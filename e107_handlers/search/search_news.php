@@ -10,15 +10,15 @@ $results = $sql -> db_Select("news", "*", "(news_start=0 || news_start < ".time(
 			if(eregi($query, $news_title)){
 				$resmain = parsesearch($news_title, $query);
 				$text .= "<form method='post' action='$link' id='news_title_".$c."'>
-				<input type='hidden' name='highlight_search' value='1' /><input type='hidden' name='search_query' value='$query' /><img src='".THEME."images/bullet2.gif' alt='bullet' /> <b><a href='javascript: document.getElementById(\"news_title_".$c."\").submit();'>".$resmain."</a></b></form><br /><span class='smalltext'>item posted on ".$datestamp." - Match found in news title</span><br /><br />";
+				<input type='hidden' name='highlight_search' value='1' /><input type='hidden' name='search_query' value='$query' /><img src='".THEME."images/bullet2.gif' alt='bullet' /> <b><a href='javascript: document.getElementById(\"news_title_".$c."\").submit();'>".$resmain."</a></b></form><br /><span class='smalltext'>".LAN_SEARCH_3.$datestamp." - ".LAN_SEARCH_4."</span><br /><br />";
 			}else if(eregi($query, $news_body)){
 				$resmain = parsesearch($news_body, $query);
 				$text .= "<form method='post' action='$link' id='news_news_".$c."'>
-				<input type='hidden' name='highlight_search' value='1' /><input type='hidden' name='search_query' value='$query' /><img src='".THEME."images/bullet2.gif' alt='bullet' /> <b><a  href='javascript:document.getElementById(\"news_news_".$c."\").submit()'>".$news_title."</a></b></form><br /><span class='smalltext'>item posted on ".$datestamp." - Match found in news text</span><br />".$resmain."<br /><br />";
+				<input type='hidden' name='highlight_search' value='1' /><input type='hidden' name='search_query' value='$query' /><img src='".THEME."images/bullet2.gif' alt='bullet' /> <b><a  href='javascript:document.getElementById(\"news_news_".$c."\").submit()'>".$news_title."</a></b></form><br /><span class='smalltext'>".LAN_SEARCH_3.$datestamp." - ".LAN_SEARCH_5."</span><br />".$resmain."<br /><br />";
 			}else if(eregi($query, $news_extended)){
 				$resmain = parsesearch($news_extended, $query);
 				$text .= "<form method='post' action='$link' id='news_extended_".$c."'>
-				<input type='hidden' name='highlight_search' value='1' /><input type='hidden' name='search_query' value='$query' /><img src='".THEME."images/bullet2.gif' alt='bullet' /> <b><a href='javascript:document.getElementById(\"news_extended_".$c."\").submit()'>".$news_title."</a></b></form><br /><span class='smalltext'>item posted on ".$datestamp." - Match found in extended news text</span><br />".$resmain."<br /><br />";
+				<input type='hidden' name='highlight_search' value='1' /><input type='hidden' name='search_query' value='$query' /><img src='".THEME."images/bullet2.gif' alt='bullet' /> <b><a href='javascript:document.getElementById(\"news_extended_".$c."\").submit()'>".$news_title."</a></b></form><br /><span class='smalltext'>".LAN_SEARCH_3.$datestamp." - ".LAN_SEARCH_6."</span><br />".$resmain."<br /><br />";
 			}
 		}else{
 			$results = $results -1;

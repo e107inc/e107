@@ -119,9 +119,9 @@ foreach($search_info as $key => $si){
 $text .= "
 <input id='google' type='checkbox' name='searchtype[]'  onclick='uncheckAll(this)' value='98' />Google
 <br /><br /> 
-<input class='button' type='button' name='CheckAll' value='Check All'
+<input class='button' type='button' name='CheckAll' value='".LAN_SEARCH_1."'
 onclick='checkAll(this);' />
-<input class='button' type='button' name='UnCheckAll' value='Uncheck All'
+<input class='button' type='button' name='UnCheckAll' value='".LAN_SEARCH_2."'
 onclick='uncheckAll(this);' />
 <br />
 </td>
