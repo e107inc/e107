@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/admin_config.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-27 19:52:36 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-29 14:01:17 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -28,6 +28,9 @@ include(file_exists($lan_file) ? $lan_file : e_PLUGIN."calendar_menu/languages/E
 	
 if (isset($_POST['updatesettings'])) {
 	$pref['eventpost_admin'] = $_POST['eventpost_admin'];
+	$pref['eventpost_headercss'] = $_POST['eventpost_headercss'];
+	$pref['eventpost_daycss'] = $_POST['eventpost_daycss'];
+	$pref['eventpost_todaycss'] = $_POST['eventpost_todaycss'];
 	save_prefs();
 	$message = EC_LAN_75; // "Calendar settings updated.";
 }
@@ -43,8 +46,25 @@ $text = "<div style='text-align:center'>
 	<table style='width:85%' class='fborder'>
 	<tr>
 	<td style='width:40%' class='forumheader3'>".EC_LAN_76." </td>
-	<td style='width:60%' class='forumheader3'>". r_userclass("eventpost_admin", $pref['eventpost_admin'], $mode = "off")
-."
+	<td style='width:60%' class='forumheader3'>". r_userclass("eventpost_admin", $pref['eventpost_admin'], $mode = "off")."
+	</td>
+	</tr>
+
+	<tr>
+	<td style='width:40%' class='forumheader3'>Css element to use for day header<br /><span class='smalltext'>Default is 'forumheader'</span></td>
+	<td style='width:60%' class='forumheader3'><input class='tbox' type='text' name='eventpost_headercss' size='20' value='".$pref['eventpost_headercss']."' maxlength='100' />
+	</td>
+	</tr>
+
+	<tr>
+	<td style='width:40%' class='forumheader3'>Css element to use for day list<br /><span class='smalltext'>Default is 'forumheader3'</span></td>
+	<td style='width:60%' class='forumheader3'><input class='tbox' type='text' name='eventpost_daycss' size='20' value='".$pref['eventpost_daycss']."' maxlength='100' />
+	</td>
+	</tr>
+
+	<tr>
+	<td style='width:40%' class='forumheader3'>Css element to use for selected day<br /><span class='smalltext'>Default is 'indent'</span></td>
+	<td style='width:60%' class='forumheader3'><input class='tbox' type='text' name='eventpost_todaycss' size='20' value='".$pref['eventpost_todaycss']."' maxlength='100' />
 	</td>
 	</tr>
 	 

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/config.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-27 19:52:36 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-29 14:01:19 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -43,11 +43,10 @@ $text = "<div style='text-align:center'>
 	<table style='width:85%' class='fborder'>
 	<tr>
 	<td style='width:40%' class='forumheader3'>".EC_LAN_76." </td>
-	<td style='width:60%' class='forumheader3'>". r_userclass("eventpost_admin", $pref['eventpost_admin'], $mode = "off")
-."
+	<td style='width:60%' class='forumheader3'>". r_userclass("eventpost_admin", $pref['eventpost_admin'], $mode = "off")."
 	</td>
 	</tr>
-	 
+
 	<tr style='vertical-align:top'>
 	<td colspan='2'  style='text-align:center' class='forumheader'>
 	<input class='button' type='submit' name='updatesettings' value='".EC_LAN_77."' />
