@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-02-23 15:58:20 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.13 $
+|     $Date: 2005-03-09 10:03:23 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -456,7 +456,7 @@ if ($signupval[5]) {
 	$text .= "
 		<tr>
 		<td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_118.req($signupval[5])."</td>
-		<td class='forumheader3' style='width:70%;white-space:nowrap' >".  
+		<td class='forumheader3' style='width:70%'>".  
 	$rs->form_select_open("birth_day"). $rs->form_option("", 0);
 	$today = getdate();
 	$year = $today['year'];
@@ -511,7 +511,7 @@ if ($signupval[7]) {
 	$text .= "<tr>
 		<td class='forumheader3' style='width:30%;white-space:nowrap;vertical-align:top' >".LAN_120." ".req($signupval[7])."</td>
 		<td class='forumheader3' style='width:70%' >
-		<textarea class='tbox' name='signature' cols='70' rows='4'>$signature</textarea>
+		<textarea class='tbox' name='signature' cols='10' rows='4' style='width: 80%;'>$signature</textarea>
 		<input class='helpbox' type='text' name='helpb' size='90' />
 		".ren_help("addtext");
 }
@@ -523,7 +523,7 @@ if ($signupval[8]) {
 		<tr>
 		<td class='forumheader3' style='width:30%; vertical-align:top;white-space:nowrap' >".LAN_121.req($signupval[8])."<br /><span class='smalltext'>(".LAN_402.")</span></td>
 		<td class='forumheader3' style='width:70%' >
-		<input class='tbox' type='text' name='image' size='60' value='$image' maxlength='100' />
+		<input class='tbox' type='text' name='image' size='40' value='$image' maxlength='100' />
 		 
 		<input class='button' type ='button' style=''width: 35px'; cursor:hand' size='30' value='".LAN_SIGNUP_27."' onClick='expandit(this)'>
 		<div style='display:none' style=&{head};>";
@@ -544,12 +544,12 @@ if ($signupval[8]) {
 		</div>";
 	 
 	if ($pref['avatar_upload'] && FILE_UPLOADS) {
-		$text .= "<br /><span class='smalltext'>".LAN_SIGNUP_25."</span> <input class='tbox' name='file_userfile[]' type='file' size='47'>
+		$text .= "<br /><span class='smalltext'>".LAN_SIGNUP_25."</span> <input class='tbox' name='file_userfile[]' type='file' size='40'>
 			<br /><div class='smalltext'>".LAN_404."</div>";
 	}
 	 
 	if ($pref['photo_upload'] && FILE_UPLOADS) {
-		$text .= "<br /><span class='smalltext'>".LAN_SIGNUP_26."</span> <input class='tbox' name='file_userfile[]' type='file' size='47'>
+		$text .= "<br /><span class='smalltext'>".LAN_SIGNUP_26."</span> <input class='tbox' name='file_userfile[]' type='file' size='40'>
 			<br /><div class='smalltext'>".LAN_404."</div>";
 	}
 	 
