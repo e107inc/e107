@@ -66,7 +66,7 @@ if($image_stats == null){ echo "<b>DEBUG</b> image_stats are null<br />"; return
 				$name2 = "thumb_".$name;
 				$destination_file = str_replace($name, $name2, $destination_file);
 			}
-			exec ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." '".$source_file."' '".$destination_file."'");
+			exec ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." ".escapeshellarg($source_file)." '".$destination_file."'");
 
 		}
 	}else if($mode == "gd1"){
