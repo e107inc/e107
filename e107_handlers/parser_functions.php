@@ -8,6 +8,8 @@
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
+@include(e_LANGUAGEDIR.e_LAN."/lan_parser_functions.php");
+@include(e_LANGUAGEDIR."English/lan_parser_functions.php");
 function e107core_parse($match,$referrer){
 	global $pref;
 	if($match[1] == "EMAILTO"){
@@ -68,8 +70,10 @@ function e107core_parse($match,$referrer){
 			return "";
 		}
 	}
-	if($match[1] == "USERNAME"){
+	if($match[1] == "USERNAME" && USER){
 		return USERNAME;
+	} else {
+		return LAN_GUEST;
 	}
 }
 
