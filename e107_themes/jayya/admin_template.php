@@ -94,7 +94,10 @@ $ADMIN_HEADER .= "<table class='main_section'>
 <tr>
 <td>
 {SETSTYLE=leftmenu}
-{ADMIN_LANG}";
+{ADMIN_LANG}
+{ADMIN_PWORD}
+{ADMIN_MSG}
+{ADMIN_PLUGINS}";
 
 if (!ADMIN) {
 	$style='leftmenu';
@@ -108,10 +111,7 @@ if ($prehelp!='') {
 	$ADMIN_HEADER .= "{ADMIN_SITEINFO}";
 }
 
-$ADMIN_HEADER .= "{ADMIN_PWORD}
-{ADMIN_MSG}
-{ADMIN_PLUGINS}
-<br />
+$ADMIN_HEADER .= "<br />
 </td></tr></table>
 </td>
 <td class='default_menu'>
