@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-02-06 01:00:38 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2005-02-09 22:31:48 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -68,20 +68,20 @@ if (isset($id)) {
 	 
 	if ($id == 0) {
 		$text = "<div style='text-align:center'>".LAN_137." ".SITENAME."</div>";
-		$ns->tablerender("<div style='text-align:center'>".LAN_20."</div>", $text);
+		$ns->tablerender(LAN_20, $text);
 		require_once(FOOTERF);
 		exit;
 	}
 	 
 	if (!$sql->db_Select("user", "*", "user_id='".$id."' ")) {
 		$text = "<div style='text-align:center'>".LAN_400."</div>";
-		$ns->tablerender("<div style='text-align:center'>".LAN_20."</div>", $text);
+		$ns->tablerender(LAN_20, $text);
 		require_once(FOOTERF);
 		exit;
 	}
 	 
 	$text = renderuser($sql->db_Fetch());
-	$ns->tablerender("<div style='text-align:center'>".LAN_402."</div>", $text);
+	$ns->tablerender(LAN_402, $text);
 	require_once(FOOTERF);
 	exit;
 }
@@ -160,7 +160,7 @@ if (!$sql->db_Select("user", "*", "ORDER BY user_id $order LIMIT $from,$records"
 	 
 }
 	
-$ns->tablerender("<div style='text-align:center'>".LAN_140."</div>", $text);
+$ns->tablerender(LAN_140, $text);
 	
 require_once(e_HANDLER."np_class.php");
 $ix = new nextprev("user.php", $from, $records, $users_total, LAN_138, $records.".".$order);
