@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:21 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-09-23 14:14:29 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -452,6 +452,7 @@ class users{
                         <td style='width:15%' class='forumheader2'><a href='".e_SELF."?main.user_class.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_91."</a></td>
                         <td style='width:30%' class='forumheader2'>".USRLAN_75."</td>
                         </tr>";
+                        require_once(e_HANDLER."multilang/pictures.php");
                         while($row = $sql -> db_Fetch()){
                                 extract($row);
                                 $text .= "<tr>
@@ -459,13 +460,13 @@ class users{
                                 <td style='width:10%' class='forumheader3'>";
 
                                 if($user_perms == "0"){
-                                        $text .= "<img src='".e_IMAGE."generic/mainadmin.gif' alt='' style='vertical-align:middle' />";
+                                        $text .= "<img src='".eMLANG_path("mainadmin.gif","generic")."' alt='' style='vertical-align:middle' />";
                                 }else if($user_admin){
-                                        $text .= "<a href='".e_SELF."?main.user_admin.".($id == "desc" ? "asc" : "desc")."'><img src='".e_IMAGE."generic/admin.gif' alt='' style='vertical-align:middle; border:0' /></a>";
+                                        $text .= "<a href='".e_SELF."?main.user_admin.".($id == "desc" ? "asc" : "desc")."'><img src='".eMLANG_path("admin.gif","generic")."' alt='' style='vertical-align:middle; border:0' /></a>";
                                 }else if($user_ban == 1){
-                                        $text .= "<a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc")."'><img src='".e_IMAGE."generic/banned.gif' alt='' style='vertical-align:middle; border:0' /></a>";
+                                        $text .= "<a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc")."'><img src='".eMLANG_path("banned.gif","generic")."' alt='' style='vertical-align:middle; border:0' /></a>";
                                 }else if($user_ban == 2){
-                                        $text .= "<img src='".e_IMAGE."generic/not_verified.gif' alt='' style='vertical-align:middle' />";
+                                        $text .= "<img src='".eMLANG_path("not_verified.gif","generic")."' alt='' style='vertical-align:middle' />";
                                 }else{
                                         $text .= "&nbsp;";
                                 }
