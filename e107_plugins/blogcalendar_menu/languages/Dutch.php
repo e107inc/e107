@@ -13,6 +13,8 @@
 */
 
 define("BLOGCAL_L1", "Nieuws voor ");
+define("BLOGCAL_L2", "Archive");
+
 define("BLOGCAL_D1", "ma");
 define("BLOGCAL_D2", "di");
 define("BLOGCAL_D3", "wo");
@@ -35,5 +37,13 @@ define("BLOGCAL_M11", "november");
 define("BLOGCAL_M12", "december");
 
 define("BLOGCAL_1", "Nieuws items");
+
+define("BLOGCAL_CONF1", "Maanden/rij");
+define("BLOGCAL_CONF2", "Cellpadding");
+define("BLOGCAL_CONF3", "De Montages van het Menu van de update");
+define("BLOGCAL_CONF4", "BlogCal Menu Configuration");
+define("BLOGCAL_CONF5", "BlogCal menu configuration saved");
+
+define("BLOGCAL_ARCHIV1", "Select Archive");
 
 ?>

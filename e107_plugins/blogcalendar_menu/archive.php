@@ -10,9 +10,16 @@
  *                                                                *
 \******************************************************************/
 require_once("../../class2.php");
+require_once(e_HANDLER."userclass_class.php");
+
+$lan_file=e_PLUGIN."blogcalendar_menu/languages/".e_LANGUAGE.".php";
+if(file_exists($lan_file)){
+	require_once($lan_file);
+} else {
+	require_once(e_PLUGIN."blogcalendar_menu/languages/English.php");
+};
 require_once("calendar.php");
 require_once("functions.php");
-require_once("languages/".e_LANGUAGE.".php");
 require_once(HEADERF); 
 
 // ---------------------
@@ -54,7 +61,7 @@ $end_year = $cur_year;
 // build the yearselector
 // ----------------------   
 $year_selector = "<div class='forumheader' style='text-align: center; margin-bottom: 2px;'>";   
-$year_selector .= "Select archive: <select name='activate' onChange='urljump(this.options[selectedIndex].value)' class='tbox'>";
+$year_selector .= "".BLOGCAL_ARCHIV1.": <select name='activate' onChange='urljump(this.options[selectedIndex].value)' class='tbox'>";
 
 for($i=$start_year; $i<=$end_year; $i++){
     $start = mktime(0,0,0,1,1,$req_year);

@@ -1,26 +1,35 @@
 <?php
 /******************************************************************\
  *                                                                *
- *  :: e107 blogcal addon ::                                      *
+ *  :: e107 blogcal addon ::   									  *
  *                                                                *
  *  file:     config.php                                          *
  *  author:   Thomas Bouve                                        *
  *  email:    crahan@gmx.net                                      *
  *  Date:     2004-02-08                                          *
  *                                                                *
+ * Multilanguage by Juan
 \******************************************************************/
 require_once("../../class2.php");
+require_once(e_HANDLER."userclass_class.php");
+
+$lan_file=e_PLUGIN."blogcalendar_menu/languages/".e_LANGUAGE.".php";
+if(file_exists($lan_file)){
+	require_once($lan_file);
+} else {
+	require_once(e_PLUGIN."blogcalendar_menu/languages/English.php");
+}
 if(!getperms("1")){ header("location:".e_BASE."index.php"); exit ;}
 require_once(e_ADMIN."auth.php");
 
 if(IsSet($_POST['update_menu'])){
     while(list($key, $value) = each($_POST)){
-        if($value != "Update Menu Settings"){ 
+        if($value != BLOGCAL_CONF3){ 
             $pref[$key] = $value;
         }
     }
     save_prefs();
-    $ns -> tablerender("", "<div style='text-align:center'><b>BlogCal menu configuration saved</b></div>");
+    $ns -> tablerender("", "<div style='text-align:center'><b>".BLOGCAL_CONF5."</b></div>");
 }
 
 $text = "<div style='text-align:center'>
@@ -28,7 +37,7 @@ $text = "<div style='text-align:center'>
 <table style='width:85%' class='fborder' >
 
 <tr>
-<td style='width:40%' class='forumheader3'>Months/row: </td>
+<td style='width:40%' class='forumheader3'>".BLOGCAL_CONF1.": </td>
 <td style='width:60%' class='forumheader3'>
 <select class='tbox' name='blogcal_mpr'>";
 
@@ -45,7 +54,7 @@ $text .= "</select>
 </tr>
 
 <tr>
-<td style='width:40%' class='forumheader3'>Cellpadding: </td>
+<td style='width:40%' class='forumheader3'>".BLOGCAL_CONF2.": </td>
 <td style='width:60%' class='forumheader3'>
 <input class='tbox' type='text' name='blogcal_padding' size='20' value='";
 // if the cellpadding isn't defined
@@ -57,13 +66,13 @@ $text.= "' maxlength='100' />
 
 <tr>
 <td colspan='2' class='forumheader' style='text-align:center'>
-    <input class='button' type='submit' name='update_menu' value='Update Menu Settings' />
+    <input class='button' type='submit' name='update_menu' value='".BLOGCAL_CONF3."' />
 </td>
 </tr>
 </table>
 </form>
 </div>";
-$ns -> tablerender("BlogCal Menu Configuration", $text);
+$ns -> tablerender(BLOGCAL_CONF4, $text);
 
 require_once(e_ADMIN."footer.php");
 ?>
