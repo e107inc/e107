@@ -131,11 +131,6 @@ $article_total = $sql -> db_Select("content", "*", "content_type='254' OR conten
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."' name='dataform'>
 <table style='width:80%' class='fborder'>
-<tr>
-<td colspan='2' style='text-align:center' class='forumheader2'>
-<input class='button' type='button' onClick='openwindow()'  value='".CNTLAN_9."' />
-</td>
-</tr>
 
 <tr>
 <td style='width:20%; vertical-align:top' class='forumheader3'>".CNTLAN_10.":</td>
