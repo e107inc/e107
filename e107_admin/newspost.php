@@ -774,7 +774,7 @@ class newspost{
 
                 global $sql, $rs, $ns, $aj;
                 $text = "<div style='border : solid 1px #000; padding : 4px; width :auto; height : 200px; overflow : auto; '>\n";
-                if($category_total = $sql -> db_Select("submitnews")){
+                if($category_total = $sql -> db_Select("submitnews","*","submitnews_id !='' ORDER BY submitnews_id DESC")){
                         $text .= "<table class='fborder' style='width:100%'>
                         <tr>
                         <td style='width:5%' class='forumheader2'>ID</td>
