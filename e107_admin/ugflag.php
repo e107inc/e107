@@ -14,6 +14,7 @@
 */
 require_once("../class2.php");
 if(!getperms("9")){ header("location:".e_BASE."index.php"); exit;}
+require_once(e_HANDLER."ren_help.php");
 
 if(IsSet($_POST['updatesettings'])){
 	$aj = new textparse;
@@ -33,7 +34,7 @@ if(e_QUERY == "u"){
 $maintainance_flag = $pref['maintainance_flag'];
 
 $text = "<div style='text-align:center'>
-<form method='post' action='".e_SELF."'>
+<form method='post' action='".e_SELF."' name='dataform'>
 <table style='width:85%' class='fborder'>
 <tr>
 <td style='width:30%' class='forumheader3'>".UGFLAN_2.": </td>
@@ -52,11 +53,17 @@ $text .= "</td>
 <tr>
 <td style='width:30%' class='forumheader3'>".UGFLAN_5."<br /><span class='smalltext'>".UGFLAN_6."</span></td>
 <td style='width:70%' class='forumheader3'>
-<textarea class='tbox' name='maintainance_text' cols='59' rows='10'>".$pref['maintainance_text']."</textarea>
+<textarea class='tbox' name='maintainance_text' cols='59' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".$pref['maintainance_text']."</textarea>
 </td>
 </tr>
 
-<tr>
+<tr style='vertical-align:top'> 
+<td colspan='2'  style='text-align:center' class='forumheader3'>
+".ren_help(2)."
+</td>
+</tr>
+
+
 <tr style='vertical-align:top'> 
 <td colspan='2'  style='text-align:center' class='forumheader'>
 <input class='button' type='submit' name='updatesettings' value='".UGFLAN_3."' />
