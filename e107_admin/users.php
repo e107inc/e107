@@ -11,13 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-02-04 08:16:22 $
-|     $Author: sweetas $
+|     $Revision: 1.11 $
+|     $Date: 2005-02-14 04:02:37 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
-if (!is_object($tp)) $tp = new e_parse;
 if (!getperms("4")) {
 	header("location:".e_BASE."index.php");
 	 exit;
@@ -405,8 +404,8 @@ class users {
 	function show_existing_users($action, $sub_action, $id, $from, $amount) {
 		// ##### Display scrolling list of existing news items ---------------------------------------------------------------------------------------------------------
 		 
-		global $sql, $rs, $ns, $aj;
-		 
+		global $sql, $rs, $ns;
+ 
 		if ($sql->db_Select("userclass_classes")) {
 			while ($row = $sql->db_Fetch()) {
 				extract($row);
