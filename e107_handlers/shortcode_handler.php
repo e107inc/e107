@@ -21,7 +21,7 @@ class e_shortcode
 
 	function parseCodes($text,$useSCFiles=TRUE,$extraCodes="")
 	{
-		$this -> parseSCFiles = $useSCFiles;
+    $this -> parseSCFiles = $useSCFiles;
 		if(is_array($extraCodes))
 		{
 			foreach($extraCodes as $sc => $code)
@@ -46,7 +46,8 @@ class e_shortcode
 
 	function doCode($matches)
 	{
-		list($code,$parm) = explode("=",$matches[1],2);
+		global $pref;
+    list($code,$parm) = explode("=",$matches[1],2);
 		$parm=trim(chop($parm));
 		if(array_key_exists($code,$this -> scList))
 		{
