@@ -1,6 +1,6 @@
 <!--
 
-function tick() {
+function tick(article1) {
   var hours, minutes, seconds, ap;
   var intHours, intMinutes, intSeconds;  var today;
   today = new Date();
@@ -24,7 +24,7 @@ function tick() {
   if (intYear < 2000){
 	intYear += 1900;
   }
-  timeString = timeString+" of "+MnthNam[intMonth]+" "+intYear;
+  timeString = timeString+" "+article1+" "+MnthNam[intMonth]+" "+intYear;
   if (intHours == 0) {
      hours = "12:";
      ap = "am.";
@@ -52,7 +52,7 @@ function tick() {
   timeString = (document.all)? timeString+", "+hours+minutes+seconds+" "+ap:timeString+" "+hours+minutes+" "+ap;
   var clock = (document.all) ? document.all("Clock") : document.getElementById("Clock");
   clock.innerHTML = timeString;
-  (document.all)?window.setTimeout("tick();", 1000):window.setTimeout("tick();", 6000);
+  (document.all)?window.setTimeout("tick("+article1+");", 1000):window.setTimeout("tick("+article1+");", 6000);
 }
 
 ////tick();
