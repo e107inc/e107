@@ -70,7 +70,7 @@ function TinyMCE_flash_execCommand(editor_id, element, command, user_interface, 
 
             template['file']   = '../../plugins/flash/flash.htm'; // Relative to theme
             template['width']  = 400;
-            template['height'] = 180;
+            template['height'] = 195;
 
 			// Is selection a image
             if (focusElm != null && focusElm.nodeName.toLowerCase() == "img") {

@@ -511,6 +511,13 @@ function TinyMCE_advanced_handleNodeChange(editor_id, node, undo_index, undo_lev
 				nodeData = "";
 			}
 
+			if (getAttrib(path[i], 'name').indexOf("mce_") != 0) {
+				if (getAttrib(path[i], "className") != "")
+					nodeName += "." + getAttrib(path[i], "className");
+				else if (getAttrib(path[i], "class") != "")
+					nodeName += "." + getAttrib(path[i], "class");
+			}
+
 			if (tinyMCE.isMSIE)
 				html += '<a title="' + nodeData + '" href="javascript:void(0);" onmousedown="tinyMCE.execInstanceCommand(\'' + editor_id + '\',\'mceSelectNodeDepth\',false,\'' + i + '\');return false;" class="mcePathItem">' + nodeName + '</a>';
 			else
