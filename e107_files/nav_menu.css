@@ -10,17 +10,17 @@ div.menu a.menuItem {
 }
 
 div.menuBar {
-  background-color: #F5EED0;
+  background-color: #FFEED0;
   border-top: 1px solid #ffffff;
-  border-bottom: 0px solid #3D4251;
+  border-bottom: 0px solid #000;
   padding: 4px 0px 4px 0px;
   text-align: left;
 }
 
 div.emenuBar {
-  background-color: #F5EED0;
+  background-color: #FFEED0;
   border-top: 1px solid #ffffff;
-  border-bottom: 0px solid #3D4251;
+  border-bottom: 0px solid #000;
   text-align: left;
 }
 
@@ -54,7 +54,7 @@ div.menuBar a.menuButtonActive:hover {
 }
 
 div.menu {
-  background-color: #F5EED0;
+  background-color: #FFEED0;
   border: 1px solid;
   border-color: #ffffff #a5a5a5 #a5a5a5 #ffffff;
   left: 0px;

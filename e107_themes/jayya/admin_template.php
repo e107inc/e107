@@ -50,7 +50,7 @@ function show_admin_menu($title, $page, $e107_vars, $js = FALSE){
 $ADMIN_HEADER = "<table class='top_section'>
 <tr>
 <td class='top_section_left' style='width: 170px'>
-<img src='".THEME."images/adminlogo_2.png' style='width: 170px; height: 68px; display: block;' alt='' />
+<img src='".THEME."images/logo.png' style='width: 170px; height: 68px; display: block;' alt='' />
 </td>
 <td class='top_section_mid' style='width: 100%'>
 <div style='margin-bottom: 3px;'>

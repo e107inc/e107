@@ -6,7 +6,7 @@ body, td {
 }
 
 body {
-	background-color: #f9f9f9;
+	background-color: #fdf9f9;
 }
 
 body, td, .indent, .defaulttext, .caption, .bodytable, .infobar, 
@@ -84,15 +84,15 @@ a:hover {
 
 .forumheader, .forumheader2, .f2default, .forumheader3, .f3default, .fcaption, .fcdefault, .fcaption2, .finfobar {
 	padding: 4px;
-	border: #3D4251 1px solid;
+	border: #000 1px solid;
 }
 
 .forumheader {
-	background-color: #f9f9f9;
+	background-color: #fdf9f9;
 }
 
 .f2default, .fcaption, .fcdefault, .fcaption2 {
-	background-color: #efefef;
+	background-color: #F3EDED;
 }
 
 .forumheader2, .forumheader3, .f3default{
@@ -164,7 +164,7 @@ ul{
 .top_section, .main_section {
 	width: 100%;
 	background-color: #fff;
-	border-bottom: 1px solid #3D4251;
+	border-bottom: 1px solid #000;
 	border-collapse:collapse;
 	border-spacing:0px;
 }
@@ -178,8 +178,8 @@ ul{
 	vertical-align: bottom;
 	text-align: right;
 	padding: 3px 5px 3px 0px;
-	border-left: 1px solid #3D4251;
-	background-color: #efefef;
+	border-left: 1px solid #000;
+	background-color: #F3EDED;
 	background-image: url(images/computer.jpg);
 	background-repeat: no-repeat;
 }
@@ -187,8 +187,8 @@ ul{
 .top_section_right {
 	vertical-align: middle;
 	text-align: center;
-	border-left: 1px solid #3D4251;
-	background-color: #f3f3f3;
+	border-left: 1px solid #000;
+	background-color: #F3EDED;
 	background-image: url(images/screen.png);
 	background-repeat: no-repeat;
 }
@@ -200,34 +200,34 @@ ul{
 .left_menu, .right_menu {
 	width: 170px;
 	vertical-align:top;
-	background-color: #efefef;
+	background-color: #F3EDED;
 }
 
 .left_menu {
-	border-right: #3D4251 1px solid;
+	border-right: #000 1px solid;
 }
 
 .right_menu {
-	border-left: #3D4251 1px solid;
+	border-left: #000 1px solid;
 }
 
 .main_caption, .left_caption, .right_caption {
 	padding: 3px;
 	border-top: #e9efff 1px solid;
-	border-bottom: 1px solid #3D4251;
+	border-bottom: 1px solid #000;
 }
 
 .main_caption {
-	background-color: #61687C;
+	background-color: #0E7CAB;
 }
 
 .left_caption, .right_caption {
-	background-color: #3D4251;
+	background-color: #225778;
 	
 }
 
 .cap_border {
-	border-top: #3D4251 1px solid;
+	border-top: #000 1px solid;
 	border-bottom: #fff 1px solid;
 }
 
