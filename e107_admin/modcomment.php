@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/modcomment.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-01-27 19:52:24 $
-|     $Author: streaky $
+|     $Revision: 1.8 $
+|     $Date: 2005-03-19 08:58:05 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -94,20 +94,23 @@ if (IsSet($message)) {
 $text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."?".e_QUERY."'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>";
-	
-if (!$sql->db_Select("comments", "*", "(comment_type='".$type."' OR comment_type='".$tid."') AND comment_item_id=$id")) {
+
+	if (!$sql->db_Select("comments", "*", "(comment_type='".$type."' OR comment_type='".$tid."') AND comment_item_id=$id")) {
 	$text .= "<tr><td class='forumheader3' style='text-align:center'>".MDCLAN_2.".</td></tr></table></form></div>";
 } else {
 	$con = new convert;
 	$aj = new textparse();
-	$sql2 = new db;
-	while ($row = $sql->db_Fetch()) {
+
+	$commentArray = $sql -> db_getList();
+
+	foreach($commentArray as $row)
+	{
 		extract($row);
 		$datestamp = $con->convert_date($comment_datestamp, "short");
 		$comment_author_id = substr($comment_author, 0, strpos($comment_author, "."));
 		if ($comment_author_id) {
-			$sql2->db_Select("user", "*", "user_id='$comment_author_id' ");
-			$row = $sql2->db_Fetch();
+			$sql->db_Select("user", "*", "user_id='$comment_author_id' ");
+			$row = $sql->db_Fetch();
 			 extract($row);
 			$comment_nick = "<a href='".e_BASE."user.php?id.".$user_id."'>".$user_name."</a>";
 			$comment_str = MDCLAN_3." #".$user_id;
