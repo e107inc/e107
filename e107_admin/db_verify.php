@@ -1,8 +1,14 @@
 <?php
 
-$db_verify_version="1.0";
+/*****************************************************
+e107 SQL verification script
 
-$tables_version["core"]="0.600alpha";
+Mar 02, 2004 (McFly)
+	+ Added field number verification
+	+ Will now work with table that have multiple KEYs
+
+*****************************************************/
+
 $filename = "sql/core_sql.php";
 @$fd = fopen ($filename, "r");
 $sql_data = @fread($fd, filesize($filename));
@@ -41,7 +47,6 @@ while(false !== ($file = readdir($handle))){
 closedir($handle);
 
 function read_tables($tab){
-
 	global $tablines;
 	global $table_list;
 	global $tables;
@@ -81,16 +86,12 @@ function check_tables($what){
 	global $tablines;
 	global $table_list;
 	global $ns;
-	global $tables_version;
-	global $coppermine_prefix;
-	
+
 	$table_list="";
 	read_tables($what);
 	
 	$text="
 	<table style='width:95%' class='fborder'>
-	<tr><td class='forumheader3' colspan='4' style='text-align:center'>
-	<b>".DBLAN_2." ".$what." tables ".DBLAN_3.": ".$tables_version[$what]."</b></td><tr>
 	<tr>
 	<td class='forumheader' style='text-align:center'>".DBLAN_4."</td>
 	<td class='forumheader' style='text-align:center'>".DBLAN_5."</td>
@@ -99,53 +100,71 @@ function check_tables($what){
 	</tr>";
 	foreach(array_keys($table_list) as $k){
 		$text.="<tr>";
-		if($what=="Coppermine"){
-			$prefix=$coppermine_prefix;
-		} else {
-			$prefix=MPREFIX;
-		}
+		$prefix=MPREFIX;
 		$current_tab=get_current($k,$prefix);
 		unset($fields);
 		unset($xfields);
 		if($current_tab){
 			$lines=split("\n",$current_tab);
+			$fieldnum=0;
 			foreach($tablines[$k] as $x){
+				$fieldnum++;
 				$ffound=0;
 				list($fname,$fparams)=split(" ",$x,2);
+				if($fname == "KEY"){
+					list($key,$keyname,$keyparms)=split(" ",$x,3);
+					$fname=$key." ".$keyname;
+					$fparams = $keyparms;
+				}
 				$fields[$fname]=1;
 				$fparams=ltrim(rtrim($fparams));
 				$fparams=preg_replace("/\r?\n$|\r[^\n]$|,$/", "", $fparams);
-				$text.="<tr><td class='forumheader3'>$k</td><td class='forumheader3'>$fname</td>";
+				$text.="<tr><td class='forumheader3'>$k</td><td class='forumheader3'>$fname";
+				if(preg_match("#KEY#",$fparams)){$text .= " $fparams";}
+				$text .= "</td>";
+				$s=0;	
+				$xfieldnum=-1;
 				foreach($lines as $l){
+					$xfieldnum++;
 					list($xl,$tmp)=split("\n",$l,2);
 					$xl=ltrim(rtrim(stripslashes($xl)));
 					$xl=preg_replace("/\r?\n$|\r[^\n]$/", "", $xl);
 					list($xfname,$xfparams)=split(" ",$xl,2);
+
+					if($xfname == "KEY"){
+						list($key,$keyname,$keyparms)=split(" ",$xl,3);
+						$xfname=$key." ".$keyname;
+						$xfparams = $keyparms;
+					}
+
 					if($xfname != "CREATE" && $xfname !=")"){
 						$xfields[$xfname]=1;
 					}
 					$xfparams=preg_replace("/,$/", "", $xfparams);
 					$fparams=preg_replace("/,$/", "", $fparams);
-					if($xfname == $fname){
+					if($xfname==$fname){
 						$ffound=1;
-						if($fparams != $xfparams){
+						if(strcasecmp($fparams,$xfparams) != 0){
 							$text.="<td class='forumheader' style='text-align:center'>".DBLAN_8."</td>";
-							$text.="<td class='forumheader3' style='text-align:center'><b>".DBLAN_9." [".$xfparams."] <br />".DBLAN_10." [".$fparams."]</b></td>";
+							$text.="<td class='forumheader3' style='text-align:center'>".DBLAN_9."<div class='indent'>".$xfparams."</div><b>".DBLAN_10."</b><div class='indent'>".$fparams."</div></td>";
+						} elseif($fieldnum != $xfieldnum) {
+							$text.="<td class='fcaption' style='text-align:center'>".DBLAN_5." ".DBLAN_8."</td>
+							<td class='forumheader3' style='text-align:center'>".DBLAN_9." #{$xfieldnum}<br />".DBLAN_10." #{$fieldnum}</td>";
 						} else {
-							$text.="<td class='forumheader3' style='text-align:center'>OK</td>
+							$text.="<td class='forumheader3' style='text-align:center;'>OK</td>
 							<td class='forumheader3' style='text-align:center'>&nbsp;</td>";
 						}
 					}
 				}
 				if($ffound==0){
-					$text.="<td class='forumheader' style='text-align:center'>".DBLAN_11."</td>
+					$text.="<td class='forumheader' style='text-align:center'><strong><em>".DBLAN_11."</em></strong></td>
 					<td class='forumheader3' style='text-align:center'><b>".DBLAN_10." [$fparams]</b></td>";
 				}
 				$text.="</tr>\n";
 			}
 			foreach(array_keys($xfields) as $tf){
 				if(!$fields[$tf]){
-					$text.="<tr><td class='forumheader3' style='text-align:center'>$k</td><td class='forumheader3' style='text-align:center'>$tf</td><td class='forumheader3' style='text-align:center'>".DBLAN_12."</td><td class='forumheader3' style='text-align:center'>&nbsp;</td></tr>";
+					$text.="<tr><td class='forumheader3' style='text-align:center'>$k</td><td class='forumheader3' style='text-align:center'>$tf</td><td class='forumheader3' style='text-align:center'><strong><em>".DBLAN_12."</em></strong></td><td class='forumheader3' style='text-align:center'>&nbsp;</td></tr>";
 				}
 			}
 		} else {
@@ -159,32 +178,27 @@ function check_tables($what){
 global $table_list;
 if(!$_POST){
 	$text="
-	<form method=\"POST\" action=\"".e_SELF."\">
-	<table border=0 align=\"center\">
+	<form method='POST' action='".e_SELF."'>
+	<table border=0 align='center'>
 	<tr><td>".DBLAN_14."<br /><br />";
 	foreach(array_keys($tables) as $x){
-		$text.="<input type=\"checkbox\" name=\"table_".$x."\">".$x."<br />";
+		$text.="<input type='checkbox' name='table_".$x."'>".$x."<br />";
 	}
 	$text.="
-	<br /><input class=\"button\" type=\"submit\" value=\"".DBLAN_15."\">
+	<br /><input class='button' type='submit' value='".DBLAN_15."'>
 	</td></tr></table></form>";
-	$ns->tablerender(DBLAN_16.": ".$db_verify_version,$text);
+	$ns->tablerender(DBLAN_16,$text);
 } else {
 	foreach(array_keys($_POST) as $k){
 		if(preg_match("/table_(.*)/",$k,$match)){
 			$xx=$match[1];
-
-
 			$str = "<br />
 			<div style='text-align:center'>
 			<form method='POST' action='db.php'>
 			<input class='button' type='submit' name='back' value='".DBLAN_17."' />
 			</form>
 			</div>";
-
-
-
-			$ns->tablerender("SQL Verification - $xx tables",check_tables($xx). $str);
+			$ns->tablerender(DBLAN_16." - $xx ".DBLAN_18,check_tables($xx).$str);
 		}
 	}
 }
