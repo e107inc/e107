@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm_menu/pm_inc.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-08 16:13:16 $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-11 14:02:32 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -85,12 +85,12 @@ function pm_show_stats($no_show_br = 0) {
 				< /script > ";
 			}
 		}
-		if ($pmstats['new']){$text.=$pmstats['new']." ".PMLAN_0." < br /> \n";}
+		if ($pmstats['new']){$text.=$pmstats['new']." ".PMLAN_0." <br /> \n";}
 		$text .= ($pmstats['received'] > 0) ? "<a class='smalltext' href='".e_PM."pm.php?read'>{$pmstats['received']} ".PMLAN_1."</a> ({$pmstats['unread_rcv_pm']})<br />" : $pmstats['received']." ".PMLAN_1."<br />";
 		$blocks = $pmstats['blocks'];
 		$text .= ($pmstats['sent_pm']>0) ? "<a class='smalltext' href='".e_PM."pm.php?sent'>{$pmstats['sent_pm']} ".PMLAN_2."</a> ({$pmstats['unread_send_pm']})<br />" : $pmstats['sent_pm']." ".PMLAN_2."<br />";
 		$text .= ($pmstats['blocks'] == 1) ? $pmstats['blocks']." ".PMLAN_3 : $pmstats['blocks']." ".PMLAN_4;
-		if ($pmstats['blocks']>0){$text.=" - < a class = 'smalltext' href = '".e_PM."pm.php?vb' > ".PMLAN_6." < /a > ";}
+		if ($pmstats['blocks']>0){$text.=" - <a class = 'smalltext' href = '".e_PM."pm.php?vb' > ".PMLAN_6." </a> ";}
 		$text.=" <br /> \n";
 		$text.="[ <a href = '".e_PM."pm.php?send'> ".PMLAN_5." </a> ]";
 		$text.=" <br /> \n";
