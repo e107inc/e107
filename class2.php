@@ -593,7 +593,20 @@ function check_class($var, $userclass=USERCLASS, $debug=FALSE){
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function getperms($arg, $ap = ADMINPERMS){
-	if(ereg($arg.".", $ap) || $ap == "0"){
+    global $PLUGINS_DIRECTORY;
+    if($ap == "0"){return TRUE;}
+    if($ap == ""){return FALSE;}
+    $ap = ".".$ap;
+    if($arg == "P" &&
+preg_match("#(.*?)/".$PLUGINS_DIRECTORY."(.*?)/(.*?)#",e_SELF,$matches) ){
+        $psql = new db;
+        if($psql -> db_Select("plugin","plugin_id","plugin_path =
+'".$matches[2]."' ")){
+            $row = $psql -> db_Fetch();
+            $arg = "P".$row[0];
+        }
+    }
+    if(preg_match("#\.".$arg."\.#", $ap)){
 		return TRUE;
 	}else{
 		return FALSE;
