@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-12-23 16:46:46 $
-|     $Author: pholzmann $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-09 01:50:36 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 /*
@@ -45,12 +45,13 @@ function sendemail($send_to, $subject, $message,$to_name,$send_from,$from_name,$
         // Clean up the HTML. ==
 
         if(preg_match('/^<(html|font|br|a|img)/i', $message)){
-        	$Html = $message; // Assume html if it begins with one of these tags
+                $Html = $message; // Assume html if it begins with one of these tags
         }else{
-	        $Html = str_replace("\n","<br />\n", htmlentities($message));	// Correctly put in breaks
-		$Html = preg_replace('%(http|ftp|https)(://\S+)%', '<a href="\1\2">\1\2</a>', $Html);
-        $Html = eregi_replace('([[:space:]()[{}])(www.[-a-zA-Z0-9@:%_\+.~#?&//=]+)',    '\\1<a href="http://\\2">\\2</a>', $Html);
-        $Html = eregi_replace('([_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,3})',    '<a href="mailto:\\1">\\1</a>', $Html);
+                $Html = htmlentities($message);
+                $Html = preg_replace('%(http|ftp|https)(://\S+)%', '<a href="\1\2">\1\2</a>', $Html);
+                $Html = eregi_replace('([[:space:]()[{}])(www.[-a-zA-Z0-9@:%_\+.~#?&//=]+)',    '\\1<a href="http://\\2">\\2</a>', $Html);
+                $Html = eregi_replace('([_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,3})',    '<a href="mailto:\\1">\\1</a>', $Html);
+                $Html = str_replace("\n","<br>\n", $Html);
         }
 
     $text = str_replace("<br />","\n",$message);

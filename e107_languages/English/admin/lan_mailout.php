@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_mailout.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-01-07 20:51:35 $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-09 01:50:36 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,6 @@ define("PRFLAN_73", "SMTP Username");
 define("PRFLAN_74", "SMTP Password");
 define("PRFLAN_75", "The email could not be sent. Please review your SMTP settings, or disable SMTP and try again.");
 
-
 define("MAILAN_01","From Name");
 define("MAILAN_02","From Email");
 define("MAILAN_03","To");
@@ -34,8 +33,9 @@ define("MAILAN_05","Bcc");
 define("MAILAN_06","Subject");
 define("MAILAN_07","Attachment");
 define("MAILAN_08","Send Email");
+define("MAILAN_09","Use Theme Style");
 
-define("MAILAN_10","User Subscribed");  
+define("MAILAN_10","User Subscribed");
 
 
 
