@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2004-10-04 18:25:54 $
+|     $Revision: 1.9 $
+|     $Date: 2004-10-06 11:43:15 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -76,6 +76,7 @@ else
 if(strstr(e_MENU, "debug"))
 {
 	error_reporting(E_ALL);
+	$HTTP_db_debug = TRUE;
 }
 $_SERVER['QUERY_STRING'] = e_QUERY;
 define('e_BASE',$link_prefix);
