@@ -1,0 +1,1 @@
+return "<div style='text-align:justify'>$code_text</div>";
