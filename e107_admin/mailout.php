@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-01-31 02:03:54 $
+|     $Revision: 1.17 $
+|     $Date: 2005-01-31 05:52:35 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -170,9 +170,15 @@ if (isset($_POST['submit'])) {
 		$mes_body = str_replace("{USERID}", $recipient_id[$i], $mes_body);
 
 		$activator = (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$recipient_id[$i].".".$recipient_key[$i] : SITEURL."/signup.php?activate.".$recipient_id[$i].".".$recipient_key[$i]);
-		$mes_body = str_replace("{SIGNUP_LINK}", "<a href='$activator'>$activator</a>", $mes_body);
+		if($recipient_key[$i]){
+        	$mes_body = str_replace("{SIGNUP_LINK}", "<a href='$activator'>$activator</a>", $mes_body);
+        }else{
+           $mes_body = str_replace("{SIGNUP_LINK}", "", $mes_body);
+        }
 
-		$mail->Body = str_replace("\n", "<br>", $mes_body);
+        $mes_body = str_replace("\n", "<br>", $mes_body);
+
+		$mail->Body = $tp->toHTML($mes_body);
 		$mail->AltBody = strip_tags(str_replace("<br>", "\n", $mes_body));
 		$mail->AddAddress($recipient[$i], $recipient_name[$i]);
 
@@ -218,12 +224,12 @@ if (isset($_POST['submit'])) {
 if (isset($_POST['updateprefs'])) {
 
 	$pref['smtp_enable'] = $_POST['smtp_enable'];
-	$pref['smtp_server'] = $aj->formtpa($_POST['smtp_server']);
-	$pref['smtp_username'] = $aj->formtpa($_POST['smtp_username']);
-	$pref['smtp_password'] = $aj->formtpa($_POST['smtp_password']);
+	$pref['smtp_server'] = $tp->toDB($_POST['smtp_server']);
+	$pref['smtp_username'] = $tp->toDB($_POST['smtp_username']);
+	$pref['smtp_password'] = $tp->toDB($_POST['smtp_password']);
 
 	save_prefs();
-	$message = "Settings Saved";
+	$message = LAN_SETSAVED;
 }
 
 
