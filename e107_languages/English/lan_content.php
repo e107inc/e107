@@ -1,5 +1,14 @@
 <?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107/e107_languages/English/lan_content.php,v $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-05 10:18:06 $
+|     $Author: pholzmann $
++----------------------------------------------------------------------------+
+*/
 define("PAGE_NAME", "Article/Review");
 
 define("LAN_1", "Article");
@@ -26,7 +35,7 @@ define("LAN_38", "vote");
 define("LAN_39", "votes");
 define("LAN_40", "How would you rate this article?");
 define("LAN_41", "thanks for submitting your rating");
-define("LAN_42", "Rating");
+define("LAN_42", "Comments");
 define("LAN_43", "by ");
 define("LAN_44", " on ");
 define("LAN_45", "No articles in this category");

@@ -1,5 +1,14 @@
 <?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107/e107_languages/English/admin/lan_plugin.php,v $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-05 10:18:06 $
+|     $Author: pholzmann $
++----------------------------------------------------------------------------+
+*/
 define("EPL_ADLAN_0", "Install");
 define("EPL_ADLAN_1", "Uninstall");
 define("EPL_ADLAN_2", "Are you certain you want to uninstall this plugin?");
@@ -9,7 +18,7 @@ define("EPL_ADLAN_5", "The install procedure will create new preference entries.
 define("EPL_ADLAN_6", "... then click here to begin install procedure"); 
 define("EPL_ADLAN_7", "Database tables successfully upgraded.");
 define("EPL_ADLAN_8", "Preference settings successfully created.");
-define("EPL_ADLAN_9", "Unable to successfully create table(s) for this plugin.");
+define("EPL_ADLAN_9", "SQL commands failed. Check to be sure all upgrade changes are ok.");
 define("EPL_ADLAN_10", "Name ");
 define("EPL_ADLAN_11", "Version ");
 define("EPL_ADLAN_12", "Author ");
@@ -41,7 +50,7 @@ define("EPL_ADLAN_36", "Parser code insert failed, incorrectly formatted.");
 
 define("EPL_CANCEL", "Cancel");
 define("EPL_EMAIL", "email");
-define("EPL_WEBSITE", "website");
+define("EPL_WEBSITE", "Website");
 define("EPL_OPTIONS", "Options");
 define("EPL_NOINSTALL", "No install required, just activate from your menus screen. To uninstall, delete the ");
 define("EPL_DIRECTORY", "directory.");

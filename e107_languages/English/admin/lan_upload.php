@@ -1,5 +1,14 @@
 <?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107/e107_languages/English/admin/lan_upload.php,v $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-05 10:18:06 $
+|     $Author: pholzmann $
++----------------------------------------------------------------------------+
+*/
 define("UPLLAN_1", "Upload removed from list.");
 define("UPLLAN_2", "Settings saved in database");
 define("UPLLAN_3", "Upload ID");

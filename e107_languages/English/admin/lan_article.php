@@ -1,5 +1,14 @@
 <?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107/e107_languages/English/admin/lan_article.php,v $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-05 10:18:06 $
+|     $Author: pholzmann $
++----------------------------------------------------------------------------+
+*/
 define("ARLAN_0", "Article saved in database.");
 define("ARLAN_1", "Fields left blank.");
 define("ARLAN_2", "Article updated in database.");

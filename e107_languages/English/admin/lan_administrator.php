@@ -66,4 +66,5 @@ define("ADMSLAN_61", "Administrator deleted");
 
 define("ADMSLAN_62", "Plugin Manager");
 define("ADMSLAN_63", "Plugin");
+define("ADMSLAN_64", "Clear the system cache");
 ?>

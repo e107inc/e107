@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107/e107_languages/English/lan_signup.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2004-09-23 09:33:49 $
-|     $Author: loloirie $
+|     $Revision: 1.10 $
+|     $Date: 2005-01-05 10:18:06 $
+|     $Author: pholzmann $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Register");
@@ -30,17 +30,17 @@ define("LAN_185", "You left required field(s) blank");
 define("LAN_201", "Yes");
 define("LAN_200", "No");
 define("LAN_202", "Registration failed");
-define("LAN_309", "Please enter your details below - <b>a verification email will be sent to the email address you enter here so it must be valid, </b>if you do not wish to display your email address on this site please tick the hide email address box.");
+define("LAN_309", "Please enter your details below. <b>A verification email will be sent to the email address you enter here so it must be valid.</b><br/>If you do not wish to display your email address on this site, please tick the 'hide email address' box.");
 define("LAN_399", "Continue");
 define("LAN_400", "Usernames and passwords are <b>case-sensitive</b>");
 define("LAN_401", "Your account has now been activated, please");
 define("LAN_402", "Registration activated");
 define("LAN_403", "Welcome to");
 define("LAN_404", "Registration details for");
-define("LAN_405", "This stage of registation is complete, you will be receiving a confirmation email containing your login details, please follow the link in the email to complete the signup process and activate your account.");
+define("LAN_405", "This stage of registation is complete. You will receive a confirmation email containing your login details. Please follow the link in the email to complete the signup process and activate your account.");
 define("LAN_406", "Thankyou!");
-define("LAN_407", "\n\nPlease keep this email for your own information as your password has been encrypted and cannot be retrieved if you misplace or forget it. You can however request a new password if this happens.\n\nThanks for your registration.\n\nFrom");
-define("LAN_408", "A user with that email address already exists. Please use the forgot password screen to retrieve your password.");
+define("LAN_407", "\n\nPlease keep this email for your own information. Your password has been encrypted and cannot be retrieved if you misplace or forget it. You can however request a new password if this happens.\n\nThanks for your registration.\n\nFrom");
+define("LAN_408", "A user with that email address already exists. Please use the 'forgot password' screen to retrieve your password.");
 define("LAN_SIGNUP_1", "Min.");
 define("LAN_SIGNUP_2", "chars.");
 define("LAN_SIGNUP_3", "Code verification failed.");
@@ -57,7 +57,7 @@ define("LAN_409", "Invalid characters in username");
 define("LAN_410", "Enter code visible in the image");
 
 define("LAN_SIGNUP_12", "please keep your username and password written down in a safe place as if lost they cannot be retrieved.");
-define("LAN_SIGNUP_13", "You can now login from the Login box.");
+define("LAN_SIGNUP_13", "You can now log in from the Login box. Please ");
 define("LAN_SIGNUP_14", "here");
 define("LAN_SIGNUP_15", "Please contact the main site admin");
 define("LAN_SIGNUP_16", "if you require assistance.");
