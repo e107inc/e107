@@ -14,16 +14,42 @@
 */
 require_once("../class2.php");
 if(!getperms("6")){ header("location:".e_BASE."index.php"); exit; }
-if(e_QUERY){
-        $tmp = explode(".", e_QUERY);
-        $action = $tmp[0];
-        $id = $tmp[1];
+if(e_QUERY)
+{
+	$tmp = explode(".", e_QUERY);
+	$action = $tmp[0];
+	$id = $tmp[1];
 }
 
 
-if($action == "dis"){
-        $sql -> db_Update("upload", "upload_active='1' WHERE upload_id='$id' ");
-        $message = UPLLAN_1;
+if($action == "dis")
+{
+	if($_POST['confirm']){
+		$sql -> db_Update("upload", "upload_active='1' WHERE upload_id='$id' ");
+		$message = UPLLAN_1;
+	} elseif($_POST['cancel'])
+	{
+		$action = "";	
+	} else 
+	{
+		$sql -> db_Select("upload", "*", "upload_id='$id'");
+		$row = $sql -> db_Fetch(); extract($row);
+		require_once(e_HANDLER."form_handler.php");
+		$rs = new form;
+		include_once("header.php");
+		$caption = UPLLAN_17;
+		$txt = UPLLAN_45."<br /><br />";
+		$txt .= UPLLAN_10.": ".(is_numeric($upload_file) ? "Binary file ID ".$upload_file :  $upload_file);
+		$txt .= "<br />".UPLLAN_5.": ".substr($upload_poster, strpos($upload_poster, ".")+1);
+		$txt .= "<br /><br />
+		".$rs -> form_open("post", e_SELF."?".e_QUERY)."
+		".$rs -> form_button("submit", "confirm", UPLLAN_46)."
+		".$rs -> form_button("submit", "cancel", UPLLAN_47)."
+		".$rs -> form_close();
+		$ns -> tablerender($caption,$txt);
+		include_once("footer.php");
+		exit;
+	}
 }
 
 if($action == "dlm"){
