@@ -384,9 +384,14 @@ class download{
                         $counter++;
                 }
 
+                if(ereg("http", $download_url) || ereg("ftp", $download_url) ){
+                        $download_url_external = $download_url;
+                }
+
                 $etext = " - (".DOWLAN_68.")";
-                if(file_exists(e_FILE."public/".$download_url) ){
+                if(file_exists(e_FILE."public/".$download_url) || $download_url_external){
                 $etext= "";
+                $found=1;
                 }
 
                 if(!$found && $download_url){
@@ -398,9 +403,6 @@ class download{
                 <span class='smalltext'> ".DOWLAN_14.": ";
 
 
-                if(ereg("http", $download_url) || ereg("ftp", $download_url) ){
-                        $download_url_external = $download_url;
-                }
 
                 $text .= "<input class='tbox' type='text' name='download_url_external' size='40' value='$download_url_external' maxlength='100' />
                 &nbsp;&nbsp;".DOWLAN_66.":
