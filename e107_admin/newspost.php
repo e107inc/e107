@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.59 $
-|   $Date: 2005-03-15 21:28:37 $
-|   $Author: stevedunstan $
+|   $Revision: 1.60 $
+|   $Date: 2005-03-31 04:27:27 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 
 */
@@ -22,6 +22,13 @@ require_once("../class2.php");
 if (!getperms("H")) {
 	header("location:".e_BASE."index.php");
 	 exit;
+}
+require_once(e_HANDLER."calendar/calendar_class.php");
+$cal = new DHTML_Calendar(true);
+function headerjs()
+{
+	global $cal;
+	return $cal->load_files();
 }
 $e_sub_cat = 'news';
 $e_wysiwyg = "data,news_extended";
@@ -204,18 +211,20 @@ if ($action == "create") {
 			$_POST['news_datestamp'] = $news_datestamp;
 
 			$_POST['cat_id'] = $news_category;
-			if ($news_start) {
-				$tmp = getdate($news_start);
-				$_POST['startmonth'] = $tmp['mon'];
-				$_POST['startday'] = $tmp['mday'];
-				$_POST['startyear'] = $tmp['year'];
-			}
-			if ($news_end) {
-				$tmp = getdate($news_end);
-				$_POST['endmonth'] = $tmp['mon'];
-				$_POST['endday'] = $tmp['mday'];
-				$_POST['endyear'] = $tmp['year'];
-			}
+			$_POST['news_start'] = $news_start;
+//			if ($news_start) {
+//				$tmp = getdate($news_start);
+//				$_POST['startmonth'] = $tmp['mon'];
+//				$_POST['startday'] = $tmp['mday'];
+//				$_POST['startyear'] = $tmp['year'];
+//			}
+			$_POST['news_end'] = $news_end;
+//			if ($news_end) {
+//				$tmp = getdate($news_end);
+//				$_POST['endmonth'] = $tmp['mon'];
+//				$_POST['endday'] = $tmp['mday'];
+//				$_POST['endyear'] = $tmp['year'];
+//			}
 			$_POST['comment_total'] = $sql->db_Count("comments", "(*)", " WHERE comment_item_id='$news_id' AND comment_type='0' ");
 			$_POST['news_rendertype'] = $news_render_type;
 
@@ -390,7 +399,9 @@ class newspost {
 
 	}
 
-	function create_item($sub_action, $id) {
+	function create_item($sub_action, $id)
+	{
+		global $cal;
 		// ##### Display creation form ---------------------------------------------------------------------------------------------------------
 		/* 08-08-2004 - unknown - fixed `Insert Image' display to use $IMAGES_DIRECTORY */
 		global $sql, $rs, $ns, $pref, $fl, $IMAGES_DIRECTORY, $tp, $pst, $e107;
@@ -694,30 +705,37 @@ class newspost {
 			<div style='display: none;'>
 
 			<br />
-			".NWSLAN_21.":<br /><select name='startday' class='tbox'><option selected='selected'> </option>";
-		for($a = 1; $a <= 31; $a++) {
-			$text .= ($a == $_POST['startday'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
-		}
-		$text .= "</select> <select name='startmonth' class='tbox'><option selected='selected'> </option>";
-		for($a = 1; $a <= 12; $a++) {
-			$text .= ($a == $_POST['startmonth'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
-		}
-		$text .= "</select> <select name='startyear' class='tbox'><option selected='selected'> </option>";
-		for($a = 2003; $a <= 2010; $a++) {
-			$text .= ($a == $_POST['startyear'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
-		}
-		$text .= "</select> ".LAN_NEWS_26." <select name='endday' class='tbox'><option selected='selected'> </option>";
-		for($a = 1; $a <= 31; $a++) {
-			$text .= ($a == $_POST['endday'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
-		}
-		$text .= "</select> <select name='endmonth' class='tbox'><option selected='selected'> </option>";
-		for($a = 1; $a <= 12; $a++) {
-			$text .= ($a == $_POST['endmonth'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
-		}
-		$text .= "</select> <select name='endyear' class='tbox'><option selected='selected'> </option>";
-		for($a = 2003; $a <= 2010; $a++) {
-			$text .= ($a == $_POST['endyear'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
-		}
+			".NWSLAN_21.":<br />";
+			
+			$_startdate = ($_POST['news_start'] > 0) ? date("d/m/Y", $_POST['news_start']) : "";
+			
+			$cal_options['firstDay'] = 0;
+			$cal_options['showsTime'] = false;
+			$cal_options['showOthers'] = false;
+			$cal_options['weekNumbers'] = false;
+			$cal_options['ifFormat'] = "%d/%m/%Y";
+			$cal_attrib['class'] = "tbox";
+			$cal_attrib['size'] = "10";
+			$cal_attrib['name'] = "news_start";
+			$cal_attrib['value'] = $_startdate;
+			$text .= $cal->make_input_field($cal_options, $cal_attrib);
+			
+		$text .= " - ";
+
+			$_enddate = ($_POST['news_end'] > 0) ? date("d/m/Y", $_POST['news_end']) : "";
+			
+			unset($cal_options);
+			unset($cal_attrib);
+			$cal_options['firstDay'] = 0;
+			$cal_options['showsTime'] = false;
+			$cal_options['showOthers'] = false;
+			$cal_options['weekNumbers'] = false;
+			$cal_options['ifFormat'] = "%d/%m/%Y";
+			$cal_attrib['class'] = "tbox";
+			$cal_attrib['size'] = "10";
+			$cal_attrib['name'] = "news_end";
+			$cal_attrib['value'] = $_enddate;
+			$text .= $cal->make_input_field($cal_options, $cal_attrib);
 
 		$text .= "</select>
 			</div>
@@ -727,13 +745,13 @@ class newspost {
   // datestamp ----------------
 
 
-			$today = ($_POST['news_datestamp'] || $_POST['ds_day'] ) ? getdate($_POST['news_datestamp']) : getdate(time());
-			$today_day = ($_POST['ds_day']) ? $_POST['ds_day'] : $today["mday"];
-			$today_month = ($_POST['ds_month']) ? $_POST['ds_month'] : $today["mon"];;
-			$today_year = ($_POST['ds_year']) ? $_POST['ds_year'] : $today["year"];;
-			$today_hour = ($_POST['ds_hour']) ? $_POST['ds_hour'] : $today["hours"];;
-			$today_min = ($_POST['ds_min']) ? $_POST['ds_min'] : $today["minutes"];;
-			$today_sec = ($_POST['ds_sec']) ? $_POST['ds_sec'] : $today["seconds"];;
+//			$today = ($_POST['news_datestamp'] || $_POST['ds_day'] ) ? getdate($_POST['news_datestamp']) : getdate(time());
+//			$today_day = ($_POST['ds_day']) ? $_POST['ds_day'] : $today["mday"];
+//			$today_month = ($_POST['ds_month']) ? $_POST['ds_month'] : $today["mon"];;
+//			$today_year = ($_POST['ds_year']) ? $_POST['ds_year'] : $today["year"];;
+//			$today_hour = ($_POST['ds_hour']) ? $_POST['ds_hour'] : $today["hours"];;
+//			$today_min = ($_POST['ds_min']) ? $_POST['ds_min'] : $today["minutes"];;
+//			$today_sec = ($_POST['ds_sec']) ? $_POST['ds_sec'] : $today["seconds"];;
 
 			$text .="<tr>
 			<td class='forumheader3'>
@@ -743,42 +761,56 @@ class newspost {
 			<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".LAN_NEWS_33."</a>
 			<div style='display: none;'>";
 			$update_checked = ($_POST['update_datestamp']) ? "checked='checked'" : "";
-			$text .= "<div style='padding-top:5px'>".LAN_DATE.":<select name='ds_day' class='tbox'>\n<option selected='selected'> </option>\n";
-			for($a = 1; $a <= 31; $a++) {
-				$day_select = ($a == $today_day) ? "selected='selected'" : "";
-				$text .= "<option value='$a' $day_select>".$a."</option>\n";
-			}
-			$text .= "</select> <select name='ds_month' class='tbox'><option selected='selected'> </option>\n";
-			for($a = 1; $a <= 12; $a++) {
-	 			$mon_select = ($a == $today_month) ? "selected='selected'" : "";
-				$text .= "<option value='$a' $mon_select>".date ("M", mktime(0,0,0,$a,1,2000))."</option>\n";
-			}
-			$text .= "</select> <select name='ds_year' class='tbox'><option selected='selected'> </option>\n";
-			for($a = 2002; $a <= 2010; $a++) {
-				$year_select = ($a == $today_year) ? "selected='selected'" : "";
-				$text .= "<option value='$a' $year_select>".$a."</option>\n";
-			}
 
-			$text .= "</select>  ".LAN_TIME.":<select name='ds_hour' class='tbox'><option selected='selected'> </option>";
-			for($a = 0; $a <= 23; $a++) {
-				$hour_select = ($a == $today_hour) ? "selected='selected'" : "";
-				$text .= "<option value='$a' $hour_select>".$a."</option>\n";
-			}
+			$_update_datestamp = ($_POST['news_datestamp'] > 0) ? date("d/m/Y H:i:s", $_POST['news_datestamp']) : "";
+			unset($cal_options);
+			unset($cal_attrib);
+			$cal_options['firstDay'] = 0;
+			$cal_options['showsTime'] = true;
+			$cal_options['showOthers'] = true;
+			$cal_options['weekNumbers'] = false;
+			$cal_options['ifFormat'] = "%d/%m/%Y %H:%M:%S";
+			$cal_options['timeFormat'] = "24";
+			$cal_attrib['class'] = "tbox";
+			$cal_attrib['name'] = "news_datestamp";
+			$cal_attrib['value'] = $_update_datestamp;
+			$text .= $cal->make_input_field($cal_options, $cal_attrib);
 
-			$text .= "</select> <select name='ds_min' class='tbox'>\n<option selected='selected'> </option>\n";
-			for($a = 0; $a <= 59; $a++) {
-				$min_select = ($a == $today_min) ? "selected='selected'" : "";
-				$text .= "<option value='$a' $min_select>".$a."</option>\n";
-			}
-			$text .= "</select> <select name='ds_sec' class='tbox'>\n<option selected='selected'> </option>\n";
-			for($a = 0; $a <= 59; $a++) {
-				$sec_select = ($a == $today_sec) ? "selected='selected'" : "";
-				$text .= "<option value='$a' $sec_select>".$a."</option>\n";
-			}
+//			$text .= "<div style='padding-top:5px'>".LAN_DATE.":<select name='ds_day' class='tbox'>\n<option selected='selected'> </option>\n";
+//			for($a = 1; $a <= 31; $a++) {
+//				$day_select = ($a == $today_day) ? "selected='selected'" : "";
+//				$text .= "<option value='$a' $day_select>".$a."</option>\n";
+//			}
+//			$text .= "</select> <select name='ds_month' class='tbox'><option selected='selected'> </option>\n";
+//			for($a = 1; $a <= 12; $a++) {
+//	 			$mon_select = ($a == $today_month) ? "selected='selected'" : "";
+//				$text .= "<option value='$a' $mon_select>".date ("M", mktime(0,0,0,$a,1,2000))."</option>\n";
+//			}
+//			$text .= "</select> <select name='ds_year' class='tbox'><option selected='selected'> </option>\n";
+//			for($a = 2002; $a <= 2010; $a++) {
+//				$year_select = ($a == $today_year) ? "selected='selected'" : "";
+//				$text .= "<option value='$a' $year_select>".$a."</option>\n";
+//			}
+//
+//			$text .= "</select>  ".LAN_TIME.":<select name='ds_hour' class='tbox'><option selected='selected'> </option>";
+//			for($a = 0; $a <= 23; $a++) {
+//				$hour_select = ($a == $today_hour) ? "selected='selected'" : "";
+//				$text .= "<option value='$a' $hour_select>".$a."</option>\n";
+//			}
+//
+//			$text .= "</select> <select name='ds_min' class='tbox'>\n<option selected='selected'> </option>\n";
+//			for($a = 0; $a <= 59; $a++) {
+//				$min_select = ($a == $today_min) ? "selected='selected'" : "";
+//				$text .= "<option value='$a' $min_select>".$a."</option>\n";
+//			}
+//			$text .= "</select> <select name='ds_sec' class='tbox'>\n<option selected='selected'> </option>\n";
+//			for($a = 0; $a <= 59; $a++) {
+//				$sec_select = ($a == $today_sec) ? "selected='selected'" : "";
+//				$text .= "<option value='$a' $sec_select>".$a."</option>\n";
+//			}
 
-
-			$text .= "</select></div>
-			<input type='checkbox' name='update_datestamp' $update_checked />".NWSLAN_105."
+			$text .= "<br />
+			<input type='checkbox' value='1' name='update_datestamp' $update_checked />".NWSLAN_105."
 			</div>
 			</td></tr>";
 
@@ -859,14 +891,41 @@ class newspost {
 		// ##### Display news preview ---------------------------------------------------------------------------------------------------------
 		global $tp, $sql, $ix,$IMAGES_DIRECTORY;
 		$_POST['news_id'] = $id;
-		$_POST['active_start'] = (!$_POST['startmonth'] || !$_POST['startday'] || !$_POST['startyear'] ? 0 : mktime (0, 0, 0, $_POST['startmonth'], $_POST['startday'], $_POST['startyear']));
-		$_POST['active_end'] = (!$_POST['endmonth'] || !$_POST['endday'] || !$_POST['endyear'] ? 0 : mktime (0, 0, 0, $_POST['endmonth'], $_POST['endday'], $_POST['endyear']));
+		
+		if($_POST['news_start'])
+		{
+			$tmp = explode("/", $_POST['news_start']);
+			$_POST['news_start'] = mktime(0, 0, 0, $tmp[1], $tmp[0], $tmp[2]);
+		}
+		else
+		{
+			$_POST['news_start'] = '';
+		}
+
+		if($_POST['news_end'])
+		{
+			$tmp = explode("/", $_POST['news_end']);
+			$_POST['news_end'] = mktime(0, 0, 0, $tmp[1], $tmp[0], $tmp[2]);
+		}
+		else
+		{
+			$_POST['news_end'] = '';
+		}
+
+		if(preg_match("#(.*?)/(.*?)/(.*?) (.*?):(.*?):(.*?)$#", $_POST['news_datestamp'], $matches))
+		{
+			$_POST['news_datestamp'] = mktime($matches[4], $matches[5], $matches[6], $matches[2], $matches[1], $matches[3]);
+		}
+		if($_POST['update_datestamp'])
+		{
+			$_POST['news_datestamp'] = time();
+		}
+
 		$sql->db_Select("news_category", "*", "category_id='".$_POST['cat_id']."' ");
 		list($_POST['category_id'], $_POST['category_name'], $_POST['category_icon']) = $sql->db_Fetch();
 		$_POST['admin_id'] = USERID;
 		$_POST['admin_name'] = USERNAME;
 		$_POST['comment_total'] = $comment_total;
-		$_POST['news_datestamp'] = ($_POST['update_datestamp']) ? time() :  mktime($_POST['ds_hour'],$_POST['ds_min'],$_POST['ds_sec'],$_POST['ds_month'],$_POST['ds_day'],$_POST['ds_year']);
 		$_PR = $_POST;
 		$_PR['data'] = str_replace($IMAGES_DIRECTORY,"../".$IMAGES_DIRECTORY,$_PR['data']);
 		$_PR['news_extended'] = str_replace($IMAGES_DIRECTORY,"../".$IMAGES_DIRECTORY,$_PR['news_extended']);
@@ -880,24 +939,53 @@ class newspost {
 		$_PR['news_image'] = $_POST['news_image'];
 
 		$ix->render_newsitem($_PR);
-	//	$_POST['data'] = $tp->toForm($_POST['data'], TRUE);
-	//	$_POST['news_title'] = $tp->toFORM($_POST['news_title']);
-	//	$_POST['news_extended'] = $tp->toFORM($_POST['news_extended']);
 	}
 
 	function submit_item($sub_action, $id) {
 		// ##### Format and submit item ---------------------------------------------------------------------------------------------------------
 		global $tp, $ix, $sql;
 
-		$_POST['active_start'] = (!$_POST['startmonth'] || !$_POST['startday'] || !$_POST['startyear'] ? 0 : mktime (0, 0, 0, $_POST['startmonth'], $_POST['startday'], $_POST['startyear']));
-		$_POST['active_end'] = (!$_POST['endmonth'] || !$_POST['endday'] || !$_POST['endyear'] ? 0 : mktime (0, 0, 0, $_POST['endmonth'], $_POST['endday'], $_POST['endyear']));
+		if($_POST['news_start'])
+		{
+			$tmp = explode("/", $_POST['news_start']);
+			$_POST['news_start'] = mktime(0, 0, 0, $tmp[1], $tmp[0], $tmp[2]);
+		}
+		else
+		{
+			$_POST['news_start'] = '';
+		}
+
+		if($_POST['news_end'])
+		{
+			$tmp = explode("/", $_POST['news_end']);
+			$_POST['news_end'] = mktime(0, 0, 0, $tmp[1], $tmp[0], $tmp[2]);
+		}
+		else
+		{
+			$_POST['news_end'] = '';
+		}
+
+		if(preg_match("#(.*?)/(.*?)/(.*?) (.*?):(.*?):(.*?)$#", $_POST['news_datestamp'], $matches))
+		{
+			$_POST['news_datestamp'] = mktime($matches[4], $matches[5], $matches[6], $matches[2], $matches[1], $matches[3]);
+		}
+		if($_POST['update_datestamp'])
+		{
+			$_POST['news_datestamp'] = time();
+		}
 		$_POST['admin_id'] = USERID;
 		$_POST['admin_name'] = USERNAME;
-		$_POST['news_datestamp'] = time();
+		if($_POST['update_datestamp'])
+		{
+			$_POST['news_datestamp'] = time();
+		}
 
-		if ($id && $sub_action != "sn" && $sub_action != "upload") {
+		if ($id && $sub_action != "sn" && $sub_action != "upload")
+		{
 			$_POST['news_id'] = $id;
-		} else {
+		}
+		else
+		{
 			$sql->db_Update("submitnews", "submitnews_auth='1' WHERE submitnews_id ='".$id."' ");
 		}
 		if (!$_POST['cat_id']) {
