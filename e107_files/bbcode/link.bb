@@ -1,3 +1,4 @@
+$full_text = str_replace('"','&039;',$full_text);
 $search = array(
 "#\[link\]([a-z]+?://){1}(.*?)\[/link\]#si",
 "#\[link\](.*?)\[/link\]#si",
