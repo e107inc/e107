@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-02-07 12:14:14 $
-|     $Author: lisa_ $
+|     $Revision: 1.22 $
+|     $Date: 2005-02-07 12:52:40 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 if (!function_exists("parseheader")) {
@@ -64,7 +64,7 @@ if (isset($theme_js_php) && $theme_js_php) {
 if (isset($htmlarea_js) && $htmlarea_js) { echo $htmlarea_js; }
 if (function_exists('headerjs')){echo headerjs();  }
 
-if ($pref['log_activate']) {
+if ($pref['statActivate']) {
 	require_once(e_PLUGIN."log/consolidate.php");
 	$script_text = "document.write( '<link rel=\"stylesheet\" type=\"text/css\" href=\"".e_PLUGIN."log/log.php?referer=' + ref + '&color=' + colord + '&eself=' + eself + '&res=' + res + '\">' );\n";
 }

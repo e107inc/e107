@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-02-07 10:31:22 $
-|     $Author: e107coders $
+|     $Revision: 1.30 $
+|     $Date: 2005-02-07 12:52:38 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -79,7 +79,15 @@ function update_61x_to_700($type) {
 		}
 
 		mysql_query("ALTER TABLE `".MPREFIX.".content` CHANGE `content_content` `content_content` LONGTEXT NOT NULL");
-
+		/* end */
+		
+		/*
+		changes by jalist 07/02/2005:
+		description stat tables no longer required
+		*/
+		mysql_query("DROP TABLE ".MPREFIX."stat_counter");
+		mysql_query("DROP TABLE ".MPREFIX."stat_info");
+		mysql_query("DROP TABLE ".MPREFIX."stat_last");
 		/* end */
 
 		// start links update -------------------------------------------------------------------------------------------

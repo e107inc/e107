@@ -1,0 +1,9 @@
+<?php
+/* e107 website system: Log file: 36:2005 */
+
+
+
+/* THE IMFORMATION IN THIS LOG FILE HAS BEEN CONSOLIDATED INTO THE DATABASE - YOU CAN SAFELY DELETE IT. */
+
+
+?>

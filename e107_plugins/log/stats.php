@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-07 10:26:35 $
+|     $Revision: 1.2 $
+|     $Date: 2005-02-07 12:52:40 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -20,9 +20,9 @@
 require_once("../../class2.php");
 require_once(HEADERF);
 
-if (!$pref['log_activate']) {
-	$text = (ADMIN ? "<div style='text-align:center'>".LAN_371."</div>" : "<div style='text-align:center'>".LAN_372."</div>");
-	$ns->tablerender(LAN_132, $text);
+if (!$pref['statActivate']) {
+	$text = (ADMIN ? "<div style='text-align:center'>".LAN_371."</div>" : "<div style='text-align:center'>The features on this page have been disabled.</div>");
+	$ns->tablerender("Site Statistics", $text);
 	require_once(FOOTERF);
 	exit;
 }
@@ -68,25 +68,49 @@ switch($action) {
 		$text = $stat -> renderTodaysVisits();
 		break;
 	case 2:
-		$text = $stat -> renderAlltimeVisits();
+			$text = $stat -> renderAlltimeVisits();
 		break;
 	case 3:
-		$text = $stat -> renderBrowsers();
+		if($pref['statBrowser']) {
+			$text = $stat -> renderBrowsers();
+		} else {
+			$text = "Statistics for this type is not being gathered.";
+		}
 		break;
 	case 4:
-		$text = $stat -> renderOses();
+		if($pref['statOs']) {
+			$text = $stat -> renderOses();
+		} else {
+			$text = "Statistics for this type is not being gathered.";
+		}
 		break;
 	case 5:
-		$text = $stat -> renderDomains();
+		if($pref['statDomain']) {
+			$text = $stat -> renderDomains();
+		} else {
+			$text = "Statistics for this type is not being gathered.";
+		}
 		break;
 	case 6:
-		$text = $stat -> renderScreens();
+		if($pref['statScreen']) {
+			$text = $stat -> renderScreens();
+		} else {
+			$text = "Statistics for this type is not being gathered.";
+		}
 		break;
 	case 7:
-		$text = $stat -> renderRefers();
+		if($pref['statRefer']) {
+			$text = $stat -> renderRefers();
+		} else {
+			$text = "Statistics for this type is not being gathered.";
+		}
 		break;
 	case 8:
-		$text = $stat -> renderQueries();
+		if($pref['statQuery']) {
+			$text = $stat -> renderQueries();
+		} else {
+			$text = "Statistics for this type is not being gathered.";
+		}
 		break;
 }
 
@@ -96,12 +120,14 @@ $path = e_PLUGIN."log/stats.php";
 $links = "<div style='text-align: center;'>".
 (e_QUERY != 1 ? "<a href='$path?1'>Today's Stats</a>" : "<b>Today's Stats</b>")." | ".
 (e_QUERY != 2 ? "<a href='$path?2'>Alltime Stats</a>" : "<b>Alltime Stats</b>")." | ".
-(e_QUERY != 3 ? "<a href='$path?3'>Browser Stats</a>" : "<b>Browser Stats</b>")." | ".
-(e_QUERY != 4 ? "<a href='$path?4'>Operating System Stats</a>" : "<b>Operating System Stats</b>")." | ".
-(e_QUERY != 5 ? "<a href='$path?5'>Domain Stats</a>" : "<b>Domain Stats</b>")." | <br />".
-(e_QUERY != 6 ? "<a href='$path?6'>Screen Resolution / Color Depth Stats</a>" : "<b>Screen Resolution / Color Depth Stats</b>")." | ".
-(e_QUERY != 7 ? "<a href='$path?7'>Referral Stats</a>" : "<b>Referral Stats</b>")." | ".
-(e_QUERY != 8 ? "<a href='$path?8'>Search String Stats</a>" : "<b>Search String Stats</b>")."</div><br /><br />";
+(e_QUERY != 3 && $pref['statBrowser'] ? "<a href='$path?3'>Browser Stats</a> | " : ($pref['statBrowser'] ? "<b>Browser Stats</b> |" : "")).
+(e_QUERY != 4 && $pref['statOs'] ? "<a href='$path?4'>Operating System Stats</a> | " : ($pref['statOs'] ? "<b>Operating System Stats</b> | " : "")).
+(e_QUERY != 5 && $pref['statDomain'] ? "<a href='$path?5'>Domain Stats</a> | " : ($pref['statDomain'] ? "<b>Domain Stats</b> | " : "")).
+(e_QUERY != 6 && $pref['statScreen'] ? "<br /><a href='$path?6'>Screen Resolution / Color Depth Stats</a> | " : ($pref['statScreen'] ? "<br /><b>Screen Resolution / Color Depth Stats</b> | " : "")).
+(e_QUERY != 7 && $pref['statRefer'] ? "<a href='$path?7'>Referral Stats</a> | " : ($pref['statRefer'] ? "<b>Referral Stats</b> | " : "")).
+(e_QUERY != 8 && $pref['statQuery'] ? "<a href='$path?8'>Search String Stats</a> | " : ($pref['statQuery'] ? "<b>Search String Stats</b> | " : "")).
+
+"</div><br /><br />";
 
 
 
@@ -112,6 +138,12 @@ class siteStats {
 
 	var $dbPageInfo;
 	var $fileInfo;
+	var $fileBrowserInfo;
+	var $fileOsInfo;
+	var $fileScreenInfo;
+	var $fileDomainInfo;
+	var $fileReferInfo;
+	var $fileQueryInfo;
 	var $error;
 	var $barImage;
 	var $order;
@@ -137,6 +169,12 @@ class siteStats {
 		$this -> order = $order;
 
 		$this -> fileInfo = $pageInfo;
+		$this -> fileBrowserInfo = $browserInfo;
+		$this -> fileOsInfo = $osInfo;
+		$this -> fileScreenInfo = $screenInfo;
+		$this -> fileDomainInfo = $domainInfo;
+		$this -> fileReferInfo = $refInfo;
+		$this -> fileQueryInfo = $searchInfo;
 
 		/* get main stat info from database */
 		if($sql -> db_Select("logstats", "*", "ORDER BY log_uniqueid DESC LIMIT 0, 1", "nowhere")){
@@ -160,6 +198,8 @@ class siteStats {
 				}
 			}
 		}
+
+
 		/* end constructor */
 	}
 
@@ -233,9 +273,15 @@ class siteStats {
 		if($sql -> db_Select("logstats", "*", "log_id='statBrowser'")) {
 			$row = $sql -> db_Fetch();
 			$statBrowser = unserialize($row['log_data']);
-		} else {
-			$this -> error = "Unable to retrieve browser information from database.";
-			return;
+		}
+
+		/* temp consolidate today's data ... */
+		foreach($this -> fileBrowserInfo as $name => $count) {
+			$statBrowser[$name] += $count;
+		}
+
+		if(!is_array($statBrowser)) {
+			return "<div style='text-align: center;'>No statistics yet.</div>";
 		}
 
 		if(is_array($statBrowser)) {
@@ -265,7 +311,7 @@ class siteStats {
 				$percentage = round(($info/$total) * 100, 2);
 				$text .= "<tr class='forumheader'>
 				<td style='width: 20%;'>".($image ? "<img src='".e_PLUGIN."log/images/$image' alt='' style='vertical-align: middle;'> " : "").$key."</td>
-				<td style='width: 70%;'><img src='".$this -> barImage."' style='width: $percentage%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info."</td>
+				<td style='width: 70%;'><img src='".$this -> barImage."' style='width: ".($percentage > 97 ? 97 : $percentage)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info."</td>
 				<td style='width: 10%; text-align: center;'>".$percentage."%</td>
 				</tr>\n";
 			}
@@ -280,9 +326,15 @@ class siteStats {
 		if($sql -> db_Select("logstats", "*", "log_id='statOs'")) {
 			$row = $sql -> db_Fetch();
 			$statOs = unserialize($row['log_data']);
-		} else {
-			$this -> error = "Unable to retrieve operating system information from database.";
-			return;
+		}
+
+		/* temp consolidate today's data ... */
+		foreach($this -> fileOsInfo as $name => $count) {
+			$statOs[$name] += $count;
+		}
+
+		if(!is_array($statOs)) {
+			return "<div style='text-align: center;'>No statistics yet.</div>";
 		}
 
 		if($this -> order) {
@@ -309,7 +361,7 @@ class siteStats {
 			$percentage = round(($info/$total) * 100, 2);
 			$text .= "<tr class='forumheader'>
 			<td style='width: 20%;'>".($image ? "<img src='".e_PLUGIN."log/images/$image' alt='' style='vertical-align: middle;'> " : "").$key."</td>
-			<td style='width: 70%;'><img src='".$this -> barImage."' style='width: $percentage%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info."</td>
+			<td style='width: 70%;'><img src='".$this -> barImage."' style='width: ".($percentage > 97 ? 97 : $percentage)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info."</td>
 			<td style='width: 10%; text-align: center;'>".$percentage."%</td>
 			</tr>\n";
 		}
@@ -324,11 +376,17 @@ class siteStats {
 		if($sql -> db_Select("logstats", "*", "log_id='statDomain'")) {
 			$row = $sql -> db_Fetch();
 			$statDom = unserialize($row['log_data']);
-		} else {
-			$this -> error = "Unable to retrieve country / domain information from database.";
-			return;
+		}
+		
+		/* temp consolidate today's data ... */
+		foreach($this -> fileDomainInfo as $name => $count) {
+			$statDom[$name] += $count;
 		}
 
+		if(!is_array($statDom)) {
+			return "<div style='text-align: center;'>No statistics yet.</div>";
+		}
+		
 		if($this -> order) {
 			ksort($statDom);
 			reset ($statDom);
@@ -343,7 +401,7 @@ class siteStats {
 			$percentage = round(($info/$total) * 100, 2);
 			$text .= "<tr class='forumheader'>
 			<td style='width: 20%;'>".$key."</td>
-			<td style='width: 70%;'><img src='".$this -> barImage."' style='width: $percentage%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info."</td>
+			<td style='width: 70%;'><img src='".$this -> barImage."' style='width: ".($percentage > 97 ? 97 : $percentage)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info."</td>
 			<td style='width: 10%; text-align: center;'>".$percentage."%</td>
 			</tr>\n";
 		}
@@ -358,9 +416,15 @@ class siteStats {
 		if($sql -> db_Select("logstats", "*", "log_id='statScreen'")) {
 			$row = $sql -> db_Fetch();
 			$statScreen = unserialize($row['log_data']);
-		} else {
-			$this -> error = "Unable to retrieve screen resolution/colour depth information from database.";
-			return;
+		}
+
+		/* temp consolidate today's data ... */
+		foreach($this -> fileScreenInfo as $name => $count) {
+			$statScreen[$name] += $count;
+		}
+
+		if(!is_array($statScreen)) {
+			return "<div style='text-align: center;'>No statistics yet.</div>";
 		}
 
 		if($this -> order) {
@@ -388,7 +452,7 @@ class siteStats {
 				$percentage = round(($info/$total) * 100, 2);
 				$text .= "<tr class='forumheader'>
 				<td style='width: 20%;'><img src='".e_PLUGIN."log/images/screen.png' alt='' style='vertical-align: middle;'> ".$key."</td>
-				<td style='width: 70%;'><img src='".$this -> barImage."' style='width: $percentage%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info."</td>
+				<td style='width: 70%;'><img src='".$this -> barImage."' style='width: ".($percentage > 97 ? 97 : $percentage)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info."</td>
 				<td style='width: 10%; text-align: center;'>".$percentage."%</td>
 				</tr>\n";
 			}
@@ -403,9 +467,15 @@ class siteStats {
 		if($sql -> db_Select("logstats", "*", "log_id='statReferer'")) {
 			$row = $sql -> db_Fetch();
 			$statRefer = unserialize($row['log_data']);
-		} else {
-			$this -> error = "Unable to retrieve referers information from database.";
-			return;
+		}
+
+		/* temp consolidate today's data ... */
+		foreach($this -> fileReferInfo as $name => $count) {
+			$statRefer[$name]['ttl'] += $count;
+		}
+
+		if(!is_array($statRefer)) {
+			return "<div style='text-align: center;'>No statistics yet.</div>";
 		}
 
 		$statArray = $this -> arraySort($statRefer, 'ttl');
@@ -418,7 +488,7 @@ class siteStats {
 			$percentage = round(($info['ttl']/$total) * 100, 2);
 			$text .= "<tr class='forumheader'>
 			<td style='width: 40%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;'> <a href='".$info['url']."' rel='external'>".$key."</a></td>
-			<td style='width: 50%;'><img src='".$this -> barImage."' style='width: $percentage%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info['ttl']."</td>
+			<td style='width: 50%;'><img src='".$this -> barImage."' style='width: ".($percentage > 97 ? 97 : $percentage)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info['ttl']."</td>
 			<td style='width: 10%; text-align: center;'>".$percentage."%</td>
 			</tr>\n";
 		}
@@ -433,10 +503,18 @@ class siteStats {
 		if($sql -> db_Select("logstats", "*", "log_id='statQuery'")) {
 			$row = $sql -> db_Fetch();
 			$statQuery = unserialize($row['log_data']);
-		} else {
-			$this -> error = "Unable to retrieve screen resolution/colour depth information from database.";
-			return;
 		}
+
+		/* temp consolidate today's data ... */
+		foreach($this -> fileQueryInfo as $name => $count) {
+			$statQuery[$name] += $count;
+		}
+
+		if(!is_array($statQuery)) {
+			return "<div style='text-align: center;'>No statistics yet.</div>";
+		}
+
+
 		$queryArray = $this -> arraySort($statQuery, 0);
 		$total = array_sum($queryArray);
 		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 60%;'>Search Engine Query Strings</td>\n<td class='fcaption' style='width: 30%;'>Total</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
@@ -445,7 +523,7 @@ class siteStats {
 			$key = str_replace("%20", " ", $key);
 			$text .= "<tr class='forumheader'>
 			<td style='width: 60%;'><img src='".e_PLUGIN."log/images/screen.png' alt='' style='vertical-align: middle;'> ".$key."</td>
-			<td style='width: 30%;'><img src='".$this -> barImage."' style='width: $percentage%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info."</td>
+			<td style='width: 30%;'><img src='".$this -> barImage."' style='width: ".($percentage > 97 ? 97 : $percentage)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info."</td>
 			<td style='width: 10%; text-align: center;'>".$percentage."%</td>
 			</tr>\n";
 		}
