@@ -140,6 +140,7 @@ class db{
 		$dbq++;
 		if($debug){ echo "UPDATE ".MPREFIX.$table." SET ".$arg."<br />"; }	
 		if($result = $this->mySQLresult = @mysql_query("UPDATE ".MPREFIX.$table." SET ".$arg)){
+			$result = mysql_affected_rows();
 			if(strstr(e_SELF, ADMINDIR) && $table != "online"){
 				if(!strstr($arg, "link_order")){
 					$str = addslashes(str_replace("WHERE", "", substr($arg, strpos($arg, "WHERE"))));
