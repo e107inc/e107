@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2005-02-20 04:59:36 $
+|     $Revision: 1.48 $
+|     $Date: 2005-02-20 05:11:37 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -35,10 +35,6 @@ if (!defined("ITEMVIEW")){
 }
 if(ADMIN && file_exists("install.php")){ echo "<div class='installe' style='text-align:center'><b>*** ".LAN_NEWS_3." ***</b><br />".LAN_NEWS_4."</div><br /><br />"; }
 
-if (!is_object($tp)) {
-	$tp = new e_parse;
-}
-
 if (e_QUERY) {
 	$tmp = explode(".", e_QUERY);
 	$action = $tmp[0];
@@ -49,6 +45,11 @@ if (e_QUERY) {
 $from = (!is_numeric($action) || !e_QUERY ? 0 : ($action ? $action : e_QUERY));
 if (isset($tmp[1]) && $tmp[1] == 'list') {
 	$action = 'list';
+	$from = intval($tmp[0]);
+	$sub_action = intval($tmp[2]);
+}
+if (isset($tmp[1]) && $tmp[1] == 'all') {
+	$action = 'all';
 	$from = intval($tmp[0]);
 	$sub_action = intval($tmp[2]);
 }
@@ -113,13 +114,13 @@ if ($action == 'cat' || $action == 'all') {
 	while ($row = $sql->db_Fetch()) {
 		$text .= $ix->parse_newstemplate($row,$NEWSLISTSTYLE,$param);
 	}
-	$icon = ($category_icon) ? "<img src='".e_IMAGE."icons/".$category_icon."' alt='' />" : "";
-	$text = $text."<div style='text-align:right'>".$icon.LAN_307.$count."&nbsp;<br />&nbsp;</div>";
+	$icon = ($row['category_icon']) ? "<img src='".e_IMAGE."icons/".$row['category_icon']."' alt='' />" : "";
+//	$text = $text."<div style='text-align:right'>".$icon.LAN_307.$news_total."&nbsp;<br />&nbsp;</div>";
 			
 	$np_parm['template'] = LAN_NEWS_22." [PREV]&nbsp;&nbsp;[DROPDOWN]&nbsp;&nbsp;[NEXT]";
 	$np_parm['currentpage'] = ($from/ITEMVIEW)+1;
 	$np_parm['totalpages'] = ($news_total/ITEMVIEW)+1;
-	$np_parm['action'] = e_SELF.'?'.($action == "list") ? "[FROM].".$action.".".$sub_action : "[FROM]";
+	$np_parm['action'] = e_SELF.'?'."[FROM].".$action.".".$sub_action;
 	$np_parm['perpage'] = ITEMVIEW;
 	cachevars('nextprev', $np_parm);
 	$text .= $tp->parseTemplate("{NEXTPREV}");
@@ -399,7 +400,7 @@ if ($action != "item") {
 	$np_parm['template'] = LAN_NEWS_22." [PREV]&nbsp;&nbsp;[DROPDOWN]&nbsp;&nbsp;[NEXT]";
 	$np_parm['currentpage'] = ($from/ITEMVIEW)+1;
 	$np_parm['totalpages'] = ($news_total/ITEMVIEW) + 1;
-	$np_parm['action'] = e_SELF.'?'.($action == "list" ? "[FROM].".$action.".".$sub_action : "[FROM]");
+	$np_parm['action'] = e_SELF.'?'."[FROM].".$action.".".$sub_action;
 	$np_parm['perpage'] = ITEMVIEW;
 	cachevars('nextprev', $np_parm);
 	$nextprev = $tp->parseTemplate("{NEXTPREV}");
@@ -442,7 +443,7 @@ function checkNewsCache($cacheString, $np = FALSE, $nfp = FALSE) {
 			$np_parm['template'] = LAN_NEWS_22." [PREV]&nbsp;&nbsp;[DROPDOWN]&nbsp;&nbsp;[NEXT]";
 			$np_parm['currentpage'] = ($from/ITEMVIEW)+1;
 			$np_parm['totalpages'] = ($news_total/ITEMVIEW) + 1;
-			$np_parm['action'] = e_SELF.'?'.($action == "list" ? "[FROM].".$action.".".$sub_action : "[FROM]");
+			$np_parm['action'] = e_SELF.'?'."[FROM].".$action.".".$sub_action;
 			$np_parm['perpage'] = ITEMVIEW;
 			cachevars('nextprev', $np_parm);
 			$nextprev = $tp->parseTemplate("{NEXTPREV}");
