@@ -843,7 +843,7 @@ function ban(){
 
 
 function cache_page_md5(){
-        return md5(e_BASE.e_LANGUAGE.e_THEME);
+        return md5(e_BASE.e_LANGUAGE.e_THEME.USERCLASS);
 }
 
 function retrieve_cache($query){
