@@ -1,7 +1,7 @@
 /**
  * Functions for the ImageManager, used by manager.php only	
  * @author $Author: e107coders $
- * @version $Id: manager.js,v 1.1 2004-06-26 13:48:37 e107coders Exp $
+ * @version $Id: manager.js,v 1.1 2004-09-21 19:10:35 e107coders Exp $
  * @package ImageManager
  */
 	

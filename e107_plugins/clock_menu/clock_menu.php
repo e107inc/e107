@@ -1,28 +1,27 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|	e107 Clock Menu
-|	/clock_menu.php
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|	Compatible with the e107 content management system
-|		http://e107.org
-|	
-|	Originally written by jalist, modified for greater 
-|	detail and cross browser compatiblity by Caveman
-|	Last modified 19:11 08/04/2003
-|	
-|	Works with Mozilla 1.x, NS6, NS7, IE5, IE5.5, Opera 7
-|	
-|	Released under the terms and conditions of the
-|	GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/clock_menu/clock_menu.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:12:07 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 if(!defined("e_HTTP")){exit;}
 $text = "\n\n<!-- ### clock ### //-->\n<div id='Clock'>&nbsp;</div>\n";
 if(!$clock_flat){
-	$ns -> tablerender($menu_pref['clock_caption'], "<div style='text-align:center'>".$text."</div>");
+        $ns -> tablerender($menu_pref['clock_caption'], "<div style='text-align:center'>".$text."</div>");
 }else{
-	echo $text;
+        echo $text;
 }
 
 ?>

@@ -11,10 +11,10 @@
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).	
 |
-| $Source: /cvs_backup/e107/e107_handlers/news_class.php,v $
-| $Revision: 1.16 $
-| $Date: 2004-08-15 02:31:14 $
-| $Author: mcfly_e107 $ 
+| $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
+| $Revision: 1.1 $
+| $Date: 2004-09-21 19:10:26 $
+| $Author: e107coders $ 
 +---------------------------------------------------------------+
 */
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//

@@ -1,18 +1,20 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        /admin/menu_conf/articles_conf.php
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
 |
-|        Based on code by Edwin van der Wal (evdwal@xs4all.nl)
-+---------------------------------------------------------------+
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/newforumposts_main/config.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:12:31 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
 require_once(e_HANDLER."userclass_class.php");

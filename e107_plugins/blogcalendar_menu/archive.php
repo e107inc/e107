@@ -1,14 +1,23 @@
 <?php
-/******************************************************************\
- *                                                                *
- *  :: e107 blogcal addon ::                                      *
- *                                                                *
- *  file:   archive.php                                           *
- *  author: Thomas Bouve                                          *
- *  email:  crahan@gmx.net                                        *
- *  date:   2004-02-08                                            *
- *                                                                *
-\******************************************************************/
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/blogcalendar_menu/archive.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:12:06 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+| Based on code by: Thomas Bouve (crahan@gmx.net)
+*/
+
 require_once("../../class2.php");
 require_once(e_HANDLER."userclass_class.php");
 

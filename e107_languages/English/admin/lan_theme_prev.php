@@ -1,5 +1,14 @@
 <?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_theme_prev.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:11:55 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
 define("TPVLAN_1", "This is a Theme Test Page");
 define("TPVLAN_2", "This theme is active for this page only. Links below will not work.");
 define("TPVLAN_3", "Preferences");

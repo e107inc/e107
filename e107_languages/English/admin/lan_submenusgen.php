@@ -3,9 +3,9 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107/e107_languages/English/admin/lan_submenusgen.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-09-06 09:55:17 $
+|     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_submenusgen.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:11:55 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */

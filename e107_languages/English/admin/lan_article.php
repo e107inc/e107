@@ -1,12 +1,21 @@
 <?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_article.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:11:04 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
 define("ARLAN_0", "Article saved in database.");
 define("ARLAN_1", "Fields left blank.");
 define("ARLAN_2", "Article updated in database.");
 define("ARLAN_3", "Parent added to database.");
 define("ARLAN_4", "Article parent updated in database.");
 define("ARLAN_5", "Article parent deleted.");
-define("ARLAN_6", "Please tick the confirm box to delete the article"); 
+define("ARLAN_6", "Please tick the confirm box to delete the article");
 define("ARLAN_7", "Articles");
 define("ARLAN_8", "No parents yet");
 define("ARLAN_9", "Existing Parents");

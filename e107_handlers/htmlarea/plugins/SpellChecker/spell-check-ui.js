@@ -6,7 +6,7 @@
 // Distributed under the same terms as HTMLArea itself.
 // This notice MUST stay intact for use (see license.txt).
 //
-// $Id: spell-check-ui.js,v 1.5 2004-08-11 09:26:38 e107coders Exp $
+// $Id: spell-check-ui.js,v 1.1 2004-09-21 19:10:38 e107coders Exp $
 
 // internationalization file was already loaded in parent ;-)
 var SpellChecker = window.opener.SpellChecker;

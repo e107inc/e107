@@ -11,10 +11,10 @@
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
 |
-|   $Source: /cvs_backup/e107/e107_admin/header.php,v $
-|   $Revision: 1.24 $
-|   $Date: 2004-09-20 16:06:32 $
-|   $Author: loloirie $
+|   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
+|   $Revision: 1.1 $
+|   $Date: 2004-09-21 19:10:20 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 */
 echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='iso-8859-1' ?>");
@@ -220,7 +220,7 @@ function get_admin_treemenu($title,$page,$e107_vars,$sortlist=FALSE)
 		{
 			$func_list[]=$temp[$key]['text'];
 		}
-
+    setlocale("LC_ALL","deu");
     usort($func_list, 'strcoll');
 
 		foreach($func_list as $func_text)

@@ -1,17 +1,20 @@
 <?php
-
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        /usersettings.php
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:12:45 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 
 
@@ -54,7 +57,7 @@ $_uid = e_QUERY;
 require_once(HEADERF);
 
 if(IsSet($_POST['updatesettings'])){
-	
+
         // check prefs for required fields =================================.
     $signupval = explode(".",$pref['signup_options']);
     $signup_title = array(LAN_308,LAN_144,LAN_115,LAN_116,LAN_117,LAN_118,LAN_119,LAN_120,LAN_121,LAN_122);
@@ -135,34 +138,34 @@ if(IsSet($_POST['updatesettings'])){
         }
 
 
-		if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
-			$row = $sql -> db_Fetch();
-			$user_entended = unserialize($row[0]);
-			$c=0;
-			while(list($key, $u_entended) = each($user_entended)){
-				if($u_entended){
-					if($pref['signup_ext'.$key] ==2 && $_POST["ue_{$key}"] == ""){
-						$ut = explode("|",$u_entended);
-						$u_name = ($ut[0] != "") ? trim($ut[0]) : trim($u_entended);
-						$error_ext = LAN_SIGNUP_6.$u_name.LAN_SIGNUP_7;
-						message_handler("P_ALERT", $error_ext);
-						$error = TRUE;
-					}
-		
-				}
-			}
-		}
-		
+                if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
+                        $row = $sql -> db_Fetch();
+                        $user_entended = unserialize($row[0]);
+                        $c=0;
+                        while(list($key, $u_entended) = each($user_entended)){
+                                if($u_entended){
+                                        if($pref['signup_ext'.$key] ==2 && $_POST["ue_{$key}"] == ""){
+                                                $ut = explode("|",$u_entended);
+                                                $u_name = ($ut[0] != "") ? trim($ut[0]) : trim($u_entended);
+                                                $error_ext = LAN_SIGNUP_6.$u_name.LAN_SIGNUP_7;
+                                                message_handler("P_ALERT", $error_ext);
+                                                $error = TRUE;
+                                        }
+
+                                }
+                        }
+                }
+
          if (preg_match('#^www\.#si', $_POST['website'])) {
                 $_POST['website'] = "http://$homepage";
         }else if (!preg_match('#^[a-z0-9]+://#si', $_POST['website'])){
                 $_POST['website'] = "";
     }
 
-	if($_POST['icq'] && !is_numeric($_POST['icq'])){
-		$error = LAN_ICQNUMBER;
-		$_POST['icq'] = "";
-	}
+        if($_POST['icq'] && !is_numeric($_POST['icq'])){
+                $error = LAN_ICQNUMBER;
+                $_POST['icq'] = "";
+        }
 
         $birthday = $_POST['birth_year']."/".$_POST['birth_month']."/".$_POST['birth_day'];
         if($file_userfile['error'] != 4){
@@ -173,10 +176,10 @@ if(IsSet($_POST['updatesettings'])){
                                 // avatar uploaded
                                 $_POST['image'] = "-upload-".$uploaded[0]['name'];
                                 if(!resize_image(e_FILE."public/avatars/".$uploaded[0]['name'], e_FILE."public/avatars/".$uploaded[0]['name'], "avatar")){
-									unset($message);
-									$error = RESIZE_NOT_SUPPORTED;
-									@unlink(e_FILE."public/avatars/".$uploaded[0]['name']);
-								}
+                                                                        unset($message);
+                                                                        $error = RESIZE_NOT_SUPPORTED;
+                                                                        @unlink(e_FILE."public/avatars/".$uploaded[0]['name']);
+                                                                }
                         }else{
                                 // photograph uploaded
                                 $user_sess = ($pref['avatar_upload'] ? $uploaded[1]['name'] : $uploaded[0]['name']);
@@ -201,12 +204,12 @@ if(IsSet($_POST['updatesettings'])){
                         $row = $sql -> db_Fetch();
                         $user_entended = unserialize($row[0]);
                         while(list($key, $u_entended) = each($user_entended)){
-                        	if($_POST["ue_{$key}"]){
+                                if($_POST["ue_{$key}"]){
                                 $val = $aj -> formtpa($_POST["ue_{$key}"], "public");
                                 $user_pref["ue_{$key}"] = $val;
-                        	} else {
-                        		unset($user_pref["ue_{$key}"]);
-                        	}
+                                } else {
+                                        unset($user_pref["ue_{$key}"]);
+                                }
                         }
                         save_prefs("user", $inp);
                 }

@@ -1,42 +1,45 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|	e107 website system
-|	/admin/menu_conf/articles_conf.php
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|	©Steve Dunstan 2001-2002
-|	http://e107.org
-|	jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|	Released under the terms and conditions of the
-|	GNU General Public License (http://gnu.org).
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
 |
-|	Based on code by Edwin van der Wal (evdwal@xs4all.nl), Multilanguage by Juan
-+---------------------------------------------------------------+
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/fader_menu/config.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:12:11 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
+
 require_once("../../class2.php");
 $lan_file=e_PLUGIN."fader_menu/languages/".e_LANGUAGE.".php";
 if(file_exists($lan_file)){
-	require_once($lan_file);
+        require_once($lan_file);
 } else {
-	require_once(e_PLUGIN."fader_menu/languages/English.php");
+        require_once(e_PLUGIN."fader_menu/languages/English.php");
 }
 if(!getperms("4")){ header("location:".e_BASE."index.php"); exit ;}
 require_once(e_ADMIN."auth.php");
 
 if(IsSet($_POST['update_menu'])){
-	$aj = new textparse;
-	$_POST['fader_height'] = ($_POST['fader_height'] ? $_POST['fader_height'] : 200);
-	$_POST['fader_delay'] = ($_POST['fader_delay'] ? $_POST['fader_delay'] : 3000);
-	while(list($key, $value) = each($_POST)){
-		if($value != FADER_L15){ 
-			$menu_pref[$key] = str_replace("<br />", "", $aj -> formtpa($value, "admin")); 
-		}
-	}
+        $aj = new textparse;
+        $_POST['fader_height'] = ($_POST['fader_height'] ? $_POST['fader_height'] : 200);
+        $_POST['fader_delay'] = ($_POST['fader_delay'] ? $_POST['fader_delay'] : 3000);
+        while(list($key, $value) = each($_POST)){
+                if($value != FADER_L15){
+                        $menu_pref[$key] = str_replace("<br />", "", $aj -> formtpa($value, "admin"));
+                }
+        }
 
-	$tmp = addslashes(serialize($menu_pref));
-	$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='menu_pref' ");
-	$ns -> tablerender("", "<div style='text-align:center'><b>".FADER_L16."</b></div>");
+        $tmp = addslashes(serialize($menu_pref));
+        $sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='menu_pref' ");
+        $ns -> tablerender("", "<div style='text-align:center'><b>".FADER_L16."</b></div>");
 }
 
 $text = "<div style='text-align:center'>
@@ -52,8 +55,8 @@ $text = "<div style='text-align:center'>
 ";
 
 for($a=1; $a<=10; $a++){
-	$var = "fader_message_$a";
-	$text .= "<tr>
+        $var = "fader_message_$a";
+        $text .= "<tr>
 <td style='width:30%' class='forumheader3'>".FADER_L7." ".$a." : </td>
 <td style='width:70%' class='forumheader3'>
 <textarea class='tbox' name='$var' cols='70' rows='4'>".$menu_pref[$var]."</textarea>
@@ -96,6 +99,6 @@ $ns -> tablerender(FADER_L14, $text);
 
 require_once(e_ADMIN."footer.php");
 
-//	<input class='tbox' type='text' name='$var' size='80' value='".$menu_pref[$var]."' maxlength='300' />
+//        <input class='tbox' type='text' name='$var' size='80' value='".$menu_pref[$var]."' maxlength='300' />
 
 ?>

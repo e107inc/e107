@@ -9,7 +9,7 @@
 // Version 3.0 developed by Mihai Bazon.
 //   http://dynarch.com/mishoo
 //
-// $Id: popup.js,v 1.1 2004-06-26 13:48:37 e107coders Exp $
+// $Id: popup.js,v 1.1 2004-09-21 19:10:35 e107coders Exp $
 
 // Slightly modified for the ImageManager, window resizing is done only
 // by each window's script. Added translation for a few other HTML elements.

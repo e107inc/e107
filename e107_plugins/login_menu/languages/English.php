@@ -1,15 +1,20 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|	e107 website system
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|	©Steve Dunstan 2001-2002
-|	http://e107.org
-|	jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|	Released under the terms and conditions of the
-|	GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/languages/English.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:12:30 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 
 define("LOGIN_MENU_L1", "Username: ");
@@ -40,7 +45,7 @@ define("LOGIN_MENU_L24", "Click here to see list of new items");
 define("LOGIN_MENU_L25", "Since your last visit there have been");
 define("LOGIN_MENU_L26", "no");
 define("LOGIN_MENU_L27", "and");
- 
+
 define("LOGIN_MENU_L28", "Login");
 
 define("LOGIN_MENU_L29", "new article");

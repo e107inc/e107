@@ -1,16 +1,20 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        code adapted from original by Lolo Irie (lolo@touchatou.com)
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/fader_menu/plugin.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:12:11 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 $lan_file = e_PLUGIN."fader_menu/languages/".e_LANGUAGE.".php";
 require_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."fader_menu/languages/English.php");

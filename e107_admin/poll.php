@@ -1,16 +1,20 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        /admin/poll_conf.php
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_admin/poll.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:10:21 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 if(!getperms("U")){ header("location:".e_BASE."index.php"); exit;}
@@ -56,7 +60,7 @@ if(IsSet($_POST['submit'])){
 }
 
 if($action == "edit" && !$_POST['preview']  && !$_POST['addoption'] && !$_POST['submit']){
-        
+
         if($sql -> db_Select("poll", "*", "poll_id=$sub_action")){
                 $row = $sql-> db_Fetch(); extract($row);
                 for($a=1; $a<=10; $a++){
@@ -68,7 +72,7 @@ if($action == "edit" && !$_POST['preview']  && !$_POST['addoption'] && !$_POST['
                 $_POST['activate'] = $poll_active;
                 $_POST['option_count'] = count($_POST['poll_option']);
                 $_POST['poll_title'] = $poll_title;
-				$_POST['poll_comment'] = $poll_comment;
+                                $_POST['poll_comment'] = $poll_comment;
         }
 }
 

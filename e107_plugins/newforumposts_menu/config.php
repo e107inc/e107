@@ -1,18 +1,20 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
 |
-|        Based on code by Edwin van der Wal (evdwal@xs4all.nl)
-|        $Id: config.php,v 1.2 2004-09-03 18:32:11 e107coders Exp $
-+---------------------------------------------------------------+
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/newforumposts_menu/config.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:12:32 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
 if(!getperms("1")){ header("location:".e_BASE."index.php"); exit ;}

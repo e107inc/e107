@@ -1,16 +1,20 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-|        $Id: plugin.php,v 1.3 2004-09-03 18:32:10 e107coders Exp $
-+---------------------------------------------------------------+
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/plugin.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:12:06 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 // Plugin info -------------------------------------------------------------------------------------------------------
 $lan_file = e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php";

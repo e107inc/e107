@@ -1,12 +1,21 @@
 <?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_administrator.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:11:04 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
 define("ADMSLAN_0", "New user/admin entry created for");
 define("ADMSLAN_1", "now has admin status.");
 define("ADMSLAN_2", "updated in database.");
 define("ADMSLAN_3", "is the main site administrator and cannot be edited.");
 define("ADMSLAN_4", "Continue");
 define("ADMSLAN_5", "Error!");
-define("ADMSLAN_6", "is the main site administrator and cannot be deleted."); 
+define("ADMSLAN_6", "is the main site administrator and cannot be deleted.");
 define("ADMSLAN_7", "Please confirm you wish to delete");
 define("ADMSLAN_8", "from the admin database");
 define("ADMSLAN_9", "Cancel");
@@ -19,7 +28,7 @@ define("ADMSLAN_15", "Edit");
 define("ADMSLAN_16", "Admin Name");
 define("ADMSLAN_17", "Admin Password");
 define("ADMSLAN_18", "Permissions");
-define("ADMSLAN_19", "Alter site preferences"); 
+define("ADMSLAN_19", "Alter site preferences");
 define("ADMSLAN_20", "Alter Menus");
 define("ADMSLAN_21", "Add site administrators");
 define("ADMSLAN_22", "Moderate users/bans etc");

@@ -1,16 +1,20 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|	e107 website system
-|	/admin/wmessage.php
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|	©Steve Dunstan 2001-2002
-|	http://e107.org
-|	jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|	Released under the terms and conditions of the
-|	GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_admin/wmessage.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:10:21 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 if(!getperms("M")){ header("location:".e_BASE."index.php"); exit;}
@@ -19,21 +23,21 @@ require_once(e_HANDLER."ren_help.php");
 $aj = new textparse;
 if(IsSet($_POST['wmsubmit'])){
 
-	$guestmessage = $aj -> formtpa($_POST['guestmessage'], "admin");
-	$membermessage = $aj -> formtpa($_POST['membermessage'], "admin");
-	$adminmessage = $aj -> formtpa($_POST['adminmessage'], "admin");
-	$sql -> db_Update("wmessage", "wm_text ='$guestmessage', wm_active='".$_POST['wm_active1']."' WHERE wm_id='1' ");
-	$sql -> db_Update("wmessage", "wm_text ='$membermessage', wm_active='".$_POST['wm_active2']."' WHERE wm_id='2' ");
-	$sql -> db_Update("wmessage", "wm_text ='$adminmessage', wm_active='".$_POST['wm_active3']."' WHERE wm_id='3' ");
+        $guestmessage = $aj -> formtpa($_POST['guestmessage'], "admin");
+        $membermessage = $aj -> formtpa($_POST['membermessage'], "admin");
+        $adminmessage = $aj -> formtpa($_POST['adminmessage'], "admin");
+        $sql -> db_Update("wmessage", "wm_text ='$guestmessage', wm_active='".$_POST['wm_active1']."' WHERE wm_id='1' ");
+        $sql -> db_Update("wmessage", "wm_text ='$membermessage', wm_active='".$_POST['wm_active2']."' WHERE wm_id='2' ");
+        $sql -> db_Update("wmessage", "wm_text ='$adminmessage', wm_active='".$_POST['wm_active3']."' WHERE wm_id='3' ");
 }
 
 if(IsSet($message)){
-	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+        $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
 $sql -> db_Select("wmessage");
 list($id, $guestmessage, $wm_active1) = $sql-> db_Fetch();
-list($id, $membermessage, $wm_active2) = $sql-> db_Fetch();	
+list($id, $membermessage, $wm_active2) = $sql-> db_Fetch();
 list($id, $adminmessage, $wm_active3) = $sql-> db_Fetch();
 
 
@@ -52,9 +56,9 @@ $text .= "
 <td style='width:20%' class='forumheader3'>".WMGLAN_1.": <br />
 ".WMGLAN_6.":";
 if($wm_active1){
-	$text .= "<input type='checkbox' name='wm_active1' value='1'  checked='checked' />";
+        $text .= "<input type='checkbox' name='wm_active1' value='1'  checked='checked' />";
 }else{
-	$text .= "<input type='checkbox' name='wm_active1' value='1' />";
+        $text .= "<input type='checkbox' name='wm_active1' value='1' />";
 }
 $text .= "</td>
 <td style='width:60%' class='forumheader3'>
@@ -71,9 +75,9 @@ $text .= "</td>
 <td style='width:20%' class='forumheader3'>".WMGLAN_2.": <br />
 ".WMGLAN_6.":";
 if($wm_active2){
-	$text .= "<input type='checkbox' name='wm_active2' value='1'  checked='checked' />";
+        $text .= "<input type='checkbox' name='wm_active2' value='1'  checked='checked' />";
 }else{
-	$text .= "<input type='checkbox' name='wm_active2' value='1' />";
+        $text .= "<input type='checkbox' name='wm_active2' value='1' />";
 }
 $text .= "</td>
 <td style='width:60%' class='forumheader3'>
@@ -90,9 +94,9 @@ $text .= "</td>
 ".WMGLAN_6.": ";
 
 if($wm_active3){
-	$text .= "<input type='checkbox' name='wm_active3' value='1'  checked='checked' />";
+        $text .= "<input type='checkbox' name='wm_active3' value='1'  checked='checked' />";
 }else{
-	$text .= "<input type='checkbox' name='wm_active3' value='1' />";
+        $text .= "<input type='checkbox' name='wm_active3' value='1' />";
 }
 
 $text .= "</td>
@@ -105,7 +109,7 @@ $text .= "</td>
 </td>
 </tr>
 
-<tr style='vertical-align:top'> 
+<tr style='vertical-align:top'>
 <td class='forumheader3'>&nbsp;</td>
 <td style='width:60%' class='forumheader3'>
 <input class='button' type='submit' name='wmsubmit' value='".WMGLAN_4."' />
@@ -120,28 +124,28 @@ $ns -> tablerender(WMGLAN_5, $text);
 ?>
 <script type="text/javascript">
 function addtext1(sc){
-	document.getElementById('wmform').guestmessage.value += sc;
+        document.getElementById('wmform').guestmessage.value += sc;
 }
 function addtext2(sc){
-	document.getElementById('wmform').membermessage.value += sc;
+        document.getElementById('wmform').membermessage.value += sc;
 }
 function addtext3(sc){
-	document.getElementById('wmform').adminmessage.value += sc;
+        document.getElementById('wmform').adminmessage.value += sc;
 }
 function fclear(){
-	document.newspostform.message.value = "";
+        document.newspostform.message.value = "";
 }
 function help1(help){
-	document.getElementById('wmform').helpguest.value = help;
+        document.getElementById('wmform').helpguest.value = help;
 }
 function help2(help){
-	document.getElementById('wmform').helpmember.value = help;
+        document.getElementById('wmform').helpmember.value = help;
 }
 function help3(help){
-	document.getElementById('wmform').helpadmin.value = help;
+        document.getElementById('wmform').helpadmin.value = help;
 }
 </script>
 <?php
 
 require_once("footer.php");
-?>	
+?>

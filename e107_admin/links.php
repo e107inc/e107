@@ -10,10 +10,10 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107/e107_admin/links.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2004-08-31 13:57:21 $
-|     $Author: loloirie $
+|     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:10:20 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
