@@ -402,7 +402,7 @@ class e107forum {
 		global $sql;
 		$ret = array();
 		$qry = "
-			SELECT t.* from #forum_t AS t
+			SELECT t.*, u.user_name, u.user_id from #forum_t AS t
 			LEFT JOIN #user AS u
 			ON t.thread_user = u.user_id
 			WHERE t.thread_id = $thread_id
@@ -421,7 +421,7 @@ class e107forum {
 			$ret['head'] = $ret[0];
 		} else {
 			$qry = "
-				SELECT t.* from #forum_t AS t
+				SELECT t.*, u.user_name, u.user_id from #forum_t AS t
 				LEFT JOIN #user AS u
 				ON t.thread_user = u.user_id
 				WHERE t.thread_id = {$parent_id}
