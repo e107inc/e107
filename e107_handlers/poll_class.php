@@ -37,7 +37,7 @@ class poll{
 		}
 		if($poll_id){
 			$cls -> db_Update("poll", "poll_title='$poll_name', poll_option_1='".$poll_option[0]."', poll_option_2='".$poll_option[1]."', poll_option_3='".$poll_option[2]."', poll_option_4='".$poll_option[3]."', poll_option_5='".$poll_option[4]."', poll_option_6='".$poll_option[5]."', poll_option_7='".$poll_option[6]."', poll_option_8='".$poll_option[7]."', poll_option_9='".$poll_option[8]."', poll_option_10='".$poll_option[9]."', poll_active='$activate' WHERE poll_id='$poll_id' ");
-			$message = "Poll updated in database.";
+			$message = POLL_11;
 		}else{
 			if($id){
 				$datestamp = $id;
@@ -90,16 +90,16 @@ class poll{
 		$replace[0] = stripslashes($poll_question);
 
 		$search[1] = "/\{VOTE_TOTAL\}(.*?)/si";
-		$replace[1] = LAN_164.$vote_total;
+		$replace[1] = POLL_164.$vote_total;
 
 		$search[2] = "/\{COMMENTS\}(.*?)/si";
-		$replace[2] = ($type == "menu" ? " <a href=\"".e_BASE."comment.php?poll.".$poll_id."\">".LAN_500.": ".$comment_total."</a>" : "");
+		$replace[2] = ($type == "menu" ? " <a href=\"".e_BASE."comment.php?poll.".$poll_id."\">".POLL_500.": ".$comment_total."</a>" : "");
 
 		$search[3] = "/\{OLDPOLLS\}(.*?)/si";
-		$replace[3] = ($type == "menu" ? "<a href=\"".e_BASE."oldpolls.php\">".LAN_165."</a>" : "");
+		$replace[3] = ($type == "menu" ? "<a href=\"".e_BASE."oldpolls.php\">".POLL_165."</a>" : "");
 
 		$search[4] = "/\{AUTHOR\}(.*?)/si";
-		$replace[4] = "Posted by <a href='".e_BASE."user.php?id.$poll_admin_id'>$user_name</a>";
+		$replace[4] = POLL_12."<a href='".e_BASE."user.php?id.$poll_admin_id'>$user_name</a>";
 
 		$p_style = preg_replace($search, $replace, $POLLSTYLE);
 
@@ -137,7 +137,7 @@ class poll{
 		}
 
 		if($mode == "notvoted"){
-			$opt .= ($type == "forum" ? "\n<br /></p><div style='text-align:center'>\n<p><input class='button' type='submit' name='pollvote' value='".POLL_4."' /></p></div>\n<p><input type='hidden' name='pollid' value='".$poll_id."' /></p></form>" : "\n<br /></p><div style='text-align:center'>\n<p><input class='button' type='submit' name='vote' value='".LAN_163."' /></p></div>\n<p><input type='hidden' name='pollid' value='".$poll_id."' /></p></form>");
+			$opt .= ($type == "forum" ? "\n<br /></p><div style='text-align:center'>\n<p><input class='button' type='submit' name='pollvote' value='".POLL_4."' /></p></div>\n<p><input type='hidden' name='pollid' value='".$poll_id."' /></p></form>" : "\n<br /></p><div style='text-align:center'>\n<p><input class='button' type='submit' name='vote' value='".POLL_163."' /></p></div>\n<p><input type='hidden' name='pollid' value='".$poll_id."' /></p></form>");
 		}
 
 		$text .= preg_replace("/\{OPTIONS=.*\}/si", $opt, $p_style);
@@ -152,7 +152,7 @@ class poll{
 
 		$ns = new e107table;
 
-		$caption = (file_exists(THEME."images/poll_menu.png") ? "<img src='".THEME."images/poll_menu.png' alt='' /> ".LAN_184 : LAN_184);
+		$caption = (file_exists(THEME."images/poll_menu.png") ? "<img src='".THEME."images/poll_menu.png' alt='' /> ".POLL_184 : POLL_184);
 		if(!$preview && $type != "forum"){
 			$ns -> tablerender($caption, $text);
 		}else{

@@ -13,6 +13,8 @@
 +---------------------------------------------------------------+
 */
 
+@include(e_LANGUAGEDIR.e_LANGUAGE."/lan_upload_handler.php");
+@include(e_LANGUAGEDIR."English/lan_upload_handler.php");
 function file_upload($uploaddir, $avatar = FALSE){
 
 	if(!$uploaddir) $uploaddir=e_FILE."public/";
@@ -35,7 +37,7 @@ function file_upload($uploaddir, $avatar = FALSE){
 				if(!in_array($fileext1, $allowed_filetypes) && !in_array(strtolower($fileext1), $allowed_filetypes) && !in_array(strtolower($file_userfile['type'][$c]), $allowed_filetypes)){
 					if(!in_array($fileext2, $allowed_filetypes) && !in_array(strtolower($fileext2), $allowed_filetypes) && !in_array(strtolower($file_userfile['type'][$c]), $allowed_filetypes)){
 						require_once(e_HANDLER."message_handler.php");
-						message_handler("MESSAGE", "The filetype '".$file_userfile['type'][$c]."' is not allowed and has been deleted.");
+						message_handler("MESSAGE", "".LANUPLOAD_1." '".$file_userfile['type'][$c]."' ".LANUPLOAD_2."");
 						return FALSE;
 						require_once(FOOTERF);
 						exit;
@@ -76,7 +78,7 @@ function file_upload($uploaddir, $avatar = FALSE){
 			if(!in_array($fileext1, $allowed_filetypes) && !in_array(strtolower($fileext1), $allowed_filetypes) && !in_array(strtolower($files['type'][$c]), $allowed_filetypes)){
 				if(!in_array($fileext2, $allowed_filetypes) && !in_array(strtolower($fileext2), $allowed_filetypes) && !in_array(strtolower($files['type'][$c]), $allowed_filetypes)){
 					require_once(e_HANDLER."message_handler.php");
-					message_handler("MESSAGE", "The filetype ".$files['type'][$key]." is not allowed and has been deleted.", __LINE__, __FILE__);
+					message_handler("MESSAGE", "".LANUPLOAD_1." ".$files['type'][$key]." ".LANUPLOAD_2.".", __LINE__, __FILE__);
 					return FALSE;
 					require_once(FOOTERF);
 					exit;
@@ -102,17 +104,17 @@ function file_upload($uploaddir, $avatar = FALSE){
 				}
 
 				require_once(e_HANDLER."message_handler.php");
-				message_handler("MESSAGE", "Successfully uploaded '".$files['name'][$key]."'", __LINE__, __FILE__);
-				$message .= "Successfully uploaded '".$files['name'][$key]."'.<br />";
+				message_handler("MESSAGE", "".LANUPLOAD_3." '".$files['name'][$key]."'", __LINE__, __FILE__);
+				$message .= "".LANUPLOAD_3." '".$files['name'][$key]."'.<br />";
 				$uploaded[$c]['size'] = $files['size'][$key];
 			}else{
 				switch ($files['error'][$key]){
-					case 0: $error = "Either destination folder does not exist or is not writable."; break;
-					case 1: $error = "The uploaded file exceeds the upload_max_filesize directive in php.ini."; break;
-					case 2: $error = "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the html form."; break;
-					case 3: $error = "The uploaded file was only partially uploaded."; break;
-					case 4: $error = "No file was uploaded."; break;
-					case 5: $error = "Uploaded file size 0 bytes"; break;	
+					case 0: $error = LANUPLOAD_4; break;
+					case 1: $error = LANUPLOAD_5; break;
+					case 2: $error = LANUPLOAD_6; break;
+					case 3: $error = LANUPLOAD_7; break;
+					case 4: $error = LANUPLOAD_8; break;
+					case 5: $error = LANUPLOAD_9; break;	
 				}
 				require_once(e_HANDLER."message_handler.php");
 				message_handler("MESSAGE", "The file did not upload. Filename: '".$files['name'][$key]."' - Error: ".$error, __LINE__, __FILE__);
