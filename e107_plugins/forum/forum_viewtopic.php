@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-03-14 16:28:42 $
+|     $Revision: 1.19 $
+|     $Date: 2005-03-14 17:49:57 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -307,6 +307,7 @@ if ((ANON || USER) && ($forum_info['forum_class'] != e_UC_READONLY || MODERATOR)
 }
 
 $POLL = $pollstr;
+
 $FORUMJUMP = forumjump();
 
 $forstr = preg_replace("/\{(.*?)\}/e", '$\1', $FORUMSTART);
