@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.14 $
-|   $Date: 2005-01-22 16:48:20 $
+|   $Revision: 1.15 $
+|   $Date: 2005-01-22 18:21:18 $
 |   $Author: stevedunstan $
 +---------------------------------------------------------------+
 
@@ -655,22 +655,14 @@ class newspost{
                 $_POST['admin_name'] = USERNAME;
                 $_POST['comment_total'] = $comment_total;
                 $_POST['news_datestamp'] = time();
-
-
-
-					$_PR = $_POST;
-
+				$_PR = $_POST;
                 $_PR['news_title'] = $tp -> post_toHTML($_PR['news_title']);
                 $_PR['data'] = $tp -> post_toHTML($_PR['data']);
                 $_PR['news_extended'] = $tp -> post_toHTML($_PR['news_extended']);
-
                 $_POST['news_title'] = $tp -> post_toForm($_POST['news_title']);
-  	             $_POST['data'] = $tp -> post_toForm($_POST['data']);
-     	          $_POST['news_extended'] = $tp -> post_toForm($_POST['news_extended']);
-   	          
-
-                $_PR['data'] = (strstr($_PR['data'], "[img]http") ? $_PR['data'] : str_replace("[img]", "[img]../", $_PR['data']));
-
+				$_POST['data'] = $tp -> post_toForm($_POST['data']);
+				$_POST['news_extended'] = $tp -> post_toForm($_POST['news_extended']);
+                $_PR['news_body'] = (strstr($_PR['data'], "[img]http") ? $_PR['data'] : str_replace("[img]", "[img]../", $_PR['data']));
                 $ix -> render_newsitem($_PR);
                 $_POST['data'] = $tp -> toForm($_POST['data'],TRUE);
                 $_POST['news_title'] = $tp -> toFORM($_POST['news_title']);

@@ -13,9 +13,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.17 $
-| $Date: 2005-01-20 04:07:50 $
-| $Author: mcfly_e107 $
+| $Revision: 1.18 $
+| $Date: 2005-01-22 18:22:13 $
+| $Author: stevedunstan $
 +---------------------------------------------------------------+
 */
 
@@ -51,7 +51,11 @@ class news {
 		return $message;
 	}
 
-	function render_newsitem($news, $mode = "default", $n_restrict = "") {
+	function render_newsitem($news, $mode = "default", $n_restrict = "")
+	{
+
+		//echo "<pre>"; print_r($news); echo "</pre>";	// debug ...
+
 		global $tp, $sql, $override;
 		if (!is_object($tp)) $tp = new e_parse;
 		if ($n_restrict == "userclass") {
