@@ -13,8 +13,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.39 $
-| $Date: 2005-02-16 20:45:27 $
+| $Revision: 1.40 $
+| $Date: 2005-02-16 20:55:01 $
 | $Author: stevedunstan $
 +---------------------------------------------------------------+
 */
@@ -202,7 +202,7 @@ class news {
 			The $param will be used below, instead of the definitions - to allow multiple styles to be used.
 			Definitions will still be used in the theme.php.
 */
-		global $tp;
+		global $tp, $pref;
 		extract($news);
 
 		$category_name = $tp->toHTML($news['category_name']);
