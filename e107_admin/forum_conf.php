@@ -205,7 +205,7 @@ $text .= "</select>
 </table>
 </div>
 </form>";
-$ns -> tablerender(FORLAN_26, $text);
+$ns -> tablerender(FORLAN_25, $text);
 }
 
 require_once("footer.php");
