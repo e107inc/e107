@@ -314,12 +314,7 @@ if($action == "create"){
         ".$rs -> form_open("post", e_SELF."?".e_QUERY."", "dataform")."
 
         <table style='width:95%' class='fborder'>
-        <tr>
-        <td colspan='2' style='text-align:center' class='forumheader2'>
-        <input class='button' type='button' onClick='openwindow()'  value='".ARLAN_73."' />
-        </td>
-        </tr>
-
+        
         <tr>
         <td style='width:20%; vertical-align:top' class='forumheader3'>".ARLAN_74.":</td>
         <td style='width:80%' class='forumheader3'>";
@@ -337,13 +332,13 @@ if($action == "create"){
         <tr>
         <td style='width:20%; vertical-align:top' class='forumheader3'>".ARLAN_82.":<br /><span class='smalltext'>(".ARLAN_83.")</span></td>
         <td style='width:80%' class='forumheader3'>
-		<a href=\"javascript:void(0);\" onclick=\"expandit(this);\" >".ARLAN_100."</a>\n
+                <a href=\"javascript:void(0);\" onclick=\"expandit(this);\" >".ARLAN_100."</a>\n
         <span style=\"display: none;\" >
-		<br /><br />
-		<input class='tbox' type='text' name='content_author' size='60' value='".($content_author ? $content_author : ARLAN_84)."' maxlength='100' ".($content_author ? "" : "onFocus=\"document.dataform.content_author.value='';\"")." /><br />
+                <br /><br />
+                <input class='tbox' type='text' name='content_author' size='60' value='".($content_author ? $content_author : ARLAN_84)."' maxlength='100' ".($content_author ? "" : "onFocus=\"document.dataform.content_author.value='';\"")." /><br />
         <input class='tbox' type='text' name='content_author_email' size='60' value='".($content_author_email ? $content_author_email : ARLAN_85)."' maxlength='100' ".($content_author_email ? "" : "onFocus=\"document.dataform.content_author_email.value='';\"")." /><br />
         </span>
-		</td>
+                </td>
         </tr>
 
         <tr>
