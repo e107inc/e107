@@ -20,11 +20,11 @@ if($use_imagecode){
         $sec_img = new secure_image;
 }
 if($pref['membersonly_enabled']){
-        $HEADER = "<div style='width:70%;margin-left:auto;margin-right:auto'><div style='text-align:center;'><br>";
+        $HEADER = "<div style='width:70%;margin-left:auto;margin-right:auto'><div style='text-align:center;'><br />";
         if(file_exists(THEME."images/login_logo.png")){
-        $HEADER .= "<img src='".THEME."images/login_logo.png'>\n";
+        $HEADER .= "<img src='".THEME."images/login_logo.png' alt='' />\n";
         } else{
-        $HEADER .= "<img src='".e_IMAGE."logo.png'>\n";
+        $HEADER .= "<img src='".e_IMAGE."logo.png' alt='' />\n";
         }
         $HEADER .= "<br />";
         $FOOTER = "</div></div>";
@@ -40,30 +40,30 @@ function fpw_error($txt){
 }
 
 if(e_QUERY){
-	$tmp=explode(".",e_QUERY);
-	$tmpinfo=preg_replace("#[\W_]#","",$tmp[1]);
-	if($sql -> db_Select("tmp","*","tmp_info LIKE '%.{$tmpinfo}' ")){
-		$row = $sql -> db_Fetch();
-		extract($row);
-		$sql -> db_Delete("tmp","tmp_info LIKE '%.{$tmpinfo}' ");
-		$newpw="";
-		$pwlen = rand(8, 12);
-		for($a=0; $a<=$pwlen;$a++){
-			$newpw .= chr(rand(97, 122));
-		}
-		$mdnewpw = md5($newpw);
+        $tmp=explode(".",e_QUERY);
+        $tmpinfo=preg_replace("#[\W_]#","",$tmp[1]);
+        if($sql -> db_Select("tmp","*","tmp_info LIKE '%.{$tmpinfo}' ")){
+                $row = $sql -> db_Fetch();
+                extract($row);
+                $sql -> db_Delete("tmp","tmp_info LIKE '%.{$tmpinfo}' ");
+                $newpw="";
+                $pwlen = rand(8, 12);
+                for($a=0; $a<=$pwlen;$a++){
+                        $newpw .= chr(rand(97, 122));
+                }
+                $mdnewpw = md5($newpw);
 
-		list($username,$md5) = explode(".",$tmp_info);
-		$sql -> db_Update("user", "user_password='$mdnewpw', user_viewed='' WHERE user_name='$username' ");
-		cookie($pref['cookie_name'], "", (time()-2592000));
-		$_SESSION[$pref['cookie_name']] = "";
+                list($username,$md5) = explode(".",$tmp_info);
+                $sql -> db_Update("user", "user_password='$mdnewpw', user_viewed='' WHERE user_name='$username' ");
+                cookie($pref['cookie_name'], "", (time()-2592000));
+                $_SESSION[$pref['cookie_name']] = "";
 
-		$txt = LAN_FPW8." {$username} ".LAN_FPW9." {$newpw}<br /><br />".LAN_FPW10;
-		fpw_error($txt);
+                $txt = LAN_FPW8." {$username} ".LAN_FPW9." {$newpw}<br /><br />".LAN_FPW10;
+                fpw_error($txt);
 
-	} else {
-		fpw_error(LAN_FPW7);
-	}
+        } else {
+                fpw_error(LAN_FPW7);
+        }
 }
 
 if(IsSet($_POST['pwsubmit'])){
@@ -126,31 +126,30 @@ $text = "<div style='text-align:center'>
 
 <tr>
 <td class='forumheader3' style='width:25%'>".LAN_FPW1."</td>
-<td class='forumheader3' style='width:75%' style='text-align:center'>
+<td class='forumheader3' style='width:75%;text-align:center'>
 <input class='tbox' type='text' name='username' size='60' value='' maxlength='100' />
 </td>
 </tr>
 
 <tr>
 <td class='forumheader3' style='width:25%'>".LAN_112."</td>
-<td class='forumheader3' style='width:75%' style='text-align:center'>
+<td class='forumheader3' style='width:75%; text-align:center'>
 <input class='tbox' type='text' name='email' size='60' value='' maxlength='100' />
 </td>
 </tr>";
 
 if($use_imagecode){
-	$text .= "
-	<tr>
-	<td class='forumheader3' style='width:25%'>".LAN_FPW2."</td>
-	<td class='forumheader3' style='width:75%' style='text-align:left'>
-	<input type='hidden' name='rand_num' value='".$sec_img -> random_number."'>";
-	$text .= $sec_img -> r_image();
-	$text .= "<br /><input class='tbox' type='text' name='code_verify' size='15' maxlength='20'><br />";
-	$text .= "</td></tr>";
+        $text .= "
+        <tr>
+        <td class='forumheader3' style='width:25%'>".LAN_FPW2."</td>
+        <td class='forumheader3' style='width:75%;text-align:left'>
+        <input type='hidden' name='rand_num' value='".$sec_img -> random_number."'>";
+        $text .= $sec_img -> r_image();
+        $text .= "<br /><input class='tbox' type='text' name='code_verify' size='15' maxlength='20'><br />";
+        $text .= "</td></tr>";
 }
 
 $text .="
-</tr>
 <tr style='vertical-align:top'>
 <td class='forumheader' colspan='2'  style='text-align:center'>
 <input class='button' type='submit' name='pwsubmit' value='".LAN_156."' />

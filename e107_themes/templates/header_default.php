@@ -37,11 +37,10 @@ if(eregi("forum_post.php", e_SELF) && ($_POST['reply'] || $_POST['newthread']) &
         echo "<meta http-equiv=\"refresh\" content=\"5;url='".e_BASE."forum_viewtopic.php?".$tmp[1].".".$tmp[2].".".$tpages."#".$tid."'>\n";
 }
 echo "<script type='text/javascript' src='".e_FILE."e107.js'></script>";
-if(file_exists(THEME."theme.js")){echo "<script type='text/javascript' src='".THEME."theme.js'></script>";}
+if(file_exists(THEME."theme.js")){echo "<script type='text/javascript' src='".THEME."theme.js'></script>\n";}
 if(file_exists(e_FILE."user.js")){echo "<script type='text/javascript' src='".e_FILE."user.js'></script>\n";}
-if($eplug_js){
-    echo (eregi("<script",$eplug_js))? $eplug_js : "<script type='text/javascript' src='{$eplug_js}'></script>\n";
-}
+if($eplug_js){ echo "<script type='text/javascript' src='{$eplug_js}'></script>\n"; }
+if(function_exists("headerjs")){echo headerjs();  }
 echo "<script type=\"text/javascript\">
 <!--\n";
 if($pref['log_activate']){
