@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/chatbox.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-02-03 00:10:40 $
+|     $Revision: 1.9 $
+|     $Date: 2005-03-23 23:31:18 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -114,7 +114,7 @@ if (!$sql->db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, 50", $
 		$cb_message = $aj->tpa($cb_message, "on");
 		 
 		$text .= "<tr>
-			<td class='forumheader3' style='width:5%; text-align: center'>".($cb_blocked ? "<img src='".e_IMAGE."generic/blocked.png' />" : "&nbsp;")."</td>
+			<td class='forumheader3' style='width:5%; text-align: center'>".($cb_blocked ? "<img src='".e_PLUGIN."chatbox/images/blocked.png' />" : "&nbsp;")."</td>
 			<td class='forumheader3' style='width:15%'>".$datestamp."</td>
 			<td class='forumheader3' style='width:20%'><b>".$cb_nick."</b><br />".$cb_str."<br />IP: ".$cb_ip."</td>
 			<td class='forumheader3' style='width:40%'>".$cb_message."</td>
