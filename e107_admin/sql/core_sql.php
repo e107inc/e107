@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-03-17 07:50:25 $
+|     $Revision: 1.16 $
+|     $Date: 2005-03-17 19:22:15 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -464,6 +464,39 @@ CREATE TABLE userclass_classes (
   PRIMARY KEY  (userclass_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
+
+-- 
+-- Table structure for table `e107_user_extended`
+-- 
+
+CREATE TABLE user_extended (
+  user_extended_id int(10) unsigned NOT NULL default '0',
+  PRIMARY KEY  (`user_extended_id`)
+) TYPE=MyISAM;
+# --------------------------------------------------------
+
+
+-- 
+-- Table structure for table `e107_user_extended_struct`
+-- 
+
+CREATE TABLE user_extended_struct (
+  user_extended_struct_id int(10) unsigned NOT NULL auto_increment,
+  user_extended_struct_name varchar(255) NOT NULL default '',
+  user_extended_struct_text varchar(255) NOT NULL default '',
+  user_extended_struct_type tinyint(3) unsigned NOT NULL default '0',
+  user_extended_struct_parms varchar(255) NOT NULL default '',
+  user_extended_struct_values text NOT NULL,
+  user_extended_struct_default varchar(255) NOT NULL default '',
+  user_extended_struct_read tinyint(3) unsigned NOT NULL default '0',
+  user_extended_struct_write tinyint(3) unsigned NOT NULL default '0',
+  user_extended_struct_required tinyint(3) unsigned NOT NULL default '0',
+  user_extended_struct_signup tinyint(3) unsigned NOT NULL default '0',
+  user_extended_struct_applicable tinyint(3) unsigned NOT NULL default '0',
+  PRIMARY KEY  (user_extended_struct_id)
+) TYPE=MyISAM
+# --------------------------------------------------------
+
 
 #
 # Table structure for table `generic`
