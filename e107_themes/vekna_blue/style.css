@@ -74,6 +74,11 @@ a:hover {
 .tbox {
 	border-right: #559 1px solid; border-top: #559 1px solid; font-size: 10px; min-height: 15px; border-left: #559 1px solid; color: #005; border-bottom: #559 1px solid; font-family: verdana, arial, helvetica, sans-serif; background-color: #e4e9f6
 }
+.tbox.chatbox {
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+}
 .button {
 	border-right: #5e5d63 1px solid; border-top: #5e5d63 1px solid; font-size: 10px; background-image: url(images/button.png); border-left: #5e5d63 1px solid; color: #000; border-bottom: #5e5d63 1px solid; text-align: center
 }
