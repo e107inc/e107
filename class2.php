@@ -504,95 +504,29 @@ class textparse{
                         $text = str_replace($this->searchb, $this->replace, $text);
                 }
                 $text = str_replace("$", "&#36;", $text);
-                $search[0] = "#\[link\]([a-z]+?://){1}(.*?)\[/link\]#si";
-                $replace[0] = '<a href="\1\2" rel="external">\1\2</a>';
-                $search[1] = "#\[link\](.*?)\[/link\]#si";
-                $replace[1] = '<a href="http://\1" rel="external">\1</a>';
-                $search[2] = "#\[link=([a-z]+?://){1}(.*?)\](.*?)\[/link\]#si";
-                $replace[2] = '<a href="\1\2" rel="external">\3</a>';
-                $search[3] = "#\[link=(.*?)\](.*?)\[/link\]#si";
-                $replace[3] = '<a href="\1" rel="external">\2</a>';
-                $search[4] = "#\[email\](.*?)\[/email\]#si";
-                $replace[4] = '<a href="mailto:\1">\1</a>';
-                $search[5] = "#\[email=(.*?){1}(.*?)\](.*?)\[/email\]#si";
-                $replace[5] = '<a href="mailto:\1\2">\3</a>';
-                $search[6] = "#\[url\]([a-z]+?://){1}(.*?)\[/url\]#si";
-                $replace[6] = '<a href="\1\2" rel="external">\1\2</a>';
-                $search[7] = "#\[url\](.*?)\[/url\]#si";
-                $replace[7] = '<a href="http://\1"> rel="external"\1</a>';
-                $search[8] = "#\[url=([a-z]+?://){1}(.*?)\](.*?)\[/url\]#si";
-                $replace[8] = '<a href="\1\2" rel="external">\3</a>';
-                $search[9] = "/\[quote=(.*?)\](.*?)/si";
-                $replace[9] = '<div class=\'indent\'><i>Originally posted by \1</i> ...<br />"\2"';
-                $search[25] = "/\[\/quote\]/si";
-                $replace[25] = '</div>';
-                $search[10] = "#\[b\](.*?)\[/b\]#si";
-                $replace[10] = '<b>\1</b>';
-                $search[11] = "#\[i\](.*?)\[/i\]#si";
-                $replace[11] = '<i>\1</i>';
-                $search[12] = "#\[u\](.*?)\[/u\]#si";
-                $replace[12] = '<u>\1</u>';
-                $search[13] = "#\[img\](.*?)\[/img\]#si";
-                if(($pref['image_post'] && check_class($pref['image_post_class'])) || $referrer == "admin"){
-                        $replace[13] = '<img src=\'\1\' alt=\'\' style=\'vertical-align:middle; border:0\' />';
-                }else if(!$pref['image_post_disabled_method'] && !ADMIN){
-                        $replace[13] = 'Image: \1';
-                }else if(!ADMIN){
-                        $replace[13] = '[ image disabled ]';
-                }else{
-                $replace[13] = '<img src=\'\1\' alt=\'\' style=\'vertical-align:middle; border:0\' />';
-        }
-
-        $search[14] = "#\[center\](.*?)\[/center\]#si";
-        $replace[14] = '<div style=\'text-align:center\'>\1</div>';
-        $search[15] = "#\[left\](.*?)\[/left\]#si";
-        $replace[15] = '<div style=\'text-align:left\'>\1</div>';
-        $search[16] = "#\[right\](.*?)\[/right\]#si";
-        $replace[16] = '<div style=\'text-align:right\'>\1</div>';
-        $search[17] = "#\[blockquote\](.*?)\[/blockquote\]#si";
-        $replace[17] = '<div class=\'indent\'>\1</div>';
-        $search[19] = "/\[color=(.*?)\](.*?)\[\/color\]/si";
-        $replace[19] = '<span style=\'color:\1\'>\2</span>';
-        $search[20] = "/\[size=([1-2]?[0-9])\](.*?)\[\/size\]/si";
-        $replace[20] = '<span style=\'font-size:\1px\'>\2</span>';
-        $search[21] = "#\[edited\](.*?)\[/edited\]#si";
-        $replace[21] = '<span class=\'smallblacktext\'>[ \1 ]</span>';
-        $search[22] = "#\[br\]#si";
-        $replace[22] = '<br />';
-
-        if($pref['forum_attach'] && FILE_UPLOADS || $referrer == "admin"){
-                $search[23] = "#\[file=(.*?)\](.*?)\[/file\]#si";
-                $replace[23] = '<a href="\1"><img src="'.e_IMAGE.'generic/attach1.png" alt="" style="border:0; vertical-align:middle" /> \2</a>';
-        }else{
-        $search[23] = "#\[file=(.*?)\](.*?)\[/file\]#si";
-        $replace[23] = '[ file attachment disabled ]';
-        }
-
-        $search[24] = "#\[quote\](.*?)\[/quote\]#si";
-        $replace[24] = '<i>"\1"</i>';
-		
-        if($referrer != "admin"){
-        		$text = $this -> tpj($text);
-        	}
-        if($mode != "nobreak"){ $text = nl2br($text); }
-		$text = preg_replace("/\n/i", " ", $text);
-		$text = str_replace("<br />", " <br />" , $text);
-        $text = e107_parse($text,$referrer);
-		$text = $this -> wrap($text, $highlight_search);
-        $text = preg_replace($search, $replace, $text);
-        if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
-        $search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;span", "&lt;/span");
-        $replace =  array("\"", "'", "\\", '\"', "\'", "<span", "</span");
-        $text = str_replace($search, $replace, $text);
-        $text = str_replace("<br /><br />", "<br />", $text);
-        $text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $text);
-        $text = substr($text, 1);
-        $text = code($text, "notdef");
-        $text = html($text);
-        return $text;
-        }
+			if($referrer != "admin"){
+					$text = $this -> tpj($text);
+				}
+			if($mode != "nobreak"){ $text = nl2br($text); }
+			$text = preg_replace("/\n/i", " ", $text);
+			$text = str_replace("<br />", " <br />" , $text);
+			$text = e107_parse($text,$referrer);
+			$text = $this -> wrap($text, $highlight_search);
+			$text = $this -> bbcode($text);
+			if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
+			$search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;span", "&lt;/span");
+			$replace =  array("\"", "'", "\\", '\"', "\'", "<span", "</span");
+			$text = str_replace($search, $replace, $text);
+			$text = str_replace("<br /><br />", "<br />", $text);
+			$text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $text);
+			$text = substr($text, 1);
+			$text = code($text, "notdef");
+			$text = html($text);
+			return $text;
+		}
 
 		function wrap($text, $highlight_search=FALSE){
+			global $pref;
 			$wrapcount = 100;
 			$message_array = explode(" ", $text);
 			for($i=0; $i<=(count($message_array)-1); $i++){
@@ -612,8 +546,12 @@ class textparse{
 						}
 				}else{
 					if(!strstr($message_array[$i], "[link=") && !strstr($message_array[$i], "[url=") && !strstr($message_array[$i], "href=") && !strstr($message_array[$i], "src=") && !strstr($message_array[$i], "action=") && !strstr($message_array[$i], "onclick=") && !strstr($message_array[$i], "url(")){
-						$message_array[$i] = preg_replace("#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="http://\2.\3" rel="external";">\2.\3</a>', $message_array[$i]);
-						$message_array[$i] = preg_replace("#([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?([^.,]))#i", '<a href="\1://\2" rel="external";">\1://\2</a>', $message_array[$i]);
+						$search = "#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i";
+						$replace = ($pref['links_new_window'] ? '\1<a href="http://\2.\3" rel="external";">\2.\3</a>' : '\1<a href="http://\2.\3" >\2.\3</a>');
+						$message_array[$i] = preg_replace($search, $replace, $message_array[$i]);
+						$search = "#([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?([^.,]))#i";
+						$replace = ($pref['links_new_window'] ? '<a href="\1://\2" rel="external";">\1://\2</a>' : '<a href="\1://\2">\1://\2</a>');
+						$message_array[$i] = preg_replace($search, $replace, $message_array[$i]);
 							if($highlight_search && !strstr($message_array[$i], "http://")){
 								$tmp = explode(" ", $_POST['search_query']);
 								foreach($tmp as $key){
@@ -628,7 +566,85 @@ class textparse{
 			$text = implode(" ",$message_array);
 			return $text;
 		}
+		function bbcode($text, $mode="off", $referrer="") {
+				global $pref;			
+				$text = " " . $text;
+				if (! (strpos($text, "[") && strpos($text, "]")) )
+				{
+						$text = substr($text, 1);
+						return $text;
+				}
+			
+                $search[0] = "#\[link\]([a-z]+?://){1}(.*?)\[/link\]#si";
+                $replace[0] = ($pref['links_new_window'] ? '<a href="\1\2" rel="external">\1\2</a>' : '<a href="\1\2">\1\2</a>');
+                $search[1] = "#\[link\](.*?)\[/link\]#si";
+                $replace[1] = ($pref['links_new_window'] ? '<a href="http://\1" rel="external">\1</a>' : '<a href="http://\1">\1</a>');
+                $search[2] = "#\[link=([a-z]+?://){1}(.*?)\](.*?)\[/link\]#si";
+                $replace[2] = ($pref['links_new_window'] ? '<a href="\1\2" rel="external">\3</a>' : '<a href="\1\2">\3</a>');
+                $search[3] = "#\[link=(.*?)\](.*?)\[/link\]#si";
+                $replace[3] = ($pref['links_new_window'] ? '<a href="\1" rel="external">\2</a>' : '<a href="\1">\2</a>');
+                $search[4] = "#\[email\](.*?)\[/email\]#si";
+                $replace[4] = '<a href="mailto:\1">\1</a>';
+                $search[5] = "#\[email=(.*?){1}(.*?)\](.*?)\[/email\]#si";
+                $replace[5] = '<a href="mailto:\1\2">\3</a>';
+                $search[6] = "#\[url\]([a-z]+?://){1}(.*?)\[/url\]#si";
+                $replace[6] = ($pref['links_new_window'] ? '<a href="\1\2" rel="external">\1\2</a>' : '<a href="\1\2">\1\2</a>');
+                $search[7] = "#\[url\](.*?)\[/url\]#si";
+                $replace[7] = ($pref['links_new_window'] ? '<a href="http://\1"> rel="external"\1</a>' : '<a href="http://\1">\1</a>');
+                $search[8] = "#\[url=([a-z]+?://){1}(.*?)\](.*?)\[/url\]#si";
+                $replace[8] = ($pref['links_new_window'] ? '<a href="\1\2" rel="external">\3</a>' : '<a href="\1\2">\3</a>');
+                $search[9] = "/\[quote=(.*?)\](.*?)/si";
+                $replace[9] = '<div class=\'indent\'><i>Originally posted by \1</i> ...<br />"\2"';
+                $search[25] = "/\[\/quote\]/si";
+                $replace[25] = '</div>';
+                $search[10] = "#\[b\](.*?)\[/b\]#si";
+                $replace[10] = '<b>\1</b>';
+                $search[11] = "#\[i\](.*?)\[/i\]#si";
+                $replace[11] = '<i>\1</i>';
+                $search[12] = "#\[u\](.*?)\[/u\]#si";
+                $replace[12] = '<u>\1</u>';
+                $search[13] = "#\[img\](.*?)\[/img\]#si";
+                if(($pref['image_post'] && check_class($pref['image_post_class'])) || $referrer == "admin"){
+                        $replace[13] = '<img src=\'\1\' alt=\'\' style=\'vertical-align:middle; border:0\' />';
+                }else if(!$pref['image_post_disabled_method'] && !ADMIN){
+                        $replace[13] = 'Image: \1';
+                }else if(!ADMIN){
+                        $replace[13] = '[ image disabled ]';
+                }else{
+                $replace[13] = '<img src=\'\1\' alt=\'\' style=\'vertical-align:middle; border:0\' />';
+				}
 
+				$search[14] = "#\[center\](.*?)\[/center\]#si";
+				$replace[14] = '<div style=\'text-align:center\'>\1</div>';
+				$search[15] = "#\[left\](.*?)\[/left\]#si";
+				$replace[15] = '<div style=\'text-align:left\'>\1</div>';
+				$search[16] = "#\[right\](.*?)\[/right\]#si";
+				$replace[16] = '<div style=\'text-align:right\'>\1</div>';
+				$search[17] = "#\[blockquote\](.*?)\[/blockquote\]#si";
+				$replace[17] = '<div class=\'indent\'>\1</div>';
+				$search[19] = "/\[color=(.*?)\](.*?)\[\/color\]/si";
+				$replace[19] = '<span style=\'color:\1\'>\2</span>';
+				$search[20] = "/\[size=([1-2]?[0-9])\](.*?)\[\/size\]/si";
+				$replace[20] = '<span style=\'font-size:\1px\'>\2</span>';
+				$search[21] = "#\[edited\](.*?)\[/edited\]#si";
+				$replace[21] = '<span class=\'smallblacktext\'>[ \1 ]</span>';
+				$search[22] = "#\[br\]#si";
+				$replace[22] = '<br />';
+
+				if($pref['forum_attach'] && FILE_UPLOADS || $referrer == "admin"){
+						$search[23] = "#\[file=(.*?)\](.*?)\[/file\]#si";
+						$replace[23] = '<a href="\1"><img src="'.e_IMAGE.'generic/attach1.png" alt="" style="border:0; vertical-align:middle" /> \2</a>';
+				}else{
+				$search[23] = "#\[file=(.*?)\](.*?)\[/file\]#si";
+				$replace[23] = '[ file attachment disabled ]';
+				}
+
+				$search[24] = "#\[quote\](.*?)\[/quote\]#si";
+				$replace[24] = '<i>"\1"</i>';
+				$text = preg_replace($search, $replace, $text);
+				return $text;
+		}
+		
         function formtpa($text, $mode="admin"){
                 global $sql, $pref;
 

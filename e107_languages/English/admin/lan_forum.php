@@ -137,4 +137,6 @@ define("WMGLAN_3", "Rules for Administrators");
 define("WMGLAN_4", "Submit");
 define("WMGLAN_5", "Set Forum Rules");
 define("WMGLAN_6", "Activate?");
+define("FORLAN_124", "Links in new window");
+define("FORLAN_125", "Tick here to make all links open in a new window (<i>this will apply sitewide</i>). ");
 ?>
