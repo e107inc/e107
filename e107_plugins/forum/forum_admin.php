@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-02-18 14:41:45 $
+|     $Revision: 1.14 $
+|     $Date: 2005-02-23 17:28:03 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -116,6 +116,8 @@ if (isset($_POST['updateoptions'])) {
 	$pref['forum_tooltip'] = $_POST['forum_tooltip'];
 	$pref['forum_tiplength'] = $_POST['forum_tiplength'];
 	$pref['forum_hilightsticky'] = $_POST['forum_hilightsticky'];
+	$pref['forum_maxwidth'] = $_POST['forum_maxwidth'];
+	$pref['forum_linkimg'] = $_POST['forum_linkimg'];
 	save_prefs();
 	$forum->show_message(FORLAN_10);
 }
@@ -584,6 +586,16 @@ class forum {
 			<tr>
 			<td style='width:75%' class='forumheader3'>".FORLAN_70."<br /><span class='smalltext'>".FORLAN_71." <a href='".e_ADMIN."upload.php'>".FORLAN_130."</a> ". FORLAN_131."</span></td>
 			<td style='width:25%;text-align:center' class='forumheader3' >".($pref['forum_attach'] ? "<input type='checkbox' name='forum_attach' value='1' checked='checked' />" : "<input type='checkbox' name='forum_attach' value='1' />")."</td>
+			</tr>
+
+			<tr>
+			<td style='width:75%' class='forumheader3'>".FORLAN_134."<br /><span class='smalltext'>".FORLAN_135."</span></td>
+			<td style='width:25%;text-align:center' class='forumheader3' ><input class='tbox' type='text' size='3' maxlength='5' name='forum_maxwidth' value='{$pref['forum_maxwidth']}'</td>
+			</tr>
+
+			<tr>
+			<td style='width:75%' class='forumheader3'>".FORLAN_136."<br /><span class='smalltext'>".FORLAN_137."</span></td>
+			<td style='width:25%;text-align:center' class='forumheader3' >".($pref['forum_linkimg'] ? "<input type='checkbox' name='forum_linkimg' value='1' checked='checked' />" : "<input type='checkbox' name='forum_linkimg' value='1' />")."</td>
 			</tr>
 
 			<tr>

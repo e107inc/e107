@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_admin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-29 00:48:32 $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-23 17:30:06 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -156,6 +156,10 @@ define("FORLAN_131", "to set max file size, allowed types etc");
 define("FORLAN_132", "Emphasize Sticky Threads");
 define("FORLAN_133", "Give extra emphasis to sticky threads (separate thread sections and headers)");
 	
+define("FORLAN_134", "Maximum width of uploaded image");
+define("FORLAN_135", "Leave blank to disable auto resizing of images");
 	
+define("FORLAN_136", "Create link to full size image");
+define("FORLAN_137", "Enabling this will resize larger images and also create a link to the original full size image.  If disabled, original image will be discarded");
 	
 ?>
