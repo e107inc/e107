@@ -36,18 +36,18 @@ function user_extended_edit($form_ext_name,$tdclass="",$alignit="left"){
                         if($ut[4] && check_class($ut[4])==FALSE){ return; }
 
                         $ret ="<tr><td class='".$tdclass."' style='vertical-align:top'>".$u_name.req($pref[$signup_ext])."</td>\n";
-                        $ret .="<td class='".$tdclass."' style='text-align:".$alignit."'><div style='text-align:left' style='width:10%;white-space:nowrap'>";
+                        $ret .="<td class='".$tdclass."' style='text-align:".$alignit."'><div style='text-align:left;width:10%;white-space:nowrap'>";
                         $tmp = explode(",",$u_value);
 
                         switch ($u_type) {
                           case "radio":
 
                             for ($i=0; $i<count($tmp); $i++) {
-                                                        $checked = ($tmp[$i] == $user_pref[$form_ext_name] || ($tmp[$i] == $v_default && !$user_pref[$form_ext_name])) ? " checked" : "";
-                            if(!USER){ $checked = ($_POST[$form_ext_name] == $tmp[$i] || ($tmp[$i] == $v_default && !$_POST[$form_ext_name]))? " checked" : ""; }
+                                                        $checked = ($tmp[$i] == $user_pref[$form_ext_name] || ($tmp[$i] == $v_default && !$user_pref[$form_ext_name])) ? " checked='checked'" : "";
+                            if(!USER){ $checked = ($_POST[$form_ext_name] == $tmp[$i] || ($tmp[$i] == $v_default && !$_POST[$form_ext_name]))? " checked='checked'" : ""; }
                             $ret .="<input  type='radio' name='".$form_ext_name."'  value='".$tmp[$i]."' $checked /> $tmp[$i] ";
                             $ret .= ($pref['signup_ext_req'.$key] && $i==0 && (!USER))? "<span style='font-size:15px; color:red'> *</span>":"";
-                            $ret .="<br/>";
+                            $ret .="<br />";
                             };
                             $ret .="</div>";
                               $ret .="</td></tr>\n\n";
@@ -59,13 +59,13 @@ function user_extended_edit($form_ext_name,$tdclass="",$alignit="left"){
                         //    $checked = ($tmp[$i] == $user_pref[$form_ext_name] || ($tmp[$i] == $v_default && !$user_pref[$form_ext_name]))? " selected" : "";
                          //   if(!USER){
 
-                             $selected = ($_POST[$form_ext_name] == "$tmp[$i]" )? " selected" :  "";
+                             $selected = ($_POST[$form_ext_name] == "$tmp[$i]" )? " selected='selected'" :  "";
                         //      }
                             $ret .="<option value=\"".$tmp[$i]."\" ".$selected." >". $tmp[$i] ."</option>\n";
                             };
                             $ret .="</select>";
                             $ret .= ($pref['signup_ext_req'.$key] && (!USER))? "<span style='font-size:15px; color:red'> *</span>":"";
-                            $ret .= "</td></tr>\n\n";
+                            $ret .= "</div></td></tr>\n\n";
 
                           break;
 
@@ -75,7 +75,7 @@ function user_extended_edit($form_ext_name,$tdclass="",$alignit="left"){
                             if(!USER && $_POST[$form_ext_name]){ $valuehere = $_POST[$form_ext_name];}
                             $ret .="<input class='tbox' type='text' name='".$form_ext_name."' size='".$u_value."' value='".$valuehere."' maxlength='200' />";
                             $ret .= ($pref['signup_ext_req'.$key] && (!USER))? "<span style='font-size:15px; color:red'> *</span>":"";
-                            $ret .="</td></tr>\n\n";
+                            $ret .="</div></td></tr>\n\n";
                             break;
 
                          case "table":
@@ -89,13 +89,13 @@ function user_extended_edit($form_ext_name,$tdclass="",$alignit="left"){
                                 while($row = $sql-> db_Fetch()){
                                 $fieldid = $row[$tmp[1]];
                                 $fieldvalue = $row[$tmp[2]];
-                            $checked = ($fieldid == $user_pref[$form_ext_name] || ($fieldid == $v_default && !$user_pref[$form_ext_name]))? " selected" : "";
-                            if(!USER){ $checked = ($_POST[$form_ext_name] == $fieldid)? " selected" : ($fieldid == $v_default)? " selected" : "";}
-                            $ret .="<option value='".$fieldid."' $checked /> $fieldvalue </option>";
+                            $checked = ($fieldid == $user_pref[$form_ext_name] || ($fieldid == $v_default && !$user_pref[$form_ext_name]))? " selected='selected'" : "";
+                            if(!USER){ $checked = ($_POST[$form_ext_name] == $fieldid)? " selected='selected'" : ($fieldid == $v_default)? " selected='selected'" : "";}
+                            $ret .="<option value='".$fieldid."' $checked > $fieldvalue </option>";
                             }
                             $ret .="</select>";
                             $ret .= ($pref['signup_ext_req'.$key] && e_PAGE =="customsignup.php")? "<span style='font-size:15px; color:red'> *</span>":"";
-                            $ret .="</td></tr>";
+                            $ret .="</div></td></tr>";
                           break;
 
                         default:
@@ -106,9 +106,10 @@ function user_extended_edit($form_ext_name,$tdclass="",$alignit="left"){
                         if(!USER){ $valuehere = $_POST[$form_ext_name];}
                         $ret .="<input class='tbox' type='text' name='".$form_ext_name."' size='40' value='".$valuehere."' maxlength='200' />";
                         $ret .= ($pref['signup_ext_req'.$key])? "<span style='font-size:15px; color:red'> *</span>":"";
-                        $ret .= "</td></tr>";
+                        $ret .= "</div></td></tr>";
                         break;
                         }
+
 
                         return $ret;
 

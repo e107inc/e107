@@ -58,29 +58,29 @@ if(IsSet($_POST['updatesettings'])){
     $signup_title = array(LAN_308,LAN_144,LAN_115,LAN_116,LAN_117,LAN_118,LAN_119,LAN_120,LAN_121,LAN_122);
     $signup_name = array("realname","website","icq","aim","msn","birth_year","location","signature","image","timezone");
 
-	if($_POST['image'] && $size = getimagesize($_POST['image'])){
-		$avwidth = $size[0];
-		$avheight = $size[1];
-		$avmsg="";
+        if($_POST['image'] && $size = getimagesize($_POST['image'])){
+                $avwidth = $size[0];
+                $avheight = $size[1];
+                $avmsg="";
 
-		$pref['im_width'] = ($pref['im_width']) ? $pref['im_width'] : 120;
-		$pref['im_height'] = ($pref['im_height']) ? $pref['im_height'] : 100;
-		if($avwidth > $pref['im_width']){
-			$avmsg .= LAN_USET_1."<br />".LAN_USET_2.": {$pref['im_width']}<br /><br />";
-		}
-		if($avheight > $pref['im_height']){
-			$avmsg .= LAN_USET_3."<br />".LAN_USET_4.": {$pref['im_height']}";
-		}
-		if($avmsg){
-			$_POST['image']="";
-			$ns -> tablerender(" ",$avmsg);
-		}
-	}
-	
+                $pref['im_width'] = ($pref['im_width']) ? $pref['im_width'] : 120;
+                $pref['im_height'] = ($pref['im_height']) ? $pref['im_height'] : 100;
+                if($avwidth > $pref['im_width']){
+                        $avmsg .= LAN_USET_1."<br />".LAN_USET_2.": {$pref['im_width']}<br /><br />";
+                }
+                if($avheight > $pref['im_height']){
+                        $avmsg .= LAN_USET_3."<br />".LAN_USET_4.": {$pref['im_height']}";
+                }
+                if($avmsg){
+                        $_POST['image']="";
+                        $ns -> tablerender(" ",$avmsg);
+                }
+        }
+
         for ($i=0; $i<count($signup_title); $i++) {
                 $postvalue = $signup_name[$i];
                 if($signupval[$i]==2 && $_POST[$postvalue] == ""){
-                    $error .= LAN_SIGNUP_6."<b>".$signup_title[$i]."</b>".LAN_SIGNUP_7."<br>";
+                    $error .= LAN_SIGNUP_6."<b>".$signup_title[$i]."</b>".LAN_SIGNUP_7."<br />";
                 }
         };
 
@@ -97,7 +97,7 @@ if(IsSet($_POST['updatesettings'])){
                         $ut = explode("|",$u_entended);
                         $u_name = ($ut[0] != "") ? trim($ut[0]) : trim($u_entended);
                         $error_ext = LAN_SIGNUP_6."<b>".$u_name."</b>".LAN_SIGNUP_7;
-                        $error .= $error_ext."<br>";
+                        $error .= $error_ext."<br />";
                         }
 
                     }
@@ -233,13 +233,13 @@ $rs -> form_text("name", 20, $name, 100, "tbox", TRUE)
 </td>
 </tr>";
 if($pref['forum_user_customtitle'] || ADMIN){
-	$text .= "
-	<tr>
-	<td style='width:30%' class='forumheader3'>".LAN_CUSTOMTITLE."</td>
-	<td style='width:70%' class='forumheader2'>
-	".$rs -> form_text("customtitle", 40, $user_customtitle, 100)."
-	</td>
-	</tr>";
+        $text .= "
+        <tr>
+        <td style='width:30%' class='forumheader3'>".LAN_CUSTOMTITLE."</td>
+        <td style='width:70%' class='forumheader2'>
+        ".$rs -> form_text("customtitle", 40, $user_customtitle, 100)."
+        </td>
+        </tr>";
 }
 
 $text .= "
@@ -249,7 +249,7 @@ $text .= "
 <td style='width:80%' class='forumheader2'>
 ".$rs -> form_password("password1", 40, "", 20);
 if($pref['signup_pass_len']){
-$text .= "<br><span class='smalltext'>  (".LAN_SIGNUP_1." {$pref['signup_pass_len']} ".LAN_SIGNUP_2.")</span>";
+$text .= "<br /><span class='smalltext'>  (".LAN_SIGNUP_1." {$pref['signup_pass_len']} ".LAN_SIGNUP_2.")</span>";
 }
 $text .="
 </td>
@@ -333,7 +333,7 @@ for($a=1900; $a<=$year; $a++){
         $text .= ($birth_year == $a ? $rs -> form_option($a, 1) : $rs -> form_option($a, 0));
 }
 
-$text .= "</td>
+$text .= $rs -> form_select_close()."</td>
 </tr>
 
 <tr>
@@ -359,7 +359,7 @@ if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
 }
 
 $text .= "<tr>
-<td style='width:20%' style='vertical-align:top' class='forumheader3'>".LAN_120."</td>
+<td style='width:20%;vertical-align:top' class='forumheader3'>".LAN_120."</td>
 <td style='width:80%' class='forumheader2'>
 <textarea class='tbox' name='signature' cols='58' rows='4' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$signature</textarea>
 <br />
@@ -377,7 +377,7 @@ timezone();
 $count = 0;
 while($timezone[$count]){
         if($timezone[$count] == $user_timezone){
-                $text .= "<option value='".$timezone[$count]."' selected>(GMT".$timezone[$count].") ".$timearea[$count]."</option>\n";
+                $text .= "<option value='".$timezone[$count]."' selected='selected'>(GMT".$timezone[$count].") ".$timearea[$count]."</option>\n";
         }else{
                 $text .= "<option value='".$timezone[$count]."'>(GMT".$timezone[$count].") ".$timearea[$count]."</option>\n";
         }
@@ -409,8 +409,8 @@ $text .= "</select>
 <tr>
 <td style='width:20%; vertical-align:top' class='forumheader3'>".LAN_421."<br /><span class='smalltext'>".LAN_424."</span></td>
 <td style='width:80%' class='forumheader2'>
-<input class='button' type ='button' style=''width: 35px'; cursor:hand' size='30' value='".LAN_403."' onClick='expandit(this)'>
-<div style='display:none' style=&{head};>";
+<input class='button' type ='button' style='width: 35px; cursor:hand' size='30' value='".LAN_403."' onclick='expandit(this)' />
+<div style='{head}; display:none' >";
 $avatarlist[0] = "";
 $handle=opendir(e_IMAGE."avatars/");
 while ($file = readdir($handle)){
@@ -434,7 +434,7 @@ if($pref['avatar_upload'] && FILE_UPLOADS){
         $text .= "<tr>
 <td style='width:20%; vertical-align:top' class='forumheader3'>".LAN_415."<br /></td>
 <td style='width:80%' class='forumheader2'>
-<input class='tbox' name='file_userfile[]' type='file' size='47'>
+<input class='tbox' name='file_userfile[]' type='file' size='47' />
 </td>
 </tr>";
 }
@@ -447,15 +447,14 @@ if($pref['photo_upload'] && FILE_UPLOADS){
 <tr>
 <td style='width:20%; vertical-align:top' class='forumheader3'>".LAN_414."<br /><span class='smalltext'>".LAN_426."</span></td>
 <td style='width:80%' class='forumheader2'>
-<input class='tbox' name='file_userfile[]' type='file' size='47'>
+<input class='tbox' name='file_userfile[]' type='file' size='47' />
 </td>
 </tr>";
 }
 
-$text .= "</td>
-</tr>";
+
 if(!e_QUERY){
-	$text .= "
+        $text .= "
 
 
 <tr>
@@ -490,10 +489,10 @@ $text .= "
 <td colspan='2' style='text-align:center' class='forumheader'><input class='button' type='submit' name='updatesettings' value='".LAN_154."' /></td>
 </tr>
 </table>
-</div>
-<input type='hidden' name='_uid' value='$_uid'>
-<input type='hidden' name='_pw' value='$user_password'>
-<input type='hidden' name='_user_sess' value='$user_sess'>
+</div><div>
+<input type='hidden' name='_uid' value='$_uid' />
+<input type='hidden' name='_pw' value='$user_password' />
+<input type='hidden' name='_user_sess' value='$user_sess' /></div>
 </form>
 ";
 
@@ -526,10 +525,15 @@ function req($field){
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-?>
-<script type="text/javascript">
+function headerjs(){
+$script_txt ="
+<script type=\"text/javascript\">
 function addtext2(sc){
         document.dataform.image.value = sc;
 }
 
-</script>
+</script>\n";
+
+}
+
+?>
