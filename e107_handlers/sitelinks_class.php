@@ -26,7 +26,7 @@ function sitelinks()
 	global $pref,$ns, $tp, $sql, $sql2, $ml, $e107cache;
 	if(!is_object($sql)){$sql = new db;}
   if(!is_object($sql2)){$sql2 = new db;}
-	if($cache = retrieve_cache("sitelinks"))
+	if($cache = $e107cache->retrieve("sitelinks"))
 	{
 		echo $tp -> toHTML($cache,TRUE,'nobreak');
 		return;
