@@ -18,9 +18,6 @@ require_once("class2.php");
 
      require_once(HEADERF);
 
-  //   }else{
-  //   require_once(HEADERF);
- //    }
      if($pref['subnews_htmlarea']){
      require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
       htmlarea("item");
@@ -39,12 +36,12 @@ $author_email=check_email($_POST['author_email']);
 if(IsSet($_POST['submit'])){
 
         if($_POST['itemtitle'] == ""){
-        $message .= "You must include a title.\\n";
+        $message .= SUBNEWSLAN_1;
         $error = TRUE;
         }
 
         if($_POST['item'] == ""){
-        $message .= "You must include some text in the news item.\\n";
+        $message .= SUBNEWSLAN_2;
         $error = TRUE;
         }
 
@@ -80,12 +77,12 @@ if($_FILES['file_userfile']){
         }
 
         if($uploaded && $fileext != "jpg" && $fileext != "gif" && $fileext != "png"){
-            $message = "Your attachment must be either a jpg, gif or png file";
+            $message = SUBNEWSLAN_3;
             $error = TRUE;
         }
 
         if($filesize > $pref['upload_maxfilesize']){
-            $message = "File too Large";
+            $message = SUBNEWSLAN_4;
             $error = TRUE;
         }
 
