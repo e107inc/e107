@@ -32,9 +32,10 @@ if(IsSet($_POST['upload'])){
 	foreach($files['name'] as $key => $name){
 		if($files['size'][$key]){
 			$name = ereg_replace("[^a-z0-9._]", "", str_replace(" ", "_", str_replace("%20", "_", strtolower($name))));
-			$uploaddir = $_SERVER['DOCUMENT_ROOT'].e_HTTP.$_POST['upload_dir'][$key]."/".$name;
+			$destination_file = $_SERVER['DOCUMENT_ROOT'].e_HTTP.$_POST['upload_dir'][$key]."/".$name;
 			$uploadfile = $files['tmp_name'][$key];
-			if(@move_uploaded_file($uploadfile, $uploaddir)){
+			if(@move_uploaded_file($uploadfile, $destination_file)){
+				@chmod($destination_file, 0644);
 				$message .= " Uploaded '".$files['name'][$key]."' to ".$_POST['upload_dir'][$key]." directory.";
 			}else{
 				switch ($files['error'][$key]){
@@ -220,9 +221,9 @@ $ns -> tablerender("<div style=\"text-align:center\">e107 Filemanager</div>", $t
 
 function dirsize($dir){
 	$_SERVER["DOCUMENT_ROOT"].e_HTTP.$dir;
-	$dh = opendir($_SERVER["DOCUMENT_ROOT"].e_HTTP.$dir);
+	$dh = @opendir($_SERVER["DOCUMENT_ROOT"].e_HTTP.$dir);
 	$size = 0;
-	while($file = readdir($dh)){
+	while($file = @readdir($dh)){
 		if($file != "." and $file != "..") {
 			$path = $dir."/".$file;
 			if(is_file($_SERVER["DOCUMENT_ROOT"].e_HTTP.$path)){
@@ -232,7 +233,7 @@ function dirsize($dir){
 			}
 		}
 	}
-	closedir($dh);
+	@closedir($dh);
 	return parsesize($size);
 }
 

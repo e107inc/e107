@@ -24,38 +24,38 @@ if(IsSet($_POST['updatesettings'])){
 require_once("auth.php");
 
 if(e_QUERY == "u"){
-	$ns -> tablerender("", "<div style=\"text-align:center\"><b>Maintainance setting updated.</b></div>");
+	$ns -> tablerender("", "<div style='text-align:center'><b>Maintainance setting updated.</b></div>");
 }
 
 $maintainance_flag = $pref['maintainance_flag'][1];
 
-$text = "
-<form method=\"post\" action=\"".e_SELF."\">
-<table style=\"width:95%\">
+$text = "<div style='text-align:center'>
+<form method='post' action='".e_SELF."'>
+<table style='width:85%' class='fborder'>
 <tr>
-<td style=\"width:30%\">Activate maintenance flag: </td>
-<td style=\"width:70%\">";
+<td style='width:30%' class='forumheader3'>Activate maintenance flag: </td>
+<td style='width:70%' class='forumheader3'>";
 
 
 if($maintainance_flag == 1){
-	$text .= "<input type=\"checkbox\" name=\"maintainance_flag\" value=\"1\"  checked>";
+	$text .= "<input type='checkbox' name='maintainance_flag' value='1'  checked>";
 }else{
-	$text .= "<input type=\"checkbox\" name=\"maintainance_flag\" value=\"1\">";
+	$text .= "<input type='checkbox' name='maintainance_flag' value='1'>";
 }
 
 $text .= "</td>
 </tr>
-
 <tr>
-<tr style=\"vertical-align:top\"> 
-<td colspan=\"2\"  style=\"text-align:center\">
-<input class=\"button\" type=\"submit\" name=\"updatesettings\" value=\"Update Maintanance Setting\" />
+<tr style='vertical-align:top'> 
+<td colspan='2'  style='text-align:center' class='forumheader'>
+<input class='button' type='submit' name='updatesettings' value='Update Maintanance Setting' />
 </td>
 </tr>
 </table>
-</form>";
+</form>
+</div>";
 
-$ns -> tablerender("<div style=\"text-align:center\">Maintanance Setting</div>", $text);
+$ns -> tablerender("<div style='text-align:center'>Maintanance Setting</div>", $text);
 require_once("footer.php");
 
 ?>

@@ -12,41 +12,35 @@
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
+
 if(IsSet($_POST['chat_submit'])){
 	$message = $_POST['message'];
 	$nick = $_POST['nick'];
 	$fp = new floodprotect;
 	$tp = new textparse;
-	if($fp -> flood("chatbox", "cb_datestamp") == FALSE){
+	if(!$fp -> flood("chatbox", "cb_datestamp")){
 		header("location:index.php");
 	}else{
 		if((strlen($message) < 1000) && $message != ""){
-			$message = $tp -> tp($message, "off");
-
-			$datestamp = time();
-			$ip = getip();
-			if(!$sql -> db_Select("chatbox", "*", "cb_message='$message' ")){
-				if(USER == TRUE){
+			if($sql -> db_Select("chatbox", "*", "cb_message='$message' AND cb_datestamp+84600>".time())){
+				$emessage = "Unable to post";
+			}else{
+				$message = $tp -> tp($message, "off");
+				$datestamp = time();
+				if(USER){
 					$nick = USERID.".".USERNAME;
 					$sql -> db_Update("user", "user_chats=user_chats+1, user_lastpost='".time()."' WHERE user_id='".USERID."' ");
-				}else if($nick == ""){
+				}else if(!$nick){
 					$nick = "0.Anonymous";
 				}else{
-					$sql2 = new db;
-					if($sql2 -> db_Select("user", "*", "user_name='$nick' ")){
-						$ip = getip();
-						if($sql2 -> db_Select("user", "*", "user_name='$nick' AND user_ip='$ip' ")){
-							list($cuser_id, $cuser_name) = $sql2-> db_Fetch();
-							$nick = $cuser_id.".".$cuser_name;
-						}else{
-							//$nick = "0.Anonymous";
-							$emessage = LAN_310;
-						}
+					if($sql -> db_Select("user", "*", "user_name='$nick' ")){
+						$emessage = LAN_310;
 					}else{
+						$ip = getip();
 						$nick = "0.".$nick;
 					}
 				}
-				if($emessage == ""){
+				if(!$emessage){
 					$sql -> db_Insert("chatbox", "0, '$nick', '$message', '".time()."', '0' , '$ip' ");
 				}
 			}
@@ -87,15 +81,19 @@ if($sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, ".$cha
 
 		// get available vars
 		$cb_nick = eregi_replace("[0-9]+\.", "", $cb_nick);
-		if($nickstore[$cb_nick]){
-			$cb_nick = "<a href='user.php?id.".$nickstore[$cb_nick]."'>".$cb_nick."</a>";
+		if($cb_nick == "Anonymous"){
+			$cuser_id = 0;
 		}else{
-			if($sql2 -> db_Select("user", "*", "user_name='$cb_nick'")){
-				list($cuser_id, $cuser_name) = $sql2-> db_Fetch();
-				$nickstore[$cb_nick] = $cuser_id;
-				$cb_nick = "<a href='user.php?id.".$cuser_id."'>".$cb_nick."</a>";
+			if($nickstore[$cb_nick]){
+				$cb_nick = "<a href='user.php?id.".$nickstore[$cb_nick]."'>".$cb_nick."</a>";
 			}else{
-				$cb_nick = $aj -> tpa($cb_nick);
+				if($sql2 -> db_Select("user", "*", "user_name='$cb_nick'")){
+					list($cuser_id, $cuser_name) = $sql2-> db_Fetch();
+					$nickstore[$cb_nick] = $cuser_id;
+					$cb_nick = "<a href='user.php?id.".$cuser_id."'>".$cb_nick."</a>";
+				}else{
+					$cb_nick = $aj -> tpa($cb_nick);
+				}
 			}
 		}
 		$datestamp = $obj2->convert_date($cb_datestamp, "short");
@@ -110,24 +108,28 @@ if($sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, ".$cha
 			$CHATBOXSTYLE = CB_STYLE;
 		}else{
 			// default chatbox style
-			$CHATBOXSTYLE = "
-			<div class='spacer'>
-			<img src='".THEME."images/bullet2.gif' alt='bullet' /><b>
-			{USERNAME}
-			</b><br /><span class='smalltext'>
-			{TIMEDATE}
-			</span><br />
-			<div class='smallblacktext'>
-			{MESSAGE}
-			</div></div>
-			{ADMINOPTIONS}
-			<br />";
+			$CHATBOXSTYLE = "<!-- chatbox -->\n<div class='spacer'>
+			<img src='".THEME."images/bullet2.gif' alt='bullet' /><b>{USERNAME}</b><br /><span class='smalltext'>{TIMEDATE}</span><br /><div class='smallblacktext'>{MESSAGE}</div></div>{ADMINOPTIONS}<br />\n";
 		}
-		
-		$text .= parsechatbox($CHATBOXSTYLE, $cb_nick, $datestamp, $cb_id, $cb_message, $cb_ip, $cb_blocked);
+
+		$search[0] = "/\{USERNAME\}(.*?)/si";
+		$replace[0] = $cb_nick;
+		$search[1] = "/\{TIMEDATE\}(.*?)/si";
+		$replace[1] = $datestamp;
+		$search[2] = "/\{MESSAGE\}(.*?)/si";
+		$replace[2] = ($cb_blocked ? LAN_0 : $cb_message);
+		$search[3] = "/\{ADMINOPTIONS\}(.*?)/si";
+		if(ADMIN){
+			$replace[3] = ($cb_blocked ? "<div class='smalltext'>[<a href='".e_ADMIN."chatbox_conf.php?unblock-".$cb_id."-".$_SERVER['PHP_SELF']."'>".LAN_1."</a>]" : "<div class='smalltext'>[<a href='".e_ADMIN."chatbox_conf.php?block-".$cb_id."-".$_SERVER['PHP_SELF']."'>".LAN_2."</a>]")."[<a href='".e_ADMIN."chatbox_conf.php?delete-".$cb_id."-".$_SERVER['PHP_SELF']."'>".LAN_3."</a>][<a href='".e_ADMIN."userinfo.php?$cb_ip'>".LAN_4."</a>]</div>";
+		}else{
+			$replace[3] = "<br />";
+		}
+		$text .= preg_replace($search, $replace, $CHATBOXSTYLE);
 	}
+
 }else{
 	$text .= "<span class='mediumtext'>".LAN_158."</span>";
+
 }
 $total_chats = $sql -> db_Count("chatbox");
 if($total_chats > $chatbox_posts){
@@ -138,44 +140,4 @@ if($emessage != ""){
 	$text = "<div style='text-align:center'><b>".$emessage."</b></div><br />".$text;
 }
 $ns -> tablerender(LAN_182, $text);
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-function parsechatbox($cbd, $cb_nick, $datestamp, $cb_id, $cb_message, $cb_ip, $cb_blocked){
-	global $text;
-	
-	$tmp = explode("\n", $cbd);
-	for($c=0; $c < count($tmp); $c++){ 
-	//	echo htmlentities($tmp[$c])."<br />";
-		if(preg_match("/[\{|\}]/", $tmp[$c])){
-			$var .=  checklayoutcb($tmp[$c], $cb_nick, $datestamp, $cb_id, $cb_message, $cb_ip, $cb_blocked);
-		}else{
-			$var .= $tmp[$c];
-		}
-	}
-	return $var;
-//	echo htmlentities($text)."<br />";
-}
-function checklayoutcb($str, $cb_nick, $datestamp, $cb_id, $cb_message, $cb_ip, $cb_blocked){
-	if(strstr($str, "USERNAME")){
-		$var = $cb_nick;
-	}else if(strstr($str, "TIMEDATE")){
-		$var = $datestamp;
-	}else if(strstr($str, "MESSAGE")){
-		if($cb_blocked == 1){
-			$var .= LAN_0;
-		}else{
-			$var = $cb_message;
-		}	
-	}else if(strstr($str, "ADMINOPTIONS")){
-		if(ADMIN == TRUE && getperms("C")){
-			if($cb_blocked == 1){
-				$var = "<div class='smalltext'>[<a href='".e_ADMIN."chatbox_conf.php?unblock-".$cb_id."-".$_SERVER['PHP_SELF']."'>".LAN_1."</a>]";
-			}else{
-				$var = "<div class='smalltext'>[<a href='".e_ADMIN."chatbox_conf.php?block-".$cb_id."-".$_SERVER['PHP_SELF']."'>".LAN_2."</a>]";
-			}
-			$var .= "[<a href='".e_ADMIN."chatbox_conf.php?delete-".$cb_id."-".$_SERVER['PHP_SELF']."'>".LAN_3."</a>][<a href='".e_ADMIN."userinfo.php?$cb_ip'>".LAN_4."</a>]</div>\n";
-		}
-	}
-	return $var;
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 ?>

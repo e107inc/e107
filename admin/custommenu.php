@@ -17,6 +17,7 @@
 require_once("../class2.php");
 if(!getperms("I")){ header("location:".e_HTTP."index.php"); }
 require_once("auth.php");
+require_once(e_BASE."classes/ren_help.php");
 $aj = new textparse;
 
 if(IsSet($_POST['add_menu'])){
@@ -71,8 +72,6 @@ if(IsSet($_POST['edit'])){
 		fclose($fp);
 
 		preg_match_all("/\"(.*?)\"/", $buffer, $result);
-			
-		//echo "result1: '".stripslashes($result[1][0])."'<br />result2: '".$result[1][1]."'";
 
 		$result[1][1] = str_replace("'", "\"", $result[1][1]);
 		$_POST['menu_caption'] = stripslashes($aj -> editparse($result[1][0]));
@@ -89,10 +88,10 @@ if(IsSet($message)){
 
 $text = "<div style=\"text-align:center\">
 <form method=\"post\" action=\"".e_SELF."\" name=\"menupostform\">
-<table style=\"width:95%\">
+<table style=\"width:85%\" class='fborder'>
 <tr>
 
-<td style=\"text-align:center\" colspan=\"2\">Existing Menus: 
+<td style=\"text-align:center\" colspan=\"2\" class='forumheader'><span class=\"defaulttext\">Existing Menus:</span> 
 <select name=\"existing\" class=\"tbox\">";
 
 $handle=opendir(e_BASE."menus/");
@@ -105,43 +104,43 @@ closedir($handle);
 
 $text .= "</select>
 <input class=\"button\" type=\"submit\" name=\"edit\" value=\"Edit\" /> 
-<br /><br />
 </td>
 </tr>
 
 
 <tr>
-<td style=\"width:30%\">Menu Filename: </td>
-<td style=\"width:70%\">
+<td style=\"width:30%\" class='forumheader3'>Menu Filename: </td>
+<td style=\"width:70%\" class='forumheader3'>
 <input class=\"tbox\" type=\"text\" size=\"30\" maxlength=\"25\" name=\"menu_name\" value=\"".$_POST['menu_name']."\">
 </td>
 </tr>
 
 <tr>
-<td style=\"width:30%\">Menu Caption Title: </td>
-<td style=\"width:70%\">
+<td style=\"width:30%\" class='forumheader3'>Menu Caption Title: </td>
+<td style=\"width:70%\" class='forumheader3'>
 <input class=\"tbox\" type=\"text\" size=\"60\" maxlength=\"25\" name=\"menu_caption\" value=\"".$_POST['menu_caption']."\">
 </td>
 </tr>
 
 <tr>
-<td style=\"width:30%\">Menu Text: </td>
-<td style=\"width:70%\">
+<td style=\"width:30%\" class='forumheader3'>Menu Text: </td>
+<td style=\"width:70%\" class='forumheader3'>
 <textarea class=\"tbox\" name=\"menu_text\" cols=\"59\" rows=\"10\">".$_POST['menu_text']."</textarea>
 </td>
 </tr>
 
 <tr>
-<td></td>
-<td>
-<input class=\"helpbox\" type=\"text\" name=\"helpb\" size=\"100\" />";
+<td class='forumheader3'>&nbsp;</td>
+<td class='forumheader3'>
+<input class=\"helpbox\" type=\"text\" name=\"helpb\" size=\"100\" />
+<br />";
 $text .= ren_help("addtext");
 
 $text .= "</td>
 </tr>
 
 <tr style=\"vertical-align:top\"> 
-<td colspan=\"2\"  style=\"text-align:center\"><br />";
+<td colspan=\"2\"  style=\"text-align:center\" class='forumheader'>";
 if(IsSet($_POST['preview'])){
 	$text .= "<input class=\"button\" type=\"submit\" name=\"preview\" value=\"Preview Again\" /> ";
 }else{
@@ -156,7 +155,8 @@ if(IsSet($_POST['edit'])){
 $text .= "</td>
 </tr>
 </table>
-</form>";
+</form>
+</div>";
 
 $ns -> tablerender("<div style=\"text-align:center\">Custom Menus</div>", $text);
 
@@ -177,21 +177,5 @@ function help(help){
 }
 </script>
 <?php
-
-function ren_help($func){
-	$str ="<br />
-<input class=\"button\" type=\"button\" value=\"link\" onclick=\"$func('[link=hyperlink url]hyperlink text[/link]')\" onMouseOver=\"help('Insert link: [link]http://mysite.com[/link] or  [link=http://yoursite.com]Visit My Site[/link]')\" onMouseOut=\"help('')\">
-<input class=\"button\" type=\"button\" value=\"b\" onclick=\"$func('[b][/b]')\" onMouseOver=\"help('Bold text: [b]This text will be bold[/b]')\" onMouseOut=\"help('')\">
-<input class=\"button\" type=\"button\" value=\"i\" onclick=\"$func('[i][/i]')\" onMouseOver=\"help('Italic text: [i]This text will be italicised[/i]')\" onMouseOut=\"help('')\">
-<input class=\"button\" type=\"button\" value=\"u\" onclick=\"$func('[u][/u]')\" onMouseOver=\"help('Underline text: [u]This text will be underlined[/u]')\" onMouseOut=\"help('')\">
-<input class=\"button\" type=\"button\" value=\"img\" onclick=\"$func('[img][/img]')\" onMouseOver=\"help('Insert image: [img]mypicture.jpg[/img]')\" onMouseOut=\"help('')\">
-<input class=\"button\" type=\"button\" value=\"center\" onclick=\"$func('[center][/center]')\" onMouseOver=\"help('Center align: [center]This text will be centered[/center]')\" onMouseOut=\"help('')\">
-<input class=\"button\" type=\"button\" value=\"left\" onclick=\"$func('[left][/left]')\" onMouseOver=\"help('Left align: [left]This text will be left aligned[/left]')\" onMouseOut=\"help('')\">
-<input class=\"button\" type=\"button\" value=\"right\" onclick=\"$func('[right][/right]')\" onMouseOver=\"help('Right align: [right]This text will be right aligned[/right]')\" onMouseOut=\"help('')\">
-<input class=\"button\" type=\"button\" value=\"blockquote\" onclick=\"$func('[blockquote][/blockquote]')\" onMouseOver=\"help('Blockquote text: [blockquote]This text will be indented[/blockquote]')\" onMouseOut=\"help('')\">
-<input class=\"button\" type=\"button\" value=\"code\" onclick=\"$func('[code][/code]')\" onMouseOver=\"help('Code - preformatted text: [code]\$var = foobah;[/code]')\" onMouseOut=\"help('')\">";	
-	return $str;
-}
-
 require_once("footer.php");
 ?>	

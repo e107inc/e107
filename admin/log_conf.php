@@ -30,75 +30,84 @@ if(e_QUERY == "u"){
 
 require_once("auth.php");
 
-if(IsSet($_POST['wipe']) && IsSet($_POST['log_wipe'])){
-	$sql -> db_Delete("stat_info", "");
-	$message = "Stats_info table emptied.";
+if(IsSet($_POST['wipe'])){
+	
+	if(IsSet($_POST['log_wipe_info'])){
+		$sql -> db_Delete("stat_info", "");
+	}
+	if(IsSet($_POST['log_wipe_counter'])){
+		$sql -> db_Delete("stat_counter", "");
+	}
+
+	$message = "Stats table(s) emptied.";
 }
 
 if(IsSet($message)){
-	$ns -> tablerender("", "<div style=\"text-align:center\"><b>".$message."</b></div>");
+	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
 $log_activate = $pref['log_activate'][1];
 $lvcount = $pref['log_lvcount'][1];
 
-$text = "
-<form method=\"post\" action=\"".e_SELF."\">
-<table style=\"width:95%\">
+$text = "<div style='text-align:center'>
+<form method='post' action='".e_SELF."'>
+<table style='width:85%' class='fborder'>
 
 <tr>
-<td style=\"width:30%\">Activate Logging/Counter?: </td>
-<td style=\"width:70%\">";
+<td style='width:30%' class='forumheader3'>Activate Logging/Counter?: </td>
+<td style='width:70%' class='forumheader3'>";
 if($log_activate == 1){
-	$text .= "<input type=\"checkbox\" name=\"log_activate\" value=\"1\"  checked>";
+	$text .= "<input type='checkbox' name='log_activate' value='1'  checked>";
 }else{
-	$text .= "<input type=\"checkbox\" name=\"log_activate\" value=\"1\">";
+	$text .= "<input type='checkbox' name='log_activate' value='1'>";
 }
 
 $text .= "</td>
 </tr>
 
 <tr>
-<td style=\"width:30%\">Refer log type: </td>
-<td style=\"width:70%\">";
+<td style='width:30%' class='forumheader3'>Refer log type: </td>
+<td style='width:70%' class='forumheader3'>";
 
 if($pref['log_refertype'][1] == 0){
-	$text .= "Domain only: <input type=\"radio\" name=\"refertype\" value=\"0\" checked>
-	Complete URL: <input type=\"radio\" name=\"refertype\" value=\"1\">";
+	$text .= "Domain only: <input type='radio' name='refertype' value='0' checked>
+	Complete URL: <input type='radio' name='refertype' value='1'>";
 }else{
-	$text .= "Domain only: <input type=\"radio\" name=\"refertype\" value=\"0\">
-	Complete URL: <input type=\"radio\" name=\"refertype\" value=\"1\" checked>";
+	$text .= "Domain only: <input type='radio' name='refertype' value='0'>
+	Complete URL: <input type='radio' name='refertype' value='1' checked>";
 }
 
 $text .= "</td>
 </tr>
 
 <tr>
-<td style=\"width:30%\">Count how many last visitors?: </td>
-<td style=\"width:70%\">
-<input class=\"tbox\" type=\"text\" name=\"lvcount\" size=\"10\" value=\"$lvcount\" maxlength=\"5\" />
+<td style='width:30%' class='forumheader3'>Count how many last visitors?: </td>
+<td style='width:70%' class='forumheader3'>
+<input class='tbox' type='text' name='lvcount' size='10' value='$lvcount' maxlength='5' />
 </td>
 </tr>
 
 
 <tr>
-<td style=\"width:30%\">Clear stats tables: </td>
-<td style=\"width:70%\">
-<input type=\"checkbox\" name=\"log_wipe\" value=\"1\">
-<input class=\"button\" type=\"submit\" name=\"wipe\" value=\"Clear!\" /> This will erase all your visitor site stats, not your counter stats
+<td style='width:30%' class='forumheader3'>Clear stats tables: </td>
+<td style='width:70%' class='forumheader3'>
+<input type='checkbox' name='log_wipe_info' value='1'> Tick to clear information stats<br />
+<input type='checkbox' name='log_wipe_counter' value='1'> Tick to clear counter stats<br />
+<input class='button' type='submit' name='wipe' value='Clear!' />
 </td>
 </tr>
 
 <tr>
-<tr style=\"vertical-align:top\"> 
-<td colspan=\"2\"  style=\"text-align:center\">
-<input class=\"button\" type=\"submit\" name=\"updatesettings\" value=\"Update Logger Settings\" />
+<tr style='vertical-align:top'> 
+<td colspan='2'  style='text-align:center' class='forumheader'>
+<input class='button' type='submit' name='updatesettings' value='Update Logger Settings' />
 </td>
 </tr>
 </table>
-</form>";
+</form>
+</div>";
 
-$ns -> tablerender("<div style=\"text-align:center\">Logger/Counter Settings</div>", $text);
+$ns -> tablerender("<div style='text-align:center'>Logger/Counter Settings</div>", $text);
 require_once("footer.php");
 
 ?>

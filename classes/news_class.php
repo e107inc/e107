@@ -127,12 +127,11 @@ class news{
 		*/
 
 		$aj = new textparse;
-		$news_title = $aj -> tp($news_title, $mode="on", "preview");
-		$news_body = $aj -> tp($news_body, $mode="on", "preview");
-		$news_extended = $aj -> tp($news_extended, $mode="on", "preview");
-		$news_source = $aj -> tp($news_source, $mode="on", "preview");
-		$news_url = $aj -> tp($news_url, $mode="on", "preview");
-		$cls = new db;
+		$news_title = $aj -> tp($news_title, "on");
+		$news_body = $aj -> tp($news_body, "on");
+		$news_extended = $aj -> tp($news_extended, "on");
+		$news_source = $aj -> tp($news_source, "on");
+		$news_url = $aj -> tp($news_url, "on");
 		
 		$this -> render_newsitem($news_id, $news_title, $news_body, $news_extended, $news_source, $news_url, ADMINID, "0", $cat_id,  time(), $allow_comments, $active_start, $active_end, $news_active, "preview");
 		return array($cat_id, $news_title, $news_body, $news_extended, $news_source, $news_url);
@@ -259,7 +258,7 @@ class news{
 			if($news_extended && !eregi("extend", e_QUERY)){
 				if(defined("PRE_EXTENDEDSTRING")){ $es1 = PRE_EXTENDEDSTRING; }
 				if(defined("POST_EXTENDEDSTRING")){ $es2 = POST_EXTENDEDSTRING; }
-				$replace[12] = $es1."<a href='".e_BASE."index.php?extend.".$news_id."'>".EXTENDEDSTRING."</a>".$es2;
+				$replace[12] = $es1."<a href='".e_BASE."news.php?extend.".$news_id."'>".EXTENDEDSTRING."</a>".$es2;
 			}
 
 			$search[13] = "/\{NEWSSOURCE\}(.*?)/si";

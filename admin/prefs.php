@@ -80,7 +80,7 @@ closedir($handle);
 
 $handle=opendir(e_BASE."languages/");
 while ($file = readdir($handle)){
-	if($file != "." && $file != ".." && $file != "/"){
+	if($file != "." && $file != ".." && $file != "/" && $file != "languages.zip"){
 		$lanlist[] = eregi_replace("lan_|.php", "", $file);
 	}
 }

@@ -14,7 +14,7 @@
 */
 require_once("class2.php");
 require_once(HEADERF);
-
+require_once(e_BASE."classes/ren_help.php");
 $captionlinkcolour = "#fff";
 $gen = new convert;
 $aj = new textparse();
@@ -281,13 +281,7 @@ $text .= "</td>
 <br />
 <input class='helpbox' type='text' name='helpb' size='90' />
 <br />
-<input class='button' type='button' style='font-weight:bold; width: 35px' value='b' onclick='addtext('[b][/b]')' onMouseOver='help('Bold text: [b]This text will be bold[/b]')' onMouseOut='help('')'>
-<input class='button' type='button' style='font-style:italic; width: 35px' value='i' onclick='addtext('[i][/i]')' onMouseOver='help('Italic text: [i]This text will be italicised[/i]')' onMouseOut='help('')'>
-<input class='button' type='button' style='text-decoration: underline; width: 35px' value='u' onclick='addtext('[u][/u]')' onMouseOver='help('Underline text: [u]This text will be underlined[/u]')' onMouseOut='help('')'>
-<input class='button' type='button' style='width: 35px' value='img' onclick='addtext('[img][/img]')' onMouseOver='help('Insert image: [img]mypicture.jpg[/img]')' onMouseOut='help('')'>
-<input class='button' type='button' style='width: 35px' value='cen' onclick='addtext('[center][/center]')' onMouseOver='help('Center align: [center]This text will be centered[/center]')' onMouseOut='help('')'>
-<input class='button' type='button' value='link' onclick='addtext('[link=hyperlink url]hyperlink text[/link]')' onMouseOver='help('Insert link: [link]http://mysite.com[/link] or  [link=http://yoursite.com]Visit My Site[/link]')' onMouseOut='help('')'>
-<input class='button' type='button' style='width: 35px' value='code' onclick='addtext('[code][/code]')' onMouseOver='help('Code - preformatted text: [code]\$var = foobah;[/code]')' onMouseOut='help('')'>
+".ren_help("addtext")."
 <br />";
 require_once(e_BASE."classes/emote.php");
 $text .= r_emote();

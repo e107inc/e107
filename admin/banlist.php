@@ -29,65 +29,65 @@ if(IsSet($_POST['delete'])){
 }
 
 if(IsSet($message)){
-	$ns -> tablerender("", "<div style=\"text-align:center\"><b>".$message."</b></div>");
+	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
 $ban_total = $sql -> db_Select("banlist");
 
+$text = "<div style='text-align:center'>
+<form method='post' action='".$_SERVER['PHP_SELF']."'>
+<table style='width:85%' class='fborder'>
+<tr>
+<td colspan='2' style='text-align:center' class='forumheader'>";
+
 if($ban_total == "0"){
-	$text = "<div style=\"text-align:center\"><b>No bans.</b></div>
-	<br />";
+	$text .= "<span style='defaulttext'>No bans.</span>";
 }else{
-	$text = "<div style=\"text-align:center\">
-	<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
-	
-	Existing Bans: 
-	<select name=\"existing\" class=\"tbox\">";
+	$text .= "<span style='defaulttext'>Existing Bans:</span> 
+	<select name='existing' class='tbox'>";
 	while(list($ban_ip_) = $sql-> db_Fetch()){
 		$text .= "<option>".$ban_ip_."</option>";
 	}
 	$text .= "</select> 
-	<input class=\"button\" type=\"submit\" name=\"delete\" value=\"Remove ban\" />
-	</form>
-	</div>
-	<br />";
+	<input class='button' type='submit' name='delete' value='Remove ban' />";
 }
 
 $text .= "
-<form method=\"post\" action=\"".e_SELF."\">
-<table style=\"width:95%\">
+</td>
+</tr>
 <tr>
-<td style=\"width:30%\">Ban by IP: </td>
-<td style=\"width:70%\">
-<input class=\"tbox\" type=\"text\" name=\"ban_ip\" size=\"40\" value=\"$ban_ip\" maxlength=\"200\" />
+<td style='width:30%' class='forumheader3'>Ban by IP: </td>
+<td style='width:70%' class='forumheader3'>
+<input class='tbox' type='text' name='ban_ip' size='40' value='$ban_ip' maxlength='200' />
 </td>
 </tr>
 
 <tr>
-<td style=\"width:30%\">Ban by email address: </td>
-<td style=\"width:70%\">
-<input class=\"tbox\" type=\"text\" name=\"ban_email\" size=\"40\" value=\"$ban_ip\" maxlength=\"200\" />
+<td style='width:30%' class='forumheader3'>Ban by email address: </td>
+<td style='width:70%' class='forumheader3'>
+<input class='tbox' type='text' name='ban_email' size='40' value='$ban_ip' maxlength='200' />
 </td>
 </tr>
 
 <tr> 
-<td style=\"width:20%\">Reason: </td>
-<td style=\"width:80%\">
-<textarea class=\"tbox\" name=\"ban_reason\" cols=\"50\" rows=\"4\">$ban_reason</textarea>
+<td style='width:20%' class='forumheader3'>Reason: </td>
+<td style='width:80%' class='forumheader3'>
+<textarea class='tbox' name='ban_reason' cols='50' rows='4'>$ban_reason</textarea>
 </td>
 </tr>
 
-<tr style=\"vertical-align:top\"> 
-<td colspan=\"2\"  style=\"text-align:center\">
+<tr style='vertical-align:top'> 
+<td colspan='2' style='text-align:center' class='forumheader'>
 
-<input class=\"button\" type=\"submit\" name=\"add_ban\" value=\"Ban User\" />
+<input class='button' type='submit' name='add_ban' value='Ban User' />
 
 </td>
 </tr>
 </table>
-</form>";
+</form>
+</div>";
 
-$ns -> tablerender("<div style=\"text-align:center\">Add/Delete Site Bans</div>", $text);
+$ns -> tablerender("<div style='text-align:center'>Add/Delete Site Bans</div>", $text);
 
 require_once("footer.php");
 ?>	

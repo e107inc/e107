@@ -38,13 +38,13 @@ if(IsSet($_POST['delete'])){
 	$sql -> db_Select("headlines", "*", "headline_url='".$_POST['existing']."' ");
 	list($category_id, $category_name, $category_icon) = $sql-> db_Fetch();
 	
-	$text = "<div style=\"text-align:center\">
+	$text = "<div style='text-align:center'>
 	<b>Please confirm you wish to delete the '$category_name' headline URL - once deleted it cannot be retrieved</b>
 <br /><br />
-<form method=\"post\" action=\"$PHP_SELF\">
-<input class=\"button\" type=\"submit\" name=\"cancel\" value=\"Cancel\" /> 
-<input class=\"button\" type=\"submit\" name=\"confirm\" value=\"Confirm Delete\" /> 
-<input type=\"hidden\" name=\"existing\" value=\"".$_POST['existing']."\">
+<form method='post' action='$PHP_SELF'>
+<input class='button' type='submit' name='cancel' value='Cancel' /> 
+<input class='button' type='submit' name='confirm' value='Confirm Delete' /> 
+<input type='hidden' name='existing' value='".$_POST['existing']."'>
 </form>
 </div>";
 $ns -> tablerender("Confirm Delete Headline URL", $text);
@@ -62,120 +62,123 @@ if(IsSet($_POST['edit'])){
 }
 
 if(IsSet($message)){
-	$ns -> tablerender("", "<div style=\"text-align:center\"><b>".$message."</b></div>");
+	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
 $headline_total = $sql -> db_Select("headlines");
 
+
+$text = "<div style='text-align:center'>
+<form method='post' action='".e_SELF."'>\n
+
+<table style='width:85%' class='fborder'>
+<tr>
+<td colspan='2' style='text-align:center' class='forumheader'>";
+
+
 if($headline_total == "0"){
-	$text = "<div style=\"text-align:center\">No headline URL's set yet.</div>
-	<br /><br />";
+	$text .= "<span style='defaulttext'>No headline URL's set yet.</span>";
 }else{
-	$text = "<div style=\"text-align:center\">
-	<form method=\"post\" action=\"$PHP_SELF\">
-	
-	Existing Headline URL's: 
-	<select name=\"existing\" class=\"tbox\">";
+	$text .= "<span style='defaulttext'>Existing Headline URL's: </span>
+	<select name='existing' class='tbox'>";
 	while(list($head_id, $head_url) = $sql-> db_Fetch()){
 		$text .= "<option>".$head_url."</option>";
 	}
 	$text .= "</select> 
-	<input class=\"button\" type=\"submit\" name=\"edit\" value=\"Edit\" /> 
-	<input class=\"button\" type=\"submit\" name=\"delete\" value=\"Delete\" />
-	</form>
-	</div>
-	<br />";
+	<input class='button' type='submit' name='edit' value='Edit' /> 
+	<input class='button' type='submit' name='delete' value='Delete' />";
 }
 
 
 $text .= "
-<form method=\"post\" action=\"".e_SELF."\">
-<table style=\"width:95%\">
+</td>
+</tr>
 <tr>
-<td style=\"width:30%\">Backend URL: </td>
-<td style=\"width:70%\">
-<input class=\"tbox\" type=\"text\" name=\"headline_url\" size=\"60\" value=\"$headline_url\" maxlength=\"200\" />
+<td style='width:30%' class='forumheader3'>Backend URL: </td>
+<td style='width:70%' class='forumheader3'>
+<input class='tbox' type='text' name='headline_url' size='60' value='$headline_url' maxlength='200' />
 </td>
 </tr>
 
 <tr>
-<td style=\"width:30%\">Path to image: </td>
-<td style=\"width:70%\">
-<input class=\"tbox\" type=\"text\" name=\"headline_image\" size=\"40\" value=\"$headline_image\" maxlength=\"200\" />
+<td style='width:30%' class='forumheader3'>Path to image: </td>
+<td style='width:70%' class='forumheader3'>
+<input class='tbox' type='text' name='headline_image' size='40' value='$headline_image' maxlength='200' />
 </td>
 </tr>
 
 <tr>
-<td style=\"width:20%\">Display Tagline?:</td>
-<td style=\"width:80%\">";
+<td style='width:20%' class='forumheader3'>Display Tagline?:</td>
+<td style='width:80%' class='forumheader3'>";
 if($headline_tagline == 1){
-	$text .= "<input type=\"checkbox\" name=\"tagline\" value=\"1\" checked>";
+	$text .= "<input type='checkbox' name='tagline' value='1' checked>";
 }else{
-	$text .= "<input type=\"checkbox\" name=\"tagline\" value=\"1\">";
+	$text .= "<input type='checkbox' name='tagline' value='1'>";
 }
 $text .= "</td>
 </tr>
 
 <tr>
-<td style=\"width:20%\">Display Description?:</td>
-<td style=\"width:80%\">";
+<td style='width:20%' class='forumheader3'>Display Description?:</td>
+<td style='width:80%' class='forumheader3'>";
 if($headline_description == 1){
-	$text .= "<input type=\"checkbox\" name=\"description\" value=\"1\" checked>";
+	$text .= "<input type='checkbox' name='description' value='1' checked>";
 }else{
-	$text .= "<input type=\"checkbox\" name=\"description\" value=\"1\">";
+	$text .= "<input type='checkbox' name='description' value='1'>";
 }
 $text .= "</td>
 </tr>
 
 <tr>
-<td style=\"width:20%\">Display Webmaster?:</td>
-<td style=\"width:80%\">";
+<td style='width:20%' class='forumheader3'>Display Webmaster?:</td>
+<td style='width:80%' class='forumheader3'>";
 if($headline_webmaster == 1){
-	$text .= "<input type=\"checkbox\" name=\"webmaster\" value=\"1\" checked>";
+	$text .= "<input type='checkbox' name='webmaster' value='1' checked>";
 }else{
-	$text .= "<input type=\"checkbox\" name=\"webmaster\" value=\"1\">";
+	$text .= "<input type='checkbox' name='webmaster' value='1'>";
 }
 $text .= "</td>
 </tr>
 
 <tr>
-<td style=\"width:20%\">Display Copyright?:</td>
-<td style=\"width:80%\">";
+<td style='width:20%' class='forumheader3'>Display Copyright?:</td>
+<td style='width:80%' class='forumheader3'>";
 if($headline_copyright == 1){
-	$text .= "<input type=\"checkbox\" name=\"copyright\" value=\"1\" checked>";
+	$text .= "<input type='checkbox' name='copyright' value='1' checked>";
 }else{
-	$text .= "<input type=\"checkbox\" name=\"copyright\" value=\"1\">";
+	$text .= "<input type='checkbox' name='copyright' value='1'>";
 }
 $text .= "</td>
 </tr>
 
 <tr>
-<td style=\"width:20%\">Activate?:</td>
-<td style=\"width:80%\">";
+<td style='width:20%' class='forumheader3'>Activate?:</td>
+<td style='width:80%' class='forumheader3'>";
 if($headline_active == 1){
-	$text .= "<input type=\"checkbox\" name=\"activate\" value=\"1\" checked>";
+	$text .= "<input type='checkbox' name='activate' value='1' checked>";
 }else{
-	$text .= "<input type=\"checkbox\" name=\"activate\" value=\"1\">";
+	$text .= "<input type='checkbox' name='activate' value='1'>";
 }
 $text .= "</td>
 </tr>
 
-<tr style=\"vertical-align:top\"> 
-<td colspan=\"2\"  style=\"text-align:center\">";
+<tr style='vertical-align:top'> 
+<td colspan='2' style='text-align:center' class='forumheader'>";
 
 if(IsSet($_POST['edit'])){
 
-	$text .= "<input class=\"button\" type=\"submit\" name=\"update_headline\" value=\"Update Headline SIte\" />
-<input type=\"hidden\" name=\"headline_id\" value=\"$headline_id\">";
+	$text .= "<input class='button' type='submit' name='update_headline' value='Update Headline SIte' />
+<input type='hidden' name='headline_id' value='$headline_id'>";
 }else{
-	$text .= "<input class=\"button\" type=\"submit\" name=\"add_headline\" value=\"Add Headline Site\" />";
+	$text .= "<input class='button' type='submit' name='add_headline' value='Add Headline Site' />";
 }
 $text .= "</td>
 </tr>
 </table>
-</form>";
+</form>
+</div>";
 
-$ns -> tablerender("<div style=\"text-align:center\">Headline</div>", $text);
+$ns -> tablerender("<div style='text-align:center'>Headline</div>", $text);
 
 require_once("footer.php");
 ?>	

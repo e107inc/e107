@@ -47,7 +47,7 @@ unset($text);
 
 
 if($pref['cache_activate'][1]){
-	$excempt = "forum_post|test|search";
+	$excempt = "forum|test|search";
 	$pref['cache_timeout'][1] = ($pref['cache_timeout'][1] ? $pref['cache_timeout'][1] : 3600);
 	$sql -> db_Delete("cache", "cache_datestamp+".$pref['cache_timeout'][1]."<".time());
 	$url = (e_QUERY ? $_SERVER['PHP_SELF']."?".e_QUERY : $_SERVER['PHP_SELF']);
@@ -144,12 +144,7 @@ function checklayout($str){
 				}
 			}
 		}else if($custom == "search"){
-			echo "<form method='post' action='search.php'>
-			<p>
-			<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />
-			<input class='button' type='submit' name='searchsubmit' value='".LAN_180."' />
-			</p>
-			</form>";
+			echo "<form method='post' action='search.php'>\n<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n<input class='button' type='submit' name='searchsubmit' value='".LAN_180."' />\n</p>\n</form>\n";
 		}else if($custom == "quote"){
 			if(!file_exists(e_BASE."quote.txt")){
 				$quote = "Quote file not found ($qotd_file)";

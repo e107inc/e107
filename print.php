@@ -64,7 +64,7 @@ if($table == "news"){
 	$sql -> db_Select("content", "*", "content_id='$id' ");
 	$row = $sql -> db_Fetch();
 	extract($row);
-	$content_content = nl2br($content_content);
+	$content_content = str_replace("{EMAILPRINT}", "", nl2br($content_content));
 	$sql -> db_Select("admin", "*", "admin_id='$content_author' ");
 	list($a_id, $a_name) = $sql-> db_Fetch();
 	$content_datestamp = $con -> convert_date($content_datestamp, "long");
