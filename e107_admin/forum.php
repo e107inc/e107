@@ -98,6 +98,7 @@ if(IsSet($_POST['updateoptions'])){
         $pref['links_new_window'] = $_POST['links_new_window'];
         $pref['forum_tooltip'] = $_POST['forum_tooltip'];
         $pref['forum_tiplength'] = $_POST['forum_tiplength'];
+        $pref['forum_hilightsticky'] = $_POST['forum_hilightsticky'];
         save_prefs();
         $forum -> show_message(FORLAN_10);
 }
@@ -610,6 +611,11 @@ class forum{
                 <tr>
                 <td style='width:75%' class='forumheader3'>".FORLAN_57."<br /><span class='smalltext'>".FORLAN_58."</span></td>
                 <td style='width:25%;text-align:center' class='forumheader2' ><input class='tbox' type='text' name='forum_postspage' size='3' value='".$pref['forum_postspage']."' maxlength='3' /></td>
+                </tr>
+
+                <tr>
+                <td style='width:75%' class='forumheader3'>".FORLAN_132."<br /><span class='smalltext'>".FORLAN_133."</span></td>
+                <td style='width:25%;text-align:center' class='forumheader2' >".($pref['forum_hilightsticky'] ? "<input type='checkbox' name='forum_hilightsticky' value='1' checked='checked' />" : "<input type='checkbox' name='forum_hilightsticky' value='1' />")."</td>
                 </tr>
 
                 <tr>
