@@ -66,5 +66,6 @@ define("DOWLAN_62", "Ascending");
 define("DOWLAN_63", "Descending");
 define("DOWLAN_64", "Update Options");
 define("DOWLAN_65", "Options Updated");
+define("DOWLAN_66", "filesize");
 
 ?>

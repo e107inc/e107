@@ -354,7 +354,7 @@ class download{
 		}
 
 		$text .= "<input class='tbox' type='text' name='download_url_external' size='40' value='$download_url_external' maxlength='100' />
-		&nbsp;&nbsp;filesize: 
+		&nbsp;&nbsp;".DOWLAN_66.": 
 		<input class='tbox' type='text' name='download_filesize_external' size='8' value='$download_filesize' maxlength='10' />
 		</span>
 

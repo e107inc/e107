@@ -135,7 +135,7 @@ if(IsSet($_POST['preview'])){
         $dt = $aj -> formtpa($dt); $dt = $aj -> tpa($dt);
         $cu= $aj -> formtpa($_POST['content_summary']); $cu= $aj -> tpa($cu);
         $ca = ($_POST['content_author'] && $_POST['content_author'] != ARLAN_84 ? $_POST['content_author'] : ADMINNAME);
-        $text = "<i>by $ca</i><br /><span class='smalltext'>".$datestamp."</span><br /><br />Subheading: $cs<br />Summary: $cu<br /><br />$dt";
+        $text = "<i>by $ca</i><br /><span class='smalltext'>".$datestamp."</span><br /><br />".ARLAN_18.": $cs<br />".ARLAN_19.": $cu<br /><br />$dt";
         $ns -> tablerender($content_heading, $text);
         echo "<br /><br />";
         // make form friendly ...

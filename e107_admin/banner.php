@@ -131,13 +131,13 @@ if(!$banner_total = $sql -> db_Select("banner")){
 		<td class=\"forumheader3\" style=\"text-align:center\">".$clickpercentage."</td>
 		<td class=\"forumheader3\" style=\"text-align:center\">".$impressions_purchased."</td>
 		<td class=\"forumheader3\" style=\"text-align:center\">".$impressions_left."</td>
-		<td class=\"forumheader3\" style=\"text-align:center\"><a href=\"".e_SELF."?edit.".$banner_id."\">Edit</a> - <a href=\"".e_SELF."?delete.".$banner_id."\">".BNRLAN_18."</a></td>
+		<td class=\"forumheader3\" style=\"text-align:center\"><a href=\"".e_SELF."?edit.".$banner_id."\">".BNRLAN_44."</a> - <a href=\"".e_SELF."?delete.".$banner_id."\">".BNRLAN_18."</a></td>
 		</tr>
 		<td colspan=\"8\" class=\"forumheader3\" style=\"text-align:center\">
 
-		Active: ". ($banner_active ? BNRLAN_19 : "<b>".BNRLAN_20."</b>")." | 
+		".BNRLAN_39.": ". ($banner_active ? BNRLAN_19 : "<b>".BNRLAN_20."</b>")." | 
 
-		Starts: ".$start_date." <> ".BNRLAN_21.": ".$end_date."</td>
+		".BNRLAN_45.": ".$start_date." <> ".BNRLAN_21.": ".$end_date."</td>
 		<tr><td colspan=\"8\">&nbsp;</td></tr>";
 	}
 }
@@ -262,7 +262,7 @@ while($images[$c]){
 		 <embed src=\"".e_IMAGE."banners/".$images[$c]."\" width=\"468\" height=\"60\" scale=\"noborder\" quality=\"high\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\"></embed></object>
 		<br />";
 	}else if($fileext1 == "php" || $fileext1 == "html" || $fileext1 == "js"){
-		$text .= "> Code: ".$images[$c];
+		$text .= "> ".BNRLAN_46.": ".$images[$c];
 	}else{
 		$text .= "> <img src=\"".e_IMAGE."banners/".$images[$c]."\" alt=\"\" /><br />";
 	}
