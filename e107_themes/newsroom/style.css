@@ -1,9 +1,16 @@
 body {
-	font-size: 12px;
 	color: #000;
 	background-color: #FFFFFF;
 	margin:0px;
+	font-family: verdana, arial, "ms sans serif", sans-serif;
+	font-size: 10px;
+	font-style: normal;
+}
 
+td {
+	font-family: verdana, arial, "ms sans serif", sans-serif;
+	font-size: 10px;
+	font-style: normal;
 }
 
 a:link {
@@ -38,8 +45,6 @@ a.forumlink:visited{
 #clock {
  font-family: arial, "ms sans serif", sans-serif;
 }
-
-
 .newsroom {
 	background-color: #333333;
 	color: #fff;
@@ -321,104 +326,3 @@ hr {
 }
 
 
-
-
-table.bclr2 {
-	background-color: #5A6F5A;
-	border: 0px;
-}
-
-table.bclr2a {
-	background-color: #5A6F5A;
-	border: 0px;
-	width: 100%;
-}
-
-table.bclr3 {
-	background-color: #7F907F;
-	border: 0px;
-	width: 100%;
-}
-
-table.bclr4 {
-	background-color: #7C8AA4;
-	border: 0px;
-	width: 100%;
-}
-
-table.bclr5 {
-	background-color: #CCCCCC;
-	border: 0px;
-	width: 100%;
-}
-
-table.mw1 {
-	max-width: 100%;
-	border: 0px;
-}
-
-table.base {
-	border: 0px;
-	width: 100%;
-}
-
-td {
-	font-family: verdana, arial, "ms sans serif", sans-serif;
-	font-size: 10px;
-	font-style: normal;
-}
-
-tclr1 {
-	background-color: #5A6F5A;
-	text-align: left;
-}
-
-
-tclr2 {
-	background-color: #5A6F5A;
-	font-family: verdana, arial, "ms sans serif", sans-serif;
-	font-size: 10px;
-	font-weight: normal;
-	line-height: 14px;
-	color: #e9ffe9;
-	text-align: right;
- }
-
-td.bclr2a {
-	max-width: 100%;
-	background-color: #5A6F5A;
-	font-family: verdana, arial, "ms sans serif", sans-serif;
-	font-size: 10px;
-	font-weight: normal;
-	line-height: 14px;
-	color: #e9ffe9;
-	text-align: right;
- }
-
-td.tclr3 {
-	background-color: #7f907f;
-	font-family: verdana, arial, "ms sans serif", sans-serif;
-	font-size: 10px;
-	font-weight: normal;
-	line-height: 14px;
-	color: #e9ffe9;
-	text-align: center;
-}
-
-td.tclr3a {
-	background-color: #7f907f;
-	font-family: verdana, arial, "ms sans serif", sans-serif;
-	font-size: 10px;
-	font-weight: normal;
-	line-height: 14px;
-	color: #e9ffe9;
-}
-
-td.tclr4 {
-	background-color: #9FAC9F;
-	font-family: verdana, arial, "ms sans serif", sans-serif;
-	font-size: 10px;
-	line-height: 10px;
-	padding-left: 2px;
-	color: #5a6f5a;
-}
