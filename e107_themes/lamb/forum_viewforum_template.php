@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/forum_viewforum_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-03-08 16:51:02 $
+|     $Revision: 1.4 $
+|     $Date: 2005-04-04 10:59:36 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@
 <tr>
 </table>
 <table style='width:100%'>
-<td style='width:80%'><div class='mediumtext'><img src='".e_PLUGIN."forum/images/e.png' style='vertical-align:middle' /> <b>{FORUMTITLE} Forum</b></div>{THREADPAGES}</td>
+<td style='width:80%'><div class='mediumtext'><img src='".e_PLUGIN."forum/images/lite/e.png' style='vertical-align:middle' /> <b>{FORUMTITLE} Forum</b></div>{THREADPAGES}</td>
 <td style='width:20%; text-align:right; vertical-align:bottom;'>
 {NEWTHREADBUTTON}
 </td>
