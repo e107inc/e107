@@ -425,9 +425,14 @@ class users{
                                         }else if ($user_admin && $user_perms != "0"){
                                                 $text .= "<option value='".e_SELF."?unadmin.$user_id'>".USRLAN_34."</option>";
                                         }
-                                }
 
-                                $text .= "<option value='".e_ADMIN."userclass.php?$user_id'>".USRLAN_36."</option>";
+
+                                }       if($user_perms == "0" && !getperms("0")){
+                                        $text .="";
+                                        } elseif($user_id != USERID || getperms("0") ){
+                                        $text .= "<option value='".e_ADMIN."userclass.php?$user_id'>".USRLAN_36."</option>";
+                                        }
+
                                 $text .= "</select>";
                                 if($user_perms != "0"){
                                         $text .= $rs -> form_button("submit", "main_3", USRLAN_29, "onClick=\"confirm_('main', '$user_id', '$user_name');\"");
@@ -462,24 +467,24 @@ class users{
 
         function show_options($action){
                 // ##### Display options ---------------------------------------------------------------------------------------------------------
-				if($action==""){$action="main";}
-				// ##### Display options ---------------------------------------------------------------------------------------------------------
-				$var['main']['text']=USRLAN_71;
-				$var['main']['link']=e_SELF;
-				
-				$var['create']['text']=USRLAN_72;
-				$var['create']['link']=e_SELF."?create";
-		
-				$var['prune']['text']=USRLAN_73;
-				$var['prune']['link']=e_SELF."?prune";
-		
-				$var['extended']['text']=USRLAN_74;
-				$var['extended']['link']=e_SELF."?extended";
-		
-				$var['options']['text']=USRLAN_75;
-				$var['options']['link']=e_SELF."?options";
-				show_admin_menu(USRLAN_76,$action,$var);
-		   }
+                                if($action==""){$action="main";}
+                                // ##### Display options ---------------------------------------------------------------------------------------------------------
+                                $var['main']['text']=USRLAN_71;
+                                $var['main']['link']=e_SELF;
+
+                                $var['create']['text']=USRLAN_72;
+                                $var['create']['link']=e_SELF."?create";
+
+                                $var['prune']['text']=USRLAN_73;
+                                $var['prune']['link']=e_SELF."?prune";
+
+                                $var['extended']['text']=USRLAN_74;
+                                $var['extended']['link']=e_SELF."?extended";
+
+                                $var['options']['text']=USRLAN_75;
+                                $var['options']['link']=e_SELF."?options";
+                                show_admin_menu(USRLAN_76,$action,$var);
+                   }
 
         function show_prefs(){
                 global $ns, $pref;
@@ -728,8 +733,8 @@ class users{
 
 }
 function users_adminmenu(){
-	global $user;
-	global $action;
-	$user -> show_options($action);
+        global $user;
+        global $action;
+        $user -> show_options($action);
 }
 ?>
