@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-02-28 20:03:48 $
+|     $Revision: 1.27 $
+|     $Date: 2005-03-05 08:03:18 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -135,7 +135,7 @@ if(!$text = $e107cache->retrieve("chatbox"))
 			$datestamp = $obj2->convert_date($cb_datestamp, "short");
 			if(!$pref['cb_wordwrap']) { $pref['cb_wordwrap'] = 30; }
 			$emotes_active = $pref['cb_emote'] ? 'emotes_on' : 'emotes_off';
-			$cb_message = $tp -> toHTML($cb_message, TRUE, $emotes_active, null, $pref['cb_wordwrap']);
+			$cb_message = $tp -> toHTML($cb_message, TRUE, $emotes_active, null, $pref['menu_wordwrap']);
 
 			$replace[0] = "["; $replace[1] = "]";
 			$search[0] = "&lsqb;"; $search[1] =  "&rsqb;";

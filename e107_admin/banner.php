@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banner.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-01-27 19:52:24 $
-|     $Author: streaky $
+|     $Revision: 1.12 $
+|     $Date: 2005-03-05 08:02:25 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -26,26 +26,28 @@ require_once("auth.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 require_once(e_HANDLER."userclass_class.php");
-	
+require_once(e_HANDLER."file_class.php");
+$fl = new e_file;
+
 $lan_file = e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_menus.php";
 include(file_exists($lan_file) ? $lan_file : e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_menus.php");
-	
-$qs = explode(".", e_QUERY);
-$action = $qs[0];
-$sub_action = $qs[1];
-$id = $qs[2];
-	
-$handle = opendir(e_IMAGE."banners/");
-while ($file = readdir($handle)) {
-	if (!strstr($file, "._") && $file != "." && $file != ".." && $file != "Thumbs.db" && $file != ".DS_Store") {
-		$images[] = $file;
-	}
+
+
+if(e_QUERY)
+{
+	list($action, $sub_action, $id) = explode(".", e_QUERY);
 }
 	
-if ($_POST['createbanner'] || $_POST['updatebanner']) {
-	if (!$_POST['startmonth'] || !$_POST['startday'] || !$_POST['startyear'] ? $start_date = 0 : $start_date = mktime (0, 0, 0, $_POST['startmonth'], $_POST['startday'], $_POST['startyear']));
-	if (!$_POST['endmonth'] || !$_POST['endday'] || !$_POST['endyear'] ? $end_date = 0 : $end_date = mktime (0, 0, 0, $_POST['endmonth'], $_POST['endday'], $_POST['endyear']));
-	 
+$reject = array('$.','$..','/','CVS','thumbs.db','*._$',"thumb_", 'index', '.DS_Store');
+$images = $fl->get_files(e_IMAGE."banners/","",$reject);
+	
+if ($_POST['createbanner'] || $_POST['updatebanner'])
+{
+
+	$start_date = (!$_POST['startmonth'] || !$_POST['startday'] || !$_POST['startyear'] ? 0 : mktime (0, 0, 0, $_POST['startmonth'], $_POST['startday'], $_POST['startyear']));
+
+	$end_date = (!$_POST['endmonth'] || !$_POST['endday'] || !$_POST['endyear'] ? 0 : mktime (0, 0, 0, $_POST['endmonth'], $_POST['endday'], $_POST['endyear']));
+
 	$cli = ($_POST['client_name'] ? $_POST['client_name'] : $_POST['banner_client_sel']);
 	 
 	if ($_POST['banner_pages']) {
@@ -368,12 +370,17 @@ if ($action == "create") {
 		<input class='button' type ='button' value='".BNRLAN_43."' onclick='expandit(this)' />
 		<div style='display:none'><br />";
 	$c = 0;
-	while ($images[$c]) {
-		$fileext1 = substr(strrchr($images[$c], "."), 1);
-		$fileext2 = substr(strrchr($images[$c], "."), 0);
+	while ($images[$c])
+	{
+
+		$image = $images[$c]['path']."/".$images[$c]['fname'];
+
+		$fileext1 = substr(strrchr($image, "."), 1);
+		$fileext2 = substr(strrchr($image, "."), 0);
 		 
-		$text .= "<input type='radio' name='banner_image' value='".$images[$c]."'";
-		if ($images[$c] == $_POST['banner_image']) {
+		$text .= "<input type='radio' name='banner_image' value='".$images[$c]['fname']."'";
+		
+		if ($image == $_POST['banner_image']) {
 			$text .= "checked='checked'";
 		}
 		 
@@ -385,9 +392,9 @@ if ($action == "create") {
 				<br />";
 		}
 		else if($fileext1 == "php" || $fileext1 == "html" || $fileext1 == "js") {
-			$text .= " /> ".BNRLAN_46.": ".$images[$c];
+			$text .= " /> ".BNRLAN_46.": ".$images[$c]['fname']."<br />";
 		} else {
-			$text .= " /> <img src='".e_IMAGE."banners/".$images[$c]."' alt='' /><br />";
+			$text .= " /> <img src='$image' alt='' /><br />";
 		}
 		$c++;
 	}
@@ -448,21 +455,7 @@ if ($action == "create") {
 		".r_userclass("banner_class", $_POST['banner_active'], "off", "public,member,guest,admin,classes,nobody,classes")."
 		</td></tr>
 		 
-		<tr>
-		<td class='forumheader3'>".BNRLAN_63."</td>
-		<td class='forumheader3'>";
-	 
-	$checked1 = ($listtype == 1) ? " checked='checked' " :
-	 "";
-	$checked2 = ($listtype == 2) ? " checked='checked' " :
-	 "";
-	 
-	$text .= "
-		<input type='radio' {$checked1} name='banner_listtype' value='1' /> ".MENLAN_26."<br />
-		<input type='radio' {$checked2} name='banner_listtype' value='2' /> ".MENLAN_27."<br /><br />".MENLAN_28."<br />
-		<textarea name='banner_pages' cols='60' rows='10' class='tbox'>$campaign_pages</textarea>
-		</td>
-		</tr>
+		
 		 
 		<tr><td colspan='2' style='text-align:center' class='forumheader'>";
 	$text .= ($sub_action == "edit" && $id ? "<input class='button' type='submit' name='updatebanner' value='".BNRLAN_40."' /><input type='hidden' name='eid' value='".$id."'" : "<input class='button' type='submit' name='createbanner' value='".BNRLAN_41."' />");
@@ -474,84 +467,7 @@ if ($action == "create") {
 	 
 }
 	
-if ($action == "cvis") {
-	$text = "<br />
-		<div style='text-align:center'>
-		<form method='post' action='".e_SELF."?".e_QUERY."' name='menu_conf_form'>
-		<table style='".ADMIN_WIDTH."' class='fborder'>
-		 
-		<tr>
-		<td style='width:40%' class='forumheader3'>".BNRLAN_49."</td>
-		<td style='width:60%' class='forumheader3'>
-		<select id='visibility' name='visibility' class='tbox' onchange=\"document.location=this.options[this.selectedIndex].value;\" >
-		".$rs->form_option(BNRLAN_50, TRUE, " ");
-	$sql2 = new db;
-	$category_total = $sql2->db_Select("banner", "DISTINCT(SUBSTRING_INDEX(banner_campaign, '^', 1)) as banner_campaign", "ORDER BY banner_campaign", "mode=no_where");
-	while ($row = $sql2->db_Fetch()) {
-		extract($row);
-		$text .= $rs->form_option($banner_campaign, "", e_SELF."?cvis.".$banner_campaign);
-	}
-	$text .= $rs->form_select_close()."
-		</td>
-		</tr>
-		 
-		</table>
-		</form>
-		</div>";
-	 
-	$ns->tablerender(BNRLAN_51, $text);
-	 
-	if ($action == "cvis" && $sub_action) {
-		 
-		foreach($menu_pref as $k => $v) {
-			if (preg_match("#^banner_pages-$sub_action#", $k)) {
-				$listtypearray = explode("-", $v);
-				$listtype = $listtypearray[0];
-				$campaign_pages = preg_replace("#\|#", "\n", $listtypearray[1]);
-			}
-		}
-		 
-		$bannerclassname = "banner_class-".$sub_action;
-		$bannerclassvalue = ($menu_pref[$bannerclassname] ? $menu_pref[$bannerclassname] : "0" );
-		$bannerpagesname = "banner_pages-".$sub_action;
-		$checked1 = ($listtype == 1) ? " checked='checked' " :
-		 "";
-		$checked2 = ($listtype == 2) ? " checked='checked' " :
-		 "";
-		 
-		$text = "
-			<div style='text-align:center'>
-			<form method='post' action='".e_SELF."?".e_QUERY."'>\n
-			<table style='".ADMIN_WIDTH."' class='fborder'>
-			<tr>
-			<td style='width:40%' class='forumheader3'>".BNRLAN_39."</td>
-			<td style='width:60%' class='forumheader3'>
-			<input type='hidden' name='campaign' value='".$sub_action."' />
-			".MENLAN_4."
-			".r_userclass($bannerclassname, $bannerclassvalue, "off", "public,member,guest,admin,classes,nobody")."
-			</td>
-			</tr>
-			<tr>
-			<td style='width:40%' class='forumheader3'>".BNRLAN_63."</td>
-			<td style='width:60%' class='forumheader3'><br />
-			<input type='radio' {$checked1} name='listtype' value='1' /> ".MENLAN_26."<br />
-			<input type='radio' {$checked2} name='listtype' value='2' /> ".MENLAN_27."<br /><br />".MENLAN_28."<br />
-			<textarea name='$bannerpagesname' cols='60' rows='10' class='tbox'>$campaign_pages</textarea><br /><br />
-			</td>
-			</tr>
-			<tr>
-			<td colspan='2' class='forumheader' style='text-align:center'><input class='button' type='submit' name='updatevisibility' value='".MENLAN_6."' /></td>
-			</tr>
-			</table>
-			</form>
-			</div>";
-		 
-		$caption = BNRLAN_52." : ".$sub_action;
-		 
-		$ns->tablerender($caption, $text);
-	}
-	 
-}
+
 	
 if ($action == "opt") {
 	 
@@ -597,16 +513,30 @@ function banner_adminmenu() {
 	 
 	$var['create']['text'] = BNRLAN_59;
 	$var['create']['link'] = e_SELF."?create";
-	 
-	$var['cat']['text'] = BNRLAN_60;
-	$var['cat']['link'] = e_SELF."?cvis";
+
+	$var['campaign']['text'] = "campaigns";
+	$var['campaign']['link'] = e_SELF."?cam";
 	 
 	$var['opt']['text'] = BNRLAN_57;
 	$var['opt']['link'] = e_SELF."?opt";
 	 
 	show_admin_menu(BNRLAN_62, $act, $var);
 }
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 require_once("footer.php");
 	
 ?>
