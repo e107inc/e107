@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-09-30 12:16:13 $
-|     $Author: loloirie $
+|     $Revision: 1.3 $
+|     $Date: 2004-10-03 15:51:53 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -236,7 +236,7 @@ class links{
                                 $text .= "<tr>
                                 <td style='width:5%' class='forumheader3'>$link_id</td>
                                 <td style='width:10%' class='forumheader3'>".$cat[$link_category]."</td>
-                                <td style='width:50%' class='forumheader3'><a href='".e_BASE."comment.php?comment.news.$link_id'></a>$link_name</td>
+                                <td style='width:50%' class='forumheader3'><a href='".e_BASE."comment.php?comment.news.$link_id'></a>$link_name<br />({$link_url})</td>
                                 <td style='width:25%; text-align:center' class='forumheader3'>".
                                 $rs -> form_open("post", e_SELF,"myform_{$link_id}","",""," onsubmit=\"return confirm_('create',$link_id)\"")."<div>".
                                 $rs -> form_button("button", "main_edit_{$link_id}", LCLAN_9, "onclick=\"document.location='".e_SELF."?create.edit.$link_id'\"")."
