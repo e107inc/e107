@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-01-09 18:12:38 $
+|     $Revision: 1.9 $
+|     $Date: 2005-01-10 09:49:03 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -24,6 +24,7 @@ if(IsSet($_POST['newver'])){
 }
 
 if(!getperms("1")){ header("location:".e_BASE."index.php"); exit;}
+$e_sub_cat = 'prefs';
 if(!$pref['timezone']){ $pref['timezone'] = "GMT"; }
 
 require_once(e_HANDLER."form_handler.php");

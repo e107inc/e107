@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/updateadmin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-05 16:57:37 $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-10 09:49:03 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
+$e_sub_cat = 'admin_pass';
 require_once("auth.php");
 
 if(IsSet($_POST['update_settings'])){

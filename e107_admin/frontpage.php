@@ -11,13 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/frontpage.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-05 16:57:37 $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-10 09:49:03 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 if(!getperms("G")){ header("location:".e_BASE."index.php"); exit; }
+$e_sub_cat = 'frontpage';
 $aj = new textparse;
 if(IsSet($_POST['updatesettings'])){
         if($_POST['frontpage'] == "other"){

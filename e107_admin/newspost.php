@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.10 $
-|   $Date: 2005-01-09 18:12:38 $
+|   $Revision: 1.11 $
+|   $Date: 2005-01-10 09:49:03 $
 |   $Author: sweetas $
 +---------------------------------------------------------------+
 
@@ -25,6 +25,7 @@ if($pref['htmlarea']){
     $htmlarea_js = (eregi("MSIE",$_SERVER['HTTP_USER_AGENT']))? htmlarea("data,news_extended"): htmlarea("data");
 }
 if(!getperms("H")){ header("location:".e_BASE."index.php"); exit;}
+$e_sub_cat = 'news';
 
 require_once(e_HANDLER."textparse/basic.php");
 $etp = new e107_basicparse;

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/ad_links.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-01-10 00:33:47 $
+|     $Revision: 1.8 $
+|     $Date: 2005-01-10 09:49:02 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -126,11 +126,50 @@ if (!defined('E_32_LANGUAGE')) { define('E_32_LANGUAGE', "<img src='".e_IMAGE."a
 if (!defined('E_32_PLUGIN')) { define('E_32_PLUGIN', "<img src='".e_IMAGE."admin_images/plugins_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
 if (!defined('E_32_PLUGMANAGER')) { define('E_32_PLUGMANAGER', "<img src='".e_IMAGE."admin_images/plugmanager_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
 if (!defined('E_32_DOCS')) { define('E_32_DOCS', "<img src='".e_IMAGE."admin_images/docs_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_MAIN')) { define('E_32_MAIN', "<img src='".e_IMAGE."admin_images/main_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
 
 // Large Admin Other Images
 if (!defined('E_32_COMMENT')) { define('E_32_COMMENT', "<img src='".e_IMAGE."admin_images/comments_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
 if (!defined('E_32_ADMINLOG')) { define('E_32_ADMINLOG', "<img src='".e_IMAGE."admin_images/adminlogs_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
 
+$e_icon_array = array(
+	'main' => E_32_MAIN,
+	'admin' => E_32_ADMIN,
+	'admin_pass' => E_32_ADPASS,
+	'article' => E_32_ARTICLE,
+	'banlist' => E_32_BANLIST,
+	'banner' => E_32_BANNER,
+	'cache' => E_32_CACHE,
+	'chatbox' => E_32_CHAT,
+	'content' => E_32_CONT,
+	'custom' => E_32_CUST,
+	'database' => E_32_DATAB,
+	'docs' => E_32_DOCS,
+	'download' => E_32_DOWNL,
+	'emoticon' => E_32_EMOTE,
+	'filemanage' => E_32_FILE,
+	'forum' => E_32_FORUM,
+	'frontpage' => E_32_FRONT,
+	'image' => E_32_IMAGES,
+	'language' => E_32_LANGUAGE,
+	'links' => E_32_LINKS,
+	'log' => E_32_STATS,
+	'mail' => E_32_MAIL,
+	'menus' => E_32_MENUS,
+	'meta' => E_32_META,
+	'newsfeed' => E_32_NEWSFEED,
+	'news' => E_32_NEWS,
+	'phpinfo' => E_32_PHP,
+	'plug_manage' => E_32_PLUGMANAGER,
+	'poll' => E_32_POLLS,
+	'prefs' => E_32_PREFS,
+	'review' => E_32_REVIEW,
+	'maintain' => E_32_MAINTAIN,
+	'upload' => E_32_UPLOADS,
+	'userclass' => E_32_USERCLASS,
+	'users' => E_32_USER,
+	'wmessage' => E_32_WELCOME
+);
 
 $admin_cat['title'][1] = ADLAN_CL_1;
 $admin_cat['id'][1] = 'setMenu';
@@ -207,6 +246,6 @@ $array_functions = array(
 	29 => array(e_ADMIN."users.php", ADLAN_36, ADLAN_37, "4", 2, E_16_USER, E_32_USER),
 	30 => array(e_ADMIN."userclass2.php", ADLAN_38, ADLAN_39, "4", 2, E_16_USERCLASS, E_32_USERCLASS),
 	31 => array(e_ADMIN."language.php", ADLAN_132, ADLAN_133, "0", 1, E_16_LANGUAGE, E_32_LANGUAGE),
-	31 => array(e_ADMIN."mailout.php", ADLAN_136, ADLAN_137, "W", 2, E_16_MAIL, E_32_MAIL),
+	32 => array(e_ADMIN."mailout.php", ADLAN_136, ADLAN_137, "W", 2, E_16_MAIL, E_32_MAIL),
 );
 ?>

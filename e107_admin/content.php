@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/content.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-09 18:12:38 $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-10 09:49:02 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -25,6 +25,7 @@ if(!getperms("J") && !getperms("K") && !getperms("L")){
         header("location:".e_HTTP."index.php");
         exit;
 }
+$e_sub_cat = 'content';
 
 require_once(e_HANDLER."textparse/basic.php");
 $etp = new e107_basicparse;
@@ -135,7 +136,7 @@ if(!$content_total = $sql -> db_Select("content", "*", "content_type='254' OR co
         }
         $text .= "</table>\n</form>";
 }
-$text .= "</div></div>";
+$text .= "<br /></div></div>";
 
 $ns -> tablerender(CNTLAN_5, $text);
 

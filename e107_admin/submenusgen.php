@@ -11,13 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/submenusgen.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-09 18:12:38 $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-10 09:49:03 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 if(!getperms("I")){ header("location:".e_BASE."index.php"); }
+$e_sub_cat = 'links';
 $lan_file = e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_links.php";
 if(file_exists($lan_file)){@include_once($lan_file);}
 else{@include_once(e_LANGUAGEDIR."english/admin/lan_links.php");}

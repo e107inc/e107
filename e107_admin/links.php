@@ -11,14 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-01-09 18:12:38 $
+|     $Revision: 1.11 $
+|     $Date: 2005-01-10 09:49:03 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
 require_once("../class2.php");
 if(!getperms("I")){ header("location:".e_BASE."index.php"); }
+$e_sub_cat = 'links';
 
 require_once(e_HANDLER."textparse/basic.php");
 $etp = new e107_basicparse;
