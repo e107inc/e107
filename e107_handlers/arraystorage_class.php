@@ -15,7 +15,6 @@ class ArrayData {
 	*/
 	function WriteArray(&$ArrayData, $AddSlashes = true) {
 		if (!is_array($ArrayData)) {
-			echo 'Input should be an array';
 			return false;
 		}
 		$Array = var_export($ArrayData, true);
@@ -33,9 +32,8 @@ class ArrayData {
 	*/
 	function ReadArray(&$ArrayData) {
 		$ArrayData = '$data = '.trim($ArrayData).';';
-		eval('$data = '.$ArrayData.';');
+		@eval('$data = '.$ArrayData.';');
 		if (!is_array($data)) {
-			echo 'Input should be stored array data';
 			return false;
 		}
 		return $data;
