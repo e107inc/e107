@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/stats.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:45 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-07 10:41:35 $
+|     $Author: pholzmann $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -148,7 +148,9 @@ function parse_data($row, $amount, $total, $action_n, $lan){
         $c=0;
         if(!$amount && $amount != 6){
                 while($data[$c][0]){
-                        if($action_n == 3 || $action_n == 4){
+			switch ($action_n) {
+			case 3:
+			case 4: // browser
                                 $imagepath = e_IMAGE."log/";
                                 if(eregi("windows", $data[$c][1])){ $image = $imagepath."windows.png";
                                 }else if(eregi("netscape", $data[$c][1])){ $image = $imagepath."netscape.png";
@@ -160,6 +162,8 @@ function parse_data($row, $amount, $total, $action_n, $lan){
                                 }else if(eregi("firebird", $data[$c][1])){ $image = $imagepath."firebird.png";
                                 }else if(eregi("firefox", $data[$c][1])){ $image = $imagepath."firefox.png";
                                 }else if(file_exists($imagepath.strtolower($data[$c][1])).".png"){ $image = $imagepath.strtolower($data[$c][1]).".png";}else{unset($image);}
+				break;
+			case 6: //referrer
                         }
 
                         $tmp = explode(".", $data[$c][2]); $width = $tmp[0];
@@ -177,7 +181,9 @@ function parse_data($row, $amount, $total, $action_n, $lan){
         }else{
                 for($r=0; $r<=9; $r++){
                         if($data[$c][0]){
-                                if($action_n == 3 || $action_n == 4){
+				switch ($action_n) {
+				case 3:
+				case 4: // browser
                                         $imagepath = e_IMAGE."log/";
                                         if(eregi("windows", $data[$c][1])){ $image = $imagepath."windows.png";
                                         }else if(eregi("netscape", $data[$c][1])){ $image = $imagepath."netscape.png";
@@ -189,12 +195,18 @@ function parse_data($row, $amount, $total, $action_n, $lan){
                                         }else if(eregi("firebird", $data[$c][1])){ $image = $imagepath."firebird.png";
                                         }else if(eregi("firefox", $data[$c][1])){ $image = $imagepath."firefox.png";
                                         }else if(file_exists($imagepath.strtolower($data[$c][1])).".png"){ $image = $imagepath.strtolower($data[$c][1]).".png";}else{unset($image);}
+					break;
+				case 6: // referrer
                                 }
 
 
                                 $tmp = explode(".", $data[$c][2]); $width = $tmp[0];
                                 if(eregi("http://", $data[$c][1])){
+				    if (strlen($data[$c][1])< 23){
                                         $data[$c][1] = "<a href='".$data[$c][1]."' rel='external'>".$data[$c][1]."</a>";
+				    } else {
+					$data[$c][1] = "<a href='".$data[$c][1]."' rel='external'>".substr($data[$c][1],0,20)."...</a>";
+ 				    }
                                 }
                                 $str .= "<tr>\n<td style='width:25%' class='forumheader3'>";
 
