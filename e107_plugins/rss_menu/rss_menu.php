@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss_menu.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-02-10 18:42:50 $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-18 18:00:42 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -41,10 +41,6 @@ if(!$des) {
 	$type = 1;
 	$des = BACKEND_MENU_L3;
 }
-
-
-
-
 
 $text = "<div style='text-align:center' class='smalltext'>
 ".$des.BACKEND_MENU_L1."<br />
