@@ -13,5 +13,6 @@
 */
 
 define("BANNER_MENU_L1", "Advertisement");
+define("BANNER_MENU_L2", "Banner menu configuration saved");
 
 ?>
