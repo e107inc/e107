@@ -564,6 +564,7 @@ CREATE TABLE userclass_classes (
   userclass_id tinyint(3) unsigned NOT NULL default '0',
   userclass_name varchar(100) NOT NULL default '',
   userclass_description varchar(250) NOT NULL default '',
+  userclass_editclass tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (userclass_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
@@ -587,6 +588,7 @@ CREATE TABLE parser (
   parser_id int(10) unsigned NOT NULL auto_increment,
   parser_pluginname varchar(100) NOT NULL default '',
   parser_regexp varchar(100) NOT NULL default '',
-  PRIMARY KEY  (parser_id)
+  PRIMARY KEY  (parser_id),
+  UNIQUE KEY parser_regexp (parser_regexp)
 ) TYPE=MyISAM;
 # --------------------------------------------------------

@@ -40,12 +40,13 @@ function update_615_to_616($type){
 		mysql_query("ALTER TABLE ".MPREFIX."comments ADD comment_subject VARCHAR( 100 ) NOT NULL AFTER comment_item_id ");
 		mysql_query("ALTER TABLE ".MPREFIX."user ADD user_customtitle VARCHAR( 100 ) NOT NULL AFTER user_name ");
 		mysql_query("ALTER TABLE ".MPREFIX."parser ADD UNIQUE (parser_regexp)");
+		mysql_query("ALTER TABLE ".MPREFIX."userclass_classes ADD userclass_editclass TINYINT( 3 ) UNSIGNED NOT NULL ");
 	} else {
 		global $mySQLdefaultdb;
-		$fields = mysql_list_fields($mySQLdefaultdb,MPREFIX."download");
+		$fields = mysql_list_fields($mySQLdefaultdb,MPREFIX."userclass_classes");
 		$columns = mysql_num_fields($fields);
 		for ($i = 0; $i < $columns; $i++) {
-	   	if("download_comment" == mysql_field_name($fields, $i)){return TRUE;}
+	   	if("userclass_editclass" == mysql_field_name($fields, $i)){return TRUE;}
 		}
 		return FALSE;
 	}
