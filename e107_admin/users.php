@@ -14,6 +14,10 @@
 */
 require_once("../class2.php");
 if(!getperms("4")){ header("location:".e_BASE."index.php"); exit;}
+
+require_once(e_HANDLER."textparse/basic.php");
+$etp = new e107_basicparse;
+
 require_once("auth.php");
 $user = new users;
 require_once(e_HANDLER."form_handler.php");
@@ -383,14 +387,15 @@ if($action == "create"){
 //$user -> show_options($action);
 require_once("footer.php");
 function headerjs(){
+global $etp;
 $header_js= "<script type=\"text/javascript\">
 function confirm_(mode, user_id, user_name){
         if(mode == 'cat'){
-                var x=confirm(\"".NWSLAN_37." [ID: \" + user_id + \"]\");
+                var x=confirm(\"".$etp->unentity(NWSLAN_37)." [ID: \" + user_id + \"]\");
         }else if(mode == 'sn'){
-                var x=confirm(\"".NWSLAN_38." [ID: \" + user_id + \"]\");
+                var x=confirm(\"".$etp->unentity(NWSLAN_38)." [ID: \" + user_id + \"]\");
         }else{
-                var x=confirm(\"".USRLAN_82." [".USRLAN_61.": \" + user_name + \"]\");
+                var x=confirm(\"".$etp->unentity(USRLAN_82)." [".USRLAN_61.": \" + user_name + \"]\");
         }
 if(x)
         if(mode == 'cat'){
