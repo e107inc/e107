@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-03-24 10:53:35 $
-|     $Author: stevedunstan $
+|     $Revision: 1.16 $
+|     $Date: 2005-03-24 21:00:26 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,7 +27,7 @@ class themeHandler{
 	/* constructor */
 
 	function themeHandler() {
-		
+
 		if (isset($_POST['upload'])) {
 			$this -> themeUpload();
 		}
@@ -138,7 +138,7 @@ class themeHandler{
 		return $themeArray;
 	}
 
-	
+
 
 	function themeUpload()
 	{
@@ -154,7 +154,7 @@ class themeHandler{
 			$fileName = $file_userfile['name'][0];
 			$fileSize = $file_userfile['size'][0];
 			$fileType = $file_userfile['type'][0];
-			
+
 			if(strstr($file_userfile['type'][0], "gzip")) {
 				$fileType = "tar";
 			} else if (strstr($file_userfile['type'][0], "zip")) {
@@ -224,13 +224,13 @@ class themeHandler{
 			}
 		}
 		$ns->tablerender(TPVLAN_26." :: ".TPVLAN_34, $text);
-		
+
 
 		if(!is_writable(e_THEME)) {
 			$ns->tablerender(TPVLAN_16, TPVLAN_15);
 			$text = "";
 		} else {
-			$text = "
+			$text = "<div style='text-align:center'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
 			<td class='forumheader3' style='width: 50%;'>".TPVLAN_13."</td>
@@ -246,7 +246,7 @@ class themeHandler{
 			</td>
 			</tr>
 			</table>
-			<br />\n";
+			<br /></div>\n";
 		}
 
 		$ns->tablerender(TPVLAN_26." :: ".TPVLAN_38, $text);
@@ -259,7 +259,7 @@ class themeHandler{
 			}
 		}
 
-		
+
 
 		$ns->tablerender(TPVLAN_26." :: ".TPVLAN_39, $text);
 		echo "</form>\n</div>\n";
@@ -281,21 +281,21 @@ class themeHandler{
 
 		$author = ($theme['email'] ? "<a href='mailto:".$theme['email']."' title='$".$theme['email']."'>".$theme['author']."</a>" : $theme['author']);
 		$website = ($theme['website'] ? "<a href='".$theme['website']."' rel='external'>".$theme['website']."</a>" : "");
-		$preview = "<a href='".e_SELF."?preview.".$theme['id']."' title='".TPVLAN_9."'>".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;' alt='' />" : "<img src='".e_IMAGE."generic/nopreview.png' title='".TPVLAN_12."' alt='' />")."</a>";
+		$preview = "<a href='".e_SELF."?preview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;width:200px' alt='' />" : "<img src='".e_IMAGE."generic/nopreview.png' style='border:0px' title='".TPVLAN_12."' alt='' />")."</a>";
 		$selectmainbutton = ($mode != 1 ? "<input class='button' type='submit' name='selectmain_".$theme['id']."' value='".TPVLAN_10."' />" : "");
 		$selectadminbutton = ($mode != 2 ? "<input class='button' type='submit' name='selectadmin_".$theme['id']."' value='".TPVLAN_32."' />" : "");
 		$previewbutton = (!$mode ? "<input class='button' type='submit' name='preview_".$theme['id']."' value='".TPVLAN_9."' /> " : "");
 
-		$text = "
+		$text = "<div style='text-align:center;margin-left:auto;margin-right:auto'>
 		<table style='".ADMIN_WIDTH."' class='fborder'>
 		<tr>
-		<td class='forumheader3' style='width:30%; text-align:center; vertical-align:top'>$preview
+		<td class='forumheader3' style='width:202px; text-align:center; vertical-align:top'>$preview
 		<br />
 		<br />
 		<b><span class='mediumtext'>".$theme['name']."</span></b><br />".TPVLAN_11." ".$theme['version']."
 		<br />
 		</td>
-		<td class='forumheader3' style='width:70%;vertical-align:top'>
+		<td class='forumheader3' style='vertical-align:top'>
 		<table cellspacing='3' style='width:97%'>
 		<tr><td style='vertical-align:top;width:24%'><b>".TPVLAN_4."</b>:</td><td style='vertical-align:top'> $author</td></tr>
 		<tr><td style='vertical-align:top'><b>".TPVLAN_5."</b>:</td><td style='vertical-align:top'> $website</td></tr>
@@ -306,9 +306,9 @@ class themeHandler{
 		</td>
 		</tr>
 		</table>";
-			
-		
-		
+
+
+
 		if(array_key_exists("multipleStylesheets", $theme))
 		{
 			$text .= "<br /><br />";
@@ -332,7 +332,7 @@ class themeHandler{
 					}
 				}
 				$text .= "</td></tr></table>";
-				
+
 			}
 			else
 			{
@@ -343,7 +343,7 @@ class themeHandler{
 				}
 			}
 		}
-			
+
 			if($mode == 1)
 			{
 				$text .= "<table cellspacing='3' style='width:97%'>
@@ -359,11 +359,11 @@ class themeHandler{
 				<input class='button' type='submit' name='submit_style' value='".TPVLAN_35."' />
 				</td></tr></table>";
 			}
-			
 
 
 
-		
+
+
 
 		if($mode == 2)
 		{
@@ -403,9 +403,9 @@ class themeHandler{
 		}
 
 
-		$text .= "</td></tr></table>\n";
+		$text .= "</td></tr></table></div>\n";
 		return $text;
-		
+
 	}
 
 	function themePreview()
