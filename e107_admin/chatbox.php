@@ -17,8 +17,9 @@ if(!getperms("C")){ header("location:".e_BASE."index.php"); exit ;}
 
 require_once("auth.php");
 
-if($action == "u"){
-        $message = CHBLAN_1;
+if(e_QUERY == "u")
+{
+	$message = CHBLAN_1;
 }
 
 if(IsSet($_POST['moderate'])){

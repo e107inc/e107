@@ -25,6 +25,7 @@ if(IsSet($_POST['wmsubmit'])){
 	$sql -> db_Update("wmessage", "wm_text ='$guestmessage', wm_active='".$_POST['wm_active1']."' WHERE wm_id='1' ");
 	$sql -> db_Update("wmessage", "wm_text ='$membermessage', wm_active='".$_POST['wm_active2']."' WHERE wm_id='2' ");
 	$sql -> db_Update("wmessage", "wm_text ='$adminmessage', wm_active='".$_POST['wm_active3']."' WHERE wm_id='3' ");
+	$message = WMGLAN_7;
 }
 
 if(IsSet($message)){
