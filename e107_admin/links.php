@@ -40,6 +40,7 @@ if($action == "dec"){
 	$location = $qs[3];
 	$sql -> db_Update("links", "link_order=link_order-1 WHERE link_order='".($link_order+1)."' AND link_category='$location' ");
 	$sql -> db_Update("links", "link_order=link_order+1 WHERE link_id='$linkid' AND link_category='$location' ");
+	clear_cache("sitelinks");
 	header("location: links.php?order");
 }
 
@@ -51,6 +52,7 @@ if($action == "inc"){
 	$location = $qs[3];
 	$sql -> db_Update("links", "link_order=link_order+1 WHERE link_order='".($link_order-1)."' AND link_category='$location' ");
 	$sql -> db_Update("links", "link_order=link_order-1 WHERE link_id='$linkid' AND link_category='$location' ");
+	clear_cache("sitelinks");
 	header("location: links.php?order");
 }
 
@@ -72,6 +74,7 @@ if(IsSet($_POST['update_order'])){
 		$tmp = explode(".", $id);
 		$sql -> db_Update("links", "link_order=".$tmp[1]." WHERE link_id=".$tmp[0]);
 	}
+	clear_cache("sitelinks");
 	$linkpost -> show_message(LCLAN_6);
 }
 
@@ -90,6 +93,7 @@ if($action == "order"){
 
 if($action == "main" && $sub_action == "confirm"){
 	if($sql -> db_Delete("links", "link_id='$id' ")){
+		clear_cache("sitelinks");
 		$linkpost -> show_message(LCLAN_53." #".$id." ".LCLAN_54);
 	}
 }
@@ -396,9 +400,11 @@ class links{
 
 		if($id && $sub_action != "sn"){
 			$sql -> db_Update("links", "link_name='$link_name', link_url='$link_url', link_description='$link_description', link_button= '$link_button', link_category='".$_POST['cat_id']."', link_open='".$_POST['linkopentype']."', link_class='".$_POST['link_class']."' WHERE link_id='$id'");
+			clear_cache("sitelinks");
 			$this->show_message(LCLAN_3);
 		}else{
 			$sql -> db_Insert("links", "0, '$link_name', '$link_url', '$link_description', '$link_button', '".$_POST['cat_id']."', '".($link_t+1)."', '0', '".$_POST['linkopentype']."', '".$_POST['link_class']."'");
+			clear_cache("sitelinks");
 			$this->show_message(LCLAN_2);
 		}
 		if($sub_action == "sn"){
