@@ -5,6 +5,8 @@ function r_userclass($fieldname, $curval=0, $mode="off"){
 	$text="<select class='tbox' name='{$fieldname}'>\n";
 	($curval==e_UC_PUBLIC) ? $s=" selected" : $s="";
 	$text.="<option  value='".e_UC_PUBLIC."' ".$s.">Everyone (public)\n";
+	($curval==e_UC_GUEST) ? $s=" selected" : $s="";
+	$text.="<option  value='".e_UC_GUEST."' ".$s.">Guests Only \n";
 	($curval==e_UC_NOBODY) ? $s=" selected" : $s="";
 	$text.="<option value='".e_UC_NOBODY."' ".$s.">No one (Inactive)\n";
 	($curval==e_UC_MEMBER) ? $s=" selected" : $s="";
@@ -31,7 +33,9 @@ function r_userclass_radio($fieldname,$curval=0){
 	($curval==e_UC_PUBLIC) ? $c=" checked" : $c="";
 	$text="<input type='radio' name='{$fieldname}' value='".e_UC_PUBLIC."' ".$c.">Everyone (public)<br />";
 	($curval==e_UC_NOBODY) ? $c=" checked" : $c="";
-	$text.="<input type='radio' name='{$fieldname}' value='".e_UC_NOBODY."' ".$c.">No one (Inactive)<br />";
+	$text.="<input type='radio' name='{$fieldname}' value='".e_UC_NOBODY."' ".$c.">No one (Inactive)<br />";	
+	($curval==e_UC_GUEST) ? $c=" checked" : $c="";
+	$text.="<input type='radio' name='{$fieldname}' value='".e_UC_GUEST."' ".$c.">Guests Only<br />";
 	($curval==e_UC_MEMBER) ? $c=" checked" : $c="";
 	$text.="<input type='radio' name='{$fieldname}' value='".e_UC_MEMBER."' ".$c.">Members only<br />";
 	if($sql -> db_Select("userclass_classes")){
