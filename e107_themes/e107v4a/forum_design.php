@@ -22,7 +22,7 @@ $FORUMSTART = "
 <td class='nforumcaption2' colspan='2'>
 <table cellspacing='0' cellpadding='0' style='width:100%'>
 <tr>
-<td class='smalltext'>{NEXTPREV}</td>
+<td>{NEXTPREV}</td>
 <td style='text-align:right'>&nbsp;{TRACK}&nbsp;</td>
 </tr>
 </table>
@@ -60,7 +60,7 @@ $FORUMTHREADSTYLE = "
 </td>
 </tr>	
 <tr>
-<td class='nforumthread' style='vertical-align:top'>\n{AVATAR}\n<span class='smalltext'>\n{LEVEL}\n{MEMBERID}\n{JOINED}\n{POSTS}\n</span>\n</td>
+<td class='nforumthread' style='vertical-align:top'>\n{AVATAR}\n<span class='smalltext'>\n{CUSTOMTITLE}\n{LEVEL}\n{MEMBERID}\n{JOINED}\n{POSTS}\n</span>\n</td>
 <td class='nforumthread' style='vertical-align:top'>\n{POST}\n{SIGNATURE}\n</td>
 </tr>		
 <tr>
@@ -79,6 +79,10 @@ $FORUMTHREADSTYLE = "
 
 $FORUMEND = "
 <div class='spacer'>
+<div class='forumheader'>
+{GOTOPAGES}
+</div>
+<br />
 <table style='width:100%' class='nforumholder' cellpadding=0 cellspacing=0>
 <tr>
 <td style='width:50%; text-align:left; vertical-align:top' class='nforumthread'><b>{MODERATORS}</b><br />{FORUMJUMP}</td>
@@ -93,38 +97,6 @@ $FORUMEND = "
 </tr>
 </table>
 <div class='nforumdisclaimer' style='text-align:center'>Forum theme loosely based on <a href='http://www.invisionpower.com/'>Invision Power Board</a></div>
-</div>";
-
-$FORUMREPLYSTYLE = "
-<div class='spacer'>
-<table style='width:100%' class='nforumholder' cellpadding=0 cellspacing=0>
-<tr>
-<td class='nforumreplycaption' style='vertical-align:middle; width:20%;'>\n{NEWFLAG}\n{POSTER}\n</td>
-<td class='nforumreplycaption' style='vertical-align:middle; width:80%;'>
-<table cellspacing='0' cellpadding='0' style='width:100%'>
-<tr>
-<td class='smallblacktext'>\n{THREADDATESTAMP}\n</td>
-<td style='text-align:right'>\n{EDITIMG}{QUOTEIMG}\n</td>
-</tr>
-</table>
-</td>
-</tr>	
-<tr>
-<td class='nforumreply' style='vertical-align:top'>\n{AVATAR}\n<span class='smalltext'>\n{LEVEL}\n{MEMBERID}\n{JOINED}\n{POSTS}\n</span>\n</td>
-<td class='nforumreply' style='vertical-align:top'>\n{POST}\n{SIGNATURE}\n</td>
-</tr>		
-<tr>
-<td class='nforumreply2'>\n<span class='smallblacktext'>\n{TOP}\n</span>\n</td>
-<td class='nforumreply2' style='vertical-align:top'>
-<table cellspacing='0' cellpadding='0' style='width:100%'>
-<tr>
-<td>\n{PROFILEIMG}\n {EMAILIMG}\n {WEBSITEIMG}\n {PRIVMESSAGE}\n</td>
-<td style='text-align:right'>\n{MODOPTIONS}\n</td>
-</tr>
-</table>
-</td>
-</tr>		
-</table>
 </div>";
 
 

@@ -60,7 +60,7 @@ $FORUMTHREADSTYLE = "
 </td>
 </tr>	
 <tr>
-<td class='nforumthread' style='vertical-align:top'>\n{AVATAR}\n<span class='smalltext'>\n{LEVEL}\n{MEMBERID}\n{JOINED}\n{POSTS}\n</span>\n</td>
+<td class='nforumthread' style='vertical-align:top'>\n{AVATAR}\n<span class='smalltext'>\n{CUSTOMTITLE}\n{LEVEL}\n{MEMBERID}\n{JOINED}\n{POSTS}\n</span>\n</td>
 <td class='nforumthread' style='vertical-align:top'>\n{POST}\n{SIGNATURE}\n</td>
 </tr>		
 <tr>
