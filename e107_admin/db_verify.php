@@ -11,34 +11,34 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db_verify.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-27 19:52:24 $
-|     $Author: streaky $
+|     $Revision: 1.6 $
+|     $Date: 2005-03-29 16:03:24 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 $e_sub_cat = 'database';
 require_once("auth.php");
-	
+
 $filename = "sql/core_sql.php";
 @$fd = fopen ($filename, "r");
 $sql_data = @fread($fd, filesize($filename));
 @fclose ($fd);
-	
+
 if (!$sql_data) {
 	echo DBLAN_1."<br /><br />";
 	exit;
 }
-	
+
 $tables["core"] = $sql_data;
-	
+
 // require_once(HEADERF);
-	
+
 if (!getperms("0")) {
 	header("location:".e_BASE."index.php");
 	exit;
 }
-	
+
 //Get any plugin _sql.php files
 $handle = opendir(e_PLUGIN);
 $c = 1;
@@ -58,8 +58,8 @@ while (false !== ($file = readdir($handle))) {
 	}
 }
 closedir($handle);
-	
-	
+
+
 function read_tables($tab) {
 	global $tablines;
 	global $table_list;
@@ -82,7 +82,7 @@ function read_tables($tab) {
 		$x = 1;
 	}
 }
-	
+
 function get_current($tab, $prefix = "") {
 	if (!$prefix) {
 		$prefix = MPREFIX;
@@ -97,16 +97,17 @@ function get_current($tab, $prefix = "") {
 		return FALSE;
 	}
 }
-	
+
 function check_tables($what) {
 	global $tablines;
 	global $table_list;
 	global $ns;
-	 
+
 	$table_list = "";
 	read_tables($what);
-	 
-	$text = "<div style='text-align:center'>
+
+	$text = "<form method='POST' action='".e_SELF."' id='checktab'>
+		<div style='text-align:center'>
 		<table style='".ADMIN_WIDTH."' class='fborder'>
 		<tr>
 		<td class='fcaption' style='text-align:center'>".DBLAN_4."</td>
@@ -148,13 +149,13 @@ function check_tables($what) {
 					$xl = ltrim(rtrim(stripslashes($xl)));
 					$xl = preg_replace("/\r?\n$|\r[^\n]$/", "", $xl);
 					list($xfname, $xfparams) = split(" ", $xl, 2);
-					 
+
 					if ($xfname == "KEY") {
 						list($key, $keyname, $keyparms) = split(" ", $xl, 3);
 						$xfname = $key." ".$keyname;
 						$xfparams = $keyparms;
 					}
-					 
+
 					if ($xfname != "CREATE" && $xfname != ")") {
 						$xfields[$xfname] = 1;
 					}
@@ -164,7 +165,8 @@ function check_tables($what) {
 						$ffound = 1;
 						if (strcasecmp($fparams, $xfparams) != 0) {
 							$text .= "<td class='forumheader' style='text-align:center'>".DBLAN_8."</td>";
-							$text .= "<td class='forumheader3' style='text-align:center'>".DBLAN_9."<div class='indent'>".$xfparams."</div><b>".DBLAN_10."</b><div class='indent'>".$fparams."</div></td>";
+							$text .= "<td class='forumheader3' style='text-align:center'>".DBLAN_9."<div class='indent'>".$xfparams."</div><b>".DBLAN_10."</b><div class='indent'>".$fparams." <br />".fix_form($k,$fname,$fparams,"alter")."</div></td>";
+                        	$fix_active = TRUE;
 						} elseif($fieldnum != $xfieldnum) {
 							$text .= "<td class='fcaption' style='text-align:center'>".DBLAN_5." ".DBLAN_8."</td>
 								<td class='forumheader3' style='text-align:center'>".DBLAN_9." #{$xfieldnum}<br />".DBLAN_10." #{$fieldnum}</td>";
@@ -174,10 +176,13 @@ function check_tables($what) {
 						}
 					}
 				}
+
 				if ($ffound == 0) {
 					$text .= "<td class='forumheader' style='text-align:center'><strong><em>".DBLAN_11."</em></strong></td>
-						<td class='forumheader3' style='text-align:center'><b>".DBLAN_10." [$fparams]</b></td>";
+						<td class='forumheader3' style='text-align:center'><b>".DBLAN_10." [$fparams]</b><br />".fix_form($k,$fname,$fparams,"insert",$prev_fname)."<br /></td>";
+                    $fix_active = TRUE;
 				}
+				$prev_fname = $fname;
 				$text .= "</tr>\n";
 			}
 			foreach(array_keys($xfields) as $tf) {
@@ -190,11 +195,19 @@ function check_tables($what) {
 		}
 	}
 	$text .= "</table></div>";
+
+	if($fix_active){
+		$text .= "<div style='".ADMIN_WIDTH.";text-align:right'>
+		<input class='button' type='submit' name='do_fix' value='".DBLAN_21."' /></div>";
+	}
+
+	$text .= "</form>";
+
 	return $text;
 }
-	
+
 global $table_list;
-if (!$_POST) {
+if (!$_POST && !$_POST['do_fix']) {
 	$text = "
 		<form method='POST' action='".e_SELF."'>
 		<table border=0 align='center'>
@@ -220,5 +233,55 @@ if (!$_POST) {
 		}
 	}
 }
+
+
+if(isset($_POST['do_fix'])){
+
+	foreach( $_POST['fix_active'] as $key=>$val){
+		$table= $_POST['fix_table'][$key][0];
+		$field= $key;
+		$newval= $_POST['fix_newval'][$key][0];
+		$mode = $_POST['fix_mode'][$key][0];
+        $after = $_POST['fix_after'][$key][0];
+
+
+		if($mode == "alter"){
+			$query = "ALTER TABLE `".MPREFIX.$table."` CHANGE `$field` `$field` $newval";
+		}
+
+		if($mode == "insert"){
+	   		$query = "ALTER TABLE `".MPREFIX.$table."` ADD `$field` $newval AFTER $after";
+		}
+
+
+        $text .= "<div>";
+		$text .= $query;
+		$text .= (mysql_query($query)) ? " - <b>".LAN_UPDATED."</b>" : " - <b>".LAN_UPDATED_FAILED."</b>";
+		$text .= "</div>";
+
+
+	}
+     $text .="<div style='text-align:center'>
+				<form method='POST' action='db.php'>
+				<input class='button' type='submit' name='back' value='".DBLAN_17."' />
+				</form>
+				</div>";
+
+	$ns -> tablerender(DBLAN_20, $text);
+}
+
+
+
+
+function fix_form($table,$field, $newvalue,$mode,$after =''){
+	$text .= "<input type='checkbox'  name=\"fix_active[$field][]\" value='1' /> ".DBLAN_19."\n"; // 'attempt to fix'
+	$text .= "<input type='hidden' name=\"fix_newval[$field][]\" value=\"$newvalue\" />\n";
+    $text .= "<input type='hidden'  name=\"fix_table[$field][]\" value=\"$table\" / >\n";
+	$text .= "<input type='hidden'  name=\"fix_mode[$field][]\" value=\"$mode\" / >\n";
+	$text .= ($after) ? "<input type='hidden'  name=\"fix_after[$field][]\" value=\"$after\" / >\n" : "";
+
+	return $text;
+}
+
 require_once(e_ADMIN."footer.php");
 ?>
