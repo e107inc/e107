@@ -11,12 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2004-12-01 14:41:39 $
+|     $Revision: 1.8 $
+|     $Date: 2004-12-01 15:05:32 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
-global $tp;
+global $tp, $e107cache;
 if(IsSet($_POST['chat_submit']))
 {
 	if(!USER && !$pref['anon_post'])
@@ -106,7 +106,7 @@ if($emessage != ""){
 	$texta .= "<div style='text-align:center'><b>".$emessage."</b></div>";
 }
 
-if(!$text = retrieve_cache("chatbox"))
+if(!$text = $e107cache->retrieve("chatbox"))
 {
 	global $pref,$tp;
 	$chatbox_posts = $pref['chatbox_posts'];
@@ -190,7 +190,6 @@ if(!$text = retrieve_cache("chatbox"))
 	{
 		$text .= "<br /><div style='text-align:center'><a href='".e_BASE."chat.php'>".CHATBOX_L12."</a> (".$total_chats.")</div>";
 	}
-	global $e107cache;
 	$e107cache->set("chatbox", $text);
 }
 

@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/articles_menu/articles_menu.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2004-12-01 14:10:50 $
+|     $Revision: 1.6 $
+|     $Date: 2004-12-01 15:05:32 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 global $ml;
-if($cache = retrieve_cache("article_menu"))
+if($cache = $e107cache->retrieve("article_menu"))
 {
 	echo $cache;
 }

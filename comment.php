@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-12-01 14:41:15 $
+|     $Revision: 1.4 $
+|     $Date: 2004-12-01 15:05:31 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -155,7 +155,7 @@ if($action == "reply"){
 }else{
 
 
-if($cache = retrieve_cache("comment.php?$table.$id")){
+if($cache = $e107cache->retrieve("comment.php?$table.$id")){
         require_once(HEADERF);
         echo $cache;
         require_once(FOOTERF);

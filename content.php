@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/content.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2004-12-01 14:41:15 $
+|     $Revision: 1.9 $
+|     $Date: 2004-12-01 15:05:31 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -172,7 +172,7 @@ if($action == "content")
 	}
 
 
-	if($cache = retrieve_cache("content.$sub_action"))
+	if($cache = $e107cache->retrieve("content.$sub_action"))
 	{
 		echo $aj -> formtparev($cache);
 	}
@@ -224,7 +224,7 @@ if($action == "content")
 
 	if($content_comment)
 	{
-		if($cache = retrieve_cache("comment.content.$sub_action")){
+		if($cache = $e107cache->retrieve("comment.content.$sub_action")){
 			echo $aj -> formtparev($cache);
 		}
 		else
@@ -268,7 +268,7 @@ if($action == "review"){
 
 	if(is_numeric($sub_action)){
 		$cachestr = ($id ? "review.item.$sub_action.$id" : "review.item.$sub_action");
-		if($cache = retrieve_cache($cachestr)){
+		if($cache = $e107cache->retrieve($cachestr)){
 			echo $aj -> formtparev($cache);
 		}else{
 		ob_start();
@@ -376,7 +376,7 @@ if($tmp_ok == 1){
 }
 
 if($content_comment){
-	if($cache = retrieve_cache("comment.content.$sub_action")){
+	if($cache = $e107cache->retrieve("comment.content.$sub_action")){
 		echo $aj -> formtparev($cache);
 	}else{
 	ob_start();
@@ -415,7 +415,7 @@ if($sub_action == "cat"){
 	$query = "content_parent=0 AND content_type=3 ORDER BY content_datestamp DESC LIMIT 0,10";
 }
 
-if($cache = retrieve_cache("review.cat.$id")){
+if($cache = $e107cache->retrieve("review.cat.$id")){
 	echo $aj -> formtparev($cache);
 }else{
 ob_start();
@@ -540,7 +540,7 @@ exit;
 
 
 
-if($cache = retrieve_cache("review.main")){
+if($cache = $e107cache->retrieve("review.main")){
 	echo $aj -> formtparev($cache);
 }else{
 ob_start();
@@ -697,7 +697,7 @@ if($action == "article"){
 	unset($text);
 	if(is_numeric($sub_action)){
 		$cachestr = ($id ? "article.item.$sub_action.$id" : "article.item.$sub_action");
-		if($cache = retrieve_cache($cachestr)){
+		if($cache = $e107cache->retrieve($cachestr)){
 			echo $aj -> formtparev($cache);
 		}else{
 		ob_start();
@@ -768,7 +768,7 @@ $text .= $content_article_rating_table_start."".$content_article_rating_table_st
 $ns -> tablerender(LAN_42, $text);
 
 if($content_comment && $comflag){
-	if($cache = retrieve_cache("comment.content.$sub_action")){
+	if($cache = $e107cache->retrieve("comment.content.$sub_action")){
 		echo $aj -> formtparev($cache);
 	}else{
 	ob_start();
@@ -809,7 +809,7 @@ if($sub_action == "cat"){
 }
 
 // ##### category -------------------------------------------------------------------------
-if($cache = retrieve_cache("article.cat.$id")){
+if($cache = $e107cache->retrieve("article.cat.$id")){
 	echo $aj -> formtparev($cache);
 }else{
 ob_start();
@@ -930,7 +930,7 @@ require_once(FOOTERF);
 exit;
 }
 
-if($cache = retrieve_cache("article.main")){
+if($cache = $e107cache->retrieve("article.main")){
 	echo $aj -> formtparev($cache);
 }else{
 ob_start();

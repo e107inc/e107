@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/oldpolls.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-12-01 14:09:53 $
+|     $Revision: 1.3 $
+|     $Date: 2004-12-01 15:05:31 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -26,7 +26,7 @@ $poll_total = $sql -> db_Count("poll", "(*)", "WHERE poll_active=0 AND poll_end_
 
 $p_query = e_PAGE.(e_QUERY ? "?".e_QUERY : "");
 
-if($cache = retrieve_cache($p_query)){
+if($cache = $e107cache->retrieve($p_query)){
         echo $cache;
         require_once(e_HANDLER."np_class.php");
         $ix = new nextprev("oldpolls.php", $from, 10, $poll_total, LAN_96);
