@@ -56,6 +56,13 @@ if(e_QUERY){
         }
 }
 
+        $signupval = explode(".",$pref['signup_options']);
+        $signup_title = array(LAN_308,LAN_144,LAN_115,LAN_116,LAN_117,LAN_118,LAN_119,LAN_120,LAN_121,LAN_122);
+        $signup_name = array("real","url","icq","aim","msn","dob","loc","sig","avt","zone");
+
+
+
+
 if(IsSet($_POST['register'])){
 
         require_once(e_HANDLER."message_handler.php");
@@ -109,11 +116,15 @@ if(IsSet($_POST['register'])){
 
  // ========== Verify Custom Signup options if selected ========================
 
-         if($pref['signup_aim'] && $pref['signup_aim_req'] && $_POST['aim'] == ""){
-              message_handler("P_ALERT", "Your AIM is Required");
-              $error = TRUE;
+        for ($i=0; $i<count($signup_title); $i++) {
+            $postvalue = $signup_name[$i];
+            if($signupval[$i]==2 && $_POST[$postvalue] == ""){
+            message_handler("P_ALERT", "Your ".$signup_title[$i]." is required");
+            $error = TRUE;
+            }
+        };
 
-         }
+         /*
 
 
 
@@ -160,7 +171,7 @@ if(IsSet($_POST['register'])){
               message_handler("P_ALERT", "Your signature is Required");
               $error = TRUE;
         }
-
+        */
         if($sql -> db_Select("user", "user_email", "user_email='".$_POST['email']."' ")){
                 message_handler("P_ALERT", LAN_408);
                 $error = TRUE;
@@ -175,7 +186,7 @@ if(IsSet($_POST['register'])){
         while(list($key, $u_entended) = each($user_entended)){
             if($u_entended){
 
-                if($pref['signup_ext'.$key] && $pref['signup_ext_req'.$key] && $_POST[str_replace(" ", "_", $u_entended)] == ""){
+                if($pref['signup_ext'.$key] ==2 && $_POST[str_replace(" ", "_", $u_entended)] == ""){
                 $ut = explode("|",$u_entended);
                 $u_name = ($ut[0] != "") ? trim($ut[0]) : trim($u_entended);
                 $error_ext = "Your ".$u_name." is Required";
@@ -301,7 +312,7 @@ $text .= $rs -> form_open("post", e_SELF, "signupform")."
 <span style='font-size:15px; color:red'> *</span></td>
 </tr>";
 
- if($pref['signup_real']){
+ if($signupval[0]){
 $text .="
 <tr>
 <td class='forumheader3' style='width:30%'>".LAN_308."</td>
@@ -344,7 +355,7 @@ $rs ->form_radio("hideemail", 1)." Yes&nbsp;&nbsp;".$rs ->form_radio("hideemail"
 
 
 
- if($pref['signup_url']){
+ if($signupval[1]){
 $text.="
 <tr>
 <td class='forumheader3' style='width:30%' >".LAN_144."</td>
@@ -355,7 +366,7 @@ $text.="
 }
 
 
- if($pref['signup_icq']){
+ if($signupval[2]){
 $text.="
 <tr>
 <td class='forumheader3' style='width:30%' >".LAN_115."</td>
@@ -365,7 +376,7 @@ $text.="
 </tr>";
 }
 
- if($pref['signup_aim']){
+ if($signupval[3]){
 
 $text.="
 <tr>
@@ -377,7 +388,7 @@ $text.="
 }
 
 
- if($pref['signup_msn']){
+ if($signupval[4]){
 $text.="
 <tr>
 <td class='forumheader3' style='width:30%' >".LAN_117."</td>
@@ -388,7 +399,7 @@ $text.="
    }
 
 
- if($pref['signup_dob']){
+ if($signupval[5]){
         $text.="
         <tr>
         <td class='forumheader3' style='width:30%' >".LAN_118."</td>
@@ -419,7 +430,7 @@ $text.="
 
 
 
- if($pref['signup_loc']){
+ if($signupval[6]){
 $text.="
 <tr>
 <td class='forumheader3' style='width:30%' >".LAN_119."</td>
@@ -454,7 +465,7 @@ if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
 }
 }
 
- if($pref['signup_sig']){
+ if($signupval[7]){
 require_once(e_HANDLER."ren_help.php");
 $text .= "<tr>
 <td class='forumheader3' style='width:30%' style='vertical-align:top' >".LAN_120."</td>
@@ -466,7 +477,7 @@ $text .= "<tr>
 
 
 
- if($pref['signup_avt']){
+ if($signupval[8]){
 $text.="
 
 <tr>
@@ -507,7 +518,7 @@ $text .= req("avt")."</td>
                 </tr>";
 }
 
- if($pref['signup_zone']){
+ if($signupval[9]){
 $text.="
 <tr>
 <td class='forumheader3' style='width:30%' >".LAN_122."</td>
