@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/languages/admin/English.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-02-10 18:58:01 $
+|     $Revision: 1.6 $
+|     $Date: 2005-02-17 18:43:57 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -24,26 +24,20 @@ define("ADSTAT_L2", "The statistics logger has been successfully installed. To a
 define("ADSTAT_L3", "Statistic Logging");
 define("ADSTAT_L4", "Activate statistic logging");
 define("ADSTAT_L5", "Statistic types");
-
 define("ADSTAT_L6", "Browsers");
 define("ADSTAT_L7", "Operating Systems");
 define("ADSTAT_L8", "Screen resolutions / depths");
 define("ADSTAT_L9", "Countries/domains visited from");
 define("ADSTAT_L10", "Referrers");
 define("ADSTAT_L11", "Search queries");
-
 define("ADSTAT_L12", "Reset stats");
 define("ADSTAT_L13", "this will erase stats - careful!");
-
 define("ADSTAT_L14", "Page counts");
-
 define("ADSTAT_L15", "Update Statistic Settings");
 define("ADSTAT_L16", "Site Statistic Settings");
 define("ADSTAT_L17", "Statistic settings updated");
 define("ADSTAT_L18", "Allow access to main statistics page to ...");
-
 define("ADSTAT_L19", "Recent visitors");
-
 define("ADSTAT_L20", "Count admin visits");
-
+define("ADSTAT_L21", "Maximum records to display on stats page");
 ?>
