@@ -43,7 +43,7 @@ if(IsSet($_POST['commentsubmit'])){
 	}
 }
 if(IsSet($_POST['replysubmit'])){
-	if(!$sql -> db_Select("news", "news_allow_comments", "news_id='$nid' ") && $table == "news"){
+	if($table == "news" && !$sql -> db_Select("news", "news_allow_comments", "news_id='$nid' ")){
 		header("location:".e_BASE."index.php");
 		exit;
 	} else {
