@@ -541,12 +541,12 @@ class textparse{
 						$url = $url[0];
 						$message_array[$i] = "<a href='".$message_array[$i]."' rel='external'>[".$url."]</a>";
 					}else{
-						if(!strstr($message_array[$i], "[link=") && !strstr($message_array[$i], "[url=") && !strstr($message_array[$i], "href=") && !strstr($message_array[$i], "src=") && !strstr($message_array[$i], "action=") && !strstr($message_array[$i], "onclick=") && !strstr($message_array[$i], "url(")){
+						if(!strstr($message_array[$i], "[link=") && !strstr($message_array[$i], "[url=") && !strstr($message_array[$i], "href=") && !strstr($message_array[$i], "src=") && !strstr($message_array[$i], "action=") && !strstr($message_array[$i], "onclick=") && !strstr($message_array[$i], "url(") && !strstr($message_array[$i], "[img")){
 							$message_array[$i] = preg_replace("/([^\s]{".$wrapcount."})/", "$1<br />", $message_array[$i]);
 						}
 						}
 				}else{
-					if(!strstr($message_array[$i], "[link=") && !strstr($message_array[$i], "[url=") && !strstr($message_array[$i], "href=") && !strstr($message_array[$i], "src=") && !strstr($message_array[$i], "action=") && !strstr($message_array[$i], "onclick=") && !strstr($message_array[$i], "url(")){
+					if(!strstr($message_array[$i], "[link=") && !strstr($message_array[$i], "[url=") && !strstr($message_array[$i], "href=") && !strstr($message_array[$i], "src=") && !strstr($message_array[$i], "action=") && !strstr($message_array[$i], "onclick=") && !strstr($message_array[$i], "url(") && !strstr($message_array[$i], "[img")){
 						$search = "#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i";
 						$replace = ($pref['links_new_window'] ? '\1<a href="http://\2.\3" rel="external";">\2.\3</a>' : '\1<a href="http://\2.\3" >\2.\3</a>');
 						$message_array[$i] = preg_replace($search, $replace, $message_array[$i]);
