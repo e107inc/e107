@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/tree_menu/tree_menu.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-01-26 12:24:15 $
+|     $Revision: 1.8 $
+|     $Date: 2005-01-26 13:39:19 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -38,7 +38,7 @@ include(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitelinks.php");
 // Many thanks to Lolo Irie for fixing the javascript that drives this menu item
 unset($text);
 
-$sql -> db_Select("links", "*", "ORDER BY link_order", "nowhere");	// get main category links
+$sql -> db_Select("links", "*", "ORDER BY link_order ASC", "nowhere");	// get main category links
 $linkArray = $sql -> db_getList();
 
 // all main links now held in array, we now need to loop through them and assign the sublinks to the correct parent links ...
