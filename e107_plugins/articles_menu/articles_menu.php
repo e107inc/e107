@@ -85,9 +85,10 @@ if($cache = retrieve_cache("article_menu")){
 
 	if($pref['cachestatus']){
 		$aj = new textparse;
-		$cache = $aj -> formtpa(ob_get_contents(), "admin");
+		$cache = $aj -> formtpa(ob_get_flush(), "admin");
 		set_cache("article_menu", $cache);
 	}
+ob_end_flush(); /* dump collected data */	
 }
 
 ?>
