@@ -37,7 +37,7 @@ if(IsSet($_POST['prune'])){
 		<table style='width:85%' class='fborder'>
 		<tr>
 		<td style='width:75%' class='forumheader3'>
-		Prune type:<br />
+		".FORLAN_106."<br />
 		<span class='smalltext'>".FORLAN_2."</span>
 		</td>
 		<td style='width:25%' class='forumheader2' style='text-align:right'>
@@ -219,7 +219,7 @@ If(IsSet($_POST['delete'])){
 		extract($row);
 		$tt = ($forum_parent ? "" : "parent"); 
 		$sql -> db_Delete("forum", "forum_id='".$_POST['existing']."' ");
-		$message = "Forum ".$tt." deleted.";
+		$message = FORLAN_107.$tt.FORLAN_108;
 	}else{
 		$message = FORLAN_15;
 	}
@@ -593,8 +593,8 @@ $text = "<div style='text-align:center'>
 <span class='smalltext'>".FORLAN_60."</span>
 </td>
 <td style='width:25%' class='forumheader2' style='text-align:center'>
-<span class='smalltext'>days:</span> <input class='tbox' type='text' name='prune_days' size='3' value='' maxlength='3' />
- <input class='button' type='submit' name='prune' value='Prune' />
+<span class='smalltext'>".FORLAN_109."</span> <input class='tbox' type='text' name='prune_days' size='3' value='' maxlength='3' />
+ <input class='button' type='submit' name='prune' value='".FORLAN_110."' />
 </tr>
 
 

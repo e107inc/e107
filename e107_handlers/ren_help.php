@@ -1,57 +1,59 @@
 <?php
+@include(e_LANGUAGEDIR.e_LANGUAGE."/lan_ren_help.php");
+@include(e_LANGUAGEDIR."English/lan_ren_help.php");
 function ren_help($mode=1){
 
 	//	$mode == TRUE : fontsize and colour dialogs are rendered
 	//	$mode == 2 : no helpbox
 
 	if(strstr(e_SELF, "article")){
-		$code[0] = array("newpage", "[newpage]", "Insert newpage tag, splits article into more than one page");
+		$code[0] = array("newpage", "[newpage]", LANHELP_34);
 	}
-	$code[1] = array("link", "[link=hyperlink url][/link]", "Insert link: [link]http://mysite.com[/link] or  [link=http://yoursite.com]Visit My Site[/link]");
-	$code[2] = array("b", "[b][/b]", "Bold text: [b]This text will be bold[/b]", "font-weight:bold; width: 20px");
-	$code[3] = array("i", "[i][/i]", "Italic text: [i]This text will be italicised[/i]", "font-style:italic; width: 20px");
-	$code[4] = array("u", "[u][/u]", "Underline text: [u]This text will be underlined[/u]", "text-decoration: underline; width: 20px");
-	$code[5] = array("img", "[img][/img]", "Insert image: [img]mypicture.jpg[/img]");
-	$code[6] = array("center", "[center][/center]", "Center align: [center]This text will be centered[/center]");
-	$code[7] = array("left", "[left][/left]", "Left align: [left]This text will be left aligned[/left]");
-	$code[8] = array("right", "[right][/right]", "Right align: [right]This text will be right aligned[/right]");
-	$code[9] = array("bq", "[blockquote][/blockquote]", "Blockquote text: [blockquote]This text will be blockquoted (indented)[/blockquote]");
-	$code[10] = array("code", "[code][/code]", "Code - preformatted text: [code]\$foo = bah;[/code]");
+	$code[1] = array("link", "[link=hyperlink url][/link]", LANHELP_23);
+	$code[2] = array("b", "[b][/b]", LANHELP_24);
+	$code[3] = array("i", "[i][/i]", LANHELP_25);
+	$code[4] = array("u", "[u][/u]", LANHELP_26);
+	$code[5] = array("img", "[img][/img]", LANHELP_27);
+	$code[6] = array("center", "[center][/center]", LANHELP_28);
+	$code[7] = array("left", "[left][/left]", LANHELP_29);
+	$code[8] = array("right", "[right][/right]", LANHELP_30);
+	$code[9] = array("bq", "[blockquote][/blockquote]", LANHELP_31);
+	$code[10] = array("code", "[code][/code]",LANHELP_32 );
 	if(ADMIN){
-		$code[11] = array("html", "[html][/html]", "HTML - removes linebreaks from text: [html]<table><tr><td> etc[/html]");
+		$code[11] = array("html", "[html][/html]", LANHELP_33);
 	}
 
-	$colours[0] = "Black";
-	$colours[1] = "Blue";
-	$colours[2] = "Brown";
-	$colours[3] = "Cyan";
-	$colours[4] = "Dark Blue";
-	$colours[5] = "Dark Red";
-	$colours[6] = "Green";
-	$colours[7] = "Indigo";
-	$colours[8] = "Olive";
-	$colours[9] = "Orange";
-	$colours[10] = "Red";
-	$colours[11] = "Violet";
-	$colours[12] = "White";
-	$colours[13] = "Yellow";
+	$colours[0] = LANHELP_1;
+	$colours[1] = LANHELP_2;
+	$colours[2] = LANHELP_3;
+	$colours[3] = LANHELP_4;
+	$colours[4] = LANHELP_5;
+	$colours[5] = LANHELP_6;
+	$colours[6] = LANHELP_7;
+	$colours[7] = LANHELP_8;
+	$colours[8] = LANHELP_9;
+	$colours[9] = LANHELP_10;
+	$colours[10] = LANHELP_11;
+	$colours[11] = LANHELP_12;
+	$colours[12] = LANHELP_13;
+	$colours[13] = LANHELP_14;
 
-	$fontsizes[0] = array("7", "Tiny");
-	$fontsizes[1] = array("9", "Small");
-	$fontsizes[2] = array("11", "Normal");
-	$fontsizes[3] = array("16", "Large");
-	$fontsizes[4] = array("20", "Larger");
-	$fontsizes[5] = array("28", "Massive");
+	$fontsizes[0] = array("7", LANHELP_15);
+	$fontsizes[1] = array("9", LANHELP_16);
+	$fontsizes[2] = array("11", LANHELP_17);
+	$fontsizes[3] = array("16", LANHELP_18);
+	$fontsizes[4] = array("20", LANHELP_19);
+	$fontsizes[5] = array("28", LANHELP_20);
 
 	while(list($key, $bbcode) = each($code)){ 
 		$string .= "<input class=\"button\" type=\"button\" value=\"".$bbcode[0]."\" onclick=\"addtext('".$bbcode[1]."')\" ".($mode != 2 ? "onmouseout=\"help('')\" onmouseover=\"help('".$bbcode[2]."')\"" : "" ).($bbcode[3] ? " style='".$bbcode[3]."'" : "")." />\n";
 	}
 	if($mode){
-		$string .= "<br />\n<select class=\"tbox\" name=\"fontcol\" onchange=\"addtext('[color=' + this.options[this.selectedIndex].value + '][/color]');this.selectedIndex=0;\"".($mode != 2 ? " onmouseover=\"help('Font Color: [color]Blue[/color]')\" onmouseout=\"help('')\"" : "").">\n<option value=\"\">Color ..</option>\n";
+		$string .= "<br />\n<select class=\"tbox\" name=\"fontcol\" onchange=\"addtext('[color=' + this.options[this.selectedIndex].value + '][/color]');this.selectedIndex=0;\"".($mode != 2 ? " onmouseover=\"help('Font Color: [color]Blue[/color]')\" onmouseout=\"help('')\"" : "").">\n<option value=\"\">".LANHELP_21."</option>\n";
 		while(list($key, $bbcode) = each($colours)){
 			$string .= "<option style=\"color:".strtolower($bbcode)."\" value=\"".strtolower($bbcode)."\">".$bbcode."</option>\n";
 		}
-		$string .= "</select>\n<select class=\"tbox\" name=\"fontsiz\" onchange=\"addtext('[size=' + this.options[this.selectedIndex].value + '][/size]');this.selectedIndex=0;\"".($mode != 2 ? " onmouseover=\"help('Font Size: [size]Big[/size]')\" onmouseout=\"help('')\">" : "" )."\n<option>Size ..</option>\n";
+		$string .= "</select>\n<select class=\"tbox\" name=\"fontsiz\" onchange=\"addtext('[size=' + this.options[this.selectedIndex].value + '][/size]');this.selectedIndex=0;\"".($mode != 2 ? " onmouseover=\"help('Font Size: [size]Big[/size]')\" onmouseout=\"help('')\">" : "" )."\n<option>".LANHELP_22."</option>\n";
 
 		while(list($key, $bbcode) = each($fontsizes)){
 			$string .= "<option value=\"".$bbcode[0]."\">".$bbcode[1]."</option>\n";

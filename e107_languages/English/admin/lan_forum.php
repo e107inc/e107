@@ -110,4 +110,11 @@ define("FORLAN_102", "Threshold");
 define("FORLAN_103", "Site Admin");
 define("FORLAN_104", "Rank Image");
 define("FORLAN_105", "Forum Moderator");
+
+
+define("FORLAN_106", "Prune Type:");
+define("FORLAN_107", "Forum");
+define("FORLAN_108", " deleted");
+define("FORLAN_109", "days:");
+define("FORLAN_110", "Prune");
 ?>
