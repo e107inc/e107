@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/class2.php,v $
-|     $Revision: 1.89 $
-|     $Date: 2004-08-26 02:53:54 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.90 $
+|     $Date: 2004-08-27 17:31:43 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -285,8 +285,8 @@ init_session();
 online();
 
 $fp = ($pref['frontpage'] ? $pref['frontpage'].".php" : "news.php index.php");
-define("e_SIGNUP", (file_exists(e_BASE."customsignup.php") ? "customsignup.php" : "signup.php"));
-define("e_LOGIN", (file_exists(e_BASE."customlogin.php") ? "customlogin.php" : "login.php"));
+define("e_SIGNUP", (file_exists(e_BASE."customsignup.php") ? e_BASE."customsignup.php" : e_BASE."signup.php"));
+define("e_LOGIN", (file_exists(e_BASE."customlogin.php") ? e_BASE."customlogin.php" : e_BASE."login.php"));
 
 if($pref['membersonly_enabled'] && !USER && e_PAGE != e_SIGNUP && e_PAGE != "index.php" && e_PAGE != "fpw.php" && e_PAGE != e_LOGIN && !strstr(e_PAGE, "admin") && e_PAGE != 'membersonly.php'){
         header("location: ".e_BASE."membersonly.php");
@@ -514,7 +514,7 @@ class textparse{
 
 
         function tpj($text, $strip=FALSE){
-        						$text = preg_replace_callback("/&#([0-9]{1,3});/",create_function('$matches','return chr($matches[1]);'),$text);
+                                                        $text = preg_replace_callback("/&#([0-9]{1,3});/",create_function('$matches','return chr($matches[1]);'),$text);
                         $search[0] = "#script#si";
                         $replace[0] = 'scri<i></i>pt';
                         $search[1] = "#document#si";
@@ -539,9 +539,9 @@ class textparse{
                         $replace[10] = 'on<i></i>load';
                         $search[11] = "#background: *?url#si";
                         $replace[11] = 'background<i></i>:url';
-								$search[12] = "#(meta )#si";
-								$replace[12] = '\1<i></i>';
-                        
+                                                                $search[12] = "#(meta )#si";
+                                                                $replace[12] = '\1<i></i>';
+
                         if($strip){
                                 $text = strip_tags($text);
                         }
