@@ -66,7 +66,7 @@ if($action != "edit"){
 			while($row = $sql -> db_Fetch()){
 					extract($row);
 					$text .= "<tr><td style='width:70%' class='forumheader3'>$banlist_ip<br />".BANLAN_7.": $banlist_reason</td>
-					<td style='width:30%; text-align:center' class='forumheader3'>".$rs -> form_button("submit", "main_edit_$count", BANLAN_12, "onclick=\"document.location='".e_SELF."?edit-$banlist_ip'\"").$rs -> form_button("submit", "main_delete_$count", BANLAN_4, "onclick=\"document.getElementById('ban_form').action='".e_SELF."?remove-$banlist_ip'\"")."</td>\n</tr>";
+					<td style='width:30%; text-align:center' class='forumheader3'>".$rs -> form_button("submit", "main_edit_$count", BANLAN_12, "onclick=\"document.getElementById('ban_form').action='".e_SELF."?edit-$banlist_ip'\"").$rs -> form_button("submit", "main_delete_$count", BANLAN_4, "onclick=\"document.getElementById('ban_form').action='".e_SELF."?remove-$banlist_ip'\"")."</td>\n</tr>";
 			$count++;
 			}
 			$text .= "</table>\n";
@@ -76,12 +76,12 @@ if($action != "edit"){
 }
 
 if($action == "edit"){
-    $sql2 -> db_Select("banlist", "*", "banlist_ip='$sub_action'");
+  $sql2 -> db_Select("banlist", "*", "banlist_ip='$sub_action'");
 	$row = $sql2 ->db_Fetch();
 	extract($row);
 }else{
 	unset($banlist_ip, $banlist_reason);
-	if(e_QUERY && count($_POST)>0 || strpos($_SERVER["HTTP_REFERER"],"userinfo")){$banlist_ip=$action;}
+	if(e_QUERY && strpos($_SERVER["HTTP_REFERER"],"userinfo")){$banlist_ip=$action;}
 }
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>
