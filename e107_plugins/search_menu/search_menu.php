@@ -11,11 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/search_menu/search_menu.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-02-13 13:18:30 $
-|     $Author: sweetas $
+|     $Revision: 1.8 $
+|     $Date: 2005-02-28 20:04:09 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
+if(!defined("e_PLUGIN")){ exit; }
 @include(e_PLUGIN."search_menu/languages/".e_LANGUAGE.".php");
 if (strstr(e_PAGE, "news.php")) {
 	 $page = 0;

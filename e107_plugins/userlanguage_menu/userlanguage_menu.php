@@ -11,11 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/userlanguage_menu/userlanguage_menu.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-02-26 02:32:39 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.9 $
+|     $Date: 2005-02-28 20:04:11 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
+if(!defined("e_HANDLER")){ exit; }
 require_once(e_HANDLER."file_class.php");
 	$fl = new e_file;
 	$lanlist = $fl->get_dirs(e_LANGUAGEDIR);

@@ -11,11 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/admin_menu/admin_menu.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-27 19:52:32 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-28 20:03:47 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
+
+if(!defined("e_HANDLER")){ exit; }
+
 require_once(e_HANDLER."userclass_class.php");
 	
 $lan_file = e_PLUGIN."admin_menu/languages/".e_LANGUAGE.".php";

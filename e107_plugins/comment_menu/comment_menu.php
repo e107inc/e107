@@ -11,28 +11,24 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/comment_menu/comment_menu.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-02-13 13:43:13 $
-|     $Author: sweetas $
+|     $Revision: 1.8 $
+|     $Date: 2005-02-28 20:03:49 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
+if(!function_exists("convert")){ exit; }
+
 global $tp, $e107;
 $gen = new convert;
-
 
 $query = "
 SELECT #comments.*, user_id, user_name FROM #comments
 LEFT JOIN #user ON #comments.comment_author = #user.user_id 
 ORDER BY comment_datestamp DESC LIMIT 0, ".$menu_pref['comment_display'];
 
-
 $results = $sql->db_Select_gen($query);
 $commentArray = $sql->db_getList();
-
-
-
-
 
 if(!$results)
 {

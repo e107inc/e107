@@ -11,12 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/banner_menu/banner_menu.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-02-13 08:55:45 $
-|     $Author: sweetas $
+|     $Revision: 1.6 $
+|     $Date: 2005-02-28 20:03:47 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
-	
+if(!defined("e_HANDLER")){ exit; }
 require_once(e_HANDLER."banner_class.php");
 $bn = new banner;
 	

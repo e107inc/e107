@@ -11,11 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/online_extended_menu/online_extended_menu.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-27 21:45:05 $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-28 20:03:51 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
+if(!defined("e_PLUGIN")){ exit; }
 $text = ONLINE_EL1.GUESTS_ONLINE.", ";
 //        if($pref['user_reg'] == 1){
 $text .= ONLINE_EL2.MEMBERS_ONLINE." ...<br />";

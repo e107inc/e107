@@ -11,11 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss_menu.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-18 18:00:42 $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-28 20:04:09 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
+if(!defined("e_PLUGIN")){ exit; }
 global $FILES_DIRECTORY;
 $path = e_PLUGIN."rss_menu/";
 

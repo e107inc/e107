@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/auth.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-27 19:52:24 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-28 20:03:45 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 @include(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php");
@@ -25,11 +25,10 @@ if (ADMIN) {
 		$obj = new auth;
 		 
 		$row = $authresult = $obj->authcheck($_POST['authname'], $_POST['authpass']);
-		if ($row[0] == "fop") {
-			echo "<script type='text/javascript'>document.location.href='admin.php?e'</script>\n";
-		}
-		else if($row[0] == "fon") {
-			echo "<script type='text/javascript'>document.location.href='admin.php?f'</script>\n";
+		if ($row[0] == "authfail") {
+			echo "<script type='text/javascript'>document.location.href='../index.php'</script>\n";
+			header("location: ../index.php");
+			exit;
 		} else {
 			 
 			$userpass = md5($_POST['authpass']);
@@ -48,15 +47,6 @@ if (ADMIN) {
 	 
 	$e_sub_cat = 'logout';
 	require_once(e_ADMIN."header.php");
-	 
-	if (e_QUERY == "e") {
-		$text = "<div style=\"text-align:center\">".ADLAN_86."</div>";
-		$ns->tablerender("Unable to login", $text);
-	}
-	if (e_QUERY == "f") {
-		$text = "<div style=\"text-align:center\">".ADLAN_87."</div>";
-		$ns->tablerender(ADLAN_88, $text);
-	}
 	 
 	if (ADMIN == FALSE) {
 		$obj = new auth;
@@ -118,11 +108,11 @@ class auth {
 				$row = $sql_auth->db_Fetch();
 				return $row;
 			} else {
-				$row = array("fop");
+				$row = array("authfail");
 				return $row;
 			}
 		} else {
-			$row = array("fon");
+			$row = array("authfail");
 			return $row;
 		}
 	}
