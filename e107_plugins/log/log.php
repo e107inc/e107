@@ -19,6 +19,7 @@ $ref = strip_tags($_REQUEST['referer']);
 
 $self = substr(strrchr(eregi_replace("\?.*", "", $self), "/"), 1);
 if($self == "/"){ $self = "index.php"; }
+if($self == ''){ $self = 'unknown'; }
 $screenstats = $res." @ ".$colour;
 @include("../../e107_config.php");
 define("MPREFIX", $mySQLprefix);
