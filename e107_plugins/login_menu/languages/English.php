@@ -43,4 +43,7 @@ define("LOGIN_MENU_L27", "and");
  
 define("LOGIN_MENU_L28", "Login");
 
+define("LOGIN_MENU_L29", "new article");
+define("LOGIN_MENU_L30", "new articles");
+
 ?>
