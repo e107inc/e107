@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/ad_links.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-03-08 16:31:13 $
+|     $Revision: 1.24 $
+|     $Date: 2005-03-08 16:58:34 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -357,6 +357,7 @@ $e_icon_array = array(
 	'poll' => E_32_POLLS,
 	'prefs' => E_32_PREFS,
 	'search' => E_32_SEARCH,
+	'theme_manage' => E_32_THEMEMANAGER,
 	'maintain' => E_32_MAINTAIN,
 	'upload' => E_32_UPLOADS,
 	'userclass' => E_32_USERCLASS,
@@ -421,10 +422,11 @@ $array_functions = array(
 	18 => array(e_ADMIN."phpinfo.php", ADLAN_68, ADLAN_69, "0", 5, E_16_PHP, E_32_PHP),
 	19 => array(e_ADMIN."prefs.php", ADLAN_4, ADLAN_5, "1", 1, E_16_PREFS, E_32_PREFS),
 	20 => array(e_ADMIN."search.php", ADLAN_142, ADLAN_143, "X", 1, E_16_SEARCH, E_32_SEARCH),
-	21 => array(e_ADMIN."upload.php", ADLAN_72, ADLAN_73, "V", 3, E_16_UPLOADS, E_32_UPLOADS),
-	22 => array(e_ADMIN."users.php", ADLAN_36, ADLAN_37, "4", 2, E_16_USER, E_32_USER),
-	23 => array(e_ADMIN."userclass2.php", ADLAN_38, ADLAN_39, "4", 2, E_16_USERCLASS, E_32_USERCLASS),
-	24 => array(e_ADMIN."language.php", ADLAN_132, ADLAN_133, "0", 1, E_16_LANGUAGE, E_32_LANGUAGE),
-	25 => array(e_ADMIN."mailout.php", ADLAN_136, ADLAN_137, "W", 2, E_16_MAIL, E_32_MAIL),
+	21 => array(e_ADMIN."theme.php", ADLAN_140, ADLAN_141, "1", 5, E_16_THEMEMANAGER, E_32_THEMEMANAGER),
+	22 => array(e_ADMIN."upload.php", ADLAN_72, ADLAN_73, "V", 3, E_16_UPLOADS, E_32_UPLOADS),
+	23 => array(e_ADMIN."users.php", ADLAN_36, ADLAN_37, "4", 2, E_16_USER, E_32_USER),
+	24 => array(e_ADMIN."userclass2.php", ADLAN_38, ADLAN_39, "4", 2, E_16_USERCLASS, E_32_USERCLASS),
+	25 => array(e_ADMIN."language.php", ADLAN_132, ADLAN_133, "0", 1, E_16_LANGUAGE, E_32_LANGUAGE),
+	26 => array(e_ADMIN."mailout.php", ADLAN_136, ADLAN_137, "W", 2, E_16_MAIL, E_32_MAIL),
 	);
 ?>

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/includes/categories.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-02-20 13:06:27 $
-|     $Author: stevedunstan $
+|     $Revision: 1.6 $
+|     $Date: 2005-03-08 16:58:38 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 	
@@ -37,7 +37,6 @@ foreach ($admin_cat['id'] as $cat_key => $cat_id) {
 		}
 	} else {
 		$text_rend = render_links(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z", E_16_PLUGMANAGER, 'default');
-		$text_rend .= render_links(e_ADMIN."theme.php", ADLAN_140, ADLAN_141, "1", E_16_THEMEMANAGER, "default");
 
 		if ($text_rend) {
 			$text_check = TRUE;
