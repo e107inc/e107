@@ -17,6 +17,8 @@
 
 $pathtologs = e_PLUGIN."log/logs/";
 $date = date("z.Y", time());
+$date2 = date("j.m.y", time());
+$date3 = date("m-y");
 $day = date("z", time());
 $year = date("Y", time());
 
@@ -113,7 +115,42 @@ $sql -> db_Update("logstats", "log_data='$squery' WHERE log_id='statQuery'");
 $sql -> db_Update("logstats", "log_data='$statTotal' WHERE log_id='statTotal'");
 $sql -> db_Update("logstats", "log_data='$statUnique' WHERE log_id='statUnique'");
 
+/* get monthly info from db */
+if($sql -> db_Select("logstats", "*", "log_id REGEXP('[[:digit:]]+-[[:digit:]]+')")) {
+	$tmp = $sql -> db_Fetch();
+	$monthlyInfo = unserialize($tmp['log_data']);
+	unset($tmp);
+	$MonthlyExistsFlag = TRUE;
+}
+
+foreach($pageInfo as $key => $info) {
+	$key = preg_replace("/\?.*/", "", $key);
+	if(array_key_exists($key, $monthlyInfo)) {
+		$monthlyInfo[$key]['ttlv'] += $info['ttlv'];
+		$monthlyInfo[$key]['unqv'] += $info['unqv'];
+	} else {
+		$monthlyInfo[$key]['ttlv'] = $info['ttlv'];
+		$monthlyInfo[$key]['unqv'] = $info['unqv'];
+	}
+}
+
+$monthlyinfo = serialize($monthlyInfo);
+
+if($MonthlyExistsFlag) {
+	$sql -> db_Update("logstats", "log_data='$monthlyinfo' WHERE log_id='$date3'");
+} else {
+	$sql->db_Insert("logstats", "0, '$date3', '$monthlyinfo'");
+}
+
 /* now we need to collate the individual page information into an array ... */
+if($sql -> db_Select("logstats", "*", "log_id REGEXP('[[:digit:]]+.')")) {
+	$tmp = $sql -> db_Fetch();
+	$pageArray = unserialize($tmp['log_data']);
+	unset($tmp);
+}
+
+
+
 foreach($pageInfo as $key => $info) {
 	$key = preg_replace("/\?.*/", "", $key);
 	if(array_key_exists($key, $pageArray)) {
@@ -132,7 +169,7 @@ foreach($pageInfo as $key => $info) {
 
 $pagearray = serialize($pageArray);
 
-$sql->db_Insert("logstats", "0, '$date', '$pagearray'");
+$sql->db_Insert("logstats", "0, '$date2', '$pagearray'");
 	
 /* ok, we're finished with the log file now, we can empty it ... */
 
@@ -144,8 +181,7 @@ fclose($handle);
 
 
 /* and finally, we need to create a new logfile for today ... */
-createLog("blank");
-
+createLog();
 /* done! */
 
 
@@ -170,14 +206,14 @@ function createLog($mode="default") {
 	$varStart."osInfo = array();\n".
 	$varStart."pageInfo = array(\n";
 
-	if($mode != "default") {
+	if($mode == "default") {
 		reset($pageArray);
 		$loop = FALSE;
 		foreach($pageArray as $key => $info) {
 			if($loop) {
 				$data .= ",\n";
 			}
-			$data .= $quote.$key.$quote." => array('url' => '".$info['url']."', 'ttl' => ".$info['ttl'].", 'unq' => ".$info['unq'].", 'ttlv' => ".$info['ttlv'].", 'unqv' => ".$info['unqv'].")";
+			$data .= $quote.$key.$quote." => array('url' => '".$info['url']."', 'ttl' => 0, 'unq' => 0, 'ttlv' => ".$info['ttlv'].", 'unqv' => ".$info['unqv'].")";
 			$loop = TRUE;
 		}
 	}
