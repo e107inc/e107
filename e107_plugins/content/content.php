@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.4 $
-|		$Date: 2005-02-07 12:21:46 $
+|		$Revision: 1.5 $
+|		$Date: 2005-02-07 12:57:18 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1599,7 +1599,7 @@ function parse_content_content_table($row){
 
 				$CONTENT_CONTENT_TABLE_EPICONS = (($content_pref["content_content_peicon_{$type_id}"] && $content_pe) || $content_pref["content_content_peicon_all_{$type_id}"] ? $ep -> render_emailprint($plugintable, $type_id.".".$content_id) : "");
 
-				$content_text = ($content_text ? $tp -> toHTML($content_text, TRUE, "") : "");
+				$content_text = ($content_text ? $content_text : "");
 				if(preg_match_all("/\[newpage=(.*?)]/si", $content_text, $matches)) {
 
 					$textpages = explode("[newpage=", $content_text);
@@ -1608,12 +1608,13 @@ function parse_content_content_table($row){
 					for ($i=0; $i < count($matches[1]); $i++) {
 						if(!$id){ $id = ($id + 1); }
 						if($id == $i+1){ $pre = " - current"; }else{ $pre = ""; }
-						$CONTENT_CONTENT_TABLE_PAGENAMES .= "page ".($i+1)." : <a href='".e_SELF."?".$type.".".$type_id.".content.".$sub_action.".".($i+1)."'>".$matches[1][$i]." ".$pre."</a><br />";
+						$CONTENT_CONTENT_TABLE_PAGENAMES .= "page ".($i+1)." ".$pre." : <a href='".e_SELF."?".$type.".".$type_id.".content.".$sub_action.".".($i+1)."'>".$matches[1][$i]."</a><br />";
 					}
 				}else{
 					$CONTENT_CONTENT_TABLE_TEXT = $content_text;
 				}
 				$CONTENT_CONTENT_TABLE_TEXT = $aa -> parseContentPathVars($CONTENT_CONTENT_TABLE_TEXT);
+				$CONTENT_CONTENT_TABLE_TEXT = $tp -> toHTML($CONTENT_CONTENT_TABLE_TEXT, TRUE, "");
 				$CONTENT_CONTENT_TABLE_ICON = $aa -> getIcon("item", $content_icon, $content_icon_path, "", "100", $content_pref["content_blank_icon_{$type_id}"]);
 				$CONTENT_CONTENT_TABLE_HEADING = ($content_heading ? $content_heading : "");
 				$CONTENT_CONTENT_TABLE_SUBHEADING = ($content_pref["content_content_subheading_{$type_id}"] && $content_subheading ? $tp -> toHTML($content_subheading, TRUE, "") : "");
