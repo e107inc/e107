@@ -372,7 +372,7 @@ class pm {
                 }
                 $ret.="</td></tr>\n";
                 $ret.="<tr><td class='forumheader3'>".PMLAN_29."</td><td class='forumheader3'><input class='tbox' type='text' name='subject' value='".$pm_subject."'></td></tr>\n";
-                $ret.="<tr><td class='forumheader3'>".PMLAN_30."</td><td class='forumheader3'><textarea id='pm_text' name='pm_text' rows='10' cols='50' class='tbox'>".$pm_message."</textarea>
+                $ret.="<tr><td class='forumheader3'>".PMLAN_30."</td><td class='forumheader3'><textarea id='pm_text' name='pm_text' rows='10' cols='50' class='tbox' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".$pm_message."</textarea>
                 <br />
         <input class='helpbox' type='text' id='helpb' name='helpb' size='100' />
                         <br />
