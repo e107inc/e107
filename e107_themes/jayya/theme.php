@@ -26,7 +26,7 @@ define("IMODE", "lite");
 // [output js nav css in <head>]
 
 function theme_head() {
-	return "<link rel='stylesheet' href='".e_FILE."nav_menu.css' />\n";
+	return "<link rel='stylesheet' href='".THEME."nav_menu.css' />\n";
 }
 
 
@@ -36,13 +36,13 @@ $no_core_css = TRUE;
 
 
 // [layout]
-
+// <img src='".THEME."images/logo.png' style='width: 170px; height: 71px; display: block;' alt='' />
 $layout = "_default";
 
 $HEADER = "<table class='top_section'>
 <tr>
-<td class='top_section_left' style='width: 170px'>
-<img src='".THEME."images/logo.png' style='width: 170px; height: 71px; display: block;' alt='' />
+<td class='top_section_left' style='width: 190px; padding-left: 5px; padding-right: 5px'>
+{LOGO}
 </td>
 <td class='top_section_mid'>
 {BANNER}
