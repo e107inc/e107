@@ -11,20 +11,18 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-02-10 21:38:57 $
-|     $Author: stevedunstan $
+|     $Revision: 1.8 $
+|     $Date: 2005-02-11 17:40:11 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 	
-if (strstr(e_QUERY, "delp")) {
+if (isset($_POST['delp'])) {
 	$tmp = explode(".", e_QUERY);
 	if (USERID == $tmp[1] || (ADMIN && getperms("4"))) {
 		$sql->db_Select("user", "user_sess", "user_id='". USERID."'");
-		$row = $sql->db_Fetch();
-		 extract($row);
-		@unlink(e_FILE."public/avatars/".$user_sess);
+		@unlink(e_FILE."public/avatars/".$row['user_sess']);
 		$sql->db_Update("user", "user_sess='' WHERE user_id=".$tmp[1]);
 		header("location:".e_SELF."?id.".$tmp[1]);
 		exit;
@@ -65,7 +63,7 @@ if ($records > 30) {
 	
 	
 if (isset($id)) {
-	 
+
 	if ($id == 0) {
 		$text = "<div style='text-align:center'>".LAN_137." ".SITENAME."</div>";
 		$ns->tablerender(LAN_20, $text);
@@ -137,9 +135,9 @@ $text .= " <input class='button' type='submit' name='submit' value='".LAN_422."'
 if (!$sql->db_Select("user", "*", "ORDER BY user_id $order LIMIT $from,$records", $mode = "no_where")) {
 	echo "<div style='text-align:center'><b>".LAN_141."</b></div>";
 } else {
-	$sql2 = new db;
-	if ($sql2->db_Select("core", " e107_value", " e107_name='user_entended'")) {
-		$row = $sql2->db_Fetch();
+	$userList = $sql->db_getList();
+	if ($sql->db_Select("core", " e107_value", " e107_name='user_entended'")) {
+		$row = $sql->db_Fetch();
 		$user_entended = unserialize($row[0]);
 	}
 	 
@@ -152,7 +150,7 @@ if (!$sql->db_Select("user", "*", "ORDER BY user_id $order LIMIT $from,$records"
 		<td class='fcaption' style='width:20%'>".LAN_145."</td>
 		</tr>";
 	 
-	while ($row = $sql->db_Fetch()) {
+	foreach ($userList as $row) {
 		$text .= renderuser($row, $user_entended, "short");
 	}
 	 
@@ -220,9 +218,13 @@ function renderuser($row, $user_entended, $mode = "verbose") {
 			}
 			 
 			if (USERID == $user_id || (ADMIN && getperms("4"))) {
-				$str .= "<br /><br /><span class='smalltext'>[ <a href='".e_SELF."?delp.$user_id'>".LAN_413."</a> ]</span>";
+				
+				$str .= "<br /><br />
+				<form method='post' action='".e_SELF."?".e_QUERY."'>
+				<input class='button' type='submit' name='delp' value='".LAN_413."' />
+				</form>
+				";
 			}
-			 
 		} else {
 			$str .= LAN_408;
 		}
@@ -285,8 +287,6 @@ function renderuser($row, $user_entended, $mode = "verbose") {
 		 
 		$str .= ($user_signature ? "<tr><td colspan='2' class='forumheader3' style='text-align:center'><i>".$tp->toHTML($user_signature)."</i></td></tr>" : "");
 		 
-		 
-		 
 		//        extended fields ...
 		 
 		if ($sql->db_Select("core", " e107_value", " e107_name='user_entended'")) {
@@ -309,9 +309,6 @@ function renderuser($row, $user_entended, $mode = "verbose") {
 				}
 			}
 		}
-		 
-		 
-		 
 		 
 		//        end extended fields
 		 
