@@ -98,7 +98,7 @@ class e107plugin {
 		if($action == 'add') {
 			if(is_array($var)) {
 				foreach($var as $tab) {
-					if(!$sql->db_Select_gen($tab)) {
+					if(!$sql->db_Query($tab)) {
 						return FALSE;
 					}
 				}
@@ -110,7 +110,7 @@ class e107plugin {
 			if(is_array($var)) {
 				foreach($var as $tab) {
 					$qry = 'DROP TABLE '.MPREFIX.$tab;
-					if(mysql_query($qry) === FALSE) {
+					if(!$sql->db_Query($qry)) {
 						return $tab;
 					}
 				}
