@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.63 $
-|     $Date: 2005-01-29 15:53:54 $
+|     $Revision: 1.64 $
+|     $Date: 2005-01-29 15:59:47 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -32,6 +32,17 @@ if($register_globals){
 	}
 	unset($global);
 }
+
+// Grab e107_config, get directory paths, and create the $e107 object
+require_once(dirname(__FILE__).'/e107_config.php');
+require_once(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY.'e107_class.php');
+$Paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY');
+if(COMPRESS_OUTPUT === true) {
+	$OutputCompression = true;
+} else {
+	$OutputCompression = false;
+}
+$e107 = new e107($Paths, __FILE__, $OutputCompression);
 
 ob_start();
 $start_ob_level=ob_get_level();
