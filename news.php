@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-01-19 17:10:10 $
-|     $Author: stevedunstan $
+|     $Revision: 1.18 $
+|     $Date: 2005-01-20 04:07:20 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -194,12 +194,10 @@ checkNewsCache($cacheString,TRUE,TRUE);
 // #### normal newsitems, rendered via render_newsitem(), the $query is changed above (no other changes made) ---------
 ob_start();
 
-if(!$sql -> db_Select_gen($query))
-{
+if(!$sql -> db_Select_gen($query)) {
 	echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_462 : LAN_83)."</b></div><br /><br />";
 } else {
-	while($news = $sql -> db_Fetch())
-	{
+	while($news = $sql -> db_Fetch()) {
 		$news['category_id'] = $news['news_category'];
 		if (check_class($news['news_class'])) {
 			if($action == "item"){ unset($news['news_rendertype']); }
