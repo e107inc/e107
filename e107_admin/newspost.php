@@ -112,6 +112,12 @@ if(IsSet($_POST['update_category'])){
 
 if(IsSet($_POST['save_prefs'])){
         $pref['newsposts'] = $_POST['newsposts'];
+
+		// ##### ADDED FOR NEWSARCHIVE --------------------------------------------------------------------
+		$pref['newsposts_archive'] = $_POST['newsposts_archive'];
+		$pref['newsposts_archive_title'] = $_POST['newsposts_archive_title'];
+		// ##### END --------------------------------------------------------------------------------------
+
         $pref['news_cats'] = $_POST['news_cats'];
         $pref['nbr_cols'] = $_POST['nbr_cols'];
         $pref['subnews_attach'] = $_POST['subnews_attach'];
@@ -416,7 +422,7 @@ class newspost{
                 <select class='tbox' name='imageps' onChange=\"addtext('[img]' + this.form.imageps.options[this.form.imageps.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_50."')\" onMouseOut=\"help('')\">
                 <option>".NWSLAN_81." ...</option>\n";
                 while(list($key, $image) = each($imagelist)){
-                        $text .= "<option value='".e_IMAGE."newspost_images/".$image."'>".$image."</option>\n";
+                       $text .= "<option value='".e_IMAGE."newspost_images/".$image."'>".$image."</option>\n";
                 }
                 $text .= "</select>
 
@@ -764,9 +770,35 @@ class newspost{
                 <option value='10' ".($pref['newsposts']==10 ? "selected='selected'>" : "").">10</option>
                 <option value='15' ".($pref['newsposts']==15 ? "selected='selected'>" : "").">15</option>
                 <option value='20' ".($pref['newsposts']==20 ? "selected='selected'>" : "").">20</option>
-
                 </select></td>
                 </tr>";
+
+
+// ##### ADDED FOR NEWSARCHIVE --------------------------------------------------------------------
+				// the possible archive values are from "1" to "< $pref['newsposts']"
+				// this should really be made as an onchange event on the selectbox for $pref['newsposts'] ...				
+				$text .= "					
+				<tr>
+                <td class='forumheader3' style='width:60%'><span class='defaulttext'>News posts to display in archive ?</span><br />
+					<span class='defaulttext'><i>First update the preferences with the changed display per page setting, then update again after setting the newsarchive preference.</i></span>
+				</td>
+                <td class='forumheader3' style='width:40%'>
+                <select class='tbox' name='newsposts_archive'>";
+				for($i=1;$i<$pref['newsposts'];$i++){
+					$text .= ($i == $pref['newsposts_archive'] ?  "<option value='".$i."' selected='selected'>".$i."</option>" : " <option value='".$i."'>".$i."</option>");
+				}
+                $text .= "</select></td>
+                </tr>
+
+				<tr>
+                <td class='forumheader3' style='width:60%'><span class='defaulttext'>set the title for the newsarchive</span></td>
+                <td class='forumheader3' style='width:40%'>
+                <input class='tbox' type='text' style='width:150px' name='newsposts_archive_title' value='".$pref['newsposts_archive_title']."' />
+                </td>
+                </tr>
+				";
+// ##### END --------------------------------------------------------------------------------------
+
 
                 require_once(e_HANDLER."userclass_class.php");
                 $text .= " <tr>
