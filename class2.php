@@ -398,7 +398,7 @@ class textparse{
         function textparse(){
                 // constructor
                 global $pref;
-
+				$pref['profanity_words'] = preg_replace("#(,$)#", "", $pref['profanity_words']);
                 if($pref['profanity_filter']){
                         $this->profan = str_replace(",", "|", $pref['profanity_words']);
                 }
