@@ -33,7 +33,7 @@ $FORUMSTART = "
 
 <table style='width:100%'>
 <tr>
-<td style='width:80%'><div class='mediumtext'><img src='".e_IMAGE."forum/e.png' style='vertical-align:middle' /> <b>{THREADNAME}</b></div><br />{GOTOPAGES}</td>
+<td style='width:80%'><div class='mediumtext'><img src='".e_IMAGE."forum/e.png' alt='' style='vertical-align:middle' /> <b>{THREADNAME}</b></div><br />{GOTOPAGES}</td>
 <td style='width:20%; vertical-align:bottom;'>{BUTTONS}</td>
 </tr>
 </table>
