@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-01-30 20:13:51 $
+|     $Revision: 1.10 $
+|     $Date: 2005-01-31 22:04:43 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -127,9 +127,6 @@ class e_parse {
 			return $text;
 		}
 		global $pref;
-//		if (MAGIC_QUOTES_GPC == TRUE) {
-//			$text = stripslashes($text);
-//		}
 
 		$text = preg_replace("#([\t\r\n ])([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="\2://\3" rel="external">\2://\3</a>', $text);
 		$text = preg_replace("#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="http://\2.\3" rel="external">\2.\3</a>', $text);
@@ -172,12 +169,6 @@ class e_parse {
 		$nl_replace = (strpos($modifiers, 'nobreak') === FALSE) ? "<br />" :
 		 "";
 		$text = str_replace('[E_NL]', $nl_replace, $text);
-
-
-
-
-
-
 		return $text;
 	}
 	 
