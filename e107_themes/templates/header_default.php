@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-02-07 12:52:40 $
-|     $Author: stevedunstan $
+|     $Revision: 1.23 $
+|     $Date: 2005-02-07 23:30:55 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if (!function_exists("parseheader")) {
@@ -42,7 +42,7 @@ if (isset($theme_css_php) && $theme_css_php) {
 	echo "<link rel='stylesheet' href='".THEME."theme-css.php' type='text/css' />";
 } else {
 	echo "<link rel='stylesheet' href='".THEME."style.css' type='text/css' />";
-	if (isset($no_core_css) && !$no_core_css) {
+	if (!isset($no_core_css) && !$no_core_css) {
 		echo "<link rel='stylesheet' href='".e_FILE."e107.css' type='text/css' />\n";
 		if (isset($eplug_css) && $eplug_css) { echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n"; }
 	}
