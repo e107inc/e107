@@ -14,9 +14,9 @@
 */
 //unset any globals created by register_globals being turned ON
 while (list($global) = each($GLOBALS)){
- if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS)$/', $global)){
-  unset($$global);
- }
+	if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST)$/', $global)){
+		unset($$global);
+	}
 }
 unset($global);
 
