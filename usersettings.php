@@ -174,9 +174,17 @@ list($user_id, $name, $user_password, $user_sess, $email, $website, $icq, $aim, 
 
 $signature = $aj -> editparse($signature);
 $tmp = explode("-", $birthday);
-$birth_day = $tmp[2];
-$birth_month = $tmp[1];
-$birth_year = $tmp[0];
+$birth_day = ($_POST['birth_day'])? $_POST['birth_day']:$tmp[2];
+$birth_month = ($_POST['birth_month'])? $_POST['birth_month']:$tmp[1];
+$birth_year = ($_POST['birth_year'])? $_POST['birth_year']:$tmp[0];
+$user_login = ($_POST['realname'])? $_POST['realname']:$user_login;
+$location = ($_POST['location'])? $_POST['location']:$location;
+$icq = ($_POST['icq'])? $_POST['icq']:$icq;
+$msn = ($_POST['msn'])? $_POST['msn']:$msn;
+$aim = ($_POST['aim'])? $_POST['aim']:$aim;
+$website = ($_POST['website'])? $_POST['website']:$website;
+$signature = ($_POST['signature'])? $_POST['signature']:$signature;
+$user_timezone = ($_POST['user_timezone'])? $_POST['user_timezone']:$user_timezone;
 
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
@@ -313,17 +321,8 @@ if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
 
         while(list($key, $u_entended) = each($user_entended)){
                 if($u_entended){
-                //        $text .= "<tr>
-                //        <td style='width:20%' class='forumheader3'>".$u_entended."</td>
-                //        <td style='width:80%' class='forumheader3'>
-                //        <input class='tbox' type='text' name='".$u_entended."' size='60' value='".$user_pref[$u_entended]."' maxlength='200' />
-                //        </td>
-               //         </tr>";
-                //        $c++;
-
-              require_once(e_HANDLER."user_extended.php");
-               $text .= user_extended_edit($u_entended,"forumheader3","left");
-
+                require_once(e_HANDLER."user_extended.php");
+                $text .= user_extended_edit($u_entended,"forumheader3","left");
                 }
         }
 }
