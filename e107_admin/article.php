@@ -144,6 +144,7 @@ if(IsSet($_POST['preview'])){
         $data = $aj -> formtparev(str_replace("../", "", $_POST['data']));
         $content_summary = $aj -> formtparev($_POST['content_summary']);
         $content_parent = $_POST['category'];
+		$content_class = $_POST['a_class'];
 }
 
 
