@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2004-12-11 01:35:14 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.9 $
+|     $Date: 2004-12-11 02:05:15 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -44,12 +44,12 @@ class db {
 	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 	function db() { // need to add session support as well.
 
-		$langid =  "e107language_".$GLOBALS['pref']['cookie_name'];
-		if($GLOBALS['pref']['user_tracking'] == "session") {
-			$this->mySQLlanguage = ($this->db_IsLang($_SESSION[$langid])) ? $_SESSION[$langid] : "";
-		} else {
-			$this->mySQLlanguage = ($this->db_IsLang($_COOKIE[$langid])) ? $_COOKIE[$langid] : "";
-		}
+	$langid =  "e107language_".$GLOBALS['pref']['cookie_name'];
+	if($GLOBALS['pref']['user_tracking'] == "session") {
+		$this->mySQLlanguage = ($this->db_IsLang($_SESSION[$langid])) ? $_SESSION[$langid] : "";
+	} else {
+		$this->mySQLlanguage = ($this->db_IsLang($_COOKIE[$langid])) ? $_COOKIE[$langid] : "";
+	}
 
 	}
 	// -------------------------------------------------------------------------------------------
@@ -198,7 +198,7 @@ class db {
 			$sQryRes =  is_null($rli) ? mysql_query("EXPLAIN $query") : mysql_query("EXPLAIN $query",$rli);
 			$nFields = "";
 			if ($sQryRes) { // There's something to explain
-				$nFields = mysql_num_fields($sQryRes);
+			$nFields = mysql_num_fields($sQryRes);
 			}
 			$aTrace = debug_backtrace();
 			$sCallingFile=$aTrace[1]['file'];
@@ -228,11 +228,11 @@ class db {
 			$aTimeMarks[$curTimeMark]['DB Time']+=$mytime;
 			$aTimeMarks[$curTimeMark]['DB Count']++;
 
-			$aDBbyTable[$this->$mySQLcurTable]['Table']=$this->$mySQLcurTable;
-			$aDBbyTable[$this->$mySQLcurTable]['%DB Time']=0; // placeholder
-			$aDBbyTable[$this->$mySQLcurTable]['%DB Count']=0; // placeholder
-			$aDBbyTable[$this->$mySQLcurTable]['DB Time']+=$mytime;
-			$aDBbyTable[$this->$mySQLcurTable]['DB Count']++;
+			$aDBbyTable[$this->mySQLcurTable]['Table'] = $this->mySQLcurTable;
+			$aDBbyTable[$this->mySQLcurTable]['%DB Time'] = 0; // placeholder
+			$aDBbyTable[$this->mySQLcurTable]['%DB Count'] = 0; // placeholder
+			$aDBbyTable[$this->mySQLcurTable]['DB Time'] += $mytime;
+			$aDBbyTable[$this->mySQLcurTable]['DB Count'] ++;
 
 			$mytime = number_format($mytime,4);  //round for local display
 			$sDBdbg .=  "<tr><td colspan=\"$nFields\"><b>Query time:</b> $mytime</td></tr></table><br />";
@@ -256,7 +256,7 @@ class db {
 
 		$table = $this->db_IsLang($table);
 
-		$this->$mySQLcurTable = $table;
+		$this->mySQLcurTable = $table;
 		if($arg != "" && $mode=="default") {
 			if($debug){ echo "SELECT ".$fields." FROM ".MPREFIX.$table." WHERE ".$arg."<br />"; }
 			if($this->mySQLresult = $this->db_Query("SELECT ".$fields." FROM ".MPREFIX.$table." WHERE ".$arg)) {
@@ -299,7 +299,7 @@ class db {
 		//     $table = "french";
 		$table = $this->db_IsLang($table);
 
-		$this->$mySQLcurTable = $table;
+		$this->mySQLcurTable = $table;
 		if ($debug) {
 			echo "INSERT INTO ".MPREFIX.$table." VALUES (".htmlentities($arg).")";
 		}
@@ -331,7 +331,7 @@ class db {
 
 		$table = $this->db_IsLang($table);
 
-		$this->$mySQLcurTable = $table;
+		$this->mySQLcurTable = $table;
 		if ($debug) { echo "UPDATE ".MPREFIX.$table." SET ".$arg."<br />"; }
 		if ($result = $this->mySQLresult = $this->db_Query("UPDATE ".MPREFIX.$table." SET ".$arg)) {
 			$result = mysql_affected_rows();
@@ -384,7 +384,7 @@ class db {
 
 		$table = $this->db_IsLang($table);
 
-		$this->$mySQLcurTable = $table;
+		$this->mySQLcurTable = $table;
 		//                echo "SELECT COUNT".$fields." FROM ".MPREFIX.$table." ".$arg;
 
 		if ($fields == "generic") {
@@ -429,14 +429,10 @@ class db {
 
 		$table = $this->db_IsLang($table);
 
-		$this->$mySQLcurTable = $table;
+		$this->mySQLcurTable = $table;
 		if ($table == "user") {
 			//                echo "DELETE FROM ".MPREFIX.$table." WHERE ".$arg."<br />";                        // debug
 		}
-
-
-
-
 		if (!$arg) {
 			if ($result = $this->mySQLresult = $this->db_Query("DELETE FROM ".MPREFIX.$table)) {
 				if (strstr(e_SELF, ADMINDIR) && $table != "online" && $table != "tmp") {
@@ -525,39 +521,37 @@ class db {
 	function db_Field_info() { /* use immediately after a seek for info on next field */
 	$result = @mysql_fetch_field($this->mySQLresult);
 	return $result;
-}
-// ----------------------------------------------------------------------------
-function db_Num_fields() {
-	$result = @mysql_num_fields($this->mySQLresult);
-	return $result;
-}
-// ----------------------------------------------------------------------------
-function db_IsLang($table) {
-
-	// Return table name based on mySQLlanguage.
-	// Uses $GLOBALS to share table list between DB objects.
-
-	if (!$this->mySQLlanguage || !$GLOBALS['pref']['multilanguage']) {
-		return $table;   // multi-lang turned off
 	}
+	// ----------------------------------------------------------------------------
+	function db_Num_fields() {
+		$result = @mysql_num_fields($this->mySQLresult);
+		return $result;
+	}
+	// ----------------------------------------------------------------------------
+	function db_IsLang($table) {
 
+		// Return table name based on mySQLlanguage.
+		// Uses $GLOBALS to share table list between DB objects.
 
-	if (!$GLOBALS['mySQLtablelist']) {
-		$tablist = mysql_list_tables($this->mySQLdefaultdb);
-		while (list($temp) = mysql_fetch_array($tablist)) {
-			$GLOBALS['mySQLtablelist'][] = $temp;
+		if (!$this->mySQLlanguage || !$GLOBALS['pref']['multilanguage']) {
+			return $table;   // multi-lang turned off
 		}
-	}
 
 
-	$mltable = strtolower($this->mySQLlanguage."_".$table);
-	if (in_array(MPREFIX.$mltable,$GLOBALS['mySQLtablelist'])) {
-		return $mltable;  // language table found.
+		if (!$GLOBALS['mySQLtablelist']) {
+			$tablist = mysql_list_tables($this->mySQLdefaultdb);
+			while (list($temp) = mysql_fetch_array($tablist)) {
+				$GLOBALS['mySQLtablelist'][] = $temp;
+			}
+		}
+
+
+		$mltable = strtolower($this->mySQLlanguage."_".$table);
+		if (in_array(MPREFIX.$mltable,$GLOBALS['mySQLtablelist'])) {
+			return $mltable;  // language table found.
+		}
+		return $table; // language table not found.
 	}
-	return $table; // language table not found.
 }
 
-
-
-}
 ?>
