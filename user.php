@@ -235,11 +235,11 @@ function renderuser($row, $user_entended, $mode="verbose"){
                 </td></tr>
 
                 <td style='width:80%'class='forumheader3'>
-                        <table style='width:100%'><tr><td style='width:30%'> <img src='".e_IMAGE."generic/aim.png' alt=''  style='vertical-align:middle' /> ".LAN_116."</td><td style='width:70%; text-align:right'>".($user_aim ? $user_aim : "<i>".LAN_401."</i>")."</td></tr></table>
+                        <table style='width:100%'><tr><td style='width:30%'> <img src='".e_IMAGE."generic/aim.png' alt=''  style='vertical-align:middle' /> ".LAN_116."</td><td style='width:70%; text-align:right'>".($user_aim ? $aj -> tpa($user_aim) : "<i>".LAN_401."</i>")."</td></tr></table>
                 </td></tr>
 
                 <td style='width:80%'class='forumheader3'>
-                        <table style='width:100%'><tr><td style='width:30%'> <img src='".e_IMAGE."generic/msn.png' alt=''  style='vertical-align:middle' /> ".LAN_117."</td><td style='width:70%; text-align:right'>".($user_msn ? $user_msn : "<i>".LAN_401."</i>")."</td></tr></table>
+                        <table style='width:100%'><tr><td style='width:30%'> <img src='".e_IMAGE."generic/msn.png' alt=''  style='vertical-align:middle' /> ".LAN_117."</td><td style='width:70%; text-align:right'>".($user_msn ? $aj -> tpa($user_msn) : "<i>".LAN_401."</i>")."</td></tr></table>
                 </td></tr>
 
                 <td style='width:80%'class='forumheader3'>
@@ -247,7 +247,7 @@ function renderuser($row, $user_entended, $mode="verbose"){
                 </td></tr>
 
                 <td style='width:80%'class='forumheader3'>
-                        <table style='width:100%'><tr><td style='width:30%'> <img src='".e_IMAGE."generic/location.png' alt=''  style='vertical-align:middle' /> ".LAN_119."</td><td style='width:70%; text-align:right'>".($user_location ? $user_location : "<i>".LAN_401."</i>")."</td></tr></table>
+                        <table style='width:100%'><tr><td style='width:30%'> <img src='".e_IMAGE."generic/location.png' alt=''  style='vertical-align:middle' /> ".LAN_119."</td><td style='width:70%; text-align:right'>".($user_location ? $aj -> tpa($user_location) : "<i>".LAN_401."</i>")."</td></tr></table>
                 </td></tr>";
 
 

@@ -133,6 +133,11 @@ if(IsSet($_POST['updatesettings'])){
                 $_POST['website'] = "";
     }
 
+	if(!is_numeric($_POST['icq'])){
+		$error = LAN_ICQNUMBER;
+		$_POST['icq'] = "";
+	}
+
         $birthday = $_POST['birth_year']."/".$_POST['birth_month']."/".$_POST['birth_day'];
 
         if($file_userfile['error'] != 4){
@@ -156,7 +161,11 @@ if(IsSet($_POST['updatesettings'])){
                 if($_uid && ADMIN){ $inp = $_uid; $remflag = TRUE; }else{ $inp = USERID; }
                 $_POST['signature'] = $aj -> formtpa($_POST['signature'], "public");
                 $_POST['location'] = $aj -> formtpa($_POST['location'], "public");
-                $_POST['user_customtitle'] = $aj -> formtpa($_POST['user_customtitle'], "public");
+                $_POST['website'] = $aj -> formtpa($_POST['website'], "public");
+                $_POST['msn'] = $aj -> formtpa($_POST['msn'], "public");
+                $_POST['aim'] = $aj -> formtpa($_POST['aim'], "public");
+                $_POST['realname'] = $aj -> formtpa($_POST['realname'], "public");
+                $_POST['customtitle'] = $aj -> formtpa($_POST['customtitle'], "public");
                 $sql -> db_Update("user", "user_password='$password', user_sess='$user_sess', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$birthday."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."', user_customtitle='".$_POST['customtitle']."' WHERE user_id='".$inp."' ");
 
                 if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
