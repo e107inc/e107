@@ -53,7 +53,7 @@ while($row = $sql -> db_Fetch()){
 								unset($link_button);
                         }
                         if($sublink_exist==0){$textadd1b = "&middot;";}
-						$text .= $textadd1.$textadd1b.$textadd2."</span></div>";
+						$text .= $textadd1.$textadd1b.$textadd2."</span></div>\n";
                 }
           }else{
                 if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
