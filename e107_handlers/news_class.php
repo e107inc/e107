@@ -13,8 +13,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.48 $
-| $Date: 2005-03-10 20:18:37 $
+| $Revision: 1.49 $
+| $Date: 2005-03-11 08:51:03 $
 | $Author: stevedunstan $
 +---------------------------------------------------------------+
 */
@@ -40,6 +40,8 @@ class news {
 		{
 			$attach .= "image:".$news_image.chr(1);
 		}
+
+
 
 		$news_title = $tp->toDB($news_title, TRUE);
 		$news_body = $tp->toDB($data, TRUE);
@@ -122,7 +124,7 @@ class news {
 
 	function render_newsitem($news, $mode = "default", $n_restrict = "") {
 
-		//echo "<pre>"; print_r($news); echo "</pre>"; // debug ...
+		//	echo "<pre>"; print_r($news); echo "</pre>"; exit; // debug ...
 /*
  Some variables from here probably still need to be moved
  into the function below.
@@ -221,7 +223,25 @@ class news {
 			Definitions will still be used in the theme.php.
 */
 		global $tp, $pref;
+
 		extract($news);
+
+		if(!isset($news_attach))
+		{
+			$news_attach = "";
+			if($news_thumb)
+			{
+				$news_attach = "thumb:".$news_thumb.chr(1);
+			}
+			if($news_file)
+			{
+				$news_attach .= "file:".$news_file.chr(1);
+			}
+			if($news_image)
+			{
+				$news_attach .= "image:".$news_image.chr(1);
+			}
+		}
 
 		$category_name = $tp->toHTML($news['category_name']);
 		$category_icon = $news['category_icon'];
@@ -282,8 +302,9 @@ class news {
 			$adminoptions = "<a href='".e_BASE.e_ADMIN."newspost.php?create.edit.".$news_id."'><img src='".e_IMAGE."generic/newsedit.png' alt='' style='border:0' /></a>\n";
 		}
 
-		/* new attach code, added by jalist 10/03/2005 */
+		
 
+		/* new attach code, added by jalist 10/03/2005 */
 		if($news_attach)
 		{
 			$attach = explode(chr(1), $news_attach);
@@ -293,11 +314,26 @@ class news {
 				{
 					$news_thumb = str_replace("thumb:", "", $attachment);
 				}
+				if(strstr($attachment, "image:"))
+				{
+					$images =  explode("|", str_replace("image:", "", $attachment));
+					for($a=1; $a<(count($images)); $a++)
+					{
+						$news_body = str_replace("IMAGE=".$a, "IMAGE=".$images[($a-1)], $news_body);
+					}
+				}
+				if(strstr($attachment, "file:"))
+				{
+					$files =  explode("|", str_replace("file:", "", $attachment));
+					for($a=1; $a<(count($files)); $a++)
+					{
+						$news_body = str_replace("FILE=".$a, "FILE=".$files[($a-1)], $news_body);
+					}
+				}
 			}
-			define("NEWSATTACH", $news_attach);
 		}
 
-		$news_body = $tp -> parseTemplate($news_body);
+		$news_body = $tp -> parseTemplate($news_body, TRUE, null, $news_attach);
 
 		$search[0] = "/\{NEWSTITLE\}(.*?)/si";
 		$replace[0] = $news_title;
