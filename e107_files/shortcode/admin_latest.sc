@@ -11,7 +11,6 @@ if (ADMIN) {
 			$text .= "<div style='padding-bottom: 2px;'>".E_16_NEWS.($submitted_news ? " <a href='".e_ADMIN."newspost.php?sn'>".ADLAN_LAT_2.": $submitted_news</a>" : " ".ADLAN_LAT_2.": 0")."</div>";
 			$text .= "<div style='padding-bottom: 2px;'>".E_16_ARTICLE.($submitted_articles ? " <a href='".e_ADMIN."article.php?sa'>".ADLAN_LAT_3.": $submitted_articles</a>" : " ".ADLAN_LAT_3.": ".$submitted_articles)."</div>";
 			$text .= "<div style='padding-bottom: 2px;'>".E_16_REVIEW.($submitted_reviews ? " <a href='".e_ADMIN."review.php?sa'>".ADLAN_LAT_4.": $submitted_reviews</a>" : " ".ADLAN_LAT_4.": ".$submitted_reviews)."</div>";
-			$text .= "<div style='padding-bottom: 2px;'>".E_16_FORUM.($reported_posts ? " <a href='".e_ADMIN."forum.php?sr'>".ADLAN_LAT_6.": $reported_posts</a>" : " ".ADLAN_LAT_6.": ".$reported_posts)."</div>";
 			$text .= "<div style='padding-bottom: 2px;'>".E_16_UPLOADS.($active_uploads ? " <a href='".e_ADMIN."upload.php'>".ADLAN_LAT_7.": $active_uploads</a>" : " ".ADLAN_LAT_7.": ".$active_uploads)."</div>";
 
 			if ($pref['plug_latest']) {
