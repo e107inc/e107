@@ -532,6 +532,8 @@ class textparse{
         if($mode != "nobreak"){ $text = nl2br($text); }
 		$text = preg_replace("/\n/i", " ", $text);
 		$text = str_replace("<br />", " <br />" , $text);
+      $text = e107_parse($text,$referrer);
+      $text = preg_replace("#\{\{.*?\}\}#","",$text);
 		$text = $this -> wrap($text, $highlight_search);
         $text = preg_replace($search, $replace, $text);
         if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
@@ -543,8 +545,6 @@ class textparse{
         $text = substr($text, 1);
         $text = code($text, "notdef");
         $text = html($text);
-        $text = e107_parse($text,$referrer);
-        $text = preg_replace("#\{\{.*?\}\}#","",$text);
         return $text;
         }
 
@@ -897,7 +897,9 @@ function init_session(){
                         define("USER", TRUE); 
                         define("USERCLASS", $user_class);
                         define("USERREALM", $user_realm);
-								define("USERVIEWED", $user_viewed); 
+								define("USERVIEWED", $user_viewed);
+								define("USERIMAGE", $user_image);
+								define("USERSESS", $user_sess);
                         if($user_currentvisit + 3600 < time()){
                                 $user_lastvisit = $user_currentvisit;
                                 $user_currentvisit = time();
