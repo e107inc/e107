@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-02-20 04:59:36 $
+|     $Revision: 1.12 $
+|     $Date: 2005-02-21 04:14:32 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -103,13 +103,16 @@ if ($pages)
 {
 	if(strpos($FORUM_VIEW_START, 'THREADPAGES') !== FALSE || strpos($FORUM_VIEW_END, 'THREADPAGES') !== FALSE)
 	{
-		$np_parm['template'] = LAN_316." [PREV]&nbsp;&nbsp;[DROPDOWN]&nbsp;&nbsp;[NEXT]";
-		$np_parm['currentpage'] = ($from/$view)+1;
-		$np_parm['totalpages'] = $pages;
-		$np_parm['action'] = e_SELF.'?'.$forum_id.'.[FROM]';
-		$np_parm['perpage'] = $view;
-		cachevars('nextprev', $np_parm);
-		$THREADPAGES = $tp->parseTemplate("{NEXTPREV}");
+//		$np_parm['template'] = LAN_316." [PREV]&nbsp;&nbsp;[DROPDOWN]&nbsp;&nbsp;[NEXT]";
+//		$np_parm['currentpage'] = ($from/$view)+1;
+//		$np_parm['totalpages'] = $pages;
+//		$np_parm['action'] = e_SELF.'?'.$forum_id.'.[FROM]';
+//		$np_parm['perpage'] = $view;
+//		cachevars('nextprev', $np_parm);
+//		$parms = $news_total.".".ITEMVIEW.".".$from.".".e_SELF.'?'."[FROM].".$action.".".$sub_action;
+//
+		$parms = "{$topics}.{$view}.{$from}.".e_SELF.'?'.$forum_id.'.[FROM]';
+		$THREADPAGES = LAN_316." ".$tp->parseTemplate("{NEXTPREV={$parms}}");
 	}
 }
 	
