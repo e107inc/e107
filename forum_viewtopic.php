@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/forum_viewtopic.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2004-10-30 01:12:49 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2004-11-04 13:48:16 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 
@@ -160,8 +160,8 @@ $sql -> db_Update("forum_t", "thread_views=thread_views+1 WHERE thread_id='$thre
 $sql -> db_Select("forum", "*", "forum_id='".$forum_id."' ");
 $row = $sql-> db_Fetch(); extract($row);
 $fname = $row['forum_name'];
-
-if(($forum_class && !check_class($forum_class)) || ($forum_class == 254 && !USER)){ header("Location:".e_BASE."forum.php"); exit;}
+// if(($forum_class && !check_class($forum_class)) || ($forum_class == 254 && !USER))
+if(!check_class($forum_class)){ header("Location:".e_BASE."forum.php"); exit;}
 
 $sql -> db_Select("forum_t", "*", "thread_id='".$thread_id."' ORDER BY thread_datestamp DESC ");
 $row = $sql-> db_Fetch("no_strip"); extract($row);
@@ -498,7 +498,8 @@ function forumjump(){
         $text .= "<form method='post' action='".e_SELF."'><p>".LAN_65.": <select name='forumjump' class='tbox'>";
         while($row = $sql -> db_Fetch()){
                 extract($row);
-                if(($forum_class && check_class($forum_class)) || ($forum_class == 254 && USER) || !$forum_class){
+                // if(($forum_class && check_class($forum_class)) || ($forum_class == 254 && USER) || !$forum_class)
+                if(check_class($forum_class)){
                         $text .= "\n<option value='".$forum_id."'>".$forum_name."</option>";
                 }
         }
