@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/includes/admin_classis.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-09 18:13:14 $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-09 19:52:56 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -26,10 +26,12 @@ while(list($key, $funcinfo) = each($newarray)){
 
 $text .= render_clean();
 
-$text .= "<tr><td colspan='5'>
-<div class='fborder'><div class='fcaption'>Plugins</div></div>
-<br />
-</td></tr>";
+$text .= "</table></div>";
+
+$ns -> tablerender(ADLAN_47." ".ADMINNAME, $text);
+
+$text = "<div style='text-align:center'>
+<table style='".ADMIN_WIDTH."'>";
 
 $text .= render_links(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z", E_32_PLUGMANAGER, "classis");
 
@@ -47,6 +49,6 @@ $text .= render_clean();
 
 $text .= "</table></div>";
 
-$ns -> tablerender(ADLAN_47." ".ADMINNAME, $text);
+$ns -> tablerender('Plugins', $text);
 
 ?>
