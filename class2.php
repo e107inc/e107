@@ -366,7 +366,7 @@ if(strstr(e_SELF, $ADMIN_DIRECTORY) && $pref['admintheme'] && !$_POST['sitetheme
 if($pref['anon_post'] ? define("ANON", TRUE) : define("ANON", FALSE));
 if(Empty($pref['newsposts']) ? define("ITEMVIEW", 15) : define("ITEMVIEW", $pref['newsposts']));
 
-if($pref['$antiflood1']==1){  define(FLOODPROTECT, TRUE); define(FLOODTIMEOUT, $pref['antiflood_timeout']); }
+if($pref['$antiflood1']==1){  define('FLOODPROTECT', TRUE); define('FLOODTIMEOUT', $pref['antiflood_timeout']); }
 
 define ("HEADERF", e_THEME."templates/header".$layout.".php");
 define ("FOOTERF", e_THEME."templates/footer".$layout.".php");
