@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/download_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-20 18:29:08 $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-08 19:23:23 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -155,9 +155,7 @@ if(!$DOWNLOAD_VIEW_TABLE){
 }
 
 if(!$DOWNLOAD_VIEW_TABLE_END){
-                $DOWNLOAD_VIEW_TABLE_END = "
-                </table>
-                </div>\n";
+                $DOWNLOAD_VIEW_TABLE_END = "\n";
 }
 // ##### ------------------------------------------------------------------------------------------
 
