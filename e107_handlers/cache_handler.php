@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2004-12-10 21:51:15 $
+|     $Revision: 1.9 $
+|     $Date: 2004-12-11 13:49:12 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -22,17 +22,18 @@
  * Class to cache data as files, improving site speed and throughput.
  *
  * @package     e107
- * @version     $Revision: 1.8 $
+ * @version     $Revision: 1.9 $
  * @author      $Author: streaky $
  */
 class ecache {
+	
+	var $CachePageMD5;
 	/**
-	* @return string
-	* @desc Internal class function that returns an md5 hash of e_BASE.e_LANGUAGE.THEME.USERCLASS.e_QUERY - used for the filename of the cache file, making sure, for example, that the file is unique to the theme.
-	* @scope private
+	* @return ecache
+	* @desc Constructor sets var $CachePageMD5
 	*/
-	function e107cache_page_md5() {
-		return md5(e_BASE.e_LANGUAGE.THEME.USERCLASS.e_QUERY);
+	function ecache(){
+		$this->CachePageMD5 = md5(e_BASE.e_LANGUAGE.THEME.USERCLASS.e_QUERY);
 	}
 
 	/**
@@ -44,7 +45,7 @@ class ecache {
 	function cache_fname($query) {
 		global $FILES_DIRECTORY;
 		$q = preg_replace("#\W#", "_", $query);
-		$fname = "./".e_BASE.$FILES_DIRECTORY."cache/".$q."-".$this->e107cache_page_md5().".cache.php";
+		$fname = "./".e_BASE.$FILES_DIRECTORY."cache/".$q."-".$this->CachePageMD5.".cache.php";
 		return $fname;
 	}
 
@@ -60,7 +61,7 @@ class ecache {
 		{
 			if ($cache_file = $this->cache_fname($query)) {
 				$ret = file_get_contents($cache_file);
-				$ret = substr($ret, 6);
+				$ret = substr($ret, 5);
 				if ($ret == false) {
 					return FALSE;
 				}
@@ -83,7 +84,7 @@ class ecache {
 		global $pref, $FILES_DIRECTORY;
 		if ($pref['cachestatus']) {
 			$cache_file = $this->cache_fname($query);
-			file_put_contents($cache_file, "<?php\n<!-- BEGIN CACHE FILE: $query -->\n\n".$text."\n\n<!-- END CACHE FILE: $query -->");
+			file_put_contents($cache_file, "<?php$text");
 			@chmod($cache_file, 0777);
 		}
 	}
@@ -96,8 +97,7 @@ class ecache {
 	function clear($query = '') {
 		global $pref, $FILES_DIRECTORY;
 		if ($pref['cachestatus'] || !$query) {
-			$file = ($query) ? preg_replace("#\W#", "_", $query)."*.cache.php" :
-			"*.cache.php";
+			$file = ($query) ? preg_replace("#\W#", "_", $query)."*.cache.php" : "*.cache.php";
 			$dir = "./".e_BASE.$FILES_DIRECTORY."cache/";
 			$ret = $this->delete($dir, $file);
 		}
