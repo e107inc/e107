@@ -40,39 +40,30 @@ function fpw_error($txt){
 }
 
 if(e_QUERY){
+	$tmp=explode(".",e_QUERY);
+	$tmpinfo=preg_replace("#[\W_]#","",$tmp[1]);
+	if($sql -> db_Select("tmp","*","tmp_info LIKE '%.{$tmpinfo}' ")){
+		$row = $sql -> db_Fetch();
+		extract($row);
+		$sql -> db_Delete("tmp","tmp_info LIKE '%.{$tmpinfo}' ");
+		$newpw="";
+		$pwlen = rand(8, 12);
+		for($a=0; $a<=$pwlen;$a++){
+			$newpw .= chr(rand(97, 122));
+		}
+		$mdnewpw = md5($newpw);
 
-        if($sql -> db_Select("tmp","*","tmp_info LIKE '%.".e_QUERY."' ")){
-                $row = $sql -> db_Fetch();
-                extract($row);
-                $sql -> db_Delete("tmp","tmp_info LIKE '%.".e_QUERY."' ");
-                $newpw="";
-                $pwlen = rand(8, 12);
-                for($a=0; $a<=$pwlen;$a++){
-                        $newpw .= chr(rand(97, 122));
-                }
-                $mdnewpw = md5($newpw);
+		list($username,$md5) = explode(".",$tmp_info);
+		$sql -> db_Update("user", "user_password='$mdnewpw', user_viewed='' WHERE user_name='$username' ");
+		cookie($pref['cookie_name'], "", (time()-2592000));
+		$_SESSION[$pref['cookie_name']] = "";
 
-                list($username,$md5) = explode(".",$tmp_info);
-                $sql -> db_Update("user", "user_password='$mdnewpw', user_sess='', user_viewed='' WHERE user_name='$username' ");
-                cookie($pref['cookie_name'], "", (time()-2592000));
-                $_SESSION[$pref['cookie_name']] = "";
+		$txt = LAN_FPW8." {$username} ".LAN_FPW9." {$newpw}<br /><br />".LAN_FPW10;
+		fpw_error($txt);
 
-                $txt = LAN_FPW8." {$username} ".LAN_FPW9." {$newpw}<br /><br />".LAN_FPW10;
-                fpw_error($txt);
-
-        } else {
-                fpw_error(LAN_FPW7);
-        }
-
-        if($sql -> db_Select("user", "*", "user_viewed='".e_QUERY."' ")){
-                $row = $sql -> db_Fetch(); extract($row);
-                $sql -> db_Update("user", "user_password='$user_sess', user_sess='', user_viewed='' WHERE user_id='$user_id' ");
-                cookie($pref['cookie_name'], "", (time()-2592000));
-                $_SESSION[$pref['cookie_name']] = "";
-                $ns -> tablerender(LAN_03, "<div style='text-align:center'>".LAN_217."</div>");
-                require_once(FOOTERF);
-                exit;
-        }
+	} else {
+		fpw_error(LAN_FPW7);
+	}
 }
 
 if(IsSet($_POST['pwsubmit'])){
@@ -88,13 +79,7 @@ if(IsSet($_POST['pwsubmit'])){
         if($sql -> db_Select("user", "*", "user_email='{$_POST['email']}' AND user_name='{$_POST['username']}' ")){
                 $row = $sql -> db_Fetch(); extract($row);
 
-                if(is_numeric($user_login) && strlen($user_sess) == 32){
-                        $ns -> tablerender(LAN_214, "<div style='text-align:center'>".LAN_219."</div>");
-                        require_once(FOOTERF);
-                        exit;
-                }
-
-                if($user_id == 1 && $user_perms == 0){
+                if($user_admin == 1 && $user_perms == "0"){
                         sendemail($pref['siteadminemail'], ".LAN_06.", "".LAN_07."".getip()." ".LAN_08);
                         echo "<script type='text/javascript'>document.location.href='index.php'</script>\n";
                         die();
@@ -154,14 +139,14 @@ $text = "<div style='text-align:center'>
 </tr>";
 
 if($use_imagecode){
-        $text .= "
-                                <tr>
-                                        <td class='forumheader3' style='width:25%'>".LAN_FPW2."</td>
-                                        <td class='forumheader3' style='width:75%' style='text-align:left'>
-                                        <input type='hidden' name='rand_num' value='".$sec_img -> random_number."'>";
-                        $text .= $sec_img -> r_image();
-                        $text .= "<br /><input class='tbox' type='text' name='code_verify' size='15' maxlength='20'><br />";
-                        $text .= "</td></tr>";
+	$text .= "
+	<tr>
+	<td class='forumheader3' style='width:25%'>".LAN_FPW2."</td>
+	<td class='forumheader3' style='width:75%' style='text-align:left'>
+	<input type='hidden' name='rand_num' value='".$sec_img -> random_number."'>";
+	$text .= $sec_img -> r_image();
+	$text .= "<br /><input class='tbox' type='text' name='code_verify' size='15' maxlength='20'><br />";
+	$text .= "</td></tr>";
 }
 
 $text .="
