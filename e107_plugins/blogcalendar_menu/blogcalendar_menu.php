@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/blogcalendar_menu/blogcalendar_menu.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-08 13:33:45 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-13 13:43:13 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 | Based on code by: Thomas Bouve (crahan@gmx.net)
 */
@@ -86,14 +86,14 @@ $sql->db_Select("news", "news_id, news_datestamp", "news_class IN (".USERCLASS_L
 while ($news = $sql->db_Fetch())
 {
 	$xmonth = date("n", $news['news_datestamp']);
-	if (!$month_links[$xmonth])
+	if (!isset($month_links[$xmonth]) || !$month_links[$xmonth])
 	{
 		$month_links[$xmonth] = e_BASE."news.php?month.".formatDate($req_year, $xmonth);
 	}
 	if($news['news_datestamp'] >= $month_start AND $news['news_datestamp'] <= $month_end)
 	{
 		$xday = date("j", $news['news_datestamp']);
-		if (!$day_links[$xday])
+		if (!isset($day_links[$xday]) || !$day_links[$xday])
 		{
 			$day_links[$xday] = e_BASE."news.php?day.".formatDate($req_year, $req_month, $xday);
 		}

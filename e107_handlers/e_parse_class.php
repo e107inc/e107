@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-02-11 18:56:48 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.25 $
+|     $Date: 2005-02-13 13:42:52 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 	
@@ -107,7 +107,7 @@ class e_parse {
 
 		foreach ($words as $word)
 		{ 
-			if (strlen ($word) > $wrap and !ereg ("[[|]|//|href|<img|&#]", $word))
+			if ((strlen($word) > $wrap) && !ereg("[[|]|//|href|<img|&#]", $word))
 			{
 				$word = wordwrap ($word, $wrap, "<br />", 1); 
 			}

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/counter_menu/counter_menu.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-02-10 19:37:09 $
-|     $Author: stevedunstan $
+|     $Revision: 1.8 $
+|     $Date: 2005-02-13 13:43:13 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 $text = "";
@@ -25,6 +25,8 @@ if ($pref['statActivate']) {
 		$unique = 1;
 		$siteTotal = 1;
 		$siteUnique = 1;
+		$totalever = 1;
+		$uniqueever = 1;
 	} else {
 		require_once($logfile);
 		$pageName = preg_replace("/(\?.*)|(\_.*)|(\.php)/", "", basename (e_SELF));

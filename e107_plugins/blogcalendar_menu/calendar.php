@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/blogcalendar_menu/calendar.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-02-08 13:33:45 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-13 13:43:13 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 | Based on code by: Thomas Bouve (crahan@gmx.net) and
 | and Based on: PHP Calendar by Keith Devens http://www.keithdevens.com/software/php_calendar/
@@ -38,8 +38,7 @@ function calendar($req_day, $req_month, $req_year, $links = NULL, $ws = "sunday"
 	}
 	 
 	// what's the padding we should use for the cells?
-	$padding = $pref['blogcal_padding']?$pref['blogcal_padding']:
-	"2";
+	$padding = (isset($pref['blogcal_padding']) && $pref['blogcal_padding']) ? $pref['blogcal_padding']: "2";
 	 
 	$date = mktime(0, 0, 0, $req_month, 1, $req_year);
 	$last_day = date('t', $date);
