@@ -119,6 +119,7 @@ if(IsSet($_POST['updateprefs'])){
         $pref['smtp_username'] = $aj -> formtpa($_POST['smtp_username']);
         $pref['smtp_password'] = $aj -> formtpa($_POST['smtp_password']);
 
+        $signup_options = "";
         for ($i=0; $i<count($signup_title); $i++) {
         $valuesignup =  $signup_name[$i];
         $signup_options .= $_POST[$valuesignup];
@@ -126,13 +127,16 @@ if(IsSet($_POST['updateprefs'])){
         }
         $pref['signup_options'] = $signup_options;
 
-        
+
         $sql -> db_Delete("cache");
         save_prefs();
         header("location:prefs.php");
        echo "<script type='text/javascript'>document.location.href='prefs.php'</script>\n";
         exit;
 }
+
+
+
 
 $sql -> db_Select("plugin","*","plugin_installflag='1' ");
 while($row = $sql -> db_Fetch()){
@@ -552,16 +556,18 @@ $text .= "
 <td class=\"fcaption\">".CUSTSIG_13."</td>
 <td class=\"fcaption\">".CUSTSIG_14."</td>
 </tr>";
+ $signupval = explode(".",$pref['signup_options']);
+
 
     for ($i=0; $i<count($signup_title); $i++) {
 
     $text .="
     <tr>
 <td style='width:50%' class='forumheader3'>".$signup_title[$i]."</td>
-<td style='width:50%' class='forumheader3'>".
-($$signup_name[$i] == "" || $$signup_name[$i]=="" ? "<input type='radio' name='".$signup_name[$i]."' value='0' checked> ".CUSTSIG_12."&nbsp;" : "<input type='radio' name='".$signup_name[$i]."' value='0'> ".CUSTSIG_12."&nbsp;").
-($$signup_name[$i] == "1" ? "<input type='radio' name='".$signup_name[$i]."' value='1' checked> ".CUSTSIG_14."&nbsp;" : "<input type='radio' name='".$signup_name[$i]."' value='1'> ".CUSTSIG_14."&nbsp;").
-($$signup_name[$i] == "2" ? "<input type='radio' name='".$signup_name[$i]."' value='2' checked> ".CUSTSIG_15."&nbsp;" : "<input type='radio' name='".$signup_name[$i]."' value='2'> ".CUSTSIG_15."&nbsp;")."
+<td style='width:50%' class='forumheader3' style='text-align:right'>".
+($signupval[$i] == "0" || $$signup_name[$i]=="" ? "<input type='radio' name='".$signup_name[$i]."' value='0' checked> ".CUSTSIG_12 : "<input type='radio' name='".$signup_name[$i]."' value='0'> ".CUSTSIG_12)."&nbsp;&nbsp;".
+($signupval[$i] == "1" ? "<input type='radio' name='".$signup_name[$i]."' value='1' checked> ".CUSTSIG_14 : "<input type='radio' name='".$signup_name[$i]."' value='1'> ".CUSTSIG_14)."&nbsp;&nbsp;".
+($signupval[$i] == "2" ? "<input type='radio' name='".$signup_name[$i]."' value='2' checked> ".CUSTSIG_15 : "<input type='radio' name='".$signup_name[$i]."' value='2'> ".CUSTSIG_15)."&nbsp;&nbsp;
 
 </td>
 
@@ -697,12 +703,12 @@ if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
         $text .="
                 <tr>
                 <td style='width:50%' class='forumheader3'>".$u_name." <span class='smalltext'>(custom field)</span></td>
-                <td style='width:25%' class='forumheader3'>".
-                ($pref['signup_ext'.$key] ? "<input type='checkbox' name='signup_ext".$key."' value='1'  checked>" : "<input type='checkbox' name='signup_ext".$key."' value='1'>")."
-                </td>
-        <td style='width:25%' class='forumheader3'>".
-                ($pref['signup_ext_req'.$key] ? "<input type='checkbox' name='signup_ext_req".$key."' value='1'  checked>" : "<input type='checkbox' name='signup_ext_req".$key."' value='1'>")."
-                </td>
+                <td style='width:50%' class='forumheader3' style='text-align:right'>".
+        ($pref['signup_ext'.$key] == "0" || $pref['signup_ext'.$key]=="" ? "<input type='radio' name='signup_ext".$key."' value='0' checked> ".CUSTSIG_12 : "<input type='radio' name='signup_ext".$key."' value='0'> ".CUSTSIG_12)."&nbsp;&nbsp;".
+        ($pref['signup_ext'.$key] == "1" ? "<input type='radio' name='signup_ext".$key."' value='1' checked> ".CUSTSIG_14 : "<input type='radio' name='signup_ext".$key."' value='1'> ".CUSTSIG_14)."&nbsp;&nbsp;".
+        ($pref['signup_ext'.$key] == "2" ? "<input type='radio' name='signup_ext".$key."' value='2' checked> ".CUSTSIG_15 : "<input type='radio' name='signup_ext".$key."' value='2'> ".CUSTSIG_15)."&nbsp;&nbsp;".
+
+                "</td>
                 </tr>";
 
               }
