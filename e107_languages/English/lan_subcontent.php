@@ -1,6 +1,6 @@
 <?php
 
-define("ARLAN_0", "Thankyou, your article has been saved and will be reviewed by a site administrator in due course.");
+define("ARLAN_0", "Thank you, your article has been saved and will be reviewed by a site administrator in due course.");
 define("ARLAN_1", "Fields left blank.");
 define("ARLAN_2", "Thankyou, your review has been saved and will be reviewed by a site administrator in due course.");
 define("ARLAN_15", "Submit Article");
@@ -31,5 +31,13 @@ define("ARLAN_89", "Submit Review");
 define("ARLAN_90", "Fields left blank, please press the back button in your browser and confirm all fields are filled in.");
 define("ARLAN_91", "Preview again");
 define("ARLAN_92", "Please enter your name/email address");
+
+
+define("ARLAN_93", "article");
+define("ARLAN_94", "review");
+define("ARLAN_95", "User submission of Articles is currently disabled");
+define("ARLAN_96", "User submission of Reviews is currently disabled");
+define("ARLAN_97", "You do not have enough privileges to Submit Articles");
+define("ARLAN_98", "You do not have enough privileges to Submit Reviews");
 
 ?>
