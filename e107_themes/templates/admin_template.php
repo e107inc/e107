@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/admin_template.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-01-05 16:57:39 $
+|     $Revision: 1.11 $
+|     $Date: 2005-01-18 02:55:23 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -30,6 +30,9 @@ $ADMIN_HEADER = "<div style='text-align:center'>
 {ADMIN_NAV}
 {ADMIN_LANG}
 {ADMIN_PWORD}
+{ADMIN_STATUS=request}
+{ADMIN_LATEST=request}
+{ADMIN_LOG=request}
 {ADMIN_HELP}
 {ADMIN_MSG}
 {ADMIN_PLUGINS}

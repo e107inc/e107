@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-01-17 08:19:10 $
+|     $Revision: 1.12 $
+|     $Date: 2005-01-18 02:54:36 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -80,85 +80,56 @@ $newarray = asortbyindex($array_functions, 1);
 
 require_once(e_ADMIN.'includes/'.$pref['adminstyle'].'.php');
 
+function admin_info() {
+	global $tp;
+	$text = "<div style='text-align:center'>
+	<table style='width: 100%; border-collapse:collapse; border-spacing:0px;'>
+	<tr>
+	<td style='width: 33%; vertical-align: top'>";
 
+	$text .= $tp -> parseTemplate('{ADMIN_STATUS}');
 
-// info -------------------------------------------------------
+	$text .= "</td>
+	<td style='width: 33%; vertical-align: top'>";
 
-function admin_info($admin_style=FALSE) {
-	global $sql, $ns;
-	$members = $sql -> db_Count("user");
-	$unverified = $sql -> db_Count("user", "(*)", "WHERE user_ban=2");
-	$banned = $sql -> db_Count("user", "(*)", "WHERE user_ban=1");
-	$chatbox_posts = $sql -> db_Count("chatbox");
-	$forum_posts = $sql -> db_Count("forum_t");
-	$comments = $sql -> db_Count("comments");
-	$permicon = "<img src='".e_IMAGE."generic/location.png' alt='' style='vertical-align:middle' /> ";
-	$permicon2 = "<img src='".e_IMAGE."generic/rname.png' alt='' style='vertical-align:middle' /> ";
-	$active_uploads = $sql -> db_Select("upload", "*", "upload_active=0");
-	$submitted_links = $sql -> db_Select("tmp", "*", "tmp_ip='submitted_link' ");
-	$reported_posts = $sql -> db_Select("tmp", "*", "tmp_ip='reported_post' ");
-	$submitted_news = $sql -> db_Select("submitnews", "*", "submitnews_auth ='0' ");
-	$submitted_articles = $sql -> db_Select("content", "*", "content_type ='15' ");
-	$submitted_reviews = $sql -> db_Select("content", "*", "content_type ='16' ");
+	$text .= $tp -> parseTemplate('{ADMIN_LATEST}');
 
-	if ($admin_style) {
-		$text = "<div style='text-align:center'>
-		<table class='fborder' style='width:95%'>
-		<tr><td class='fcaption'>".ADLAN_134."</td><td class='fcaption'>".ADLAN_135."</td></tr>";
-		$text .= "<tr><td class='forumheader3' style='width:50%; vertical-align:top'>";
+	$text .= "</td>
+	<td style='width: 33%; vertical-align: top'>";
+
+	$text .= $tp -> parseTemplate('{ADMIN_LOG}');
+
+	$text .= "</td>
+	</tr></table>";
+	
+	return $text;
+}
+
+function status_request() {
+	global $pref;
+	if ($pref['adminstyle']=='classis' || $pref['adminstyle']=='cascade') {
+		return TRUE;
 	} else {
-		$text = "<div style='text-align:center'>
-		<table style='width:95%'>
-		<tr>
-		<td style='width:50%; vertical-align:top'>";
+		return FALSE;
 	}
+}
 
-	$text .= "<div style='padding-bottom: 2px;'>".E_16_USER." ".ADLAN_110.": ".$members."</div>";
-	$text .= "<div style='padding-bottom: 2px;'>".E_16_USER." ".ADLAN_111.": ".$unverified."</div>";
-	$text .= "<div style='padding-bottom: 2px;'>".E_16_BANLIST." ".ADLAN_112.": ".$banned."<br /><br /></div>";
-
-	$text .= "<div style='padding-bottom: 2px;'>".E_16_NEWS.($submitted_news ? " <a href='".e_ADMIN."newspost.php?sn'>".ADLAN_107.": $submitted_news</a>" : " ".ADLAN_107.": 0")."</div>";
-	$text .= "<div style='padding-bottom: 2px;'>".E_16_ARTICLE.($submitted_articles ? " <a href='".e_ADMIN."article.php?sa'>".ADLAN_123.": $submitted_articles</a>" : " ".ADLAN_123.": ".$submitted_articles)."</div>";
-	$text .= "<div style='padding-bottom: 2px;'>".E_16_REVIEW.($submitted_reviews ? " <a href='".e_ADMIN."review.php?sa'>".ADLAN_124.": $submitted_reviews</a>" : " ".ADLAN_124.": ".$submitted_reviews)."</div>";
-	$text .= "<div style='padding-bottom: 2px;'>".E_16_LINKS.($submitted_links ? " <a href='".e_ADMIN."links.php?sn'>".ADLAN_119.": $submitted_links</a>" : " ".ADLAN_119.": ".$submitted_links)."<br /><br /></div>";
-
-	$text .= "<div style='padding-bottom: 2px;'>".E_16_FORUM.($reported_posts ? " <a href='".e_ADMIN."forum.php?sr'>".ADLAN_125.": $reported_posts</a>" : " ".ADLAN_125.": ".$reported_posts)."<br /><br /></div>";
-
-	$text .= "<div style='padding-bottom: 2px;'>".E_16_UPLOADS.($active_uploads ? " <a href='".e_ADMIN."upload.php'>".ADLAN_108.": $active_uploads</a>" : " ".ADLAN_108.": ".$active_uploads)."<br /><br /></div>";
-
-	$text .= "<div style='padding-bottom: 2px;'>".E_16_FORUM." ".ADLAN_113.": ".$forum_posts."</div>";
-	$text .= "<div style='padding-bottom: 2px;'>".E_16_COMMENT." ".ADLAN_114.": ".$comments."</div>";
-	$text .= "<div style='padding-bottom: 2px;'>".E_16_CHAT." ".ADLAN_115.": ".$chatbox_posts."</div>";
-
-	if ($admin_style) {
-		$text .= "</td>
-		<td class='forumheader3' style='width:50%; vertical-align:top'>";
+function latest_request() {
+	global $pref;
+	if ($pref['adminstyle']=='classis' || $pref['adminstyle']=='cascade') {
+		return TRUE;
 	} else {
-		$text .= "</td>
-		<td style='width:50%; vertical-align:top'>";
+		return FALSE;
 	}
+}
 
-	$text .= E_16_ADMINLOG." <a style='cursor: pointer; cursor: hand' onclick=\"expandit(this)\">".ADLAN_116."</a>\n";
-	if (e_QUERY != "logall") {
-		$text .= "<div style='display: none;'>";
-	}
-	if (e_QUERY == "logall") {
-		$sql -> db_Select("tmp", "*", "tmp_ip='adminlog' ORDER BY tmp_time DESC");
+function log_request() {
+	global $pref;
+	if ($pref['adminstyle']=='classis' || $pref['adminstyle']=='cascade') {
+		return TRUE;
 	} else {
-		$sql -> db_Select("tmp", "*", "tmp_ip='adminlog' ORDER BY tmp_time DESC LIMIT 0,10");
+		return FALSE;
 	}
-	$text .= '<ul>';
-	$gen = new convert;
-	while ($row = $sql -> db_Fetch()) {
-		$datestamp = $gen->convert_date($row['tmp_time'], 'short');
-		$text .= '<li>'.$datestamp.$row['tmp_info'].'</li>';
-	}
-	$text .= '</ul>';
-
-	$text .= "[ <a href='".e_SELF."?logall'>".ADLAN_117."</a> ][ <a href='".e_SELF."?purge'>".ADLAN_118."</a> ]\n</div>
-	</td></tr></table></div>";
-
-	$ns -> tablerender(ADLAN_109, $text);
 }
 
 require_once("footer.php");
