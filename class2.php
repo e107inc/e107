@@ -147,21 +147,45 @@ $menu_pref=unserialize($tmp);
 
 $page = substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
 define("e_PAGE", $page);
+
 if($pref['frontpage'] && $pref['frontpage_type'] == "splash"){
-        $ip = getip();
-        if(!$sql -> db_Count("online", "(*)", "WHERE online_ip='{$ip}' ")){
-                online();
-                if(is_numeric($pref['frontpage'])){
-                        header("location: article.php?".$pref['frontpage'].".255");
-                        exit;
-                } else if(eregi("http", $pref['frontpage'])) {
-                        header("location: ".$pref['frontpage']);
-                        exit;
-                } else {
-                        header("location: ".e_BASE.$pref['frontpage'].".php");
-                        exit;
-                }
-        }
+	$ip = getip();
+	if(!$sql -> db_Count("online", "(*)", "WHERE online_ip='{$ip}' ")){
+		online();
+		if(is_numeric($pref['frontpage'])){
+			header("location: article.php?".$pref['frontpage'].".255");
+			exit;
+		} else if(eregi("http", $pref['frontpage'])) {
+			header("location: ".$pref['frontpage']);
+			exit;
+		} else {
+			header("location: ".e_BASE.$pref['frontpage'].".php");
+			exit;
+		}
+	}
+}
+
+if($pref['cachestatus']){
+	require_once(e_HANDLER."cache_handler.php");
+	$e107cache = new ecache;
+}
+
+function retrieve_cache($query){
+	global $e107cache;
+	if(!is_object($e107cache)){return FALSE;}
+   return $e107cache -> retrieve($query);
+}
+
+function set_cache($query, $text){
+	global $e107cache;
+	if(!is_object($e107cache)){return FALSE;}
+	$e107cache -> set($query,$text);
+}
+
+function clear_cache($query){
+	global $e107cache;
+	if(!is_object($e107cache)){return FALSE;}
+	return $e107cache -> clear($query);
 }
 
 if($pref['del_unv']){
@@ -942,48 +966,6 @@ function ban(){
                 exit;
         }
 }
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-
-
-function cache_page_md5(){
-        return md5(e_BASE.e_LANGUAGE.e_THEME.USERCLASS);
-}
-
-function retrieve_cache($query){
-        global $sql, $pref;
-        if(!$pref['cachestatus']){return FALSE;}
-        $query = $query . "-".cache_page_md5();
-        if(!is_object($sql)){
-                $sql = new db;
-        }
-        if($sql -> db_Select("cache", "cache_data", "cache_url='$query' ")){
-                $row = $sql -> db_Fetch();
-                $ret = stripslashes($row['cache_data']);
-                if($ret == ""){
-                        return "<!-- null -->";
-                } else {
-                        return stripslashes($row['cache_data']);
-                }
-        } else {
-                return FALSE;
-        }
-}
-
-function set_cache($query, $text){
-        global $pref, $sql;
-        $query = $query . "-".cache_page_md5();
-        if($pref['cachestatus']){
-                $sql -> db_Insert("cache", "'$query', '".time()."', '".mysql_escape_string($text)."' ");
-        }
-}
-
-function clear_cache($query){
-        global $pref, $sql;
-        if($pref['cachestatus']){
-                return $sql -> db_Delete("cache", "cache_url LIKE '%".$query."%' ");
-        }
-}
-
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function cookie($name, $value, $expire, $path="/", $domain="", $secure=0){
         setcookie($name, $value, $expire, $path, $domain, $secure);
