@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-01-31 22:55:57 $
+|     $Revision: 1.9 $
+|     $Date: 2005-02-02 16:51:46 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -97,7 +97,7 @@ foreach ($_POST['menuAct'] as $k => $v) {
 }
 	
 if ($menu_act == 'config') {
-	header("location:".SITEURL.$PLUGINS_DIRECTORY.$location."_menu/config.php");
+	header("location:".SITEURL.$PLUGINS_DIRECTORY.$location."/{$position}.php");
 	exit;
 }
 	
@@ -402,7 +402,7 @@ function checklayout($str) {
 			 
 			$sql9->db_Select("menus", "*", "menu_location='$menu' ORDER BY menu_order");
 			$menu_count = $sql9->db_Rows();
-			while (list($menu_id, $menu_name, $menu_location, $menu_order, $menu_class, $menu_pages) = $sql9->db_Fetch()) {
+			while (list($menu_id, $menu_name, $menu_location, $menu_order, $menu_class, $menu_pages, $menu_path) = $sql9->db_Fetch()) {
 				$menu_name = eregi_replace("_menu", "", $menu_name);
 				$vis = ($menu_class || strlen($menu_pages) > 1) ? " <span style='color:red'>*</span> " :
 				 "";
@@ -410,18 +410,23 @@ function checklayout($str) {
 				$menu_info = "{$menu_location}.{$menu_order}";
 				 
 				$text = "";
-				@include(e_PLUGIN.$menu_name.'_menu/plugin.php');
-				$config_path = e_PLUGIN.$menu_name.'_menu/'.$eplug_conffile;
-				$conf = FALSE;
-				if (file_exists($config_path)) {
-					$conf = TRUE;
+				$conf = '';
+				$config_path = e_PLUGIN.$menu_path.'/'.$eplug_conffile;
+				if (file_exists(e_PLUGIN."{$menu_path}/{$menu_name}.config.php"))
+				{
+					$conf = "config.{$menu_path}.{$menu_name}";
 				}
+				if($conf == '' && file_exists(e_PLUGIN."{$menu_path}/config.php"))
+				{
+					$conf = "config.{$menu_path}.config";
+				}
+
 				$text .= "<select id='menuAct_$menu_id' name='menuAct[$menu_id]' class='tbox' onchange='this.form.submit()' >";
 				$text .= $frm->form_option(MENLAN_25, TRUE, " ");
 				$text .= $frm->form_option(MENLAN_15, "", "deac.{$menu_info}");
 				 
 				if ($conf) {
-					$text .= $frm->form_option(MENLAN_16, "", "config.{$menu_name}");
+					$text .= $frm->form_option(MENLAN_16, "", $conf);
 				}
 				 
 				if ($menu_order != 1) {
