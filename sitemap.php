@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/sitemap.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-10-07 14:45:21 $
+|     $Revision: 1.3 $
+|     $Date: 2004-11-06 01:38:01 $
 |     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
@@ -55,7 +55,7 @@ $text .= "<br /><br />\n
 <br /><br />\n\n";
 
 // "Home" pages
-$text .= "<p class='caption2' style='text-align: left;' >\n
+$text .= "<p class='forumheader2' >\n
 <img src='".THEME."images/bullet2.gif' alt='bullet' /> <a class=\"sitemap2\" href=\"".SITEURL."\" >".LANSM_2."</a> <b class='smalltext' >".LANSM_3."</b>\n
 </p><br />\n";
 

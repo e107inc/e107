@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitemap/sitemap_articles.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-10-07 14:46:28 $
+|     $Revision: 1.3 $
+|     $Date: 2004-11-06 01:38:44 $
 |     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
@@ -20,7 +20,7 @@ function sm_articles(){
         $sql = new db;
         $sql2 = new db;
         $aj = new textparse;
-        $texto .= "<p class='caption2' style='text-align: left;' >\n
+        $texto .= "<p class='forumheader2' >\n
         <a href=\"#\" onfocus=\"this.blur;\" onclick=\"if(document.getElementById('articles_cat')){expandit('articles_cats');}ejs_func_todo='view'\" >".SM_ICO_EXP."</a> <img src='".THEME."images/bullet2.gif' alt='bullet' /> <a class=\"sitemap2\"  href=\"content.php?article\" >".LANSM_14."</a> <b class='smalltext' >".LANSM_15."</b>\n
         </p><br />\n";
 

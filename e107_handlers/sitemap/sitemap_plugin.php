@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitemap/sitemap_plugin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-10-07 14:46:28 $
+|     $Revision: 1.3 $
+|     $Date: 2004-11-06 01:38:44 $
 |     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
@@ -31,7 +31,7 @@ function sm_plugins(){
                 }
         }
 
-        $textostart = "<p class='caption2' style='text-align: left;' >\n
+        $textostart = "<p class='forumheader2' >\n
         <a href=\"#\" onfocus=\"this.blur;\" onclick=\"if(document.getElementById('plugin_cats')){expandit('plugin_cats');}ejs_func_todo='view'\" >".SM_ICO_EXP."</a> <img src='".THEME."images/bullet2.gif' alt='bullet' /> <a class=\"sitemap2\"  href=\"#\" onfocus=\"this.blur;\" onclick=\"expandit('plugin_cats');ejs_func_todo='view'\" >".LANSM_25."</a>\n
         </p><br />\n";
 
