@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/admin_config.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-02-28 18:41:35 $
-|     $Author: stevedunstan $
+|     $Revision: 1.3 $
+|     $Date: 2005-03-03 04:00:17 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -125,7 +125,7 @@ $text = "<div style='text-align:center'>
 
 <tr>
 <td style='width:50%' class='forumheader3'>".NFLAN_30."</td>
-<td style='width:50%; text-align: right;' class='forumheader3'>
+<td style='width:50%; text-align: left;' class='forumheader3'>
 <input class='tbox' type='text' name='newsfeed_name' size='80' value='$newsfeed_name' maxlength='200' />
 </td>
 </tr>
@@ -134,35 +134,35 @@ $text = "<div style='text-align:center'>
 
 <tr>
 <td style='width:50%' class='forumheader3'>".NFLAN_10."</td>
-<td style='width:50%; text-align: right;' class='forumheader3'>
+<td style='width:50%; text-align: left;' class='forumheader3'>
 <input class='tbox' type='text' name='newsfeed_url' size='80' value='$newsfeed_url' maxlength='200' />
 </td>
 </tr>
 	 
 <tr>
 <td style='width:50%' class='forumheader3'>".NFLAN_11."<br /><span class='smalltext'>".NFLAN_17."</span></td>
-<td style='width:50%; text-align: right;' class='forumheader3'>
+<td style='width:50%; text-align: left;' class='forumheader3'>
 <input class='tbox' type='text' name='newsfeed_image' size='80' value='$newsfeed_image' maxlength='200' />
 </td>
 </tr>
 
 <tr>
 <td style='width:50%' class='forumheader3'>".NFLAN_36."<br /><span class='smalltext'>".NFLAN_37."</span></td>
-<td style='width:50%; text-align: right;' class='forumheader3'>
+<td style='width:50%; text-align: left;' class='forumheader3'>
 <input class='tbox' type='text' name='newsfeed_description' size='80' value='$newsfeed_description' maxlength='200' />
 </td>
 </tr>
 
 <tr>
 <td style='width:50%' class='forumheader3'>".NFLAN_18."<br /><span class='smalltext'>".NFLAN_19."</span></td>
-<td style='width:50%; text-align: right;' class='forumheader3'>
+<td style='width:50%; text-align: left;' class='forumheader3'>
 <input class='tbox' type='text' name='newsfeed_updateint' size='5' value='".($newsfeed_updateint ? $newsfeed_updateint : "3600")."' maxlength='200' />
 </td>
 </tr>
 
 <tr>
 <td style='width:50%' class='forumheader3'>".NFLAN_12."<br /><span class='smalltext'>".NFLAN_22."</span></td>
-<td style='width:50%; text-align: right;' class='forumheader3'>
+<td style='width:50%; text-align: left;' class='forumheader3'>
 
 <input type='radio' name='newsfeed_active' value='0'".(!$newsfeed_active ? " checked='checked'" : "")." /> ".NFLAN_13."&nbsp;<br />
 <input type='radio' name='newsfeed_active' value='1'".($newsfeed_active == 1 ? " checked='checked'" : "")." /> ".NFLAN_14."&nbsp;<br />
