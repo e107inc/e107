@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-03-24 16:21:24 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.35 $
+|     $Date: 2005-03-24 16:34:32 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -1246,15 +1246,12 @@ class download {
 			
 			$description = $tp -> toDB($_POST['mirror_description']);
 
-			if(isset($_POST['id']))
-			{
-				$sql -> db_Update("download_mirror", "mirror_name='$name', mirror_url='$url', mirror_image='".$_POST['mirror_image']."', mirror_location='$location', mirror_description='$description' WHERE mirror_id=".$_POST['id']);
-				$this->show_message(DOWLAN_133);
-			}
-			else
-			{
-				$sql -> db_Insert("download_mirror", "0, '$name', '$url', '".$_POST['mirror_image']."', '$location', '$description', 0");
-				$this->show_message(DOWLAN_134);
+			if (isset($_POST['id'])){
+				$message = ($sql -> db_Update("download_mirror", "mirror_name='$name', mirror_url='$url', mirror_image='".$_POST['mirror_image']."', mirror_location='$location', mirror_description='$description' WHERE mirror_id=".$_POST['id'])) ? DOWLAN_133 : LAN_UPDATED_FAILED;
+				$this->show_message($message);
+			} else {
+				$message = ($sql -> db_Insert("download_mirror", "0, '$name', '$url', '".$_POST['mirror_image']."', '$location', '$description', 0")) ? DOWLAN_134 : LAN_CREATED_FAILED;
+				$this->show_message($message);
 			}
 		}
 	}
