@@ -173,14 +173,16 @@ function renderuser($row, $user_entended, $mode="verbose"){
                 <td class='forumheader3' style='width:20%'>$datestamp</td>
                 </tr>";
         }else{
-
+				$user_data = $user_id.".".$user_name;
                 $chatposts = $sql -> db_Count("chatbox");
                 $commentposts = $sql -> db_Count("comments");
                 $forumposts = $sql -> db_Count("forum_t");
-
-                $chatper = round(($user_chats/$chatposts)*100,2);
-                $commentper = round(($user_comments/$commentposts)*100,2);
-                $forumper = round(($user_forums/$forumposts)*100,2);
+				$actual_forums = $sql -> db_Count("forum_t", "(*)", "WHERE thread_user='$user_data'");
+				$actual_chats = $sql -> db_Count("chatbox", "(*)", "WHERE cb_nick='$user_data'");
+				$actual_comments = $sql -> db_Count("forum_t", "(*)", "WHERE comment_author='$user_data'");
+                $chatper = round(($actual_chats/$chatposts)*100,2);
+                $commentper = round(($actual_comments/$commentposts)*100,2);
+                $forumper = round(($actual_forums/$forumposts)*100,2);
                 require_once(e_HANDLER."level_handler.php");
 
                 $ldata = get_level($user_id, $user_forums, $user_comments, $user_chats, $user_visits, $user_join, $user_admin, $user_perms, $pref);
