@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2004-12-11 02:05:15 $
-|     $Author: streaky $
+|     $Revision: 1.10 $
+|     $Date: 2004-12-11 04:25:20 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -231,8 +231,17 @@ class db {
 			$aDBbyTable[$this->mySQLcurTable]['Table'] = $this->mySQLcurTable;
 			$aDBbyTable[$this->mySQLcurTable]['%DB Time'] = 0; // placeholder
 			$aDBbyTable[$this->mySQLcurTable]['%DB Count'] = 0; // placeholder
-			$aDBbyTable[$this->mySQLcurTable]['DB Time'] += $mytime;
-			$aDBbyTable[$this->mySQLcurTable]['DB Count'] ++;
+			if(array_key_exists('DB Time',$aDBbyTable[$this->mySQLcurTable])) {
+				$aDBbyTable[$this->mySQLcurTable]['DB Time'] += $mytime;
+			} else {
+				$aDBbyTable[$this->mySQLcurTable]['DB Time'] = $mytime;
+			}
+				
+			if(array_key_exists('DB Count',$aDBbyTable[$this->mySQLcurTable])) {
+				$aDBbyTable[$this->mySQLcurTable]['DB Count'] ++;
+			} else {
+				$aDBbyTable[$this->mySQLcurTable]['DB Count'] = 1;
+			}
 
 			$mytime = number_format($mytime,4);  //round for local display
 			$sDBdbg .=  "<tr><td colspan=\"$nFields\"><b>Query time:</b> $mytime</td></tr></table><br />";

@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2004-12-11 02:15:31 $
+|     $Revision: 1.33 $
+|     $Date: 2004-12-11 04:25:06 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -68,11 +68,15 @@ if (preg_match("/\[(.*?)\].*?/i", $_SERVER['QUERY_STRING'], $matches)) {
 }
 
 if (strstr(e_MENU, "debug")) {
-	error_reporting(E_ALL);
 	$e107_debug = 1;
 	// Default: debug=1
 	if (preg_match('/debug=(.*)/', e_MENU, $debug_param)) {
 		$e107_debug = $debug_param[1];
+	}
+	if ($e107_debug > 1) {
+		error_reporting(E_ALL);
+	} else {
+		error_reporting(E_ERROR | E_WARNING | E_PARSE);
 	}
 }
 
@@ -102,19 +106,21 @@ if (!$ADMIN_DIRECTORY && !$DOWNLOADS_DIRECTORY) {
 	exit;
 }
 
-if (!@include(e_HANDLER."errorhandler_class.php")) {
+if (!e107_include(e_HANDLER."errorhandler_class.php")) {
 	echo "<div style='text-align:center; font: 12px Verdana, Tahoma'>Path error</div>";
 	exit;
 }
-set_error_handler("error_handler");
+if(!$e107_debug) {
+	set_error_handler("error_handler");
+}
 if (!$mySQLuser) {
 	header("location:install.php");
 	exit;
 }
 define("MPREFIX", $mySQLprefix);
 
-@require_once(e_HANDLER."mysql_class.php");
-@require_once(e_HANDLER.'e_parse_class.php');
+e107_require_once(e_HANDLER."mysql_class.php");
+e107_require_once(e_HANDLER.'e_parse_class.php');
 
 $tp = new e_parse;
 $sql = new db;
@@ -136,8 +142,8 @@ else if($merror == "e2") {
 At a later date add a check to load e107 compat mode by $pref
 PHP Compatabilty should *always* be on. */
 
-require_once(e_HANDLER."PHP_Compat_handler.php");
-require_once(e_HANDLER."e107_Compat_handler.php");
+e107_require_once(e_HANDLER."PHP_Compat_handler.php");
+e107_require_once(e_HANDLER."e107_Compat_handler.php");
 
 // New parser code #########
 $parsethis = array();
@@ -149,13 +155,10 @@ if ($sql->db_Select("parser", "parser_pluginname,parser_regexp", "")) {
 // End parser code #########
 
 global $sysprefs;
-require_once(e_HANDLER."pref_class.php");
+e107_require_once(e_HANDLER."pref_class.php");
 $sysprefs = new prefs;
 $tmp = $sysprefs->get('pref');
 $pref = unserialize($tmp);
-//foreach($pref as $key => $prefvalue){
-//        $pref[$key] = $ tp->toHTML($prefvalue);
-//}
 
 if (!is_array($pref)) {
 	$pref = $sysprefs->getArray('pref');
@@ -230,7 +233,7 @@ if ($pref['frontpage'] && $pref['frontpage_type'] == "splash") {
 	}
 }
 
-require_once(e_HANDLER."cache_handler.php");
+e107_require_once(e_HANDLER."cache_handler.php");
 $e107cache = new ecache;
 
 
@@ -242,7 +245,7 @@ if ($pref['modules']) {
 	$mods = explode(",", $pref['modules']);
 	foreach($mods as $mod) {
 		if (file_exists(e_PLUGIN."{$mod}/module.php")) {
-			@require_once(e_PLUGIN."{$mod}/module.php");
+			e107_require_once(e_PLUGIN."{$mod}/module.php");
 		}
 	}
 }
@@ -256,8 +259,8 @@ if (!function_exists('checkvalidtheme')) {
 		if (@fopen(e_THEME.$theme_check."/theme.php", r)) {
 			define("THEME", e_THEME.$theme_check."/");
 		} else {
-			@require_once(e_HANDLER."debug_handler.php");
-			@require_once(e_HANDLER."textparse/basic.php");
+			e107_require_once(e_HANDLER."debug_handler.php");
+			e107_require_once(e_HANDLER."textparse/basic.php");
 			$etp = new e107_basicparse;
 			$e107tmp_theme = search_validtheme();
 			define("THEME", e_THEME.$e107tmp_theme."/");
@@ -341,10 +344,11 @@ if ($pref['membersonly_enabled'] && !USER && e_PAGE != e_SIGNUP && e_PAGE != "in
 $sql->db_Delete("tmp", "tmp_time < '".(time()-300)."' AND tmp_ip!='data' AND tmp_ip!='adminlog' AND tmp_ip!='submitted_link' AND tmp_ip!='reported_post' AND tmp_ip!='var_store' ");
 
 $language = ($pref['sitelanguage'] ? $pref['sitelanguage'] : "English");
+define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
 define("e_LAN", $language);
 define("USERLAN", ($user_language && (strpos(e_SELF, $PLUGINS_DIRECTORY) !== FALSE || (strpos(e_SELF, $ADMIN_DIRECTORY) === FALSE && file_exists(e_LANGUAGEDIR.$user_language."/lan_".e_PAGE)) || (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE && file_exists(e_LANGUAGEDIR.$user_language."/admin/lan_".e_PAGE))) ? $user_language : FALSE));
 define("e_LANGUAGE", (!USERLAN || !defined("USERLAN") ? $language : USERLAN));
-@include(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.".php");
+e107_include(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.".php");
 foreach($pref as $key => $prefvalue) {
 	$pref[$key] = $tp->toFORM($prefvalue);
 }
@@ -356,29 +360,25 @@ define("SITETAG", $pref['sitetag']);
 define("SITEDESCRIPTION", $pref['sitedescription']);
 define("SITEADMIN", $pref['siteadmin']);
 define("SITEADMINEMAIL", $pref['siteadminemail']);
-
-$search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "©");
-$replace = array("\"", "'", "\\", '\"', "\'", "&#169;");
-define("SITEDISCLAIMER", str_replace($search, $replace, $pref['sitedisclaimer']));
-
+define("SITEDISCLAIMER", $pref['sitedisclaimer']);
 
 if ($pref['maintainance_flag'] && ADMIN == FALSE && !eregi("admin", e_SELF)) {
-	@include(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitedown.php");
-	@include(e_LANGUAGEDIR."English/lan_sitedown.php");
-	@require_once(e_BASE."sitedown.php");
+	e107_include(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitedown.php");
+	e107_include(e_LANGUAGEDIR."English/lan_sitedown.php");
+	e107_require_once(e_BASE."sitedown.php");
 	exit;
 }
 
 if (strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin.php")) {
-	@include(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".e_PAGE);
-	@include(e_LANGUAGEDIR."English/admin/lan_".e_PAGE);
+	e107_include(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".e_PAGE);
+	e107_include(e_LANGUAGEDIR."English/admin/lan_".e_PAGE);
 } else {
-	@include(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE);
-	@include(e_LANGUAGEDIR."English/lan_".e_PAGE);
+	e107_include(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE);
+	e107_include(e_LANGUAGEDIR."English/lan_".e_PAGE);
 }
 
 if (IsSet($_POST['userlogin'])) {
-	@require_once(e_HANDLER."login.php");
+	e107_require_once(e_HANDLER."login.php");
 	$usr = new userlogin($_POST['username'], $_POST['userpass'], $_POST['autologin']);
 }
 
@@ -416,7 +416,7 @@ if ((strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin") ) && $pref['adm
 		checkvalidtheme($pref['sitetheme']);
 	}
 }
-@require_once(THEME."theme.php");
+require_once(THEME."theme.php");
 
 if ($pref['anon_post'] ? define("ANON", TRUE) : define("ANON", FALSE));
 if (Empty($pref['newsposts']) ? define("ITEMVIEW", 15) : define("ITEMVIEW", $pref['newsposts']));
@@ -440,7 +440,6 @@ $ns = new e107table;
 
 define("OPEN_BASEDIR", (ini_get('open_basedir') ? TRUE : FALSE));
 define("SAFE_MODE", (ini_get('safe_mode') ? TRUE : FALSE));
-define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
 define("FILE_UPLOADS", (ini_get('file_uploads') ? TRUE : FALSE));
 define("INIT", TRUE);
 define("e_REFERER_SELF", ($_SERVER["HTTP_REFERER"] == e_SELF));
@@ -800,9 +799,6 @@ function init_session() {
 				exit;
 			}
 			$user_pref = unserialize($user_prefs);
-//			foreach($pref as $key => $prefvalue) {
-//				$pref[$key] = $tp->toFORM($prefvalue);
-//			}
 			if (IsSet($_POST['settheme'])) {
 				$user_pref['sitetheme'] = ($pref['sitetheme'] == $_POST['sitetheme'] ? "" : $_POST['sitetheme']);
 				save_prefs($user);
@@ -849,7 +845,7 @@ function cookie($name, $value, $expire, $path = "/", $domain = "", $secure = 0) 
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function message_handler($mode, $message, $line = 0, $file = "") {
-	@require_once(e_HANDLER."message_handler.php");
+	e107_require_once(e_HANDLER."message_handler.php");
 	show_emessage($mode, $message, $line, $file);
 }
 // -----------------------------------------------------------------------------
@@ -870,4 +866,22 @@ function table_exists($check){
 	}
 }
 // ---------------------------------------------------------------------------
+function e107_include($fname) {
+	global $e107_debug;
+	return ($e107_debug ? include($fname) : @include($fname));
+}
+function e107_include_once($fname) {
+	global $e107_debug;
+	return ($e107_debug ? include_once($fname) : @include_once($fname));
+}
+
+function e107_require_once($fname) {
+	global $e107_debug;
+	return ($e107_debug ? require_once($fname) : @require_once($fname));
+}
+function e107_require($fname) {
+	global $e107_debug;
+	return ($e107_debug ? require($fname) : @require($fname));
+}
+
 ?>
