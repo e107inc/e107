@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2005-03-20 15:46:34 $
-|     $Author: sweetas $
+|     $Revision: 1.56 $
+|     $Date: 2005-03-20 21:19:40 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -132,6 +132,8 @@ function update_61x_to_700($type) {
 			$sql->db_Select_gen("DROP TABLE ".MPREFIX."poll");
 		}
 		/* end poll update */
+
+		mysql_query("ALTER TABLE `".MPREFIX.".user` CHANGE `user_sess` `user_sess` VARCHAR( 100 ) NOT NULL ");
 
 
 		// start links update -------------------------------------------------------------------------------------------
