@@ -19,6 +19,6 @@ if(ADMIN){
 	}
 
 	$text = get_admin_treemenu(FOOTLAN_14,$act,$e107_var);
-	return $ns -> tablerender(FOOTLAN_14,$text);
+	return $ns -> tablerender(FOOTLAN_14,$text, '', TRUE);
 }
 
