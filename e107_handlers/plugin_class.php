@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-03-12 15:54:00 $
+|     $Revision: 1.10 $
+|     $Date: 2005-03-12 16:14:44 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -233,6 +233,96 @@ class e107plugin {
 		}
 		save_prefs();
 	}
-}
-?>
 
+	/**
+	 * Installs a plugin by ID
+	 *
+	 * @param int $id
+	 */
+	function install_plugin($id) {
+		global $sql, $ns;
+		
+		// install plugin ...
+		$plug = $this->getinfo($id);
+
+		if ($plug['plugin_installflag'] == FALSE) {
+			include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
+
+			$func = $eplug_folder.'_install';
+			if (function_exists($func)) {
+				$text .= call_user_func($func);
+			}
+
+			if (is_array($eplug_tables)) {
+				$result = $this->manage_tables('add', $eplug_tables);
+				if ($result === TRUE) {
+					$text .= EPL_ADLAN_19.'<br />';
+					//success
+				} else {
+					$text .= EPL_ADLAN_18.'<br />';
+					//fail
+				}
+			}
+
+			if (is_array($eplug_prefs)) {
+				$this->manage_prefs('add', $eplug_prefs);
+				$text .= EPL_ADLAN_20.'<br />';
+			}
+
+			if ($eplug_module === TRUE) {
+				$this->manage_plugin_prefs('add', 'modules', $eplug_folder);
+			}
+
+			if ($eplug_status === TRUE) {
+				$this->manage_plugin_prefs('add', 'plug_status', $eplug_folder);
+			}
+
+			if ($eplug_latest === TRUE) {
+				$this->manage_plugin_prefs('add', 'plug_latest', $eplug_folder);
+			}
+
+
+			if (is_array($eplug_sc)) {
+				$this->manage_plugin_prefs('add', 'plug_sc', $eplug_folder, $eplug_sc);
+			}
+
+			if (is_array($eplug_bb)) {
+				$this->manage_plugin_prefs('add', 'plug_bb', $eplug_folder, $eplug_bb);
+			}
+
+			if (is_array($eplug_user_prefs)) {
+				$sql->db_Select("core", " e107_value", " e107_name='user_entended'");
+				$row = $sql->db_Fetch();
+				$user_entended = unserialize($row[0]);
+				while (list($e_user_pref, $default_value) = each($eplug_user_prefs)) {
+					$user_entended[] = $e_user_pref;
+					$user_pref['$e_user_pref'] = $default_value;
+				}
+				save_prefs("user");
+				$tmp = addslashes(serialize($user_entended));
+				if ($sql->db_Select("core", " e107_value", " e107_name='user_entended'")) {
+					$sql->db_Update("core", "e107_value='$tmp' WHERE e107_name='user_entended' ");
+				} else {
+					$sql->db_Insert("core", "'user_entended', '$tmp' ");
+				}
+				$text .= EPL_ADLAN_20."<br />";
+			}
+
+			if ($eplug_link === TRUE && $eplug_link_url != '' && $eplug_link_name != '') {
+				$this->manage_link('add', $eplug_link_url, $eplug_link_name);
+			}
+
+			if ($eplug_userclass) {
+				$this->manage_userclass('add', $eplug_userclass, $eplug_userclass_description);
+			}
+
+			$sql->db_Update('plugin', "plugin_installflag=1 WHERE plugin_id='$id' ");
+			$text .= ($eplug_done ? "<br />".$eplug_done : "");
+		} else {
+			$text = EPL_ADLAN_21;
+		}
+		$ns->tablerender(EPL_ADLAN_33, $text);
+	}
+}
+
+?>
