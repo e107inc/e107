@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/upload.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-01-27 19:52:25 $
-|     $Author: streaky $
+|     $Revision: 1.10 $
+|     $Date: 2005-03-09 09:31:10 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -216,12 +216,15 @@ if ($action == "view") {
 // list -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 $imgd = e_BASE.$IMAGES_DIRECTORY;
 $text = "<div style='text-align:center'>
-	<table style='".ADMIN_WIDTH."' class='fborder'>
-	<tr><td class='forumheader3' style='text-align:center' colspan='6'>";
+<table style='".ADMIN_WIDTH."' class='fborder'>
+<tr><td class='forumheader3' style='text-align:center' colspan='6'>";
 	
 if (!$active_uploads = $sql->db_Select("upload", "*", "upload_active=0 ORDER BY upload_id ASC")) {
 	$text .= UPLLAN_19.".\n</td>\n</tr>";
 } else {
+
+	$activeUploads = $sql -> db_getList();
+
 	$text .= UPLLAN_20." ".($active_uploads == 1 ? UPLAN_IS : UPLAN_ARE).$active_uploads." ".UPLLAN_21.($active_uploads == 1 ? "" : "s")." ...";
 	 
 	$text .= "</td></tr>";
@@ -233,24 +236,25 @@ if (!$active_uploads = $sql->db_Select("upload", "*", "upload_active=0 ORDER BY 
 		<td style='width:30%' class='forumheader3'>".UPLLAN_24."</td>
 		<td style='width:18px' class='forumheader3'>".UPLLAN_42."</td>
 		</tr>";
-	while ($row = $sql->db_Fetch()) {
+	foreach($activeUploads as $row)
+	{
 		extract($row);
 		$post_author_id = substr($upload_poster, 0, strpos($upload_poster, "."));
 		$post_author_name = substr($upload_poster, (strpos($upload_poster, ".")+1));
 		$poster = (!$post_author_id ? "<b>".$post_author_name."</b>" : "<a href='".e_BASE."user.php?id.".$post_author_id."'><b>".$post_author_name."</b></a>");
 		$upload_datestamp = $gen->convert_date($upload_datestamp, "short");
 		$text .= "<tr>
-			<td style='width:5%' class='forumheader3'>".$upload_id ."</td>
-			<td style='width:20%' class='forumheader3'>".$upload_datestamp."</td>
-			<td style='width:15%' class='forumheader3'>".$poster."</td>
-			<td style='width:20%' class='forumheader3'><a href='".e_SELF."?view.".$upload_id."'>".$upload_name ."</a></td>
-			<td style='width:20%' class='forumheader3'>".$upload_file ."</td>
-			<td style='width:50px;white-space:nowrap' class='forumheader3'>
-			<a href='".e_SELF."?dlm.$upload_id'><img src='".$imgd."filemanager/exe.png' alt='".UPLAN_COPYTODLS."' title='".UPLAN_COPYTODLS."' style='border:0' /></a>
-			<a href='".e_SELF."?news.$upload_id'><img src='".$imgd."filemanager/htm.png' alt='".UPLLAN_16."' title='".UPLLAN_16."' style='border:0' /></a>
-			<a href='".e_SELF."?dis.$upload_id'><img src='".$imgd."filemanager/del.png' alt='".UPLLAN_17."' title='".UPLLAN_17."' style='border:0' /></a>
-			</td>
-			</tr>";
+		<td style='width:5%' class='forumheader3'>".$upload_id ."</td>
+		<td style='width:20%' class='forumheader3'>".$upload_datestamp."</td>
+		<td style='width:15%' class='forumheader3'>".$poster."</td>
+		<td style='width:20%' class='forumheader3'><a href='".e_SELF."?view.".$upload_id."'>".$upload_name ."</a></td>
+		<td style='width:20%' class='forumheader3'>".$upload_file ."</td>
+		<td style='width:50px;white-space:nowrap' class='forumheader3'>
+		<a href='".e_SELF."?dlm.$upload_id'><img src='".$imgd."filemanager/exe.png' alt='".UPLAN_COPYTODLS."' title='".UPLAN_COPYTODLS."' style='border:0' /></a>
+		<a href='".e_SELF."?news.$upload_id'><img src='".$imgd."filemanager/htm.png' alt='".UPLLAN_16."' title='".UPLLAN_16."' style='border:0' /></a>
+		<a href='".e_SELF."?dis.$upload_id'><img src='".$imgd."filemanager/del.png' alt='".UPLLAN_17."' title='".UPLLAN_17."' style='border:0' /></a>
+		</td>
+		</tr>";
 	}
 }
 $text .= "</table>\n</div>";
