@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/ad_links.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-02-11 02:01:42 $
-|     $Author: sweetas $
+|     $Revision: 1.20 $
+|     $Date: 2005-02-20 13:06:27 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 	
@@ -197,6 +197,9 @@ if (!defined('E_16_PLUGMANAGER')) {
 if (!defined('E_16_DOCS')) {
 	define('E_16_DOCS', "<img src='".e_IMAGE."admin_images/docs_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
+if (!defined('E_16_THEMEMANAGER')) {
+	define('E_16_THEMEMANAGER', "<img src='".e_IMAGE."admin_images/themes_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+}
 	
 // Small Admin Other Images
 if (!defined('E_16_COMMENT')) {
@@ -304,6 +307,10 @@ if (!defined('E_32_DOCS')) {
 }
 if (!defined('E_32_MAIN')) {
 	define('E_32_MAIN', "<img src='".e_IMAGE."admin_images/main_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+}
+
+if (!defined('E_32_THEMEMANAGER')) {
+	define('E_32_THEMEMANAGER', "<img src='".e_IMAGE."admin_images/themes_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 	
 // Large Admin Other Images

@@ -16,6 +16,8 @@
 $themename = "CraHan";
 $themeversion = "1.0";
 $themeauthor = "Steve Dunstan [jalist]";
+$themeemail = "jalist@e107.org";
+$themewebsite = "http://e107.org";
 $themedate = "29/01/2005";
 $themeinfo = "Based on the theme by CraHan at his homepage http://n00.be, design used with permission *smooch*";
 define("STANDARDS_MODE", TRUE);

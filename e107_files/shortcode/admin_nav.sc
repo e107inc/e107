@@ -21,6 +21,7 @@ if (ADMIN) {
 			$e107_var['x']['text'] = "<b>".ADLAN_98."</b>";
 			$e107_var['x']['link'] = e_ADMIN."plugin.php";
 			$e107_var['x']['perm'] = "P";
+
 			while($rowplug = $sql -> db_Fetch()) {
 				extract($rowplug);
 				$e107_plug[$rowplug[1]] = $rowplug[3];

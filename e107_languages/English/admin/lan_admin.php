@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-02-13 06:19:13 $
-|     $Author: e107coders $
+|     $Revision: 1.15 $
+|     $Date: 2005-02-20 13:06:28 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("ADLAN_0", "News");
@@ -175,6 +175,11 @@ define("ADLAN_LAT_8", "There are unmoderated administrator messages");
 
 define("ADLAN_138", "Site Links");
 define("ADLAN_139", "Add/edit/delete links");
+
+define("ADLAN_140", "Theme Manager");
+define("ADLAN_141", "Install / set themes etc");
+
+
 // Common Terms
 define("LAN_EDIT","Edit");
 define("LAN_DELETE","Delete");

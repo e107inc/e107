@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-02-19 12:12:45 $
-|     $Author: e107coders $
+|     $Revision: 1.30 $
+|     $Date: 2005-02-20 13:06:29 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 if (!function_exists("parseheader")) {
@@ -44,15 +44,20 @@ echo '<link rel="pingback" href="'.$e107->HTTPPath.PLUGINS_DIRECTORY.'trackback/
 ';
 }
 
-if (isset($theme_css_php) && $theme_css_php) {
-	echo "<link rel='stylesheet' href='".THEME."theme-css.php' type='text/css' />";
+if(defined("PREVIEWTHEME")) {
+	echo "<link rel='stylesheet' href='".PREVIEWTHEME."style.css' type='text/css' />\n";
 } else {
-	echo "<link rel='stylesheet' href='".THEME."style.css' type='text/css' />";
-	if (!isset($no_core_css) || !$no_core_css) {
-		echo "<link rel='stylesheet' href='".e_FILE."e107.css' type='text/css' />\n";
-		if (isset($eplug_css) && $eplug_css) { echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n"; }
+	if (isset($theme_css_php) && $theme_css_php) {
+		echo "<link rel='stylesheet' href='".THEME."theme-css.php' type='text/css' />\n";
+	} else {
+		echo "<link rel='stylesheet' href='".THEME."style.css' type='text/css' />\n";
+		if (!isset($no_core_css) || !$no_core_css) {
+			echo "<link rel='stylesheet' href='".e_FILE."e107.css' type='text/css' />\n";
+			if (isset($eplug_css) && $eplug_css) { echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n"; }
+		}
 	}
 }
+
 if(function_exists('theme_head')){
 	echo theme_head();
 }
@@ -186,6 +191,13 @@ if ($e107_popup != 1) {
 		parseheader(($ph ? $cust_header : $HEADER));
 	}
 	$sql->db_Mark_Time("Main Page Body");
+
+
+	if(defined("PREVIEWTHEME")) {
+		themeHandler :: showPreview();
+	}
+
+
 	unset($text);
 }
 ?>

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/includes/cascade.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-27 19:52:25 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-20 13:06:27 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 	
@@ -31,6 +31,7 @@ $text .= "<tr>
 	</tr>";
 	
 $text .= render_links(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z", E_16_PLUGMANAGER, 'adminb');
+$text .= render_links(e_ADMIN."theme.php", ADLAN_140, ADLAN_141, "1", E_32_THEMEMANAGER, "adminb");
 	
 if ($sql->db_Select("plugin", "*", "plugin_installflag=1")) {
 	while ($row = $sql->db_Fetch()) {

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-02-19 12:12:32 $
-|     $Author: e107coders $
+|     $Revision: 1.29 $
+|     $Date: 2005-02-20 13:06:27 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -45,8 +45,6 @@ $signup_name = array("real", "url", "icq", "aim", "msn", "dob", "loc", "sig", "a
 
 if (isset($_POST['updateprefs'])) {
 	unset($_POST['updateprefs']);
-
-//	echo "<pre>"; print_r($_POST); echo "</pre>"; exit;
 
 	foreach($_POST as $key => $value) {
 		if(is_string($value)) {
@@ -232,25 +230,6 @@ $text .= "</table>
 
 	<div id='theme' style='display:none; text-align:center'>
 	<table style='width:100%' class='fborder'>
-	<tr>
-	<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' colspan='2'>".PRFLAN_10."</td>
-	</tr>
-
-	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_11."<br /><span class='smalltext'>".PRFLAN_85."</span></td>
-	<td style='width:50%; text-align:right' class='forumheader3'><a href='".e_ADMIN."theme_prev.php'>".PRFLAN_12."</a>
-	<select name='sitetheme' class='tbox'>\n";
-$counter = 0;
-while (isset($dirlist[$counter])) {
-	if (!strstr($dirlist[$counter], 'admin_')) {
-		$text .= ($dirlist[$counter] == $pref['sitetheme'] ? "<option selected='selected'>".$dirlist[$counter]."</option>\n" : "<option>".$dirlist[$counter]."</option>\n");
-	}
-	$counter++;
-}
-$text .= "</select>
-	</td>
-	</tr>
-
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_100."</td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
