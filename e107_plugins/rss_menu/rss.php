@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-31 21:54:22 $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-03 21:15:29 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -216,47 +216,30 @@ class rssCreate {
 				} else {
 					list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $topic['thread_anon']);
 				}
-
-				
 				$this -> rssItems[$loop]['title'] = htmlspecialchars($topic['thread_name']);
 				$this -> rssItems[$loop]['link'] = $e107->HTTPPath.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$topic['thread_id'];
-				
-				$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? htmlspecialchars($value['thread_thread']) : htmlspecialchars(substr($value['thread_thread'], 0, 100)));
-				
+				$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? htmlspecialchars($topic['thread_thread']) : htmlspecialchars(substr($topic['thread_thread'], 0, 100)));
 				$loop ++;
-
 				foreach($replies as $value) {
 					if($value['thread_user']) {
 						$this -> rssItems[$loop]['author'] = $value['user_name'] . " ( ".$e107->HTTPPath."user.php?id.".$value['thread_user']." )";
 					} else {
 						list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $value['thread_anon']);
 					}
-
-					
 					$this -> rssItems[$loop]['title'] = "Re: ".htmlspecialchars($topic['thread_name']);
 					$this -> rssItems[$loop]['link'] = $e107->HTTPPath.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$this -> topicid;
-					
 					$this -> rssItems[$loop]['description'] = htmlspecialchars($value['thread_thread']);
 					$loop++;
 				}
-
-
-				//echo "<pre>"; print_r($topic); echo "</pre>";
-				//echo "<pre>"; print_r($replies); echo "</pre>";
-
 				break;
-
 		}
 	}
 
 
 	function buildRss() {
 		global $sql, $pref;
-
-	header('Content-type: text/xml', TRUE);
-
+		header('Content-type: text/xml', TRUE);
 		switch ($this -> rssType) {
-
 			case 1:
 				echo "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>
 						<!-- generator=\"e107\" -->
@@ -301,7 +284,6 @@ class rssCreate {
 				<docs>http://backend.userland.com/rss</docs>
 				<generator>e107 (http://e107.org)</generator>
 				<ttl>60</ttl>
-				 
 				<image>
 				<title>".$pref['sitename']."</title>
 				<url>".(strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", e_IMAGE).SITEBUTTON)."</url>
@@ -310,7 +292,6 @@ class rssCreate {
 				<height>31</height>
 				<description>".$pref['sitedescription']."</description>
 				</image>
-				 
 				<textInput>
 				<title>Search</title>
 				<description>Search ".$pref['sitename']."</description>
@@ -380,17 +361,8 @@ class rssCreate {
 			echo "
 				</rdf:RDF>";
 			break;
-
 		}
-
-
 	}
-
-
-
-
-
-
 }
 	
 ?>
