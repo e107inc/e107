@@ -11,7 +11,7 @@ define("MENLAN_8", "Class updated");
 define("MENLAN_9", "New custom menu installed");
 define("MENLAN_10", "New menu installed");
 define("MENLAN_11", "Menu removed");
-define("MENLAN_12", "Activate this menu - please choose location");
+define("MENLAN_12", "Activate this menu - choose location");
 define("MENLAN_13", "Activate in Area");
 define("MENLAN_14", "Area");
 define("MENLAN_15", "Deactivate");

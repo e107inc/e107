@@ -18,12 +18,19 @@ if(IsSet($_POST['reset'])){
 	unset($text);
 }
 
-$text .= "You can arrange where and in which order your menu items are from here. Use the arrows to move the menus up and down until you are satisfied with their positioning.<br />If you find the menus are not updating properly click on the refresh button.
-
+$text .= "
+You can arrange where and in which order your menu items are from here. 
+Use the dropdown menu to move the menus up and down until you are satisfied with their positioning.
 <br />
-<form method='post' action='".$_SERVER['PHP_SELF']."'>
-<input class='button' type='submit' name='reset' value='Refresh' />
-</form>";
+<br />
+If you find the menus are not updating properly click on the refresh button.
+<br />
+<form method='post' id='menurefresh' action='".$_SERVER['PHP_SELF']."'>
+<div><input type='submit' class='button' name='reset' value='Refresh' /></div>
+</form>
+<br />
+<div class='indent'><span style='color:red'>*</span> indicates menu visibility has been modified</div>
+";
 
 $ns -> tablerender("Menus Help", $text);
 ?>
