@@ -13,8 +13,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.47 $
-| $Date: 2005-03-10 20:11:45 $
+| $Revision: 1.48 $
+| $Date: 2005-03-10 20:18:37 $
 | $Author: stevedunstan $
 +---------------------------------------------------------------+
 */
@@ -375,6 +375,24 @@ class news {
 		if (function_exists("news_style")) {
 			$NEWS_TEMPLATE = news_style($news);
 		}
+
+		if($news_render_type == 1)
+		{
+			if(function_exists("news_list"))
+			{
+				$NEWS_TEMPLATE = news_list($news);
+			}
+			else if($NEWSLISTSTYLE)
+			{
+				$NEWS_TEMPLATE = $NEWSLISTSTYLE;
+			}
+			else
+			{
+				$NEWS_TEMPLATE = "{NEWSICON}&nbsp;<b>{NEWSTITLELINK}</b><div class='smalltext'>{NEWSAUTHOR} on {NEWSDATE} | {NEWSCOMMENTS}</div>";
+			}
+		}
+
+
 
 		$text = preg_replace($search, $replace, $NEWS_TEMPLATE);
 
