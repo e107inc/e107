@@ -45,7 +45,7 @@ class emailprint{
 			}else{
 				$ico_mail = e_IMAGE."generic/friend.gif";
 			}
-			$text_emailprint .= "<a href='email.php?{$tab}.{$id}.{$email}'><img src='".$ico_mail."' style='border:0' alt='email to someone' /></a> ";
+			$text_emailprint .= "<a href='email.php?{$tab}.{$id}.{$email}'><img src='".$ico_mail."' style='border:0' alt='email to someone'  title='email to someone' /></a> ";
 		}
 		if($look==0 || $look==2){
 			if(defined("ICONPRINT")&&file_exists(THEME."images/".ICONPRINT)){
@@ -53,7 +53,7 @@ class emailprint{
 			}else{
 				$ico_print = e_IMAGE."generic/printer.gif";
 			}
-			$text_emailprint .= "<a href='print.php?{$tab}.{$id}.{$print}'><img src='".$ico_print."' style='border:0' alt='printer friendly' /></a>";
+			$text_emailprint .= "<a href='print.php?{$tab}.{$id}.{$print}'><img src='".$ico_print."' style='border:0' alt='printer friendly'  title='printer friendly'/></a>";
 		}
 		return $text_emailprint;
 	}
