@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-09-26 04:09:25 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2004-10-08 04:47:01 $
+|     $Author: chavo $
 +----------------------------------------------------------------------------+
 */
 if(!function_exists("parseheader"))
@@ -40,7 +40,8 @@ echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='iso-8859-1
 <head>
 <title>".SITENAME.(defined("e_PAGETITLE") ? ": ".e_PAGETITLE : (defined("PAGE_NAME") ? ": ".PAGE_NAME : ""))."</title>
 <link rel=\"stylesheet\" href=\"".e_FILE."e107.css\" type=\"text/css\" />
-<link rel=\"stylesheet\" href=\"".THEME."style.css\" type=\"text/css\" />";
+<link rel=\"stylesheet\" href=\"".THEME."style.css\" type=\"text/css\" />
+<link rel=\"alternate\" type=\"application/rss+xml\" title=\"".SITENAME." RSS\" href=\"".e_FILE."backend\news.xml\" />";
 if(file_exists(e_BASE."favicon.ico")){echo "\n<link rel=\"shortcut icon\" href=\"favicon.ico\" />"; }
 if(file_exists(e_FILE."style.css")){ echo "\n<link rel='stylesheet' href='".e_FILE."style.css' type=\"text/css\" />\n"; }
 if($eplug_css){ echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n"; }
