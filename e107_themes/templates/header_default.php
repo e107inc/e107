@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2005-04-05 07:33:25 $
-|     $Author: e107coders $
+|     $Revision: 1.42 $
+|     $Date: 2005-04-05 16:58:40 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 if (!function_exists("parseheader")) {
@@ -32,7 +32,7 @@ if (!function_exists("parseheader")) {
 $sql->db_Mark_Time('(Header Top)');
 
 echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET."' "."?".">")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
-<html xmlns='http://www.w3.org/1999/xhtml'>
+<html xmlns='http://www.w3.org/1999/xhtml' ".(defined("TEXTDIRECTION") ? "dir='".TEXTDIRECTION."'" : "").">
 <head>
 <title>".SITENAME.(defined("e_PAGETITLE") ? ": ".e_PAGETITLE : (defined("PAGE_NAME") ? ": ".PAGE_NAME : ""))."</title>\n";
 echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
