@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banner.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-12 10:56:56 $
+|     $Revision: 1.7 $
+|     $Date: 2005-01-13 21:49:07 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -155,21 +155,20 @@ if($sql -> db_Select("banner")){
 
 if(!$action){
 		$text = "
-		<div style='border:solid 1px #000; padding:4px; width:auto; height:400px; overflow:auto; '>\n
-		<table class='fborder' style='".ADMIN_WIDTH."'>
+		<table style='".ADMIN_WIDTH."' class='fborder'>
 		<tr><td colspan='7' style='text-align:center' class='fcaption'>".BNRLAN_7."</td></tr>
 		<tr>
-		<td class='forumheader' style='text-align:center'><span class='smallblacktext'>".BNRLAN_8."</span></td>
-		<td class='forumheader' style='text-align:center'><span class='smallblacktext'>".BNRLAN_9."</span></td>
-		<td class='forumheader' style='text-align:center'><span class='smallblacktext'>".BNRLAN_10."</span></td>
-		<td class='forumheader' style='text-align:center'><span class='smallblacktext'>".BNRLAN_11."</span></td>
-		<td class='forumheader' style='text-align:center'><span class='smallblacktext'>".BNRLAN_12."</span></td>
-		<td class='forumheader' style='text-align:center'><span class='smallblacktext'>".BNRLAN_13."</span></td>
-		<td class='forumheader' style='text-align:center'><span class='smallblacktext'>".BNRLAN_14."</span></td>
+		<td class='forumheader' style='text-align:center'>".BNRLAN_8."</td>
+		<td class='forumheader' style='text-align:center'>".BNRLAN_9."</td>
+		<td class='forumheader' style='text-align:center'>".BNRLAN_10."</td>
+		<td class='forumheader' style='text-align:center'>".BNRLAN_11."</td>
+		<td class='forumheader' style='text-align:center'>".BNRLAN_12."</td>
+		<td class='forumheader' style='text-align:center'>".BNRLAN_13."</td>
+		<td class='forumheader' style='text-align:center'>".BNRLAN_14."</td>
 		</tr>";
 
 		if(!$banner_total = $sql -> db_Select("banner")){
-			$text .= "<tr><td colspan='7' class='forumheader2' style='text-align:center'>".BNRLAN_15."</td></tr>";
+			$text .= "<tr><td colspan='7' class='forumheader' style='text-align:center'>".BNRLAN_15."</td></tr>";
 		}else{
 			while($row = $sql-> db_Fetch()){
 				extract($row);
@@ -184,7 +183,7 @@ if(!$action){
 				if(preg_match("#\^#", $banner_campaign)){
 					$campaignsplit = explode("^", $banner_campaign);
 					$banner_campaign = $campaignsplit[0];
-					$textvisivilitychanged = "<span style='color:#FF0000;'>(*)</span>";
+					$textvisivilitychanged = "(*)";
 				}else{
 					$textvisivilitychanged = "";
 				}
@@ -200,9 +199,9 @@ if(!$action){
 				</tr>
 				<tr>
 				<td class='forumheader3' style='text-align:center'>&nbsp;</td>
-				<td class='forumheader3' style='text-align:center'><span class='smalltext'>".$banner_campaign."</span></td>
-				<td colspan='2' class='forumheader3' style='text-align:center'><span class='smalltext'>".r_userclass_name($banner_active)." ".$textvisivilitychanged."</span></td>
-				<td colspan='3' class='forumheader3' style='text-align:center'><span class='smalltext'>".BNRLAN_45.": ".$start_date." &lt;&gt; ".BNRLAN_21.": ".$end_date."</span></td>
+				<td class='forumheader3' style='text-align:center'>".$banner_campaign."</td>
+				<td colspan='2' class='forumheader3' style='text-align:center'>".r_userclass_name($banner_active)." ".$textvisivilitychanged."</td>
+				<td colspan='3' class='forumheader3' style='text-align:center'>".BNRLAN_45.": ".$start_date." &lt;&gt; ".BNRLAN_21.": ".$end_date."</td>
 				</tr>
 				<tr><td colspan='8'>&nbsp;</td></tr>";
 			}
@@ -251,7 +250,7 @@ if($action == "create"){
 		$text = "
 		<div style='text-align: center;'>
 		<form method='post' action='".e_SELF."'>
-		<table class='fborder' style='".ADMIN_WIDTH."'>
+		<table style='".ADMIN_WIDTH."' class='fborder'>
 		<tr><td colspan='2' style='text-align:center' class='fcaption'>".($sub_action == "edit" ? BNRLAN_22 : BNRLAN_23)."</td></tr>
 		<tr>
 		<td class='forumheader3'>".BNRLAN_24."</td>
@@ -453,7 +452,7 @@ if($action == "cvis"){
 		$text = "<br />
 		<div style='text-align:center'>
 		<form method='post' action='".e_SELF."?".e_QUERY."' name='menu_conf_form'>
-		<table style='width:85%' class='fborder' >
+		<table style='".ADMIN_WIDTH."' class='fborder'>
 
 		<tr>
 		<td style='width:40%' class='forumheader3'>".BNRLAN_49."</td>
@@ -495,7 +494,7 @@ if($action == "cvis"){
 			$text = "
 			<div style='text-align:center'>
 			<form method='post' action='".e_SELF."?".e_QUERY."'>\n
-			<table style='width:85%' class='fborder' >
+			<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
 				<td style='width:40%' class='forumheader3'>".BNRLAN_39."</td>
 				<td style='width:60%' class='forumheader3'>
@@ -536,7 +535,7 @@ if($action == "opt"){
 			$text = "
 			<div style='text-align:center'>
 			<form method='post' action='".e_SELF."?".e_QUERY."'>\n
-			<table style='width:85%' class='fborder' >
+			<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
 			<td style='width:40%' class='forumheader3'>".BNRLAN_53."<br /><span class='smalltext' style='font-style:italic;'>
 			individual visibility will overwrite all campaign visibility settings.<br /><br />
