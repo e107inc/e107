@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2004-12-17 13:51:23 $
-|     $Author: streaky $
+|     $Revision: 1.19 $
+|     $Date: 2004-12-17 21:37:43 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 
@@ -60,7 +60,7 @@ if(USER == TRUE || ADMIN == TRUE){
 	}
 	if(!$menu_pref['login_menu'] || $menu_pref['login_menu']['new_articles'] == true){
 		$new_articles = 0;
-		$new_articles = $sql -> db_Select('content', '*', '`content_type` = 6 OR `content_type` = 0 AND `content_datestamp` > '.$time);
+		$new_articles = $sql -> db_Select('content', '*', '`content_type` < 4 OR `content_type` = 0 AND `content_datestamp` > '.$time);
 		while($row = $sql -> db_Fetch()){
 			if(!check_class($row['content_class'])){
 				$new_articles--;

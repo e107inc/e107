@@ -49,7 +49,7 @@ $text = "<div style='text-align:center'>
 
 // Articles/content/reviews
 unset($str);
-$content_items = $sql -> db_Select("content", "*", "content_type!=6 AND content_datestamp>$lvisit  ORDER BY content_datestamp DESC LIMIT 0,10");
+$content_items = $sql -> db_Select("content", "*", "content_type <4 AND content_datestamp>$lvisit  ORDER BY content_datestamp DESC LIMIT 0,10");
 while($row = $sql -> db_Fetch()){
 	extract($row);
 	if(check_class($content_class)){
