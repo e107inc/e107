@@ -12,9 +12,9 @@
 |	GNU General Public License (http://gnu.org).	
 |
 | $Source: /cvs_backup/e107/e107_handlers/news_class.php,v $
-| $Revision: 1.19 $
-| $Date: 2004-12-20 20:16:02 $
-| $Author: sweetas $ 
+| $Revision: 1.20 $
+| $Date: 2004-12-27 22:30:32 $
+| $Author: loloirie $ 
 +---------------------------------------------------------------+
 */
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -37,7 +37,7 @@ class news{
 				$message = LAN_NEWS_21;
              clear_cache("news.php");
 			}else{
-				$message = LAN_NEWS_5;
+				$message = "<strong>".LAN_NEWS_5."</strong>";
 			}
 		}else{
 			$news_title = $aj -> formtpa($news_title);
@@ -47,7 +47,7 @@ class news{
 				$message = LAN_NEWS_6;
              clear_cache("news.php");
 			}else{
-				$message = LAN_NEWS_7;
+				$message = "<strong>".LAN_NEWS_7."</strong>";
 			}
 		}
 		$this -> create_rss();
@@ -126,7 +126,7 @@ on
 		$active_start = ($active_start ? str_replace(" - 00:00:00", "", $con -> convert_date($active_start, "long")) : LAN_NEWS_19);
 		$active_end = ($active_end ?  " to ".str_replace(" - 00:00:00", "", $con -> convert_date($active_end, "long")) : "");
 		$info = "<div class='smalltext'><br /><br /><b>".LAN_NEWS_18."</b><br />";
-		$info .= ($titleonly ? LAN_NEWS_9 : "");
+		$info .= ($titleonly ? LAN_NEWS_9."<br />" : "");
 		$info .= ($news_class==255 ? LAN_NEWS_10 : LAN_NEWS_11);
 		$info .= ($news_allow_comments ? LAN_NEWS_13 : LAN_NEWS_12);
 		$info .= LAN_NEWS_14.$active_start.$active_end."<br />";
