@@ -14,6 +14,14 @@
 */
 require_once("class2.php");
 
+// Restrict access to members
+if(!USER && $pref['search_restrict']==1){
+	require_once(HEADERF);
+	$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_416."</div>");
+	require_once(FOOTERF);
+	exit;
+}
+
 $_POST['searchquery'] = trim(chop($_POST['searchquery']));
 if(IsSet($_POST['searchquery']) && $_POST['searchtype'] == "98"){ header("location:http://www.google.com/search?q=".stripslashes(str_replace(" ", "+", $_POST['searchquery']))); exit; }
 require_once(HEADERF);

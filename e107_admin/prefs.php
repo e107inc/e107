@@ -60,6 +60,7 @@ if(IsSet($_POST['updateprefs'])){
         $pref['adminstyle'] = $_POST['adminstyle'];
         $pref['membersonly_enabled'] = $_POST['membersonly_enabled'];
         $pref['ssl_enabled'] = $_POST['ssl_enabled'];
+		$pref['search_restrict'] = $_POST['search_restrict'];
 
         // Signup.
           $pref['signup_real'] = $_POST['signup_real'];
@@ -169,6 +170,7 @@ $user_reg = $pref['user_reg'];
 $profanity_filter = $pref['profanity_filter'];
 $profanity_replace = $pref['profanity_replace'];
 $profanity_words = $pref['profanity_words'];
+$search_restrict = $pref['search_restrict'];
 $use_coppa = $pref['use_coppa'];
 $shortdate = $pref['shortdate'];
 $longdate = $pref['longdate'];
@@ -236,7 +238,7 @@ $text .="</div>";
 
 
 $text .= "
-<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_1."</div>
+<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:pointer;cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_1."</div>
 <div id='main' style='text-align:center'>
 <form method='post' action='prefs.php'>
 <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
@@ -298,7 +300,7 @@ $text .= "
 </tr>
 
 </table></div>
-<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_10."</div>
+<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:pointer;cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_10."</div>
 <div id='theme' style='display:none'>
 <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 
@@ -315,7 +317,7 @@ $text .= "</select>
 </tr>
 
 </table></div>
-<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_13."</div>
+<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:pointer;cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_13."</div>
 <div id='theme' style='display:none'>
 <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 
@@ -341,7 +343,7 @@ $text .= "</select>
 </tr>
 
 </table></div>
-<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_17."</div>
+<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:pointer;cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_17."</div>
 <div id='theme' style='display:none'>
 <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 
@@ -368,7 +370,7 @@ $text .="</table></div>";
 // Admin Display Areas. .
 
 $text .="
-<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_77."</div>
+<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:pointer;cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_77."</div>
 <div id='admindisp' style='display:none'>
 <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 
@@ -412,7 +414,7 @@ $text .= "</select>
 // Date options.
 $text .="
 
-<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_21."</div>
+<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:pointer;cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_21."</div>
 <div id='date' style='text-align:center; display:none' >
 <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 <tr>";
@@ -486,7 +488,7 @@ $text .= "</select>
 
 $text .="
 
-<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_28."</div>
+<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:pointer;cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_28."</div>
 <div id='registration' style='text-align:center; display:none'>
 <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 <tr>
@@ -549,7 +551,7 @@ $text .="
 
 
 $text .= "
-<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' title='".PRFLAN_80."' style='cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_19."</div>
+<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' title='".PRFLAN_80."' style='cursor:pointer;cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_19."</div>
 <div id='signup' style='text-align:center; display:none'>
 <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 <tr >
@@ -729,7 +731,7 @@ $text .="</table></div>";
 
 $text .="
 
-<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_47."</div>
+<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:pointer;cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_47."</div>
 <div id='security' style='text-align:center; display:none'>
 <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 
@@ -764,7 +766,7 @@ $text .="
 </td>
 </tr>
 
-
+<tr>
 <td style='width:50%' class='forumheader3'>".PRFLAN_40.": </td>
 <td style='width:50%; text-align:right' class='forumheader3'>";
 if($profanity_filter == 1){
@@ -792,10 +794,22 @@ $text .= "(".PRFLAN_41.")
 </td>
 </tr>
 
+<tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_82.": </td>
+<td style='width:50%; text-align:right' class='forumheader3'>";
+if($search_restrict == 1){
+        $text .= "<input type='checkbox' name='search_restrict' value='1'  checked>";
+}else{
+        $text .= "<input type='checkbox' name='search_restrict' value='1'>";
+}
+$text .= "</td>
+</tr>
+
+
 </table></div>";
 
 $text .="
-<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_62."</div>
+<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:pointer;cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_62."</div>
 <div id='mail' style='text-align:center; display:none'>
 <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 
@@ -844,7 +858,7 @@ $text .="<div id='cookie' style='text-align:center; display:none'>
 
 $text .="
 
-<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">e107</div>
+<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:pointer;cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">e107</div>
 <div id='update' style='text-align:center; display:none'>
 <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>".$auth_dropdown."
 
