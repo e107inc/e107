@@ -1,8 +1,7 @@
 <?php
 /*
-+---------------------------------------------------------------+
++--------------------------------------------------------------+
 |	e107 website system
-|	/comfort.php theme file
 |
 |	©Steve Dunstan 2001-2002
 |	http://e107.org
@@ -10,6 +9,7 @@
 |
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
+| $Id: theme.php,v 1.3 2004-08-17 08:41:05 loloirie Exp $
 +---------------------------------------------------------------+
 */
 
@@ -26,8 +26,8 @@ define("THEME_DISCLAIMER", "<br />comfort theme by jalist, designed By <a class=
 // [layout]	#############
 $layout = "_default";
 $HEADER = 
-"<a name=\"top\"></a>
-<div style=\"text-align:center\">
+"
+<div style=\"text-align:center\" id=\"top\">
 <table style=\"width:100%\" cellspacing=\"1\" cellpadding=\"3\" class=\"mainwindow\"><tr><td colspan=\"3\" style=\"text-align:left\">
 <span class=\"captiontextorange\"> &gt; </span>
 <span class=\"captiontext\">
@@ -36,19 +36,19 @@ $HEADER =
 <span class=\"captiontextorange\"> :.</span>
 </td>
 </tr>
-<tr bgcolor=\"#354463\">
+<tr style=\"background-color:#354463\">
 <td colspan=\"3\" style=\"text-align:left\" class=\"normalorange\"> <b>".
 strftime("%A, %d %B, %Y .:. %H:%M:%S %Z", time())."
 </b>
 </td></tr>
 <tr>
-<td bgcolor=\"#253047\" valign=\"top\" width=\"3\">&nbsp;</td>
-<td valign='top' bgcolor='#CCCCCC'> 
+<td class='alpha'>&nbsp;</td>
+<td class='beta'> 
 <table width='100%' border='0' cellspacing='2' cellpadding='3'>
 <tr>
-</td><td style='width:30%; vertical-align:top'>
+<td style='width:30%; vertical-align:top'>
 {SITELINKS=menu}
-{SETSTYLE=menu}
+{SETSTYLE=menu1}
 {MENU=1}
 </td>
 <td style='width:70%; vertical-align: top;'>
@@ -62,16 +62,18 @@ while($row = $sql -> db_Fetch()){
 
 $FOOTER = 
 "
+</td>
 </tr>
 </table>
-<td bgcolor='#253047' valign='top' width='3'>&nbsp;</td>
+</td>
+<td class='alpha'>&nbsp;</td>
 </tr>
-<tr bgcolor='#354463'>
+<tr style='background-color:#354463'>
 <td colspan='3' style='text-align:center' class='mediumtext'><a class='forumlink' href='#top'>^TOP</a> 
 $links
 </td>
 </tr>
-<tr bgcolor='#101842'>
+<tr style='background-color:#101842'>
 <td colspan='3' style='text-align:right' class='smallwhitetext'>
 {SITEDISCLAIMER}
 </td>
@@ -130,10 +132,10 @@ define("POST_URLSTRING", "<br />");
 // [linkstyle]
 
 
-define("PRELINK", "\n\n<table cellpadding='2' cellspacing='1' bgcolor='#000000' style='width:100%'><tr><td class='caption2'>:: Navigation : </td></tr>\n");
-define("POSTLINK", "\n\n</table></div></div><br />\n\n");
-define("LINKSTART", "\n<tr bgcolor='#758393'> <td onMouseOver=\"this.style.backgroundColor='#9DA8B3';\" onMouseOut=\"this.style.backgroundColor='#758393'\"> <span class='linktext'>\n");
-define("LINKEND", "</span></td>");
+define("PRELINK", "\n\n<table cellpadding='2' cellspacing='1' style='background-color:#000000; width:100%'><tr><td class='caption2'>:: Navigation : </td></tr>\n");
+define("POSTLINK", "\n\n</table><br />\n\n");
+define("LINKSTART", "\n<tr style='background-color:#758393'> <td onmouseover=\"this.style.backgroundColor='#9DA8B3';\" onmouseout=\"this.style.backgroundColor='#758393'\"> <span class='linktext'>\n");
+define("LINKEND", "</span></td></tr>");
 define("LINKDISPLAY", 1);			// 1 - along top, 2 - in left or right column
 define("LINKALIGN", "left");
 define("LINKCLASS", "forumlink");
