@@ -12,12 +12,13 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.15 $
-|   $Date: 2005-01-16 05:28:49 $
+|   $Revision: 1.16 $
+|   $Date: 2005-01-18 03:38:04 $
 |   $Author: sweetas $
 +---------------------------------------------------------------+
 */
 if (!defined('e_HTTP')) { exit; }
+require_once(e_ADMIN.'ad_links.php');
 echo defined('STANDARDS_MODE') ? "" : "<?xml version='1.0' encoding='".CHARSET."' ?>";
 if (file_exists(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_header.php')) {
 	@include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_header.php");
@@ -64,8 +65,6 @@ if($eplug_css){ echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/cs
 echo "</head>
 <body>";
 
-require(e_ADMIN.'ad_links.php');
-
 $ns = new e107table;
 $e107_var = array();
 
@@ -82,7 +81,6 @@ if (!function_exists('show_admin_menu')) {
 			}
 			$t=str_replace(" ","&nbsp;",$e107_vars[$act]['text']);
 			if (!$e107_vars[$act]['perm'] || getperms($e107_vars[$act]['perm'])) {
-				//$on_click = $js ? "href='' onclick=\"showhideit('".$act."');\"" : "href='{$e107_vars[$act]['link']}'";
 				$on_click = $js ? "href=\"javascript:showhideit('".$act."');\"" : "href='{$e107_vars[$act]['link']}'";
 				$text .= "<tr><td class='button'><div style='width:100%; text-align:center'><a style='cursor:hand; cursor:pointer; text-decoration:none;' ".$on_click.">{$pre}{$t}{$post}</a></div></td></tr>";
 			}
