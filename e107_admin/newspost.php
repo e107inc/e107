@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.34 $
-|   $Date: 2005-02-10 08:39:50 $
-|   $Author: e107coders $
+|   $Revision: 1.35 $
+|   $Date: 2005-02-10 22:03:08 $
+|   $Author: stevedunstan $
 +---------------------------------------------------------------+
 
 */
@@ -133,7 +133,7 @@ if (IsSet($_POST['submit'])) {
 if (IsSet($_POST['create_category'])) {
 	if ($_POST['category_name']) {
 		if (empty($_POST['category_button'])) {
-			$handle = opendir(e_IMAGE."newsicons");
+			$handle = opendir(e_IMAGE."icons");
 			while ($file = readdir($handle)) {
 				if ($file != "." && $file != ".." && $file != "/" && $file != "null.txt" && $file != "CVS") {
 					$iconlist[] = $file;
@@ -758,7 +758,7 @@ class newspost {
 				extract($row);
 
 				if ($category_icon) {
-					$icon = (strstr($category_icon, "images/") ? THEME."$category_icon" : e_IMAGE."newsicons/$category_icon");
+					$icon = (strstr($category_icon, "images/") ? THEME."$category_icon" : e_IMAGE."icons/$category_icon");
 				}
 
 				$text .= "<tr>
@@ -781,7 +781,7 @@ class newspost {
 		$text .= "</div>";
 		$ns->tablerender(NWSLAN_51, $text);
 
-		$handle = opendir(e_IMAGE."newsicons");
+		$handle = opendir(e_IMAGE."icons");
 		while ($file = readdir($handle)) {
 			if ($file != "." && $file != ".." && $file != "/" && $file != "null.txt" && $file != "CVS") {
 				$iconlist[] = $file;
@@ -813,7 +813,7 @@ class newspost {
 			<input class='button' type ='button' style='cursor:hand' size='30' value='".NWSLAN_54."' onclick='expandit(this)' />
 			<div id='caticn' style='display:none'>";
 		while (list($key, $icon) = each($iconlist)) {
-			$text .= "<a href=\"javascript:insertext('$icon','category_button','caticn')\"><img src='".e_IMAGE."newsicons/".$icon."' style='border:0' alt='' /></a>\n ";
+			$text .= "<a href=\"javascript:insertext('$icon','category_button','caticn')\"><img src='".e_IMAGE."icons/".$icon."' style='border:0' alt='' /></a>\n ";
 		}
 		$text .= "</div></td>
 			</tr>

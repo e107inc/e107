@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-02-05 04:45:12 $
-|     $Author: e107coders $
+|     $Revision: 1.22 $
+|     $Date: 2005-02-10 22:03:04 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -145,7 +145,7 @@ class links {
 			while ($row = $sql->db_Fetch()) {
 				extract($row);
 				$text .= "<tr><td class='forumheader3' style='width:5%; text-align: center; vertical-align: middle' title='".$link_description."'>";
-				$text .= $link_button ? "<img src='".e_IMAGE."link_icons/".$link_button."' alt='' /> ":
+				$text .= $link_button ? "<img src='".e_IMAGE."icons/".$link_button."' alt='' /> ":
 				"";
 				$text .= "</td><td style='width:60%' class='forumheader3' title='".$link_description."'>".$link_name."</td>";
 				$text .= "<td style='width:15%; text-align:center; white-space: nowrap' class='forumheader3'>";
@@ -196,7 +196,7 @@ class links {
 			}
 		}
 
-		$handle = opendir(e_IMAGE."link_icons");
+		$handle = opendir(e_IMAGE."icons");
 		while ($file = readdir($handle)) {
 			if ($file != "." && $file != ".." && $file != "/") {
 				$iconlist[] = $file;
@@ -238,7 +238,7 @@ class links {
 			<div id='linkicn' style='display:none;{head}'>";
 
 		while (list($key, $icon) = each($iconlist)) {
-			$text .= "<a href=\"javascript:insertext('$icon','link_button','linkicn')\"><img src='".e_IMAGE."link_icons/".$icon."' style='border:0' alt='' /></a> ";
+			$text .= "<a href=\"javascript:insertext('$icon','link_button','linkicn')\"><img src='".e_IMAGE."icons/".$icon."' style='border:0' alt='' /></a> ";
 		}
 
 		// 0 = same window
