@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/submenusgen.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-18 05:57:15 $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-22 16:13:08 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -289,18 +289,6 @@ function submenusgen_adminmenu(){
 
 	$var['create']['text']=LCLAN_63;
 	$var['create']['link']="links.php?create";
-
-	$var['order']['text']=LCLAN_64;
-	$var['order']['link']="links.php?order";
-
-	$var['cat']['text']=LCLAN_65;
-	$var['cat']['link']="links.php?cat";
-	$var['cat']['perm']="8";
-
-	if($sql -> db_Select("tmp", "*", "tmp_ip='submitted_link' ")){
-		$var['sn']['text']=LCLAN_66;
-		$var['sn']['link']="links.php?sn";
-	}
 
 	$var['opt']['text']=LCLAN_67;
 	$var['opt']['link']="links.php?opt";

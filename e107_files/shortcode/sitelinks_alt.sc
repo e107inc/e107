@@ -1,6 +1,6 @@
 	global $sql, $pref;
 	function adnav_cat($cat_title, $cat_link, $cat_img, $cat_id=FALSE) {
-		$text = "<a class='menuButton' href='".$cat_link."' style='background-image: url(".$cat_img."); background-repeat: no-repeat;  background-position: 3px 1px' ";
+		$text = "<a class='menuButton' href='".e_BASE.$cat_link."' style='background-image: url(".$cat_img."); background-repeat: no-repeat;  background-position: 3px 1px' ";
 		if ($cat_id) { 
 			$text .= "onclick=\"return buttonClick(event, '".$cat_id."');\" onmouseover=\"buttonMouseover(event, '".$cat_id."');\"";
 		}
@@ -9,7 +9,7 @@
 	}
 
 	function adnav_main($cat_title, $cat_link, $cat_img, $cat_id=FALSE) {
-		$text = "<a class='menuItem' href='".$cat_link."' ";
+		$text = "<a class='menuItem' href='".e_BASE.$cat_link."' ";
 		if ($cat_id) { 
 			$text .= "onclick=\"return false;\" onmouseover=\"menuItemMouseover(event, '".$cat_id."');\"";
 		}
