@@ -11,24 +11,20 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/emote.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-27 19:52:27 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-23 16:15:39 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 function r_emote() {
-	$sql = new db;
-	$sql->db_Select("core", "*", "e107_name='emote'");
-	$row = $sql->db_Fetch();
-	 extract($row);
-	$emote = unserialize($e107_value);
-	 
+	global $sysprefs;
+	$emote = $sysprefs -> getArray('emote');
 	$str = "<div class='spacer'>";
-	 
 	$c = 0;
-	while (list($code, $name) = @each($emote[$c])) {
-		if (!$orig[$name]) {
-			$str .= "<a href=\"javascript:addtext(' $code')\"><img src=\"".e_IMAGE."emoticons/$name\" style=\"border:0\" alt=\"\" /></a> \n";
+	$orig = array();
+	while(list($code, $name) = @each($emote[$c])){
+		if(!array_key_exists($name,$orig)){
+			$str .= "\n<a href=\"javascript:addtext(' $code', true)\"><img src=\"".e_IMAGE."emoticons/$name\" style=\"border:0; padding-top:2px;\" alt=\"\" /></a> ";
 			$orig[$name] = TRUE;
 		}
 		$c++;
