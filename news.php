@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-02-02 12:39:12 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.29 $
+|     $Date: 2005-02-03 13:12:28 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -217,48 +217,98 @@ else if(strstr(e_QUERY, "day")) {
 }
 	
 checkNewsCache($cacheString, TRUE, TRUE);
-	
+
+
 /*
-changes by jalist 22/01/2005:
-added ability to add a new date header to news posts, turn on and off from news->prefs
+changes by jalist 03/02/2005:
+news page templating
 */
-$newpostday = 0;
-$thispostday = 0;
-$pref['newsHeaderDate'] = 1;
-$gen = new convert();
-	
-if (!defined("DATEHEADERCLASS")) {
-	define("DATEHEADERCLASS", "nextprev");
-	// if not defined in the theme, default class nextprev will be used for new date header
-}
-	
-// #### normal newsitems, rendered via render_newsitem(), the $query is changed above (no other changes made) ---------
-ob_start();
-	
-if (!$sql->db_Select_gen($query)) {
-	echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_462 : LAN_83)."</b></div><br /><br />";
-} else {
-	while ($news = $sql->db_Fetch()) {
-		//        render new date header if pref selected ...
-		$thispostday = strftime("%j", $news['news_datestamp']);
-		if ($newpostday != $thispostday && (isset($pref['news_newdateheader']) && $pref['news_newdateheader'])) {
-			echo "<div class='".DATEHEADERCLASS."'>".strftime("%A %d %B %Y", $news['news_datestamp'])."</div>";
+if($pref['news_unstemplate']) {
+	// theme specific template required ...
+	if (file_exists(THEME."news_template.php")) {
+		require_once(THEME."news_template.php");
+
+		$newscolumns = ($NEWSCOLUMNS ? $NEWSCOLUMNS : 1);
+		$newspercolumn = ($NEWSITEMSPERCOLUMN ? $NEWSITEMSPERCOLUMN : 10);
+		$newsdata = array();
+
+		if (!$sql->db_Select_gen($query)) {
+			echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_462 : LAN_83)."</b></div><br /><br />";
+		} else {
+			$loop = 1;
+			while($news = $sql->db_Fetch()) {
+				$newsdata[$loop] .= $ix->render_newsitem($news, "return");
+				$loop ++;
+				if($loop > $newscolumns) {
+					$loop = 1;
+				}
+			}
 		}
-		 
-		$newpostday = $thispostday;
-		 
-		$news['category_id'] = $news['news_category'];
-//		if (check_class($news['news_class'])) {
+
+/*
+			for($a=1; $a<= $newscolumns; $a++) {
+				for($b=1; $b<= $newspercolumn; $b++) {
+					if($news = $sql->db_Fetch()) {
+						$newsdata[$a] .= $ix->render_newsitem($news, "return");
+					}
+				}
+			}
+		}
+*/
+
+
+
+		$loop = 1;
+		foreach($newsdata as $data) {
+			$var = "ITEMS$loop";
+			$$var = $data;
+			$loop++;
+		}
+
+		$text = preg_replace("/\{(.*?)\}/e", '$\1', $NEWSCLAYOUT);
+
+		echo $text;
+
+	}
+} else {
+
+
+
+	/*
+	changes by jalist 22/01/2005:
+	added ability to add a new date header to news posts, turn on and off from news->prefs
+	*/
+	$newpostday = 0;
+	$thispostday = 0;
+	$pref['newsHeaderDate'] = 1;
+	$gen = new convert();
+		
+	if (!defined("DATEHEADERCLASS")) {
+		define("DATEHEADERCLASS", "nextprev");
+		// if not defined in the theme, default class nextprev will be used for new date header
+	}
+		
+	// #### normal newsitems, rendered via render_newsitem(), the $query is changed above (no other changes made) ---------
+	ob_start();
+		
+	if (!$sql->db_Select_gen($query)) {
+		echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_462 : LAN_83)."</b></div><br /><br />";
+	} else {
+		while ($news = $sql->db_Fetch()) {
+			//        render new date header if pref selected ...
+			$thispostday = strftime("%j", $news['news_datestamp']);
+			if ($newpostday != $thispostday && (isset($pref['news_newdateheader']) && $pref['news_newdateheader'])) {
+				echo "<div class='".DATEHEADERCLASS."'>".strftime("%A %d %B %Y", $news['news_datestamp'])."</div>";
+			}
+			 
+			$newpostday = $thispostday;
+			 
+			$news['category_id'] = $news['news_category'];
 			if ($action == "item") {
 				unset($news['news_render_type']);
 			}
 			$ix->render_newsitem($news);
-			// To hide messages for restricted news and only display valid news, comment the following else statement
-//		} else {
-//			if ($pref['subnews_hide_news'] == 1) {
-//				$ix->render_newsitem($news, "", "userclass");
-//			}
-//		}
+		}
 	}
 }
 // ##### --------------------------------------------------------------------------------------------------------------

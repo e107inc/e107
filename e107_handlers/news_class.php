@@ -13,9 +13,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.21 $
-| $Date: 2005-02-02 12:39:27 $
-| $Author: mcfly_e107 $
+| $Revision: 1.22 $
+| $Date: 2005-02-03 13:12:14 $
+| $Author: stevedunstan $
 +---------------------------------------------------------------+
 */
 	
@@ -213,6 +213,9 @@ class news {
 			$NEWSSTYLE = news_style($news);
 		}
 		$text = preg_replace($search, $replace, ($news_render_type == 1 && strstr(e_SELF, "news.php") ? $NEWSLISTSTYLE : $NEWSSTYLE));
+		if($mode == "return") {
+			return $text;
+		}
 		echo $text;
 		if ($preview == "Preview") {
 			echo $info;

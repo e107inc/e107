@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.22 $
-|   $Date: 2005-02-03 09:56:46 $
-|   $Author: e107coders $
+|   $Revision: 1.23 $
+|   $Date: 2005-02-03 13:11:45 $
+|   $Author: stevedunstan $
 +---------------------------------------------------------------+
 
 */
@@ -163,6 +163,8 @@ if (IsSet($_POST['save_prefs'])) {
 	added pref to render new date header
 	*/
 	$pref['news_newdateheader'] = $_POST['news_newdateheader'];
+	$pref['news_unstemplate'] = $_POST['news_unstemplate'];
+	
 
 
 	save_prefs();
@@ -905,6 +907,13 @@ class newspost {
 			<td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_111."</span><br /><i>".NWSLAN_112."</i></td>
 			<td class='forumheader3' style='width:40%'>
 			<input type='checkbox' name='news_newdateheader' value='1' ".($pref['news_newdateheader'] == 1 ? " checked='checked'" : "")." />
+			</td>
+			</tr>
+
+			<tr>
+			<td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_113."</span><br /><i>".NWSLAN_114."</i></td>
+			<td class='forumheader3' style='width:40%'>
+			<input type='checkbox' name='news_unstemplate' value='1' ".($pref['news_unstemplate'] == 1 ? " checked='checked'" : "")." />
 			</td>
 			</tr>
 
