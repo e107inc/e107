@@ -33,11 +33,12 @@ define("IMAGE_website", (file_exists(THEME."forum/website.png") ? "<img src='".T
 define("IMAGE_edit", (file_exists(THEME."forum/edit.png") ? "<img src='".THEME."forum/edit.png' alt='".LAN_400."' style='border:0' />" : "<img src='".e_IMAGE."forum/edit.png' alt='".LAN_400."' style='border:0' />"));
 define("IMAGE_quote", (file_exists(THEME."forum/quote.png") ? "<img src='".THEME."forum/quote.png' alt='".LAN_401."' style='border:0' />" : "<img src='".e_IMAGE."forum/quote.png' alt='".LAN_401."' style='border:0' />"));
 define("IMAGE_admin_edit", (file_exists(THEME."forum/admin_edit.png") ? "<img src='".THEME."forum/admin_edit.png' alt='".LAN_406."' style='border:0' />" : "<img src='".e_IMAGE."forum/admin_edit.png' alt='".LAN_406."' style='border:0' />"));
-define("IMAGE_admin_delete", (file_exists(THEME."forum/admin_delete.png") ? "<img src='".THEME."forum/admin_delete.png' alt='".LAN_407."' style='border:0' />" : "<img src='".e_IMAGE."forum/admin_delete.png' alt='".LAN_407."' style='border:0' />"));
 define("IMAGE_admin_move", (file_exists(THEME."forum/admin_move.png") ? "<img src='".THEME."forum/admin_move.png' alt='".LAN_408."' style='border:0' />" : "<img src='".e_IMAGE."forum/admin_move.png' alt='".LAN_408."' style='border:0' />"));
 define("IMAGE_new", (file_exists(THEME."forum/new.png") ? "<img src='".THEME."forum/new.png' alt='' style='float:left' />" : "<img src='".e_IMAGE."forum/new.png' alt='' style='float:left' />"));
 define("IMAGE_post", (file_exists(THEME."forum/post.png") ? "<img src='".THEME."forum/post.png' alt='' style='border:0' />" : "<img src='".e_IMAGE."forum/post.png' alt='' style='border:0' />"));
 define("IMAGE_report", (file_exists(THEME."forum/report.png") ? "<img src='".THEME."forum/report.png' alt='".LAN_413."' style='border:0' />" : "<img src='".e_IMAGE."forum/report.png' alt='".LAN_413."' style='border:0' />"));
+
+define("IMAGE_admin_delete", (file_exists(THEME."forum/admin_delete.png") ? "src='".THEME."forum/admin_delete.png' alt='".LAN_407."' title='".LAN_407."' style='border:0' " : " src='".e_IMAGE."forum/admin_delete.png' alt='".LAN_407."' title='".LAN_407."' style='border:0' "));
 
 
 if(!e_QUERY){
@@ -151,10 +152,23 @@ $sql -> db_Select("forum_t", "*", "thread_id='".$thread_id."' ORDER BY thread_da
 $row = $sql-> db_Fetch("no_strip"); extract($row);
 define("e_PAGETITLE", LAN_01." / ".$fname." / ".$row['thread_name']);
 
+define("MODERATOR", (preg_match("/".preg_quote(ADMINNAME)."/", $forum_moderators) && getperms("A") ? TRUE : FALSE));
+$message="";
+if(MODERATOR)
+{
+	if($_POST)
+	{
+		require_once(e_HANDLER."forum_mod.php");
+		$message = forum_thread_moderate($_POST);
+	}
+}
+
 require_once(HEADERF);
 require_once(e_HANDLER."level_handler.php");
-
-define("MODERATOR", (preg_match("/".preg_quote(ADMINNAME)."/", $forum_moderators) && getperms("A") ? TRUE : FALSE));
+if($message)
+{
+	$ns -> tablerender("",$message);
+}
 
 If(IsSet($_POST['pollvote'])){
 	$sql -> db_Select("poll", "poll_active, poll_ip", "poll_id='".$_POST['pollid']."' ");
@@ -301,8 +315,16 @@ if($thread_active){
 }
 $REPORTIMG = (USER ? "<a href='forum_viewtopic.php?".$forum_id.".".$thread_id.".".$from.".report'>".IMAGE_report."</a> " : "");
 if(MODERATOR){
-	$MODOPTIONS = "<a href='forum_post.php?edit.".$forum_id.".".$thread_id."'>".IMAGE_admin_edit."</a>\n<a style='cursor:pointer; cursor:hand' onClick=\"confirm_('thread', $forum_id, $thread_id, '')\"'>".IMAGE_admin_delete."</a>\n<a href='".e_ADMIN."forum_conf.php?move.".$forum_id.".".$thread_id."'>".IMAGE_admin_move."</a>";
+	$MODOPTIONS = "
+		<form method='post' action='".e_HTTP."forum_viewforum.php?{$forum_id}' id='frmMod_{$forum_id}_{$thread_id}'>
+		<div>
+		<a href='forum_post.php?edit.".$forum_id.".".$thread_id."'>".IMAGE_admin_edit."</a>
+		<input type='image' ".IMAGE_admin_delete." name='delete_{$thread_id}' value='thread_action' onclick=\"return confirm_('thread', $forum_id, $thread_id, '')\" />
+		<a href='".e_ADMIN."forum_conf.php?move.".$forum_id.".".$thread_id."'>".IMAGE_admin_move."</a>
+		</div>
+		</form>";
 }
+//	$MODOPTIONS .= "<a style='cursor:pointer; cursor:hand' onclick=\"confirm_('thread', $forum_id, $thread_id, '')\"'>".IMAGE_admin_delete."</a>\n";
 
 unset($newflag);
 if(USER){
@@ -385,8 +407,16 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 		}
 		$REPORTIMG = (USER ? "<a href='forum_viewtopic.php?".$forum_id.".".$thread_id.".".$from.".report'>".IMAGE_report."</a> " : "");
 		if(MODERATOR){
-			$MODOPTIONS = "<a href='forum_post.php?edit.".$forum_id.".".$thread_id."'>".IMAGE_admin_edit."</a>\n<a style='cursor:pointer; cursor:hand' onClick=\"confirm_('reply', $forum_id, $thread_id, '$post_author_name')\"'>".IMAGE_admin_delete."</a>\n<a href='".e_ADMIN."forum_conf.php?move.".$forum_id.".".$thread_id."'>".IMAGE_admin_move."</a>";
-		}
+
+	$MODOPTIONS = "
+		<form method='post' action='".e_HTTP."forum_viewtopic.php?{$forum_id}.{$thread_parent}' id='frmMod_{$forum_id}_{$thread_id}'>
+		<div>
+		<a href='forum_post.php?edit.".$forum_id.".".$thread_id."'>".IMAGE_admin_edit."</a>
+		<input type='image' ".IMAGE_admin_delete." name='delete_{$thread_id}' value='thread_action' onclick=\"return confirm_('reply', $forum_id, $thread_id, '{$post_author_name}')\" />
+		<a href='".e_ADMIN."forum_conf.php?move.".$forum_id.".".$thread_id."'>".IMAGE_admin_move."</a>
+		</div>
+		</form>";
+}
 
 		unset($newflag);
 		if(USER){
@@ -505,12 +535,9 @@ function rpg($user_join, $user_forums){
 echo "<script type=\"text/javascript\">
 function confirm_(mode, forum_id, thread_id, thread){
 	if(mode == 'thread'){
-		var x=confirm(\"".LAN_409."\");
+		return confirm(\"".LAN_409."\");
 	}else{
-		var x=confirm(\"".LAN_410." [ ".LAN_411."\" + thread + \" ]\");
-	}
-	if(x){
-		window.location='".e_ADMIN."forum_conf.php?confirm.' + forum_id + '.' + thread_id;
+		return confirm(\"".LAN_410." [ ".LAN_411."\" + thread + \" ]\");
 	}
 }
 </script>";
