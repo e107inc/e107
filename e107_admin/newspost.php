@@ -91,6 +91,18 @@ if(IsSet($_POST['update_category'])){
 	}
 }
 
+if(IsSet($_POST['save_prefs'])){
+        $pref['newsposts'] = $_POST['newsposts'];
+        $pref['news_cats'] = $_POST['news_cats'];
+        $pref['nbr_cols'] = $_POST['nbr_cols'];
+
+        save_prefs();
+        $newspost -> show_message("Settings Saved");
+}
+
+
+
+
 if(!e_QUERY || $action == "main"){
 	$newspost -> show_existing_items($action, $sub_action, $id, $from, $amount);
 }
@@ -123,6 +135,9 @@ if($action == "sn"){
 	$newspost -> submitted_news($sub_action, $id);
 }
 
+if($action == "pref"){
+        $newspost -> show_news_prefs($sub_action, $id);
+}
 
 
 
@@ -249,6 +264,10 @@ class newspost{
 		}
 		if($action != "cat" && getperms("7")){
 			$text .= "<a href='".e_SELF."?cat'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".NWSLAN_46."</div></div></a>";
+                }
+
+                if($action != "pref" && getperms("N")){
+                        $text .= "<a href='".e_SELF."?pref'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' />Preferences</div></div></a>";
 		}
 		if($action != "sn" && getperms("N")){
 			$text .= "<a href='".e_SELF."?sn'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".NWSLAN_47."</div></div></a>";
@@ -259,7 +278,7 @@ class newspost{
 
 	function create_item($sub_action, $id){
 		// ##### Display creation form ---------------------------------------------------------------------------------------------------------
-		global $sql, $rs, $ns;
+                global $sql, $rs, $ns,$pref;
 
 		$handle=opendir(e_IMAGE."newspost_images");
 		while ($file = readdir($handle)){
@@ -365,7 +384,7 @@ class newspost{
 
 		<select class='tbox' name='imageps' onChange=\"addtext('[img]' + this.form.imageps.options[this.form.imageps.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_50."')\" onMouseOut=\"help('')\">
 		<option>Insert image ...</option>\n";
-		while(list($key, $image) = each($imagelist)){ 
+                while(list($key, $image) = each($imagelist)){
 			$text .= "<option value='e107_images/newspost_images/".$image."'>".$image."</option>\n";
 		}
 		$text .= "</select>
@@ -663,6 +682,59 @@ class newspost{
 		$ns -> tablerender(NWSLAN_56, $text);
 	}
 	
+        function show_news_prefs(){
+        global $sql, $rs, $ns,$pref;
+
+                $text = "<div style='text-align:center'>
+                ".$rs -> form_open("post", e_SELF."?pref", "dataform")."
+                <table class='fborder' style='width:94%'>
+                <tr>
+                <td class='forumheader3' style='width:60%'><span class='defaulttext'>Show News-Category Footer Menu</span></td>
+                <td class='forumheader3' style='width:40%'>
+                <input type='checkbox' name='news_cats' value='1' ".($pref['news_cats']==1 ? " checked" : "").">
+                        </td>
+
+                </tr>
+
+                <tr>
+                <td class='forumheader3' style='width:60%'><span class='defaulttext'>News Category Columns?:</span></td>
+                <td class='forumheader3' style='width:40%'>
+                <select class='tbox' name='nbr_cols'>
+                <option value='1' ".($pref['nbr_cols']==1 ? "selected" : "").">1</option>
+                <option value='2' ".($pref['nbr_cols']==2 ? "selected" : "").">2</option>
+                <option value='3' ".($pref['nbr_cols']==3 ? "selected" : "").">3</option>
+                <option value='4' ".($pref['nbr_cols']==4 ? "selected" : "").">4</option>
+                <option value='5' ".($pref['nbr_cols']==5 ? "selected" : "").">5</option>
+                <option value='6' ".($pref['nbr_cols']==6 ? "selected" : "").">6</option>
+                </select></td>
+                </tr>
+
+                <tr>
+                <td class='forumheader3' style='width:60%'><span class='defaulttext'>News posts to display per page?:</span></td>
+                <td class='forumheader3' style='width:40%'>
+                <select class='tbox' name='newsposts'>
+                <option value='1' ".($pref['newsposts']==1 ? "selected" : "").">1</option>
+                <option value='2' ".($pref['newsposts']==2 ? "selected" : "").">2</option>
+                <option value='3' ".($pref['newsposts']==3 ? "selected" : "").">3</option>
+                <option value='5' ".($pref['newsposts']==5 ? "selected" : "").">5</option>
+                <option value='10' ".($pref['newsposts']==10 ? "selected" : "").">10</option>
+                <option value='15' ".($pref['newsposts']==15 ? "selected" : "").">15</option>
+                <option value='20' ".($pref['newsposts']==20 ? "selected" : "").">20</option>
+
+                </select></td>
+                </tr>
+
+                <tr><td colspan='2' style='text-align:center' class='forumheader'>";
+                $text .= "<input class='button' type='submit' name='save_prefs' value='Save News Preferences'></td></tr>";
+
+                $text .= "</table>
+                ".$rs -> form_close()."
+                </div>";
+
+                $ns -> tablerender("News Preferences", $text);
+        }
+
+
 
 
 	function submitted_news($sub_action, $id){
