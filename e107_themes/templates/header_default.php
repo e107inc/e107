@@ -11,7 +11,7 @@
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
 |
-|   $Id: header_default.php,v 1.36 2004-08-28 13:50:41 mcfly_e107 Exp $
+|   $Id: header_default.php,v 1.37 2004-08-29 02:40:05 mcfly_e107 Exp $
 +---------------------------------------------------------------+
 */
 if(!function_exists("parseheader")){
@@ -219,7 +219,7 @@ document.write( '<link rel=\"stylesheet\" type=\"text/css\" href=\"".e_PLUGIN."l
 //echo "var ejs_listpics = new Array();";
 
 $fader_onload = ($sql -> db_Select("menus", "*", "menu_name='fader_menu' AND menu_location!='0' ") ? "changecontent();" : "");
-$links_onload = ($pref['links_new_window'] ? "externalLinks();" : "");
+$links_onload = "externalLinks();";
 $body_onload =($fader_onload != "" || $links_onload != "" ? " onload='".$links_onload." ".$fader_onload."'" : "");
 $ejs_listpics = "";
 $handle=opendir(THEME."images");
