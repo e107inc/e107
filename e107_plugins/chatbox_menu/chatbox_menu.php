@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2004-12-01 15:05:32 $
-|     $Author: streaky $
+|     $Revision: 1.9 $
+|     $Date: 2004-12-11 17:06:26 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 global $tp, $e107cache;
@@ -206,8 +206,9 @@ function emote(){
 	$emote = $sysprefs -> getArray('emote');
 	$str="<br />";
 	$c=0;
+	$orig = array();
 	while(list($code, $name) = @each($emote[$c])){
-		if(!$orig[$name]){
+		if(!array_key_exists($name,$orig)){
 			$code = htmlentities($code);
 			$str .= "\n<a href=\"javascript:caddtext(' $code')\"><img src=\"".e_IMAGE."emoticons/$name\" style=\"border:0; padding-top:2px;\" alt=\"\" /></a> ";
 			$orig[$name] = TRUE;
