@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-01-27 02:44:44 $
+|     $Revision: 1.14 $
+|     $Date: 2005-01-27 02:55:08 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -292,7 +292,7 @@ function update_603_to_604($type){
                                 mysql_query("ALTER TABLE ".MPREFIX."content ADD content_pe_icon TINYINT( 1 ) UNSIGNED NOT NULL AFTER content_review_score");
                 } else {
                                 global $mySQLdefaultdb;
-                                if ($sql -> db_Select("link_category", "link_category_id")){
+                                if ($sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."link_category")) {
                                         $fields = mysql_list_fields($mySQLdefaultdb,MPREFIX."link_category");
                                         $columns = mysql_num_fields($fields);
                                         for ($i = 0; $i < $columns; $i++) {
