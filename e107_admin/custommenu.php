@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/custommenu.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-01-27 19:52:24 $
-|     $Author: streaky $
+|     $Revision: 1.8 $
+|     $Date: 2005-01-28 14:01:11 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 	
@@ -103,7 +103,7 @@ if ((isset($_POST['add_menu']) || isset($_POST['update_menu'])) && $_POST['type_
 			require_once(\"../../class2.php\");\n
 			require_once(HEADERF);\n\n". chr(36)."caption = ".chr(34).$_POST['menu_caption'].chr(34).";\n". chr(36)."text = ".chr(34).$_POST['menu_text'].chr(34).";\n".  
 		 
-		chr(36)."aj = new textparse;\n". chr(36)."caption = ".chr(36)."aj->tpa(".chr(36)."caption, \"on\");\n". chr(36)."text = ".chr(36)."aj->tpa(".chr(36)."text, \"on\",\"admin\");\n". chr(36)."ns->tablerender(".chr(36)."caption, ".chr(36)."text);\n\n
+		chr(36)."aj = new textparse;\n". chr(36)."caption = ".chr(36)."aj -> tpa(".chr(36)."caption, \"nobreak,on\");\n".chr(36)."text = ".chr(36)."aj -> tpa(".chr(36)."text, \"nobreak,on\",\"admin\");\n".chr(36)."ns->tablerender(".chr(36)."caption, ".chr(36)."text);\n\n
 			require_once(FOOTERF);\n
 			?".chr(62);
 		 
@@ -123,7 +123,7 @@ if ((isset($_POST['add_menu']) || isset($_POST['update_menu'])) && $_POST['type_
 	
 if (isset($_POST['preview'])) {
 	$menu_caption = $aj->tpa($_POST['menu_caption']);
-	$menu_text = $aj->tpa($_POST['menu_text'], "on", "admin");
+	$menu_text = $aj -> tpa($_POST['menu_text'],"nobreak,on","admin");
 	echo "<div style='text-align:center'>
 		<table style='width:200px'>
 		<tr>
@@ -132,7 +132,7 @@ if (isset($_POST['preview'])) {
 	echo "</td></tr></table></div><br /><br />";
 	$_POST['menu_caption'] = $aj->tpa($_POST['menu_caption']);
 	$_POST['menu_text'] = $aj->tpa($_POST['menu_text']);
-	$_POST['menu_text'] = str_replace("<br />", "", $_POST['menu_text']);
+	$_POST['menu_text'] = str_replace("<br />", "\n", $_POST['menu_text']);
 }
 else if(isset($_POST['edit'])) {
 	$menu = e_PLUGIN."custom/".$_POST['existing'];
