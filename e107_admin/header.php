@@ -26,10 +26,11 @@ if(file_exists(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_header.php")){@include_once(
 <meta http-equiv="Content-Type" content="text/html; charset=<?php echo CHARSET; ?>" />
 <meta http-equiv="content-style-type" content="text/css" />
 <?php
-echo "<script type='text/javascript' src='".e_FILE."e107.js'></script>\n";
+ echo "<script type='text/javascript' src='".e_FILE."e107.js'></script>\n";
 if(file_exists(THEME."theme.js")){echo "<script type='text/javascript' src='".THEME."theme.js'></script>\n";}
-if(file_exists(e_FILE."user.js")){echo "<script type='text/javascript' src='".e_FILE."user.js'></script>\n";}
+ if(file_exists(e_FILE."user.js")){echo "<script type='text/javascript' src='".e_FILE."user.js'></script>\n";}
 if(function_exists("headerjs")){     echo headerjs(); }
+if($htmlarea_js){ echo $htmlarea_js; }
 if($eplug_js){ echo "<script type='text/javascript' src='{$eplug_js}'></script>\n"; }
 if($eplug_css){ echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n"; }
 ?>
