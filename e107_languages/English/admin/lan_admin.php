@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-01-23 18:51:57 $
+|     $Revision: 1.9 $
+|     $Date: 2005-01-23 21:35:34 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -174,7 +174,7 @@ define("ADLAN_LAT_7", "File uploads");
 
 define("ADLAN_138", "Site Links");
 define("ADLAN_139", "Add/edit/delete links");
-
+// Common Terms
 define("LAN_EDIT","Edit");
 define("LAN_DELETE","Delete");
 define("LAN_CREATE","Create");
@@ -186,5 +186,17 @@ define("LAN_ERROR","Error");
 define("LAN_CONFIRMDEL","Please confirm you wish to delete");
 define("LAN_OPTIONS","Options");
 define("LAN_PREFS","Preferences");
+define("LAN_DELETED","Successfully deleted");
+define("LAN_UPDATED","Successfully updated");
+define("LAN_CREATED","Successfully created");
+define("LAN_CREATED_FAILED","Creation Unsuccessful");
+define("LAN_DELETED_FAILED","Deletion Unsuccessful");
+define("LAN_UPDATED_FAILED","Update Unsuccessful");
+
+define("LAN_RESET","Reset");
+define("LAN_CLEAR","Clear");
+define("LAN_OK","OK");
+
+
 
 ?>
