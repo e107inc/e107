@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/languages/English.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-03-03 22:52:34 $
+|     $Revision: 1.2 $
+|     $Date: 2005-03-03 23:00:33 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -22,7 +22,7 @@ define("POLL_ADLAN02", "The poll plugin allows you to define polls in either a m
 define("POLL_ADLAN03", "Configure polls");
 define("POLL_ADLAN04", "The poll plugin has been successfully installed. To add polls, click on the Polls icon in the plugin section of your admin front page, and remeber to activate the menu item from your menus page.");
 
-
+define("POLLAN_MENU_CAPTION", "Poll");
 
 define("POLLAN_1", "Existing polls");
 define("POLLAN_2", "Create / edit polls");
@@ -56,7 +56,7 @@ define("POLLAN_28", "Previous polls");
 define("POLLAN_29", "posted by");
 define("POLLAN_30", "Submit");
 define("POLLAN_31", "votes");
+define("POLLAN_32", "Click here to see results");
 
-define("POLLAN_MENU_CAPTION", "Poll");
 
 ?>

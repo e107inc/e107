@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/templates/poll_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-03-03 22:52:34 $
+|     $Revision: 1.3 $
+|     $Date: 2005-03-03 23:00:34 $
 |     $Author: stevedunstan $
 |
 +----------------------------------------------------------------------------+
@@ -67,6 +67,8 @@ $POLL_VOTED_LOOP = "
 
 $POLL_VOTED_END = "
 <div style='text-align:center' class='smalltext'>
+{AUTHOR}
+<br />
 {VOTE_TOTAL} {COMMENTS}
 <br />
 {OLDPOLLS}
