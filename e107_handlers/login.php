@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:26 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-12 18:05:42 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 @include(e_LANGUAGEDIR.e_LANGUAGE."/lan_login.php");
@@ -28,7 +28,7 @@ class userlogin{
                 # - return                                boolean
                 # - scope                                        public
                 */
-                global $pref;
+                global $pref, $e_event;
                 $sql = new db;
 
                 if($pref['auth_method'] && $pref['auth_method'] != "e107"){
@@ -73,7 +73,8 @@ class userlogin{
                                                 cookie($pref['cookie_name'], $cookieval, ( time()+3600*3));
                                         }
                                 }
-
+				$edata_li = array("user_id" => $user_id, "user_name" => $username);
+				$e_event -> trigger("login", $edata_li);
                                 $redir = (e_QUERY ? e_SELF."?".e_QUERY : e_SELF);
                                 if(strstr($_SERVER['SERVER_SOFTWARE'], "Apache")){
                                         header("Location: ".$redir);
