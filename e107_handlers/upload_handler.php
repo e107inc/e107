@@ -94,8 +94,10 @@ function file_upload($uploaddir, $avatar = FALSE){
 
                         if(@$method($uploadfile, $destination_file)){
                                 @chmod($destination_file, 0644);
-                                $tmp = explode(".", $name);
-                                $rename = substr($tmp[0], 0, 15).time().".".$tmp[1];
+										$fext  = array_pop(explode('.', $name));
+										$fname = basename($name, '.'.$fext);
+                                $tmp = pathinfo($name);
+                                $rename = substr($fname, 0, 15).".".time().".".$fext;
                                 if(@rename(e_FILE."public/avatars/".$name, e_FILE."public/avatars/".$rename)){
                                         $uploaded[$c]['name'] = $rename;
                                 }
