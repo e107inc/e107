@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-07 04:08:44 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-07 10:57:26 $
+|     $Author: pholzmann $
 +----------------------------------------------------------------------------+
 */
 
@@ -90,9 +90,7 @@ if(IsSet($_POST['updatesettings'])){
         };
 
 
-        if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
-                $row = $sql -> db_Fetch();
-                $user_entended = unserialize($row[0]);
+	if(($user_entended = $sysprefs->getArray('user_entended'))){
                 $c=0;
                 while(list($key, $u_entended) = each($user_entended)){
                     if($u_entended){
@@ -138,9 +136,7 @@ if(IsSet($_POST['updatesettings'])){
         }
 
 
-                if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
-                        $row = $sql -> db_Fetch();
-                        $user_entended = unserialize($row[0]);
+	if(($user_entended = $sysprefs->getArray('user_entended'))){
                         $c=0;
                         while(list($key, $u_entended) = each($user_entended)){
                                 if($u_entended){
@@ -180,7 +176,8 @@ if(IsSet($_POST['updatesettings'])){
                                                                         $error = RESIZE_NOT_SUPPORTED;
                                                                         @unlink(e_FILE."public/avatars/".$uploaded[0]['name']);
                                                                 }
-                        }else{
+                        }
+                        if($uploaded[1]['name'] || (!$pref['avatar_upload'] && $uploaded[0]['name'])) {
                                 // photograph uploaded
                                 $user_sess = ($pref['avatar_upload'] ? $uploaded[1]['name'] : $uploaded[0]['name']);
                                 resize_image(e_FILE."public/avatars/".$user_sess, e_FILE."public/avatars/".$user_sess, 180);
@@ -200,9 +197,7 @@ if(IsSet($_POST['updatesettings'])){
                 $_POST['customtitle'] = $aj -> formtpa($_POST['customtitle'], "public");
                 $sql -> db_Update("user", "user_password='$password', user_sess='$user_sess', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$birthday."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."', user_customtitle='".$_POST['customtitle']."' WHERE user_id='".$inp."' ");
 
-                if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
-                        $row = $sql -> db_Fetch();
-                        $user_entended = unserialize($row[0]);
+		if(($user_entended = $sysprefs->getArray('user_entended'))){
                         while(list($key, $u_entended) = each($user_entended)){
                                 if($_POST["ue_{$key}"]){
                                 $val = $aj -> formtpa($_POST["ue_{$key}"], "public");
@@ -441,9 +436,7 @@ $text .= $rs -> form_select_close()."</td>
 </td>
 </tr>";
 
-if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
-        $row = $sql -> db_Fetch();
-        $user_entended = unserialize($row[0]);
+if(($user_entended = $sysprefs->getArray('user_entended'))){
         $c=0;
 
         $user_pref = unserialize($user_prefs);
