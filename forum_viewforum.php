@@ -201,7 +201,7 @@ require_once(FOOTERF);
 
 
 function parse_thread($row){
-	global $sql2, $sql3, $FORUM_VIEW_FORUM, $gen, $aj, $pref, $forum_id;
+	global $sql2, $sql3, $FORUM_VIEW_FORUM, $gen, $aj, $pref, $forum_id, $menu_pref;
 	extract($row);
 	$VIEWS = $thread_views;
 	$REPLIES = $sql2 -> db_Count("forum_t", "(*)", " WHERE thread_parent='$thread_id' ");
@@ -255,7 +255,18 @@ function parse_thread($row){
 
 	$thread_name = strip_tags($aj -> tpa($thread_name));
 	$result = preg_split("/\]/", $thread_name);
-	$THREADNAME = ($result[1] ? $result[0]."] <a href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id."'>".ereg_replace("\[.*\]", "", $thread_name)."</a>" : "<a href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id."'>".$thread_name."</a>");
+	if($pref['forum_tooltip']){
+		$thread_thread = strip_tags($aj -> tpa($thread_thread));
+		$tip_length = ($pref['forum_tiplength'] ? $pref['forum_tiplength'] : 400);
+		if(strlen($thread_thread) > $tip_length) {
+			$thread_thread = substr($thread_thread, 0, $tip_length)." ".$menu_pref['newforumposts_postfix'];
+		}
+		$thread_thread = str_replace("'", "&#39;", $thread_thread);
+		$title = "title='".$thread_thread."'";
+	}else{
+		$title = "";
+	}
+	$THREADNAME = ($result[1] ? $result[0]."] <a  ".$title." href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id."'>".ereg_replace("\[.*\]", "", $thread_name)."</a>" : "<a ".$title."' href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id."'>".$thread_name."</a>");
 
 	
 

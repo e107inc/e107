@@ -98,6 +98,8 @@ if(IsSet($_POST['updateoptions'])){
         $pref['forum_user_customtitle'] = $_POST['forum_user_customtitle'];
         $pref['reported_post_email'] = $_POST['reported_post_email'];
         $pref['links_new_window'] = $_POST['links_new_window'];
+        $pref['forum_tooltip'] = $_POST['forum_tooltip'];
+        $pref['forum_tiplength'] = $_POST['forum_tiplength'];
         save_prefs();
         $forum -> show_message(FORLAN_10);
 }
@@ -573,6 +575,17 @@ class forum{
                 <tr>
                 <td style='width:75%' class='forumheader3'>".FORLAN_116."<br /><span class='smalltext'>".FORLAN_122."</span></td>
                 <td style='width:25%' class='forumheader2' style='text-align:center'>".($pref['reported_post_email'] ? "<input type='checkbox' name='reported_post_email' value='1' checked='checked' />" : "<input type='checkbox' name='reported_post_email' value='1' />")."</td>
+                </tr>
+
+
+                <tr>
+                <td style='width:75%' class='forumheader3'>".FORLAN_126."<br /><span class='smalltext'>".FORLAN_127."</span></td>
+                <td style='width:25%' class='forumheader2' style='text-align:center'>".($pref['forum_tooltip'] ? "<input type='checkbox' name='forum_tooltip' value='1' checked='checked' />" : "<input type='checkbox' name='forum_tooltip' value='1' />")."</td>
+                </tr>
+
+                <tr>
+                <td style='width:75%' class='forumheader3'>".FORLAN_128."<br /><span class='smalltext'>".FORLAN_129."</span></td>
+                <td style='width:25%' class='forumheader2' style='text-align:center'><input class='tbox' type='text' name='forum_tiplength' size='15' value='".$pref['forum_tiplength']."' maxlength='20' /></td>
                 </tr>
 
 

@@ -139,4 +139,11 @@ define("WMGLAN_5", "Set Forum Rules");
 define("WMGLAN_6", "Activate?");
 define("FORLAN_124", "Links in new window");
 define("FORLAN_125", "Tick here to make all links open in a new window (<i>this will apply sitewide</i>). ");
+
+//v.617
+define("FORLAN_126", "Show Tooltips");
+define("FORLAN_127", "Tick here to show a tooltip containing the first post of the thread when mouse hovers over thread name. ");
+define("FORLAN_128", "Length of tooltip");
+define("FORLAN_129", "This will determine the number of characters to display in the tooltip. ");
+
 ?>
