@@ -180,7 +180,7 @@ if($action == "article"){
         <br />";
 
         require_once(e_HANDLER."ren_help.php");
-        $text .= ren_help(1, "addtext2", TRUE)."
+        $text .= ren_help(1, "addtext2", "help")."
         </td>
         </tr>
 
@@ -272,7 +272,7 @@ if($action == "review"){
         <input class='helpbox' type='text' name='helpb' size='100' />
         <br />";
         require_once(e_HANDLER."ren_help.php");
-        $text .= ren_help(1, "addtext2", TRUE)."
+        $text .= ren_help(1, "addtext2", "help")."
         </td>
         </tr>
 
@@ -307,10 +307,10 @@ require_once(FOOTERF);
 function headerjs(){
 $script_txt= "<script type=\"text/javascript\">
 function addtext2(sc){
-        document.dataform.data.value += sc;
+        document.getElementById('dataform').data.value += sc;
 }
 function help(help){
-        document.dataform.helpb.value = help;
+        document.getElementById('dataform').helpb.value = help;
 }
 </script>\n";
 return $script_txt;

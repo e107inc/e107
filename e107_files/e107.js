@@ -127,7 +127,7 @@ function addtext(text){
 }
 
 function help(help){
-	document.dataform.helpb.value = help;
+	document.getElementById('dataform').helpb.value = help;
 }
 function externalLinks() { 
  if (!document.getElementsByTagName) return; 
