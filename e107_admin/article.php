@@ -152,10 +152,14 @@ if(IsSet($_POST['preview'])){
         $ch = $aj -> formtpa($_POST['content_heading'],"admin"); $ch = $aj -> tpa($ch,"nobreak","admin");
         $cs = $aj -> formtpa($_POST['content_subheading'],"admin"); $cs = $aj -> tpa($ch,"nobreak","admin");
         $dt = (strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]", "[img]../", $_POST['data']));
-        $dt = $aj -> formtpa($dt,"admin"); $dt = $aj -> tpa($dt,"nobreak","admin");
+        $dt = $aj -> formtpa($dt,"admin"); $dt = $aj -> tpa($dt,"off","admin");
         $cu= $aj -> formtpa($_POST['content_summary'],"admin"); $cu= $aj -> tpa($cu,"nobreak","admin");
         $ca = ($_POST['content_author'] && $_POST['content_author'] != ARLAN_84 ? $_POST['content_author'] : ADMINNAME);
         $text = "<i>by $ca</i><br /><span class='smalltext'>".$datestamp."</span><br /><br />".ARLAN_18.": $cs<br />".ARLAN_19.": $cu<br /><br />$dt";
+ 
+ 		/* 9 Aug 2004 - unknown - the article preview looks more like the actual article */
+	 	$text = '<div style="text-align: center"><table class="fborder" style="width:95%" border="0"><tr><td>'.$text.'</td></tr></table></div>';
+ 	
         $ns -> tablerender($content_heading, $text);
         echo "<br /><br />";
         // make form friendly ...
