@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search/search_news.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-02-13 09:02:43 $
+|     $Revision: 1.10 $
+|     $Date: 2005-02-15 11:25:50 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -20,12 +20,12 @@
 $return_fields = 'news_id, news_title, news_body, news_extended, news_allow_comments, news_datestamp';
 $search_fields = array('news_title', 'news_body', 'news_extended');
 $weights = array('1.2', '0.6', '0.6');
+$no_results = LAN_198;
 $time = time();
 $where = "(news_start < ".$time.") AND (news_end=0 OR news_end > ".$time.") AND news_class IN (".USERCLASS_LIST.") AND";
-$sql_order = ", news_datestamp DESC";
-$php_order = array("news_datestamp", SORT_DESC);
-$no_results = LAN_198;
-$ps = $sch -> parsesearch('news', $return_fields, $search_fields, $weights, 'search_news', $no_results, $where, $sql_order, $php_order);
+$order = array('news_datestamp' => DESC);
+
+$ps = $sch -> parsesearch('news', $return_fields, $search_fields, $weights, 'search_news', $no_results, $where, $order);
 $text .= $ps['text'];
 $results = $ps['results'];
 
