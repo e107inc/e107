@@ -18,5 +18,6 @@ define("COUNTER_L3", "Ever");
 define("COUNTER_L4", "Record");
 define("COUNTER_L5", "Stat logging is disabled.");
 define("COUNTER_L6", "Click here to enable.");
+define("COUNTER_L7", "Unique");
 
 ?>
