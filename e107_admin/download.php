@@ -11,19 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2005-03-24 16:49:11 $
+|     $Revision: 1.37 $
+|     $Date: 2005-03-24 19:14:40 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
-if (!is_object($tp)) $tp = new e_parse;
 if (!getperms("R")) {
 	header("location:".e_BASE."index.php");
 	exit;
 }
 $e_sub_cat = 'download';
-
 
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."userclass_class.php");
@@ -57,10 +55,11 @@ if (e_QUERY) {
 	unset($tmp);
 }
 
-if(isset($_POST['delete_x']))
+if(isset($_POST['delete']))
 {
-	$delete = $_POST['type'];
-	$del_id = $_POST['id'];
+	$tmp = array_pop(array_flip($_POST['delete']));
+	list($delete, $del_id) = explode("_", $tmp);
+	unset($_POST['searchquery']);
 }
 
 $from = ($from ? $from : 0);
@@ -189,7 +188,6 @@ if ($delete == 'category') {
 	if ($sql->db_Delete("download_category", "download_category_id='$del_id' ")) {
 		$sql->db_Delete("download_category", "download_category_parent='{$del_id}' ");
 		$download->show_message(DOWLAN_49." #".$del_id." ".DOWLAN_36);
-		$download->show_categories($sub_action, $del_id);
 	}
 }
 
@@ -294,7 +292,7 @@ if($action == 'limits')
 		}
 	}
 	$txt = "
-		<form method='post'>
+		<form method='post' action='".e_SELF."?".e_QUERY."'>
 		<table style='width:100%'>
 		<tr>
 			<td colspan='4' class='forumheader3' style='text-align:left'>
@@ -309,7 +307,7 @@ if($action == 'limits')
 		}
 		
 		$txt .= "
-			<input type='checkbox' name='download_limits' {$chk}> ".DOWLAN_125."
+			<input type='checkbox' name='download_limits' {$chk} /> ".DOWLAN_125."
 			</td>
 		</tr>
 		<tr>
@@ -364,11 +362,8 @@ if($action == 'limits')
 	</td>
 	</tr>
 	";
-
-
-
 	
-	$txt .= "</table>";
+	$txt .= "</table></form>";
 	
 	$ns->tablerender(DOWLAN_112, $txt);
 	require_once(e_ADMIN.'footer.php');
@@ -393,7 +388,8 @@ class download {
 		}
 
 		if ($sql->db_Select("download", "*", $query, ($_POST['searchquery'] ? 0 : "nowhere"))) {
-			$text .= "<table class='fborder' style='width:99%'>
+			$text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform")."
+				<table class='fborder' style='width:99%'>
 				<tr>
 				<td style='width:5%' class='fcaption'>ID</td>
 				<td style='width:50%' class='fcaption'>".DOWLAN_27."</td>
@@ -405,17 +401,12 @@ class download {
 					<td style='width:5%' class='forumheader3'>$download_id</td>
 					<td style='width:75%' class='forumheader3'>$download_name</td>
 					<td style='width:20%; text-align:center' class='forumheader3'>
-					".$rs->form_open("post", e_SELF, "myform_{$download_id}", "", "", " onsubmit=\"return jsconfirm('".$tp->toJS(DOWLAN_33." [ID: $download_id ]")."') \"  ")."
 					<a href='".e_SELF."?create.edit.{$download_id}'>".ADMIN_EDIT_ICON."</a>
-					<input type='image' title='".LAN_DELETE."' name='delete' src='".ADMIN_DELETE_ICON_PATH."' />
-					<input type='hidden' name='type' value='main' />
-					<input type='hidden' name='id' value='{$download_id}' />
-					</div>
-					".$rs->form_close()."
+					<input type='image' title='".LAN_DELETE."' name='delete[main_{$download_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(DOWLAN_33." [ID: $download_id ]")."') \" />
 					</td>
 					</tr>";
 			}
-			$text .= "</table>";
+			$text .= "</table></form>";
 		} else {
 			$text .= "<div style='text-align:center'>".DOWLAN_6."</div>";
 		}
@@ -889,12 +880,14 @@ class download {
 		}
 		if (!is_object($sql3)) {
 			$sql3 = new db;
-			 $sql4 = new db;
+		}
+		if (!is_object($sql4)) {
+			$sql4 = new db;
 		}
 		$text = "<div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>";
 		if ($download_total = $sql->db_Select("download_category", "*", "download_category_parent=0")) {
-			$text .= "<table class='fborder' style='width:99%'>
-
+			$text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform")."
+			<table class='fborder' style='width:99%'>
 				<tr>
 				<td style='width:5%; text-align:center' class='fcaption'>&nbsp;</td>
 				<td style='width:70%; text-align:center' class='fcaption'>".DOWLAN_11."</td>
@@ -908,12 +901,8 @@ class download {
 					<td style='width:5%; text-align:center' class='forumheader'>".($download_category_icon ? "<img src='".e_IMAGE."icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")."</td>
 					<td colspan='2' style='width:70%' class='forumheader'><b>$download_category_name</b></td>
 					<td style='width:20%; text-align:center' class='forumheader'>
-					".$rs->form_open("post", e_SELF, "myform_{$download_category_id}", "", "", "     ")."
 					<a href='".e_SELF."?cat.edit.{$download_category_id}'>".ADMIN_EDIT_ICON."</a>
-					<input type='image' title='".LAN_DELETE."' name='delete' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(DOWLAN_34." [ID: $download_category_id ]")."') \"/>
-					<input type='hidden' name='type' value='category' />
-					<input type='hidden' name='id' value='{$download_category_id}' />
-					".$rs->form_close()."
+					<input type='image' title='".LAN_DELETE."' name='delete[category_{$download_category_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(DOWLAN_34." [ID: $download_category_id ]")."') \"/>
 					</td>
 					</tr>";
 					
@@ -927,12 +916,8 @@ class download {
 							<td style='width:70%' class='forumheader3'>$download_category_name<br /><span class='smalltext'>$download_category_description</span></td>
 							<td style='width:5%; text-align:center' class='forumheader3'>$files</td>
 							<td style='width:20%; text-align:center' class='forumheader3'>
-							".$rs->form_open("post", e_SELF, "myform_{$download_category_id}", "", "", "")."
 							<a href='".e_SELF."?cat.edit.{$download_category_id}'>".ADMIN_EDIT_ICON."</a>
-							<input type='image' title='".LAN_DELETE."' name='delete' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(DOWLAN_34." [ID: $download_category_id ]")."') \"/>
-							<input type='hidden' name='type' value='category' />
-							<input type='hidden' name='id' value='{$download_category_id}' />
-							".$rs->form_close()."
+							<input type='image' title='".LAN_DELETE."' name='delete[category_{$download_category_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(DOWLAN_34." [ID: $download_category_id ]")."') \"/>
 							</td>
 							</tr>";
 
@@ -947,20 +932,16 @@ class download {
 									<td style='width:70%' class='forumheader3'>&nbsp;&nbsp;&nbsp;&nbsp;".DOWLAN_53.": $download_category_name<br />&nbsp;&nbsp;&nbsp;&nbsp;<span class='smalltext'>$download_category_description</span></td>
 									<td style='width:5%; text-align:center' class='forumheader3'>$files</td>
 									<td style='width:20%; text-align:center' class='forumheader3'>
-                           ".$rs->form_open("post", e_SELF, "myform_{$download_category_id}", "", "", "")."
 									<a href='".e_SELF."?cat.edit.{$download_category_id}'>".ADMIN_EDIT_ICON."</a>
-									<input type='image' title='".LAN_DELETE."' name='delete' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(DOWLAN_34." [ID: $download_category_id ]")."') \"/>
-									<input type='hidden' name='type' value='category' />
-									<input type='hidden' name='id' value='{$download_category_id}' />
-									".$rs->form_close()."
-								</td>
+									<input type='image' title='".LAN_DELETE."' name='delete[category_{$download_category_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(DOWLAN_34." [ID: $download_category_id ]")."') \"/>
+									</td>
 									</tr>";
 							}
 						}
 					}
 				}
 			}
-			$text .= "</table>";
+			$text .= "</table></form>";
 		} else {
 			$text .= "<div style='text-align:center'>".DOWLAN_38."</div>";
 		}
@@ -1039,8 +1020,6 @@ class download {
 			<input class='button' type ='button' style='cursor:hand' size='30' value='".DOWLAN_42."' onclick='expandit(this)' />
 			<div id='cat_icn' style='display:none;{head}' >";
 
-
-
 		while (list($key, $icon) = each($iconlist)) {
 			$text .= "<a href=\"javascript:insertext('$icon','download_category_icon','cat_icn')\"><img src='".e_IMAGE."icons/".$icon."' style='border:0' alt='' /></a> ";
 		}
@@ -1111,6 +1090,7 @@ class download {
 		{
 
 			$text = "<div style='text-align:center'>
+			<form method='post' action='".e_SELF."?".e_QUERY."'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
 			<td style='width: 10%; text-align: center;' class='forumheader'>ID</td>
@@ -1127,22 +1107,18 @@ class download {
 				extract($mirror);
 				$text .= "
 				
-				<form method='post' action='".e_SELF."?".e_QUERY."' onsubmit=\"return jsconfirm('".DOWLAN_137." [ID: $mirror_id ]')\">
 				<tr>
 				<td style='width: 10%; text-align: center;' class='forumheader3'>$mirror_id</td>
 				<td style='width: 30%;' class='forumheader3'>".$tp -> toHTML($mirror_name)."</td>
 				<td style='width: 30%;' class='forumheader3'>".($mirror_image ? "<img src='".e_FILE."downloadimages/".$mirror_image."' alt='' />" : "None")."</td>
 				<td style='width: 30%; text-align: center;' class='forumheader3'>
 				<a href='".e_SELF."?mirror.edit.{$mirror_id}'>".ADMIN_EDIT_ICON."</a>
-				<input type='image' title='".LAN_DELETE."' name='delete' src='".ADMIN_DELETE_ICON_PATH."' />
-				<input type='hidden' name='type' value='mirror' />
-				<input type='hidden' name='id' value='{$mirror_id}' />
+				<input type='image' title='".LAN_DELETE."' name='delete[mirror_{$mirror_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".DOWLAN_137." [ID: $mirror_id ]')\"/>
 				</td>
 				</tr>
-				</form>
 				";
 			}
-			$text .= "</table></div>";
+			$text .= "</table></form></div>";
 
 		}
 
@@ -1189,7 +1165,7 @@ class download {
 		<tr>
 		<td style='width: 30%;' class='forumheader3'>".DOWLAN_136."</td>
 		<td style='width: 70%;' class='forumheader3'>
-		<input class='tbox' type='text' name='mirror_image' size='60' value='$mirror_image' maxlength='200' />
+		<input class='tbox' type='text' id='mirror_image' name='mirror_image' size='60' value='$mirror_image' maxlength='200' />
 
 
 		<br /><input class='button' type ='button' style='cursor:hand' size='30' value='".DOWLAN_42."' onclick='expandit(this)' />
@@ -1198,11 +1174,10 @@ class download {
 		$text .= DOWLAN_140."<br /><br />";
 
 		foreach($imagelist as $file){
-			$text .= "<a href=\"javascript:insertext('".$file['fname']."','mirror_image','null')\"><img src='".e_FILE."downloadimages/".$file['fname']."' alt='' /></a> ";
+			$text .= "<a href=\"javascript:insertext('".$file['fname']."','mirror_image','imagefile')\"><img src='".e_FILE."downloadimages/".$file['fname']."' alt='' /></a> ";
 		}
 
 		$text .= "</div>
-
 		</td>
 		</tr>
 
@@ -1223,6 +1198,7 @@ class download {
 		<tr>
 		<td colspan='2' class='forumheader' style='text-align:center;'>
 		".($edit ? "<input class='button' type='submit' name='submit_mirror' value='".DOWLAN_142."' /><input type='hidden' name='id' value='$mirror_id' />" : "<input class='button' type='submit' name='submit_mirror' value='".DOWLAN_143."' />")."
+		</td>
 		</tr>
 
 		</table>
