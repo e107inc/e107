@@ -16,7 +16,7 @@ if(!$LOGIN_TABLE){
 		}
 		$LOGIN_TABLE .= "
 		<div style='text-align:center'>
-		".$rs -> form_open("post", e_SELF)."<table class='fborder' style='width:60%' >\n<tr>\n<td class='forumheader' style='text-align:center;' colspan='3'>".LAN_LOGIN_4."</td>\n</tr>\n<tr>\n<td class='forumheader3' width='40%'>".LAN_LOGIN_1."</td>\n<td class='forumheader3' width='40%'>{LOGIN_TABLE_USERNAME}</td>\n<td class='forumheader3' width='20%' rowspan='".($LOGIN_TABLE_SECIMG_SECIMG ? 3 : 2)."' style='vertical-align: middle; margin-left: auto; margin-right: auto; text-align: center;'><img src='".e_IMAGE."generic/password.png' alt='' /></td>\n</tr>\n<tr>\n<td class='forumheader3'>".LAN_LOGIN_2."</td>\n<td class='forumheader3'>{LOGIN_TABLE_PASSWORD}</td>\n</tr>\n";
+		".$rs -> form_open("post", e_SELF)."<table class='fborder' style='width:60%' >\n<tr>\n<td class='forumheader' style='text-align:center;' colspan='3'>".LAN_LOGIN_4."</td>\n</tr>\n<tr>\n<td class='forumheader3' width='40%'>".LAN_LOGIN_1."</td>\n<td class='forumheader3' width='40%'>{LOGIN_TABLE_USERNAME}</td>\n<td class='forumheader3' width='20%' rowspan='".($LOGIN_TABLE_SECIMG_SECIMG ? 3 : 2)."' style='vertical-align: middle; margin-left: auto; margin-right: auto; text-align: center;'><img src='".e_IMAGE."generic/".IMODE."/password.png' alt='' /></td>\n</tr>\n<tr>\n<td class='forumheader3'>".LAN_LOGIN_2."</td>\n<td class='forumheader3'>{LOGIN_TABLE_PASSWORD}</td>\n</tr>\n";
 	if($LOGIN_TABLE_SECIMG_SECIMG){
 		$LOGIN_TABLE .= "<tr><td class='forumheader3'>{LOGIN_TABLE_SECIMG_LAN}</td>\n<td class='forumheader3'>{LOGIN_TABLE_SECIMG_HIDDEN} {LOGIN_TABLE_SECIMG_SECIMG} {LOGIN_TABLE_SECIMG_TEXTBOC}</td>\n</tr>\n";
 	}

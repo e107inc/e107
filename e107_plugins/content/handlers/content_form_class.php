@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.11 $
-|		$Date: 2005-03-01 23:13:47 $
-|		$Author: lisa_ $
+|		$Revision: 1.12 $
+|		$Date: 2005-03-31 09:20:25 $
+|		$Author: stevedunstan $
 +---------------------------------------------------------------+
 */
 
@@ -977,8 +977,8 @@ class contentform{
 									".($type_id == $prefetchbreadcrumb[$i][0] ? "<a href='".e_SELF."?".$type.".".$type_id.".order.all'>".CONTENT_ICON_ORDERALL."</a>" : "")."
 								</td>
 								<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>
-									<a href='".e_SELF."?".$type.".".$type_id.".order.cat.inc-".$prefetchbreadcrumb[$i][0]."-".$prefetchbreadcrumb[$i][4]."'><img src='".e_IMAGE."generic/up.png' alt='".CONTENT_ADMIN_ITEM_LAN_63."' style='border:0;' /></a>
-									<a href='".e_SELF."?".$type.".".$type_id.".order.cat.dec-".$prefetchbreadcrumb[$i][0]."-".$prefetchbreadcrumb[$i][4]."'><img src='".e_IMAGE."generic/down.png' alt='".CONTENT_ADMIN_ITEM_LAN_64."' style='border:0;' /></a>
+									<a href='".e_SELF."?".$type.".".$type_id.".order.cat.inc-".$prefetchbreadcrumb[$i][0]."-".$prefetchbreadcrumb[$i][4]."'><img src='".e_IMAGE."admin_images/up.png' alt='".CONTENT_ADMIN_ITEM_LAN_63."' style='border:0;' /></a>
+									<a href='".e_SELF."?".$type.".".$type_id.".order.cat.dec-".$prefetchbreadcrumb[$i][0]."-".$prefetchbreadcrumb[$i][4]."'><img src='".e_IMAGE."admin_images/down.png' alt='".CONTENT_ADMIN_ITEM_LAN_64."' style='border:0;' /></a>
 								</td>
 								<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>
 									<select name='order[]' class='tbox'>";
@@ -1067,8 +1067,8 @@ class contentform{
 										</td>
 										<td class='forumheader3' style='width:70%; text-align:left;'>".$content_heading."</td>
 										<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>
-											<a href='".e_SELF."?".$type.".".$type_id.".order.".$sub_action.".inc-".$content_id."-".$content_order."'><img src='".e_IMAGE."generic/up.png' alt='".CONTENT_ADMIN_ITEM_LAN_63."' style='border:0;' /></a>
-											<a href='".e_SELF."?".$type.".".$type_id.".order.".$sub_action.".dec-".$content_id."-".$content_order."'><img src='".e_IMAGE."generic/down.png' alt='".CONTENT_ADMIN_ITEM_LAN_64."' style='border:0;' /></a>
+											<a href='".e_SELF."?".$type.".".$type_id.".order.".$sub_action.".inc-".$content_id."-".$content_order."'><img src='".e_IMAGE."admin_images/up.png' alt='".CONTENT_ADMIN_ITEM_LAN_63."' style='border:0;' /></a>
+											<a href='".e_SELF."?".$type.".".$type_id.".order.".$sub_action.".dec-".$content_id."-".$content_order."'><img src='".e_IMAGE."generic/admin_images.png' alt='".CONTENT_ADMIN_ITEM_LAN_64."' style='border:0;' /></a>
 										</td>
 										<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>
 											<select name='order[]' class='tbox'>";

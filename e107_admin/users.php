@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-03-28 18:06:47 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.24 $
+|     $Date: 2005-03-31 09:18:48 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -656,12 +656,12 @@ class users {
 				if($i > 0)
 				{
 					$text .= "
-					<input type='image' alt='' title='".USRLAN_137."' src='".e_IMAGE."/generic/up.png' name='up' value='{$ext['user_extended_struct_id']}' />
+					<input type='image' alt='' title='".USRLAN_137."' src='".e_IMAGE."/admin_images/up.png' name='up' value='{$ext['user_extended_struct_id']}' />
 					";
 				}
 				if($i <= count($extendedList)-2)
 				{
-					$text .= "<input type='image' alt='' title='".USRLAN_136."' src='".e_IMAGE."/generic/down.png' name='down' value='{$ext['user_extended_struct_id']}' />";
+					$text .= "<input type='image' alt='' title='".USRLAN_136."' src='".e_IMAGE."/admin_images/down.png' name='down' value='{$ext['user_extended_struct_id']}' />";
 				}
 				$text .= "
 				</form>
