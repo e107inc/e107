@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/event_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-03-14 13:39:42 $
+|     $Revision: 1.6 $
+|     $Date: 2005-03-14 14:50:54 $
 |     $Author: asperon $
 +----------------------------------------------------------------------------+
 */
@@ -21,14 +21,15 @@ class e107_event {
 	var $functions = array();
 	var $includes = array();
 	 
-	function register($eventname, $function, $include) {
-		if ($include) {
+	function register($eventname, $function, $include='') {
+		if ($include!='') {
 			$this->includes[$eventname][] = $include;
 		}
 		$this->functions[$eventname][] = $function;
 	}
 	 
 	function trigger($eventname, &$data) {
+
 		foreach($this->includes[$eventname] as $evt_inc) {
 			if (file_exists($evt_inc)) {
 				include_once($evt_inc);
@@ -36,7 +37,7 @@ class e107_event {
 		}
 		foreach($this->functions[$eventname] as $evt_func) {
 			if (function_exists($evt_func)) {
-				$ret = call_user_function($evt_func($data));
+				$ret = $evt_func($data);
 				if ($ret!='') {
 					break;
 				}
