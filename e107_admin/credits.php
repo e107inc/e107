@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/credits.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-03-02 12:55:44 $
+|     $Revision: 1.2 $
+|     $Date: 2005-03-02 13:15:42 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ $creditsArray = array(
 				"url" => "http://magpierss.sourceforge.net/", 
 				"description" => "MagpieRSS provides an XML-based (expat) RSS parser in PHP.", 
 				"version" => "0.71.1", 
-				"licence" => "GPL"
+				"licence" => "GPL, permission granted"
 			),
 	array(	"name" => "PCLZip", 
 				"url" => "http://www.phpconcept.net/pclzip/index.en.php", 
@@ -57,7 +57,16 @@ $creditsArray = array(
 				"version" => "1.72", 
 				"licence" => "GPL"
 			),
+	array(	"name" => "Brainjar DHTML Menu", 
+				"url" => "http://www.brainjar.com/dhtml/menubar/", 
+				"description" => "Menu system used in Jayya theme", 
+				"version" => "0.1", 
+				"licence" => "GPL, permission granted"
+			),
 	);
+
+
+	
 
 $text = "<div style='text-align: center; margin-left: auto; margin-right: auto;'><table style='width: 90%;' class='fborder'>
 
