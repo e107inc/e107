@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-02-22 18:19:11 $
+|     $Revision: 1.20 $
+|     $Date: 2005-03-03 18:35:54 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -212,8 +212,7 @@ if ($action == "reply") {
 				$subject = $poll_title;
 				define(e_PAGETITLE, LAN_101." / ".LAN_99." / ".$subject."");
 				require_once(HEADERF);
-				require(e_PLUGIN."poll_menu/poll_menu.php");
-
+				require(e_PLUGIN."poll/poll_menu.php");
 				$field = $poll_id;
 				$comtype = 4;
 			}

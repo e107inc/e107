@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-02-24 18:39:55 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.15 $
+|     $Date: 2005-03-03 18:35:56 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -116,9 +116,9 @@ if (IsSet($_POST['addoption']) && $_POST['option_count'] < 10) {
 }
 
 if (IsSet($_POST['submitpoll'])) {
-	require_once(e_HANDLER."poll_class.php");
+	require_once(e_PLUGIN."poll/poll_class.php");
 	$poll = new poll;
-	$poll->submit_poll(0, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], 0, $forum_id, "forum");
+	//$poll->submit_poll(0, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], 0, $forum_id, "forum");
 
 	require_once(HEADERF);
 	if (!$FORUMPOST) {
@@ -147,15 +147,9 @@ if (IsSet($_POST['fpreview'])) {
 	$tpost = $tp->post_toHTML($_POST['post']);
 
 	if ($_POST['poll_title'] != "" && $pref['forum_poll']) {
-		require_once(e_HANDLER."poll_class.php");
+		require_once(e_PLUGIN."poll/poll_class.php");
 		$poll = new poll;
-		$poll_text .= $poll->render_poll($_POST['existing'], $_POST['poll_title'], $_POST['poll_option'], array($votes), "preview", "forum");
-		$count = 0;
-		while ($_POST['poll_option'][$count]) {
-			$_POST['poll_option'][$count] = $tp->post_toForm($_POST['poll_option'][$count]);
-			$count++;
-		}
-		$_POST['poll_title'] = $tp->post_toForm($_POST['poll_title']);
+		$poll->render_poll($_POST, "forum", "notvoted");
 	}
 
 
@@ -249,9 +243,10 @@ if (isset($_POST['newthread']) || isset($_POST['reply'])) {
 		}
 
 		if ($_POST['poll_title'] != "" && $_POST['poll_option'][0] != "" && $_POST['poll_option'][1] != "" && isset($_POST['newthread'])) {
-			require_once(e_HANDLER."poll_class.php");
+			require_once(e_PLUGIN."poll/poll_class.php");
+			$_POST['iid'] = $iid;
 			$poll = new poll;
-			$poll->submit_poll(0, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], 0, $iid, "forum");
+			$poll -> submit_poll(2);
 		}
 
 		if ($pref['forum_redirect']) {

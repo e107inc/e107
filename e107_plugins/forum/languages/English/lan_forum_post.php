@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_post.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-26 18:30:41 $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-03 18:36:11 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -71,7 +71,7 @@ define("LAN_387", "Go");
 define("LAN_388", "Back to top");
 define("LAN_389", "Duplicate post, redirecting ...");
 define("LAN_390", "Attach file / image");
-define("LAN_391", "Option");
+define("LAN_391", "Options");
 define("LAN_392", "File to attach");
 define("LAN_393", "<b>Please note</b><br />Allowed filetypes:");
 define("LAN_394", "Any other filetypes uploaded will be instantly deleted.");
@@ -102,5 +102,11 @@ define("LAN_414", "Click Here to view your poll");
 define("LAN_415", "Your reply has been successfully posted.");
 
 define("LAN_416", "Attach file");
+
+define("POLL_506", "Allow multiple choices?");
+define("POLL_507", "yes");
+define("POLL_508", "no");
+
+
 
 ?>

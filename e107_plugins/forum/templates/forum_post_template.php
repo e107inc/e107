@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_post_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-26 18:32:38 $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-03 18:36:11 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -35,6 +35,11 @@ $subjectbox = "<tr>
 
 // the poll is optional, be careful when changing the values here, only change if you know what you're doing ...
 
+require_once(e_PLUGIN."poll/poll_class.php");
+$pollo = new poll;
+$poll = $pollo -> renderPollForm("forum");
+
+/*
 $poll = "<tr>
 <td colspan='2' class='nforumcaption2'>".LAN_4."</td>
 </tr>
@@ -61,6 +66,13 @@ $poll .= "<tr><td style='width:20%' class='forumheader3'>".LAN_7."</td><td class
 $poll .= ($_POST['activate'] == 9 ? "<input name='activate' type='radio' value='9' checked>".LAN_8."<br />" : "<input name='activate' type='radio' value='9'>".LAN_8."<br />");
 $poll .= ($_POST['activate'] == 10 ? "<input name='activate' type='radio' value='10' checked>".LAN_9."<br />" : "<input name='activate' type='radio' value='10'>".LAN_9."<br />");
 $poll .= "</td>\n</tr>";
+*/
+
+
+
+
+
+
 
 // finally, file attach is optional, again only change this if you know what you're doing ...
 

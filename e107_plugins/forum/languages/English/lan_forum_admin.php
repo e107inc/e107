@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_admin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-23 17:30:06 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-03 18:35:56 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("FORLAN_1", "You must enter the number of days you wish to prune.");
@@ -58,7 +58,7 @@ define("FORLAN_46", "Title displayed in caption if enclose tables is ticked");
 define("FORLAN_47", "Enable email nofication");
 define("FORLAN_48", "Tick this to allow your users to have the option of receiving an email when somebody replies to their post");
 define("FORLAN_49", "Enable polls");
-define("FORLAN_50", "Tick this to allow your users to set polls in the forums");
+define("FORLAN_50", "Tick this to allow your users to set polls in the forums - the Polls plugin must be installed to use this feature");
 define("FORLAN_51", "Enable tracking");
 define("FORLAN_52", "Tick this to allow your users to track threads and be emailed when the thread is replied to");
 define("FORLAN_53", "Email prefix");

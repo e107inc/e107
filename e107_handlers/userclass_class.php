@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-03-01 17:36:32 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2005-03-03 18:35:55 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 @include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_userclass.php");
@@ -74,7 +74,7 @@ function r_userclass($fieldname, $curval = 0, $mode = "off", $optlist = "") {
 			}
 		}
 	}
-	if ($mode != "off" || preg_match("#readonly#", $optlist)) {
+	if (($mode != "off" && $mode != "admin") || preg_match("#readonly#", $optlist)) {
 		($curval == e_UC_READONLY) ? $s = " selected='selected'" :
 		 $s = "";
 		$text .= "<option  value='".e_UC_READONLY."' ".$s.">".UC_LAN_4."</option>\n";
