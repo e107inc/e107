@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/oldpolls.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-03-03 19:59:01 $
+|     $Revision: 1.4 $
+|     $Date: 2005-03-04 08:29:18 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -31,8 +31,6 @@ if(e_QUERY)
 	$query = "SELECT p.*, u.user_name FROM #poll AS p 
 	LEFT JOIN #user AS u ON p.poll_admin_id = u.user_id
 	WHERE p.poll_type=1 AND p.poll_id=".e_QUERY;
-
-
 
 	if($sql->db_Select_gen($query))
 	{
@@ -59,7 +57,7 @@ if(e_QUERY)
 		<tr>
 		<td colspan='2' class='mediumtext' style='text-align:center'>
 		<b>".$tp -> toHTML($poll_title)."</b>
-		<div class='smalltext'>".POLL_510." <a href='".e_BASE."user.php?id.$user_id'>".$user_name."</a>.<br /> ".POLL_515.$start_datestamp.POLL_516.$end_datestamp.".<br />".POLL_511." $voteTotal</div>
+		<div class='smalltext'>".POLLAN_35." <a href='".e_BASE."user.php?id.$user_id'>".$user_name."</a>.<br /> ".POLLAN_37." ".$start_datestamp." ".POLLAN_38." ".$end_datestamp.".<br />".POLLAN_26.": $voteTotal</div>
 		<br />
 		 
 		</td>
@@ -96,23 +94,9 @@ if(e_QUERY)
 		}
 	 
 		$text .= "</table>";
-		$ns->tablerender(POLL_184." #".$poll_id, $text);
+		$ns->tablerender(POLL_ADLAN01." #".$poll_id, $text);
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 $query = "SELECT p.*, u.user_name FROM #poll AS p 
 LEFT JOIN #user AS u ON p.poll_admin_id = u.user_id
@@ -121,7 +105,7 @@ ORDER BY p.poll_datestamp DESC";
 
 if(!$sql->db_Select_gen($query))
 {
-	$ns->tablerender(POLL_165, "<div style='text-align:center'>".POLL_509."</div>");
+	$ns->tablerender(POLLAN_28, "<div style='text-align:center'>".POLLAN_33."</div>");
 	require_once(FOOTERF);
 	exit;
 }
@@ -129,11 +113,18 @@ if(!$sql->db_Select_gen($query))
 $array = $sql -> db_getList();
 $oldpollArray = array_slice($array, 1);
 
+if(!count($oldpollArray))
+{
+	$ns->tablerender(POLLAN_28, "<div style='text-align:center'>".POLLAN_33."</div>");
+	require_once(FOOTERF);
+	exit;
+}
+
 $text = "<table style='width: 100%;'>
 <tr>
-<td class='forumheader3' style='width: 50%;'>Title</td>
-<td class='forumheader3' style='width: 20%;'>Posted by</td>
-<td class='forumheader3' style='width: 30%;'>Active</td>
+<td class='forumheader3' style='width: 50%;'>".POLLAN_34."</td>
+<td class='forumheader3' style='width: 20%;'>".POLLAN_35."</td>
+<td class='forumheader3' style='width: 30%;'>".POLLAN_36."</td>
 </tr>\n";
 
 foreach($oldpollArray as $oldpoll)
@@ -150,116 +141,7 @@ foreach($oldpollArray as $oldpoll)
 }
 	
 $text .= "</table>";
-$ns->tablerender(POLL_165, $text);
+$ns->tablerender(POLLAN_28, $text);
 require_once(FOOTERF);
-exit;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-$sql->db_Select("poll", "*", "poll_active='0' ORDER BY poll_datestamp DESC LIMIT $from, 10");
-	
-$sql2 = new db;
-while (list($poll_id, $poll_datestamp, $poll_end_datestamp, $poll_admin_id, $poll_title, $poll[1], $poll[2], $poll[3], $poll[4], $poll[5], $poll[6], $poll[7], $poll[8], $poll[9], $poll[10], $votes[1], $votes[2], $votes[3], $votes[4], $votes[5], $votes[6], $votes[7], $votes[8], $votes[9], $votes[10], $poll_ip, $poll_active) = $sql->db_Fetch()) {
-	 
-	$p_total = array_sum($votes);
-	if ($p_total > 0) {
-		 
-		for($counter = 1; $counter <= 10; $counter++) {
-			$percen[$counter] = round(($votes[$counter]/$p_total) * 100, 2);
-		}
-	}
-	 
-	$obj = new convert;
-	$datestamp = $obj->convert_date($poll_datestamp, "long");
-	$end_datestamp = $obj->convert_date($poll_end_datestamp, "long");
-	 
-	$sql2->db_Select("user", "*", "user_id='$poll_admin_id' ");
-	$row = $sql2->db_Fetch();
-	extract($row);
-	 
-	$text = "<table style='width:95%'>
-		<tr>
-		<td colspan='2' class='mediumtext' style='text-align:center'>
-		<b>".stripslashes($poll_title)."</b>
-		<div class='smalltext'>".LAN_94." <a href='".e_BASE."user.php?id.$user_id'>".$user_name."</a>. ".LAN_99.$datestamp.LAN_100.$end_datestamp.". ".LAN_95." $p_total</div>
-		<br />
-		 
-		</td>
-		</tr>";
-	$c = 1;
-	while ($poll[$c]) {
-		$text .= "<tr>
-			<td style='width:40% 'class='mediumtext'>
-			<b>".stripslashes($poll[$c])."</b>
-			</td>
-			<td class='smalltext'>
-			<img src='".THEME."/images/bar.jpg' height='12' width='";
-		 
-		if (($percen[$c] * 3) > 180) {
-			$perc = 180;
-		} else {
-			$perc = ($percen[$c] * 3);
-		}
-		 
-		$text .= $perc."' border='1'> ".$percen[$c]."% [Votes: ".$votes[$c]."]</div>
-			</td>
-			</tr>";
-		$c++;
-		 
-	}
-	 
-	$field = $poll_id;
-	$comtype = 4;
-	$comment_total = $sql2->db_Select("comments", "*", "comment_item_id='$field' AND comment_type='$comtype' ORDER BY comment_datestamp");
-	if ($comment_total) {
-		$text .= "<tr><td colspan='2'>
-			<input class='button' type ='button' style=''width: 35px'; cursor:hand' size='30' value='".LAN_97." ($comment_total)' onClick='expandit(this)'>
-			<div style='display:none' style=&{head};'>";
-		while ($row = $sql2->db_Fetch()) {
-			$text .= $cobj->render_comment($row);
-		}
-		$text .= "</div></td></tr>";
-	}
-	 
-	$text .= "</table>";
-	$ns->tablerender(LAN_98." #".$poll_id, $text);
-}
-	
-if ($pref['cachestatus']) {
-	$e107cache->set($p_query, ob_get_contents());
-}
-ob_end_flush(); /* dump collected data */
-	
-require_once(e_HANDLER."np_class.php");
-$ix = new nextprev("oldpolls.php", $from, 10, $poll_total, LAN_96);
-	
-	
-	
-require_once(FOOTERF);
 ?>
