@@ -11,22 +11,21 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/content.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2004-11-05 02:59:20 $
-|     $Author: e107coders $
+|     $Revision: 1.6 $
+|     $Date: 2004-11-25 19:52:13 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
+
 require_once("class2.php");
-if(e_QUERY)
-{
+
+if(e_QUERY){
 	$tmp = explode(".", e_QUERY);
 	$action = $tmp[0];
 	$sub_action = $tmp[1];
 	$id = $tmp[2];
 	unset($tmp);
-}
-else
-{
+}else{
 	require_once(HEADERF);
 	$text = "<a href='".e_SELF."?article'>".LAN_59." ".LAN_57."</a>\n<br />\n<a href='".e_SELF."?review'>".LAN_59." ".LAN_58."</a>";
 	$ns -> tablerender(LAN_60, $text);
