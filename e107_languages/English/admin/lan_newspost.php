@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-03-07 11:37:43 $
+|     $Revision: 1.15 $
+|     $Date: 2005-03-10 18:35:06 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -144,7 +144,7 @@ define("LAN_NEWS_18", "Info:");
 define("LAN_NEWS_19",  "Now");
 define("LAN_NEWS_21", "News updated in database.");
 define("LAN_NEWS_22", "Thumbnail");
-define("LAN_NEWS_23", "Choose a thumbnail image for this news item.");
+define("LAN_NEWS_23", "Choose a thumbnail image / icon for this news item.");
 define("LAN_NEWS_24", "Image + Auto-Thumbnail");
 define("LAN_NEWS_25", "Auto-Thumbnail size");
 define("LAN_NEWS_26", "add new upload");
