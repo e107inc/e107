@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-09 12:27:45 $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-10 00:52:27 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -20,17 +20,9 @@
 class e_search {
 	
 	var $query;
-	var $orig_query;
 	var $keywords;
 	var $text;
-	var $weight;
-	var $total_weight;
-	var $nocrop;
-	var $endcrop;
-	var $stritext;
-	var $ret = array();
-	var $exact;
-	var $match = array();
+	var $pos;
 	
 	function e_search() {
 		global $pref;
@@ -40,93 +32,59 @@ class e_search {
 		}
 	}
 	
-	function search_query($query, $table, $fields, $pre_query, $post_query) {
-		global $sql;
-		$this -> query = $query;
-		$this -> orig_query = $query;
-		$this -> keywords = explode(' ', $this -> query);
-		foreach ($this -> keywords as $this -> query) {
-			foreach ($fields as $field) {
-				if (isset($search_query)) {
-					$search_query .= " OR ";
-				}
-				$search_query .= " ".$field." REGEXP '[[:<:]]".$this -> query."[[:>:]]' ";
-			}
+	function search_query($table, $return_fields, $search_fields, $weights, $where, $order) {
+		global $sql, $query;
+		$this -> query = $query;	
+		$this -> keywords = explode(' ', $this -> query);	
+		foreach ($search_fields as $field_key => $field) {
+			$search_query[] = "(".$weights[$field_key]." * (MATCH(".$field.") AGAINST ('".$this -> query."' IN BOOLEAN MODE)))";
 		}
-		return $results = $sql->db_Select($table, '*', $pre_query." (".$search_query.") ".$post_query);
+		$match_query = implode(' + ', $search_query);
+		$field_query = implode(',', $search_fields);		
+		return $results = $sql->db_Select_gen("SELECT ".$return_fields.", (".$match_query.") AS relevance FROM #".$table." WHERE ".$where." ( MATCH(".$field_query.") AGAINST ('".$this -> query."' IN BOOLEAN MODE) ) HAVING relevance > 0 ORDER BY relevance DESC ".$order.";");
 	}
 	
-	function search_sort() {
-		$args = func_get_args();
-		$numargs = func_num_args();
-		call_user_func_array('array_multisort', $args);
-		foreach ($args[0] as $arg_id => $arg_value) {
-			$text .= $args[$numargs-2][$arg_id];
-		}
-		return $text;
-	}
-	
-	function search_link($link) {
-		return "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <b><a href='".$link."'>".$this -> ret['text']."</a></b><br />";
-	}
-	
-	function search_detail($item_text) {
-		$relevance = round((100 / (count($this -> keywords) * ($this -> total_weight * 2))) * $this -> ret['weight']);
-		$this -> ret['text'] .= "<br /><span class='smalltext'>".$item_text." | Relevance: ".$relevance."%</span><br /><br />";
-		return $this -> ret;
-	}
-	
-	function parsesearch($text, $weight = FALSE, $endcrop=FALSE, $reset_weight=FALSE) {
+	function parsesearch($results, $link, $item_text, $relevance) {
 		global $tp;
-		$this -> weight = $weight;
-		$this -> endcrop = $endcrop;
-		$this -> text = strip_tags($tp -> toHTML(str_replace(array('[', ']'), array('<', '>'), $text), FALSE));
-		$this -> ret['text'] = $this -> text;
-		if ($reset_weight) {
-			$this -> ret['weight'] = 0;
-			$this -> total_weight = $this -> weight;
-		} else {
-			$this -> total_weight += $this -> weight;
-		}
-		$this -> exact = TRUE;
-		$this -> query = $this -> orig_query;
-		if ($this -> stritext = stristr($this -> text, $this -> query)) {
-			$this -> parsesearch_match();
-		} else {
-			$this -> exact = FALSE;
+		$endcrop = FALSE;
+		$output = '';
+		$title = TRUE;
+		foreach ($results as $this -> text) {
+			$this -> text = strip_tags($tp -> toHTML(str_replace(array('[', ']'), array('<', '>'), $this -> text), FALSE));
 			foreach ($this -> keywords as $this -> query) {
-				if ($this -> stritext = stristr($this -> text, $this -> query)) {
-					$this -> parsesearch_match();
+				if (($this -> pos = stripos($this -> text, $this -> query)) !== FALSE) {
+					if (!$endcrop || !$title) {
+						$this -> parsesearch_crop();
+						$endcrop = TRUE;
+					}
+					$key = substr($this -> text, $this -> pos, strlen($this -> query));
+					$this -> text = eregi_replace("[[:<:]]".$this -> query."[[:>:]]", "<span class='searchhighlight'>".$key."</span>", $this -> text);
 				}
 			}
+			if ($title) {
+				$this -> text = "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <b><a href='".$link."'>".$this -> text."</a></b><br />";
+			} else if (!$endcrop) {
+				$this -> parsesearch_crop();
+			}
+			$output .= $this -> text;
+			$title = FALSE;
 		}
-		$this -> parsesearch_crop();
+		return $output."<br /><span class='smalltext'>".$item_text." | Relevance: ".$relevance."</span><br /><br />";
 	}
-	
-	function parsesearch_match() {
-		$this -> match['pos'] = strlen($this -> text) - strlen($this -> stritext);
-		$this -> match['key'] = substr($this -> text, $this -> match['pos'], strlen($this -> query));
-		if ($this -> exact) {
-			$this -> ret['weight'] = round((($this -> weight * 2) * count($this -> keywords)));
-		} else {
-			$this -> ret['weight'] += round(($this -> weight * 1.5));
-		}
-		$this -> parsesearch_crop();
-		$this -> ret['text'] = eregi_replace("[[:<:]]".$this -> query."[[:>:]]", "<span class='searchhighlight'>".$this -> match['key']."</span>", $this -> ret['text']);
-		$this -> endcrop = TRUE;
-	}
-	
+
 	function parsesearch_crop() {
 		global $pref;
-		if (!$this -> endcrop && (strlen($this -> ret['text']) > $pref['search_chars'])) {
-			if ($this -> match['pos'] < ($pref['search_chars'] - strlen($this -> query))) {
-				$this -> ret['text'] = substr($this -> ret['text'], 0, $pref['search_chars'])."...";
-			} else if ($this -> match['pos'] > (strlen($this -> ret['text']) - ($pref['search_chars'] - strlen($this -> query)))) {
-				$this -> ret['text'] = "...".substr($this -> ret['text'], (strlen($this -> ret['text']) - ($pref['search_chars'] - strlen($this -> query))));
+		if (strlen($this -> text) > $pref['search_chars']) {
+			if ($this -> pos < ($pref['search_chars'] - strlen($this -> query))) {
+				$this -> text = substr($this -> text, 0, $pref['search_chars'])."...";
+			} else if ($this -> pos > (strlen($this -> text) - ($pref['search_chars'] - strlen($this -> query)))) {
+				$this -> text = "...".substr($this -> text, (strlen($this -> text) - ($pref['search_chars'] - strlen($this -> query))));
 			} else {
-				$this -> ret['text'] = "...".substr($this -> ret['text'], ($this -> match['pos'] - round(($pref['search_chars'] / 3))), $pref['search_chars'])."...";
+				$this -> text = "...".substr($this -> text, ($this -> pos - round(($pref['search_chars'] / 3))), $pref['search_chars'])."...";
 			}
+			$this -> pos = stripos($this -> text, $this -> query);
 		}
 	}
 }
+
 ?>
