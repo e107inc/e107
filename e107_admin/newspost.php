@@ -42,6 +42,7 @@ $amount = 50;
 if($action == "main" && $sub_action == "confirm"){
 	if($sql -> db_Delete("news", "news_id='$id' ")){
 		$newspost -> show_message(NWSLAN_31." #".$id." ".NWSLAN_32);
+		clear_cache("news.php");
 	}
 	unset($sub_action, $id);
 }
@@ -84,7 +85,7 @@ if(IsSet($_POST['create_category'])){
 	if($_POST['category_name']){
 		$_POST['category_name'] = $aj -> formtpa($_POST['category_name'], "admin");
 		$sql -> db_Insert("news_category", " '0', '".$_POST['category_name']."', '".$_POST['category_button']."'");
-		$newspost -> show_message(NWSLAN_35);	
+		$newspost -> show_message(NWSLAN_35);
 	}
 }
 
