@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.12 $
-|   $Date: 2005-01-13 09:29:29 $
+|   $Revision: 1.13 $
+|   $Date: 2005-01-15 01:26:37 $
 |   $Author: sweetas $
 +---------------------------------------------------------------+
 */
@@ -40,7 +40,7 @@ echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR
 <html xmlns='http://www.w3.org/1999/xhtml'>
 <head>
 <title>".SITENAME." : ".LAN_head_4."</title>\n";
-echo "<meta http-equiv='Content-Type' content='text/html; charset=".CHARSET."' />
+echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
 <meta http-equiv='content-style-type' content='text/css' />\n";
 if (file_exists(THEME.'admin_style.css')) {
 	echo "<link rel='stylesheet' href='".THEME."admin_style.css' />\n";
@@ -51,6 +51,9 @@ if (file_exists(THEME.'e107.css')) {
 	echo "<link rel='stylesheet' href='".THEME."e107.css' />\n";
 } else if (file_exists(e_FILE.'e107.css')) {
 	echo "<link rel='stylesheet' href='".e_FILE."e107.css' />\n";
+}
+if(function_exists('theme_head')){
+	echo theme_head();
 }
 echo "<script type='text/javascript' src='".e_FILE."e107.js'></script>\n";
 if(file_exists(THEME."theme.js")){ echo "<script type='text/javascript' src='".THEME."theme.js'></script>\n"; }
