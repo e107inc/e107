@@ -129,7 +129,7 @@ class poll{
 				$replace = array("<input type='radio' name='votea' value='".($count+1)."' /> ".$poll_option[$count], "", "", "", "<br />");
 			}else if($mode == "disallowed"){
 				$search = array("OPTION", "BAR", "PERCENTAGE", "VOTES");
-				$replace = array("<img src='".THEME."images/bullet2.gif' alt='bullet' /> <b>".$poll_option[$count], "", "", "");
+				$replace = array("<img src='".THEME."images/bullet2.gif' alt='bullet' /> <b>".$poll_option[$count].'</b>', '', '', '');
 			}
 
 			$opt .= str_replace($search, $replace, $optionstring);
