@@ -523,7 +523,7 @@ class textparse{
 						if($mode != "on"){
 							$text = $this -> wrap($text, $highlight_search);
 						}
-                        $text = $this -> bbcode($text);
+                        $text = $this -> bbcode($text, $mode, $referrer);
                         if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
                         $search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;span", "&lt;/span");
                         $replace =  array("\"", "'", "\\", '\"', "\'", "<span", "</span");
