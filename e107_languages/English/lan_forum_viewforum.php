@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107/e107_languages/English/lan_forum_viewforum.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2004-09-06 09:55:18 $
-|     $Author: e107coders $
+|     $Revision: 1.8 $
+|     $Date: 2004-09-08 12:02:28 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Forum");
@@ -69,6 +69,16 @@ define("FORLAN_6", "Thread deleted");
 define("FORLAN_7", "replies deleted");
 define("FORLAN_8", "here");
 define("FORLAN_9", "to sign up or login from the login menu.");
+
+define("FORLAN_10","Begin New Thread");
+define("FORLAN_11","New Posts");
+define("FORLAN_12","No New Posts");
+define("FORLAN_13","New Posts on Popular Thread");
+define("FORLAN_14","No New Posts on Popular Thread");
+define("FORLAN_15","Sticky Thread");
+define("FORLAN_16","Closed Sticky Thread");
+define("FORLAN_17","Announcement Thread");
+define("FORLAN_18","Closed Thread");
 
 
 ?>
