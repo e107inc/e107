@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-04-06 14:23:34 $
+|     $Revision: 1.15 $
+|     $Date: 2005-04-06 17:09:20 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -90,6 +90,19 @@ class e107_user_extended
 		return $ret;
 	}
 
+	function user_extended_get_fieldList()
+	{
+		global $sql;
+		$more = ($cat) ? " AND user_extended_struct_parent = $cat " : "";
+		if($sql->db_Select("user_extended_struct", "*", "user_extended_struct_type > 0 {$more} ORDER BY user_extended_struct_order ASC"))
+		{
+			while($row = $sql->db_Fetch())
+			{
+				$ret[$row['user_extended_struct_id']] = $row;
+			}
+		}
+		return $ret;
+	}
 
 	function user_extended_type_text($type, $default)
 	{
