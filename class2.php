@@ -430,9 +430,9 @@ class textparse{
                 //                $text = stripslashes($text);
                 $search = array();
                 $replace = array();
-                $search[0] = "/\<div class=\"indent\"\>\<i\>Originally posted by (.*?)\<\/i\>\<br \/\>\"(.*?)\"\<\/div\>/si";
+                $search[0] = "/\<div class=\"indent\"\>\<i\>'.CORE_LAN2.' (.*?)\<\/i\>\<br \/\>\"(.*?)\"\<\/div\>/si";
                 $replace[0] = '[quote=\1]\2[/quote]';
-                $search[1] = "/\<div class=\"indent\"\>\<i\>Originally posted by (.*?)\<\/i\> ...\<br \/\>\"(.*?)\"\<\/div\>/si";
+                $search[1] = "/\<div class=\"indent\"\>\<i\>'.CORE_LAN2.' (.*?)\<\/i\> ...\<br \/\>\"(.*?)\"\<\/div\>/si";
                 $replace[1] = '[quote=\1]\2[/quote]';
                 $search[2] = "/\<div class=\"indent\"\>(.*?)\<\/div\>/si";
                 $replace[2] = '[blockquote]\1[/blockquote]';
@@ -576,14 +576,12 @@ class textparse{
                         return $text;
                 }
                 function bbcode($text, $mode="off", $referrer="") {
-                                global $pref;
-                                $text = " " . $text;
-                                if (! (strpos($text, "[") && strpos($text, "]")) )
-                                {
-                                                $text = substr($text, 1);
-                                                return $text;
-                                }
-
+                global $pref;
+                $text = " " . $text;
+                if (! (strpos($text, "[") && strpos($text, "]")) ){
+					$text = substr($text, 1);
+					return $text;
+				}
                 $search[0] = "#\[link\]([a-z]+?://){1}(.*?)\[/link\]#si";
                 $replace[0] = ($pref['links_new_window'] ? '<a href="\1\2" rel="external">\1\2</a>' : '<a href="\1\2">\1\2</a>');
                 $search[1] = "#\[link\](.*?)\[/link\]#si";
@@ -603,7 +601,7 @@ class textparse{
                 $search[8] = "#\[url=([a-z]+?://){1}(.*?)\](.*?)\[/url\]#si";
                 $replace[8] = ($pref['links_new_window'] ? '<a href="\1\2" rel="external">\3</a>' : '<a href="\1\2">\3</a>');
                 $search[9] = "/\[quote=(.*?)\](.*?)/si";
-                $replace[9] = '<div class=\'indent\'><i>Originally posted by \1</i> ...<br />';
+                $replace[9] = '<div class=\'indent\'><i>'.CORE_LAN2.' \1</i> ...<br />';
                 $search[25] = "/\[\/quote\]/si";
                 $replace[25] = '</div>';
                 $search[10] = "#\[b\](.*?)\[/b\]#si";
@@ -645,7 +643,7 @@ class textparse{
 					$replace[23] = '<a href="\1"><img src="'.e_IMAGE.'generic/attach1.png" alt="" style="border:0; vertical-align:middle" /> \2</a>';
 				}else{
 					$search[23] = "#\[file=(.*?)\](.*?)\[/file\]#si";
-					$replace[23] = '[ file attachment disabled ]';
+					$replace[23] = '[ '.CORE_LAN3.' ]';
 				}
 
 				$search[24] = "#\[quote\](.*?)\[/quote\]#si";
