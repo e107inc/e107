@@ -342,8 +342,8 @@ if(e_QUERY == "logout"){
 ban();
 
 define("TIMEOFFSET", $pref['time_offset']);
-define("FLOODTIME", $pref['flood_time']);
-define("FLOODHITS", $pref['flood_hits']);
+//define("FLOODTIME", $pref['flood_time']);
+//define("FLOODHITS", $pref['flood_hits']);
 
 if(strstr(e_SELF, $ADMIN_DIRECTORY) && $pref['admintheme'] && !$_POST['sitetheme']){
         if(strstr(e_SELF, "menus.php")){
@@ -365,7 +365,8 @@ if(strstr(e_SELF, $ADMIN_DIRECTORY) && $pref['admintheme'] && !$_POST['sitetheme
 
 if($pref['anon_post'] ? define("ANON", TRUE) : define("ANON", FALSE));
 if(Empty($pref['newsposts']) ? define("ITEMVIEW", 15) : define("ITEMVIEW", $pref['newsposts']));
-if($pref['flood_protect']){  define(FLOODPROTECT, TRUE); define(FLOODTIMEOUT, $pref['flood_timeout']); }
+
+if($pref['$antiflood1']==1){  define(FLOODPROTECT, TRUE); define(FLOODTIMEOUT, $pref['antiflood_timeout']); }
 
 define ("HEADERF", e_THEME."templates/header".$layout.".php");
 define ("FOOTERF", e_THEME."templates/footer".$layout.".php");
@@ -884,7 +885,7 @@ function online(){
                 }
         }
 
-        if(ADMIN){$online_pagecount=1;}
+        if(ADMIN || $pref['autoban']!=1){$online_pagecount=1;}
         if($online_pagecount > $online_bancount && $online_ip !="127.0.0.1"){
                 $sql -> db_Insert("banlist", "'$ip', '0', 'Hit count exceeded ($online_pagecount requests within allotted time)' ");
                 exit;
@@ -955,7 +956,7 @@ class floodprotect{
                 # - scope                                        public
                 */
                 $sql = new db;
-                if(FLOODPROTECTION == TRUE){
+                if(FLOODPROTECT == TRUE){
                         $sql -> db_Select($table, "*", "ORDER BY ".$orderfield." DESC LIMIT 1", "no_where");
                         $row = $sql -> db_Fetch();
                         return ($row[$orderfield] > (time() - FLOODTIMEOUT) ? FALSE : TRUE);
