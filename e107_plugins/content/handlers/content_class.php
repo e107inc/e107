@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.10 $
-|		$Date: 2005-02-09 21:19:24 $
+|		$Revision: 1.11 $
+|		$Date: 2005-02-09 21:54:56 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -913,8 +913,8 @@ class content{
 				$data .= "if(".chr(36)."content_pref[\"content_menu_viewrecent_{$parentid}\"]){\n";
 				$data .= "   ".chr(36)."text .= ".chr(36)."viewicon.\" <a href='\".e_PLUGIN.\"content/content.php?type.$parentid'>\".CONTENT_LAN_61.\"</a><br />".chr(34).";\n\n";
 				$data .= "}\n\n";
-				$data .= "if(".chr(36)."content_pref[\"content_menu_viewsubmit_{$parentid}\"]){\n";
-				$data .= "   ".chr(36)."text .= ".chr(36)."viewicon.\" <a href='\".e_PLUGIN.\"content/content_submit.php?type.$parentid'>\".CONTENT_LAN_61.\"</a><br />".chr(34).";\n\n";
+				$data .= "if(".chr(36)."content_pref[\"content_menu_viewsubmit_{$parentid}\"] && ".chr(36)."content_pref[\"content_submit_{$parentid}\"] && check_class(".chr(36)."content_pref[\"content_submit_class_{$parentid}\"])){\n";
+				$data .= "   ".chr(36)."text .= ".chr(36)."viewicon.\" <a href='\".e_PLUGIN.\"content/content_submit.php?type.$parentid'>\".CONTENT_LAN_75.\"</a><br />".chr(34).";\n\n";
 				$data .= "}\n\n";
 
 				$data .= "if(".chr(36)."content_pref[\"content_menu_cat_{$parentid}\"]){\n";
