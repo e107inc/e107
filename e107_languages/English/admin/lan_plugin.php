@@ -37,6 +37,7 @@ define("EPL_ADLAN_32", "and all files inside it to complete the uninstall proces
 define("EPL_ADLAN_33", "Plugin successfully installed.");
 define("EPL_ADLAN_34", "Plugin successfully updated.");
 define("EPL_ADLAN_35", "Parser settings successfully added.");
+define("EPL_ADLAN_36", "Parser code insert failed, incorrectly formatted.");
 
 define("EPL_CANCEL", "Cancel");
 define("EPL_EMAIL", "email");
