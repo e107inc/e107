@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:45 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-10-06 02:47:32 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if(!is_object($sql)){
@@ -42,6 +42,8 @@ if($e107_popup!=1){
         if($pref['displaysql']){ $rinfo .= "DB queries: ".$dbq.". "; }
         if($pref['displaycacheinfo']){ $rinfo .= $cachestring."."; }
         echo ($rinfo ? "<div style='text-align:center' class='smalltext'>$rinfo</div>" : "");
+		  echo ($sDBdbg ? "<div style='text-align:left' class='smalltext'>$sDBdbg</div>\n" : "");
+        
 }
 echo "</body>
 </html>";
