@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-09 02:10:00 $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-15 09:10:44 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -123,7 +123,8 @@ if($action == "list"){
         $sql -> db_Select("download_category", "*", "download_category_id='".$id."'");
         $row = $sql -> db_Fetch(); extract($row);
         $core_total = $sql -> db_Count("download WHERE download_category='".$id."' AND download_active=1");
-        $type = $download_category_name." [ ".$download_category_description." ]";
+        $type = $download_category_name;
+        $type .= ($download_category_description) ? " [ ".$download_category_description." ]" : "";
         define("e_PAGETITLE", PAGE_NAME." / ".$download_category_name);
 
         require_once(HEADERF);
