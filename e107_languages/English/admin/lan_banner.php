@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_banner.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-13 21:56:38 $
-|     $Author: lisa_ $
+|     $Revision: 1.4 $
+|     $Date: 2005-03-05 09:39:00 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("BNRLAN_1", "Banner deleted.");
@@ -81,20 +81,22 @@ define("BNRLAN_62", "banner options");
 define("BNRLAN_63", "visibility pages");
 define("BNRLAN_64", "individual visibility will overwrite all campaign visibility settings.");
 define("BNRLAN_65", "campaign visibility will overwrite all individual visibility settings.");
-define("BNRLAN_66", "");
-define("BNRLAN_67", "");
-define("BNRLAN_68", "");
-define("BNRLAN_69", "");
-define("BNRLAN_70", "");
-define("BNRLAN_71", "");
-define("BNRLAN_72", "");
-define("BNRLAN_73", "");
-define("BNRLAN_74", "");
-define("BNRLAN_75", "");
-define("BNRLAN_76", "");
-define("BNRLAN_77", "");
-define("BNRLAN_78", "");
-define("BNRLAN_79", "");
-define("BNRLAN_80", "");
+
+define("BANNER_MENU_L1", "Advertisement");
+define("BANNER_MENU_L2", "Banner menu configuration saved");
+	
+//v.617
+define("BANNER_MENU_L3", "Caption");
+define("BANNER_MENU_L4", "Campaign");
+define("BANNER_MENU_L5", "Banner Menu Configuration");
+define("BANNER_MENU_L6", "choose campaigns to show in menu");
+define("BANNER_MENU_L7", "available campaigns");
+define("BANNER_MENU_L8", "selected campaigns");
+define("BANNER_MENU_L9", "remove selection");
+define("BANNER_MENU_L10", "Render type");
+define("BANNER_MENU_L11", "choose render type ...");
+define("BANNER_MENU_L12", "plain");
+define("BANNER_MENU_L13", "in captioned box");
+define("BANNER_MENU_L18", "Update Menu Settings");
 
 ?>
