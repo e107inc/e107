@@ -31,7 +31,7 @@ if(!isset($SEARCH_MAIN_TABLE)){
 		</div>\n";
 }
 
-$AFTERCHECKBOXES = "<br />";	/* string thats printed after each category checkbox */
+$AFTERCHECKBOXES = "";	/* string thats printed after each category checkbox */
 
 // ##### ------------------------------------------------------------------------------------------
 
