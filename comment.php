@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-02-15 22:46:16 $
+|     $Revision: 1.14 $
+|     $Date: 2005-02-16 20:16:52 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -258,7 +258,46 @@ if (!strstr(e_QUERY, "poll")) {
 	$e107cache->set("comment.php?{$table}.{$field}", $cache);
 }
 ob_end_flush(); // dump the buffer we started
-	
+
+
+if($pref['trackbackEnabled']){
+	if($sql->db_Select("trackback", "*", "trackback_pid=$id"))
+	{
+		$tbArray = $sql -> db_getList();
+
+		if (file_exists(THEME."trackback_template.php")) {
+			require_once(THEME."news_template.php");
+		} else {
+			require_once(e_THEME."templates/trackback_template.php");
+		}
+
+		$text = "";
+
+		foreach($tbArray as $trackback)
+		{
+			extract($trackback);
+			$TITLE = $trackback_title;
+			$EXCERPT = $trackback_excerpt;
+			$BLOGNAME = "<a href='$trackback_url' rel='external'>$trackback_blogname</a>";
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TRACKBACK);
+		}
+		
+		if($TRACKBACK_RENDER_METHOD)
+		{
+			$ns->tablerender("<a name='track'></a>".LAN_315, $text);
+		}
+		else
+		{
+			echo "<a name='track'></a>".$text;
+		}
+	}
+	else
+	{
+		echo "<a name='track'></a>".LAN_316;
+	}
+}
+
+
 require_once(FOOTERF);
 	
 ?>
