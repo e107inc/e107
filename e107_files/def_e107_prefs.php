@@ -23,7 +23,6 @@ $pref['user_reg'] = "1";
 $pref['use_coppa'] = "1";
 $pref['profanity_filter'] = "1";
 $pref['profanity_replace'] = "[censored]";
-$pref['chatbox_posts'] = "10";
 $pref['smiley_activate'] = "";
 $pref['log_activate'] = "";
 $pref['log_refertype'] = "1";
@@ -33,9 +32,6 @@ $pref['forumdate'] = "%a %b %d %Y, %I:%M%p";
 $pref['sitelanguage'] = (isset($_POST['installlanguage']) ? $_POST['installlanguage'] :  "English");
 $pref['maintainance_flag'] = "0";
 $pref['time_offset'] = "0";
-$pref['cb_linkc'] = " -link- ";
-$pref['cb_wordwrap'] = "20";
-$pref['cb_linkreplace'] = "1";
 $pref['log_lvcount'] = "10";
 $pref['meta_tag'] = "";
 $pref['user_reg_veri'] = "1";
@@ -78,5 +74,14 @@ $pref['wmessage_sc'] = "0";
 $pref['link_submit'] = "1";
 $pref['link_submit_class'] = "0";
 $pref['linkpage_categories'] = "0";	
+
+// Chatbox plugin pre-installed
+$pref['chatbox_posts'] = "10";
+$pref['cb_linkc'] = " -link- ";
+$pref['cb_wordwrap'] = "20";
+$pref['cb_linkreplace'] = "1";
+$pref['cb_layer'] = "0";
+$pref['cb_layer_height'] = "200";
+$pref['cb_emote'] = "0";
 	
 ?>

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-01-28 18:33:17 $
-|     $Author: stevedunstan $
+|     $Revision: 1.17 $
+|     $Date: 2005-02-01 05:15:01 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 global $tp, $e107cache, $e_event;
@@ -174,12 +174,12 @@ if(!$text = $e107cache->retrieve("chatbox"))
 	$total_chats = $sql -> db_Count("chatbox");
 	if($total_chats > $chatbox_posts)
 	{
-		$text .= "<br /><div style='text-align:center'><a href='".e_BASE."chat.php'>".CHATBOX_L12."</a> (".$total_chats.")</div>";
+		$text .= "<br /><div style='text-align:center'><a href='".e_PLUGIN."chatbox_menu/chat.php'>".CHATBOX_L12."</a> (".$total_chats.")</div>";
 	}
 	$e107cache->set("chatbox", $text);
 }
 
-if(ADMIN && getperms("C")){$text .= "<br />[ <a href='".e_ADMIN."chatbox.php'>".CHATBOX_L13."</a> ]";}
+if(ADMIN && getperms("C")){$text .= "<br />[ <a href='".e_PLUGIN."chatbox_menu/admin_chatbox.php'>".CHATBOX_L13."</a> ]";}
 $caption = (file_exists(THEME."images/chatbox_menu.png") ? "<img src='".THEME."images/chatbox_menu.png' alt='' /> ".CHATBOX_L2 : CHATBOX_L2);
 
 
