@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-02-21 18:12:49 $
+|     $Revision: 1.12 $
+|     $Date: 2005-02-21 18:15:39 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -125,7 +125,7 @@ define("NWSLAN_114", "if the theme you're using has a news layout template, use 
 define("NWSLAN_115", "News posts to display in archive ?");
 define("NWSLAN_116", "First update the preferences with the changed display per page setting, then update again after setting the newsarchive preference. (0 is un-activated)");
 define("NWSLAN_117", "set the title for the newsarchive");
-
+define("NWSLAN_118", "View Images");
 
 define("LAN_NEWS_5", "Error! - Was unable to update news item into database!");
 define("LAN_NEWS_6", "News entered into database.");
