@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-04-05 03:55:22 $
+|     $Revision: 1.19 $
+|     $Date: 2005-04-05 05:59:36 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -93,6 +93,22 @@ foreach ($menu_array as $menu_value) {
 	}
 	$menu_check = $menu_value;
 }
+
+// Cams Bit ----------- Activate Multiple Menus ---
+if($_POST['menuActivate']){
+	foreach ($_POST['menuActivate'] as $k => $v) {
+     	if (trim($v)) {
+        	$location = $k;
+		}
+	}
+
+    $menu_count = $sql->db_Count("menus", "(*)", " WHERE menu_location='$position' ");
+    foreach($_POST['menuselect'] as $sel_mens){
+		$sql->db_Update("menus", "menu_location='$location', menu_order='".($menu_count+1)."' WHERE menu_id='$sel_mens' ");
+		$menu_count++;
+	}
+}
+// =-============
 
 foreach ($_POST['menuAct'] as $k => $v) {
 	if (trim($v)) {
@@ -266,8 +282,8 @@ if ($message != "") {
 	echo $ns -> tablerender('Updated', "<div style='text-align:center'><b>".$message."</b></div><br /><br />");
 }
 if (strpos(e_QUERY, 'configure') === FALSE) {
-  	$cnt = $sql->db_Select("menus", "*", "menu_location='0' ORDER BY menu_name "); // calculate height to remove vertical scroll-bar.
-  	$text = "<object data='".e_SELF."?configure' type='text/html' style='width:100%;height:".(($cnt*75)+400)."px;border:0px;overflow:auto' ></object>";
+  	$cnt = $sql->db_Select("menus", "*", "menu_location='1' ORDER BY menu_name "); // calculate height to remove vertical scroll-bar.
+  	$text = "<object data='".e_SELF."?configure' type='text/html' style='width:100%;height:".(($cnt*80)+500)."px;border:0px;overflow:auto' ></object>";
 	echo $ns -> tablerender(MENLAN_35, $text, 'menus_config');
 } else {
 
@@ -329,37 +345,30 @@ if ($CUSTOMPAGES) {
 
 	parseheader($menus_header);
 	echo "<div style='text-align:center'>";
-	echo "<div style='font-size:14px' class='fborder'><div class='forumheader'><b>".MENLAN_22."</b></div></div><br />";
 	echo $frm->form_open("post", e_SELF."?configure.".$menus_equery[1], "menuActivation");
-	echo "<table style='width:96%' class='fborder'>";
+	$text = "<table  style='width:95%;margin-left:auto;margin-right:auto' >";
 
 	$sql->db_Select("menus", "*", "menu_location='0' ORDER BY menu_name ");
+	$text .= "<tr><td style='text-align:center;padding-bottom:4px'>Choose the menu(s) to activate...</td><td style='padding-bottom:4px;text-align:center'>...then choose where to active them.</td></tr>";
+  	$text .= "<tr><td style='width:50%;vertical-align:top;text-align:center'>";
+
+	$text .= "<select name='menuselect[]' class='tbox' multiple='multiple' style='height:200px;width:95%'>";
 	while (list($menu_id, $menu_name, $menu_location, $menu_order) = $sql->db_Fetch()) {
-		$text = "";
+	  //	$text = "";
 		$menu_name = eregi_replace("_menu", "", $menu_name);
+    $text .= "<option value='$menu_id'>$menu_name</option>";
 
-		echo "<tr>
-			<td class=\"fcaption\" style=\"text-align:center\">
-			<b>".$menu_name."</b>
-			</td>
-			</tr>
-			<tr>
-			<td class=\"forumheader3\" style=\"text-align:center\">";
-
-		$text .= "<div>
-			<select id='menuAct_$menu_id' name='menuAct[$menu_id]' class='tbox' onchange='this.form.submit()' >";
-		$text .= $frm->form_option(MENLAN_12." ...", TRUE, " ");
-
-		foreach ($menu_areas as $menu_act) {
-		  	$text .= $frm->form_option(MENLAN_13." ".$menu_act, "", "activate.".$menu_act);
 		}
-		$text .= $frm->form_select_close()."</div>";
-		echo $text;
-		echo "</td></tr>
-			<tr><td><br /></td></tr>
-			";
-	}
-	echo "</table>";
+	$text .= "</select>";
+    $text .= "<br /><br /><span class='smalltext'>Hold down CTRL to select multiple menus.</span>";
+	$text .= "</td><td style='width:50%;vertical-align:top;text-align:center'><br />";
+    	foreach ($menu_areas as $menu_act) {
+	 	  	$text .= "<input type='submit' class='button' id='menuAct_".trim($menu_act)."' name='menuActivate[".trim($menu_act)."]' value='".MENLAN_13." ".trim($menu_act)."' /><br /><br />\n";
+	 	}
+	 	$text .= "</td>";
+
+  	$text .= "</tr></table>";
+	echo $ns -> tablerender(MENLAN_22, $text);
 	echo $frm->form_close();
 	echo "</div>";
 
