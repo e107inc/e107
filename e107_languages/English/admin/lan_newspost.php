@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-22 16:48:39 $
-|     $Author: stevedunstan $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-29 03:53:17 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("NWSLAN_1", "News story deleted.");
@@ -115,8 +115,9 @@ define("NWSLAN_105", "Check box to update datestamp of news item to current time
 define("NWSLAN_106", "Submit-News maybe accessed by:");
 define("NWSLAN_107", "Enable HtmlArea on Submit-News page.");
 
-define("NWSLAN_108","Display messages instead not allowed news");
-define("NWSLAN_109","Check the box if you want to display a standard message for visitors not allowed to see a news (userclass restriction) instead the news itself.");
+//define("NWSLAN_108","Display messages instead not allowed news");
+//define("NWSLAN_109","Check the box if you want to display a standard message for visitors not allowed to see a news (userclass restriction) instead the news itself.");
+
 define("NWSLAN_110","is not writable, you need to CHMOD 777 the folder before uploading");
 
 define("NWSLAN_111", "Show new date header");

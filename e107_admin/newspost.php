@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.19 $
-|   $Date: 2005-01-28 14:04:53 $
-|   $Author: mrpete $
+|   $Revision: 1.20 $
+|   $Date: 2005-01-29 03:53:16 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 	
 */
@@ -818,14 +818,14 @@ class newspost {
 			<option value='15' ".($pref['newsposts'] == 15 ? "selected='selected'" : "").">15</option>
 			<option value='20' ".($pref['newsposts'] == 20 ? "selected='selected'" : "").">20</option>
 			</select></td>
-			</tr>
-			 
-			<tr>
-			<td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_108."</span><br /><i>".NWSLAN_109."</i></td>
-			<td class='forumheader3' style='width:40%'>
-			<input type='checkbox' name='subnews_hide_news' value='1' ".($pref['subnews_hide_news'] == 1 ? " checked='checked'" : "")." />
-			</td>
 			</tr>";
+			 
+//			<tr>
+//			<td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_108."</span><br /><i>".NWSLAN_109."</i></td>
+//			<td class='forumheader3' style='width:40%'>
+//			<input type='checkbox' name='subnews_hide_news' value='1' ".($pref['subnews_hide_news'] == 1 ? " checked='checked'" : "")." />
+//			</td>
+//			</tr>";
 		 
 		 
 		 
