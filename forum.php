@@ -79,7 +79,15 @@ list($nuser_id, $nuser_name)  = $sql -> db_Fetch();
 $member_users = $sql -> db_Select("online", "*", "online_location REGEXP('forum.php') AND online_user_id!='0' ");
 $guest_users = $sql -> db_Select("online", "*", "online_location REGEXP('forum.php') AND online_user_id='0' ");
 $users = $member_users+$guest_users;
-
+$USERLIST = LAN_426;
+global $listuserson;
+$c = 0;
+foreach($listuserson as $uinfo => $pinfo){	
+	list($oid,$oname) = explode(".",$uinfo,2);
+	$c ++;
+	$USERLIST .= "<a href='".e_BASE."user.php?id.$oid'>$oname</a>".($c == MEMBERS_ONLINE ? "." :", ");
+}
+$USERLIST .= "<br /><a href='online.php'>".LAN_427."</a>";
 $ICONKEY = "
 <table style='width:100%'>\n<tr>
 <td style='width:2%'>".IMAGE_new_small."</td>
