@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-03-20 22:35:08 $
+|     $Revision: 1.23 $
+|     $Date: 2005-03-28 18:03:05 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -305,7 +305,9 @@ if($pref['trackbackEnabled'] && $table == "news"){
 	{
 		echo "<a name='track'></a>".LAN_316;
 	}
-	echo "<div style='text-align:right'><a href='".e_PLUGIN."trackback/modtrackback.php?".$id."'>".LAN_317."</a></div><br />";
+	if (ADMIN && getperms("B")) {
+		echo "<div style='text-align:right'><a href='".e_PLUGIN."trackback/modtrackback.php?".$id."'>".LAN_317."</a></div><br />";
+	}
 }
 
 
