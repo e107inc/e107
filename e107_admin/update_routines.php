@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2005-03-09 10:47:02 $
-|     $Author: sweetas $
+|     $Revision: 1.43 $
+|     $Date: 2005-03-10 15:55:50 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -52,7 +52,7 @@ function update_check() {
 }
 
 function update_61x_to_700($type) {
-	global $sql, $ns,$mySQLdefaultdb;
+	global $sql, $ns,$mySQLdefaultdb, $pref;
 	if ($type == "do") {
 		$sql->db_Update("userclass_classes", "userclass_editclass='254' WHERE userclass_editclass ='0' ");
 
@@ -245,6 +245,52 @@ function update_61x_to_700($type) {
 			) TYPE=MyISAM;
 		");
 
+		$sql->db_Select_gen(
+		"CREATE TABLE ".MPREFIX."generic (
+			gen_id int(10) unsigned NOT NULL auto_increment,
+  			gen_type varchar(80) NOT NULL default '',
+  			gen_datestamp int(10) unsigned NOT NULL default '0',
+			gen_user_id int(10) unsigned NOT NULL default '0',
+			gen_ip varchar(80) NOT NULL default '',
+			gen_intdata int(10) unsigned NOT NULL default '0',
+			gen_chardata text NOT NULL,
+			PRIMARY KEY  (gen_id)
+			) TYPE=MyISAM;
+		");
+
+		$sql->db_Select_gen(
+		"CREATE TABLE ".MPREFIX."user_extended (
+  			user_extended_id int(10) unsigned NOT NULL default '0',
+  			user_gender varchar(255) default 'Male',
+  			user_yahoo varchar(255) default NULL,
+  			user_interests text,
+  			PRIMARY KEY  (user_extended_id)
+			) TYPE=MyISAM;
+    	");
+
+		$sql->db_Select_gen(
+		"CREATE TABLE ".MPREFIX."user_extended_struct (
+  			user_extended_struct_id int(10) unsigned NOT NULL auto_increment,
+  			user_extended_struct_name varchar(255) NOT NULL default '',
+  			user_extended_struct_text varchar(255) NOT NULL default '',
+  			user_extended_struct_type tinyint(3) unsigned NOT NULL default '0',
+  			user_extended_struct_parms varchar(255) NOT NULL default '',
+  			user_extended_struct_values text NOT NULL,
+  			user_extended_struct_default varchar(255) NOT NULL default '',
+  			user_extended_struct_read tinyint(3) unsigned NOT NULL default '0',
+  			user_extended_struct_write tinyint(3) unsigned NOT NULL default '0',
+  			user_extended_struct_required tinyint(3) unsigned NOT NULL default '0',
+  			user_extended_struct_signup_show tinyint(3) unsigned NOT NULL default '0',
+  			user_extended_struct_signup_required tinyint(3) unsigned NOT NULL default '0',
+  			PRIMARY KEY  (user_extended_struct_id)
+			) TYPE=MyISAM;
+		");
+		if(!array_key_exists('ue_upgrade', $pref))
+		{
+			$pref['ue_upgrade'] = 1;
+			save_prefs();
+		}
+
 		// Update user_class field to use #,#,# instead of #.#.#. notation
 		if ($sql->db_Select('user', 'user_id, user_class')) {
 			$sql2 = new db;
@@ -384,15 +430,15 @@ function update_61x_to_700($type) {
 } else {
 		// check if update is needed.
 		// FALSE = needed, TRUE = not needed.
-		global $sysprefs;
-		$search_prefs = $sysprefs -> getArray('search_prefs');
-		if (isset($search_prefs['plug_handlers'])) {
-			return TRUE;
-		} else {
-			return FALSE;
-		}
+//		global $sysprefs;
+//		$search_prefs = $sysprefs -> getArray('search_prefs');
+//		if (isset($search_prefs['plug_handlers'])) {
+//			return TRUE;
+//		} else {
+//			return FALSE;
+//		}
 		
-		// return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."generic");
+		return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."user_extended_struct");
 		/*
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."download");
 		$fieldname = mysql_field_name($fields,15);
