@@ -601,7 +601,7 @@ class textparse{
                 $search[8] = "#\[url=([a-z]+?://){1}(.*?)\](.*?)\[/url\]#si";
                 $replace[8] = ($pref['links_new_window'] ? '<a href="\1\2" rel="external">\3</a>' : '<a href="\1\2">\3</a>');
                 $search[9] = "/\[quote=(.*?)\](.*?)/si";
-                $replace[9] = '<div class=\'indent\'><i>'.CORE_LAN2.' \1</i> ...<br />';
+                $replace[9] = '<div class=\'indent\'>'.CORE_LAN2.' ...<br />';
                 $search[25] = "/\[\/quote\]/si";
                 $replace[25] = '</div>';
                 $search[10] = "#\[b\](.*?)\[/b\]#si";
