@@ -802,26 +802,28 @@ class users{
                 <td style='width:70%' class='forumheader3'>
                 ".$rs -> form_text("email", 60, "", 100)."
                 </td>
-                </tr>
-                <tr style='vertical-align:top'>
-                <td colspan='2' style='text-align:center' class='forumheader'>
-                                ".USRLAN_120."
-                </td>
                 </tr>";
+                
 
                                 if(!is_object($sql)) $sql = new db;
-                                $sql -> db_Select("userclass_classes");
-                                $c=0;
-                                while($row = $sql -> db_Fetch()){
-                                        $class[$c][0] = $row['userclass_id'];
-                                        $class[$c][1] = $row['userclass_name'];
-                                        $class[$c][2] = $row['userclass_description'];
-                                        $c++;
-                                }
-                                for($a=0; $a<= (count($class)-1); $a++){
-                                        $text .= "<tr><td style='width:30%' class='forumheader'>
-                                        <input type='checkbox' name='userclass[]' value='".$class[$a][0]."' />".$class[$a][1]."
-                                        </td><td style='width:70%' class='forumheader3'> ".$class[$a][2]."</td></tr>";
+                                if($sql -> db_Select("userclass_classes")){
+                                    $text .= "<tr style='vertical-align:top'>
+                                    <td colspan='2' style='text-align:center' class='forumheader'>
+                                                    ".USRLAN_120."
+                                    </td>
+                                    </tr>";
+                                    $c=0;
+                                    while($row = $sql -> db_Fetch()){
+                                            $class[$c][0] = $row['userclass_id'];
+                                            $class[$c][1] = $row['userclass_name'];
+                                            $class[$c][2] = $row['userclass_description'];
+                                            $c++;
+                                    }
+                                    for($a=0; $a<= (count($class)-1); $a++){
+                                            $text .= "<tr><td style='width:30%' class='forumheader'>
+                                            <input type='checkbox' name='userclass[]' value='".$class[$a][0]."' />".$class[$a][1]."
+                                            </td><td style='width:70%' class='forumheader3'> ".$class[$a][2]."</td></tr>";
+                                    }
                                 }
                                 $text .= "
                 <tr style='vertical-align:top'>
