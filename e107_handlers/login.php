@@ -12,7 +12,7 @@
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
-@include(e_LANGUAGEDIR.$language."/lan_login.php");
+@include(e_LANGUAGEDIR.e_LANGUAGE."/lan_login.php");
 @include(e_LANGUAGEDIR."English/lan_login.php");
 class userlogin{
 	function userlogin($username, $userpass, $autologin){

@@ -12,7 +12,7 @@
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
-@include(e_LANGUAGEDIR.$language."/admin/lan_admin.php");
+@include(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php");
 @include(e_LANGUAGEDIR."English/admin/lan_admin.php");
 if(ADMIN){
 	require_once(e_ADMIN."header.php");
