@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-02-13 18:55:10 $
+|     $Revision: 1.28 $
+|     $Date: 2005-02-16 18:42:21 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -38,6 +38,12 @@ echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET.
 echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
 <meta http-equiv='content-style-type' content='text/css' />\n";
 echo "<link rel='alternate' type='application/rss+xml' title='".SITENAME." RSS' href='".e_PLUGIN."rss_menu/rss.php?1.2' />\n";
+if($pref['trackbackEnabled'])
+{
+echo '<link rel="pingback" href="'.$e107->HTTPPath.PLUGINS_DIRECTORY.'trackback/xmlrpc.php" />
+';
+}
+
 if (isset($theme_css_php) && $theme_css_php) {
 	echo "<link rel='stylesheet' href='".THEME."theme-css.php' type='text/css' />";
 } else {
