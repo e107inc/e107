@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-03-09 09:31:08 $
+|     $Revision: 1.30 $
+|     $Date: 2005-03-14 16:42:21 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -764,10 +764,6 @@ class download {
 					$sql->db_Delete("upload", "upload_id=".$_POST['remove_id']);
 					$mes = "<br />".$_POST['download_name']." ".DOWLAN_104;
 					$mes .= "<br /><br /><a href='".e_ADMIN."upload.php'>".DOWLAN_105."</a>";
-				}
-				else
-				{
-					echo "NOT DELETING!"; exit;
 				}
 				$this->show_message(DOWLAN_1.$mes);
 			}
