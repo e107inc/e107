@@ -13,6 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
+if(!getperms("A")){ header("location:../index.php"); }
 require_once("auth.php");
 
 $qs = explode(".", $_SERVER['QUERY_STRING']);

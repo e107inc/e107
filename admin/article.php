@@ -13,7 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(ADMINPERMS != 0 && ADMINPERMS != 1 && ADMINPERMS != 2){
+if(!getperms("J") && !getperms("K") && !getperms("L")){
 	header("location:../index.php");
 }
 require_once("auth.php");
@@ -26,23 +26,8 @@ If(IsSet($_POST['submit'])){
 		$content_subheading = $aj -> tp($_POST['content_subheading'], $mode="on");
 		$content_content = $aj -> tp($_POST['content_content'], $mode="on");
 
-        $content_parent = $_POST['parent_article'];
-
-		 $sql -> db_Insert("content", "0, '".$content_heading."', '".$content_subheading."', '$content_content', '0', '".time()."', '".ADMINID."', '".$_POST['content_comment']."', '0', '".$_POST['content_type']."' ");
+		 $sql -> db_Insert("content", "0, '".$content_heading."', '".$content_subheading."', '$content_content', '0', '".time()."', '".ADMINID."', '".$_POST['content_comment']."', '0', '0' ");
 		unset($content_heading, $content_subheading, $content_content, $content_parent);
-
-		if($_POST['content_type'] == 255){
-			$sql -> db_Select("content", "*", "ORDER BY content_datestamp DESC LIMIT 0,1 ", $mode="no_where");
-			list($content_id, $content_heading) = $sql-> db_Fetch();
-			$sql -> db_Insert("links", "0, '".$content_heading."', 'article.php?".$content_id.".255', '', '', '1', '0', '0' ");
-		}
-
-		if($_POST['content_type'] == 254){
-			$sql -> db_Select("content", "*", "ORDER BY content_datestamp DESC LIMIT 0,1 ", $mode="no_where");
-			list($content_id, $content_heading) = $sql-> db_Fetch();
-			$message = "To link to this content page use this url - article.php?".$content_id.".255.";
-		}
-
 	}else{
 		$message = "Fields left blank.";
 	}
@@ -102,7 +87,7 @@ if(IsSet($message)){
 	$ns -> tablerender("", "<div style=\"text-align:center\"><b>".$message."</b></div>");
 }
 
-$article_total = $sql -> db_Select("content");
+$article_total = $sql -> db_Select("content", "*", "content_type='0' ");
 
 if($article_total == "0"){
 	$text = "<div style=\"text-align:center\">
@@ -185,44 +170,6 @@ if($content_comment == "0"){
 	Off: <input type=\"radio\" name=\"content_comment\" value=\"0\">";
 }
 
-
-$text .= "</td></tr><tr><td style=\"width:20%\">Turn off auto &lt;br />'s: </td>
-<td style=\"width:80%\">";
-if($content_page == 1){
-	$text .= "<input type=\"checkbox\" name=\"content_page\" value=\"1\"  checked>";
-}else{
-	$text .= "<input type=\"checkbox\" name=\"content_page\" value=\"1\">";
-}
-
-
-$text .= " (check this if there are html tags in your article)</td></tr><tr>
-<td style=\"width:20%\">Content Type:</td>
-<td style=\"width:80%\">
-<select name=\"content_type\" class=\"tbox\">";
-if($content_type == 0){
-	$text .= "<option value=\"0\" selected>Article</option>";
-}else{
-	$text .= "<option value=\"0\">Article</option>";
-}
-
-if($content_type == 255){
-	$text .= "<option value=\"255\" selected>Normal Content with link</option>";
-}else{
-	$text .= "<option value=\"255\">Normal Content with link</aoption>";
-}
-
-if($content_type == 254){
-	$text .= "<option value=\"254\" selected>Normal Content without link</option>";
-}else{
-	$text .= "<option value=\"254\">Normal Content without link</aoption>";
-}
-
-if($content_type == 3){
-	$text .= "<option value=\"3\" selected>Review</option>";
-}else{
-	$text .= "<option value=\"3\">Review</aoption>";
-}
-
 $text .= "</td></tr>
 <tr style=\"vertical-align:top\">
 <td colspan=\"2\"  style=\"text-align:center\"><br />";
@@ -249,11 +196,13 @@ Tags allowed: all. <u>Underlined</u> fields are required. Use [newpage] to seper
 
 $ns -> tablerender("<div style=\"text-align:center\">Articles</div>", $text);
 
-require_once("footer.php");
 ?>
-
 <script type="text/javascript">
 function addtext(sc){
 	document.articlepostform.content_content.value += sc;
 }
 </script>
+<?php
+
+require_once("footer.php");
+?>

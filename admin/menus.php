@@ -53,7 +53,7 @@ if($action == "move"){
 	header("location:".$_SERVER['PHP_SELF']);
 }
 
-if(ADMINPERMS != 0 && ADMINPERMS != 1){ header("location:../index.php"); }
+if(!getperms("2")){ header("location:../index.php"); }
 
 require_once("auth.php");
 

@@ -16,25 +16,11 @@ require_once("../class2.php");
 require_once("auth.php");
 
 function wad($link, $title, $description, $perms){
-	$ptmp = explode(".", $perms);
-	if(ADMINPERMS == $ptmp[0] || ADMINPERMS == $ptmp[1] || ADMINPERMS == $ptmp[2] || ADMINPERMS == $ptmp[3]){
-		$tmp = "<td style=\"text-align:center; vertical-align:top\">
-<a href=\"".$link."\"><img src=\"e107.png\" alt=\"bullet\" style=\"border:0\"/></a>
-<br />
-<a href=\"".$link."\"><b>".$title."</b></a>
-<br />
-".$description."
-<br /><br />
-</td>";
+
+	if(getperms($perms)){
+		$tmp = "<td style=\"text-align:center; vertical-align:top\"><a href=\"".$link."\"><img src=\"e107.png\" alt=\"bullet\" style=\"border:0\"/></a><br /><a href=\"".$link."\"><b>".$title."</b></a><br />".$description."<br /><br /></td>";
 	}else{
-		$tmp = "<td style=\"text-align:center; vertical-align:top\">
-<img src=\"e1073.png\" alt=\"bullet\" style=\"border:0\"/>
-<br />
-<b>".$title."</b>
-<br />
-".$description."
-<br /><br />
-</td>";
+		$tmp = "<td style=\"text-align:center; vertical-align:top\"><img src=\"e1073.png\" alt=\"bullet\" style=\"border:0\"/><br /><b>".$title."</b><br />".$description."<br /><br /></td>";
 	}
 	return $tmp;
 }
@@ -42,35 +28,40 @@ function wad($link, $title, $description, $perms){
 $text = "<table style=\"width:95%\">
 <tr>";
 
-$text .= wad("newspost.php", "News", "Add/edit/delete news items", "0.1.2.3");
-$text .= wad("news_category.php", "News Categories", "Add/edit/delete news categories", "0.1.2");
-$text .= wad("prefs.php", "Preferences", "Edit Site Preferences", "0.1");
-$text .= wad("menus.php", "Menus", "Alter the order of your menus", "0.1");
-$text .= wad("administrator.php", "Administrators", "Add/delete site administrators", "0.1");
+$text .= wad("newspost.php", "News", "Add/edit/delete news items", "H");
+$text .= wad("news_category.php", "News Categories", "Add/edit/delete news categories", "7");
+$text .= wad("prefs.php", "Preferences", "Edit Site Preferences", "1");
+$text .= wad("menus.php", "Menus", "Alter the order of your menus", "2");
+$text .= wad("administrator.php", "Administrators", "Add/delete site administrators", "3");
 
 $text .= "</tr><tr>";
 
-$text .= wad("updateadmin.php", "Update admin settings", "Edit your admin settings", "0.1.2.3");
-$text .= wad("forum.php", "Forums", "Add/Edit Forums", "0.1");
-$text .= wad("article.php", "Articles/Content/Reviews", "Add new/edit/delete articles/reviews, add new content pages", "0.1.2");
-$text .= wad("links.php", "Links", "Add new/edit/delete links", "0.1.2");
-$text .= wad("link_category.php", "Link Categories", "Add new/edit/delete link categories", "0.1.2");
+$text .= wad("updateadmin.php", "Update admin settings", "Edit your admin settings", "");
+$text .= wad("forum.php", "Forums", "Add/Edit Forums", "5");
+$text .= wad("article.php", "Articles", "Add new/edit/delete articles", "J");
+$text .= wad("content.php", "Content", "Add new/edit/delete content pages", "L");
+$text .= wad("review.php", "Reviews", "Add new/edit/delete reviews", "K");
+
+$text .= "</tr><tr>";
+$text .= wad("links.php", "Links", "Add new/edit/delete links", "I");
+$text .= wad("link_category.php", "Link Categories", "Add new/edit/delete link categories", "8");
+$text .= wad("wmessage.php", "Welcome Message", "Set static welcome message", "M");
+$text .= wad("upload.php", "Upload", "Upload file/image", "6");
+$text .= wad("submitnews.php", "Submitted News", "Review user submitted news items", "N");
 
 $text .= "</tr><tr>";
 
-$text .= wad("wmessage.php", "Welcome Message", "Set static welcome message", "0.1.2");
-$text .= wad("upload.php", "Upload", "Upload file/image", "0.1.2");
-$text .= wad("submitnews.php", "Submitted News", "Review user submitted news items", "0.1.2");
-$text .= wad("banlist.php", "Banlist", "Ban visitors by IP address", "0.1.2");
-$text .= wad("users.php", "Users", "Moderate site members", "0.1");
+$text .= wad("banlist.php", "Banlist", "Ban visitors by IP address", "4");
+$text .= wad("users.php", "Users", "Moderate site members", "4");
+$text .= wad("ugflag.php", "Maintainance", "Display custom site is down page", "9");
+$text .= wad("admin.php?logout", "Logout", "", "");
 $text .= "</tr><tr>";
 
-$text .= wad("ugflag.php", "Maintainance", "Display custom site is down page", "0.1.2");
-$text .= wad("admin.php?logout", "Logout", "", "0.1.2.3.4");
+
 
 $text .= "</tr></table>";
 
-$ns -> tablerender("<div style=\"text-align:center\">Welcome ".ADMINNAME." (Level ".ADMINPERMS." administrator)</div>", $text);
+$ns -> tablerender("<div style=\"text-align:center\">Welcome ".ADMINNAME."</div>", $text);
 
 $text = "<table style=\"width:95%\">
 <tr>";

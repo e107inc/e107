@@ -13,9 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(ADMINPERMS != 0 && ADMINPERMS != 1){
-	header("location:../index.php");
-}
+if(!getperms("C")){ header("location:../index.php"); }
 
 if(IsSet($_SERVER['QUERY_STRING'])){
 	$temp = explode("-", $_SERVER['QUERY_STRING']);

@@ -24,9 +24,13 @@ echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
     <meta http-equiv="content-style-type" content="text/css" />
 <script type="text/javascript">
-function Navigate() {
-var number = NavSelect.selectedIndex;
-location.href = NavSelect.options[number].value; }
+<!--
+var ref=""+escape(top.document.referrer);
+var colord = window.screen.colorDepth; 
+var res = window.screen.width + "x" + window.screen.height;
+var self = document.location;
+document.write("<img src='plugins/log2.php?referer=" + ref + "&amp;color=" + colord + "&amp;self=" + self + "&amp;res=" + res + "' style='float:left; border:0' alt='' />");
+//-->
 </script>
   </head>
 <body>
@@ -86,4 +90,5 @@ echo "<br />
 <td style=\"padding: 4px; margin: 0px; width: *; background-color: #EEF4F4; vertical-align:top;\">";
 
 $style = "default";
+unset($text);
 ?>

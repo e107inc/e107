@@ -24,7 +24,7 @@ define(LAN_6, "You must be logged in to post comments on this site - please eith
 define(LAN_7, "Name: ");
 define(LAN_8, "Comment");
 define(LAN_9, "Submit comment");
-define(LAN_10, "Shortcut tags allowed: [b] [i] [u] [img] [cen] [bq]<br />use [link] url [/link] for links<br />Line breaks (&lt;br /&gt;) are auto added.");
+define(LAN_10, "Shortcut tags allowed: [b] [i] [u] [img] [center] [link]<br />use [link=link text] link url [/link] for links<br />Line breaks (&lt;br /&gt;) are auto added.");
 
 //chat.php
 define(LAN_11, "Chatbox (all posts)");
@@ -105,7 +105,7 @@ define(LAN_81, "Closed thread");
 
 //index.php
 define(LAN_82, "News - Category");
-define(LAN_83, "No news items yet.");
+define(LAN_83, "No news items yet - please check back soon.");
 define(LAN_84, "News Items");
 
 //links.php

@@ -17,35 +17,26 @@ if(IsSet($_POST['chat_submit'])){
 	$message = $_POST['message'];
 	$nick = $_POST['nick'];
 	$fp = new floodprotect;
+	$tp = new textparse;
 	if($fp -> flood("chatbox", "cb_datestamp") == FALSE){
 		header("location:index.php");
 	}else{
 		if((strlen($message) < 1000) && $message != ""){
 			$message = strip_tags($message, "<a>");
-			for($a=0;$a<strlen($message);$a++){
-				$char = ord($message[$a]);
-				$tmp[$char] = 1;
-			}
-//			if(count($tmp) <=4){ $message = "Invalid input"; }
-			$message_array = explode(" ", $message);
-			for($i=0; $i<=(count($message_array)-1); $i++){
-				if(eregi("http", $message_array[$i])){
-					$message_array[$i] =  "<a href=\"".$message_array[$i]."\">-link-</a>";
-				}else if(eregi("www", $message_array[$i])){
-					$message_array[$i] =  "<a href=\"http://".$message_array[$i]."\">-link-</a>";
-				}else if(strlen($message_array[$i]) > 30){
-					$message_array[$i] = preg_replace("/([^\s]{30})/", "$1<br />", $message_array[$i]);
-				}
-			}
-			$message = implode(" ", $message_array);
-			$nick = addslashes($nick);
-			$message = addslashes($message);
+//			for($a=0;$a<strlen($message);$a++){
+//				$char = ord($message[$a]);
+//				$tmp[$char] = 1;
+//			}
+			$message = $tp -> tp($message, "off", 30);
 
 			$datestamp = time();
 			$ip = getip();
 
 			if(USER == TRUE){
 				$nick = USERNAME;
+
+			list($user_id, $user_name) = $sql-> db_Fetch();
+
 			}
 			if(!$sql -> db_Select("chatbox", "*", "cb_message='$message' ")){
 				if(USER == TRUE){
@@ -54,11 +45,20 @@ if(IsSet($_POST['chat_submit'])){
 				}else if($nick == ""){
 					$nick = "0.Anonymous";
 				}else{
-					$nick = "0.".$nick;
+					$sql2 = new db;
+					if($sql2 -> db_Select("user", "*", "user_name='$nick' ")){
+						$ip = getip();
+						if($sql2 -> db_Select("user", "*", "user_name='$nick' AND user_ip='$ip' ")){
+							list($cuser_id, $cuser_name) = $sql2-> db_Fetch();
+							$nick = $cuser_id.".".$cuser_name;
+						}else{
+							$nick = "0.Anonymous";
+						}
+					}else{
+						$nick = "0.".$nick;
+					}
 				}
-//				if($message != "Invalid input"){
 					$sql -> db_Insert("chatbox", "0, '$nick', '$message', '".time()."', '0' , '$ip' ");
-//				}
 			}
 		}
 	}
@@ -68,24 +68,25 @@ $chatbox_posts = $pref['chatbox_posts'][1];
 if($pref['user_reg'][1] == 1 && USER != TRUE && $pref['anon_post'][1] != "1"){
 	$text = "<div style=\"text-align:center\">".LAN_6."</div><br /><br />";
 }else{
+	$text =  "<div style=\"text-align:center\">";
 	if($_SERVER['QUERY_STRING'] != ""){
-		$text =  "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING']."\"><p>";
+		$text .=  "\n<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING']."\"><p>";
 	}else{
-		$text =  "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><p>";
+		$text .=  "\n<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><p>";
 	}
 
 if(($pref['anon_post'][1] == "1" && USER == FALSE)){
-	$text .= "<input class=\"tbox\" type=\"text\" name=\"nick\" size=\"27\" value=\"\" maxlength=\"50\" /><br />";
+	$text .= "\n<input class=\"tbox\" type=\"text\" name=\"nick\" size=\"27\" value=\"\" maxlength=\"50\" /><br />";
 }
-$text .= "<textarea class=\"tbox\" name=\"message\" cols=\"26\" rows=\"5\"></textarea>
+$text .= "\n<textarea class=\"tbox\" name=\"message\" cols=\"26\" rows=\"5\"></textarea>
 <br />
 <input class=\"button\" type=\"submit\" name=\"chat_submit\" value=\"".LAN_156."\" />
 <input class=\"button\" type=\"reset\" name=\"reset\" value=\"".LAN_157."\" />
 </p>
-</form>";
+</form>
+</div>";
 }
 
-$text .= "<div style=\"text-align:center\"><table style=\"width:88%\"><tr><td>";
 if($sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, ".$chatbox_posts, $mode="no_where")){
 	$obj2 = new convert;
 	$aj = new textparse();
@@ -98,14 +99,21 @@ if($sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, ".$cha
 		$datestamp = $obj2->convert_date($cb_datestamp, "short");
 
 		$cb_nick = eregi_replace("[0-9]+\.", "", $cb_nick);
-		$cb_nick = $aj -> tpa($cb_nick);
+		$sql2 = new db;
+		if($sql2 -> db_Select("user", "*", "user_name='$cb_nick'")){
+			list($cuser_id, $cuser_name) = $sql2-> db_Fetch();
+			$cb_nick = "<a href=\"user.php?id.".$cuser_id."\">".$cb_nick."</a>";
+		}else{
+
+			$cb_nick = $aj -> tpa($cb_nick);
+		}
 	
 		$text .= "\n<div class=\"spacer\">
 <img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" />
-<b>".$cb_nick."</b><br />\n".$datestamp."<br />\n";
+<b>".$cb_nick."</b><br />\n<span class=\"smalltext\">".$datestamp."</span><br />\n";
 		if($cb_blocked == 1){
 			$text .= "[blocked by admin]";
-			if(ADMIN == TRUE && ADMINPERMS <=2){
+			if(ADMIN == TRUE && getperms("C")){
 				$text .= "<div class=\"smalltext\">
 [<a href=\"admin/chatbox_conf.php?unblock-".$cb_id."-".$_SERVER['PHP_SELF']."\">".LAN_1."</a>]
 [<a href=\"admin/chatbox_conf.php?delete-".$cb_id."-".$_SERVER['PHP_SELF']."\">".LAN_3."</a>]
@@ -115,8 +123,8 @@ if($sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, ".$cha
 				}
 			}else{
 
-				$text .= "<div class=\"smalltext\">".$cb_message."</div></div>\n";
-				if(ADMIN == TRUE && ADMINPERMS <=2){
+				$text .= "<div class=\"smallblack\">".$cb_message."</div></div>\n";
+				if(ADMIN == TRUE && getperms("C")){
 					$text .= "<div class=\"smalltext\">
 [<a href=\"admin/chatbox_conf.php?block-".$cb_id."-".$_SERVER['PHP_SELF']."\">".LAN_2."</a>]
 [<a href=\"admin/chatbox_conf.php?delete-".$cb_id."-".$_SERVER['PHP_SELF']."\">".LAN_3."</a>]
@@ -134,7 +142,7 @@ if($total_chats > $chatbox_posts){
 	$text .= "<br />
 <div style=\"text-align:center\"><a href=\"chat.php\">".LAN_159."</a> (".$total_chats.")</div>";
 }
-$text .= "</td></tr></table></div>";
+
 $ns -> tablerender(LAN_182, $text);
 
 

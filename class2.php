@@ -61,10 +61,10 @@ class db{
 		# - return				affected rows
 		# - scope					public
 		*/
-		$debug = FALSE;
-		$debugtable = "admin";
+		$debug = false;
+		$debugtable = "register";
 		if($arg != "" && $mode=="default"){
-			if($debug == TRUE && $debugtable == $table){ echo "SELECT ".$fields." FROM ".MUSER.$table." WHERE ".$arg."<br />"; }
+			if($debug == TRUE && $debugtable == $table){ echo "!!SELECT ".$fields." FROM ".MUSER.$table." WHERE ".$arg."<br />"; }
 			if($this->mySQLresult = @mysql_query("SELECT ".$fields." FROM ".MUSER.$table." WHERE ".$arg)){
 				$this->dbError("dbQuery");
 				return $this->db_Rows();
@@ -73,7 +73,7 @@ class db{
 				return FALSE;
 			}
 		}else if($arg != "" && $mode != "default"){
-			if($debug == TRUE && $debugtable == $table){ echo "SELECT ".$fields." FROM ".MUSER.$table." ".$arg."<br />"; }
+			if($debug == TRUE && $debugtable == $table){ echo "@@SELECT ".$fields." FROM ".MUSER.$table." ".$arg."<br />"; }
 			if($this->mySQLresult = @mysql_query("SELECT ".$fields." FROM ".MUSER.$table." ".$arg)){
 				$this->dbError("dbQuery");
 				return $this->db_Rows();
@@ -267,6 +267,9 @@ class userlogin{
 		# - return				boolean
 		# - scope					public
 		*/
+
+		$autologin == 1;
+
 		$sql = new db;
 		if($username != "" && $userpass != ""){
 			$userpass = md5($userpass);
@@ -329,7 +332,7 @@ class floodprotect{
 		*/
 		$sql = new db;
 		if(FLOODPROTECTION == TRUE){
-			$sql -> db_Select($table, "ORDER BY ".$orderfield." DESC LIMIT 1", $mode = "no_where");
+			$sql -> db_Select($table, "*", "ORDER BY ".$orderfield." DESC LIMIT 1", $mode = "no_where");
 			$row = $sql -> db_Fetch();
 			if($row[$orderfield] > (time() - FLOODTIMEOUT)){
 				return FALSE;
@@ -344,6 +347,7 @@ class floodprotect{
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function init_session(){
+
 		/*
 		# Validate session if exists
 		#
@@ -384,7 +388,7 @@ function init_session(){
 			}
 
 			if($user_admin == 1){
-				if($sql -> db_Select("admin", "*", "admin_password='$upw' ")){
+				if($sql -> db_Select("admin", "*", "admin_name='$user_name' AND admin_password='$upw' ")){
 					$result = $sql -> db_Fetch();
 					extract($result);
 					define("ADMIN", TRUE);
@@ -419,17 +423,40 @@ function ban(){
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //initialise
+			
+			timing_start();
+			ob_start();
 			$_SERVER['QUERY_STRING'] = eregi_replace("&|/?PHPSESSID.*", "", $_SERVER['QUERY_STRING']);
 			session_start();
-			error_reporting(E_ERROR | E_WARNING | E_PARSE);
+//			error_reporting(E_ERROR | E_WARNING);
 			set_magic_quotes_runtime(0);
 			ini_set("arg_separator.output", "&amp;");
-			if(eregi("admin", $_SERVER['PHP_SELF'])){ require_once("../config.php"); }else{ require_once("config.php"); }
+			ini_set("url_rewriter.tags", "a=href,area=href,frame=src,input=src");
+			if(eregi("admin", $_SERVER['PHP_SELF']) || eregi("plugins", $_SERVER['PHP_SELF'])){
+				require_once("../config.php"); }else{ require_once("config.php"); }
 			if($mySQLuser == ""){ header("location:install.php"); }
 			define("MUSER", $mySQLprefix);
 			$sql = new db;
 			$sql -> db_SetErrorReporting(TRUE);
 			$sql -> db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
+
+			$ns = new table;
+			if($sql -> db_Select("prefs", "*", "", $mode="no_where")){
+				$c = 0;
+				while(list($preftemp, $pref[$c][1]) = $sql-> db_Fetch()){
+					$pref[$preftemp][1] = $pref[$c][1];
+					$c++;
+				}
+			}
+
+			if($pref['flood_protect'][1] == 1){
+				$sql -> db_Delete("flood", "flood_time+'".$pref['flood_time'][1]."'<'".time()."' ");
+				$sql -> db_Insert("flood", " '".$_SERVER['PHP_SELF']."', '".time()."' ");
+				$hits = $sql -> db_Count("flood", "(*)", "WHERE flood_url = '".$_SERVER['PHP_SELF']."' ");
+				if($hits > $pref['flood_hits'][1] && $pref['flood_hits'][1] != ""){
+					die("Flood protection activated");
+				}
+			}
 
 			if(IsSet($_POST['settheme'])){
 				if(IsSet($_SESSION['userkey'])){ $uk = $_SESSION['userkey']; }else{ $uk = $_COOKIE['userkey']; }
@@ -449,17 +476,6 @@ function ban(){
 
 			if(IsSet($_POST['userlogin'])){ $usr = new userlogin($_POST['username'], $_POST['userpass'], $_POST['autologin']); }
 
-			
-			
-
-			$ns = new table;
-			if($sql -> db_Select("prefs", "*", "", $mode="no_where")){
-				$c = 0;
-				while(list($preftemp, $pref[$c][1]) = $sql-> db_Fetch()){
-					$pref[$preftemp][1] = $pref[$c][1];
-					$c++;
-				}
-			}
 			define("SITENAME", $pref['sitename'][1]);
 			define("SITEURL", $pref['siteurl'][1]);
 			define("SITEBUTTON", $pref['sitebutton'][1]);
@@ -470,6 +486,11 @@ function ban(){
 			$pref['sitedisclaimer'][1] = str_replace("©", "&copy;", $pref['sitedisclaimer'][1]);
 			define("SITEDISCLAIMER", $pref['sitedisclaimer'][1]);
 			define("TIMEOFFSET", $pref['time_offset'][1]);
+
+			define("FLOODTIME", $pref['flood_time'][1]);
+			define("FLOODHITS", $pref['flood_hits'][1]);
+
+
 //			if($sql -> db_Select("menus", "*", "menu_name='usertheme_menu' AND menu_location!=0 ")){
 				if(USERTHEME != FALSE){
 					define("THEME", "themes/".USERTHEME."/"); 
@@ -483,7 +504,7 @@ function ban(){
 			if(Empty($pref['newsposts'][1])){ define(ITEMVIEW, 10); }else{ define(ITEMVIEW, $pref['newsposts'][1]); }
 			if($pref['flood_protect'][1] == 1){  define(FLOODPROTECT, TRUE); define(FLOODTIMEOUT, $pref['flood_timeout'][1]); }
 			$language =  $pref['sitelanguage'][1]; if(!$language){ $language = "English"; }
-			if(eregi("admin", $_SERVER['PHP_SELF'])){ require_once("../".THEME."theme.php"); require_once("../languages/lan_".$language.".php"); }else{ require_once(THEME."theme.php"); require_once("languages/lan_".$language.".php"); }
+			if(eregi("admin", $_SERVER['PHP_SELF']) || eregi("plugins", $_SERVER['PHP_SELF'])){ require_once("../".THEME."theme.php"); require_once("../languages/lan_".$language.".php"); }else{ require_once(THEME."theme.php"); require_once("languages/lan_".$language.".php"); }
 			define ("HEADERF", "themes/templates/header".$layout.".php");
 			define ("FOOTERF","themes/templates/footer".$layout.".php");
 			define("LOGINMESSAGE", "");
@@ -495,7 +516,9 @@ function ban(){
 					}
 				}
 			}
-			
+			if($pref['log_activate'][1] == 1 && ADMIN == FALSE){
+				$referer = getreferer();
+			}
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -595,7 +618,7 @@ class news{
 		$cls = new db;
 		if($allow_comments == 0){ $allow_comments = 1; }else{ $allow_comments = 0; }
 		
-		$this -> render_newsitem($news_id, $news_title, $news_body, $news_extended, $news_source, $news_url, ADMINID, "0", $cat_id,  time(), $allow_comments);
+		$this -> render_newsitem($news_id, $news_title, $news_body, $news_extended, $news_source, $news_url, ADMINID, "0", $cat_id,  time(), $allow_comments, "preview");
 		return $news_id;
 	}
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -696,17 +719,26 @@ class news{
 			unset($text);
 		}
 
+
 		if(ICON_SHOW == TRUE && ICON_POSITION == "body"){
 			$text .= "<a href=\"index.php?cat.".$category_id."\"><img style=\"float: ".ICON_ALIGN."; border:0\"  src=\"".$category_icon."\" alt=\"\" /></a>";
 		}
+
+		if(TITLE_POSITION == "body"){
+			$text .= "<div style=\"text-align:".TITLE_ALIGN."\">".TITLE_STYLE_START.$news_title.TITLE_STYLE_END."</div><br />";
+		}
+
 		$text .= "<div style=\"text-align:".TEXT_ALIGN."\">".
 		stripslashes($news_body);
 
 		$text .= "</div>";
 
-		if($news_extended != "" && $modex != "extend"){
+		if($modex == "preview" && $news_extended != ""){
+			$text .= "<br />[Extended text]: ".$news_extended;
+		}else if($news_extended != "" && $modex != "extend"){
 			$text .= "<br /><a href=\"index.php?extend.".$news_id."\">".EXTENDED_STRING."</a>";
 		}
+		
 		if($modex == "extend"){
 			$text .= "<br />".$news_extended;
 		}
@@ -723,7 +755,7 @@ class news{
 		}
 
 		$ns = new table;
-		$ns -> tablerender($caption, $text);
+		$ns -> tablerender($caption, $text, $category_id);
 	}
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -790,7 +822,7 @@ echo "</div>";
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 class table{
 
-	function tablerender($caption, $text){
+	function tablerender($caption, $text, $mode="default"){
 		/*
 		# Render style table
 		# - parameter #1:		string $caption, caption text
@@ -827,9 +859,16 @@ class textparse{
 		# - scope					public
 		*/
 
-		$text = str_replace("<","&lt;",$text);
-		$text = str_replace(">","&gt;",$text);
-		$text=str_replace("&","&amp;",$text);
+//		if($mode == "off"){
+//			$text = str_replace("<","&lt;",$text);
+//			$text = str_replace(">","&gt;",$text);
+//		}
+//		$text=str_replace("&","&amp;",$text);
+
+
+		if($mode == "off"){
+			$text = htmlentities($text);
+		}
 
 		$search = array("[b]", "[/b]", "[i]", "[/i]", "[u]", "[/u]", "[img]", "[/img]", "[center]", "[/center]", "[left]", "[/left]", "[right]", "[/right]", "[blockquote]", "[/blockquote]", "[code]", "[/code]");
 		$replace = array("<b>", "</b>", "<i>", "</i>", "<u>", "</u>", "<img alt=\"\" src=\"", "\" />", "<div style=\"text-align:center\">", "</div>", "<div style=\"text-align:left\">", "</div>", "<div style=\"text-align:right\">", "</div>", "<span class=\"indent\">", "</span>", "<code>", "</code>");
@@ -859,6 +898,12 @@ class textparse{
 		$r[4] = '<a href="mailto:\1">\1</a>';
 		$p[5] = "#\[email=(.*?){1}(.*?)\](.*?)\[/email\]#si";
 		$r[5] = '<a href="mailto:\1\2">\3</a>';
+		$p[6] = "#\[url\]([a-z]+?://){1}(.*?)\[/url\]#si";
+		$r[6] = '<a href="\1\2">\1\2</a>';
+		$p[7] = "#\[url\](.*?)\[/url\]#si";
+		$r[7] = '<a href="http://\1">\1</a>';
+		$p[8] = "#\[url=([a-z]+?://){1}(.*?)\](.*?)\[/url\]#si";
+		$r[8] = '<a href="\1\2">\3</a>';
 		$text = preg_replace($p, $r, $text);
 
 		$text = preg_replace("/\[quote=(.*?)\](.*?)\[\/quote\]/si", "<i>Originally posted by \\1: \"\\2\"</i>", $text);
@@ -903,6 +948,10 @@ class textparse{
 			}
 			$text = emoticons($text);
 		}
+
+		$search = array("[b]", "[/b]", "[i]", "[/i]", "[u]", "[/u]", "[img]", "[/img]", "[center]", "[/center]", "[left]", "[/left]", "[right]", "[/right]", "[blockquote]", "[/blockquote]", "[code]", "[/code]");
+		$replace = array("<b>", "</b>", "<i>", "</i>", "<u>", "</u>", "<img alt=\"\" src=\"", "\" />", "<div style=\"text-align:center\">", "</div>", "<div style=\"text-align:left\">", "</div>", "<div style=\"text-align:right\">", "</div>", "<span class=\"indent\">", "</span>", "<code>", "</code>");
+		$text = str_replace($search,$replace, $text);
 		$text = str_replace("<br>","<br />", $text);
 		$text = stripslashes($text);
 		
@@ -928,7 +977,7 @@ function sitelinks(){
 		$text .= LINKSTART."<a href=\"admin/admin.php\">Admin Area</a>".LINKEND."\n";
 	}
 	$sql = new db;
-	$sql -> db_Select("links", "*", "link_category='1' ");
+	$sql -> db_Select("links", "*", "link_category='1' ORDER BY link_order ASC");
 	while(list($link_id_, $link_name_, $link_url_) = $sql-> db_Fetch()){
 		$text .=  LINKSTART."<a href=\"".$link_url_."\">".$link_name_."</a>".LINKEND."\n";
 	}
@@ -957,11 +1006,11 @@ class convert{
 		$datestamp += (TIMEOFFSET*3600);
 
 		if($mode == "long"){
-			return ereg_replace(" 0", " ", gmdate($pref['longdate'][1], $datestamp));
+			return ereg_replace(" 0", " ", date($pref['longdate'][1], $datestamp));
 		}else if($mode == "short"){
-			return ereg_replace(" 0", " ", gmdate($pref['shortdate'][1], $datestamp));
+			return ereg_replace(" 0", " ", date($pref['shortdate'][1], $datestamp));
 		}else{
-			return ereg_replace(" 0", " ", gmdate($pref['forumdate'][1], $datestamp));
+			return ereg_replace(" 0", " ", date($pref['forumdate'][1], $datestamp));
 		}
 	}
 }
@@ -1068,6 +1117,13 @@ class nextprev{
   echo "</tr>\n</table>";
  }
 }
+function getperms($arg, $ap = ADMINPERMS){
+	if(ereg($arg.".", $ap) || $ap == "0"){
+		return TRUE;
+	}else{
+		return FALSE;
+	}
+}
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
@@ -1161,6 +1217,65 @@ class dbfunc{
 			}
 		}
 	}
+	function dbInsert($query){
+		return $this->mySQLresult = mysql_query($query);
+	}
+}
+function getreferer(){
+	$sql = new db;
+	$referer = $_SERVER['HTTP_REFERER'];
+	if($referer != ""){
+		$siteurl = parse_url(SITEURL);
+		if(!eregi($siteurl['host'], $referer) && !eregi("localhost", $referer)){
+			if($referer != ""){
+				if($pref['log_refertype'][1] == 0){
+					// log domain only
+					$rl = parse_url($referer);
+					$ref =  eregi_replace("www.", "", $rl['host']);
+					if($sql -> db_Select("stat_info", "*", "info_name='$referer' ")){
+						$sql -> db_Update("stat_info", "info_count=info_count+1 WHERE info_name='$referer' ");
+					}else{
+						$sql -> db_Insert("stat_info", " '$ref', '1', '6' ");
+					}
+				}else{
+				// Log whole URL
+					if($sql -> db_Select("stat_info", "*", "info_name='$referer' ")){
+						$sql -> db_Update("stat_info", "info_count=info_count+1 WHERE info_name='$referer' ");
+					}else{
+						$sql -> db_Insert("stat_info", " '$referer', '1', '6' ");
+					}
+				}
+			}
+		}
+	}
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+function timing_start($name = "default") {
+    global $timing_start_times;
+    $timing_start_times[$name] = explode(' ', microtime());
+}
+
+function timing_stop($name = "default") {
+    global $timing_stop_times;
+    $ss_timing_stop_times[$name] = explode(' ', microtime());
+}
+
+function timing_return($name = "default") {
+    global $timing_start_times, $ss_timing_stop_times;
+    if (!isset($timing_start_times[$name])) {
+        return 0;
+    }
+    if (!isset($timing_stop_times[$name])) {
+        $stop_time = explode(' ', microtime());
+    }
+    else {
+        $stop_time = $timing_stop_times[$name];
+    }
+    $current = $stop_time[1] - $timing_start_times[$name][1];
+    $current += $stop_time[0] - $timing_start_times[$name][0];
+	$current = number_format($current, 4);
+    return $current;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -1204,9 +1319,16 @@ $rss = "<?xml version=\"1.0\"?>
 ";
 
   while(list($news_id, $news_title, $news_body, $news_datestamp, $news_author, $news_source, $news_url, $news_catagory) = $rsd-> db_Fetch()){
+  		$tmp = explode(" ", $news_body);
+		unset($nb);
+		for($a=0; $a<=100; $a++){
+			$nb .= $tmp[$a]." ";
+		}
+  		$nb = htmlentities($nb); 
 		$text .= $news_title."\n".SITEURL."/comment.php?".$news_id."\n\n";
 		$rss .= "<item>
-<title>".$news_title."</title> 
+<title>".$news_title."</title>
+<description>".$nb."</description>
 <link>".SITEURL."/comment.php?".$news_id."</link> 
 </item>
 ";

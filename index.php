@@ -19,7 +19,6 @@ if(eregi("cat", $_SERVER['QUERY_STRING'])){
 	$qs = explode(".", $_SERVER['QUERY_STRING']);
 	$category = $qs[1];
 	if($category != 0){
-		unset($text);
 		$sql -> db_Select("news_category", "*", "category_id='$category'");
 		list($category_id, $category_name, $category_icon) = $sql-> db_Fetch();
 		$sql -> db_SELECT("news", "*",  "news_category='$category' ORDER BY news_datestamp DESC");
@@ -27,7 +26,8 @@ if(eregi("cat", $_SERVER['QUERY_STRING'])){
 			if($news_title == ""){ $news_title = "Untitled"; }
 			$text .= "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <a href=\"comment.php?".$news_id."\">".$news_title."</a><br />\n";
 		}
-		$ns -> tablerender("<div style=\"text-align:center\">".LAN_82." '".$category_name."'</div>", $text);
+		$text = "<img src=\"".THEME."$category_icon\" alt=\"\" /><br /><br />".$text;
+		$ns -> tablerender(LAN_82." '".$category_name."'", $text);
 		require_once(FOOTERF);
 		exit;
 	}
@@ -54,23 +54,16 @@ if(Empty($order)){ $order = "news_datestamp"; }
 $sql -> db_Select("wmessage");
 list($wm_text, $wm_active) = $sql-> db_Fetch();
 if($wm_active == 1){
-	$ns -> tablerender("", "<div class=\"border\" style=\"text-align:center\">".$wm_text."</div>");
+	$ns -> tablerender("", "<div style=\"text-align:center\">".$wm_text."</div>");
 }
 
 $news_total = $sql -> db_Count("news");
 
 if(!$sql -> db_Select("news", "*", "ORDER BY ".$order." DESC LIMIT $from,".ITEMVIEW, $mode="no_where")){
-	echo "<div style=\"text-align:center\"><b>".LAN_83."</b></div>";
+	echo "<br /><br /><div style=\"text-align:center\"><b>".LAN_83."</b></div><br /><br />";
 }else{
-	$sql2 = new db;
+	$sql2 = new db;	
 	while(list($news_id, $news_title, $news_body, $news_extended, $news_datestamp, $news_author, $news_source, $news_url, $news_category, $news_allow_comments) = $sql-> db_Fetch()){
-
-		if(eregi("http://", $news_url)){
-			$news_url = "<a href=\"$news_url\">$news_url</a>";
-		}else if(eregi("www", $news_url)){
-			$news_url = "<a href=\"http://$news_url\">$news_url</a>";
-		}
-
 		$sql2 -> db_Select("news_category", "*", "category_id='$news_category' ");
 		list($category_id, $category_name, $category_icon) = $sql2-> db_Fetch();
 		$comment_total = $sql2 -> db_Select("comments", "*",  "comment_item_id='$news_id' AND comment_type='0' ");

@@ -1,20 +1,14 @@
 <?php
-// Counter function by que
-function get_count($url){
-	$cnt = new db;
-	$date = date("Y-m-d");
-	$cnt -> db_Select("stat_counter", "*", "counter_date='$date' AND counter_url='$url' ");
-	$row = $cnt -> db_Fetch();
-	$text = "Page Hits today: ".$row['counter_total']."<br />(unique: ".$row['counter_unique'].")<br />";
- 
-	$cnt -> db_Select("stat_counter", "*", "counter_url='$url' ");
-	while($row = $cnt -> db_Fetch()){
-		$unique_ever += $row[2];
-		$total_ever += $row[3];
-	}
-	$text .= "Page Hits ever: $total_ever<br />(unique: $unique_ever)<br />";
-	$ns = new table;         
-	$ns -> tablerender("Counter", $text);
-}
-get_count($_SERVER['PHP_SELF']);
+$date = date("Y-m-d");
+$sql -> db_Select("stat_counter", "*", "counter_date='$date' AND counter_url='".$_SERVER['PHP_SELF']."' ");
+$row = $sql -> db_Fetch();
+$text = "Today: ".$row['counter_total']." (unique: ".$row['counter_unique'].")";
+$dep = new dbfunc;
+$total_page_views = $dep -> dbCount("SELECT sum(counter_total) FROM ".MUSER."stat_counter WHERE counter_url='".$_SERVER['PHP_SELF']."' ");
+$total_unique_views = $dep -> dbCount("SELECT sum(counter_unique) FROM ".MUSER."stat_counter WHERE counter_url='".$_SERVER['PHP_SELF']."' ");
+$text .= "<br />Total ever: $total_page_views (unique: $total_unique_views)";
+$sql -> db_Select("stat_counter", "*", "counter_url='".$_SERVER['PHP_SELF']."' ORDER BY counter_total DESC");
+$row = $sql -> db_Fetch();
+$text .= "<br />Record: ".$row['counter_total']." (unique: ".$row['counter_unique'].")";
+$ns -> tablerender("Counter", $text);
 ?>

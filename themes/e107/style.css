@@ -320,3 +320,25 @@ p {
 .leftbar {
 	background-image : url(images/leftbar.png);
 }
+
+.helpbox {
+	border-bottom: #fff 1px solid;
+	border-left: #fff 1px solid;
+	border-right: #fff 1px solid;
+	border-top: #fff 1px solid;
+	background-color: #fff;
+	color:#000;
+	font-family: tahoma, verdana, arial, helvetica, sans-serif;
+	font-size: 9px;
+}
+
+.fhelpbox {
+	border-bottom: #EFEFEF 1px solid;
+	border-left: #EFEFEF 1px solid;
+	border-right: #EFEFEF 1px solid;
+	border-top: #EFEFEF 1px solid;
+	background-color: #EFEFEF;
+	color:#000;
+	font-family: tahoma, verdana, arial, helvetica, sans-serif;
+	font-size: 9px;
+}

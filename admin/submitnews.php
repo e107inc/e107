@@ -13,9 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(ADMINPERMS != 0 && ADMINPERMS != 1 && ADMINPERMS != 2){
-	header("location:../index.php");
-}
+if(!getperms("N")){ header("location:../index.php"); }
 
 if(IsSet($_POST['transfer'])){ 
 	$sql -> db_Update("submitnews", "submitnews_auth='1' WHERE submitnews_id ='".$_POST['id']."' ");

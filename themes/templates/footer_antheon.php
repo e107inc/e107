@@ -10,10 +10,7 @@ while(list($menu_id, $menu_name, $menu_location, $menu_order) = $sql9-> db_Fetch
 	require_once("menus/".$menu_name.".php");
 }
 
-echo "<div style=\"text-align:center\">
-<a href=\"http://sourceforge.net/projects/e107/\"><img src=\"files/images/sourceforge.png\" style=\"border:0\" alt=\"\" /></a>
-</div>
-
+echo "
 </td>
 </tr>
 </table>

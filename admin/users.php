@@ -13,9 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(ADMINPERMS != 0 && ADMINPERMS != 1){
-	header("location:../index.php");
-}
+if(!getperms("4")){ header("location:../index.php"); }
 require_once("auth.php");
 
 $qs = explode(".", $_SERVER['QUERY_STRING']);
@@ -98,7 +96,7 @@ require_once("footer.php");
 exit;
 }
 
-$sql -> db_Select("user", "*", "ORDER BY user_name", $mode="no_where");
+$sql -> db_Select("user", "*", "user_admin=0 ORDER BY user_name");
 
 if(IsSet($message)){
 	$ns -> tablerender("", "<div style=\"text-align:center\"><b>".$message."</b></div>");

@@ -8,6 +8,15 @@ echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>";
     <link rel="stylesheet" href="<? echo THEME; ?>style.css" />
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
     <meta http-equiv="content-style-type" content="text/css" />
+<script type="text/javascript">
+<!--
+var ref=""+escape(top.document.referrer);
+var colord = window.screen.colorDepth; 
+var res = window.screen.width + "x" + window.screen.height;
+var self = document.location;
+document.write("<img src='plugins/log2.php?referer=" + ref + "&amp;color=" + colord + "&amp;self=" + self + "&amp;res=" + res + "' style='float:left; border:0' alt='' />");
+//-->
+</script>
   </head>
 <body>
 <?
@@ -85,4 +94,5 @@ require_once("menus/log_menu.php");
 echo "</div>
            </td><td class=\"spacer\"></td><td class=\"line-left\"></td><td class=\"spacer\"></td>
          <td style=\"vertical-align: top; width:50%;\">";
+unset($text);
 ?>                   

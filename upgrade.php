@@ -27,7 +27,7 @@ if(IsSet($_POST['usubmit'])){
 			$error = "Unable to continue - upgrade process must be carried out by main site administrator.";
 		}else{
 				
-			$sql -> db_Update("e107", "e107_version='5.05'");
+			$sql -> db_Update("e107", "e107_version='5.1'");
 			$text = "Version number updated to 5.05.<br />";
 
 			if(!$sql -> db_Select("prefs", "*", "pref_name='time_offset' ")){
@@ -35,14 +35,28 @@ if(IsSet($_POST['usubmit'])){
 			}
 			$text .= "Time offset pref added<br />";
 
+			if(!$sql -> db_Select("prefs", "*", "pref_name='flood_time' ")){
+				$sql -> db_Insert("prefs", "'flood_time', '30' ");
+			}
+			if(!$sql -> db_Select("prefs", "*", "pref_name='flood_hits' ")){
+				$sql -> db_Insert("prefs", "'flood_hits', '100' ");
+			}
+			$text .= "Basic flood prefs added<br />";
+
 			mysql_query("ALTER TABLE ".$mySQLprefix."prefs  CHANGE pref_value pref_value TEXT NOT NULL");
 			$text .= "Prefs table altered<br />";
 			mysql_query("ALTER TABLE ".$mySQLprefix."forum_t ADD thread_s TINYINT(1) UNSIGNED NOT NULL");
 			$text .= "Forum_t table altered<br />";
 
-			if($sql -> db_Select("prefs", "*", "pref_name='sitetag' AND pref_value='Website System Version 5.03' ")){
-				$sql -> db_Update("prefs", "pref_value='Website System Version 5.05' WHERE pref_name='sitetag' ");
+			if($sql -> db_Select("prefs", "*", "pref_name='sitetag' AND pref_value='Website System Version 5.05' ")){
+				$sql -> db_Update("prefs", "pref_value='Website System Version 5.1' WHERE pref_name='sitetag' ");
 			}
+
+			mysql_query("CREATE TABLE ".$mySQLprefix."flood ( flood_url text NOT NULL, flood_time int(10) unsigned NOT NULL default '0') TYPE=MyISAM;");
+			$text .= "Flood table created<br />";
+
+			mysql_query("ALTER TABLE e107_admin CHANGE admin_permissions admin_permissions TEXT NOT NULL");
+			$text .= "Admin table updated<br />";
 
 			$text .= "<br /><br />Upgrade process complete - now running e107 version ".VERSION.".";
 		}

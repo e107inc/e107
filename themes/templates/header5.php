@@ -24,9 +24,13 @@ echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
     <meta http-equiv="content-style-type" content="text/css" />
 <script type="text/javascript">
-function Navigate() {
-var number = NavSelect.selectedIndex;
-location.href = NavSelect.options[number].value; }
+<!--
+var ref=""+escape(top.document.referrer);
+var colord = window.screen.colorDepth; 
+var res = window.screen.width + "x" + window.screen.height;
+var self = document.location;
+document.write("<img src='plugins/log2.php?referer=" + ref + "&amp;color=" + colord + "&amp;self=" + self + "&amp;res=" + res + "' style='float:left; border:0' alt='' />");
+//-->
 </script>
   </head>
 <body>
@@ -40,7 +44,7 @@ echo "
 
 <td style=\"background-color:#E2E2E2; text-align:".$logo_align."\">";
 if($logo_display == TRUE){
-	echo "\n<img src=\"themes/e107/images/logo.png\" alt=\"Logo\" />";
+	echo "\n<img src=\"themes/shared/logo.png\" alt=\"Logo\" />";
 }else{
 	echo "<span class=\"captiontext\">".SITENAME."</span><br />\n";
 	if($tag_display == TRUE){
@@ -94,4 +98,5 @@ echo "<br />
 </td>
 <td style=\"width:".$maincolumn."; vertical-align: top\">";
 $style = "default";
+unset($text);
 ?>

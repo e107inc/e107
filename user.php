@@ -118,7 +118,7 @@ if(!$sql -> db_Select("user", "*",  "ORDER BY user_id $order LIMIT $from,$record
 $ix = new nextprev("user.php", $from, $records, $users_total, LAN_138, $records.".".$order);
 
 function renderuser($user_id, $user_name, $null, $user_sess, $user_email, $user_homepage, $user_icq, $user_aim, $user_msn, $user_location, $user_birthday, $user_signature, $user_image, $user_timezone, $user_hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_prefs, $user_new, $user_viewed, $user_visits){
-	$caption = "<div style=\"text-align:center\">".LAN_142." ".$user_id.": ".$user_name."</div>";
+	$caption = LAN_142." ".$user_id.": ".$user_name."</div>";
 	$text = "<table style=\"width:95%\"><tr>
 <td style=\"width:25%\">".LAN_112."</td>
 <td style=\"width:75%\">";
@@ -163,7 +163,10 @@ function renderuser($user_id, $user_name, $null, $user_sess, $user_email, $user_
 		<td style=\"width:75%\">".$user_birthday."</td></tr>";
 	}
 
+	$aj = new textparse();
+
 	if($user_signature != ""){
+		$user_signature = $aj -> tpa($user_signature);
 		$text .= "<tr><td style=\"width:25%\">".LAN_120."</td>
 		<td style=\"width:75%\">".$user_signature."</td></tr>";
 	}

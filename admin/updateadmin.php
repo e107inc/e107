@@ -17,7 +17,7 @@ require_once("../class2.php");
 if(IsSet($_POST['update_settings'])){
 	if($_POST['a_name'] != "" && $_POST['a_email'] != "" && $_POST['a_password'] != "" && $_POST['a_password2'] != "" && ($_POST['a_password'] == $_POST['a_password2'])){
 		$admin_ip = getip();
-		session_destroy(); session_unregister();
+//		session_destroy(); session_unregister();
 		$sql -> db_Update("admin", "admin_name='".$_POST['a_name']."', admin_password='".md5($_POST['a_password'])."', admin_email='".$_POST['a_email']."', admin_pwchange='".time()."' WHERE admin_id='".ADMINID."' ");
 
 		$sql -> db_Update("user", "user_password='".md5($_POST['a_password'])."' WHERE user_name='".ADMINNAME."' ");

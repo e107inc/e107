@@ -21,6 +21,15 @@ echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
     <link rel="stylesheet" href="<?php echo THEME; ?>style.css" />
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
     <meta http-equiv="content-style-type" content="text/css" />
+<script type="text/javascript">
+<!--
+var ref=""+escape(top.document.referrer);
+var colord = window.screen.colorDepth; 
+var res = window.screen.width + "x" + window.screen.height;
+var self = document.location;
+document.write("<img src='plugins/log2.php?referer=" + ref + "&amp;color=" + colord + "&amp;self=" + self + "&amp;res=" + res + "' style='float:left; border:0' alt='' />");
+//-->
+</script>
   </head>
 <body>
 <?php
@@ -85,6 +94,8 @@ echo "</td>
 </p>
 </form>";
 
+/*
+Uncomment to use QOTD plugin in header
 $qotd_file = $pref['qotd_file'][1];
 if(!file_exists($qotd_file)){
 	$quote = "Quote file not found ($qotd_file)";
@@ -92,6 +103,7 @@ if(!file_exists($qotd_file)){
 	$quotes = file($qotd_file);
 	$quote = htmlspecialchars($quotes[rand(0, count($quotes))]);
 }
+*/
 
 echo "
 </td>
@@ -161,10 +173,8 @@ if(ADMIN == TRUE){
 	$text .= "</select>&nbsp;&nbsp;";
 	echo $text;
 }
-
+unset($text);
 
 ?>
-<br />
-<div style="text-align:center"><img src="files/images/tag2.png" alt="for l.j.t" /></div>
 </td>
 <td style="vertical-align: top;width:50%">

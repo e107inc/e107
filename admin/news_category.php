@@ -13,7 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(ADMINPERMS != 0 && ADMINPERMS != 1 && ADMINPERMS != 2){ header("location:../index.php"); }
+if(!getperms("7")){ header("location:../index.php"); }
 require_once("auth.php");
 
 if(IsSet($_POST['add_category'])){

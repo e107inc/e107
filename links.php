@@ -43,7 +43,7 @@ while(list($link_category_id, $link_category_name, $link_category_description) =
 			</td>
 			<td style=\"text-align: right; vertical-align:top; width:80px\">
 			<span class=\"smalltext\">[ ".LAN_88." $link_refer ]</span></td></tr>";
-			if(ADMIN == TRUE && ADMINPERMS <=2){
+			if(ADMIN == TRUE && getperms("I")){
 				$text .= "<tr><td colspan=\"3\" class=\"smalltext\">".LAN_89."[ <a href=\"admin/links.php?edit.".$link_id."\">".LAN_68."</a> ] [ <a href=\"admin/links.php?delete.".$link_id."\">".LAN_69."</a> ][ <a href=\"admin/links.php?add.".$link_category."\">".LAN_90."</a> ][ <a href=\"admin/link_category.php\">".LAN_91."</a> ]</td></tr>";
 			}
 			$text .= "</table>";
@@ -51,14 +51,6 @@ while(list($link_category_id, $link_category_name, $link_category_description) =
 		$ns -> tablerender($caption, $text);
 	}
 }
-
-
-
-
-
-
-
-
 
 
 /*

@@ -13,9 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(ADMINPERMS != 0 && ADMINPERMS != 1){
-	header("location:../index.php");
-}
+if(!getperms("P")){ header("location:../index.php"); }
 
 if(IsSet($_POST['updatesettings'])){
 	$sql -> db_Update("prefs", "pref_value='".$_POST['smiley_activate']."' WHERE pref_name='smiley_activate' ");

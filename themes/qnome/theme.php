@@ -38,7 +38,7 @@ echo "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">
            <tr>
            
            <td class=\"head-left\"></td>
-            <td class=\"head\"><span class =\"captiontext\">$mode $caption</span></td>
+            <td class=\"head\"><span class =\"captiontext\">$caption</span></td>
             <td class=\"head-right\"></td>
            </tr>
            <tr>

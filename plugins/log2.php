@@ -1,95 +1,188 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system													|
-|	/plugins/log.php															|
-|																						|
-|	©Steve Dunstan 2001-2002										|
-|	http://jalist.com															|
-|	stevedunstan@jalist.com											|
-|																						|
-|	Released under the terms and conditions of the		|
-|	GNU General Public License (http://gnu.org).				|
+|	e107 website system
+|	/plugins/log2.php
+|
+|	©Steve Dunstan 2001-2002
+|	http://jalist.com
+|	stevedunstan@jalist.com
+|
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
-if(ADMIN == FALSE){
-$self = $_SERVER['PHP_SELF'];
+$colour = $_REQUEST['color'];
+$res = $_REQUEST['res'];
+$self = $_REQUEST['self'];
+$referer = $_REQUEST['ref'];
+$str = "http://".$_SERVER['SERVER_NAME'];
+$str2 = eregi_replace("www.","",  $str);
+$self = eregi_replace("$str|$str2|\?.*", "", $self);
 
-$ip = getip();
-
-$date = date("Y-m-d");
-
-if(!$sql -> db_Select("stat_counter", "*", "counter_url='".$self."' AND counter_date='$date' ")){
-	// page not parsed before - create new entry ...
-	$ip .= ".";
-	$sql -> db_Insert("stat_counter", "CURRENT_DATE, '$self', '0', '0', '$ip', '0', '0' ");
-}else if(!$sql -> db_Select("stat_counter", "*", "counter_url='".$self."' AND counter_date='$date' ")){
-	// First visit of the day - update tables ...
-	$sql -> db_Update("stat_counter", "counter_ip='', counter_date='$date', counter_unique=counter_unique+1, counter_total=counter_total+1, counter_today_total='1', counter_today_unique='1' WHERE counter_url='".$self."' ");
+if($self == "/"){
+	$self = "/index.php";
 }
+
+$screenstats = $res." @ ".$colour;
+require_once("../class2.php");
+
+if($pref['log_activate'][1] == 1 && ADMIN == FALSE){
+
+	$agent = $_SERVER['HTTP_USER_AGENT'];
+	$browser = getbrowser($agent);
+	$os = getos($agent);
+	$country = getcountry();
+
+	$ip = getip();
+
+
+	$date = date("Y-m-d");
+
+	if(!$sql -> db_Select("stat_counter", "*", "counter_url='".$self."' AND counter_date='$date' ")){
+		// page not parsed before - create new entry ...
+		$ip .= ".";
+		$sql -> db_Insert("stat_counter", "CURRENT_DATE, '$self', '0', '0', '$ip', '0', '0' ");
+		$yesterday = date("Y-m-d", time()-86400);
+		$sql -> db_Update("stat_counter", "counter_ip='' WHERE counter_url='".$self."' AND counter_date='$yesterday' ");
+	}
 	// Not first visit - update tables
 	list($counter_date, $counter_url, $counter_unique, $counter_total, $counter_ip, $counter_today_total, $counter_today_unique) = $sql-> db_Fetch();
 	if(!ereg($ip, $counter_ip) && (!eregi("admin", $self))){
 		// ip is not stored and not an admin page so unique visit - update counters
 		
 		$iplist = $counter_ip."-".$ip;
-		$sql -> db_Update("stat_counter", "counter_ip='$iplist', counter_unique=counter_unique+1, counter_total=counter_total+1, counter_today_total=counter_today_total+1, counter_today_unique=counter_today_unique+1 WHERE counter_url='".$_SERVER['PHP_SELF']."' ");
+		$sql -> db_Update("stat_counter", "counter_ip='$iplist', counter_unique=counter_unique+1, counter_total=counter_total+1 WHERE counter_url='".$self."' ");
+		
 
-		// log visitor stats
-
-		$agent =$HTTP_USER_AGENT;
-
-		if(eregi("MSIE",$agent)){
-			$browser = "Internet Explorer";
-		}else if(eregi("Opera",$agent)){
-			$browser = "Opera";
-		}else if(eregi("Konqueror",$agent)){
-			$browser = "Konqueror";
-		}else if(eregi("Lynx",$agent)){
-			$browser = "Lynx";
-		}else if(eregi("Mozilla/5",$agent)){
-			$browser = "Netscape";
-		}else if(eregi("(netscape6)/(6.[0-9]{1,3})",$agent,$ver)){
-			$browser = "Netscape $ver[2]";
-		}else if(eregi("(Mozilla)/([0-9]{1,2}.[0-9]{1,3})",$agent,$ver)){
-			$browser = "Netscape $ver[2]";
-		}else{
-			$browser = "Unknown";
+		if($browser != ""){
+			if($sql -> db_Count("stat_info", "(*)", " WHERE info_name='$browser' ")){
+				$sql -> db_Update("stat_info", "info_count=info_count+1 WHERE info_name='$browser' ");
+			}else{
+				$sql -> db_Insert("stat_info", " '$browser', '1', '1' ");
+			}
 		}
 
-		if(eregi("win32",$agent)){
-			$os = "Windows";
-		}else if(eregi("linux",$agent)){
-			$os = "Linux";
-		}else if(eregi("Win 9x 4.90",$agent)){
-			$os = "Windows Me";
-		}else if(eregi("Windows 2000",$agent) || eregi("(Windows NT)( ){0,1}(5.0)",$browser)){
-			$os = "Windows 2000";
-		}else if(eregi("(Windows NT)( ){0,1}(5.1)",$agent)){
-			$os = "Windows XP";
-		}else if( (eregi("(Win)([0-9]{2})",$agent,$ver)) || (eregi("(Windows) ([0-9]{2})",$agent,$ver)) ){
-			$os = "Windows $ver[2]";
-		}else if(eregi("(WinNT)([0-9]{1,2}.[0-9]{1,2}){0,1}",$agent,$ver)){
-			$os = "Windows NT $ver[2]";
-		}else if(eregi("(Windows NT)( ){0,1}([0-9]{1,2}.[0-9]{1,2}){0,1}",$agent,$ver)){
-			$os = "Windows NT $ver[3]";
-		}else if(eregi("OS2",$agent)){
-			$os = "OS2";
-		}else if(eregi("Mac",$agent)){
-			$os = "Apple Macintosh";
-		}else if(eregi("BeOS",$agent)){
-			$os = "BeOS";
-		}else if(eregi("Unix", $agent) || eregi("HP-ux", $agent) || eregi("X11", $agent)){
-			$os = "Unix";
-		}else if(eregi("OpenBSD",$agent)){
-			$os = "OpenBSD";
-		}else if(eregi("FreeBSD",$agent)){
-			$os = "FreeBSD";
-		}else{
-			$os = "Unknown";
+		if($os != ""){
+			if($sql -> db_Count("stat_info", "(*)", " WHERE info_name='$os' ")){
+				$sql -> db_Update("stat_info", "info_count=info_count+1 WHERE info_name='$os' ");
+			}else{
+				$sql -> db_Insert("stat_info", " '$os', '1', '2' ");
+			}
 		}
 
-		if($host = gethostbyaddr(getenv(REMOTE_ADDR))){
+		if($country != ""){
+			if($sql -> db_Count("stat_info", "(*)", " WHERE info_name='$country' ")){
+				$sql -> db_Update("stat_info", "info_count=info_count+1 WHERE info_name='$country' ");
+			}else{
+				$sql -> db_Insert("stat_info", " '$country', '1', '4' ");
+			}
+		}
+
+		if($screenstats != ""){
+			if($sql -> db_Count("stat_info", "(*)", " WHERE info_name='$screenstats' ")){
+				$sql -> db_Update("stat_info", "info_count=info_count+1 WHERE info_name='$screenstats' ");
+			}else{
+				$sql -> db_Insert("stat_info", " '$screenstats', '1', '5' ");
+			}
+		}
+		
+		if($referer != ""){
+			if($pref['log_refertype'][1] == 0){
+				if($sql -> db_Select("stat_info", "*", "info_name='$referer' ")){
+					$sql -> db_Update("stat_info", "info_count=info_count+1 WHERE info_name='$referer' ");
+				}else{
+					$sql -> db_Insert("stat_info", " '$ref', '1', '6' ");
+				}
+			}else{
+				// Log whole URL
+				if($sql -> db_Select("stat_info", "*", "info_name='$referer' ")){
+					$sql -> db_Update("stat_info", "info_count=info_count+1 WHERE info_name='$referer' ");
+				}else{
+					$sql -> db_Insert("stat_info", " '$referer', '1', '6' ");
+				}
+			}
+		}
+
+	}else{
+		$sql -> db_Update("stat_counter", "counter_total=counter_total+1 WHERE counter_url='".$self."' AND counter_date='$date' ");
+	}
+}
+
+header("Content-type: image/gif");
+readfile("../themes/shared/generic/trans.gif");
+
+function getbrowser($agent){
+	
+
+	if(eregi("Netcaptor", $agent)){
+		$browser = "Netcaptor";
+	}else if(eregi("MSIE",$agent)){
+		$browser = "Internet Explorer";
+	}else if(eregi("Opera",$agent)){
+		$browser = "Opera";
+	}else if(eregi("Konqueror",$agent)){
+		$browser = "Konqueror";
+	}else if(eregi("Lynx",$agent) || eregi("Links", $agent)){
+		$browser = "Lynx";
+	}else if(eregi("Mozilla/5",$agent)){
+		$browser = "Netscape";
+	}else if(eregi("(netscape6)/(6.[0-9]{1,3})",$agent,$ver)){
+		$browser = "Netscape $ver[2]";
+	}else if(eregi("(Mozilla)/([0-9]{1,2}.[0-9]{1,3})",$agent,$ver)){
+		$browser = "Netscape $ver[2]";
+	}else if(eregi("Galeon", $agent)){
+		$browser = "Galeon";
+	}else if(eregi("ZyBorg|WebCrawler|Slurp|Googlebot|MuscatFerret|ia_archiver", $agent)){
+		$browser = "Web indexing robot";
+	}else{
+		$browser = "Unknown";
+	}
+	return $browser;
+}
+
+function getos($agent){
+	if(eregi("win32",$agent)){
+		$os = "Windows";
+	}else if(eregi("linux",$agent)){
+		$os = "Linux";
+	}else if(eregi("Win 9x 4.90",$agent)){
+		$os = "Windows Me";
+	}else if(eregi("Windows 2000",$agent) || eregi("(Windows NT)( ){0,1}(5.0)",$browser)){
+		$os = "Windows 2000";
+	}else if(eregi("(Windows NT)( ){0,1}(5.1)",$agent)){
+		$os = "Windows XP";
+	}else if( (eregi("(Win)([0-9]{2})",$agent,$ver)) || (eregi("(Windows) ([0-9]{2})",$agent,$ver)) ){
+		$os = "Windows $ver[2]";
+	}else if(eregi("(WinNT)([0-9]{1,2}.[0-9]{1,2}){0,1}",$agent,$ver)){
+		$os = "Windows NT $ver[2]";
+	}else if(eregi("(Windows NT)( ){0,1}([0-9]{1,2}.[0-9]{1,2}){0,1}",$agent,$ver)){
+		$os = "Windows NT $ver[3]";
+	}else if(eregi("OS2",$agent)){
+		$os = "OS2";
+	}else if(eregi("Mac",$agent)){
+		$os = "Apple Macintosh";
+	}else if(eregi("BeOS",$agent)){
+		$os = "BeOS";
+	}else if(eregi("Unix", $agent) || eregi("HP-ux", $agent) || eregi("X11", $agent)){
+		$os = "Unix";
+	}else if(eregi("OpenBSD",$agent)){
+		$os = "OpenBSD";
+	}else if(eregi("FreeBSD",$agent)){
+		$os = "FreeBSD";
+	}else{
+		$os = "Unknown";
+	}
+
+	if($os == "Windows NT 5.0"){
+		$os = "Windows XP";
+	}
+
+	return $os;
+}
+
+function getcountry(){
+	if($host = gethostbyaddr(getenv(REMOTE_ADDR))){
 			$dom = substr($host, strrpos($host, ".")+1);
 
 			$country["arpa"]="ARPANet"; 
@@ -347,58 +440,7 @@ if(!$sql -> db_Select("stat_counter", "*", "counter_url='".$self."' AND counter_
 		}else{
 			$scountry = "";
 		}
-
-		$referer = $_SERVER['HTTP_REFERER'];
-		
-		if($browser != ""){
-			if($sql -> db_Count("stat_info", "(*)", " WHERE info_name='$browser' ")){
-				$sql -> db_Update("stat_info", "info_count=info_count+1 WHERE info_name='$browser' ");
-			}else{
-				$sql -> db_Insert("stat_info", " '$browser', '1', '1' ");
-			}
-		}
-
-		if($os != ""){
-			if($sql -> db_Count("stat_info", "(*)", " WHERE info_name='$os' ")){
-				$sql -> db_Update("stat_info", "info_count=info_count+1 WHERE info_name='$os' ");
-			}else{
-				$sql -> db_Insert("stat_info", " '$os', '1', '2' ");
-			}
-		}
-
-		if($scountry != ""){
-			if($sql -> db_Count("stat_info", "(*)", " WHERE info_name='$scountry' ")){
-				$sql -> db_Update("stat_info", "info_count=info_count+1 WHERE info_name='$scountry' ");
-			}else{
-				$sql -> db_Insert("stat_info", " '$scountry', '1', '4' ");
-			}
-		}
-
-		$siteurl = parse_url(SITEURL);
-		if(!eregi($siteurl['host'], $referer) && !eregi("localhost", $referer)){
-			if($referer != ""){
-				if($pref['log_refertype'][1] == 0){
-					// log domain only
-					$rl = parse_url($referer);
-					$ref =  eregi_replace("www.", "", $rl['host']);
-					if($sql -> db_Select("stat_info", "*", "info_name='$ref' ")){
-						$sql -> db_Update("stat_info", "info_count=info_count+1 WHERE info_name='$ref' ");
-					}else{
-						$sql -> db_Insert("stat_info", " '$ref', '1', '6' ");
-					}
-				}else{
-					// Log whole URL
-					if($sql -> db_Select("stat_info", "*", "info_name='$referer' ")){
-						$sql -> db_Update("stat_info", "info_count=info_count+1 WHERE info_name='$referer' ");
-					}else{
-						$sql -> db_Insert("stat_info", " '$referer', '1', '6' ");
-					}
-				}
-			}
-		}
-
-	}else{
-		$sql -> db_Update("stat_counter", "counter_total=counter_total+1, counter_today_total=counter_today_total+1 WHERE counter_url='".$_SERVER['PHP_SELF']."' ");
-	}
+		return $scountry;
 }
+
 ?>

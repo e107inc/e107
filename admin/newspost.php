@@ -13,7 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(ADMINPERMS != 0 && ADMINPERMS != 1 && ADMINPERMS != 2 && ADMINPERMS != 3){ header("location:../index.php"); }
+if(!getperms("H")){ header("location:../index.php"); }
 
 require_once("auth.php");
 
@@ -257,9 +257,7 @@ Line breaks (&lt;br /&gt;) are auto added. <u>Underlined fields are required.</u
 <input type=\"hidden\" name=\"news_id\" value=\"$news_id\">
 </form>";
 $ns -> tablerender("<div style=\"text-align:center\">News Post</div>", $text);
-require_once("footer.php");
 ?>
-
 <script type="text/javascript">
 function addtext(sc){
 	document.newspostform.news_body.value += sc;
@@ -275,3 +273,7 @@ function help(help){
 	document.newspostform.helpb.value = help;
 }
 </script>
+<?php
+require_once("footer.php");
+?>
+

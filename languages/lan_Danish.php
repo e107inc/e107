@@ -234,5 +234,39 @@ define(LAN_182, "Chatbox");
 define(LAN_183, "Hoved menu");
 define(LAN_184, "Afstemning");
 
+//  version 5
+
+define(LAN_186, "Send Nyhed");
+define(LAN_187, "Send til Email adresse ");
+define(LAN_188, "Jeg tænkte du var interesseret i denne nyhed");
+define(LAN_189, "Lavet med");
+define(LAN_190, "Anmeldelser");
+define(LAN_191, "Information");
+define(LAN_192, "Brugerne har ialt skrevet ");
+define(LAN_193, "Forum Bestyrer");
+define(LAN_194, "Gæst");
+define(LAN_195, "Registeret medlem");
+define(LAN_196, "Du har læst ");
+define(LAN_197, "af disse poster.");
+define(LAN_198, " Alle nye poster læst.");
+define(LAN_199, "Marker alle poster som læst");
+define(LAN_200, "Luk denne tråd");
+define(LAN_201, "genåben denne tråd");
+define(LAN_202, "En stinker");
+define(LAN_203, "Lukket tråd/stinker");
+define(LAN_204, "Du <b>kan</b> starte nye indlæg");
+define(LAN_205, "Du <b>kan ikke</b> start new threads");
+define(LAN_206, "Du <b>kan</b> poste svar");
+define(LAN_207, "Du <b>kan ikke</b> poste svar");
+define(LAN_208, "Du <b>kan</b> redigere dine indlæg");
+define(LAN_209, "Du <b>kan ikke</b> redigere dine indlæg");
+define(LAN_210, "Du <b>kan</b> slette dine indlæg");
+define(LAN_211, "Du <b>kan ikke </b> slette dine indlæg");
+define(LAN_212, "Glemt password?");
+define(LAN_213, "Brugernavn/email ikke fundet i databasen .");
+define(LAN_214, "Kan ikke resette password");
+define(LAN_215, "Dit password til  ".SITENAME." er slettet. Nyt er\n\n");
+define(LAN_216, "For at verificere nyt kodeord gå til URL ...");
+define(LAN_217, "Tak. dit nye password er ok du kan gå videre.");
 
 ?>

@@ -12,6 +12,8 @@
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
+$captionlinkcolour = "#fff";
+
 require_once("class2.php");
 
 $qs = explode(".", $_SERVER['QUERY_STRING']);
@@ -129,7 +131,7 @@ $sql -> db_Select("forum_t", "*",  "thread_datestamp>'".USERLV."' ");
 }
 
 require_once(HEADERF);
-
+unset($text);
 if($error != ""){
 	$ns -> tablerender("<div style=\"text-align:center\">".LAN_20."</div>", $error);
 }
@@ -182,7 +184,7 @@ if(!$_SERVER['QUERY_STRING']){
 			}
 
 			if($newflag == TRUE){
-				$text .= "<tr><td style=\"width:5%; text-align:center\" class=\"forumheader2\"><img src=\"themes/shared/forum/new.png\" alt=\"\"></td>";
+				$text .= "<tr><td style=\"width:5%; text-align:center\" class=\"forumheader2\"><img src=\"themes/shared/forum/new.png\" alt=\"\" /></td>";
 			}else{
 				$text .= "<tr><td style=\"width:5%; text-align:center\" class=\"forumheader2\"><img src=\"themes/shared/forum/nonew.png\" alt=\"\" /></td>";
 			}
@@ -193,7 +195,7 @@ $text .= "<td style=\"width:55%\" class=\"forumheader2\"><a href=\"forum.php?for
 
 
 					if($forum_threads == 0 && $forum_replies == 0){
-						$text .= "No posts yet";
+						$text .= "No posts yet</td>";
 					}else{
 						$lp = explode(".", $forum_lastpost);
 						if(ereg("[0-9]+", $lp[0])){
@@ -201,7 +203,7 @@ $text .= "<td style=\"width:55%\" class=\"forumheader2\"><a href=\"forum.php?for
 							$lastpost_author_name = $lp[1];
 							$lastpost_datestamp = $lp[2];
 							$lastpost_datestamp = $gen->convert_date($lastpost_datestamp, "forum");
-							$text .= $lastpost_datestamp."<br /><a href=\"user.php?id.".$lastpost_author_id."\">".$lastpost_author_name."</a>";
+							$text .= $lastpost_datestamp."<br /><a href=\"user.php?id.".$lastpost_author_id."\">".$lastpost_author_name."</a></td>";
 						}
 					}
 
@@ -221,7 +223,7 @@ $text .= "<td style=\"width:55%\" class=\"forumheader2\"><a href=\"forum.php?for
 <td colspan=\"2\" style=\"width:60%\" class=\"fcaption\">".LAN_191."</td>
 </tr>
 <tr>
-<td rowspan=\"2\" style=\"width:5%; text-align:center\" class=\"forumheader3\"><img src=\"themes/shared/forum/e.png\" alt=\"\"></td>
+<td rowspan=\"2\" style=\"width:5%; text-align:center\" class=\"forumheader3\"><img src=\"themes/shared/forum/e.png\" alt=\"\" /></td>
 ";
 
 	if(USER == TRUE){
@@ -307,9 +309,14 @@ if($action == "forum"){
 		$pages = 0;
 	}
 
-	$text = "<div class=\"captiontext\"><a href=\"index.php\">".SITENAME."</a> >> <a href=\"forum.php\">Forums</a> >> <b>".$forum_name."</b></div>
-
-	<table style=\"width:100%\"><tr><td width=\"50%\">moderators: $forum_moderators";
+	$text = "<table style=\"width:100%\" class=\"fborder\">
+	<tr>
+	<td  colspan=\"2\" class=\"fcaption\">
+	<a style=\"color:$captionlinkcolour\" href=\"index.php\">".SITENAME."</a> >> <a style=\"color:$captionlinkcolour\" href=\"forum.php\">Forums</a> >> <b>".$forum_name."</b>
+	</td>
+	</tr>
+	<tr>
+	<td style=\"width:50%; vertical-align:bottom\">moderators: $forum_moderators";
 	
 	if($pages != 0){
 		$text .= "<br />Go to page ";
@@ -328,9 +335,9 @@ if($action == "forum"){
 	if(ANON == TRUE || IsSet($_SESSION['userkey'])){
 		$text .= "<a href=\"".$_SERVER['PHP_SELF']."?nt.".$forum_id.".".$thread_id."\"><img src=\"themes/shared/forum/newthread.png\" alt=\"\" style=\"border:0\" /></a>";
 	}
-	$text .= "</td></tr></table>";
-	
-	
+	$text .= "</td></tr><tr>
+	<td colspan=\"2\">";
+
 	echo $text;
 
 	echo "
@@ -421,10 +428,11 @@ if($action == "forum"){
 					}else{
 						echo "[ <a href=\"admin/forum_conf.php?open.".$forum_id.".".$thread_id."\">".LAN_201."</a> ]";
 					}
+					echo "</div>";
 				}
 			}
 			
-			echo "</div></td>
+			echo "</td>
 <td style=\"vertical-align:top; text-align:center; width:20%\" class=\"forumheader3\">".$thread_datestamp."<br /><a href=\"user.php?id.".$post_author_id."\">".$post_author_name."</a></td>
 <td style=\"vertical-align:center; text-align:center; width:5%\" class=\"forumheader3\">$replies</td>
 <td style=\"vertical-align:center; text-align:center; width:5%\" class=\"forumheader3\">$thread_views</td>
@@ -462,6 +470,7 @@ if(ANON == TRUE || IsSet($_SESSION['userkey'])){
 	</table>";
 
 	echo $text;
+	echo "</td></tr></table>";
 }
 
 //############################################################################################# new thread
@@ -479,7 +488,7 @@ if($action == "nt"){
 	list($forum_id, $forum_name, $forum_description, $parent, $forum_datestamp, $forum_active, $forum_moderators) = $sql-> db_Fetch();
 
 	echo "<div class=\"captiontext\">
-	<a href=\"index.php\">".SITENAME."</a> -> <a href=\"forum.php\">Forums</a> >> <a href=\"forum.php?forum.".$forum_id."\">".$forum_name."</a></div>";
+	<a href=\"index.php\">".SITENAME."</a> -> <a href=\"forum.php\">Forums</a> >> <a href=\"forum.php?forum.".$forum_id."\"><b>".$forum_name."</b></a></div>";
 
 	echo "
 <form method=\"post\" action=\"".$_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING']."\" name=\"newthread\">\n
@@ -506,7 +515,7 @@ if($action == "nt"){
 <td class=\"forumheader2\" style=\"width:60%\">
 <textarea class=\"tbox\" name=\"post\" cols=\"70\" rows=\"10\"></textarea>
 <br />
-<input class=\"fhelpbox\" type=\"text\" name=\"helpb\" size=\"80\" />
+<input class=\"fhelpbox\" type=\"text\" name=\"helpb\" size=\"90\" />
 <br />
 <input class=\"button\" type=\"button\" style=\"font-weight:bold; width: 35px\" value=\"b\" onclick=\"addtext('[b][/b]')\" onMouseOver=\"help('Bold text: [b]This text will be bold[/b]')\" onMouseOut=\"help('')\">
 <input class=\"button\" type=\"button\" style=\"font-style:italic; width: 35px\" value=\"i\" onclick=\"addtext('[i][/i]')\" onMouseOver=\"help('Italic text: [i]This text will be italicised[/i]')\" onMouseOut=\"help('')\">
@@ -579,14 +588,18 @@ if($action == "view"){
 	list($thread_id, $thread_name, $thread_thread, $thread_forum_id, $thread_datestamp, $thread_parent, $thread_user, $thread_views, $thread_active) = $sql -> db_Fetch();
 
 	
-	echo "<div class=\"captiontext\"><a href=\"index.php\">".SITENAME."</a> -> <a href=\"forum.php\">Forums</a> -> <a href=\"forum.php?forum.".$forum_id."\"><b>".$forum_name."</b></a> -><br /><b>".$thread_name."</b></div>
+	//echo "<div class=\"captiontext\"><a href=\"index.php\">".SITENAME."</a> -> <a href=\"forum.php\">Forums</a> -> <a href=\"forum.php?forum.".$forum_id."\"><b>".$forum_name."</b></a> -><br /><b>".$thread_name."</b></div>
 
-	<table style=\"width:100%\"><tr><td width=\"50%\">";
+	echo "<table style=\"width:100%\" class=\"fborder\">
+	<tr>
+	<td  colspan=\"2\" class=\"fcaption\"><a style=\"color:$captionlinkcolour\" href=\"index.php\">".SITENAME."</a> -> <a style=\"color:$captionlinkcolour\" href=\"forum.php\">Forums</a> -> <a style=\"color:$captionlinkcolour\" href=\"forum.php?forum.".$forum_id."\">".$forum_name."</a> -> ".$thread_name."</td>
+	
+	</tr><tr><td style=\"width:50%; vertical-align:bottom\">";
 	if(ADMIN == TRUE && eregi(ADMINNAME, $forum_moderators)){
 		echo "<br />".LAN_65;
 	}
 	
-	echo "<td style=\"width:50%; text-align:right\">";
+	echo "</td><td style=\"width:50%; text-align:right\">";
 
 	if(ANON == TRUE || IsSet($_SESSION['userkey'])){
 		if($thread_active != 0){
@@ -594,7 +607,8 @@ if($action == "view"){
 		}
 		echo "<a href=\"".$_SERVER['PHP_SELF']."?nt.".$forum_id.".".$thread_id."\"><img src=\"themes/shared/forum/newthread.png\" alt=\"\" style=\"border:0\" /></a>";
 	}
-	echo "</td></tr></table>";	
+
+	echo "</td></tr><tr><td colspan=\"2\">";
 
 	if($thread_active == 0){
 		echo "<div class=\"mediumtext\"  style=\"text-align:center\"><b>".LAN_66."</b></div>";
@@ -663,6 +677,7 @@ $text .= "</td>
 ".$thread_thread;
 
 if($user_signature != ""){
+	$user_signature = $aj -> tpa($user_signature);
 	$text .= "<br />
 <hr style=\"width:30%; text-align:left\" />
 ".$user_signature;
@@ -774,6 +789,7 @@ $text .= LAN_67.": $replier_count
 ".$thread_thread;
 
 if($user_signature != ""){
+	$user_signature = $aj -> tpa($user_signature);
 	$text .= "<br />
 <hr style=\"width:30%; text-align:left\" />
 ".$user_signature;
@@ -846,6 +862,8 @@ if($pref['anon_post'][1] == "1" || USER == TRUE){
 
 	echo $text;
 	
+	echo "</td></tr></table>";	
+
 //	$sql -> db_Update("user", "user_new='$user_new' WHERE user_sess='".session_id()."' ");
 
 }
@@ -1137,7 +1155,6 @@ $text .= "</td></tr>
 </div>";
 echo $text;
 }
-require_once(FOOTERF);
 
 ?>
 <script type="text/javascript">
@@ -1148,3 +1165,6 @@ function help(help){
 	document.newthread.helpb.value = help;
 }
 </script>
+<?php
+require_once(FOOTERF);
+?>

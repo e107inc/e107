@@ -33,28 +33,27 @@ if(!$sql -> db_Select("content", "*", " content_id='$id' ")){
 }
 
 if(IsSet($_POST['submit'])){
+
 	$fp = new floodprotect;
 	if($fp -> flood("comments", "comment_datestamp") == FALSE){
 		header("location:index.php");
 		die();
 	}
-	if(!$sql -> db_Select("comments", "*", "comment_comment='".$_POST['comment']."' AND comment_author='$author_name' AND comment_type='1' ")){
-		if($comment != ""){
+	if(!$sql -> db_Select("comments", "*", "comment_comment='".$_POST['comment']."' AND comment_item_id='$id' AND comment_type='1' ")){
+		if($_POST['comment'] != ""){
 			if(USER != TRUE){
 				if($_POST['author_name'] == ""){
 					$author = "0.Anonymous";
 				}else{
-					
 					$author = "0.". $aj -> tp($_POST['author_name']);
 				}
 			}else{
 				$author = USERID.".".USERNAME;
 				$sql -> db_Update("user", "user_comments=user_comments+1, user_lastpost='".time()."' WHERE user_id='".USERID."' ");
 			}
-
+			$ip = getip();
 			$comment = $aj -> tp($_POST['comment']);
-
-			$sql -> db_Insert("comments", "0, '$id', '$author', '$author_email', '".time()."', '$comment', '0', '".getenv("REMOTE_ADDR")."', '1' ");
+			$sql -> db_Insert("comments", "0, '$id', '$author', '$author_email', '".time()."', '$comment', '0', '$ip', '1' ");
 
 		}
 	}
@@ -68,13 +67,13 @@ list($content_id, $content_heading) = $sql-> db_Fetch();
 $sql -> db_Select("content", "*", "content_heading='$content_heading' ");
 list($content_id, $main_content_heading, $content_subheading, $content_content, $content_page, $content_datestamp, $content_author, $main_content_comment, $comment_parent, $content_type) = $sql-> db_Fetch();
 
-if($content_type == 254 || $content_type == 255){
-	if($content_page == 1){
-		$text = $aj -> tpa($content_content, $mode="on");
-	}else{
-		$text = $aj -> tpa($content_content);
+if($page == 255){
+	$text = $aj -> tpa($content_content, $mode="on");
+	$caption = $aj -> tpa($content_subheading);
+	$ns -> tablerender($caption, $text);
+	if($main_content_comment){
+		comment();
 	}
-	$ns -> tablerender($content_subheading, $text);
 	require_once(FOOTERF);
 	exit;
 }
@@ -141,7 +140,15 @@ if($totalpages > 1){
 }
 
 if($main_content_comment == 1 && ($page+1) == $totalpages){
+	comment();
+}
+
+function comment(){
+	global $id;
+	$sql = new db;
 	$sql2 = new db;
+	$aj = new textparse;
+	$ns = new table;
 	$comment_total = $sql -> db_Select("comments", "*", "comment_item_id='$id' AND comment_type='1' ");
 	if($comment_total != 0){
 	$text = "";
@@ -176,8 +183,7 @@ if($comment_blocked == 1){
 $text .= "</span>
 </td>";
 
-
-if(ADMIN == TRUE){
+if(ADMIN == TRUE && getperms("B")){
 	$text .= "<td style=\"text-align:right\">
 <div class=\"smalltext\">";
 
@@ -238,8 +244,8 @@ $text .= "<tr>
 </tr>
 </table>
 </form>";
-
 $ns -> tablerender("Submit comment", $text);
 }
+
 require_once(FOOTERF);
 ?>

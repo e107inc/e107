@@ -14,6 +14,8 @@
 */
 require_once("../class2.php");
 
+if(!getperms("B")){ header("location:../index.php"); }
+
 if(IsSet($_SERVER['QUERY_STRING'])){
 	$temp = explode("-", $_SERVER['QUERY_STRING']);
 	$action = $temp[0];

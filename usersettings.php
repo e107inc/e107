@@ -14,7 +14,9 @@
 */
 require_once("class2.php");
 if(USER == FALSE && ADMIN == FALSE){ header("location:index.php"); }
+
 $_uid = $_SERVER['QUERY_STRING'];
+
 if(IsSet($_POST['_uid'])){ $_uid = $_POST['_uid']; }
 require_once(HEADERF);
 if(IsSet($_POST['updatesettings'])){
@@ -40,7 +42,7 @@ if(IsSet($_POST['updatesettings'])){
     }
 
 	if($error == ""){
-		if(IsSet($_uid)){ $inp = $_uid; }else{ $inp = USERID; }
+		if($_uid != ""){ $inp = $_uid; }else{ $inp = USERID; }
 		$sql -> db_Update("user", "user_password='$password', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$_POST['birthday']."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."' WHERE user_id='".$inp."' ");
 
 		$text = "<div style=\"text-align:center\">".LAN_150."</div>";
@@ -62,7 +64,7 @@ if($_uid != ""){
 list($user_id, $name, $user_password, $user_sess, $email, $website, $icq, $aim, $msn, $location, $birthday, $signature, $image, $user_timezone, $hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_new, $user_viewed, $user_prefs, $user_new, $user_viewed, $user_visits, $user_admin)  = $sql -> db_Fetch();
 
 $text = "
-<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."?stage2\">\n
+<form  name=\"settings\" method=\"post\" action=\"".$_SERVER['PHP_SELF']."?stage2\">\n
 <table style=\"width:95%\">
 <tr>
 <td style=\"width:20%\">".LAN_7."</td>
@@ -147,6 +149,16 @@ $text .= LAN_114."</td></tr><tr>
 <td style=\"width:20%\">".LAN_120."</td>
 <td style=\"width:80%\">
 <textarea class=\"tbox\" name=\"signature\" cols=\"70\" rows=\"4\">$signature</textarea>
+<br />
+<input class=\"fhelpbox\" type=\"text\" name=\"helpb\" size=\"90\" />
+<br />
+<input class=\"button\" type=\"button\" style=\"font-weight:bold; width: 35px\" value=\"b\" onclick=\"addtext('[b][/b]')\" onMouseOver=\"help('Bold text: [b]This text will be bold[/b]')\" onMouseOut=\"help('')\">
+<input class=\"button\" type=\"button\" style=\"font-style:italic; width: 35px\" value=\"i\" onclick=\"addtext('[i][/i]')\" onMouseOver=\"help('Italic text: [i]This text will be italicised[/i]')\" onMouseOut=\"help('')\">
+<input class=\"button\" type=\"button\" style=\"text-decoration: underline; width: 35px\" value=\"u\" onclick=\"addtext('[u][/u]')\" onMouseOver=\"help('Underline text: [u]This text will be underlined[/u]')\" onMouseOut=\"help('')\">
+<input class=\"button\" type=\"button\" style=\"width: 35px\" value=\"img\" onclick=\"addtext('[img][/img]')\" onMouseOver=\"help('Insert image: [img]mypicture.jpg[/img]')\" onMouseOut=\"help('')\">
+<input class=\"button\" type=\"button\" style=\"width: 35px\" value=\"cen\" onclick=\"addtext('[center][/center]')\" onMouseOver=\"help('Center align: [center]This text will be centered[/center]')\" onMouseOut=\"help('')\">
+<input class=\"button\" type=\"button\" value=\"link\" onclick=\"addtext('[link=hyperlink url]hyperlink text[/link]')\" onMouseOver=\"help('Insert link: [link]http://mysite.com[/link] or [link=http://yoursite.com]Visit My Site[/link]')\" onMouseOut=\"help('')\">
+<input class=\"button\" type=\"button\" style=\"width: 35px\" value=\"code\" onclick=\"addtext('[code][/code]')\" onMouseOver=\"help('Code - preformatted text: [code]\$var = foobah;[/code]')\" onMouseOut=\"help('')\">
 </td>
 </tr>
 
@@ -197,4 +209,13 @@ $text .= "</select>
 $ns -> tablerender(LAN_155, $text);
 
 require_once(FOOTERF);
+// shortcut code added by Chris McLeod 01.11.02 //
 ?>
+<script type="text/javascript">
+function addtext(sc){
+	document.settings.signature.value += sc;
+}
+function help(help){
+	document.settings.helpb.value = help;
+}
+</script>

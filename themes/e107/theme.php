@@ -66,7 +66,7 @@ define(LINKALIGN, "left");
 
 //	[tablestyle]
 function tablestyle($caption, $text, $mode=""){
-	if($mode == "default" || $mode == ""){
+	if($mode == "mode2"){
 		if($caption != ""){
 			echo "<div class=\"border\"><div class=\"caption\">".$caption."</div></div>\n";
 			if($text != ""){
@@ -75,14 +75,12 @@ function tablestyle($caption, $text, $mode=""){
 		}else{
 			echo "<div class=\"border\"><div class=\"bodytable\">".$text."</div></div><br />\n";
 		}
-	}else if($mode == "mode2"){
+	}else{
 		if($caption != ""){
 			echo "<div class=\"border\"><div class=\"caption2\">".$caption."</div></div><div class=\"bodytable2\">".$text."</div><br />\n";
 		}else{
 			echo "<div class=\"bodytable2\">".$text."</div><br />\n";
 		}
-	}else{
-		echo "<div class=\"border\"><div class=\"bodytable\">".$text."</div></div><br />\n";
 	}
 }
 

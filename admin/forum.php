@@ -13,9 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(ADMINPERMS != 0 && ADMINPERMS != 1){
-	header("location:../index.php");
-}
+if(!getperms("5")){ header("location:../index.php"); }
 require_once("auth.php");
 
 If(IsSet($_POST['submit'])){
@@ -247,9 +245,10 @@ $text .= "</td><tr>
 <td style=\"width:20%\">Moderators: </td>
 <td style=\"width:80%\">";
 
-$admin_no = $sql -> db_Select("admin");
+$admin_no = $sql -> db_Select("admin", "*", "admin_permissions REGEXP('.A') OR admin_permissions='0' ");
 $text .= "<select name=\"mod[]\" multiple size=\"".$admin_no."\" class=\"tbox\">";
-while(list($admin_id_, $admin_name_) = $sql-> db_Fetch()){
+
+while(list($admin_id_, $admin_name_, $null, $null, $null, $admin_perms_) = $sql-> db_Fetch()){
 	$text .= "<option>".$admin_name_."</option>";
 }
 $text .= "</select>

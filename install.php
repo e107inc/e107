@@ -85,7 +85,6 @@ if($_POST['stage'] == 1){
 echo "Testing file permissions of /config.php ...<br /><br />";
 
 $fp = @fopen("config.php","w");
-//$data = chr(60)."?php\ndefine(".chr(34)."INSTALLED".chr(34).", FALSE);\n?".chr(62);
 if(@fwrite($fp, "Test")){
 	echo "File permissions test passed - please click button to continue.<br /><br />
 <form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
@@ -112,7 +111,7 @@ If you are using an existing database that already has tables in it you can pref
 <br />
 <br />
 <form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
-<table style=\"width:95%\">
+<table style=\"width:100%\">
 <tr>
 <td style=\"width:20%\" class=\"mediumtext\">mySQL Server:</td>
 <td style=\"width:80%\">
@@ -254,7 +253,7 @@ chr(36)."mySQLserver = ".chr(34).$_POST['mysql_server'].chr(34).";\n".
 chr(36)."mySQLuser = ".chr(34).$_POST['mysql_name'].chr(34).";\n".
 chr(36)."mySQLpassword = ".chr(34).$_POST['mysql_password'].chr(34).";\n".
 chr(36)."mySQLdefaultdb = ".chr(34).$_POST['mysql_db'].chr(34).";\n".
-chr(36)."mySQLprefix = ".chr(34).$_POST['mysql_prefix'].chr(34).";\n?".chr(62);
+chr(36)."mySQLprefix = ".chr(34).$_POST['mysql_prefix'].chr(34).";\n";
 
 	$fp = @fopen("config.php","w");
 	if(!@fwrite($fp, $data)){
@@ -316,6 +315,8 @@ if($_POST['stage'] == 4){
 
 <!-- BEGIN STAGE 5 -->
 <?php
+
+//echo "INSERT INTO ".$mySQLprefix."admin VALUES (0, '".$_POST['admin_name']."',  '".md5($_POST['admin_password1'])."', '".$_POST['admin_email']."', 0, '0', '".time()."') ";
 if($_POST['stage'] == 5){
 	require_once("config.php");
 	mysql_connect($mySQLserver, $mySQLuser, $mySQLpassword);
@@ -340,10 +341,10 @@ if($_POST['stage'] == 5){
 	/backend/news.txt - 666<br /><br />
 	<b>Very important - please now delete /install.php and /upgrade.php from your server, if you don't it's possible anyone may be able to set themselves up as an administrator on your site</b><br /><br />";
 
-//	$fp = @fopen("config.php","w+");
-//	$data = "define(".chr(34)."INSTALLED".chr(34).", FALSE);\n?".chr(62);
+//	$fp = @fopen("config.php","a");
+//	$data = "\ndefine(".chr(34)."INSTALLED".chr(34).", TRUE);\n?".chr(62);
 //	@fwrite($fp, $data);
-//	fclose($fp);
+
 
 	?>
 	<form method="post" action="install.php">
@@ -360,7 +361,7 @@ $admin_table = "CREATE TABLE ".$mySQLprefix."admin (
   admin_password varchar(100) NOT NULL default '',
   admin_email varchar(200) NOT NULL default '',
   admin_sess varchar(32) NOT NULL default '',
-  admin_permissions tinyint(3) unsigned NOT NULL default '0',
+  admin_permissions text NOT NULL,
   admin_pwchange int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (admin_id)
 ) TYPE=MyISAM;";
@@ -619,6 +620,11 @@ $wmessage_table = "CREATE TABLE ".$mySQLprefix."wmessage (
   wm_active tinyint(3) unsigned NOT NULL default '0'
 ) TYPE=MyISAM;";
 
+$flood_table = "CREATE TABLE ".$mySQLprefix."flood (
+  flood_url text NOT NULL,
+  flood_time int(10) unsigned NOT NULL default '0'
+) TYPE=MyISAM;";
+
 $welcome_message = addslashes("e107 is what is commonly known as a CMS, or content management system. It gives you a completely interactive website without the need to learn HTML, PHP etc.<br />It has been in developement since July 2002 and is constantly being updated and tweaked for better performance and stability.
 Some of the features of e107 are ...<ul><li>Secure administration backend allows you to moderate all aspects of your website, post news items etc</li><li>News item commenting, chatbox, forums, poll etc make your site totally interactive to visitors</li><li>Totally themeable interface, change every aspect of how your site looks</li><li>More themes and plugins available to download, dynamic recognition of new addons means extremely easy installation</li><li>Allow users to register as members on your site, and allow comments from members only or anonymous users</li></ul>Your admin section is located at <a href=\"admin/admin.php\">/admin/admin.php</a>, click to go there now. You will have to login using the name and password you entered during the installation process.
 If you would like to see something added to the core, or coded as a plugin please visit <a href=\"http://jalist.com\">jalist.com</a> and leave a message on the Requests forum, or alternatively email the developer jalist (Steve Dunstan) <a href=\"mailto:jalist@jalist.com\">here</a>.
@@ -638,6 +644,9 @@ if(!mysql_query($content_table)){	$error .= "There was a problem creating the <b
 if(!mysql_query($e107_table)){	$error .= "There was a problem creating the <b>e107</b> mySQL table ...<br />"; }else{echo "e107 table ... created<br />";}
 if(!mysql_query($forum_table)){	$error .= "There was a problem creating the <b>forum</b> mySQL table ...<br />"; }else{echo "forum table ... created<br />";}
 if(!mysql_query($forum_t_table)){	$error .= "There was a problem creating the <b>forum_t</b> mySQL table ...<br />"; }else{echo "forum_t table ... created<br />";}
+
+if(!mysql_query($flood_table)){	$error .= "There was a problem creating the <b>flood</b> mySQL table ...<br />"; }else{echo "flood table ... created<br />";}
+
 if(!mysql_query($headlines_table)){	$error .= "There was a problem creating the <b>headlines_table</b> mySQL table ...<br />"; }else{echo "headlines_table table ... created<br />";}
 if(!mysql_query($link_table)){	$error .= "There was a problem creating the <b>link</b> mySQL table ...<br />"; }else{echo "link table ... created<br />";}
 if(!mysql_query($link_category_table)){	$error .= "There was a problem creating the <b>link_category</b> mySQL table ...<br />"; }else{echo "link_category table ... created<br />";}
@@ -653,6 +662,7 @@ if(!mysql_query($stat_counter_table)){	$error .= "There was a problem creating t
 if(!mysql_query($stat_info_table)){	$error .= "There was a problem creating the <b>stat_info</b> mySQL table ...<br />"; }else{echo "stat_info table ... created<br />";}
 if(!mysql_query($wmessage_table)){	$error .= "There was a problem creating the <b>wmessage</b> mySQL table ...<br />"; }else{echo "wmessage table ... created<br /><br />";}
 
+
 $datestamp = time();
 
 mysql_query("INSERT INTO ".$mySQLprefix."content VALUES (0, '$article_heading', '$article_subheading', '$article', '$datestamp', 0, 0) ");
@@ -667,7 +677,7 @@ mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Forum', 'forum.php', 
 mysql_query("INSERT INTO ".$mySQLprefix."prefs VALUES ('sitename', 'e107 powered site')");
 mysql_query("INSERT INTO ".$mySQLprefix."prefs VALUES ('siteurl', 'http://yoursite.com' )");
 mysql_query("INSERT INTO ".$mySQLprefix."prefs VALUES ('sitebutton', 'button.png' )");
-mysql_query("INSERT INTO ".$mySQLprefix."prefs VALUES ('sitetag', 'Website System Version 5.05' )");
+mysql_query("INSERT INTO ".$mySQLprefix."prefs VALUES ('sitetag', 'Website System Version 5.1' )");
 mysql_query("INSERT INTO ".$mySQLprefix."prefs VALUES ('sitedescription', '' )");
 mysql_query("INSERT INTO ".$mySQLprefix."prefs VALUES ('siteadmin', 'Webmaster' )");
 mysql_query("INSERT INTO ".$mySQLprefix."prefs VALUES ('siteadminemail', 'webmaster@yourdomain.com' )");
@@ -691,8 +701,12 @@ mysql_query("INSERT INTO ".$mySQLprefix."prefs VALUES ('forumdate', 'd-m-Y  g:i 
 mysql_query("INSERT INTO ".$mySQLprefix."prefs VALUES ('sitelanguage', 'English')");
 mysql_query("INSERT INTO ".$mySQLprefix."prefs VALUES ('sitelocale', 'en')");
 mysql_query("INSERT INTO ".$mySQLprefix."prefs VALUES ('maintainance_flag', '0')");
+mysql_query("INSERT INTO ".$mySQLprefix."prefs VALUES ('time_offset', '0')");
+mysql_query("INSERT INTO ".$mySQLprefix."prefs VALUES ('flood_time', '30')");
+mysql_query("INSERT INTO ".$mySQLprefix."prefs VALUES ('flood_hits', '100')");
+ 
 
-mysql_query("INSERT INTO ".$mySQLprefix."e107 VALUES ('jalist (Steve Dunstan)', 'http://jalist.com', '5.05', '-', '$datestamp')");
+mysql_query("INSERT INTO ".$mySQLprefix."e107 VALUES ('jalist (Steve Dunstan)', 'http://jalist.com', '5.1', '-', '$datestamp')");
 mysql_query("INSERT INTO ".$mySQLprefix."link_category VALUES (0, 'Main', 'Any links with this category will be displayed in main navigation bar.')");
 mysql_query("INSERT INTO ".$mySQLprefix."link_category VALUES (0, 'Misc', 'Miscellaneous links.')");
 

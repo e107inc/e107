@@ -24,7 +24,6 @@ echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
   </head>
 <body>
 <?php
-
 $ns = new table;
 echo "
 <div style=\"text-align:center\">";
@@ -43,7 +42,12 @@ if($admin_logo == "1"){
 	<tr>
 	<td style=\"background-color:#ccc\">&nbsp;";
 	if(ADMIN == TRUE){
-		echo "Logged in: ".ADMINNAME.", level '".ADMINPERMS."' administrator";
+		$str = str_replace(".", "", ADMINPERMS);
+		if(ADMINPERMS == 0){
+			echo "Logged in: ".ADMINNAME." (Main Site Administrator)";
+		}else{
+			echo "Logged in: ".ADMINNAME." (levels: ".$str.")";
+		}
 	}else{
 		echo "Login required to progress to secure admin area ...";
 	}
@@ -57,7 +61,12 @@ if($admin_logo == "1"){
 	echo "<img src=\"logo".$admin_logo.".png\" alt=\"Logo\" />
 	<br />";
 	if(ADMIN == TRUE){
-		echo "Logged in: ".ADMINNAME.", level '".ADMINPERMS."' administrator";
+		$str = str_replace(".", "", ADMINPERMS);
+		if(ADMINPERMS == 0){
+			echo "Logged in: ".ADMINNAME." (Main Site Administrator)";
+		}else{
+			echo "Logged in: ".ADMINNAME." (levels:  ".$str.")";
+		}
 	}else{
 		echo "Login required to progress to secure admin area ...";
 	}
@@ -76,50 +85,51 @@ if(ADMIN == TRUE){
 <br />
 <br />";
 
-if(ADMINPERMS == 0 || ADMINPERMS == 1 || ADMINPERMS == 2){
+if(getperms("H")){
 	$text .= "<a href=\"newspost.php\">News</a><br />";
 }
-if(ADMINPERMS == 0 || ADMINPERMS == 1 || ADMINPERMS == 2){
+if(getperms("7")){
 	$text .= "<a href=\"news_category.php\">News Categories</a><br />";
 }
-if(ADMINPERMS == 0 || ADMINPERMS == 1){
+if(getperms("1")){
 	$text .= "<a href=\"prefs.php\">Preferences</a><br />";
 }
-if(ADMINPERMS == 0 || ADMINPERMS == 1){
+if(getperms("2")){
 	$text .= "<a href=\"menus.php\">Menus</a><br />";
 }
-if(ADMINPERMS == 0 || ADMINPERMS == 1){
+if(getperms("3")){
 	$text .= "<a href=\"administrator.php\">Administrators</a><br />";
 }
 $text .= "<a href=\"updateadmin.php\">Update admin settings</a><br />";
-if(ADMINPERMS == 0 || ADMINPERMS == 1 || ADMINPERMS == 2){
+if(getperms("5")){
 	$text .= "<a href=\"forum.php\">Forums</a><br />";
 }
-if(ADMINPERMS == 0 || ADMINPERMS == 1 || ADMINPERMS == 2){
-	$text .= "<a href=\"article.php\">Articles/Content/Reviews</a><br />";
+if(getperms("J")){
+	$text .= "<a href=\"article.php\">Articles</a><br />";
 }
-if(ADMINPERMS == 0 || ADMINPERMS == 1 || ADMINPERMS == 2){
+if(getperms("l")){
+	$text .= "<a href=\"content.php\">Content</a><br />";
+}
+if(getperms("K")){
+	$text .= "<a href=\"review.php\">Reviews</a><br />";
+}
+if(getperms("I")){
 	$text .= "<a href=\"links.php\">Links</a><br />";
 }
-if(ADMINPERMS == 0 || ADMINPERMS == 1 || ADMINPERMS == 2){
-	$text .= "<a href=\"link_category.php\">Link Categories</a>";
+if(getperms("8")){
+	$text .= "<a href=\"link_category.php\">Link Categories</a><br />";
 }
-$text .= "<br />";
-
-if(ADMINPERMS == 0 || ADMINPERMS == 1 || ADMINPERMS == 2){
+if(getperms("M")){
 	$text .= "<a href=\"wmessage.php\">Welcome Message</a><br />";
 }
 
-if(ADMINPERMS == 0 || ADMINPERMS == 1 || ADMINPERMS == 2){
+if(getperms("6")){
 	$text .= "<a href=\"upload.php\">Upload</a><br />";
 }
-if(ADMINPERMS == 0 || ADMINPERMS == 1 || ADMINPERMS == 2){
+if(getperms("N")){
 	$text .= "<a href=\"submitnews.php\">Submitted News</a><br />";
 }
-if(ADMINPERMS == 0 || ADMINPERMS == 1 || ADMINPERMS == 2){
-	$text .= "<a href=\"banlist.php\">Bans</a><br />";
-}
-if(ADMINPERMS == 0 || ADMINPERMS == 1){
+if(getperms("4")){
 	$text .= "<a href=\"users.php\">Users</a><br />";
 }
 
@@ -142,13 +152,11 @@ Please click <a href=\"submitnews.php\">here</a> to review.";
 if(ADMINPERMS == 0){
 	$sql -> db_Select("admin", "*", "admin_permissions='0'");
 	list($a_id, $a_name, $null, $a_email, $null, $a_perms, $a_pwchange) = $sql-> db_Fetch();
-	if(($a_pwchange+612000) < time()){
+	if(($a_pwchange+2592000) < time()){
 		$text = "<div style=\"mediumtext; text-align:center\">It has been more than 30 days since you changed the main administrator password - <a href=\"updateadmin.php\">Click here to change it now</a></div>";
 		$ns -> tablerender("Security", $text);
 	}
  }
-
-
 
 $handle=opendir("help/");
 	$text = "";
@@ -162,6 +170,7 @@ $handle=opendir("help/");
 	}
 	closedir($handle);
 }
+
 ?>
 <br />
 </td>

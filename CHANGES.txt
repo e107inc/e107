@@ -1,4 +1,34 @@
-Changes in v5.06
+Changes in v5.11
+~~~~~~~~~~
+
+- Added <description> tag to rss genetion to bring compatibilty to www.feedreader.com (suggested by alessandro - thanks)
+- Unset $text variable in template files, some people were getting menus rendered in main page
+- Added markups to javascript for validation purposes
+- Comments are now themable from theme.php - if not defined then default layout will be used
+- Fixed perms in admin.php/prefs.php
+- Parsed shortcuts etc now available on welcome message page
+- Updated stats to show links from top 10 to all stats in category
+
+Changes in v5.1
+~~~~~~~~~~
+
+- Added new (very basic) flood-protection routines, I'll be upgrading these in the near future
+- Nick links to user.php in chatbox
+- Posts in chatbox by person not logged in checks if name entered exists in user table, if it does and ip matches the post is properly credited to member, else the nick will be changed to Anonymous
+- Shortcuts now parsed correctly in signatures
+- Added category icon to index.php?cat page
+- Added some shortcut code by Chris McLeod to usersettings.php
+- Rewrote admin permissions routines, much more flexible admin settings now allowed (ie you can have a news poster only, or a chatbox moderator only etc etc)
+- Rewrote admin pages to reflect changes to perms system
+- Articles, content and reviews now seperated to allow for new admin perms, so you can have a reviewer admin who cant post articles
+- log2.php and stats.php completely rewritten, now quicker and logs more info
+- counter menu rewritten
+- user menu rewritten, displays new info since last visit
+- counter menu rewritten
+- antheon theme added to core
+- Many minor changes, alterations and bugfixes
+
+Changes in v5.05d
 ~~~~~~~~~~
 
 - Fixed edit bug in newspost and forum, shortcut tags now parsed back to original format and entered ok
@@ -8,7 +38,13 @@ Changes in v5.06
 - shortcut buttons helpbox added on newsposts and forums
 - updated articles to use newer shortcuts, and new editparse routine
 - Spanish and Dutch language files updated - thankyou
-- links and other parse routines tidies up, especially in chatbox
+- links and other parse routines tidied up, especially in chatbox
+- comments now entererd properly in articles
+- comments in comment.php now wordwrapped properly
+- cleared up problem with ampersands in forum
+- extended news now shown in news preview
+- changed wmessage display, took inside border out
+
 
 Changes in v5.05
 ~~~~~~~~~~

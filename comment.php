@@ -46,7 +46,7 @@ if(IsSet($_POST['submit'])){
 				$sql -> db_Update("user", "user_comments=user_comments+1, user_lastpost='".time()."' WHERE user_id='".USERID."' ");
 			}
 
-			$comment = $aj -> tp($_POST['comment'], "off", 1);
+			$comment = $aj -> tp($_POST['comment'], "off");
 			$ip = getip();
 			if(!eregi("Invalid", $comment)){
 				$sql -> db_Insert("comments", "0, '$id', '$author', '$author_email', '".time()."', '$comment', '0', '$ip', '0' ");
@@ -70,7 +70,7 @@ $ix = new news;
 $ix -> render_newsitem($news_id, $news_title, $news_body, $news_extended, $news_source, $news_url, $news_author, $comment_total, $category_id, $news_datestamp, $news_allow_comments);
 
 if($comment_total != 0){
-	$text = "";
+	unset($text);
 	while(list($comment_id, $comment_item_id, $comment_author, $comment_author_email, $comment_datestamp, $comment_comment, $comment_blocked, $comment_ip) = $sql2-> db_Fetch()){
 		$fca = eregi_replace("[0-9]+\.", "", $comment_author);
 
@@ -78,51 +78,58 @@ if($comment_total != 0){
 		$gen = new convert;
 		$datestamp = $gen->convert_date($comment_datestamp, "short");
 		$comment_author = $fca;
-		$text .= "<table style=\"width:95%\">
-<tr>
-<td style=\"width:30%; vertical-align=top\">
-<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> 
-<span class=\"defaulttext\"><i>$comment_author</i></span>
-<br />
-<span class=\"smalltext\">on $datestamp
-<br />
-Comments: ".$author_total."
-</span>
-</td>
-<td style=\"width:70%; vertical-align=top\">
-<span class=\"mediumtext\">";
 
-if($comment_blocked == 1){
-	$text .= LAN_0;
-}else{
-	
-	$text .= $aj -> tpa($comment_comment);
-}	
-	
-$text .= "</span>
-</td>";
+// commentstyle -----------------------------------------------------------------------------------------------------
 
+		$text .= "<table style=\"width:95%\">";
 
-if(ADMIN == TRUE && ADMINPERMS <=2){
-	$text .= "<td style=\"text-align:right\">
-<div class=\"smalltext\">";
+		if(defined("COMMENTSTYLE")){
+			$text .= commentstyle($comment_id, $comment_author, $author_total, $datestamp, $comment_blocked, $comment_comment);
+		}else{
+			$unblock = "[<a href=\"admin/comment_conf.php?unblock-".$comment_id."-".$_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING']."\">".LAN_1."</a>]";
+			$block = "[<a href=\"admin/comment_conf.php?block-".$comment_id."-".$_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING']."\">".LAN_2."</a>] ";
+			$delete = "[<a href=\"admin/comment_conf.php?delete-".$comment_id."-".$_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING']."\">".LAN_3."</a>] ";
+			$userinfo = "[<a href=\"admin/userinfo.php?".$comment_ip."\">".LAN_4."</a>]";
+			$text .= "<tr>
+			<td style=\"width:30%; vertical-align=top\">
+			<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> 
+			<span class=\"defaulttext\"><i>$comment_author</i></span>
+			<br />
+			<span class=\"smalltext\">on $datestamp
+			<br />
+			Comments: ".$author_total."
+			</span>
+			</td>
+			<td style=\"width:70%; vertical-align=top\">
+			<span class=\"mediumtext\">";
 
-if($comment_blocked == 1){
-	$text .= "[<a href=\"admin/comment_conf.php?unblock-".$comment_id."-".$_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING']."\">".LAN_1."</a>] ";
-}else{
-	$text .= "[<a href=\"admin/comment_conf.php?block-".$comment_id."-".$_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING']."\">".LAN_2."</a>] ";
-}
-$text .= "[<a href=\"admin/comment_conf.php?delete-".$comment_id."-".$_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING']."\">".LAN_3."</a>] 
-[<a href=\"admin/userinfo.php?".$comment_ip."\">".LAN_4."</a>]
-</td>";
-}
+			if($comment_blocked == 1){
+				$text .= LAN_0;
+			}else{
+				$text .= $aj -> tpa($comment_comment);
+			}	
+				
+			$text .= "</span>
+			</td>";
 
+			if(ADMIN == TRUE && getperms("B")){
+				$text .= "<td style=\"text-align:right\"><div class=\"smalltext\">";
 
-$text .= "</tr>
-</table>
-<br />";
+				if($comment_blocked == 1){
+					$text .= $unblock;
+				}else{
+					$text .= $block;
+				}
+				$text .= $delete.$userinfo."</td>";
+			}
+			$text .= "</tr>";
+		}
+
+		$text .= "</table><br />";
 	}
-//	$text = $aj -> tpa($text);
+
+// end commentstyle -----------------------------------------------------------------------------------------------------
+
 	$ns -> tablerender(LAN_5, $text);
 }
 

@@ -17,7 +17,7 @@ $sql -> db_Select("e107");
 list($e107_author, $e107_url, $e107_version, $e107_build, $e107_datestamp) = $sql-> db_Fetch();
 if(IsSet($_POST['newver'])){ header("location:http://jalist.com/check.php?".$e107_version."-".$e107_build); }
 
-if(ADMINPERMS != 0 && ADMINPERMS != 1){ header("location:../index.php"); }
+if(!getperms("1")){ header("location:../index.php"); }
 
 //if($_POST['user_reg'] == 1){
 //	if(!$sql -> db_Select("links", "*", "link_name='Members' ")){
@@ -48,6 +48,8 @@ if(IsSet($_POST['updateprefs'])){
 	$sql -> db_Update("prefs", "pref_value='".$_POST['sitelanguage']."' WHERE pref_name='sitelanguage' ");
 	$sql -> db_Update("prefs", "pref_value='".$_POST['sitelocale']."' WHERE pref_name='sitelocale' ");
 	$sql -> db_Update("prefs", "pref_value='".$_POST['time_offset']."' WHERE pref_name='time_offset' ");
+	$sql -> db_Update("prefs", "pref_value='".$_POST['flood_hits']."' WHERE pref_name='flood_hits' ");
+	$sql -> db_Update("prefs", "pref_value='".$_POST['flood_time']."' WHERE pref_name='flood_time' ");
 	header("location:prefs.php");
 }
 
@@ -63,6 +65,8 @@ $longdate = $pref['longdate'][1];
 $forumdate = $pref['forumdate'][1];
 $sitelocale = $pref['sitelocale'][1];
 $time_offset = $pref['time_offset'][1];
+$flood_hits = $pref['flood_hits'][1];
+$flood_time = $pref['flood_time'][1];
 
 require_once("auth.php");
 
@@ -368,10 +372,27 @@ if($flood_protect == 1){
 	$text .= "<input type=\"checkbox\" name=\"flood_protect\" value=\"1\">";
 }
 
-
 $text .= "
 </td>
 </tr>
+<tr>
+<td style=\"width:40%\">Flood hits: </td>
+<td style=\"width:60%\">
+<input class=\"tbox\" type=\"text\" name=\"flood_hits\" size=\"10\" value=\"$flood_hits\" maxlength=\"4\" />
+</td>
+</tr>
+
+</td>
+</tr>
+<tr>
+<td style=\"width:40%; vertical-align:top\">Flood time: </td>
+<td style=\"width:60%\">
+<input class=\"tbox\" type=\"text\" name=\"flood_time\" size=\"10\" value=\"$flood_time\" maxlength=\"20\" />
+<br />
+example, flood hits set to 100 and flood time set to 60: if any single page on your site gets 100 hits in 60 seconds the page will be inaccessable for a further 60 seconds. 
+</td>
+</tr>
+
 <tr>
 
 <tr><td colspan=\"2\"><br /></td></tr>

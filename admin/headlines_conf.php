@@ -13,9 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(ADMINPERMS != 0 && ADMINPERMS != 1){
-	header("location:../index.php");
-}
+if(!getperms("P")){ header("location:../index.php"); }
 require_once("auth.php");
 
 if(IsSet($_POST['add_headline'])){
