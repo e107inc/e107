@@ -2,7 +2,7 @@
 
 define("DBLAN_1", "Unable to read the sql datafile<br /><br />Please ensure the file <b>core_sql.php</b> exists in the <b>/admin/sql</b> directory.");
 define("DBLAN_2", "Verifying all");
-define("DBLAN_3", "for version");
+//define("DBLAN_3", "for version");
 define("DBLAN_4", "Table");
 define("DBLAN_5", "Field");
 define("DBLAN_6", "Status");
@@ -14,9 +14,9 @@ define("DBLAN_11", "Field missing");
 define("DBLAN_12", "Extra Field!");
 define("DBLAN_13", "Table missing!");
 define("DBLAN_14", "Choose table(s) to validate");
-
 define("DBLAN_15", "Start Verify");
-define("DBLAN_16", "SQL Verification - Version");
+define("DBLAN_16", "SQL Verification");
 define("DBLAN_17", "Back");
+define("DBLAN_18", "tables");
 
 ?>
