@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.24 $
-|   $Date: 2005-02-04 08:16:21 $
-|   $Author: sweetas $
+|   $Revision: 1.25 $
+|   $Date: 2005-02-04 08:22:58 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 
 */
@@ -30,20 +30,24 @@ if (!getperms("H")) {
 	 exit;
 }
 $e_sub_cat = 'news';
+
+// -------- Presets. ------------  // always load before auth.php
+require_once(e_HANDLER."preset_class.php");
+$pst = new e_preset;
+$pst->form = "dataform"; // form id of the form that will have it's values saved.
+$pst->page = "newspost.php?create"; // display preset options on which page(s).
+$pst->id = "admin_newspost";
+// ------------------------------
+
 $newspost = new newspost;
 require_once("auth.php");
+$pst->save_preset(); // save and render result using unique name
+
 require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."news_class.php");
 require_once(e_HANDLER."ren_help.php");
 require_once(e_HANDLER."form_handler.php");
 
-// -------- Presets. ------------
-require_once(e_HANDLER."preset_class.php");
-$pst = new e_preset;
-$pst->form = array("dataform"); // form id of the form that will have it's values saved.
-$pst->page = array("newspost.php?create"); // display preset options on which page(s).
-$pst->save_preset("admin_newspost");  // unique name(s) for the presets - comma separated.
-// ------------------------------
 
 
 $rs = new form;

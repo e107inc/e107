@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-02-03 09:56:46 $
+|     $Revision: 1.20 $
+|     $Date: 2005-02-04 08:22:58 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -23,17 +23,20 @@ if (!getperms('I')) {
 	header('location:'.e_BASE.'index.php');
 }
 $e_sub_cat = 'links';
-
-require_once('auth.php');
-
-require_once(e_HANDLER.'userclass_class.php');
-require_once(e_HANDLER.'form_handler.php');
-// Presets.
+// ----- Presets.----------
 require_once(e_HANDLER."preset_class.php");
 $pst = new e_preset;
 $pst->form = "linkform";
 $pst->page = "links.php?create";
-$pst->save_preset("admin_links");
+$pst->id = "admin_links";
+require_once('auth.php');
+// --------------------
+$pst->save_preset();
+
+
+require_once(e_HANDLER.'userclass_class.php');
+require_once(e_HANDLER.'form_handler.php');
+
 
 $rs = new form;
 $aj = new textparse;

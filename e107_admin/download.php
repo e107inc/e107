@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-02-04 06:38:59 $
-|     $Author: sweetas $
+|     $Revision: 1.14 $
+|     $Date: 2005-02-04 08:22:58 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -33,9 +33,12 @@ require_once(e_HANDLER."preset_class.php");
 $pst = new e_preset;
 $pst->form = array("myform","dlform"); // form id of the form that will have it's values saved.
 $pst->page = array("download.php?create","download.php?cat"); // display preset options on which page(s).
-$pst->save_preset("admin_downloads,admin_dl_cat");  // unique name(s) for the presets - comma separated.
-// ------------------------------
+$pst->id = array("admin_downloads","admin_dl_cat");
+// -------------------------------
 
+$download = new download;   
+require_once("auth.php");
+$pst->save_preset();  // unique name(s) for the presets - comma separated.
 
  /*
 One form example (no arrays needed)
@@ -44,12 +47,12 @@ $pst->page = "download.php?create"; // display preset options on which page.
 $pst->save_preset("admin_downloads");  // unique name for the preset
 */
 
-require_once("auth.php");
+
 
 $rs = new form;
 $aj = new textparse;
 
-$download = new download;
+
 $deltest = array_flip($_POST);
 if (e_QUERY) {
 	$tmp = explode(".", e_QUERY);
