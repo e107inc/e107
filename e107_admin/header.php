@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107/e107_admin/header.php,v $
-|   $Revision: 1.21 $
-|   $Date: 2004-08-20 00:04:31 $
-|   $Author: mcfly_e107 $
+|   $Revision: 1.22 $
+|   $Date: 2004-09-03 21:54:45 $
+|   $Author: loloirie $
 +---------------------------------------------------------------+
 */
 echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='iso-8859-1' ?>");
@@ -144,7 +144,10 @@ if(ADMINPERMS == "0")
 	}
 }
 
-$handle=opendir(e_ADMIN."help/");
+if(!($handle=opendir(e_LANGUAGEDIR.e_LANGUAGE."/admin/help/"))){
+  $handle=opendir(e_LANGUAGEDIR."English/admin/help/");
+}
+
 $text = "";
 while(false !== ($file = readdir($handle)))
 {
@@ -152,7 +155,7 @@ while(false !== ($file = readdir($handle)))
 	{
 		if(eregi($file, e_SELF))
 		{
-			@require_once("help/".$file);
+			@require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/help/".$file);
 		}
 	}
 }
