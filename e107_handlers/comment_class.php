@@ -212,11 +212,6 @@ class comment{
 	function enter_comment($author_name, $comment, $table, $id, $pid, $subject){
 		global $sql, $aj;
 		if(!is_object($aj)){ $aj = new textparse; }
-		$fp = new floodprotect;
-		if($fp -> flood("comments", "comment_datestamp") == FALSE){
-			header("location:".e_BASE."index.php");
-			exit;
-		}
 
 		switch($table){
 			case "news": $type=0; break;
