@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.1 $
-|		$Date: 2005-02-03 23:31:37 $
+|		$Revision: 1.2 $
+|		$Date: 2005-02-04 10:37:09 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -33,10 +33,14 @@ class contentdb{
 						$_POST['content_text'] = $tp -> toDB($_POST['content_text']);
 						$_POST['parent'] = ($_POST['parent'] ? $_POST['parent'] : "0");
 
-						if(!($_POST['content_author_id'] == USERID && $_POST['content_author_name'] == USERNAME && $_POST['content_author_email'] == USEREMAIL) ){
-							$author = $_POST['content_author_id']."^".$_POST['content_author_name']."^".$_POST['content_author_email'];
+						if(USER){
+							if(!($_POST['content_author_id'] == USERID && $_POST['content_author_name'] == USERNAME && $_POST['content_author_email'] == USEREMAIL) ){
+									$author = $_POST['content_author_id']."^".$_POST['content_author_name']."^".$_POST['content_author_email'];
+							}else{
+								$author = USERID;
+							}
 						}else{
-							$author = USERID;
+							$author = "0^".$_POST['content_author_name']."^".$_POST['content_author_email'];
 						}
 
 						$content_pref = $aa -> getContentPref($type_id);
@@ -184,10 +188,14 @@ class contentdb{
 						$_POST['content_text'] = $tp -> toDB($_POST['content_text']);
 						$_POST['parent'] = ($_POST['parent'] ? $_POST['parent'] : "0");
 
-						if(!($_POST['content_author_id'] == USERID && $_POST['content_author_name'] == USERNAME && $_POST['content_author_email'] == USEREMAIL) ){
-							$author = $_POST['content_author_id']."^".$_POST['content_author_name']."^".$_POST['content_author_email'];
+						if(USER){
+							if(!($_POST['content_author_id'] == USERID && $_POST['content_author_name'] == USERNAME && $_POST['content_author_email'] == USEREMAIL) ){
+								$author = $_POST['content_author_id']."^".$_POST['content_author_name']."^".$_POST['content_author_email'];
+							}else{
+								$author = USERID;
+							}
 						}else{
-							$author = USERID;
+							$author = "0^".$_POST['content_author_name']."^".$_POST['content_author_email'];
 						}
 
 						if($_POST['ne_day'] != "none" && $_POST['ne_month'] != "none" && $_POST['ne_year'] != "none"){

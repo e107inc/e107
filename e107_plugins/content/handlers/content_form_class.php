@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.1 $
-|		$Date: 2005-02-03 23:31:38 $
+|		$Revision: 1.2 $
+|		$Date: 2005-02-04 10:37:09 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -188,14 +188,14 @@ class contentform{
 								".$rs -> form_select_open("end_day")."
 								".$rs -> form_option(CONTENT_ADMIN_DATE_LAN_12, 0, "none");
 								for($count=1; $count<=31; $count++){
-									$text .= $rs -> form_option($count, ($ne_day == $count ? "1" : "0"), $count);
+									$text .= $rs -> form_option($count, ($end_day == $count ? "1" : "0"), $count);
 								}
 								$text .= $rs -> form_select_close()."
 
 								".$rs -> form_select_open("end_month")."
 								".$rs -> form_option(CONTENT_ADMIN_DATE_LAN_13, 0, "none");
 								for($count=1; $count<=12; $count++){
-									$text .= $rs -> form_option($months[($count-1)], ($ne_month == $count ? "1" : "0"), $count);
+									$text .= $rs -> form_option($months[($count-1)], ($end_month == $count ? "1" : "0"), $count);
 									
 								}
 								$text .= $rs -> form_select_close()."
@@ -203,7 +203,7 @@ class contentform{
 								".$rs -> form_select_open("end_year")."
 								".$rs -> form_option(CONTENT_ADMIN_DATE_LAN_14, 0, "none");
 								for($count=($current_year-5); $count<=$current_year; $count++){
-									$text .= $rs -> form_option($count, ($ne_year == $count ? "1" : "0"), $count);
+									$text .= $rs -> form_option($count, ($end_year == $count ? "1" : "0"), $count);
 								}
 								$text .= $rs -> form_select_close()."
 
@@ -234,8 +234,8 @@ class contentform{
 						<tr>
 							<td class='forumheader3' style='width:30%; vertical-align:top'>".CONTENT_ADMIN_ITEM_LAN_51."</td>
 							<td class='forumheader3' style='width:70%; vertical-align:top'>
-								".$rs -> form_text("content_author_name", 60, ($authordetails[1] ? $authordetails[1] : CONTENT_ADMIN_ITEM_LAN_14), 100, "tbox", "", "", ($authordetails[1] ? "" : "onfocus=\"if(document.dataform.content_author_name.value=='".CONTENT_ADMIN_ITEM_LAN_14."'){document.dataform.content_author_name.value='';}\"") )."<br />
-								".$rs -> form_text("content_author_email", 60, ($authordetails[2] ? $authordetails[2] : CONTENT_ADMIN_ITEM_LAN_15), 100, "tbox", "", "", ($authordetails[2] ? "" : "onfocus=\"if(document.dataform.content_author_email.value=='".CONTENT_ADMIN_ITEM_LAN_15."'){document.dataform.content_author_email.value='';}\"") )."
+								".$rs -> form_text("content_author_name", 60, ($authordetails[1] ? $authordetails[1] : CONTENT_ADMIN_ITEM_LAN_14), 100, "tbox", "", "", ($authordetails[1] ? "" : "onfocus=\"if(document.getElementById('dataform').content_author_name.value=='".CONTENT_ADMIN_ITEM_LAN_14."'){document.getElementById('dataform').content_author_name.value='';}\"") )."<br />
+								".$rs -> form_text("content_author_email", 60, ($authordetails[2] ? $authordetails[2] : CONTENT_ADMIN_ITEM_LAN_15), 100, "tbox", "", "", ($authordetails[2] ? "" : "onfocus=\"if(document.getElementById('dataform').content_author_email.value=='".CONTENT_ADMIN_ITEM_LAN_15."'){document.getElementById('dataform').content_author_email.value='';}\"") )."
 								".$rs -> form_hidden("content_author_id", $authordetails[0])."
 							</td>
 						</tr>
@@ -508,9 +508,9 @@ class contentform{
 
 
 		function show_content_submitted($mode){
-						global $sql, $rs, $ns, $aa, $plugintable;
+						global $rs, $ns, $aa, $plugintable;
 						global $type, $type_id;
-						if(!is_object($sql2)){ $sql2 = new db; }
+						if(!is_object($sql)){ $sql = new db; }
 						$text = "<div style='text-align:center'>\n";
 						if($content_total = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_author, content_icon, content_parent", "content_refer = 'sa' ")){
 								$text .= "<table style='".ADMIN_WIDTH."' class='fborder'>
@@ -525,11 +525,11 @@ class contentform{
 								extract($row);
 										unset($content_pref);
 										$type_id = substr($content_parent,0,1);
+										if(!is_object($sql2)){ $sql2 = new db; }
 										$parent = $sql2 -> db_Select("content", "content_id, content_heading", "content_id = '".$type_id."' ");
 										list($parent_id, $parent_heading) = $sql2 -> db_Fetch();
 										$delete_heading = str_replace("&#39;", "\'", $content_heading);
 										$authordetails = $aa -> getAuthor($content_author);
-
 										$content_pref = $aa -> getContentPref($content_id);
 										$content_pref["content_icon_path_{$type_id}"] = ($content_pref["content_icon_path_{$type_id}"] ? $content_pref["content_icon_path_{$type_id}"] : "{e_PLUGIN}content/images/icon/" );
 										$content_icon_path = $aa -> parseContentPathVars($content_pref["content_icon_path_{$type_id}"]);
@@ -540,7 +540,9 @@ class contentform{
 											<td class='forumheader3' style='width:5%; text-align:center'>".$content_id."</td>
 											<td class='forumheader3' style='width:5%; text-align:center'>".($content_icon ? "<img src='".$caticon."' alt='' style='width:50px; vertical-align:middle' />" : "&nbsp;")."</td>
 											<td class='forumheader3' style='width:15%; text-align:center'>".$parent_heading."</td>
-											<td class='forumheader3' style='width:75%; white-space:nowrap;'><b>".$content_heading."</b> [".$content_subheading."]<br /><a href='".e_BASE."user.php?id.".$authordetails[0]."'>".$authordetails[1]."</a> (".$authordetails[2].")</td>
+											<td class='forumheader3' style='width:75%; white-space:nowrap;'><b>".$content_heading."</b> [".$content_subheading."]<br />
+											".($authordetails[0] == "0" ? $authordetails[1] : "<a href='".e_BASE."user.php?id.".$authordetails[0]."'>".$authordetails[1]."</a>")."	
+											(".$authordetails[2].")</td>
 											<td class='forumheader3' style='width:5%; text-align:left; white-space:nowrap;'>
 											".$rs -> form_open("post", e_SELF."?".$type.".".$type_id, "myform_{$content_id}","","", "")."
 											<a href='".e_SELF."?".$type.".".$type_id.".create.sa.".$content_id."'>".CONTENT_ICON_EDIT."</a> 
