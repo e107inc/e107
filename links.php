@@ -11,15 +11,21 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/links.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:45 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-10-10 21:12:04 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 
 require_once(HEADERF);
 
+// ML
+if(e_MLANG == 1){
+	require_once(e_HANDLER."multilang/ml_panel.php");
+	e107ml_panel("links");
+}
+// END ML
 if(IsSet($_POST['add_link']) && check_class($pref['link_submit_class'])){
         if($_POST['link_name'] && $_POST['link_url'] && $_POST['link_description']){
                 $link_name = $aj -> formtpa($_POST['link_name'], "public");
@@ -71,7 +77,12 @@ if(e_QUERY == "" && $pref['linkpage_categories'] == 1){
 
         $caption = LAN_61;
         $sql = new db; $sql2 = new db;
-        $category_total = $sql -> db_Select("link_category", "*", "link_category_id != '1' ");
+        // ML
+        if(e_MLANG == 1){
+          $category_total = $ml -> e107_ml_Select("link_category", "*", "link_category_id != '1' ");
+        }else{ // END ML
+          $category_total = $sql -> db_Select("link_category", "*", "link_category_id != '1' ");
+        }
         $total_links = $sql2 -> db_Count("links", "(*)", "WHERE link_category!=1");
 
         while($row = $sql-> db_Fetch()){
@@ -106,19 +117,41 @@ if(e_QUERY == "" && $pref['linkpage_categories'] == 1){
         if(isset($id)){
                 $id = $qs[0];
                 if($id){
-                        $sql -> db_Update("links", "link_refer=link_refer+1 WHERE link_id='$id' ");
-                        $sql -> db_Select("links", "*", "link_id='$id AND link_class!=255' ");
+                        // ML
+                        if(e_MLANG == 1){
+                          $ml -> e107_ml_MultiUpdate("links", "link_refer=link_refer+1 WHERE link_id='$id' ");
+                          $ml -> e107_ml_Select("links", "*", "link_id='$id AND link_class!=255' ");
+                        }else{ // END ML
+                          $sql -> db_Update("links", "link_refer=link_refer+1 WHERE link_id='$id' ");
+                          $sql -> db_Select("links", "*", "link_id='$id AND link_class!=255' ");
+                        }
                         $row = $sql -> db_Fetch(); extract($row);
                                 header("location:".$link_url);
 
                 }
-                $sql -> db_Select("link_category", "*", "link_category_id != '1' ");
+                // ML
+                if(e_MLANG == 1){
+                  $ml -> e107_ml_Select("link_category", "*", "link_category_id != '1' ");
+                }else{ // END ML
+                  $sql -> db_Select("link_category", "*", "link_category_id != '1' ");
+                }
         }
         if($category){
                 if($category == "all"){
-                        $sql -> db_Select("link_category", "*", "link_category_id != '1' ");
+                        // ML
+                        if(e_MLANG == 1){
+                          $ml -> e107_ml_Select("link_category", "*", "link_category_id != '1' ");
+                        }else{ // END ML
+                          $sql -> db_Select("link_category", "*", "link_category_id != '1' ");
+                        }
+                        
                 }else{
-                        $sql -> db_Select("link_category", "*", "link_category_id='$category'");
+                        // ML
+                        if(e_MLANG == 1){
+                          $ml -> e107_ml_Select("link_category", "*", "link_category_id='$category'");
+                        }else{ // END ML
+                          $sql -> db_Select("link_category", "*", "link_category_id='$category'");
+                        }
                 }
         }
 
@@ -133,7 +166,18 @@ if(e_QUERY == "" && $pref['linkpage_categories'] == 1){
 
         $sql2 = new db;
         while(list($link_category_id, $link_category_name, $link_category_description) = $sql-> db_Fetch()){
-                if($link_total = $sql2 -> db_Select("links", "*", "link_category ='$link_category_id' ORDER BY link_order ")){
+                // ML
+                $tmp_ok = 0;
+                if(e_MLANG == 1 && $link_total = $ml -> e107_ml_Select("links", "*", "link_category ='$link_category_id' ORDER BY link_order ", "default", false, "sql2"))
+                {
+                  $tmp_ok = 1;
+                }
+                else if($link_total = $sql2 -> db_Select("links", "*", "link_category ='$link_category_id' ORDER BY link_order "))
+                {
+                  $tmp_ok = 1;
+                }
+                
+                if($tmp_ok == 1){ // END ML
                         unset($text, $link_cat_table_string);
                         $link_activ = 0;
                         while($row = $sql2-> db_Fetch()){
@@ -190,7 +234,17 @@ function parse_link_submit_table(){
                 global $LINK_SUBMIT_TABLE;
 
                 $sql = new db;
-                if($link_cats = $sql -> db_Select("link_category")){
+               // ML
+                $tmp_ok = 0;
+                if(e_MLANG == 1 && $ml -> e107_ml_Select("link_category"))
+                {
+                  $tmp_ok = 1;
+                }
+                else if($link_cats = $sql -> db_Select("link_category"))
+                {
+                  $tmp_ok = 1;
+                }
+                if($tmp_ok == 1){ // END ML
                         $LINK_SUBMIT_CAT = "<select name='cat_name' class='tbox'>";
                                 while(list($cat_id, $cat_name, $cat_description) = $sql-> db_Fetch()){
                                         if($cat_name != "Main"){

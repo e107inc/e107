@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:21 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-10-10 21:13:18 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -25,7 +25,11 @@ if(IsSet($_POST['newver'])){
 
 if(!getperms("1")){ header("location:".e_BASE."index.php"); exit;}
 if(!$pref['timezone']){ $pref['timezone'] = "GMT"; }
-
+// ML
+require_once(e_HANDLER."form_handler.php");
+$rs = new form;
+require_once(e_HANDLER."multilang/ml_adpanel.php");
+// END ML
 $signup_title = array(CUSTSIG_2,CUSTSIG_3,"ICQ","Aim","MSN",CUSTSIG_4,CUSTSIG_5,CUSTSIG_6,CUSTSIG_7,CUSTSIG_8);
 $signup_name = array("real","url","icq","aim","msn","dob","loc","sig","avt","zone");
 
@@ -51,7 +55,7 @@ if(IsSet($_POST['updateprefs'])){
         $pref['shortdate'] = $aj -> formtpa($_POST['shortdate']);
         $pref['longdate'] = $aj -> formtpa($_POST['longdate']);
         $pref['forumdate'] = $aj -> formtpa($_POST['forumdate']);
-        $pref['sitelanguage'] = $_POST['sitelanguage'];
+        //$pref['sitelanguage'] = $_POST['sitelanguage'];
         $pref['time_offset'] = $_POST['time_offset'];
         $pref['user_reg_veri'] = $_POST['user_reg_veri'];
         $pref['user_reg_secureveri'] = $_POST['user_reg_secureveri'];
@@ -113,8 +117,18 @@ if(IsSet($_POST['updateprefs'])){
         $pref['smtp_password'] = $aj -> formtpa($_POST['smtp_password']);
 
         clear_cache();
-        save_prefs();
-        header("location:".e_ADMIN."prefs.php");
+        // ML
+        if(e_MLANG && isset($_POST['list_lang']) && $_POST['list_lang']!=e_LAN){
+    			$tmp_mainlang = $pref['sitelanguage'];
+          unset ($pref['sitelanguage']);
+          save_prefs("core",-1,"ml_".$_POST['list_lang']);
+          $pref['sitelanguage'] = $tmp_mainlang;
+    		}else{ // END ML
+    			//$pref['sitelanguage'] = $_POST['sitelanguage'];
+    			save_prefs();
+    		}
+        
+       header("location:".e_ADMIN."prefs.php");
        echo "<script type='text/javascript'>document.location.href='prefs.php'</script>\n";
         exit;
 }
@@ -331,7 +345,8 @@ $text .= "</select>
 </td>
 </tr>
 
-</table></div>
+</table></div>";
+/*
 <div class='caption' title='".PRFLAN_80."' style='cursor:pointer;cursor:hand;text-align:left;border:1px solid black' onclick=\"expandit(this)\">".PRFLAN_17."</div>
 <div id='language' style='display:none'>
 <table style='width:100%' class='fborder' cellspacing='1' cellpadding='0'>
@@ -357,6 +372,7 @@ $text .= "</select>
 </td>
 </tr>";
 $text .="</table></div>";
+*/
 
 // Admin Display Areas. .
 
@@ -787,9 +803,27 @@ $text .="
 $text .="<div style='text-align:center'>
 <table style='width:100%' class='fborder' cellspacing='1' cellpadding='0'>  <tr style='vertical-align:top'>
 <td colspan='2'  style='text-align:center' class='forumheader3'>
-<br />
-<input class='caption' type='submit' name='updateprefs' value='".PRFLAN_52."' />
-</td>
+<br />";
+
+// ML
+if(e_MLANG == 1){
+	//$text .="<input class='caption' type='submit' name='updateprefs' value='".PRFLAN_52."' />
+	$but_typ = array(""); // empty = submit
+	$but_nam = array("updateprefs"); // empty = autobutX with X autoincrement
+	$but_val = array("updateprefs"); // empty = Submit
+	$but_class = array("caption"); // empty = button
+	$butjs = array(""); // empty = ""
+	$buttitle = array(""); // empty = ""
+	$text .= e107ml_adpanel(1,$but_typ,$but_nam,$but_val,$but_class,$butjs,$buttitle);
+}else{
+	$text .="<input class='caption' type='submit' name='updateprefs' value='".PRFLAN_52."' />";
+}
+
+// END ML
+
+
+
+$text .="</td>
 </tr>
 </table></div>
 

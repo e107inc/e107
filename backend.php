@@ -11,16 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/backend.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:09:30 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-10-10 21:12:04 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 
-
-        $pubdate = strftime("%a, %d %b %Y %I:%M:00 GMT", time());
-        $rss = "<?xml version=\"1.0\"?>
+$pubdate = strftime("%a, %d %b %Y %I:%M:00 GMT", time());
+$rss = "<?xml version=\"1.0\"?>
 <rss version=\"2.0\">
 <channel>
   <title>".SITENAME."</title>
@@ -56,12 +55,20 @@ require_once("class2.php");
   ";
 
         $sql2 = new db;
-
-        $sql -> db_Select("news", "*", "news_class=0 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY news_datestamp DESC LIMIT 0, 10");
+        if(e_MLANG){
+          $ml -> e107_ml_Select("news", "*", "news_class=0 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY news_datestamp DESC LIMIT 0, 10");
+        }else{
+          $sql -> db_Select("news", "*", "news_class=0 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY news_datestamp DESC LIMIT 0, 10");
+        }
+        
         while($row = $sql -> db_Fetch()){
                 extract($row);
 
-                $sql2 -> db_Select("news_category", "*",  "category_id='$news_category' ");
+                if(e_MLANG){
+                  $ml -> e107_ml_Select("news_category", "*",  "category_id='$news_category' ", "default", FALSE, "sql2");
+                }else{
+                  $sql2 -> db_Select("news_category", "*",  "category_id='$news_category' ");
+                }
                 $row = $sql -> db_Fetch(); extract($row);
 
                 $sql2 -> db_Select("user", "user_name", "user_id='".$news_author."' ");

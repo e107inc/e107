@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2004-10-06 14:56:47 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.11 $
+|     $Date: 2004-10-10 21:12:04 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 
@@ -175,6 +175,13 @@ define("e_SELF", ($pref['ssl_enabled'] ? "https://".$_SERVER['HTTP_HOST'].($_SER
 
 $menu_pref = $sysprefs -> getArray('menu_pref');
 
+// ML
+if($pref['e107ml_flag'] == 1){
+	require_once(e_HANDLER."multilang/mysql_queries.php");
+	$ml = new e107_ml;
+}
+// END ML
+
 $page = substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
 define("e_PAGE", $page);
 
@@ -245,6 +252,14 @@ if($pref['modules'])
 		}
 	}
 }
+
+// ML
+if($pref['e107ml_flag'] == 1){
+	require_once(e_HANDLER."multilang/init.php");
+}else{
+	define("e_MLANG", FALSE);
+}
+// END ML
 
 //###########  Module redifinable functions ###############
 if(!function_exists('checkvalidtheme'))
@@ -356,6 +371,15 @@ if($pref['membersonly_enabled'] && !USER && e_PAGE != e_SIGNUP && e_PAGE != "ind
 
 $sql -> db_Delete("tmp", "tmp_time < '".(time()-300)."' AND tmp_ip!='data' AND tmp_ip!='adminlog' AND tmp_ip!='submitted_link' AND tmp_ip!='reported_post' AND tmp_ip!='var_store' ");
 
+// ML
+$language = ($pref['sitelanguage'] ? $pref['sitelanguage'] : "English");
+define("e_LAN", $language);
+define("e_LANGUAGE", (!USERLAN || !defined("USERLAN") ? $language : USERLAN));
+if(e_MLANG == 1){
+	require_once(e_HANDLER."multilang/init2.php");
+}
+// END ML
+
 define("SITENAME", $pref['sitename']);
 define("SITEURL", (substr($pref['siteurl'], -1) == "/" ? $pref['siteurl'] : $pref['siteurl']."/"));
 define("SITEBUTTON", $pref['sitebutton']);
@@ -367,11 +391,6 @@ define("SITEADMINEMAIL", $pref['siteadminemail']);
 $search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "©");
 $replace =  array("\"", "'", "\\", '\"', "\'", "&#169;");
 define("SITEDISCLAIMER", str_replace($search, $replace, $pref['sitedisclaimer']));
-
-$language = ($pref['sitelanguage'] ? $pref['sitelanguage'] : "English");
-
-define("e_LAN", $language);
-define("e_LANGUAGE", (!USERLAN || !defined("USERLAN") ? $language : USERLAN));
 
 @include(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.".php");
 
@@ -882,14 +901,14 @@ function init_session(){
 				$user_pref['sitetheme'] = ($pref['sitetheme'] == $_POST['sitetheme'] ? "" : $_POST['sitetheme']);
 				save_prefs($user);
 			}
-			if(IsSet($_POST['setlanguage']))
-			{
-				$user_pref['sitelanguage'] = ($pref['sitelanguage'] == $_POST['sitelanguage'] ? "" : $_POST['sitelanguage']);
-				save_prefs($user);
-			}
+			if(IsSet($_POST['setlanguage']) || IsSet($_POST['setlanguage2']))
+      {
+				require_once(e_HANDLER."multilang/switch.php");
+      }
 
 			define("USERTHEME", ($user_pref['sitetheme'] && file_exists(e_THEME.$user_pref['sitetheme']."/theme.php") ? $user_pref['sitetheme'] : FALSE));
 			global $ADMIN_DIRECTORY,$PLUGINS_DIRECTORY;
+			define("USERDBLAN", ($user_pref['sitedblanguage'] ? $user_pref['sitedblanguage'] : FALSE));
 			define("USERLAN", ($user_pref['sitelanguage'] && (strpos(e_SELF,$PLUGINS_DIRECTORY)!==FALSE||(strpos(e_SELF,$ADMIN_DIRECTORY)===FALSE && file_exists(e_LANGUAGEDIR.$user_pref['sitelanguage']."/lan_".e_PAGE))||(strpos(e_SELF,$ADMIN_DIRECTORY)!==FALSE && file_exists(e_LANGUAGEDIR.$user_pref['sitelanguage']."/admin/lan_".e_PAGE))) ? $user_pref['sitelanguage'] : FALSE));
 
 			if($user_admin)

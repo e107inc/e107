@@ -12,9 +12,9 @@
 |	GNU General Public License (http://gnu.org).	
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.3 $
-| $Date: 2004-10-06 13:03:09 $
-| $Author: mcfly_e107 $ 
+| $Revision: 1.4 $
+| $Date: 2004-10-10 21:18:20 $
+| $Author: loloirie $ 
 +---------------------------------------------------------------+
 */
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -23,9 +23,12 @@ class news{
 	
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 	function submit_item($news){
-		
+		// ML
+		global $pref, $ml, $tmp_lg, $ml;
+		// END ML
 		if(!is_object($tp)) $tp = new e_parse;
 		if(!is_object($sql)) $sql = new db;
+		if(e_MLANG == 1 && !is_object($ml)){ $sql = new e107_ml;}
 		extract($news);
 		if($news_id){
 			$news_title = $tp -> toDB($news_title,TRUE);
@@ -33,21 +36,33 @@ class news{
 			$news_extended = $tp -> toDB($news_extended,TRUE);
 			$vals = $update_datestamp ? "news_datestamp = ".time().", " : "";
 			$vals .= " news_title='$news_title', news_body='$news_body', news_extended='$news_extended', news_category='$cat_id', news_allow_comments='$news_allow_comments', news_start='$active_start', news_end='$active_end', news_class='$news_class', news_render_type='$news_rendertype' WHERE news_id='$news_id' ";
-			if($sql -> db_Update("news",$vals)){
-				$message = "News updated in database.";
-             clear_cache("news.php");
+			// ML
+			if(isset($_POST['list_lang'])){$tmp_lg = $_POST['list_lang'];}else{$tmp_lg = e_DBLANGUAGE;}
+      if(e_MLANG == 1 && $ml -> e107_ml_Update("news",$vals,FALSE,$tmp_lg)){
+				$message = LAN_NEWS_20.$tmp_lg;
+        clear_cache("news.php");
+			} // END ML
+			else if($sql -> db_Update("news",$vals)){
+				$message = LAN_NEWS_21;
+        clear_cache("news.php");
 			}else{
-				$message = "<strong>Error! - Was unable to update news item into database!</strong>";
+				$message = LAN_NEWS_5;
 			}
 		}else{
 			$news_title = $tp -> toDB($news_title,TRUE);
 			$news_body = $tp -> toDB($data,TRUE);
 			$news_extended = $tp -> toDB($news_extended,TRUE);
-			if($sql -> db_Insert("news", "0, '$news_title', '$news_body', '$news_extended', ".time().", ".USERID.", $cat_id, $news_allow_comments, $active_start, $active_end, '$news_class', '$news_rendertype' ")){
-				$message = "News entered into database.";
+			// ML
+			if(e_MLANG == 1){
+				$message = LAN_NEWS_8;
+				$message .= $ml -> e107_ml_MultiInsert("news", "0, '$news_title', '$news_body', '$news_extended', ".time().", ".USERID.", $cat_id, $news_allow_comments, $active_start, $active_end, '$news_class', '$news_rendertype' ");
+			}
+			else if($sql -> db_Insert("news", "0, '$news_title', '$news_body', '$news_extended', ".time().", ".USERID.", $cat_id, $news_allow_comments, $active_start, $active_end, '$news_class', '$news_rendertype' ")){
+			// END ML
+			 $message = LAN_NEWS_6;
              clear_cache("news.php");
 			}else{
-				$message = "<strong>Error! - Was unable to enter news item into database!</strong>";
+				$message = LAN_NEWS_7;
 			}
 		}
 		$this -> create_rss();
@@ -125,14 +140,14 @@ on
 			}
 		}
 
-		$active_start = ($active_start ? str_replace(" - 00:00:00", "", $con -> convert_date($active_start, "long")) : "Now");
+		$active_start = ($active_start ? str_replace(" - 00:00:00", "", $con -> convert_date($active_start, "long")) : LAN_NEWS_19);
 		$active_end = ($active_end ?  " to ".str_replace(" - 00:00:00", "", $con -> convert_date($active_end, "long")) : "");
-		$info = "<div class='smalltext'><br /><br /><b>Info:</b><br />";
-		$info .= ($titleonly ? "Title only is set - <b>only the news title will be shown</b><br />" : "");
-		$info .= ($news_class==255 ? "This news post is <b>inactive</b> (It will be not shown on front page). " : "This news post is <b>active</b> (it will be shown on front page). ");
-		$info .= ($news_allow_comments ? "Comments are turned <b>off</b>. " : "Comments are turned <b>on</b>. ");
-		$info .= "<br />Activation period: ".$active_start.$active_end."<br />";
-		$info .= "Body length: ".strlen($news_body)."b. Extended length: ".strlen($news_extended)."b.<br /><br /></div>";
+		$info = "<div class='smalltext'><br /><br /><b>".LAN_NEWS_18."</b><br />";
+		$info .= ($titleonly ? LAN_NEWS_9 : "");
+		$info .= ($news_class==255 ? LAN_NEWS_10 : LAN_NEWS_11);
+		$info .= ($news_allow_comments ? LAN_NEWS_13 : LAN_NEWS_12);
+		$info .= LAN_NEWS_14.$active_start.$active_end."<br />";
+		$info .= LAN_NEWS_15.strlen($news_body).LAN_NEWS_16.strlen($news_extended).LAN_NEWS_17."<br /><br /></div>";
 
 		if($comment_total)
 		{
@@ -227,7 +242,7 @@ on
 	}
 	
 function make_xml_compatible($original){
-	global $tp;
+	global $tp, $ml;
   if(!is_object($tp)) $tp = new e_parse;
   $original = $tp -> toHTML($original,TRUE);
   // remove html-only entities
@@ -244,8 +259,7 @@ function create_rss(){
                 # - return                                null
                 # - scope                                        public
                 */
-                global $sql;
-  							global $tp;
+                global $sql, $ml, $tp;
 								if(!is_object($tp)) $tp = new e_parse;
                 setlocale (LC_TIME, CORE_LC);
                 $pubdate = strftime("%a, %d %b %Y %I:%M:00 GMT", time());
@@ -286,11 +300,19 @@ function create_rss(){
   ";
 
         $sql2 = new db;
-
-        $sql -> db_Select("news", "*", "news_class=0 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY news_datestamp DESC LIMIT 0, 10");
-        while($row = $sql -> db_Fetch()){
+        // ML
+        if(e_MLANG==1){
+          $ml -> e107_ml_Select("news", "*", "news_class=0 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY news_datestamp DESC LIMIT 0, 10");
+        }else{// END ML
+          $sql -> db_Select("news", "*", "news_class=0 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY news_datestamp DESC LIMIT 0, 10");
+        }while($row = $sql -> db_Fetch()){
                 extract($row);
-                $sql2 -> db_Select("news_category", "*",  "category_id='$news_category' ");
+                // ML
+                if(e_MLANG==1){
+                  $ml -> e107_ml_Select("news_category", "*",  "category_id='$news_category' ", "default" , FALSE, "sql2");
+                }else{ // end(MLarray array)
+                  $sql2 -> db_Select("news_category", "*",  "category_id='$news_category' ");
+                }
                 $row = $sql2 -> db_Fetch(); extract($row);
                 $sql2 -> db_Select("user", "user_name, user_email", "user_id=$news_author");
                 $row = $sql2 -> db_Fetch(); extract($row);

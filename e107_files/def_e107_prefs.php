@@ -28,7 +28,7 @@ $pref['log_refertype'] = "1";
 $pref['longdate'] = "%A %d %B %Y - %H:%M:%S";
 $pref['shortdate'] = "%d %b : %H:%M";
 $pref['forumdate'] = "%a %b %d %Y, %I:%M%p";
-$pref['sitelanguage'] = "English";
+$pref['sitelanguage'] = (isset($_POST['installlanguage']) ? $_POST['installlanguage'] :  "English");
 $pref['maintainance_flag'] = "0";
 $pref['time_offset'] = "0";
 $pref['cb_linkc'] = " -link- ";
@@ -68,5 +68,5 @@ $pref['search_restrict'] = "1";
 $pref['antiflood1'] = "1";
 $pref['antiflood_timeout'] = "10";
 $pref['autoban'] = "1";
-
+$pref['sitelang_init'] = (isset($_POST['installlanguage']) ? $_POST['installlanguage'] :  "English");
 ?>
