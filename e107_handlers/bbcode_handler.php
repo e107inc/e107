@@ -19,7 +19,7 @@ class e_bbcode
 	var $core_bb;
 	
 	function e_bbcode(){
-		$this -> core_bb=array('b','i','img','u','center','br','color','size','code','html','flash');
+		$this -> core_bb=array('b','i','img','u','center','br','color','size','code','html','flash','link','email','url','quote');
 	}
 
 	function parseBBCodes($text,$postID)
@@ -43,7 +43,7 @@ class e_bbcode
 		return $text;
 	}
 	
-	function doBB($code,$parm,$code_text,$postID)
+	function doBB($code,$parm,$code_text,$postID,$full_text)
 	{
 		global $tp;
 		if(array_key_exists($code,$this -> bbList))
