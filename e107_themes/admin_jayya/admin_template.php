@@ -28,21 +28,21 @@ ob_end_clean();
 if (!function_exists('show_admin_menu')) {
 	function show_admin_menu($title, $page, $e107_vars, $js = FALSE){
 		global $ns;
-		$text = "<div style='text-align:center; width:100%'><table class='fborder' style='width: 100%'>";
+		$text = "<table class='fborder' style='width: 100%'>";
 		foreach (array_keys($e107_vars) as $act) {
 			$t=str_replace(" ","&nbsp;",$e107_vars[$act]['text']);
 			if (!$e107_vars[$act]['perm'] || getperms($e107_vars[$act]['perm'])) {
-				$arrow_icon = $page == $act ? E_16_NAV_ARROW_OVER : E_16_NAV_ARROW;
+				$arrow_icon = ($page == $act) ? E_16_NAV_ARROW_OVER : E_16_NAV_ARROW;
 				$on_click = $js ? "showhideit('".$act."');" : "document.location='".$e107_vars[$act]['link']."'; disabled=true;";
-				$text .= "<tr><td style='border-bottom: 1px solid #000'><div class='emenuBar' style='width:100%;'>
+				$text .= "<tr><td style='border-bottom: 1px solid #000'><div class='emenuBar'>
 				<div class='menuButton' onmouseover='adbutover(this)' onmouseout='adbutnorm(this)' onclick=\"".$on_click."\"
-				style='background-image: url(".$arrow_icon."); background-repeat: no-repeat; background-position: 3px 1px; width: 100%; display: block;'>
-				".$t."</div>
+				style='width: 98% !important; width: 100%; padding: 0px 0px 0px 2px; border-right: 0px'>
+				<img src='".$arrow_icon."' style='width: 16px; height: 16px; vertical-align: middle' alt='' />&nbsp;".$t."</div>
 				</div>
 				</td></tr>";
 			}
 		}
-		$text .= "</table></div>";
+		$text .= "</table>";
 		if ($title=="") {
 			return $text;
 		}
