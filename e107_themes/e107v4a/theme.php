@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/theme.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-03-21 11:49:33 $
+|     $Revision: 1.11 $
+|     $Date: 2005-03-24 10:11:45 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -34,7 +34,7 @@ $themedate = "11/06/2003";
 $themeinfo = "";
 $xhtmlcompliant = TRUE;
 $csscompliant = TRUE;
-
+define("IMODE", "lite");
 define("THEME_DISCLAIMER", "<br /><i>".LAN_THEME_6."</i>");
 
 // [layout]

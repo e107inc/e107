@@ -7,7 +7,7 @@ $themedate = "10th March 2005";
 $themeinfo = "This theme displays some of the news features of 0.7<br />For best results, create news items with a thumbnail image of 65x50 pixels.<br />To place these items in the top right area, choose 'othernews2' for the rendertype of the news item.<br />'othernews' may be used for the simple bullet listing below it.<br />This theme may be used freely under the GPL license providing the 'e107 newsroom' image is replaced.";
 $xhtmlcompliant = TRUE;
 define("THEME_DISCLAIMER", "<br /><i>NewsRoom theme v1.0 by CaMer0n</i>");
-
+define("IMODE", "dark");
 
 // [layout]
 

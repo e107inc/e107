@@ -26,7 +26,7 @@ $themeinfo = "Based on 'kubrick' by Michael Heilemann (http://binarybonsai.com/k
 define("STANDARDS_MODE", TRUE);
 $xhtmlcompliant = TRUE;
 $csscompliant = TRUE;
-
+define("IMODE", "lite");
 define("THEME_DISCLAIMER", "<br /><i>".LAN_THEME_1."</i>");
 
 // [layout]

@@ -25,7 +25,7 @@ $themewebsite = "http://e107.org";
 $themedate = "09/03/2005";
 $themeinfo = "Based on, and with permission from Arach's site, http://e107.vekna.com";
 define("STANDARDS_MODE", TRUE);
-
+define("IMODE", "lite");
 $xhtmlcompliant = TRUE;
 $csscompliant = TRUE;
 

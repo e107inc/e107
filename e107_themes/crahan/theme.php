@@ -29,7 +29,7 @@ $themeinfo = "Based on the theme by CraHan at his homepage <a href='http://n00.b
 define("STANDARDS_MODE", TRUE);
 $xhtmlcompliant = TRUE;
 $csscompliant = TRUE;
-
+define("IMODE", "lite");
 define("THEME_DISCLAIMER", "<br /><i>".LAN_THEME_1."</i>");
 
 $logo = "logo".rand(1, 4);
