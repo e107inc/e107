@@ -4,13 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_mailout.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-04-02 21:08:06 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2005-04-06 21:31:27 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_52", "Save Changes");
-// define("PRFLAN_62", "Email Settings");
 define("PRFLAN_63", "Send test email");
 define("PRFLAN_64", "Clicking button will send test email to main admin email address");
 define("PRFLAN_65", "Click to send email to");
@@ -34,18 +33,12 @@ define("MAILAN_06","Subject");
 define("MAILAN_07","Attachment");
 define("MAILAN_08","Send Email");
 define("MAILAN_09","Use Theme Style");
-
 define("MAILAN_10","User Subscribed");
 define("MAILAN_11","Insert Variables");
 define("MAILAN_12","All Members");
 define("MAILAN_13","All Unverified Members ");
-
-
-
-
-
-
-
+define("MAILAN_14","It is recommended that you enable <a href='prefs.php'>SMTP</a> for sending large numbers of emails.");
+define("MAILAN_15","Mail-Out");
 
 
 ?>
