@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-02-06 01:12:38 $
+|     $Revision: 1.8 $
+|     $Date: 2005-02-13 00:58:59 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -70,7 +70,6 @@ $TRACKTITLE = LAN_397;
 	
 $rules_text = forum_rules('check');
 $USERINFO = "<a href='".e_BASE."top.php?0.top.forum.10'>".LAN_429."</a> | <a href='".e_BASE."top.php?0.active'>".LAN_430."</a>".(USER ? " | <a href='".e_BASE."userposts.php?0.forums.".USERID."'>".LAN_431."</a> | <a href='".e_BASE."usersettings.php'>".LAN_432."</a> | <a href='".e_BASE."user.php?id.".USERID."'>".LAN_435."</a>" : "").($rules_text != '' ? " | <a href='".e_PLUGIN."forum/forum.php?rules'>".LAN_433."</a>" : "");
-	
 $total_topics = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent='0' ");
 $total_replies = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent!='0' ");
 $total_members = $sql->db_Count("user");
@@ -368,13 +367,13 @@ require_once(FOOTERF);
 function forum_rules($action = 'check') {
 	global $tp, $sql, $ns;
 	if (ADMIN == TRUE) {
-		$num = 6;
+		$type = 'forum_rules_admin';
 	} elseif(USER == TRUE) {
-		$num = 5;
+		$type = 'forum_rules_member';
 	} else {
-		$num = 4;
+		$type = 'forum_rules_guest';
 	}
-	$result = $sql->db_Select('wmessage', 'wm_text', "wm_id = $num AND wm_active = 1");
+	$result = $sql->db_Select('generic', 'gen_chardata', "gen_type = '$type' AND gen_intdata = 1");
 	if ($action == 'check') {
 		if ($result) {
 			return TRUE;
@@ -384,11 +383,11 @@ function forum_rules($action = 'check') {
 	}
 	if ($result) {
 		$row = $sql->db_Fetch();
-		$rules_text = $tp->toHTML($row['wm_text'], TRUE);
+		$rules_text = $tp->toHTML($row['gen_chardata'], TRUE);
 	} else {
 		$rules_text = FORLAN_441;
 	}
-	$ns->tablerender(LAN_433, "<div style='text-align:center'>{$rules_text}</div>", 'wm');
+	$ns->tablerender(LAN_433, "<div style='text-align:center'>{$rules_text}</div>", 'forum_rules');
 }
 	
 	
