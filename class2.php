@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.84 $
-|     $Date: 2005-02-20 21:49:16 $
-|     $Author: streaky $
+|     $Revision: 1.85 $
+|     $Date: 2005-02-21 05:06:08 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -337,7 +337,7 @@ if (isset($pref['modules']) && $pref['modules']) {
 if (!function_exists('checkvalidtheme')) {
 	function checkvalidtheme($theme_check) {
 		// arg1 = theme to check
-		global $ADMIN_DIRECTORY;
+		global $ADMIN_DIRECTORY, $tp;
 
 		if (@fopen(e_THEME.$theme_check."/theme.php", r)) {
 			define("THEME", e_THEME.$theme_check."/");
