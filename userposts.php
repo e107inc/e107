@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/userposts.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-27 19:51:38 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-09 17:06:30 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -22,9 +22,6 @@ require_once(HEADERF);
 if (!USER) {
 	header("location:".e_BASE."index.php");
 	exit;
-}
-if (!is_object($aj)) {
-	$aj = new textparse;
 }
 	
 $_POST['f_query'] = trim(chop($_POST['f_query']));
@@ -148,7 +145,7 @@ require_once(FOOTERF);
 	
 	
 function parse_userposts_comments_table($row) {
-	global $USERPOSTS_COMMENTS_TABLE, $pref, $gen, $aj, $menu_pref;
+	global $USERPOSTS_COMMENTS_TABLE, $pref, $gen, $tp, $menu_pref;
 	extract($row);
 	 
 	$poster = substr($comment_author, (strpos($comment_author, ".")+1));
@@ -156,12 +153,12 @@ function parse_userposts_comments_table($row) {
 	$datestamp = $gen->convert_date($comment_datestamp, "short");
 	$DATESTAMP = $datestamp;
 	 
-	$comment_comment = $aj->tpa($comment_comment);
+	$comment_comment = $tp->toHTML($comment_comment);
 	 
 	if ($pref['cb_linkreplace']) {
 		$comment_comment .= " ";
 		$comment_comment = preg_replace("#\>(.*?)\</a\>[\s]#si", ">".$pref['cb_linkc']."</a> ", $comment_comment);
-		$comment_comment = $aj->tpa(strip_tags($comment_comment));
+		$comment_comment = $tp->toHTML(strip_tags($comment_comment));
 	}
 	 
 	if (!eregi("<a href|<img|&#", $thread_thread)) {
@@ -284,7 +281,7 @@ function parse_userposts_comments_table($row) {
 	
 	
 function parse_userposts_forum_table($row) {
-	global $USERPOSTS_FORUM_TABLE, $gen, $aj;
+	global $USERPOSTS_FORUM_TABLE, $gen, $tp;
 	extract($row);
 	 
 	$gen = new convert;
@@ -310,7 +307,7 @@ function parse_userposts_forum_table($row) {
 		$USERPOSTS_FORUM_TOPIC_PRE = "Thread: ";
 	}
 	 
-	$thread_thread = $aj->tpa($thread_thread);
+	$thread_thread = $tp->toHTML($thread_thread);
 	 
 	$USERPOSTS_FORUM_ICON = "<img src='".e_IMAGE."forum/new_small.png' alt='' />";
 	$USERPOSTS_FORUM_TOPIC_HREF_PRE = "<a href='".e_BASE."forum_viewtopic.php?".$thread_forum_id.".".$tmp."'>";
