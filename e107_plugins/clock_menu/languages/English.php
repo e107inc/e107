@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/clock_menu/languages/English.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-09-28 12:02:47 $
+|     $Revision: 1.4 $
+|     $Date: 2004-10-07 11:12:31 $
 |     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
@@ -40,5 +40,5 @@ define('CLOCK_MENU_L20','September');
 define('CLOCK_MENU_L21','October');
 define('CLOCK_MENU_L22','November');
 define('CLOCK_MENU_L23','December');
-define('CLOCK_MENU_L24',' ');
+define('CLOCK_MENU_L24','');
 ?>
