@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2004-12-12 18:12:51 $
+|     $Revision: 1.38 $
+|     $Date: 2004-12-12 18:22:26 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -671,6 +671,7 @@ function online() {
 	}
 	if ($online_pagecount > $online_bancount && $online_ip != "127.0.0.1") {
 		$sql->db_Insert("banlist", "'$ip', '0', 'Hit count exceeded ($online_pagecount requests within allotted time)' ");
+		$e_event -> trigger("flood", $ip);
 		exit;
 	}
 	if ($online_pagecount >= $online_warncount && $online_ip != "127.0.0.1") {
