@@ -23,7 +23,7 @@ class banner {
 		while ($row = $sql->db_Fetch()) {
 			extract($row);
 			 
-			if (!$menu_pref['banner_visibilitytype'] || $menu_pref['banner_visibilitytype'] == "1") {
+			if (!isset($menu_pref['banner_visibilitytype']) || !$menu_pref['banner_visibilitytype'] || $menu_pref['banner_visibilitytype'] == "1") {
 				//use individual banner visibility
 				if (preg_match("#\^#", $banner_campaign)) {
 					$campaignsplit = explode("^", $banner_campaign);
@@ -46,7 +46,7 @@ class banner {
 			}
 			 
 			$classcheck = "banner_class-".$banner_campaign;
-			if (check_class($menu_pref[$classcheck])) {
+			if (isset($menu_pref[$classcheck]) && check_class($menu_pref[$classcheck])) {
 				//class check for campaign
 				if (check_class($banner_active)) {
 					//class check for banner
@@ -57,7 +57,9 @@ class banner {
 				}
 			}
 		}
-		return $array_bannerid;
+		if (isset($array_bannerid)) {
+			return $array_bannerid;
+		}
 	}
 	 
 	function checkShowBanner($pagescheck) {
