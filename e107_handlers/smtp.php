@@ -6,7 +6,7 @@
  *   copyright            : (C) 2001 The phpBB Group
  *   email                : support@phpbb.com
  *
- *   $Id: smtp.php,v 1.2 2004-03-03 18:41:14 stevedunstan Exp $
+ *   $Id: smtp.php,v 1.3 2004-04-08 21:10:22 mcfly_e107 Exp $
  *
  ***************************************************************************/
 
@@ -121,7 +121,7 @@ function smtpmail($mail_to, $subject, $message, $headers = "")
 	//
 	if( !$socket = fsockopen($pref['smtp_server'], 25, $errno, $errstr, 20) )
 	{
-		print ("Could not connect to smtp host <b>".$pref['smtp_server']."</b> using username <b>".$pref['smtp_username']."</b> and password <b>".$pref['smtp_password']."</b><br />error $errno: $errstr");
+		print ("Could not connect to smtp host. <br />$errno: $errstr");
 		return FALSE;
 	}
 	server_parse($socket, "220");
