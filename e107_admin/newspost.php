@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107/e107_admin/newspost.php,v $
-|   $Revision: 1.39 $
-|   $Date: 2004-08-13 02:39:39 $
-|   $Author: e107coders $
+|   $Revision: 1.40 $
+|   $Date: 2004-08-16 10:12:49 $
+|   $Author: loloirie $
 +---------------------------------------------------------------+
 
 */
@@ -45,7 +45,7 @@ $amount = 50;
 
 // ##### Main loop -----------------------------------------------------------------------------------------------------------------------
 
-if(preg_match("#(.*?)_delete_(\d+)#",$deltest['Delete'],$matches))
+if(preg_match("#(.*?)_delete_(\d+)#",$deltest[NWSLAN_8],$matches))
 {
         $delete = $matches[1];
         $del_id = $matches[2];
