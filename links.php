@@ -17,6 +17,7 @@ require_once("class2.php");
 require_once(HEADERF);
 
 if(IsSet($_POST['add_link']) && check_class($pref['link_submit_class'])){
+	echo "gooduh";
 	if($_POST['link_name'] && $_POST['link_url'] && $_POST['link_description']){
 		$link_name = $aj -> formtpa($_POST['link_name'], "public");
 		$link_url = $aj -> formtpa($_POST['link_url'], "public");
@@ -25,6 +26,8 @@ if(IsSet($_POST['add_link']) && check_class($pref['link_submit_class'])){
 		$submitted_link = $_POST['cat_name']."^".$link_name."^".$link_url."^".$link_description."^".$link_button."^".USERNAME;
 		$sql -> db_Insert("tmp", "'submitted_link', '".time()."', '$submitted_link' ");
 		$ns -> tablerender(LAN_99, "<div style='text-align:center'>".LAN_100."</div>");
+	}else{
+		message_handler("ALERT", 5);
 	}
 }
 
@@ -52,7 +55,7 @@ if(e_QUERY == "submit" && check_class($pref['link_submit_class'])){
 		</tr>";
 	}
 
-	$text .= "<tr><td class='forumheader3' style='width:30%'>".LAN_94."</td><td class='forumheader3' style='width:30%'><input class='tbox' type='text' name='link_name' size='60' value='' maxlength='100' /></td></tr><tr><td class='forumheader3' style='width:30%'>".LAN_95."</td><td class='forumheader3' style='width:30%'><input class='tbox' type='text' name='link_url' size='60' value='' maxlength='200' /></td></tr><tr><td class='forumheader3' style='width:30%'>".LAN_96."</td><td class='forumheader3' style='width:30%'><textarea class='tbox' name='link_description' cols='59' rows='3'></textarea></td></tr><tr><td class='forumheader3' style='width:30%'>".LAN_97."</td><td class='forumheader3' style='width:30%'><input class='tbox' type='text' name='link_button' size='60' value='' maxlength='200' /></td></tr><tr><td colspan='2' style='text-align:center' class='forumheader'><input class='button' type='submit' name='add_link' value='".LAN_98."' /></td></tr></table></form></div>";
+	$text .= "<tr><td class='forumheader3' style='width:30%'><u>".LAN_94."</u></td><td class='forumheader3' style='width:30%'><input class='tbox' type='text' name='link_name' size='60' value='' maxlength='100' /></td></tr><tr><td class='forumheader3' style='width:30%'><u>".LAN_95."</u></td><td class='forumheader3' style='width:30%'><input class='tbox' type='text' name='link_url' size='60' value='' maxlength='200' /></td></tr><tr><td class='forumheader3' style='width:30%'><u>".LAN_96."</u></td><td class='forumheader3' style='width:30%'><textarea class='tbox' name='link_description' cols='59' rows='3'></textarea></td></tr><tr><td class='forumheader3' style='width:30%'>".LAN_97."</td><td class='forumheader3' style='width:30%'><input class='tbox' type='text' name='link_button' size='60' value='' maxlength='200' /></td></tr><tr><td colspan='2' style='text-align:center' class='forumheader3'><span class='smalltext'>".LAN_106."</span></td></tr><tr><td colspan='2' style='text-align:center' class='forumheader'><input class='button' type='submit' name='add_link' value='".LAN_98."' /></td></tr></table></form></div>";
 
 	$ns -> tablerender(LAN_92, $text);
 	require_once(FOOTERF);
