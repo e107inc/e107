@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-03-22 15:31:35 $
+|     $Revision: 1.15 $
+|     $Date: 2005-03-22 16:29:36 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -238,26 +238,39 @@ class e107plugin {
 		save_prefs();
 	}
 	
-	function manage_search($action, $eplug_folder, $type='default') {
+	function manage_search($action, $eplug_folder) {
 		global $sql, $sysprefs;
 		$search_prefs = $sysprefs -> getArray('search_prefs');
+		$default = file_exists(e_PLUGIN.$eplug_folder.'/e_search.php') ? TRUE : FALSE;
+		$comments = file_exists(e_PLUGIN.$eplug_folder.'/comments_search.php') ? TRUE : FALSE;
 		if ($action == 'add'){
-			if ($type == 'default') {
-				if (!isset($search_prefs['plug_handlers'][$eplug_folder])) {
-					$search_prefs['plug_handlers'][$eplug_folder] = array('class' => 0, 'pre_title' => 1, 'pre_title_alt' => '', 'chars' => 150, 'results' => 10);
-				}
-			} else if ($type == 'comments') {
-				if (!isset($search_prefs['comments_handlers'][$eplug_folder])) {
-					require_once(e_PLUGIN.$eplug_folder.'/comments_search.php');
-					$search_prefs['comments_handlers'][$eplug_folder] = array('id' => $comments_type_id, 'class' => 0, 'dir' => $eplug_folder);
-				}
-			}			
+			$install_default = $default ? TRUE : FALSE;
+			$install_comments = $comments ? TRUE : FALSE;
 		} else if ($action == 'remove'){
-			if ($type == 'default') {
-				unset($search_prefs['plug_handlers'][$eplug_folder]);
-			} else if ($type == 'comments') {
-				unset($search_prefs['comments_handlers'][$eplug_folder]);
+			$uninstall_default = isset($search_prefs['plug_handlers'][$eplug_folder]) ? TRUE : FALSE;
+			$uninstall_comments = isset($search_prefs['comments_handlers'][$eplug_folder]) ? TRUE : FALSE;
+		} else if ($action == 'upgrade'){
+			if (isset($search_prefs['plug_handlers'][$eplug_folder])) {
+				$uninstall_default = $default ? FALSE : TRUE;
+			} else {
+				$install_default = $default ? TRUE : FALSE;
 			}
+			if (isset($search_prefs['comments_handlers'][$eplug_folder])) {
+				$uninstall_comments = $comments ? FALSE : TRUE;
+			} else {
+				$install_comments = $comments ? TRUE : FALSE;
+			}
+		}
+		if ($install_default) {
+			$search_prefs['plug_handlers'][$eplug_folder] = array('class' => 0, 'pre_title' => 1, 'pre_title_alt' => '', 'chars' => 150, 'results' => 10);
+		} else if ($uninstall_default) {
+			unset($search_prefs['plug_handlers'][$eplug_folder]);
+		}
+		if ($install_comments) {
+			require_once(e_PLUGIN.$eplug_folder.'/comments_search.php');
+			$search_prefs['comments_handlers'][$eplug_folder] = array('id' => $comments_type_id, 'class' => 0, 'dir' => $eplug_folder);
+		} else if ($uninstall_comments) {
+			unset($search_prefs['comments_handlers'][$eplug_folder]);
 		}
 		$tmp = addslashes(serialize($search_prefs));
 		$sql->db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs' ");
@@ -352,13 +365,7 @@ class e107plugin {
 				$this->manage_userclass('add', $eplug_userclass, $eplug_userclass_description);
 			}
 			
-			if (file_exists(e_PLUGIN.$eplug_folder.'/e_search.php')) {
-				$this -> manage_search('add', $eplug_folder);
-			}
-			
-			if (file_exists(e_PLUGIN.$eplug_folder.'/comments_search.php')) {
-				$this -> manage_search('add', $eplug_folder, 'comments');
-			}
+			$this -> manage_search('add', $eplug_folder);
 			
 			$sql->db_Update('plugin', "plugin_installflag=1 WHERE plugin_id='$id' ");
 			$text .= ($eplug_done ? "<br />".$eplug_done : "");
