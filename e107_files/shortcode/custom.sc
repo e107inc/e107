@@ -54,7 +54,10 @@ switch($custom_query[0])
 
 	case "clock":
 		$clock_flat = TRUE;
-		require_once(e_PLUGIN."clock_menu/clock_menu.php");
+//		if(file_exists(e_PLUGIN."clock_menu/clock_menu.php"))
+//		{
+			include_once(e_PLUGIN."clock_menu/clock_menu.php");
+//		}
 		return "";
 		break;
 
