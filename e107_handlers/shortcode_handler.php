@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.14 $
-| $Date: 2005-03-09 10:03:23 $
-| $Author: stevedunstan $
+| $Revision: 1.15 $
+| $Date: 2005-03-10 19:45:57 $
+| $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -26,7 +26,7 @@ class e_shortcode {
 
 	function e_shortcode()
 	{
-		global $pref;
+		global $pref, $register_sc;
 		if($pref['plug_sc'] != '')
 		{
 			$tmp = explode(',',$pref['plug_sc']);
