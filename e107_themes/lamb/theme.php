@@ -30,31 +30,33 @@ $HEADER = "<div id='header'>
 <div id='banner'>
 {BANNER}
 </div>
-<div id='mainleft'>
-<div id='mainright'>
-<div id='leftcontent'>
+
+<table style='width: 100%;' cellpadding='0' cellspacing='0'>
+<tr>
+<td id='leftcontent'>
 <div class='columnwrap'>
 {SITELINKS}
 {MENU=1}
 </div>
-</div>
-<div id='rightcontent'>
-<div class='columnwrap'>
-{MENU=2}
-</div>
-</div>
-<div id='centercontent'>
-<div class='menuwrapper'>
+</td>
+
+<td id='centercontent'>
 <div class='columnwrap'>
 ";
 
 $FOOTER = "
 </div>
+</td>
+
+<td id='rightcontent'>
+<div class='columnwrap'>
+{MENU=2}
 </div>
-<div class='cleaner'>&nbsp;</div>
-</div>
-</div>
-</div>
+</td>
+</tr>
+</table>
+
+
 <div id='footer'>
 <div class='columnwrap'>
 <div style='text-align: center;' class='smalltext'>
