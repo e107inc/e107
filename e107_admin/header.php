@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.29 $
-|   $Date: 2005-03-28 23:09:19 $
-|   $Author: e107coders $
+|   $Revision: 1.30 $
+|   $Date: 2005-04-04 09:23:00 $
+|   $Author: sweetas $
 +---------------------------------------------------------------+
 */
 if (!defined('e_HTTP')) {
@@ -60,7 +60,7 @@ echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR
 	<title>".SITENAME." : ".LAN_head_4."</title>\n";
 echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
 	<meta http-equiv='content-style-type' content='text/css' />\n";
-if ($pref['admincss'] && file_exists(THEME.$pref['admincss'])) {
+if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE && $pref['admincss'] && file_exists(THEME.$pref['admincss'])) {
 	echo "<link rel='stylesheet' href='".THEME.$pref['admincss']."' />\n";
 } else {
 	echo "<link rel='stylesheet' href='".THEME."style.css' />\n";
@@ -72,7 +72,9 @@ if (!$no_core_css) {
 if (function_exists('theme_head')) {
    	echo theme_head();
 }
-echo "<script type='text/javascript' src='".e_FILE."e107.js'></script>\n";
+if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
+	echo "<script type='text/javascript' src='".e_FILE."e107.js'></script>\n";
+}
 if (file_exists(THEME."theme.js")) {
 	echo "<script type='text/javascript' src='".THEME."theme.js'></script>\n";
 }
@@ -147,7 +149,9 @@ if (!function_exists("parse_admin")) {
 	}
 }
 
-parse_admin($ADMIN_HEADER);
+if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
+	parse_admin($ADMIN_HEADER);
+}
 
 function get_admin_treemenu($title, $page, $e107_vars, $sortlist = FALSE) {
 	global $ns;

@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_menus.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-04-03 18:27:45 $
-|     $Author: e107coders $
+|     $Revision: 1.7 $
+|     $Date: 2005-04-04 09:24:16 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 define("MENLAN_1", "Visible to all");
@@ -47,5 +47,6 @@ define("MENLAN_31", "Default Layout");
 define("MENLAN_32", "Newsheader Layout");
 define("MENLAN_33", "Custom Layout");
 define("MENLAN_34", "Embedded");
+define("MENLAN_35", "Configure Menus");
 
 ?>
