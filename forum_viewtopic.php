@@ -279,7 +279,7 @@ if(!$post_author_id || !$sql -> db_Select("user", "*", "user_id='".$post_author_
 
 	$SIGNATURE = ($user_signature ? "<br /><hr style='width:15%; text-align:left'><span class='smalltext'>".$aj -> tpa($user_signature) : "");
 	
-	$PROFILEIMG = e107_parse("{PROFILE={$user_id}}","admin");
+	$PROFILEIMG = (USER ? e107_parse("{PROFILE={$user_id}}","admin") : "");
 	$EMAILIMG = (!$user_hideemail ? e107_parse("{EMAILTO={$user_email}}","admin") : "");
 
 	$PRIVMESSAGE = ($pm_installed && $post_author_id && (!USERCLASS || check_class($pref['pm_userclass'])) ? "<a href='".e_PLUGIN."pm_menu/pm.php?send.$post_author_id'>".IMAGE_pm."</a>" : "");
@@ -295,7 +295,7 @@ if($thread_active){
 }else{
 	$T_ACTIVE = TRUE;
 }
-$REPORTIMG = "<a href='forum_viewtopic.php?".$forum_id.".".$thread_id.".".$from.".report'>".IMAGE_report."</a> ";
+$REPORTIMG = (USER ? "<a href='forum_viewtopic.php?".$forum_id.".".$thread_id.".".$from.".report'>".IMAGE_report."</a> " : "");
 if(MODERATOR){
 	$MODOPTIONS = "<a href='forum_post.php?edit.".$forum_id.".".$thread_id."'>".IMAGE_admin_edit."</a>\n<a style='cursor:pointer; cursor:hand' onClick=\"confirm_('thread', $forum_id, $thread_id, '')\"'>".IMAGE_admin_delete."</a>\n<a href='".e_ADMIN."forum_conf.php?move.".$forum_id.".".$thread_id."'>".IMAGE_admin_move."</a>";
 }
@@ -346,7 +346,7 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 			unset($iphost);
 			
 			$row = $sql2 -> db_Fetch(); extract($row);
-			$POSTER = "<a href='user.php?id.".$post_author_id."'><b>".$post_author_name."</b></a>";
+			$POSTER =  "<a href='user.php?id.".$post_author_id."'><b>".$post_author_name."</b></a>";
 			if($user_image){
 				require_once(e_HANDLER."avatar_handler.php");
 				$AVATAR = "<div class='spacer'><img src='".avatar($user_image)."' alt='' /></div><br />";
@@ -366,7 +366,7 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 			$LEVEL = $ldata[1];
 
 			$SIGNATURE = ($user_signature ? "<br /><hr style='width:15%; text-align:left'><span class='smalltext'>".$aj -> tpa($user_signature) : "");
-			$PROFILEIMG = e107_parse("{PROFILE={$user_id}}","admin");
+			$PROFILEIMG = (USER ? e107_parse("{PROFILE={$user_id}}","admin") : "");
 			$EMAILIMG = (!$user_hideemail ? e107_parse("{EMAILTO={$user_email}}","admin") : "");
 
 			$PRIVMESSAGE = ($pm_installed && $post_author_id && (!USERCLASS || check_class($pref['pm_userclass'])) ? "<a href='".e_PLUGIN."pm_menu/pm.php?send.$post_author_id'>".IMAGE_pm."</a>" : "");
@@ -379,7 +379,7 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 		if(!$T_ACTIVE){
 			$QUOTEIMG = "<a href='forum_post.php?quote.".$forum_id.".".$thread_id."'>".IMAGE_quote."</a>";
 		}
-		$REPORTIMG = "<a href='forum_viewtopic.php?".$forum_id.".".$thread_id.".".$from.".report'>".IMAGE_report."</a> ";
+		$REPORTIMG = (USER ? "<a href='forum_viewtopic.php?".$forum_id.".".$thread_id.".".$from.".report'>".IMAGE_report."</a> " : "");
 		if(MODERATOR){
 			$MODOPTIONS = "<a href='forum_post.php?edit.".$forum_id.".".$thread_id."'>".IMAGE_admin_edit."</a>\n<a style='cursor:pointer; cursor:hand' onClick=\"confirm_('reply', $forum_id, $thread_id, '$post_author_name')\"'>".IMAGE_admin_delete."</a>\n<a href='".e_ADMIN."forum_conf.php?move.".$forum_id.".".$thread_id."'>".IMAGE_admin_move."</a>";
 		}
