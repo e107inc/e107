@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2005-03-16 17:57:52 $
-|     $Author: sweetas $
+|     $Revision: 1.53 $
+|     $Date: 2005-03-18 01:47:07 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -52,7 +52,7 @@ function update_check() {
 }
 
 function update_61x_to_700($type) {
-	global $sql, $ns,$mySQLdefaultdb, $pref;
+	global $sql, $ns, $mySQLdefaultdb, $pref, $tp;
 	if ($type == "do") {
 		set_time_limit(180);
 
