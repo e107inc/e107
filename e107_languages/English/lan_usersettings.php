@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_usersettings.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:11:56 $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-07 04:08:44 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -89,4 +89,7 @@ define("MAX_AVHEIGHT", "Maximum avatar height is ");
 define("GIF_RESIZE", "Please resize gif image or convert to different format");
 define("RESIZE_NOT_SUPPORTED", "Resize method not supported by this server. Please resize image or choose another. File has been deleted.");
 
+// v0.7
+define("LAN_USET_5", "Subscribed to");
+define("LAN_USET_6", "Subscribe to our mailing-list(s) and/or sections of this site.");
 ?>

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:27 $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-07 04:08:44 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -53,6 +53,10 @@ function r_userclass($fieldname, $curval=0, $mode="off",$optlist=""){
                 ($curval==e_UC_MEMBER) ? $s=" selected='selected'" : $s="";
                 $text.="<option value='".e_UC_MEMBER."' ".$s.">".UC_LAN_3."</option>\n";
         }
+        if($mode != "off" || preg_match("#admin#",$optlist)){
+                ($curval==e_UC_ADMIN) ? $s=" selected='selected'" : $s="";
+                $text.="<option  value='".e_UC_ADMIN."' ".$s.">".UC_LAN_5."</option>\n";
+        }
         if(!$optlist || preg_match("#classes#",$optlist)){
                 if($sql -> db_Select("userclass_classes")){
                         while($row = $sql -> db_Fetch()){
@@ -68,10 +72,7 @@ function r_userclass($fieldname, $curval=0, $mode="off",$optlist=""){
                 ($curval==e_UC_READONLY) ? $s=" selected='selected'" : $s="";
                 $text.="<option  value='".e_UC_READONLY."' ".$s.">".UC_LAN_4."</option>\n";
         }
-        if($mode != "off" || preg_match("#admin#",$optlist)){
-                ($curval==e_UC_ADMIN) ? $s=" selected='selected'" : $s="";
-                $text.="<option  value='".e_UC_ADMIN."' ".$s.">".UC_LAN_5."</option>\n";
-        }
+
         $text.="</select>\n";
         return $text;
 }
