@@ -1,5 +1,6 @@
 $ret = "";
-switch($parm)
+$custom_query = explode('.', $parm);
+switch($custom_query[0])
 {
 	case "login":
 	case "login noprofile":

@@ -7,4 +7,6 @@ if (ADMIN) {
 		$icon = $e_icon_array[$e_sub_cat];
 	}
 	return $icon;
+} else {
+	return E_32_LOGOUT;
 }

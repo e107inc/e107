@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/search_menu/search_menu.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-12-13 13:20:45 $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-12 09:38:57 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -30,11 +30,22 @@ elseif(strstr(e_PAGE, "download.php")){ $page = 9;}
 else{ $page = 99;
 }
 
+$search_size = $custom_query[2] ? $custom_query[2] : '20';
+if ($custom_query[1]!='') {
+	if ($custom_query[1]!='default') {
+		$image_file = $custom_query[1];
+	} else {
+		$image_file = e_PLUGIN.'search_menu/images/search.png';
+	}
+	$search_button = "<input type='image' src='".$image_file."' value='".LAN_180."' style='width: 16px; height: 16px; border: 0px; vertical-align: middle' name='searchsubmit' />";
+} else {
+	$search_button = "<input class='button' type='submit' name='searchsubmit' value='".LAN_180."' />";
+}
 $text = "<form method='post' action='".e_BASE."search.php'>
 <p>
-<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />
+<input class='tbox' type='text' name='searchquery' size='".$search_size."' value='' maxlength='50' />
 <input type='hidden' name='searchtype' value='$page' />
-<input class='button' type='submit' name='searchsubmit' value='".LAN_180."' />
+".$search_button."
 </p>
 </form>";
 if($searchflat){ echo $text; }else{ $ns -> tablerender(LAN_180." ".SITENAME, "<div style='text-align:center'>".$text."</div>", 'search'); }
