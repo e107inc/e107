@@ -32,6 +32,10 @@ define("LAN_FPW6","An email has been sent to you with a link that will allow you
 define("LAN_FPW7","This is not a valid link to reset your password.<br />Please contact the site administrator for more details.");
 define("LAN_FPW8","The password for username");
 define("LAN_FPW9","has been successfully changed.<br /><br />The new password is:");
-define("LAN_FPW10","Please log in now and immediately change your password, for security purposes.");
+define("LAN_FPW10","Please");
+define("LAN_FPW11","log in now");
+define("LAN_FPW12","and immediately change your password, for security purposes.");
+
+
 
 ?>
