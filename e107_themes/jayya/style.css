@@ -9,9 +9,12 @@ body, .finfobar {
 	background-color: #fdfdfd;
 }
 
-body, td, .indent, .defaulttext, .caption, .bodytable, .infobar, .mediumtext, 
-.forumheader, .forumheader2, .f2default, .forumheader3, .f3default, .fcaption, .fcdefault, .fcaption2, .finfobar {
+body, td, .indent, .defaulttext, .caption, .bodytable, .infobar, .forumheader, .forumheader2, .f2default, .forumheader3, .f3default, .fcaption, .fcdefault, .fcaption2, .finfobar {
 	font: normal 11px arial, sans-serif;
+}
+
+.mediumtext {
+	font: normal 14px arial, sans-serif;
 }
 
 .smalltext, .smallblacktext, .tbox, .captiontext, .button, .button:hover, .nextprev, .helpbox {
@@ -238,3 +241,10 @@ ul{
 	border-collapse:collapse;
 	border-spacing:0px;
 }
+
+.center {
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+}
+

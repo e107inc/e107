@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2005-03-11 14:07:56 $
+|     $Revision: 1.40 $
+|     $Date: 2005-03-15 12:08:01 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -124,16 +124,6 @@ if(e_QUERY == "u") {
 	$ns->tablerender("", "<div style='text-align:center'><b>".PRFLAN_106."</b></div>");
 }
 
-$handle = opendir(e_THEME);
-while ($file = readdir($handle)) {
-	if ($file != "." && $file != ".." && $file != "templates" && $file != "/") {
-		if (is_readable(e_THEME.$file."/theme.php") && is_readable(e_THEME.$file."/style.css")) {
-			$dirlist[] = $file;
-		}
-	}
-}
-closedir($handle);
-
 $handle = opendir(e_ADMIN.'includes/');
 while ($file = readdir($handle)) {
 	if ($file != "." && $file != "..") {
@@ -228,44 +218,6 @@ $text .= pref_submit();
 $text .= "</table>
 	</div>
 
-	<div id='theme' style='display:none; text-align:center'>
-	<table style='width:100%' class='fborder'>
-	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_100."</td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input type='radio' name='image_preload' value='1'".($pref['image_preload'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
-	<input type='radio' name='image_preload' value='0'".(!$pref['image_preload'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
-	</td>
-	</tr>";
-
-	/* see if theme has multiple stylesheets ... */
-
-	require_once(e_HANDLER."file_class.php");
-	$file = new e_file;
-
-	if(count($gfiles = $file -> get_files(e_THEME.$pref['sitetheme'], "css", "nav")) > 1)
-	{
-
-		$text .= "<tr>
-		<td style='width:50%' class='forumheader3'>".PRFLAN_131."</td>
-		<td style='width:50%; text-align:right' class='forumheader3'>
-
-		<select name='themecss' class='tbox'>\n";
-		foreach($gfiles as $stylesheet)
-		{
-			$text .= ($stylesheet['fname'] == $pref['themecss'] || (!$pref['themecss'] && $stylesheet['fname'] == "style.css") ? "<option selected='selected'>" : "<option>").$stylesheet['fname']."</option>\n";
-		}
-		
-		$text .= "</select>
-		</td>
-		</tr>\n";
-	}
-
-$text .= pref_submit();
-
-$text .= "</table>
-	</div>
-
 	<div id='display' style='display:none; text-align:center'>
 	<table style='width:100%' class='fborder'>
 	<tr>
@@ -308,33 +260,9 @@ $text .= "<div id='admindisp' style='display:none; text-align:center'>
 	<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' colspan='2'>".PRFLAN_77."</td>
 	</tr>
 
-	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_54.": </td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
-	<select name='admintheme' class='tbox'>\n";
-$counter = 0;
-while (isset($dirlist[$counter])) {
-	$text .= ($dirlist[$counter] == $pref['admintheme'] ? "<option selected='selected'>".$dirlist[$counter]."</option>\n" : "<option>".$dirlist[$counter]."</option>\n");
-	$counter++;
-}
-$text .= "</select>
-	</td>
-	</tr>
+	
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_57.": </td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
-	<select name='adminstyle' class='tbox'>\n";
-$counter = 0;
-while (isset($adminlist[$counter])) {
-	$text .= ($adminlist[$counter] == $pref['adminstyle'] ? "<option selected='selected'>".$adminlist[$counter]."</option>\n" : "<option>".$adminlist[$counter]."</option>\n");
-	$counter++;
-}
-$text .= "</select>
-	</td>
-	</tr>";
-
-$text .= "<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_95."<br /><span class='smalltext'>".PRFLAN_96."</td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
 	<input type='radio' name='admin_alerts_ok' value='1'".($pref['admin_alerts_ok'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
@@ -844,7 +772,6 @@ function pref_submit() {
 
 function prefs_adminmenu() {
 	$var['main']['text'] = PRFLAN_1;
-	$var['theme']['text'] = PRFLAN_10;
 	$var['display']['text'] = PRFLAN_13;
 	$var['admindisp']['text'] = PRFLAN_77;
 	$var['date']['text'] = PRFLAN_21;

@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.5 $
-|   $Date: 2005-02-24 18:40:45 $
-|   $Author: mcfly_e107 $
+|   $Revision: 1.6 $
+|   $Date: 2005-03-15 12:09:29 $
+|   $Author: stevedunstan $
 +---------------------------------------------------------------+
 */
 	
@@ -22,8 +22,10 @@
 @include(e_LANGUAGEDIR."English/lan_upload_handler.php");
 function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "") {
 	 
-	if (!$uploaddir) $uploaddir = e_FILE."public/";
 	global $pref, $sql;
+
+	if (!$uploaddir) $uploaddir = e_FILE."public/";
+	if($uploaddir == e_THEME) $pref['upload_storagetype'] = 1;
 	 
 	$allowed_filetypes = ($pref['upload_allowedfiletype'] ? explode("\n", $pref['upload_allowedfiletype']) : array(".zip", ".gz", ".jpg", ".png", ".gif", ".txt"));
 	 
@@ -67,11 +69,13 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "") {
 	return FALSE;
 	}
 	*/
-	 
+
+
 	$files = $_FILES['file_userfile'];
 	if (!is_array($files)) {
 		return FALSE;
 	}
+
 	$c = 0;
 	foreach($files['name'] as $key => $name) {
 		 
