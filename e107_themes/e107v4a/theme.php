@@ -229,8 +229,6 @@ $POLLSTYLE = <<< EOF
 </div>
 EOF;
 
-background-image : url(images/orange_b.png);
-
 define(CB_STYLE, $CHATBOXSTYLE);
 
 
