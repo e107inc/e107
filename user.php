@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-03-06 01:53:05 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.11 $
+|     $Date: 2005-03-09 10:57:29 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -259,8 +259,11 @@ function renderuser($row, $user_entended, $mode = "verbose") {
 		}
 
 		$datestamp = $gen->convert_date($user_join, "long");
-		$lastvisit = ($user_currentvisit ? $gen->convert_date($user_currentvisit, "long") : "<i>".LAN_401."</i>");
-		$daysregged = max(1, round((time() - $user_join)/86400))." ".LAN_405;
+		$lastvisit = ($user_currentvisit ? $gen->convert_date($user_currentvisit, "long")."<br />( ".$gen -> computeLapse($user_currentvisit)." ".LAN_426." )" : "<i>".LAN_401."</i>");
+
+		$daysregged = $gen -> computeLapse($user_join)." ".LAN_426;
+
+		
 		$str = "
 		<div style='text-align:center'>
 		<table style='width:95%' class='fborder'>
@@ -373,7 +376,7 @@ function renderuser($row, $user_entended, $mode = "verbose") {
 
 		<tr>
 		<td style='width:30%' class='forumheader3'>".LAN_145."</td>
-		<td style='width:70%' class='forumheader3'>$datestamp ( $daysregged )</td>
+		<td style='width:70%' class='forumheader3'>$datestamp <br />( $daysregged )</td>
 		</tr>
 
 		<tr>

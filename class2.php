@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.92 $
-|     $Date: 2005-03-08 19:41:20 $
-|     $Author: streaky $
+|     $Revision: 1.93 $
+|     $Date: 2005-03-09 10:57:28 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -351,32 +351,6 @@ if (!function_exists('checkvalidtheme')) {
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-if (!class_exists('convert')) {
-	class convert {
-		function convert_date($datestamp, $mode = "long") {
-			/*
-			# Date convert
-			# - parameter #1:  string $datestamp, unix stamp
-			# - parameter #2:  string $mode, date format, default long
-			# - return         parsed text
-			# - scope          public
-			*/
-			global $pref;
-
-			$datestamp += TIMEOFFSET;
-
-			if ($mode == "long") {
-				return strftime($pref['longdate'], $datestamp);
-			} else if ($mode == "short") {
-				return strftime($pref['shortdate'], $datestamp);
-			} else {
-				return strftime($pref['forumdate'], $datestamp);
-			}
-		}
-	}
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 if (!class_exists('e107_table')) {
 	class e107table {
 		function tablerender($caption, $text, $mode = "default", $return = FALSE) {
@@ -622,6 +596,12 @@ if(isset($_SERVER['HTTP_REFERER'])) {
 } else {
 	define('e_REFERER_SELF', FALSE);
 }
+
+if (!class_exists('convert'))
+{
+	require_once(e_HANDLER."date_handler.php");
+}
+
 
 //@require_once(e_HANDLER."IPB_int.php");
 //@require_once(e_HANDLER."debug_handler.php");

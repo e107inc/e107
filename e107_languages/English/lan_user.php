@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_user.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-03-06 01:53:05 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2005-03-09 10:57:30 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Members");
@@ -52,16 +52,15 @@ define("LAN_415", "next member");
 define("LAN_416", "You must be logged in to access this page");
 define("LAN_417", "Main site administrator");
 define("LAN_418", "Site administrator");
-
 define("LAN_419", "Show");
 define("LAN_420", "DESC");
 define("LAN_421", "ASC");
 define("LAN_422", "Go");
 define("LAN_423", "Click here to View User Comments");
 define("LAN_424", "Click here to View Forum Posts");
-
-
 define("LAN_425", "Send Private Message");
+define("LAN_426", "ago");
+
 define("USERLAN_1", "Peer Rating");
 
 ?>
