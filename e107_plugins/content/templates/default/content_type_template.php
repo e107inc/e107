@@ -11,11 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_type_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-03 23:31:40 $
+|     $Revision: 1.2 $
+|     $Date: 2005-02-09 21:19:25 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
+
+$CONTENT_TYPE_TABLE_START = "";
+$CONTENT_TYPE_TABLE_SUBMIT = "";
+$CONTENT_TYPE_TABLE_MANAGER = "";
+$CONTENT_TYPE_TABLE_LINE = "";
+$CONTENT_TYPE_TABLE_END = "";
 
 // ##### CONTENT TYPE LIST --------------------------------------------------
 if(!$CONTENT_TYPE_TABLE_START){

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_content_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-03 23:31:40 $
+|     $Revision: 1.2 $
+|     $Date: 2005-02-09 21:19:25 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -21,6 +21,7 @@
 $CONTENT_CONTENT_TABLE_START = "";
 $CONTENT_CONTENT_TABLE = "";
 $CONTENT_CONTENT_TABLE_END = "";
+$CONTENT_CONTENT_TABLE_CUSTOM_KEY = "";
 
 if(!$CONTENT_CONTENT_TABLE){
 				$CONTENT_CONTENT_TABLE .= "

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_submit.php,v $
-|		$Revision: 1.3 $
-|		$Date: 2005-02-08 14:36:02 $
+|		$Revision: 1.4 $
+|		$Date: 2005-02-09 21:17:54 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -31,7 +31,7 @@ $aform = new contentform;
 global $tp;
 
 $lan_file = e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content.php';
-include(file_exists($lan_file) ? $lan_file : e_PLUGIN.'content/languages/English/lan_content.php');
+include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN.'content/languages/English/lan_content.php');
 
 if(e_QUERY){
 	$tmp = explode(".", e_QUERY);
