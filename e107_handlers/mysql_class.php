@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-01-29 14:26:36 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.31 $
+|     $Date: 2005-01-29 17:19:02 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 	
@@ -25,8 +25,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.30 $
-* @author $Author: mcfly_e107 $
+* @version $Revision: 1.31 $
+* @author $Author: mrpete $
 */
 class db {
 	 
@@ -52,9 +52,11 @@ class db {
 		global $pref, $eTraffic;
 		$eTraffic->BumpWho('Create db object', 1);
 		$langid = 'e107language_'.$pref['cookie_name'];
-		if ($pref['user_tracking'] == 'session') {
+		if ($pref['user_tracking'] == 'session') { 
+			if (!isset($_SESSION[$langid])) { return; }
 			$this->mySQLlanguage = ($this->db_IsLang($_SESSION[$langid])) ? $_SESSION[$langid] : '';
-		} else {
+		} else {                                  
+			if (!isset($_COOKIE[$langid])) { return; }
 			$this->mySQLlanguage = ($this->db_IsLang($_COOKIE[$langid])) ? $_COOKIE[$langid] : '';
 		}
 	}
@@ -172,7 +174,9 @@ class db {
 			}
 	    if(is_object($db_debug)) {
 			$nFields = $db_debug->Mark_Query($query, $rli, $sQryRes,$aTrace, $mytime, $pTable);
-		}
+		} else {
+echo "what happened to db_debug??!!<br/>";
+}
 		}
 		return $sQryRes;
 	}
@@ -246,8 +250,9 @@ class db {
 	*/
 	function db_Insert($table, $arg, $debug = FALSE, $log_type = '', $log_remark = '') {
 		$table = $this->db_IsLang($table);
-		$this->mySQLcurTable = $table;
-		if ($result = $this->mySQLresult = $this->db_Query('INSERT INTO '.MPREFIX.$table.' VALUES ('.$arg.')', NULL, 'db_Insert', $debug, $log_type, $log_remark )) {
+		$this->mySQLcurTable = $table;                           
+		$query='INSERT INTO '.MPREFIX.$table.' VALUES ('.$arg.')';
+		if ($result = $this->mySQLresult = $this->db_Query($query, NULL, 'db_Insert', $debug, $log_type, $log_remark )) {
 			$tmp = mysql_insert_id();
 			return $tmp;
 		} else {
@@ -333,8 +338,9 @@ class db {
 	function db_Count($table, $fields = '(*)', $arg = '', $debug = FALSE, $log_type = '', $log_remark = '') {
 		$table = $this->db_IsLang($table);
 
-		if ($fields == 'generic') {
-			if ($this->mySQLresult = $this->db_Query($table, NULL, 'db_Count', $debug, $log_type, $log_remark)) {
+		if ($fields == 'generic') {                 
+			$query=$table;
+			if ($this->mySQLresult = $this->db_Query($query, NULL, 'db_Count', $debug, $log_type, $log_remark)) {
 				$rows = $this->mySQLrows = @mysql_fetch_array($this->mySQLresult);
 				return $rows[0];
 			} else {
@@ -344,7 +350,8 @@ class db {
 		}
 		
 		$this->mySQLcurTable = $table;
-		if ($this->mySQLresult = $this->db_Query('SELECT COUNT'.$fields.' FROM '.MPREFIX.$table.' '.$arg, NULL, 'db_Count', $debug, $log_type, $log_remark)) {
+		$query='SELECT COUNT'.$fields.' FROM '.MPREFIX.$table.' '.$arg;
+		if ($this->mySQLresult = $this->db_Query($query, NULL, 'db_Count', $debug, $log_type, $log_remark)) {
 			$rows = $this->mySQLrows = @mysql_fetch_array($this->mySQLresult);
 			return $rows[0];
 		} else {
@@ -445,7 +452,7 @@ class db {
 	* @desc Enter description here...
 	* @access private
 	*/
-	function db_Select_gen($arg, $debug = FALSE, $log_type = '', $log_remark = '') {
+	function db_Select_gen($query, $debug = FALSE, $log_type = '', $log_remark = '') {
 		 
 		/*
 		changes by jalist 19/01/05:
@@ -454,10 +461,10 @@ class db {
 		*/
 		 
 		$this->tabset = FALSE;
-		if(strpos($arg,'#') !== FALSE) {
-			$arg = preg_replace_callback("/#([\w]*?)\W/", array($this, 'ml_check'), $arg);
+		if(strpos($query,'#') !== FALSE) {
+			$query = preg_replace_callback("/#([\w]*?)\W/", array($this, 'ml_check'), $query);
 		}
-		if ($this->mySQLresult = $this->db_Query($arg, NULL, 'db_Select_gen', $debug, $log_type, $log_remark)) {
+		if ($this->mySQLresult = $this->db_Query($query, NULL, 'db_Select_gen', $debug, $log_type, $log_remark)) {
 			$this->dbError('db_Select_gen');
 			return $this->db_Rows();
 		} else {
@@ -547,7 +554,7 @@ class db {
 					}
 				}
 			}
-			if ($amount && $amount == $counter || ($counter > $maximum && $maximum)) {
+			if ($amount && $amount == $counter || ($maximum && $counter > $maximum)) {
 				break;
 			}
 			$counter++;
