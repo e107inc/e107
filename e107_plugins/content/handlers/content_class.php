@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.6 $
-|		$Date: 2005-02-08 14:36:55 $
+|		$Revision: 1.7 $
+|		$Date: 2005-02-08 16:02:02 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -453,9 +453,9 @@ class content{
 
 
 		function countItemsInCat($id, $parent, $nolan=""){
-				global $plugintable, $datequery;
+				global $plugintable, $datequery, $type_id;
 
-				$itemswithparent = ($parent == "0" ? $id.".".$id : substr($parent,2).".".substr($parent,2).".".$id );
+				$itemswithparent = ($parent == "0" ? $id.".".$id : $type_id.".".substr($parent,2).".".$id );
 
 				if(!is_object($sqlcountitemsincat)){ $sqlcountitemsincat = new db; }
 				$n = $sqlcountitemsincat -> db_Select($plugintable, "content_class", "content_parent='".$itemswithparent."' AND content_refer != 'sa' ".$datequery." ");
@@ -720,87 +720,6 @@ class content{
 		}
 
 
-
-
-		/*
-		//get parent tree from a content item (content_parent)
-		function getBreadCrumb($id=""){
-				global $plugintable, $datequery;
-				$sqlgetbreadcrumb = "";
-
-				if(strpos($id, ".")){
-					$tmp = array_reverse( explode(".", $id) );
-					$id = $tmp[0];
-				}
-				//".$datequery."
-				if($id != ""){					
-					if(!is_object($sqlgetbreadcrumb)){ $sqlgetbreadcrumb = new db; }
-					if(!$sqlgetbreadcrumb -> db_Select($plugintable, "content_id, content_heading, content_parent", "content_id='".$id."'  ")){
-						$parent = FALSE;
-					}else{
-						while(list($parent_id, $parent_heading, $parent_parent) = $sqlgetbreadcrumb -> db_Fetch()){
-							$parent[] = array($parent_id, $parent_heading, $parent_parent);
-							if(strpos($parent_parent, ".")){
-								$parentchild = $this -> getBreadCrumb($parent_parent);
-								if($parentchild == TRUE){
-									if(is_array($parentchild[0])){
-										for($a=0;$a<count($parentchild);$a++){
-											$parent[] = $parentchild[$a];
-										}
-									}else{
-										$parent[] = $parentchild;
-									}
-								}
-							}
-						}
-					}
-				}else{
-					$parent = "";
-				}
-				return $parent;
-		}
-		*/
-		/*
-		function printBreadCrumb($breadcrumb="", $mode="", $nolink=""){
-				global $content_pref, $type, $type_id;
-				$contentpreflimit = "5";
-
-				if($breadcrumb != ""){
-					$result = array_reverse($breadcrumb);
-					if(count($result) > $contentpreflimit){
-						$limit = count($result)-$contentpreflimit;
-						$pre = "... > ";
-					}else{
-						$limit = "0";
-						$pre = "";
-					}
-				}
-
-				if($mode == "nobase"){
-					$breadcrumbstring = "";
-				}else{
-					if($nolink){
-						$breadcrumbstring = CONTENT_LAN_58." > ".CONTENT_LAN_59." > ".CONTENT_LAN_60." > ";
-					}else{
-						$breadcrumbstring = "<a href='".e_BASE."'>".CONTENT_LAN_58."</a> > <a href='".e_SELF."'>".CONTENT_LAN_59."</a> > <a href='".e_SELF."?".$type.".".$type_id."'>".CONTENT_LAN_60."</a> > ";
-					}
-				}
-				if($breadcrumb != ""){
-					$breadcrumbstring .= $pre;
-					for($a=$limit;$a<count($result);$a++){
-						if($result[$a][1]){
-							if($nolink){
-								$breadcrumbstring .= $result[$a][1]." > ";
-							}else{
-								$breadcrumbstring .= "<a href='".e_SELF."?".$type.".".$type_id.".cat.".$result[$a][0]."'>".$result[$a][1]."</a> > ";
-							}
-						}
-					}
-				}
-				return substr($breadcrumbstring, 0, -3);
-		}
-		*/
-
 		function getOrder(){
 				global $type, $type_id, $action, $sub_action, $id, $content_pref;
 
@@ -914,7 +833,6 @@ class content{
 				}else{
 					return;
 				}
-				
 		}
 
 

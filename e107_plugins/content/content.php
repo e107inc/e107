@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.8 $
-|		$Date: 2005-02-08 14:36:02 $
+|		$Revision: 1.9 $
+|		$Date: 2005-02-08 16:01:50 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -159,6 +159,9 @@ if(isset($type) && $type == "type" && is_numeric($type_id)){
 		$number = ($content_pref["content_nextprev_number_0"] ? $content_pref["content_nextprev_number_0"] : "5");
 		$nextprevquery = ($content_pref["content_nextprev_0"] ? "LIMIT ".$from.",".$number : "");
 }
+
+$prefetchbreadcrumb = $aa -> prefetchBreadCrumb($type_id);
+$prefetchbreadcrumbnosub = $aa -> prefetchBreadCrumb($type_id, "no_sub");
 
 //post comment
 if(IsSet($_POST['commentsubmit'])){
@@ -499,7 +502,7 @@ function show_content(){
 function show_content_recent(){
 				global $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj;
 				global $type, $type_id, $action, $sub_action, $id, $id2, $nextprevquery, $from, $number;
-				global $CONTENT_RECENT_TABLE, $datequery;
+				global $CONTENT_RECENT_TABLE, $datequery, $prefetchbreadcrumb;
 
 				$cachestr = "$plugintable.recent";
 				if($cache = $e107cache->retrieve($cachestr)){
@@ -520,7 +523,6 @@ function show_content_recent(){
 						}
 					}
 
-					$prefetchbreadcrumb = $aa -> prefetchBreadCrumb($type_id);
 					$breadcrumbstring = $aa -> drawBreadcrumb($prefetchbreadcrumb, $type_id, "base", "");
 
 					if(!is_object($sql)){ $sql = new db; }
@@ -575,7 +577,7 @@ function show_content_recent(){
 function show_content_cat_all(){
 				global $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj;
 				global $type, $type_id, $action, $sub_action, $id, $id2, $nextprevquery, $from, $number;
-				global $CONTENT_CAT_TABLE, $datequery;
+				global $CONTENT_CAT_TABLE, $datequery, $prefetchbreadcrumb;
 				unset($text);
 
 				$parentarray = $aa -> getParent("", "", $type_id, "1");
@@ -588,7 +590,6 @@ function show_content_cat_all(){
 					}else{
 						ob_start();
 
-						$prefetchbreadcrumb = $aa -> prefetchBreadCrumb($type_id);
 						$breadcrumbstring = $aa -> drawBreadcrumb($prefetchbreadcrumb, $type_id, "base", "");
 
 						if(!$CONTENT_CAT_TABLE){
@@ -636,7 +637,7 @@ function show_content_cat_all(){
 
 function show_content_cat($mode=""){
 				global $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj, $datequery;
-				global $type, $type_id, $action, $sub_action, $id, $id2, $nextprevquery, $from, $number;
+				global $type, $type_id, $action, $sub_action, $id, $id2, $nextprevquery, $from, $number, $prefetchbreadcrumb;
 				global $CONTENT_RECENT_TABLE, $CONTENT_CAT_LIST_TABLE, $CONTENT_CAT_LISTSUB_TABLE_START, $CONTENT_CAT_LISTSUB_TABLE, $CONTENT_CAT_LISTSUB_TABLE_END;
 
 				if($mode == "comment"){
@@ -649,7 +650,6 @@ function show_content_cat($mode=""){
 				}else{
 					ob_start();
 
-					$prefetchbreadcrumb = $aa -> prefetchBreadCrumb($type_id);
 					if($content_pref["content_breadcrumb_{$type_id}"]){						
 						$breadcrumbstring = $aa -> drawBreadcrumb($prefetchbreadcrumb, $sub_action, "base", "");
 					}
@@ -731,8 +731,6 @@ function show_content_cat($mode=""){
 								}
 							}
 						}
-
-						//$prefetchbreadcrumb = $aa -> prefetchBreadCrumb($type_id);
 
 						// check userclasses for contents, and do not use those content_ids in the query
 						$leftlength = strlen($type_id)+2;
@@ -868,7 +866,7 @@ function show_content_cat($mode=""){
 // ##### AUTHOR LIST --------------------------------------
 function show_content_author_all(){
 				global $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj;
-				global $type, $type_id, $action, $sub_action, $id, $id2, $datequery;
+				global $type, $type_id, $action, $sub_action, $id, $id2, $datequery, $prefetchbreadcrumbnosub;
 
 				$cachestr = "$plugintable.author";
 				if($cache = $e107cache->retrieve($cachestr)){
@@ -927,8 +925,7 @@ function show_content_author_all(){
 						$text = $content_author_table_start.$content_author_table_string.$content_author_table_end;
 
 						if($content_pref["content_breadcrumb_{$type_id}"]){
-							$prefetchbreadcrumb = $aa -> prefetchBreadCrumb($type_id, "nosub");
-							$breadcrumbstring = $aa -> drawBreadcrumb($prefetchbreadcrumb, $type_id, "base", "");
+							$breadcrumbstring = $aa -> drawBreadcrumb($prefetchbreadcrumbnosub, $type_id, "base", "");
 
 							if($content_pref["content_breadcrumb_rendertype_{$type_id}"] == "1"){
 									echo $breadcrumbstring;					
@@ -953,7 +950,7 @@ function show_content_author_all(){
 function show_content_author(){
 				global $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj;
 				global $type, $type_id, $action, $sub_action, $id, $id2, $nextprevquery, $from, $number;
-				global $CONTENT_RECENT_TABLE, $datequery;
+				global $CONTENT_RECENT_TABLE, $datequery, $prefetchbreadcrumb;
 
 				$cachestr = "$plugintable.author.$sub_action";
 				if($cache = $e107cache->retrieve($cachestr)){
@@ -997,7 +994,6 @@ function show_content_author(){
 						$order = $aa -> getOrder();
 						$contenttotal = $sql -> db_Count($plugintable, "(*)", "WHERE content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' AND (".$query.") AND ".$UnValidArticleIds2." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ");
 
-						$prefetchbreadcrumb = $aa -> prefetchBreadCrumb($type_id);
 						$breadcrumbstring = $aa -> drawBreadcrumb($prefetchbreadcrumb, $type_id, "base", "");
 
 						if(!is_object($sql)){ $sql = new db; }
@@ -1043,7 +1039,7 @@ function show_content_author(){
 // ##### CONTENT ------------------------------------------
 function show_content_item(){
 				global $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj;
-				global $type, $type_id, $action, $sub_action, $id, $id2, $datequery;
+				global $type, $type_id, $action, $sub_action, $id, $id2, $datequery, $prefetchbreadcrumbnosub;
 
 				if(!is_numeric($sub_action)){ header("location:".e_SELF."?".$type.".".$type_id); exit; }
 
@@ -1064,8 +1060,7 @@ function show_content_item(){
 						$sql -> db_Select($plugintable, "content_parent", "content_id='".$sub_action."' ".$datequery." ");
 						list($breadcrumb_parent) = $sql -> db_Fetch();
 						if($content_pref["content_breadcrumb_{$type_id}"]){
-							$prefetchbreadcrumb = $aa -> prefetchBreadCrumb($type_id, "nosub");
-							$breadcrumbstring = $aa -> drawBreadcrumb($prefetchbreadcrumb, $breadcrumb_parent, "base", "");
+							$breadcrumbstring = $aa -> drawBreadcrumb($prefetchbreadcrumbnosub, $breadcrumb_parent, "base", "");
 							if($content_pref["content_breadcrumb_rendertype_{$type_id}"] == "1"){
 									echo $breadcrumbstring;					
 							}elseif($content_pref["content_breadcrumb_rendertype_{$type_id}"] == "2"){
@@ -1122,7 +1117,7 @@ function show_content_item(){
 // ##### TOP RATED LIST -----------------------------------
 function show_content_top(){
 				global $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj;
-				global $type, $type_id, $action, $sub_action, $id, $id2, $nextprevquery, $from, $number, $datequery;
+				global $type, $type_id, $action, $sub_action, $id, $id2, $nextprevquery, $from, $number, $datequery, $prefetchbreadcrumbnosub;
 
 				if(!is_object($sql)){ $sql = new db; }
 				$sql2 = ""; if(!is_object($sql2)){ $sql2 = new db; }
@@ -1210,8 +1205,7 @@ function show_content_top(){
 								}
 							}
 						}
-						$prefetchbreadcrumb = $aa -> prefetchBreadCrumb($type_id, "nosub");
-						$breadcrumbstring = $aa -> drawBreadcrumb($prefetchbreadcrumb, $type_id, "base", "");
+						$breadcrumbstring = $aa -> drawBreadcrumb($prefetchbreadcrumbnosub, $type_id, "base", "");
 
 						if($content_pref["content_breadcrumb_{$type_id}"]){
 							if($content_pref["content_breadcrumb_rendertype_{$type_id}"] == "1"){
