@@ -267,7 +267,7 @@ class newspost{
                 }
 
                 if($action != "pref" && getperms("N")){
-                        $text .= "<a href='".e_SELF."?pref'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' />Preferences</div></div></a>";
+                        $text .= "<a href='".e_SELF."?pref'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> Preferences</div></div></a>";
 		}
 		if($action != "sn" && getperms("N")){
 			$text .= "<a href='".e_SELF."?sn'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".NWSLAN_47."</div></div></a>";
