@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-02-10 22:23:00 $
-|     $Author: stevedunstan $
+|     $Revision: 1.24 $
+|     $Date: 2005-02-14 03:56:12 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -39,7 +39,6 @@ require_once(e_HANDLER.'form_handler.php');
 
 
 $rs = new form;
-$aj = new textparse;
 $linkpost = new links;
 
 
@@ -129,7 +128,7 @@ exit;
 
 class links {
 	function show_existing_items() {
-		global $sql, $rs, $ns, $aj, $tp;
+		global $sql, $rs, $ns, $tp;
 		if ($link_total = $sql->db_Select("links", "*", "ORDER BY link_order, link_id ASC", "nowhere")) {
 			$text = $rs->form_open("post", e_SELF, "myform_{$link_id}", "", "");
 			$text .= "<div style='text-align:center'>
@@ -277,11 +276,11 @@ class links {
 	}
 
 	function submit_link($sub_action, $id) {
-		global $aj, $sql, $e107cache;
-		$link_name = $aj->formtpa($_POST['link_name'], "admin");
-		$link_url = $aj->formtpa($_POST['link_url'], "admin");
-		$link_description = $aj->formtpa($_POST['link_description'], "admin");
-		$link_button = $aj->formtpa($_POST['link_button'], "admin");
+		global $sql, $e107cache;
+		$link_name = $tp->toDB($_POST['link_name']);
+		$link_url = $tp->toDB($_POST['link_url']);
+		$link_description = $tp->toDB($_POST['link_description']);
+		$link_button = $tp->toDB($_POST['link_button']);
 
 		$link_t = $sql->db_Count("links", "(*)");
 
