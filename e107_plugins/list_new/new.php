@@ -46,6 +46,7 @@ $text = "<div style='text-align:center'>
 </tr>\n";
 
 unset($str);
+$comment_count=0;
 if($comments = $sql -> db_Select("comments", "*", "comment_datestamp>$lvisit ORDER BY comment_datestamp DESC LIMIT 0,10")){
 	while($row = $sql -> db_Fetch()){
 		extract($row);
@@ -54,70 +55,74 @@ if($comments = $sql -> db_Select("comments", "*", "comment_datestamp>$lvisit ORD
 				$sql2 -> db_Select("news", "*", "news_id=$comment_item_id ");
 				$row = $sql2 -> db_Fetch(); extract($row);
 				if(check_class($news_class)){
-					$str .= $bullet."[ News item ] Re: <a href='".e_BASE."comment.php?comment.news.$comment_item_id'>$news_title</a><br />";
+					$news_title=$aj -> tpa($news_title);
+					$str .= $bullet."[ ".LIST_1." ] Re: <a href='".e_BASE."comment.php?comment.news.$comment_item_id'>".$aj -> tpa($news_title,"admin")."</a><br />";
+					$comment_count++;
 				}
 			break;
 
 			case 1:	//	article, review or content page
-
 				//	find out whether article, review or content page ...
-				$sql2 -> db_Select("content", "content_heading, content_type", "content_id=$comment_item_id ");
-				$row = $sql2 -> db_Fetch(); extract($row);
-				
-				switch($content_type){
-					case 0:	//	article
-						$str .= $bullet."[ Article ] Re: <a href='".e_BASE."content.php?article.$comment_item_id'>$content_heading</a><br />";
-					break;
-					case 1:	//	content page
-						$str .= $bullet."[ Content ] Re: <a href='".e_BASE."content.php?content.$comment_item_id'>$content_heading</a><br />";
-					break;
-					case 3:	//	review
-						$str .= $bullet."[ Review ] Re: <a href='".e_BASE."content.php?review.$comment_item_id.'>$content_heading</a><br />";
-					break;
+				$sql2 -> db_Select("content", "content_heading, content_type, content_class", "content_id=$comment_item_id ");
+				$row = $sql2 -> db_Fetch(); 
+				extract($row);
+				if(check_class($content_class)){
+					$comment_count++;
+					switch($content_type){
+						case 0:	//	article
+							$str .= $bullet."[ ".LIST_14." ] Re: <a href='".e_BASE."content.php?article.$comment_item_id'>".$aj -> tpa($content_heading,"admin")."</a><br />";
+						break;
+						case 1:	//	content page
+							$str .= $bullet."[ ".LIST_15." ] Re: <a href='".e_BASE."content.php?content.$comment_item_id'>".$aj -> tpa($content_heading,"admin")."</a><br />";
+						break;
+						case 3:	//	review
+							$str .= $bullet."[ ".LIST_16." ] Re: <a href='".e_BASE."content.php?review.$comment_item_id.'>".$aj -> tpa($content_heading,"admin")."</a><br />";
+						break;
+					}
 				}
 			break;
 
-
-
-
 			case 2: //	downloads
-				$sql2 -> db_Select("download", "download_name", "download_id=$comment_item_id ");
-				$row = $sql2 -> db_Fetch(); extract($row);
-				$str .= $bullet."[ Download ] Re: <a href='".e_BASE."download.php?view.$comment_item_id'>$download_name</a><br />";
+				$mp = MPREFIX;
+				$qry = "SELECT download_name, {$mp}download_category.download_category_class FROM {$mp}download LEFT JOIN {$mp}download_category ON {$mp}download.download_category={$mp}download_category.download_category_id WHERE {$mp}download.download_id={$comment_item_id}";
+				$sql2 -> db_Select_gen($qry);
+				$row = $sql2 -> db_Fetch(); 
+				extract($row);
+				if(check_class($download_category_class)){
+					$str .= $bullet."[ ".LIST_17." ] Re: <a href='".e_BASE."download.php?view.$comment_item_id'>".$aj -> tpa($download_name,"admin")."</a><br />";
+					$comment_class++;
+				}
 			break;
 
 			case 3: //	faq
 				$sql2 -> db_Select("faq", "faq_question", "faq_id=$comment_item_id ");
 				$row = $sql2 -> db_Fetch(); extract($row);
-				$str .= $bullet."[ Download ] Re: <a href='".e_BASE."faq.php?view.$comment_item_id'>$faq_question</a><br />";
+				$str .= $bullet."[ ".LIST_18." ] Re: <a href='".e_BASE."faq.php?view.$comment_item_id'>".$aj -> tpa($faq_question,"admin")."</a><br />";
+				$comment_class++;
 			break;
 
 			case 4:	//	poll comment
 				$sql2 -> db_Select("poll", "*", "poll_id=$comment_item_id ");
 				$row = $sql2 -> db_Fetch(); extract($row);
-				$str .= $bullet."[ Poll ] Re: <a href='".e_BASE."comment.php?comment.poll..$comment_item_id'>$poll_title</a><br />";
-			break;
-
-			
-			case 5: //	docs
-				$str .= $bullet."[ Download ] Re: <a href='http://e107.org/docs/main.php?$comment_item_id'>Doc $comment_item_id</a><br />";
+				$str .= $bullet."[ ".LIST_19." ] Re: <a href='".e_BASE."comment.php?comment.poll..$comment_item_id'>".$aj -> tpa($poll_title,"admin")."</a><br />";
 			break;
 
 			case 6:	//	bugtracker
 				$sql2 -> db_Select("bugtrack", "bugtrack_summary", "bugtrack_id=$comment_item_id ");
 				$row = $sql2 -> db_Fetch(); extract($row);
-				$str .= $bullet."[ Bugtracker ] Re: <a href='".e_PLUGIN."bugtracker/bugtracker.php?show.$comment_item_id'>$bugtrack_summary</a><br />";
+				$str .= $bullet."[ ".LIST_20." ] Re: <a href='".e_PLUGIN."bugtracker/bugtracker.php?show.$comment_item_id'>".$aj -> tpa($bugtrack_summary)."</a><br />";
 			break;
 
 		}
 	}
-}else{
+}
+if($comment_count==0){
 	$str = LIST_4;
 }
 
 $text .= "
 <tr>
-<td class='fcaption'>".LIST_2." ($comments)</td>
+<td class='fcaption'>".LIST_2." ({$comment_count})</td>
 </tr>
 <td class='forumheader3'>".$str."</td>
 </tr>\n";
@@ -129,7 +134,7 @@ if($chatbox_posts = $sql -> db_Select("chatbox", "*", "cb_datestamp>$lvisit ORDE
 		$cb_id = substr($cb_nick , 0, strpos($cb_nick , "."));
 		$cb_nick = substr($cb_nick , (strpos($cb_nick , ".")+1));
 		$cb_message = str_replace("<br />", "", $aj -> tpa($cb_message));
-		$str .= $bullet."[ <a href='".e_BASE."user.php?id.$cb_id'>$cb_nick</a> ] $cb_message<br />";
+		$str .= $bullet."[ <a href='".e_BASE."user.php?id.$cb_id'>$cb_nick</a> ] {$cb_message}<br />";
 	}
 }else{
 	$str = LIST_4;
@@ -149,17 +154,13 @@ if($forum_posts = $sql -> db_Select("forum_t", "*", "thread_datestamp>$lvisit OR
 		$sql2 -> db_Select("forum", "*", "forum_id=$thread_forum_id");
 		$row = $sql2 -> db_Fetch(); extract($row);
 		if(check_class($forum_class)){
-
-			$cb_id = substr($thread_user , 0, strpos($thread_user , "."));
-			$cb_nick = substr($thread_user , (strpos($thread_user , ".")+1));
-
 			if($thread_parent){
 				$ttemp = $thread_id;
 				$sql2 -> db_Select("forum_t", "*", "thread_id=$thread_parent ");
 				$row = $sql2 -> db_Fetch(); extract($row);
-				$str .= $bullet."[ <a href='".e_BASE."forum_viewforum.php?$forum_id'>$forum_name</a> ] Re: <a href='".e_BASE."forum_viewtopic.php?$thread_forum_id.$thread_id#$ttemp'>$thread_name</a><br />";
+				$str .= $bullet."[ <a href='".e_BASE."forum_viewforum.php?$forum_id'>$forum_name</a> ] Re: <a href='".e_BASE."forum_viewtopic.php?$thread_forum_id.$thread_id#$ttemp'>".$aj -> tpa($thread_name)."</a><br />";
 			}else{
-				$str .= $bullet."[ <a href='".e_BASE."forum_viewforum.php?$forum_id'>$forum_name</a> ] <a href='".e_BASE."forum_viewtopic.php?$thread_forum_id.$thread_id'>$thread_name</a><br />";
+				$str .= $bullet."[ <a href='".e_BASE."forum_viewforum.php?$forum_id'>$forum_name</a> ] <a href='".e_BASE."forum_viewtopic.php?$thread_forum_id.$thread_id'>".$aj -> tpa($thread_name)."</a><br />";
 			}
 		}
 	}
