@@ -23,7 +23,7 @@ if($cache = retrieve_cache("newforumposts")){
 	}else{
 		while($row = $sql-> db_Fetch()){
 			extract($row);
-			if(!$forum_class){
+			if(check_class($forum_class)){
 				$poster = substr($thread_user, (strpos($thread_user, ".")+1));
 				if(strstr($poster, chr(1))){
 					$tmp = explode(chr(1), $poster);
