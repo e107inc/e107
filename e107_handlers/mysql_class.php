@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-01-29 01:27:20 $
+|     $Revision: 1.30 $
+|     $Date: 2005-01-29 14:26:36 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.29 $
+* @version $Revision: 1.30 $
 * @author $Author: mcfly_e107 $
 */
 class db {
@@ -547,7 +547,7 @@ class db {
 					}
 				}
 			}
-			if ($amount && $amount == $counter || $counter > $maximum) {
+			if ($amount && $amount == $counter || ($counter > $maximum && $maximum)) {
 				break;
 			}
 			$counter++;
