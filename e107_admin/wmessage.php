@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/wmessage.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-02-13 05:41:48 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.17 $
+|     $Date: 2005-02-24 08:10:03 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -22,6 +22,7 @@ if (!getperms("M")) {
 	 exit;
 }
 $e_sub_cat = 'wmessage';
+$e_wysiwyg = "wm_text";
 
 require_once(e_HANDLER."preset_class.php");
 $pst = new e_preset;
@@ -134,16 +135,20 @@ if ($action == "create" || $action == "edit") {
 
 		<td style='width:20%' class='forumheader3'>".WMLAN_04."</td>
 		<td style='width:60%' class='forumheader3'>
-		<textarea class='tbox' name='wm_text' cols='70' rows='10' style='width:90%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this)'>".$row['gen_chardata']."</textarea>
+		<textarea class='tbox' id='wm_text' name='wm_text' cols='70' rows='18' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this)'>".$row['gen_chardata']."</textarea>
+		<br />";
+
+	if(!$pref['wysiwyg']){
+		$text .="<input id='helpguest' class='helpbox' type='text' name='helpguest' size='100' />
 		<br />
-		<input id='helpguest' class='helpbox' type='text' name='helpguest' size='100' />
-		<br />
-		".display_help("helpguest",FALSE)."
+		".display_help("helpguest",FALSE);
+	}
+
+	$text .= "
 		</td>
+		</tr>
 
-		</tr>";
-
-	$text .= "<tr><td class='forumheader3'>".WMLAN_03."</td>
+		<tr><td class='forumheader3'>".WMLAN_03."</td>
 		<td class='forumheader3'>".r_userclass("wm_active", $row['gen_intdata'], "off", "public,guest,nobody,member,admin,classes")."</td></tr>";
 
 	$text .= "
