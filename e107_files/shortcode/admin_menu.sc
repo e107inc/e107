@@ -1,5 +1,6 @@
 if (ADMIN) {
 	global $ns, $pref;
+	ob_start();
 	//Show upper_right menu if the function exists
 	$tmp = explode(".",e_PAGE);
 	$adminmenu_func = $tmp[0]."_adminmenu";
@@ -7,8 +8,7 @@ if (ADMIN) {
 		if (!$parm) {
 			call_user_func($adminmenu_func,$adminmenu_parms);
 		} else {
-			$ret = 'pre';
-			return $ret;
+			return 'pre';
 		}
 	}
 	$plugindir = (str_replace("/","",str_replace("..","",e_PLUGIN))."/");
@@ -20,4 +20,7 @@ if (ADMIN) {
 			return 'pre';
 		}
 	}
+	$ret = ob_get_contents();
+	ob_end_clean();
+	return $ret;
 }

@@ -12,13 +12,12 @@ $style = "default";
 $preleft = ob_get_contents();
 ob_end_clean();
 
-ob_start();
 $style = "rightmenu";
-echo $tp -> parseTemplate('{ADMIN_MENU=pre}');
+$preright = $tp -> parseTemplate('{ADMIN_MENU=pre}');
+$preright_info = $tp -> parseTemplate('{ADMIN_STATUS=request}');
+$preright_info .= $tp -> parseTemplate('{ADMIN_LATEST=request}');
+$preright_info .= $tp -> parseTemplate('{ADMIN_LOG=request}');
 $style = "default";
-$preright = ob_get_contents();
-ob_end_clean();
-
 
 // [admin button style]
 
@@ -120,13 +119,14 @@ $ADMIN_HEADER .= "<br />
 $ADMIN_FOOTER = "<br />
 </td>";
 
-if ($preright=='pre') {
+if ($preright=='pre' || $preright_info) {
 	$ADMIN_FOOTER .= "<td class='right_menu'>
 	<table style='width:100%; border-collapse: collapse; border-spacing: 0px;'>
 	<tr>
 	<td>
 	{SETSTYLE=rightmenu}
 	{ADMIN_MENU}
+	".$preright_info."
 	<br />
 	</td></tr></table>
 	</td>";

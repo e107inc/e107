@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/includes/categories.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-01-17 08:14:40 $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-18 02:55:21 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -22,9 +22,8 @@ $text = "<div style='text-align:center'>
 
 foreach ($admin_cat['id'] as $cat_key => $cat_id) {
 	$text_check = FALSE;
-	$text_cat = "<tr><td class='forumheader3' rowspan='2' style='text-align: center; vertical-align: middle;'>".$admin_cat['lrg_img'][$cat_key]."</td>
-	<td class='fcaption'>".$admin_cat['title'][$cat_key]."</td></tr>
-	<tr><td class='forumheader3'>
+	$text_cat = "<tr><td class='fcaption' colspan='2'>".$admin_cat['title'][$cat_key]."</td></tr>
+	<tr><td class='forumheader3' style='text-align: center; vertical-align: middle; width: 72px; height: 48px'>".$admin_cat['lrg_img'][$cat_key]."</td><td class='forumheader3'>
 	<table style='width:100%'>";
 	if ($cat_key!=7) {
 		foreach ($newarray as $key => $funcinfo) {
@@ -62,6 +61,6 @@ $text .= "</table></div>";
 
 $ns -> tablerender(ADLAN_47." ".ADMINNAME, $text);
 
-admin_info(TRUE);
+echo admin_info();
 
 ?>
