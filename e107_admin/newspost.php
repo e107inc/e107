@@ -84,6 +84,16 @@ if(IsSet($_POST['submit'])){
 
 if(IsSet($_POST['create_category'])){
         if($_POST['category_name']){
+				if(empty($_POST['category_button'])){						
+					$handle=opendir(e_IMAGE."newsicons");
+					while ($file = readdir($handle)){
+							if($file != "." && $file != ".." && $file != "/" && $file != "null.txt" && $file != "CVS"){
+									$iconlist[] = $file;
+							}
+					}
+					closedir($handle);
+					$_POST['category_button'] = $iconlist[0];
+				}
                 $_POST['category_name'] = $aj -> formtpa($_POST['category_name'], "admin");
                 $sql -> db_Insert("news_category", " '0', '".$_POST['category_name']."', '".$_POST['category_button']."'");
                 $newspost -> show_message(NWSLAN_35);
@@ -92,8 +102,9 @@ if(IsSet($_POST['create_category'])){
 
 if(IsSet($_POST['update_category'])){
         if($_POST['category_name']){
+				$category_button = ($_POST['category_button'] ? $_POST['category_button'] : 1);
                 $_POST['category_name'] = $aj -> formtpa($_POST['category_name'], "admin");
-                $sql -> db_Update("news_category", "category_name='".$_POST['category_name']."', category_icon='".$_POST['category_button']."' WHERE category_id='".$_POST['category_id']."'");
+                $sql -> db_Update("news_category", "category_name='".$_POST['category_name']."', category_icon='".$category_button."' WHERE category_id='".$_POST['category_id']."'");
                 $newspost -> show_message(NWSLAN_36);
         }
 }
