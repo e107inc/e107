@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-01-27 19:52:28 $
-|     $Author: streaky $
+|     $Revision: 1.27 $
+|     $Date: 2005-01-28 03:04:06 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -27,8 +27,8 @@ $db_mySQLQueryCount = 0;
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.26 $
-* @author $Author: streaky $
+* @version $Revision: 1.27 $
+* @author $Author: mcfly_e107 $
 */
 class db {
 	 
@@ -43,6 +43,7 @@ class db {
 	var $mySQLcurTable;
 	var $mySQLlanguage;
 	var $mySQLinfo;
+	var $tabset;
 	 
 	/**
 	* @return db
@@ -444,7 +445,10 @@ class db {
 		usage: instead of sending "SELECT * FROM ".MPREFIX."table", do "SELECT * FROM #table"
 		*/
 		 
-		$arg = str_replace("#", MPREFIX, $arg);
+		$this->tabset = FALSE;
+		if(strpos($arg,'#') !== FALSE) {
+			$arg = preg_replace_callback("/#([\w]*?)\W/", array($this, 'ml_check'), $arg);
+		}
 		if ($this->mySQLresult = $this->db_Query($arg, NULL, 'db_Select_gen', $debug, $log_type, $log_remark)) {
 			$this->dbError('db_Select_gen');
 			return $this->db_Rows();
@@ -453,7 +457,16 @@ class db {
 			return FALSE;
 		}
 	}
-	 
+
+	function ml_check($matches) {
+		$table = $this->db_IsLang($matches[1]);
+		if($this->tabset == FALSE) {
+			$this->mySQLcurTable = $table;
+			$this->tabset = TRUE;
+		}
+		return MPREFIX.$table.substr($matches[0],-1);
+	}
+
 	/**
 	* @return unknown
 	* @param unknown $offset

@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.59 $
-|     $Date: 2005-01-27 20:14:46 $
-|     $Author: streaky $
+|     $Revision: 1.60 $
+|     $Date: 2005-01-28 03:03:39 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -264,7 +264,7 @@ if ($pref['multilanguage']) {
 $page = substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
 define("e_PAGE", $page);
 
-if ($pref['frontpage'] && $pref['frontpage_type'] == "splash") {
+if (isset($pref['frontpage']) && $pref['frontpage_type'] == "splash") {
 	$ip = getip();
 	if (!$sql->db_Count("online", "(*)", "WHERE online_ip='{$ip}' ")) {
 		online();
@@ -827,6 +827,8 @@ function init_session() {
 		define("USERTHEME", FALSE);
 		define("ADMIN", FALSE);
 		define("GUEST", TRUE);
+		define('USERCLASS', '');
+		define('USEREMAIL', '');
 
 	} else {
 		list($uid, $upw) = ($_COOKIE[$pref['cookie_name']] ? explode(".", $_COOKIE[$pref['cookie_name']]) : explode(".", $_SESSION[$pref['cookie_name']]));
