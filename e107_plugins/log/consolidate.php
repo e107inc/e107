@@ -178,13 +178,14 @@ $pagearray = serialize($pageArray);
 $sql->db_Insert("logstats", "0, '$date2', '$pagearray'");
 	
 /* ok, we're finished with the log file now, we can empty it ... */
-
-$data = chr(60)."?php\n". chr(47)."* e107 website system: Log file: ".date("z:Y", time())." *". chr(47)."\n\n\n\n".chr(47)."* THE IMFORMATION IN THIS LOG FILE HAS BEEN CONSOLIDATED INTO THE DATABASE - YOU CAN SAFELY DELETE IT. *". chr(47)."\n\n\n?".  chr(62);
-if ($handle = fopen($pathtologs.$yfile, 'w')) { 
-	fwrite($handle, $data);
+if(!unlink($pathtologs.$yfile))
+{
+	$data = chr(60)."?php\n". chr(47)."* e107 website system: Log file: ".date("z:Y", time())." *". chr(47)."\n\n\n\n".chr(47)."* THE IMFORMATION IN THIS LOG FILE HAS BEEN CONSOLIDATED INTO THE DATABASE - YOU CAN SAFELY DELETE IT. *". chr(47)."\n\n\n?".  chr(62);
+	if ($handle = fopen($pathtologs.$yfile, 'w')) { 
+		fwrite($handle, $data);
+	}
+	fclose($handle);
 }
-fclose($handle);
-
 
 /* and finally, we need to create a new logfile for today ... */
 createLog();
