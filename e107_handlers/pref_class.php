@@ -68,7 +68,7 @@ class prefs {
 			} else {
 				return false;
 			}
-		} elseif($sql->db_Select('core', '*', "`e107_name` = '{$Name}'", 'default', true)) {
+		} elseif($sql->db_Select('core', '*', "`e107_name` = '{$Name}'", 'default')) {
 			$row = $sql->db_Fetch();
 			$this->prefVals['core'][$Name] = $row['e107_name'];
 			return $this->prefVals['core'][$Name];
