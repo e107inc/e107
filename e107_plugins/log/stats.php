@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-07 13:34:40 $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-07 14:29:49 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -65,11 +65,6 @@ if($stat -> error) {
 8: search engine strings
 */
 
-
-
-
-
-
 switch($action) {
 	case 1:
 		$text = $stat -> renderTodaysVisits();
@@ -119,6 +114,13 @@ switch($action) {
 			$text = "Statistics for this type is not being gathered.";
 		}
 		break;
+	case 9:
+		if($pref['statRecent']) {
+			$text = $stat -> recentVisitors();
+		} else {
+			$text = "Statistics for this type is not being gathered.";
+		}
+		break;
 }
 
 
@@ -133,7 +135,7 @@ $links = "<div style='text-align: center;'>".
 (e_QUERY != 6 && $pref['statScreen'] ? "<br /><a href='$path?6'>Screen Resolution / Color Depth Stats</a> | " : ($pref['statScreen'] ? "<br /><b>Screen Resolution / Color Depth Stats</b> | " : "")).
 (e_QUERY != 7 && $pref['statRefer'] ? "<a href='$path?7'>Referral Stats</a> | " : ($pref['statRefer'] ? "<b>Referral Stats</b> | " : "")).
 (e_QUERY != 8 && $pref['statQuery'] ? "<a href='$path?8'>Search String Stats</a> | " : ($pref['statQuery'] ? "<b>Search String Stats</b> | " : "")).
-
+(e_QUERY != 9 && $pref['statRecent'] ? "<a href='$path?9'>Recent Visitors</a> | " : ($pref['statRecent'] ? "<b>Recent Visitors</b>" : "")).
 "</div><br /><br />";
 
 
@@ -151,6 +153,7 @@ class siteStats {
 	var $fileDomainInfo;
 	var $fileReferInfo;
 	var $fileQueryInfo;
+	var $fileRecent;
 	var $error;
 	var $barImage;
 	var $order;
@@ -182,6 +185,7 @@ class siteStats {
 		$this -> fileDomainInfo = $domainInfo;
 		$this -> fileReferInfo = $refInfo;
 		$this -> fileQueryInfo = $searchInfo;
+		$this -> fileRecent = $visitInfo;
 
 		/* get main stat info from database */
 		if($sql -> db_Select("logstats", "*", "ORDER BY log_uniqueid DESC LIMIT 0, 1", "nowhere")){
@@ -540,6 +544,31 @@ class siteStats {
 	}
 
 
+	function recentVisitors() {
+		if(!is_array($this -> fileRecent) || !count($this -> fileRecent)) {
+			return "<div style='text-align: center;'>No statistics yet.</div>";
+		}
+
+		$gen = new convert;
+
+		$recentArray = array_reverse($this -> fileRecent, TRUE); 
+		
+		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>Recent Visitors</td>\n<td class='fcaption' style='width: 70%;'>Total</td>\n</tr>\n";
+
+		foreach($recentArray as $key => $info) {
+			list($host, $datestamp, $os, $browser, $screen, $referer) = explode(chr(1), $info);
+			$datestamp = $gen -> convert_date($datestamp, "long");
+
+			$text .= "<tr class='forumheader'>
+			<td style='width: 30%;'>$datestamp</td>
+			<td style='width: 70%;'>$host, using $browser under $os (screen res $screen)".($referer ? "<br />referred from <a href='$referer' rel='external'>$referer</a>" : "")."</td>
+			</tr>\n";
+		}
+
+		$text .= "</table>";
+		return $text;
+
+	}
 
 }
 

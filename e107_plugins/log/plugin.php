@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/plugin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-02-07 13:34:40 $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-07 14:29:49 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -47,7 +47,7 @@ $eplug_caption = "Configure Statitics Logging";
 	
 // List of preferences -----------------------------------------------------------------------------------------------
 $eplug_prefTable = "menu_pref";
-$eplug_prefs = array("statActivate" => 0, "statUserclass" => "", "statClass" => 0, "statBrowser" => 1, "statOs" => 1, "statScreen" => 1, "statDomain" => 1, "statRefer" => 1, "statQuery" => 1);
+$eplug_prefs = array("statActivate" => 0, "statUserclass" => "", "statClass" => 0, "statBrowser" => 1, "statOs" => 1, "statScreen" => 1, "statDomain" => 1, "statRefer" => 1, "statQuery" => 1, "statRecent" => 1);
 	
 // List of table names -----------------------------------------------------------------------------------------------
 $eplug_table_names = array("logstats");
