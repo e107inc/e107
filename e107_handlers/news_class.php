@@ -13,8 +13,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.45 $
-| $Date: 2005-03-10 18:35:05 $
+| $Revision: 1.46 $
+| $Date: 2005-03-10 19:01:27 $
 | $Author: stevedunstan $
 +---------------------------------------------------------------+
 */
@@ -309,12 +309,6 @@ class news {
 		/* check for attached images ... */
 		define("NEWSATTACH", $news_attach);
 		$news_body = $tp -> parseTemplate($news_body);
-	
-			
-
-
-
-		
 
 		$search[0] = "/\{NEWSTITLE\}(.*?)/si";
 		$replace[0] = $news_title;
