@@ -30,7 +30,7 @@ if(e_QUERY){
         unset($tmp);
 }
 
-if(preg_match("#(.*?)_delete_(\d+)#",$deltest['Delete'],$matches))
+if(preg_match("#(.*?)_delete_(\d+)#",$deltest[DOWLAN_9],$matches))
 {
         $delete = $matches[1];
         $del_id = $matches[2];
