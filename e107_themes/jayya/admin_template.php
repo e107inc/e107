@@ -22,7 +22,7 @@ function show_admin_menu($title, $page, $e107_vars, $js = FALSE){
 	foreach (array_keys($e107_vars) as $act) {
 		$t=str_replace(" ","&nbsp;",$e107_vars[$act]['text']);
 		if (!$e107_vars[$act]['perm'] || getperms($e107_vars[$act]['perm'])) {
-			$arrow_icon = ($page == $act) ? E_16_NAV_ARROW_OVER : E_16_NAV_ARROW;
+			$arrow_icon = ($page == $act || (str_replace("?","",e_PAGE.e_QUERY) == str_replace("?","",$act))) ? E_16_NAV_ARROW_OVER : E_16_NAV_ARROW;
 			if ($js_include) {
 				$on_click = $js_include;
 			} else {
@@ -76,7 +76,7 @@ if (ADMIN) {
 	} else {
 		$ADMIN_HEADER .= "<script type='text/javascript' src='".e_FILE."admin_nav.js'></script>";
 	}
-	
+
 	$ADMIN_HEADER .= "<div style='width: 100%'><table style='width:100%; border-collapse: collapse; border-spacing: 0px;'>
 	<tr><td>
 	<div class='menuBar' style='width:100%;'>
@@ -102,7 +102,7 @@ $ADMIN_HEADER .= "<table class='main_section'>
 if (!ADMIN) {
 	$style='leftmenu';
 	$ADMIN_HEADER .= $ns -> tablerender('Welcome', '', '', TRUE);
-	$style='default';	
+	$style='default';
 }
 
 if ($prehelp!='') {
