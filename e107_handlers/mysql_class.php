@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2004-12-22 15:33:58 $
+|     $Revision: 1.15 $
+|     $Date: 2004-12-22 15:47:45 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ $db_time = 0.0;
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.14 $
+* @version $Revision: 1.15 $
 * @author $Author: streaky $
 */
 class db {
@@ -57,7 +57,7 @@ class db {
 
 	/**
 	* @return null or string error code
-	* @param string $mySQLserver IP Or hostanem of the MySQL server
+	* @param string $mySQLserver IP Or hostname of the MySQL server
 	* @param string $mySQLuser MySQL username
 	* @param string $mySQLpassword MySQL Password
 	* @param string $mySQLdefaultdb The database schema to connect to
@@ -146,12 +146,12 @@ class db {
 	/**
 	* @return int Number of rows or false on error
 	* 
-	* @param string $table		Table name to select data from
-	* @param string $fields		Table fields to be retrieved, default * (all in table)
-	* @param string $arg		Query arguments, default null 
-	* @param string $mode		Argument has WHERE or not, default=default (WHERE)
+	* @param string $table Table name to select data from
+	* @param string $fields	Table fields to be retrieved, default * (all in table)
+	* @param string $arg Query arguments, default null 
+	* @param string $mode Argument has WHERE or not, default=default (WHERE)
 	* 
-	* @param bool $debug 		Debug mode on or off
+	* @param bool $debug Debug mode on or off
 	* 
 	* @desc Perform a mysql_query() using the arguments suplied by calling db::db_Query()<br />
 	* <br />
@@ -251,7 +251,7 @@ class db {
 	* <code>$sql -> db_Update("user", "user_viewed='$u_new' WHERE user_id='".USERID."' ");</code>
 	* <br />
 	* OR as second connection<br />
-	* <code>$sql2 = new db;<br />
+	* <code>$sql2 = new db;
 	* $sql2 -> db_Update("user", "user_viewed = '$u_new' WHERE user_id = '".USERID."' ");</code><br />
 	* 
 	* @access public
