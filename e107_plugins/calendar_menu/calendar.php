@@ -10,6 +10,11 @@
 |
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
+|
+| $Source: /cvs_backup/e107/e107_plugins/calendar_menu/calendar.php,v $
+| $Revision: 1.4 $
+| $Date: 2004-08-15 13:26:46 $
+| $Author: mcfly_e107 $ 
 +---------------------------------------------------------------+
 */
 
@@ -89,18 +94,25 @@ $ny = $year+1;
 $nextlink = mktime(0,0,0,$month,1, $ny);
 $cal_text = "<table style='width:100%' class='fborder'>
 <tr>
-<td class='forumheader' style='width:18%; text-align:left'><span class='defaulttext'><a href='".e_SELF."?".$previous."'><< ".$months[($prevmonth-1)]."</a></span></td>
-<td class='fcaption' style='width:64%; text-align:center' class='mediumtext'><b>".$months[($month-1)]." ".$year."</b></td>
-<td class='forumheader' style='width:185%; text-align:right'><span class='defaulttext'><a href='".e_SELF."?".$next."'> ".$months[($nextmonth-1)]." >></a></span> </td>
-</tr><tr>
-<td class='forumheader3' style='text-align:left'><a href='calendar.php?".$prevlink."'><< ".$py."</a></td>
-<td class='fcaption' style='text-align:center; vertical-align:middle'>";
+  <td class='forumheader' style='width:18%; text-align:left'><span class='defaulttext'><a href='".e_SELF."?".$previous."'>&lt;&lt; ".$months[($prevmonth-1)]."</a></span></td>
+  <td class='fcaption' style='width:64%; text-align:center'><b>".$months[($month-1)]." ".$year."</b></td>
+  <td class='forumheader' style='width:185%; text-align:right'><span class='defaulttext'><a href='".e_SELF."?".$next."'> ".$months[($nextmonth-1)]." &gt;&gt;</a></span> </td>
+</tr>
+<tr>
+  <td class='forumheader3' style='text-align:left'><a href='calendar.php?".$prevlink."'>&lt;&lt; ".$py."</a></td>
+  <td class='fcaption' style='text-align:center; vertical-align:middle'>";
 for ($ii = 0; $ii < 13; $ii++){
         $m = $ii+1;
         $monthjump= mktime(0,0,0,$m,1,$year);
         $cal_text .=  "<a class='forumlink' href=\"calendar.php?".$monthjump."\">".$monthabb[$ii]."</a> ";
 }
-$cal_text .= "<td class='forumheader3' style='text-align:right'><a href='calendar.php?".$nextlink."'>".$ny." >></a></td></td></tr></table>";
+$cal_text .= 
+ "</td>
+  <td class='forumheader3' style='text-align:right'>
+    <a href='calendar.php?".$nextlink."'>".$ny." &gt;&gt;</a>
+  </td>
+</tr>
+</table>";
 
 
 $cal_text .= "<div style='text-align:center'>
@@ -120,10 +132,13 @@ $current = mktime(0,0,0,$nowmonth, 1, $nowyear);
 
 //------------ Navigation Buttons. ------------------------------------------------------
 
-$nav_text = "<br /><table border='0' cellpadding='2' cellspacing='3' class='forumheader3'>
-<tr><td align=right><form method=post action=".e_SELF."?".e_QUERY.">
-<select name='event_cat_ids' class='tbox' style='width:140px; '>
-<option value='all'>All</option>";
+$nav_text = "<br />
+	     <form method='post' action='".e_SELF."?".e_QUERY."'>
+	     <table border='0' cellpadding='2' cellspacing='3' class='forumheader3'>
+	       <tr>
+	         <td align='right'>
+		   <select name='event_cat_ids' class='tbox' style='width:140px;'>
+		   <option value='all'>All</option>";
 
  $event_cat_id = !isset($_POST['event_cat_ids'])? NULL : $_POST['event_cat_ids'];
         $sql -> db_Select("event_cat");
@@ -137,23 +152,29 @@ $nav_text = "<br /><table border='0' cellpadding='2' cellspacing='3' class='foru
                         $nav_text .= "<option value='$event_cat_id'>".$event_cat_name."</option>";
                 }
         }
-$nav_text .= "</td></select><td align='center'>
-<input class='button' type='submit' style='width:140px;' name='viewallevents' value='View Events List'>
-</td></tr>
-<tr><td align='right'><input type='hidden' name='do' value='vc'>
-<input class='button' type='submit' style='width:140px;' name='viewcat' value='View Category'>
-</td><td align=center><input type='hidden' name='enter_new_val' value='".$prop."'> ";
+$nav_text .=      "</select>
+		 </td>
+		 <td align='center'>
+		   <input class='button' type='submit' style='width:140px;' name='viewallevents' value='View Events List' />
+		 </td>
+	       </tr>
+	       <tr>
+	         <td align='right'>
+		   <input type='hidden' name='do' value='vc' />
+		   <input class='button' type='submit' style='width:140px;' name='viewcat' value='View Category' />
+		 </td>
+		 <td align='center'>
+		   <input type='hidden' name='enter_new_val' value='".$prop."' /> ";
 
-  if(check_class($pref['eventpost_admin']) || getperms('0')){  // start no admin preference
+if(check_class($pref['eventpost_admin']) || getperms('0')){  // start no admin preference
+	$nav_text .=    "<input class='button' type='submit' style='width:140px;' name='doit' value='Enter New Event' />";   
+}     // end admin preference activated.
 
-  $nav_text .= "
-
-  <input class='button' type='submit' style='width:140px;' name='doit' value='Enter New Event'>
-   ";   
-   }     // end admin preference activated.
-
-
-$nav_text .= "</form></tr></table><br />";
+$nav_text .=    "</td>
+	       </tr>
+	     </table>
+	     </form>
+	     <br />";
 
 //--------------------------------------------------------------------------------
 
@@ -190,9 +211,12 @@ $text .= "<div style='text-align:center'>
 
 
 foreach($week as $day){
-    $text .= "<td wrap class='fcaption' style='z-index: -1;background-color:black; width:90px;height:20px;text-align:center'><strong>".$day."</strong><img src='".THEME."images/blank.gif' height='12%' width='14%'></td>";
+    $text .= "<td class='fcaption' style='z-index: -1;background-color:black; width:90px;height:20px;text-align:center'>
+    		<strong>".$day."</strong>
+		<img src='".THEME."images/blank.gif' alt='' height='12%' width='14%' />
+	      </td>";
 }
-$text .= "</tr><tr >";
+$text .= "</tr><tr>";
 $calmonth = $datearray['mon'];
 $calday = $datearray['mday'];
 $calyear = $datearray['year'];
@@ -227,26 +251,37 @@ for ($c=1; $c<=32; $c++) {
     if ($dayarray['mon'] == $calmonth) {
         if ($nowday == $c && $calmonth == $nowmonth && $calyear == $nowyear && !$event_true[($c)]&& !$event_true_end[($c)]) {
             $text .="<td  class='forumheader3' style='vertical-align:top; width:90px;height:90px;padding-bottom:0px;padding-right:0px; margin-right:0px'>";
-            $text .="<div style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'><b><a href='".e_PLUGIN."calendar_menu/event.php?".$startt.".one'>".$c."</a></b> <span class='smalltext'>[today]</span></div>";
+            $text .="<div style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'>
+	    	       <b>
+		         <a href='".e_PLUGIN."calendar_menu/event.php?".$startt.".one'>".$c."</a>
+		       </b>
+	    	       <span class='smalltext'>[today]</span>
+		     </div>";
         } elseif($event_true[($c)] || $event_true_end[($c)]) {
             $text .="<td class='forumheader3' style='z-index: 1;vertical-align:top;  width:90px;height:90px;padding-bottom:0px;padding-right:0px; margin-right:0px'>";
-            $text .="<span style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'><a href='".e_PLUGIN."calendar_menu/event.php?".$startt.".one'><strong>".$c."</strong></a></span>";
+            $text .="<span style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'>
+	    	       <a href='".e_PLUGIN."calendar_menu/event.php?".$startt.".one'>
+		         <strong>".$c."</strong>
+		       </a>
+		     </span>";
         }else {
             $text .="<td class='forumheader2 ' style='z-index: 1;vertical-align:top;  width:90px;height:90px;padding-bottom:0px;padding-right:0px; margin-right:0px'>";
-            $text .="<span style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'><a href='".e_PLUGIN."calendar_menu/event.php?".$startt.".one'><strong>".$c."</strong></a></span>";
+            $text .="<span style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'>
+	    	       <a href='".e_PLUGIN."calendar_menu/event.php?".$startt.".one'>
+		         <strong>".$c."</strong>
+		       </a>
+		     </span>";
         }
 
         if ($event_true_end[($c)]) {
             $indicat = $event_true_end[($c)]==1? "->":"|";
-            $text .="<br><img style='border:0' src='".$ec_dir."images/".$category_icon[$event_category]."' alt='' height='8' width='8'>&nbsp;<a href='".e_PLUGIN."calendar_menu/event.php?".$linkut.".one'><span class='smalltext' style='color:black' >".$cevent_title[$c]."</span></a>$indicat";
+            $text .="<br /><img style='border:0' src='".$ec_dir."images/".$category_icon[$event_category]."' alt='' height='8' width='8' />&nbsp;<a href='".e_PLUGIN."calendar_menu/event.php?".$linkut.".one'><span class='smalltext' style='color:black' >".$cevent_title[$c]."</span></a>".$indicat;
             }
 
-        while($row = $sql -> db_Fetch()){
-                extract($row);
+	while($row = $sql -> db_Fetch()){
+		extract($row);
 
-
-
-               $event_title = $cevent_title[$c];
+                $event_title = $cevent_title[$c];
                 if (strlen($event_title) > 9){
                         $oevent_title = substr($event_title,0,10)."<br />".substr($event_title,10,9);
                         if (strlen($event_title) > 15){
@@ -260,26 +295,26 @@ for ($c=1; $c<=32; $c++) {
                     $linkut = mktime(0 ,0 ,0 ,$datearray['mon'], $c, $datearray['year']);
                     if(($_POST['do'] == NULL || $_POST['event_cat_ids'] == "all") || ($_POST['event_cat_ids'] == $event_cat_id)){
 
-                            $text .="<br><img style='border:0' src='".$ec_dir."images/".$category_icon[$event_category]."' alt='' height='8' width='8'>&nbsp;<a href='".e_PLUGIN."calendar_menu/event.php?".$linkut.".one'><span class='smalltext' style='color:black' >".$oevent_title."</span></a>";
+			$text .="<br />
+			    	 <img style='border:0' src='".$ec_dir."images/".$category_icon[$event_category]."' alt='' height='8' width='8' />
+				 &nbsp;
+				 <a href='".e_PLUGIN."calendar_menu/event.php?".$linkut.".one'>
+				   <span class='smalltext' style='color:black' >".$oevent_title."</span>
+				 </a>";
                     }
-
-
-
-               }
-
-
-
 
 
                 }
 
+	}
+
+	$text .= '</td>';
     }
-    $text .= "</td>\n";
 
     $loop++;
     if ($loop == 7) {
         $loop = 0;
-        $text .= "</tr><tr>";
+        $text .= '</tr><tr>';
     }
 }
 
