@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-02-03 14:34:07 $
-|     $Author: stevedunstan $
+|     $Revision: 1.8 $
+|     $Date: 2005-02-09 15:35:14 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -134,7 +134,7 @@ if ((ANON || USER) && ($forum_info['forum_class'] != e_UC_READONLY || MODERATOR)
 	$NEWTHREADBUTTON = "<a href='".e_PLUGIN."forum/forum_post.php?nt.".$forum_id."'>".IMAGE_newthread."</a>";
 }
 	
-$BREADCRUMB = "<a class='forumlink' href='index.php'>".SITENAME."</a> >> <a class='forumlink' href='forum.php'>".LAN_01."</a> >> <b>".$forum_info['forum_name']."</b>";
+$BREADCRUMB = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a> >> <a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_01."</a> >> <b>".$forum_info['forum_name']."</b>";
 $FORUMTITLE = $forum_info['forum_name'];
 $MODERATORS = LAN_404.": ".$forum_info['forum_moderators'];
 $BROWSERS = $users." ".($users == 1 ? LAN_405 : LAN_406)." (".$member_users." ".($member_users == 1 ? LAN_407 : LAN_409).", ".$guest_users." ".($guest_users == 1 ? LAN_408 : LAN_410).")";
