@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107/e107_plugins/calendar_menu/calendar.php,v $
-| $Revision: 1.4 $
-| $Date: 2004-08-15 13:26:46 $
+| $Revision: 1.5 $
+| $Date: 2004-09-02 02:56:09 $
 | $Author: mcfly_e107 $ 
 +---------------------------------------------------------------+
 */
@@ -225,9 +225,8 @@ for ($c=0; $c<$firstdayarray['wday']; $c++) {
     $text .= "<td style=' width:90px;height:60px;'></td>";
 }
 $loop = $firstdayarray['wday'];
-for ($c=1; $c<=32; $c++) {
-
-        $dayarray = getdate($start+($c*86400));
+for ($c=1; $c<=31; $c++) {
+$dayarray = getdate($start+(($c-1)*86400));
 
 
         $stopp = mktime(24,0,0,$calmonth,$c,$calyear);
