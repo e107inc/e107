@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-03-03 18:35:54 $
+|     $Revision: 1.21 $
+|     $Date: 2005-03-09 08:59:28 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -120,7 +120,7 @@ if ($action == "reply") {
 				$title = LAN_100;
 			}
 		} elseif ($table == "poll") {
-			if (!$sql->db_Select("poll", "poll_title", "poll_id='$nid' ")) {
+			if (!$sql->db_Select("polls", "poll_title", "poll_id='$nid' ")) {
 				header("location:".e_BASE."index.php");
 				exit;
 			} else {
@@ -202,7 +202,7 @@ if ($action == "reply") {
 			}
 		}
 		else if($table == "poll") {
-			if (!$sql->db_Select("poll", "*", "poll_id='$id' AND poll_comment=1")) {
+			if (!$sql->db_Select("polls", "*", "poll_id='$id' AND poll_comment=1")) {
 				header("location:".e_BASE."index.php");
 				exit;
 			} else {
