@@ -29,7 +29,7 @@ $cobj = new comment;
 $aj = new textparse;
 
 if(IsSet($_POST['commentsubmit'])){
-	if(!$sql -> db_Select("news", "news_allow_comments", "news_id='$id' ")){
+	if(!$sql -> db_Select("news", "news_allow_comments", "news_id='$id' ") && $table == "news"){
 		header("location:".e_BASE."index.php");
 		exit;
 	}else{
@@ -68,7 +68,7 @@ if(IsSet($_POST['replysubmit'])){
 						}
 				}
 		}
-		if($table == $e_plug_table){
+		if($plugin_redir){
 			header("location:".$location."");
 			exit;
 		}elseif($table == "news" || $table == "poll"){
