@@ -17,20 +17,9 @@ require_once("auth.php");
 
 
 // auto db update ...
-$handle=opendir(e_ADMIN."sql/db_update");
-while ($file = readdir($handle)){
-	if($file != "." && $file != ".." && $file != "index.html" && $file != "CVS"){
-		$updatelist[] = $file;
-	}
-}
-closedir($handle);
-if(IsSet($_POST['inst_update'])){
-	require_once(e_ADMIN."sql/db_update/".$updatelist[0]);
-}else if(is_array($updatelist)){
-	$text = "<div style='text-align:center'>".ADLAN_120."<br /><br />
-	<form method='post' action='".e_SELF."'><input class='button' type='submit' name='inst_update' value='".ADLAN_121."' /></form>
-	</div>";
-	$ns -> tablerender(ADLAN_122, $text);
+if("0" == ADMINPERMS){
+	@require_once(e_ADMIN."update_routines.php");
+	@update_check();	
 }
 //	end auto db update
 
