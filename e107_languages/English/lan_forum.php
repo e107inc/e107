@@ -75,4 +75,5 @@ define("LAN_421", "Show new posts");
 define("LAN_422", "New posts since your last visit");
 define("LAN_423", "Posted by");
 define("LAN_424", "New threads");
+define("LAN_425", "Re:");
 ?>
