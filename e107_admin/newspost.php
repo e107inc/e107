@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.62 $
-|   $Date: 2005-03-31 16:49:09 $
+|   $Revision: 1.63 $
+|   $Date: 2005-03-31 17:07:18 $
 |   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 
@@ -396,28 +396,25 @@ class newspost {
 		global $sql, $rs, $ns, $pref, $fl, $IMAGES_DIRECTORY, $tp, $pst, $e107;
 		$thumblist = $fl->get_files(e_IMAGE."newspost_images/", 'thumb_');
 
-		$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$',"thumb_", 'index', 'null*');
-		$imagelist = $fl->get_files(e_IMAGE."newspost_images/","",'$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
-		$filelist = $fl->get_files(e_FILE."downloads/","",$rejecthumb);
+		$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
+		$imagelist = $fl->get_files(e_IMAGE."newspost_images/","",$rejecthumb);
+		$tmp = $fl->get_files(e_FILE."downloads/","",$rejecthumb);
+
+		$filelist = array();
+		foreach($tmp as $value)
+		{
+			$filelist[] = array("id" => 0, "name" => $value['fname'], "url" => $value['fname']);
+		}
+		
 
 		$sql->db_Select("download");
-		$c = 0;
 		while ($row = $sql->db_Fetch()) {
 			extract($row);
-			$filelist[$c][0] = $download_id;
-			$filelist[$c][1] = $download_url;
-			$c++;
-		}
-
-		$handle = opendir(e_FILE."downloads");
-		while ($file = readdir($handle)) {
-			if ($file != "." && $file != ".." && $file != "/" && $file != "index.html" && $file != "null.txt" && $file != "CVS") {
-				$filelist[$c][0] = "";
-				$filelist[$c][1] = $file;
-				$c++;
+			if($download_url)
+			{
+				$filelist[] = array("id" => $download_id, "name" => $download_name, "url" => $download_url);
 			}
 		}
-		closedir($handle);
 
 		if ($sub_action == "sn" && !$_POST['preview']) {
 			if ($sql->db_Select("submitnews", "*", "submitnews_id=$id", TRUE)) {
@@ -499,24 +496,6 @@ class newspost {
 		if (!$pref['wysiwyg']) {
 			$text .= "<input id='helpb' class='helpbox' type='text' name='helpb' size='100' style='width:95%'/>
 			<br />". display_help("helpb");
-
-				$text .="<select class='tbox' name='imageps' onchange=\"addtext('[img]' + this.form.imageps.options[this.form.imageps.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onmouseover=\"help('".NWSLAN_110."')\" onmouseout=\"help('')\">
-				<option>".NWSLAN_81." ...</option>\n";
-				foreach ($imagelist as $image) {
-					$text .= "<option value='".$e107->HTTPPath.$IMAGES_DIRECTORY."newspost_images/".$image['fname']."'>".$image['fname']."</option>\n";
-				}
-
-				foreach ($thumblist as $thmb){
-					$text .= "<option value='".$e107->HTTPPath.$IMAGES_DIRECTORY."newspost_images/".$thmb['fname']."'>".$thmb['fname']."</option>\n";
-				}
-				$text .= "</select>
-
-					<select class='tbox' name='fileps' onChange=\"addtext('[file=request.php?' + this.form.fileps.options[this.form.fileps.selectedIndex].value + ']' + this.form.fileps.options[this.form.fileps.selectedIndex].value + '[/file]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_64."')\" onMouseOut=\"help('')\">
-					<option>".NWSLAN_82." ...</option>\n";
-			while (list($key, $file) = each($filelist)) {
-				$text .= "<option value='".$file[1]."'>".$file[1]."</option>\n";
-			}
-			$text .= "</select>";
 		} // end of htmlarea check.
 
 //Extended news form textarea
@@ -529,25 +508,7 @@ class newspost {
 			<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_83."</a>
 			<div style='display: none;'>
 			<textarea class='tbox' id='news_extended' name='news_extended' cols='80' rows='15' style='width:95%;height:100px' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".(strstr($_POST['news_extended'], "[img]http") ? $_POST['news_extended'] : str_replace("[img]../", "[img]", $tp->toForm($_POST['news_extended'])))."</textarea>
-			";
-		if (!$pref['wysiwyg']) {
-			$text .= "<br />
-				<input id='help_ext' class='helpbox' type='text' name='help_ext' size='100' style='width:95%'/>
-				<br />
-				".display_help("help_ext")."
-				<select class='tbox' name='imageps2' onchange=\"addtext('[img]' + this.form.imageps2.options[this.form.imageps2.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onmouseover=\"help('".NWSLAN_110."','help_ext')\" onmouseout=\"help('','help_ext')\">
-				<option>".NWSLAN_81." ...</option>\n";
-			reset($imagelist);
-			foreach ($imagelist as $image){
-				$text .= "<option value='".$e107->HTTPPath.$IMAGES_DIRECTORY."newspost_images/".$image['fname']."'>".$image['fname']."</option>\n";
-			}
-
-			foreach ($thumblist as $thmb){
-					$text .= "<option value='".$e107->HTTPPath.$IMAGES_DIRECTORY."newspost_images/".$thmb['fname']."'>".$thmb['fname']."</option>\n";
-			}
-			$text .= "</select>";
-		}
-		$text .= "
+			<br />". display_help("helpb")."
 			</div>
 			</td>
 			</tr>
@@ -601,7 +562,7 @@ class newspost {
 			<a style='cursor: pointer' onclick='expandit(this);'>".LAN_NEWS_23."</a>
 			<div style='display: none;'>
 
-			( this will be displayed in your news item where {NEWSTHUMBNAIL} is defined in the NEWSSTYLE section of the theme template )<br />
+			(".LAN_NEWS_38.")<br />
 			<input class='tbox' type='text' name='news_thumb' size='60' value='".$_POST['news_thumb']."' maxlength='100' />
 			<input class='button' type ='button' style='cursor:hand' size='30' value='".NWSLAN_118."' onclick='expandit(this)' />
 			<div id='newsicn' style='display:none;{head}'>";
@@ -617,19 +578,24 @@ class newspost {
 			<tr>
 			<td class='forumheader3'>Files</td>
 			<td class='forumheader3'>
-			<a style='cursor: pointer' onclick='expandit(this);'>Attach links to files in the newspost</a>
+			<a style='cursor: pointer' onclick='expandit(this);'>".LAN_NEWS_40."</a>
 			<div style='display: none;'>
-
-			<input class='tbox' type='text' name='news_file' size='60' value='".$_POST['news_file']."' maxlength='100' />
-			<input class='button' type ='button' style='cursor:hand' size='30' value='View files' onclick='expandit(this)' />
-			<div id='newsfile' style='display:none;{head}'>";
-
-			$text .= "Multiple files can be added. Once a file has been selected, type {NEWSFILE=filenumber} into your text to display it, eg {NEWSFILE=1}, {NEWSFILE=2).<br /><br />";
-
-			foreach($filelist as $file){
-				$text .= "<a href=\"javascript:appendtext('".$file['fname']."|','news_file','null')\">".$file['fname']."</a><br />";
+			<br />
+			";
+			if(!count($filelist))
+			{
+				$text .= LAN_NEWS_43;
 			}
-
+			else
+			{
+				$text .= LAN_NEWS_39."<br /><br />";
+				foreach($filelist as $file)
+				{
+					$text .= "<a href='javascript:addtext(\"[file=request.php?".$file['url']."]".$file['name']."[/file]\");'><img src='".e_IMAGE."generic/".IMODE."/file.png' alt='' style='vertical-align:middle;' /> ".$file['name']."</a><br />
+					";
+				}
+			}
+	
 			$text .= "</div>
 			</td>
 			</tr>\n";
@@ -640,9 +606,48 @@ class newspost {
 			$text .= "<tr>
 				<td class='forumheader3'>Images</td>
 				<td class='forumheader3'>
-				<a style='cursor: pointer' onclick='expandit(this);'>Attach images to the newspost</a>
+				<a style='cursor: pointer' onclick='expandit(this);'>".LAN_NEWS_38."</a>
 				<div style='display: none;'>
+				<br />
+				";
+				if(!count($imagelist))
+				{
+					$text .= LAN_NEWS_43;
+				}
+				else
+				{
+					$text .= LAN_NEWS_39."<br /><br />";
+					foreach($imagelist as $image)
+					{
+						if(strstr($image['fname'], "thumb"))
+						{
+							$fi = str_replace("thumb_", "", $image['fname']);
+							if(file_exists(e_IMAGE."newspost_images/".$fi))
+							{
+								// thumb and main image found
+								$text .= "<a href='javascript:addtext(\"[link=e107_images/newspost_images/".$fi."][image]".$image['fname']."[/image][/link]\");'><img src='".e_IMAGE."generic/".IMODE."/image.png' alt='' style='vertical-align:middle;' /> ".$image['fname']."</a> (link to full image will be generated)<br />
+								";
+							}
+							else 
+							{
+								$text .= "<a href='javascript:addtext(\"[image]".$image['fname']."[/image]\");'><img src='".e_IMAGE."generic/".IMODE."/image.png' alt='' style='vertical-align:middle;' /> ".$image['fname']."</a><br />
+								";
+							}
+						}
+						else 
+						{
+							$text .= "<a href='javascript:addtext(\"[image]".$image['fname']."[/image]\");'><img src='".e_IMAGE."generic/".IMODE."/image.png' alt='' style='vertical-align:middle;' /> ".$image['fname']."</a><br />
+							";
+						}
+					}
+				}
 
+				$text .= "</div>
+				</td>
+				</tr>\n";
+
+
+				/*
 				<input class='tbox' type='text' name='news_image' size='60' value='".$_POST['news_image']."' maxlength='100' />
 				<input class='button' type ='button' style='cursor:hand' size='30' value='View images' onclick='expandit(this)' />
 				<div id='imagefile' style='display:none;{head}'>";
@@ -652,6 +657,8 @@ class newspost {
 				foreach($imagelist as $file){
 					$text .= "<a href=\"javascript:appendtext('".$file['fname']."|','news_image','null')\">".$file['fname']."</a><br />";
 				}
+				*/
+
 
 				$text .= "</div>
 				</td>
@@ -909,7 +916,7 @@ class newspost {
 		{
 			$_POST['news_datestamp'] = time();
 		}
-		
+			
 		if($_POST['update_datestamp'])
 		{
 			$_POST['news_datestamp'] = time();
@@ -938,7 +945,6 @@ class newspost {
 	function submit_item($sub_action, $id) {
 		// ##### Format and submit item ---------------------------------------------------------------------------------------------------------
 		global $tp, $ix, $sql;
-
 		if($_POST['news_start'])
 		{
 			$tmp = explode("/", $_POST['news_start']);
@@ -959,6 +965,8 @@ class newspost {
 			$_POST['news_end'] = 0;
 		}
 
+		$_POST['update_datestamp'] = 0;
+
 		if(preg_match("#(.*?)/(.*?)/(.*?) (.*?):(.*?):(.*?)$#", $_POST['news_datestamp'], $matches))
 		{
 			$_POST['news_datestamp'] = mktime($matches[4], $matches[5], $matches[6], $matches[2], $matches[1], $matches[3]);
@@ -967,6 +975,7 @@ class newspost {
 		{
 			$_POST['news_datestamp'] = time();
 		}
+			
 		if($_POST['update_datestamp'])
 		{
 			$_POST['news_datestamp'] = time();
