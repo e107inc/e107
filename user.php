@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-03-09 21:04:44 $
+|     $Revision: 1.13 $
+|     $Date: 2005-03-09 21:34:52 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -367,10 +367,12 @@ function renderuser($row, $user_entended, $mode = "verbose") {
 			{
 				if (check_class($ext['user_extended_struct_read']))
 				{
+					$ex_name = "user_".$ext['user_extended_struct_name'];
+					$ex_val = $$ex_name;
 					$str .= "
 						<tr>
 							<td style='width:40%' class='forumheader3'>".$ext['user_extended_struct_text']."</td>
-							<td style='width:60%' class='forumheader3'>".($$ext['user_extended_struct_name'] ? $$ext['user_extended_struct_name'] : LAN_401)."</td>
+							<td style='width:60%' class='forumheader3'>".($ex_val ? $tp->toHTML($ex_val, TRUE, '', "class:".$user_class) : LAN_401)."</td>
 						</tr>
 						";
 				}
