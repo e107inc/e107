@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/e107_update.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-28 14:47:46 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-07 03:45:52 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -22,6 +22,10 @@ require_once("auth.php");
 require_once("update_routines.php");
 	
 if ($_POST) {
+	if(isset($_POST['updateall']))
+	{
+		$dbupdate = array_reverse($dbupdate);
+	}
 	foreach($dbupdate as $func => $rmks) {
 		$installed = call_user_func("update_".$func);
 		if ((LAN_UPDATE_4 == $_POST[$func] || $_POST['updateall']) && !$installed) {
@@ -48,6 +52,7 @@ $text = "
 	";
 	
 $updates = 0;
+
 foreach($dbupdate as $func => $rmks) {
 	if (function_exists("update_".$func)) {
 		$text .= "<tr><td class='forumheader3'>{$rmks}</td>";

@@ -11,21 +11,24 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-02-03 11:49:24 $
-|     $Author: sweetas $
+|     $Revision: 1.28 $
+|     $Date: 2005-02-07 03:45:52 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 
-$dbupdate = array(
-"61x_to_700" => LAN_UPDATE_8." .61x ".LAN_UPDATE_9." .7",
-	"616_to_617" => LAN_UPDATE_8." .616 ".LAN_UPDATE_9." .617",
-	"615_to_616" => LAN_UPDATE_8." .615 ".LAN_UPDATE_9." .616",
-	"614_to_615" => LAN_UPDATE_8." .614 ".LAN_UPDATE_9." .615",
-	"611_to_612" => LAN_UPDATE_8." .611 ".LAN_UPDATE_9." .612",
-	"603_to_604" => LAN_UPDATE_8." .603 ".LAN_UPDATE_9." .604",
-	);
+
+if(file_exists(e_PLUGIN.'forum/forum_update_check.php'))
+{
+	include_once(e_PLUGIN.'forum/forum_update_check.php');
+}
+$dbupdate["61x_to_700"] = LAN_UPDATE_8." .61x ".LAN_UPDATE_9." .7";
+$dbupdate["616_to_617"] = LAN_UPDATE_8." .616 ".LAN_UPDATE_9." .617";
+$dbupdate["615_to_616"] = LAN_UPDATE_8." .615 ".LAN_UPDATE_9." .616";
+$dbupdate["614_to_615"] = LAN_UPDATE_8." .614 ".LAN_UPDATE_9." .615";
+$dbupdate["611_to_612"] = LAN_UPDATE_8." .611 ".LAN_UPDATE_9." .612";
+$dbupdate["603_to_604"] = LAN_UPDATE_8." .603 ".LAN_UPDATE_9." .604";
 
 
 function update_check() {
