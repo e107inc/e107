@@ -12,7 +12,7 @@ define("LAN_67", "Show All Links");
 define("LAN_68", "edit");
 define("LAN_69", "delete");
 define("LAN_86", "Category:");
-define("LAN_88", "Referals:");
+define("LAN_88", "Referrals:");
 define("LAN_89", "Admin: ");
 define("LAN_90", "add new link in this category");
 define("LAN_91", "add new category");
