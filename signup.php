@@ -418,10 +418,10 @@ if($signupval[5]){
 if($signupval[6]){
         $text.="
         <tr>
-        <td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_119."</td>
+        <td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_119." ".req($signupval[6])."</td>
         <td class='forumheader3' style='width:70%' >
         <input class='tbox' type='text' name='location' size='60' value='$location' maxlength='200' />
-        ".req($signupval[6])."</td>
+        </td>
         </tr>";
 }
 
@@ -447,10 +447,10 @@ if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
 if($signupval[7]){
         require_once(e_HANDLER."ren_help.php");
         $text .= "<tr>
-        <td class='forumheader3' style='width:30%;white-space:nowrap;vertical-align:top' >".LAN_120."</td>
+        <td class='forumheader3' style='width:30%;white-space:nowrap;vertical-align:top' >".LAN_120." ".req($signupval[7])."</td>
         <td class='forumheader3' style='width:70%' >
         <textarea class='tbox' name='signature' cols='70' rows='4'>$signature</textarea>
-        ".req($signupval[7])."<input class='helpbox' type='text' name='helpb' size='90' />
+        <input class='helpbox' type='text' name='helpb' size='90' />
         ".ren_help("addtext");
 }
 
