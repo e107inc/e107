@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-03 14:34:07 $
-|     $Author: stevedunstan $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-06 01:12:38 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -99,7 +99,7 @@ $ICONKEY = "
 	</tr>\n</table>\n";
 	
 $SEARCH = "
-	<form method='post' action='search.php'>
+	<form method='post' action='".e_BASE."search.php'>
 	<p>
 	<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />
 	<input class='button' type='submit' name='searchsubmit' value='".LAN_180."' />
