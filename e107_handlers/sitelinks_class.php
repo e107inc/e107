@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-01-31 02:49:12 $
+|     $Revision: 1.24 $
+|     $Date: 2005-02-02 13:26:23 $
 |     $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
@@ -81,7 +81,7 @@ class sitelinks {
 			foreach ($this->eLinkList['head_menu'] as $link) {
 				$text .= $this->makeLink($link);
 				$main_linkname = $link['link_name'];
-				if (is_array($this->eLinkList[$main_linkname])) {
+				if (isset($this->eLinkList[$main_linkname]) && is_array($this->eLinkList[$main_linkname])) {
 					foreach ($this->eLinkList[$main_linkname] as $sub) {
 						$text .= $this->makeLink($sub, TRUE);
 					}
@@ -126,20 +126,20 @@ class sitelinks {
 		 
 		$_link = $linkInfo['link_button'] ? preg_replace('/\<img.*\>/si', '', LINKSTART) :
 		 LINKSTART;
-		$_link .= $linkInfo['link_button'] ? "<img src='".e_IMAGE."link_icons/".$linkInfo['link_button']."' alt='' style='vertical-align:middle' />" :
-		 "";
-		$_link .= ($submenu == TRUE && LINKDISPLAY != 3) ? "&nbsp;&nbsp;" :
-		 "";
+		$_link .= $linkInfo['link_button'] ? "<img src='".e_IMAGE."link_icons/".$linkInfo['link_button']."' alt='' style='vertical-align:middle' />" : "";
+		$_link .= ($submenu == TRUE && LINKDISPLAY != 3) ? "&nbsp;&nbsp;" : "";
 		 
 		if ($linkInfo['link_url']) {
-			$linkadd = defined('LINKCLASS') ? " class='".LINKCLASS."'" :
-			 "";
-			$screentip = ($pref['linkpage_screentip'] && $linkInfo['link_description']) ? " title = '".$linkInfo['link_description']."'" :
-			 "";
-			$href = ($linkInfo['link_open'] == 4) ? " href=\"javascript:open_window('".$linkInfo['link_url']."')\"" :
-			 " href='".$linkInfo['link_url']."'";
-			$link_append = ($linkInfo['link_open'] == 1) ? " rel='external'" :
-			 "";
+			$linkadd = defined('LINKCLASS') ? " class='".LINKCLASS."'" : "";
+			$screentip = '';
+			if(isset($pref['linkpage_screentip']) && $pref['linkpage_screentip'] && $linkInfo['link_description'])
+			{
+				$screentip = " title = '".$linkInfo['link_description']."'";
+			}
+				
+//			$screentip = ($pref['linkpage_screentip'] && $linkInfo['link_description']) ? " title = '".$linkInfo['link_description']."'" : "";
+			$href = ($linkInfo['link_open'] == 4) ? " href=\"javascript:open_window('".$linkInfo['link_url']."')\"" : " href='".$linkInfo['link_url']."'";
+			$link_append = ($linkInfo['link_open'] == 1) ? " rel='external'" : "";
 			 
 			$_link .= "<a".$linkadd.$screentip.$href.$link_append.">".$linkInfo['link_name']."</a>\n";
 		} else {
