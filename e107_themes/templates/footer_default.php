@@ -11,12 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-01-27 15:11:30 $
+|     $Revision: 1.13 $
+|     $Date: 2005-01-27 18:39:50 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
-global $eTraffic,$sql, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $CUSTOMFOOTER, $FOOTER;
+global $eTraffic,$db_time,$sql, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $CUSTOMFOOTER, $FOOTER;
 
 if(!is_object($sql)){
         // reinstigate db connection if another connection from third-party script closed it ...
@@ -52,19 +52,13 @@ if($e107_popup!=1){
                 $tmp = $eTraffic->Display();
                 if (strlen($tmp)) {
                     $ns->tablerender('Traffic Counters',$tmp);
-                } else echo "No Traffic???";
+                }
                 $tmp = $db_debug->Show_Performance();
                 if (strlen($tmp)) {
-                    $dbg_summary = "
-                    <div style='text-align:left' class='smalltext'>
-                    ".$tmp."</div>";
                     $ns->tablerender('Time Analysis',$tmp);
                 }
                 $tmp = $db_debug->Show_SQL_Details();
                 if (strlen($tmp)) {
-                    $dbg_details = "
-                    <div style='text-align:left' class='smalltext'>
-                    ".$tmp."</div>";
                     $ns->tablerender('SQL Analysis',$tmp);
                 }
         }
@@ -107,6 +101,7 @@ if (abs($_serverTime - $lastSet) > 120) {
       //  </script>\n";
       // commented out until error is fixed. missing the function ?
 }
+global $start_ob_level;
 if (ob_get_level() != $start_ob_level ) {
         $oblev=ob_get_level();
         $obdbg = "<div style='text-align:center' class='smalltext'>";
