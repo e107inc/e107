@@ -9,7 +9,8 @@ define("LCLAN_8", "Existing Links");
 define("LCLAN_9", "Edit");
 define("LCLAN_10", "Delete");
 define("LCLAN_12", "Link Category");
-
+define("LCLAN_13", "Cannot edit the main category.");
+define("LCLAN_14", "Post");
 define("LCLAN_15", "Link Name");
 define("LCLAN_16", "Link URL");
 define("LCLAN_17", "Link Description");
@@ -72,5 +73,7 @@ define("LCLAN_77", "Submitted link deleted");
 define("LCLAN_78", "Show Description as Screen-Tip");
 define("LCLAN_79", "Description will be shown when the mouse hovers over the link");
 
+define("LCLAN_80", "View Images");
+define("LCLAN_81", "Clear Form");
 
 ?>
