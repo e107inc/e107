@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_stats.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-03-20 18:42:47 $
+|     $Revision: 1.4 $
+|     $Date: 2005-03-24 09:12:43 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -25,9 +25,9 @@ require_once('../../class2.php');
 $gen = new convert;
 
 
-$barl = (file_exists(THEME."images/barl.png") ? THEME."images/barl.png" : e_IMAGE."generic/barl.png");
-$barr = (file_exists(THEME."images/barr.png") ? THEME."images/barr.png" : e_IMAGE."generic/barr.png");
-$bar = (file_exists(THEME."images/bar.png") ? THEME."images/bar.png" : e_IMAGE."generic/bar.png");
+$barl = (file_exists(THEME."images/barl.png") ? THEME."images/barl.png" : e_PLUGIN."poll/images/barl.png");
+$barr = (file_exists(THEME."images/barr.png") ? THEME."images/barr.png" : e_PLUGIN."poll/images/barr.png");
+$bar = (file_exists(THEME."images/bar.png") ? THEME."images/bar.png" : e_PLUGIN."poll/images/bar.png");
 
 require_once(HEADERF);
 

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-03-23 14:54:56 $
+|     $Revision: 1.11 $
+|     $Date: 2005-03-24 09:13:42 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -88,9 +88,9 @@ class poll
 	{
 		global $POLLSTYLE, $sql, $tp, $ns;
 
-		$barl = (file_exists(THEME."images/barl.png") ? THEME."images/barl.png" : e_IMAGE."generic/barl.png");
-		$barr = (file_exists(THEME."images/barr.png") ? THEME."images/barr.png" : e_IMAGE."generic/barr.png");
-		$bar = (file_exists(THEME."images/bar.png") ? THEME."images/bar.png" : e_IMAGE."generic/bar.png");
+		$barl = (file_exists(THEME."images/barl.png") ? THEME."images/barl.png" : e_PLUGIN."poll/images/barl.png");
+		$barr = (file_exists(THEME."images/barr.png") ? THEME."images/barr.png" : e_PLUGIN."poll/images/barr.png");
+		$bar = (file_exists(THEME."images/bar.png") ? THEME."images/bar.png" : e_PLUGIN."poll/images/bar.png");
 
 		if($type == "preview")
 		{
