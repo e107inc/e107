@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-02-19 16:26:49 $
+|     $Revision: 1.10 $
+|     $Date: 2005-02-20 03:22:43 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -38,17 +38,9 @@ if (!e_QUERY) {
 }
 $view = 25;
 
-if(isset($_POST['pageSelect']))
+if(is_numeric(e_MENU))
 {
-	$from = ($_POST['pageSelect']-1)*$view;
-}
-if(isset($_POST['submitPrev']))
-{
-	$from = ($_POST['pagePrev']-1)*$view;
-}
-if(isset($_POST['submitNext']))
-{
-	$from = ($_POST['pageNext']-1)*$view;
+	$from = (intval(e_MENU)-1)*$view;	
 }
 require_once(e_PLUGIN.'forum/forum_class.php');
 $forum = new e107forum;
@@ -67,10 +59,7 @@ if (!$FORUM_VIEW_START) {
 	}
 }
 	
-	
 $forum_info = $forum->forum_get($forum_id);
-
-
 $forum_info['forum_name'] = $tp -> toHTML($forum_info['forum_name'], TRUE);
 $forum_info['forum_description'] = $tp -> toHTML($forum_info['forum_description'], TRUE);
 
@@ -102,7 +91,6 @@ if ($message) {
 	$ns->tablerender("", $message);
 }
 	
-	
 $topics = $forum->forum_get_topic_count($forum_id);
 	
 if ($topics > $view) {
@@ -115,11 +103,13 @@ if ($pages)
 {
 	if(strpos($FORUM_VIEW_START, 'THREADPAGES') !== FALSE || strpos($FORUM_VIEW_END, 'THREADPAGES') !== FALSE)
 	{
-		$np_parm['template'] = LAN_316." [PREV] [DROPDOWN] [NEXT]";
+		$np_parm['template'] = LAN_316." [PREV]&nbsp;&nbsp;[DROPDOWN]&nbsp;&nbsp;[NEXT]";
 		$np_parm['currentpage'] = ($from/$view)+1;
 		$np_parm['totalpages'] = $pages;
+		$np_parm['prev'] = "&nbsp;&nbsp;<<&nbsp;&nbsp;";
+		$np_parm['next'] = "&nbsp;&nbsp;>>&nbsp;&nbsp;";
 		cachevars('nextprev', $np_parm);
-		$THREADPAGES = $tp->parseTemplate("{NEXTPREV}");
+		$THREADPAGES = $tp->parseTemplate("{NEXTPREV=link}");
 	}
 }
 	
