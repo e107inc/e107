@@ -34,8 +34,12 @@ function dblclick(){
 }
 if (document.layers) {document.captureEvents(Event.ONDBLCLICK);}
 document.ondblclick=dblclick;
-function open_window(url) {
-	pwindow = window.open(url,'Name', 'top=100,left=100,resizable=yes,width=600,height=400,scrollbars=yes,menubar=yes')
+function open_window(url,type) {
+	if('full' == type){
+		pwindow = window.open(url);
+	} else {
+		pwindow = window.open(url,'Name', 'top=100,left=100,resizable=yes,width=600,height=400,scrollbars=yes,menubar=yes')
+	}
 }
 
 function preloadimages(nbrpic,pic){
