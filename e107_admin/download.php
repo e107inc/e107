@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-03-24 19:14:40 $
+|     $Revision: 1.38 $
+|     $Date: 2005-03-24 19:22:07 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -442,15 +442,15 @@ class download {
 		$var['main']['text'] = DOWLAN_29;
 		$var['main']['link'] = e_SELF;
 
-		$var['opt']['text'] = DOWLAN_28;
-		$var['opt']['link'] = e_SELF."?opt";
-
 		$var['create']['text'] = DOWLAN_30;
 		$var['create']['link'] = e_SELF."?create";
 
 		$var['cat']['text'] = DOWLAN_31;
 		$var['cat']['link'] = e_SELF."?cat";
 		$var['cat']['perm'] = "Q";
+
+		$var['opt']['text'] = DOWLAN_28;
+		$var['opt']['link'] = e_SELF."?opt";
 
 		$var['limits']['text'] = DOWLAN_112;
 		$var['limits']['link'] = e_SELF."?limits";
