@@ -204,8 +204,9 @@ if(!$post_author_id || !$sql -> db_Select("user", "*", "user_id='".$post_author_
 	}
 	
 	$JOINED = ($user_perms == "0" ? "" : LAN_06." ".$gen->convert_date($user_join, "forum")."<br />");
-	$LOCATION = ($user_location ? LAN_07.": ".$user_location : "");
-	$WEBSITE = ($user_homepage ? LAN_08.": ".$user_homepage : "");
+	$LOCATION = ($user_location ? LAN_07.": ".$user_location."<br />" : "");
+	$CUSTOMTITLE = ($user_customtitle ? $user_customtitle."<br />" : "");
+	$WEBSITE = ($user_homepage ? LAN_08.": ".$user_homepage."<br />" : "");
 	$POSTS = LAN_67." ".$user_forums."<br />";
 	$VISITS = LAN_09.": ".$user_visits;
 
@@ -245,7 +246,6 @@ if(USER){
 }
 
 $THREADDATESTAMP = "<a id='$thread_id'>".IMAGE_post."</a> ".$gen->convert_date($thread_datestamp, "forum");
-$thread_thread = wrap($thread_thread);
 $POST = $aj -> tpa($thread_thread, "forum");
 if(ADMIN && $iphost){ $POST .= "<br />".$iphost; }
 $TOP = "<a href='".e_SELF."?".e_QUERY."#top'>".LAN_10."</a>";
@@ -278,7 +278,7 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 		if(!$post_author_id || !$sql2 -> db_Select("user", "*", "user_id='".$post_author_id."' ")){	// guest
 			$POSTER = "<b>".$post_author_name."</b>";
 			$AVATAR = "<br /><span class='smallblacktext'>".LAN_194."</span>";
-			unset($JOINED, $LOCATION, $WEBSITE, $POSTS, $VISITS, $MEMBERID, $SIGNATURE, $RPG, $LEVEL, $PRIVMESSAGE, $PROFILEIMG, $EMAILIMG, $WEBSITEIMG);
+			unset($JOINED, $LOCATION, $CUSTOMTITLE, $WEBSITE, $POSTS, $VISITS, $MEMBERID, $SIGNATURE, $RPG, $LEVEL, $PRIVMESSAGE, $PROFILEIMG, $EMAILIMG, $WEBSITEIMG);
 		}else{	// regged member - get member info
 			unset($iphost);
 			
@@ -292,8 +292,9 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 			}
 			
 			$JOINED = ($user_perms == "0" ? "" : LAN_06.": ".$gen->convert_date($user_join, "forum")."<br />");
-			$LOCATION = ($user_location ? LAN_07.": ".$user_location : "");
-			$WEBSITE = ($user_homepage ? LAN_08.": ".$user_homepage : "");
+			$LOCATION = ($user_location ? LAN_07.": ".$user_location."<br />" : "");
+			$CUSTOMTITLE = ($user_customtitle ? $user_customtitle."<br />" : "");
+			$WEBSITE = ($user_homepage ? LAN_08.": ".$user_homepage."<br />" : "");
 			$POSTS = LAN_67." ".$user_forums."<br />";
 			$VISITS = LAN_09.": ".$user_visits;
 			
@@ -329,7 +330,6 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 		}
 
 		$THREADDATESTAMP = "<a id='$thread_id'>".IMAGE_post."</a> ".$gen->convert_date($thread_datestamp, "forum");
-		$thread_thread = wrap($thread_thread);
 		$POST = $aj -> tpa($thread_thread, "forum");
 		if(ADMIN && $iphost){ $POST .= "<br />".$iphost; }
 
@@ -362,25 +362,6 @@ function forumjump(){
 	}
 	$text .= "</select> <input class='button' type='submit' name='fjsubmit' value='".LAN_03."' />&nbsp;&nbsp;&nbsp;&nbsp;<a href='".e_SELF."?".$_SERVER['QUERY_STRING']."#top'>".LAN_10."</a></p></form>";
 	return $text;
-}
-
-function wrap($data){
-	$wrapcount = 100;
-	$message_array = explode(" ", $data);
-	for($i=0; $i<=(count($message_array)-1); $i++){
-		if(strlen($message_array[$i]) > $wrapcount){
-			if(substr($message_array[$i], 0, 7) == "http://"){
-				$url = str_replace("http://", "", $message_array[$i]);  
-				$url = explode("/", $url);  
-				$url = $url[0];
-				$message_array[$i] = "<a href='".$message_array[$i]."'>[".$url."]</a>";
-			}else{
-				$message_array[$i] = preg_replace("/([^\s]{".$wrapcount."})/", "$1<br />", $message_array[$i]);
-			}
-		}
-	}
-	$data = implode(" ",$message_array);
-	return $data;
 }
 
 function rpg($user_join, $user_forums){

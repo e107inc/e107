@@ -118,6 +118,9 @@ define("FORLAN_108", " deleted");
 define("FORLAN_109", "days:");
 define("FORLAN_110", "Prune");
 define("FORLAN_111", "deactivate");
+
 define("FORLAN_112", "Enable Redirect");
 define("FORLAN_113", "Tick this to make browser redirect to forum page after replying");
+define("FORLAN_114", "User Custom Title");
+define("FORLAN_115", "Tick this to allow users to change their Custom Title");
 ?>
