@@ -20,7 +20,7 @@ function e107core_parse($match,$referrer){
 		}
 	}
 	if($match[1] == "PROFILE"){
-		$image = (file_exists(THEME."forum/profile.png")) ? "<img src='".THEME."forum/email.png' alt='' style='border:0' />" : "<img src='".e_IMAGE."forum/profile.png' alt='' style='border:0' />";
+		$image = (file_exists(THEME."forum/profile.png")) ? "<img src='".THEME."forum/profile.png' alt='' style='border:0' />" : "<img src='".e_IMAGE."forum/profile.png' alt='' style='border:0' />";
 		return "<a href='".e_BASE."user.php?id.{$match[2]}'>{$image}</a>";
 	}
 }
