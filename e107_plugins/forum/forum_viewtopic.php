@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-02-23 03:22:42 $
+|     $Revision: 1.13 $
+|     $Date: 2005-02-25 03:55:04 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -177,11 +177,11 @@ $pm_installed = ($pref['pm_title'] ? TRUE : FALSE);
 $replies = $forum->thread_count($thread_id)-1;
 if ($from === 'last') {
 	$pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
-	$pages = ceil($replies/$pref['forum_postspage']);
+	$pages = ceil(($replies+1)/$pref['forum_postspage']);
 	$from = ($pages-1) * $pref['forum_postspage'];
 }
 $gen = new convert;
-$thread_info = $forum->thread_get($thread_id, $from, $pref['forum_postspage']);
+$thread_info = $forum->thread_get($thread_id, $from-1, $pref['forum_postspage']);
 $forum_info = $forum->forum_get($thread_info['head']['thread_forum_id']);
 
 
@@ -268,9 +268,9 @@ $MODERATORS = LAN_321.$forum_info['forum_moderators'];
 $THREADSTATUS = (!$thread_info['head']['thread_active'] ? LAN_66 : "");
 
 $pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
-$pages = ceil($replies/$pref['forum_postspage']);
+$pages = ceil(($replies+1)/$pref['forum_postspage']);
 if ($pages > 1) {
-		$parms = "{$replies},{$pref['forum_postspage']},{$from},".e_SELF.'?'.$thread_id.'.[FROM]';
+		$parms = ($replies+1).",{$pref['forum_postspage']},{$from},".e_SELF.'?'.$thread_id.'.[FROM]';
 		$GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
 }
 
