@@ -1,5 +1,4 @@
 <?php
-
 /*
 +---------------------------------------------------------------+
 | e107 website system
@@ -13,8 +12,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.49 $
-| $Date: 2005-03-11 08:51:03 $
+| $Revision: 1.50 $
+| $Date: 2005-03-15 14:03:13 $
 | $Author: stevedunstan $
 +---------------------------------------------------------------+
 */
@@ -40,8 +39,6 @@ class news {
 		{
 			$attach .= "image:".$news_image.chr(1);
 		}
-
-
 
 		$news_title = $tp->toDB($news_title, TRUE);
 		$news_body = $tp->toDB($data, TRUE);
