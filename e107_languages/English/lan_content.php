@@ -7,6 +7,8 @@ define("LAN_2", "Review");
 define("LAN_3", "Category");
 
 
+define("LAN_25", "Previous Page");
+define("LAN_26", "Next Page");
 define("LAN_27", "List reviews in this category");
 define("LAN_28", "Back to reviews front page");
 define("LAN_29", "moderate comments");
