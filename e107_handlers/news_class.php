@@ -13,8 +13,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.46 $
-| $Date: 2005-03-10 19:01:27 $
+| $Revision: 1.47 $
+| $Date: 2005-03-10 20:11:45 $
 | $Author: stevedunstan $
 +---------------------------------------------------------------+
 */
@@ -283,7 +283,7 @@ class news {
 		}
 
 		/* new attach code, added by jalist 10/03/2005 */
-		
+
 		if($news_attach)
 		{
 			$attach = explode(chr(1), $news_attach);
@@ -293,21 +293,10 @@ class news {
 				{
 					$news_thumb = str_replace("thumb:", "", $attachment);
 				}
-					
-				if(strstr($attachment, "image:"))
-				{
-					$newsimages =  explode("|", str_replace("image:", "", $attachment));
-				}
-
-				if(strstr($attachment, "file:"))
-				{
-					$tmp = explode("|", str_replace("file:", "", $attachment));
-				}
 			}
+			define("NEWSATTACH", $news_attach);
 		}
 
-		/* check for attached images ... */
-		define("NEWSATTACH", $news_attach);
 		$news_body = $tp -> parseTemplate($news_body);
 
 		$search[0] = "/\{NEWSTITLE\}(.*?)/si";
@@ -388,18 +377,6 @@ class news {
 		}
 
 		$text = preg_replace($search, $replace, $NEWS_TEMPLATE);
-
-
-
-		if(is_array($news_files))
-		{
-			foreach($news_files as $file)
-			{
-				$text .= $file."<br />";
-			}
-		}
-
-
 
 		return $text;
 	}
