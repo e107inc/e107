@@ -1,9 +1,10 @@
 if (preg_match("#\.php\?.*#",$code_text)){return "";}
-$matches[1] = preg_replace('#onerror *=#','',$matches[1]);
+$code_text = preg_replace('#onerror *=#i','',$code_text);
 unset($imgParms);
 $imgParms['alt']='';
 $imgParms['style']="vertical-align:middle; border:0";
 if($parm) {
+	$parm = preg_replace('#onerror *=#i','',$parm);
 	parse_str($parm,$tmp);
 	foreach($tmp as $p => $v) {
 		$imgParms[$p]=$v;
