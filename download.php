@@ -23,7 +23,12 @@ if(!e_QUERY){
 	// no qs - render categories ...
 
 	if(!$DOWNLOAD_CAT_PARENT_TABLE){
-		require_once(e_BASE.$THEMES_DIRECTORY."templates/download_template.php");
+		if(file_exists(THEME."download_template.php")){
+      require_once(THEME."download_template.php");
+    }
+		else{
+      require_once(e_BASE.$THEMES_DIRECTORY."templates/download_template.php");
+    }
 	}
 
 	$sql = new db; $sql2 = new db;
@@ -121,7 +126,12 @@ if($action == "list"){
         require_once(HEADERF);
 
 		if(!$DOWNLOAD_LIST_TABLE){
-			require_once(e_BASE.$THEMES_DIRECTORY."templates/download_template.php");
+		  if(file_exists(THEME."download_template.php")){
+        require_once(THEME."download_template.php");
+      }
+			else{
+        require_once(e_BASE.$THEMES_DIRECTORY."templates/download_template.php");
+      }
 		}
 
         $gen = new convert;
@@ -168,9 +178,7 @@ if($action == "view"){
                         $highlight_search = TRUE;
                 }
 
-		if(!$DOWNLOAD_VIEW_TABLE){
-			require_once(e_BASE.$THEMES_DIRECTORY."templates/download_template.php");
-		}
+		
 		$sql = new db;
         if(!$sql -> db_Select("download", "*", "download_id = {$id} AND download_active = 1")){
                 require_once(HEADERF);require_once(FOOTERF);
@@ -252,7 +260,15 @@ if($action == "view"){
 			$DOWNLOAD_VIEW_RATING .= LAN_dl_15;
 		}
 		$DOWNLOAD_VIEW_RATING .= "</td></tr></table>";
-
+    
+    if(!$DOWNLOAD_VIEW_TABLE){
+			if(file_exists(THEME."download_template.php")){
+        require_once(THEME."download_template.php");
+      }
+			else{
+        require_once(e_BASE.$THEMES_DIRECTORY."templates/download_template.php");
+      }
+		}
 		$download_view_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_VIEW_TABLE_START);
 		$download_view_table_string = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_VIEW_TABLE);
 		$download_view_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_VIEW_TABLE_END);

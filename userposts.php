@@ -35,7 +35,12 @@ $user_id = $id.".".$user_name."";
 if($action == "comments"){
 
 	if(!$USERPOSTS_COMMENTS_TABLE){
-		require_once(e_BASE.$THEMES_DIRECTORY."templates/userposts_template.php");
+		if(file_exists(THEME."userposts_template.php")){
+      require_once(THEME."userposts_template.php");
+    }
+  	else{
+      require_once(e_BASE.$THEMES_DIRECTORY."templates/userposts_template.php");
+    }
 	}
 	
 	$ccaption = UP_LAN_1.$user_name;
@@ -67,7 +72,12 @@ if($action == "comments"){
 if($action == "forums" || isset($_POST['fsearch'])){
 
 	if(!$USERPOSTS_FORUM_TABLE){
-		require_once(e_BASE.$THEMES_DIRECTORY."templates/userposts_template.php");
+		if(file_exists(THEME."userposts_template.php")){
+      require_once(THEME."userposts_template.php");
+    }
+  	else{
+      require_once(e_BASE.$THEMES_DIRECTORY."templates/userposts_template.php");
+    }
 	}
 
 	if(isset($_POST['f_query']) && $_POST['f_query'] != ""){

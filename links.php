@@ -34,7 +34,12 @@ if(IsSet($_POST['add_link']) && check_class($pref['link_submit_class'])){
 if(e_QUERY == "submit" && check_class($pref['link_submit_class'])){
 
         if(!$LINK_SUBMIT_TABLE){
-                require_once(e_BASE.$THEMES_DIRECTORY."templates/links_template.php");
+            if(file_exists(THEME."links_template.php")){
+              require_once(THEME."links_template.php");
+            }
+          	else{
+              require_once(e_BASE.$THEMES_DIRECTORY."templates/links_template.php");
+            }
         }
 
         $link_submit_table_string .= parse_link_submit_table();
@@ -52,7 +57,12 @@ if(e_QUERY == "submit" && check_class($pref['link_submit_class'])){
 if(e_QUERY == "" && $pref['linkpage_categories'] == 1){
 
         if(!$LINK_MAIN_TABLE){
-                require_once(e_BASE.$THEMES_DIRECTORY."templates/links_template.php");
+           if(file_exists(THEME."links_template.php")){
+              require_once(THEME."links_template.php");
+            }
+          	else{
+              require_once(e_BASE.$THEMES_DIRECTORY."templates/links_template.php");
+            }
         }
 
         $caption = LAN_61;
@@ -109,7 +119,12 @@ if(e_QUERY == "" && $pref['linkpage_categories'] == 1){
         }
 
         if(!$LINK_CAT_TABLE){
-                require_once(e_BASE.$THEMES_DIRECTORY."templates/links_template.php");
+           if(file_exists(THEME."links_template.php")){
+              require_once(THEME."links_template.php");
+            }
+          	else{
+              require_once(e_BASE.$THEMES_DIRECTORY."templates/links_template.php");
+            }
         }
 
         $sql2 = new db;
