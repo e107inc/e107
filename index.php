@@ -11,8 +11,8 @@ e107 website system
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/index.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-31 23:01:50 $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-01 00:42:39 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -36,33 +36,23 @@ if ($pref['frontpage'] == 'links') {
 
 if ($pref['membersonly_enabled'] && !USER)
 {
-	require_once(e_LOGIN);
+	header("location: ".e_LOGIN);
 	exit;
 }
-else if (!$pref['frontpage'] || $pref['frontpage_type'] == "splash")
+else if (!$pref['frontpage'])
 {
-	require_once(e_BASE."news.php");
+	header("location: ".e_BASE."news.php");
 	exit;
 }
 else if(strpos($pref['frontpage'], "http")!==FALSE)
 {
-	if (strpos($pref['frontpage'], ".php")!==FALSE) {
-		require_once($pref['frontpage']);
-		exit;
-	} else {
-		header("location: ".$pref['frontpage']);
-		exit;
-	}
+	header("location: ".$pref['frontpage']);
+	exit;
 }
 else
 {
-	if (strpos($pref['frontpage'], ".php")!==FALSE) {
-		require_once(e_BASE.$pref['frontpage']);
-		exit;
-	} else {
-		header("location: ".e_BASE.$pref['frontpage']);
-		exit;
-	}
+	header("location: ".e_BASE.$pref['frontpage']);
+	exit;
 }
 
 ?>
