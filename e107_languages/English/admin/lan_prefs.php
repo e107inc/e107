@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-15 04:32:20 $
-|     $Author: sweetas $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-15 18:15:34 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_1", "Site Information");
@@ -119,6 +119,8 @@ define("CUSTSIG_13", "Fields");
 define("CUSTSIG_14", "Display");
 define("CUSTSIG_15", "Required");
 define("CUSTSIG_16", "Minimum Length for Passwords");
+define("CUSTSIG_17", "Subscribe to content/mailouts");
+
 
 
 define("PRFLAN_89", "Site Header:");
