@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.66 $
-|     $Date: 2005-03-30 03:32:16 $
+|     $Revision: 1.67 $
+|     $Date: 2005-03-31 03:58:37 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -561,7 +561,12 @@ function update_61x_to_700($type) {
 			$s_prefs = TRUE;
 		}
 
-		
+		// db verify fixes
+		mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` DROP `user_extended_struct_signup_show` , DROP `user_extended_struct_signup_required` ;");
+		mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` ADD `user_extended_struct_signup` TINYINT( 3 ) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_extended_struct_required` ;");
+		mysql_query("ALTER TABLE `".MPREFIX."download_category` CHANGE `download_category_class` `download_category_class` TINYINT( 3 ) UNSIGNED DEFAULT '0' NOT NULL");
+		mysql_query("ALTER TABLE `".MPREFIX."generic` CHANGE `gen_chardata` `gen_chardata` TEXT NOT NULL");
+				
 		// Save all prefs that were set in above update routines
 			if ($s_prefs == TRUE) {
 				save_prefs();
