@@ -303,5 +303,36 @@ define(LAN_324, "Je bericht is succesvol geplaatst.");
 define(LAN_325, "Klik hier om je bericht te bekijken");
 define(LAN_326, "Klik hier om terug te keren naar het forum");
 define(LAN_327, "Controleer");
+define(LAN_328, "Settings");   // "Settings" as used in default-header.
+define(LAN_328, "Tijd");
+define(LAN_329, "Uitspraak van het moment");
+define(LAN_400, "Januarie");
+define(LAN_401, "Februarie");
+define(LAN_402, "Maart");
+define(LAN_403, "April");
+define(LAN_404, "Mei");
+define(LAN_405, "Juni");
+define(LAN_406, "Juli");
+define(LAN_407, "Augustus");
+define(LAN_408, "September");
+define(LAN_409, "Oktober");
+define(LAN_410, "November");
+define(LAN_411, "December");
+define(LAN_412, "Maandag");
+define(LAN_413, "Dinsdag");
+define(LAN_414, "Woensdag");
+define(LAN_415, "Donderdag");
+define(LAN_416, "Vrijdag");
+define(LAN_417, "Zaterdag");
+define(LAN_418, "Zondag");
+define(LAN_419, "Maan");
+define(LAN_420, "Din");
+define(LAN_421, "Woe");
+define(LAN_422, "Don");
+define(LAN_423, "Vrij");
+define(LAN_424, "Zat");
+define(LAN_425, "Zon");
+define(LAN_426, "Evenementen deze Maand");
+define(LAN_427, "Geen evenementen voor deze maand.");
 
 ?>

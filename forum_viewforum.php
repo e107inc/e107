@@ -1,4 +1,8 @@
 <?php
+if(IsSet($_POST['fjsubmit'])){
+	header("location:forum_viewforum.php?".$_POST['forumjump']);
+	exit;
+}
 /*
 +---------------------------------------------------------------+
 |	e107 website system
@@ -247,7 +251,7 @@ function forumjump(){
 	while($row = $sql -> db_Fetch()){
 		extract($row);
 		if(!$forum_class || check_class($forum_class)){
-			$text .= "\n<option>".$forum_name."</option>";
+			$text .= "\n<option value=\"".$forum_id."\">".$forum_name."</option>";
 		}
 	}
 	$text .= "</select> <input class=\"button\" type=\"submit\" name=\"fjsubmit\" value=\"Go\" />&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"".e_SELF."?".$_SERVER['QUERY_STRING']."#top\">Back to top</a></p></form>";

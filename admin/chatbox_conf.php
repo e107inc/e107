@@ -13,7 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("C")){ header("location:".e_HTTP."index.php"); }
+if(!getperms("C")){ header("location:".e_HTTP."index.php"); exit ;}
 require_once("auth.php");
 
 if(e_QUERY != ""){
@@ -47,11 +47,18 @@ if($action == "u"){
 }
 
 if(IsSet($_POST['updatesettings'])){
+
 	$pref['chatbox_posts'][1] = $_POST['chatbox_posts'];
-	$pref['cb_linkc'][1] = $_POST['cb_linkc'];
+
+	$cb_linkc = str_replace("\"", "'", $_POST['cb_linkc']);
+	$cb_linkc = stripslashes($cb_linkc);
+
+	$pref['cb_linkc'][1] = $cb_linkc;
 	$pref['cb_wordwrap'][1] = $_POST['cb_wordwrap'];
 	$pref['cb_linkreplace'][1] = $_POST['cb_linkreplace'];
-	$sql -> db_Update("core", "e107_value='".serialize($pref)."' WHERE e107_name='pref' ");
+	
+	$tmp = addslashes(serialize($pref));
+	$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='pref' ");
 	header("location:chatbox_conf.php?u");
 }
 
@@ -116,7 +123,7 @@ $text .= "
 
 <td style=\"width:20%\">Replace string if activated: </td>
 <td style=\"width:50%\" colspan=\"2\">
-<input class='tbox' type='text' name='cb_linkc' size='80' value='$cb_linkc' maxlength='200' onFocus=\"checkenabled(this.form)\" />
+<input class=\"tbox\" type=\"text\" name=\"cb_linkc\" size=\"80\" value=\"$cb_linkc\" maxlength=\"200\" />
 </td>
 </tr>
 

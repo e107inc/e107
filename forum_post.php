@@ -43,6 +43,9 @@ if($sql -> db_Select("tmp", "*",  "tmp_ip='$ip' ")){
 if(IsSet($_POST['preview'])){
 	if(USER ? $poster = USERNAME : $poster = $_POST['anonname']);
 	$postdate = $gen->convert_date(time(), "forum");
+	$_POST['subject'] = htmlentities($_POST['subject']);
+	$_POST['post'] = htmlentities($_POST['post']);
+
 	$tsubject = $aj -> tpa($_POST['subject'], $mode="off");
 	$tpost = $aj -> tpa($_POST['post'], $mode="off");
 	echo "<table style=\"width:100%\" class=\"fborder\">

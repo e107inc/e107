@@ -110,8 +110,12 @@ class manualparse{
 	$nc = new convert;
 	$datestamp = $nc->convert_date($ts, "short");
 	$text .= "<span class=\"smalltext\">Last updated: ".$datestamp."</span>";
-	$text = "<div style=\"text-align:center\"><table style=\"width:87%\" cellspacing=\"1\"><tr><td>".$text."</td></tr></table></div>";
+	$text = "<div style=\"text-align:center\"><table style=\"width:95%\" cellspacing=\"1\"><tr><td>".$text."</td></tr></table></div>";
 	$ns = new table;
+
+	$text = eregi_replace("<img src=\"themes" ,"<img src=\"".e_BASE."themes", $text);
+
+
 	$ns -> tablerender(LAN_161, stripslashes($text));
 	}
 }

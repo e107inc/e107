@@ -1,4 +1,8 @@
 <?php
+if(IsSet($_POST['fjsubmit'])){
+	header("location:forum_viewforum.php?".$_POST['forumjump']);
+	exit;
+}
 /*
 +---------------------------------------------------------------+
 |	e107 website system
@@ -107,7 +111,7 @@ if(!$post_author_id){
 	if(eregi($user_name, $forum_moderators)){
 		$starter_info .= "<b><u>".LAN_193."</u></b><br /><br />";	
 	}else{
-		$user_join = $gen->convert_date($user_join, "short");
+		$user_join = $gen->convert_date($user_join, "forum");
 		$starter_info .= LAN_195."#".$user_id."<br />joined $user_join<br /><br />";
 	}
 	$text .= "</div>";
@@ -306,7 +310,7 @@ function forumjump(){
 	while($row = $sql -> db_Fetch()){
 		extract($row);
 		if(!$forum_class || check_class($forum_class)){
-			$text .= "\n<option>".$forum_name."</option>";
+			$text .= "\n<option value=\"".$forum_id."\">".$forum_name."</option>";
 		}
 	}
 	$text .= "</select> <input class=\"button\" type=\"submit\" name=\"fjsubmit\" value=\"Go\" />&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"".e_SELF."?".$_SERVER['QUERY_STRING']."#top\">Back to top</a></p></form>";

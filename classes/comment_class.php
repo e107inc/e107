@@ -145,7 +145,7 @@ class comment{
 	function parsecomment($LAYOUT, $user_id, $user_name, $datestamp, $user_image, $user_comments, $user_join, $user_signature, $comment_comment, $comment_blocked, $unblock, $block, $delete, $userinfo){
 		$tmp = explode("\n", $LAYOUT);
 		for($c=0; $c < count($tmp); $c++){ 
-			if(ereg("{|}", $tmp[$c])){
+			if(preg_match("/[\{|\}]/", $tmp[$c])){
 				$text .= $this->checklayoutc($tmp[$c], $user_id, $user_name, $datestamp, $user_image, $user_comments, $user_join, $user_signature, $comment_comment, $comment_blocked, $unblock, $block, $delete, $userinfo);
 			}else{
 				$text .=  $tmp[$c];

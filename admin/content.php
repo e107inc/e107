@@ -52,7 +52,7 @@ If(IsSet($_POST['update'])){
 	$content_subheading = $aj -> tp($_POST['content_subheading'], $mode="on");
 	$content_content = $aj -> tp($_POST['content_content'], $mode="on");
     $content_parent = $_POST['parent_article'];
-	$sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_page='".$_POST['content_page']."', content_comment='".$_POST['content_comment']."', content_parent='".$content_parent."' WHERE content_id='".$_POST['content_id']."' ");
+	$sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_page='".$_POST['content_page']."', content_comment='".$_POST['content_comment']."', content_summary='".$content_parent."' WHERE content_id='".$_POST['content_id']."' ");
 
 	unset($content_heading, $content_subheading, $content_content, $content_parent);
 	$message = "Content updated in database.";

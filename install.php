@@ -5,7 +5,7 @@
 if(IsSet($_POST['frontpage'])){ header("location: index.php"); }
 if(IsSet($_POST['adminpage'])){ header("location: admin/admin.php"); }
 if(!$_POST['mysql_server']){ $_POST['mysql_server'] = "localhost"; }
-if(!$_POST['mysql_prefix']){ $_POST['mysql_prefix'] = "e107_"; }
+if(!$_POST['mysql_prefix'] && !$_POST['stage_2']){ $_POST['mysql_prefix'] = "e107_"; }
 if(!$_POST['admin_email']){ $_POST['admin_email'] = "you@yoursite.com"; }
 
 echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
@@ -547,6 +547,27 @@ $banlist_table = "CREATE TABLE ".$mySQLprefix."banlist (
 ) TYPE=MyISAM;";
 if(!mysql_query($banlist_table)){	$error .= "There was a problem creating the <b>banlist</b> mySQL table ...<br />"; }
 
+
+$banner_table = "CREATE TABLE ".$mySQLprefix."banner (
+  banner_id int(10) unsigned NOT NULL auto_increment,
+  banner_clientname varchar(100) NOT NULL default '',
+  banner_clientlogin varchar(20) NOT NULL default '',
+  banner_clientpassword varchar(50) NOT NULL default '',
+  banner_image varchar(150) NOT NULL default '',
+  banner_clickurl varchar(150) NOT NULL default '',
+  banner_impurchased int(10) unsigned NOT NULL default '0',
+  banner_startdate int(10) unsigned NOT NULL default '0',
+  banner_enddate int(10) unsigned NOT NULL default '0',
+  banner_active tinyint(1) unsigned NOT NULL default '0',
+  banner_clicks int(10) unsigned NOT NULL default '0',
+  banner_impressions int(10) unsigned NOT NULL default '0',
+  banner_ip text NOT NULL,
+  banner_campaign varchar(150) NOT NULL default '',
+  PRIMARY KEY  (banner_id)
+) TYPE=MyISAM;";
+if(!mysql_query($banner_table)){	$error .= "There was a problem creating the <b>banner</b> mySQL table ...<br />"; }
+
+
 $chatbox_table = "CREATE TABLE ".$mySQLprefix."chatbox (
   cb_id int(10) unsigned NOT NULL auto_increment,
   cb_nick varchar(20) NOT NULL default '',
@@ -877,7 +898,7 @@ $datestamp = time();
 mysql_query("INSERT INTO ".$mySQLprefix."content VALUES (0, '$article_heading', '$article_subheading', '$article', '$datestamp', 0, 0) ");
 mysql_query("INSERT INTO ".$mySQLprefix."news VALUES (0, 'Welcome to e107', '$welcome_message', '', '$datestamp', '0', '', '', '1', 1, 0, 0, 0) ");
 mysql_query("INSERT INTO ".$mySQLprefix."news_category VALUES (0, 'Misc', 'images/bullet1.gif') ");
-mysql_query("INSERT INTO ".$mySQLprefix."poll VALUES (0, '$datestamp', 0, 1, 'So what do you think of e107?', 'I\'m not impressed', 'It\'s not bad but other content management systems are a lot better', 'It\'s good', 'I love it!', 'Grah I hate polls', 'What\'s e107 anyway?', '', '', '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 1) ");
+mysql_query("INSERT INTO ".$mySQLprefix."poll VALUES (0, '$datestamp', 0, 1, 'So what do you think of e107?', 'I\'m not impressed', 'It\'s not bad but I\'ve seen better', 'It\'s good', 'I love it!', 'Grah I hate polls', 'What\'s e107 anyway?', '', '', '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 1) ");
 mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Home', 'index.php', '', '', 1, 0, 0, 0) ");
 mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Links', 'links.php', '', '', 1, 0, 0, 0) ");
 mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Submit News', 'submitnews.php', '', '', 1, 0, 0, 0) ");
@@ -889,7 +910,7 @@ mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Members', 'user.php',
 $e107['e107_author'] = "Steve Dunstan (jalist)";
 $e107['e107_url'] = "http://e107.org";
 $e107['e107_version'] = "v5.4";
-$e107['e107_build'] = "beta1";
+$e107['e107_build'] = "beta4";
 $e107['e107_datestamp'] = time();
 $tmp = serialize($e107);
 mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('e107', '$tmp') ");
@@ -934,6 +955,7 @@ $pref['meta_tag'][1] = "";
 $pref['user_reg_veri'][1] = "1";
 $tmp = serialize($pref);
 mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('pref', '$tmp') ");
+mysql_query("INSERT INTO ".$mySQLprefix."banner VALUES (0, 'e107', 'e107login', 'e107password', 'e107.jpg', 'http://e107.org', 0, 0, 0, 1, 0, 0, '', 'campaign_one') ");
 mysql_query("INSERT INTO ".$mySQLprefix."link_category VALUES (0, 'Main', 'Any links with this category will be displayed in main navigation bar.')");
 mysql_query("INSERT INTO ".$mySQLprefix."link_category VALUES (0, 'Misc', 'Miscellaneous links.')");
 mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES ('1', 'This text (if activated) will appear at the top of your front page all the time.', '0')");

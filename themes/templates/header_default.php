@@ -123,35 +123,29 @@ function checklayout($str){
 			</p>
 			</form>";
 		}else if($custom == "quote"){
-			if(!file_exists(e_HTTP."quote.txt")){
+			if(!file_exists(e_BASE."quote.txt")){
 				$quote = "Quote file not found ($qotd_file)";
 			}else{
-				$quotes = file($qotd_file);
-				$quote = htmlspecialchars($quotes[rand(0, count($quotes))]);
+				$quotes = file(e_BASE."quote.txt");
+				$quote = stripslashes(htmlspecialchars($quotes[rand(0, count($quotes))]));
 			}
 			echo $quote;
 		}
 	}else if(strstr($str, "BANNER")){
-		$handle=opendir(e_BASE."themes/shared/banners");
-		while ($file = readdir($handle)){	
-			if($file != "." && $file != ".." && $file != "bannerimages"){
-				$files[] = $file;
-			}
+		$campaign = trim(chop(preg_replace("/\{BANNER=(.*?)\}/si", "\\1", $str)));
+		mt_srand ((double) microtime() * 1000000);
+		$seed = mt_rand(1,2000000000);
+		if($campaign != "{BANNER}"){
+			$query = "banner_active=1 AND (banner_startdate=0 OR banner_startdate<=".time().") AND (banner_enddate=0 OR banner_enddate>".time().") AND (banner_impurchased=0 OR banner_impressions<=banner_impurchased) AND banner_campaign='$campaign' ORDER BY RAND($seed)";
+		}else{
+			$query = "banner_active=1 AND (banner_startdate=0 OR banner_startdate<=".time().") AND (banner_enddate=0 OR banner_enddate>".time().") AND (banner_impurchased=0 OR banner_impressions<=banner_impurchased) ORDER BY RAND($seed)";
 		}
-		closedir($handle);
-
-		$tmp = $files[rand(0,(count($files)-1))];
-		require_once(e_BASE."themes/shared/banners/".$tmp);
+		$sql = new db;
+		$sql -> db_Select("banner", "*", $query);
+		$row = $sql -> db_Fetch(); extract($row);
+		echo "<a href=\"".e_BASE."banner.php?".$banner_id."\"><img src=\"".e_BASE."themes/shared/banners/".$banner_image."\" alt=\"".$banner_clickurl."\" style=\"border:0\" /></a>";
+		$sql -> db_Update("banner", "banner_impressions=banner_impressions+1 WHERE banner_id='$banner_id' ");
 	}
-
-	
-
-
-
-
-
-
-
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 ?>

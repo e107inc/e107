@@ -13,7 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("J") && !getperms("K") && !getperms("L")){header("location:".e_HTTP."index.php");}
+if(!getperms("J") && !getperms("K") && !getperms("L")){header("location:".e_HTTP."index.php"); exit; }
 require_once("auth.php");
 
 //echo "-> "$content_id."<br /> -> ".$_POST['content_id'];.

@@ -75,7 +75,7 @@ class news{
 		$cls = new db;
 
 		if($news_id != ""){
-			if($cls -> db_Update("news", "news_title='$news_title', news_body='$news_body', news_extended='$news_extended', news_source='$news_source', news_url='$news_url', news_category='$category_id', news_allow_comments='$allow_comments', news_start='$news_start', news_end='$news_end', news_active='$news_active' WHERE news_id='$news_id' ")){
+			if($cls -> db_Update("news", "news_title='$news_title', news_body='$news_body', news_extended='$news_extended', news_source='$news_source', news_url='$news_url', news_category='$category_id', news_allow_comments='$allow_comments', news_start='$news_start', news_end='$news_end', news_active='".$_POST['news_active']."' WHERE news_id='$news_id' ")){
 				$message = LAN_14;
 			}else{
 				$search = array("\"", "'", "\\");
@@ -84,7 +84,7 @@ class news{
 				$news_body = str_replace($search, $replace, $news_body);
 				$news_extended = str_replace($search, $replace, $news_extended);
 
-				if($cls -> db_Update("news", "news_title='$news_title', news_body='$news_body', news_extended='$news_extended', news_source='$news_source', news_url='$news_url', news_category='$category_id', news_allow_comments='$allow_comments', news_start='$news_start', news_end='$news_end', news_active='$news_active' WHERE news_id='$news_id' ")){
+				if($cls -> db_Update("news", "news_title='$news_title', news_body='$news_body', news_extended='$news_extended', news_source='$news_source', news_url='$news_url', news_category='$category_id', news_allow_comments='$allow_comments', news_start='$news_start', news_end='$news_end', news_active='".$_POST['news_active']."' WHERE news_id='$news_id' ")){
 					$message = "<b>Had to modify quotemarks and apostrophies to update news item into database - item now entered.</b>";
 				}else{
 					$message = "<b>Error!</b> Was unable to update news item into database!</b>";
@@ -92,7 +92,7 @@ class news{
 			}
 		}else{
 			$datestamp = time();
-			if($cls -> db_Insert("news","0, '$news_title', '$news_body', '$news_extended', '$datestamp', '".ADMINID."', '$news_source', '$news_url', '$category_id', '$allow_comments', '$news_start', '$news_end', '$news_active' ")){
+			if($cls -> db_Insert("news","0, '$news_title', '$news_body', '$news_extended', '$datestamp', '".ADMINID."', '$news_source', '$news_url', '$category_id', '$allow_comments', '$news_start', '$news_end', '".$_POST['news_active']."' ")){
 				$message = LAN_15;
 			}else{
 				$search = array("\"", "'", "\\");

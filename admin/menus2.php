@@ -186,7 +186,7 @@ parseheader($tmp2, $menus_used);
 function parseheader($LAYOUT){
 	$tmp = explode("\n", $LAYOUT);
 	for($c=0; $c < count($tmp); $c++){ 
-		if(ereg("{|}", $tmp[$c])){
+		if(preg_match("/[\{|\}]/", $tmp[$c])){
 			$str = checklayout($tmp[$c]);
 		}else{
 			echo $tmp[$c];

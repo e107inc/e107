@@ -161,7 +161,7 @@ If(IsSet($_POST['delete'])){
 	$text = "<div style=\"text-align:center\">
 	<b>Please confirm you wish to delete the '".$_POST['existing']."' forum $tt - once deleted it cannot be retrieved</b>
 <br /><br />
-<form method=\"post\" action=\"e_SELF\">
+<form method=\"post\" action=\"".e_SELF."\">
 <input class=\"button\" type=\"submit\" name=\"cancel\" value=\"Cancel\" /> 
 <input class=\"button\" type=\"submit\" name=\"confirm\" value=\"Confirm Delete\" /> 
 <input type=\"hidden\" name=\"existing\" value=\"".$_POST['existing']."\">

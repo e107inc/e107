@@ -140,7 +140,7 @@ function parsechatbox($cbd, $cb_nick, $datestamp, $cb_id, $cb_message, $cb_ip, $
 	$tmp = explode("\n", $cbd);
 	for($c=0; $c < count($tmp); $c++){ 
 	//	echo htmlentities($tmp[$c])."<br />";
-		if(ereg("{|}", $tmp[$c])){
+		if(preg_match("/[\{|\}]/", $tmp[$c])){
 			$var .=  checklayoutcb($tmp[$c], $cb_nick, $datestamp, $cb_id, $cb_message, $cb_ip, $cb_blocked);
 		}else{
 			$var .= $tmp[$c];
