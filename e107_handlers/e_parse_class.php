@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-03-04 15:06:28 $
+|     $Revision: 1.38 $
+|     $Date: 2005-03-05 08:03:18 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -172,16 +172,17 @@ function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $ut
 		$text = str_replace ("\n\n\n", "\n\n", $text);
 		$text = $this -> htmlwrap($text, $wrap);
 		$text = str_replace (array ("<br /> ", " <br />", " <br /> ", "<br />"), "", $text);	
-		/* we can remove any linebreaks added by htmlwrap function as any /n's will be converted later anyway */
+		/* we can remove any linebreaks added by htmlwrap function as any \n's will be converted later anyway */
 		return $text; 
 	}
 	 
-	function toHTML($text, $parseBB = FALSE, $modifiers = "", $postID = "", $wrap=100) {
+	function toHTML($text, $parseBB = FALSE, $modifiers = "", $postID = "", $wrap=FALSE) {
 		if ($text == '')
 		{
 			return $text;
 		}
 		global $pref;
+		if(!$wrap) $wrap = $pref['main_wordwrap'];
 		$text = " ".$text;
 		if($pref['make_clickable']) {
 			if($pref['link_replace'] && strpos($modifiers, 'no_replace') === FALSE) {
