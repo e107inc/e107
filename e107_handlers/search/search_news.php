@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search/search_news.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-02-07 03:47:38 $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-07 05:07:26 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -40,7 +40,8 @@ if ($results = $sch -> search_query($keywords, 'news', $fields, $pre_query, $pos
 			$output_text .= $res_body['text']."<br />";
 			
 			$weight = $res_title['weight'] + $res_body['weight'];
-			$output_text .= "<span class='smalltext'>".LAN_SEARCH_3.$datestamp." Relevance: ".$weight."</span><br /><br />";
+			$relevance = $sch -> relevance($keywords, 6, $weight);
+			$output_text .= "<span class='smalltext'>".LAN_SEARCH_3.$datestamp." | Relevance: ".$relevance."%</span><br /><br />";
 
 			$output['text'][] = $output_text;
 			$output['weight'][] = $weight;

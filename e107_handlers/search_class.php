@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-07 03:47:38 $
+|     $Revision: 1.2 $
+|     $Date: 2005-02-07 05:08:07 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -33,25 +33,34 @@ class e_search {
 		return $results = $sql->db_Select($table, '*', $pre_query." (".$search_query.") ".$post_query);
 	}
 	
+	function relevance($keywords, $max_weight, $weight) {
+		return round((100 / (count($keywords) * $max_weight)) * $weight);
+	}
+	
 	function parsesearch_match($text, $temp, $match, $key_count, $weight, $exact, $rel_weight) {
 		$match_array['pos'] = strlen($text)-strlen($temp);
 		$match_array['matchedText'] = substr($text,$match_array['pos'],strlen($match));
 		if ($exact) {
 			$match_array['rel_weight'] = (($weight*2)*count($key_count));
 		} else {
-			$match_array['rel_weight'] = $rel_weight + $weight;
+			$match_array['rel_weight'] = $rel_weight + ($weight*1.5);
 		}
 		return $match_array;
 	}
 	
 	function parsesearch_crop($pos, $crop_match, $text, $nocrop, $endcrop) {
-		if (!$nocrop && !$endcrop && (strlen($text) > 150)){
-			if ($pos < (150 - strlen($crop_match))) {
-				$text = substr($text, 0, 150)."...";
-			} else if ($pos > (strlen($text) - (150 - strlen($crop_match)))) {
-				$text = "...".substr($text, (strlen($text) - (150 - strlen($crop_match))));
+		global $pref;
+		if (!isset($pref['search_chars'])) {
+			$pref['search_chars'] = 150;
+			save_prefs();
+		}
+		if (!$nocrop && !$endcrop && (strlen($text) > $pref['search_chars'])){
+			if ($pos < ($pref['search_chars'] - strlen($crop_match))) {
+				$text = substr($text, 0, $pref['search_chars'])."...";
+			} else if ($pos > (strlen($text) - ($pref['search_chars'] - strlen($crop_match)))) {
+				$text = "...".substr($text, (strlen($text) - ($pref['search_chars'] - strlen($crop_match))));
 			} else {
-				$text = "...".substr($text, ($pos - round((150 / 3))), 150)."...";
+				$text = "...".substr($text, ($pos - round(($pref['search_chars'] / 3))), $pref['search_chars'])."...";
 			}
 		}
 		return $text;
@@ -89,6 +98,7 @@ class e_search {
 				}
 			}
 			$ret['text'] = $this -> parsesearch_crop('', '', $ret['text'], $nocrop, $endcrop);
+			$ret['weight'] = round($ret['weight']);
 			return($ret);
 		} else {
 			$temp = stristr($text, $match);
