@@ -1,5 +1,8 @@
 <?php
 
+// Commented out for beta testing reasons, should be 
+// unccommented on release or use on production sites.
+/*
 function retrieve_cache($query) {
 	global $e107cache, $e107_debug;
 	if (!is_object($e107cache)) {
@@ -30,6 +33,7 @@ function clear_cache($query) {
 	}
 	return $e107cache->clear($query);
 }
+*/
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 class textparse {
