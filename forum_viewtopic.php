@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/forum_viewtopic.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-09-23 14:11:05 $
-|     $Author: loloirie $
+|     $Revision: 1.3 $
+|     $Date: 2004-09-28 03:10:43 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -317,14 +317,13 @@ if(!$post_author_id || !$sql -> db_Select("user", "*", "user_id='".$post_author_
 
         $SIGNATURE = ($user_signature ? "<br /><hr style='width:15%; text-align:left'><span class='smalltext'>".$aj -> tpa($user_signature) : "");
 
-        $PROFILEIMG = (USER ? e107_parse("{CODE=CORE.profile.{$user_id}}","admin") : "");
-        $EMAILIMG = (!$user_hideemail ? e107_parse("{CODE=CORE.emailto.{$user_email}}","admin") : "");
+        $PROFILEIMG = (USER ? $tp -> parseTemplate("{PROFILE={$user_id}}") : "");
+        $EMAILIMG = (!$user_hideemail ? $tp -> parseTemplate("{EMAILTO={$user_email}}") : "");
 
-        $PRIVMESSAGE = e107_parse("{CODE=pm_menu.sendpm.{$post_author_id}}");
+        $PRIVMESSAGE = $tp -> parseTemplate("{pm_menu.sendpm={$post_author_id}}");
 
         $WEBSITEIMG = ($user_homepage && $user_homepage != "http://" ? "<a href='$user_homepage'>".IMAGE_website."</a>" : "");
         $RPG = rpg($user_join, $user_forums);
-
 }
 
 $EDITIMG = ($post_author_id != "0" && $post_author_name == USERNAME && $thread_active ? "<a href='forum_post.php?edit.".$forum_id.".".$thread_id."'>".IMAGE_edit."</a> " : "");
@@ -412,10 +411,11 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
                         $LEVEL = $ldata[1];
 
                         $SIGNATURE = ($user_signature ? "<br /><hr style='width:15%; text-align:left'><span class='smalltext'>".$aj -> tpa($user_signature) : "");
-                        $PROFILEIMG = (USER ? e107_parse("{CODE=CORE.profile.{$user_id}}","admin") : "");
-                        $EMAILIMG = (!$user_hideemail ? e107_parse("{CODE=CORE.emailto.{$user_email}}","admin") : "");
+                        $PROFILEIMG = (USER ? $tp -> parseTemplate("{PROFILE={$user_id}}") : "");
 
-                        $PRIVMESSAGE = e107_parse("{CODE=pm_menu.sendpm.{$post_author_id}}");
+                        $EMAILIMG = (!$user_hideemail ? $tp -> parseTemplate("{EMAILTO={$user_email}}") : "");
+
+                        $PRIVMESSAGE = $tp -> parseTemplate("{pm_menu.sendpm={$post_author_id}}");
 
                         $WEBSITEIMG = ($user_homepage && $user_homepage != "http://" ? "<a href='$user_homepage'>".IMAGE_website."</a>" : "");
                         $RPG = rpg($user_join, $user_forums);

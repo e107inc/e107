@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/forum_post.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:45 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-09-28 03:10:42 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -450,11 +450,14 @@ if($action == "edit" || $action == "quote"){
         $post = ereg_replace("&lt;span class=&#39;smallblacktext&#39;.*\span\>", "", $post);
         if($action == "quote"){
                 $post_author_name = substr($thread_user, (strpos($thread_user, ".")+1));
-                if(strstr($post_author_name, chr(1))){
-                                                $tmp = explode(chr(1), $post_author_name);
-                                                $post_author_name = $tmp[0];
-                                        }
-                $post = "[quote=$post_author_name]".$post."[/quote]\n";
+                if(strstr($post_author_name, chr(1)))
+                {
+                	$tmp = explode(chr(1), $post_author_name);
+                  $post_author_name = $tmp[0];
+                 }
+                 $timeStamp = time();
+                                       
+                $post = "[quote{$timeStamp}=$post_author_name]\n".$post."\n[/quote{$timeStamp}]\n";
                 $eaction = FALSE;
                 $action = "reply";
         }else{

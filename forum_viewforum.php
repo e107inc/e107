@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/forum_viewforum.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-09-23 14:11:05 $
-|     $Author: loloirie $
+|     $Revision: 1.3 $
+|     $Date: 2004-09-28 03:10:42 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -32,7 +32,7 @@ if(!e_QUERY){
 }
 
 require_once(e_HANDLER."multilang/pictures.php");
-define("IMAGE_newthread", "<img src='".eMLANG_path("reply.png","forum")."' alt='".FORLAN_10."' title='".FORLAN_10."' style='border:0' />");
+define("IMAGE_newthread", "<img src='".eMLANG_path("newthread.png","forum")."' alt='".FORLAN_10."' title='".FORLAN_10."' style='border:0' />");
 $image = (file_exists(THEME."forum/new_small.png")) ? THEME."forum/new_small.png" : e_IMAGE."forum/new_small.png";
 define("IMAGE_new_small", "<img src='{$image}' alt='".FORLAN_11."' title='".FORLAN_11."' style='border:0' />");
 $image = (file_exists(THEME."forum/nonew_small.png")) ? THEME."forum/nonew_small.png" : e_IMAGE."forum/nonew_small.png";
