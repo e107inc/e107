@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banner.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-01-13 21:56:35 $
+|     $Revision: 1.9 $
+|     $Date: 2005-01-13 22:05:33 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -542,7 +542,7 @@ if($action == "opt"){
 			<input type='radio' {$checked1} name='banner_visibilitytype' value='1' /> ".BNRLAN_54."<br />
 			<input type='radio' {$checked2} name='banner_visibilitytype' value='2' /> ".BNRLAN_55."<br />
 			<tr>
-			<td class='forumheader3' style='text-align:center' colspan='2'>
+			<td class='forumheader' style='text-align:center' colspan='2'>
 			<input class='button' type='submit' name='updateoptions' value='".BNRLAN_56."' />
 			</td>
 			</tr>
