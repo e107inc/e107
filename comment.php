@@ -30,12 +30,11 @@ if(!$id){
 }
 $cobj = new comment;
 if(IsSet($_POST['commentsubmit'])){
-	if(!$sql -> db_Select("news", "news_allow_comments", "news_id='$id' ")){
+	if($table == "news" && $sql -> db_Count("news", "news_allow_comments", "WHERE news_allow_comments=1 && news_id='$id' ")){
 		header("location:".e_BASE."index.php");
 		exit;
 	}else{
-		$row = $sql -> db_Fetch();
-		if(!$row[0] && (ANON===TRUE || USER===TRUE)){
+		if(ANON===TRUE || USER===TRUE){
 			$cobj -> enter_comment($_POST['author_name'], $_POST['comment'], $table, $id);
 			clear_cache("comment.php?$table.$id");
 		}
