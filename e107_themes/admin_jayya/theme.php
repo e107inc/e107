@@ -28,6 +28,10 @@ function theme_head() {
 	return "<link rel='stylesheet' href='".e_FILE."admin_nav.css' />\n";
 }
 
+// [dont render core style sheet link]
+
+$no_core_css = TRUE;
+
 // [layout]
 
 $layout = "_default";

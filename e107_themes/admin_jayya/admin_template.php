@@ -31,7 +31,7 @@ function show_admin_menu($title, $page, $e107_vars, $js = FALSE){
 			$arrow_icon = ($page == $act) ? E_16_NAV_ARROW_OVER : E_16_NAV_ARROW;
 			$on_click = $js ? "showhideit('".$act."');" : "document.location='".$e107_vars[$act]['link']."'; disabled=true;";
 			$text .= "<tr><td style='border-bottom: 1px solid #000'><div class='emenuBar'>
-			<div class='menuButton' onmouseover='adbutover(this)' onmouseout='adbutnorm(this)' onclick=\"".$on_click."\"
+			<div class='menuButton' onmouseover=\"eover(this, 'menuButton_over')\" onmouseout=\"eover(this, 'menuButton')\" onclick=\"".$on_click."\"
 			style='width: 98% !important; width: 100%; padding: 0px 0px 0px 2px; border-right: 0px'>
 			<img src='".$arrow_icon."' style='width: 16px; height: 16px; vertical-align: middle' alt='' />&nbsp;".$t."</div>
 			</div>
@@ -48,19 +48,7 @@ function show_admin_menu($title, $page, $e107_vars, $js = FALSE){
 
 // [layout]
 
-$ADMIN_HEADER = "<script type=\"text/javascript\">
-<!--
-function adbutover(object) {
-	if (object.className == 'menuButton') object.className = 'menuButton_over';
-}
-
-function adbutnorm(object) {
-	if (object.className == 'menuButton_over') object.className = 'menuButton';
-}
-// -->
-</script>
-
-<table class='top_section'>
+$ADMIN_HEADER = "<table class='top_section'>
 <tr>
 <td style='vertical-align: top; padding: 0px 0px 0px 0px'>
 <img src='".THEME."images/adminlogo_2.png' style='width: 170px; height: 68px; display: block;' alt='' />
