@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.51 $
-|     $Date: 2005-01-20 04:07:20 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.52 $
+|     $Date: 2005-01-22 14:19:38 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -382,7 +382,7 @@ if ($pref['maintainance_flag'] && ADMIN == FALSE && !eregi("admin", e_SELF)) {
 if (strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin.php")) {
 	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".e_PAGE);
 	e107_include_once(e_LANGUAGEDIR."English/admin/lan_".e_PAGE);
-} else {
+} else if (!strstr(e_SELF, $PLUGINS_DIRECTORY)) {
 	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE);
 	e107_include_once(e_LANGUAGEDIR."English/lan_".e_PAGE);
 }
