@@ -4,7 +4,7 @@ require_once("../../class2.php");
 
 //Only "Master of Desaster" can use this thing!
 //Change to "P" If you wanna give your plugin-Admins the same rights
-if (!getperms("0")) { header("location:".e_Base."index.php"); exit; }
+ if (!getperms("P")) { header("location:".e_BASE."index.php"); exit; } 
 
 if(e_QUERY){
 	$query = explode(".", e_QUERY);
