@@ -22,7 +22,7 @@ $style = "default";
 $preright = ob_get_contents();
 ob_end_clean();
 
-/*
+
 // [admin button style]
 
 function show_admin_menu($title,$page,$e107_vars){
@@ -46,17 +46,17 @@ function show_admin_menu($title,$page,$e107_vars){
 	}
 	$ns -> tablerender($title, $text, array('id' => 'unique_id', 'style' => 'button_menu'));
 }
-*/
+
 
 // [layout]
 
 $ADMIN_HEADER = "
 <table cellpadding='0' cellspacing='0' border='0' class='top_section'>
 <tr>
-<td style='vertical-align: top; padding: 3px 0px 3px 0px'>
-{ADMIN_LOGO}
+<td style='vertical-align: top; padding: 0px 0px 0px 0px'>
+<img src='".THEME."images/adminlogo_2.png' style='width: 170px; height: 68px; display: block;' alt='' />
 </td>
-<td style='vertical-align: bottom; text-align: right; padding: 3px'>
+<td style='vertical-align: bottom; text-align: right; padding: 3px; background-color: #efefef; border-left: 1px solid #3D4251; width: 100%; background-image: url(".THEME."images/computer.jpg); background-repeat: no-repeat'>
 <div style='height: 23px'>
 {CUSTOM=search}
 </div>

@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.9 $
-|   $Date: 2005-01-05 16:57:37 $
+|   $Revision: 1.10 $
+|   $Date: 2005-01-09 18:12:38 $
 |   $Author: sweetas $
 +---------------------------------------------------------------+
 
@@ -263,10 +263,9 @@ class newspost{
                 if($sql -> db_Select("news", "*", $query, ($_POST['searchquery'] ? 0 : "nowhere"))){
                         $text .= "<table class='fborder' style='width:99%'>
                         <tr>
-
-                        <td style='width:5%' class='forumheader'><a href='".e_SELF."?main.news_id.".($id == "desc" ? "asc" : "desc").".$from'>ID</a></td>
-                        <td style='width:5%' class='forumheader'><a href='".e_SELF."?main.news_title.".($id == "desc" ? "asc" : "desc").".$from'>".NWSLAN_40."</a></td>
-                        <td style='width:45%' class='forumheader'>".NWSLAN_41."</td>
+                        <td style='width:5%' class='fcaption'><a href='".e_SELF."?main.news_id.".($id == "desc" ? "asc" : "desc").".$from'>ID</a></td>
+                        <td style='width:5%' class='fcaption'><a href='".e_SELF."?main.news_title.".($id == "desc" ? "asc" : "desc").".$from'>".NWSLAN_40."</a></td>
+                        <td style='width:45%' class='fcaption'>".NWSLAN_41."</td>
                         </tr>";
                         while($row = $sql -> db_Fetch()){
                                 extract($row);
@@ -701,9 +700,9 @@ class newspost{
                 if($category_total = $sql -> db_Select("news_category")){
                         $text .= "<table class='fborder' style='width:99%'>
                         <tr>
-                        <td style='width:5%' class='forumheader'>&nbsp;</td>
-                        <td style='width:75%' class='forumheader'>".NWSLAN_6."</td>
-                        <td style='width:20%; text-align:center' class='forumheader'>".NWSLAN_41."</td>
+                        <td style='width:5%' class='fcaption'>&nbsp;</td>
+                        <td style='width:75%' class='fcaption'>".NWSLAN_6."</td>
+                        <td style='width:20%; text-align:center' class='fcaption'>".NWSLAN_41."</td>
                         </tr>";
                         while($row = $sql -> db_Fetch()){
                                 extract($row);
@@ -913,9 +912,9 @@ class newspost{
                 if($category_total = $sql -> db_Select("submitnews","*","submitnews_id !='' ORDER BY submitnews_id DESC")){
                         $text .= "<table class='fborder' style='width:99%'>
                         <tr>
-                        <td style='width:5%' class='forumheader2'>ID</td>
-                        <td style='width:70%' class='forumheader2'>".NWSLAN_57."</td>
-                        <td style='width:25%; text-align:center' class='forumheader2'>".NWSLAN_41."</td>
+                        <td style='width:5%' class='fcaption'>ID</td>
+                        <td style='width:70%' class='fcaption'>".NWSLAN_57."</td>
+                        <td style='width:25%; text-align:center' class='fcaption'>".NWSLAN_41."</td>
                         </tr>";
                         while($row = $sql -> db_Fetch()){
                                 extract($row);

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/wmessage.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-05 16:57:37 $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-09 18:12:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -110,8 +110,8 @@ $text .= "</td>
 </tr>
 
 <tr style='vertical-align:top'>
-<td class='forumheader3'>&nbsp;</td>
-<td style='width:60%' class='forumheader3'>
+<td class='forumheader'>&nbsp;</td>
+<td style='width:60%' class='forumheader'>
 <input class='button' type='submit' name='wmsubmit' value='".WMGLAN_4."' />
 </td>
 </tr>

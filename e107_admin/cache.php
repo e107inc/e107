@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cache.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-05 16:57:36 $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-09 18:12:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -45,7 +45,7 @@ $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>
 <table style='".ADMIN_WIDTH."' class='fborder'>
 <tr>
-<td class='forumheader'>".CACLAN_1."</td>
+<td class='fcaption'>".CACLAN_1."</td>
 </tr>
 <tr>
 <td class='forumheader3'>";

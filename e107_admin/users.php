@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-07 20:51:34 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-09 18:12:38 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -446,11 +446,11 @@ class users{
                 if($sql -> db_Select("user", "*", $query, ($_POST['searchquery'] ? 0 : "nowhere"))){
                         $text .= "<table class='fborder' style='width: 99%'>
                         <tr>
-                        <td style='width:5%' class='forumheader'><a href='".e_SELF."?main.user_id.".($id == "desc" ? "asc" : "desc").".$from'>ID</a></td>
-                        <td style='width:10%' class='forumheader'><a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_79."</a></td>
-                        <td style='width:30%' class='forumheader'><a href='".e_SELF."?main.user_name.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_78."</a></td>
-                        <td style='width:15%' class='forumheader'><a href='".e_SELF."?main.user_class.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_91."</a></td>
-                        <td style='width:30%' class='forumheader'>".USRLAN_75."</td>
+                        <td style='width:5%' class='fcaption'><a href='".e_SELF."?main.user_id.".($id == "desc" ? "asc" : "desc").".$from'>ID</a></td>
+                        <td style='width:10%' class='fcaption'><a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_79."</a></td>
+                        <td style='width:30%' class='fcaption'><a href='".e_SELF."?main.user_name.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_78."</a></td>
+                        <td style='width:15%' class='fcaption'><a href='".e_SELF."?main.user_class.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_91."</a></td>
+                        <td style='width:30%' class='fcaption'>".USRLAN_75."</td>
                         </tr>";
 
                         while($row = $sql -> db_Fetch()){

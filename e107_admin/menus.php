@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-12-22 11:34:26 $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-09 18:12:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -243,14 +243,15 @@ if ($message != "") {
 	echo "<div style='text-align:center'><b>".$message."</b></div><br /><br />";
 }
 
+if ($CUSTOMPAGES) {
 if ($menu_act != 'adv') {
 	$text = "<form  method='post' action='".e_SELF."'><div style='width: 100%'>
-	<table cellpadding='0' cellspacing='0' style='width:100%; border: 0px;'>
+	<table class='fborder' style='".ADMIN_WIDTH."'>
 	<tr>
-	<td style='width: 90%'>
+	<td class='forumheader3' style='width: 90%'>
 	".MENLAN_30."
 	</td>
-	<td style='width: 10%; text-align: center;'>";
+	<td class='forumheader3' style='width: 10%; text-align: center;'>";
 
 	$text .= $frm -> form_select_open('custom_select', 'onchange="this.form.submit()"');
 
@@ -294,6 +295,7 @@ if ($menu_act != 'adv') {
 	</form>";
         
 	$ns -> tablerender(MENLAN_29, $text);
+}
 }
 
 parseheader($menus_header);

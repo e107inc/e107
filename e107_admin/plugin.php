@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-05 16:57:37 $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-09 18:12:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -70,7 +70,7 @@ if(strstr(e_QUERY, "uninstall")){
         $row = $sql -> db_Fetch(); extract($row);
         $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>
-<table style='".ADMIN_WIDTH."' class='fborder' cellspacing='0' cellpadding='0'>
+<table style='".ADMIN_WIDTH."' class='fborder'>
 <tr>
 <td class='forumheader3' style='text-align:center'>".EPL_ADLAN_2."<br /><br />
 <input class='button' type='submit' name='cancel' value='".EPL_CANCEL."' />

@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-01-09 01:50:12 $
-|     $Author: e107coders $
+|     $Revision: 1.8 $
+|     $Date: 2005-01-09 18:12:38 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
     require_once("../class2.php");
     require_once(e_ADMIN."auth.php");
-    if(!getperms("4")){ header("location:".e_BASE."index.php"); exit;}
+    if(!getperms("W")){ header("location:".e_BASE."index.php"); exit;}
     require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php");
 
     require_once(e_HANDLER."userclass_class.php");
@@ -27,6 +27,7 @@
     require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
     htmlarea('email_body');
     }
+
 
     $aj = new textparse;
 
@@ -93,13 +94,9 @@ if(IsSet($_POST['submit'])){
     $attach = chop($_POST['email_attachment']);
 
     $root = (preg_match("#^/#",$DOWNLOADS_DIRECTORY) || preg_match("#.:#",$DOWNLOADS_DIRECTORY))? "" : e_BASE;
-    if(file_exists($root.$DOWNLOADS_DIRECTORY.$_POST['email_attachment'])){
-        $attach_link = $root.$DOWNLOADS_DIRECTORY.$_POST['email_attachment'];
-    }else{
-        $attach_link = $root.$FILES_DIRECTORY."public/".$_POST['email_attachment'];
-    }
-    if(!$mail->AddAttachment($attach_link,$attach) && $attach !=""){
-    $mss = "There is a problem with the attachment<br />$attach_link";
+
+    if(!$mail->AddAttachment($root.$DOWNLOADS_DIRECTORY."/".$_POST['email_attachment'],$attach) && $attach !=""){
+    $mss = "There is a problem with the attachment";
     $ns -> tablerender("Error", $mss);
     require_once(e_ADMIN."footer.php");
     exit;
@@ -112,16 +109,6 @@ if(IsSet($_POST['submit'])){
     $message_subject = stripslashes($_POST['email_subject']);
     $message_body = stripslashes($_POST['email_body']);
     $message_body = eregi_replace('src="','src="'.SITEURL,$message_body);
-
-    if(IsSet($_POST['use_theme'])){
-        $theme = $THEMES_DIRECTORY.$pref['sitetheme']."/";
-        $mail_style = "<link rel=\"stylesheet\" href=\"".SITEURL.$theme."style.css\" type=\"text/css\" />";
-        $mail_style .= "<div style='text-align:center; width:100%'>";
-        $mail_style .= "<div style='width:90%;text-align:center;padding-top:10px'>";
-        $mail_style .= "<div class='fcaption' style='text-align:center'><b>$message_subject</b></div>";
-        $mail_style .= "<div class='forumheader3' style='text-align:left;'>";
-        $message_body = $mail_style.$message_body."<br><br><br></div></div>";
-    }
 
 
     $sent_no = 0;
@@ -216,7 +203,7 @@ if(IsSet($message)){
    <tr>
    <td style='width:30%' class='forumheader3'>".MAILAN_03.": </td>
    <td style='width:70%' class='forumheader3'>
-   ".userclasses("email_to",$email_to)."</td>
+   ".userclasses("email_to")."$email_to</td>
    </tr>";
 
    $text .="
@@ -224,8 +211,8 @@ if(IsSet($message)){
    <tr>
    <td style='width:30%' class='forumheader3'>".MAILAN_04.": </td>
    <td style='width:70%' class='forumheader3'>
-   <input type='text' name='email_cc' class='tbox' style='width:80%' value='$email_cc' />
-
+   <input type='text' name='email_cc' class='tbox' style='width:80%' value='' />
+   $email_cc
    </td>
    </tr>
 
@@ -233,20 +220,19 @@ if(IsSet($message)){
    <tr>
    <td style='width:30%' class='forumheader3'>".MAILAN_05.": </td>
    <td style='width:70%' class='forumheader3'>
-   <input type='text' name='email_bcc' class='tbox' style='width:80%' value='$email_bcc' />
-
+   <input type='text' name='email_bcc' class='tbox' style='width:80%' value='' />
+   $email_bcc
    </td>
    </tr>
 
    <tr>
    <td style='width:30%' class='forumheader3'>".MAILAN_06.": </td>
    <td style='width:70%' class='forumheader3'>
-   <input type='text' name='email_subject' class='tbox' style='width:80%' value='$email_subject' />
-
+   <input type='text' name='email_subject' class='tbox' style='width:80%' value='' />
+   $email_subject
    </td>
-   </tr>
+   </tr>";
 
-  ";
 
    // Attachment.
 
@@ -267,17 +253,7 @@ if(IsSet($message)){
    </tr>";
 
 
-   $text .="
-    <tr>
-   <td style='width:30%' class='forumheader3'>".MAILAN_09.": </td>
-   <td style='width:70%' class='forumheader3'>
-   <input type='checkbox' name='use_theme' value='1' />
-   </td>
-   </tr>
-
-
-
-      <tr>
+   $text .="   <tr>
    <td colspan='2' style='width:30%' class='forumheader3'>
 
    <textarea rows='10' cols='20' id='email_body' name='email_body'  class='tbox' style='border:1px solid black;width:100%;height:200px'>
@@ -307,7 +283,7 @@ if(IsSet($message)){
    $text ="
 <form method='post' action='".e_SELF."' id='mailsettingsform'>
 <div id='mail' style='text-align:center;'>
-<table style='".ADMIN_WIDTH."' class='fborder' cellspacing='0' cellpadding='0'>
+<table style='".ADMIN_WIDTH."' class='fborder'>
 <tr>
 <td style='width:50%' class='forumheader3'>".PRFLAN_63."<br /><span class='smalltext'>".PRFLAN_64."</span></td>
 <td style='width:50%; text-align:right' class='forumheader3'><input class='button' type='submit' name='testemail' value='".PRFLAN_65." ".SITEADMINEMAIL."' />

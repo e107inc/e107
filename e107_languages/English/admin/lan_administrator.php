@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_administrator.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-05 10:17:43 $
-|     $Author: pholzmann $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-09 18:13:15 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 define("ADMSLAN_0", "New user/admin entry created for");
@@ -76,4 +76,5 @@ define("ADMSLAN_61", "Administrator deleted");
 define("ADMSLAN_62", "Plugin Manager");
 define("ADMSLAN_63", "Plugin");
 define("ADMSLAN_64", "Clear the system cache");
+define("ADMSLAN_65", "Configure mail settings and mailout");
 ?>

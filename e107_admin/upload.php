@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/upload.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-07 21:08:28 $
-|     $Author: e107coders $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-09 18:12:38 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -215,7 +215,7 @@ if($action == "view"){
 $imgd = e_BASE.$IMAGES_DIRECTORY;
 $text = "<div style='text-align:center'>
 <table style='".ADMIN_WIDTH."' class='fborder'>
-<tr><td class='forumheader' style='text-align:center' colspan='6'>";
+<tr><td class='forumheader3' style='text-align:center' colspan='6'>";
 
 if(!$active_uploads = $sql -> db_Select("upload", "*", "upload_active=0 ORDER BY upload_id ASC")){
         $text .= UPLLAN_19.".\n</td>\n</tr>";

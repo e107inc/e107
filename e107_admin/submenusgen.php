@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/submenusgen.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-05 16:57:37 $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-09 18:12:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -159,11 +159,13 @@ $text .= $rs -> form_open("post", e_SELF, "submenus_config");
 
 $text .= "<table style=\"".ADMIN_WIDTH."\" class=\"fborder\" >\n";
 
-$text .="<tr>\n
-<td style=\"vertical-align:top\" colspan=\"2\"  >\n
-<img src=\"".e_IMAGE."generic/English/but_create.png\" width=\"55\" height=\"16\" style=\"vertical-align: middle; margin: 0px 5px 0px 5px;\" >
-<b>".LAN_MENGEN_2."</b><br /><b class=\"smalltext\" >".LAN_MENGEN_3."</b></td>\n
-</tr>\n";
+$text .="<tr>
+<td style=\"vertical-align:top\" colspan=\"2\" class='fcaption'>".LAN_MENGEN_2."</td>
+</tr>";
+
+$text .="<tr>
+<td style=\"vertical-align:top\" colspan=\"2\" class='forumheader'>".LAN_MENGEN_3."</td>
+</tr>";
 
 
 // Add news links
@@ -227,11 +229,14 @@ $text .= "</td>\n
 
 
 // Delete submenus
-$text .="<tr>\n
-<td style=\"vertical-align:top\" colspan=\"2\"  >\n
-<img src=\"".e_IMAGE."generic/English/but_delete.png\" width=\"55\" height=\"16\" style=\"vertical-align: middle; margin: 0px 5px 0px 5px;\" >\n
-<b>".LAN_MENGEN_19."</b><br /><b class=\"smalltext\" >".LAN_MENGEN_20."</b></td>
-</tr>\n";
+
+$text .="<tr>
+<td style=\"vertical-align:top\" colspan=\"2\" class='fcaption'>".LAN_MENGEN_19."</td>
+</tr>";
+
+$text .="<tr>
+<td style=\"vertical-align:top\" colspan=\"2\" class='forumheader'>".LAN_MENGEN_20."</td>
+</tr>";
 
 // Delete news links
 $text .= display_dellink(LAN_MENGEN_4, "delNews", LAN_MENGEN_21." ".LAN_MENGEN_4.LAN_MENGEN_22);

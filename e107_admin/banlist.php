@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banlist.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-05 16:57:36 $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-09 18:12:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -57,26 +57,26 @@ if(IsSet($message)){
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 if($action != "edit"){
-        $text = $rs -> form_open("post", e_SELF, "ban_form").$rs -> form_hidden("ban_secure","1")."<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; height : 400px; overflow : auto; margin-left: auto; margin-right: auto;'>\n";
-        if(!$ban_total = $sql -> db_Select("banlist")){
-                        $text .= "<div style='text-align:center'>".BANLAN_2."</div>";
-        }else{
-                        $text .= "<table class='fborder' style='width:99%;'>
-                        <tr>
-                        <td style='width:70%' class='forumheader'>".BANLAN_10."</td>
-        <td style='width:30%' class='forumheader'>".BANLAN_11."</td>
-        </tr>";
-                        $count =0;
-                        while($row = $sql -> db_Fetch()){
-                                        extract($row);
-                                        $text .= "<tr><td style='width:70%' class='forumheader3'>$banlist_ip<br />".BANLAN_7.": $banlist_reason</td>
-                                        <td style='width:30%; text-align:center' class='forumheader3'>".$rs -> form_button("submit", "main_edit_$count", BANLAN_12, "onclick=\"document.getElementById('ban_form').action='".e_SELF."?edit-$banlist_ip'\"").$rs -> form_button("submit", "main_delete_$count", BANLAN_4, "onclick=\"document.getElementById('ban_form').action='".e_SELF."?remove-$banlist_ip'\"")."</td>\n</tr>";
-                        $count++;
-                        }
-                        $text .= "</table>\n";
-        }
-        $text .= "</div></div>".$rs -> form_close();
-        $ns -> tablerender(BANLAN_3, $text);
+	$text = $rs -> form_open("post", e_SELF, "ban_form")."<div style='text-align:center'>".$rs -> form_hidden("ban_secure","1")."<div style='padding : 1px; ".ADMIN_WIDTH."; height : 170px; overflow : auto; margin-left: auto; margin-right: auto;'>\n";
+	if(!$ban_total = $sql -> db_Select("banlist")){
+		$text .= "<div style='text-align:center'>".BANLAN_2."</div>";
+	}else{
+		$text .= "<table class='fborder' style='width:99%;'>
+		<tr>
+		<td style='width:70%' class='fcaption'>".BANLAN_10."</td>
+		<td style='width:30%' class='fcaption'>".BANLAN_11."</td>
+		</tr>";
+		$count =0;
+		while($row = $sql -> db_Fetch()){
+			extract($row);
+			$text .= "<tr><td style='width:70%' class='forumheader3'>$banlist_ip<br />".BANLAN_7.": $banlist_reason</td>
+			<td style='width:30%; text-align:center' class='forumheader3'>".$rs -> form_button("submit", "main_edit_$count", BANLAN_12, "onclick=\"document.getElementById('ban_form').action='".e_SELF."?edit-$banlist_ip'\"").$rs -> form_button("submit", "main_delete_$count", BANLAN_4, "onclick=\"document.getElementById('ban_form').action='".e_SELF."?remove-$banlist_ip'\"")."</td>\n</tr>";
+			$count++;
+		}
+		$text .= "</table>\n";
+	}
+	$text .= "</div></div>".$rs -> form_close();
+	$ns -> tablerender(BANLAN_3, $text);
 }
 
 if($action == "edit"){

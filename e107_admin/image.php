@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/image.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-05 16:57:37 $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-09 18:12:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -100,7 +100,7 @@ if(IsSet($_POST['show_avatars'])){
                         $text .= "<div class='spacer'>
                         <table style='".ADMIN_WIDTH."' class='fborder'>
                         <tr>
-                        <td class='forumheader'>$image_name</td>
+                        <td class='fcaption'>$image_name</td>
                         </tr>
                         <tr>
                         <td class='forumheader3'><img src='".e_FILE."public/avatars/".$image_name."' alt='' /><br />[ <a href='".e_SELF."?delp-$image_name'>".IMALAN_27." ]</a></td>

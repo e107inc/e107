@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_menus.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-05 10:17:43 $
-|     $Author: pholzmann $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-09 18:13:15 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 define("MENLAN_1", "Visible to all");
@@ -42,7 +42,7 @@ define("MENLAN_27", "This menu will only be <strong>HIDDEN</strong> on the follo
 define("MENLAN_28", "Enter one page per line, enter enough of the url to distinguish it properly");
 
 define("MENLAN_29", "Select Layout");
-define("MENLAN_30", "To see the menu areas and their positions for custom layouts, if your theme supports them, select the custom layout here:");
+define("MENLAN_30", "To see the menu areas and their positions for custom layouts, select the custom layout here:");
 define("MENLAN_31", "Default Layout");
 define("MENLAN_32", "Newsheader Layout");
 define("MENLAN_33", "Custom Layout");

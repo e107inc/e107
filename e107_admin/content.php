@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/content.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-05 16:57:36 $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-09 18:12:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -117,9 +117,9 @@ if(!$content_total = $sql -> db_Select("content", "*", "content_type='254' OR co
         <form method='post' action='".e_SELF."' onsubmit=\"return confirm_()\">
         <table class='fborder' style='width:99%'>
         <tr>
-        <td style='width:5%' class='forumheader2'>&nbsp;</td>
-        <td style='width:65%' class='forumheader2'>".CNTLAN_25."</td>
-        <td style='width:30%' class='forumheader2'>".CNTLAN_26."</td>
+        <td style='width:5%' class='fcaption'>&nbsp;</td>
+        <td style='width:65%' class='fcaption'>".CNTLAN_25."</td>
+        <td style='width:30%' class='fcaption'>".CNTLAN_26."</td>
         </tr>";
         while($row = $sql -> db_Fetch())
         {

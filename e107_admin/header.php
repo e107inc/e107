@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.6 $
-|   $Date: 2005-01-05 16:57:37 $
+|   $Revision: 1.7 $
+|   $Date: 2005-01-09 18:12:38 $
 |   $Author: sweetas $
 +---------------------------------------------------------------+
 */
@@ -62,6 +62,30 @@ if($eplug_css){ echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/cs
 $ns = new e107table;
 $e107_var = array();
 
+if (!function_exists('show_admin_menu')) {
+	function show_admin_menu($title,$page,$e107_vars){
+		global $ns;
+		$text = "<div style='text-align:center; width:100%'><table class='fborder' style='width:98%;'>";
+		foreach (array_keys($e107_vars) as $act) {
+			$pre = "";
+			$post = "";
+			if ($page == $act) {
+				$pre = "<b>&laquo;&nbsp;";
+				$post = "&nbsp;&raquo;</b>";
+			}
+			$t=str_replace(" ","&nbsp;",$e107_vars[$act]['text']);
+			if (!$e107_vars[$act]['perm'] || getperms($e107_vars[$act]['perm'])) {
+				$text .= "<tr><td class='button'><div style='width:100%; text-align:center'><a style='cursor:hand; cursor:pointer; text-decoration:none;' href='{$e107_vars[$act]['link']}'>{$pre}{$t}{$post}</a></div></td></tr>";
+			}
+		}
+		$text .= "</table></div>";
+		if ($title=="") {
+			return $text;
+		}
+		$ns -> tablerender($title,$text);
+	}
+}
+
 if(!function_exists("parse_admin"))
 {
 	function parse_admin($ADMINLAYOUT){
@@ -83,30 +107,7 @@ if(!function_exists("parse_admin"))
 
 parse_admin($ADMIN_HEADER);
 
-function show_admin_menu($title,$page,$e107_vars){
-	global $ns;
-	$text = "<div style='text-align:center; width:100%'><table class='fborder' style='width:98%;'>";
-	foreach(array_keys($e107_vars) as $act)
-	{
-		$pre = "";
-		$post = "";
-		if($page == $act){
-			$pre = "<b>&laquo;&nbsp;";
-			$post = "&nbsp;&raquo;</b>";
-		}
-		$t=str_replace(" ","&nbsp;",$e107_vars[$act]['text']);
-		if(!$e107_vars[$act]['perm'] || getperms($e107_vars[$act]['perm']))
-		{
-			$text .= "<tr><td class='button'><div style='width:100%; text-align:center'><a style='cursor:hand; cursor:pointer; text-decoration:none;' href='{$e107_vars[$act]['link']}'>{$pre}{$t}{$post}</a></div></td></tr>";
-		}
-	}
-	$text .= "</table></div>";
-	if($title=="")
-	{
-		return $text;
-	}
-	$ns -> tablerender($title,$text);
-}
+
 
 function get_admin_treemenu($title,$page,$e107_vars,$sortlist=FALSE)
 {
