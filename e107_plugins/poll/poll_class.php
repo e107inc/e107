@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-03-25 17:05:30 $
-|     $Author: stevedunstan $
+|     $Revision: 1.14 $
+|     $Date: 2005-03-27 21:21:42 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 @include(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
@@ -21,7 +21,7 @@
 define("POLLCLASS", TRUE);
 class poll
 {
-	 
+
 	function delete_poll($existing)
 	{
 		global $sql;
@@ -30,10 +30,10 @@ class poll
 			return "Poll deleted.";
 		}
 	}
-	 
+
 	function submit_poll($mode=1)
 	{
-		
+
 		/*
 		$mode = 1 :: poll is main poll
 		$mode = 2 :: poll is forum poll
@@ -83,7 +83,7 @@ class poll
 		}
 		return $message;
 	}
-	 
+
 	function render_poll($pollArray, $type = "menu", $POLLMODE, $returnMethod=FALSE)
 	{
 		global $POLLSTYLE, $sql, $tp, $ns;
@@ -107,14 +107,14 @@ class poll
 			@include_once(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
 			@include_once(e_PLUGIN."poll/languages/English.php");
 			$optionArray = explode(chr(1), $pollArray['poll_options']);
-			$optionArray = array_slice($optionArray, 0, -1);      
+			$optionArray = array_slice($optionArray, 0, -1);
 			$voteArray = explode(chr(1), $pollArray['poll_votes']);
 			$voteArray = array_slice($voteArray, 0, -1);
 		}
 		else
 		{
 			$optionArray = explode(chr(1), $pollArray['poll_options']);
-			$optionArray = array_slice($optionArray, 0, -1);      
+			$optionArray = array_slice($optionArray, 0, -1);
 			$voteArray = explode(chr(1), $pollArray['poll_votes']);
 			$voteArray = array_slice($voteArray, 0, -1);
 		}
@@ -126,7 +126,7 @@ class poll
 		{
 			$percentage[] = round(($votes/$voteTotal) * 100, 2);
 		}
- 
+
 		/* get template */
 		if (file_exists(THEME."poll_template.php"))
 		{
@@ -134,9 +134,9 @@ class poll
 		}
 		else if(!$POLL_NOTVOTED_START)
 		{
-			require(e_PLUGIN."poll/templates/poll_template.php");
+		   	require(e_PLUGIN."poll/templates/poll_template.php");
 		}
-		 
+
 		if ($type == "preview")
 		{
 			$POLLMODE = "notvoted";
@@ -158,16 +158,22 @@ class poll
 			case "notvoted":
 				$text = "<form method='post' action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."'>\n".preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_NOTVOTED_START : $POLL_NOTVOTED_START));
 				$count = 1;
+				$alt == 0; // alternate style.
 				foreach($optionArray as $option)
 				{
 					$MODE = $mode;		/* debug */
 					$OPTIONBUTTON = ($pollArray['poll_allow_multiple'] ? "<input type='checkbox' name='votea[]' value='$count' />" : "<input type='radio' name='votea' value='$count' />");
 					$OPTION = $option;
-					$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_NOTVOTED_LOOP : $POLL_NOTVOTED_LOOP));
+					if($POLL_NOTVOTED_LOOP_ALT && $type != "forum"){ // alternating style
+                        $text .= preg_replace("/\{(.*?)\}/e", '$\1', ($alt == 0 ? $POLL_NOTVOTED_LOOP : $POLL_NOTVOTED_LOOP_ALT));
+						$alt = ($alt ==0) ? 1 : 0;
+					}else{
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_NOTVOTED_LOOP : $POLL_NOTVOTED_LOOP));
+					}
 					$count ++;
 				}
 				$SUBMITBUTTON = "<input class='button' type='submit' name='pollvote' value='".POLLAN_30."' onclick='setcook(\"".$pollArray['poll_id']."\");' />";
-				
+
 				$text .= "\n".preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_NOTVOTED_END : $POLL_NOTVOTED_END))."\n</form>";
 			break;
 
@@ -176,7 +182,7 @@ class poll
 				if($pollArray['poll_result_type'] && !strstr(e_SELF, "comment.php"))
 				{
 					$text = "<div style='text-align: center;'><br /><br />".POLLAN_39."<br /><br /><a href='".e_BASE."comment.php?comment.poll.".$pollArray['poll_id']."'>".POLLAN_40."</a></div><br /><br />";
-					
+
 				}
 				else
 				{
@@ -198,7 +204,7 @@ class poll
 					}
 				}
 				$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_VOTED_END : $POLL_VOTED_END));
-				
+
 			break;
 
 			case "disallowed":
@@ -238,7 +244,7 @@ class poll
 			$caption = POLL_505;
 		}
 
-		
+
 
 		if($returnMethod)
 		{
@@ -298,11 +304,11 @@ class poll
 			</td>
 			</tr>";
 
-			
+
 			return $text;
 		}
 
-		$formgo = e_SELF.(e_QUERY && !defined("RESET") ? "?".e_QUERY : ""); 
+		$formgo = e_SELF.(e_QUERY && !defined("RESET") ? "?".e_QUERY : "");
 
 		$text = "<div style='text-align:center'>
 		<form method='post' action='$formgo'>
@@ -361,7 +367,7 @@ class poll
 		</tr>
 
 
-		
+
 
 		<tr>
 		<td class='forumheader3'>".POLLAN_20.": </td><td class='forumheader3'>
