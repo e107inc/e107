@@ -151,6 +151,7 @@ $SEARCH = "
 <p>
 <input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />
 <input class='button' type='submit' name='searchsubmit' value='".LAN_180."' />
+<input type='hidden' name='searchtype' value='7' />
 </p>
 </form>";
 
