@@ -44,7 +44,7 @@ if(IsSet($_POST['update_ban'])){
         unset($ban_ip);
 }
 
-if($action == "remove"){
+if($action == "remove" && isset($_POST['ban_secure'])){
         $sql -> db_Delete("banlist", "banlist_ip='$sub_action'");
         $message = BANLAN_1;
 }
@@ -53,7 +53,7 @@ if(IsSet($message)){
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 if($action != "edit"){
-	$text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 400px; overflow : auto; '>\n";
+	$text = $rs -> form_open("post", e_SELF, "ban_form").$rs -> form_hidden("ban_secure","1")."<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 400px; overflow : auto; '>\n";
 	if(!$ban_total = $sql -> db_Select("banlist")){
 			$text .= "<div style='text-align:center'>".BANLAN_2."</div>";
 	}else{
@@ -66,12 +66,12 @@ if($action != "edit"){
 			while($row = $sql -> db_Fetch()){
 					extract($row);
 					$text .= "<tr><td style='width:70%' class='forumheader3'>$banlist_ip<br />".BANLAN_7.": $banlist_reason</td>
-					<td style='width:30%; text-align:center' class='forumheader3'>".$rs -> form_button("submit", "main_edit_$count", BANLAN_12, "onclick=\"document.location='".e_SELF."?edit-$banlist_ip'\"").$rs -> form_button("submit", "main_delete_$count", BANLAN_4, "onclick=\"document.location='".e_SELF."?remove-$banlist_ip'\"")."</td>\n</tr>";
+					<td style='width:30%; text-align:center' class='forumheader3'>".$rs -> form_button("submit", "main_edit_$count", BANLAN_12, "onclick=\"document.location='".e_SELF."?edit-$banlist_ip'\"").$rs -> form_button("submit", "main_delete_$count", BANLAN_4, "onclick=\"document.getElementById('ban_form').action='".e_SELF."?remove-$banlist_ip'\"")."</td>\n</tr>";
 			$count++;
 			}
 			$text .= "</table>\n";
 	}
-	$text .= "</div></div>";
+	$text .= "</div></div>".$rs -> form_close();
 	$ns -> tablerender(BANLAN_3, $text);
 }
 
@@ -81,6 +81,7 @@ if($action == "edit"){
 	extract($row);
 }else{
 	unset($banlist_ip, $banlist_reason);
+	if(e_QUERY && count($_POST)>0 || strpos($_SERVER["HTTP_REFERER"],"userinfo")){$banlist_ip=$action;}
 }
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>
