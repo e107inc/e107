@@ -11,102 +11,118 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-02-07 05:08:07 $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-08 18:00:34 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
 class e_search {
 	
-	function search_query($keywords, $table, $fields, $pre_query, $post_query) {
+	var $query;
+	var $orig_query;
+	var $keywords;
+	var $text;
+	var $weight;
+	var $total_weight;
+	var $nocrop;
+	var $endcrop;
+	var $stritext;
+	var $ret = array();
+	var $exact;
+	var $match = array();
+	
+	function search_query($query, $table, $fields, $pre_query, $post_query) {
 		global $sql;
-		$search_query = '';
-		foreach ($keywords as $keyword) {
+		$this -> query = $query;
+		$this -> orig_query = $query;
+		$this -> keywords = explode(' ', $this -> query);
+		foreach ($this -> keywords as $keyword) {
 			foreach ($fields as $field) {
-				if ($search_query != '') {
+				if (isset($search_query)) {
 					$search_query .= " OR ";
 				}
-				$search_query .= " ".$field." REGEXP ('".$keyword."') ";
+				$search_query .= " ".$field." REGEXP '[[:<:]]".$keyword."[[:>:]]' ";
 			}
 		}
 		return $results = $sql->db_Select($table, '*', $pre_query." (".$search_query.") ".$post_query);
 	}
 	
-	function relevance($keywords, $max_weight, $weight) {
-		return round((100 / (count($keywords) * $max_weight)) * $weight);
-	}
-	
-	function parsesearch_match($text, $temp, $match, $key_count, $weight, $exact, $rel_weight) {
-		$match_array['pos'] = strlen($text)-strlen($temp);
-		$match_array['matchedText'] = substr($text,$match_array['pos'],strlen($match));
-		if ($exact) {
-			$match_array['rel_weight'] = (($weight*2)*count($key_count));
-		} else {
-			$match_array['rel_weight'] = $rel_weight + ($weight*1.5);
+	function search_sort() {
+		$args = func_get_args();
+		$numargs = func_num_args();
+		call_user_func_array('array_multisort', $args);
+		foreach ($args[0] as $arg_id => $arg_value) {
+			$text .= $args[$numargs-2][$arg_id];
 		}
-		return $match_array;
+		return $text;
 	}
 	
-	function parsesearch_crop($pos, $crop_match, $text, $nocrop, $endcrop) {
+	function search_link($text, $link) {
+		return "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <b><a href='".$link."'>".$text."</a></b><br />";
+	}
+	
+	function search_detail($item_text) {
+		$relevance = round((100 / (count($this -> keywords) * ($this -> total_weight * 2))) * $this -> ret['weight']);
+		$this -> ret['text'] .= "<br /><span class='smalltext'>".$item_text." | Relevance: ".$relevance."%</span><br /><br />";
+		return $this -> ret;
+	}
+	
+	function parsesearch($text, $weight = FALSE, $endcrop=FALSE, $reset_weight=FALSE) {
+		global $tp;
+		$this -> weight = $weight;
+		$this -> endcrop = $endcrop;
+		$this -> text = strip_tags($tp -> toHTML(str_replace(array('[', ']'), array('<', '>'), $text), FALSE));
+		$this -> ret['text'] = $this -> text;
+		if ($reset_weight) {
+			$this -> ret['weight'] = 0;
+			$this -> total_weight = $this -> weight;
+		} else {
+			$this -> total_weight += $this -> weight;
+		}
+		$this -> exact = TRUE;
+		$this -> query = $this -> orig_query;
+		if ($this -> stritext = stristr($this -> text, $this -> query)) {
+			$this -> parsesearch_match();
+		} else {
+			$this -> exact = FALSE;
+			foreach ($this -> keywords as $this -> query) {
+				if ($this -> stritext = stristr($this -> text, $this -> query)) {
+					$this -> parsesearch_match();
+				}
+			}
+		}
+		$this -> parsesearch_crop();
+		return $this -> ret['text'];
+	}
+	
+	function parsesearch_match() {
+		$this -> match['pos'] = strlen($this -> text) - strlen($this -> stritext);
+		$this -> match['key'] = substr($this -> text, $this -> match['pos'], strlen($this -> query));
+		if ($this -> exact) {
+			$this -> ret['weight'] = round((($this -> weight * 2) * count($this -> keywords)));
+		} else {
+			$this -> ret['weight'] += round(($this -> weight * 1.5));
+		}
+		$this -> parsesearch_crop();
+		$this -> ret['text'] = eregi_replace("[[:<:]]".$this -> query."[[:>:]]", "<span class='searchhighlight'>".$this -> match['key']."</span>", $this -> ret['text']);
+		$this -> endcrop = TRUE;
+	}
+	
+	function parsesearch_crop() {
 		global $pref;
 		if (!isset($pref['search_chars'])) {
 			$pref['search_chars'] = 150;
 			save_prefs();
 		}
-		if (!$nocrop && !$endcrop && (strlen($text) > $pref['search_chars'])){
-			if ($pos < ($pref['search_chars'] - strlen($crop_match))) {
-				$text = substr($text, 0, $pref['search_chars'])."...";
-			} else if ($pos > (strlen($text) - ($pref['search_chars'] - strlen($crop_match)))) {
-				$text = "...".substr($text, (strlen($text) - ($pref['search_chars'] - strlen($crop_match))));
+		if (!$this -> endcrop && (strlen($this -> ret['text']) > $pref['search_chars'])) {
+			if ($this -> match['pos'] < ($pref['search_chars'] - strlen($this -> query))) {
+				$this -> ret['text'] = substr($this -> ret['text'], 0, $pref['search_chars'])."...";
+			} else if ($this -> match['pos'] > (strlen($this -> ret['text']) - ($pref['search_chars'] - strlen($this -> query)))) {
+				$this -> ret['text'] = "...".substr($this -> ret['text'], (strlen($this -> ret['text']) - ($pref['search_chars'] - strlen($this -> query))));
 			} else {
-				$text = "...".substr($text, ($pos - round(($pref['search_chars'] / 3))), $pref['search_chars'])."...";
+				$this -> ret['text'] = "...".substr($this -> ret['text'], ($this -> match['pos'] - round(($pref['search_chars'] / 3))), $pref['search_chars'])."...";
 			}
-		}
-		return $text;
-	}
-	
-	function parsesearch_highlight($match, $match_text, $text) {
-		$text = eregi_replace($match, "<span class='searchhighlight'>".$match_text."</span>", $text);
-		return $text;
-	}
-	
-	function parsesearch_routine($text, $temp, $text_crop, $query, $match, $weight, $nocrop, $exact, $total_weight, $endcrop) {
-		$match_array = $this -> parsesearch_match($text, $temp, $query, $match, $weight, $exact, $total_weight);
-		$text_crop = $this -> parsesearch_crop($match_array['pos'], $query, $text_crop, $nocrop, $endcrop);
-		$text_crop = $this -> parsesearch_highlight($query, $match_array['matchedText'], $text_crop);
-		$ret['text'] = $text_crop;
-		$ret['weight'] = $match_array['rel_weight'];
-		return $ret;
-	}
-	
-	function parsesearch($text, $match, $weight = FALSE, $nocrop=FALSE) {
-		global $tp;
-		$text = strip_tags($tp->toHTML(str_replace(array('[', ']'), array('<', '>'), $text), FALSE));
-		if (is_array($match)) {
-			$exact_match = implode(' ', $match);
-			$ret['text'] = $text;
-			if ($temp = stristr($text, $exact_match)) {
-				$ret = $this -> parsesearch_routine($text, $temp, $ret['text'], $exact_match, $match, $weight, $nocrop, TRUE, FALSE, $endcrop);
-				$endcrop = TRUE;
-			} else {
-				foreach ($match as $match_extract) {
-					if ($temp = stristr($text, $match_extract)) {
-						$ret = $this -> parsesearch_routine($text, $temp, $ret['text'], $match_extract, $match, $weight, $nocrop, FALSE, $ret['weight'], $endcrop);
-						$endcrop = TRUE;
-					}
-				}
-			}
-			$ret['text'] = $this -> parsesearch_crop('', '', $ret['text'], $nocrop, $endcrop);
-			$ret['weight'] = round($ret['weight']);
-			return($ret);
-		} else {
-			$temp = stristr($text, $match);
-			$pos = strlen($text)-strlen($temp);
-			$matchedText = substr($text,$pos,strlen($match));
-			$text = $this -> parsesearch_crop($pos, $match, $text, $nocrop, $endcrop);
-			$text = $this -> parsesearch_highlight($match, $matchedText, $text);
-			return($text);
 		}
 	}
 }
