@@ -31,6 +31,33 @@ if(e_QUERY){
 $from = ($from ? $from : 0);
 $amount = 50;
 
+
+if(IsSet($_POST['resend_mail'])){
+    $id = $_POST['resend_id'];
+    $key = $_POST['resend_key'];
+    $name = $_POST['resend_name'];
+   define("RETURNADDRESS", (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$id.".".$key : SITEURL."/signup.php?activate.".$id.".".$key));
+
+   $message = USRLAN_114.RETURNADDRESS.USRLAN_115." ".SITENAME."\n".SITEURL;
+   require_once(e_HANDLER."mail.php");
+   sendemail($_POST['resend_email'], USRLAN_113." ".SITENAME, $message);
+ //  echo str_replace("\n","<br>",$message);
+   $user -> show_message("Email Re-sent to: ".$name);
+   unset($id,$action,$sub_cation);
+}
+
+if(IsSet($_POST['test_mail'])){
+
+   require_once(e_HANDLER."mail.php");
+   $text = validatemail($_POST['test_email']);
+   $caption = $_POST['test_email']." - ";
+   $caption .= ($text[0]==TRUE)?"Successful": "Error";
+   $ns -> tablerender($caption, $text[1]);
+   unset($id,$action,$sub_cation);
+}
+
+
+
 if(IsSet($_POST['update_options'])){
         $pref['avatar_upload'] = (FILE_UPLOADS ? $_POST['avatar_upload'] : 0);
         $pref['im_width'] = $_POST['im_width'];
@@ -113,6 +140,39 @@ if($action == "ban"){
         $action = "main";
         $sub_action = "user_id";
 }
+
+
+if($action == "resend"){
+     if($sql -> db_Select("user", "*", "user_id='$sub_action' ")){
+     $resend = $sql -> db_Fetch();
+     $text .= "<form method='post' action='".e_SELF."'><div style='text-align:center'>\n";
+     $text .= USRLAN_116." <b>".$resend['user_name']."</b><br><br>
+
+     <input type='hidden' name='resend_id' value='$sub_action'>\n
+     <input type='hidden' name='resend_name' value='".$resend['user_name']."'>\n
+     <input type='hidden' name='resend_key' value='".$resend['user_sess']."'>\n
+     <input type='hidden' name='resend_email' value='".$resend['user_email']."'>\n
+     <input class='button' type='submit' name='resend_mail' value='".USRLAN_112."' />\n</div></form>\n";
+     $caption = USRLAN_112;
+     $ns -> tablerender($caption, $text);
+     }
+}
+
+if($action == "test"){
+     if($sql -> db_Select("user", "*", "user_id='$sub_action' ")){
+     $test = $sql -> db_Fetch();
+     $text .= "<form method='post' action='".e_SELF."'><div style='text-align:center'>\n";
+     $text .= USRLAN_117." <br><b>".$test['user_email']."</b><br><br>
+
+     <input type='hidden' name='resend_id' value='$sub_action'>\n
+     <input type='hidden' name='test_name' value='".$test['user_name']."'>\n
+     <input type='hidden' name='test_email' value='".$test['user_email']."'>\n
+     <input class='button' type='submit' name='test_mail' value='".USRLAN_118."' />\n</div></form>\n";
+     $caption = USRLAN_112;
+     $ns -> tablerender($caption, $text);
+     }
+}
+
 
 if($action == "unban"){
         $sql -> db_Update("user", "user_ban='0' WHERE user_id='$sub_action' ");
@@ -355,7 +415,9 @@ class users{
                                                 $text .= "<option value='".e_SELF."?unban.$user_id'>".USRLAN_33."</option>";
                                         }else if($user_ban == 2){
                                                 $text .= "<option value='".e_SELF."?ban.$user_id'>".USRLAN_30."</option>
-                                                <option value='".e_SELF."?verify.$user_id'>".USRLAN_32."</option>";
+                                                <option value='".e_SELF."?verify.$user_id'>".USRLAN_32."</option>
+                                                <option value='".e_SELF."?resend.$user_id'>".USRLAN_112."</option>
+                                                <option value='".e_SELF."?test.$user_id'>".USRLAN_118."</option>";
                                         }else{
                                                 $text .= "<option value='".e_SELF."?ban.$user_id'>".USRLAN_30."</option>";
                                         }

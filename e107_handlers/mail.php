@@ -100,7 +100,7 @@ function validatemail($Email) {
     }  else {
 
         $result[0]=false;
-        $result[1]="Can not connect E-Mail server.";
+        $result[1]="Cannot find E-Mail server.";
         $result[2] = $From;
         return $result;
     }

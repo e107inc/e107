@@ -24,7 +24,7 @@ define("LAN_202", "Registration failed");
 define("LAN_309", "Please enter your details below - <b>a verification email will be sent to the email address you enter here so it must be valid, </b>if you do not wish to display your email address on this site please tick the hide email address box.");
 define("LAN_399", "Continue");
 define("LAN_400", "Usernames and passwords are <b>case-sensitive</b>");
-define("LAN_401", "Your account has now been activated, please log in from the login box.<br />Thankyou for registering at");
+define("LAN_401", "Your account has now been activated, please <a href='index.php'>click here</a> to login.<br />Thankyou for registering at");
 define("LAN_402", "Registration activated");
 define("LAN_403", "Welcome to ".SITENAME."\nYour registration has been received and created with the following login information ...\n\nUsername: ".$_POST['name']."\nPassword: ".$_POST['password1']."\n\nYour account is currently marked as being inactive, to activate your account please go to the following link ...\n\n");
 define("LAN_404", "Registration details for");
