@@ -9,6 +9,6 @@ define("LAN_95", "Total votes:");
 define("LAN_96", "Polls");
 define("LAN_97", "Show Comments");
 
-
+define("LAN_98", "Poll");
 
 ?>

@@ -11,8 +11,10 @@ define("LAN_112", "Email Address: ");
 define("LAN_156", "Submit");
 define("LAN_213", "That username/email address was not found in database.");
 define("LAN_214", "Unable to reset password");
-define("LAN_215", "Your password for ".SITENAME." has been reset. Your new password is\n\n");
+define("LAN_215", "Your password for ".SITENAME." has been reset.\n\nYour new password is: ");
 define("LAN_216", "To validate your new password please go to the following URL ...");
 define("LAN_217", "Your new password is now validated, you may now login using your new password.");
+
+define("LAN_218", "Your username is:");
 
 ?>

@@ -15,19 +15,61 @@
 require_once("../class2.php");
 require_once("auth.php");
 
-$tdc=0;
 
-function wad($link, $title, $description, $perms, $icon = FALSE){
+// auto db update ...
+
+
+
+$handle=opendir(e_ADMIN."sql/db_update");
+while ($file = readdir($handle)){
+	if($file != "." && $file != ".." && $file != "index.html"){
+		$updatelist[] = $file;
+	}
+}
+closedir($handle);
+
+if(IsSet($_POST['inst_update'])){
+	require_once(e_ADMIN."sql/db_update/".$updatelist[0]);
+}else if(is_array($updatelist)){
+	$text = "<div style='text-align:center'>".ADLAN_120."<br /><br />
+	<form method='post' action='".e_SELF."'><input class='button' type='submit' name='inst_update' value='".ADLAN_121."' /></form>
+	</div>";
+	$ns -> tablerender(ADLAN_122, $text);
+}
+
+
+
+
+
+
+
+
+
+
+//	end auto db update
+
+
+
+if(e_QUERY == "purge"){
+	$sql -> db_Delete("tmp", "tmp_ip='adminlog' ");
+}
+
+$tdc=0;
+function wad($link, $title, $description, $perms, $icon = FALSE, $mode = FALSE){
 	global $tdc;
-	$permicon = ($icon ? e_PLUGIN.$icon : e_IMAGE."generic/e107.gif");
+	$permicon = ($mode == TRUE ? e_IMAGE."generic/rname.png" : e_IMAGE."generic/location.png");
 	if(getperms($perms)){
 		if(!$tdc){$tmp1 = "<tr>";}
 		if($tdc == 4){$tmp2 = "</tr>";$tdc=-1;}
 		$tdc++;
-		$tmp = $tmp1."<td style='text-align:center; vertical-align:top; width:20%'><a href='".$link."'><img src='$permicon' alt='$description' style='border:0'/></a><br /><a href='".$link."'><b>".$title."</b></a><br />".$description."<br /><br /></td>\n\n".$tmp2;
+		$tmp = $tmp1."<td class='td' style='text-align:left; vertical-align:top; width:20%; whitespace:nowrap' onmouseover='tdover(this)' onmouseout='tdnorm(this)'
+		onclick=\"document.location.href='$link'\"><img src='$permicon' alt='$description' style='border:0; vertical-align:middle'/> $title</td>\n\n".$tmp2;
 	}
 	return $tmp;
 }
+
+
+
 
 $text = "<div style='text-align:center'>
 <table style='width:95%'>";
@@ -81,21 +123,19 @@ if(!$tdc){ $text .= "</tr>"; }
 if(getperms("P")){
 
 	$text .= "<tr>
-	<td colspan='5'>
-	<div class='border'><div class='caption'>Plugins</div></div></div>
-	<br />
+	<td colspan='5'><br />
 	</td>
 	<tr>";
 
-	$text .= wad(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "P", e_PLUGIN.e_IMAGE."generic/plugin.png");
-	$text .= wad(e_PLUGIN."theme_layout/theme_layout.php", ADLAN_100, ADLAN_101, "P", e_PLUGIN."theme_layout/images/icon.png");
+	$text .= wad(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "P", "", TRUE);
+	$text .= wad(e_PLUGIN."theme_layout/theme_layout.php", ADLAN_100, ADLAN_101, "P", "", TRUE);
 
 	if($sql -> db_Select("plugin", "*", "plugin_installflag=1")){
 		while($row = $sql -> db_Fetch()){
 			extract($row);
 			include(e_PLUGIN.$plugin_path."/plugin.php");
 			if($eplug_conffile){
-				$text .= wad(e_PLUGIN.$plugin_path."/".$eplug_conffile, $eplug_name, $eplug_caption, "P", $eplug_icon);
+				$text .= wad(e_PLUGIN.$plugin_path."/".$eplug_conffile, $eplug_name, $eplug_caption, "P", "", TRUE);
 			}
 		}
 	}
@@ -103,5 +143,86 @@ if(getperms("P")){
 $text .= "</tr>
 </table></div>";
 $ns -> tablerender("<div style='text-align:center'>".ADLAN_47." ".ADMINNAME."</div>", $text);
+
+
+
+// info -------------------------------------------------------
+
+$members = $sql -> db_Count("user");
+$unverified = $sql -> db_Count("user", "(*)", "WHERE user_ban=2");
+$banned = $sql -> db_Count("user", "(*)", "WHERE user_ban=1");
+$chatbox_posts = $sql -> db_Count("chatbox");
+$forum_posts = $sql -> db_Count("forum_t");
+$comments = $sql -> db_Count("comments");
+$permicon = "<img src='".e_IMAGE."generic/location.png' alt='' style='vertical-align:middle' /> ";
+$permicon2 = "<img src='".e_IMAGE."generic/rname.png' alt='' style='vertical-align:middle' /> ";
+$active_uploads = $sql -> db_Select("upload", "*", "upload_active=0");
+$submitted_links = $sql -> db_Select("tmp", "*", "tmp_ip='submitted_link' ");
+$submitted_news = $sql -> db_Select("submitnews", "*", "submitnews_auth ='0' ");
+
+$text = "<div style='text-align:center'>
+<table style='width:95%'>
+<tr>
+<td style='width:50%'>";
+
+
+$text .= $permicon.ADLAN_110.": ".$members."<br />";
+$text .= $permicon.ADLAN_111.": ".$unverified."<br />";
+$text .= $permicon.ADLAN_112.": ".$banned."<br />";
+
+$text .= ($submitted_news ? $permicon2."<a href='".e_ADMIN."submitnews.php'>".ADLAN_107.": $submitted_news</a>" : $permicon.ADLAN_107.": 0")."<br />";
+$text .= ($active_uploads ? $permicon2."<a href='".e_ADMIN."upload.php'>".ADLAN_108.": $active_uploads</a>" : $permicon.ADLAN_108.": ".$active_uploads)."<br />";
+
+$text .= ($submitted_links ? $permicon2."<a href='".e_ADMIN."links.php'>".ADLAN_119.": $submitted_links</a>" : $permicon.ADLAN_119.": ".$submitted_links)."<br /><br />";
+$text .= $permicon.ADLAN_113.": ".$forum_posts."<br />";
+$text .= $permicon.ADLAN_114.": ".$comments."<br />";
+$text .= $permicon.ADLAN_115.": ".$chatbox_posts;
+
+$text .= "</td>
+<td style='width:50%; vertical-align:top'>";
+
+$text .= $permicon." <a style='cursor: pointer; cursor: hand' onclick=\"expandit(this)\">".ADLAN_116."</a>\n";
+if(e_QUERY != "logall"){
+	$text .= "<div style='display: none;'>";
+}
+if(e_QUERY == "logall"){
+	$sql -> db_Select("tmp", "*", "tmp_ip='adminlog' ORDER BY tmp_time DESC");
+}else{
+	$sql -> db_Select("tmp", "*", "tmp_ip='adminlog' ORDER BY tmp_time DESC LIMIT 0,10");
+}
+$text .= "<ul>";
+$gen = new convert;
+while($row = $sql -> db_Fetch()){
+	extract($row);
+	$datestamp = $gen->convert_date($tmp_time, "short");
+	$text .= "<li>".$datestamp.$tmp_info."</li>";
+}
+$text .= "</ul>";
+
+$text .= "[ <a href='".e_SELF."?logall'>".ADLAN_117."</a> ][ <a href='".e_SELF."?purge'>".ADLAN_118."</a> ]\n</div>
+</td></tr></table></div>
+
+";
+
+$ns -> tablerender(ADLAN_109, $text);
+
+
+
+
+
+
+
+// -------------------------------------------------------------
+
 require_once("footer.php");
 ?>
+
+<script type="text/javascript">
+function tdover(object) {
+  if (object.className == 'td') object.className = 'forumheader5';
+}
+
+function tdnorm(object) {
+  if (object.className == 'forumheader5') object.className = 'td';
+}
+</script>

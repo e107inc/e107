@@ -44,4 +44,6 @@ define("LAN_413", "delete photo");
 define("LAN_414", "previous member");
 define("LAN_415", "next member");
 
+define("LAN_416", "You must be logged in to access this page");
+
 ?>

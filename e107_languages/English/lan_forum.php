@@ -48,4 +48,6 @@ define("LAN_399", "Restricted");
 define("LAN_400", "This forum can only be browsed by registered members");
 define("LAN_401", "Members only");
 
+define("LAN_402", "This forum is read only");
+
 ?>

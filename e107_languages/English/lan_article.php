@@ -15,5 +15,7 @@ define("LAN_399", "Rating");
 define("LAN_400", "Inactive page");
 define("LAN_401", "This page is inactive and cannot be shown.");
 
+define("LAN_2", "You do not have the correct permissions to view this article.");
+
 
 ?>

@@ -32,4 +32,9 @@ define("LAN_399", "Private Message");
 define("LAN_400", "Edit");
 define("LAN_401", "Quote");
 
+define("LAN_402", "Author");
+define("LAN_403", "Post");
+define("LAN_404", "No previous thread");
+define("LAN_405", "No next thread");
+
 ?>

@@ -22,17 +22,12 @@ if(!is_object($sql)){
 $custompage = explode(" ", $CUSTOMPAGES);
 if(in_array (e_PAGE, $custompage) && $CUSTOMFOOTER ? parseheader($CUSTOMFOOTER) : parseheader($FOOTER)) ; 
 
-
 $timing_stop = explode(' ', microtime());
-$start = $timing_start[0]+$timitiming_startng_stop[1];
-$end = $timing_stop[0]+$timing_stop[1];
-$rendertime = number_format($start-$stop, 4);
-$rinfo = "<div style='text-align:center' class='smalltext'>";
+$rendertime = number_format((($timing_stop[0]+$timing_stop[1])-($timing_start[0]+$timing_start[1])), 4);
 if($pref['displayrendertime']){ $rinfo .= "Render time: ".$rendertime." second(s). "; }
 if($pref['displaysql']){ $rinfo .= "DB queries: ".$dbq.". "; }
 if($pref['displaycacheinfo']){ $rinfo .= $cachestring."."; }
-$rinfo .= "</div>";
-echo $rinfo;
+echo ($rinfo ? "<div style='text-align:center' class='smalltext'>$rinfo</div>" : "");
 
 if($pref['log_activate']){
 	echo "
@@ -43,6 +38,8 @@ var ref=\"\"+escape(top.document.referrer);
 var colord = window.screen.colorDepth; 
 var res = window.screen.width + \"x\" + window.screen.height;
 var eself = document.location;
+
+
 document.write(\"<img src='".e_PLUGIN."log/log.php?referer=\"+ref+\"&amp;color=\"+colord+\"&amp;eself=\"+eself+\"&amp;res=\"+res+\"' style='float:left; border:0' alt='' />\");\n
 //-->
 </script>";

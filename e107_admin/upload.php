@@ -236,7 +236,7 @@ $text = "<div style='text-align:center'>
 <td style='width:50%' class='forumheader3'>".UPLLAN_29."<br />
 <span class='smalltext'>".UPLLAN_30."</span></td>
 <td style='width:50%' class='forumheader3'>".
-($pref['upload_storagetype'] == 1 ? $rs -> form_radio("upload_storagetype", 1, 1)." ".UPLLAN_31.$rs -> form_radio("upload_storagetype", 2)." ".UPLLAN_32 : $rs -> form_radio("upload_storagetype", 1)." ".UPLLAN_31.$rs -> form_radio("upload_storagetype", 2,1)." ".UPLLAN_32)."
+($pref['upload_storagetype'] == 1 ? $rs -> form_radio("upload_storagetype", 1, 1)." ".UPLLAN_31."<br />".$rs -> form_radio("upload_storagetype", 2)." ".UPLLAN_32 : $rs -> form_radio("upload_storagetype", 1)." ".UPLLAN_31."<br />".$rs -> form_radio("upload_storagetype", 2,1)." ".UPLLAN_32)."
 </td>
 </tr>
 

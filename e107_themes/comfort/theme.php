@@ -25,7 +25,6 @@ define("THEME_DISCLAIMER", "<br />comfort theme by jalist, designed By <a class=
 
 // [layout]	#############
 $layout = "_default";
-$clock_flat = TRUE;
 $HEADER = 
 "<a name=\"top\"></a>
 <div style=\"text-align:center\">

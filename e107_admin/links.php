@@ -41,6 +41,8 @@ if($action == "inc"){
 
 if(IsSet($_POST['updateoptions'])){
 	$pref['linkpage_categories'] = $_POST['linkpage_categories'];
+	$pref['link_submit'] = $_POST['link_submit'];
+	$pref['link_submit_class'] = $_POST['link_submit_class'];
 	save_prefs();
 	$message = LCLAN_1;
 }
@@ -106,15 +108,63 @@ if(IsSet($_POST['delete'])){
 
 
 if(IsSet($_POST['update_order'])){
-        extract($_POST);
-        $sql -> db_Select("links");
-        $sql2 = new db;
-        while(list($link_id) = $sql-> db_Fetch()){
-                $sql2 -> db_Update("links", "link_order='".$link_order[$link_id]."' WHERE link_id='$link_id' ");
-        }
 
+        extract($_POST);
+
+		while(list($key, $id) = each($link_order)){
+			$tmp = explode(".", $id);
+			$sql -> db_Update("links", "link_order=".$tmp[1]." WHERE link_id=".$tmp[0]);
+		}
+		
         $message = LCLAN_6;
 
+}
+
+if($sql -> db_Select("tmp", "*", "tmp_ip='submitted_link' ")){
+	$gen = new convert; 
+	$text = "<div style='text-align:center'>
+	<table style='width:85%' class='fborder'>\n";
+	while($row = $sql -> db_Fetch()){
+		extract($row);
+		$submitted = explode("^", $tmp_info);
+		$datestamp = $gen->convert_date($tmp_time, "short");
+		if(!strstr($submitted[2], "http")){
+			$submitted[2] = "http://".$submitted[2];
+		}
+		$text .= "<tr><td class='forumheader3'>
+		<table>
+		<tr><td style='width:40%'>".LCLAN_45."</td><td style='width:60%'><b>".$submitted[5]."</b></td></tr>
+		<tr><td style='width:40%'>".LCLAN_12."</td><td style='width:60%'>".$submitted[0]."</td></tr>
+		<tr><td style='width:40%'>".LCLAN_15."</td><td style='width:60%'>".$submitted[1]."</td></tr>
+		<tr><td style='width:40%'>".LCLAN_16."</td><td style='width:60%'><a href='".$submitted[2]."'>".$submitted[2]."</a></td></tr>
+		<tr><td style='width:40%'>".LCLAN_17."</td><td style='width:60%'>".$submitted[3]."</td></tr>
+		<tr><td style='width:40%'>".LCLAN_18."</td><td style='width:60%'>".$submitted[4]."</td></tr>
+		<tr><td style='width:40%'>&nbsp;</td><td style='width:60%'>[ <a href='".e_SELF."?sval.$tmp_time'>".LCLAN_46."</a> ] [ <a href='".e_SELF."?sdel.$tmp_time'>".LCLAN_50."</a> ]</td></tr>
+		</table>
+		</td>
+		</tr>";
+	}
+	$text .= "</table>
+	</div>";
+	$ns -> tablerender(LCLAN_47, $text);
+}
+
+if($action == "sval"){
+	$sql -> db_Select("tmp", "*", "tmp_time='$linkid' ");
+	$row = $sql -> db_Fetch(); extract($row);
+	$submitted = explode("^", $tmp_info);
+	$sql -> db_Select("link_category", "*", "link_category_name='".$submitted[0]."' ");
+	$row = $sql -> db_Fetch(); extract($row);
+	$link_category = $link_category_id;
+	$link_name = $submitted[1];
+	$link_url = $submitted[2];
+	$link_description = $submitted[3]."\n<br /><i>".LCLAN_45." ".$submitted[5]."</i>";
+	$link_button = $submitted[4];
+}
+
+if($action == "sdel"){
+	$sql -> db_Delete("tmp", "tmp_time='$linkid' ");
+	$message = LCLAN_49;
 }
 
 if(IsSet($message)){
@@ -251,7 +301,7 @@ $text .= "</td>
 </div>";
 $ns -> tablerender("<div style='text-align:center'>".LCLAN_29."</div>", $text);
 
-
+/*
 $sql2 = new db;
 for($a=1; $a<=$link_cats; $a++){
 	if($sql -> db_Select("links", "*",  "link_category='$a' ORDER BY link_order ASC")){
@@ -263,7 +313,7 @@ for($a=1; $a<=$link_cats; $a++){
 		}
 	}
 }
-
+*/
 
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>
@@ -272,21 +322,26 @@ $text = "<div style='text-align:center'>
 $sql -> db_Select("link_category");
 $sql2 = new db;
 while(list($link_category_id, $link_category_name, $link_category_description) = $sql-> db_Fetch()){
-        if($sql2 -> db_Select("links", "*", "link_category ='$link_category_id' ORDER BY link_order ASC ")){
+        if($lamount = $sql2 -> db_Select("links", "*", "link_category ='$link_category_id' ORDER BY link_order ASC ")){
                 $text .= "<tr><td colspan='3' class='forumheader'>$link_category_name</td></tr>";
                 while(list($link_id, $link_name, $link_url, $link_description, $link_button, $link_category, $link_order, $link_refer) = $sql2-> db_Fetch()){
+					$text .= "<tr>\n<td style='width:30%' class='forumheader3'>".$link_order." - ".$link_name."</td>\n<td style='width:20%' class='forumheader3'>\n<select name='link_order[]' class='tbox'>";
+					for($a=1; $a<= $lamount; $a++){
+						$text .= ($link_order == $a ? "<option value='$link_id.$a' selected>$a</option>\n" : "<option value='$link_id.$a'>$a</option>\n");
+					}
 
-                        $text .= "<tr>
-<td style='width:30%' class='forumheader3'>".$link_order." - ".$link_name."</td>
-<td style='width:20%' class='forumheader3'>
+
+
+/*
 <select name='activate' onChange='urljump(this.options[selectedIndex].value)' class='tbox'>
 <option value='links.php' selected></option>
 <option value='links.php?inc.".$link_id.".".$link_order.".".$link_category."'>".LCLAN_30."</option>
 <option value='links.php?dec.".$link_id.".".$link_order.".".$link_category."'>".LCLAN_31."</option>
 </select>
-</td>
-<td style='width:50%' class='forumheader3'>&nbsp;".$link_description."</td>
-</tr>";
+*/
+					$text .= "</td>
+					<td style='width:50%' class='forumheader3'>&nbsp;".$link_description."</td>
+					</tr>";
                 }
                 
         }
@@ -307,14 +362,34 @@ $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>\n
 <table style='width:85%' class='fborder'>
 <tr>
-<td style='width:90%' class='forumheader3'>
+<td style='width:70%' class='forumheader3'>
 ".LCLAN_40."<br />
 <span class='smalltext'>".LCLAN_34."</span>
 </td>
-<td style='width:10%' class='forumheader2' style='text-align:center'>".
+<td style='width:30%' class='forumheader2' style='text-align:center'>".
 ($pref['linkpage_categories'] ? "<input type='checkbox' name='linkpage_categories' value='1' checked>" : "<input type='checkbox' name='linkpage_categories' value='1'>")."
 </td>
 </tr>
+
+<tr>
+<td style='width:70%' class='forumheader3'>
+".LCLAN_41."<br />
+<span class='smalltext'>".LCLAN_42."</span>
+</td>
+<td style='width:30%' class='forumheader2' style='text-align:center'>".
+($pref['link_submit'] ? "<input type='checkbox' name='link_submit' value='1' checked>" : "<input type='checkbox' name='link_submit' value='1'>")."
+</td>
+</tr>
+
+<tr>
+<td style='width:70%' class='forumheader3'>
+".LCLAN_43."<br />
+<span class='smalltext'>".LCLAN_44."</span>
+</td>
+<td style='width:30%' class='forumheader2' style='text-align:center'>".r_userclass("link_submit_class", $pref['link_submit_class'])."</td>
+</tr>
+
+
 
 
 

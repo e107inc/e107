@@ -28,6 +28,12 @@ if(strstr(e_QUERY, "delp")){
 
 require_once(HEADERF);
 
+if(!USER){
+	$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_416."</div>");
+	require_once(FOOTERF);
+	exit;
+}
+
 if(IsSet($_POST['records'])){
 	$records = $_POST['records'];
 	$order = $_POST['order'];
@@ -86,7 +92,7 @@ if($records == 10){
 <option>20</option>
 <option>30</option>
 </select>  ";
-}else if($records == 10){
+}else if($records == 20){
 	$text .= "<select name='records' class='tbox'>
 <option>10</option>
 <option selected>20</option>
@@ -177,15 +183,14 @@ function renderuser($row, $user_entended, $mode="verbose"){
 		$level = getlevel($user_join, $user_forums, $user_comments, $user_chats, $user_visits);
 
 		$datestamp = $gen->convert_date($user_join, "long");
-		$lastvisit = ($user_lastvisit ? $gen->convert_date($user_lastvisit, "long") : "<i>".LAN_401."</i>");
+		$lastvisit = ($user_currentvisit ? $gen->convert_date($user_currentvisit, "long") : "<i>".LAN_401."</i>");
 		$daysregged = max(1, round((time() - $user_join)/86400))." ".LAN_405;
 		$str = "
 		<div style='text-align:center'>
 		<table style='width:95%' class='fborder'>
 		<tr><td colspan='2' class='fcaption' style='text-align:center'>".LAN_142." ".$user_id.": ".$user_name."</td></tr>
 		<tr><td rowspan='8' class='forumheader3' style='width:20%; vertical-align:middle; text-align:center'>";
-		
-		
+
 		if($user_sess && file_exists(e_FILE."public/avatars/".$user_sess)){
 			$str .= "<img src='".e_FILE."public/avatars/".$user_sess."' alt='' />";
 
@@ -306,7 +311,7 @@ function renderuser($row, $user_entended, $mode="verbose"){
 
 		if(USERID == $user_id){
 			$str .= "<tr><td colspan='2' class='forumheader3' style='text-align:center'><a href='".e_BASE."usersettings.php'>".LAN_411."</a></td></tr>";
-		}else if(ADMIN){
+		}else if(ADMIN && getperms("4") && !$user_admin){
 			$str .= "<tr><td colspan='2' class='forumheader3' style='text-align:center'><a href='".e_BASE."usersettings.php?".$user_id."'>".LAN_412."</a></td></tr>";
 		}
 

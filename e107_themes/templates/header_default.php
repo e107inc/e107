@@ -153,7 +153,7 @@ function checklayout($str){
 					if(ADMIN == TRUE){
 						echo "<td><a href='".e_ADMIN.(!$pref['adminstyle'] || $pref['adminstyle'] == "default" ? "admin.php" : $pref['adminstyle'].".php")."'>".LOGIN_MENU_L11."</a></td><td>.:.</td>";
 					}
-					echo "<td> <a href='" . e_BASE . "usersettings.php'>".LOGIN_MENU_L12."</a></td><td>.:.</td><td><a href='".e_BASE."index.php?logout'>".LOGIN_MENU_L8."</a></td><td>.:.</td></tr></table> ";
+					echo "<td> <a href='" . e_BASE . "usersettings.php'>".LOGIN_MENU_L12."</a></td><td>.:.</td><td><a href='".e_BASE."?logout'>".LOGIN_MENU_L8."</a></td><td>.:.</td></tr></table> ";
 				}else{
 					echo  "<form method='post' action='".e_SELF."'>
 					<p>
@@ -195,7 +195,16 @@ function checklayout($str){
 		$sql = new db;
 		if($sql -> db_Select("banner", "*", $query)){
 			$row = $sql -> db_Fetch(); extract($row);
-			echo "<a href='".e_BASE."banner.php?".$banner_id."'><img src='".e_IMAGE."banners/".$banner_image."' alt='".$banner_clickurl."' style='border:0' /></a>";
+
+			$fileext1 = substr(strrchr($banner_image, "."), 1);
+			$fileext2 = substr(strrchr($banner_image, "."), 0);
+			if ($fileext1 == swf) {
+				echo "<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" codebase=\"http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0\" width=\"468\" height=\"60\">\n<param name=\"movie\" value=\"".e_IMAGE."banners/".$banner_image."\">\n<param name=\"quality\" value=\"high\"><param name=\"SCALE\" value=\"noborder\">\n<embed src=\"".e_IMAGE."banners/".$banner_image."\" width=\"468\" height=\"60\" scale=\"noborder\" quality=\"high\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\"></embed></object>";
+			}else if($fileext1 == "php" || $fileext1 == "html" || $fileext1 == "js"){
+				include(e_IMAGE."banners/".$banner_image);
+			}else{
+				echo "<a href='".e_BASE."banner.php?".$banner_id."' onclick=\"window.open('".e_BASE."banner.php?$banner_id'); return false;\"><img src='".e_IMAGE."banners/".$banner_image."' alt='".$banner_clickurl."' style='border:0' /></a>";
+			}
 			$sql -> db_Update("banner", "banner_impressions=banner_impressions+1 WHERE banner_id='$banner_id' ");
 		}
 	}else if(strstr($str, "NEWS_CATEGORY")){

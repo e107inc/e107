@@ -44,4 +44,17 @@ define("LCLAN_39", "View Images");
 
 define("LCLAN_40", "Show only link categories");
 
+define("LCLAN_41", "Allow links to be submitted");
+define("LCLAN_42", "Allow visitors to submit links to your site");
+
+define("LCLAN_43", "Submit links class");
+define("LCLAN_44", "Select which users can submit links");
+define("LCLAN_45", "Submitted by");
+define("LCLAN_46", "Validate link");
+define("LCLAN_47", "Submitted links");
+define("LCLAN_48", "Date");
+define("LCLAN_49", "Submitted link deleted");
+
+define("LCLAN_50", "Mark as validated");
+
 ?>

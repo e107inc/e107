@@ -1,4 +1,4 @@
 <?php
-$text = "Update your name, email and password here.";
+$text = "Update your password here.";
 $ns -> tablerender("Update Settings Help", $text);
 ?>

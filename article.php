@@ -89,7 +89,7 @@ if($id == "list"){
 			$ns -> tablerender("<div style='text-align:center'>".LAN_190."</div>", $text);
 	
 			require_once(e_HANDLER."np_class.php");
-			$ix = new nextprev("article.php", $from, $itemview, $total, LAN_190, "list.".$from);
+			$ix = new nextprev("article.php", $from, $itemview, $total, LAN_190, "list.3");
 	
 			require_once(FOOTERF);
 			exit;
@@ -111,7 +111,7 @@ if($id == "list"){
 					<td style='width:95%; vertical-align:middle'><div class='mediumtext'><b>$content_heading</b></div><div class='smalltext'>$content_subheading</div><br /></td>
 					</tr>";
 				} else {
-					$text.=LAN_ARTICLE_2;
+					$text.="<div style='text-align:center'>".LAN_2."</div>";
 				}
 			} else {
 				$text .= "<table style='width:90%'>
@@ -198,7 +198,7 @@ $row = $sql -> db_Fetch(); extract($row);
 if(!check_class($content_class)){
 	$content_type==3 ? $caption=LAN_190 : $caption=LAN_100;
 	if($content_type == 1){$caption="";}
-	$ns->tablerender($caption,LAN_ARTICLE_2);
+	$ns->tablerender($caption, "<div style='text-align:center'>".LAN_2."</div>");
 	require_once(FOOTERF);
 	exit;
 }

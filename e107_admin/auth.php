@@ -31,7 +31,7 @@ if(ADMIN){
 			if($pref['tracktype'] == "session"){
 				$_SESSION[$pref['cookie_name']] = $user_id.".".$userpass;
 			}else{
-				setcookie($pref['cookie_name'], $user_id.".".$userpass, time()+3600*24*30, '/', '', 0);
+				cookie($pref['cookie_name'], $user_id.".".$userpass, ( time()+3600*24*30));
 			}
 			echo "<script type='text/javascript'>document.location.href='admin.php'</script>\n";
 		}

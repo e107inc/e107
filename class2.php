@@ -59,9 +59,11 @@ define("e_LANGUAGEDIR", e_BASE.$LANGUAGES_DIRECTORY);
 define("e_DOCS", e_BASE.$HELP_DIRECTORY);
 define("e_DOCROOT",$_SERVER['DOCUMENT_ROOT']."/");
 define("e_UC_PUBLIC", 0);
+define("e_UC_READONLY", 251);
 define("e_UC_MEMBER", 253);
 define("e_UC_ADMIN", 254);
 define("e_UC_NOBODY", 255);
+define("ADMINDIR", $ADMIN_DIRECTORY);
 
 include(e_HANDLER."errorhandler_class.php");
 set_error_handler("error_handler");
@@ -76,14 +78,8 @@ $sql = new db;
 $sql -> db_SetErrorReporting(TRUE);
 $merror = $sql -> db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
 
-if($merror == "e1"){
-	message_handler("CRITICAL_ERROR", 6,  ": generic, ", "class2.php");
-	exit;
-}else if($merror == "e2"){
-	message_handler("CRITICAL_ERROR", 7,  ": generic, ", "class2.php");
-	exit;
-}
-
+if($merror == "e1"){ message_handler("CRITICAL_ERROR", 6,  ": generic, ", "class2.php"); exit;
+}else if($merror == "e2"){ message_handler("CRITICAL_ERROR", 7,  ": generic, ", "class2.php"); exit;}
 
 $sql -> db_Select("core", "*", "e107_name='pref' ");
 $row = $sql -> db_Fetch();
@@ -106,7 +102,7 @@ if(!is_array($pref)){
 	}
 }
 if(!$pref['cookie_name']){ $pref['cookie_name'] = "e107cookie"; }
-if($pref['user_tracking'] == "session"){ require_once(e_HANDLER."session_handler.php"); }
+if($pref['user_tracking'] == "session"){ session_start(); }
 
 $sql -> db_Select("core", "*", "e107_name='menu_pref' ");
 $row = $sql -> db_Fetch();
@@ -136,7 +132,7 @@ if($pref['frontpage'] && $pref['frontpage_type'] == "splash"){
 init_session();
 online();
 
-$sql -> db_Delete("tmp", "tmp_time < '".(time()-300)."' AND tmp_ip!='data' ");
+$sql -> db_Delete("tmp", "tmp_time < '".(time()-300)."' AND tmp_ip!='data' AND tmp_ip!='adminlog' AND tmp_ip!='submitted_link' AND tmp_ip!='var_store' ");
 
 if($pref['flood_protect'] == 1){
 	$sql -> db_Delete("flood", "flood_time+'".$pref['flood_time']."'<'".time()."' ");
@@ -184,8 +180,9 @@ if(IsSet($_POST['userlogin'])){
 
 if(e_QUERY == "logout"){
 	if($pref['user_tracking'] == "session"){ session_destroy(); $_SESSION[$pref['cookie_name']] = ""; }
-	setcookie($pref['cookie_name'], '', 0, '/', '', 0);
+	cookie($pref['cookie_name'], "", (time()-2592000));
 	echo "<script type='text/javascript'>document.location.href='".e_BASE."index.php'</script>\n";
+	exit;
 }
 ban();
 			
@@ -372,7 +369,7 @@ class textparse{
 		$search[12] = "#\[u\](.*?)\[/u\]#si";
 		$replace[12] = '<u>\1</u>';
 		$search[13] = "#\[img\](.*?)\[/img\]#si";
-		if($pref['image_post'] || $mode == "on"){
+		if($pref['image_post'] || $mode == "on" || ADMIN){
 			$replace[13] = '<img src=\'\1\' alt=\'\' style=\'vertical-align:middle; border:0\' />';
 		}else if(!$pref['image_post_disabled_method']){
 			$replace[13] = '\1';
@@ -407,6 +404,12 @@ class textparse{
 			$replace[24] = '[ file attachment disabled ]';
 		}
 
+		$search[25] = "#\[quote\](.*?)\[/quote\]#si";
+		$replace[25] = '<i>"\1"</i>';
+
+//		$search[26] = "#\<script#si";
+//		$replace[26] = '&lt;script';
+
 		$text = preg_replace($search, $replace, $text);
 		if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
 		$search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;span", "&lt;/span");
@@ -415,11 +418,12 @@ class textparse{
 		if($mode != "nobreak"){ $text = nl2br($text); }
 		$text = str_replace("<br /><br />", "<br />", $text);
 		$text = " " . $text;
-		$text = preg_replace("#([\t\r\n ])([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="\2://\3">\2://\3</a>', $text);
-		$text = preg_replace("#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="http://\2.\3">\2.\3</a>', $text);
-		$text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $text);
+		$text = preg_replace("#([\t\r\n ])([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="\2://\3" onclick="window.open(\'\2://\3\'); return false;">\2://\3</a>', $text);
+		$text = preg_replace("#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="http://\2.\3" onclick="window.open(\'http://\2.\3\'); return false;">\2.\3</a>', $text);
+		$text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\<script type=\"text/javascript\">document.write('<a href=\"mailto:'+'\\2'+'@'+'\\3\">'+'\\2'+'@'+'\\3'+'</a>')</script>", $text);
 		$text = substr($text, 1);
 		$text = code($text, "notdef");
+		$text = html($text);
 		return $text;
 	}
 
@@ -429,9 +433,7 @@ class textparse{
 		for($r=0; $r<=strlen($text); $r++){
 			$chars[$text[$r]] = 1;
 		}
-
 		$ch = array_count_values($chars);
-
 		if((strlen($text) > 50 && $ch[1] < 10) || (strlen($text) > 10 && $ch[1] < 3) || (strlen($text) > 100 && $ch[1] < 20)){
 			echo "<script type='text/javascript'>document.location.href='index.php'</script>\n";
 			exit;
@@ -440,6 +442,7 @@ class textparse{
 		if($mode != "admin"){
 			$text = code($text);
 			if(!$pref['html_post']){ $text = str_replace("<", "&lt;", $text); str_replace(">", "&gt;", $text); }
+			$text = str_replace("<script", "&lt;script", $text);
 			if(($pref['image_post_class'] == 253 && !USER) || ($pref['image_post_class'] == 254 && !ADMIN)){
 				$text = preg_replace("#\[img\](.*?)\[/img\]#si", '', $text);
 			}else if(!check_class($pref['image_post_class'])){
@@ -495,6 +498,7 @@ function check_class($var, $userclass=USERCLASS){
 		if($var == e_UC_PUBLIC){return TRUE;}
 		if($var == e_UC_NOBODY) {return FALSE;}
 		if($var == e_UC_ADMIN && ADMIN) {return TRUE;}
+		if($var == e_UC_READONLY){return TRUE;}
 	}
 	if($debug){ echo "USERCLASS: ".$userclass.", \$var = $var : "; }
 	if(!defined("USERCLASS") || $userclass == ""){
@@ -661,7 +665,7 @@ function init_session(){
 	}else{
 		$tmp = ($_COOKIE[$pref['cookie_name']] ? explode(".", $_COOKIE[$pref['cookie_name']]) : explode(".", $_SESSION[$pref['cookie_name']])); $uid = $tmp[0]; $upw = $tmp[1];
 		if(Empty($upw)){	 // corrupt cookie?
-			setcookie($pref['cookie_name'], '', 0, '/', '', 0);
+			cookie($pref['cookie_name'], "", (time()-2592000));
 			$_SESSION[$pref['cookie_name']] = "";
 			session_destroy();
 			define("ADMIN", FALSE); define("USER", FALSE); define("LOGINMESSAGE", "Corrupted cookie detected - logged out.<br /><br />");
@@ -717,9 +721,34 @@ function ban(){
 	}
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+function retrieve_cache($query){
+	global $sql;
+	if(!is_object($sql)){
+		$sql = new db;
+	}
+	if($sql -> db_Select("cache", "*", "cache_url='$query' ")){
+		$row = $sql -> db_Fetch(); extract($row);
 
+	//	if($query == "news.php"){ echo htmlentities(stripslashes($cache_data)); exit; }
+
+		return stripslashes($cache_data);
+	}else{
+		return FALSE;
+	}
+}
+
+function set_cache($query, $text){
+	global $pref, $sql;
+	if($pref['cachestatus'] && !strstr(e_BASE, "../")){
+		$sql -> db_Insert("cache", "'$query', '".time()."', '".mysql_escape_string($text)."' ");
+	}
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+function cookie($name, $value, $expire, $path="/", $domain="", $secure=0){
+	setcookie($name, $value, $expire, $path, $domain, $secure);
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function glte($table, $order, $amount, $element, $value, $mode){
-
 	/*
 	$table - db table to check
 	$order - field to order by
@@ -746,7 +775,17 @@ function glte($table, $order, $amount, $element, $value, $mode){
 	}
 	return FALSE;
 }
-
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+function html($string){
+	$match_count = preg_match_all("#\[html\](.*?)\[/html\]#si", $string, $result);
+	for ($a = 0; $a < $match_count; $a++){
+		
+		$after_replace = str_replace("<br />", "", $result[1][$a]);
+		$string = str_replace("[html]".$result[1][$a]."[/html]", $after_replace, $string);
+	}
+	return $string;
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function code($string, $mode="default"){
 	if($mode == "default"){
 		$search = array("<", ">", "[", "]");

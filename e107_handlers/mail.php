@@ -14,14 +14,13 @@
 */
 
 function sendemail($send_to, $subject, $message){
-
 	$tmp = parse_url(SITEURL);
 	$headers = "From: ".SITENAME."<".SITEADMINEMAIL.">\n";
 	$headers .= "X-Sender: <mail@".$tmp['host'].">\n";
 	$headers .= "X-Mailer: PHP\n";
 	$headers .= "X-Priority: 3\n";
+	$headers .= "Content-Type: text/plain; charset=".CHARSET."\n";
 	$headers .= "Return-Path: <mail@".$tmp['host'].">\n";
-
 	if(file_exists(e_HANDLER."smtp.php")){
 		require_once(e_HANDLER."smtp.php");
 		smtpmail($send_to, $subject, $message, $headers);

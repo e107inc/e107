@@ -21,7 +21,7 @@ if($NEWSHEADER){
 	exit;
 }
 
-
+if(Empty($pref['newsposts']) ? define("ITEMVIEW", 15) : define("ITEMVIEW", $pref['newsposts']));
 if(file_exists("install.php")){ echo "<div class='installe' style='text-align:center'><b>*** ".LAN_00."</div><br /><br />"; }
 
 if(!is_object($aj)){ $aj = new textparse; }
@@ -118,16 +118,16 @@ if($sql -> db_Select("news", "*", "news_class<255 AND news_class!='' AND (news_s
 	$disablecache = TRUE;
 }
 
-if($sql -> db_Select("cache", "*", "cache_url='news.php' ") && !$disablecache && !e_QUERY){
-	$row = $sql -> db_Fetch(); extract($row);
-	echo $aj -> formtparev($cache_data); 
-	$cachestring = "Cache system activated (content originally served ".strftime("%A %d %B %Y - %H:%M:%S", $cache_datestamp).").";
-	require_once(e_HANDLER."np_class.php");
-	$ix = new nextprev("news.php", $from, ITEMVIEW, $news_total, LAN_84);
-	require_once(FOOTERF);
-	exit;
+if(!$disablecache && !e_QUERY){
+	if($cache_data = retrieve_cache("news.php")){
+		echo $aj -> formtparev($cache_data); 
+		$cachestring = "Cache system activated (content originally served ".strftime("%A %d %B %Y - %H:%M:%S", $cache_datestamp).").";
+		require_once(e_HANDLER."np_class.php");
+		$ix = new nextprev("news.php", $from, ITEMVIEW, $news_total, LAN_84);
+		require_once(FOOTERF);
+		exit;
+	}
 }
-
 
 ob_start();
 if(!$sql -> db_Select("news", "*", "news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY ".$order." DESC LIMIT $from,".ITEMVIEW)){
@@ -136,7 +136,7 @@ if(!$sql -> db_Select("news", "*", "news_class<255 AND (news_start=0 || news_sta
 	$sql2 = new db;
 	while(list($news['news_id'], $news['news_title'], $news['data'], $news['news_extended'], $news['news_datestamp'], $news['admin_id'], $news_category, $news['news_allow_comments'],  $news['news_start'], $news['news_end'], $news['news_class']) = $sql -> db_Fetch()){
 
-		if(check_class($news['news_class']) || !$news['news_class']){
+		if(check_class($news['news_class'])){
 
 			if($news['admin_id'] == 1 && $pref['siteadmin']){
 				$news['admin_name'] = $pref['siteadmin'];
@@ -153,11 +153,12 @@ if(!$sql -> db_Select("news", "*", "news_class<255 AND (news_start=0 || news_sta
 	}
 }
 
-if(!$disablecache){
+if(!$disablecache && !e_QUERY){
 	$cache = $aj -> formtpa(ob_get_contents(), "admin");
-	if($pref['cachestatus'] && !e_QUERY){
-		$cachestring = ($sql -> db_Insert("cache", "'news.php', '".time()."', '$cache' ") ? "Served uncached page. Cache saved." : "Served uncached page. Unable to save cache.");
-	}
+
+	set_cache("news.php", $cache);
+	
+	
 }else{
 	$sql -> db_Delete("cache", "cache_url='news.php' ");
 }

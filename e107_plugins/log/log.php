@@ -19,13 +19,13 @@ $ref = $_REQUEST['referer'];
 
 $self = substr(strrchr(eregi_replace("\?.*", "", $self), "/"), 1);
 
-
 if($self == "/"){ $self = "index.php"; }
 
 $screenstats = $res." @ ".$colour;
+
 require_once("../../class2.php");
 
-if($pref['log_activate'] && ADMIN == FALSE){
+if($pref['log_activate'] && !ADMIN){
 
 	$agent = $_SERVER['HTTP_USER_AGENT'];
 	$browser = getbrowser();
@@ -40,7 +40,7 @@ if($pref['log_activate'] && ADMIN == FALSE){
 		// page not parsed before - create new entry ...
 		$ip .= ".";
 		$sql -> db_Insert("stat_counter", "CURRENT_DATE, '$self', '0', '0', '$ip' ");
-		$yesterday = date("Y-m-d", time()-86400);
+		$yesterday = date("Y-m-d", (time()-86400));
 		$sql -> db_Update("stat_counter", "counter_ip='' WHERE counter_date='$yesterday' ");	// clear ip stats
 	}else{
 		$row = $sql-> db_Fetch(); extract($row);
@@ -128,6 +128,7 @@ if($pref['log_activate'] && ADMIN == FALSE){
 		}
 	}
 }
+
 // end last visitors -----------------------------------------------------------------------------------------------------------------------------------------------------------
 header("Content-type: image/gif");
 readfile("images/trans.gif");

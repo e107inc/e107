@@ -168,7 +168,7 @@ define("POST_EXTENDEDSTRING", " ]<br />");
 
 define(PRELINK, "");
 define(POSTLINK, "");
-define(LINKSTART, "<img src='".THEME."images/bullet3.gif' alt='bullet' /> ");
+define(LINKSTART, "<img src='".THEME."images/bullet3.gif' alt='bullet' style='vertical-align:middle' /> ");
 define(LINKEND, "&nbsp;&nbsp;");
 define(LINKALIGN, "center");
 

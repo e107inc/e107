@@ -60,4 +60,18 @@ define("USRLAN_57", "Deleting un-activated members ...");
 
 define("USRLAN_58", "file uploads are disabled in php.ini");
 
+// ADD USER RELATED
+define("USRLAN_59", "Quick add user");
+define("USRLAN_60", "Add user");
+define("USRLAN_61", "Username");
+define("USRLAN_62", "Password");
+define("USRLAN_63", "Re-type Password");
+define("USRLAN_64", "Email Address");
+define("USRLAN_65", "That user name cannot be accepted as valid, please choose a different user name");
+define("USRLAN_66", "That user name already exists in the database, please choose a different user name");
+define("USRLAN_67", "The two passwords do not match");
+define("USRLAN_68", "You left required field(s) blank");
+define("USRLAN_69", "That doesn't appear to be a valid email address");
+define("USRLAN_70", "User succesfully added");
+
 ?>

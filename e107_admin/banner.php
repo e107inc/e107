@@ -247,15 +247,27 @@ $text .= "<input class=\"tbox\" type=\"text\" size=\"30\" maxlength=\"100\" name
 <div style=\"display:none\"><br />";
 $c=0;
 while($images[$c]){
+	$fileext1 = substr(strrchr($images[$c], "."), 1);
+	$fileext2 = substr(strrchr($images[$c], "."), 0);
+
 	$text .= "<input type=\"radio\" name=\"banner_image\" value=\"".$images[$c]."\"";
 	if($images[$c] == $_POST['banner_image']){
 		$text .= "checked";
 	}
 
-	$text .= "> <img src=\"".e_IMAGE."banners/".$images[$c]."\" alt=\"\" /><br />";
+	if ($fileext1 == swf){
+		$text .= "> <br><object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" codebase=\"http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0\" width=\"468\" height=\"60\">
+		<param name=\"movie\" value=\"".e_IMAGE."banners/".$images[$c]."\">
+		 <param name=\"quality\" value=\"high\"><param name=\"SCALE\" value=\"noborder\">
+		 <embed src=\"".e_IMAGE."banners/".$images[$c]."\" width=\"468\" height=\"60\" scale=\"noborder\" quality=\"high\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\"></embed></object>
+		<br />";
+	}else if($fileext1 == "php" || $fileext1 == "html" || $fileext1 == "js"){
+		$text .= "> Code: ".$images[$c];
+	}else{
+		$text .= "> <img src=\"".e_IMAGE."banners/".$images[$c]."\" alt=\"\" /><br />";
+	}
 	$c++;
 }
-//<input class=\"tbox\" type=\"text\" size=\"70\" maxlength=\"150\" name=\"banner_image\" value=\"".$_POST['banner_image']."\">
 $text .= "</div></td></tr>
 
 <tr>

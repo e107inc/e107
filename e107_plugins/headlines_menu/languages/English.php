@@ -14,5 +14,11 @@
 
 define("NFMENU_160", "Webmaster: ");
 define("NFMENU_161", "News Headlines");
+define("NFMENU_162", "Last updated");
+
+define("NFMENU_163", "Unable to open ");
+define("NFMENU_164", "Your server does not allow outside URL's to be opened using fopen(), contact your site administrator");
+define("NFMENU_165", "[more]");
+define("NFMENU_166", "Details");
 
 ?>

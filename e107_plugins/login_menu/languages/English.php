@@ -12,7 +12,6 @@
 +---------------------------------------------------------------+
 */
 
-
 define("LOGIN_MENU_L1", "Username: ");
 define("LOGIN_MENU_L2", "Password: ");
 define("LOGIN_MENU_L3", "Signup");
@@ -26,5 +25,17 @@ define("LOGIN_MENU_L10", "The maintenance flag is true - this means normal visit
 define("LOGIN_MENU_L11", "Admin");
 define("LOGIN_MENU_L12", "Settings");
 define("LOGIN_MENU_L13", "Profile");
+
+define("LOGIN_MENU_L14", "news item");
+define("LOGIN_MENU_L15", "news items");
+define("LOGIN_MENU_L16", "chatbox post");
+define("LOGIN_MENU_L17", "chatbox posts");
+define("LOGIN_MENU_L18", "comment");
+define("LOGIN_MENU_L19", "comments");
+define("LOGIN_MENU_L20", "forum post");
+define("LOGIN_MENU_L21", "forum posts");
+define("LOGIN_MENU_L22", "new site member");
+define("LOGIN_MENU_L23", "new site members");
+define("LOGIN_MENU_L24", "Click here to see list of new items");
 
 ?>

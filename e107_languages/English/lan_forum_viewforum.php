@@ -30,4 +30,6 @@ define("LAN_321", "Moderators: ");
 define("LAN_395", "[popular]");
 define("LAN_396", "Announcement");
 
+define("LAN_397", "This forum is read only");
+
 ?>

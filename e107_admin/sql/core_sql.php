@@ -225,14 +225,11 @@ CREATE TABLE headlines (
   headline_url varchar(150) NOT NULL default '',
   headline_data text NOT NULL,
   headline_timestamp int(10) unsigned NOT NULL default '0',
-  headline_description tinyint(3) unsigned NOT NULL default '0',
-  headline_webmaster tinyint(3) unsigned NOT NULL default '0',
-  headline_copyright tinyint(3) unsigned NOT NULL default '0',
-  headline_tagline tinyint(3) unsigned NOT NULL default '0',
-  headline_image varchar(100) NOT NULL default '',
-  headline_active tinyint(3) unsigned NOT NULL default '0',
+  headline_description text NOT NULL,
+  headline_active tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (headline_id)
 ) TYPE=MyISAM;
+
 # --------------------------------------------------------
 
 #

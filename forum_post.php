@@ -219,6 +219,7 @@ if(IsSet($_POST['reply'])){
 			header("location: ".e_BASE."index.php");
 			exit;
 		}
+
 		if($sql -> db_Select("forum_t", "*", "thread_thread='".$_POST['post']."' AND thread_id='$thread_id' ")){
 			$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_389."</div>");
 			require_once(FOOTERF);
@@ -276,7 +277,6 @@ if(IsSet($_POST['reply'])){
 			sendemail($user_email, $pref['forum_eprefix']." '".$thread_name."', ".LAN_381.SITENAME, $message);
 		}
 		if($sql -> db_Select("user", "*", "user_realm REGEXP('-".$thread_id."-') ")){
-			echo "Tracking match found - sending email ...";
 			while($row = $sql -> db_Fetch()){
 				extract($row);
 				$poster = ereg_replace("^[0-9]+\.", "", $user);
@@ -354,7 +354,7 @@ if($action == "edit" || $action == "quote"){
 
 	$subject = $thread_name;
 	$post = $aj -> editparse($thread_thread);
-	$post = ereg_replace("\[ .*\]", "", $post);
+	$post = ereg_replace("\<span .*\<\/span\>", "", $post);
 	if($action == "quote"){
 		$post_author_name = substr($thread_user, (strpos($thread_user, ".")+1));
 		$post = "[quote=$post_author_name]".$post."[/quote]\n";
@@ -371,7 +371,7 @@ if($action == "edit" || $action == "quote"){
 
 
 if(ANON == FALSE && USER == FALSE){
-	$text .= LAN_45;
+	$text .= "<div style='text-align:center'>".LAN_45."</div>";
 	$ns -> tablerender(LAN_20, $text);
 	require_once(FOOTERF);
 	exit;
@@ -379,6 +379,14 @@ if(ANON == FALSE && USER == FALSE){
 
 $sql -> db_Select("forum", "*", "forum_id='".$forum_id."' ");
 $row = $sql-> db_Fetch(); extract($row);
+
+if($forum_class == e_UC_READONLY && !ADMIN){
+	$text .= "<div style='text-align:center'>".LAN_398."</div>";
+	$ns -> tablerender(LAN_20, $text);
+	require_once(FOOTERF);
+	exit;
+}
+
 
 if($thread_id){
 	$sql -> db_Select("forum_t", "*", "thread_id='".$thread_id."' ");
@@ -408,7 +416,7 @@ if(ANON == TRUE  && USER == FALSE){
 	$text .= "<tr>
 <td class='forumheader2' style='width:20%'>".LAN_61."</td>
 <td class='forumheader2' style='width:80%'>
-<input class='tbox' type='text' name='anonname' size='71' value='".$anonname."' maxlength='100' />
+<input class='tbox' type='text' name='anonname' size='71' value='".$anonname."' maxlength='20' />
 </td>
 </tr>";
 }
@@ -586,7 +594,7 @@ if($action == "rp"){
 if($pref['forum_enclose']){ $ns -> tablerender($pref['forum_title'], $text); }else{ echo $text; }
 
 function getuser($name){
-	$sql = new db;
+	global $sql, $aj;
 	$ip = getip();
 	if(USER){
 		$name = USERID.".".USERNAME;
@@ -605,7 +613,7 @@ function getuser($name){
 				return FALSE;
 			}
 		}else{
-			$name = "0.".$name.chr(1).$ip;
+			$name = "0.".substr($aj -> formtpa($_POST['anonname'], "public"), 0, 20).chr(1).$ip;
 		}
 	}
 	return $name;

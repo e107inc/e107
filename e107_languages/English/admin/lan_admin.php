@@ -10,7 +10,7 @@ define("ADLAN_6", "Menus");
 define("ADLAN_7", "Alter the order of your menus");
 define("ADLAN_8", "Administrators");
 define("ADLAN_9", "Add/delete site administrators");
-define("ADLAN_10", "Update admin password");
+define("ADLAN_10", "Admin password");
 define("ADLAN_11", "Change your password");
 define("ADLAN_12", "Forums");
 define("ADLAN_13", "Add/Edit Forums");
@@ -107,5 +107,24 @@ define("ADLAN_104", "Security");
 
 define("ADLAN_105", "Images");
 define("ADLAN_106", "Image Settings");
+
+define("ADLAN_107", "Unchecked submitted news items");
+define("ADLAN_108", "Unchecked file uploads");
+define("ADLAN_109", "Information");
+define("ADLAN_110", "Registered members");
+define("ADLAN_111", "Unverified members");
+define("ADLAN_112", "Banned users");
+define("ADLAN_113", "Forum posts");
+define("ADLAN_114", "Comments");
+define("ADLAN_115", "Chatbox posts");
+define("ADLAN_116", "Admin log ...");
+define("ADLAN_117", "Show all entries");
+define("ADLAN_118", "Clear log");
+
+define("ADLAN_119", "Unchecked submitted links");
+
+define("ADLAN_120", "There is a database update available, please click button to install ...");
+define("ADLAN_121", "Install");
+define("ADLAN_122", "Update");
 
 ?>

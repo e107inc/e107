@@ -13,6 +13,11 @@
 +---------------------------------------------------------------+
 */
 require_once("class2.php");
+if(!e_QUERY){
+	header("location: ".e_BASE."index.php");
+	exit;
+}
+
 
 $tmp = explode(".", e_QUERY);
 if(!$tmp[1]){
@@ -41,7 +46,7 @@ if($type == "file"){
 		echo $binary_data;
 		exit;
 	}
-	if(eregi("http", $row['download_url'])){
+	if(strstr($row['download_url'], "http") || strstr($row['download_url'], "ftp")){
 		header("location:".$row['download_url']);
 		exit;
 	}else{

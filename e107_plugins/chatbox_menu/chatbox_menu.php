@@ -38,7 +38,7 @@ if(IsSet($_POST['chat_submit'])){
 					if($sql -> db_Select("user", "*", "user_name='$nick' ")){
 						$emessage = CHATBOX_L1;
 					}else{
-						$nick = "0.".$nick;
+						$nick = "0.".$aj -> formtpa($nick, "public");
 					}
 				}
 				if(!$emessage){
@@ -66,12 +66,7 @@ if($pref['user_reg'] == 1 && USER != TRUE && $pref['anon_post'] != "1"){
 	$texta .= "\n<textarea class='tbox' name='cmessage' cols='26' rows='5' style='overflow:hidden'></textarea>\n<br />\n<input class='button' type='submit' name='chat_submit' value='".CHATBOX_L4."' />\n<input class='button' type='reset' name='reset' value='".CHATBOX_L5."' />\n</p>\n</form>\n</div>\n<br />\n";
 }
 
-
-if($sql -> db_Select("cache", "*", "cache_url='chatbox' ")){
-	$row = $sql -> db_Fetch(); extract($row);
-	$text = stripslashes($cache_data);
-//	$text = preg_replace("/action=\'(.*?)\'\>\<p\>/si", "action='".e_SELF."'><p>", $text);
-}else{
+if(!$text = retrieve_cache("chatbox")){
 
 	$chatbox_posts = $pref['chatbox_posts'];
 	global $nickstore;
@@ -162,10 +157,8 @@ if($sql -> db_Select("cache", "*", "cache_url='chatbox' ")){
 		$text = "<div style='text-align:center'><b>".$emessage."</b></div><br />".$text;
 	}
 
-	if($pref['cachestatus'] && !strstr(e_BASE, "../")){
-		$cache = mysql_escape_string($text);
-		$sql -> db_Insert("cache", "'chatbox', '".time()."', '$cache' ");
-	}
+	set_cache("chatbox", $text);
+
 }
 if(ADMIN && getperms("C")){$text .= "<br />[ <a href='".e_ADMIN."chatbox.php'>".CHATBOX_L13."</a> ]";}
 $caption = (file_exists(THEME."images/chatbox_menu.png") ? "<img src='".THEME."images/chatbox_menu.png' alt='' /> ".CHATBOX_L2 : CHATBOX_L2);

@@ -36,11 +36,11 @@ If(IsSet($_POST['submit'])){
 			$sql -> db_Select("content", "*", "ORDER BY content_datestamp DESC LIMIT 0,1 ", $mode="no_where");
 			list($content_id, $content_heading) = $sql-> db_Fetch();
 			$sql -> db_Insert("links", "0, '".$content_heading."', 'article.php?".$content_id.".255', '', '', '1', '0', '0', '0', {$_POST['c_class']} ");
-			$message = "Content page added and link created in Main Navigation menu.";
+			$message = CNTLAN_24;
 		}else{
 			$sql -> db_Select("content", "*", "ORDER BY content_datestamp DESC LIMIT 0,1 ", $mode="no_where");
 			list($content_id, $content_heading) = $sql-> db_Fetch();
-			$message = "Content page added without link - to link to this content page use this url - 'article.php?".$content_id.".255'.";
+			$message = CNTLAN_23." - 'article.php?".$content_id.".255'.";
 		}
 		unset($content_heading, $content_subheading, $content_content, $content_parent);
 	}else{
@@ -53,6 +53,9 @@ If(IsSet($_POST['update'])){
 	$content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
 	$content_content = $aj -> formtpa($_POST['data'], "admin");
 	$sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_page='".$_POST['content_page']."',  content_comment='".$_POST['content_comment']."', content_class='{$_POST['c_class']}' WHERE content_id='".$_POST['content_id']."' ");
+
+	$sql -> db_Update("links", "link_class='".$_POST['c_class']."' WHERE link_name='$content_heading' ");
+
 	unset($content_heading, $content_subheading, $content_content, $content_parent);
 	$message = CNTLAN_2;
 }

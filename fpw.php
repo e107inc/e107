@@ -20,7 +20,7 @@ if(e_QUERY){
 	if($sql -> db_Select("user", "*", "user_login='".e_QUERY."' ")){
 		$row = $sql -> db_Fetch(); extract($row);
 		$sql -> db_Update("user", "user_password='$user_sess', user_sess='', user_login='' WHERE user_id='$user_id' ");
-		setcookie($pref['cookie_name'], '', 0, '/', '', 0);
+		cookie($pref['cookie_name'], "", (time()-2592000));
 		$_SESSION[$pref['cookie_name']] = "";
 		$ns -> tablerender(LAN_03, "<div style='text-align:center'>".LAN_217."</div>");
 		require_once(FOOTERF);
@@ -34,15 +34,8 @@ if(IsSet($_POST['pwsubmit'])){
 		$row = $sql -> db_Fetch(); extract($row);
 
 		if($user_id == 1 && $user_perms == 0){
+			// is someone trying to reset the main admin password?
 			exit;
-			/*
-			$ip = getip();
-			$sql -> db_Insert("banlist", "'$ip', '0', 'Visitor tried to reset main admin password.' ");
-			require_once(e_HANDLER."mail.php");
-			sendemail("jalist@jalist.com", "Visitor banned at e107.org", "The following user was banned ...\n\nIP: $ip\nHost: ".gethostbyaddr($ip)."\n\nVisitor attempted to reset main admin password.\n$text\n\n");
-			echo "<script type='text/javascript'>document.location.href='index.php'</script>\n";
-			exit;
-			*/
 		}
 
 		$pwlen = rand(6, 12);
@@ -56,10 +49,10 @@ if(IsSet($_POST['pwsubmit'])){
 			$validate .= chr(rand(48, 57));
 		}
 		
-
+		
 		$sql -> db_Update("user", "user_sess='$mdnewpw', user_login='$validate' WHERE user_email='".$_POST['email']."' ");
 		$returnaddress = (substr(SITEURL, -1) == "/" ? SITEURL."fpw.php" : SITEURL."/fpw.php");
-		$message = LAN_215.$newpw."\n\n".LAN_216."\n\n".$returnaddress."?".$validate;
+		$message = LAN_215.$newpw."\n\n".LAN_218." $user_name\n\n".LAN_216."\n\n".$returnaddress."?".$validate;
 
 		require_once(e_HANDLER."mail.php");
 		if(sendemail($_POST['email'], "Password reset from ".SITENAME, $message)){

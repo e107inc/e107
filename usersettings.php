@@ -245,11 +245,11 @@ if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
 $text .= "<tr>
 <td style='width:20%' style='vertical-align:top' class='forumheader3'>".LAN_120."</td>
 <td style='width:80%; text-align:right' class='forumheader3'>
-<textarea class='tbox' name='signature' cols='70' rows='4'>$signature</textarea>
+<textarea class='tbox' name='signature' cols='58' rows='4'>$signature</textarea>
 <br />
 <input class='helpbox' type='text' name='helpb' size='90' />
 <br />
-".ren_help("addtext")."
+".ren_help("addtext", TRUE)."
 </td>
 </tr>
 

@@ -70,6 +70,19 @@ while ($file = readdir($handle)){
 }
 closedir($handle);
 
+if($pref['cachestatus']){
+	if(!$sql -> db_Select("tmp", "*", " tmp_ip='var_store' && tmp_time='1' ")){		// var_store 1 == cache empty time
+		$sql -> db_Insert("tmp", "'var_store', 1, '".$e107info['e107_datestamp']."' ");
+	}else{
+		$row = $sql -> db_Fetch(); extract($row);
+		if(($tmp_info+604800) < time()){
+			$sql -> db_Delete("cache");
+			$sql -> db_Update("tmp", "tmp_info='".time()."' WHERE tmp_ip='var_store' AND tmp_time=1 ");
+		}
+	}
+}
+
+
 $text = "º <a style='cursor: pointer; cursor: hand' onclick=\"expandit(this)\">Show Docs</a>
 <div style='display: none;'>
 <br />";

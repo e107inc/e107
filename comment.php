@@ -49,6 +49,11 @@ if($sql -> db_Select("cache", "*", "cache_url='comment.php?$table.$id' ")){
 
 			list($news['news_id'], $news['news_title'], $news['data'], $news['news_extended'], $news['news_datestamp'], $news['admin_id'], $news_category, $news['news_allow_comments'],  $news['news_start'], $news['news_end'], $news['news_class']) = $sql -> db_Fetch();
 
+			if($news['news_allow_comments']){
+				header("location:".e_BASE."index.php");
+				exit;
+			}
+
 			if(!check_class($news['news_class'])){
 				header("location:".e_BASE."index.php");
 				exit;

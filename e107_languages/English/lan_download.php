@@ -39,5 +39,10 @@ define("LAN_dl_34", "Next");
 define("LAN_dl_35", "Back to list");
 define("LAN_dl_36", "New downloads");
 
+define("LAN_dl_37", "View");
+define("LAN_dl_38", "Order by");
+define("LAN_dl_39", "Sort");
+
+define("LAN_dl_40", "Click here for screenshot");
 
 ?>

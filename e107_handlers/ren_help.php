@@ -4,12 +4,7 @@ function ren_help($func, $rencolsize = FALSE){
 	if(strstr(e_SELF, "article")){
 		$str = "<input class=\"button\" type=\"button\" value=\"newpage\" onclick=\"addtext('[newpage]')\" onMouseOver=\"help('Insert newpage tag, splits article into more than one page')\" onMouseOut=\"help('')\"> ";
 	}
-	if(strstr(e_SELF, "article") || strstr(e_SELF, "content")){
-		$str .= "<input class=\"button\" type=\"button\" value=\"preserve\" onclick=\"addtext('[preserve] [/preserve]')\" onMouseOver=\"help('[preserve]html[/preserve] Preserves HTML tags')\" onMouseOut=\"help('')\"> ";
-	}
-
-
-
+	
 	$str .= <<< EOT
 <input class="button" type="button" value="link" onclick="$func('[link=hyperlink url]hyperlink text[/link]')" onMouseOver="help('Insert link: [link]http://mysite.com[/link] or  [link=http://yoursite.com]Visit My Site[/link]')" onMouseOut="help('')">
 <input class="button" type="button" style="font-weight:bold; width: 20px" value="b" onclick="$func('[b][/b]')" onMouseOver="help('Bold text: [b]This text will be bold[/b]')" onMouseOut="help('')">
@@ -19,10 +14,15 @@ function ren_help($func, $rencolsize = FALSE){
 <input class="button" type="button" value="center" onclick="$func('[center][/center]')" onMouseOver="help('Center align: [center]This text will be centered[/center]')" onMouseOut="help('')">
 <input class="button" type="button" value="left" onclick="$func('[left][/left]')" onMouseOver="help('Left align: [left]This text will be left aligned[/left]')" onMouseOut="help('')">
 <input class="button" type="button" value="right" onclick="$func('[right][/right]')" onMouseOver="help('Right align: [right]This text will be right aligned[/right]')" onMouseOut="help('')">
-<input class="button" type="button" value="blockquote" onclick="$func('[blockquote][/blockquote]')" onMouseOver="help('Blockquote text: [blockquote]This text will be indented[/blockquote]')" onMouseOut="help('')">
-<input class="button" type="button" value="code" onclick="$func('[code][/code]')" onMouseOver="help('Code - preformatted text: [code]\$var = foobah;[/code]')" onMouseOut="help('')">
-
+<input class="button" type="button" value="bq" onclick="$func('[blockquote][/blockquote]')" onMouseOver="help('Blockquote text: [blockquote]This text will be indented[/blockquote]')" onMouseOut="help('')"> 
+<input class="button" type="button" value="code" onclick="$func('[code][/code]')" onMouseOver="help('Code - preformatted text: [code]\$var = foobah;[/code]')" onMouseOut="help('')"> 
 EOT;
+
+if(ADMIN){
+	$str .= <<< EOT
+<input class="button" type="button" value="html" onclick="$func('[html][/html]')" onMouseOver="help('HTML - removes linebreaks from text: [html]<table><tr><td> etc[/html]')" onMouseOut="help('')">
+EOT;
+}
 
 if($rencolsize){
 

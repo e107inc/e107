@@ -49,6 +49,7 @@ if(ADMIN == TRUE){
 	echo ADLAN_51." ...";
 }
 
+$adminfpage = (!$pref['adminstyle'] || $pref['adminstyle'] == "default" ? "admin.php" : $pref['adminstyle'].".php");
 
 echo "
 <div>
@@ -57,8 +58,9 @@ echo "
 <td style='width:15%; vertical-align: top;'>";
 
 if(ADMIN == TRUE){
-	if(!eregi("/admin.php", e_SELF)){
-	$text = "<a href='".e_ADMIN.(!$pref['adminstyle'] || $pref['adminstyle'] == "default" ? "admin.php" : $pref['adminstyle'].".php")."'>".ADLAN_52."</a><br /><a href='".e_BASE."index.php'>".ADLAN_53."</a><br /><br />";
+	
+	if(!strstr(e_SELF, "/".$adminfpage) || strstr(e_SELF, "/".$adminfpage."?")){
+	$text = "<a href='".e_ADMIN.$adminfpage."'>".ADLAN_52."</a><br /><a href='".e_BASE."index.php'>".ADLAN_53."</a><br /><br />";
 	$text .= "º <a style='cursor: pointer; cursor: hand' onclick=\"expandit(this);\">".ADLAN_93."</a>
 	<div style='display: none;'>
 	<br />";
@@ -107,14 +109,6 @@ if(ADMIN == TRUE){
 	$ns -> tablerender("Admin Navigation", $text);
 	unset($text);
  }
-
-if($sql -> db_Select("submitnews", "*", "submitnews_auth ='0' ")){
-	$text = "<div class='defaulttext' style='text-align:center'>
-<b><a href='".e_ADMIN."submitnews.php'>".ADLAN_77."</a></b>
-</div>
-";
-	$ns -> tablerender(ADLAN_32, $text);
-}
 
 if(ADMINPERMS == "0"){
 	if((ADMINPWCHANGE+2592000) < time()){

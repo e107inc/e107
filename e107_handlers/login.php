@@ -45,9 +45,9 @@ class userlogin{
 					$_SESSION[$pref['cookie_name']] = $user_id.".".$userpass;
 				}else{
 					if($autologin == 1){
-						setcookie($pref['cookie_name'], $user_id.".".$userpass, time()+3600*24*30, '/', '', 0);
+						cookie($pref['cookie_name'], $user_id.".".$userpass, ( time()+3600*24*30));
 					}else{
-						setcookie($pref['cookie_name'], $user_id.".".$userpass, time()+3600, '/', '', 0);
+						cookie($pref['cookie_name'], $user_id.".".$userpass, ( time()+3600*3));
 					}
 				}
 

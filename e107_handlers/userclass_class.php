@@ -1,6 +1,6 @@
 <?php
 
-function r_userclass($fieldname,$curval=0){
+function r_userclass($fieldname, $curval=0, $mode="off"){
 	$sql = new db;
 	$text="<select class='tbox' name='{$fieldname}'>\n";
 	($curval==e_UC_PUBLIC) ? $s=" selected" : $s="";
@@ -15,6 +15,10 @@ function r_userclass($fieldname,$curval=0){
 			($userclass_id==$curval) ? $s=" selected" : $s="";
 			$text .= "<option value='$userclass_id' ".$s.">".$userclass_name ."\n";
 		}
+	}
+	if($mode != "off"){
+		($curval==e_UC_READONLY) ? $s=" selected" : $s="";
+		$text.="<option  value='".e_UC_READONLY."' ".$s.">Read only\n";
 	}
 	$text.="</select>\n";
 	return $text;

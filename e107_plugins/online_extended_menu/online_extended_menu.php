@@ -24,7 +24,7 @@
 	if($total_members > 1){
 		$newest_member = $sql -> db_Select("user", "user_id, user_name", "ORDER BY user_join DESC LIMIT 0,1", "no_where");
 		$row = $sql -> db_Fetch(); extract($row);
-		$text .= "<br />".ONLINE_EL5.": ".$total_members."<br />".ONLINE_EL6.": <a href='user.php?id.".$user_id."'>".$user_name."</a>";
+		$text .= "<br />".ONLINE_EL5.": ".$total_members."<br />".ONLINE_EL6.": <a href='".e_BASE."user.php?id.".$user_id."'>".$user_name."</a>";
 	}
 
 	$ns -> tablerender(ONLINE_EL4, $text);

@@ -17,7 +17,7 @@ if($pref['user_reg'] == 0){header("location:".e_BASE."index.php"); exit; }
 
 if(USER){header("location:".e_BASE."index.php"); exit; }
 
-if(e_QUERY != ""){
+if(e_QUERY){
 	$qs = explode(".", e_QUERY);
 	if($qs[0] == "activate"){
 		if($sql -> db_Select("user", "*", "user_sess='".$qs[2]."' ")){
@@ -57,6 +57,12 @@ if(IsSet($_POST['register'])){
 		message_handler("P_ALERT", LAN_185);
 		$error = TRUE;
 	}
+
+	if($sql -> db_Select("user", "user_email", "user_email='".$_POST['email']."' ")){
+		message_handler("P_ALERT", LAN_408);
+		$error = TRUE;
+	}
+
 	 if(!preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]+@([-0-9A-Z]+\.)+([0-9A-Z]){2,4}$/i', $_POST['email'])){
 		 message_handler("P_ALERT", LAN_106);
 		 $error = TRUE;

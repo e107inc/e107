@@ -44,6 +44,7 @@ if(e_QUERY && e_QUERY != "track"){
 }
 
 require_once(HEADERF);
+
 $gen = new convert;
 $total_topics = $sql -> db_Count("forum_t", "(*)", " WHERE thread_parent='0' ");
 $total_replies = $sql -> db_Count("forum_t", "(*)", " WHERE thread_parent!='0' ");
@@ -61,11 +62,9 @@ $text = "<div style='text-align:center'>
 </tr>";
 
 if(!$sql -> db_Select("forum", "*", "forum_parent='0' ORDER BY forum_order ASC")){
-	$text .= "<tr><td colspan='5' style='text-align:center'><br />".LAN_51."<br /><br /></td></tr><table></td></tr></table>";
-	echo $text;
+	$ns -> tablerender(PAGE_NAME, "<div style='text-align:center'>".LAN_51."</div>");
 	require_once(FOOTERF);
 	exit;
-
 }else{
 	$sql2 = new db; $sql3 = new db;
 
@@ -102,6 +101,8 @@ if(!$sql -> db_Select("forum", "*", "forum_parent='0' ORDER BY forum_order ASC")
 					$text .= render_forum($row, $newflag, $forum_id);
 				}else if($forum_class == 254 && !USER){
 					$text .= "<tr><td class='forumheader3' colspan='5' style='text-align:center'>".$forum_name.": ".LAN_400."</td></tr>";
+				}else if($forum_class == 251){
+					$text .= render_forum($row, $newflag, $forum_id);
 				}else if($forum_class && check_class($forum_class)){
 					$text .= render_forum($row, $newflag, $forum_id);
 				}else if(!$forum_class){

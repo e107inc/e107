@@ -116,6 +116,7 @@ if(IsSet($_POST['submit'])){
 	$_POST['admin_name'] = USERNAME;
 	$_POST['comment_total'] = $comment_total;
 	$_POST['news_datestamp'] = time();
+	if(!$_POST['cat_id']){ $_POST['cat_id'] = 1; }
 	$message = $ix -> submit_item($_POST);
 	unset($_POST['news_title'], $_POST['cat_id'], $_POST['data'], $_POST['news_extended'], $_POST['news_allow_comments'], $_POST['startday'], $_POST['startmonth'], $_POST['startyear'], $_POST['endday'], $_POST['endmonth'], $_POST['endyear'], $_POST['news_id'], $_POST['news_class']);
 	$rsd = new create_rss();

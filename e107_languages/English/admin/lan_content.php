@@ -23,4 +23,9 @@ define("CNTLAN_20", "Content page deleted.");
 define("CNTLAN_21", "Auto line breaks");
 define("CNTLAN_22", "( if you're posting HTML code you should set this to off )");
 
+define("CNTLAN_23", "Content page added without link - to link to this content page use this url");
+define("CNTLAN_24", "Content page added and link created in Main Navigation menu");
+
+
+
 ?>

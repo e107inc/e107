@@ -442,8 +442,8 @@ function create_tables(){
 
 	$e107['e107_author'] = "Steve Dunstan (jalist)";
 	$e107['e107_url'] = "http://e107.org";
-	$e107['e107_version'] = "v0.600beta";
-	$e107['e107_build'] = "";
+	$e107['e107_version'] = "v0.603";
+	$e107['e107_build'] = "Revision #6";
 	$e107['e107_datestamp'] = time();
 	$tmp = serialize($e107);
 	mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('e107', '$tmp') ");
@@ -456,10 +456,10 @@ function create_tables(){
 	$pref['sitebutton'] = "button.png";
 	$pref['sitetag'] = "Website System ".$e107['e107_version']." ".$e107['e107_build'];
 	$pref['sitedescription'] = "";
-	$pref['siteadmin'] = $mainsiteadmin;
-	$pref['siteadminemail'] = $mainsiteadminemail;
-	$pref['sitetheme'] = "leap of faith";
-	$pref['admintheme'] = "leap of faith";
+	$pref['siteadmin'] = $_POST['admin_name'];
+	$pref['siteadminemail'] = $_POST['admin_email'];
+	$pref['sitetheme'] = "e107v4a";
+	$pref['admintheme'] = "e107v4a";
 	$pref['sitedisclaimer'] = "All trademarks are &copy; their respective owners, all other content is &copy; e107 powered website.<br />e107 is &copy; e107.org 2002/2003 and is released under the <a href=&#39;http://www.gnu.org/&#39;>GNU GPL license</a>.";
 	$pref['newsposts'] = "10";
 	$pref['flood_protect'] = "";
@@ -510,6 +510,8 @@ function create_tables(){
 	$pref['displayrendertime'] = "1";
 	$pref['displaysql'] = "";
 	$pref['displaythemeinfo'] = "1";
+	$pref['link_submit'] = "1";
+	$pref['link_submit_class'] = "0";
 
 	$tmp = serialize($pref);
 	mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('pref', '$tmp') ");

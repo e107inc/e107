@@ -12,10 +12,11 @@
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
+require_once("class2.php");
 
 $text = "<font style='FONT-SIZE: 11px; COLOR: black; FONT-FAMILY: Tahoma, Verdana, Arial, Helvetica; TEXT-DECORATION: none'>
 <div style='text-align:center'>
-<img src='e107_images/logo.png' alt='Logo' />
+<img src='".e_IMAGE."logo.png' alt='Logo' />
 </div>
 <hr />
 <br />

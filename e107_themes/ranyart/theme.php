@@ -18,7 +18,7 @@ $themename = "ranyart";
 $themeversion = "1";
 $themeauthor = "jalist";
 $themedate = "14/09/2003";
-$themeinfo = "<b>PLEASE NOTE</b> This theme uses sectioning and is set up to show only category 1 and 2 type news items, to alter to standard news view please delete the \$NEWSHEADER section from the theme.php.";
+$themeinfo = "To use sectioning with this theme uncomment the relevant code from theme.php.";
 
 // [layout]
 
@@ -68,6 +68,10 @@ $HEADER = "
 </td>
 {SETSTYLE=default}
 <td style='width:70%; vertical-align: top'>";
+
+/*
+
+// uncomment to use sectioning and listing
 
 $NEWSHEADER = "
 <div style='text-align:center'>
@@ -124,6 +128,21 @@ $NEWSHEADER = "
 </tr>
 </table>";
 
+$NEWSLISTSTYLE = "
+{NEWSICON}
+<b>
+{NEWSTITLE}
+</b>
+<div class='smalltext'>
+{NEWSAUTHOR}
+on
+{NEWSDATE}
+{NEWSCOMMENTS}
+</div>
+<hr />
+";
+
+*/
 $FOOTER = "
 <br />
 </td>
@@ -172,20 +191,6 @@ on
 </div>
 </div>
 <br />";
-
-$NEWSLISTSTYLE = "
-{NEWSICON}
-<b>
-{NEWSTITLE}
-</b>
-<div class='smalltext'>
-{NEWSAUTHOR}
-on
-{NEWSDATE}
-{NEWSCOMMENTS}
-</div>
-<hr />
-";
 
 define("ICONSTYLE", "float: left; border:0");
 define("COMMENTLINK", "Read/Post Comment: ");

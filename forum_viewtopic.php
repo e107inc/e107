@@ -26,19 +26,19 @@ if(!e_QUERY){
 	$tmp = explode(".", e_QUERY);
 	$forum_id = $tmp[0]; $thread_id = $tmp[1]; $from = $tmp[2]; $action = $tmp[3];
 	if(!$from){ $from = 0; }
-	if(!$thread_id){
+	if(!$thread_id || !is_numeric($thread_id)){
 		header("Location:".e_BASE."forum.php");
 		exit;
 	}
 }
 
-if($action == "track"){
+if($action == "track" && USER){
 	$sql -> db_Update("user", "user_realm='".USERREALM."-".$thread_id."-' WHERE user_id='".USERID."' ");
 	header("location:".e_SELF."?".$forum_id.".".$thread_id);
 	exit;
 }
 
-if($action == "untrack"){
+if($action == "untrack" && USER){
 	$tmp = ereg_replace("-".$thread_id."-", "", USERREALM);
 	$sql -> db_Update("user", "user_realm='$tmp' WHERE user_id='".USERID."' ");
 	header("location:".e_SELF."?".$forum_id.".".$thread_id);
@@ -113,7 +113,7 @@ while($row = $sql -> db_Fetch()){
 }
 
 if(!$FORUMSTART){	// no style defined in theme.php - use default style ...
-	$FORUMSTART = "<div style='text-align:center'>\n<table style='width:95%' class='fborder'>\n<tr>\n<td  colspan='2' class='fcaption'>\n{BREADCRUMB}\n</td>\n</tr>\n<tr>\n<td class='forumheader' colspan='2'>\n<table cellspacing='0' cellpadding='0' style='width:100%'>\n<tr>\n<td class='smalltext'>\n{NEXTPREV}\n</td>\n<td style='text-align:right'>&nbsp;\n{TRACK}\n</td>\n</tr>\n</table>\n</td>\n</tr>\n<tr>\n<td style='width:80%; vertical-align:bottom'>\n{MODERATORS}\n<div class='mediumtext'>\n{GOTOPAGES}\n</div>\n</td>\n<td style='width:20%; text-align:right'>\n{BUTTONS}\n</td>\n</tr>\n<tr>\n<td colspan='2' style='text-align:center'>\n{THREADSTATUS}\n<table style='width:100%' class='fborder'>\n<tr>\n<td style='width:20%; text-align:center' class='fcaption'>\nAuthor\n</td>\n<td style='width:80%; text-align:center' class='fcaption'>\nPost\n</td>\n</tr>\n";
+	$FORUMSTART = "<div style='text-align:center'>\n<table style='width:95%' class='fborder'>\n<tr>\n<td  colspan='2' class='fcaption'>\n{BREADCRUMB}\n</td>\n</tr>\n<tr>\n<td class='forumheader' colspan='2'>\n<table cellspacing='0' cellpadding='0' style='width:100%'>\n<tr>\n<td class='smalltext'>\n{NEXTPREV}\n</td>\n<td style='text-align:right'>&nbsp;\n{TRACK}\n</td>\n</tr>\n</table>\n</td>\n</tr>\n<tr>\n<td style='width:80%; vertical-align:bottom'>\n{MODERATORS}\n<div class='mediumtext'>\n{GOTOPAGES}\n</div>\n</td>\n<td style='width:20%; text-align:right'>\n{BUTTONS}\n</td>\n</tr>\n<tr>\n<td colspan='2' style='text-align:center'>\n{THREADSTATUS}\n<table style='width:100%' class='fborder'>\n<tr>\n<td style='width:20%; text-align:center' class='fcaption'>\n".LAN_402."\n</td>\n<td style='width:80%; text-align:center' class='fcaption'>\n".LAN_403."\n</td>\n</tr>\n";
 	$FORUMTHREADSTYLE = "<tr>\n<td class='forumheader' style='vertical-align:middle'>\n{NEWFLAG}\n{POSTER}\n</td>\n<td class='forumheader' style='vertical-align:middle'>\n<table cellspacing='0' cellpadding='0' style='width:100%'>\n<tr>\n<td class='smallblacktext'>\n{THREADDATESTAMP}\n</td>\n<td style='text-align:right'>\n{EDITIMG}{QUOTEIMG}\n</td>\n</tr>\n</table>\n</td>\n</tr>\n<tr>\n<td class='forumheader3' style='vertical-align:top'>\n{AVATAR}\n<span class='smalltext'>\n{MEMBERID}\n</span>\n{LEVEL}\n<span class='smalltext'>\n{JOINED}\n{POSTS}\n</span>\n</td>\n<td class='forumheader3' style='vertical-align:top'>\n{POST}\n{SIGNATURE}\n</td>\n</tr>\n<tr>\n <td class='finfobar'>\n<span class='smallblacktext'>\n{TOP}\n</span>\n</td>\n<td class='finfobar' style='vertical-align:top'>\n<table cellspacing='0' cellpadding='0' style='width:100%'>\n<tr>\n<td>\n{PROFILEIMG}\n {EMAILIMG}\n {WEBSITEIMG}\n {PRIVMESSAGE}\n</td>\n<td style='text-align:right'>\n{MODOPTIONS}\n</td>\n</tr>\n</table>\n</td>\n</tr>\n<tr>\n<td colspan='2'>\n</td>\n</tr>\n";
 	$FORUMEND = "<tr><td colspan='2' class='forumheader3' style='text-align:center'>{QUICKREPLY}</td></tr></table>\n</td>\n</tr>\n<tr>\n<td style='width:80%; vertical-align:top'>\n<div class='mediumtext'>\n{GOTOPAGES}\n</div>\n{FORUMJUMP}\n</td>\n<td style='width:20%; text-align:right'>\n{BUTTONS}\n</td>\n</tr>\n</table>\n</div>";
 	$FORUMREPLYSTYLE = "";
@@ -121,11 +121,18 @@ if(!$FORUMSTART){	// no style defined in theme.php - use default style ...
 
 // get info for main thread -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+$thread_name = $aj -> tpa($thread_name);
+
 $BREADCRUMB = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a> -> <a class='forumlink' href='forum.php'>Forums</a> -> <a class='forumlink' href='forum_viewforum.php?".$forum_id."'>".$forum_name."</a> -> ".$thread_name;
 
-$NEXTPREV = ($prevthread ? "&lt;&lt; <a href='".e_SELF."?".$forum_id.".".$prevthread."'>".LAN_389."</a> " : "No previous thread ")."|".($nextthread ? " <a href='".e_SELF."?".$forum_id.".".$nextthread."'>".LAN_390."</a> &gt;&gt;" : " No next thread");
+$BACKLINK = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a> -> <a class='forumlink' href='forum.php'>Forums</a> -> <a class='forumlink' href='forum_viewforum.php?".$forum_id."'>".$forum_name."</a>";
 
-if($pref['forum_track']){
+$THREADNAME = $thread_name;
+
+
+$NEXTPREV = ($prevthread ? "&lt;&lt; <a href='".e_SELF."?".$forum_id.".".$prevthread."'>".LAN_389."</a> " : LAN_404." ")."|".($nextthread ? " <a href='".e_SELF."?".$forum_id.".".$nextthread."'>".LAN_390."</a> &gt;&gt;" : " ".LAN_405." ");
+
+if($pref['forum_track'] && USER){
 	$TRACK = (preg_match("/-".$thread_id."-/", USERREALM) ? "<span class='smalltext'><a href='".e_SELF."?".$forum_id.".".$thread_id.".0."."untrack'>".LAN_392."</a></span>" : "<span class='smalltext'><a href='".e_SELF."?".$forum_id.".".$thread_id.".0."."track'>".LAN_391."</a></span>");
 }
 
@@ -146,7 +153,7 @@ if($pages>1){
 	$GOTOPAGES .= ($nextpage < $replies ? " <a href='forum_viewtopic.php?".$forum_id.".".$thread_id.".".$nextpage."'>".LAN_05."</a> " : "");
 }
 
-if(ANON || USER){
+if(ANON || USER && ($forum_class != e_UC_READONLY || ADMIN)){
 	if($thread_active){
 		$BUTTONS = "<a href='forum_post.php?rp.".e_QUERY."'><img src='".FTHEME."reply.png' alt='' style='border:0' /></a>";
 	}
@@ -163,12 +170,11 @@ if(strstr($post_author_name, chr(1))){
 	$iphost = "<div class='smalltext' style='text-align:right'>IP: <a href='".e_ADMIN."userinfo.php?$ip'>$ip ( $host )</a></div>";
 }
 
-if(!$post_author_id){	// guest
+if(!$post_author_id || !$sql -> db_Select("user", "*", "user_id='".$post_author_id."' ")){	// guest
 	$POSTER = "<a name='$thread_id'>\n<b>".$post_author_name."</b>";
 	$AVATAR = "<br /><span class='smallblacktext'>".LAN_194."</span>";
 }else{	// regged member - get member info
 	unset($iphost);
-	$sql -> db_Select("user", "*", "user_id='".$post_author_id."' ");
 	$row = $sql -> db_Fetch(); extract($row);
 	$POSTER = "<a name='$thread_id'>\n<a href='user.php?id.".$post_author_id."'><b>".$post_author_name."</b></a>";
 	if($user_image){
@@ -177,12 +183,13 @@ if(!$post_author_id){	// guest
 	}else{
 		unset($AVATAR);
 	}
+	
 	$JOINED = ($user_perms == "0" ? "" : LAN_06." ".$gen->convert_date($user_join, "forum")."<br />");
 	$LOCATION = ($user_location ? LAN_07.": ".$user_location : "");
 	$WEBSITE = ($user_homepage ? LAN_08.": ".$user_homepage : "");
 	$POSTS = LAN_67." ".$user_forums."<br />";
 	$VISITS = LAN_09.": ".$user_visits;
-	$MEMBERID = (preg_match("/(^|\s)".preg_quote($user_name)."/", $forum_moderators) ? "<img src='".FTHEME."moderator.png' alt='' style='border:0' /><br />" : LAN_195." #".$user_id."<br />");
+	$MEMBERID = (preg_match("/(^|\s)".preg_quote($user_name)."/", $forum_moderators) && getperms("A", $user_perms) ? "<img src='".FTHEME."moderator.png' alt='' style='border:0' /><br />" : LAN_195." #".$user_id."<br />");
 	$SIGNATURE = ($user_signature ? "<br /><hr style='width:15%; text-align:left'><span class='smalltext'>".$aj -> tpa($user_signature) : "");
 	$PROFILEIMG = "<a href='user.php?id.".$user_id."'><img src='".FTHEME."profile.png' alt='".LAN_398."' style='border:0' /></a>";
 	$EMAILIMG = (!$user_hideemail ? "<a href='mailto:$user_email'><img src='".FTHEME."email.png' alt='".LAN_397."' style='border:0' /></a>" : "");
@@ -257,7 +264,7 @@ if(USER){
 $THREADDATESTAMP = "<img src='".FTHEME."post.png' alt='' /> ".$gen->convert_date($thread_datestamp, "forum");
 $POST = $aj -> tpa($thread_thread, "forum");
 if(ADMIN && $iphost){ $POST .= "<br />".$iphost; }
-$TOP = "<a href='".e_SELF."?".e_QUERY."#top'>Back to top</a>";
+$TOP = "<a href='".e_SELF."?".e_QUERY."#top'>".LAN_10."</a>";
 $FORUMJUMP = forumjump();
 
 $forstr = preg_replace("/\{(.*?)\}/e", '$\1', $FORUMSTART);
@@ -284,13 +291,13 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 		}
 		//$post_author_count = $sql -> db_Count("forum_t", "(*)", " WHERE thread_user='$thread_user' OR thread_user='$post_author_name' ");
 
-		if(!$post_author_id){	// guest
+		if(!$post_author_id || !$sql2 -> db_Select("user", "*", "user_id='".$post_author_id."' ")){	// guest
 			$POSTER = "<a name='$thread_id'>\n<b>".$post_author_name."</b>";
 			$AVATAR = "<br /><span class='smallblacktext'>".LAN_194."</span>";
 			unset($JOINED, $LOCATION, $WEBSITE, $POSTS, $VISITS, $MEMBERID, $SIGNATURE, $RPG, $LEVEL, $PRIVMESSAGE);
 		}else{	// regged member - get member info
 			unset($iphost);
-			$sql2 -> db_Select("user", "*", "user_id='".$post_author_id."' ");
+			
 			$row = $sql2 -> db_Fetch(); extract($row);
 			$POSTER = "<a name='$thread_id'>\n<a href='user.php?id.".$post_author_id."'><b>".$post_author_name."</b></a>";
 			if($user_image){
@@ -299,12 +306,13 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 			}else{
 				unset($AVATAR);
 			}
+			
 			$JOINED = ($user_perms == "0" ? "" : LAN_06.": ".$gen->convert_date($user_join, "forum")."<br />");
 			$LOCATION = ($user_location ? LAN_07.": ".$user_location : "");
 			$WEBSITE = ($user_homepage ? LAN_08.": ".$user_homepage : "");
 			$POSTS = LAN_67." ".$user_forums."<br />";
 			$VISITS = LAN_09.": ".$user_visits;
-			$MEMBERID = (preg_match("/(^|\s)".preg_quote($user_name)."/", $forum_moderators) ? "<img src='".FTHEME."moderator.png' alt='' style='border:0' /><br />" : LAN_195." #".$user_id."<br />");
+			$MEMBERID = (preg_match("/(^|\s)".preg_quote($user_name)."/", $forum_moderators) && getperms("A", $user_perms) ? "<img src='".FTHEME."moderator.png' alt='' style='border:0' /><br />" : LAN_195." #".$user_id."<br />");
 			$SIGNATURE = ($user_signature ? "<br /><hr style='width:15%; text-align:left'><span class='smalltext'>".$aj -> tpa($user_signature) : "");
 			$PROFILEIMG = "<a href='user.php?id.".$user_id."'><img src='".FTHEME."profile.png' alt='".LAN_398."' style='border:0' /></a>";
 			$EMAILIMG = (!$user_hideemail ? "<a href='mailto:$user_email'><img src='".FTHEME."email.png' alt='".LAN_397."' style='border:0' /></a>" : "");
@@ -403,7 +411,7 @@ require_once(FOOTERF);
 function forumjump(){
 	global $sql;
 	$sql -> db_Select("forum", "*", "forum_parent !=0 AND forum_class!='255' ");
-	$text .= "<form method='post' action='".e_SELF."'><p>Jump: <select name='forumjump' class='tbox'>";
+	$text .= "<form method='post' action='".e_SELF."'><p>".LAN_65.": <select name='forumjump' class='tbox'>";
 	while($row = $sql -> db_Fetch()){
 		extract($row);
 		if(($forum_class && check_class($forum_class)) || ($forum_class == 254 && USER) || !$forum_class){

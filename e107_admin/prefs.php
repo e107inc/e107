@@ -282,8 +282,6 @@ $text .= "</select>
 <tr>
 <td style='width:50%' class='forumheader3'>".PRFLAN_16." </td>
 <td style='width:50%; text-align:right' class='forumheader3'>".
-
-
 ($pref['displaysql'] ? "<input type='checkbox' name='displaysql' value='1' checked>" : "<input type='checkbox' name='displaysql' value='1'>")."
 </td>
 </tr>
@@ -341,7 +339,7 @@ if(ITEMVIEW == 20){
 	$text .= "<option>20</option>\n";
 }
 if(ITEMVIEW == 25){
-	$text .= "<option selected>5</option>\n";
+	$text .= "<option selected>25</option>\n";
 }else{
 	$text .= "<option>25</option>\n";
 }

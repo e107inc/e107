@@ -117,7 +117,12 @@ class db{
 //		if(!ANON && !USER && $table != "user"){ return FALSE; }
 
 		if($result = $this->mySQLresult = @mysql_query("INSERT INTO ".MPREFIX.$table." VALUES (".$arg.")" )){
-			return mysql_insert_id();
+			$tmp = mysql_insert_id();
+
+			if(strstr(e_SELF, ADMINDIR) && $table != "online"){
+				mysql_query("INSERT INTO ".MPREFIX."tmp VALUES ('adminlog', '".time()."', '<br /><b>Insert</b> - <b>$table</b> table (field id <b>$tmp</b>)<br />by <b>".USERNAME."</b>') ");
+			}
+			return $tmp;
 		}else{
 			$this->dbError("db_Insert ($query)");
 			return FALSE;
@@ -137,6 +142,13 @@ class db{
 		$debugtable = "plugin";
 		if($debug == TRUE && $table == $debugtable){ echo "UPDATE ".MPREFIX.$table." SET ".$arg."<br />"; }	
 		if($result = $this->mySQLresult = @mysql_query("UPDATE ".MPREFIX.$table." SET ".$arg)){
+
+			if(strstr(e_SELF, ADMINDIR) && $table != "online"){
+				if(!strstr($arg, "link_order")){
+					$str = addslashes(str_replace("WHERE", "", substr($arg, strpos($arg, "WHERE"))));
+					mysql_query("INSERT INTO ".MPREFIX."tmp VALUES ('adminlog', '".time()."', '<br /><b>Update</b> - <b>$table</b> table (string: <b>$str</b>)<br />by <b>".USERNAME."</b>') ");
+				}
+			}
 			return $result;
 		}else{
 			$this->dbError("db_Update ($query)");
@@ -221,6 +233,17 @@ class db{
 		}
 		if(!$arg){
 			if($result = $this->mySQLresult = @mysql_query("DELETE FROM ".MPREFIX.$table)){
+				if(strstr(e_SELF, ADMINDIR) && $table != "online" && $table != "tmp"){
+					$str = addslashes(str_replace("WHERE", "", substr($arg, strpos($arg, "WHERE"))));
+
+					if($table == "cache"){
+						$string = "<br /><b>Delete</b> - <b>$table</b> table (routine tidy-up)<br />by <b>e107</b>";
+					}else{
+						$string = "<br /><b>Delete</b> - <b>$table</b> table (all entries deleted)<br />by <b>".USERNAME."</b>";
+					}
+
+					mysql_query("INSERT INTO ".MPREFIX."tmp VALUES ('adminlog', '".time()."', '$string') ");
+				}
 				return $result;
 			}else{
 				$this->dbError("db_Delete ($arg)");
@@ -228,7 +251,12 @@ class db{
 			}
 		}else{
 			if($result = $this->mySQLresult = @mysql_query("DELETE FROM ".MPREFIX.$table." WHERE ".$arg)){
-				return mysql_affected_rows();
+				$tmp = mysql_affected_rows();
+				if(strstr(e_SELF, ADMINDIR) && $table != "online" && $table != "tmp"){
+					$str = addslashes(str_replace("WHERE", "", substr($arg, strpos($arg, "WHERE"))));
+					mysql_query("INSERT INTO ".MPREFIX."tmp VALUES ('adminlog', '".time()."', '<b>Delete</b> - <b>$table</b> table (string: <b>$str</b>) by <b>".USERNAME."</b>') ");
+				}
+				return $tmp;
 			}else{
 				$this->dbError("db_Delete ($arg)");
 				return FALSE;

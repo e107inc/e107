@@ -242,8 +242,6 @@ $CHATBOXSTYLE = "
 <div class='mediumtext'>
 {MESSAGE}
 </div>
-<div class='smalltext'>
-{ADMINOPTIONS}
-</div>";
+";
 
 ?>

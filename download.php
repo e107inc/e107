@@ -130,7 +130,7 @@ if($action == "list"){
 	<table style='width:95%' class='fborder'>
 	<tr>
 	<td colspan='7' style='text-align:center' class='forumheader'>
-	<span class='defaulttext'>View</span> 
+	<span class='defaulttext'>".LAN_dl_37."</span> 
 	<select name='view' class='tbox'>".
 	($view == 5 ? "<option selected>5</option>" : "<option>5</option>").
 	($view == 10 ? "<option selected>10</option>" : "<option>10</option>").
@@ -138,7 +138,7 @@ if($action == "list"){
 	($view == 20 ? "<option selected>20</option>" : "<option>20</option>")."
 	</select>
 	&nbsp;
-	<span class='defaulttext'>Order by</span>  
+	<span class='defaulttext'>".LAN_dl_38."</span>  
 	<select name='order' class='tbox'>".
 	($order == "download_datestamp" ? "<option value='download_datestamp' selected>".LAN_dl_22."</option>" : "<option value='download_datestamp'>".LAN_dl_22."</option>").
 	($order == "download_requested" ? "<option value='download_requested' selected>".LAN_dl_18."</option>" : "<option value='download_requested'>".LAN_dl_18."</option>").
@@ -146,7 +146,7 @@ if($action == "list"){
 	($order == "download_author" ? "<option value='download_author' selected>".LAN_dl_24."</option>" : "<option value='download_author'>".LAN_dl_24."</option>")."
 	</select>
 	&nbsp;
-	<span class='defaulttext'>Sort</span> 
+	<span class='defaulttext'>".LAN_dl_39."</span> 
 	<select name='sort' class='tbox'>".
 	($sort == "ASC" ? "<option value='ASC' selected>".LAN_dl_25."</option>" : "<option value='ASC'>".LAN_dl_25."</option>").
 	($sort == "DESC" ? "<option value='DESC' selected>".LAN_dl_26."</option>" : "<option value='DESC'>".LAN_dl_26."</option>")."
@@ -275,7 +275,7 @@ if($action == "view"){
 		$text .= "<tr>
 		<td style='width:20%' class='forumheader3'>".LAN_dl_11.": </td>
 		<td style='width:80%' class='forumheader3'>
-		<a href='".e_BASE."request.php?download.".$download_id."'>Click here for screenshot</a>
+		<a href='".e_BASE."request.php?download.".$download_id."'>".LAN_dl_40."</a>
 		</td>
 		</tr>";
 	}
@@ -357,7 +357,8 @@ if($action == "view"){
 	}
 
 	$text .= "
-	</table>";
+	</table>
+	</div>";
 
 	$ns -> tablerender($type, $text);
 	require_once(FOOTERF);

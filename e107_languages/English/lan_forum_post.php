@@ -65,4 +65,6 @@ define("LAN_396", "bytes");
 
 define("LAN_397", "This thread is locked.");
 
+define("LAN_398", "This forum is read only");
+
 ?>

@@ -35,7 +35,6 @@ $row = $sql-> db_Fetch(); extract($row);
 if($forum_class == 255 || $forum_class && !check_class($forum_class) || !$forum_parent){ header("Location:".e_BASE."forum.php"); exit;}
 
 if(preg_match("/".preg_quote(ADMINNAME)."/", $forum_moderators) && getperms("A")){
-
 	define("MODERATOR", TRUE);
 }else{
 	define("MODERATOR", FALSE);
@@ -95,7 +94,7 @@ if($pages){
 $text .= $nppage."</td>
 <td style='width:20%; text-align:right'>";
 
-if(ANON || USER){
+if(ANON || USER && ($forum_class != e_UC_READONLY || ADMIN)){
 	$text .= "<a href='".e_BASE."forum_post.php?nt.".$forum_id."'><img src='".FTHEME."newthread.png' alt='' style='border:0' /></a>";
 }
 $text .= "</td></tr><tr>
@@ -174,6 +173,7 @@ if(!$topics){
 		}
 
 		$text .= $icon;
+		$thread_name = $aj -> tpa($thread_name);
 		$result = preg_split("/\]/", $thread_name);
 		$thread_name = ($result[1] ? $result[0]."] <a href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id."'>".ereg_replace("\[.*\]", "", $thread_name)."</a>" : "<a href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id."'>".$thread_name."</a>");
 		$text .= "</td><td style='vertical-align:middle; text-align:left; width:47%'  class='forumheader3'><span class='mediumtext'>".$thread_name."</span>";
@@ -225,8 +225,10 @@ $text .= forumjump();
 $text .= "</td>
 <td style='width:20%; text-align:right'>";
 
-if(ANON || USER){
+if(ANON || USER && ($forum_class != e_UC_READONLY || ADMIN)){
 	$text .= "<a href='".e_BASE."forum_post.php?nt.".$forum_id."'><img src='".FTHEME."newthread.png' alt='' style='border:0' /></a>";
+}else if($forum_class == e_UC_READONLY && !ADMIN){
+	$text .= LAN_397;
 }else{
 	$text .= LAN_59;
 }

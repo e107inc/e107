@@ -24,7 +24,9 @@ function file_upload($uploaddir, $avatar = FALSE){
 		$allowed_filetypes[$a] = trim(chop($allowed_filetypes[$a]));
 	}
 
-	if(($pref['upload_storagetype'] == "2" && $avatar == FALSE) || $avatar != "attachment"){
+//	echo $pref['upload_storagetype'];
+
+	if($pref['upload_storagetype'] == "2" && $avatar == FALSE){
 		extract($_FILES);
 		for($c=0; $c<=1; $c++){
 			if($file_userfile['tmp_name'][$c]){
@@ -98,7 +100,7 @@ function file_upload($uploaddir, $avatar = FALSE){
 			if(@$method($uploadfile, $destination_file)){
 				@chmod($destination_file, 0644);
 				$tmp = explode(".", $name);
-				$rename = $tmp[0].time().".".$tmp[1];
+				$rename = substr($tmp[0], 0, 15).time().".".$tmp[1];
 				if(@rename(e_FILE."public/avatars/".$name, e_FILE."public/avatars/".$rename)){
 					$uploaded[$c]['name'] = $rename;
 				}

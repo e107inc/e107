@@ -55,4 +55,6 @@ define("ADMSLAN_52", "Update administrator");
 define("ADMSLAN_53", "Add administrator");
 define("ADMSLAN_54", "Site Administrators");
 
+define("ADMSLAN_55", "Field(s) left blank");
+
 ?>
