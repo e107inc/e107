@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.5 $
-|		$Date: 2005-02-07 12:57:18 $
+|		$Revision: 1.6 $
+|		$Date: 2005-02-07 15:48:14 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1300,7 +1300,7 @@ function parse_content_recent_table($row){
 					$CONTENT_RECENT_TABLE_AUTHORDETAILS .= " <a href='".e_SELF."?".$type.".".$type_id.".author.".$content_id."' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
 				}
 
-				$CONTENT_RECENT_TABLE_EPICONS = ((($content_pref["content_list_peicon_{$type_id}"] && $content_pe) || $content_pref["content_list_peicon_all_{$type_id}"]) ? $ep -> render_emailprint($plugintable, $type_id.".".$content_id) : "");
+				$CONTENT_RECENT_TABLE_EPICONS = ((($content_pref["content_list_peicon_{$type_id}"] && $content_pe) || $content_pref["content_list_peicon_all_{$type_id}"]) ? $ep -> render_emailprint($plugintable, $content_id) : "");
 
 				if($content_pref["content_log_{$type_id}"] && $content_pref["content_list_refer_{$type_id}"]){
 					$refercounttmp = explode("^", $content_refer);
@@ -1374,7 +1374,7 @@ function parse_content_cat_table($row){
 					$CONTENT_CAT_TABLE_AUTHORDETAILS = $authordetails[1]." ".CONTENT_ICON_USER." <a href='".e_SELF."?".$type.".".$type_id.".author' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
 				}
 
-				$CONTENT_CAT_TABLE_EPICONS = ($row[12] ? $ep -> render_emailprint($plugintable, $type_id.".".$row[0]) : "");
+				$CONTENT_CAT_TABLE_EPICONS = ($row[12] ? $ep -> render_emailprint($plugintable, $row[0]) : "");
 
 				$CONTENT_CAT_TABLE_RATING = "";
 				if($row[11]){
@@ -1462,7 +1462,7 @@ function parse_content_cat_list_table($row){
 						$CONTENT_CAT_LIST_TABLE_RATING .= " - ".LAN_41;
 					}
 				}
-				$CONTENT_CAT_LIST_TABLE_EPICONS = ($content_pe ? $ep -> render_emailprint($plugintable, $type_id.".".$sub_action) : "");
+				$CONTENT_CAT_LIST_TABLE_EPICONS = ($content_pe ? $ep -> render_emailprint($plugintable, $sub_action) : "");
 				return(preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CAT_LIST_TABLE));
 }
 
@@ -1597,7 +1597,7 @@ function parse_content_content_table($row){
 					}
 				}
 
-				$CONTENT_CONTENT_TABLE_EPICONS = (($content_pref["content_content_peicon_{$type_id}"] && $content_pe) || $content_pref["content_content_peicon_all_{$type_id}"] ? $ep -> render_emailprint($plugintable, $type_id.".".$content_id) : "");
+				$CONTENT_CONTENT_TABLE_EPICONS = (($content_pref["content_content_peicon_{$type_id}"] && $content_pe) || $content_pref["content_content_peicon_all_{$type_id}"] ? $ep -> render_emailprint($plugintable, $content_id) : "");
 
 				$content_text = ($content_text ? $content_text : "");
 				if(preg_match_all("/\[newpage=(.*?)]/si", $content_text, $matches)) {

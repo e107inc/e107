@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/print.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-27 19:51:38 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-07 15:48:15 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -64,7 +64,7 @@ $print_info[] = array('table' => 'news', 'handler' => '
 	( http://".$_SERVER[HTTP_HOST].e_HTTP."comment.php?comment.news.comment.".$news_id." )
 	</font>";
 	');
-	
+/*
 $print_info[] = array('table' => 'content', 'handler' => '
 	$sql->db_Select("content", "*", "content_id=\"$id\" ");
 	$row = $sql->db_Fetch();
@@ -96,7 +96,7 @@ $print_info[] = array('table' => 'content', 'handler' => '
 	( http://".$_SERVER[HTTP_HOST].e_HTTP."article.php?article.".$content_id." )
 	</font>";
 	');
-	
+*/
 	
 //load the others from plugins
 $handle = opendir(e_PLUGIN);
@@ -104,7 +104,7 @@ while (false !== ($file = readdir($handle))) {
 	if ($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)) {
 		$plugin_handle = opendir(e_PLUGIN.$file."/");
 		while (false !== ($file2 = readdir($plugin_handle))) {
-			if ($file2 == "e_print.php") {
+			if ($file2 == "e_emailprint.php") {
 				require_once(e_PLUGIN.$file."/".$file2);
 			}
 		}

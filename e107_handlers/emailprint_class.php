@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/emailprint_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-27 19:52:27 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-07 15:47:05 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 	
@@ -23,6 +23,10 @@ class emailprint {
 		// $look = 1  --->display email icon only
 		// $look = 2  --->display print icon only
 		$text_emailprint = "";
+
+		
+		/*
+		//because of new method, this old method for emailprint_class is ignored
 		switch($mode) {
 			case "article":
 			$email = "article";
@@ -37,13 +41,35 @@ class emailprint {
 			$print = "content";
 			break;
 		}
+		*/
+
+		//new method emailprint_class : (only news is core, rest is plugin: searched for e_emailprint.php which should hold $email and $print values)
+		if($mode == "news"){
+				$email = "news";
+				$print = "news";
+		}else{
+				//load the others from plugins
+				$handle = opendir(e_PLUGIN);
+				while (false !== ($file = readdir($handle))) {
+					if ($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)) {
+						$plugin_handle = opendir(e_PLUGIN.$file."/");
+						while (false !== ($file2 = readdir($plugin_handle))) {
+							if ($file2 == "e_emailprint.php") {
+								require_once(e_PLUGIN.$file."/".$file2);
+							}
+						}
+					}
+				}
+		}
+
+
 		if ($look == 0 || $look == 1) {
 			if (defined("ICONMAIL") && file_exists(THEME."images/".ICONMAIL)) {
 				$ico_mail = THEME."images/".ICONMAIL;
 			} else {
 				$ico_mail = e_IMAGE."generic/friend.gif";
 			}
-			$text_emailprint .= "<a href='email.php?".$email.".".$id."'><img src='".$ico_mail."' style='border:0' alt='email to someone' title='email to someone' /></a> ";
+			$text_emailprint .= "<a href='".e_BASE."email.php?".$email.".".$id."'><img src='".$ico_mail."' style='border:0' alt='email to someone' title='email to someone' /></a> ";
 		}
 		if ($look == 0 || $look == 2) {
 			if (defined("ICONPRINT") && file_exists(THEME."images/".ICONPRINT)) {
@@ -51,7 +77,7 @@ class emailprint {
 			} else {
 				$ico_print = e_IMAGE."generic/printer.gif";
 			}
-			$text_emailprint .= "<a href='print.php?".$print.".".$id."'><img src='".$ico_print."' style='border:0' alt='printer friendly' title='printer friendly'/></a>";
+			$text_emailprint .= "<a href='".e_BASE."print.php?".$print.".".$id."'><img src='".$ico_print."' style='border:0' alt='printer friendly' title='printer friendly'/></a>";
 		}
 		return $text_emailprint;
 	}
