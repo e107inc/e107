@@ -119,8 +119,8 @@ if(!$tdc){ $text .= "</tr>"; }
 $text3="";
 
 
-if(getperms("PM")){ // Plugin Manager
-	$text3 .= wad2(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "PM", e_PLUGIN.e_IMAGE."generic/plugin.png");
+if(getperms("Z")){ // Plugin Manager
+        $text3 .= wad2(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "P0", e_PLUGIN.e_IMAGE."generic/plugin.png");
 }
 
 	if($sql -> db_Select("plugin", "*", "plugin_installflag=1")){
