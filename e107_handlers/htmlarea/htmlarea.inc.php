@@ -1,73 +1,45 @@
 <?php
 // Settings ==========================================================
-
     $width = "540px";  // htmlarea width
     $height = "320px";  // htmlarea height
     $fullscreen = 1;   // Show Full-Screen Editor button. 0=no 1=yes
     $display_emoticons = 0; // Show Emoticons when enabled in e107 ?
     $tableops = 1;  // Table operations.
-    $spelling = 1;  // Spell Checking.
-
+    $spelling = 0;  // Spell Checking.
  // ========================================================================
     $plgcnt =0; // do not change.
     $imagebut = (ADMIN) ? "insertimage" : "space"; // image button for  ADMINS only
     $popupeditor = $fullscreen == 1 ? "popupeditor":"space";
 
 // ==========================
-echo "<script> _editor_url = '".e_HANDLER."htmlarea/';
-                </script>\n";
+echo "<script type=\"text/javascript\"> _editor_url = '".e_HANDLER."htmlarea/'; </script>\n";
 echo "<script type=\"text/javascript\" src=\"".e_HANDLER."htmlarea/htmlarea.js\"></script>\n";
+echo "<script type=\"text/javascript\">\n";
+echo ($tableops==1) ? "HTMLArea.loadPlugin('TableOperations');\n":"";
+echo ($spelling==1) ? "HTMLArea.loadPlugin('SpellChecker');\n":"";
+echo "var config = new HTMLArea.Config(); // create a new configuration object\n";
+echo htmlarea_emote(1);
+echo "config.width = '".$width."';\n
+            config.height = '".$height."';\n
+            config.statusBar = false;\n
+            config.pageStyle =
+            'body { background-color: white; font-size: 12px; border:1px solid black; color: black; font-family: tahoma, verdana, arial, sans-serif; } ' +
+            'p { font-width: bold; } ';
+            config.editorURL = '".e_HANDLER."htmlarea/';
+            config.toolbar = [
+            ['fontname','fontsize','space','formatblock','space'],
+            ['bold','italic','underline','separator','copy', 'cut', 'paste','separator', 'justifyleft', 'justifycenter', 'justifyright', 'justifyfull', 'separator',";
 
-// Load plugins here.  ===
-echo "<script>\n";
-
-    echo ($tableops==1) ? "HTMLArea.loadPlugin('TableOperations');\n":"";
-    echo ($spelling==1) ? "HTMLArea.loadPlugin('SpellChecker');\n":"";
-
-
-// Load Configuration.
-echo "
-        var config = new HTMLArea.Config(); // create a new configuration object
-
-
-
-    ".htmlarea_emote(1)."
-
-
-    config.width = '".$width."';
-    config.height = '".$height."';
-    config.statusBar = false;
-
-    config.pageStyle =
-    'body { background-color: white; font-size: 12px; border:1px solid black; color: black; font-family: tahoma, verdana, arial, sans-serif; } ' +
-    'p { font-width: bold; } ';
-    config.editorURL = '".e_HANDLER."htmlarea/';
+// echo "'insertorderedlist', 'insertunorderedlist', 'outdent', 'indent', 'separator',";
+echo "'orderedlist', 'unorderedlist', 'outdent', 'indent', 'separator',";
+echo "'forecolor', 'hilitecolor', 'separator',
+            'inserthorizontalrule', 'createlink', '".$imagebut."', 'inserttable', 'separator','htmlmode', '".$popupeditor."'
+            ]";
+echo $display_emoticons ? ",[".htmlarea_emote(2)."]":"";
+echo"];";
 
 
-
-    config.toolbar = [
-    ['fontname',
-    'fontsize', 'space',
-    'formatblock', 'space',
-    ],
-
-
-   [ 'bold', 'italic', 'underline', 'separator','copy', 'cut', 'paste','separator', 'justifyleft', 'justifycenter', 'justifyright', 'justifyfull', 'separator',
-
-  'insertorderedlist', 'insertunorderedlist', 'outdent', 'indent', 'separator',
-  'forecolor', 'hilitecolor', 'separator',
-  'inserthorizontalrule', 'createlink', '".$imagebut."', 'inserttable', 'separator','htmlmode', '".$popupeditor."'
-  ],
-  [".htmlarea_emote(2)."]
-
-    ];
-
-
-
-
-    </script>\n";
-
-
+echo "</script>\n";
 
 // ==================================================
 function htmlarea($name){
@@ -84,21 +56,19 @@ function htmlarea($name){
 */
   global $tableops,$spelling,$plgcnt;
 
+
 echo "<script type=\"text/javascript\" defer=\"1\">
-
- //  HTMLArea.replace('$name', config);   // old method.
-  var editor = new HTMLArea('$name', config);";
-
-echo ($tableops==1 && $plgcnt<1) ? " editor.registerPlugin('TableOperations');\n ":"";
-echo ($spelling==1 && $plgcnt<1) ? " editor.registerPlugin('SpellChecker');\n ":"";
+     var editor_$name = new HTMLArea('$name', config);";
+echo  ($tableops==1 && $plgcnt<1) ? " editor_$name.registerPlugin(TableOperations);\n ":"";
+echo ($spelling==1 && $plgcnt<1) ? " editor_$name.registerPlugin(SpellChecker);\n ":"";
         $plgcnt++;
-echo "
-
-  var check = '$name';
-  if(document.getElementById(check)){
-  editor.generate();
-  }
-</script>\n";
+echo "  setTimeout(function() {
+        var check = '$name';
+        if(document.getElementById(check)){
+        editor_$name.generate();
+        }
+       }, 10);
+       </script>\n";
 }
 
 // Build Custom Emoticon Buttons=================

@@ -15,8 +15,16 @@
 
 
 require_once("class2.php");
-require_once(HEADERF);
 
+     require_once(HEADERF);
+
+  //   }else{
+  //   require_once(HEADERF);
+ //    }
+     if($pref['subnews_htmlarea']){
+     require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
+      htmlarea("item");
+      }
      if(!check_class($pref['subnews_class'])){
      $ns -> tablerender(NWSLAN_12,NWSLAN_11);
      require_once(FOOTERF);
@@ -55,6 +63,7 @@ if(IsSet($_POST['submit'])){
 
                         $itemtitle = $aj -> formtpa($_POST['itemtitle'], "public");
                         $item = $aj -> formtpa($_POST['item'], "public");
+                        $item = str_replace("src=&quot;e107_images","src=&quot;".SITEURL."e107_images",$item);
 
 
 // Process File Upload    =================================================
@@ -116,10 +125,7 @@ if($_FILES['file_userfile']){
 
 
 
-     if($pref['subnews_htmlarea']){
-     require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
-     htmlarea("item");
-     }
+
 
 
 
