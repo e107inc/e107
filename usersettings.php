@@ -11,17 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-03-24 03:27:48 $
+|     $Revision: 1.16 $
+|     $Date: 2005-03-30 19:44:06 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
-	
 require_once("class2.php");
 require_once(e_HANDLER."user_extended_class.php");
 $ue = new e107_user_extended;
-	
+
 if (isset($_POST['sub_news'])) {
 	header("location:".e_BASE."submitnews.php");
 	exit;
@@ -56,7 +55,9 @@ if (e_QUERY && !ADMIN) {
 	header("location:".e_BASE."usersettings.php");
 	exit;
 }
-$aj = new textparse;
+
+require_once(e_HANDLER."calendar/calendar_class.php");
+$cal = new DHTML_Calendar(true);
 $_uid = e_QUERY;
 	
 require_once(HEADERF);
@@ -160,7 +161,8 @@ if (isset($_POST['updatesettings']))
 		$_POST['icq'] = "";
 	}
 	 
-	$birthday = $_POST['birth_year']."/".$_POST['birth_month']."/".$_POST['birth_day'];
+	$birthday = $_POST['birthday'];
+
 	if ($file_userfile['error'] != 4) {
 		require_once(e_HANDLER."upload_handler.php");
 		require_once(e_HANDLER."resize_handler.php");
@@ -267,7 +269,6 @@ WHERE u.user_id='{$uuid}'
 
 $sql->db_Select_gen($qry);
 $curVal=$sql->db_Fetch();
-list($birth_year, $birth_month, $birth_day) = explode("-", $curVal['user_birthday']);
 extract($curVal);
 	
 require_once(e_HANDLER."form_handler.php");
@@ -408,24 +409,21 @@ $text .= "<tr>
 	 
 	<tr>
 	<td style='width:20%' class='forumheader3'>".LAN_118."</td>
-	<td style='width:80%' class='forumheader2'>
-	 
-	".$rs->form_select_open("birth_day"). $rs->form_option("", 0);
-$today = getdate();
-$year = $today['year'];
-for($a = 1; $a <= 31; $a++) {
-	$text .= ($birth_day == $a ? $rs->form_option($a, 1) : $rs->form_option($a, 0));
-}
-$text .= $rs->form_select_close(). $rs->form_select_open("birth_month"). $rs->form_option("", 0);
-for($a = 1; $a <= 12; $a++) {
-	$text .= ($birth_month == $a ? $rs->form_option($a, 1, $a) : $rs->form_option($a, 0, $a));
-}
-$text .= $rs->form_select_close(). $rs->form_select_open("birth_year"). $rs->form_option("", 0);
-for($a = 1900; $a <= $year; $a++) {
-	$text .= ($birth_year == $a ? $rs->form_option($a, 1) : $rs->form_option($a, 0));
-}
+	<td style='width:80%' class='forumheader2'>";
 	
-$text .= $rs->form_select_close()."</td>
+unset($cal_options);
+unset($cal_attrib);
+$cal_options['firstDay'] = 0;
+$cal_options['showsTime'] = false;
+$cal_options['showOthers'] = true;
+$cal_options['weekNumbers'] = false;
+$cal_options['ifFormat'] = "%Y-%m-%d";
+$cal_attrib['class'] = "tbox";
+$cal_attrib['name'] = "birthday";
+$cal_attrib['value'] = $user_birthday;
+$text .= $cal->make_input_field($cal_options, $cal_attrib);
+$text .= "
+	</td>
 	</tr>
 	 
 	<tr>
@@ -623,14 +621,18 @@ function req($field) {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 	
 function headerjs() {
+	global $cal;
 	$script = "<script type=\"text/javascript\">
 		function addtext_us(sc){
 		document.getElementById('dataform').image.value = sc;
 		}
 		 
 		</script>\n";
+
+
+	$script .= $cal->load_files();
 	return $script;
-	 
+
 }
 	
 ?>
