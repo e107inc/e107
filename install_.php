@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-03-17 08:22:12 $
+|     $Revision: 1.18 $
+|     $Date: 2005-03-17 09:06:56 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -489,11 +489,9 @@ function create_tables() {
 	mysql_query("INSERT INTO ".$mySQLprefix."news_category VALUES (0, 'Misc', 'icon5.png') ");
 	
 	mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Home', 'index.php', '', '', 1, 1, 0, 0, 0) ");
-	mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Forum', 'forum.php', '', '', 1, 2, 0, 0, 0) ");
 	mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Downloads', 'download.php', '', '', 1, 3, 0, 0, 0) ");
 	mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Members', 'user.php', '', '', 1, 4, 0, 0, 0) ");
 	mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Submit News', 'submitnews.php', '', '', 1, 5, 0, 0, 0) ");
-	mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Stats', 'stats.php', '', '', 1, 6, 0, 0, 0) ");
 
 
 
