@@ -22,6 +22,7 @@ $eplug_email = "mcfly@e107.org";
 $eplug_description = "This plugin is a fully featured Private Messaging system.";
 $eplug_compatible = "e107v6+";
 $eplug_readme = "pm_readme.txt";	// leave blank if no readme file
+$eplug_parse= array("/{{(SENDPM)=([0-9]+)}}/");
 
 // Name of the plugin's folder -------------------------------------------------------------------------------------
 $eplug_folder = "pm_menu";

@@ -286,7 +286,7 @@ if(!$post_author_id || !$sql -> db_Select("user", "*", "user_id='".$post_author_
 	$PROFILEIMG = (USER ? e107_parse("{PROFILE={$user_id}}","admin") : "");
 	$EMAILIMG = (!$user_hideemail ? e107_parse("{EMAILTO={$user_email}}","admin") : "");
 
-	$PRIVMESSAGE = ($pm_installed && $post_author_id && (!USERCLASS || check_class($pref['pm_userclass'])) ? "<a href='".e_PLUGIN."pm_menu/pm.php?send.$post_author_id'>".IMAGE_pm."</a>" : "");
+	$PRIVMESSAGE = e107_parse("{{SENDPM={$post_author_id}}}");
 
 	$WEBSITEIMG = ($user_homepage && $user_homepage != "http://" ? "<a href='$user_homepage'>".IMAGE_website."</a>" : "");
 	$RPG = rpg($user_join, $user_forums);
@@ -373,7 +373,7 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 			$PROFILEIMG = (USER ? e107_parse("{PROFILE={$user_id}}","admin") : "");
 			$EMAILIMG = (!$user_hideemail ? e107_parse("{EMAILTO={$user_email}}","admin") : "");
 
-			$PRIVMESSAGE = ($pm_installed && $post_author_id && (!USERCLASS || check_class($pref['pm_userclass'])) ? "<a href='".e_PLUGIN."pm_menu/pm.php?send.$post_author_id'>".IMAGE_pm."</a>" : "");
+			$PRIVMESSAGE = e107_parse("{{SENDPM={$post_author_id}}}");
 
 			$WEBSITEIMG = ($user_homepage && $user_homepage != "http://" ? "<a href='$user_homepage'>".IMAGE_website."</a>" : "");
 			$RPG = rpg($user_join, $user_forums);
