@@ -26,6 +26,56 @@ define("THEME_DISCLAIMER", "<br />Admin Theme Jayya<br /><br />");
 
 $layout = "_default";
 
+$HEADER = "
+<table cellpadding='0' cellspacing='0' border='0' class='top_section'>
+<tr>
+<td style='vertical-align: top; padding: 0px 0px 0px 0px'>
+{LOGO}
+</td>
+<td style='vertical-align: bottom; text-align: right; padding: 3px; background-color: #efefef; border-left: 1px solid #3D4251; width: 100%; background-image: url(".THEME."images/computer.jpg); background-repeat: no-repeat'>
+<div style='height: 23px'>
+{CUSTOM=search}
+</div>
+{SITELINKS=flat}
+</td>
+</tr>
+</table>
+
+<table cellpadding='0' cellspacing='0' border='0' class='main_section'>
+<tr>
+<td class='left_menu'>
+<table cellpadding='0' cellspacing='0' border='0' style='width:100%;'>
+<tr>
+<td>
+{MENU=1}
+<br />
+</td></tr></table>
+</td>
+<td class='default_menu'>
+{SETSTYLE=default}
+";
+
+$FOOTER = "<br />
+<div style='text-align:center'>
+{SITEDISCLAIMER}
+</div>
+</td>
+
+<td class='right_menu'>
+
+	<table cellpadding='0' cellspacing='0' border='0' style='width:100%;'>
+	<tr>
+	<td>
+	{SETSTYLE=rightmenu}
+	{MENU=2}
+	<br />
+	</td></tr></table>
+
+</td>
+</tr>
+</table>
+";
+
 // [linkstyle]
 
 define(PRELINK, "::  ");
@@ -34,6 +84,30 @@ define(LINKSTART, "");
 define(LINKEND, "  ::  ");
 define(LINKDISPLAY, 1);
 define(LINKALIGN, "right");
+
+//        [newsstyle]
+
+	$NEWSSTYLE = "<table cellpadding='0' cellspacing='0' border='0' style='width: 100%'><tr><td class='caption_border'><div class='caption'>
+	{NEWSTITLE}
+	</div></td></tr>
+	<tr><td class='bodytable'>
+	{NEWSBODY}
+	{EXTENDED}
+	<br /></td></tr>
+	<tr><td class='bodytable'>
+	{NEWSAUTHOR}
+	{NEWSDATE}
+	{NEWSCOMMENTS}
+	{EMAILICON}
+	{PRINTICON}
+	<br /></td></tr></table>";
+	
+define("ICONSTYLE", "float: left; border:0");
+define("COMMENTLINK", "Read/Post Comment: ");
+define("COMMENTOFFSTRING", "Comments are turned off for this item");
+define("PRE_EXTENDEDSTRING", "<br /><br />[ ");
+define("EXTENDEDSTRING", "Read the rest...");
+define("POST_EXTENDEDSTRING", " ]<br />");
 
 
 //	[tablestyle]
