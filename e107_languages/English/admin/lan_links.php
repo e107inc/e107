@@ -1,5 +1,14 @@
 <?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_links.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:11:55 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
 define("LCLAN_1", "Options Saved");
 define("LCLAN_2", "Link saved to database.");
 define("LCLAN_3", "Link updated in database.");

@@ -9,7 +9,7 @@
 // Version 3.0 developed by Mihai Bazon.
 //   http://dynarch.com/mishoo
 //
-// $Id: htmlarea.js,v 1.9 2004-08-11 09:26:35 e107coders Exp $
+// $Id: htmlarea.js,v 1.1 2004-09-21 19:10:27 e107coders Exp $
 
 if (typeof _editor_url == "string") {
         // Leave exactly one backslash at the end of _editor_url

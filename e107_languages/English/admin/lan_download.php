@@ -1,5 +1,14 @@
 <?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_download.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:11:04 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
 define("DOWLAN_1", "Download added to database.");
 define("DOWLAN_2", "Download updated in database.");
 define("DOWLAN_3", "Download deleted.");

@@ -1,39 +1,42 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|	e107 website system
-|	/admin/menu_conf/comment_conf.php
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|	©Steve Dunstan 2001-2002
-|	http://e107.org
-|	jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|	Released under the terms and conditions of the
-|	GNU General Public License (http://gnu.org).
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
 |
-|	Based on code by Edwin van der Wal (evdwal@xs4all.nl), Multilanguage by Juan
-+---------------------------------------------------------------+
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/comment_menu/config.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:12:08 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
+
 require_once("../../class2.php");
 require_once(e_HANDLER."userclass_class.php");
 
 $lan_file=e_PLUGIN."comment_menu/languages/".e_LANGUAGE.".php";
 if(file_exists($lan_file)){
-	require_once($lan_file);
+        require_once($lan_file);
 } else {
-	require_once(e_PLUGIN."comment_menu/languages/English.php");
+        require_once(e_PLUGIN."comment_menu/languages/English.php");
 }
 if(!getperms("1")){ header("location:".e_BASE."index.php"); exit ;}
 require_once(e_ADMIN."auth.php");
 
 if(IsSet($_POST['update_menu'])){
-	while(list($key, $value) = each($_POST)){
-		if($value != CM_L9){ $menu_pref[$key] = $value; }
-	}
-	if(!$_POST['comment_title']){ $menu_pref['comment_title'] = 0; }
-	$tmp = addslashes(serialize($menu_pref));
-	$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='menu_pref' ");
-	$ns -> tablerender("", "<div style=\"text-align:center\"><b>".CM_L10."</b></div>");
+        while(list($key, $value) = each($_POST)){
+                if($value != CM_L9){ $menu_pref[$key] = $value; }
+        }
+        if(!$_POST['comment_title']){ $menu_pref['comment_title'] = 0; }
+        $tmp = addslashes(serialize($menu_pref));
+        $sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='menu_pref' ");
+        $ns -> tablerender("", "<div style=\"text-align:center\"><b>".CM_L10."</b></div>");
 }
 
 $text = "<div style='text-align:center'>
@@ -73,8 +76,8 @@ $text = "<div style='text-align:center'>
 <td style=\"width:60%\" class='forumheader3'>
 <input type=\"checkbox\" name=\"comment_title\" value=\"1\"";
 if($menu_pref['comment_title']){
-	$text .= " checked ";
-} 
+        $text .= " checked ";
+}
 $text .= ">
 </td>
 </tr>

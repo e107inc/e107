@@ -1,15 +1,20 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|	e107 website system
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|	©Steve Dunstan 2001-2002
-|	http://e107.org
-|	jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|	Released under the terms and conditions of the
-|	GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_themes/ranyart/theme.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:12:44 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 
 // [theme]
@@ -57,7 +62,7 @@ $HEADER = "
 </tr>
 </table>
 <table >
-<tr> 
+<tr>
 <td style='padding:10px;width:15%; vertical-align: top;'>
 {SETSTYLE=menu1}
 {SITELINKS=menu}
@@ -106,7 +111,7 @@ $NEWSHEADER = "
 </tr>
 </table>
 <table style='width:100%' cellspacing='10' cellpadding='10'>
-<tr> 
+<tr>
 <td style='width:15%; vertical-align: top;'>
 {SETSTYLE=menu1}
 {SITELINKS=menu}
@@ -204,36 +209,36 @@ define(PRELINK, "");
 define(POSTLINK, "");
 define(LINKSTART, "<img src='".THEME."images/bullet2.gif' alt='bullet' /> ");
 define(LINKEND, "<br />");
-define(LINKDISPLAY, 2);			// 1 - along top, 2 - in left or right column
+define(LINKDISPLAY, 2);                        // 1 - along top, 2 - in left or right column
 define(LINKALIGN, "left");
 
 
-//	[tablestyle]
+//        [tablestyle]
 
 function tablestyle($caption, $text){
-	global $style;
-	if($style == "menu1" || !$style){
-		if($caption != ""){
-			echo "<div class='border'><div class='caption'>".$caption."</div>";
-			if($text != ""){
-				echo "\n<div class='bodytable'>".$text."</div></div><br />";
-			}
-		}else{
-			echo "<div class='border2'><div class='bodytable2'>".$text."</div></div><br />";
-		}
-	}else if($style == "default"){
-		if($caption != ""){
-			echo "<div class='border2'><div class='caption2'>".$caption."</div><div class='bodytable2'>".$text."</div></div><br />";
-		}else{
-			echo "<div class='bodytable'>".$text."</div><br />";
-		}
-	}else{
-		if($caption != ""){
-			echo "<div class='border3'><div class='caption3'>".$caption."</div></div><div class='bodytable3'>".$text."</div><br />";
-		}else{
-			echo "<div class='bodytable3'>".$text."</div><br />";
-		}
-	}
+        global $style;
+        if($style == "menu1" || !$style){
+                if($caption != ""){
+                        echo "<div class='border'><div class='caption'>".$caption."</div>";
+                        if($text != ""){
+                                echo "\n<div class='bodytable'>".$text."</div></div><br />";
+                        }
+                }else{
+                        echo "<div class='border2'><div class='bodytable2'>".$text."</div></div><br />";
+                }
+        }else if($style == "default"){
+                if($caption != ""){
+                        echo "<div class='border2'><div class='caption2'>".$caption."</div><div class='bodytable2'>".$text."</div></div><br />";
+                }else{
+                        echo "<div class='bodytable'>".$text."</div><br />";
+                }
+        }else{
+                if($caption != ""){
+                        echo "<div class='border3'><div class='caption3'>".$caption."</div></div><div class='bodytable3'>".$text."</div><br />";
+                }else{
+                        echo "<div class='bodytable3'>".$text."</div><br />";
+                }
+        }
 }
 
 $COMMENTSTYLE = "

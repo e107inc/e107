@@ -1,19 +1,20 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        /e107_handlers/cache_handler.php
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|        http://e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2004-09-03 01:31:41 $
-|     $Author: mcfly_e107 $
-+---------------------------------------------------------------+
+|     $Source: /cvs_backup/e107_0.7/e107_handlers/cache_handler.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:10:26 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 
 class ecache {
@@ -22,12 +23,12 @@ class ecache {
                 return md5(e_BASE.e_LANGUAGE.THEME.USERCLASS);
         }
 
-			function cache_fname($query){
-				global $FILES_DIRECTORY;
-				$q = preg_replace("#\W#","_",$query);
-				$fname = "./".e_BASE.$FILES_DIRECTORY."cache/".$q."-".$this -> e107cache_page_md5().".cache.php";
-				return $fname;
-			}
+                        function cache_fname($query){
+                                global $FILES_DIRECTORY;
+                                $q = preg_replace("#\W#","_",$query);
+                                $fname = "./".e_BASE.$FILES_DIRECTORY."cache/".$q."-".$this -> e107cache_page_md5().".cache.php";
+                                return $fname;
+                        }
 
         function retrieve($query){
                 global $pref,$FILES_DIRECTORY;

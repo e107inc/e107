@@ -1,18 +1,35 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:10:22 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
 header("location:../index.php");
 exit;
 ?>
 #
 # +---------------------------------------------------------------+
-# |	e107 website system
-# |	/files/sql.php
+# |        e107 website system
+# |        /files/sql.php
 # |
-# |	©Steve Dunstan 2001-2002
-# |	http://e107.org
-# |	jalist@e107.org
+# |        ©Steve Dunstan 2001-2002
+# |        http://e107.org
+# |        jalist@e107.org
 # |
-# |	Released under the terms and conditions of the
-# |	GNU General Public License (http://gnu.org).
+# |        Released under the terms and conditions of the
+# |        GNU General Public License (http://gnu.org).
 # +---------------------------------------------------------------+
 # Database : <variable>
 # --------------------------------------------------------

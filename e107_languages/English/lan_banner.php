@@ -1,6 +1,15 @@
 <?php
-
-define("PAGE_NAME", "Banner"); 
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_banner.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:11:56 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
+define("PAGE_NAME", "Banner");
 
 define("LAN_16", "Username: ");
 define("LAN_17", "Password: ");

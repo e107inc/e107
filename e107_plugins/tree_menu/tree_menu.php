@@ -1,16 +1,20 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        /tree_menu.php
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/tree_menu/tree_menu.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:12:40 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 
 /* Modification to keep menu status during navigation on the site
@@ -33,27 +37,27 @@ while($row = $sql -> db_Fetch()){
         extract($row);
         $link_name=strip_tags($link_name);
         $textadd1 = ""; $textadd2 = "";
-		if($sql2 -> db_Select("links", "*", "link_name REGEXP('submenu.".$link_name."') ORDER BY link_order")){
-				if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
+                if($sql2 -> db_Select("links", "*", "link_name REGEXP('submenu.".$link_name."') ORDER BY link_order")){
+                                if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
                         $mlink_name = $link_name;
                         $textadd1 .= "
                         <div class='spacer'>
                         <div class='button' style='width:100%; cursor: pointer; cursor: hand' onclick='expandit(\"span_".$link_name."\");updatecook(\"".$link_name."\");' >";
-						($link_button!="" ? $textadd1b = "<img src='".e_IMAGE."link_icons/".$link_button."' alt='' style='vertical-align:middle;' />" : $textadd1b = "&raquo;" );
-						$textadd2 .= " <a href='javascript: void(0);'  style='text-decoration:none'>".$link_name."</a></div>
+                                                ($link_button!="" ? $textadd1b = "<img src='".e_IMAGE."link_icons/".$link_button."' alt='' style='vertical-align:middle;' />" : $textadd1b = "&raquo;" );
+                                                $textadd2 .= " <a href='javascript: void(0);'  style='text-decoration:none'>".$link_name."</a></div>
                         <span style=\"display:none\" id=\"span_".$link_name."\">";
                         $sublink_exist = 0;
-						while($row = $sql2 -> db_Fetch()){
+                                                while($row = $sql2 -> db_Fetch()){
                                 extract($row);
                                 if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
                                         $link_name2 = str_replace("submenu.".$mlink_name.".", "", $link_name);
                                         $textadd2 .= ($link_button!="" ? "<img src='".e_IMAGE."link_icons/".$link_button."' alt='' style='vertical-align:middle' />  " : "&middot; " ).setlink($link_name2, $link_url, $link_open)."\n<br />";
-                                	$sublink_exist = 1;
-								}
-								unset($link_button);
+                                        $sublink_exist = 1;
+                                                                }
+                                                                unset($link_button);
                         }
                         if($sublink_exist==0){$textadd1b = "&middot;";}
-						$text .= $textadd1.$textadd1b.$textadd2."</span></div>\n";
+                                                $text .= $textadd1.$textadd1b.$textadd2."</span></div>\n";
                 }
           }else{
                 if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){

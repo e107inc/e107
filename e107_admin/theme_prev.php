@@ -1,25 +1,29 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|	e107 website system
-|	/theme preview by Chavo
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|	©Steve Dunstan 2001-2002
-|	http://e107.org
-|	jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|	Released under the terms and conditions of the
-|	GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_admin/theme_prev.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:10:21 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 
 if (IsSet($_POST['updateprefs'])) {
-	require_once("../class2.php");
-	require_once(e_ADMIN."auth.php");
-	$pref['sitetheme'] = $_POST['sitetheme'];
-	save_prefs();
-	header("location:".e_SELF);
-	exit;
+        require_once("../class2.php");
+        require_once(e_ADMIN."auth.php");
+        $pref['sitetheme'] = $_POST['sitetheme'];
+        save_prefs();
+        header("location:".e_SELF);
+        exit;
 }
 
 if(isSet($_POST['sitetheme'])) {
@@ -28,32 +32,32 @@ if(isSet($_POST['sitetheme'])) {
     require_once("../class2.php");
     require_once(HEADERF);
     $text = "<form method='post' action='".e_SELF."'>
-	<table style='width:95%' >
-	<tr>
-		<td >".TPVLAN_2."</td>
-	</tr>
-	<tr>
-		<td >".TPVLAN_10."
-		<input type ='hidden' name='sitetheme' value='".USERTHEME."'>
-		<input class='button' type='submit' name='updateprefs' value='".TPVLAN_15."'>
-		</td>
-	</tr>
-	<tr>
-		<td ><br />".TPVLAN_9."<br />"
-		.theme_dropdown()."
-	<input class='button' type='submit' name='previewtheme' value='".TPVLAN_6."' /></td>
-	</tr>
-	</table>
-	</form>
-		<br /><b>".TPVLAN_13."</b><br />
-	".$themename." v".$themeversion." by ".$themeauthor." (".$themedate.")";
-		$text .= (!empty($themeinfo) ? "<br />".TPVLAN_11.": ".$themeinfo."<br />" : "");
-		$ns->tablerender(TPVLAN_1, $text);
-		require_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_news.php");
-		require_once(e_HANDLER."news_class.php");
-		if (!is_object($aj)) {
-			$aj = new textparse;
-		}
+        <table style='width:95%' >
+        <tr>
+                <td >".TPVLAN_2."</td>
+        </tr>
+        <tr>
+                <td >".TPVLAN_10."
+                <input type ='hidden' name='sitetheme' value='".USERTHEME."'>
+                <input class='button' type='submit' name='updateprefs' value='".TPVLAN_15."'>
+                </td>
+        </tr>
+        <tr>
+                <td ><br />".TPVLAN_9."<br />"
+                .theme_dropdown()."
+        <input class='button' type='submit' name='previewtheme' value='".TPVLAN_6."' /></td>
+        </tr>
+        </table>
+        </form>
+                <br /><b>".TPVLAN_13."</b><br />
+        ".$themename." v".$themeversion." by ".$themeauthor." (".$themedate.")";
+                $text .= (!empty($themeinfo) ? "<br />".TPVLAN_11.": ".$themeinfo."<br />" : "");
+                $ns->tablerender(TPVLAN_1, $text);
+                require_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_news.php");
+                require_once(e_HANDLER."news_class.php");
+                if (!is_object($aj)) {
+                        $aj = new textparse;
+                }
     $ix = new news;
     ob_start();
     $news_total = $sql -> db_Count("news");
@@ -109,26 +113,26 @@ $ns -> tablerender("<div style='text-align:center'>".TPVLAN_7."</div>", $text);
 
 require_once("footer.php");
 function theme_dropdown(){
-	$handle=opendir(e_THEME);
-	while ($file = readdir($handle)){
-		if($file != "." && $file != ".." && $file != "templates" && $file != "shared"){
-			if (is_readable(e_THEME.$file."/theme.php") && is_readable(e_THEME.$file."/style.css")){
-				$dirlist[] = $file;
-			}
-		}
-	}
-	closedir($handle);
-	$text ="<select name='sitetheme' class='tbox'>\n";
-	$counter = 0;
-	while(IsSet($dirlist[$counter])){
-		if($dirlist[$counter] == $pref['sitetheme'][1] || $dirlist[$counter] == USERTHEME){
-			$text .= "<option selected='selected'>".$dirlist[$counter]."</option>\n";
-		}else{
-		$text .= "<option>".$dirlist[$counter]."</option>\n";
-	}
-	$counter++;
+        $handle=opendir(e_THEME);
+        while ($file = readdir($handle)){
+                if($file != "." && $file != ".." && $file != "templates" && $file != "shared"){
+                        if (is_readable(e_THEME.$file."/theme.php") && is_readable(e_THEME.$file."/style.css")){
+                                $dirlist[] = $file;
+                        }
+                }
+        }
+        closedir($handle);
+        $text ="<select name='sitetheme' class='tbox'>\n";
+        $counter = 0;
+        while(IsSet($dirlist[$counter])){
+                if($dirlist[$counter] == $pref['sitetheme'][1] || $dirlist[$counter] == USERTHEME){
+                        $text .= "<option selected='selected'>".$dirlist[$counter]."</option>\n";
+                }else{
+                $text .= "<option>".$dirlist[$counter]."</option>\n";
+        }
+        $counter++;
 }
 $text .= "</select>";
 return $text;
 }
-?>	
+?>

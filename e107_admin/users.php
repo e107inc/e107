@@ -10,9 +10,9 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107/e107_admin/users.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2004-09-09 09:31:15 $
+|     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:10:21 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */

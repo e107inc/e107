@@ -1,5 +1,14 @@
 <?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_forum_conf.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:11:04 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
 define("FORLAN_5", "Poll deleted.");
 define("FORLAN_6", "Thread deleted");
 define("FORLAN_7", "replies deleted");

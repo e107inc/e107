@@ -1,12 +1,21 @@
 <?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:11:04 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
 define("ADLAN_0", "News");
 define("ADLAN_1", "Add/edit/delete news items");
 define("ADLAN_2", "News Categories");
 define("ADLAN_3", "Add/edit/delete news categories");
 define("ADLAN_4", "Preferences");
 define("ADLAN_5", "Edit Site Preferences");
-define("ADLAN_6", "Menus"); 
+define("ADLAN_6", "Menus");
 define("ADLAN_7", "Alter the order of your menus");
 define("ADLAN_8", "Administrators");
 define("ADLAN_9", "Add/delete site administrators");
@@ -19,7 +28,7 @@ define("ADLAN_15", "Add new/edit/delete articles");
 define("ADLAN_16", "Content");
 define("ADLAN_17", "Add new/edit/delete content pages");
 define("ADLAN_18", "Reviews");
-define("ADLAN_19", "Add new/edit/delete reviews"); 
+define("ADLAN_19", "Add new/edit/delete reviews");
 define("ADLAN_20", "Links");
 define("ADLAN_21", "Add new/edit/delete links");
 define("ADLAN_22", "Link Categories");

@@ -1,16 +1,20 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|	e107 website system
-|	e107 theme file
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|	©Steve Dunstan 2001-2002
-|	http://e107.org
-|	jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|	Released under the terms and conditions of the
-|	GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_themes/e107/theme.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:12:42 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 
 // [theme]
@@ -123,34 +127,34 @@ EOT;
 
 
 
-//	[newsstyle]
+//        [newsstyle]
 
 $NEWSSTYLE = "
 <div class='border'>
-	<div class='caption'>
-		{NEWSTITLE}
-	</div>
+        <div class='caption'>
+                {NEWSTITLE}
+        </div>
 </div>
 <div class='bodytable'>
 {NEWSICON}
-	<div style='text-align:justify'>
-		{NEWSBODY}
-		<br />
-	</div>
-	<div style='text-align:center'>
-		<hr />Category: 
-		{NEWSCATEGORY}
-		Posted by: 
-		{NEWSAUTHOR}
-		on
-		{NEWSDATE}
-		<br />
-		{NEWSCOMMENTS}
-		{EMAILICON}
-		{PRINTICON}
-		{ADMINOPTIONS}
-		{EXTENDED}
-	</div>
+        <div style='text-align:justify'>
+                {NEWSBODY}
+                <br />
+        </div>
+        <div style='text-align:center'>
+                <hr />Category:
+                {NEWSCATEGORY}
+                Posted by:
+                {NEWSAUTHOR}
+                on
+                {NEWSDATE}
+                <br />
+                {NEWSCOMMENTS}
+                {EMAILICON}
+                {PRINTICON}
+                {ADMINOPTIONS}
+                {EXTENDED}
+        </div>
 </div>";
 
 
@@ -184,32 +188,32 @@ define(POSTLINK, "");
 //define(LINKSTART, "<img src='".THEME."images/bullet2.gif' alt='bullet' /> ");
 define(LINKSTART, " ");
 define(LINKEND, "<br />");
-//define(LINKDISPLAY, 2);			// 1 - along top, 2 - in left or right column
+//define(LINKDISPLAY, 2);                        // 1 - along top, 2 - in left or right column
 define(LINKALIGN, "left");
 
 
-//	[tablestyle]
+//        [tablestyle]
 function tablestyle($caption, $text, $mode=""){
-//	echo "Style: ".$style.", Mode: ".$mode;
-	if($mode == "mode2"){
-		if($caption != ""){
-			echo "<div class='border'><div class='caption'>".$caption."</div></div>\n";
-			if($text != ""){
-				echo "\n<div class='bodytable'>".$text."</div>\n";
-			}
-		}else{
-			echo "<div class='border'><div class='bodytable'>".$text."</div></div><br />\n";
-		}
-	}else{
-		if($caption != ""){
-			echo "<div class='border'><div class='caption2'>".$caption."</div></div>";
-			if($text != ""){
-				echo "<div class='bodytable2'>".$text."</div><br />\n";
-			}
-		}else{
-			echo "<div class='bodytable2'>".$text."</div><br />\n";
-		}
-	}
+//        echo "Style: ".$style.", Mode: ".$mode;
+        if($mode == "mode2"){
+                if($caption != ""){
+                        echo "<div class='border'><div class='caption'>".$caption."</div></div>\n";
+                        if($text != ""){
+                                echo "\n<div class='bodytable'>".$text."</div>\n";
+                        }
+                }else{
+                        echo "<div class='border'><div class='bodytable'>".$text."</div></div><br />\n";
+                }
+        }else{
+                if($caption != ""){
+                        echo "<div class='border'><div class='caption2'>".$caption."</div></div>";
+                        if($text != ""){
+                                echo "<div class='bodytable2'>".$text."</div><br />\n";
+                        }
+                }else{
+                        echo "<div class='bodytable2'>".$text."</div><br />\n";
+                }
+        }
 }
 
 // [commentstyle]
@@ -224,7 +228,7 @@ $COMMENTSTYLE = "
 <b>
 {USERNAME}
 </b>
- | 
+ |
  {TIMEDATE}
 </td>
 </tr>
@@ -251,7 +255,7 @@ $COMMENTSTYLE = "
 <br />";
 
 
-//	[chatboxstyle]
+//        [chatboxstyle]
 
 $CHATBOXSTYLE = "
 <div class='indent'>

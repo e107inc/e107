@@ -1,5 +1,14 @@
 <?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_chatbox.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:11:04 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
 define("CHBLAN_1", "Chatbox settings updated.");
 define("CHBLAN_2", "Moderated.");
 define("CHBLAN_3", "No chatbox posts yet.");

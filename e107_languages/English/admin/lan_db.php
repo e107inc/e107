@@ -1,5 +1,14 @@
 <?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_db.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:11:04 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
 define("DBLAN_1", "Core settings backed up in database.");
 define("DBLAN_2", "Click button to save a backup of your e107 database");
 define("DBLAN_3", "Backup SQL database");

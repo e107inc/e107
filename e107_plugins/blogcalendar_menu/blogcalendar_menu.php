@@ -1,14 +1,22 @@
 <?php
-/******************************************************************\
- *                                                                *
- *  :: e107 blogcal addon ::                                      *                            
- *                                                                *
- *  file:   blogcalendar_menu.php                                 *
- *  author: Thomas Bouve                                          *
- *  email:  crahan@gmx.net                                        *
- *  date:   2004-02-08                                            *
- *                                                                *
-\******************************************************************/
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/blogcalendar_menu/blogcalendar_menu.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:12:06 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+| Based on code by: Thomas Bouve (crahan@gmx.net)
+*/
 require_once(e_PLUGIN."blogcalendar_menu/calendar.php");
 require_once(e_PLUGIN."blogcalendar_menu/functions.php");
 
@@ -16,10 +24,10 @@ require_once(e_PLUGIN."blogcalendar_menu/functions.php");
 // initialization + fetch options
 // ------------------------------
 $sql = new db;
-$prefix = e_PLUGIN."blogcalendar_menu"; 
+$prefix = e_PLUGIN."blogcalendar_menu";
 $marray = array(BLOGCAL_M1,BLOGCAL_M2,BLOGCAL_M3,BLOGCAL_M4,
-	        BLOGCAL_M5,BLOGCAL_M6,BLOGCAL_M7,BLOGCAL_M8,
-		BLOGCAL_M9,BLOGCAL_M10,BLOGCAL_M11,BLOGCAL_M12);
+                BLOGCAL_M5,BLOGCAL_M6,BLOGCAL_M7,BLOGCAL_M8,
+                BLOGCAL_M9,BLOGCAL_M10,BLOGCAL_M11,BLOGCAL_M12);
 $pref['blogcal_ws'] = "monday";
 
 // ----------------------------------------------
@@ -68,12 +76,12 @@ $lastday = date("t", $start);
 $end = mktime(23,59,59,$req_month,$lastday,$req_year);
 $sql -> db_Select("news", "news_id, news_datestamp, news_class","news_datestamp > $start AND news_datestamp < $end");
 while($news =  $sql -> db_Fetch()){
-	if(check_class($news['news_class'])){
-		$xday = date("j",$news['news_datestamp']);
-		if(!$day_links[$xday]){
-			$day_links[$xday]=e_BASE."news.php?day.".formatDate($req_year,$req_month,$xday);
-		}
-	}
+        if(check_class($news['news_class'])){
+                $xday = date("j",$news['news_datestamp']);
+                if(!$day_links[$xday]){
+                        $day_links[$xday]=e_BASE."news.php?day.".formatDate($req_year,$req_month,$xday);
+                }
+        }
 }
 
 

@@ -1,15 +1,20 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|	e107 website system
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|	©Steve Dunstan 2001-2002
-|	http://e107.org
-|	jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|	Released under the terms and conditions of the
-|	GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar_menu.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:12:06 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 
 $ec_dir = e_PLUGIN."calendar_menu/";
@@ -87,8 +92,8 @@ for($c=1; $c<=31; $c++){
                         extract($icon);
                         $img = "<img style='border:0' src='".$ec_dir."images/".$event_cat_icon."' alt='' height='10' width='10'/>";
                 }else{
-					$img = $c;
-				}
+                                        $img = $c;
+                                }
 
                 $linkut = mktime(0 ,0 ,0 ,$dayarray['mon'], $c, $datearray['year']);
 
@@ -108,7 +113,7 @@ for($c=1; $c<=31; $c++){
 }
 
 for($a=($loop+1); $a<=7; $a++){
-	$text .="<td>&nbsp;</td>";
+        $text .="<td>&nbsp;</td>";
 }
 
 $text .= "</tr></table></div>";

@@ -3,7 +3,7 @@
 /**
  * The frame that contains the image to be edited.
  * @author $Author: e107coders $
- * @version $Id: editorFrame.php,v 1.1 2004-06-26 13:48:37 e107coders Exp $
+ * @version $Id: editorFrame.php,v 1.1 2004-09-21 19:10:34 e107coders Exp $
  * @package ImageManager
  */
 

@@ -1,16 +1,20 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        code adapted from original by Lolo Irie (lolo@touchatou.com)
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:10:21 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 if(!getperms("Z")){ header("location:".e_BASE."index.php"); exit; }
@@ -21,41 +25,41 @@ require_once(e_HANDLER."parser_handler.php");
 $handle=opendir(e_PLUGIN);
 while(false !== ($file = readdir($handle)))
 {
-	if($file != "." && $file != ".." && is_dir(e_PLUGIN.$file))
-	{
-		$plugin_handle=opendir(e_PLUGIN.$file."/");
-		while(false !== ($file2 = readdir($plugin_handle)))
-		{
-			if($file2 == "plugin.php")
-			{
-				include(e_PLUGIN.$file."/".$file2);
-				if(!$sql -> db_Select("plugin", "*", "plugin_name='$eplug_name'"))
-				{
-					if(!$eplug_prefs && !$eplug_table_names && !$eplug_user_prefs && !$eplug_parse && !$eplug_userclass && !$eplug_module)
-					{
-						// new plugin, assign entry in plugin table, install is not necessary so mark it as intalled
-						$sql -> db_Insert("plugin", "0, '$eplug_name', '$eplug_version', '$eplug_folder', 1");        
-					}
-					else
-					{
-						// new plugin, assign entry in plugin table, install is necessary
-						$sql -> db_Insert("plugin", "0, '$eplug_name', '$eplug_version', '$eplug_folder', 0");        
-					}
-				}
-			}
-		}
-		closedir($plugin_handle);
-	}
+        if($file != "." && $file != ".." && is_dir(e_PLUGIN.$file))
+        {
+                $plugin_handle=opendir(e_PLUGIN.$file."/");
+                while(false !== ($file2 = readdir($plugin_handle)))
+                {
+                        if($file2 == "plugin.php")
+                        {
+                                include(e_PLUGIN.$file."/".$file2);
+                                if(!$sql -> db_Select("plugin", "*", "plugin_name='$eplug_name'"))
+                                {
+                                        if(!$eplug_prefs && !$eplug_table_names && !$eplug_user_prefs && !$eplug_parse && !$eplug_userclass && !$eplug_module)
+                                        {
+                                                // new plugin, assign entry in plugin table, install is not necessary so mark it as intalled
+                                                $sql -> db_Insert("plugin", "0, '$eplug_name', '$eplug_version', '$eplug_folder', 1");
+                                        }
+                                        else
+                                        {
+                                                // new plugin, assign entry in plugin table, install is necessary
+                                                $sql -> db_Insert("plugin", "0, '$eplug_name', '$eplug_version', '$eplug_folder', 0");
+                                        }
+                                }
+                        }
+                }
+                closedir($plugin_handle);
+        }
 }
 closedir($handle);
 
 $sql -> db_Select("plugin");
 while($row = $sql -> db_fetch())
 {
-	if(!is_dir(e_PLUGIN.$row[plugin_path]))
-	{
-		$sql -> db_Delete("plugin", "plugin_path='{$row['plugin_path']}'");
-	}
+        if(!is_dir(e_PLUGIN.$row[plugin_path]))
+        {
+                $sql -> db_Delete("plugin", "plugin_path='{$row['plugin_path']}'");
+        }
 }
 
 if(strstr(e_QUERY, "uninstall")){

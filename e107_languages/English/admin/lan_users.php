@@ -3,9 +3,9 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2004-09-09 09:31:42 $
+|     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:11:55 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */

@@ -2,7 +2,7 @@
 /**
  * ImageManager, list images, directories, and thumbnails.
  * @author $Author: e107coders $
- * @version $Id: ImageManager.php,v 1.1 2004-06-26 13:48:37 e107coders Exp $
+ * @version $Id: ImageManager.php,v 1.1 2004-09-21 19:10:34 e107coders Exp $
  * @package ImageManager
  */
 
@@ -11,7 +11,7 @@ require_once('Files.php');
 /**
  * ImageManager Class.
  * @author $Author: e107coders $
- * @version $Id: ImageManager.php,v 1.1 2004-06-26 13:48:37 e107coders Exp $
+ * @version $Id: ImageManager.php,v 1.1 2004-09-21 19:10:34 e107coders Exp $
  */
 class ImageManager 
 {

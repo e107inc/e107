@@ -1,16 +1,20 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        /admin/admin.php
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_admin/admin_etalkers.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:10:20 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 require_once("auth.php");
@@ -62,19 +66,19 @@ $texto[7] = ADLAN_95;
 $tit_css = " style=\"border: 1px solid #c00; background-color: #fff; padding: 0px 3px 0px 3px;\" ";
 
 for($i=1;$i<7;$i++){
-	$tmpi = 0;
-	$newarray = asortbyindex ($array_functions, 1);
-	$texti = "<b{$tit_css}> ".$texto[$i]." </b></td></tr>";
-	while(list($key, $funcinfo) = each($newarray)){
-			if($funcinfo[4]==$i){
-				$texti .= wad($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3]);
-				$tmpi = 1;
-			}
-	}
-	if(!$tdc){ $texti .= "</tr>"; }
-	$texti .= "<tr><td colspan='5' ><hr /></td></tr><tr><td colspan='5' >";
-	$tdc=0;
-	if($tmpi == 1){$text .= $texti;}
+        $tmpi = 0;
+        $newarray = asortbyindex ($array_functions, 1);
+        $texti = "<b{$tit_css}> ".$texto[$i]." </b></td></tr>";
+        while(list($key, $funcinfo) = each($newarray)){
+                        if($funcinfo[4]==$i){
+                                $texti .= wad($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3]);
+                                $tmpi = 1;
+                        }
+        }
+        if(!$tdc){ $texti .= "</tr>"; }
+        $texti .= "<tr><td colspan='5' ><hr /></td></tr><tr><td colspan='5' >";
+        $tdc=0;
+        if($tmpi == 1){$text .= $texti;}
 }
 
 

@@ -11,10 +11,10 @@
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
 |
-|   $Source: /cvs_backup/e107/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.5 $
-|   $Date: 2004-08-20 01:00:57 $
-|   $Author: mcfly_e107 $
+|   $Source: /cvs_backup/e107_0.7/e107_handlers/upload_handler.php,v $
+|   $Revision: 1.1 $
+|   $Date: 2004-09-21 19:10:27 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 */
 

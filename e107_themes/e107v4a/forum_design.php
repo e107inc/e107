@@ -1,16 +1,20 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        /forum_design file
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|        ©e107 Core Team 2004
-|        http://e107.org
-|        jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/forum_design.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:12:42 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 
 $FORUMSTART = "

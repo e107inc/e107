@@ -1,4 +1,21 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/compliance_menu/compliance_menu.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:12:09 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
 $text = "<div style='text-align:center'>
 <a href='http://validator.w3.org/check/referer'><img style='border:0' src='http://www.w3.org/Icons/valid-xhtml11' alt='Valid XHTML 1.1!' height='31' width='88' /></a>
 <br />

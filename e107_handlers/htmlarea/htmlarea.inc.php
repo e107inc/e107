@@ -1,7 +1,7 @@
 <?php
 
 // HTMLAREA handler for e107.
-// $Id: htmlarea.inc.php,v 1.13 2004-08-13 23:42:43 e107coders Exp $
+// $Id: htmlarea.inc.php,v 1.1 2004-09-21 19:10:27 e107coders Exp $
 
 // Settings ==========================================================
     $width = "520px";  // htmlarea width

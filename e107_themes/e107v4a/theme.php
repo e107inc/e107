@@ -1,16 +1,20 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|	e107 website system
-|	/e107.v4 theme file 
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|	©Steve Dunstan 2001-2002
-|	http://e107.org
-|	jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|	Released under the terms and conditions of the
-|	GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/theme.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:12:42 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 
 // [theme]
@@ -33,7 +37,7 @@ $logo = THEME."images/bullet3.gif";
 
 
 
-$HEADER .= 
+$HEADER .=
 "
 <table style='width:100%; background-color:#E4E0E0' cellspacing='3' class='topborder'>
 <tr>
@@ -62,7 +66,7 @@ $HEADER .=
 {MENU=1}
 </td><td style='width:60%; vertical-align: top;'>";
 
-$FOOTER = 
+$FOOTER =
 "</td><td style='width:20%; vertical-align:top'>
 {MENU=2}
 </td></tr>
@@ -94,11 +98,11 @@ $FOOTER =
 
 
 function rand_tag(){
-	$tags = file(e_BASE."files/taglines.txt");
-	return stripslashes(htmlspecialchars($tags[rand(0, count($tags))]));
+        $tags = file(e_BASE."files/taglines.txt");
+        return stripslashes(htmlspecialchars($tags[rand(0, count($tags))]));
 }
 
-//	[newsstyle]
+//        [newsstyle]
 
 $NEWSSTYLE = "
 <div class='spacer'>
@@ -128,9 +132,9 @@ $NEWSSTYLE = "
 {EXTENDED}
 <div class='alttd' style='text-align:right'>
 Posted by {NEWSAUTHOR} on {NEWSDATE}
- | 
+ |
 {NEWSCOMMENTS}
- | 
+ |
 {EMAILICON}
 {PRINTICON}
 </div>
@@ -170,13 +174,13 @@ define(LINKDISPLAY, 2);
 define(LINKALIGN, "left");
 
 
-//	[tablestyle]
+//        [tablestyle]
 
 function tablestyle($caption, $text){
-	global $style;
-//	echo "Mode: ".$style;
+        global $style;
+//        echo "Mode: ".$style;
 
-	echo "<div class='spacer'>
+        echo "<div class='spacer'>
 
 <table cellpadding='0' cellspacing='0'>
 <tr>
@@ -240,7 +244,7 @@ $COMMENTSTYLE = "
 <b>
 {USERNAME}
 </b>
- | 
+ |
  {TIMEDATE}
 </td>
 </tr>
@@ -268,7 +272,7 @@ $COMMENTSTYLE = "
 
 // Forum design
 if(strstr(e_SELF,"forum.php")||strstr(e_SELF,"forum_post.php")||strstr(e_SELF,"forum_viewforum.php")||strstr(e_SELF,"forum_viewtopic.php")){
-	@require_once("forum_design.php");
+        @require_once("forum_design.php");
 }
 
 ?>

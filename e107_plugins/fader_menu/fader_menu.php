@@ -1,4 +1,21 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/fader_menu/fader_menu.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:12:11 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
 $fader = "
 
 <script type='text/javascript'>
@@ -17,12 +34,12 @@ begintag='' //set opening tag, such as font declarations
 
 $aj = new textparse;
 for($a=1; $a<=10; $a++){
-	$var = "fader_message_$a";
-	if($menu_pref[$var]){
-		$var2 = str_replace("\"", "'", $aj -> tpa($menu_pref[$var]));
-		$var2 = str_replace("\r\n", "", $var2);
-		$fader .= "fcontent[".($a-1)."] = \"".$var2."\";\n";
-	}
+        $var = "fader_message_$a";
+        if($menu_pref[$var]){
+                $var2 = str_replace("\"", "'", $aj -> tpa($menu_pref[$var]));
+                $var2 = str_replace("\r\n", "", $var2);
+                $fader .= "fcontent[".($a-1)."] = \"".$var2."\";\n";
+        }
 }
 
 $fader .= "
@@ -88,22 +105,22 @@ obj[i].style.color="rgb("+hex+","+hex+","+hex+")"
 }
 }
 
-function colorfade() {	         	
+function colorfade() {
 // 20 frames fading process
-if(frame>0) {	
+if(frame>0) {
 hex=(fadescheme==0)? hex-12 : hex+12 // increase or decrease color value depd on fadescheme
 document.getElementById("fscroller").style.color="rgb("+hex+","+hex+","+hex+")"; // Set color value.
 if (fadelinks)
 linkcolorchange(linksobj)
 frame--;
-setTimeout("colorfade()",20);	
+setTimeout("colorfade()",20);
 }
 
 else{
 document.getElementById("fscroller").style.color=endcolor;
 frame=20;
 hex=(fadescheme==0)? 255 : 0
-}   
+}
 }
 
 if (ie4||DOM2)

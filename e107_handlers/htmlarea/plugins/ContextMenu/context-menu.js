@@ -6,7 +6,7 @@
 // Distributed under the same terms as HTMLArea itself.
 // This notice MUST stay intact for use (see license.txt).
 //
-// $Id: context-menu.js,v 1.4 2004-08-11 09:26:37 e107coders Exp $
+// $Id: context-menu.js,v 1.1 2004-09-21 19:10:31 e107coders Exp $
 
 HTMLArea.loadStyle("menu.css", "ContextMenu");
 

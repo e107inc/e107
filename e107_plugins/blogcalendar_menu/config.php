@@ -1,30 +1,36 @@
 <?php
-/******************************************************************\
- *                                                                *
- *  :: e107 blogcal addon ::   									  *
- *                                                                *
- *  file:     config.php                                          *
- *  author:   Thomas Bouve                                        *
- *  email:    crahan@gmx.net                                      *
- *  Date:     2004-02-08                                          *
- *                                                                *
- * Multilanguage by Juan
-\******************************************************************/
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/blogcalendar_menu/config.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:12:06 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
 require_once("../../class2.php");
 require_once(e_HANDLER."userclass_class.php");
 
 $lan_file=e_PLUGIN."blogcalendar_menu/languages/".e_LANGUAGE.".php";
 if(file_exists($lan_file)){
-	require_once($lan_file);
+        require_once($lan_file);
 } else {
-	require_once(e_PLUGIN."blogcalendar_menu/languages/English.php");
+        require_once(e_PLUGIN."blogcalendar_menu/languages/English.php");
 }
 if(!getperms("1")){ header("location:".e_BASE."index.php"); exit ;}
 require_once(e_ADMIN."auth.php");
 
 if(IsSet($_POST['update_menu'])){
     while(list($key, $value) = each($_POST)){
-        if($value != BLOGCAL_CONF3){ 
+        if($value != BLOGCAL_CONF3){
             $pref[$key] = $value;
         }
     }
@@ -47,7 +53,7 @@ for($i=1; $i<=12; $i++){
    $text .= "<option value='$i'";
    $text .= $months_per_row==$i?"selected":"";
    $text .= ">$i</option>";
-} 
+}
 
 $text .= "</select>
 </td>

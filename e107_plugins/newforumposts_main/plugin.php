@@ -1,16 +1,20 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        code adapted from original by Lolo Irie (lolo@touchatou.com)
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/newforumposts_main/plugin.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2004-09-21 19:12:31 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = "New Forum Posts";
@@ -38,9 +42,9 @@ $eplug_caption =  "Configure New Forum Posts";
 
 // List of preferences -----------------------------------------------------------------------------------------------
 $eplug_prefs = array(
-        "nfp_display" => 0, 
-		"nfp_caption" => "Latest Forum Posts", 
-		"nfp_amount" => 5, 
+        "nfp_display" => 0,
+                "nfp_caption" => "Latest Forum Posts",
+                "nfp_amount" => 5,
 );
 
 // List of table names -----------------------------------------------------------------------------------------------
