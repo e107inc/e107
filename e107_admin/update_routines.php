@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-01-26 14:41:58 $
+|     $Revision: 1.12 $
+|     $Date: 2005-01-26 17:57:10 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -76,6 +76,20 @@ function update_61x_to_700($type){
 							extract($comments);
 							$sql -> db_Update("news", "news_comment_total=$amount WHERE news_id=$id");
 						}
+						/*
+                        changes by jalist 26/01/2005:
+                        altered structure of forum_t table
+                        */
+
+						$sql -> db_Select_gen("SELECT thread_parent AS id, COUNT(*) AS amount FROM #forum_t WHERE thread_parent!=0 GROUP BY thread_parent");
+						$threadArray = $sql -> db_getList();
+						foreach($threadArray as $threads)
+						{
+							extract($threads);
+							$sql -> db_Update("forum_t", "thread_total_replies=$amount WHERE thread_id=$id");
+						}
+
+
                         /* end */
 
                         // start links update -------------------------------------------------------------------------------------------
