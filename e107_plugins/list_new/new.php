@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/list_new/new.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-27 19:53:07 $
-|     $Author: streaky $
+|     $Revision: 1.6 $
+|     $Date: 2005-02-13 18:01:03 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -101,8 +101,8 @@ if ($comments = $sql->db_Select("comments", "*", "comment_datestamp>$lvisit ORDE
 			$row = $sql2->db_Fetch();
 			 extract($row);
 			if (check_class($news_class)) {
-				$news_title = $aj->tpa($news_title);
-				$str .= $bullet."[ ".LIST_1." ] Re: <a href='".e_BASE."comment.php?comment.news.$comment_item_id'>".$aj->tpa($news_title, "admin")."</a><br />";
+				$news_title = $tp -> toHTML($news_title);
+				$str .= $bullet."[ ".LIST_1." ] Re: <a href='".e_BASE."comment.php?comment.news.$comment_item_id'>".$tp -> toHTML($news_title, "admin")."</a><br />";
 				$comment_count++;
 			}
 			break;
@@ -118,15 +118,15 @@ if ($comments = $sql->db_Select("comments", "*", "comment_datestamp>$lvisit ORDE
 				switch($content_type) {
 					case 0:
 					//        article
-					$str .= $bullet."[ ".LIST_14." ] Re: <a href='".e_BASE."content.php?article.$comment_item_id'>".$aj->tpa($content_heading, "admin")."</a><br />";
+					$str .= $bullet."[ ".LIST_14." ] Re: <a href='".e_BASE."content.php?article.$comment_item_id'>".$tp -> toHTML($content_heading, "admin")."</a><br />";
 					break;
 					case 1:
 					//        content page
-					$str .= $bullet."[ ".LIST_15." ] Re: <a href='".e_BASE."content.php?content.$comment_item_id'>".$aj->tpa($content_heading, "admin")."</a><br />";
+					$str .= $bullet."[ ".LIST_15." ] Re: <a href='".e_BASE."content.php?content.$comment_item_id'>".$tp -> toHTML($content_heading, "admin")."</a><br />";
 					break;
 					case 3:
 					//        review
-					$str .= $bullet."[ ".LIST_16." ] Re: <a href='".e_BASE."content.php?review.$comment_item_id.'>".$aj->tpa($content_heading, "admin")."</a><br />";
+					$str .= $bullet."[ ".LIST_16." ] Re: <a href='".e_BASE."content.php?review.$comment_item_id.'>".$tp -> toHTML($content_heading, "admin")."</a><br />";
 					break;
 				}
 			}
@@ -139,7 +139,7 @@ if ($comments = $sql->db_Select("comments", "*", "comment_datestamp>$lvisit ORDE
 			$row = $sql2->db_Fetch();
 			extract($row);
 			if (check_class($download_category_class)) {
-				$str .= $bullet."[ ".LIST_17." ] Re: <a href='".e_BASE."download.php?view.$comment_item_id'>".$aj->tpa($download_name, "admin")."</a><br />";
+				$str .= $bullet."[ ".LIST_17." ] Re: <a href='".e_BASE."download.php?view.$comment_item_id'>".$tp -> toHTML($download_name, "admin")."</a><br />";
 				$comment_count++;
 			}
 			break;
@@ -148,7 +148,7 @@ if ($comments = $sql->db_Select("comments", "*", "comment_datestamp>$lvisit ORDE
 			$sql2->db_Select("faq", "faq_question", "faq_id=$comment_item_id ");
 			$row = $sql2->db_Fetch();
 			 extract($row);
-			$str .= $bullet."[ ".LIST_18." ] Re: <a href='".e_BASE."faq.php?view.$comment_item_id'>".$aj->tpa($faq_question, "admin")."</a><br />";
+			$str .= $bullet."[ ".LIST_18." ] Re: <a href='".e_BASE."faq.php?view.$comment_item_id'>".$tp -> toHTML($faq_question, "admin")."</a><br />";
 			$comment_count++;
 			break;
 			 
@@ -157,7 +157,7 @@ if ($comments = $sql->db_Select("comments", "*", "comment_datestamp>$lvisit ORDE
 			$sql2->db_Select("poll", "*", "poll_id=$comment_item_id ");
 			$row = $sql2->db_Fetch();
 			 extract($row);
-			$str .= $bullet."[ ".LIST_19." ] Re: <a href='".e_BASE."comment.php?comment.poll.$comment_item_id'>".$aj->tpa($poll_title, "admin")."</a><br />";
+			$str .= $bullet."[ ".LIST_19." ] Re: <a href='".e_BASE."comment.php?comment.poll.$comment_item_id'>".$tp -> toHTML($poll_title, "admin")."</a><br />";
 			$comment_count++;
 			break;
 			 
@@ -166,7 +166,7 @@ if ($comments = $sql->db_Select("comments", "*", "comment_datestamp>$lvisit ORDE
 			$sql2->db_Select("bugtrack", "bugtrack_summary", "bugtrack_id=$comment_item_id ");
 			$row = $sql2->db_Fetch();
 			 extract($row);
-			$str .= $bullet."[ ".LIST_20." ] Re: <a href='".e_PLUGIN."bugtracker/bugtracker.php?show.$comment_item_id'>".$aj->tpa($bugtrack_summary)."</a><br />";
+			$str .= $bullet."[ ".LIST_20." ] Re: <a href='".e_PLUGIN."bugtracker/bugtracker.php?show.$comment_item_id'>".$tp -> toHTML($bugtrack_summary)."</a><br />";
 			$comment_count++;
 			break;
 			 
@@ -184,7 +184,7 @@ if ($comments = $sql->db_Select("comments", "*", "comment_datestamp>$lvisit ORDE
 							 extract($row);
 							$nid = $comment_item_id;
 							$link = $row[0];
-							$str .= $bullet."[ ".$plugin_name." ] Re: <a href='".$reply_location."'>".$aj->tpa($link)."</a><br />";
+							$str .= $bullet."[ ".$plugin_name." ] Re: <a href='".$reply_location."'>".$tp -> toHTML($link)."</a><br />";
 							$comment_count++;
 							break 2;
 						}
@@ -211,7 +211,7 @@ if ($chatbox_posts = $sql->db_Select("chatbox", "*", "cb_datestamp>$lvisit ORDER
 		extract($row);
 		$cb_id = substr($cb_nick , 0, strpos($cb_nick , "."));
 		$cb_nick = substr($cb_nick , (strpos($cb_nick , ".")+1));
-		$cb_message = str_replace("<br />", "", $aj->tpa($cb_message));
+		$cb_message = str_replace("<br />", "", $tp -> toHTML($cb_message));
 		$str .= $bullet."[ <a href='".e_BASE."user.php?id.$cb_id'>$cb_nick</a> ] {$cb_message}<br />";
 	}
 } else {
@@ -238,9 +238,9 @@ while ($row = $sql->db_Fetch()) {
 			$sql2->db_Select("forum_t", "*", "thread_id=$thread_parent ");
 			$row = $sql2->db_Fetch();
 			 extract($row);
-			$str .= $bullet."[ <a href='".e_BASE."forum_viewforum.php?$forum_id'>$forum_name</a> ] Re: <a href='".e_BASE."forum_viewtopic.php?$thread_forum_id.$thread_id#$ttemp'>".$aj->tpa($thread_name)."</a><br />";
+			$str .= $bullet."[ <a href='".e_PLUGIN."forum/forum_viewforum.php?$forum_id'>$forum_name</a> ] Re: <a href='".e_PLUGIN."forum/forum_viewtopic.php?$thread_forum_id.$thread_id#$ttemp'>".$tp -> toHTML($thread_name)."</a><br />";
 		} else {
-			$str .= $bullet."[ <a href='".e_BASE."forum_viewforum.php?$forum_id'>$forum_name</a> ] <a href='".e_BASE."forum_viewtopic.php?$thread_forum_id.$thread_id'>".$aj->tpa($thread_name)."</a><br/>";
+			$str .= $bullet."[ <a href='".e_PLUGIN."forum/forum_viewforum.php?$forum_id'>$forum_name</a> ] <a href='".e_PLUGIN."forum/forum_viewtopic.php?$thread_forum_id.$thread_id'>".$tp -> toHTML($thread_name)."</a><br/>";
 		}
 	} else {
 		$forum_posts = $forum_posts - 1;
