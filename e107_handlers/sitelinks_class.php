@@ -59,6 +59,7 @@ function sitelinks(){
 	while($row = $sql -> db_Fetch()){
 		extract($row);
 		if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
+			if(!strstr($link_url, "http:")){ $link_url = e_BASE.$link_url; }
 			$linkstart = ($link_button ? preg_replace("/\<img.*\>/si", "", LINKSTART) : LINKSTART);
 			switch ($link_open) { 
 				case 1:
@@ -73,7 +74,6 @@ function sitelinks(){
 				default:
 				   unset($link_append);
 			}
-			if(!strstr($link_url, "http:")){ $link_url = e_BASE.$link_url; }
 
 			if($link_open == 4){
 				$_link =  $linkstart.($link_button ? "<img src='".e_IMAGE."link_icons/$link_button' alt='' style='vertical-align:middle' /> " : "").($link_url ? "<a".$linkadd.($pref['linkpage_screentip'] ? " title = '$link_description' " : "")." href=\"javascript:open_window('".$link_url."')\">".$link_name."</a>" : $link_name)."\n";
