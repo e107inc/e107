@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.51 $
-|   $Date: 2005-02-22 04:37:13 $
+|   $Revision: 1.52 $
+|   $Date: 2005-02-22 08:03:46 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -455,16 +455,16 @@ class newspost {
 
 			<tr>
 			<td style='width:20%' class='forumheader3'>".NWSLAN_13.":<br /></td>
-			<td style='width:80%' class='forumheader3'>";
+			<td style='width:80%;margin-left:auto' class='forumheader3'>";
 
-		$insertjs = (!check_class($pref['wysiwyg']))?"rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'":
+		$insertjs = (!$pref['wysiwyg'])?"rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'":
 		"rows='25' style='width:100%' ";
 		$_POST['data'] = $tp->toForm($_POST['data']);
 		$text .= "<textarea class='tbox' id='data' name='data'  cols='80'  style='width:95%' $insertjs>".(strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]../", "[img]", $_POST['data']))."</textarea>
 			";
 
 //Main news body textarea
-		if (!check_class($pref['wysiwyg'])) {
+		if (!$pref['wysiwyg']) {
 			$text .= "<input id='helpb' class='helpbox' type='text' name='helpb' size='100' style='width:95%'/>
 			<br />". display_help("helpb");
 
@@ -498,7 +498,7 @@ class newspost {
 			<div style='display: none;'>
 			<textarea class='tbox' id='news_extended' name='news_extended' cols='80' rows='15' style='width:95%;height:100px' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".(strstr($_POST['news_extended'], "[img]http") ? $_POST['news_extended'] : str_replace("[img]../", "[img]", $tp->toForm($_POST['news_extended'])))."</textarea>
 			";
-		if (!check_class($pref['wysiwyg'])) {
+		if (!$pref['wysiwyg']) {
 			$text .= "<br />
 				<input id='help_ext' class='helpbox' type='text' name='help_ext' size='100' style='width:95%'/>
 				<br />
