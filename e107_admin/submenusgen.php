@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/submenusgen.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-01-27 19:52:24 $
-|     $Author: streaky $
+|     $Revision: 1.8 $
+|     $Date: 2005-02-14 20:34:59 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -59,12 +59,12 @@ if ($_POST['subLinks'] == 1) {
 }
 	
 if ($_POST['subForums'] == 1) {
-	$sub_url = "forum.php";
+	$sub_url = $PLUGINS_DIRECTORY."forum/forum.php";
 	$sub_name = LAN_MENGEN_5; // Forum
 	$sub_getcat = "forum";
 	$sub_getcatfield = "forum_id, forum_name";
 	$sub_getcatsql = "forum_parent !='0' ORDER BY forum_order ASC";
-	$sub_suburl = "forum_viewforum.php?";
+	$sub_suburl = $PLUGINS_DIRECTORY."forum/forum_viewforum.php?";
 	$message .= create_submenu();
 }
 	
