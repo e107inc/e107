@@ -4,7 +4,7 @@
 * MySql Handler for multilanguage (works with the default e107 mysql handler)
 *
 */
-// $Id: mysql_queries.php,v 1.1 2004-10-10 21:20:07 loloirie Exp $ 
+// $Id: mysql_queries.php,v 1.2 2004-10-10 22:17:36 loloirie Exp $ 
 class e107_ml {
 	//global $list_e107lang;
 	var $tab_sql;
@@ -24,16 +24,16 @@ class e107_ml {
 			if($tab_sql = $$var_sql -> db_Select($ml_fullname, $ml_fields, $ml_arg, $ml_mode, $ml_debug)){
         return $tab_sql;
 			}else if($tab_sql = $$var_sql -> db_Select($ml_table, $ml_fields, $ml_arg, $ml_mode, $ml_debug)){
-				if($pref['e107ml_mailalert']==1){
-          echo "<br />Error1: ".$ml_fullname." - ".$ml_fields." - ".$ml_arg." - ".$ml_mode." - ".$ml_debug." - ".e_SELF;
-          sendemail(SITEADMINEMAIL,"Error with the multilanguage system on your site ".SITENAME."The following SELECT request was required but was not successful:\n".$ml_fullname." - ".$ml_fields." - ".$ml_arg." - ".$ml_mode." - ".$ml_debug.".\n\nPlease report bug to the e107 Dev team, on e107.org");
-				}
-				
 				return $tab_sql;
 			}
 		}else if($tab_sql = $$var_sql -> db_Select($ml_table, $ml_fields, $ml_arg, $ml_mode, $ml_debug)){
 			return $tab_sql;
 		}
+    if($pref['e107ml_mailalert']==1){
+      echo "<br />Error1: ".$ml_fullname." - ".$ml_fields." - ".$ml_arg." - ".$ml_mode." - ".$ml_debug." - ".e_SELF;
+      sendemail(SITEADMINEMAIL,"Error with the multilanguage system on your site ".SITENAME."The following SELECT request was required but was not successful:\n".$ml_fullname." - ".$ml_fields." - ".$ml_arg." - ".$ml_mode." - ".$ml_debug.".\n\nPlease report bug to the e107 Dev team, on e107.org");
+		}
+
 		return FALSE;
 	}
 	
