@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/templates/poll_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-03-03 18:36:15 $
+|     $Revision: 1.2 $
+|     $Date: 2005-03-03 22:52:34 $
 |     $Author: stevedunstan $
 |
 +----------------------------------------------------------------------------+
@@ -106,26 +106,32 @@ $POLL_DISALLOWED_END = "
 /*		template for forum polls when user HASN'T voted*/
 
 $POLL_FORUM_NOTVOTED_START = "
-<div style='text-align:center'>
-<br />
+<div style='text-align:center; margin-left: auto; margin-right: auto;'>
+<table class='fborder' style='width: 350px;'>
+<tr>
+<td class='forumheader' style='width: 100%; text-align: center;'>
 <b><i>{QUESTION}</i></b>
-<hr />
-</div>
-<br />";
+</td>
+</tr>
+<tr>
+<td class='forumheader3' style='width: 100%;'>";
 
 $POLL_FORUM_NOTVOTED_LOOP = "
 {OPTIONBUTTON}<b>{OPTION}</b>
 <br /><br />";
 
 $POLL_FORUM_NOTVOTED_END = "
+</td>
+</tr>
+
+<tr>
+<td class='forumheader' style='width: 100%;'>
 <div style='text-align:center' class='smalltext'>
 {SUBMITBUTTON}
-<br /><br />
-{AUTHOR}
-<br />
-{VOTE_TOTAL} {COMMENTS}
-<br />
-{OLDPOLLS}
+</div>
+</td>
+</tr>
+</table>
 </div>";
 
 
@@ -140,7 +146,6 @@ $POLL_FORUM_VOTED_START = "
 <b><i>{QUESTION}</i></b>
 </td>
 </tr>
-
 <tr>
 <td class='forumheader3' style='width: 100%;'>
 ";
@@ -164,6 +169,7 @@ $POLL_FORUM_VOTED_END = "
 </td>
 </tr>
 </table>
+</div>
 ";
 
 ?>
