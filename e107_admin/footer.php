@@ -23,7 +23,7 @@ $sql -> db_Select("core", "*", "e107_name='e107' ");
 $row = $sql -> db_Fetch();
 $e107info = unserialize($row['e107_value']);
 
-if(file_exists(e_ADMIN."ver.php")){ require_once(e_ADMIN."ver.php"); }
+if(file_exists(e_ADMIN."ver.php")){ @require_once(e_ADMIN."ver.php"); }
 
 $obj = new convert;
 $install_date = $obj->convert_date($e107info['e107_datestamp'], "long");
@@ -38,7 +38,7 @@ if(function_exists($adminmenu_func)){
 $plugindir = (str_replace("/","",str_replace("..","",e_PLUGIN))."/");
 $plugpath = e_PLUGIN.str_replace(basename(e_SELF),"",str_replace($plugindir,"",strstr(e_SELF,$plugindir)))."admin_menu.php";
 if(file_exists($plugpath)){
-	require_once($plugpath);
+	@require_once($plugpath);
 }
 
 $text = "<b>".FOOTLAN_1."</b>
@@ -102,15 +102,14 @@ if($pref['cachestatus']){
 }
 
 
-$text = "º <a style='cursor: pointer; cursor: hand' onclick=\"expandit(this)\">".FOOTLAN_14."</a>
-<div style='display: none;'>
-<br />";
-while(list($key, $value) = each($helplist)){ 
-	$text .= "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".e_ADMIN."docs.php?$key'>$value</a><br />"; 
-}
-$text .= "</div>";
-$ns -> tablerender(FOOTLAN_15, $text);
+// Docs menu
 
+while(list($key, $value) = each($helplist)){
+	$e107_var['x'.$key]['text'] = $value;
+	$e107_var['x'.$key]['link'] = e_ADMIN."docs.php?".$key;
+}
+
+$text .= show_admin_treemenu(FOOTLAN_14,$act,$e107_var);
 
 }
 ?>
