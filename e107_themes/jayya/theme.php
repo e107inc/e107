@@ -162,4 +162,8 @@ function tablestyle($caption, $text, $mode){
 	}
 }
 
+$CHATBOXSTYLE = "
+<img src='".e_IMAGE."admin_images/chatbox_16.png' alt='' style='width: 16px; height: 16px; vertical-align: bottom' />
+<b>{USERNAME}</b><br />{TIMEDATE}<br />{MESSAGE}<br /><br />";
+
 ?>
