@@ -1,0 +1,95 @@
+<?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/forum_viewforum_template.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2005-01-29 18:06:35 $
+|     $Author: sweetas $
++----------------------------------------------------------------------------+
+*/
+ $FORUM_VIEW_START = "
+<table style='width:100%' class='nforumholder' cellpadding=0 cellspacing=0>
+<tr>
+<td  colspan='2' class='nforumcaption'>{BREADCRUMB}</td>
+</tr>
+<tr>
+</table>
+<table style='width:100%'>
+<td style='width:80%'><div class='mediumtext'><img src='".e_IMAGE."forum/e.png' style='vertical-align:middle' /> <b>{FORUMTITLE} Forum</b></div>{THREADPAGES}</td>
+<td style='width:20%; text-align:right; vertical-align:bottom;'>
+{NEWTHREADBUTTON}
+</td>
+</tr>
+</table>
+
+<table style='width:100%' class='nforumholder' cellpadding=0 cellspacing=0>
+<tr>
+<td style='width:3%' class='nforumcaption2'>&nbsp;</td>
+<td style='width:47%' class='nforumcaption2'>{THREADTITLE}</td>
+<td style='width:20%; text-align:center' class='nforumcaption2'>{STARTERTITLE}</td>
+<td style='width:5%; text-align:center' class='nforumcaption2'>{REPLYTITLE}</td>
+<td style='width:5%; text-align:center' class='nforumcaption2'>{VIEWTITLE}</td>
+<td style='width:20%; text-align:center' class='nforumcaption2'>{LASTPOSTITLE}</td>
+</tr>";
+
+
+$FORUM_VIEW_FORUM = "
+<tr>
+<td style='vertical-align:middle; text-align:center; width:3%' class='nforumview1'>{ICON}</td>
+<td style='vertical-align:middle; text-align:left; width:47%'  class='nforumview1'>
+
+<table style='width:100%'>
+<tr>
+<td style='width:90%'><span class='mediumtext'><b>{THREADNAME}</b></span> <span class='smalltext'>{PAGES}</span></td>
+<td style='width:10%; white-space:nowrap;'>{ADMIN_ICONS}</td>
+</tr>
+</table>
+</td>
+
+<td style='vertical-align:top; text-align:center; width:20%' class='nforumview2'><span class='smalltext'><b>{POSTER}</b><br />{THREADDATE}</span></td>
+<td style='vertical-align:center; text-align:center; width:5%' class='nforumview2'><span class='smalltext'>{REPLIES}</span></td>
+<td style='vertical-align:center; text-align:center; width:5%' class='nforumview2'><span class='smalltext'>{VIEWS}</span></td>
+<td style='vertical-align:top; text-align:center; width:20%' class='nforumview2'><span class='smalltext'>{LASTPOST}</span></td>
+</tr>";
+
+ $FORUM_VIEW_END = "
+</table>
+<table style='width:100%'>
+<tr>
+<td style='width:80%'><span class='mediumtext'>{THREADPAGES}</span>
+{FORUMJUMP}
+</td>
+<td style='width:20%; text-align:right'>
+{NEWTHREADBUTTON}
+</td>
+</tr>
+</table>
+
+
+<div class='spacer'>
+<table style='width:100%' class='nforumholder' cellpadding=0 cellspacing=0>
+<tr>
+<td style='vertical-align:center; width:50%' class='nforumview3'><span class='smalltext'>{MODERATORS}</span></td>
+<td style='text-align:right; vertical-align:center; width:50%' class='nforumview3'><span class='smalltext'>{BROWSERS}</span></td>
+</tr>
+
+<tr>
+<td style='vertical-align:center; width:50%' class='nforumview4'>{ICONKEY}</td>
+<td style='vertical-align:center; text-align:center; width:50%' class='nforumview4'>{PERMS}<br /><br />{SEARCH}
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class='nforumdisclaimer' style='text-align:center'>Powered by <b>e107 Forum System</b></div>";
+
+ ?>
