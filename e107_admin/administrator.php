@@ -30,7 +30,7 @@ if(IsSet($_POST['add_admin'])){
 		if(!$_POST['ad_name'] || !$_POST['a_password']){
 			$message = ADMSLAN_55;
 		}else{
-			for ($i=0; $i<=29; $i++){
+                        for ($i=0; $i<=count($_POST['perms']); $i++){
 				if($_POST['perms'][$i]){
 					$perm .= $_POST['perms'][$i].".";
 				}
@@ -57,7 +57,7 @@ if(IsSet($_POST['update_admin'])){
 		$admin_password = md5($_POST['a_password']);
 	}
 
-	for ($i=0; $i<=29; $i++){
+       for ($i=0; $i<=count($_POST['perms']); $i++){
 		if($_POST['perms'][$i]){
 			$perm .= $_POST['perms'][$i].".";
 		}
@@ -195,7 +195,17 @@ $text .= checkb("U", $a_perms).ADMSLAN_45."<br />";
 $text .= checkb("M", $a_perms).ADMSLAN_46."<br />";
 $text .= checkb("N", $a_perms).ADMSLAN_47."<br /><br />";
 
-$text .= checkb("P", $a_perms).ADMSLAN_48."<br />";
+
+$text .= checkb("Z", $a_perms)."Plugin Manager<br /><br />";
+
+$sql -> db_Select("plugin", "*", "plugin_installflag='1'");
+while($row = $sql-> db_Fetch()){
+extract($row);
+$text .= checkb("P".$plugin_id, $a_perms)."Plugin - ".$plugin_name."<br />";
+}
+
+
+
 
 $text .= "
 <br />
