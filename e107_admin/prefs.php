@@ -83,6 +83,27 @@ if(IsSet($_POST['updateprefs'])){
         $pref['signup_avt_req'] = $_POST['signup_avt_req'];
         $pref['signup_zone_req'] = $_POST['signup_zone_req'];
 
+        // Create prefs to custom fields.
+        if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
+        $row = $sql -> db_Fetch();
+        $user_entended = unserialize($row[0]);
+        $c=0;
+        $user_pref = unserialize($user_prefs);
+            while(list($key, $u_entended) = each($user_entended)){
+                    if($u_entended){
+                    $signup_ext =  "signup_ext".$key;
+                    $pref[$signup_ext] = $_POST[$signup_ext];
+                    $signup_ext_req =  "signup_ext_req".$key;
+                    $pref[$signup_ext_req] = $_POST[$signup_ext_req];
+                    }
+            }
+        }
+
+
+
+
+
+        $pref['imagecode'] = $_POST['imagecode'];
 
 
 
@@ -191,13 +212,13 @@ while ($file = readdir($handle)){
 closedir($handle);
 // new
 
-$text .= "<div style='text-align:center'><div class='fborder' style='text-align:center; width:98%'>";
+$text .= "<div style='text-align:center'><div style='text-align:center; width:97%'>";
 $text .="<input type='button' class='button' style='width:280px' value='".PRFLAN_1."' onClick=\"expandit('main')\"><br/>";
 $text .="<input type='button' class='button' style='width:280px' value='".PRFLAN_21."' onClick=\"expandit('date')\"><br/>";
-$text .="<input type='button' class='button' style='width:280px' value='Admin Display Options' onClick=\"expandit('admindisp')\"><br/>";
-$text .="<input type='button' class='button' style='width:280px' value='Registration' onClick=\"expandit('registration')\"><br/>";
-$text .="<input type='button' class='button' style='width:280px' value='Security & Protection' onClick=\"expandit('security')\"><br/>";
-$text .="<input type='button' class='button' style='width:280px' value='Mail Settings' onClick=\"expandit('mail')\"><br/>";
+$text .="<input type='button' class='button' style='width:280px' value='".PRFLAN_77."' onClick=\"expandit('admindisp')\"><br/>";
+$text .="<input type='button' class='button' style='width:280px' value='".PRFLAN_28."' onClick=\"expandit('registration')\"><br/>";
+$text .="<input type='button' class='button' style='width:280px' value='".PRFLAN_47."' onClick=\"expandit('security')\"><br/>";
+$text .="<input type='button' class='button' style='width:280px' value='".PRFLAN_62."' onClick=\"expandit('mail')\"><br/>";
 $text .="</div>";
 
 // end new.
@@ -340,14 +361,14 @@ $text .= "</select>
 </tr>";
 $text .="</table></div>";
 
-// Admin Display. .
+// Admin Display Areas. .
 
-$text .="<div id='admindisp' class='border' style='display:none'>
+$text .="<div id='admindisp' style='display:none'>
 <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 
 <tr>
 <td colspan='2'>
-<div class='caption'>Admin Display Options</div></div>
+<div class='caption'>".PRFLAN_77."</div></div>
 </td>
 </tr>
 
@@ -382,7 +403,7 @@ $text .= "</select>
 
 
 <tr>
-<td style='width:50%' class='forumheader3'>Use HtmlArea for admin text-areas: </td>
+<td style='width:50%' class='forumheader3'>".PRFLAN_79.":</td>
 <td style='width:50%; text-align:right' class='forumheader3'>".
 ($pref['htmlarea'] ? "<input type='checkbox' name='htmlarea' value='1'  checked>" : "<input type='checkbox' name='htmlarea' value='1'>")."
 </td>
@@ -464,6 +485,8 @@ $text .= "</select>
 </td>
 </tr></table></div>";
 
+// =========== Registration Preferences. ==================
+
 $text .="<div id='registration' style='text-align:center; display:none'>
 <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 
@@ -497,19 +520,202 @@ $text .="<div id='registration' style='text-align:center; display:none'>
 </tr>
 
 <tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_45.": </td>
+<td style='width:50%; text-align:right' class='forumheader3'>";
+if($use_coppa == 1){
+        $text .= "<input type='checkbox' name='use_coppa' value='1'  checked>";
+}else{
+        $text .= "<input type='checkbox' name='use_coppa' value='1'>";
+}
+
+
+$text .= "(".PRFLAN_46.")
+</td>
+</tr>
+
+<tr>
 <td style='width:50%' class='forumheader3'>".PRFLAN_58.": </td>
 <td style='width:50%; text-align:right' class='forumheader3'>".
 ($pref['membersonly_enabled'] ? "<input type='checkbox' name='membersonly_enabled' value='1'  checked>" : "<input type='checkbox' name='membersonly_enabled' value='1'>")."
 (".PRFLAN_59.")
 </td>
-</tr></table></div>";
+</tr>
+
+<tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_76.": </td>
+<td style='width:50%; text-align:right' class='forumheader3'>".
+($pref['imagecode'] ? "<input type='checkbox' name='imagecode' value='1'  checked>" : "<input type='checkbox' name='imagecode' value='1'>")."
+</td>
+</tr>
+
+";
+
+$text .="
+<tr>
+<td style='width:50%' class='forumheader3'>".CUSTSIG_16."</td>
+<td class='forumheader3' style='width:50%;text-align:right' >
+<input type='text' class='tbox' name='signup_pass_len' value='".$pref['signup_pass_len']."'>
+(".PRFLAN_78.") </td>
+</tr>";
+// Signup options.
+
+$text .= "<div style='text-align:center'>
+<table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
+<tr >
+<td class=\"caption\">".CUSTSIG_13."</td>
+<td class=\"caption\">".CUSTSIG_14."</td>
+<td class=\"caption\">".CUSTSIG_15."</td>
+<tr>
+<td style='width:50%' class='forumheader3'>".CUSTSIG_2."</td>
+<td style='width:25%' class='forumheader3'>".
+($pref['signup_real'] ? "<input type='checkbox' name='signup_real' value='1'  checked>" : "<input type='checkbox' name='signup_real' value='1'>")."
+</td>
+<td style='width:25%' class='forumheader3'>".
+($pref['signup_real_req'] ? "<input type='checkbox' name='signup_real_req' value='1'  checked>" : "<input type='checkbox' name='signup_real_req' value='1'>")."
+</td>
+</tr>
+
+<tr>
+<td style='width:50%' class='forumheader3'>".CUSTSIG_3."</td>
+<td style='width:25%' class='forumheader3'>".
+($pref['signup_url'] ? "<input type='checkbox' name='signup_url' value='1'  checked>" : "<input type='checkbox' name='signup_url' value='1'>")."
+</td>
+<td style='width:25%' class='forumheader3'>".
+($pref['signup_url_req'] ? "<input type='checkbox' name='signup_url_req' value='1'  checked>" : "<input type='checkbox' name='signup_url_req' value='1'>")."
+</td>
+</tr>
+
+<tr>
+<td style='width:50%' class='forumheader3'>ICQ: </td>
+<td style='width:25%' class='forumheader3'>".
+($pref['signup_icq'] ? "<input type='checkbox' name='signup_icq' value='1'  checked>" : "<input type='checkbox' name='signup_icq' value='1'>")."
+</td>
+<td style='width:25%' class='forumheader3'>".
+($pref['signup_icq_req'] ? "<input type='checkbox' name='signup_icq_req' value='1'  checked>" : "<input type='checkbox' name='signup_icq_req' value='1'>")."
+</td>
+</tr>
+
+<tr>
+<td style='width:50%' class='forumheader3'>Aim: </td>
+<td style='width:25%' class='forumheader3'>".
+($pref['signup_aim'] ? "<input type='checkbox' name='signup_aim' value='1'  checked>" : "<input type='checkbox' name='signup_aim' value='1'>")."
+</td>
+<td style='width:25%' class='forumheader3'>".
+($pref['signup_aim_req'] ? "<input type='checkbox' name='signup_aim_req' value='1'  checked>" : "<input type='checkbox' name='signup_aim_req' value='1'>")."
+</td>
+</tr>
+
+<tr>
+<td style='width:50%' class='forumheader3'>MSN: </td>
+<td style='width:25%' class='forumheader3'>".
+($pref['signup_msn'] ? "<input type='checkbox' name='signup_msn' value='1'  checked>" : "<input type='checkbox' name='signup_msn' value='1'>")."
+</td>
+<td style='width:25%' class='forumheader3'>".
+($pref['signup_msn_req'] ? "<input type='checkbox' name='signup_msn_req' value='1'  checked>" : "<input type='checkbox' name='signup_msn_req' value='1'>")."
+</td>
+</tr>
+
+
+
+
+<tr>
+<td style='width:50%' class='forumheader3'>".CUSTSIG_4."</td>
+<td style='width:25%' class='forumheader3'>".
+($pref['signup_dob'] ? "<input type='checkbox' name='signup_dob' value='1'  checked>" : "<input type='checkbox' name='signup_dob' value='1'>")."
+</td>
+<td style='width:25%' class='forumheader3'>".
+($pref['signup_dob_req'] ? "<input type='checkbox' name='signup_dob_req' value='1'  checked>" : "<input type='checkbox' name='signup_dob_req' value='1'>")."
+</td>
+</tr>
+
+<tr>
+<td style='width:50%' class='forumheader3'>".CUSTSIG_5."</td>
+<td style='width:25%' class='forumheader3'>".
+($pref['signup_loc'] ? "<input type='checkbox' name='signup_loc' value='1'  checked>" : "<input type='checkbox' name='signup_loc' value='1'>")."
+</td>
+<td style='width:25%' class='forumheader3'>".
+($pref['signup_loc_req'] ? "<input type='checkbox' name='signup_loc_req' value='1'  checked>" : "<input type='checkbox' name='signup_loc_req' value='1'>")."
+</td>
+</tr>
+
+<tr>
+<td style='width:50%' class='forumheader3'>".CUSTSIG_6."</td>
+<td style='width:25%' class='forumheader3'>".
+($pref['signup_sig'] ? "<input type='checkbox' name='signup_sig' value='1'  checked>" : "<input type='checkbox' name='signup_sig' value='1'>")."
+</td>
+<td style='width:25%' class='forumheader3'>".
+($pref['signup_sig_req'] ? "<input type='checkbox' name='signup_sig_req' value='1'  checked>" : "<input type='checkbox' name='signup_sig_req' value='1'>")."
+</td>
+</tr>
+
+<tr>
+<td style='width:50%' class='forumheader3'>Avatar: </td>
+<td style='width:25%' class='forumheader3'>".
+($pref['signup_avt'] ? "<input type='checkbox' name='signup_avt' value='1'  checked>" : "<input type='checkbox' name='signup_avt' value='1'>")."
+</td>
+<td style='width:25%' class='forumheader3'>".
+($pref['signup_avt_req'] ? "<input type='checkbox' name='signup_avt_req' value='1'  checked>" : "<input type='checkbox' name='signup_avt_req' value='1'>")."
+</td>
+</tr>";
+
+
+if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
+        $row = $sql -> db_Fetch();
+        $user_entended = unserialize($row[0]);
+        $c=0;
+
+        $user_pref = unserialize($user_prefs);
+
+        while(list($key, $u_entended) = each($user_entended)){
+                if($u_entended){
+                                $ut = explode("|",$u_entended);
+                                $u_name = ($ut[0] != "") ? $ut[0] : $u_entended;
+                                $u_type = $ut[1];
+                                $u_value = $ut[2];
+
+        $signup_ext = "signup_ext";
+        $text .="
+                <tr>
+                <td style='width:50%' class='forumheader3'>".$u_name." <span class='smalltext'>(custom field)</span></td>
+                <td style='width:25%' class='forumheader3'>".
+                ($pref['signup_ext'.$key] ? "<input type='checkbox' name='signup_ext".$key."' value='1'  checked>" : "<input type='checkbox' name='signup_ext".$key."' value='1'>")."
+                </td>
+        <td style='width:25%' class='forumheader3'>".
+                ($pref['signup_ext_req'.$key] ? "<input type='checkbox' name='signup_ext_req".$key."' value='1'  checked>" : "<input type='checkbox' name='signup_ext_req".$key."' value='1'>")."
+                </td>
+                </tr>";
+
+              }
+           }
+           }
+
+
+$text .="
+<tr>
+<td style='width:50%' class='forumheader3'>".CUSTSIG_8."</td>
+<td style='width:25%' class='forumheader3'>".
+($pref['signup_zone'] ? "<input type='checkbox' name='signup_zone' value='1'  checked>" : "<input type='checkbox' name='signup_zone' value='1'>")."
+</td>
+<td style='width:25%' class='forumheader3'>".
+($pref['signup_zone_req'] ? "<input type='checkbox' name='signup_zone_req' value='1'  checked>" : "<input type='checkbox' name='signup_zone_req' value='1'>")."
+</td>
+</tr>";
+
+
+$text .="</table></div>";
+
+
+
+ // Security Options. .
+
+
 
 $text .="<div id='security' style='text-align:center; display:none'>
 <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 
 <tr>
 <td colspan='2'>
-<div class='border'><div class='caption'>".PRFLAN_34."</div></div>
+<div class='border'><div class='caption'>".PRFLAN_47."</div></div>
 </td>
 </tr>
 
@@ -520,11 +726,6 @@ $text .="<div id='security' style='text-align:center; display:none'>
 </td>
 </tr>
 
-<tr>
-<td colspan='2'>
-<div class='border'><div class='caption'>".PRFLAN_47."</div></div>
-</td>
-</tr><tr>
 
 <td style='width:50%' class='forumheader3'>".PRFLAN_48.": </td>
 <td style='width:50%; text-align:right' class='forumheader3'>".
@@ -535,11 +736,6 @@ $text .="<div id='security' style='text-align:center; display:none'>
 </td>
 </tr>
 
-<tr>
-<td colspan='2'>
-<div class='border'><div class='caption'>".PRFLAN_39."</div></div>
-</td>
-</tr><tr>
 
 <td style='width:50%' class='forumheader3'>".PRFLAN_40.": </td>
 <td style='width:50%; text-align:right' class='forumheader3'>";
@@ -568,19 +764,7 @@ $text .= "(".PRFLAN_41.")
 </td>
 </tr>
 
-<tr>
-<td style='width:50%' class='forumheader3'>".PRFLAN_45.": </td>
-<td style='width:50%; text-align:right' class='forumheader3'>";
-if($use_coppa == 1){
-        $text .= "<input type='checkbox' name='use_coppa' value='1'  checked>";
-}else{
-        $text .= "<input type='checkbox' name='use_coppa' value='1'>";
-}
-
-
-$text .= "(".PRFLAN_46.")
-</td>
-</tr></table></div>";
+</table></div>";
 
 $text .="<div id='mail' style='text-align:center; display:none'>
 <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
