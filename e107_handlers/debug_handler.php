@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/debug_handler.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-03-13 10:59:53 $
+|     $Revision: 1.11 $
+|     $Date: 2005-03-16 08:15:32 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */  
@@ -37,6 +37,8 @@ class e107_debug {
 	'warn'	=>     1,   // just warnings, parse errrors, etc
 	'notice'	=> 32768,	// you REALLY don't want all this, do you?
 	'everything' => 65535,
+	'bbsc' => 65536, 
+	'paths' => 131072
 	);
 	
 	function e107_debug() {
@@ -102,6 +104,10 @@ if (strstr(e_MENU, "debug") || isset($_COOKIE['e107_debug_level'])) {
 // 255 = all basics
 // 65535 = all basic and all gory details
 
+// 65536 = will show all shortcodes and bbcodes used
+// 131072 = will show all path related information
+
+
 // Basic levels
 define('E107_DBG_BASIC',(E107_DEBUG_LEVEL & 1));         // basics: worst php errors, sql errors, etc
 define('E107_DBG_SQLQUERIES',(E107_DEBUG_LEVEL & 2));    // display all sql queries
@@ -123,5 +129,5 @@ define('E107_DBG_ALLERRORS',(E107_DEBUG_LEVEL & 32768));     // show ALL errors/
 // BBCode / Shortcode
 define('E107_DBG_BBSC',(E107_DEBUG_LEVEL & 65536));
 
-
+define('E107_DBG_PATH',(E107_DEBUG_LEVEL & 131072));
 ?>
