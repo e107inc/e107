@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-02-11 17:54:02 $
-|     $Author: sweetas $
+|     $Revision: 1.9 $
+|     $Date: 2005-02-11 18:52:50 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -69,7 +69,7 @@ class e_search {
 						$regex_append = "[[:>:]]";	
 					}
 					$this -> query = str_replace(array('"', '+'), array('', ''), $this -> query);
-					if (($this -> pos = stripos($this -> text, $this -> query)) !== FALSE) {
+					if (($this -> pos = strpos(strtolower($this -> text), strtolower($this -> query))) !== FALSE) {
 						if (!$endcrop || !$title) {
 							$this -> parsesearch_crop();
 							$endcrop = TRUE;
@@ -100,7 +100,7 @@ class e_search {
 			} else {
 				$this -> text = "...".substr($this -> text, ($this -> pos - round(($pref['search_chars'] / 3))), $pref['search_chars'])."...";
 			}
-			$this -> pos = stripos($this -> text, $this -> query);
+			$this -> pos = strpos(strtolower($this -> text), strtolower($this -> query));
 		}
 	}
 }
