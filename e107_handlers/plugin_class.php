@@ -4,8 +4,11 @@ class e107plugin {
 		global $sql;
 		if ($sql->db_Select('plugin')) {
 			while ($row = $sql->db_Fetch()) {
-				$ret[] = $row;
+				$ret[ucfirst($row['plugin_name'])] = $row;
 			}
+			
+			ksort($ret, SORT_STRING);
+			
 			return $ret;
 		}
 		return FALSE;
