@@ -180,7 +180,7 @@ if($action == "article"){
 	<br />";
 
 	require_once(e_HANDLER."ren_help.php");
-	$text .= ren_help("addtext2", TRUE)."
+	$text .= ren_help(1, "addtext2", TRUE)."
 	</td>
 	</tr>
 
@@ -272,7 +272,7 @@ if($action == "review"){
 	<input class='helpbox' type='text' name='helpb' size='100' />
 	<br />";
 	require_once(e_HANDLER."ren_help.php");
-	$text .= ren_help("addtext2", TRUE)."
+	$text .= ren_help(1, "addtext2", TRUE)."
 	</td>
 	</tr>
 
