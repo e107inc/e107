@@ -61,6 +61,15 @@ $HEADER = "<table class='top_section'>
 <table class='main_section'>
 <tr>
 <td class='left_menu'>
+</td>
+<td style='width: *'>
+</td>
+<td class='right_menu'>
+</td>
+</tr>
+
+<tr>
+<td class='left_menu'>
 <table style='width:100%; border-collapse: collapse; border-spacing: 0px;'>
 <tr>
 <td>
