@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-03-29 06:04:58 $
-|     $Author: e107coders $
+|     $Revision: 1.12 $
+|     $Date: 2005-03-31 17:47:44 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -23,6 +23,7 @@ if (!e_QUERY) {
 	exit;
 }
 
+$id = FALSE;
 if (!is_numeric(e_QUERY)) {
 	if ($sql->db_Select("download", "download_id", "download_url='".e_QUERY."'", TRUE)) {
 		$row = $sql->db_Fetch();
@@ -109,7 +110,10 @@ if (preg_match("#.*\.[a-z,A-Z]{3,4}#", e_QUERY)) {
 		send_file($DOWNLOADS_DIRECTORY.e_QUERY);
 		exit;
 	}
-	return;
+	require_once(HEADERF);
+	$ns -> tablerender(LAN_dl_61, "<div style='text-align:center'>".LAN_dl_65."<br /><br /><a href='javascript:history.back(1)'>".LAN_dl_64."</a></div>");
+	require_once(FOOTERF);
+	exit;
 }
 	
 if ($type == "file")

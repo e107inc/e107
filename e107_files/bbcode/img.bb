@@ -16,6 +16,11 @@ foreach($imgParms as $k => $v) {
 	$parmStr .= "$k='{$v}' ";
 }
 
+if(file_exists(e_IMAGE."newspost_images/".$code_text))
+{
+	$code_text = e_IMAGE."newspost_images/".$code_text;
+}
+
 if (!$postID) {
 	return "<img src='{$code_text}' {$parmStr} />";
 } else {
