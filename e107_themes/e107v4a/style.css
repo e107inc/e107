@@ -1,0 +1,345 @@
+body {
+	color: #000;
+	font: 12px tahoma, verdana, arial, sans-serif;
+	background-color: #E7E7E7;
+	margin:0px; text-align:left;
+}
+a {
+	color: #716d6d;
+	text-decoration: underline;
+}
+a:hover {
+	color: #2a3236;
+	text-decoration: underline;
+}
+.smalltext {
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#5d6e75;
+}
+.smallblacktext {
+	font: normal 11px tahoma, verdana, arial, helvetica, sans-serif;
+	color:#000;
+}
+.indent{
+	padding: 3px 3px 3px 3px;
+	margin: 5px;
+	font: 11px verdana, tahoma, arial, sans-serif;
+	color: #000060;
+	border: 1px solid;
+	background-color: #E3E2D7;
+	border-bottom: #FFFFFF 1px solid;
+	border-left: #000 1px solid;
+	border-right: #FFFFFF 1px solid;
+	border-top: #000 1px solid;
+}
+.defaulttext {
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+}
+td {
+	font:10px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+	padding: 0px;
+	text-align:left;
+}
+
+blockquote {
+	font: italic 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#7e96ac;
+}
+.mediumtext {
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+}
+.captiontext {
+	font: 14px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+}
+.tbox{
+	background-color: #eaeef2;
+	border: #5e5d63 1px solid;
+	color: #000000;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+.nextprev{
+	background-color: #eaeef2;
+	border: 1px solid #696C6C;
+	color: #000;
+	font: normal 9px verdana, tahoma, arial, helvetica, sans-serif;
+	text-align:center;
+	padding : 2px, 2px, 2px, 2px;
+	background-image : url(images/button.png);
+}
+.button{
+	background-color: #eaeef2;
+	border: #000 1px solid;
+	color: #000000;
+	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
+	text-align:center;
+	background-image : url(images/button.png);
+}
+.np{
+	background-color: #eaeef2;
+	border: #000 1px solid;
+	color: #000000;
+	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
+	text-align:center;
+	padding : 2px;
+}
+form {
+	margin: 2px 0px 0px 0px;
+}
+.spacer{
+	padding: 2px 0px 2px 0px;
+}
+hr {
+	border-top: #666 1px solid;
+	border-bottom: #eee 1px solid;
+	height: 2px;
+	width: 92%;
+	text-align:center;
+}
+.border {
+	border: #000 1px solid;
+}
+.border2 {
+	border: #D5D5D5 1px solid;
+}
+
+.border3 {
+	border: #000 1px solid;
+}
+.helpbox {
+	border: transparent;
+	background-color: transparent;
+	color:#000;
+	font: 9px tahoma, verdana, arial, helvetica, sans-serif;
+}
+.caption {
+	padding: 0px 4px 0px 4px;
+	border-bottom: #363A44 1px solid;
+	border-left: #8A96B3 1px solid;
+	border-right: #363A44 1px solid;
+	border-top: #8A96B3 1px solid;
+	background-color: #E1DFDF;
+	color: #000;
+	font: 13px tahoma, arial, verdana, helvetica, sans-serif;
+	background-image : url(images/cap1.png);
+}
+.caption2 {
+	padding: 0px 4px 0px 4px;
+	color: #243B3B;
+	font: 15px tahoma, arial, verdana, helvetica, sans-serif;
+	text-align:center;
+}
+.caption3 {
+	padding: 0px 4px 0px 4px;
+	border-bottom: #C7C3C3 1px solid;
+	border-left: #fff 1px solid;
+	border-right: transparent;
+	border-top: #fff 1px solid;
+	background-color: #D5D5D5;
+	color: #000;
+	font: 13px tahoma, arial, verdana, helvetica, sans-serif;
+}
+.bodytable {
+	padding: 8px;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #000;
+}
+.bodytable2 {
+	border: #D5D5D5 1px solid;
+	padding: 8px;
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #404040;
+}
+.bodytable3 {
+	padding: 8px;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #000;
+}
+p {
+	margin-top: 0px;
+	margin-bottom: 0px
+}
+.fborder {
+	border: #000000 1px solid;
+	background-color: #fff;
+	
+}
+.forumheader{
+	background-color: #EBEFF2;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+	padding: 4px;
+	background-image : url(images/cap1.png);
+	border: #C3BDBD 1px solid;
+}
+.forumheader2{
+	background-color: #E4EAF2;
+	font: 14px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+	padding: 4px;
+	border: #C3BDBD 1px solid;
+}
+.forumheader3{
+	background-color: #DFE6EF;
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+	padding: 4px;
+	border: #C3BDBD 1px solid;
+}
+.forumborder{
+	border: #000080 1px solid;
+}
+.fcaption {
+	border: #000 1px solid;
+	padding: 2px 0px 2px 8px;
+	background-color: #C9C7C7;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+	background-image : url(images/fcap.png);
+	color:#fff;
+}
+.captiontopleft{ width: 24px; background-image: url(images/topleft.png); }
+.captiontopmiddle{ width: 100%; background-repeat: repeat-x; background-image: url(images/top.png); }
+.captiontopright{ width: 11px; background-image: url(images/topright.png); }
+.captionleft{ width: 24px; background-image: url(images/capleft.png); }
+.captionbar{ background-repeat: repeat-x; padding-right:10px; font-size: 10px; color: #fff; font-family: verdana, tahoma, arial, sans-serif; background-image: url(images/capdark.png);}
+.captionend{ width: 12px; background-image: url(images/captransition.png); }
+.captionmain{ width: 100%; background-repeat: repeat-x; background-image: url(images/caplight.png); }
+.captionright{ width: 11px; background-image: url(images/capright.png); }
+.bodyleft{ width: 3px; background-repeat: repeat-y; background-image: url(images/left.png); }
+.bodymain{ width: 100%; background: #DAE7F3; padding: 4px 5px 5px 4px; font-size: 10px; color: #000; font-family: verdana, tahoma, arial, sans-serif; vertical-align:top; }
+.bodyright{ width: 3px; background-repeat: repeat-y; background-image: url(images/right.png); }
+.bottomleft{ width: 10px; background-image: url(images/bottomleft.png); }
+.bottommain{ width: 100%; background-repeat: repeat-x; background-image: url(images/bottom.png);}
+.bottomright{ width: 10px; background-image: url(images/bottomright.png); }
+.finfobar{
+	background-color: #DBE5F5;
+	font: 15px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+	padding: 4px;
+	border: #C3BDBD 1px solid;
+	background-image : url(forum/finfobar.png);
+}
+
+a.forumlink{
+	color: #fff;
+	text-decoration: underline;
+}
+
+.topborder {
+	border-bottom: #000 1px solid;
+}
+
+.bottomborder {
+	border-top: #000 1px solid;
+	border-bottom: #000 1px solid;
+}
+.alttd{
+	background-color: #C8DDEE;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #000;
+}
+.code{
+	border: #9F9F9F 1px solid;
+	padding: 8px;
+	background-color: #EEECEC;
+	font: 12px courier, arial, verdana, tahoma, helvetica, sans-serif;
+	color:#000040;
+}
+
+.nforumholder {
+	border: 1px solid #345487;
+	padding: 0px;
+	background-color: #fff;
+}
+
+.nforumcaption {
+	background-image: url(images/nforumcaption.png);
+	padding: 8px 4px 8px 4px;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #fff;
+}
+
+.nforumcaption2 {
+	background-image: url(images/nforumcaption2.png);
+	padding: 8px 0px 8px 4px;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #000;
+	font-weight: bold;
+}
+
+.nforumcaption3 {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-color: #E4EAF2;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumthread {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-color: #EEF2F7;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumthread2 {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-color: #D1DCEB;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumreplycaption {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-color: #E2EDF2;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumreply {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-color: #EDF4F7;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumreply2 {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-color: #CFE0EB;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+.nforumdisclaimer {
+	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#5d6e75;
+}
+
+.nforumview1 {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-color: #E4EAF2;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumview2 {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-color: #DFE6EF;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumview3 {
+	padding: 4px;
+	background-color: #BCD0ED;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #263448;
+}
+
+.nforumview4 {
+	padding: 4px;
+	background-color: #E4EAF2;
+	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #3A4F6C;
+}

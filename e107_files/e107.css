@@ -1,0 +1,20 @@
+/*
++---------------------------------------------------------------+
+|	e107 website system
+|	/files/e107.css
+|
+|	©Steve Dunstan 2001-2002
+|	http://e107.org
+|	jalist@e107.org
+|
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
++---------------------------------------------------------------+
+This file is here for a possible future project of making themes more css compatible
+*/
+
+.defaulttable, .fbdefault, .fdefault, .f2default, .f3default, .fcdefault{ display: block; width: auto; }
+.center{ text-align:center; }
+.right { text-align:right; }
+.left { text-align:left; }
+table { margin-left:auto; margin-right:auto; }

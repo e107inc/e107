@@ -1,0 +1,10 @@
+User-agent: *
+Disallow: /e107_admin/
+Disallow: /e107_plugins/
+Disallow: /e107_languages/
+Disallow: /e107_images/
+Disallow: /e107_themes/
+Disallow: /e107_files/
+Disallow: /e107_docs/
+Disallow: /e107_handlers/
+Disallow: /e107_install/

@@ -1,0 +1,36 @@
+.day {
+  text-align: center;
+  background: #F1EAE1;
+  font: 10px tahoma, verdana, arial, helvetica, sans-serif;
+  padding: 2px 1px 2px 1px;
+}
+
+.dayentry {
+  text-align: center;
+  background: #F1C7B7;
+  font: 10px tahoma, verdana, arial, helvetica, sans-serif;
+  padding: 2px 1px 2px 1px;
+}
+
+.forumheader4{
+	background-color: #EBEFF2;
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 11px;
+	color:#000;
+	padding: 4px;
+	border: #C3BDBD 1px solid;
+	cursor: hand;
+	cursor: pointer;
+}
+
+.forumheader5{
+	background-color: #BCD5EA;
+	color:#000;
+	cursor: hand;
+	cursor: pointer;
+}
+
+ul{
+	margin-top:0px;
+	margin-bottom:0px;
+}

@@ -1,0 +1,283 @@
+
+a {
+	color: #000040;
+	text-decoration: underline;
+}
+a:hover {
+	color: #ff0000;
+	text-decoration: underline;
+}
+
+body {
+	margin-left: 100px;
+	margin-right: 100px;
+	background-color: #999999;
+	scrollbar-face-color: #354463;
+	scrollbar-highlight-color: #758393; 
+	scrollbar-3dlight-color: #9DA8B3; 
+	scrollbar-darkshadow-color: #101842; 
+	scrollbar-shadow-color: #253d47; 
+	scrollbar-arrow-color: #deb500;
+	scrollbar-track-color: #b5b5b5; 
+	font-family: verdana, arial, "ms sans serif", sans-serif;  
+	font-size: 11px;  
+	color: #101842;
+}
+.indent{
+	padding-bottom: 3px;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 3px;
+	font-family: verdana, tahoma, arial, sans-serif;
+	color: #000040;
+	font-size: 11px;
+}
+
+.smalltext {
+    font: normal 10px tahoma, verdana, arial, helvetica, sans-serif;
+	color:#000;
+}
+
+.smallwhitetext {
+    font: normal 10px tahoma, verdana, arial, helvetica, sans-serif;
+	color:#fff;
+}
+
+.smallblacktext {
+	font: normal 10px tahoma, verdana, arial, helvetica, sans-serif;
+	color:#000;
+}
+
+td {
+	font-family: verdana, arial, "ms sans serif", sans-serif;  
+	font-size: 11px;  
+	color: #101842;
+	font-style: normal;
+	text-align:left;
+}
+.mediumtext {
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 14px;
+	font-style: normal;
+	color:#000;
+}
+.captiontext {
+    background: none;
+	letter-spacing: 0.4em; 
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 18px;
+	color:#000;
+}
+
+.captiontextorange {
+    background: none;
+	letter-spacing: 0.4em; 
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 18px;
+	color:#DEB500;
+}
+
+.normalorange {
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 10px;
+	color:#DEB500;
+}
+
+.tbox{
+	background-color: #ececec;
+	border-bottom: #5e5d63 1px solid;
+	border-left: #5e5d63 1px solid;
+	border-right: #5e5d63 1px solid;
+	border-top: #5e5d63 1px solid;
+	color: #000000;
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 10px;
+}
+.button{
+	background-color: #ececec;
+	border-bottom: #000 1px solid;
+	border-left: #fff 1px solid;
+	border-right: #000 1px solid;
+	border-top: #fff 1px solid;
+	color: #000000;
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 9px;
+	text-align:center;
+}
+form {
+	margin: 2px 0px 0px 0px;
+}
+.spacer{
+	padding-bottom : 2px;
+	padding-left : 0px;
+	padding-right : 2px;
+	padding-top : 2px;
+}
+hr {
+	border-top: #666 1px solid;
+	border-bottom: #eee 1px solid;
+	height: 2px;
+	width: 92%;
+	text-align:center;
+}
+.border {
+	border: #000 1px solid;
+}
+
+.border2 {
+	border-bottom: #000 1px solid;
+	border-left: #000 1px solid;
+	border-right: #000 1px solid;
+}
+.caption {
+	padding-bottom: 1px;
+	padding-left: 2px;
+	padding-right: 2px;
+	padding-top: 1px;
+	background-color: #758393;
+	color: #000;
+	font-family: verdana, helvetica, sans-serif;
+	font-size: 11px;
+}
+.caption2 {
+	padding-bottom: 1px;
+	padding-left: 2px;
+	padding-right: 2px;
+	padding-top: 1px;
+	background-color: #101842;
+	color: #fff;
+	font-family: verdana, helvetica, sans-serif;
+	font-size: 11px;
+}
+
+.bodytable2 {
+	background-color: #9DA8B3;
+	padding-bottom: 8px;
+	padding-left: 8px;
+	padding-right: 8px;
+	padding-top: 8px;
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 10px;
+	font-style: normal;
+	color:#101842;
+}
+
+.bodytable3 {
+	background-color: #9DA8B3;
+	padding: 0px;
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 10px;
+	font-style: normal;
+	color:#101842;
+}
+
+.bodytable {
+	background-color: #B5B5B5;
+	padding-bottom: 8px;
+	padding-left: 8px;
+	padding-right: 8px;
+	padding-top: 8px;
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 10px;
+	font-style: normal;
+	color:#101842;
+}
+
+p {
+	margin-top: 0px
+}
+
+
+.fborder, .fbdefault{
+	border: #000000 1px solid;
+	background-color: #ccc;
+}
+.forumheader{
+	background-color: #EBEFF2;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+	padding: 4px;
+	background-image : url(forum/fcap2.png);
+	border: #5D6D7B 1px solid;
+}
+
+.forumheader2, .f2default{
+	background-color: #9DA8B3;
+	font: 14px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+	padding: 4px;
+	border: #5D6D7B 1px solid;
+}
+
+.forumheader3, .f3default{
+	background-color: #9DA8B3;
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+	padding: 4px;
+	border: #5D6D7B 1px solid;
+}
+
+.fcaption, .fcdefault {
+	border: #000 1px solid;
+	padding-bottom: 2px;
+	padding-left: 8px;
+	padding-right: 0px;
+	padding-top: 2px;
+	background-color: #C9C7C7;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+	background-image : url(forum/fcap.png);
+	color:#fff;
+}
+
+.fcaption2{
+	border: #000 1px solid;
+	padding-bottom: 2px;
+	padding-left: 8px;
+	padding-right: 0px;
+	padding-top: 2px;
+	background-color: #C9C7C7;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+	background-image : url(forum/fcap.png);
+	color:#fff;
+}
+
+
+.finfobar{
+	background-color: #CCC8C8;
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+	padding: 4px;
+	border: #C3BDBD 1px solid;
+	background-image : url(forum/finfobar.png);
+}
+
+.mainwindow{
+	border: 1px solid #000;
+	background-color: #101842;
+}
+
+a.forumlink{
+	color: #fff;
+	text-decoration: underline;
+}
+
+.nextprev{
+	background-color: #B5B5B5;
+	border: 1px solid #758393;
+	color: #101842;
+	font: normal 9px verdana, tahoma, arial, helvetica, sans-serif;
+	text-align:center;
+	padding : 2px, 2px, 2px, 2px;
+}
+
+.helpbox {
+	border: transparent;
+	background-color: transparent;
+	color:#000;
+	font: 9px tahoma, verdana, arial, helvetica, sans-serif;
+}
+
+.linktext {
+	font: normal 12px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+}

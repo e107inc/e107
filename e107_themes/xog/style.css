@@ -1,0 +1,185 @@
+a {
+	color: #fff; 
+	font: verdana, arial, sans-serif;
+	text-decoration: none;
+}
+a:hover {
+	color: #FFC805;
+	text-decoration: none
+}
+body {
+	font: 12px tahoma, verdana, arial, sans-serif;
+	background-color: #1D3255;
+	padding:0px;
+	margin:0px;
+	scrollbar-3dlight-color:#FFD700; 
+	scrollbar-arrow-color:#FFFF00;
+	scrollbar-base-color:#FF6347;
+	scrollbar-darkshadow-color:#FFA500;
+	scrollbar-face-color:#7688AE;
+	scrollbar-highlight-color:#000;
+	scrollbar-shadow-color:#000
+}
+.indent{
+	padding: 3px 10px 3px 10px;
+	font: 11px verdana, tahoma, arial, sans-serif;
+	color: #aaa;
+	border: 1px solid #545454;
+}
+.smalltext {
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#52B0D5;
+	letter-spacing: -1px;
+}
+td {
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#DFDD49;
+	padding: 0px;
+	text-align:left;
+}
+.mediumtext {
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#52B0D5;
+}
+.captiontext {
+	letter-spacing: -1px;
+	font: 16px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#C3C160;
+	font-weight: bold;
+	padding:8px;	
+}
+.bodytext {
+	color: #fff;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+
+}
+.tbox{
+	background-color: #213142;
+	border: #000 1px solid;
+	color: #C3C160;
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+}
+.button{
+	background-color: #A5ADC6;
+	border-bottom: #6B7B9C 1px solid;
+	border-left: #D6D6E7 1px solid;
+	border-right: #6B7B9C 1px solid;
+	border-top: #D6D6E7 1px solid;
+	color: #000000;
+	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
+	text-align:center;
+}
+form {
+	margin: 2px 0px 0px 0px;
+}
+.spacer{
+	padding: 4px 0px 2px 4px;
+}
+hr {
+	border-top: #8CB6CE 1px solid;
+	border-bottom: #8CB6CE 1px solid;
+	height: 1px;
+	width: 100%;
+	padding:0px;
+	margin:-5px;
+}
+.border {
+	border: #000 1px solid;
+}
+.caption {
+	letter-spacing: -1px;
+	background-color: #7688AE;
+	border-top: #BDC6D5 1px solid;
+	border-right: #313942 1px solid;
+	border-bottom: #313942 1px solid;
+	border-left: #BDC6D5 1px solid;
+	font: 14px verdana, helvetica, sans-serif;
+	color: #000;
+}
+.bodytable {
+	background-color: #1D3257;
+	padding: 2px;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#C3C160;
+}
+p {
+	margin-top: 0px
+}
+.fborder {
+	border: #000000 1px solid;
+	background-color: #1D3257;
+}
+.forumheader{
+	background-color: #EBEFF2;
+	font: 14px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#C3C160;
+	padding: 4px;
+	background-image : url(../../e107_images/forum/fcap.png);
+	border: #000 1px solid;
+}
+.forumheader2{
+	background-color: #324460;
+	font: 14px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#C3C160;
+	padding: 4px;
+	border: #1C2738 1px solid;
+}
+.forumheader3{
+	background-color: #2A4572;
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#2E9AC2;
+	padding: 4px;
+	border: #1B4077 1px solid;
+}
+.fcaption {
+	border: #000 1px solid;
+	padding: 2px 0px 2px 8px;
+	background-color: #C9C7C7;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+	background-image : url(../../e107_images/forum/fcap.png);
+	color:#fff;
+}
+.finfobar{
+	background-color: #324460;
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+	padding: 4px;
+	border: #000 1px solid;
+//	background-image : url(../e107_images/forum/finfobar.png);
+}
+a.forumlink{
+	color: #fff;
+	text-decoration: underline;
+}
+.helpbox {
+	border: transparent;
+	background-color: transparent;
+	color:#000;
+	font: 9px tahoma, verdana, arial, helvetica, sans-serif;
+}
+
+.box {
+	background-color: #7688AE;
+	border-top: #BDC6D5 1px solid;
+	border-right: #313942 1px solid;
+	border-bottom: #313942 1px solid;
+	border-left: #BDC6D5 1px solid;
+	padding: 2px;
+}
+
+.box2 {
+	background-color: #687A93;
+	border-top: #BDC6D5 1px solid;
+	border-right: #313942 1px solid;
+	border-bottom: #313942 1px solid;
+	border-left: #BDC6D5 1px solid;
+	padding: 4px;
+}
+
+.linkbox {
+	background-color: #213142;
+	border: #000;
+	color: #C3C160;
+	text-align:center;
+	padding: 4px;
+}

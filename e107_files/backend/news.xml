@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<rss version="2.0">
+<channel>
+  <title>e107 powered website</title> 
+  <link>http://81.108.86.209/e107v0.604/index.php</link> 
+  <description></description> 
+  <language>en-gb</language> 
+  <copyright>All trademarks are &#169; their respective owners, all other content is &#169; e107 powered website.e107 is &#169; e107.org 2002/2003 and is released under the <a href='http://www.gnu.org/'>GNU GPL license</a>.</copyright> 
+  <managingEditor>jalist</managingEditor> 
+  <webMaster>jalist@e107.org</webMaster> 
+  <pubDate>Sun, 07 Dec 2003 03:48:00 GMT</pubDate>
+  <lastBuildDate>Sun, 07 Dec 2003 03:48:00 GMT</lastBuildDate>
+  <docs>http://backend.userland.com/rss</docs>
+  <generator>e107 website system (http://e107.org)</generator>
+  <ttl>60</ttl>
+
+  <image>
+    <title>e107 powered website</title> 
+    <url>http://81.108.86.209/e107v0.604/e107_images/button.png</url> 
+    <link>http://81.108.86.209/e107v0.604/index.php</link> 
+    <width>88</width> 
+    <height>31</height> 
+    <description>Website System v0.603 Revision #6</description>
+  </image>
+   
+  <textInput>
+    <title>Search</title>
+    <description>Search e107 powered website</description>
+    <name>query</name>
+    <link>http://81.108.86.209/e107v0.604/search.php</link>
+  </textInput>
+  <item>
+    <title>Webring</title> 
+    <link>http://81.108.86.209/e107v0.604/comment.php?2</link> 
+    <description>Lolo&amp;#39;s newly rewritten and brand spanking new webring is now online for your browsing pleasure, see it at http://www.touchatou.org/e107/webring.php.                                                                                   </description>
+    <category domain="http://81.108.86.209/e107v0.604/">Another Category</category>
+    <comments>http://81.108.86.209/e107v0.604/comment.php?2</comments>
+    <author>jalist</author>
+    <pubDate>Sun, 07 Dec 2003 03:48:00 GMT</pubDate>
+    <guid isPermaLink="true">http://81.108.86.209/e107v0.604/comment.php?2</guid>
+  </item>
+  <item>
+    <title>Welcome to e107</title> 
+    <link>http://81.108.86.209/e107v0.604/comment.php?1</link> 
+    <description>&lt;b&gt;Welcome to your new website!&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;e107 has installed successfully and is now ready to accept content.&lt;br /&gt;Your administration section is &lt;a href=&amp;quot;e107_admin/admin.php&amp;quot;&gt;located here&lt;/a&gt;, click to go there now. You will have to login using the name and password you entered during the installation process.
+
+[b]Support[/b]
+e107 Homepage: http://e107.org, you will find the FAQ and documentation here.
+Forums: http://e107.org/forum.php
+
+[b]Downloads[/b]
+Plugins: http://e107coders.org
+Themes: http://e107themes.org
+&lt;br /&gt;&lt;br /&gt;Thankyou for trying e107, we hope it fulfills your website needs.
+(You can delete this message from your admin section.)                        </description>
+    <category domain="http://81.108.86.209/e107v0.604/">Misc</category>
+    <comments>http://81.108.86.209/e107v0.604/comment.php?1</comments>
+    <author>jalist</author>
+    <pubDate>Sun, 07 Dec 2003 03:13:00 GMT</pubDate>
+    <guid isPermaLink="true">http://81.108.86.209/e107v0.604/comment.php?1</guid>
+  </item>
+  </channel>
+</rss>

@@ -1,0 +1,308 @@
+body {
+	font-size: 12px;
+	color: #000;
+	font-family: tahoma, verdana, arial, sans-serif;
+	background-color: #fff;
+	margin:0px;
+	text-align:left
+}
+a {
+	color: #616060; 
+	font-family: verdana, arial, sans-serif; 
+	text-decoration: none;
+}
+a:hover {
+	color: #616060;
+	font-family: verdana, arial, sans-serif; 
+	text-decoration: underline;
+}
+.smalltext {
+    background: none;
+	font-family: tahoma, verdana, arial, helvetica, sans-serif;
+	font-size: 9px;
+	font-style: normal;
+	color:#5d6e75;
+}
+.smallblacktext {
+    background: none;
+	font-family: tahoma, verdana, arial, helvetica, sans-serif;
+	font-size: 10px;
+	font-style: normal;
+	color:#000;
+}
+.defaulttext {
+    background: none;
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 11px;
+	font-style: normal;
+	color:#000;
+}
+
+td {
+    background: none;
+	font-family: tahoma, verdana, arial, helvetica, sans-serif;
+	font-size: 11px;
+	font-style: normal;
+	color:#5d6e75;
+	padding-bottom: 0px;
+	padding-left: 0px;
+	padding-right: 0px;
+	padding-top: 0px;
+	text-align:left;
+}
+
+blockquote {
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-style: italic;
+	color:#7e96ac;
+}
+.mediumtext {
+    background: none;
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 11px;
+	font-style: normal;
+	color:#000;
+}
+.captiontext {
+    background: none;
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 18px;
+	color:#000080;
+}
+.tbox{
+	background-color: #F4F7FA;
+	border-bottom: #5e5d63 1px solid;
+	border-left: #5e5d63 1px solid;
+	border-right: #5e5d63 1px solid;
+	border-top: #5e5d63 1px solid;
+	color: #000000;
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 10px;
+}
+.button{
+	color: #fff;
+	font-family: tahoma, verdana, arial, helvetica, sans-serif;
+	font-size: 10px;
+	text-align:center;
+	background-color: #4F5974;
+	border-bottom: #333A4B 1px solid;
+	border-left: #7180A6 1px solid;
+	border-right: #333A4B 1px solid;
+	border-top: #7180A6 1px solid;
+	letter-spacing: 0.1em; 
+}
+
+.np{
+	background-color: #eaeef2;
+	border-bottom: #000 1px solid;
+	border-left: #000 1px solid;
+	border-right: #000 1px solid;
+	border-top: #000 1px solid;
+	color: #000000;
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 9px;
+	text-align:center;
+	padding-bottom : 2px;
+	padding-left : 2px;
+	padding-right : 2px;
+	padding-top : 2px;
+}
+
+form {
+	margin: 2px 0px 0px 0px;
+}
+.spacer{
+	padding-bottom : 2px;
+	padding-left : 0px;
+	padding-right : 0px;
+	padding-top : 2px;
+}
+hr {
+	border-top: #666 1px solid;
+	border-bottom: #eee 1px solid;
+	height: 2px;
+	width: 92%;
+	text-align:center;
+}
+.border {
+	border: #999 1px solid;
+	background-color: #F0F1F1;
+	padding: 2px;
+}
+
+.border2 {
+	border: #999 1px solid;
+	background-color: #F0F1F1;
+	padding: 2px;
+}
+
+.border3 {
+	border-bottom: #C3D2B4 1px solid;
+	border-left: #fff 1px solid;
+	border-right: #C3D2B4 1px solid;
+	border-top: #fff 1px solid;
+	background-color: transparent;
+}
+
+
+.caption {
+	padding-bottom: 2px;
+	padding-left: 4px;
+	padding-right: 4px;
+	padding-top: 2px;
+	background-color: #B3BAC5;
+	color: #616060;
+}
+
+.caption2 {
+	padding-bottom: 2px;
+	padding-left: 4px;
+	padding-right: 4px;
+	padding-top: 2px;
+	background-color: #C9C9C9;
+	color: #616060;
+	font-family: tahoma, verdana, arial, helvetica, sans-serif;
+}
+
+.caption3 {
+	padding-bottom: 0px;
+	padding-left: 4px;
+	padding-right: 4px;
+	padding-top: 0px;
+	border-bottom: #fff 1px solid;
+	border-left: #fff 1px solid;
+	border-right: #fff 1px solid;
+	border-top: #fff 1px solid;
+	background-color: #EEF2EA;
+	color: #000;
+	font-family: tahoma, arial, verdana, helvetica, sans-serif;
+	font-size: 13px;
+}
+
+.bodytable {
+	padding: 2px;
+	background-color: transparent;
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 10px;
+	font-style: normal;
+	color: #000;
+}
+
+.bodytable2 {
+	padding: 4px;
+	background-color: transparent;
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #000;
+}
+
+.bodytable3 {
+	background-color: transparent;
+	padding-bottom: 8px;
+	padding-left: 8px;
+	padding-right: 8px;
+	padding-top: 8px;
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 10px;
+	font-style: normal;
+	color: #000;
+}
+
+p {
+	margin-top: 0px
+}
+
+.fborder {
+	border-bottom: #000000 1px solid;
+	border-left: #000000 1px solid;
+	border-right: #000000 1px solid;
+	border-top: #000000 1px solid;
+	background-color: #fff;
+	
+}
+.forumheader{
+	background-color: #EBEFF2;
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 14px;
+	color:#000;
+	padding: 4px;
+	background-image : url(../e107_images/forum/fcap2.png);
+	border: #C3BDBD 1px solid;
+}
+
+.forumheader2{
+	background-color: #EFEFEF;
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 14px;
+	color:#000;
+	padding: 4px;
+	border: #C3BDBD 1px solid;
+}
+
+.forumheader3{
+	background-color: #E3E1E1;
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 11px;
+	color:#000;
+	padding: 4px;
+	border: #C3BDBD 1px solid;
+}
+
+.forumborder{
+	border-bottom: #000080 1px solid;
+	border-left: #000080 1px solid;
+	border-right: #000080 1px solid;
+	border-top: #000080 1px solid;
+	background-color: transparent;
+}
+
+.fcaption {
+	border: #000 1px solid;
+	padding-bottom: 2px;
+	padding-left: 8px;
+	padding-right: 0px;
+	padding-top: 2px;
+	background-color: #B3BAC5;
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 12px;
+	color:#616060;
+}
+
+.topbar {
+	background-image : url(images/topbar.png);
+}
+.leftbar {
+	background-image : url(images/leftbar.png);
+}
+
+.finfobar{
+	background-color: #CCC8C8;
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+	padding: 4px;
+	border: #C3BDBD 1px solid;
+	background-image : url(../e107_images/forum/finfobar.png);
+}
+
+a.forumlink{
+	color: #616060;
+	text-decoration: underline;
+}
+
+.helpbox {
+	border: 0px none red;
+	background-color: transparent;
+	color:#000;
+	font: 9px tahoma, verdana, arial, helvetica, sans-serif;
+}
+
+.alttd9{
+	background-color: #E4E6E6;
+	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #000;
+}
+
+.alttd8{
+	background-color: #E4E6E6;
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #000;
+}

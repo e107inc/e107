@@ -1,0 +1,225 @@
+body {
+	color: #5D6E75;
+	font: 12px tahoma, verdana, arial, sans-serif;
+	background-color: #123134;
+	margin:0px;
+	text-align:left
+}
+a {
+	color: #6F8087; 
+	font-style: italic; 
+	font-family: verdana, arial, sans-serif; 
+	text-decoration: none;
+}
+a:hover {
+	color: #CD942C;
+	text-decoration: none;
+}
+.indent{
+	padding: 3px 3px 3px 3px;
+	margin: 5px;
+	font: 11px verdana, tahoma, arial, sans-serif;
+	color: #000060;
+	border: 1px dotted;
+}
+.smalltext {
+	font: 9px tahoma, verdana, arial, helvetica, sans-serif;
+	font-size: 9px;
+	color:#5d6e75;
+}
+.smallblacktext {
+	font: 10px tahoma, verdana, arial, helvetica, sans-serif;
+	color:#6F8087;
+}
+.defaulttext {
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+}
+
+td {
+    font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#5D6E75;
+	padding: 0px, 0px, 0px, 0px;
+	text-align:left;
+}
+
+.mediumtext {
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#6F8087;
+}
+.captiontext {
+	font: 18px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#fff;
+}
+.tbox{
+	background-color: #666666;
+	border: #000 1px solid;
+	color: #32393C;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+.button{
+	background-color: #666666;
+	border: #000 1px solid;
+	color: #32393C;
+	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
+	text-align:center;
+}
+
+.np{
+	background-color: #666666;
+	border: #000 1px solid;
+	color: #000000;
+	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
+	text-align:center;
+	padding: 2px;
+}
+
+form {
+	margin: 2px 0px 0px 0px;
+}
+.spacer{
+	padding-bottom : 2px;
+	padding-left : 0px;
+	padding-right : 0px;
+	padding-top : 2px;
+}
+hr {
+	border-top: #3D3B3B 1px solid;
+	border-bottom: #666 1px solid;
+	height: 2px;
+	width: 92%;
+	text-align:center;
+}
+.border {
+	border: #3E3F3E 1px solid;
+}
+.caption {
+	padding-bottom: 0px;
+	padding-left: 4px;
+	padding-right: 4px;
+	padding-top: 0px;
+	border: #3E3F3E 1px solid;
+	background-color: #1E201E;
+	color: #CD942C;
+	font: 13px tahoma, arial, verdana, helvetica, sans-serif;
+	background-image : url(images/cap.png);
+}
+
+.caption2 {
+	padding-bottom: 0px;
+	padding-left: 4px;
+	padding-right: 4px;
+	padding-top: 0px;
+	border: #3E3F3E 1px solid;
+	background-color: #eaeef2;
+	color: #768A92;
+	font: 13px tahoma, arial, verdana, helvetica, sans-serif;
+	background-image : url(images/cap2.png);
+}
+
+.bodytable {
+	background-color: transparent;
+	padding: 8px;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #5D6E75;
+
+}
+
+.bodytable2 {
+	background-color: transparent;
+	border: #fff 1px solid;
+	padding: 8px;
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #404040;
+}
+
+p {
+	margin-top: 0px
+}
+
+.fborder {
+	border-bottom: #000000 1px solid;
+	border-left: #000000 1px solid;
+	border-right: #000000 1px solid;
+	border-top: #000000 1px solid;
+	background-color: #000;
+}
+.forumheader{
+	background-color: #092022;
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 14px;
+	color:#CD942C;
+	padding: 4px;
+}
+
+.forumheader2{
+	background-color: #092022;
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 14px;
+	color:#CD942C;
+	padding: 4px;
+}
+
+.forumheader3{
+	background-color: #092022;
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 11px;
+	color:#CD942C;
+	padding: 4px;
+}
+
+.fcaption {
+	border-bottom: #000 1px solid;
+	border-left: #000 1px solid;
+	border-right: #000 1px solid;
+	border-top: #000 1px solid;
+	padding-bottom: 2px;
+	padding-left: 4px;
+	padding-right: 0px;
+	padding-top: 2px;
+	background-color: #C9C7C7;
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	background-image : url(forum/fcap.png);
+	font-size: 12px;
+	color:#eee;
+}
+
+.topbar {
+	background-image : url(images/topbar.png);
+	padding-bottom: 2px;
+	padding-left: 8px;
+	padding-right: 0px;
+	padding-top: 2px;
+}
+
+.helpbox {
+	border-bottom: transparent;
+	border-left: transparent;
+	border-right: transparent;
+	border-top: transparent;
+	background-color: transparent;
+	color:#CD942C;
+	font-family: tahoma, verdana, arial, helvetica, sans-serif;
+	font-size: 9px;
+}
+
+.menubg{
+	background-image : url(images/menubg.png);
+	background-repeat: repeat-y;
+}
+
+.menuend{
+	background-image : url(images/menuend.png);
+}
+
+.news{
+	padding-bottom: 0px;
+	padding-left: 4px;
+	padding-right: 4px;
+	padding-top: 0px;
+}
+
+.forumlink{
+	color: #eee;
+	text-decoration: underline;
+}
