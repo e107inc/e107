@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-03-27 17:42:16 $
-|     $Author: e107coders $
+|     $Revision: 1.30 $
+|     $Date: 2005-03-31 09:18:48 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -152,8 +152,8 @@ class links {
 				$text .= "</td>";
 				$text .= "<td style='width:10%; text-align:center' class='forumheader3'>".r_userclass("link_class[".$link_id."]", $link_class, "off", "public,guest,nobody,member,admin,classes")."</td>";
 				$text .= "<td style='width:5%; text-align:center; white-space: nowrap' class='forumheader3'>";
-				$text .= "<input type='image' src='".e_IMAGE."generic/up.png' value='".$link_id.".".$link_order."' name='inc' />";
-				$text .= "<input type='image' src='".e_IMAGE."generic/down.png' value='".$link_id.".".$link_order."' name='dec' />";
+				$text .= "<input type='image' src='".e_IMAGE."admin_images/up.png' value='".$link_id.".".$link_order."' name='inc' />";
+				$text .= "<input type='image' src='".e_IMAGE."admin_images/down.png' value='".$link_id.".".$link_order."' name='dec' />";
 				$text .= "</td>";
 				$text .= "<td style='width:5%; text-align:center' class='forumheader3'>";
 				$text .= "<select name='link_order[]' class='tbox'>";

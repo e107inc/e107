@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/admin_config.php,v $
-|    $Revision: 1.4 $
-|    $Date: 2005-02-17 05:08:55 $
-|    $Author: e107coders $
+|    $Revision: 1.5 $
+|    $Date: 2005-03-31 09:20:29 $
+|    $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -204,8 +204,8 @@ class links {
 				$text .= "</td><td style='width:70%' class='forumheader3'>".$link_name."</td>";
 				$text .= "</td>";
 				$text .= "<td style='width:5%; text-align:center; white-space: nowrap' class='forumheader3'>";
-				$text .= "<input type='image' src='".e_IMAGE."generic/up.png' value='".$link_id.".".$link_order.".".$link_category."' name='inc' />";
-				$text .= "<input type='image' src='".e_IMAGE."generic/down.png' value='".$link_id.".".$link_order.".".$link_category."' name='dec' />";
+				$text .= "<input type='image' src='".e_IMAGE."admin_images/up.png' value='".$link_id.".".$link_order.".".$link_category."' name='inc' />";
+				$text .= "<input type='image' src='".e_IMAGE."admin_images/down.png' value='".$link_id.".".$link_order.".".$link_category."' name='dec' />";
 				$text .= "</td>";
 				$text .= "<td style='width:15%; text-align:center; white-space: nowrap' class='forumheader3'>";
 				$text .= $rs->form_button("button", "main_edit_{$link_id}", LCLAN_9, "onclick=\"document.location='".e_SELF."?create.edit.$link_id'\"");

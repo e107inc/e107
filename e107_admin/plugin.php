@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2005-03-24 23:26:11 $
-|     $Author: e107coders $
+|     $Revision: 1.41 $
+|     $Date: 2005-03-31 09:23:45 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -349,13 +349,13 @@ foreach($pluginList as $plug) {
 	include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
 
 	if ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_user_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest) {
-		$img = (!$plug['plugin_installflag'] ? "<img src='".e_IMAGE."generic/uninstalled.png' alt='' />" : "<img src='".e_IMAGE."generic/installed.png' alt='' />");
+		$img = (!$plug['plugin_installflag'] ? "<img src='".e_IMAGE."admin_images/uninstalled.png' alt='' />" : "<img src='".e_IMAGE."generic/installed.png' alt='' />");
 	} else {
-		$img = "<img src='".e_IMAGE."generic/noinstall.png' alt='' />";
+		$img = "<img src='".e_IMAGE."admin_images/noinstall.png' alt='' />";
 	}
 
 	if ($plug['plugin_version'] != $eplug_version && $plug['plugin_installflag']) {
-		$img = "<img src='".e_IMAGE."generic/upgrade.png' alt='' />";
+		$img = "<img src='".e_IMAGE."admin_images/upgrade.png' alt='' />";
 	}
 
 	$plugin_icon = $eplug_icon ? "<img src='".e_PLUGIN.$eplug_icon."' alt='' style='border:0px;vertical-align: bottom; width: 32px; height: 32px' />" :
@@ -427,10 +427,10 @@ foreach($pluginList as $plug) {
 
 $text .= "</table>
 	<div><br />
-	<img src='".e_IMAGE."generic/uninstalled.png' alt='' /> ".EPL_ADLAN_23."&nbsp;&nbsp;
-	<img src='".e_IMAGE."generic/installed.png' alt='' /> ".EPL_ADLAN_22."&nbsp;&nbsp;
-	<img src='".e_IMAGE."generic/upgrade.png' alt='' /> ".EPL_ADLAN_24."&nbsp;&nbsp;
-	<img src='".e_IMAGE."generic/noinstall.png' alt='' /> ".EPL_ADLAN_25."</div></div>";
+	<img src='".e_IMAGE."admin_images/uninstalled.png' alt='' /> ".EPL_ADLAN_23."&nbsp;&nbsp;
+	<img src='".e_IMAGE."admin_images/installed.png' alt='' /> ".EPL_ADLAN_22."&nbsp;&nbsp;
+	<img src='".e_IMAGE."admin_images/upgrade.png' alt='' /> ".EPL_ADLAN_24."&nbsp;&nbsp;
+	<img src='".e_IMAGE."admin_images/noinstall.png' alt='' /> ".EPL_ADLAN_25."</div></div>";
 
 $ns->tablerender(EPL_ADLAN_16, $text);
 // ----------------------------------------------------------
