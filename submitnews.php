@@ -11,18 +11,20 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/submitnews.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-02-09 16:51:50 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.8 $
+|     $Date: 2005-03-07 11:38:50 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 	
 	
 require_once("class2.php");
+/*
 if ($pref['subnews_htmlarea']) {
 	require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
 	$htmlarea_js = htmlarea("item");
 }
+*/
 require_once(HEADERF);
 	
 if (!isset($pref['subnews_class'])) {
@@ -133,7 +135,7 @@ if (isset($_POST['submit'])) {
 	
 	
 $text = "<div style='text-align:center'>
-	<form method='post' action='".e_SELF."' enctype='multipart/form-data' >\n
+	<form id='dataform' method='post' action='".e_SELF."' enctype='multipart/form-data' >\n
 	<table style='width:95%' class='fborder'>";
 if (!USER) {
 	$text .= "<tr>\n<td style='width:20%' class='forumheader3'>".LAN_7."</td>\n<td style='width:80%' class='forumheader3'>\n<input class='tbox' type='text' name='author_name' size='60' value='$author_name' maxlength='100' />\n</td>\n</tr>\n<tr>\n<td style='width:20%' class='forumheader3'>".LAN_112."</td>\n<td style='width:80%' class='forumheader3'>\n<input class='tbox' type='text' name='author_email' size='60' value='$author_email' maxlength='100' />\n</td>\n</tr>";
@@ -161,12 +163,22 @@ $text .= "</td>
 	<td style='width:80%' class='forumheader3'>
 	<input class='tbox' type='text' name='itemtitle' size='60' value='$itemtitle' maxlength='200' style='width:90%' />
 	</td>
-	</tr>
+	</tr>";
+	
+	if($pref['subnews_htmlarea'])
+	{
+		require_once(e_HANDLER."tiny_mce/wysiwyg.php");
+		echo wysiwyg("item");
+	}
+
+	$insertjs = (!$pref['subnews_htmlarea'])?"rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'" : "rows='25' style='width:100%' ";
+	
+	$text .= "
 	 
 	<tr>
 	<td style='width:20%' class='forumheader3'>".LAN_135."</td>
 	<td style='width:80%' class='forumheader3'>
-	<textarea class='tbox' id='item' name='item' cols='70' rows='10' style='width:90%'></textarea>
+	<textarea class='tbox' id='item' name='item'  cols='80'  style='width:95%' $insertjs></textarea>
 	</td>
 	</tr>\n";
 	
