@@ -21,7 +21,7 @@ $text = "<font style='FONT-SIZE: 14px; COLOR: black; FONT-FAMILY: Tahoma, Verdan
 <hr />
 <br />
 
-<div style='text-align:center'>".($pref['maintainance_text'] ? $pref['maintainance_text'] : LAN_00)."</div>";
+<div style='text-align:center'>".($pref['maintainance_text'] ? textparse::tpa($pref['maintainance_text'],"","admin") : LAN_00)."</div>";
 echo $text;
 
 ?>
