@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-01-23 10:06:06 $
-|     $Author: stevedunstan $
+|     $Revision: 1.19 $
+|     $Date: 2005-01-23 15:19:00 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,8 +24,8 @@ $db_time = 0.0;
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.18 $
-* @author $Author: stevedunstan $
+* @version $Revision: 1.19 $
+* @author $Author: streaky $
 */
 class db {
 
@@ -512,41 +512,30 @@ class db {
 		return $table;
 	}
 
-	/*
-	changes by jalist 23/01/2005:
-	new method, returns fields as structured array
-	*/
 	/**
 	* @return array
-	* @param
-	* @desc
+	* @param string fields to retrieve
+	* @desc returns fields as structured array
 	* @access public
 	*/
-	function db_getList($fields="ALL", $amount=FALSE, $maximum=200)
-	{
+	function db_getList($fields = "ALL", $amount = FALSE, $maximum = 200) {
 		$list = array();
 		$counter = 1;
-		while($row = $this -> db_Fetch())
-		{
-			foreach($row as $key => $value)
-			{
-				if(is_string($key))
-				{
-					if(strtoupper($fields) == "ALL" || in_array ($key, $fields))
-					{
+		while($row = $this -> db_Fetch()) {
+			foreach($row as $key => $value) {
+				if(is_string($key)) {
+					if(strtoupper($fields) == "ALL" || in_array ($key, $fields)) {
 						$list[$counter][$key] = $value;
 					}
 				}
 			}
-			if($amount && $amount == $counter || $counter > $maximum)
-			{
+			if($amount && $amount == $counter || $counter > $maximum) {
 				break;
 			}
 			$counter++;
 		}
 		return $list;
 	}
-
 }
 
 ?>
