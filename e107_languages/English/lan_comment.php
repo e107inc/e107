@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_comment.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:11:56 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-29 14:17:31 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Comments");
@@ -41,6 +41,8 @@ define("LAN_314", "moderate comments");
 define("COMLAN_1", "here");
 define("COMLAN_2", "to signup");
 define("COMLAN_3", "Error!");
-
+define("COMLAN_4", 'Subject');
+define("COMLAN_5", 'Re:');
+define("COMLAN_6", 'Reply to this');
 
 ?>
