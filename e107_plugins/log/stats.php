@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-03-29 11:58:49 $
+|     $Revision: 1.15 $
+|     $Date: 2005-03-29 12:24:54 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -165,6 +165,9 @@ class siteStats {
 	var $error;
 	var $barImage;
 	var $order;
+	var $barl;
+	var $bar;
+	var $barr;
 
 	function siteStats() {
 		/* constructor */
@@ -219,6 +222,10 @@ class siteStats {
 			}
 		}
 
+		$this -> barl = (file_exists(THEME."images/barl.png") ? THEME."images/barl.png" : e_PLUGIN."poll/images/barl.png");
+		$this -> barr = (file_exists(THEME."images/barr.png") ? THEME."images/barr.png" : e_PLUGIN."poll/images/barr.png");
+		$this -> bar = (file_exists(THEME."images/bar.png") ? THEME."images/bar.png" : e_PLUGIN."poll/images/bar.png");
+
 
 		/* end constructor */
 	}
@@ -243,12 +250,11 @@ class siteStats {
 			$totalu += $info['unq'];
 		}
 
-
 		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>Page</td>\n<td class='fcaption' style='width: 70%;'>Visits Today</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
 		foreach($totalArray as $key => $info) {
 			if($info['ttl']){
 				$percentage = round(($info['ttl']/$totalv) * 100, 2);
-				$text .= "<tr class='forumheader3'>\n<td style='width: 20%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a></td>\n<td style='width: 70%;'><img src='".$this -> barImage."' style='width: ".($percentage > 90 ? 90 : $percentage)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info['ttl']." [".$info['unq']."]</td>\n<td style='width: 10%; text-align: center;'>".$percentage."%</td>\n</tr>\n";
+				$text .= "<tr class='forumheader3'>\n<td style='width: 20%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a></td>\n<td style='width: 70%;'>".$this -> bar($percentage)." ".$info['ttl']." [".$info['unq']."]</td>\n<td style='width: 10%; text-align: center;'>".$percentage."%</td>\n</tr>\n";
 			}
 		}
 		$text .= "<tr class='forumheader2'><td colspan='2'>Total</td><td style='text-align: center;'>$totalv</td></tr>\n<tr class='forumheader2'><td colspan='2'>Unique</td><td style='text-align: center;'>$totalu</td></tr>\n</table>";
@@ -268,7 +274,7 @@ class siteStats {
 				$percentage = round(($info['ttlv']/$total) * 100, 2);
 				$text .= "<tr class='forumheader3'>
 				<td style='width: 20%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a></td>
-				<td style='width: 70%;'><img src='".$this -> barImage."' style='width: $percentage%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info['ttlv']."</td>
+				<td style='width: 70%;'>".$this -> bar($percentage)."  ".$info['ttlv']."</td>
 				<td style='width: 10%; text-align: center;'>".$percentage."%</td>
 				</tr>\n";
 			}
@@ -285,7 +291,7 @@ class siteStats {
 				$percentage = round(($info['unqv']/$total) * 100, 2);
 				$text .= "<tr class='forumheader3'>
 				<td style='width: 20%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a></td>
-				<td style='width: 70%;'><img src='".$this -> barImage."' style='width: $percentage%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info['unqv']."</td>
+				<td style='width: 70%;'>".$this -> bar($percentage)." ".$info['unqv']."</td>
 				<td style='width: 10%; text-align: center;'>".$percentage."%</td>
 				</tr>\n";
 			}
@@ -338,7 +344,7 @@ class siteStats {
 				$percentage = round(($info/$total) * 100, 2);
 				$text .= "<tr class='forumheader3'>
 				<td style='width: 20%;'>".($image ? "<img src='".e_PLUGIN."log/images/$image' alt='' style='vertical-align: middle;' /> " : "").$key."</td>
-				<td style='width: 70%;'><img src='".$this -> barImage."' style='width: ".($percentage > 97 ? 97 : $percentage)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info."</td>
+				<td style='width: 70%;'>".$this -> bar($percentage)." ".$info."</td>
 				<td style='width: 10%; text-align: center;'>".$percentage."%</td>
 				</tr>\n";
 			}
@@ -388,7 +394,7 @@ class siteStats {
 			$percentage = round(($info/$total) * 100, 2);
 			$text .= "<tr class='forumheader3'>
 			<td style='width: 20%;'>".($image ? "<img src='".e_PLUGIN."log/images/$image' alt='' style='vertical-align: middle;' /> " : "").$key."</td>
-			<td style='width: 70%;'><img src='".$this -> barImage."' style='width: ".($percentage > 97 ? 97 : $percentage)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info."</td>
+			<td style='width: 70%;'>".$this -> bar($percentage)." ".$info."</td>
 			<td style='width: 10%; text-align: center;'>".$percentage."%</td>
 			</tr>\n";
 		}
@@ -429,7 +435,7 @@ class siteStats {
 				$percentage = round(($info/$total) * 100, 2);
 				$text .= "<tr class='forumheader3'>
 				<td style='width: 20%;'>".$key."</td>
-				<td style='width: 70%;'><img src='".$this -> barImage."' style='width: ".($percentage > 97 ? 97 : $percentage)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info."</td>
+				<td style='width: 70%;'>".$this -> bar($percentage)." ".$info."</td>
 				<td style='width: 10%; text-align: center;'>".$percentage."%</td>
 				</tr>\n";
 			}
@@ -481,7 +487,7 @@ class siteStats {
 				$percentage = round(($info/$total) * 100, 2);
 				$text .= "<tr class='forumheader3'>
 				<td style='width: 20%;'><img src='".e_PLUGIN."log/images/screen.png' alt='' style='vertical-align: middle;' /> ".$key."</td>
-				<td style='width: 70%;'><img src='".$this -> barImage."' style='width: ".($percentage > 97 ? 97 : $percentage)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info."</td>
+				<td style='width: 70%;'>".$this -> bar($percentage)." ".$info."</td>
 				<td style='width: 10%; text-align: center;'>".$percentage."%</td>
 				</tr>\n";
 			}
@@ -522,7 +528,7 @@ class siteStats {
 			$percentage = round(($info['ttl']/$total) * 100, 2);
 			$text .= "<tr class='forumheader'>
 			<td style='width: 40%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."' rel='external'>".$key."</a></td>
-			<td style='width: 50%;'><img src='".$this -> barImage."' style='width: ".($percentage > 97 ? 97 : $percentage)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info['ttl']."</td>
+			<td style='width: 50%;'>".$this -> bar($percentage)." ".$info['ttl']."</td>
 			<td style='width: 10%; text-align: center;'>".$percentage."%</td>
 			</tr>\n";
 			$count++;
@@ -561,7 +567,7 @@ class siteStats {
 			$key = str_replace("%20", " ", $key);
 			$text .= "<tr class='forumheader3'>
 			<td style='width: 60%;'><img src='".e_PLUGIN."log/images/screen.png' alt='' style='vertical-align: middle;' /> ".$key."</td>
-			<td style='width: 30%;'><img src='".$this -> barImage."' style='width: ".($percentage > 97 ? 97 : $percentage)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info."</td>
+			<td style='width: 30%;'>".$this -> bar($percentage)." ".$info."</td>
 			<td style='width: 10%; text-align: center;'>".$percentage."%</td>
 			</tr>\n";
 		}
@@ -626,7 +632,7 @@ class siteStats {
 			$barWidth = ($total['totalv'] / $ratio);
 			$text .= "<tr class='forumheader3'>
 			<td style='width: 30%;'>$date</td>
-			<td style='width: 30%;'><img src='".$this -> barImage."' style='width: ".($barWidth > 90 ? 90 : $barWidth)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$total['totalv']."</td>
+			<td style='width: 30%;'>".$this -> bar($barWidth)." ".$total['totalv']."</td>
 			</tr>\n";
 		}
 
@@ -642,7 +648,7 @@ class siteStats {
 			$barWidth = ($total['uniquev'] / $ratio);
 			$text .= "<tr class='forumheader3'>
 			<td style='width: 30%;'>$date</td>
-			<td style='width: 30%;'><img src='".$this -> barImage."' style='width: ".($barWidth > 90 ? 90 : $barWidth)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$total['uniquev']."</td>
+			<td style='width: 30%;'>".$this -> bar($barWidth)." ".$total['uniquev']."</td>
 			</tr>\n";
 		}
 		$text .= "</table>";
@@ -656,7 +662,7 @@ class siteStats {
 			$barWidth = ($total['totalv'] / $ratio);
 			$text .= "<tr class='forumheader3'>
 			<td style='width: 30%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> $key</td>
-			<td style='width: 30%;'><img src='".$this -> barImage."' style='width: ".($barWidth > 90 ? 90 : $barWidth)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$total['totalv']."</td>
+			<td style='width: 30%;'>".$this -> bar($barWidth)." ".$total['totalv']."</td>
 			</tr>\n";
 		}
 		$text .= "</table>";
@@ -669,7 +675,7 @@ class siteStats {
 			$barWidth = ($total['uniquev'] / $ratio);
 			$text .= "<tr class='forumheader3'>
 			<td style='width: 30%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> $key</td>
-			<td style='width: 30%;'><img src='".$this -> barImage."' style='width: ".($barWidth > 90 ? 90 : $barWidth)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$total['uniquev']."</td>
+			<td style='width: 30%;'>".$this -> bar($barWidth)." ".$total['uniquev']."</td>
 			</tr>\n";
 		}
 		$text .= "</table>";
@@ -705,7 +711,7 @@ class siteStats {
 			$barWidth = ($total['totalv'] / $ratio);
 			$text .= "<tr class='forumheader3'>
 			<td style='width: 30%;'>$date</td>
-			<td style='width: 30%;'><img src='".$this -> barImage."' style='width: ".($barWidth > 90 ? 90 : $barWidth)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$total['totalv']."</td>
+			<td style='width: 30%;'>".$this -> bar($barWidth)." ".$total['totalv']."</td>
 			</tr>\n";
 		}
 		$text .= "</table>";
@@ -719,7 +725,7 @@ class siteStats {
 			$barWidth = ($total['uniquev'] / $ratio);
 			$text .= "<tr class='forumheader3'>
 			<td style='width: 30%;'>$date</td>
-			<td style='width: 30%;'><img src='".$this -> barImage."' style='width: ".($barWidth > 90 ? 90 : $barWidth)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$total['uniquev']."</td>
+			<td style='width: 30%;'>".$this -> bar($barWidth)." ".$total['uniquev']."</td>
 			</tr>\n";
 		}
 		$text .= "</table>";
@@ -738,6 +744,10 @@ class siteStats {
 		while($maxValue > 100) {
 			$maxValue = ($maxValue / 2);
 			$ratio ++;
+		}
+		if(!$ratio)
+		{
+			return 1;
 		}
 		return $ratio;
 	}
@@ -995,9 +1005,14 @@ class siteStats {
 		$country["zr"] = "Zaire";
 		$country["zw"] = "Zimbabwe";
 		$scountry = $country[$dom];
-	return $scountry;
-}
+		return $scountry;
+	}
+	
+	function bar($percen)
+	{
+		return ($percen ? "<div style='background-image: url(".$this -> barl."); width: 5px; height: 14px; float: left;'></div><div style='background-image: url(".$this -> bar."); width: ".(floor($percen) != 100 ? floor($percen) : 90)."%; height: 14px; float: left;'></div><div style='background-image: url(".$this -> barr."); width: 5px; height: 14px; float: left;'></div>" : "");
 
+	}
 
 }
 
