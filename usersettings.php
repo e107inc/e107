@@ -16,6 +16,7 @@
 
 
 require_once("class2.php");
+
 if(IsSet($_POST['sub_news'])){
         header("location:".e_BASE."submitnews.php");
         exit;
@@ -90,7 +91,6 @@ if(IsSet($_POST['updatesettings'])){
                 $row = $sql -> db_Fetch();
                 $user_entended = unserialize($row[0]);
                 $c=0;
-                $user_pref = unserialize($user_prefs);
                 while(list($key, $u_entended) = each($user_entended)){
                     if($u_entended){
 
@@ -139,7 +139,6 @@ if(IsSet($_POST['updatesettings'])){
 			$row = $sql -> db_Fetch();
 			$user_entended = unserialize($row[0]);
 			$c=0;
-			$user_pref = unserialize($user_prefs);
 			while(list($key, $u_entended) = each($user_entended)){
 				if($u_entended){
 					if($pref['signup_ext'.$key] ==2 && $_POST["ue_{$key}"] == ""){
