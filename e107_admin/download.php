@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-02-10 22:29:29 $
-|     $Author: stevedunstan $
+|     $Revision: 1.19 $
+|     $Date: 2005-02-18 14:18:05 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -47,11 +47,7 @@ $pst->page = "download.php?create"; // display preset options on which page.
 $pst->save_preset("admin_downloads");  // unique name for the preset
 */
 
-
-
 $rs = new form;
-$aj = new textparse;
-
 
 $deltest = array_flip($_POST);
 if (e_QUERY) {
@@ -116,7 +112,7 @@ if (isset($_POST['updateoptions'])) {
 	$pref['download_sort'] = $_POST['download_sort'];
 	$pref['download_order'] = $_POST['download_order'];
 	$pref['agree_flag'] = $_POST['agree_flag'];
-	$pref['agree_text'] = $aj->formtpa($_POST['agree_text']);
+	$pref['agree_text'] = $tp->toDB($_POST['agree_text']);
 	save_prefs();
 	$message = DOWLAN_65;
 }
@@ -168,8 +164,6 @@ if ($action == "opt") {
 	$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."?".e_QUERY."'>\n
 		<table style='".ADMIN_WIDTH."' class='fborder'>
-
-
 		<tr>
 		<td style='width:70%' class='forumheader3'>".DOWLAN_69."</td>
 		<td class='forumheader3' style='width:30%;text-align:left'>";
@@ -177,10 +171,6 @@ if ($action == "opt") {
 	 "";
 	$text .= "<input type='checkbox' class='tbox' name='download_php' value='1' {$c} /> <span class='smalltext'>".DOWLAN_70."</span></td>
 		</tr>
-
-
-
-
 		<tr>
 		<td style='width:70%' class='forumheader3'>
 		".DOWLAN_55."
@@ -242,7 +232,7 @@ exit;
 class download {
 
 	function show_existing_items($action, $sub_action, $id, $from, $amount) {
-		global $sql, $rs, $ns, $aj, $tp;
+		global $sql, $rs, $ns, $tp;
 		$text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>";
 
 		if (isset($_POST['searchquery'])) {
@@ -269,7 +259,6 @@ class download {
 					<div>".$rs->form_button("button", "main_edit_{$download_id}", DOWLAN_8, "onclick=\"document.location='".e_SELF."?create.edit.$download_id'\"")."
 					".$rs->form_button("submit", "main_delete_{$download_id}", DOWLAN_9)."</div>
 					".$rs->form_close()."
-
 
 					</td>
 					</tr>";
@@ -549,10 +538,6 @@ class download {
 				";
 		}
 
-
-
-
-
 		$text .= "
 			<tr style='vertical-align:top'>
 			<td colspan='2' style='text-align:center' class='forumheader'>";
@@ -581,7 +566,7 @@ class download {
 	}
 
 	function submit_download($sub_action, $id) {
-		global $aj, $sql, $DOWNLOADS_DIRECTORY, $e_event;
+		global $tp, $sql, $DOWNLOADS_DIRECTORY, $e_event;
 
 		if ($_POST['download_url_external'] && $_POST['download_url'] == '') {
 			$durl = $_POST['download_url_external'];
@@ -602,7 +587,9 @@ class download {
 			$filesize = $upload_filesize;
 		}
 
-		$_POST['download_description'] = $aj->formtpa($_POST['download_description'], "admin");
+		$_POST['download_description'] = $tp->toDB($_POST['download_description']);
+		$_POST['download_name'] = $tp->toDB($_POST['download_name']);
+		$_POST['download_author'] = $tp->toDB($_POST['download_author']);
 
 		if ($id) {
 			$sql->db_Update("download", "download_name='".$_POST['download_name']."', download_url='".$durl."', download_author='".$_POST['download_author']."', download_author_email='".$_POST['download_author_email']."', download_author_website='".$_POST['download_author_website']."', download_description='".$_POST['download_description']."', download_filesize='".$filesize."', download_category='".$_POST['download_category']."', download_active='".$_POST['download_active']."', download_datestamp='".time()."', download_thumb='".$_POST['download_thumb']."', download_image='".$_POST['download_image']."', download_comment='".$_POST['download_comment']."' WHERE download_id=$id");
@@ -613,7 +600,6 @@ class download {
 
 				$dlinfo = array("download_id" => $download_id, "download_name" => $_POST['download_name'], "download_url" => $durl, "download_author" => $_POST['download_author'], "download_author_email" => $_POST['download_author_email'], "download_author_website" => $_POST['download_author_website'], "download_description" => $_POST['download_description'], "download_filesize" => $filesize, "download_category" => $_POST['download_category'], "download_active" => $_POST['download_active'], "download_datestamp" => $time, "download_thumb" => $_POST['download_thumb'], "download_image" => $_POST['download_image'], "download_comment" => $_POST['download_comment'] );
 				$e_event->trigger("dlpost", $dlinfo);
-
 
 				if ($_POST['remove_upload']) {
 					$sql->db_Delete("upload", "upload_id='".$_POST['remove_id']."' ");
@@ -627,8 +613,6 @@ class download {
 
 	function show_categories($sub_action, $id) {
 		global $sql, $rs, $ns, $sql2, $sql3, $tp, $pst;
-
-
 
 		if (!is_object($sql2)) {
 			$sql2 = new db;
@@ -821,17 +805,13 @@ class download {
 			</form>
 			</div>";
 		$ns->tablerender(DOWLAN_39, $text);
-
-
-
 	}
 
 	function create_category($sub_action, $id) {
-		global $aj, $sql;
-		$download_category_name = $aj->formtpa($_POST['download_category_name'], "admin");
-		$download_category_description = $aj->formtpa($_POST['download_category_description'], "admin");
-		$download_category_icon = $aj->formtpa($_POST['download_category_icon'], "admin");
-
+		global $sql;
+		$download_category_name = $tp->toDB($_POST['download_category_name']);
+		$download_category_description = $tp->toDB($_POST['download_category_description']);
+		$download_category_icon = $tp->toDB($_POST['download_category_icon']);
 		if ($id) {
 			$sql->db_Update("download_category", "download_category_name='$download_category_name', download_category_description='$download_category_description', download_category_icon ='$download_category_icon', download_category_parent= '".$_POST['download_category_parent']."', download_category_class='".$_POST['download_category_class']."' WHERE download_category_id='$id'");
 			$this->show_message(DOWLAN_48);
@@ -847,9 +827,7 @@ class download {
 
 function getfiles($dir, $sub = 0) {
 	global $t_array, $DOWNLOADS_DIRECTORY, $FILES_DIRECTORY;
-	if ($DOWNLOADS_DIRECTORY {
-		0 }
-	== "/" && $sub != 1 ) {
+	if ($DOWNLOADS_DIRECTORY{0} == "/" && $sub != 1 ) {
 		$pathdir = $dir;
 	} else {
 		$pathdir = e_BASE.$dir;
@@ -878,7 +856,6 @@ function download_adminmenu($parms) {
 	global $action;
 	$download->show_options($action);
 }
-
 
 
 ?>
