@@ -109,25 +109,13 @@ function checklayout($str){
 		$ns = new e107table;
 		$menu = trim(chop(preg_replace("/\{MENU=(.*?)\}/si", "\\1", $str)));
 		$sql9 = new db;
-		$sql9 -> db_Select("menus", "*",  "menu_location='$menu' ORDER BY menu_order");
+		$sql9 -> db_Select("menus", "menu_name,menu_class",  "menu_location='$menu' ORDER BY menu_order");
 		while($row = $sql9-> db_Fetch()){
 			extract($row);
-			$sm = FALSE;
-			if(!$menu_class){
-				$sm = TRUE;
-			}else if($menu_class == 252 && !USER){
-				$sm = TRUE;
-			}else if($menu_class == 253 && USER){
-				$sm = TRUE;
-			}else if($menu_class == 254 && ADMIN){
-				$sm = TRUE;
-			}else if(check_class($menu_class)){
-				$sm = TRUE;
-			}
-			if($sm == TRUE){
+			if(check_class($menu_class)){
 				if(strstr($menu_name, "custom_")){
 					require_once(e_PLUGIN."custom/".str_replace("custom_", "", $menu_name).".php");
-				}else{
+				} else {
 					@include(e_PLUGIN.$menu_name."/languages/".e_LANGUAGE.".php");
 					@include(e_PLUGIN.$menu_name."/languages/English.php");
 					require_once(e_PLUGIN.$menu_name."/".$menu_name.".php");
