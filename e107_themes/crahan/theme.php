@@ -12,6 +12,8 @@
 +---------------------------------------------------------------+
 */
 
+if(!defined("e_THEME")){ exit; }
+
 // [theme]
 $themename = "CraHan";
 $themeversion = "1.0";

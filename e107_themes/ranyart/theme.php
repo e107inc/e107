@@ -11,7 +11,7 @@
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
-
+if(!defined("e_THEME")){ exit; }
 // [theme]
 $themename = "ranyart";
 $themeversion = "1";

@@ -12,6 +12,8 @@
 +---------------------------------------------------------------+
 */
 
+if(!defined("e_THEME")){ exit; }
+
 // [theme]
 $themename = "lamb";
 $themeversion = "1.0";
@@ -30,36 +32,31 @@ $HEADER = "<div id='header'>
 <div id='banner'>
 {BANNER}
 </div>
-
-<table style='width: 100%;' cellpadding='0' cellspacing='0'>
-
-<tr><td style='width: 180px; border-right: 1px solid #000;'></td><td></td><td style='width: 180px; border-left: 1px solid #000;'></tr>
-
-<tr>
-<td id='leftcontent'>
+<div id='mainleft'>
+<div id='mainright'>
+<div id='leftcontent'>
 <div class='columnwrap'>
 {SITELINKS}
 {MENU=1}
 </div>
-</td>
-
-<td id='centercontent'>
+</div>
+<div id='rightcontent'>
+<div class='columnwrap'>
+{MENU=2}
+</div>
+</div>
+<div id='centercontent'>
+<div class='menuwrapper'>
 <div class='columnwrap'>
 ";
 
 $FOOTER = "
 </div>
-</td>
-
-<td id='rightcontent'>
-<div class='columnwrap'>
-{MENU=2}
 </div>
-</td>
-</tr>
-</table>
-
-
+<div class='cleaner'>&nbsp;</div>
+</div>
+</div>
+</div>
 <div id='footer'>
 <div class='columnwrap'>
 <div style='text-align: center;' class='smalltext'>

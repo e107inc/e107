@@ -1,4 +1,8 @@
 
+.intwrapper {
+	width: 100%;
+}
+
 #mainleft {
 	margin:0; padding:0;
 	background: #fff url("images/left.png") top left repeat-y;
@@ -8,24 +12,16 @@
 	background:url("images/right.png") top right repeat-y;
 }
 #leftcontent {
+	float:left;
 	width:180px;
 	margin:0; padding:0;
 	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
-	background: #f6f4f4;
-	vertical-align: top;
-	border-right: 1px solid #000;
 }
 #rightcontent {
+	float:right;
 	width:180px;
 	margin:0; padding:0;
 	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
-	background: #f6f4f4;
-	vertical-align: top;
-	border-left: 1px solid #000;
-}
-
-#centercontent {
-	vertical-align: top;
 }
 
 .menuwrapper {
@@ -34,14 +30,21 @@
 	margin-right: auto;
 }
 
-.intwrapper {
-	overflow: scroll;
+#centercontent {
+	margin:0 180px;
+	background:#fff;
 }
-
 .columnwrap {
 	margin:0; padding:0.5em 1em;
 }
-
+.cleaner {
+	clear:both;
+	height:1px;
+	font-size:1px;
+	border:none;
+	margin:0; padding:0;
+	background:transparent;
+}
 
 #header {
 	height: 80px;

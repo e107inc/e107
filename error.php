@@ -11,15 +11,20 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/error.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-27 19:51:38 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-28 20:15:03 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
-	
-	
-	
 require_once("class2.php");
+
+if(!e_QUERY || (e_QUERY != 401 && e_QUERY != 403 && e_QUERY != 404 && e_QUERY != 500))
+{
+	echo "<script type='text/javascript'>document.location.href='index.php'</script>\n";
+	header("location: index.php");
+	exit;
+}
+
 require_once(HEADERF);
 	
 $errFrom = $_SERVER['HTTP_REFERER'];
@@ -49,6 +54,7 @@ switch(e_QUERY) {
 	$text = "<div class='installe'>".LAN_13." (".$_SERVER['QUERY_STRING'].")</div><br /><div class='installh'>".LAN_14."</div><br /><div class='smalltext'>".LAN_15."</div>
 		<br /><div class='installh'>".LAN_2."<a href='index.php'>".LAN_20."</a></div>";
 }
+
 $ns->tablerender(PAGE_NAME." ".e_QUERY, $text);
 require_once(FOOTERF);
 ?>
