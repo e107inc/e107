@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-18 02:55:22 $
+|     $Revision: 1.7 $
+|     $Date: 2005-01-23 15:36:34 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -29,8 +29,6 @@ define("ADLAN_16", "Content");
 define("ADLAN_17", "Add new/edit/delete content pages");
 define("ADLAN_18", "Reviews");
 define("ADLAN_19", "Add new/edit/delete reviews");
-define("ADLAN_20", "Links");
-define("ADLAN_21", "Add new/edit/delete links");
 define("ADLAN_22", "Link Categories");
 define("ADLAN_23", "Add new/edit/delete link categories");
 define("ADLAN_24", "Downloads");
@@ -173,5 +171,8 @@ define("ADLAN_LAT_4", "Submitted reviews");
 define("ADLAN_LAT_5", "Submitted links");
 define("ADLAN_LAT_6", "Reported forum posts");
 define("ADLAN_LAT_7", "File uploads");
+
+define("ADLAN_138", "Site Links");
+define("ADLAN_139", "Add/edit/delete links");
 
 ?>
