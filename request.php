@@ -123,10 +123,12 @@ if(eregi("http", $image)){
                 require_once(FOOTERF);
         }else{
                 if(is_file(e_FILE."public/".$image)){
-               echo "<img src='".e_FILE."public/".$image."' alt='' />";
-               }else{
-               echo "Not Found";
-               }
+                    echo "<img src='".e_FILE."public/".$image."' alt='' />";
+                }elseif(file_exists(e_FILE."downloadimages/".$image)){
+                    echo "<img src='".e_FILE."downloadimages/".$image."' alt='' />";
+                }else{
+                echo "Not Found";
+                }
                 exit;
         }
 }
