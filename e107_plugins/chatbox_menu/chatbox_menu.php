@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-02-02 14:28:47 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.20 $
+|     $Date: 2005-02-02 17:43:07 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 global $tp, $e107cache, $e_event;
@@ -116,7 +116,6 @@ if(!$text = $e107cache->retrieve("chatbox"))
 	if($sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, ".$chatbox_posts, $mode="no_where"))
 	{
 		$obj2 = new convert;
-		$cb_wordwrap = $pref['cb_wordwrap'];
 		while(list($cb_id, $cb_nick, $cb_message, $cb_datestamp, $cb_blocked, $cb_ip) = $sql-> db_Fetch())
 		{
 			// get available vars
@@ -133,15 +132,7 @@ if(!$text = $e107cache->retrieve("chatbox"))
 
 			$datestamp = $obj2->convert_date($cb_datestamp, "short");
 
-			if($pref['cb_linkreplace'])
-			{
-				$cb_message = " ".$cb_message;
-				$cb_message = preg_replace("#([\t\r\n ])([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="\2://\3" rel="external">'.$pref['cb_linkc'].'</a>', $cb_message);
-				$cb_message = preg_replace("#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="http://\2.\3" rel="external">'.$pref['cb_linkc'].'</a>', $cb_message);
-				$cb_message = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $cb_message);
-			}
-
-			$cb_message = $tp -> toHTML($cb_message, TRUE, null, null, $cb_wordwrap);
+			$cb_message = $tp -> toHTML($cb_message, TRUE, null, null, $pref['cb_wordwrap']);
 
 			$replace[0] = "["; $replace[1] = "]";
 			$search[0] = "&lsqb;"; $search[1] =  "&rsqb;";

@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-15 18:15:34 $
-|     $Author: e107coders $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-02 17:43:06 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_1", "Site Information");
@@ -139,5 +139,12 @@ define("PRFLAN_98", "If unchecked, each plugin will display its own info in an i
 define("PRFLAN_99", "Options");
 define("PRFLAN_100", "Preload Theme Images:");
 
-
+define("PRFLAN_101", "Text rendering");
+define("PRFLAN_102", "Replace links");
+define("PRFLAN_103", "If ticked, posted links will be replaced by the text entered in the textbox below, will stop very long links breaking layout");
+define("PRFLAN_104", "Link replace text");
+define("PRFLAN_105", "text to replace links with, image can be used by using &lt;img tag, with full path to image");
+define("PRFLAN_106", "Core preferences saved to database.");
+define("PRFLAN_107", "Email link replace text");
+define("PRFLAN_108", "text to replace email links with, image can be used by using &lt;img tag, with full path to image");
 ?>
