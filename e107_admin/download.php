@@ -478,7 +478,7 @@ class download{
                         $filesize = $_POST['download_filesize_external'];
                 }else{
                         $durl = $_POST['download_url'];
-                        $filesize = ($_POST['download_filesize_external'] ? $_POST['download_filesize_external'] : filesize($DOWNLOADS_DIRECTORY.$_POST['download_url']));
+                        $filesize = ($_POST['download_filesize_external'] ? $_POST['download_filesize_external'] : filesize(e_BASE.$DOWNLOADS_DIRECTORY.$_POST['download_url']));
                 }
 
                 if(!$filesize){
