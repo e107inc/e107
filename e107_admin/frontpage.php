@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/frontpage.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-02-11 09:19:02 $
-|     $Author: lisa_ $
+|     $Revision: 1.14 $
+|     $Date: 2005-03-09 03:31:58 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -146,7 +146,7 @@ $text = "
 <form method='post' action='".e_SELF."'>
 <table style='".ADMIN_WIDTH."' class='fborder'>
 	<tr>
-		<td colspan='4' style='text-align:center'  class='forumheader'>".FRTLAN_2.": </td>
+		<td colspan='4' style='text-align:center'  class='fcaption'>".FRTLAN_2.": </td>
 	</tr>
 	<tr>
 		<td style='width:2%;' class='forumheader3'>";
