@@ -102,4 +102,12 @@ define("FORLAN_95", "Ranks saved");
 define("FORLAN_96", "Forum deleted");
 define("FORLAN_97", "Parent deleted");
 
+define("FORLAN_98", "Rank Name");
+define("FORLAN_99", "number of points before level change");
+define("FORLAN_100", "upload images to e107_images/forum/");
+define("FORLAN_101", "Main Site Admin");
+define("FORLAN_102", "Threshold");
+define("FORLAN_103", "Site Admin");
+define("FORLAN_104", "Rank Image");
+define("FORLAN_105", "Forum Moderator");
 ?>
