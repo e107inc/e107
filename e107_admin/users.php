@@ -1,16 +1,20 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        /admin/users.php
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107/e107_admin/users.php,v $
+|     $Revision: 1.29 $
+|     $Date: 2004-09-09 09:31:15 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 if(!getperms("4")){ header("location:".e_BASE."index.php"); exit;}
@@ -43,7 +47,9 @@ if(IsSet($_POST['resend_mail'])){
     $name = $_POST['resend_name'];
    define("RETURNADDRESS", (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$id.".".$key : SITEURL."/signup.php?activate.".$id.".".$key));
 
-   $message = USRLAN_114.RETURNADDRESS.USRLAN_115." ".SITENAME."\n".SITEURL;
+   $message = USRLAN_114." ".$_POST['resend_name']."\n\n".USRLAN_122." ".SITENAME."\n".USRLAN_123."\n\n".USRLAN_124."...\n\n";
+   $message .= RETURNADDRESS . "\n\n".USRLAN_115."\n\n ".USRLAN_125." ".SITENAME."\n".SITEURL;
+
    require_once(e_HANDLER."mail.php");
    sendemail($_POST['resend_email'], USRLAN_113." ".SITENAME, $message);
  //  echo str_replace("\n","<br>",$message);

@@ -1,17 +1,20 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|	e107 website system
-|	/sitemap.php
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|	©Lolo Irie 2001-2004
-|	http://etalkers.org
-|	e107, Original CMS from Jalist, http://e107.org
-|	jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|	Released under the terms and conditions of the
-|	GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107/sitemap.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2004-09-09 09:31:42 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 
 ///////////////////
@@ -23,20 +26,20 @@ require_once(HEADERF);
 $sql2 = new db;
 
 if(file_exists(THEME."images/extand_ico.png")){
-	define("SM_ICO_EXP","<img onclick=\"if(this.src.indexOf('".THEME."images/extand_ico.png')!=-1){this.src='".THEME."images/extand2_ico.png'}else{this.src='".THEME."images/extand_ico.png'}\" class='icoexp' src='".THEME."images/extand_ico.png' style='border: 0px; width: 11px; height: 11px;' />");
-	define("SM_ICO_URL",THEME."images/extand_ico.png");
+        define("SM_ICO_EXP","<img onclick=\"if(this.src.indexOf('".THEME."images/extand_ico.png')!=-1){this.src='".THEME."images/extand2_ico.png'}else{this.src='".THEME."images/extand_ico.png'}\" class='icoexp' src='".THEME."images/extand_ico.png' style='border: 0px; width: 11px; height: 11px;' />");
+        define("SM_ICO_URL",THEME."images/extand_ico.png");
 }else{
-	define("SM_ICO_EXP","<img onclick=\"if(this.src.indexOf('".e_IMAGE."generic/extand_ico.png')!=-1){this.src='".e_IMAGE."generic/extand2_ico.png'}else{this.src='".e_IMAGE."generic/extand_ico.png'}\" class='icoexp' src='".e_IMAGE."generic/extand_ico.png' style='border: 0px; width: 11px; height: 11px;' />");
-	define("SM_ICO_URL",e_IMAGE."generic/extand_ico.png");
+        define("SM_ICO_EXP","<img onclick=\"if(this.src.indexOf('".e_IMAGE."generic/extand_ico.png')!=-1){this.src='".e_IMAGE."generic/extand2_ico.png'}else{this.src='".e_IMAGE."generic/extand_ico.png'}\" class='icoexp' src='".e_IMAGE."generic/extand_ico.png' style='border: 0px; width: 11px; height: 11px;' />");
+        define("SM_ICO_URL",e_IMAGE."generic/extand_ico.png");
 }
 if(file_exists(THEME."images/extand2_ico.png")){
-	define("SM_ICO_URL2",THEME."images/extand2_ico.png");
+        define("SM_ICO_URL2",THEME."images/extand2_ico.png");
 }else{
-	define("SM_ICO_URL2",e_IMAGE."generic/extand2_ico.png");
+        define("SM_ICO_URL2",e_IMAGE."generic/extand2_ico.png");
 }
 
 
-$caption = LANSM_1;
+$caption = LANSM_1. " ".SITENAME." <b>".SITEURL."</b>";
 $text = "\n\n
 <script type='text/javascript' src='".e_HANDLER."javascript/sitemap.php' ></script>
 \n\n";
@@ -44,7 +47,7 @@ $text = "\n\n
 
 
 // Help
-$text .= "<p>\n<a href=\"javascript:void(0);\" onclick=\"ejs_func_todo=ejs_expandall('cats',ejs_func_todo,'subcats');ejs_func_todo2=ejs_expandpics('icoexp',ejs_func_todo2,'".SM_ICO_URL."','".SM_ICO_URL2."');\" > ".LANSM_7."</a>".LANSM_31."</p>\n";
+$text .= "<p>\n<a href=\"javascript:void(0);\" onclick=\"ejs_func_todo=ejs_expandall('cats',ejs_func_todo,'subcats');ejs_func_todo2=ejs_expandpics('icoexp',ejs_func_todo2,'".SM_ICO_URL."','".SM_ICO_URL2."');\" > ".LANSM_7."</a> ".LANSM_31." <img src='".e_IMAGE."generic/extand_ico.png' style='border: 0px; width: 11px; height: 11px;' /> ".LANSM_41."</p>\n";
 
 
 $text .= "<br /><br />\n
@@ -58,44 +61,44 @@ $text .= "<p class='caption2' style='text-align: left;' >\n
 
 // News
 if($sql -> db_Select("news","news_id")){
-	require_once(e_HANDLER."sitemap/sitemap_news.php");
-	$text .= sm_news();
+        require_once(e_HANDLER."sitemap/sitemap_news.php");
+        $text .= sm_news();
 }
 
 // Links
 if($sql -> db_Select("links","link_id","link_category!='1'")){
-	require_once(e_HANDLER."sitemap/sitemap_links.php");
-	$text .= sm_links();
+        require_once(e_HANDLER."sitemap/sitemap_links.php");
+        $text .= sm_links();
 }
 
 // Forums
 if($sql -> db_Select("forum","forum_id")){
-	require_once(e_HANDLER."sitemap/sitemap_forums.php");
-	$text .= sm_forums();
+        require_once(e_HANDLER."sitemap/sitemap_forums.php");
+        $text .= sm_forums();
 }
 
 // Downloads
 if($sql -> db_Select("download_category","download_category_id")){
-	require_once(e_HANDLER."sitemap/sitemap_downloads.php");
-	$text .= sm_downloads();
+        require_once(e_HANDLER."sitemap/sitemap_downloads.php");
+        $text .= sm_downloads();
 }
 
 // Articles
 if($sql -> db_Select("content","content_id","content_type='6' OR (content_type='0' AND content_parent='0')")){
-	require_once(e_HANDLER."sitemap/sitemap_articles.php");
-	$text .= sm_articles();
+        require_once(e_HANDLER."sitemap/sitemap_articles.php");
+        $text .= sm_articles();
 }
 
 // Reviews
 if($sql -> db_Select("content","content_id","content_type='10' OR (content_type='3' AND content_parent='0')")){
-	require_once(e_HANDLER."sitemap/sitemap_reviews.php");
-	$text .= sm_reviews();
+        require_once(e_HANDLER."sitemap/sitemap_reviews.php");
+        $text .= sm_reviews();
 }
 
 // Content
 if($sql -> db_Select("content","content_id","content_type='1'")){
-	require_once(e_HANDLER."sitemap/sitemap_content.php");
-	$text .= sm_content();
+        require_once(e_HANDLER."sitemap/sitemap_content.php");
+        $text .= sm_content();
 }
 
 // Members
