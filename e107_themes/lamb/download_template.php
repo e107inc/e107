@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/download_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-02-13 21:07:01 $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-17 20:31:54 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -70,7 +70,7 @@ if(!$DOWNLOAD_LIST_TABLE_START){
                 $DOWNLOAD_LIST_TABLE_START = "
 <img src='http://localhost/e107_0.7/e107_themes/lamb/images/download.png' alt='' style='vertical-align: middle;' /> <span class='dlmain'>Downloads: {DOWNLOAD_CATEGORY}</span><br /><br />{DOWNLOAD_CATEGORY_DESCRIPTION}<br /><br />
 
-
+<form method='post' action='".e_SELF."?".e_QUERY."'>
 <span class='defaulttext'>".LAN_dl_38."</span>
 <select name='order' class='tbox'>".
 ($order == "download_datestamp" ? "<option value='download_datestamp' selected='selected'>".LAN_dl_22."</option>" : "<option value='download_datestamp'>".LAN_dl_22."</option>").
@@ -98,10 +98,6 @@ if(!$DOWNLOAD_LIST_TABLE_START){
 &nbsp;
 <input class='button' type='submit' name='goorder' value='".LAN_dl_27."' /><br /><br />
 
-
-
-                
-<form method='post' action='".e_SELF."?".e_QUERY."'>
 <table style='width:100%'>\n
 
 <tr>
