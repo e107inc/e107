@@ -17,8 +17,16 @@
 require_once("class2.php");
 require_once(HEADERF);
 
+     if(!check_class($pref['subnews_class'])){
+     $ns -> tablerender(NWSLAN_12,NWSLAN_11);
+     require_once(FOOTERF);
+     exit;
+     }
+
 $author_name=textparse::tpj($_POST['author_name'],TRUE);
 $author_email=check_email($_POST['author_email']);
+
+
 
 if(IsSet($_POST['submit'])){
 
@@ -103,6 +111,16 @@ if($_FILES['file_userfile']){
                 }
         }
 }
+// ==============================================================
+
+
+
+
+     if($pref['subnews_htmlarea']){
+     require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
+     htmlarea("item");
+     }
+
 
 
 $text = "<div style='text-align:center'>
@@ -139,7 +157,7 @@ $text .= " <tr>
 <tr>
 <td style='width:20%' class='forumheader3'>".LAN_135."</td>
 <td style='width:80%' class='forumheader3'>
-<textarea class='tbox' name='item' cols='70' rows='10'></textarea>
+<textarea class='tbox' id='item' name='item' cols='70' rows='10'></textarea>
 </td>
 </tr>\n";
 
