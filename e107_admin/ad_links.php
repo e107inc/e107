@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/ad_links.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-01-15 12:21:27 $
+|     $Revision: 1.12 $
+|     $Date: 2005-01-15 12:23:57 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -128,7 +128,7 @@ if (!defined('E_32_POLLS')) { define('E_32_POLLS', "<img src='".e_IMAGE."admin_i
 if (!defined('E_32_PREFS')) { define('E_32_PREFS', "<img src='".e_IMAGE."admin_images/prefs_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
 if (!defined('E_32_UPLOADS')) { define('E_32_UPLOADS', "<img src='".e_IMAGE."admin_images/uploads_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
 if (!defined('E_32_REVIEW')) { define('E_32_REVIEW', "<img src='".e_IMAGE."admin_images/reviews_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
-if (!defined('E_32_USER')) { define('E_32_USER', "<img src='".e_IMAGE."admin_images/cat_user_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_USER')) { define('E_32_USER', "<img src='".e_IMAGE."admin_images/users_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
 if (!defined('E_32_USERCLASS')) { define('E_32_USERCLASS', "<img src='".e_IMAGE."admin_images/userclass_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
 if (!defined('E_32_LANGUAGE')) { define('E_32_LANGUAGE', "<img src='".e_IMAGE."admin_images/language_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
 
