@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-04-04 10:23:12 $
-|     $Author: sweetas $
+|     $Revision: 1.18 $
+|     $Date: 2005-04-05 03:55:22 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -266,10 +266,11 @@ if ($message != "") {
 	echo $ns -> tablerender('Updated', "<div style='text-align:center'><b>".$message."</b></div><br /><br />");
 }
 if (strpos(e_QUERY, 'configure') === FALSE) {
-	$text = "<iframe src='".e_SELF."?configure' width='100%' style='width: 100%; height: 700px; border: 0px' frameborder='0'></iframe>";
+  	$cnt = $sql->db_Select("menus", "*", "menu_location='0' ORDER BY menu_name "); // calculate height to remove vertical scroll-bar.
+  	$text = "<object data='".e_SELF."?configure' type='text/html' style='width:100%;height:".(($cnt*75)+400)."px;border:0px;overflow:auto' ></object>";
 	echo $ns -> tablerender(MENLAN_35, $text, 'menus_config');
 } else {
-	
+
 if ($CUSTOMPAGES) {
 	if ($menu_act != 'adv') {
 		$text = "<form  method='post' action='".e_SELF."?configure.".$menus_equery[1]."'><div style='width: 100%'>
@@ -350,7 +351,7 @@ if ($CUSTOMPAGES) {
 		$text .= $frm->form_option(MENLAN_12." ...", TRUE, " ");
 
 		foreach ($menu_areas as $menu_act) {
-			$text .= $frm->form_option(MENLAN_13." ".$menu_act, "", "activate.".$menu_act);
+		  	$text .= $frm->form_option(MENLAN_13." ".$menu_act, "", "activate.".$menu_act);
 		}
 		$text .= $frm->form_select_close()."</div>";
 		echo $text;
