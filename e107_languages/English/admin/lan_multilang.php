@@ -5,6 +5,10 @@ This file will be highly updated before e107 v.700
 define("DO NOT TRANSLATE THIS FILE","DO NOT TRANSLATE THIS FILE");
 */
 
+// Please keep HTML in the page, not in the language file. 
+
+
+
 define("MLAD_LAN_1", "Languages");
 define("MLAD_LAN_2", "Multilanguage system currently running.");
 define("MLAD_LAN_3", "You are not currently using multilanguage.");
@@ -45,12 +49,10 @@ define("MLAD_LAN_27", "Following languages are existing in your database.
 Click on a language to see which tables are existing in your database and which type of information you can publish...");
 define("MLAD_LAN_28", " used for ");
 define("MLAD_LAN_29", "Drop existing tables?");
-define("MLAD_LAN_30", "If you check this box, existing tables with content will be deleted before to be created again.<br />If required backup these tables at first using e107, PhpMyAdmin or a similar backup tool.");
+define("MLAD_LAN_30", "Replace existing tables (data will be lost).");
 define("MLAD_LAN_31", "Other languages used");
 define("MLAD_LAN_32", "Confirm delete");
-define("MLAD_LAN_33", "Check this box before to click on the button to delete tables.
-<br />
-<b>BE CAREFUL</b>: content will be lost for these languages !!!");
+define("MLAD_LAN_33", "Delete unchecked tables above (if they exist).");
 define("MLAD_LAN_34", "Delete tables");
 define("MLAD_LAN_35", "Following tables were deleted in your database :");
 define("MLAD_LAN_36", "Following table was deleted in your database :");
