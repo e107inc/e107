@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/content.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2004-12-01 15:05:31 $
-|     $Author: streaky $
+|     $Revision: 1.10 $
+|     $Date: 2004-12-03 22:33:13 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -33,92 +33,53 @@ if(e_QUERY){
 	exit;
 }
 $query="";
-if($action == "content")
-{
+if($action == "content"){
 	$sub_action=intval($sub_action);
 	$query = "content_id='".$sub_action."' ";
 	$page = LAN_60." /";
 }
-if($action == "article")
-{
-	if(is_numeric($sub_action))
-	{
+if($action == "article"){
+	if(is_numeric($sub_action))	{
 		$query = "content_id='".$sub_action."' ";
 		$page = LAN_1." /";
-	}
-	elseif($sub_action == "cat" )
-	{
-		if($id == "0")
-		{
+	}elseif($sub_action == "cat" ){
+		if($id == "0")		{
 			$page = LAN_57." / ".LAN_61;
-		}
-		else
-		{
+		}else{
 			$query = "content_id='".$id."' ";
 			$page = LAN_1." / ".LAN_3." /";
 		}
-	}
-	else
-	{
+	}else{
 		$page = LAN_50;
 	}
 }
-if($action == "review")
-{
-	if(is_numeric($sub_action))
-	{
+if($action == "review"){
+	if(is_numeric($sub_action))	{
 		$page = LAN_2." /";
 		$query = "content_id='".$sub_action."' ";
-	}
-	elseif($sub_action == "cat")
-	{
+	}elseif($sub_action == "cat"){
 		$page = LAN_2." / ".LAN_3." /";
 		$query = "content_id='".$id."' ";
-	}
-	else
-	{
+	}else{
 		$page = LAN_35;
 	}
 }
-if($query)
-{
+if($query){
 	//        echo $query; exit;
-	// ML
-	$tmp_ok = 0;
-	if(e_MLANG == 1 && $ml -> e107_ml_Select("content", "*", $query))
-	{
-		$tmp_ok = 1;
-	}
-	else if($sql -> db_Select("content", "*", $query))
-	{
-		$tmp_ok = 1;
-	}
-
-	if($tmp_ok == 1)
-	{
+if($sql -> db_Select("content", "*", $query)){
 		$row = $sql -> db_Fetch(); extract($row);
 		define("e_PAGETITLE", $page." ".$content_heading);
 	}
-}
-else
-{
+}else{
 	define("e_PAGETITLE", $page);
 }
 
 $highlight_search = FALSE;
-if(IsSet($_POST['highlight_search']))
-{
+if(IsSet($_POST['highlight_search'])){
 	$highlight_search = TRUE;
 }
 require_once(HEADERF);
 
-// ML
-if(e_MLANG == 1)
-{
-	require_once(e_HANDLER."multilang/ml_panel.php");
-	e107ml_panel("content");
-}
-// END ML
 
 require_once(e_HANDLER."emailprint_class.php");
 $ep = new emailprint;
@@ -134,50 +95,39 @@ require_once(e_HANDLER."comment_class.php");
 $cobj = new comment;
 require_once(e_HANDLER."rate_class.php");
 $rater = new rater;
-if(IsSet($_POST['commentsubmit']))
-{
+if(IsSet($_POST['commentsubmit'])){
 	$tmp = explode(".", e_QUERY);
 
-	if(!((e_MLANG == 1 && $ml -> e107_ml_Select("content", "content_comment", "content_id='$sub_action' ")) || (e_MLANG != 1 && $sql -> db_Select("content", "content_comment", "content_id='$sub_action' "))))
-	{
+        if(!$sql -> db_Select("content", "content_comment", "content_id='$sub_action' ")){
 		header("location:".e_BASE."index.php");
 		exit;
-	}
-	else
-	{
+	}else{
 		$row = $sql -> db_Fetch();
-		if($row[0] && (ANON===TRUE || USER===TRUE))
-		{
+		if($row[0] && (ANON===TRUE || USER===TRUE))	{
 			$cobj -> enter_comment($_POST['author_name'], $_POST['comment'], "content", $sub_action, $pid, $_POST['subject']);
 			$e107cache->clear("comment.content.{$sub_action}");
 		}
 	}
 }
 // content page -------------------------------------------------------------------------------------------------------------------------------------------------------------------
-if($action == "content")
-{
+if($action == "content"){
 
-	if((e_MLANG == 1 && !$ml -> e107_ml_Select("content", "*", "content_id=$sub_action AND content_type=1")) || (e_MLANG != 1 && !$sql -> db_Select("content", "*", "content_id=$sub_action AND content_type=1")))
-	{
+        if(!$sql -> db_Select("content", "*", "content_id=$sub_action AND content_type=1")){
 		header("location: ".e_BASE."index.php");
 		exit;
 	}
 	$row = $sql -> db_Fetch(); extract($row);
 
-	if(!check_class($content_class))
-	{
+	if(!check_class($content_class)){
 		$ns->tablerender(LAN_52, "<div style='text-align:center'>".LAN_54."</div>");
 		require_once(FOOTERF);
 		exit;
 	}
 
 
-	if($cache = $e107cache->retrieve("content.$sub_action"))
-	{
+	if($cache = $e107cache->retrieve("content.$sub_action")){
 		echo $aj -> formtparev($cache);
-	}
-	else
-	{
+	}else{
 		ob_start();
 
 		$search = array("{e_BASE}", "{e_ADMIN}", "{e_IMAGE}", "{e_THEME}", "{THEME}", "{e_PLUGIN}", "{e_FILE}", "{e_HANDLER}", "{e_LANGUAGEDIR}", "{e_DOCS}", "{e_DOCROOT}");
@@ -185,13 +135,10 @@ if($action == "content")
 		$content_content = str_replace($search, $replace, $content_content);
 
 		$textemailprint = $ep -> render_emailprint("content",$sub_action);
-		if(strstr($content_content, "{EMAILPRINT}"))
-		{
+		if(strstr($content_content, "{EMAILPRINT}")){
 			$content_content = str_replace("{EMAILPRINT}", $textemailprint, $content_content);
 			$epflag = TRUE;
-		}
-		elseif($content_pe_icon)
-		{
+		}elseif($content_pe_icon){
 			$content_content = $content_content."<br /><br />".$textemailprint;
 		}
 		$text = ($content_parent ? $aj -> tpa($content_content, "nobreak", "admin", $highlight_search) : $aj -> tpa($content_content, "off", "admin", $highlight_search));
@@ -215,34 +162,25 @@ if($action == "content")
 			$ns -> tablerender($caption, $text);
 		}
 
-		if($pref['cachestatus'])
-		{
+		if($pref['cachestatus'])		{
 			$cache = $aj -> formtpa(ob_get_contents(), "admin");
 			$e107cache->set("content.$sub_action", $cache);
 		}
 	}
 
-	if($content_comment)
-	{
+	if($content_comment){
 		if($cache = $e107cache->retrieve("comment.content.$sub_action")){
 			echo $aj -> formtparev($cache);
-		}
-		else
-		{
+		}else{
 			ob_start();
 			unset($text);
-			if($comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='$sub_action' AND comment_type='1' AND comment_pid='0' ORDER BY comment_datestamp"))
-			{
+			if($comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='$sub_action' AND comment_type='1' AND comment_pid='0' ORDER BY comment_datestamp")){
 				$width = 0;
-				while($row = $sql -> db_Fetch())
-				{
-					if($pref['nested_comments'])
-					{
+				while($row = $sql -> db_Fetch()){
+					if($pref['nested_comments']){
 						$text = $cobj -> render_comment($row, "content" , "comment", $sub_action, $width, $content_heading);
 						$ns -> tablerender(LAN_5, $text);
-					}
-					else
-					{
+					}else{
 						$text .= $cobj -> render_comment($row, "content" , "comment", $sub_action, $width, $content_heading);
 					}
 				}
@@ -253,8 +191,7 @@ if($action == "content")
 				}
 			}
 		}
-		if(ADMIN && getperms("B") && $comment_total)
-		{
+		if(ADMIN && getperms("B") && $comment_total){
 			echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?content.$sub_action'>".LAN_29."</a></div><br />";
 		}
 		$cobj -> form_comment("comment", "content", $sub_action, $content_heading);
@@ -272,17 +209,10 @@ if($action == "review"){
 			echo $aj -> formtparev($cache);
 		}else{
 		ob_start();
-		$tmp_ok = 0;
-		if(e_MLANG == 1 && $ml -> e107_ml_Select("content", "*", "content_id=$sub_action"))
-		{
-			$tmp_ok = 1;
-		}else if($sql -> db_Select("content", "*", "content_id=$sub_action"))
-		{
-			$tmp_ok = 1;
-		}
-		if($tmp_ok == 1){
+            if($sql -> db_Select("content", "*", "content_id=$sub_action")){
 			$row = $sql -> db_Fetch(); extract($row);
 
+            $textemailprint = $ep -> render_emailprint("review",$sub_action);
 			if(!check_class($content_class)){
 				$ns -> tablerender(LAN_52, "<div style='text-align:center'>".LAN_53."</div>");
 				require_once(FOOTERF);
@@ -291,11 +221,7 @@ if($action == "review"){
 
 			$sql2 = new db;
 			$gen = new convert;
-			if(e_MLANG == 1){
-				$ml -> e107_ml_Select("content", "content_id, content_summary", "content_id=$content_parent", "default", false, "sql2");
-			}else{
 			$sql2 -> db_Select("content", "content_id, content_summary", "content_id=$content_parent");
-		}
 		list($content_id_, $content_summary_) = $sql2-> db_Fetch();
 		$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
 		$sql2 -> db_Select("user", "*", "user_id=$content_author");
@@ -362,16 +288,8 @@ if($pref['cachestatus']){
 	$e107cache->set("review.item.$sub_action", $cache);
 }
 }
-$tmp_ok = 0;
-if(e_MLANG == 1 && $ml -> e107_ml_Select("content", "*", "content_id=$sub_action"))
-{
-	$tmp_ok = 1;
-}
-else if($sql -> db_Select("content", "*", "content_id=$sub_action"))
-{
-	$tmp_ok = 1;
-}
-if($tmp_ok == 1){
+
+                if($sql -> db_Select("content", "*", "content_id=$sub_action")){
 	$row = $sql -> db_Fetch(); extract($row);
 }
 
@@ -419,29 +337,10 @@ if($cache = $e107cache->retrieve("review.cat.$id")){
 	echo $aj -> formtparev($cache);
 }else{
 ob_start();
-$tmp_ok = 0;
-if(e_MLANG == 1 && ($ml -> e107_ml_Select("content", "*", "content_id=$id") || !$id))
-{
-	$tmp_ok = 1;
-}
-else if($sql -> db_Select("content", "*", "content_id=$id") || !$id)
-{
-	$tmp_ok = 1;
-}
-if($tmp_ok == 1){
+    if($sql -> db_Select("content", "*", "content_id=$id") || !$id){
 	$row = $sql -> db_Fetch(); extract($row);
 	$category = $content_heading;
-	$tmp_ok = 0;
-	if(e_MLANG == 1 && $ml -> e107_ml_Select("content", "*", $query))
-	{
-		$tmp_ok = 1;
-	}
-	else if($sql -> db_Select("content", "*", $query))
-	{
-		$tmp_ok = 1;
-	}
-
-	if($tmp_ok == 1){
+        if($sql -> db_Select("content", "*", $query)){
 		$text = "<br />";
 		$icon = $content_summary;
 		$cat_id = $content_id;
@@ -489,17 +388,7 @@ if($pref['cachestatus']){
 
 
 unset($text);
-$tmp_ok = 0;
-if(e_MLANG == 1 && $ml -> e107_ml_Select("content", "content_id, content_heading, content_datestamp ", "content_parent=$id AND content_type=3 ORDER BY content_datestamp DESC LIMIT 10,200"))
-{
-	$tmp_ok = 1;
-}
-else if($sql -> db_Select("content", "content_id, content_heading, content_datestamp ", "content_parent=$id AND content_type=3 ORDER BY content_datestamp DESC LIMIT 10,200"))
-{
-	$tmp_ok = 1;
-}
-
-if($tmp_ok == 1){
+    if($sql -> db_Select("content", "content_id, content_heading, content_datestamp ", "content_parent=$id AND content_type=3 ORDER BY content_datestamp DESC LIMIT 10,200")){
 	while($row = $sql -> db_Fetch()){
 		extract($row);
 		if(!is_object($gen)){ $gen = new convert; }
@@ -515,18 +404,7 @@ if($tmp_ok == 1){
 }
 
 unset($text);
-$tmp_ok = 0;
-if(e_MLANG == 1 && $ml -> e107_ml_Select("content", "content_id, content_heading, content_datestamp ", "content_subheading REGEXP('^-$id-') AND content_type=3 ORDER BY content_datestamp DESC LIMIT 10,200"))
-{
-	$tmp_ok = 1;
-}
-else if($sql -> db_Select("content", "content_id, content_heading, content_datestamp ", "content_subheading REGEXP('^-$id-') AND content_type=3 ORDER BY content_datestamp DESC LIMIT 10,200"))
-{
-	$tmp_ok = 1;
-}
-
-
-if($tmp_ok == 1){
+    if($sql -> db_Select("content", "content_id, content_heading, content_datestamp ", "content_subheading REGEXP('^-$id-') AND content_type=3 ORDER BY content_datestamp DESC LIMIT 10,200")){
 	while($row = $sql -> db_Fetch()){
 		extract($row);
 		$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
@@ -544,17 +422,7 @@ if($cache = $e107cache->retrieve("review.main")){
 	echo $aj -> formtparev($cache);
 }else{
 ob_start();
-$tmp_ok = 0;
-if(e_MLANG == 1 && $ml -> e107_ml_Select("content", "*", "content_type=3 ORDER BY content_datestamp DESC LIMIT 0,10"))
-{
-	$tmp_ok = 1;
-}
-else if($sql -> db_Select("content", "*", "content_type=3 ORDER BY content_datestamp DESC LIMIT 0,10"))
-{
-	$tmp_ok = 1;
-}
-
-if($tmp_ok == 1){
+    if($sql -> db_Select("content", "*", "content_type=3 ORDER BY content_datestamp DESC LIMIT 0,10")){
 	$text = "<br />";
 	$sql2 = new db;
 	$gen = new convert;
@@ -574,16 +442,7 @@ if($tmp_ok == 1){
 			$user_email = $tmp[1];
 		}
 
-		$tmp_ok = 0;
-		if(e_MLANG == 1)
-		{
-			$ml -> e107_ml_Select("content", "content_id, content_summary", "content_id=$category", "default", FALSE, "sql2");
-		}
-		else
-		{
 			$sql2 -> db_Select("content", "content_id, content_summary", "content_id=$category");
-		}
-
 		$row = $sql2 -> db_Fetch(); extract($row);
 		$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
 
@@ -608,33 +467,14 @@ exit;
 }
 $ns -> tablerender(LAN_32, $text);
 
-$tmp_ok = 0;
-if(e_MLANG == 1 && $ml -> e107_ml_Select("content", "*", "content_type=10"))
-{
-	$tmp_ok = 1;
-}
-else if($sql -> db_Select("content", "*", "content_type=10"))
-{
-	$tmp_ok = 1;
-}
-if($tmp_ok == 1){
+    if($sql -> db_Select("content", "*", "content_type=10")){
 	$text = "<div style='text-align:center'>
 	<table class='fborder' style='width:95%'>\n";
 
 	while($row = $sql -> db_Fetch()){
 		extract($row);
-
-		$tmp_ok = 0;
-		if(e_MLANG == 1 && $total = $ml -> e107_ml_Select("content", "content_class", "content_parent=$content_id AND content_type=3", "default", FALSE, "sql2"))
-		{
-			$tmp_ok = 1;
-		}
-		else if($total = $sql2 -> db_Select("content", "content_class", "content_parent=$content_id AND content_type=3"))
-		{
-			$tmp_ok = 1;
-		}
-
-		if($tmp_ok == 1){
+        $total = $sql2 -> db_Select("content", "content_class", "content_parent=$content_id AND content_type=3");
+        if($total){
 			while($row2 = $sql2 -> db_Fetch()){
 				extract($row2);
 				if(!check_class($content_class)){
@@ -652,15 +492,7 @@ if($tmp_ok == 1){
 		<td class='forumheader3'>$content_subheading  <span class='smalltext'>( $total ".($total==1 ? LAN_34 : LAN_33)." )</span></td>
 		</tr>\n";
 	}
-	if(e_MLANG == 1)
-	{
-		$total = $ml -> e107_ml_Select("content", "*", "content_type=3 AND content_parent=0", "default", false, "sql2");
-	}
-	else
-	{
 		$total = $sql2 -> db_Select("content", "*", "content_type=3 AND content_parent=0");
-	}
-
 	if($total){
 		while($row2 = $sql2 -> db_Fetch()){
 			extract($row2);
@@ -709,16 +541,7 @@ if($action == "article"){
 			require_once(e_BASE.$THEMES_DIRECTORY."templates/content_template.php");
 		}
 	}
-	$tmp_ok = 0;
-	if(e_MLANG == 1 && $ml -> e107_ml_Select("content", "*", "content_id=$sub_action"))
-	{
-		$tmp_ok = 1;
-	}
-	else if($sql -> db_Select("content", "*", "content_id=$sub_action"))
-	{
-		$tmp_ok = 1;
-	}
-	if($tmp_ok == 1){
+                        if($sql -> db_Select("content", "*", "content_id=$sub_action")){
 		$row = $sql -> db_Fetch(); extract($row);
 
 		if(!check_class($content_class)){
@@ -742,17 +565,7 @@ if($action == "article"){
 	}
 }
 
-$tmp_ok = 0;
-if(e_MLANG == 1 && $ml -> e107_ml_Select("content", "*", "content_id=$sub_action"))
-{
-	$tmp_ok = 1;
-}
-else if($sql -> db_Select("content", "*", "content_id=$sub_action"))
-{
-	$tmp_ok = 1;
-}
-
-if($tmp_ok == 1){
+    if($sql -> db_Select("content", "*", "content_id=$sub_action")){
 	$row = $sql -> db_Fetch(); extract($row);
 }
 
@@ -822,32 +635,11 @@ if(!$CONTENT_RECENT_TABLE){
 }
 }
 $sql = new db; $sql2 = new db;
-$tmp_ok = 0;
-if(e_MLANG == 1 && ($ml -> e107_ml_Select("content", "*", "content_id=$id") || !$id))
-{
-	$tmp_ok = 1;
-}
-else if($sql -> db_Select("content", "*", "content_id=$id") || !$id)
-{
-	$tmp_ok = 1;
-}
-
-if($tmp_ok == 1){
+                        if($sql -> db_Select("content", "*", "content_id=$id") || !$id){
 	$row = $sql -> db_Fetch(); extract($row);
 	$caption = LAN_47.": ".$content_heading;
 
-
-	$tmp_ok = 0;
-	if(e_MLANG == 1 && $ml -> e107_ml_Select("content", "*", $query))
-	{
-		$tmp_ok = 1;
-	}
-	else if($sql -> db_Select("content", "*", $query))
-	{
-		$tmp_ok = 1;
-	}
-
-	if($tmp_ok == 1){
+                                if($sql -> db_Select("content", "*", $query)){
 		$sql2 = new db;
 		$gen = new convert;
 
@@ -888,18 +680,7 @@ if(!$CONTENT_ARCHIVE_TABLE){
 	require_once(e_BASE.$THEMES_DIRECTORY."templates/content_template.php");
 }
 }
-
-$tmp_ok = 0;
-if(e_MLANG == 1 && $ml -> e107_ml_Select("content", "content_id, content_heading, content_datestamp ", "content_parent=$id AND content_type=0 ORDER BY content_datestamp DESC LIMIT 10,200"))
-{
-	$tmp_ok = 1;
-}
-else if($sql -> db_Select("content", "content_id, content_heading, content_datestamp ", "content_parent=$id AND content_type=0 ORDER BY content_datestamp DESC LIMIT 10,200"))
-{
-	$tmp_ok = 1;
-}
-
-if($tmp_ok == 1){
+                if($sql -> db_Select("content", "content_id, content_heading, content_datestamp ", "content_parent=$id AND content_type=0 ORDER BY content_datestamp DESC LIMIT 10,200")){
 	while($row = $sql -> db_Fetch()){
 		extract($row);
 		if(!is_object($gen)){ $gen = new convert; }
@@ -908,14 +689,7 @@ if($tmp_ok == 1){
 		}
 	}
 	$sql2 = new db;
-	if(e_MLANG == 1)
-	{
-		$ml -> db_Select("content", "content_heading", "content_id=$id", "default", false, "sql2");
-	}
-	else
-	{
 		$sql2 -> db_Select("content", "content_heading", "content_id=$id");
-	}
 	while(list($content_heading) = $sql2 -> db_Fetch()){
 		$category = $content_heading;
 	}
@@ -945,18 +719,7 @@ if(!$CONTENT_RECENT_TABLE){
 }
 }
 $sql = new db; $sql2 = new db;
-$tmp_ok = 0;
-if(e_MLANG == 1 && $ml -> e107_ml_Select("content", "*", "content_type=0 ORDER BY content_datestamp DESC LIMIT 0,10"))
-{
-	$tmp_ok = 1;
-}
-else if($sql -> db_Select("content", "*", "content_type=0 ORDER BY content_datestamp DESC LIMIT 0,10"))
-{
-	$tmp_ok = 1;
-}
-
-
-if($tmp_ok == 1){
+                if($sql -> db_Select("content", "*", "content_type=0 ORDER BY content_datestamp DESC LIMIT 0,10")){
 	$gen = new convert;
 	while($row = $sql -> db_Fetch()){
 		extract($row);
@@ -984,30 +747,11 @@ if(!$CONTENT_CATEGORY_TABLE){
 }
 }
 
-$tmp_ok = 0;
-if(e_MLANG == 1 && $ml -> e107_ml_Select("content", "*", "content_type=6"))
-{
-	$tmp_ok = 1;
-}
-else if($sql -> db_Select("content", "*", "content_type=6"))
-{
-	$tmp_ok = 1;
-}
-
-if($tmp_ok == 1){
+                if($sql -> db_Select("content", "*", "content_type=6")){
 	while($row = $sql -> db_Fetch()){
 		extract($row);
-		$tmp_ok = 0;
-		if(e_MLANG == 1 && $total = $ml -> db_Select("content", "content_class", "content_parent=$content_id AND content_type=0", "default", false, "sql2"))
-		{
-			$tmp_ok = 1;
-		}
-		else if($total = $sql2 -> db_Select("content", "content_class", "content_parent=$content_id AND content_type=0"))
-		{
-			$tmp_ok = 1;
-		}
-
-		if($tmp_ok == 1){
+                                $total = $sql2 -> db_Select("content", "content_class", "content_parent=$content_id AND content_type=0");
+                                if($total){
 			while($row2 = $sql2 -> db_Fetch()){
 				extract($row2);
 				if(!check_class($content_class)){
@@ -1019,17 +763,8 @@ if($tmp_ok == 1){
 	}
 
 	// uncategorized
-	$tmp_ok = 0;
-	if(e_MLANG == 1 && $ml -> e107_ml_Select("content", "*", "content_type=0 AND content_parent=0"))
-	{
-		$tmp_ok = 1;
-	}
-	else if($untotal = $sql2 -> db_Select("content", "*", "content_type=0 AND content_parent=0"))
-	{
-		$tmp_ok = 1;
-	}
-
-	if($tmp_ok == 1){
+                        $untotal = $sql2 -> db_Select("content", "*", "content_type=0 AND content_parent=0");
+                        if($untotal){
 		while($row2 = $sql2 -> db_Fetch()){
 			extract($row2);
 			if(!check_class($content_class)){
@@ -1057,7 +792,7 @@ if($tmp_ok == 1){
 // ##### End ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 function parse_content_article_table($row){
-	global $CONTENT_ARTICLE_TABLE, $rater, $aj, $ep, $id, $ml;
+	global $CONTENT_ARTICLE_TABLE, $rater, $aj, $ep, $id;
 	extract($row);
 
 	$search = array("{e_BASE}", "{e_ADMIN}", "{e_IMAGE}", "{e_THEME}", "{e_PLUGIN}", "{e_FILE}", "{e_HANDLER}", "{e_LANGUAGEDIR}", "{e_DOCS}", "{e_DOCROOT}");
@@ -1081,26 +816,15 @@ function parse_content_article_table($row){
 	$user_name = $tmp[0];
 	$user_email = $tmp[1];
 }
-if($user_hideemail)
-{
+if($user_hideemail){
 	$CONTENT_ARTICLE_AUTHOR = ($user_name != "" ? "<a href='user.php?id.$content_author'>$user_name</a>" : "");
-}
-else
-{
+}else{
 	$CONTENT_ARTICLE_AUTHOR = ($user_name != "" ? "<a href='mailto:$user_email'>$user_name</a>" : "");
 }
 $datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
 $CONTENT_ARTICLE_DATESTAMP = ($datestamp != "" ? $datestamp : "");
 
-if(e_MLANG == 1)
-{
-	$ml -> e107_ml_Select("content", "content_id, content_summary", "content_id=$category", "default", false, "sql2");
-}
-else
-{
 	$sql2 -> db_Select("content", "content_id, content_summary", "content_id=$category");
-}
-
 list($content_id_, $content_summary_) = $sql2-> db_Fetch();
 
 $CONTENT_ARTICLE_CAT_ICON = ($content_summary_ ? "<a href='".e_SELF."?article.cat.$content_id_'><img src='".e_IMAGE."link_icons/".$content_summary_."' alt='' style='float:left; border:0' /></a>" : "");
@@ -1197,14 +921,7 @@ function parse_content_recent_table($row){
 	$sql = new db; $sql2 = new db;
 	$gen = new convert;
 
-	if(e_MLANG == 1)
-	{
-		$ml -> e107_ml_Select("content", "content_id, content_summary", "content_id=$category", "default", false, "sql2");
-	}
-	else
-	{
 		$sql2 -> db_Select("content", "content_id, content_summary", "content_id=$category");
-	}
 	$row = $sql2 -> db_Fetch(); extract($row);
 
 	// author

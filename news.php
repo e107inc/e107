@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2004-12-01 14:09:53 $
-|     $Author: streaky $
+|     $Revision: 1.14 $
+|     $Date: 2004-12-03 22:33:13 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -25,13 +25,6 @@ if($NEWSHEADER) {
 	exit;
 }
 $cacheString = 'news.php_'.e_QUERY;
-// ML
-if(e_MLANG == 1) {
-	require_once(e_HANDLER."multilang/ml_panel.php");
-	e107ml_panel("news");
-}
-// END ML
-
 if (Empty($pref['newsposts']) ? define("ITEMVIEW", 15) : define("ITEMVIEW", $pref['newsposts']));
 if (file_exists("install.php") && ADMIN){ echo "<div class='installe' style='text-align:center'><b>*** ".LAN_NEWS_3." ***</b><br />".LAN_NEWS_4."</div><br /><br />"; }
 
@@ -188,10 +181,7 @@ checkNewsCache($cacheString,TRUE,TRUE);
 
 // #### normal newsitems, rendered via render_newsitem(), the $query is changed above (no other changes made) ---------
 ob_start();
-// ML
-if (e_MLANG == 1) {
-	require_once(e_HANDLER."multilang/news1.php");
-} elseif (!$sql -> db_Select("news", "*", $query)) {
+if(!$sql -> db_Select("news", "*", $query)){
 	echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_462 : LAN_83)."</b></div><br /><br />";
 } else {
 	$sql2 = new db;
@@ -241,14 +231,9 @@ if (e_MLANG == 1) {
 // #### new: news archive ---------------------------------------------------------------------------------------------
 if ($action != "item" && $action != 'list') { // do not show the newsarchive on the news.php?item.X page (but only on the news mainpage)
 	$sql2b = new db;
-	require_once(e_HANDLER."multilang/mysql_queries.php");
-	if (!is_object($ml)){$ml = new e107_ml;}
-	$tmp_ok = 1;
 	if (!$sql2b -> db_Select("news", "*", $query2)) {
-		$tmp_ok = 0;
-	}
 
-	if($tmp_ok == 1) {
+        }else{
 		while(list($news2['news_id'], $news2['news_title'], $news2['data'], $news2['news_extended'], $news2['news_datestamp'], $news2['admin_id'], $news2_category, $news2['news_allow_comments'],  $news2['news_start'], $news2['news_end'], $news2['news_class'], $news2['news_rendertype']) = $sql2b -> db_Fetch()) {
 
 			if (check_class($news2['news_class'])) {

@@ -12,20 +12,17 @@
 |	GNU General Public License (http://gnu.org).	
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.6 $
-| $Date: 2004-12-01 14:41:39 $
-| $Author: streaky $ 
+| $Revision: 1.7 $
+| $Date: 2004-12-03 22:33:22 $
+| $Author: e107coders $ 
 +---------------------------------------------------------------+
 */
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 class news{
 	function submit_item($news){
-		// ML
-		global $pref, $ml, $tmp_lg, $ml;
-		// END ML
-		if(!is_object($tp)) $tp = new e_parse;
+		global $e107cache;
+			if(!is_object($tp)) $tp = new e_parse;
 		if(!is_object($sql)) $sql = new db;
-		if(e_MLANG == 1 && !is_object($ml)){ $sql = new e107_ml;}
 		extract($news);
 		if($news_id){
 			$news_title = $tp -> toDB($news_title,TRUE);
@@ -33,15 +30,9 @@ class news{
 			$news_extended = $tp -> toDB($news_extended,TRUE);
 			$vals = $update_datestamp ? "news_datestamp = ".time().", " : "";
 			$vals .= " news_title='$news_title', news_body='$news_body', news_extended='$news_extended', news_category='$cat_id', news_allow_comments='$news_allow_comments', news_start='$active_start', news_end='$active_end', news_class='$news_class', news_render_type='$news_rendertype' WHERE news_id='$news_id' ";
-			// ML
-			if(isset($_POST['list_lang'])){$tmp_lg = $_POST['list_lang'];}else{$tmp_lg = e_DBLANGUAGE;}
-      if(e_MLANG == 1 && $ml -> e107_ml_Update("news",$vals,FALSE,$tmp_lg)){
-				$message = LAN_NEWS_20.$tmp_lg;
-        $e107cache->clear("news.php");
-			} // END ML
-			else if($sql -> db_Update("news",$vals)){
+			if($sql -> db_Update("news",$vals)){
 				$message = LAN_NEWS_21;
-        $e107cache->clear("news.php");
+        		$e107cache->clear("news.php");
 			}else{
 				$message = LAN_NEWS_5;
 			}
@@ -49,13 +40,8 @@ class news{
 			$news_title = $tp -> toDB($news_title,TRUE);
 			$news_body = $tp -> toDB($data,TRUE);
 			$news_extended = $tp -> toDB($news_extended,TRUE);
-			// ML
-			if(e_MLANG == 1){
-				$message = LAN_NEWS_8;
-				$message .= $ml -> e107_ml_MultiInsert("news", "0, '$news_title', '$news_body', '$news_extended', ".time().", ".USERID.", $cat_id, $news_allow_comments, $active_start, $active_end, '$news_class', '$news_rendertype' ");
-			}
-			else if($sql -> db_Insert("news", "0, '$news_title', '$news_body', '$news_extended', ".time().", ".USERID.", $cat_id, $news_allow_comments, $active_start, $active_end, '$news_class', '$news_rendertype' ")){
-			// END ML
+			if($sql -> db_Insert("news", "0, '$news_title', '$news_body', '$news_extended', ".time().", ".USERID.", $cat_id, $news_allow_comments, $active_start, $active_end, '$news_class', '$news_rendertype' ")){
+		
 			 $message = LAN_NEWS_6;
              $e107cache->clear("news.php");
 			}else{
@@ -146,23 +132,17 @@ on
 		$info .= LAN_NEWS_14.$active_start.$active_end."<br />";
 		$info .= LAN_NEWS_15.strlen($news_body).LAN_NEWS_16.strlen($news_extended).LAN_NEWS_17."<br /><br /></div>";
 
-		if($comment_total)
-		{
+		if($comment_total){
 			
 			$sql -> db_Select("comments", "comment_datestamp", "comment_item_id='".$news['news_id']."' AND comment_type='0' ORDER BY comment_datestamp DESC LIMIT 0,1");
 			list($comments['comment_datestamp']) = $sql -> db_Fetch();
 			$latest_comment = $comments['comment_datestamp'];
-			if($latest_comment > USERLV )
-			{
+			if($latest_comment > USERLV )			{
 					$NEWIMAGE = IMAGE_new_small;
-			}
-			else
-			{
+			}else{
 					$NEWIMAGE = IMAGE_nonew_small;
 			}
-		}
-		else
-		{
+		}else{
 			$NEWIMAGE = IMAGE_nonew_small;
 		}
 		
@@ -257,7 +237,7 @@ function create_rss(){
                 # - scope                                        public
                 */
                 global $sql, $ml, $tp;
-								if(!is_object($tp)) $tp = new e_parse;
+				if(!is_object($tp)) $tp = new e_parse;
                 setlocale (LC_TIME, CORE_LC);
                 $pubdate = strftime("%a, %d %b %Y %I:%M:00 GMT", time());
                 $sitebutton = (strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", e_IMAGE).SITEBUTTON);
@@ -297,19 +277,10 @@ function create_rss(){
   ";
 
         $sql2 = new db;
-        // ML
-        if(e_MLANG==1){
-          $ml -> e107_ml_Select("news", "*", "news_class=0 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY news_datestamp DESC LIMIT 0, 10");
-        }else{// END ML
           $sql -> db_Select("news", "*", "news_class=0 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY news_datestamp DESC LIMIT 0, 10");
-        }while($row = $sql -> db_Fetch()){
+				while($row = $sql -> db_Fetch()){
                 extract($row);
-                // ML
-                if(e_MLANG==1){
-                  $ml -> e107_ml_Select("news_category", "*",  "category_id='$news_category' ", "default" , FALSE, "sql2");
-                }else{ // end(MLarray array)
                   $sql2 -> db_Select("news_category", "*",  "category_id='$news_category' ");
-                }
                 $row = $sql2 -> db_Fetch(); extract($row);
                 $sql2 -> db_Select("user", "user_name, user_email", "user_id=$news_author");
                 $row = $sql2 -> db_Fetch(); extract($row);
