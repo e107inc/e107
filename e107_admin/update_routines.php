@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-02-10 20:55:50 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.33 $
+|     $Date: 2005-02-11 00:48:01 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -248,7 +248,6 @@ function update_61x_to_700($type) {
 		// return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."generic");
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."news");
 		$fieldname = mysql_field_name($fields,15);
-	   print_r($fieldname);
 	 	return ($fieldname == "news_sticky") ? TRUE : FALSE;
 		/*if ($sql->db_Select("plugin", "plugin_path", "plugin_path='chatbox_menu'")) {
 			return TRUE;
