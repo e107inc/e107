@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-01-30 01:36:27 $
+|     $Revision: 1.17 $
+|     $Date: 2005-01-30 23:34:40 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -39,7 +39,7 @@ while (false !== ($file = readdir($handle))) {
 			if ($file2 == "plugin.php") {
 				include(e_PLUGIN.$file."/".$file2);
 				if (!$sql->db_Select("plugin", "*", "plugin_name='$eplug_name'")) {
-					if (!$eplug_prefs && !$eplug_table_names && !$eplug_user_prefs && !$eplug_sc && !$eplug_userclass && !$eplug_module) {
+					if (!$eplug_prefs && !$eplug_table_names && !$eplug_user_prefs && !$eplug_sc && !$eplug_userclass && !$eplug_module && !$eplug_bb && !$eplug_latest && !$eplug_status) {
 						// new plugin, assign entry in plugin table, install is not necessary so mark it as intalled
 						$sql->db_Insert("plugin", "0, '$eplug_name', '$eplug_version', '$eplug_folder', 1");
 					} else {
@@ -130,6 +130,11 @@ if (isset($_POST['confirm'])) {
 			$plugin->manage_plugin_prefs('remove', 'plug_sc', $eplug_folder, $eplug_sc);
 		}
 
+		if (is_array($eplug_bb))
+		{
+			$plugin->manage_plugin_prefs('remove', 'plug_bb', $eplug_folder, $eplug_bb);
+		}
+
 		if (is_array($eplug_user_prefs)) {
 			$sql = new db;
 			$sql->db_Select("core", " e107_value", " e107_name='user_entended'");
@@ -210,6 +215,10 @@ if ($action == 'install') {
 			$plugin->manage_plugin_prefs('add', 'plug_sc', $eplug_folder, $eplug_sc);
 		}
 		 
+		if (is_array($eplug_bb)) {
+			$plugin->manage_plugin_prefs('add', 'plug_bb', $eplug_folder, $eplug_bb);
+		}
+
 		if (is_array($eplug_user_prefs)) {
 			$sql = new db;
 			$sql->db_Select("core", " e107_value", " e107_name='user_entended'");
@@ -272,6 +281,16 @@ if ($action == 'upgrade') {
 	if (is_array($upgrade_remove_eplug_sc))
 	{
 		$plugin->manage_plugin_prefs('remove', 'plug_sc', $eplug_folder, $eplug_sc);
+	}
+
+	if (is_array($upgrade_add_eplug_bb))
+	{
+		$plugin->manage_plugin_prefs('add', 'plug_bb', $eplug_folder, $eplug_bb);
+	}
+
+	if (is_array($upgrade_remove_eplug_bb))
+	{
+		$plugin->manage_plugin_prefs('remove', 'plug_bb', $eplug_folder, $eplug_bb);
 	}
 
 	if (is_array($upgrade_add_prefs)) {
