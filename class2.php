@@ -26,7 +26,6 @@ ob_start ();
 $timing_start = explode(' ', microtime());
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
-
 if(!$mySQLserver){
         @include("e107_config.php");
         $a=0; $p="";
@@ -540,7 +539,7 @@ class textparse{
          return $text;
         }
 
-        function tpa($text, $mode="off", $referrer="", $highlight_search){
+        function tpa($text, $mode="off", $referrer="", $highlight_search=FALSE, $poster_id=""){
                 /*
                 # Post parse
                 # - parameter #1:                string $text, text to parse
@@ -550,6 +549,8 @@ class textparse{
                 */
                 global $pref;
                 global $referrer;
+                global $poster_userid;
+                $poster_userid=$poster_id;
                 $text = " ".$text;
                 if($pref['profanity_filter'] && $this->profan){
                         $text = eregi_replace($this->profan, $pref['profanity_replace'], $text);
@@ -693,26 +694,36 @@ class textparse{
 
 		function img_parse($matches)
 		{
-			global $referrer;
+			global $poster_userid,$pref;
 			if(preg_match("#\.php\?.*#",$matches[1]))
 			{
 				return "";
 			}
-			if(($pref['image_post'] && check_class($pref['image_post_class'])) || $referrer == "admin")
-			{
-				return "<img src='{$matches[1]} alt='' style='vertical-align:middle; border:0' />";
-			}
-			else if(!$pref['image_post_disabled_method'] && !ADMIN)
-			{
-				return "Image: $matches[1]";
-			}else if(!ADMIN)
-			{
-				return '[ image disabled ]';
-			}
-			else
-			{
+			if(!$poster_userid){
 				return "<img src='{$matches[1]}' alt='' style='vertical-align:middle; border:0' />";
 			}
+			else 
+			{
+				if($pref['image_post'])
+				{
+					if(!function_exists('e107_userGetuserclass'))
+					{
+						require_once(e_HANDLER.'user_func.php');
+					}
+					if(check_class($pref['image_post_class'],e107_userGetuserclass($poster_userid)))
+					{
+						return "<img src='{$matches[1]}' alt='' style='vertical-align:middle; border:0' />";
+					}
+				}
+				if($pref['image_post_disabled_method'])
+				{
+					return '[ image disabled ]';
+				}
+				else
+				{
+					return "Image: $matches[1]";
+				}
+			}		
 		}
         function formtpa($text, $mode="admin"){
                 global $sql, $pref;

@@ -335,7 +335,7 @@ if(USER){
 }
 
 $THREADDATESTAMP = "<a id='$thread_id'>".IMAGE_post."</a> ".$gen->convert_date($thread_datestamp, "forum");
-$POST = $aj -> tpa($thread_thread, "forum", "off", $highlight_search);
+$POST = $aj -> tpa($thread_thread, "forum", "off", $highlight_search,$post_author_id);
 if(ADMIN && $iphost){ $POST .= "<br />".$iphost; }
 $TOP = "<a href='".e_SELF."?".e_QUERY."#top'>".LAN_10."</a>";
 $FORUMJUMP = forumjump();
@@ -427,7 +427,7 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 		}
 
 		$THREADDATESTAMP = "<a id='$thread_id'>".IMAGE_post."</a> ".$gen->convert_date($thread_datestamp, "forum");
-		$POST = $aj -> tpa($thread_thread, "forum", "off", $highlight_search);
+		$POST = $aj -> tpa($thread_thread, "forum", "off", $highlight_search,$post_author_id);
 		if(ADMIN && $iphost){ $POST .= "<br />".$iphost; }
 
 		$forrep .= preg_replace("/\{(.*?)\}/e", '$\1', $FORUMREPLYSTYLE);
