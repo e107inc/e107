@@ -31,4 +31,35 @@ function clear_cache($query) {
 	return $e107cache->clear($query);
 }
 
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+class textparse {
+	function editparse($text, $mode = "off") {
+		global $tp;
+		return $tp->toForm($text);
+	}
+
+	function tpa($text, $mode, $referrer = '', $highlight_search = FALSE, $poster_id) {
+		global $tp;
+		return $tp->toHTML($text, TRUE, $mode, $poster_id);
+	}
+
+	function tpj($text) {
+		return $text;
+	}
+
+	function formtpa($text, $mode) {
+		global $tp;
+		$no_encode = ($mode == 'admin') ? TRUE :
+		FALSE;
+		return $tp->toDB($text, $no_encode);
+	}
+
+	function formtparev($text) {
+		global $tp;
+		return $tp->toFORM($text);
+	}
+
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+
 ?>
