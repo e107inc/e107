@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm_menu/pm\cjdss.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-10-29 16:09:00 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-05 10:13:09 $
+|     $Author: pholzmann $
 +----------------------------------------------------------------------------+
 */
 class pm {
@@ -196,11 +196,10 @@ class pm {
                 }
                 $ret.="</table></form>\n";
                 if($rcv_total > $max_per_page){
-                        ob_end_flush();
+                        //ob_end_flush();
                         ob_start();
                         $np -> nextprev(e_SELF,$start,$max_per_page,$rcv_total,"",$np_query);
-                        $ret .= ob_get_contents();
-                        ob_end_clean();
+                        $ret .= ob_get_clean();
                 }
                 return $ret;
         }
