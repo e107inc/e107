@@ -56,7 +56,7 @@ if(IsSet($_POST['updatesettings'])){
         // check prefs for required fields =================================.
     $signupval = explode(".",$pref['signup_options']);
     $signup_title = array(LAN_308,LAN_144,LAN_115,LAN_116,LAN_117,LAN_118,LAN_119,LAN_120,LAN_121,LAN_122);
-    $signup_name = array("realname","website","icq","aim","msn","birth_year","location","signature","image","timezone");
+    $signup_name = array("realname","website","icq","aim","msn","birth_year","location","signature","image","user_timezone");
 
         if($_POST['image'] && $size = getimagesize($_POST['image'])){
                 $avwidth = $size[0];
@@ -178,6 +178,8 @@ if(IsSet($_POST['updatesettings'])){
 
                 $text = "<div style='text-align:center'>".LAN_150."</div>";
                 $ns -> tablerender(LAN_151, $text);
+                require_once(FOOTERF);
+                exit;
         }
 }
 
