@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-03-11 03:11:55 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.11 $
+|     $Date: 2005-03-14 12:54:25 $
+|     $Author: asperon $
 +----------------------------------------------------------------------------+
 */
 	
@@ -196,35 +196,53 @@ if (isset($_POST['updatesettings']))
 		$_POST['aim'] = $tp->toDB($_POST['aim']);
 		$_POST['realname'] = $tp->toDB($_POST['realname']);
 		$_POST['customtitle'] = $tp->toDB($_POST['customtitle']);
-		$sql->db_Update("user", "user_password='$password', user_sess='$user_sess', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$birthday."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."', user_customtitle='".$_POST['customtitle']."' WHERE user_id='".$inp."' ");
-		if($ue_fields)
-		{
-			$sql->db_Update("user_extended", $ue_fields." WHERE user_extended_id = '{$inp}'");
-		}
-		 
-		// Update Userclass =======
-		if ($_POST['usrclass']) {
-			if(is_array($_POST['usrclass'])) {
-				if(count($_POST['usrclass'] == 1)) {
-					$nid = $_POST['usrclass'][0];
-				} else {
-					$nid = explode(',',array_dif($_POST['usrclass'],array('')));
-				}
-			} else {
-				$nid = $_POST['usrclass'];
+
+		$event_data=array();
+		foreach($_POST as $key => $value) {
+			if (($key!='password1') || ($key!='password2')) {
+				$event_data[$key] = $value;
 			}
-			$sql->db_Update("user", "user_class='$nid' WHERE user_id='".USERID."' ");
+		}
+
+		$ret = $e_event->trigger("preuserset", $event_data);
+
+		if ($ret=='') {
+			$sql->db_Update("user", "user_password='$password', user_sess='$user_sess', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$birthday."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."', user_customtitle='".$_POST['customtitle']."' WHERE user_id='".$inp."' ");
+			if($ue_fields)
+			{
+				$sql->db_Update("user_extended", $ue_fields." WHERE user_extended_id = '{$inp}'");
+			}
 			 
-		}
-		// =======================
+			// Update Userclass =======
+			if ($_POST['usrclass']) {
+				if(is_array($_POST['usrclass'])) {
+					if(count($_POST['usrclass'] == 1)) {
+						$nid = $_POST['usrclass'][0];
+					} else {
+						$nid = explode(',',array_dif($_POST['usrclass'],array('')));
+					}
+				} else {
+					$nid = $_POST['usrclass'];
+				}
+				$sql->db_Update("user", "user_class='$nid' WHERE user_id='".USERID."' ");
+				 
+			}
+			
+			$e_event->trigger("postuserset", $event_data);
+	
+			// =======================
+			 
+			if ($remflag) {
+				header("location:".e_ADMIN."users.php?main.$inp");
+				exit;
+			}
 		 
-		if ($remflag) {
-			header("location:".e_ADMIN."users.php?main.$inp");
-			exit;
+			$text = "<div style='text-align:center'>".LAN_150."</div>";
+			$ns->tablerender(LAN_151, $text);
+		} else {
+			$text = "<div style='text-align:center'>".$ret."</div>";
+			$ns->tablerender(LAN_151, $text);
 		}
-		 
-		$text = "<div style='text-align:center'>".LAN_150."</div>";
-		$ns->tablerender(LAN_151, $text);
 	}
 }
 	
