@@ -52,14 +52,30 @@ if(IsSet($_POST['replysubmit'])){
 			$cobj -> enter_comment($_POST['author_name'], $_POST['comment'], $table, $nid, $pid, $_POST['subject']);
 			clear_cache("comment.php?$table.$id");
 		}
-		if($table == "news" || $table == "poll"){
+		$plugin_redir = FALSE;
+		$handle=opendir(e_PLUGIN);
+		while(false !== ($file = readdir($handle))){
+				if($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)){
+						$plugin_handle=opendir(e_PLUGIN.$file."/");
+						while(false !== ($file2 = readdir($plugin_handle))){
+								if($file2 == "e_comment.php"){
+										require_once(e_PLUGIN.$file."/".$file2);
+										if($table == $e_plug_table){
+											$plugin_redir = TRUE;
+											break 2;
+										}
+								}
+						}
+				}
+		}
+		if($table == $e_plug_table){
+			header("location:".$location."");
+			exit;
+		}elseif($table == "news" || $table == "poll"){
 			header("location:".e_BASE."comment.php?comment.".$table.".".$nid."");
 			exit;
 		}elseif($table == "content"){
 			header("location:".e_BASE."content.php?".$_POST['content_type'].".".$nid."");
-			exit;
-		}elseif($table == "bugtrack"){
-			header("location:".e_PLUGIN."bugtracker/bugtracker.php");
 			exit;
 		}elseif($table == "download"){
 			header("location:".e_BASE."download.php?view.".$nid."");
