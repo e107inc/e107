@@ -35,7 +35,6 @@ if(IsSet($_POST['updateprefs'])){
 	$pref['admintheme'] = ($_POST['admintheme'] && $_POST['admintheme'] != "/" ? $_POST['admintheme'] : "leap of faith");
 	$pref['sitedisclaimer'] = $aj -> formtpa($_POST['sitedisclaimer']);
 	$pref['newsposts'] = $_POST['newsposts'];
-	$pref['flood_protect'] = $_POST['flood_protect'];
 	$pref['anon_post'] = $_POST['anon_post'];
 	$pref['user_reg'] = $_POST['user_reg'];
 	$pref['profanity_filter'] = $_POST['profanity_filter'];
@@ -47,8 +46,6 @@ if(IsSet($_POST['updateprefs'])){
 	$pref['forumdate'] = $aj -> formtpa($_POST['forumdate']);
 	$pref['sitelanguage'] = $_POST['sitelanguage'];
 	$pref['time_offset'] = $_POST['time_offset'];
-	$pref['flood_hits'] = $_POST['flood_hits'];
-	$pref['flood_time'] = $_POST['flood_time'];
 	$pref['user_reg_veri'] = $_POST['user_reg_veri'];
 	$pref['user_tracking'] = $_POST['user_tracking'];
 	$pref['cookie_name'] = ereg_replace("[^[:alpha:]]", "", $_POST['cookie_name']);
@@ -99,7 +96,6 @@ if($authlist){
 
 
 //added prefs since v2.0 ...
-$flood_protect = $pref['flood_protect'];
 $anon_post = $pref['anon_post'];
 $user_reg = $pref['user_reg'];
 $profanity_filter = $pref['profanity_filter'];
@@ -111,8 +107,6 @@ $longdate = $pref['longdate'];
 $forumdate = $pref['forumdate'];
 $sitelocale = $pref['sitelocale'];
 $time_offset = $pref['time_offset'];
-$flood_hits = $pref['flood_hits'];
-$flood_time = $pref['flood_time'];
 $user_reg_veri = $pref['user_reg_veri'];
 $user_tracking = $pref['user_tracking'];
 
@@ -479,31 +473,6 @@ $text .= "</select>
 <tr>
 <td colspan='2'>
 <div class='border'><div class='caption'>".PRFLAN_34."</div></div>
-</td>
-</tr>
-
-<tr>
-<td style='width:50%' class='forumheader3'>".PRFLAN_35.": </td>
-<td style='width:50%; text-align:right' class='forumheader3'>".
-($flood_protect ? "<input type='checkbox' name='flood_protect' value='1'  checked>" : "<input type='checkbox' name='flood_protect' value='1'>")."
-</td>
-</tr>
-
-<tr>
-<td style='width:50%' class='forumheader3'>".PRFLAN_36.": </td>
-<td style='width:50%; text-align:right' class='forumheader3'>
-<input class='tbox' type='text' name='flood_hits' size='10' value='$flood_hits' maxlength='4' />
-</td>
-</tr>
-
-</td>
-</tr>
-<tr>
-<td style='width:50%; vertical-align:top' class='forumheader3'>".PRFLAN_37.": </td>
-<td style='width:50%; text-align:right' class='forumheader3'>
-<input class='tbox' type='text' name='flood_time' size='10' value='$flood_time' maxlength='20' />
-<br />
-".PRFLAN_38." 
 </td>
 </tr>
 

@@ -18,14 +18,29 @@ if(!e_QUERY){
 	exit;
 }
 
-$tmp = explode(".", e_QUERY);
-if(!$tmp[1]){
-	$id = $tmp[0];
-	$type = "file";
+if(!is_numeric(e_QUERY)){
+	if($sql -> db_Select("download", "*", "download_url='".e_QUERY."'", TRUE)){
+		$row = $sql -> db_Fetch(); extract($row);
+		$type = "file";
+		$id = $download_id;
+	}else if(file_exists(e_FILE."downloads/".e_QUERY)){
+		header("location:".e_FILE."downloads/".e_QUERY);
+		exit;
+	}else if(strstr(e_QUERY, "http") || strstr(e_QUERY, "ftp")){
+		header("location:".e_QUERY);
+		exit;
+	}
 }else{
-	$table = $tmp[0];
-	$id = $tmp[1];
-	$type = "image";
+
+	$tmp = explode(".", e_QUERY);
+	if(!$tmp[1]){
+		$id = $tmp[0];
+		$type = "file";
+	}else{
+		$table = $tmp[0];
+		$id = $tmp[1];
+		$type = "image";
+	}
 }
 
 if($type == "file"){

@@ -19,7 +19,7 @@ function get_level($user_id, $user_forums, $user_comments, $user_chats, $user_vi
 
 	if($user_admin){
 		if($user_perms == "0"){
-			$data[0] = "<div class='spacer'>".IMAGE_rank_main_admin_image."</div>";
+			$data[0] = IMAGE_rank_main_admin_image."<br />";
 			return($data);
 		}else{
 			if(preg_match("/(^|\s)".preg_quote($user_name)."/", $forum_moderators) && getperms("A", $user_perms)){

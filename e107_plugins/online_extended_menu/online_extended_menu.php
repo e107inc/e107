@@ -39,7 +39,7 @@
 	$total_members = $sql -> db_Count("user");
 
 	if($total_members > 1){
-		$newest_member = $sql -> db_Select("user", "user_id, user_name", "ORDER BY user_join DESC LIMIT 0,1", "no_where");
+		$newest_member = $sql -> db_Select("user", "user_id, user_name", "user_ban='0' ORDER BY user_join DESC LIMIT 0,1");
 		$row = $sql -> db_Fetch(); extract($row);
 		$text .= "<br />".ONLINE_EL5.": ".$total_members."<br />".ONLINE_EL6.": <a href='".e_BASE."user.php?id.".$user_id."'>".$user_name."</a>";
 	}

@@ -127,11 +127,8 @@ while($row = $sql -> db_Fetch()){
 	$c++;
 }
 
-if(!$FORUMSTART){	// no style defined in theme.php - use default style ...
-	$FORUMSTART = "<div style='text-align:center'>\n<table style='width:98%' class='fborder'>\n<tr>\n<td  colspan='2' class='fcaption'>\n{BACKLINK}\n</td>\n</tr>\n<tr>\n<td class='forumheader' colspan='2'>\n<table cellspacing='0' cellpadding='0' style='width:100%'>\n<tr>\n<td class='smalltext'>\n{NEXTPREV}\n</td>\n<td style='text-align:right'>&nbsp;\n{TRACK}\n</td>\n</tr>\n</table>\n</td>\n</tr>\n<tr>\n<td style='width:80%; vertical-align:bottom'><br /><div class='captiontext'>&nbsp;{THREADNAME}</div><br />\n{MODERATORS}\n<div class='mediumtext'>\n{GOTOPAGES}\n</div>\n</td>\n<td style='width:20%; text-align:right'>\n{BUTTONS}\n</td>\n</tr>\n<tr>\n<td colspan='2' style='text-align:center'>\n{THREADSTATUS}\n<table style='width:100%' class='fborder'>\n<tr>\n<td style='width:20%; text-align:center' class='fcaption'>\n".LAN_402."\n</td>\n<td style='width:80%; text-align:center' class='fcaption'>\n".LAN_403."\n</td>\n</tr>\n";
-	$FORUMTHREADSTYLE = "<tr>\n<td class='forumheader' style='vertical-align:middle'>\n{NEWFLAG}\n{POSTER}\n</td>\n<td class='forumheader' style='vertical-align:middle'>\n<table cellspacing='0' cellpadding='0' style='width:100%'>\n<tr>\n<td class='smallblacktext'>\n{THREADDATESTAMP}\n</td>\n<td style='text-align:right'>\n{EDITIMG}{QUOTEIMG}\n</td>\n</tr>\n</table>\n</td>\n</tr>\n<tr>\n<td class='forumheader3' style='vertical-align:top'>\n{AVATAR}\n<span class='smalltext'>\n{LEVEL}\n{MEMBERID}\n{JOINED}\n{POSTS}\n</span>\n</td>\n<td class='forumheader3' style='vertical-align:top'>\n{POST}\n{SIGNATURE}\n</td>\n</tr>\n<tr>\n <td class='finfobar'>\n<span class='smallblacktext'>\n{TOP}\n</span>\n</td>\n<td class='finfobar' style='vertical-align:top'>\n<table cellspacing='0' cellpadding='0' style='width:100%'>\n<tr>\n<td>\n{PROFILEIMG}\n {EMAILIMG}\n {WEBSITEIMG}\n {PRIVMESSAGE}\n</td>\n<td style='text-align:right'>\n{MODOPTIONS}\n</td>\n</tr>\n</table>\n</td>\n</tr>\n<tr>\n<td colspan='2'>\n</td>\n</tr>\n";
-	$FORUMEND = "<tr><td colspan='2' class='forumheader3' style='text-align:center'>{QUICKREPLY}</td></tr></table>\n</td>\n</tr>\n<tr>\n<td style='width:80%; vertical-align:top'>\n<div class='mediumtext'>\n{GOTOPAGES}\n</div>\n{FORUMJUMP}\n</td>\n<td style='width:20%; text-align:right'>\n{BUTTONS}\n</td>\n</tr>\n</table>\n</div>";
-	$FORUMREPLYSTYLE = "";
+if(!$FORUMSTART){
+	require_once(e_BASE.$THEMES_DIRECTORY."templates/forum_viewtopic_template.php");
 }
 
 // get info for main thread -------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -185,12 +182,12 @@ if(strstr($post_author_name, chr(1))){
 }
 
 if(!$post_author_id || !$sql -> db_Select("user", "*", "user_id='".$post_author_id."' ")){	// guest
-	$POSTER = "<a name='$thread_id'>\n<b>".$post_author_name."</b>";
+	$POSTER = "<b>".$post_author_name."</b>";
 	$AVATAR = "<br /><span class='smallblacktext'>".LAN_194."</span>";
 }else{	// regged member - get member info
 	unset($iphost);
 	$row = $sql -> db_Fetch(); extract($row);
-	$POSTER = "<a name='$thread_id'>\n<a href='user.php?id.".$post_author_id."'><b>".$post_author_name."</b></a>";
+	$POSTER = "<a href='user.php?id.".$post_author_id."'><b>".$post_author_name."</b></a>";
 	if($user_image){
 		require_once(e_HANDLER."avatar_handler.php");
 		$AVATAR = "<div class='spacer'><img src='".avatar($user_image)."' alt='' /></div><br />";
@@ -239,7 +236,7 @@ if(USER){
 	}
 }
 
-$THREADDATESTAMP = IMAGE_post." ".$gen->convert_date($thread_datestamp, "forum");
+$THREADDATESTAMP = "<a id='anchor_$thread_id'>".IMAGE_post."</a> ".$gen->convert_date($thread_datestamp, "forum");
 $thread_thread = wrap($thread_thread);
 $POST = $aj -> tpa($thread_thread, "forum");
 if(ADMIN && $iphost){ $POST .= "<br />".$iphost; }
@@ -271,14 +268,14 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 		//$post_author_count = $sql -> db_Count("forum_t", "(*)", " WHERE thread_user='$thread_user' OR thread_user='$post_author_name' ");
 
 		if(!$post_author_id || !$sql2 -> db_Select("user", "*", "user_id='".$post_author_id."' ")){	// guest
-			$POSTER = "<a name='$thread_id'>\n<b>".$post_author_name."</b>";
+			$POSTER = "<b>".$post_author_name."</b>";
 			$AVATAR = "<br /><span class='smallblacktext'>".LAN_194."</span>";
 			unset($JOINED, $LOCATION, $WEBSITE, $POSTS, $VISITS, $MEMBERID, $SIGNATURE, $RPG, $LEVEL, $PRIVMESSAGE, $PROFILEIMG, $EMAILIMG, $WEBSITEIMG);
 		}else{	// regged member - get member info
 			unset($iphost);
 			
 			$row = $sql2 -> db_Fetch(); extract($row);
-			$POSTER = "<a name='$thread_id'>\n<a href='user.php?id.".$post_author_id."'><b>".$post_author_name."</b></a>";
+			$POSTER = "<a href='user.php?id.".$post_author_id."'><b>".$post_author_name."</b></a>";
 			if($user_image){
 				require_once(e_HANDLER."avatar_handler.php");
 				$AVATAR = "<div class='spacer'><img src='".avatar($user_image)."' alt='' /></div><br />";
@@ -323,7 +320,7 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 			}
 		}
 
-		$THREADDATESTAMP = IMAGE_post." ".$gen->convert_date($thread_datestamp, "forum");
+		$THREADDATESTAMP = "<a id='anchor_$thread_id'>".IMAGE_post."</a> ".$gen->convert_date($thread_datestamp, "forum");
 		$thread_thread = wrap($thread_thread);
 		$POST = $aj -> tpa($thread_thread, "forum");
 		if(ADMIN && $iphost){ $POST .= "<br />".$iphost; }
@@ -333,7 +330,7 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 }
 
 if((ANON || USER) && ($forum_class != e_UC_READONLY || MODERATOR) && !$T_ACTIVE ){
-	$QUICKREPLY = "<form action='".e_BASE."forum_post.php?rp.".e_QUERY."' method='post'>\n<p>\n".LAN_393.":<br /><textarea cols='60' rows='4' class='tbox' name='post'></textarea><br /><input type='submit' name='fpreview' value='".LAN_394."' class='button'> &nbsp;\n<input type='submit' name='reply' value='".LAN_395."' class='button'>\n<input type='hidden' name='thread_id' value='$thread_parent'>\n</p>\n</form>";
+	$QUICKREPLY = "<form action='".e_BASE."forum_post.php?rp.".e_QUERY."' method='post'>\n<p>\n".LAN_393.":<br /><textarea cols='60' rows='4' class='tbox' name='post'></textarea><br /><input type='submit' name='fpreview' value='".LAN_394."' class='button' /> &nbsp;\n<input type='submit' name='reply' value='".LAN_395."' class='button' />\n<input type='hidden' name='thread_id' value='$thread_parent' />\n</p>\n</form>";
 }
 
 $forend = preg_replace("/\{(.*?)\}/e", '$\1', $FORUMEND);
@@ -345,8 +342,6 @@ if($u_new != ""){ $sql -> db_Update("user", "user_viewed='$u_new' WHERE user_id=
 
 // end -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-
-require_once(FOOTERF);
 function forumjump(){
 	global $sql;
 	$sql -> db_Select("forum", "*", "forum_parent !=0 AND forum_class!='255' ");
@@ -456,5 +451,7 @@ function confirm_(mode, forum_id, thread_id, thread){
 	}
 }
 </script>";
+
+require_once(FOOTERF);
 
 ?>

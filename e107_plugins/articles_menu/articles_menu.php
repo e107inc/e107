@@ -63,7 +63,10 @@ if($cache = retrieve_cache("article_menu")){
 				}
 			}
 		}
-		$ns -> tablerender($menu_pref['article_caption'], $text);
+
+		$caption = (file_exists(THEME."images/article_menu.png") ? "<img src='".THEME."images/article_menu.png' alt='' style='vertical-align:middle' /> ".$menu_pref['article_caption'] : $menu_pref['article_caption']);
+
+		$ns -> tablerender($caption, $text);
 	}
 
 	if($pref['cachestatus']){

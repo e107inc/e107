@@ -66,7 +66,9 @@ if($cache = retrieve_cache("review_menu")){
 				}
 			}
 		}
-		$ns -> tablerender($menu_pref['reviews_caption'], $text);
+
+		$caption = (file_exists(THEME."images/review_menu.png") ? "<img src='".THEME."images/review_menu.png' alt='' style='vertical-align:middle' /> ".$menu_pref['reviews_caption'] : $menu_pref['reviews_caption']);
+		$ns -> tablerender($caption, $text);
 	}
 	if($pref['cachestatus']){
 		$aj = new textparse;

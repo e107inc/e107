@@ -98,9 +98,6 @@ require_once("footer.php");
 
 echo "<script type=\"text/javascript\">
 
-function addtext(str){
-	document.dataform.data.value += str;
-}
 function addtext2(str){
 	document.dlform.download_category_icon.value = str;
 }

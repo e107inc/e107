@@ -13,10 +13,8 @@
 +---------------------------------------------------------------+
 */
 require_once("../e107_config.php");
-
 mysql_connect($mySQLserver, $mySQLuser, $mySQLpassword);
 mysql_select_db($mySQLdefaultdb);
-
 
 echo "<?xml version='1.0' encoding='iso-8859-1' ?>\n";
 ?>
@@ -24,44 +22,20 @@ echo "<?xml version='1.0' encoding='iso-8859-1' ?>\n";
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title><e107 resetcore></title>
-<link rel="stylesheet" href="../e107_themes/e107/style.css" />
+<link rel="stylesheet" href="../e107_docs/style.css" />
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <meta http-equiv="content-style-type" content="text/css" />
 </head>
 <body>
 
-<div style="text-align:center">
-<table style="width:100%" cellspacing="0" cellpadding="0">
-<tr>
-<td style="width:66%; background-color:#E2E2E2; text-align:left'>
-<img src="../e107_themes/shared/logo.png" alt="Logo" />
-</td>
-<td style="background-color:#E2E2E2; text-align:right; vertical-align:bottom" class="smalltext">
-©Steve Dunstan 2002. See gpl.txt for licence details.
-</td>
-<tr> 
-<td colspan="2" style="background-color:#000; vertical-align: top;"></td>
-</tr>
-<tr>
-<tr> 
-<td colspan="2" style="background-color:#ccc; vertical-align: top;">
-<div class="mediumtext">&nbsp;resetcore</div>
-</td>
-</tr>
-<tr> 
-<td colspan="2" style="background-color:#000; vertical-align: top;"></td>
-</tr>
-<tr>
-<td colspan="2" style="vertical-align: top; text-align:center"><br />
-<table style="width:66%" class="fborder">
-<tr>
-<td class="installb">
-<br /><img src="../e107_themes/e107/images/installlogo.png" alt="" /><br /><span class="smalltext">php/mySQL website system</span><br />
-<br />
-<span class="installe">e107 Core Utility</span><br />
-<br /><br />
-<?php
+<div class='mainbox'>
 
+<a href="http://e107.org"><img src="../e107_images/logo.png" alt="Logo" style="border:0" /></a>
+<br /><br />
+<span class="smalltext">©Steve Dunstan 2002-2004. See gpl.txt for license details.</span><br /><br /><br />
+
+
+<?php
 
 if(IsSet($_POST['usubmit'])){
 
@@ -71,34 +45,27 @@ if(IsSet($_POST['usubmit'])){
 	if($result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_name='$a_name' AND user_password='$a_password' AND user_perms=0")){
 		if($row = mysql_fetch_array($result)){
 			extract($row);
-			
-			$admin_directory = "admin";
-			echo "<div style='text-align:center'>
-			<form method='post' action='".$_SERVER['PHP_SELF']."'>
-			<table style='width:80%'>
-			<tr>
-			<td style='width:30%' class='mediumtext'>Reset core to default values</td>
-			<td style='width:70%; text-align:right'><input type='checkbox' name='reset_core' value='1' /> <input class='button' type='submit' name='reset_core_sub' value='Tick box to confirm then click here to continue' />
-			</td>
-			</tr>";
 
-			if($result = mysql_query("SELECT * FROM ".$mySQLprefix."core WHERE e107_name='pref_backup' ")){
-				echo "<tr>
-				<td style='width:30%' class='mediumtext'> Restore core backup</td>
-				<td style='width:70%; text-align:right'>
-				<input type='checkbox' name='restore_core' value='1' /> <input class='button' type='submit' name='restore_core_sub' value='Tick box to confirm then click here to continue' />
-				<input type ='hidden' name='a_name' name='$a_name'><input type ='hidden' name='a_password' name='$a_password'>
-				</td></tr>";
-			}else{
-				echo "<tr>
-				<td colspan='2' style='text-align:center'>No ackup core was found. After resetting the core you should save a backup of your core by going to your admin section and clicking on the SQL utilities button.
-				</td>
-				</tr>";
-			}
-				
-			echo "</table>
+			$result = mysql_query("SELECT * FROM ".$mySQLprefix."core WHERE e107_name='pref_backup' ");
+			$bu_exist = ($row = mysql_fetch_array($result) ? TRUE : FALSE);
+			
+			$admin_directory = "e107_admin";
+
+			echo "<span class='headertext2'><b>Please select which method you want to use, then click the button to proceed ...</b></span><br /><br /><br /><br />
+			<div style='text-align:center'>
+			<form method='post' action='".$_SERVER['PHP_SELF']."'>
+			<input type='radio' name='mode' value='1'> <span class='headertext'>Manually edit core values</span><br />
+			<input type='radio' name='mode' value='2'> <span class='headertext'>Reset core to default values</span><br />".
+			($bu_exist ? "<input type='radio' name='mode' value='3'> <span class='headertext'>Restore core backup</span>" : " <span class='headertext'>[ No core backup found - unable to restore core ]</span>")."<br /><br /><input class='button' type='submit' name='reset_core_sub' value='Select method then click here to continue' />
+
+			<input type='hidden' name='a_name' value='$a_name' />
+			<input type='hidden' name='a_password' value='$a_password' />
+
 			</form>
 			</div>";
+			$END = TRUE;
+		}else{
+			$message = "<b>Administrator not found in database / incorrect password / insufficient permissions - aborting.</b><br />";
 			$END = TRUE;
 		}
 	}else{
@@ -108,12 +75,14 @@ if(IsSet($_POST['usubmit'])){
 }
 
 
-if(IsSet($_POST['reset_core_sub']) && $_POST['reset_core']){
+if(IsSet($_POST['reset_core_sub']) && $_POST['mode'] == 2){
 	$a_name = $_POST['a_name'];
 	$a_password = $_POST['a_password'];
-	if(!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_name='$a_name' AND user_password='$a_password' AND user_perms=0")){
+	if(!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_name='$a_name' AND user_password='$a_password' AND user_perms='0' ")){
 		exit;
 	}
+	$at = ($row = mysql_fetch_array($result) ? TRUE : FALSE);
+	if(!$at){ exit; }
 
 	$tmpr = substr(str_replace($_SERVER['DOCUMENT_ROOT'], "", $_SERVER['SCRIPT_FILENAME']), 1);
 	$root = "/".substr($tmpr, 0, strpos($tmpr, "/"))."/";
@@ -129,20 +98,18 @@ if(IsSet($_POST['reset_core_sub']) && $_POST['reset_core']){
 	define("e_SELF", "http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);
 	define("e_QUERY", eregi_replace("&|/?PHPSESSID.*", "", $_SERVER['QUERY_STRING']));
 	define('e_BASE',$link_prefix);
-
 	$e_path = (!strpos($_SERVER['SCRIPT_FILENAME'], ".php") ? $_SERVER['PATH_TRANSLATED'] : $_SERVER['SCRIPT_FILENAME']);
-
 	define("e_PATH", $e_path);
 	$pref['sitename'] = "e107 powered website";
-	$pref['siteurl'] = e_HTTP;
+	$pref['siteurl'] = $e_HTTP;
 	$pref['sitebutton'] = "button.png";
-	$pref['sitetag'] = "Website System RC";
+	$pref['sitetag'] = "e107 website system";
 	$pref['sitedescription'] = "";
-	$pref['siteadmin'] = "SiteAdmin";
-	$pref['siteadminemail'] = "SiteAdmin@".e_HTTP;
+	$pref['siteadmin'] = $_POST['admin_name'];
+	$pref['siteadminemail'] = $_POST['admin_email'];
 	$pref['sitetheme'] = "e107v4a";
 	$pref['admintheme'] = "e107v4a";
-	$pref['sitedisclaimer'] = "All trademarks are &copy; their respective owners, all other content is &copy; e107 powered website.<br />e107 is &copy; e107.org 2002/2003 and is released under the <a href='http://www.gnu.org/'>GNU GPL license</a>.";
+	$pref['sitedisclaimer'] = "All trademarks are &copy; their respective owners, all other content is &copy; e107 powered website.<br />e107 is &copy; e107.org 2002/2003 and is released under the <a href=&#39;http://www.gnu.org/&#39;>GNU GPL license</a>.";
 	$pref['newsposts'] = "10";
 	$pref['flood_protect'] = "";
 	$pref['flood_timeout'] = "5";
@@ -194,6 +161,7 @@ if(IsSet($_POST['reset_core_sub']) && $_POST['reset_core']){
 	$pref['displaythemeinfo'] = "1";
 	$pref['link_submit'] = "1";
 	$pref['link_submit_class'] = "0";
+	$pref['timezone'] = "GMT";
 
 	$tmp = addslashes(serialize($pref));
 
@@ -207,56 +175,113 @@ if(IsSet($_POST['reset_core_sub']) && $_POST['reset_core']){
 	}
 }
 
-if(IsSet($_POST['restore_core_sub']) && $_POST['restore_core']){
+
+if(IsSet($_POST['coreedit_sub'])){
+	$a_name = $_POST['a_name'];
+	$a_password = $_POST['a_password'];
+	if(!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_name='$a_name' AND user_password='$a_password' AND user_perms='0' ")){
+		exit;
+	}
+	$at = ($row = mysql_fetch_array($result) ? TRUE : FALSE);
+	if(!$at){ exit; }
+
+
+
+	while(list($key, $prefvalue) = each($_POST)){
+		$pref[$key] = formtpa($prefvalue);
+	}
+
+	$tmp = addslashes(serialize($pref));
+
+	@mysql_query("UPDATE ".$mySQLprefix."core set e107_value='$tmp' WHERE e107_name='pref' ");
+	$message = "Core settings successfully updated. <br /><br /><a href='../index.php'>Click here to continue</a>";
+	$END = TRUE;
+	
+
+
+}
+
+if(IsSet($_POST['reset_core_sub']) && $_POST['mode'] == 3){
+	$a_name = $_POST['a_name'];
+	$a_password = $_POST['a_password'];
+	if(!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_name='$a_name' AND user_password='$a_password' AND user_perms='0' ")){
+		exit;
+	}
+	$at = ($row = mysql_fetch_array($result) ? TRUE : FALSE);
+	if(!$at){ exit; }
+	
 	$result = @mysql_query("SELECT * FROM ".$mySQLprefix."core WHERE e107_name='pref_backup' ");
 	$row = @mysql_fetch_array($result);
-
 	$tmp = stripslashes($row['e107_value']);
 	$pref=unserialize($tmp);
 	if(!is_array($pref)){
 		$pref=unserialize($row['e107_value']);
 	}
-
-
 	@mysql_query("UPDATE ".$mySQLprefix."core set e107_value='".$row['e107_value']."' WHERE e107_name='pref' ");
-	$message = "Core restored. <br /><br /><a href='../index.php'>Click here to continue</a>";
+	$message = "Core backup successfully restored. <br /><br /><a href='../index.php'>Click here to continue</a>";
 	$END = TRUE;
 }
 
 
+if(IsSet($_POST['reset_core_sub']) && $_POST['mode'] == 1){
 
+	$a_name = $_POST['a_name'];
+	$a_password = $_POST['a_password'];
+	if(!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_name='$a_name' AND user_password='$a_password' AND user_perms=0")){
+		exit;
+	}
 
+	$result = @mysql_query("SELECT * FROM ".$mySQLprefix."core WHERE e107_name='pref' ");
+	$row = @mysql_fetch_array($result);
+	$tmp = stripslashes($row['e107_value']);
+	$pref=unserialize($tmp);
 
+	echo "
+	<span class='headertext2'><b>Edit your individual core items and click the button to save - <span class='headertext'>use this script with caution</span>.</b></span><br /><br />
+	<form method='post' action='".$_SERVER['PHP_SELF']."'>
+	<table style='width:95%'>\n";
 
-
-
-
-
-
+	while(list($key, $prefr) = each($pref)){ 
+		echo "<tr><td class='headertext' style='width:50%; text-align:right;'>$key&nbsp;&nbsp;</td>
+		<td style='width:50%'><input type='text' name='$key' value='$prefr' size='50' maxlength='100' /></td></tr>\n";
+	}
+	echo "
+	<tr>
+	<td colspan='2' style='text-align:center'><br /><input class='button' type='submit' name='coreedit_sub' value='Save Core Settings' /></td>
+	</tr>
+	</table>
+	<input type='hidden' name='a_name' value='".$_POST['a_name']."' />
+	<input type='hidden' name='a_password' value='".$_POST['a_password']."' />
+	</form>";
+	$END = TRUE;
+}
 
 if($message){
-	echo "<span class='installh'>".$message."</span>";
+	echo "<br /><br /><div style='text-align:center'><span class='headertext'>".$message."</span></div><br />";
 }
 
 if($END){
-	echo "</td></tr></table><br /></body></html>";
+	echo "<br /></div></body></html>";
 	exit;
 }
 
-echo "
-Please enter your main administrator name and password<br /><br />
+echo "<span class='headertext2'>
+This is the e107 resetcore utility. It allows you to completely rebuild your core if it becomes corrupt, or to restore a backup, or to change core settings manually. It won't affect your actual content (news posts, forum posts, articles etc).<br />
+<b>Only run this utility if your site is failing to load due to a critical core error, or if you need to change a setting and can't log into your admin area.</b></span><br /><br /><br /><br />
+
+<span class='headertext'>Please enter your main administrator username and password to continue ...</span><br /><br />
 <form method='post' action='".$_SERVER['PHP_SELF']."'>
 <table style='width:95%'>
 <tr>
-<td style='width:30%' class='mediumtext'>Main administrator name:</td>
-<td style='width:70%'>
-<input class='tbox' type='text' name='a_name' size='60' value='' maxlength='100' />
+<td style='width:50%; text-align:right;' class='mediumtext'>Main administrator name:</td>
+<td style='width:50%'>
+<input class='tbox' type='text' name='a_name' size='30' value='' maxlength='100' />
 </td>
 </tr>
 <tr>
-<td style='width:30%' class='mediumtext'>Main administrator Password:</td>
-<td style='width:70%'>
-<input class='tbox' type='password' name='a_password' size='60' value='' maxlength='100' />
+<td style='width:50%; text-align:right;' class='mediumtext'>Main administrator Password:</td>
+<td style='width:50%'>
+<input class='tbox' type='password' name='a_password' size='30' value='' maxlength='100' />
 </td>
 </tr>
 <tr>
@@ -267,6 +292,15 @@ Please enter your main administrator name and password<br /><br />
 </tr>
 </table>
 <br />
+</div>
 </body>
 </html>";
+
+function formtpa($text){
+	$search = array("\"", "'", "\\", '\"', "\'", "$");
+	$replace = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&#036;");
+	$text = str_replace($search, $replace, $text);
+	return $text;
+}
+
 ?>

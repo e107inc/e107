@@ -23,6 +23,20 @@ function sitelinks(){
 	# - scope					null
 	*/
 	global $pref,$ns;
+
+	if($cache = retrieve_cache("sitelinks")){
+		$aj = new textparse;
+		echo $aj -> formtparev($cache);
+		return;
+	}
+	ob_start();
+
+
+	if(LINKDISPLAY == 4){
+		require_once(e_PLUGIN."ypslide_menu/ypslide_menu.php");
+		return;
+	}
+
 	define(PRELINKTITLE, "");
 	define(POSTLINKTITLE, "");
 	$menu_count=0;
@@ -30,6 +44,7 @@ function sitelinks(){
 	if(defined("LINKCLASS")){
 		$linkadd = " class='".LINKCLASS."' ";
 	}
+	/*
 	if(ADMIN == TRUE){
 		$linkstart = (file_exists(e_IMAGE."link_icons/admin.png") ? preg_replace("/\<img.*\>/si", "", LINKSTART)." " : LINKSTART);
 		if(LINKDISPLAY != 3) {
@@ -38,6 +53,7 @@ function sitelinks(){
 			$menu_main .= $linkstart.(file_exists(e_IMAGE."link_icons/admin.png") ? "<img src='".e_IMAGE."link_icons/admin.png' alt='' style='vertical-align:middle' /> " : "")."<a".$linkadd." href=\"".e_ADMIN.(!$pref['adminstyle'] || $pref['adminstyle'] == "default" ? "admin.php" : $pref['adminstyle'].".php")."\">".LAN_502."</a>".LINKEND."\n";
 		}
 	}
+	*/
 	$sql = new db; $sql2 = new db;
 	$sql -> db_Select("links", "*", "link_category='1' && link_name NOT REGEXP('submenu') ORDER BY link_order ASC");
 	while($row = $sql -> db_Fetch()){
@@ -131,5 +147,13 @@ function sitelinks(){
 			echo $m;
 		}
 	}
+
+	if($pref['cachestatus']){
+		$aj = new textparse;
+		$cache = $aj -> formtpa(ob_get_contents(), "admin");
+		set_cache("sitelinks", $cache);
+	}
+
+
 }
 ?>

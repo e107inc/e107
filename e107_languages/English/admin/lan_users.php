@@ -48,19 +48,14 @@ define("USRLAN_45", "Yes");
 define("USRLAN_46", "No");
 define("USRLAN_47", "Maximum avatar width (in pixels)");
 define("USRLAN_48", "default is 70");
-
 define("USRLAN_51", "Update Options");
 define("USRLAN_52", "Member Options");
 define("USRLAN_53", "Allow members to upload a photograph?");
-
 define("USRLAN_54", "Click here to delete all un-activated users");
 define("USRLAN_55", "Prune");
 define("USRLAN_56", "Deleted");
 define("USRLAN_57", "Deleting un-activated members ...");
-
 define("USRLAN_58", "file uploads are disabled in php.ini");
-
-// ADD USER RELATED
 define("USRLAN_59", "Quick add user");
 define("USRLAN_60", "Add user");
 define("USRLAN_61", "Username");
@@ -73,8 +68,6 @@ define("USRLAN_67", "The two passwords do not match");
 define("USRLAN_68", "You left required field(s) blank");
 define("USRLAN_69", "That doesn't appear to be a valid email address");
 define("USRLAN_70", "User created");
-
-
 define("USRLAN_71", "Users Front Page");
 define("USRLAN_72", "Quick Add User");
 define("USRLAN_73", "Prune Users");
@@ -86,7 +79,6 @@ define("USRLAN_78", "User Name");
 define("USRLAN_79", "Status");
 define("USRLAN_80", "Info");
 define("USRLAN_81", "Edit");
-
 define("USRLAN_82", "Are you sure you want to delete this user?");
 define("USRLAN_83", "Extended field deleted");
 define("USRLAN_84", "There are");
@@ -94,11 +86,13 @@ define("USRLAN_85", "users who haven't activated their account - click below to 
 define("USRLAN_86", "User verified");
 define("USRLAN_87", "User settings updated");
 define("USRLAN_88", "User classes updated");
-
 define("USRLAN_89", "Go to page:");
 define("USRLAN_90", "Search Users");
-
 define("USRLAN_91", "Class");
 define("USRLAN_92", "Invalid characters in username");
+
+define("USRLAN_93", "Delete unverified users");
+define("USRLAN_94", "Delete signups if unverified after this amount of time - leave blank to not use this option");
+define("USRLAN_95", "minutes");
 
 ?>

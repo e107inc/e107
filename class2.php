@@ -24,8 +24,7 @@ $LANGUAGES_DIRECTORY = "e107_languages/";
 $HELP_DIRECTORY = "e107_docs/help/";
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//initialise
-//ob_start ("ob_gzhandler");
+//ob_start ("ob_gzhandler")
 ob_start ();
 $timing_start = explode(' ', microtime());
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
@@ -41,18 +40,19 @@ if(!$mySQLserver){
 	if(!defined("e_HTTP")){ header("Location:install.php"); exit; }
 }
 
+unset($link_prefix);
 $url_prefix=substr($_SERVER['PHP_SELF'],strlen(e_HTTP),strrpos($_SERVER['PHP_SELF'],"/")+1-strlen(e_HTTP));
 $tmp=explode("?",$url_prefix);
 $num_levels=substr_count($tmp[0],"/");
 for($i=1;$i<=$num_levels;$i++){ 
 	$link_prefix.="../";
 }
-if(strstr($_SERVER['QUERY_STRING'], "'") || strstr($_SERVER['QUERY_STRING'], ";")){ die("Access denied."); }
+if(strstr($_SERVER['QUERY_STRING'], "'") || strstr($_SERVER['QUERY_STRING'], ";") || strstr($_SERVER['QUERY_STRING'], "&")){ die("Access denied."); }
 if(preg_match("/\[(.*?)\].*?/i", $_SERVER['QUERY_STRING'], $matches)){
 define("e_MENU", $matches[1]);
-	define("e_QUERY", str_replace($matches[0], "", eregi_replace("(.?)([a-zA-Z]*\(.*\))(.*)", "\\1\\3", eregi_replace("&|/?PHPSESSID.*", "", $_SERVER['QUERY_STRING']))));
+	define("e_QUERY", str_replace($matches[0], "", eregi_replace("&|/?PHPSESSID.*", "", $_SERVER['QUERY_STRING'])));
 }else{
-	define("e_QUERY", eregi_replace("(.?)([a-zA-Z]*\(.*\))(.*)", "\\1\\3", eregi_replace("&|/?PHPSESSID.*", "", $_SERVER['QUERY_STRING'])));
+	define("e_QUERY", eregi_replace("&|/?PHPSESSID.*", "", $_SERVER['QUERY_STRING']));
 }
 if(strstr(e_MENU, "debug")){ error_reporting(E_ALL); }
 $_SERVER['QUERY_STRING'] = e_QUERY;
@@ -109,6 +109,7 @@ if(!is_array($pref)){
 		}					
 	}
 }
+
 if(!$pref['cookie_name']){ $pref['cookie_name'] = "e107cookie"; }
 //if($pref['user_tracking'] == "session"){ require_once(e_HANDLER."session_handler.php"); }	// if your server session handling is misconfigured uncomment this line and comment the next to use custom session handler
 if($pref['user_tracking'] == "session"){ session_start(); }
@@ -139,6 +140,11 @@ if($pref['frontpage'] && $pref['frontpage_type'] == "splash"){
 	}
 }
 
+if($pref['del_unv']){
+	$threshold = (time() - ($pref['del_unv']*60));
+	$sql -> db_Delete("user", "user_ban = 2 AND user_join<'$threshold' ");
+}
+
 init_session();
 online();
 
@@ -151,15 +157,6 @@ if($pref['membersonly_enabled'] && !USER && !strstr($fp, e_PAGE) && e_PAGE != e_
 }
 
 $sql -> db_Delete("tmp", "tmp_time < '".(time()-300)."' AND tmp_ip!='data' AND tmp_ip!='adminlog' AND tmp_ip!='submitted_link' AND tmp_ip!='var_store' ");
-
-if($pref['flood_protect']){
-	$sql -> db_Delete("flood", "flood_time+'".$pref['flood_time']."'<'".time()."' ");
-	$sql -> db_Insert("flood", " '".$_SERVER['PHP_SELF']."', '".time()."' ");
-	$hits = $sql -> db_Count("flood", "(*)", "WHERE flood_url = '".$_SERVER['PHP_SELF']."' ");
-	if($hits > $pref['flood_hits'] && $pref['flood_hits']){
-		die();
-	}
-}
 
 define("SITENAME", $pref['sitename']);
 define("SITEURL", (substr($pref['siteurl'], -1) == "/" ? $pref['siteurl'] : $pref['siteurl']."/"));
@@ -207,7 +204,7 @@ if(e_QUERY == "logout"){
 	exit;
 }
 ban();
-			
+
 define("TIMEOFFSET", $pref['time_offset']);
 define("FLOODTIME", $pref['flood_time']);
 define("FLOODHITS", $pref['flood_hits']);
@@ -252,6 +249,9 @@ define("FILE_UPLOADS", (ini_get('file_uploads') ? TRUE : FALSE));
 define("INIT", TRUE);
 
 define("e_ADMIN", $e_BASE.$ADMIN_DIRECTORY);
+
+
+//if(USERNAME != "jalist"){ header("location: index.html"); exit; }
 
 
 //require_once(e_HANDLER."IPB_int.php");
@@ -359,7 +359,7 @@ class textparse{
 		return $text;
 	}
 	
-	function tpa($text, $mode="off"){
+	function tpa($text, $mode="off", $referrer=""){
 		/*
 		# Post parse
 		# - parameter #1:		string $text, text to parse
@@ -404,7 +404,7 @@ class textparse{
 		$search[12] = "#\[u\](.*?)\[/u\]#si";
 		$replace[12] = '<u>\1</u>';
 		$search[13] = "#\[img\](.*?)\[/img\]#si";
-		if(($pref['image_post'] && check_class($pref['image_post_class'])) || $mode == "on"){
+		if(($pref['image_post'] && check_class($pref['image_post_class'])) || $referrer == "admin"){
 			$replace[13] = '<img src=\'\1\' alt=\'\' style=\'vertical-align:middle; border:0\' />';
 		}else if(!$pref['image_post_disabled_method'] && !ADMIN){
 			$replace[13] = 'Image: \1';
@@ -428,22 +428,47 @@ class textparse{
 		$replace[20] = '<span style=\'font-size:\1px\'>\2</span>';
 		$search[21] = "#\[edited\](.*?)\[/edited\]#si";
 		$replace[21] = '<span class=\'smallblacktext\'>[ \1 ]</span>';
-		$search[22] = "#onmouseover|onclick|onmousedown|onmouseup|ondblclick|onmouseout|onmousemove|onload|expression|background:url|javascript:document.write#si";
-		$replace[22] = ' <i>invalid<i> ';
-		$search[23] = "#\[br\]/si";
-		$replace[23] = '<br />';
+		$search[22] = "#\[br\]#si";
+		$replace[22] = '<br />';
 
-		if($pref['forum_attach'] && FILE_UPLOADS || ADMIN){
-			$search[24] = "#\[file=(.*?)\](.*?)\[/file\]#si";
-			$replace[24] = '<a href="\1"><img src="'.e_IMAGE.'generic/attach1.png" alt="" style="border:0; vertical-align:middle" /> \2</a>';
+		if($pref['forum_attach'] && FILE_UPLOADS || $referrer == "admin"){
+			$search[23] = "#\[file=(.*?)\](.*?)\[/file\]#si";
+			$replace[23] = '<a href="\1"><img src="'.e_IMAGE.'generic/attach1.png" alt="" style="border:0; vertical-align:middle" /> \2</a>';
 		}else{
-			$search[24] = "#\[file=(.*?)\](.*?)\[/file\]#si";
-			$replace[24] = '[ file attachment disabled ]';
+			$search[23] = "#\[file=(.*?)\](.*?)\[/file\]#si";
+			$replace[23] = '[ file attachment disabled ]';
 		}
 
-		$search[25] = "#\[quote\](.*?)\[/quote\]#si";
-		$replace[25] = '<i>"\1"</i>';
+		$search[24] = "#\[quote\](.*?)\[/quote\]#si";
+		$replace[24] = '<i>"\1"</i>';
 
+		if($referrer != "admin"){
+			$search[25] = "#script#si";
+			$replace[25] = 'scrï<i></i>pt';
+			$search[26] = "#document#si";
+			$replace[26] = 'döcu<i></i>ment';
+			$search[27] = "#expression#si";
+			$replace[27] = 'expres<i></i>sïon';
+			$search[28] = "#onmouseover#si";
+			$replace[28] = 'onmouse<i></i>over';
+			$search[29] = "#onclick#si";
+			$replace[29] = 'on<i></i>click';
+			$search[30] = "#onmousedown#si";
+			$replace[30] = 'onmouse<i></i>down';
+			$search[31] = "#onmouseup#si";
+			$replace[31] = 'onmouse<i></i>up';
+			$search[32] = "#ondblclick#si";
+			$replace[32] = 'on<i></i>dblclick';
+			$search[33] = "#onmouseout#si";
+			$replace[33] = 'onmouse<i></i>out';
+			$search[34] = "#onmousemove#si";
+			$replace[34] = 'onmouse<i></i>move';
+			$search[35] = "#onload#si";
+			$replace[35] = 'on<i></i>load';
+			$search[36] = "#background:url#si";
+			$replace[36] = 'background<i></i>:url';
+		}
+	
 		$text = preg_replace($search, $replace, $text);
 		if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
 		$search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;span", "&lt;/span");
@@ -587,17 +612,42 @@ function save_prefs($table = "core", $uid=USERID){
 	}
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-
 function online(){
-	global $e_BASE;
 	$page = (strstr(e_SELF, "forum_") ? e_SELF.".".e_QUERY : e_SELF);
-	$sql = new db;
+	global $sql;
 	$ip = getip();
 	$udata = (USER ? USERID.".".USERNAME : 0);
-	if($sql -> db_Delete("online", "online_timestamp < '".(time()-300)."' OR online_ip='$ip' OR (online_user_id!=0 AND online_user_id='$udata') ")){
+
+	if(!$sql -> db_Select("online", "*", "online_ip='$ip'")){
 		define("NOSPLASH", TRUE); // first visit to site
+		$sql -> db_Insert("online", " '".time()."', 'null', '".$udata."', '$ip', '".$page."', 1");
+	}else{
+		$row = $sql -> db_Fetch();
+		extract($row);
+
+		$online_pagecount++;
+
+		if($online_pagecount > 100){
+			$sql -> db_Insert("banlist", "'$ip', '0', 'Hit count exceeded ($online_pagecount requests within allotted time)' ");
+			exit;
+		}
+
+		if($online_pagecount == 90){
+			echo "<div style='text-align:center; font: 11px verdana, tahoma, arial, helvetica, sans-serif;'><b>Warning!</b><br /><br />The flood protection on this site has been activated and you are warned that if you carry on requesting pages you could be banned.<br /></div>";
+			exit;
+		}
+
+		if($online_timestamp < (time()-300)){
+			$query = "online_timestamp='".time()."', online_user_id='$udata', online_location='$page', online_pagecount=$online_pagecount WHERE online_ip='$ip'";
+		}else{
+			$query = "online_user_id='$udata', online_location='$page', online_pagecount=$online_pagecount WHERE online_ip='$ip' ";
+		}
+
+		$sql -> db_Update("online", $query);
+
 	}
-	$sql -> db_Insert("online", " '".time()."', 'null', '".$udata."', '$ip', '".$page."' ");
+
+	$sql -> db_Delete("online", "online_timestamp<".(time()-300)." ");
 
 	$total_online = $sql -> db_Count("online");
 	if($members_online = $sql -> db_Select("online", "*", "online_user_id!='0' ")){
@@ -605,12 +655,13 @@ function online(){
 			extract($row);
 			$oid = substr($online_user_id, 0, strpos($online_user_id, "."));
 			$oname = substr($online_user_id, (strpos($online_user_id, ".")+1));
-			$member_list .= "<a href='".$e_BASE."user.php?id.$oid'>$oname</a> ";
+			$member_list .= "<a href='".e_BASE."user.php?id.$oid'>$oname</a> ";
 		}
 	}
 	define("TOTAL_ONLINE", $total_online);
 	define("MEMBERS_ONLINE", $members_online);
 	define("GUESTS_ONLINE", $total_online - $members_online);
+	define("ON_PAGE", $sql -> db_Count("online", "(*)", "WHERE online_location='$page' "));
 	define("ON_PAGE", $sql -> db_Select("online", "*", "online_location='$page' "));
 	define("MEMBER_LIST", $member_list);
 }
@@ -710,12 +761,6 @@ function init_session(){
 		}
 		if($sql -> db_Select("user", "*", "user_id='$uid' AND md5(user_password)='$upw'")){
 			$result = $sql -> db_Fetch(); extract($result);
-
-		/*	echo "<pre>";
-			print_r($result);
-			echo "</pre>";
-			exit;	*/
-
 			define("USERID", $user_id); define("USERNAME", $user_name); define("USERURL", $user_website); define("USEREMAIL", $user_email); define("USER", TRUE); define("USERLV", $user_lastvisit); define("USERVIEWED", $user_viewed); define("USERCLASS", $user_class); define("USERREALM", $user_realm);
 			if($user_ban == 1){ exit; }
 			$user_pref = unserialize($user_prefs);

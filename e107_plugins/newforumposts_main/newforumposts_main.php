@@ -75,7 +75,7 @@ if($sql -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHE
 
 	$text = ($pref['nfp_layer'] ? "<div style='border : 0; padding : 4px; width : auto; height : ".$pref['nfp_layer_height']."px; overflow : auto; '>".$text."</div>" : $text);
 
-	$ns -> tablerender($pref['nfp_caption'], $text);
+	$ns -> tablerender($pref['nfp_caption'], $text, "nfp");
 
 }
 
