@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-27 19:52:49 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-29 00:12:17 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -233,6 +233,8 @@ function parse_thread($thread_info) {
 	 
 	$VIEWS = $thread_info['thread_views'];
 	$REPLIES = $thread_info['thread_total_replies'];
+
+//	$forum->showvar($thread_info);
 	 
 	if ($REPLIES) {
 		$lastpost_datestamp = $gen->convert_date($thread_info['thread_lastpost'], 'forum');
@@ -240,17 +242,17 @@ function parse_thread($thread_info) {
 		changes by jalist 27/01/2005:
 		if lastpost name has period(s) in it list/explode would fail
 		*/
-		$lastpost = explode(".", $thread_info['thread_lastuser']);
-		$count = count($lastpost);
-		$lastpost_id = $lastpost[0];
-		$lastpost_name = "";
-		if (count($lastpost) > 2) {
-			for($a = 1; $a <= ($count-1); $a++) {
-				$lastpost_name .= $lastpost[$a];
-			}
-		} else {
-			$lastpost_name = $lastpost[($count-1)];
-		}
+		list($lastpost_id, $lastpost_name) = explode('.', $thread_info['thread_lastuser'],2);
+//		$count = count($lastpost);
+//		$lastpost_id = $lastpost[0];
+//		$lastpost_name = "";
+//		if (count($lastpost) > 2) {
+//			for($a = 1; $a <= ($count-1); $a++) {
+//				$lastpost_name .= $lastpost[$a];
+//			}
+//		} else {
+//			$lastpost_name = $lastpost[($count-1)];
+//		}
 		if (!$lastpost_id) {
 			$LASTPOST = $lastpost_name.'<br />'.$lastpost_datestamp;
 		} else {
@@ -284,8 +286,8 @@ function parse_thread($thread_info) {
 		$ICON = IMAGE_closed_small;
 		$THREADTYPE = '';
 	}
-	 
-	 
+
+//	echo $thread_info['thread_id'].' = ['.$thread_info['thread_active'].']';
 	 
 	$thread_name = strip_tags($tp->toHTML($thread_info['thread_name']));
 	if (strtoupper($THREADTYPE) == strtoupper(substr($thread_name, 0, strlen($THREADTYPE)))) {
