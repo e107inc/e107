@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/forum_post.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2004-10-29 15:42:51 $
+|     $Revision: 1.5 $
+|     $Date: 2004-10-29 18:02:45 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -28,25 +28,29 @@ $gen = new convert;
 $aj = new textparse();
 $fp = new floodprotect;
 
-if(!e_QUERY){
-        header("Location:".e_BASE."forum.php");
-        exit;
-}else{
-        $tmp = explode(".", e_QUERY);
-        $action = $tmp[0]; $forum_id = $tmp[1]; $thread_id = $tmp[2];
+if(!e_QUERY)
+{
+	header("Location:".e_BASE."forum.php");
+	exit;
+}
+else
+{
+	$tmp = explode(".", e_QUERY);
+	$action = $tmp[0]; $forum_id = $tmp[1]; $thread_id = $tmp[2];
 }
 
 // check if user can post to this forum ...
-
-if($sql -> db_Select("forum", "*", "forum_id=$forum_id")){
-        $row = $sql -> db_Fetch(); extract($row);
-        if(!check_class($forum_class)){
-                $ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
-                require_once(FOOTERF);
-                exit;
-        }
+if($sql -> db_Select("forum", "*", "forum_id=$forum_id"))
+{
+	$row = $sql -> db_Fetch(); extract($row);
+	if(!check_class($forum_class))
+	{
+		require_once(HEADERF);
+		$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
+		require_once(FOOTERF);
+		exit;
+	}
 }
-
 //        end
 
 $ip = getip();
@@ -60,11 +64,13 @@ if($sql -> db_Select("tmp", "*",  "tmp_ip='$ip' ")){
         $sql -> db_Delete("tmp", "tmp_ip='$ip' ");
 }
 
-if(ANON == FALSE && USER == FALSE){
-        $text .= "<div style='text-align:center'>".LAN_45." <a href='".e_SIGNUP."'>".LAN_411."</a> ".LAN_412."</div>";
-        $ns -> tablerender(LAN_20, $text);
-        require_once(FOOTERF);
-        exit;
+if(ANON == FALSE && USER == FALSE)
+{
+	require_once(HEADERF);
+	$text .= "<div style='text-align:center'>".LAN_45." <a href='".e_SIGNUP."'>".LAN_411."</a> ".LAN_412."</div>";
+	$ns -> tablerender(LAN_20, $text);
+	require_once(FOOTERF);
+	exit;
 }
 
 $sql -> db_Select("forum", "*", "forum_id='".$forum_id."' ");
