@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.12 $
-|		$Date: 2005-02-09 22:47:55 $
+|		$Revision: 1.13 $
+|		$Date: 2005-02-10 23:03:35 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -557,22 +557,7 @@ require_once(e_ADMIN."footer.php");
 function headerjs(){
 	global $tp;
 	$script = "<script type=\"text/javascript\">
-	function addtext2(sc){
-		document.getElementById('dataform').cat_icon.value = sc;
-	}
-/*
-	function confirm_(mode, content_heading, content_id){
-			if(mode == 'cat'){
-					return confirm(\"".$tp->toJS(CONTENT_ADMIN_JS_LAN_0)." [".CONTENT_ADMIN_JS_LAN_6." \" + content_id + \": \" + content_heading + \"]\");
-			}
-			if(mode == 'sa'){
-					return confirm(\"".$tp->toJS(CONTENT_ADMIN_JS_LAN_0)." [".CONTENT_ADMIN_JS_LAN_6." \" + content_id + \": \" + content_heading + \"]\");
-			}
-			if(mode == 'content'){
-					return confirm(\"".$tp->toJS(CONTENT_ADMIN_JS_LAN_1)." [".CONTENT_ADMIN_JS_LAN_6." \" + content_id + \": \" + content_heading + \"]\");
-			}
-	}
-*/
+
 	function confirm2_(mode, number, name){
 		if(mode == 'image'){
 			var x=confirm(\"".CONTENT_ADMIN_JS_LAN_2." [".CONTENT_ADMIN_JS_LAN_4.": \" + name + \"] \");
