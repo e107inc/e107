@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search_class.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-02-13 09:02:44 $
+|     $Revision: 1.13 $
+|     $Date: 2005-02-13 20:17:02 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ class e_search {
 	
 	function e_search() {
 		global $pref;
-		$pref['search_sort'] = 'mysql';
+		$pref['search_sort'] = 'php';
 		save_prefs();
 		if (!isset($pref['search_chars'])) {
 			$pref['search_chars'] = 150;
@@ -100,7 +100,7 @@ class e_search {
 										$weight += $weights[$x];
 									}
 								}
-								if (!$endcrop || !$title) {
+								if (!$endcrop && !$title) {
 									$this -> parsesearch_crop();
 									$endcrop = TRUE;
 								}
@@ -114,7 +114,7 @@ class e_search {
 					}
 					if ($title) {
 						$this -> text = "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <b><a href='".$res['link']."'>".$this -> text."</a></b><br />";
-					} else if (!$endcrop) {
+					} else if (!$endcrop && !$title) {
 						$this -> parsesearch_crop();
 					}
 					$output .= $this -> text;
