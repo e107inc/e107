@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/templates/newsfeed_menu_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-03-02 09:06:47 $
+|     $Revision: 1.3 $
+|     $Date: 2005-03-02 09:14:44 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -30,7 +30,7 @@ $NEWSFEED_MENU = "
 
 $NEWSFEED_MENU_END = "
 
-<div style='text-align: right;'><span class='smalltext'>{FEEDLASTBUILDDATE}<br />{LINKTOMAIN}</div>\n";
+<div style='text-align: right;'><span class='smalltext'>{FEEDLASTBUILDDATE}<br />{LINKTOMAIN}</div>\n<hr />";
 
 
 ?>

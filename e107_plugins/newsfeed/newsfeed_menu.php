@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/newsfeed_menu.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-03-02 09:06:47 $
+|     $Revision: 1.4 $
+|     $Date: 2005-03-02 09:14:44 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -48,7 +48,7 @@ if ($feeds = $sql -> db_Select("newsfeed", "*", "newsfeed_active=1 OR newsfeed_a
 		$FEEDDESCRIPTION = $newsfeed_description;
 		if($newsfeed_image == "default")
 		{
-			if($file = fopen ($dataArray['image'], "r"))
+			if($file = fopen ($rss -> image['url'], "r"))
 			{
 				/* remote image exists - use it! */
 				$FEEDIMAGE = "<a href='".$rss -> image['link']."' rel='external'><img src='".$rss -> image['url']."' alt='".$rss -> image['title']."' style='border: 0; vertical-align: middle;' /></a>";
