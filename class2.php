@@ -301,7 +301,7 @@ function e107_parse($text){
                 preg_match_all($parser_regexp,$text,$matches,PREG_SET_ORDER);
                 for ($i=0; $i< count($matches); $i++) {
                         @require_once(e_PLUGIN.$parser_name.'/parser.php');
-                        if(function_exists($plugin_name.'_parse')) {
+                        if(function_exists($parser_name.'_parse')) {
                                 $newtext=call_user_func($parser_name.'_parse',$matches[$i]);
                                 $text = str_replace($matches[$i][0],$newtext,$text);
                         }
