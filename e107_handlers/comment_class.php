@@ -226,7 +226,7 @@ class comment{
 			case "your_comment_type"; $type = your_type_id; break;
 			****************************************/
 		}
-		if(empty($type)){
+		if(!Isset($type)){
 			$type = $table;
 		}
 		
