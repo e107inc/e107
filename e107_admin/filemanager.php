@@ -24,7 +24,7 @@ $choice .= e_FILE;
 $admin_choice=$_POST['admin_choice'];
 
 if($admin_choice=="Custom" && getperms("I")){
-	$choice="../e107_plugins/custom/";
+	$choice= e_PLUGIN."custom/";
 }
 
 $path = str_replace("../", "", (e_QUERY ? e_QUERY : $choice));
