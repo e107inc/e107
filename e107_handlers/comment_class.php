@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-01-28 17:57:23 $
+|     $Revision: 1.11 $
+|     $Date: 2005-02-03 10:41:21 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -152,7 +152,7 @@ class comment {
 		}
 		 
 		$search[4] = "/\{COMMENT\}(.*?)/si";
-		$replace[4] = ($comment_blocked ? LAN_0 : $tp->toHTML($comment_comment, TRUE));
+		$replace[4] = ($comment_blocked ? LAN_0 : $tp->toHTML($comment_comment, TRUE, null, null, 75));
 		 
 		$search[5] = "/\{SIGNATURE\}(.*?)/si";
 		if ($user_signature) {
