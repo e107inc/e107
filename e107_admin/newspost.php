@@ -84,16 +84,16 @@ if(IsSet($_POST['submit'])){
 
 if(IsSet($_POST['create_category'])){
         if($_POST['category_name']){
-				if(empty($_POST['category_button'])){						
-					$handle=opendir(e_IMAGE."newsicons");
-					while ($file = readdir($handle)){
-							if($file != "." && $file != ".." && $file != "/" && $file != "null.txt" && $file != "CVS"){
-									$iconlist[] = $file;
-							}
-					}
-					closedir($handle);
-					$_POST['category_button'] = $iconlist[0];
-				}
+                                if(empty($_POST['category_button'])){
+                                        $handle=opendir(e_IMAGE."newsicons");
+                                        while ($file = readdir($handle)){
+                                                        if($file != "." && $file != ".." && $file != "/" && $file != "null.txt" && $file != "CVS"){
+                                                                        $iconlist[] = $file;
+                                                        }
+                                        }
+                                        closedir($handle);
+                                        $_POST['category_button'] = $iconlist[0];
+                                }
                 $_POST['category_name'] = $aj -> formtpa($_POST['category_name'], "admin");
                 $sql -> db_Insert("news_category", " '0', '".$_POST['category_name']."', '".$_POST['category_button']."'");
                 $newspost -> show_message(NWSLAN_35);
@@ -102,7 +102,7 @@ if(IsSet($_POST['create_category'])){
 
 if(IsSet($_POST['update_category'])){
         if($_POST['category_name']){
-				$category_button = ($_POST['category_button'] ? $_POST['category_button'] : 1);
+                                $category_button = ($_POST['category_button'] ? $_POST['category_button'] : 1);
                 $_POST['category_name'] = $aj -> formtpa($_POST['category_name'], "admin");
                 $sql -> db_Update("news_category", "category_name='".$_POST['category_name']."', category_icon='".$category_button."' WHERE category_id='".$_POST['category_id']."'");
                 $newspost -> show_message(NWSLAN_36);
@@ -236,8 +236,8 @@ class newspost{
                                 <td style='width:5%' class='forumheader3'>$news_id</td>
                                 <td style='width:75%' class='forumheader3'><a href='".e_BASE."comment.php?comment.news.$news_id'>".($news_title ? $aj -> tpa($news_title) : "[".NWSLAN_42."]")."</a></td>
                                 <td style='width:20%; text-align:center' class='forumheader3'>
-                                ".$rs -> form_button("submit", "main_edit", NWSLAN_7, "onClick=\"document.location='".e_SELF."?create.edit.$news_id'\"")."
-                                ".$rs -> form_button("submit", "main_delete", NWSLAN_8, "onClick=\"confirm_('create', $news_id)\"")."
+                                ".$rs -> form_button("submit", "main_edit_{$news_id}", NWSLAN_7, "onclick=\"document.location='".e_SELF."?create.edit.$news_id'\"")."
+                                ".$rs -> form_button("submit", "main_delete_{$news_id}", NWSLAN_8, "onclick=\"confirm_('create', $news_id)\"")."
                                 </td>
                                 </tr>";
                         }
@@ -659,8 +659,8 @@ class newspost{
                                 <td style='width:5%; text-align:center' class='forumheader3'><img src='$icon' alt='' style='vertical-align:middle' /></td>
                                 <td style='width:75%' class='forumheader3'>$category_name</td>
                                 <td style='width:20%; text-align:center' class='forumheader3'>
-                                ".$rs -> form_button("submit", "category_edit", NWSLAN_7, "onClick=\"document.location='".e_SELF."?cat.edit.$category_id'\"")."
-                                ".$rs -> form_button("submit", "category_delete", NWSLAN_8, "onClick=\"confirm_('cat', '$category_id');\"")."
+                                ".$rs -> form_button("submit", "category_edit_{$category_id}", NWSLAN_7, "onclick=\"document.location='".e_SELF."?cat.edit.$category_id'\"")."
+                                ".$rs -> form_button("submit", "category_delete_{$category_id}", NWSLAN_8, "onclick=\"confirm_('cat', '$category_id');\"")."
                                 </td>
                                 </tr>\n";
                         }
@@ -699,12 +699,12 @@ class newspost{
                 <td class='forumheader3' style='width:70%'>
                 ".$rs -> form_text("category_button", 60, $category_icon, 100)."
                 <br />
-                <input class='button' type ='button' style=''width: 35px'; cursor:hand' size='30' value='".NWSLAN_54."' onClick='expandit(this)' />
+                <input class='button' type ='button' style='cursor:hand' size='30' value='".NWSLAN_54."' onclick='expandit(this)' />
                 <div style='display:none'>";
                 while(list($key, $icon) = each($iconlist)){
-                        $text .= "<a href='javascript:addtext3(\"$icon\")'><img src='".e_IMAGE."newsicons/".$icon."' style='border:0' alt='' /></a> ";
+                        $text .= "<a href='javascript:addtext3(\"$icon\")'><img src='".e_IMAGE."newsicons/".$icon."' style='border:0' alt='' /></a>\n ";
                 }
-                $text .= "</td>
+                $text .= "</div></td>
                 </tr>
 
                 <tr><td colspan='2' style='text-align:center' class='forumheader'>";
@@ -831,8 +831,8 @@ class newspost{
                                 $text .=" [ ".NWSLAN_104." $submitnews_name on ".date("D dS M y, g:ia",$submitnews_datestamp)."]<br />".$aj -> tpa($submitnews_item)."</td>
                                 <td style='width:25%; text-align:right; vertical-align:top' class='forumheader3'>";
                                 $buttext = ($submitnews_auth == 0)? NWSLAN_58 : NWSLAN_103;
-                                $text .= $rs -> form_button("submit", "category_edit", $buttext, "onClick=\"document.location='".e_SELF."?create.sn.$submitnews_id'\"")."
-                                ".$rs -> form_button("submit", "category_delete", NWSLAN_8, "onClick=\"confirm_('sn', $submitnews_id);\"")."
+                                $text .= $rs -> form_button("submit", "category_edit_{$submitnews_id}", $buttext, "onclick=\"document.location='".e_SELF."?create.sn.$submitnews_id'\"")."
+                                ".$rs -> form_button("submit", "category_delete_{$submitnews_id}", NWSLAN_8, "onclick=\"confirm_('sn', $submitnews_id);\"")."
                                 </td>
                                 </tr>\n";
                         }

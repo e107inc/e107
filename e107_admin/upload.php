@@ -39,24 +39,24 @@ if($action == "news"){
 
 if($action == "dl"){
 
-	$id = str_replace("%20", " ", $id);
+        $id = str_replace("%20", " ", $id);
 
-	if(preg_match("/Binary\s(.*?)\/.*/", $id, $result)){
-		$bid = $result[1];
-		$result = @mysql_query("SELECT * FROM ".MPREFIX."rbinary WHERE binary_id='$bid' ");
-		$binary_data = @mysql_result($result, 0, "binary_data");
-		$binary_filetype = @mysql_result($result, 0, "binary_filetype");
-		$binary_name = @mysql_result($result, 0, "binary_name");
-		header("Content-type: ".$binary_filetype);
-		header("Content-length: ".$download_filesize);
-		header("Content-Disposition: attachment; filename=".$binary_name);
-		header("Content-Description: PHP Generated Data");
-		echo $binary_data;
-		exit;
-	}else{
-		header("location:".e_FILE."public/".str_replace("dl.", "", e_QUERY));
-		exit;
-	}
+        if(preg_match("/Binary\s(.*?)\/.*/", $id, $result)){
+                $bid = $result[1];
+                $result = @mysql_query("SELECT * FROM ".MPREFIX."rbinary WHERE binary_id='$bid' ");
+                $binary_data = @mysql_result($result, 0, "binary_data");
+                $binary_filetype = @mysql_result($result, 0, "binary_filetype");
+                $binary_name = @mysql_result($result, 0, "binary_name");
+                header("Content-type: ".$binary_filetype);
+                header("Content-length: ".$download_filesize);
+                header("Content-Disposition: attachment; filename=".$binary_name);
+                header("Content-Description: PHP Generated Data");
+                echo $binary_data;
+                exit;
+        }else{
+                header("location:".e_FILE."public/".str_replace("dl.", "", e_QUERY));
+                exit;
+        }
 }
 
 require_once("auth.php");
@@ -90,7 +90,7 @@ if(IsSet($message)){
 }
 
 if(!FILE_UPLOADS){
-	message_handler("ADMIN_MESSAGE", UPLLAN_41);
+        message_handler("ADMIN_MESSAGE", UPLLAN_41);
 }
 
 
@@ -214,9 +214,9 @@ if(!$active_uploads = $sql -> db_Select("upload", "*", "upload_active=0")){
                 <td style='width:20%' class='forumheader3'><a href='".e_SELF."?view.".$upload_id."'>".$upload_name ."</a></td>
                 <td style='width:20%' class='forumheader3'>".$upload_file ."</td>
                 <td style='width:18px' class='forumheader3'>
-                		<a href='".e_SELF."?dlm.$upload_id'><img src='".$imgd."filemanager/exe.png' alt='".UPLAN_COPYTODLS."' title='".UPLAN_COPYTODLS."' style='border:0' /></a><br />
-                		<a href='".e_SELF."?news.$upload_id'><img src='".$imgd."filemanager/htm.png' alt='".UPLLAN_16."' title='".UPLLAN_16."' style='border:0' /></a><br />
-                		<a href='".e_SELF."?dis.$upload_id'><img src='".$imgd."filemanager/del.png' alt='".UPLLAN_17."' title='".UPLLAN_17."' style='border:0' /></a>
+                                <a href='".e_SELF."?dlm.$upload_id'><img src='".$imgd."filemanager/exe.png' alt='".UPLAN_COPYTODLS."' title='".UPLAN_COPYTODLS."' style='border:0' /></a><br />
+                                <a href='".e_SELF."?news.$upload_id'><img src='".$imgd."filemanager/htm.png' alt='".UPLLAN_16."' title='".UPLLAN_16."' style='border:0' /></a><br />
+                                <a href='".e_SELF."?dis.$upload_id'><img src='".$imgd."filemanager/del.png' alt='".UPLLAN_17."' title='".UPLLAN_17."' style='border:0' /></a>
                 </td>
                 </tr>";
         }
@@ -231,7 +231,7 @@ $ns -> tablerender(UPLLAN_43, $text);
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>
 <table style='width:85%' class='fborder'>
-
+<tr>
 <td style='width:50%' class='forumheader3'>".UPLLAN_25."<br />
 <span class='smalltext'>".UPLLAN_26."</span></td>
 <td style='width:50%' class='forumheader3'>".
@@ -239,7 +239,7 @@ $text = "<div style='text-align:center'>
 </td>
 </tr>
 
-
+<tr>
 <td style='width:50%' class='forumheader3'>".UPLLAN_29."<br />
 <span class='smalltext'>".UPLLAN_30."</span></td>
 <td style='width:50%' class='forumheader3'>".

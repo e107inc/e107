@@ -108,8 +108,8 @@ if(!$content_total = $sql -> db_Select("content", "*", "content_type='254' OR co
                 $text .= "<tr><td style='width:5%; text-align:center' class='forumheader3'>$content_id</td>
                 <td style='width:65%' class='forumheader3'>$content_title</td>
                 <td style='width:30%; text-align:center' class='forumheader3'>
-                ".$rs -> form_button("submit", "main_edit_{$content_id}", CNTLAN_6, "onClick=\"document.location='".e_SELF."?edit.$content_id'\"")."
-                ".$rs -> form_button("submit", "main_delete_{$content_id}", CNTLAN_7, "onClick=\"confirm_($content_id)\"")."
+                ".$rs -> form_button("submit", "main_edit_{$content_id}", CNTLAN_6, "onclick=\"document.location='".e_SELF."?edit.$content_id'\"")."
+                ".$rs -> form_button("submit", "main_delete_{$content_id}", CNTLAN_7, "onclick=\"confirm_($content_id)\"")."
 
                 </td>\n</tr>";
         }

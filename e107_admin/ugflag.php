@@ -1,15 +1,15 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system
-|	/admin/ugflag.php
+|        e107 website system
+|        /admin/ugflag.php
 |
-|	©Steve Dunstan 2001-2002
-|	http://e107.org
-|	jalist@e107.org
+|        ©Steve Dunstan 2001-2002
+|        http://e107.org
+|        jalist@e107.org
 |
-|	Released under the terms and conditions of the
-|	GNU General Public License (http://gnu.org).
+|        Released under the terms and conditions of the
+|        GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -17,18 +17,18 @@ if(!getperms("9")){ header("location:".e_BASE."index.php"); exit;}
 require_once(e_HANDLER."ren_help.php");
 
 if(IsSet($_POST['updatesettings'])){
-	$aj = new textparse;
-	$pref['maintainance_flag'] = $_POST['maintainance_flag'];
-	$pref['maintainance_text'] = $aj -> formtpa($_POST['maintainance_text']);
-	save_prefs();
-	header("location:".e_SELF."?u");
-	exit;
+        $aj = new textparse;
+        $pref['maintainance_flag'] = $_POST['maintainance_flag'];
+        $pref['maintainance_text'] = $aj -> formtpa($_POST['maintainance_text']);
+        save_prefs();
+        header("location:".e_SELF."?u");
+        exit;
 }
 
 require_once("auth.php");
 
 if(e_QUERY == "u"){
-	$ns -> tablerender("", "<div style='text-align:center'><b>".UGFLAN_1.".</b></div>");
+        $ns -> tablerender("", "<div style='text-align:center'><b>".UGFLAN_1.".</b></div>");
 }
 
 $maintainance_flag = $pref['maintainance_flag'];
@@ -42,9 +42,9 @@ $text = "<div style='text-align:center'>
 
 
 if($maintainance_flag == 1){
-	$text .= "<input type='checkbox' name='maintainance_flag' value='1'  checked='checked' />";
+        $text .= "<input type='checkbox' name='maintainance_flag' value='1'  checked='checked' />";
 }else{
-	$text .= "<input type='checkbox' name='maintainance_flag' value='1'>";
+        $text .= "<input type='checkbox' name='maintainance_flag' value='1' />";
 }
 
 $text .= "</td>
@@ -57,14 +57,14 @@ $text .= "</td>
 </td>
 </tr>
 
-<tr style='vertical-align:top'> 
+<tr style='vertical-align:top'>
 <td colspan='2'  style='text-align:center' class='forumheader3'>
 ".ren_help(2)."
 </td>
 </tr>
 
 
-<tr style='vertical-align:top'> 
+<tr style='vertical-align:top'>
 <td colspan='2'  style='text-align:center' class='forumheader'>
 <input class='button' type='submit' name='updatesettings' value='".UGFLAN_3."' />
 </td>

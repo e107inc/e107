@@ -99,7 +99,7 @@ define("NWSLAN_89", "Save News Preferences");
 define("NWSLAN_90", "News Preferences");
 define("NWSLAN_100", "Enable Image uploading on Submit News page");
 define("NWSLAN_101", "Automatic resizing of submitted image");
-define("NWSLAN_102", "width in pixels<br> or leave blank to disable.");
+define("NWSLAN_102", "width in pixels<br /> or leave blank to disable.");
 define("NWSLAN_103", "re-Post");
 define("NWSLAN_104", "by");
 define("NWSLAN_105", "Check box to update datestamp of news item to current time");
