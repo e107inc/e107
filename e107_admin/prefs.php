@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-02-22 04:37:13 $
-|     $Author: e107coders $
+|     $Revision: 1.31 $
+|     $Date: 2005-02-22 22:11:53 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -460,12 +460,19 @@ $text .= "</table></div>";
 
 // Signup options ===========================.
 
-$text .= "<div id='signup' style='display:none; text-align:center'><table style='width:100%' class='fborder'>
+$text .= "<div id='signup' style='display:none; text-align:center'>
+	<table style='width:100%' class='fborder'>
 	<tr>
-	<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' colspan='2'>".PRFLAN_19."</td>
+	<td class='fcaption' style='text-align:left;' colspan='2'>".PRFLAN_19."</td>
 	</tr>
 
-	<tr >
+	<tr>
+	<td style='width:50%' class='forumheader3'>Text to display on signup page</td>
+	<td style='width:50%' class='forumheader3'><textarea class='tbox' name='signup_text' cols='1' rows='5' style='width: 100%;'>".$pref['signup_text']."</textarea>
+	</tr>
+
+
+	<tr>
 	<td class='forumheader'>".CUSTSIG_13."</td>
 	<td class='forumheader'>".CUSTSIG_14."</td>
 	</tr>";

@@ -84,5 +84,8 @@ $pref['cb_linkreplace'] = "1";
 $pref['cb_layer'] = "0";
 $pref['cb_layer_height'] = "200";
 $pref['cb_emote'] = "0";
+
+// Added
+$pref['signup_text'] = "";
 	
 ?>
