@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.57 $
-|   $Date: 2005-03-10 19:44:44 $
+|   $Revision: 1.58 $
+|   $Date: 2005-03-11 08:50:32 $
 |   $Author: stevedunstan $
 +---------------------------------------------------------------+
 
@@ -393,7 +393,7 @@ class newspost {
 		$thumblist = $fl->get_files(e_IMAGE."newspost_images/", 'thumb_');
 
 		$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$',"thumb_", 'index', 'null*');
-		$imagelist = $fl->get_files(e_IMAGE."newspost_images/","",$rejecthumb);
+		$imagelist = $fl->get_files(e_IMAGE."newspost_images/","",'$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
 		$filelist = $fl->get_files(e_FILE."downloads/","",$rejecthumb);
 
 		$sql->db_Select("download");
@@ -610,15 +610,6 @@ class newspost {
 			</td>
 			</tr>
 
-
-
-
-
-
-
-
-
-
 			<tr>
 			<td class='forumheader3'>Files</td>
 			<td class='forumheader3'>
@@ -637,41 +628,33 @@ class newspost {
 
 			$text .= "</div>
 			</td>
-			</tr>
+			</tr>\n";
 
+			if (!$pref['wysiwyg'])
+			{
 
+			$text .= "<tr>
+				<td class='forumheader3'>Images</td>
+				<td class='forumheader3'>
+				<a style='cursor: pointer' onclick='expandit(this);'>Attach images to the newspost</a>
+				<div style='display: none;'>
 
-			<tr>
-			<td class='forumheader3'>Images</td>
-			<td class='forumheader3'>
-			<a style='cursor: pointer' onclick='expandit(this);'>Attach images to the newspost</a>
-			<div style='display: none;'>
+				<input class='tbox' type='text' name='news_image' size='60' value='".$_POST['news_image']."' maxlength='100' />
+				<input class='button' type ='button' style='cursor:hand' size='30' value='View images' onclick='expandit(this)' />
+				<div id='imagefile' style='display:none;{head}'>";
 
-			<input class='tbox' type='text' name='news_image' size='60' value='".$_POST['news_image']."' maxlength='100' />
-			<input class='button' type ='button' style='cursor:hand' size='30' value='View images' onclick='expandit(this)' />
-			<div id='imagefile' style='display:none;{head}'>";
+				$text .= "Multiple images can be added. Once an image has been selected, type {NEWSIMAGE=imagenumber} into your text to display it, eg {NEWSIMAGE=1}, {NEWSIMAGE=2).<br /><br />";
 
-			$text .= "Multiple images can be added. Once an image has been selected, type {NEWSIMAGE=imagenumber} into your text to display it, eg {NEWSIMAGE=1}, {NEWSIMAGE=2).<br /><br />";
+				foreach($imagelist as $file){
+					$text .= "<a href=\"javascript:appendtext('".$file['fname']."|','news_image','null')\">".$file['fname']."</a><br />";
+				}
 
-			foreach($imagelist as $file){
-				$text .= "<a href=\"javascript:appendtext('".$file['fname']."|','news_image','null')\">".$file['fname']."</a><br />";
+				$text .= "</div>
+				</td>
+				</tr>\n";
 			}
 
-			$text .= "</div>
-			</td>
-			</tr>
-
-
-
-
-
-
-
-
-
-
-
-			<tr>
+			$text .= "<tr>
 			<td style='width:20%' class='forumheader3'>".NWSLAN_15."</td>
 			<td style='width:80%' class='forumheader3'>
 			<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_18."</a>
@@ -888,6 +871,10 @@ class newspost {
 		$_PR['data'] = $tp->post_toHTML($_PR['data'], FALSE);
 		$_PR['news_extended'] = $tp->post_toHTML($_PR['news_extended']);
 		$_PR['news_body'] = (strstr($_PR['data'], "[img]http") ? $_PR['data'] : str_replace("[img]", "[img]../", $_PR['data']));
+
+		$_PR['news_file'] = $_POST['news_file'];
+		$_PR['news_image'] = $_POST['news_image'];
+
 		$ix->render_newsitem($_PR);
 	//	$_POST['data'] = $tp->toForm($_POST['data'], TRUE);
 	//	$_POST['news_title'] = $tp->toFORM($_POST['news_title']);
