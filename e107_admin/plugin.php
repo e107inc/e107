@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-03-08 12:57:06 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.31 $
+|     $Date: 2005-03-12 16:08:11 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -394,40 +394,7 @@ if ($action == 'upgrade') {
 
 // Check for new plugins, create entry in plugin table ...
 
-$fl = new e_file;
-$pluginList = $fl->get_files(e_PLUGIN, "^plugin\.php$", "standard", 1);
-
-foreach($pluginList as $p)
-{
-	foreach($defined_vars as $varname) {
-		if (substr($varname, 0, 6) == 'eplug_' || substr($varname, 0, 8) == 'upgrade_') {
-			unset($$varname);
-		}
-	}
-	include($p['path']."/".$p['fname']);
-	$plugin_path = substr($p['path'], strrpos($p['path'], "/")+1);
-
-	if ((!$sql->db_Select("plugin", "plugin_id", "plugin_path='$plugin_path'")) && $eplug_name)
-	{
-		if (!$eplug_prefs && !$eplug_table_names && !$eplug_user_prefs && !$eplug_sc && !$eplug_userclass && !$eplug_module && !$eplug_bb && !$eplug_latest && !$eplug_status)
-		{
-			// new plugin, assign entry in plugin table, install is not necessary so mark it as intalled
-			$sql->db_Insert("plugin", "0, '$eplug_name', '$eplug_version', '$eplug_folder', 1");
-		}
-		else
-		{
-			// new plugin, assign entry in plugin table, install is necessary
-			$sql->db_Insert("plugin", "0, '$eplug_name', '$eplug_version', '$eplug_folder', 0");
-		}
-	}
-}
-
-$sql->db_Select("plugin");
-while ($row = $sql->db_fetch()) {
-	if (!is_dir(e_PLUGIN.$row['plugin_path'])) {
-		$sql->db_Delete('plugin', "plugin_path='{$row['plugin_path']}'");
-	}
-}
+$plugin->update_plugins_table();
 
 // ----------------------------------------------------------
 //        render plugin information ...
