@@ -19,6 +19,7 @@ if(!is_object($sql)){
 	$sql -> db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
 }
 
+unset($fh);
 if($e107_popup!=1){
 	$custompage = explode(" ", $CUSTOMPAGES);
 	if($CUSTOMFOOTER){
