@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:45 $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-07 04:08:44 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -214,10 +214,29 @@ if(IsSet($_POST['updatesettings'])){
                         save_prefs("user", $inp);
                 }
 
+
+  // Update Userclass =======
+
+
+                if($_POST['usrclass']){
+                   unset($insert_class);
+                   sort($_POST['usrclass']);
+                   foreach($_POST['usrclass'] as $value){
+                   $insert_class .= $value.".";
+
+                   }
+                    $sql -> db_Update("user", "user_class='$insert_class' WHERE user_id='".USERID."' ");
+
+                }
+          // =======================
+
                 if($remflag){
                         header("location:".e_ADMIN."users.php?main.$inp");
                         exit;
                 }
+
+
+
 
                 $text = "<div style='text-align:center'>".LAN_150."</div>";
                 $ns -> tablerender(LAN_151, $text);
@@ -319,9 +338,44 @@ $text .="
 ($hideemail ? $rs ->form_radio("hideemail", 1, 1)." ".LAN_416."&nbsp;&nbsp;".$rs ->form_radio("hideemail", 0)." ".LAN_417 : $rs ->form_radio("hideemail", 1)." ".LAN_416."&nbsp;&nbsp;".$rs ->form_radio("hideemail", 0, 1)." ".LAN_417)."</span>
 <br />
 </td>
-</tr>
+</tr>";
 
-<tr>
+
+// -------------------------------------------------------------
+// public userclass subcription.
+if($sql -> db_Select("userclass_classes","*","userclass_editclass =0")){
+    $hide ="";
+    $text .= "
+    <tr>
+    <td style='width:20%;vertical-align:top' class='forumheader3'>".LAN_USET_5.":
+    <br /><span class='smalltext'>".LAN_USET_6."</span>
+    </td>
+    <td style='width:80%' class='forumheader2'>";
+    $text .= "<table style='width:100%'>";
+    $sql -> db_Select("userclass_classes","*","userclass_id !='' order by userclass_name");
+    while($row3 = $sql-> db_Fetch()){
+    extract($row3);
+       if($userclass_editclass ==0){
+          $frm_checked = check_class($userclass_id) ? "checked='checked'" : "";
+          $text .= "<tr><td class='defaulttext'>";
+          $text .= "<input type='checkbox' name='usrclass[]' value='$userclass_id' $frm_checked />\n";
+       //   $text .= $rs -> form_checkbox("usrclass[]", $userclass_id, $frm_checked);
+          $text .= $row3['userclass_name']."</td>";
+          $text .= "<td class='smalltext'>".$row3['userclass_description']."</td>";
+          $text .= "</tr>\n";
+       }else{
+          $hide .= check_class($userclass_id) ? "<input type='hidden' name='usrclass[]' value='$userclass_id' />\n" : "";
+       }
+    }
+    $text .= "</table>\n";
+    $text .= $hide;
+    $text .= "</td></tr>\n";
+}
+
+// ---------------------------------------------------
+
+
+$text .="<tr>
 <td colspan='2' class='forumheader'>".LAN_419."</td>
 </tr>
 
