@@ -154,7 +154,7 @@ if(IsSet($_POST['updatesettings'])){
                 if($_uid && ADMIN){ $inp = $_uid; $remflag = TRUE; }else{ $inp = USERID; }
                 $_POST['signature'] = $aj -> formtpa($_POST['signature'], "public");
                 $_POST['location'] = $aj -> formtpa($_POST['location'], "public");
-                $sql -> db_Update("user", "user_password='$password', user_sess='$user_sess', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$birthday."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."' WHERE user_id='".$inp."' ");
+                $sql -> db_Update("user", "user_password='$password', user_sess='$user_sess', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$birthday."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."', user_customtitle='".$_POST['customtitle']."' WHERE user_id='".$inp."' ");
 
                 if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
                         $row = $sql -> db_Fetch();
@@ -187,10 +187,11 @@ if($_uid){
 }else{
         $sql -> db_Select("user", "*", "user_id='".USERID."' ");
 }
-list($user_id, $name, $user_password, $user_sess, $email, $website, $icq, $aim, $msn, $location, $birthday, $signature, $image, $user_timezone, $hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_prefs, $user_new, $user_viewed, $user_visits, $user_admin, $user_login) = $sql -> db_Fetch();
+list($user_id, $name, $user_customtitle, $user_password, $user_sess, $email, $website, $icq, $aim, $msn, $location, $birthday, $signature, $image, $user_timezone, $hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_prefs, $user_new, $user_viewed, $user_visits, $user_admin, $user_login) = $sql -> db_Fetch();
 
 $signature = $aj -> editparse($signature);
 $tmp = explode("-", $birthday);
+$user_customtitle = ($_POST['customtitle'])? $_POST['customtitle']:$user_customtitle;
 $birth_day = ($_POST['birth_day'])? $_POST['birth_day']:$tmp[2];
 $birth_month = ($_POST['birth_month'])? $_POST['birth_month']:$tmp[1];
 $birth_year = ($_POST['birth_year'])? $_POST['birth_year']:$tmp[0];
@@ -228,7 +229,18 @@ $rs -> form_text("name", 20, $name, 100, "tbox", TRUE)
 <td style='width:70%' class='forumheader2'>
 ".$rs -> form_text("realname", 40, $user_login, 100)."
 </td>
-</tr>
+</tr>";
+if($pref['forum_user_customtitle'] || ADMIN){
+	$text .= "
+	<tr>
+	<td style='width:30%' class='forumheader3'>".LAN_CUSTOMTITLE."</td>
+	<td style='width:70%' class='forumheader2'>
+	".$rs -> form_text("customtitle", 40, $user_customtitle, 100)."
+	</td>
+	</tr>";
+}
+
+$text .= "
 
 <tr>
 <td style='width:20%' class='forumheader3'>".LAN_152."<br /><span class='smalltext'>".LAN_401."</span></td>
