@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-01-25 15:14:57 $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-26 17:33:23 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -196,7 +196,7 @@ foreach ($parent_list as $parent) {
 					$forum_string .= parse_forum($f, LAN_407);
 				} elseif($f['forum_class'] == e_UC_READONLY) {
 					$forum_string .= parse_forum($f, LAN_408);
-				} elseif($f['forum_class'] && check_class($forum['forum_class'])) {
+				} elseif($f['forum_class'] && check_class($f['forum_class'])) {
 					$forum_string .= parse_forum($f, LAN_409);
 				} elseif(!$f['forum_class']) {
 					$forum_string .= parse_forum($f);
