@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-03-27 22:54:45 $
+|     $Revision: 1.38 $
+|     $Date: 2005-03-27 22:57:28 $
 |     $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -183,7 +183,7 @@ function hilite($link,$enabled=''){
   	if(!$enabled){ return FALSE; }
 
 // --------------- highlighting for plugins. ----------------
-	if(eregi($PLUGINS_DIRECTORY,$link)){
+	if(eregi($PLUGINS_DIRECTORY,$link) && !eregi("custompages",$link)){
 		$link = str_replace("../","",$link);
 		if(eregi(dirname($link),dirname(e_SELF))){
 			return TRUE;
