@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/admin_config.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-03-03 04:00:17 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.4 $
+|     $Date: 2005-03-11 09:16:39 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -63,47 +63,53 @@ if (isset($message)) {
 }
 
 
-$headline_total = $sql->db_Select("newsfeed");
-$nfArray = $sql -> db_getList();
-
-$text = "<div style='text-align:center'>
-<table class='fborder' style='".ADMIN_WIDTH.";'>
-<tr>
-<td class='forumheader' style='width: 5%; text-align: center;'>ID</td>
-<td class='forumheader' style='width: 50%;'>".NFLAN_30."</td>
-<td class='forumheader' style='width: 10%; text-align: center;'>".NFLAN_26."</td>
-<td class='forumheader' style='width: 25%; text-align: center;'>".NFLAN_12."</td>
-<td class='forumheader' style='width: 10%; text-align: center;'>".NFLAN_27."</td>
-</tr>\n";
-
-foreach($nfArray as $newsfeed)
+if($headline_total = $sql->db_Select("newsfeed"))
 {
-	extract($newsfeed);
-	switch ($newsfeed_active)
+	$nfArray = $sql -> db_getList();
+
+	$text = "<div style='text-align:center'>
+	<table class='fborder' style='".ADMIN_WIDTH.";'>
+	<tr>
+	<td class='forumheader' style='width: 5%; text-align: center;'>ID</td>
+	<td class='forumheader' style='width: 50%;'>".NFLAN_30."</td>
+	<td class='forumheader' style='width: 10%; text-align: center;'>".NFLAN_26."</td>
+	<td class='forumheader' style='width: 25%; text-align: center;'>".NFLAN_12."</td>
+	<td class='forumheader' style='width: 10%; text-align: center;'>".NFLAN_27."</td>
+	</tr>\n";
+
+	foreach($nfArray as $newsfeed)
 	{
-		case 0:
-			$active = NFLAN_13;
-		break;
-		case 1:
-			$active = NFLAN_14;
-		break;
-		case 2:
-			$active = NFLAN_20;
-		break;
-		case 3:
-			$active = NFLAN_21;
-		break;
+		extract($newsfeed);
+		switch ($newsfeed_active)
+		{
+			case 0:
+				$active = NFLAN_13;
+			break;
+			case 1:
+				$active = NFLAN_14;
+			break;
+			case 2:
+				$active = NFLAN_20;
+			break;
+			case 3:
+				$active = NFLAN_21;
+			break;
+		}
+
+		$text .= "<td class='forumheader3' style='width: 5%; text-align: center;'>$newsfeed_id</td>
+		<td class='forumheader3' style='width: 50%;'><a href='$newsfeed_url' rel='external'>$newsfeed_name</a></td>
+		<td class='forumheader3' style='width: 10%; text-align: center;'>".($newsfeed_updateint ? $newsfeed_updateint : "3600")."</td>
+		<td class='forumheader3' style='width: 25%; text-align: center;'>$active</td>
+		<td class='forumheader3' style='width: 10%; text-align: center;'><a href='".e_SELF."?edit.".$newsfeed_id."'>".NFLAN_05."</a> - <a href='".e_SELF."?delete.".$newsfeed_id."'>".NFLAN_06."</a></td>
+		</tr>\n";
 	}
 
-	$text .= "<td class='forumheader3' style='width: 5%; text-align: center;'>$newsfeed_id</td>
-	<td class='forumheader3' style='width: 50%;'><a href='$newsfeed_url' rel='external'>$newsfeed_name</a></td>
-	<td class='forumheader3' style='width: 10%; text-align: center;'>".($newsfeed_updateint ? $newsfeed_updateint : "3600")."</td>
-	<td class='forumheader3' style='width: 25%; text-align: center;'>$active</td>
-	<td class='forumheader3' style='width: 10%; text-align: center;'><a href='".e_SELF."?edit.".$newsfeed_id."'>".NFLAN_05."</a> - <a href='".e_SELF."?delete.".$newsfeed_id."'>".NFLAN_06."</a></td>
-	</tr>\n";
+	$text .= "</table>\n</div>";
 }
-
-$text .= "</table>\n</div>";
+else
+{
+	$text = NFLAN_41;
+}
 $ns->tablerender(NFLAN_07, $text);
 
 if($action == "edit")
