@@ -272,7 +272,7 @@ if(!$post_author_id || !$sql -> db_Select("user", "*", "user_id='".$post_author_
 	
 	$JOINED = ($user_perms == "0" ? "" : LAN_06." ".$gen->convert_date($user_join, "forum")."<br />");
 	$LOCATION = ($user_location ? LAN_07.": ".$user_location."<br />" : "");
-	$CUSTOMTITLE = ($user_customtitle ? $user_customtitle."<br />" : "");
+	$CUSTOMTITLE = ($user_customtitle ? $aj -> tpa($user_customtitle)."<br />" : "");
 	$WEBSITE = ($user_homepage ? LAN_08.": ".$user_homepage."<br />" : "");
 	$POSTS = LAN_67." ".$user_forums."<br />";
 	$VISITS = LAN_09.": ".$user_visits;
@@ -360,7 +360,7 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 			
 			$JOINED = ($user_perms == "0" ? "" : LAN_06.": ".$gen->convert_date($user_join, "forum")."<br />");
 			$LOCATION = ($user_location ? LAN_07.": ".$user_location."<br />" : "");
-			$CUSTOMTITLE = ($user_customtitle ? $user_customtitle."<br />" : "");
+			$CUSTOMTITLE = ($user_customtitle ? $aj -> tpa($user_customtitle)."<br />" : "");
 			$WEBSITE = ($user_homepage ? LAN_08.": ".$user_homepage."<br />" : "");
 			$POSTS = LAN_67." ".$user_forums."<br />";
 			$VISITS = LAN_09.": ".$user_visits;

@@ -156,6 +156,7 @@ if(IsSet($_POST['updatesettings'])){
                 if($_uid && ADMIN){ $inp = $_uid; $remflag = TRUE; }else{ $inp = USERID; }
                 $_POST['signature'] = $aj -> formtpa($_POST['signature'], "public");
                 $_POST['location'] = $aj -> formtpa($_POST['location'], "public");
+                $_POST['user_customtitle'] = $aj -> formtpa($_POST['user_customtitle'], "public");
                 $sql -> db_Update("user", "user_password='$password', user_sess='$user_sess', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$birthday."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."', user_customtitle='".$_POST['customtitle']."' WHERE user_id='".$inp."' ");
 
                 if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
