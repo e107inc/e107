@@ -37,9 +37,9 @@ $text = "<div style='text-align:center'>
 <textarea class='tbox' name='meta' cols='70' rows='10'>".$pref['meta_tag']."</textarea>
 <br />";
 $text .= <<< EOT
-<input class="button" type="button" value="description" onclick="addtext('<META name=\'description\' content=\'type your description here\'>')">
-<input class="button" type="button" value="keywords" onclick="addtext('<META name=\'keywords\' content=\'type, a, list, of, your, keywords, here\'>')">
-<input class="button" type="button" value="copyright" onclick="addtext('<META name=\'copyright\' content=\'type your copyright info here\'>')">
+<input class="button" type="button" value="description" onclick="addtext2('<meta name=\'description\' content=\'type your description here\' />')">
+<input class="button" type="button" value="keywords" onclick="addtext2('<meta name=\'keywords\' content=\'type, a, list, of, your, keywords, here\' />')">
+<input class="button" type="button" value="copyright" onclick="addtext2('<meta name=\'copyright\' content=\'type your copyright info here\' />')">
 EOT;
 $text .= "</td>
 </tr>
@@ -55,7 +55,7 @@ $text .= "</td>
 $ns -> tablerender("Meta Tags", $text);
 ?>
 <script type="text/javascript">
-function addtext(str){
+function addtext2(str){
 	document.dataform.meta.value += str;
 }
 </script>
