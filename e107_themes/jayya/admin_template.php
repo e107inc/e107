@@ -16,7 +16,7 @@ $style = "rightmenu";
 $preright = $tp -> parseTemplate('{ADMIN_MENU=pre}');
 $preright_info = $tp -> parseTemplate('{ADMIN_STATUS=request}');
 $preright_info .= $tp -> parseTemplate('{ADMIN_LATEST=request}');
-//$preright_info .= $tp -> parseTemplate('{ADMIN_PRESET}');
+$preright_info .= $tp -> parseTemplate('{ADMIN_PRESET}');
 $preright_info .= $tp -> parseTemplate('{ADMIN_LOG=request}');
 $style = "default";
 
@@ -132,7 +132,6 @@ if ($preright=='pre' || $preright_info) {
 	{SETSTYLE=rightmenu}
 	{ADMIN_MENU}
 	".$preright_info."
-	{ADMIN_PRESET}
 	<br />
 	</td></tr></table>
 	</td>";
