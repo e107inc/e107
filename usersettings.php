@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-03-30 19:44:06 $
+|     $Revision: 1.17 $
+|     $Date: 2005-04-04 16:23:06 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -433,27 +433,44 @@ $text .= "
 	</td>
 	</tr>";
 	
-if ($sql->db_Select("user_extended_struct","*","1 ORDER BY user_extended_struct_order"))
-{
-	$ueList = $sql->db_getList();
 
-	$text .= "<tr><td colspan='2' class='forumheader'>".LAN_410."</td></tr>";
-
-	foreach($ueList as $ext)
+	$qry = "
+	SELECT f.*, c.user_extended_struct_name AS category_name, c.user_extended_struct_id AS category_id FROM #user_extended_struct as f
+	LEFT JOIN #user_extended_struct as c ON f.user_extended_struct_parent = c.user_extended_struct_id
+	WHERE f.user_extended_struct_applicable IN (".USERCLASS_LIST.") 
+	AND f.user_extended_struct_write IN (".USERCLASS_LIST.") 
+	AND ((c.user_extended_struct_applicable IN (".USERCLASS_LIST.") 
+	AND c.user_extended_struct_write IN (".USERCLASS_LIST.")) 
+	OR f.user_extended_struct_parent = 0)
+	AND f.user_extended_struct_type > 0
+	ORDER BY c.user_extended_struct_order ASC, f.user_extended_struct_order ASC
+	";
+	
+	if($sql->db_Select_gen($qry))
 	{
-		if (check_class($ext['user_extended_struct_applicable']) && check_class($ext['user_extended_struct_write']))
+		$fieldList = $sql->db_getList();
+		unset($prev_cat);
+		foreach($fieldList as $f)
 		{
+			if(!isset($prev_cat) || $f['category_id'] != $prev_cat)
+			{
+				$catname = ($f['category_name'] == null) ? LAN_USET_7 : $f['category_name'];
+				$text .= "<tr><td colspan='2' class='forumheader'>{$catname}</td></tr>";
+			}
+			$prev_cat = $f['category_id'];
 			$text .= "
 				<tr>
-					<td style='width:40%' class='forumheader3'>".$ext['user_extended_struct_text']."</td>
-					<td style='width:60%' class='forumheader3'>".$ue->user_extended_edit($ext, $curVal["user_".$ext['user_extended_struct_name']])."</td>
+					<td style='width:40%' class='forumheader3'>".$f['user_extended_struct_text']."</td>
+					<td style='width:60%' class='forumheader3'>".$ue->user_extended_edit($f, $curVal["user_".$f['user_extended_struct_name']])."</td>
 				</tr>
-				";
+			";
 		}
 	}
-}
+	
 
-$text .= "<tr>
+$text .= "
+	<tr><td colspan='2' class='forumheader'>".LAN_USET_8."</td></tr>
+	<tr>
 	<td style='width:20%;vertical-align:top' class='forumheader3'>".LAN_120."</td>
 	<td style='width:80%' class='forumheader2'>
 	<textarea class='tbox' name='signature' cols='58' rows='4' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$signature</textarea>
