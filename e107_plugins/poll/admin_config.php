@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/admin_config.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-03-04 12:41:24 $
+|     $Revision: 1.4 $
+|     $Date: 2005-03-04 13:19:38 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -123,9 +123,9 @@ if (isset($message))
 }
 
 $text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>
-	<form action=\"".e_SELF."\" method=\"post\" id=\"del_poll\" >";
+	<form action='".e_SELF."' method='post' id='del_poll'>";
 
-if ($poll_total = $sql->db_Select("polls")) {
+if ($poll_total = $sql->db_Select("polls", "*", "poll_type=1")) {
 	$text .= "<table class='fborder' style='width:99%'>
 		<tr>
 		<td style='width:5%' class='fcaption'>ID
