@@ -13,8 +13,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.18 $
-| $Date: 2005-01-22 18:22:13 $
+| $Revision: 1.19 $
+| $Date: 2005-01-26 22:29:07 $
 | $Author: stevedunstan $
 +---------------------------------------------------------------+
 */
@@ -47,7 +47,6 @@ class news {
 				$message = "<strong>".LAN_NEWS_7."</strong>";
 			}
 		}
-		$this->create_rss();
 		return $message;
 	}
 
@@ -219,119 +218,7 @@ class news {
 		// encode rest
 		return htmlspecialchars($original);
 	}
-	function create_rss() {
-		/*
-		# rss create
-		# - parameters                none
-		# - return                                null
-		# - scope                                        public
-		*/
-		global $sql, $ml, $tp;
-		if (!is_object($tp)) $tp = new e_parse;
-		setlocale (LC_TIME, CORE_LC);
-		$pubdate = strftime("%a, %d %b %Y %I:%M:00 GMT", time());
-		$sitebutton = (strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", e_IMAGE).SITEBUTTON);
-		$sitedisclaimer = ereg_replace("<br />|\n", "", SITEDISCLAIMER);
-		$rss = "<?xml version=\"1.0\" encoding=\"".CHARSET."\"?>
-				<rss version=\"2.0\">
-				<channel>
-				<title>".$this->make_xml_compatible(SITENAME)."</title>
-				<link>http://".$_SERVER['HTTP_HOST'].e_HTTP."index.php</link>
-				<description>".$this->make_xml_compatible(SITEDESCRIPTION)."</description>
-				<language>".CORE_LC."-".CORE_LC2."</language>
-				<copyright>".$this->make_xml_compatible($sitedisclaimer)."</copyright>
-				<managingEditor>".$this->make_xml_compatible(SITEADMIN)." - ".SITEADMINEMAIL."</managingEditor>
-				<webMaster>".SITEADMINEMAIL."</webMaster>
-				<pubDate>$pubdate</pubDate>
-				<lastBuildDate>$pubdate</lastBuildDate>
-				<docs>http://backend.userland.com/rss</docs>
-				<generator>e107 website system (http://e107.org)</generator>
-				<ttl>60</ttl>
-				 
-				<image>
-				<title>".$this->make_xml_compatible(SITENAME)."</title>
-				<url>".$sitebutton."</url>
-				<link>http://".$_SERVER['HTTP_HOST'].e_HTTP."index.php</link>
-				<width>88</width>
-				<height>31</height>
-				<description>".$this->make_xml_compatible(SITETAG)."</description>
-				</image>
-				 
-				<textInput>
-				<title>Search</title>
-				<description>Search ".$this->make_xml_compatible(SITENAME)."</description>
-				<name>query</name>
-				<link>".SITEURL.(substr(SITEURL, -1) == "/" ? "" : "/")."search.php</link>
-				</textInput>
-				";
-		$sql2 = new db;
-		$sql->db_Select("news", "*", "news_class=0 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY news_datestamp DESC LIMIT 0, 10");
-		while ($row = $sql->db_Fetch()) {
-			extract($row);
-			$sql2->db_Select("news_category", "*", "category_id='$news_category' ");
-			$row = $sql2->db_Fetch();
-			extract($row);
-			$sql2->db_Select("user", "user_name, user_email", "user_id=$news_author");
-			$row = $sql2->db_Fetch();
-			extract($row);
-			$tmp = explode(" ", $news_body);
-			unset($nb);
-			for($a = 0; $a <= 100; $a++) {
-				$nb .= $tmp[$a]." ";
-			}
-			if ($tmp[($a-2)]) {
-				$nb .= " [more ...]";
-			}
-			//$nb = $this->make_xml_compatible($nb);
-			// Code from Lisa
-			//$search = array();
-			//$replace = array();
-			//$search[0] = "/\<a href=\"(.*?)\">(.*?)<\/a>/si";
-			//$replace[0] = '\\2';
-			//$search[1] = "/\<a href='(.*?)'>(.*?)<\/a>/si";
-			//$replace[1] = '\\2';
-			//$search[2] = "/\<a href='(.*?)'>(.*?)<\/a>/si";
-			//$replace[2] = '\\2';
-			//$search[3] = "/\<a href=&quot;(.*?)&quot;>(.*?)<\/a>/si";
-			//$replace[3] = '\\2';
-			//$news_title = preg_replace($search, $replace, $news_title);
-			// End of code from Lisa
-			if (!$news_allow_comments) {
-				$rsslink = "comment.php?comment.news.";
-			} else {
-				$rsslink = $news_extended ? "news.php?extend." : "news.php?item.";
-			}
-			$wlog .= strip_tags($tp->toHTML($news_title, TRUE))."\n".SITEURL.$rsslink.$news_id."\n\n";
-			$itemdate = strftime("%a, %d %b %Y %I:%M:00 GMT", $news_datestamp);
-			$rss .= "<item>
-					<title>".$this->make_xml_compatible(strip_tags($tp->toHTML($news_title)))."</title>
-					<link>http://".$_SERVER['HTTP_HOST'].e_HTTP.$rsslink.$news_id."</link>
-					<description>".$this->make_xml_compatible($nb)."</description>
-					<category domain=\"".SITEURL."\">$category_name</category>";
-					if (!$news_allow_comments) {
-						$rss .= "<comments>http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$news_id."</comments>";
-					}
-					$rss .= "<author>".$this->make_xml_compatible($user_name)." - $user_email</author>
-					<pubDate>$itemdate</pubDate>
-					<guid isPermaLink=\"true\">http://".$_SERVER['HTTP_HOST'].e_HTTP.$rsslink.$news_id."</guid>
-					</item>
-					";
-
-		}
-		$rss .= "</channel>
-				</rss>";
-		$rss = str_replace("&nbsp;", " ", $rss);
-		$fp = fopen(e_FILE."backend/news.xml", "w");
-		@fwrite($fp, $rss);
-		fclose($fp);
-		$fp = fopen(e_FILE."backend/news.txt", "w");
-		@fwrite($fp, $wlog);
-		fclose($fp);
-		if (!fwrite) {
-			$text = "<div style='text-align:center'>".LAN_19."</div>";
-			$ns->tablerender("<div style='text-align:center'>".LAN_20."</div>", $text);
-		}
-	}
+	
 }
 
 ?>

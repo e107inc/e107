@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/rss.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-23 15:21:16 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-26 22:30:08 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -55,7 +55,6 @@ WHERE news_class != '255' AND (news_start=0 || news_start < ".time().") AND (new
 
 
 $rss -> buildRss ($query, $rss_type);
-//echo "<pre>"; print_r($pref); echo "</pre>";
 
 
 
