@@ -43,38 +43,59 @@ function wad($link, $title, $description, $perms, $icon = FALSE, $mode = FALSE){
 
 require_once("ad_links.php");
 
-$newarray = asortbyindex ($array_functions, 1);
+
 
 $text = "<div style='text-align:center'>
-<table style='width:95%'>";
+<table style='width:95%'>
+<tr>
+<td colspan='5' >";
 
-while(list($key, $funcinfo) = each($newarray)){
-        $text .= wad($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3]);
+$texto = array();
+$texto[1] = ADLAN_126;
+$texto[2] = ADLAN_127;
+$texto[3] = ADLAN_128;
+$texto[4] = ADLAN_129;
+$texto[5] = ADLAN_130;
+$texto[6] = ADLAN_131;
+$texto[7] = ADLAN_95;
+
+$tit_css = " style=\"border: 1px solid #c00; background-color: #fff; padding: 0px 3px 0px 3px;\" ";
+
+for($i=1;$i<7;$i++){
+	$tmpi = 0;
+	$newarray = asortbyindex ($array_functions, 1);
+	$texti = "<b{$tit_css}> ".$texto[$i]." </b></td></tr>";
+	while(list($key, $funcinfo) = each($newarray)){
+			if($funcinfo[4]==$i){
+				$texti .= wad($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3]);
+				$tmpi = 1;
+			}
+	}
+	if(!$tdc){ $texti .= "</tr>"; }
+	$texti .= "<tr><td colspan='5' ><hr /></td></tr><tr><td colspan='5' >";
+	$tdc=0;
+	if($tmpi == 1){$text .= $texti;}
 }
 
-if(!$tdc){ $text .= "</tr>"; }
 
+unset($tdc);
 
+$text .= "</tr>
+<tr>
+<td colspan='5' ><b{$tit_css}> ".$texto[7]." </b></td></tr>";
 
-        unset($tdc);
+$text .= wad(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z", "", TRUE);
 
-        $text .= "</tr><tr>
-        <td colspan='5'><br />
-        </td>
-        </tr>";
-
-        $text .= wad(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z", "", TRUE);
-
-        if($sql -> db_Select("plugin", "*", "plugin_installflag=1")){
-                while($row = $sql -> db_Fetch()){
-                        extract($row);
-                        include(e_PLUGIN.$plugin_path."/plugin.php");
-                        if($eplug_conffile){
-                                $text .= wad(e_PLUGIN.$plugin_path."/".$eplug_conffile, $eplug_name, $eplug_caption, "P".$plugin_id, "", TRUE);
-                        }
-                        unset($eplug_conffile, $eplug_name, $eplug_caption);
+if($sql -> db_Select("plugin", "*", "plugin_installflag=1")){
+        while($row = $sql -> db_Fetch()){
+                extract($row);
+                include(e_PLUGIN.$plugin_path."/plugin.php");
+                if($eplug_conffile){
+                        $text .= wad(e_PLUGIN.$plugin_path."/".$eplug_conffile, $eplug_name, $eplug_caption, "P".$plugin_id, "", TRUE);
                 }
+                unset($eplug_conffile, $eplug_name, $eplug_caption);
         }
+}
 
 $text .= "</tr>
 </table></div>";

@@ -57,40 +57,7 @@ function wad2($link, $title, $description, $perms, $icon = FALSE){
 $text = "<div style='text-align:center'>
 <table style='width:95%'>";
 
-$array_functions = array(
-        0 => array(e_ADMIN."administrator.php", ADLAN_8, ADLAN_9, "3"),
-        1 => array(e_ADMIN."updateadmin.php", ADLAN_10, ADLAN_11, ""),
-        2 => array(e_ADMIN."article.php", ADLAN_14, ADLAN_15, "J"),
-        3 => array(e_ADMIN."banlist.php", ADLAN_34, ADLAN_35, "4"),
-        4 => array(e_ADMIN."banner.php", ADLAN_54, ADLAN_55, "D"),
-        5 => array(e_ADMIN."cache.php", ADLAN_74, ADLAN_75, "0"),
-        6 => array(e_ADMIN."chatbox.php", ADLAN_56, ADLAN_57, "C"),
-        7 => array(e_ADMIN."content.php", ADLAN_16, ADLAN_17, "L"),
-        8 => array(e_ADMIN."custommenu.php", ADLAN_42, ADLAN_43, "2"),
-        9 => array(e_ADMIN."db.php",ADLAN_44, ADLAN_45,"0"),
-        10 => array(e_ADMIN."download.php", ADLAN_24, ADLAN_25, "R"),
-        11 => array(e_ADMIN."emoticon.php", ADLAN_58, ADLAN_59, "F"),
-        12 => array(e_ADMIN."filemanager.php", ADLAN_30, ADLAN_31, "6"),
-        13 => array(e_ADMIN."forum.php", ADLAN_12, ADLAN_13, "5"),
-        14 => array(e_ADMIN."frontpage.php", ADLAN_60, ADLAN_61, "G"),
-        15 => array(e_ADMIN."image.php", ADLAN_105, ADLAN_106, "5"),
-        16 => array(e_ADMIN."links.php", ADLAN_20, ADLAN_21, "I"),
-        17 => array(e_ADMIN."wmessage.php", ADLAN_28, ADLAN_29, "M"),
-        18 => array(e_ADMIN."log.php", ADLAN_64, ADLAN_65, "S"),
-        19 => array(e_ADMIN."ugflag.php", ADLAN_40, ADLAN_41, "9"),
-        20 => array(e_ADMIN."menus.php", ADLAN_6, ADLAN_7, "2"),
-        21 => array(e_ADMIN."meta.php", ADLAN_66, ADLAN_67, "T"),
-        22 => array(e_ADMIN."newspost.php", ADLAN_0, ADLAN_1, "H"),
-        23 => array(e_ADMIN."newsfeed.php", ADLAN_62, ADLAN_63, "E"),
-        24 => array(e_ADMIN."phpinfo.php", ADLAN_68, ADLAN_69, "0"),
-        25 => array(e_ADMIN."poll.php", ADLAN_70, ADLAN_71, "U"),
-        26 => array(e_ADMIN."prefs.php", ADLAN_4, ADLAN_5, "1"),
-        27 => array(e_ADMIN."upload.php", ADLAN_72, ADLAN_73, "V"),
-        28 => array(e_ADMIN."review.php", ADLAN_18, ADLAN_19, "K"),
-        29 => array(e_ADMIN."users.php", ADLAN_36, ADLAN_37, "4"),
-        30 => array(e_ADMIN."userclass2.php", ADLAN_38, ADLAN_39, "4"),
-        31 => array(e_ADMIN."admin.php?logout", ADLAN_46, "", "")
-);
+require_once("ad_links.php");
 
 $newarray = asortbyindex ($array_functions, 1);
 
