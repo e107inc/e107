@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-30 20:16:00 $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-03 14:34:07 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -101,7 +101,9 @@ if ($action != "nt" && !$thread_info['head']['thread_active']) {
 	require_once(FOOTERF);
 	exit;
 }
-	
+
+$forum_info['forum_name'] = $tp -> toHTML($forum_info['forum_name'], TRUE);
+
 define("e_PAGETITLE", LAN_01." / ".$forum_info['forum_name']." / ".($action == "rp" ? LAN_02.$forum_info['thread_name'] : LAN_03));
 require_once(HEADERF);
 	
@@ -120,16 +122,15 @@ if (IsSet($_POST['submitpoll'])) {
 	$poll->submit_poll(0, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], 0, $forum_id, "forum");
 	 
 	require_once(HEADERF);
-	echo "<table style='width:100%' class='fborder'>
-		<tr>
-		<td class='fcaption' colspan='2'>".LAN_133."</td>
-		</tr><tr>
-		<td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
-		<td style='vertical-align:center; width:80%' class='forumheader2'>
-		<br />".LAN_384."<br />
-		<span class='defaulttext'><a class='forumlink' href='".e_PLUGIN."forum/forum_viewtopic.php?".$thread_id."'>".LAN_325."</a><br />
-		<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_id."'>".LAN_326."</a></span><br /><br />
-		</td></tr></table>";
+	if (!$FORUMPOST) {
+		if (file_exists(THEME."forum_posted_template.php")) {
+			require_once(THEME."forum_posted_template.php");
+		} else {
+			require_once(e_PLUGIN."forum/templates/forum_posted_template.php");
+		}
+	}
+
+	echo $FORUMPOLLPOSTED;
 	require_once(FOOTERF);
 	exit;
 }
@@ -262,16 +263,15 @@ if (isset($_POST['newthread']) || isset($_POST['reply'])) {
 			redirect(e_BASE."forum_viewtopic.php?{$iid}.last");
 		} else {
 			require_once(HEADERF);
-			echo "<table style='width:100%' class='fborder'>
-				<tr>
-				<td class='fcaption' colspan='2'>".LAN_133."</td>
-				</tr><tr>
-				<td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
-				<td style='vertical-align:center; width:80%' class='forumheader2'>
-				<br />".LAN_324."<br />
-				<span class='defaulttext'><a href='".e_PLUGIN."forum/forum_viewtopic.php?{$iid}.last'>".LAN_325."</a><br />
-				<a href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_id."'>".LAN_326."</a></span><br /><br />
-				</td></tr></table>";
+			if (!$FORUMPOST) {
+				if (file_exists(THEME."forum_posted_template.php")) {
+					require_once(THEME."forum_posted_template.php");
+				} else {
+					require_once(e_PLUGIN."forum/templates/forum_posted_template.php");
+				}
+			}
+			
+			echo (isset($_POST['newthread']) ? $FORUMTHREADPOSTED : $FORUMREPLYPOSTED);
 			$e107cache->clear("newforumposts");
 			require_once(FOOTERF);
 			exit;

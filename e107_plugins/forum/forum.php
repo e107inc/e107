@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-29 00:12:17 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2005-02-03 14:34:07 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -235,12 +235,16 @@ function parse_parent($parent) {
 }
 	
 function parse_forum($f, $restricted_string = "") {
-	global $FORUM_MAIN_FORUM, $gen, $forum;
+	global $FORUM_MAIN_FORUM, $gen, $forum, $tp;
 	if (USER && $forum->forum_newflag($f['forum_id'])) {
 		$NEWFLAG = "<a href='".e_SELF."?mfar.{$f['forum_id']}'>".IMAGE_new."</a></td>";
 	} else {
 		$NEWFLAG = IMAGE_nonew;
 	}
+
+	$f['forum_name'] = $tp -> toHTML($f['forum_name'], TRUE);
+	$f['forum_description'] = $tp -> toHTML($f['forum_description'], TRUE);
+
 	$FORUMNAME = "<a href='".e_PLUGIN."forum/forum_viewforum.php?{$f['forum_id']}'>{$f['forum_name']}</a>";
 	$FORUMDESCRIPTION = $f['forum_description'].($restricted_string ? "<br /><span class='smalltext'><i>$restricted_string</i></span>" : "");
 	;
@@ -249,24 +253,7 @@ function parse_forum($f, $restricted_string = "") {
 	 
 	 
 	if ($f['forum_lastpost']) {
-		/*
-		changes by jalist 27/01/2005:
-		if lastpost name has period(s) in it list/explode would fail
-		*/
 		list($lastpost_id, $lastpost_name, $lastpost_datestamp, $lastpost_thread) = explode(chr(1), $f['forum_lastpost']);
-//		$count = count($lastpost);
-//		$lastpost_id = $lastpost[0];
-//		$lastpost_thread = $lastpost[($count-1)];
-//		$lastpost_datestamp = $lastpost[($count-2)];
-//		$lastpost_name = "";
-//		if (count($lastpost) > 4) {
-//			for($a = 1; $a <= ($count-3); $a++) {
-//				$lastpost_name .= $lastpost[$a];
-//			}
-//		} else {
-//			$lastpost_name = $lastpost[($count-3)];
-//		}
-		 
 		if ($lastpost_id) {
 			$lastpost_name = "<a href='".e_BASE."user.php?id.{$lastpost_id}'>{$lastpost_name}</a>";
 		}
