@@ -82,7 +82,7 @@ if($action == "create"){
 if($action == "cat"){
         if($sub_action == "confirm"){
                 if($sql -> db_Delete("download_category", "download_category_id='$id' ")){
-								$sql -> db_Delete("download_category","download_category_parent='{$id}' ");
+                                                                $sql -> db_Delete("download_category","download_category_parent='{$id}' ");
                         $download -> show_message(DOWLAN_49." #".$id." ".DOWLAN_36);
                         $download -> show_categories($sub_action, $id);
                 }
@@ -256,20 +256,20 @@ class download{
                 $text = "<div style='text-align:left'>";
                 if(e_QUERY && $action != "main"){
 //                        $text .= "<a href='".e_SELF."'><div class='fcaption'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".DOWLAN_29."</div></a>";
-								$text .= "<input onclick='window.location.href=\"".e_SELF."\"' class='button' type='button' style='width:100%' value='".DOWLAN_29."' />";
+                                                                $text .= "<input onclick='window.location.href=\"".e_SELF."\"' class='button' type='button' style='width:100%' value='".DOWLAN_29."' />";
 
                 }
                 if($action != "opt"){
 //                        $text .= "<a href='".e_SELF."?opt'><div class='fcaption'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".DOWLAN_28."</div></a>";
-								$text .= "<input onclick='window.location.href=\"".e_SELF."?opt\"' class='button' type='button' style='width:100%' value='".DOWLAN_28."' />";
+                                                                $text .= "<input onclick='window.location.href=\"".e_SELF."?opt\"' class='button' type='button' style='width:100%' value='".DOWLAN_28."' />";
                 }
                 if($action != "create"){
 //                        $text .= "<a href='".e_SELF."?create'><div class='button'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".DOWLAN_30."</div></a>";
-								$text .= "<input onclick='window.location.href=\"".e_SELF."?create\"' class='button' type='button' style='width:100%' value='".DOWLAN_30."' />";
+                                                                $text .= "<input onclick='window.location.href=\"".e_SELF."?create\"' class='button' type='button' style='width:100%' value='".DOWLAN_30."' />";
                 }
                 if($action != "cat" && getperms("Q")){
 //                        $text .= "<a href='".e_SELF."?cat'><div class='button'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".DOWLAN_31."</div></a>";
-								$text .= "<input onclick='window.location.href=\"".e_SELF."?cat\"' class='button' type='button' style='width:100%' value='".DOWLAN_31."' />";
+                                                                $text .= "<input onclick='window.location.href=\"".e_SELF."?cat\"' class='button' type='button' style='width:100%' value='".DOWLAN_31."' />";
                 }
                 $text .= "</div>";
                 $ns -> tablerender(DOWLAN_32, $text);
@@ -347,16 +347,16 @@ class download{
                 while(IsSet($file_array[$counter])){
 
                         if(eregi($download_url,$file_array[$counter])){
-                        $selected = " selected";
+                        $selected = " selected='selected'";
                         $found = 1;
                         }else{
                         $selected = "";
                         }
 
-                        $text .= "<option $selected>".$file_array[$counter]."</option>\n";
+                        $text .= "<option value='".$file_array[$counter]."' $selected>".$file_array[$counter]."</option>\n";
                         $counter++;
                 }
-                $text .= (!$found)? "<option selected>".$download_url." -(file missing!)</option>\n":"";
+                $text .= (!$found)? "<option value='".$download_url."' selected='selected'>".$download_url." -(file missing!)</option>\n":"";
 
                 $text .= "</select>
                 <br />
@@ -602,7 +602,7 @@ class download{
                         }
                 }
 
-					$frm_action = (isset($_POST['add_category'])) ? e_SELF."?cat" : e_SELF."?".e_QUERY;
+                                        $frm_action = (isset($_POST['add_category'])) ? e_SELF."?cat" : e_SELF."?".e_QUERY;
                 $text = "<div style='text-align:center'>
                 <form method='post' action='{$frm_action}' name='dlform'>
                 <table style='width:auto' class='fborder'>
@@ -722,7 +722,7 @@ function getfiles($dir,$sub=0){
                         if(is_file($pathdir.$file)){
                                 $t_array[] = str_replace($search, $replace, $pathdir.$file);
                         }else{
-										if(!preg_match("#^CVS#",$patchdir.$file)){
+                                                                                if(!preg_match("#^CVS#",$patchdir.$file)){
                                 getfiles(str_replace("../", "", $pathdir.$file)."/");
                                }
                         }
@@ -733,9 +733,9 @@ function getfiles($dir,$sub=0){
 }
 
 function download_adminmenu($parms){
-	global $download;
-	global $action;
-	$download -> show_options($action);
+        global $download;
+        global $action;
+        $download -> show_options($action);
 }
 
 ?>

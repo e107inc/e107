@@ -18,7 +18,9 @@ if(!e_QUERY){
         exit;
 }
 
+
 if(!is_numeric(e_QUERY)){
+
         if($sql -> db_Select("download", "*", "download_url='".e_QUERY."'", TRUE)){
                 $row = $sql -> db_Fetch(); extract($row);
                 $type = "file";
@@ -30,9 +32,14 @@ if(!is_numeric(e_QUERY)){
                 header("location:".e_QUERY);
                 exit;
         }
-}else{
+}
+//else{
 
-        $tmp = explode(".", e_QUERY);
+
+//}
+
+
+ $tmp = explode(".", e_QUERY);
         if(!$tmp[1]){
                 $id = $tmp[0];
                 $type = "file";
@@ -41,9 +48,11 @@ if(!is_numeric(e_QUERY)){
                 $id = $tmp[1];
                 $type = "image";
         }
-}
+
+
 
 if($type == "file"){
+
         if($sql -> db_Select("download", "*", "download_id= '$id' ")){
                 $row = $sql -> db_Fetch(); extract($row);
                 $sql -> db_Select("download_category", "*", "download_category_id=$download_category");
@@ -105,26 +114,29 @@ if(preg_match("/Binary\s(.*?)\/.*/", $image, $result)){
 
 
 $image = ($table == "upload" ? $upload_ss : $download_image);
-
+        
 if(eregi("http", $image)){
+
         header("location:".$image);
         exit;
 }else{
         if($table == "download"){
                 require_once(HEADERF);
                 if(file_exists(e_FILE."download/".$image)){
-                        echo "<img src='".e_FILE."download/".$image."' alt='' />";
+                        $disp = "<div style='text-align:center'><img src='".e_FILE."download/".$image."' alt='' /></div>";
                 }else if(file_exists(e_FILE."downloadimages/".$image)){
-                        echo "<img src='".e_FILE."downloadimages/".$image."' alt='' />";
+                        $disp = "<div style='text-align:center'><img src='".e_FILE."downloadimages/".$image."' alt='' /></div>";
                 }else{
-                        echo "<img src='".e_FILE."public/".$image."' alt='' />";
+                        $disp = "<div style='text-align:center'><img src='".e_FILE."public/".$image."' alt='' /></div>";
                 }
-                echo "<br /><a href='javascript:history.back(1)'>Back</a>";
+                $disp .= "<br /><div style='text-align:center'><a href='javascript:history.back(1)'>Back</a></div>";
+                $ns -> tablerender($image, $disp);
+
                 require_once(FOOTERF);
         }else{
                 if(is_file(e_FILE."public/".$image)){
                     echo "<img src='".e_FILE."public/".$image."' alt='' />";
-                }elseif(file_exists(e_FILE."downloadimages/".$image)){
+                }elseif(is_file(e_FILE."downloadimages/".$image)){
                     echo "<img src='".e_FILE."downloadimages/".$image."' alt='' />";
                 }else{
                 echo "Not Found";
