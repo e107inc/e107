@@ -1,4 +1,10 @@
 <?php
+$use_imagecode = ($pref['logcode'] && extension_loaded("gd"));
+if($use_imagecode){
+	require_once(e_HANDLER."secure_img_handler.php");
+	$sec_img = new secure_image;
+}
+
 $text = "";
 	if(USER == TRUE || ADMIN == TRUE){
 		list($uid, $upw) = ($_COOKIE[$pref['cookie_name']] ? explode(".", $_COOKIE[$pref['cookie_name']]) : explode(".", $_SESSION[$pref['cookie_name']]));
@@ -40,21 +46,33 @@ $text = "";
 			$text = "<div style='text-align:center'>".LOGINMESSAGE."</div>";
 		}
 		$text .=  "<div style='text-align:center'>\n<form method='post' action='".e_SELF;
-if(e_QUERY){
-	$text .= "?".e_QUERY;
-}
+		if(e_QUERY){
+			$text .= "?".e_QUERY;
+		}
 
-$text .= "'><p>\n".LOGIN_MENU_L1."<br />\n<input class='tbox' type='text' name='username' size='15' value='' maxlength='30' />\n<br />\n".LOGIN_MENU_L2."\n<br />\n<input class='tbox' type='password' name='userpass' size='15' value='' maxlength='20' />\n\n<br />\n<input class='button' type='submit' name='userlogin' value='".LOGIN_MENU_L28."' />\n\n<br />\n<input type='checkbox' name='autologin' value='1' /> ".LOGIN_MENU_L6;
+		$text .= "'><p>\n".LOGIN_MENU_L1."<br />\n
+		<input class='tbox' type='text' name='username' size='15' value='' maxlength='30' />\n
+		<br />\n".LOGIN_MENU_L2."\n<br />\n
+		<input class='tbox' type='password' name='userpass' size='15' value='' maxlength='20' />\n\n<br />\n
+		";
+		if($use_imagecode){
+			$text .= "<input type='hidden' name='rand_num' value='".$sec_img -> random_number."'>";
+			$text .= $sec_img -> r_image();
+			$text .= "<br /><input class='tbox' type='text' name='code_verify' size='15' maxlength='20'><br />";
+		}
+		$text .= "			
+		<input class='button' type='submit' name='userlogin' value='".LOGIN_MENU_L28."' />\n\n
+		<br />\n<input type='checkbox' name='autologin' value='1' /> ".LOGIN_MENU_L6;
 
-if($pref['user_reg']){
-	$text .= "<br /><br />";
-	if($pref['auth_method'] != "ldap"){
-		$text .= "[ <a href='".e_BASE.e_SIGNUP."'>".LOGIN_MENU_L3."</a> ]<br />[ <a href='".e_BASE."fpw.php'> ".LOGIN_MENU_L4."</a> ]";
-	}
-}
-$text .= "</p>
-</form>
-</div>";
+		if($pref['user_reg']){
+			$text .= "<br /><br />";
+			if($pref['auth_method'] != "ldap"){
+				$text .= "[ <a href='".e_BASE.e_SIGNUP."'>".LOGIN_MENU_L3."</a> ]<br />[ <a href='".e_BASE."fpw.php'> ".LOGIN_MENU_L4."</a> ]";
+			}
+		}
+		$text .= "</p>
+		</form>
+		</div>";
 		$caption = (file_exists(THEME."images/login_menu.png") ? "<img src='".THEME."images/login_menu.png' alt='' /> ".LOGIN_MENU_L5 : LOGIN_MENU_L5);
 		$ns -> tablerender($caption, $text);
 	}
