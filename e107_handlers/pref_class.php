@@ -31,23 +31,21 @@
 class prefs {
 	var $prefVals;
 	var $prefArrays;
-	
+
 	/**
-	 * Constructor
-	 */
-	function prefs()
-	{
-		$sql = new db;
+	* Constructor
+	*/
+	function prefs() {
+		global $sql;
 		/* Preload core table */
 		$table = 'core';
-		$sql -> db_Select($table, "*", "");
-		while ($row = $sql -> db_Fetch())
-		{
+		$sql->db_Select($table);
+		while ($row = $sql -> db_Fetch()) {
 			extract($row);
 			$this -> prefVals[$table][$e107_name] = stripslashes($e107_value);
 		}
 	}
-       
+
 	/**
 	* Return current pref string $name from $table (only core for now)
 	*
@@ -57,13 +55,12 @@ class prefs {
 	* - @access		public
 	*/
 	function get($name,$table="core"){	// retrieve the prefs for $name
-		if($table == 'core')
-		{
+		if($table == 'core') {
 			return $this -> prefVals[$table][$name];
-		} 
+		}
 		return FALSE;
 	}
-	
+
 	/**
 	* Return current array from pref string $name in $table (core only for now)
 	*
@@ -72,10 +69,9 @@ class prefs {
 	* - @return		array pref values
 	* - @access					public
 	*/
-	function getArray($name,$table="core")  // retrieve prefs as an array of values
-	{
-		if(!is_array($this -> prefArrays[$table][$name]))
-		{
+	// retrieve prefs as an array of values
+	function getArray($name,$table="core") {
+		if(!is_array($this -> prefArrays[$table][$name])) {
 			$this -> prefArrays[$table][$name] = unserialize($this -> get($name,$table));
 		}
 		return $this -> prefArrays[$table][$name];
@@ -97,30 +93,27 @@ class prefs {
 	* set("val","","user",uid) 		== 'user', 'user_pref' for user uid
 	* set("val","fieldname","user") 	== 'user', fieldname
 	*
-	* all pref sets other than menu_pref get formtpa()
 	*/
-	function set($val,$name="",$table = "core", $uid=USERID){
- 
- 	       $sql = new db;
-        
-	        if (!strlen($name)){
-	        	switch ($table){
-	        	case 'core':	$name = "pref"; break;
-	        	case 'user':	$name = "user_pref"; break;
-	        	}
-	        }
-	        $val = addslashes($val);
-	                
-	        switch ( $table ){
-	        case 'core':
-	        	$sql -> db_Update($table, "e107_value='$val' WHERE e107_name='$name'");
-	        	$this->prefVals[$table][$name]=$val;
-	        	unset($this->prefArrays[$table][$name]);
-	        	break;
-	        case 'user':
-	                $sql -> db_Update($table, "user_prefs='$val' WHERE user_id=$uid");
-	                break;
-		}        
+	function set($val,$name="",$table = "core", $uid=USERID) {
+		global $sql;
+		if (!strlen($name)) {
+			switch ($table) {
+				case 'core':	$name = "pref"; break;
+				case 'user':	$name = "user_pref"; break;
+			}
+		}
+		$val = addslashes($val);
+
+		switch ( $table ) {
+			case 'core':
+			$sql -> db_Update($table, "e107_value='$val' WHERE e107_name='$name'");
+			$this->prefVals[$table][$name]=$val;
+			unset($this->prefArrays[$table][$name]);
+			break;
+			case 'user':
+			$sql -> db_Update($table, "user_prefs='$val' WHERE user_id=$uid");
+			break;
+		}
 	}
 
 
@@ -138,27 +131,27 @@ class prefs {
 	* set("","user",uid) 		== user, user_pref for user uid
 	* set("fieldname","user") 	== user, fieldname
 	*
-	* all pref sets other than menu_pref get formtpa()
+	* all pref sets other than menu_pref get toDB()
 	*/
 	function setArray($name="",$table = "core", $uid=USERID){
 		global $tp;
-	
-		if (!strlen($name)){
-			switch ($table){
+
+		if (!strlen($name)) {
+			switch ($table) {
 				case 'core':	$name = "pref"; break;
 				case 'user':	$name = "user_pref"; break;
 			}
 		}
-	
+
 		global $$name;
 		if ($name != "menu_pref") {
 			foreach($$name as $key => $prefvalue){
 				$$name[$key] = $tp -> toDB($prefvalue);
 			}
 		}
-	
+
 		$tmp = serialize($$name);
 		$this->set($tmp,$name,$table,$uid);
 	}
-	}
+}
 ?>

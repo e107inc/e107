@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/debug_handler.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-12-19 01:47:52 $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-26 02:56:37 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -128,6 +128,7 @@ class e107_db_debug {
 		//
 		global $dbq;
 		global $db_time;
+		global $sql;
 		
 		$this->Mark_Time('Stop');
 		
@@ -154,7 +155,7 @@ class e107_db_debug {
 			$thisWhat = $tMarker['What'];
 			$tMarker['Time'] = number_format($thisDelta, 4);
 			$tMarker['%Time'] = $totTime ? number_format(100.0*($thisDelta/$totTime),0) : 0;
-			$tMarker['%DB Count'] = number_format(100.0*$tMarker['DB Count']/$dbq,0);
+			$tMarker['%DB Count'] = number_format(100.0*$tMarker['DB Count']/$sql->mySQLquerycount,0);
 			$tMarker['%DB Time'] = number_format(100.0*$tMarker['DB Time']/$db_time,0);
 			$tMarker['DB Time'] = number_format($tMarker['DB Time'],4);
 			$tMarker['OB Lev'] = $aOBMarks[$thisWhat];
@@ -178,7 +179,7 @@ class e107_db_debug {
 				$bRowHeaders = TRUE;
 				$text .= "<tr><td><b>".implode("</b></td><td><b>",array_keys($curTable))."</b></td></tr>\n";
 			}
-			$curTable['%DB Count'] = number_format(100.0*$curTable['DB Count']/$dbq,0);
+			$curTable['%DB Count'] = number_format(100.0*$curTable['DB Count']/$sql->mySQLquerycount,0);
 			$curTable['%DB Time'] = number_format(100.0*$curTable['DB Time']/$db_time,0);
 			$curTable['DB Time'] = number_format($curTable['DB Time'],4);
 			$text .= "<tr><td>".implode("&nbsp;</td><td style='text-align:right'>",array_values($curTable))."&nbsp;</td></tr>\n";

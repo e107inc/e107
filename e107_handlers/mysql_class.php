@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-01-24 10:14:38 $
-|     $Author: stevedunstan $
+|     $Revision: 1.21 $
+|     $Date: 2005-01-26 02:56:41 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,8 +24,8 @@ $db_time = 0.0;
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.20 $
-* @author $Author: stevedunstan $
+* @version $Revision: 1.21 $
+* @author $Author: mcfly_e107 $
 */
 class db {
 
@@ -118,13 +118,27 @@ class db {
 	}
 
 	/**
+	* @return void
+	* @desc add query to dblog table
+	* @access private
+	*/
+	function db_Write_log($log_type='',$log_remark='',$log_query='') {
+		global $tp;
+		$d = time();
+		$uid = (USER === FALSE) ? USERID : '0';
+		$ip = getip();
+		$qry = $tp->toDB($log_query);
+		$this->db_Insert('dblog',"0,'{$log_type}',{$d},{$uid},'{$ip}','{$qry}','{$log_remark}'",2);
+	}
+
+	/**
 	* @return unknown
 	* @param unknown $query
 	* @param unknown $rli
 	* @desc Enter description here...
 	* @access private
 	*/
-	function db_Query($query, $rli = NULL) {
+	function db_Query($query, $rli = NULL, $qry_from = '', $debug = FALSE, $log_type = '', $log_remark = '') {
 		global $e107_debug, $db_time, $sDBdbg, $aTimeMarks, $aDBbyTable, $curTimeMark;
 		if (E107_DEBUG_LEVEL > 0) {
 			global $db_debug;
@@ -132,6 +146,15 @@ class db {
 			$nFields = $db_debug->Mark_Query($query, $rli, $aTrace);
 		}
 		$_dbTimeStart = explode(' ', microtime());
+		if ($debug == 'now') {
+			echo "** $query";
+		}
+		if ($debug !== FALSE || strstr(e_QUERY, 'showsql')) {
+			$this->mySQLinfo[$this->mySQLquerycount]['data'] = "<b>{$qry_from}</b>: $query";
+		}
+		if ($log_type != '') {
+			$this->db_Write_log($log_type, $log_remark, $query);
+		}
 		$sQryRes = is_null($rli) ? @mysql_query($query) : @mysql_query($query, $rli);
 		$_dbTimeEnd = explode(' ', microtime());
 		$mytime = ((float)$_dbTimeEnd[0] + (float)$_dbTimeEnd[1]) - ((float)$_dbTimeStart[0] + (float)$_dbTimeStart[1]);
@@ -167,16 +190,12 @@ class db {
 	* 
 	* @access public
 	*/
-	function db_Select($table, $fields = '*', $arg = '', $mode = 'default', $debug = FALSE) {
+	function db_Select($table, $fields = '*', $arg = '', $mode = 'default', $debug = FALSE, $log_type = '', $log_remark = '') {
 		$table = $this->db_IsLang($table);
 		$this->mySQLcurTable = $table;
 		$this -> mySQLquerycount++;
 		if ($arg != '' && $mode == 'default') {
-			if ($debug || strstr(e_QUERY, "showsql"))
-			{
-				$this -> mySQLinfo[$this -> mySQLquerycount]['data'] = "<b>db_Select</b>: SELECT $fields FROM ".MPREFIX.$table." WHERE $arg";
-			}
-			if ($this->mySQLresult = $this->db_Query('SELECT '.$fields.' FROM '.MPREFIX.$table.' WHERE '.$arg)) {
+			if ($this->mySQLresult = $this->db_Query('SELECT '.$fields.' FROM '.MPREFIX.$table.' WHERE '.$arg, NULL, 'db_Select', $debug, $log_type, $log_remark)) {
 				$this->dbError('dbQuery');
 				return $this->db_Rows();
 			} else {
@@ -184,11 +203,7 @@ class db {
 				return FALSE;
 			}
 		} elseif($arg != '' && $mode != 'default') {
-			if ($debug || strstr(e_QUERY, "showsql"))
-			{
-				$this -> mySQLinfo[$this -> mySQLquerycount]['data'] = "<b>db_Select</b>: SELECT $fields FROM ".MPREFIX.$table." WHERE $arg";
-			}
-			if ($this->mySQLresult = $this->db_Query('SELECT '.$fields.' FROM '.MPREFIX.$table.' '.$arg)) {
+			if ($this->mySQLresult = $this->db_Query('SELECT '.$fields.' FROM '.MPREFIX.$table.' '.$arg, NULL, 'db_Select', $debug, $log_type, $log_remark)) {
 				$this->dbError('dbQuery');
 				return $this->db_Rows();
 			} else {
@@ -196,11 +211,7 @@ class db {
 				return FALSE;
 			}
 		} else {
-			if ($debug || strstr(e_QUERY, "showsql"))
-			{
-				$this -> mySQLinfo[$this -> mySQLquerycount]['data'] = "<b>db_Select</b>: SELECT $fields FROM ".MPREFIX.$table;
-			}
-			if ($this->mySQLresult = $this->db_Query('SELECT '.$fields.' FROM '.MPREFIX.$table)) {
+			if ($this->mySQLresult = $this->db_Query('SELECT '.$fields.' FROM '.MPREFIX.$table, NULL, 'db_Select', $debug, $log_type, $log_remark)) {
 				$this->dbError('dbQuery');
 				return $this->db_Rows();
 			} else {
@@ -222,20 +233,12 @@ class db {
 	* 
 	* @access public
 	*/
-	function db_Insert($table, $arg, $debug = FALSE) {
+	function db_Insert($table, $arg, $debug = FALSE, $log_type = '', $log_remark = '') {
 		$table = $this->db_IsLang($table);
 		$this -> mySQLquerycount++;
 		$this->mySQLcurTable = $table;
-		if ($debug || strstr(e_QUERY, "showsql"))
-		{
-			$this -> mySQLinfo[$this -> mySQLquerycount]['data'] = "<b>db_Insert</b>: INSERT INTO ".MPREFIX.$table." VALUES (".htmlentities($arg).")";
-		}
-		if ($result = $this->mySQLresult = $this->db_Query('INSERT INTO '.MPREFIX.$table.' VALUES ('.$arg.')' )) {
+		if ($result = $this->mySQLresult = $this->db_Query('INSERT INTO '.MPREFIX.$table.' VALUES ('.$arg.')', NULL, 'db_Insert', $debug, $log_type, $log_remark )) {
 			$tmp = mysql_insert_id();
-
-			if (strstr(e_SELF, ADMINDIR) && $table != 'online') {
-				mysql_query('INSERT INTO '.MPREFIX.'tmp VALUES (\'adminlog\', \''.time()."', '<br /><b>Insert</b> - <b>$table</b> table (field id <b>$tmp</b>)<br />by <b>".USERNAME."</b>') ");
-			}
 			return $tmp;
 		} else {
 			$this->dbError("db_Insert ($query)");
@@ -261,23 +264,12 @@ class db {
 	* 
 	* @access public
 	*/
-	function db_Update($table, $arg, $debug = FALSE)
-	{
+	function db_Update($table, $arg, $debug = FALSE, $log_type = '', $log_remark = '') {
 		$table = $this->db_IsLang($table);
 		$this->mySQLcurTable = $table;
 		$this -> mySQLquerycount++;
-		if ($debug || strstr(e_QUERY, "showsql"))
-		{
-			$this -> mySQLinfo[$this -> mySQLquerycount]['data'] = "<b>db_Update</b>: UPDATE ".MPREFIX.$table." SET ".$arg."\n";
-		}
-		if ($result = $this->mySQLresult = $this->db_Query('UPDATE '.MPREFIX.$table.' SET '.$arg)) {
+		if ($result = $this->mySQLresult = $this->db_Query('UPDATE '.MPREFIX.$table.' SET '.$arg, NULL, 'db_Update', $debug, $log_type, $log_remark)) {
 			$result = mysql_affected_rows();
-			if (strstr(e_SELF, ADMINDIR) && $table != 'online') {
-				if (!strstr($arg, 'link_order')) {
-					$str = addslashes(str_replace('WHERE', '', substr($arg, strpos($arg, 'WHERE'))));
-					mysql_query('INSERT INTO '.MPREFIX."tmp VALUES ('adminlog', '".time()."', '<br /><b>Update</b> - <b>$table</b> table (string: <b>$str</b>)<br />by <b>".USERNAME."</b>') ");
-				}
-			}
 			return $result;
 		} else {
 			$this->dbError("db_Update ($query)");
@@ -325,23 +317,19 @@ class db {
 	* 
 	* @access public
 	*/
-	function db_Count($table, $fields = '(*)', $arg = '') {
+	function db_Count($table, $fields = '(*)', $arg = '', $debug = FALSE, $log_type = '', $log_remark = '') {
 		$table = $this->db_IsLang($table);
 		$this->mySQLcurTable = $table;
-		$this -> mySQLquerycount++;
-		if ($debug || strstr(e_QUERY, "showsql"))
-		{
-			$this -> mySQLinfo[$this -> mySQLquerycount]['data'] = "<b>db_Count:</b> SELECT COUNT ".$fields." FROM ".MPREFIX.$table." ".$arg;
-		}
+		$this->mySQLquerycount++;
 		if ($fields == 'generic') {
-			if ($this->mySQLresult = $this->db_Query($table)) {
+			if ($this->mySQLresult = $this->db_Query($table, NULL, 'db_Count', $debug, $log_type, $log_remark)) {
 				$rows = $this->mySQLrows = @mysql_fetch_array($this->mySQLresult);
 				return $rows[0];
 			} else {
 				$this->dbError("dbCount ($query)");
 			}
 		}
-		if ($this->mySQLresult = $this->db_Query('SELECT COUNT'.$fields.' FROM '.MPREFIX.$table.' '.$arg)) {
+		if ($this->mySQLresult = $this->db_Query('SELECT COUNT'.$fields.' FROM '.MPREFIX.$table.' '.$arg, NULL, 'db_Count', $debug, $log_type, $log_remark)) {
 			$rows = $this->mySQLrows = @mysql_fetch_array($this->mySQLresult);
 			return $rows[0];
 		} else {
@@ -377,36 +365,20 @@ class db {
 	* <br />
 	* @access public
 	*/
-	function db_Delete($table, $arg = '') {
+	function db_Delete($table, $arg = '', $debug = FALSE, $log_type = '', $log_remark = '') {
 		$table = $this->db_IsLang($table);
 		$this->mySQLcurTable = $table;
-		$this -> mySQLquerycount++;
+		$this->mySQLquerycount++;
 		if (!$arg) {
-			if ($result = $this->mySQLresult = $this->db_Query('DELETE FROM '.MPREFIX.$table)) {
-				if (strstr(e_SELF, ADMINDIR) && $table != 'online' && $table != 'tmp') {
-					$str = addslashes(str_replace('WHERE', '', substr($arg, strpos($arg, 'WHERE'))));
-					mysql_query('INSERT INTO '.MPREFIX."tmp VALUES ('adminlog', '".time()."', '$string') ");
-				}
-				if ($debug || strstr(e_QUERY, "showsql"))
-				{
-					$this -> mySQLinfo[$this -> mySQLquerycount]['data'] = "<b>db_Delete:</b> DELETE FROM ".MPREFIX.$table;
-				}
+			if ($result = $this->mySQLresult = $this->db_Query('DELETE FROM '.MPREFIX.$table, NULL, 'db_Delete', $debug, $log_type, $log_remark)) {
 				return $result;
 			} else {
 				$this->dbError("db_Delete ($arg)");
 				return FALSE;
 			}
 		} else {
-			if ($result = $this->mySQLresult = $this->db_Query('DELETE FROM '.MPREFIX.$table.' WHERE '.$arg)) {
+			if ($result = $this->mySQLresult = $this->db_Query('DELETE FROM '.MPREFIX.$table.' WHERE '.$arg, NULL, 'db_Delete', $debug, $log_type, $log_remark)) {
 				$tmp = mysql_affected_rows();
-				if (strstr(e_SELF, ADMINDIR) && $table != 'online' && $table != 'tmp') {
-					$str = addslashes(str_replace('WHERE', '', substr($arg, strpos($arg, 'WHERE'))));
-					mysql_query('INSERT INTO '.MPREFIX."tmp VALUES ('adminlog', '".time()."', '<b>Delete</b> - <b>$table</b> table (string: <b>$str</b>) by <b>".USERNAME."</b>') ");
-				}
-				if ($debug || strstr(e_QUERY, "showsql"))
-				{
-					$this -> mySQLinfo[$this -> mySQLquerycount]['data'] = "<b>db_Delete:</b> DELETE FROM ".MPREFIX.$table." WHERE $arg";
-				}
 				return $tmp;
 			} else {
 				$this->dbError('db_Delete ('.$arg.')');
@@ -458,7 +430,7 @@ class db {
 	* @desc Enter description here...
 	* @access private
 	*/
-	function db_Select_gen($arg) {
+	function db_Select_gen($arg, $debug = FALSE, $log_type = '', $log_remark = '') {
 
 		/*
 		changes by jalist 19/01/05:
@@ -467,12 +439,8 @@ class db {
 		*/
 
 		$arg = str_replace("#", MPREFIX, $arg);
-		$this -> mySQLquerycount++;
-		if ($debug || strstr(e_QUERY, "showsql"))
-		{
-			$this -> mySQLinfo[$this -> mySQLquerycount]['data'] = "<b>db_Select_gen:</b> $arg";
-		}
-		if ($this->mySQLresult = $this->db_Query($arg)) {
+		$this->mySQLquerycount++;
+		if ($this->mySQLresult = $this->db_Query($arg, NULL, 'db_Select_gen', $debug, $log_type, $log_remark)) {
 			$this->dbError('db_Select_gen');
 			return $this->db_Rows();
 		} else {
@@ -542,13 +510,13 @@ class db {
 	* @desc returns fields as structured array
 	* @access public
 	*/
-	function db_getList($fields = "ALL", $amount = FALSE, $maximum = 200) {
+	function db_getList($fields = 'ALL', $amount = FALSE, $maximum = 200) {
 		$list = array();
 		$counter = 1;
-		while($row = $this -> db_Fetch()) {
+		while($row = $this->db_Fetch()) {
 			foreach($row as $key => $value) {
 				if(is_string($key)) {
-					if(strtoupper($fields) == "ALL" || in_array ($key, $fields)) {
+					if(strtoupper($fields) == 'ALL' || in_array ($key, $fields)) {
 						$list[$counter][$key] = $value;
 					}
 				}

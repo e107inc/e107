@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2005-01-22 14:19:38 $
-|     $Author: sweetas $
+|     $Revision: 1.53 $
+|     $Date: 2005-01-26 02:54:40 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -135,8 +135,6 @@ else if($merror == "e2") {
 	message_handler("CRITICAL_ERROR", 7, ": generic, ", "class2.php");
 	exit;
 }
-
-
 
 /* New compatabilty mode.
 At a later date add a check to load e107 compat mode by $pref
