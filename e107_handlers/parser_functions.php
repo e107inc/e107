@@ -70,10 +70,12 @@ function e107core_parse($match,$referrer){
 			return "";
 		}
 	}
-	if($match[1] == "USERNAME" && USER){
-		return USERNAME;
-	} else {
-		return LAN_GUEST;
+	if($match[1] == "USERNAME"){
+		if(USER){
+			return USERNAME;
+		} else {
+			return LAN_GUEST;
+		}
 	}
 }
 
