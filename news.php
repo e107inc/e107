@@ -11,22 +11,32 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-01-31 02:23:33 $
-|     $Author: sweetas $
+|     $Revision: 1.28 $
+|     $Date: 2005-02-02 12:39:12 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 require_once(e_HANDLER."news_class.php");
 require_once(HEADERF);
 	
-if ($NEWSHEADER) {
+if (isset($NEWSHEADER)) {
 	require_once(FOOTERF);
 	exit;
 }
 $cacheString = 'news.php_'.e_QUERY;
 $action = '';
-if (Empty($pref['newsposts']) ? define("ITEMVIEW", 15) : define("ITEMVIEW", $pref['newsposts']));
+if (!defined("ITEMVIEW"))
+{
+	if (empty($pref['newsposts']))
+	{
+		define("ITEMVIEW", 15);
+	} 
+	else
+	{
+		define("ITEMVIEW", $pref['newsposts']);
+	}
+}
 if(ADMIN && file_exists("install.php")){ echo "<div class='installe' style='text-align:center'><b>*** ".LAN_NEWS_3." ***</b><br />".LAN_NEWS_4."</div><br /><br />"; }
 	
 if (!is_object($tp)) {
@@ -41,7 +51,7 @@ if (e_QUERY) {
 }
 	
 $from = (!is_numeric($action) || !e_QUERY ? 0 : ($action ? $action : e_QUERY));
-if ($tmp[1] == 'list') {
+if (isset($tmp[1]) && $tmp[1] == 'list') {
 	$action = 'list';
 	$from = intval($tmp[0]);
 	$sub_action = intval($tmp[2]);
@@ -178,6 +188,10 @@ else if(strstr(e_QUERY, "day")) {
 	$news_total = $sql->db_Count("news", "(*)", "WHERE news_class IN (".USERCLASS_LIST.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().") AND news_render_type!=2" );
 	 
 	// #### changed for news archive ------------------------------------------------------------------------------
+	if(!isset($pref['newsposts_archive']))
+	{
+		$pref['newsposts_archive'] = 0;
+	}
 	$interval = $pref['newsposts']-$pref['newsposts_archive'];
 	$from2 = $interval+$from;
 	$ITEMVIEW2 = ITEMVIEW-$interval;
@@ -227,7 +241,7 @@ if (!$sql->db_Select_gen($query)) {
 	while ($news = $sql->db_Fetch()) {
 		//        render new date header if pref selected ...
 		$thispostday = strftime("%j", $news['news_datestamp']);
-		if ($newpostday != $thispostday && $pref['news_newdateheader']) {
+		if ($newpostday != $thispostday && (isset($pref['news_newdateheader']) && $pref['news_newdateheader'])) {
 			echo "<div class='".DATEHEADERCLASS."'>".strftime("%A %d %B %Y", $news['news_datestamp'])."</div>";
 		}
 		 
@@ -236,7 +250,7 @@ if (!$sql->db_Select_gen($query)) {
 		$news['category_id'] = $news['news_category'];
 //		if (check_class($news['news_class'])) {
 			if ($action == "item") {
-				unset($news['news_rendertype']);
+				unset($news['news_render_type']);
 			}
 			$ix->render_newsitem($news);
 			// To hide messages for restricted news and only display valid news, comment the following else statement
@@ -256,7 +270,7 @@ if ($action != "item" && $action != 'list' && $pref['newsposts_archive']) {
 		while ($news2 = $sql->db_Fetch()) {
 			if (check_class($news2['news_class'])) {
 				if ($action == "item") {
-					unset($news2['news_rendertype']);
+					unset($news2['news_render_type']);
 				}
 				 
 				// Code from Lisa
@@ -309,11 +323,15 @@ if ($pref['nfp_display'] == 2) {
 	
 	
 // ==CNN Style Categories. ============================================================
-$nbr_cols = $pref['nbr_cols'];
+$nbr_cols = 1;
+if(isset($pref['nbr_cols']))
+{
+	$nbr_cols = $pref['nbr_cols'];
+}
 $nbr_lst = 5;
 $line_clr = "black";
 	
-if ($pref['news_cats'] == '1') {
+if (isset($pref['news_cats']) && $pref['news_cats'] == '1') {
 	$sql2 = new db;
 	$sql2->db_Select("news_category", "*", "category_id!='' ORDER BY category_name ASC");
 	 

@@ -13,9 +13,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.20 $
-| $Date: 2005-01-27 19:52:28 $
-| $Author: streaky $
+| $Revision: 1.21 $
+| $Date: 2005-02-02 12:39:27 $
+| $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 	
@@ -56,6 +56,10 @@ class news {
 		//echo "<pre>"; print_r($news); echo "</pre>"; // debug ...
 		 
 		global $tp, $sql, $override;
+		$active_start = 0;
+		$active_end = 0;
+		$admin_name = '';
+		$preview = '';
 		if (!is_object($tp)) $tp = new e_parse;
 		if ($n_restrict == "userclass") {
 			$news['news_id'] = 0;
@@ -65,7 +69,7 @@ class news {
 			$news['news_allow_comments'] = 1;
 			$news['news_start'] = 0;
 			$news['news_end'] = 0;
-			$news['news_rendertype'] = 0;
+			$news['news_render_type'] = 0;
 			$news['comment_total'] = 0;
 		}
 		 
@@ -83,8 +87,14 @@ class news {
 			$news['news_extended'] = trim(chop($tp->toHTML($news['news_extended'], TRUE)));
 		}
 		extract($news);
-		define("IMAGE_nonew_small", (file_exists(THEME."generic/nonew_comments.png") ? "<img src='".THEME."generic/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/nonew_comments.png' alt=''  />"));
-		define("IMAGE_new_small", (file_exists(THEME."generic/new_comments.png") ? "<img src='".THEME."generic/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/new_comments.png' alt=''  /> "));
+		if(!defined("IMAGE_nonew_small"))
+		{
+			define("IMAGE_nonew_small", (file_exists(THEME."generic/nonew_comments.png") ? "<img src='".THEME."generic/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/nonew_comments.png' alt=''  />"));
+		}
+		if(!defined("IMAGE_new_small"))
+		{
+			define("IMAGE_new_small", (file_exists(THEME."generic/new_comments.png") ? "<img src='".THEME."generic/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/new_comments.png' alt=''  /> "));
+		}
 		if (!$NEWSLISTSTYLE) {
 			$NEWSLISTSTYLE = "
 				<img src='".THEME."images/bullet2.gif' alt='bullet' />
@@ -104,7 +114,7 @@ class news {
 		if (IsSet($_POST['highlight_search'])) {
 			$highlight_search = TRUE;
 		}
-		if (!$comment_total) $comment_total = "0";
+		if (!isset($comment_total)) $comment_total = "0";
 		$con = new convert;
 		$datestamp = $con->convert_date($news_datestamp, "long");
 		$titleonly = (substr($news_body, 0, 6) == "&nbsp;" && $NEWSLISTSTYLE ? TRUE : FALSE);
@@ -116,7 +126,7 @@ class news {
 			$category_icon = (strstr(SITEBUTTON, "http") ? SITEBUTTON : e_IMAGE.SITEBUTTON);
 		} else {
 			$category_icon = str_replace("../", "", $category_icon);
-			if (strstr("images", $category_icon)) {
+			if ($category_icon && strstr("images", $category_icon)) {
 				$category_icon = THEME.$category_icon;
 			} else {
 				$category_icon = e_IMAGE."newsicons/".$category_icon;
@@ -149,11 +159,11 @@ class news {
 		$textemail = $ep->render_emailprint("news", $news_id, 1);
 		$textprint = $ep->render_emailprint("news", $news_id, 2);
 		if (ADMIN && getperms("H")) {
-			$adminoptions .= "<a href='".e_BASE.e_ADMIN."newspost.php?create.edit.".$news_id."'><img src='".e_IMAGE."generic/newsedit.png' alt='' style='border:0' /></a>\n";
+			$adminoptions = "<a href='".e_BASE.e_ADMIN."newspost.php?create.edit.".$news_id."'><img src='".e_IMAGE."generic/newsedit.png' alt='' style='border:0' /></a>\n";
 		}
 		 
 		$search[0] = "/\{NEWSTITLE\}(.*?)/si";
-		$replace[0] = ($news_rendertype == 1 ? "<a href='".e_BASE."news.php?item.$news_id'>".$news_title."</a>" : $news_title);
+		$replace[0] = ($news_render_type == 1 ? "<a href='".e_BASE."news.php?item.$news_id'>".$news_title."</a>" : $news_title);
 		$search[13] = "/\{CAPTIONCLASS\}(.*?)/si";
 		$replace[13] = "<div class='category".$category_id."'>".($titleonly ? "&nbsp;<a href='".e_BASE."comment.php?comment.news.$news_id'>".$news_title."</a>" : "&nbsp;".$news_title)."</div>";
 		$search[14] = "/\{ADMINCAPTION\}(.*?)/si";
@@ -202,7 +212,7 @@ class news {
 		if (function_exists("news_style")) {
 			$NEWSSTYLE = news_style($news);
 		}
-		$text = preg_replace($search, $replace, ($news_rendertype == 1 && strstr(e_SELF, "news.php") ? $NEWSLISTSTYLE : $NEWSSTYLE));
+		$text = preg_replace($search, $replace, ($news_render_type == 1 && strstr(e_SELF, "news.php") ? $NEWSLISTSTYLE : $NEWSSTYLE));
 		echo $text;
 		if ($preview == "Preview") {
 			echo $info;
