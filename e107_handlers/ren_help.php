@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-03-31 06:44:23 $
+|     $Revision: 1.9 $
+|     $Date: 2005-03-31 06:51:59 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -80,7 +80,7 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help") {
         $string .= "<img src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"{$addtextfunc}('".$bbcode[1]."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />";
 	}
 	if ($mode) {
-		$string .= "\n<span><select class=\"tbox\" name=\"fontcol\" onchange=\"{$addtextfunc}('[color=' + this.options[this.selectedIndex].value + '][/color]');this.selectedIndex=0;\"".($mode != 2 ? " onmouseover=\"{$helpfunc}('Font Color: [color]Blue[/color]')\" onmouseout=\"{$helpfunc}('')\"" : "")." >\n<option value=\"\">".LANHELP_21."</option>\n";
+		$string .= "\n<br />\n<span><select class=\"tbox\" name=\"fontcol\" onchange=\"{$addtextfunc}('[color=' + this.options[this.selectedIndex].value + '][/color]');this.selectedIndex=0;\"".($mode != 2 ? " onmouseover=\"{$helpfunc}('Font Color: [color]Blue[/color]')\" onmouseout=\"{$helpfunc}('')\"" : "")." >\n<option value=\"\">".LANHELP_21."</option>\n";
 		while (list($key, $bbcode) = each($colours)) {
 			$string .= "<option style=\"color:".strtolower($bbcode[0])."\" value=\"".strtolower($bbcode[0])."\">".$bbcode[1]."</option>\n";
 		}
@@ -90,7 +90,7 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help") {
 		while (list($key, $bbcode) = each($fontsizes)) {
 			$string .= "<option value=\"".$bbcode[0]."\">".$bbcode[1]."</option>\n";
 		}
-		$string .= "</select></span>";
+		$string .= "</select></span><br /><br />";
 	}
 	return $string;
 }
