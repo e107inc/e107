@@ -149,7 +149,7 @@ function checklayout($str){
 				echo "</p>\n</form>";
 			}
 			
-		}else if($custom == "search"){
+		}else if($custom == "search" && (USER || $pref['search_restrict']!=1)){
 			$searchflat = TRUE;
 			include(e_PLUGIN."search_menu/search_menu.php");
 		}else if($custom == "quote"){
