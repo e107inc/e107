@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_recent_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-02-13 19:15:22 $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-13 19:17:24 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -23,7 +23,7 @@ $CONTENT_RECENT_TABLE_END = "";
 if(!$CONTENT_RECENT_TABLE_START){
 				$CONTENT_RECENT_TABLE_START = "
 				<div style='text-align:center'>
-				<table style='width:95%' border='1'>\n";
+				<table style='width:95%' border='0'>\n";
 }
 if(!$CONTENT_RECENT_TABLE){
 				$CONTENT_RECENT_TABLE = "
