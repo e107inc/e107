@@ -47,22 +47,26 @@ if($action == "cat"){
                 $category_name = $aj -> tpa($category_name);
                 $category_icon = e_IMAGE."newsicons/".$category_icon;
 
-                $count = $sql -> db_SELECT("news", "*",  "news_category='$category' ORDER BY news_datestamp DESC");
+                $count = $sql -> db_SELECT("news", "*",  "news_category='$category' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY news_datestamp DESC");
                 while($row = $sql-> db_Fetch()){
                         extract($row);
-                        $news_title = $aj -> tpa($news_title);
-                        if($news_title == ""){ $news_title = "Untitled"; }
-                        $datestamp = $gen->convert_date($news_datestamp, "short");
-                        $comment_total = $sql2 -> db_Count("comments", "(*)",  "WHERE comment_item_id='$news_id' AND comment_type='0' ");
-                        $text .= "
-                        <img src='".THEME."images/bullet2.gif' alt='bullet' /> <b>
-                        <a href='news.php?item.".$news_id."'>".$news_title."</a></b>
-                        <br />&nbsp;&nbsp;
-                        <span class='smalltext'>
-                        ".$datestamp.", ".LAN_99.": ".
-                        ($news_allow_comments ? COMMENTOFFSTRING : $comment_total)."
-                        </span>
-                        <br />\n";
+						if(check_class($news_class)){
+							$news_title = $aj -> tpa($news_title);
+							if($news_title == ""){ $news_title = "Untitled"; }
+							$datestamp = $gen->convert_date($news_datestamp, "short");
+							$comment_total = $sql2 -> db_Count("comments", "(*)",  "WHERE comment_item_id='$news_id' AND comment_type='0' ");
+							$text .= "
+							<img src='".THEME."images/bullet2.gif' alt='bullet' /> <b>
+							<a href='news.php?item.".$news_id."'>".$news_title."</a></b>
+							<br />&nbsp;&nbsp;
+							<span class='smalltext'>
+							".$datestamp.", ".LAN_99.": ".
+							($news_allow_comments ? COMMENTOFFSTRING : $comment_total)."
+							</span>
+							<br />\n";
+						}else{
+							$count --;
+						}
                 }
                 $text = "<img src='$category_icon' alt='' /><br />".
                 LAN_307.$count."
