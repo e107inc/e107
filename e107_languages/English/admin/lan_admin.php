@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-02-08 21:33:05 $
+|     $Revision: 1.12 $
+|     $Date: 2005-02-10 22:11:42 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -171,7 +171,7 @@ define("ADLAN_LAT_4", "Submitted reviews");
 define("ADLAN_LAT_5", "Submitted links");
 define("ADLAN_LAT_6", "Reported forum posts");
 define("ADLAN_LAT_7", "File uploads");
-define("ADLAN_LAT_8", "There are unviewed administrator messages");
+define("ADLAN_LAT_8", "There are unmoderated administrator messages");
 
 define("ADLAN_138", "Site Links");
 define("ADLAN_139", "Add/edit/delete links");
