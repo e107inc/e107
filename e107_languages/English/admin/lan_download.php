@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_download.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-03-23 13:17:51 $
-|     $Author: stevedunstan $
+|     $Revision: 1.6 $
+|     $Date: 2005-04-02 18:29:48 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("DOWLAN_1", "Download added to database.");
@@ -16,8 +16,7 @@ define("DOWLAN_4", "Please tick the confirm box to delete the download");
 define("DOWLAN_5", "There are no download categories defined yet, until you define some you cannot enter any downloads.");
 define("DOWLAN_6", "No existing downloads");
 define("DOWLAN_7", "Existing Downloads");
-define("DOWLAN_8", "Edit");
-define("DOWLAN_9", "Delete");
+
 define("DOWLAN_10", "tick to confirm");
 define("DOWLAN_11", "Category");
 define("DOWLAN_12", "Name");
@@ -30,13 +29,12 @@ define("DOWLAN_18", "Description");
 define("DOWLAN_19", "Main image");
 define("DOWLAN_20", "Thumbnail image");
 define("DOWLAN_21", "Status");
-define("DOWLAN_22", "Yes");
-define("DOWLAN_23", "No");
+
 define("DOWLAN_24", "Update Download");
 define("DOWLAN_25", "Submit Download");
 define("DOWLAN_26", "Downloads");
 define("DOWLAN_27", "Download");
-define("DOWLAN_28", "Options");
+
 define("DOWLAN_29", "Downloads Front Page");
 define("DOWLAN_30", "Create Download");
 define("DOWLAN_31", "Categories");
@@ -66,7 +64,7 @@ define("DOWLAN_54", "Download Options");
 define("DOWLAN_55", "Number of downloads to display per page");
 define("DOWLAN_56", "Sort by ");
 define("DOWLAN_57", "Downloads");
-define("DOWLAN_58", "Date");
+
 define("DOWLAN_59", "Filename");
 define("DOWLAN_60", "Author");
 define("DOWLAN_61", "Order ");

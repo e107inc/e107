@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/custommenu.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-03-26 16:09:14 $
+|     $Revision: 1.21 $
+|     $Date: 2005-04-02 18:29:13 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -166,7 +166,7 @@ if (isset($_POST['preview'])){
 
  // Read Page Information.
 
-} elseif (isset($_POST['edit2'])){  
+} elseif (isset($_POST['edit2'])){
 	$page = e_PLUGIN."custompages/".$_POST['existingpages'];
     if ($fileArray = file($page)){
 		$data = implode("\n", $fileArray);
@@ -216,7 +216,7 @@ if (count($menu_files)){
 	foreach($menu_files as $f) {
 		$text .= "<option>".$f['fname']."</option>";
 	}
-	$text .= "</select>\n<input class='button' type='submit' name='edit' value='".CUSLAN_9."' /> ";
+	$text .= "</select>\n<input class='button' type='submit' name='edit' value='".LAN_EDIT."' /> ";
 } else {
 	$text .= "<span class='defaulttext'>".CUSLAN_10."</span>";
 }
