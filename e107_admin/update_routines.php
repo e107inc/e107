@@ -33,6 +33,8 @@ function update_614_to_615($type){
 		mysql_query("ALTER TABLE ".MPREFIX."submitnews ADD submitnews_category TINYINT(3) UNSIGNED NOT NULL DEFAULT '0' AFTER submitnews_title");
 		mysql_query("ALTER TABLE ".MPREFIX."upload ADD upload_category TINYINT(3) UNSIGNED NOT NULL DEFAULT '0'");
 		mysql_query("ALTER TABLE ".MPREFIX."online ADD online_pagecount tinyint(3) unsigned NOT NULL default '0'");
+		mysql_query("ALTER TABLE ".MPREFIX."submitnews ADD submitnews_file VARCHAR(100) NOT NULL default '' ");
+
 		global $DOWNLOADS_DIRECTORY;
 		$sql2 = new db;
 		$sql -> db_Select("download", "download_id, download_url", "download_filesize=0");
@@ -45,7 +47,7 @@ function update_614_to_615($type){
 		$fields = mysql_list_fields($mySQLdefaultdb,MPREFIX."submitnews");
 		$columns = mysql_num_fields($fields);
 		for ($i = 0; $i < $columns; $i++) {
-	   	if("submitnews_category" == mysql_field_name($fields, $i)){return TRUE;}
+	   	if("submitnews_file" == mysql_field_name($fields, $i)){return TRUE;}
 		}
 		return FALSE;
 	}
