@@ -654,7 +654,6 @@ function online(){
 	global $sql;
 	$ip = getip();
 	$udata = (USER ? USERID.".".USERNAME : 0);
-
 	if(!$sql -> db_Select("online", "*", "online_ip='$ip' OR (online_user_id = '{$udata}' AND online_user_id != '0') ")){
 		define("NOSPLASH", TRUE); // first visit to site
 		$sql -> db_Insert("online", " '".time()."', 'null', '".$udata."', '$ip', '".$page."', 1");
@@ -668,13 +667,12 @@ function online(){
 		}
 		if($online_pagecount == 90 && $online_ip !="127.0.0.1"){
 			echo "<div style='text-align:center; font: 11px verdana, tahoma, arial, helvetica, sans-serif;'><b>Warning!</b><br /><br />The flood protection on this site has been activated and you are warned that if you carry on requesting pages you could be banned.<br /></div>";
-			exit;
 		}
 		if($online_timestamp < (time()-300)){
 			if($udata == $online_user_id){
-				$query = "online_timestamp='".time()."', online_ip='$ip', online_location='$page', online_pagecount=$online_pagecount WHERE online_user_id='$udata'";
+				$query = "online_timestamp='".time()."', online_ip='$ip', online_location='$page', online_pagecount=1 WHERE online_user_id='$udata'";
 			} else {
-				$query = "online_timestamp='".time()."', online_user_id='$udata', online_location='$page', online_pagecount=$online_pagecount WHERE online_ip='$ip'";
+				$query = "online_timestamp='".time()."', online_user_id='$udata', online_location='$page', online_pagecount=1 WHERE online_ip='$ip'";
 			}
 		} else {
 			if($udata == $online_user_id){
@@ -689,6 +687,7 @@ function online(){
 		}
 	}
 	$sql -> db_Delete("online", "online_timestamp<".(time()-300)." ");
+	if($online_pagecount == 90){exit;}
 	$total_online = $sql -> db_Count("online");
 	if($members_online = $sql -> db_Select("online", "*", "online_user_id!='0' ")){
 		while($row = $sql -> db_Fetch()){
@@ -713,25 +712,7 @@ function getcachedvars($id){
         global $cachevar;
         return ($cachevar[$id] ? $cachevar[$id] : FALSE);
 }
-
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-class gettime{
-        function gettime(){
-                /* Constructor
-                # Get microtime
-                #
-                # - parameters                none
-                # - return                                microtime
-                # - scope                                        public
-                */
-                list($usec, $sec) = explode(" ",microtime());
-                return ((float)$usec + (float)$sec);
-    }
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-
 function getip(){
         /*
         # Get IP address
