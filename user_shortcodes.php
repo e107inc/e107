@@ -124,9 +124,9 @@ if(defined("USER_REALNAME_ICON"))
 }
 if(file_exists(THEME."generic/user_realname.png"))
 {
-	return "<img src='".THEME."generic/user_realname.png' alt='' style='vertical-align:middle;' /> ";
+	return "<img src='".THEME."generic/user_realname.png' alt='' style='border:0px;vertical-align:middle;' /> ";
 }
-return "<img src='".e_IMAGE."user_icons/user_realname_".IMODE.".png' alt='' style='vertical-align:middle;' /> ";
+return "<img src='".e_IMAGE."user_icons/user_realname_".IMODE.".png' alt='' style='border:0px;vertical-align:middle;' /> ";
 SC_END
 
 SC_BEGIN USER_REALNAME
@@ -163,9 +163,9 @@ if(defined("USER_ICON"))
 }
 if(file_exists(THEME."generic/user.png"))
 {
-	return "<img src='".THEME."generic/user.png' alt='' style='vertical-align:middle;' /> ";
+	return "<img src='".THEME."generic/user.png' alt='' style='border:0px;vertical-align:middle;' /> ";
 }
-return "<img src='".e_IMAGE."user_icons/user_".IMODE.".png' alt='' style='vertical-align:middle;' /> ";
+return "<img src='".e_IMAGE."user_icons/user_".IMODE.".png' alt='' style='border:0px;vertical-align:middle;' /> ";
 SC_END
 
 SC_BEGIN USER_ICON_LINK
@@ -176,11 +176,11 @@ if(defined("USER_ICON"))
 }
 else if(file_exists(THEME."generic/user.png"))
 {
-	$icon = "<img src='".THEME."generic/user.png' alt='' style='vertical-align:middle;' /> ";
+	$icon = "<img src='".THEME."generic/user.png' alt='' style='border:0px;vertical-align:middle;' /> ";
 }
 else
 {
-	$icon = "<img src='".e_IMAGE."user_icons/user_".IMODE.".png' alt='' style='vertical-align:middle;' /> ";
+	$icon = "<img src='".e_IMAGE."user_icons/user_".IMODE.".png' alt='' style='border:0px;vertical-align:middle;' /> ";
 }
 return "<a href='".e_SELF."?id.{$user['user_id']}'>{$icon}</a>";
 SC_END
