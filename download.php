@@ -13,9 +13,9 @@
 +---------------------------------------------------------------+
 */
 require_once("class2.php");
-require_once(HEADERF);
 unset($text);
 if(!e_QUERY){
+require_once(HEADERF);
 	// no qs - render categories ...
 
 	if(!$sql -> db_Select("download_category", "*", "download_category_parent='0' ")){
@@ -146,15 +146,16 @@ if($action == "list"){
 	if(!$view) {$view = ($pref['download_view'] ? $pref['download_view'] : "10");}
 
 	$total_downloads = $sql -> db_Select("download", "*", "download_category='$id' AND download_active='1'");
-	if(!$total_downloads){ require_once(FOOTERF); exit; }
+	if(!$total_downloads){ require_once(HEADERF);require_once(FOOTERF); exit; }
 
 
 	$sql -> db_Select("download_category", "*", "download_category_id='$id'");
 	$row = $sql -> db_Fetch(); extract($row);
 	$core_total = $sql -> db_Count("download WHERE download_category='$id' AND download_active=1");
 	$type = $download_category_name." [ ".$download_category_description." ]";
-
-
+	define("e_PAGETITLE", PAGE_NAME." / ".$download_category_name);
+	
+	require_once(HEADERF);
 	$text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."?".e_QUERY."'>
 	<table style='width:95%' class='fborder'>
@@ -254,7 +255,7 @@ if($action == "view"){
 
 
 	if(!$sql -> db_Select("download", "*", "download_id='$id'")){
-		require_once(FOOTERF);
+		require_once(HEADERF);require_once(FOOTERF);
 		exit;
 	}
 
@@ -263,7 +264,9 @@ if($action == "view"){
 	$sql2 -> db_Select("download_category", "*", "download_category_id='$download_category'");
 	$row = $sql2 -> db_Fetch(); extract($row);
 	$type = $download_category_name." [ ".$download_category_description." ]";
+	define("e_PAGETITLE", PAGE_NAME." / ".$download_category_name." / ".$download_name);
 
+	require_once(HEADERF);
 	$text = "<div style='text-align:center'>
 	<table style='width:95%' class='fborder'>
 	<tr>
@@ -272,7 +275,7 @@ if($action == "view"){
 
 	<tr>
 	<td style='width:20%' class='forumheader3'>".LAN_dl_24.": </td>
-	<td style='width:80%' class='forumheader3'>$download_author</td>
+	<td style='width:80%' class='forumheader3'>".($download_author ? $download_author : "&nbsp;")."</td>
 	</tr>";
 
 	if($download_author_email){
@@ -292,7 +295,7 @@ if($action == "view"){
 
 	$text .= "<tr>
 	<td style='width:20%' class='forumheader3'>".LAN_dl_7.": </td>
-	<td style='width:80%' class='forumheader3'>".$aj -> tpa($download_description)."</td>
+	<td style='width:80%' class='forumheader3'>".$aj -> tpa(($download_description ? $downloadd_description : "&nbsp;"))."</td>
 	</tr>";
 
 	if($download_thumb){

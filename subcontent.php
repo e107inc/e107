@@ -13,7 +13,6 @@
 +---------------------------------------------------------------+
 */
 require_once("class2.php");
-require_once(HEADERF);
 
 $aj = new textparse;
 require_once(e_HANDLER."form_handler.php");
@@ -27,7 +26,13 @@ if(e_QUERY){
 	$id = $tmp[2];
 	unset($tmp);
 }
+if($action == "article"){
+	define("e_PAGETITLE", ARLAN_15.(IsSet($_POST['preview']) ? " / ".ARLAN_28 : ""));
+}elseif($action == "review"){
+	define("e_PAGETITLE", ARLAN_89);
+}
 
+require_once(HEADERF);
 if(IsSet($_POST['preview'])){
 	$obj = new convert;
 	$datestamp = $obj->convert_date(time(), "long");
