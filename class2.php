@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2005-01-10 09:41:04 $
-|     $Author: sweetas $
+|     $Revision: 1.49 $
+|     $Date: 2005-01-15 20:42:20 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -183,6 +183,8 @@ if (!$pref['cookie_name']) {
 if ($pref['user_tracking'] == "session") {
         session_start();
 }
+
+$pref['htmlarea'] = false;
 
 define("e_SELF", ($pref['ssl_enabled'] ? "https://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']) : "http://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'])));
 
