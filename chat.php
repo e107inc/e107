@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/chat.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:09:30 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-14 12:57:05 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -35,11 +35,9 @@ if(strstr(e_QUERY, "fs")){
 }
 
 if(e_QUERY ? $from = e_QUERY : $from = 0);
-
 if(!$view){ $view = 30; }
 
 $chat_total = $sql -> db_Count("chatbox");
-$text = "<br /><table style='width:100%'><tr><td>";
 
 if($fs){
         $sql -> db_Select("chatbox", "*", "cb_id='$cgtm'");
@@ -48,22 +46,39 @@ if($fs){
 }
 $obj2 = new convert;
 $aj = new textparse;
-while($row = $sql-> db_Fetch()){
-        $datestamp = $obj2->convert_date($row['cb_datestamp'], "long");
-        $cb_nick = eregi_replace("[0-9]+\.", "", $row['cb_nick']);
+
+while($row = $sql -> db_Fetch()){
+        $CHAT_TABLE_DATESTAMP = $obj2->convert_date($row['cb_datestamp'], "long");
+        $CHAT_TABLE_NICK = eregi_replace("[0-9]+\.", "", $row['cb_nick']);
         $cb_message = ($row['cb_blocked']  ? LAN_16 : $aj -> tpa($row['cb_message']));
         if(!eregi("<a href|<img|&#", $cb_message)){
                 $cb_message = preg_replace("/([^\s]{100})/", "$1\n", $cb_message);
         }
-        $text .= "\n<div class='spacer'>".($flag ? "<div class='forumheader3'>" : "<div class='forumheader4'>")."
-<img src='".THEME."images/bullet2.gif' alt='bullet' /> \n<b>".$cb_nick."</b> ".LAN_13." ".$datestamp."<br /><div class='defaulttext'><i>".$cb_message."</i></div>\n</div></div>\n";
-        $flag = (!$flag ? TRUE : FALSE);
+		$CHAT_TABLE_MESSAGE = $cb_message;
+		$CHAT_TABLE_FLAG = ($flag ? "forumheader3" : "forumheader4");
+
+		if(!$CHAT_TABLE){
+			if(file_exists(THEME."chat_template.php")){
+				require_once(THEME."chat_template.php");
+			}else{
+				require_once(e_BASE.$THEMES_DIRECTORY."templates/chat_template.php");
+			}
+		}
+		$textstring .= preg_replace("/\{(.*?)\}/e", '$\1', $CHAT_TABLE);
+		$flag = (!$flag ? TRUE : FALSE);
 }
-$text .= "</td></tr></table>";
+
+$textstart = preg_replace("/\{(.*?)\}/e", '$\1', $CHAT_TABLE_START);
+$textend = preg_replace("/\{(.*?)\}/e", '$\1', $CHAT_TABLE_END);
+$text = $textstart.$textstring.$textend;
+
 $ns -> tablerender(LAN_11, $text);
+
 if(!$fs){
         require_once(e_HANDLER."np_class.php");
         $ix = new nextprev("chat.php", $from, 30, $chat_total, LAN_12);
 }
+
 require_once(FOOTERF);
+
 ?>
