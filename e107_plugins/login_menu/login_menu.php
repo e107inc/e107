@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2004-12-17 13:00:42 $
+|     $Revision: 1.8 $
+|     $Date: 2004-12-17 13:47:33 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -222,9 +222,9 @@ if(USER == TRUE || ADMIN == TRUE){
 	}
 	$text .= '</p></form></div>';
 	if(file_exists(THEME.'images/login_menu.png')){
-		$caption = '<img src="'.THEME.'images/login_menu.png" alt="" />'.LOGIN_MENU_L5.' '.USERNAME;
+		$caption = '<img src="'.THEME.'images/login_menu.png" alt="" />'.LOGIN_MENU_L5;
 	} else {
-		$caption = LOGIN_MENU_L5.' '.USERNAME;
+		$caption = LOGIN_MENU_L5;
 	}
 	$ns -> tablerender($caption, $text, 'login');
 }
