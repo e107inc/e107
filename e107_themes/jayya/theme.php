@@ -42,7 +42,7 @@ $layout = "_default";
 $HEADER = "<table class='top_section'>
 <tr>
 <td class='top_section_left' style='width: 170px'>
-<img src='".THEME."images/logo.png' style='width: 170px; height: 68px; display: block;' alt='' />
+<img src='".THEME."images/logo.png' style='width: 170px; height: 71px; display: block;' alt='' />
 </td>
 <td class='top_section_mid'>
 {BANNER}
