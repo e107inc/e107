@@ -42,7 +42,7 @@ class textparse {
 		return $tp->toForm($text);
 	}
 
-	function tpa($text, $mode, $referrer = '', $highlight_search = FALSE, $poster_id) {
+	function tpa($text, $mode = '', $referrer = '', $highlight_search = FALSE, $poster_id = '') {
 		global $tp;
 		return $tp->toHTML($text, TRUE, $mode, $poster_id);
 	}
@@ -51,10 +51,9 @@ class textparse {
 		return $text;
 	}
 
-	function formtpa($text, $mode) {
+	function formtpa($text, $mode = '') {
 		global $tp;
-		$no_encode = ($mode == 'admin') ? TRUE :
-		FALSE;
+		$no_encode = ($mode == 'admin') ? TRUE : FALSE;
 		return $tp->toDB($text, $no_encode);
 	}
 
