@@ -58,32 +58,6 @@ $print_info[] = array( 'table' => 'news',  'handler' => '
 	</font>";
 ');
 
-$print_info[] = array( 'table' => 'article', 'handler' => '
-	$sql -> db_Select("content", "*", "content_id=\"$id\" ");
-	$row = $sql -> db_Fetch();
-	extract($row);
-	$content_heading = $aj -> tpa($content_heading);
-	$content_subheading = $aj -> tpa($content_subheading);
-	$content_content = ereg_replace("\{EMAILPRINT\}|\[newpage\]", "", $aj -> tpa($content_content));
-	$sql -> db_Select("user", "*", "user_id=\"$content_author\" ");
-	list($a_id, $a_name) = $sql-> db_Fetch();
-	$content_datestamp = $con -> convert_date($content_datestamp, "long");
-	$text = "<font style=\"FONT-SIZE: 11px; COLOR: black; FONT-FAMILY: Tahoma, Verdana, Arial, Helvetica; TEXT-DECORATION: none\">
-	<b>".LAN_304.$content_heading."</b>
-	<br />
-	".LAN_305.$content_subheading."
-	<br />
-	".LAN_87.$a_name."<br />
-	".$content_datestamp."
-	<br /><br />".
-	$content_content."
-	<br /><br /><hr />
-	".LAN_306.SITENAME."
-	<br />
-	( http://".$_SERVER[HTTP_HOST].e_HTTP."content.php?article.".$content_id." )
-	</font>";
-');
-
 $print_info[] = array( 'table' => 'content', 'handler' => '
 	$sql -> db_Select("content", "*", "content_id=\"$id\" ");
 	$row = $sql -> db_Fetch();
@@ -91,8 +65,14 @@ $print_info[] = array( 'table' => 'content', 'handler' => '
 	$content_heading = $aj -> tpa($content_heading);
 	$content_subheading = $aj -> tpa($content_subheading);
 	$content_content = ereg_replace("\{EMAILPRINT\}|\[newpage\]", "", $aj -> tpa($content_content));
-	$sql -> db_Select("user", "*", "user_id=\"$content_author\" ");
-	list($a_id, $a_name) = $sql-> db_Fetch();
+	if(is_numeric($content_author)) {
+		$sql -> db_Select("user", "*", "user_id=\"$content_author\" ");
+		list($a_id, $a_name) = $sql-> db_Fetch();
+	} else {
+		$tmp = explode("^",$content_author);
+		$a_name = $tmp[0];
+		$user_email = $tmp[1];
+	}
 	$content_datestamp = $con -> convert_date($content_datestamp, "long");
 	$text = "<font style=\"FONT-SIZE: 11px; COLOR: black; FONT-FAMILY: Tahoma, Verdana, Arial, Helvetica; TEXT-DECORATION: none\">
 	<b>".LAN_304.$content_heading."</b>
@@ -106,7 +86,7 @@ $print_info[] = array( 'table' => 'content', 'handler' => '
 	<br /><br /><hr />
 	".LAN_306.SITENAME."
 	<br />
-	( http://".$_SERVER[HTTP_HOST].e_HTTP."content.php?content.".$content_id." )
+	( http://".$_SERVER[HTTP_HOST].e_HTTP."article.php?article.".$content_id." )
 	</font>";
 ');
 
