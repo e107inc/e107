@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-02-18 00:56:05 $
+|     $Revision: 1.13 $
+|     $Date: 2005-02-18 14:41:45 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -314,7 +314,7 @@ class forum {
 			$sql3 = new db;
 		}
 		if (!$mode) {
-			$text = "<div style='padding : 1px; ".ADMIN_WIDTH."; height : 400px; overflow : auto; margin-left: auto; margin-right: auto;'>";
+			$text = "<div style='padding : 1px; ".ADMIN_WIDTH."; margin-left: auto; margin-right: auto;'>";
 		} else {
 			$text = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
 		}
@@ -370,7 +370,7 @@ class forum {
 					while ($row = $sql2->db_Fetch()) {
 						extract($row);
 
-						$text .= "<tr><td style='width:5%; text-align:center' class='forumheader3'><img src='".e_PLUGIN."images/new.png' alt='' /></td>\n<td style='width:55%' class='forumheader3'><a href='".e_BASE."forum_viewforum.php?".$forum_id."'>".$forum_name."</a>" ;
+						$text .= "<tr><td style='width:5%; text-align:center' class='forumheader3'><img src='".e_PLUGIN."forum/images/new.png' alt='' /></td>\n<td style='width:55%' class='forumheader3'><a href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_id."'>".$forum_name."</a>" ;
 
 						if ($forum_class == e_UC_MEMBER) {
 							$text .= "(".FORLAN_84.")";
