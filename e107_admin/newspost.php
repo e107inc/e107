@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.16 $
-|   $Date: 2005-01-22 18:45:19 $
-|   $Author: stevedunstan $
+|   $Revision: 1.17 $
+|   $Date: 2005-01-25 20:38:49 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 
 */
@@ -26,9 +26,6 @@ if($pref['htmlarea']){
 }
 if(!getperms("H")){ header("location:".e_BASE."index.php"); exit;}
 $e_sub_cat = 'news';
-
-require_once(e_HANDLER."textparse/basic.php");
-$etp = new e107_basicparse;
 
 require_once("auth.php");
 require_once(e_HANDLER."userclass_class.php");
@@ -51,35 +48,30 @@ $amount = 50;
 
 // ##### Main loop -----------------------------------------------------------------------------------------------------------------------
 
-if(preg_match("#(.*?)_delete_(\d+)#",$deltest[$etp->unentity(NWSLAN_8)],$matches))
-{
+if (preg_match("#(.*?)_delete_(\d+)#",$deltest[$tp->toJS(NWSLAN_8)],$matches)){
         $delete = $matches[1];
         $del_id = $matches[2];
 }
 
-if($delete == "main" && $del_id)
-{
-        if($sql -> db_Delete("news", "news_id='$del_id' "))
-        {
-		$e_event -> trigger("newsdel", $del_id);
+if ($delete == "main" && $del_id){
+        if($sql -> db_Delete("news", "news_id='$del_id' ")){
+                $e_event -> trigger("newsdel", $del_id);
                 $newspost -> show_message(NWSLAN_31." #".$del_id." ".NWSLAN_32);
                 $e107cache->clear("news.php");
                 $ix -> create_rss();
         }
         unset($delete, $del);
-        
+
 }
 
-if($delete == "category" && $del_id)
-{
-        if($sql -> db_Delete("news_category", "category_id='$del_id' "))
-        {
+if ($delete == "category" && $del_id){
+        if($sql -> db_Delete("news_category", "category_id='$del_id' ")){
                 $newspost -> show_message(NWSLAN_33." #".$del_id." ".NWSLAN_32);
                 unset($delete,$del_id);
         }
 }
 
-if($delete == "sn" && $del_id){
+if ($delete == "sn" && $del_id){
         if($sql -> db_Delete("submitnews", "submitnews_id='$del_id' "))
         {
                 $newspost -> show_message(NWSLAN_34." #".$del_id." ".NWSLAN_32);
@@ -88,121 +80,107 @@ if($delete == "sn" && $del_id){
         }
 }
 
-if(IsSet($_POST['submitupload']))
-{
-	$pref['upload_storagetype'] = "1";
-	require_once(e_HANDLER."upload_handler.php");
-	$uploaded = file_upload(($_POST['uploadtype'] == NWSLAN_67 ? e_IMAGE."newspost_images/" : e_FILE."downloads/"));
-	if($_POST['uploadtype'] == "Image" && $_POST['imagecrethumb'])
-	{
-		require_once(e_HANDLER."resize_handler.php");
-		resize_image(e_IMAGE."newspost_images/".$uploaded[0]['name'], e_IMAGE."newspost_images/".$uploaded[0]['name'], 250, "copy");
-	}
+if (IsSet($_POST['submitupload'])){
+        $pref['upload_storagetype'] = "1";
+        require_once(e_HANDLER."upload_handler.php");
+        $uploaded = file_upload(($_POST['uploadtype'] == NWSLAN_67 ? e_IMAGE."newspost_images/" : e_FILE."downloads/"));
+        if($_POST['uploadtype'] == "Image" && $_POST['imagecrethumb']){
+                require_once(e_HANDLER."resize_handler.php");
+                resize_image(e_IMAGE."newspost_images/".$uploaded[0]['name'], e_IMAGE."newspost_images/".$uploaded[0]['name'], 250, "copy");
+        }
 }
 
-//$_POST['news_title'] = $tp -> toDB($_POST['news_title']);
-if(IsSet($_POST['preview'])){
+$_POST['news_title'] = $tp -> toDB($_POST['news_title']);  // required.
+if (IsSet($_POST['preview'])){
         $newspost -> preview_item($id);
 }
 
-if(IsSet($_POST['submit'])){
+if (IsSet($_POST['submit'])){
         $newspost -> submit_item($sub_action, $id);
         $action = "main";
         unset($sub_action, $id);
 }
 
-if(IsSet($_POST['create_category']))
-{
-	if($_POST['category_name'])
-	{
-		if(empty($_POST['category_button']))
-		{
-			$handle=opendir(e_IMAGE."newsicons");
-			while ($file = readdir($handle))
-			{
-				if($file != "." && $file != ".." && $file != "/" && $file != "null.txt" && $file != "CVS")
-				{
-					$iconlist[] = $file;
-				}
-			}
-			closedir($handle);
-			$_POST['category_button'] = $iconlist[0];
-		}
-		$_POST['category_name'] = $tp -> toDB($_POST['category_name'], TRUE);
-		$sql -> db_Insert("news_category", " '0', '".$_POST['category_name']."', '".$_POST['category_button']."'");
-		$newspost -> show_message(NWSLAN_35);
-	}
+if (IsSet($_POST['create_category'])){
+        if ($_POST['category_name']){
+                if(empty($_POST['category_button'])){
+                        $handle=opendir(e_IMAGE."newsicons");
+                        while ($file = readdir($handle)){
+                                if($file != "." && $file != ".." && $file != "/" && $file != "null.txt" && $file != "CVS"){
+                                        $iconlist[] = $file;
+                                }
+                        }
+                        closedir($handle);
+                        $_POST['category_button'] = $iconlist[0];
+                }
+                $_POST['category_name'] = $tp -> toDB($_POST['category_name'], TRUE);
+                $sql -> db_Insert("news_category", " '0', '".$_POST['category_name']."', '".$_POST['category_button']."'");
+                $newspost -> show_message(NWSLAN_35);
+        }
 }
 
-if(IsSet($_POST['update_category']))
-{
-	if($_POST['category_name'])
-	{
-		$category_button = ($_POST['category_button'] ? $_POST['category_button'] : "");
-		$_POST['category_name'] = $tp -> toDB($_POST['category_name'], TRUE);
-		$sql -> db_Update("news_category", "category_name='".$_POST['category_name']."', category_icon='".$category_button."' WHERE category_id='".$_POST['category_id']."'");
-		$newspost -> show_message(NWSLAN_36);
-	}
+if (IsSet($_POST['update_category'])){
+        if ($_POST['category_name']){
+                $category_button = ($_POST['category_button'] ? $_POST['category_button'] : "");
+                $_POST['category_name'] = $tp -> toDB($_POST['category_name'], TRUE);
+                $sql -> db_Update("news_category", "category_name='".$_POST['category_name']."', category_icon='".$category_button."' WHERE category_id='".$_POST['category_id']."'");
+                $newspost -> show_message(NWSLAN_36);
+        }
 }
 
-if(IsSet($_POST['save_prefs']))
-{
-	$pref['newsposts'] = $_POST['newsposts'];
+if(IsSet($_POST['save_prefs'])){
+        $pref['newsposts'] = $_POST['newsposts'];
 
-	// ##### ADDED FOR NEWSARCHIVE --------------------------------------------------------------------
-	$pref['newsposts_archive'] = $_POST['newsposts_archive'];
-	$pref['newsposts_archive_title'] = $_POST['newsposts_archive_title'];
-	// ##### END --------------------------------------------------------------------------------------
+        // ##### ADDED FOR NEWSARCHIVE --------------------------------------------------------------------
+        $pref['newsposts_archive'] = $_POST['newsposts_archive'];
+        $pref['newsposts_archive_title'] = $_POST['newsposts_archive_title'];
+        // ##### END --------------------------------------------------------------------------------------
 
-	$pref['news_cats'] = $_POST['news_cats'];
-	$pref['nbr_cols'] = $_POST['nbr_cols'];
-	$pref['subnews_attach'] = $_POST['subnews_attach'];
-	$pref['subnews_resize'] = $_POST['subnews_resize'];
-	$pref['subnews_class'] = $_POST['subnews_class'];
-	$pref['subnews_htmlarea'] = $_POST['subnews_htmlarea'];
-	$pref['subnews_hide_news'] = $_POST['subnews_hide_news'];
+        $pref['news_cats'] = $_POST['news_cats'];
+        $pref['nbr_cols'] = $_POST['nbr_cols'];
+        $pref['subnews_attach'] = $_POST['subnews_attach'];
+        $pref['subnews_resize'] = $_POST['subnews_resize'];
+        $pref['subnews_class'] = $_POST['subnews_class'];
+        $pref['subnews_htmlarea'] = $_POST['subnews_htmlarea'];
+        $pref['subnews_hide_news'] = $_POST['subnews_hide_news'];
 
-	/*
-	changes by jalist 22/01/2005:
-	added pref to render new date header
-	*/
-	$pref['news_newdateheader'] = $_POST['news_newdateheader'];
+        /*
+        changes by jalist 22/01/2005:
+        added pref to render new date header
+        */
+        $pref['news_newdateheader'] = $_POST['news_newdateheader'];
 
 
-	save_prefs();
-	$e107cache->clear("news.php");
-	$newspost -> show_message("Settings Saved");
+        save_prefs();
+        $e107cache->clear("news.php");
+        $newspost -> show_message("Settings Saved");
 }
 
 
 
 
-if(!e_QUERY || $action == "main")
-{
-	$newspost -> show_existing_items($action, $sub_action, $id, $from, $amount);
+if(!e_QUERY || $action == "main"){
+        $newspost -> show_existing_items($action, $sub_action, $id, $from, $amount);
 }
 
-if($action == "create")
-{
-	if($sub_action == "edit" && !$_POST['preview']  && !$_POST['submit'])
-	{
-		if($sql -> db_Select("news", "*", "news_id='$id' "))
-		{
-			$row = $sql-> db_Fetch();
-			extract($row);
-			$_POST['news_title'] = $news_title;
-			$_POST['data'] = $news_body;
-			$_POST['news_extended'] = $news_extended;
-			$_POST['news_allow_comments'] = $news_allow_comments;
-			$_POST['news_class'] = $news_class;
-			$_POST['cat_id'] = $news_category;
-			if($news_start){$tmp = getdate($news_start);$_POST['startmonth'] = $tmp['mon'];$_POST['startday'] = $tmp['mday'];$_POST['startyear'] = $tmp['year'];}
-			if($news_end){$tmp = getdate($news_end);$_POST['endmonth'] = $tmp['mon'];$_POST['endday'] = $tmp['mday'];$_POST['endyear'] = $tmp['year'];}
-			$_POST['comment_total'] = $sql -> db_Count("comments", "(*)", " WHERE comment_item_id='$news_id' AND comment_type='0' ");
-			$_POST['news_rendertype'] = $news_render_type;
-		}
-	}
-	$newspost -> create_item($sub_action, $id);
+if($action == "create"){
+        if($sub_action == "edit" && !$_POST['preview']  && !$_POST['submit']) {
+                if($sql -> db_Select("news", "*", "news_id='$id' ")){
+                        $row = $sql-> db_Fetch();
+                        extract($row);
+                        $_POST['news_title'] = $news_title;
+                        $_POST['data'] = $news_body;
+                        $_POST['news_extended'] = $news_extended;
+                        $_POST['news_allow_comments'] = $news_allow_comments;
+                        $_POST['news_class'] = $news_class;
+                        $_POST['cat_id'] = $news_category;
+                        if($news_start){$tmp = getdate($news_start);$_POST['startmonth'] = $tmp['mon'];$_POST['startday'] = $tmp['mday'];$_POST['startyear'] = $tmp['year'];}
+                        if($news_end){$tmp = getdate($news_end);$_POST['endmonth'] = $tmp['mon'];$_POST['endday'] = $tmp['mday'];$_POST['endyear'] = $tmp['year'];}
+                        $_POST['comment_total'] = $sql -> db_Count("comments", "(*)", " WHERE comment_item_id='$news_id' AND comment_type='0' ");
+                        $_POST['news_rendertype'] = $news_render_type;
+                }
+        }
+        $newspost -> create_item($sub_action, $id);
 }
 
 if($action == "cat"){
@@ -243,11 +221,11 @@ function fclear(){
 echo "<script type=\"text/javascript\">
 function confirm_(mode, news_id){
         if(mode == 'cat'){
-                return confirm(\"".$etp->unentity(NWSLAN_37)." [ID: \" + news_id + \"]\");
+                return confirm(\"".$tp->toJS(NWSLAN_37)." [ID: \" + news_id + \"]\");
         }else if(mode == 'sn'){
-                return confirm(\"".$etp->unentity(NWSLAN_38)." [ID: \" + news_id + \"]\");
+                return confirm(\"".$tp->toJS(NWSLAN_38)." [ID: \" + news_id + \"]\");
         }else{
-                return confirm(\"".$etp->unentity(NWSLAN_39)." [ID: \" + news_id + \"]\");
+                return confirm(\"".$tp->toJS(NWSLAN_39)." [ID: \" + news_id + \"]\");
         }
 }
 </script>";
@@ -351,8 +329,8 @@ class newspost{
 
         function create_item($sub_action, $id){
                 // ##### Display creation form ---------------------------------------------------------------------------------------------------------
-                                        /* 08-08-2004 - unknown - fixed `Insert Image' display to use $IMAGES_DIRECTORY */
-                                        global $sql, $rs, $ns, $pref, $IMAGES_DIRECTORY, $tp;
+                /* 08-08-2004 - unknown - fixed `Insert Image' display to use $IMAGES_DIRECTORY */
+                global $sql, $rs, $ns, $pref, $IMAGES_DIRECTORY, $tp;
 
                 $handle=opendir(e_IMAGE."newspost_images");
                 while ($file = readdir($handle)){
@@ -655,13 +633,13 @@ class newspost{
                 $_POST['admin_name'] = USERNAME;
                 $_POST['comment_total'] = $comment_total;
                 $_POST['news_datestamp'] = time();
-				$_PR = $_POST;
+                                $_PR = $_POST;
                 $_PR['news_title'] = $tp -> post_toHTML($_PR['news_title']);
                 $_PR['data'] = $tp -> post_toHTML($_PR['data']);
                 $_PR['news_extended'] = $tp -> post_toHTML($_PR['news_extended']);
                 $_POST['news_title'] = $tp -> post_toForm($_POST['news_title']);
-				$_POST['data'] = $tp -> post_toForm($_POST['data']);
-				$_POST['news_extended'] = $tp -> post_toForm($_POST['news_extended']);
+                                $_POST['data'] = $tp -> post_toForm($_POST['data']);
+                                $_POST['news_extended'] = $tp -> post_toForm($_POST['news_extended']);
                 $_PR['news_body'] = (strstr($_PR['data'], "[img]http") ? $_PR['data'] : str_replace("[img]", "[img]../", $_PR['data']));
                 $ix -> render_newsitem($_PR);
                 $_POST['data'] = $tp -> toForm($_POST['data'],TRUE);
@@ -893,12 +871,12 @@ class newspost{
                 <span class='smalltext'>".NWSLAN_102."</span></td>
                 </tr>
 
-				
-				<tr>
+
+                                <tr>
                 <td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_111."</span><br /><i>".NWSLAN_112."</i></td>
                 <td class='forumheader3' style='width:40%'>
                 <input type='checkbox' name='news_newdateheader' value='1' ".($pref['news_newdateheader']==1 ? " checked='checked'" : "")." />
-				</td>
+                                </td>
                 </tr>
 
 
