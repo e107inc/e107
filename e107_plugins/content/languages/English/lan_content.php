@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-08 00:16:01 $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-08 14:36:55 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -150,7 +150,7 @@ define("CONTENT_ADMIN_OPT_LAN_79", "in seperate menus");
 define("CONTENT_ADMIN_OPT_LAN_80", "in one menu");
 define("CONTENT_ADMIN_OPT_LAN_81", "error; menu file not created");
 define("CONTENT_ADMIN_OPT_LAN_82", "menu file succesfully created in the /menus folder<br />you will still need to activate the menu in the admin menus area");
-define("CONTENT_ADMIN_OPT_LAN_83", "");
+define("CONTENT_ADMIN_OPT_LAN_83", "breadcrumb seperator character ( >> or > or - or ...)");
 define("CONTENT_ADMIN_OPT_LAN_84", "");
 define("CONTENT_ADMIN_OPT_LAN_85", "");
 

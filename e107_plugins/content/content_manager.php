@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_manager.php,v $
-|		$Revision: 1.1 $
-|		$Date: 2005-02-03 23:31:36 $
+|		$Revision: 1.2 $
+|		$Date: 2005-02-08 14:36:02 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -155,9 +155,13 @@ if(IsSet($message)){
 }
 
 if(!e_QUERY){
-			$aform -> show_contentmanager("edit", USERID, USERNAME);
-			require_once(FOOTERF);
-			exit;
+			if(USERID){
+				$aform -> show_contentmanager("edit", USERID, USERNAME);
+				require_once(FOOTERF);
+				exit;
+			}else{
+				header("location:".e_PLUGIN."content/content.php"); exit;
+			}
 }else{
 
 	if($type == "c"){
