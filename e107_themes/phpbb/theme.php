@@ -27,7 +27,7 @@ $layout = "_default";
 
 $HEADER = 
 "<div class='centre'>
-<table style='width:100%' class='maintable' cellspacing='10'>
+<table style='width:100%' class='maintable' cellspacing='0' cellpadding='0'>
 <tr>
 <td style='width:30%'>
 {LOGO}
@@ -44,14 +44,14 @@ $HEADER =
 </tr>
 <tr>
 <td colspan='4' >
-<table style='width:100%' cellspacing='10'><tr>
-<td style='width:25%; vertical-align: top;'>
+<table style='width:100%' cellspacing='0' cellpadding='0'><tr>
+<td style='width:25%; vertical-align: top;padding:10px'>
 {MENU=1}
-</td><td style='width:50%; vertical-align: top;'>";
+</td><td style='width:50%; vertical-align: top;padding-top:10px'>";
 
 
 $FOOTER = 
-"</td><td style='width:25%; vertical-align:top'>
+"</td><td style='width:25%; vertical-align:top;padding:10px'>
 {MENU=2}
 </td></tr>
 <tr>
@@ -94,7 +94,7 @@ $CUSTOMHEADER = "
 </tr>
 <tr>
 <td colspan='4' >
-<table style='width:100%' cellspacing='10'><tr>
+<table style='width:100%' ><tr>
 <td>";
 
 $CUSTOMFOOTER = "
@@ -190,14 +190,21 @@ function tablestyle($caption, $text, $mode=""){
 // [commentstyle]
 
 $COMMENTSTYLE = "
-<table style='width:95%'>
+<table style='width:100%'>
 <tr>
-<td style='width:30%; vertical-align:top'>
-<img src='".THEME."images/bullet2.gif' alt='bullet' /> 
+<td colspan='2' class='forumheader3'>
+{SUBJECT}
 <b>
 {USERNAME}
 </b>
-<br />
+|
+<span class='smalltext'>
+{TIMEDATE}
+</span>
+</td>
+</tr>
+<tr>
+<td style='width:30%; vertical-align:top'>
 {LEVEL}
 {AVATAR}
 <span class='smalltext'>
@@ -207,10 +214,6 @@ $COMMENTSTYLE = "
 </span>
 </td>
 <td style='width:70%; vertical-align:top'>
-<span class='smalltext'>
-{TIMEDATE}
-</span>
-<br />
 {COMMENT}
 <br /><i><span class='smalltext'>
 {SIGNATURE}

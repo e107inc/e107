@@ -54,7 +54,7 @@ if($cache = retrieve_cache("newcomments")){
 				$sql2 -> db_Select("news", "news_title, news_class", "news_id = $comment_item_id");
 				$row = $sql2 -> db_Fetch(); extract($row);
 				if(!$news_class){
-					$text .= "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".e_BASE."comment.php?$comment_item_id'><b>".$poster."</b> on ".$datestamp."</a>";
+					$text .= "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".e_BASE."comment.php?comment.news.$comment_item_id'><b>".$poster."</b> on ".$datestamp."</a>";
 					if($menu_pref['comment_title']) {
 						$text .= "<br /> [ Re: <i>$news_title</i> ]";
 					}
@@ -85,7 +85,7 @@ if($cache = retrieve_cache("newcomments")){
 			}
 			if($comment_type_ == "2"){
 					//This code is not tested... [edwin]
-				$text .= "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".e_BASE."download_comment.php?$comment_item_id_.'>download - <b>".$poster."</b> on ".$datestamp."</a><br />".($comment_blocked ? CM_L2 : $comment_comment)."<br /><br />";
+				$text .= "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".e_BASE."download_comment.php?comment.news.$comment_item_id_.'>download - <b>".$poster."</b> on ".$datestamp."</a><br />".($comment_blocked ? CM_L2 : $comment_comment)."<br /><br />";
 			}
 		}
 

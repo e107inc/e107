@@ -70,7 +70,7 @@ require_once("class2.php");
 			$nb .= $tmp[$a]." ";
 		}
   		$nb = htmlspecialchars($nb);
-		$wlog .= $news_title."\n".SITEURL."/comment.php?".$news_id."\n\n";
+		$wlog .= $news_title."\n".SITEURL."/comment.php?comment.news.".$news_id."\n\n";
 
 		$itemdate = strftime("%a, %d %b %Y %I:%M:00 GMT", $news_datestamp);
 
@@ -79,13 +79,13 @@ require_once("class2.php");
    
   $rss .= "<item>
     <title>$news_title</title> 
-    <link>http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?".$news_id."</link> 
+    <link>http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$news_id."</link> 
     <description>$nb</description>
     <category domain=\"".SITEURL."\">$category_name</category>
-    <comments>http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?".$news_id."</comments>
+    <comments>http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$news_id."</comments>
     <author>$user_name</author>
     <pubDate>$itemdate</pubDate>
-    <guid isPermaLink=\"true\">http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?".$news_id."</guid>
+    <guid isPermaLink=\"true\">http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$news_id."</guid>
   </item>
   ";
    

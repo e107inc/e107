@@ -86,6 +86,7 @@ $FORUMEND = "
 </tr>
 </table>
 </div>
+{GOTOPAGES}
 <div class='spacer'>
 <table style='width:100%' class='nforumholder' cellpadding=0 cellspacing=0>
 <tr>

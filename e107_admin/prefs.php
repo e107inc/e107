@@ -60,7 +60,8 @@ if(IsSet($_POST['updateprefs'])){
         $pref['adminstyle'] = $_POST['adminstyle'];
         $pref['membersonly_enabled'] = $_POST['membersonly_enabled'];
         $pref['ssl_enabled'] = $_POST['ssl_enabled'];
-                $pref['search_restrict'] = $_POST['search_restrict'];
+        $pref['search_restrict'] = $_POST['search_restrict'];
+        $pref['nested_comments'] = $_POST['nested_comments'];
 
         // Signup. ====================================================
 
@@ -736,6 +737,17 @@ $text .="<div id='cookie' style='text-align:center; display:none'>
 <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 
 
+
+
+</table></div>
+<div style='text-align:center'><div class='caption' title='".PRFLAN_87."' style='cursor:pointer;cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_87."</div>
+<div id='comments' style='text-align:center; display:none'>
+<table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
+<tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_88.": </td>
+<td style='width:50%; text-align:right' class='forumheader3'>".
+($pref['nested_comments'] ?  "<input type='checkbox' name='nested_comments' value='1'  checked>" : "<input type='checkbox' name='nested_comments' value='1'>"). "</td>
+</tr>
 
 
 </table></div>";

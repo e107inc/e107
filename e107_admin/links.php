@@ -204,7 +204,7 @@ class links{
 				$text .= "<tr>
 				<td style='width:5%' class='forumheader3'>$link_id</td>
 				<td style='width:10%' class='forumheader3'>".$cat[$link_category]."</td>
-				<td style='width:50%' class='forumheader3'><a href='".e_BASE."comment.php?$link_id'></a>$link_name</td>
+				<td style='width:50%' class='forumheader3'><a href='".e_BASE."comment.php?comment.news.$link_id'></a>$link_name</td>
 				<td style='width:25%; text-align:center' class='forumheader3'>".
 				$rs -> form_button("submit", "main_edit", LCLAN_9, "onClick=\"document.location='".e_SELF."?create.edit.$link_id'\"").
 				$rs -> form_button("submit", "main_delete", LCLAN_10, "onClick=\"confirm_('create', $link_id)\"")."

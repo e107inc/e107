@@ -93,7 +93,7 @@ class poll{
 		$replace[1] = POLL_164.$vote_total;
 
 		$search[2] = "/\{COMMENTS\}(.*?)/si";
-		$replace[2] = ($type == "menu" ? " <a href=\"".e_BASE."comment.php?poll.".$poll_id."\">".POLL_500.": ".$comment_total."</a>" : "");
+		$replace[2] = ($type == "menu" ? " <a href=\"".e_BASE."comment.php?comment.poll.".$poll_id."\">".POLL_500.": ".$comment_total."</a>" : "");
 
 		$search[3] = "/\{OLDPOLLS\}(.*?)/si";
 		$replace[3] = ($type == "menu" ? "<a href=\"".e_BASE."oldpolls.php\">".POLL_165."</a>" : "");

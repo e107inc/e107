@@ -55,9 +55,12 @@ class news{
 			return;
 		}
 
-		global $NEWSSTYLE, $NEWSLISTSTYLE, $aj;
+		global $NEWSSTYLE, $NEWSLISTSTYLE, $aj,$sql;
 		if(!is_object($aj)) $aj = new textparse;
 		extract($news);
+
+		define("IMAGE_nonew_small", (file_exists(THEME."generic/nonew_comments.png") ? "<img src='".THEME."generic/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/nonew_comments.png' alt=''  />"));
+		define("IMAGE_new_small", (file_exists(THEME."generic/new_comments.png") ? "<img src='".THEME."generic/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/new_comments.png' alt=''  /> "));
 
 		if(!$NEWSLISTSTYLE){
 			$NEWSLISTSTYLE = "
@@ -109,6 +112,14 @@ on
 		$info .= "<br />Activation period: ".$active_start.$active_end."<br />";
 		$info .= "Body length: ".strlen($news_body)."b. Extended length: ".strlen($news_extended)."b.<br /><br /></div>";
 
+		$sql -> db_Select("comments", "comment_datestamp", "comment_item_id='".$news['news_id']."' AND comment_type='0' ORDER BY comment_datestamp DESC LIMIT 0,1");
+		list($comments['comment_datestamp']) = $sql -> db_Fetch();
+		$latest_comment = $comments['comment_datestamp'];
+		if($latest_comment > USERLV ){
+				$NEWIMAGE = IMAGE_new_small;
+		}else{
+				$NEWIMAGE = IMAGE_nonew_small;
+		}
 
 		$news_category = "<a href='".e_BASE."news.php?cat.".$category_id."'>".$category_name."</a>";
 		$news_author = "<a href='".e_BASE."user.php?id.".$admin_id."'>".$admin_name."</a>";
@@ -130,10 +141,10 @@ on
 		$replace[0] = ($news_rendertype == 1 ? "<a href='".e_BASE."news.php?item.$news_id'>".$news_title."</a>" : $news_title);
 
 		$search[13] = "/\{CAPTIONCLASS\}(.*?)/si";
-		$replace[13] = "<div class='category".$category_id."'>".($titleonly ? "&nbsp;<a href='".e_BASE."comment.php?$news_id'>".$news_title."</a>" : "&nbsp;".$news_title)."</div>";
+		$replace[13] = "<div class='category".$category_id."'>".($titleonly ? "&nbsp;<a href='".e_BASE."comment.php?comment.news.$news_id'>".$news_title."</a>" : "&nbsp;".$news_title)."</div>";
 
 		$search[14] = "/\{ADMINCAPTION\}(.*?)/si";
-		$replace[14] = "<div class='$admin_name'>".($titleonly ? "&nbsp;<a href='".e_BASE."comment.php?$news_id'>".$news_title."</a>" : "&nbsp;".$news_title)."</div>";
+		$replace[14] = "<div class='$admin_name'>".($titleonly ? "&nbsp;<a href='".e_BASE."comment.php?comment.news.$news_id'>".$news_title."</a>" : "&nbsp;".$news_title)."</div>";
 
 		$search[15] = "/\{ADMINBODY\}(.*?)/si";
 		$replace[15] = "<div class='$admin_name'>".(strstr(e_QUERY, "extend") ? $news_body."<br /><br />".$news_extended : $news_body)."</div>";
@@ -151,7 +162,7 @@ on
 		$search[6] = "/\{NEWSDATE\}(.*?)/si";
 		$replace[6] = $datestamp;
 		$search[7] = "/\{NEWSCOMMENTS\}(.*?)/si";
-		$replace[7] = ($news_allow_comments ? COMMENTOFFSTRING : "<a href='".e_BASE."comment.php?$news_id'>".COMMENTLINK.$comment_total."</a>");
+		$replace[7] = ($news_allow_comments ? COMMENTOFFSTRING : "".$NEWIMAGE." <a href='".e_BASE."comment.php?comment.news.$news_id'>".COMMENTLINK.$comment_total."</a>");
 		$search[8] = "/\{EMAILICON\}(.*?)/si";
 		$replace[8] = $textemail;
 		$search[9] = "/\{PRINTICON\}(.*?)/si";
@@ -259,18 +270,18 @@ function create_rss(){
                 $replace[3] = '\\2';
                 $news_title = preg_replace($search, $replace, $news_title);
                 // End of code from Lisa
-                $wlog .= $news_title."\n".SITEURL."comment.php?".$news_id."\n\n";
+                $wlog .= $news_title."\n".SITEURL."comment.php?comment.news.".$news_id."\n\n";
                 $itemdate = strftime("%a, %d %b %Y %I:%M:00 GMT", $news_datestamp);
 
   $rss .= "<item>
     <title>$news_title</title>
-    <link>http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?".$news_id."</link>
+    <link>http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$news_id."</link>
     <description>$nb</description>
     <category domain=\"".SITEURL."\">$category_name</category>
-    <comments>http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?".$news_id."</comments>
+    <comments>http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$news_id."</comments>
     <author>$user_name - $user_email</author>
     <pubDate>$itemdate</pubDate>
-    <guid isPermaLink=\"true\">http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?".$news_id."</guid>
+    <guid isPermaLink=\"true\">http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$news_id."</guid>
   </item>
   ";
 

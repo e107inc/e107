@@ -16,30 +16,43 @@
 @include(e_LANGUAGEDIR."English/lan_comment.php");
 class comment{
 
-	function form_comment(){
+	function form_comment($action, $table, $id, $subject, $content_type){
+		global $pref;
 		require_once(e_HANDLER."ren_help.php");
 		if(ANON == TRUE || USER == TRUE){
 			$ns = new e107table;
-			$text = "\n<form method='post' action='".e_SELF."?".e_QUERY."' name='dataform'>\n<table style='width:95%'>";
+			if($action == "reply" && substr($subject, 0, 4) != "Re: "){
+				$subject = "Re: ".$subject;
+			}
+			$text = "\n<div style='text-align:center'><form method='post' action='".e_SELF."?".e_QUERY."' name='dataform'>\n<table style='width:95%'>";
+			if($pref['nested_comments']){
+				$text .= "<tr>\n<td style='width:20%'>Subject</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='subject' size='60' value='$subject' maxlength='100' />\n</td>\n</tr>";
+			}else{
+				$text .= "<input  type='hidden' name='subject' value='$subject'  />\n";
+			}
 			if(ANON == TRUE && USER == FALSE){
 				$text .= "<tr>\n<td style='width:20%'>".LAN_16."</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='author_name' size='60' value='$author_name' maxlength='100' />\n</td>\n</tr>";
 			}
-			$text .= "<tr> \n<td style='width:20%'>".LAN_8.":</td>\n<td style='width:80%'>\n<textarea class='tbox' name='comment' cols='70' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>\n<br />".ren_help(2)."</td></tr>\n<tr style='vertical-align:top'> \n<td style='width:20%'></td>\n<td style='width:80%'>\n<input class='button' type='submit' name='commentsubmit' value='".LAN_9."' />\n</td>\n</tr>\n</table>\n</form>";
-			$ns -> tablerender(LAN_9, $text);
+			$text .= "<tr> \n<td style='width:20%'>".LAN_8.":</td>\n<td style='width:80%'>\n<textarea class='tbox' name='comment' cols='70' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>\n<br />".ren_help(2)."</td></tr>\n<tr style='vertical-align:top'> \n<td style='width:20%'></td>\n<td style='width:80%'>\n".
+			($action == "reply" ? "<input type='hidden' name='pid' value='$id'>" : "").($content_type  ? "<input type='hidden' name='content_type' value='$content_type'>" : "").
+				"<input class='button' type='submit' name='".$action."submit' value='".LAN_9."' />\n</td>\n</tr>\n</table>\n</form>";
+			$ns -> tablerender("", $text);
 		}else{
 			echo "<br /><div style='text-align:center'><b>".LAN_6."</b></div>";
 		}
 	}
 
-	function render_comment($row){
+	function render_comment($row, $table, $action, $id, $width, $subject){
 		global $COMMENTSTYLE, $pref;
-
 		require_once(e_HANDLER."level_handler.php");
-
+		if(!$width){$width = 0;}
+		define("IMAGE_nonew_comments", (file_exists(THEME."forum/nonew_comments.png") ? "<img src='".THEME."forum/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/nonew_comments.png' alt=''  />"));
+		define("IMAGE_new_comments", (file_exists(THEME."forum/new_comments.png") ? "<img src='".THEME."forum/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/new_comments.png' alt=''  /> "));
 		$sql = new db;
 		$ns = new e107table;
 		extract($row);
 		$comment_author = eregi_replace("[0-9]+\.", "", $comment_author);
+		$comment_subject = (empty($comment_subject) ? $subject : $comment_subject);
 		$gen = new convert; $datestamp = $gen->convert_date($comment_datestamp, "short");
 		if($sql -> db_Select("user", "*", "user_name='$comment_author'")){
 			$row = $sql -> db_Fetch();
@@ -52,7 +65,7 @@ class comment{
 			$user_id = 0;
 			$user_name = $comment_author;
 		}
-			
+		
 		$user_join = $gen->convert_date($user_join, "short");
 
 		$url = e_PAGE."?".e_QUERY;
@@ -63,29 +76,59 @@ class comment{
 		$userinfo = "[<a href='".e_BASE.e_ADMIN."userinfo.php?$comment_ip'>".LAN_4."</a>]";
 	
 		if(!$COMMENTSTYLE){
-			$COMMENTSTYLE = "<table style='width:95%'>
+			$COMMENTSTYLE = "
+			<table style='width:100%'>
 			<tr>
-			<td style='width:30%; vertical-align=top'>
-			<img src='".THEME."images/bullet2.gif' alt='bullet' /> 
-			<span class='defaulttext'><i>
+			<td colspan='2' class='forumheader3'>
+			{SUBJECT}
+			<b>
 			{USERNAME}
-			<br />
-			</i></span>
-			{LEVEL}
-			<span class='smalltext'>on 
-			{TIMEDATE}
-			<br />
+			</b>
+			 | 
+			 {TIMEDATE}
+			</td>
+			</tr>
+			<tr>
+			<td style='width:30%; vertical-align:top'>
+			<div class='spacer'>
+			{AVATAR}
+			</div>
+			<span class='smalltext'>
 			{COMMENTS}
+			<br />
+			{JOINED}
 			</span>
+			<br/>
+			{REPLY}
 			</td>
-			<td style='width:70%; vertical-align=top'>
-			<span class='mediumtext'>
+			<td style='width:70%; vertical-align:top'>
 			{COMMENT}
-			</span>
 			</td>
-			</tr></table><br />";
+			</tr>
+			</table>
+			<br />";
 		}
-
+		if($pref['nested_comments']){	
+			$width2 = 100 - $width;
+			$renderstyle = "
+			<table style='width:98%'>
+			<tr>
+			<td style='width:".$width."%' ></td>
+			<td style='width:".$width2."%'>"
+			.$COMMENTSTYLE.
+			"
+			</td>
+			</tr>
+			</table>";
+			if($comment_datestamp > USERLV ){
+				$NEWIMAGE = IMAGE_new_comments;
+			}else{
+				$NEWIMAGE = IMAGE_nonew_comments;
+			}
+		}else{
+			$renderstyle = $COMMENTSTYLE;
+		}
+			
 		$aj = new textparse;
 		$comment_comment = wrap_comment($comment_comment);
 		$search[0] = "/\{USERNAME\}(.*?)/si";
@@ -129,12 +172,39 @@ class comment{
 		$ldata = get_level($user_id, $user_forums, $user_comments, $user_chats, $user_visits, $user_join, $user_admin, $user_perms, $pref);
 		$replace[8] = ($user_admin ? $ldata[0] : $ldata[1]);
 
+			$search[9] = "/\{REPLY\}(.*?)/si";
+		if($action == "comment" && $pref['nested_comments']){
+			$replace[9] = "<a href='".e_BASE."comment.php?reply.".$table.".".$comment_id.".".$id."'>Reply to this</a>";
+		}else{
+			$replace[9] = "";
+		}
 
-		$text = preg_replace($search, $replace, $COMMENTSTYLE);
+
+
+		$search[10] = "/\{SUBJECT\}(.*?)/si";
+		if($pref['nested_comments']){
+			$replace[10] = "<div>".$NEWIMAGE." <b>".$comment_subject."</b></div>";
+		}else{
+			$replace[10] = "";
+		}
+		
+
+		$text .= preg_replace($search, $replace, $renderstyle);
+		if($action == "comment" && $pref['nested_comments']){
+			$sub_query = "comment_pid='".$comment_id."' ORDER BY comment_datestamp" ;
+				$sql2 = new db;
+				if($sub_total = $sql2 -> db_Select("comments", "*",  "".$sub_query."")){
+							while($row = $sql2 -> db_Fetch()){
+					if($pref['nested_comments']){$width = $width + 3;if($width >80){$width =80;}}
+					$text .= $this -> render_comment($row, $table, $action, $id, $width);
+							}
+					$total ++;
+				}
+		}
 		return stripslashes($text);
 	}
 	
-	function enter_comment($author_name, $comment, $table, $id){
+	function enter_comment($author_name, $comment, $table, $id, $pid, $subject){
 		global $sql, $aj;
 		if(!is_object($aj)){ $aj = new textparse; }
 		$fp = new floodprotect;
@@ -180,7 +250,7 @@ class comment{
 					}
 				}
 				if(!defined("emessage")){
-					if(!$sql -> db_Insert("comments", "0, '$id', '$nick', '', '".time()."', '$comment', '0', '$ip', '$type' ")){
+					if(!$sql -> db_Insert("comments", "0, '$pid', '$id', '$subject', '$nick', '', '".time()."', '$comment', '0', '$ip', '$type' ")){
 						echo LAN_11;
 					}else{
 						clear_cache("news.php");

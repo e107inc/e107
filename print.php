@@ -54,7 +54,7 @@ $print_info[] = array( 'table' => 'news',  'handler' => '
 	$text .= "<br /><br /><hr />".
 	LAN_303.SITENAME."
 	<br />
-	( http://".$_SERVER[HTTP_HOST].e_HTTP."comment.php?".$news_id." )
+	( http://".$_SERVER[HTTP_HOST].e_HTTP."comment.php?comment.news.comment.".$news_id." )
 	</font>";
 ');
 

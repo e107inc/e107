@@ -345,7 +345,7 @@ if(IsSet($_POST['reply'])){
                 $pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
                 $pages = ((ceil($replies/$pref['forum_postspage']) -1) * $pref['forum_postspage']);
 
-                $text = "<table style='width:100%' class='fborder'>
+                $text = "<table style='width:96%' class='fborder'>
                 <tr>
                 <td class='fcaption' colspan='2'>".LAN_133."</td>
                 </tr><tr>

@@ -5,7 +5,7 @@ $results = $sql -> db_Select("news", "*", "(news_start=0 || news_start < ".time(
 	while($row = $sql -> db_Fetch()){
 		extract($row);
 		if(check_class($news_class)){
-			$link = ($news_allow_comments ? "news.php?item.$news_id" : "comment.php?$news_id");
+			$link = ($news_allow_comments ? "news.php?item.$news_id" : "comment.php?comment.news.$news_id");
 			$datestamp = $con -> convert_date($news_datestamp, "long");
 			if(eregi($query, $news_title)){
 				$resmain = parsesearch($news_title, $query);

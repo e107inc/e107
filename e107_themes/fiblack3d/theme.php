@@ -200,34 +200,38 @@ function tablestyle($caption, $text, $mode=""){
 // [commentstyle]
 
 $COMMENTSTYLE = "
-<table style='width:95%'>
+<div style='text-align:center'>
+<table style='width:100%'>
 <tr>
-<td style='width:30%; vertical-align:top'>
-<img src='".THEME."images/bullet2.gif' alt='bullet' /> 
+<td colspan='2' class='forumheader3'>
+{SUBJECT}
 <b>
 {USERNAME}
 </b>
-<br />
-{LEVEL}
+ | 
+ {TIMEDATE}
+</td>
+</tr>
+<tr>
+<td style='width:30%; vertical-align:top'>
+<div class='spacer'>
 {AVATAR}
+</div>
 <span class='smalltext'>
+{LEVEL}
 {COMMENTS}
+<br />
 {JOINED}
-{LOCATION}
+<br />
+{REPLY}
 </span>
 </td>
 <td style='width:70%; vertical-align:top'>
-<span class='smalltext'>
-{TIMEDATE}
-</span>
-<br />
 {COMMENT}
-<br /><i><span class='smalltext'>
-{SIGNATURE}
-</span></i>
 </td>
 </tr>
 </table>
+</div>
 <br />";
 
 //	[chatboxstyle]

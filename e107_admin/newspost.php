@@ -225,7 +225,7 @@ class newspost{
                                 extract($row);
                                 $text .= "<tr>
                                 <td style='width:5%' class='forumheader3'>$news_id</td>
-                                <td style='width:75%' class='forumheader3'><a href='".e_BASE."comment.php?$news_id'>".($news_title ? $aj -> tpa($news_title) : "[".NWSLAN_42."]")."</a></td>
+                                <td style='width:75%' class='forumheader3'><a href='".e_BASE."comment.php?comment.news.$news_id'>".($news_title ? $aj -> tpa($news_title) : "[".NWSLAN_42."]")."</a></td>
                                 <td style='width:20%; text-align:center' class='forumheader3'>
                                 ".$rs -> form_button("submit", "main_edit", NWSLAN_7, "onClick=\"document.location='".e_SELF."?create.edit.$news_id'\"")."
                                 ".$rs -> form_button("submit", "main_delete", NWSLAN_8, "onClick=\"confirm_('create', $news_id)\"")."
