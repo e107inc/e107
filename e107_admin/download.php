@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-03-24 16:34:32 $
-|     $Author: e107coders $
+|     $Revision: 1.36 $
+|     $Date: 2005-03-24 16:49:11 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -225,7 +225,7 @@ if ($action == "opt") {
 		<td style='width:70%' class='forumheader3'>".DOWLAN_69."</td>
 		<td class='forumheader3' style='width:30%;text-align:left'>";
 	$c = $pref['download_php'] ? " checked = 'checked' " : "";
-	$text .= "<input type='checkbox' class='tbox' name='download_php' value='1' {$c} /> <span class='smalltext'>".DOWLAN_70."</span></td>
+	$text .= "<input type='checkbox' name='download_php' value='1' {$c} /> <span class='smalltext'>".DOWLAN_70."</span></td>
 		</tr>
 		<tr>
 		<td style='width:70%' class='forumheader3'>
@@ -309,7 +309,7 @@ if($action == 'limits')
 		}
 		
 		$txt .= "
-			<input class='tbox' type='checkbox' name='download_limits' {$chk}> ".DOWLAN_125."
+			<input type='checkbox' name='download_limits' {$chk}> ".DOWLAN_125."
 			</td>
 		</tr>
 		<tr>
@@ -406,7 +406,7 @@ class download {
 					<td style='width:75%' class='forumheader3'>$download_name</td>
 					<td style='width:20%; text-align:center' class='forumheader3'>
 					".$rs->form_open("post", e_SELF, "myform_{$download_id}", "", "", " onsubmit=\"return jsconfirm('".$tp->toJS(DOWLAN_33." [ID: $download_id ]")."') \"  ")."
-					<a href='".e_SELF."?main_edit_{$download_id}'>".ADMIN_EDIT_ICON."</a>
+					<a href='".e_SELF."?create.edit.{$download_id}'>".ADMIN_EDIT_ICON."</a>
 					<input type='image' title='".LAN_DELETE."' name='delete' src='".ADMIN_DELETE_ICON_PATH."' />
 					<input type='hidden' name='type' value='main' />
 					<input type='hidden' name='id' value='{$download_id}' />
