@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:11:55 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-27 22:36:24 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 define("NWSLAN_1", "News story deleted.");
@@ -118,4 +118,21 @@ define("NWSLAN_107", "Enable HtmlArea on Submit-News page.");
 define("NWSLAN_108","Display messages instead not allowed news");
 define("NWSLAN_109","Check the box if you want to display a standard message for visitors not allowed to see a news (userclass restriction) instead the news itself.");
 define("NWSLAN_110","is not writable, you need to CHMOD 777 the folder before uploading");
+
+define("LAN_NEWS_5", "Error! - Was unable to update news item into database!");
+define("LAN_NEWS_6", "News entered into database.");
+define("LAN_NEWS_7", "Error! - Was unable to enter news item into database!");
+define("LAN_NEWS_9", "Title only is set - <b>only the news title will be shown</b>");
+define("LAN_NEWS_10", "This news post is <b>inactive</b> (It will be not shown on front page). ");
+define("LAN_NEWS_11", "This news post is <b>active</b> (it will be shown on front page). ");
+define("LAN_NEWS_12", "Comments are turned <b>on</b>.");
+define("LAN_NEWS_13", "Comments are turned <b>off</b>.");
+define("LAN_NEWS_14", "<br />Activation period: ");
+define("LAN_NEWS_15", "Body length: ");
+define("LAN_NEWS_16", "b. Extended length: ");
+define("LAN_NEWS_17", "b.");
+define("LAN_NEWS_18", "Info:");
+define("LAN_NEWS_19",  "Now");
+define("LAN_NEWS_21", "News updated in database.");
+
 ?>
