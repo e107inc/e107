@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2004-11-27 14:39:40 $
+|     $Revision: 1.8 $
+|     $Date: 2004-12-10 21:51:15 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -22,7 +22,7 @@
  * Class to cache data as files, improving site speed and throughput.
  *
  * @package     e107
- * @version     $Revision: 1.7 $
+ * @version     $Revision: 1.8 $
  * @author      $Author: streaky $
  */
 class ecache {
@@ -93,7 +93,7 @@ class ecache {
 	* @param string $query
 	* @desc Deletes cache files. If $query is set, deletes files named {$query}*.cache.php, if not it deletes all cache files - (*.cache.php)
 	*/
-	function clear($query) {
+	function clear($query = '') {
 		global $pref, $FILES_DIRECTORY;
 		if ($pref['cachestatus'] || !$query) {
 			$file = ($query) ? preg_replace("#\W#", "_", $query)."*.cache.php" :
