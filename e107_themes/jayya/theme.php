@@ -26,7 +26,7 @@ define("THEME_DISCLAIMER", "");
 // [output js nav css in <head>]
 
 function theme_head() {
-	return "<link rel='stylesheet' href='".e_FILE."nav_menu.css' />\n";
+	return "<link rel='stylesheet' href='".THEME."nav_menu.css' />\n";
 }
 
 
@@ -142,7 +142,7 @@ function tablestyle($caption, $text, $mode){
 	if ($style == "leftmenu") {
 		echo "<div class='cap_border'><div class='left_caption'>".$caption."</div></div>";
 		if ($text != "") {
-			echo "<div class='menu_content' style='background-image: url(".THEME."images/".$image."); background-repeat: no-repeat'>
+			echo "<div class='menu_content'>
 			".$text."<br /></div>";
 		}
 	}  else if ($style == "rightmenu") {
