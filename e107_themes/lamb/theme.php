@@ -153,7 +153,7 @@ $POLLSTYLE = <<< EOF
 </div>
 EOF;
 
-define("CBWIDTH", "150px");
+define("CBWIDTH", "100%");
 
 $CHATBOXSTYLE = "
 <img src='".e_IMAGE."admin_images/chatbox_16.png' alt='' style='vertical-align: middle;' />
