@@ -3,7 +3,7 @@
 
 include_once(e_LANGUAGEDIR."English/lan_equery_secure.php");
 include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_equery_secure.php");
-require(HEADERF);
+require_once(HEADERF);
 
 $caption = EQSEC_LAN2;
 $text = "<div style='text-align: center;' >
