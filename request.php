@@ -150,29 +150,40 @@ if(eregi("http", $image)){
 // File retrieval function. by Cam.
 
 function send_file($file){
-      $fullpath = $file;
-      $file = basename($file);
-        if (strstr($_SERVER['HTTP_USER_AGENT'], "MSIE")){
-       $file = preg_replace('/\./', '%2e', $file,substr_count($file, '.') - 1);
+
+    @set_time_limit(10*60);
+    @ini_set("max_execution_time",10*60);
+
+
+        $fullpath = $file;
+        $file = basename($file);
+    if (strstr($_SERVER['HTTP_USER_AGENT'], "MSIE")){
+        $file = preg_replace('/\./', '%2e', $file,substr_count($file, '.') - 1);
+    }
+
+
+    if(is_file($fullpath) && connection_status()==0){
+        header("Cache-control: private");
+        header('Pragma: no-cache');
+        header("Content-Type: application/force-download");
+        header("Content-Disposition:attachment; filename=\"".trim(htmlentities($file))."\"");
+        header("Content-Description: ".trim(htmlentities($file)));
+        header("Content-length:".(string)(filesize($fullpath)));
+        header("Expires: ".gmdate("D, d M Y H:i:s", mktime(date("H")+2, date("i"), date("s"), date("m"), date("d"), date("Y")))." GMT");
+        header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
+
+
+        if ($file = fopen($fullpath, 'rb')) {
+            while(!feof($file) and (connection_status()==0)) {
+            print(fread($file, 1024*8));
+            flush();
+            }
+            $status = (connection_status()==0);
+            fclose($file);
         }
 
-  //    @set_time_limit(600);
-      if(file_exists($fullpath)){
-       header("Cache-control: private");
-       header('Pragma: no-cache');
-       header("Content-Type: application/force-download");
-       header("Content-Disposition:attachment; filename=\"".trim(htmlentities($file))."\"");
-       header("Content-Description: ".trim(htmlentities($file)));
-       header("Content-length:".(string)(filesize($fullpath)));
-
-       $fd=fopen($fullpath,'rb');
-       while(!feof($fd)) {
-         print fread($fd, 4096);
-       }
-       fclose($fd);
-      }else{
-      header("location: ".e_BASE."index.php");
-   //     echo "File Not Found";
-      }
+    }else{
+        header("location: ".e_BASE."index.php");
+    }
 }
 ?>
