@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-01-25 15:14:57 $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-26 16:15:21 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -178,13 +178,12 @@ $unstuck = FALSE;
 $thread_list = $forum->forum_get_topics($forum_id,$from,$view);
 $gen = new convert;
 
-
 if($thread_list) {
 	foreach($thread_list as $thread_info) {
 		$idArray[] = $thread_info['thread_id'];
 	}
 	$inList = '('.implode(',',$idArray).')';
-	$thread_replies = $forum->thread_count_list($inList);
+//	$thread_replies = $forum->thread_count_list($inList);
 
 	foreach($thread_list as $thread_info) {
 		if($thread_info['thread_s']){
@@ -207,6 +206,9 @@ if($thread_list) {
 	$forum_view_forum = "<tr><td colspan='6' style='text-align:center' class='forumheader2'><br /><span class='mediumtext'><b>".LAN_58."</b></span><br /><br /></td></tr>";
 }
 
+
+
+
 $sql -> db_Select("forum", "*", "forum_parent !=0 AND forum_class!='255' ");
 $FORUMJUMP = "<form method='post' action='".e_SELF."'><p>".LAN_403.": <select name='forumjump' class='tbox'>";
 while($row = $sql -> db_Fetch()){
@@ -224,12 +226,12 @@ if($pref['forum_enclose']){ $ns -> tablerender($pref['forum_title'], $forum_view
 require_once(FOOTERF);
 
 
-function parse_thread($thread_info) {
-	global $forum, $thread_replies;
-	global $tp, $FORUM_VIEW_FORUM, $gen, $aj, $pref, $forum_id, $menu_pref;
+function parse_thread($thread_info)
+{
+	global $forum, $tp, $FORUM_VIEW_FORUM, $gen, $aj, $pref, $forum_id, $menu_pref;
 	
 	$VIEWS = $thread_info['thread_views'];
-	$REPLIES = $thread_replies[$thread_info['thread_id']];
+	$REPLIES = $thread_info['thread_total_replies'];
 
 	if($REPLIES) {
 		$lastpost_datestamp = $gen->convert_date($thread_info['thread_lastpost'],'forum');

@@ -16,6 +16,8 @@ function forum_stage1() {
 	$sql->db_Select_gen("ALTER TABLE {$ttab} ADD thread_anon VARCHAR( 250 ) NOT NULL");
 	$sql->db_Select_gen("ALTER TABLE {$ttab} ADD thread_edit_datestamp INT( 10 ) UNSIGNED NOT NULL");
 	$sql->db_Select_gen("ALTER TABLE {$ttab} ADD thread_lastuser VARCHAR( 30 ) NOT NULL");
+	$sql->db_Select_gen("ALTER TABLE {$ttab} ADD thread_lastuser VARCHAR( 30 ) NOT NULL");
+	$sql->db_Select_gen("ALTER TABLE {$ttab} ADD thread_total_replies INT UNSIGNED NOT NULL");
 }
 
 function forum_stage2() {

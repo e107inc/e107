@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-25 15:14:55 $
+|     $Revision: 1.7 $
+|     $Date: 2005-01-26 16:14:07 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -184,46 +184,6 @@ CREATE TABLE download_category (
 CREATE TABLE flood (
   flood_url text NOT NULL,
   flood_time int(10) unsigned NOT NULL default '0'
-) TYPE=MyISAM;
-# --------------------------------------------------------
-
-#
-# Table structure for table `forum`
-#
-
-CREATE TABLE forum (
-  forum_id int(10) unsigned NOT NULL auto_increment,
-  forum_name varchar(250) NOT NULL default '',
-  forum_description text NOT NULL,
-  forum_parent int(10) unsigned NOT NULL default '0',
-  forum_datestamp int(10) unsigned NOT NULL default '0',
-  forum_moderators text NOT NULL,
-  forum_threads int(10) unsigned NOT NULL default '0',
-  forum_replies int(10) unsigned NOT NULL default '0',
-  forum_lastpost varchar(200) NOT NULL default '',
-  forum_class varchar(100) NOT NULL default '',
-  forum_order int(10) unsigned NOT NULL default '0',
-  PRIMARY KEY  (forum_id)
-) TYPE=MyISAM;
-# --------------------------------------------------------
-
-#
-# Table structure for table `forum_t`
-#
-
-CREATE TABLE forum_t (
-  thread_id int(10) unsigned NOT NULL auto_increment,
-  thread_name varchar(250) NOT NULL default '',
-  thread_thread text NOT NULL,
-  thread_forum_id int(10) unsigned NOT NULL default '0',
-  thread_datestamp int(10) unsigned NOT NULL default '0',
-  thread_parent int(10) unsigned NOT NULL default '0',
-  thread_user varchar(250) NOT NULL default '',
-  thread_views int(10) unsigned NOT NULL default '0',
-  thread_active tinyint(3) unsigned NOT NULL default '0',
-  thread_lastpost int(10) unsigned NOT NULL default '0',
-  thread_s tinyint(1) unsigned NOT NULL default '0',
-  PRIMARY KEY  (thread_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/plugin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-01-25 15:14:57 $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-26 16:15:22 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -89,6 +89,7 @@ $eplug_tables = array(
   thread_anon varchar(250) NOT NULL default '',
   thread_edit_datestamp int(10) unsigned NOT NULL default '0',
   thread_lastuser varchar(30) NOT NULL default '',
+  thread_total_replies int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (thread_id),
   KEY thread_parent (thread_parent),
   KEY thread_datestamp (thread_datestamp),
