@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-02-16 20:43:39 $
+|     $Revision: 1.16 $
+|     $Date: 2005-02-17 18:58:23 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -202,31 +202,31 @@ if ($action == "reply") {
 			}
 		}
 		else if($table == "poll") {
-			if (!$sql->db_Select("poll", "*", "poll_id='$id' ")) {
+			if (!$sql->db_Select("poll", "*", "poll_id='$id' AND poll_comment=1")) {
 				header("location:".e_BASE."index.php");
 				exit;
 			} else {
 				$row = $sql->db_Fetch();
 				extract($row);
-				if ($poll_comment == 0) {
-					header("location:".e_BASE."index.php");
-				}
+
 				$subject = $poll_title;
 				define(e_PAGETITLE, LAN_101." / ".LAN_99." / ".$subject."");
 				require_once(HEADERF);
-				require_once(e_PLUGIN."poll_menu/poll_menu.php");
+				require(e_PLUGIN."poll_menu/poll_menu.php");
+
 				$field = $poll_id;
 				$comtype = 4;
 			}
 		}
 		require_once(HEADERF);
-		$query = ($pref['nested_comments'] ? "comment_item_id='$field' AND comment_type='$comtype' AND comment_pid='0' ORDER BY comment_datestamp" :
+		$query = ($pref['nested_comments'] ? 
+		"comment_item_id='$field' AND comment_type='$comtype' AND comment_pid='0' ORDER BY comment_datestamp" :
 		"SELECT #comments.*, user_id, user_name, user_image, user_signature, user_join, user_comments, user_location FROM #comments
 			LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='$field' AND comment_type='$comtype'  ORDER BY comment_datestamp");
 	}
 }
 
-if($pref['trackbackEnabled']){
+if($pref['trackbackEnabled'] && $table == "news"){
 	echo "<span class='smalltext'><b>".$pref['trackbackString']."</b> ".$e107->HTTPPath.e_PLUGIN."trackback/trackback.php?$id</span>";
 }
 	
@@ -263,7 +263,7 @@ if (!strstr(e_QUERY, "poll")) {
 ob_end_flush(); // dump the buffer we started
 
 
-if($pref['trackbackEnabled']){
+if($pref['trackbackEnabled'] && $table == "news"){
 	if($sql->db_Select("trackback", "*", "trackback_pid=$id"))
 	{
 		$tbArray = $sql -> db_getList();
