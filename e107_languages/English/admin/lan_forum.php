@@ -1,5 +1,14 @@
 <?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107/e107_languages/English/admin/lan_forum.php,v $
+|     $Revision: 1.12 $
+|     $Date: 2004-09-06 09:55:17 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
 define("FORLAN_1", "You must enter the number of days you wish to prune.");
 define("FORLAN_2", "Please select to either delete pruned posts completely, or make them inactive (not deleted but not visible in forums)");
 define("FORLAN_3", "delete");
@@ -70,7 +79,7 @@ define("FORLAN_68", "Enable HTML post");
 define("FORLAN_69", "Allow public users to post HTML code, this will apply sitewide (comments, chatbox etc)");
 
 define("FORLAN_70", "Enable file / image attachments");
-define("FORLAN_71", "Allow users to upload file or image with their forum post, <a href='upload.php'>click here</a> to set max file size, allowed types etc");
+define("FORLAN_71", "Allow users to upload file or image with their forum post,");
 define("FORLAN_72", "Update Order");
 define("FORLAN_73", "Order Updated");
 
@@ -145,5 +154,9 @@ define("FORLAN_126", "Show Tooltips");
 define("FORLAN_127", "Tick here to show a tooltip containing the first post of the thread when mouse hovers over thread name. ");
 define("FORLAN_128", "Length of tooltip");
 define("FORLAN_129", "This will determine the number of characters to display in the tooltip. ");
+define("FORLAN_130", "click here");
+define("FORLAN_131", "to set max file size, allowed types etc");
+
+
 
 ?>

@@ -1,16 +1,20 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        /forum_post.php
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107/forum_post.php,v $
+|     $Revision: 1.23 $
+|     $Date: 2004-09-06 09:55:18 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 
 require_once("class2.php");
@@ -57,7 +61,7 @@ if($sql -> db_Select("tmp", "*",  "tmp_ip='$ip' ")){
 }
 
 if(ANON == FALSE && USER == FALSE){
-        $text .= "<div style='text-align:center'>".LAN_45."</div>";
+        $text .= "<div style='text-align:center'>".LAN_45." <a href='".e_SIGNUP."'>".LAN_411."</a> ".LAN_412."</div>";
         $ns -> tablerender(LAN_20, $text);
         require_once(FOOTERF);
         exit;
@@ -85,9 +89,9 @@ if($action != "nt" && !$thread_active){
         exit;
 }
 if($action == "cp"){
-	define("e_PAGETITLE", LAN_01." / ".$fname." / ".$row['thread_name']);
+        define("e_PAGETITLE", LAN_01." / ".$fname." / ".$row['thread_name']);
 }else{
-	define("e_PAGETITLE", LAN_01." / ".$fname." / ".($action == "rp" ? LAN_02.$row['thread_name'] : LAN_03));
+        define("e_PAGETITLE", LAN_01." / ".$fname." / ".($action == "rp" ? LAN_02.$row['thread_name'] : LAN_03));
 }
 require_once(HEADERF);
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -246,25 +250,25 @@ if(IsSet($_POST['newthread'])){
                         $poll = new poll;
                         $poll -> submit_poll(0, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], 0, $thread_id, "forum");
                 }
-				if($pref['forum_redirect']){
-					redirect("".e_BASE."forum_viewtopic.php?".$thread_forum_id.".".$thread_id.".".$pages."#$iid");
-				}else{
+                                if($pref['forum_redirect']){
+                                        redirect("".e_BASE."forum_viewtopic.php?".$thread_forum_id.".".$thread_id.".".$pages."#$iid");
+                                }else{
 
-					require_once(HEADERF);
-					echo "<table style='width:100%' class='fborder'>
-					<tr>
-					<td class='fcaption' colspan='2'>".LAN_133."</td>
-					</tr><tr>
-					<td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'><img src='".e_IMAGE."forum/e.png' alt='' />&nbsp;</td>
-					<td style='vertical-align:center; width:80%' class='forumheader2'>
-					<br />".LAN_324."<br />
-					<span class='defaulttext'><a href='".e_BASE."forum_viewtopic.php?".$thread_forum_id.".".$thread_id."#$iid'>".LAN_325."</a><br />
-					<a href='".e_BASE."forum_viewforum.php?".$forum_id."'>".LAN_326."</a></span><br /><br />
-					</td></tr></table>";
-					clear_cache("newforumposts");
-					require_once(FOOTERF);
-					exit;
-				}
+                                        require_once(HEADERF);
+                                        echo "<table style='width:100%' class='fborder'>
+                                        <tr>
+                                        <td class='fcaption' colspan='2'>".LAN_133."</td>
+                                        </tr><tr>
+                                        <td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'><img src='".e_IMAGE."forum/e.png' alt='' />&nbsp;</td>
+                                        <td style='vertical-align:center; width:80%' class='forumheader2'>
+                                        <br />".LAN_324."<br />
+                                        <span class='defaulttext'><a href='".e_BASE."forum_viewtopic.php?".$thread_forum_id.".".$thread_id."#$iid'>".LAN_325."</a><br />
+                                        <a href='".e_BASE."forum_viewforum.php?".$forum_id."'>".LAN_326."</a></span><br /><br />
+                                        </td></tr></table>";
+                                        clear_cache("newforumposts");
+                                        require_once(FOOTERF);
+                                        exit;
+                                }
         }
 }
 
@@ -348,27 +352,27 @@ if(IsSet($_POST['reply'])){
                 $replies = $sql -> db_Count("forum_t", "(*)", "WHERE thread_parent='".$thread_id."'");
                 $pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
                 $pages = ((ceil($replies/$pref['forum_postspage']) -1) * $pref['forum_postspage']);
-				if($pref['forum_redirect']){
-					redirect("".e_BASE."forum_viewtopic.php?".$thread_forum_id.".".$thread_id.".".$pages."#$iid");
-				}else{
+                                if($pref['forum_redirect']){
+                                        redirect("".e_BASE."forum_viewtopic.php?".$thread_forum_id.".".$thread_id.".".$pages."#$iid");
+                                }else{
 
-					require_once(HEADERF);
-					$text = "<table style='width:96%' class='fborder'>
-					<tr>
-					<td class='fcaption' colspan='2'>".LAN_133."</td>
-					</tr><tr>
-					<td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'><img src='".e_IMAGE."forum/e.png' alt='' />&nbsp;</td>
-					<td style='vertical-align:center; width:80%' class='forumheader2'>
-					<br />".LAN_324."<br />
+                                        require_once(HEADERF);
+                                        $text = "<table style='width:96%' class='fborder'>
+                                        <tr>
+                                        <td class='fcaption' colspan='2'>".LAN_133."</td>
+                                        </tr><tr>
+                                        <td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'><img src='".e_IMAGE."forum/e.png' alt='' />&nbsp;</td>
+                                        <td style='vertical-align:center; width:80%' class='forumheader2'>
+                                        <br />".LAN_324."<br />
 
-					<span class='defaulttext'><a href='".e_BASE."forum_viewtopic.php?".$thread_forum_id.".".$thread_id.".".$pages."#$iid'>".LAN_325."</a><br />
-					<a href='".e_BASE."forum_viewforum.php?".$forum_id."'>".LAN_326."</a></span><br /><br />
-					</td></tr></table>";
-					if($pref['forum_enclose']){ $ns -> tablerender($pref['forum_title'], $text); }else{ echo $text; }
-					clear_cache("newforumposts");
-					require_once(FOOTERF);
-					exit;
-				}
+                                        <span class='defaulttext'><a href='".e_BASE."forum_viewtopic.php?".$thread_forum_id.".".$thread_id.".".$pages."#$iid'>".LAN_325."</a><br />
+                                        <a href='".e_BASE."forum_viewforum.php?".$forum_id."'>".LAN_326."</a></span><br /><br />
+                                        </td></tr></table>";
+                                        if($pref['forum_enclose']){ $ns -> tablerender($pref['forum_title'], $text); }else{ echo $text; }
+                                        clear_cache("newforumposts");
+                                        require_once(FOOTERF);
+                                        exit;
+                                }
         }
 }
 
@@ -446,10 +450,10 @@ if($action == "edit" || $action == "quote"){
         $post = ereg_replace("&lt;span class=&#39;smallblacktext&#39;.*\span\>", "", $post);
         if($action == "quote"){
                 $post_author_name = substr($thread_user, (strpos($thread_user, ".")+1));
-                if(strstr($post_author_name, chr(1))){ 
-						$tmp = explode(chr(1), $post_author_name); 
-						$post_author_name = $tmp[0];
-					}
+                if(strstr($post_author_name, chr(1))){
+                                                $tmp = explode(chr(1), $post_author_name);
+                                                $post_author_name = $tmp[0];
+                                        }
                 $post = "[quote=$post_author_name]".$post."[/quote]\n";
                 $eaction = FALSE;
                 $action = "reply";
@@ -626,7 +630,7 @@ $text .= "</td></tr></table><br />";
 }
 
 if($action == "rp" || $action == "cp"){
-		$id = $thread_id;
+                $id = $thread_id;
         $sql -> db_Select("forum_t", "*", "thread_id = '$thread_id' ");
         $row = $sql-> db_Fetch("no_strip"); extract($row);
         $post_author_name = substr($thread_user, (strpos($thread_user, ".")+1));
@@ -635,8 +639,8 @@ if($action == "rp" || $action == "cp"){
         $thread_datestamp  = $gen->convert_date($thread_datestamp , "forum");
         $thread_name = $aj -> tpa($thread_name, $mode="off");
         $thread_thread = $aj -> tpa($thread_thread, $mode="off");
-		$replies = $sql -> db_Count("forum_t" ,"(*)", "WHERE thread_parent='$id'");
-		$replies_t = ($replies >= 10 ? "10" : $replies);
+                $replies = $sql -> db_Count("forum_t" ,"(*)", "WHERE thread_parent='$id'");
+                $replies_t = ($replies >= 10 ? "10" : $replies);
         $text .= "<div style='text-align:center'>".($action == "rp" ? "<div style='border:0;padding-right:2px;width:auto;height:400px;overflow:auto;'>": "")."
         <table style='width:97%' class='fborder'>
         <tr>
@@ -647,32 +651,32 @@ if($action == "rp" || $action == "cp"){
         <div class='smallblacktext' style='text-align:right'><img src='".e_IMAGE."forum/post.png' alt='' /> ".LAN_322.$thread_datestamp."</div>".$thread_thread."</td>
         </tr>".($action == "rp"  && $replies ? "
         </table>
-		<br />
+                <br />
         <table style='width:97%' class='fborder'>
-		<tr><td colspan='2' class='fcaption' style='vertical-align:top'>".LAN_101.$replies_t.LAN_102."</td></tr>" : "");
-		$query = ($action == "cp" ? "thread_parent=$id ORDER by thread_datestamp" : "thread_parent=$id ORDER by thread_datestamp DESC LIMIT 0,10 ");
-		if($replies){
-			$sql -> db_Select("forum_t", "*", $query);
-			while($row = $sql-> db_Fetch("no_strip")){ extract($row);
-			$post_author_name = substr($thread_user, (strpos($thread_user, ".")+1));
-			if(strstr($post_author_name, chr(1))){ 
-				$tmp = explode(chr(1), $post_author_name); 
-				$post_author_name = $tmp[0];
-			}
-			$thread_datestamp  = $gen->convert_date($thread_datestamp , "forum");
-			$thread_name = $aj -> tpa($thread_name, $mode="off");
-			$thread_thread = $aj -> tpa($thread_thread, $mode="off");
-			$text .= "<tr>
-			<td class='forumheader3' style='width:20%' style='vertical-align:top'><b>".$post_author_name."</b></td>
-			<td class='forumheader3' style='width:80%'>
-			<div class='smallblacktext' style='text-align:right'><img src='".e_IMAGE."forum/post.png' alt='' /> ".LAN_322.$thread_datestamp."</div>".$thread_thread."</td>
-			</tr>";
-			}
-		}
+                <tr><td colspan='2' class='fcaption' style='vertical-align:top'>".LAN_101.$replies_t.LAN_102."</td></tr>" : "");
+                $query = ($action == "cp" ? "thread_parent=$id ORDER by thread_datestamp" : "thread_parent=$id ORDER by thread_datestamp DESC LIMIT 0,10 ");
+                if($replies){
+                        $sql -> db_Select("forum_t", "*", $query);
+                        while($row = $sql-> db_Fetch("no_strip")){ extract($row);
+                        $post_author_name = substr($thread_user, (strpos($thread_user, ".")+1));
+                        if(strstr($post_author_name, chr(1))){
+                                $tmp = explode(chr(1), $post_author_name);
+                                $post_author_name = $tmp[0];
+                        }
+                        $thread_datestamp  = $gen->convert_date($thread_datestamp , "forum");
+                        $thread_name = $aj -> tpa($thread_name, $mode="off");
+                        $thread_thread = $aj -> tpa($thread_thread, $mode="off");
+                        $text .= "<tr>
+                        <td class='forumheader3' style='width:20%' style='vertical-align:top'><b>".$post_author_name."</b></td>
+                        <td class='forumheader3' style='width:80%'>
+                        <div class='smallblacktext' style='text-align:right'><img src='".e_IMAGE."forum/post.png' alt='' /> ".LAN_322.$thread_datestamp."</div>".$thread_thread."</td>
+                        </tr>";
+                        }
+                }
         $text .= ($action == "rp" && $replies > 10 ? "<tr>
-		<td class='forumheader3'  colspan='2'><a href='javascript:open_window(\"forum_post.php?cp.".$forum_id.".".$id."\",\"full\")'>".LAN_103."</a></td>
-			</tr>" : "")."
-		</table>
+                <td class='forumheader3'  colspan='2'><a href='javascript:open_window(\"forum_post.php?cp.".$forum_id.".".$id."\",\"full\")'>".LAN_103."</a></td>
+                        </tr>" : "")."
+                </table>
         </div>".($action == "rp" ? "</div>" : "");
 }
 
@@ -747,17 +751,17 @@ function forumjump(){
 }
 function redirect($url)
 {
-	global $ns;
-	if (@preg_match('/Microsoft|WebSTAR|Xitami/', getenv('SERVER_SOFTWARE')))
-	{
-		header('Refresh: 0; URL=' .$url);
-		$text = "<div style='text-align:center'>".LAN_408."<a href='".$url."'> ".LAN_409." </a>".LAN_410."</div>";
-		$ns -> tablerender(LAN_407, $text);
-		require_once(FOOTERF);
-		exit;
-	}
+        global $ns;
+        if (@preg_match('/Microsoft|WebSTAR|Xitami/', getenv('SERVER_SOFTWARE')))
+        {
+                header('Refresh: 0; URL=' .$url);
+                $text = "<div style='text-align:center'>".LAN_408."<a href='".$url."'> ".LAN_409." </a>".LAN_410."</div>";
+                $ns -> tablerender(LAN_407, $text);
+                require_once(FOOTERF);
+                exit;
+        }
 
-	header('Location: ' . $url);
-	exit;
+        header('Location: ' . $url);
+        exit;
 }require_once(FOOTERF);
 ?>

@@ -1,6 +1,15 @@
 <?php
-
-define("PAGE_NAME", "Forum"); 
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107/e107_languages/English/lan_forum.php,v $
+|     $Revision: 1.7 $
+|     $Date: 2004-09-06 09:55:17 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
+define("PAGE_NAME", "Forum");
 
 define("LAN_30", "Welcome");
 define("LAN_31", "There are no new posts ");
@@ -13,8 +22,8 @@ define("LAN_37", "It is now ");
 define("LAN_38", ", all times are ");
 define("LAN_41", "Newest member: ");
 define("LAN_42", "Registered members: ");
-define("LAN_44", "These forums can be used by non-registered users, but please be aware that your IP Address will be logged if you make a post.<br />To access the full features of this forum  you will need to <a href='".e_BASE."signup.php'>register</a> and log in.");
-define("LAN_45", "These forums can only be posted to by registered and logged in members, please click <a href='".e_BASE."signup.php'>here</a> to go to the registration page.");
+define("LAN_44", "These forums can be used by non-registered users, but please be aware that your IP Address will be logged if you make a post.<br />To access the full features of this forum  you will need to");
+define("LAN_45", "These forums can only be posted to by registered and logged in members, please click");
 define("LAN_46", "Forum");
 define("LAN_47", "Threads");
 define("LAN_48", "Replies");
@@ -89,4 +98,10 @@ define("LAN_433", "Forum Rules");
 define("LAN_434", "Return to forums");
 define("LAN_435", "My Profile");
 define("LAN_436", " (Will open a new window.)");
+
+define("LAN_437", "register");
+define("LAN_438", "and login.");
+define("LAN_439", "here");
+define("LAN_440", "to go to the registration page.");
+
 ?>

@@ -1,5 +1,14 @@
 <?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107/e107_languages/English/admin/lan_prefs.php,v $
+|     $Revision: 1.17 $
+|     $Date: 2004-09-06 09:55:17 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
 define("PRFLAN_1", "Site Information");
 define("PRFLAN_2", "Site Name");
 define("PRFLAN_3", "Site URL");
@@ -24,7 +33,7 @@ define("PRFLAN_21", "Date display options");
 define("PRFLAN_22", "Short date format");
 define("PRFLAN_23", "Long date format");
 define("PRFLAN_24", "Forum date format");
-define("PRFLAN_25", "For more information on date formats see the <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>strftime function page at php.net</a>");
+define("PRFLAN_25", "For more information on date formats see the");
 define("PRFLAN_26", "Time offset");
 define("PRFLAN_27", "Example, if you set this to +2, all times on your site will have two hours added to them");
 define("PRFLAN_28", "User registration/posting");
@@ -45,7 +54,7 @@ define("PRFLAN_42", "Replace string");
 define("PRFLAN_43", "Filter words");
 define("PRFLAN_44", "words to censor, seperate with a comma");
 define("PRFLAN_45", "Use COPPA on signup page?");
-define("PRFLAN_46", "for more info on COPPA see <a href='http://www.cdt.org/legislation/105th/privacy/coppa.html'>here</a>");
+define("PRFLAN_46", "for more info on COPPA see");
 define("PRFLAN_47", "Security &amp; Protection");
 define("PRFLAN_48", "User Tracking method");
 define("PRFLAN_49", "Cookies");
@@ -117,4 +126,7 @@ define("PRFLAN_89", "Site Header:");
 define("PRFLAN_90", "Click here to force Internet Explorer to use standards mode. Default is quirks mode.");
 define("PRFLAN_91", "If someone is attacking your site by multiple requests to your server, his IP will be automatically banned ! Don't replace a correct server config !!!");
 define("PRFLAN_92", "Secure signup verification -- hide password in email?");
+
+define("PRFLAN_93", "strftime function page at php.net");
+define("PRFLAN_94", "here");
 ?>

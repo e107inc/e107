@@ -14,14 +14,19 @@
 |        16/02/2003
 +---------------------------------------------------------------+
 */
+
+
+
 require_once("../class2.php");
+if($pref['htmlarea']){
+   require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
+   $htmlarea_js =  htmlarea("menu_text");
+}
+
 if(!getperms("I")){ header("location:".e_BASE."index.php"); exit; }
 require_once("auth.php");
 require_once(e_HANDLER."ren_help.php");
-    if($pref['htmlarea']){
-        require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
-        htmlarea("menu_text");
-    }
+
 // New texteparse used
 require_once(e_HANDLER."textparse/basic.php");
 $etp = new e107_basicparse;
@@ -50,7 +55,7 @@ if((IsSet($_POST['add_menu']) || IsSet($_POST['update_menu'])) && $_POST['type_c
         }else{
 
 
-                
+
                 $_POST['menu_caption'] = $etp -> e107in_basic($_POST['menu_caption']);
                 $_POST['menu_text'] = $etp -> e107in_basic($_POST['menu_text']);
                 /*
@@ -124,7 +129,7 @@ $_POST['menu_text'] = $etp -> e107out_basic($_POST['menu_text']);
                         $message .= CUSLAN_20.e_PLUGIN.CUSLAN_21;
                 }else{
                         fclose($fp);
-                        $message .= (IsSet($_POST['update_menu']) ? CUSLAN_4 : CUSLAN_24);
+                        $message .= (IsSet($_POST['update_menu']) ? CUSLAN_4 : CUSLAN_24." ".SITEURL.CUSLAN_29);
                         unset($_POST['menu_name'], $_POST['menu_caption'], $_POST['menu_text'], $_POST['edit'], $_POST['type_content']);
                 }
         }
@@ -152,7 +157,7 @@ if(IsSet($_POST['preview'])){
                 $_POST['menu_text'] = $etp -> e107out_basic($result[1][1]);
                 $_POST['menu_text'] = str_replace("<br />", "", $_POST['menu_text']);
                 $_POST['menu_name'] = eregi_replace(e_PLUGIN."custom/|.php", "", $menu);
-				$_POST['type_content'] = 1;
+                                $_POST['type_content'] = 1;
         }else{
                 $message .= CUSLAN_6." '".$_POST['existing']."' ".CUSLAN_7;
         }
@@ -166,7 +171,7 @@ if(IsSet($_POST['preview'])){
                 $_POST['menu_text'] = $etp -> e107out_basic($result[1][2]);
                 $_POST['menu_text'] = str_replace("<br />", "", $_POST['menu_text']);
                 $_POST['menu_name'] = eregi_replace(e_PLUGIN."custompages/|.php", "", $menu);
-				$_POST['type_content'] = 2;
+                                $_POST['type_content'] = 2;
         }else{
                 $message .= CUSLAN_6." '".$_POST['existing']."' ".CUSLAN_7;
         }
@@ -283,7 +288,7 @@ $text .= "<tr>
 <input type='radio' name='type_content' value='2' ".( $_POST['type_content']==2 ? "checked" : "" )." />
 <br />".CUSLAN_25." <input type='checkbox' name='mainmenu_link' value='1' />
 <br />
-<b class=\"smalltext\" >".CUSLAN_26."</b></td>
+<b class=\"smalltext\" >".CUSLAN_26."<br /><a href=\"".e_ADMIN."links.php\" >".CUSLAN_30."</a></b></td>
 </tr>";
 
 

@@ -1,6 +1,15 @@
 <?php
-
-define("PAGE_NAME", "Forum"); 
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107/e107_languages/English/lan_forum_post.php,v $
+|     $Revision: 1.7 $
+|     $Date: 2004-09-06 09:55:18 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
+define("PAGE_NAME", "Forum");
 
 define("LAN_01", "Forums");
 define("LAN_02", "Replying to: ");
@@ -22,7 +31,7 @@ define("LAN_20", "Error");
 define("LAN_27", "You left required field(s) blank");
 define("LAN_28", "You didn't post anything ..");
 define("LAN_29", "Edited");
-define("LAN_45", "These forums can only be posted to by registered and logged in members, please click <a href='".e_BASE."signup.php'>here</a> to go to the registration page.");
+define("LAN_45", "These forums can only be posted to by registered and logged in members, please click");
 define("LAN_60", "Start New Thread");
 define("LAN_61", "Your Name: ");
 define("LAN_62", "Subject: ");
@@ -85,5 +94,8 @@ define("LAN_407", "Redirect");
 define("LAN_408", "If your browser does not support meta redirection please click");
 define("LAN_409", "HERE");
 define("LAN_410", "to be redirected");
+define("LAN_411", "here");
+define("LAN_412", "to go to the registration page.");
+
 
 ?>

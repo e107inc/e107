@@ -561,7 +561,7 @@ class forum{
                 </tr>
 
                 <tr>
-                <td style='width:75%' class='forumheader3'>".FORLAN_70."<br /><span class='smalltext'>".FORLAN_71."</span></td>
+                <td style='width:75%' class='forumheader3'>".FORLAN_70."<br /><span class='smalltext'>".FORLAN_71." <a href='upload.php'>".FORLAN_130."</a> ". FORLAN_131."</span></td>
                 <td style='width:25%;text-align:center' class='forumheader2' >".($pref['forum_attach'] ? "<input type='checkbox' name='forum_attach' value='1' checked='checked' />" : "<input type='checkbox' name='forum_attach' value='1' />")."</td>
                 </tr>
 

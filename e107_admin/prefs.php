@@ -89,11 +89,11 @@ if(IsSet($_POST['updateprefs'])){
         }
 
         $signup_options = "";
-			for ($i=0; $i<count($signup_title); $i++) {
-				$valuesignup =  $signup_name[$i];
-				$signup_options .= $_POST[$valuesignup];
-				$signup_options .= $i < (count($signup_title)-1)?".":"";
-			}
+                        for ($i=0; $i<count($signup_title); $i++) {
+                                $valuesignup =  $signup_name[$i];
+                                $signup_options .= $_POST[$valuesignup];
+                                $signup_options .= $i < (count($signup_title)-1)?".":"";
+                        }
         $pref['signup_options'] = $signup_options;
 
         // =========================
@@ -436,7 +436,7 @@ $text .= "<td style='width:50%' class='forumheader3'>".PRFLAN_22.": </td>
 
 <tr>
 <td colspan='2' style='text-align:center' class='forumheader3'>
-(".PRFLAN_25.")
+(".PRFLAN_25." <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>".PRFLAN_93."</a>)
 </td>
 </tr>
 
@@ -510,7 +510,7 @@ if($use_coppa == 1){
 }
 
 
-$text .= "(".PRFLAN_46.")
+$text .= "(".PRFLAN_46." <a href='http://www.cdt.org/legislation/105th/privacy/coppa.html'>".PRFLAN_94."</a>)
 </td>
 </tr>
 
@@ -566,28 +566,28 @@ $text .= "
 // Custom Fields.
 
 if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
-	$row = $sql -> db_Fetch();
-	$user_entended = unserialize($row[0]);
-	$c=0;
-	$user_pref = unserialize($user_prefs);
-	while(list($key, $u_entended) = each($user_entended)){
-		if($u_entended){
-			$ut = explode("|",$u_entended);
-			$u_name = ($ut[0] != "") ? str_replace("_"," ",$ut[0]): $u_entended;
-			$u_type = $ut[1];
-			$u_value = $ut[2];
-			$signup_ext = "signup_ext";
-			$text .="
-			<tr>
-			<td style='width:50%' class='forumheader3'>".$u_name." <span class='smalltext'>(custom field)</span></td>
-			<td style='width:50%;text-align:right' class='forumheader3' >".
-			($pref['signup_ext'.$key] == "0" || $pref['signup_ext'.$key]=="" ? "<input type='radio' name='signup_ext".$key."' value='0' checked='checked' /> ".CUSTSIG_12 : "<input type='radio' name='signup_ext".$key."' value='0' /> ".CUSTSIG_12)."&nbsp;&nbsp;".
-			($pref['signup_ext'.$key] == "1" ? "<input type='radio' name='signup_ext".$key."' value='1' checked='checked' /> ".CUSTSIG_14 : "<input type='radio' name='signup_ext".$key."' value='1' /> ".CUSTSIG_14)."&nbsp;&nbsp;".
-			($pref['signup_ext'.$key] == "2" ? "<input type='radio' name='signup_ext".$key."' value='2' checked='checked' /> ".CUSTSIG_15 : "<input type='radio' name='signup_ext".$key."' value='2' /> ".CUSTSIG_15)."&nbsp;&nbsp;".
-			"</td>
-			</tr>";
-		}
-	}
+        $row = $sql -> db_Fetch();
+        $user_entended = unserialize($row[0]);
+        $c=0;
+        $user_pref = unserialize($user_prefs);
+        while(list($key, $u_entended) = each($user_entended)){
+                if($u_entended){
+                        $ut = explode("|",$u_entended);
+                        $u_name = ($ut[0] != "") ? str_replace("_"," ",$ut[0]): $u_entended;
+                        $u_type = $ut[1];
+                        $u_value = $ut[2];
+                        $signup_ext = "signup_ext";
+                        $text .="
+                        <tr>
+                        <td style='width:50%' class='forumheader3'>".$u_name." <span class='smalltext'>(custom field)</span></td>
+                        <td style='width:50%;text-align:right' class='forumheader3' >".
+                        ($pref['signup_ext'.$key] == "0" || $pref['signup_ext'.$key]=="" ? "<input type='radio' name='signup_ext".$key."' value='0' checked='checked' /> ".CUSTSIG_12 : "<input type='radio' name='signup_ext".$key."' value='0' /> ".CUSTSIG_12)."&nbsp;&nbsp;".
+                        ($pref['signup_ext'.$key] == "1" ? "<input type='radio' name='signup_ext".$key."' value='1' checked='checked' /> ".CUSTSIG_14 : "<input type='radio' name='signup_ext".$key."' value='1' /> ".CUSTSIG_14)."&nbsp;&nbsp;".
+                        ($pref['signup_ext'.$key] == "2" ? "<input type='radio' name='signup_ext".$key."' value='2' checked='checked' /> ".CUSTSIG_15 : "<input type='radio' name='signup_ext".$key."' value='2' /> ".CUSTSIG_15)."&nbsp;&nbsp;".
+                        "</td>
+                        </tr>";
+                }
+        }
 }
 
 $text .="</table></div>";
