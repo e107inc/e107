@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/download_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-03-25 11:38:50 $
+|     $Revision: 1.7 $
+|     $Date: 2005-03-26 09:15:22 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -67,7 +67,8 @@ if(!$DOWNLOAD_LIST_TABLE_START){
 <img src='".e_THEME."lamb/images/download.png' alt='' style='vertical-align: middle;' /> <span class='dlmain'>Downloads: {DOWNLOAD_CATEGORY}</span><br /><br />{DOWNLOAD_CATEGORY_DESCRIPTION}<br /><br />
 
 <form method='post' action='".e_SELF."?".e_QUERY."'>
-<span class='defaulttext'>".LAN_dl_38."</span>
+<p>
+<span class='defaulttext'>".LAN_dl_38."
 <select name='order' class='tbox'>".
 ($order == "download_datestamp" ? "<option value='download_datestamp' selected='selected'>".LAN_dl_22."</option>" : "<option value='download_datestamp'>".LAN_dl_22."</option>").
 ($order == "download_requested" ? "<option value='download_requested' selected='selected'>".LAN_dl_18."</option>" : "<option value='download_requested'>".LAN_dl_18."</option>").
@@ -75,7 +76,7 @@ if(!$DOWNLOAD_LIST_TABLE_START){
 ($order == "download_author" ? "<option value='download_author' selected='selected'>".LAN_dl_24."</option>" : "<option value='download_author'>".LAN_dl_24."</option>")."
 </select>&nbsp;&nbsp;&nbsp;
 
-<span class='defaulttext'>".LAN_dl_37."</span>
+".LAN_dl_37."
 <select name='view' class='tbox'>".
 ($view == 5 ? "<option selected='selected'>5</option>" : "<option>5</option>").
 ($view == 10 ? "<option selected='selected'>10</option>" : "<option>10</option>").
@@ -86,14 +87,18 @@ if(!$DOWNLOAD_LIST_TABLE_START){
 &nbsp;
                         
 &nbsp;
-<span class='defaulttext'>".LAN_dl_39."</span>
+".LAN_dl_39."
 <select name='sort' class='tbox'>".
 ($sort == "ASC" ? "<option value='ASC' selected='selected'>".LAN_dl_25."</option>" : "<option value='ASC'>".LAN_dl_25."</option>").
 ($sort == "DESC" ? "<option value='DESC' selected='selected'>".LAN_dl_26."</option>" : "<option value='DESC'>".LAN_dl_26."</option>")."
 </select>
 &nbsp;
-<input class='button' type='submit' name='goorder' value='".LAN_dl_27."' /><br /><br />
+<input class='button' type='submit' name='goorder' value='".LAN_dl_27."' />
+</span>
 
+
+<br /><br />
+</p>
 <table style='width:100%'>\n
 
 <tr>

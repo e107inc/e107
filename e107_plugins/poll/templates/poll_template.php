@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/templates/poll_template.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-03-25 17:07:01 $
+|     $Revision: 1.6 $
+|     $Date: 2005-03-26 09:15:22 $
 |     $Author: stevedunstan $
 |
 +----------------------------------------------------------------------------+
@@ -57,11 +57,11 @@ $POLL_NOTVOTED_END = "
 /*		template for polls when user HAS voted ...			*/
 
 $POLL_VOTED_START = "
-<span style='text-align:center'>
+<div style='text-align:center'>
 <br />
 <b><i>{QUESTION}</i></b>
 <hr />
-</span>
+</div>
 <br />
 ";
 
