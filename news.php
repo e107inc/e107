@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2005-02-13 05:42:05 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.40 $
+|     $Date: 2005-02-13 23:16:32 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -138,7 +138,7 @@ if (!$pref['wmessage_sc']) {
 }
 // --->wmessage end
 
-if ($pref['nfp_display'] == 1)
+if (isset($pref['nfp_display']) && $pref['nfp_display'] == 1)
 {
 	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 }
