@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.61 $
-|     $Date: 2005-03-29 03:18:38 $
+|     $Revision: 1.62 $
+|     $Date: 2005-03-29 04:12:43 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -269,8 +269,8 @@ function update_61x_to_700($type) {
 		$sql->db_Select_gen(
 		"CREATE TABLE ".MPREFIX."generic (
 			gen_id int(10) unsigned NOT NULL auto_increment,
-  			gen_type varchar(80) NOT NULL default '',
-  			gen_datestamp int(10) unsigned NOT NULL default '0',
+				gen_type varchar(80) NOT NULL default '',
+				gen_datestamp int(10) unsigned NOT NULL default '0',
 			gen_user_id int(10) unsigned NOT NULL default '0',
 			gen_ip varchar(80) NOT NULL default '',
 			gen_intdata int(10) unsigned NOT NULL default '0',
@@ -281,10 +281,10 @@ function update_61x_to_700($type) {
 
 		$sql->db_Select_gen(
 		"CREATE TABLE ".MPREFIX."user_extended (
-  			user_extended_id int(10) unsigned NOT NULL default '0',
-  			PRIMARY KEY  (user_extended_id)
+				user_extended_id int(10) unsigned NOT NULL default '0',
+				PRIMARY KEY  (user_extended_id)
 			) TYPE=MyISAM;
-    	");
+		");
 
 		$sql->db_Select_gen(
 		"CREATE TABLE ".MPREFIX."user_extended_struct (
@@ -410,7 +410,8 @@ function update_61x_to_700($type) {
 		$sql->db_Update("wmessage", "wm_active='254' WHERE wm_id = '3' AND wm_active='1' ");
 		mysql_query("ALTER IGNORE TABLE `".MPREFIX."wmessage` ADD UNIQUE INDEX(wm_id)");
 		mysql_query("ALTER TABLE `".MPREFIX."wmessage` CHANGE `wm_id` `wm_id` TINYINT( 3 ) UNSIGNED NOT NULL AUTO_INCREMENT");
-
+		$pref['wm_enclose'] = 1;
+		save_prefs();
 		/*
 		Changes by McFly 2/12/2005
 		Moving forum rules from wmessage table to generic table
@@ -474,31 +475,38 @@ function update_61x_to_700($type) {
 		PRIMARY KEY  (preset_id)
 		) TYPE=MyISAM;
 		");
-		// News Updates
-		mysql_query("ALTER TABLE `".MPREFIX."news` ADD `news_summary` TEXT DEFAULT NULL;");
-		mysql_query("ALTER TABLE `".MPREFIX."news` ADD `news_attach` TEXT DEFAULT NULL;");
-		mysql_query("ALTER TABLE ".MPREFIX."news ADD news_sticky TINYINT ( 3 ) UNSIGNED NOT NULL");
+
+		// News Updates -----------------
+
+		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."news");
+		$columns = mysql_num_fields($fields);
+
+		if($columns != 16){
+			mysql_query("ALTER TABLE `".MPREFIX."news` ADD `news_summary` TEXT DEFAULT NULL;");
+			mysql_query("ALTER TABLE `".MPREFIX."news` ADD `news_attach` TEXT DEFAULT NULL;");
+			mysql_query("ALTER TABLE ".MPREFIX."news ADD news_sticky TINYINT ( 3 ) UNSIGNED NOT NULL");
+		}
 
 		// Downloads updates - Added March 1, 2005 by McFly
 
 		$sql->db_Select_gen(
 		"CREATE TABLE ".MPREFIX."download_requests (
-  			download_request_id int(10) unsigned NOT NULL auto_increment,
-  			download_request_userid int(10) unsigned NOT NULL default '0',
-  			download_request_ip varchar(30) NOT NULL default '',
-  			download_request_download_id int(10) unsigned NOT NULL default '0',
-  			download_request_datestamp int(10) unsigned NOT NULL default '0',
-  			PRIMARY KEY  (download_request_id)
+				download_request_id int(10) unsigned NOT NULL auto_increment,
+				download_request_userid int(10) unsigned NOT NULL default '0',
+				download_request_ip varchar(30) NOT NULL default '',
+				download_request_download_id int(10) unsigned NOT NULL default '0',
+				download_request_datestamp int(10) unsigned NOT NULL default '0',
+				PRIMARY KEY  (download_request_id)
 			) TYPE=MyISAM;
 		");
 
 		// Search Update
 		global $pref, $sysprefs;
-        $search_prefs = $sysprefs -> getArray('search_prefs');
-        if (!isset($pref['search_highlight'])) {
-        	$serial_prefs = "a:10:{s:11:\"search_sort\";s:3:\"php\";s:11:\"multisearch\";s:1:\"1\";s:9:\"relevance\";s:1:\"1\";s:11:\"user_select\";s:1:\"1\";s:13:\"time_restrict\";s:1:\"0\";s:9:\"time_secs\";s:2:\"60\";s:6:\"google\";s:1:\"0\";s:13:\"core_handlers\";a:4:{s:4:\"news\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"0\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:8:\"comments\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:5:\"users\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:9:\"downloads\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}}s:17:\"comments_handlers\";a:2:{s:4:\"news\";a:3:{s:2:\"id\";i:0;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}s:8:\"download\";a:3:{s:2:\"id\";i:2;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}}s:13:\"plug_handlers\";N;}";
-        	$search_prefs = unserialize(stripslashes($serial_prefs));
-   			$handle = opendir(e_PLUGIN);
+		$search_prefs = $sysprefs -> getArray('search_prefs');
+		if (!isset($pref['search_highlight'])) {
+			$serial_prefs = "a:10:{s:11:\"search_sort\";s:3:\"php\";s:11:\"multisearch\";s:1:\"1\";s:9:\"relevance\";s:1:\"1\";s:11:\"user_select\";s:1:\"1\";s:13:\"time_restrict\";s:1:\"0\";s:9:\"time_secs\";s:2:\"60\";s:6:\"google\";s:1:\"0\";s:13:\"core_handlers\";a:4:{s:4:\"news\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"0\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:8:\"comments\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:5:\"users\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:9:\"downloads\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}}s:17:\"comments_handlers\";a:2:{s:4:\"news\";a:3:{s:2:\"id\";i:0;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}s:8:\"download\";a:3:{s:2:\"id\";i:2;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}}s:13:\"plug_handlers\";N;}";
+			$search_prefs = unserialize(stripslashes($serial_prefs));
+			$handle = opendir(e_PLUGIN);
 			while (false !== ($file = readdir($handle))) {
 				if ($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)) {
 					$plugin_handle = opendir(e_PLUGIN.$file."/");
@@ -533,6 +541,19 @@ function update_61x_to_700($type) {
 			save_prefs();
 		}
 
+// Forum upgrade.
+		global $PLUGINS_DIRECTORY;
+		if($sql -> db_Select("links", "*", "link_url = 'forum.php'")){
+			$sql -> db_Insert("plugin", "0, 'Forum', '1.1', 'forum', '1' ");
+			$sql -> db_Update("links", "link_url='".$PLUGINS_DIRECTORY."forum/forum.php' WHERE link_url='forum.php' ");
+		}
+
+        if($pref['cb_linkreplace']){
+        	$pref['link_text'] = $pref['cb_linkreplace'];
+			save_prefs();
+		}
+
+
 } else {
 		// check if update is needed.
 		// FALSE = needed, TRUE = not needed.
@@ -550,7 +571,7 @@ function update_61x_to_700($type) {
 
 // ---- news check. ------------
 
-        $fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."news");
+		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."news");
 		$columns = mysql_num_fields($fields);
 		if($columns != 16){
 		return FALSE;
@@ -558,7 +579,7 @@ function update_61x_to_700($type) {
 
 // ----- ----------------------
 
-        global $pref;
+		global $pref;
 		if (!isset($pref['search_highlight'])) {
 			return FALSE;
 		} else {
