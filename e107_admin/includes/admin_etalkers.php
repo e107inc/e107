@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/includes/admin_etalkers.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-09 18:13:14 $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-10 00:34:20 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -43,11 +43,12 @@ foreach ($admin_cat['id'] as $cat_key => $cat_id) {
 				extract($row);
 				include(e_PLUGIN.$plugin_path."/plugin.php");
 				if ($eplug_conffile) {
-					$text_rend = render_links(e_PLUGIN.$plugin_path."/".$eplug_conffile, $eplug_name, $eplug_caption, "P".$plugin_id, E_16_PLUGIN, 'default');
+					$plugin_icon = $eplug_icon_small ? "<img src='".e_PLUGIN.$eplug_icon_small."' alt='".$eplug_caption."' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />" : E_16_PLUGIN;					
+					$text_rend = render_links(e_PLUGIN.$plugin_path."/".$eplug_conffile, $eplug_name, $eplug_caption, "P".$plugin_id, $plugin_icon, 'default');
 					if ($text_rend) { $text_check = TRUE; }
 					$text_cat .= $text_rend;
 				}
-				unset($eplug_conffile, $eplug_name, $eplug_caption);
+				unset($eplug_conffile, $eplug_name, $eplug_caption, $eplug_icon_small);
 			}
 		}
 	}

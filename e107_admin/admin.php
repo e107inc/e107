@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-09 18:12:38 $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-10 00:33:47 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */

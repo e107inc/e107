@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/fader_menu/plugin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:11 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-10 00:34:25 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 $lan_file = e_PLUGIN."fader_menu/languages/".e_LANGUAGE.".php";
@@ -24,7 +24,6 @@ require_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."fader_menu/languages
 $eplug_name = "Fader";
 $eplug_version = "1";
 $eplug_author = "jalist";
-$eplug_logo = "button.png";
 $eplug_url = "http://e107.org";
 $eplug_email = "jalist@e107.org";
 $eplug_description = FADER_L1; //"Fading text inside a menu, uses code from DynamicDrive.com";
@@ -38,10 +37,11 @@ $eplug_folder = "fader_menu";
 $eplug_menu_name = "fader_menu";
 
 // Name of the admin configuration file --------------------------------------------------------------------------
-$eplug_conffile = "config.php";
+$eplug_conffile = "admin_config.php";
 
 // Icon image and caption text ------------------------------------------------------------------------------------
-$eplug_icon = $eplug_folder."/images/logo.png";
+$eplug_icon = $eplug_folder."/images/fader_32.png";
+$eplug_icon_small = $eplug_folder."/images/fader_16.png";
 $eplug_caption =  FADER_L17; //"Configure Fader";
 
 // List of preferences -----------------------------------------------------------------------------------------------

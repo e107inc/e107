@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/includes/admin_classis.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-09 19:52:56 $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-10 00:34:20 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -40,8 +40,10 @@ if($sql -> db_Select("plugin", "*", "plugin_installflag=1")){
 		extract($row);
 		include(e_PLUGIN.$plugin_path."/plugin.php");
 		if($eplug_conffile){
-			$text .= render_links(e_PLUGIN.$plugin_path."/".$eplug_conffile, $eplug_name, $eplug_caption, "P".$plugin_id, "<img src='".e_PLUGIN.$eplug_icon."' alt='".$eplug_caption."' style='border:0' />", "classis");
+			$plugin_icon = $eplug_icon ? "<img src='".e_PLUGIN.$eplug_icon."' alt='' style='border:0px; width: 32px; height: 32px' />" : E_32_CAT_PLUG;
+			$text .= render_links(e_PLUGIN.$plugin_path."/".$eplug_conffile, $eplug_name, $eplug_caption, "P".$plugin_id, $plugin_icon, "classis");
 		}
+		unset($eplug_conffile, $eplug_name, $eplug_caption, $eplug_icon);
 	}
 }
 

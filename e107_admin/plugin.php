@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-09 18:12:38 $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-10 00:33:47 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -363,7 +363,7 @@ $text = "<div style='text-align:center'>
 $sql -> db_Select("plugin");
 while($row = $sql -> db_Fetch()){
         extract($row);
-        unset($eplug_compliant,$eplug_module, $eplug_parse, $eplug_name, $eplug_version, $eplug_author, $eplug_logo, $eplug_url, $eplug_email, $eplug_description, $eplug_compatible, $eplug_readme, $eplug_folder, $eplug_table_names, $eplug_userclass);
+        unset($eplug_compliant,$eplug_module, $eplug_parse, $eplug_name, $eplug_version, $eplug_author, $eplug_icon, $eplug_url, $eplug_email, $eplug_description, $eplug_compatible, $eplug_readme, $eplug_folder, $eplug_table_names, $eplug_userclass);
         include(e_PLUGIN.$plugin_path."/plugin.php");
 
         if($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs)  || is_array($eplug_user_prefs) || is_array($eplug_parse) || $eplug_module || $eplug_userclass){
@@ -376,8 +376,9 @@ while($row = $sql -> db_Fetch()){
                 $img = "<img src='".e_IMAGE."generic/upgrade.png' alt='' />";
         }
 
+		$plugin_icon = $eplug_icon ? "<img src='".e_PLUGIN.$eplug_icon."' alt='' style='vertical-align: bottom; width: 32px; height: 32px' />" : E_32_CAT_PLUG;
         $text .= "<tr>
-        <td class='forumheader3' style='width:30%; text-align:center; vertical-align:top'>".($eplug_logo && $eplug_logo != "button.png" ? "<img src='".e_PLUGIN.$eplug_folder."/".$eplug_logo."' alt='' /><br /><br />" : "")."
+        <td class='forumheader3' style='width:30%; text-align:center; vertical-align:top'>".$plugin_icon."<br /><br />
 
 
         $img <b>$plugin_name</b><br />version $plugin_version<br /></td>

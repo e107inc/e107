@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm_menu/plugin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:36 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-10 00:34:26 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,7 +24,6 @@
 $eplug_name = PMLAN_PM;
 $eplug_version = "2.07";
 $eplug_author = "McFly";
-$eplug_logo = "/images/icon_pm.png";
 $eplug_url = "http://mcfly.gotdns.org";
 $eplug_email = "mcfly@e107.org";
 $eplug_description = PM_ADLAN_42; //"This plugin is a fully featured Private Messaging system.";
@@ -38,10 +37,11 @@ $eplug_folder = "pm_menu";
 $eplug_menu_name = "pm_menu";
 
 // Name of the admin configuration file --------------------------------------------------------------------------
-$eplug_conffile = "pm_conf.php";
+$eplug_conffile = "admin_pm_conf.php";
 
 // Icon image and caption text ------------------------------------------------------------------------------------
-$eplug_icon = $eplug_folder."/images/icon_pm.png";
+$eplug_icon = $eplug_folder."/images/pvt_message_32.png";
+$eplug_icon_small = $eplug_folder."/images/pvt_message_16.png";
 $eplug_caption =  PM_ADLAN_43; //"Configure Private Messager";
 
 // List of preferences -----------------------------------------------------------------------------------------------
