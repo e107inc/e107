@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/e107_admin/plugin.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2004-11-25 02:29:35 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.20 $
+|     $Date: 2005-01-24 14:04:13 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -280,14 +280,18 @@ if(strstr(e_QUERY, "upgrade")){
 	include(e_PLUGIN.$plugin_path."/plugin.php");
 
 	if(is_array($upgrade_alter_tables)){
+        	$upgtbl_attempts = 0; // How many attempts
+        	$upgtbl_failed   = 0; // How many didn't work
 		while(list($key, $e_table) = each($upgrade_alter_tables)){
 			if(!mysql_query($e_table)){
-				$text .= EPL_ADLAN_9."<br />";
-				$err_plug = TRUE;
-				break;
+                        	$upgtbl_failed++;
 			}
+                        $upgtbl_attempts++;
 		}
-		if(!$err_plug){
+                if ( $upgtbl_failed ) {
+                	$text .= "$upgtbl_failed/$upgtbl_attempts ".EPL_ADLAN_9."<br />";
+                        $err_plug = TRUE;
+                 } else {
 			$text .= EPL_ADLAN_7."<br />";
 		}
 	}
