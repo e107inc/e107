@@ -569,7 +569,7 @@ class textparse{
 				}else{
 					if(!strstr($message_array[$i], "[link=") && !strstr($message_array[$i], "[url=") && !strstr($message_array[$i], "href=") && !strstr($message_array[$i], "src=") && !strstr($message_array[$i], "action=") && !strstr($message_array[$i], "onclick=") && !strstr($message_array[$i], "url(")){
 						$message_array[$i] = preg_replace("#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="http://\2.\3" onclick="window.open(\'http://\2.\3\'); return false;">\2.\3</a>', $message_array[$i]);
-						$message_array[$i] = preg_replace("#([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?([^.]))#i", '<a href="\1://\2" onclick="window.open(\'\1://\2\'); return false;">\1://\2</a>', $message_array[$i]);
+						$message_array[$i] = preg_replace("#([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?([^.,]))#i", '<a href="\1://\2" onclick="window.open(\'\1://\2\'); return false;">\1://\2</a>', $message_array[$i]);
 							if($highlight_search){
 								$tmp = explode(" ", $_POST['search_query']);
 								foreach($tmp as $key){
