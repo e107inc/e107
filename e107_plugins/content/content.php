@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.16 $
-|		$Date: 2005-02-20 22:35:06 $
+|		$Revision: 1.17 $
+|		$Date: 2005-03-01 23:12:20 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -326,7 +326,7 @@ function show_content_search_menu(){
 				".$rs -> form_close();
 
 				$text = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_SEARCH_TABLE);
-				$caption = "content search";
+				$caption = CONTENT_LAN_77;
 				$ns -> tablerender($caption, $text);
 				return TRUE;
 }
