@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-02-22 02:29:03 $
+|     $Revision: 1.17 $
+|     $Date: 2005-02-24 10:49:52 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -210,6 +210,8 @@ define("LAN_PRESET_CONFIRMDEL","Are you sure you want to delete this preset?");
 define("LAN_NOTWRITABLE"," is not writable, you need to CHMOD 777 the folder first.");
 define("LAN_DATE","Date");
 define("LAN_TIME","Time");
+define("LAN_YES","Yes");
+define("LAN_NO","No");
 define("LAN_EMPTY","There are no entries in the database yet");
 
 

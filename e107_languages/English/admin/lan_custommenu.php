@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_custommenu.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-02-09 03:00:04 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-24 10:49:52 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 global $PLUGINS_DIRECTORY;
@@ -40,7 +40,8 @@ define("CUSLAN_26", "Link displayed for everybody and opened in the same window 
 define("CUSLAN_27", "You already have a link in your main menu for this page or with the same name...");
 define("CUSLAN_28", "Link to this page now created !!! Go to your links section to update link properties.");
 
-define("CUSLAN_29", $PLUGINS_DIRECTORY."custompages/");
+define("CUSLAN_29", "Type");
 define("CUSLAN_30", "If required edit link properties here ");
+define("CUSLAN_31", "and visible to");
 
 ?>
