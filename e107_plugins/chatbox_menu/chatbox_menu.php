@@ -70,11 +70,11 @@ if($pref['user_reg'] && !USER && !$pref['anon_post']){
 		$texta .= " \n<input class='button' type ='button' style='cursor:hand; cursor:pointer' size='30' value='".CHATBOX_L14."' onclick='expandit(this)' />\n<span style='display:none;'>".emote()."\n</span>\n";
 	}
 	
-	$texta .="</p>\n</form>\n</div>\n<br />\n";
+	$texta .="</p>\n</form>\n</div>\n";
 }
 
 if($emessage != ""){
-	$texta .= "<div style='text-align:center'><b>".$emessage."</b></div><br />";
+	$texta .= "<div style='text-align:center'><b>".$emessage."</b></div>";
 }
 
 if(!$text = retrieve_cache("chatbox")){
@@ -170,7 +170,7 @@ if(ADMIN && getperms("C")){$text .= "<br />[ <a href='".e_ADMIN."chatbox.php'>".
 $caption = (file_exists(THEME."images/chatbox_menu.png") ? "<img src='".THEME."images/chatbox_menu.png' alt='' /> ".CHATBOX_L2 : CHATBOX_L2);
 
 
-$text = ($pref['cb_layer'] ? "<div style='border : 0; padding : 4px; width : auto; height : ".$pref['cb_layer_height']."px; overflow : auto; '>".$texta.$text."</div>" : $texta.$text);
+$text = ($pref['cb_layer'] ? $texta."<div style='border : 0; padding : 4px; width : auto; height : ".$pref['cb_layer_height']."px; overflow : auto; '>".$text."</div>" : $texta.$text);
 
 
 $ns -> tablerender($caption, $text);
