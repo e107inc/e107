@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-01-26 17:57:10 $
-|     $Author: stevedunstan $
+|     $Revision: 1.13 $
+|     $Date: 2005-01-27 02:44:44 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -93,7 +93,7 @@ function update_61x_to_700($type){
                         /* end */
 
                         // start links update -------------------------------------------------------------------------------------------
-                        if (!$sql -> db_Select("links_page", "link_id")){
+                        if (!$sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."links_page")) {
                         global $IMAGES_DIRECTORY, $PLUGINS_DIRECTORY, $pref;
                         $sql -> db_Select_gen("CREATE TABLE ".MPREFIX."links_page_cat (
                         link_category_id int(10) unsigned NOT NULL auto_increment,
