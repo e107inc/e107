@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-12 16:31:01 $
-|     $Author: lisa_ $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-19 11:52:33 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -54,6 +54,7 @@ function update_61x_to_700($type){
             $sql -> db_Update("userclass_classes", "userclass_editclass='254' WHERE userclass_editclass ='0' ");
 
 			 mysql_query("ALTER TABLE ".MPREFIX."banner CHANGE banner_active banner_active TINYINT(3) UNSIGNED NOT NULL DEFAULT '0'");
+			 mysql_query('DROP TABLE `'.MPREFIX.'cache`'); // db cache is no longer an available option..
 			 $sql -> db_Update("banner", "banner_active='255' WHERE banner_active = '0' ");
 			 $sql -> db_Update("banner", "banner_active='0' WHERE banner_active = '1' ");
 
