@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/sitemap.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:45 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-10-07 14:45:21 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 
@@ -26,10 +26,10 @@ require_once(HEADERF);
 $sql2 = new db;
 
 if(file_exists(THEME."images/extand_ico.png")){
-        define("SM_ICO_EXP","<img onclick=\"if(this.src.indexOf('".THEME."images/extand_ico.png')!=-1){this.src='".THEME."images/extand2_ico.png'}else{this.src='".THEME."images/extand_ico.png'}\" class='icoexp' src='".THEME."images/extand_ico.png' style='border: 0px; width: 11px; height: 11px;' />");
+        define("SM_ICO_EXP","<img onclick=\"if(this.src.indexOf('".THEME."images/extand_ico.png')!=-1){this.src='".THEME."images/extand2_ico.png'}else{this.src='".THEME."images/extand_ico.png'}\" class='icoexp' src='".THEME."images/extand_ico.png' style='border: 0px; width: 11px; height: 11px;' alt=\"\" />");
         define("SM_ICO_URL",THEME."images/extand_ico.png");
 }else{
-        define("SM_ICO_EXP","<img onclick=\"if(this.src.indexOf('".e_IMAGE."generic/extand_ico.png')!=-1){this.src='".e_IMAGE."generic/extand2_ico.png'}else{this.src='".e_IMAGE."generic/extand_ico.png'}\" class='icoexp' src='".e_IMAGE."generic/extand_ico.png' style='border: 0px; width: 11px; height: 11px;' />");
+        define("SM_ICO_EXP","<img onclick=\"if(this.src.indexOf('".e_IMAGE."generic/extand_ico.png')!=-1){this.src='".e_IMAGE."generic/extand2_ico.png'}else{this.src='".e_IMAGE."generic/extand_ico.png'}\" class='icoexp' src='".e_IMAGE."generic/extand_ico.png' style='border: 0px; width: 11px; height: 11px;' alt=\"\" />");
         define("SM_ICO_URL",e_IMAGE."generic/extand_ico.png");
 }
 if(file_exists(THEME."images/extand2_ico.png")){
@@ -47,7 +47,7 @@ $text = "\n\n
 
 
 // Help
-$text .= "<p>\n<a href=\"javascript:void(0);\" onclick=\"ejs_func_todo=ejs_expandall('cats',ejs_func_todo,'subcats');ejs_func_todo2=ejs_expandpics('icoexp',ejs_func_todo2,'".SM_ICO_URL."','".SM_ICO_URL2."');\" > ".LANSM_7."</a> ".LANSM_31." <img src='".e_IMAGE."generic/extand_ico.png' style='border: 0px; width: 11px; height: 11px;' /> ".LANSM_41."</p>\n";
+$text .= "<p>\n<a href=\"#\" onclick=\"ejs_func_todo=ejs_expandall('cats',ejs_func_todo,'subcats');ejs_func_todo2=ejs_expandpics('icoexp',ejs_func_todo2,'".SM_ICO_URL."','".SM_ICO_URL2."');\" > ".LANSM_7."</a> ".LANSM_31." <img src='".e_IMAGE."generic/extand_ico.png' style='border: 0px; width: 11px; height: 11px;' alt=\"\" /> ".LANSM_41."</p>\n";
 
 
 $text .= "<br /><br />\n

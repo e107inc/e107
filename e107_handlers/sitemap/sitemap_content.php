@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitemap/sitemap_content.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:40 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-10-07 14:46:28 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 function sm_content(){
@@ -21,7 +21,7 @@ function sm_content(){
         $sql2 = new db;
         $aj = new textparse;
         $texto .= "<p class='caption2' style='text-align: left;' >\n
-        <a href=\"javascript:void(0);\" onfocus=\"this.blur;\" onclick=\"expandit('contents_cats');ejs_func_todo='view'\" >".SM_ICO_EXP."</a> <img src='".THEME."images/bullet2.gif' alt='bullet' /> <a class=\"sitemap2\"  href=\"content.php\" >".LANSM_4."</a> <b class='smalltext' >".LANSM_36."</b>\n
+        <a href=\"#\" onfocus=\"this.blur;\" onclick=\"if(document.getElementById('contents_cats')){expandit('contents_cats');}ejs_func_todo='view'\" >".SM_ICO_EXP."</a> <img src='".THEME."images/bullet2.gif' alt='bullet' /> <a class=\"sitemap2\"  href=\"content.php\" >".LANSM_4."</a> <b class='smalltext' >".LANSM_36."</b>\n
         </p><br />\n";
 
         if($sql -> db_Select("content","content_id, content_heading, content_type, content_class","content_type='1' ORDER BY content_heading ASC")){

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitemap/sitemap_links.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:40 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-10-07 14:46:28 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 function sm_links(){
@@ -22,7 +22,7 @@ function sm_links(){
         $aj = new textparse;
         if($sql -> db_Select("news","news_id")){
                 $texto .= "<p class='caption2' style='text-align: left;' >\n
-                <a href=\"javascript:void(0);\" onfocus=\"this.blur;\" onclick=\"expandit('link_cats');ejs_func_todo='view'\" >".SM_ICO_EXP."</a> <img src='".THEME."images/bullet2.gif' alt='bullet' /> <a class=\"sitemap2\"  href=\"links.php\" >".LANSM_8."</a> <b class='smalltext' >".LANSM_9."</b>\n
+                <a href=\"#\" onfocus=\"this.blur;\" onclick=\"if(document.getElementById('links_cats')){expandit('link_cats');}ejs_func_todo='view'\" >".SM_ICO_EXP."</a> <img src='".THEME."images/bullet2.gif' alt='bullet' /> <a class=\"sitemap2\"  href=\"links.php\" >".LANSM_8."</a> <b class='smalltext' >".LANSM_9."</b>\n
                 </p><br />\n";
 
                 if($sql -> db_Select("link_category","*","link_category_id!='1' ORDER BY link_category_name")){
@@ -33,10 +33,10 @@ function sm_links(){
                                 extract($row);
                                 $row[1] = $aj -> tpa($row[1]);
                                 $row[2] = $aj -> tpa($row[2]);
-                                $texto .= "<a href=\"javascript:void(0);\" onfocus=\"this.blur;\" onclick=\"expandit('link_subcats_".$row[0]."');ejs_func_todo='view'\" class='smalltext' >".SM_ICO_EXP."</a> ".($row[3]!="" ? "<img src='".e_IMAGE."link_icons/".$row[3]."' alt='bullet' /> " : "")."<a  href='links.php?cat.".$row[0]."' >".$row[1]."</a>\n";
+                                $texto .= "<a href=\"#\" onfocus=\"this.blur;\" onclick=\"if(document.getElementById('link_subcats_".$row[0]."')){expandit('link_subcats_".$row[0]."');}ejs_func_todo='view'\" class='smalltext' >".SM_ICO_EXP."</a> ".($row[3]!="" ? "<img src='".e_IMAGE."link_icons/".$row[3]."' alt='bullet' /> " : "")."<a  href='links.php?cat.".$row[0]."' >".$row[1]."</a>\n";
                                 $nbr_link_cat++;
                                 if($sql2 -> db_Select("links","link_id, link_name, link_url, link_class","link_category='".$row[0]."' ORDER BY link_name DESC")){
-                                        $texto .= "<br /><br /><span class='subcats' id='link_subcats_".$row[0]."' style='display:none;' ><div style='margin: 0px 0px 0px 30px;' >\n
+                                        $texto .= "<br /><br /><span class='subcats' id='link_subcats_".$row[0]."' style='display:none;' ><span style='margin: 0px 0px 0px 30px;' >\n
                                         <b>".LANSM_8."</b><br />";
                                         while($row2 = $sql2 -> db_Fetch()){
                                                 extract($row2);
@@ -45,7 +45,7 @@ function sm_links(){
                                                         $texto .= "<a href=\"".$row2[2]."\" >".$row2[1]."</a><br />";
                                                 }
                                         }
-                                        $texto .= "<br /><br /></div></span>";
+                                        $texto .= "<br /><br /></span></span>";
                                 }else{
                                         $texto .= "<br /><br />";
                                 }
