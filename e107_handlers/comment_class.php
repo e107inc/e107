@@ -77,49 +77,50 @@ class comment{
 	
 		if(!$COMMENTSTYLE){
 			$COMMENTSTYLE = "
-			<table style='width:100%'>
-			<tr>
-			<td colspan='2' class='forumheader3'>
-			{SUBJECT}
-			<b>
-			{USERNAME}
-			</b>
-			 | 
-			 {TIMEDATE}
-			</td>
-			</tr>
-			<tr>
-			<td style='width:30%; vertical-align:top'>
-			<div class='spacer'>
-			{AVATAR}
-			</div>
-			<span class='smalltext'>
-			{COMMENTS}
-			<br />
-			{JOINED}
-			</span>
-			<br/>
-			{REPLY}
-			</td>
-			<td style='width:70%; vertical-align:top'>
-			{COMMENT}
-			</td>
-			</tr>
-			</table>
-			<br />";
+<table style='width:100%'>
+<tr>
+<td colspan='2' class='forumheader3'>
+{SUBJECT}
+<b>
+{USERNAME}
+</b>
+|
+{TIMEDATE}
+</td>
+</tr>
+<tr>
+<td style='width:30%; vertical-align:top'>
+<div class='spacer'>
+{AVATAR}
+</div>
+<span class='smalltext'>
+{COMMENTS}
+<br />
+{JOINED}
+</span>
+<br/>
+{REPLY}
+</td>
+<td style='width:70%; vertical-align:top'>
+{COMMENT}
+</td>
+</tr>
+</table>
+<br />";
 		}
 		if($pref['nested_comments']){	
 			$width2 = 100 - $width;
+			$total_width = ($pref['standards_mode'] ? "100%" : "96%");
 			$renderstyle = "
-			<table style='width:98%'>
-			<tr>
-			<td style='width:".$width."%' ></td>
-			<td style='width:".$width2."%'>"
-			.$COMMENTSTYLE.
-			"
-			</td>
-			</tr>
-			</table>";
+<table style='width:".$total_width."'>
+<tr>
+<td style='width:".$width."%' ></td>
+<td style='width:".$width2."%'>"
+.$COMMENTSTYLE.
+"
+</td>
+</tr>
+</table>";
 			if($comment_datestamp > USERLV ){
 				$NEWIMAGE = IMAGE_new_comments;
 			}else{
