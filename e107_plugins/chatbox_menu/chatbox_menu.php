@@ -11,12 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2004-12-11 17:06:26 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.10 $
+|     $Date: 2004-12-12 17:57:18 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-global $tp, $e107cache;
+global $tp, $e107cache, $e_event;
 if(IsSet($_POST['chat_submit']))
 {
 	if(!USER && !$pref['anon_post'])
@@ -68,6 +68,8 @@ if(IsSet($_POST['chat_submit']))
 					if(!$emessage)
 					{
 						$sql -> db_Insert("chatbox", "0, '$nick', '$cmessage', '".time()."', '0' , '$ip' ");
+						$edata_cb = array("cmessage" => $cmessage, "ip" => $ip);
+						$e_event -> trigger("cboxpost", $edata_cb);
 						$e107cache->clear("chatbox");
 					}
 				}
