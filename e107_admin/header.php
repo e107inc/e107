@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.27 $
-|   $Date: 2005-03-15 12:08:01 $
-|   $Author: stevedunstan $
+|   $Revision: 1.28 $
+|   $Date: 2005-03-24 16:21:24 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 if (!defined('e_HTTP')) {
@@ -40,6 +40,18 @@ if (file_exists(THEME.'admin_template.php')) {
   	require_once(THEME.'admin_template.php');
 } else {
   	require_once(e_BASE.$THEMES_DIRECTORY.'templates/admin_template.php');
+}
+
+if (!defined('ADMIN_EDIT_ICON'))
+{
+	define("ADMIN_EDIT_ICON", "<img src='".e_IMAGE."admin_images/edit_16.png' alt='' title='".LAN_EDIT."' style='border:0px; height:16px; width:16px' />");
+	define("ADMIN_EDIT_ICON_PATH", e_IMAGE."admin_images/edit_16.png");
+}
+
+if (!defined('ADMIN_DELETE_ICON'))
+{
+	define("ADMIN_DELETE_ICON", "<img src='".e_IMAGE."admin_images/delete_16.png' alt='' title='".LAN_DELETE."' style='border:0px; height:16px; width:16px' />");
+	define("ADMIN_DELETE_ICON_PATH", e_IMAGE."admin_images/delete_16.png");
 }
 
 echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">

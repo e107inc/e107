@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-03-24 03:26:12 $
+|     $Revision: 1.22 $
+|     $Date: 2005-03-24 16:21:24 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -667,16 +667,12 @@ class users {
 				</form>
 				</td>
 				<td class='forumheader3' style='text-align:center;'>
-					<span class='button' style='height:16px; width:50%'>
-						<a style='text-decoration:none' href='".e_SELF."?editext.{$ext['user_extended_struct_id']}'>".USRLAN_81."</a>
-					</span>
+					<a style='text-decoration:none' href='".e_SELF."?editext.{$ext['user_extended_struct_id']}'>".ADMIN_EDIT_ICON."</a>
 					&nbsp;
 					<form method='post' action='".e_SELF."?extended' onsubmit='return confirm(\"".USRLAN_16."\")'>
-						<span>
 						<input type='hidden' name='eu_action' value='delext' />
 						<input type='hidden' name='key' value='{$ext['user_extended_struct_id']},{$ext['user_extended_struct_name']}' />
-						<input type='submit' class='button' name='eudel' value='".USRLAN_29."' />
-						</span>
+						<input type='image' title='".LAN_DELETE."' name='eudel' src='".ADMIN_DELETE_ICON_PATH."' />
 					</form>
 				</td>
 				</tr>
