@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2005-02-17 04:40:05 $
-|     $Author: e107coders $
+|     $Revision: 1.46 $
+|     $Date: 2005-02-17 20:15:17 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -245,7 +245,6 @@ else
 		WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type<2
 		GROUP by n.news_id ORDER BY news_sticky DESC, ".$order." DESC LIMIT $from,".$ITEMVIEW1;
 
-
 		$query = "SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
@@ -275,40 +274,33 @@ checkNewsCache($cacheString, TRUE, TRUE);
 changes by jalist 03/02/2005:
 news page templating
 */
-if($pref['news_unstemplate']) {
+if($pref['news_unstemplate'] && file_exists(THEME."news_template.php")) {
 	// theme specific template required ...
-	if (file_exists(THEME."news_template.php")) {
-		require_once(THEME."news_template.php");
-
-		$newscolumns = ($NEWSCOLUMNS ? $NEWSCOLUMNS : 1);
-		$newspercolumn = ($NEWSITEMSPERCOLUMN ? $NEWSITEMSPERCOLUMN : 10);
-		$newsdata = array();
-
-		if (!$sql->db_Select_gen($query)) {
-			echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_462 : LAN_83)."</b></div><br /><br />";
-		} else {
-			$loop = 1;
-			while($news = $sql->db_Fetch()) {
-				$newsdata[$loop] .= $ix->render_newsitem($news, "return");
-				$loop ++;
-				if($loop > $newscolumns) {
-					$loop = 1;
-				}
+	require_once(THEME."news_template.php");
+	$newscolumns = ($NEWSCOLUMNS ? $NEWSCOLUMNS : 1);
+	$newspercolumn = ($NEWSITEMSPERCOLUMN ? $NEWSITEMSPERCOLUMN : 10);
+	$newsdata = array();
+	if (!$sql->db_Select_gen($query)) {
+		echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_462 : LAN_83)."</b></div><br /><br />";
+	} else {
+		$loop = 1;
+		while($news = $sql->db_Fetch()) {
+			$newsdata[$loop] .= $ix->render_newsitem($news, "return");
+			$loop ++;
+			if($loop > $newscolumns) {
+				$loop = 1;
 			}
 		}
-
-		$loop = 1;
-		foreach($newsdata as $data) {
-			$var = "ITEMS$loop";
-			$$var = $data;
-			$loop++;
-		}
-
-		$text = preg_replace("/\{(.*?)\}/e", '$\1', $NEWSCLAYOUT);
-
-		echo $text;
-
 	}
+	$loop = 1;
+	foreach($newsdata as $data) {
+		$var = "ITEMS$loop";
+		$$var = $data;
+		$loop++;
+	}
+	$text = preg_replace("/\{(.*?)\}/e", '$\1', $NEWSCLAYOUT);
+	echo $text;
+
 } else {
 	/*
 	changes by jalist 22/01/2005:
