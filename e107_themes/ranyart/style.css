@@ -92,6 +92,14 @@ blockquote {
 	letter-spacing: 0.1em; 
 }
 
+.button a{
+	color: #FFF;
+	}
+.button a:hover{
+	color: #CFCFDF;
+	text-decoration: none;
+	}
+
 .np{
 	background-color: #eaeef2;
 	border-bottom: #000 1px solid;
@@ -323,3 +331,14 @@ a.forumlink{
 	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
 	color: #000;
 }
+.thinblackline {
+	background-color: #000;
+	height:1px
+	}
+.thinwhiteline {
+	background-color: #FFF;
+	height:1px
+	}
+.thingreyline {
+	background-color: #B3BAC5;
+	}

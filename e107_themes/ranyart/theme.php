@@ -25,7 +25,6 @@ $themeinfo = "To use sectioning with this theme uncomment the relevant code from
 $layout = "_default";
 
 $HEADER = "
-<div style='text-align:center'>
 <table style='width:100%' cellspacing='0' cellpadding='0'>
 <tr>
 <td style='background-color:#fff'>
@@ -40,9 +39,9 @@ $HEADER = "
 </tr>
 </table>
 </td></tr>
-<tr><td style='background-color:#000'></td></tr>
-<tr><td style='background-color:#fff'></td></tr>
-<tr><td style='background-color:#B3BAC5'>
+<tr><td class='thinblackline'></td></tr>
+<tr><td class='thinwhiteline'></td></tr>
+<tr><td class='thingreyline'>
 <table style='width:100%'>
 <tr>
 <td style='width:50%; text-align:left'>
@@ -55,19 +54,19 @@ $HEADER = "
 </table>
 </td></tr>
 <tr>
-<td style='background-color:#000'></td>
+<td class='thinblackline'></td>
 </tr>
 </table>
-<table style='width:100%' cellspacing='10' cellpadding='10'>
+<table style='width:100%' >
 <tr> 
-<td style='width:15%; vertical-align: top;'>
+<td style='padding:10px;width:15%; vertical-align: top;'>
 {SETSTYLE=menu1}
 (SITELINKS=menu}
 {MENU=1}
 <br />
 </td>
 {SETSTYLE=default}
-<td style='width:70%; vertical-align: top'>";
+<td style='padding-top:10px;width:70%; vertical-align: top'>";
 
 /*
 
@@ -146,7 +145,7 @@ on
 $FOOTER = "
 <br />
 </td>
-<td style='width:15%; vertical-align:top'>
+<td style='padding:10px;width:15%; vertical-align:top'>
 {SETSTYLE=menu1}
 {MENU=2}
 </td>
@@ -155,20 +154,20 @@ $FOOTER = "
 </div>
 <table style='width:100%' cellspacing='0' cellpadding='0'>
 <tr>
-<td style='background-color:#000'></td>
+<td class='thinblackline'></td>
 </tr>
 <tr>
-<td style='background-color:#fff'></td>
+<td class='thinwhiteline'></td>
 </tr>
 <tr>
-<td style='background-color:#B3BAC5; text-align:center'>
+<td class='thingreyline' style='text-align:center'>
 {SITEDISCLAIMER}
 <br />
 <img src='".e_IMAGE."generic/php-small-trans-light.gif' alt='' /> <img src='".e_IMAGE."button.png' alt='' /> <img src='".e_IMAGE."generic/poweredbymysql-88.png' alt='' />
 </td>
 </tr>
 <tr>
-<td style='background-color:#000'></td>
+<td class='thinblackline'></td>
 </tr>
 </table>
 ";
@@ -192,7 +191,6 @@ on
 </div>
 </div>
 <br />";
-
 define("ICONSTYLE", "float: left; border:0");
 define("COMMENTLINK", "Read/Post Comment: ");
 define("COMMENTOFFSTRING", "Comments are turned off for this item");
@@ -240,17 +238,6 @@ function tablestyle($caption, $text){
 	}
 }
 
-$POLLSTYLE = <<< EOF
-<b>Poll:</b> {QUESTION}
-<br /><br />
-{OPTIONS=<div class='alttd8'>OPTION</div>BAR<br /><span class='smalltext'>PERCENTAGE VOTES</span><br />\n}
-<br /><div style='text-align:center' class='smalltext'>{AUTHOR}<br />{VOTE_TOTAL} {COMMENTS}
-<br />
-{OLDPOLLS}
-</div>
-EOF;
-
-
 $COMMENTSTYLE = "
 <div style='text-align:center'>
 <table style='width:95%'>
@@ -282,6 +269,16 @@ $COMMENTSTYLE = "
 </table>
 </div>
 <br />";
+
+$POLLSTYLE = <<< EOF
+<b>Poll:</b> {QUESTION}
+<br /><br />
+{OPTIONS=<div class='alttd8'>OPTION</div>BAR<br /><span class='smalltext'>PERCENTAGE VOTES</span><br />\n}
+<br /><div style='text-align:center' class='smalltext'>{AUTHOR}<br />{VOTE_TOTAL} {COMMENTS}
+<br />
+{OLDPOLLS}
+</div>
+EOF;
 
 $CHATBOXSTYLE = "
 <div class='alttd9'>
