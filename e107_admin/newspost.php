@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107/e107_admin/newspost.php,v $
-|   $Revision: 1.45 $
-|   $Date: 2004-11-25 14:35:40 $
-|   $Author: streaky $
+|   $Revision: 1.46 $
+|   $Date: 2005-01-11 15:43:17 $
+|   $Author: pholzmann $
 +---------------------------------------------------------------+
 
 */
@@ -825,7 +825,7 @@ class newspost {
 
 
 		// ##### ADDED FOR NEWSARCHIVE --------------------------------------------------------------------
-		// the possible archive values are from "1" to "< $pref['newsposts']"
+		// the possible archive values are from "0" to "< $pref['newsposts']"
 		// this should really be made as an onchange event on the selectbox for $pref['newsposts'] ...
 		$text .= "
 				<tr>
@@ -834,7 +834,7 @@ class newspost {
 				</td>
 				<td class='forumheader3' style='width:40%'>
 				<select class='tbox' name='newsposts_archive'>";
-		for($i = 1; $i < $pref['newsposts']; $i++) {
+		for($i = 0; $i < $pref['newsposts']; $i++) {
 			$text .= ($i == $pref['newsposts_archive'] ? "<option value='".$i."' selected='selected'>".$i."</option>" : " <option value='".$i."'>".$i."</option>");
 		}
 		$text .= "</select></td>
