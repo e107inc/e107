@@ -17,7 +17,6 @@ require_once("class2.php");
 require_once(HEADERF);
 
 if(IsSet($_POST['add_link']) && check_class($pref['link_submit_class'])){
-	echo "gooduh";
 	if($_POST['link_name'] && $_POST['link_url'] && $_POST['link_description']){
 		$link_name = $aj -> formtpa($_POST['link_name'], "public");
 		$link_url = $aj -> formtpa($_POST['link_url'], "public");
