@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-02-03 16:49:27 $
-|     $Author: sweetas $
+|     $Revision: 1.13 $
+|     $Date: 2005-02-04 16:09:16 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -97,7 +97,11 @@ foreach ($_POST['menuAct'] as $k => $v) {
 }
 	
 if ($menu_act == 'config') {
-	header("location:".SITEURL.$PLUGINS_DIRECTORY.$location."/{$position}.php");
+	if($newloc)
+	{
+		$newloc = ".".$newloc;
+	}
+	header("location:".SITEURL.$PLUGINS_DIRECTORY.$location."/{$position}{$newloc}.php");
 	exit;
 }
 	
@@ -411,11 +415,11 @@ function checklayout($str) {
 				 
 				$text = "";
 				$conf = '';
-				$config_path = e_PLUGIN.$menu_path.'/'.$eplug_conffile;
-				if (file_exists(e_PLUGIN."{$menu_path}/{$menu_name}.config.php"))
+				if (file_exists(e_PLUGIN."{$menu_path}/{$menu_name}_menu.config.php"))
 				{
-					$conf = "config.{$menu_path}.{$menu_name}";
+					$conf = "config.{$menu_path}.{$menu_name}_menu.config";
 				}
+		
 				if($conf == '' && file_exists(e_PLUGIN."{$menu_path}/config.php"))
 				{
 					$conf = "config.{$menu_path}.config";
