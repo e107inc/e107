@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search_class.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-03-08 16:25:03 $
+|     $Revision: 1.18 $
+|     $Date: 2005-03-08 17:26:59 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -22,18 +22,7 @@ class e_search {
 	var $query;
 	var $text;
 	var $pos;
-	
-	function e_search() {
-		/*
-		global $search_prefs;
-		$search_prefs['search_sort'] = 'php';
-		if (!$search_prefs['search_chars']) {
-			$search_prefs['search_chars'] = 150;
-		}
-		save_prefs();
-		*/
-	}
-	
+
 	function parsesearch($table, $return_fields, $search_fields, $weights, $handler, $no_results, $where, $order) {
 		global $sql, $query, $tp, $search_prefs;
 		$this -> query = $query;	
@@ -86,7 +75,6 @@ class e_search {
 						if($search_prefs['search_sort'] == 'php') {
 							$exact = TRUE;
 						}
-						//$this -> text = strip_tags($tp -> toHTML(str_replace(array('<br />', '[', ']'), array(' ', '<', '>'), nl2br($this -> text)), FALSE, 'emotes_off, nobreak'));
 						$this -> text = nl2br($this -> text);
 						$search = array('&#39;', '&#039;', '&#036;', '&quot;', 'onerror', '&lt;', '&gt;', '<br />', '[', ']');
 						$replace = array("'", "'", '$', '"', 'one<i></i>rror', '<', '>', ' ', '<', '>');
