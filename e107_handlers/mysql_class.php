@@ -136,6 +136,8 @@ class db{
 		# - return				sql identifier, or error if (error reporting = on, error occured, boolean)
 		# - scope					public
 		*/
+		global $dbq;
+		$dbq++;
 		if($debug){ echo "UPDATE ".MPREFIX.$table." SET ".$arg."<br />"; }	
 		if($result = $this->mySQLresult = @mysql_query("UPDATE ".MPREFIX.$table." SET ".$arg)){
 			if(strstr(e_SELF, ADMINDIR) && $table != "online"){
@@ -185,6 +187,8 @@ class db{
 		*/
 //		echo "SELECT COUNT".$fields." FROM ".MPREFIX.$table." ".$arg;
 
+		global $dbq;
+		$dbq++;
 		if($fields == "generic"){
 			if($this->mySQLresult = @mysql_query($table)){
 				$rows = $this->mySQLrows = @mysql_fetch_array($this->mySQLresult);
@@ -295,6 +299,8 @@ class db{
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 	function db_Select_gen($arg){
+		global $dbq;
+		$dbq++;
 		//echo "\mysql_query($arg)";
 		if($this->mySQLresult = @mysql_query($arg)){
 			$this->dbError("db_Select_gen");
