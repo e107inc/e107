@@ -11,12 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/human_condition/theme.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-03-06 13:34:37 $
+|     $Revision: 1.7 $
+|     $Date: 2005-03-21 11:13:48 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_THEME")){ exit; }
+
+// [multilanguage]
+@include_once(e_THEME."human_condition/languages/".e_LANGUAGE.".php");
+@include_once(e_THEME."human_condition/languages/English.php");
 
 // [theme]
 $themename = "human condition";
@@ -25,6 +29,11 @@ $themeauthor = "jalist";
 $themedate = "19/01/2005";
 $themeinfo = "based on the Wordpress theme, <a href='http://wordpress.org'>http://wordpress.org</a>";
 define("STANDARDS_MODE", TRUE);
+$xhtmlcompliant = TRUE;
+$csscompliant = TRUE;
+
+define("THEME_DISCLAIMER", "<br /><br /><i>".LAN_THEME_1."</i>");
+
 // [layout]
 
 $layout = "_default";
@@ -43,7 +52,7 @@ $FOOTER = "
 <div id='menu'>
 {SITELINKS}
 {MENU=1}
-<br /><hr /><span class='smalltext'>{SITEDISCLAIMER}<br />'$themename' $themeversion by $themeauthor :: $themeinfo</span>
+<br /><hr /><span class='smalltext'>{SITEDISCLAIMER}<br />{THEME_DISCLAIMER}</span>
 </div>
 </div>
 
@@ -56,7 +65,7 @@ $NEWSSTYLE = "
 <div class='postinfo'>{NEWSCATEGORY}: {NEWSAUTHOR} @ {NEWSDATE}</div>
 <div class='textstyle3'>{NEWSBODY}</div>
 <div class='postinfo'>".TP_commenticon." {NEWSCOMMENTS}{TRACKBACK}</div>\n<br />\n";
-define("TRACKBACKSTRING", "Trackbacks: ");
+define("TRACKBACKSTRING", LAN_THEME_5);
 define("TRACKBACKBEFORESTRING", " | ");
 
 
@@ -64,11 +73,11 @@ define("DATEHEADERCLASS", "button");
 //	define("DATEHEADERCLASS", "nextprev");	// uncomment this line for a different style of news date header
 
 define("ICONSTYLE", "float: left; border:0");
-define("COMMENTLINK", LAN_THEME_1);
+define("COMMENTLINK", LAN_THEME_3);
 define("COMMENTOFFSTRING", LAN_THEME_2);
 
 define("PRE_EXTENDEDSTRING", "<br /><br />[ ");
-define("EXTENDEDSTRING", LAN_THEME_3);
+define("EXTENDEDSTRING", LAN_THEME_4);
 define("POST_EXTENDEDSTRING", " ]<br />");
 
 
@@ -77,7 +86,7 @@ define("POST_EXTENDEDSTRING", " ]<br />");
 define(PRELINK, "");
 define(POSTLINK, "");
 define(LINKSTART, "<span><img src='".THEME."images/bullet2.gif' alt='bullet' /> ");
-define(LINKSTART_HILITE, "<span style='font-weight:bold'><img src='".THEME."images/bullet2.gif' alt='bullet' /> ");
+define(LINKSTART_HILITE, "<span style='font-weight:bold'><img src='".THEME."images/bullet2.png' alt='bullet' /> ");
 define(LINKEND, "</span><br />");
 define(LINKDISPLAY, 2);                        // 1 - along top, 2 - in left or right column
 define(LINKALIGN, "left");
@@ -94,31 +103,31 @@ function tablestyle($caption, $text, $mode="")
 
 		if(!$caption)
 		{
-			echo "<div id='spacer'>$text</div>\n";
+			echo "<div class='spacer'>$text</div>\n";
 		}
 		else if(!$text)
 		{
-			echo "<div id='spacer'><div class='date'>$caption</div></div>\n";
+			echo "<div class='spacer'><div class='date'>$caption</div></div>\n";
 		}
 		else
 		{
-			echo "<div id='spacer'><div class='date'>$caption</div>\n$text\n</div>\n";
+			echo "<div class='spacer'><div class='date'>$caption</div>\n$text\n</div>\n";
 		}
 	}
 	else
 	{
 		if(!$caption)
 		{
-			echo "<div id='spacer'>$text</div>\n";
+			echo "<div class='spacer'>$text</div>\n";
 		}
 
 		else if(!$text)
 		{
-			echo "<div id='spacer'>$caption</div>\n";
+			echo "<div class='spacer'>$caption</div>\n";
 		}
 		else
 		{
-			echo "<div id='spacer'><div id='menubox'><b>$caption</b><br />$text</div></div>";
+			echo "<div class='spacer'><div class='menubox'><b>$caption</b><br />$text</div></div>";
 		}
 	}
 }
