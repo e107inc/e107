@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-01-17 08:14:03 $
+|     $Revision: 1.11 $
+|     $Date: 2005-01-17 08:19:10 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -78,7 +78,7 @@ function render_clean() {
 
 $newarray = asortbyindex($array_functions, 1);
 
-require_once(e_ADMIN.'includes/'.$pref['adminstyle'].'.php';
+require_once(e_ADMIN.'includes/'.$pref['adminstyle'].'.php');
 
 
 
