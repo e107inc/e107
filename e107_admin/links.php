@@ -202,8 +202,8 @@ class links{
 				<td style='width:10%' class='forumheader3'>".$cat[$link_category]."</td>
 				<td style='width:50%' class='forumheader3'><a href='".e_BASE."comment.php?$link_id'></a>$link_name</td>
 				<td style='width:25%; text-align:center' class='forumheader3'>".
-				$rs -> form_button("submit", "main_edit", "Edit", "onClick=\"document.location='".e_SELF."?create.edit.$link_id'\"").
-				$rs -> form_button("submit", "main_delete", "Delete", "onClick=\"confirm_('create', $link_id)\"")."
+				$rs -> form_button("submit", "main_edit", LCLAN_9, "onClick=\"document.location='".e_SELF."?create.edit.$link_id'\"").
+				$rs -> form_button("submit", "main_delete", LCLAN_10, "onClick=\"confirm_('create', $link_id)\"")."
 				</td>
 				</tr>";
 			}
@@ -512,7 +512,7 @@ class links{
 		<td class='forumheader3' style='width:70%'>
 		".$rs -> form_text("link_category_icon", 60, $link_category_icon, 100)."
 		<br />
-		<input class='button' type ='button' style=''width: 35px'; cursor:hand' size='30' value='View Images' onClick='expandit(this)'>
+		<input class='button' type ='button' style=''width: 35px'; cursor:hand' size='30' value='".LCLAN_80."' onClick='expandit(this)'>
 		<div style='display:none'>";
 		while(list($key, $icon) = each($iconlist)){
 			$text .= "<a href='javascript:addtext2(\"$icon\")'><img src='".e_IMAGE."link_icons/".$icon."' style='border:0' alt='' /></a> ";
@@ -523,7 +523,7 @@ class links{
 		<tr><td colspan='2' style='text-align:center' class='forumheader'>";
 		if($id){
 			$text .= "<input class='button' type='submit' name='update_category' value='".LCLAN_74."'> 
-			".$rs -> form_button("submit", "category_clear", "Clear Form").
+			".$rs -> form_button("submit", "category_clear", LCLAN_81).
 			$rs -> form_hidden("link_category_id", $id)."
 			</td></tr>";
 		}else{
@@ -555,8 +555,8 @@ class links{
 				<td style='width:50%' class='forumheader3'><a href='".$submitted[2]."' onclick=\"window.open('".$submitted[2]."'); return false;\">".$submitted[2]."</a></td>
 				<td style='width:30%' class='forumheader3'>".$submitted[5]."</td>
 				<td style='width:20%; text-align:center; vertical-align:top' class='forumheader3'>
-				".$rs -> form_button("submit", "category_edit", "Post", "onClick=\"document.location='".e_SELF."?create.sn.$tmp_time'\"")."
-				".$rs -> form_button("submit", "category_delete", "Delete", "onClick=\"confirm_('sn', $tmp_time);\"")."
+				".$rs -> form_button("submit", "category_edit", LCLAN_14, "onClick=\"document.location='".e_SELF."?create.sn.$tmp_time'\"")."
+				".$rs -> form_button("submit", "category_delete", LCLAN_10, "onClick=\"confirm_('sn', $tmp_time);\"")."
 				</td>
 				</tr>\n";
 			}
@@ -625,6 +625,5 @@ class links{
 
 
 }
-
 
 
