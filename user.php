@@ -243,7 +243,7 @@ function renderuser($row, $user_entended, $mode="verbose"){
                 </td></tr>
 
                 <td style='width:80%'class='forumheader3'>
-                        <table style='width:100%'><tr><td style='width:30%'> <img src='".e_IMAGE."generic/hme.png' alt=''  style='vertical-align:middle' /> ".LAN_144."</td><td style='width:70%; text-align:right'>".($user_homepage ? "<a href=\"javascript:open_window('".$user_homepage."')\">$user_homepage</a>" : "<i>".LAN_401."</i>")."</td></tr></table>
+                        <table style='width:100%'><tr><td style='width:30%'> <img src='".e_IMAGE."generic/hme.png' alt=''  style='vertical-align:middle' /> ".LAN_144."</td><td style='width:70%; text-align:right'>".($user_homepage ? "<a href='".$user_homepage."' rel='external';>$user_homepage</a>" : "<i>".LAN_401."</i>")."</td></tr></table>
                 </td></tr>
 
                 <td style='width:80%'class='forumheader3'>
