@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107/user.php,v $
-|   $Revision: 1.14 $
-|   $Date: 2004-08-14 00:37:02 $
+|   $Revision: 1.15 $
+|   $Date: 2004-09-07 12:30:55 $
 |   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
@@ -207,7 +207,7 @@ $str = "
 <div style='text-align:center'>
 <table style='width:95%' class='fborder'>
 <tr><td colspan='2' class='fcaption' style='text-align:center'>".LAN_142." ".$user_id.": ".$user_name."</td></tr>
-<tr><td rowspan='".($pm_installed && $id != USERID ? 9 : 8)."' class='forumheader3' style='width:20%; vertical-align:middle; text-align:center'>";
+<tr><td rowspan='".($pm_installed && $id != USERID ? 10 : 9)."' class='forumheader3' style='width:20%; vertical-align:middle; text-align:center'>";
 
 if($user_sess && file_exists(e_FILE."public/avatars/".$user_sess)){
 	$str .= "<img src='".e_FILE."public/avatars/".$user_sess."' alt='' />";
@@ -276,7 +276,7 @@ if($pm_installed && $id != USERID){
 	$str .= "
 	<tr>
 	<td style='width:80%' class='forumheader3' colspan='2'>
-	<table style='width:100%'><tr><td style='width:30%'> ".e107_parse("{CODE=pm_menu.sendpm.{$id}}")." ".LAN_425."</td><td style='width:70%; text-align:right'>".e107_parse("{CODE=pm_menu.sendpmtext.{$id}}")."</td></tr></table>
+	<table style='width:100%'><tr><td style='width:30%'> ".e107_parse("{CODE=pm_menu.sendpm.{$id}}")." ".LAN_425."</td></tr></table>
 	</td></tr>";
 }
 
