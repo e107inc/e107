@@ -1,3 +1,4 @@
+global $pref;
 if (preg_match("#\.php\?.*#",$code_text)){return "";}
 $code_text = preg_replace('#onerror *=#i','',$code_text);
 unset($imgParms);
@@ -17,11 +18,17 @@ foreach($imgParms as $k => $v) {
 if (!$postID) {
 	return "<img src='{$code_text}' {$parmStr} />";
 } else {
+	if(strstr($postID,'class:')) {
+		$uc = substr($postID,6);
+	}
 	if ($pref['image_post']) {
-		if (!function_exists('e107_userGetuserclass')) {
-			require_once(e_HANDLER.'user_func.php');
+		if($uc == '') {
+			if (!function_exists('e107_userGetuserclass')) {
+				require_once(e_HANDLER.'user_func.php');
+			}
+			$uc = e107_userGetuserclass($postID);
 		}
-		if (check_class($pref['image_post_class'],e107_userGetuserclass($poster_userid))) {
+		if (check_class($pref['image_post_class'],$uc)) {
 			return "<img src='{$code_text}' {$parmStr} />";
 		}
 		if ($pref['image_post_disabled_method']) {
