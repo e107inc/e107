@@ -1,7 +1,28 @@
 <?php
-
+/*
++---------------------------------------------------------------+
+|        e107 website system
+|        /admin/review.php
+|
+|        ©Steve Dunstan 2001-2002
+|        http://e107.org
+|        jalist@e107.org
+|
+|        Released under the terms and conditions of the
+|        GNU General Public License (http://gnu.org).
+|
+|		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_conversion_script.php,v $
+|		$Revision: 1.4 $
+|		$Date: 2005-02-11 16:15:54 $
+|		$Author: lisa_ $
++---------------------------------------------------------------+
+*/
 
 require_once("../../class2.php");
+
+if(!getperms("P")){header("location:".e_BASE."index.php"); exit; }
+$e_sub_cat = 'content';
+
 $lan_file = e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content.php';
 include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN.'content/languages/English/lan_content.php');
 require_once(e_ADMIN."auth.php");

@@ -80,7 +80,7 @@ if($type == "type" && is_numeric($type_id)){
 
 	if($action == "order"){
 			if($type_id == "0" || !$sub_action){
-				$text = CONTENT_ADMIN_HELP_LAN_0;
+				$text = CONTENT_ADMIN_HELP_LAN_20;
 			}elseif($type_id != "0" && $sub_action == "cat"){
 				$text = CONTENT_ADMIN_HELP_LAN_18;
 			}elseif($type_id != "0" && $sub_action && $sub_action != "cat"){

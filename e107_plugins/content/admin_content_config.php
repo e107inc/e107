@@ -12,15 +12,15 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.13 $
-|		$Date: 2005-02-10 23:03:35 $
+|		$Revision: 1.14 $
+|		$Date: 2005-02-11 16:15:54 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
 require_once("../../class2.php");
 
-if(!getperms("J") && !getperms("K") && !getperms("L")){header("location:".e_BASE."index.php"); exit; }
+if(!getperms("P")){header("location:".e_BASE."index.php"); exit; }
 $e_sub_cat = 'content';
 
 $lan_file = e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content.php';

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.13 $
-|		$Date: 2005-02-10 14:10:04 $
+|		$Revision: 1.14 $
+|		$Date: 2005-02-11 16:15:55 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -482,7 +482,7 @@ function show_content(){
 									if($SUBMIT_LINE != TRUE && $MANAGER_LINE == TRUE){
 										$content_type_table_string .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_TYPE_TABLE_LINE);
 									}
-									$CONTENT_TYPE_TABLE_MANAGER_ICON = "<a href='".e_PLUGIN."content/content_manager.php'>".CONTENT_ICON_CONTENTMANAGER."</a>";
+									$CONTENT_TYPE_TABLE_MANAGER_ICON = "<a href='".e_PLUGIN."content/content_manager.php'>".CONTENT_ICON_CONTENTMANAGER_SMALL."</a>";
 									$CONTENT_TYPE_TABLE_MANAGER_HEADING = "<a href='".e_PLUGIN."content/content_manager.php'>".CONTENT_LAN_67."</a>";
 									$CONTENT_TYPE_TABLE_MANAGER_SUBHEADING = CONTENT_LAN_68;
 									$content_type_table_string .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_TYPE_TABLE_MANAGER);

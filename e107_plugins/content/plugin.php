@@ -61,7 +61,7 @@ $eplug_tables = array(
 	content_heading varchar(250) NOT NULL default '',
 	content_subheading varchar(250) NOT NULL default '',
 	content_summary text NOT NULL,
-	content_text text NOT NULL,
+	content_text longtext NOT NULL,
 	content_author varchar(100) NOT NULL default '',
 	content_icon varchar(250) NOT NULL default '',
 	content_file text NOT NULL,
@@ -84,6 +84,7 @@ $eplug_tables = array(
 $eplug_link = TRUE;
 $eplug_link_name = "Content";
 $eplug_link_url = $PLUGINS_DIRECTORY.'content/content.php';
+$eplug_link_icon = "";
 
 // Text to display after plugin successfully installed ------------------------------------------------------------------
 $eplug_done = "This plugin is now ready to be used.";
