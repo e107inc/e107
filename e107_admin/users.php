@@ -654,7 +654,7 @@ class users{
                 ";
                 }else{
                 $text .="
-                <input class='button' type='submit' name='update_field' value='".USRLAN_112."' />
+                <input class='button' type='submit' name='update_field' value='".USRLAN_119."' />
                 ";
                 }
             // ======= end added by Cam.
