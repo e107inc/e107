@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_viewtopic.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-31 21:47:36 $
-|     $Author: stevedunstan $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-10 14:40:07 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Forum");
@@ -81,4 +81,6 @@ define("LAN_431", "Syndicate this thread: rss 0.92");
 define("LAN_432", "Syndicate this thread: rss 2.0");
 define("LAN_433", "Syndicate this thread: RDF");
 	
+define("FORLAN_101", "Email Thread");
+define("FORLAN_102", "Print View");
 ?>

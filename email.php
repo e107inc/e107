@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/email.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-02-08 05:45:11 $
-|     $Author: mrpete $
+|     $Revision: 1.8 $
+|     $Date: 2005-02-10 14:40:03 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -27,7 +27,7 @@ if ($qs[0] == "") {
 $source = $qs[0];
 $parms = $qs[1];
 	
-$comments = $tp->post_toHTML($_POST['comment'], TRUE);
+$comments = $tp->post_toHTML($_POST['comment'], TRUE, 'retain_nl');
 $author = $tp->post_toHTML($_POST['author_name']);
 $email_send = check_email($_POST['email_send']);
 
