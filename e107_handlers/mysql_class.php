@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-01-30 05:16:25 $
-|     $Author: e107coders $
+|     $Revision: 1.33 $
+|     $Date: 2005-03-13 10:59:53 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -25,8 +25,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.32 $
-* @author $Author: e107coders $
+* @version $Revision: 1.33 $
+* @author $Author: stevedunstan $
 */
 class db {
 
@@ -175,8 +175,8 @@ class db {
 	    if(is_object($db_debug)) {
 			$nFields = $db_debug->Mark_Query($query, $rli, $sQryRes,$aTrace, $mytime, $pTable);
 		} else {
-echo "what happened to db_debug??!!<br/>";
-}
+			echo "what happened to db_debug??!!<br/>";
+			}
 		}
 		return $sQryRes;
 	}

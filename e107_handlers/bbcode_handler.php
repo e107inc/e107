@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-03-09 10:03:22 $
+|     $Revision: 1.21 $
+|     $Date: 2005-03-13 10:59:53 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -84,6 +84,13 @@ class e_bbcode {
 		global $parm;
 		
 		$code = $matches[1];
+
+		if (E107_DEBUG_LEVEL)
+		{
+			global $db_debug;
+			$db_debug->logCode(1, $code, $parm, $postID);
+		}
+
 		$parm = substr($matches[4], 1);
 		$code_text = $matches[5];
 		$full_text = $matches[0];
