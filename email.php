@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/email.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-27 19:51:38 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-07 15:48:15 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -51,9 +51,23 @@ if (isset($_POST['emailsubmit'])) {
 		list($news_id, $news_title, $news_body, $news_extended, $news_datestamp, $news_author, $news_source, $news_url, $news_category, $news_allow_comments) = $sql->db_Fetch();
 		$message .= $comments."\n\n".$news_title."\n".$news_body."\n".$news_extended."\n\n".SITEURL.e_BASE."comment.php?comment.news.".$id;
 	} else {
-		$row = $sql->db_Fetch();
-		extract($row);
-		$message .= $comments."\n\n".SITEURL.e_BASE."content.php?article.".$id."\n\n".$content_heading."\n".$content_subheading."\n".$content_content."\n\n";
+		//$row = $sql->db_Fetch();
+		//extract($row);
+		//$message .= $comments."\n\n".SITEURL.e_BASE."content.php?article.".$id."\n\n".$content_heading."\n".$content_subheading."\n".$content_content."\n\n";
+		$message .= $comments."\n\n";
+
+		//load the others from plugins
+		$handle = opendir(e_PLUGIN);
+		while (false !== ($file = readdir($handle))) {
+			if ($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)) {
+				$plugin_handle = opendir(e_PLUGIN.$file."/");
+				while (false !== ($file2 = readdir($plugin_handle))) {
+					if ($file2 == "e_emailprint.php") {
+						require_once(e_PLUGIN.$file."/".$file2);
+					}
+				}
+			}
+		}
 	}
 	if ($error == "") {
 		require_once(e_HANDLER."mail.php");
