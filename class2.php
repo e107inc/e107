@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/class2.php,v $
-|     $Revision: 1.94 $
-|     $Date: 2004-09-03 15:40:55 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.95 $
+|     $Date: 2004-09-19 15:25:51 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 
@@ -373,7 +373,7 @@ if((strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin") ) && $pref['admi
 if($pref['anon_post'] ? define("ANON", TRUE) : define("ANON", FALSE));
 if(Empty($pref['newsposts']) ? define("ITEMVIEW", 15) : define("ITEMVIEW", $pref['newsposts']));
 
-if($pref['$antiflood1']==1){  define('FLOODPROTECT', TRUE); define('FLOODTIMEOUT', $pref['antiflood_timeout']); }
+if($pref['antiflood1']==1){  define('FLOODPROTECT', TRUE); define('FLOODTIMEOUT', $pref['antiflood_timeout']); }
 
 define ("HEADERF", e_THEME."templates/header".$layout.".php");
 define ("FOOTERF", e_THEME."templates/footer".$layout.".php");
