@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-08 18:00:36 $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-10 14:14:16 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -116,8 +116,8 @@ if ($_POST['searchtype'] == "99") {
 }
 	
 foreach($search_info as $key => $si) {
-	//($_POST['searchtype'][$key]==$key ) ? $sel=" checked" : $sel="";
-	$SEARCH_MAIN_CHECKBOXES .= "<span style='white-space:nowrap; padding-bottom:7px;padding-top:7px'><input onclick=\"getElementById('google').checked = false\"   type='checkbox' name='searchtype[]' value='{$key}' />{$si['qtype']}</span>\n";
+	(isset($_POST['searchtype'][$key]) && $_POST['searchtype'][$key]==$key) ? $sel=" checked" : $sel="";
+	$SEARCH_MAIN_CHECKBOXES .= "<span style='white-space:nowrap; padding-bottom:7px;padding-top:7px'><input onclick=\"getElementById('google').checked = false\"   type='checkbox' name='searchtype[$key]' value='{$key}' ".$sel." />{$si['qtype']}</span>\n";
 }
 $SEARCH_MAIN_CHECKBOXES .= "<input id='google' type='checkbox' name='searchtype[]'  onclick='uncheckAll(this)' value='98' />Google";
 $SEARCH_MAIN_SEARCHFIELD = "<input class='tbox' type='text' name='searchquery' size='40' value='$query' maxlength='50' />";
@@ -141,12 +141,15 @@ if ($_POST['searchquery']) {
 	//echo "<div style='border:0;padding-right:2px;width:auto;height:400px;overflow:auto;'>";
 	unset($text);
 	extract($_POST);
-	$key = $_POST['searchtype'];
-	for($a = 0; $a <= (count($key)-1); $a++) {
+	//$key = $_POST['searchtype'];
+	//for($a = 0; $a <= (count($key)-1); $a++) {
+	foreach($search_info as $key => $a) {
+		if (isset($_POST['searchtype'][$key])) {
 		unset($text);
-		if (file_exists($search_info[$key[$a]]['sfile'])) {
-			@require_once($search_info[$key[$a]]['sfile']);
-			$ns->tablerender(LAN_195." ".$search_info[$key[$a]]['qtype']." : ".LAN_196.": ".$results, $text);
+		if (file_exists($search_info[$key]['sfile'])) {
+			@require_once($search_info[$key]['sfile']);
+			$ns->tablerender(LAN_195." ".$search_info[$key]['qtype']." : ".LAN_196.": ".$results, $text);
+		}
 		}
 	}
 	//echo "</div>";
@@ -179,7 +182,7 @@ function headerjs() {
 		for (var i = 0; i < document.searchform[\"searchtype[]\"].length-1; i++)
 		document.searchform[\"searchtype[]\"][i].checked = false ;
 		}
-		 
+		
 		function uncheckG(allbox) {
 		i = document.searchform[\"searchtype[]\"].length;
 		document.searchform[\"searchtype[]\"][i].checked = false ;

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-02-10 00:52:27 $
+|     $Revision: 1.6 $
+|     $Date: 2005-02-10 14:14:16 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -35,7 +35,16 @@ class e_search {
 	function search_query($table, $return_fields, $search_fields, $weights, $where, $order) {
 		global $sql, $query;
 		$this -> query = $query;	
-		$this -> keywords = explode(' ', $this -> query);	
+		$this -> keywords = explode(' ', $this -> query);
+		/*
+				$limit = explode('.', e_QUERY);
+		if ($limit[0]) {
+			$limit_res = "LIMIT ".$limit[0].", 10";
+		}
+		
+		
+		.$limit_res
+		*/	
 		foreach ($search_fields as $field_key => $field) {
 			$search_query[] = "(".$weights[$field_key]." * (MATCH(".$field.") AGAINST ('".$this -> query."' IN BOOLEAN MODE)))";
 		}
@@ -52,13 +61,22 @@ class e_search {
 		foreach ($results as $this -> text) {
 			$this -> text = strip_tags($tp -> toHTML(str_replace(array('[', ']'), array('<', '>'), $this -> text), FALSE));
 			foreach ($this -> keywords as $this -> query) {
-				if (($this -> pos = stripos($this -> text, $this -> query)) !== FALSE) {
-					if (!$endcrop || !$title) {
-						$this -> parsesearch_crop();
-						$endcrop = TRUE;
+				if (strpos($this -> query, '-') === FALSE) {
+					if (strpos($this -> query, '*') !== FALSE) {
+						$regex_append = "";
+						$this -> query = str_replace('*', '', $this -> query);
+					} else {
+						$regex_append = "[[:>:]]";	
 					}
-					$key = substr($this -> text, $this -> pos, strlen($this -> query));
-					$this -> text = eregi_replace("[[:<:]]".$this -> query."[[:>:]]", "<span class='searchhighlight'>".$key."</span>", $this -> text);
+					$this -> query = str_replace(array('"', '+'), array('', ''), $this -> query);
+					if (($this -> pos = stripos($this -> text, $this -> query)) !== FALSE) {
+						if (!$endcrop || !$title) {
+							$this -> parsesearch_crop();
+							$endcrop = TRUE;
+						}
+						$key = substr($this -> text, $this -> pos, strlen($this -> query));
+						$this -> text = eregi_replace("[[:<:]]".$this -> query.$regex_append, "<span class='searchhighlight'>".$key."</span>", $this -> text);
+					}
 				}
 			}
 			if ($title) {
