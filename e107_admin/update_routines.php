@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2005-03-10 15:55:50 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.44 $
+|     $Date: 2005-03-10 18:39:23 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -385,7 +385,7 @@ function update_61x_to_700($type) {
 		// News Updates
 		mysql_query("ALTER TABLE `".MPREFIX."news` ADD `news_image` TEXT NOT NULL ,ADD `news_thumb` VARCHAR( 60 ) DEFAULT NULL ;");
 		mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_image` `news_summary` TEXT DEFAULT NULL;");
-		mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_thumb` `news_thumb` VARCHAR( 60 ) DEFAULT NULL;");
+		mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_thumb` `news_attach` TEXT DEFAULT NULL;");
 		mysql_query("ALTER TABLE ".MPREFIX."news ADD news_sticky TINYINT ( 3 ) UNSIGNED NOT NULL");
 		
 		// Downloads updates - Added March 1, 2005 by McFly
