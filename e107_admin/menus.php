@@ -188,7 +188,7 @@ for($a=1; $a<=$areas; $a++){
 $sql -> db_Select("menus");
 while(list($menu_id, $menu_name, $menu_location, $menu_order) = $sql-> db_Fetch()){
 	if(!eregi($menu_name, $menustr)){
-		$sql -> db_Delete("menus", "menu_name='$menu_name'");
+		$sql2 -> db_Delete("menus", "menu_name='$menu_name'");
 		$message .= "<b>".MENLAN_11." - ".$menu_name."</b><br />";
 	}
 }
