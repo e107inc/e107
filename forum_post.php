@@ -377,7 +377,7 @@ if(IsSet($_POST['update_thread'])){
                 $subject = $aj -> formtpa($_POST['subject'], "public");
 
                 $datestamp = $gen->convert_date(time(), "forum");
-                $sql -> db_Update("forum_t", "thread_name='".$subject."', thread_thread='".$post."' WHERE thread_id='$thread_id' ");
+                $sql -> db_Update("forum_t", "thread_name='".$subject."', thread_thread='".$post."', thread_s='".$_POST['threadtype']."' WHERE thread_id='$thread_id' ");
                 clear_cache("newforumposts");
                 header("location: forum_viewtopic.php?".$forum_id.".".$thread_id);
                 exit;
