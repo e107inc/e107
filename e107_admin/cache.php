@@ -56,7 +56,7 @@ $text .=CACLAN_8."
 
 <tr>
 <td style='width:98%' class='forumheader3'>";
-if(is_writable(e_BASE."cache")){
+if(is_writable(e_FILE."cache")){
 	$text .= ('2' == $pref['cachestatus']) ? "<input class='tbox' type='radio' name='cachestatus' value='2' checked='checked' />" : "<input type='radio' name='cachestatus' value='2' />";
 	$text .= CACLAN_9;
 } else {
