@@ -9,8 +9,8 @@ parent.location.href = self.location.href;
 |	e107 website system - Javascript File.
 |
 |	$Source: /cvs_backup/e107_0.7/e107_files/e107.js,v $
-|	$Revision: 1.7 $
-|	$Date: 2005-02-05 07:05:14 $
+|	$Revision: 1.8 $
+|	$Date: 2005-02-07 09:22:24 $
 |	$Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -235,7 +235,32 @@ function eover(object, over) {
 	object.className = over;
 }
 
+function duplicateHTML(copy,paste){
+		if(document.getElementById(copy)){
 
+			var type = document.getElementById(copy).nodeName; // get the tag name of the source copy.
+
+			var but = document.createElement('input');
+			var br = document.createElement('br');
+
+			but.type = 'button';
+			but.value = 'del';
+			but.className = 'button';
+			but.onclick = function(){ this.parentNode.parentNode.removeChild(this.parentNode); };
+
+			var destination = document.getElementById(paste);
+			var source      = document.getElementById(copy).cloneNode(true);
+
+			var newentry = document.createElement(type);
+
+			newentry.appendChild(source);
+			newentry.value='';
+			newentry.appendChild(but);
+			newentry.appendChild(br);
+
+			destination.appendChild(newentry);
+		}
+}
 
 
 
