@@ -11,8 +11,8 @@
 	 |     GNU General Public License (http://gnu.org).
 	 |
 	 |     $Source: /cvs_backup/e107_0.7/e107_handlers/db_debug_class.php,v $
-	 |     $Revision: 1.6 $
-	 |     $Date: 2005-03-13 10:59:53 $
+	 |     $Revision: 1.7 $
+	 |     $Date: 2005-03-16 08:15:32 $
 	 |     $Author: stevedunstan $
 	 +----------------------------------------------------------------------------+
 	 */
@@ -369,16 +369,36 @@
 			}
 			$text .= "</table>";
 			return $text;
-
-
-
-			
-
-
-
-
-
-
 		}
+
+		function Show_PATH()
+		{
+			if (!E107_DBG_PATH)
+			{
+				return FALSE;
+			}
+			global $e107;
+			$text .= "<table class='fborder' style='width: 100%'>
+			<tr><td class='fcaption' colspan='4'><b>Paths</b></td></tr>
+			<tr>
+			<td class='forumheader3'>\n";
+
+			ob_start();
+			echo "<pre>"; print_r($e107); echo "</pre>";
+			$text .= ob_get_contents();
+			ob_end_clean();
+
+			$text .= "e_HTTP: '".e_HTTP."'<br />";
+			$text .= "e_BASE: '".e_BASE."'<br />";
+			$text .= "\$_SERVER['PHP_SELF']: '".$_SERVER['PHP_SELF']."'<br />";
+			$text .= "\$_SERVER['DOCUMENT_ROOT']: '".$_SERVER['DOCUMENT_ROOT']."'<br />";
+			$text .= "\$_SERVER['HTTP_HOST']: '".$_SERVER['HTTP_HOST']."'<br />";
+
+			$text .= "</td></tr></table>";
+			return $text;
+		}
+
+
+
 	 }
 ?>

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-03-13 10:59:53 $
+|     $Revision: 1.17 $
+|     $Date: 2005-03-16 08:17:01 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -64,6 +64,10 @@ if($e107_popup!=1){
 				$tmp = $db_debug->Show_SC_BB();
                 if (strlen($tmp)) {
                     $ns->tablerender('Shortcodes / BBCode',$tmp);
+                }
+				$tmp = $db_debug->Show_PATH();
+                if (strlen($tmp)) {
+                    $ns->tablerender('Paths',$tmp);
                 }
         }
 }
