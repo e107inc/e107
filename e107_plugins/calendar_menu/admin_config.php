@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/admin_config.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-29 14:01:17 $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-29 16:01:20 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -51,19 +51,19 @@ $text = "<div style='text-align:center'>
 	</tr>
 
 	<tr>
-	<td style='width:40%' class='forumheader3'>Css element to use for day header<br /><span class='smalltext'>Default is 'forumheader'</span></td>
+	<td style='width:40%' class='forumheader3'>".EC_LAN_84."<br /><span class='smalltext'>".EC_LAN_85."</span></td>
 	<td style='width:60%' class='forumheader3'><input class='tbox' type='text' name='eventpost_headercss' size='20' value='".$pref['eventpost_headercss']."' maxlength='100' />
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:40%' class='forumheader3'>Css element to use for day list<br /><span class='smalltext'>Default is 'forumheader3'</span></td>
+	<td style='width:40%' class='forumheader3'>".EC_LAN_86."<br /><span class='smalltext'>".EC_LAN_87."</span></td>
 	<td style='width:60%' class='forumheader3'><input class='tbox' type='text' name='eventpost_daycss' size='20' value='".$pref['eventpost_daycss']."' maxlength='100' />
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:40%' class='forumheader3'>Css element to use for selected day<br /><span class='smalltext'>Default is 'indent'</span></td>
+	<td style='width:40%' class='forumheader3'>".EC_LAN_88."<br /><span class='smalltext'>".EC_LAN_89."</span></td>
 	<td style='width:60%' class='forumheader3'><input class='tbox' type='text' name='eventpost_todaycss' size='20' value='".$pref['eventpost_todaycss']."' maxlength='100' />
 	</td>
 	</tr>
