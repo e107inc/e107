@@ -13,9 +13,10 @@
 +---------------------------------------------------------------+
 */
 require_once("class2.php");
+require_once(e_HANDLER."comment_class.php");
 unset($text);
 $agreetext = $pref['agree_text'];
-
+$cobj = new comment;
 if(!e_QUERY){
 require_once(HEADERF);
         // no qs - render categories ...
@@ -136,6 +137,22 @@ if(is_numeric($tmp[0])){
         $id = $tmp[1];
 }
 
+
+
+if(IsSet($_POST['commentsubmit'])){
+	$tmp = explode(".", e_QUERY);
+
+	if(!$sql -> db_Select("download", "download_comment", "download_id='$id' ")){
+		header("location:".e_BASE."index.php");
+		exit;
+	}else{
+		$row = $sql -> db_Fetch();
+		if($row[0] && (ANON===TRUE || USER===TRUE)){
+			$cobj -> enter_comment($_POST['author_name'], $_POST['comment'], "download", $id, $pid, $_POST['subject']);
+			clear_cache("comment.download.{$sub_action}");
+		}
+	}
+}
 
 if($action == "list"){
 
@@ -275,7 +292,7 @@ if($action == "view"){
         }
 
         $row = $sql -> db_Fetch(); extract($row);
-
+		$subject = $download_name;
         $sql2 -> db_Select("download_category", "*", "download_category_id='$download_category'");
         $row = $sql2 -> db_Fetch(); extract($row);
         $type = $download_category_name." [ ".$download_category_description." ]";
@@ -416,8 +433,28 @@ if($action == "view"){
         </div>";
 
         $ns -> tablerender($type, $text);
-        require_once(FOOTERF);
-}
+		if($download_comment){
+			$query = ($pref['nested_comments'] ? "comment_item_id='$id' AND comment_type='2' AND comment_pid='0' ORDER BY comment_datestamp" : "comment_item_id='$id' AND comment_type='2' ORDER BY comment_datestamp");
+			$comment_total = $sql -> db_Select("comments", "*",  "".$query."");
+				if($comment_total){
+					$width = 0;
+					while($row = $sql -> db_Fetch()){
+								if($pref['nested_comments']){
+									$text = $cobj -> render_comment($row, "download", "comment", $id, $width, $subject);		
+									$ns -> tablerender(LAN_5, $text);	
+									}else{
+										$text .= $cobj -> render_comment($row, "download", "comment", $id, $width, $subject);
+									}
+							}
+							 if(!$pref['nested_comments']){$ns -> tablerender(LAN_5, $text);	}
+						}
+
+					
+			$cobj -> form_comment("comment", "download", $id, $subject, $content_type);
+		}
+
+				require_once(FOOTERF);
+		}
 
 //$ns -> tablerender(LAN_dl_18, LAN_dl_2);
 //require_once(FOOTERF);

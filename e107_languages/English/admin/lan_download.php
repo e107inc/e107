@@ -72,4 +72,6 @@ define("DOWLAN_100", "Activate Download Agreement");
 define("DOWLAN_101", "Agreement Text");
 define("DOWLAN_67", "ID");
 
+define("DOWLAN_102", "Allow Comments?");
+
 ?>

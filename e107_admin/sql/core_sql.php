@@ -150,6 +150,7 @@ CREATE TABLE download (
   download_datestamp int(10) unsigned NOT NULL default '0',
   download_thumb varchar(150) NOT NULL default '',
   download_image varchar(150) NOT NULL default '',
+  download_comment tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (download_id),
   UNIQUE KEY download_name (download_name)
 ) TYPE=MyISAM;
