@@ -1,5 +1,14 @@
 <?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107/e107_languages/English/admin/lan_newspost.php,v $
+|     $Revision: 1.13 $
+|     $Date: 2004-09-14 06:51:31 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
 define("NWSLAN_1", "News story deleted.");
 define("NWSLAN_2", "Please tick the confirm box to delete this news item.");
 define("NWSLAN_3", "No news items yet.");
@@ -49,7 +58,7 @@ define("NWSLAN_46", "Categories");
 define("NWSLAN_47", "Submitted News");
 define("NWSLAN_48", "News Options");
 define("NWSLAN_49", "Submitted by");
-define("NWSLAN_50", "Insert image: Upload images to ".e_IMAGE."/newsicons");
+define("NWSLAN_50", "Insert image: Upload images to");
 
 define("NWSLAN_51", "Existing News Categories");
 define("NWSLAN_52", "Category Name");
@@ -74,7 +83,7 @@ define("NWSLAN_67", "Image");
 define("NWSLAN_68", "File");
 define("NWSLAN_69", "Upload an image or file for use in the news item");
 define("NWSLAN_70", "The e107_files/downloads folder is not writable, you need to CHMOD 777 the folder before uploading");
-define("NWSLAN_71", "The ".e_IMAGE."/newspost_images folder is not writable, you need to CHMOD 777 the folder before uploading");
+define("NWSLAN_71", "The folder");
 define("NWSLAN_72", "Only show news item between certain dates");
 define("NWSLAN_73", "Render type");
 define("NWSLAN_74", "Select how and where news item is posted");
@@ -108,4 +117,5 @@ define("NWSLAN_107", "Enable HtmlArea on Submit-News page.");
 
 define("NWSLAN_108","Display messages instead not allowed news");
 define("NWSLAN_109","Check the box if you want to display a standard message for visitors not allowed to see a news (userclass restriction) instead the news itself.");
+define("NWSLAN_110","is not writable, you need to CHMOD 777 the folder before uploading");
 ?>

@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107/e107_admin/newspost.php,v $
-|   $Revision: 1.41 $
-|   $Date: 2004-08-31 16:02:51 $
-|   $Author: loloirie $
+|   $Revision: 1.42 $
+|   $Date: 2004-09-14 06:51:14 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 
 */
@@ -433,7 +433,7 @@ class newspost{
                 <input class='helpbox' type='text' name='helpb' size='100' />
                 <br />".
                                 ren_help()."
-                <select class='tbox' name='thumbps' onChange=\"addtext('[link=".e_IMAGE."newspost_images/' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '][img]".e_IMAGE."newspost_images/thumb_' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '[/img][/link]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_50."')\" onMouseOut=\"help('')\">
+                <select class='tbox' name='thumbps' onChange=\"addtext('[link=".e_IMAGE."newspost_images/' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '][img]".e_IMAGE."newspost_images/thumb_' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '[/img][/link]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_50." ".e_IMAGE."/newsicons')\" onMouseOut=\"help('')\">
                 <option>".NWSLAN_80." ...</option>\n";
                 while(list($key, $image) = each($thumblist)){
                         $image2 = str_replace("thumb_", "", $image);
@@ -498,7 +498,7 @@ class newspost{
                                 $text .= "<b>".NWSLAN_70."</b><br />";
                         }
                         if(!is_writable(e_IMAGE."newspost_images")){
-                                $text .= "<b>".NWSLAN_71."</b><br />";
+                                $text .= "<b>".NWSLAN_71." ".e_IMAGE."/newspost_images ".NWSLAN_110."</b><br />";
                         }
 
                         $text .= "<input class='tbox' type='file' name='file_userfile[]' size='50' />
