@@ -22,7 +22,7 @@ if($pref['useGeshi'] && file_exists(e_PLUGIN."geshi/geshi.php")) {
 		$CodeCache = $geshi->parse_code();
 		$e107cache->set('GeshiParsed_'.$code_md5, $CodeCache);
 	}
-	return $CodeCache;
+	return str_replace("&amp;", "&", $CodeCache);
 }
 
 $highlighted_text = highlight_string(html_entity_decode($code_text,ENT_QUOTES,CHARSET),TRUE);
