@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-03-31 06:51:59 $
+|     $Revision: 1.10 $
+|     $Date: 2005-03-31 06:59:26 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -116,10 +116,7 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	$code[8] = array("right", "[right][/right]", LANHELP_30);
 	$code[9] = array("bq", "[blockquote][/blockquote]", LANHELP_31);
 	$code[10] = array("code", "[code][/code]", LANHELP_32 );
-	if (ADMIN) {
-		$code[11] = array("html", "[html][/html]", LANHELP_33);
-	}
-	$code[12] = array("list", "[list][/list]", LANHELP_36);
+	$code[11] = array("list", "[list][/list]", LANHELP_36);
 
 	$colours[0] = array("black", LANHELP_1);
 	$colours[1] = array("blue", LANHELP_2);
@@ -143,9 +140,25 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	$fontsizes[4] = array("20", LANHELP_19);
 	$fontsizes[5] = array("28", LANHELP_20);
 
+	$img[1] = "link.png";
+	$img[2] = "bold.png";
+	$img[3] = "italic.png";
+	$img[4] = "underline.png";
+	$img[5] = "image.png";
+	$img[6] = "center.png";
+	$img[7] = "left.png";
+	$img[8] = "right.png";
+	$img[9] = "blockquote.png";
+	$img[10] = "code.png";
+	$img[11] = "list.png";
+
+	$imgpath = e_IMAGE."generic/bbcode/";
+
 	while (list($key, $bbcode) = each($code)) {
-		$string .= "<input class=\"button\" type=\"button\" value=\"".$bbcode[0]."\" onclick=\"{$addtextfunc}('".$bbcode[1]."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('','{$tagid}')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."','{$tagid}')\"" : "" ).($bbcode[3] ? " style='".$bbcode[3]."'" :
-		"")." />\n";
+		//$string .= "<input class=\"button\" type=\"button\" value=\"".$bbcode[0]."\" onclick=\"{$addtextfunc}('".$bbcode[1]."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('','{$tagid}')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."','{$tagid}')\"" : "" ).($bbcode[3] ? " style='".$bbcode[3]."'" :"")." />\n";
+
+		$string .= "<img src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"{$addtextfunc}('".$bbcode[1]."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />";
+
 	}
 
 /*
