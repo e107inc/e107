@@ -15,7 +15,6 @@
 
 function sendemail($send_to, $subject, $message,$format="plain"){
         global $pref;
-ini_set("SMTP","smtp.west.cox.net");
         $send_to = "<".$send_to.">";
         $headers = "From: \"".$pref['siteadmin']."\" <".$pref['siteadminemail']."> \n";
         $headers .= "Reply-To: ".$pref['siteadmin']." <".$pref['siteadminemail'].">\n";
