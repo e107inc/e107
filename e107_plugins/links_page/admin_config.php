@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/admin_config.php,v $
-|    $Revision: 1.1 $
-|    $Date: 2005-01-22 16:13:11 $
+|    $Revision: 1.2 $
+|    $Date: 2005-01-25 22:37:59 $
 |    $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -74,7 +74,7 @@ if (IsSet($_POST['update_order'])) {
 	}
 	$linkpost -> show_message(LCLAN_6);
 }
-echo $pref['latest'];
+
 if (IsSet($_POST['updateoptions'])) {
 	$pref['linkpage_categories'] = $_POST['linkpage_categories'];
 	$pref['link_submit'] = $_POST['link_submit'];
