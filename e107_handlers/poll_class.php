@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/poll_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:27 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-13 22:42:50 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 @include(e_PLUGIN."poll_menu/languages/".e_LANGUAGE.".php");
@@ -133,7 +133,7 @@ class poll{
                                 $replace = array("<input type='radio' name='votea' value='".($count+1)."' /> ".$poll_option[$count], "", "", "", "<br />");
                         }else if($mode == "disallowed"){
                                 $search = array("OPTION", "BAR", "PERCENTAGE", "VOTES");
-                                $replace = array("<img src='".THEME."images/bullet2.gif' alt='bullet' /> <b>".$poll_option[$count], "", "", "");
+                                $replace = array("<img src='".THEME."images/bullet2.gif' alt='bullet' /> <b>".$poll_option[$count].'</b>', "", "", "");
                         }
 
                         $opt .= str_replace($search, $replace, $optionstring);
