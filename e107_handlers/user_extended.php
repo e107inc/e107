@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-02-23 15:54:12 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2005-02-23 19:08:25 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 	
@@ -30,7 +30,7 @@ to store its data and structural information.
 	
 	
 function user_extended_field_exist($name) {
-	 
+	global $sql;
 	$found = FALSE;
 	$sql->db_Query("SHOW COLUMNS FROM user_extended");
 	while ($row = $sql->db_Fetch() && !$found) {
@@ -42,7 +42,7 @@ function user_extended_field_exist($name) {
 }
 	
 function user_extended_add($name, $type, $access, $default = '', $values = '') {
-	 
+	global $sql;
 	if (!(user_extended_field_exist($name))) {
 		$db_type = '';
 		switch ($type) {
@@ -63,6 +63,7 @@ function user_extended_add($name, $type, $access, $default = '', $values = '') {
 }
 			 
 function user_extended_remove($name) {
+	global $sql;
 	if (!user_extended_field_exist($name)) {
 		$sql->db_Query("ALTER TABLE user_extended DROP ".$name);
 		$sql->db_Delete("user_extended_struct", "user_extended_struct_name = '$name' ");
@@ -70,6 +71,7 @@ function user_extended_remove($name) {
 }
 			 
 function user_extended_modify($name,$type,$access,$default='',$values='') {
+	global $sql;
 	if (user_extended_field_exist($name)) {
 		$db_type='';
 		switch ($type) {
@@ -113,13 +115,12 @@ function user_extended_name($extended) {
 	// strips out the other information to just reveal the extended user-field name.
 	$ut = explode("|", $extended);
 	$ret = ($ut[0] != "") ? str_replace("_", " ", $ut[0]) :
-	 trim($extended);
+	trim($extended);
 	return $ret;
 }
 	
 	
 function user_extended_edit($u_fieldnum, $form_ext_name, $tdclass = "", $alignit = "left") {
-	 
 	global $pref, $key, $sql, $user_pref, $signup_ext, $_POST;
 	$ut = explode("|", $form_ext_name);
 	$u_name = ($ut[0] != "") ? str_replace("_", " ", $ut[0]) :
@@ -228,7 +229,6 @@ function user_extended_edit($u_fieldnum, $form_ext_name, $tdclass = "", $alignit
 		$ret .= "</div></td></tr>";
 		break;
 	}
-	 
 	return $ret;
 }
 	
