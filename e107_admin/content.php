@@ -11,7 +11,7 @@
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
-$Id: content.php,v 1.17 2004-08-31 16:02:51 loloirie Exp $  
+$Id: content.php,v 1.18 2004-10-18 11:27:32 loloirie Exp $  
 */
 require_once("../class2.php");
     if($pref['htmlarea']){
@@ -169,7 +169,7 @@ $text = "<div style='text-align:center'>
 <td style='width:20%' class='forumheader3'><span style='text-decoration: underline'>".CNTLAN_12.": </span></td>
 <td style='width:80%' class='forumheader3'>";
 $insertjs = (!$pref['htmlarea'])? "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'":"";
-$text .="<textarea class='tbox' id='data' name='data' style='width:100%' rows='30' cols='60' $insertjs >$content_content</textarea>";
+$text .="<textarea class='tbox' id='data' name='data' style='width:100%' rows='30' cols='60' {$insertjs} >".$aj -> formtparev($content_content)."</textarea>";
 
 if(!$pref['htmlarea']){
     $text .="

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/class2.php,v $
-|     $Revision: 1.97 $
-|     $Date: 2004-10-06 00:05:38 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.98 $
+|     $Date: 2004-10-18 11:24:43 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 
@@ -806,7 +806,7 @@ class textparse
 			*/
 
 		}
-		else if(ADMIN && !strstr(e_PAGE, "newspost.php") && !strstr(e_PAGE, "article.php") && !strstr(e_PAGE, "review.php"))
+		else if(ADMIN && !strstr(e_PAGE, "content.php") && !strstr(e_PAGE, "newspost.php") && !strstr(e_PAGE, "article.php") && !strstr(e_PAGE, "review.php"))
 		{
 			$text = preg_replace("#\[img\](.*?)\[/img\]#si", '<img src=\'\1\' alt=\'\' style=\'vertical-align:middle; border:0\' />', $text);
 		}
