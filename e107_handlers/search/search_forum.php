@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search/search_forum.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-15 13:48:57 $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-15 16:47:53 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -44,7 +44,7 @@ function search_forum($row) {
 	} else {
 		$link_id = $row['thread_id'];
 	}
-	$res['link'] = e_PLUGIN."forum/forum_viewtopic.php?".$link_id;
+	$res['link'] = e_PLUGIN."forum/forum_viewtopic.php?".$link_id.".post";
 	$res['title'] = $title ? "As part of thread: ".$title : LAN_SEARCH_9;	
 	$res['summary'] = $row['thread_thread'];
 	$res['detail'] = LAN_SEARCH_7.$row['user_name'].LAN_SEARCH_8.$datestamp;
