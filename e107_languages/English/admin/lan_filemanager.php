@@ -37,6 +37,7 @@ define("FMLAN_32", "Select Directory");
 define("FMLAN_33", "Select");
 define("FMLAN_34", "Directory Choice");
 define("FMLAN_35", "Files Directory");
-define("FMLAN_36", "Custom Directory");
 
+define("FMLAN_36", "Custom Menus Directory");
+define("FMLAN_37", "Custom Pages Directory");
 ?>
