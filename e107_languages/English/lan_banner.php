@@ -23,4 +23,6 @@ define("LAN_33", "No");
 define("LAN_34", "Ends");
 define("LAN_35", "Clickthrough IP addresses");
 
+define("LAN_banner_1", "Choose banner image");
+
 ?>
