@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/includes/beginner.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-04-03 08:27:17 $
+|     $Revision: 1.6 $
+|     $Date: 2005-04-05 06:51:07 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -34,7 +34,7 @@ $text = "<div style='text-align:center;vertical-align:middle'><br /><br />
 	$text .= render_links($newarray[$id][0],$newarray[$id][1],$newarray[$id][2],$newarray[$id][3],$newarray[$id][6],'beginner');
 	}
 
-$text .= "</table><br /></div>";
+$text .= "\n</tr></table><br /></div>";
 
 $text .= "<div class='smalltext' style='text-align:center'>".ADLAN_144." <a href='".e_SELF."?mode=e_advanced' >".ADLAN_145."</a>&nbsp;&nbsp;</div>";
 
