@@ -13,6 +13,7 @@
 +---------------------------------------------------------------+
 */
 
+require_once("languages/".e_LANGUAGE.".php");
 if($sql -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHERE ".MPREFIX."forum.forum_id=".MPREFIX."forum_t.thread_forum_id AND ".MPREFIX."forum_t.thread_parent=0 ORDER BY ".MPREFIX."forum_t.thread_datestamp DESC LIMIT 0, ".$pref['nfp_amount'])){
 	$text = "<div style='text-align:center'>\n<table style='width:auto' class='fborder'>\n";
 	if(!is_object($sql2)){
@@ -24,11 +25,11 @@ if($sql -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHE
 
 	$text .= "<tr>
 		<td style='width:5%' class='forumheader'>&nbsp;</td>
-		<td style='width:45%' class='forumheader'>Thread</td>
-		<td style='width:15%; text-align:center' class='forumheader'>Poster</td>
-		<td style='width:5%; text-align:center' class='forumheader'>Views</td>
-		<td style='width:5%; text-align:center' class='forumheader'>Replies</td>
-		<td style='width:25%; text-align:center' class='forumheader'>Lastpost</td>
+		<td style='width:45%' class='forumheader'>".LAN_1."</td>
+		<td style='width:15%; text-align:center' class='forumheader'>".LAN_2."</td>
+		<td style='width:5%; text-align:center' class='forumheader'>".LAN_3."</td>
+		<td style='width:5%; text-align:center' class='forumheader'>".LAN_4."</td>
+		<td style='width:25%; text-align:center' class='forumheader'>".LAN_5."</td>
 		</tr>\n";
 
 	while($row = $sql -> db_Fetch()){
@@ -53,7 +54,7 @@ if($sql -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHE
 
 			$text .= "<tr>
 			<td style='width:5%; text-align:center' class='forumheader3'><img src='".e_IMAGE."forum/new_small.png' alt='' /></td>
-			<td style='width:45%' class='forumheader3'><b><a href='".e_BASE."forum_viewtopic.php?$forum_id.$thread_id'>$thread_name</a></b> <span class='smalltext'>(<a href='".e_BASE."forum_viewforum.php?$forum_id'>$forum_name</a>}</span></td>
+			<td style='width:45%' class='forumheader3'><b><a href='".e_BASE."forum_viewtopic.php?$forum_id.$thread_id'>$thread_name</a></b> <span class='smalltext'>(<a href='".e_BASE."forum_viewforum.php?$forum_id'>$forum_name</a>)</span></td>
 			<td style='width:15%; text-align:center' class='forumheader3'><a href='".e_BASE."user.php?id.$post_author_id'>$post_author_name</a></td>
 			<td style='width:5%; text-align:center' class='forumheader3'>$thread_views</td>
 			<td style='width:5%; text-align:center' class='forumheader3'>$replies</td>
@@ -67,7 +68,7 @@ if($sql -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHE
 	$total_views = $sql -> db_Count("SELECT sum(thread_views) FROM ".MPREFIX."forum_t", "generic");
 
 	$text .= "<tr>\n<td colspan='6' style='text-align:center' class='forumheader2'>
-	<span class='smalltext'>Threads: <b>$total_topics</b> | Replies: <b>$total_replies</b> | Views: <b>$total_views</b></span>
+	<span class='smalltext'>".LAN_6.": <b>$total_topics</b> | ".LAN_4.": <b>$total_replies</b> | ".LAN_3.": <b>$total_views</b></span>
 	</td>\n</tr>\n";
 
 	$text .= "</table>\n</div>";

@@ -112,7 +112,7 @@ if(count($dirs) == 1){
 $pathd = $path;
 $text = "<div class=\"border\">
 <div class=\"caption\">
-Path: <b>root/".$pathd."</b>&nbsp;&nbsp;[ ".count($dirs)." ".$dstr.", ".count($files)." ".$cstr." ]
+".FMLAN_29.": <b>root/".$pathd."</b>&nbsp;&nbsp;[ ".count($dirs)." ".$dstr.", ".count($files)." ".$cstr." ]
 </div>
 </div>
 <br />
@@ -129,7 +129,7 @@ if($path != e_FILE){
 	}else{
 		$pathup = e_SELF."?".substr($path, 0, strrpos(substr($path, 0, -1), "/"))."/";
 	}
-	$text .= "<tr><td colspan=\"5\" class=\"forumheader3\"><a href=\"".$pathup."\"><img src=\"".$imagedir."updir.png\" alt=\"Up level\" style=\"border:0\" /> </a>
+	$text .= "<tr><td colspan=\"5\" class=\"forumheader3\"><a href=\"".$pathup."\"><img src=\"".$imagedir."updir.png\" alt=\"".FMLAN_30."\" style=\"border:0\" /> </a>
 	<a href=\"filemanager.php\"><img src=\"".$imagedir."home.png\" alt=\"".FMLAN_16."\" style=\"border:0\" /></a>
 	</td>
 	</tr>";
@@ -151,7 +151,7 @@ while($dirs[$c]){
 	$dirsize = dirsize($path.$dirs[$c]);
 	$text .= "<tr>
 	<td style=\"width:5%\" class=\"forumheader3\" style=\"vertical-align:middle; text-align:center\">
-	<a href=\"".e_SELF."?".$path.$dirs[$c]."/\"><img src=\"".$imagedir."folder.png\" alt=\"".$dirs[$c]." folder\" style=\"border:0\" /></a>
+	<a href=\"".e_SELF."?".$path.$dirs[$c]."/\"><img src=\"".$imagedir."folder.png\" alt=\"".$dirs[$c]." ".FMLAN_31."\" style=\"border:0\" /></a>
 	<td style=\"width:30%\" class=\"forumheader3\">
 	<a href=\"".e_SELF."?".$path.$dirs[$c]."/\">".$dirs[$c]."</a>
 	</td>
