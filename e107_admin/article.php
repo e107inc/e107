@@ -11,19 +11,19 @@
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
+$Id: article.php,v 1.23 2004-08-11 09:44:46 e107coders Exp $
 */
 require_once("../class2.php");
+if($pref['htmlarea']){
+    require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
+   $htmlarea_js =  htmlarea("data");
+  //  htmlarea("content_summary");
+}
 if(!getperms("J") && !getperms("K") && !getperms("L")){header("location:".e_BASE."index.php"); exit; }
 require_once("auth.php");
 $aj = new textparse;
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."userclass_class.php");
-
-if($pref['htmlarea']){
-    require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
-    htmlarea("data");
-  //  htmlarea("content_summary");
-}
 
 $rs = new form;
 
@@ -156,10 +156,10 @@ if(IsSet($_POST['preview'])){
         $cu= $aj -> formtpa($_POST['content_summary'],"admin"); $cu= $aj -> tpa($cu,"nobreak","admin");
         $ca = ($_POST['content_author'] && $_POST['content_author'] != ARLAN_84 ? $_POST['content_author'] : ADMINNAME);
         $text = "<i>by $ca</i><br /><span class='smalltext'>".$datestamp."</span><br /><br />".ARLAN_18.": $cs<br />".ARLAN_19.": $cu<br /><br />$dt";
- 
- 		/* 9 Aug 2004 - unknown - the article preview looks more like the actual article */
-	 	$text = '<div style="text-align: center"><table class="fborder" style="width:95%" border="0"><tr><td>'.$text.'</td></tr></table></div>';
- 	
+
+                 /* 9 Aug 2004 - unknown - the article preview looks more like the actual article */
+                 $text = '<div style="text-align: center"><table class="fborder" style="width:95%" border="0"><tr><td>'.$text.'</td></tr></table></div>';
+
         $ns -> tablerender($content_heading, $text);
         echo "<br /><br />";
         // make form friendly ...
