@@ -139,7 +139,7 @@ if($action == "review"){
 				$text .= ($content_summary_ ? "<a href='".e_SELF."?review.cat.$content_id_'><img src='".e_IMAGE."link_icons/".$content_summary_."' alt='' style='float:left; border:0' /></a>" : "")."
 				<span class='mediumtext'><b>$content_heading</b></span>
 				<br />
-				<span class='smalltext'>by $user_name on $datestamp</span>
+				<span class='smalltext'>".LAN_43."$user_name".LAN_44."$datestamp</span>
 				<br /><br />
 				$content_summary
 				<br /><br />
@@ -230,7 +230,7 @@ if($action == "review"){
 							<td style='width:95%'>
 							<b><span class='mediumtext'><a href='".e_SELF."?review.$content_id'>$content_heading</a></span></b>
 							<br />
-							<span class='smalltext'>by $user_name on $datestamp</span>
+							<span class='smalltext'>".LAN_43."$user_name".LAN_44."$datestamp</span>
 							<br />
 							$content_summary
 							<br />
@@ -316,7 +316,7 @@ if($action == "review"){
 					$text .= (file_exists(e_IMAGE."link_icons/$content_summary") ? "<a href='".e_SELF."?review.cat.$content_id'><img src='".e_IMAGE."link_icons/".$content_summary."' alt='' style='float:left; border:0' /></a>" : "&nbsp;")."
 					<b><span class='mediumtext'><a href='".e_SELF."?review.$rev_id'>$content_heading</a></span></b>
 					<br />
-					<span class='smalltext'>by <b>$user_name</b> on $datestamp</span>
+					<span class='smalltext'>".LAN_43."<b>$user_name</b>".LAN_44."$datestamp</span>
 					<br />
 					$summary
 					<br />
@@ -413,7 +413,7 @@ if($action == "article"){
 				$text .= ($content_summary_ ? "<a href='".e_SELF."?article.cat.$content_id_'><img src='".e_IMAGE."link_icons/".$content_summary_."' alt='' style='float:left; border:0' /></a>" : "")."
 				<span class='mediumtext'><b>$content_heading</b></span>
 				<br />
-				<span class='smalltext'>by <b>$user_name</b> on $datestamp</span>
+				<span class='smalltext'>".LAN_43."<b>$user_name</b>".LAN_44."$datestamp</span>
 				<br /><br />
 				$content_summary
 				<br /><br />";
@@ -630,7 +630,7 @@ if($action == "article"){
 					</td>\n<td style='width:95%'>
 					<b><span class='mediumtext'><a href='".e_SELF."?article.$rev_id'>$content_heading</a></span></b>
 					<br />
-					<span class='smalltext'>by $user_name on $datestamp</span>
+					<span class='smalltext'>".LAN_43."$user_name".LAN_44."$datestamp</span>
 					<br />
 					$summary
 					<br /><br />\n</td></tr>\n";
