@@ -14,13 +14,12 @@
 */
 
 if (IsSet($_POST['updateprefs'])) {
-    require_once("../class2.php");
-    require_once(e_ADMIN."auth.php");
-    $pref['sitetheme'] = $_POST['sitetheme'];
-    save_prefs();
-	$message = TPVLAN_12;
-    header("location : ".e_SELF."");
-    exit;
+	require_once("../class2.php");
+	require_once(e_ADMIN."auth.php");
+	$pref['sitetheme'] = $_POST['sitetheme'];
+	save_prefs();
+	header("location:".e_SELF);
+	exit;
 }
 
 if(isSet($_POST['sitetheme'])) {
@@ -102,7 +101,6 @@ theme_dropdown()."
 <input class='button' type='submit' name='previewtheme' value='".TPVLAN_6."' />
 </td>
 </tr>
-<tr>
 </table>
 </form>
 </div>";
@@ -126,11 +124,11 @@ function theme_dropdown(){
 		if($dirlist[$counter] == $pref['sitetheme'][1] || $dirlist[$counter] == USERTHEME){
 			$text .= "<option selected='selected'>".$dirlist[$counter]."</option>\n";
 		}else{
-			$text .= "<option>".$dirlist[$counter]."</option>\n";
-		}
-		$counter++;
+		$text .= "<option>".$dirlist[$counter]."</option>\n";
 	}
-	$text .= "</select>";
-	return $text;
+	$counter++;
+}
+$text .= "</select>";
+return $text;
 }
 ?>	
