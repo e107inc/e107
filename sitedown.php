@@ -11,25 +11,25 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/sitedown.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:45 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-17 12:53:55 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 $tp = new textparse;
-$text = "<font style='font-size: 14px; color: black; font-family: Tahoma, Verdana, Arial, Helvetica; text-decoration: none'>
-<div style='text-align:center'>
-<img src='".e_IMAGE."logo.png' alt='Logo' />
-</div>
-<hr />
-<br />
+global $pref;
 
-<div style='text-align:center'>".($pref['maintainance_text'] ? $tp -> tpa($pref['maintainance_text'],"","admin") : "<b>- ".SITENAME." ".LAN_00." -</b><br /><br />".LAN_01 )."</div>";
-echo "<html><head><title>".PAGE_NAME."</title></head><body>";
+$SITEDOWN_TABLE_MAINTAINANCETEXT = ($pref['maintainance_text'] ? $tp -> tpa($pref['maintainance_text'],"","admin") : "<b>- ".SITENAME." ".LAN_00." -</b><br /><br />".LAN_01 );
+$SITEDOWN_TABLE_PAGENAME = PAGE_NAME;
 
-echo $text;
-
-echo "</body></html>";
+if(!$SITEDOWN_TABLE){
+	if(file_exists(THEME."sitedown_template.php")){
+		require_once(THEME."sitedown_template.php");
+	}else{
+		require_once(e_THEME."templates/sitedown_template.php");
+	}
+}
+echo preg_replace("/\{(.*?)\}/e", '$\1', $SITEDOWN_TABLE);
 
 ?>
