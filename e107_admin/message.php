@@ -11,12 +11,19 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/message.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-08 21:42:25 $
+|     $Revision: 1.2 $
+|     $Date: 2005-02-11 22:04:47 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
+
+$messageTypes = array("Reported Forum Post", "Broken Download", "Dev Team Message");
+$queryString = "";
+foreach($messageTypes as $types) {
+	$queryString .= " gen_type='$types' OR";
+}
+$queryString = substr($queryString, 0, -3);
 
 $e_sub_cat = 'message';
 require_once("auth.php");
@@ -31,7 +38,7 @@ if(isset($_POST['delete_message']))
 
 if(isset($_POST['delete_all']) && isset($_POST['deleteconfirm']))
 {
-	$sql->db_Delete("generic", "gen_type='reported_post' OR gen_type='broken download'");
+	$sql->db_Delete("generic", $queryString);
 	$message = MESSLAN_6;
 }
 
@@ -40,7 +47,8 @@ if (isset($message)) {
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
-if($amount = $sql -> db_Select("generic", "*", "gen_type='Reported Forum Post' OR gen_type='Broken Download' "))
+
+if($amount = $sql -> db_Select("generic", "*", $queryString))
 {
 
 
@@ -64,6 +72,9 @@ if($amount = $sql -> db_Select("generic", "*", "gen_type='Reported Forum Post' O
 				$sql -> db_Select("forum_t", "thread_parent", "thread_id=$gen_intdata");
 				$thread = $sql -> db_Fetch();
 				$link = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?".$thread['thread_parent']."#$gen_intdata'>$gen_ip</a>";
+			break;
+			case "Dev Team Message":
+				$link = "";
 			break;
 		}
 
