@@ -458,7 +458,7 @@ $text .= "<td style='width:50%' class='forumheader3'>".PRFLAN_22.": </td>
 <td style='width:50%' class='forumheader3'>".PRFLAN_26.": </td>
 <td style='width:50%; text-align:right' class='forumheader3'>
 <select name='time_offset' class='tbox'>\n";
-$toffset = array("-12", "-11", "-10", "-9", "-8", "-7", "-6", "-5", "-4", "-3", "-2", "-1", "0", "+1", "+2", "+3", "+4", "+5", "+6", "+7", "+8", "+9", "+10", "+11", "+12", "+13", "+14");
+$toffset = array("-12", "-11", "-10", "-9", "-8", "-7", "-6", "-5", "-4", "-3", "-2", "-1", "0", "+1", "+2", "+3", "+4", "+5", "+6", "+7", "+8", "+9", "+10", "+11", "+12", "+13", "+14", "+15", "+16");
 $counter = 0;
 while(IsSet($toffset[$counter])){
         if($toffset[$counter] == $pref['time_offset']){
