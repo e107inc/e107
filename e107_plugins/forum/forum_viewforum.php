@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-03-24 13:08:02 $
+|     $Revision: 1.20 $
+|     $Date: 2005-03-24 14:47:54 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -216,6 +216,14 @@ if ($pref['forum_enclose']) {
 } else {
 	echo $forum_view_start.$forum_view_forum.$forum_view_end;
 }
+
+echo "<script type=\"text/javascript\">
+	function confirm_(thread_id)
+	{
+		return confirm(\"".$tp->toJS(LAN_434)."\");
+	}
+	</script>";
+
 require_once(FOOTERF);
 	
 	
@@ -314,6 +322,9 @@ function parse_thread($thread_info) {
 		$ADMIN_ICONS = "
 			<form method='post' action='".e_SELF."?{$forum_id}' id='frmMod_{$forum_id}_{$thread_id}' style='margin:0;'><div>
 			";
+
+		$ADMIN_ICONS .= "<input type='image' ".IMAGE_admin_delete." name='delete_$thread_id' value='thread_action' onclick=\"return confirm_($thread_id)\" /> \n";
+
 		$ADMIN_ICONS .= ($thread_info['thread_s'] == 1) ? "<input type='image' ".IMAGE_admin_unstick." name='unstick_{$thread_id}' value='thread_action' /> " :
 		 "<input type='image' ".IMAGE_admin_stick." name='stick_{$thread_id}' value='thread_action' /> ";
 		$ADMIN_ICONS .= ($thread_info['thread_active']) ? "<input type='image' ".IMAGE_admin_lock." name='lock_{$thread_id}' value='thread_action' /> " :

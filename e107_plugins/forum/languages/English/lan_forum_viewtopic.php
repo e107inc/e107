@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_viewtopic.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-10 14:40:07 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-24 14:49:17 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Forum");
@@ -47,7 +47,7 @@ define("LAN_404", "No previous thread");
 define("LAN_405", "No next thread");
 	
 define("LAN_406", "Moderator: Edit");
-define("LAN_407", "Moderator: Delete");
+define("LAN_435", "Moderator: Delete");
 define("LAN_408", "Moderator: Move");
 define("LAN_409", "Are you sure you want to delete this thread and any replies?");
 define("LAN_410", "Are you sure you want to delete this reply?");

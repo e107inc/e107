@@ -68,7 +68,7 @@ return "<a href='".e_BASE."user.php?id.".$post_info['user_id']."'><b>".$post_inf
 }
 SC_END
 	
-SC_BEGIN EMAILING
+SC_BEGIN EMAILIMG
 global $post_info;
 global $tp;
 return (!$post_info['user_hideemail'] ? $tp->parseTemplate("{EMAILTO={$post_info['user_email']}}") : "");
