@@ -6,7 +6,7 @@
 // Distributed under the same terms as HTMLArea itself.
 // This notice MUST stay intact for use (see license.txt).
 //
-// $Id: list-type.js,v 1.1 2004-06-26 13:48:38 e107coders Exp $
+// $Id: list-type.js,v 1.2 2004-08-11 09:26:37 e107coders Exp $
 
 function ListType(editor) {
 	this.editor = editor;

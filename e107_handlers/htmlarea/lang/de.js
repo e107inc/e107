@@ -43,7 +43,8 @@ HTMLArea.I18N = {
 		copy:           "Kopieren",
         paste:                  "Einfügen aus der Zwischenablage",
         lefttoright:            "Textrichtung von Links nach Rechts",
-        righttoleft:            "Textrichtung von Rechts nach Links"
+        righttoleft:            "Textrichtung von Rechts nach Links",
+        removeformat:            "Formatierung entfernen"
 	},
   
  buttons: {

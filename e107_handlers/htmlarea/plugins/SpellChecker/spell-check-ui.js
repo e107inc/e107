@@ -6,7 +6,7 @@
 // Distributed under the same terms as HTMLArea itself.
 // This notice MUST stay intact for use (see license.txt).
 //
-// $Id: spell-check-ui.js,v 1.4 2004-06-26 13:48:35 e107coders Exp $
+// $Id: spell-check-ui.js,v 1.5 2004-08-11 09:26:38 e107coders Exp $
 
 // internationalization file was already loaded in parent ;-)
 var SpellChecker = window.opener.SpellChecker;
@@ -126,7 +126,7 @@ function replaceAllClicked() {
 	}
 	*/
 	if (ok) {
-		for (var i in spans) {
+		for (var i = 0; i < spans.length; ++i) {
 			if (spans[i] != currentElement) {
 				replaceWord(spans[i]);
 			}
@@ -156,7 +156,7 @@ function learnClicked() {
 
 function internationalizeWindow() {
 	var types = ["div", "span", "button"];
-	for (var i in types) {
+	for (var i = 0; i < types.length; ++i) {
 		var tag = types[i];
 		var els = document.getElementsByTagName(tag);
 		for (var j = els.length; --j >= 0;) {
@@ -237,7 +237,7 @@ function wordClicked(scroll) {
 	if (currentElement) {
 		var a = allWords[currentElement.__msh_origWord];
 		currentElement.className = currentElement.className.replace(/\s*HA-spellcheck-current\s*/g, " ");
-		for (var i in a) {
+		for (var i = 0; i < a.length; ++i) {
 			var el = a[i];
 			if (el != currentElement) {
 				el.className = el.className.replace(/\s*HA-spellcheck-same\s*/g, " ");
@@ -247,7 +247,7 @@ function wordClicked(scroll) {
 	currentElement = this;
 	this.className += " HA-spellcheck-current";
 	var a = allWords[currentElement.__msh_origWord];
-	for (var i in a) {
+	for (var i = 0; i < a.length; ++i) {
 		var el = a[i];
 		if (el != currentElement) {
 			el.className += " HA-spellcheck-same";

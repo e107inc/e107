@@ -191,7 +191,7 @@ PopupDiv.prototype.getForm = function() {
 PopupDiv.prototype.callHandler = function() {
 	var tags = ["input", "textarea", "select"];
 	var params = new Object();
-	for (var ti in tags) {
+	for (var ti = tags.length; --ti >= 0;) {
 		var tag = tags[ti];
 		var els = this.content.getElementsByTagName(tag);
 		for (var j = 0; j < els.length; ++j) {

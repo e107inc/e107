@@ -3,7 +3,7 @@
 .htmlarea .toolbar {
   cursor: default;
   background: ButtonFace;
-  padding: 1px 1px 2px 1px;
+  padding: 3px;
   border: 1px solid;
   border-color: ButtonHighlight ButtonShadow ButtonShadow ButtonHighlight;
 }
@@ -42,7 +42,7 @@
 }
 
 .htmlarea .toolbar .buttonDisabled img {
-  filter: alpha(opacity = 25);
+  filter: gray() alpha(opacity = 25);
   -moz-opacity: 0.25;
 }
 
