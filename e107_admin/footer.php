@@ -70,7 +70,7 @@ SITENAME."
 ".mysql_get_server_info().
 "<br />
 ".FOOTLAN_16.": ".$mySQLdefaultdb;
-$ns -> tablerender("Site Info", $text);
+$ns -> tablerender(FOOTLAN_13, $text);
 
 $c=1;
 $handle=opendir(e_DOCS);

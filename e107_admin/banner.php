@@ -243,7 +243,7 @@ $text .= "<input class=\"tbox\" type=\"text\" size=\"30\" maxlength=\"100\" name
 <tr>
 <td class=\"forumheader3\">".BNRLAN_32."</td>
 <td class=\"forumheader3\">
-<input class=\"button\" type =\"button\" value=\"Choose banner image\" onClick=\"expandit(this)\">
+<input class=\"button\" type =\"button\" value=\"".LAN_banner_1."\" onClick=\"expandit(this)\">
 <div style=\"display:none\"><br />";
 $c=0;
 while($images[$c]){
