@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-02-10 19:56:25 $
+|     $Revision: 1.12 $
+|     $Date: 2005-02-10 20:15:33 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -241,6 +241,9 @@ define("CONTENT_ADMIN_ITEM_LAN_68", "");
 define("CONTENT_ADMIN_ITEM_LAN_69", "");
 define("CONTENT_ADMIN_ITEM_LAN_70", "");
 
+define("CONTENT_ADMIN_ORDER_LAN_0", "order is increased");
+define("CONTENT_ADMIN_ORDER_LAN_1", "order is decreased");
+define("CONTENT_ADMIN_ORDER_LAN_2", "new order for content items is saved");
 
 define("CONTENT_ADMIN_MAIN_LAN_0", "existing content categories");
 define("CONTENT_ADMIN_MAIN_LAN_1", "no content categories yet");
