@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/credits.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-03-25 03:18:27 $
-|     $Author: sweetas $
+|     $Revision: 1.4 $
+|     $Date: 2005-03-30 19:02:19 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -63,6 +63,12 @@ $creditsArray = array(
 				"description" => "Menu system used in Jayya theme", 
 				"version" => "0.1", 
 				"licence" => "GPL, permission granted"
+			),
+	array(	"name" => "DHTML / JavaScript Calendar", 
+				"url" => "http://www.dynarch.com/projects/calendar/", 
+				"description" => "Popup calendar widget", 
+				"version" => "1.0", 
+				"licence" => "GPL"
 			),
 	);
 
