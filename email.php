@@ -16,7 +16,7 @@ require_once("class2.php");
 require_once(HEADERF);
 
 $qs = explode(".", e_QUERY);
-if($qs[0] == ""){ header("location:".e_HTTP."index.php"); exit;}
+if($qs[0] == ""){ header("location:".e_BASE."index.php"); exit;}
 $table = $qs[0];
 $id = $qs[1];
 $type = ($table == "news" ? "news item" : "article");
@@ -51,14 +51,14 @@ if(IsSet($_POST['emailsubmit'])){
 			smtpmail($_POST['email_send'], "News item from ".SITENAME, $message, "From: newssend@".SITENAME."\r\n"."Reply-To: ".NULL ."\r\n"."X-Mailer: PHP/" . phpversion());
 		}else{
 			if(@mail($_POST['email_send'], "News item from ".SITENAME, $message, "From: newssend@".SITENAME."\r\n"."Reply-To: ".NULL ."\r\n"."X-Mailer: PHP/" . phpversion())){
-				$text = "<div class='center'>Mail sent to ".$_POST['email_send']."</div>";
+				$text = "<div class='center'>".LAN_10." ".$_POST['email_send']."</div>";
 			}else{
-				$text = "<div class='center'>Sorry - unable to send email</div>";
+				$text = "<div class='center'>".LAN_9."</div>";
 			}
 		}
-		$ns -> tablerender("Email sent", $text);
+		$ns -> tablerender(LAN_11, $text);
 	}else{
-		$ns -> tablerender("Error", "<div style='text-align:center'>".$error."</div>");
+		$ns -> tablerender(LAN_12, "<div style='text-align:center'>".$error."</div>");
 	}
 }
 
@@ -76,7 +76,7 @@ if(USER != TRUE){
 $text .= "<tr> 
 <td style='width:20%'>".LAN_8."</td>
 <td style='width:80%'>
-<textarea class='tbox' name='comment' cols='70' rows='4'>".LAN_188." ".SITENAME." (".SITEURL.")";
+<textarea class='tbox' name='comment' cols='70' rows='4'>".($type == "news" ? LAN_188 : LAN_189)." ".SITENAME." (".SITEURL.")";
 if(USER == TRUE){
 	$text .= "\n\nFrom ".USERNAME;
 }
@@ -95,13 +95,13 @@ $text .= "</textarea>
 <tr style='vertical-align:top'> 
 <td style='width:20%'></td>
 <td style='width:80%'>
-<input class='button' type='submit' name='emailsubmit' value='".LAN_186."' />
+<input class='button' type='submit' name='emailsubmit' value='".($type == "news" ? LAN_186 : LAN_185)."' />
 </td>
 </tr>
 </table>
 </form>";
 
-$ns -> tablerender("Email $type to a friend", $text);
+$ns -> tablerender(($type == "news" ? LAN_6 : LAN_5), $text);
 
 
 

@@ -24,14 +24,13 @@ if(!$tmp[1]){
 	$type = "image";
 }
 
-
 if($type == "file"){
 	$sql -> db_Select("download", "*", "download_id= '$id' ");
 	$row = $sql -> db_Fetch(); extract($row);
 	$sql -> db_Update ("download", "download_requested=download_requested+1 WHERE download_id='$id' ");
 	if(preg_match("/Binary\s(.*?)\/.*/", $download_url, $result)){
 		$bid = $result[1];
-		$result = @mysql_query("SELECT * FROM ".MPREFIX."binary WHERE binary_id='$bid' ");
+		$result = @mysql_query("SELECT * FROM ".MPREFIX."rbinary WHERE binary_id='$bid' ");
 		$binary_data = @mysql_result($result, 0, "binary_data");
 		$binary_filetype = @mysql_result($result, 0, "binary_filetype");
 		$binary_name = @mysql_result($result, 0, "binary_name");
@@ -46,8 +45,14 @@ if($type == "file"){
 		header("location:".$row['download_url']);
 		exit;
 	}else{
-		header("location:files/downloads/".$row['download_url']);
-		exit;
+
+		if(file_exists(e_FILE."downloads/".$row['download_url'])){
+			header("location:".e_FILE."downloads/".$row['download_url']);
+			exit;
+		}else if(file_exists(e_FILE."public/".$row['download_url'])){
+			header("location:".e_FILE."public/".$row['download_url']);
+			exit;
+		}
 	}
 }
 
@@ -58,7 +63,7 @@ $image = ($table == "upload" ? $upload_ss : $download_image);
 
 if(preg_match("/Binary\s(.*?)\/.*/", $image, $result)){
 	$bid = $result[1];
-	$result = @mysql_query("SELECT * FROM ".MPREFIX."binary WHERE binary_id='$bid' ");
+	$result = @mysql_query("SELECT * FROM ".MPREFIX."rbinary WHERE binary_id='$bid' ");
 	$binary_data = @mysql_result($result, 0, "binary_data");
     $binary_filetype = @mysql_result($result, 0, "binary_filetype");
 	$binary_name = @mysql_result($result, 0, "binary_name");
@@ -78,19 +83,16 @@ if(eregi("http", $image)){
 }else{
 	if($table == "download"){
 		require_once(HEADERF);
-		if(file_exists("files/download/".$image)){
-			echo "<img src='files/download/".$image."' alt='' />";
+		if(file_exists(e_FILE."download/".$image)){
+			echo "<img src='".e_FILE."download/".$image."' alt='' />";
 		}else{
-			echo "<img src='files/public/".$image."' alt='' />";
+			echo "<img src='".e_FILE."public/".$image."' alt='' />";
 		}
 		require_once(FOOTERF);
 	}else{
-		echo "<img src='files/public/".$image."' alt='' />";
+		echo "<img src='".e_FILE."public/".$image."' alt='' />";
 		exit;
 	}
 }
-
-
-
 
 ?>

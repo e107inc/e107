@@ -13,17 +13,17 @@
 +---------------------------------------------------------------+
 */
 require_once("class2.php");
-if(!$pref['frontpage'][1] || $pref['frontpage_type'][1] == "splash"){
+if(!$pref['frontpage'] || $pref['frontpage_type'] == "splash"){
 	header("location: ".e_BASE."news.php");
 	exit;
-}else if(is_numeric($pref['frontpage'][1])){
-	header("location: ".e_BASE."article.php?".$pref['frontpage'][1].".255");
+}else if(is_numeric($pref['frontpage'])){
+	header("location: ".e_BASE."article.php?".$pref['frontpage'].".255");
 	exit;
-}else if(eregi("http", $pref['frontpage'][1])){
-	header("location: ".e_BASE.$pref['frontpage'][1]);
+}else if(eregi("http", $pref['frontpage'])){
+	header("location: ".e_BASE.$pref['frontpage']);
 	exit;
 }else{
-	header("location: ".e_BASE.$pref['frontpage'][1].".php");
+	header("location: ".e_BASE.$pref['frontpage'].".php");
 	exit;
 }
 ?>

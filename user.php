@@ -45,7 +45,7 @@ if(IsSet($id)){
 	}
 
 	if(!$sql -> db_Select("user", "*", "user_id='".$id."' ")){
-		$text = "<div style='text-align:center'>That is not a valid user.</div>";
+		$text = "<div style='text-align:center'>".LAN_400."</div>";
 		$ns -> tablerender("<div style='text-align:center'>".LAN_20."</div>", $text);
 		require_once(FOOTERF);
 		exit;
@@ -99,6 +99,7 @@ if($order == "ASC"){
 
 $text .= " <input class='button' type='submit' name='submit' value='Go' />
 <input type='hidden' name='from' value='$from' />
+</p>
 </form>
 </div>";
 
@@ -107,45 +108,48 @@ $ns -> tablerender("<div style='text-align:center'>".LAN_140."</div>", $text);
 if(!$sql -> db_Select("user", "*",  "ORDER BY user_id $order LIMIT $from,$records", $mode="no_where")){
 	echo "<div style='text-align:center'><b>".LAN_141."</b></div>";
 }else{
+	$sql2 = new db;
+	if($sql2 -> db_Select("core", " e107_value", " e107_name='user_entended'")){
+		$row = $sql2 -> db_Fetch();
+		$user_entended = unserialize($row[0]);
+	}
 	while($row = $sql -> db_Fetch()){
-
-		renderuser($row);
+		renderuser($row, $user_entended);
 	}
 }
-require_once(e_BASE."classes/np_class.php");
+require_once(e_HANDLER."np_class.php");
 $ix = new nextprev("user.php", $from, $records, $users_total, LAN_138, $records.".".$order);
 
-function renderuser($row){
+function renderuser($row, $user_entended){
+	global $sql;
+	$sql2 = new db;
 	extract($row);
 	$caption = LAN_142." ".$user_id.": ".$user_name;
-	$text = "<table style='width:95%'><tr>";
+	$text = "<table style='width:95%'>";
 
 	if($user_image){
-		
-		require_once(e_BASE."classes/avatar_handler.php");
+		require_once(e_HANDLER."avatar_handler.php");
 		$user_image = avatar($user_image);
-
-		$text .= "<td colspan='2'><div class='spacer'><img src='".$user_image."' alt='' /></div></td></tr><tr>";
+		$text .= "<tr><td colspan='2'><div class='spacer'><img src='".$user_image."' alt='' /></div></td></tr>";
 	}
 
 
-if($user_login != ""){
-	$text .= "<td style='width:40%'>".LAN_308."</td>
-<td style='width:60%'>".$user_login."</td></tr>";
-}
+	if($user_login != ""){
+		$text .= "<tr><td style='width:40%'>".LAN_308."</td><td style='width:60%'>".$user_login."</td></tr>";
+	}
 
 
-$text .= "<td style='width:40%'>".LAN_112."</td>
-<td style='width:60%'>";
+	$text .= "<tr><td style='width:40%'>".LAN_112."</td>
+	<td style='width:60%'>";
 
-	if($user_hideemail == 1){
+	if($user_hideemail == 1 && !ADMIN){
 		$text .= LAN_143;
 	}else{
 		$text .= "<a href='mailto:".$user_email."'>".$user_email."</a>";
 	}
-	$text .= "</td></tr><tr>";
+	$text .= "</td></tr>";
 	if($user_homepage != "" && $user_homepage != "http://"){
-		$text .= "<td style='width:40%'>".LAN_144."</td>
+		$text .= "<tr><td style='width:40%'>".LAN_144."</td>
 		<td style='width:60%'><a href='".$user_homepage."'>".$user_homepage."</a></td></tr>";
 	}
 	if($user_icq != ""){
@@ -186,6 +190,16 @@ $text .= "<td style='width:40%'>".LAN_112."</td>
 		<td style='width:60%'>".$user_signature."</td></tr>";
 	}
 
+	if(is_array($user_entended)){
+		$user_prefs = unserialize($user_prefs);
+		while(list($key, $u_entended) = each($user_entended)){
+			$text .= "<tr><td style='width:40%'>".$u_entended.":</td>
+			<td style='width:60%'>".$user_prefs[$u_entended]."</td></tr>";
+		}
+	}
+
+
+
 	$gen = new convert;
 	$datestamp = $gen->convert_date($user_join, "long");
 
@@ -204,7 +218,7 @@ $text .= "<td style='width:40%'>".LAN_112."</td>
 	<tr><td style='width:40%'>".LAN_149."</td>
 	<td style='width:60%'>".$user_forums."</td></tr>";
 	$text .= "</table>";
-	$ns = new table;
+	$ns = new e107table;
 	$ns -> tablerender($caption, $text);
 }
 

@@ -1,0 +1,6 @@
+
+Q>	Whats this section for?
+A>	Setting Cache Status to on will save certain areas of your site in your database. This reduces calls to mySQL, and vastly speeds up your site.
+
+Q>	I made some alterations to the theme I'm using but it hasn't changed - is it because it's cached.
+A>	Most probably. When you change themes the cache is cleared but altering code in your theme.php wont clear the cache. Set Cache Status to off until you're finished.

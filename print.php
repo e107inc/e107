@@ -15,16 +15,16 @@
 require_once("class2.php");
 
 $qs = explode(".", e_QUERY);
-if($qs[0] == ""){ header("location:".e_HTTP."index.php"); exit;}
+if($qs[0] == ""){ header("location:".e_BASE."index.php"); exit;}
 $table = $qs[0];
 $id = $qs[1];
 $con = new convert;
-
+$aj = new textparse;
 if($table == "news"){
 	$sql -> db_Select("news", "*", "news_id='$id' ");
-	list($news_id, $news_title, $news_body, $news_extended, $news_datestamp, $news_author, $news_source, $news_url, $news_category) = $sql-> db_Fetch();
-	$news_body = nl2br($news_body);
-	$news_extended = nl2br($news_extended);
+	$row = $sql -> db_Fetch(); extract($row);
+	$news_body = $aj -> tpa($news_body);
+	$news_extended = $aj -> tpa($news_extended);
 	if($news_author == 0){
 		$a_name = "e107";
 		$category_name = "e107 welcome message";
@@ -38,7 +38,7 @@ if($table == "news"){
 
 	$text = "<font style='font-size: 11px; color: black; font-family: tahoma, verdana, arial, helvetica; text-decoration: none'>
 	<div style='text-align:center'>
-	<img src='themes/shared/logo.png' alt='Logo' />
+	<img src='".e_IMAGE."logo.png' alt='Logo' />
 	</div>
 	<hr />
 	<br />
@@ -64,13 +64,15 @@ if($table == "news"){
 	$sql -> db_Select("content", "*", "content_id='$id' ");
 	$row = $sql -> db_Fetch();
 	extract($row);
-	$content_content = str_replace("{EMAILPRINT}", "", nl2br($content_content));
+	$content_heading = $aj -> tpa($content_heading);
+	$content_subheading = $aj -> tpa($content_subheading);
+	$content_content = ereg_replace("\{EMAILPRINT\}|\[newpage\]", "", $aj -> tpa($content_content));
 	$sql -> db_Select("user", "*", "user_id='$content_author' ");
 	list($a_id, $a_name) = $sql-> db_Fetch();
 	$content_datestamp = $con -> convert_date($content_datestamp, "long");
 	$text = "<font style='FONT-SIZE: 11px; COLOR: black; FONT-FAMILY: Tahoma, Verdana, Arial, Helvetica; TEXT-DECORATION: none'>
 	<div style='text-align:center'>
-	<img src='themes/shared/logo.png' alt='Logo' />
+	<img src='".e_IMAGE."logo.png' alt='Logo' />
 	</div>
 	<hr />
 	<br />
@@ -89,5 +91,7 @@ if($table == "news"){
 	</font>";
 }
 echo $text;
+
+echo "<br /><br /><div style='text-align:center'><form><input type='button' value='".LAN_307."' onClick='window.print()'></form></div>";
 
 ?>

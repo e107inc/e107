@@ -15,7 +15,7 @@
 require_once("class2.php");
 require_once(HEADERF);
 
-if(!$pref['log_activate'][1]){
+if(!$pref['log_activate']){
 	if(ADMIN){
 		$text = "<div style='text-align:center'>".LAN_371."</div>";
 	}else{
@@ -85,13 +85,13 @@ $sql -> db_Select_gen("SELECT counter_url, sum(counter_total) FROM ".MPREFIX."st
 $text .= ($action == 2 ? parse_data($row, 0, $total_page_views, 2, LAN_127) : parse_data($row, 10, $total_page_views, 2, LAN_127));
 
 $con = new convert;
-$tmp = str_replace("10", $pref['log_lvcount'][1], LAN_376);
+$tmp = str_replace("10", $pref['log_lvcount'], LAN_376);
 $text .= "<table style='width:95%' class='fborder'>
 <tr>
 <td class='forumheader3'><b>$tmp</b></td>
 </tr>";
 
-$sql -> db_Select("stat_last", "*", "ORDER BY stat_last_date DESC LIMIT 0,".$pref['log_lvcount'][1], "no_where");
+$sql -> db_Select("stat_last", "*", "ORDER BY stat_last_date DESC LIMIT 0,".$pref['log_lvcount'], "no_where");
 
 while($row = $sql-> db_Fetch()){
 	extract($row);
@@ -144,14 +144,14 @@ function parse_data($row, $amount, $total, $action_n, $lan){
 	if(!$amount){
 		while($data[$c][0]){
 			if($action_n == 3 || $action_n == 4){
-				$imagepath = e_BASE."themes/shared/log/";
+				$imagepath = e_IMAGE."log/";
 				if(eregi("windows", $data[$c][1])){ $image = $imagepath."windows.png";
 				}else if(eregi("netscape", $data[$c][1])){ $image = $imagepath."netscape.png";
 				}else if(eregi("konqueror", $data[$c][1])){ $image = $imagepath."konqueror.png";
 				}else if(eregi("opera", $data[$c][1])){ $image = $imagepath."opera.png";
 				}else if(eregi("links", $data[$c][1]) || eregi("lynx",$data[$c][1])){ $image = $imagepath."lynx.png";
 				}else if(eregi("mac", $data[$c][1])){ $image = $imagepath."mac.png";
-				}else if(eregi("explorer", $data[$c][1])){ $image = $imagepath."ie.png";
+				}else if(eregi("explorer", $data[$c][1])){ $image = $imagepath."explorer.png";
 				}else if(file_exists($imagepath.strtolower($data[$c][1])).".png"){ $image = $imagepath.strtolower($data[$c][1]).".png";}else{unset($image);}
 			}
 
@@ -172,14 +172,14 @@ function parse_data($row, $amount, $total, $action_n, $lan){
 		for($r=0; $r<=9; $r++){
 			if($data[$c][0]){
 				if($action_n == 3 || $action_n == 4){
-					$imagepath = e_BASE."themes/shared/log/";
+					$imagepath = e_IMAGE."log/";
 					if(eregi("windows", $data[$c][1])){ $image = $imagepath."windows.png";
 					}else if(eregi("netscape", $data[$c][1])){ $image = $imagepath."netscape.png";
 					}else if(eregi("konqueror", $data[$c][1])){ $image = $imagepath."konqueror.png";
 					}else if(eregi("opera", $data[$c][1])){ $image = $imagepath."opera.png";
 					}else if((eregi("links", $data[$c][1]) || eregi("lynx",$data[$c][1])) && !eregi("php", $data[$c][1])){ $image = $imagepath."lynx.png";
 					}else if(eregi("mac", $data[$c][1])){ $image = $imagepath."mac.png";
-					}else if(eregi("explorer", $data[$c][1])){ $image = $imagepath."ie.png";
+					}else if(eregi("explorer", $data[$c][1])){ $image = $imagepath."explorer.png";
 					}else if(file_exists($imagepath.strtolower($data[$c][1])).".png"){ $image = $imagepath.strtolower($data[$c][1]).".png";}else{unset($image);}
 				}
 

@@ -14,9 +14,6 @@
 */
 require_once("class2.php");
 
-//$qs = explode(".", e_QUERY);
-//$action = $qs[0]; $id = $qs[1];
-
 if(e_QUERY){
 	$sql -> db_Select("banner", "*", "banner_id='".e_QUERY."' ");
 	$row = $sql -> db_Fetch(); extract($row);
@@ -32,7 +29,7 @@ require_once(HEADERF);
 if(IsSet($_POST['clientsubmit'])){
 	
 	if(!$sql -> db_Select("banner", "*", "banner_clientlogin='".$_POST['clientlogin']."' AND banner_clientpassword='".$_POST['clientpassword']."' ")){
-		$ns -> tablerender("Error", "<br /><div style='text-align:center'>Sorry, unable to find those details in the database. Please contact the site administrator for details.</div><br />");
+		$ns -> tablerender("Error", "<br /><div style='text-align:center'>".LAN_20."</div><br />");
 		require_once(FOOTERF);
 		exit;
 	}
@@ -42,30 +39,30 @@ if(IsSet($_POST['clientsubmit'])){
 	$banner_total = $sql -> db_Select("banner", "*", "banner_clientname='$banner_clientname' ");
 
 	$text = "<table class='fborder' style='width:98%'>
-	<tr><td colspan='7' style='text-align:center' class='fcaption'>Banners Statistics</td></tr>
+	<tr><td colspan='7' style='text-align:center' class='fcaption'>".LAN_21."</td></tr>
 	<tr>
-	<td class='forumheader' style='text-align:center'><span class='smallblacktext'>Client</span></td>
-	<td class='forumheader' style='text-align:center'><span class='smallblacktext'>Banner ID</span></td>
-	<td class='forumheader' style='text-align:center'><span class='smallblacktext'>Clickthroughs</span></td>
-	<td class='forumheader' style='text-align:center'><span class='smallblacktext'>Click %</span></td>
-	<td class='forumheader' style='text-align:center'><span class='smallblacktext'>Impressions</span></td>
-	<td class='forumheader' style='text-align:center'><span class='smallblacktext'>Impressions Purchased</span></td>
-	<td class='forumheader' style='text-align:center'><span class='smallblacktext'>Impressions Left</span></td>
+	<td class='forumheader' style='text-align:center'><span class='smallblacktext'>".LAN_22."</span></td>
+	<td class='forumheader' style='text-align:center'><span class='smallblacktext'>".LAN_23."</span></td>
+	<td class='forumheader' style='text-align:center'><span class='smallblacktext'>".LAN_24."</span></td>
+	<td class='forumheader' style='text-align:center'><span class='smallblacktext'>".LAN_25."</span></td>
+	<td class='forumheader' style='text-align:center'><span class='smallblacktext'>".LAN_26."</span></td>
+	<td class='forumheader' style='text-align:center'><span class='smallblacktext'>".LAN_27."</span></td>
+	<td class='forumheader' style='text-align:center'><span class='smallblacktext'>".LAN_28."</span></td>
 	</tr>";
 
 	if(!$banner_total){
 		$text .= "<tr>
-		<td colspan='7' class='forumheader2' style='text-align:center'>No banners</td>";
+		<td colspan='7' class='forumheader2' style='text-align:center'>".LAN_29."</td>";
 	}else{
 		while($row = $sql-> db_Fetch()){
 			extract($row);
 
 			$clickpercentage = ($banner_clicks && $banner_impressions ? round(($banner_clicks / $banner_impressions) * 100)."%" : "-");
-			$impressions_left = ($banner_impurchased ? $banner_impurchased - $banner_impressions : "Unlimited");
-			$impressions_purchased = ($banner_impurchased ? $banner_impurchased : "Unlimited");
+			$impressions_left = ($banner_impurchased ? $banner_impurchased - $banner_impressions : LAN_30);
+			$impressions_purchased = ($banner_impurchased ? $banner_impurchased : LAN_30);
 
-			$start_date = ($banner_startdate ? strftime("%d %B %Y", $banner_startdate) : "Not applicable");
-			$end_date = ($banner_enddate ? strftime("%d %B %Y", $banner_enddate) : "Not applicable");
+			$start_date = ($banner_startdate ? strftime("%d %B %Y", $banner_startdate) : LAN_31);
+			$end_date = ($banner_enddate ? strftime("%d %B %Y", $banner_enddate) : LAN_31);
 
 			$text.="<tr>
 			<td class='forumheader3' style='text-align:center'>".$banner_clientname."</td>
@@ -78,14 +75,14 @@ if(IsSet($_POST['clientsubmit'])){
 			</tr>
 			<td colspan='7' class='forumheader3' style='text-align:center'>
 
-			Active: ". ($banner_active ? "Yes" : "<b>No</b>")." | 
+			Active: ". ($banner_active ? LAN_32 : "<b>".LAN_33."</b>")." | 
 
-			Starts: ".$start_date.", Ends: ".$end_date."</td></tr>";
+			Starts: ".$start_date.", ".LAN_34.": ".$end_date."</td></tr>";
 			
 			if($banner_ip){
 				$tmp = explode("^", $banner_ip);
 				$text .= "<tr><td class='forumheader3'>
-				Clickthrough IP addresses: ".(count($tmp)-1)."</td>
+				".LAN_35.": ".(count($tmp)-1)."</td>
 				<td colspan='6' class='forumheader3'>";
 				for($a=0; $a<=(count($tmp)-2); $a++){
 					$text .= $tmp[$a]." (".gethostbyaddr($tmp[$a]).")<br />";
@@ -120,11 +117,11 @@ $text =  "<form method='post' action='".e_SELF."'>\n
 <tr>
 <td style='width:15%'></td>
 <td>
-<input class='button' type='submit' name='clientsubmit' value='Continue' />
+<input class='button' type='submit' name='clientsubmit' value='".LAN_18."' />
 </td>
 </tr>
 </table>";
-$ns -> tablerender("Please enter your client login and password to continue", $text);
+$ns -> tablerender(LAN_19, $text);
 require_once(FOOTERF);
 
 

@@ -1,7 +1,7 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system   .-:*'``'*:-.,_,.-:*'``'*:-.
+|	e107 website system
 |	/class2.php
 |
 |	©Steve Dunstan 2001-2002
@@ -11,665 +11,220 @@
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
-*/ 
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-class db{
-
-	//	 global variables
-	var $mySQLserver;
-	var $mySQLuser;
-	var $mySQLpassword;
-	var $mySQLdefaultdb;
-	var $mySQLaccess;
-	var $mySQLresult;
-	var $mySQLrows;
-	var $mySQLerror;
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-	function db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb){
-		/*
-		# Connect to mySQL server and select database
-		#
-		# - parameters #1:		string $mySQLserver, mySQL server
-		# - parameters #2:		string $mySQLuser, mySQL username
-		# - parameters #3:		string $mySQLpassword, mySQL password
-		# - parameters #4:		string mySQLdefaultdb, mySQL default database
-		# - return				error if encountered
-		# - scope					public
-		*/
-
-		$this->mySQLserver = $mySQLserver;
-		$this->mySQLuser = $mySQLuser;
-		$this->mySQLpassword = $mySQLpassword;
-		$this->mySQLdefaultdb = $mySQLdefaultdb;
-		$temp = $this->mySQLerror;
-		$this->mySQLerror = FALSE;
-		$this->mySQL_access = @mysql_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword);
-		@mysql_select_db($this->mySQLdefaultdb);
-		$this->dbError("dbConnect/SelectDB");
-		return $this->mySQLerror = $temp;
-	}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-	function db_Select($table, $fields="*", $arg="", $mode="default"){
-		/*
-		# Select with args
-		#
-		# - parameter #1:	string $table, table name
-		# - parameter #2:	string $fields, table fields to be retrieved, default *
-		# - parameter #3:	string $arg, query arguaments, default null
-		# - parameter #4:	string $mode, arguament has WHERE or not, default=default (WHERE)
-		# - return				affected rows
-		# - scope					public
-		*/
-		global $dbq;
-		$dbq++;
-
-		$debug = 0;
-		$debugtable = "links";
-		if($arg != "" && $mode=="default"){
-			if($debug == TRUE && $debugtable == $table){ echo "SELECT ".$fields." FROM ".MPREFIX.$table." WHERE ".$arg."<br />"; }
-			if($this->mySQLresult = @mysql_query("SELECT ".$fields." FROM ".MPREFIX.$table." WHERE ".$arg)){
-				$this->dbError("dbQuery");
-				return $this->db_Rows();
-			}else{
-				$this->dbError("db_Select (SELECT $fields FROM ".MPREFIX."$table WHERE $arg)");
-				return FALSE;
-			}
-		}else if($arg != "" && $mode != "default"){
-			if($debug == TRUE && $debugtable == $table){ echo "@@SELECT ".$fields." FROM ".MPREFIX.$table." ".$arg."<br />"; }
-			if($this->mySQLresult = @mysql_query("SELECT ".$fields." FROM ".MPREFIX.$table." ".$arg)){
-				$this->dbError("dbQuery");
-				return $this->db_Rows();
-			}else{
-				$this->dbError("db_Select (SELECT $fields FROM ".MPREFIX."$table $arg)");
-				return FALSE;
-			}
-		}else{
-			if($debug == TRUE && $debugtable == $table){ echo "SELECT ".$fields." FROM ".MPREFIX.$table."<br />"; }
-			if($this->mySQLresult = @mysql_query("SELECT ".$fields." FROM ".MPREFIX.$table)){
-				$this->dbError("dbQuery");
-				return $this->db_Rows();
-			}else{
-				$this->dbError("db_Select (SELECT $fields FROM ".MPREFIX."$table)");
-				return FALSE;
-			}		
-		}
-	}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-	function db_Insert($table, $arg){
-		/*
-		# Insert with args
-		#
-		# - parameter #1:	string $table, table name
-		# - parameter #2:	string $arg, insert string
-		# - return				sql identifier, or error if (error reporting = on, error occured, boolean)
-		# - scope					public
-		*/
-
-		if($table == "news"){
-//			echo "INSERT INTO ".MPREFIX.$table." VALUES (".$arg.")";
-		}
-		if($result = $this->mySQLresult = @mysql_query("INSERT INTO ".MPREFIX.$table." VALUES (".$arg.")" )){
-			update_cache($table);
-			return $result;
-		}else{
-			$this->dbError("db_Insert ($query)");
-			return FALSE;
-		}
-	}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-	function db_Update($table, $arg){
-		/*
-		# Update with args
-		#
-		# - parameter #1:	string $table, table name
-		# - parameter #2:	string $arg, update string
-		# - return				sql identifier, or error if (error reporting = on, error occured, boolean)
-		# - scope					public
-		*/
-		$debug = 0;
-//		$debugtable = "download";
-		if($debug == TRUE){ echo "UPDATE ".MPREFIX.$table." SET ".$arg."<br />"; }	
-		if($result = $this->mySQLresult = @mysql_query("UPDATE ".MPREFIX.$table." SET ".$arg)){
-			update_cache($table);
-			return $result;
-		}else{
-			$this->dbError("db_Update ($query)");
-			return FALSE;
-		}
-	}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-	function db_Fetch($mode = "strip"){
-		/*
-		# Retrieve table row
-		#
-		# - parameters		none
-		# - return				result array, or error if (error reporting = on, error occured, boolean)
-		# - scope					public
-		*/
-		if($row = @mysql_fetch_array($this->mySQLresult)){
-			if($mode == strip){
-				while (list($key,$val) = each($row)){
-					$row[$key] = stripslashes($val);
-				}
-			}
-			$this->dbError("db_Fetch");
-			return $row;
-		}else{
-			$this->dbError("db_Fetch");
-			return FALSE;
-		}
-	}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-	function db_Count($table, $fields="(*)", $arg=""){
-		/*
-		# Retrieve result count
-		#
-		# - parameter #1:	string $table, table name
-		# - parameter #2:	string $fields, count fields, default (*)
-		# - parameter #3:	string $arg, count string, default null
-		# - return				result array, or error if (error reporting = on, error occured, boolean)
-		# - scope					public
-		*/
-//		echo "SELECT COUNT".$fields." FROM ".MPREFIX.$table." ".$arg;
-
-		if($fields == "generic"){
-			if($this->mySQLresult = @mysql_query($table)){
-				$rows = $this->mySQLrows = @mysql_fetch_array($this->mySQLresult);
-				return $rows[0];
-			}else{
-				$this->dbError("dbCount ($query)");
-			}
-		}
-
-		if($this->mySQLresult = @mysql_query("SELECT COUNT".$fields." FROM ".MPREFIX.$table." ".$arg)){
-			$rows = $this->mySQLrows = @mysql_fetch_array($this->mySQLresult);
-			return $rows[0];
-		}else{
-			$this->dbError("dbCount ($query)");
-		}
-	}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-	function db_Close(){
-		/*
-		# Close mySQL server connection
-		#
-		# - parameters		none
-		# - return				null
-		# - scope					public
-		*/
-		mysql_close();
-		$this->dbError("dbClose");
-	}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-	function db_Delete($table, $arg=""){
-		/*
-		# Delete with args
-		#
-		# - parameter #1:	string $table, table name
-		# - parameter #2:	string $arg, delete string
-		# - return				result array, or error if (error reporting = on, error occured, boolean)
-		# - scope					public
-		*/
-//		if($table == "forum_t" || $table == "poll"){
-//			echo "DELETE FROM ".MPREFIX.$table." WHERE ".$arg."<br />";			// debug
-//		}
-		update_cache($table);
-
-		if(!$arg){
-			if($result = $this->mySQLresult = @mysql_query("DELETE FROM ".MPREFIX.$table)){
-				return $result;
-			}else{
-				$this->dbError("db_Delete ($arg)");
-				return FALSE;
-			}
-		}else{
-			if($result = $this->mySQLresult = @mysql_query("DELETE FROM ".MPREFIX.$table." WHERE ".$arg)){
-				return mysql_affected_rows();
-			}else{
-				$this->dbError("db_Delete ($arg)");
-				return FALSE;
-			}
-		}
-	}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-	function db_Rows(){
-		/*
-		# Return affected rows
-		#
-		# - parameters		none
-		# - return				affected rows, or error if (error reporting = on, error occured, boolean)
-		# - scope					public
-		*/
-		$rows = $this->mySQLrows = @mysql_num_rows($this->mySQLresult);
-		return $rows;
-		$this->dbError("db_Rows");
-	}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-	function dbError($from){
-		/*
-		# Return affected rows
-		#
-		# - parameter #1		string $from, routine that called this function
-		# - return				error message on mySQL error
-		# - scope					private
-		*/
-		if($error_message = @mysql_error()){
-			if($this->mySQLerror == TRUE){
-				require_once(e_BASE."classes/message_handler.php");
-				message_handler("ADMIN_MESSAGE", "<b>mySQL Error!</b> Function: $from. [".@mysql_errno()." - $error_message]",  __LINE__, __FILE__);
-				return $error_message;
-			}
-		}
-	}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-	function db_SetErrorReporting($mode){
-		$this->mySQLerror = $mode;
-	}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-
-	function db_Select_gen($arg){
-		if($this->mySQLresult = @mysql_query($arg)){
-			$this->dbError("db_Select_gen");
-			return $this->db_Rows();
-		}else{
-			$this->dbError("dbQuery ($query)");
-			return FALSE;
-		}
-	}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-
-	function db_Fieldname($offset){
-
-		$result = @mysql_field_name($this->mySQLresult, $offset);
-		return $result;
-	}
-
-	function db_Num_fields(){
-		$result = @mysql_num_fields($this->mySQLresult);
-		return $result;
-	}
-
-
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-class gettime{
-	function gettime(){
-		/* Constructor
-		# Get microtime
-		#
-		# - parameters		none
-		# - return				microtime
-		# - scope					public
-		*/
-		list($usec, $sec) = explode(" ",microtime()); 
-		return ((float)$usec + (float)$sec); 
-    } 
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-class userlogin{
-	function userlogin($username, $userpass, $autologin){
-		/* Constructor
-		# Class called when user attempts to log in
-		#
-		# - parameters #1:		string $username, $_POSTED user name
-		# - parameters #2:		string $userpass, $_POSTED user password
-		# - return				boolean
-		# - scope					public
-		*/
-		global $pref;
-		$sql = new db;
-
-		if($username != "" && $userpass != ""){
-			$userpass = md5($userpass);
-			if(!$sql -> db_Select("user",  "*", "user_name='$username' ")){
-				define("LOGINMESSAGE", LAN_300);
-				return FALSE;
-			}else if(!$sql -> db_Select("user", "*", "user_name='$username' AND user_password='$userpass'")){
-				define("LOGINMESSAGE", LAN_301);
-				return FALSE;
-			}else if(!$sql -> db_Select("user", "*", "user_name='$username' AND user_password='$userpass' AND user_ban!=2 ")){
-				define("LOGINMESSAGE", LAN_302);
-				return FALSE;
-			}else{
-				list($user_id) = $sql-> db_Fetch();
-
-				if($pref['user_tracking'][1] == "session"){
-					$_SESSION['userkey'] = $user_id.".".$userpass;
-				}else{
-					if($autologin == 1){
-						setcookie('userkey', $user_id.".".$userpass, time()+3600*24*30, '/', '', 0);
-					}else{
-						setcookie('userkey', $user_id.".".$userpass, time()+3600, '/', '', 0);
-					}
-				}
-
-				$redir = (e_QUERY ? e_SELF."?".e_QUERY : e_SELF);
-				echo "<script type='text/javascript'>document.location.href='$redir'</script>\n";
-
-/*
-				if(!eregi("Apache", $_SERVER['SERVER_SOFTWARE'])){
-					header("Refresh: 0; URL: ".$redir);
-					exit;
-				}else{
-					header("Location: ".$redir);
-					exit;
-				}
 */
-			}
-		}else{
-			define("LOGINMESSAGE", LAN_27."<br /><br />");
-			return FALSE;
-		}
-	}
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-function getip(){
-	/*
-	# Get IP address
-	#
-	# - parameters		none
-	# - return				valid IP address
-	# - scope					public
-	*/
-	if(getenv('HTTP_X_FORWARDED_FOR')){
-		$ip = $_SERVER['REMOTE_ADDR'];
-		if(preg_match("/^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/", getenv('HTTP_X_FORWARDED_FOR'), $ip3)){
-			$ip2 = array('/^0\./', '/^127\.0\.0\.1/', '/^192\.168\..*/', '/^172\.16\..*/', '/^10..*/', '/^224..*/', '/^240..*/');
-			$ip = preg_replace($ip2, $ip, $ip3[1]);
-		}
-	}else{
-		$ip = $_SERVER['REMOTE_ADDR'];
-	}
-	if($ip == ""){ $ip = "x.x.x.x"; }
-	return $ip;
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-class floodprotect{
-	function flood($table, $orderfield){
-		/*
-		# Test for possible flood
-		#
-		# - parameter #1		string $table, table being affected
-		# - parameter #2		string $orderfield, date entry in respective table
-		# - return				boolean
-		# - scope					public
-		*/
-		$sql = new db;
-		if(FLOODPROTECTION == TRUE){
-			$sql -> db_Select($table, "*", "ORDER BY ".$orderfield." DESC LIMIT 1", $mode = "no_where");
-			$row = $sql -> db_Fetch();
-			if($row[$orderfield] > (time() - FLOODTIMEOUT)){
-				return FALSE;
-			}else{
-				return TRUE;
-			}
-		}else{
-			return TRUE;
-		}
-	}
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-function init_session(){
+// If you need to change the names of any of your directories, change the value here then rename the respective folder on your server ...
+$ADMIN_DIRECTORY = "e107_admin/";
+$FILES_DIRECTORY = "e107_files/";
+$IMAGES_DIRECTORY = "e107_images/";
+$THEMES_DIRECTORY = "e107_themes/";
+$PLUGINS_DIRECTORY = "e107_plugins/";
+$HANDLERS_DIRECTORY = "e107_handlers/";
+$LANGUAGES_DIRECTORY = "e107_languages/";
+$HELP_DIRECTORY = "e107_docs/help/";
 
-		/*
-		# Validate session if exists
-		#
-		# - parameters		none
-		# - return				boolean
-		# - scope				public
-		*/
-	global $pref, $user_pref, $sql;
-
-	if(!$_COOKIE['userkey'] && !$_SESSION['userkey']){
-		define("USER", FALSE); define("USERTHEME", FALSE); define("ADMIN", FALSE);
-	}else{
-		$tmp = ($_COOKIE['userkey'] ? explode(".", $_COOKIE['userkey']) : explode(".", $_SESSION['userkey'])); $uid = $tmp[0]; $upw = $tmp[1];
-		if(Empty($upw)){	 // corrupt cookie?
-			setcookie('userkey', '', 0, '/', '', 0);
-			$_SESSION["userkey"] = "";
-			session_destroy();
-			define("ADMIN", FALSE); define("USER", FALSE); define("LOGINMESSAGE", "Corrupted cookie detected - logged out.<br /><br />");
-			return(FALSE);
-		}
-		$sql = new db;
-		if($sql -> db_Select("user", "*", "user_id='$uid' AND user_password='$upw' ")){
-			$result = $sql -> db_Fetch(); extract($result);
-			define("USERID", $user_id); define("USERNAME", $user_name); define("USERURL", $user_website); define("USEREMAIL", $user_email); define("USER", TRUE); define("USERLV", $user_lastvisit); define("USERVIEWED", $user_viewed); define("USERCLASS", $user_class); define("USERREALM", $user_realm);
-
-			if($user_ban == 1){ exit; }
-
-			$user_pref = unserialize($user_prefs);
-
-			if(IsSet($_POST['settheme'])){
-				$user_pref['sitetheme'] = ($pref['sitetheme'][1] == $_POST['sitetheme'] ? "" : $_POST['sitetheme']);
-				save_prefs($user);
-			}
-
-			if(IsSet($_POST['setlanguage'])){
-				$user_pref['sitelanguage'] = ($pref['sitelanguage'][1] == $_POST['sitelanguage'] ? "" : $_POST['sitelanguage']);
-				save_prefs($user);
-			}
-
-			if($user_pref['sitetheme'] && @fopen(e_BASE."themes/".$user_pref['sitetheme']."/theme.php","r")){
-				define("USERTHEME", $user_pref['sitetheme']);
-			}else{
-				define("USERTHEME", FALSE);
-			}
-
-			if($user_pref['sitelanguage'] && @fopen(e_BASE."languages/lan_".$user_pref['sitelanguage'].".php","r")){
-				define("USERLAN", $user_pref['sitelanguage']);
-			}else{
-				define("USERLAN", FALSE);
-			}
-
-			if($user_currentvisit + 3600 < time()){
-				$sql -> db_Update("user", "user_visits=user_visits+1 WHERE user_name='".USERNAME."' ");
-				$sql -> db_Update("user", "user_lastvisit='$user_currentvisit', user_currentvisit='".time()."', user_viewed='$r' WHERE user_name='".USERNAME."' ");
-			}
-
-			if($user_admin){
-				define("ADMIN", TRUE); define("ADMINID", $user_id); define("ADMINNAME", $user_name); define("ADMINPERMS", $user_perms); define("ADMINEMAIL", $user_email); define("ADMINPWCHANGE", $user_pwchange);
-			}else{
-				define("ADMIN", FALSE);
-			}
-		}else{
-			define("USER", FALSE); define("USERTHEME", FALSE); define("ADMIN", FALSE);
-		}
-	}
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-function ban(){
-	$sql = new db;
-	if($sql -> db_Select("banlist", "*", "banlist_ip='".$_SERVER['REMOTE_ADDR']."' || banlist_ip='".USEREMAIL."' ")){exit;}
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //initialise
+//ob_start ("ob_gzhandler");
+ob_start ();
+$timing_start = explode(' ', microtime());
 
-//			@include("classes/errorhandler_class.php");
-//			set_error_handler("error_handler");
+@include("e107_config.php");
+$a=0;
+while(!$mySQLserver && $a<5){
+	$a++;
+	$p.="../";
+	@include($p."e107_config.php");
+}
+if(!defined("e_HTTP")){ header("Location:install.php"); exit; }
 
-			ob_start();
-			$timing_start = explode(' ', microtime());
-//			ini_set("display_errors", "1");
-//			error_reporting(E_ALL & ~E_NOTICE);
-//			ini_set("include_path", "/");
+$url_prefix=substr($_SERVER['PHP_SELF'],strlen(e_HTTP),strrpos($_SERVER['PHP_SELF'],"/")+1-strlen(e_HTTP));
+$tmp=explode("?",$url_prefix);
+$num_levels=substr_count($tmp[0],"/");
+for($i=1;$i<=$num_levels;$i++){ 
+	$link_prefix.="../";
+}
 
-//			if(!get_magic_quotes_runtime ()){ set_magic_quotes_runtime(1); }
-//			ini_set("magic_quotes_gpc", "1");
+define('e_BASE', $link_prefix);
+define("e_SELF", "http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);
+define("e_QUERY", eregi_replace("&|/?PHPSESSID.*", "", $_SERVER['QUERY_STRING']));
+define('e_BASE',$link_prefix);
+define("e_ADMIN", e_BASE.$ADMIN_DIRECTORY);
+define("e_IMAGE", e_BASE.$IMAGES_DIRECTORY);
+define("e_THEME", e_BASE.$THEMES_DIRECTORY);
+define("e_PLUGIN", e_BASE.$PLUGINS_DIRECTORY);
+define("e_FILE", e_BASE.$FILES_DIRECTORY);
+define("e_HANDLER", e_BASE.$HANDLERS_DIRECTORY);
+define("e_LANGUAGEDIR", e_BASE.$LANGUAGES_DIRECTORY);
+define("e_DOCS", e_BASE.$HELP_DIRECTORY);
+define("e_DOCROOT",$_SERVER['DOCUMENT_ROOT']."/");
+define("e_UC_PUBLIC", 0);
+define("e_UC_MEMBER", 254);
+define("e_UC_NOBODY", 255);
 
-			$admin_directory = "admin";
+/*
+echo "\$tmpr: ".$tmpr."<br />";
+echo "\$root: ".$root."<br />";
+echo "realpath(\$root): ".realpath($root)."<br />";
+echo "\$url_prefix: ".$url_prefix."<br />";
+echo "\$mod_userdir: ".$mod_userdir."<br />";
+echo "e_BASE: ".e_BASE."<br />";
+echo "\$_SERVER['PHP_SELF']: ".$_SERVER['PHP_SELF']."<br />";
+echo "e_DOCROOT: ".e_DOCROOT."<br />";
+*/
 
-			@include("config.php");
-			$a=0;
-			while(!defined("e_HTTP") && $a<5){
-				$a++;
-				$p.="../";
-				@include($p."config.php");
-			}
-			if(!defined("e_HTTP")){ header("Location:install.php"); exit; }
+include(e_HANDLER."errorhandler_class.php");
+set_error_handler("error_handler");
 
-			$url_prefix=substr($_SERVER['PHP_SELF'],strlen(e_HTTP),strrpos($_SERVER['PHP_SELF'],"/")+1-strlen(e_HTTP));
-			$tmp=explode("?",$url_prefix);
-			$num_levels=substr_count($tmp[0],"/");
-			for($i=1;$i<=$num_levels;$i++){ 
-				$link_prefix.="../";
-			}
+if(!$mySQLuser){ header("location:install.php"); exit; }
+define("MPREFIX", $mySQLprefix);
 
-			define("e_ADMIN", e_HTTP.$admin_directory."/");
-			define("e_SELF", "http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);
-			define("e_QUERY", eregi_replace("&|/?PHPSESSID.*", "", $_SERVER['QUERY_STRING']));
-			define('e_BASE',$link_prefix);
+require_once(e_HANDLER."message_handler.php");
+require_once(e_HANDLER."mysql_class.php");
 
-			if($mySQLuser == ""){ header("location:install.php"); exit; }
-			define("MPREFIX", $mySQLprefix);
-			define("MUSER", $mySQLprefix); // depracated, please use MPREFIX
+$sql = new db;
+$sql -> db_SetErrorReporting(TRUE);
+$sql -> db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
 
-			$sql = new db;
-			$sql -> db_SetErrorReporting(TRUE);
-			$sql -> db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
+$sql -> db_Select("core", "*", "e107_name='pref' ");
+$row = $sql -> db_Fetch();
 
-			$sql -> db_Select("core", "*", "e107_name='pref' ");
-			$row = $sql -> db_Fetch();
+$tmp = stripslashes($row['e107_value']);
+$pref=unserialize($tmp);
+if(!is_array($pref)){
+	$pref=unserialize($row['e107_value']);
+	if(!is_array($pref)){
+		($sql -> db_Select("core", "*", "e107_name='pref' ") ? message_handler("CRITICAL_ERROR", 1,  __LINE__, __FILE__) : message_handler("CRITICAL_ERROR", 2,  __LINE__, __FILE__));
+		if($sql -> db_Select("core", "*", "e107_name='pref_backup' ")){
+			$row = $sql -> db_Fetch(); extract($row);
+			$tmp = addslashes(serialize($e107_value ));
+			$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='pref' ");
+			message_handler("CRITICAL_ERROR", 3,  __LINE__, __FILE__);
+		}else{
+			message_handler("CRITICAL_ERROR", 4,  __LINE__, __FILE__);
+			exit;
+		}					
+	}
+}
+if($pref['user_tracking'] == "session"){ require_once(e_HANDLER."session_handler.php"); }
 
-			require_once(e_BASE."classes/message_handler.php");
+$sql -> db_Select("core", "*", "e107_name='menu_pref' ");
+$row = $sql -> db_Fetch();
+$tmp = stripslashes($row['e107_value']);
+$menu_pref=unserialize($tmp);
 
-			$tmp = stripslashes($row['e107_value']);
-			$pref=unserialize($tmp);
-			if(!is_array($pref)){
-				$pref=unserialize($row['e107_value']);
-				if(!is_array($pref)){
-					($sql -> db_Select("core", "*", "e107_name='pref' ") ? message_handler("CRITICAL_ERROR", 1,  __LINE__, __FILE__) : message_handler("CRITICAL_ERROR", 2,  __LINE__, __FILE__));
-					if($sql -> db_Select("core", "*", "e107_name='pref_backup' ")){
-						$row = $sql -> db_Fetch(); extract($row);
-						$tmp = addslashes(serialize($e107_value ));
-						$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='pref' ");
-						message_handler("CRITICAL_ERROR", 3,  __LINE__, __FILE__);
-					}else{
-						message_handler("CRITICAL_ERROR", 4,  __LINE__, __FILE__);
-						exit;
-					}					
-				}
-			}
-			if($pref['user_tracking'][1] == "session"){ require_once(e_BASE."classes/session_handler.php"); }
+$page = substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
+define("e_PAGE", $page);
+if($pref['frontpage'] && $pref['frontpage_type'] == "splash"){
+	$ip = getip();
+	if(!$sql -> db_Select("online", "*", "online_ip='$ip' ")){
 
-			$sql -> db_Select("core", "*", "e107_name='menu_pref' ");
-			$row = $sql -> db_Fetch();
-			$tmp = stripslashes($row['e107_value']);
-			$menu_pref=unserialize($tmp);
+		online(e_SELF);
+		if(is_numeric($pref['frontpage'])){
+			header("location: article.php?".$pref['frontpage'].".255");
+			exit;
+		}else if(eregi("http", $pref['frontpage'])){
+			header("location: ".$pref['frontpage']);
+			exit;
+		}else{
+			header("location: ".e_BASE.$pref['frontpage'].".php");
+			exit;
+		}
+	}
+}
 
-			$page = substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
-			if($pref['frontpage'][1] && $pref['frontpage_type'][1] == "splash"){
-				$ip = getip();
-				if(!$sql -> db_Select("online", "*", "online_ip='$ip' ")){
+init_session();
+online(e_SELF);
 
-					online(e_SELF);
-					if(is_numeric($pref['frontpage'][1])){
-						header("location: article.php?".$pref['frontpage'][1].".255");
-						exit;
-					}else if(eregi("http", $pref['frontpage'][1])){
-						header("location: ".$pref['frontpage'][1]);
-						exit;
-					}else{
-						header("location: ".e_BASE.$pref['frontpage'][1].".php");
-						exit;
-					}
-				}
-			}
+$sql -> db_Delete("tmp", "tmp_time < '".(time()-300)."' AND tmp_ip!='data' ");
 
-			init_session();
-//			if(!USER && !eregi("customlogin.php", e_SELF)){ header("location:".e_BASE."customlogin.php"); }
-			online(e_SELF);
+if($pref['flood_protect'] == 1){
+	$sql -> db_Delete("flood", "flood_time+'".$pref['flood_time']."'<'".time()."' ");
+	$sql -> db_Insert("flood", " '".$_SERVER['PHP_SELF']."', '".time()."' ");
+	$hits = $sql -> db_Count("flood", "(*)", "WHERE flood_url = '".$_SERVER['PHP_SELF']."' ");
+	if($hits > $pref['flood_hits'] && $pref['flood_hits'] != ""){
+		die();
+	}
+}
 
-			$sql -> db_Delete("tmp", "tmp_time < '".(time()-300)."' AND tmp_ip!='data' ");
+define("SITENAME", $pref['sitename']);
+define("SITEURL", $pref['siteurl']);
+define("SITEBUTTON", $pref['sitebutton']);
+define("SITETAG", $pref['sitetag']);
+define("SITEDESCRIPTION", $pref['sitedescription']);
+define("SITEADMIN", $pref['siteadmin']);
+define("SITEADMINEMAIL", $pref['siteadminemail']);
 
-			if($pref['flood_protect'][1] == 1){
-				$sql -> db_Delete("flood", "flood_time+'".$pref['flood_time'][1]."'<'".time()."' ");
-				$sql -> db_Insert("flood", " '".$_SERVER['PHP_SELF']."', '".time()."' ");
-				$hits = $sql -> db_Count("flood", "(*)", "WHERE flood_url = '".$_SERVER['PHP_SELF']."' ");
-				if($hits > $pref['flood_hits'][1] && $pref['flood_hits'][1] != ""){
-					die();
-				}
-			}
+$search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "©");
+$replace =  array("\"", "'", "\\", '\"', "\'", "&#169;");
+define("SITEDISCLAIMER", str_replace($search, $replace, $pref['sitedisclaimer']));
 
-			define("SITENAME", $pref['sitename'][1]);
-			define("SITEURL", $pref['siteurl'][1]);
-//			if(eregi("http:", $pref['sitebutton'][1]) ? define ("SITEBUTTON", $pref['sitebutton'][1]) : define("SITEBUTTON", e_HTTP.$pref['sitebutton'][1]));
-			define ("SITEBUTTON", $pref['sitebutton'][1]);
-			define("SITETAG", $pref['sitetag'][1]);
-			define("SITEDESCRIPTION", $pref['sitedescription'][1]);
-			define("SITEADMIN", $pref['siteadmin'][1]);
-			define("SITEADMINEMAIL", $pref['siteadminemail'][1]);
-			define("SITEDISCLAIMER", str_replace("©", "&#169;", $pref['sitedisclaimer'][1]));
+$language = ($pref['sitelanguage'] ? $pref['sitelanguage'] : "English");
 
-			$language = $pref['sitelanguage'][1]; if(!$language){$language = "English";}
-			if(!USERLAN || !defined("USERLAN")){
-				require_once(e_BASE."languages/lan_".$language.".php");
-				define("e_LANGUAGE", $language);
-			}else{
-				require_once(e_BASE."languages/lan_".USERLAN.".php");
-				define("e_LANGUAGE", USERLAN);
-			}
+define("e_LAN", $language);
+define(e_LANGUAGE, (!USERLAN || !defined("USERLAN") ? $language : USERLAN));
 
-			if(IsSet($_POST['userlogin'])){
-				$sql -> db_Delete("cache");
-				$usr = new userlogin($_POST['username'], $_POST['userpass'], $_POST['autologin']);
-			}
+@include(e_LANGUAGEDIR.$language."/".$language.".php");
+
+if(strstr(e_SELF, $ADMIN_DIRECTORY)){
+	(file_exists(e_LANGUAGEDIR.$language."/admin/lan_".$page) ? @include(e_LANGUAGEDIR.$language."/admin/lan_".$page) : @include(e_LANGUAGEDIR."English/admin/lan_".$page));
+}else{
+	(file_exists(e_LANGUAGEDIR.e_LANGUAGE."/lan_".$page) ? @include(e_LANGUAGEDIR.e_LANGUAGE."/lan_".$page) : @include(e_LANGUAGEDIR."English/lan_".$page));
+}
+
+if(IsSet($_POST['userlogin'])){
+	require_once(e_HANDLER."login.php");
+	$usr = new userlogin($_POST['username'], $_POST['userpass'], $_POST['autologin']);
+}
+
+if(e_QUERY == "logout"){
+	if($pref['user_tracking'] == "session"){ session_destroy(); $_SESSION["userkey"] = ""; }
+	setcookie('userkey', '', 0, '/', '', 0);
+	echo "<script type='text/javascript'>document.location.href='".e_BASE."index.php'</script>\n";
+}
+ban();
 			
+define("TIMEOFFSET", $pref['time_offset']);
+define("FLOODTIME", $pref['flood_time']);
+define("FLOODHITS", $pref['flood_hits']);
 
-			if(e_QUERY == "logout"){
-				if($pref['user_tracking'][1] == "session"){ session_destroy(); $_SESSION["userkey"] = ""; }
-				setcookie('userkey', '', 0, '/', '', 0);
-				$sql -> db_Delete("cache");
-				echo "<script type='text/javascript'>document.location.href='".e_BASE."index.php'</script>\n";
-			}
-			ban();
-			
-			define("TIMEOFFSET", $pref['time_offset'][1]);
-			define("FLOODTIME", $pref['flood_time'][1]);
-			define("FLOODHITS", $pref['flood_hits'][1]);
+if(strstr(e_SELF, $ADMIN_DIRECTORY) && $pref['admintheme'] && !$_POST['sitetheme']){
+	define("THEME", e_THEME.$pref['admintheme']."/");
+}else{
+	if(USERTHEME != FALSE && USERTHEME != "USERTHEME"){
+		define("THEME", (@fopen(e_THEME.USERTHEME."/theme.php", r) ? e_THEME.USERTHEME."/" : e_THEME."e107/"));
+	}else{
+		define("THEME", (@fopen(e_THEME.$pref['sitetheme']."/theme.php", r) ? e_THEME.$pref['sitetheme']."/" : e_THEME."e107/"));
+	}
+}
+require_once(THEME."theme.php");
 
-			if(USERTHEME != FALSE && USERTHEME != "USERTHEME"){
-				define("THEME", (@fopen(e_BASE."themes/".USERTHEME."/theme.php", r) ? e_BASE."themes/".USERTHEME."/" : e_BASE."themes/e107/"));
-			}else{
-				define("THEME", (@fopen(e_BASE."themes/".$pref['sitetheme'][1]."/theme.php", r) ? e_BASE."themes/".$pref['sitetheme'][1]."/" : e_BASE."themes/e107/"));
-			}
-			require_once(THEME."theme.php");
+if($pref['anon_post'] ? define("ANON", TRUE) : define("ANON", FALSE));
+if(Empty($pref['newsposts']) ? define("ITEMVIEW", 15) : define("ITEMVIEW", $pref['newsposts']));
+if($pref['flood_protect']){  define(FLOODPROTECT, TRUE); define(FLOODTIMEOUT, $pref['flood_timeout']); }
 
-			if($pref['anon_post'][1] ? define("ANON", TRUE) : define("ANON", FALSE));
-			if(Empty($pref['newsposts'][1]) ? define("ITEMVIEW", 15) : define("ITEMVIEW", $pref['newsposts'][1]));
-			if($pref['flood_protect'][1]){  define(FLOODPROTECT, TRUE); define(FLOODTIMEOUT, $pref['flood_timeout'][1]); }
+if($layout != "_default"){
+	define ("HEADERF", e_THEME."templates/header".$layout.".php");
+	define ("FOOTERF", e_THEME."templates/footer".$layout.".php");
+}else{
+	define ("HEADERF", e_THEME."templates/header_default.php");
+	define ("FOOTERF", e_THEME."templates/footer_default.php");
+}
 
-			if($layout != "_default"){
-				define ("HEADERF", e_BASE."themes/templates/header".$layout.".php");
-				define ("FOOTERF", e_BASE."themes/templates/footer".$layout.".php");
-			}else{
-				define ("HEADERF", e_BASE."themes/templates/header_default.php");
-				define ("FOOTERF", e_BASE."themes/templates/footer_default.php");
-			}
+define("LOGINMESSAGE", "");
+if($pref['maintainance_flag'] && ADMIN == FALSE && !eregi("admin", e_SELF)){
+	header("location:".e_BASE."sitedown.php"); exit;
+}
+$ns = new e107table;
 
-			define("LOGINMESSAGE", "");
-			if($pref['maintainance_flag'][1] && ADMIN == FALSE && !eregi("admin", e_SELF)){
-				header("location:".e_BASE."sitedown.php"); exit;
-			}
-			$ns = new table;
-
-			define("OPEN_BASEDIR", (ini_get('open_basedir') ? TRUE : FALSE));
-			define("SAFE_MODE", (ini_get('safe_mode') ? TRUE : FALSE));
-			define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
+define("OPEN_BASEDIR", (ini_get('open_basedir') ? TRUE : FALSE));
+define("SAFE_MODE", (ini_get('safe_mode') ? TRUE : FALSE));
+define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
+define("INIT", TRUE);
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-class table{
+class e107table{
 	function tablerender($caption, $text, $mode="default"){
 		/*
 		# Render style table
@@ -684,55 +239,35 @@ class table{
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 class textparse{
-	function tp($text, $mode="off"){
-		/*
-		# Pre parse
-		# - parameter #1:		string $text, text to parse
-		# - parameter #2:		string $mode, on=HTML allowed, default off
-		# - return					parsed text
-		# - scope					public
-		*/
 
-		if($mode == "off"){
-			$text = strip_tags($text);
+	var $emotes;
+	var $searcha;
+	var $searchb;
+	var $replace;
+	var $profan;
+
+	function textparse(){
+	// constructor
+		global $pref;
+
+		if($pref['profanity_filter']){
+			$this->profan = str_replace(",", "|", $pref['profanity_words']);
 		}
 
-		$search = array();
-		$replace = array();
-		$search[0] = "#\[link\]([a-z]+?://){1}(.*?)\[/link\]#si";
-		$replace[0] = '<a href="\1\2">\1\2</a>';
-		$search[1] = "#\[link\](.*?)\[/link\]#si";
-		$replace[1] = '<a href="http://\1">\1</a>';
-		$search[2] = "#\[link=([a-z]+?://){1}(.*?)\](.*?)\[/link\]#si";
-		$replace[2] = '<a href="\1\2">\3</a>';
-		$search[3] = "#\[link=(.*?)\](.*?)\[/link\]#si";
-		$replace[3] = '<a href="http://\1">\2</a>';
-		$search[4] = "#\[email\](.*?)\[/email\]#si";
-		$replace[4] = '<a href="mailto:\1">\1</a>';
-		$search[5] = "#\[email=(.*?){1}(.*?)\](.*?)\[/email\]#si";
-		$replace[5] = '<a href="mailto:\1\2">\3</a>';
-		$search[6] = "#\[url\]([a-z]+?://){1}(.*?)\[/url\]#si";
-		$replace[6] = '<a href="\1\2">\1\2</a>';
-		$search[7] = "#\[url\](.*?)\[/url\]#si";
-		$replace[7] = '<a href="http://\1">\1</a>';
-		$search[8] = "#\[url=([a-z]+?://){1}(.*?)\](.*?)\[/url\]#si";
-		$replace[8] = '<a href="\1\2">\3</a>';
-		$text = preg_replace($search, $replace, $text);
+		if($pref['smiley_activate']){
+			$sql = new db;
+			$sql -> db_Select("core", "*", "e107_name='emote'");
+			$row = $sql -> db_Fetch(); extract($row);
+			$this->emotes = unserialize($e107_value);
 
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-
-	if(defined("MQ")){
-		$search = array("\"", "'", "\\");
-		$replace = array("&quot;", "&#39;", "&#92;");
-		$text = str_replace($search, $replace, $text);
-		$text = str_replace("<a href=&quot;", "<a href=\"", $text);
-		$text = str_replace("&quot;>", "\">", $text);
-	}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-
-		stripslashes($text);
-		$text = trim(chop($text));
-		return($text);
+			$c=0;
+			while(list($code, $name) = each($this->emotes[$c])){
+				$this->searcha[$c] = " ".$code;
+				$this->searchb[$c] = $code." ";
+				$this->replace[$c] = " <img src='".e_IMAGE."emoticons/$name' alt='' style='vertical-align:middle' /> ";
+				$c++;
+			}
+		}
 	}
 	
 	function editparse($text, $mode="off"){
@@ -777,7 +312,7 @@ class textparse{
 		$text = preg_replace($search, $replace, $text);
 		return $text;
 	}
-
+	
 	function tpa($text, $mode="off"){
 		/*
 		# Post parse
@@ -787,18 +322,15 @@ class textparse{
 		# - scope					public
 		*/
 		global $pref;
-//		$text = preg_quote($text);
-		if($pref['profanity_filter'][1] == 1){
-			$prof = LAN_24;
-			$text = eregi_replace($prof, $pref['profanity_replace'][1], $text);
-		}
-		if($pref['smiley_activate'][1] == 1){
-			require_once(e_BASE."plugins/emoticons.php");
-			$text = emoticons($text);
-		}
 
-//		$text = str_replace("<br>","<br />", $text);
-		
+		if($pref['profanity_filter'] && $this->profan){
+			$text = eregi_replace($this->profan, $pref['profanity_replace'], $text);
+		}
+		if($pref['smiley_activate']){
+			$text = str_replace($this->searcha, $this->replace, $text);
+			$text = str_replace($this->searchb, $this->replace, $text);
+		}
+		$text = str_replace("$", "&#36;", $text);
 		$search[0] = "#\[link\]([a-z]+?://){1}(.*?)\[/link\]#si";
 		$replace[0] = '<a href="\1\2">\1\2</a>';
 		$search[1] = "#\[link\](.*?)\[/link\]#si";
@@ -841,25 +373,45 @@ class textparse{
 		$replace[19] = '<span style=\'color:\1\'>\2</span>';
 		$search[20] = "/\[size=([1-2]?[0-9])\](.*?)\[\/size\]/si";
 		$replace[20] = '<span style=\'font-size:\1px\'>\2</span>';
-		$search[16] = "#\[edited\](.*?)\[/edited\]#si";
-		$replace[16] = '<span class=\'smallblacktext\'>[ \1 ]</span>';
+		$search[21] = "#\[edited\](.*?)\[/edited\]#si";
+		$replace[21] = '<span class=\'smallblacktext\'>[ \1 ]</span>';
+		$search[22] = "#onmouseover|onclick|onmousedown|onmouseup|ondblclick|onmouseout|onmousemove|onload/#si";
+		$replace[22] = '';
 		$text = preg_replace($search, $replace, $text);
-
-		if($mode == "off"){
-			$text = nl2br($text);
-			$text = str_replace("<br /><br />", "<br />", $text);
-		}
-		// sent in by 'Anon' - thanks
+		if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
+		$search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;");
+		$replace =  array("\"", "'", "\\", '\"', "\'");
+		$text = str_replace($search, $replace, $text);
+		if($mode != "nobreak"){ $text = nl2br($text); }
+		$text = str_replace("<br /><br />", "<br />", $text);
 		$text = " " . $text;
 		$text = preg_replace("#([\t\r\n ])([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="\2://\3">\2://\3</a>', $text);
 		$text = preg_replace("#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="http://\2.\3">\2.\3</a>', $text);
 		$text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $text);
 		$text = substr($text, 1);
-		if($mode != "off"){
-			$text = stripslashes($text);
-		}
 		return $text;
 	}
+
+	function formtpa($text, $mode="admin"){
+		global $sql;
+
+		if($mode != "admin"){
+			$text = strip_tags($text);
+		}
+		if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
+		$search = array("\"", "'", "\\", '\"', "\'");
+		$replace = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;");
+		$text = str_replace($search, $replace, $text);
+		return $text;
+	}
+
+	function formtparev($text){
+		$search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;");
+		$replace = array("\"", "'", "\\", '\"', "\'");
+		$text = str_replace($search, $replace, $text);
+		return $text;
+	}
+
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -877,11 +429,11 @@ class convert{
 
 		$datestamp += (TIMEOFFSET*3600);
 		if($mode == "long"){
-			return strftime($pref['longdate'][1], $datestamp);
+			return strftime($pref['longdate'], $datestamp);
 		}else if($mode == "short"){
-			return strftime($pref['shortdate'][1], $datestamp);
+			return strftime($pref['shortdate'], $datestamp);
 		}else{
-			return strftime($pref['forumdate'][1], $datestamp);
+			return strftime($pref['forumdate'], $datestamp);
 		}
 	}
 }
@@ -889,26 +441,30 @@ class convert{
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function check_class($var, $userclass=USERCLASS){
 	if(ADMIN == TRUE){ $debug=0; }else{ $debug=0; }
+	if(preg_match ("/^([0-9]+)$/", $var)){
+		if($var == e_UC_MEMBER && USER==TRUE){return TRUE;}
+		if($var == e_UC_PUBLIC){return TRUE;}
+		if($var == e_UC_NOBODY) {return FALSE;}
+	}
 	if($debug){ echo "USERCLASS: ".$userclass.", \$var = $var : "; }
 	if(!defined("USERCLASS") || $userclass == ""){
 		if($debug){ echo "FALSE<br />"; }
 		return FALSE;
 	}
 	// user has classes set - continue
-	if(is_numeric($var[0])){
+	if(preg_match ("/^([0-9]+)$/", $var)){
 		$tmp = explode(".", $userclass);
-		for($c=0; $c<=(count($tmp)-1); $c++){
-			if($tmp[$c] && preg_match("/".$var."(|\$)/", $tmp[$c])){
-				if($debug){ echo "TRUE<br />"; }
-				return TRUE;
-			}
+		if(is_numeric(array_search($var,$tmp))){
+			if($debug){ echo "TRUE<br />"; }
+			return TRUE;
 		}
 	}else{
 		// var is name of class ...
 		$sql = new db;
 		if($sql -> db_Select("userclass_classes", "*", "userclass_name='$var' ")){
-			$row = $sql -> db_Fetch(); extract($row);
-			if(ereg($userclass_id, $userclass)){
+			$row = $sql -> db_Fetch();
+			$tmp = explode(".", $userclass);
+			if(is_numeric(array_search($row['userclass_id'],$tmp))){
 				if($debug){ echo "TRUE<br />"; }
 				return TRUE;
 			}
@@ -967,23 +523,175 @@ function online($page){
 	define("MEMBER_LIST", $member_list);
 }
 
-function update_cache($table){
-	$sql = new db;
-	switch ($table){ 
-		case "news":
-			$sql -> db_Delete("cache", "cache_url REGEXP('news.php') OR cache_URL REGEXP('comment.php')");
-		break;
-		case "comments":
-			$sql -> db_Delete("cache", "cache_url REGEXP('news.php') OR cache_URL REGEXP('comment.php')");
-		break; 
-		case "forum_t": 
-			$tmp = explode(".", e_QUERY);
-			$sql -> db_Delete("cache", "cache_url REGEXP('forum.php') OR cache_URL REGEXP('forum_viewforum.php?".$tmp[0]."') OR cache_url REGEXP('forum_viewtopic.php?".$tmp[0].".".$tmp[1]."')");
-		break; 
-		case "register": 
-			$sql -> db_Delete("cache", "cache_url REGEXP('register.php')");
-		break; 
-	}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+function cachevars($id, $var){
+	global $cachevar;
+	$cachevar[$id] = $var;
+}
+function getcachedvars($id){
+	global $cachevar;
+	return ($cachevar[$id] ? $cachevar[$id] : FALSE);
 }
 
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+class gettime{
+	function gettime(){
+		/* Constructor
+		# Get microtime
+		#
+		# - parameters		none
+		# - return				microtime
+		# - scope					public
+		*/
+		list($usec, $sec) = explode(" ",microtime()); 
+		return ((float)$usec + (float)$sec); 
+    } 
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+
+function getip(){
+	/*
+	# Get IP address
+	#
+	# - parameters		none
+	# - return				valid IP address
+	# - scope					public
+	*/
+	if(getenv('HTTP_X_FORWARDED_FOR')){
+		$ip = $_SERVER['REMOTE_ADDR'];
+		if(preg_match("/^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/", getenv('HTTP_X_FORWARDED_FOR'), $ip3)){
+			$ip2 = array('/^0\./', '/^127\.0\.0\.1/', '/^192\.168\..*/', '/^172\.16\..*/', '/^10..*/', '/^224..*/', '/^240..*/');
+			$ip = preg_replace($ip2, $ip, $ip3[1]);
+		}
+	}else{
+		$ip = $_SERVER['REMOTE_ADDR'];
+	}
+	if($ip == ""){ $ip = "x.x.x.x"; }
+	return $ip;
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+class floodprotect{
+	function flood($table, $orderfield){
+		/*
+		# Test for possible flood
+		#
+		# - parameter #1		string $table, table being affected
+		# - parameter #2		string $orderfield, date entry in respective table
+		# - return				boolean
+		# - scope					public
+		*/
+		$sql = new db;
+		if(FLOODPROTECTION == TRUE){
+			$sql -> db_Select($table, "*", "ORDER BY ".$orderfield." DESC LIMIT 1", "no_where");
+			$row = $sql -> db_Fetch();
+			return ($row[$orderfield] > (time() - FLOODTIMEOUT) ? FALSE : TRUE);
+		}else{
+			return TRUE;
+		}
+	}
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+function init_session(){
+		/*
+		# Validate user
+		#
+		# - parameters		none
+		# - return				boolean
+		# - scope				public
+		*/
+	global $sql, $pref, $user_pref, $sql;
+
+	if(!$_COOKIE['userkey'] && !$_SESSION['userkey']){
+		define("USER", FALSE); define("USERTHEME", FALSE); define("ADMIN", FALSE);
+	}else{
+		$tmp = ($_COOKIE['userkey'] ? explode(".", $_COOKIE['userkey']) : explode(".", $_SESSION['userkey'])); $uid = $tmp[0]; $upw = $tmp[1];
+		if(Empty($upw)){	 // corrupt cookie?
+			setcookie('userkey', '', 0, '/', '', 0);
+			$_SESSION["userkey"] = "";
+			session_destroy();
+			define("ADMIN", FALSE); define("USER", FALSE); define("LOGINMESSAGE", "Corrupted cookie detected - logged out.<br /><br />");
+			return(FALSE);
+		}
+		if($sql -> db_Select("user", "*", "user_id='$uid' AND user_password='$upw' ")){
+			$result = $sql -> db_Fetch(); extract($result);
+			define("USERID", $user_id); define("USERNAME", $user_name); define("USERURL", $user_website); define("USEREMAIL", $user_email); define("USER", TRUE); define("USERLV", $user_lastvisit); define("USERVIEWED", $user_viewed); define("USERCLASS", $user_class); define("USERREALM", $user_realm);
+			if($user_ban == 1){ exit; }
+			$user_pref = unserialize($user_prefs);
+			if(IsSet($_POST['settheme'])){
+				$user_pref['sitetheme'] = ($pref['sitetheme'] == $_POST['sitetheme'] ? "" : $_POST['sitetheme']);
+				save_prefs($user);
+				$pref['cachestatus'] = 0;
+				save_prefs();
+			}
+			if(IsSet($_POST['setlanguage'])){
+				$user_pref['sitelanguage'] = ($pref['sitelanguage'] == $_POST['sitelanguage'] ? "" : $_POST['sitelanguage']);
+				save_prefs($user);
+			}
+			if($user_pref['sitetheme'] && @fopen(e_THEME.$user_pref['sitetheme']."/theme.php","r")){
+				define("USERTHEME", $user_pref['sitetheme']);
+			}else{
+				define("USERTHEME", FALSE);
+			}
+			if($user_pref['sitelanguage'] && @fopen(e_LANGUAGEDIR.$user_pref['sitelanguage']."/lan_".e_PAGE,"r")){
+				define("USERLAN", $user_pref['sitelanguage']);
+			}else{
+				define("USERLAN", FALSE);
+			}
+			if($user_currentvisit + 3600 < time()){
+				$sql -> db_Update("user", "user_visits=user_visits+1 WHERE user_name='".USERNAME."' ");
+				$sql -> db_Update("user", "user_lastvisit='$user_currentvisit', user_currentvisit='".time()."', user_viewed='$r' WHERE user_name='".USERNAME."' ");
+			}
+			if($user_admin){
+				define("ADMIN", TRUE); define("ADMINID", $user_id); define("ADMINNAME", $user_name); define("ADMINPERMS", $user_perms); define("ADMINEMAIL", $user_email); define("ADMINPWCHANGE", $user_pwchange);
+			}else{
+				define("ADMIN", FALSE);
+			}
+		}else{
+			define("USER", FALSE); define("USERTHEME", FALSE); define("ADMIN", FALSE);
+		}
+	}
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+function ban(){
+	$sql = new db;
+	$ip = getip();
+	if($sql -> db_Select("banlist", "*", "banlist_ip='".$_SERVER['REMOTE_ADDR']."' OR banlist_ip='".USEREMAIL."' OR banlist_ip='$ip' ")){
+		// enter a message here if you want some text displayed to banned users ...
+		exit;
+	}
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+function glte($table, $order, $amount, $element, $value, $mode){
+
+	/*
+	$table - db table to check
+	$order - field to order by
+	$amount - number of elements to check
+	$element - field to check
+	$value - entered value, check criteria
+	$mode - 1 = full string match, 2 = string contains match
+	*/
+
+	$sqlc = new db;
+	$sqlc -> db_Select($table, "*", "ORDER BY $order DESC LIMIT 0, $amount", "nowhere");
+	while($row = $sqlc -> db_Fetch()){
+		$result[] = $row[$element];
+	}
+
+	if($mode == 1){
+		return (in_array($value, $result) ? TRUE : FALSE);
+	}
+
+	while(list($key, $var) = each($result)){
+		if(strstr($var, $value)){
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
 ?>

@@ -23,7 +23,7 @@ if(ereg("untrack", e_QUERY)){
 	exit;
 }
 
-define("FTHEME", (file_exists(THEME."forum/newthread.png")) ? THEME."forum/" : "themes/shared/forum/");
+define("FTHEME", (file_exists(THEME."forum/newthread.png") ? THEME."forum/" : e_IMAGE."forum/"));
 
 if(e_QUERY && e_QUERY != "track"){
 	$forum_id = e_QUERY;
@@ -51,8 +51,8 @@ $total_members = $sql -> db_Count("user");
 $newest_member = $sql -> db_Select("user", "*", "ORDER BY user_join DESC LIMIT 0,1", $mode="no_where");
 list($nuser_id, $nuser_name)  = $sql -> db_Fetch();
 
-echo "
-<table style='width:100%' class='fborder'>
+$text = "<div style='text-align:center'>
+<table style='width:95%' class='fborder'>
 <tr>
 <td colspan='2' style='width:60%; text-align:center' class='fcaption'>".LAN_46."</td>
 <td style='width:10%; text-align:center' class='fcaption'>".LAN_47."</td>
@@ -66,98 +66,65 @@ if(!$sql -> db_Select("forum", "*", "forum_parent='0' ORDER BY forum_order ASC")
 	require_once(FOOTERF);
 	exit;
 
-
 }else{
 	$sql2 = new db; $sql3 = new db;
 
 	while($row = $sql-> db_Fetch()){
 		extract($row);
-		if(!$forum_active){
-			$text .= "<tr><td colspan='5' class='forumheader'>".$forum_name." (Closed)</td></tr>";
-			$parent_status == "closed";
+		if($forum_class==255){
+			$text .= "<tr><td colspan='5' class='forumheader'>".$forum_name." (".LAN_398.")</td></tr>";
+			$parent_status = "closed";
+		}else if($forum_class==254 && !USER){
+			$text .= "<tr><td colspan='5' class='forumheader'>".$forum_name." (".LAN_401.")</td></tr>";
+			$parent_status = "closed";
+		}else if($forum_class==254 && USER){
+			$text .= "<tr><td colspan='5' class='forumheader'>".$forum_name."</td></tr>";
+			$parent_status = "open";
 		}else if($forum_class){
 			if(check_class($forum_class)){
-				$text .= "<tr><td colspan='5' class='forumheader'>".$forum_name." (Restricted)</td></tr>";
-				$parent_status == "open";
+				$text .= "<tr><td colspan='5' class='forumheader'>".$forum_name." (".LAN_399.")</td></tr>";
+				$parent_status = "open";
 			}else{
-				$parent_status == "closed";
+				$parent_status = "closed";
 			}
 		}else{
 			$text .= "<tr><td colspan='5' class='forumheader'>".$forum_name."</td></tr>";
-			$parent_status == "open";
+			$parent_status = "open";
 		}
-		
 
 		$forums = $sql2 -> db_Select("forum", "*", "forum_parent='".$forum_id."' ORDER BY forum_order ASC ");
-		if($forums == 0 && $parent_status == "open"){
-			$text .= "<td colspan='5' style='text-align:center' class='forumheader3'>".LAN_52."</td>";
-		}else{
+		if(!$forums && $parent_status == "open"){
+			$text .= "<td colspan='5' style='text-align:center' class='forumheader3'>".LAN_52."</td>";	 // no forums
+		}else if($parent_status == "open"){
 			while($row = $sql2-> db_Fetch()){
 				extract($row);
-				if(!$forum_class || ($forum_class && check_class($forum_class))){
-					$newflag = FALSE;
-					if($sql3 -> db_Select("forum_t", "*", "thread_forum_id='$forum_id' AND thread_datestamp > '".USERLV."' ")){
-						while(list($nthread_id) = $sql3 -> db_Fetch()){
-							if(!ereg("\.".$nthread_id."\.", USERVIEWED)){ $newflag = TRUE; }
-						}
-					}
-
-					if($forum_active == 1 && $parent_inactive == FALSE){
-
-						if($newflag == TRUE){
-							$text .= "<tr><td style='width:5%; text-align:center' class='forumheader2'><a href='".e_SELF."?".$forum_id."'><img src='".FTHEME."new.png' alt='mark all posts in this forum as read' style='border:0' /></a></td>";
-						}else{
-							$text .= "<tr><td style='width:5%; text-align:center' class='forumheader2'><img src='".FTHEME."nonew.png' alt='' /></td>";
-						}
-
-						$text .= "<td style='width:55%' class='forumheader2'><a href='forum_viewforum.php?".$forum_id."'>".$forum_name."</a><br /><span class='smallblacktext'>".$forum_description."</span></td>
-						<td style='width:10%; text-align:center' class='forumheader3'>".$forum_threads."</td>
-						<td style='width:10%; text-align:center' class='forumheader3'>".$forum_replies."</td>
-						<td style='width:20%; text-align:center' class='forumheader3'><span class='smallblacktext'>";
-
-						if($forum_threads == 0 && $forum_replies == 0){
-							$text .= "No posts yet</span></td>";
-						}else{
-							$sql3 -> db_Select("forum_t", "*", "thread_forum_id='$forum_id' ORDER BY thread_datestamp DESC LIMIT 0,1");
-							$row = $sql3 -> db_Fetch();
-							extract($row);
-							$tmp = explode(".", $thread_user);
-							$lastpost_author_id = $tmp[0];
-							$lastpost_author_name = $tmp[1];
-							$lastpost_datestamp = $gen->convert_date($thread_datestamp, "forum");
-							$text .= $lastpost_datestamp."<br />".
-							
-							($lastpost_author_id ? "<a href='user.php?id.".$lastpost_author_id."'>".$lastpost_author_name."</a> " : $lastpost_author_name);
-
-							if($thread_parent){
-								$text .= "&nbsp;&nbsp;<a href='".e_HTTP."forum_viewtopic.php?".$forum_id.".".$thread_parent."'><img src='".FTHEME."post.png' alt='' style='border:0' /></a></span></td>";
-							}else{
-								$text .= "&nbsp;&nbsp;<a href='".e_HTTP."forum_viewtopic.php?".$forum_id.".".$thread_id."'><img src='".FTHEME."post.png' alt='' style='border:0' /></a></span></td>";
-							}
-						}
-
-						$text .= "</tr>";
-					}
+				if($forum_class == 254 && USER){
+					$text .= render_forum($row, $newflag, $forum_id);
+				}else if($forum_class == 254 && !USER){
+					$text .= "<tr><td class='forumheader3' colspan='5' style='text-align:center'>".$forum_name.": ".LAN_400."</td></tr>";
+				}else if($forum_class && check_class($forum_class)){
+					$text .= render_forum($row, $newflag, $forum_id);
+				}else if(!$forum_class){
+					$text .= render_forum($row, $newflag, $forum_id);
 				}
 			}
 		}
 	}
 }
 $text .= "</table>";
-echo $text;
-
 
 // info bar ...
 
 if(e_QUERY != "track"){
 
-$text = "<br /><table style='width:100%' class='fborder'>
+$text .= "<br /><table style='width:95%' class='fborder'>
 <tr>
 <td colspan='2' style='width:60%' class='fcaption'>".LAN_191."</td>
 </tr>
 <tr>
 <td rowspan='2' style='width:5%; text-align:center' class='forumheader3'><img src='".FTHEME."e.png' alt='' /></td>
 ";
+
 
 if(USER == TRUE){
 
@@ -191,7 +158,7 @@ if(USER == TRUE){
 		$text .= " (".LAN_196.$total_read_threads.LAN_197.")";
 	}
 
-	if($pref['time_offset'][1] == "0" ? $tmp = "." : $tmp = $pref['time_offset'][1].".");
+	if($pref['time_offset'] == "0" ? $tmp = "." : $tmp = $pref['time_offset'].".");
 
 	$text .= "<br />
 	".LAN_36." ".$lastvisit_datestamp."<br />
@@ -216,7 +183,7 @@ if(USERREALM && USER){
 }
 $text .= "</td></tr><tr><td style='width:95%' class='forumheader3'>
 
-".LAN_192.($total_topics+$total_replies)." ".strtolower(LAN_100).".<br />".LAN_42.": ".$total_members."<br />".LAN_41."<a href='user.php?id.".$nuser_id."'>".$nuser_name."</a>.<br />
+".LAN_192.($total_topics+$total_replies)." ".LAN_100.".<br />".LAN_42.$total_members."<br />".LAN_41."<a href='user.php?id.".$nuser_id."'>".$nuser_name."</a>.<br />
 
 
 </td>
@@ -233,7 +200,7 @@ $text .= "</td></tr><tr><td style='width:95%' class='forumheader3'>
 ";
 
 
-	$tmp = explode(".", USERREALM);
+	$tmp = explode("-", USERREALM);
 
 	foreach($tmp as $key => $value){
 		if($value){
@@ -250,9 +217,6 @@ $text .= "</td></tr><tr><td style='width:95%' class='forumheader3'>
 					}
 				}
 			}
-
-
-
 
 			$sql -> db_Select("forum_t", "*",  "thread_id='".$tmp[$key]."' ORDER BY thread_s DESC, thread_lastpost DESC, thread_datestamp DESC");
 			$row = $sql -> db_Fetch(); extract($row);
@@ -281,12 +245,8 @@ $text .= "</td></tr><tr><td style='width:95%' class='forumheader3'>
 // --- tracked items ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-
-
-
-
 $text .= "<div class='spacer'>
-<table class='fborder' style='width:100%'>
+<table class='fborder' style='width:95%'>
 <tr>
 <td class='forumheader3' style='text-align:center; width:33%'>
 	<table style='width:100%'>
@@ -337,10 +297,10 @@ if(USER == TRUE || ANON == TRUE){
 
 $text .= "</span></td></tr>
 </table>
+</div>
 </div>";
-echo $text;
 
-
+if($pref['forum_enclose']){ $ns -> tablerender($pref['forum_title'], $text); }else{ echo $text; }
 
 ?>
 <script type="text/javascript">
@@ -355,4 +315,50 @@ function help(help){
 
 
 require_once(FOOTERF);
+
+function render_forum($row, $newflag, $forum_id){	
+
+	global $sql3, $gen;
+	extract($row);
+	$newflag = FALSE;
+	if(USER){
+		if($sql3 -> db_Select("forum_t", "*", "thread_forum_id='$forum_id' AND thread_datestamp > '".USERLV."' ")){
+			while(list($nthread_id) = $sql3 -> db_Fetch()){
+				if(!ereg("\.".$nthread_id."\.", USERVIEWED)){ $newflag = TRUE; }
+			}
+		}
+	}
+
+	$text = "<tr><td style='width:5%; text-align:center' class='forumheader2'>".($newflag ? "<a href='".e_SELF."?".$forum_id."'><img src='".FTHEME."new.png' alt='".LAN_199."' style='border:0' /></a></td>" : "<img src='".FTHEME."nonew.png' alt='' /></td>")."
+	<td style='width:55%' class='forumheader2'><a href='forum_viewforum.php?".$forum_id."'>".$forum_name."</a><br /><span class='smallblacktext'>".$forum_description."</span></td>
+	<td style='width:10%; text-align:center' class='forumheader3'>".$forum_threads."</td>
+	<td style='width:10%; text-align:center' class='forumheader3'>".$forum_replies."</td>
+	<td style='width:20%; text-align:center' class='forumheader3'><span class='smallblacktext'>";
+
+	if($forum_threads == 0 && $forum_replies == 0){
+		$text .= "No posts yet</span></td>";
+	}else{
+		$sql3 -> db_Select("forum_t", "*", "thread_forum_id='$forum_id' ORDER BY thread_datestamp DESC LIMIT 0,1");
+		$row = $sql3 -> db_Fetch();
+		extract($row);
+		$tmp = explode(".", $thread_user);
+		$lastpost_author_id = $tmp[0];
+		$lastpost_author_name = $tmp[1];
+
+		$tmp = explode(chr(1), $lastpost_author_name); $lastpost_author_name = $tmp[0];
+
+		$lastpost_datestamp = $gen->convert_date($thread_datestamp, "forum");
+		$text .= $lastpost_datestamp."<br />".
+								
+		($lastpost_author_id ? "<a href='user.php?id.".$lastpost_author_id."'>".$lastpost_author_name."</a> " : $lastpost_author_name);
+
+		if($thread_parent){
+			$text .= "&nbsp;&nbsp;<a href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_parent."'><img src='".FTHEME."post.png' alt='' style='border:0' /></a></span></td>";
+		}else{
+			$text .= "&nbsp;&nbsp;<a href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id."'><img src='".FTHEME."post.png' alt='' style='border:0' /></a></span></td>";
+		}
+	}
+	return $text;
+}
+
 ?>

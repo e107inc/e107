@@ -14,19 +14,21 @@
 */
 require_once("class2.php");
 
-if(!$pref['upload_enabled'][1]){
+if(!$pref['upload_enabled'] || $pref['upload_class'] == 255){
 	header("location: ".e_BASE."index.php");
 	exit;
 }
 
 require_once(HEADERF);
 
-if($pref['upload_class'][1] == 999 && !USER){
+
+
+if($pref['upload_class'] == 254 && !USER){
 	$text = "<div style='text-align:center'>".LAN_402."</div>";
 	$ns -> tablerender(LAN_20, $text);
 	require_once(FOOTERF);				
 	exit;
-}else if(!check_class($pref['upload_class'][1]) && $pref['upload_class'][1] != 999){
+}else if(!check_class($pref['upload_class']) && $pref['upload_class']){
 	$text = "<div style='text-align:center'>".LAN_403."</div>";
 	$ns -> tablerender(LAN_20, $text);
 	require_once(FOOTERF);				
@@ -37,8 +39,8 @@ if($pref['upload_class'][1] == 999 && !USER){
 if(IsSet($_POST['upload'])){
 	if(($_POST['file_email'] || USER==TRUE) && $_POST['file_name'] && $_POST['file_description']){ 
 
-		require_once(e_BASE."classes/upload_handler.php");
-		$uploaded = file_upload("files/public/");
+		require_once(e_HANDLER."upload_handler.php");
+		$uploaded = file_upload(e_FILE."public/");
 
 		$file = $uploaded[0]['name'];
 		$filetype = $uploaded[0]['type'];
@@ -46,12 +48,12 @@ if(IsSet($_POST['upload'])){
 		$image = $uploaded[1]['name'];
 		$imagetype = $uploaded[1]['type'];
 
-		if(!$pref['upload_maxfilesize'][1]){
-			$pref['upload_maxfilesize'][1] = ini_get('upload_max_filesize')*1048576;
+		if(!$pref['upload_maxfilesize']){
+			$pref['upload_maxfilesize'] = ini_get('upload_max_filesize')*1048576;
 		}
 
 
-		if($filesize > $pref['upload_maxfilesize'][1]){
+		if($filesize > $pref['upload_maxfilesize']){
 			$message = LAN_405;
 		}else{
 			if(is_array($uploaded)){
@@ -63,7 +65,7 @@ if(IsSet($_POST['upload'])){
 		}
 
 	}else{
-		require_once(e_BASE."classes/message_handler.php");
+		require_once(e_HANDLER."message_handler.php");
 		message_handler("ALERT", 5);
 	}
 }
@@ -77,8 +79,8 @@ $text = "<div style='text-align:center'>
 <table style='width:70%' class='fborder'>
 
 <tr>
-<td style='text-align:center' colspan='2'' class='forumheader3'>".LAN_406." ".str_replace("\n", " | ", $pref['upload_allowedfiletype'][1])."<br />".LAN_407."<br />
-Maximum file size: ".($pref['upload_maxfilesize'][1] ? $pref['upload_maxfilesize'][1] : ini_get('upload_max_filesize'))."<br /> 
+<td style='text-align:center' colspan='2'' class='forumheader3'>".LAN_406." ".str_replace("\n", " | ", $pref['upload_allowedfiletype'])."<br />".LAN_407."<br />
+Maximum file size: ".($pref['upload_maxfilesize'] ? $pref['upload_maxfilesize'] : ini_get('upload_max_filesize'))."<br /> 
 ".LAN_408."</td>
 </tr>";
 
@@ -94,11 +96,7 @@ if(!USER){
 </tr>";
 }
 
-$text .= "<tr>
-<td style='width:30%' class='forumheader3'>".LAN_144."</td>
-<td style='width:70%' class='forumheader3'><input class='tbox' name='file_website' type='text' size='50' maxlength='100 value=".(defined(USERURL) ? USERURL : "")."'></td>
-</tr>
-
+$text .= "
 <tr>
 <td style='width:30%' class='forumheader3'><u>".LAN_409."</u></td>
 <td style='width:70%' class='forumheader3'><input class='tbox' name='file_name' type='text' size='50' maxlength='100'></td>
@@ -123,6 +121,11 @@ $text .= "<tr>
 <tr>
 <td style='width:30%' class='forumheader3'><u>".LAN_413."</u></td>
 <td style='width:70%' class='forumheader3'><textarea class='tbox' name='file_description' cols='59' rows='6'></textarea></td>
+</tr>
+
+<tr>
+<td style='width:30%' class='forumheader3'>".LAN_144."</td>
+<td style='width:70%' class='forumheader3'><input class='tbox' name='file_website' type='text' size='50' maxlength='100 value=".(defined(USERURL) ? USERURL : "")."'></td>
 </tr>
 
 <tr>

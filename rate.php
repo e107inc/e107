@@ -17,7 +17,7 @@ require_once("class2.php");
 $qs = explode("-", e_QUERY);
 
 if(!$qs[0] || USER == FALSE){
-	header("location:".e_HTTP."index.php");
+	header("location:".e_BASE."index.php");
 	exit;
 }
 
@@ -27,27 +27,15 @@ $returnurl = $qs[2];
 $rate = $qs[3];
 
 if($sql -> db_Select("rate", "*", "rate_table='$table' AND rate_itemid='$itemid' ")){
-	// rate already exists - update required
 	$row = $sql -> db_Fetch();
 	extract($row);
 	$rate_voters .= USERID.".";
 	$sql -> db_Update("rate", "rate_votes=rate_votes+1, rate_rating=rate_rating+'$rate', rate_voters='$rate_voters' WHERE rate_itemid='$itemid' ");
 }else{
-	// rate doesn't exist - create
 	$sql -> db_Insert("rate", " 0, '$table', '$itemid', '$rate', '1', '.".USERID.".' ");
 }
 
 header("location:".$returnurl);
 exit;
-
-/*
-echo "Table: ".$table."<br />
-ItemID: ".$itemid."<br />
-Rate: ".$rate."<br />
-Return URL: ".$returnurl;
-*/
-
-
-
 
 ?>
