@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-03-17 09:02:20 $
-|     $Author: stevedunstan $
+|     $Revision: 1.35 $
+|     $Date: 2005-03-21 14:14:18 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 if (!function_exists("parseheader")) {
@@ -44,6 +44,9 @@ echo '<link rel="pingback" href="'.$e107->HTTPPath.PLUGINS_DIRECTORY.'trackback/
 ';
 }
 
+if (isset($eplug_css) && $eplug_css) { echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n"; }
+if (isset($eplug_js) && $eplug_js) { echo "<script type='text/javascript' src='".$eplug_js."'></script>\n"; }
+
 if(defined("PREVIEWTHEME")) {
 	echo "<link rel='stylesheet' href='".PREVIEWTHEME."style.css' type='text/css' />\n";
 } else {
@@ -60,7 +63,6 @@ if(defined("PREVIEWTHEME")) {
 		}
 		if (!isset($no_core_css) || !$no_core_css) {
 			echo "<link rel='stylesheet' href='".e_FILE."e107.css' type='text/css' />\n";
-			if (isset($eplug_css) && $eplug_css) { echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n"; }
 		}
 	}
 }
@@ -77,7 +79,6 @@ if (isset($theme_js_php) && $theme_js_php) {
 	echo "<script type='text/javascript' src='".e_FILE."e107.js'></script>\n";
 	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME."theme.js'></script>\n"; }
 	if (filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE."user.js'></script>\n"; }
-	if (isset($eplug_js) && $eplug_js) { echo "<script type='text/javascript' src='".$eplug_js."'></script>\n"; }
 }
 if (isset($WYSIWYG) && $WYSIWYG == TRUE && check_class($pref['wysiwyg'])) { require_once(e_HANDLER."tiny_mce/wysiwyg.php"); }
 if (function_exists('headerjs')){echo headerjs();  }
