@@ -115,15 +115,13 @@ $FORUM_MAIN_END = "<div class='spacer'>\n<table style='width:100%' class='fborde
 
 
 
-
-
-
 $FORUM_VIEW_START = "
 <table style='width:100%' class='nforumholder' cellpadding='0' cellspacing='0'>
 <tr>
 <td  colspan='2' class='nforumcaption'>{BREADCRUMB}</td>
 </tr>
 </table>
+
 <table style='width:100%'><tr>
 <td style='width:80%'><div class='mediumtext'><img src='".e_IMAGE."forum/e.png' style='vertical-align:middle' alt='' /> <b>{FORUMTITLE} Forum</b></div>{THREADPAGES}</td>
 <td style='width:20%; text-align:right; vertical-align:bottom;'>
@@ -192,7 +190,7 @@ $FORUM_VIEW_END = "
 </tr>
 </table>
 </div>
-</div>
+
 <div class='nforumdisclaimer' style='text-align:center'>Forum theme loosely based on <a href='http://www.invisionpower.com/'>Invision Power Board</a></div>";
 
 
