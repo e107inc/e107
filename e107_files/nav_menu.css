@@ -44,11 +44,6 @@ div.menuBar a.menuButton:hover, div.menuButton:hover, div.menuButton_over {
   color: #000000;
 }
 
-a.menuItem.highlight {
-  background-color: #FFF9EF;
-}
-
-
 div.menuBar a.menuButtonActive, div.menuButtonActive, div.menuButtonActive:hover, 
 div.menuBar a.menuButtonActive:hover {
   background-color: #ffffef;
@@ -106,4 +101,9 @@ div.menu div.menuItemSep {
   border-top: 1px solid #a5a5a5;
   border-bottom: 1px solid #ffffff;
   margin: 4px 2px;
+}
+
+a.menuItem.header {
+  border-bottom: 1px solid #b3b3b3;
+
 }
