@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/class2.php,v $
-|     $Revision: 1.93 $
-|     $Date: 2004-09-03 01:50:05 $
+|     $Revision: 1.94 $
+|     $Date: 2004-09-03 15:40:55 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -577,10 +577,10 @@ class textparse{
                                 $text = preg_replace("/\n/i", " ", $text);
                                 $text = str_replace("<br />", " <br />" , $text);
                                 $text = e107_parse($text,$referrer);
+                                $text = $this -> bbcode($text, $mode, $referrer);
                                 if($mode != "on"){
                                         $text = $this -> wrap($text, $mode, $referrer, $highlight_search);
                                 }
-                                $text = $this -> bbcode($text, $mode, $referrer);
                                 if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
                                 $search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;span", "&lt;/span");
                                 $replace =  array("\"", "'", "\\", '\"', "\'", "<span", "</span");
