@@ -47,7 +47,7 @@ $HEADER = "
 {CUSTOM=search}
 </td>
 </tr></table><br />
-<table style='width:848px; ' cellspacing='0' cellspacing='0'>
+<table style='width:848px; ' cellspacing='0' cellpadding='0'>
 <tr> <td style='width:174px; vertical-align: top;' class='menubg'>
 {SETSTYLE=leftmenu}
 {SITELINKS=menu}
@@ -55,12 +55,12 @@ $HEADER = "
 </td><td style='500px; vertical-align: top;'>";
 
 $FOOTER = 
-"<td style='width:174px; vertical-align: top;' class='menubg'>
+"</td><td style='width:174px; vertical-align: top;' class='menubg'>
 {MENU=2}
 </td></tr>
 <tr>
 <td style='width:174px; vertical-align: top;' class='menuend'><img src='images/blank.gif' width='174' height='5' alt='' style='display: block;'/></td>
-</td><td style='500px; vertical-align: top;'></td>
+<td style='500px; vertical-align: top;'></td>
 <td style='width:174px; vertical-align: top;' class='menuend'><img src='images/blank.gif' width='174' height='5' alt='' style='display: block;'/></td>
 </tr>
 </table>
@@ -104,7 +104,7 @@ $CUSTOMHEADER = "
 {CUSTOM=search}
 </td>
 </tr></table><br />
-<table style='width:848px; ' cellspacing='0' cellspacing='0'>
+<table style='width:848px; ' cellspacing='0' cellpadding='0'>
 <tr><td style='text-align:center'>";
 
 $CUSTOMFOOTER = "

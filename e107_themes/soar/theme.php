@@ -30,7 +30,7 @@ $HEADER =
 "<div style='text-align:center'>
 <table style='width:751px' cellspacing='0' cellpadding='0'>
 <tr>
-<td><img src='".THEME."images/logo.jpg' alt='' /></div></td>
+<td><img src='".THEME."images/logo.jpg' alt='' /></td>
 </tr>
 </table>
 <table style='width:750px' cellspacing='0' cellpadding='0'>
@@ -41,7 +41,7 @@ $HEADER =
 <td style='50%'>
 {CUSTOM=clock}
 </td>
-<td style='50%' style='text-align:right'>
+<td style='50%; text-align:right'>
 {CUSTOM=search}
 </td>
 </tr>
@@ -94,7 +94,7 @@ $CUSTOMHEADER =
 <td style='50%'>
 {CUSTOM=clock}
 </td>
-<td style='50%' style='text-align:right'>
+<td style='50%; text-align:right'>
 {CUSTOM=search}
 </td>
 </tr>
@@ -151,11 +151,10 @@ $NEWSSTYLE = "
 {NEWSDATE}
 <br />
 {NEWSCOMMENTS}
-</span>
 <br />
 {EMAILICON}
 {PRINTICON}
-</td>
+</div></td>
 </tr>
 </table>
 <br />
@@ -186,7 +185,7 @@ function tablestyle($caption, $text){
 	if($style == "leftmenu"){
 		echo"<table class='border' style='width:100%' cellpadding='0' cellspacing='0'><tr><td class='caption2' style='whitespace:nowrap'>$caption</td></tr><tr><td class='bodytable2'>$text</td></tr></table><br />";
 	}else{
-		echo "<table class='border' style='width:100%' cellpadding='0' cellspacing='0'>\n<tr>\n<td colspan='3' class='caption'>$caption</td>\n<tr>\n<td class='shadow_left'><img src='".THEME."images/blank.gif' width='7' height='21' alt='' style='display: block;' /></td>\n<td class='shadow_middle'></td>\n<td class='shadow_right'><img src='".THEME."images/blank.gif' width='7' height='21' alt='' style='display: block;' /></td>\n</tr>\n<tr>\n<td colspan='3' class='bodytable'>\n$text\n</td>\n</tr>\n</table>";	
+		echo "<table class='border' style='width:100%' cellpadding='0' cellspacing='0'>\n<tr>\n<td colspan='3' class='caption'>$caption</td>\n</tr><tr>\n<td class='shadow_left'><img src='".THEME."images/blank.gif' width='7' height='21' alt='' style='display: block;' /></td>\n<td class='shadow_middle'></td>\n<td class='shadow_right'><img src='".THEME."images/blank.gif' width='7' height='21' alt='' style='display: block;' /></td>\n</tr>\n<tr>\n<td colspan='3' class='bodytable'>\n$text\n</td>\n</tr>\n</table>";	
 	}
 }
 

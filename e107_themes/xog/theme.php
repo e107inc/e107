@@ -63,6 +63,7 @@ Menu area 3
 </tr>
 </table>
 <table style='width:850px' cellspacing='0' cellpadding='0'>
+<tr>
 <td style='width:200px; vertical-align: top;'>
 {SETSTYLE=leftmenu}
 {MENU=1}
@@ -94,6 +95,7 @@ $NEWSSTYLE = "
 {EXTENDED}
 <br />
 <br />
+</div>
 <div class='mediumtext' style='text-align:right'>
 <b>
 {NEWSAUTHOR}
@@ -102,13 +104,12 @@ $NEWSSTYLE = "
 {NEWSDATE}
 <br />
 {NEWSCOMMENTS}
-</span>
 <br />
 {EMAILICON}
 {PRINTICON}
 </div>
 <br />
-<img style='margin-top: 2px; margin-bottom: 2px;' width='610' height='1' src='".THEME."images/hr.png'><br />";
+<img style='margin-top: 2px; margin-bottom: 2px;' width='610' alt='' height='1' src='".THEME."images/hr.png'/><br />";
 
 define("ICONSTYLE", "border:0; vertical-align:middle");
 define("COMMENTLINK", "Read/Post Comment: ");
@@ -124,7 +125,7 @@ define("POST_EXTENDEDSTRING", " ]<br />");
 define(PRELINK, "<div class='linkbox'>| ");
 define(POSTLINK, "</div>");
 define(LINKSTART, "");
-//define(LINKEND, "<br /><img style='margin-top: 2px; margin-bottom: 2px;' width='190' height='1' src='".THEME."images/hr.png'><br />");
+//define(LINKEND, "<br /><img style='margin-top: 2px; margin-bottom: 2px;' width='190' height='1' alt='' src='".THEME."images/hr.png'/><br />");
 define(LINKEND, " | ");
 define(LINKDISPLAY, 1);
 define(LINKALIGN, "left");
