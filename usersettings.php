@@ -58,8 +58,8 @@ if(IsSet($_POST['updatesettings'])){
                 $error .= LAN_105."<br />";
         }
 
-        if(strlen($_POST['password1']) < $pref['signup_pass_len']){
-           
+        if(strlen($_POST['password1']) < $pref['signup_pass_len'] && $_POST['password1'] !=""){
+
                 $error .= LAN_SIGNUP_4.$pref['signup_pass_len'].LAN_SIGNUP_5;
                 $password1 = "";
                 $password2 = "";
@@ -86,7 +86,7 @@ if(IsSet($_POST['updatesettings'])){
         if($file_userfile['error'] != 4){
                 require_once(e_HANDLER."upload_handler.php");
                 require_once(e_HANDLER."resize_handler.php");
-                if($uploaded = file_upload(e_FILE."public/avatars/", TRUE)){
+                if($uploaded = file_upload(e_FILE."public/avatars/", "avatar")){
                         if($uploaded[0]['name'] && $pref['avatar_upload']){
                                 // avatar uploaded
                                 $_POST['image'] = "-upload-".$uploaded[0]['name'];
