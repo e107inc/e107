@@ -34,7 +34,7 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 if(!$mySQLserver){
         @include("e107_config.php");
-        $a=0;
+        $a=0; $p="";
         while(!$mySQLserver && $a<5){
                 $a++;
                 $p.="../";
@@ -43,7 +43,7 @@ if(!$mySQLserver){
         if(!defined("e_HTTP")){ header("Location:install.php"); exit; }
 }
 
-unset($link_prefix);
+$link_prefix="";
 $url_prefix=substr($_SERVER['PHP_SELF'],strlen(e_HTTP),strrpos($_SERVER['PHP_SELF'],"/")+1-strlen(e_HTTP));
 $tmp=explode("?",$url_prefix);
 $num_levels=substr_count($tmp[0],"/");
@@ -384,6 +384,39 @@ class textparse{
                 $text = preg_replace($search, $replace, $text);
                 return $text;
         }
+        
+
+        function tpj($text, $strip=FALSE){
+			$search[0] = "#script#si";
+			$replace[0] = 'scri<i></i>pt';
+			$search[1] = "#document#si";
+			$replace[1] = 'docu<i></i>ment';
+			$search[2] = "#expression#si";
+			$replace[2] = 'expres<i></i>sion';
+			$search[3] = "#onmouseover#si";
+			$replace[3] = 'onmouse<i></i>over';
+			$search[4] = "#onclick#si";
+			$replace[4] = 'on<i></i>click';
+			$search[5] = "#onmousedown#si";
+			$replace[5] = 'onmouse<i></i>down';
+			$search[6] = "#onmouseup#si";
+			$replace[6] = 'onmouse<i></i>up';
+			$search[7] = "#ondblclick#si";
+			$replace[7] = 'on<i></i>dblclick';
+			$search[8] = "#onmouseout#si";
+			$replace[8] = 'onmouse<i></i>out';
+			$search[9] = "#onmousemove#si";
+			$replace[9] = 'onmouse<i></i>move';
+			$search[10] = "#onload#si";
+			$replace[10] = 'on<i></i>load';
+			$search[11] = "#background:url#si";
+			$replace[11] = 'background<i></i>:url';
+			if($strip){
+				$text = strip_tags($text);
+			}
+         $text = preg_replace($search, $replace, $text);
+         return $text;
+        }
 
         function tpa($text, $mode="off", $referrer=""){
                 /*
@@ -468,34 +501,10 @@ class textparse{
         $search[24] = "#\[quote\](.*?)\[/quote\]#si";
         $replace[24] = '<i>"\1"</i>';
 
-        if($referrer != "admin"){
-                $search[25] = "#script#si";
-                $replace[25] = 'scri<i></i>pt';
-                $search[26] = "#document#si";
-                $replace[26] = 'docu<i></i>ment';
-                $search[27] = "#expression#si";
-                $replace[27] = 'expres<i></i>sion';
-                $search[28] = "#onmouseover#si";
-                $replace[28] = 'onmouse<i></i>over';
-                $search[29] = "#onclick#si";
-                $replace[29] = 'on<i></i>click';
-                $search[30] = "#onmousedown#si";
-                $replace[30] = 'onmouse<i></i>down';
-                $search[31] = "#onmouseup#si";
-                $replace[31] = 'onmouse<i></i>up';
-                $search[32] = "#ondblclick#si";
-                $replace[32] = 'on<i></i>dblclick';
-                $search[33] = "#onmouseout#si";
-                $replace[33] = 'onmouse<i></i>out';
-                $search[34] = "#onmousemove#si";
-                $replace[34] = 'onmouse<i></i>move';
-                $search[35] = "#onload#si";
-                $replace[35] = 'on<i></i>load';
-                $search[36] = "#background:url#si";
-                $replace[36] = 'background<i></i>:url';
-        }
-
         $text = preg_replace($search, $replace, $text);
+        if($referrer != "admin"){
+        		$text = $this -> tpj($text);
+        	}
         if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
         $search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;span", "&lt;/span");
         $replace =  array("\"", "'", "\\", '\"', "\'", "<span", "</span");
@@ -580,6 +589,10 @@ class convert{
                         return strftime($pref['forumdate'], $datestamp);
                 }
         }
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+function check_email($var){
+	return (preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]+@([-0-9A-Z]+\.)+([0-9A-Z]){2,4}$/i', $var)) ? $var : FALSE;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function check_class($var, $userclass=USERCLASS, $debug=FALSE){

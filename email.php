@@ -21,16 +21,19 @@ $table = $qs[0];
 $id = $qs[1];
 $type = ($table == "news" ? "news item" : "article");
 
+$comments = textparse::tpj($_POST['comment'],TRUE);
+$author = textparse::tpj($_POST['author_name'],TRUE);
+$email_send = check_email($_POST['email_send']);
 if(IsSet($_POST['emailsubmit'])){
-	if(!preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]+@([-0-9A-Z]+\.)+([0-9A-Z]){2,4}$/i', $_POST['email_send'])){
+	if(!$email_send){
 		 $error .= LAN_106;
 	 }
-	 if($_POST['comment'] == ""){
+	 if($comments == ""){
 		 $message = LAN_188." ".SITENAME." (".SITEURL.")";
 		if(USER == TRUE){
 			$message .= "\n\n".LAN_email_1." ".USERNAME;
 		}else{
-			$message .= "\n\n".LAN_email_1." ".$_POST['author_name'];
+			$message .= "\n\n".LAN_email_1." ".$author;
 		}
 	 }
 	$ip = getip();
@@ -39,16 +42,16 @@ if(IsSet($_POST['emailsubmit'])){
 	if($table == "news"){
 		$sql -> db_Select("news", "*", "news_id='$id' ");
 		list($news_id, $news_title, $news_body, $news_extended, $news_datestamp, $news_author, $news_source, $news_url, $news_category, $news_allow_comments) = $sql-> db_Fetch();
-		$message .= $_POST['comment']."\n\n".$news_title."\n".$news_body."\n".$news_extended."\n\n".SITEURL.e_BASE."comment.php?comment.news.".$id;
+		$message .= $comments."\n\n".$news_title."\n".$news_body."\n".$news_extended."\n\n".SITEURL.e_BASE."comment.php?comment.news.".$id;
 	}else{
 		$row = $sql -> db_Fetch(); 
 		extract($row);
-		$message .= $_POST['comment']."\n\n".SITEURL.e_BASE."article.php?".$id."\n\n".$content_heading."\n".$content_subheading."\n".$content_content."\n\n";
+		$message .= $comments."\n\n".SITEURL.e_BASE."article.php?".$id."\n\n".$content_heading."\n".$content_subheading."\n".$content_content."\n\n";
 	}
 	if($error == ""){
 		require_once(e_HANDLER."mail.php");
-		if(sendemail($_POST['email_send'], LAN_email_3.SITENAME, $message)){
-			$text = "<div style='text-align:center'>".LAN_10." ".$_POST['email_send']."</div>";
+		if(sendemail($email_send, LAN_email_3.SITENAME, $message)){
+			$text = "<div style='text-align:center'>".LAN_10." ".$email_send."</div>";
 		}else{
 			$text = "<div class='center'>".LAN_9."</div>";
 		}
@@ -65,7 +68,7 @@ if(USER != TRUE){
 	$text .= "<tr>
 <td style='width:20%'>".LAN_7."</td>
 <td style='width:80%'>
-<input class='tbox' type='text' name='author_name' size='60' value='$author_name' maxlength='100' />
+<input class='tbox' type='text' name='author_name' size='60' value='$author' maxlength='100' />
 </td>
 </tr>";
 }

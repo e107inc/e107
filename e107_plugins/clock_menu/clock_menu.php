@@ -17,6 +17,7 @@
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
+if(!defined("e_HTTP")){exit;}
 $text = "\n\n<!-- ### clock ### //-->\n<div id='Clock'>&nbsp;</div>\n";
 if(!$clock_flat){
 	$ns -> tablerender($menu_pref['clock_caption'], "<div style='text-align:center'>".$text."</div>");

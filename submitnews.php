@@ -17,6 +17,9 @@
 require_once("class2.php");
 require_once(HEADERF);
 
+$author_name=textparse::tpj($_POST['author_name'],TRUE);
+$author_email=check_email($_POST['author_email']);
+
 if(IsSet($_POST['submit'])){
 
         if($_POST['itemtitle'] == ""){
@@ -29,10 +32,8 @@ if(IsSet($_POST['submit'])){
         $error = TRUE;
         }
 
-
-
-                $user = (USER ? USERNAME : $_POST['author_name']);
-                $email = (USER ? USEREMAIL : $_POST['author_email']);
+                $user = (USER ? USERNAME : $author_name);
+                $email = (USER ? USEREMAIL : $author_email);
 
                 if($user && $email){
 
@@ -92,7 +93,7 @@ if($_FILES['file_userfile']){
   // ==========================================================
                if($error == FALSE){
                 if(!file_exists(e_IMAGE."newspost_images/". $newname)){$newname = ""; }
-                $sql -> db_Insert("submitnews", "0, '$user', '$email', '$itemtitle', '".$_POST['cat_id']."','$item', '".time()."', '$ip', '0', '$newname' ");
+                $sql -> db_Insert("submitnews", "0, '$user', '$email', '$itemtitle', '".intval($_POST['cat_id'])."','$item', '".time()."', '$ip', '0', '$newname' ");
                 $ns -> tablerender(LAN_133, "<div style='text-align:center'>".LAN_134."</div>");
                 require_once(FOOTERF);
                 exit;

@@ -117,9 +117,11 @@ if(!defined("WMFLAG")){
 
 
 if($action == "list"){
+		$sub_action=intval($sub_action);
         $news_total = $sql -> db_Count("news", "(*)", "WHERE news_category=$sub_action");
         $query = "news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_render_type!=2 AND news_category=$sub_action ORDER BY ".$order." DESC LIMIT $from,".ITEMVIEW;
 }else if($action == "item"){
+		$sub_action=intval($sub_action);
         $news_total = $sql -> db_Count("news", "(*)", "WHERE news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_render_type!=2" );
         $query = "news_id=$sub_action AND news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")";
 }else if(strstr(e_QUERY, "month")){
