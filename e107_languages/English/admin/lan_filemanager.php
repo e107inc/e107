@@ -33,4 +33,10 @@ define("FMLAN_29", "Path");
 define("FMLAN_30", "Up level");
 define("FMLAN_31", "folder");
 
+define("FMLAN_32", "Select Directory");
+define("FMLAN_33", "Select");
+define("FMLAN_34", "Directory Choice");
+define("FMLAN_35", "Files Directory");
+define("FMLAN_36", "Custom Directory");
+
 ?>
