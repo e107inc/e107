@@ -94,7 +94,7 @@ if(IsSet($_POST['updatesettings'])){
                 while(list($key, $u_entended) = each($user_entended)){
                     if($u_entended){
 
-                        if($pref['signup_ext'.$key] ==2 && $_POST[str_replace(" ", "_", $u_entended)] == ""){
+                        if($_POST[str_replace(" ", "_", $u_entended)] === "" && $pref['signup_ext'.$key] == 2){
                         $ut = explode("|",$u_entended);
                         $u_name = ($ut[0] != "") ? trim($ut[0]) : trim($u_entended);
                         $error_ext = LAN_SIGNUP_6."<b>".$u_name."</b>".LAN_SIGNUP_7;
