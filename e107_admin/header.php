@@ -71,18 +71,12 @@ if(ADMIN == TRUE){
 
     //    $text = "<a href='".e_ADMIN.$adminfpage."'>".ADLAN_52."</a><br /><a href='".e_BASE."index.php'>".ADLAN_53."</a><br /><br />";
     //     $text ="<div style='text-align:center'>";
-			$text .= show_admin_menu("",$act,$e107_var);
+			$text .= show_admin_menu("",$act,$e107_var)."<br />";
 //         $text .= "<input type='button' class='button' style='width:100%' onClick=\"document.location='".e_ADMIN.$adminfpage."'\" value='".ADLAN_52."' /><br />
 //         <input type='button' class='button' style='width:100%' onClick=\"document.location='".e_BASE."index.php'\" value='".ADLAN_53."' /><br /><br />";
 		
-		unset($e107_var);
 		
 		unset($e107_var);
-		$e107_var['x']['text']=ADLAN_46;
-		$e107_var['x']['link']=e_ADMIN."admin.php?logout";
-		$text .= "<br />".show_admin_menu("",$act,$e107_var);
-		
-        $ns -> tablerender(LAN_head_1, $text);
 		
 		// Admin links menu
 		
@@ -209,7 +203,9 @@ if(ADMIN == TRUE){
 		$e107_var['ff']['link']=e_ADMIN."wmessage.php";
 		$e107_var['ff']['perm']="M";
 		
-		$text .= show_admin_treemenu(ADLAN_93,$act,$e107_var);
+		$text .= get_admin_treemenu(ADLAN_93,$act,$e107_var);
+		
+
 		
 		unset($e107_var);
 		
@@ -234,9 +230,14 @@ if(ADMIN == TRUE){
 				}
 				unset($eplug_conffile, $eplug_name, $eplug_caption);
 			}
-			$text .= show_admin_treemenu(ADLAN_95,$act,$e107_var);
+			$text .= get_admin_treemenu(ADLAN_95,$act,$e107_var);
 			unset($e107_var);
 		}
+//		unset($e107_var);
+//		$e107_var['x']['text']=ADLAN_46;
+//		$e107_var['x']['link']=e_ADMIN."admin.php?logout";
+//		$text .= "<br />".show_admin_menu("",$act,$e107_var);
+      $ns -> tablerender(LAN_head_1, $text);
 
  }else{
 
@@ -296,11 +297,12 @@ function show_admin_menu($title,$page,$e107_vars){
 		$pre = "";
 		$post = "";
 		if($page == $act){
-			$pre = "<b> &laquo; ";
-			$post = " &raquo; </b>";
+			$pre = "<b>&laquo;&nbsp;";
+			$post = "&nbsp;&raquo;</b>";
 		}
+		$t=str_replace(" ","&nbsp;",$e107_vars[$act]['text']);
 		if(!$e107_vars[$act]['perm'] || getperms($e107_vars[$act]['perm'])){
-			$text .= "<tr><td class='button'><a style='cursor:hand; cursor:pointer; text-decoration:none;' href='{$e107_vars[$act]['link']}'><div style='width:100%; text-align:center;'>{$pre}{$e107_vars[$act]['text']}{$post}</div></a></td></tr>";
+			$text .= "<tr><td class='button'><a style='cursor:hand; cursor:pointer; text-decoration:none;' href='{$e107_vars[$act]['link']}'><div style='width:100%; text-align:center;'>{$pre}{$t}{$post}</div></a></td></tr>";
 		}
 	}
 	$text .= "</table>";
@@ -310,12 +312,12 @@ function show_admin_menu($title,$page,$e107_vars){
 	$ns -> tablerender($title,$text);
 }
 
-function show_admin_treemenu($title,$page,$e107_vars){
+function get_admin_treemenu($title,$page,$e107_vars){
 	global $ns;
 	$idtitle="yop_".str_replace(" ","",$title);
 	$text = "<table class='fborder' style='width:100%;'>";
-	$text .= "<tr><td class='button' style='text-align:center; cursor:hand; cursor:pointer;' onclick=\"expandit('{$idtitle}');\" >{$title}</td></tr>";
-	$text .= "<tr id=\"{$idtitle}\" style=\"display: none;\" ><td class='forumheader3' style='text-align:center;'>";
+	$text .= "<tr><td class='button'><a style='text-align:center; cursor:hand; cursor:pointer; text-decoration:none;' onclick=\"expandit('{$idtitle}');\" >{$title}</a></td></tr>";
+	$text .= "<tr id=\"{$idtitle}\" style=\"display: none;\" ><td class='forumheader3' style='text-align:left;'>";
 	foreach(array_keys($e107_vars) as $act){
 		$pre = "";
 		$post = "";
@@ -330,6 +332,7 @@ function show_admin_treemenu($title,$page,$e107_vars){
 	
 	$text .= "</td></tr>";
 	$text .= "</table>";
-	$ns -> tablerender($title,$text);
+	return $text;
+//	$ns -> tablerender($title,$text);
 }
 ?>

@@ -109,8 +109,8 @@ while(list($key, $value) = each($helplist)){
 	$e107_var['x'.$key]['link'] = e_ADMIN."docs.php?".$key;
 }
 
-$text .= show_admin_treemenu(FOOTLAN_14,$act,$e107_var);
-
+$text = get_admin_treemenu(FOOTLAN_14,$act,$e107_var);
+$ns -> tablerender(FOOTLAN_14,$text);
 }
 ?>
 </td>
