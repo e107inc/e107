@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/upload.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-11-04 13:48:16 $
-|     $Author: loloirie $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-08 23:23:16 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -83,7 +83,7 @@ if(IsSet($message)){
 
 $text = "<div style='text-align:center'>
 <form enctype='multipart/form-data' method='post' action='".e_SELF."'>
-<table style='width:70%' class='fborder'>
+<table style='width:97%' class='fborder'>
 <tr>
 <td style='width:20%' class='forumheader3'>".DOWLAN_11.":</td>
 <td style='width:80%' class='forumheader3'>";
@@ -116,40 +116,40 @@ $text = "<div style='text-align:center'>
 if(!USER){
         $text .= "<tr>
 <td style='width:30%' class='forumheader3'>".LAN_61."</td>
-<td style='width:70%' class='forumheader3'><input class='tbox' name='file_poster' type='text' size='50' maxlength='100' /></td>
+<td style='width:70%' class='forumheader3'><input class='tbox' style='width:90%' name='file_poster' type='text' size='50' maxlength='100' /></td>
 </tr>
 
 <tr>
 <td style='width:30%' class='forumheader3'><span style='text-decoration:underline'>".LAN_112."</span></td>
-<td style='width:70%' class='forumheader3'><input class='tbox' name='file_email' type='text' size='50' maxlength='100' value='".USEREMAIL."' /></td>
+<td style='width:70%' class='forumheader3'><input class='tbox' style='width:90%' name='file_email' type='text' size='50' maxlength='100' value='".USEREMAIL."' /></td>
 </tr>";
 }
 
 $text .= "
 <tr>
 <td style='width:30%' class='forumheader3'><span style='text-decoration:underline'>".LAN_409."</span></td>
-<td style='width:70%' class='forumheader3'><input class='tbox' name='file_name' type='text' size='50' maxlength='100' /></td>
+<td style='width:70%' class='forumheader3'><input class='tbox' style='width:90%'  name='file_name' type='text' size='50' maxlength='100' /></td>
 </tr>
 
 <tr>
 <td style='width:30%' class='forumheader3'>".LAN_410."</td>
-<td style='width:70%' class='forumheader3'><input class='tbox' name='file_version' type='text' size='10' maxlength='10' /></td>
+<td style='width:70%' class='forumheader3'><input class='tbox' style='width:90%' name='file_version' type='text' size='10' maxlength='10' /></td>
 </tr>
 
 
 <tr>
 <td style='width:30%' class='forumheader3'><span style='text-decoration:underline'>".LAN_411."</span></td>
-<td style='width:70%' class='forumheader3'><input class='tbox' name='file_userfile[]' type='file' size='47' /></td>
+<td style='width:70%' class='forumheader3'><input class='tbox' style='width:90%'  name='file_userfile[]' type='file' size='47' /></td>
 </tr>
 
 <tr>
 <td style='width:30%' class='forumheader3'>".LAN_412."</td>
-<td style='width:70%' class='forumheader3'><input class='tbox' name='file_userfile[]' type='file' size='47' /></td>
+<td style='width:70%' class='forumheader3'><input class='tbox' style='width:90%' name='file_userfile[]' type='file' size='47' /></td>
 </tr>
 
 <tr>
 <td style='width:30%' class='forumheader3'><span style='text-decoration:underline'>".LAN_413."</span></td>
-<td style='width:70%' class='forumheader3'><textarea class='tbox' name='file_description' cols='59' rows='6'></textarea></td>
+<td style='width:70%' class='forumheader3'><textarea class='tbox' style='width:90%' name='file_description' cols='59' rows='6'></textarea></td>
 </tr>
 
 <tr>
