@@ -256,7 +256,7 @@ class comment{
 					if(!$sql -> db_Insert("comments", "0, '$pid', '$id', '$subject', '$nick', '', '".time()."', '$comment', '0', '$ip', '$type' ")){
 						echo LAN_11;
 					}else{
-						clear_cache("news.php");
+						clear_cache("comment");
 					}
 				}
 			}

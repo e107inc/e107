@@ -143,7 +143,8 @@ if($action == "reply"){
 if($cache = retrieve_cache("comment.php?$table.$id")){
 	require_once(HEADERF);
 	echo $cache;
-	$cached=TRUE;
+	require_once(FOOTERF);
+	exit;
 } else {
 	if($table == "news"){
 		if(!$sql -> db_Select("news", "*", "news_id='$id' ")){
@@ -195,7 +196,6 @@ if($cache = retrieve_cache("comment.php?$table.$id")){
 }
 }
 
-if(!$cached){
 $comment_total = $sql -> db_Select("comments", "*",  "".$query."");
 if($comment_total){
 	$width = 0;
@@ -221,7 +221,6 @@ $cobj -> form_comment($action, $table, $id, $subject, $content_type);
 if(!strstr(e_QUERY, "poll")){
 	$cache = ob_get_contents();
 	set_cache("comment.php?{$table}.{$field}",$cache);
-}
 }
 
 
