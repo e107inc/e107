@@ -62,7 +62,7 @@ $signup_name = array("realname","website","icq","aim","msn","birth_year","locati
 
 
 if(IsSet($_POST['register'])){
-
+		extract($_POST);
         require_once(e_HANDLER."message_handler.php");
 
 

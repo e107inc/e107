@@ -40,7 +40,7 @@ function message_handler($mode, $message, $line=0, $file=""){
 			echo "<script type='text/javascript'>alert(\"".$emessage[$message]."\"); window.history.go(-1); </script>\n";
 		break;
 		case "P_ALERT":
-			echo "<script type='text/javascript'>alert(\"".$message."\");  window.history.go(-1);</script>\n";
+			echo "<script type='text/javascript'>alert(\"".$message."\"); </script>\n";
 		break;
 	}
 }
