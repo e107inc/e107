@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/admin_config.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-28 18:23:56 $
+|     $Revision: 1.2 $
+|     $Date: 2005-02-28 18:41:35 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -51,6 +51,11 @@ if(isset($_POST['updateFeed']))
 	$description = $tp -> toDB($_POST['newsfeed_description']);
 	$sql->db_Update("newsfeed", "newsfeed_name='$name', newsfeed_url='".$_POST['newsfeed_url']."', newsfeed_timestamp='0', newsfeed_image='".$_POST['newsfeed_image']."', newsfeed_description='$description', newsfeed_active=".$_POST['newsfeed_active'].", newsfeed_updateint=".$_POST['newsfeed_updateint']." WHERE newsfeed_id=".$_POST['newsfeed_id']);
 	$message = NFLAN_25;
+}
+
+if($action == "delete") {
+	$sql->db_Delete("newsfeed", "newsfeed_id=$id");
+	$message = NFLAN_40;
 }
 
 if (isset($message)) {
@@ -111,7 +116,7 @@ if($action == "edit")
 }
 else
 {
-	unset($newsfeed_name, $newsfeed_url, $newsfeed_image, $newsfeed_updateint, $newsfeed_active);
+	unset($newsfeed_name, $newsfeed_url, $newsfeed_image, $newsfeed_description, $newsfeed_updateint, $newsfeed_active);
 }
 
 $text = "<div style='text-align:center'>
