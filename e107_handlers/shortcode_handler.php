@@ -12,19 +12,18 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.5 $
-| $Date: 2004-12-11 01:35:14 $
+| $Revision: 1.6 $
+| $Date: 2005-01-20 01:39:04 $
 | $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
-class e_shortcode
-{
+class e_shortcode {
 	var $scList;
 	var $parseSCFiles;
 	var $addedCodes;
 
-	function parseCodes($text,$useSCFiles=TRUE,$extraCodes="") {
+	function parseCodes($text, $useSCFiles=TRUE, $extraCodes='') {
 		$this->parseSCFiles = $useSCFiles;
 		$ret='';
 		if (is_array($extraCodes)) {
@@ -69,6 +68,24 @@ class e_shortcode
 			}
 		}
 		return eval($shortcode);
+	}
+	
+	function parse_scbatch($fname) {
+		$ret = array();
+		$sc_batch = file($fname);
+		$cur_sc='';
+		foreach($sc_batch as $line) {
+			if(trim($line) == 'SC_END') {
+				$cur_sc = '';
+			}
+			if($cur_sc) {
+				$ret[$cur_sc] .= $line;
+			}
+			if(preg_match("#^SC_BEGIN (\w*).*#",$line,$matches)) {
+				$cur_sc = $matches[1];
+			}
+		}
+		return $ret;
 	}
 }
 
