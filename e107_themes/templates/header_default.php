@@ -37,25 +37,24 @@ if($pref['log_activate']){
         echo "
 document.write( '<link rel=\"stylesheet\" type=\"text/css\" href=\"".e_PLUGIN."log/log.php?referer=' + ref + '&color=' + colord + '&eself=' + eself + '&res=' + res + '\">' );";
 }
-echo "var listpics = new Array();
-";
+//echo "var ejs_listpics = new Array();";
+
+$ejs_listpics = "";
 $handle=opendir(THEME."images");
-$nbrpic=0;
 while ($file = readdir($handle)){
-        if($file != "." && $file != ".."){
-                $imagelist[] = $file;
-                echo "listpics[".$nbrpic."]='".THEME."images/".$file."';";
-                $nbrpic++;
+        if(strstr($file,".") && $file != "." && $file != ".."){
+                $ejs_listpics .= $file.",";
         }
 }
+$ejs_listpics = substr($ejs_listpics, 0, -1);
 
 closedir($handle);
 $fader_onload = ($sql -> db_Select("menus", "*", "menu_name='fader_menu' AND menu_location!='0' ") ? "changecontent()" : "");
-echo "\nfor(i=0;i<(".$nbrpic."-1);i++){ preloadimages(i,listpics[i]); }
-// -->
-</script>
-<script type='text/javascript'>
-window.onload=function(){externalLinks(); ".$fader_onload."}
+echo "\n
+ejs_preload('".THEME."images/','".$ejs_listpics."');\n
+
+window.onload=function(){externalLinks(); ".$fader_onload."}\n
+// -->\n
 </script>
 </head>
 <body >";
