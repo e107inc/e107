@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/search_menu/search_menu.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-05 10:13:34 $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-13 13:18:30 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -41,9 +41,8 @@ if (strstr(e_PAGE, "news.php")) {
 	 $page = 99;
 }
 	
-$search_size = $custom_query[1] ? $custom_query[1] :
- '20';
-if ($custom_query[2] != '') {
+$search_size = (isset($custom_query[1]) && $custom_query[1]) ? $custom_query[1] : '20';
+if (isset($custom_query[2]) && $custom_query[2] != '') {
 	$image_file = ($custom_query[2] != 'default') ? $custom_query[2] : e_PLUGIN.'search_menu/images/search.png';
 	$search_button = "<input type='image' src='".$image_file."' value='".LAN_180."' style='width: 16px; height: 16px; border: 0px; vertical-align: middle' name='searchsubmit' />";
 } else {
@@ -56,7 +55,7 @@ $text = "<form method='post' action='".e_BASE."search.php'>
 	".$search_button."
 	</p>
 	</form>";
-if ($searchflat) {
+if (isset($searchflat) && $searchflat) {
 	echo $text;
 } else {
 	$ns->tablerender(LAN_180." ".SITENAME, "<div style='text-align:center'>".$text."</div>", 'search');
