@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-27 19:52:29 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-01 17:36:32 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 @include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_userclass.php");
@@ -111,25 +111,25 @@ function r_userclass_radio($fieldname, $curval = 0) {
 	
 function r_userclass_name($id) {
 	$sql = new db;
-	if ($sql->db_Select("userclass_classes", "userclass_name", "userclass_id=$id")) {
-		extract($row = $sql->db_Fetch());
-		return $userclass_name;
-	} else {
-		switch ($id) {
-			case e_UC_PUBLIC:
-			return UC_LAN_0;
-			case e_UC_GUEST:
-			return UC_LAN_1;
-			case e_UC_NOBODY:
-			return UC_LAN_2;
-			case e_UC_MEMBER:
-			return UC_LAN_3;
-			case e_UC_READONLY:
-			return UC_LAN_4;
-			case e_UC_ADMIN:
-			return UC_LAN_5;
+	$class_names = getcachedvars('userclass_names');
+	if(!is_array($class_names))
+	{
+		if ($sql->db_Select("userclass_classes", "userclass_id, userclass_name"))
+		{
+			while($row = $sql->db_Fetch())
+			{
+				$class_names[$row['userclass_id']] = $row['userclass_name'];
+			}
+			$class_names[e_UC_PUBLIC] = UC_LAN_0;
+			$class_names[e_UC_GUEST] = UC_LAN_1;
+			$class_names[e_UC_NOBODY] = UC_LAN_2;
+			$class_names[e_UC_MEMBER] = UC_LAN_3;
+			$class_names[e_UC_READONLY] = UC_LAN_4;
+			$class_names[e_UC_ADMIN] = UC_LAN_5;
+			cachevars('userclass_names', $class_names);
 		}
 	}
+	return $class_names[$id];
 }
 	
 class e_userclass {
