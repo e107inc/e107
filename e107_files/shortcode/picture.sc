@@ -1,13 +1,15 @@
 if(is_numeric($parm))
 {
-	if($m[2] == USERID)
+	if($parm == USERID)
 	{
 		$image = USERSESS;
 	}
 	else
 	{
-		$sql2 = new db;
-		$sql2 -> db_Select("user","user_sess","user_id = '{$m[2]}'");
+		if(!is_object($sql2)){
+			$sql2 = new db;
+		}
+		$sql2 -> db_Select("user","user_sess","user_id = '{$parm}'");
 		$row = $sql2 -> db_Fetch();
 		$image=$row['user_sess'];
 	}
