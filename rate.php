@@ -16,7 +16,7 @@ require_once("class2.php");
 
 $qs = explode("^", e_QUERY);
 
-if(!$qs[0] || USER == FALSE || $qs[3]>10){
+if(!$qs[0] || USER == FALSE || $qs[3]>10 || $qs[3]<1){
 	header("location:".e_BASE."index.php");
 	exit;
 }

@@ -330,9 +330,15 @@ if(IsSet($_POST['reply'])){
 }
 
 if(IsSet($_POST['update_thread'])){
+
 	if(!$_POST['subject'] || !$_POST['post']){
 		$error = "<div style='text-align:center'>".LAN_27."</div>";
 	}else{
+		if(!isAuthor($thread_id)){
+			$ns -> tablerender(LAN_95, "<div style='text-align:center'>".LAN_96."</div>");
+			require_once(FOOTERF);
+			exit;
+		}
 		$post = $aj -> formtpa($_POST['post']."\n<span class='smallblacktext'>[ ".LAN_29." ".$datestamp." ]</span>", "public");
 		$subject = $aj -> formtpa($_POST['subject'], "public");
 
@@ -349,6 +355,11 @@ if(IsSet($_POST['update_reply'])){
 	if(!$_POST['post']){
 		$error = "<div style='text-align:center'>".LAN_27."</div>";
 	}else{
+		if(!isAuthor($thread_id)){
+			$ns -> tablerender(LAN_95, "<div style='text-align:center'>".LAN_96."</div>");
+			require_once(FOOTERF);
+			exit;
+		}
 		$datestamp = $gen->convert_date(time(), "forum");
 		$post = $aj -> formtpa($_POST['post']."\n<span class='smallblacktext'>[ ".LAN_29." ".$datestamp." ]</span>", "public");
 
@@ -625,6 +636,14 @@ if($action == "rp"){
 }
 
 if($pref['forum_enclose']){ $ns -> tablerender($pref['forum_title'], $text); }else{ echo $text; }
+
+function isAuthor($thread){
+	global $sql;
+	$sql -> db_Select("forum_t", "thread_user", "thread_id='".$thread."' ");
+	$row = $sql-> db_Fetch("no_strip");
+	$post_author_id = substr($row[0], 0, strpos($row[0], "."));
+	return ($post_author_id == USERID || ADMIN === TRUE);
+}
 
 function getuser($name){
 	global $sql, $aj;

@@ -30,8 +30,16 @@ if(!$id){
 }
 $cobj = new comment;
 if(IsSet($_POST['commentsubmit'])){
-	$cobj -> enter_comment($_POST['author_name'], $_POST['comment'], $table, $id);
-	$sql -> db_Delete("cache", "cache_url='comment.php?$table.$id'");
+	if(!$sql -> db_Select("news", "news_allow_comments", "news_id='$id' ")){
+		header("location:".e_BASE."index.php");
+		exit;
+	}else{
+		$row = $sql -> db_Fetch();
+		if(!$row[0] && (ANON===TRUE || USER===TRUE)){
+			$cobj -> enter_comment($_POST['author_name'], $_POST['comment'], $table, $id);
+			$sql -> db_Delete("cache", "cache_url='comment.php?$table.$id'");
+		}
+	}
 }
 
 if($sql -> db_Select("cache", "*", "cache_url='comment.php?$table.$id' ")){
@@ -39,8 +47,6 @@ if($sql -> db_Select("cache", "*", "cache_url='comment.php?$table.$id' ")){
 	require_once(HEADERF);
 	echo stripslashes($cache_data);
 }else{
-	
-
 	if($table == "news"){
 		if(!$sql -> db_Select("news", "*", "news_id='$id' ")){
 			header("location:".e_BASE."index.php");
