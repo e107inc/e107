@@ -127,6 +127,9 @@ if($action == "confirm"){
         if($sql -> db_Delete("content", "content_id='$sub_action' ")){
                 $message = ARLAN_30;
                 clear_cache("article");
+				$action = "";
+				$sub_action = "";
+				$id = "";
         }
 }
 
