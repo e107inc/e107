@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:11:55 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-03-06 01:53:05 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("USRLAN_1", "Options Saved.");
@@ -140,5 +140,10 @@ define("USRLAN_122", "Welcome to");
 define("USRLAN_123", "Your registration has been received and created.");
 define("USRLAN_124", "Your account is currently marked as being inactive, to activate your account please go to the following link");
 define("USRLAN_125", "From");
+
+
+define("USRLAN_126", "Allow users to rate users");
+define("USRLAN_127", "Allow comments in user profile");
+
 
 ?>
