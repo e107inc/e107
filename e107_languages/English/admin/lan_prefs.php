@@ -112,4 +112,8 @@ define("CUSTSIG_13", "Fields");
 define("CUSTSIG_14", "Display");
 define("CUSTSIG_15", "Required");
 define("CUSTSIG_16", "Minimum Length for Passwords");
+
+
+define("PRFLAN_89", "Site Header:");
+define("PRFLAN_90", "Click here to force Internet Explorer to use standards mode. Default is quirks mode.");
 ?>
