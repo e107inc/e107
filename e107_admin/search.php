@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/search.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-03-23 21:13:44 $
+|     $Revision: 1.13 $
+|     $Date: 2005-03-27 08:01:51 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -34,6 +34,7 @@ $search_handlers['downloads'] = SEALAN_8;
 
 if (isset($_POST['updatesettings'])) {
 	$pref['search_restrict'] = $_POST['search_restrict'];
+	$pref['search_highlight'] = $_POST['search_highlight'];
 	save_prefs();
 	$search_prefs['search_sort'] = $_POST['search_sort'];
 	$search_prefs['relevance'] = $_POST['relevance'];
@@ -96,6 +97,14 @@ $text .= "<tr>
 $text .= "<tr>
 <td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_3."</td>
 <td style='width:50%;' colspan='2' class='forumheader3'>".$rs -> form_radio('search_sort', 'php', ($search_prefs['search_sort'] == 'php' ? 1 : 0))."PHP".$rs -> form_radio('search_sort', 'mysql', ($search_prefs['search_sort'] == 'mysql' ? 1 : 0))."MySql</td>
+</tr>";
+
+$text .= "<tr>
+<td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_30."</td>
+<td style='width:50%;' colspan='2' class='forumheader3'>
+<input type='radio' name='search_highlight' value='1'".($pref['search_highlight'] ? " checked='checked'" : "")." /> ".SEALAN_16."&nbsp;&nbsp;
+<input type='radio' name='search_highlight' value='0'".(!$pref['search_highlight'] ? " checked='checked'" : "")." /> ".SEALAN_17."
+</td>
 </tr>";
 
 $text .= "<tr>
