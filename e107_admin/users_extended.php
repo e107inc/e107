@@ -11,13 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-04-01 04:32:45 $
+|     $Revision: 1.4 $
+|     $Date: 2005-04-01 18:55:08 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
-
 if (!getperms("4")) {
 	header("location:".e_BASE."index.php");
 	exit;
@@ -49,8 +48,9 @@ if (isset($_POST['up_x']))
 	$qs = explode(".", $_POST['id']);
 	$_id = $qs[0];
 	$_order = $qs[1];
-	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_order='".($_order-1)."'");
-	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_id='".$_id."'");
+	$_parent = $qs[2];
+	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_order<='".($_order)."'");
+	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_id='".$_id."'");
 }
 
 if (isset($_POST['down_x']))
@@ -58,22 +58,68 @@ if (isset($_POST['down_x']))
 	$qs = explode(".", $_POST['id']);
 	$_id = $qs[0];
 	$_order = $qs[1];
-	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_order='".($_order+1)."'");
-	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_id='".$_id."'");
+	$_parent = $qs[2];
+	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_order='".($_order)."'");
+	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_id='".$_id."'");
+}
+
+
+if (isset($_POST['catup_x']))
+{
+	$qs = explode(".", $_POST['id']);
+	$_id = $qs[0];
+	$_order = $qs[1];
+	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_parent = 0 AND user_extended_struct_order='".($_order)."'");
+	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_parent = 0 AND user_extended_struct_id='".$_id."'");
+}
+
+if (isset($_POST['catdown_x']))
+{
+	$qs = explode(".", $_POST['id']);
+	$_id = $qs[0];
+	$_order = $qs[1];
+	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type = 0 AND user_extended_struct_order='".($_order)."'");
+	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type = 0 AND user_extended_struct_id='".$_id."'");
 }
 
 if (isset($_POST['add_field']))
 {
-	if($ue->user_extended_add($_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $_POST['user_parms'], $_POST['user_values'], $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable']))
+	if($ue->user_extended_add($_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $_POST['user_parms'], $_POST['user_values'], $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable'], 0, $_POST['user_parent']))
 	{
 		$message = EXTLAN_29;
 	}
 }
 
 if (isset($_POST['update_field'])) {
-	if($ue->user_extended_modify($sub_action, $_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $_POST['user_parms'], $_POST['user_values'], $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable']))
+	if($ue->user_extended_modify($sub_action, $_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $_POST['user_parms'], $_POST['user_values'], $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable'], $_POST['user_parent']))
 	{
 		$message = EXTLAN_29;
+	}
+}
+
+if (isset($_POST['update_category']))
+{
+	$name = $tp->toHTML($_POST['user_field']);
+	if($sql->db_Update("user_extended_struct","user_extended_struct_name = '{$name}', user_extended_struct_read = '{$_POST['user_read']}', user_extended_struct_write = '{$_POST['user_write']}', user_extended_struct_applicable = '{$_POST['user_applicable']}' WHERE user_extended_struct_id = '{$sub_action}'"))
+	{
+		$message = EXTLAN_43;
+	}
+	else
+	{
+		$message = LAN_UPDATED_FAILED;
+	}
+}
+
+if (isset($_POST['add_category']))
+{
+	$name = $tp->toHTML($_POST['user_field']);
+	if($sql->db_Insert("user_extended_struct","'0', '$name', '', 0, '', '', '', '{$_POST['user_read']}', '{$_POST['user_write']}', '', '', '{$_POST['user_applicable']}', '0', '0'"))
+	{
+		$message = EXTLAN_40;
+	}
+	else
+	{
+		$message = LAN_CREATED_FAILED;
 	}
 }
 
@@ -83,6 +129,15 @@ if ($_POST['eu_action'] == "delext")
 	if($ue->user_extended_remove($_id, $_name))
 	{
 		$message = EXTLAN_30;
+	}
+}
+
+if ($_POST['eu_action'] == "delcat")
+{
+	list($_id, $_name) = explode(",",$_POST['key']);
+	if($ue->user_extended_remove($_id, $_name))
+	{
+		$message = EXTLAN_41;
 	}
 }
 
@@ -108,7 +163,7 @@ if ($action == "editext")
 
 if($action == 'cat')
 {
-	if(is_integer($sub_action))
+	if(is_numeric($sub_action))
 	{
 		if($sql->db_Select('user_extended_struct','*',"user_extended_struct_id = '{$sub_action}'"))
 		{
@@ -144,22 +199,21 @@ class users_ext
 		";
 
 		$catList = $ue->user_extended_get_categories();
-		$catList[0] = array('user_extended_struct_name' => EXTLAN_36);
+		$catList[0][0] = array('user_extended_struct_name' => EXTLAN_36);
 		$catNums = array_keys($catList);
-		sort($catNums);
 		$extendedList = $ue->user_extended_get_fields();
 		foreach($catNums as $cn)
 		{
 			$text .= "
 			<tr>
-			<td class='fcaption' colspan='9' style='text-align:center'>{$catList[$cn]['user_extended_struct_name']}</td>
+			<td class='fcaption' colspan='9' style='text-align:center'>{$catList[$cn][0]['user_extended_struct_name']}</td>
 			</tr>
 			";
 
 			$i=0;
 			if(count($extendedList))
 			{
-				//			Show current extended fields
+				//	Show current extended fields
 				foreach($extendedList[$cn] as $ext)
 				{
 					$text .= "
@@ -178,18 +232,18 @@ class users_ext
 					<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_read'])."</td>
 					<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_write'])."</td>
 					<td class='forumheader3'>
-					<form method='post' action='".e_SELF."?extended'>
-					<input type='hidden' name='id' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}' />
+					<form method='post' action='".e_SELF."'>
+					<input type='hidden' name='id' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />
 					";
 					if($i > 0)
 					{
 						$text .= "
-						<input type='image' alt='' title='".EXTLAN_26."' src='".e_IMAGE."/admin_images/up.png' name='up' value='{$ext['user_extended_struct_id']}' />
+						<input type='image' alt='' title='".EXTLAN_26."' src='".e_IMAGE."/admin_images/up.png' name='up' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />
 						";
 					}
 					if($i <= count($extendedList[$cn])-2)
 					{
-						$text .= "<input type='image' alt='' title='".EXTLAN_25."' src='".e_IMAGE."/admin_images/down.png' name='down' value='{$ext['user_extended_struct_id']}' />";
+						$text .= "<input type='image' alt='' title='".EXTLAN_25."' src='".e_IMAGE."/admin_images/down.png' name='down' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />";
 					}
 					$text .= "
 					</form>
@@ -292,6 +346,20 @@ class users_ext
 		</tr>
 
 		<tr>
+		<td style='width:30%' class='forumheader3'>".EXTLAN_44."</td>
+		<td style='width:70%' class='forumheader3' colspan='3'>
+		<select class='tbox' name='user_parent'>";
+		foreach($catNums as $k)
+		{
+			$sel = ($k == $current['user_extended_struct_parent']) ? " selected='selected' " : "";
+			$text .= "<option value='{$k}' {$sel}>{$catList[$k][0]['user_extended_struct_name']}</option>\n";
+		}
+		$text .= "</select>
+		
+		</td>
+		</tr>
+
+		<tr>
 		<td style='width:30%' class='forumheader3'>".EXTLAN_18."</td>
 		<td style='width:70%' class='forumheader3' colspan='3'>
 		<select class='tbox' type='text' name='user_required'>
@@ -377,7 +445,7 @@ class users_ext
 		<td class='fcaption'>".EXTLAN_8."</td>
 		</tr>
 		";
-		$catList = $ue->user_extended_get_categories();
+		$catList = $ue->user_extended_get_categories(FALSE);
 		if(count($catList))
 		{
 			//			Show current categories
@@ -385,34 +453,33 @@ class users_ext
 			foreach($catList as $ext)
 			{
 				$text .= "
-				<td class='forumheader3'>{$ext['user_extended_struct_name']}<br />[{$ext['user_extended_struct_text']}]</td>
+				<td class='forumheader3'>{$ext['user_extended_struct_name']}</td>
 				</td>
-				<td class='forumheader3'>".($ext['user_extended_struct_required'] ? LAN_YES : LAN_NO)."</td>
 				<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_applicable'])."</td>
 				<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_read'])."</td>
 				<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_write'])."</td>
 				<td class='forumheader3'>
-				<form method='post' action='".e_SELF."?extended'>
+				<form method='post' action='".e_SELF."?cat'>
 				<input type='hidden' name='id' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}' />
 				";
 				if($i > 0)
 				{
 					$text .= "
-					<input type='image' alt='' title='".EXTLAN_26."' src='".e_IMAGE."/admin_images/up.png' name='up' value='{$ext['user_extended_struct_id']}' />
+					<input type='image' alt='' title='".EXTLAN_26."' src='".e_IMAGE."/admin_images/up.png' name='catup' value='{$ext['user_extended_struct_id']}' />
 					";
 				}
-				if($i <= count($extendedList)-2)
+				if($i <= count($catList)-2)
 				{
-					$text .= "<input type='image' alt='' title='".EXTLAN_25."' src='".e_IMAGE."/admin_images/down.png' name='down' value='{$ext['user_extended_struct_id']}' />";
+					$text .= "<input type='image' alt='' title='".EXTLAN_25."' src='".e_IMAGE."/admin_images/down.png' name='catdown' value='{$ext['user_extended_struct_id']}' />";
 				}
 				$text .= "
 				</form>
 				</td>
 				<td class='forumheader3' style='text-align:center;'>
-				<a style='text-decoration:none' href='".e_SELF."?editext.{$ext['user_extended_struct_id']}'>".ADMIN_EDIT_ICON."</a>
+				<a style='text-decoration:none' href='".e_SELF."?cat.{$ext['user_extended_struct_id']}'>".ADMIN_EDIT_ICON."</a>
 				&nbsp;
-				<form method='post' action='".e_SELF."?extended' onsubmit='return confirm(\"".EXTLAN_27."\")'>
-				<input type='hidden' name='eu_action' value='delext' />
+				<form method='post' action='".e_SELF."?cat' onsubmit='return confirm(\"".EXTLAN_27."\")'>
+				<input type='hidden' name='eu_action' value='delcat' />
 				<input type='hidden' name='key' value='{$ext['user_extended_struct_id']},{$ext['user_extended_struct_name']}' />
 				<input type='image' title='".LAN_DELETE."' name='eudel' src='".ADMIN_DELETE_ICON_PATH."' />
 				</form>
@@ -481,7 +548,7 @@ class users_ext
 		else
 		{
 			$text .= "
-			<input class='button' type='submit' name='update_category' value='".EXTLAN_24."' /> &nbsp; &nbsp;
+			<input class='button' type='submit' name='update_category' value='".EXTLAN_42."' /> &nbsp; &nbsp;
 			<input class='button' type='submit' name='cancel_cat' value='".EXTLAN_33."' />
 			";
 		}
