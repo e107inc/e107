@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.31 $
-|   $Date: 2005-02-09 22:24:23 $
+|   $Revision: 1.32 $
+|   $Date: 2005-02-10 06:14:06 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -594,10 +594,15 @@ class newspost {
 			<td style='width:20%' class='forumheader3'>".NWSLAN_73.":</td>
 			<td style='width:80%' class='forumheader3'>
 			<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_74."</a>
-			<div style='display: none;'>".
-		(!$_POST['news_rendertype'] ? "<input name='news_rendertype' type='radio' value='0' checked='checked' />" : "<input name='news_rendertype' type='radio' value='0' />").NWSLAN_75."<br />". ($_POST['news_rendertype'] == 1 ? "<input name='news_rendertype' type='radio' value='1' checked='checked' />" : "<input name='news_rendertype' type='radio' value='1' />").NWSLAN_76."<br />". ($_POST['news_rendertype'] == 2 ? "<input name='news_rendertype' type='radio' value='2' checked='checked' />" : "<input name='news_rendertype' type='radio' value='2' />").NWSLAN_77."
+			<div style='display: none;'>";
+			$ren_type = array(NWSLAN_75,NWSLAN_76,NWSLAN_77,NWSLAN_77." 2");
+			foreach($ren_type as $key=>$value){
+				$checked = ($_POST['news_rendertype'] == $key) ? "checked='checked'" : "";
+				$text .= "<input name='news_rendertype' type='radio' value='$key' $checked />";
+				$text .= $value."<br />";
+			}
 
-			</div>
+			$text .="</div>
 			</td>
 			</tr>
 
