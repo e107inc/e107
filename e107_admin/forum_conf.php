@@ -70,7 +70,11 @@ if($action == "confirm"){
 		$row = $sql -> db_Fetch(); extract($row);
 		$replies = $sql -> db_Count("forum_t", "(*)", "WHERE thread_parent='".$thread_parent."'");
 		$pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
-		$pages = ((ceil($replies/$pref['forum_postspage']) -1) * $pref['forum_postspage']);
+		
+		$pages= 0;
+		if($replies){
+			$pages = ((ceil($replies/$pref['forum_postspage']) -1) * $pref['forum_postspage']);
+		}
 		
 		$url = e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_parent.($pages ? ".$pages" : "");	// set return url
 		$message = FORLAN_26;
