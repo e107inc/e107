@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/templates/poll_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-20 19:51:38 $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-25 17:07:01 $
 |     $Author: stevedunstan $
 |
 +----------------------------------------------------------------------------+
@@ -24,18 +24,24 @@
 
 $POLL_NOTVOTED_START = "
 <div style='text-align:center'>
+<p>
 <br />
 <b><i>{QUESTION}</i></b>
+</p>
 <hr />
 </div>
-<br />";
+<p>
+<br />
+";
 
 $POLL_NOTVOTED_LOOP = "
 {OPTIONBUTTON}<b>{OPTION}</b>
 <br /><br />";
 
 $POLL_NOTVOTED_END = "
+</p>
 <div style='text-align:center' class='smalltext'>
+<p>
 {SUBMITBUTTON}
 <br /><br />
 {AUTHOR}
@@ -43,6 +49,7 @@ $POLL_NOTVOTED_END = "
 {VOTE_TOTAL} {COMMENTS}
 <br />
 {OLDPOLLS}
+</p>
 </div>";
 
 
@@ -50,11 +57,11 @@ $POLL_NOTVOTED_END = "
 /*		template for polls when user HAS voted ...			*/
 
 $POLL_VOTED_START = "
-<div style='text-align:center'>
+<span style='text-align:center'>
 <br />
 <b><i>{QUESTION}</i></b>
 <hr />
-</div>
+</span>
 <br />
 ";
 

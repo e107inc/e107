@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-03-24 22:28:06 $
+|     $Revision: 1.13 $
+|     $Date: 2005-03-25 17:05:30 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -156,7 +156,7 @@ class poll
 		switch ($POLLMODE)
 		{
 			case "notvoted":
-				$text = "<form method='post' action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."'>\n<p>\n".preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_NOTVOTED_START : $POLL_NOTVOTED_START));
+				$text = "<form method='post' action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."'>\n".preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_NOTVOTED_START : $POLL_NOTVOTED_START));
 				$count = 1;
 				foreach($optionArray as $option)
 				{
@@ -168,7 +168,7 @@ class poll
 				}
 				$SUBMITBUTTON = "<input class='button' type='submit' name='pollvote' value='".POLLAN_30."' onclick='setcook(\"".$pollArray['poll_id']."\");' />";
 				
-				$text .= "</p>\n".preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_NOTVOTED_END : $POLL_NOTVOTED_END))."</p>\n</form>";
+				$text .= "\n".preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_NOTVOTED_END : $POLL_NOTVOTED_END))."\n</form>";
 			break;
 
 			case "voted":
