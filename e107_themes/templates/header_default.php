@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-02-10 18:58:01 $
-|     $Author: stevedunstan $
+|     $Revision: 1.26 $
+|     $Date: 2005-02-13 07:28:17 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!function_exists("parseheader")) {
@@ -37,7 +37,7 @@ echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET.
 <title>".SITENAME.(defined("e_PAGETITLE") ? ": ".e_PAGETITLE : (defined("PAGE_NAME") ? ": ".PAGE_NAME : ""))."</title>\n";
 echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
 <meta http-equiv='content-style-type' content='text/css' />\n";
-echo "<link rel='alternate' type='application/rss+xml' title='".SITENAME." RSS' href='".e_FILE."backend/news.xml' />\n";
+echo "<link rel='alternate' type='application/rss+xml' title='".SITENAME." RSS' href='".e_PLUGIN."rss_menu/rss.php?1.2' />\n";
 if (isset($theme_css_php) && $theme_css_php) {
 	echo "<link rel='stylesheet' href='".THEME."theme-css.php' type='text/css' />";
 } else {
