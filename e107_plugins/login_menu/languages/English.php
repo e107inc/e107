@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/languages/English.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:30 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-16 01:04:08 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -30,7 +30,6 @@ define("LOGIN_MENU_L10", "The maintenance flag is true - this means normal visit
 define("LOGIN_MENU_L11", "Admin Area");
 define("LOGIN_MENU_L12", "Settings");
 define("LOGIN_MENU_L13", "Profile");
-
 define("LOGIN_MENU_L14", "news item");
 define("LOGIN_MENU_L15", "news items");
 define("LOGIN_MENU_L16", "chatbox post");
@@ -45,10 +44,19 @@ define("LOGIN_MENU_L24", "Click here to see list of new items");
 define("LOGIN_MENU_L25", "Since your last visit there have been");
 define("LOGIN_MENU_L26", "no");
 define("LOGIN_MENU_L27", "and");
-
 define("LOGIN_MENU_L28", "Login");
 
 define("LOGIN_MENU_L29", "new article");
 define("LOGIN_MENU_L30", "new articles");
+
+// New config options
+define('LOGIN_MENU_L31', 'Show New News Posts');
+define('LOGIN_MENU_L32', 'Show New Article Posts');
+define('LOGIN_MENU_L33', 'Show New Chatbox Posts');
+define('LOGIN_MENU_L34', 'Show New Comment Posts');
+define('LOGIN_MENU_L35', 'Show New Forum Posts');
+define('LOGIN_MENU_L36', 'Show New Members');
+define('LOGIN_MENU_L37', 'Update Settings');
+define('LOGIN_MENU_L38', 'Settings Updated');
 
 ?>
