@@ -131,8 +131,25 @@ if($action == "content"){
 			$content_content = $content_content."<br /><br />".$textemailprint;
 		}
 		$text = ($content_parent ? $aj -> tpa($content_content, "nobreak", "admin", $highlight_search) : $aj -> tpa($content_content, "off", "admin", $highlight_search));
-		$caption = $aj -> tpa($content_subheading, "off", "admin");
-		$ns -> tablerender($caption, $text);
+		
+		if($info = preg_split("#\[section=(.*?)\]#",$text,-1,PREG_SPLIT_DELIM_CAPTURE))
+		{
+			for($sec=0; $sec < count($info); $sec+=2 )
+			{
+				if($sec == 0)
+				{
+					$caption = $aj -> tpa($content_subheading, "off", "admin");
+				} else 
+				{
+					$caption = $aj -> tpa($info[$sec-1], "off", "admin");
+				}
+				$ns -> tablerender($caption, $info[$sec]);
+			}
+		} else 
+		{
+			$caption = $aj -> tpa($content_subheading, "off", "admin");
+			$ns -> tablerender($caption, $text);
+		}
 		
 		if($pref['cachestatus']){
 			$cache = $aj -> formtpa(ob_get_contents(), "admin");
