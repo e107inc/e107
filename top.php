@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/top.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-02-16 21:34:03 $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-16 21:43:53 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -86,37 +86,6 @@ if ($action == "active") {
 				} else {
 					$LASTPOST = "<a href='".e_BASE."user.php?id.".$lastpost_id."'>".$lastpost_name."</a><br />".$lastpost_datestamp;
 				}
-				
-/*
-				$sql2->db_Select("forum_t", "thread_lastpost, thread_lastuser", "thread_parent='$thread_id' ORDER BY thread_views DESC");
-				list($r_datestamp, $r_user) = $sql2->db_Fetch();
-				$lastpost_datestamp = $gen->convert_date($r_datestamp, "forum");
-
-				
-
-
-				$r_id = substr($r_user, 0, strpos($r_user, "."));
-				$r_name = substr($r_user, (strpos($r_user, ".")+1));
-				 
-				if (strstr($r_name, chr(1))) {
-					$tmp = explode(chr(1), $r_name);
-					$r_name = $tmp[0];
-				}
-				 
-				$r_datestamp = $gen->convert_date($r_datestamp, "forum");
-				 
-				$post_author_id = substr($thread_user, 0, strpos($thread_user, "."));
-				$post_author_name = substr($thread_user, (strpos($thread_user, ".")+1));
-				if (strstr($post_author_name, chr(1))) {
-					$tmp = explode(chr(1), $post_author_name);
-					$post_author_name = $tmp[0];
-				}
-				$post_author_name = ($post_author_id != 0 ? "<a href='".e_BASE."user.php?id.$post_author_id'>$post_author_name</a>" : $post_author_name);
-				$replies = $sql2->db_Select("forum_t", "*", "thread_parent=$thread_id");
-				 
-
-*/
-
 
 				$text .= "<tr>
 					<td style='width:5%; text-align:center' class='forumheader3'><img src='".e_IMAGE."forum/new_small.png' alt='' /></td>
@@ -130,9 +99,6 @@ if ($action == "active") {
 		}
 		 
 		$text .= "</table>\n</div>";
-		 
-		 
-		//$text = ($pref['nfp_layer'] ? "<div style='border : 0; padding : 4px; width : auto; height : ".$pref['nfp_layer_height']."px; overflow : auto; '>".$text."</div>" : $text);
 		 
 		$ns->tablerender(LAN_7, $text, "nfp");
 		require_once(e_HANDLER."np_class.php");
