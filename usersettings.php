@@ -58,6 +58,13 @@ if(IsSet($_POST['updatesettings'])){
                 $error .= LAN_105."<br />";
         }
 
+        if(strlen($_POST['password1']) < $pref['signup_pass_len']){
+           
+                $error .= LAN_SIGNUP_4.$pref['signup_pass_len'].LAN_SIGNUP_5;
+                $password1 = "";
+                $password2 = "";
+        }
+
         if($_POST['password1'] =="" || $_POST['password2'] == ""){
                 $password = $_POST['_pw'];
         }else{
@@ -168,7 +175,11 @@ $rs -> form_text("name", 20, $name, 100, "tbox", TRUE)
 <tr>
 <td style='width:20%' class='forumheader3'>".LAN_152."<br /><span class='smalltext'>".LAN_401."</span></td>
 <td style='width:80%' class='forumheader2'>
-".$rs -> form_password("password1", 40, "", 20)."
+".$rs -> form_password("password1", 40, "", 20);
+if($pref['signup_pass_len']){
+$text .= "<br><span class='smalltext'>  (".LAN_SIGNUP_1." {$pref['signup_pass_len']} ".LAN_SIGNUP_2.")</span>";
+}
+$text .="
 </td>
 </tr>
 

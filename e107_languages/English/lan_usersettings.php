@@ -57,4 +57,9 @@ define("LAN_430", "Download");
 define("LAN_431", "Article");
 define("LAN_432", "Review");
 
+define("LAN_SIGNUP_1", "Min.");
+define("LAN_SIGNUP_2", "chars.");
+define("LAN_SIGNUP_4", "Your password must be at least ");
+define("LAN_SIGNUP_5", " characters long.");
+
 ?>
