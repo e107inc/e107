@@ -118,19 +118,27 @@ if($action == "forums" || isset($_POST['fsearch'])){
 	$f_query = $_POST['f_query'];
 	$db_query = "SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHERE ".MPREFIX."forum.forum_id=".MPREFIX."forum_t.thread_forum_id AND ".MPREFIX."forum_t.thread_user='".$user_id."' AND (".MPREFIX."forum_t.thread_name REGEXP('".$f_query."') OR ".MPREFIX."forum_t.thread_thread REGEXP('".$f_query."')) ORDER BY ".MPREFIX."forum_t.thread_datestamp DESC ";
 	}else{
-	$sql -> db_Select("user", "user_forums", "user_id=".$id."");
-	list($user_forums) = $sql -> db_Fetch();
-	$ftotal = $user_forums;
+	if(!is_object($sql2)){
+		$sql2 = new db;
+	}
+	$ftotal = 0;
+	$sql2 -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHERE ".MPREFIX."forum.forum_id=".MPREFIX."forum_t.thread_forum_id AND ".MPREFIX."forum_t.thread_user='".$user_id."'" );
+	while($row = $sql2 -> db_Fetch()){
+		extract($row);
+		if(check_class($forum_class)){
+			$ftotal ++;
+			$limit_ids[] = $thread_id;
+		}
+	}
+	$limit_ids = implode(",", $limit_ids);
 	$fcaption = UP_LAN_0.$user_name;
-	$db_query = "SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHERE ".MPREFIX."forum.forum_id=".MPREFIX."forum_t.thread_forum_id AND ".MPREFIX."forum_t.thread_user='".$user_id."' ORDER BY ".MPREFIX."forum_t.thread_datestamp DESC LIMIT ".$from.", 10";
+	$db_query = "SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHERE ".MPREFIX."forum.forum_id=".MPREFIX."forum_t.thread_forum_id AND ".MPREFIX."forum_t.thread_user='".$user_id."' AND ".MPREFIX."forum_t.thread_id IN ($limit_ids) ORDER BY ".MPREFIX."forum_t.thread_datestamp DESC LIMIT ".$from.", 10";
 	}
 	$ftext = "<div style='text-align:center'>\n<form method='post' action='".e_SELF."?".e_QUERY."'><table style='width:95%' class='fborder'>\n";
 	if(!$sql -> db_Select_gen("".$db_query."")){
 		$ftext .= "<span class='mediumtext'>".UP_LAN_8."</span>";
 	}else{
-	if(!is_object($sql2)){
-		$sql2 = new db;
-	}
+
 	if(!is_object($gen)){
 		$gen = new convert;
 	}
@@ -138,14 +146,8 @@ if($action == "forums" || isset($_POST['fsearch'])){
 			extract($row);
 		if(check_class($forum_class)){
 				$poster = substr($thread_user, (strpos($thread_user, ".")+1));
-				if(strstr($poster, chr(1))){
-					$tmp = explode(chr(1), $poster);
-					$poster = $tmp[0];
-				}
-				$datestamp = $gen->convert_date($thread_datestamp, "short");
-			
+				$datestamp = $gen->convert_date($thread_datestamp, "short");			
 				if($thread_parent){
-
 					if($cachevar[$thread_parent]){
 						$thread_name = $cachevar[$thread_parent];
 					}else{
@@ -159,9 +161,7 @@ if($action == "forums" || isset($_POST['fsearch'])){
 					$tmp = $thread_id;
 					$topic = "Thread: $thread_name";
 				}
-
-				$thread_thread = $aj -> tpa($thread_thread);
-				
+				$thread_thread = $aj -> tpa($thread_thread);				
 				$ftext .= "<tr>
 				<td style='width:5%; text-align:center' class='forumheader'><img src='".e_IMAGE."forum/new_small.png' alt='' /></td>
 				<td style='width:95%' class='forumheader'><div style='width:50%;float:left;'>
