@@ -680,8 +680,8 @@ function online(){
 			} else {
 				$query = "online_user_id='$udata', online_location='$page', online_pagecount=$online_pagecount WHERE online_ip='$ip' ";
 			}
-			$sql -> db_Update("online", $query);
 		}
+		$sql -> db_Update("online", $query);
 		if(USER){
 			$sql -> db_Delete("online","online_user_id = '0' AND online_ip = '{$ip}' ");
 		}
