@@ -12,9 +12,11 @@ $obj2 = new convert;
 while($row = $sql-> db_Fetch($mySQLresult)){
 	$datestamp = $obj2->convert_date($row['cb_datestamp'], "long");
 	$cb_nick = eregi_replace("[0-9]+\.", "", $row['cb_nick']);
+	$cb_message = $aj -> tpa($row['cb_message']);
+	$cb_message = stripslashes($cb_message);
 	$text .= "\n<div class=\"spacer\">
 <img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" />
-<b>".$cb_nick."</b> on ".$datestamp."<br /><i>".$row['cb_message']."</i>
+<b>".$cb_nick."</b> on ".$datestamp."<br /><i>".$cb_message."</i>
 </div>
 <br />\n";
 	}

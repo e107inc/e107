@@ -29,8 +29,9 @@ if(ADMIN == TRUE){
 
 			$sql -> db_Select("user", "*", "user_name='".$_POST['authname']."'");
 			list($user_id, $user_name, $user_pass) = $sql-> db_Fetch();
-//			echo $user_id, $userpass;
+			$_SESSION['userkey'] = $user_id.".".$user_pass;
 			setcookie('userkey', $user_id.".".$user_pass, time()+3600*24*30, '/', '', 0);
+			$sql -> db_Update("user", "user_sess='".session_id()."' WHERE user_id='$user_id' ");
 			header("Location: http://".$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF']);
 			exit;
 		}

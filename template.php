@@ -16,16 +16,6 @@ require_once("class2.php");
 require_once(HEADERF);
 
 
-//Your content here
-//If you want to use plain HTML, break out of php like this ...
-
-?>
-
-HTML code here
-
-
-<?php
-//And now you're back in php again
 
 
 require_once(FOOTERF);

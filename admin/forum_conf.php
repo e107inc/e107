@@ -27,9 +27,21 @@ if($action == "close"){
 	$url = "../forum.php?forum.".$forum_id;
 }
 
-if($action == "reopen"){
+if($action == "open"){
 	$sql -> db_Update("forum_t", "thread_active='1' WHERE thread_id='$thread_id' ");
 	$message = "Thread reopened.";
+	$url = "../forum.php?forum.".$forum_id;
+}
+
+if($action == "stick"){
+	$sql -> db_Update("forum_t", "thread_s='1' WHERE thread_id='$thread_id' ");
+	$message = "Thread made sticky.";
+	$url = "../forum.php?forum.".$forum_id;
+}
+
+if($action == "unstick"){
+	$sql -> db_Update("forum_t", "thread_s='0' WHERE thread_id='$thread_id' ");
+	$message = "Thread unstuck.";
 	$url = "../forum.php?forum.".$forum_id;
 }
 

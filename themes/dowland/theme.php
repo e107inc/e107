@@ -65,8 +65,6 @@ $text
 	}
 }
 
-//	[newsstyle]	#############
-
 //	[newsstyle]
 
 define(TITLE_POSITION, "caption");	// put news title in caption or body?
@@ -95,28 +93,4 @@ define(LINKEND, "</span></span>");
 define(LINKDISPLAY, 1);			// 1 - along top, 2 - in left or right column
 define(LINKALIGN, "left");
 
-
-/*
-//	[sitelinks]	#############
-
-function sitelinks(){
-echo "<div class=\"spacer\">";
-$sql = new dbFunc;
-$sql -> dbQuery("SELECT * FROM ".MUSER."links WHERE link_category='1' ORDER BY link_order");
-
-if($_COOKIE['admin']){
-	echo "<span class=\"border\">
-<span class=\"caption\">
-<a href=\"admin/admin.php\">Admin Area</a>
-</span></span>";
-}
-while(list($link_id_, $link_name_, $link_url_) = $sql-> dbFetch()){
-	echo "<span class=\"border\">
-<span class=\"caption\">
-<a href=\"".$link_url_."\">".$link_name_."</a>
-</span></span>";
-}
-echo "</div>";
-}
-*/
 ?>

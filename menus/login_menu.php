@@ -1,15 +1,11 @@
 <?php
 $text = "";
-if($pref['user_reg'][1] == 1){
+if($pref['user_reg'][1] == 1 || ADMIN == TRUE){
 
-	if(USER == TRUE){
-		$ct = explode(".", $_COOKIE['userkey']);
-		$uid = $ct[0];
-		$upw = $ct[1];
-		if($upw[1] == ""){
-			setcookie('userkey', '', time()+3600*24*30, '/', '', 0);
-			return FALSE;
-		}
+	if(USER == TRUE || ADMIN == TRUE){
+		if(IsSet($_SESSION['userkey'])){ $uk = $_SESSION['userkey']; }else{ $uk = $_COOKIE['userkey']; }
+		$tmp = explode(".", $uk); $uid = $tmp[0]; $upw = $tmp[1];
+		if(Empty($upw)){ session_destroy; session_unregister; return FALSE; }
 		if($sql -> db_Select("user", "*", "user_id='$uid' AND user_password='$upw' ")){
 			$text = "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <a href=\"usersettings.php\">Settings</a>
 <br />
@@ -40,7 +36,7 @@ if($pref['user_reg'][1] == 1){
 <br />
 <input class=\"button\" type=\"submit\" name=\"userlogin\" value=\"Login\" />\n
 <br /><br />
-[ <a href=\"signup.php\">".LAN_174."</a> ]
+[ <a href=\"signup.php\">".LAN_174."</a> ]<br />[ <a href=\"fpw.php\">".LAN_212."</a> ]
 </div>
 </form>";
 		$ns -> tablerender(LAN_175, $text);

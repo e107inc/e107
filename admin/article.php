@@ -63,6 +63,7 @@ If(IsSet($_POST['update'])){
 If(IsSet($_POST['edit'])){
 	$sql -> db_Select("content", "*", "content_id='".$_POST['existing']."' ");
 	list($content_id, $content_heading, $content_subheading, $content_content, $content_page, $content_datestamp, $content_author, $content_comment, $content_parent, $content_type) = $sql-> db_Fetch();
+	$content_content = $aj -> editparse($content_content);
 }
 
 If(IsSet($_POST['confirm'])){

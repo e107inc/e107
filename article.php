@@ -210,7 +210,7 @@ $text = "
 <form method=\"post\" action=\"".$_SERVER['PHP_SELF']."?".$id.".".$page."\">\n
 <table style=\"width:95%\">";
 
-if($pref['anon_post'][1] == "1" && !$_COOKIE['user_unique']){
+if($pref['anon_post'][1] == "1" && !$_SESSION['userkey']){
 	$text .= "<tr>
 <td style=\"width:20%\">".LAN_7."</td>
 <td style=\"width:80%\">

@@ -19,11 +19,11 @@ if(IsSet($_POST['newver'])){ header("location:http://jalist.com/check.php?".$e10
 
 if(ADMINPERMS != 0 && ADMINPERMS != 1){ header("location:../index.php"); }
 
-if($_POST['user_reg'] == 1){
-	if(!$sql -> db_Select("links", "*", "link_name='Members' ")){
-		$sql -> db_Insert("links",  "0, 'Members', 'user.php', '', '', '1', '0', '0' ");
-	}
-}
+//if($_POST['user_reg'] == 1){
+//	if(!$sql -> db_Select("links", "*", "link_name='Members' ")){
+//		$sql -> db_Insert("links",  "0, 'Members', 'user.php', '', '', '1', '0', '0' ");
+//	}
+//}
 
 if(IsSet($_POST['updateprefs'])){
 	$sql -> db_Update("prefs", "pref_value='".$_POST['sitename']."' WHERE pref_name='sitename' ");
@@ -47,6 +47,7 @@ if(IsSet($_POST['updateprefs'])){
 	$sql -> db_Update("prefs", "pref_value='".$_POST['forumdate']."' WHERE pref_name='forumdate' ");
 	$sql -> db_Update("prefs", "pref_value='".$_POST['sitelanguage']."' WHERE pref_name='sitelanguage' ");
 	$sql -> db_Update("prefs", "pref_value='".$_POST['sitelocale']."' WHERE pref_name='sitelocale' ");
+	$sql -> db_Update("prefs", "pref_value='".$_POST['time_offset']."' WHERE pref_name='time_offset' ");
 	header("location:prefs.php");
 }
 
@@ -61,6 +62,7 @@ $shortdate = $pref['shortdate'][1];
 $longdate = $pref['longdate'][1];
 $forumdate = $pref['forumdate'][1];
 $sitelocale = $pref['sitelocale'][1];
+$time_offset = $pref['time_offset'][1];
 
 require_once("auth.php");
 
@@ -86,7 +88,7 @@ closedir($handle);
 
 
 $text = "<div style=\"text-align:center\">
-<form method=\"post\" action=\"$PHP_SELF\">
+<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
 <table style=\"width:95%\">
 <tr>
 
@@ -152,6 +154,7 @@ $text = "<div style=\"text-align:center\">
 </td>
 </tr>
 
+
 <tr><td colspan=\"2\"><br /></td></tr>
 
 <tr>
@@ -201,16 +204,12 @@ $text .= "</select>
 </td>
 </tr>
 
-
-
-
 <td style=\"width:40%; vertical-align:top\">Site Locale: </td>
 <td style=\"width:60%\">
 <input class=\"tbox\" type=\"text\" name=\"sitelocale\" size=\"15\" value=\"$sitelocale\" maxlength=\"5\" /> 
 <br /> (Please note, not all servers supports locales - for more information see <a href=\"http://www.php.net/manual/en/function.setlocale.php\">the setlocale page at php.net</a>)
 </td>
 </tr>
-
 
 <tr><td colspan=\"2\"><br /></td></tr>
 
@@ -292,8 +291,31 @@ example: $date3
 </tr>
 
 <tr>
-<td colspan=\"2\">
-For more information on date formats see the <a href=\"http://www.php.net/manual/en/function.date.php\" target=\"_blank\">date function page at php.net</a>
+<td colspan=\"2\" style=\"text-align:center\">
+(For more information on date formats see the <a href=\"http://www.php.net/manual/en/function.date.php\" target=\"_blank\">date function page at php.net</a>)
+</td>
+</tr>
+
+<tr>
+<td style=\"width:40%\">Time offset: </td>
+<td style=\"width:60%\">
+<select name=\"time_offset\" class=\"tbox\">\n";
+$toffset = array("-12", "-11", "-10", "-9", "-8", "-7", "-6", "-5", "-4", "-3", "-2", "-1", "0", "+1", "+2", "+3", "+4", "+5", "+6", "+7", "+8", "+9", "+10", "+11", "+12", "+13");
+$counter = 0;
+while($toffset[$counter] != ""){
+	if($toffset[$counter] == $pref['time_offset'][1]){
+		$text .= "<option selected>".$toffset[$counter]."</option>\n";
+	}else{
+		$text .= "<option>".$toffset[$counter]."</option>\n";
+	}
+	$counter++;
+}
+$text .= "</select>
+</td></tr>
+
+<tr>
+<td colspan=\"2\" style=\"text-align:center\">
+(Example, if you set this to +2, all times on your site will have two hours added to them)
 </td>
 </tr>
 

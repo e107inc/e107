@@ -126,7 +126,7 @@ $text .= "</tr>
 	$ns -> tablerender(LAN_5, $text);
 }
 
-if($pref['user_reg'][1] == 1 && !$_COOKIE['user_unique'] && $pref['anon_post'][1] != "1"){
+if($pref['user_reg'][1] == 1 && !$_SESSION['userkey'] && $pref['anon_post'][1] != "1"){
 	$text = "<div style=\"text-align:center\">".LAN_6."</div>";
 	$ns -> tablerender($text, "");
 	require_once(FOOTERF);

@@ -14,120 +14,6 @@
 */
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-class inituser{
-	function inituser(){
-		/* Constructor
-		# Called when valid cookie detected
-		#
-		# - parameters		none
-		# - return				boolean
-		# - scope					public
-		*/
-
-		$sql = new db;
-		$ct = explode(".", $_COOKIE['userkey']);
-		$uid = $ct[0];
-		$upw = $ct[1];
-		if($upw[1] == ""){
-			setcookie('userkey', '', time()+3600*24*30, '/', '', 0);
-			return FALSE;
-		}
-		if($sql -> db_Select("user", "*", "user_id='$uid' AND user_password='$upw' ")){
-			list($user_id, $user_name, $null, $session, $user_email, $user_homepage, $user_icq, $user_aim, $user_msn, $user_location, $user_birthday, $user_signature, $user_image, $user_timezone, $user_hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_prefs, $user_new, $user_viewed, $user_visits, $user_admin)  = $sql -> db_Fetch();
-			if($user_admin == 1){ $adm = new initadmin(); }else{ define("ADMIN", FALSE); }
-			$usertheme = str_replace("sitetheme=", "", $user_prefs); if($usertheme != ""){ define("USERTHEME", $usertheme); }else{ define("USERTHEME", FALSE); }
-			define("USERID", $user_id);
-			define("USERNAME", $user_name);
-			define("USERSIGNATURE", $user_signature);
-			define("USERIMAGE", $user_image);
-			define("USERLASTVISIT", $user_lastvisit);
-			define("USER", TRUE);
-			if($user_lastvisit + 3600 < time()){
-				$sql -> db_SELECT("forum_t", "*", "thread_datestamp > '$user_lastvisit' ");
-				$new_threads = ".";
-				$new_forums = ".";
-				$new_parents = ".";
-				while(list($new_id, $nulll, $null, $new_forum_id, $null, $new_parent) = $sql -> db_Fetch()){
-					$new_threads .= $new_id.".";
-					if($new_parent != 0 && !ereg("\.".$new_parent."\.", $new_parents)){
-						$new_parents .= $new_parent.".";
-					}
-				}
-				$new_posts = $new_threads."^".$new_parents;
-				$sql -> db_Update("user", "user_visits=user_visits+1, user_new='$new_posts', user_lastvisit='$user_currentvisit', user_currentvisit='".time()."', user_viewed='' WHERE user_password='".$_COOKIE['userkey']."' ");
-			}
-		}else{
-			define("USER", FALSE);
-		}
-	}
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-class userlogin{
-	function userlogin($username, $userpass){
-		/* Constructor
-		# Class called when user attempts to log in
-		#
-		# - parameters #1:		string $username, $_POSTED user name
-		# - parameters #2:		string $userpass, $_POSTED user password
-		# - return				boolean
-		# - scope					public
-		*/
-		$sql = new db;
-		if($username != "" && $userpass != ""){
-			$userpass = md5($userpass);
-			if(!$sql -> db_Select("user",  "*", "user_name='$username' ")){
-				define("LOGINMESSAGE", "That username was not found in the database.<br /><br />");
-				return FALSE;
-			}else if(!$sql -> db_Select("user", "*", "user_name='$username' AND user_password='$userpass' ")){
-				define("LOGINMESSAGE", "Incorrect password.<br /><br />");
-				return FALSE;
-			}else{
-				list($user_id, $user_name) = $sql-> db_Fetch();
-				setcookie('userkey', $user_id.".".$userpass, time()+3600*24*30, '/', '', 0);
-				header("Location: http://".$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF']);
-			}
-		}else{
-			define("LOGINMESSAGE", "Field(s) left blank.<br /><br />");
-			return FALSE;
-		}
-	}
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-class initadmin{
-	function initadmin(){
-		/* Constructor
-		# Check for administrator rights
-		#
-		# - parameters		none
-		# - return				boolean
-		# - scope					private
-		*/
-		$sql = new db;
-		$ct = explode(".", $_COOKIE['userkey']);
-		$uid = $ct[0];
-		$upw = $ct[1];
-		if($upw == ""){
-			setcookie('userkey', '', time()+3600*24*30, '/', '', 0);
-			return FALSE;
-		}
-		if($sql -> db_Select("admin", "*", "admin_password='$upw' ")){
-			list($admin_id, $admin_name, $null, $admin_email, $admin_ip, $admin_permissions) = $sql-> db_Fetch();
-			define("ADMIN", TRUE);
-			define("ADMINID", $admin_id);
-			define("ADMINNAME", $admin_name);
-			define("ADMINPERMS", $admin_permissions);
-			define("ADMINEMAIL", $admin_email);
-			return TRUE;
-		}else{
-			define("ADMIN", FALSE);
-			return FALSE;
-		}
-	}
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 class db{
 
 	//	 global variables
@@ -157,7 +43,7 @@ class db{
 		$this->mySQLpassword = $mySQLpassword;
 		$this->mySQLdefaultdb = $mySQLdefaultdb;
 		$temp = $this->mySQLerror;
-		$this->mySQLerror = TRUE;
+		$this->mySQLerror = FALSE;
 		$this->mySQL_access = @mysql_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword);
 		@mysql_select_db($this->mySQLdefaultdb);
 		$this->dbError("dbConnect/SelectDB");
@@ -176,7 +62,7 @@ class db{
 		# - scope					public
 		*/
 		$debug = FALSE;
-		$debugtable = "stat_counter";
+		$debugtable = "admin";
 		if($arg != "" && $mode=="default"){
 			if($debug == TRUE && $debugtable == $table){ echo "SELECT ".$fields." FROM ".MUSER.$table." WHERE ".$arg."<br />"; }
 			if($this->mySQLresult = @mysql_query("SELECT ".$fields." FROM ".MUSER.$table." WHERE ".$arg)){
@@ -217,7 +103,7 @@ class db{
 		# - scope					public
 		*/
 //		echo "INSERT INTO ".MUSER.$table." VALUES (".$arg.")";
-		if($result = $this->mySQLresult = @mysql_query("INSERT INTO ".MUSER.$table." VALUES (".$arg.")" )){	
+		if($result = $this->mySQLresult = @mysql_query("INSERT INTO ".MUSER.$table." VALUES (".$arg.")" )){
 			return $result;
 		}else{
 			$this->dbError("db_Insert ($query)");
@@ -234,7 +120,9 @@ class db{
 		# - return				sql identifier, or error if (error reporting = on, error occured, boolean)
 		# - scope					public
 		*/
-//		echo "UPDATE ".MUSER.$table." SET ".$arg."<br />";
+		$debug = FALSE;
+		$debugtable = "user";
+		if($debug == TRUE && $debugtable == $table){ echo "UPDATE ".MUSER.$table." SET ".$arg."<br />"; }	
 		if($result = $this->mySQLresult = @mysql_query("UPDATE ".MUSER.$table." SET ".$arg)){	
 			return $result;
 		}else{
@@ -252,6 +140,9 @@ class db{
 		# - scope					public
 		*/
 		if($row = @mysql_fetch_array($this->mySQLresult)){
+			while (list($key,$val) = each($row)) {
+				$row[$key] = stripslashes($val);
+			}
 			$this->dbError("db_Fetch");
 			return $row;
 		}else{
@@ -364,7 +255,43 @@ class gettime{
 		return ((float)$usec + (float)$sec); 
     } 
 }
-
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+class userlogin{
+	function userlogin($username, $userpass, $autologin){
+		/* Constructor
+		# Class called when user attempts to log in
+		#
+		# - parameters #1:		string $username, $_POSTED user name
+		# - parameters #2:		string $userpass, $_POSTED user password
+		# - return				boolean
+		# - scope					public
+		*/
+		$sql = new db;
+		if($username != "" && $userpass != ""){
+			$userpass = md5($userpass);
+			if(!$sql -> db_Select("user",  "*", "user_name='$username' ")){
+				define("LOGINMESSAGE", "That username was not found in the database.<br /><br />");
+				return FALSE;
+			}else if(!$sql -> db_Select("user", "*", "user_name='$username' AND user_password='$userpass' ")){
+				define("LOGINMESSAGE", "Incorrect password.<br /><br />");
+				return FALSE;
+			}else{
+				list($user_id) = $sql-> db_Fetch();
+				$_SESSION['userkey'] = $user_id.".".$userpass;
+				if($autologin == 1){
+					setcookie('userkey', $user_id.".".$userpass, time()+3600*24*30, '/', '', 0);
+				}
+				$sql -> db_Update("user", "user_sess='".session_id()."' WHERE user_id='$user_id' ");
+				header("Location: http://".$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF']);
+				exit;
+			}
+		}else{
+			define("LOGINMESSAGE", "Field(s) left blank.<br /><br />");
+			return FALSE;
+		}
+	}
+}
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
@@ -376,10 +303,14 @@ function getip(){
 	# - return				valid IP address
 	# - scope					public
 	*/
-	if(getenv(HTTP_X_FORWARDED_FOR)){ 
-		$ip=getenv(HTTP_X_FORWARDED_FOR); 
-	}else{ 
-		$ip=$_SERVER['REMOTE_ADDR'];
+	if(getenv('HTTP_X_FORWARDED_FOR')){
+		$ip = $_SERVER['REMOTE_ADDR'];
+		if(preg_match("/^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/", getenv('HTTP_X_FORWARDED_FOR'), $ip3)){
+			$ip2 = array('/^0\./', '/^127\.0\.0\.1/', '/^192\.168\..*/', '/^172\.16\..*/', '/^10..*/', '/^224..*/', '/^240..*/');
+			$ip = preg_replace($ip2, $ip, $ip3[1]);
+		}
+	}else{
+		$ip = $_SERVER['REMOTE_ADDR'];
 	}
 	if($ip == ""){ $ip = "x.x.x.x"; }
 	return $ip;
@@ -412,38 +343,114 @@ class floodprotect{
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+function init_session(){
+		/*
+		# Validate session if exists
+		#
+		# - parameters		none
+		# - return				boolean
+		# - scope					public
+		*/
+	if(IsSet($_SESSION['userkey']) || IsSet($_COOKIE['userkey'])){
+		if(IsSet($_SESSION['userkey'])){ $uk = $_SESSION['userkey']; }else{ $uk = $_COOKIE['userkey']; }
+		$tmp = explode(".", $uk); $uid = $tmp[0]; $upw = $tmp[1];
+
+		if(Empty($upw)){
+			if(IsSet($_SESSION['userkey'])){ 
+				session_destroy(); session_unregister();
+			}else{
+				setcookie('userkey', '', time()+3600*24*30, '/', '', 0);
+			}
+			return FALSE;
+			define("ADMIN", FALSE);
+			define("USER", FALSE);
+		}
+
+		$sql = new db;
+		if($sql -> db_Select("user", "*", "user_id='$uid' AND user_password='$upw' ")){
+			$result = $sql -> db_Fetch();
+			extract($result);
+			define("USERID", $user_id);
+			define("USERNAME", $user_name);
+			define("USER", TRUE);
+			define("USERLV", $user_lastvisit);
+			define("USERVIEWED", $user_viewed);
+
+			$usertheme = str_replace("sitetheme=", "", $user_prefs); if($usertheme == "" || $usertheme == "none"){ define("USERTHEME", FALSE); }else{ define("USERTHEME", $usertheme); }
+
+			$sql -> db_Update("user", "user_visits=user_visits+1 WHERE user_name='".USERNAME."' ");
+			if($user_currentvisit + 3600 < time()){
+				$sql -> db_Update("user", "user_lastvisit='$user_currentvisit', user_currentvisit='".time()."', user_viewed='$r' WHERE user_name='".USERNAME."' ");
+			}
+
+			if($user_admin == 1){
+				if($sql -> db_Select("admin", "*", "admin_password='$upw' ")){
+					$result = $sql -> db_Fetch();
+					extract($result);
+					define("ADMIN", TRUE);
+					define("ADMINID", $admin_id);
+					define("ADMINNAME", $admin_name);
+					define("ADMINPERMS", $admin_permissions);
+					define("ADMINEMAIL", $admin_email);
+				}else{
+					define("ADMIN", FALSE);
+					define("LOGINMESSAGE", "Error: User and admin passwords do not match.");
+				}
+			}else{
+				define("ADMIN", FALSE);
+			}
+		}else{
+			define("USER", FALSE);
+			define("USERTHEME", FALSE);
+			define("ADMIN", FALSE);
+		}
+	}else{
+		define("USER", FALSE);
+		define("USERTHEME", FALSE);
+		define("ADMIN", FALSE);
+	}
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+function ban(){
+	$sql = new db;
+	if($sql -> db_Select("banlist", "*", "banlist_ip='".$_SERVER['REMOTE_ADDR']."' ")){ exit; }
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //initialise
+			$_SERVER['QUERY_STRING'] = eregi_replace("&|/?PHPSESSID.*", "", $_SERVER['QUERY_STRING']);
+			session_start();
 			error_reporting(E_ERROR | E_WARNING | E_PARSE);
 			set_magic_quotes_runtime(0);
+			ini_set("arg_separator.output", "&amp;");
 			if(eregi("admin", $_SERVER['PHP_SELF'])){ require_once("../config.php"); }else{ require_once("config.php"); }
 			if($mySQLuser == ""){ header("location:install.php"); }
 			define("MUSER", $mySQLprefix);
 			$sql = new db;
 			$sql -> db_SetErrorReporting(TRUE);
 			$sql -> db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
+
+			if(IsSet($_POST['settheme'])){
+				if(IsSet($_SESSION['userkey'])){ $uk = $_SESSION['userkey']; }else{ $uk = $_COOKIE['userkey']; }
+				$tmp = explode(".", $uk); $uid = $tmp[0]; $upw = $tmp[1];
+				$sql -> db_Update("user", "user_prefs='sitetheme=".$_POST['sitetheme']."' WHERE user_id='$uid' ");
+			}
+
+			init_session();
+
 			if($_SERVER['QUERY_STRING'] == "logout"){
 				setcookie('userkey', '', time()+3600*24*30, '/', '', 0);
-				if(eregi("admin", $_SERVER['PHP_SELF'])){ header("Location:../index.php"); }else{  header("Location:".$_SERVER['PHP_SELF']); }
+//				$sql -> db_Update("user", "user_sess='' WHERE user_sess='".session_id()."' "); 
+				session_unset(); session_destroy(); 
+				if(eregi("admin", $_SERVER['PHP_SELF'])){ header("Location:../index.php"); }else{  header("Location:index.php");}
 			}
-			if($sql -> db_Select("banlist", "*", "banlist_ip='".$_SERVER['REMOTE_ADDR']."' ")){ exit; }
+			ban();
 
-			if(IsSet($_POST['userlogin'])){
-				$usr = new userlogin($_POST['username'], $_POST['userpass']);
-			}
-			if(IsSet($_POST['settheme'])){ 
-				$ct = explode(".", $_COOKIE['userkey']);
-				$uid = $ct[0];
-				$upw = $ct[1];
-				$sql -> db_Update("user", "user_prefs='sitetheme=".$_POST['sitetheme']."' WHERE user_password='".$upw."' ");
-			}
+			if(IsSet($_POST['userlogin'])){ $usr = new userlogin($_POST['username'], $_POST['userpass'], $_POST['autologin']); }
 
-			if(IsSet($_COOKIE['userkey'])){
-				$usr = new inituser();
-			}else{
-				define("USER", FALSE);
-				define("ADMIN",FALSE);
-				define("USERTHEME", FALSE);
-			}
+			
+			
 
 			$ns = new table;
 			if($sql -> db_Select("prefs", "*", "", $mode="no_where")){
@@ -460,25 +467,26 @@ class floodprotect{
 			define("SITEDESCRIPTION", $pref['sitedescription'][1]);
 			define("SITEADMIN", $pref['siteadmin'][1]);
 			define("SITEADMINEMAIL", $pref['siteadminemail'][1]);
-			$pref['sitedisclaimer'][1] = eregi_replace("©", "&copy;", $pref['sitedisclaimer'][1]);
+			$pref['sitedisclaimer'][1] = str_replace("©", "&copy;", $pref['sitedisclaimer'][1]);
 			define("SITEDISCLAIMER", $pref['sitedisclaimer'][1]);
-
-			if(USERTHEME != FALSE){
-				define("THEME", "themes/".USERTHEME."/");
-			}else{
-				define("THEME", "themes/".$pref['sitetheme'][1]."/");
-			}
-
+			define("TIMEOFFSET", $pref['time_offset'][1]);
+//			if($sql -> db_Select("menus", "*", "menu_name='usertheme_menu' AND menu_location!=0 ")){
+				if(USERTHEME != FALSE){
+					define("THEME", "themes/".USERTHEME."/"); 
+				}else{
+					define("THEME", "themes/".$pref['sitetheme'][1]."/");
+				}
+	//		}else{
+	//			define("THEME", "themes/".$pref['sitetheme'][1]."/");
+	//		}
 			
 			if(Empty($pref['newsposts'][1])){ define(ITEMVIEW, 10); }else{ define(ITEMVIEW, $pref['newsposts'][1]); }
 			if($pref['flood_protect'][1] == 1){  define(FLOODPROTECT, TRUE); define(FLOODTIMEOUT, $pref['flood_timeout'][1]); }
-			if(eregi("admin", $_SERVER['PHP_SELF'])){ require_once("../".THEME."theme.php"); }else{ require_once(THEME."theme.php"); }
+			$language =  $pref['sitelanguage'][1]; if(!$language){ $language = "English"; }
+			if(eregi("admin", $_SERVER['PHP_SELF'])){ require_once("../".THEME."theme.php"); require_once("../languages/lan_".$language.".php"); }else{ require_once(THEME."theme.php"); require_once("languages/lan_".$language.".php"); }
 			define ("HEADERF", "themes/templates/header".$layout.".php");
 			define ("FOOTERF","themes/templates/footer".$layout.".php");
-			$language =  $pref['sitelanguage'][1]; if(!$language){ $language = "English"; }
-			if(eregi("admin", $PHP_SELF)){ require_once("../languages/lan_".$language.".php"); }else{ require_once("languages/lan_".$language.".php"); }
 			define("LOGINMESSAGE", "");
-			if($pref['user_reg'][1] == 0){ 	$adm = new initadmin; }
 			if($pref['sitelocale'][1] == ""){ setlocale (LC_ALL, 'en'); }else{ setlocale (LC_ALL, $pref['sitelocale'][1]); }
 			if($pref['maintainance_flag'][1] == 1){
 				if(ADMIN == FALSE){
@@ -488,6 +496,7 @@ class floodprotect{
 				}
 			}
 			
+
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 class news{
@@ -504,6 +513,12 @@ class news{
 		if($cls -> db_Select("news", "*", "news_id='$existing' ")){
 			$row = $cls-> db_Fetch();
 		}
+		$tp = new textparse;
+		$row['news_title'] = $tp -> editparse($row['news_title']);
+		$row['news_body'] = $tp -> editparse($row['news_body']);
+		$row['news_extended'] = $tp -> editparse($row['news_extended']);
+		$row['news_source'] = $tp -> editparse($row['news_source']);
+		$row['news_url'] = $tp -> editparse($row['news_url']);
 		return $row;
 	}
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//	
@@ -537,11 +552,11 @@ class news{
 		# - scope					public
 		*/
 		$aj = new textparse;
-		$news_title = $aj -> tp($news_title, $mode="on");
-		$news_body = $aj -> tp($news_body, $mode="on");
-		$news_extended = $aj -> tp($news_extended, $mode="on");
-		$news_source = $aj -> tp($news_source, $mode="on");
-		$news_url = $aj -> tp($news_url, $mode="on");
+		$news_title = $aj -> tp($news_title, $mode="on", 0);
+		$news_body = $aj -> tp($news_body, $mode="on", 0);
+		$news_extended = $aj -> tp($news_extended, $mode="on", 0);
+		$news_source = $aj -> tp($news_source, $mode="on", 0);
+		$news_url = $aj -> tp($news_url, $mode="on", 0);
 		if($allow_comments == 0){ $allow_comments = 1; }else{ $allow_comments = 0; }
 		$cls = new db;
 
@@ -572,9 +587,9 @@ class news{
 		*/
 
 		$aj = new textparse;
-		$news_title = $aj -> tp($news_title, $mode="on");
-		$news_body = $aj -> tp($news_body, $mode="on");
-		$news_extended = $aj -> tp($news_extended, $mode="on");
+		$news_title = $aj -> tp($news_title, $mode="on", "preview");
+		$news_body = $aj -> tp($news_body, $mode="on", "preview");
+		$news_extended = $aj -> tp($news_extended, $mode="on", "preview");
 		$news_source = $aj -> tp($news_source, $mode="on");
 		$news_url = $aj -> tp($news_url, $mode="on");
 		$cls = new db;
@@ -604,10 +619,11 @@ class news{
 		# - scope					public
 		*/
 		$aj = new textparse;
+		
 		$news_title = $aj -> tpa($news_title, $mode="on");
 		$news_body = $aj -> tpa($news_body, $mode="off");
 		$news_extended = $aj -> tpa($news_extended, $mode="off");
-		$theme = $this->theme;
+
 		if(Empty($comment_total)) $comment_total = "0";
 		$con = new convert;
 		$datestamp = $con -> convert_date($datestamp, "long");
@@ -810,24 +826,60 @@ class textparse{
 		# - return				parsed text
 		# - scope					public
 		*/
-		$search = array("[a]", "[b]", "[/b]", "[i]", "[/i]", "[u]", "[/u]", "<script>", "</script>", "[img]", "[/img]", "[center]", "[/center]", "[left]", "[/left]", "[right]", "[/right]", "<javascript>", "<vbscript>", "[blockquote]", "[/blockquote]");
-		$replace = array("<a href=", "<b>", "</b>", "<i>", "</i>", "<u>", "</u>", "", "", "<img alt=\"\" src=\"", "\" />", "<div style=\"text-align:center\">", "</div>", "<div style=\"text-align:left\">", "</div>", "<div style=\"text-align:right\">", "</div>", "javascript", "vbscript", "<blockquote>", "</blockquote>");
-		if($mode == "off"){
-			$text = strip_tags($text);
-			$text = preg_replace("/([^\s]{100})/", "$1<br />", $text);
-			for($a=0;$a<strlen($text);$a++){
-				$char = ord($text[$a]);
-				$tmp[$char] = 1;
-			}
-			if(count($tmp) <=$len){ $text = "Invalid input"; }
+
+		$text = str_replace("<","&lt;",$text);
+		$text = str_replace(">","&gt;",$text);
+		$text=str_replace("&","&amp;",$text);
+
+		$search = array("[b]", "[/b]", "[i]", "[/i]", "[u]", "[/u]", "[img]", "[/img]", "[center]", "[/center]", "[left]", "[/left]", "[right]", "[/right]", "[blockquote]", "[/blockquote]", "[code]", "[/code]");
+		$replace = array("<b>", "</b>", "<i>", "</i>", "<u>", "</u>", "<img alt=\"\" src=\"", "\" />", "<div style=\"text-align:center\">", "</div>", "<div style=\"text-align:left\">", "</div>", "<div style=\"text-align:right\">", "</div>", "<span class=\"indent\">", "</span>", "<code>", "</code>");
+//		if($mode == "off"){
+//			$text = wordwrap($text, 100);
+//		}
+
+//	echo $mode."<br />".$len;
+
+		if($mode == "off" && $len != 6){
+			$text = wordwrap($text, $len, "\n", 1);
 		}
-		$text = preg_replace("/\[link\](.*?)\[\/link\]/si", "<a href=\"\\1\">\\1</a>", $text);
+		$text = eregi_replace("(^|[>[:space:]\n])([[:alnum:]]+)://([^[:space:]]*)([[:alnum:]#?/&=])([<[:space:]\n]|$)","\\1<a href=\"\\2://\\3\\4\">\\2://\\3\\4</a>\\5", $text);
 		$text = str_replace($search,$replace, $text);
-		
+
+		$p = array();
+		$r = array();
+		$p[0] = "#\[link\]([a-z]+?://){1}(.*?)\[/link\]#si";
+		$r[0] = '<a href="\1\2">\1\2</a>';
+		$p[1] = "#\[link\](.*?)\[/link\]#si";
+		$r[1] = '<a href="http://\1">\1</a>';
+		$p[2] = "#\[link=([a-z]+?://){1}(.*?)\](.*?)\[/link\]#si";
+		$r[2] = '<a href="\1\2">\3</a>';
+		$p[3] = "#\[link=(.*?)\](.*?)\[/link\]#si";
+		$r[3] = '<a href="http://\1">\2</a>';
+		$p[4] = "#\[email\](.*?)\[/email\]#si";
+		$r[4] = '<a href="mailto:\1">\1</a>';
+		$p[5] = "#\[email=(.*?){1}(.*?)\](.*?)\[/email\]#si";
+		$r[5] = '<a href="mailto:\1\2">\3</a>';
+		$text = preg_replace($p, $r, $text);
+
+		$text = preg_replace("/\[quote=(.*?)\](.*?)\[\/quote\]/si", "<i>Originally posted by \\1: \"\\2\"</i>", $text);
 		addslashes($text);
+		if($len != "preview"){	
+			$text = mysql_escape_string($text);
+		}
 		return($text);
 	}
+	
+	function editparse($text){
+		$search = array("<b>", "</b>", "<i>", "</i>", "<u>", "</u>", "<div style=\"text-align:center\">", "</div>", "<div style=\"text-align:left\">", "</div>", "<div style=\"text-align:right\">", "</div>", "<code>", "</code>");
+		$replace = array("[b]", "[/b]", "[i]", "[/i]", "[u]", "[/u]", "[center]", "[/center]", "[left]", "[/left]", "[right]", "[/right]","[code]", "[/code]");
+		$text = str_replace($search,$replace, $text);
 
+		$text = preg_replace("/\<img alt=\"\" src=\"(.*?)\" \/>/si", "[img]\\1[/img]", $text);
+		$text = preg_replace("/\<a href=\"(.*?)\">(.*?)<\/a>/si", "[link=\\1]\\2[/link]", $text);
+		$text = preg_replace("/\<span class=\"indent\">(.*?)<\/span>/si", "[blockquote]\\1[/blockquote]", $text);
+
+		return $text;
+	}
 
 	function tpa($text, $mode="off"){
 		/*
@@ -901,12 +953,15 @@ class convert{
 		# - scope					public
 		*/
 		global $pref;
+
+		$datestamp += (TIMEOFFSET*3600);
+
 		if($mode == "long"){
-			return ereg_replace(" 0", " ", date($pref['longdate'][1], $datestamp));
+			return ereg_replace(" 0", " ", gmdate($pref['longdate'][1], $datestamp));
 		}else if($mode == "short"){
-			return ereg_replace(" 0", " ", date($pref['shortdate'][1], $datestamp));
+			return ereg_replace(" 0", " ", gmdate($pref['shortdate'][1], $datestamp));
 		}else{
-			return ereg_replace(" 0", " ", date($pref['forumdate'][1], $datestamp));
+			return ereg_replace(" 0", " ", gmdate($pref['forumdate'][1], $datestamp));
 		}
 	}
 }
@@ -979,7 +1034,11 @@ class nextprev{
   if($from > 1){
    $s = $from-$view;
    echo "<td style=\"width:33%\" class=\"np\">";
-   $text = "<div style=\"text-align:left\"><span class=\"smalltext\"><a href=\"".$url."?".$s.".".$qs."\">".LAN_25."</a></span></div>";
+   if($qs != ""){
+		$text = "<div style=\"text-align:left\"><span class=\"smalltext\"><a href=\"".$url."?".$s.".".$qs."\">".LAN_25."</a></span></div>";
+   }else{
+		$text = "<div style=\"text-align:left\"><span class=\"smalltext\"><a href=\"".$url."?".$s."\">".LAN_25."</a></span></div>";
+   }
    echo $text;
   }else{
    echo "<td style=\"width:33%\">&nbsp;";
@@ -997,7 +1056,11 @@ class nextprev{
   $s = $from+$view;
   if($s < $total){
    echo "</td><td style=\"width:33%\" class=\"np\">";
-   $text = "<div style=\"text-align:right\"><span class=\"smalltext\"><a href=\"".$url."?$s.$qs\">".LAN_26."</a></span></div></td>";
+   if($qs != ""){
+		$text = "<div style=\"text-align:right\"><span class=\"smalltext\"><a href=\"".$url."?".$s.".".$qs."\">".LAN_26."</a></span></div></td>";
+   }else{
+		$text = "<div style=\"text-align:right\"><span class=\"smalltext\"><a href=\"".$url."?".$s."\">".LAN_26."</a></span></div></td>";
+   }
    echo $text;
   }else{
    echo "</td><td style=\"width:33%\">&nbsp;</td>";

@@ -30,6 +30,8 @@ if($_SERVER['QUERY_STRING'] != ""){
 
 if(IsSet($_POST['news_allow_comments'])){
 	$news_allow_comments = $_POST['news_allow_comments'];
+}else{
+	$news_allow_comments = 1;
 }
 
 $ix = new news;
@@ -166,15 +168,18 @@ $text .= "<span class=\"twelvept\"> [ <a href=\"news_category.php\">Add/Edit Cat
 <td style=\"width:80%\">
 <textarea class=\"tbox\" name=\"news_body\" cols=\"80\" rows=\"10\">$news_body</textarea>
 <br />
-<input class=\"button\" type=\"button\" value=\"link\" onclick=\"addtext('[link][/link]')\">
-<input class=\"button\" type=\"button\" value=\"b\" onclick=\"addtext('[b][/b]')\">
-<input class=\"button\" type=\"button\" value=\"i\" onclick=\"addtext('[i][/i]')\">
-<input class=\"button\" type=\"button\" value=\"u\" onclick=\"addtext('[u][/u]')\">
-<input class=\"button\" type=\"button\" value=\"img\" onclick=\"addtext('[img][/img]')\">
-<input class=\"button\" type=\"button\" value=\"center\" onclick=\"addtext('[center][/center]')\">
-<input class=\"button\" type=\"button\" value=\"left\" onclick=\"addtext('[left][/left]')\">
-<input class=\"button\" type=\"button\" value=\"right\" onclick=\"addtext('[right][/right]')\">
-<input class=\"button\" type=\"button\" value=\"blockquote\" onclick=\"addtext('[blockquote][/blockquote]')\">
+<input class=\"helpbox\" type=\"text\" name=\"helpb\" size=\"100\" />
+<br />
+<input class=\"button\" type=\"button\" value=\"link\" onclick=\"addtext('[link=hyperlink url]hyperlink text[/link]')\" onMouseOver=\"help('Insert link: [link]http://mysite.com[/link] or  [link=http://yoursite.com]Visit My Site[/link]')\" onMouseOut=\"help('')\">
+<input class=\"button\" type=\"button\" value=\"b\" onclick=\"addtext('[b][/b]')\" onMouseOver=\"help('Bold text: [b]This text will be bold[/b]')\" onMouseOut=\"help('')\">
+<input class=\"button\" type=\"button\" value=\"i\" onclick=\"addtext('[i][/i]')\" onMouseOver=\"help('Italic text: [i]This text will be italicised[/i]')\" onMouseOut=\"help('')\">
+<input class=\"button\" type=\"button\" value=\"u\" onclick=\"addtext('[u][/u]')\" onMouseOver=\"help('Underline text: [u]This text will be underlined[/u]')\" onMouseOut=\"help('')\">
+<input class=\"button\" type=\"button\" value=\"img\" onclick=\"addtext('[img][/img]')\" onMouseOver=\"help('Insert image: [img]mypicture.jpg[/img]')\" onMouseOut=\"help('')\">
+<input class=\"button\" type=\"button\" value=\"center\" onclick=\"addtext('[center][/center]')\" onMouseOver=\"help('Center align: [center]This text will be centered[/center]')\" onMouseOut=\"help('')\">
+<input class=\"button\" type=\"button\" value=\"left\" onclick=\"addtext('[left][/left]')\" onMouseOver=\"help('Left align: [left]This text will be left aligned[/left]')\" onMouseOut=\"help('')\">
+<input class=\"button\" type=\"button\" value=\"right\" onclick=\"addtext('[right][/right]')\" onMouseOver=\"help('Right align: [right]This text will be right aligned[/right]')\" onMouseOut=\"help('')\">
+<input class=\"button\" type=\"button\" value=\"blockquote\" onclick=\"addtext('[blockquote][/blockquote]')\" onMouseOver=\"help('Blockquote text: [blockquote]This text will be indented[/blockquote]')\" onMouseOut=\"help('')\">
+<input class=\"button\" type=\"button\" value=\"code\" onclick=\"addtext('[code][/code]')\" onMouseOver=\"help('Code - preformatted text: [code]\$var = foobah;[/code]')\" onMouseOut=\"help('')\">
 </td>
 </tr>
 <tr> 
@@ -182,7 +187,7 @@ $text .= "<span class=\"twelvept\"> [ <a href=\"news_category.php\">Add/Edit Cat
 <td style=\"width:80%\">
 <textarea class=\"tbox\" name=\"news_extended\" cols=\"80\" rows=\"10\">$news_extended</textarea>
 <br />
-<input class=\"button\" type=\"button\" value=\"link\" onclick=\"addtext2('[link][/link]')\">
+<input class=\"button\" type=\"button\" value=\"link\" onclick=\"addtext('[link=hyperlink url]hyperlink text[/link]')\">
 <input class=\"button\" type=\"button\" value=\"b\" onclick=\"addtext2('[b][/b]')\">
 <input class=\"button\" type=\"button\" value=\"i\" onclick=\"addtext2('[i][/i]')\">
 <input class=\"button\" type=\"button\" value=\"u\" onclick=\"addtext2('[u][/u]')\">
@@ -191,7 +196,7 @@ $text .= "<span class=\"twelvept\"> [ <a href=\"news_category.php\">Add/Edit Cat
 <input class=\"button\" type=\"button\" value=\"left\" onclick=\"addtext2('[left][/left]')\">
 <input class=\"button\" type=\"button\" value=\"right\" onclick=\"addtext2('[right][/right]')\">
 <input class=\"button\" type=\"button\" value=\"blockquote\" onclick=\"addtext2('[blockquote][/blockquote]')\">
-</td>
+<input class=\"button\" type=\"button\" value=\"code\" onclick=\"addtext2('[code][/code]')\">
 </tr>
 <tr> 
 <td style=\"width:20%\">Source:</td>
@@ -265,5 +270,8 @@ function addtext2(sc){
 function fclear(){
 	document.newspostform.news_body.value = "";
 	document.newspostform.news_extended.value = "";
+}
+function help(help){
+	document.newspostform.helpb.value = help;
 }
 </script>

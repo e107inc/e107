@@ -12,14 +12,14 @@
 |	GNU General Public License (http://gnu.org).				|
 +---------------------------------------------------------------+
 */
-IF(ADMIN == FALSE){
+if(ADMIN == FALSE){
 $self = $_SERVER['PHP_SELF'];
 
 $ip = getip();
 
 $date = date("Y-m-d");
 
-if(!$sql -> db_Select("stat_counter", "*", "counter_url='".$self."' ")){
+if(!$sql -> db_Select("stat_counter", "*", "counter_url='".$self."' AND counter_date='$date' ")){
 	// page not parsed before - create new entry ...
 	$ip .= ".";
 	$sql -> db_Insert("stat_counter", "CURRENT_DATE, '$self', '0', '0', '$ip', '0', '0' ");
@@ -375,7 +375,7 @@ if(!$sql -> db_Select("stat_counter", "*", "counter_url='".$self."' ")){
 		}
 
 		$siteurl = parse_url(SITEURL);
-		if(!eregi($siteurl['host'], $referer)){
+		if(!eregi($siteurl['host'], $referer) && !eregi("localhost", $referer)){
 			if($referer != ""){
 				if($pref['log_refertype'][1] == 0){
 					// log domain only

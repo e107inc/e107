@@ -41,7 +41,7 @@ if(IsSet($_POST['upload'])){
 
 		$large = $_POST['path']."/".$_FILES['userfile']['name'];
 		$small = $_POST['path']."/".$file_name.".thumb.".$file_extention;
-
+		
 		copy($userfile, $large);
 		copy($userfile, $small);
 
@@ -90,7 +90,7 @@ if(IsSet($_POST['upload'])){
 
 		$large = $_POST['path']."/".$_FILES['userfile']['name'];
 
-		copy($userfile, $large);
+		copy($_FILES['userfile']['tmp_name'], $large); // fix by db 15.10.02
 		$text = "File <b>".$_FILES['userfile']['name']."</b> uploaded to ".$path." directory.";
 		$ns -> tablerender("File uploaded", $text);
 	}

@@ -17,10 +17,6 @@ if(ADMINPERMS != 0 && ADMINPERMS != 1){ header("location:../index.php"); }
 require_once("auth.php");
 
 if(IsSet($_POST['add_admin'])){
-
-//	if(!$sql -> db_Select("admin", "*", "admin_password='".$_POST['ad_name']."' ")){
-
-
 	if(!$sql -> db_Select("admin", "*", "admin_name='".$_POST['ad_name']."' ")){
 		$sql -> db_Insert("admin", "0, '".$_POST['ad_name']."', '".md5($_POST ['a_password'])."', '".$_POST['ad_email']."', '', '".$_POST['a_perms']."', '".time()."' ");
 		if(!$sql -> db_Select("user", "*", "user_name='".$_POST['ad_name']."' ")){

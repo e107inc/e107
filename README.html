@@ -12,7 +12,7 @@
 <table style="width:100%" cellspacing="0" cellpadding="0">
 <tr>
 <td style="background-color:#E2E2E2; text-align:left\">
-<img src="themes/e107/images/logo.png" alt="Logo" />
+<img src="themes/shared/logo.png" alt="Logo" />
 <br />
 <div class="smalltext" style="text-align:right">&nbsp;©Steve Dunstan 2002. See gpl.txt for licence details.</div>
 </td>
@@ -35,10 +35,10 @@ e107 readme.html
 <td style="background-color:#fff; ">
 
 <br />
-<div class="mediumtext">e107 website system version 5.01<br />
+<div class="mediumtext">e107 website system version 5.05<br />
 by Steve Dunstan</a> (jalist)<br />
-<a href="mailto:jalist@jalist.com">mailto:jalist@jalist.com</a><br />
-<a href="http://www.jalist.com">http://jalist.com</a><br />
+<a href="mailto:jalist@e107.org">jalist@e107.org</a><br />
+<a href="http://www.jalist.com">http://e107.org</a><br />
 
 
 </div><br /><br />
@@ -63,18 +63,13 @@ During the install process you will be asked to set up the main site admin, plea
 
 Upgrading your version/build ---
 <ul>
-<li>Backup your config.php file in case it gets overwritten</li>
+<li><b>Backup your config.php file</b></li>
 <li>Upload all files to your server EXCEPT config.php - don't overwrite this file</li>
-<li>Navigate to install.php in your browser and click on the Upgrade button</li>
+<li>Navigate to upgrade.php in your browser and follow the instructions</li>
 </ul>
 
 
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br />
-IMPORTANT!<br />
-Once you are happy e107 is installed correctly delete /install.php and /upgrade.php from your server<br />
-Also for security reasons you should now chmod your config.php file back to 644.<br />
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br />
+For security reasons you should chmod your config.php file back to 644 after installation is complete.<br />
 <br />
 You also need to chmod the two files (news.xml and news.txt) in the /backend directory to 666 for your xml generation to work properly.
 
@@ -89,6 +84,7 @@ Your logo is situated at /themes/shared/logo.png, change this file to alter your
 <div class="mediumtext">Thankyous</div>
 Thanks mainly to Bill Nalens (nalenb) and que for their unstinting support. Also to CraHan, NeXTer, Kuhndog, wols, [steev], rootrider, Claymore and the others in [shhhh] for their friendship.<br />
 Many thanks to the beta-test team for their bughunting.<br />
+Thanks to all of you who have taken the time to create plugins/themes etc</br />
 And thanks to you for trying e107, I hope you like it and it fits your website needs.
 <br /><hr /><br />
 <div class="mediumtext">Disclaimer</div>
@@ -97,6 +93,5 @@ This software is free and as such comes without warrenty as stated in the GNU GP
 </td>
 </tr>
 </table>
-
 </body>
 </html>

@@ -13,7 +13,6 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-//if(USER == TRUE && ADMIN == FALSE){ header("location:../index.php"); }
 require_once("auth.php");
 
 function wad($link, $title, $description, $perms){

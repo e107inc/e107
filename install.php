@@ -1,29 +1,10 @@
 <?php
+if(filesize("config.php") != 0 && $_POST['stage'] == ""){
+	 header("location: index.php");
+}
 if(IsSet($_POST['frontpage'])){ header("location: index.php"); }
 if(IsSet($_POST['adminpage'])){ header("location: admin/admin.php"); }
 if(IsSet($_POST['upgrade'])){ header("location: upgrade.php"); exit; }
-
-if(IsSet($_POST['mainadmin'])){
-	if($_POST['mainadmin'] != "" && $_POST['adminpassword1'] != "" &&  $_POST['adminpassword2'] != ""){
-		if($_POST['adminpassword1'] == $_POST['adminpassword2']){
-			require_once("config.php");
-
-			mysql_connect($mySQLserver, $mySQLuser, $mySQLpassword);
-			mysql_select_db($mySQLdefaultdb);
-
-			if(!mysql_query("INSERT INTO ".$mySQLprefix."admin VALUES (0, '".$_POST['adminname']."',  '".md5($_POST['adminpassword1'])."', '".$_POST['adminemail']."', 0, '0', '".time()."') ")){
-				$adminerror = "<b>Error</b> - unable to enter admin details into database";
-			}else{
-				mysql_query("INSERT INTO ".$mySQLprefix."user VALUES (0, '".$_POST['adminname']."', '".md5($_POST['adminpassword1'])."', '', '".$_POST['adminemail']."', 	'".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$_POST['birthday']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".time()."', '0', '".time()."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '1')");
-			}
-		}else{
-			$adminerror = "<b>Error</b> - Passwords do not match, please re-enter.";
-		}
-	}else{
-		$adminerror = "<b>Error</b> - Required fields left blank - please re-enter.";
-	}
-}
-
 echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
@@ -39,27 +20,28 @@ echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
 <div style="text-align:center">
 <table style="width:100%" cellspacing="0" cellpadding="0">
 <tr>
-<td style="background-color:#E2E2E2; text-align:left\">
-<img src="themes/e107/images/logo.png" alt="Logo" />
-<br />
-<div class="smalltext" style="text-align:right">&nbsp;©Steve Dunstan 2002. See gpl.txt for licence details.</div>
+<td style="width:80%; background-color:#E2E2E2; text-align:left\">
+<img src="themes/shared/logo.png" alt="Logo" />
+</td>
+<td style="background-color:#E2E2E2; text-align:right; vertical-align:bottom" class="smalltext">
+©Steve Dunstan 2002. See gpl.txt for licence details.
 </td>
 <tr> 
-<td style="background-color:#000; vertical-align: top;"></td>
+<td colspan="2" style="background-color:#000; vertical-align: top;"></td>
 </tr>
 <tr>
 <tr> 
-<td style="background-color:#ccc; vertical-align: top;">
+<td colspan="2" style="background-color:#ccc; vertical-align: top;">
 
 <?php
 if(!$_POST['stage']){ $_POST['stage'] = 0; }
-echo "<div class=\"mediumtext\">&nbsp;&nbsp;Installation Stage: ".$_POST['stage']." of 6</div>";
+echo "<div class=\"mediumtext\">&nbsp;&nbsp;Installation Stage: ".$_POST['stage']." of 5</div>";
 ?>
 
 </td>
 </tr>
 <tr> 
-<td style="background-color:#000; vertical-align: top;"></td>
+<td colspan="2" style="background-color:#000; vertical-align: top;"></td>
 </tr>
 <tr>
 <td style="vertical-align: top;"><br />
@@ -67,10 +49,16 @@ echo "<div class=\"mediumtext\">&nbsp;&nbsp;Installation Stage: ".$_POST['stage'
 <tr>
 <td style="background-color:#fff; ">
 
+<!-- POST CHECK FAILED! -->
 <?php
-switch ($_POST['stage']){
-// ########### case default ###########
-default:
+if($_POST['mysql_server'] == "" && $mysql_server != ""){
+	echo "POST type variables are not being recognised - these were introduced in php version 4.1.0, if your php version is older than this you will need to upgrade to use e107<br />(Your php version is ".phpversion().".)<br />Script halted.";
+	exit;
+}
+?>
+<!-- BEGIN STAGE 0 -->
+<?php
+if($_POST['stage'] == ""){
 ?>
 Welcome to e107 website system. This script will install or upgrade e107 on your server, please follow the instructions.
 <br />
@@ -83,81 +71,116 @@ If you want e107 to use it's own mySQL database you need to create one either fr
 <br />
 <br />
 <form method="post" action="install.php">
-<input class="button" type="submit" name="submit" value="Click to begin full installation" />
-<input class="button" type="submit" name="upgrade" value="Click to begin upgrade installation" />
+<input class="button" type="submit" name="submit" value="Click to begin installation" />
 <input type="hidden" name="stage" value="1">
 </form>
-
 <?php
+}
+?>
+<!-- END STAGE 0 -->
 
-
-break;
-// ########### case 1 ###########
-case 1:
-
+<!-- BEGIN STAGE 1 -->
+<?php
+if($_POST['stage'] == 1){
 echo "Testing file permissions of /config.php ...<br /><br />";
 
 $fp = @fopen("config.php","w");
+//$data = chr(60)."?php\ndefine(".chr(34)."INSTALLED".chr(34).", FALSE);\n?".chr(62);
 if(@fwrite($fp, "Test")){
 	echo "File permissions test passed - please click button to continue.<br /><br />
-<form method=\"post\" action=\"install.php\">
+<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
 <input class=\"button\" type=\"submit\" name=\"submit\" value=\"Proceed to stage 2\" />
 <input type=\"hidden\" name=\"stage\" value=\"2\">";
-	
+	exit;
 }else{
 	echo "<b>Unable to write to /config.php!</b><br />Please CHMOD /config.php to 666 then click the button to continue.<br /><br />
-	<form method=\"post\" action=\"install.php\">
+	<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
 <input class=\"button\" type=\"submit\" name=\"submit\" value=\"Retest file permissions of /config.php\" />
 <input type=\"hidden\" name=\"stage\" value=\"1\">";
 }
 @fclose($fp);
+}
+?>
+<!-- END STAGE 1 -->
 
-break;
-// ########### case 2 ###########
-case 2:
-
+<!-- BEGIN STAGE 2 -->
+<?php
+if($_POST['stage'] == 2){
 echo "Please enter your mysql details <br />If you dont have any of these details or are unable to create a database you will need to contact your system administrator.
 <br />
 If you are using an existing database that already has tables in it you can prefix your e107 tables so that naming conflicts don't occur. Enter whatever you want to use as a prefix in the Table Prefix box and your tables wil be called [yourprefix]admin, [yourprefix]news etc. If you have created a new database for e107 to use you can leave the prefix box blank if you wish.
 <br />
 <br />
-<form method=\"post\" action=\"install.php\">
+<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
 <table style=\"width:95%\">
 <tr>
 <td style=\"width:20%\" class=\"mediumtext\">mySQL Server:</td>
 <td style=\"width:80%\">
-<input class=\"tbox\" type=\"text\" name=\"server\" size=\"60\" value=\"localhost\" maxlength=\"100\" /> Your mySQL server (normally 'localhost')
+<input class=\"tbox\" type=\"text\" name=\"mysql_server\" size=\"60\" value=\"localhost\" maxlength=\"100\" /> Your mySQL server (normally 'localhost')
 </td>
 </tr>
 <tr>
 <td style=\"width:20%\" class=\"mediumtext\">mySQL Username:</td>
 <td style=\"width:80%\">
-<input class=\"tbox\" type=\"text\" name=\"name\" size=\"60\" value=\"\" maxlength=\"100\" /> Your mySQL username
+<input class=\"tbox\" type=\"text\" name=\"mysql_name\" size=\"60\" value=\"\" maxlength=\"100\" /> Your mySQL username
 </td>
 </tr>
 <tr> 
 <td style=\"width:20%\" class=\"mediumtext\">mySQL Password: </td>
 <td style=\"width:80%\">
-<input class=\"tbox\" type=\"text\" name=\"password\" size=\"60\" value=\"\" maxlength=\"100\" /> Your mySQL password
+<input class=\"tbox\" type=\"text\" name=\"mysql_password\" size=\"60\" value=\"\" maxlength=\"100\" /> Your mySQL password
 </td>
 </tr>\n
 <tr> 
 <td style=\"width:20%\" class=\"mediumtext\">mySQL Database: </td>
 <td style=\"width:80%\">
-<input class=\"tbox\" type=\"text\" name=\"db\" size=\"60\" value=\"\" maxlength=\"100\" /> The name of your database (you need to create this)
+<input class=\"tbox\" type=\"text\" name=\"mysql_db\" size=\"60\" value=\"\" maxlength=\"100\" /> The name of the database you wish to use for e107
 </td>
 
 </tr>\n
 <tr> 
 <td style=\"width:20%\" class=\"mediumtext\">Table prefix: </td>
 <td style=\"width:80%\">
-<input class=\"tbox\" type=\"text\" name=\"prefix\" size=\"60\" value=\"\" maxlength=\"100\" /> What to prefix your table names with
+<input class=\"tbox\" type=\"text\" name=\"mysql_prefix\" size=\"60\" value=\"e107_\"  maxlength=\"100\" /> What to prefix your table names with - leave blank for no prefix
+</td>
+
+</tr>
+<tr>
+<td colspan=\"2\">
+<br /><br />
+Please enter the details for the main site administrator
+<br /><br />
+</td>
+</tr>
+
+<tr>
+<td style=\"width:20%\" class=\"mediumtext\">Admin Name:</td>
+<td style=\"width:80%\">
+<input class=\"tbox\" type=\"text\" name=\"admin_name\" size=\"60\" value=\"\" maxlength=\"100\" />
+</td>
+</tr>
+<tr>
+<td style=\"width:20%\" class=\"mediumtext\">Admin Password:</td>
+<td style=\"width:80%\">
+<input class=\"tbox\" type=\"password\" name=\"admin_password1\" size=\"60\" value=\"\" maxlength=\"100\" />
+</td>
+</tr>
+<tr> 
+<td style=\"width:20%\" class=\"mediumtext\">Re-type password: </td>
+<td style=\"width:80%\">
+<input class=\"tbox\" type=\"password\" name=\"admin_password2\" size=\"60\" value=\"\" maxlength=\"100\" />
+</td>
+</tr>\n
+<tr> 
+<td style=\"width:20%\" class=\"mediumtext\">Admin Email Address: </td>
+<td style=\"width:80%\">
+<input class=\"tbox\" type=\"text\" name=\"admin_email\" size=\"60\" value=\"you@yoursite.com\" maxlength=\"100\" />
 </td>
 
 </tr>\n
 <tr style=\"vertical-align:top\"> 
-<td style=\"width:20%\"></td>
-<td style=\"width:80%\">
+<td style=\"width:20%\"><br /></td>
+<td style=\"width:80%\"><br />
 <input class=\"button\" type=\"submit\" name=\"submit\" value=\"Continue\" />
 
 </td>
@@ -165,216 +188,172 @@ If you are using an existing database that already has tables in it you can pref
 </table>
 <input type=\"hidden\" name=\"stage\" value=\"3\">
 </form>";
-
-break;
-// ########### case 3 ###########
-case 3:
-
-if($_POST['db'] == "" && $db != ""){
-	echo "POST type variables are not being recognised - these were introduced in php version 4.1.0, if your php version is older than this you will need to upgrade to use e107<br />(Your php version is ".phpversion().".)<br />Script halted.";
+exit;
 }
+?>
 
-if($_POST['server'] == "" || $_POST['name'] =="" || $_POST['db'] == ""){
-	echo "You left required fields blank - please re-enter your mySQL information.<br /><br />";
+<!-- END STAGE 2 -->
+
+<!-- BEGIN STAGE 3 -->
+<?php
+if($_POST['stage'] == 3){
+	if($_POST['mysql_server'] == "" || $_POST['mysql_name'] =="" || $_POST['mysql_db'] == "" || $_POST['admin_name'] == "" || $_POST['admin_password1'] == "" || $_POST['admin_password2'] == "" || $_POST['admin_email'] == ""){
+		$error = "You left required fields blank";
+	}
+	if($_POST['admin_password1'] != $_POST['admin_password2']){
+		$error = "The two passwords you entered do not match";
+	}
+	if(!preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]+@([-0-9A-Z]+\.)+([0-9A-Z]){2,4}$/i', $_POST['admin_email'])){
+		$error = "That doesn't appear to be a valid email address";
+	}
+
+	if($error != ""){
+		echo $error." -  - please re-enter your information.<br /><br />";
 	?>
-<form method="post" action="install.php">
-<input class="button" type="submit" name="submit" value="Continue" />
-<input type="hidden" name="stage" value="2">
-</form>
-<?php
-exit;
-}
+	<form method="post" action="install.php">
+	<input class="button" type="submit" name="submit" value="Continue" />
+	<input type="hidden" name="stage" value="2">
+	</form>
+	<?php
+		exit;
+	}
 
-if($_POST['password'] == ""){
-	$password = "'null'";
-}else{
-	$password = $_POST['password'];
-}
-echo "Attempting to connect to mySQL server (".$_POST['server'].") using  username <i>".$_POST['name']."</i> and password <i>".$password."</i> ...
-<br />";
-if(!@mysql_connect($_POST['server'], $_POST['name'], $_POST['password'])){
-	echo "Unable to connect to mySQL server - please verify your details and re-enter.
-<br />
-<br />";
-?>
-<form method="post" action="install.php">
-<input class="button" type="submit" name="submit" value="Continue" />
-<input type="hidden" name="stage" value="2">
-</form>
-<?php
+	echo "Information verified<br /><br />";
+	echo "Attempting to connect to mySQL server (".$_POST['mysql_server'].") using  username <i>".$_POST['mysql_name']."</i> and password <i>".$_POST['admin_password1']."</i> ... ";
+	if(!@mysql_connect($_POST['mysql_server'], $_POST['mysql_name'], $_POST['mysql_password'])){
+		echo "Unable to connect to mySQL server - please verify your details and re-enter.<br /><br />";
+		?>
+		<form method="post" action="install.php">
+		<input class="button" type="submit" name="submit" value="Continue" />
+		<input type="hidden" name="stage" value="2">
+		</form>
+		<?php
+		exit;
+	}
+	echo "mySQL test passed - successfully connected to mySQL server.<br /><br />Checking validity of database ...";
+
+	if(@mysql_select_db($_POST['mysql_db'])){
+		echo " database validity test passed - database found and verified.<br /><br />";
+	}else{
+		echo "<br /><b>Could not verify database '".$_POST['mysql_db']."' - please make sure database was created properly and that it is called '".$_POST['mysql_db']."'</b><br /><br />";
+		?>
+		<form method="post" action="install.php">
+		<input class="button" type="submit" name="submit" value="Continue" />
+		<input type="hidden" name="stage" value="2">
+		</form>
+		<?php
+		exit;
+	}
+
+	echo "Attempting to write settings to config file ...";
+	$data = chr(60)."?php\n".
+chr(47)."*\n+---------------------------------------------------------------+\n|	e107 website system\n|	/config.php\n|\n|	©Steve Dunstan 2001-2002\n|	http://jalist.com\n|	stevedunstan@jalist.com\n|\n|	Released under the terms and conditions of the\n|	GNU General Public License (http://gnu.org).\n+---------------------------------------------------------------+\n\nThis file has been generated by the installation script - DO NOT EDIT!\n
+*".
+chr(47)."\n".
+chr(36)."mySQLserver = ".chr(34).$_POST['mysql_server'].chr(34).";\n".
+chr(36)."mySQLuser = ".chr(34).$_POST['mysql_name'].chr(34).";\n".
+chr(36)."mySQLpassword = ".chr(34).$_POST['mysql_password'].chr(34).";\n".
+chr(36)."mySQLdefaultdb = ".chr(34).$_POST['mysql_db'].chr(34).";\n".
+chr(36)."mySQLprefix = ".chr(34).$_POST['mysql_prefix'].chr(34).";\n?".chr(62);
+
+	$fp = @fopen("config.php","w");
+	if(!@fwrite($fp, $data)){
+		echo "<b>Error!</b><br />Was unable to write config.php to server, the file probably doesn't have the correct permissions set. Try chmodding config.php to 666 or 777 and re-running script. Script halted.";
+		exit;
+	}
+	echo " config file successfully written to server.<br /><br />";
+	fclose($fp);
+
+	echo "<b>You are now ready to begin creating the database tables e107 will use, please press the button to continue.</b><br /><br />
+	
+	<form method=\"post\" action=\"install.php\">
+	<input class=\"button\" type=\"submit\" name=\"submit\" value=\"Continue\" />
+	<input type=\"hidden\" name=\"stage\" value=\"4\" />
+
+	<input type=\"hidden\" name=\"admin_name\" value=\"".$_POST['admin_name']."\" />
+	<input type=\"hidden\" name=\"admin_password1\" value=\"".$_POST['admin_password1']."\" />
+	<input type=\"hidden\" name=\"admin_email\" value=\"".$_POST['admin_email']."\" />
+
+	</form>";
+	
 	exit;
-}else{
-	echo "mySQL test passed - successfully connected to mySQL server.
-<br />
-<br />
-Checking validity of database ...
-<br />";
+}
+	?>
 
-if(@mysql_select_db($_POST['db'])){
-echo "Database validity test passed - database found and verified.";
-}else{
-	echo "Could not verify database '".$_POST['db']."' - please make sure database was created properly and that it is called '".$_POST['db']."'
-<br />
-<br />";
-?>
-<form method="post" action="install.php">
-<input class="button" type="submit" name="submit" value="Continue" />
-<input type="hidden" name="stage" value="2">
-</form>
+<!-- END STAGE 3 -->
+
+<!-- BEGIN STAGE 4 -->
 <?php
+if($_POST['stage'] == 4){
+
+	require_once("config.php");
+	mysql_connect($mySQLserver, $mySQLuser, $mySQLpassword);
+	mysql_select_db($mySQLdefaultdb);
+
+	echo "Setting up database tables ...<br /><br />";
+	require_once("config.php");
+	$error = setuptables($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $mySQLprefix);
+	if($error != ""){
+		echo "<br /><b>Error</b><br />".$error."<br />You may need to delete the tables involved and recreate them by re-running this script.<br /><br />Script halted.";
+		exit;
+	}else{
+		echo " Tables successfully set up.<br /><br />Please press the button to set up the main site administrator in the database.<br /><br />
+		
+	<form method=\"post\" action=\"install.php\">
+	<input class=\"button\" type=\"submit\" name=\"submit\" value=\"Continue\" />
+	<input type=\"hidden\" name=\"stage\" value=\"5\">
+	<input type=\"hidden\" name=\"admin_name\" value=\"".$_POST['admin_name']."\" />
+	<input type=\"hidden\" name=\"admin_password1\" value=\"".$_POST['admin_password1']."\" />
+	<input type=\"hidden\" name=\"admin_email\" value=\"".$_POST['admin_email']."\" />
+
+	</form>";
+	
 	exit;
+	}
 }
+	?>
+<!-- END STAGE 4 -->
 
-echo "<br /><br />Attempting to write settings to config file ...";
-$data = chr(60)."?php\n".
-chr(36)."mySQLserver = ".chr(34).$_POST['server'].chr(34).";\n".
-chr(36)."mySQLuser = ".chr(34).$_POST['name'].chr(34).";\n".
-chr(36)."mySQLpassword = ".chr(34).$_POST['password'].chr(34).";\n".
-chr(36)."mySQLdefaultdb = ".chr(34).$_POST['db'].chr(34).";\n".
-chr(36)."mySQLprefix = ".chr(34).$_POST['prefix'].chr(34).";\n?".chr(62);
-//chmod("config.php", 0660);
-$fp = fopen("config.php","w");
-if(fwrite($fp, $data)){
-	echo "<br />Config file successfully written to server.
-<br />
-<br />";
-?>
-<form method="post" action="install.php">
-<input class="button" type="submit" name="submit" value="Continue" />
-<input type="hidden" name="stage" value="4">
-</form>
+<!-- BEGIN STAGE 5 -->
 <?php
-}else{
-	echo "<b>Error!</b>
-<br />
-Was unable to write config.php to server, the folder probably doesn't have the correct permissions set. Try chmodding config.php to 777 and re-running script. Script halted.";
-exit;
-}
-fclose($fp);
+if($_POST['stage'] == 5){
+	require_once("config.php");
+	mysql_connect($mySQLserver, $mySQLuser, $mySQLpassword);
+	mysql_select_db($mySQLdefaultdb);
+	echo "Setting up main site administrator ...";
+	if(!mysql_query("INSERT INTO ".$mySQLprefix."admin VALUES (0, '".$_POST['admin_name']."',  '".md5($_POST['admin_password1'])."', '".$_POST['admin_email']."', 0, '0', '".time()."') ")){
+		echo "<b>Error</b> - unable to enter admin details into database - script halted.";
+		exit;
+	}else{
+		if(!mysql_query("INSERT INTO ".$mySQLprefix."user VALUES (0, '".$_POST['admin_name']."', '".md5($_POST['admin_password1'])."', '', '$email', 	'$website', '$icq', '$aim', '$msn', '$location', '$birthday', '$signature', '$image', '$timezone', '$hideeamil', '".time()."', '0', '".time()."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '1')")){
+			echo "<b>Error</b> - unable to enter admin details into database - script halted.";
+			exit;
+		}
+	}
 
-}
-
-break;
-// ########### case 4 ###########
-case 4:
-
-echo "Setting up database tables ...
-<br /><br />";
-require_once("config.php");
-
-$error = setuptables($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $mySQLprefix);
-
-if($error != ""){
-	echo "<br /><b>Error</b><br />".$error."<br />You may need to delete the tables involved and recreate them by re-running this script.<br /><br />Script halted.";
-	exit;
-}else{
-	echo "Tables successfully set up.";
-}
-?>
-<br /><br />
-<form method="post" action="install.php">
-<input class="button" type="submit" name="submit" value="Continue" />
-<input type="hidden" name="stage" value="5">
-</form>
-<?php
-
-break;
-// ########### case 5 ###########
-case 5:
-
-echo "Please now enter your details to set yourself up as main site administrator.
-<br />
-Please note that your password will be one-way encrypted, so it cannot be unencrypted later if you forget it - <b>write it down in a safe place!</b>
-<br /><br />
-
-<form method=\"post\" action=\"install.php\">
-<table style=\"width:95%\">
-<tr>
-<td style=\"width:30%\" class=\"mediumtext\">Admin Name:</td>
-<td style=\"width:70%\">
-<input class=\"tbox\" type=\"text\" name=\"adminname\" size=\"60\" value=\"\" maxlength=\"100\" />
-</td>
-</tr>
-<tr>
-<td style=\"width:30%\" class=\"mediumtext\">Admin Password:</td>
-<td style=\"width:70%\">
-<input class=\"tbox\" type=\"password\" name=\"adminpassword1\" size=\"60\" value=\"\" maxlength=\"100\" />
-</td>
-</tr>
-<tr> 
-<td style=\"width:30%\" class=\"mediumtext\">Admin Password (please retype for security): </td>
-<td style=\"width:70%\">
-<input class=\"tbox\" type=\"password\" name=\"adminpassword2\" size=\"60\" value=\"\" maxlength=\"100\" />
-</td>
-</tr>\n
-<tr> 
-<td style=\"width:30%\" class=\"mediumtext\">Admin Email Address: </td>
-<td style=\"width:70%\">
-<input class=\"tbox\" type=\"text\" name=\"adminemail\" size=\"60\" value=\"you@yoursite.com\" maxlength=\"100\" />
-</td>
-
-</tr>\n
-<tr style=\"vertical-align:top\"> 
-<td style=\"width:30%\"></td>
-<td style=\"width:70%\">
-<input class=\"button\" type=\"submit\" name=\"mainadmin\" value=\"Submit\" />
-
-</td>
-</tr>
-</table>
-<input type=\"hidden\" name=\"stage\" value=\"6\">
-</form>";
-
-break;
-
-
-// ########### case 6 ###########
-case 6:
-
-if($adminerror != ""){
-	echo $adminerror."<br />Please click button to return to last page.
-<br /><br />";
-?>
-<form method="post" action="install.php">
-<input class="button" type="submit" name="submit" value="Continue" />
-<input type="hidden" name="stage" value="5">
-</form>
-<?php
-}else{
 	echo "Congratulations - e107 has been successfully installed on your server.<br />
 	The main site administrator has been set up and entered into the database - please write these down in a safe place<br />
-	<b>Administrator name: ".$_POST['adminname'].", Administrator password: ".$_POST['adminpassword1']."</b><br /><br />
+	<b>Administrator name: ".$_POST['admin_name'].", Administrator password: ".$_POST['admin_password1']."</b><br /><br />
 	You now need to chmod the following files to these respective values ...<br />
 	/config.php - 644<br />
 	/backend/news.xml - 666<br />
 	/backend/news.txt - 666<br /><br />
-	<b>Very important - please now delete /install.php and upgrade.php from your server, if you don't it's possible anyone may be able to set themselves up as an administrator on your site</b><br /><br />";
-?>
-<form method="post" action="install.php">
-<input class="button" type="submit" name="frontpage" value="Click here to go to your main front page" />
-<input class="button" type="submit" name="adminpage" value="Click here to go to your admin page" />
-</form>
-<?php	
+	<b>Very important - please now delete /install.php and /upgrade.php from your server, if you don't it's possible anyone may be able to set themselves up as an administrator on your site</b><br /><br />";
+
+//	$fp = @fopen("config.php","w+");
+//	$data = "define(".chr(34)."INSTALLED".chr(34).", FALSE);\n?".chr(62);
+//	@fwrite($fp, $data);
+//	fclose($fp);
+
+	?>
+	<form method="post" action="install.php">
+	<input class="button" type="submit" name="frontpage" value="Click here to go to your main front page" />
+	<input class="button" type="submit" name="adminpage" value="Click here to go to your admin page" />
+	</form>
+	<?php
 }
-
-
-
-break;
-}
-?>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-</body>
-</html>
-
-<?php
 
 function setuptables($server, $user, $pass, $db, $mySQLprefix){
-
 $admin_table = "CREATE TABLE ".$mySQLprefix."admin (
   admin_id smallint(5) unsigned NOT NULL auto_increment,
   admin_name varchar(20) NOT NULL default '',
@@ -445,7 +424,7 @@ $forum_table = "CREATE TABLE ".$mySQLprefix."forum (
 ) TYPE=MyISAM;";
 
 $forum_t_table = "CREATE TABLE ".$mySQLprefix."forum_t (
-  thread_id int(10) unsigned NOT NULL auto_increment,
+ thread_id int(10) unsigned NOT NULL auto_increment,
   thread_name varchar(250) NOT NULL default '',
   thread_thread text NOT NULL,
   thread_forum_id int(10) unsigned NOT NULL default '0',
@@ -455,6 +434,7 @@ $forum_t_table = "CREATE TABLE ".$mySQLprefix."forum_t (
   thread_views int(10) unsigned NOT NULL default '0',
   thread_active tinyint(3) unsigned NOT NULL default '0',
   thread_lastpost int(10) unsigned NOT NULL default '0',
+  thread_s tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (thread_id)
 ) TYPE=MyISAM;";
 
@@ -569,7 +549,7 @@ $poll_table = "CREATE TABLE ".$mySQLprefix."poll (
 
 $prefs_table = "CREATE TABLE ".$mySQLprefix."prefs (
   pref_name varchar(100) NOT NULL default '',
-  pref_value varchar(250) NOT NULL default ''
+  pref_value text NOT NULL
 ) TYPE=MyISAM;";
 
 $stat_counter_table = "CREATE TABLE ".$mySQLprefix."stat_counter (
@@ -646,11 +626,8 @@ If you have created a theme or plugin for e107 please consider sharing it with t
 Thankyou for trying e107, and have fun with your new website!
 (You can delete this message from your admin section.)");
 
-mysql_connect($server, $user, $pass);
-mysql_select_db($db);
-
-setcookie('userkey', '', time()+3600*24*30, '/', '', 0);
-setcookie('adminkey', '', time()+3600*24*30, '/', '', 0);
+//mysql_connect($server, $user, $pass);
+//mysql_select_db($db);
 
 if(!mysql_query($admin_table)){	
 	$error .= "There was a problem creating the <b>admin</b> mySQL table ...<br />";}else{$noerror .= "admin table ... created";}
@@ -690,7 +667,7 @@ mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Forum', 'forum.php', 
 mysql_query("INSERT INTO ".$mySQLprefix."prefs VALUES ('sitename', 'e107 powered site')");
 mysql_query("INSERT INTO ".$mySQLprefix."prefs VALUES ('siteurl', 'http://yoursite.com' )");
 mysql_query("INSERT INTO ".$mySQLprefix."prefs VALUES ('sitebutton', 'button.png' )");
-mysql_query("INSERT INTO ".$mySQLprefix."prefs VALUES ('sitetag', 'Website System Version 5.03' )");
+mysql_query("INSERT INTO ".$mySQLprefix."prefs VALUES ('sitetag', 'Website System Version 5.05' )");
 mysql_query("INSERT INTO ".$mySQLprefix."prefs VALUES ('sitedescription', '' )");
 mysql_query("INSERT INTO ".$mySQLprefix."prefs VALUES ('siteadmin', 'Webmaster' )");
 mysql_query("INSERT INTO ".$mySQLprefix."prefs VALUES ('siteadminemail', 'webmaster@yourdomain.com' )");
@@ -715,7 +692,7 @@ mysql_query("INSERT INTO ".$mySQLprefix."prefs VALUES ('sitelanguage', 'English'
 mysql_query("INSERT INTO ".$mySQLprefix."prefs VALUES ('sitelocale', 'en')");
 mysql_query("INSERT INTO ".$mySQLprefix."prefs VALUES ('maintainance_flag', '0')");
 
-mysql_query("INSERT INTO ".$mySQLprefix."e107 VALUES ('jalist (Steve Dunstan)', 'http://jalist.com', '5.03', '-', '$datestamp')");
+mysql_query("INSERT INTO ".$mySQLprefix."e107 VALUES ('jalist (Steve Dunstan)', 'http://jalist.com', '5.05', '-', '$datestamp')");
 mysql_query("INSERT INTO ".$mySQLprefix."link_category VALUES (0, 'Main', 'Any links with this category will be displayed in main navigation bar.')");
 mysql_query("INSERT INTO ".$mySQLprefix."link_category VALUES (0, 'Misc', 'Miscellaneous links.')");
 
@@ -735,3 +712,13 @@ mysql_close();
 return $error;
 }
 ?>
+
+
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</body>
+</html>

@@ -13,221 +13,271 @@
 +---------------------------------------------------------------+
 */
 
+
 //articles.php/comment.php
-define(LAN_0, "[Bloqueado por el Administrador]");
-define(LAN_1, "Desbloqueado");
-define(LAN_2, "Bloqueado");
+define(LAN_0, "[bloqueado por el administrador]");
+define(LAN_1, "Desbloquear");
+define(LAN_2, "Bloquear");
 define(LAN_3, "Borrar");
 define(LAN_4, "Info");
 define(LAN_5, "Comentarios ...");
-define(LAN_6, "Ustéd debe de estar registrado para poner comentarios en este sitio - Si ustéd no está registrado, por favor haga click <a href=\"signup.php\">Aqui</a> Para inscibirse");
-define(LAN_7, "Nombre: ");
+define(LAN_6, "Es necesario iniciar sesion para colocar mensajes en este sitio - por favor inicia tu sesion <a href=\"signup.php\">registrate aqui</a> ");
+define(LAN_7, "Nombre o Nick: ");
 define(LAN_8, "Comentario");
-define(LAN_9, "Enviar Comentario");
-define(LAN_10, "Etiquetas de atajo permitidas: [b] [i] [u] [img] [cen] [bq]<br />use [link] url [/link] para links<br />Las líneas (&lt;br /&gt;) se agregan automáticamente.");
+define(LAN_9, "Enviar");
+define(LAN_10, "Etiquetas permitidas: [b] [i] [u] [img] [cen] [bq]<br />use [link] url [/link] para links<br />Los cambios de renglon (&lt;br /&gt;) son agregados automaticamente.");
+
 
 //chat.php
-define(LAN_11, "Chat (Todos los mensajes)");
-define(LAN_12, "Mensajes del Chat");
+define(LAN_11, "Chatbox (Todos)");
+define(LAN_12, "Mensajes");
+
 
 //class.php
-define(LAN_13, "Noticia Borrada.");
-define(LAN_14, "Noticia actualizada en base de datos.");
-define(LAN_15, "Noticia ingresada en base de datos.");
+define(LAN_13, "Noticia Eliminada.");
+define(LAN_14, "Las noticias fueron actualizadas.");
+define(LAN_15, "Noticia agregada a la base de datos.");
 define(LAN_16, "Usuario: ");
 define(LAN_17, "Contraseña: ");
-define(LAN_18, "Por favor, ingrese");
-define(LAN_19, "No se puede escribir el archivo news.xml en el servidor, asegurese / que el directorio de backend tenga los permisos (666)");
+define(LAN_18, "Iniciar Sesion");
+define(LAN_19, "No s epudo escribir a news.xml, asegurese de que el directorio /backend tiene los permisos adecuados 666");
 define(LAN_20, "Error");
-define(LAN_21, "Total de páginas visitadas hoy: ");
-define(LAN_22, "Total de páginas visitadas: ");
-define(LAN_23, "Total de visitas al sitio: ");
-define(LAN_24, "fuck|piss|shit|cunt|cock|asshole|motherfucker|mother fucker| arse|pussy|faggot");
-define(LAN_25, "Página anterior");
-define(LAN_26, "Página siguiente");
+define(LAN_21, "Vistas totales solo hoy: ");
+define(LAN_22, "Vistas totales: ");
+define(LAN_23, "Visitas totales: ");
+define(LAN_24, "puto|puta|verga|pendejo|macana|put0|put4|culo|joto|chinga|faggot");
+define(LAN_25, "Pagina Anterior");
+define(LAN_26, "Siguiente Pagina");
+
 
 //forum.php
-define(LAN_27, "Dejo campos necesarios en blanco");
-define(LAN_28, "Error no publico nada ..");
+define(LAN_27, "Dejastes campos en blancos que son requeridos");
+define(LAN_28, "Error: No ingresaste nada ..");
 define(LAN_29, "Editado");
-define(LAN_30, "Bienvenido");
+define(LAN_30, "Bienvenid@");
 define(LAN_31, "No hay nuevos mensajes ");
-define(LAN_32, "Hay un nuevo mensaje ");
-define(LAN_33, "Ahi hay");
+define(LAN_32, "Hay 1 nuevo mensaje ");
+define(LAN_33, "Hay");
 define(LAN_34, "nuevos mensajes");
-define(LAN_35, "desde su última visita.");
-define(LAN_36, "Su última visita fue ");
-define(LAN_37, "Ahora es ");
-define(LAN_38, ", todos los horarios son GMT.");
-define(LAN_39, "Total de temas");
-define(LAN_40, "total de mensajes.");
-define(LAN_41, "Miembro más reciente: ");
-define(LAN_42, "Miembros registrados: ");
-define(LAN_43, "Estos foros pueden ser vistos y utilzados por miembros no registrados, pero si desea tener preferencia <a href=\"signup.php\">registrese</a> e ingrese.");
-define(LAN_44, "TEstos foros pueden ser vistos y utilzados por miembros no registrados, el ip y host serán registrados.");
-define(LAN_45, "Estos foros solo pueden ser utilizados por miembros registrados, hacer click <a href=\"signup.php\">aqui</a> para ir a la página de registro.");
+define(LAN_35, "desde tu ultima visita.");
+define(LAN_36, "tu ultima visita fue a ");
+define(LAN_37, "Ahora es a ");
+define(LAN_38, ", los tiempos son GMT.");
+define(LAN_39, "Discuciones");
+define(LAN_40, "Mensajes.");
+define(LAN_41, "Miembro reciente: ");
+define(LAN_42, "Usuarios registrados: ");
+define(LAN_43, "En estos foros los usuarios NO Registrados puede navegar y colocar mensajes, pero si deseas ver informacion relacionada con tus mensajes, borrar o editar tus mensajes necesitaras <a href=\"signup.php\">regitrarte</a> e iniciar sesion.");
+define(LAN_44, "En estos foros los usuarios NO registrados puede navegar y colocar mensajes, sin embargo su direcion IP y Servidor seran guardados en el historial.");
+define(LAN_45, "Estos foros solo pueden ser usados por usuarios registrados, por favor <a href=\"signup.php\">Registrate</a> para usarlos.");
 define(LAN_46, "Foro");
-define(LAN_47, "Asuntos");
-define(LAN_48, "Respuestas");
-define(LAN_49, "Último Mensaje");
+define(LAN_47, "Mensajes");
+define(LAN_48, "Contestaciones");
+define(LAN_49, "Ultimo");
 define(LAN_50, "Moderadores");
-define(LAN_51, "No hay foros, por favor regrese pronto.");
-define(LAN_52, "No hay foros en esta sección, por favor regrese pronto.");
-define(LAN_53, "Asunto");
-define(LAN_54, "Iniciar");
-define(LAN_55, "Respuestas");
+define(LAN_51, "No existen foros aun, por favor regrese de nuevo.");
+define(LAN_52, "No hay foros en estas secciones aun, por favor regesa y verifica de nuevo, gracias..");
+define(LAN_53, "Mensaje");
+define(LAN_54, "Iniciador");
+define(LAN_55, "Contestaciones");
 define(LAN_56, "Vistas");
-define(LAN_57, "Ultimo mensaje");
-define(LAN_58, "No hay temas en este foro todavía.");
-define(LAN_59, "Ustéd debe ser un miembro registrado e ingresar para publicar en este foro. Click <a href=\"signup.php\">aqui</a> para registrarse o ingresar desde el menu.");
-define(LAN_60, "Iniciar nuevo Asunto");
-define(LAN_61, "Su Nombre: ");
+define(LAN_57, "Ultimo Mensaje");
+define(LAN_58, "No hay topicos en este foro aun.");
+define(LAN_59, "Debes de ser un usuarios registrado e iniciar tu sesion para colocar emnsaje sne este foro. da Click <a href=\"signup.php\">aqui</a> para registrarte o iniciar sesion.");
+define(LAN_60, "Iniciar nueva discucion");
+define(LAN_61, "Nombre o NIck: ");
 define(LAN_62, "Asunto: ");
-define(LAN_63, "Mensajes: ");
-define(LAN_64, "Enviar nuevo asunto");
-define(LAN_65, "Admin detectadp - moderación activada");
-define(LAN_66, "El asunto está cerrado");
-define(LAN_67, "Publicaciónes");
-define(LAN_68, "Editar");
-define(LAN_69, "Borrar");
+define(LAN_63, "Mensaje: ");
+define(LAN_64, "Colocar Mensaje");
+define(LAN_65, "administrador detectado - Moderacion activada");
+define(LAN_66, "Esta discucion esta cerrada");
+define(LAN_67, "Mensajes");
+define(LAN_68, "editar");
+define(LAN_69, "borrar");
 define(LAN_70, "mover");
-define(LAN_71, "Sin Respuestas.");
-define(LAN_72, "Publicado por");
-define(LAN_73, "Responder: ");
-define(LAN_74, "Responder al Asunto");
-define(LAN_75, "Responder mensaje");
-define(LAN_76, "Responder");
-define(LAN_77, "Actualizar Asunto");
-define(LAN_78, "Actualizar respuesta");
+define(LAN_71, "Sin contestacion.");
+define(LAN_72, "Originalmente por");
+define(LAN_73, "Contestar: ");
+define(LAN_74, "Contestar al mensaje");
+define(LAN_75, "Colocar contestacion");
+define(LAN_76, "Contestar");
+define(LAN_77, "Actualizar discucion");
+define(LAN_78, "Actualizar contestacion");
 define(LAN_79, "Nuevos mensajes");
 define(LAN_80, "No hay nuevos mensajes");
-define(LAN_81, "Asunto Cerrado");
+define(LAN_81, "Discucion Cerrada");
+
 
 //index.php
-define(LAN_82, "Noticias - Categoria");
-define(LAN_83, "No hay noticias todavía.");
+define(LAN_82, "Noticias - Categorias");
+define(LAN_83, "Sin noticias aun.");
 define(LAN_84, "Noticias");
 
+
 //links.php
-define(LAN_85, "No hay links todavía.");
+define(LAN_85, "No hay links.");
 define(LAN_86, "Categoria:");
-define(LAN_87, "Botón para");
+define(LAN_87, "Boton para");
 define(LAN_88, "Referencias:");
 define(LAN_89, "Admin: ");
-define(LAN_90, "Agregar nuevo link en esta Categoria");
-define(LAN_91, "Agregar nueva Categoria");
+define(LAN_90, "Agregar link a esta categoria");
+define(LAN_91, "Agregar nueva categoria");
+
 
 //oldpolls.php
-define(LAN_92, "Encuestas anteriores");
-define(LAN_93, "No hay encuestas anteriores.");
-define(LAN_94, "Publicado por");
-define(LAN_95, "Total de votos:");
+define(LAN_92, "Mas Encuestas");
+define(LAN_93, "No hay mas encuestas.");
+define(LAN_94, "Colocado por");
+define(LAN_95, "Votos totales:");
 define(LAN_96, "Encuestas");
 
+
 //search.php
-define(LAN_97, "No hay coincidencias.");
-define(LAN_98, "Nuevas noticias");
+define(LAN_97, "Sin resultados.");
+define(LAN_98, "Notas");
 define(LAN_99, "Comentarios");
 define(LAN_100, "Articulos");
-define(LAN_101, "Chat"); 
+define(LAN_101, "Chatbox"); 
 define(LAN_102, "Links");
-define(LAN_103, "Foro");
+define(LAN_103, "Foros");
+
 
 //signup.php
-define(LAN_104, "Este usuario ya existe en nuestra base de datos, por favor elija un usuario diferente.");
-define(LAN_105, "Las contraseñas no coinciden, por favor re-intente.");
-define(LAN_106, "Esta no es una dirección de correo valida, por favor re-intente.");
-define(LAN_107, "Gracias! Ustéd es un miembro regisrado de ".SITENAME.", por favor, mantenga su nombre de usuario y contraseña escrita en un lugar seguro.<br /><br />Ustéd puede ingresar desde el bloque de registro.");
-define(LAN_108, "Registro Completo");
-define(LAN_109, "Este sitio cumple con el convenio de protección a menores Actual de 1998 (COPPA) y no acepta registros de menores 13 sin autorización escrita de sus padres o tutores. Para más información puede leer <a href=\"http://www.cdt.org/legislation/105th/privacy/coppa.html\">Aquí</a>. Por favor contacte al Administrador <a href=\"mailto:".SITEADMINEMAIL."\">aquí</a> si requiere ayuda.<br /><br /><div style=\"text-align:center\"><b>Si ustéd es mayor de 13 años haga click <a href=\"signup.php?stage1\">aquí</a> para continuar con el proceso de registro.");
+define(LAN_104, "El nombre de usuario que solicitas ya fue registrado, cambia de nombre de usuario e intenta de nuevo.");
+define(LAN_105, "Las contraseñas no concuerdan, reescribelas e intenta de nuevo.");
+define(LAN_106, "Direccion email invalida, por favor reingresa tu direccion.");
+define(LAN_107, "¡Gracias! ahora eres parte de ".SITENAME.", No olvides tu nombre de usuario y contraseña si los pierdes NO podras recuperarlos.<br /><br />Ahora puedes iniciar tu sesion.");
+define(LAN_108, "Proceso de registro completo");
+define(LAN_109, "Este sitio cumple con las normas de The Children's Online Privacy Protection Act of 1998 (COPPA) y como tal no acepta el registro de menores de 13 años sin un domcumento de permiso escrito por sus padres o tutores. para mas informacion puedes leer la legislacion <a href=\"http://www.cdt.org/legislation/105th/privacy/coppa.html\">aqui</a>. por favor contacta al aministrador <a href=\"mailto:".SITEADMINEMAIL."\">aqui</a> si requieres asistencia.<br /><br /><div style=\"text-align:center\"><b>si eres mayor de 13 años por favor da click <a href=\"signup.php?stage1\">aqui</a> para continuar con el proceso de registro.");
 define(LAN_110, "Registro");
-define(LAN_111, "Re-escribir contraseña: ");
-define(LAN_112, "Ocultar cuenta de correo: ");
-define(LAN_113, "Ocultar cuenta de correo?: ");
-define(LAN_114, "(Esto evita que su e-mail sea publicado)");
-define(LAN_115, "Número ICQ: ");
-define(LAN_116, "Usuario AIM: ");
-define(LAN_117, "Usuario MSN : ");
+define(LAN_111, "Re-ingresa la contraseña: ");
+define(LAN_112, "Direccion Email: ");
+define(LAN_113, "¿Ocultar direccion email?: ");
+define(LAN_114, "(Esto evitara que otros usuarios puedan ver tu direccion email)");
+define(LAN_115, "ICQ UIN: ");
+define(LAN_116, "AIM Nick: ");
+define(LAN_117, "MSN: ");
 define(LAN_118, "Cumpleaños: ");
-define(LAN_119, "Locación: ");
+define(LAN_119, "Localizacion: ");
 define(LAN_120, "Firma: ");
 define(LAN_121, "Imagen: ");
-define(LAN_122, "Zona Horaria:");
-define(LAN_123, "Registrarse");
+define(LAN_122, "Zona horaria:");
+define(LAN_123, "Registar");
+
 
 //stats.php
-define(LAN_124, "Total de visitas unicas: ");
-define(LAN_125, "Total de visitas al sitio: ");
-define(LAN_126, "Unicas visitas por página: ");
-define(LAN_127, "Total de vistas por página: ");
+define(LAN_124, "Visitas unicas totales: ");
+define(LAN_125, "Vistas totales del sitio: ");
+define(LAN_126, "Visitas unicas por pagina: ");
+define(LAN_127, "Vistas totales por pagina: ");
 define(LAN_128, "Navegador: ");
-define(LAN_129, "Sistema Operativo: ");
-define(LAN_130, "Paises/Dominios de origen: ");
-define(LAN_131, "Referidos: ");
-define(LAN_132, "Estadísticas del Sitio");
+define(LAN_129, "sistema Operativo: ");
+define(LAN_130, "Paises/Dominios: ");
+define(LAN_131, "Referencias: ");
+define(LAN_132, "Estadisticas");
+
 
 //submitnews.php
-define(LAN_133, "Gracias");
-define(LAN_134, "Su noticia ha sido enviada para revisión de nuestros administradores.");
-define(LAN_135, "Noticias: ");
-define(LAN_136, "Enviar noticias");
+define(LAN_133, "Gracias!");
+define(LAN_134, "Tu nota ha sido enviada y sera revisada por uno de nuestros aministradores en cualquier momento antes de ser colocada.");
+define(LAN_135, "Nota o noticia: ");
+define(LAN_136, "Enviar Noticia");
+
 
 //user.php
-define(LAN_137, "No hay información de miembros no registrados en");
-define(LAN_138, "Miembros Registrados: ");
+define(LAN_137, "No hay informacion para ese usuario");
+define(LAN_138, "Usuarios registrados: ");
 define(LAN_139, "Orden: ");
-define(LAN_140, "Miembros Registrados");
-define(LAN_141, "No hay miembros registrados.");
-define(LAN_142, "Miembro");
-define(LAN_143, "Oculto por solicitud");
-define(LAN_144, "URL del Sitio: ");
+define(LAN_140, "Usuarios registrados");
+define(LAN_141, "No hay usuarios registrados.");
+define(LAN_142, "Usuarios");
+define(LAN_143, "[oculto a peticion]");
+define(LAN_144, "URL Pagina personal: ");
 define(LAN_145, "Registrado:");
-define(LAN_146, "Visitas al sitio desde el registro: ");
-define(LAN_147, "Mensajes del Chat: ");
-define(LAN_148, "Comentarios: ");
-define(LAN_149, "Mensajes del Foro: ");
+define(LAN_146, "Visitas desde su registro: ");
+define(LAN_147, "Mensajes al Chatbox: ");
+define(LAN_148, "Comentarios COlocados: ");
+define(LAN_149, "Mensajes al Foro: ");
+
 
 //usersettings.php
-define(LAN_150, "Datos actualizados.");
-define(LAN_151, "OK");
-define(LAN_152, "Nueva Contraseña: ");
-define(LAN_153, "Re-escribir Nueva Contraseña: ");
-define(LAN_154, "Actualizar Datos");
-define(LAN_155, "Actualizar datos de Usuario");
-define(LAN_185, "Dejo la contraseña en blanco,");
+define(LAN_150, "Detalles actualizados.");
+define(LAN_151, "Aceptar");
+define(LAN_152, "Nueva contraseña: ");
+define(LAN_153, "Re-escribir nueva contraseña: ");
+define(LAN_154, "Actualizar detalles");
+define(LAN_155, "Actualizar detalles de usuario");
+define(LAN_185, "Dejaste la contraseña en blanco,");
+
 
 //plugins
 define(LAN_156, "Enviar");
-define(LAN_157, "Borrar");
-define(LAN_158, "No hay mensajes.");
+define(LAN_157, "Reiniciar");
+define(LAN_158, "No hay emnsajes aun.");
 define(LAN_159, "Ver todos los mensajes");
 define(LAN_160, "Webmaster: ");
 define(LAN_161, "Encabezados");
-define(LAN_162, "Sin encuestas activas.");
-define(LAN_163, "Enviar Voto");
+define(LAN_162, "No activas.");
+define(LAN_163, "Enviar voto");
 define(LAN_164, "Votos: ");
 define(LAN_165, "Encuestas anteriores");
 
+
 //menus
-define(LAN_166, "No hay Artículos.");
-define(LAN_167, "Artículos");
-define(LAN_168, "Our headlines can be syndicated by using either our rss or text feeds.");
+define(LAN_166, "sin articulos.");
+define(LAN_167, "Articulos");
+define(LAN_168, "Nuestras notas puedes ser requeridas usando nuestras fuentes rrs o de texto.");
 define(LAN_169, "Backend");
-define(LAN_170, "W3C Compliance");
-define(LAN_171, "Unique user id not recognised (possible corrupted cookie).<br />Please <a href=\"index.php?logout\">click here</a> to destroy cookie.");
+define(LAN_170, "Conformidad W3C");
+define(LAN_171, "identificador de usuario no reconocido.(Cookie invalida o dañada)<br />Por favor da click <a href=\"index.php?logout\">aqui</a> e inicia tu sesion de nuevo.");
 define(LAN_172, "Salir");
-define(LAN_173, "Error de Acceso");
+define(LAN_173, "Error de inicio de sesion");
 define(LAN_174, "Registrarse");
-define(LAN_175, "Ingresar");
-define(LAN_176, "En esta página: ");
-define(LAN_177, "En el Sitio: ");
-define(LAN_178, "Usuarios ingresados: ");
-define(LAN_179, "Usuarios en linea");
+define(LAN_175, "Iniciar Sesion");
+define(LAN_176, "Usuarios en esta pagina: ");
+define(LAN_177, "Usuarios en el sitio: ");
+define(LAN_178, "Usuarios activos: ");
+define(LAN_179, "En linea");
 define(LAN_180, "Buscar");
-define(LAN_181, "Pon nuestro link");
-define(LAN_182, "Chat");
-define(LAN_183, "Menú Principal");
+define(LAN_181, "Linkeanos");
+define(LAN_182, "Chatbox");
+define(LAN_183, "Menu Principal");
 define(LAN_184, "Encuesta");
 
 
+// #### Added in v5 #### //
+
+
+define(LAN_186, "Enviar Nota");
+define(LAN_187, "Direccion email del destinatario");
+define(LAN_188, "Podrias estar interesado en esta nota");
+define(LAN_189, "Powered by");
+define(LAN_190, "Reseñas");
+define(LAN_191, "Informacion");
+define(LAN_192, "Los usuarios en este foro han colocado un total de ");
+define(LAN_193, "Moderador del foro");
+define(LAN_194, "Anonimo");
+define(LAN_195, "Usuario registrado");
+define(LAN_196, "Has leido ");
+define(LAN_197, " de estos mensajes.");
+define(LAN_198, " Todos los neuvos mensajes han sido leidos.");
+define(LAN_199, "Marcar todos los mensajes como leidos");
+define(LAN_200, "Cerrar esta discucion");
+define(LAN_201, "Reabrir esta discucion");
+define(LAN_202, "Discucion estancada");
+define(LAN_203, "Estancar/Cerrar discucion");
+define(LAN_204, "<b>Puedes</b> iniciar nuevas discuciones");
+define(LAN_205, "<b>No puedes</b> iniciar nuevas discuciones");
+define(LAN_206, "<b>Puedes</b> contestar a mensajes");
+define(LAN_207, "<b>No puedes</b> contestar a los mensajes");
+define(LAN_208, "<b>Puedes</b> editar tus menajes");
+define(LAN_209, "<b>No puedes editar tus mensajes</b>");
+define(LAN_210, "<b>Puedes</b> borrar tus mensajes");
+define(LAN_211, "<b>No puedes</b> borrar tus mensajes");
+define(LAN_212, "¿Olvidaste tu contraseña?");
+define(LAN_213, "Ese nombre de usuario o contraseña no se encontro en la base de datos.");
+define(LAN_214, "No se puede reiniciar tu contraseña");
+define(LAN_215, "Tu contrasela en ".SITENAME." ha sido reiniciada. tu nueva contraseña es\n\n");
+define(LAN_216, "Para validar tu nueva contraseña pro favor sigue al siguiente URL ...");
+define(LAN_217, "Gracias, Tu nueva contraseña ha sido validada. Ahora puedes iniciar tu sesion usando tu nueva contrseña.");
 ?>

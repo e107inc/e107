@@ -14,7 +14,8 @@
 */
 require_once("class2.php");
 if(USER == FALSE && ADMIN == FALSE){ header("location:index.php"); }
-if($_SERVER['QUERY_STRING'] != ""){ $uid = $_SERVER['QUERY_STRING']; }
+$_uid = $_SERVER['QUERY_STRING'];
+if(IsSet($_POST['_uid'])){ $_uid = $_POST['_uid']; }
 require_once(HEADERF);
 if(IsSet($_POST['updatesettings'])){
 
@@ -23,7 +24,9 @@ if(IsSet($_POST['updatesettings'])){
 	}
 
 	if($_POST['password1'] =="" || $_POST['password2'] = ""){
-		$error .= LAN_185."<br />";
+		$password = $_POST['_pw'];
+	}else{
+		$password = md5($_POST['password1']);
 	}
 
 	 if(!preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]+@([-0-9A-Z]+\.)+([0-9A-Z]){2,4}$/i', $_POST['email'])){
@@ -37,7 +40,8 @@ if(IsSet($_POST['updatesettings'])){
     }
 
 	if($error == ""){
-		$sql -> db_Update("user", "user_password='".md5($_POST['password1'])."', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$_POST['birthday']."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."' WHERE user_id='".USERID."' ");
+		if(IsSet($_uid)){ $inp = $_uid; }else{ $inp = USERID; }
+		$sql -> db_Update("user", "user_password='$password', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$_POST['birthday']."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."' WHERE user_id='".$inp."' ");
 
 		$text = "<div style=\"text-align:center\">".LAN_150."</div>";
 		$ns -> tablerender(LAN_151, $text);
@@ -50,13 +54,12 @@ if($error != ""){
 	$ns -> tablerender("<div style=\"text-align:center\">".LAN_20."</div>", $error);
 }
 
-if(IsSet($uid)){
-	$sql -> db_Select("user", "*", "user_id='".$uid."' ");
+if($_uid != ""){
+	$sql -> db_Select("user", "*", "user_id='".$_uid."' ");
 }else{
 	$sql -> db_Select("user", "*", "user_id='".USERID."' ");
 }
 list($user_id, $name, $user_password, $user_sess, $email, $website, $icq, $aim, $msn, $location, $birthday, $signature, $image, $user_timezone, $hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_new, $user_viewed, $user_prefs, $user_new, $user_viewed, $user_visits, $user_admin)  = $sql -> db_Fetch();
-
 
 $text = "
 <form method=\"post\" action=\"".$_SERVER['PHP_SELF']."?stage2\">\n
@@ -171,22 +174,18 @@ while($timezone[$count]){
 }
 
 $text .= "</select>
-
-
-
-
-
 </td>
 </tr>
-
-
 </tr>
 <tr style=\"vertical-align:top\"> 
 <td colspan=\"2\"  style=\"text-align:center\">
+<br />
 <input class=\"button\" type=\"submit\" name=\"updatesettings\" value=\"".LAN_154."\" />
 </td>
 </tr>
 </table>
+<input type=\"hidden\" name=\"_uid\" value=\"$_uid\">
+<input type=\"hidden\" name=\"_pw\" value=\"$user_password\">
 </form>
 <br />
 <br />

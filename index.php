@@ -37,6 +37,9 @@ if(eregi("extend", $_SERVER['QUERY_STRING'])){
 	$extend_id = $qs[1];
 	$sql -> db_Select("news", "*", "news_id='$extend_id' ");
 	list($news_id, $news_title, $news_body, $news_extended, $news_datestamp, $news_author, $news_source, $news_url, $news_category) = $sql-> db_Fetch();
+	$sql2 = new db;
+	$sql2 -> db_Select("news_category", "*", "category_id='$news_category' ");
+	list($category_id, $category_name, $category_icon) = $sql2-> db_Fetch();
 	$comment_total = $sql -> db_Count("comments", "(*)", " WHERE comment_item_id='$news_id' AND comment_type='0' ");
 
 	$ix -> render_newsitem($news_id, $news_title, $news_body, $news_extended, $news_source, $news_url, $news_author, $comment_total, $category_id, $news_datestamp, $news_allow_comments, $mode="extend");
@@ -44,8 +47,6 @@ if(eregi("extend", $_SERVER['QUERY_STRING'])){
 	require_once(FOOTERF);
 	exit;
 }
-
-
 
 if(!$_SERVER['QUERY_STRING'] || eregi("cat", $_SERVER['QUERY_STRING'])){ $from = 0; }else{ $from = $_SERVER['QUERY_STRING']; }
 if(Empty($order)){ $order = "news_datestamp"; }

@@ -34,10 +34,10 @@ if(IsSet($_POST['emailsubmit'])){
 	$message .= "\n\nIP address of sender: ".$ip."\n\n";
 	$sql -> db_Select("news", "*", "news_id='$id' ");
 	list($news_id, $news_title, $news_body, $news_extended, $news_datestamp, $news_author, $news_source, $news_url, $news_category, $news_allow_comments) = $sql-> db_Fetch();
-	$message .= "\n\n".$news_title."\n".$news_body."\n".$news_extended."\n\n";
+	$message .= $_POST['comment']."\n\n".$news_title."\n".$news_body."\n".$news_extended."\n\n";
 
 	if($error == ""){
-		if(@mail($_POST['email_send'], "News item from ".SITENAME, $message, "From: ".SITEADMINEMAIL ."\r\n"."Reply-To: ".SITEADMINEMAIL ."\r\n"."X-Mailer: PHP/" . phpversion())){
+		if(@mail($_POST['email_send'], "News item from ".SITENAME, $message, "From: newssend@".SITENAME."\r\n"."Reply-To: ".NULL ."\r\n"."X-Mailer: PHP/" . phpversion())){
 			$text = "<div style=\"text-align:center\">Mail sent to ".$_POST['email_send']."</div>";
 		}else{
 			$text = "<div style=\"text-align:center\">Sorry - unable to send email</div>";

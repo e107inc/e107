@@ -38,8 +38,8 @@ $rightcolumn = "15%";
 
 define(TITLE_POSITION, "caption");	// put news title in caption or body?
 define(TITLE_ALIGN,  "left");
-define(TITLE_STYLE_START, "<b>");
-define(TITLE_STYLE_END, "</b>");
+define(TITLE_STYLE_START, "");
+define(TITLE_STYLE_END, "");
 define(ICON_SHOW, TRUE);
 define(ICON_POSITION, "body");	 // put icon in caption or body?
 define(ICON_ALIGN, "left");

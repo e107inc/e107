@@ -17,64 +17,88 @@ alphabetised by image name added help link (9.8.02)
 
 function emoticons($msg) {
 
-
 $emoticons = array(
+"&\|" => "cry", 
+"&-\|" => "cry", 
+"&o\|" => "cry", 
+":\(\(" => "cry", 
 
-// 43 smilies August 2002
+"~:\(" => "mad", 
+"~:o\(" => "mad",
+"~:-\(" => "mad",
 
-//"\(a\)" => "angel_smile",
-":@" => "owned",
-//":\[" => "bat",
-//"\(b\)" => "beer_yum",
-//"\(&\)" => "bowwow",
-//"\(u\)" => "broken_heart",
-//"\(\^\)" => "cake",
-//"\(p\)" => "camera",
-//"\(o\)" => "clock",
-//"\(c\)" => "coffee",
-":s" => "smirk",
-//":'\(" => "cry_smile",
-//"\(6\)" => "devil_smile",
-//"\(\{\)" => "dude_hug",
-":\\$" => "smirk",
-//"\(e\)" => "envelope",
-//"\(~\)" => "film",
-//"\(x\)" => "girl_handsacrossamerica",
-//"\(\}\)" => "girl_hug",
-//"\(z\)" => "guy_handsacrossamerica",
-"\(l\)" => "heart",
-//"\(k\)" => "kiss",
-//"\(@\)" => "kittykay",
-//"\(i\)" => "lightbulb",
-//"\(d\)" => "martini_shaken",
-//"\(m\)" => "messenger", 
-//"\(s\)" => "moon",
-//"\(8\)" => "musical_note",
-":o" => "omg",
-//"\(t\)" => "phone",
-//"\(g\)" => "present",
-":\)" => "smirk",
-//"\(f\)" => "rose",
-":\(" => "sad",
-"\(h\)" => "dead",
-"\(\*\)" => "square",
-":D" => "bigsmile",
-//"\(n\)" => "thumbs_down",
-//"\(y\)" => "thumbs_up",
-":p" => "tongue",
-":\|" => "confused",
-//"\(w\)" => "wilted_rose",
-";)" => "wink",
-"\:O" => "omg"
+":\)" => "smile", 
+":o\)" => "smile",
+":-\)" => "smile",
+
+":\(" => "frown", 
+":o\(" => "frown", 
+":-\(" => "frown", 
+
+":D" => "grin", 
+":oD" => "grin", 
+":-D" => "grin", 
+
+":\?" => "confused", 
+":o\?" => "confused", 
+":-\?" => "confused", 
+
+"\%-6" => "special", 
+
+"x\)" => "dead", 
+"xo\)" => "dead", 
+"x-\)" => "dead", 
+"x\(" => "dead", 
+"xo\(" => "dead", 
+"x-\(" => "dead", 
+
+":@" => "gah", 
+":o@" => "gah", 
+":-@" => "gah", 
+
+":!" => "idea", 
+":o!" => "idea", 
+":-!" => "idea", 
+
+":\|" => "neutral", 
+":o\|" => "neutral", 
+":-\|" => "neutral", 
+
+"\?!" => "question", 
+
+"B\)" => "rolleyes", 
+"Bo\)" => "rolleyes", 
+"B-\)" => "rolleyes", 
+
+"8\)" => "shades", 
+"8o\)" => "shades", 
+"8-\)" => "shades", 
+
+":O" => "suprised", 
+":oO" => "suprised", 
+":-O" => "suprised", 
+
+":p" => "tongue", 
+":op" => "tongue", 
+":-p" => "tongue", 
+":P" => "tongue", 
+":oP" => "tongue", 
+":-P" => "tongue", 
+
+";\)" => "wink", 
+";o\)" => "wink", 
+";-\)" => "wink"
+
 );
 
 while (list($short, $name) = each ($emoticons)){
+//	echo $short."<br />";
 	if(eregi("admin", $_SERVER['PHP_SELF'])){
-		$msg = ereg_replace("$short","<img src=\"../themes/shared/emoticons/$name.gif\" alt=\"\" style=\"vertical-align:absmiddle\" />",$msg);
-		$msg = ereg_replace(strtoupper($short),"<img src=\"../themes/shared/emoticons/$name.gif\" alt=\"\" style=\"vertical-align:absmiddle\" />",$msg);
+		$msg = ereg_replace(strtoupper($short),"<img src=\"../themes/shared/emoticons/$name.png\" alt=\"\" style=\"vertical-align:absmiddle\" />",$msg);
+//		$msg = ereg_replace(strtoupper($short),"<img src=\"../themes/shared/emoticons/$name.png\" alt=\"\" style=\"vertical-align:absmiddle\" />",$msg);
 	}else{
-		$msg = ereg_replace("$short","<img src=\"themes/shared/emoticons/$name.gif\" alt=\"\" style=\"vertical-align:absmiddle\" />",$msg);
-		$msg = ereg_replace(strtoupper($short),"<img src=\"themes/shared/emoticons/$name.gif\" alt=\"\" style=\"vertical-align:absmiddle\" />",$msg);
+		$msg = ereg_replace(strtoupper($short),"<img src=\"themes/shared/emoticons/$name.png\" alt=\"\" style=\"vertical-align:absmiddle\" />", $msg);
+//		$msg = ereg_replace(strtoupper($short),"<img src=\"themes/shared/emoticons/$name.png\" alt=\"\" style=\"vertical-align:absmiddle\" />",$msg);
 	}
 }
 return $msg;

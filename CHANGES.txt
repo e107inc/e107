@@ -1,0 +1,147 @@
+Changes in v5.06
+~~~~~~~~~~
+
+- Fixed edit bug in newspost and forum, shortcut tags now parsed back to original format and entered ok
+- Post reply image now shown correctly
+- next/prev function fixed
+- slashes now stripped properly
+- shortcut buttons helpbox added on newsposts and forums
+- updated articles to use newer shortcuts, and new editparse routine
+- Spanish and Dutch language files updated - thankyou
+- links and other parse routines tidies up, especially in chatbox
+
+Changes in v5.05
+~~~~~~~~~~
+
+- Sessions restored, this is to hopefully aid integration of third-party scripts in the future
+- Forum display routines rewritten
+- Category icon now displays correctly on extended news items
+- Fixed some bugs with the admin section of usersettings.php
+- Emailed news now sends the message along with it
+- Rewrote new post forum functions
+- Fixed bug that screwed admin login if user registration system turned off
+- Remade the emoticon images, changed code to suit
+- Added time_offset pref value, you can now alter the time sitewide
+- Added mark all read link to forum
+- Added ability to give/remove admin status to registered users
+- Made it impossible to delete the main site admin from the user table
+- Fixed bug that stopped files being uploaded under certain server configs (thanks to db for this fix)
+- Finally nailed down that apostrophe problem (hopefully)
+- Made allow_comments default in newspost
+- Added refresh button to /admin/menus to use if menus table gets corrupted
+- Added new page to deal with forgotten password requests
+- [link][/link] syntax is now [link=hyperlink]link URL[/link], ie entering [link=Foo]http://blah.com[/link] would result in <a href="http://blah.com">Foo</a>
+- Rewrote the usertheme plugin, much cleaner and reverts to default site theme if menu item deactivated
+
+Changes in v5
+~~~~~~~~~~
+
+- dbFunc completely rewritten, much faster and easier to use now (old dbFunc has been left although depracated to allow backward compatibilty of third-party plugins)
+- Login functions totally rewritten, admin and user login now completely (but securely) integrated
+- Cookies are no more. Even though I envising my inbox refilling with those "I cant login you bastard" emails I used to get (all due to bad session_path) this is the best way of handling this stuff
+- Added timezone select box on signup.php and usersettings.php
+- Search menu now aligned center (looks better)
+- dump.php removed from core - use phpMyAdmin or similar for backups
+- Theme structure completely rewritten - themes are now almost all variable based
+
+Changes in v4.2
+~~~~~~~~~~
+
+- Updated cookie routines (again)
+- Fixed security hole in user logins (thanks nalenb)
+- que updated the nextprev class (small xhtml issue)
+- Fixed the "Logged in ADMINNAME" when logging into admin in the e107 theme
+- /admim/menus.php rewritten (again), seems it's still confusing a lot of people, hopefully this format is a bit simpler
+- New e107 button
+- Added php and mysql buttons to e107 theme
+- Language support started, English language file in place and all neccessary updates made to core files to allow other languages. Option added on prefs page to change site language.
+- Another small change in theme.php - REALLY SORRY!. If you are using your own or a modified theme please open theme.php and find this line ...
+		<a href=\"extended.php?id=".$news_id."\"><b>Read More ...</b></a>";
+	and replace it with ...
+		<a href=\"extended.php?".$news_id."\"><b>Read More ...</b></a>";
+	(Thanks to eTron for pointing this bug out)
+- Thanks to nalenb for this one - he made the necessary updates to show replied to threads first in forum - many thanks Bill
+- Fixed small bug that allowed you to update your user settings with a blank password
+- Added news_url to default themes (don't know how that got lost ...) - thanks to Thermo for pointing this out
+- Small change to get_count class by que
+- Headlines fixed
+- Logging in as a user will now log you in as an admin if usernames are the same
+
+Changes in v4.1
+~~~~~~~~~~~~~
+- Interim bugfixes
+
+
+Changes in v4.FINAL
+~~~~~~~~~~~~~
+
+- Added ability to have different styles for news and menu items, I'll expand this to all content in a near-future version. It does offer many more options theming wise ..
+- Minor modifications to theme.php, if you have made or modified your own theme you'll need to make the same changes ....
+	1. open theme.php, go to the [newsstyle] section
+	2. change the line ...
+		function newsstyle($news_id, $news_title, $news_body, $news_extended, $news_source, $news_url, $admin_name, $admin_email, $comment_total, $category_name, $datestamp, $preview=FALSE){
+	    to ...
+		function newsstyle($news_id, $news_title, $news_body, $news_extended, $news_source, $news_url, $admin_name, $admin_email, $comment_total, $category_id, $category_name, $category_icon, $datestamp, $preview=FALSE){
+	3. delete the following lines ...
+		if($category_name == "e107 welcome message"){
+		$category_id = 0;
+		$category_icon = "button.png";
+	}else{
+		$sql2 = new dbfunc;
+		$sql2 -> dbQuery("SELECT * FROM ".MUSER."news_category WHERE category_name='$category_name' ");
+		list($category_id, $category_name, $category_icon) = $sql2-> dbFetch();
+		$category_icon = THEME.$category_icon;
+	}
+	4. save the file - your theme is now compatible with beta7
+- Install script just about totally rewritten, main site admin is now set from installation
+- Added new default theme (e107 theme)
+- Finally fixed emoticons not working and sometimes causing errors in newspost (woohoo!)
+- Fixed a couple of small formatting bugs in article.php
+- Complete rewrite admin.php
+- Added homepage button to admin login page
+- Fixed small bugs to comment.php and /plugins/chatbox.php
+- Fixed bugs to poll, delete now works
+- Fixed bug in userinfo.php causing header error
+- Fixed small layout bug in newspost.php - thanks to grd for pointing out the last three things
+- Fixed login box holding onto fake values
+- Fixed dateprefs not updating in prefs.php - thanks to nalenb for these
+- Added comfort messages for admin login failure
+- Tidied up help box for articles (still displaying old help file)
+- Added ability to post html in articles
+- Fixed users being shown more than once in the users online box under some circumstances
+- Fixed single quote problem in chatbox
+- Added clickable shortcut tags in admin/newspost and admin/articles (http://jalist.com/files/temp/clickableshortcuts.png)
+- Fixed login bug (thanks que)
+- Removed "target=_blank" stuff, screwed validation
+- Added admin menu to links page
+- Added routine to check if install.php has been deleted from server
+- Logger plugin now doesn't record any admin stats (suggested by steev)
+- Blank username in chatbox now converted to "Anonymous"
+- Fixed small bug to quote function in forum
+- Fixed logged in user not being able to post if anon_posting was turned off on forum (thanks MorbidDK)
+- When user registration is switched on a link is now created to user.php, same with logging, when activated a link is created to stats.php
+- Tidied up code for XHTML compliance
+- Finally fixed that damn rsort error in stats.php (knew what it was, just kept forgetting)
+
+
+Changes in beta6 
+~~~~~~~~~~~
+
+ - Added ability to flush stat_info table from log_config page
+ - Fixed countries and os's getting mixed up on stats page
+ - Fixed user login letting you log in with no password if certain conditions were right (thanks to razorback for reporting this serious bug)
+ - Altered order of menus on admin/menus page, they're now ordered by right-menu/left-menu/no-menu
+ - Fixed entended.php, now uses new rendernews code (thanks to Locke for pointing this out)
+ - Links clicked on in links.php now open in new window (requested by Hsilva)
+ - Complete rewrite of articles.php and minor changes to admin/articles.php, incorporated Locke's idea's and code samples into core - thanks Locke. (Multi page articles all entered 
+	from the same dialog, pages are now seperated by using [newpage] in the content, far simpler method Locke came up with)
+ - Altered layout slightly on admin/prefs page to make it a bit more easily navigable
+ - Added button on admin/prefs page to check for new version of e107
+ - Added ability to alter how date/time is displayed across site from admin/prefs
+ - Removed the troublesome regexp that was auto-linking url's and replaced with [link] [/link] shortcut
+ - If a normal content page is deleted it now also deletes the corrosponding link (suggested by Locke)
+ - Made the td declaration default to text-align left in all theme's style.css (default in Mozilla is center - grrr)
+ - Tidied up search.php, it's now fully usable, many thanks to Bill Nalens (nalenb) for the original code
+ - Repaired some small bugs to oldpolls.php (thanks to MorbidDK for pointing this out)
+ - Fixed small bug in forum.php, some replies weren't being ordered correctly
+ - Online box now lists online users correctly

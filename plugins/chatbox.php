@@ -26,19 +26,19 @@ if(IsSet($_POST['chat_submit'])){
 				$char = ord($message[$a]);
 				$tmp[$char] = 1;
 			}
-			if(count($tmp) <=4){ $message = "Invalid input"; }
+//			if(count($tmp) <=4){ $message = "Invalid input"; }
 			$message_array = explode(" ", $message);
 			for($i=0; $i<=(count($message_array)-1); $i++){
-				if(eregi("^http", $message_array[$i])){
+				if(eregi("http", $message_array[$i])){
 					$message_array[$i] =  "<a href=\"".$message_array[$i]."\">-link-</a>";
-				}else if(eregi("^www", $message_array[$i])){
+				}else if(eregi("www", $message_array[$i])){
 					$message_array[$i] =  "<a href=\"http://".$message_array[$i]."\">-link-</a>";
 				}else if(strlen($message_array[$i]) > 30){
 					$message_array[$i] = preg_replace("/([^\s]{30})/", "$1<br />", $message_array[$i]);
 				}
 			}
 			$message = implode(" ", $message_array);
-
+			$nick = addslashes($nick);
 			$message = addslashes($message);
 
 			$datestamp = time();
@@ -56,16 +56,16 @@ if(IsSet($_POST['chat_submit'])){
 				}else{
 					$nick = "0.".$nick;
 				}
-				if($message != "Invalid input"){
+//				if($message != "Invalid input"){
 					$sql -> db_Insert("chatbox", "0, '$nick', '$message', '".time()."', '0' , '$ip' ");
-				}
+//				}
 			}
 		}
 	}
 }
 
 $chatbox_posts = $pref['chatbox_posts'][1];
-if($pref['user_reg'][1] == 1 && !$_COOKIE['userkey'] && $pref['anon_post'][1] != "1"){
+if($pref['user_reg'][1] == 1 && USER != TRUE && $pref['anon_post'][1] != "1"){
 	$text = "<div style=\"text-align:center\">".LAN_6."</div><br /><br />";
 }else{
 	if($_SERVER['QUERY_STRING'] != ""){
@@ -74,7 +74,7 @@ if($pref['user_reg'][1] == 1 && !$_COOKIE['userkey'] && $pref['anon_post'][1] !=
 		$text =  "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><p>";
 	}
 
-if($pref['anon_post'][1] == "1" && USER == FALSE){
+if(($pref['anon_post'][1] == "1" && USER == FALSE)){
 	$text .= "<input class=\"tbox\" type=\"text\" name=\"nick\" size=\"27\" value=\"\" maxlength=\"50\" /><br />";
 }
 $text .= "<textarea class=\"tbox\" name=\"message\" cols=\"26\" rows=\"5\"></textarea>
@@ -94,7 +94,6 @@ if($sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, ".$cha
 		
 		$cb_message = $aj -> tpa($cb_message);
 		$cb_message = stripslashes($cb_message);
-//		$cb_message = eregi_replace("<br />(<br />)*", "\r\n", $cb_message);
 
 		$datestamp = $obj2->convert_date($cb_datestamp, "short");
 
