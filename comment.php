@@ -174,7 +174,7 @@ if($cache = retrieve_cache("comment.php?$table.$id")){
 				$subject = $aj -> formtpa($news['news_title']);
 				define(e_PAGETITLE,  LAN_100." / ".LAN_99." / ".$subject."");
 				require_once(HEADERF);
-				ob_end_flush();
+				//ob_end_flush();
 				ob_start();
 				$sql -> db_Select("user", "user_name", "user_id='".$news['admin_id']."' ");
 				list($news['admin_name']) = $sql -> db_Fetch();
@@ -234,7 +234,7 @@ if(!strstr(e_QUERY, "poll")){
 	$cache = ob_get_contents();
 	set_cache("comment.php?{$table}.{$field}",$cache);
 }
-
+ob_end_flush(); 
 
 require_once(FOOTERF);
 ?>
