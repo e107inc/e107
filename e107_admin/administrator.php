@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/administrator.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:20 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-05 06:51:34 $
+|     $Author: pholzmann $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -66,7 +66,7 @@ if(IsSet($_POST['update_admin'])){
         }
 
        for ($i=0; $i<=count($_POST['perms']); $i++){
-                if($_POST['perms'][$i]){
+                if(strlen($_POST['perms'][$i])){
                         $perm .= $_POST['perms'][$i].".";
                 }
         }
@@ -120,8 +120,8 @@ $text = "<div style='text-align:center'><div style='border : solid 1px #000; pad
 <tr>
 <td style='width:5%' class='forumheader2'>ID</td>
 <td style='width:30%' class='forumheader2'>".ADMSLAN_56."</td>
-<td style='width:35%' class='forumheader2'>".ADMSLAN_18."</td>
 <td style='width:30%' class='forumheader2'>".ADMSLAN_57."</td>
+<td style='width:35%' class='forumheader2'>".ADMSLAN_18."</td>
 </tr>";
 
 while($row = $sql -> db_Fetch()){
@@ -129,11 +129,11 @@ while($row = $sql -> db_Fetch()){
         $text .= "<tr>
 <td style='width:5%' class='forumheader3'>$user_id</td>
 <td style='width:30%' class='forumheader3'>$user_name</td>
-<td style='width:35%' class='forumheader3'>".($user_perms == "0" ? ADMSLAN_58 : ($user_perms ? str_replace(".", "", $user_perms) : "&nbsp;"))."</td>
 <td style='width:30%; text-align:center' class='forumheader3'>".
 ($user_perms == "0" ? "&nbsp;" :
 $rs -> form_button("button", "main_edit", ADMSLAN_15, "onclick=\"document.location='".e_SELF."?edit.$user_id'\"").
 $rs -> form_button("button", "main_delete", ADMSLAN_59, "onclick=\"confirm_($user_id, '$user_name')\""))."</td>
+<td style='width:35%' class='forumheader3'>".($user_perms == "0" ? ADMSLAN_58 : ($user_perms ? str_replace(".", "", $user_perms) : "&nbsp;"))."</td>
 </tr>";
 }
 
@@ -181,6 +181,7 @@ $text .= checkb("Q", $a_perms).ADMSLAN_24."<br />";
 $text .= checkb("6", $a_perms).ADMSLAN_25."<br />";
 $text .= checkb("7", $a_perms).ADMSLAN_26."<br />";
 $text .= checkb("8", $a_perms).ADMSLAN_27."<br />";
+$text .= checkb("0", $a_perms).ADMSLAN_64."<br />";
 $text .= checkb("9", $a_perms).ADMSLAN_28."<br /><br />";
 
 $text .= checkb("D", $a_perms).ADMSLAN_29."<br />";
