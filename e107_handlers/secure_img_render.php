@@ -10,8 +10,10 @@
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
-while (list($global) = each($GLOBALS)){
-	if (!preg_match('/^(_SERVER|GLOBALS)$/', $global)){
+while (list($global) = each($GLOBALS))
+{
+	if (!preg_match('/^(_SERVER|GLOBALS)$/', $global))
+  {
 		unset($$global);
 	}
 }
@@ -20,12 +22,16 @@ $imgtypes=array("jpeg", "png", "gif");
 
 define("e_QUERY", eregi_replace("&|/?PHPSESSID.*", "", $_SERVER['QUERY_STRING']));
 $recnum = preg_replace("#\D#","",e_QUERY);
-ob_clean();
+if(!$recnum)
+{
+  exit;
+}
 @include("e107_config.php");
 $a=0;
 $p="";
 
-while(!$mySQLserver && $a<5){
+while(!$mySQLserver && $a<5)
+{
 	$a++;
 	$p.="../";
 	@include($p."e107_config.php");
@@ -33,17 +39,22 @@ while(!$mySQLserver && $a<5){
 mysql_connect($mySQLserver, $mySQLuser, $mySQLpassword);
 mysql_select_db($mySQLdefaultdb);
 $result = mysql_query("SELECT tmp_info FROM {$mySQLprefix}tmp WHERE tmp_ip = '{$recnum}'");
-$row = mysql_fetch_array($result);
-list($code,$url) = explode(",",$row['tmp_info']);
+if(!$row = mysql_fetch_array($result))
+{
+  exit;
+}
 
+list($code,$url) = explode(",",$row['tmp_info']);
 $type="none";
-foreach($imgtypes as $t){
+foreach($imgtypes as $t)
+{
 	if(function_exists("imagecreatefrom".$t)){
 		$type = $t;
 		break;
 	}
 }
-switch($type){
+switch($type)
+{
 	case "jpeg":
 		$image = ImageCreateFromJPEG($url."generic/code_bg.jpg");
 		break;
@@ -55,9 +66,11 @@ switch($type){
 		break;
 }
 $text_color = ImageColorAllocate($image, 80, 80, 80);
+ob_clean();
 Header("Content-type: image/{$type}");
 ImageString ($image, 5, 12, 2, $code, $text_color);
-switch($type){
+switch($type)
+{
 	case "jpeg":
 		ImageJPEG($image,'',75);
 		break;
