@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-04-02 19:13:38 $
-|     $Author: e107coders $
+|     $Revision: 1.15 $
+|     $Date: 2005-04-05 12:00:22 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -166,7 +166,7 @@ if ($_POST['edit_existing']) {
 				<td style='width:70%' class='forumheader3'>\n";
 			$selected = (db_Table_exists($installed)) ? "checked='checked'" : "";
 			$text .= "<input type=\"checkbox\" id='$table_name' name=\"$table_name\" value=\"1\" $selected onclick=\"if(document.getElementById('$table_name').checked){document.getElementById('datacopy_$table_name').style.display = '';} \"  />";
-			$text .= "<span id='datacopy_$table_name' style='display:none'>Tick to copy data from the default language.(useful for links, news-categories etc) <input type=\"checkbox\" name=\"copydata_$table_name\" value=\"1\" /> </span>";
+			$text .= "<span id='datacopy_$table_name' style='display:none'>".LANG_LAN_15."<input type=\"checkbox\" name=\"copydata_$table_name\" value=\"1\" /> </span>";
 			$text .= "</td></tr>\n";
 		}
 
