@@ -267,10 +267,7 @@ define("e_ADMIN", $e_BASE.$ADMIN_DIRECTORY);
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-// Added for grafx plugin
-if($pref['gxhz_active']){
-        require_once(e_PLUGIN."grafxheadz/gxhzuni.php");
-}
+
 
 class e107table{
         function tablerender($caption, $text, $mode="default", $return=FALSE){
@@ -281,10 +278,6 @@ class e107table{
                 # - return                                null
                 # - scope                                        public
                 */
-                                // Added for grafx plugin
-                                if($pref['gxhz_cap']){
-                                        require(e_PLUGIN."grafxheadz/gxhzc2.php");
-                                }else{
                         if($return){
                                 ob_end_flush();
                                 ob_start();
@@ -295,7 +288,6 @@ class e107table{
                         }else{
                                 tablestyle($caption, $text, $mode);
                         }
-                                }
         }
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//

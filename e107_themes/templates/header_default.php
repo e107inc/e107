@@ -92,12 +92,7 @@ function checklayout($str){
 	$sql = new db;
 	global $pref, $style, $userthemes, $udirs, $userclass, $dbq, $menu_pref, $dbq;
 	if(strstr($str, "LOGO")){
-		// Added for grafx plugin
-		if($pref['gxhz_logo']){
-			require(e_PLUGIN."grafxheadz/gxhzhd.php");
-		}else{
-			echo "<img src='".e_IMAGE."logo.png' alt='Logo' />\n";
-		}
+		echo "<img src='".e_IMAGE."logo.png' alt='Logo' />\n";
 	}else if(strstr($str, "SITENAME")){
 		echo SITENAME."\n";
 	}else if(strstr($str, "SITETAG")){

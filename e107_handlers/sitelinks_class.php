@@ -44,20 +44,11 @@ function sitelinks(){
 	if(defined("LINKCLASS")){
 		$linkadd = " class='".LINKCLASS."' ";
 	}
-	// Added for grafx plugin
-	if($pref['gxhz_but']){
-		require(e_PLUGIN."grafxheadz/gxhzslm.php");
-	}
 	/*
 	if(ADMIN == TRUE){
 		$linkstart = (file_exists(e_IMAGE."link_icons/admin.png") ? preg_replace("/\<img.*\>/si", "", LINKSTART)." " : LINKSTART);
 		if(LINKDISPLAY != 3) {
-			// Added for grafx plugin
-			if($pref['gxhz_but']){
-				require(e_PLUGIN."grafxheadz/gxhzslaa.php");
-			}else{
 				$text .= $linkstart.(file_exists(e_IMAGE."link_icons/admin.png") ? "<img src='".e_IMAGE."link_icons/admin.png' alt='' style='vertical-align:middle' /> " : "")."<a".$linkadd." href=\"".e_ADMIN.(!$pref['adminstyle'] || $pref['adminstyle'] == "default" ? "admin.php" : $pref['adminstyle'].".php")."\">".LAN_502."</a>".LINKEND."\n";
-			}
 		} else {
 			$menu_main .= $linkstart.(file_exists(e_IMAGE."link_icons/admin.png") ? "<img src='".e_IMAGE."link_icons/admin.png' alt='' style='vertical-align:middle' /> " : "")."<a".$linkadd." href=\"".e_ADMIN.(!$pref['adminstyle'] || $pref['adminstyle'] == "default" ? "admin.php" : $pref['adminstyle'].".php")."\">".LAN_502."</a>".LINKEND."\n";
 		}
@@ -67,10 +58,6 @@ function sitelinks(){
 	$sql -> db_Select("links", "*", "link_category='1' && link_name NOT REGEXP('submenu') ORDER BY link_order ASC");
 	while($row = $sql -> db_Fetch()){
 		extract($row);
-		// Added for grafx plugin
-		if($pref['gxhz_but']){
-			require(e_PLUGIN."grafxheadz/gxhzslnm.php");
-		}
 		if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
 			$linkstart = ($link_button ? preg_replace("/\<img.*\>/si", "", LINKSTART) : LINKSTART);
 			switch ($link_open) { 
@@ -148,10 +135,7 @@ function sitelinks(){
 		
 	}
 	$text .= POSTLINK;
-	// Added for grafx plugin
-	if($pref['gxhz_but']){
-		require(e_PLUGIN."grafxheadz/gxhzslm2.php");
-	}
+
 	if(LINKDISPLAY == 2){
 		$ns = new e107table;
 		$ns -> tablerender(LAN_183, $text);
