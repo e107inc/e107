@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-03-31 22:38:21 $
-|     $Author: e107coders $
+|     $Revision: 1.20 $
+|     $Date: 2005-04-01 04:38:30 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 @include(e_LANGUAGEDIR.e_LANGUAGE."/lan_ren_help.php");
@@ -161,60 +161,87 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	return $string;
 }
 
-function Color_Select($field){
+function Color_Select($field, $embed = FALSE){
+	if (!$embed) {
+		$text = "<!-- Start of Color selector -->
+		<div style='margin-left: 0px; margin-right: 0px; width: 221px; position: relative; z-index: 1000; float: right; display: none' id='col_selector' onclick=\"this.style.display='none'\">
+		<div style='position: absolute; bottom: 30px; right: 145px; width: 221px'>";
+		
+		$render_td = "var tdtop = '<td style=\'background-color: #';
+		var tdmid = '; height: 10px; width: 10px;\' ';
+		var tdmid2 = ' onclick=\"addtext(\'[color=#';
+		var tdbot = '][/color]\')\"></td>';";
+	} else {
+		$text ="<table border='0' cellspacing='0' cellpadding='0' style='width: 100%; border: 0px; padding: 4px;'>
+		<tr>
+		<td colspan='3'>
+		<div id='gxhzct_".$field."' onclick=\"window.close();\">";
 
-	$text ="<!-- Start of Color selector -->
-		<div style='margin-left:0px;margin-right:0px;width:180px;position:relative;z-index:1000;float:right;display:none' id='col_selector' onclick=\"this.style.display='none'\">";
-	$text .="<div style='position:absolute;bottom:30px;right:145px;width:180px'>";
-	$text .= "<table cellspacing=\"1px\" cellpadding=\"0px\"  style=\"width:180px;background-color:#000000;border:1px solid #cccccc;cursor: pointer;\">
-	<tr>";
-
-	$colors = array("#000000","#000033","#000066","#000099",
-		"#0000cc","#0000ff","#330000","#330033","#330066",
-		"#330099","#3300cc","#3300ff","#660000","#660033",
-		"#660066","#660099","#6600cc","#6600ff","#990000",
-		"#990033","#990066","#990099","#9900cc","#9900ff",
-		"#cc0000","#cc0033","#cc0066","#cc0099","#cc00cc","#cc00ff",
-		"#ff0000","#ff0033","#ff0066","#ff0099","#ff00cc","#ff00ff",
-		"#003300","#003333","#003366","#003399","#0033cc","#0033ff",
-		"#333300","#333333","#333366","#333399","#3333cc","#3333ff",
-		"#663300","#663333","#663366","#663399","#6633cc","#6633ff",
-		"#993300","#993333","#993366","#993399","#9933cc","#9933ff",
-		"#cc3300","#cc3333","#cc3366","#cc3399","#cc33cc","#cc33ff",
-		"#ff3300","#ff3333","#ff3366","#ff3399","#ff33cc","#ff33ff","#006600",
-		"#006633","#006666","#006699","#0066cc","#0066ff","#336600",
-		"#336633","#336666","#336699","#3366cc","#3366ff","#666600",
-		"#666633","#666666","#666699","#6666cc","#6666ff","#996600",
-		"#996633","#996666","#996699","#9966cc","#9966ff","#cc6600",
-		"#cc6633","#cc6666","#cc6699","#cc66cc","#cc66ff","#ff6600",
-		"#ff6633","#ff6666","#ff6699","#ff66cc","#ff66ff","#009900",
-		"#009933","#009966","#009999","#0099cc","#0099ff","#339900",
-		"#339933","#339966","#339999","#3399cc","#3399ff","#669900",
-		"#669933","#669966","#669999","#6699cc","#6699ff","#999900",
-		"#999933","#999966","#999999","#9999cc","#9999ff","#cc9900",
-		"#cc9933","#cc9966","#cc9999","#cc99cc","#cc99ff","#ff9900",
-		"#ff9933","#ff9966","#ff9999","#ff99cc","#ff99ff","#00cc00","#00cc33",
-		"#00cc66","#00cc99","#00cccc","#00ccff","#33cc00","#33cc33",
-		"#33cc66","#33cc99","#33cccc","#33ccff","#66cc00","#66cc33",
-		"#66cc66","#66cc99","#66cccc","#66ccff","#99cc00","#99cc33",
-		"#99cc66","#99cc99","#99cccc","#99ccff","#cccc00","#cccc33",
-		"#cccc66","#cccc99","#cccccc","#ccccff","#ffcc00","#ffcc33",
-		"#ffcc66","#ffcc99","#ffcccc","#ffccff","#00ff00","#00ff33","#00ff66",
-		"#00ff99","#00ffcc","#00ffff","#33ff00","#33ff33","#33ff66","#33ff99",
-		"#33ffcc","#33ffff","#66ff00","#66ff33","#66ff66","#66ff99","#66ffcc",
-		"#66ffff","#99ff00","#99ff33","#99ff66","#99ff99","#99ffcc","#99ffff",
-		"#ccff00","#ccff33","#ccff66","#ccff99","#ccffcc","#ccffff","#ffff00",
-		"#ffff33","#ffff66","#ffff99","#ffffcc","#ffffff"
-	);
-
-	foreach($colors as $key=>$c){
-		$text .= "\n<td style='width:10px;height:10px;background-color:$c' onclick=\"addtext('[color=$c][/color]')\"  ></td>";
-		$text .= (($key+1) % 18 == 0 && $key !=215 ) ? "\n</tr><tr>" : "";
+		$render_td = "var tdtop = '<td style=\'background-color: #';
+		var tdmid = '; height: 10px; width: 10px;\' onmouseover=\"View(\'".$field."\',\'';
+		var tdmid2 = '\')\" onclick=\"Set(\'".$field."\',\'';
+		var tdbot = '\')\"></td>';";
 	}
-	$text .="</tr>\n </table></div>";
-	$text .="</div>\n<!-- End of Color selector -->";
 
-return $text;
+	$text .= "<script>
+	var maxtd = 18; 
+	var maxtddiv = -1; 
+	var coloursrgb = new Array('00', '33', '66', '99', 'cc', 'ff'); 
+	var coloursgrey = new Array('000000', '333333', '666666', '999999', 'cccccc', 'ffffff');
+	var colourssol = new Array('ff0000', '00ff00', '0000ff', 'ffff00', '00ffff', 'ff00ff');
+	var rowswitch = 0;
+	var rowline = '';
+	var rows1 = '';
+	var rows2 = '';
+	var notr = 0;
+	".$render_td."
+	var tdblk = '<td style=\'background-color: #000000; cursor: default; height: 10px; width: 10px;\'></td>';
+	var g = 1;
+	var s = 0;
+
+	for (i=0; i < coloursrgb.length; i++) { 
+		for (j=0; j < coloursrgb.length; j++) { 
+			for (k=0; k < coloursrgb.length; k++) { 
+				maxtddiv++; 
+				if (maxtddiv % maxtd == 0) { 
+					if (rowswitch) {
+						if (notr < 5){
+							rows1 += '</tr><tr>'+tdtop+coloursgrey[g]+tdmid+coloursgrey[g]+tdmid2+coloursgrey[g]+tdbot+tdblk;
+							g++;
+						}
+						rowswitch = 0;
+						notr++;
+					}else{
+						rows2 += '</tr><tr>'+tdtop+colourssol[s]+tdmid+colourssol[s]+tdmid2+colourssol[s]+tdbot+tdblk;
+						s++;
+						rowswitch = 1;
+					}
+					maxtddiv = 0; 
+				}
+				rowline = tdtop+coloursrgb[j]+coloursrgb[k]+coloursrgb[i]+tdmid+coloursrgb[j]+coloursrgb[k]+coloursrgb[i]+tdmid2+coloursrgb[j]+coloursrgb[k]+coloursrgb[i]+tdbot;
+				if (rowswitch) {
+					rows1 += rowline;
+				}else{
+					rows2 += rowline;
+				}
+			}
+		}
+	}
+	document.write('<table border=\'0\' cellspacing=\'1\' cellpadding=\'0\' style=\'cursor: hand; cursor: pointer; background-color: #000000; width: 100%; border: 0px\'><tr>'+tdtop+coloursgrey[0]+tdmid+coloursgrey[0]+tdmid2+coloursgrey[0]+tdbot+tdblk+rows1+rows2+'</tr></table>');
+	</script>";
+	
+	if (!$embed) {
+		$text .="</div>
+		</div>
+		<!-- End of Color selector -->";
+	} else {
+		$text .="</div>
+		</td>
+		</tr>
+		</table>";
+	}
+
+	return $text;
 }
 
 
