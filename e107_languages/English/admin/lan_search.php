@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_search.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-16 17:38:52 $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-16 18:15:47 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -23,5 +23,8 @@ define("SEALAN_11", "Allow user to select searchable areas:");
 define("SEALAN_12", "Restrict time allowed between searches:");
 define("SEALAN_13", "Restrict to one search every");
 define("SEALAN_14", "seconds");
+define("SEALAN_15", "Restrict search page to members:");
+define("SEALAN_16", "On");
+define("SEALAN_17", "Off");
 
 ?>

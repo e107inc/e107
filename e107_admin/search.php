@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/search.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-03-16 17:38:27 $
+|     $Revision: 1.6 $
+|     $Date: 2005-03-16 18:14:44 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -32,6 +32,8 @@ $search_handlers['users'] = SEALAN_7;
 $search_handlers['downloads'] = SEALAN_8;
 
 if (isset($_POST['updatesettings'])) {
+	$pref['search_restrict'] = $_POST['search_restrict'];
+	save_prefs();
 	$search_prefs['search_chars'] = $_POST['search_chars'];
 	$search_prefs['search_sort'] = $_POST['search_sort'];
 	$search_prefs['search_res'] = $_POST['search_res'];
@@ -65,7 +67,14 @@ $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>
 <table style='".ADMIN_WIDTH."' class='fborder'>";
 
-
+$text .= "<tr>
+<td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_15.": </td>
+<td style='width:50%' class='forumheader3'>
+<input type='radio' name='search_restrict' value='1'".($pref['search_restrict'] ? " checked='checked'" : "")." /> ".SEALAN_16."&nbsp;&nbsp;
+<input type='radio' name='search_restrict' value='0'".(!$pref['search_restrict'] ? " checked='checked'" : "")." /> ".SEALAN_17."
+</td>
+</tr>";
+	
 $text .= "<tr>
 <td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_2."</td>
 <td style='width:50%;' colspan='2' class='forumheader3'>".$rs -> form_text("search_chars", 4, $search_prefs['search_chars'], 4)."</td>
