@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/forum_viewtopic.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:45 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-09-23 14:11:05 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 
@@ -30,12 +30,19 @@ $highlight_search = FALSE;
 if(IsSet($_POST['highlight_search'])){
         $highlight_search = TRUE;
 }
-define("IMAGE_reply", (file_exists(THEME."forum/reply.png") ? "<img src='".THEME."forum/reply.png' alt='' style='border:0' />" : "<img src='".e_IMAGE."forum/reply.png' alt='' style='border:0' />"));
-define("IMAGE_newthread", (file_exists(THEME."forum/newthread.png") ? "<img src='".THEME."forum/newthread.png' alt='' style='border:0' />" : "<img src='".e_IMAGE."forum/newthread.png' alt='' style='border:0' />"));
+
+require_once(e_HANDLER."multilang/pictures.php");
+define("IMAGE_reply", "<img src='".eMLANG_path("reply.png","forum")."' alt='' title='' style='border:0' />");
+define("IMAGE_newthread", "<img src='".eMLANG_path("newthread.png","forum")."' alt='' title='' style='border:0' />");
+//define("IMAGE_reply", (file_exists(THEME."forum/reply.png") ? "<img src='".THEME."forum/reply.png' alt='' style='border:0' />" : "<img src='".e_IMAGE."forum/reply.png' alt='' style='border:0' />"));
+//define("IMAGE_newthread", (file_exists(THEME."forum/newthread.png") ? "<img src='".THEME."forum/newthread.png' alt='' style='border:0' />" : "<img src='".e_IMAGE."forum/newthread.png' alt='' style='border:0' />"));
 //define("IMAGE_profile", (file_exists(THEME."forum/profile.png") ? "<img src='".THEME."forum/profile.png' alt='".LAN_398."' style='border:0' />" : "<img src='".e_IMAGE."forum/profile.png' alt='".LAN_398."' style='border:0' />"));
-define("IMAGE_rank_moderator_image", ($pref['rank_moderator_image'] && file_exists(THEME."forum/".$pref['rank_moderator_image']) ? "<img src='".THEME."forum/".$pref['rank_moderator_image']."' alt='' />" : "<img src='".e_IMAGE."forum/moderator.png' alt='' />"));
-define("IMAGE_rank_main_admin_image", ($pref['rank_main_admin_image'] && file_exists(THEME."forum/".$pref['rank_main_admin_image']) ? "<img src='".THEME."forum/".$pref['rank_main_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/main_admin.png' alt='' />"));
-define("IMAGE_rank_admin_image", ($pref['rank_admin_image'] && file_exists(THEME."forum/".$pref['rank_admin_image']) ? "<img src='".THEME."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/admin.png' alt='' />"));
+( $pref['rank_moderator_image'] ? $tmp_pic = $pref['rank_moderator_image'] : $tmp_pic = 'moderator.png' );
+define("IMAGE_rank_moderator_image", "<img src='".eMLANG_path($tmp_pic,"forum")."' alt='' />");
+( $pref['rank_main_admin_image'] ? $tmp_pic = $pref['rank_main_admin_image'] : $tmp_pic = 'main_admin.png' );
+define("IMAGE_rank_main_admin_image", "<img src='".eMLANG_path($tmp_pic,"forum")."' alt='' />");
+( $pref['rank_admin_image'] ? $tmp_pic = $pref['rank_admin_image'] : $tmp_pic = 'admin.png' );
+define("IMAGE_rank_admin_image", "<img src='".eMLANG_path($tmp_pic,"forum")."' alt='' />");
 define("IMAGE_pm", (file_exists(THEME."forum/pm.png") ? "<img src='".THEME."forum/pm.png' alt='".LAN_399."' style='border:0' />" : "<img src='".e_IMAGE."forum/pm.png' alt='".LAN_399."' style='border:0' />"));
 define("IMAGE_website", (file_exists(THEME."forum/website.png") ? "<img src='".THEME."forum/website.png' alt='".LAN_396."' style='border:0' />" : "<img src='".e_IMAGE."forum/website.png' alt='".LAN_396."' style='border:0' />"));
 define("IMAGE_edit", (file_exists(THEME."forum/edit.png") ? "<img src='".THEME."forum/edit.png' alt='".LAN_400."' style='border:0' />" : "<img src='".e_IMAGE."forum/edit.png' alt='".LAN_400."' style='border:0' />"));
