@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-01-08 22:51:33 $
-|     $Author: e107coders $
+|     $Revision: 1.8 $
+|     $Date: 2005-01-24 10:16:16 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 if(!is_object($sql)){
@@ -33,7 +33,7 @@ if($e107_popup!=1){
         $rendertime = number_format((($eTimingStop[0]+$eTimingStop[1])-($eTimingStart[0]+$eTimingStart[1])), 4);
         $db_time    = number_format($db_time,4);
         if($pref['displayrendertime']){ $rinfo .= "Render time: ".$rendertime." second(s); ".$db_time." of that for queries. "; }
-        if($pref['displaysql']){ $rinfo .= "DB queries: ".$dbq.". "; }
+        if($pref['displaysql']){ $rinfo .= "DB queries: ".$sql -> mySQLquerycount.". "; }
         if($pref['displaycacheinfo']){ $rinfo .= $cachestring."."; }
         echo ($rinfo ? "\n<div style='text-align:center' class='smalltext'>$rinfo</div>\n" : "");
         if ($e107_debug_level) {
@@ -55,6 +55,29 @@ if($e107_popup!=1){
 }
 
 $sql -> db_Close();
+
+/*
+changes by jalist 24/01/2005:
+show sql queries
+usage: add ?showsql to query string, must be admin
+*/
+if(strstr(e_QUERY, "showsql") && ADMIN)
+{
+	$mySQLInfo = $sql -> mySQLinfo;
+	echo "<table class='fborder' style='width: 100%;'>
+	<tr>
+	<td class='fcaption' style='width: 5%;'>ID</td><td class='fcaption' style='width: 95%;'>SQL Queries</td>\n</tr>\n";
+	for($c = 0; $c<=($sql -> mySQLquerycount); $c++)
+	{
+		if($mySQLInfo[$c]['data'])
+		{
+			echo "<tr>\n<td class='forumheader3' style='width: 5%;'>$c</td><td class='forumheader3' style='width: 95%;'>".$mySQLInfo[$c]['data']."</td>\n</tr>\n";
+		}
+	}
+	echo "</table>";
+}
+
+
 
 // Provide a way to sync user and server time -- see e107.js and class2.php
 // This should be done as late as possible in page processing.
