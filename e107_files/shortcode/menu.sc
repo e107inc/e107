@@ -39,10 +39,8 @@ foreach($eMenuList[$parm] as $row) {
 				@include(e_PLUGIN.$row['menu_path']."/languages/English.php");
 			}
 		}
-//		if(file_exists(e_PLUGIN.$row['menu_path']."/".$row['menu_name'].".php"))
-//		{
-			include(e_PLUGIN.$row['menu_path']."/".$row['menu_name'].".php");
-			$sql->db_Mark_Time("(After {$row['menu_name']})");
-//		}
+		$mname = $row['menu_name'];
+		include(e_PLUGIN.$row['menu_path']."/".$mname.".php");
+		$sql->db_Mark_Time("(After ".$mname.")");
 	}
 }

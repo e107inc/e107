@@ -13,8 +13,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.43 $
-| $Date: 2005-03-08 11:53:22 $
+| $Revision: 1.44 $
+| $Date: 2005-03-09 10:03:22 $
 | $Author: stevedunstan $
 +---------------------------------------------------------------+
 */
@@ -275,7 +275,7 @@ class news {
 		$search[3] = "/\{NEWSHEADER\}(.*?)/si";
 		$replace[3] = $category_icon;
 		$search[4] = "/\{NEWSCATEGORY\}(.*?)/si";
-		$replace[4] = "<a style='".$param['catlink']."' href='".e_BASE."news.php?cat.$category_id'>".$category_name."</a>";
+		$replace[4] = "<a style='".(isset($param['catlink']) ? $param['catlink'] : "#")."' href='".e_BASE."news.php?cat.$category_id'>".$category_name."</a>";
 		$search[5] = "/\{NEWSAUTHOR\}(.*?)/si";
 		$replace[5] = $news_author;
 		$search[6] = "/\{NEWSDATE\}(.*?)/si";
@@ -312,10 +312,10 @@ class news {
 		$replace[13] = "<div class='category".$category_id."'>".($titleonly ? "&nbsp;<a href='".e_BASE."comment.php?comment.news.$news_id'>".$news_title."</a>" : "&nbsp;".$news_title)."</div>";
 
 		$search[14] = "/\{ADMINCAPTION\}(.*?)/si";
-		$replace[14] = "<div class='$admin_name'>".($titleonly ? "&nbsp;<a href='".e_BASE."comment.php?comment.news.$news_id'>".$news_title."</a>" : "&nbsp;".$news_title)."</div>";
+		$replace[14] = "<div class='".(isset($admin_name) ? $admin_name : "null")."'>".($titleonly ? "&nbsp;<a href='".e_BASE."comment.php?comment.news.$news_id'>".$news_title."</a>" : "&nbsp;".$news_title)."</div>";
 
 		$search[15] = "/\{ADMINBODY\}(.*?)/si";
-		$replace[15] = "<div class='$admin_name'>".(strstr(e_QUERY, "extend") ? $news_body."<br /><br />".$news_extended : $news_body)."</div>";
+		$replace[15] = "<div class='".(isset($admin_name) ? $admin_name : "null")."'>".(strstr(e_QUERY, "extend") ? $news_body."<br /><br />".$news_extended : $news_body)."</div>";
 
 		$search[16] = "/\{NEWSSUMMARY\}(.*?)/si";
 		$replace[16] = ($news_summary) ? $news_summary."<br />" : "";
@@ -327,13 +327,13 @@ class news {
 		$replace[18] = ($news['news_sticky'])? $param['image_sticky'] : "";
 
 		$search[19] = "/\{NEWSTITLELINK\}(.*?)/si";
-		$replace[19] = "<a style='".$param['itemlink']."' href='".e_BASE."news.php?item.$news_id.$category_id'>".$news_title."</a>";
+		$replace[19] = "<a style='".(isset($param['itemlink']) ? $param['itemlink'] : "null")."' href='".e_BASE."news.php?item.$news_id.$category_id'>".$news_title."</a>";
 
 		$search[20] = "/\{NEWSCATICON\}(.*?)/si";
 		$replace[20] = "<a href='".e_BASE."news.php?cat.$category_id'><img style='".$param['caticon']."'  src='$category_icon' alt='' /></a>";
 
 		$search[21] = "/\{TRACKBACK\}(.*?)/si";
-		if($pref['trackbackEnabled']) {
+		if(isset($pref['trackbackEnabled'])) {
 			$replace[21] = ($param['trackbackbeforestring'] ? $param['trackbackbeforestring'] : "")."<a href='".e_BASE."comment.php?comment.news.$news_id#track'>".$param['trackbackstring'].$tb_count."</a>".($param['trackbackafterstring'] ? $param['trackbackafterstring'] : "");
 		} else {
 			$replace[21] = "";

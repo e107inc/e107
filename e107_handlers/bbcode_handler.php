@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-02-25 20:27:39 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.20 $
+|     $Date: 2005-03-09 10:03:22 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 	
@@ -36,8 +36,7 @@ class e_bbcode {
 		{
 			$this->bbLocation[$c] = 'core';
 		}
-		echo $pref['plug_bb'];
-		if($pref['plug_bb'] != '')
+		if(isset($pref['plug_bb']) && $pref['plug_bb'] != '')
 		{
 			$tmp = explode(',',$pref['plug_bb']);
 			foreach($tmp as $val)
