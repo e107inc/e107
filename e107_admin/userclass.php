@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-27 19:52:25 $
-|     $Author: streaky $
+|     $Revision: 1.7 $
+|     $Date: 2005-01-28 15:52:44 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -53,7 +53,7 @@ if (isset($_POST['updateclass'])) {
 		$svar .= $userclass[$a].".";
 	}
 	$sql->db_Update("user", "user_class='$svar' WHERE user_id='$id' ");
-	$message = UCSLAN_8;
+        $message = UCSLAN_9;
 	$sql->db_Select("user", "user_name", "user_id='$id' ");
 	$row = $sql->db_Fetch();
 	if ($_POST['notifyuser']) {
@@ -86,7 +86,7 @@ if ($_POST['notifyuser']) {
 	}
 	$send_to = $user_email;
 	$subject = UCSLAN_2;
-	$message = UCSLAN_3." " . $user_name. ",\n\n".UCSLAN_4." ".SITENAME."\n( ".SITEURL . " )\n\n".UCSLAN_5.": \n\n".$messaccess."\n".UCSLAN_8."\n".SITEADMIN."\n( ".SITENAME." )";
+        $message = UCSLAN_3." " . $user_name. ",\n\n".UCSLAN_4." ".SITENAME."\n( ".SITEURL . " )\n\n".UCSLAN_5.": \n\n".$messaccess."\n".UCSLAN_10."\n".SITEADMIN."\n( ".SITENAME." )";
 	sendemail($send_to, $subject, $message);
 }
 	
