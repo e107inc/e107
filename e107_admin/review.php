@@ -11,8 +11,13 @@
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
+$Id: review.php,v 1.20 2004-08-11 09:36:34 e107coders Exp $  
 */
 require_once("../class2.php");
+    if($pref['htmlarea']){
+        require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
+       $htmlarea_js = htmlarea("data");
+    }
 if(!getperms("J") && !getperms("K") && !getperms("L")){
         header("location:".e_BASE."index.php");
         exit;
@@ -21,10 +26,7 @@ require_once("auth.php");
 $aj = new textparse;
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."userclass_class.php");
-    if($pref['htmlarea']){
-        require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
-        htmlarea("data");
-    }
+
 $rs = new form;
 
 $deltest = array_flip($_POST);
@@ -115,11 +117,11 @@ if(IsSet($_POST['updateoptions'])){
 if($delete == 'category')
 {
 if($sql -> db_Delete("content", "content_id='$del_id' "))
-	{
-		$message = REVLAN_27;
-		unset($sub_action, $id);
-		$action = "cat";
-	}
+        {
+                $message = REVLAN_27;
+                unset($sub_action, $id);
+                $action = "cat";
+        }
 }
 
 if($delete == "main")
@@ -136,8 +138,8 @@ if($delete == "main")
 if($action == "cat" && $sub_action == "confirm"){
         if($sql -> db_Delete("content", "content_id='$id' ")){
                 $message = REVLAN_27;
-				unset($sub_action,	$id);
-				$action = "cat";
+                                unset($sub_action,        $id);
+                                $action = "cat";
         }
 }
 
@@ -146,7 +148,7 @@ if($action == "confirm"){
         if($sql -> db_Delete("content", "content_id='$sub_action' ")){
                 $message = REVLAN_4;
                 clear_cache("review");
-				unset($action, $sub_action,	$id);
+                                unset($action, $sub_action,        $id);
         }
 }
 */
@@ -172,15 +174,15 @@ if($action == "cat"){
                 </tr>";
                 while($row = $sql -> db_Fetch()){
                         extract($row);
-						$delete_heading = str_replace("&#39;", "\'", $content_heading);
+                                                $delete_heading = str_replace("&#39;", "\'", $content_heading);
                         $text .= "<tr>
                         <td style='width:5%; text-align:center' class='forumheader3'>".($content_summary ? "<img src='".e_IMAGE."link_icons/$content_summary' alt='' style='vertical-align:middle' />" : "&nbsp;")."</td>
                         <td style='width:75%' class='forumheader3'>$content_heading [$content_subheading]</td>
                         <td style='width:20%; text-align:center' class='forumheader3'>
                         ".$rs -> form_button("submit", "category_edit", REVLAN_30, "onclick=\"document.location='".e_SELF."?cat.edit.$content_id'\"")."
-								".$rs -> form_open("post", e_SELF,"myform_{$content_id}","",""," onsubmit=\"return confirm_('cat','$delete_heading','$content_id')\"")."
-								".$rs -> form_button("submit", "category_delete_{$content_id}", REVLAN_31)."
-								".$rs -> form_close()."
+                                                                ".$rs -> form_open("post", e_SELF,"myform_{$content_id}","",""," onsubmit=\"return confirm_('cat','$delete_heading','$content_id')\"")."
+                                                                ".$rs -> form_button("submit", "category_delete_{$content_id}", REVLAN_31)."
+                                                                ".$rs -> form_close()."
                         </td>
                         </tr>";
                 }
@@ -264,7 +266,7 @@ if(!$action || $action == "confirm"){
                 while($row = $sql -> db_Fetch()){
                         extract($row);
                         unset($cs);
-						$delete_heading = str_replace("&#39;", "\'", $content_heading);
+                                                $delete_heading = str_replace("&#39;", "\'", $content_heading);
                         if($sql2 -> db_Select("content", "content_summary", "content_id=$content_parent")){
                                 $row = $sql2 -> db_Fetch(); $cs = $row[0];
                         }
@@ -273,10 +275,10 @@ if(!$action || $action == "confirm"){
                         <td style='width:75%' class='forumheader3'><a href='".e_BASE."content.php?review.$content_id'>$content_heading</a> [".preg_replace("/-.*-/", "", $content_subheading)."]</td>
                         <td style='width:20%; text-align:center' class='forumheader3'>
 
-								".$rs -> form_open("post", e_SELF,"myform_{$content_id}","",""," onsubmit=\"return confirm_('create','$delete_heading','$content_id')\"")."
-								<div>".$rs -> form_button("button", "main_edit_{$content_id}", REVLAN_30, "onclick=\"document.location='".e_SELF."?create.edit.$content_id'\"")."
-								".$rs -> form_button("submit", "main_delete_{$content_id}", REVLAN_31)."</div>
-								".$rs -> form_close()."
+                                                                ".$rs -> form_open("post", e_SELF,"myform_{$content_id}","",""," onsubmit=\"return confirm_('create','$delete_heading','$content_id')\"")."
+                                                                <div>".$rs -> form_button("button", "main_edit_{$content_id}", REVLAN_30, "onclick=\"document.location='".e_SELF."?create.edit.$content_id'\"")."
+                                                                ".$rs -> form_button("submit", "main_delete_{$content_id}", REVLAN_31)."</div>
+                                                                ".$rs -> form_close()."
 
                         </td>
                         </tr>";
