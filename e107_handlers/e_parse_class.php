@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2005-03-31 03:45:41 $
-|     $Author: sweetas $
+|     $Revision: 1.56 $
+|     $Date: 2005-04-03 08:28:59 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 	
@@ -50,6 +50,7 @@ class e_parse {
 	}
 	 
 	function toForm($text, $single_quotes = FALSE) {
+		if(!$text) return;
 		$mode = ($single_quotes ? ENT_QUOTES :ENT_COMPAT);
 		if (MAGIC_QUOTES_GPC == TRUE) {
 			$text = stripslashes($text);
