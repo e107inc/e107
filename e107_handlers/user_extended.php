@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-16 21:42:18 $
-|     $Author: stevedunstan $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-23 15:54:12 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -58,18 +58,18 @@ function user_extended_add($name, $type, $access, $default = '', $values = '') {
 		}
 		$sql->db_Query("ALTER TABLE user_extended ADD ".$name.' '.$db_type.($default != ''?' DEFAULT '.$default:''));
 		$access = explode(',', $access);
-		$sql->db_Insert("user_extended_struct (0,'".$name."','".$type."','".$values."',".$access[0].",".$access[1].",".$access[2].",".$access[3].",".$access[4].");
+		$sql->db_Insert("user_extended_struct (0,'".$name."','".$type."','".$values."',".$access[0].",".$access[1].",".$access[2].",".$access[3].",".$access[4]);
 	}
 }
 			 
 function user_extended_remove($name) {
-	if (!(user_extended_field_exist($name)) {
+	if (!user_extended_field_exist($name)) {
 		$sql->db_Query("ALTER TABLE user_extended DROP ".$name);
 		$sql->db_Delete("user_extended_struct", "user_extended_struct_name = '$name' ");
 	}
 }
 			 
-function user_extended_modify{$name,$type,$access,$default='',$values='') {
+function user_extended_modify($name,$type,$access,$default='',$values='') {
 	if (user_extended_field_exist($name)) {
 		$db_type='';
 		switch ($type) {
@@ -85,7 +85,7 @@ function user_extended_modify{$name,$type,$access,$default='',$values='') {
 		}
 		$sql->db_Query("ALTER TABLE user_extended MODIFY ".$name.' '.$db_type.($default!=''?' DEFAULT '.$default:''));
 		$access=explode(',',$access);
-		$sql->db_Update("user_extended_struct", "user_extended_struct_type = '".$type."', user_extended_struct_values = '".$values."', user_extended_struct_read = ".$access[0].", user_extended_struct_write = ".$access[1].", user_extended_struct_required = ".$access[2].", user_extended_struct_signup_show = ".$access[3].", user_extended_struct_signup_required = ".$access[4]." WHERE user_extended_struct_name = '".$name."');
+		$sql->db_Update("user_extended_struct", "user_extended_struct_type = '".$type."', user_extended_struct_values = '".$values."', user_extended_struct_read = ".$access[0].", user_extended_struct_write = ".$access[1].", user_extended_struct_required = ".$access[2].", user_extended_struct_signup_show = ".$access[3].", user_extended_struct_signup_required = ".$access[4]." WHERE user_extended_struct_name = '".$name."'");
 	}
 }
 	
