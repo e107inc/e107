@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/integrity_check/languages/English.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-02-26 10:36:18 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2005-03-09 20:48:52 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 	
@@ -32,7 +32,7 @@ define("Integ_19", "Core-Checksum-Files");
 define("Integ_20", "Plugin-Checksum-Files");
 define("Integ_21", "Select the plugin you want to create a crc-file for.");
 define("Integ_22", "Use gzip");
-define("Integ_23", "Check only themes actually existant on your host");
+define("Integ_23", "Only check installed themes");
 define("Integ_24", "Admin Front Page");
 define("Integ_25", "Leave Admin Area");
 define("Integ_26", "Load Site with normal header");
