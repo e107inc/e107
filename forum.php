@@ -318,7 +318,7 @@ if(e_QUERY == "new"){
 						$replies = $sql3 -> db_Count("forum_t", "(*)", "WHERE thread_parent='".$thread_id."'");
 						$pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
 						$pages = ((ceil($replies/$pref['forum_postspage']) -1) * $pref['forum_postspage']);		
-						$NEWSPOSTNAME = "<a href='".e_BASE."forum_viewtopic.php?$thread_forum_id.$thread_id".($pages ? ".$pages" : "")."#".$iid."'>Re: $thread_name</a>";
+						$NEWSPOSTNAME = "<a href='".e_BASE."forum_viewtopic.php?$thread_forum_id.$thread_id".($pages ? ".$pages" : "")."#".$iid."'>".LAN_425.$thread_name."</a>";
 					}else{
 						$NEWSPOSTNAME = "<a href='".e_BASE."forum_viewtopic.php?$thread_forum_id.$thread_id'>$thread_name</a>";
 					}

@@ -439,12 +439,12 @@ if($action != "nt" && !$thread_active){
 $text = "<div style='text-align:center'>
 <form enctype='multipart/form-data' method='post' action='".e_SELF."?".e_QUERY."' name='dataform'>
 <table style='width:95%' class='fborder'>
-<tr><td colspan='2' class='fcaption'><a class='forumlink' href='".e_BASE."forum.php'>Forums</a> -> <a class='forumlink' href='".e_HTTP."forum_viewforum.php?".$forum_id."'>".$forum_name."</a> -> ";
+<tr><td colspan='2' class='fcaption'><a class='forumlink' href='".e_BASE."forum.php'>".LAN_405."</a> -> <a class='forumlink' href='".e_HTTP."forum_viewforum.php?".$forum_id."'>".$forum_name."</a> -> ";
 
 if($action == "nt"){
 	$text .= ($eaction ? LAN_77 : LAN_60);
 }else{
-	$text .= ($eaction ? LAN_78 : "Re: ".$thread_name);
+	$text .= ($eaction ? LAN_78 : LAN_406." ".$thread_name);
 }
 
 $text .= "</td></tr>";

@@ -147,7 +147,7 @@ class poll{
 			$qs = explode(".", e_QUERY);
 			$forum_id = $qs[0];
 			$thread_id = $qs[1];
-			$text .= "<br /><div style='text-align:right' class='smallblacktext'>[ moderator - <a href='".e_ADMIN."forum_conf.php?delete_poll.".$forum_id.".".$thread_id.".".$poll_id."'>delete poll only</a> ]</div>";
+			$text .= "<br /><div style='text-align:right' class='smallblacktext'>[ ".POLL_9." - <a href='".e_ADMIN."forum_conf.php?delete_poll.".$forum_id.".".$thread_id.".".$poll_id."'>".POLL_10."</a> ]</div>";
 		}
 
 		$ns = new e107table;
