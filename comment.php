@@ -25,6 +25,7 @@ $action = $qs[0];
 $table = $qs[1];
 $id = $qs[2];
 $nid = $qs[3];
+$xid = $qs[4];
 $cobj = new comment;
 $aj = new textparse;
 
@@ -69,10 +70,16 @@ if(IsSet($_POST['replysubmit'])){
 			}
 		}
 		if($plugin_redir){
-			header("location:".$location."");
+			header("location:".$reply_location."");
 			exit;
 		} elseif ($table == "news" || $table == "poll"){
 			header("location:".e_BASE."comment.php?comment.".$table.".".$nid."");
+			exit;
+		}elseif($table == "bugtrack"){
+			header("location:".e_PLUGIN."bugtracker/bugtracker.php?show.".$nid."");
+			exit;
+		}elseif($table == "faq"){
+			header("location:".e_PLUGIN."faq/faq.php?cat.".$xid.".".$nid."");
 			exit;
 		} elseif ($table == "content"){
 			header("location:".e_BASE."content.php?".$_POST['content_type'].".".$nid."");

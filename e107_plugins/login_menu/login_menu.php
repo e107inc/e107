@@ -85,6 +85,21 @@ $text = "";
 				}
 			}
 		}
+		$handle=opendir(e_PLUGIN);
+			while(false !== ($file = readdir($handle))){
+			if($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)){
+				$plugin_handle=opendir(e_PLUGIN.$file."/");
+				while(false !== ($file2 = readdir($plugin_handle))){
+					if($file2 == "e_comment.php"){
+						require_once(e_PLUGIN.$file."/".$file2);
+						if($comment_type == $e_plug_table){
+							$new_comments++;
+							break 2;
+						}
+					}
+				}
+			}
+		}
 		$new_total = $new_total + $new_comments;
 		if(!$new_comments){ $new_comments = LOGIN_MENU_L26; }
 		$display_chats = TRUE;

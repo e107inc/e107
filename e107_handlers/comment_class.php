@@ -220,6 +220,7 @@ class comment{
 			case "faq" : $type=3; break;
 			case "poll" : $type=4; break;
 			case "docs" : $type=5; break;
+			case "bugtrack" : $type=6; break;
 			/****************************************
 			Add your comment type here in same format as above, ie ...
 			case "your_comment_type"; $type = your_type_id; break;
