@@ -11,24 +11,19 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/admin_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2004-11-18 03:12:44 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2004-12-10 02:52:42 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 $ADMIN_HEADER = "<div style='text-align:center'>
 {ADMIN_LOGO}
 <br />
-{ADMIN_LOGGED}";
-
-if($_COOKIE['userlan']){
-$ADMIN_HEADER .= "<br /><b>Language:</b> ".$_COOKIE['userlan'];
-}
-
-$ADMIN_HEADER .= "
+{ADMIN_LOGGED}
+{ADMIN_USERLAN}
 <div>
-".(e_MLANG == 1 ? "{ADMIN_MULTILANG}" : "" )."
+{ADMIN_MULTILANG}
 <table style='width:100%' cellspacing='10' cellpadding='10'>
 <tr>
 <td style='width:15%; vertical-align: top;'>
