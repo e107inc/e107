@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-03-28 18:03:05 $
+|     $Revision: 1.24 $
+|     $Date: 2005-04-03 09:04:11 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -215,7 +215,7 @@ if ($action == "reply") {
 			}
 		}
 		else if($table == "poll") {
-			if (!$sql->db_Select("polls", "*", "poll_id='$id' AND poll_comment=1")) {
+			if (!$sql->db_Select("polls", "*", "poll_id='$id'")) {
 				header("location:".e_BASE."index.php");
 				exit;
 			} else {
@@ -228,6 +228,12 @@ if ($action == "reply") {
 				require(e_PLUGIN."poll/poll_menu.php");
 				$field = $poll_id;
 				$comtype = 4;
+
+				if(!$poll_comment)
+				{
+					require_once(FOOTERF);
+					exit;
+				}
 			}
 		}
 		require_once(HEADERF);
