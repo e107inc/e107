@@ -3,11 +3,11 @@
 define("MENLAN_1", "Visible to all");
 define("MENLAN_2", "Visible to members only");
 define("MENLAN_3", "Visible to administrators only");
-define("MENLAN_4", "Only visible to users in");
+define("MENLAN_4", "Only visible to:");
 define("MENLAN_5", "class");
-define("MENLAN_6", "Update Menu Class");
-define("MENLAN_7", "Set class for");
-define("MENLAN_8", "Class updated");
+define("MENLAN_6", "Save visibility options");
+define("MENLAN_7", "Configure visibility options for");
+define("MENLAN_8", "Visibility options updated");
 define("MENLAN_9", "New custom menu installed");
 define("MENLAN_10", "New menu installed");
 define("MENLAN_11", "Menu removed");
@@ -27,5 +27,9 @@ define("MENLAN_22", "Inactive Menus");
 define("MENLAN_23", "Move to bottom");
 define("MENLAN_24", "Move to top");
 define("MENLAN_25", "Function ...");
+
+define("MENLAN_26", "This menu will only be <strong>SHOWN</strong> on the following pages");
+define("MENLAN_27", "This menu will only be <strong>HIDDEN</strong> on the following pages");
+define("MENLAN_28", "Enter one page per line, enter enough of the url to distinguish it properly");
 
 ?>

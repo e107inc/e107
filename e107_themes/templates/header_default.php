@@ -11,7 +11,7 @@
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
 |
-|   $Id: header_default.php,v 1.32 2004-08-12 15:54:23 e107coders Exp $
+|   $Id: header_default.php,v 1.33 2004-08-20 03:59:23 mcfly_e107 Exp $
 +---------------------------------------------------------------+
 */
 if(!function_exists("parseheader")){
@@ -56,10 +56,40 @@ if(!function_exists("checklayout")){
                   $ns = new e107table;
                   $menu = trim(chop(preg_replace("/\{MENU=(.*?)\}/si", "\\1", $str)));
                   $sql9 = new db;
-                  $sql9 -> db_Select("menus", "menu_name,menu_class",  "menu_location='$menu' ORDER BY menu_order");
+                  $sql9 -> db_Select("menus", "menu_name,menu_class,menu_pages","menu_location='$menu' ORDER BY menu_order");
                   while($row = $sql9-> db_Fetch()){
                           extract($row);
-                          if(check_class($menu_class)){
+                          $show_menu = TRUE;
+									if($menu_pages)
+									{
+										list($listtype,$listpages) = explode("-",$menu_pages);
+										$pagelist = explode("|",$listpages);
+										$check_url = e_SELF."?".e_QUERY;
+										if($listtype == '1') //show menu
+										{
+											$show_menu = FALSE;
+											foreach($pagelist as $p)
+											{
+												if(strpos($check_url,$p))
+												{
+													$show_menu = TRUE;
+												}
+											}
+										}
+										if($listtype == '2') //hide menu
+										{
+											$show_menu = TRUE;
+											foreach($pagelist as $p)
+											{
+												if(strpos($check_url,$p))
+												{
+													$show_menu = FALSE;
+												}
+											}
+										}
+									}
+											
+                          if(check_class($menu_class) && $show_menu){
                                   if(strstr($menu_name, "custom_")){
                                           require_once(e_PLUGIN."custom/".str_replace("custom_", "", $menu_name).".php");
                                   } else {

@@ -38,40 +38,30 @@ if($menu_act == 'config')
 
 if($menu_act == "adv")
 {
+	require_once(e_HANDLER."userclass_class.php");
 	$sql -> db_Select("menus", "*", "menu_id='$id' ");
 	$row = $sql -> db_Fetch(); extract($row);
+	$listtype = substr($menu_pages,0,1);
+	$menu_pages = substr($menu_pages,2);
+	$menu_pages = preg_replace("#\|#","\n",$menu_pages);
 	$text = "<div style='text-align:center'>
 	<form  method='post' action='".e_SELF."'>\n
-	<table style='width:50%'>
+	<table style='width:100%'>
 	<tr>
 	<td>
 	<input type='hidden' name='menuAct[$menu_id]' value='sv.$menu_id' />
-	<input name='menu_class' type='radio' value='0' ";
-	if(!$menu_class){ $text .= "checked='checked'"; }
-	$text .= " />".MENLAN_1."<br />
-
-	<input name='menu_class' type='radio' value='252' ";
-	if($menu_class == 252){ $text .= "checked='checked'"; }
-	$text .= " />".MENLAN_21."<br />
-
-	<input name='menu_class' type='radio' value='253' ";
-	if($menu_class == 253){ $text .= "checked='checked'"; }
-	$text .= " />".MENLAN_2."<br />
-
-	<input name='menu_class' type='radio' value='254' ";
-	if($menu_class == 254){ $text .= "checked='checked'"; }
-	$text .= " />".MENLAN_3."<br />";
-
-	$sql -> db_Select("userclass_classes");
-	while($row = $sql -> db_Fetch())
-	{
-		extract($row);
-		$text .= "<input name='menu_class' type='radio' value='".$userclass_id."'";
-		if($menu_class == $userclass_id){ $text .= "checked='checked'"; }
-		$text .= ">".MENLAN_4." ".$userclass_name." ".MENLAN_5."<br />";
-	}
+	";
+	$text .= MENLAN_4." ";
+	$text .= r_userclass('menu_class',$menu_class,"off","public,member,guest,admin,classes,nobody");
 	$text .= "</td>
-	</tr>
+	</tr>";
+	$text .= "<tr><td><br />";
+	$checked = ($listtype == 1) ? " checked='checked' " : "";
+	$text .= "<input type='radio' {$checked} name='listtype' value='1' /> ".MENLAN_26."<br />";
+	$checked = ($listtype == 2) ? " checked='checked' " : "";
+	$text .= "<input type='radio' {$checked} name='listtype' value='2' /> ".MENLAN_27."<br /><br />".MENLAN_28."<br />";
+	$text .= "<textarea name='pagelist' cols='60' rows='10' class='tbox'>$menu_pages</textarea>";
+	$text .= "
 	<tr>
 	<td style=\"text-align:center\"><br />
 	<input class=\"button\" type=\"submit\" name=\"class_submit\" value=\"".MENLAN_6."\" />
@@ -84,11 +74,19 @@ if($menu_act == "adv")
 	$ns -> tablerender($caption, $text);
 }
 
-
+unset($message);
 
 if($menu_act == "sv")
 {
-	$sql -> db_Update("menus", "menu_class='".$_POST['menu_class']."' WHERE menu_id='$id' ");
+	$pagelist = explode("\r\n",$_POST['pagelist']);
+	for($i = 0 ;$i < count($pagelist) ; $i++){
+		$pagelist[$i]=trim($pagelist[$i]);
+	}  
+	$plist = implode("|",$pagelist);
+	$pageparms = $_POST['listtype'].'-'.$plist;
+	$pageparms = preg_replace("#\|$#","",$pageparms);
+	$pageparms = (trim($_POST['pagelist']) == '') ? '' : $pageparms;
+	$sql -> db_Update("menus", "menu_class='".$_POST['menu_class']."', menu_pages='{$pageparms}' WHERE menu_id='$id' ");
 	$message = "<br />".MENLAN_8."<br />";
 }
 
@@ -134,7 +132,6 @@ if($menu_act == "inc")
 	$sql -> db_Update("menus", "menu_order=menu_order-1 WHERE menu_id='$id' AND menu_location='$location' ");
 }
 
-unset($message);
 $handle=opendir(e_PLUGIN);
 $c=0;
 while(false !== ($file = readdir($handle)))
@@ -301,9 +298,9 @@ function checklayout($str){
 					
                 $sql9 -> db_Select("menus", "*",  "menu_location='$menu' ORDER BY menu_order");
                 $menu_count = $sql9 -> db_Rows();
-                while(list($menu_id, $menu_name, $menu_location, $menu_order, $menu_class) = $sql9-> db_Fetch()){
+                while(list($menu_id, $menu_name, $menu_location, $menu_order, $menu_class, $menu_pages) = $sql9-> db_Fetch()){
                         $menu_name = eregi_replace("_menu", "", $menu_name);
-								$vis = ($menu_class) ? " <span style='color:red'>*</span> " : "";
+								$vis = ($menu_class || strlen($menu_pages) > 1) ? " <span style='color:red'>*</span> " : "";
                         $caption = "<div style=\"text-align:center\">{$menu_name}{$vis}</div>";
                         $menu_info = "{$menu_location}.{$menu_order}";
 
