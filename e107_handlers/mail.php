@@ -3,7 +3,7 @@
 +---------------------------------------------------------------+
 |        e107 website system
 |        /classes/mail.php
-|        updated by Cameron.
+|        updated by the Dev Team (Cameron, Lolo Irie)
 |
 |        ©Steve Dunstan 2001-2002
 |        http://e107.org
@@ -21,44 +21,72 @@ php 4.3.6 does NOT have this problem.
 // ini_set(sendmail_path, "/usr/sbin/sendmail -t -f ".$pref['siteadminemail']);
 
 
-function sendemail($send_to, $subject, $message,$to_name,$send_from,$from_name,$attachments,$Cc,$Bcc,$returnpath,$returnreceipt){
-        global $pref;
-        $lb = "\n";
+if(file_exists(e_LANGUAGEDIR.e_LANGUAGE."/lan_mail_handler.php")){@include(e_LANGUAGEDIR.e_LANGUAGE."/lan_mail_handler.php");}
+else{@include(e_LANGUAGEDIR."English/lan_mail_handler.php");}
+
+function sendemail($e107_send_to, $e107_subject, $e107_message, $e107_to_name, $e107_send_from="", $e107_from_name="", $e107_attachments="", $e107_Cc="", $e107_Bcc="", $e107_returnpath="", $e107_returnreceipt="", $e107_mode=3){
+        // $e107_mode -> 	0 to use short version of email header + send_to format : email
+		//					1 to use short version of email header + send_to format : name <email>
+		//					2 to use  long version of email header + send_to format : email
+		//					3 to use  long version of email header + send_to format : name <email>
+		
+		
+		// NO anonymous email, subject required, message required
+		if(!isset($e107_send_to)||!isset($e107_subject)||!isset($e107_message)){
+			return false;
+		}
+		
+		global $pref;
+        //$lb = "\n";
         // Clean up the HTML. ==
 
-        if(preg_match('/<(html|font|br|a|img)/i', $message)){
-        $Html = $message;
+        if(preg_match('/<(html|font|br|a|img)/i', $e107_message)){
+        $Html = $e107_message;
         }else{
-        $Html = preg_replace("/\n/","<br />",$message);
+        $Html = preg_replace("/\n/","<br />",$e107_message);
         $Html = eregi_replace('(((f|ht){1}tp://)[-a-zA-Z0-9@:%_\+.~#?&//=]+)',    '<a href="\\1">\\1</a>', $Html);
         $Html = eregi_replace('([[:space:]()[{}])(www.[-a-zA-Z0-9@:%_\+.~#?&//=]+)',    '\\1<a href="http://\\2">\\2</a>', $Html);
         $Html = eregi_replace('([_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,3})',    '<a href="mailto:\\1">\\1</a>', $Html);
         }
 
-        $text = strip_tags(preg_replace("<br>","/\n/",$message));
+        $text = strip_tags(preg_replace("<br>","/\n/",$e107_message));
         $OB="----=_OuterBoundary_000". md5(uniqid(mt_rand(), 1));
         $IB="----=_InnerBoundery_001" . md5(uniqid(mt_rand(), 1));
 
-        $send_from = ($send_from)?$send_from:$pref['siteadminemail'];
-        $from_name = ($from_name)?$from_name:$pref['siteadmin'];
-        $to_name = ($to_name)?$to_name:$send_to;
-        $send_to = $to_name." <".$send_to.">\n";
+        $e107_send_from = ($e107_send_from!="" ? $e107_send_from : $pref['siteadminemail'] );
+        $e107_from_name = ($e107_from_name!="" ? $e107_from_name : $pref['siteadmin'] );
+        $e107_to_name = ($e107_to_name!="" ? $e107_to_name : $e107_send_to );
+		if($e107_mode==1 || $e107_mode==3){
+			$e107_send_to = $e107_to_name." <".$e107_send_to.">\n";
+		}
+		
+        
+		
+		//$e107_send_to = $e107_to_name." <".$e107_send_to.">\n";
 
-        $headers = "Date: ".date("r")."\n";
-        $headers.= "MIME-Version: 1.0\n";
-        $headers.= "From: ".$from_name." <".$send_from.">\n";
-        $headers.= "Reply-To: ".$from_name." <".$send_from.">\n";
-        $headers.= ($returnreceipt !="")? "Return-Receipt: $returnreceipt\n":"Return-Receipt: ".$pref['siteadminemail']."\n";
-        $headers.= "X-Sender: ".$send_from."\n";
-        $headers.= "X-Mailer: PHP Mailer\n";
-        $headers.= "X-MimeOLE: Produced By e107 website system\n";
-        $headers.= "X-Priority: 3\n";
-        if ($Cc) {$headers .= "Cc: $Cc\n";}
-        if ($Bcc) {$headers .= "Bcc: $Bcc\n";}
-        $headers.="Content-Type: multipart/mixed;\n\tboundary=\"".$OB."\"\n";
+        if($e107_mode>1){
+			$headers = "Date: ".date("r")."\r\n";
+	        $headers.= "MIME-Version: 1.0\r\n";
+	        if($e107_from_name!=""){
+				$headers.= "From: ".$e107_from_name.( $e107_send_from != "" ? " <".$e107_send_from.">"  : "" )."\r\n";
+	    	    $headers.= "Reply-To: ".$e107_from_name.( $e107_send_from != "" ? " <".$e107_send_from.">"  : "" )."\r\n";
+			}
+	        $headers.= ($e107_returnreceipt !=""? "Return-Receipt: ".$e107_returnreceipt."\n" : "Return-Receipt: ".$pref['siteadminemail']."\r\n" );
+	        $headers.= "X-Sender: ".$e107_send_from."\r\n";
+	        $headers.= "X-Mailer: PHP Mailer\r\n";
+	        $headers.= "X-MimeOLE: ".LANMAILH_1."\r\n";
+	        $headers.= "X-Priority: 3\r\n";
+	        if ($e107_Cc!="") {$headers .= "Cc: ".$e107_Cc."\r\n";}
+	        if ($e107_Bcc!="") {$headers .= "Bcc: ".$e107_Bcc."\r\n";}
+	        $headers.="Content-Type: multipart/mixed;\n\tboundary=\"".$OB."\"\r\n";
+		}
+		else{
+			$headers= "From: ".$e107_from_name."\r\n";
+	    	$headers.= "Reply-To: ".$e107_from_name."\r\n";
+		}
 
         // Insert Body with text and HTML.
-        $body ="This is a multi-part message in MIME format.\n";
+        $body =LANMAILH_2."\n";
         $body.="\n--".$OB."\n";
         $body.="Content-Type:multipart/alternative;\n\tboundary=\"".$IB."\"\n\n";
 
@@ -77,11 +105,11 @@ function sendemail($send_to, $subject, $message,$to_name,$send_from,$from_name,$
         $body.="\n--".$IB."--\n";
 
 // attachments ================
-        if($attachments){
-        if(!is_array($attachments)){
-        $AttmFiles[] = $attachments;
+        if($e107_attachments!=""){
+        if(!is_array($e107_attachments)){
+        $AttmFiles[] = $e107_attachments;
         }else{
-        $AttmFiles = $attachments;
+        $AttmFiles = $e107_attachments;
         }
 
          foreach($AttmFiles as $AttmFile){
@@ -108,14 +136,14 @@ function sendemail($send_to, $subject, $message,$to_name,$send_from,$from_name,$
 
         if($pref['smtp_enable']){
                 require_once(e_HANDLER."smtp.php");
-                if(smtpmail($send_to, $subject, $body, $headers)){
+                if(smtpmail($e107_send_to, $e107_subject, $body, $headers)){
                         return TRUE;
                 }else{
                         return FALSE;
                 }
         }else{
-                $headers.= ($returnpath !="")? "Return-Path: <".$returnpath.">\n":"Return-Path: <".$pref['siteadminemail'].">\n";
-                if(@mail($send_to, $subject, $body, $headers)){
+                $headers.= ($e107_returnpath !="")? "Return-Path: <".$e107_returnpath.">\n":"Return-Path: <".$pref['siteadminemail'].">\n";
+                if(@mail($e107_send_to, $e107_subject, $body, $headers)){
                         return TRUE;
                 }else{
                         return FALSE;
@@ -128,10 +156,11 @@ function sendemail($send_to, $subject, $message,$to_name,$send_from,$from_name,$
 function validatemail($Email) {
     global $HTTP_HOST;
     $result = array(); ;
-
-    if (!eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$", $Email)) {
+	
+	// Email too short, too long or wrong formatted
+	if (strlen($Email) < 6 || strlen($Email) > 255 || !eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$", $Email)){
         $result[0]=false;
-        $result[1]="$Email is not properly formatted";
+        $result[1]=$Email.LANMAILH_3;
         return $result;
     }
 
@@ -160,13 +189,13 @@ function validatemail($Email) {
             if (!ereg ("^250", $From) ||
             !ereg ( "^250", $To )) {
                $result[0]=false;
-               $result[1]="Server rejected address";
+               $result[1]= LANMAILH_4;
                $result[2] = $From;
                return $result;
             }
             } else {
             $result[0] = false;
-            $result[1] = "No response from server";
+            $result[1] = LANMAILH_5;
             $result[2] = $From;
             return $result;
           }
@@ -174,12 +203,12 @@ function validatemail($Email) {
     }  else {
 
         $result[0]=false;
-        $result[1]="Cannot find E-Mail server.";
+        $result[1]= LANMAILH_6;
         $result[2] = $From;
         return $result;
     }
   $result[0]=true;
-    $result[1]="$Email appears to be valid.";
+    $result[1]=$Email.LANMAILH_7;
     $result[2] = $From;
     return $result;
 } // end of function
