@@ -53,7 +53,7 @@ if(IsSet($_POST['commentsubmit'])){
 		$row = $sql -> db_Fetch();
 		if($row[0] && (ANON===TRUE || USER===TRUE)){
 			$cobj -> enter_comment($_POST['author_name'], $_POST['comment'], "content", $sub_action);
-			$sql -> db_Delete("cache", "cache_url='comment.content.$sub_action' ");
+			clear_cache("comment.content.{$sub_action}");
 		}
 	}
 }
