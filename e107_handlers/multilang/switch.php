@@ -4,34 +4,35 @@
 * Switch languages, called from class2.php
 *
 */
-// $Id: switch.php,v 1.1 2004-10-10 21:20:07 loloirie Exp $ 
-global $ADMIN_DIRECTORY;
-if(IsSet($_POST['setlanguage2']) && $_POST['setlanguage2']!=""){
-	$tmp_dblg = $_POST['setlanguage2'];
-	if(e_MLANGDIF==1){
-		$tmp_lg = false;
-	}else{
-		$tmp_lg = $_POST['setlanguage2'];
-	}
-}else if(IsSet($_POST['setlanguage']) && $_POST['setlanguage']!=""){
-	if(strstr(e_SELF, $ADMIN_DIRECTORY)){$_POST['sitelanguage']=$_POST['setlanguage'];}
-	if(e_MLANGDIF==1){
-		if(IsSet($_POST['sitedblanguage']) && $_POST['sitedblanguage']!=""){
-			$tmp_dblg = $_POST['sitedblanguage'];
-		}else{
-			$tmp_dblg = false;
-		}
-		$tmp_lg = $_POST['sitelanguage'];
-	}else{
-		$tmp_dblg = false;
-		$tmp_lg = $_POST['sitelanguage'];
-	}
-	if(strstr(e_SELF, $ADMIN_DIRECTORY)){$tmp_dblg = $_POST['sitelanguage'];}
-}else{
-	$tmp_lg = false;
-	$tmp_dblg = false;
+// $Id: switch.php,v 1.2 2004-10-13 07:57:45 loloirie Exp $ 
+if(IsSet($_POST['setlanguage']) || IsSet($_POST['setlanguage2'])){
+  global $ADMIN_DIRECTORY;
+  if(IsSet($_POST['setlanguage2']) && $_POST['setlanguage2']!=""){
+  	$tmp_dblg = $_POST['setlanguage2'];
+  	if(e_MLANGDIF==1){
+  		$tmp_lg = false;
+  	}else{
+  		$tmp_lg = $_POST['setlanguage2'];
+  	}
+  }else if(IsSet($_POST['setlanguage']) && $_POST['setlanguage']!=""){
+  	if(strstr(e_SELF, $ADMIN_DIRECTORY)){$_POST['sitelanguage']=$_POST['setlanguage'];}
+  	if(e_MLANGDIF==1){
+  		if(IsSet($_POST['sitedblanguage']) && $_POST['sitedblanguage']!=""){
+  			$tmp_dblg = $_POST['sitedblanguage'];
+  		}else{
+  			$tmp_dblg = false;
+  		}
+  		$tmp_lg = $_POST['sitelanguage'];
+  	}else{
+  		$tmp_dblg = false;
+  		$tmp_lg = $_POST['sitelanguage'];
+  	}
+  	if(strstr(e_SELF, $ADMIN_DIRECTORY)){$tmp_dblg = $_POST['sitelanguage'];}
+  }else{
+  	$tmp_lg = false;
+  	$tmp_dblg = false;
+  }
 }
-
 /*
 * 
 * Switch for guests
