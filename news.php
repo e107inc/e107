@@ -1,16 +1,20 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        /index.php
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107/news.php,v $
+|     $Revision: 1.17 $
+|     $Date: 2004-09-09 10:03:10 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 require_once(e_HANDLER."news_class.php");
@@ -22,7 +26,7 @@ if($NEWSHEADER){
 }
 
 if(Empty($pref['newsposts']) ? define("ITEMVIEW", 15) : define("ITEMVIEW", $pref['newsposts']));
-if(file_exists("install.php") && ADMIN){ echo "<div class='installe' style='text-align:center'><b>*** ".LAN_00."</div><br /><br />"; }
+if(file_exists("install.php") && ADMIN){ echo "<div class='installe' style='text-align:center'><b>*** ".LAN_NEWS_3." ***</b><br />".LAN_NEWS_4."</div><br /><br />"; }
 
 if(!is_object($aj)){ $aj = new textparse; }
 
@@ -35,9 +39,9 @@ if(e_QUERY){
 
 $from = (!is_numeric($action) || !e_QUERY ? 0 : ($action ? $action : e_QUERY));
 if($tmp[1]=='list'){
-	$action='list';
-	$from=intval($tmp[0]);
-	$sub_action=intval($tmp[2]);
+        $action='list';
+        $from=intval($tmp[0]);
+        $sub_action=intval($tmp[2]);
 }
 
 $ix = new news;
@@ -52,26 +56,26 @@ if($action == "cat"){
                 $category_name = $aj -> tpa($category_name);
                 $category_icon = e_IMAGE."newsicons/".$category_icon;
 
-				$count = $sql -> db_SELECT("news", "*",  "news_category='$category' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY news_datestamp DESC");
+                                $count = $sql -> db_SELECT("news", "*",  "news_category='$category' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY news_datestamp DESC");
                 while($row = $sql-> db_Fetch()){
                         extract($row);
-						if(check_class($news_class)){
+                                                if(check_class($news_class)){
                         $news_title = $aj -> tpa($news_title);
-							if($news_title == ""){ $news_title = "Untitled"; }
-							$datestamp = $gen->convert_date($news_datestamp, "short");
-							$comment_total = $sql2 -> db_Count("comments", "(*)",  "WHERE comment_item_id='$news_id' AND comment_type='0' ");
-							$text .= "
-							<img src='".THEME."images/bullet2.gif' alt='bullet' /> <b>
-							<a href='news.php?item.".$news_id."'>".$news_title."</a></b>
-							<br />&nbsp;&nbsp;
-							<span class='smalltext'>
-							".$datestamp.", ".LAN_99.": ".
-							($news_allow_comments ? COMMENTOFFSTRING : $comment_total)."
-							</span>
-							<br />\n";
-						}else{ 
-							$count --; 
-						} 
+                                                        if($news_title == ""){ $news_title = "Untitled"; }
+                                                        $datestamp = $gen->convert_date($news_datestamp, "short");
+                                                        $comment_total = $sql2 -> db_Count("comments", "(*)",  "WHERE comment_item_id='$news_id' AND comment_type='0' ");
+                                                        $text .= "
+                                                        <img src='".THEME."images/bullet2.gif' alt='bullet' /> <b>
+                                                        <a href='news.php?item.".$news_id."'>".$news_title."</a></b>
+                                                        <br />&nbsp;&nbsp;
+                                                        <span class='smalltext'>
+                                                        ".$datestamp.", ".LAN_99.": ".
+                                                        ($news_allow_comments ? COMMENTOFFSTRING : $comment_total)."
+                                                        </span>
+                                                        <br />\n";
+                                                }else{
+                                                        $count --;
+                                                }
 
                 }
                 $text = "<img src='$category_icon' alt='' /><br />".
@@ -124,11 +128,11 @@ if(!defined("WMFLAG")){
 // ---> wmessage end
 
 if($action == "list"){
-		$sub_action=intval($sub_action);
+                $sub_action=intval($sub_action);
         $news_total = $sql -> db_Count("news", "(*)", "WHERE news_category=$sub_action");
         $query = "news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_render_type!=2 AND news_category=$sub_action ORDER BY ".$order." DESC LIMIT $from,".ITEMVIEW;
 }else if($action == "item"){
-		$sub_action=intval($sub_action);
+                $sub_action=intval($sub_action);
         $news_total = $sql -> db_Count("news", "(*)", "WHERE news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_render_type!=2" );
         $query = "news_id=$sub_action AND news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")";
 }else if(strstr(e_QUERY, "month")){
@@ -153,19 +157,19 @@ if($action == "list"){
 }else{
         $news_total = $sql -> db_Count("news", "(*)", "WHERE news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_render_type!=2" );
 
-		// #### changed for news archive ------------------------------------------------------------------------------
-		$interval = $pref['newsposts']-$pref['newsposts_archive'];
-		$from2 = $interval+$from;
-		$ITEMVIEW2 = ITEMVIEW-$interval;
-		$ITEMVIEW1 = $interval;
+                // #### changed for news archive ------------------------------------------------------------------------------
+                $interval = $pref['newsposts']-$pref['newsposts_archive'];
+                $from2 = $interval+$from;
+                $ITEMVIEW2 = ITEMVIEW-$interval;
+                $ITEMVIEW1 = $interval;
 
 
-		// normal newsitems
+                // normal newsitems
         $query = "news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_render_type!=2 ORDER BY ".$order." DESC LIMIT $from,".$ITEMVIEW1;
 
-		// news archive
-		$query2 = "news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_render_type!=2 ORDER BY ".$order." DESC LIMIT $from2,".$ITEMVIEW2;
-		// #### END ---------------------------------------------------------------------------------------------------
+                // news archive
+                $query2 = "news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_render_type!=2 ORDER BY ".$order." DESC LIMIT $from2,".$ITEMVIEW2;
+                // #### END ---------------------------------------------------------------------------------------------------
 }
 
 if($sql -> db_Select("news", "*", "news_class<255 AND news_class!='' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_class!='' ORDER BY ".$order." DESC LIMIT $from,".ITEMVIEW)){
@@ -229,54 +233,54 @@ if(!$sql -> db_Select("news", "*", $query)){
 
 // #### new: news archive ---------------------------------------------------------------------------------------------
 if($action != "item" && $action != 'list'){ // do not show the newsarchive on the news.php?item.X page (but only on the news mainpage)
-	$sql2b = new db;
-	if(!$sql2b -> db_Select("news", "*", $query2)){
+        $sql2b = new db;
+        if(!$sql2b -> db_Select("news", "*", $query2)){
 
-	}else{
-		while(list($news2['news_id'], $news2['news_title'], $news2['data'], $news2['news_extended'], $news2['news_datestamp'], $news2['admin_id'], $news2_category, $news2['news_allow_comments'],  $news2['news_start'], $news2['news_end'], $news2['news_class'], $news2['news_rendertype']) = $sql2b -> db_Fetch()){
-				
-				if(check_class($news2['news_class'])){
-					if($action == "item"){ unset($news2['news_rendertype']); }
+        }else{
+                while(list($news2['news_id'], $news2['news_title'], $news2['data'], $news2['news_extended'], $news2['news_datestamp'], $news2['admin_id'], $news2_category, $news2['news_allow_comments'],  $news2['news_start'], $news2['news_end'], $news2['news_class'], $news2['news_rendertype']) = $sql2b -> db_Fetch()){
 
-					// Code from Lisa
-					// copied from the rss creation, but added here to make sure the url for the newsitem is to the news.php?item.X
-					// instead of the actual hyperlink that may have been added to a newstitle on creation
-					$search = array();
-					$replace = array();
-					$search[0] = "/\<a href=\"(.*?)\">(.*?)<\/a>/si";
-					$replace[0] = '\\2';
-					$search[1] = "/\<a href='(.*?)'>(.*?)<\/a>/si";
-					$replace[1] = '\\2';
-					$search[2] = "/\<a href='(.*?)'>(.*?)<\/a>/si";
-					$replace[2] = '\\2';
-					$search[3] = "/\<a href=&quot;(.*?)&quot;>(.*?)<\/a>/si";
-					$replace[3] = '\\2';
-					$search[4] = "/\<a href=&#39;(.*?)&#39;>(.*?)<\/a>/si";
-					$replace[4] = '\\2';
-					$news2['news_title'] = preg_replace($search, $replace, $news2['news_title']);
-					// End of code from Lisa
+                                if(check_class($news2['news_class'])){
+                                        if($action == "item"){ unset($news2['news_rendertype']); }
 
-					$gen = new convert;
-					$news2['news_datestamp'] = $gen->convert_date($news2['news_datestamp'], "short");
-					if(!is_object($sql2)){$sql2 = new db;}
-					$sql2 -> db_Select("news_category", "*",  "category_id='$news2_category' ");
-					list($news2['category_id'], $news2['category_name'], $news2['category_icon']) = $sql2-> db_Fetch();
-					$news2['comment_total'] = $sql2 -> db_Count("comments", "(*)",  "WHERE comment_item_id='".$news2['news_id']."' AND comment_type='0' ");
+                                        // Code from Lisa
+                                        // copied from the rss creation, but added here to make sure the url for the newsitem is to the news.php?item.X
+                                        // instead of the actual hyperlink that may have been added to a newstitle on creation
+                                        $search = array();
+                                        $replace = array();
+                                        $search[0] = "/\<a href=\"(.*?)\">(.*?)<\/a>/si";
+                                        $replace[0] = '\\2';
+                                        $search[1] = "/\<a href='(.*?)'>(.*?)<\/a>/si";
+                                        $replace[1] = '\\2';
+                                        $search[2] = "/\<a href='(.*?)'>(.*?)<\/a>/si";
+                                        $replace[2] = '\\2';
+                                        $search[3] = "/\<a href=&quot;(.*?)&quot;>(.*?)<\/a>/si";
+                                        $replace[3] = '\\2';
+                                        $search[4] = "/\<a href=&#39;(.*?)&#39;>(.*?)<\/a>/si";
+                                        $replace[4] = '\\2';
+                                        $news2['news_title'] = preg_replace($search, $replace, $news2['news_title']);
+                                        // End of code from Lisa
 
-					$textnewsarchive .= "
-					<div>
-					<table style='width:98%;'>
-						<tr>
-							<td>
-								<div><img src='".THEME."images/bullet2.gif' border='0' style='border:0;' alt='' /> <b><a href='news.php?item.".$news2['news_id']."'>".$news2['news_title']."</a></b> <span class='smalltext' ><i>(".$news2['news_datestamp'].") (".$news2['category_name'].")</i></span></div>
-							</td>
-						</tr>
-					</table>
-					</div>";
-				}
-		}
-		$ns -> tablerender($pref['newsposts_archive_title'], $textnewsarchive);
-	}
+                                        $gen = new convert;
+                                        $news2['news_datestamp'] = $gen->convert_date($news2['news_datestamp'], "short");
+                                        if(!is_object($sql2)){$sql2 = new db;}
+                                        $sql2 -> db_Select("news_category", "*",  "category_id='$news2_category' ");
+                                        list($news2['category_id'], $news2['category_name'], $news2['category_icon']) = $sql2-> db_Fetch();
+                                        $news2['comment_total'] = $sql2 -> db_Count("comments", "(*)",  "WHERE comment_item_id='".$news2['news_id']."' AND comment_type='0' ");
+
+                                        $textnewsarchive .= "
+                                        <div>
+                                        <table style='width:98%;'>
+                                                <tr>
+                                                        <td>
+                                                                <div><img src='".THEME."images/bullet2.gif' border='0' style='border:0;' alt='' /> <b><a href='news.php?item.".$news2['news_id']."'>".$news2['news_title']."</a></b> <span class='smalltext' ><i>(".$news2['news_datestamp'].") (".$news2['category_name'].")</i></span></div>
+                                                        </td>
+                                                </tr>
+                                        </table>
+                                        </div>";
+                                }
+                }
+                $ns -> tablerender($pref['newsposts_archive_title'], $textnewsarchive);
+        }
 }
 // #### END -----------------------------------------------------------------------------------------------------------
 
@@ -285,7 +289,7 @@ require_once(e_HANDLER."np_class.php");
 if($action != "item"){ $ix = new nextprev("news.php", $from, ITEMVIEW, $news_total, LAN_84, ($action == "list" ? $action.".".$sub_action : "")); }
 
 if($pref['nfp_display'] == 2){
-	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
+        require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 }
 
 
@@ -308,7 +312,7 @@ if($pref['nfp_display'] == 2){
                 $text3 .= "<div style='border-bottom:1px inset $line_clr; font-weight:bold;padding-bottom:1px;margin-bottom:5px'><img src='$category_icon' alt='' />&nbsp;<a href='news.php?cat.".$category_id."' style='text-decoration:none' >$category_name</a></div>";
               //  $text3 .= "</td>";
 
-				$count = $sql -> db_SELECT("news", "*",  "news_category='$category_id' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")  ORDER BY news_datestamp DESC LIMIT 0,$nbr_lst");
+                                $count = $sql -> db_SELECT("news", "*",  "news_category='$category_id' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")  ORDER BY news_datestamp DESC LIMIT 0,$nbr_lst");
                 while($row = $sql-> db_Fetch()){
                         extract($row);
                         $text3 .="<div style='width:100%'><table style='width:100%' cellpadding='0' cellspacing='0' border='0'>\n";
@@ -333,10 +337,10 @@ if($pref['nfp_display'] == 2){
   }
 
 if(!$disablecache && !e_QUERY){
-	$cache = $aj -> formtpa(ob_get_contents(), "admin");
-	set_cache("news.php", $cache);
+        $cache = $aj -> formtpa(ob_get_contents(), "admin");
+        set_cache("news.php", $cache);
 }else{
-	clear_cache("news.php");
+        clear_cache("news.php");
 }
 // =========================================================================
 
