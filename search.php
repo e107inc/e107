@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-27 19:51:38 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-28 13:31:12 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -154,12 +154,15 @@ function parsesearch($text, $match) {
 	$text = strip_tags($text);
 	$temp = stristr($text, $match);
 	$pos = strlen($text)-strlen($temp);
+        $matchedText =  substr($text,$pos,strlen($match));
 	if ($pos < 70) {
 		$text = "...".substr($text, 0, 100)."...";
-	} else {
-		$text = "...".substr($text, ($pos-70), 140)."...";
 	}
-	$text = eregi_replace($match, "<span class='searchhighlight'>$match</span>", $text);
+        else
+        {
+                $text = "...".substr($text, ($pos-50), $pos+30)."...";
+        }
+$text = eregi_replace($match, "<span class='searchhighlight'>$matchedText</span>", $text);
 	return($text);
 }
 	
