@@ -12,5 +12,5 @@ define("LAN_LOGIN_4", "please enter your details to gain access");
 define("LAN_LOGIN_5", "Click here to Sign-Up");
 define("LAN_LOGIN_6", "Not accepting new members at this time");
 define("LAN_LOGIN_7", "Enter visible code");
-
+define("LAN_LOGIN_8", "Remember Me");
 ?>

@@ -69,6 +69,7 @@ $rs -> form_password("userpass", 40, "", 100)."
 
 $text .= "<tr>
 <td class='forumheader' colspan='2' style='text-align:center'>".
+$rs -> form_checkbox("autologin", "1")."<span class='smalltext'>".LAN_LOGIN_8."</span><br />".
 $rs -> form_button("submit", "userlogin", "Log In", "", "Click to login")."
 </td>
 </tr></table>".
