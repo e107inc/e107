@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.67 $
-|     $Date: 2005-03-31 03:58:37 $
+|     $Revision: 1.68 $
+|     $Date: 2005-03-31 10:19:32 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -405,12 +405,6 @@ function update_61x_to_700($type) {
 		mysql_query('DROP TABLE `'.MPREFIX.'cache`'); // db cache is no longer an available option..
 		$sql->db_Update("banner", "banner_active='255' WHERE banner_active = '0' ");
 		$sql->db_Update("banner", "banner_active='0' WHERE banner_active = '1' ");
-		$sql->db_Update("wmessage", "wm_active='255' WHERE wm_active = '0' ");
-		$sql->db_Update("wmessage", "wm_active='252' WHERE wm_id = '1' AND wm_active='1' ");
-		$sql->db_Update("wmessage", "wm_active='253' WHERE wm_id = '2' AND wm_active='1' ");
-		$sql->db_Update("wmessage", "wm_active='254' WHERE wm_id = '3' AND wm_active='1' ");
-		mysql_query("ALTER IGNORE TABLE `".MPREFIX."wmessage` ADD UNIQUE INDEX(wm_id)");
-		mysql_query("ALTER TABLE `".MPREFIX."wmessage` CHANGE `wm_id` `wm_id` TINYINT( 3 ) UNSIGNED NOT NULL AUTO_INCREMENT");
 		$pref['wm_enclose'] = 1;
 		$s_prefs = TRUE;
 		/*
@@ -427,30 +421,29 @@ function update_61x_to_700($type) {
 			foreach($wmList as $wm)
 			{
 				$gen_type='wmessage';
-				if($wm['wm_id'] == '4') {$gen_type = 'forum_rules_guest';}
-				if($wm['wm_id'] == '5') {$gen_type = 'forum_rules_member';}
-				if($wm['wm_id'] == '6') {$gen_type = 'forum_rules_admin';}
+				if($wm['wm_id'] == '4') {$gen_type = 'forum_rules_guest'; $wm_class = $wm['wm_active'] ? e_UC_GUEST : '255'; }
+				if($wm['wm_id'] == '5') {$gen_type = 'forum_rules_member'; $wm_class = $wm['wm_active'] ? e_UC_MEMBER : '255'; }
+				if($wm['wm_id'] == '6') {$gen_type = 'forum_rules_admin'; $wm_class = $wm['wm_active'] ? e_UC_ADMIN : '255'; }
 				$fieldlist = "";
 				if($gen_type != "wmessage")
 				{
 					$exists = $sql->db_Count('generic','(*)',"WHERE gen_type = '{$gen_type}'");
 					if(!$exists)
 					{
-						$fieldlist = "0,'$gen_type','".time()."','".USERID."','',{$wm['wm_active']},'{$wm['wm_text']}'";
+						$fieldlist = "0,'$gen_type','".time()."','".USERID."','',{$wm_class},'{$wm['wm_text']}'";
 					}
 				}
 				else
 				{
-					if($wm['wm_id'] == '1') {$wm_class = e_UC_GUEST;}
-					if($wm['wm_id'] == '2') {$wm_class = e_UC_MEMBER;}
-					if($wm['wm_id'] == '3') {$wm_class = e_UC_ADMIN;}
+					if($wm['wm_id'] == '1') { $wm_class = $wm['wm_active'] ? e_UC_GUEST : '255'; }
+					if($wm['wm_id'] == '2') { $wm_class = $wm['wm_active'] ? e_UC_MEMBER : '255'; }
+					if($wm['wm_id'] == '3') { $wm_class = $wm['wm_active'] ? e_UC_ADMIN : '255'; }
 					$fieldlist = "0,'wmessage','".time()."','".USERID."','',{$wm_class},'{$wm['wm_text']}'";
 				}
 				if($fieldlist)
 				{
 					$sql->db_Insert('generic',$fieldlist);
 				}
-				$sql->db_Delete('wmessage',"WHERE wm_id = '{$wm['wm_id']}'");
 			}
 		}
 		mysql_query('DROP TABLE '.MPREFIX.'wmessage');  // table wmessage is no longer needed.
@@ -542,7 +535,7 @@ function update_61x_to_700($type) {
 			$s_prefs = TRUE;
 		}
 
-// Missing Forum upgrade stuff by Cam.
+		// Missing Forum upgrade stuff by Cam.
 		global $PLUGINS_DIRECTORY;
 		if($sql -> db_Select("links", "*", "link_url = 'forum.php'")){
 			$sql -> db_Insert("plugin", "0, 'Forum', '1.1', 'forum', '1' ");
@@ -566,6 +559,43 @@ function update_61x_to_700($type) {
 		mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` ADD `user_extended_struct_signup` TINYINT( 3 ) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_extended_struct_required` ;");
 		mysql_query("ALTER TABLE `".MPREFIX."download_category` CHANGE `download_category_class` `download_category_class` TINYINT( 3 ) UNSIGNED DEFAULT '0' NOT NULL");
 		mysql_query("ALTER TABLE `".MPREFIX."generic` CHANGE `gen_chardata` `gen_chardata` TEXT NOT NULL");
+
+		// start poll update -------------------------------------------------------------------------------------------
+		if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='poll'")) {
+			$sql->db_Insert("plugin", "0, 'Poll', '2.0', 'poll', 1");
+			$s_prefs = TRUE;
+		}
+		// end poll update -------------------------------------------------------------------------------------------
+		
+		// start newsfeed update -------------------------------------------------------------------------------------------
+		if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='newsfeed'")) {
+			$sql->db_Insert("plugin", "0, 'Newsfeeds', '2.0', 'newsfeed', 1");
+			$s_prefs = TRUE;
+		}
+		// end newsfeed update -------------------------------------------------------------------------------------------
+		
+		// start stats update -------------------------------------------------------------------------------------------
+		if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='log'")) {
+			$sql->db_Insert("plugin", "0, 'Statistic Logging', '2.0', 'log', 1");
+			$s_prefs = TRUE;
+		}
+		// end stats update -------------------------------------------------------------------------------------------
+		
+		// start stats update -------------------------------------------------------------------------------------------
+		if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='log'")) {
+			$sql->db_Insert("plugin", "0, 'Statistic Logging', '2.0', 'log', 1");
+			$s_prefs = TRUE;
+		}
+		// end stats update -------------------------------------------------------------------------------------------
+		
+		// start content update -------------------------------------------------------------------------------------------
+		if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='content'")) {
+			$sql->db_Insert("plugin", "0, 'Content Management', '1.0', 'content', 1");
+			$s_prefs = TRUE;
+		}
+		// end content update -------------------------------------------------------------------------------------------
+
+
 				
 		// Save all prefs that were set in above update routines
 			if ($s_prefs == TRUE) {
