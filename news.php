@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/news.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2004-12-11 14:22:10 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.22 $
+|     $Date: 2005-01-18 03:27:15 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -357,7 +357,7 @@ if($pref['news_cats']=='1')
                         if(check_class($news_class)){
                                 $news_title = $aj -> tpa($news_title);
                                 if($news_title == ""){ $news_title = "Untitled"; }
-                                $text3 .= "<tr><td style='width:2px;vertical-align:top'>•</td>\n";
+                                $text3 .= "<tr><td style='width:2px;vertical-align:top'>-</td>\n";
                                 $text3 .= "<td style='text-align:left;vertical-align:top;padding-left:2px'><a href='news.php?extend.".$news_id."'>".$news_title."</a></td></tr>\n";
                         }
                         $text3 .="</table></div>\n";
