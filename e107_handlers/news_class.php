@@ -13,8 +13,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.34 $
-| $Date: 2005-02-15 00:40:34 $
+| $Revision: 1.35 $
+| $Date: 2005-02-15 09:51:13 $
 | $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -267,13 +267,13 @@ class news {
 		$replace[16] = ($news_summary) ? $news_summary."<br />" : "";
 
 		$search[17] = "/\{NEWSTHUMBNAIL\}(.*?)/si";
-		$replace[17] = ($news_thumb) ? "<a href='".e_BASE."news.php?item.$news_id'><img src='".e_IMAGE."newspost_images/".$news_thumb."' alt='' style='".$param['thumbnail']."' /></a>" : "";
+		$replace[17] = ($news_thumb) ? "<a href='".e_BASE."news.php?item.$news_id.$category_id'><img src='".e_IMAGE."newspost_images/".$news_thumb."' alt='' style='".$param['thumbnail']."' /></a>" : "";
 
 		$search[18] = "/\{STICKY_ICON\}(.*?)/si";
 		$replace[18] = ($news['news_sticky'])? $param['image_sticky'] : "";
 
 		$search[19] = "/\{NEWSTITLELINK\}(.*?)/si";
-		$replace[19] = "<a style='".$param['itemlink']."' href='".e_BASE."news.php?item.$news_id'>".$news_title."</a>";
+		$replace[19] = "<a style='".$param['itemlink']."' href='".e_BASE."news.php?item.$news_id.$category_id'>".$news_title."</a>";
 
 		$search[20] = "/\{NEWSCATICON\}(.*?)/si";
 		$replace[20] = "<a href='".e_BASE."news.php?cat.$category_id'><img style='".$param['caticon']."'  src='$category_icon' alt='' /></a>";

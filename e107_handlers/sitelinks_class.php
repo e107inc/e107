@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-02-15 07:21:28 $
+|     $Revision: 1.31 $
+|     $Date: 2005-02-15 09:51:14 $
 |     $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -157,21 +157,30 @@ class sitelinks {
 }
 
 function hilite($link){
+// hilite the link of the news item in the menu.
+// eg. news.php?list.1 or news.php?cat.2 etc
+if(!defined("LINKSTART_HILITE")){ return FALSE; }
 
+if(eregi("news.php",$link)){
 	if(eregi("list",$link) && eregi("list",e_QUERY)){
 		$tmp = str_replace("php?","",explode(".",$link));
 		$tmp2 = explode(".",e_QUERY);
-		if($tmp[1] == $tmp2[1] && $tmp[2]==$tmp2[2]){ return TRUE; }
-
+	 	if($tmp[1] == $tmp2[1] && $tmp[2]==$tmp2[2]){ return TRUE; }
 	}
 
+	if((eregi("cat",$link) || eregi("list",$link)) && eregi("item",e_QUERY)){
+		$tmp = str_replace("php?","",explode(".",$link));
+		$tmp2 = explode(".",e_QUERY);
+		if($tmp[2]==$tmp2[2]){ return TRUE; }
+	}
+}
 	if(eregi("\?",$link)){
 		if(defined("LINKSTART_HILITE") && (strpos(e_SELF."?".e_QUERY, str_replace("../","","/".$link)) !== FALSE)){
 			return TRUE;
 		}
 	}
 
-	if(!eregi("all",e_QUERY) && !eregi("disp",e_QUERY) && !eregi("cat",e_QUERY) && !eregi("list",e_QUERY) && defined("LINKSTART_HILITE") && (strpos(e_SELF, str_replace("../","","/".$link)) !== FALSE)){
+	if(!eregi("all",e_QUERY) && !eregi("item",e_QUERY) && !eregi("cat",e_QUERY) && !eregi("list",e_QUERY) && defined("LINKSTART_HILITE") && (strpos(e_SELF, str_replace("../","","/".$link)) !== FALSE)){
 		return TRUE;
 	}
 
