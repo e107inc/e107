@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/footer.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-03-04 11:08:58 $
-|     $Author: stevedunstan $
+|     $Revision: 1.9 $
+|     $Date: 2005-03-28 00:52:13 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
+
+global $ADMIN_FOOTER;
 if (!defined("e_HTTP")) {
 	exit;
 }
