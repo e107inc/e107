@@ -1,4 +1,22 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107/e107_handlers/user_extended.php,v $
+|     $Revision: 1.7 $
+|     $Date: 2004-09-13 19:56:24 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
+
 // $form_ext_name = extended-user-field string
 // Usage of $form_ext_name - "Name|type|values|default|applicable to|visible to"
 //
@@ -26,88 +44,88 @@ function user_extended_name($extended){
 
 function user_extended_edit($u_fieldnum,$form_ext_name,$tdclass="",$alignit="left"){
 
-	global $pref,$key,$sql,$user_pref,$signup_ext,$_POST;
-	$ut = explode("|",$form_ext_name);
-	$u_name = ($ut[0] != "") ? str_replace("_"," ",$ut[0]) : trim($form_ext_name);
-	$u_type = trim($ut[1]);
-	$u_value = $ut[2];
-	$v_default = $ut[3];
-	$u_visible = $ut[4];
-	if($ut[4] && check_class($ut[4])==FALSE){ return; }
-	$ufield_name="ue_{$u_fieldnum}";
+        global $pref,$key,$sql,$user_pref,$signup_ext,$_POST;
+        $ut = explode("|",$form_ext_name);
+        $u_name = ($ut[0] != "") ? str_replace("_"," ",$ut[0]) : trim($form_ext_name);
+        $u_type = trim($ut[1]);
+        $u_value = $ut[2];
+        $v_default = $ut[3];
+        $u_visible = $ut[4];
+        if($ut[4] && check_class($ut[4])==FALSE){ return; }
+        $ufield_name="ue_{$u_fieldnum}";
 
-	$ret ="<tr><td class='".$tdclass."' style='vertical-align:top'>".$u_name.req($pref[$signup_ext])."</td>\n";
-	$ret .="<td class='".$tdclass."' style='text-align:".$alignit."'><div style='text-align:left;width:10%;white-space:nowrap'>";
-	$tmp = explode(",",$u_value);
+        $ret ="<tr><td class='".$tdclass."' style='vertical-align:top'>".$u_name.req($pref[$signup_ext])."</td>\n";
+        $ret .="<td class='".$tdclass."' style='text-align:".$alignit."'><div style='text-align:left;width:10%;white-space:nowrap'>";
+        $tmp = explode(",",$u_value);
 
-	switch ($u_type) {
-		case "radio":
+        switch ($u_type) {
+                case "radio":
 
-		for ($i=0; $i<count($tmp); $i++) {
-			$checked = ($tmp[$i] == $user_pref[$ufield_name] || ($tmp[$i] == $v_default && !$user_pref[$ufield_name])) ? " checked='checked'" : "";
-			if(!USER){ $checked = ($_POST[$ufield_name] == $tmp[$i] || ($tmp[$i] == $v_default && !$_POST[$ufield_name]))? " checked='checked'" : ""; }
-			$ret .="<input  type='radio' name='".$ufield_name."'  value='".$tmp[$i]."' $checked /> $tmp[$i] ";
-			$ret .= ($pref['signup_ext_req'.$key] && $i==0 && (!USER))? "<span style='font-size:15px; color:red'> *</span>":"";
-			$ret .="<br />";
-		};
-		$ret .="</div>";
-		$ret .="</td></tr>\n\n";
-		break;
+                for ($i=0; $i<count($tmp); $i++) {
+                        $checked = ($tmp[$i] == $user_pref[$ufield_name] || ($tmp[$i] == $v_default && !$user_pref[$ufield_name])) ? " checked='checked'" : "";
+                        if(!USER || $_POST[$ufield_name]){ $checked = ($_POST[$ufield_name] == $tmp[$i] || ($tmp[$i] == $v_default && !$_POST[$ufield_name]))? " checked='checked'" : ""; }
+                        $ret .="<input  type='radio' name='".$ufield_name."'  value='".$tmp[$i]."' $checked /> $tmp[$i] ";
+                        $ret .= ($pref['signup_ext_req'.$key] && $i==0 && (!USER))? "<span style='font-size:15px; color:red'> *</span>":"";
+                        $ret .="<br />";
+                };
+                $ret .="</div>";
+                $ret .="</td></tr>\n\n";
+                break;
 
-		case "dropdown":
-		$ret .= "\n<select class='tbox' style='width:200px'  name='".$ufield_name."'><option></option>\n";
-		for ($i=0; $i<count($tmp); $i++) {
-			$selected = ($user_pref[$ufield_name] == "$tmp[$i]" )? " selected='selected'" :  "";
-			$ret .="<option value=\"".$tmp[$i]."\" ".$selected." >". $tmp[$i] ."</option>\n";
-		};
-		$ret .="</select>";
-		$ret .= ($pref['signup_ext_req'.$key] && (!USER))? "<span style='font-size:15px; color:red'> *</span>":"";
-		$ret .= "</div></td></tr>\n\n";
+                case "dropdown":
+                $ret .= "\n<select class='tbox' style='width:200px'  name='".$ufield_name."'><option></option>\n";
+                for ($i=0; $i<count($tmp); $i++) {
+                        $selected = ($user_pref[$ufield_name] == "$tmp[$i]" || $_POST[$ufield_name] == $tmp[$i])? " selected='selected'" :  "";
+                        $ret .="<option value=\"".$tmp[$i]."\" ".$selected." >". $tmp[$i] ."</option>\n";
+                };
+                $ret .="</select>";
+                $ret .= ($pref['signup_ext_req'.$key] && (!USER))? "<span style='font-size:15px; color:red'> *</span>":"";
+                $ret .= "</div></td></tr>\n\n";
 
-		break;
+                break;
 
-		case "text":
-		if($u_value == ""){$u_value = "40";};
-		$valuehere = ($_POST[$ufield_name])? $_POST[$ufield_name] : ($user_pref[$ufield_name])? $user_pref[$ufield_name] : $v_default;
-		if(!USER && $_POST[$ufield_name]){ $valuehere = $_POST[$ufield_name];}
-		$ret .="<input class='tbox' type='text' name='".$ufield_name."' size='".$u_value."' value='".$valuehere."' maxlength='200' />";
-		$ret .= ($pref['signup_ext_req'.$key] && (!USER))? "<span style='font-size:15px; color:red'> *</span>":"";
-		$ret .="</div></td></tr>\n\n";
-		break;
+                case "text":
+                if($u_value == ""){$u_value = "40";};
+                $valuehere = ($_POST[$ufield_name])? $_POST[$ufield_name] : ($user_pref[$ufield_name])? $user_pref[$ufield_name] : $v_default;
+                if(!USER || $_POST[$ufield_name]){ $valuehere = $_POST[$ufield_name];}
+                $ret .="<input class='tbox' type='text' name='".$ufield_name."' size='".$u_value."' value='".$valuehere."' maxlength='200' />";
+                $ret .= ($pref['signup_ext_req'.$key] && (!USER))? "<span style='font-size:15px; color:red'> *</span>":"";
+                $ret .="</div></td></tr>\n\n";
+                break;
 
-		case "table":
-		$ret .="
-		<select class='tbox' style='width:200px'  name='".$ufield_name."'><option></option>";
+                case "table":
+                $ret .="
+                <select class='tbox' style='width:200px'  name='".$ufield_name."'><option></option>";
 
-		$tmp = explode(",",$u_value);
-		$fieldid = $row[$tmp[1]];
-		$fieldvalue = $row[$tmp[2]];
-		$sql -> db_Select($tmp[0],"*","$tmp[1] !='' ORDER BY $tmp[2]");
-		while($row = $sql-> db_Fetch()){
-			$fieldid = $row[$tmp[1]];
-			$fieldvalue = $row[$tmp[2]];
-			$checked = ($fieldid == $user_pref[$ufield_name] || ($fieldid == $v_default && !$user_pref[$ufield_name]))? " selected='selected'" : "";
-			if(!USER){ $checked = ($_POST[$ufield_name] == $fieldid)? " selected='selected'" : ($fieldid == $v_default)? " selected='selected'" : "";}
-			$ret .="<option value='".$fieldid."' $checked > $fieldvalue </option>";
-		}
-		$ret .="</select>";
-		$ret .= ($pref['signup_ext_req'.$key] && e_PAGE =="customsignup.php")? "<span style='font-size:15px; color:red'> *</span>":"";
-		$ret .="</div></td></tr>";
-		break;
+                $tmp = explode(",",$u_value);
+                $fieldid = $row[$tmp[1]];
+                $fieldvalue = $row[$tmp[2]];
+                $sql -> db_Select($tmp[0],"*","$tmp[1] !='' ORDER BY $tmp[2]");
+                while($row = $sql-> db_Fetch()){
+                        $fieldid = $row[$tmp[1]];
+                        $fieldvalue = $row[$tmp[2]];
+                        $checked = ($fieldid == $user_pref[$ufield_name] || ($fieldid == $v_default && !$user_pref[$ufield_name]))? " selected='selected'" : "";
+                        if(!USER || $_POST[$ufield_name]){ $checked = ($_POST[$ufield_name] == $fieldid)? " selected='selected'" : ($fieldid == $v_default)? " selected='selected'" : "";}
+                        $ret .="<option value='".$fieldid."' $checked > $fieldvalue </option>";
+                }
+                $ret .="</select>";
+                $ret .= ($pref['signup_ext_req'.$key] && e_PAGE =="customsignup.php")? "<span style='font-size:15px; color:red'> *</span>":"";
+                $ret .="</div></td></tr>";
+                break;
 
-		default:
-		//    $ret = "<tr>
-		//    <td style='width:20%' class='".$tdclass."'>".$form_ext_name."</td>
-		//    <td style='width:80%; text-align:".$alignit."' class='".$tdclass."' nowrap>";
-		$valuehere = ($_POST[$ufield_name])? $_POST[$ufield_name] : ($user_pref[$ufield_name])? $user_pref[$ufield_name] : $v_defualt;
-		if(!USER){ $valuehere = $_POST[$ufield_name];}
-		$ret .="<input class='tbox' type='text' name='".$ufield_name."' size='40' value='".$valuehere."' maxlength='200' />";
-		$ret .= ($pref['signup_ext_req'.$key])? "<span style='font-size:15px; color:red'> *</span>":"";
-		$ret .= "</div></td></tr>";
-		break;
-	}
+                default:
+                //    $ret = "<tr>
+                //    <td style='width:20%' class='".$tdclass."'>".$form_ext_name."</td>
+                //    <td style='width:80%; text-align:".$alignit."' class='".$tdclass."' nowrap>";
+                $valuehere = ($_POST[$ufield_name])? $_POST[$ufield_name] : ($user_pref[$ufield_name])? $user_pref[$ufield_name] : $v_defualt;
+                if(!USER || $_POST[$ufield_name]){ $valuehere = $_POST[$ufield_name];}
+                $ret .="<input class='tbox' type='text' name='".$ufield_name."' size='40' value='".$valuehere."' maxlength='200' />";
+                $ret .= ($pref['signup_ext_req'.$key])? "<span style='font-size:15px; color:red'> *</span>":"";
+                $ret .= "</div></td></tr>";
+                break;
+        }
 
-	return $ret;
+        return $ret;
 }
 
 ?>
