@@ -375,6 +375,7 @@ class pm {
 		$ret.="<tr><td class='forumheader3'>".PMLAN_30."</td><td class='forumheader3'><textarea name='pm_text' rows='10' cols='50' class='tbox'>".$pm_message."</textarea>
 		<br />
         <input class='helpbox' type='text' name='helpb' size='100' />
+			<br />
 		".ren_help(1, "addtext", "help")."
 		</td></tr>";
 		
