@@ -32,10 +32,10 @@
 		return $ret;
 	}
 	
-	if (file_exists(THEME.'admin_nav.js')) {
-		$text = "<script type='text/javascript' src='".THEME."admin_nav.js'></script>";
+	if (file_exists(THEME.'nav_menu.js')) {
+		$text = "<script type='text/javascript' src='".THEME."nav_menu.js'></script>";
 	} else {
-		$text = "<script type='text/javascript' src='".e_FILE."admin_nav.js'></script>";
+		$text = "<script type='text/javascript' src='".e_FILE."nav_menu.js'></script>";
 	}
 	$text .= "<div class='menuBar' style='width:100%;'>";
 

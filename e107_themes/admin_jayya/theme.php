@@ -18,15 +18,15 @@ $themename = "Jayya";
 $themeversion = "1.0";
 $themeauthor = "e107";
 $themedate = "22/12/04";
-$themeinfo = "Admin Theme Jayya";
+$themeinfo = "Jayya";
 
-define("THEME_DISCLAIMER", "<br />Admin Theme Jayya<br /><br />");
+define("THEME_DISCLAIMER", "");
 
 
 // [output js nav css in <head>]
 
 function theme_head() {
-	return "<link rel='stylesheet' href='".e_FILE."admin_nav.css' />\n";
+	return "<link rel='stylesheet' href='".e_FILE."nav_menu.css' />\n";
 }
 
 
