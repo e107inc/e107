@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/linkwords/admin_config.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-03-15 17:25:24 $
+|     $Revision: 1.2 $
+|     $Date: 2005-03-23 15:03:16 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -26,9 +26,10 @@ require_once(e_ADMIN."auth.php");
 @include_once(e_PLUGIN."linkwords/languages/English.php");
 
 $deltest = array_flip($_POST);
-if(isset($_POST[LWLAN_17]))
+
+if(isset($deltest[LWLAN_17]))
 {
-	$delete_id = str_replace("delete_", "", $_POST[LWLAN_17]);
+	$delete_id = str_replace("delete_", "", $deltest[LWLAN_17]);
 
 	if ($sql->db_Count("linkwords", "(*)", "WHERE linkword_id = ".$delete_id))
 	{
@@ -41,22 +42,6 @@ if(e_QUERY)
 {
 	list($action, $id) = explode(".", e_QUERY);
 }
-
-if($action == "edit")
-{
-
-	if($sql -> db_Select("linkwords", "*", "linkword_id=".$id))
-	{
-		$row = $sql -> db_Fetch();
-		extract($row);
-		define("EDIT", TRUE);
-	}
-	else
-	{
-		$message = LWLAN_20;
-	}
-}
-
 
 if (isset($_POST['submit_linkword']))
 {
@@ -138,7 +123,17 @@ $text .= "</div>";
 $ns -> tablerender(LWLAN_11, $text);
 
 
-if(!defined("EDIT"))
+if($action == "edit")
+{
+
+	if($sql -> db_Select("linkwords", "*", "linkword_id=".$id))
+	{
+		$row = $sql -> db_Fetch();
+		extract($row);
+		define("EDIT", TRUE);
+	}
+}
+else
 {
 	unset($linkword_word, $linkword_link, $linkword_active);
 }
