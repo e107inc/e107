@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search/search_download.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-03-14 09:05:15 $
+|     $Revision: 1.6 $
+|     $Date: 2005-03-21 22:11:39 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -31,6 +31,7 @@ $results = $ps['results'];
 
 function search_downloads($row) {
 	$res['link'] = "download.php?view.".$row['download_id'];
+	$res['pre_title'] = $row['download_category_name']." | ";
 	$res['title'] = $row['download_name'];
 	$res['summary'] = $row['download_description'];
 	$res['detail'] = LAN_SEARCH_14." ".$row['download_category_name']." | ".LAN_SEARCH_15." ".$row['download_author'];

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.56 $
-|     $Date: 2005-03-20 21:19:40 $
-|     $Author: stevedunstan $
+|     $Revision: 1.57 $
+|     $Date: 2005-03-21 22:09:26 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -476,76 +476,43 @@ function update_61x_to_700($type) {
 		");
 		
 		// Search Update
-		if (!$sql->db_Select("core", "e107_name", "e107_name='search_prefs'")) {
-			$sql->db_Insert('core', "'search_prefs', 'a:4:{s:12:\"search_chars\";s:3:\"150\";s:11:\"search_sort\";s:3:\"php\";s:6:\"google\";s:2:\"on\";s:13:\"core_handlers\";a:4:{s:4:\"news\";s:2:\"on\";s:8:\"comments\";s:2:\"on\";s:9:\"downloads\";s:2:\"on\";s:5:\"users\";s:2:\"on\";}}'");
-   		}
-
-		// Search Update 2
-        global $sysprefs;
+		global $pref, $sysprefs;
         $search_prefs = $sysprefs -> getArray('search_prefs');
-        if (!isset($search_prefs['plug_handlers'])) {
-      	  $handle = opendir(e_PLUGIN);
+        if (!isset($search_prefs['multisearch'])) {
+        	$serial_prefs = "a:10:{s:11:\"search_sort\";s:3:\"php\";s:11:\"multisearch\";s:1:\"1\";s:9:\"relevance\";s:1:\"1\";s:11:\"user_select\";s:1:\"1\";s:13:\"time_restrict\";s:1:\"0\";s:9:\"time_secs\";s:2:\"60\";s:6:\"google\";s:1:\"0\";s:13:\"core_handlers\";a:4:{s:4:\"news\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"0\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:8:\"comments\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:5:\"users\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:9:\"downloads\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}}s:17:\"comments_handlers\";a:2:{s:4:\"news\";a:3:{s:2:\"id\";i:0;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}s:8:\"download\";a:3:{s:2:\"id\";i:2;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}}s:13:\"plug_handlers\";N;}";
+        	$search_prefs = unserialize(stripslashes($serial_prefs));
+   			$handle = opendir(e_PLUGIN);
 			while (false !== ($file = readdir($handle))) {
 				if ($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)) {
 					$plugin_handle = opendir(e_PLUGIN.$file."/");
 					while (false !== ($file2 = readdir($plugin_handle))) {
-						if ($file2 == "e_search.php") {
-							if ($sql->db_Select("plugin", "plugin_path", "plugin_path='".$file."' AND plugin_installflag='1'")) {
-								$plugin_handlers[$file] = TRUE;
+						if ($file2 == "e_search.php" || $file2 == "comments_search.php") {
+							if ($sql -> db_Select("plugin", "plugin_path", "plugin_path='".$file."' AND plugin_installflag='1'")) {
+								if ($file2 == "e_search.php") {
+									$search_prefs['plug_handlers'][$file] = array('class' => 0, 'pre_title' => 1, 'pre_title_alt' => '', 'chars' => 150, 'results' => 10);
+								}
+								if ($file2 == "comments_search.php") {
+									require_once(e_PLUGIN.$file.'/comments_search.php');
+									$search_prefs['comments_handlers'][$file] = array('id' => $comments_type_id, 'class' => '0', 'dir' => $file);
+									unset($comments_type_id);
+								}
 							}
 						}
 					}
 				}
 			}
-			$search_prefs['plug_handlers'] = $plugin_handlers;
-			$tmp = addslashes(serialize($search_prefs));
-			$sql->db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs' ");
-		}
-		
-		// Search Update 3
-		if (!isset($search_prefs['search_res'])) {
-			$search_prefs['search_res'] = '10';
-			$tmp = addslashes(serialize($search_prefs));
-			$sql->db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs' ");
-		}
-		
-		// Search Update 4
-		if (!isset($search_prefs['relevance'])) {
-			$search_prefs['relevance'] = 'on';
-			$search_prefs['user_select'] = 'on';
-			$tmp = addslashes(serialize($search_prefs));
-			$sql->db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs' ");
-		}
-		
-		// Search Update 5
-		if (!isset($search_prefs['time_restrict'])) {
-			$search_prefs['time_restrict'] = '';
-			$search_prefs['time_secs'] = '60';
-			$tmp = addslashes(serialize($search_prefs));
-			$sql->db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs' ");
-		}
-		
-		// Search Update 6
-		if (!isset($search_prefs['comments_handlers'])) {
-			$search_prefs['comments_handlers']['news'] = array('id' => 0, 'active' => 'on', 'dir' => 'core', 'handler' => 'comments_news.php');
-			$search_prefs['comments_handlers']['download'] = array('id' => 2, 'active' => 'on', 'dir' => 'core', 'handler' => 'comments_downloads.php');
-			$handle = opendir(e_PLUGIN);
-			while (false !== ($file = readdir($handle))) {
-				if ($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)) {
-					$plugin_handle = opendir(e_PLUGIN.$file."/");
-					while (false !== ($file2 = readdir($plugin_handle))) {
-						if ($file2 == "comments_search.php") {
-							if ($sql->db_Select("plugin", "plugin_path", "plugin_path='".$file."' AND plugin_installflag='1'")) {
-								require_once(e_PLUGIN.$file.'/comments_search.php');
-								$search_prefs['comments_handlers'][$file] = array('id' => $comments_type_id, 'active' => 'on', 'dir' => $file);
-								unset($comments_type_id);
-							}
-						}
-					}
-				}
+			$serial_prefs = addslashes(serialize($search_prefs));
+			if (!$sql -> db_Select("core", "e107_name", "e107_name='search_prefs'")) {
+				$sql -> db_Insert("core", "'search_prefs', '".$serial_prefs."'");
+   			} else {
+				$sql -> db_Update("core", "e107_value='".$serial_prefs."' WHERE e107_name='search_prefs' ");
+   			}
+			if ($pref['search_restrict']) {
+				$pref['search_restrict'] = 253;
+			} else {
+				$pref['search_restrict'] = 0;
 			}
-			$tmp = addslashes(serialize($search_prefs));
-			$sql->db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs' ");
+			save_prefs;
 		}
 		
 } else {
@@ -565,7 +532,7 @@ function update_61x_to_700($type) {
 
         global $sysprefs;
         $search_prefs = $sysprefs -> getArray('search_prefs');
-		if (!isset($search_prefs['comments_handlers'])) {
+		if (!isset($search_prefs['multisearch'])) {
 			return FALSE;
 		} else {
 			return TRUE;

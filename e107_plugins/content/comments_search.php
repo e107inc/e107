@@ -10,7 +10,8 @@ function com_search_1($row) {
 	$datestamp = $con -> convert_date($row['comment_datestamp'], "long");
 	$type = explode('.', $row['content_parent']);
 	$res['link'] = e_PLUGIN."content/content.php?type.".$type[0].".content.".$row['content_id'];
-	$res['title'] = 'Posted in reply to item: '.$row['content_heading'];
+	$res['pre_title'] = 'Posted in reply to item: ';
+	$res['title'] = $row['content_heading'];
 	$res['summary'] = $row['comment_comment'];
 	$res['detail'] = LAN_SEARCH_7.$nick.LAN_SEARCH_8.$datestamp;
 	return $res;

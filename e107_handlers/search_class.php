@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search_class.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-03-16 14:57:41 $
+|     $Revision: 1.22 $
+|     $Date: 2005-03-21 22:11:41 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ class e_search {
 	var $pos;
 
 	function parsesearch($table, $return_fields, $search_fields, $weights, $handler, $no_results, $where, $order) {
-		global $sql, $query, $tp, $search_prefs;
+		global $sql, $query, $tp, $search_prefs, $pre_title, $search_chars, $search_res;
 		$this -> query = $query;	
 		$keywords = explode(' ', $this -> query);
 		$field_query = implode(',', $search_fields);
@@ -45,7 +45,8 @@ class e_search {
 			foreach ($order as $sort_key => $sort_value) {
 				$sql_order .= ', '.$sort_key.' '.$sort_value;
 			}
-			$sql_query = "SELECT ".$return_fields.", (".$match_query.") AS relevance FROM #".$table." WHERE ".$where." ( MATCH(".$field_query.") AGAINST ('".$this -> query."' IN BOOLEAN MODE) ) HAVING relevance > 0 ORDER BY relevance DESC ".$sql_order.";";
+			$limit = " LIMIT ".$_GET['r'].",".$search_res;
+			$sql_query = "SELECT SQL_CALC_FOUND_ROWS ".$return_fields.", (".$match_query.") AS relevance FROM #".$table." WHERE ".$where." ( MATCH(".$field_query.") AGAINST ('".$this -> query."' IN BOOLEAN MODE) ) HAVING relevance > 0 ORDER BY relevance DESC ".$sql_order.$limit.";";
 		}
 		if($search_prefs['search_sort'] == 'php') {
 			if (count($keywords) > 1) {
@@ -115,7 +116,14 @@ class e_search {
 							}
 						}
 						if ($title) {
-							$this -> text = "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <b><a href='".$res['link']."'>".$this -> text."</a></b><br />";
+							if ($pre_title == 0) {
+								$pre_title_output = "";
+							} else if ($pre_title == 1) {
+								$pre_title_output = $res['pre_title'];
+							} else if ($pre_title == 2) {
+								$pre_title_output = $pre_title;
+							}
+							$this -> text = "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <b><a href='".$res['link']."'>".$pre_title_output.$this -> text."</a></b><br />";
 						} else if (!$endcrop && !$title) {
 							$this -> parsesearch_crop();
 						}
@@ -158,24 +166,35 @@ class e_search {
 			} else {
 				$ps_limit = $output_array['text'];
 			}
-			for ($i = $_GET['r']; $i < ($_GET['r'] + $search_prefs['search_res']); $i++) {
-				$ps['text'] .= $ps_limit[$i];
+			if ($search_prefs['search_sort'] == 'php') {
+				for ($i = $_GET['r']; $i < ($_GET['r'] + $search_res); $i++) {
+					$ps['text'] .= $ps_limit[$i];
+				}
+			} else {
+				for ($i = 0; $i < $search_res; $i++) {
+					$ps['text'] .= $ps_limit[$i];
+				}
 			}
 		} else {
 			$ps['text'] = $no_results;
+		}
+		if ($search_prefs['search_sort'] == 'mysql') {
+			$sql->db_Query("SELECT FOUND_ROWS()");
+			$frows = $sql->db_Fetch();
+			$ps['results'] = $frows[0];
 		}
 		return $ps;
 	}
 	
 	function parsesearch_crop() {
-		global $search_prefs;
-		if (strlen($this -> text) > $search_prefs['search_chars']) {
-			if ($this -> pos < ($search_prefs['search_chars'] - strlen($this -> query))) {
-				$this -> text = substr($this -> text, 0, $search_prefs['search_chars'])."...";
-			} else if ($this -> pos > (strlen($this -> text) - ($search_prefs['search_chars'] - strlen($this -> query)))) {
-				$this -> text = "...".substr($this -> text, (strlen($this -> text) - ($search_prefs['search_chars'] - strlen($this -> query))));
+		global $search_chars;
+		if (strlen($this -> text) > $search_chars) {
+			if ($this -> pos < ($search_chars - strlen($this -> query))) {
+				$this -> text = substr($this -> text, 0, $search_chars)."...";
+			} else if ($this -> pos > (strlen($this -> text) - ($search_chars - strlen($this -> query)))) {
+				$this -> text = "...".substr($this -> text, (strlen($this -> text) - ($search_chars - strlen($this -> query))));
 			} else {
-				$this -> text = "...".substr($this -> text, ($this -> pos - round(($search_prefs['search_chars'] / 3))), $search_prefs['search_chars'])."...";
+				$this -> text = "...".substr($this -> text, ($this -> pos - round(($search_chars / 3))), $search_chars)."...";
 			}
 			$match_start = stristr($this -> text, $this -> query);
 			$this -> pos = strlen($this -> text) - strlen($match_start);

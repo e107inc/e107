@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/search_chatbox.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-03-08 16:25:05 $
+|     $Revision: 1.2 $
+|     $Date: 2005-03-21 22:11:44 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -32,6 +32,7 @@ function search_chatbox($row) {
 	global $con;
 	$row['cb_nick'] = eregi_replace("[0-9]+\.", "", $row['cb_nick']);
 	$res['link'] = e_PLUGIN."chatbox_menu/chat.php?".$row['cb_id'].".fs";
+	$res['pre_title'] = "Posted by ";
 	$res['title'] = $row['cb_nick'];
 	$res['summary'] = $row['cb_message'];
 	$res['detail'] = $con -> convert_date($row['cb_datestamp'], "long");
