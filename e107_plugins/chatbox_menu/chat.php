@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chat.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-02-10 18:11:36 $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-10 18:58:39 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -50,7 +50,7 @@ $chat_total = $sql->db_Count("chatbox");
 if ($fs) {
 	$sql->db_Select("chatbox", "*", "cb_id='$cgtm'");
 } else {
-	$sql->db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT $from, ".$view, $mode = "no_where");
+	$sql->db_Select("chatbox", "*", "cb_blocked=0 ORDER BY cb_datestamp DESC LIMIT $from, ".$view);
 }
 $obj2 = new convert;
 	
