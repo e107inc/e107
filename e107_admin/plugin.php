@@ -397,7 +397,7 @@ $ns -> tablerender(Plugins, $text);
 
 
 
-echo "pref-modules = [{$pref['modules']}]";
+//echo "pref-modules = [{$pref['modules']}]";
 
 
 require_once("footer.php");
