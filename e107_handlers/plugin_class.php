@@ -122,7 +122,7 @@ class e107plugin {
 	 
 	function manage_plugin_prefs($action, $prefname, $plugin_folder, $varArray = '') {
 		global $pref;
-		if ($prefname == 'plug_sc') {
+		if ($prefname == 'plug_sc' || $prefname = 'plug_bb') {
 			foreach($varArray as $code) {
 				$prefvals[] = "$code:$plugin_folder";
 			}
