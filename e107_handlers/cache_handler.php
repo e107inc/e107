@@ -17,6 +17,13 @@ class ecache {
                 return md5(e_BASE.e_LANGUAGE.e_THEME.USERCLASS);
         }
 
+			function cache_fname($query){
+				global $FILES_DIRECTORY;
+				$q = preg_replace("#\W#","_",$query);
+				$fname = "./".e_BASE.$FILES_DIRECTORY."cache/".$q."-".$this -> e107cache_page_md5().".cache.php";
+				return $fname;
+			}
+
         function retrieve($query){
                 global $pref,$FILES_DIRECTORY;
                 if('1' == $pref['cachestatus']){  //Save to db
@@ -31,7 +38,7 @@ class ecache {
                         }
                 }
                 if('2' == $pref['cachestatus']){  //Save to file
-                        $cache_file = "./".e_BASE.$FILES_DIRECTORY."cache/".md5($query)."-".$this -> e107cache_page_md5().".cache.php";
+                        $cache_file = $this -> cache_fname($query);
                         if($fp = fopen($cache_file, 'rb')) {
                                 fseek($fp,6);
                                 $ret = fread($fp, filesize($cache_file));
@@ -52,7 +59,7 @@ class ecache {
                         $sql -> db_Insert("cache", "'$query', '".time()."', '".mysql_escape_string($text)."' ");
                 }
                 if('2' == $pref['cachestatus']){
-                        $cache_file = "./".e_BASE.$FILES_DIRECTORY."cache/".md5($query)."-".$this -> e107cache_page_md5().".cache.php";
+                        $cache_file = $this -> cache_fname($query);
                         $fp = fopen($cache_file, 'w+');
                         fwrite ($fp, "<?php\n<!-- BEGIN CACHE FILE: $query -->\n\n".$text."\n\n<!-- END CACHE FILE: $query -->");
                         fclose($fp);
@@ -68,7 +75,7 @@ class ecache {
                         $ret = $sql -> db_Delete("cache", "cache_url LIKE '%".$query."%' ");
                 }
                 if('2' == $pref['cachestatus'] || !$query){
-                        $file = ($query) ? md5($query)."-*.cache.php" : "*.cache.php";
+                        $file = ($query) ? preg_replace("#\W#","_",$query)."*.cache.php" : "*.cache.php";
                         $dir = "./".e_BASE.$FILES_DIRECTORY."cache/";
                         $ret = $this -> delete($dir, $file);
                 }
