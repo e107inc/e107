@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-04-04 09:23:01 $
+|     $Revision: 1.17 $
+|     $Date: 2005-04-04 10:23:12 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -266,7 +266,7 @@ if ($message != "") {
 	echo $ns -> tablerender('Updated', "<div style='text-align:center'><b>".$message."</b></div><br /><br />");
 }
 if (strpos(e_QUERY, 'configure') === FALSE) {
-	$text = "<iframe src='".e_SELF."?configure' width='100%' style='width: 100%; height: 700px; border: 0px'></iframe>";
+	$text = "<iframe src='".e_SELF."?configure' width='100%' style='width: 100%; height: 700px; border: 0px' frameborder='0'></iframe>";
 	echo $ns -> tablerender(MENLAN_35, $text, 'menus_config');
 } else {
 	
