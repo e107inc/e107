@@ -20,11 +20,12 @@ function sm_articles(){
 		$nbr_articles_cat = 0;
 		while($row = $sql -> db_Fetch()){
 			extract($row);
-			$row[1] = $aj -> tpa($row[1]);
+			//echo $row[1];
+            $row[1] = $aj -> tpa($row[1]);
 			if(check_class($row[3]) && $row[2]=="0"){
-				$texto .= "<a href=\"javascript:void(0);\" onfocus=\"this.blur;\" onclick=\"expandit('articles_subcats2_".$row[0]."');ejs_func_todo='view'\" class='smalltext' >".SM_ICO_EXP."</a> <a  href='content.php?article.cat.0' >".LANSM_40."</a>\n";
+				$texto .= "<a href=\"javascript:void(0);\" onfocus=\"this.blur;\" onclick=\"expandit('articles_subcats2_".$row[0]."');ejs_func_todo='view'\" class='smalltext' >".SM_ICO_EXP."</a> <a  href='content.php?article.cat.0' >".$row[1]."</a>\n";
 				$nbr_articles_cat++;
-				if($sql2 -> db_Select("content","content_id, content_heading, content_class","content_parent='0' AND content_type='0' ORDER BY content_heading ASC")){
+				if($sql2 -> db_Select("content","content_id, content_heading, content_class","content_parent='".$row[0]."' AND content_type='0' ORDER BY content_heading ASC")){
 						$texto .= "<br /><br /><div class='subcats' id='articles_subcats2_".$row[0]."' style='display:none;' ><div style='margin: 0px 0px 0px 30px;' >\n
 					<b>".LANSM_38."</b><br />";
 						while($row2 = $sql2 -> db_Fetch()){
