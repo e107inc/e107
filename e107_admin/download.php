@@ -360,27 +360,27 @@ class download{
                 while(IsSet($file_array[$counter])){
 
                         if(eregi($download_url,$file_array[$counter])){
-                        $selected = " selected='selected'>";
+                        $selected = " selected='selected'";
                         $found = 1;
                         }else{
                         $selected = "";
                         }
 
-                        $text .= "<option value='".$file_array[$counter]."' $selected='selected'>".$file_array[$counter]."</option>\n";
+                        $text .= "<option value='".$file_array[$counter]."' $selected>".$file_array[$counter]."</option>\n";
                         $counter++;
                 }
-					$etext="";
+                                        $etext="";
                 if($sub_action == 'dlm'){
-                	$found=1;
-                	if(!file_exists(e_FILE."public/".$download_url) ){
-		                $etext .= " - (".DOWLAN_68.")";
-                	}
+                        $found=1;
+                        if(!file_exists(e_FILE."public/".$download_url) ){
+                                $etext .= " - (".DOWLAN_68.")";
+                        }
                 $text .= "<option value='".$download_url."' selected='selected'>".$download_url.$etext."</option>\n";
                }
-              	if(!$found && $download_url){
-	                $etext .= " - (".DOWLAN_68.")";
-	                $text .= "<option value='".$download_url."' selected='selected'>".$download_url.$etext."</option>\n";
-              	}
+                      if(!$found && $download_url){
+                        $etext .= " - (".DOWLAN_68.")";
+                        $text .= "<option value='".$download_url."' selected='selected'>".$download_url.$etext."</option>\n";
+                      }
 
                 $text .= "</select>
                 <br />
@@ -480,7 +480,7 @@ class download{
 
                 $text .= "</td>
                 </tr>
-					
+
 
                 <tr>
                 <td style='width:20%' class='forumheader3'>".DOWLAN_102.":</td>
