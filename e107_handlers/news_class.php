@@ -19,7 +19,8 @@ class news{
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 	function submit_item($news){
 		
-		global $sql, $aj;
+		if(!is_object($aj)) $aj = new textparse;
+		if(!is_object($sql)) $sql = new db;
 		extract($news);
 		if($news_id){
 			$news_title = $aj -> formtpa($news_title);
@@ -55,8 +56,9 @@ class news{
 			if($result == "return"){return;}
 		}
 
-		global $NEWSSTYLE, $NEWSLISTSTYLE, $aj,$sql;
+		global $NEWSSTYLE, $NEWSLISTSTYLE;
 		if(!is_object($aj)) $aj = new textparse;
+		if(!is_object($sql)) $sql = new db;
 		extract($news);
 
 		define("IMAGE_nonew_small", (file_exists(THEME."generic/nonew_comments.png") ? "<img src='".THEME."generic/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/nonew_comments.png' alt=''  />"));
