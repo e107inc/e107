@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_banner.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:11:56 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-14 12:57:27 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Banner");
@@ -29,9 +29,10 @@ define("LAN_30", "Unlimited");
 define("LAN_31", "Not applicable");
 define("LAN_32", "Yes");
 define("LAN_33", "No");
-define("LAN_34", "Ends");
+define("LAN_34", "Ends:");
 define("LAN_35", "Clickthrough IP addresses");
 define("LAN_36", "Active:");
 define("LAN_37", "Starts:");
+define("LAN_38", "Error");
 
 ?>

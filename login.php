@@ -11,12 +11,11 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/login.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-05 10:39:05 $
-|     $Author: pholzmann $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-14 12:57:05 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
-
 
 require_once("class2.php");
 $HEADER = "<div>&nbsp;</div>";
@@ -27,77 +26,50 @@ if($use_imagecode){
         $sec_img = new secure_image;
 }
 
-
 if(!USER){
+	require_once(e_HANDLER."form_handler.php");
+	$rs = new form;
+	$text = "";
 
-        echo "<div style='width:100%;text-align:center; margin-left: auto;margin-right: auto'><div style='text-align:center;width:70%;margin-left: auto;margin-right: auto'>";
-        if(file_exists(THEME."images/login_logo.png")){
-                echo "<img src='".THEME."images/login_logo.png' alt='' />\n";
-        } else{
-        echo "<img src='".e_IMAGE."logo.png' alt='' />\n";
-}
-require_once(e_HANDLER."form_handler.php");
-$rs = new form;
-$text = "";
-if(LOGINMESSAGE != ""){
-        $text = "<div style='text-align:center'>".LOGINMESSAGE."</div>";
-}
-$text .= "
-<div style='text-align:center'>".
-$rs -> form_open("post", e_SELF)."
-<table class='fborder' style='width:30%'>
-<tr>
-<td class='forumheader' colspan='2' style='text-align:center;width:30%'>
- <strong>".LAN_LOGIN_4."</strong>
-</td>
-        </tr>
-<tr>
-<td class='forumheader3' style='width:30%'>
-".LAN_LOGIN_1."
-</td>
-<td class='forumheader3' style='width:70%; text-align:right'>".
-$rs -> form_text("username", 40, "", 100)."
-</td>
-</tr><tr>
-<td class='forumheader3' style='width:30%'>
-".LAN_LOGIN_2."
-</td>
-<td class='forumheader3' style='width:70%; text-align:right'>".
-$rs -> form_password("userpass", 40, "", 100)."
-</td>
-</tr>";
+	$LOGIN_TABLE_LOGINMESSAGE = LOGINMESSAGE;
+	$LOGIN_TABLE_USERNAME = $rs -> form_text("username", 40, "", 100);
+	$LOGIN_TABLE_PASSWORD = $rs -> form_password("userpass", 40, "", 100);
+	if($use_imagecode){
+			$LOGIN_TABLE_LAN = LAN_LOGIN2;
+			$LOGIN_TABLE_HIDDEN = "<input type='hidden' name='rand_num' value='".$sec_img -> random_number."'>";
+			$LOGIN_TABLE_SECIMG = $sec_img -> r_image();
+			$LOGIN_TABLE_TEXTBOC = "<input class='tbox' type='text' name='code_verify' size='15' maxlength='20'>";
+	}
+	$LOGIN_TABLE_AUTOLOGIN = $rs -> form_checkbox("autologin", "1");
+	$LOGIN_TABLE_AUTOLOGIN_LAN = LAN_LOGIN_8;
+	$LOGIN_TABLE_SUBMIT = $rs -> form_button("submit", "userlogin", LAN_LOGIN_9, "", LAN_LOGIN_10);
 
-                if($use_imagecode){
-                        $text .= "<tr><td class='forumheader3'>".LAN_LOGIN_7."</td><td class='forumheader3'><input type='hidden' name='rand_num' value='".$sec_img -> random_number."'>";
-                        $text .= $sec_img -> r_image();
-                        $text .= "<br /><input class='tbox' type='text' name='code_verify' size='15' maxlength='20'><br /></td></tr>";
-                }
+	if(!$LOGIN_TABLE){
+		if(file_exists(THEME."login_template.php")){
+			require_once(THEME."login_template.php");
+		}else{
+			require_once(e_BASE.$THEMES_DIRECTORY."templates/login_template.php");
+		}
+	}
+	$text = preg_replace("/\{(.*?)\}/e", '$\1', $LOGIN_TABLE);
 
-$text .= "<tr>
-<td class='forumheader2' colspan='2' style='text-align:center'>".
-$rs -> form_checkbox("autologin", "1")."<span class='smalltext'>".LAN_LOGIN_8."</span><br />".
-$rs -> form_button("submit", "userlogin", "Log In", "", "Click to login")."
-</td>
-</tr></table>".
-$rs -> form_close()."
-</div>";
+	echo preg_replace("/\{(.*?)\}/e", '$\1', $LOGIN_TABLE_HEADER);
 
-$login_message = "".LAN_LOGIN_3." | ".SITENAME."";
-$ns -> tablerender($login_message, $text);
-echo "<div style='width:70%;margin-right:auto;margin-left:auto'><div style='text-align:center'><br />";
+	$login_message = LAN_LOGIN_3." | ".SITENAME;
+	$ns -> tablerender($login_message, $text);
 
-if($pref['user_reg']){
-        echo "<a href='".e_SIGNUP."'>Register as a New User</a>";
-}
-echo "&nbsp;&nbsp;&nbsp;<a href='fpw.php'>Forgot Password</a></div></div>";
+	if($pref['user_reg']){
+		$LOGIN_TABLE_FOOTER_USERREG = "<a href='".e_SIGNUP."'>".LAN_LOGIN_11."</a>";
+	}
+	echo preg_replace("/\{(.*?)\}/e", '$\1', $LOGIN_TABLE_FOOTER);
 
 }else{
-header("location:".e_BASE."index.php");
-exit;
+	header("location:".e_BASE."index.php");
+	exit;
 }
 
-echo "</div></div></body>
-</html>";
+echo "</body></html>";
 
 $sql -> db_Close();
+
 ?>

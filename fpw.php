@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/fpw.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:45 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-14 12:57:05 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -22,22 +22,24 @@ if($use_imagecode){
         require_once(e_HANDLER."secure_img_handler.php");
         $sec_img = new secure_image;
 }
+
 if($pref['membersonly_enabled']){
-        $HEADER = "<div style='width:100%;text-align:center;margin-left:auto;margin-right:auto'><div style='width:70%;margin-left:auto;margin-right:auto;text-align:center;'><br />";
-        if(file_exists(THEME."images/login_logo.png")){
-        $HEADER .= "<img src='".THEME."images/login_logo.png' alt='' />\n";
-        } else{
-        $HEADER .= "<img src='".e_IMAGE."logo.png' alt='' />\n";
-        }
-        $HEADER .= "<br />";
-        $FOOTER = "</div></div>";
+		if(!$FPW_TABLE_HEADER){
+			if(file_exists(THEME."fpw_template.php")){
+				require_once(THEME."fpw_template.php");
+			}else{
+				require_once(e_BASE.$THEMES_DIRECTORY."templates/fpw_template.php");
+			}
+		}
+		$HEADER = preg_replace("/\{(.*?)\}/e", '$\1', $FPW_TABLE_HEADER);
+		$FOOTER = preg_replace("/\{(.*?)\}/e", '$\1', $FPW_TABLE_FOOTER);
 }
 
 require_once(HEADERF);
 
 function fpw_error($txt){
         global $ns;
-        $ns -> tablerender(LAN_03,"<div class='forumheader3' style='text-align:center'>".$txt."</div>");
+        $ns -> tablerender(LAN_03,"<div style='text-align:center'>".$txt."</div>");
         require_once(FOOTERF);
         exit;
 }
@@ -120,49 +122,25 @@ if(IsSet($_POST['pwsubmit'])){
                 $ns -> tablerender(LAN_214, "<div style='text-align:center'>".$text."</div>");
         }
 }
-$text = "<div style='text-align:center'>
-<form method='post' action='".e_SELF."'>\n
-<table style='width:85%' class='fborder'>
 
-<tr>
-<td class='forumheader3' colspan='2' style='text-align:center'>".LAN_05."</td>
-</tr>
-
-<tr>
-<td class='forumheader3' style='width:25%'>".LAN_FPW1."</td>
-<td class='forumheader3' style='width:75%;text-align:center'>
-<input class='tbox' type='text' name='username' size='60' value='' maxlength='100' />
-</td>
-</tr>
-
-<tr>
-<td class='forumheader3' style='width:25%'>".LAN_112."</td>
-<td class='forumheader3' style='width:75%; text-align:center'>
-<input class='tbox' type='text' name='email' size='60' value='' maxlength='100' />
-</td>
-</tr>";
 
 if($use_imagecode){
-        $text .= "
-        <tr>
-        <td class='forumheader3' style='width:25%'>".LAN_FPW2."</td>
-        <td class='forumheader3' style='width:75%;text-align:left'>
-        <input type='hidden' name='rand_num' value='".$sec_img -> random_number."'>";
-        $text .= $sec_img -> r_image();
-        $text .= "<br /><input class='tbox' type='text' name='code_verify' size='15' maxlength='20'><br />";
-        $text .= "</td></tr>";
+ 		$FPW_TABLE_SECIMG_LAN = LAN_FPW2;
+		$FPW_TABLE_SECIMG_HIDDEN = "<input type='hidden' name='rand_num' value='".$sec_img -> random_number."'>";
+		$FPW_TABLE_SECIMG_SECIMG = $sec_img -> r_image();
+		$FPW_TABLE_SECIMG_TEXTBOC = "<input class='tbox' type='text' name='code_verify' size='15' maxlength='20'>";
 }
 
-$text .="
-<tr style='vertical-align:top'>
-<td class='forumheader' colspan='2'  style='text-align:center'>
-<input class='button' type='submit' name='pwsubmit' value='".LAN_156."' />
-</td>
-</tr>
-</table>
-</form>
-</div>";
+if(!$FPW_TABLE){
+	if(file_exists(THEME."fpw_template.php")){
+		require_once(THEME."fpw_template.php");
+	}else{
+		require_once(e_BASE.$THEMES_DIRECTORY."templates/fpw_template.php");
+	}
+}
+$text = preg_replace("/\{(.*?)\}/e", '$\1', $FPW_TABLE);
 
 $ns -> tablerender(LAN_03, $text);
 require_once(FOOTERF);
+
 ?>
