@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.48 $
-|   $Date: 2005-02-21 18:11:12 $
+|   $Revision: 1.49 $
+|   $Date: 2005-02-21 18:15:32 $
 |   $Author: stevedunstan $
 +---------------------------------------------------------------+
 
@@ -570,7 +570,7 @@ class newspost {
 			<div style='display: none;'>
 
 			<input class='tbox' type='text' name='news_thumb' size='60' value='".$_POST['news_thumb']."' maxlength='100' />
-			<input class='button' type ='button' style='cursor:hand' size='30' value='".LCLAN_39."' onclick='expandit(this)' />
+			<input class='button' type ='button' style='cursor:hand' size='30' value='".NWSLAN_118."' onclick='expandit(this)' />
 			<div id='newsicn' style='display:none;{head}'>";
 
 			foreach($thumblist as $icon){
