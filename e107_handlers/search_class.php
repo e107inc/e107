@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search_class.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-03-21 22:11:41 $
-|     $Author: sweetas $
+|     $Revision: 1.23 $
+|     $Date: 2005-03-23 23:33:11 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -25,6 +25,7 @@ class e_search {
 
 	function parsesearch($table, $return_fields, $search_fields, $weights, $handler, $no_results, $where, $order) {
 		global $sql, $query, $tp, $search_prefs, $pre_title, $search_chars, $search_res;
+		$bullet = (defined("BULLET") ? "<img src='".THEME."images/".BULLET."' alt='' style='vertical-align: middle;' />" : "<img src='".THEME."images/bullet2.gif' alt='' style='vertical-align: middle;' />");
 		$this -> query = $query;	
 		$keywords = explode(' ', $this -> query);
 		$field_query = implode(',', $search_fields);
@@ -123,7 +124,7 @@ class e_search {
 							} else if ($pre_title == 2) {
 								$pre_title_output = $pre_title;
 							}
-							$this -> text = "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <b><a href='".$res['link']."'>".$pre_title_output.$this -> text."</a></b><br />";
+							$this -> text = $bullet." <b><a href='".$res['link']."'>".$pre_title_output.$this -> text."</a></b><br />";
 						} else if (!$endcrop && !$title) {
 							$this -> parsesearch_crop();
 						}
