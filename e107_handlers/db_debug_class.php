@@ -11,9 +11,9 @@
 	 |     GNU General Public License (http://gnu.org).
 	 |
 	 |     $Source: /cvs_backup/e107_0.7/e107_handlers/db_debug_class.php,v $
-	 |     $Revision: 1.5 $
-	 |     $Date: 2005-01-29 18:52:45 $
-	 |     $Author: mrpete $
+	 |     $Revision: 1.6 $
+	 |     $Date: 2005-03-13 10:59:53 $
+	 |     $Author: stevedunstan $
 	 +----------------------------------------------------------------------------+
 	 */
 
@@ -27,6 +27,8 @@
 		 var $nTimeMarks = 0;            // Provide an array index for time marks. Stablizes 'current' function
 		 var $aGoodQueries = array();
 		 var $aBadQueries = array();
+		 var $scbbcodes = array();
+		 var $scbcount;
 
 		 function e107_db_debug() {
 			 global $eTimingStart;
@@ -327,5 +329,56 @@
 
 			 return $text;
 		 }
+
+		 function logCode($type, $code, $parm, $postID)
+		 {
+			if (!E107_DBG_BBSC)
+			{
+				return FALSE;
+			}	
+			$this -> scbbcodes[$this -> scbcount]['type'] = $type;
+			$this -> scbbcodes[$this -> scbcount]['code'] = $code;
+			$this -> scbbcodes[$this -> scbcount]['parm'] = $parm;
+			$this -> scbbcodes[$this -> scbcount]['postID'] = $postID;
+			$this -> scbcount ++;
+		 }
+
+		function Show_SC_BB()
+		{
+			if (!E107_DBG_BBSC)
+			{
+				return FALSE;
+			}
+			$text .= "<table class='fborder' style='width: 100%'>
+			<tr><td class='fcaption' colspan='4'><b>Shortcode / BBCode</b></td></tr>
+			<tr>
+			<td class='fcaption' style='width: 10%;'>Type</td>
+			<td class='fcaption' style='width: 10%;'>Code</td>
+			<td class='fcaption' style='width: 10%;'>Parm</td>
+			<td class='fcaption' style='width: 10%;'>Post ID</td>
+			</tr>\n";
+
+			foreach($this -> scbbcodes as $codes)
+			{
+				$text .= "<tr>
+				<td class='forumheader3' style='width: 10%;'>".($codes['type'] == 1 ? "BBCode" : "Shortcode")."</td>
+				<td class='forumheader3' style='width: 10%;'>".(isset($codes['code']) ? $codes['code'] : "&nbsp;")."</td>
+				<td class='forumheader3' style='width: 10%;'>".($codes['parm'] ? $codes['parm'] : "&nbsp;")."</td>
+				<td class='forumheader3' style='width: 10%;'>".($codes['postID'] ? $codes['postID'] : "&nbsp;")."</td>
+				</tr>\n";
+			}
+			$text .= "</table>";
+			return $text;
+
+
+
+			
+
+
+
+
+
+
+		}
 	 }
 ?>

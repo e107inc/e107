@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/debug_handler.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-02-11 15:52:13 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.10 $
+|     $Date: 2005-03-13 10:59:53 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */  
 
@@ -119,6 +119,9 @@ define('E107_DBG_FILLIN1024',(E107_DEBUG_LEVEL & 1024));         // fill in what
 define('E107_DBG_FILLIN2048',(E107_DEBUG_LEVEL & 2048));         // fill in what it is
 //...
 define('E107_DBG_ALLERRORS',(E107_DEBUG_LEVEL & 32768));     // show ALL errors//...
+
+// BBCode / Shortcode
+define('E107_DBG_BBSC',(E107_DEBUG_LEVEL & 65536));
 
 
 ?>

@@ -40,7 +40,10 @@ foreach($eMenuList[$parm] as $row) {
 			}
 		}
 		$mname = $row['menu_name'];
-		include(e_PLUGIN.$row['menu_path']."/".$mname.".php");
+		if(file_exists(e_PLUGIN.$row['menu_path']."/".$mname.".php"))
+		{
+			include(e_PLUGIN.$row['menu_path']."/".$mname.".php");
+		}
 		$sql->db_Mark_Time("(After ".$mname.")");
 	}
 }

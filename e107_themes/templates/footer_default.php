@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-02-13 08:33:23 $
-|     $Author: sweetas $
+|     $Revision: 1.16 $
+|     $Date: 2005-03-13 10:59:53 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 global $eTraffic,$db_time,$sql, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $CUSTOMFOOTER, $FOOTER;
@@ -60,6 +60,10 @@ if($e107_popup!=1){
                 $tmp = $db_debug->Show_SQL_Details();
                 if (strlen($tmp)) {
                     $ns->tablerender('SQL Analysis',$tmp);
+                }
+				$tmp = $db_debug->Show_SC_BB();
+                if (strlen($tmp)) {
+                    $ns->tablerender('Shortcodes / BBCode',$tmp);
                 }
         }
 }

@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.15 $
-| $Date: 2005-03-10 19:45:57 $
-| $Author: mcfly_e107 $
+| $Revision: 1.16 $
+| $Date: 2005-03-13 10:59:53 $
+| $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 	
@@ -78,6 +78,13 @@ class e_shortcode {
 			$parm = '';
 		}
 		$parm = trim(chop($parm));
+
+		if (E107_DEBUG_LEVEL)
+		{
+			global $db_debug;
+			$db_debug->logCode(2, $code, $parm, "");
+		}
+
 		if (is_array($this->scList) && array_key_exists($code, $this->scList))
 		{
 			$shortcode = $this->scList[$code];
