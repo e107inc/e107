@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-02-06 23:39:27 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.22 $
+|     $Date: 2005-02-19 16:33:27 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -29,6 +29,76 @@ $plugin = new e107plugin;
 $tmp = explode('.', e_QUERY);
 $action = $tmp[0];
 $id = intval($tmp[1]);
+
+if (isset($_POST['upload'])) {
+	if (!$_POST['ac'] == md5(ADMINPWCHANGE)) {
+		exit;
+	}
+
+	extract($_FILES);
+
+	//echo "<pre>"; print_r($file_userfile); echo "</pre>"; exit;
+
+	/* check if e_PLUGIN dir is writable ... */
+	if(!is_writable(e_PLUGIN)) {
+		/* it's not - attempt to make it so ... */
+		$old = umask(0);
+		chmod(e_PLUGIN, 0755);
+		umask($old);
+	}
+	/* check again ... */
+	if(!is_writable(e_PLUGIN)) {
+		/* still not writable - spawn error message */
+		$ns->tablerender(EPL_ADLAN_40, EPL_ADLAN_39);
+	} else {
+		/* e_PLUGIN is writable - continue */
+		$pref['upload_storagetype'] = "1";
+		require_once(e_HANDLER."upload_handler.php");
+		$fileName = $file_userfile['name'][0];
+		$fileSize = $file_userfile['size'][0];
+		$fileType = $file_userfile['type'][0];
+		
+		if($fileType != "application/x-zip-compressed" && $fileType != "application/x-gzip-compressed") {
+			/* not zip or tar - spawn error message */
+			$ns->tablerender(EPL_ADLAN_40, EPL_ADLAN_41);
+			require_once("footer.php");
+			exit;
+		}
+
+		if ($fileSize) {
+
+			$opref = $pref['upload_storagetype'];
+			$pref['upload_storagetype'] = 1;		/* temporarily set upload type pref to flatfile */
+			$uploaded = file_upload(e_PLUGIN);
+			$pref['upload_storagetype'] = $opref;
+
+			$archiveName = $uploaded[0]['name'];	/* update name - it'll have been renamed by upload handler */
+
+			/* attempt to unarchive ... */
+
+			if($fileType == "application/x-zip-compressed") {
+				require_once(e_HANDLER."pclzip.lib.php");
+				$archive = new PclZip(e_PLUGIN.$archiveName);
+				if($archive->extract(PCLZIP_OPT_PATH, e_PLUGIN)) {
+					$ns->tablerender(EPL_ADLAN_40, EPL_ADLAN_43);
+				} else {
+					$error = "PCLZIP extract error: ".$archive -> errorName(true);
+					$ns->tablerender(EPL_ADLAN_40, EPL_ADLAN_42." ".$archiveName." ".$error);
+				}
+			} else {
+				require_once(e_HANDLER."pcltar.lib.php");
+				if(PclTarExtract($archiveName, e_PLUGIN)) {
+					$ns->tablerender(EPL_ADLAN_40, EPL_ADLAN_43);
+				} else {
+					$error = "PCLTAR extract error: ".PclErrorString().", code: ".intval(PclErrorCode());
+					$ns->tablerender(EPL_ADLAN_40, EPL_ADLAN_42." ".$archiveName." ".$error);
+				}
+			}
+			/* attempt to delete uploaded archive */
+			@unlink(e_PLUGIN.$archiveName);
+		}
+	}
+}
 
 if ($action == 'uninstall') {
 	$plug = $plugin->getinfo($id);
@@ -344,8 +414,31 @@ while ($row = $sql->db_fetch()) {
 //        render plugin information ...
 
 $text = "<div style='text-align:center'>
-	<form method='post' action='".e_SELF."'>
-	<table style='".ADMIN_WIDTH."' class='fborder'>";
+<form enctype='multipart/form-data' method='post' action='".e_SELF."'>
+<table style='".ADMIN_WIDTH."' class='fborder'>";
+
+/* plugin upload form */
+
+$text .= "
+<tr>
+<td class='forumheader3' style='width: 50%;'>".EPL_ADLAN_37."</td>
+<td class='forumheader3' style='width: 50%;'>
+<input type='hidden' name='MAX_FILE_SIZE' value='1000000' />
+<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
+<input class='tbox' type='file' name='file_userfile[]' size='50' />
+</td>
+</tr>
+<tr>
+<td colspan='2' style='text-align:center' class='forumheader'>
+<input class='button' type='submit' name='upload' value='".EPL_ADLAN_38."' />
+</td>
+</tr>
+</table>
+</form>
+<br />
+
+<table style='".ADMIN_WIDTH."' class='fborder'>";
+
 
 $pluginList = $plugin->getall();
 
@@ -421,7 +514,7 @@ $text .= "</table>
 	<img src='".e_IMAGE."generic/uninstalled.png' alt='' /> ".EPL_ADLAN_23."&nbsp;&nbsp;
 	<img src='".e_IMAGE."generic/installed.png' alt='' /> ".EPL_ADLAN_22."&nbsp;&nbsp;
 	<img src='".e_IMAGE."generic/upgrade.png' alt='' /> ".EPL_ADLAN_24."&nbsp;&nbsp;
-	<img src='".e_IMAGE."generic/noinstall.png' alt='' /> ".EPL_ADLAN_25."</div></form></div>";
+	<img src='".e_IMAGE."generic/noinstall.png' alt='' /> ".EPL_ADLAN_25."</div></div>";
 
 $ns->tablerender(EPL_ADLAN_16, $text);
 // ----------------------------------------------------------
