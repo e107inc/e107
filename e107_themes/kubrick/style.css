@@ -583,6 +583,65 @@ body	 	{ background: url("images/kubrickbgcolor.jpg"); }
 	font: 9px tahoma, verdana, arial, helvetica, sans-serif;
 }
 
+
+td {
+    background: none;
+	font-family: tahoma, verdana, arial, helvetica, sans-serif;
+	font-size: 9px;
+	font-style: normal;
+	color:#5d6e75;
+	padding-bottom: 0px;
+	padding-left: 0px;
+	padding-right: 0px;
+	padding-top: 0px;
+	text-align:left;
+}
+
+.fborder {
+	border: #ededed 1px solid;
+	background-color: #fff;
+	
+}
+.forumheader{
+	background-color: #EBEFF2;
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 11px;
+	color:#000;
+	padding: 4px;
+	border: 1px solid #ededed;
+}
+
+.forumheader2{
+	background-color: #fff;
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 10px;
+	color:#000;
+	padding: 4px;
+	border: #ededed 1px solid;
+}
+
+.forumheader3{
+	background-color: #fff;
+	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+	padding: 4px;
+	border: #ededed 1px solid;
+}
+
+.forumborder{
+	border:  #000080 1px solid;
+	background-color: transparent;
+}
+
+.fcaption {
+	border: #ededed 1px solid;
+	padding: 2px 0 2px 8px;
+	background-color: #e5f2ff;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#616060;
+}
+
+
 /* "Daisy, Daisy, give me your answer do. I'm half crazy all for the love of you.
 	It won't be a stylish marriage, I can't afford a carriage.
 	But you'll look sweet upon the seat of a bicycle built for two." */
