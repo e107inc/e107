@@ -103,7 +103,7 @@ if(IsSet($_POST['register'])){
 	}
 
 	if(strlen($_POST['password1']) < $pref['signup_pass_len']){
-		message_handler("P_ALERT", "Your password must be atleast ".$pref['signup_pass_len']." characters long.   ");
+		message_handler("P_ALERT", LAN_SIGNUP_4.$pref['signup_pass_len'].LAN_SIGNUP_5);
 		$error = TRUE;
 		$password1 = "";
 		$password2 = "";
@@ -119,7 +119,7 @@ if(IsSet($_POST['register'])){
 	for ($i=0; $i<count($signup_title); $i++) {
 		$postvalue = $signup_name[$i];
 		if($signupval[$i]==2 && $_POST[$postvalue] == ""){
-			message_handler("P_ALERT", "Your ".$signup_title[$i]." is required");
+			message_handler("P_ALERT", LAN_SIGNUP_6.$signup_title[$i].LAN_SIGNUP_7);
 			$error = TRUE;
 		}
 	};
@@ -141,7 +141,7 @@ if(IsSet($_POST['register'])){
 				if($pref['signup_ext'.$key] ==2 && $_POST[str_replace(" ", "_", $u_entended)] == ""){
 					$ut = explode("|",$u_entended);
 					$u_name = ($ut[0] != "") ? trim($ut[0]) : trim($u_entended);
-					$error_ext = "Your ".$u_name." is Required";
+					$error_ext = LAN_SIGNUP_6.$u_name.LAN_SIGNUP_7;
 					message_handler("P_ALERT", $error_ext);
 					$error = TRUE;
 				}
@@ -203,7 +203,7 @@ if(IsSet($_POST['register'])){
 		}else{
 		require_once(HEADERF);
 		$sql -> db_Insert("user", "0, '".$username."', '".md5($_POST['password1'])."', '$key', '".$_POST['email']."',         '".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$_POST['birthday']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '' ");
-		$ns -> tablerender("<div style='text-align:center'>Thankyou!</div>", LAN_107);
+		$ns -> tablerender("<div style='text-align:center'>".LAN_SIGNUP_8."</div>", LAN_107);
 		require_once(FOOTERF);
 		exit;
 	}
@@ -240,8 +240,7 @@ if(!$website){
 if(!eregi("stage", LAN_109)){
         if(IsSet($_POST['newver'])){
                 if(!$_POST['coppa']){
-                        $text = "Unable to proceed.";
-                        $ns -> tablerender("<div style='text-align:center'>".LAN_202."</div>", "<div style='text-align:center'>".$text."</div>");
+                        $ns -> tablerender("<div style='text-align:center'>".LAN_202."</div>", "<div style='text-align:center'>".LAN_SIGNUP_9."</div>");
                         require_once(FOOTERF);
                         exit;
                 }
@@ -301,7 +300,7 @@ $text .="
 <tr>
 <td class='forumheader3' style='width:30%'>".LAN_113."</td>
 <td class='forumheader3' style='width:70%'>".
-$rs ->form_radio("hideemail", 1)." Yes&nbsp;&nbsp;".$rs ->form_radio("hideemail", 0, 1)." ".LAN_200."
+$rs ->form_radio("hideemail", 1)." ".LAN_SIGNUP_10."&nbsp;&nbsp;".$rs ->form_radio("hideemail", 0, 1)." ".LAN_200."
 </td>
 </tr>";
 
