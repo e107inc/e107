@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-01-10 09:49:03 $
-|     $Author: sweetas $
+|     $Revision: 1.11 $
+|     $Date: 2005-01-18 05:19:15 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -52,8 +52,9 @@
 
 if(IsSet($_POST['submit'])){
 
-    if($_POST['email_to'] == "all"){   // send to all.
-       $sql -> db_Select("user", "user_name, user_email, user_class", "ORDER BY user_name", "no-where");
+    if($_POST['email_to'] == "all" || $_POST['email_to']== "unverified"){
+       $insert = ($_POST['email_to']== "unverified")? "user_ban='2' ":"user_id !='' ";   // send to all.
+       $sql -> db_Select("user", "user_name, user_email, user_class", " $insert ORDER BY user_name");
        $c=0;
            while($row = $sql -> db_Fetch()){
                extract($row);
@@ -388,7 +389,8 @@ require_once(e_ADMIN."footer.php");
 function userclasses($name){
     global $sql;
    $text .= "<select style='width:80%' class='tbox' name='$name' >
-       <option value='all'>All Members</option>";
+       <option value='all'>All Members</option>
+       <option value='unverified'>All Unverified Members</option>";
        $sql -> db_Select("userclass_classes");
        while($row = $sql-> db_Fetch()){
            extract($row);
