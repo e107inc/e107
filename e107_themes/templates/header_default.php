@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2004-12-11 01:35:14 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2004-12-14 23:14:03 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 if(!function_exists("parseheader"))
@@ -71,7 +71,7 @@ $body_onload =($fader_onload != "" || $links_onload != "" ? " onload='".$links_o
 $ejs_listpics = "";
 $handle=opendir(THEME."images");
 while ($file = readdir($handle)){
-if(strstr($file,".") && $file != "." && $file != ".."){
+if($file != "." && $file != ".." && $file != "Thumbs.db"){
 $ejs_listpics .= $file.",";
 }
 }
