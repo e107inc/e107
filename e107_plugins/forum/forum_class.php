@@ -7,7 +7,6 @@ class e107forum {
 		echo "</pre>";
 	}
 	 
-	 
 	function update_lastpost($type, $id) {
 		global $sql;
 		if ($type == 'thread') {
@@ -49,11 +48,11 @@ class e107forum {
 						if ($lp_info['thread_datestamp'] > $current_lastpost) {
 							if ($lp_info['thread_anon'] != '') {
 								$anon = explode(chr(1), $lp_info['thread_anon']);
-								$forum_lpinfo = "0.{$anon[0]}";
+								$forum_lpinfo = "0".chr(1).".{$anon[0]}";
 							} else {
-								$forum_lpinfo = "{$lp_info['thread_user']}.{$lp_info['user_name']}";
+								$forum_lpinfo = "{$lp_info['thread_user']}".chr(1)."{$lp_info['user_name']}";
 							}
-							$forum_lpinfo .= ".{$lp_info['thread_datestamp']}.{$row['thread_id']}";
+							$forum_lpinfo .= chr(1)."{$lp_info['thread_datestamp']}".chr(1)."{$row['thread_id']}";
 							$current_lastpost = $lp_info['thread_datestamp'];
 						}
 					}
@@ -169,18 +168,16 @@ class e107forum {
 	function forum_get_topics($forum_id, $from, $view) {
 		$forum_id = intval($forum_id);
 		global $sql;
-		$ftab = MPREFIX.'forum_t';
-		$utab = MPREFIX.'user';
 		$qry = "
-			SELECT thread_id, thread_name, thread_datestamp, thread_user, thread_views, thread_lastpost, thread_anon, thread_lastuser, thread_total_replies, user_name from {$ftab}
-			LEFT JOIN {$utab}
-			ON {$ftab}.thread_user = {$utab}.user_id
-			WHERE {$ftab}.thread_forum_id = $forum_id
-			AND {$ftab}.thread_parent = 0
+			SELECT t.*, u.user_name from #forum_t as t
+			LEFT JOIN #user AS u
+			ON t.thread_user = u.user_id
+			WHERE t.thread_forum_id = $forum_id
+			AND t.thread_parent = 0
 			ORDER BY
-			thread_s DESC,
-			thread_lastpost DESC,
-			thread_datestamp DESC
+			t.thread_s DESC,
+			t.thread_lastpost DESC,
+			t.thread_datestamp DESC
 			LIMIT {$from},{$view}
 			";
 		$ret = array();
@@ -195,21 +192,21 @@ class e107forum {
 	function thread_get_lastpost($forum_id) {
 		$forum_id = intval($forum_id);
 		global $sql;
-		$ftab = MPREFIX.'forum_t';
-		$utab = MPREFIX.'user';
+//		$ftab = MPREFIX.'forum_t';
+//		$utab = MPREFIX.'user';
 		if ($sql->db_Count('forum_t', '(*)', "WHERE thread_parent = {$forum_id} ")) {
-			$where = "WHERE {$ftab}.thread_parent = $forum_id ";
+			$where = "WHERE t.thread_parent = $forum_id ";
 		} else {
-			$where = "WHERE {$ftab}.thread_id = $forum_id ";
+			$where = "WHERE t.thread_id = $forum_id ";
 		}
 		$qry = "
-			SELECT {$ftab}.thread_user,{$ftab}.thread_anon,{$ftab}.thread_datestamp, {$utab}.user_name
-			from {$ftab}
-			LEFT JOIN {$utab}
-			ON {$ftab}.thread_user = {$utab}.user_id
+			SELECT t.thread_user,t.thread_anon,t.thread_datestamp, u.user_name
+			from #forum_t AS t
+			LEFT JOIN #user AS u
+			ON t.thread_user = u.user_id
 			{$where}
 			ORDER BY
-			thread_datestamp DESC
+			t.thread_datestamp DESC
 			LIMIT 0,1
 			";
 		if ($sql->db_Select_gen($qry)) {
@@ -230,13 +227,13 @@ class e107forum {
 		$ftab = MPREFIX.'forum_t';
 		while (!$found) {
 			$qry = "
-				SELECT thread_id from {$ftab}
-				WHERE thread_forum_id = $forum_id
-				AND thread_parent = 0
+				SELECT t.thread_id from #forum_t AS t
+				WHERE t.thread_forum_id = $forum_id
+				AND t.thread_parent = 0
 				ORDER BY
-				thread_s DESC,
-				thread_lastpost DESC,
-				thread_datestamp DESC
+				t.thread_s DESC,
+				t.thread_lastpost DESC,
+				t.thread_datestamp DESC
 				LIMIT {$from}, {$limit}
 				";
 			echo $qry.'<br />';
@@ -268,13 +265,13 @@ class e107forum {
 		$ftab = MPREFIX.'forum_t';
 		while (!$found) {
 			$qry = "
-				SELECT thread_id from {$ftab}
-				WHERE thread_forum_id = $forum_id
-				AND thread_parent = 0
+				SELECT t.thread_id from #forum_t AS t
+				WHERE t.thread_forum_id = $forum_id
+				AND t.thread_parent = 0
 				ORDER BY
-				thread_s DESC,
-				thread_lastpost DESC,
-				thread_datestamp DESC
+				t.thread_s DESC,
+				t.thread_lastpost DESC,
+				t.thread_datestamp DESC
 				LIMIT {$from}, {$limit}
 				";
 			if ($sql->db_Select_gen($qry)) {
@@ -318,11 +315,11 @@ class e107forum {
 		}
 		 
 		$qry = "
-			SELECT * from {$ftab}
-			LEFT JOIN {$utab}
-			ON {$ftab}.thread_user = {$utab}.user_id
-			WHERE {$ftab}.thread_parent = $thread_id
-			ORDER by thread_datestamp ASC
+			SELECT t.* from #forum_t as t
+			LEFT JOIN #user AS u
+			ON t.thread_user = u.user_id
+			WHERE t.thread_parent = $thread_id
+			ORDER by t.thread_datestamp ASC
 			LIMIT {$start},".($limit-1);
 		$ret = array();
 		if ($sql->db_Select_gen($qry)) {
@@ -333,10 +330,10 @@ class e107forum {
 			}
 		}
 		$qry = "
-			SELECT * from {$ftab}
-			LEFT JOIN {$utab}
-			ON {$ftab}.thread_user = {$utab}.user_id
-			WHERE {$ftab}.thread_id = $thread_id
+			SELECT t.* from #forum_t AS t
+			LEFT JOIN #user AS u
+			ON t.thread_user = u.user_id
+			WHERE t.thread_id = $thread_id
 			LIMIT 0,1
 			";
 		if ($sql->db_Select_gen($qry)) {
@@ -357,13 +354,12 @@ class e107forum {
 	 
 	function thread_count_list($thread_list) {
 		global $sql;
-		$ftab = MPREFIX.'forum_t';
 		$qry = "
-			SELECT thread_parent, COUNT(*) as thread_replies
-			FROM {$ftab}
-			WHERE thread_parent
+			SELECT t.thread_parent, t.COUNT(*) as thread_replies
+			FROM #forum_t AS t
+			WHERE t.thread_parent
 			IN {$thread_list}
-			GROUP BY thread_parent
+			GROUP BY t.thread_parent
 			";
 		if ($sql->db_Select_gen($qry)) {
 			while ($row = $sql->db_Fetch()) {
@@ -384,13 +380,11 @@ class e107forum {
 		$thread_id = intval($thread_id);
 		global $sql;
 		$ret = array();
-		$ttab = MPREFIX.'forum_t';
-		$utab = MPREFIX.'user';
 		$qry = "
-			SELECT * from {$ttab}
-			LEFT JOIN {$utab}
-			ON {$ttab}.thread_user = {$utab}.user_id
-			WHERE {$ttab}.thread_id = $thread_id
+			SELECT t.* from #forum_t AS t
+			LEFT JOIN #user AS u
+			ON t.thread_user = u.user_id
+			WHERE t.thread_id = $thread_id
 			LIMIT 0,1
 			";
 		if ($sql->db_Select_gen($qry)) {
@@ -406,10 +400,10 @@ class e107forum {
 			$ret['head'] = $ret[0];
 		} else {
 			$qry = "
-				SELECT * from {$ttab}
-				LEFT JOIN {$utab}
-				ON {$ttab}.thread_user = {$utab}.user_id
-				WHERE {$ttab}.thread_id = {$parent_id}
+				SELECT t.* from #forum_t AS t
+				LEFT JOIN #user AS u
+				ON t.thread_user = u.user_id
+				WHERE t.thread_id = {$parent_id}
 				LIMIT 0,1
 				";
 			if ($sql->db_Select_gen($qry)) {

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-27 19:52:48 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-29 00:12:17 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -253,19 +253,19 @@ function parse_forum($f, $restricted_string = "") {
 		changes by jalist 27/01/2005:
 		if lastpost name has period(s) in it list/explode would fail
 		*/
-		$lastpost = explode(".", $f['forum_lastpost']);
-		$count = count($lastpost);
-		$lastpost_id = $lastpost[0];
-		$lastpost_thread = $lastpost[($count-1)];
-		$lastpost_datestamp = $lastpost[($count-2)];
-		$lastpost_name = "";
-		if (count($lastpost) > 4) {
-			for($a = 1; $a <= ($count-3); $a++) {
-				$lastpost_name .= $lastpost[$a];
-			}
-		} else {
-			$lastpost_name = $lastpost[($count-3)];
-		}
+		list($lastpost_id, $lastpost_name, $lastpost_datestamp, $lastpost_thread) = explode(chr(1), $f['forum_lastpost']);
+//		$count = count($lastpost);
+//		$lastpost_id = $lastpost[0];
+//		$lastpost_thread = $lastpost[($count-1)];
+//		$lastpost_datestamp = $lastpost[($count-2)];
+//		$lastpost_name = "";
+//		if (count($lastpost) > 4) {
+//			for($a = 1; $a <= ($count-3); $a++) {
+//				$lastpost_name .= $lastpost[$a];
+//			}
+//		} else {
+//			$lastpost_name = $lastpost[($count-3)];
+//		}
 		 
 		if ($lastpost_id) {
 			$lastpost_name = "<a href='".e_BASE."user.php?id.{$lastpost_id}'>{$lastpost_name}</a>";
