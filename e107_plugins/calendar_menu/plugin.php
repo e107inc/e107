@@ -2,7 +2,6 @@
 /*
 +---------------------------------------------------------------+
 |        e107 website system
-|        code adapted from original by Lolo Irie (lolo@touchatou.com)
 |
 |        ©Steve Dunstan 2001-2002
 |        http://e107.org
@@ -10,9 +9,12 @@
 |
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
+|        $Id: plugin.php,v 1.3 2004-09-03 18:32:10 e107coders Exp $
 +---------------------------------------------------------------+
 */
 // Plugin info -------------------------------------------------------------------------------------------------------
+$lan_file = e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php";
+@require_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."calendar_menu/languages/English.php");
 $eplug_name = "Event Calendar";
 $eplug_version = "3.2";
 $eplug_author = "jalist / cameron";
@@ -34,7 +36,7 @@ $eplug_conffile = "config.php";
 
 // Icon image and caption text ------------------------------------------------------------------------------------
 $eplug_icon = $eplug_folder."/images/icon_ec.png";
-$eplug_caption =  "Configure Event Calendar";
+$eplug_caption =  EC_LAN_81; // "Configure Event Calendar";
 
 // List of preferences -----------------------------------------------------------------------------------------------
 $eplug_prefs = array(
@@ -77,13 +79,13 @@ $eplug_tables = array(
 
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
 $eplug_link = TRUE;
-$eplug_link_name = "Calendar";
+$eplug_link_name = EC_LAN_83; // "Calendar";
 $ec_dir = e_PLUGIN."calendar_menu/";
 $eplug_link_url = "".$ec_dir."calendar.php";
 
 
 // Text to display after plugin successfully installed ------------------------------------------------------------------
-$eplug_done = "To activate please go to your menus screen and select the calendar_menu into one of your menu areas.";
+$eplug_done = EC_LAN_82; // "To activate please go to your menus screen and select the calendar_menu into one of your menu areas.";
 
 
 // upgrading ... //

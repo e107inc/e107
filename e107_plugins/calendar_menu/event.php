@@ -177,7 +177,7 @@ if(IsSet($message)){
 
 // enter new event form---------------------------------------------------------------------------------
 if($action == "ne" || $action == "ed"){
-		if(check_class($pref['eventpost_admin']) || getperms('0')){ 
+                if(check_class($pref['eventpost_admin']) || getperms('0')){
         if($action == "ed"){
                 $sql -> db_Select("event", "*", "event_id='".$qs[1]."' ");
                 list($null, $ne_start, $ne_end, $allday, $recurring, $ne_datestamp, $ne_title, $ne_location, $ne_event, $ne_author, $ne_email, $ne_category, $ne_thread) = $sql-> db_Fetch();
@@ -490,10 +490,10 @@ closedir($handle);
         $ns -> tablerender($caption, $text);
         require_once(FOOTERF);
         exit;
-		}else{
-			header("location:".e_PLUGIN."calendar_menu/event.php");
-			exit;
-		}
+                }else{
+                        header("location:".e_PLUGIN."calendar_menu/event.php");
+                        exit;
+                }
 }
 
 
@@ -817,7 +817,7 @@ if($num != 0){
 }
 
 $text2 .= "</table>";
-  $caption = "Event List";
+  $caption = EC_LAN_80; // "Event List";
  $ns -> tablerender($caption, $text2);
 
 require_once(FOOTERF);

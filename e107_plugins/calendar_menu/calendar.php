@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107/e107_plugins/calendar_menu/calendar.php,v $
-| $Revision: 1.5 $
-| $Date: 2004-09-02 02:56:09 $
-| $Author: mcfly_e107 $ 
+| $Revision: 1.6 $
+| $Date: 2004-09-03 18:32:10 $
+| $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -106,7 +106,7 @@ for ($ii = 0; $ii < 13; $ii++){
         $monthjump= mktime(0,0,0,$m,1,$year);
         $cal_text .=  "<a class='forumlink' href=\"calendar.php?".$monthjump."\">".$monthabb[$ii]."</a> ";
 }
-$cal_text .= 
+$cal_text .=
  "</td>
   <td class='forumheader3' style='text-align:right'>
     <a href='calendar.php?".$nextlink."'>".$ny." &gt;&gt;</a>
@@ -133,12 +133,12 @@ $current = mktime(0,0,0,$nowmonth, 1, $nowyear);
 //------------ Navigation Buttons. ------------------------------------------------------
 
 $nav_text = "<br />
-	     <form method='post' action='".e_SELF."?".e_QUERY."'>
-	     <table border='0' cellpadding='2' cellspacing='3' class='forumheader3'>
-	       <tr>
-	         <td align='right'>
-		   <select name='event_cat_ids' class='tbox' style='width:140px;'>
-		   <option value='all'>All</option>";
+             <form method='post' action='".e_SELF."?".e_QUERY."'>
+             <table border='0' cellpadding='2' cellspacing='3' class='forumheader3'>
+               <tr>
+                 <td align='right'>
+                   <select name='event_cat_ids' class='tbox' style='width:140px;'>
+                   <option value='all'>All</option>";
 
  $event_cat_id = !isset($_POST['event_cat_ids'])? NULL : $_POST['event_cat_ids'];
         $sql -> db_Select("event_cat");
@@ -153,28 +153,28 @@ $nav_text = "<br />
                 }
         }
 $nav_text .=      "</select>
-		 </td>
-		 <td align='center'>
-		   <input class='button' type='submit' style='width:140px;' name='viewallevents' value='View Events List' />
-		 </td>
-	       </tr>
-	       <tr>
-	         <td align='right'>
-		   <input type='hidden' name='do' value='vc' />
-		   <input class='button' type='submit' style='width:140px;' name='viewcat' value='View Category' />
-		 </td>
-		 <td align='center'>
-		   <input type='hidden' name='enter_new_val' value='".$prop."' /> ";
+                 </td>
+                 <td align='center'>
+                   <input class='button' type='submit' style='width:140px;' name='viewallevents' value='View Events List' />
+                 </td>
+               </tr>
+               <tr>
+                 <td align='right'>
+                   <input type='hidden' name='do' value='vc' />
+                   <input class='button' type='submit' style='width:140px;' name='viewcat' value='View Category' />
+                 </td>
+                 <td align='center'>
+                   <input type='hidden' name='enter_new_val' value='".$prop."' /> ";
 
 if(check_class($pref['eventpost_admin']) || getperms('0')){  // start no admin preference
-	$nav_text .=    "<input class='button' type='submit' style='width:140px;' name='doit' value='Enter New Event' />";   
+        $nav_text .=    "<input class='button' type='submit' style='width:140px;' name='doit' value='Enter New Event' />";
 }     // end admin preference activated.
 
 $nav_text .=    "</td>
-	       </tr>
-	     </table>
-	     </form>
-	     <br />";
+               </tr>
+             </table>
+             </form>
+             <br />";
 
 //--------------------------------------------------------------------------------
 
@@ -212,9 +212,9 @@ $text .= "<div style='text-align:center'>
 
 foreach($week as $day){
     $text .= "<td class='fcaption' style='z-index: -1;background-color:black; width:90px;height:20px;text-align:center'>
-    		<strong>".$day."</strong>
-		<img src='".THEME."images/blank.gif' alt='' height='12%' width='14%' />
-	      </td>";
+                    <strong>".$day."</strong>
+                <img src='".THEME."images/blank.gif' alt='' height='12%' width='14%' />
+              </td>";
 }
 $text .= "</tr><tr>";
 $calmonth = $datearray['mon'];
@@ -251,25 +251,25 @@ $dayarray = getdate($start+(($c-1)*86400));
         if ($nowday == $c && $calmonth == $nowmonth && $calyear == $nowyear && !$event_true[($c)]&& !$event_true_end[($c)]) {
             $text .="<td  class='forumheader3' style='vertical-align:top; width:90px;height:90px;padding-bottom:0px;padding-right:0px; margin-right:0px'>";
             $text .="<div style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'>
-	    	       <b>
-		         <a href='".e_PLUGIN."calendar_menu/event.php?".$startt.".one'>".$c."</a>
-		       </b>
-	    	       <span class='smalltext'>[today]</span>
-		     </div>";
+                           <b>
+                         <a href='".e_PLUGIN."calendar_menu/event.php?".$startt.".one'>".$c."</a>
+                       </b>
+                           <span class='smalltext'>[today]</span>
+                     </div>";
         } elseif($event_true[($c)] || $event_true_end[($c)]) {
             $text .="<td class='forumheader3' style='z-index: 1;vertical-align:top;  width:90px;height:90px;padding-bottom:0px;padding-right:0px; margin-right:0px'>";
             $text .="<span style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'>
-	    	       <a href='".e_PLUGIN."calendar_menu/event.php?".$startt.".one'>
-		         <strong>".$c."</strong>
-		       </a>
-		     </span>";
+                           <a href='".e_PLUGIN."calendar_menu/event.php?".$startt.".one'>
+                         <strong>".$c."</strong>
+                       </a>
+                     </span>";
         }else {
             $text .="<td class='forumheader2 ' style='z-index: 1;vertical-align:top;  width:90px;height:90px;padding-bottom:0px;padding-right:0px; margin-right:0px'>";
             $text .="<span style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'>
-	    	       <a href='".e_PLUGIN."calendar_menu/event.php?".$startt.".one'>
-		         <strong>".$c."</strong>
-		       </a>
-		     </span>";
+                           <a href='".e_PLUGIN."calendar_menu/event.php?".$startt.".one'>
+                         <strong>".$c."</strong>
+                       </a>
+                     </span>";
         }
 
         if ($event_true_end[($c)]) {
@@ -277,8 +277,8 @@ $dayarray = getdate($start+(($c-1)*86400));
             $text .="<br /><img style='border:0' src='".$ec_dir."images/".$category_icon[$event_category]."' alt='' height='8' width='8' />&nbsp;<a href='".e_PLUGIN."calendar_menu/event.php?".$linkut.".one'><span class='smalltext' style='color:black' >".$cevent_title[$c]."</span></a>".$indicat;
             }
 
-	while($row = $sql -> db_Fetch()){
-		extract($row);
+        while($row = $sql -> db_Fetch()){
+                extract($row);
 
                 $event_title = $cevent_title[$c];
                 if (strlen($event_title) > 9){
@@ -294,20 +294,20 @@ $dayarray = getdate($start+(($c-1)*86400));
                     $linkut = mktime(0 ,0 ,0 ,$datearray['mon'], $c, $datearray['year']);
                     if(($_POST['do'] == NULL || $_POST['event_cat_ids'] == "all") || ($_POST['event_cat_ids'] == $event_cat_id)){
 
-			$text .="<br />
-			    	 <img style='border:0' src='".$ec_dir."images/".$category_icon[$event_category]."' alt='' height='8' width='8' />
-				 &nbsp;
-				 <a href='".e_PLUGIN."calendar_menu/event.php?".$linkut.".one'>
-				   <span class='smalltext' style='color:black' >".$oevent_title."</span>
-				 </a>";
+                        $text .="<br />
+                                     <img style='border:0' src='".$ec_dir."images/".$category_icon[$event_category]."' alt='' height='8' width='8' />
+                                 &nbsp;
+                                 <a href='".e_PLUGIN."calendar_menu/event.php?".$linkut.".one'>
+                                   <span class='smalltext' style='color:black' >".$oevent_title."</span>
+                                 </a>";
                     }
 
 
                 }
 
-	}
+        }
 
-	$text .= '</td>';
+        $text .= '</td>';
     }
 
     $loop++;
@@ -319,7 +319,7 @@ $dayarray = getdate($start+(($c-1)*86400));
 
 
 $text .= "</tr></table></div>";
-$caption = "Calendar View";
+$caption = EC_LAN_79; // "Calendar View";
 $nav = $cal_text .$nav_text. $text;
  $ns -> tablerender($caption, $nav);
 // echo $text;

@@ -58,7 +58,7 @@ function pm_show_stats($no_show_br=0){
                                 setcookie("pm-alert", "ON", time()+$alertdelay);
                                 $popuptext="<html><head ><title>".$pmstats['new']." ".PMLAN_0."</title><link rel=stylesheet href=" . THEME . "style.css></head><body style=padding-left:2px;padding-right:2px;padding:2px;padding-bottom:2px;margin:0px;align;center marginheight=0 marginleft=0 topmargin=0 leftmargin=0><table width=100% align=center style=width:100%;height:99%padding-bottom:2px class=bodytable height=99% ><tr><td width=100% ><center><b>--- ".PMLAN_PM." ---</b><br />".$pmstats['new']." ".PMLAN_0."<br />".$pmstats['unread_rcv_pm']." ".PMLAN_45."<br><br /><form><input class=button type=submit onclick=\\\\\"self.close()\\\\\" value=\\\\\"ok\\\\\"></form></center></td></tr></table></body></html>";
                                 $text.="
-<script>
+<script type='text/javascript'>
 winl=(screen.width-200)/2;
 wint=(screen.height-100)/2;
 winProp = 'width=200,height=100,left='+winl+',top='+wint+',scrollbars=no';
