@@ -33,7 +33,7 @@ $HEADER = "<div id='header'>
 
 <table style='width: 100%;' cellpadding='0' cellspacing='0'>
 
-<tr><td style='width: 180px; border-right: 1px solid #000;'></td><td></td><td style='width: 180px; border-left: 1px solid #000;'></tr>
+<tr><td style='width: 180px; border-right: 1px solid #000;'></td><td style='width: *;'></td><td style='width: 180px; border-left: 1px solid #000;'></td></tr>
 
 <tr>
 <td id='leftcontent'>
