@@ -22,6 +22,9 @@ if(IsSet($_POST['newver'])){
 if(!getperms("1")){ header("location:".e_BASE."index.php"); exit;}
 if(!$pref['timezone']){ $pref['timezone'] = "GMT"; }
 
+$signup_title = array(CUSTSIG_2,CUSTSIG_3,"ICQ","Aim","MSN",CUSTSIG_4,CUSTSIG_5,CUSTSIG_6,CUSTSIG_7,CUSTSIG_8);
+$signup_name = array("real","url","icq","aim","msn","dob","loc","sig","avt","zone");
+
 if(IsSet($_POST['updateprefs'])){
         $aj = new textparse;
         $pref['sitename'] = $aj -> formtpa($_POST['sitename']);
@@ -103,8 +106,8 @@ if(IsSet($_POST['updateprefs'])){
 
 
 
-        $pref['imagecode'] = $_POST['imagecode'];
-
+        $pref['signcode'] = $_POST['signcode'];
+         $pref['logcode'] = $_POST['logcode'];
 
 
 
@@ -116,14 +119,18 @@ if(IsSet($_POST['updateprefs'])){
         $pref['smtp_username'] = $aj -> formtpa($_POST['smtp_username']);
         $pref['smtp_password'] = $aj -> formtpa($_POST['smtp_password']);
 
+        for ($i=0; $i<count($signup_title); $i++) {
+        $valuesignup =  $signup_name[$i];
+        $signup_options .= $_POST[$valuesignup];
+        $signup_options .= $i < (count($signup_title)-1)?".":"";
+        }
+        $pref['signup_options'] = $signup_options;
 
-
-
-
+        
         $sql -> db_Delete("cache");
         save_prefs();
         header("location:prefs.php");
-        echo "<script type='text/javascript'>document.location.href='prefs.php'</script>\n";
+       echo "<script type='text/javascript'>document.location.href='prefs.php'</script>\n";
         exit;
 }
 
@@ -523,12 +530,6 @@ $text .= "(".PRFLAN_46.")
 </td>
 </tr>
 
-<tr>
-<td style='width:50%' class='forumheader3'>".PRFLAN_76.": </td>
-<td style='width:50%; text-align:right' class='forumheader3'>".
-($pref['imagecode'] ? "<input type='checkbox' name='imagecode' value='1'  checked>" : "<input type='checkbox' name='imagecode' value='1'>")."
-</td>
-</tr>
 
 ";
 
@@ -541,6 +542,8 @@ $text .="
 </tr></table></div>";
 // Signup options.
 
+
+
 $text .= "
 <div style='text-align:center'><div class='caption' title='".PRFLAN_80."' title='".PRFLAN_80."' style='cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_19."</div>
 <div id='signup' style='text-align:center; display:none'>
@@ -548,7 +551,27 @@ $text .= "
 <tr >
 <td class=\"fcaption\">".CUSTSIG_13."</td>
 <td class=\"fcaption\">".CUSTSIG_14."</td>
-<td class=\"fcaption\">".CUSTSIG_15."</td>
+</tr>";
+
+    for ($i=0; $i<count($signup_title); $i++) {
+
+    $text .="
+    <tr>
+<td style='width:50%' class='forumheader3'>".$signup_title[$i]."</td>
+<td style='width:50%' class='forumheader3'>".
+($$signup_name[$i] == "" || $$signup_name[$i]=="" ? "<input type='radio' name='".$signup_name[$i]."' value='0' checked> ".CUSTSIG_12."&nbsp;" : "<input type='radio' name='".$signup_name[$i]."' value='0'> ".CUSTSIG_12."&nbsp;").
+($$signup_name[$i] == "1" ? "<input type='radio' name='".$signup_name[$i]."' value='1' checked> ".CUSTSIG_14."&nbsp;" : "<input type='radio' name='".$signup_name[$i]."' value='1'> ".CUSTSIG_14."&nbsp;").
+($$signup_name[$i] == "2" ? "<input type='radio' name='".$signup_name[$i]."' value='2' checked> ".CUSTSIG_15."&nbsp;" : "<input type='radio' name='".$signup_name[$i]."' value='2'> ".CUSTSIG_15."&nbsp;")."
+
+</td>
+
+</tr>";
+
+    }
+
+/*
+
+$text .="
 <tr>
 <td style='width:50%' class='forumheader3'>".CUSTSIG_2."</td>
 <td style='width:25%' class='forumheader3'>".
@@ -633,7 +656,7 @@ $text .= "
 </tr>
 
 <tr>
-<td style='width:50%' class='forumheader3'>Avatar: </td>
+<td style='width:50%' class='forumheader3'>".CUSTSIG_7."</td>
 <td style='width:25%' class='forumheader3'>".
 ($pref['signup_avt'] ? "<input type='checkbox' name='signup_avt' value='1'  checked>" : "<input type='checkbox' name='signup_avt' value='1'>")."
 </td>
@@ -642,6 +665,19 @@ $text .= "
 </td>
 </tr>";
 
+$text .="
+<tr>
+<td style='width:50%' class='forumheader3'>".CUSTSIG_8."</td>
+<td style='width:25%' class='forumheader3'>".
+($pref['signup_zone'] ? "<input type='checkbox' name='signup_zone' value='1'  checked>" : "<input type='checkbox' name='signup_zone' value='1'>")."
+</td>
+<td style='width:25%' class='forumheader3'>".
+($pref['signup_zone_req'] ? "<input type='checkbox' name='signup_zone_req' value='1'  checked>" : "<input type='checkbox' name='signup_zone_req' value='1'>")."
+</td>
+</tr>";
+
+*/
+// Custom Fields.
 
 if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
         $row = $sql -> db_Fetch();
@@ -674,16 +710,7 @@ if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
            }
 
 
-$text .="
-<tr>
-<td style='width:50%' class='forumheader3'>".CUSTSIG_8."</td>
-<td style='width:25%' class='forumheader3'>".
-($pref['signup_zone'] ? "<input type='checkbox' name='signup_zone' value='1'  checked>" : "<input type='checkbox' name='signup_zone' value='1'>")."
-</td>
-<td style='width:25%' class='forumheader3'>".
-($pref['signup_zone_req'] ? "<input type='checkbox' name='signup_zone_req' value='1'  checked>" : "<input type='checkbox' name='signup_zone_req' value='1'>")."
-</td>
-</tr>";
+
 
 
 $text .="</table></div>";
