@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.64 $
-|     $Date: 2005-03-29 16:34:17 $
+|     $Revision: 1.65 $
+|     $Date: 2005-03-29 16:50:38 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -541,11 +541,15 @@ function update_61x_to_700($type) {
 			save_prefs();
 		}
 
-// Forum upgrade.
+// Missing Forum upgrade stuff by Cam.
 		global $PLUGINS_DIRECTORY;
 		if($sql -> db_Select("links", "*", "link_url = 'forum.php'")){
 			$sql -> db_Insert("plugin", "0, 'Forum', '1.1', 'forum', '1' ");
 			$sql -> db_Update("links", "link_url='".$PLUGINS_DIRECTORY."forum/forum.php' WHERE link_url='forum.php' ");
+		}
+
+		if($sql -> db_Select("menus", "*", "menu_name = 'newforumposts_menu' and menu_path='newforumposts_menu' ")){
+			$sql -> db_Update("menus", "menu_path='forum' WHERE menu_name = 'newforumposts_menu' ");
 		}
 
         if($pref['cb_linkreplace'] && !$pref['link_replace']){
@@ -570,8 +574,11 @@ function update_61x_to_700($type) {
 		//return !$sql->db_Select("core","*","e107_name = 'user_entended'");
 
 //		$sql->db_Select_gen("DELETE FROM #core WHERE e107_name='user_entended'");
-        
- return false;
+
+		if($sql -> db_Select("menus", "*", "menu_name = 'newforumposts_menu' and menu_path='newforumposts_menu' ")){
+			return FALSE;
+		}
+
 		global $pref;
 		if (!isset($pref['search_highlight'])) {
 			return FALSE;
