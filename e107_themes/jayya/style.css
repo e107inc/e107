@@ -92,7 +92,7 @@ a:hover {
 }
 
 .f2default, .fcaption, .fcdefault, .fcaption2 {
-	background-color: #F3EDED;
+	background-color: #F9f7f7;
 }
 
 .forumheader2, .forumheader3, .f3default{
@@ -200,7 +200,7 @@ ul{
 .left_menu, .right_menu {
 	width: 170px;
 	vertical-align:top;
-	background-color: #f7f7f7;
+	background-color: #F9f7f7;
 }
 
 .left_menu {
@@ -218,11 +218,11 @@ ul{
 }
 
 .main_caption {
-	background-color: #365CCF;
+	background-color: #60808D;
 }
 
 .left_caption, .right_caption {
-	background-color: #2A469C;
+	background-color: #173E4F;
 	
 }
 
