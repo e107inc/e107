@@ -35,7 +35,7 @@ if(IsSet($_POST['update_options'])){
         $pref['avatar_upload'] = (FILE_UPLOADS ? $_POST['avatar_upload'] : 0);
         $pref['im_width'] = $_POST['im_width'];
         $pref['photo_upload'] = (FILE_UPLOADS ? $_POST['photo_upload'] : 0);
-		$pref['del_unv'] = $_POST['del_unv'];
+                $pref['del_unv'] = $_POST['del_unv'];
         save_prefs();
         $user -> show_message(USRLAN_1);
 }
@@ -159,6 +159,7 @@ if(IsSet($_POST['add_field'])){
         $row = $sql -> db_Fetch();
         $user_entended = unserialize($row[0]);
         // changed by Cameron
+        $user_field = str_replace(" ","_",$user_field);
         $user_entended[] = $user_field."|".$user_type."|".$user_value."|".$user_default."|".$user_visible."|".$user_hide;
    //     $user_entended[] = $user_field;
         $tmp = addslashes(serialize($user_entended));
@@ -176,6 +177,7 @@ if(IsSet($_POST['update_field'])){
         $row = $sql -> db_Fetch();
         $user_entended = unserialize($row[0]);
         unset($user_entended[$sub_action]);
+        $user_field = str_replace(" ","_",$user_field);
         $user_entended[] = $user_field."|".$user_type."|".$user_value."|".$user_default."|".$user_visible."|".$user_hide;
         $tmp = addslashes(serialize($user_entended));
         if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
@@ -208,9 +210,9 @@ if($action == "editext"){
         $uf_name = $tmp[0];
         $uf_type = $tmp[1];
         $uf_value = $tmp[2];
-		$uf_default = $tmp[3];
-		$uf_visible = $tmp[4];
-		$uf_hide = $tmp[5];
+                $uf_default = $tmp[3];
+                $uf_visible = $tmp[4];
+                $uf_hide = $tmp[5];
         $user -> show_extended();
 }
 
@@ -463,7 +465,7 @@ class users{
                 <input class='tbox' type='text' name='im_width' size='10' value='".$pref['im_width']."' maxlength='5' /> (".USRLAN_48.")
                 </tr>
 
-				<tr>
+                                <tr>
                 <td style='width:50%' class='forumheader3'>".USRLAN_93."<br /><span class='smalltext'>".USRLAN_94."</span></td>
                 <td style='width:50%' class='forumheader3'>
                 <input class='tbox' type='text' name='del_unv' size='10' value='".$pref['del_unv']."' maxlength='5' /> ".USRLAN_95."
@@ -486,7 +488,7 @@ class users{
 
         function show_extended(){
                 global $sql, $ns, $uf_name, $uf_type, $uf_value, $uf_default, $uf_visible, $uf_hide;
-				require_once(e_HANDLER."userclass_class.php");
+                                require_once(e_HANDLER."userclass_class.php");
 
                 $sql -> db_Select("core", " e107_value", " e107_name='user_entended'");
                 $row = $sql -> db_Fetch();
@@ -500,9 +502,9 @@ class users{
                 <td class='fcaption'>".USRLAN_96."</td>
                 <td class='fcaption'>".USRLAN_97."</td>
                 <td class='fcaption'>".USRLAN_98."</td>
-				<td class='fcaption'>".USRLAN_99."</td>
-				<td class='fcaption'>".USRLAN_100."</td>
-				<td class='fcaption'>".USRLAN_101."</td>
+                                <td class='fcaption'>".USRLAN_99."</td>
+                                <td class='fcaption'>".USRLAN_100."</td>
+                                <td class='fcaption'>".USRLAN_101."</td>
                 <td class='fcaption'>".USRLAN_102."</td>
                 \n";
 
@@ -517,19 +519,19 @@ class users{
                                 if($u_entended){
                                 // added by cameron..=============================
                                 $ut = explode("|",$u_entended);
-                                $u_name = ($ut[0] != "" ? $ut[0] : $u_entended);
+                                $u_name = ($ut[0] != "" ? str_replace("_"," ",$ut[0]) : $u_entended);
                                 $u_type = $ut[1];
                                 $u_value = $ut[2];
-								$u_default = $ut[3];
-								$u_visible = $ut[4];
-								$u_hide = $ut[5];
-										$text .= "<tr>
+                                $u_default = $ut[3];
+                                $u_visible = $ut[4];
+                                $u_hide = $ut[5];
+                                                                                $text .= "<tr>
                                         <td class='forumheader3' >".$u_name."&nbsp; </td>
                                         <td class='forumheader3' >".$u_type."&nbsp; </td>
                                         <td class='forumheader3' >".$u_value."&nbsp; </td>
-										<td class='forumheader3' >".$u_default."&nbsp; </td>
-										<td class='forumheader3' >".r_userclass_name($u_visible)."&nbsp; </td>
-										<td class='forumheader3' >".r_userclass_name($u_hide)."&nbsp; </td>
+                                                                                <td class='forumheader3' >".$u_default."&nbsp; </td>
+                                                                                <td class='forumheader3' >".r_userclass_name($u_visible)."&nbsp; </td>
+                                                                                <td class='forumheader3' >".r_userclass_name($u_hide)."&nbsp; </td>
                                         <td class='forumheader3' style='text-align:center;'><span class='button' style='height:16px; width:50%;'><a style='text-decoration:none' href='".e_SELF."?editext.$key'>".USRLAN_81."</a></span>&nbsp;<span class='button' style='height:16px; width:50%'><a style='text-decoration:none' href='".e_SELF."?delext.$key'>".USRLAN_29."</a></span>
                                         </td>
                                         </tr>";
@@ -570,26 +572,26 @@ class users{
                 <span class='smalltext'>".USRLAN_105."</span>
                 </td>
                 </tr>
-					
-				<tr>
-				<td style='width:30%' class='forumheader3'>".USRLAN_104."</td>
+
+                                <tr>
+                                <td style='width:30%' class='forumheader3'>".USRLAN_104."</td>
                 <td style='width:70%' class='forumheader3' colspan='3'>
-				<input class='tbox' type='text' name='user_default' size='40' value='$uf_default' />
-				</td>
+                                <input class='tbox' type='text' name='user_default' size='40' value='$uf_default' />
+                                </td>
                 </tr>
 
-				<tr>
-				<td style='width:30%' class='forumheader3'>".USRLAN_100."</td>
+                                <tr>
+                                <td style='width:30%' class='forumheader3'>".USRLAN_100."</td>
                 <td style='width:70%' class='forumheader3' colspan='3'>
-				".r_userclass("user_visible", $uf_visible)."<br /><span class='smalltext'>".USRLAN_106."</span>
-				</td>
+                                ".r_userclass("user_visible", $uf_visible)."<br /><span class='smalltext'>".USRLAN_106."</span>
+                                </td>
                 </tr>
 
-				<tr>
-				<td style='width:30%' class='forumheader3'>".USRLAN_101."</td>
+                                <tr>
+                                <td style='width:30%' class='forumheader3'>".USRLAN_101."</td>
                 <td style='width:70%' class='forumheader3' colspan='3'>
-				".r_userclass("user_hide", $uf_hide)."<br /><span class='smalltext'>".USRLAN_107."</span>
-				</td>
+                                ".r_userclass("user_hide", $uf_hide)."<br /><span class='smalltext'>".USRLAN_107."</span>
+                                </td>
                 </tr>";
 
 
