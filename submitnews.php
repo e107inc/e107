@@ -10,17 +10,19 @@
 |
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
+|
+|   $Id: submitnews.php,v 1.13 2004-08-12 15:54:52 e107coders Exp $
 +---------------------------------------------------------------+
 */
 
 
 require_once("class2.php");
-
-require_once(HEADERF);
 if($pref['subnews_htmlarea']){
         require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
-        htmlarea("item");
+        $htmlarea_js = htmlarea("item");
 }
+require_once(HEADERF);
+
 if(!isset($pref['subnews_class'])){
         $pref['subnews_class']="0";
 }
