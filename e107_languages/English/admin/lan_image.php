@@ -38,4 +38,10 @@ define("IMALAN_27", "delete");
 define("IMALAN_28", "deleted");
 define("IMALAN_29", "No images");
 
+define("IMALAN_30", "Everyone (public)");
+define("IMALAN_31", "Guests only");
+define("IMALAN_32", "Members only");
+define("IMALAN_33", "Admin only");
+
+
 ?>
