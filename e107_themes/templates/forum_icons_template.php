@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/forum_icons_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-12-21 06:57:52 $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-21 10:18:17 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -35,12 +35,9 @@ define("IMAGE_quote", "<img src='".img_path('quote.png')."' alt='".LAN_401."' ti
 define("IMAGE_admin_edit", "<img src='".img_path('admin_edit.png')."' alt='".LAN_406."' title='".LAN_406."' style='border:0' />");
 define("IMAGE_admin_move", "<img src='".img_path('admin_move.png')."' alt='".LAN_402."' title='".LAN_402."' style='border:0' />");
 define("IMAGE_admin_move2", "<img src='".img_path('admin_move.png')."' alt='".LAN_408."' title='".LAN_408."' style='border:0' />");
-define("IMAGE_post2", "<img src='".img_path('post2.png')."' alt='' title='' style='border:0; vertical-align:bottom' />");
 define("IMAGE_post", "<img src='".img_path('post.png')."' alt='' title='' style='border:0' />");
+define("IMAGE_post2", "<img src='".img_path('post2.png')."' alt='' title='' style='border:0; vertical-align:bottom' />");
 define("IMAGE_report", "<img src='".img_path('report.png')."' alt='".LAN_413."' title='".LAN_413."' style='border:0' />");
-//define("IMAGE_reply", "<img src='".img_path('reply.png')."' alt='' title='' style='border:0' />");
-//define("IMAGE_newthread", "<img src='".img_path('newthread.png')."' alt='' title='' style='border:0' />");
-//define("IMAGE_profile", "<img src='".img_path('profile.png')."' alt='".LAN_398."' title='".LAN_398."' style='border:0' />");
 
 
 // Admin <input> Icons
@@ -54,16 +51,10 @@ define("IMAGE_admin_unlock", "src='".img_path('admin_unlock.png')."' alt='".LAN_
 
 // Multi Language Images
 
-define("IMAGE_newthread", "<img src='".eMLANG_path("newthread.png","forum")."' alt='".FORLAN_10."' title='".FORLAN_10."' style='border:0' />");
-define("IMAGE_reply", "<img src='".eMLANG_path("reply.png","forum")."' alt='' title='' style='border:0' />");
-
-$tmp_pic = $pref['rank_moderator_image'] ? $pref['rank_moderator_image'] : 'moderator.png';
-define("IMAGE_rank_moderator_image", "<img src='".eMLANG_path($tmp_pic,"forum")."' alt='' />");
-
-$tmp_pic = $pref['rank_main_admin_image'] ? $pref['rank_main_admin_image'] : 'main_admin.png';
-define("IMAGE_rank_main_admin_image", "<img src='".eMLANG_path($tmp_pic,"forum")."' alt='' />");
-
-$tmp_pic = $pref['rank_admin_image'] ? $pref['rank_admin_image'] : 'admin.png';
-define("IMAGE_rank_admin_image", "<img src='".eMLANG_path($tmp_pic,"forum")."' alt='' />");
+define("IMAGE_newthread", "<img src='".img_path('newthread.png', 'forum')."' alt='".FORLAN_10."' title='".FORLAN_10."' style='border:0' />");
+define("IMAGE_reply", "<img src='".img_path('reply.png', 'forum')."' alt='' title='' style='border:0' />");
+define("IMAGE_rank_moderator_image", "<img src='".img_path('moderator.png', 'forum', 'rank_moderator_image')."' alt='' />");
+define("IMAGE_rank_main_admin_image", "<img src='".img_path('main_admin.png', 'forum', 'rank_main_admin_image')."' alt='' />");
+define("IMAGE_rank_admin_image", "<img src='".img_path('admin.png', 'forum', 'rank_admin_image')."' alt='' />");
 
 ?>
