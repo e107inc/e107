@@ -25,7 +25,9 @@ class news{
 			$news_title = $aj -> formtpa($news_title);
 			$news_body = $aj -> formtpa($data);
 			$news_extended = $aj -> formtpa($news_extended);
-			if($sql -> db_Update("news", "news_title='$news_title', news_body='$news_body', news_extended='$news_extended', news_category='$cat_id', news_allow_comments='$news_allow_comments', news_start='$active_start', news_end='$active_end', news_class='$news_class', news_render_type='$news_rendertype' WHERE news_id='$news_id' ")){
+			$vals = $update_datestamp ? "news_datestamp = ".time().", " : "";
+			$vals .= " news_title='$news_title', news_body='$news_body', news_extended='$news_extended', news_category='$cat_id', news_allow_comments='$news_allow_comments', news_start='$active_start', news_end='$active_end', news_class='$news_class', news_render_type='$news_rendertype' WHERE news_id='$news_id' ";
+			if($sql -> db_Update("news",$vals)){
 				$message = "News updated in database.";
              clear_cache("news.php");
 			}else{
@@ -42,6 +44,7 @@ class news{
 				$message = "<b>Error!</b> Was unable to enter news item into database!</b>";
 			}
 		}
+		$this -> create_rss();
 		return $message;
 	}
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -177,5 +180,118 @@ on
 
 		return TRUE;
 	}
+	
+function create_rss(){
+                /*
+                # rss create
+                # - parameters                none
+                # - return                                null
+                # - scope                                        public
+                */
+                global $sql;
+                setlocale (LC_TIME, "en");
+                $pubdate = strftime("%a, %d %b %Y %I:%M:00 GMT", time());
+
+                $sitebutton = (strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", e_IMAGE).SITEBUTTON);
+                $sitedisclaimer = ereg_replace("<br />|\n", "", SITEDISCLAIMER);
+
+        $rss = "<?xml version=\"1.0\"?>
+<rss version=\"2.0\">
+<channel>
+  <title>".SITENAME."</title>
+  <link>http://".$_SERVER['HTTP_HOST'].e_HTTP."index.php</link>
+  <description>".SITEDESCRIPTION."</description>
+  <language>en-gb</language>
+  <copyright>".$sitedisclaimer."</copyright>
+  <managingEditor>".SITEADMIN." - ".SITEADMINEMAIL."</managingEditor>
+  <webMaster>".SITEADMINEMAIL."</webMaster>
+  <pubDate>$pubdate</pubDate>
+  <lastBuildDate>$pubdate</lastBuildDate>
+  <docs>http://backend.userland.com/rss</docs>
+  <generator>e107 website system (http://e107.org)</generator>
+  <ttl>60</ttl>
+
+  <image>
+    <title>".SITENAME."</title>
+    <url>".$sitebutton."</url>
+    <link>http://".$_SERVER['HTTP_HOST'].e_HTTP."index.php</link>
+    <width>88</width>
+    <height>31</height>
+    <description>".SITETAG."</description>
+  </image>
+
+  <textInput>
+    <title>Search</title>
+    <description>Search ".SITENAME."</description>
+    <name>query</name>
+    <link>".SITEURL.(substr(SITEURL, -1) == "/" ? "" : "/")."search.php</link>
+  </textInput>
+  ";
+
+        $sql2 = new db;
+
+        $sql -> db_Select("news", "*", "news_class=0 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY news_datestamp DESC LIMIT 0, 10");
+        while($row = $sql -> db_Fetch()){
+                extract($row);
+                $sql2 -> db_Select("news_category", "*",  "category_id='$news_category' ");
+                $row = $sql2 -> db_Fetch(); extract($row);
+                $sql2 -> db_Select("user", "user_name, user_email", "user_id=$news_author");
+                $row = $sql2 -> db_Fetch(); extract($row);
+                $tmp = explode(" ", $news_body);
+                unset($nb);
+                for($a=0; $a<=100; $a++){
+                        $nb .= $tmp[$a]." ";
+                }
+                if($tmp[($a-2)]){ $nb .= " [more ...]"; }
+                  $nb = htmlentities($nb);
+                $nb = str_replace('&pound', '&amp;#163;', $nb);
+                $nb = str_replace('&copy;', 'c.', $nb);
+                // Code from Lisa
+                $search = array();
+                $replace = array();
+                $search[0] = "/\<a href=\"(.*?)\">(.*?)<\/a>/si";
+                $replace[0] = '\\2';
+                $search[1] = "/\<a href='(.*?)'>(.*?)<\/a>/si";
+                $replace[1] = '\\2';
+                $search[2] = "/\<a href='(.*?)'>(.*?)<\/a>/si";
+                $replace[2] = '\\2';
+                $search[3] = "/\<a href=&quot;(.*?)&quot;>(.*?)<\/a>/si";
+                $replace[3] = '\\2';
+                $news_title = preg_replace($search, $replace, $news_title);
+                // End of code from Lisa
+                $wlog .= $news_title."\n".SITEURL."comment.php?".$news_id."\n\n";
+                $itemdate = strftime("%a, %d %b %Y %I:%M:00 GMT", $news_datestamp);
+
+  $rss .= "<item>
+    <title>$news_title</title>
+    <link>http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?".$news_id."</link>
+    <description>$nb</description>
+    <category domain=\"".SITEURL."\">$category_name</category>
+    <comments>http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?".$news_id."</comments>
+    <author>$user_name - $user_email</author>
+    <pubDate>$itemdate</pubDate>
+    <guid isPermaLink=\"true\">http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?".$news_id."</guid>
+  </item>
+  ";
+
+        }
+
+
+        $rss .= "</channel>
+</rss>";
+        $rss = str_replace("&nbsp;", " ", $rss);
+        $fp = fopen(e_FILE."backend/news.xml","w");
+        @fwrite($fp, $rss);
+        fclose($fp);
+        $fp = fopen(e_FILE."backend/news.txt","w");
+        @fwrite($fp, $wlog);
+        fclose($fp);
+        if(!fwrite){
+                $text = "<div style='text-align:center'>".LAN_19."</div>";
+                $ns -> tablerender("<div style='text-align:center'>".LAN_20."</div>", $text);
+        }
+}
+
+	
 }
 ?>
