@@ -13,13 +13,12 @@
 */
 
 // [theme]
-
 $themename = "ranyart";
 $themeversion = "1";
 $themeauthor = "jalist";
 $themedate = "14/09/2003";
 $themeinfo = "To use sectioning with this theme uncomment the relevant code from theme.php.";
-
+define("STANDARDS_MODE", TRUE);
 // [layout]
 
 $layout = "_default";
@@ -119,10 +118,10 @@ $NEWSHEADER = "
 <table style='width:100%'>
 <tr>
 <td style='width:50%; vertical-align:top'>
-{NEWS_CATEGORY=2}
+{NEWS_CATEGORY=1}
 </td>
 <td style='width:50%; vertical-align:top'>
-{NEWS_CATEGORY=3}
+{NEWS_CATEGORY=2}
 </td>
 </tr>
 </table>";
@@ -140,8 +139,8 @@ on
 </div>
 <hr />
 ";
-
 */
+
 $FOOTER = "
 <br />
 </td>
