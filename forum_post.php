@@ -235,7 +235,7 @@ if(IsSet($_POST['newthread'])){
 
                 $iid = $sql -> db_Insert("forum_t", "0, '".$subject."', '".$post."', '$forum_id', '".time()."', '0', '$user', 0, $email_notify, '".time()."', '".$_POST['threadtype']."' ");
                 $sql -> db_Update("forum", "forum_threads=forum_threads+1, forum_lastpost='$lastpost' WHERE forum_id='$forum_id' ");
-                $sql -> db_Update("user", "user_forums=user_forums+1, user_viewed='".USERVIEWED.$iid.".' WHERE user_id='".USERID."' ");
+                $sql -> db_Update("user", "user_forums=user_forums+1, user_viewed='".USERVIEWED.".{$iid}.' WHERE user_id='".USERID."' ");
 
                 $sql -> db_Select("forum_t", "*", "thread_thread='$post' ");
                 $row = $sql -> db_Fetch(); extract($row);

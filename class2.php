@@ -827,12 +827,20 @@ function init_session(){
                 }
                 if($sql -> db_Select("user", "*", "user_id='$uid' AND md5(user_password)='$upw'")){
                         $result = $sql -> db_Fetch(); extract($result);
+                        define("USERID", $user_id); 
+                        define("USERNAME", $user_name); 
+                        define("USERURL", $user_website); 
+                        define("USEREMAIL", $user_email); 
+                        define("USER", TRUE); 
+                        define("USERCLASS", $user_class);
+                        define("USERREALM", $user_realm);
+								define("USERVIEWED", $user_viewed); 
                         if($user_currentvisit + 3600 < time()){
                                 $user_lastvisit = $user_currentvisit;
                                 $user_currentvisit = time();
-                                $sql -> db_Update("user", "user_visits=user_visits+1, user_lastvisit='$user_lastvisit', user_currentvisit='$user_currentvisit', user_viewed='$r' WHERE user_name='".USERNAME."' ");
+                                $sql -> db_Update("user", "user_visits=user_visits+1, user_lastvisit='$user_lastvisit', user_currentvisit='$user_currentvisit', user_viewed='' WHERE user_name='".USERNAME."' ");
                         }
-                        define("USERID", $user_id); define("USERNAME", $user_name); define("USERURL", $user_website); define("USEREMAIL", $user_email); define("USER", TRUE); define("USERLV", $user_lastvisit); define("USERVIEWED", $user_viewed); define("USERCLASS", $user_class); define("USERREALM", $user_realm);
+								define("USERLV", $user_lastvisit); 
                         if($user_ban == 1){ exit; }
                         $user_pref = unserialize($user_prefs);
                         if(IsSet($_POST['settheme'])){
