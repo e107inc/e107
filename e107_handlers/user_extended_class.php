@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-15 03:04:15 $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-15 13:48:44 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -94,6 +94,10 @@ class e107_user_extended
 	function user_extended_add($name, $text, $type, $parms, $values, $default, $required, $read, $write, $applicable)
 	{
 		global $sql;
+		if(is_array($name))
+		{
+			extract($name);
+		}
 		if (!($this->user_extended_field_exist($name)))
 		{
 			$field_info = $this->user_extended_type_text($type, $default);
