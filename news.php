@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2005-02-21 04:14:32 $
+|     $Revision: 1.50 $
+|     $Date: 2005-02-23 03:22:42 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -48,7 +48,7 @@ if (isset($tmp[1]) && $tmp[1] == 'list') {
 	$from = intval($tmp[0]);
 	$sub_action = intval($tmp[2]);
 }
-if (isset($tmp[1]) && ($tmp[1] == 'cat' || $tmp[1] == 'cat')) {
+if (isset($tmp[1]) && ($tmp[1] == 'all' || $tmp[1] == 'cat')) {
 	$action = $tmp[1];
 	$from = intval($tmp[0]);
 	$sub_action = intval($tmp[2]);
@@ -121,7 +121,7 @@ if ($action == 'cat' || $action == 'all')
 		$text .= $ix->parse_newstemplate($row,$NEWSLISTSTYLE,$param);
 	}
 	$icon = ($row['category_icon']) ? "<img src='".e_IMAGE."icons/".$row['category_icon']."' alt='' />" : "";
-	$parms = $news_total.".".ITEMVIEW.".".$from.".".e_SELF.'?'."[FROM].".$action.".".$sub_action;
+	$parms = $news_total.",".ITEMVIEW.",".$from.",".e_SELF.'?'."[FROM].".$action.".".$sub_action;
 	$text .= LAN_NEWS_22."&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}");
 	$ns->tablerender(LAN_82." '".$category_name."'", $text);
 	setNewsCache($cacheString);
@@ -398,7 +398,7 @@ if ($action != "item") {
 	{
 		$action = "";
 	}
-	$parms = $news_total.".".ITEMVIEW.".".$from.".".e_SELF.'?'."[FROM].".$action.".".$sub_action;
+	$parms = $news_total.",".ITEMVIEW.",".$from.",".e_SELF.'?'."[FROM].".$action.".".$sub_action;
 	$nextprev = LAN_NEWS_22."&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}");
 	echo "<div class='nextprev' style='text-align:center'>".$nextprev."</div>";
 }
@@ -432,7 +432,7 @@ function checkNewsCache($cacheString, $np = FALSE, $nfp = FALSE) {
 	if ($cache_data) {
 		echo $cache_data;
 		if ($np) {
-			$parms = $news_total.".".ITEMVIEW.".".$from.".".e_SELF.'?'."[FROM].".$action.".".$sub_action;
+			$parms = $news_total.",".ITEMVIEW.",".$from.",".e_SELF.'?'."[FROM].".$action.".".$sub_action;
 			$nextprev = LAN_NEWS_22."&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}");
 			echo "<div class='nextprev' style='text-align:center'>".$nextprev."</div>";
 		}

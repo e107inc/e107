@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-02-21 04:14:32 $
+|     $Revision: 1.12 $
+|     $Date: 2005-02-23 03:22:42 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -270,7 +270,7 @@ $THREADSTATUS = (!$thread_info['head']['thread_active'] ? LAN_66 : "");
 $pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
 $pages = ceil($replies/$pref['forum_postspage']);
 if ($pages > 1) {
-		$parms = "{$replies}.{$pref['forum_postspage']}.{$from}.".e_SELF.'?'.$thread_id.'.[FROM]';
+		$parms = "{$replies},{$pref['forum_postspage']},{$from},".e_SELF.'?'.$thread_id.'.[FROM]';
 		$GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
 }
 
