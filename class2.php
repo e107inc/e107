@@ -640,7 +640,9 @@ function online(){
                 $row = $sql -> db_Fetch();
                 extract($row);
 
-                $online_pagecount++;
+				if(!ADMIN){
+					$online_pagecount++;
+				}
 
                 if($online_pagecount > 100){
                         $sql -> db_Insert("banlist", "'$ip', '0', 'Hit count exceeded ($online_pagecount requests within allotted time)' ");
