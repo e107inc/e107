@@ -24,39 +24,37 @@ define("STANDARDS_MODE", TRUE);
 
 $layout = "_default";
 
-$HEADER = "
-<div id='header'>
+$HEADER = "<div id='header'>
 <div id='logo'>&nbsp;</div>
 </div>
 <div id='banner'>
 {BANNER}
 </div>
-
-<table style='width: 100%;' cellpadding='0' cellspacing='0'>
-<tr>
-<td style='width: 180px; vertical-align: top;'>
-<div class='menuwrapper'>
+<div id='mainleft'>
+<div id='mainright'>
+<div id='leftcontent'>
+<div class='columnwrap'>
 {SITELINKS}
 {MENU=1}
 </div>
-</td>
-
-<td style='vertical-align: top; overflow: scroll;  border-right: 1px solid #000; border-left: 1px solid #000;'>
+</div>
+<div id='rightcontent'>
+<div class='columnwrap'>
+{MENU=2}
+</div>
+</div>
+<div id='centercontent'>
 <div class='menuwrapper'>
+<div class='columnwrap'>
 ";
 
 $FOOTER = "
 </div>
-</td>
-
-<td style='width: 180px; vertical-align: top;'>
-<div class='menuwrapper'>
-{MENU=2}
 </div>
-</td>
-</tr>
-</table>
-
+<div class='cleaner'>&nbsp;</div>
+</div>
+</div>
+</div>
 <div id='footer'>
 <div class='columnwrap'>
 <div style='text-align: center;' class='smalltext'>
@@ -84,13 +82,13 @@ $NEWSSTYLE = "
 {NEWSAUTHOR}
 on
 {NEWSDATE}
- | 
+<br />
 <img src='".e_IMAGE."admin_images/userclass_16.png' alt='' style='vertical-align: middle;' />
 {NEWSCOMMENTS}
  |
 {TRACKBACK}
 <br />
-<a href='".e_BASE."submitnews.php'>Submit a news item</a>
+ | <a href='".e_BASE."submitnews.php'>Submit a news item</a>
 </div>
 <br />";
 define("ICONSTYLE", "float: left; border:0");
@@ -101,11 +99,12 @@ define("EXTENDEDSTRING", "Read the rest ...");
 define("POST_EXTENDEDSTRING", " ]<br />");
 define("TRACKBACKSTRING", "Trackbacks: ");
 
+
 // [linkstyle]
 
 define('PRELINK', "");
 define('POSTLINK', "");
-define('LINKSTART', "<img src='".THEME."images/bullet2.gif' alt='bullet' /> ");
+define('LINKSTART', "<img src='".THEME."images/bullet2.gif' alt='' /> ");
 define('LINKEND', "<br />");
 define('LINKDISPLAY', 2);
 define('LINKALIGN', "left");
