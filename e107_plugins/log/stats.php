@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-02-09 14:13:22 $
+|     $Revision: 1.8 $
+|     $Date: 2005-02-10 17:20:09 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -121,6 +121,12 @@ switch($action) {
 			$text = "Statistics for this type is not being gathered.";
 		}
 		break;
+	case 10:
+			$text = $stat -> renderDaily();
+		break;
+	case 11:
+			$text = $stat -> renderMonthly();
+		break;
 }
 
 
@@ -129,6 +135,8 @@ $path = e_PLUGIN."log/stats.php";
 $links = "<div style='text-align: center;'>".
 (e_QUERY != 1 ? "<a href='$path?1'>Today's Stats</a>" : "<b>Today's Stats</b>")." | ".
 (e_QUERY != 2 ? "<a href='$path?2'>Alltime Stats</a>" : "<b>Alltime Stats</b>")." | ".
+(e_QUERY != 10 ? "<a href='$path?10'>Daily Stats</a>" : "<b>Daily Stats</b>")." | ".
+(e_QUERY != 11 ? "<a href='$path?11'>Monthly Stats</a>" : "<b>Monthly Stats</b>")." | ".
 (e_QUERY != 3 && $pref['statBrowser'] ? "<a href='$path?3'>Browser Stats</a> | " : ($pref['statBrowser'] ? "<b>Browser Stats</b> | " : "")).
 (e_QUERY != 4 && $pref['statOs'] ? "<a href='$path?4'>Operating System Stats</a> | " : ($pref['statOs'] ? "<b>Operating System Stats</b> | " : "")).
 (e_QUERY != 5 && $pref['statDomain'] ? "<a href='$path?5'>Domain Stats</a> | " : ($pref['statDomain'] ? "<b>Domain Stats</b> | " : "")).
@@ -238,7 +246,7 @@ class siteStats {
 		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>Page</td>\n<td class='fcaption' style='width: 70%;'>Visits Today</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
 		foreach($totalArray as $key => $info) {
 			$percentage = round(($info['ttl']/$totalv) * 100, 2);
-			$text .= "<tr class='forumheader'>\n<td style='width: 20%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;'> <a href='".$info['url']."'>".$key."</a></td>\n<td style='width: 70%;'><img src='".$this -> barImage."' style='width: $percentage%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info['ttl']." [".$info['unq']."]</td>\n<td style='width: 10%; text-align: center;'>".$percentage."%</td>\n</tr>\n";
+			$text .= "<tr class='forumheader'>\n<td style='width: 20%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;'> <a href='".$info['url']."'>".$key."</a></td>\n<td style='width: 70%;'><img src='".$this -> barImage."' style='width: ".($percentage > 90 ? 90 : $percentage)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info['ttl']." [".$info['unq']."]</td>\n<td style='width: 10%; text-align: center;'>".$percentage."%</td>\n</tr>\n";
 		}
 		$text .= "<tr class='forumheader'><td colspan='2'>Total</td><td style='text-align: center;'>$totalv</td></tr>\n<tr class='forumheader'><td colspan='2'>Unique</td><td style='text-align: center;'>$totalu</td></tr>\n</table>";
 		return $text;
@@ -570,6 +578,151 @@ class siteStats {
 
 	}
 
+
+	function renderDaily() {
+		global $sql;
+
+		if($amount = $sql -> db_Select("logstats", "*", "log_id REGEXP('[[:digit:]]+.[[:digit:]]+.[[:digit:]]+') ORDER BY log_id DESC LIMIT 0,14")) {
+			$array = $sql -> db_getList();
+			$dailyArray = array();
+			$dailytotal = array();
+			foreach($array as $info) {
+				$date = $info['log_id'];
+				$stats = unserialize($info['log_data']);
+
+				foreach($stats as $key => $total) {
+					$dailyArray[$key]['totalv'] += $total['ttlv'];
+					$dailyArray[$key]['uniquev'] += $total['unqv'];
+					$dailytotal[$date]['totalv'] += $total['ttlv'];
+					$dailytotal[$date]['uniquev'] += $total['unqv'];
+				}
+			}
+		}
+
+		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>Visits in last $amount days</td>\n<td class='fcaption' style='width: 70%;'>Visits</td>\n</tr>\n";
+	
+		$ratio = $this -> getWidthRatio ($dailytotal, "totalv");
+		foreach($dailytotal as $date => $total) {
+			list($day, $month, $year) = explode(".", $date);
+			$date = strftime ("%A, %B %d", mktime (0,0,0,$month,$day,$year));
+			$barWidth = ($total['totalv'] / $ratio);
+			$text .= "<tr class='forumheader'>
+			<td style='width: 30%;'>$date</td>
+			<td style='width: 30%;'><img src='".$this -> barImage."' style='width: ".($barWidth > 90 ? 90 : $barWidth)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$total['totalv']."</td>
+			</tr>\n";
+		}
+
+		$text .= "</table>";
+
+		
+		$text .= "<br /><table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>Unique visits in last $amount days</td>\n<td class='fcaption' style='width: 70%;'>Visits</td>\n</tr>\n";
+	
+		$ratio = $this -> getWidthRatio ($dailytotal, "uniquev");
+		foreach($dailytotal as $date => $total) {
+			list($day, $month, $year) = explode(".", $date);
+			$date = strftime ("%A, %B %d", mktime (0,0,0,$month,$day,$year));
+			$barWidth = ($total['uniquev'] / $ratio);
+			$text .= "<tr class='forumheader'>
+			<td style='width: 30%;'>$date</td>
+			<td style='width: 30%;'><img src='".$this -> barImage."' style='width: ".($barWidth > 90 ? 90 : $barWidth)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$total['uniquev']."</td>
+			</tr>\n";
+		}
+		$text .= "</table>";
+
+
+		$text .= "<br /><table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>Visits in last $amount days by page</td>\n<td class='fcaption' style='width: 70%;'>Visits</td>\n</tr>\n";
+		
+		$ratio = $this -> getWidthRatio ($dailyArray, "totalv");
+		$newArray = $this -> arraySort($dailyArray, "totalv");
+		foreach($newArray as $key => $total) {
+			$barWidth = ($total['totalv'] / $ratio);
+			$text .= "<tr class='forumheader'>
+			<td style='width: 30%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;'> $key</td>
+			<td style='width: 30%;'><img src='".$this -> barImage."' style='width: ".($barWidth > 90 ? 90 : $barWidth)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$total['totalv']."</td>
+			</tr>\n";
+		}
+		$text .= "</table>";
+
+		$text .= "<br /><table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>Unique visits in last $amount days by page</td>\n<td class='fcaption' style='width: 70%;'>Visits</td>\n</tr>\n";
+		
+		$ratio = $this -> getWidthRatio ($dailyArray, "uniquev");
+		$newArray = $this -> arraySort($dailyArray, "uniquev");
+		foreach($newArray as $key => $total) {
+			$barWidth = ($total['uniquev'] / $ratio);
+			$text .= "<tr class='forumheader'>
+			<td style='width: 30%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;'> $key</td>
+			<td style='width: 30%;'><img src='".$this -> barImage."' style='width: ".($barWidth > 90 ? 90 : $barWidth)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$total['uniquev']."</td>
+			</tr>\n";
+		}
+		$text .= "</table>";
+		return $text;
+	}
+
+	function renderMonthly() {
+		global $sql;
+		
+		if(!$sql -> db_Select("logstats", "*", "log_id REGEXP('[[:digit:]]+-[[:digit:]]+')")) {
+			return "No monthly stats yet.";
+		}
+
+		$array = $sql -> db_getList();
+
+		$monthTotal = array();
+		foreach($array as $info) {
+			$date = $info['log_id'];
+			$stats = unserialize($info['log_data']);
+
+			foreach($stats as $key => $total) {
+				$monthTotal[$date]['totalv'] += $total['ttlv'];
+				$monthTotal[$date]['uniquev'] += $total['unqv'];
+			}
+		}
+
+		$ratio = $this -> getWidthRatio ($monthTotal, "totalv");
+		$text .= "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>Visits by month</td>\n<td class='fcaption' style='width: 70%;'>Visits</td>\n</tr>\n";
+		
+		foreach($monthTotal as $date => $total) {
+			list($month, $year) = explode("-", $date);
+			$date = strftime ("%B %Y", mktime (0,0,0,$month,1,$year));
+			$barWidth = ($total['totalv'] / $ratio);
+			$text .= "<tr class='forumheader'>
+			<td style='width: 30%;'>$date</td>
+			<td style='width: 30%;'><img src='".$this -> barImage."' style='width: ".($barWidth > 90 ? 90 : $barWidth)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$total['totalv']."</td>
+			</tr>\n";
+		}
+		$text .= "</table>";
+
+		$ratio = $this -> getWidthRatio ($monthTotal, "totalv");
+		$text .= "<br /><table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>Unique visits by month</td>\n<td class='fcaption' style='width: 70%;'>Visits</td>\n</tr>\n";
+		
+		foreach($monthTotal as $date => $total) {
+			list($month, $year) = explode("-", $date);
+			$date = strftime ("%B %Y", mktime (0,0,0,$month,1,$year));
+			$barWidth = ($total['uniquev'] / $ratio);
+			$text .= "<tr class='forumheader'>
+			<td style='width: 30%;'>$date</td>
+			<td style='width: 30%;'><img src='".$this -> barImage."' style='width: ".($barWidth > 90 ? 90 : $barWidth)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$total['uniquev']."</td>
+			</tr>\n";
+		}
+		$text .= "</table>";
+
+
+		return $text;
+	}
+
+
+	function getWidthRatio ($array, $column) {
+		$tmpArray = $this -> arraySort($array, $column);
+		$data = each($tmpArray);
+		$maxValue = $data[1]['totalv'];
+
+		$ratio = 0;
+		while($maxValue > 100) {
+			$maxValue = ($maxValue / 2);
+			$ratio ++;
+		}
+		return $ratio;
+	}
 }
 
 ?>
