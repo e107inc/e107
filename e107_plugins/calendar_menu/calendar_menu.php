@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar_menu.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-04-03 19:57:26 $
+|     $Revision: 1.11 $
+|     $Date: 2005-04-03 20:41:16 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -117,11 +117,11 @@ $cal_months = Array(EC_LAN_0, EC_LAN_1, EC_LAN_2, EC_LAN_3, EC_LAN_4, EC_LAN_5, 
 // changed by rezso
 if($pref['eventpost_dateformat'] == 'my')
 {
-	$calendar_title = "<a class='forumlink' href='" . e_PLUGIN . "calendar_menu/event.php' class='mmenu'>" . $cal_months[$cal_datearray[mon]-1] . " " . $current_year . "</a>";
+	$calendar_title = "<a class='forumlink' href='" . e_PLUGIN . "calendar_menu/event.php' class='mmenu'>" . $cal_months[$cal_datearray['mon']-1] . " " . $cal_current_year . "</a>";
 }
 else
 {
-	$calendar_title = "<a class='forumlink' href='" . e_PLUGIN . "calendar_menu/event.php' class='mmenu'>" . $cal_current_year . " " . $cal_months[$cal_datearray[mon]-1] . "</a>";
+	$calendar_title = "<a class='forumlink' href='" . e_PLUGIN . "calendar_menu/event.php' class='mmenu'>" . $cal_current_year . " " . $cal_months[$cal_datearray['mon']-1] . "</a>";
 }
 //$calendar_title = "<a class='forumlink' href='" . $ec_dir . "calendar.php'>" . $cal_months[$cal_datearray[mon]-1] . " " . $cal_current_year . "</a>";
 // -----------------------------------------------------------------------------------------------------------
