@@ -12,11 +12,12 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.3 $
-|   $Date: 2004-09-28 11:37:59 $
+|   $Revision: 1.4 $
+|   $Date: 2004-09-28 12:52:27 $
 |   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
+if(!defined("e_HTTP")){ exit; }
 echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='iso-8859-1' ?>");
 if(file_exists(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_header.php")){@include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_header.php");}else{@include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_header.php");}
 
