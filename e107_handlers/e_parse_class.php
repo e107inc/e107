@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-02-08 15:33:08 $
+|     $Revision: 1.22 $
+|     $Date: 2005-02-10 14:35:25 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -48,7 +48,7 @@ class e_parse {
 		return html_entity_decode($text, $mode, CHARSET);
 	}
 	 
-	function post_toHTML($text, $modifier=TRUE) {
+	function post_toHTML($text, $modifier=TRUE, $extra='') {
 
 		/*
 		changes by jalist 30/01/2005:
@@ -71,7 +71,7 @@ class e_parse {
 		} else {
 			$text = htmlentities($text, ENT_QUOTES, CHARSET);
 		}
-		return ($modifier ? $this->toHTML($text, TRUE) : $text);
+		return ($modifier ? $this->toHTML($text, TRUE, $extra) : $text);
 	}
 	 
 	function post_toForm($text) {
@@ -178,11 +178,18 @@ class e_parse {
 			$text = $this->e_pf->filterProfanities($text);
 		}
 		 
-		$nl_replace = (strpos($modifiers, 'nobreak') === FALSE) ? "<br />" : "";
+		$nl_replace = "<br />";
+		if (strpos($modifiers, 'nobreak') !== FALSE)
+		{
+			$nl_replace = '';
+		}
+		elseif (strpos($modifiers, 'retain_nl') !== FALSE)
+		{
+			$nl_replace = "\n";
+		}
 		$text = str_replace('[E_NL]', $nl_replace, $text);
 		return $text;
 	}
-	 
 	 
 	function toJS($stringarray) {
 		$trans_tbl = get_html_translation_table (HTML_ENTITIES);
