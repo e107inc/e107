@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/login.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:45 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-05 10:39:05 $
+|     $Author: pholzmann $
 +----------------------------------------------------------------------------+
 */
 
@@ -87,7 +87,7 @@ $ns -> tablerender($login_message, $text);
 echo "<div style='width:70%;margin-right:auto;margin-left:auto'><div style='text-align:center'><br />";
 
 if($pref['user_reg']){
-        echo "<a href='".e_SIGNUP."'>Signup</a>";
+        echo "<a href='".e_SIGNUP."'>Register as a New User</a>";
 }
 echo "&nbsp;&nbsp;&nbsp;<a href='fpw.php'>Forgot Password</a></div></div>";
 
