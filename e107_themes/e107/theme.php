@@ -11,11 +11,19 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107/theme.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:42 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-10-04 21:27:27 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
+
+// [multilanguage]
+
+if(file_exists(e_THEME."e107/languages/".e_LANGUAGE.".php")){
+  require_once(e_THEME."e107/languages/".e_LANGUAGE.".php");
+}else{
+  require_once(e_THEME."e107/languages/English.php");
+}
 
 // [theme]
 
@@ -176,9 +184,9 @@ on
 
 
 define("ICONSTYLE", "float: left; border:0");
-define("COMMENTLINK", "Comments: ");
-define("COMMENTOFFSTRING", "Comments are turned off for this item");
-define("EXTENDEDSTRING", "Read more ...");
+define("COMMENTLINK", LAN_THEME_1);
+define("COMMENTOFFSTRING", LAN_THEME_2);
+define("EXTENDEDSTRING", LAN_THEME_3);
 
 
 // [linkstyle]
