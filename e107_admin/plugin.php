@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-01-26 20:32:25 $
-|     $Author: sweetas $
+|     $Revision: 1.14 $
+|     $Date: 2005-01-27 00:29:35 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -171,11 +171,11 @@ if($action == 'install') {
 		}
 
 		if(is_array($eplug_tables)) {
-			$err = $plugin->manage_tables('add',$eplug_tables);
-			if($err === TRUE) {
-				$text .= EPL_ADLAN_19.'<br />';
+			$result = $plugin->manage_tables('add',$eplug_tables);
+			if($result === TRUE) {
+				$text .= EPL_ADLAN_19.'<br />';  //success
 			} else {
-				$text .= EPL_ADLAN_18.'<br />';
+				$text .= EPL_ADLAN_18.'<br />';  //fail
 			}
 		}
 
