@@ -20,89 +20,89 @@ $aj = new textparse;
 $sql2=new db;
 
 function check_allowed($class_id){
-	global $sql;
-	if(!$sql -> db_Select("userclass_classes","*","userclass_id = {$class_id}")){
-		header("location:".SITEURL);
-		exit;
-	}
-	$row = $sql -> db_Fetch();
-	extract($row);
-	if(!getperms("0") && !check_class($userclass_editclass)){
-		header("location:".SITEURL);
-		exit;
-	}
+        global $sql;
+        if(!$sql -> db_Select("userclass_classes","*","userclass_id = {$class_id}")){
+                header("location:".SITEURL);
+                exit;
+        }
+        $row = $sql -> db_Fetch();
+        extract($row);
+        if(!getperms("0") && !check_class($userclass_editclass)){
+                header("location:".SITEURL);
+                exit;
+        }
 }
 
 if(strstr(e_QUERY, "clear")){
-	$tmp = explode(".", e_QUERY);
-	$class_id = $tmp[1];
-	check_allowed($class_id);
-	if($sql -> db_Select("user", "*", "user_class REGEXP('^{$class_id}\.') OR user_class REGEXP('\.{$class_id}\.') OR user_class REGEXP('\.{$class_id}$')")){
-		while($row = $sql -> db_Fetch()){
-			extract($row);
-			$cl=explode(".",$user_class);
-			$i=array_search($class_id,$cl);
-			if(is_numeric($i)){
-				unset($cl[$i]);
-				$user_class=implode(".",$cl);
-				$sql2 -> db_Update("user", "user_class='$user_class' WHERE user_id='$user_id' ");
-			}
-		}
-		$message = UCSLAN_1;
-	}
+        $tmp = explode(".", e_QUERY);
+        $class_id = $tmp[1];
+        check_allowed($class_id);
+        if($sql -> db_Select("user", "*", "user_class REGEXP('^{$class_id}\.') OR user_class REGEXP('\.{$class_id}\.') OR user_class REGEXP('\.{$class_id}$')")){
+                while($row = $sql -> db_Fetch()){
+                        extract($row);
+                        $cl=explode(".",$user_class);
+                        $i=array_search($class_id,$cl);
+                        if(is_numeric($i)){
+                                unset($cl[$i]);
+                                $user_class=implode(".",$cl);
+                                $sql2 -> db_Update("user", "user_class='$user_class' WHERE user_id='$user_id' ");
+                        }
+                }
+                $message = UCSLAN_1;
+        }
 }else if(e_QUERY){
-	$tmp2 = explode("-", e_QUERY);
-	$class_id = $tmp2[0];
-	check_allowed($class_id);
-	$tmp = explode(".", $tmp2[1]);
-	$tmp=array_flip($tmp);
-	$message = UCSLAN_2;
+        $tmp2 = explode("-", e_QUERY);
+        $class_id = $tmp2[0];
+        check_allowed($class_id);
+        $tmp = explode(".", $tmp2[1]);
+        $tmp=array_flip($tmp);
+        $message = UCSLAN_2;
 
-	$sql -> db_Select("user", "*");
-	while($row = $sql -> db_Fetch()){
-		extract($row);
-		if(array_key_exists($user_id,$tmp)){  //Add user to the class
-			$cl=explode(".",$user_class);
-			$flip=array_flip($cl);
-			if(!array_key_exists($class_id,$flip)){
-				array_push($cl,$class_id);
-				$user_class=implode(".",$cl);
-				$sql2 -> db_Update("user", "user_class='$user_class' WHERE user_id='$user_id' ");
-			}
-		} else {  //Remove user from class
-			$cl=explode(".",$user_class);
-			$i=array_search($class_id,$cl);
-			if(is_numeric($i)){  //Belongs to array?
-				unset($cl[$i]);
-				$user_class=implode(".",$cl);
-				$sql2 -> db_Update("user", "user_class='$user_class' WHERE user_id='$user_id' ");
-			}
-		}
-	}
+        $sql -> db_Select("user", "*");
+        while($row = $sql -> db_Fetch()){
+                extract($row);
+                if(array_key_exists($user_id,$tmp)){  //Add user to the class
+                        $cl=explode(".",$user_class);
+                        $flip=array_flip($cl);
+                        if(!array_key_exists($class_id,$flip)){
+                                array_push($cl,$class_id);
+                                $user_class=implode(".",$cl);
+                                $sql2 -> db_Update("user", "user_class='$user_class' WHERE user_id='$user_id' ");
+                        }
+                } else {  //Remove user from class
+                        $cl=explode(".",$user_class);
+                        $i=array_search($class_id,$cl);
+                        if(is_numeric($i)){  //Belongs to array?
+                                unset($cl[$i]);
+                                $user_class=implode(".",$cl);
+                                $sql2 -> db_Update("user", "user_class='$user_class' WHERE user_id='$user_id' ");
+                        }
+                }
+        }
 }
 
 If(IsSet($_POST['delete'])){
-	$sql2=new db;
-	$class_id = $_POST['existing'];
+        $sql2=new db;
+        $class_id = $_POST['existing'];
    check_allowed($class_id);
-	if($_POST['confirm']){
-		$sql -> db_Delete("userclass_classes", "userclass_id='".$_POST['existing']."' ");
-		$sql -> db_Select("user", "user_id, user_class", "user_class REGEXP('^{$class_id}\.') OR user_class REGEXP('\.{$class_id}\.') OR user_class REGEXP('\.{$class_id}$')");
-		while($row = $sql -> db_Fetch()){
-			extract($row);
-			$classes=explode(".",$user_class);
-			$newclass="";
-			foreach($classes as $c){
-				if($c !==$_POST['existing'] && $c){
-					$newclass.=".".$c;
-				}
-			}
-			$sql2 -> db_Update("user","user_class='$newclass' WHERE user_id='$user_id' ");
-		}
-		$message = UCSLAN_3;
-	} else {
-		$message = UCSLAN_4;
-	}
+        if($_POST['confirm']){
+                $sql -> db_Delete("userclass_classes", "userclass_id='".$_POST['existing']."' ");
+                $sql -> db_Select("user", "user_id, user_class", "user_class REGEXP('^{$class_id}\.') OR user_class REGEXP('\.{$class_id}\.') OR user_class REGEXP('\.{$class_id}$')");
+                while($row = $sql -> db_Fetch()){
+                        extract($row);
+                        $classes=explode(".",$user_class);
+                        $newclass="";
+                        foreach($classes as $c){
+                                if($c !==$_POST['existing'] && $c){
+                                        $newclass.=".".$c;
+                                }
+                        }
+                        $sql2 -> db_Update("user","user_class='$newclass' WHERE user_id='$user_id' ");
+                }
+                $message = UCSLAN_3;
+        } else {
+                $message = UCSLAN_4;
+        }
 }
 
 If(IsSet($_POST['edit'])){
@@ -120,23 +120,23 @@ if(IsSet($_POST['updateclass'])){
 }
 
 if(IsSet($_POST['createclass'])){
-	$_POST['userclass_name'] = $aj -> formtpa($_POST['userclass_name'], "admin");
-	$_POST['userclass_description'] = $aj -> formtpa($_POST['userclass_description'], "admin");
+        $_POST['userclass_name'] = $aj -> formtpa($_POST['userclass_name'], "admin");
+        $_POST['userclass_description'] = $aj -> formtpa($_POST['userclass_description'], "admin");
 
-	if(getperms("0") || check_class($_POST['userclass_editclass']) && $_POST['userclass_editclass']){
-		$editclass = $_POST['userclass_editclass'];
-		$i=1;
-		while($sql -> db_Select("userclass_classes", "*", "userclass_id='".$i."' ") && $i<255){
-			$i++;
-		}
-		if($i<255){
-			$sql -> db_Insert("userclass_classes", $i.", '".strip_tags(strtoupper($_POST['userclass_name']))."', '".$_POST['userclass_description']."',{$editclass} ");
-		}
-		$message = UCSLAN_6;
-	} else {
-		header("location:".SITEURL);
-		exit;
-	}
+        if(getperms("0") || check_class($_POST['userclass_editclass']) && $_POST['userclass_editclass']){
+                $editclass = $_POST['userclass_editclass'];
+                $i=1;
+                while($sql -> db_Select("userclass_classes", "*", "userclass_id='".$i."' ") && $i<255){
+                        $i++;
+                }
+                if($i<255){
+                        $sql -> db_Insert("userclass_classes", $i.", '".strip_tags(strtoupper($_POST['userclass_name']))."', '".$_POST['userclass_description']."',{$editclass} ");
+                }
+                $message = UCSLAN_6;
+        } else {
+                header("location:".SITEURL);
+                exit;
+        }
 }
 
 if(IsSet($message)){
@@ -152,21 +152,21 @@ $text = "<div style='text-align:center'>
 <td class='forumheader' style='text-align:center' colspan='2'>";
 
 if($class_total == "0"){
-	$text .= UCSLAN_7;
+        $text .= UCSLAN_7;
 } else {
-	$text .= "<span class='defaulttext'>".UCSLAN_8.":</span>
-	<select name='existing' class='tbox'>";
-	while($row = $sql-> db_Fetch()){
-		if(check_class($row['userclass_editclass']) || getperms("0")){
-			$text .= "<option value='{$row['userclass_id']}'>{$row['userclass_name']}</option>";
-		}
-	}
-	$text .= "</select>
-	<input class='button' type='submit' name='edit' value='".UCSLAN_9."' />
-	<input class='button' type='submit' name='delete' value='".UCSLAN_10."' />
-	<input type='checkbox' name='confirm' value='1'><span class='smalltext'> ".UCSLAN_11."</span>
-	</td>
-	</tr>";
+        $text .= "<span class='defaulttext'>".UCSLAN_8.":</span>
+        <select name='existing' class='tbox'>";
+        while($row = $sql-> db_Fetch()){
+                if(check_class($row['userclass_editclass']) || getperms("0")){
+                        $text .= "<option value='{$row['userclass_id']}'>{$row['userclass_name']}</option>";
+                }
+        }
+        $text .= "</select>
+        <input class='button' type='submit' name='edit' value='".UCSLAN_9."' />
+        <input class='button' type='submit' name='delete' value='".UCSLAN_10."' />
+        <input type='checkbox' name='confirm' value='1' /><span class='smalltext'> ".UCSLAN_11."</span>
+        </td>
+        </tr>";
 }
 
 $text.="
@@ -266,8 +266,8 @@ require_once("footer.php");
 function headerjs(){
 
 $script_js= "<script type=\"text/javascript\">
-<!--
-<!-- Adapted from original:  Kathi O'Shea (Kathi.O'Shea@internet.com) -->
+//<![CDATA[
+// Adapted from original:  Kathi O'Shea (Kathi.O'Shea@internet.com)
 function moveOver()
 {
 var boxLength = document.getElementById('assignclass2').length;
@@ -338,7 +338,7 @@ else {
 location.href = document.location + \"?\" + clid + \"-\" + strValues;
    }
 }
-// -->
+//]]>
 </script>\n";
  return $script_js;
 }
@@ -346,4 +346,3 @@ location.href = document.location + \"?\" + clid + \"-\" + strValues;
 
 
 ?>
-
