@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/tree_menu/tree_menu.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-02-12 21:33:27 $
-|     $Author: stevedunstan $
+|     $Revision: 1.12 $
+|     $Date: 2005-02-13 13:13:15 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 	
@@ -126,7 +126,7 @@ function setlink($link_name, $link_url, $link_open, $link_description) {
 		$link_append = "";
 		break;
 		default:
-		unset($link_append);
+		$link_append = '';
 	}
 	if (!strstr($link_url, "http:")) {
 		$link_url = e_BASE.$link_url;
@@ -139,7 +139,7 @@ function setlink($link_name, $link_url, $link_open, $link_description) {
 	return $link;
 }
 	
-($_COOKIE["treemenustatus"] ? $treemenustatus = $_COOKIE["treemenustatus"] : $treemenustatus = "0");
+(isset($_COOKIE["treemenustatus"]) && $_COOKIE["treemenustatus"]) ? $treemenustatus = $_COOKIE["treemenustatus"] : $treemenustatus = "0";
 	
 $text .= "
 	<script type='text/javascript'>
