@@ -60,11 +60,15 @@ while ($file = readdir($handle)){
 }
 
 closedir($handle);
+$fader_onload = ($sql -> db_Select("menus", "*", "menu_name='fader_menu' AND menu_location!='0' ") ? "changecontent()" : "");
 echo "\nfor(i=0;i<(".$nbrpic."-1);i++){ preloadimages(i,listpics[i]); }
 // -->
 </script>
+<script type='text/javascript'>
+window.onload=function(){externalLinks(); ".$fader_onload."}
+</script>
 </head>
-<body>";
+<body >";
 //echo "XX - ".$e107_popup;
 // require $e107_popup =1; to use it as header for popup without menus
 if($e107_popup != 1){
