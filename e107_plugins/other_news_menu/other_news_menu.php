@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/other_news_menu/other_news_menu.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-02-15 00:41:08 $
+|     $Revision: 1.10 $
+|     $Date: 2005-02-22 02:08:02 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -60,11 +60,25 @@ if(!defined("OTHERNEWS_CATICON")){
 	define("OTHERNEWS_CATICON","border:0px");
 }
 
+if(!defined("OTHERNEWS_COLS")){
+	define("OTHERNEWS_COLS","1");
+}
+
+if(!defined("OTHERNEWS_CELL")){
+	define("OTHERNEWS_CELL","padding:0px;vertical-align:top");
+}
+
+if(!defined("OTHERNEWS_SPACING")){
+	define("OTHERNEWS_SPACING","0");
+}
+
 $param['itemlink'] = OTHERNEWS_ITEMLINK;
 $param['thumbnail'] = OTHERNEWS_THUMB;
 $param['catlink'] = OTHERNEWS_CATLINK;
 $param['caticon'] = OTHERNEWS_CATICON;
 
+$style = OTHERNEWS_CELL;
+$nbr_cols = OTHERNEWS_COLS;
 
 
 	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
@@ -73,9 +87,31 @@ $param['caticon'] = OTHERNEWS_CATICON;
 		WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type=2  ORDER BY n.news_datestamp DESC LIMIT 0,".OTHERNEWS_LIMIT;
 
 	if ($sql->db_Select_gen($query)){
+    $text = "<table style='width:100%' cellpadding='0' cellspacing='".OTHERNEWS2_SPACING."'>";
+    $t = 0;
+	$wid = floor(100/$nbr_cols);
 		while ($row = $sql->db_Fetch()) {
-			$text .= $ix->parse_newstemplate($row,$OTHERNEWS_STYLE,$param);
+		$text .= ($t % $nbr_cols == 0) ? "<tr>" : "";
+		$text .= "\n<td style='$style ; width:$wid%;'>\n";
+		$text .= $ix->parse_newstemplate($row,$OTHERNEWS_STYLE,$param);
+
+    	$text .= "\n</td>\n";
+		if (($t+1) % $nbr_cols == 0) {
+			$text .= "</tr>";
+			$t++;
+		} else {
+			$t++;
 		}
+	}
+
+
+    while ($t % $nbr_cols != 0){
+		$text .= "<td style='width:$wid'>&nbsp;</td>\n";
+		$text .= (($t+1) % nbr_cols == 0) ? "</tr>" : "";
+		$t++;
+			
+		}
+	$text .= "</table>";
 
 		$ns->tablerender(TD_MENU_L1, $text, 'other_news');
 	}
