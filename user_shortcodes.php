@@ -118,7 +118,15 @@ return $gen -> computeLapse($user['user_join'])." ".LAN_426;
 SC_END
 
 SC_BEGIN USER_REALNAME_ICON
-return defined("USER_REALNAME_ICON") ? USER_REALNAME_ICON : "<img src='".e_IMAGE."user_icons/user_realname_".IMODE.".png' alt='' style='vertical-align:middle; height:16px; width:16px' /> ";
+if(defined("USER_REALNAME_ICON"))
+{
+	return USER_REALNAME_ICON;
+}
+if(file_exists(THEME."generic/user_realname.png"))
+{
+	return "<img src='".THEME."generic/user_realname.png' alt='' style='vertical-align:middle;' /> ";
+}
+return "<img src='".e_IMAGE."user_icons/user_realname_".IMODE.".png' alt='' style='vertical-align:middle;' /> ";
 SC_END
 
 SC_BEGIN USER_REALNAME
@@ -127,7 +135,15 @@ return $user['user_login'] ? $user['user_login'] : "<i>".LAN_401."</i>";
 SC_END
 
 SC_BEGIN USER_EMAIL_ICON
-return defined("USER_EMAIL_ICON") ? USER_EMAIL_ICON : "<img src='".e_IMAGE."generic/email_".IMODE.".png' alt='' style='vertical-align:middle; height:16px; width:16px' /> ";
+if(defined("USER_EMAIL_ICON"))
+{
+	return USER_EMAIL_ICON;
+}
+if(file_exists(THEME."generic/email.png"))
+{
+	return "<img src='".THEME."generic/email.png' alt='' style='vertical-align:middle;' /> ";
+}
+return "<img src='".e_IMAGE."generic/".IMODE."/email.png' alt='' style='vertical-align:middle;' /> ";
 SC_END
 
 SC_BEGIN USER_EMAIL_LINK
@@ -141,12 +157,31 @@ return ($user['user_hideemail'] && !ADMIN) ? "<i>".LAN_143."</i>" : "<a href='ma
 SC_END
 
 SC_BEGIN USER_ICON
-return defined("USER_ICON") ? USER_ICON : "<img src='".e_IMAGE."generic/user_".IMODE.".png' alt='' style='vertical-align:middle; height:16px; width:16px; border:0' /> ";
+if(defined("USER_ICON"))
+{
+	return USER_ICON;
+}
+if(file_exists(THEME."generic/user.png"))
+{
+	return "<img src='".THEME."generic/user.png' alt='' style='vertical-align:middle;' /> ";
+}
+return "<img src='".e_IMAGE."user_icons/user_".IMODE.".png' alt='' style='vertical-align:middle;' /> ";
 SC_END
 
 SC_BEGIN USER_ICON_LINK
 global $user;
-$icon = defined("USER_ICON") ? USER_ICON : "<img src='".e_IMAGE."generic/user_".IMODE.".png' alt='' style='vertical-align:middle; height:16px; width:16px; border:0' /> ";
+if(defined("USER_ICON"))
+{
+	$icon = USER_ICON;
+}
+else if(file_exists(THEME."generic/user.png"))
+{
+	$icon = "<img src='".THEME."generic/user.png' alt='' style='vertical-align:middle;' /> ";
+}
+else
+{
+	$icon = "<img src='".e_IMAGE."user_icons/user_".IMODE.".png' alt='' style='vertical-align:middle;' /> ";
+}
 return "<a href='".e_SELF."?id.{$user['user_id']}'>{$icon}</a>";
 SC_END
 
@@ -166,7 +201,15 @@ return $user['user_id'];
 SC_END
 
 SC_BEGIN USER_BIRTHDAY_ICON
-return defined("USER_BIRTHDAY_ICON") ? USER_BIRTHDAY_ICON : "<img src='".e_IMAGE."user_icons/user_birthday_".IMODE.".png' alt='' style='vertical-align:middle; height:16px; width:16px' /> ";
+if(defined("USER_BIRTHDAY_ICON"))
+{
+	return USER_BIRTHDAY_ICON;
+}
+if(file_exists(THEME."generic/user_birthday.png"))
+{
+	return "<img src='".THEME."generic/user_birthday.png' alt='' style='vertical-align:middle;' /> ";
+}
+return "<img src='".e_IMAGE."user_icons/user_birthday_".IMODE.".png' alt='' style='vertical-align:middle;' /> ";
 SC_END
 
 SC_BEGIN USER_BIRTHDAY
