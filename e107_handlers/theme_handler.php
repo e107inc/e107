@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-02-20 18:17:51 $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-22 22:14:41 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -182,7 +182,7 @@ class themeHandler{
 		foreach($this -> themeArray as $theme) {
 			$author = ($theme['email'] ? "<a href='mailto:".$theme['email']."' title='$".$theme['email']."'>".$theme['author']."</a>" : $theme['author']);
 			$website = ($theme['website'] ? "<a href='".$theme['website']."' rel='external'>".$theme['website']."</a>" : "");
-			$preview = ($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;' alt='' />" : "<img src='".e_IMAGE."generic/nopreview.png' title='".TPVLAN_12."' alt='' />");
+			$preview = "<a href='".e_SELF."?preview.".$theme['id']."' title='".TPVLAN_9."'>".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;' alt='' />" : "<img src='".e_IMAGE."generic/nopreview.png' title='".TPVLAN_12."' alt='' />")."</a>";
 			$text .= "<tr>
 			<td class='forumheader3' style='width:30%; text-align:center; vertical-align:top'>$preview
 			<br />
