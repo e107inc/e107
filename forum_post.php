@@ -696,7 +696,7 @@ function getuser($name){
                 // anonymous guest
                 $name = "0.".LAN_311.chr(1).$ip;
         }else{
-                $sql = new db;
+                //$sql = new db;
                 if($sql -> db_Select("user", "*", "user_name='$name' ")){
                         $ip = getip();
                         if($sql -> db_Select("user", "*", "user_name='$name' AND user_ip='$ip' ")){
