@@ -59,7 +59,7 @@ if(IsSet($_POST['replysubmit'])){
 			header("location:".e_BASE."content.php?".$_POST['content_type'].".".$nid."");
 			exit;
 		}elseif($table == "bugtrack"){
-			header("location:".e_PLUGIN."bugtrack/bugtracker.php");
+			header("location:".e_PLUGIN."bugtracker/bugtracker.php");
 			exit;
 		}								
 	}
