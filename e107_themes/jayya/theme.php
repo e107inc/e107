@@ -49,7 +49,7 @@ $HEADER = "<table class='top_section'>
 </td>
 
 <td class='top_section_right' style='padding: 0px; white-space: nowrap; width: 170px'>
-{CUSTOM=search++default}
+{CUSTOM=search+default}
 </td>
 </tr>
 </table>
@@ -204,7 +204,7 @@ $COMMENTSTYLE = "
 <table style='width: 100%;'>
 <tr>
 <td style='width: 10%;'>{USERNAME}<br />{TIMEDATE}<br />{AVATAR}<br />{REPLY}</td>
-<td style='width: 90%; background-color: #fdf9f9; vertical-align: top; padding: 4px'>
+<td style='width: 90%; background-color: #f9f9fd; vertical-align: top; padding: 4px'>
 {COMMENT}
 </td>
 </tr>
