@@ -49,7 +49,7 @@ if($sql -> db_Select("banner", "*", $banneridquery." ORDER BY RAND($seed) ")){
 	{
 		$fileext1 = substr(strrchr($row['banner_image'], "."), 1);
 		$fileext2 = substr(strrchr($row['banner_image'], "."), 0);
-		$sql->db_Update("banner", "banner_impressions=banner_impressions+1 WHERE banner_id='{$row['banner_id']}' ",'default','now');
+		$sql->db_Update("banner", "banner_impressions=banner_impressions+1 WHERE banner_id='{$row['banner_id']}' ");
 		if ($fileext1 == 'swf')
 		{
 			return "
