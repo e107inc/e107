@@ -570,4 +570,16 @@ CREATE TABLE wmessage (
   wm_text text NOT NULL,
   wm_active tinyint(3) unsigned NOT NULL default '0'
 ) TYPE=MyISAM;
+# --------------------------------------------------------
 
+#
+# Table structure for table `parser`
+#
+
+CREATE TABLE parser (
+  parser_id int(10) unsigned NOT NULL auto_increment,
+  parser_pluginname varchar(100) NOT NULL default '',
+  parser_regexp varchar(100) NOT NULL default '',
+  PRIMARY KEY  (parser_id)
+) TYPE=MyISAM;
+# --------------------------------------------------------

@@ -15,6 +15,7 @@
 require_once("../class2.php");
 if(!getperms("Z")){ header("location:".e_HTTP."index.php"); exit; }
 require_once("auth.php");
+require_once(e_HANDLER."parser_handler.php");
 
 //	check for new plugins, create entry in plugin table ...
 $handle=opendir(e_PLUGIN);
@@ -111,6 +112,9 @@ if(IsSet($_POST['confirm'])){
 			$sql -> db_Delete("userclass_classes", "userclass_name='$eplug_userclass' ");
 		}
 
+		if(is_array($eplug_parse)){
+			$sql -> db_Delete("parser","parser_pluginname='".$eplug_folder."'");
+		}
 
 		$sql -> db_Update("plugin", "plugin_installflag=0, plugin_version='$eplug_version' WHERE plugin_id='$id' ");
 		$text .= "<br />".EPL_ADLAN_31." <b>".e_PLUGIN.$eplug_folder."</b> ".EPL_ADLAN_32;
@@ -151,6 +155,13 @@ if(strstr(e_QUERY, "install")){
 			save_prefs();
 			$text .= EPL_ADLAN_20."<br />";
 			
+		}
+
+		if(is_array($eplug_parse)){
+			while(list($key, $e_regexp) = each($eplug_parse)){
+				register_parser($eplug_folder,$e_regexp);
+			}
+			$text .= EPL_ADLAN_35."<br />";
 		}
 
 		if($eplug_link){
@@ -200,6 +211,15 @@ if(strstr(e_QUERY, "upgrade")){
 		 if(!$err_plug){
 			$text .= EPL_ADLAN_7."<br />";
 		 }
+	}
+
+	if(is_array($eplug_parse)){
+		while(list($key, $e_regexp) = each($eplug_parse)){
+			$p_added .= register_parser($eplug_folder,$e_regexp);
+		}
+		if($p_added){
+			$text .= EPL_ADLAN_35."<br />";
+		}
 	}
 
 	if(is_array($upgrade_add_prefs)){
