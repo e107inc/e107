@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/trackback/trackbackClass.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-15 22:46:22 $
+|     $Revision: 1.2 $
+|     $Date: 2005-02-16 18:42:20 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -22,49 +22,63 @@ class trackbackClass
 
 	function sendTrackback ($permLink, $pingUrl, $title, $excerpt)
 	{
-		$trackback_url = parse_url($pingUrl);
-
-        if ((isset($trackback_url["query"])) && ($trackback_url["query"] != ""))
-		{
-            $trackback_url["query"] = "?" . $trackback_url["query"];
-        }
-		else
-		{
-            $trackback_url["query"] = "";
-        }
-
-		if ((isset($trackback_url["port"]) && !is_numeric($trackback_url["port"])) || (!isset($trackback_url["port"])))
-		{
-            $trackback_url["port"] = 80;
-        }
+		global $e107;
+		
 
 		$title = urlencode(stripslashes($title));
 		$excerpt = urlencode(stripslashes($excerpt));
 		$blog_name = urlencode(stripslashes(SITENAME));
-		$permLink = urlencode(stripslashes($permLink));
+		$permLink = urlencode(stripslashes($e107->HTTPPath.$permLink));
 		$query_string = "title=$title&url=$permLink&blog_name=$blog_name&excerpt=$excerpt";
 
-		$header  = 'POST ' . $trackback_url['path'] . $trackback_url['query'] . " HTTP/1.0\r\n";
-		$header .= 'Host: '.$trackback_url['host']."\r\n";
-		$header .= 'Content-Type: application/x-www-form-urlencoded'."\r\n";
-		$header .= 'Content-Length: '.strlen($query_string)."\r\n";
-		$header .= "\r\n";
-		$header .= $query_string;
+		if (strstr($trackback_url, '?'))
+		{
+			$pingUrl .= "&".$query_string;
+			$fp = fopen($trackback_url, 'r');
+			$response = fread($fp, 4096);
+			fclose($fp);
+		}
+		else
+		{
 
-		$socket = fsockopen($trackback_url["host"], $trackback_url["port"]); 
+			$trackback_url = parse_url($pingUrl);
 
-        if (!is_resource($socket)) {
-            return "$trackbackClass -> sendTrackback: Unable to connect to $pingUrl.";
-        }
+			if ((isset($trackback_url["query"])) && ($trackback_url["query"] != ""))
+			{
+				$trackback_url["query"] = "?" . $trackback_url["query"];
+			}
+			else
+			{
+				$trackback_url["query"] = "";
+			}
 
-		fputs($socket, $header); 
+			if ((isset($trackback_url["port"]) && !is_numeric($trackback_url["port"])) || (!isset($trackback_url["port"])))
+			{
+				$trackback_url["port"] = 80;
+			}
+
+			$header  = 'POST ' . $trackback_url['path'] . $trackback_url['query'] . " HTTP/1.0\r\n";
+			$header .= 'Host: '.$trackback_url['host']."\r\n";
+			$header .= 'Content-Type: application/x-www-form-urlencoded'."\r\n";
+			$header .= 'Content-Length: '.strlen($query_string)."\r\n";
+			$header .= "\r\n";
+			$header .= $query_string;
+
+			$socket = fsockopen($trackback_url["host"], $trackback_url["port"]); 
+
+			if (!is_resource($socket)) {
+				return "$trackbackClass -> sendTrackback: Unable to connect to $pingUrl.";
+			}
+
+			fputs($socket, $header); 
        
-		$response = "";
-		while (!feof($socket)) {
-            $response .= fgets($socket, 4096);
-        }
+			$response = "";
+			while (!feof($socket)) {
+				$response .= fgets($socket, 4096);
+			}
+			fclose($socket);
 
-        fclose($socket);
+		}
 
 		if(strstr($response, "<error>0</error>"))
 		{
@@ -93,25 +107,40 @@ class trackbackClass
 			$errorMessage = "This site does not allow trackbacks.";
 		}
 
-		$permLink = $_POST['url'];
+		if(isset($_GET['pid']))
+		{
+			$pid = $_GET['pid'];
+			$permLink = $_GET['url'];
+			$blog_name = $_GET['blog_name'];
+			$title = $_GET['title'];
+			$excerpt = $_GET['excerpt'];
+		}
+		else
+		{
+			$pid = $_POST['pid'];
+			$permLink = $_POST['url'];
+			$blog_name = $_POST['blog_name'];
+			$title = $_POST['title'];
+			$excerpt = $_POST['excerpt'];
+		}
+
 		if(!$permLink)
 		{
 			$errorMessage = "No permanent ID sent.";
 		}
 
-		$pid = e_QUERY;
-		if(!is_numeric($pid))
+		if(!isset($pid) || !is_numeric($pid))
 		{
 			$errorMessage = "No known item with that pid.";
 		}
 
-		$excerpt = ($_POST['excerpt'] ? $_POST['excerpt'] : "I found your news item interesting, I've added a trackback to it on my website :)");
-		$title = ($_POST['title'] ? $_POST['title'] : "Trackbacking your news item ...");
-		$blog_name = ($_POST['blog_name'] ? $_POST['blog_name'] : "Anonymous site");
+		$excerpt = ($excerpt ? strip_tags($excerpt) : "I found your news item interesting, I've added a trackback to it on my website :)");
+		$title = ($title ? $title : "Trackbacking your news item ...");
+		$blog_name = ($blog_name ? $blog_name : "Anonymous site");
 
 		if(!$errorMessage)
 		{
-			if(!$sql -> db_Insert("trackback", "0, $pid, '$title', '$excerpt', '$permLink' "))
+			if(!$sql -> db_Insert("trackback", "0, $pid, '$title', '$excerpt', '$permLink', '$blog_name' "))
 			{
 				$errorMessage = "Unable to enter your trackback information into the database.";
 			}
@@ -133,5 +162,4 @@ class trackbackClass
 			echo "</response>";
 		}
 	}
-
 }

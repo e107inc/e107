@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.44 $
-|   $Date: 2005-02-15 22:46:18 $
+|   $Revision: 1.45 $
+|   $Date: 2005-02-16 18:42:02 $
 |   $Author: stevedunstan $
 +---------------------------------------------------------------+
 
@@ -744,9 +744,11 @@ class newspost {
 				$text .= "<tr>
 				<td class='forumheader3'>".LAN_NEWS_34.":</td>
 				<td class='forumheader3'><a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".LAN_NEWS_35."</a>
-				<div style='display: none;'>";
-				//<span class='smalltext'><input type='checkbox' name='pingback_urls' /> ".LAN_NEWS_34."<br />
-				$text .= "<span class='smalltext'>".LAN_NEWS_37."</span><br />
+				<div style='display: none;'>
+				<span class='smalltext'>";
+				/* pingback */
+				//	<input type='checkbox' name='pingback_urls' ".($_POST['pingback_urls'] ? " checked='checked'" : "")." />".LAN_NEWS_36."<br />
+				$text .= LAN_NEWS_37."</span><br />
 				<textarea class='tbox' name='trackback_urls' style='width:95%;height:100px'>".$_POST['trackback_urls']."</textarea>
 				</div>
 				</td>

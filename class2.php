@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.79 $
-|     $Date: 2005-02-11 15:50:49 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.80 $
+|     $Date: 2005-02-16 18:40:07 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -76,7 +76,7 @@ for ($i = 1; $i <= $num_levels; $i++) {
 	$link_prefix .= "../";
 }
 
-if (strstr($_SERVER['QUERY_STRING'], "'") || strstr($_SERVER['QUERY_STRING'], ";")) {
+if (!strstr($_SERVER['PHP_SELF'], "trackback") && (strstr($_SERVER['QUERY_STRING'], "'") || strstr($_SERVER['QUERY_STRING'], ";"))) {
 	die("Access denied.");
 }
 
