@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/class2.php,v $
-|     $Revision: 1.90 $
-|     $Date: 2004-08-27 17:31:43 $
+|     $Revision: 1.91 $
+|     $Date: 2004-09-01 10:09:55 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -350,7 +350,7 @@ define("TIMEOFFSET", $pref['time_offset']);
 //define("FLOODTIME", $pref['flood_time']);
 //define("FLOODHITS", $pref['flood_hits']);
 
-if(strstr(e_SELF, $ADMIN_DIRECTORY) && $pref['admintheme'] && !$_POST['sitetheme']){
+if((strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin") ) && $pref['admintheme'] && !$_POST['sitetheme']){
         if(strstr(e_SELF, "menus.php")){
                         checkvalidtheme($pref['sitetheme']);
         } else if(strstr(e_SELF, "newspost.php")){
