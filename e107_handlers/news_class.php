@@ -13,9 +13,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.11 $
-| $Date: 2004-12-13 22:17:30 $
-| $Author: streaky $
+| $Revision: 1.12 $
+| $Date: 2004-12-15 23:45:09 $
+| $Author: sweetas $
 +---------------------------------------------------------------+
 */
 
@@ -56,7 +56,7 @@ class news {
 	}
 
 	function render_newsitem($news, $mode = "default", $n_restrict = "") {
-		global $tp, $sql;
+		global $tp, $sql, $override;
 		if (!is_object($tp)) $tp = new e_parse;
 		if ($n_restrict == "userclass") {
 			$news['news_id'] = 0;
@@ -69,12 +69,14 @@ class news {
 			$news['news_rendertype'] = 0;
 			$news['comment_total'] = 0;
 		}
-		if (function_exists("theme_render_newsitem")) {
-			$result = call_user_func("theme_render_newsitem", $news);
+		
+		if ($override_newsitem = $override -> override_check('render_newsitem')) {
+			$result = call_user_func($override_newsitem, $news);
 			if ($result == "return") {
 				return;
 			}
 		}
+		
 		global $NEWSSTYLE, $NEWSLISTSTYLE;
 		if (!is_object($tp)) $tp = new e_parse;
 		extract($news);
