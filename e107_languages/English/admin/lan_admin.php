@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-03-31 19:18:27 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.22 $
+|     $Date: 2005-04-02 08:41:21 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("ADLAN_0", "News");
@@ -177,7 +177,8 @@ define("ADLAN_141", "Install / set themes etc");
 
 define("ADLAN_142", "Search");
 define("ADLAN_143", "Search Configuration");
-
+define("ADLAN_144", "You are in simple-view mode, to switch to advanced-view");
+define("ADLAN_145", "click here");
 
 // Common Terms
 define("LAN_EDIT","Edit");
