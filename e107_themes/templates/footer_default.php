@@ -58,12 +58,12 @@ if (abs($_serverTime - $lastSet) > 120) {
 	echo "SyncWithServerTime('{$_serverTime}');
 	</script>\n";
 }
-if (ob_get_level() != 1 ) {
+if (ob_get_level() != $start_ob_level ) {
 	$oblev=ob_get_level();
 	$obdbg = "<div style='text-align:center' class='smalltext'>";
 	$obdbg .= "Software defect detected; ob_*() level $oblev at end.</div>";
-	if ($oblev > 1) {
-		while (ob_get_level() > 1) {
+	if ($oblev > $start_ob_level) {
+		while (ob_get_level() > $start_ob_level) {
 			ob_end_flush();  /* clear extras */
 		}
 	} else {

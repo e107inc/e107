@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2004-12-16 05:33:28 $
+|     $Revision: 1.19 $
+|     $Date: 2004-12-18 16:31:47 $
 |     $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
@@ -64,8 +64,10 @@ class sitelinks {
 			foreach ($main_links as $link) {
 				$text .= $this->makeLink($link);
 				$main_linkname = $link['link_name'];
-				foreach ($submenu[$main_linkname] as $sub) {
-					$text .= $this->makeLink($sub,TRUE);
+				if (is_array($submenu[$main_linkname])) {
+					foreach ($submenu[$main_linkname] as $sub) {
+						$text .= $this->makeLink($sub,TRUE);
+					}
 				}
 			}
 			$text .= POSTLINK;
