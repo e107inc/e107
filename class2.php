@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.78 $
-|     $Date: 2005-02-03 00:09:15 $
-|     $Author: stevedunstan $
+|     $Revision: 1.79 $
+|     $Date: 2005-02-11 15:50:49 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -111,7 +111,9 @@ define("ADMINDIR", $ADMIN_DIRECTORY);
 //
 // All debug objects and constants are defined in the debug handler
 //
-if (preg_match('/debug=(.*)/', e_MENU)) {
+//print_r($_COOKIE);
+//exit;
+if (preg_match('/debug=(.*)/', e_MENU) || isset($_COOKIE['e107_debug_level'])) {
 	require_once(e_HANDLER.'debug_handler.php');
 	$db_debug = new e107_db_debug;
 } else {
