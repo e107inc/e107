@@ -11,7 +11,7 @@
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
-$Id: review.php,v 1.20 2004-08-11 09:36:34 e107coders Exp $  
+$Id: review.php,v 1.21 2004-08-13 10:12:45 loloirie Exp $  
 */
 require_once("../class2.php");
     if($pref['htmlarea']){
@@ -37,7 +37,7 @@ if(e_QUERY){
         $id = $tmp[2];
         unset($tmp);
 }
-if(preg_match("#(.*?)_delete_(\d+)#",$deltest['Delete'],$matches))
+if(preg_match("#(.*?)_delete_(\d+)#",$deltest[REVLAN_9],$matches))
 {
         $delete = $matches[1];
         $del_id = $matches[2];

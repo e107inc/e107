@@ -31,7 +31,7 @@ if(e_QUERY){
         $id = $tmp[2];
         unset($tmp);
 }
-if(preg_match("#(.*?)_delete_(\d+)#",$deltest['Delete'],$matches))
+if(preg_match("#(.*?)_delete_(\d+)#",$deltest[FORLAN_20],$matches))
 {
 	$delete = $matches[1];
 	$del_id = $matches[2];
