@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2005-03-20 19:47:53 $
+|     $Revision: 1.59 $
+|     $Date: 2005-03-20 23:06:45 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -396,7 +396,7 @@ if ($action != "item") {
 	}
 	$parms = $news_total.",".ITEMVIEW.",".$from.",".e_SELF.'?'."[FROM].".$action.(isset($sub_action) ? ".".$sub_action : "");
 	$nextprev = ($news_total > ITEMVIEW) ? LAN_NEWS_22."&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}") : "";
-	echo "<div class='nextprev' style='text-align:center'>".$nextprev."</div>";
+	echo ($nextprev ? "<div class='nextprev' style='text-align:center'>".$nextprev."</div>" : "");
 }
 
 if ($pref['nfp_display'] == 2) {
