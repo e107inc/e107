@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/list_new/new.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-02-16 22:19:00 $
+|     $Revision: 1.8 $
+|     $Date: 2005-03-12 10:06:43 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -171,12 +171,12 @@ if ($comments = $sql->db_Select("comments", "*", "comment_datestamp>$lvisit ORDE
 			 
 			case 6:
 			//        bugtracker
-			$sql2->db_Select("bugtrack", "bugtrack_summary", "bugtrack_id=$comment_item_id ");
+			$sql2->db_Select("bugtrack2_bugs", "bugtrack2_bugs_summary", "bugtrack2_bugs_id=$comment_item_id ");
 			$row = $sql2->db_Fetch();
 			 extract($row);
-			$str .= $bullet."[ ".LIST_20." ] Re: <a href='".e_PLUGIN."bugtracker/bugtracker.php?show.$comment_item_id'>".$tp -> toHTML($bugtrack_summary)."</a><br />";
+			$str .= $bullet."[ ".LIST_20." ] Re: <a href='".e_PLUGIN."bugtracker2/bugtracker2.php?0.bug.$comment_item_id'>".$tp -> toHTML($bugtrack_summary)."</a><br />";
 			$comment_count++;
-			break;	 
+			break;
 		}
 		$handle = opendir(e_PLUGIN);
 		while (false !== ($file = readdir($handle))) {
