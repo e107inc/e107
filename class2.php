@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.56 $
-|     $Date: 2005-01-27 15:12:46 $
+|     $Revision: 1.57 $
+|     $Date: 2005-01-27 18:36:20 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -154,6 +154,7 @@ e107_require_once(e_HANDLER.'e_parse_class.php');
 e107_require_once(e_HANDLER.'traffic_class.php');
 
 $eTraffic = new e107_traffic; // Traffic counts can begin now
+$eTraffic->Calibrate($eTraffic);
 $tp = new e_parse;
 $sql = new db;
 $sql->db_SetErrorReporting(FALSE);
