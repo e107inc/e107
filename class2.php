@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.85 $
-|     $Date: 2005-02-21 05:06:08 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.86 $
+|     $Date: 2005-02-21 17:32:42 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -758,7 +758,6 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '') {
 			if(!$sql->db_Update('core', "e107_value='".addslashes($PrefCache)."' WHERE e107_name='SitePrefs_Backup'")){
 				$sql->db_Insert('core', "'SitePrefs', '".addslashes($PrefCache)."'");
 			}
-			echo $PrefCache;
 
 			foreach ($pref as $key => $prefvalue) {
 				$pref[$key] = $tp->toDB($prefvalue, true);
@@ -767,7 +766,6 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '') {
 			
 			// Create the data to be stored
 			$PrefCache1 = $eArrayStorage->WriteArray($pref);
-			echo $PrefCache1;
 			if(!$sql->db_Update('core', "e107_value='{$PrefCache1}' WHERE e107_name = 'SitePrefs'", true)){
 				$sql->db_Insert('core', "'SitePrefs', '{$PrefCache1}'");
 			}
