@@ -13,9 +13,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.25 $
-| $Date: 2005-02-10 08:26:48 $
-| $Author: e107coders $
+| $Revision: 1.26 $
+| $Date: 2005-02-11 02:29:33 $
+| $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 
@@ -29,11 +29,12 @@ class news {
 		$news_body = $tp->toDB($data, TRUE);
 		$news_extended = $tp->toDB($news_extended, TRUE);
 		$news_summary = $tp->toDB($news_summary, TRUE);  
+		if(!isset($news_sticky)) {$news_sticky = 0;}
 
 		if ($news_id) {
 			$vals = $update_datestamp ? "news_datestamp = ".time().", " :
 			 "";
-			$vals .= " news_title='$news_title', news_body='$news_body', news_extended='$news_extended', news_category='$cat_id', news_allow_comments='$news_allow_comments', news_start='$active_start', news_end='$active_end', news_class='$news_class', news_render_type='$news_rendertype' , news_summary='$news_summary', news_thumb='$news_thumb' WHERE news_id='$news_id' ";
+			$vals .= " news_title='$news_title', news_body='$news_body', news_extended='$news_extended', news_category='$cat_id', news_allow_comments='$news_allow_comments', news_start='$active_start', news_end='$active_end', news_class='$news_class', news_render_type='$news_rendertype' , news_summary='$news_summary', news_thumb='$news_thumb', news_sticky=$news_sticky WHERE news_id='$news_id' ";
 			if ($sql->db_Update("news", $vals)) {
 				$e_event->trigger("newsupd", $news);
 				$message = LAN_NEWS_21;
@@ -42,7 +43,7 @@ class news {
 				$message = "<strong>".LAN_NEWS_5."</strong>";
 			}
 		} else {
-			if ($sql->db_Insert("news", "0, '$news_title', '$news_body', '$news_extended', ".time().", ".USERID.", $cat_id, $news_allow_comments, $active_start, $active_end, '$news_class', '$news_rendertype', 0 , '$news_summary', '$news_thumb' ")) {
+			if ($sql->db_Insert("news", "0, '$news_title', '$news_body', '$news_extended', ".time().", ".USERID.", $cat_id, $news_allow_comments, $active_start, $active_end, '$news_class', '$news_rendertype', 0 , '$news_summary', '$news_thumb', $news_sticky ")) {
 				$e_event->trigger("newspost", $news);
 				$message = LAN_NEWS_6;
 				$e107cache->clear("news.php");
@@ -89,6 +90,7 @@ class news {
 			$news['news_extended'] = trim(chop($tp->toHTML($news['news_extended'], TRUE)));
 		}
 		extract($news);
+		$preview = substr($preview,0,7);
 		if(!defined("IMAGE_nonew_small"))
 		{
 			define("IMAGE_nonew_small", (file_exists(THEME."generic/nonew_comments.png") ? "<img src='".THEME."generic/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/nonew_comments.png' alt=''  />"));
@@ -139,7 +141,8 @@ class news {
 		$info = "<div class='smalltext'><br /><br /><b>".LAN_NEWS_18."</b><br />";
 		$info .= ($titleonly ? LAN_NEWS_9 : "");
 		$info .= ($news_class == 255 ? LAN_NEWS_10 : LAN_NEWS_11);
-		$info .= ($news_allow_comments ? LAN_NEWS_13 : LAN_NEWS_12);
+		$info .= ($news_sticky) ? "<br />".LAN_NEWS_31 : "";
+		$info .= "<br />".($news_allow_comments ? LAN_NEWS_13 : LAN_NEWS_12);
 		$info .= LAN_NEWS_14.$active_start.$active_end."<br />";
 		$info .= LAN_NEWS_15.strlen($news_body).LAN_NEWS_16.strlen($news_extended).LAN_NEWS_17."<br /><br /></div>";
 		if ($comment_total) {
