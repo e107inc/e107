@@ -265,7 +265,7 @@ p {
 	font-size: 14px;
 	color:#000;
 	padding: 4px;
-	background-image : url(../shared/forum/fcap2.png);
+	background-image : url(forum/fcap2.png);
 	border: #C3BDBD 1px solid;
 }
 
@@ -306,7 +306,7 @@ p {
 	padding-top: 2px;
 	background-color: #C9C7C7;
 	font-family: verdana, tahoma, arial, helvetica, sans-serif;
-	background-image : url(../shared/forum/fcap.png);
+	background-image : url(forum/fcap.png);
 	font-size: 12px;
 	color:#fff;
 }
@@ -322,3 +322,17 @@ p {
 .bar1{padding: 0px; margin: 0px; background-image: url(images/corner.png); width: 37px;}
 .bar2{padding: 0px; margin: 0px; width: *; background: #DBDBDB; background-repeat: repeat-x; background-image: url(images/top.png);}
 .bar3{padding: 0px; margin: 0px; background: #DBDBDB; background-repeat: repeat-y; background-image: url(images/side.png); width: 37px;}
+
+.finfobar{
+	background-color: #CCC8C8;
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+	padding: 4px;
+	border: #C3BDBD 1px solid;
+	background-image : url(forum/finfobar.png);
+}
+
+.forumlink{
+	color: #fff;
+	text-decoration: underline;
+}

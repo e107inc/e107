@@ -41,7 +41,6 @@ if(IsSet($_POST['emailsubmit'])){
 		list($news_id, $news_title, $news_body, $news_extended, $news_datestamp, $news_author, $news_source, $news_url, $news_category, $news_allow_comments) = $sql-> db_Fetch();
 		$message .= $_POST['comment']."\n\n".$news_title."\n".$news_body."\n".$news_extended."\n\n".SITEURL.e_BASE."comment.php?".$id;
 	}else{
-		$sql -> db_Select("content","*","content_id='$id' ");
 		$row = $sql -> db_Fetch(); 
 		extract($row);
 		$message .= $_POST['comment']."\n\n".SITEURL.e_BASE."article.php?".$id."\n\n".$content_heading."\n".$content_subheading."\n".$content_content."\n\n";

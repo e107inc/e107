@@ -68,7 +68,7 @@ if(e_QUERY){
 	
 
 	if($core_total == 0){
-		$text = "<div class='mediumtext' style='text-align:center'>".LAN_355."<br /><br /><a href='download.php'>Back to downloads page</a></div>";
+		$text = "<div class='mediumtext' style='text-align:center'>".LAN_355."<br /><br /><a href='download2.php'>Back to downloads page</a></div>";
 		$ns -> tablerender("No downloads", $text);
 		require_once(FOOTERF);
 		exit;
@@ -76,7 +76,7 @@ if(e_QUERY){
 
 	$text .= "
 	<div style='text-align:center' class='spacer'>
-	<form method='post' action='download.php?".$dtype."'>
+	<form method='post' action='download2.php?".$dtype."'>
 	<p>
 		Show ";
 	 if($records == 5){
@@ -212,37 +212,10 @@ if(e_QUERY){
 
 	$ns -> tablerender("Downloads: ".$type, $text);
 
-	$nx = new nextprev("download.php", $from, $records, $core_total, LAN_363, $dtype.".".$records.".".$order.".".$sort.".!");
+	$nx = new nextprev("download2.php", $from, $records, $core_total, LAN_363, $dtype.".".$records.".".$order.".".$sort.".!");
 	require_once(FOOTERF);
 	exit;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // ----- no qs, render category list ----- //
 

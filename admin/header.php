@@ -64,13 +64,16 @@ function setCheckboxes(the_form, do_check){
 <?php
 
 $ns = new table;
+
+$alogo = (eregi("menu_config", e_SELF) ? "../logo.png" : "logo.png");
+
 echo "
 <div style=\"text-align:center\">";
 if($admin_logo == "1"){
 	echo "<table style=\"width:100%\" cellspacing=\"0\" cellpadding=\"0\">
 	<tr>
 	<td style=\"background-color:#E2E2E2; text-align:".$logo_align."\">
-	\n<img src=\"logo.png\" alt=\"Logo\" />
+	\n<img src=\"$alogo\" alt=\"Logo\" />
 	</td></tr>
 	<tr>
 	<td style=\"background-color:#000\"></td>
@@ -97,7 +100,7 @@ if($admin_logo == "1"){
 	</tr>
 	</table>";
 }else{
-	echo "<img src=\"logo".$admin_logo.".png\" alt=\"Logo\" />
+	echo "<img src=\"$alogo\" alt=\"Logo\" />
 	<br />";
 	if(ADMIN == TRUE){
 		$str = str_replace(".", "", ADMINPERMS);
@@ -118,71 +121,109 @@ echo "<table style=\"width:100%\" cellspacing=\"10\" cellpadding=\"10\">
 // security update added by que
 if(ADMIN == TRUE){
  if(!eregi("/admin.php", $_SERVER['PHP_SELF'])){
-	 $text = "<a href=\"admin.php\">Admin Front Page</a>
+	 $text = "<a href=\"".e_ADMIN."admin.php\">Admin Front Page</a>
 <br />
-<a href=\"../index.php\">Leave Admin Area</a>
+
+
+
+
+".(eregi("menu_config", e_SELF) ? "<a href=\"../../index.php\">Leave Admin Area</a>" : "<a href=\"../index.php\">Leave Admin Area</a>")."
+
+
+
 <br />
 <br />";
 
 if(getperms("H")){
-	$text .= "<a href=\"newspost.php\">News</a><br />";
+	$text .= "<a href=\"".e_ADMIN."newspost.php\">News</a><br />";
 }
 if(getperms("7")){
-	$text .= "<a href=\"news_category.php\">News Categories</a><br />";
+	$text .= "<a href=\"".e_ADMIN."news_category.php\">News Categories</a><br />";
 }
 if(getperms("1")){
-	$text .= "<a href=\"prefs.php\">Preferences</a><br />";
+	$text .= "<a href=\"".e_ADMIN."prefs.php\">Preferences</a><br />";
 }
 if(getperms("2")){
-	$text .= "<a href=\"menus.php\">Menus</a><br />";
+	$text .= "<a href=\"".e_ADMIN."menus.php\">Menus</a><br />";
 }
 if(getperms("3")){
-	$text .= "<a href=\"administrator.php\">Administrators</a><br />";
+	$text .= "<a href=\"".e_ADMIN."administrator.php\">Administrators</a><br />";
 }
-$text .= "<a href=\"updateadmin.php\">Update admin password</a><br />";
+$text .= "<a href=\"".e_ADMIN."updateadmin.php\">Update admin password</a><br />";
 if(getperms("5")){
-	$text .= "<a href=\"forum.php\">Forums</a><br />";
+	$text .= "<a href=\"".e_ADMIN."forum.php\">Forums</a><br />";
 }
 if(getperms("J")){
-	$text .= "<a href=\"article.php\">Articles</a><br />";
+	$text .= "<a href=\"".e_ADMIN."article.php\">Articles</a><br />";
 }
 if(getperms("l")){
-	$text .= "<a href=\"content.php\">Content</a><br />";
+	$text .= "<a href=\"".e_ADMIN."content.php\">Content</a><br />";
 }
 if(getperms("K")){
-	$text .= "<a href=\"review.php\">Reviews</a><br />";
+	$text .= "<a href=\"".e_ADMIN."review.php\">Reviews</a><br />";
 }
 if(getperms("I")){
-	$text .= "<a href=\"links.php\">Links</a><br />";
+	$text .= "<a href=\"".e_ADMIN."links.php\">Links</a><br />";
 }
 if(getperms("8")){
-	$text .= "<a href=\"link_category.php\">Link Categories</a><br />";
-}
-if(getperms("Q")){
-	$text .= "<a href=\"download.php\">Downloads</a><br />";
+	$text .= "<a href=\"".e_ADMIN."link_category.php\">Link Categories</a><br />";
 }
 if(getperms("R")){
-	$text .= "<a href=\"download_category.php\">Download Categories</a><br />";
+	$text .= "<a href=\"".e_ADMIN."download.php\">Downloads</a><br />";
+}
+if(getperms("Q")){
+	$text .= "<a href=\"".e_ADMIN."download_category.php\">Download Categories</a><br />";
 }
 if(getperms("M")){
-	$text .= "<a href=\"wmessage.php\">Welcome Message</a><br />";
+	$text .= "<a href=\"".e_ADMIN."wmessage.php\">Welcome Message</a><br />";
 }
 
 if(getperms("6")){
-	$text .= "<a href=\"filemanager.php\">File Manager</a><br />";
+	$text .= "<a href=\"".e_ADMIN."filemanager.php\">File Manager</a><br />";
 }
 if(getperms("N")){
-	$text .= "<a href=\"submitnews.php\">Submitted News</a><br />";
-}
-if(getperms("4")){
-	$text .= "<a href=\"users.php\">Users</a><br />";
+	$text .= "<a href=\"".e_ADMIN."submitnews.php\">Submitted News</a><br />";
 }
 
-	$text .= "<a href=\"admin.php?logout\">Logout</a>";
+
+if(getperms("4")){
+	$text .= "<a href=\"".e_ADMIN."banlist.php\">Bans</a><br />";
+}
+
+if(getperms("4")){
+	$text .= "<a href=\"".e_ADMIN."users.php\">Users</a><br />";
+}
+
+if(getperms("4")){
+	$text .= "<a href=\"".e_ADMIN."userclass2.php\">User Classes</a><br />";
+}
+
+if(getperms("9")){
+	$text .= "<a href=\"".e_ADMIN."ugflag.php\">Maintainence Flag</a><br />";
+}
+
+if(getperms("2")){
+	$text .= "<a href=\"".e_ADMIN."custommenu.php\">Custom Menus</a><br />";
+}
+
+if(getperms("0")){
+	$text .= "<a href=\"".e_ADMIN."db.php\">SQL</a><br />";
+}
+
+
+
+
+
+
+
+
+
+
+	$text .= "<a href=\"".e_ADMIN."admin.php?logout\">Logout</a>";
 	$ns -> tablerender("Admin Navigation", $text);
 
  }else{
-	$text = "<a href=\"../index.php\">Leave Admin Area</a>";
+	$text = "<a href=\"".e_ADMIN."../index.php\">Leave Admin Area</a>";
 	$ns -> tablerender("Admin Navigation", $text);
 	unset($text);
  }
@@ -191,30 +232,31 @@ if($sql -> db_Select("submitnews", "*", "submitnews_auth ='0' ")){
 	$text = "<div class=\"defaulttext\" style=\"text-align:center\">
 <b>You have had a news item submitted.</b>
 </div>
-Please click <a href=\"submitnews.php\">here</a> to review.";
+Please click <a href=\"".e_ADMIN."submitnews.php\">here</a> to review.";
 	$ns -> tablerender("Story Submitted", $text);
 }
 
 if(ADMINPERMS == "0"){
 	if((ADMINPWCHANGE+2592000) < time()){
-		$text = "<div style=\"mediumtext; text-align:center\">It has been more than 30 days since you changed the main administrator password - <a href=\"updateadmin.php\">Click here to change it now</a></div>";
+		$text = "<div style=\"mediumtext; text-align:center\">It has been more than 30 days since you changed the main administrator password - <a href=\"".e_ADMIN."updateadmin.php\">Click here to change it now</a></div>";
 		$ns -> tablerender("Security", $text);
 	}
  }
 
-$handle=opendir("help/");
-	$text = "";
-	while ($file = readdir($handle)){	
-		if($file != "." && $file != ".."){
-//			 echo "help/".$file."<br />";
-			 if(eregi($file, e_SELF)){
-				require_once("help/".$file);
-			 }
+if(!eregi("menu_config", e_SELF)){
+	$handle=opendir("help/");
+		$text = "";
+		while ($file = readdir($handle)){	
+			if($file != "." && $file != ".."){
+	//			 echo "help/".$file."<br />";
+				 if(eregi($file, e_SELF)){
+					require_once("help/".$file);
+				 }
+			}
 		}
+		closedir($handle);
 	}
-	closedir($handle);
 }
-
 ?>
 <br />
 </td>

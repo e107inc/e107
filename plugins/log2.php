@@ -176,7 +176,7 @@ function getos($agent){
 		$os = "Linux";
 	}else if(eregi("Win 9x 4.90",$agent)){
 		$os = "Windows Me";
-	}else if(eregi("Windows 2000",$agent) || eregi("(Windows NT)( ){0,1}(5.0)",$browser)){
+	}else if(eregi("Windows 2000",$agent) || eregi("(Windows NT)( ){0,1}(5.0)",$agent)){
 		$os = "Windows 2000";
 	}else if(eregi("(Windows NT)( ){0,1}(5.1)",$agent)){
 		$os = "Windows XP";

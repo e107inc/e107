@@ -51,17 +51,14 @@ if(IsSet($_POST['pwsubmit'])){
 		$sql -> db_Update("user", "user_sess='$newpw' WHERE user_name='".$_POST['name']."' AND user_email='".$_POST['email']."' ");
 
 		$message = LAN_215.$newpw."\n\n".LAN_216."\n\n".SITEURL."fpw.php?".$user_id;
-		
-		if(file_exists(e_BASE."plugins/smtp.php")){
-			require_once(e_BASE."plugins/smtp.php");
-			smtpmail($_POST['email'], "Password reset from ".SITENAME, $message, "From: reset@".SITENAME."\r\n"."Reply-To: -null-\r\n"."X-Mailer: PHP/" . phpversion());
+
+		require_once("classes/mail.php");
+		if(sendemail($_POST['email'], "Password reset from ".SITENAME, $message)){
+			$text = "<div style='text-align:center'>New password sent to ".$_POST['email'].", please follow the instructions in the email to validate your password.</div>";
 		}else{
-			if(@mail($_POST['email'], "Password reset from ".SITENAME, $message, "From: reset@".SITENAME."\r\n"."Reply-To: -null-\r\n"."X-Mailer: PHP/" . phpversion())){
-				$text = "<div style='text-align:center'>New password sent to ".$_POST['email'].", please follow the instructions in the email to validate your password.</div>";
-			}else{
-				$text = "<div style='text-align:center'>Sorry - unable to send email.</div>";
-			}
+			$text = "<div style='text-align:center'>Sorry - unable to send email.</div>";
 		}
+
 		$ns -> tablerender("Password Reset", $text);
 		require_once(FOOTERF);
 		exit;

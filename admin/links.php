@@ -17,11 +17,11 @@ if(!getperms("I")){ header("location:".e_HTTP."index.php"); }
 require_once("auth.php");
 
 if(e_QUERY){
-        $qs = explode(".", e_QUERY);
-        $action = $qs[0];
-        $linkid = $qs[1];
-		$link_order = $qs[2];
-		$location = $qs[3];
+	$qs = explode(".", e_QUERY);
+	$action = $qs[0];
+	$linkid = $qs[1];
+	$link_order = $qs[2];
+	$location = $qs[3];
 }
 
 

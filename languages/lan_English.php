@@ -147,10 +147,10 @@ define("LAN_110", "Registration");
 define("LAN_111", "Re-type Password: ");
 define("LAN_112", "Email Address: ");
 define("LAN_113", "Hide email address?: ");
-define("LAN_114", "(This will prevent your email address from being displayed)");
+define("LAN_114", "This will prevent your email address from being displayed on site");
 define("LAN_115", "ICQ Number: ");
-define("LAN_116", "AIM Nickname: ");
-define("LAN_117", "MSN Nickname: ");
+define("LAN_116", "AIM Address: ");
+define("LAN_117", "MSN Messenger: ");
 define("LAN_118", "Birthday: ");
 define("LAN_119", "Location: ");
 define("LAN_120", "Signature: ");
@@ -241,7 +241,7 @@ define("LAN_189", "Powered by");
 define("LAN_190", "Reviews");
 define("LAN_191", "Information");
 define("LAN_192", "The users of this forum have posted a total of ");
-define("LAN_193", "Forum Moderator");
+define("LAN_193", "forum moderator");
 define("LAN_194", "Guest");
 define("LAN_195", "Registered Member");
 define("LAN_196", "You have read ");
@@ -250,8 +250,8 @@ define("LAN_198", " All new posts have been read.");
 define("LAN_199", "Mark all posts as read");
 define("LAN_200", "close this thread");
 define("LAN_201", "reopen this thread");
-define("LAN_202", "Sticky thread");
-define("LAN_203", "Sticky/Closed thread");
+define("LAN_202", "Sticky");
+define("LAN_203", "Sticky/Closed");
 define("LAN_204", "You <b>can</b> start new threads");
 define("LAN_205", "You <b>cannot</b> start new threads");
 define("LAN_206", "You <b>can</b> post replies");
@@ -308,7 +308,6 @@ define("LAN_351", "Select Theme");
 define("LAN_352", "Set Language");
 define("LAN_353", "Select Interface Language");
 
-
 define("LAN_354", "(Restricted)");
 define("LAN_355", "No downloads in this category yet");
 define("LAN_356", "Total size of files: ");
@@ -326,4 +325,37 @@ define("LAN_367", "Download");
 define("LAN_368", "No downloads yet, please check back soon");
 define("LAN_369", "Not rated yet");
 define("LAN_370", "Rating: ");
+
+define("LAN_371", "Logging is not activated, to activate go to your admin section, click on Logger and tick the Activate Logging/Counter checkbox.");
+define("LAN_372", "The features on this page have been disabled.");
+define("LAN_373", "No stats yet.");
+define("LAN_374", "Logging began:");
+define("LAN_375", "View all");
+define("LAN_376", "Last 10 unique visitors");
+define("LAN_377", "all");
+define("LAN_378", "top 10");
+define("LAN_379", "Screen resolutions");
+
+define("LAN_380", "If you wish to be notified by email when a reply is posted to your thread please tick the box ");
+define("LAN_381", "Forum reply from ");
+define("LAN_382", "Post made: ");
+define("LAN_383", "Please click the following link to view the full thread ...");
+define("LAN_384", "Forum reply at ");
+define("LAN_385", "Post: ");
+define("LAN_386", "If you do not wish to add a poll to your thread leave the fields blank ");
+define("LAN_387", "You must be a logged-in member to vote in this poll.");
+define("LAN_388", "Popular thread");
+
+
+define("LAN_389", "Previous thread");
+define("LAN_390", "Next thread");
+define("LAN_391", "track this thread");
+define("LAN_392", "stop tracking this thread");
+
+define("LAN_393", "List tracked threads");
+define("LAN_394", "Closed forum");
+define("LAN_395", "[popular]");
+define("LAN_396", "Announcement");
+define("LAN_397", "Tracked threads");
+
 ?>

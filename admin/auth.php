@@ -13,28 +13,42 @@
 +---------------------------------------------------------------+
 */
 if(ADMIN == TRUE){
+	$language =  $pref['sitelanguage'][1]; if(!$language){ $language = "English"; }
+	require_once("languages/admin_lan_".$language.".php");
 	require_once("header.php");
 }else{
 	if($_POST['authsubmit']){
-
-		echo "<b>DEBUG</b><br />";
-
 		$obj = new auth;
 
 		$row = $authresult = $obj -> authcheck($_POST['authname'], $_POST['authpass']);
 		if($row[0] == "fop"){
-			header("Location: ".e_SELF."?e");
+			if(!eregi("Apache", $_SERVER['SERVER_SOFTWARE'])){
+				header("Refresh: 0; URL: admin.php?e");
+			}else{
+				header("Location: ".e_SELF."?e");
+			}
 			exit;
 		}else if($row[0] == "fon"){
-			header("Location: ".e_SELF."?f");
+			if(!eregi("Apache", $_SERVER['SERVER_SOFTWARE'])){
+				header("Refresh: 0; URL: admin.php?f");
+			}else{
+				header("Location: ".e_SELF."?f");
+			}
 			exit;
 		}else{
 
 			$sql -> db_Select("user", "*", "user_name='".$_POST['authname']."'");
 			list($user_id, $user_name, $user_pass) = $sql-> db_Fetch();
-
-			setcookie('userkey', $user_id.".".$user_pass, time()+3600*24*30, '/', '', 0);
-			header("Location: ".e_SELF);
+//			if($pref['tracktype'][1] == "cookie"){
+				setcookie('userkey', $user_id.".".$user_pass, time()+3600*24*30, '/', '', 0);
+//			}else{
+//				$_SESSION['userkey'] = $user_id.".".$userpass;
+//			}
+			if(!eregi("Apache", $_SERVER['SERVER_SOFTWARE'])){
+				header("Refresh: 0; URL: admin.php");
+			}else{
+				header("Location: admin.php");
+			}
 			exit;
 		}
 	}

@@ -307,6 +307,11 @@ define(LAN_328, "Settings");
 define(LAN_328, "Tijd");
 define(LAN_329, "Uitspraak van het moment");
 
+define("LAN_350", "Zet Thema");
+define("LAN_351", "Selecteer Thema");
+define("LAN_352", "Zet taal");
+define("LAN_353", "Selecteer taal interface");
+
 define("LAN_354", "(Afgeschermd)");
 define("LAN_355", "Nog geen downloads in deze categorie");
 define("LAN_356", "Totale grootte bestanden: ");

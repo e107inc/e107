@@ -19,7 +19,7 @@ if(!e_QUERY){
 	// no qs - render categories ...
 
 	if(!$sql -> db_Select("download_category", "*", "download_category_parent='0' ")){
-		$text .= "<div style='text-align:center'>No downloads yet, please check back soon</div>>";
+		$text .= "<div style='text-align:center'>No downloads yet, please check back soon</div>";
 	}else{
 		$sql2 = new db; $sql3 = new db;
 		while($row = $sql-> db_Fetch()){

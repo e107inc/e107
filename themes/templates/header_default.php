@@ -26,9 +26,13 @@ if(file_exists(e_BASE."files/style.css")){ echo "\n<link rel='stylesheet' href='
 ?>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <meta http-equiv="content-style-type" content="text/css" />
-	<?php
+<?php
 echo $pref['meta_tag'][1]."\n";
-	?>
+if(eregi("forum_post.php", e_SELF) && ($_POST['reply'] || $_POST['newthread'])){
+	$tmp = explode(".", e_QUERY);
+	echo "<meta http-equiv=\"refresh\" content=\"5;url='".e_HTTP."forum_viewtopic.php?".$tmp[1].".".$tmp[2]."'>\n";
+}
+?>
 
 <script type="text/javascript" src="files/e107.js"></script>
 <?php
@@ -42,9 +46,6 @@ if(file_exists(e_BASE."files/user.js")){echo "<script type='text/javascript' src
 $page = substr(strrchr(e_SELF, "/"), 1);
 if(eregi($page, $CUSTOMPAGES) ? parseheader($CUSTOMHEADER) : parseheader($HEADER)) ;
 unset($text);
-
-
-
 
 if($pref['cache_activate'][1]){
 	$excempt = "forum|test|search";
@@ -75,7 +76,7 @@ function parseheader($LAYOUT){
 	}
 }
 function checklayout($str){
-	global $pref, $style, $userthemes, $udirs, $userclass, $dbq;
+	global $pref, $style, $userthemes, $udirs, $userclass, $dbq, $menu_pref;
 	if(strstr($str, "LOGO")){
 		echo "<img src='".e_BASE."themes/shared/logo.png' alt='Logo' />\n";
 	}else if(strstr($str, "SITENAME")){
@@ -103,15 +104,8 @@ function checklayout($str){
 			}else if(check_class($menu_class)){
 				$sm = TRUE;
 			}
-
 			if($sm == TRUE){
-//				if(ADMIN){
-//					echo "dbq: ".$dbq."<br />";
-//				}
 				require_once(e_BASE."menus/".$menu_name.".php");
-//				if(ADMIN){
-//					echo "dbq: ".$dbq."<br />";
-//				}
 			}
 			
 		}
@@ -119,7 +113,7 @@ function checklayout($str){
 		$tmp = explode("=", $str);
 		$style = trim(chop(preg_replace("/\{SETSTYLE=(.*?)\}/si", "\\1", $str)));
 	}else if(strstr($str, "SITEDISCLAIMER")){
-		echo SITEDISCLAIMER;
+		echo SITEDISCLAIMER.(defined("THEME_DISCLAIMER") ? THEME_DISCLAIMER : "");
 	}else if(strstr($str, "CUSTOM")){
 		$custom = trim(chop(preg_replace("/\{CUSTOM=(.*?)\}/si", "\\1", $str)));
 		if($custom == "login"){

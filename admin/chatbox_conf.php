@@ -14,7 +14,7 @@
 */
 require_once("../class2.php");
 if(!getperms("C")){ header("location:".e_HTTP."index.php"); exit ;}
-require_once("auth.php");
+
 
 if(e_QUERY != ""){
 	$temp = explode("-", e_QUERY);
@@ -24,23 +24,22 @@ if(e_QUERY != ""){
 
 	if($action == "block"){
 		$sql -> db_Update("chatbox", "cb_blocked='1' WHERE cb_id='$id' ");
-		$message = "<b>Chatbox item blocked.</b><br /><br /><a href=\"$url\">Return</a>";
+		header("location:".$url);
+		exit;
 	}
 	if($action == "unblock"){
 		$sql -> db_Update("chatbox", "cb_blocked='0' WHERE cb_id='$id' ");
-		$message = "<b>Chatbox item unblocked.</b><br /><br /><a href=\"$url\">Return</a>";
+		header("location:".$url);
+		exit;
 	}
 	if($action == "delete"){
 		$sql -> db_Delete("chatbox", "cb_id='$id' ");
-		$message = "<b>Chatbox item deleted.</b><br /><br /><a href=\"$url\">Return</a>";
-	}
-
-	if($message != ""){
-		echo "<div style=\"text-align:center\">$message</div>";
-		require_once("footer.php");
+		header("location:".$url);
 		exit;
 	}
 }
+
+require_once("auth.php");
 
 if($action == "u"){
 	$message = "Chatbox settings updated.";

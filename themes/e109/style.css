@@ -271,3 +271,17 @@ p {
 .bottomlt{ width: 10px; background-image: url(images/bottomleft.png); }
 .bottomcr{ width: 100%; background-repeat: repeat-x; background-image: url(images/bottom.png);}
 .bottomrt{ width: 10px; background-image: url(images/bottomright.png); }
+
+.finfobar{
+	background-color: #CCC8C8;
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+	padding: 4px;
+	border: #C3BDBD 1px solid;
+	background-image : url(../shared/forum/finfobar.png);
+}
+
+.forumlink{
+	color: #fff;
+	text-decoration: underline;
+}

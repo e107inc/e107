@@ -41,10 +41,10 @@ if($_POST['createbanner'] || $_POST['updatebanner']){
 
 	if($_POST['createbanner']){
 		$sql -> db_Insert("banner", "0, '".$cli."', '".$_POST['client_login']."', '".$_POST['client_password']."', '".$_POST['banner_image']."', '".$_POST['click_url']."', '".$_POST['impressions_purchased']."', '$start_date', '$end_date', '".$_POST['banner_enabled']."', 0, 0, '', '".$cam."' ");
-		$message = "Banner Created";
+		$message = "Banner Created <script> alert('Banner Created');top.location.href = top.location.href </script>";
 	}else{
-		$sql -> db_Update("banner", "banner_clientname='".$_POST['client_name']."', banner_clientlogin='".$_POST['client_login']."', banner_clientpassword='".$_POST['client_password']."', banner_image='".$_POST['banner_image']."', banner_clickurl='".$_POST['click_url']."', banner_impurchased='".$_POST['impressions_purchased']."', banner_startdate='$start_date', banner_enddate='$end_date', banner_active='".$_POST['banner_enabled']."', banner_campaign='".$cam."' WHERE banner_id='".$_POST['eid']."' ");
-		$message = "Banner Updated";
+		$sql -> db_Update("banner", "banner_clientname='".$cli."', banner_clientlogin='".$_POST['client_login']."', banner_clientpassword='".$_POST['client_password']."', banner_image='".$_POST['banner_image']."', banner_clickurl='".$_POST['click_url']."', banner_impurchased='".$_POST['impressions_purchased']."', banner_startdate='$start_date', banner_enddate='$end_date', banner_active='".$_POST['banner_enabled']."', banner_campaign='".$cam."' WHERE banner_id='".$_POST['eid']."' ");
+		$message = "Banner Updated <script> alert('Banner Updated');top.location.href = top.location.href </script>";
 	}
 	unset($_POST['client_name'], $_POST['client_login'], $_POST['client_password'], $_POST['banner_image'], $_POST['click_url'], $_POST['impressions_purchased'], $start_date, $end_date, $_POST['banner_enabled'], $_POST['startday'], $_POST['startmonth'], $_POST['startyear'], $_POST['endday'], $_POST['endmonth'], $_POST['endyear']);
 }
@@ -82,6 +82,8 @@ if($sql -> db_Select("banner")){
 		extract($row);
 		if($banner_campaign){ $campaigns[] = $banner_campaign; }
 		if($banner_clientname){ $clients[] = $banner_clientname; }
+		if($banner_clientlogin){ $logins[] = $banner_clientlogin; }
+		if($banner_clientpassword){ $passwords[] = $banner_clientpassword; }
 	}
 }
 
@@ -161,9 +163,13 @@ if(count($campaigns)){
 	$text .= "<select name=\"banner_campaign_sel\" class=\"tbox\"><option></option>";
 	$c=0;
 	while($campaigns[$c]){
-		$text .=($_POST['banner_campaign'] == $campaigns[$c] ? "<option selected>".$campaigns[$c]."</option>" : "<option>".$campaigns[$c]."</option>");
+		if (!isset($for_var[$campaigns[$c]])){
+			$text .=($_POST['banner_campaign'] == $campaigns[$c] ? "<option selected>".$campaigns[$c]."</option>" : "<option>".$campaigns[$c]."</option>");
+			$for_var[$campaigns[$c]] = $campaigns[$c];
+		}
 		$c++;
 	}
+	unset($for_var);
 
 	$text .= "</select> choose existing campaign&nbsp;&nbsp;";
 }
@@ -177,14 +183,48 @@ enter new campaign
 <td class=\"forumheader3\">";
 
 if(count($clients)){
-	$text .= "<select name=\"banner_client_sel\" class=\"tbox\"><option></option>";
+	$text .= "<select name=\"banner_client_sel\" class=\"tbox\" onChange=\"Change_Details(this.form)\"><option></option>";
 	$c=0;
 	while($clients[$c]){
-		$text .=($_POST['client_name'] == $clients[$c] ? "<option selected>".$clients[$c]."</option>" : "<option>".$clients[$c]."</option>");
+		if (!isset($for_var[$clients[$c]])){
+			$text .=($_POST['client_name'] == $clients[$c] ? "<option selected>".$clients[$c]."</option>" : "<option>".$clients[$c]."</option>");
+			$for_var[$clients[$c]] = $clients[$c];
+		}
 		$c++;
 	}
+	unset($for_var);
 
 	$text .= "</select> choose existing client&nbsp;&nbsp;";
+	$text .= "<script> 
+	function Change_Details(form){
+		var login_field = (document.all) ? document.all(\"clientlogin\") : document.getElementById(\"clientlogin\");
+		var password_field = (document.all) ? document.all(\"clientpassword\") : document.getElementById(\"clientpassword\");
+  		switch(form.banner_client_sel.selectedIndex-1){";
+
+		$c = 0;
+		$i = 0;
+		while($logins[$c]){
+			if (!isset($for_var[$logins[$c]])){
+				$text .= "
+				case ".$i.":
+					login_field.value = \"".$logins[$c]."\";
+					password_field.value = \"".$passwords[$c]."\";
+					break;";
+				$for_var[$logins[$c]] = $logins[$c];
+				$i++;
+			}
+			$c++;
+		}
+		unset($for_var);
+	
+	$text .= "
+				default:
+					login_field.value = \"\";
+					password_field.value = \"\";
+					break;	
+		}
+	}
+	</script>";
 }
 
 $text .= "<input class=\"tbox\" type=\"text\" size=\"30\" maxlength=\"100\" name=\"client_name\" value=\"\">
@@ -194,13 +234,13 @@ enter new client
 <tr>
 <td class=\"forumheader3\">Client Login</td>
 <td class=\"forumheader3\">
-<input class=\"tbox\" type=\"text\" size=\"30\" maxlength=\"20\" name=\"client_login\" value=\"".$_POST['client_login']."\">
+<input class=\"tbox\" type=\"text\" size=\"30\" maxlength=\"20\" ID=\"clientlogin\" name=\"client_login\" value=\"".$_POST['client_login']."\">
 </tr>
 
 <tr>
 <td class=\"forumheader3\">Client Password</td>
 <td class=\"forumheader3\">
-<input class=\"tbox\" type=\"text\" size=\"30\" maxlength=\"50\" name=\"client_password\" value=\"".$_POST['client_password']."\">
+<input class=\"tbox\" type=\"text\" size=\"30\" maxlength=\"50\" ID=\"clientpassword\" name=\"client_password\" value=\"".$_POST['client_password']."\">
 </tr>
 
 <tr>

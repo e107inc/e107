@@ -19,7 +19,9 @@ $themename = "e107";
 $themeversion = "5.0";
 $themeauthor = "jalist";
 $themedate = "26/08/02";
-$themeinfo = "compatible with e107 v5+";
+$themeinfo = "";
+
+define("THEME_DISCLAIMER", "<br />phpBB theme by jalist based on phpBB forum system, <a href='http://phpbb.com'>phpBB.com</a>");
 
 // [layout]
 

@@ -28,9 +28,9 @@ function wad($link, $title, $description, $perms){
 $text = "<table style=\"width:95%\">
 <tr>";
 
-$text .= wad("newspost.php", "News", "Add/edit/delete news items", "H");
-$text .= wad("news_category.php", "News Categories", "Add/edit/delete news categories", "7");
-$text .= wad("prefs.php", "Preferences", "Edit Site Preferences", "1");
+$text .= wad("newspost.php", ADLAN_0, ADLAN_1, "H");
+$text .= wad("news_category.php", ADLAN_2, ADLAN_3, "7");
+$text .= wad("prefs.php", ADLAN_4, ADLAN_5, "1");
 $text .= wad("menus.php", "Menus", "Alter the order of your menus", "2");
 $text .= wad("administrator.php", "Administrators", "Add/delete site administrators", "3");
 
@@ -59,6 +59,7 @@ $text .= wad("userclass2.php", "User Classes", "Create/edit user classes", "4");
 $text .= "</tr><tr>";
 $text .= wad("ugflag.php", "Maintainance", "Display custom site is down page", "9");
 $text .= wad("custommenu.php", "Custom Menus", "Create custom menu items", "2");
+$text .= wad("db.php","SQL","Database utilities","0");
 $text .= wad("admin.php?logout", "Logout", "", "");
 
 

@@ -88,7 +88,7 @@ if(IsSet($_POST['clientsubmit'])){
 				Clickthrough IP addresses: ".(count($tmp)-1)."</td>
 				<td colspan='6' class='forumheader3'>";
 				for($a=0; $a<=(count($tmp)-2); $a++){
-					$text .= $tmp[$a]."<br />";
+					$text .= $tmp[$a]." (".gethostbyaddr($tmp[$a]).")<br />";
 				}
 			}
 			

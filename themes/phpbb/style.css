@@ -8,12 +8,10 @@ font: bold 10px Verrdana, Arial, Helvectica;
 
 }
 a {
-	font-size: 11px;
 	color: #006699;
 	text-decoration: underline;
 }
 a:hover {
-	font-size: 11px;
 	color: #DD6900;
 	text-decoration: underline;
 }
@@ -88,11 +86,12 @@ form {
 	padding-top : 2px;
 }
 hr {
-	border-top: #666 1px solid;
-	border-bottom: #eee 1px solid;
+	border-bottom: #C6D6D6 1px solid;
+	border-top: #006699 1px solid;
 	height: 2px;
-	width: 92%;
+	width: 100%;
 	text-align:center;
+	vertical-align:bottom;
 }
 .border {
 	border: #006699 2px solid;
@@ -158,12 +157,12 @@ p {
 	border: #000000 1px solid;
 	background-color: #fff;
 }
-.forumheader, .fdefault{
+.forumheader{
 	background-color: #EBEFF2;
-	font: 14px verdana, tahoma, arial, helvetica, sans-serif;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
 	color:#000;
 	padding: 4px;
-	background-image : url(../shared/forum/fcap2.png);
+	background-image : url(forum/fcap2.png);
 	border: #C3BDBD 1px solid;
 }
 
@@ -191,8 +190,34 @@ p {
 	padding-top: 2px;
 	background-color: #C9C7C7;
 	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
-	background-image : url(../shared/forum/fcap.png);
+	background-image : url(forum/fcap.png);
 	color:#fff;
+}
+
+.fcaption2{
+	border: #000 1px solid;
+	padding-bottom: 2px;
+	padding-left: 8px;
+	padding-right: 0px;
+	padding-top: 2px;
+	background-color: #C9C7C7;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+	background-image : url(forum/fcap.png);
+	color:#fff;
+}
+
+.finfobar{
+	background-color: #CCC8C8;
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+	padding: 4px;
+	border: #C3BDBD 1px solid;
+	background-image : url(forum/finfobar.png);
+}
+
+.forumlink{
+	color: #fff;
+	text-decoration: underline;
 }
 
 .helpbox {

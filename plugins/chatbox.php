@@ -15,7 +15,7 @@
 
 if(IsSet($_POST['chat_submit'])){
 	$message = $_POST['message'];
-	$nick = $_POST['nick'];
+	$nick = trim(chop($_POST['nick']));
 	$fp = new floodprotect;
 	$tp = new textparse;
 	if(!$fp -> flood("chatbox", "cb_datestamp")){
@@ -103,7 +103,9 @@ if($sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, ".$cha
 		}
 
 		$cb_message = preg_replace("#src='#si" ,"src='".e_BASE, $cb_message);
-		$cb_message = preg_replace("/([^\s]{".$cb_wordwrap."})/", "$1\n", $cb_message);
+		if(!$pref['cb_linkreplace'][1]){
+			$cb_message = preg_replace("/([^\s]{".$cb_wordwrap."})/", "$1\n", $cb_message);
+		}
 		if(CB_STYLE != "CB_STYLE"){
 			$CHATBOXSTYLE = CB_STYLE;
 		}else{

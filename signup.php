@@ -34,6 +34,7 @@ if(e_QUERY != ""){
 }
 
 if(IsSet($_POST['register'])){
+	$_POST['name'] = trim(chop($_POST['name']));
 	if($sql -> db_Select("user", "*", "user_name='".$_POST['name']."' ")){
 		$error = LAN_104."<br />";
 	}	
@@ -72,18 +73,12 @@ if(IsSet($_POST['register'])){
 			$sql -> db_Select("user", "*", "user_name='".$_POST['name']."' AND user_join='".$time."' ");
 			$row = $sql -> db_Fetch();
 			$id = $row['user_id'];
-			$headers .= "From: ".SITENAME."<".SITEADMINEMAIL.">\n";
-			$headers .= "X-Sender: <mail@".SITEURL.">\n";
-			$headers .= "X-Mailer: PHP\n";
-			$headers .= "X-Priority: 3\n";
-			$headers .= "Return-Path: <mail@".SITEURL.">\n";
+			
 			$message = "Welcome to ".SITENAME."\nYour registration has been received and created with the following login information ...\n\nUsername: ".$_POST['name']."\nPassword: ".$_POST['password1']."\n\nYour account is currently marked as being inactive, to activate your account please go to the following link ...\n\n".SITEURL."signup.php?activate.".$id.".".$key."\n\nPlease keep this email for your own information as your password has been encrypted and cannot be retrieved if you misplace or forget it. You can however request a new password if this happens.\n\nThanks for your registration.\n\nFrom ".SITENAME."\n".SITEURL;
-			if(file_exists(e_BASE."plugins/smtp.php")){
-				require_once(e_BASE."plugins/smtp.php");
-				smtpmail($_POST['email'], "Registration details for ".SITENAME, $message, $headers);
-			}else{
-				mail($_POST['email'], "Registration details for ".SITENAME, $message, $headers);
-			}
+
+			require_once("classes/mail.php");
+			sendemail($_POST['email'], "Registration details for ".SITENAME, $message);
+
 			require_once(HEADERF);
 			$text = "This stage of registation is complete, you will be receiving a confirmation email containing your login details, please follow the link in the email to complete the signup process and activate your account.";
 			$ns -> tablerender("<div style='text-align:center'>Thankyou!</div>", $text);

@@ -29,6 +29,7 @@ if(!is_object($sql)){
 	$sql -> db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
 }
 $page = substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
+
 if((eregi($page, $CUSTOMPAGES) && $CUSTOMFOOTER != "") ? parseheader($CUSTOMFOOTER) : parseheader($FOOTER)) ;
 
 $timing_stop = explode(' ', microtime());

@@ -60,7 +60,7 @@ if($id == "list"){
 			$text .= "<br />";
 		}
 			
-		$ns -> tablerender("<div style='text-align:center'>".LAN_100, $text);
+		$ns -> tablerender("<div style='text-align:center'>".LAN_100."</div>", $text);
 
 
 		if(!$page ? $ix = new nextprev("article.php", $from, $itemview, $total, LAN_100, "list.".$page) : $ix = new nextprev("article.php", $from, $itemview, $total, LAN_190, "list.".$page));

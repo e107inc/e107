@@ -1,20 +1,17 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system													|
-|	language file: Swedish													|
-|																						|
-|	©Steve Dunstan 2001-2002										|
-|	http://jalist.com															|
-|	stevedunstan@jalist.com											|
-|
-| Transalation by TheFrog.
-| NOTE: Since I don't use e107 I take no responisbility for eventual "bugs" in this file
-| since one word can have many meenings and I'm not entierly sure what Steve is refering to...
-|
-|																						|
+|	e107 website system					|
+|	language file: Swedish					|
+|								|
+|	©Steve Dunstan 2001-2002				|
+|	http://jalist.com					|
+|	stevedunstan@jalist.com					|
+| 	Transalation by TheFrog					|																						|
+|	Updated 2003-04-27 by Kimmo
+|								|
 |	Released under the terms and conditions of the		|
-|	GNU General Public License (http://gnu.org).				|
+|	GNU General Public License (http://gnu.org).		|
 +---------------------------------------------------------------+
 */
 
@@ -169,7 +166,7 @@ define(LAN_128, "Webläsare: ");
 define(LAN_129, "Operativsystem: ");
 define(LAN_130, "Besök från land/domän: ");
 define(LAN_131, "Hänvisningar: ");
-define(LAN_132, "Statestik");
+define(LAN_132, "Statistik");
 
 //submitnews.php
 define(LAN_133, "Tack");
@@ -178,13 +175,13 @@ define(LAN_135, "Nyhet: ");
 define(LAN_136, "Skicka nyhet");
 
 //user.php
-define(LAN_137, "Det finns ingen information om den användaren eftersom han/hon inte är registrerad vid");
+define(LAN_137, "Det finns ingen information om den användaren eftersom han/hon inte är registrerad än");
 define(LAN_138, "Registrerade medlemmar: ");
 define(LAN_139, "Ordning: ");
 define(LAN_140, "Registrerade medlemmar");
 define(LAN_141, "Inga registrerade medlemmar ännu.");
 define(LAN_142, "Medlem");
-define(LAN_143, "[dåld enligt önskemål]");
+define(LAN_143, "[dold enligt önskemål]");
 define(LAN_144, "Hemdisa: ");
 define(LAN_145, "Registrerad: ");
 define(LAN_146, "Besök sedan registreringen: ");
@@ -193,7 +190,7 @@ define(LAN_148, "Antal kommentarer: ");
 define(LAN_149, "Poster i forum: ");
 
 //usersettings.php
-define(LAN_150, "Instllningarna uppdaterade.");
+define(LAN_150, "Inställningarna uppdaterade.");
 define(LAN_151, "OK");
 define(LAN_152, "Nytt lösenord: ");
 define(LAN_153, "Ange det nya lösenordet igen: ");
@@ -223,7 +220,7 @@ define(LAN_171, "Användarid icke godkännt (kan vara en korrupt kaka (cookie)).<b
 define(LAN_172, "Logga ut");
 define(LAN_173, "Fel vid inloggning");
 define(LAN_174, "Gå med"); //FIX
-define(LAN_175, "Login"); //Might be changed to Logga in
+define(LAN_175, "Logga in"); //Might be changed to Logga in
 define(LAN_176, "Användare på denna sida: ");
 define(LAN_177, "Användare på siten: ");
 define(LAN_178, "Inloggade användare: ");
@@ -239,7 +236,7 @@ define(LAN_184, "Omröstning");
 define(LAN_186, "Skicka nyhet");
 define(LAN_187, "E-postaddress att skicka till");
 define(LAN_188, "Jag tror att du kunde vara intresseard av denna nyhet från");
-define(LAN_189, "Används tillsammans med"); //Wierd transalation...
+define(LAN_189, "Powered by"); //No translation exist..
 define(LAN_190, "Recension");
 define(LAN_191, "Information");
 define(LAN_192, "Användarna av detta forum har postat totalt ");
@@ -263,30 +260,27 @@ define(LAN_209, "Du <b>kan inte</b> redigera dina poster");
 define(LAN_210, "Du <b>kan</b> ta bort dina poster");
 define(LAN_211, "Du <b>kan inte</b> ta bort dina poster");
 define(LAN_212, "Glömt lösenordet?");
-define(LAN_213, "Användarnamnet/e-postaddressen hittades inte i databasen.");
+define(LAN_213, "Användarnamnet/e-postadressen hittades inte i databasen.");
 define(LAN_214, "Kunde inte återställa lösenordet");
 define(LAN_215, "Ditt lösenord på ".SITENAME." har återställts. Ditt nya lösenord är\n\n");
 define(LAN_216, "Gå till följande url för att validera ditt nya lösenord...");
 define(LAN_217, "Tack, ditt nya lösenord är nu validerat. Du kan nu logga in med ditt nya lösenord.");
+define("LAN_281", "Gäster: ");
 
-define("LAN_354", "(Åtkomst nekad)" );
-define("LAN_355", "Inga filer i denna kategori finns tillgängliga" );
-define("LAN_356", "Total nerladdningsstorlek: " );
-define("LAN_357", "Filer nerladdade: " );
-define("LAN_358", "Tillgängliga filer: " );
-define("LAN_359", "Ranka denna download" );
-define("LAN_360", "Tack för att du röstade!" );
-define("LAN_361", "downloads från" ); (as in "5 downloads from 8 files" )
-define("LAN_362", "filer" );
-define("LAN_363", "Downloads" );
-define("LAN_364", "Sortera efter" );
-define("LAN_365", "Datum" );
-define("LAN_366", "Filstorlek" );
-define("LAN_367", "Download" );
-define("LAN_368", "Inga filer tillgängliga, kom tillbaka senare!" );
-define("LAN_369", "Inte graderat än");
-define("LAN_370", "Gradering: ");
-
+define(LAN_300, "Användarnamnet finns inte i databasen.<br /><br />");
+define(LAN_301, "Fel lösenord.<br /><br />");
+define(LAN_302, "Du har inte aktiverat ditt konto. Du borde ha fått ett mail med instruktioner om hur du aktiverar ditt konto, om inte kontakta en administratör.<br /><br />");
+define(LAN_303, "Denna Nyhet är från ");
+define(LAN_304, "Artikeltitel: ");
+define(LAN_305, "Underrubrik: ");
+define(LAN_306, "Denna artikel är från ");
+define(LAN_307, "Totalt antal poster i den här kategorin: ");
+define(LAN_308, "Riktigt namn: ");
+define(LAN_309, "Mata in dina uppgifter här - <b>ett aktiveringsmail kommer att bli skickat till den e-post address du skriver här, </b>vill du inte visa din e-post address på den här sidan klickar du i göm min mail.");
+define(LAN_310, "Kan inte acceptera post, namnet är redan registrerat - om det är ditt namn, logga in för att posta.");
+define(LAN_311, "Anonym");
+define(LAN_312, "Dubbelpost - Kan inte acceptera.");
+define(LAN_313, "Välj vilken lista du vill visa...");
 define(LAN_314, "Klasser: ");
 define(LAN_315, "Användare: ");
 define(LAN_316, "Gå till sidan ");
@@ -306,12 +300,8 @@ define(LAN_329, "Auto Login"); // Auto Login
 
 define("LAN_350", "OK");
 define("LAN_351", "Välj tema");
-
 define("LAN_352", "OK");
 define("LAN_353", "Välj språk");
-
-
-
 define("LAN_354", "(Åtkomst nekad)" );
 define("LAN_355", "Inga filer i denna kategori finns tillgängliga" );
 define("LAN_356", "Total nerladdningsstorlek: " );
@@ -319,7 +309,7 @@ define("LAN_357", "Filer nerladdade: " );
 define("LAN_358", "Tillgängliga filer: " );
 define("LAN_359", "Ranka denna download" );
 define("LAN_360", "Tack för att du röstade!" );
-define("LAN_361", "downloads från" );
+define("LAN_361", "downloads från" ); 
 define("LAN_362", "filer" );
 define("LAN_363", "Downloads" );
 define("LAN_364", "Sortera efter" );
@@ -328,5 +318,23 @@ define("LAN_366", "Filstorlek" );
 define("LAN_367", "Download" );
 define("LAN_368", "Inga filer tillgängliga, kom tillbaka senare!" );
 define("LAN_369", "Inte graderat än");
-define("LAN_370", "Gradering: ");
+define("LAN_370", "Rankning: ");
+define("LAN_371", "Loggning är inte aktiverat än, gå till admin sidan, klicka på Logger och Activate Logging/Counter rutan.");
+define("LAN_372", "Egenskaperna på denna sida är inaktiverade.");
+define("LAN_373", "Har inte startat än");
+define("LAN_374", "Loggning startade:");
+define("LAN_375", "Visa alla");
+define("LAN_376", "Senaste 10 besökarna"); 
+define("LAN_377", "alla");
+define("LAN_378", "top 10");
+define("LAN_379", "Skärm upplösningar");
+define("LAN_380", "Om du önskar att bli notifierad via e-post när ett svar postas under detta inlägg, bocka då i denna ruta");
+define("LAN_381", "Du har mottagit ett svar på ditt forum inlägg hos ");
+define("LAN_382", "Post skickad: ");
+define("LAN_383", "Klicka på länken för att läsa hela tråden...");
+define("LAN_384", "Forum svar från ");
+define("LAN_385", "Posta: ");
+define("LAN_386", "Om du önskar att aktivera en omröstning för ditt inlägg, lämna då detta fält tomt ");
+define("LAN_387", "Du måste vara medlem samt inloggad för att kunna rösta.");
+
 ?>

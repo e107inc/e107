@@ -65,7 +65,7 @@ if($_POST['searchtype']){
 	// as no searchtype has been specified we need to find out what page the query has been executed from ...
 	// $refpage holds referring page believe it or not
 
-	if(eregi("index.php", $refpage)){ $searchtype = 1; }
+	if(eregi("news.php", $refpage)){ $searchtype = 1; }
 	if(eregi("comment.php", $refpage)){ $searchtype = 2; }
 	if(eregi("chat.php", $refpage)){ $searchtype = 6; }
 	if(eregi("links.php", $refpage)){ $searchtype = 7; }

@@ -25,14 +25,19 @@ if(!e_QUERY){
 	$forum_id = $tmp[0]; $from = $tmp[1];
 	if(!$from){ $from = 0; }
 }
-
+define("FTHEME", (file_exists(THEME."forum/newthread.png")) ? THEME."forum/" : "themes/shared/forum/");
 $view=15;
-$captionlinkcolour = "#fff";
 	
 $sql -> db_Select("forum", "*", "forum_id='".$forum_id."' ");
 $row = $sql-> db_Fetch(); extract($row);
 
 if(!$forum_active || $forum_class && !check_class($forum_class)){ header("Location:".e_HTTP."forum.php"); }
+
+if(preg_match("/^".preg_quote(ADMINNAME)."/", $forum_moderators)){
+	define("MODERATOR", TRUE);
+}else{
+	define("MODERATOR", FALSE);
+}
 
 require_once(HEADERF);
 
@@ -49,7 +54,7 @@ if($topics > $view){
 $text = "<table style='width:100%' class='fborder'>
 <tr>
 <td  colspan='2' class='fcaption'>
-<a style='color:$captionlinkcolour' href='index.php'>".SITENAME."</a> >> <a style='color:$captionlinkcolour' href='forum.php'>Forums</a> >> <b>".$forum_name."</b>
+<a class='forumlink' href='index.php'>".SITENAME."</a> >> <a class='forumlink' href='forum.php'>Forums</a> >> <b>".$forum_name."</b>
 </td>
 </tr>
 <tr>
@@ -66,7 +71,7 @@ $text .= "</td>
 <td style='width:20%; text-align:right'>";
 
 if(ANON || USER){
-	$text .= "<a href='".e_HTTP."forum_post.php?nt.".$forum_id."'><img src='".e_HTTP."themes/shared/forum/newthread.png' alt='' style='border:0' /></a>";
+	$text .= "<a href='".e_HTTP."forum_post.php?nt.".$forum_id."'><img src='".FTHEME."newthread.png' alt='' style='border:0' /></a>";
 }
 $text .= "</td></tr><tr>
 <td colspan='2'>";
@@ -110,7 +115,7 @@ if(!$topics){
 		$post_author_name = substr($thread_user, (strpos($thread_user, ".")+1));
 
 		echo "<tr>
-		<td style='vertical-align:center; width:3%' class='forumheader3'>";
+		<td style='vertical-align:middle; text-align:center; width:3%' class='forumheader3'>";
 
 		$newflag = FALSE;
 		if($thread_datestamp > USERLV && (!ereg("\.".$thread_id."\.", USERVIEWED))){
@@ -124,40 +129,73 @@ if(!$topics){
 		}
 
 		$thread_datestamp = $gen->convert_date($thread_datestamp, "forum");
-		if($thread_s){
-			if(!$thread_active){
-				echo "<img src='themes/shared/forum/stickyclosed.png' alt='' />";
-			}else{
-				echo "<img src='themes/shared/forum/sticky.png' alt='' />";
-			}
-		}else if(!$thread_active){
-			echo "<img src='themes/shared/forum/closed.png' alt='' />";
-		}else if($newflag){
-			echo "<img src='themes/shared/forum/new.png' alt='' />";
+
+		
+		 if($newflag){
+			$icon = "<img src='".FTHEME."new_small.png' alt='' />";
 		}else{
-			echo "<img src='themes/shared/forum/nonew.png' alt='' />";
+			$icon = "<img src='".FTHEME."nonew_small.png' alt='' />";
 		}
 
-		echo "</td><td style='vertical-align:center; text-align:left; width:47%'  class='forumheader3'><span class='mediumtext'><a href='forum_viewtopic.php?".$forum_id.".".$thread_id."'>".$thread_name."</a></span>";
+		if($replies >= $pref['forum_popular'][1] && $replies != "None"){
+			$icon = ($newflag ? "<img src='".FTHEME."new_popular.gif' alt='' />" : "<img src='".FTHEME."nonew_popular.gif' alt='' />");
+		}
 
-		if(eregi(ADMINNAME, $forum_moderators)){
-			echo "<div class='smalltext' style='text-align:right'>".LAN_318;
-			if($thread_s){
-				echo "[ <a href='".e_ADMIN."forum_conf.php?unstick.".$forum_id.".".$thread_id."'>".LAN_319."</a> ]";
+		if($thread_s == 1){
+			if(!$thread_active){
+				$icon = "<img src='".FTHEME."stickyclosed.png' alt='' />";
+			}else{
+				$icon = "<img src='".FTHEME."sticky.png' alt='' />";
+			}
+		}else if($thread_s == 2){
+			$icon = "<img src='".FTHEME."announce.png' alt='' />";
+		}else if(!$thread_active){
+			$icon = "<img src='".FTHEME."closed_small.png' alt='' />";
+		}
+		
+		
+
+		echo $icon;
+
+/*é
+		if($thread_s){
+			if(!$thread_active){
+				echo "<img src='".FTHEME."stickyclosed.png' alt='' />";
+			}else{
+				echo "<img src='".FTHEME."sticky.png' alt='' />";
+			}
+		}else if(!$thread_active){
+			echo "<img src='".FTHEME."closed.png' alt='' />";
+		}else if($newflag){
+			echo "<img src='".FTHEME."new.png' alt='' />";
+		}else{
+			echo "<img src='".FTHEME."nonew.png' alt='' />";
+		}
+*/
+
+		$result = preg_split("/\]/", $thread_name);
+
+		$thread_name = ($result[1] ? $result[0]."] <a href='forum_viewtopic.php?".$forum_id.".".$thread_id."'>".ereg_replace("\[.*\]", "", $thread_name)."</a>" : "<a href='forum_viewtopic.php?".$forum_id.".".$thread_id."'>".$thread_name."</a>");
+		echo "</td><td style='vertical-align:middle; text-align:left; width:47%'  class='forumheader3'><span class='mediumtext'>".$thread_name."</span>";
+
+		if(MODERATOR){
+			echo "<div style='text-align:right'>";
+			if($thread_s == 1){
+				echo "<a href='".e_ADMIN."forum_conf.php?unstick.".$forum_id.".".$thread_id."'><img src='".FTHEME."admin_unstick.png' alt='make un-sticky' style='border:0' /></a> ";
 				if($thread_active){
-					echo "[ <a href='".e_ADMIN."forum_conf.php?close.".$forum_id.".".$thread_id."'>".LAN_200."</a> ]";
+					echo "<a href='".e_ADMIN."forum_conf.php?close.".$forum_id.".".$thread_id."'><img src='".FTHEME."admin_lock.png' alt='lock' style='border:0' /></a> ";
 				}else{
-					echo "[ <a href='".e_ADMIN."forum_conf.php?open.".$forum_id.".".$thread_id."'>".LAN_201."</a> ]";
+					echo "<a href='".e_ADMIN."forum_conf.php?open.".$forum_id.".".$thread_id."'><img src='".FTHEME."admin_unlock.png' alt='unlock' style='border:0' /></a> ";
 				}
 			}else{
-				echo "[ <a href='".e_ADMIN."forum_conf.php?stick.".$forum_id.".".$thread_id."'>".LAN_320."</a> ]";
+				echo "<a href='".e_ADMIN."forum_conf.php?stick.".$forum_id.".".$thread_id."'><img src='".FTHEME."admin_stick.png' alt='make sticky' style='border:0' /></a> ";
 				if($thread_active){
-					echo "[ <a href='".e_ADMIN."forum_conf.php?close.".$forum_id.".".$thread_id."'>".LAN_200."</a> ]";
+					echo "<a href='".e_ADMIN."forum_conf.php?close.".$forum_id.".".$thread_id."'><img src='".FTHEME."admin_lock.png' alt='lock' style='border:0' /></a> ";
 				}else{
-					echo "[ <a href='".e_ADMIN."forum_conf.php?open.".$forum_id.".".$thread_id."'>".LAN_201."</a> ]";
+					echo "<a href='".e_ADMIN."forum_conf.php?open.".$forum_id.".".$thread_id."'><img src='".FTHEME."admin_unlock.png' alt='unlock' style='border:0' /></a> ";
 				}
-				echo "</div>";
 			}
+			echo "<a href='".e_ADMIN."forum_conf.php?move.".$forum_id.".".$thread_id."'><img src='".FTHEME."admin_move.png' alt='move' style='border:0' /></a></div>";
 		}
 			
 		echo "</td>
@@ -186,7 +224,7 @@ $text .= "</td>
 <td style='width:20%; text-align:right'>";
 
 if(ANON || USER){
-	$text .= "<a href='forum_post.php?nt.".$forum_id."'><img src='themes/shared/forum/newthread.png' alt='' style='border:0' /></a>";
+	$text .= "<a href='forum_post.php?nt.".$forum_id."'><img src='".FTHEME."newthread.png' alt='' style='border:0' /></a>";
 }else{
 	$text .= LAN_59;
 }
@@ -197,38 +235,54 @@ $text .= "</td>
 echo $text;
 echo "</td></tr></table><br />";
 
-$text = "<div style='text-align:center'>
-<table style='width:100%' class='fborder'>
+$text = "<table class='fborder' style='width:100%'>
 <tr>
-<td style='width:100%; vertical-align:top'>
+<td style='vertical-align:center; width:33%' class='forumheader3'>
+
+
+
 <table style='width:100%'>
 <tr>
-<td style='vertical-align:center; width:3%'><img src='themes/shared/forum/new.png' alt='' /></td>
-<td style='vertical-align:center' class='smallblacktext'> ".LAN_79."</td>
-<td style='vertical-align:center; width:3%'><img src='themes/shared/forum/nonew.png' alt='' /></td>
-<td style='vertical-align:center' class='smallblacktext'> ".LAN_80."</td>
-<td style='vertical-align:center; width:3%'><img src='themes/shared/forum/sticky.png' alt='' /></td>
-<td style='vertical-align:center' class='smallblacktext'> ".LAN_202."</td>
-<td style='vertical-align:center; width:3%'><img src='themes/shared/forum/stickyclosed.png' alt='' /></td>
-<td style='vertical-align:center' class='smallblacktext'> ".LAN_203."</td>
-<td style='vertical-align:center; width:3%'><img src='themes/shared/forum/closed.png' alt='' /></td>
-<td style='vertical-align:center' class='smallblacktext'> ".LAN_81."</td>
-</tr>
-</table>
-</td>
-</tr>
-<tr>
-<td style='width:100%; text-align:center; vertical-align:top' class='smallblacktext'>";
 
+<td style='vertical-align:center; text-align:center; width:2%'><img src='".FTHEME."new_small.png' alt='' /></td>
+<td style='width:10%' class='smallblacktext'>".LAN_79."</td>
+
+<td style='vertical-align:center; text-align:center; width:2%'><img src='".FTHEME."nonew_small.png' alt='' /></td>
+<td style='width:10%' class='smallblacktext'>".LAN_80."</td>
+
+<td style='vertical-align:center; text-align:center; width:2%'><img src='".FTHEME."sticky.png' alt='' /></td>
+<td style='width:10%' class='smallblacktext'>".LAN_202."</td>
+
+<td style='vertical-align:center; text-align:center; width:2%'><img src='".FTHEME."announce.png' alt='' /></td>
+<td style='width:10%' class='smallblacktext'>".LAN_396."</td>
+
+<td style='vertical-align:center; text-align:center; width:50%' class='smallblacktext'>";
 if(USER == TRUE || ANON == TRUE){
 	$text .= LAN_204." - ".LAN_206." - ".LAN_208;
 }else{
 	$text .= LAN_205." - ".LAN_207." - ".LAN_209;
 }
 
-$text .= "</td></tr>
+$text .= "</td>
+
+</tr>
 <tr>
-<td style='text-align:center' colspan='2'>
+
+
+
+<td style='vertical-align:center; text-align:center; width:2%'><img src='".FTHEME."new_popular.gif' alt='' /></td>
+<td style='width:2%' class='smallblacktext'>".LAN_79." ".LAN_395."</td>
+
+<td style='vertical-align:center; text-align:center; width:2%'><img src='".FTHEME."nonew_popular.gif' alt='' /></td>
+<td style='width:10%' class='smallblacktext'>".LAN_80." ".LAN_395."</td>
+
+<td style='vertical-align:center; text-align:center; width:2%'><img src='".FTHEME."stickyclosed.png' alt='' /></td>
+<td style='width:10%' class='smallblacktext'>".LAN_203."</td>
+
+<td style='vertical-align:center; text-align:center; width:2%'><img src='".FTHEME."closed_small.png' alt='' /></td>
+<td style='width:10%' class='smallblacktext'>".LAN_81."</td>
+
+<td style='vertical-align:center; text-align:center; width:50%' class='smallblacktext'>
 <form method='post' action='search.php'>
 <p>
 <input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />
@@ -236,10 +290,18 @@ $text .= "</td></tr>
 </p>
 </form>
 </td>
+
+
+
 </tr>
 </table>
 
-</div>";
+
+
+
+</td>
+</tr>
+</table>";
 echo $text;
 require_once(FOOTERF);
 

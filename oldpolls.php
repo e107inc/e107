@@ -20,7 +20,6 @@ $from = (!e_QUERY ? $from = 0 : $from = e_QUERY);
 $poll_total = $sql -> db_Count("poll");
 
 $sql -> db_Select("poll", "*", "poll_active='0' ORDER BY poll_datestamp DESC LIMIT $from, 10");
-//$poll_total = $sql -> db_Rows();
 
 $ns -> tablerender("<div style='text-align:center'>".LAN_92."</div>", "");
 

@@ -16,6 +16,26 @@ require_once("../class2.php");
 if(!getperms("2")){ header("location:".e_HTTP."index.php"); }
 require_once("auth.php");
 
+$sql -> db_Select("core", "*", "e107_name='menu_pref' ");
+$row = $sql -> db_Fetch();
+$tmp = stripslashes($row['e107_value']);
+$menu_pref=unserialize($tmp);
+
+
+
+
+$handle=opendir("menu_config/");
+while ($file = readdir($handle)){
+	if($file != "." && $file != ".." && $file != "index.html"){
+		$conflist[] = $file;
+	}
+}
+closedir($handle);
+
+
+
+
+
 $tmp = explode(".", e_QUERY);
 $action = $tmp[0];
 $id = $tmp[1];
@@ -196,7 +216,7 @@ function parseheader($LAYOUT){
 	}
 }
 function checklayout($str){
-	global $pref, $menus_used;
+	global $pref, $menus_used, $menu_pref, $conflist;
 	if(strstr($str, "LOGO")){
 		echo "[Logo]";
 	}else if(strstr($str, "SITENAME")){
@@ -217,21 +237,25 @@ function checklayout($str){
 		while(list($menu_id, $menu_name, $menu_location, $menu_order) = $sql9-> db_Fetch()){
 			$menu_name = eregi_replace("_menu", "", $menu_name);
 			$caption = "<div style=\"text-align:center\">".$menu_name."</div>";
-			$text = "<a href=\"".e_SELF."?deac.".$menu_id."\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/off.png\" alt=\"\" /> Deactivate</div></a>";
+			$text = "<a href=\"".e_SELF."?deac.".$menu_id."\"><img style=\"border:0\" src=\"../themes/shared/generic/off.png\" alt=\"\" /> Deactivate</a><br />";
+			if(in_array($menu_name."_conf.php", $conflist)){
+
+				$text .= "<a href=\"menu_config/".$menu_name."_conf.php\"><img style=\"border:0\" src=\"../themes/shared/generic/move.png\" alt=\"\" /> Configure</a><br />";
+			}
 			if($menu_order != 1){
-				$text .= "<a href=\"".e_SELF."?inc.".$menu_id.".".$menu_order.".".$menu."\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/up.gif\" alt=\"\" /> Move Up</div></a>";
+				$text .= "<a href=\"".e_SELF."?inc.".$menu_id.".".$menu_order.".".$menu."\"><img style=\"border:0\" src=\"../themes/shared/generic/up.gif\" alt=\"\" /> Move Up</a><br />";
 			}
 			if($menu_count != $menu_order){
-				$text .= "<a href=\"".e_SELF."?dec.".$menu_id.".".$menu_order.".".$menu."\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/down.gif\" alt=\"\" /> Move Down</div></a>";
+				$text .= "<a href=\"".e_SELF."?dec.".$menu_id.".".$menu_order.".".$menu."\"><img style=\"border:0\" src=\"../themes/shared/generic/down.gif\" alt=\"\" /> Move Down</a><br />";
 			}
 			for($c=1; $c<=5; $c++){
 				if($menu <> $c){
-					$text .= "<a href=\"".e_SELF."?move.".$menu_id.".$c\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/move.png\" alt=\"\" /> Move to Area ".$c."</div></a>";
+					$text .= "<a href=\"".e_SELF."?move.".$menu_id.".$c\"><img style=\"border:0\" src=\"../themes/shared/generic/move.png\" alt=\"\" /> Move to Area ".$c."</a><br />";
 					
 				}
 			}
 
-			$text .= "<a href=\"".e_SELF."?adv.".$menu_id."\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/move.png\" alt=\"\" /> Visibility</div></a>";
+			$text .= "<a href=\"".e_SELF."?adv.".$menu_id."\"><img style=\"border:0\" src=\"../themes/shared/generic/move.png\" alt=\"\" /> Visibility</a>";
 
 
 			$ns -> tablerender($caption, $text);

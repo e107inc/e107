@@ -17,14 +17,14 @@ class comment{
 	function form_comment(){
 		if(ANON == TRUE || USER == TRUE){
 			$ns = new table;
-			$text = "\n<form method=\"post\" action=\"".e_SELF."?".e_QUERY."\">\n<table style=\"width:95%\">";
+			$text = "\n<form method='post' action='".e_SELF."?".e_QUERY."'>\n<table style='width:95%'>";
 			if(ANON == TRUE && USER == FALSE){
-				$text .= "<tr>\n<td style=\"width:20%\">".LAN_16."</td>\n<td style=\"width:80%\">\n<input class=\"tbox\" type=\"text\" name=\"author_name\" size=\"60\" value=\"$author_name\" maxlength=\"100\" />\n</td>\n</tr>";
+				$text .= "<tr>\n<td style='width:20%'>".LAN_16."</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='author_name' size='60' value='$author_name' maxlength='100' />\n</td>\n</tr>";
 			}
-			$text .= "<tr> \n<td style=\"width:20%\">".LAN_8.":</td>\n<td style=\"width:80%\">\n<textarea class=\"tbox\" name=\"comment\" cols=\"70\" rows=\"10\"></textarea>\n</td></tr>\n<tr style=\"vertical-align:top\"> \n<td style=\"width:20%\"></td>\n<td style=\"width:80%\">\n<input class=\"button\" type=\"submit\" name=\"commentsubmit\" value=\"".LAN_9."\" />\n<br /><br />\n<span class=\"smalltext\">\n".LAN_10."\n</span>\n</td>\n</tr>\n</table>\n</form>";
+			$text .= "<tr> \n<td style='width:20%'>".LAN_8.":</td>\n<td style='width:80%'>\n<textarea class='tbox' name='comment' cols='70' rows='10'></textarea>\n</td></tr>\n<tr style='vertical-align:top'> \n<td style='width:20%'></td>\n<td style='width:80%'>\n<input class='button' type='submit' name='commentsubmit' value='".LAN_9."' />\n<br /><br />\n<span class='smalltext'>\n".LAN_10."\n</span>\n</td>\n</tr>\n</table>\n</form>";
 			$ns -> tablerender(LAN_9, $text);
 		}else{
-			echo "<br /><div style=\"text-align:center\"><b>".LAN_6."</b></div>";
+			echo "<br /><div style='text-align:center'><b>".LAN_6."</b></div>";
 		}
 	}
 
@@ -58,32 +58,32 @@ class comment{
 			
 		$user_join = $gen->convert_date($user_join, "short");
 
-		$unblock = "[<a href=\"".e_BASE.e_ADMIN."comment_conf.php?unblock-".$comment_id."-".$_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING']."\">".LAN_1."</a>]";
-		$block = "[<a href=\"".e_BASE.e_ADMIN."comment_conf.php?block-".$comment_id."-".$_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING']."\">".LAN_2."</a>] ";
-		$delete = "[<a href=\"".e_BASE.e_ADMIN."comment_conf.php?delete-".$comment_id."-".$_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING']."\">".LAN_3."</a>] ";
-		$userinfo = "[<a href=\"".e_BASE.e_ADMIN."userinfo.php?".$comment_ip."\">".LAN_4."</a>]";
+		$unblock = "[<a href='".e_BASE.e_ADMIN."comment_conf.php?unblock-".$comment_id."-".$_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING']."'>".LAN_1."</a>]";
+		$block = "[<a href='".e_BASE.e_ADMIN."comment_conf.php?block-".$comment_id."-".$_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING']."'>".LAN_2."</a>] ";
+		$delete = "[<a href='".e_BASE.e_ADMIN."comment_conf.php?delete-".$comment_id."-".$_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING']."'>".LAN_3."</a>] ";
+		$userinfo = "[<a href='".e_BASE.e_ADMIN."userinfo.php?".$comment_ip."'>".LAN_4."</a>]";
 	
 		if(!$COMMENTSTYLE){
-			$COMMENTSTYLE = "<table style=\"width:95%\">
+			$COMMENTSTYLE = "<table style='width:95%'>
 			<tr>
-			<td style=\"width:30%; vertical-align=top\">
-			<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> 
-			<span class=\"defaulttext\"><i>
+			<td style='width:30%; vertical-align=top'>
+			<img src='".THEME."images/bullet2.gif' alt='bullet' /> 
+			<span class='defaulttext'><i>
 			{USERNAME}
 			</i></span>
 			<br />
-			<span class=\"smalltext\">on 
+			<span class='smalltext'>on 
 			{TIMEDATE}
 			<br />
 			{COMMENTS}
 			</span>
 			</td>
-			<td style=\"width:70%; vertical-align=top\">
-			<span class=\"mediumtext\">
+			<td style='width:70%; vertical-align=top'>
+			<span class='mediumtext'>
 			{COMMENT}
 			</span>
 			</td>
-			<td style=\"text-align:right\"><div class=\"smalltext\">
+			<td style='text-align:right' class='smalltext'>
 			{ADMINOPTIONS}
 			</td></tr></table><br />";
 		}
@@ -91,13 +91,13 @@ class comment{
 		$aj = new textparse;
 
 		$search[0] = "/\{USERNAME\}(.*?)/si";
-		$replace[0] = ($user_id ? "<a href=\"user.php?id.".$user_id."\">".$user_name."</a>\n" : $user_name."\n");
+		$replace[0] = ($user_id ? "<a href='user.php?id.".$user_id."'>".$user_name."</a>\n" : $user_name."\n");
 
 		$search[1] = "/\{TIMEDATE\}(.*?)/si";
 		$replace[1] = $datestamp;
 
 		$search[2] = "/\{AVATAR\}(.*?)/si";
-		$replace[2] = ($user_image ? "<img src=\"".$user_image."\" alt=\"\" />" : "");
+		$replace[2] = ($user_image ? "<img src='".$user_image."' alt='' />" : "");
 		
 		$search[3] = "/\{COMMENTS\}(.*?)/si";
 		$replace[3] = ($user_id ? LAN_99.": ".$user_comments : LAN_194);

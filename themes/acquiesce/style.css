@@ -244,3 +244,16 @@ p {
 	font-size: 12px;
 	color:#fff;
 }
+.finfobar{
+	background-color: #CCC8C8;
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+	padding: 4px;
+	border: #C3BDBD 1px solid;
+	background-image : url(../shared/forum/finfobar.png);
+}
+
+.forumlink{
+	color: #fff;
+	text-decoration: underline;
+}

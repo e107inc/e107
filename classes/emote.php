@@ -10,7 +10,7 @@ function r_emote(){
 	$c=0;
 	while(list($code, $name) = @each($emote[$c])){
 		if(!$orig[$name]){
-			$str .= "<a href=\"javascript:addtext('$code')\"><img src=\"themes/shared/emoticons/$name\" style=\"border:0\" alt=\"\" /> \n";
+			$str .= "<a href=\"javascript:addtext('$code')\"><img src=\"themes/shared/emoticons/$name\" style=\"border:0\" alt=\"\" /></a> \n";
 			$orig[$name] = TRUE;
 		}
 		$c++;
