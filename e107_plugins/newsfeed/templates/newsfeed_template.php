@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/templates/newsfeed_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-02-28 19:36:58 $
+|     $Revision: 1.3 $
+|     $Date: 2005-03-02 09:06:48 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -39,7 +39,7 @@ $NEWSFEED_MAIN_START = "
 <ul>\n";
 
 $NEWSFEED_MAIN = "
-<li>{FEEDITEMLINK}<span class='smalltext'>{FEEDITEMCREATOR}</span><br /><span class='mediumtext'>{FEEDITEMTEXT}</span></li>\n";
+<li>{FEEDITEMLINK} <span class='smalltext'>{FEEDITEMCREATOR}</span><br /><span class='mediumtext'>{FEEDITEMTEXT}</span></li>\n";
 
 
 $NEWSFEED_MAIN_END = "
