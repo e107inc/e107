@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-02-03 14:34:07 $
-|     $Author: stevedunstan $
+|     $Revision: 1.6 $
+|     $Date: 2005-02-10 15:42:28 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -260,7 +260,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply'])) {
 		}
 		 
 		if ($pref['forum_redirect']) {
-			redirect(e_BASE."forum_viewtopic.php?{$iid}.last");
+			redirect(e_PLUGIN."forum/forum_viewtopic.php?{$iid}.last");
 		} else {
 			require_once(HEADERF);
 			if (!$FORUMPOST) {
