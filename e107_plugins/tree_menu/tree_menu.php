@@ -32,30 +32,37 @@ $sql -> db_Select("links", "*", "link_category='1' AND link_name NOT REGEXP('sub
 while($row = $sql -> db_Fetch()){
         extract($row);
         $link_name=strip_tags($link_name);
-        if($sql2 -> db_Select("links", "*", "link_name REGEXP('submenu.".$link_name."') ORDER BY link_order")){
-                if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
+        $textadd1 = ""; $textadd2 = "";
+		if($sql2 -> db_Select("links", "*", "link_name REGEXP('submenu.".$link_name."') ORDER BY link_order")){
+				if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
                         $mlink_name = $link_name;
-                        $text .= "
+                        $textadd1 .= "
                         <div class='spacer'>
-                        <div class='button' style='width:100%; cursor: pointer; cursor: hand' onclick='expandit(this);updatecook(\"".$link_name."\");' >&raquo; ".$link_name."</div>
-                        <span style=\"display:none\" style=&{head}; id=\"span_".$link_name."\">";
-                        while($row = $sql2 -> db_Fetch()){
+                        <div class='button' style='width:100%; cursor: pointer; cursor: hand' onclick='expandit(\"span_".$link_name."\");updatecook(\"".$link_name."\");' >";
+						($link_button!="" ? $textadd1b = "<img src='".e_IMAGE."link_icons/".$link_button."' alt='' style='vertical-align:middle;' />" : $textadd1b = "&raquo;" );
+						$textadd2 .= " <a href=\"javascript: void(0);\" >".$link_name."</a></div>
+                        <span style=\"display:none\" id=\"span_".$link_name."\">";
+                        $sublink_exist = 0;
+						while($row = $sql2 -> db_Fetch()){
                                 extract($row);
                                 if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
-                                        $link_name = str_replace("submenu.".$mlink_name.".", "", $link_name);
-                                        $text .= "&middot; ".(strstr($link_url, "http") ? setlink($link_name, $link_url, $link_open) : setlink($link_name, $link_url, $link_open))."\n<br />";
-                                }
+                                        $link_name2 = str_replace("submenu.".$mlink_name.".", "", $link_name);
+                                        $textadd2 .= ($link_button!="" ? "<img src='".e_IMAGE."link_icons/".$link_button."' alt='' style='vertical-align:middle' />  " : "&middot; " ).setlink($link_name2, $link_url, $link_open)."\n<br />";
+                                	$sublink_exist = 1;
+								}
+								unset($link_button);
                         }
-                        $text .= "</span></div>";
+                        if($sublink_exist==0){$textadd1b = "&middot;";}
+						$text .= $textadd1.$textadd1b.$textadd2."</span></div>";
                 }
-                        }else{
-                                if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
-                                        $text .= "<div class='spacer'><div class='button' style='width:100%; cursor: pointer; cursor: hand' onclick=\"clearcook();\">&middot; ".
-                                        (strstr($link_url, "http") ? setlink($link_name, $link_url, $link_open) : setlink($link_name, $link_url, $link_open))."
-                                        </div></div>";
-                                }
-                        }
+          }else{
+                if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
+                        $text .= "<div class='spacer'><div class='button' style='width:100%; cursor: pointer; cursor: hand' onclick=\"clearcook();\">".($link_button!="" ? "<img src='".e_IMAGE."link_icons/".$link_button."' alt='' style='vertical-align:middle' />  " : "&middot; " ).
+                        setlink($link_name, $link_url, $link_open)."
+                        </div></div>";
                 }
+        }
+}
 
 $text .= "
 <script type='text/javascript'>
@@ -77,7 +84,6 @@ function clearcook(){
         expireDate.setMinutes(expireDate.getMinutes()+10);
         document.cookie = \"treemenustatus=\" + \"0\" + \"; expires=\" + expireDate.toGMTString();
 }\n
-
 //-->\n
 ";
 
@@ -106,7 +112,7 @@ function setlink($link_name, $link_url, $link_open){
                 if($link_open == 4){
                         $link =  "<a style='text-decoration:none' href=\"javascript:open_window('".$link_url."')\">".$link_name."</a>\n";
                 }else{
-                        $link =  "<a style='text-decoration:none' href=\"".$link_url."\"".$link_append.">".$link_name."</a>\n";
+                        $link =  "<a style='text-decoration:none' href=\"".$link_url."\" ".$link_append.">".$link_name."</a>\n";
                 }
         return $link;
 }
