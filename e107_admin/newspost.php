@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.29 $
-|   $Date: 2005-02-09 08:49:51 $
+|   $Revision: 1.30 $
+|   $Date: 2005-02-09 22:18:37 $
 |   $Author: stevedunstan $
 +---------------------------------------------------------------+
 
@@ -77,7 +77,6 @@ if ($delete == "main" && $del_id) {
 		$e_event->trigger("newsdel", $del_id);
 		$newspost->show_message(NWSLAN_31." #".$del_id." ".NWSLAN_32);
 		$e107cache->clear("news.php");
-		$ix->create_rss();
 	}
 	unset($delete, $del);
 
