@@ -98,12 +98,12 @@ define("POST_EXTENDEDSTRING", " ]<br />");
 
 // [linkstyle]
 
-define(PRELINK, "");
-define(POSTLINK, "");
-define(LINKSTART, "<img src='".THEME."images/bullet2.gif' alt='bullet' /> ");
-define(LINKEND, "<br />");
-define(LINKDISPLAY, 2);
-define(LINKALIGN, "left");
+define('PRELINK', "");
+define('POSTLINK', "");
+define('LINKSTART', "<img src='".THEME."images/bullet2.gif' alt='bullet' /> ");
+define('LINKEND', "<br />");
+define('LINKDISPLAY', 2);
+define('LINKALIGN', "left");
 
 
 //	[tablestyle]
