@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-02-15 09:51:14 $
+|     $Revision: 1.32 $
+|     $Date: 2005-02-26 09:18:04 $
 |     $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -157,23 +157,36 @@ class sitelinks {
 }
 
 function hilite($link){
-// hilite the link of the news item in the menu.
+
+	global $PLUGINS_DIRECTORY;
+
+	if(!defined("LINKSTART_HILITE")){ return FALSE; }
+
+// --------------- highlighting for plugins. ----------------
+	if(eregi($PLUGINS_DIRECTORY,$link)){
+		$link = str_replace("../","",$link);
+		if(eregi(dirname($link),dirname(e_SELF))){
+			return TRUE;
+		}
+	}
+// --------------- highlight for news items.----------------
 // eg. news.php?list.1 or news.php?cat.2 etc
-if(!defined("LINKSTART_HILITE")){ return FALSE; }
 
-if(eregi("news.php",$link)){
-	if(eregi("list",$link) && eregi("list",e_QUERY)){
-		$tmp = str_replace("php?","",explode(".",$link));
-		$tmp2 = explode(".",e_QUERY);
-	 	if($tmp[1] == $tmp2[1] && $tmp[2]==$tmp2[2]){ return TRUE; }
+	if(eregi("news.php",$link)){
+		if(eregi("list",$link) && eregi("list",e_QUERY)){
+			$tmp = str_replace("php?","",explode(".",$link));
+			$tmp2 = explode(".",e_QUERY);
+			if($tmp[1] == $tmp2[1] && $tmp[2]==$tmp2[2]){ return TRUE; }
+		}
+
+		if((eregi("cat",$link) || eregi("list",$link)) && eregi("item",e_QUERY)){
+			$tmp = str_replace("php?","",explode(".",$link));
+			$tmp2 = explode(".",e_QUERY);
+			if($tmp[2]==$tmp2[2]){ return TRUE; }
+		}
 	}
 
-	if((eregi("cat",$link) || eregi("list",$link)) && eregi("item",e_QUERY)){
-		$tmp = str_replace("php?","",explode(".",$link));
-		$tmp2 = explode(".",e_QUERY);
-		if($tmp[2]==$tmp2[2]){ return TRUE; }
-	}
-}
+// --------------- highlight default ----------------
 	if(eregi("\?",$link)){
 		if(defined("LINKSTART_HILITE") && (strpos(e_SELF."?".e_QUERY, str_replace("../","","/".$link)) !== FALSE)){
 			return TRUE;
