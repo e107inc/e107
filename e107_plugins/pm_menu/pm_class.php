@@ -372,11 +372,11 @@ class pm {
 		}
 		$ret.="</td></tr>\n";
 		$ret.="<tr><td class='forumheader3'>".PMLAN_29."</td><td class='forumheader3'><input class='tbox' type='text' name='subject' value='".$pm_subject."'></td></tr>\n";
-		$ret.="<tr><td class='forumheader3'>".PMLAN_30."</td><td class='forumheader3'><textarea name='pm_text' rows='10' cols='50' class='tbox'>".$pm_message."</textarea>
+		$ret.="<tr><td class='forumheader3'>".PMLAN_30."</td><td class='forumheader3'><textarea id='pm_text' name='pm_text' rows='10' cols='50' class='tbox'>".$pm_message."</textarea>
 		<br />
-        <input class='helpbox' type='text' name='helpb' size='100' />
+        <input class='helpbox' type='text' id='helpb' name='helpb' size='100' />
 			<br />
-		".ren_help(1, "addtext", "help")."
+		".ren_help(1, "addtextpm", "helppm")."
 		</td></tr>";
 		
 		if($pref['smiley_activate']==1){
@@ -653,11 +653,11 @@ class pm {
 }
 function headerjs(){
 $script_txt= "	<script type=\"text/javascript\">
-function addtext(sc){
-	document.getElementById('pm').pm_text.value += sc;
+function addtextpm(sc){
+	document.getElementById('pm_text').value += sc;
 }
-function help(help){
-	document.getElementById('pm').helpb.value = help;
+function helppm(help){
+	document.getElementById('helpb').value = help;
 }
 </script>\n";
 return $script_txt;
