@@ -13,7 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("P")){ header("location:".e_HTTP."index.php"); exit; }
+if(!getperms("Z")){ header("location:".e_HTTP."index.php"); exit; }
 require_once("auth.php");
 
 //	check for new plugins, create entry in plugin table ...
