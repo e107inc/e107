@@ -15,6 +15,8 @@
 
 /* first thing to do is check if the log file is out of date ... */
 
+//require_once("../../class2.php");
+
 $pathtologs = e_PLUGIN."log/logs/";
 $date = date("z.Y", time());
 $date2 = date("j.m.y", time());
@@ -25,6 +27,7 @@ $year = date("Y", time());
 $yfile = "log_".($day-1).".".$year.".php";
 $tfile = "log_".$date.".php";
 
+
 if(file_exists($pathtologs.$tfile)) {
 	/* log file is up to date, no consolidation required */
 	return;
@@ -34,13 +37,15 @@ if(file_exists($pathtologs.$tfile)) {
 	return FALSE;
 }
 
+
+
 /* log file is out of date - consolidation required */
 
 /* get existing stats ... */
-if($sql -> db_Select("stat_info", "*", "log_id='statBrowser' OR log_id='statOs' OR log_id='statScreen' OR log_id='statDomain' OR log_id='statTotal' OR log_id='statUnique' OR log_id='statReferer' OR log_id='statQuery'")) {
+if($sql -> db_Select("logstats", "*", "log_id='statBrowser' OR log_id='statOs' OR log_id='statScreen' OR log_id='statDomain' OR log_id='statTotal' OR log_id='statUnique' OR log_id='statReferer' OR log_id='statQuery'")) {
 	$infoArray = array();
 	while($row = $sql -> db_Fetch()) {
-		$$row[0] = unserialize($row[1]);
+		$$row[1] = unserialize($row[2]);
 	}
 }else{
 	/* this must be the first time a consolidation has happened - this will only ever happen once ... */
@@ -69,7 +74,6 @@ foreach($browserInfo as $name => $amount) {
 	$statBrowser[$name] += $amount;
 }
 
-
 foreach($osInfo as $name => $amount) {
 	$statOs[$name] += $amount;
 }
@@ -80,8 +84,8 @@ foreach($screenInfo as $name => $amount) {
 
 
 foreach($domainInfo as $name => $amount) {
-	if($country = getcountry($name)) {
-		$statDomain[$country] += $amount;
+	if(!is_numeric($name)) {
+		$statDomain[$name] += $amount;
 	}
 }
 
@@ -100,6 +104,7 @@ $os = serialize($statOs);
 $screen = serialize($statScreen);
 $domain = serialize($statDomain);
 
+
 $refer = serialize($statReferer);
 $squery = serialize($statQuery);
 
@@ -114,6 +119,7 @@ $sql -> db_Update("logstats", "log_data='$refer' WHERE log_id='statReferer'");
 $sql -> db_Update("logstats", "log_data='$squery' WHERE log_id='statQuery'");
 $sql -> db_Update("logstats", "log_data='$statTotal' WHERE log_id='statTotal'");
 $sql -> db_Update("logstats", "log_data='$statUnique' WHERE log_id='statUnique'");
+
 
 /* get monthly info from db */
 if($sql -> db_Select("logstats", "*", "log_id REGEXP('[[:digit:]]+-[[:digit:]]+')")) {
@@ -236,264 +242,6 @@ function createLog($mode="default") {
 	}
 	fclose($handle);
 	return;
-}
-
-
-
-function getcountry($dom) {
-		$country["arpa"] = "ARPANet";
-		$country["com"] = "Commercial Users";
-		$country["edu"] = "Education";
-		$country["gov"] = "Government";
-		$country["int"] = "Oganization established by an International Treaty";
-		$country["mil"] = "Military";
-		$country["net"] = "Network";
-		$country["org"] = "Organization";
-		$country["ad"] = "Andorra";
-		$country["ae"] = "United Arab Emirates";
-		$country["af"] = "Afghanistan";
-		$country["ag"] = "Antigua & Barbuda";
-		$country["ai"] = "Anguilla";
-		$country["al"] = "Albania";
-		$country["am"] = "Armenia";
-		$country["an"] = "Netherland Antilles";
-		$country["ao"] = "Angola";
-		$country["aq"] = "Antarctica";
-		$country["ar"] = "Argentina";
-		$country["as"] = "American Samoa";
-		$country["at"] = "Austria";
-		$country["au"] = "Australia";
-		$country["aw"] = "Aruba";
-		$country["az"] = "Azerbaijan";
-		$country["ba"] = "Bosnia-Herzegovina";
-		$country["bb"] = "Barbados";
-		$country["bd"] = "Bangladesh";
-		$country["be"] = "Belgium";
-		$country["bf"] = "Burkina Faso";
-		$country["bg"] = "Bulgaria";
-		$country["bh"] = "Bahrain";
-		$country["bi"] = "Burundi";
-		$country["bj"] = "Benin";
-		$country["bm"] = "Bermuda";
-		$country["bn"] = "Brunei Darussalam";
-		$country["bo"] = "Bolivia";
-		$country["br"] = "Brasil";
-		$country["bs"] = "Bahamas";
-		$country["bt"] = "Bhutan";
-		$country["bv"] = "Bouvet Island";
-		$country["bw"] = "Botswana";
-		$country["by"] = "Belarus";
-		$country["bz"] = "Belize";
-		$country["ca"] = "Canada";
-		$country["cc"] = "Cocos (Keeling) Islands";
-		$country["cf"] = "Central African Republic";
-		$country["cg"] = "Congo";
-		$country["ch"] = "Switzerland";
-		$country["ci"] = "Ivory Coast";
-		$country["ck"] = "Cook Islands";
-		$country["cl"] = "Chile";
-		$country["cm"] = "Cameroon";
-		$country["cn"] = "China";
-		$country["co"] = "Colombia";
-		$country["cr"] = "Costa Rica";
-		$country["cs"] = "Czechoslovakia";
-		$country["cu"] = "Cuba";
-		$country["cv"] = "Cape Verde";
-		$country["cx"] = "Christmas Island";
-		$country["cy"] = "Cyprus";
-		$country["cz"] = "Czech Republic";
-		$country["de"] = "Germany";
-		$country["dj"] = "Djibouti";
-		$country["dk"] = "Denmark";
-		$country["dm"] = "Dominica";
-		$country["do"] = "Dominican Republic";
-		$country["dz"] = "Algeria";
-		$country["ec"] = "Ecuador";
-		$country["ee"] = "Estonia";
-		$country["eg"] = "Egypt";
-		$country["eh"] = "Western Sahara";
-		$country["er"] = "Eritrea";
-		$country["es"] = "Spain";
-		$country["et"] = "Ethiopia";
-		$country["fi"] = "Finland";
-		$country["fj"] = "Fiji";
-		$country["fk"] = "Falkland Islands (Malvibas)";
-		$country["fm"] = "Micronesia";
-		$country["fo"] = "Faroe Islands";
-		$country["fr"] = "France";
-		$country["fx"] = "France (European Territory)";
-		$country["ga"] = "Gabon";
-		$country["gb"] = "Great Britain";
-		$country["gd"] = "Grenada";
-		$country["ge"] = "Georgia";
-		$country["gf"] = "Guyana (French)";
-		$country["gh"] = "Ghana";
-		$country["gi"] = "Gibralta";
-		$country["gl"] = "Greenland";
-		$country["gm"] = "Gambia";
-		$country["gn"] = "Guinea";
-		$country["gp"] = "Guadeloupe (French)";
-		$country["gq"] = "Equatorial Guinea";
-		$country["gr"] = "Greece";
-		$country["gs"] = "South Georgia & South Sandwich Islands";
-		$country["gt"] = "Guatemala";
-		$country["gu"] = "Guam (US)";
-		$country["gw"] = "Guinea Bissau";
-		$country["gy"] = "Guyana";
-		$country["hk"] = "Hong Kong";
-		$country["hm"] = "Heard & McDonald Islands";
-		$country["hn"] = "Honduras";
-		$country["hr"] = "Croatia";
-		$country["ht"] = "Haiti";
-		$country["hu"] = "Hungary";
-		$country["id"] = "Indonesia";
-		$country["ie"] = "Ireland";
-		$country["il"] = "Israel";
-		$country["in"] = "India";
-		$country["io"] = "British Indian Ocean Territories";
-		$country["iq"] = "Iraq";
-		$country["ir"] = "Iran";
-		$country["is"] = "Iceland";
-		$country["it"] = "Italy";
-		$country["jm"] = "Jamaica";
-		$country["jo"] = "Jordan";
-		$country["jp"] = "Japan";
-		$country["ke"] = "Kenya";
-		$country["kg"] = "Kyrgyz Republic";
-		$country["kh"] = "Cambodia";
-		$country["ki"] = "Kiribati";
-		$country["km"] = "Comoros";
-		$country["kn"] = "Saint Kitts Nevis Anguilla";
-		$country["kp"] = "Korea (North)";
-		$country["kr"] = "Korea (South)";
-		$country["kw"] = "Kuwait";
-		$country["ky"] = "Cayman Islands";
-		$country["kz"] = "Kazachstan";
-		$country["la"] = "Laos";
-		$country["lb"] = "Lebanon";
-		$country["lc"] = "Saint Lucia";
-		$country["li"] = "Liechtenstein";
-		$country["lk"] = "Sri Lanka";
-		$country["lr"] = "Liberia";
-		$country["ls"] = "Lesotho";
-		$country["lt"] = "Lithuania";
-		$country["lu"] = "Luxembourg";
-		$country["lv"] = "Latvia";
-		$country["ly"] = "Libya";
-		$country["ma"] = "Morocco";
-		$country["mc"] = "Monaco";
-		$country["md"] = "Moldova";
-		$country["mg"] = "Madagascar";
-		$country["mh"] = "Marshall Islands";
-		$country["mk"] = "Macedonia";
-		$country["ml"] = "Mali";
-		$country["mm"] = "Myanmar";
-		$country["mn"] = "Mongolia";
-		$country["mo"] = "Macau";
-		$country["mp"] = "Northern Mariana Islands";
-		$country["mq"] = "Martinique (French)";
-		$country["mr"] = "Mauretania";
-		$country["ms"] = "Montserrat";
-		$country["mt"] = "Malta";
-		$country["mu"] = "Mauritius";
-		$country["mv"] = "Maldives";
-		$country["mw"] = "Malawi";
-		$country["mx"] = "Mexico";
-		$country["my"] = "Malaysia";
-		$country["mz"] = "Mozambique";
-		$country["na"] = "Namibia";
-		$country["nc"] = "New Caledonia (French)";
-		$country["ne"] = "Niger";
-		$country["nf"] = "Norfolk Island";
-		$country["ng"] = "Nigeria";
-		$country["ni"] = "Nicaragua";
-		$country["nl"] = "Netherlands";
-		$country["no"] = "Norway";
-		$country["np"] = "Nepal";
-		$country["nr"] = "Nauru";
-		$country["nt"] = "Saudiarab. Irak)";
-		$country["nu"] = "Niue";
-		$country["nz"] = "New Zealand";
-		$country["om"] = "Oman";
-		$country["pa"] = "Panama";
-		$country["pe"] = "Peru";
-		$country["pf"] = "Polynesia (French)";
-		$country["pg"] = "Papua New Guinea";
-		$country["ph"] = "Philippines";
-		$country["pk"] = "Pakistan";
-		$country["pl"] = "Poland";
-		$country["pm"] = "Saint Pierre & Miquelon";
-		$country["pn"] = "Pitcairn";
-		$country["pr"] = "Puerto Rico (US)";
-		$country["pt"] = "Portugal";
-		$country["pw"] = "Palau";
-		$country["py"] = "Paraguay";
-		$country["qa"] = "Qatar";
-		$country["re"] = "Reunion (French)";
-		$country["ro"] = "Romania";
-		$country["ru"] = "Russian Federation";
-		$country["rw"] = "Rwanda";
-		$country["sa"] = "Saudi Arabia";
-		$country["sb"] = "Salomon Islands";
-		$country["sc"] = "Seychelles";
-		$country["sd"] = "Sudan";
-		$country["se"] = "Sweden";
-		$country["sg"] = "Singapore";
-		$country["sh"] = "Saint Helena";
-		$country["si"] = "Slovenia";
-		$country["sj"] = "Svalbard & Jan Mayen";
-		$country["sk"] = "Slovakia";
-		$country["sl"] = "Sierra Leone";
-		$country["sm"] = "San Marino";
-		$country["sn"] = "Senegal";
-		$country["so"] = "Somalia";
-		$country["sr"] = "Suriname";
-		$country["st"] = "Sao Tome & Principe";
-		$country["su"] = "Soviet Union";
-		$country["sv"] = "El Salvador";
-		$country["sy"] = "Syria";
-		$country["sz"] = "Swaziland";
-		$country["tc"] = "Turks & Caicos Islands";
-		$country["td"] = "Chad";
-		$country["tf"] = "French Southern Territories";
-		$country["tg"] = "Togo";
-		$country["th"] = "Thailand";
-		$country["tj"] = "Tadjikistan";
-		$country["tk"] = "Tokelau";
-		$country["tm"] = "Turkmenistan";
-		$country["tn"] = "Tunisia";
-		$country["to"] = "Tonga";
-		$country["tp"] = "East Timor";
-		$country["tr"] = "Turkey";
-		$country["tt"] = "Trinidad & Tobago";
-		$country["tv"] = "Tuvalu";
-		$country["tw"] = "Taiwan";
-		$country["tz"] = "Tanzania";
-		$country["ua"] = "Ukraine";
-		$country["ug"] = "Uganda";
-		$country["uk"] = "United Kingdom";
-		$country["um"] = "US Minor outlying Islands";
-		$country["us"] = "United States";
-		$country["uy"] = "Uruguay";
-		$country["uz"] = "Uzbekistan";
-		$country["va"] = "Vatican City State";
-		$country["vc"] = "St Vincent & Grenadines";
-		$country["ve"] = "Venezuela";
-		$country["vg"] = "Virgin Islands (British)";
-		$country["vi"] = "Virgin Islands (US)";
-		$country["vn"] = "Vietnam";
-		$country["vu"] = "Vanuatu";
-		$country["wf"] = "Wallis & Futuna Islands";
-		$country["ws"] = "Samoa";
-		$country["ye"] = "Yemen";
-		$country["yt"] = "Mayotte";
-		$country["yu"] = "Yugoslavia";
-		$country["za"] = "South Africa";
-		$country["zm"] = "Zambia";
-		$country["zr"] = "Zaire";
-		$country["zw"] = "Zimbabwe";
-		$scountry = $country[$dom];
-	return $scountry;
 }
 
 ?>
