@@ -4,42 +4,52 @@
     $height = "320px";  // htmlarea height
     $fullscreen = 1;   // Show Full-Screen Editor button. 0=no 1=yes
     $display_emoticons = 0; // Show Emoticons when enabled in e107 ?
-    $tableops = 1;  // Table operations.
-    $spelling = 0;  // Spell Checking.
+    $tableops = 1;  // Table operations Plugin.
+    $spelling = 0;  // Spell Checking Plugin.
+    $tidy = 0; // Html Tidy Plugin.
+    $context = 1; // Context Menu Plugin
  // ========================================================================
     $plgcnt =0; // do not change.
     $imagebut = (ADMIN) ? "insertimage" : "space"; // image button for  ADMINS only
     $popupeditor = $fullscreen == 1 ? "popupeditor":"space";
 
 // ==========================
-echo "<script type=\"text/javascript\"> _editor_url = '".e_HANDLER."htmlarea/'; </script>\n";
-echo "<script type=\"text/javascript\" src=\"".e_HANDLER."htmlarea/htmlarea.js\"></script>\n";
-echo "<script type=\"text/javascript\">\n";
-echo ($tableops==1) ? "HTMLArea.loadPlugin('TableOperations');\n":"";
-echo ($spelling==1) ? "HTMLArea.loadPlugin('SpellChecker');\n":"";
-echo "var config = new HTMLArea.Config(); // create a new configuration object\n";
-echo htmlarea_emote(1);
-echo "config.width = '".$width."';\n
+$areajs = "<script type=\"text/javascript\">\n _editor_url = '".e_HANDLER."htmlarea/';_editor_lang = 'en'; </script>\n";
+$areajs .= "<script type=\"text/javascript\" src=\"".e_HANDLER."htmlarea/htmlarea.js\"></script>\n";
+$areajs .= "<script type=\"text/javascript\" >\n";
+$areajs .= ($context==1) ? "HTMLArea.loadPlugin('ContextMenu');\n":"";
+$areajs .= ($tableops==1) ? "HTMLArea.loadPlugin('TableOperations');\n":"";
+$areajs .= ($spelling==1) ? "HTMLArea.loadPlugin('SpellChecker');\n":"";
+$areajs .= ($tidy==1) ? "HTMLArea.loadPlugin('HtmlTidy');\n":"";
+
+$areajs .= "var config = new HTMLArea.Config(); // create a new configuration object\n";
+$areajs .= htmlarea_emote(1);
+$areajs .= "config.width = '".$width."';\n
             config.height = '".$height."';\n
             config.statusBar = false;\n
-            config.pageStyle =
+            config.killWordOnPaste = true;\n";
+
+$areajs .=" config.pageStyle =
             'body { background-color: white; font-size: 12px; border:1px solid black; color: black; font-family: tahoma, verdana, arial, sans-serif; } ' +
-            'p { font-width: bold; } ';
-            config.editorURL = '".e_HANDLER."htmlarea/';
+            'p { font-width: bold; } ';";
+
+$areajs .=" config.editorURL = '".e_HANDLER."htmlarea/';
             config.toolbar = [
             ['fontname','fontsize','space','formatblock','space'],
             ['bold','italic','underline','separator','copy', 'cut', 'paste','separator', 'justifyleft', 'justifycenter', 'justifyright', 'justifyfull', 'separator',";
 
-// echo "'insertorderedlist', 'insertunorderedlist', 'outdent', 'indent', 'separator',";
-echo "'orderedlist', 'unorderedlist', 'outdent', 'indent', 'separator',";
-echo "'forecolor', 'hilitecolor', 'separator',
+// $areajs .= "'insertorderedlist', 'insertunorderedlist', 'outdent', 'indent', 'separator',";
+$areajs .= "'orderedlist', 'unorderedlist', 'outdent', 'indent', 'separator',";
+$areajs .= "'forecolor', 'hilitecolor', 'separator',
             'inserthorizontalrule', 'createlink', '".$imagebut."', 'inserttable', 'separator','htmlmode', '".$popupeditor."'
             ]";
-echo $display_emoticons ? ",[".htmlarea_emote(2)."]":"";
-echo"];";
+$areajs .= $display_emoticons ? ",[".htmlarea_emote(2)."]":"";
+$areajs .="];";
 
 
-echo "</script>\n";
+$areajs .= "</script>\n";
+
+ echo $areajs;
 
 // ==================================================
 function htmlarea($name){
@@ -54,13 +64,19 @@ function htmlarea($name){
     require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
     htmlarea("post");
 */
-  global $tableops,$spelling,$plgcnt;
+
+  global $tableops,$spelling,$plgcnt, $context, $tidy;
 
 
-echo "<script type=\"text/javascript\" defer=\"defer\">
-     var editor_$name = new HTMLArea('$name', config);";
+echo "\n<script type=\"text/javascript\" defer=\"defer\">\n";
+echo "var editor_$name = new HTMLArea('$name', config);";
+// echo "var editor_$name = new HTMLArea('$name');\n";
+echo ($context==1 && $plgcnt<1) ? " editor_$name.registerPlugin('ContextMenu');\n ":"";
 echo  ($tableops==1 && $plgcnt<1) ? " editor_$name.registerPlugin(TableOperations);\n ":"";
 echo ($spelling==1 && $plgcnt<1) ? " editor_$name.registerPlugin(SpellChecker);\n ":"";
+echo ($tidy==1 && $plgcnt<1) ? " editor_$name.registerPlugin(HtmlTidy);\n ":"";
+
+
         $plgcnt++;
 echo "  setTimeout(function() {
         var check = '$name';
