@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-03-13 11:42:32 $
-|     $Author: sweetas $
+|     $Revision: 1.13 $
+|     $Date: 2005-03-20 15:36:59 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -98,7 +98,8 @@ foreach($listuserson as $uinfo => $pinfo) {
 	$c ++;
 	$USERLIST .= "<a href='".e_BASE."user.php?id.$oid'>$oname</a>".($c == MEMBERS_ONLINE ? "." :", ");
 }
-$USERLIST .= "<br /><a rel='external' href='".e_BASE."online.php'>".LAN_427."</a> ".LAN_436."";
+$USERLIST .= "<br /><a rel='external' href='".e_BASE."online.php'>".LAN_427."</a> ".LAN_436;
+$STATLINK = "<a href='".e_PLUGIN."forum/forum_stats.php'>".LAN_441."</a>\n";
 $ICONKEY = "
 	<table style='width:100%'>\n<tr>
 	<td style='width:2%'>".IMAGE_new_small."</td>

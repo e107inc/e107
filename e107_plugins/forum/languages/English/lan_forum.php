@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-14 15:50:46 $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-20 15:37:19 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -103,6 +103,8 @@ define("LAN_437", "register");
 define("LAN_438", "and login.");
 define("LAN_439", "here");
 define("LAN_440", "to go to the registration page.");
+
+define("LAN_441", "View forum statistics");
 	
 define('FORLAN_441', 'No rules defined.');
 define('FORLAN_442', 'My Uploads');
