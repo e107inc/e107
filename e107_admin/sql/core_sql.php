@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-03-01 17:33:30 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.14 $
+|     $Date: 2005-03-04 12:40:25 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -304,43 +304,6 @@ CREATE TABLE plugin (
   plugin_path varchar(100) NOT NULL default '',
   plugin_installflag tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (plugin_id)
-) TYPE=MyISAM;
-# --------------------------------------------------------
-
-#
-# Table structure for table `poll`
-#
-
-CREATE TABLE poll (
-  poll_id int(10) unsigned NOT NULL auto_increment,
-  poll_datestamp int(10) unsigned NOT NULL default '0',
-  poll_end_datestamp int(10) unsigned NOT NULL default '0',
-  poll_admin_id int(10) unsigned NOT NULL default '0',
-  poll_title varchar(250) NOT NULL default '',
-  poll_option_1 varchar(250) NOT NULL default '',
-  poll_option_2 varchar(250) NOT NULL default '',
-  poll_option_3 varchar(250) NOT NULL default '',
-  poll_option_4 varchar(250) NOT NULL default '',
-  poll_option_5 varchar(250) NOT NULL default '',
-  poll_option_6 varchar(250) NOT NULL default '',
-  poll_option_7 varchar(250) NOT NULL default '',
-  poll_option_8 varchar(250) NOT NULL default '',
-  poll_option_9 varchar(250) NOT NULL default '',
-  poll_option_10 varchar(250) NOT NULL default '',
-  poll_votes_1 int(10) unsigned NOT NULL default '0',
-  poll_votes_2 int(10) unsigned NOT NULL default '0',
-  poll_votes_3 int(10) unsigned NOT NULL default '0',
-  poll_votes_4 int(10) unsigned NOT NULL default '0',
-  poll_votes_5 int(10) unsigned NOT NULL default '0',
-  poll_votes_6 int(10) unsigned NOT NULL default '0',
-  poll_votes_7 int(10) unsigned NOT NULL default '0',
-  poll_votes_8 int(10) unsigned NOT NULL default '0',
-  poll_votes_9 int(10) unsigned NOT NULL default '0',
-  poll_votes_10 int(10) unsigned NOT NULL default '0',
-  poll_ip text NOT NULL,
-  poll_active tinyint(3) unsigned NOT NULL default '0',
-  poll_comment tinyint(3) unsigned NOT NULL default '1',
-  PRIMARY KEY  (poll_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 

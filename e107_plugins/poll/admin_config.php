@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/admin_config.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-03-03 22:52:33 $
+|     $Revision: 1.3 $
+|     $Date: 2005-03-04 12:41:24 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -73,7 +73,7 @@ if (isset($_POST['submit']))
 if (POLLACTION == "edit" && !$_POST['preview'] && !$_POST['submit'])
 {
 
-	if ($sql->db_Select("poll", "*", "poll_id=".POLLID)) {
+	if ($sql->db_Select("polls", "*", "poll_id=".POLLID)) {
 		$row = $sql->db_Fetch();
 		extract($row);
 
@@ -125,11 +125,11 @@ if (isset($message))
 $text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>
 	<form action=\"".e_SELF."\" method=\"post\" id=\"del_poll\" >";
 
-if ($poll_total = $sql->db_Select("poll")) {
+if ($poll_total = $sql->db_Select("polls")) {
 	$text .= "<table class='fborder' style='width:99%'>
 		<tr>
 		<td style='width:5%' class='fcaption'>ID
-		<input type=\"hidden\" name=\"del_poll_confirm\" id=\"del_poll_confirm\" value=\"1\" />
+		<input type='hidden' name='del_poll_confirm' id='del_poll_confirm' value='1' />
 		</td>
 		<td style='width:75%' class='fcaption'>".POLLAN_3."</td>
 		<td style='width:20%' class='fcaption'>".POLLAN_4."</td>
@@ -150,7 +150,7 @@ if ($poll_total = $sql->db_Select("poll")) {
 $text .= "</form></div></div>";
 $ns->tablerender(POLLAN_1, $text);
 
-$poll_total = $sql->db_Select("poll");
+$poll_total = $sql->db_Select("polls");
 
 $text = $poll -> renderPollForm();
 

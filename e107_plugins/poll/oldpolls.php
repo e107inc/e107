@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/oldpolls.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-04 08:29:18 $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-04 12:41:24 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -28,7 +28,7 @@ $gen = new convert;
 
 if(e_QUERY)
 {
-	$query = "SELECT p.*, u.user_name FROM #poll AS p 
+	$query = "SELECT p.*, u.user_name FROM #polls AS p 
 	LEFT JOIN #user AS u ON p.poll_admin_id = u.user_id
 	WHERE p.poll_type=1 AND p.poll_id=".e_QUERY;
 
@@ -98,7 +98,7 @@ if(e_QUERY)
 	}
 }
 
-$query = "SELECT p.*, u.user_name FROM #poll AS p 
+$query = "SELECT p.*, u.user_name FROM #polls AS p 
 LEFT JOIN #user AS u ON p.poll_admin_id = u.user_id
 WHERE p.poll_type=1 
 ORDER BY p.poll_datestamp DESC";
