@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_error.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:11:56 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-05 10:17:44 $
+|     $Author: pholzmann $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Error");
@@ -19,7 +19,7 @@ define("LAN_5", "The URL you've requested requires a correct username and passwo
 define("LAN_6", "Please inform the administrator of the referring page if you think this error page has been shown by mistake.");
 define("LAN_7", "Error 404 - Document Not Found");
 define("LAN_8", "The requested URL could not be found on this server. The link you followed is either outdated, inaccurate, or the server has been instructed not to allow access to it.");
-define("LAN_9", "Please inform the administrator of the referring page if you think this error page has been shown by mistake.");
+define("LAN_9", "Please inform the administrator of the referring page if you think this error message has been shown by mistake.");
 define("LAN_10", "Error 500 - Malformed Header");
 define("LAN_11", "The server encountered an internal error or misconfiguration and was unable to complete your request");
 define("LAN_12", "Please inform the administrator of the referring page if you think this error page has been shown by mistake.");

@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_forum.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:11:04 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-05 10:17:43 $
+|     $Author: pholzmann $
 +----------------------------------------------------------------------------+
 */
 define("FORLAN_1", "You must enter the number of days you wish to prune.");
@@ -156,6 +156,8 @@ define("FORLAN_128", "Length of tooltip");
 define("FORLAN_129", "This will determine the number of characters to display in the tooltip. ");
 define("FORLAN_130", "click here");
 define("FORLAN_131", "to set max file size, allowed types etc");
+define("FORLAN_132", "Emphasize Sticky Threads");
+define("FORLAN_133", "Give extra emphasis to sticky threads (separate thread sections and headers)");
 
 
 
