@@ -292,6 +292,8 @@ if($pref['flood_protect']){  define(FLOODPROTECT, TRUE); define(FLOODTIMEOUT, $p
 
 define ("HEADERF", e_THEME."templates/header".$layout.".php");
 define ("FOOTERF", e_THEME."templates/footer".$layout.".php");
+if(!file_exists(HEADERF)){message_handler("CRITICAL_ERROR", "Unable to find file: ".HEADERF,  __LINE__-2, __FILE__);}
+if(!file_exists(FOOTERF)){message_handler("CRITICAL_ERROR", "Unable to find file: ".HEADERF,  __LINE__-2, __FILE__);}
 
 define("LOGINMESSAGE", "");
 $ns = new e107table;

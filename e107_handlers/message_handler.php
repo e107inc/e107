@@ -27,7 +27,8 @@ function message_handler($mode, $message, $line=0, $file=""){
 	$ns = new e107table;
 	switch($mode){
 		case "CRITICAL_ERROR":
-			echo "<div style='text-align:center; font: 11px verdana, tahoma, arial, helvetica, sans-serif;'><b>CRITICAL_ERROR: </b><br />Line $line $file<br /><br />Error reported as: ".$emessage[$message]."</div>";
+			$msg = is_numeric($message) ? $emessage[$message] : $message;
+			echo "<div style='text-align:center; font: 11px verdana, tahoma, arial, helvetica, sans-serif;'><b>CRITICAL_ERROR: </b><br />Line $line $file<br /><br />Error reported as: ".$message."</div>";
 		break;
 		case "MESSAGE":
 			$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
