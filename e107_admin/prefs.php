@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-03-06 10:04:22 $
+|     $Revision: 1.36 $
+|     $Date: 2005-03-08 09:10:26 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -530,6 +530,15 @@ if(!isset($pref['post_html']))
 
 $text .= "<div id='textpost' style='display:none; text-align:center'>
 	<table style='width:100%' class='fborder'>
+
+	<tr>
+	<td class='forumheader3' style='width:50%;'>".PRFLAN_127.":  <div class='smalltext'>".PRFLAN_128."</div></td>
+	<td class='forumheader3' style='width:50%; text-align: right;'>
+	<input type='radio' name='make_clickable' value='1'".($pref['make_clickable'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
+	<input type='radio' name='make_clickable' value='0'".(!$pref['make_clickable'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
+	</td>
+	</tr>
+
 	<tr>
 	<td class='forumheader3' style='width:50%;'>".PRFLAN_102."?:  <div class='smalltext'>".PRFLAN_103."</div></td>
 	<td class='forumheader3' style='width:50%; text-align: right;'>
@@ -589,14 +598,6 @@ $text .= "<div id='textpost' style='display:none; text-align:center'>
 	<input type='radio' name='old_np' value='0'".(!$pref['old_np'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
 	</tr>
-
-	<tr>
-	<td class='forumheader3' style='width:50%;'>".PRFLAN_127.":  <div class='smalltext'>".PRFLAN_128."</div></td>
-	<td class='forumheader3' style='width:50%; text-align: right;'>
-	<input type='radio' name='make_clickable' value='1'".($pref['make_clickable'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
-	<input type='radio' name='make_clickable' value='0'".(!$pref['make_clickable'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
-	</td>
-	</tr>\n
 
 ";
 
