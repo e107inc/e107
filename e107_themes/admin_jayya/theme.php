@@ -116,6 +116,7 @@ function tablestyle($caption, $text, $mode){
 	global $style;
 	if ($caption == '') { $caption = '&nbsp;'; }
 	$bodytable = $mode['style']=='button_menu' ? 'bodytable_buttons' : 'bodytable';
+	$bodybreak = $mode['style']=='button_menu' ? '' : '<br />';
 	$r_caption_bord_but = $mode['style']=='button_menu' ? ' button_menu' : '';
 	if ($caption == 'Select Language') { $image = 'language.png'; } else { $image = 'gears.png'; }
 	if ($style == "leftmenu") {
@@ -127,7 +128,7 @@ function tablestyle($caption, $text, $mode){
 	}  else if ($style == "rightmenu") {
 		echo "<table cellpadding='0' cellspacing='0' border='0' style='width: 100%'><tr><td class='right_caption_border".$r_caption_bord_but."'><div class='right_caption'>".$caption."</div></td></tr>";
 		if ($text != "") {
-			echo "<tr><td class='".$bodytable."'>".$text."<br /></td></tr>";
+			echo "<tr><td class='".$bodytable."'>".$text.$bodybreak."</td></tr>";
 		}
 		echo "</table>";
 	} else {
