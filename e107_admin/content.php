@@ -11,7 +11,7 @@
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
-$Id: content.php,v 1.18 2004-10-18 11:27:32 loloirie Exp $  
+$Id: content.php,v 1.19 2004-11-30 13:57:17 asperon Exp $  
 */
 require_once("../class2.php");
     if($pref['htmlarea']){
@@ -55,16 +55,12 @@ If(IsSet($_POST['submit'])){
                 $content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
                 $content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
                 $content_content = $aj -> formtpa($_POST['data'],"admin");
-                $sql -> db_Insert("content", "0, '".$content_heading."', '".$content_subheading."', '$content_content', '".$_POST['auto_line_breaks']."', '".time()."', '".ADMINID."', '".$_POST['content_comment']."', '', '1', 0, ".$_POST['add_icons'].",  {$_POST['c_class']}");
+                $content_id=$sql -> db_Insert("content", "0, '".$content_heading."', '".$content_subheading."', '$content_content', '".$_POST['auto_line_breaks']."', '".time()."', '".ADMINID."', '".$_POST['content_comment']."', '', '1', 0, ".$_POST['add_icons'].",  {$_POST['c_class']}");
                 if($_POST['content_heading']){
-                        $sql -> db_Select("content", "*", "ORDER BY content_datestamp DESC LIMIT 0,1 ", $mode="no_where");
-                        list($content_id, $content_heading) = $sql-> db_Fetch();
-                        $sql -> db_Insert("links", "0, '".$content_heading."', 'content.php?content.$content_id', '', '', '1', '0', '0', '0', {$_POST['c_class']} ");
+                        $sql -> db_Insert("links", "0, '".$_POST['content_heading']."', 'content.php?content.$content_id', '', '', '1', '0', '0', '0', {$_POST['c_class']} ");
                         clear_cache("sitelinks");
                         $message = CNTLAN_24;
                 } else {
-                        $sql -> db_Select("content", "*", "ORDER BY content_datestamp DESC LIMIT 0,1 ", $mode="no_where");
-                        list($content_id, $content_heading) = $sql-> db_Fetch();
                         $message = CNTLAN_23." - 'article.php?".$content_id.".255'.";
                 }
                 clear_cache("content");
