@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-01-31 22:04:43 $
+|     $Revision: 1.11 $
+|     $Date: 2005-01-31 22:18:11 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -95,7 +95,7 @@ class e_parse {
 	function textclean ($text, $wrap=100)
 	{
 		$text = trim ($text);
-		$text = str_replace ("nnn", "nn", $text);
+		$text = str_replace ("\n\n\n", "\n\n", $text);
 
 		list ($words) = array (explode (" ", $text));
 		$text = ""; 
