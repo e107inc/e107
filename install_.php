@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-01-22 16:13:11 $
+|     $Revision: 1.8 $
+|     $Date: 2005-01-23 14:31:12 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -487,9 +487,8 @@ function create_tables(){
         mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Submit News', 'submitnews.php', '', 'submitnews_16.png', 1, 5, 0, 0, 0) ");
         mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Submit Article', 'subcontent.php?article', '', 'articles_16.png', 1, 6, 0, 0, 255) ");
         mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Submit Review', 'subcontent.php?review', '', 'reviews_16.png', 1, 7, 0, 0, 255) ");
-        mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Links', 'e107_plugins/links_page/links.php', '', 'linkspage_16.png', 1, 8, 0, 0, 0) ");
-        mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Stats', 'stats.php', '', 'stats_16.png', 1, 9, 0, 0, 0) ");
-        mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Site Map', 'sitemap.php', '', 'sitemap_16.png', 1, 10, 0, 0, 0) ");
+        mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Stats', 'stats.php', '', 'stats_16.png', 1, 8, 0, 0, 0) ");
+        mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Site Map', 'sitemap.php', '', 'sitemap_16.png', 1, 9, 0, 0, 0) ");
 
 
         $e107['e107_author'] = "Steve Dunstan (jalist)";
@@ -515,8 +514,6 @@ function create_tables(){
         mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('menu_pref', '$menu_conf') ");
 
         mysql_query("INSERT INTO ".$mySQLprefix."banner VALUES (0, 'e107', 'e107login', 'e107password', 'e107.jpg', 'http://e107.org', 0, 0, 0, 0, 0, 0, '', 'campaign_one') ");
-        mysql_query("INSERT INTO ".$mySQLprefix."link_category VALUES (0, 'Main', 'Any links with this category will be displayed in main navigation bar.', '')");
-        mysql_query("INSERT INTO ".$mySQLprefix."link_category VALUES (0, 'Misc', 'Miscellaneous links.', '')");
         mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES ('1', 'This text (if activated) will appear at the top of your front page all the time.', '0')");
         mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES ('2', 'Member message ----- This text (if activated) will appear at the top of your front page all the time - only logged in members will see this.', '0')");
         mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES ('3', 'Administrator message ----- This text (if activated) will appear at the top of your front page all the time - only logged in administrators will see this.', '0')");
@@ -557,7 +554,6 @@ function create_tables(){
                 mysql_query("INSERT INTO ".$mySQLprefix."parser VALUES (0,'e107core','/{(PICTURE)(=(.+?))*}/') ");
                 mysql_query("INSERT INTO ".$mySQLprefix."parser VALUES (0,'e107core','/{(USERNAME)}/') ");
                 mysql_query("INSERT INTO ".$mySQLprefix."plugin VALUES (0, 'Integrity Check', '0.03', 'integrity_check', 1) ");
-				mysql_query("INSERT INTO ".$mySQLprefix."plugin VALUES (0, 'Links Page', '1.0', 'links_page', 1) ");
 
 
         $userp = "1, '".$_POST['admin_name']."', '', '".md5($_POST['admin_password1'])."', '', '".$_POST['admin_email']."', '', '', '', '', '', '', '', '', '', 0, ".time().", 0, 0, 0, 0, 0, 0, '$ip', 0, '', '', '', 0, 1, '', '', '0', '', ".time();
