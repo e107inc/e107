@@ -1,4 +1,14 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/integrity_check/languages/English.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-26 10:36:18 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
 	
 define("Integ_01", "Saving successful");
 define("Integ_02", "Saving failed");
@@ -27,7 +37,9 @@ define("Integ_24", "Admin Front Page");
 define("Integ_25", "Leave Admin Area");
 define("Integ_26", "Load Site with normal header");
 	
-define("Integ_29", "<br /><br /><b>*<u>CRC-ERRORS:</u></b><br />These are checksum errors and there are two possible reasons for this:<br />-You changed something within the mentioned file, so it isn't longer the same as the original.<br />-The mentioned file is corrupt, you should reupload it!");
+// define("Integ_29", "<br /><br /><b>*<u>CRC-ERRORS:</u></b><br />These are checksum errors and there are two possible reasons for this:<br />-You changed something within the mentioned file, so it isn't longer the same as the original.<br />-The mentioned file is corrupt, you should reupload it!");
+// language file should contain NO html. 
+
 define("Integ_30", "For less cpu-usage , you can do the checking in 1 - 10 steps.");
 define("Integ_31", "Steps: ");
 define("Integ_32", "There is a file named <b>log_crc.txt</b> in your crc-folder. Please delete! (Or try refreshing)");
