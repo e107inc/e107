@@ -1,6 +1,0 @@
-news post test
-http://mcfly.gotdns.org/e107_0.7/comment.php?comment.news.2
-
-Welcome to e107
-http://mcfly.gotdns.org/e107_0.7/comment.php?comment.news.1
-
