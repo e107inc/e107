@@ -304,7 +304,7 @@ $text .= "
 
 <td style='width:50%' class='forumheader3'>".PRFLAN_11.": </td>
 <td style='width:50%; text-align:right' class='forumheader3'><a href='".e_ADMIN."theme_prev.php'>".PRFLAN_12."</a>
-<select name='display' class='tbox'>\n";
+<select name='sitetheme' class='tbox'>\n";
 $counter = 0;
 while(IsSet($dirlist[$counter])){
         $text .= ($dirlist[$counter] == $pref['sitetheme'] ? "<option selected>".$dirlist[$counter]."</option>\n" : "<option>".$dirlist[$counter]."</option>\n");
