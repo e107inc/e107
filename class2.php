@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.80 $
-|     $Date: 2005-02-16 18:40:07 $
-|     $Author: stevedunstan $
+|     $Revision: 1.81 $
+|     $Date: 2005-02-17 05:07:48 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -358,12 +358,11 @@ if (!function_exists('checkvalidtheme')) {
 				closedir($handle);
 			}
 
-			e107_require_once(e_HANDLER."textparse/basic.php");
-			$etp=new e107_basicparse;
+
 			$e107tmp_theme=search_validtheme();
 			define("THEME", e_THEME.$e107tmp_theme."/");
 			if (ADMIN && !strstr(e_SELF, $ADMIN_DIRECTORY)) {
-				echo '<script>alert("'.$etp->unentity(CORE_LAN1).'")</script>';
+				echo '<script>alert("'.$tp->toJS(CORE_LAN1).'")</script>';
 			}
 		}
 	}

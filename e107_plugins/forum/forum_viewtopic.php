@@ -11,23 +11,23 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-02-16 12:42:50 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.9 $
+|     $Date: 2005-02-17 05:08:55 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-	
+
 require_once('../../class2.php');
-	
+
 @include_once e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewtopic.php';
 @include_once e_PLUGIN.'forum/languages/English/lan_forum_viewtopic.php';
 @require_once(e_PLUGIN.'forum/forum_class.php');
 if (file_exists(THEME.'forum_design.php')) {
 	@include_once(THEME.'forum_design.php');
 }
-	
+
 $forum = new e107forum;
-	
+
 if (IsSet($_POST['fjsubmit'])) {
 	header("location:".e_PLUGIN."forum/forum_viewforum.php?".$_POST['forumjump']);
 	exit;
@@ -36,7 +36,7 @@ $highlight_search = FALSE;
 if (IsSet($_POST['highlight_search'])) {
 	$highlight_search = TRUE;
 }
-	
+
 if (!e_QUERY) {
 	//No paramters given, redirect to forum home
 	header("Location:".e_PLUGIN."/forum/forum.php");
@@ -75,22 +75,21 @@ if($from === 'post')
 	}
 }
 
-require_once(e_HANDLER.'textparse/basic.php');
 require_once(e_PLUGIN.'forum/forum_shortcodes.php');
-$etp = new e107_basicparse;
-	
+
+
 if ($action == "track" && USER) {
 	$forum->track($thread_id);
 	header("location:".e_SELF."?{$thread_id}.{$from}");
 	exit;
 }
-	
+
 if ($action == "untrack" && USER) {
 	$forum->untrack($thread_id);
 	header("location:".e_SELF."?{$thread_id}.{$from}");
 	exit;
 }
-	
+
 if ($action == "next") {
 	$next = $forum->thread_getnext($thread_id, $from);
 	if ($next) {
@@ -103,7 +102,7 @@ if ($action == "next") {
 		exit;
 	}
 }
-	
+
 if ($action == "prev") {
 	$prev = $forum->thread_getprev($thread_id, $from);
 	if ($prev) {
@@ -115,9 +114,9 @@ if ($action == "prev") {
 		require_once(FOOTERF);
 		exit;
 	}
-	 
+
 }
-	
+
 if ($action == "report") {
 	$thread_info = $forum->thread_get_postinfo($thread_id, TRUE);
 	if (IsSet($_POST['report_thread'])) {
@@ -174,7 +173,7 @@ if ($action == "report") {
 	exit;
 }
 $pm_installed = ($pref['pm_title'] ? TRUE : FALSE);
-	
+
 $replies = $forum->thread_count($thread_id)-1;
 if ($from === 'last') {
 	$pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
@@ -184,18 +183,18 @@ if ($from === 'last') {
 $gen = new convert;
 $thread_info = $forum->thread_get($thread_id, $from, $pref['forum_postspage']);
 $forum_info = $forum->forum_get($thread_info['head']['thread_forum_id']);
-	
-	
+
+
 if (!check_class($forum_info['forum_class'])) {
 	header("Location:".e_PLUGIN."forum/forum.php");
 	exit;
 }
-	
+
 $forum->thread_incview($thread_id);
-	
+
 define("e_PAGETITLE", LAN_01." / ".$forum_info['forum_name']." / ".$thread_info['head']['thread_name']);
 define("MODERATOR", (preg_match("/".preg_quote(ADMINNAME)."/", $forum_info['forum_moderators']) && getperms('A') ? TRUE : FALSE));
-	
+
 $message = '';
 if (MODERATOR) {
 	if ($_POST) {
@@ -203,13 +202,13 @@ if (MODERATOR) {
 		$message = forum_thread_moderate($_POST);
 	}
 }
-	
+
 require_once(HEADERF);
 require_once(e_HANDLER."level_handler.php");
 if ($message) {
 	$ns->tablerender("", $message);
 }
-	
+
 If (IsSet($_POST['pollvote'])) {
 	$sql->db_Select("poll", "poll_active, poll_ip", "poll_id='".$_POST['pollid']."' ");
 	$row = $sql->db_Fetch();
@@ -222,7 +221,7 @@ If (IsSet($_POST['pollvote'])) {
 		}
 	}
 }
-	
+
 if (eregi("\[".LAN_430."\]", $thread_info['head']['thread_name'])) {
 	if ($sql->db_Select("poll", "*", "poll_datestamp='{$thread_info['head']['thread_id']}'")) {
 		list($poll_id, $poll_datestamp, $poll_end_datestamp, $poll_admin_id, $poll_title, $poll_option[0], $poll_option[1], $poll_option[2], $poll_option[3], $poll_option[4], $poll_option[5], $poll_option[6], $poll_option[7], $poll_option[8], $poll_option[9], $votes[0], $votes[1], $votes[2], $votes[3], $votes[4], $votes[5], $votes[6], $votes[7], $votes[8], $votes[9], $poll_ip, $poll_active) = $sql->db_Fetch();
@@ -240,7 +239,7 @@ if (eregi("\[".LAN_430."\]", $thread_info['head']['thread_name'])) {
 	}
 }
 //Load forum templates
-	
+
 if (!$FORUMSTART) {
 	if (file_exists(THEME."forum_viewtopic_template.php")) {
 		require_once(THEME."forum_viewtopic_template.php");
@@ -248,27 +247,27 @@ if (!$FORUMSTART) {
 		require_once(e_PLUGIN."forum/templates/forum_viewtopic_template.php");
 	}
 }
-	
+
 $forum_info['forum_name'] = $tp -> toHTML($forum_info['forum_name'], TRUE);
 
 // get info for main thread -------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	
+
 $BREADCRUMB = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a>-><a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_01."</a>-><a class='forumlink' href='forum_viewforum.php?".$forum_info['forum_id']."'>".$forum_info['forum_name']."</a>->".$thread_info['head']['thread_name']."XXX";
-	
+
 $BACKLINK = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a>-><a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_01."</a>-><a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_info['forum_id']."'>".$forum_info['forum_name']."</a>";
 $THREADNAME = $thread_info['head']['thread_name'];
 $NEXTPREV = "&lt;&lt; <a href='".e_SELF."?{$thread_id}.{$forum_info['forum_id']}.prev'>".LAN_389."</a>";
 $NEXTPREV .= " | ";
 $NEXTPREV .= "<a href='".e_SELF."?{$thread_id}.{$forum_info['forum_id']}.next'>".LAN_390."</a> &gt;&gt;";
-	
+
 if ($pref['forum_track'] && USER) {
 	$TRACK = (preg_match("/-".$thread_id."-/", USERREALM) ? "<span class='smalltext'><a href='".e_SELF."?".$forum_id.".".$thread_id.".0."."untrack'>".LAN_392."</a></span>" : "<span class='smalltext'><a href='".e_SELF."?".$thread_id.".0."."track'>".LAN_391."</a></span>");
 }
-	
+
 $MODERATORS = LAN_321.$forum_info['forum_moderators'];
 $THREADSTATUS = (!$thread_info['head']['thread_active'] ? LAN_66 : "");
-	
-	
+
+
 $pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
 $pages = ceil($replies/$pref['forum_postspage']);
 if ($pages > 1) {
@@ -281,21 +280,21 @@ if ($pages > 1) {
 	}
 	$GOTOPAGES .= ($nextpage < $replies ? " <a href='".e_SELF."?".$thread_id.".".$nextpage."'>".LAN_05."</a> " : "");
 }
-	
+
 if ((ANON || USER) && ($forum_info['forum_class'] != e_UC_READONLY || MODERATOR)) {
 	if ($thread_info['head']['thread_active']) {
 		$BUTTONS = "<a href='".e_PLUGIN."forum/forum_post.php?rp.".e_QUERY."'>".IMAGE_reply."</a>";
 	}
 	$BUTTONS .= "<a href='".e_PLUGIN."forum/forum_post.php?nt.".$forum_info['forum_id']."'>".IMAGE_newthread."</a>";
 }
-	
+
 $FORUMJUMP = forumjump();
-	
+
 $forstr = preg_replace("/\{(.*?)\}/e", '$\1', $FORUMSTART);
-	
+
 unset($forrep);
 if (!$FORUMREPLYSTYLE) $FORUMREPLYSTYLE = $FORUMTHREADSTYLE;
-	
+
 for($i = 0; $i < count($thread_info)-1; $i++) {
 	unset($post_info);
 	$post_info = $thread_info[$i];
@@ -309,7 +308,7 @@ for($i = 0; $i < count($thread_info)-1; $i++) {
 	} else {
 		$post_info['anon'] = FALSE;
 	}
-	 
+
 	// unset($newflag);
 	// if (USER) {
 	//  if ($thread_datestamp > USERLV && (!ereg("\.".$thread_id."\.", USERVIEWED))) {
@@ -319,8 +318,8 @@ for($i = 0; $i < count($thread_info)-1; $i++) {
 	// }
 	$forrep .= $tp->parseTemplate($FORUMREPLYSTYLE, FALSE, $forum_shortcodes)."\n";
 }
-	
-	
+
+
 if ((ANON || USER) && ($forum_class != e_UC_READONLY || MODERATOR) && $thread_info['head']['thread_active'] ) {
 	if (!$forum_quickreply) {
 		$QUICKREPLY = "<form action='".e_PLUGIN."forum/forum_post.php?rp.".e_QUERY."' method='post'>\n<p>\n".LAN_393.":<br /><textarea cols='60' rows='4' class='tbox' name='post'></textarea><br /><input type='submit' name='fpreview' value='".LAN_394."' class='button' /> &nbsp;\n<input type='submit' name='reply' value='".LAN_395."' class='button' />\n<input type='hidden' name='thread_id' value='$thread_parent' />\n</p>\n</form>";
@@ -328,38 +327,38 @@ if ((ANON || USER) && ($forum_class != e_UC_READONLY || MODERATOR) && $thread_in
 		$QUICKREPLY = $forum_quickreply;
 	}
 }
-	
+
 $forend = preg_replace("/\{(.*?)\}/e", '$\1', $FORUMEND);
 $forumstring = $pollstr.$forstr.$forrep.$forend;
-	
+
 if ($thread_info['head']['thread_lastpost'] > USERLV && (!ereg("\.{$thread_info['head']['thread_id']}\.", USERVIEWED))) {
 	$tst = $forum->thread_markasread($thread_info['head']['thread_id']);
 }
-	
+
 if ($pref['forum_enclose']) {
 	$ns->tablerender(LAN_01, $forumstring);
 } else {
 	echo $forumstring;
 }
-	
-	
+
+
 //$u_new = USERVIEWED . $u_new;
 //if ($u_new != "") {
 // $sql->db_Update("user", "user_viewed='$u_new' WHERE user_id='".USERID."' ");
 //}
 // end -------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	
+
 echo "<script type=\"text/javascript\">
 	function confirm_(mode, forum_id, thread_id, thread) {
 	if (mode == 'thread') {
-	return confirm(\"".$etp->unentity(LAN_409)."\");
+	return confirm(\"".$tp->toJS(LAN_409)."\");
 	} else {
-	return confirm(\"".$etp->unentity(LAN_410)." [ ".$etp->unentity(LAN_411)."\" + thread + \" ]\");
+	return confirm(\"".$tp->toJS(LAN_410)." [ ".$tp->toJS(LAN_411)."\" + thread + \" ]\");
 	}
 	}
 	</script>";
 require_once(FOOTERF);
-	
+
 function showmodoptions() {
 	// return 'work in progress';
 	global $thread_id;
@@ -371,7 +370,7 @@ function showmodoptions() {
 	} else {
 		$type = 'reply';
 	}
-	 
+
 	$forum_id = $forum_info['forum_id'];
 	$ret = "
 		<form method='post' action='".e_PLUGIN."forum/forum_viewforum.php?{$forum_id}' id='frmMod_{$forum_id}_{$post_info['thread_id']}'>
@@ -400,14 +399,14 @@ function forumjump() {
 	$text .= "</select> <input class='button' type='submit' name='fjsubmit' value='".LAN_03."' />&nbsp;&nbsp;&nbsp;&nbsp;<a href='".e_SELF."?".$_SERVER['QUERY_STRING']."#top'>".LAN_10."</a></p></form>";
 	return $text;
 }
-	
+
 function rpg($user_join, $user_forums) {
 	global $FORUMTHREADSTYLE;
 	if (strpos($FORUMTHREADSTYLE, '{RPG}') == FALSE) {
 		return '';
 	}
 	// rpg mod by Ikari ( kilokan1@yahoo.it | http://artemanga.altervista.org )
-	 
+
 	$lvl_post_mp_cost = 2.5;
 	$lvl_mp_regen_per_day = 4;
 	$lvl_avg_ppd = 5;
@@ -424,7 +423,7 @@ function rpg($user_join, $user_forums) {
 		$lvl_hp_percent = 0;
 	} else {
 		$lvl_max_hp = floor((pow($lvl_level, (1/4) ) ) * (pow(10, pow($lvl_level+2, (1/3) ) ) ) / (1.5) );
-		 
+
 		if ($lvl_ppd >= $lvl_avg_ppd) {
 			$lvl_hp_percent = floor((.5 + (($lvl_ppd - $lvl_avg_ppd) / ($lvl_bonus_redux * 2)) ) * 100);
 		} else {
@@ -475,5 +474,5 @@ function rpg($user_join, $user_forums) {
 	$rpg_info .= "</div>";
 	return $rpg_info;
 }
-	
+
 ?>
