@@ -20,9 +20,15 @@
 $themename = "interfectus";
 $themeversion = "1.0";
 $themeauthor = "Steve Dunstan [jalist]";
+$themeemail = "jalist@e107.org";
+$themewebsite = "http://e107.org";
 $themedate = "16/03/2005";
-$themeinfo = "Dark theme suitable for gaming / clan sites";
+$themeinfo = "Dark theme suitable for gaming / clan sites.";
 define("STANDARDS_MODE", TRUE);
+$xhtmlcompliant = TRUE;
+$csscompliant = TRUE;
+
+define("THEME_DISCLAIMER", "<br /><i>".LAN_THEME_1."</i>");
 
 // [layout]
 
@@ -103,6 +109,8 @@ $FOOTER = "
 <td id='colbotright'><img src='".THEME."images/blank.gif' width='14' height='14' alt='' style='display: block;' /></td>
 </tr>
 </table>
+
+<div class='smalltext' style='text-align: center;'>{SITEDISCLAIMER}<br />{THEMEDISCLAIMER}</div>
 
 ";
 
@@ -196,7 +204,6 @@ $NEWSSTYLE = "
 <div class='captiontext'>{NEWSTITLE}</div>
 {NEWSBODY}
 {EXTENDED}
-</div>
 <div style='text-align:right' class='smalltext'>
 {NEWSAUTHOR}
 on
@@ -242,20 +249,9 @@ function tablestyle($caption, $text)
 	else if($style == "menu2")
 	{
 		echo "<table class='menutable' cellpadding='0' cellspacing='0'>
-<tr>
-<td class='menutop2'></td>
-</tr>
-<tr>
-<td class='menubody2'>
-<div class='menuwrapper'>
-$caption<br /><br />
-$text
-</div>
-</td>
-</tr>
-<tr>
-<td class='menubottom2'></td>
-</tr>
+<tr><td class='menutop2'></td></tr>
+<tr><td class='menubody2'><div class='menuwrapper'>$caption<br /><br />$text</div></td></tr>
+<tr><td class='menubottom2'></td></tr>
 </table>";
 	}
 	else
