@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-02-01 20:54:25 $
-|     $Author: streaky $
+|     $Revision: 1.18 $
+|     $Date: 2005-02-02 02:44:10 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -22,8 +22,8 @@
 * Class to cache data as files, improving site speed and throughput.
 *
 * @package     e107
-* @version     $Revision: 1.17 $
-* @author      $Author: streaky $
+* @version     $Revision: 1.18 $
+* @author      $Author: mcfly_e107 $
 */
 class ecache {
 
@@ -37,13 +37,15 @@ class ecache {
 	*/
 	function cache_fname($CacheTag) {
 		global $FILES_DIRECTORY;
+		$x='';
 		if (is_object($this)) {
 			if (!$this->CachePageMD5) {
 				$this->CachePageMD5 = md5(e_BASE.e_LANGUAGE.THEME.USERCLASS.e_QUERY.filemtime(THEME.'theme.php'));
 			}
+			$x = '-';
 		}
 		$q = preg_replace("#\W#", "_", $CacheTag);
-		$fname = './'.e_BASE.$FILES_DIRECTORY.'cache/'.$q.($this->CachePageMD5 ? '-'.$this->CachePageMD5 : '').'.cache.php';
+		$fname = './'.e_BASE.$FILES_DIRECTORY.'cache/'.$q.$x.'.cache.php';
 		return $fname;
 	}
 
