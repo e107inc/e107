@@ -11,8 +11,8 @@
 |		GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_handlers/preset_class.php,v $
-|		$Revision: 1.3 $
-|		$Date: 2005-02-03 09:57:15 $
+|		$Revision: 1.4 $
+|		$Date: 2005-02-04 08:23:00 $
 |		$Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -23,10 +23,10 @@ class e_preset {
 	var $page;
 	var $id;
 
-	function save_preset($pnames){
+	function save_preset(){
 	global $sql,$tp,$ns;
 	$qry = explode(".",e_QUERY);
-	$unique_id = explode(",",$pnames);
+	$unique_id = is_array($this->id) ? $this->id : array($this->id);
 	$uid = $qry[1];
 
 		if($_POST && $qry[0] =="savepreset"){
@@ -58,7 +58,6 @@ class e_preset {
 
 	function read_preset($unique_id){
 		global $sql,$tp;
-		$this->id = $unique_id;
 		if (!$_POST){
 			if ($sql -> db_Select("preset", "*", "preset_name ='$unique_id' ")){
 				while ($row = $sql-> db_Fetch()){
@@ -72,6 +71,7 @@ class e_preset {
 	}
 
 // ---------------------------------------------------
+
 
 }
 

@@ -6,7 +6,6 @@ if(ADMIN){
 		for ($i=0; $i<count($pst->page); $i++) {
 			if(eregi(urlencode($pst->page[$i]),$thispage)){
 				$query = urlencode($pst->page[$i]);
-
 				$theform = $pst->form[$i];
 				$pid = $i;
 				}
@@ -17,16 +16,18 @@ if(ADMIN){
 			$pid = 0;
 		}
 
+		$existing = is_array($pst->id) ? $pst->id[$pid] : $pst->id;
+
 		 if(eregi($query,$thispage)){
 			$pst_text = "
 			<form method='post' action='".e_SELF."?clr_preset' id='e_preset'>
 			<div style='text-align:center'>";
-			if(!$sql->db_Count("preset", "(*)", " WHERE preset_name='".$pst->id."'  ")){
+			if(!$sql->db_Count("preset", "(*)", " WHERE preset_name='".$existing."'  ")){
 				$pst_text .= "<input type='button' class='button' name='save_preset' value='".LAN_SAVE."' onclick=\"savepreset('".$theform."',$pid)\" />";
 			}else{
 				$pst_text .= "<input type='button' class='button' name='save_preset' value='".LAN_UPDATE."' onclick=\"savepreset('".$theform."',$pid)\" />";
 				$pst_text .= "<input type='hidden' name='del_id' value='$pid' />
-				<input type='submit' class='button' name='delete_preset' value='".LAN_DELETE."' onclick=\"return jsconfirm('".$tp->toJS(LAN_PRESET_CONFIRMDEL." [".$pst->id."]")."')\" />";
+				<input type='submit' class='button' name='delete_preset' value='".LAN_DELETE."' onclick=\"return jsconfirm('".$tp->toJS(LAN_PRESET_CONFIRMDEL." [".$existing."]")."')\" />";
 			}
 			$pst_text .= "</div></form>";
 			return $ns -> tablerender(LAN_PRESET, $pst_text, '', TRUE);

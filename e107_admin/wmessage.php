@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/wmessage.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-02-01 03:07:06 $
-|     $Author: sweetas $
+|     $Revision: 1.12 $
+|     $Date: 2005-02-04 08:22:58 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -24,7 +24,15 @@ if (!getperms("M")) {
 	 exit;
 }
 $e_sub_cat = 'wmessage';
+
+require_once(e_HANDLER."preset_class.php");
+$pst = new e_preset;
+$pst->form = "wmform"; // form id of the form that will have it's values saved.
+$pst->page = "wmessage.php?create"; // display preset options on which page.
+$pst->id = "admin_wmessage"; // unique name for the preset
 require_once("auth.php");
+$pst->save_preset();  // save and render result
+
 require_once(e_HANDLER.'form_handler.php');
 require_once(e_HANDLER.'userclass_class.php');
 require_once(e_HANDLER."ren_help.php");
@@ -115,9 +123,15 @@ if ($action == "main" || $action == "") {
 
 // Create and Edit
 if ($action == "create" || $action == "edit") {
-	$sql->db_Select("wmessage", "*", "wm_id = $id");
-	$row = $sql->db_Fetch();
-	 extract($row);
+
+	if ($action == "edit"){
+		$sql->db_Select("wmessage", "*", "wm_id = $id");
+		$row = $sql->db_Fetch();
+		 extract($row);
+	}
+
+	$preset = $pst->read_preset("admin_wmessage");
+	extract($preset);
 
 	$text = "
 		<div style='text-align:center'>
