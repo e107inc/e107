@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-02-19 17:05:28 $
+|     $Revision: 1.26 $
+|     $Date: 2005-02-19 17:06:34 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -35,7 +35,7 @@ if (isset($_POST['upload'])) {
 		exit;
 	}
 
-	echo "<pre>"; print_r($_FILES); echo "</pre>"; exit;
+//	echo "<pre>"; print_r($_FILES); echo "</pre>"; exit;
 
 	extract($_FILES);
 	/* check if e_PLUGIN dir is writable ... */
