@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-01-26 02:56:41 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.22 $
+|     $Date: 2005-01-26 09:29:34 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,8 +24,8 @@ $db_time = 0.0;
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.21 $
-* @author $Author: mcfly_e107 $
+* @version $Revision: 1.22 $
+* @author $Author: stevedunstan $
 */
 class db {
 
@@ -39,8 +39,6 @@ class db {
 	var $mySQLerror;
 	var $mySQLcurTable;
 	var $mySQLlanguage;
-	var $mySQLinfo;
-	var $mySQLquerycount;
 
 	/**
 	* @return db
@@ -139,7 +137,7 @@ class db {
 	* @access private
 	*/
 	function db_Query($query, $rli = NULL, $qry_from = '', $debug = FALSE, $log_type = '', $log_remark = '') {
-		global $e107_debug, $db_time, $sDBdbg, $aTimeMarks, $aDBbyTable, $curTimeMark;
+		global $e107_debug, $db_time, $sDBdbg, $aTimeMarks, $aDBbyTable, $curTimeMark, $queryinfo;
 		if (E107_DEBUG_LEVEL > 0) {
 			global $db_debug;
 			$aTrace = debug_backtrace();
@@ -149,8 +147,9 @@ class db {
 		if ($debug == 'now') {
 			echo "** $query";
 		}
-		if ($debug !== FALSE || strstr(e_QUERY, 'showsql')) {
-			$this->mySQLinfo[$this->mySQLquerycount]['data'] = "<b>{$qry_from}</b>: $query";
+		if ($debug !== FALSE || strstr(e_QUERY, 'showsql'))
+		{
+			$queryinfo[] = "<b>{$qry_from}</b>: $query";
 		}
 		if ($log_type != '') {
 			$this->db_Write_log($log_type, $log_remark, $query);
@@ -193,8 +192,9 @@ class db {
 	function db_Select($table, $fields = '*', $arg = '', $mode = 'default', $debug = FALSE, $log_type = '', $log_remark = '') {
 		$table = $this->db_IsLang($table);
 		$this->mySQLcurTable = $table;
-		$this -> mySQLquerycount++;
-		if ($arg != '' && $mode == 'default') {
+		global $dbq; $dbq++;
+		if ($arg != '' && $mode == 'default')
+		{
 			if ($this->mySQLresult = $this->db_Query('SELECT '.$fields.' FROM '.MPREFIX.$table.' WHERE '.$arg, NULL, 'db_Select', $debug, $log_type, $log_remark)) {
 				$this->dbError('dbQuery');
 				return $this->db_Rows();
@@ -235,7 +235,7 @@ class db {
 	*/
 	function db_Insert($table, $arg, $debug = FALSE, $log_type = '', $log_remark = '') {
 		$table = $this->db_IsLang($table);
-		$this -> mySQLquerycount++;
+		global $dbq; $dbq++;
 		$this->mySQLcurTable = $table;
 		if ($result = $this->mySQLresult = $this->db_Query('INSERT INTO '.MPREFIX.$table.' VALUES ('.$arg.')', NULL, 'db_Insert', $debug, $log_type, $log_remark )) {
 			$tmp = mysql_insert_id();
@@ -267,7 +267,7 @@ class db {
 	function db_Update($table, $arg, $debug = FALSE, $log_type = '', $log_remark = '') {
 		$table = $this->db_IsLang($table);
 		$this->mySQLcurTable = $table;
-		$this -> mySQLquerycount++;
+		global $dbq; $dbq++;
 		if ($result = $this->mySQLresult = $this->db_Query('UPDATE '.MPREFIX.$table.' SET '.$arg, NULL, 'db_Update', $debug, $log_type, $log_remark)) {
 			$result = mysql_affected_rows();
 			return $result;
@@ -320,7 +320,7 @@ class db {
 	function db_Count($table, $fields = '(*)', $arg = '', $debug = FALSE, $log_type = '', $log_remark = '') {
 		$table = $this->db_IsLang($table);
 		$this->mySQLcurTable = $table;
-		$this->mySQLquerycount++;
+		global $dbq; $dbq++;
 		if ($fields == 'generic') {
 			if ($this->mySQLresult = $this->db_Query($table, NULL, 'db_Count', $debug, $log_type, $log_remark)) {
 				$rows = $this->mySQLrows = @mysql_fetch_array($this->mySQLresult);
@@ -368,7 +368,7 @@ class db {
 	function db_Delete($table, $arg = '', $debug = FALSE, $log_type = '', $log_remark = '') {
 		$table = $this->db_IsLang($table);
 		$this->mySQLcurTable = $table;
-		$this->mySQLquerycount++;
+		global $dbq; $dbq++;
 		if (!$arg) {
 			if ($result = $this->mySQLresult = $this->db_Query('DELETE FROM '.MPREFIX.$table, NULL, 'db_Delete', $debug, $log_type, $log_remark)) {
 				return $result;
@@ -439,7 +439,7 @@ class db {
 		*/
 
 		$arg = str_replace("#", MPREFIX, $arg);
-		$this->mySQLquerycount++;
+		global $dbq; $dbq++;
 		if ($this->mySQLresult = $this->db_Query($arg, NULL, 'db_Select_gen', $debug, $log_type, $log_remark)) {
 			$this->dbError('db_Select_gen');
 			return $this->db_Rows();
