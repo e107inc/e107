@@ -14,6 +14,19 @@ a:hover {
 	color: #2a3236;
 	text-decoration: underline;
 }
+
+#header {
+	background-image : url(images/header.png);
+	background-repeat: repeat-x;
+	border-bottom: #000 1px solid;
+	height: 80px;
+}
+
+ul, ol {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
 .fcaption a {
 	color: #ffffcc;
 	text-decoration: underline;
@@ -27,13 +40,13 @@ a:hover {
 	color:#5d6e75;
 }
 .smallblacktext {
-	font: normal 11px tahoma, verdana, arial, helvetica, sans-serif;
+	font: normal 7pt verdana, tahoma, arial, helvetica, sans-serif;
 	color:#000;
 }
 .indent{
-	padding: 3px 3px 3px 3px;
+	padding: 3px;
 	margin: 5px;
-	font: 11px verdana, tahoma, arial, sans-serif;
+	font: 9px verdana, tahoma, arial, sans-serif;
 	color: #000060;
 	border: 1px solid;
 	background-color: #E3E2D7;
@@ -70,6 +83,11 @@ blockquote {
 	border: #5e5d63 1px solid;
 	color: #000000;
 	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+.tbox.chatbox {
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
 }
 .nextprev{
 	background-color: #eaeef2;
