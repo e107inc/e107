@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/modcomment.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-12-01 14:41:39 $
+|     $Revision: 1.3 $
+|     $Date: 2004-12-17 12:59:47 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -61,6 +61,7 @@ if(IsSet($_POST['moderate'])){
                 }
         }
         $e107cache->clear("comment");
+        $e107cache->clear("news");
         $message = MDCLAN_1;
 }
 
