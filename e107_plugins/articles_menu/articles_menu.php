@@ -11,18 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/articles_menu/articles_menu.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-10-29 15:20:08 $
+|     $Revision: 1.4 $
+|     $Date: 2004-11-07 21:03:23 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 global $ml;
 if($cache = retrieve_cache("article_menu"))
 {
-	$aj = new textparse;
-	$cache = str_replace("e107_themes/", e_THEME, $cache);
-	$cache = str_replace("<a href=&#39;", "<a href=&#39;".e_BASE, $cache);
-	echo $aj -> formtparev($cache);
+	echo $cache;
 }
 else
 {
@@ -150,9 +147,10 @@ else
 	if($pref['cachestatus'])
 	{
 		$aj = new textparse;
-		$cache = $aj -> formtpa(ob_get_contents(), "admin");
+		$cache = ob_get_contents();
 		set_cache("article_menu", $cache);
 	}
+	ob_end_clean();
 }
 
 ?>
