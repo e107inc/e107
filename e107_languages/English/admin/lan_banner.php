@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_banner.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-04-06 21:27:58 $
+|     $Revision: 1.9 $
+|     $Date: 2005-04-06 21:29:36 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -59,6 +59,7 @@ define("BANNER_MENU_L2", "Banner menu configuration saved");
 
 //v.617
 define("BANNER_MENU_L3", "Caption");
+define("BANNER_MENU_L5", "Banner Configuration"); 
 define("BANNER_MENU_L6", "choose campaigns to show in menu");
 define("BANNER_MENU_L7", "available campaigns");
 define("BANNER_MENU_L8", "selected campaigns");
