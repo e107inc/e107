@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-02-11 17:40:11 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.9 $
+|     $Date: 2005-02-16 20:43:40 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -285,7 +285,7 @@ function renderuser($row, $user_entended, $mode = "verbose") {
 				</td></tr>";
 		}
 		 
-		$str .= ($user_signature ? "<tr><td colspan='2' class='forumheader3' style='text-align:center'><i>".$tp->toHTML($user_signature)."</i></td></tr>" : "");
+		$str .= ($user_signature ? "<tr><td colspan='2' class='forumheader3' style='text-align:center'><i>".$tp->toHTML($user_signature, TRUE)."</i></td></tr>" : "");
 		 
 		//        extended fields ...
 		 

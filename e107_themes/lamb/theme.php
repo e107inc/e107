@@ -31,31 +31,32 @@ $HEADER = "
 <div id='banner'>
 {BANNER}
 </div>
-<div id='mainleft'>
-<div id='mainright'>
-<div id='leftcontent'>
-<div class='columnwrap'>
+
+<table style='width: 100%;' cellpadding='0' cellspacing='0'>
+<tr>
+<td style='width: 180px; vertical-align: top;'>
+<div class='menuwrapper'>
 {SITELINKS}
 {MENU=1}
 </div>
-</div>
-<div id='rightcontent'>
-<div class='columnwrap'>
-{MENU=2}
-</div>
-</div>
-<div id='centercontent'>
+</td>
+
+<td style='vertical-align: top; overflow: scroll;  border-right: 1px solid #000; border-left: 1px solid #000;'>
 <div class='menuwrapper'>
-<div class='columnwrap'>
 ";
 
 $FOOTER = "
 </div>
+</td>
+
+<td style='width: 180px; vertical-align: top;'>
+<div class='menuwrapper'>
+{MENU=2}
 </div>
-<div class='cleaner'>&nbsp;</div>
-</div>
-</div>
-</div>
+</td>
+</tr>
+</table>
+
 <div id='footer'>
 <div class='columnwrap'>
 <div style='text-align: center;' class='smalltext'>
@@ -86,7 +87,10 @@ on
  | 
 <img src='".e_IMAGE."admin_images/userclass_16.png' alt='' style='vertical-align: middle;' />
 {NEWSCOMMENTS}
- | <a href='".e_BASE."submitnews.php'>Submit a news item</a>
+ |
+{TRACKBACK}
+<br />
+<a href='".e_BASE."submitnews.php'>Submit a news item</a>
 </div>
 <br />";
 define("ICONSTYLE", "float: left; border:0");
@@ -95,7 +99,7 @@ define("COMMENTOFFSTRING", "Comments are turned off for this item");
 define("PRE_EXTENDEDSTRING", "<br /><br />[ ");
 define("EXTENDEDSTRING", "Read the rest ...");
 define("POST_EXTENDEDSTRING", " ]<br />");
-
+define("TRACKBACKSTRING", "Trackbacks: ");
 
 // [linkstyle]
 
