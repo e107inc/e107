@@ -1,40 +1,40 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system
-|	/admin/updateadmin.php
+|        e107 website system
+|        /admin/updateadmin.php
 |
-|	©Steve Dunstan 2001-2002
-|	http://e107.org
-|	jalist@e107.org
+|        ©Steve Dunstan 2001-2002
+|        http://e107.org
+|        jalist@e107.org
 |
-|	Released under the terms and conditions of the
-|	GNU General Public License (http://gnu.org).
+|        Released under the terms and conditions of the
+|        GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
 require_once("auth.php");
 
 if(IsSet($_POST['update_settings'])){
-	if($_POST['ac'] == md5(ADMINPWCHANGE)){
-		if($_POST['a_password'] != "" && $_POST['a_password2'] != "" && ($_POST['a_password'] == $_POST['a_password2'])){
-			$sql -> db_Update("user", "user_password='".md5($_POST['a_password'])."', user_pwchange='".time()."' WHERE user_name='".ADMINNAME."' ");
-			$se = TRUE;
-		}else{
-			$message = UDALAN_1;
-		}
-	}
+        if($_POST['ac'] == md5(ADMINPWCHANGE)){
+                if($_POST['a_password'] != "" && $_POST['a_password2'] != "" && ($_POST['a_password'] == $_POST['a_password2'])){
+                        $sql -> db_Update("user", "user_password='".md5($_POST['a_password'])."', user_pwchange='".time()."' WHERE user_name='".ADMINNAME."' ");
+                        $se = TRUE;
+                }else{
+                        $message = UDALAN_1;
+                }
+        }
 }
 
 if($se == TRUE){
-	$text = "<div style='text-align:center'>".UDALAN_2.".</div>";
-	$ns -> tablerender("<div style='text-align:center'>".UDALAN_3." ".($a_name ? $a_name : ADMINNAME)."</div>", $text);
-	require_once("footer.php");
-	exit;
+        $text = "<div style='text-align:center'>".UDALAN_2.".</div>";
+        $ns -> tablerender("<div style='text-align:center'>".UDALAN_3." ".($a_name ? $a_name : ADMINNAME)."</div>", $text);
+        require_once("footer.php");
+        exit;
 }
 
 if(IsSet($message)){
-	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+        $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
 $text = "<div style='text-align:center'>
@@ -60,13 +60,14 @@ $text = "<div style='text-align:center'>
 </td>
 </tr>
 
-<tr> 
+<tr>
 <td colspan='2' style ='text-align:center'  class='forumheader'>
 <input class='button' type='submit' name='update_settings' value='".UDALAN_7."' />
+<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />  
 </td>
 </tr>
 </table>
-<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
+
 </form>
 </div>";
 
