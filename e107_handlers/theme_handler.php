@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-03-13 12:27:49 $
+|     $Revision: 1.11 $
+|     $Date: 2005-03-13 12:33:00 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -219,17 +219,13 @@ class themeHandler{
 	
 			if(array_key_exists("multipleStylesheets", $theme))
 			{
-				$text .= "<br /><br /><b>this theme has multiple style sheets: </b><br />";
+				$text .= "<br /><br /><b>".TPVLAN_22.": </b><br />";
 				foreach($theme['css'] as $css)
 				{
-					$text .= "<b>".$css['name'].":</b> ".($css['info'] ? $css['info'] : ($css['name'] == "style.css" ? "Default stylesheet" : "No information"))."<br />";
+					$text .= "<b>".$css['name'].":</b> ".($css['info'] ? $css['info'] : ($css['name'] == "style.css" ? TPVLAN_23 : TPVLAN_24))."<br />";
 				}
-				$text .= "<br />To select which stylesheet to use, please go to <a href='".e_ADMIN."prefs.php'>preferences</a> and click on 'Theme'.";
+				$text .= "<br />".TPVLAN_25.".";
 			}
-
-
-			
-
 
 			$text .= "</td></tr>
 			</table>
@@ -237,7 +233,7 @@ class themeHandler{
 			</tr>\n";
 		}
 		$text .= "</table>";
-		$ns->tablerender("Themes", $text);
+		$ns->tablerender(TPVLAN_26, $text);
 	}
 
 	function themePreview() {
