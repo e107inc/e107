@@ -30,5 +30,5 @@ $text .= "<br />
 $ns -> tablerender($caption, $text);
 
 require_once(FOOTERF);
-
+exit;
 ?>
