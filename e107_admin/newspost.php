@@ -175,15 +175,16 @@ if($action == "pref"){
 // ##### End ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 print "<script type=\"text/javascript\">
 
+
 function addtext3(str){
-        document.dataform.category_button.value = str;
+        document.getElementById('dataform').category_button.value = str;
 }
 function help2(help){
-        document.dataform.help_ext.value = help;
+        document.getElementById('dataform').help_ext.value = help;
 }
 function fclear(){
-        document.dataform.data.value = \"\";
-        document.dataform.news_extended.value = \"\";
+        document.getElementById('dataform').data.value = \"\";
+        document.getElementById('dataform').news_extended.value = \"\";
 }
 
 </script>\n";
