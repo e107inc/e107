@@ -560,7 +560,7 @@ function req($field){
 
 function headerjs(){
 $script_txt = "<script type=\"text/javascript\">
-function addtext(sc){
+function addtext3(sc){
         document.signupform.image.value = sc;
 }
 
