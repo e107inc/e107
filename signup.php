@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-02-09 16:46:47 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.11 $
+|     $Date: 2005-02-22 22:13:04 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -322,6 +322,11 @@ if (!eregi("stage", LAN_109)) {
 	}
 }
 $text .= "<div style='text-align:center'>";
+
+if($pref['signup_text']) {
+	$text .= $pref['signup_text']."<br />";
+}
+
 if ($pref['user_reg_veri']) {
 	$text .= LAN_309."<br /><br />";
 }
