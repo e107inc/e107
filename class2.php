@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/class2.php,v $
-|     $Revision: 1.105 $
-|     $Date: 2004-11-25 09:58:01 $
-|     $Author: streaky $
+|     $Revision: 1.106 $
+|     $Date: 2004-11-25 17:45:15 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -804,7 +804,7 @@ class textparse {
 				echo "<script type='text/javascript'>document.location.href='index.php'</script>\n";
 				exit;
 			}
-			$text = code($text);
+//			$text = code($text);
 			if (!$pref['html_post']) {
 				$text = str_replace("<", "&lt;", $text);
 				str_replace(">", "&gt;", $text);
@@ -1237,9 +1237,9 @@ function html($string) {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function code($string, $mode = "default") {
 	global $pref, $aj;
-	$search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;span", "&lt;/span");
-	$replace = array("\"", "'", "\\", '\"', "\'", "<span", "</span");
-	$string = str_replace($search, $replace, $string);
+//	$search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;span", "&lt;/span");
+//	$replace = array("\"", "'", "\\", '\"', "\'", "<span", "</span");
+//	$string = str_replace($search, $replace, $string);
 	$match_count = preg_match_all("#(\[code[=]*(.*?)\])(.*?)\[/code\]#si", $string, $result);
 	for ($a = 0; $a < $match_count; $a++) {
 
