@@ -46,8 +46,8 @@ define("PRFLAN_43", "Filter words");
 define("PRFLAN_44", "words to censor, seperate with a comma");
 define("PRFLAN_45", "Use COPPA on signup page?");
 define("PRFLAN_46", "for more info on COPPA see <a href='http://www.cdt.org/legislation/105th/privacy/coppa.html'>here</a>");
-define("PRFLAN_47", "User tracking");
-define("PRFLAN_48", "Tracking method");
+define("PRFLAN_47", "Security & Protection");
+define("PRFLAN_48", "User Tracking method");
 define("PRFLAN_49", "Cookies");
 define("PRFLAN_50", "Sessions");
 define("PRFLAN_51", "Click here to visit the homepage of e107");
@@ -64,7 +64,7 @@ define("PRFLAN_60", "Enable SSL");
 
 define("PRFLAN_61", "Only enable SSL if <b>you are sure you know what you are doing!</b>");
 
-define("PRFLAN_62", "Email");
+define("PRFLAN_62", "Email Settings");
 define("PRFLAN_63", "Send test email");
 define("PRFLAN_64", "Clicking button will send test email to main admin email address");
 define("PRFLAN_65", "Click to send email to");
@@ -79,5 +79,27 @@ define("PRFLAN_73", "SMTP Username");
 define("PRFLAN_74", "SMTP Password");
 define("PRFLAN_75", "The email could not be sent. Please review your SMTP settings, or disable SMTP and try again.");
 
+define("PRFLAN_76", "Activate Image-code protection.");
+define("PRFLAN_77", "Admin Display Options ");
+define("PRFLAN_78", "Leave blank to disable");
+define("PRFLAN_79", "Use HtmlArea for admin text-areas");
 
+
+
+define("CUSTSIG_1", "Settings Saved!");
+define("CUSTSIG_2", "Real Name:");
+define("CUSTSIG_3", "Website:");
+define("CUSTSIG_4", "Birthday:");
+define("CUSTSIG_5", "Location:");
+define("CUSTSIG_6", "Signature:");
+define("CUSTSIG_7", "Extended User Fields:");
+define("CUSTSIG_8", "Time-Zone:");
+define("CUSTSIG_9", "Update Signup Settings");
+define("CUSTSIG_10", "Custom-Signup Page Options");
+define("CUSTSIG_11", "Check-All");
+define("CUSTSIG_12", "unCheck-All");
+define("CUSTSIG_13", "Signup Page Options");
+define("CUSTSIG_14", "Display");
+define("CUSTSIG_15", "Required");
+define("CUSTSIG_16", "Minimum Length for Passwords");
 ?>
