@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/languages/admin/English.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-07 14:30:09 $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-10 18:58:01 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -43,5 +43,7 @@ define("ADSTAT_L17", "Statistic settings updated");
 define("ADSTAT_L18", "Allow access to main statistics page to ...");
 
 define("ADSTAT_L19", "Recent visitors");
+
+define("ADSTAT_L20", "Count admin visits");
 
 ?>

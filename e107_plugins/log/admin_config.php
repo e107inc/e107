@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/admin_config.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-07 14:29:49 $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-10 18:56:37 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -38,6 +38,7 @@ if(!is_writable(LOGPATH."logs")) {
 	
 if (isset($_POST['updatesettings'])) {
 	$pref['statActivate'] = $_POST['statActivate'];
+	$pref['statCountAdmin'] = $_POST['statCountAdmin'];
 	$pref['statUserclass'] = $_POST['statUserclass'];
 	$pref['statBrowser'] = $_POST['statBrowser'];
 	$pref['statOs'] = $_POST['statOs'];
@@ -46,7 +47,6 @@ if (isset($_POST['updatesettings'])) {
 	$pref['statRefer'] = $_POST['statRefer'];
 	$pref['statQuery'] = $_POST['statQuery'];
 	$pref['statRecent'] = $_POST['statRecent'];
-	
 	save_prefs();
 	header("location:".e_SELF."?u");
 	exit;
@@ -75,7 +75,7 @@ if (isset($message)) {
 $text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
-	 
+
 	<tr>
 	<td style='width:50%' class='forumheader3'>".ADSTAT_L4."</td>
 	<td style='width:50%; text-align: right;' class='forumheader3'>
@@ -87,6 +87,14 @@ $text = "<div style='text-align:center'>
 	<tr>
 	<td style='width:50%' class='forumheader3'>".ADSTAT_L18."</td>
 	<td style='width:50%; text-align: right;' class='forumheader3'>".r_userclass("statUserclass", $pref['statUserclass'])."</td>
+	</tr>
+
+	<tr>
+	<td style='width:50%' class='forumheader3'>".ADSTAT_L20."</td>
+	<td style='width:50%; text-align: right;' class='forumheader3'>
+	<input type='radio' name='statCountAdmin' value='1'".($pref['statCountAdmin'] ? " checked='checked'" : "")." /> ".ADSTAT_ON."&nbsp;&nbsp;
+	<input type='radio' name='statCountAdmin' value='0'".(!$pref['statCountAdmin'] ? " checked='checked'" : "")." /> ".ADSTAT_OFF."
+	</td>
 	</tr>
 	 
 	<tr>

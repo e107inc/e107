@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-02-08 03:02:41 $
-|     $Author: sweetas $
+|     $Revision: 1.25 $
+|     $Date: 2005-02-10 18:58:01 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 if (!function_exists("parseheader")) {
@@ -65,8 +65,12 @@ if (isset($htmlarea_js) && $htmlarea_js) { echo $htmlarea_js; }
 if (function_exists('headerjs')){echo headerjs();  }
 
 if ($pref['statActivate']) {
-	require_once(e_PLUGIN."log/consolidate.php");
-	$script_text = "document.write( '<link rel=\"stylesheet\" type=\"text/css\" href=\"".e_PLUGIN."log/log.php?referer=' + ref + '&color=' + colord + '&eself=' + eself + '&res=' + res + '\">' );\n";
+	if(!$pref['statCountAdmin'] && ADMIN) {
+		/* don't count admin visits */
+	} else {
+		require_once(e_PLUGIN."log/consolidate.php");
+		$script_text = "document.write( '<link rel=\"stylesheet\" type=\"text/css\" href=\"".e_PLUGIN."log/log.php?referer=' + ref + '&color=' + colord + '&eself=' + eself + '&res=' + res + '\">' );\n";
+	}
 }
 
 if ($pref['image_preload']) {
