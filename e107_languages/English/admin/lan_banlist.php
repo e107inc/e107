@@ -4,16 +4,16 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_banlist.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-04-02 18:29:48 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2005-04-05 16:27:39 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("BANLAN_1", "Ban removed.");
 define("BANLAN_2", "No bans.");
 define("BANLAN_3", "Existing Bans");
 define("BANLAN_4", "Remove ban");
-define("BANLAN_5", "Enter IP or Email Address");
+define("BANLAN_5", "Enter IP, email address, or host");
 
 define("BANLAN_7", "Reason");
 define("BANLAN_8", "Ban User");

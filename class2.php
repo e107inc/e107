@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.103 $
-|     $Date: 2005-04-04 09:14:57 $
-|     $Author: sweetas $
+|     $Revision: 1.104 $
+|     $Date: 2005-04-05 16:26:49 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -1036,8 +1036,12 @@ function ban() {
 	$ip=getip();
 	$wildcard=substr($ip, 0, strrpos($ip, ".")).".*";
 
+	$tmp = gethostbyaddr(getenv('REMOTE_ADDR'));
+	preg_match("/[\w]+\.[\w]+$/si", $tmp, $match);
+	$bhost = $match[0];
+
 	if ($ip != '127.0.0.1') {
-		if ($sql->db_Select("banlist", "*", "banlist_ip='".$_SERVER['REMOTE_ADDR']."' OR banlist_ip='".USEREMAIL."' OR banlist_ip='$ip' OR banlist_ip='$wildcard'")) {
+		if ($sql->db_Select("banlist", "*", "banlist_ip='".$_SERVER['REMOTE_ADDR']."' OR banlist_ip='".USEREMAIL."' OR banlist_ip='$ip' OR banlist_ip='$wildcard' OR banlist_ip='$bhost'")) {
 			// enter a message here if you want some text displayed to banned users ...
 			exit;
 		}
