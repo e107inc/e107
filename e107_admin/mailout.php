@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-04-05 17:18:27 $
+|     $Revision: 1.22 $
+|     $Date: 2005-04-06 21:31:27 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -241,7 +241,7 @@ if (isset($message)) {
 
 
 $text = "";
-$text .= ($pref['smtp_enable'] == 0)? "<div style='text-align:center'>It is recommended that you enable <a href='prefs.php'>SMTP</a> for sending large numbers of emails.<br /><br /></div>":
+$text .= ($pref['smtp_enable'] == 0)? "<div style='text-align:center'>".MAILAN_14."<br /><br /></div>":
 "";
 $text .= "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."' id='linkform'>
@@ -362,8 +362,7 @@ $text .= "</td>
 	</form>
 	</div>";
 
-$caption = "Mail-Out";
-$ns->tablerender($caption, $text);
+$ns->tablerender(MAILAN_15, $text);
 
 
 
