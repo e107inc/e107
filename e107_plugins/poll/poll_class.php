@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-03-03 18:36:13 $
+|     $Revision: 1.2 $
+|     $Date: 2005-03-03 19:47:49 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
-@include(e_PLUGIN."poll_menu/languages/".e_LANGUAGE.".php");
-@include(e_PLUGIN."poll_menu/languages/English.php");
+@include(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
+@include(e_PLUGIN."poll/languages/English.php");
 define("POLLCLASS", TRUE);
 class poll
 {
@@ -62,6 +62,17 @@ class poll
 			{
 				$votes .= "0".chr(1);
 			}
+
+			/* deactivate other polls */
+			if($sql -> db_Select("poll", "*", "poll_type=1 AND poll_vote_userclass!=255"))
+			{
+				$deacArray = $sql -> db_getList();
+				foreach($deacArray as $deacpoll)
+				{
+					$sql -> db_Update("poll", "poll_end_datestamp=".time().", poll_vote_userclass=255 WHERE poll_id=".$deacpoll['poll_id']);
+				}
+			}
+
 
 			if($mode == 1)
 			{
