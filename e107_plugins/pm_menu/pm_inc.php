@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm_menu/pm_inc.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-02-11 14:02:32 $
+|     $Revision: 1.8 $
+|     $Date: 2005-03-18 01:57:01 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -48,7 +48,7 @@ function pm_get_stats($user = USERNAME, $time = USERLV) {
 	if ($user == $pm_stored_stat_user && $time == $pm_stored_stat_time) {
 		return $pm_stat_store;
 	}
-	$ret['new'] = $sql->db_Count("pm_messages", "(*)", "WHERE pm_to_user = '{$user}' AND pm_sent_datestamp > {$time}  ");
+	$ret['new'] = $sql->db_Count("pm_messages", "(*)", "WHERE pm_to_user = '{$user}' AND pm_sent_datestamp > {$time} AND pm_rcv_datestamp = 0");
 	$ret['received'] = $sql->db_Count("pm_messages", "(*)", "WHERE pm_to_user = '{$user}' ");
 	$ret['unread_rcv_pm'] = $sql->db_Count("pm_messages", "(*)", "WHERE pm_to_user = '{$user}' AND pm_rcv_datestamp = 0");
 	$ret['sent_pm'] = $sql->db_Count("pm_messages", "(*)", "WHERE pm_from_user = '{$user}' ");
