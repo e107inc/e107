@@ -15,11 +15,7 @@ define("LAN_THEME_1", "Read/Post Comment: ");
 define("LAN_THEME_2", "Comments are turned off for this item");
 define("LAN_THEME_3", "Read the rest...");
 define("LAN_THEME_4", "");
-define("LAN_THEME_5", "");
-define("LAN_THEME_6", "");
-define("LAN_THEME_7", "");
-define("LAN_THEME_8", "");
-define("LAN_THEME_9", "");
-define("LAN_THEME_10", "");
+define("LAN_THEME_5", "on");
+
 
 ?>
