@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-01-18 19:22:57 $
+|     $Revision: 1.14 $
+|     $Date: 2005-01-21 18:22:44 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -302,9 +302,9 @@ if(isset($message)){
     <tr>
    <td style='width:30%' class='forumheader3'>Insert Variables: </td>
    <td style='width:70%' class='forumheader3'>
-   <input type='button' class='tbox' name='usrname' value='username' onclick=\"add_text('{USERNAME}')\" />
-   <input type='button' class='tbox' name='usrlink' value='signup link' onclick=\"add_text('{SIGNUP_LINK}')\" />
-   <input type='button' class='tbox' name='usrid' value='user id' onclick=\"add_text('{USERID}')\" />
+   <input type='button' class='button' name='usrname' value='username' onclick=\"add_text('{USERNAME}')\" />
+   <input type='button' class='button' name='usrlink' value='signup link' onclick=\"add_text('{SIGNUP_LINK}')\" />
+   <input type='button' class='button' name='usrid' value='user id' onclick=\"add_text('{USERID}')\" />
    </td>
    </tr>";
 
