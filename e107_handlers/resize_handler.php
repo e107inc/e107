@@ -38,7 +38,7 @@ function resize_image($source_file, $destination_file, $type = "upload", $model=
 	
 if($image_stats == null){ echo "<b>DEBUG</b> image_stats are null<br />"; return false; }
 
-	if ($image_stats[2] != 2 && $image_stats[2] != 3 && ($mode == 'gd1' || $mode == 'gd2')){
+	if ($image_stats[2] != 1 && $image_stats[2] != 2 && $image_stats[2] != 3 && ($mode == 'gd1' || $mode == 'gd2')){
 		echo "<b>DEBUG</b> Wrong image type<br />";
 		return FALSE;
 	}
