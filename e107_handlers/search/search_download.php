@@ -14,8 +14,8 @@ if($results = $sql -> db_Select("download", "download_id, download_category, dow
 
 
 				$action = "download.php?view.".$download_id."";
-				$text .= "<form method='post' action='$action' name='download_".$c."'>
-				<input type='hidden' name='highlight_search' value='1'><input type='hidden' name='search_query' value='$query'><img src='".THEME."images/bullet2.gif' alt='bullet' /> <b><a href='javascript:this.download_".$c.".submit()'>$download_name</a></b></form><br />$download_description<br /><br />";
+				$text .= "<form method='post' action='$action' id='download_".$c."'>
+				<input type='hidden' name='highlight_search' value='1' /><input type='hidden' name='search_query' value='$query' /><img src='".THEME."images/bullet2.gif' alt='bullet' /> <b><a href='javascript:this.download_".$c.".submit()'>$download_name</a></b></form><br />$download_description<br /><br />";
 				$c ++;
 
         }
