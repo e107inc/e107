@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_icons_template.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-03-24 14:49:17 $
+|     $Revision: 1.6 $
+|     $Date: 2005-03-24 15:20:55 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -39,7 +39,7 @@ define("IMAGE_announce_small", "<img src='".img_path('announce_small.png')."' al
 
 define("IMAGE_closed_small", "<img src='".img_path('closed_small.png')."' alt='".FORLAN_18."' title='".FORLAN_18."' style='border:0' />");
 define("IMAGE_closed", "<img src='".img_path('closed.png')."' alt='".FORLAN_18."' title='".FORLAN_18."' style='border:0' />");
-
+define("IMAGE_profile", "<img src='".img_path('profile.png')."' alt='".LAN_398."' title='".LAN_398."' style='border:0' />");
 define("IMAGE_email", "<img src='".img_path('email.png')."' alt='".LAN_397."' title='".LAN_397."' style='border:0' />");
 define("IMAGE_pm", "<img src='".img_path('pm.png')."' alt='".LAN_399."' title='".LAN_399."' style='border:0' />");
 define("IMAGE_website", "<img src='".img_path('website.png')."' alt='".LAN_396."' title='".LAN_396."' style='border:0' />");
