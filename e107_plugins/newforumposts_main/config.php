@@ -15,6 +15,14 @@
 +---------------------------------------------------------------+
 */
 require_once("../../class2.php");
+require_once(e_HANDLER."userclass_class.php");
+
+$lan_file=e_PLUGIN."newforumposts_main/languages/".e_LANGUAGE.".php";
+if(file_exists($lan_file)){
+	require_once($lan_file);
+} else {
+	require_once(e_PLUGIN."newforumposts_main/languages/English.php");
+}
 if(!getperms("1")){ header("location:".e_BASE."index.php"); exit ;}
 require_once(e_ADMIN."auth.php");
 
@@ -25,7 +33,7 @@ if(IsSet($_POST['updatesettings'])){
 	$pref['nfp_layer'] = $_POST['nfp_layer'];
 	$pref['nfp_layer_height'] = ($_POST['nfp_layer_height'] ? $_POST['nfp_layer_height'] : 200);
 	save_prefs();
-	$message = "New Forum Posts settings updated.";
+	$message = "".NFPM_L14."";
 }
 
 if($message){
@@ -39,43 +47,43 @@ $text = "<div style='text-align:center'>
 <table style='width:85%' class='fborder'>
 
 <tr>
-<td style='width:40%' class='forumheader3'>Activate in which area?</td>
+<td style='width:40%' class='forumheader3'>".NFPM_L4."</td>
 <td style='width:60%' class='forumheader3'>
 <select class='tbox' name='nfp_display'>"
-.($pref['nfp_display'] == "0" ? "<option value=0 selected>Inactive</option>" : "<option value=0>Inactive</option>")
-.($pref['nfp_display'] == "1" ? "<option value=1 selected>Top of page</option>" : "<option value=1>Top of page</option>")
-.($pref['nfp_display'] == "2" ? "<option value=2 selected>Bottom of page</option>" : "<option value=2>Bottom of page</option>")
+.($pref['nfp_display'] == "0" ? "<option value=0 selected>".NFPM_L5."</option>" : "<option value=0>".NFPM_L5."</option>")
+.($pref['nfp_display'] == "1" ? "<option value=1 selected>".NFPM_L6."</option>" : "<option value=1>".NFPM_L6."</option>")
+.($pref['nfp_display'] == "2" ? "<option value=2 selected>".NFPM_L7."</option>" : "<option value=2>".NFPM_L7."</option>")
 ."</select>
 </td>
 </tr>
 
 <tr>
-<td style='width:40%' class='forumheader3'>Caption: </td>
+<td style='width:40%' class='forumheader3'>".NFPM_L8.": </td>
 <td style='width:60%' class='forumheader3'>
 <input class='tbox' type='text' name='nfp_caption' size='20' value='".$pref['nfp_caption']."' maxlength='100' />
 </td>
 </tr>
 
 <tr>
-<td style='width:40%' class='forumheader3'>Number of new posts to display: </td>
+<td style='width:40%' class='forumheader3'>".NFPM_L9.": </td>
 <td style='width:60%' class='forumheader3'>
 <input class='tbox' type='text' name='nfp_amount' size='6' value='".$pref['nfp_amount']."' maxlength='3' />
 </td>
 </tr>
 
-<td class='forumheader3' style='width:40%'>Display inside scrolling layer?: </td>
+<td class='forumheader3' style='width:40%'>".NFPM_L10.": </td>
 <td class='forumheader3' style='width:60%'>".
-($pref['nfp_layer'] ? "<input type='checkbox' name='nfp_layer' value='1' checked>" : "<input type='checkbox' name='nfp_layer' value='1'>")."&nbsp;&nbsp;Layer height: <input class='tbox' type='text' name='nfp_layer_height' size='8' value='".$pref['nfp_layer_height']."' maxlength='3' />
+($pref['nfp_layer'] ? "<input type='checkbox' name='nfp_layer' value='1' checked>" : "<input type='checkbox' name='nfp_layer' value='1'>")."&nbsp;&nbsp;".NFPM_L11.": <input class='tbox' type='text' name='nfp_layer_height' size='8' value='".$pref['nfp_layer_height']."' maxlength='3' />
 </td>
 </tr>
 
 <tr>
-<td colspan='2' class='forumheader' style='text-align:center'><input class='button' type='submit' name='updatesettings' value='Update New Forum Posts Settings' /></td>
+<td colspan='2' class='forumheader' style='text-align:center'><input class='button' type='submit' name='updatesettings' value='".NFPM_L13."' /></td>
 </tr>
 </table>
 </form>
 </div>";
-$ns -> tablerender("New Forum Posts Configuration", $text);
+$ns -> tablerender(NFPM_L12, $text);
 
 require_once(e_ADMIN."footer.php");
 ?>

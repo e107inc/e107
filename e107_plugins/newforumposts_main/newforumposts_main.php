@@ -13,7 +13,15 @@
 +---------------------------------------------------------------+
 */
 
-require_once("languages/".e_LANGUAGE.".php");
+require_once("../../class2.php");
+require_once(e_HANDLER."userclass_class.php");
+
+$lan_file=e_PLUGIN."articles_menu/languages/".e_LANGUAGE.".php";
+if(file_exists($lan_file)){
+	require_once($lan_file);
+} else {
+	require_once(e_PLUGIN."articles/languages/English.php");
+}
 if($sql -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHERE ".MPREFIX."forum.forum_id=".MPREFIX."forum_t.thread_forum_id AND ".MPREFIX."forum_t.thread_parent=0 ORDER BY ".MPREFIX."forum_t.thread_datestamp DESC LIMIT 0, ".$pref['nfp_amount'])){
 	$text = "<div style='text-align:center'>\n<table style='width:auto' class='fborder'>\n";
 	if(!is_object($sql2)){
