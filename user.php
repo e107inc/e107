@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-09 22:31:48 $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-10 21:38:57 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -171,7 +171,7 @@ function renderuser($row, $user_entended, $mode = "verbose") {
 	$gen = new convert;
 	$pm_installed = ($pref['pm_title'] ? TRUE : FALSE);
 	if ($mode != "verbose") {
-		$datestamp = $gen->convert_date($user_join, "short");
+		$datestamp = $gen->convert_date($user_join, "forum");
 		return "
 			<tr>
 			<td class='forumheader3' style='width:2%'><a href='".e_SELF."?id.$user_id'><img src='".e_IMAGE."generic/user.png' alt='' style='border:0' /></a></td>
