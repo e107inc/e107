@@ -1,46 +1,43 @@
 // Spell Checker Plugin for HTMLArea-3.0
-// Implementation by Mihai Bazon.  Sponsored by www.americanbible.org
+// Sponsored by www.americanbible.org
+// Implementation by Mihai Bazon, http://dynarch.com/mishoo/
 //
-// htmlArea v3.0 - Copyright (c) 2002 interactivetools.com, inc.
+// (c) dynarch.com 2003.
+// Distributed under the same terms as HTMLArea itself.
 // This notice MUST stay intact for use (see license.txt).
 //
-// A free WYSIWYG editor replacement for <textarea> fields.
-// For full source code and docs, visit http://www.interactivetools.com/
-//
-// Version 3.0 developed by Mihai Bazon for InteractiveTools.
-//	     http://students.infoiasi.ro/~mishoo
-//
-// $Id: spell-check-ui.js,v 1.2 2004-03-15 21:36:02 e107coders Exp $
+// $Id: spell-check-ui.js,v 1.3 2004-03-16 07:23:00 e107coders Exp $
 
 // internationalization file was already loaded in parent ;-)
 var SpellChecker = window.opener.SpellChecker;
 var i18n = SpellChecker.I18N;
 
-var is_ie = window.opener.HTMLArea.is_ie;
+var HTMLArea = window.opener.HTMLArea;
+var is_ie = HTMLArea.is_ie;
 var editor = SpellChecker.editor;
 var frame = null;
 var currentElement = null;
 var wrongWords = null;
 var modified = false;
 var allWords = {};
+var fixedWords = [];
+var suggested_words = {};
 
 function makeCleanDoc(leaveFixed) {
 	// document.getElementById("status").innerHTML = 'Please wait: rendering valid HTML';
-	for (var i in wrongWords) {
-		var el = wrongWords[i];
+	var words = wrongWords.concat(fixedWords);
+	for (var i = words.length; --i >= 0;) {
+		var el = words[i];
 		if (!(leaveFixed && /HA-spellcheck-fixed/.test(el.className))) {
 			el.parentNode.insertBefore(el.firstChild, el);
-			el.parentNode.removeChild(el.nextSibling);
 			el.parentNode.removeChild(el);
-		} else {
+		} else
 			el.className = "HA-spellcheck-fixed";
-			el.parentNode.removeChild(el.nextSibling);
-		}
 	}
 	// we should use innerHTML here, but IE6's implementation fucks up the
 	// HTML to such extent that our poor Perl parser doesn't understand it
 	// anymore.
-	return window.opener.HTMLArea.getHTML(frame.contentWindow.document.body, leaveFixed);
+	return window.opener.HTMLArea.getHTML(frame.contentWindow.document.body, false, editor);
 };
 
 function recheckClicked() {
@@ -71,13 +68,15 @@ function cancelClicked() {
 
 function replaceWord(el) {
 	var replacement = document.getElementById("v_replacement").value;
-	modified = (el.innerHTML != replacement);
+	var this_word_modified = (el.innerHTML != replacement);
+	if (this_word_modified)
+		modified = true;
 	if (el) {
 		el.className = el.className.replace(/\s*HA-spellcheck-(hover|fixed)\s*/g, " ");
 	}
 	el.className += " HA-spellcheck-fixed";
 	el.__msh_fixed = true;
-	if (!modified) {
+	if (!this_word_modified) {
 		return false;
 	}
 	el.innerHTML = replacement;
@@ -97,7 +96,14 @@ function replaceClicked() {
 		index = 0;
 		alert(i18n["Finished list of mispelled words"]);
 	}
-	wrongWords[index].onclick();
+	wrongWords[index].__msh_wordClicked(true);
+	return false;
+};
+
+function revertClicked() {
+	document.getElementById("v_replacement").value = currentElement.__msh_origWord;
+	replaceWord(currentElement);
+	currentElement.className = "HA-spellcheck-error HA-spellcheck-current";
 	return false;
 };
 
@@ -170,7 +176,7 @@ function initDocument() {
 	modified = false;
 	frame = document.getElementById("i_framecontent");
 	var field = document.getElementById("f_content");
-	field.value = editor.getHTML();
+	field.value = HTMLArea.getHTML(editor._doc.body, false, editor);
 	field.form.submit();
 	document.getElementById("f_init").value = "0";
 
@@ -192,6 +198,8 @@ function initDocument() {
 	document.getElementById("b_ignore").onclick = ignoreClicked;
 	document.getElementById("b_ignall").onclick = ignoreAllClicked;
 	document.getElementById("b_recheck").onclick = recheckClicked;
+	document.getElementById("b_revert").onclick = revertClicked;
+	document.getElementById("b_info").onclick = displayInfo;
 
 	document.getElementById("b_ok").onclick = saveClicked;
 	document.getElementById("b_cancel").onclick = cancelClicked;
@@ -202,7 +210,30 @@ function initDocument() {
 	};
 };
 
-function wordClicked() {
+function getAbsolutePos(el) {
+	var r = { x: el.offsetLeft, y: el.offsetTop };
+	if (el.offsetParent) {
+		var tmp = getAbsolutePos(el.offsetParent);
+		r.x += tmp.x;
+		r.y += tmp.y;
+	}
+	return r;
+};
+
+function wordClicked(scroll) {
+	var self = this;
+	if (scroll) (function() {
+		var pos = getAbsolutePos(self);
+		var ws = { x: frame.offsetWidth - 4,
+			   y: frame.offsetHeight - 4 };
+		var wp = { x: frame.contentWindow.document.body.scrollLeft,
+			   y: frame.contentWindow.document.body.scrollTop };
+		pos.x -= Math.round(ws.x/2);
+		if (pos.x < 0) pos.x = 0;
+		pos.y -= Math.round(ws.y/2);
+		if (pos.y < 0) pos.y = 0;
+		frame.contentWindow.scrollTo(pos.x, pos.y);
+	})();
 	if (currentElement) {
 		var a = allWords[currentElement.__msh_origWord];
 		currentElement.className = currentElement.className.replace(/\s*HA-spellcheck-current\s*/g, " ");
@@ -222,8 +253,8 @@ function wordClicked() {
 			el.className += " HA-spellcheck-same";
 		}
 	}
-	document.getElementById("b_replall").disabled = (a.length <= 1);
-	document.getElementById("b_ignall").disabled = (a.length <= 1);
+	// document.getElementById("b_replall").disabled = (a.length <= 1);
+	// document.getElementById("b_ignall").disabled = (a.length <= 1);
 	var txt;
 	if (a.length == 1) {
 		txt = "one occurrence";
@@ -232,14 +263,17 @@ function wordClicked() {
 	} else {
 		txt = a.length + " occurrences";
 	}
+	var suggestions = suggested_words[this.__msh_origWord];
+	if (suggestions)
+		suggestions = suggestions.split(/,/);
+	else
+		suggestions = [];
+	var select = document.getElementById("v_suggestions");
 	document.getElementById("statusbar").innerHTML = "Found " + txt +
 		' for word "<b>' + currentElement.__msh_origWord + '</b>"';
-	var select = document.getElementById("v_suggestions");
 	for (var i = select.length; --i >= 0;) {
 		select.remove(i);
 	}
-	var suggestions;
-	suggestions = this.nextSibling.firstChild.data.split(/,/);
 	for (var i = 0; i < suggestions.length; ++i) {
 		var txt = suggestions[i];
 		var option = document.createElement("option");
@@ -254,6 +288,8 @@ function wordClicked() {
 	} else {
 		document.getElementById("v_replacement").value = this.innerHTML;
 	}
+	select.style.display = "none";
+	select.style.display = "block";
 	return false;
 };
 
@@ -265,11 +301,27 @@ function wordMouseOut() {
 	this.className = this.className.replace(/\s*HA-spellcheck-hover\s*/g, " ");
 };
 
+function displayInfo() {
+	var info = frame.contentWindow.spellcheck_info;
+	if (!info)
+		alert("No information available");
+	else {
+		var txt = "** Document information **";
+		for (var i in info) {
+			txt += "\n" + i + " : " + info[i];
+		}
+		alert(txt);
+	}
+	return false;
+};
+
 function finishedSpellChecking() {
 	// initialization of global variables
 	currentElement = null;
 	wrongWords = null;
 	allWords = {};
+	fixedWords = [];
+	suggested_words = frame.contentWindow.suggested_words;
 
 	document.getElementById("status").innerHTML = "HTMLArea Spell Checker (<a href='readme-tech.html' target='_blank' title='Technical information'>info</a>)";
 	var doc = frame.contentWindow.document;
@@ -280,7 +332,12 @@ function finishedSpellChecking() {
                 var el = spans[i];
                 if (/HA-spellcheck-error/.test(el.className)) {
                         sps.push(el);
-			el.onclick = wordClicked;
+			el.__msh_wordClicked = wordClicked;
+			el.onclick = function(ev) {
+				ev || (ev = window.event);
+				ev && HTMLArea._stopEvent(ev);
+				return this.__msh_wordClicked(false);
+			};
 			el.onmouseover = wordMouseOver;
 			el.onmouseout = wordMouseOut;
 			el.__msh_id = id++;
@@ -291,7 +348,9 @@ function finishedSpellChecking() {
 			} else {
 				allWords[txt].push(el);
 			}
-                }
+                } else if (/HA-spellcheck-fixed/.test(el.className)) {
+			fixedWords.push(el);
+		}
         }
 	wrongWords = sps;
 	if (sps.length == 0) {
@@ -303,7 +362,7 @@ function finishedSpellChecking() {
 		}
 		return false;
 	}
-	(currentElement = sps[0]).onclick();
+	(currentElement = sps[0]).__msh_wordClicked(true);
 	var as = doc.getElementsByTagName("a");
 	for (var i = as.length; --i >= 0;) {
 		var a = as[i];
@@ -326,6 +385,10 @@ function finishedSpellChecking() {
 		for (var i = 0; i < dicts.length; ++i) {
 			var txt = dicts[i];
 			var option = document.createElement("option");
+			if (/^@(.*)$/.test(txt)) {
+				txt = RegExp.$1;
+				option.selected = true;
+			}
 			option.value = txt;
 			option.appendChild(document.createTextNode(txt));
 			select.appendChild(option);

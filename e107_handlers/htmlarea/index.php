@@ -1,125 +1,46 @@
 <html>
 <head>
-<title>Example of HTMLArea 3.0</title>
-
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>HTMLArea 3.0 for e107</title>
+  <script type="text/javascript">
+   //   _editor_url = window.opener._editor_url;
+  //    _editor_lang = window.opener._editor_lang;
+ //     var BASE = window.opener.document.baseURI || window.opener.document.URL;
+  //    var head = document.getElementsByTagName("head")[0];
+ //     var base = document.createElement("base");
+ //     base.href = BASE;
+ //     head.appendChild(base);
+    </script>
 
 <script type="text/javascript" src="htmlarea.js"></script>
-<script type="text/javascript" src="lang/en.js"></script>
+
+
+<script type="text/javascript" src="htmlarea-lang-en.js"></script>
 <script type="text/javascript" src="dialog.js"></script>
+<script type="text/javascript" src="editor.js"></script>
+
+
 
 <style type="text/css">
 @import url(htmlarea.css);
 
 html, body {
   font-family: Verdana,sans-serif;
-  background-color: #fff;
-  font-size: small;
+  background-color: #ddd;
   color: #000;
 }
 a:link, a:visited { color: #00f; }
 a:hover { color: #048; }
 a:active { color: #f00; }
 
-/*textarea { background-color: #fff; border: 1px solid 00f; }*/
+textarea { background-color: #fff; border: 1px solid 00f; }
 </style>
 
 <script type="text/javascript">
 var editor = null;
 function initEditor() {
   editor = new HTMLArea("ta");
-
-  // comment the following two lines to see how customization works
   editor.generate();
-  return false;
 
-  var cfg = editor.config; // this is the default configuration
-  cfg.registerButton({
-    id        : "my-hilite",
-    tooltip   : "Highlight text",
-    image     : "ed_custom.gif",
-    textMode  : false,
-    action    : function(editor) {
-                  editor.surroundHTML("<span class=\"hilite\">", "</span>");
-                },
-    context   : 'table'
-  });
-
-  cfg.toolbar.push(["linebreak", "my-hilite"]); // add the new button to the toolbar
-
-  // BEGIN: code that adds a custom button
-  // uncomment it to test
-  var cfg = editor.config; // this is the default configuration
-  /*
-  cfg.registerButton({
-    id        : "my-hilite",
-    tooltip   : "Highlight text",
-    image     : "ed_custom.gif",
-    textMode  : false,
-    action    : function(editor) {
-                  editor.surroundHTML("<span class=\"hilite\">", "</span>");
-                }
-  });
-  */
-
-function clickHandler(editor, buttonId) {
-  switch (buttonId) {
-    case "my-toc":
-      editor.insertHTML("<h1>Table Of Contents</h1>");
-      break;
-    case "my-date":
-      editor.insertHTML((new Date()).toString());
-      break;
-    case "my-bold":
-      editor.execCommand("bold");
-      editor.execCommand("italic");
-      break;
-    case "my-hilite":
-      editor.surroundHTML("<span class=\"hilite\">", "</span>");
-      break;
-  }
-};
-cfg.registerButton("my-toc",  "Insert TOC", "ed_custom.gif", false, clickHandler);
-cfg.registerButton("my-date", "Insert date/time", "ed_custom.gif", false, clickHandler);
-cfg.registerButton("my-bold", "Toggle bold/italic", "ed_custom.gif", false, clickHandler);
-cfg.registerButton("my-hilite", "Hilite selection", "ed_custom.gif", false, clickHandler);
-
-cfg.registerButton("my-sample", "Class: sample", "ed_custom.gif", false,
-  function(editor) {
-    if (HTMLArea.is_ie) {
-      editor.insertHTML("<span class=\"sample\">&nbsp;&nbsp;</span>");
-      var r = editor._doc.selection.createRange();
-      r.move("character", -2);
-      r.moveEnd("character", 2);
-      r.select();
-    } else { // Gecko/W3C compliant
-      var n = editor._doc.createElement("span");
-      n.className = "sample";
-      editor.insertNodeAtSelection(n);
-      var sel = editor._iframe.contentWindow.getSelection();
-      sel.removeAllRanges();
-      var r = editor._doc.createRange();
-      r.setStart(n, 0);
-      r.setEnd(n, 0);
-      sel.addRange(r);
-    }
-  }
-);
-
-
-  /*
-  cfg.registerButton("my-hilite", "Highlight text", "ed_custom.gif", false,
-    function(editor) {
-      editor.surroundHTML('<span class="hilite">', '</span>');
-    }
-  );
-  */
-  cfg.pageStyle = "body { background-color: #efd; } .hilite { background-color: yellow; } "+
-                  ".sample { color: green; font-family: monospace; }";
-  cfg.toolbar.push(["linebreak", "my-toc", "my-date", "my-bold", "my-hilite", "my-sample"]); // add the new button to the toolbar
-  // END: code that adds a custom button
-
-  editor.generate();
 }
 function insertHTML() {
   var html = prompt("Enter some HTML code here");
@@ -128,59 +49,41 @@ function insertHTML() {
   }
 }
 function highlight() {
-  editor.surroundHTML('<span style="background-color: yellow">', '</span>');
+  editor.surroundHTML('<span style="background:yellow">', '</span>');
 }
+
+function updateOpener(){
+        htmresult = editor.getHTML();
+      opener.document.forms.dataform.data.value = htmresult;
+   //      parent_object.setHTML(editor.getInnerHTML());
+        window.close()
+}
+
 </script>
 
 </head>
 
-<!-- use <body onload="HTMLArea.replaceAll()" if you don't care about
-     customizing the editor.  It's the easiest way! :) -->
+<!-- use <body onload="initEditor()"> if you don't care about
+     customizing the editor.  It's the easiest way! :)
+         <body onload="HTMLArea.replaceAll()"> -->
 <body onload="initEditor()">
 
-<h1>HTMLArea 3.0 beta + Image Manager + Image Editor</h1>
+HTMLArea &copy; <a href="http://interactivetools.com">InteractiveTools.com</a>, 2003.</p>
 
-<p>A replacement for <code>TEXTAREA</code> elements. &copy; <a
-href="http://interactivetools.com">InteractiveTools.com</a>, 2003.</p>
-<p>Testing for image manager. PHP version (GD or ImageMagick).
-<UL>
-	<LI>Auto cache thumbnails. 
-	<LI>Filmstrip view.
-	<LI>Online Image Editor.
-</UL>
-  </p>
+<form method="POST" action="" name="mainform">
 
-<form method="post" id="edit" name="edit">
-<table border="0" width="600">
-   <tr><Td>
-<textarea id="ta" name="ta" style="width:600px" rows="20" cols="80">
-  &lt;p&gt;Here is some sample text: &lt;b&gt;bold&lt;/b&gt;, &lt;i&gt;italic&lt;/i&gt;, &lt;u&gt;underline&lt;/u&gt;. &lt;/p&gt;
-  &lt;p align=center&gt;Different fonts, sizes and colors (all in bold):&lt;/p&gt;
-  &lt;p&gt;&lt;b&gt;
-   &lt;font face="arial"           size="7" color="#000066"&gt;arial&lt;/font&gt;,
-   &lt;font face="courier new"     size="6" color="#006600"&gt;courier new&lt;/font&gt;,
-   &lt;font face="georgia"         size="5" color="#006666"&gt;georgia&lt;/font&gt;,
-   &lt;font face="tahoma"          size="4" color="#660000"&gt;tahoma&lt;/font&gt;,
-   &lt;font face="times new roman" size="3" color="#660066"&gt;times new roman&lt;/font&gt;,
-   &lt;font face="verdana"         size="2" color="#666600"&gt;verdana&lt;/font&gt;,
-   &lt;font face="tahoma"          size="1" color="#666666"&gt;tahoma&lt;/font&gt;
-  &lt;/b&gt;&lt;/p&gt;
-  &lt;p&gt;Click on &lt;a href="http://www.interactivetools.com/"&gt;this link&lt;/a&gt; and then on the link button to the details ... OR ... select some text and click link to create a &lt;b&gt;new&lt;/b&gt; link.&lt;/p&gt;
-</textarea>
-  </td></tr></table>
+<textarea id="ta" name='ta' style="width:60%" rows="20"></textarea>
 
-<input type="submit" name="ok" value="  submit  " />
+<p>
+
+<input class="button" type="button" value="Finished" onClick="updateOpener()">
+<input class="button" type="button" value="Cancel" onClick="window.close()">
+
 <input type="button" name="ins" value="  insert html  " onclick="return insertHTML();" />
 <input type="button" name="hil" value="  highlight text  " onclick="return highlight();" />
 
-<a href="javascript:mySubmit()">submit</a>
-
 <script type="text/javascript">
-function mySubmit() {
-// document.edit.save.value = "yes";
-document.edit.onsubmit(); // workaround browser bugs.
-document.edit.submit();
-};
+document.forms.mainform.ta.value = opener.document.forms.dataform.data.value
 </script>
 
 </form>

@@ -19,7 +19,7 @@
 
 
         include 'ImageManager/config.inc.php';
-        
+
         $no_dir = false;
         if(!is_dir($BASE_DIR.$BASE_ROOT)) {
                 $no_dir = true;
@@ -32,6 +32,9 @@
 <script type="text/javascript" src="popup.js"></script>
 <script type="text/javascript" src="../dialog.js"></script>
 <script type="text/javascript">
+window.resizeTo(600, 150);   
+
+
 var preview_window = null;
 
 function Init() {

@@ -1,3 +1,16 @@
+// htmlArea v3.0 - Copyright (c) 2003-2004 interactivetools.com, inc.
+// This copyright notice MUST stay intact for use (see license.txt).
+//
+// Portions (c) dynarch.com, 2003-2004
+//
+// A free WYSIWYG editor replacement for <textarea> fields.
+// For full source code and docs, visit http://www.interactivetools.com/
+//
+// Version 3.0 developed by Mihai Bazon.
+//   http://dynarch.com/mishoo
+//
+// $Id: dialog.js,v 1.3 2004-03-16 07:22:51 e107coders Exp $
+
 // Though "Dialog" looks like an object, it isn't really an object.  Instead
 // it's just namespace for protecting global symbols.
 
@@ -5,26 +18,13 @@ function Dialog(url, action, init) {
 	if (typeof init == "undefined") {
 		init = window;	// pass this window object by default
 	}
-	if (document.all) {	// here we hope that Mozilla will never support document.all
-		var value =
-			showModalDialog(url, init,
-//			window.open(url, '_blank',
-					"resizable: yes; help: no; status: no; scroll: no");
-		if (action) {
-			action(value);
-		}
-	} else {
-		return Dialog._geckoOpenModal(url, action, init);
-	}
+	Dialog._geckoOpenModal(url, action, init);
 };
 
 Dialog._parentEvent = function(ev) {
 	if (Dialog._modal && !Dialog._modal.closed) {
 		Dialog._modal.focus();
-		// we get here in Mozilla only, anyway, so we can safely use
-		// the DOM version.
-		ev.preventDefault();
-		ev.stopPropagation();
+		HTMLArea._stopEvent(ev);
 	}
 };
 
@@ -38,23 +38,23 @@ Dialog._modal = null;
 Dialog._arguments = null;
 
 Dialog._geckoOpenModal = function(url, action, init) {
-	var dlg = window.open(url, "ha_dialog"+url,
+	var dlg = window.open(url, "hadialog",
 			      "toolbar=no,menubar=no,personalbar=no,width=10,height=10," +
-			      "scrollbars=no,resizable=no");
+			      "scrollbars=no,resizable=yes");
 	Dialog._modal = dlg;
 	Dialog._arguments = init;
 
 	// capture some window's events
 	function capwin(w) {
-		w.addEventListener("click", Dialog._parentEvent, true);
-		w.addEventListener("mousedown", Dialog._parentEvent, true);
-		w.addEventListener("focus", Dialog._parentEvent, true);
+		HTMLArea._addEvent(w, "click", Dialog._parentEvent);
+		HTMLArea._addEvent(w, "mousedown", Dialog._parentEvent);
+		HTMLArea._addEvent(w, "focus", Dialog._parentEvent);
 	};
 	// release the captured events
 	function relwin(w) {
-		w.removeEventListener("focus", Dialog._parentEvent, true);
-		w.removeEventListener("mousedown", Dialog._parentEvent, true);
-		w.removeEventListener("click", Dialog._parentEvent, true);
+		HTMLArea._removeEvent(w, "click", Dialog._parentEvent);
+		HTMLArea._removeEvent(w, "mousedown", Dialog._parentEvent);
+		HTMLArea._removeEvent(w, "focus", Dialog._parentEvent);
 	};
 	capwin(window);
 	// capture other frames

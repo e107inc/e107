@@ -7,18 +7,14 @@
     "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 
    Spell Checker Plugin for HTMLArea-3.0
-   Implementation by Mihai Bazon.  Sponsored by www.americanbible.org
+   Sponsored by www.americanbible.org
+   Implementation by Mihai Bazon, http://dynarch.com/mishoo/
   
-   htmlArea v3.0 - Copyright (c) 2003 interactivetools.com, inc.
+   (c) dynarch.com 2003.
+   Distributed under the same terms as HTMLArea itself.
    This notice MUST stay intact for use (see license.txt).
-  
-   A free WYSIWYG editor replacement for <textarea> fields.
-   For full source code and docs, visit http://www.interactivetools.com/
-  
-   Version 3.0 developed by Mihai Bazon for InteractiveTools.
-  	     http://students.infoiasi.ro/~mishoo
-  
-   $Id: spell-check-ui.html,v 1.2 2004-03-15 21:36:02 e107coders Exp $
+
+   $Id: spell-check-ui.html,v 1.3 2004-03-16 07:23:00 e107coders Exp $
 
 -->
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -37,7 +33,7 @@
       table { background-color: ButtonFace; color: ButtonText;
       font-family: tahoma,verdana,sans-serif; font-size: 11px; }
 
-      iframe { background-color: #fff; color: #000; }
+      iframe { background-color: #fff; color: #000; height: 100%; width: 100%; }
 
       .controls { width: 13em; }
       .controls .sectitle { /* background-color: #736c6c; color: #fff;
@@ -51,7 +47,7 @@
 
       input, select { font-family: fixed,"andale mono",monospace; }
 
-      #v_currentWord { color: #f00; font-weight: bold; font-size: 120%; }
+      #v_currentWord { color: #f00; font-weight: bold; }
       #statusbar { padding: 7px 0px 0px 5px; }
       #status { font-weight: bold; }
     </style>
@@ -61,12 +57,12 @@
   <body onload="initDocument()">
 
     <form style="display: none;" action="spell-check-logic.cgi"
-        method="post" target="framecontent"
-        accept-charset="utf-8"
-        ><input type="hidden" name="content" id="f_content"
-        /><input type="hidden" name="dictionary" id="f_dictionary"
-        /><input type="hidden" name="init" id="f_init" value="1"
-        /></form>
+          method="post" target="framecontent"
+          accept-charset="UTF-8"
+          ><input type="hidden" name="content" id="f_content"
+          /><input type="hidden" name="dictionary" id="f_dictionary"
+          /><input type="hidden" name="init" id="f_init" value="1"
+    /></form>
 
     <table style="height: 100%; width: 100%; border-collapse: collapse;" cellspacing="0" cellpadding="0">
       <tr>
@@ -80,8 +76,15 @@
       </tr>
       <tr>
         <td valign="top" class="controls">
+          <div class="secbody" style="text-align: center">
+            <button id="b_info">Info</button>
+          </div>
           <div class="sectitle">Original word</div>
-          <div class="secbody" id="v_currentWord" style="text-align: center">pliz weit ;-)</div>
+          <div class="secbody" id="v_currentWord" style="text-align:
+          center; margin-bottom: 0px;">pliz weit ;-)</div>
+          <div class="secbody" style="text-align: center">
+            <button id="b_revert">Revert</button>
+          </div>
           <div class="sectitle">Replace with</div>
           <div class="secbody">
             <input type="text" id="v_replacement" style="width: 94%; margin-left: 3%;" /><br />

@@ -1,8 +1,11 @@
+// (c) dynarch.com 2003-2004
+// Distributed under the same terms as HTMLArea itself.
+
 function PopupWin(editor, title, handler, initFunction) {
 	this.editor = editor;
 	this.handler = handler;
 	var dlg = window.open("", "__ha_dialog",
-			      "toolbar=no,menubar=no,personalbar=no,width=600,height=600," +
+			      "toolbar=no,menubar=no,personalbar=no,width=600,height=600,left=20,top=40" +
 			      "scrollbars=no,resizable=no");
 	this.window = dlg;
 	var doc = dlg.document;
@@ -12,6 +15,17 @@ function PopupWin(editor, title, handler, initFunction) {
 	var base = document.baseURI || document.URL;
 	if (base && base.match(/(.*)\/([^\/]+)/)) {
 		base = RegExp.$1 + "/";
+	}
+	if (typeof _editor_url != "undefined" && !/^\//.test(_editor_url)) {
+		// _editor_url doesn't start with '/' which means it's relative
+		// FIXME: there's a problem here, it could be http:// which
+		// doesn't start with slash but it's not relative either.
+		base += _editor_url;
+	} else
+		base = _editor_url;
+	if (!/\/$/.test(base)) {
+		// base does not end in slash, add it now
+		base += '/';
 	}
 	this.baseURL = base;
 

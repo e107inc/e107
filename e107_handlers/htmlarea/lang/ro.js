@@ -1,7 +1,7 @@
 // I18N constants
 
 // LANG: "ro", ENCODING: UTF-8
-// Author: Mihai Bazon, <mishoo@infoiasi.ro>
+// Author: Mihai Bazon, http://dynarch.com/mishoo
 
 // FOR TRANSLATORS:
 //
@@ -23,8 +23,8 @@ HTMLArea.I18N = {
 		italic:         "Italic",
 		underline:      "Subliniat",
 		strikethrough:  "Tăiat",
-		subscript:      "Subscript",
-		superscript:    "Superscript",
+		subscript:      "Indice jos",
+		superscript:    "Indice sus",
 		justifyleft:    "Aliniere la stânga",
 		justifycenter:  "Aliniere pe centru",
 		justifyright:   "Aliniere la dreapta",
@@ -36,8 +36,8 @@ HTMLArea.I18N = {
 		forecolor:      "Culoarea textului",
 		hilitecolor:    "Culoare de fundal",
 		horizontalrule: "Linie orizontală",
-		createlink:     "Inserează link",
-		insertimage:    "Inserează o imagine",
+		createlink:     "Inserează/modifică link",
+		insertimage:    "Inserează/modifică imagine",
 		inserttable:    "Inserează un tabel",
 		htmlmode:       "Sursa HTML / WYSIWYG",
 		popupeditor:    "Maximizează editorul",
@@ -48,7 +48,9 @@ HTMLArea.I18N = {
 		redo:           "Reface ultima acţiune anulată",
 		cut:            "Taie în clipboard",
 		copy:           "Copie în clipboard",
-		paste:          "Aduce din clipboard"
+		paste:          "Aduce din clipboard",
+		lefttoright:    "Direcţia de scriere: stânga - dreapta",
+		righttoleft:    "Direcţia de scriere: dreapta - stânga"
 	},
 
 	buttons: {
@@ -59,5 +61,20 @@ HTMLArea.I18N = {
 	msg: {
 		"Path":         "Calea",
 		"TEXT_MODE":    "Eşti în modul TEXT.  Apasă butonul [<>] pentru a te întoarce în modul WYSIWYG."
+	},
+
+	dialogs: {
+		"Cancel"                                            : "Renunţă",
+		"Insert/Modify Link"                                : "Inserează/modifcă link",
+		"New window (_blank)"                               : "Fereastră nouă (_blank)",
+		"None (use implicit)"                               : "Nimic (foloseşte ce-i implicit)",
+		"OK"                                                : "Acceptă",
+		"Other"                                             : "Alt target",
+		"Same frame (_self)"                                : "Aceeaşi fereastră (_self)",
+		"Target:"                                           : "Ţinta:",
+		"Title (tooltip):"                                  : "Titlul (tooltip):",
+		"Top frame (_top)"                                  : "Fereastra principală (_top)",
+		"URL:"                                              : "URL:",
+		"You must enter the URL where this link points to"  : "Trebuie să introduceţi un URL"
 	}
 };

@@ -1,5 +1,8 @@
 // I18N constants
 
+// LANG: "it", ENCODING: UTF-8 | ISO-8859-1
+// Author: Fabio Rotondo <fabio@rotondo.it>
+
 HTMLArea.I18N = {
 
 	// the following should be the filename without .js extension
@@ -8,29 +11,44 @@ HTMLArea.I18N = {
 
 	tooltips: {
 		bold:           "Grassetto",
-		italic:         "Corsivo",
+		italic:         "Italico",
 		underline:      "Sottolineato",
 		strikethrough:  "Barrato",
 		subscript:      "Pedice",
 		superscript:    "Apice",
-		justifyleft:    "Allinea a sinistra",
-		justifycenter:  "Centra",
-		justifyright:   "Allinea a destra",
-		justifyfull:    "Giustifica",
-		orderedlist:    "Elenco numerato",
-		unorderedlist:  "Elenco puntato",
-		outdent:        "Riduci rientro",
-		indent:         "Aumenta rientro",
-		forecolor:      "Colore carattere",
-		backcolor:      "Colore di sfondo",
-		horizontalrule: "Linea orizzontale",
-		createlink:     "Inserisci collegamento ipertestuale",
-		insertimage:    "Inserisci immagine",
-		inserttable:    "Inserisci tabella",
-		htmlmode:       "Passa alla visualizzazione HTML",
-		popupeditor:    "Ingrandisci editor",
-		about:          "Info",
-		help:           "Aiuto",
-		textindicator:  "Stile utilizzato"
+		justifyleft:    "Giustifica a Sinistra",
+		justifycenter:  "Giustifica in Centro",
+		justifyright:   "Giustifica a Destra",
+		justifyfull:    "Giustifica Completamente",
+		orderedlist:    "Lista Ordinata",
+		unorderedlist:  "Lista Puntata",
+		outdent:        "Decrementa Indentazione",
+		indent:         "Incrementa Indentazione",
+		forecolor:      "Colore del Carattere",
+		hilitecolor:    "Colore di Sfondo",
+		horizontalrule: "Linea Orizzontale",
+		createlink:     "Inserisci un Link",
+		insertimage:    "Inserisci un'Immagine",
+		inserttable:    "Inserisci una Tabella",
+		htmlmode:       "Attiva il codice HTML",
+		popupeditor:    "Allarga l'editor",
+		about:          "Info sull'editor",
+		showhelp:       "Aiuto sull'editor",
+		textindicator:  "Stile Attuale",
+		undo:           "Elimina l'ultima modifica",
+		redo:           "Ripristina l'ultima modifica",
+		cut:            "Taglia l'area selezionata",
+		copy:           "Copia l'area selezionata",
+		paste:          "Incolla dalla memoria"
+	},
+
+	buttons: {
+		"ok":           "OK",
+		"cancel":       "Annulla"
+	},
+
+	msg: {
+		"Path":         "Percorso",
+		"TEXT_MODE":    "Sei in MODALITA' TESTO. Usa il bottone [<>] per tornare alla modalità WYSIWYG."
 	}
 };
