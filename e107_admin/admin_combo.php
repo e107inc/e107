@@ -28,6 +28,7 @@ if(e_QUERY == "purge"){
 }
 
 $tdc=0;
+$tdt=0;
 function wad($link, $title, $description, $perms, $icon = FALSE, $mode = FALSE){
         global $tdc;
         $permicon = ($mode == TRUE ? e_IMAGE."generic/rname.png" : e_IMAGE."generic/location.png");
@@ -45,8 +46,8 @@ function wad2($link, $title, $description, $perms, $icon = FALSE){
         global $tdt;
         $permicon = ($icon ? e_PLUGIN.$icon : e_IMAGE."generic/e107.gif");
         if(getperms($perms)){
-                if(!$tdt){$tmp1 = "<tr>";}
-                if($tdt == 4){$tmp2 = "</tr>";$tdt=-1;}
+             //  if($tdt == 0){$tmp1 = "<tr>";}
+                if($tdt == 4){$tmp2 = "</tr><tr>";$tdt=-1;}
                 $tdt++;
                 $tmp = $tmp1."<td style='text-align:center; vertical-align:top; width:20%'><a href='".$link."'><img src='$permicon' alt='$description' style='border:0'/></a><br /><a href='".$link."'><b>".$title."</b></a><br />".$description."<br /><br /></td>\n\n".$tmp2;
         }
@@ -213,4 +214,3 @@ function tdnorm(object) {
 
 
 ?>
-
