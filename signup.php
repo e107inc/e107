@@ -13,6 +13,14 @@
 +---------------------------------------------------------------+
 */
 require_once("class2.php");
+$use_imagecode = $pref['imagecode'];
+$use_imagecode = 1;
+
+if(1 == $use_imagecode){
+	require_once(e_HANDLER."secure_img_handler.php");
+	$sec_img = new secure_image;
+}
+
 if($pref['user_reg'] == 0){header("location:".e_BASE."index.php"); exit; }
 
 if(USER){header("location:".e_BASE."index.php"); exit; }
@@ -38,6 +46,13 @@ if(e_QUERY){
 
 if(IsSet($_POST['register'])){
 	require_once(e_HANDLER."message_handler.php");
+
+	if($use_imagecode){
+		if(!$sec_img -> verify_code($_POST['rand_num'],$_POST['code_verify'])){
+			message_handler("P_ALERT", "Bad code verification");
+			$error = TRUE;
+		}
+	}
 
 	if(strstr($_POST['name'], "#") || strstr($_POST['name'], "=")){
 		message_handler("P_ALERT", LAN_409);
@@ -174,36 +189,48 @@ $rs = new form;
 $text .= $rs -> form_open("post", e_SELF, "signupform")."
 <table style='width:60%'>
 <tr>
-<td style='width:30%'>".LAN_7."</td>
-<td style='width:70%'>
+<td class='forumheader3' style='width:30%'>".LAN_7."</td>
+<td class='forumheader3' style='width:70%'>
 ".$rs -> form_text("name", 40, "", 30)."
 </td>
 </tr>
 <tr>
-<td style='width:30%'>".LAN_17."</td>
-<td style='width:70%'>
+<td class='forumheader3' style='width:30%'>".LAN_17."</td>
+<td class='forumheader3' style='width:70%'>
 ".$rs -> form_password("password1", 40, "", 20)."
 </td>
 </tr>
 <tr>
-<td style='width:30%'>".LAN_111."</td>
-<td style='width:70%'>
+<td class='forumheader3' style='width:30%'>".LAN_111."</td>
+<td class='forumheader3' style='width:70%'>
 ".$rs -> form_password("password2", 40, "", 20)."
 </td>
 </tr>
 <tr>
-<td style='width:30%'>".LAN_112."</td>
-<td style='width:70%'>
+<td class='forumheader3' style='width:30%'>".LAN_112."</td>
+<td class='forumheader3' style='width:70%'>
 ".$rs -> form_text("email", 60, "", 100)."
 </td>
 </tr>
 <tr>
-<td style='width:30%'>".LAN_113."</td>
-<td style='width:70%'>".
+<td class='forumheader3' style='width:30%'>".LAN_113."</td>
+<td class='forumheader3' style='width:70%'>".
 $rs ->form_radio("hideemail", 1)." Yes&nbsp;&nbsp;".$rs ->form_radio("hideemail", 0, 1)." ".LAN_200."
 </td>
 </tr>
-<tr style='vertical-align:top'> 
+";
+if(1 == $use_imagecode){
+	$text .= "
+		<tr>
+		<td class='forumheader3' style='width:30%'>".LAN_410."</td>
+		<td class='forumheader3' style='width:70%'>".
+		$rs ->form_hidden("rand_num", $sec_img -> random_number).
+		$sec_img -> r_image()."<br />".$rs -> form_text("code_verify", 20, "", 20)."
+		</td>
+		</tr>";
+}
+
+$text .= "<tr style='vertical-align:top'> 
 <td colspan='2'  style='text-align:center'>
 <br />
 <input class='button' type='submit' name='register' value='".LAN_123."' />
