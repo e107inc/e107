@@ -30,4 +30,10 @@ define("CNTLAN_25", "Title");
 define("CNTLAN_26", "Options");
 define("CNTLAN_27", "Are you sure you want to delete this content page?");
 
+//v.617
+
+define("CNTLAN_28", "Add email/print icons?");
+define("CNTLAN_29", "Yes");
+define("CNTLAN_30", "No");
+
 ?>

@@ -46,7 +46,7 @@ if(IsSet($_POST['emailsubmit'])){
 	}else{
 		$row = $sql -> db_Fetch(); 
 		extract($row);
-		$message .= $comments."\n\n".SITEURL.e_BASE."article.php?".$id."\n\n".$content_heading."\n".$content_subheading."\n".$content_content."\n\n";
+		$message .= $comments."\n\n".SITEURL.e_BASE."content.php?".$id."\n\n".$content_heading."\n".$content_subheading."\n".$content_content."\n\n";
 	}
 	if($error == ""){
 		require_once(e_HANDLER."mail.php");

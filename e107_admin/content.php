@@ -43,7 +43,7 @@ If(IsSet($_POST['submit'])){
                 $content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
                 $content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
                 $content_content = $aj -> formtpa($_POST['data'],"admin");
-                $sql -> db_Insert("content", "0, '".$content_heading."', '".$content_subheading."', '$content_content', '".$_POST['auto_line_breaks']."', '".time()."', '".ADMINID."', '".$_POST['content_comment']."', '', '1', 0, 0,  {$_POST['c_class']}");
+                $sql -> db_Insert("content", "0, '".$content_heading."', '".$content_subheading."', '$content_content', '".$_POST['auto_line_breaks']."', '".time()."', '".ADMINID."', '".$_POST['content_comment']."', '', '1', 0, ".$_POST['add_icons'].",  {$_POST['c_class']}");
                 if($_POST['content_heading']){
                         $sql -> db_Select("content", "*", "ORDER BY content_datestamp DESC LIMIT 0,1 ", $mode="no_where");
                         list($content_id, $content_heading) = $sql-> db_Fetch();
@@ -66,7 +66,7 @@ if(IsSet($_POST['update'])){
         $content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
         $content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
         $content_content = $aj -> formtpa($_POST['data'], "admin");
-        $sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_parent='".$_POST['auto_line_breaks']."',  content_comment='".$_POST['content_comment']."', content_type='1', content_class='{$_POST['c_class']}' WHERE content_id='".$_POST['content_id']."'");
+        $sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_parent='".$_POST['auto_line_breaks']."',  content_comment='".$_POST['content_comment']."', content_type='1', content_class='{$_POST['c_class']}', content_pe_icon='".$_POST['add_icons']."' WHERE content_id='".$_POST['content_id']."'");
         $sql -> db_Update("links", "link_class='".$_POST['c_class']."' WHERE link_name='$content_heading' ");
         unset($content_heading, $content_subheading, $content_content, $content_parent);
         $message = CNTLAN_2;
@@ -195,6 +195,14 @@ if(!$content_comment){
 
 $text .= "
 </td></tr>
+
+
+        <tr>
+        <td class='forumheader3'>".CNTLAN_28.":&nbsp;&nbsp;</td><td class='forumheader3'>".
+        ($content_pe_icon ? CNTLAN_29.": <input type='radio' name='add_icons' value='1' checked='checked' />".CNTLAN_30.": <input type='radio' name='add_icons' value='0' />" : CNTLAN_29.": <input type='radio' name='add_icons' value='1' />".CNTLAN_30.": <input type='radio' name='add_icons' value='0' checked='checked' />")."
+        </td>
+        </tr>
+
 ";
 
 $text.="
