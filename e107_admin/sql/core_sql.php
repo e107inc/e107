@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-13 16:11:55 $
-|     $Author: lisa_ $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-19 11:49:26 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -66,17 +66,6 @@ CREATE TABLE banner (
   banner_ip text NOT NULL,
   banner_campaign varchar(150) NOT NULL default '',
   PRIMARY KEY  (banner_id)
-) TYPE=MyISAM;
-# --------------------------------------------------------
-
-#
-# Table structure for table `cache`
-#
-
-CREATE TABLE cache (
-  cache_url varchar(200) NOT NULL default '',
-  cache_datestamp int(10) unsigned NOT NULL default '0',
-  cache_data longtext NOT NULL
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
