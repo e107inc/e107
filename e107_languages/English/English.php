@@ -1,10 +1,19 @@
 <?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107/e107_languages/English/English.php,v $
+|     $Revision: 1.10 $
+|     $Date: 2004-09-17 23:36:39 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
 setlocale(LC_ALL, 'en');
 define("CORE_LC", 'en');
 define("CORE_LC2", 'gb');
-// define("CHARSET", "iso-8859-1");
-define("CHARSET", "utf-8");
+define("CHARSET", "iso-8859-1");
+// define("CHARSET", "utf-8");
 define("CORE_LAN1","Error : theme is missing.\\n\\nChange the used themes in your preferences (admin area) or upload files of the current theme on the server.");
 
 //v.616
