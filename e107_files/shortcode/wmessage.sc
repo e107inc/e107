@@ -15,7 +15,7 @@ if ($pref['wmessage_sc']) {
 				}
 			}
 	 
-			if ($wmessage) {
+			if (isset($wmessage) && $wmessage) {
 				if ($pref['wm_enclose']) {
 					$ns->tablerender("", $wmessage, "wm");
 				} else {
