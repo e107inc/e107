@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/templates/poll_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-03-03 23:00:34 $
+|     $Revision: 1.4 $
+|     $Date: 2005-03-20 19:51:38 $
 |     $Author: stevedunstan $
 |
 +----------------------------------------------------------------------------+
@@ -60,7 +60,7 @@ $POLL_VOTED_START = "
 
 $POLL_VOTED_LOOP = "
 <b>{OPTION}</b>
-<br />{BAR}<br />
+<br /><div class='spacer'>{BAR}</div><br />
 <span class='smalltext'>{VOTES} | {PERCENTAGE}</span>
 <br /><br />
 ";
