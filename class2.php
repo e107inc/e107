@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/class2.php,v $
-|     $Revision: 1.92 $
-|     $Date: 2004-09-01 13:27:05 $
-|     $Author: loloirie $
+|     $Revision: 1.93 $
+|     $Date: 2004-09-03 01:50:05 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -1110,7 +1110,7 @@ function code($string, $mode="default"){
         $search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;span", "&lt;/span");
         $replace =  array("\"", "'", "\\", '\"', "\'", "<span", "</span");
         $string = str_replace($search, $replace, $string);
-        $match_count = preg_match_all("#(\[code(.*?)\])(.*?)\[/code\]#si", $string, $result);
+        $match_count = preg_match_all("#(\[code[=]*(.*?)\])(.*?)\[/code\]#si", $string, $result);
         for ($a = 0; $a < $match_count; $a++){
                 if($pref['smiley_activate']){
                         if(!is_object($aj)){$aj = new textparse;}
@@ -1122,14 +1122,11 @@ function code($string, $mode="default"){
                         $after_replace = str_replace("&#036;","$",$after_replace);
                         $after_replace=highlight_string($after_replace,TRUE);
                         $after_replace=str_replace("<br />","",$after_replace);
+                        $class='indent';
                 } else {
                         $after_replace = str_replace("&#036;","$",$after_replace);
                         $after_replace=htmlentities($after_replace);
-                }
-                if(strpos($result[2][$a],'indent')){
-                        $class="indent";
-                } else {
-                        $class="";
+                        $class = (strlen(trim($result[2][$a]))) ? $result[2][$a] : 'indent';
                 }
                 $string = str_replace($result[1][$a].$result[3][$a]."[/code]", "<div class='{$class}'>".$after_replace."</div>", $string);
         }
