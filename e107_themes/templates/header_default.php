@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2004-12-15 00:14:06 $
+|     $Revision: 1.8 $
+|     $Date: 2004-12-15 04:03:44 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -116,21 +116,33 @@ if($e107_popup != 1)
 		</script>\n";
 	}
 
-	$custompage = explode(" ", $CUSTOMPAGES);
-	if(e_PAGE == "news.php" && $NEWSHEADER){
-		parseheader($NEWSHEADER);
+	if (is_array($CUSTOMPAGES)) {
+		foreach ($CUSTOMPAGES as $cust_key => $cust_value) {
+			$custompage[$cust_key] = explode(' ', $cust_value);
+		}
+	} else {
+		$custompage['no_array'] = explode(' ', $CUSTOMPAGES);
 	}
-	else
-	{
-		while(list($key, $kpage) = each($custompage))
-		{
-			if($kpage && strstr(e_SELF, $kpage))
-			{
-				$ph = TRUE;
-				break;
+
+	if (e_PAGE == 'news.php' && $NEWSHEADER) {
+		parseheader($NEWSHEADER);
+	} else {
+		foreach ($custompage as $key_extract => $cust_extract) {
+			foreach ($cust_extract as $key => $kpage) {
+				if ($kpage && strstr(e_SELF, $kpage)) {
+					$ph = TRUE;
+					if ($key_extract=='no_array') {
+						$cust_header = $CUSTOMHEADER ? $CUSTOMHEADER : $HEADER;
+						$cust_footer = $CUSTOMFOOTER ? $CUSTOMFOOTER : $FOOTER;
+					} else {
+						$cust_header = $CUSTOMHEADER[$key_extract] ? $CUSTOMHEADER[$key_extract] : $HEADER;
+						$cust_footer = $CUSTOMFOOTER[$key_extract] ? $CUSTOMFOOTER[$key_extract] : $FOOTER;
+					}
+					break;
+				}
 			}
 		}
-		parseheader(($ph ? $CUSTOMHEADER : $HEADER));
+		parseheader(($ph ? $cust_header : $HEADER));
 	}
 	$sql->db_Mark_Time("Main Page Body");
 	unset($text);

@@ -21,16 +21,7 @@ if(!is_object($sql)){
 
 unset($fh);
 if($e107_popup!=1){
-	$custompage = explode(" ", $CUSTOMPAGES);
-	if($CUSTOMFOOTER){
-		while(list($key, $kpage) = each($custompage)){
-			if(strstr(e_SELF, $kpage)){
-				$fh = TRUE;
-				break;
-			}
-		}
-	}
-	parseheader(($fh ? $CUSTOMFOOTER : $FOOTER));
+	parseheader(($ph ? $cust_footer : $FOOTER));
 	
 	$eTimingStop = explode(' ', microtime());
 	global $eTimingStart;
