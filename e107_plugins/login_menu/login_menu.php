@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2004-12-16 01:20:02 $
+|     $Revision: 1.17 $
+|     $Date: 2004-12-16 01:20:45 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -45,7 +45,6 @@ if(USER == TRUE || ADMIN == TRUE){
 	}
 	$new_total = 0;
 	$time = USERLV;
-	//$time = 1103157042;
 	if(!$menu_pref['login_menu'] || $menu_pref['login_menu']['new_news'] == true){
 		$new_news = $sql -> db_Select('news', '*', '`news_datestamp` > '.$time);
 		while($row = $sql -> db_Fetch()){
