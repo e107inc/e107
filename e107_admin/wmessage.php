@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/wmessage.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-23 21:34:52 $
-|     $Author: e107coders $
+|     $Revision: 1.7 $
+|     $Date: 2005-01-26 13:38:31 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -46,6 +46,12 @@ if(isset($_POST['wm_insert'])){
         $message = ($sql -> db_Insert("wmessage", "0, '$wmtext', '".$_POST['wm_active']."' ")) ? LAN_CREATED : LAN_CREATED_FAILED ;
 }
 
+if(isset($_POST['updateoptions']))
+{
+	$pref['wm_enclose'] = $_POST['wm_enclose'];
+	save_prefs();
+	$message = WMLAN_09;
+}
 
 $deltest = array_flip($_POST);
 if (preg_match("#(.*?)_delete_(\d+)#",$deltest[$aj->toJS(LAN_DELETE)],$matches)) {
@@ -147,16 +153,47 @@ if($action == "create" || $action == "edit"){
 }
 
 
+if($action == "opt")
+{
+	global $pref, $ns;
+	$text = "<div style='text-align:center'>
+	<form method='post' action='".e_SELF."?".e_QUERY."'>\n
+	<table style='".ADMIN_WIDTH."' class='fborder'>
+	<tr>
 
+	<td style='width:70%' class='forumheader3'>
+	".WMLAN_06."<br />
+	<span class='smalltext'>".WMLAN_07."</span>
+	</td>
+	<td class='forumheader3' style='width:30%;text-align:center'>".
+	($pref['wm_enclose'] ? "<input type='checkbox' name='wm_enclose' value='1' checked='checked' />" : "<input type='checkbox' name='wm_enclose' value='1' />")."
+	</td>
+	</tr>
+
+	<tr style='vertical-align:top'>
+	<td colspan='2'  style='text-align:center' class='forumheader'>
+	<input class='button' type='submit' name='updateoptions' value='".WMLAN_08."' />
+	</td>
+	</tr>
+
+	</table>
+	</form>
+	</div>";
+        
+	$ns -> tablerender(WMLAN_00.": ".WMLAN_05, $text);
+
+
+}
 
 function wmessage_adminmenu(){
         global $action;
         if ($action=="") { $action="main"; }
         $var['main']['text']=WMLAN_00;
         $var['main']['link']=e_SELF;
-
         $var['create']['text']=WMLAN_01;
         $var['create']['link']=e_SELF."?create";
+		$var['opt']['text']=WMLAN_05;
+        $var['opt']['link']=e_SELF."?opt";
 
         show_admin_menu(LAN_OPTIONS,$action,$var);
 }

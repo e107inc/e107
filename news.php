@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-01-23 21:35:34 $
-|     $Author: e107coders $
+|     $Revision: 1.22 $
+|     $Date: 2005-01-26 13:39:19 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -109,8 +109,9 @@ if ($action == "extend") {
         exit;
 }
 
-if ($pref['nfp_display'] == 1) {
-        require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
+if ($pref['nfp_display'] == 1)
+{
+	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 }
 
 if (Empty($order)){ $order = "news_datestamp"; }
@@ -125,8 +126,17 @@ if (!defined("WMFLAG")) {
                 $wmessage .= $tp -> toHTML($row['wm_text'], TRUE)."<br />";
             }
         }
-    if ($wmessage){
-        $ns -> tablerender("", "<div style='text-align:center'>".$wmessage."</div>", "wm");
+
+    if ($wmessage)
+	{
+		if($pref['wm_enclose'])
+		{
+			$ns -> tablerender("", $wmessage, "wm");
+		}
+		else
+		{
+			echo $wmessage;
+		}
     }
 }
 // ---> wmessage end
