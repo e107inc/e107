@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar_menu.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-27 19:52:36 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-29 14:01:19 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 	
@@ -58,14 +58,18 @@ if ($events) {
 } else {
 	$text .= EC_LAN_27;
 }
+
+$headercss = ($pref['eventpost_headercss'] ? $pref['eventpost_headercss'] : "forumheader");
+$daycss = ($pref['eventpost_daycss'] ? $pref['eventpost_daycss'] : "forumheader3");
+$todaycss = ($pref['eventpost_todaycss'] ? $pref['eventpost_todaycss'] : "indent");
 	
 $start = $monthstart;
 	
 $text .= "<br /><br />
-	<table cellpadding='0' cellspacing='1' style='width:95%' class='fborder'><tr>";
+	<table cellpadding='0' cellspacing='1' style='width:100%' class='fborder'><tr>";
 	
 foreach($week as $day) {
-	$text .= "<td class='forumheader' style='text-align:center'><span class='smalltext'>".$day."</span></td>";
+	$text .= "<td class='$headercss' style='text-align:center'><span class='smalltext'>".$day."</span></td>";
 }
 $text .= "</tr><tr >";
 	
@@ -73,7 +77,7 @@ $thismonth = $datearray['mon'];
 $thisday = $datearray['mday'];
 	
 for($c = 0; $c < $firstdayarray['wday']; $c++) {
-	$text .= "<td class='forumheader3' style='text-align:center'><br /></td>";
+	$text .= "<td class='$daycss' style='text-align:center'><br /></td>";
 }
 $loop = $firstdayarray['wday'];
 for($c = 1; $c <= 31; $c++) {
@@ -82,9 +86,9 @@ for($c = 1; $c <= 31; $c++) {
 	 
 	if ($dayarray['mon'] == $thismonth) {
 		if ($thisday == $c) {
-			$text .= "<td class='indent' style='text-align:center'>";
+			$text .= "<td class='$todaycss' style='text-align:center; width: 15%;'>";
 		} else {
-			$text .= "<td class='forumheader3' style='text-align:center'>";
+			$text .= "<td class='$daycss' style='text-align:center; width: 15%;'>";
 		}
 		 
 		if (array_key_exists($c, $event_true) && $event_true[($c)]) {
