@@ -101,7 +101,8 @@ blockquote {
 	border-left: #7180A6 1px solid;
 	border-right: #333A4B 1px solid;
 	border-top: #7180A6 1px solid;
-	letter-spacing: 0.1em; 
+	letter-spacing: 0.1em;
+	cursor:pointer 
 }
 
 .button a{
@@ -262,8 +263,8 @@ p {
 	font-size: 14px;
 	color:#000;
 	padding: 4px;
-	background-image : url(../e107_images/forum/fcap2.png);
-	border: #C3BDBD 1px solid;
+	background-image : url('../e107_images/forum/fcap2.png');
+	border: 1px solid #C3BDBD;
 }
 
 .forumheader2{
@@ -305,19 +306,18 @@ p {
 }
 
 .topbar {
-	background-image : url(images/topbar.png);
+	background-image : url('images/topbar.png');
 }
 .leftbar {
-	background-image : url(images/leftbar.png);
+	background-image : url('images/leftbar.png');
 }
 
 .finfobar{
 	background-color: #CCC8C8;
-	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
 	color:#000;
 	padding: 4px;
-	border: #C3BDBD 1px solid;
-	background-image : url(../e107_images/forum/finfobar.png);
+	border: 1px solid #C3BDBD;
+	background-image : url('../e107_images/forum/finfobar.png');font-style:normal; font-variant:normal; font-weight:normal; font-size:11px; font-family:verdana, tahoma, arial, helvetica, sans-serif
 }
 
 a.forumlink{
