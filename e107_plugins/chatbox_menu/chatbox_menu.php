@@ -11,11 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-02-23 19:13:09 $
-|     $Author: stevedunstan $
+|     $Revision: 1.25 $
+|     $Date: 2005-02-25 03:06:19 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
+require_once(e_HANDLER."emote.php");
 global $tp, $e107cache, $e_event;
 $emessage='';
 if(isset($_POST['chat_submit']))
@@ -96,10 +97,10 @@ else
 	if(($pref['anon_post'] == "1" && USER == FALSE)){
 		$texta .= "\n<input class='tbox' type='text' name='nick' value='' maxlength='50' style='width: 100%;' /><br />";
 	}
-	$texta .= "\n<textarea class='tbox' name='cmessage' rows='5' cols='1' style='overflow:hidden; width: 100%;'></textarea>\n<br />\n<input class='button' type='submit' name='chat_submit' value='".CHATBOX_L4."' />\n<input class='button' type='reset' name='reset' value='".CHATBOX_L5."' />";
+	$texta .= "\n<textarea class='tbox' name='cmessage' rows='5' style='overflow:hidden; width: 100%;' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>\n<br />\n<input class='button' type='submit' name='chat_submit' value='".CHATBOX_L4."' />\n<input class='button' type='reset' name='reset' value='".CHATBOX_L5."' />";
 
 	if($pref['cb_emote']){
-		$texta .= " \n<input class='button' type ='button' style='cursor:hand; cursor:pointer' size='30' value='".CHATBOX_L14."' onclick='expandit(this)' />\n<span style='display:none;'>".emote()."\n</span>\n";
+		$texta .= " \n<input class='button' type ='button' style='cursor:hand; cursor:pointer' size='30' value='".CHATBOX_L14."' onclick='expandit(this)' />\n<span style='display:none;'>".r_emote()."\n</span>\n";
 	}
 
 	$texta .="</p>\n</form>\n</div>\n";
@@ -177,29 +178,5 @@ $caption = (file_exists(THEME."images/chatbox_menu.png") ? "<img src='".THEME."i
 $text = ($pref['cb_layer'] ? $texta."<div style='border : 0; padding : 4px; width : auto; height : ".$pref['cb_layer_height']."px; overflow : auto; '>".$text."</div>" : $texta.$text);
 
 $ns -> tablerender($caption, $text, 'chatbox');
-
-function emote(){
-	global $sysprefs;
-	$emote = $sysprefs -> getArray('emote');
-	$str="<br />";
-	$c=0;
-	$orig = array();
-	while(list($code, $name) = @each($emote[$c])){
-		if(!array_key_exists($name,$orig)){
-			$code = htmlentities($code);
-			$str .= "\n<a href=\"javascript:caddtext(' $code')\"><img src=\"".e_IMAGE."emoticons/$name\" style=\"border:0; padding-top:2px;\" alt=\"\" /></a> ";
-			$orig[$name] = TRUE;
-		}
-		$c++;
-	}
-	return $str;
-}
-
-echo "
-<script type='text/javascript'>
-function caddtext(sc){
-	document.getElementById('chatbox').cmessage.value +=sc;
-}
-</script>";
 
 ?>
