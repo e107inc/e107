@@ -26,7 +26,7 @@ define("THEME_DISCLAIMER", "");
 // [output js nav css in <head>]
 
 function theme_head() {
-	return "<link rel='stylesheet' href='".THEME."nav_menu.css' />\n";
+	return "<link rel='stylesheet' href='".e_FILE."nav_menu.css' />\n";
 }
 
 
