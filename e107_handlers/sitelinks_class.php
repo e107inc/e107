@@ -12,7 +12,7 @@
 |        GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
-@include(e_LANGUAGEDIR.e_LAN."/lan_sitelinks.php");
+@include(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitelinks.php");
 @include(e_LANGUAGEDIR."English/lan_sitelinks.php");
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function sitelinks(){
