@@ -431,6 +431,7 @@ function e107_parse($text,$referrer){
         return $text;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+
 class textparse{
 
         var $emotes;
@@ -548,6 +549,7 @@ class textparse{
                 # - scope                                        public
                 */
                 global $pref;
+                global $referrer;
                 $text = " ".$text;
                 if($pref['profanity_filter'] && $this->profan){
                         $text = eregi_replace($this->profan, $pref['profanity_replace'], $text);
@@ -628,6 +630,7 @@ class textparse{
 					$text = substr($text, 1);
 					return $text;
 				}
+					$text = preg_replace_callback("#\[img\](.*?)\[/img\]#si", array($this,"img_parse"),$text);
                 $search[0] = "#\[link\]([a-z]+?://){1}(.*?)\[/link\]#si";
                 $replace[0] = ($pref['links_new_window'] ? '<a href="\1\2" rel="external">\1\2</a>' : '<a href="\1\2">\1\2</a>');
                 $search[1] = "#\[link\](.*?)\[/link\]#si";
@@ -648,23 +651,12 @@ class textparse{
                 $replace[8] = ($pref['links_new_window'] ? '<a href="\1\2" rel="external">\3</a>' : '<a href="\1\2">\3</a>');
 				$search[9] = "#\[quote\](.*?)\[/quote\]#si";
 				$replace[9] = '<i>"\1"</i>';
-                $search[10] = "#\[b\](.*?)\[/b\]#si";
-                $replace[10] = '<b>\1</b>';
-                $search[11] = "#\[i\](.*?)\[/i\]#si";
-                $replace[11] = '<i>\1</i>';
-                $search[12] = "#\[u\](.*?)\[/u\]#si";
-                $replace[12] = '<u>\1</u>';
-                $search[13] = "#\[img\](.*?)\[/img\]#si";
-                if(($pref['image_post'] && check_class($pref['image_post_class'])) || $referrer == "admin"){
-                        $replace[13] = '<img src=\'\1\' alt=\'\' style=\'vertical-align:middle; border:0\' />';
-                }else if(!$pref['image_post_disabled_method'] && !ADMIN){
-                        $replace[13] = 'Image: \1';
-                }else if(!ADMIN){
-                        $replace[13] = '[ image disabled ]';
-                }else{
-                $replace[13] = '<img src=\'\1\' alt=\'\' style=\'vertical-align:middle; border:0\' />';
-                }
-
+            $search[10] = "#\[b\](.*?)\[/b\]#si";
+            $replace[10] = '<b>\1</b>';
+            $search[11] = "#\[i\](.*?)\[/i\]#si";
+            $replace[11] = '<i>\1</i>';
+            $search[12] = "#\[u\](.*?)\[/u\]#si";
+            $replace[12] = '<u>\1</u>';
 				$search[14] = "#\[center\](.*?)\[/center\]#si";
 				$replace[14] = '<div style=\'text-align:center\'>\1</div>';
 				$search[15] = "#\[left\](.*?)\[/left\]#si";
@@ -683,8 +675,7 @@ class textparse{
 				$replace[21] = '<span class=\'smallblacktext\'>[ \1 ]</span>';
 				$search[22] = "#\[br\]#si";
 				$replace[22] = '<br />';
-
-                if($pref['forum_attach'] && FILE_UPLOADS || $referrer == "admin"){
+            if($pref['forum_attach'] && FILE_UPLOADS || $referrer == "admin"){
 					$search[23] = "#\[file=(.*?)\](.*?)\[/file\]#si";
 					$replace[23] = '<a href="\1"><img src="'.e_IMAGE.'generic/attach1.png" alt="" style="border:0; vertical-align:middle" /> \2</a>';
 				}else{
@@ -700,6 +691,29 @@ class textparse{
 				return $text;
 				}
 
+		function img_parse($matches)
+		{
+			global $referrer;
+			if(preg_match("#\.php\?.*#",$matches[1]))
+			{
+				return "";
+			}
+			if(($pref['image_post'] && check_class($pref['image_post_class'])) || $referrer == "admin")
+			{
+				return "<img src='{$matches[1]} alt='' style='vertical-align:middle; border:0' />";
+			}
+			else if(!$pref['image_post_disabled_method'] && !ADMIN)
+			{
+				return "Image: $matches[1]";
+			}else if(!ADMIN)
+			{
+				return '[ image disabled ]';
+			}
+			else
+			{
+				return "<img src='{$matches[1]}' alt='' style='vertical-align:middle; border:0' />";
+			}
+		}
         function formtpa($text, $mode="admin"){
                 global $sql, $pref;
 
