@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-02-14 19:50:35 $
+|     $Revision: 1.9 $
+|     $Date: 2005-02-16 14:12:52 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -335,13 +335,13 @@ if ($action == 'edit' || $action == 'quote') {
 		}
 	}
 	 
-	$thread_info['0']['user_name'] = $forum->thread_user($thread_info['0']);
+	$thread_info[0]['user_name'] = $forum->thread_user($thread_info[0]);
 	$subject = $thread_info['0']['thread_name'];
 	$post = $tp->toForm($thread_info[0]['thread_thread']);
 	$post = ereg_replace("&lt;span class=&#39;smallblacktext&#39;.*\span\>", "", $post);
 	if ($action == 'quote') {
 		$timeStamp = time();
-		$post = "[quote{$timeStamp}={$thread_info['0']['user_name']}]\n".$post."\n[/quote{$timeStamp}]\n";
+		$post = "[quote{$timeStamp}={$thread_info[0]['user_name']}]\n".$post."\n[/quote{$timeStamp}]\n";
 		$eaction = FALSE;
 		$action = 'reply';
 	} else {
