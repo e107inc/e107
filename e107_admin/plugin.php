@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-01-18 16:11:32 $
-|     $Author: streaky $
+|     $Revision: 1.11 $
+|     $Date: 2005-01-22 16:13:08 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -169,7 +169,14 @@ if(isset($_POST['confirm'])){
                 }
 
                 if($eplug_link){
-                        $sql -> db_Delete("links", "link_name='$eplug_link_name' ");
+               			$sql -> db_Select("links", "link_order", "link_name='".$eplug_link_name."'");
+						$row = $sql -> db_Fetch();
+						$sql2 = new db;
+						$sql -> db_Select("links", "link_id", "link_order>'".$row['link_order']."'");
+						while ($row = $sql -> db_Fetch()) {
+							$sql2 -> db_Update("links", "link_order=link_order-1 WHERE link_id='".$row['link_id']."'");
+						}
+                        $sql -> db_Delete("links", "link_name='".$eplug_link_name."'");
                 }
 
                 if($eplug_userclass){
@@ -277,8 +284,9 @@ if(strstr(e_QUERY, "install")){
 
                 if($eplug_link){
                         $path = str_replace("../", "", $eplug_link_url);
+                        $link_t = $sql -> db_Count("links", "(*)");
                         if(!$sql -> db_Select("links", "*", "link_name='$eplug_link_name' ")){
-                                $sql -> db_Insert("links", "0, '$eplug_link_name', '$path', '', '', '1', '0', '0', '0', '' ");
+                                $sql -> db_Insert("links", "0, '$eplug_link_name', '$path', '', '', '1', '".($link_t+1)."', '0', '0', '' ");
                         }
                 }
 

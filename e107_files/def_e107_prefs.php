@@ -64,12 +64,17 @@ $pref['cachestatus'] = "";
 $pref['displayrendertime'] = "1";
 $pref['displaysql'] = "";
 $pref['displaythemeinfo'] = "1";
-$pref['link_submit'] = "1";
-$pref['link_submit_class'] = "0";
 $pref['timezone'] = "GMT";
 $pref['search_restrict'] = "1";
 $pref['antiflood1'] = "1";
 $pref['antiflood_timeout'] = "10";
 $pref['autoban'] = "1";
 $pref['sitelang_init'] = (isset($_POST['installlanguage']) ? $_POST['installlanguage'] :  "English");
+$pref['linkpage_screentip'] = "0";
+
+// Links page plugin pre-installed
+$pref['link_submit'] = "1";
+$pref['link_submit_class'] = "0";
+$pref['linkpage_categories'] = "0";	
+	
 ?>

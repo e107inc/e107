@@ -11,10 +11,10 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/sitebutton_menu/sitebutton_menu.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-12-13 13:20:45 $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-22 16:13:10 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-$ns -> tablerender(SITEBUTTON_MENU_L1,  "<div style='text-align:center'>\n<a href='".SITEURL."'><img style='border:0' src='".(strstr(SITEBUTTON, "http:") ? SITEBUTTON : e_IMAGE.SITEBUTTON)."' alt='".SITEBUTTON_MENU_L1."' /></a>\n</div>", 'sitebutton');
+$ns -> tablerender(SITEBUTTON_MENU_L1,  "<div style='text-align:center'>\n<a href='".SITEURL."'><img src='".(strstr(SITEBUTTON, "http:") ? SITEBUTTON : e_IMAGE.SITEBUTTON)."' alt='".SITEBUTTON_MENU_L1."' style='border: 0px; width: 88px; height: 31px' /></a>\n</div>", 'sitebutton');
 ?>
