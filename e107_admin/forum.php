@@ -86,7 +86,6 @@ if(IsSet($_POST['updateoptions'])){
         $pref['forum_enclose'] = $_POST['forum_enclose'];
         $pref['forum_title'] = $_POST['forum_title'];
         $pref['forum_postspage'] = $_POST['forum_postspage'];
-        $pref['forum_levels'] = $_POST['forum_levels'];
         $pref['html_post'] = $_POST['html_post'];
         $pref['forum_attach'] = $_POST['forum_attach'];
         $pref['forum_redirect'] = $_POST['forum_redirect'];
