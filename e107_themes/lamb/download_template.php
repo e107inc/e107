@@ -11,53 +11,54 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/download_template.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-03-26 09:15:22 $
+|     $Revision: 1.8 $
+|     $Date: 2005-04-02 09:37:57 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 // ##### CAT TABLE --------------------------------------------------------------------------------
 $DOWNLOAD_CAT_TABLE_RENDERPLAIN = TRUE;
-if(!$DOWNLOAD_CAT_TABLE_START){
-	$DOWNLOAD_CAT_TABLE_START = "
-	<img src='".e_THEME."lamb/images/download.png' alt='' style='vertical-align: middle;' /> <span class='dlmain'>Downloads</span>\n";
-}
-if(!$DOWNLOAD_CAT_PARENT_TABLE){
 
-                $DOWNLOAD_CAT_PARENT_TABLE .= "<br /><br /><br />
-               <div class='dlcat'>{DOWNLOAD_CAT_MAIN_ICON} {DOWNLOAD_CAT_MAIN_NAME}</div>
-                ";
-}
+$DOWNLOAD_CAT_TABLE_START = "
+<img src='".e_THEME."lamb/images/download.png' alt='' style='vertical-align: middle;' /> <span class='dlmain'>Downloads</span>\n
+<br /><br />
+";
 
-if(!$DOWNLOAD_CAT_CHILD_TABLE){
 
-                $DOWNLOAD_CAT_CHILD_TABLE .= "
-               
-				{DOWNLOAD_CAT_SUB_ICON}
-               
-                        {DOWNLOAD_CAT_SUB_NEW_ICON} &#183; {DOWNLOAD_CAT_SUB_NAME}
-                        ";
 
-                        if($DOWNLOAD_CAT_SUBSUB_NAME){
-                                $DOWNLOAD_CAT_CHILD_TABLE .= "
-                                <br /><span class='defaulttext'>
-                                {DOWNLOAD_CAT_SUBSUB_LAN}
-                                {DOWNLOAD_CAT_SUBSUB_NAME}
-                                </span>";
-                        }
+$DOWNLOAD_CAT_PARENT_TABLE .= "
+<h4>{DOWNLOAD_CAT_MAIN_ICON} {DOWNLOAD_CAT_MAIN_NAME}</h4>
+";
 
-                $DOWNLOAD_CAT_CHILD_TABLE .= "
-                ";
 
-}
-if(!$DOWNLOAD_CAT_TABLE_END){
-                $DOWNLOAD_CAT_TABLE_END = "<br /><br /><br /><br />
-                {DOWNLOAD_CAT_SEARCH}
-             ";
-}
+$DOWNLOAD_CAT_CHILD_TABLE .= "
+{DOWNLOAD_CAT_SUB_ICON}
+{DOWNLOAD_CAT_SUB_NEW_ICON} {DOWNLOAD_CAT_SUB_NAME}<br />
+<span class='smalltext'>
+{DOWNLOAD_CAT_SUB_DESCRIPTION}
+</span>
+";
+
+
+$DOWNLOAD_CAT_CHILD_TABLE .= "
+<br /><span class='defaulttext'>
+{DOWNLOAD_CAT_SUBSUB_LAN}
+{DOWNLOAD_CAT_SUBSUB_NAME}
+</span>
+<span class='smalltext'>
+{DOWNLOAD_CAT_SUBSUB_DESCRIPTION}
+</span>
+";
+
+$DOWNLOAD_CAT_SUBSUB_TABLE .= "
+{DOWNLOAD_CAT_SUBSUB_NEW_ICON} {DOWNLOAD_CAT_SUBSUB_NAME}";
+
+$DOWNLOAD_CAT_TABLE_END = "
+<br /><br /><br /><br />
+{DOWNLOAD_CAT_SEARCH}
+";
+
 // ##### ------------------------------------------------------------------------------------------
-
-
 
 // ##### LIST TABLE -------------------------------------------------------------------------------
 $DOWNLOAD_LIST_TABLE_RENDERPLAIN = TRUE;
