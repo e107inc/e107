@@ -146,7 +146,7 @@ if($comments = $sql -> db_Select("comments", "*", "comment_datestamp>$lvisit ORD
 			case 6:	//	bugtracker
 				$sql2 -> db_Select("bugtrack", "bugtrack_summary", "bugtrack_id=$comment_item_id ");
 				$row = $sql2 -> db_Fetch(); extract($row);
-				$str .= $bullet."[ ".LIST_20." ] Re: <a href='".e_PLUGIN."bugtracker/bugtracker.php?show.$comment_item_id'>".$aj -> tpa($bugtrack_summary)."</a><br />";
+				$str .= $bullet."[ ".LIST_20." ] Re: <a href='".(file_exists(e_PLUGIN."bugtracker/bugtracker.php") ? e_PLUGIN."bugtracker/bugtracker.php?show.".$comment_item_id : e_PLUGIN."bugtracker_menu/bugtracker.php?show.".$comment_item_id )."'>".$aj -> tpa($bugtrack_summary)."</a><br />";
 					$comment_count++;
 			break;
 
