@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/upload.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-05 16:57:37 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-07 21:08:28 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -240,12 +240,12 @@ if(!$active_uploads = $sql -> db_Select("upload", "*", "upload_active=0 ORDER BY
                 $text .= "<tr>
                 <td style='width:5%' class='forumheader3'>".$upload_id ."</td>
                 <td style='width:20%' class='forumheader3'>".$upload_datestamp."</td>
-                <td style='width:20%' class='forumheader3'>".$poster."</td>
+                <td style='width:15%' class='forumheader3'>".$poster."</td>
                 <td style='width:20%' class='forumheader3'><a href='".e_SELF."?view.".$upload_id."'>".$upload_name ."</a></td>
                 <td style='width:20%' class='forumheader3'>".$upload_file ."</td>
-                <td style='width:18px' class='forumheader3'>
-                                <a href='".e_SELF."?dlm.$upload_id'><img src='".$imgd."filemanager/exe.png' alt='".UPLAN_COPYTODLS."' title='".UPLAN_COPYTODLS."' style='border:0' /></a><br />
-                                <a href='".e_SELF."?news.$upload_id'><img src='".$imgd."filemanager/htm.png' alt='".UPLLAN_16."' title='".UPLLAN_16."' style='border:0' /></a><br />
+                <td style='width:50px;white-space:nowrap' class='forumheader3'>
+                                <a href='".e_SELF."?dlm.$upload_id'><img src='".$imgd."filemanager/exe.png' alt='".UPLAN_COPYTODLS."' title='".UPLAN_COPYTODLS."' style='border:0' /></a>
+                                <a href='".e_SELF."?news.$upload_id'><img src='".$imgd."filemanager/htm.png' alt='".UPLLAN_16."' title='".UPLLAN_16."' style='border:0' /></a>
                                 <a href='".e_SELF."?dis.$upload_id'><img src='".$imgd."filemanager/del.png' alt='".UPLLAN_17."' title='".UPLLAN_17."' style='border:0' /></a>
                 </td>
                 </tr>";
