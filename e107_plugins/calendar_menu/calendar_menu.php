@@ -11,17 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar_menu.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-03-30 17:47:32 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.10 $
+|     $Date: 2005-04-03 19:57:26 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 // *BK* Notes added and comments made by Barry are prefixed by *BK*
 // *BK* Prefixed variables with cal_ to ensure isolation from other menus/scripts that may use the same variable names
 $ec_dir = e_PLUGIN . "calendar_menu/";
-include_once(e_PLUGIN . "calendar_menu/languages/Hungarian.php");
-//$lan_file = $ec_dir . "languages/" . e_LANGUAGE . ".php";
-//include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN . "calendar_menu/languages/English.php");
+$lan_file = e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php";
+require_once((file_exists($lan_file) ? $lan_file : e_PLUGIN."calendar_menu/languages/English.php"));
 
 $cal_datearray = getdate();
 $cal_current_day = $cal_datearray['mday'];
@@ -178,11 +177,11 @@ for($cal_c = 1; $cal_c <= 31; $cal_c++)
 	{
 		if ($cal_thisday == $cal_c)
 		{
-			$cal_text .= "<td class='$cal_todaycss' style='text-align:center; width: 15%;'>";
+			$cal_text .= "<td class='$cal_todaycss' style='text-align:center; width: 14.28%;'>";
 		}
 		else
 		{
-			$cal_text .= "<td class='$cal_daycss' style='text-align:center; width: 15%;'>";
+			$cal_text .= "<td class='$cal_daycss' style='text-align:center; width: 14.28%;'>";
 		}
 
 		if (array_key_exists($cal_c, $cal_events))
