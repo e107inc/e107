@@ -74,6 +74,23 @@ global $tp;
 return (!$post_info['user_hideemail'] ? $tp->parseTemplate("{EMAILTO={$post_info['user_email']}}") : "");
 SC_END
 	
+SC_BEGIN EMAILITEM
+global $post_info;
+global $tp;
+if($post_info['thread_parent'] == 0)
+{
+	return $tp->parseTemplate("{EMAIL_ITEM=".FORLAN_101."^plugin:forum.{$post_info['thread_id']}}");
+}
+SC_END
+
+SC_BEGIN PRINTITEM
+global $post_info;
+global $tp;
+if($post_info['thread_parent'] == 0)
+{
+	return $tp->parseTemplate("{PRINT_ITEM=".FORLAN_102."^plugin:forum.{$post_info['thread_id']}}");
+}
+SC_END
 	
 SC_BEGIN SIGNATURE
 global $post_info;
