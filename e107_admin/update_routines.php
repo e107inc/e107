@@ -1,6 +1,7 @@
 <?php
 
 $dbupdate=array(	
+						"615_to_616" => LAN_UPDATE_8." .615 ".LAN_UPDATE_9." .616",
 						"614_to_615" => LAN_UPDATE_8." .614 ".LAN_UPDATE_9." .615",
 						"613b_to_614" => LAN_UPDATE_8." .613b ".LAN_UPDATE_9." .614",
 						"611_to_612" => LAN_UPDATE_8." .611 ".LAN_UPDATE_9." .612",
@@ -24,6 +25,24 @@ function update_check(){
 		<input class='button' type='submit' value='".ADLAN_122."' />
 		</form></div>";
 		$ns -> tablerender(ADLAN_122,$txt);
+	}
+}
+
+function update_615_to_616($type){
+	global $sql;
+	if($type=="do"){
+ 		mysql_query("ALTER TABLE ".MPREFIX."comments ADD comment_pid INT( 10 ) UNSIGNED DEFAULT '0' NOT NULL AFTER comment_id ");
+		mysql_query("ALTER TABLE ".MPREFIX."comments ADD comment_subject VARCHAR( 100 ) NOT NULL AFTER comment_item_id ");
+		mysql_query("ALTER TABLE ".MPREFIX."user ADD user_customtitle VARCHAR( 100 ) NOT NULL AFTER user_name ");
+
+	} else {
+		global $mySQLdefaultdb;
+		$fields = mysql_list_fields($mySQLdefaultdb,MPREFIX."user");
+		$columns = mysql_num_fields($fields);
+		for ($i = 0; $i < $columns; $i++) {
+	   	if("user_customtitle" == mysql_field_name($fields, $i)){return TRUE;}
+		}
+		return FALSE;
 	}
 }
 
@@ -87,6 +106,7 @@ function update_611_to_612($type){
 		return FALSE;
 	}
 }
+
 function update_603_to_604($type){
 	global $sql;
 	if($type=="do"){
