@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:45 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-13 14:01:25 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 @include("e107_handlers/errorhandler_class.php");
@@ -226,7 +226,7 @@ function stage3(){
         <td style='width:60%' class='installbox1'><input class='tbox' type='text' name='mysql_name' size='60' value='".$_POST['mysql_name']."' maxlength='100' /></td></tr>
 
         <tr><td style='width:40%' class='installbox1'><b>".INSLAN24.":</b></td>
-        <td style='width:60%' class='installbox1'><input class='tbox' type='text' name='mysql_password' size='60' value='".$_POST['mysql_password']."' maxlength='100' /></td></tr>
+        <td style='width:60%' class='installbox1'><input class='tbox' type='password' name='mysql_password' size='60' value='".$_POST['mysql_password']."' maxlength='100' /></td></tr>
 
         <tr><td style='width:40%' class='installbox1'><b>".INSLAN25.":</b></td>
         <td style='width:60%' class='installbox1'><input class='tbox' type='text' name='mysql_db' size='42' value='".$_POST['mysql_db']."' maxlength='100' />
@@ -446,6 +446,7 @@ function create_tables(){
         @mysql_connect($_POST['mysql_server'], $_POST['mysql_name'], $_POST['mysql_password']);
         @mysql_select_db($_POST['mysql_db']);
         $mySQLprefix = $_POST['mysql_prefix'];
+
 
         $filename = "e107_admin/sql/core_sql.php";
         @$fd = fopen ($filename, "r");
