@@ -499,7 +499,7 @@ if($action == "sa"){
 
 function article_adminmenu(){
 	
-		global $action;
+		global $action,$sql;
 		$act=$action;	
 		if($act==""){$act="main";}
 		$var['main']['text']=ARLAN_76;
@@ -513,9 +513,10 @@ function article_adminmenu(){
 
 		$var['opt']['text']=ARLAN_60;
 		$var['opt']['link']=e_SELF."?opt";
-
-		$var['sa']['text']=ARLAN_93;
-		$var['sa']['link']=e_SELF."?sa";
+		if($sql -> db_Select("content", "*", "content_type ='15' ")){
+			$var['sa']['text']=ARLAN_93;
+			$var['sa']['link']=e_SELF."?sa";
+		}
 
 		show_admin_menu(ARLAN_79,$act,$var);
 
