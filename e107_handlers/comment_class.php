@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-03-19 08:59:02 $
+|     $Revision: 1.19 $
+|     $Date: 2005-03-30 15:55:47 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -58,8 +58,8 @@ class comment {
 		if (!$width) {
 			$width = 0;
 		}
-		define("IMAGE_nonew_comments", (file_exists(THEME."forum/nonew_comments.png") ? "<img src='".THEME."forum/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/nonew_comments.png' alt=''  />"));
-		define("IMAGE_new_comments", (file_exists(THEME."forum/new_comments.png") ? "<img src='".THEME."forum/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/new_comments.png' alt=''  /> "));
+		define("IMAGE_nonew_comments", (file_exists(THEME."generic/nonew_comments.png") ? "<img src='".THEME."generic/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/nonew_comments.png' alt=''  />"));
+		define("IMAGE_new_comments", (file_exists(THEME."generic/new_comments.png") ? "<img src='".THEME."generic/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/".IMODE."/new_comments.png' alt=''  /> "));
 		$sql = new db;
 		$ns = new e107table;
 		extract($row);
