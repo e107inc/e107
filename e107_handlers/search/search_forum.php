@@ -29,7 +29,7 @@ if($results = $sql -> db_Select("forum_t", "*", "thread_name REGEXP('".$query."'
 			}
 			$action = "forum_viewtopic.php?".$thread_forum_id.".".$tmp."";
 			$text .= "<form method='post' action='$action' id='forum_".$c."'>
-				<input type='hidden' name='highlight_search' value='1' /><input type='hidden' name='search_query' value='$query' /><img src='".THEME."images/bullet2.gif' alt='bullet' /> <b><a href='javascript:this.forum_".$c.".submit()'>$thread_name</a></b></form><br />$thread_thread<br /><br />";
+				<input type='hidden' name='highlight_search' value='1' /><input type='hidden' name='search_query' value='$query' /><img src='".THEME."images/bullet2.gif' alt='bullet' /> <b><a href='javascript:document.getElementById(\"forum_".$c."\").submit()'>$thread_name</a></b></form><br />$thread_thread<br /><br />";
 				$c ++;
 		}else{
 			$results = $results -1;
