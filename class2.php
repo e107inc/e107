@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2004-12-11 17:13:55 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.35 $
+|     $Date: 2004-12-12 14:24:13 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -241,6 +241,10 @@ if ($pref['del_unv']) {
 	$threshold = (time() - ($pref['del_unv'] * 60));
 	$sql->db_Delete("user", "user_ban = 2 AND user_join<'$threshold' ");
 }
+
+require_once(e_HANDLER."event_class.php");
+$e_event = new e107_event;
+
 if ($pref['modules']) {
 	$mods = explode(",", $pref['modules']);
 	foreach($mods as $mod) {
