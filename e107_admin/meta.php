@@ -11,38 +11,41 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/meta.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-22 23:43:48 $
-|     $Author: e107coders $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-27 19:52:24 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("C")){ header("location:".e_BASE."index.php"); exit; }
+if (!getperms("C")) {
+	header("location:".e_BASE."index.php");
+	exit;
+}
 $e_sub_cat = 'meta';
 require_once("auth.php");
-
-if(isset($_POST['metasubmit'])){
-    $aj = new textparse;
-    $pref['meta_tag'] = $aj -> formtpa($_POST['meta'], "admin");
-    save_prefs();
-    $message = METLAN_1;
+	
+if (isset($_POST['metasubmit'])) {
+	$aj = new textparse;
+	$pref['meta_tag'] = $aj->formtpa($_POST['meta'], "admin");
+	save_prefs();
+	$message = METLAN_1;
 }
-
-if($message){
-    $ns -> tablerender(METLAN_4, "<div
-style='text-align:center'>".METLAN_1.".</div>");
+	
+if ($message) {
+	$ns->tablerender(METLAN_4, "<div
+		style='text-align:center'>".METLAN_1.".</div>");
 }
-
+	
 $text = "<div style='text-align:center'>
-<form method='post' action='".e_SELF."' id='dataform'>
-<table style='".ADMIN_WIDTH."' class='fborder'>
-<tr>
-
-<td style='width:20%' class='forumheader3'>".METLAN_2.": </td>
-<td style='width:80%' class='forumheader3'>
-<textarea class='tbox' id='meta' name='meta' cols='70'
-rows='10' style='width:90%'>".$pref['meta_tag']."</textarea>
-<br />";
+	<form method='post' action='".e_SELF."' id='dataform'>
+	<table style='".ADMIN_WIDTH."' class='fborder'>
+	<tr>
+	 
+	<td style='width:20%' class='forumheader3'>".METLAN_2.": </td>
+	<td style='width:80%' class='forumheader3'>
+	<textarea class='tbox' id='meta' name='meta' cols='70'
+	rows='10' style='width:90%'>".$pref['meta_tag']."</textarea>
+	<br />";
 $text .= <<< EOT
 <input class="button" type="button" value="description"
 onclick="addtext2('<meta name=\'description\' content=\'

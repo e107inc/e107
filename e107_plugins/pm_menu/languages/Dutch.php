@@ -1,5 +1,5 @@
 <?php
-define(PMLAN_PM,"Persoonlijk Bericht");
+define(PMLAN_PM, "Persoonlijk Bericht");
 define(PMLAN_0, "Bericht(en) sedert laatste bezoek");
 define(PMLAN_1, "ontvangen bericht(en)");
 define(PMLAN_2, "verzonden bericht(en)");

@@ -1,5 +1,5 @@
 <?php
-define(PMLAN_PM,"Privat Besked");
+define(PMLAN_PM, "Privat Besked");
 define(PMLAN_0, "Beskede(er) siden sidst");
 define(PMLAN_1, "modtaget besked(er)");
 define(PMLAN_2, "sendt beskede(er)");

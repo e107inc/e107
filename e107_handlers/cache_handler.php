@@ -1,5 +1,5 @@
 <?php
-
+	
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -12,23 +12,23 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-01-19 12:26:55 $
+|     $Revision: 1.16 $
+|     $Date: 2005-01-27 19:52:27 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
-
+	
 /**
 * Class to cache data as files, improving site speed and throughput.
 *
 * @package     e107
-* @version     $Revision: 1.15 $
+* @version     $Revision: 1.16 $
 * @author      $Author: streaky $
 */
 class ecache {
-
+	 
 	var $CachePageMD5;
-
+	 
 	/**
 	* @return string
 	* @param string $query
@@ -37,8 +37,8 @@ class ecache {
 	*/
 	function cache_fname($CacheTag) {
 		global $FILES_DIRECTORY;
-		if(is_object($this)){
-			if(!$this->CachePageMD5){
+		if (is_object($this)) {
+			if (!$this->CachePageMD5) {
 				$this->CachePageMD5 = md5(e_BASE.e_LANGUAGE.THEME.USERCLASS.e_QUERY.filemtime(THEME.'theme.php'));
 			}
 		}
@@ -46,7 +46,7 @@ class ecache {
 		$fname = './'.e_BASE.$FILES_DIRECTORY.'cache/'.$q.($this->CachePageMD5 ? '-'.$this->CachePageMD5 : '').'.cache.php';
 		return $fname;
 	}
-
+	 
 	/**
 	* @return string
 	* @param string $query
@@ -58,8 +58,8 @@ class ecache {
 		global $pref, $FILES_DIRECTORY;
 		if ($pref['cachestatus'] || $ForcedCheck == true) {
 			$cache_file = ecache::cache_fname($CacheTag);
-			if(file_exists($cache_file)){
-				if($MaximumAge != false && (filemtime($cache_file) + ($MaximumAge * 60)) < time()){
+			if (file_exists($cache_file)) {
+				if ($MaximumAge != false && (filemtime($cache_file) + ($MaximumAge * 60)) < time()) {
 					unlink($cache_file);
 					return false;
 				} else {
@@ -72,7 +72,7 @@ class ecache {
 			}
 		}
 	}
-
+	 
 	/**
 	* @return void
 	* @param string $query
@@ -89,7 +89,7 @@ class ecache {
 			@touch($cache_file);
 		}
 	}
-
+	 
 	/**
 	* @return bool
 	* @param string $query
@@ -98,13 +98,14 @@ class ecache {
 	function clear($CacheTag = '') {
 		global $pref, $FILES_DIRECTORY;
 		if ($pref['cachestatus'] || !$CacheTag) {
-			$file = ($CacheTag) ? preg_replace("#\W#", "_", $query)."*.cache.php" : "*.cache.php";
+			$file = ($CacheTag) ? preg_replace("#\W#", "_", $query)."*.cache.php" :
+			 "*.cache.php";
 			$dir = "./".e_BASE.$FILES_DIRECTORY."cache/";
 			$ret = ecache::delete($dir, $file);
 		}
 		return $ret;
 	}
-
+	 
 	/**
 	* @return bool
 	* @param string $dir
@@ -134,5 +135,5 @@ class ecache {
 		}
 	}
 }
-
+	
 ?>

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-01-26 16:14:07 $
-|     $Author: stevedunstan $
+|     $Revision: 1.8 $
+|     $Date: 2005-01-27 19:52:26 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");

@@ -11,19 +11,19 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/fader_menu/languages/English.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:11 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-27 19:52:48 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
-
-
+	
+	
 define("FADER_L1", "Fading text inside a menu, uses code from DynamicDrive.com");
 define("FADER_L2", "First message");
 define("FADER_L3", "Second message");
 define("FADER_L4", "Leave textboxes blank if you want to :)");
 define("FADER_L5", "To configure please click on the link in the plugins section of the admin front page, then go to the menus screen and activate the menu");
-
+	
 define("FADER_L6", "Caption");
 define("FADER_L7", "Message");
 define("FADER_L8", "Fade Colour");
@@ -36,6 +36,6 @@ define("FADER_L14", "Fader Menu Configuration");
 define("FADER_L15", "Update Menu Settings");
 define("FADER_L16", "Fader menu configuration saved.");
 define("FADER_L17", "Configure Fader");
-
-
+	
+	
 ?>

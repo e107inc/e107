@@ -11,47 +11,47 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/fader_menu/fader_menu.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-12-13 13:20:43 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-27 19:52:48 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 $fader = "
-
-<script type='text/javascript'>
-
-/*
-Fading Scroller- By DynamicDrive.com
-For full source code, and usage terms, visit http://www.dynamicdrive.com
-This notice MUST stay intact for use
-*/
-
-var delay=".$menu_pref['fader_delay']." //set delay between message change (in miliseconds)
-var fcontent=new Array()
-begintag='' //set opening tag, such as font declarations
-
-";
-
+	 
+	<script type='text/javascript'>
+	 
+	/*
+	Fading Scroller- By DynamicDrive.com
+	For full source code, and usage terms, visit http://www.dynamicdrive.com
+	This notice MUST stay intact for use
+	*/
+	 
+	var delay=".$menu_pref['fader_delay']." //set delay between message change (in miliseconds)
+	var fcontent=new Array()
+	begintag='' //set opening tag, such as font declarations
+	 
+	";
+	
 $aj = new textparse;
-for($a=1; $a<=10; $a++){
-        $var = "fader_message_$a";
-        if($menu_pref[$var]){
-                $var2 = str_replace("\"", "'", $aj -> tpa($menu_pref[$var]));
-                $var2 = str_replace("\r\n", "", $var2);
-                $fader .= "fcontent[".($a-1)."] = \"".$var2."\";\n";
-        }
+for($a = 1; $a <= 10; $a++) {
+	$var = "fader_message_$a";
+	if ($menu_pref[$var]) {
+		$var2 = str_replace("\"", "'", $aj->tpa($menu_pref[$var]));
+		$var2 = str_replace("\r\n", "", $var2);
+		$fader .= "fcontent[".($a-1)."] = \"".$var2."\";\n";
+	}
 }
-
+	
 $fader .= "
-
-closetag=''
-var fwidth='100%' //set scroller width
-var fheight='".$menu_pref['fader_height']."'
-var fadescheme=".$menu_pref['fader_colour']."
-
-";
-
-
+	 
+	closetag=''
+	var fwidth='100%' //set scroller width
+	var fheight='".$menu_pref['fader_height']."'
+	var fadescheme=".$menu_pref['fader_colour']."
+	 
+	";
+	
+	
 $fader .= <<< TEXT
 var fadelinks=1  //should links inside scroller content also fade like text? 0 for no, 1 for yes.
 
@@ -133,4 +133,4 @@ document.write('<div id="fscroller" style="width:'+fwidth+';height:'+fheight+';p
 
 TEXT;
 
-$ns -> tablerender($menu_pref['fader_caption'], $fader, 'fader');
+$ns -> tablerender($menu_pref['fader_caption'], $fader, 'fader');

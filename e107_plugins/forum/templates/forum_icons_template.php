@@ -11,12 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_icons_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-01-25 15:14:58 $
-|     $Author: stevedunstan $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-27 19:52:49 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
-
+	
 define("IMAGE_e", "<img src='".img_path('e.png')."' alt='' title='' style='border:0' />");
 define("IMAGE_new", "<img src='".img_path('new.png')."' alt='".LAN_199."' title='".LAN_199."' style='border:0' />");
 define("IMAGE_nonew", "<img src='".img_path('nonew.png')."' alt='' title='' style='border:0' />");
@@ -38,23 +38,23 @@ define("IMAGE_admin_move2", "<img src='".img_path('admin_move.png')."' alt='".LA
 define("IMAGE_post", "<img src='".img_path('post.png')."' alt='' title='' style='border:0' />");
 define("IMAGE_post2", "<img src='".img_path('post2.png')."' alt='' title='' style='border:0; vertical-align:bottom' />");
 define("IMAGE_report", "<img src='".img_path('report.png')."' alt='".LAN_413."' title='".LAN_413."' style='border:0' />");
-
-
+	
+	
 // Admin <input> Icons
-
+	
 define("IMAGE_admin_delete", "src='".img_path('admin_delete.png')."' alt='".LAN_407."' title='".LAN_407."' style='border:0' ");
 define("IMAGE_admin_unstick", "src='".img_path('admin_unstick.png')."' alt='".LAN_398."' title='".LAN_398."' style='border:0' ");
 define("IMAGE_admin_stick", "src='".img_path('admin_stick.png')."' alt='".LAN_401."' title='".LAN_401."' style='border:0' ");
 define("IMAGE_admin_lock", "src='".img_path('admin_lock.png')."' alt='".LAN_399."' title='".LAN_399."' style='border:0' ");
 define("IMAGE_admin_unlock", "src='".img_path('admin_unlock.png')."' alt='".LAN_400."' title='".LAN_400."' style='border:0' ");
-
-
+	
+	
 // Multi Language Images
-
+	
 define("IMAGE_newthread", "<img src='".img_path('newthread.png', 'forum')."' alt='".FORLAN_10."' title='".FORLAN_10."' style='border:0' />");
 define("IMAGE_reply", "<img src='".img_path('reply.png', 'forum')."' alt='' title='' style='border:0' />");
 define("IMAGE_rank_moderator_image", "<img src='".img_path('moderator.png', 'forum', 'rank_moderator_image')."' alt='' />");
 define("IMAGE_rank_main_admin_image", "<img src='".img_path('main_admin.png', 'forum', 'rank_main_admin_image')."' alt='' />");
 define("IMAGE_rank_admin_image", "<img src='".img_path('admin.png', 'forum', 'rank_admin_image')."' alt='' />");
-
+	
 ?>

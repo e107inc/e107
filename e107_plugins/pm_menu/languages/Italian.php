@@ -1,5 +1,5 @@
 <?php
-define(PMLAN_PM,"Messaggi Privati");
+define(PMLAN_PM, "Messaggi Privati");
 define(PMLAN_0, "Messaggi dalla tua ultima visita");
 define(PMLAN_1, "Messaggi ricevuti");
 define(PMLAN_2, "Messaggi inviati");

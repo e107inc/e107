@@ -4,13 +4,13 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_viewforum.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-01-25 15:14:57 $
-|     $Author: stevedunstan $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-27 19:52:49 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Forum");
-
+	
 define("LAN_01", "Forums");
 define("LAN_02", "Back to top");
 define("LAN_03", "Go");
@@ -38,9 +38,9 @@ define("LAN_317", "None");
 define("LAN_321", "Moderators: ");
 define("LAN_395", "[popular]");
 define("LAN_396", "Announcement");
-
+	
 define("LAN_397", "This forum is read only");
-
+	
 define("LAN_398", "Unstick thread");
 define("LAN_399", "Lock thread");
 define("LAN_400", "Unlock thread");
@@ -48,18 +48,18 @@ define("LAN_401", "Stick thread");
 define("LAN_402", "Move thread");
 define("LAN_403", "Jump to forum");
 define("LAN_404", "This forum is moderated by");
-
+	
 define("LAN_405", "user is browsing this forum at the moment");
 define("LAN_406", "users are browsing this forum at the moment");
 define("LAN_407", "member");
 define("LAN_408", "guest");
 define("LAN_409", "members");
 define("LAN_410", "guests");
-
+	
 //v.616
 define("LAN_411", "Important Threads");
 define("LAN_412", "Forum Threads");
-
+	
 //v.617
 define("FORLAN_CLOSE", "Thread closed.");
 define("FORLAN_OPEN", "Thread reopened.");
@@ -69,16 +69,16 @@ define("FORLAN_6", "Thread deleted");
 define("FORLAN_7", "replies deleted");
 define("FORLAN_8", "here");
 define("FORLAN_9", "to sign up or login from the login menu.");
-
-define("FORLAN_10","Begin New Thread");
-define("FORLAN_11","New Posts");
-define("FORLAN_12","No New Posts");
-define("FORLAN_13","New Posts on Popular Thread");
-define("FORLAN_14","No New Posts on Popular Thread");
-define("FORLAN_15","Sticky Thread");
-define("FORLAN_16","Closed Sticky Thread");
-define("FORLAN_17","Announcement Thread");
-define("FORLAN_18","Closed Thread");
-
-
+	
+define("FORLAN_10", "Begin New Thread");
+define("FORLAN_11", "New Posts");
+define("FORLAN_12", "No New Posts");
+define("FORLAN_13", "New Posts on Popular Thread");
+define("FORLAN_14", "No New Posts on Popular Thread");
+define("FORLAN_15", "Sticky Thread");
+define("FORLAN_16", "Closed Sticky Thread");
+define("FORLAN_17", "Announcement Thread");
+define("FORLAN_18", "Closed Thread");
+	
+	
 ?>

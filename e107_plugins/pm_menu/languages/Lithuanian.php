@@ -1,5 +1,5 @@
 <?php
-define(PMLAN_PM,"Asmeniniai praneðimai");
+define(PMLAN_PM, "Asmeniniai praneðimai");
 define(PMLAN_0, "Naujas praneðims(ai)");
 define(PMLAN_1, "Gauti praneðimai");
 define(PMLAN_2, "Iðsiøsti praneðimai");
@@ -52,6 +52,6 @@ define(PMLAN_48, "Visi vartotojai");
 define(PMLAN_49, "Neperskaityta");
 define(PMLAN_50, "Gavote naujà AP");
 define(PMLAN_51, "Tinklapis");
-define(PMLAN_52,"Patikrinkite norëdami baigti veiksmà");
-
+define(PMLAN_52, "Patikrinkite norëdami baigti veiksmà");
+	
 ?>

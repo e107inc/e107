@@ -1,5 +1,5 @@
 <?php
-define(PMLAN_PM,"Privát üzenet");
+define(PMLAN_PM, "Privát üzenet");
 define(PMLAN_0, "Új üzenet");
 define(PMLAN_1, "fogadott üzenet");
 define(PMLAN_2, "elküldött üzenet");
@@ -52,6 +52,6 @@ define(PMLAN_48, "Össz. felhasználó");
 define(PMLAN_49, "Nem olvasott");
 define(PMLAN_50, "Új PÜ érkezett");
 define(PMLAN_51, "Oldal");
-define(PMLAN_52,"Megerõsítés");
-
+define(PMLAN_52, "Megerõsítés");
+	
 ?>

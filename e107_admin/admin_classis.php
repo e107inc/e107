@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin_classis.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-09 18:12:38 $
-|     $Author: sweetas $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-27 19:52:24 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -22,6 +22,6 @@ if (ADMIN) {
 	exit;
 } else {
 	header('Location:'.SITEURL.'index.php');
-	exit;	
+	exit;
 }
 ?>

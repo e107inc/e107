@@ -4,15 +4,15 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/banner_menu/languages/English.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-12 10:57:08 $
-|     $Author: lisa_ $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-27 19:52:35 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
-
+	
 define("BANNER_MENU_L1", "Advertisement");
 define("BANNER_MENU_L2", "Banner menu configuration saved");
-
+	
 //v.617
 define("BANNER_MENU_L3", "Caption");
 define("BANNER_MENU_L4", "Campaign");
@@ -30,5 +30,5 @@ define("BANNER_MENU_L15", "how many banners should be shown ?");
 define("BANNER_MENU_L16", "this setting will only be used with options 2 and 3.<br />if less banners are present the maximum available amount will be used.");
 define("BANNER_MENU_L17", "set amount ...");
 define("BANNER_MENU_L18", "Update Menu Settings");
-
+	
 ?>

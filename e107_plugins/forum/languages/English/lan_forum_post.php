@@ -4,13 +4,13 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_post.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-01-25 15:14:57 $
-|     $Author: stevedunstan $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-27 19:52:49 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Forum");
-
+	
 define("LAN_01", "Forums");
 define("LAN_02", "Replying to: ");
 define("LAN_03", "New Thread");
@@ -82,13 +82,13 @@ define("LAN_398", "This forum is read only");
 define("LAN_399", "You are not authorized to post to this forum.");
 define("LAN_400", "post thread as");
 define("LAN_401", "Jump");
-
+	
 define("LAN_402", "poll");
 define("LAN_403", "announcement");
 define("LAN_404", "sticky");
 define("LAN_405", "Forums");
 define("LAN_406", "Re:");
-
+	
 //v.616
 define("LAN_407", "Redirect");
 define("LAN_408", "If your browser does not support meta redirection please click");
@@ -96,6 +96,6 @@ define("LAN_409", "HERE");
 define("LAN_410", "to be redirected");
 define("LAN_411", "here");
 define("LAN_412", "to go to the registration page.");
-
-
+	
+	
 ?>

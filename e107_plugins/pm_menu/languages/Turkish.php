@@ -1,5 +1,5 @@
 <?php
-define(PMLAN_PM,"Özel Ýleti(ler)");
+define(PMLAN_PM, "Özel Ýleti(ler)");
 define(PMLAN_0, "Okunmamýþ Ýleti");
 define(PMLAN_1, "Alýnan ileti");
 define(PMLAN_2, "Gönderilen ileti");
@@ -46,5 +46,5 @@ define(PMLAN_42, "Özgün Alýntý");
 define(PMLAN_43, "Ýleti Gönder:");
 define(PMLAN_44, "Ýleti Oku:");
 define(PMLAN_45, "Okunmamýþ Ýleti(ler):");
-
+	
 ?>

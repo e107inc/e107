@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_conf.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-01-25 15:14:57 $
-|     $Author: stevedunstan $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-27 19:52:49 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 define("FORLAN_5", "Poll deleted.");
@@ -31,7 +31,7 @@ define("FORLAN_23", "cannot</u></b> be retreived");
 define("FORLAN_24", "Move thread  to forum");
 define("FORLAN_25", "Move Thread");
 define("FORLAN_26", "Reply deleted");
-
+	
 define("FORLAN_27", "moved");
-
+	
 ?>

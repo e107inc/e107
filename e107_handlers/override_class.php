@@ -11,25 +11,26 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/override_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-22 23:11:12 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-27 19:52:28 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
-
+	
 class override {
 	var $functions = array();
 	var $includes = array();
-	
+	 
 	function override_function($override, $function, $include) {
 		if ($include) {
 			$this->includes[$override] = $include;
-		} else if (isset($this->includes[$override])) {
+		}
+		else if (isset($this->includes[$override])) {
 			unset($this->includes[$override]);
 		}
 		$this->functions[$override] = $function;
 	}
-	
+	 
 	function override_check($override) {
 		if (isset($this->includes[$override])) {
 			if (file_exists($this->includes[$override])) {
@@ -45,5 +46,5 @@ class override {
 		}
 	}
 }
-
+	
 ?>
