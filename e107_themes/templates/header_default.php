@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-02-03 14:47:39 $
-|     $Author: lisa_ $
+|     $Revision: 1.20 $
+|     $Date: 2005-02-07 10:26:38 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 if (!function_exists("parseheader")) {
@@ -30,8 +30,8 @@ if (!function_exists("parseheader")) {
 	}
 }
 $sql->db_Mark_Time('(Header Top)');
-$aj = new textparse;
-echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET."' ?>")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
+
+echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET."' "."?".">")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
 <html xmlns='http://www.w3.org/1999/xhtml'>
 <head>
 <title>".SITENAME.(defined("e_PAGETITLE") ? ": ".e_PAGETITLE : (defined("PAGE_NAME") ? ": ".PAGE_NAME : ""))."</title>\n";
@@ -65,6 +65,7 @@ if (isset($htmlarea_js) && $htmlarea_js) { echo $htmlarea_js; }
 if (function_exists('headerjs')){echo headerjs();  }
 
 if ($pref['log_activate']) {
+	require_once(e_PLUGIN."log/consolidate.php");
 	$script_text = "document.write( '<link rel=\"stylesheet\" type=\"text/css\" href=\"".e_PLUGIN."log/log.php?referer=' + ref + '&color=' + colord + '&eself=' + eself + '&res=' + res + '\">' );\n";
 }
 

@@ -10,504 +10,187 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/log/log.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-27 19:53:08 $
-|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
+
 $colour = strip_tags($_REQUEST['color']);
 $res = strip_tags($_REQUEST['res']);
 $self = strip_tags($_REQUEST['eself']);
 $ref = strip_tags($_REQUEST['referer']);
-	
-$self = substr(strrchr(eregi_replace("\?.*", "", $self), "/"), 1);
-if ($self == "/") {
-	$self = "index.php";
+
+if(strstr($ref, "admin")) {
+	$ref = FALSE;
 }
-$screenstats = $res." @ ".$colour;
-@include("../../e107_config.php");
-define("MPREFIX", $mySQLprefix);
-if ($HANDLERS_DIRECTORY) {
-	@require_once("../../{$HANDLERS_DIRECTORY}mysql_class.php");
+$screenstats = $res."@".$colour;
+$agent = $_SERVER['HTTP_USER_AGENT'];
+
+$ip = getip();
+$browser = getBrowser($agent);
+$os = getOs($agent);
+
+$pageName = preg_replace("/(\?.*)|(\_.*)|(\.php)/", "", basename ($self));
+
+$logfile = "logs/log_".date("z.Y", time()).".php";
+require_once($logfile);
+
+
+$flag = FALSE;
+if(array_key_exists($pageName, $pageInfo)) {
+	$pageInfo[$pageName]['ttl'] ++;
+	$pageInfo[$pageName]['ttlv'] ++;
 } else {
-	@require_once("../../e107_handlers/mysql_class.php");
+	$pageInfo[$pageName] = array('url' => $self, 'ttl' => 1, 'unq' => 1, 'ttlv' => 1, 'unqv' => 1);
+	$flag = TRUE;
 }
-$sql = new db;
-$sql->db_SetErrorReporting(FALSE);
-$sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
-$sql->db_Select("core", "*", "e107_name='pref' ");
-$row = $sql->db_Fetch();
-$tmp = stripslashes($row['e107_value']);
-$pref = unserialize($tmp);
-	
-$siteurl = $pref['siteurl'];
-	
-if ($pref['log_activate']) {
-	 
-	$agent = $_SERVER['HTTP_USER_AGENT'];
-	$browser = getbrowser();
-	$os = getos();
-	$country = getcountry();
-	$ip = getip();
-	$gip = $ip;
-	 
-	$date = date("Y-m-d");
-	 
-	if (!$sql->db_Select("stat_counter", "*", "counter_url='".$self."' AND counter_date='$date' ") && $self) {
-		// page not parsed before - create new entry ...
-		$ip .= ".";
-		$sql->db_Insert("stat_counter", "CURRENT_DATE, '$self', '0', '0', '$ip' ");
-		$yesterday = date("Y-m-d", (time()-86400));
-		$sql->db_Update("stat_counter", "counter_ip='' WHERE counter_date='$yesterday' ");
-		// clear ip stats
-	} else {
-		$row = $sql->db_Fetch();
-		extract($row);
-		$sql->db_Update("stat_counter", "counter_total=counter_total+1 WHERE counter_url='".$self."' AND counter_date='$date' ");
+
+if(!strstr($ipAddresses, $ip)) {
+	if(!$flag) {
+		$pageInfo[$pageName]['unq'] ++;
+		$pageInfo[$pageName]['unqv'] ++;
 	}
-	// update tables
-	 
-	if (!ereg($ip, $counter_ip) && (!eregi("admin", $self))) {
-		// ip is not stored and not an admin page so unique visit - update counters
-		 
-		$iplist = $counter_ip."-".$ip.".";
-		$sql->db_Update("stat_counter", "counter_ip='$iplist', counter_unique=counter_unique+1, counter_total=counter_total+1 WHERE counter_url='".$self."' ");
-		if ($browser != "") {
-			if (!$sql->db_Update("stat_info", "info_count=info_count+1 WHERE info_name='$browser' ")) {
-				$sql->db_Insert("stat_info", " '$browser', '1', '1' ");
-			}
-			if ($os != "") {
-				if (!$sql->db_Update("stat_info", "info_count=info_count+1 WHERE info_name='$os' ")) {
-					$sql->db_Insert("stat_info", " '$os', '1', '2' ");
-				}
-			}
-			if ($country != "") {
-				if (!$sql->db_Update("stat_info", "info_count=info_count+1 WHERE info_name='$country' ")) {
-					$sql->db_Insert("stat_info", " '$country', '1', '4' ");
-				}
-			}
-			if ($screenstats != "") {
-				if (trim(chop($screenstats)) != "@" && trim(chop($screenstats)) != "\" res \" @ \" colord \"") {
-					if (!$sql->db_Update("stat_info", "info_count=info_count+1 WHERE info_name='$screenstats' ")) {
-						$sql->db_Insert("stat_info", " '$screenstats', '1', '5' ");
-					}
-				}
-			}
-			$referer = $ref;
-			if ($referer != "" && $ref != "\" ref \"" && !eregi("blocked", $referer)) {
-				$siteurl = parse_url($pref['siteurl']);
-				if (!strstr($referer, $siteurl['host']) && !strstr($referer, "localhost")) {
-					if ($pref['log_refertype'] == 0) {
-						// log domain only
-						$rl = parse_url($referer);
-						$ref = eregi_replace("www.", "", $rl['host']);
-						if (!$sql->db_Update("stat_info", "info_count=info_count+1 WHERE info_name='$ref' ")) {
-							$sql->db_Insert("stat_info", " '$ref', '1', '6' ");
-						}
-					} else {
-						// Log whole URL
-						if (!$sql->db_Update("stat_info", "info_count=info_count+1 WHERE info_name='$referer' ")) {
-							$sql->db_Insert("stat_info", " '$referer', '1', '6' ");
-						}
-					}
-				}
-			}
-			// last unique visitors -------------------------------------------------------------------------------------------------------------------------------------------------------
-			if ($sql->db_Count("stat_last") >= $pref['log_lvcount']) {
-				$sql->db_Select("stat_last", "*", "ORDER BY stat_last_date ASC", "no_where");
-				$row = $sql->db_Fetch();
-				$sql->db_Delete("stat_last", "stat_last_date='".$row['stat_last_date']."' ");
-			}
-			 
-			$sip = substr($ip, 0, (strlen($ip)-2))."x";
-			if (!$country) {
-				$country = "(unknown)";
-			}
-			 
-			$con = new convert;
-			$datestamp = $con->convert_date(time(), "long");
-			$laststr = "IP: ".$sip." using ".$browser." under ".$os ." at ".$res." x ".$colour." from ".$country.".";
-			 
-			if (!$sql->db_Select("stat_last", "*", "stat_last_info='$laststr' ")) {
-				$sql->db_Insert("stat_last", " '".time()."', '$laststr' ");
-			}
-		}
-	}
-}
-	
-// end last visitors -----------------------------------------------------------------------------------------------------------------------------------------------------------
-header("Content-type: text/css");
-echo ".DUMMY {color: green;}";
-// functions -------------------------------------------------------------------------------------------------------------------------------------------------------------------
-function getbrowser() {
-	$agent = $_SERVER['HTTP_USER_AGENT'];
-	if (eregi("Netcaptor", $agent)) {
-		$browser = "Netcaptor";
-	} elseif(eregi("(opera) ([0-9]{1,2}.[0-9]{1,3}){0,1}", $agent, $ver) || eregi("(opera/)([0-9]{1,2}.[0-9]{1,3}){0,1}", $agent, $ver)) {
-		 $browser = "Opera $ver[2]";
-	} elseif(eregi("(konqueror)/([0-9]{1,2}.[0-9]{1,3})", $agent, $ver)) {
-		 $browser = "Konqueror $ver[2]";
-	} elseif(eregi("(lynx)/([0-9]{1,2}.[0-9]{1,2}.[0-9]{1,2})", $agent, $ver)) {
-		 $browser = "Lynx $ver[2]";
-	} elseif(eregi("(msie) ([0-9]{1,2}.[0-9]{1,3})", $agent, $ver)) {
-		 $browser = "Internet Explorer $ver[2]";
-	} elseif(eregi("Links", $agent)) {
-		 $browser = "Lynx";
-	} elseif(eregi("(Firefox/)([0-9]{1,2}.[0-9]{1,3}){0,1}", $agent, $ver)) {
-		 $browser = "Firefox $ver[2]";
-	} elseif(eregi("(Firebird/)([0-9]{1,2}.[0-9]{1,3}){0,1}", $agent, $ver)) {
-		 $browser = "Firebird $ver[2]";
-	} elseif(eregi("Mozilla/5", $agent)) {
-		$browser = "Netscape 5";
-	} elseif(eregi("Gecko", $agent)) {
-		 $browser = "Mozilla";
-	} elseif(eregi("Safari", $agent)) {
-		 $browser = "OS-X Safari";
-	} elseif(eregi("(netscape6)/(6.[0-9]{1,3})", $agent, $ver)) {
-		 $browser = "Netscape $ver[2]";
-	} elseif(eregi("(Mozilla)/([0-9]{1,2}.[0-9]{1,3})", $agent, $ver)) {
-		 $browser = "Netscape $ver[2]";
-	} elseif(eregi("Galeon", $agent)) {
-		 $browser = "Galeon";
-	} elseif(eregi("(lynx)/([0-9]{1,2}.[0-9]{1,2}.[0-9]{1,2})", $agent, $ver) ) {
-		$browser = "Lynx $ver[2]";
-	} elseif(eregi("Avant Browser", $agent)) {
-		 $browser = "Avant";
-	} elseif(eregi("(omniweb/)([0-9]{1,2}.[0-9]{1,3})", $agent, $ver) ) {
-		$browser = "OmniWeb $ver[2]";
-	} elseif(eregi("ZyBorg|WebCrawler|Slurp|Googlebot|MuscatFerret|ia_archiver", $agent)) {
-		 $browser = "Web indexing robot";
-	} elseif(eregi("(webtv/)([0-9]{1,2}.[0-9]{1,3})", $agent, $ver) ) {
-		$browser = "WebTV $ver[2]";
-	} else {
-		$browser = "Unknown";
-	}
-	return $browser;
-}
-	
-function getos() {
-	$agent = $_SERVER['HTTP_USER_AGENT'];
-	if (strstr($agent, 'Win')) {
-		if (strstr($agent, 'NT 5.0') || strstr($agent, 'NT5.0') || strstr($agent, 'Windows 2000')) {
-			 $os = "Windows 2000";
-		}
-		else if(strstr($agent, 'NT 5.1') || strstr($agent, 'NT5.1') || strstr($agent, 'Windows XP')) {
-			$os = "Windows XP";
-		}
-		else if(strstr($agent, 'Win98') || strstr($agent, 'Windows 98')) {
-			$os = "Windows 98";
-		}
-		else if(strstr($agent, 'NT')) {
-			$os = 'Windows NT';
-		}
-		else if(strstr($agent, 'Win95') || strstr($agent, 'Windows 95')) {
-			$os = 'Windows 95';
-		}
-		else if(strstr($agent, 'Win 9x')) {
-			$os = 'Windows 95';
-		}
-		else if(strstr($agent, 'WinME') || strstr($agent, 'Windows ME')) {
-			$os = 'Windows ME';
+
+	if($screenstats && $screenstats != "@") {
+		if(array_key_exists($screenstats, $screenInfo)) {
+			$screenInfo[$screenstats] ++;
 		} else {
-			$os = 'Windows (version unspecified)';
+			$screenInfo[$screenstats] = 1;
 		}
-		 
 	}
-	else if (strstr($agent, 'Mac')) {
-		$os = 'Apple Macintosh';
-	}
-	else if (strstr($agent, 'Linux')) {
-		$os = 'Linux';
-	}
-	else if (strstr($agent, 'BeOS')) {
-		$os = 'BeOS';
-	}
-	else if (strstr($agent, 'Unix') || strstr($agent, "HP-ux") || strstr($agent, "X11")) {
-		$os = 'Unix';
-	}
-	else if (strstr($agent, 'SunOS')) {
-		$os = 'SunOS';
-	}
-	else if (strstr($agent, 'FreeBSD')) {
-		$os = 'FreeBSD';
-	}
-	else if (strstr($agent, 'OpenBSD')) {
-		$os = 'OpenBSD';
-	}
-	else if (strstr($agent, 'IRIX')) {
-		$os = 'IRIX';
-	}
-	else if (strstr($agent, 'spider') || strstr($agent, 'bot') || strstr($agent, 'http') || strstr($agent, 'Scooter') || strstr($agent, 'WebCopier')) {
-		$os = 'Spiders';
+
+	if(array_key_exists($browser, $browserInfo)) {
+		$browserInfo[$browser] ++;
 	} else {
-		$os = 'Unspecified';
+		$browserInfo[$browser] = 1;
 	}
-	return $os;
-}
-	
-function getcountry() {
-	if ($host = gethostbyaddr(getenv(REMOTE_ADDR))) {
-		$dom = strtolower(substr($host, strrpos($host, ".")+1));
-		 
-		$country["arpa"] = "ARPANet";
-		$country["com"] = "Commercial Users";
-		$country["edu"] = "Education";
-		$country["gov"] = "Government";
-		$country["int"] = "Oganization established by an International Treaty";
-		$country["mil"] = "Military";
-		$country["net"] = "Network";
-		$country["org"] = "Organization";
-		$country["ad"] = "Andorra";
-		$country["ae"] = "United Arab Emirates";
-		$country["af"] = "Afghanistan";
-		$country["ag"] = "Antigua & Barbuda";
-		$country["ai"] = "Anguilla";
-		$country["al"] = "Albania";
-		$country["am"] = "Armenia";
-		$country["an"] = "Netherland Antilles";
-		$country["ao"] = "Angola";
-		$country["aq"] = "Antarctica";
-		$country["ar"] = "Argentina";
-		$country["as"] = "American Samoa";
-		$country["at"] = "Austria";
-		$country["au"] = "Australia";
-		$country["aw"] = "Aruba";
-		$country["az"] = "Azerbaijan";
-		$country["ba"] = "Bosnia-Herzegovina";
-		$country["bb"] = "Barbados";
-		$country["bd"] = "Bangladesh";
-		$country["be"] = "Belgium";
-		$country["bf"] = "Burkina Faso";
-		$country["bg"] = "Bulgaria";
-		$country["bh"] = "Bahrain";
-		$country["bi"] = "Burundi";
-		$country["bj"] = "Benin";
-		$country["bm"] = "Bermuda";
-		$country["bn"] = "Brunei Darussalam";
-		$country["bo"] = "Bolivia";
-		$country["br"] = "Brasil";
-		$country["bs"] = "Bahamas";
-		$country["bt"] = "Bhutan";
-		$country["bv"] = "Bouvet Island";
-		$country["bw"] = "Botswana";
-		$country["by"] = "Belarus";
-		$country["bz"] = "Belize";
-		$country["ca"] = "Canada";
-		$country["cc"] = "Cocos (Keeling) Islands";
-		$country["cf"] = "Central African Republic";
-		$country["cg"] = "Congo";
-		$country["ch"] = "Switzerland";
-		$country["ci"] = "Ivory Coast";
-		$country["ck"] = "Cook Islands";
-		$country["cl"] = "Chile";
-		$country["cm"] = "Cameroon";
-		$country["cn"] = "China";
-		$country["co"] = "Colombia";
-		$country["cr"] = "Costa Rica";
-		$country["cs"] = "Czechoslovakia";
-		$country["cu"] = "Cuba";
-		$country["cv"] = "Cape Verde";
-		$country["cx"] = "Christmas Island";
-		$country["cy"] = "Cyprus";
-		$country["cz"] = "Czech Republic";
-		$country["de"] = "Germany";
-		$country["dj"] = "Djibouti";
-		$country["dk"] = "Denmark";
-		$country["dm"] = "Dominica";
-		$country["do"] = "Dominican Republic";
-		$country["dz"] = "Algeria";
-		$country["ec"] = "Ecuador";
-		$country["ee"] = "Estonia";
-		$country["eg"] = "Egypt";
-		$country["eh"] = "Western Sahara";
-		$country["er"] = "Eritrea";
-		$country["es"] = "Spain";
-		$country["et"] = "Ethiopia";
-		$country["fi"] = "Finland";
-		$country["fj"] = "Fiji";
-		$country["fk"] = "Falkland Islands (Malvibas)";
-		$country["fm"] = "Micronesia";
-		$country["fo"] = "Faroe Islands";
-		$country["fr"] = "France";
-		$country["fx"] = "France (European Territory)";
-		$country["ga"] = "Gabon";
-		$country["gb"] = "Great Britain";
-		$country["gd"] = "Grenada";
-		$country["ge"] = "Georgia";
-		$country["gf"] = "Guyana (French)";
-		$country["gh"] = "Ghana";
-		$country["gi"] = "Gibralta";
-		$country["gl"] = "Greenland";
-		$country["gm"] = "Gambia";
-		$country["gn"] = "Guinea";
-		$country["gp"] = "Guadeloupe (French)";
-		$country["gq"] = "Equatorial Guinea";
-		$country["gr"] = "Greece";
-		$country["gs"] = "South Georgia & South Sandwich Islands";
-		$country["gt"] = "Guatemala";
-		$country["gu"] = "Guam (US)";
-		$country["gw"] = "Guinea Bissau";
-		$country["gy"] = "Guyana";
-		$country["hk"] = "Hong Kong";
-		$country["hm"] = "Heard & McDonald Islands";
-		$country["hn"] = "Honduras";
-		$country["hr"] = "Croatia";
-		$country["ht"] = "Haiti";
-		$country["hu"] = "Hungary";
-		$country["id"] = "Indonesia";
-		$country["ie"] = "Ireland";
-		$country["il"] = "Israel";
-		$country["in"] = "India";
-		$country["io"] = "British Indian Ocean Territories";
-		$country["iq"] = "Iraq";
-		$country["ir"] = "Iran";
-		$country["is"] = "Iceland";
-		$country["it"] = "Italy";
-		$country["jm"] = "Jamaica";
-		$country["jo"] = "Jordan";
-		$country["jp"] = "Japan";
-		$country["ke"] = "Kenya";
-		$country["kg"] = "Kyrgyz Republic";
-		$country["kh"] = "Cambodia";
-		$country["ki"] = "Kiribati";
-		$country["km"] = "Comoros";
-		$country["kn"] = "Saint Kitts Nevis Anguilla";
-		$country["kp"] = "Korea (North)";
-		$country["kr"] = "Korea (South)";
-		$country["kw"] = "Kuwait";
-		$country["ky"] = "Cayman Islands";
-		$country["kz"] = "Kazachstan";
-		$country["la"] = "Laos";
-		$country["lb"] = "Lebanon";
-		$country["lc"] = "Saint Lucia";
-		$country["li"] = "Liechtenstein";
-		$country["lk"] = "Sri Lanka";
-		$country["lr"] = "Liberia";
-		$country["ls"] = "Lesotho";
-		$country["lt"] = "Lithuania";
-		$country["lu"] = "Luxembourg";
-		$country["lv"] = "Latvia";
-		$country["ly"] = "Libya";
-		$country["ma"] = "Morocco";
-		$country["mc"] = "Monaco";
-		$country["md"] = "Moldova";
-		$country["mg"] = "Madagascar";
-		$country["mh"] = "Marshall Islands";
-		$country["mk"] = "Macedonia";
-		$country["ml"] = "Mali";
-		$country["mm"] = "Myanmar";
-		$country["mn"] = "Mongolia";
-		$country["mo"] = "Macau";
-		$country["mp"] = "Northern Mariana Islands";
-		$country["mq"] = "Martinique (French)";
-		$country["mr"] = "Mauretania";
-		$country["ms"] = "Montserrat";
-		$country["mt"] = "Malta";
-		$country["mu"] = "Mauritius";
-		$country["mv"] = "Maldives";
-		$country["mw"] = "Malawi";
-		$country["mx"] = "Mexico";
-		$country["my"] = "Malaysia";
-		$country["mz"] = "Mozambique";
-		$country["na"] = "Namibia";
-		$country["nc"] = "New Caledonia (French)";
-		$country["ne"] = "Niger";
-		$country["nf"] = "Norfolk Island";
-		$country["ng"] = "Nigeria";
-		$country["ni"] = "Nicaragua";
-		$country["nl"] = "Netherlands";
-		$country["no"] = "Norway";
-		$country["np"] = "Nepal";
-		$country["nr"] = "Nauru";
-		$country["nt"] = "Saudiarab. Irak)";
-		$country["nu"] = "Niue";
-		$country["nz"] = "New Zealand";
-		$country["om"] = "Oman";
-		$country["pa"] = "Panama";
-		$country["pe"] = "Peru";
-		$country["pf"] = "Polynesia (French)";
-		$country["pg"] = "Papua New Guinea";
-		$country["ph"] = "Philippines";
-		$country["pk"] = "Pakistan";
-		$country["pl"] = "Poland";
-		$country["pm"] = "Saint Pierre & Miquelon";
-		$country["pn"] = "Pitcairn";
-		$country["pr"] = "Puerto Rico (US)";
-		$country["pt"] = "Portugal";
-		$country["pw"] = "Palau";
-		$country["py"] = "Paraguay";
-		$country["qa"] = "Qatar";
-		$country["re"] = "Reunion (French)";
-		$country["ro"] = "Romania";
-		$country["ru"] = "Russian Federation";
-		$country["rw"] = "Rwanda";
-		$country["sa"] = "Saudi Arabia";
-		$country["sb"] = "Salomon Islands";
-		$country["sc"] = "Seychelles";
-		$country["sd"] = "Sudan";
-		$country["se"] = "Sweden";
-		$country["sg"] = "Singapore";
-		$country["sh"] = "Saint Helena";
-		$country["si"] = "Slovenia";
-		$country["sj"] = "Svalbard & Jan Mayen";
-		$country["sk"] = "Slovakia";
-		$country["sl"] = "Sierra Leone";
-		$country["sm"] = "San Marino";
-		$country["sn"] = "Senegal";
-		$country["so"] = "Somalia";
-		$country["sr"] = "Suriname";
-		$country["st"] = "Sao Tome & Principe";
-		$country["su"] = "Soviet Union";
-		$country["sv"] = "El Salvador";
-		$country["sy"] = "Syria";
-		$country["sz"] = "Swaziland";
-		$country["tc"] = "Turks & Caicos Islands";
-		$country["td"] = "Chad";
-		$country["tf"] = "French Southern Territories";
-		$country["tg"] = "Togo";
-		$country["th"] = "Thailand";
-		$country["tj"] = "Tadjikistan";
-		$country["tk"] = "Tokelau";
-		$country["tm"] = "Turkmenistan";
-		$country["tn"] = "Tunisia";
-		$country["to"] = "Tonga";
-		$country["tp"] = "East Timor";
-		$country["tr"] = "Turkey";
-		$country["tt"] = "Trinidad & Tobago";
-		$country["tv"] = "Tuvalu";
-		$country["tw"] = "Taiwan";
-		$country["tz"] = "Tanzania";
-		$country["ua"] = "Ukraine";
-		$country["ug"] = "Uganda";
-		$country["uk"] = "United Kingdom";
-		$country["um"] = "US Minor outlying Islands";
-		$country["us"] = "United States";
-		$country["uy"] = "Uruguay";
-		$country["uz"] = "Uzbekistan";
-		$country["va"] = "Vatican City State";
-		$country["vc"] = "St Vincent & Grenadines";
-		$country["ve"] = "Venezuela";
-		$country["vg"] = "Virgin Islands (British)";
-		$country["vi"] = "Virgin Islands (US)";
-		$country["vn"] = "Vietnam";
-		$country["vu"] = "Vanuatu";
-		$country["wf"] = "Wallis & Futuna Islands";
-		$country["ws"] = "Samoa";
-		$country["ye"] = "Yemen";
-		$country["yt"] = "Mayotte";
-		$country["yu"] = "Yugoslavia";
-		$country["za"] = "South Africa";
-		$country["zm"] = "Zambia";
-		$country["zr"] = "Zaire";
-		$country["zw"] = "Zimbabwe";
-		$scountry = $country[$dom];
+
+
+	if(array_key_exists($os, $osInfo)) {
+		$osInfo[$os] ++;
 	} else {
-		$scountry = "";
+		$osInfo[$os] =1;
 	}
-	return $scountry;
+
+	/* referer data ... */
+	if($ref && !strstr($ref, $_SERVER['HTTP_HOST'])) {
+		$refererData .= $ref.$exp;
+		if(preg_match("#http://(.*?)($|/)#is", $ref, $match)) {
+			$refdom = $match[0];
+			if(array_key_exists($refdom, $refInfo)) {
+				$refInfo[$refdom]['ttl'] ++;
+			} else {
+				$refInfo[$refdom] = array('url' => $ref, 'ttl' => 1);
+			}
+		}
+	}
+
+	/* is the referal from Google? If so get search string ... */
+	if(preg_match("#q=(.*?)($|&)#is", $ref, $match)) {
+		$schstr = trim(chop($match[1]));
+		if(array_key_exists($schstr, $searchInfo)) {
+			$searchInfo[$schstr] ++;
+		} else {
+			$searchInfo[$schstr] = 1;
+		}
+	}
+
+
+	$siteUnique ++;
+	$ipAddresses .= $ip.chr(1);
+
+	if ($tmp = gethostbyaddr(getenv(REMOTE_ADDR))) {
+		$host = strtolower(substr($tmp, strrpos($tmp, ".")+1));
+		if(array_key_exists($host, $domainInfo)) {
+			$domainInfo[$host] ++;
+		} else {
+			$domainInfo[$host] =1;
+		}
+	}
 }
-	
+
+$siteTotal ++;
+
+$varStart = chr(36);
+$quote = chr(34);
+
+$data = chr(60)."?php\n". chr(47)."* e107 website system: Log file: ".date("z:Y", time())." *". chr(47)."\n\n".
+$varStart."refererData = ".$quote.$refererData.$quote.";\n".
+$varStart."ipAddresses = ".$quote.$ipAddresses.$quote.";\n".
+$varStart."siteTotal = ".$quote.$siteTotal.$quote.";\n".
+$varStart."siteUnique = ".$quote.$siteUnique.$quote.";\n";
+
+$loop = FALSE;
+$data .= $varStart."domainInfo = array(\n";
+foreach($domainInfo as $key => $info) {
+	if($loop){ $data .= ",\n"; }
+	$data .= $quote.$key.$quote." => $info";
+	$loop = 1;
+}
+$data .= "\n);\n".
+
+$loop = FALSE;
+$data .= $varStart."screenInfo = array(\n";
+foreach($screenInfo as $key => $info) {
+	if($loop){ $data .= ",\n"; }
+	$data .= $quote.$key.$quote." => $info";
+	$loop = 1;
+}
+$data .= "\n);\n".
+
+
+$loop = FALSE;
+$data .= $varStart."browserInfo = array(\n";
+foreach($browserInfo as $key => $info) {
+	if($loop){ $data .= ",\n"; }
+	$data .= $quote.$key.$quote." => $info";
+	$loop = 1;
+}
+$data .= "\n);\n".
+
+$loop = FALSE;
+$data .= $varStart."osInfo = array(\n";
+foreach($osInfo as $key => $info) {
+	if($loop){ $data .= ",\n"; }
+	$data .= $quote.$key.$quote." => $info";
+	$loop = 1;
+}
+$data .= "\n);\n".
+
+
+$loop = FALSE;
+$data .= $varStart."refInfo = array(\n";
+foreach($refInfo as $key => $info) {
+	if($loop){ $data .= ",\n"; }
+	$data .= $quote.$key.$quote." => array('url' => '".$info['url']."', 'ttl' => ".$info['ttl'].")";
+	$loop = 1;
+}
+$data .= "\n);\n".
+
+$loop = FALSE;
+$data .= $varStart."searchInfo = array(\n";
+foreach($searchInfo as $key => $info) {
+	if($loop){ $data .= ",\n"; }
+	$data .= $quote.$key.$quote." => $info";
+	$loop = 1;
+}
+$data .= "\n);\n".
+
+
+$loop = FALSE;
+$data .= $varStart."pageInfo = array(\n";
+foreach($pageInfo as $info) {
+	$page = preg_replace("/(\?.*)|(\_.*)|(\.php)/", "", basename ($info['url']));
+	if($loop){ $data .= ",\n"; }
+	$data .= $quote.$page.$quote." => array('url' => '".$info['url']."', 'ttl' => ".$info['ttl'].", 'unq' => ".$info['unq'].", 'ttlv' => ".$info['ttlv'].", 'unqv' => ".$info['unqv'].")";
+	$loop = 1;
+}
+
+$data .= "\n);\n\n?".  chr(62);
+
+if ($handle = fopen($logfile, 'w')) { 
+	fwrite($handle, $data);
+}
+fclose($handle);
+
 function getip() {
 	if (getenv('HTTP_X_FORWARDED_FOR')) {
 		$ip = $_SERVER['REMOTE_ADDR'];
@@ -523,18 +206,83 @@ function getip() {
 	}
 	return $ip;
 }
-class convert {
-	function convert_date($datestamp, $mode = "long") {
-		global $pref;
-		$datestamp += (TIMEOFFSET * 3600);
-		if ($mode == "long") {
-			return strftime($pref['longdate'], $datestamp);
-		}
-		else if($mode == "short") {
-			return strftime($pref['shortdate'], $datestamp);
-		} else {
-			return strftime($pref['forumdate'], $datestamp);
+
+function getBrowser($agent) {
+	$browsers = array(
+		"netcaptor" => array('name' => 'Netcaptor', 'rule' => 'netcaptor[ /]([0-9.]{1,10})'), 
+		"explorer" => array('name' => 'Internet Explorer', 'rule' => '\(compatible; MSIE[ /]([0-9.]{1,10})'), 
+		"firefox" => array('name' => 'Firefox', 'rule' => 'Firefox/([0-9.+]{1,10})'), 
+		"opera" => array('name' => 'Opera', 'rule' => 'opera[ /]([0-9.]{1,10})'),
+		"aol" => array('name' => 'AOL', 'rule' => 'aol[ /\-]([0-9.]{1,10})'), 
+		"aol2"=> array('name' => 'AOL', 'rule' => 'aol[ /\-]?browser'), 
+		"netscape" => array('name' => 'Netscape', 'rule' => 'netscape[0-9]?/([0-9.]{1,10})'),
+		"netscape2" => array('name' => 'Netscape', 'rule' => '^mozilla/([0-4]\.[0-9.]{1,10})'),
+		"mozilla" => array('name' => 'Mozilla', 'rule' => '^mozilla/[5-9]\.[0-9.]{1,10}.+rv:([0-9a-z.+]{1,10})'),
+		"mozilla2" => array('name' => 'Mozilla', 'rule' => '^mozilla/([5-9]\.[0-9a-z.]{1,10})'),
+		"mosaic" => array('name' => 'Mosaic', 'rule' => 'mosaic[ /]([0-9.]{1,10})'), 
+		"k-meleon" => array('name' => 'K-Meleon', 'rule' => 'K-Meleon[ /]([0-9.]{1,10})'), 
+		"konqueror" => array('name' => 'Konqueror', 'rule' => 'konqueror/([0-9.]{1,10})'), 
+		"avantbrowser" => array('name' => 'Avant Browser', 'rule' => 'Avant[ ]?Browser'), 
+		"avantgo" => array('name' => 'AvantGo', 'rule' => 'AvantGo[ /]([0-9.]{1,10})'), 
+		"proxomitron" => array('name' => 'Proxomitron', 'rule' => 'Space[ ]?Bison/[0-9.]{1,10}'), 
+		"safari" => array('name' => 'Safari', 'rule' => 'safari/([0-9.]{1,10})'), 
+		"lynx" => array('name' => 'Lynx', 'rule' => 'lynx/([0-9a-z.]{1,10})'), 
+		"links" => array('name' => 'Links', 'rule' => 'Links[ /]\(([0-9.]{1,10})'), 
+		"galeon" => array('name' => 'Galeon', 'rule' => 'galeon/([0-9.]{1,10})')
+	);
+	$browser = "";
+	foreach($browsers as $info) {
+		if (eregi($info['rule'], $agent, $results)) {
+			return ($info['name']." v".$results[1]);
 		}
 	}
+	return ("Unknown");
 }
+
+function getOs($agent) {
+	$os = array(
+		"windows2003" => array('name' => 'Windows 2003', 'rule' => 'wi(n|ndows)[ \-]?(2003|nt[ /]?5\.2)'), 
+		"windowsxp" => array('name' => 'Windows XP', 'rule' => 'Windows XP'), 
+		"windowsxp2" => array('name' => 'Windows XP', 'rule' => 'wi(n|ndows)[ \-]?nt[ /]?5\.1'), 
+		"windows2k" => array('name' => 'Windows 2000', 'rule' => 'wi(n|ndows)[ \-]?(2000|nt[ /]?5\.0)'), 
+		"windows95" => array('name' => 'Windows 95', 'rule' => 'wi(n|ndows)[ \-]?95'), 
+		"windowsce" => array('name' => 'Windows CE', 'rule' => 'wi(n|ndows)[ \-]?ce'), 
+		"windowsme" => array('name' => 'Windows ME', 'rule' => 'win 9x 4\.90'), 
+		"windowsme2" => array('name' => 'Windows ME', 'rule' => 'wi(n|ndows)[ \-]?me'), 
+		"windowsnt" => array('name' => 'Windows NT', 'rule' => 'wi(n|ndows)[ \-]?nt[ /]?([0-4][0-9.]{1,10})'), 
+		"windowsnt2" => array('name' => 'Windows NT', 'rule' => 'wi(n|ndows)[ \-]?nt'), 
+		"windows98" => array('name' => 'Windows 98', 'rule' => 'wi(n|ndows)[ \-]?98'), 
+		"windows" => array('name' => 'Windows', 'rule' => 'wi(n|n32|ndows)'), 
+		"linux" => array('name' => 'Linux', 'rule' => 'mdk for ([0-9.]{1,10})'), 
+		"linux2" => array('name' => 'Linux', 'rule' => 'linux[ /\-]([a-z0-9.]{1,10})'), 
+		"linux3" => array('name' => 'Linux', 'rule' => 'linux'), 
+		"macosx" => array('name' => 'MacOS X', 'rule' => 'Mac[ ]?OS[ ]?X'), 
+		"macppc" => array('name' => 'MacOS PPC', 'rule' => 'Mac(_Power|intosh.+P)PC'), 
+		"mac" => array('name' => 'MacOS', 'rule' => 'mac[^hk]'), 
+		"amiga" => array('name' => 'Amiga', 'rule' => 'Amiga[ ]?OS[ /]([0-9.]{1,10})'), 
+		"beos" => array('name' => 'BeOS', 'rule' => 'beos[ a-z]*([0-9.]{1,10})'), 
+		"freebsd" => array('name' => 'FreeBSD', 'rule' => 'free[ \-]?bsd[ /]([a-z0-9.]{1,10})'), 
+		"freebsd2" => array('name' => 'FreeBSD', 'rule' => 'free[ \-]?bsd'), 
+		"irix" => array('name' => 'Irix', 'rule' => 'irix[0-9]*[ /]([0-9.]{1,10})'), 
+		"netbsd" => array('name' => 'NetBSD', 'rule' => 'net[ \-]?bsd[ /]([a-z0-9.]{1,10})'), 
+		"netbsd2" => array('name' => 'NetBSD', 'rule' => 'net[ \-]?bsd'), 
+		"os2" => array('name' => 'OS/2 Warp', 'rule' => 'warp[ /]?([0-9.]{1,10})'), 
+		"os22" => array('name' => 'OS/2 Warp', 'rule' => 'os[ /]?2'), 
+		"openbsd" => array('name' => 'OpenBSD', 'rule' => 'open[ \-]?bsd[ /]([a-z0-9.]{1,10})'), 
+		"openbsd2" => array('name' => 'OpenBSD', 'rule' => 'open[ \-]?bsd'), 
+		"palm" => array('name' => 'PalmOS', 'rule' => 'Palm[ \-]?(Source|OS)[ /]?([0-9.]{1,10})'), 
+		"palm2" => array('name' => 'PalmOS', 'rule' => 'Palm[ \-]?(Source|OS)')
+	);
+	foreach($os as $key => $info) {
+		if (eregi($info['rule'], $agent, $results)) {
+			if(strstr($key, "win")) {
+				return ($info['name']);
+			} else {
+				return ($info['name']." ".$results[1]);
+			}
+		}
+	}
+	return ("Unspecified");
+}
+
 ?>
