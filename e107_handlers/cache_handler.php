@@ -12,21 +12,21 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2004-12-11 17:06:46 $
+|     $Revision: 1.11 $
+|     $Date: 2005-01-06 22:58:44 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
 /**
- * Class to cache data as files, improving site speed and throughput.
- *
- * @package     e107
- * @version     $Revision: 1.10 $
- * @author      $Author: streaky $
- */
+* Class to cache data as files, improving site speed and throughput.
+*
+* @package     e107
+* @version     $Revision: 1.11 $
+* @author      $Author: streaky $
+*/
 class ecache {
-	
+
 	var $CachePageMD5;
 
 	/**
@@ -35,12 +35,12 @@ class ecache {
 	* @desc Internal class function that returns the filename of a cache file based on the query.
 	* @scope private
 	*/
-	function cache_fname($query) {
+	function cache_fname($CacheTag) {
 		if($this->CachePageMD5 == ''){
 			$this->CachePageMD5 = md5(e_BASE.e_LANGUAGE.THEME.USERCLASS.e_QUERY);
 		}
 		global $FILES_DIRECTORY;
-		$q = preg_replace("#\W#", "_", $query);
+		$q = preg_replace("#\W#", "_", $CacheTag);
 		$fname = "./".e_BASE.$FILES_DIRECTORY."cache/".$q."-".$this->CachePageMD5.".cache.php";
 		return $fname;
 	}
@@ -48,21 +48,24 @@ class ecache {
 	/**
 	* @return string
 	* @param string $query
+	* @param int $MaximumAge the time in minutes before the cache file 'expires'
 	* @desc Returns the data from the cache file associated with $query, else it returns false if there is no cache for $query.
 	* @scope public
 	*/
-	function retrieve($query) {
+	function retrieve($CacheTag, $MaximumAge = false) {
 		global $pref, $FILES_DIRECTORY;
 		if ($pref['cachestatus']) //Save to file
 		{
-			if ($cache_file = $this->cache_fname($query)) {
-				$ret = file_get_contents($cache_file);
-				$ret = substr($ret, 5);
-				if ($ret == false) {
-					return FALSE;
+			$cache_file = $this->cache_fname($CacheTag);
+			if(file_exists($cache_file)){
+				if($MaximumAge != false && (filemtime($cache_file) + intval(($MaximumAge * 60))) > time()){
+					unlink($cache_file);
+					return false;
+				} else {
+					$ret = file_get_contents($cache_file);
+					$ret = substr($ret, 5);
+					return $ret;
 				}
-				return ('' == $ret) ? '<!-- null -->' :
-				$ret;
 			} else {
 				return FALSE;
 			}
@@ -76,11 +79,11 @@ class ecache {
 	* @desc Creates / overwrites the cache file for $query, $text is the data to store for $query.
 	* @scope public
 	*/
-	function set($query, $text) {
+	function set($CacheTag, $Data) {
 		global $pref, $FILES_DIRECTORY;
 		if ($pref['cachestatus']) {
-			$cache_file = $this->cache_fname($query);
-			file_put_contents($cache_file, "<?php$text");
+			$cache_file = $this->cache_fname($CacheTag);
+			file_put_contents($cache_file, '<?php'.$text);
 			@chmod($cache_file, 0777);
 		}
 	}
@@ -90,10 +93,10 @@ class ecache {
 	* @param string $query
 	* @desc Deletes cache files. If $query is set, deletes files named {$query}*.cache.php, if not it deletes all cache files - (*.cache.php)
 	*/
-	function clear($query = '') {
+	function clear($CacheTag = '') {
 		global $pref, $FILES_DIRECTORY;
-		if ($pref['cachestatus'] || !$query) {
-			$file = ($query) ? preg_replace("#\W#", "_", $query)."*.cache.php" : "*.cache.php";
+		if ($pref['cachestatus'] || !$CacheTag) {
+			$file = ($CacheTag) ? preg_replace("#\W#", "_", $query)."*.cache.php" : "*.cache.php";
 			$dir = "./".e_BASE.$FILES_DIRECTORY."cache/";
 			$ret = $this->delete($dir, $file);
 		}
