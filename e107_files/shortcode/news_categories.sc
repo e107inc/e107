@@ -8,7 +8,7 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
 
 	if(!$NEWSCAT){
 		$NEWSCAT = "
-			<div style='padding:5px'><div style='border-bottom:1px inset black; font-weight:bold;padding-bottom:1px;margin-bottom:5px'>
+			<div style='padding:5px'><div style='border-bottom:1px inset black; padding-bottom:1px;margin-bottom:5px'>
 			{NEWSCAT_CATICON}&nbsp;
 			{NEWSCAT_CATNAME}
 			</div>
@@ -58,10 +58,10 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
 		extract($row3);
 
 		$search[0] = "/\{NEWSCAT_CATICON\}(.*?)/si";
-		$replace[0] = ($category_icon) ? "<a href='news.php?cat.".$category_id."'><img src='".e_IMAGE."icons/".$category_icon."' alt='' style='border:0px' /></a>" : "";
+		$replace[0] = ($category_icon) ? "<a href='".e_BASE."news.php?cat.".$category_id."'><img src='".e_IMAGE."icons/".$category_icon."' alt='' style='border:0px' /></a>" : "";
 
 		$search[1] = "/\{NEWSCAT_CATNAME\}(.*?)/si";
-		$replace[1] = ($category_name) ? "<a href='news.php?cat.".$category_id."' style='".NEWSCAT_CATLINKSTYLE."' >".$tp->toHTML($category_name)."</a>" : "";
+		$replace[1] = ($category_name) ? "<a href='".e_BASE."news.php?cat.".$category_id."' style='".NEWSCAT_CATLINKSTYLE."' >".$tp->toHTML($category_name)."</a>" : "";
 
 		$text3 .= ($t % $nbr_cols == 0) ? "<tr>" : "";
 		$text3 .= "\n<td style='vertical-align:top; width:$wid%;'>\n";
@@ -75,13 +75,13 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
 			if (check_class($news_class)) {
 
 				$search[3] = "/\{NEWSCAT_TITLE\}(.*?)/si";
-				$replace[3] = ($news_title) ? "<a href='news.php?item.".$news_id."' style='".NEWSCAT_ITEMLINKSTYLE."'>".$tp->toHTML($news_title)."</a>":"<a style='".NEWSCAT_ITEMLINKSTYLE."' href='news.php?item.".$news_id."'>Untitled</a>";
+				$replace[3] = ($news_title) ? "<a href='".e_BASE."news.php?item.".$news_id."' style='".NEWSCAT_ITEMLINKSTYLE."'>".$tp->toHTML($news_title)."</a>":"<a style='".NEWSCAT_ITEMLINKSTYLE."' href='".e_BASE."news.php?item.".$news_id."'>Untitled</a>";
 
 				$search[4] = "/\{NEWSCAT_SUMMARY\}(.*?)/si";
 				$replace[4] =  ($news_summary) ? $tp->toHTML($news_summary) : "" ;
 
 				$search[5] = "/\{NEWSCAT_THUMBNAIL\}(.*?)/si";
-				$replace[5] = ($news_thumb) ? "<a href='news.php?item.".$news_id."'><img src='".e_IMAGE."newspost_images/".$news_thumb."' alt='' style='border:0px' /></a>" : "";
+				$replace[5] = ($news_thumb) ? "<a href='".e_BASE."news.php?item.".$news_id."'><img src='".e_IMAGE."newspost_images/".$news_thumb."' alt='' style='border:0px' /></a>" : "";
 
 				$textbody .= preg_replace($search, $replace,$NEWSCAT_ITEM);
 			}
