@@ -26,5 +26,14 @@ define("LIST_10", "returned");
 define("LIST_11", "Admin");
 define("LIST_12", "Settings");
 define("LIST_13", "Profile");
+define("LIST_14", "Article");
+define("LIST_15", "Content");
+define("LIST_16", "Review");
+define("LIST_17", "Download");
+define("LIST_18", "FAQ");
+define("LIST_18", "Poll");
+define("LIST_19", "Docs");
+define("LIST_20", "Bugtracker");
+
 
 ?>
