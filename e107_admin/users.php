@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-03-31 09:18:48 $
-|     $Author: stevedunstan $
+|     $Revision: 1.25 $
+|     $Date: 2005-03-31 19:16:24 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -27,10 +27,8 @@ $user = new users;
 require_once("auth.php");
 
 require_once(e_HANDLER."form_handler.php");
-require_once(e_HANDLER."user_extended_class.php");
 
 $rs = new form;
-$ue = new e107_user_extended;
 
 if (e_QUERY) {
 	$tmp = explode(".", e_QUERY);
@@ -44,22 +42,6 @@ if (e_QUERY) {
 $from = ($from ? $from : 0);
 $amount = 30;
 	
-if (IsSet($_POST['up_x'])) {
-	$qs = explode(".", $_POST['id']);
-	$_id = $qs[0];
-	$_order = $qs[1];
-	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_order='".($_order-1)."'");
-	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_id='".$_id."'");
-}
-
-if (IsSet($_POST['down_x'])) {
-	$qs = explode(".", $_POST['id']);
-	$_id = $qs[0];
-	$_order = $qs[1];
-	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_order='".($_order+1)."'");
-	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_id='".$_id."'");
-}
-
 if (isset($_POST['resend_mail'])) {
 	$id = $_POST['resend_id'];
 	$key = $_POST['resend_key'];
@@ -291,38 +273,6 @@ if ($_POST['useraction'] == "unadmin") {
 	}
 }
 	
-if (isset($_POST['add_field']))
-{
-	if($ue->user_extended_add($_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $_POST['user_parms'], $_POST['user_values'], $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable']))
-	{
-		$message = USRLAN_2;
-	}
-}
-	
-if (isset($_POST['update_field'])) {
-	if($ue->user_extended_modify($sub_action, $_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $_POST['user_parms'], $_POST['user_values'], $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable']))
-	{
-		$message = USRLAN_2;
-	}
-}
-	
-if ($_POST['eu_action'] == "delext") {
-	list($_id, $_name) = explode(",",$_POST['key']);
-	if($ue->user_extended_remove($_id, $_name))
-	{
-		$user->show_message(USRLAN_83);
-	}
-}
-	
-if ($action == "editext")
-{
-	if($sql->db_Select('user_extended_struct','*',"user_extended_struct_id = '{$sub_action}'"))
-	{
-		$tmp = $sql->db_Fetch();
-		$user->show_extended($tmp);
-	}
-}
-	
 if ($_POST['useraction'] == "verify") {
 	$sub_action = $_POST['userid'];
 	if ($sql->db_Update("user", "user_ban='0' WHERE user_id=$sub_action")) {
@@ -351,10 +301,6 @@ if ($action == "options") {
 	$user->show_prefs();
 }
 	
-if ($action == "extended") {
-	$user->show_extended();
-}
-	
 if ($action == "prune") {
 	$user->show_prune();
 }
@@ -363,33 +309,10 @@ if ($action == "create") {
 	$user->add_user();
 }
 	
-//$user->show_options($action);
 require_once("footer.php");
-function headerjs() {
-	global $tp;
-	$header_js = "<script type=\"text/javascript\">
-		function confirm_(mode, user_id, user_name){
-		if (mode == 'cat'){
-		var x=confirm(\"".$tp->toJS(NWSLAN_37)." [ID: \" + user_id + \"]\");
-		}else if(mode == 'sn'){
-		var x=confirm(\"".$tp->toJS(NWSLAN_38)." [ID: \" + user_id + \"]\");
-		}else{
-		var x=confirm(\"".$tp->toJS(USRLAN_82)." [".USRLAN_61.": \" + user_name + \"]\");
-		}
-		if (x)
-		if (mode == 'cat'){
-		window.location='".e_SELF."?cat.confirm.' + user_id;
-		}else if(mode == 'sn'){
-		window.location='".e_SELF."?sn.confirm.' + user_id;
-		}else{
-		window.location='".e_SELF."?main.confirm.' + user_id;
-		}
-		}
-		</script>";
-	return $header_js;
-}
-class users {
-	 
+
+class users
+{
 	function show_existing_users($action, $sub_action, $id, $from, $amount) {
 		// ##### Display scrolling list of existing news items ---------------------------------------------------------------------------------------------------------
 		 
@@ -401,7 +324,6 @@ class users {
 				$class[$userclass_id] = $userclass_name;
 			}
 		}
-		 
 		 
 		$text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; margin-left: auto; margin-right: auto;'>";
 		 
@@ -535,9 +457,6 @@ class users {
 		$var['prune']['text'] = USRLAN_73;
 		$var['prune']['link'] = e_SELF."?prune";
 		 
-		$var['extended']['text'] = USRLAN_74;
-		$var['extended']['link'] = e_SELF."?extended";
-		 
 		$var['options']['text'] = USRLAN_75;
 		$var['options']['link'] = e_SELF."?options";
 		 
@@ -607,226 +526,6 @@ class users {
 	function show_message($message) {
 		global $ns;
 		$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
-	}
-	 
-	function show_extended($current) {
-		global $sql, $ns, $ue;
-		require_once(e_HANDLER."userclass_class.php");
-		
-		$text = "<div style='text-align:center'>";
-		$text .= "
-			<table style='".ADMIN_WIDTH."' class='fborder'>
-			<tr>
-				<td class='fcaption'>".USRLAN_96."</td>
-				<td class='fcaption'>".USRLAN_97."</td>
-				<td class='fcaption'>".USRLAN_98."</td>
-				<td class='fcaption'>".USRLAN_99."</td>
-				<td class='fcaption'>".USRLAN_134."</td>
-				<td class='fcaption'>".USRLAN_100."</td>
-				<td class='fcaption'>".USRLAN_101."</td>
-				<td class='fcaption'>&nbsp;</td>
-				<td class='fcaption'>".USRLAN_102."</td>
-			</tr>
-			";
-		if($sql->db_Select('user_extended_struct','*',"1 ORDER BY user_extended_struct_order"))
-		{
-			//Show current extended fields
-			$extendedList = $sql->db_getList();
-			$i=0;
-			foreach($extendedList as $ext)
-			{
-				$text .= "
-				<td class='forumheader3'>{$ext['user_extended_struct_name']}<br />[{$ext['user_extended_struct_text']}]</td>
-				<td class='forumheader3'>".$ue->user_extended_types[$ext['user_extended_struct_type']]."</td>
-				<td class='forumheader3'>{$ext['user_extended_struct_values']}";
-				if($ext['user_extended_struct_values'])
-				{
-					$text .= "<br />[{$ext['user_extended_struct_default']}]";
-				}
-				$text .= "
-				</td>
-				<td class='forumheader3'>".($ext['user_extended_struct_required'] ? LAN_YES : LAN_NO)."</td>
-				<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_applicable'])."</td>
-				<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_read'])."</td>
-				<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_write'])."</td>
-				<td class='forumheader3'>
-					<form method='post' action='".e_SELF."?extended'>
-					<input type='hidden' name='id' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}' />
-				";
-				if($i > 0)
-				{
-					$text .= "
-					<input type='image' alt='' title='".USRLAN_137."' src='".e_IMAGE."/admin_images/up.png' name='up' value='{$ext['user_extended_struct_id']}' />
-					";
-				}
-				if($i <= count($extendedList)-2)
-				{
-					$text .= "<input type='image' alt='' title='".USRLAN_136."' src='".e_IMAGE."/admin_images/down.png' name='down' value='{$ext['user_extended_struct_id']}' />";
-				}
-				$text .= "
-				</form>
-				</td>
-				<td class='forumheader3' style='text-align:center;'>
-					<a style='text-decoration:none' href='".e_SELF."?editext.{$ext['user_extended_struct_id']}'>".ADMIN_EDIT_ICON."</a>
-					&nbsp;
-					<form method='post' action='".e_SELF."?extended' onsubmit='return confirm(\"".USRLAN_16."\")'>
-						<input type='hidden' name='eu_action' value='delext' />
-						<input type='hidden' name='key' value='{$ext['user_extended_struct_id']},{$ext['user_extended_struct_name']}' />
-						<input type='image' title='".LAN_DELETE."' name='eudel' src='".ADMIN_DELETE_ICON_PATH."' />
-					</form>
-				</td>
-				</tr>
-				";
-				$i++;
-			}
-		}
-		else
-		{
-			$text .= "
-				<tr>
-					<td colspan='8' class='forumheader3' style='text-align:center'>".USRLAN_40."</td>
-				</tr>
-				";
-		}
-			
-		//Show add/edit form
-		$text .= "
-			</table>
-			<form method='post' action='".e_SELF."?".e_QUERY."'>
-			";
-		$text .= "<div><br /></div><table style='".ADMIN_WIDTH."' class='fborder'>  ";
-		$text .= "
-
-			<tr>
-				<td style='width:30%' class='forumheader3'>".USRLAN_41.":</td>
-				<td style='width:70%' class='forumheader3' colspan='3'>user_
-				";
-				if(is_array($current))
-				{
-					$text .= $current['user_extended_struct_name']."
-					<input type='hidden' name='user_field' value='".$current['user_extended_struct_name']."' />
-					";
-				}
-				else
-				{
-					$text .= "
-					<input class='tbox' type='text' name='user_field' size='40' value='".$current['user_extended_struct_name']."' maxlength='50' />
-					";
-				}
-				$text .= "
-					<br /><span class='smalltext'>".USRLAN_130."</span>
-				</td>
-			</tr>
-
-			<tr>
-				<td style='width:30%' class='forumheader3'>".USRLAN_129.":</td>
-				<td style='width:70%' class='forumheader3' colspan='3'>
-				<input class='tbox' type='text' name='user_text' size='40' value='".$current['user_extended_struct_text']."' maxlength='50' /><br />
-				<span class='smalltext'>".USRLAN_131."</span>
-				</td>
-			</tr>
-			";
-		 
-		$text .= "<tr>
-			<td style='width:30%' class='forumheader3'>".USRLAN_103."</td>
-			<td style='width:70%' class='forumheader3' colspan='3'>
-			<select class='tbox' name='user_type'>";
-		foreach($ue->user_extended_types as $key => $val)
-		{
-			$selected = ($current['user_extended_struct_type'] == $key) ? " selected='selected'": "";
-			$text .= "<option value='".$key."' $selected>".$val."</option>";
-		};
-		 
-		$text .= "
-			</select></td></tr>";
-		 
-		$text .= "
-			<tr>
-				<td style='width:30%' class='forumheader3'>".USRLAN_128."</td>
-				<td style='width:70%' class='forumheader3' colspan='3'>
-				<input class='tbox' type='text' name='user_parms' size='40' value='{$current['user_extended_struct_parms']}' /><br />
-				</td>
-			</tr>
-
-			<tr>
-				<td style='width:30%' class='forumheader3'>".USRLAN_98."</td>
-				<td style='width:70%' class='forumheader3' colspan='3'>
-				<input class='tbox' type='text' name='user_values' size='40' value='{$current['user_extended_struct_values']}' /><br />
-				<span class='smalltext'>".USRLAN_105."</span>
-				</td>
-			</tr>
-			 
-			<tr>
-			<td style='width:30%' class='forumheader3'>".USRLAN_104."</td>
-			<td style='width:70%' class='forumheader3' colspan='3'>
-			<input class='tbox' type='text' name='user_default' size='40' value='{$current['user_extended_struct_default']}' />
-			</td>
-			</tr>
-			 
-			<tr>
-			<td style='width:30%' class='forumheader3'>".USRLAN_132."</td>
-			<td style='width:70%' class='forumheader3' colspan='3'>
-			<select class='tbox' type='text' name='user_required'>
-			";
-			if($current['user_extended_struct_required'])
-			{
-				$text .= "
-				<option value='1' selected='selected'>".LAN_YES."
-				<option value='0'>".LAN_NO;
-			}
-			else
-			{
-				$text .= "
-				<option value='1'>".LAN_YES."
-				<option value='0' selected='selected'>".LAN_NO;
-			}
-			$text .= "
-			</select>
-			<br />
-			<span class='smalltext'>".USRLAN_133."</span>
-			</td>
-			</tr>
-
-			<tr>
-			<td style='width:30%' class='forumheader3'>".USRLAN_134."</td>
-			<td style='width:70%' class='forumheader3' colspan='3'>
-			".r_userclass("user_applicable", $current['user_extended_struct_applicable'], 'off', 'member, admin, classes')."<br /><span class='smalltext'>".USRLAN_135."</span>
-			</td>
-			</tr>
-
-			<tr>
-			<td style='width:30%' class='forumheader3'>".USRLAN_100."</td>
-			<td style='width:70%' class='forumheader3' colspan='3'>
-			".r_userclass("user_read", $current['user_extended_struct_read'], 'off', 'member, admin, classes')."<br /><span class='smalltext'>".USRLAN_107."</span>
-			</td>
-			</tr>
-			 
-			<tr>
-			<td style='width:30%' class='forumheader3'>".USRLAN_101."</td>
-			<td style='width:70%' class='forumheader3' colspan='3'>
-			".r_userclass("user_write", $current['user_extended_struct_write'], 'off', 'member, admin, classes')."<br /><span class='smalltext'>".USRLAN_106."</span>
-			</td>
-			</tr>";
-		 
-		 
-		$text .= "<tr>
-			<td colspan='4' style='text-align:center' class='forumheader'>";
-		 
-		if (!is_array($current)) {
-			$text .= "
-				<input class='button' type='submit' name='add_field' value='".USRLAN_42."' />
-				";
-		} else {
-			$text .= "
-				<input class='button' type='submit' name='update_field' value='".USRLAN_119."' />
-				";
-		}
-		// ======= end added by Cam.
-		$text .= "</td>
-			</tr>
-			 
-			</table></form></div>";
-		$ns->tablerender(USRLAN_43, $text);
 	}
 	 
 	function show_prune() {

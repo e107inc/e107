@@ -4,13 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-03-24 03:27:48 $
+|     $Revision: 1.6 $
+|     $Date: 2005-03-31 19:18:27 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("USRLAN_1", "Options Saved.");
-define("USRLAN_2", "Extended user fields saved.");
 define("USRLAN_3", "now listed an Administrator - to set permissions please go to the");
 define("USRLAN_4", "Administrator page");
 define("USRLAN_5", "You cannot remove admin status of main site admin");
@@ -49,9 +48,6 @@ define("USRLAN_37", "Members");
 define("USRLAN_38", "Search returned");
 define("USRLAN_39", "result(s)");
 define("USRLAN_40", "None defined");
-define("USRLAN_41", "Field name");
-define("USRLAN_42", "Add Extended Field");
-define("USRLAN_43", "Extended User Fields");
 define("USRLAN_44", "Allow members to upload an avatar?");
 define("USRLAN_45", "Yes");
 define("USRLAN_46", "No");
@@ -82,7 +78,6 @@ define("USRLAN_70", "User created");
 define("USRLAN_71", "Users Front Page");
 define("USRLAN_72", "Quick Add User");
 define("USRLAN_73", "Prune Users");
-define("USRLAN_74", "Extended User Fields");
 define("USRLAN_75", "Options");
 define("USRLAN_76", "User Options");
 define("USRLAN_77", "Existing Users");
@@ -91,7 +86,6 @@ define("USRLAN_79", "Status");
 define("USRLAN_80", "Info");
 define("USRLAN_81", "Edit");
 define("USRLAN_82", "Are you sure you want to delete this user?");
-define("USRLAN_83", "Extended field deleted");
 define("USRLAN_84", "There are");
 define("USRLAN_85", "users who haven't activated their account - click below to delete.");
 define("USRLAN_86", "User verified");
@@ -106,24 +100,6 @@ define("USRLAN_93", "Delete unverified users");
 define("USRLAN_94", "Delete signups if unverified after this amount of time - leave blank to not use this option");
 define("USRLAN_95", "minutes");
 
-define("USRLAN_96", "Name");
-define("USRLAN_97", "Type");
-define("USRLAN_98", "Values");
-define("USRLAN_99", "Req'd");
-define("USRLAN_100", "Read access");
-define("USRLAN_101", "Write access");
-define("USRLAN_102", "Action");
-
-define("USRLAN_103", "Field Type");
-define("USRLAN_104", "Default Value");
-define("USRLAN_105", "Enter values seperated by commas eg. value1,value2 etc <br /> For DB table use the format: dbtable,field-value,field-name.");
-define("USRLAN_106", "This will determine who will see this field in their usersettings.");
-define("USRLAN_107", "This will determine who can see the value in the user page.");
-
-define("USRLAN_108", "Text Box");
-define("USRLAN_109", "Radio Buttons");
-define("USRLAN_110", "Drop-Down Menu");
-define("USRLAN_111", "DB Table Field");
 
 define("USRLAN_112", "Resend Email");
 define("USRLAN_113", "Registration details for");
@@ -133,7 +109,6 @@ define("USRLAN_116", "Please confirm that you wish to resend a confirmation emai
 define("USRLAN_117", "Click the button below to test the following email:");
 define("USRLAN_118", "Test Email");
 
-define("USRLAN_119", "Update Extended Field");
 define("USRLAN_120", "Set Classes");
 define("USRLAN_121", "Mailing");
 define("USRLAN_122", "Welcome to");
@@ -141,23 +116,7 @@ define("USRLAN_123", "Your registration has been received and created.");
 define("USRLAN_124", "Your account is currently marked as being inactive, to activate your account please go to the following link");
 define("USRLAN_125", "From");
 
-
 define("USRLAN_126", "Allow users to rate users");
 define("USRLAN_127", "Allow comments in user profile");
-
-define("USRLAN_128", "Field Type parameters");
-define("USRLAN_129", "Field text");
-
-define("USRLAN_130", "This is the name of the field as stored in the table, it must be unique from any other");
-define("USRLAN_131", "This is the displayed name of the field in rendered pages");
-define("USRLAN_132", "Required");
-define("USRLAN_133", "Users will be required to enter a value in this field when updating their settings.");
-
-define("USRLAN_134", "Applicable");
-define("USRLAN_135", "Determines which users this field will apply to.");
-define("USRLAN_136", "move down");
-define("USRLAN_137", "move up");
-
-
 
 ?>
