@@ -1,5 +1,14 @@
 <?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107/e107_languages/English/lan_error.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2004-09-10 02:58:00 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
 define("PAGE_NAME", "Error");
 
 define("LAN_1", "Error 401 - Permission Denied");
@@ -14,7 +23,7 @@ define("LAN_9", "Please inform the administrator of the referring page if you th
 define("LAN_10", "Error 500 - Malformed Header");
 define("LAN_11", "The server encountered an internal error or misconfiguration and was unable to complete your request");
 define("LAN_12", "Please inform the administrator of the referring page if you think this error page has been shown by mistake.");
-define("LAN_13", "Error - Unknown (".$_SERVER['QUERY_STRING'].")");
+define("LAN_13", "Error - Unknown");
 define("LAN_14", "The server encountered an error");
 define("LAN_15", "Please inform the administrator of the referring page if you think this error page has been shown by mistake.");
 
