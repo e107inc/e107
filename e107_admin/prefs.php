@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-01-10 09:49:03 $
+|     $Revision: 1.10 $
+|     $Date: 2005-01-11 23:44:49 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -188,7 +188,7 @@ $handle=opendir(e_ADMIN.'includes/');
 while ($file = readdir($handle)){
         if(strstr($file, "admin")){
                 $file = str_replace(".php", "", $file);
-                if($file == "admin"){ $file = "default"; }
+                if($file == "admin_default"){ $file = "default"; }
                 $adminlist[] = $file;
         }
 }
