@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.11 $
-|		$Date: 2005-02-09 21:54:56 $
+|		$Revision: 1.12 $
+|		$Date: 2005-02-09 22:48:40 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -450,7 +450,7 @@ class content{
 				if(empty($array)){ return FALSE; }
 				 
 				for($a=0;$a<count($array);$a++){
-						usort($array, create_function('$x,$y','return $x[16]==$y[16]?0:($x[16]<$y[16]?-1:1);'));
+						//usort($array, create_function('$x,$y','return $x[16]==$y[16]?0:($x[16]<$y[16]?-1:1);'));
 						if(!$array[$a][17] || $array[$a][17] == "0"){
 							$pre = "";
 							$class = "forumheader";

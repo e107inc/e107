@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.6 $
-|		$Date: 2005-02-09 16:18:39 $
+|		$Revision: 1.7 $
+|		$Date: 2005-02-09 22:48:40 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -88,9 +88,14 @@ class contentform{
 						}
 
 						if($parentdetails == FALSE){
+
 							$text = "<div style='text-align:center'>".CONTENT_ADMIN_MAIN_LAN_1."</div>";
 							$ns -> tablerender(CONTENT_ADMIN_MAIN_LAN_2, $text);
-							require_once(FOOTERF);
+							if($mode == "admin"){
+								require_once(e_ADMIN."footer.php");
+							}else{
+								require_once(FOOTERF);
+							}
 							exit;
 						}
 
@@ -1140,7 +1145,7 @@ class contentform{
 						if(!$sub_action || $sub_action == "manage"){
 								$text = "<div style='text-align:center'>\n";
 								if(!is_object($sql)){ $sql = new db; }
-								if($category_total = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_author, content_icon", "content_id='".$type_id."' ")){
+								if($category_total = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_author, content_icon", "content_id='".$type_id."' ORDER BY content_parent")){
 										$text .= "
 										<table style='".ADMIN_WIDTH."' class='fborder'>
 										<tr>
