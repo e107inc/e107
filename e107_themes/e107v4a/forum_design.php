@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/forum_design.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:42 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-02-07 19:06:19 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -58,7 +58,7 @@ $FORUMTHREADSTYLE = "
 <table cellspacing='0' cellpadding='0' style='width:100%'>
 <tr>
 <td class='smallblacktext'>\n{THREADDATESTAMP}\n</td>
-<td style='text-align:right'>\n{REPORTIMG}{EDITIMG}{QUOTEIMG}\n</td>
+<td style='text-align:right'>\n{EMAILITEM} {PRINTITEM} {REPORTIMG}\n{EDITIMG}\n{QUOTEIMG}\n</td>
 </tr>
 </table>
 </td>
