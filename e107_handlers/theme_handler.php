@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-03-04 11:31:04 $
+|     $Revision: 1.7 $
+|     $Date: 2005-03-04 11:34:35 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -196,9 +196,8 @@ class themeHandler{
 			<tr><td style='vertical-align:top'><b>".TPVLAN_5."</b>:</td><td style='vertical-align:top'> $website</td></tr>
 			<tr><td style='vertical-align:top'><b>".TPVLAN_6."</b>:</td><td style='vertical-align:top'>".$theme['date']."</td></tr>
 			<tr><td style='vertical-align:top'><b>".TPVLAN_7."</b>:</td><td style='vertical-align:top'>".$theme['info']."</td></tr>
-			<tr><td style='vertical-align:top'><b>".TPVLAN_8."</b>:</td><td style='vertical-align:top'>
-			[ <a href='".e_SELF."?preview.".$theme['id']."'>".TPVLAN_9."</a> ] [ <a href='".e_SELF."?set.".$theme['id']."'>".TPVLAN_10."</a> ]\n".
-			($theme['name'] == $pref['sitetheme'] ? "<br /><br />".TPVLAN_21 : "")."
+			<tr><td style='vertical-align:top'><b>".TPVLAN_8."</b>:</td><td style='vertical-align:top'>[ <a href='".e_SELF."?preview.".$theme['id']."'>".TPVLAN_9."</a> ] [ ".
+			($theme['name'] == $pref['sitetheme'] ? TPVLAN_21 : "<a href='".e_SELF."?set.".$theme['id']."'>".TPVLAN_10."</a>\n")." ]
 			</td></tr>
 			</table>
 			</td>
