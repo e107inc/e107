@@ -1,12 +1,10 @@
 <?
 
-
-
 $themename = "newsroom";
 $themeversion = "1.0";
-$themeauthor = "cameron";
-$themedate = "9/02/2005";
-$themeinfo = "";
+$themeauthor = "CaMer0n";
+$themedate = "10th March 2005";
+$themeinfo = "This theme displays some of the news features of 0.7<br />For best results, create news items with a thumbnail image of 65x50 pixels.<br />To place these items in the top right area, choose 'othernews2' for the rendertype of the news item.<br />'othernews' may be used for the simple bullet listing below it.<br />This theme may be used freely under the GPL license providing the 'e107 newsroom' image is replaced.";
 
 define("THEME_DISCLAIMER", "<br /><i>NewsRoom theme v1.0 by CaMer0n</i>");
 
@@ -56,10 +54,10 @@ $HEADER = "
 ";
 $CUSTOMHEADER = $HEADER."<div>";
 $HEADER .= "<div style='width:440px'> ";
-$CUSTOMPAGES = "forum_viewforum.php forum.php forum_viewtopic.php forum_post.php";
+$CUSTOMPAGES = "user.php usersettings.php forum_viewforum.php forum.php forum_viewtopic.php forum_post.php";
 
 $FOOTER = "
-		<div class='forumheader3' style='margin-top:6px'>
+		<div style='margin-top:6px'>
 		{NEWS_CATEGORIES}
 		</div>
 		</div>
@@ -71,7 +69,9 @@ $FOOTER = "
 		{SETSTYLE=rightmenu}
 		{MENU=2}
 	</td>
-</tr>
+</tr>";
+
+$FOOTERBASE = "
 
 <tr>
 	<td colspan='2' style='vertical-align:top'>
@@ -150,6 +150,11 @@ $FOOTER = "
 
 </td></tr></table>
 </div>\n";
+// this part just saves us duplicating the html in the footer section.
+$CUSTOMFOOTER = "</div></td>
+</tr>".$FOOTERBASE;
+
+$FOOTER .= $FOOTERBASE;
 
 
 $NEWSSTYLE = "
@@ -186,9 +191,9 @@ $NEWSSTYLE = "
 
 ";
 
-$NEWSLISTSTYLE = "<table cellpadding='0' cellspacing='0' style='border-bottom:1px solid black;width:100%'>
-	<tr><td class='caption2' colspan='2' style='padding:3px;text-decoration:none'>
-	</td></tr>
+// the style of the items in news.php?cat and news.php?all
+$NEWSLISTSTYLE = "<table cellpadding='0' cellspacing='0' style='margin-bottom:3px;border-bottom:1px solid black;width:100%'>
+
 	<tr><td style='padding:3px;vertical-align:top;width:65px'>
 		{NEWSTHUMBNAIL}
 	</td>
@@ -199,19 +204,25 @@ $NEWSLISTSTYLE = "<table cellpadding='0' cellspacing='0' style='border-bottom:1p
 	</td>
 	</tr>
 	</table>";
-/*
+
+
+// You can customize the news-category bullet listing here.
+
 $NEWSCAT = "\n\n\n\n<!-- News Category -->\n\n\n\n
 	<div style='padding:2px;padding-bottom:12px'>
-	<div class='newscat_caption'>
+	<div class='leftcap' style='vertical-align:center'>
+	{NEWSCATICON}
+	&nbsp;<span style='vertical-align:top;margin-top:3px'>
 	{NEWSCATEGORY}
+	</span>
 	</div>
-	<div style='width:100%;text-align:left'>
+	<div style='width:100%;text-align:left;padding-top:2px'>
 	{NEWSCAT_ITEM}
 	</div>
 	</div>
 ";
 
-
+/*
 $NEWSCAT_ITEM = "
         <div style='width:100%;height:14px;display:block'>
         <table style='width:100%'>
@@ -225,7 +236,7 @@ $NEWSCAT_ITEM = "
 
 
 $OTHERNEWS_STYLE = "<div style='text-align:left;margin-bottom:3px'>
-	<table style='width:100%'><tr><td style='color:white;text-align:left;width:10px;vertical-align:top'>
+	<table style='width:100%'><tr><td style='color:black;text-align:left;width:10px;vertical-align:top'>
 &#8226;</td><td style='text-align:left;vertical-align:top'>
 	<div style='font-size:11px;'><b>{NEWSTITLELINK}</b></div></td></tr></table>
 	</div>";
@@ -265,14 +276,12 @@ define("NEWSLIST_CATICON","border:1px solid white");
 
 // [news categories]
 define("NEWSCAT_CATLINK","font-weight:bold;font-size:12px;text-decoration:none;color:black");
-define("NEWSCAT_ITEMLINK","font-size:12px;color:#000099");
-define("NEWSCAT_STYLE","width:100%");
+define("NEWSCAT_ITEMLINK","font-size:12px;color:#fff");
+define("NEWSCAT_STYLE","width:100%;margin-bottom:3px");
 define("NEWSCAT_AMOUNT",3);
 define("NEWSCAT_COLS",2);
 define("NEWSCAT_THUMB","border:1px solid black");
 // define("NEWSCAT_CATICON","border:1px solid red");
-
-
 
 // [other news]
 define("OTHERNEWS_CATLINK","text-decoration:none;");
@@ -281,12 +290,12 @@ define("OTHERNEWS_LIMIT",3);
 
 // [other news 2]
 define("OTHERNEWS2_CATLINK","color:white;text-decoration:none;");
-define("OTHERNEWS2_ITEMLINK","color:#CCCCCC;text-transform:uppercase;font-weight:bold;text-decoration:none;");
+define("OTHERNEWS2_ITEMLINK","color:#cccccc;text-transform:uppercase;font-weight:bold;text-decoration:none;");
 define("OTHERNEWS2_LIMIT",4);
 
 // [linkstyle]
 
-define(PRELINK, "<table style='width:145px;background-color:#EEEEEE' border=\"0\" cellpadding=\"0\" cellspacing=\"0\" summary=\"Newsroom Navigation\">");
+define(PRELINK, "<table style='width:145px;background-color:#eeeeee' border=\"0\" cellpadding=\"0\" cellspacing=\"0\" summary=\"Newsroom Navigation\">");
 define(POSTLINK, "</table>");
 define(LINKSTART, "<tr class=\"newsroomRow\">
 	<td class=\"dent\">&nbsp;</td>
@@ -310,9 +319,9 @@ switch ($style) {
 	case "leftmenu":
 	echo "<div style='width:145px'>
 	<table style='width:100%' cellpadding='0' cellspacing='0'>
-	<tr class=\"newsroomOtherRow\">
+	<tr>
 	<td>
-	<div class=\"newsroomOther\" style='border-bottom:1px solid black;color:white;background-color:#666666;padding:3px'>
+	<div class='leftcap'>
 	$caption
 	</div>
 	<div class=\"forumheader3\" >$text</div>
@@ -363,7 +372,7 @@ switch ($style) {
 	<div class=\"caption2\" style='color:white;padding:3px'>
 	$caption
 	</div>
-	<div class=\"newsroomOther\" style='padding:6px'>$text</div>
+	<div class=\"forumheader3\" style='padding:6px'>$text</div>
 	</td></tr></table></div>";
 
 	break;

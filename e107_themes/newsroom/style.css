@@ -3,7 +3,42 @@ body {
 	color: #000;
 	background-color: #FFFFFF;
 	margin:0px;
+
 }
+
+a:link {
+ color: #333333;
+ font-weight: bold;
+ text-decoration: none;
+ }
+
+a:visited {
+ color: #333333;
+ font-weight: bold;
+ text-decoration: none;
+}
+
+a:hover {
+ color: #333333;
+ font-weight: bold;
+ text-decoration: underline;
+}
+
+
+a.forumlink{
+	color: #fff;
+	text-decoration: underline;
+}
+
+a.forumlink:visited{
+	color: #fff;
+	text-decoration: underline;
+}
+
+#clock {
+ font-family: arial, "ms sans serif", sans-serif;
+}
+
 
 .newsroom {
 	background-color: #333333;
@@ -31,17 +66,15 @@ TR TD.newsroomHilite A:link, TR TD.newsroomHilite A:visited {
 
 
 
-.newsroomOther {
+.leftcap {
 	background-color: #ddd;
+	background-image : url(images/fheader.png);
 	color: #000;
-	cursor: pointer;
+	border-bottom:1px solid black;
+	border-top:1px solid white;
+	padding:3px
 }
-.newsroomOther A:link, .newsroomOther A:visited {
-	color: #000;
-}
-TR TD.newsroomOther A:link, TR TD.newsroomOther A:visited {
-	text-decoration: none;
-}
+
 
 
 
@@ -57,11 +90,7 @@ TR.newsroomRow TD.dent {
 	border-right: none;
 }
 
-a:link {
- color: #333333;
- font-weight: bold;
- text-decoration: none;
- }
+
 
 TR.newsroomHiliteRow TD {
 	vertical-align: middle;
@@ -75,113 +104,9 @@ TR.newsroomHiliteRow TD.dent {
 	border-right: none;
 }
 
-TR.newsroomGroupRow TD {
-	vertical-align: middle;
-	border: 1px solid;
-	border-color: #ddd #666 #666;
-	border-left: none;
-}
-
-TR.newsroomOtherRow TD {
-	vertical-align: middle;
-	border: 1px solid;
-	border-color: #fff #666 #666;
-	border-left: none;
-}
-
-TR.newsroomOtherRow TD.dent {
-	background-color: #ccc;
-	border-right: none;
-}
-
-.newsroomTextRed {
-	font-family: verdana, arial, sans-serif;
-	font-size: 10px;
-	font-weight: bold;
-	line-height: 14px;
-	padding-left: 4px;
-	color: #c00
-}
-
-.newsroomOtherOn{
-	background-color: #ddd;
-	color: #c00;
-	cursor: pointer;
-}
-
-.newsroomOtherOn A:link, .newsroomOtherOn A:visited {
-	color: #c00;
-}
-
-
-a:visited {
- color: #333333;
- font-weight: bold;
- text-decoration: none;
-}
-
-
-TR TD.newsroomOtherOn A:link, TR TD.newsroomOtherOn A:visited {
-	text-decoration: none;
-}
-
-.newsroomHiliteSub {
-	background-color: #c00;
-	color: #fff;
-	cursor: pointer;
-	vertical-align: middle;
-	border-bottom: 1px solid;
-	border-color: #600;
-	font-family: verdana, arial, sans-serif;
-	font-size: 10px;
-	line-height:14px;
-	font-weight: bold;
-	text-decoration: none;
-
-}
-
-.newsroomSub {
-	background-color: #EAEFF4;
-	cursor: pointer;
-	vertical-align: middle;
-	border-bottom: 1px solid;
-	border-color: #BFD4E8;
-	font-family: verdana, arial, sans-serif;
-	font-size: 10px;
-	line-height:14px;
-	font-weight: bold;
-	text-decoration: none;
-}
-
-.newsroomHiliteSub A:link, .newsroomHiliteSub A:visited {
-	text-decoration: none;
-	color: #fff;
-}
-
-.newsroomSub A:link, .newsroomSub A:visited {
-	text-decoration: none;
-}
-
-.newsroomSub A:hover {color: #C00;}
 
 
 
-
-
-
-
-
-a:hover {
- color: #333333;
- font-weight: bold;
- text-decoration: underline;
-}
-
-
-
-p {
- margin-top: 0px;
- }
 h3 {
  font-family: verdana, arial, "ms sans serif", sans-serif;
  font-size: 16px;
@@ -190,65 +115,9 @@ h3 {
  padding-left: 5px;
  color: #e9ffe9;
  }
-.header {
- font-family: verdana, arial, "ms sans serif", sans-serif;
- font-size: 13px;
- font-weight: bold;
- margin: 10px;
- line-height: 13px;
- color: #333333;
- }
-.small
- {
- font-family: verdana, arial, "ms sans serif", sans-serif;
- font-size: 10px;
- font-weight: normal;
- line-height: 14px;
- color: #e9ffe9;
- }
 
 
-.small a,.small a:visited
-{
- color: #e9ffe9;
- font-weight: bold;
-}
-.smalldark
- {
- font-family: verdana, arial, "ms sans serif", sans-serif;
- font-size: 10px;
- font-weight: normal;
- line-height: 14px;
- color: #333333;
- }
-.smalldark a,.smalldark a:visited
- {
- color: #333333;
- font-weight: bold;
- }
-.basic
- {
- max-width: 100%;
- font-family: verdana, arial, "ms sans serif", sans-serif;
- font-size: 10px;
- line-height: 10px;
- padding-left: 2px;
- color: #5a6f5a;
- vertical-align: top;
- }
-.basic a,.basic a:visited
- {
- color: #46644c;
- }
-input, textarea, select {
- background-color: #cccccc;
- border-style: solid;
- border-width: 1px;
- font-family: verdana, arial, sans-serif;
- font-size: 10px;
- color: #333333;
- padding: 0px;
-}
+
 .smalltext {
     background: none;
 	font-family: verdana, arial, "ms sans serif", sans-serif;
@@ -300,22 +169,16 @@ input, textarea, select {
 	color:#5a6f5a;
 }
 .tbox{
-	background-color: #cccccc;
-	border-bottom: #333333 1px solid;
-	border-left: #333333 1px solid;
-	border-right: #333333 1px solid;
-	border-top: #333333 1px solid;
-	color: #333333;
+	background-color: #666666;
+	border: #666666 1px inset;
+	color: #ffffff;
 	font-family: verdana, arial, "ms sans serif", sans-serif;
 	font-size: 10px;
 }
 .button{
-	background-color: #cccccc;
-	border-bottom: #333333 1px solid;
-	border-left: #333333 1px solid;
-	border-right: #333333 1px solid;
-	border-top: #333333 1px solid;
-	color: #333333;
+	background-color: #333333;
+	border: #666666 1px outset;
+	color: #ffffff;
 	font-family: verdana, arial, "ms sans serif", sans-serif;
 	font-size: 9px;
 	text-align:center;
@@ -393,6 +256,7 @@ hr {
 	border: #C3BDBD 1px solid;
 	text-align:right;
 }
+
 .fborder {
 	border-bottom: #000000 1px solid;
 	border-left: #000000 1px solid;
@@ -400,13 +264,14 @@ hr {
 	border-top: #000000 1px solid;
 	background-color: #fff;
 }
+
 .forumheader{
 	background-color: #EBEFF2;
 	font-family: verdana, tahoma, arial, helvetica, sans-serif;
 	font-size: 14px;
 	color:#000;
 	padding: 4px;
-	background-image : url(forum/fcap2.png);
+	background-image : url(images/fheader.png);
 	border: #C3BDBD 1px solid;
 }
 
@@ -431,48 +296,32 @@ hr {
 
 
 .fcaption {
-	border-bottom: #000 1px solid;
-	border-left: #000 1px solid;
-	border-right: #000 1px solid;
-	border-top: #000 1px solid;
+	text-align:left;
+	border: #000 1px solid;
 	padding-bottom: 2px;
 	padding-left: 8px;
 	padding-right: 0px;
 	padding-top: 2px;
 	background-color: #C9C7C7;
 	font-family: verdana, tahoma, arial, helvetica, sans-serif;
-	background-image : url(forum/fcap.png);
+	background-color : #333333;
 	font-size: 12px;
 	color:#fff;
 }
+
 
 .helpbox {
 	border-bottom: #fff 1px solid;
 	border-left: #fff 1px solid;
 	border-right: #fff 1px solid;
 	border-top: #fff 1px solid;
-	background-color: transparent;
 	color:#000;
 	font-family: tahoma, verdana, arial, helvetica, sans-serif;
 	font-size: 9px;
 }
 
-a.forumlink{
-	color: #fff;
-	text-decoration: underline;
-}
 
-table.bclr1 {
-	background-color: #ffffff;
-	width: 98%;
-	border: 0px;
-}
 
-table.bclr1a {
-	background-color: #ffffff;
-	width: 100%;
-	border: 0px;
-}
 
 table.bclr2 {
 	background-color: #5A6F5A;
