@@ -6,7 +6,12 @@
 |
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|
+|     $Source: /cvs_backup/e107/e107_plugins/pm_menu/pm_class.php,v $
+|     $Revision: 1.10 $
+|     $Date: 2005-01-05 10:13:54 $
+|     $Author: pholzmann $
++----------------------------------------------------------------------------+
 */
 class pm {
 
@@ -188,11 +193,10 @@ class pm {
                 }
                 $ret.="</table></form>\n";
                 if($rcv_total > $max_per_page){
-                        ob_end_flush();
+                        //ob_end_flush();
                         ob_start();
                         $np -> nextprev(e_SELF,$start,$max_per_page,$rcv_total,"",$np_query);
-                        $ret .= ob_get_contents();
-                        ob_end_clean();
+                        $ret .= ob_get_clean();
                 }
                 return $ret;
         }
