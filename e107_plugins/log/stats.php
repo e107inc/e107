@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-03-29 12:27:44 $
+|     $Revision: 1.17 $
+|     $Date: 2005-03-29 23:48:12 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -606,8 +606,9 @@ class siteStats {
 	function renderDaily() {
 		global $sql;
 
-		if($amount = $sql -> db_Select("logstats", "*", "log_id REGEXP('[[:digit:]]+.[[:digit:]]+.[[:digit:]]+') ORDER BY log_id DESC LIMIT 0,14")) {
+		if($amount = $sql -> db_Select("logstats", "*", "log_id REGEXP('[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+') ORDER BY log_id DESC LIMIT 0,14", TRUE)) {
 			$array = $sql -> db_getList();
+
 			$dailyArray = array();
 			$dailytotal = array();
 			foreach($array as $info) {
@@ -624,12 +625,15 @@ class siteStats {
 		}
 
 		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>Visits in last $amount days</td>\n<td class='fcaption' style='width: 70%;'>Visits</td>\n</tr>\n";
-	
-		$ratio = $this -> getWidthRatio ($dailytotal, "totalv");
+
+		$tmpArray = $this -> arraySort($dailytotal, "totalv");
+		$data = each($tmpArray);
+		$maxValue = $data[1]['totalv'];
+
 		foreach($dailytotal as $date => $total) {
 			list($day, $month, $year) = explode(".", $date);
 			$date = strftime ("%A, %B %d", mktime (0,0,0,$month,$day,$year));
-			$barWidth = ($total['totalv'] / $ratio);
+			$barWidth = round(($total['totalv']/$maxValue) * 100, 2);
 			$text .= "<tr class='forumheader3'>
 			<td style='width: 30%;'>$date</td>
 			<td style='width: 30%;'>".$this -> bar($barWidth)." ".$total['totalv']."</td>
@@ -640,12 +644,15 @@ class siteStats {
 
 		
 		$text .= "<br /><table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>Unique visits in last $amount days</td>\n<td class='fcaption' style='width: 70%;'>Visits</td>\n</tr>\n";
-	
-		$ratio = $this -> getWidthRatio ($dailytotal, "uniquev");
+
+		$tmpArray = $this -> arraySort($dailytotal, "uniquev");
+		$data = each($tmpArray);
+		$maxValue = $data[1]['uniquev'];
+
 		foreach($dailytotal as $date => $total) {
 			list($day, $month, $year) = explode(".", $date);
 			$date = strftime ("%A, %B %d", mktime (0,0,0,$month,$day,$year));
-			$barWidth = ($total['uniquev'] / $ratio);
+			$barWidth = round(($total['uniquev']/$maxValue) * 100, 2);
 			$text .= "<tr class='forumheader3'>
 			<td style='width: 30%;'>$date</td>
 			<td style='width: 30%;'>".$this -> bar($barWidth)." ".$total['uniquev']."</td>
@@ -655,11 +662,13 @@ class siteStats {
 
 
 		$text .= "<br /><table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>Visits in last $amount days by page</td>\n<td class='fcaption' style='width: 70%;'>Visits</td>\n</tr>\n";
-		
-		$ratio = $this -> getWidthRatio ($dailyArray, "totalv");
+
 		$newArray = $this -> arraySort($dailyArray, "totalv");
+		$data = each($newArray);
+		$maxValue = $data[1]['totalv'];
+		
 		foreach($newArray as $key => $total) {
-			$barWidth = ($total['totalv'] / $ratio);
+			$barWidth = round(($total['totalv']/$maxValue) * 100, 2);
 			$text .= "<tr class='forumheader3'>
 			<td style='width: 30%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> $key</td>
 			<td style='width: 30%;'>".$this -> bar($barWidth)." ".$total['totalv']."</td>
@@ -669,10 +678,12 @@ class siteStats {
 
 		$text .= "<br /><table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>Unique visits in last $amount days by page</td>\n<td class='fcaption' style='width: 70%;'>Visits</td>\n</tr>\n";
 		
-		$ratio = $this -> getWidthRatio ($dailyArray, "uniquev");
 		$newArray = $this -> arraySort($dailyArray, "uniquev");
+		$data = each($newArray);
+		$maxValue = $data[1]['uniquev'];
+
 		foreach($newArray as $key => $total) {
-			$barWidth = ($total['uniquev'] / $ratio);
+			$barWidth = round(($total['uniquev']/$maxValue) * 100, 2);
 			$text .= "<tr class='forumheader3'>
 			<td style='width: 30%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> $key</td>
 			<td style='width: 30%;'>".$this -> bar($barWidth)." ".$total['uniquev']."</td>
@@ -702,13 +713,16 @@ class siteStats {
 			}
 		}
 
-		$ratio = $this -> getWidthRatio ($monthTotal, "totalv");
+		$tmpArray = $this -> arraySort($monthTotal, "totalv");
+		$data = each($tmpArray);
+		$maxValue = $data[1]['totalv'];
+
 		$text .= "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>Visits by month</td>\n<td class='fcaption' style='width: 70%;'>Visits</td>\n</tr>\n";
 		
 		foreach($monthTotal as $date => $total) {
 			list($month, $year) = explode("-", $date);
 			$date = strftime ("%B %Y", mktime (0,0,0,$month,1,$year));
-			$barWidth = ($total['totalv'] / $ratio);
+			$barWidth = round(($total['totalv']/$maxValue) * 100, 2);
 			$text .= "<tr class='forumheader3'>
 			<td style='width: 30%;'>$date</td>
 			<td style='width: 30%;'>".$this -> bar($barWidth)." ".$total['totalv']."</td>
@@ -716,16 +730,15 @@ class siteStats {
 		}
 		$text .= "</table>";
 
-		$ratio = $this -> getWidthRatio ($monthTotal, "totalv");
 		$text .= "<br /><table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>Unique visits by month</td>\n<td class='fcaption' style='width: 70%;'>Visits</td>\n</tr>\n";
 		
 		foreach($monthTotal as $date => $total) {
+			$barWidth = round(($total['totalv']/$maxValue) * 100, 2);
 			list($month, $year) = explode("-", $date);
 			$date = strftime ("%B %Y", mktime (0,0,0,$month,1,$year));
-			$barWidth = ($total['uniquev'] / $ratio);
 			$text .= "<tr class='forumheader3'>
 			<td style='width: 30%;'>$date</td>
-			<td style='width: 30%;'>".$this -> bar($barWidth)." ".$total['uniquev']."</td>
+			<td style='width: 30%;'>".$this -> bar($barWidth)." ".$total['totalv']."</td>
 			</tr>\n";
 		}
 		$text .= "</table>";
@@ -740,6 +753,10 @@ class siteStats {
 		$data = each($tmpArray);
 		$maxValue = $data[1]['totalv'];
 
+		
+
+		echo "<b>maxValue</b> ".$maxValue." <br />";
+
 		$ratio = 0;
 		while($maxValue > 100) {
 			$maxValue = ($maxValue / 2);
@@ -749,6 +766,7 @@ class siteStats {
 		{
 			return 1;
 		}
+		echo "<b>ratio</b> ".$ratio." <br />";
 		return $ratio;
 	}
 
@@ -1010,7 +1028,7 @@ class siteStats {
 	
 	function bar($percen)
 	{
-		return ($percen ? "<div style='background-image: url(".$this -> barl."); width: 5px; height: 14px; float: left;'></div><div style='background-image: url(".$this -> bar."); width: ".(floor($percen) != 100 ? floor($percen) : 90)."%; height: 14px; float: left;'></div><div style='background-image: url(".$this -> barr."); width: 5px; height: 14px; float: left;'></div>" : "");
+		return ($percen ? "<div style='background-image: url(".$this -> barl."); width: 5px; height: 14px; float: left;'></div><div style='background-image: url(".$this -> bar."); width: ".($percen-10)."%; height: 14px; float: left;'></div><div style='background-image: url(".$this -> barr."); width: 5px; height: 14px; float: left;'></div>" : "");
 
 	}
 
