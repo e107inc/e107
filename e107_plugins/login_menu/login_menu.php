@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2004-12-16 01:23:25 $
+|     $Revision: 1.7 $
+|     $Date: 2004-12-17 13:00:42 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
+
+$sql2 = new db;
 
 if(CORRUPT_COOKIE === TRUE){
 	$text = '<div style="text-align:center">'.LOGIN_MENU_L7.'<br /><br />
