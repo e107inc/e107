@@ -59,7 +59,7 @@ if (ADMIN) {
 	$plugin_text .= adnav_cat('Plugins', '', E_16_CAT_PLUG, 'plugMenu');
 	$plugin_text .= "<div id='plugMenu' class='menu' onmouseover=\"menuMouseover(event)\">";
 	if (getperms('Z')) {
-		$plugin_text .= adnav_main(ADLAN_98, e_ADMIN.'plugin.php', E_16_PLUGMANAGER, FALSE, 'highlight');
+		$plugin_text .= adnav_main(ADLAN_98, e_ADMIN.'plugin.php', E_16_PLUGMANAGER, FALSE, 'header');
 		$render_plugins = TRUE;
 	}
 	if($sql -> db_Select("plugin", "*", "plugin_installflag=1")){
