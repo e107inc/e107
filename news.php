@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2004-10-10 21:12:04 $
+|     $Revision: 1.5 $
+|     $Date: 2004-10-11 09:27:26 $
 |     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
@@ -315,11 +315,11 @@ if($action != "item" && $action != 'list'){ // do not show the newsarchive on th
 	$sql2b = new db;
 	require_once(e_HANDLER."multilang/mysql_queries.php");
   if(!is_object($ml)){$ml = new e107_ml;}
-  $tmp_ok = 0;
-  if(e_ML && !$ml -> e107_ml_Select("news", "*", $query2, "", FALSE, "sql2b")){
-    $tmp_ok = 1;
+  $tmp_ok = 1;
+  if(e_MLANG == 1 && !$ml -> e107_ml_Select("news", "*", $query2, "default", FALSE, "sql2b")){
+    $tmp_ok = 0;
   }else if(!$sql2b -> db_Select("news", "*", $query2)){
-    $tmp_ok = 1;
+    $tmp_ok = 0;
   }
   
   if($tmp_ok == 1){
@@ -357,7 +357,7 @@ if($action != "item" && $action != 'list'){ // do not show the newsarchive on th
 			else
 			{
 			  // ML
-				if(e_MLANG)
+				if(e_MLANG == 1)
 				{
           $ml -> e107_ml_Select("news_category", "*",  "category_id='$news2_category' ", "default", false, "sql2");
         }
@@ -410,7 +410,7 @@ $line_clr = "black";
 if($pref['news_cats']=='1'){
 	$sql2 = new db;
   // ML
-	if(e_MLANG)
+	if(e_MLANG == 1)
 	{
     $ml -> e107_ml_Select("news_category","*",  "category_id!='' ORDER BY category_name ASC", "default", false, "sql2");
   }
@@ -431,7 +431,7 @@ if($pref['news_cats']=='1'){
 		//  $text3 .= "</td>";
 
     // ML
-  	if(e_MLANG)
+  	if(e_MLANG == 1)
   	{
       $ml -> e107_ml_Select("news", "*",  "news_category='$category_id' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")  ORDER BY news_datestamp DESC LIMIT 0,$nbr_lst");
     }
