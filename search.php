@@ -163,7 +163,7 @@ function parsesearch($text, $match){
 	}else{
 		$text = "...".substr($text, ($pos-70), 140)."...";
 	}
-	$text = eregi_replace($match, "<span style='text-decoration: underline;'><b>$match</b></span>", $text);	
+	$text = eregi_replace($match, "<span class='searchhighlight'>$match</span>", $text);	
 	return($text);
 }
 
