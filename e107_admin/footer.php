@@ -1,8 +1,7 @@
 <?php
 /*
-+---------------------------------------------------------------+
++ ----------------------------------------------------------------------------+
 |        e107 website system
-|        /admin/footer.php
 |
 |        ©Steve Dunstan 2001-2002
 |        http://e107.org
@@ -10,7 +9,12 @@
 |
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|
+|     $Source: /cvs_backup/e107/e107_admin/footer.php,v $
+|     $Revision: 1.12 $
+|     $Date: 2005-01-07 10:46:13 $
+|     $Author: pholzmann $
++----------------------------------------------------------------------------+
 */
 @include(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_footer.php");
 @include(e_LANGUAGEDIR."English/admin/lan_footer.php");
