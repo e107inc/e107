@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.6 $
-|   $Date: 2004-12-01 14:41:39 $
-|   $Author: streaky $
+|   $Revision: 1.7 $
+|   $Date: 2004-12-12 15:26:21 $
+|   $Author: sweetas $
 +---------------------------------------------------------------+
 
 */
@@ -60,6 +60,7 @@ if($delete == "main" && $del_id)
 {
         if($sql -> db_Delete("news", "news_id='$del_id' "))
         {
+		$e_event -> trigger("newsdel", $del_id);
                 $newspost -> show_message(NWSLAN_31." #".$del_id." ".NWSLAN_32);
                 $e107cache->clear("news.php");
                 $ix -> create_rss();
