@@ -21,7 +21,13 @@ class e107_basicparse{
     return $text;
   }
 
-
+  // From the official php help
+  function unentity ($stringarray){
+      $trans_tbl = get_html_translation_table (HTML_ENTITIES);
+      $trans_tbl = array_flip ($trans_tbl);
+      return strtr ($stringarray, $trans_tbl);
+  }
+  
 }
 
 ?>
