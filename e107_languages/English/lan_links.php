@@ -37,4 +37,5 @@ define("LAN_106", "Underlined fields are required.");
 
 define("LAN_Links_1", "Total links");
 define("LAN_Links_2", "Total links activated");
+define("LAN_LINKS_3", "Anonymous");
 ?>

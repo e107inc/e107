@@ -22,7 +22,8 @@ if(IsSet($_POST['add_link']) && check_class($pref['link_submit_class'])){
                 $link_url = $aj -> formtpa($_POST['link_url'], "public");
                 $link_description = $aj -> formtpa($_POST['link_description'], "public");
                 $link_button = $aj -> formtpa($_POST['link_button'], "public");
-                $submitted_link = $_POST['cat_name']."^".$link_name."^".$link_url."^".$link_description."^".$link_button."^".USERNAME;
+                $username = (defined('USERNAME')) ? USERNAME : LAN_LINKS_3;
+                $submitted_link = $_POST['cat_name']."^".$link_name."^".$link_url."^".$link_description."^".$link_button."^".$username;
                 $sql -> db_Insert("tmp", "'submitted_link', '".time()."', '$submitted_link' ");
                 $ns -> tablerender(LAN_99, "<div style='text-align:center'>".LAN_100."</div>");
         }else{
