@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.2 $
-|		$Date: 2005-02-04 10:35:47 $
+|		$Revision: 1.3 $
+|		$Date: 2005-02-04 12:08:33 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -383,17 +383,17 @@ function admin_content_config_adminmenu(){
                 $var['main']['link']=e_SELF;
 
                 $var['create']['text']=CONTENT_ADMIN_MENU_LAN_1;
-                $var['create']['link']=e_SELF."?".$type.".0.create";
+                $var['create']['link']=e_SELF."?type.0.create";
 
                 $var['cat.manage']['text']=CONTENT_ADMIN_MENU_LAN_2;
-                $var['cat.manage']['link']=e_SELF."?".$type.".0.cat.manage";
+                $var['cat.manage']['link']=e_SELF."?type.0.cat.manage";
 
 				$var['cat.create']['text']=CONTENT_ADMIN_MENU_LAN_3;
-                $var['cat.create']['link']=e_SELF."?".$type.".0.cat.create";
+                $var['cat.create']['link']=e_SELF."?type.0.cat.create";
 
                 if($submittedcontents = $sql -> db_Count($plugintable, "(*)", "WHERE content_refer ='sa' ")){
                         $var['sa']['text']=CONTENT_ADMIN_MENU_LAN_4." (".$submittedcontents.")";
-                        $var['sa']['link']=e_SELF."?".$type.".0.sa";
+                        $var['sa']['link']=e_SELF."?type.0.sa";
                 }
 
 				show_admin_menu(CONTENT_ADMIN_MENU_LAN_6, $act,$var);
@@ -427,7 +427,7 @@ function admin_content_config_adminmenu(){
 								$parentarray = $aa -> printParent($parentdetails2, "0", $content_id, "optionadminmenu");
 								for($i=0;$i<count($parentarray);$i++){
 									$var['c'.$parentarray[$i][3]]['text']=$parentarray[$i][1];
-									$var['c'.$parentarray[$i][3]]['link']=e_SELF."?".$type.".".$parentarray[$i][4].".c.{$parentarray[$i][3]}";
+									$var['c'.$parentarray[$i][3]]['link']=e_SELF."?type.".$parentarray[$i][4].".c.{$parentarray[$i][3]}";
 								}
 								show_admin_menu(CONTENT_ADMIN_MENU_LAN_5." : ".$content_heading."", 'c'.$sub_action, $var);
 							}
