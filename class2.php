@@ -1,17 +1,22 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        /class2.php
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107/class2.php,v $
+|     $Revision: 1.88 $
+|     $Date: 2004-08-14 01:48:47 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
+
 //unset any globals created by register_globals being turned ON
 while (list($global) = each($GLOBALS)){
         if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST)$/', $global)){
@@ -208,71 +213,71 @@ if($pref['modules']){
 
 //###########  Module redifinable functions ###############
 if(!function_exists('checkvalidtheme')){
-	function checkvalidtheme($theme_check){
-		// arg1 = theme to check
-		global $ADMIN_DIRECTORY;
-		if(@fopen(e_THEME.$theme_check."/theme.php", r)){
-			define("THEME", e_THEME.$theme_check."/");
-		}else {
-			@require_once(e_HANDLER."debug_handler.php");
-			$e107tmp_theme = search_validtheme();
-			define("THEME", e_THEME.$e107tmp_theme."/");
-			if(ADMIN && !strstr(e_SELF, $ADMIN_DIRECTORY)){echo '<script>alert("'.CORE_LAN1.'")</script>';}
-		}
-	}
+        function checkvalidtheme($theme_check){
+                // arg1 = theme to check
+                global $ADMIN_DIRECTORY;
+                if(@fopen(e_THEME.$theme_check."/theme.php", r)){
+                        define("THEME", e_THEME.$theme_check."/");
+                }else {
+                        @require_once(e_HANDLER."debug_handler.php");
+                        $e107tmp_theme = search_validtheme();
+                        define("THEME", e_THEME.$e107tmp_theme."/");
+                        if(ADMIN && !strstr(e_SELF, $ADMIN_DIRECTORY)){echo '<script>alert("'.CORE_LAN1.'")</script>';}
+                }
+        }
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 if(!class_exists('convert')){
-	class convert{
-		function convert_date($datestamp, $mode="long"){
-			/*
-			# Date convert
-			# - parameter #1:                string $datestamp, unix stamp
-			# - parameter #2:                string $mode, date format, default long
-			# - return                                parsed text
-			# - scope                                        public
-			*/
-			global $pref;
-		
-			$datestamp += (TIMEOFFSET*3600);
-			if($mode == "long"){
-				return strftime($pref['longdate'], $datestamp);
-			}else if($mode == "short"){
-				return strftime($pref['shortdate'], $datestamp);
-			}else {
-				return strftime($pref['forumdate'], $datestamp);
-			}
-		}
-	}
+        class convert{
+                function convert_date($datestamp, $mode="long"){
+                        /*
+                        # Date convert
+                        # - parameter #1:                string $datestamp, unix stamp
+                        # - parameter #2:                string $mode, date format, default long
+                        # - return                                parsed text
+                        # - scope                                        public
+                        */
+                        global $pref;
+
+                        $datestamp += (TIMEOFFSET*3600);
+                        if($mode == "long"){
+                                return strftime($pref['longdate'], $datestamp);
+                        }else if($mode == "short"){
+                                return strftime($pref['shortdate'], $datestamp);
+                        }else {
+                                return strftime($pref['forumdate'], $datestamp);
+                        }
+                }
+        }
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 if(!class_exists('e107_table')){
-	class e107table{
-		function tablerender($caption, $text, $mode="default", $return=FALSE){
-			/*
-			# Render style table
-			# - parameter #1:                string $caption, caption text
-			# - parameter #2:                string $text, body text
-			# - return                                null
-			# - scope                                        public
-			*/
-			if(function_exists("theme_tablerender")){
-				$result = call_user_func("theme_tablerender",$caption,$text,$mode,$return);
-				if($result == "return"){return;}
-				extract($result);
-			}
-			if($return){
-				ob_end_flush();
-				ob_start();
-				tablestyle($caption, $text, $mode);
-				$ret = ob_get_contents();
-				ob_end_clean();
-				return($ret);
-			}else {
-				tablestyle($caption, $text, $mode);
-			}
-		}
-	}
+        class e107table{
+                function tablerender($caption, $text, $mode="default", $return=FALSE){
+                        /*
+                        # Render style table
+                        # - parameter #1:                string $caption, caption text
+                        # - parameter #2:                string $text, body text
+                        # - return                                null
+                        # - scope                                        public
+                        */
+                        if(function_exists("theme_tablerender")){
+                                $result = call_user_func("theme_tablerender",$caption,$text,$mode,$return);
+                                if($result == "return"){return;}
+                                extract($result);
+                        }
+                        if($return){
+                                ob_end_flush();
+                                ob_start();
+                                tablestyle($caption, $text, $mode);
+                                $ret = ob_get_contents();
+                                ob_end_clean();
+                                return($ret);
+                        }else {
+                                tablestyle($caption, $text, $mode);
+                        }
+                }
+        }
 }
 //#############################################################
 
@@ -281,8 +286,9 @@ online();
 
 $fp = ($pref['frontpage'] ? $pref['frontpage'].".php" : "news.php index.php");
 define("e_SIGNUP", (file_exists(e_BASE."customsignup.php") ? "customsignup.php" : "signup.php"));
+define("e_LOGIN", (file_exists(e_BASE."customlogin.php") ? "customlogin.php" : "login.php"));
 
-if($pref['membersonly_enabled'] && !USER && e_PAGE != e_SIGNUP && e_PAGE != "index.php" && e_PAGE != "fpw.php" && e_PAGE != "login.php" && !strstr(e_PAGE, "admin") && e_PAGE != 'membersonly.php'){
+if($pref['membersonly_enabled'] && !USER && e_PAGE != e_SIGNUP && e_PAGE != "index.php" && e_PAGE != "fpw.php" && e_PAGE != e_LOGIN && !strstr(e_PAGE, "admin") && e_PAGE != 'membersonly.php'){
         header("location: ".e_BASE."membersonly.php");
         exit;
 }
@@ -442,7 +448,7 @@ class textparse{
         function textparse(){
                 // constructor
                 global $pref;
-				$pref['profanity_words'] = preg_replace("#(,$)#", "", $pref['profanity_words']);
+                                $pref['profanity_words'] = preg_replace("#(,$)#", "", $pref['profanity_words']);
                 if($pref['profanity_filter']){
                         $this->profan = str_replace(",", "|", $pref['profanity_words']);
                 }
@@ -559,25 +565,25 @@ class textparse{
                         $text = str_replace($this->searcha, $this->replace, $text);
                         $text = str_replace($this->searchb, $this->replace, $text);
                 }
-                $text = str_replace("$", "&#36;", $text);                
-				$text = code($text, "notdef");
+                $text = str_replace("$", "&#36;", $text);
+                                $text = code($text, "notdef");
             if($mode != "nobreak"){ $text = nl2br($text); }
-				$text = preg_replace("/\n/i", " ", $text);
-				$text = str_replace("<br />", " <br />" , $text);
-				$text = e107_parse($text,$referrer);
-				if($mode != "on"){
-					$text = $this -> wrap($text, $mode, $referrer, $highlight_search);
-				}
-				$text = $this -> bbcode($text, $mode, $referrer);
-				if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
-				$search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;span", "&lt;/span");
-				$replace =  array("\"", "'", "\\", '\"', "\'", "<span", "</span");
-				$text = str_replace($search, $replace, $text);
-				$text = str_replace("<br /><br />", "<br />", $text);
-				$text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $text);
-				$text = substr($text, 1);
-				$text = html($text);
-				return $text;
+                                $text = preg_replace("/\n/i", " ", $text);
+                                $text = str_replace("<br />", " <br />" , $text);
+                                $text = e107_parse($text,$referrer);
+                                if($mode != "on"){
+                                        $text = $this -> wrap($text, $mode, $referrer, $highlight_search);
+                                }
+                                $text = $this -> bbcode($text, $mode, $referrer);
+                                if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
+                                $search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;span", "&lt;/span");
+                                $replace =  array("\"", "'", "\\", '\"', "\'", "<span", "</span");
+                                $text = str_replace($search, $replace, $text);
+                                $text = str_replace("<br /><br />", "<br />", $text);
+                                $text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $text);
+                                $text = substr($text, 1);
+                                $text = html($text);
+                                return $text;
                 }
 
                 function wrap($text, $mode, $referrer, $highlight_search=FALSE){
@@ -600,21 +606,21 @@ class textparse{
                                                 }
                                         }
                                 }else{
-									if(!stristr($message_array[$i], "[link") && !stristr($message_array[$i], "[url") && !stristr($message_array[$i], "href=") && !stristr($message_array[$i], "src=") && !stristr($message_array[$i], "action=") && !stristr($message_array[$i], "onclick=") && !stristr($message_array[$i], "url(") && !stristr($message_array[$i], "[img") && !stristr($message_array[$i], "value=") && !stristr($message_array[$i], "pluginspage=") && !stristr($message_array[$i], "codebase=")){
-										if($referrer != "admin" && !stristr($message_array[$i], "http://")){
-											$message_array[$i] = $this -> tpj($message_array[$i]);
-										}
-										$search = "#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i";
+                                                                        if(!stristr($message_array[$i], "[link") && !stristr($message_array[$i], "[url") && !stristr($message_array[$i], "href=") && !stristr($message_array[$i], "src=") && !stristr($message_array[$i], "action=") && !stristr($message_array[$i], "onclick=") && !stristr($message_array[$i], "url(") && !stristr($message_array[$i], "[img") && !stristr($message_array[$i], "value=") && !stristr($message_array[$i], "pluginspage=") && !stristr($message_array[$i], "codebase=")){
+                                                                                if($referrer != "admin" && !stristr($message_array[$i], "http://")){
+                                                                                        $message_array[$i] = $this -> tpj($message_array[$i]);
+                                                                                }
+                                                                                $search = "#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i";
                                         $replace = ($pref['links_new_window'] ? '\1<a href="http://\2.\3" rel="external";">\2.\3</a>' : '\1<a href="http://\2.\3" >\2.\3</a>');
                                         $message_array[$i] = preg_replace($search, $replace, $message_array[$i]);
                                         $search = "#([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?([^).,]))#i";
                                         $replace = ($pref['links_new_window'] ? '<a href="\1://\2" rel="external";">\1://\2</a>' : '<a href="\1://\2">\1://\2</a>');
                                         $message_array[$i] = preg_replace($search, $replace, $message_array[$i]);
                                         if($highlight_search && !stristr($message_array[$i], "http://")){
-											$tmp = explode(" ", $_POST['search_query']);
+                                                                                        $tmp = explode(" ", $_POST['search_query']);
                                              foreach($tmp as $key){
-												 if(eregi($key, $message_array[$i])){
-													$message_array[$i] = eregi_replace($key, "<span class='searchhighlight'>$key</span>", $message_array[$i]);
+                                                                                                 if(eregi($key, $message_array[$i])){
+                                                                                                        $message_array[$i] = eregi_replace($key, "<span class='searchhighlight'>$key</span>", $message_array[$i]);
                                                  }
                                              }
                                           }
@@ -628,10 +634,10 @@ class textparse{
                 global $pref;
                 $text = " " . $text;
                 if (! (strpos($text, "[") && strpos($text, "]")) ){
-					$text = substr($text, 1);
-					return $text;
-				}
-					$text = preg_replace_callback("#\[img\](.*?)\[/img\]#si", array($this,"img_parse"),$text);
+                                        $text = substr($text, 1);
+                                        return $text;
+                                }
+                                        $text = preg_replace_callback("#\[img\](.*?)\[/img\]#si", array($this,"img_parse"),$text);
                 $search[0] = "#\[link\]([a-z]+?://){1}(.*?)\[/link\]#si";
                 $replace[0] = ($pref['links_new_window'] ? '<a href="\1\2" rel="external">\1\2</a>' : '<a href="\1\2">\1\2</a>');
                 $search[1] = "#\[link\](.*?)\[/link\]#si";
@@ -650,81 +656,81 @@ class textparse{
                 $replace[7] = ($pref['links_new_window'] ? '<a href="http://\1"> rel="external"\1</a>' : '<a href="http://\1">\1</a>');
                 $search[8] = "#\[url=([a-z]+?://){1}(.*?)\](.*?)\[/url\]#si";
                 $replace[8] = ($pref['links_new_window'] ? '<a href="\1\2" rel="external">\3</a>' : '<a href="\1\2">\3</a>');
-				$search[9] = "#\[quote\](.*?)\[/quote\]#si";
-				$replace[9] = '<i>"\1"</i>';
+                                $search[9] = "#\[quote\](.*?)\[/quote\]#si";
+                                $replace[9] = '<i>"\1"</i>';
             $search[10] = "#\[b\](.*?)\[/b\]#si";
             $replace[10] = '<b>\1</b>';
             $search[11] = "#\[i\](.*?)\[/i\]#si";
             $replace[11] = '<i>\1</i>';
             $search[12] = "#\[u\](.*?)\[/u\]#si";
             $replace[12] = '<u>\1</u>';
-				$search[14] = "#\[center\](.*?)\[/center\]#si";
-				$replace[14] = '<div style=\'text-align:center\'>\1</div>';
-				$search[15] = "#\[left\](.*?)\[/left\]#si";
-				$replace[15] = '<div style=\'text-align:left\'>\1</div>';
-				$search[16] = "#\[right\](.*?)\[/right\]#si";
-				$replace[16] = '<div style=\'text-align:right\'>\1</div>';
-				$search[17] = "#\[blockquote\]#si";
-				$replace[17] = '<div class=\'indent\'>';
-				$search[18] = "#\[/blockquote\]#si";
-				$replace[18] = '</div>';
-				$search[19] = "/\[color=(.*?)\](.*?)\[\/color\]/si";
-				$replace[19] = '<span style=\'color:\1\'>\2</span>';
-				$search[20] = "/\[size=([1-2]?[0-9])\](.*?)\[\/size\]/si";
-				$replace[20] = '<span style=\'font-size:\1px\'>\2</span>';
-				$search[21] = "#\[edited\](.*?)\[/edited\]#si";
-				$replace[21] = '<span class=\'smallblacktext\'>[ \1 ]</span>';
-				$search[22] = "#\[br\]#si";
-				$replace[22] = '<br />';
+                                $search[14] = "#\[center\](.*?)\[/center\]#si";
+                                $replace[14] = '<div style=\'text-align:center\'>\1</div>';
+                                $search[15] = "#\[left\](.*?)\[/left\]#si";
+                                $replace[15] = '<div style=\'text-align:left\'>\1</div>';
+                                $search[16] = "#\[right\](.*?)\[/right\]#si";
+                                $replace[16] = '<div style=\'text-align:right\'>\1</div>';
+                                $search[17] = "#\[blockquote\]#si";
+                                $replace[17] = '<div class=\'indent\'>';
+                                $search[18] = "#\[/blockquote\]#si";
+                                $replace[18] = '</div>';
+                                $search[19] = "/\[color=(.*?)\](.*?)\[\/color\]/si";
+                                $replace[19] = '<span style=\'color:\1\'>\2</span>';
+                                $search[20] = "/\[size=([1-2]?[0-9])\](.*?)\[\/size\]/si";
+                                $replace[20] = '<span style=\'font-size:\1px\'>\2</span>';
+                                $search[21] = "#\[edited\](.*?)\[/edited\]#si";
+                                $replace[21] = '<span class=\'smallblacktext\'>[ \1 ]</span>';
+                                $search[22] = "#\[br\]#si";
+                                $replace[22] = '<br />';
             if($pref['forum_attach'] && FILE_UPLOADS || $referrer == "admin"){
-					$search[23] = "#\[file=(.*?)\](.*?)\[/file\]#si";
-					$replace[23] = '<a href="\1"><img src="'.e_IMAGE.'generic/attach1.png" alt="" style="border:0; vertical-align:middle" /> \2</a>';
-				}else{
-					$search[23] = "#\[file=(.*?)\](.*?)\[/file\]#si";
-					$replace[23] = '[ '.CORE_LAN3.' ]';
-				}
+                                        $search[23] = "#\[file=(.*?)\](.*?)\[/file\]#si";
+                                        $replace[23] = '<a href="\1"><img src="'.e_IMAGE.'generic/attach1.png" alt="" style="border:0; vertical-align:middle" /> \2</a>';
+                                }else{
+                                        $search[23] = "#\[file=(.*?)\](.*?)\[/file\]#si";
+                                        $replace[23] = '[ '.CORE_LAN3.' ]';
+                                }
 
                 $search[24] = "/\[quote=(.*?)\](.*?)/si";
                 $replace[24] = '<div class=\'indent\'>'.CORE_LAN2.' ...<br />';
                 $search[25] = "/\[\/quote\]/si";
                 $replace[25] = '</div>';
-				$text = preg_replace($search, $replace, $text);
-				return $text;
-				}
+                                $text = preg_replace($search, $replace, $text);
+                                return $text;
+                                }
 
-		function img_parse($matches)
-		{
-			global $poster_userid,$pref;
-			if(preg_match("#\.php\?.*#",$matches[1]))
-			{
-				return "";
-			}
-			if(!$poster_userid){
-				return "<img src='{$matches[1]}' alt='' style='vertical-align:middle; border:0' />";
-			}
-			else 
-			{
-				if($pref['image_post'])
-				{
-					if(!function_exists('e107_userGetuserclass'))
-					{
-						require_once(e_HANDLER.'user_func.php');
-					}
-					if(check_class($pref['image_post_class'],e107_userGetuserclass($poster_userid)))
-					{
-						return "<img src='{$matches[1]}' alt='' style='vertical-align:middle; border:0' />";
-					}
-				}
-				if($pref['image_post_disabled_method'])
-				{
-					return '[ image disabled ]';
-				}
-				else
-				{
-					return "Image: $matches[1]";
-				}
-			}		
-		}
+                function img_parse($matches)
+                {
+                        global $poster_userid,$pref;
+                        if(preg_match("#\.php\?.*#",$matches[1]))
+                        {
+                                return "";
+                        }
+                        if(!$poster_userid){
+                                return "<img src='{$matches[1]}' alt='' style='vertical-align:middle; border:0' />";
+                        }
+                        else
+                        {
+                                if($pref['image_post'])
+                                {
+                                        if(!function_exists('e107_userGetuserclass'))
+                                        {
+                                                require_once(e_HANDLER.'user_func.php');
+                                        }
+                                        if(check_class($pref['image_post_class'],e107_userGetuserclass($poster_userid)))
+                                        {
+                                                return "<img src='{$matches[1]}' alt='' style='vertical-align:middle; border:0' />";
+                                        }
+                                }
+                                if($pref['image_post_disabled_method'])
+                                {
+                                        return '[ image disabled ]';
+                                }
+                                else
+                                {
+                                        return "Image: $matches[1]";
+                                }
+                        }
+                }
         function formtpa($text, $mode="admin"){
                 global $sql, $pref;
 
@@ -1077,51 +1083,51 @@ function cookie($name, $value, $expire, $path="/", $domain="", $secure=0){
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function html($string){
-	global $pref, $aj;
-	$match_count = preg_match_all("#\[html\](.*?)\[/html\]#si", $string, $result);
-	for ($a = 0; $a < $match_count; $a++){
-		if($pref['smiley_activate']){
-			if(!is_object($aj)){$aj = new textparse;}
-     		$after_replace = str_replace($aj->replace, $aj->searcha, $result[1][$a]);
-		} else {
-			$after_replace= $result[1][$a];
-		}
-		$after_replace = str_replace("<br />", "\n", $after_replace);
-		$after_replace=nl2br($after_replace);
-		$string = str_replace("[html]".$result[1][$a]."[/html]", $after_replace, $string);
-	}
-	return $string;
+        global $pref, $aj;
+        $match_count = preg_match_all("#\[html\](.*?)\[/html\]#si", $string, $result);
+        for ($a = 0; $a < $match_count; $a++){
+                if($pref['smiley_activate']){
+                        if(!is_object($aj)){$aj = new textparse;}
+                     $after_replace = str_replace($aj->replace, $aj->searcha, $result[1][$a]);
+                } else {
+                        $after_replace= $result[1][$a];
+                }
+                $after_replace = str_replace("<br />", "\n", $after_replace);
+                $after_replace=nl2br($after_replace);
+                $string = str_replace("[html]".$result[1][$a]."[/html]", $after_replace, $string);
+        }
+        return $string;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function code($string, $mode="default"){
-	global $pref, $aj;
-	$search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;span", "&lt;/span");
-	$replace =  array("\"", "'", "\\", '\"', "\'", "<span", "</span");
-	$string = str_replace($search, $replace, $string);
-	$match_count = preg_match_all("#(\[code(.*?)\])(.*?)\[/code\]#si", $string, $result);
-	for ($a = 0; $a < $match_count; $a++){
-		if($pref['smiley_activate']){
-			if(!is_object($aj)){$aj = new textparse;}
-    			$after_replace = str_replace($aj->replace, $aj->searcha, $result[3][$a]);
-		} else {
-			$after_replace= $result[3][$a];
-		}
-		if(strpos($result[2][$a],'highlight')){
-			$after_replace = str_replace("&#036;","$",$after_replace);
-			$after_replace=highlight_string($after_replace,TRUE);
-			$after_replace=str_replace("<br />","",$after_replace);
-		} else {
-			$after_replace = str_replace("&#036;","$",$after_replace);
-			$after_replace=htmlentities($after_replace);
-		}
-		if(strpos($result[2][$a],'indent')){
-			$class="indent";
-		} else {
-			$class="";
-		}
-		$string = str_replace($result[1][$a].$result[3][$a]."[/code]", "<div class='{$class}'>".$after_replace."</div>", $string);
-	}
-	return $string;
+        global $pref, $aj;
+        $search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;span", "&lt;/span");
+        $replace =  array("\"", "'", "\\", '\"', "\'", "<span", "</span");
+        $string = str_replace($search, $replace, $string);
+        $match_count = preg_match_all("#(\[code(.*?)\])(.*?)\[/code\]#si", $string, $result);
+        for ($a = 0; $a < $match_count; $a++){
+                if($pref['smiley_activate']){
+                        if(!is_object($aj)){$aj = new textparse;}
+                            $after_replace = str_replace($aj->replace, $aj->searcha, $result[3][$a]);
+                } else {
+                        $after_replace= $result[3][$a];
+                }
+                if(strpos($result[2][$a],'highlight')){
+                        $after_replace = str_replace("&#036;","$",$after_replace);
+                        $after_replace=highlight_string($after_replace,TRUE);
+                        $after_replace=str_replace("<br />","",$after_replace);
+                } else {
+                        $after_replace = str_replace("&#036;","$",$after_replace);
+                        $after_replace=htmlentities($after_replace);
+                }
+                if(strpos($result[2][$a],'indent')){
+                        $class="indent";
+                } else {
+                        $class="";
+                }
+                $string = str_replace($result[1][$a].$result[3][$a]."[/code]", "<div class='{$class}'>".$after_replace."</div>", $string);
+        }
+        return $string;
 }
 
 ?>
