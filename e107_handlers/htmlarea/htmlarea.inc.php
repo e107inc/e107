@@ -1,7 +1,7 @@
 <?php
 
 // HTMLAREA handler for e107.
-// $Id: htmlarea.inc.php,v 1.2 2004-11-21 07:20:24 e107coders Exp $
+// $Id: htmlarea.inc.php,v 1.3 2005-01-05 07:37:30 pholzmann Exp $
 
 // Settings ==========================================================
     $width = "520px";  // htmlarea width
@@ -122,13 +122,10 @@ return $areajs;
 // Build Custom Emoticon Buttons=================
 
 function htmlarea_emote($mode){
-global $IMAGES_DIRECTORY, $pref,$display_emoticons;
+global $IMAGES_DIRECTORY, $pref,$display_emoticons,$sysprefs;
 if($pref['smiley_activate'] && $display_emoticons==1){
 
-        $sql = new db;
-        $sql -> db_Select("core", "*", "e107_name='emote'");
-        $row = $sql -> db_Fetch(); extract($row);
-        $emote = unserialize($e107_value);
+        $emote = $sysprefs->getArray('emote');
 
         $c=0;
         while(list($code, $name) = @each($emote[$c])){
