@@ -113,7 +113,7 @@ $ns -> tablerender($login_message, $text);
 echo "</div></div>";
 
         if($membership_open == 1){
-        echo "<div style='text-align:center'><a href='signup.php'>Click here to Sign-Up</a></div>";
+        echo "<div style='text-align:center'><a href='".e_SIGNUP."'>Click here to Sign-Up</a></div>";
         }else{
         echo "<div style='text-align:center'>Not accepting new members at this time.</div>";
         }
