@@ -540,7 +540,7 @@ class textparse{
                         }
                         */
 
-                }else if(ADMIN && !strstr(e_PAGE, "newspost.php") && !strstr(e_PAGE, "article.php" && !strstr(e_PAGE, "review.php"))){
+                }else if(ADMIN && !strstr(e_PAGE, "newspost.php") && !strstr(e_PAGE, "article.php") && !strstr(e_PAGE, "review.php")){
                         $text = preg_replace("#\[img\](.*?)\[/img\]#si", '<img src=\'\1\' alt=\'\' style=\'vertical-align:middle; border:0\' />', $text);
                 }
 

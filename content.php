@@ -423,7 +423,8 @@ if($action == "article"){
 				<br /><br />
 				$content_summary
 				<br /><br />";
-
+			
+				$content_content = $aj -> tpa($content_content, "off", "admin");
 				$articlepages = explode("[newpage]",$content_content);
 				$totalpages = count($articlepages);
 				if(strstr($content_content, "{EMAILPRINT}") || $content_pe_icon){
@@ -432,7 +433,7 @@ if($action == "article"){
 				}
 
 				if($totalpages > 1){
-					$text .=  $aj -> tpa($articlepages[(!$id ? 0 : $id)]."<br /><br />");
+					$text .=  $articlepages[(!$id ? 0 : $id)]."<br /><br />";
 					if($id != 0){ $text .= "<a href='content.php?article.$sub_action.".($id-1)."'>".LAN_25." <<</a> "; }
 					for($c=1; $c<= $totalpages; $c++){
 						$text .= ($c == ($id+1) ? "<span style='text-decoration: underline;'>$c</span>&nbsp;&nbsp;" : "<a href='content.php?article.$sub_action.".($c-1)."'>$c</a>&nbsp;&nbsp;");
@@ -443,7 +444,6 @@ if($action == "article"){
 					$cachestr = ($id ? "article.item.$sub_action.$id" : "article.item.$sub_action");
 
 				}else{
-					$content_content = $aj -> tpa($content_content, "off", "admin");
 					$text .= $content_content."\n<br />\n";
 					if($epflag){ $text .= $ep; }
 					$cachestr = "article.item.$sub_action";
