@@ -50,4 +50,11 @@ define("LAN_410", "guests");
 //v.616
 define("LAN_411", "Important Threads");
 define("LAN_412", "Forum Threads");
+
+//v.617
+define("FORLAN_CLOSE", "Thread closed.");
+define("FORLAN_OPEN", "Thread reopened.");
+define("FORLAN_STICK", "Thread made sticky.");
+define("FORLAN_UNSTICK", "Thread unstuck.");
+
 ?>
