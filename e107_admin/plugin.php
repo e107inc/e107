@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-01-27 19:52:24 $
-|     $Author: streaky $
+|     $Revision: 1.16 $
+|     $Date: 2005-01-30 01:36:27 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -118,13 +118,18 @@ if (isset($_POST['confirm'])) {
 		}
 		 
 		if ($eplug_status) {
-			$plugin->manage_plugin_prefs('remove', 'status', $eplug_folder);
+			$plugin->manage_plugin_prefs('remove', 'plug_status', $eplug_folder);
 		}
 		 
 		if ($eplug_latest) {
-			$plugin->manage_plugin_prefs('remove', 'latest', $eplug_folder);
+			$plugin->manage_plugin_prefs('remove', 'plug_latest', $eplug_folder);
 		}
 		 
+		if (is_array($eplug_sc))
+		{
+			$plugin->manage_plugin_prefs('remove', 'plug_sc', $eplug_folder, $eplug_sc);
+		}
+
 		if (is_array($eplug_user_prefs)) {
 			$sql = new db;
 			$sql->db_Select("core", " e107_value", " e107_name='user_entended'");
@@ -258,6 +263,17 @@ if ($action == 'upgrade') {
 		}
 	}
 	 
+
+	if (is_array($upgrade_add_eplug_sc))
+	{
+		$plugin->manage_plugin_prefs('add', 'plug_sc', $eplug_folder, $eplug_sc);
+	}
+
+	if (is_array($upgrade_remove_eplug_sc))
+	{
+		$plugin->manage_plugin_prefs('remove', 'plug_sc', $eplug_folder, $eplug_sc);
+	}
+
 	if (is_array($upgrade_add_prefs)) {
 		$plugin->manage_prefs('add', $upgrade_add_prefs);
 		$text .= EPL_ADLAN_8.'<br />';
