@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.97 $
-|     $Date: 2005-03-23 15:35:50 $
+|     $Revision: 1.98 $
+|     $Date: 2005-03-24 09:48:17 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -558,16 +558,17 @@ if ((strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin")) && $pref['admi
 }
 
 
-	if (strstr(e_SELF, $ADMIN_DIRECTORY)) {
-		if (file_exists(THEME.'admin_theme.php')) {
-			require_once(THEME.'admin_theme.php');
-		} else {
-			require_once(THEME."theme.php");
-		}
+if (strstr(e_SELF, $ADMIN_DIRECTORY)) {
+	if (file_exists(THEME.'admin_theme.php')) {
+		require_once(THEME.'admin_theme.php');
 	} else {
 		require_once(THEME."theme.php");
 	}
+} else {
+	require_once(THEME."theme.php");
+}
 
+if(!defined("IMODE")) define("IMODE", "lite");
 
 if ($pref['anon_post'] ? define("ANON", TRUE) : define("ANON", FALSE));
 

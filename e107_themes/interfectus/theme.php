@@ -29,6 +29,7 @@ $xhtmlcompliant = TRUE;
 $csscompliant = TRUE;
 
 define("THEME_DISCLAIMER", "<br /><i>".LAN_THEME_1."</i>");
+define("IMODE", "dark");
 
 // [layout]
 
