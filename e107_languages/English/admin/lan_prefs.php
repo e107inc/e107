@@ -85,6 +85,7 @@ define("PRFLAN_78", "Leave blank to disable");
 define("PRFLAN_79", "Use HtmlArea for admin text-areas");
 define("PRFLAN_80", "Click here to view");
 define("PRFLAN_81", "Enable Image-code verification during login.");
+define("PRFLAN_82", "Restrict Search page to members");
 
 define("CUSTSIG_1", "Settings Saved!");
 define("CUSTSIG_2", "Real Name:");
