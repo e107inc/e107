@@ -189,13 +189,6 @@ if(!$sql -> db_Select("news", "*", $query)){
                 }
         }
 }
-
-if(!$disablecache && !e_QUERY){
-        $cache = $aj -> formtpa(ob_get_contents(), "admin");
-        set_cache("news.php", $cache);
-}else{
-		clear_cache("news.php");
-}
 require_once(e_HANDLER."np_class.php");
 if($action != "item"){ $ix = new nextprev("news.php", $from, ITEMVIEW, $news_total, LAN_84, ($action == "list" ? e_QUERY: "")); }
 
@@ -228,7 +221,7 @@ if($pref['nfp_display'] == 2){
               //  $text3 .= "</td>";
 
 
-                $count = $sql -> db_SELECT("news", "*",  "news_category='$category_id' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")  ORDER BY news_datestamp DESC LIMIT $from,$nbr_lst");
+                $count = $sql -> db_SELECT("news", "*",  "news_category='$category_id' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")  ORDER BY news_datestamp DESC LIMIT 0,$nbr_lst");
                 while($row = $sql-> db_Fetch()){
                         extract($row);
                         $text3 .="<div style='width:100%'><table style='width:100%' cellpadding='0' cellspacing='0' border='0'>\n";
@@ -251,6 +244,14 @@ if($pref['nfp_display'] == 2){
             $text3 .="</tr></table>";
             $ns -> tablerender("News Categories", $text3);
   }
+  
+
+if(!$disablecache && !e_QUERY){
+        $cache = $aj -> formtpa(ob_get_contents(), "admin");
+        set_cache("news.php", $cache);
+}else{
+		clear_cache("news.php");
+}
 // =========================================================================
 
 
