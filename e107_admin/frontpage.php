@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/frontpage.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-02-01 03:01:04 $
+|     $Revision: 1.10 $
+|     $Date: 2005-02-02 02:48:45 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,10 @@ $e_sub_cat = 'frontpage';
 
 // update from old 6xx system
 
-if ($pref['frontpage'] == 'links') {
+if (!$pref['frontpage']) {
+	$pref['frontpage'] = "news.php";
+	save_prefs();
+} else if ($pref['frontpage'] == 'links') {
 	$pref['frontpage'] = $PLUGINS_DIRECTORY."links_page/links.php";
 	save_prefs();
 } else if ($pref['frontpage'] == 'forum') {

@@ -69,6 +69,7 @@ $pref['sitelang_init'] = (isset($_POST['installlanguage']) ? $_POST['installlang
 $pref['linkpage_screentip'] = "0";
 $pref['plug_latest'] = ",links_page";
 $pref['wmessage_sc'] = "0";
+$pref['frontpage'] = "news.php";
 
 // Links page plugin pre-installed
 $pref['link_submit'] = "1";
