@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-01-27 19:52:27 $
-|     $Author: streaky $
+|     $Revision: 1.9 $
+|     $Date: 2005-01-28 16:14:39 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 	
@@ -38,7 +38,7 @@ class comment {
 			if (ANON == TRUE && USER == FALSE) {
 				$text .= "<tr>\n<td style='width:20%'>".LAN_16."</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='author_name' size='60' value='$author_name' maxlength='100' />\n</td>\n</tr>";
 			}
-			$text .= "<tr> \n<td style='width:20%'>".LAN_8.":</td>\n<td style='width:80%'>\n<textarea class='tbox' name='comment' cols='70' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>\n<br />
+			$text .= "<tr> \n<td style='width:20%'>".LAN_8.":</td>\n<td style='width:80%'>\n<textarea class='tbox' name='comment' cols='70' rows='7' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>\n<br />
 				<input class='helpbox' type='text' name='helpb' size='100' /><br />".ren_help(1, 'addtext', 'help')."</td></tr>\n<tr style='vertical-align:top'> \n<td style='width:20%'>".$text2."</td>\n<td style='width:80%'>\n". ($action == "reply" ? "<input type='hidden' name='pid' value='$id' />" : '').($content_type ? "<input type='hidden' name='content_type' value='$content_type' />" : ''). "<input class='button' type='submit' name='".$action."submit' value='".LAN_9."' />\n</td>\n</tr>\n</table>\n</form></div>";
 			$ns->tablerender('', $text);
 		} else {
