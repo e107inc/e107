@@ -20,7 +20,6 @@
 $eplug_name = "Integrity Check";
 $eplug_version = "0.03";
 $eplug_author = "HeX0R";
-$eplug_logo = "/images/integ.gif";
 $eplug_url = "http://h3x0r.ath.cx";
 $eplug_email = "hex0r@h3x0r.ath.cx";
 $eplug_description = "Integrity Check is a plugin that checks checksums of your files, helping to find corrupted files.";
@@ -34,10 +33,11 @@ $eplug_folder = "integrity_check";
 $eplug_menu_name = "";
 
 // Name of the admin configuration file --------------------------------------------------------------------------
-$eplug_conffile = "integrity_check.php";
+$eplug_conffile = "admin_integrity_check.php";
 
 // Icon image and caption text ------------------------------------------------------------------------------------
-$eplug_icon = $eplug_folder."/images/integ.gif";
+$eplug_icon = $eplug_folder."/images/integrity_32.png";
+$eplug_icon_small = $eplug_folder."/images/integrity_16.png";
 $eplug_caption =  "Check Integrity";
 
 // List of preferences -----------------------------------------------------------------------------------------------

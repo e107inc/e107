@@ -11,16 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newforumposts_main/plugin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:31 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-10 00:34:26 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = "New Forum Posts";
 $eplug_version = "1";
 $eplug_author = "jalist";
-$eplug_logo = "button.png";
 $eplug_url = "http://e107.org";
 $eplug_email = "jalist@e107.org";
 $eplug_description = "This plugin displays a list of new forum posts on your front page";
@@ -34,10 +33,11 @@ $eplug_folder = "newforumposts_main";
 $eplug_menu_name = "newforumposts_main";
 
 // Name of the admin configuration file --------------------------------------------------------------------------
-$eplug_conffile = "config.php";
+$eplug_conffile = "admin_config.php";
 
 // Icon image and caption text ------------------------------------------------------------------------------------
-$eplug_icon = $eplug_folder."/images/logo.png";
+$eplug_icon = $eplug_folder."/images/new_forum_32.png";
+$eplug_icon_small = $eplug_folder."/images/new_forum_16.png";
 $eplug_caption =  "Configure New Forum Posts";
 
 // List of preferences -----------------------------------------------------------------------------------------------

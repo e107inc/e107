@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/ad_links.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-09 19:22:03 $
+|     $Revision: 1.7 $
+|     $Date: 2005-01-10 00:33:47 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -81,7 +81,6 @@ if (!defined('E_16_LANGUAGE')) { define('E_16_LANGUAGE', "<img src='".e_IMAGE."a
 // Small Admin Other Link Images
 if (!defined('E_16_PLUGIN')) { define('E_16_PLUGIN', "<img src='".e_IMAGE."admin_images/plugins.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />"); }
 if (!defined('E_16_PLUGMANAGER')) { define('E_16_PLUGMANAGER', "<img src='".e_IMAGE."admin_images/plugmanager.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />"); }
-if (!defined('E_32_PLUGMANAGER')) { define('E_32_PLUGMANAGER', "<img src='".e_IMAGE."admin_images/plugmanager_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
 if (!defined('E_16_DOCS')) { define('E_16_DOCS', "<img src='".e_IMAGE."admin_images/docs.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />"); }
 
 // Small Admin Other Images
@@ -89,49 +88,48 @@ if (!defined('E_16_COMMENT')) { define('E_16_COMMENT', "<img src='".e_IMAGE."adm
 if (!defined('E_16_ADMINLOG')) { define('E_16_ADMINLOG', "<img src='".e_IMAGE."admin_images/adminlogs.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />"); }
 
 // Large Admin Main Link Images
-if (!defined('E_32_ADMIN')) { define('E_32_ADMIN', "<img src='".e_IMAGE."admin_images/admins_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_ADPASS')) { define('E_32_ADPASS', "<img src='".e_IMAGE."admin_images/adminpass_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_ARTICLE')) { define('E_32_ARTICLE', "<img src='".e_IMAGE."admin_images/articles_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_BANLIST')) { define('E_32_BANLIST', "<img src='".e_IMAGE."admin_images/banlist_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_BANNER')) { define('E_32_BANNER', "<img src='".e_IMAGE."admin_images/banners_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_CACHE')) { define('E_32_CACHE', "<img src='".e_IMAGE."admin_images/cache_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_CHAT')) { define('E_32_CHAT', "<img src='".e_IMAGE."admin_images/chatbox_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_CONT')) { define('E_32_CONT', "<img src='".e_IMAGE."admin_images/content_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_CUST')) { define('E_32_CUST', "<img src='".e_IMAGE."admin_images/custom_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_DATAB')) { define('E_32_DATAB', "<img src='".e_IMAGE."admin_images/database_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_DOWNL')) { define('E_32_DOWNL', "<img src='".e_IMAGE."admin_images/downloads_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_EMOTE')) { define('E_32_EMOTE', "<img src='".e_IMAGE."admin_images/emoticons_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_FILE')) { define('E_32_FILE', "<img src='".e_IMAGE."admin_images/cat_file_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_FORUM')) { define('E_32_FORUM', "<img src='".e_IMAGE."admin_images/forums_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_FRONT')) { define('E_32_FRONT', "<img src='".e_IMAGE."admin_images/frontpage_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_IMAGES')) { define('E_32_IMAGES', "<img src='".e_IMAGE."admin_images/images_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_LINKS')) { define('E_32_LINKS', "<img src='".e_IMAGE."admin_images/links_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_WELCOME')) { define('E_32_WELCOME', "<img src='".e_IMAGE."admin_images/welcome_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_STATS')) { define('E_32_STATS', "<img src='".e_IMAGE."admin_images/stats_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_MAIL')) { define('E_32_MAIL', "<img src='".e_IMAGE."admin_images/mail_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_MAINTAIN')) { define('E_32_MAINTAIN', "<img src='".e_IMAGE."admin_images/maintain_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_MENUS')) { define('E_32_MENUS', "<img src='".e_IMAGE."admin_images/menus_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_META')) { define('E_32_META', "<img src='".e_IMAGE."admin_images/meta_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_NEWS')) { define('E_32_NEWS', "<img src='".e_IMAGE."admin_images/news_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_NEWSFEED')) { define('E_32_NEWSFEED', "<img src='".e_IMAGE."admin_images/newsfeeds_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_PHP')) { define('E_32_PHP', "<img src='".e_IMAGE."admin_images/phpinfo_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_POLLS')) { define('E_32_POLLS', "<img src='".e_IMAGE."admin_images/polls_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_PREFS')) { define('E_32_PREFS', "<img src='".e_IMAGE."admin_images/prefs_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_UPLOADS')) { define('E_32_UPLOADS', "<img src='".e_IMAGE."admin_images/uploads_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_REVIEW')) { define('E_32_REVIEW', "<img src='".e_IMAGE."admin_images/reviews_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_USER')) { define('E_32_USER', "<img src='".e_IMAGE."admin_images/cat_user_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_USERCLASS')) { define('E_32_USERCLASS', "<img src='".e_IMAGE."admin_images/userclass_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_LANGUAGE')) { define('E_32_LANGUAGE', "<img src='".e_IMAGE."admin_images/language_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
+if (!defined('E_32_ADMIN')) { define('E_32_ADMIN', "<img src='".e_IMAGE."admin_images/admins_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_ADPASS')) { define('E_32_ADPASS', "<img src='".e_IMAGE."admin_images/adminpass_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_ARTICLE')) { define('E_32_ARTICLE', "<img src='".e_IMAGE."admin_images/articles_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_BANLIST')) { define('E_32_BANLIST', "<img src='".e_IMAGE."admin_images/banlist_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_BANNER')) { define('E_32_BANNER', "<img src='".e_IMAGE."admin_images/banners_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_CACHE')) { define('E_32_CACHE', "<img src='".e_IMAGE."admin_images/cache_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_CHAT')) { define('E_32_CHAT', "<img src='".e_IMAGE."admin_images/chatbox_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_CONT')) { define('E_32_CONT', "<img src='".e_IMAGE."admin_images/content_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_CUST')) { define('E_32_CUST', "<img src='".e_IMAGE."admin_images/custom_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_DATAB')) { define('E_32_DATAB', "<img src='".e_IMAGE."admin_images/database_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_DOWNL')) { define('E_32_DOWNL', "<img src='".e_IMAGE."admin_images/downloads_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_EMOTE')) { define('E_32_EMOTE', "<img src='".e_IMAGE."admin_images/emoticons_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_FILE')) { define('E_32_FILE', "<img src='".e_IMAGE."admin_images/cat_file_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_FORUM')) { define('E_32_FORUM', "<img src='".e_IMAGE."admin_images/forums_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_FRONT')) { define('E_32_FRONT', "<img src='".e_IMAGE."admin_images/frontpage_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_IMAGES')) { define('E_32_IMAGES', "<img src='".e_IMAGE."admin_images/images_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_LINKS')) { define('E_32_LINKS', "<img src='".e_IMAGE."admin_images/links_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_WELCOME')) { define('E_32_WELCOME', "<img src='".e_IMAGE."admin_images/welcome_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_STATS')) { define('E_32_STATS', "<img src='".e_IMAGE."admin_images/stats_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_MAIL')) { define('E_32_MAIL', "<img src='".e_IMAGE."admin_images/mail_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_MAINTAIN')) { define('E_32_MAINTAIN', "<img src='".e_IMAGE."admin_images/maintain_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_MENUS')) { define('E_32_MENUS', "<img src='".e_IMAGE."admin_images/menus_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_META')) { define('E_32_META', "<img src='".e_IMAGE."admin_images/meta_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_NEWS')) { define('E_32_NEWS', "<img src='".e_IMAGE."admin_images/news_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_NEWSFEED')) { define('E_32_NEWSFEED', "<img src='".e_IMAGE."admin_images/newsfeeds_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_PHP')) { define('E_32_PHP', "<img src='".e_IMAGE."admin_images/phpinfo_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_POLLS')) { define('E_32_POLLS', "<img src='".e_IMAGE."admin_images/polls_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_PREFS')) { define('E_32_PREFS', "<img src='".e_IMAGE."admin_images/prefs_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_UPLOADS')) { define('E_32_UPLOADS', "<img src='".e_IMAGE."admin_images/uploads_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_REVIEW')) { define('E_32_REVIEW', "<img src='".e_IMAGE."admin_images/reviews_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_USER')) { define('E_32_USER', "<img src='".e_IMAGE."admin_images/cat_user_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_USERCLASS')) { define('E_32_USERCLASS', "<img src='".e_IMAGE."admin_images/userclass_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_LANGUAGE')) { define('E_32_LANGUAGE', "<img src='".e_IMAGE."admin_images/language_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
 
 // Large Admin Other Link Images
-if (!defined('E_32_PLUGIN')) { define('E_32_PLUGIN', "<img src='".e_IMAGE."admin_images/plugins_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_PLUGMANAGER')) { define('E_32_PLUGMANAGER', "<img src='".e_IMAGE."admin_images/plugmanager_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_PLUGMANAGER')) { define('E_32_PLUGMANAGER', "<img src='".e_IMAGE."admin_images/plugmanager_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_DOCS')) { define('E_32_DOCS', "<img src='".e_IMAGE."admin_images/docs_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
+if (!defined('E_32_PLUGIN')) { define('E_32_PLUGIN', "<img src='".e_IMAGE."admin_images/plugins_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_PLUGMANAGER')) { define('E_32_PLUGMANAGER', "<img src='".e_IMAGE."admin_images/plugmanager_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_DOCS')) { define('E_32_DOCS', "<img src='".e_IMAGE."admin_images/docs_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
 
 // Large Admin Other Images
-if (!defined('E_32_COMMENT')) { define('E_32_COMMENT', "<img src='".e_IMAGE."admin_images/comments_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
-if (!defined('E_32_ADMINLOG')) { define('E_32_ADMINLOG', "<img src='".e_IMAGE."admin_images/adminlogs_32.png' alt='' style='border:0px; vertical-align:bottom; width: 32px; height: 32px' />"); }
+if (!defined('E_32_COMMENT')) { define('E_32_COMMENT', "<img src='".e_IMAGE."admin_images/comments_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_ADMINLOG')) { define('E_32_ADMINLOG', "<img src='".e_IMAGE."admin_images/adminlogs_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
 
 
 $admin_cat['title'][1] = ADLAN_CL_1;

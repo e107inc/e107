@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/plugin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:06 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-10 00:34:25 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 // Plugin info -------------------------------------------------------------------------------------------------------
@@ -22,7 +22,6 @@ $lan_file = e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php";
 $eplug_name = "Event Calendar";
 $eplug_version = "3.2";
 $eplug_author = "jalist / cameron";
-$eplug_logo = "button.png";
 $eplug_url = "http://e107.org";
 $eplug_email = "jalist@e107.org";
 $eplug_description = "This plugin is a fully featured event calendar with calendar menu.";
@@ -36,10 +35,11 @@ $eplug_folder = "calendar_menu";
 $eplug_menu_name = "calendar_menu";
 
 // Name of the admin configuration file --------------------------------------------------------------------------
-$eplug_conffile = "config.php";
+$eplug_conffile = "admin_config.php";
 
 // Icon image and caption text ------------------------------------------------------------------------------------
-$eplug_icon = $eplug_folder."/images/icon_ec.png";
+$eplug_icon = $eplug_folder."/images/calendar_32.png";
+$eplug_icon_small = $eplug_folder."/images/calendar_16.png";
 $eplug_caption =  EC_LAN_81; // "Configure Event Calendar";
 
 // List of preferences -----------------------------------------------------------------------------------------------
