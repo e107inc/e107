@@ -11,11 +11,34 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:26 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-09-24 09:51:51 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
+
+if(!function_exists('file_get_contents')) {
+	function file_get_contents($filename) {
+		$fd = fopen("$filename", "rb");
+		$content = fread($fd, filesize($filename));
+		fclose($fd);
+		return $content;
+	}
+}
+
+if (!function_exists('file_put_contents')) {
+   function file_put_contents($filename, $data)
+   {
+       if (($h = @fopen($filename, 'w+')) === false) {
+           return false;
+       }
+       if (($bytes = @fwrite($h, $data)) === false) {
+           return false;
+       }
+       fclose($h);
+       return $bytes;
+   }
+}
 
 class ecache {
 
@@ -23,12 +46,12 @@ class ecache {
                 return md5(e_BASE.e_LANGUAGE.THEME.USERCLASS);
         }
 
-                        function cache_fname($query){
-                                global $FILES_DIRECTORY;
-                                $q = preg_replace("#\W#","_",$query);
-                                $fname = "./".e_BASE.$FILES_DIRECTORY."cache/".$q."-".$this -> e107cache_page_md5().".cache.php";
-                                return $fname;
-                        }
+		function cache_fname($query){
+			global $FILES_DIRECTORY;
+			$q = preg_replace("#\W#","_",$query);
+			$fname = "./".e_BASE.$FILES_DIRECTORY."cache/".$q."-".$this -> e107cache_page_md5().".cache.php";
+			return $fname;
+		}
 
         function retrieve($query){
                 global $pref,$FILES_DIRECTORY;
@@ -44,11 +67,10 @@ class ecache {
                         }
                 }
                 if('2' == $pref['cachestatus']){  //Save to file
-                        $cache_file = $this -> cache_fname($query);
-                        if($fp = fopen($cache_file, 'rb')) {
-                                fseek($fp,6);
-                                $ret = fread($fp, filesize($cache_file));
-                                fclose($fp);
+                        if($cache_file = $this -> cache_fname($query)){
+                                $ret = file_get_contents($cache_file);
+                                $ret = substr($ret, 6);
+								if($ret == false){ return false; }
                                 return ('' == $ret) ? '<!-- null -->' : $ret;
                         } else {
                                 return FALSE;
@@ -66,9 +88,7 @@ class ecache {
                 }
                 if('2' == $pref['cachestatus']){
                         $cache_file = $this -> cache_fname($query);
-                        $fp = fopen($cache_file, 'w+');
-                        fwrite ($fp, "<?php\n<!-- BEGIN CACHE FILE: $query -->\n\n".$text."\n\n<!-- END CACHE FILE: $query -->");
-                        fclose($fp);
+                        file_put_contents($cache_file, "<?php\n<!-- BEGIN CACHE FILE: $query -->\n\n".$text."\n\n<!-- END CACHE FILE: $query -->");
                         @chmod($cache_file, 0777);
                 }
         }
