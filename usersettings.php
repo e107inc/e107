@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-03-15 13:40:00 $
-|     $Author: stevedunstan $
+|     $Revision: 1.15 $
+|     $Date: 2005-03-24 03:27:48 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -96,6 +96,7 @@ if (isset($_POST['updatesettings']))
 		}
 	};
 	 
+	
 	if($sql->db_Select('user_extended_struct'))
 	{
 		while($row = $sql->db_Fetch())
@@ -434,7 +435,7 @@ $text .= $rs->form_select_close()."</td>
 	</td>
 	</tr>";
 	
-if ($sql->db_Select("user_extended_struct"))
+if ($sql->db_Select("user_extended_struct","*","1 ORDER BY user_extended_struct_order"))
 {
 	$ueList = $sql->db_getList();
 

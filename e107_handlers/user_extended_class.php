@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-03-20 04:06:26 $
+|     $Revision: 1.8 $
+|     $Date: 2005-03-24 03:27:47 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -91,7 +91,7 @@ class e107_user_extended
 		return $sql->db_Count('user_extended_struct','(*)', "WHERE user_extended_struct_name = '{$name}'");
 	}
 
-	function user_extended_add($name, $text, $type, $parms, $values, $default, $required, $read, $write, $applicable, $order, $icon)
+	function user_extended_add($name, $text, $type, $parms, $values, $default, $required, $read, $write, $applicable, $order='', $icon)
 	{
 		global $sql;
 		if(is_array($name))
@@ -101,6 +101,17 @@ class e107_user_extended
 		if (!($this->user_extended_field_exist($name)))
 		{
 			$field_info = $this->user_extended_type_text($type, $default);
+			if($order === '')
+			{
+				if($sql->db_Select("user_extended_struct","MAX(user_extended_struct_order) as maxorder","1"))
+				{
+					$row = $sql->db_Fetch();
+					if(is_numeric($row['maxorder']))
+					{
+						$order = $row['maxorder']+1;
+					}
+				}
+			}
 			$sql->db_Select_gen("ALTER TABLE #user_extended ADD user_".$name.' '.$field_info);
 			$sql->db_Insert("user_extended_struct","0,'{$name}','{$text}','{$type}','{$parms}','{$values}','{$default}','{$read}','{$write}','{$required}','0','{$applicable}', '{$order}', '{$icon}'");
 			if ($this->user_extended_field_exist($name))
@@ -239,7 +250,7 @@ class e107_user_extended
 		return $ret;
 	}
 	
-	function user_extended_getStruct()
+	function user_extended_getStruct($orderby="user_extended_struct_order")
 	{
 		if($ueStruct = getcachedvars('ue_struct'))
 		{
@@ -247,7 +258,12 @@ class e107_user_extended
 		}
 		global $sql;
 		$ret = array();
-		if($sql->db_Select('user_extended_struct'))
+		$parms = "";
+		if($orderby != "")
+		{
+			$parms = "1 ORDER BY {$orderby}";
+		}
+		if($sql->db_Select('user_extended_struct','*',$parms))
 		{
 			while($row = $sql->db_Fetch())
 			{

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-03-15 03:02:46 $
+|     $Revision: 1.21 $
+|     $Date: 2005-03-24 03:26:12 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -44,6 +44,22 @@ if (e_QUERY) {
 $from = ($from ? $from : 0);
 $amount = 30;
 	
+if (IsSet($_POST['up_x'])) {
+	$qs = explode(".", $_POST['id']);
+	$_id = $qs[0];
+	$_order = $qs[1];
+	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_order='".($_order-1)."'");
+	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_id='".$_id."'");
+}
+
+if (IsSet($_POST['down_x'])) {
+	$qs = explode(".", $_POST['id']);
+	$_id = $qs[0];
+	$_order = $qs[1];
+	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_order='".($_order+1)."'");
+	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_id='".$_id."'");
+}
+
 if (isset($_POST['resend_mail'])) {
 	$id = $_POST['resend_id'];
 	$key = $_POST['resend_key'];
@@ -608,13 +624,15 @@ class users {
 				<td class='fcaption'>".USRLAN_134."</td>
 				<td class='fcaption'>".USRLAN_100."</td>
 				<td class='fcaption'>".USRLAN_101."</td>
+				<td class='fcaption'>&nbsp;</td>
 				<td class='fcaption'>".USRLAN_102."</td>
 			</tr>
 			";
-		if($sql->db_Select('user_extended_struct'))
+		if($sql->db_Select('user_extended_struct','*',"1 ORDER BY user_extended_struct_order"))
 		{
 			//Show current extended fields
 			$extendedList = $sql->db_getList();
+			$i=0;
 			foreach($extendedList as $ext)
 			{
 				$text .= "
@@ -631,21 +649,39 @@ class users {
 				<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_applicable'])."</td>
 				<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_read'])."</td>
 				<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_write'])."</td>
+				<td class='forumheader3'>
+					<form method='post' action='".e_SELF."?extended'>
+					<input type='hidden' name='id' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}' />
+				";
+				if($i > 0)
+				{
+					$text .= "
+					<input type='image' alt='' title='".USRLAN_137."' src='".e_IMAGE."/generic/up.png' name='up' value='{$ext['user_extended_struct_id']}' />
+					";
+				}
+				if($i <= count($extendedList)-2)
+				{
+					$text .= "<input type='image' alt='' title='".USRLAN_136."' src='".e_IMAGE."/generic/down.png' name='down' value='{$ext['user_extended_struct_id']}' />";
+				}
+				$text .= "
+				</form>
+				</td>
 				<td class='forumheader3' style='text-align:center;'>
-					<span class='button' style='height:16px; width:50%;'>
+					<span class='button' style='height:16px; width:50%'>
 						<a style='text-decoration:none' href='".e_SELF."?editext.{$ext['user_extended_struct_id']}'>".USRLAN_81."</a>
 					</span>
 					&nbsp;
 					<form method='post' action='".e_SELF."?extended' onsubmit='return confirm(\"".USRLAN_16."\")'>
-						<div>
+						<span>
 						<input type='hidden' name='eu_action' value='delext' />
 						<input type='hidden' name='key' value='{$ext['user_extended_struct_id']},{$ext['user_extended_struct_name']}' />
 						<input type='submit' class='button' name='eudel' value='".USRLAN_29."' />
-						</div>
+						</span>
 					</form>
 				</td>
 				</tr>
 				";
+				$i++;
 			}
 		}
 		else
