@@ -1,6 +1,7 @@
 <?php
 
 $dbupdate=array(	
+						"614_to_615" => LAN_UPDATE_8." .614 ".LAN_UPDATE_9." .615",
 						"613b_to_614" => LAN_UPDATE_8." .613b ".LAN_UPDATE_9." .614",
 						"611_to_612" => LAN_UPDATE_8." .611 ".LAN_UPDATE_9." .612",
 						"603_to_604" => LAN_UPDATE_8." .603 ".LAN_UPDATE_9." .604",
@@ -25,6 +26,24 @@ function update_check(){
 		$ns -> tablerender(ADLAN_122,$txt);
 	}
 }
+
+function update_614_to_615($type){
+	global $sql;
+	if($type=="do"){
+		mysql_query("ALTER TABLE ".MPREFIX."submitnews ADD submitnews_category TINYINT(3) UNSIGNED NOT NULL DEFAULT '0' AFTER submitnews_title");
+		mysql_query("ALTER TABLE ".MPREFIX."upload ADD upload_category TINYINT(3) UNSIGNED NOT NULL DEFAULT '0'");
+		mysql_query("ALTER TABLE ".MPREFIX."online ADD online_pagecount tinyint(3) unsigned NOT NULL default '0'");
+	} else {
+		global $mySQLdefaultdb;
+		$fields = mysql_list_fields($mySQLdefaultdb,MPREFIX."submitnews");
+		$columns = mysql_num_fields($fields);
+		for ($i = 0; $i < $columns; $i++) {
+	   	if("submitnews_category" == mysql_field_name($fields, $i)){return TRUE;}
+		}
+		return FALSE;
+	}
+}
+
 
 function update_613b_to_614($type){
 	global $sql;
