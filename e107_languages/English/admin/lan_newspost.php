@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-03-02 14:45:45 $
+|     $Revision: 1.14 $
+|     $Date: 2005-03-07 11:37:43 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -112,7 +112,7 @@ define("NWSLAN_103", "re-Post");
 define("NWSLAN_104", "by");
 define("NWSLAN_105", "Check box to update datestamp of news item to current time");
 define("NWSLAN_106", "Submit-News maybe accessed by:");
-define("NWSLAN_107", "Enable HtmlArea on Submit-News page.");
+define("NWSLAN_107", "Enable WYSIWYG editor on Submit-News page.");
 
 define("NWSLAN_110","is not writable, you need to CHMOD 777 the folder before uploading");
 
