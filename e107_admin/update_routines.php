@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-01-30 06:14:08 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.19 $
+|     $Date: 2005-01-30 18:17:29 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -78,7 +78,7 @@ function update_61x_to_700($type) {
 		/* end */
 		 
 		// start links update -------------------------------------------------------------------------------------------
-		if (!$sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."links_page")) {
+		if ($sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."link_category")) {
 			global $IMAGES_DIRECTORY, $PLUGINS_DIRECTORY, $pref;
 			$sql->db_Select_gen("CREATE TABLE ".MPREFIX."links_page_cat (
 				link_category_id int(10) unsigned NOT NULL auto_increment,
@@ -106,8 +106,7 @@ function update_61x_to_700($type) {
 			while ($row = $sql->db_Fetch()) {
 				$link_cat_id[$row['link_category_id']] = $new_cat_id;
 				if ($row['link_category_icon']) {
-					$link_category_icon = strstr($row['link_category_icon'], "/") ? $row['link_category_icon'] :
-					 $IMAGES_DIRECTORY."link_icons/".$row['link_category_icon'];
+					$link_category_icon = strstr($row['link_category_icon'], "/") ? $row['link_category_icon'] : $IMAGES_DIRECTORY."link_icons/".$row['link_category_icon'];
 				} else {
 					$link_category_icon = "";
 				}
@@ -125,8 +124,7 @@ function update_61x_to_700($type) {
 			$sql->db_Select("links", "*", "link_category!=1 ORDER BY link_category");
 			while ($row = $sql->db_Fetch()) {
 				if ($row['link_button']) {
-					$link_button = strstr($row['link_button'], "/") ? $row['link_button'] :
-					 $IMAGES_DIRECTORY."link_icons/".$row['link_button'];
+					$link_button = strstr($row['link_button'], "/") ? $row['link_button'] : $IMAGES_DIRECTORY."link_icons/".$row['link_button'];
 				} else {
 					$link_button = "";
 				}
