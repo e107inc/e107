@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-02-24 04:21:48 $
+|     $Revision: 1.18 $
+|     $Date: 2005-02-25 18:44:35 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -49,9 +49,10 @@ class e_bbcode {
 		$this->bbLocation = array_diff($this->bbLocation,array(''));
 	}
 	 
-	function parseBBCodes($text, $postID) {
+	function parseBBCodes($text, $p_ID) {
 		global $code;
 		global $postID;
+		$postID = $p_ID;
 		$done = FALSE;
 		$i=0;
 		while (!$done) {
