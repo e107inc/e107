@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/tree_menu/tree_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:40 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-09-28 09:43:59 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 
@@ -26,7 +26,7 @@
 - Add a PHP function to read cookie (if existing) when page is loaded and restore menu status (writing or not window.onload js function)
 */
 
-include(e_LANGUAGEDIR.e_LAN."/lan_sitelinks.php");
+include(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitelinks.php");
 
 // Many thanks to Lolo Irie for fixing the javascript that drives this menu item
 unset($text);
