@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/newsfeed.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-28 18:23:56 $
+|     $Revision: 1.2 $
+|     $Date: 2005-02-28 19:36:58 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -56,7 +56,18 @@ if($action == "show")
 		$FEEDDESCRIPTION = $newsfeed_description;
 		if($newsfeed_image == "default")
 		{
-			$FEEDIMAGE = ($dataArray['image'] ? "<a href='".$dataArray['link']."' rel='external'><img src='".$dataArray['image']."' alt='' style='border: 0; vertical-align: middle;' /></a>" : "");
+			if($file = fopen ($dataArray['image'], "r"))
+			{
+				/* remote image exists - use it! */
+				$FEEDIMAGE = "<a href='".$dataArray['link']."' rel='external'><img src='".$image."' alt='' style='border: 0; vertical-align: middle;' /></a>";
+			}
+			else
+			{
+				/* remote image doesn't exist - ghah! */
+				$FEEDIMAGE = "";
+			}
+
+
 		}else if ($newsfeed_image)
 		{
 			$FEEDIMAGE = $newsfeed_image;
@@ -77,7 +88,7 @@ if($action == "show")
 		while($dataArray['itemlink'][$loop])
 		{
 			$FEEDITEMLINK = $dataArray['itemlink'][$loop];
-			$FEEDITEMTEXT = $tp -> toHTML($dataArray['itemtext'][$loop], TRUE);
+			$FEEDITEMTEXT = ereg_replace("&#091;.*]", "", $tp -> toHTML($dataArray['itemtext'][$loop], TRUE));
 			$FEEDITEMCREATOR = $tp -> toHTML($dataArray['itemcreator'][$loop], TRUE);
 			$data .= preg_replace("/\{(.*?)\}/e", '$\1', $NEWSFEED_MAIN);
 			$loop++;
@@ -98,7 +109,7 @@ if ($feeds = $sql -> db_Select("newsfeed", "*", "newsfeed_active=2 OR newsfeed_a
 	{
 		extract($row);
 		$FEEDNAME = "<a href='".e_SELF."?show.$newsfeed_id'>$newsfeed_name</a>";
-		$FEEDDESCRIPTION = ($newsfeed_description ? $newsfeed_description : "&nbsp;");
+		$FEEDDESCRIPTION = ((!$newsfeed_description || $newsfeed_description == "default") ? "&nbsp;" : $newsfeed_description);
 		$FEEDIMAGE = $newsfeed_image;
 		$data .= preg_replace("/\{(.*?)\}/e", '$\1', $NEWSFEED_LIST);
 	}
