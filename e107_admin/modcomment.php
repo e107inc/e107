@@ -27,6 +27,8 @@ switch($table){
 	case "poll" :  $type = 4;  break;
 	case "docs" : $tid=5; $type = "docs";  break;
 	case "bugtrack" : $tid=6; $type = "bugtrack";  break;
+	default : $tid = ""; $type=$table; 
+
 	/****************************************
 	Add your comment type here in same format as above, ie ...
 	case "your_comment_type"; $type = your_type_id; break;
