@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-07 13:27:21 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-12 16:31:01 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -52,6 +52,11 @@ function update_61x_to_700($type){
         global $sql,$ns;
         if($type=="do"){
             $sql -> db_Update("userclass_classes", "userclass_editclass='254' WHERE userclass_editclass ='0' ");
+
+			 mysql_query("ALTER TABLE ".MPREFIX."banner CHANGE banner_active banner_active TINYINT(3) UNSIGNED NOT NULL DEFAULT '0'");
+			 $sql -> db_Update("banner", "banner_active='255' WHERE banner_active = '0' ");
+			 $sql -> db_Update("banner", "banner_active='0' WHERE banner_active = '1' ");
+
         }else{
            if(!$sql -> db_Select("userclass_classes", "*", "userclass_editclass='254'") && $sql -> db_Count("userclass_classes") > 0 ){
                return FALSE;
