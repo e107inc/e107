@@ -22,18 +22,19 @@ php 4.3.6 does NOT have this problem.
 
 
 function sendemail($send_to, $subject, $message,$to_name,$send_from,$from_name,$attachments,$Cc,$Bcc,$returnpath,$returnreceipt){
-        global $pref,$SIGNUPEMAIL;
+        global $pref;
         $lb = "\n";
         // Clean up the HTML. ==
-        if(!$SIGNUPEMAIL || (!eregi("<br>",$message) && !eregi("<br />",$message))){
+
+        if(preg_match('/<(html|font|br|a|img)/i', $message)){
+        $Html = $message;
+        }else{
         $Html = preg_replace("/\n/","<br />",$message);
         $Html = eregi_replace('(((f|ht){1}tp://)[-a-zA-Z0-9@:%_\+.~#?&//=]+)',    '<a href="\\1">\\1</a>', $Html);
         $Html = eregi_replace('([[:space:]()[{}])(www.[-a-zA-Z0-9@:%_\+.~#?&//=]+)',    '\\1<a href="http://\\2">\\2</a>', $Html);
         $Html = eregi_replace('([_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,3})',    '<a href="mailto:\\1">\\1</a>', $Html);
-        }else{
-        $Html = $message;
-
         }
+
         $text = strip_tags(preg_replace("<br>","/\n/",$message));
         $OB="----=_OuterBoundary_000". md5(uniqid(mt_rand(), 1));
         $IB="----=_InnerBoundery_001" . md5(uniqid(mt_rand(), 1));
