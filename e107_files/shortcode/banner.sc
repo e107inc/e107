@@ -7,7 +7,7 @@ $ret = "";
 require_once(e_HANDLER."banner_class.php");
 $bn = new banner;
 
-if($menu_pref['banner_campaign']){	
+if(isset($menu_pref['banner_campaign']) && $menu_pref['banner_campaign']){	
 	//if campaign(s) are present, set query
 	$campaignlist = explode("|", $menu_pref['banner_campaign']);
 	unset($campaignlist_query);
@@ -25,8 +25,11 @@ unset($banneridquery);
 for($i = 0 ;$i < count($bannerarray) ; $i++){
 	$banneridquery .= " banner_id = '".$bannerarray[$i]."' OR ";
 }
-$banneridquery = substr($banneridquery, 0, -3);
-if($banneridquery == '')
+if(isset($banneridquery))
+{
+	$banneridquery = substr($banneridquery, 0, -3);
+}
+else
 {
 	$banneridquery = '1 ';
 }
