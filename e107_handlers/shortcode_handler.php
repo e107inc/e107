@@ -16,14 +16,17 @@
 class e_shortcode
 {
 	var $scList;
+	var $parseSCFiles;
+	var $addedCodes;
 
-	function parseCodes($text,$parseSCFiles=TRUE,$extraCodes="")
+	function parseCodes($text,$useSCFiles=TRUE,$extraCodes="")
 	{
+		$this -> parseSCFiles = $useSCFiles;
 		if(is_array($extraCodes))
 		{
 			foreach($extraCodes as $sc => $code)
 			{
-				$this -> $scList[$sc] = $code;
+				$this -> scList[$sc] = $code;
 			}
 		}
 		$tmp = explode("\n", $text);
@@ -43,24 +46,15 @@ class e_shortcode
 
 	function doCode($matches)
 	{
-		if(($pos = strpos($matches[1],"=")) != FALSE)
-		{
-			$code = substr($matches[1],0,$pos);
-			$parm = substr($matches[1],$pos+1);
-		}
-		else 
-		{
-			$code = $matches[1];
-			$parm = "";
-		}
-		
+		list($code,$parm) = explode("=",$matches[1],2);
+		$parm=trim(chop($parm));
 		if(array_key_exists($code,$this -> scList))
 		{
 			$shortcode = $this -> scList[$code];
 		}
 		else
 		{
-			if($parseSCFiles)
+			if($this -> parseSCFiles)
 			{
 				if(($pos = strpos($code,".")) != FALSE)
 				{
