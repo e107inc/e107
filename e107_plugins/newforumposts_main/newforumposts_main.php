@@ -69,7 +69,7 @@ $results = $sql -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."f
 			<td style='width:15%; text-align:center' class='forumheader3'>".(USER ? "<a href='".e_BASE."user.php?id.$post_author_id'>" : "")."$post_author_name".(USER ? "</a>" :"")."</td>
 			<td style='width:5%; text-align:center' class='forumheader3'>$thread_views</td>
 			<td style='width:5%; text-align:center' class='forumheader3'>$replies</td>
-			<td style='width:25%; text-align:center' class='forumheader3'>".($replies ? "<b>".(USER ? "<a href='".e_BASE."user.php?id.$r_id'>" : "")."$r_name".(USER ? "</a>" : "")."</b><br /><span class='smalltext'>$r_datestamp</span>" : "-")."</td>
+			<td style='width:25%; text-align:center' class='forumheader3'>".($replies ? "<b>".(USER && $r_id > 0 ? "<a href='".e_BASE."user.php?id.$r_id'>" : "")."$r_name".(USER && $r_id > 0 ? "</a>" : "")."</b><br /><span class='smalltext'>$r_datestamp</span>" : "-")."</td>
 			</tr>\n";
 		}else{
 			$results --;
