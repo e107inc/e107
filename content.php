@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/content.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2004-12-03 22:33:13 $
-|     $Author: e107coders $
+|     $Revision: 1.11 $
+|     $Date: 2005-01-05 10:34:26 $
+|     $Author: pholzmann $
 +----------------------------------------------------------------------------+
 */
 
@@ -127,6 +127,7 @@ if($action == "content"){
 
 	if($cache = $e107cache->retrieve("content.$sub_action")){
 		echo $aj -> formtparev($cache);
+		$comment_total = 1; /* assume there are some, so moderation works! */
 	}else{
 		ob_start();
 
@@ -166,8 +167,12 @@ if($action == "content"){
 			$cache = $aj -> formtpa(ob_get_contents(), "admin");
 			$e107cache->set("content.$sub_action", $cache);
 		}
+		ob_end_flush(); /* dump collected data */
 	}
 
+	if (ADMIN) {
+		echo '<span style="text-align:right">(<a href="',e_ADMIN,'content.php?edit.',$sub_action,'">Admin Edit</a>)<br /></span>';
+	}
 	if($content_comment){
 		if($cache = $e107cache->retrieve("comment.content.$sub_action")){
 			echo $aj -> formtparev($cache);
@@ -190,6 +195,7 @@ if($action == "content"){
 					$e107cache->set("comment.content.$sub_action", $cache);
 				}
 			}
+		ob_end_flush(); /* dump collected data */			
 		}
 		if(ADMIN && getperms("B") && $comment_total){
 			echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?content.$sub_action'>".LAN_29."</a></div><br />";
@@ -287,6 +293,7 @@ if($pref['cachestatus']){
 	$cache = $aj -> formtpa(ob_get_contents(), "admin");
 	$e107cache->set("review.item.$sub_action", $cache);
 }
+			ob_end_flush(); /* dump collected data */
 }
 
                 if($sql -> db_Select("content", "*", "content_id=$sub_action")){
@@ -315,6 +322,7 @@ if($content_comment){
 		$e107cache->set("comment.content.$sub_action", $cache);
 	}
 }
+				ob_end_flush(); /* dump collected data */	
 }
 if(ADMIN && getperms("B")){
 	echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?content.$sub_action'>".LAN_29."</a></div><br />";
@@ -397,10 +405,8 @@ unset($text);
 	}
 	$ns -> tablerender(LAN_46.": ".$category, $text);
 }
-
-
-
 }
+		ob_end_flush(); /* dump collected data */			
 }
 
 unset($text);
@@ -518,6 +524,7 @@ $ns -> tablerender(LAN_32, $text);
 		$e107cache->set("review.main", $cache);
 	}
 }
+		ob_end_flush(); /* dump collected data */
 }
 }
 
@@ -563,6 +570,7 @@ if($action == "article"){
 		$cache = $aj -> formtpa(ob_get_contents(), "admin");
 		$e107cache->set($cachestr, $cache);
 	}
+			ob_end_flush(); /* dump collected data */			
 }
 
     if($sql -> db_Select("content", "*", "content_id=$sub_action")){
@@ -602,6 +610,7 @@ if($content_comment && $comflag){
 		$e107cache->set("comment.content.$sub_action", $cache);
 	}
 }
+					ob_end_flush(); /* dump collected data */		
 }
 if(ADMIN && getperms("B")){
 	echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?content.$sub_action'>".LAN_29."</a></div><br />";
@@ -667,6 +676,7 @@ if($pref['cachestatus']){
 	$e107cache->set("article.cat.$id", $cache);
 }
 }
+		ob_end_flush(); /* dump collected data */
 }
 // ##### ----------------------------------------------------------------------------------
 
@@ -786,6 +796,7 @@ if(!$CONTENT_CATEGORY_TABLE){
 			$e107cache->set("article.main", $cache);
 	}
 }
+		ob_end_flush(); /* dump collected data */		
 }
 }
 
@@ -816,11 +827,16 @@ function parse_content_article_table($row){
 	$user_name = $tmp[0];
 	$user_email = $tmp[1];
 }
-if($user_hideemail){
+
+                if($user_hideemail)
+                {
 	$CONTENT_ARTICLE_AUTHOR = ($user_name != "" ? "<a href='user.php?id.$content_author'>$user_name</a>" : "");
-}else{
+                }
+                else
+                {
 	$CONTENT_ARTICLE_AUTHOR = ($user_name != "" ? "<a href='mailto:$user_email'>$user_name</a>" : "");
 }
+
 $datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
 $CONTENT_ARTICLE_DATESTAMP = ($datestamp != "" ? $datestamp : "");
 
