@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/search.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-16 14:56:16 $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-16 17:38:27 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -37,6 +37,8 @@ if (isset($_POST['updatesettings'])) {
 	$search_prefs['search_res'] = $_POST['search_res'];
 	$search_prefs['relevance'] = $_POST['relevance'];
 	$search_prefs['user_select'] = $_POST['user_select'];
+	$search_prefs['time_restrict'] = $_POST['time_restrict'];
+	$search_prefs['time_secs'] = $_POST['time_secs'];
 	foreach($search_handlers as $s_key => $s_value) {
 		$search_prefs['core_handlers'][$s_key] = $_POST['core_handlers'][$s_key];
 	}
@@ -66,12 +68,12 @@ $text = "<div style='text-align:center'>
 
 $text .= "<tr>
 <td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_2."</td>
-<td style='width:50%;' colspan='2' class='forumheader3'>".$rs -> form_text("search_chars", 3, $search_prefs['search_chars'], 4)."</td>
+<td style='width:50%;' colspan='2' class='forumheader3'>".$rs -> form_text("search_chars", 4, $search_prefs['search_chars'], 4)."</td>
 </tr>";
 
 $text .= "<tr>
 <td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_9."</td>
-<td style='width:50%;' colspan='2' class='forumheader3'>".$rs -> form_text("search_res", 3, $search_prefs['search_res'], 4)."</td>
+<td style='width:50%;' colspan='2' class='forumheader3'>".$rs -> form_text("search_res", 4, $search_prefs['search_res'], 4)."</td>
 </tr>";
 
 $text .= "<tr>
@@ -87,6 +89,11 @@ $text .= "<tr>
 $text .= "<tr>
 <td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_11."</td>
 <td style='width:50%;' colspan='2' class='forumheader3'>".$rs -> form_checkbox('user_select', '1', $search_prefs['user_select'])."</td>
+</tr>";
+
+$text .= "<tr>
+<td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_12."</td>
+<td style='width:50%;' colspan='2' class='forumheader3'>".$rs -> form_checkbox('time_restrict', '1', $search_prefs['time_restrict'])." ".SEALAN_13." ".$rs -> form_text("time_secs", 4, $search_prefs['time_secs'], 4)." ".SEALAN_14."</td>
 </tr>";
 
 $text .= "<tr>

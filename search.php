@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-03-16 15:30:32 $
+|     $Revision: 1.23 $
+|     $Date: 2005-03-16 17:38:53 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -68,10 +68,33 @@ if (isset($query) && isset($_GET['t'][$google_id]) && $_GET['t'][$google_id]) {
 	exit;
 }
 
+$perform_search = TRUE;
+if ($search_prefs['time_restrict']) {
+	if (isset($query)) {
+		$time = time() - $search_prefs['time_secs'];
+		$query_check = $tp -> toDB($query);
+		$ip = getip();
+		if ($sql -> db_Select("generic", "gen_datestamp, gen_chardata, gen_ip", "gen_type='search' AND gen_ip='".$ip."'")) {
+			$row = $sql -> db_Fetch();
+			if (($row['gen_datestamp'] > $time) && ($row['gen_chardata'] != $query_check)) {
+				$perform_search = FALSE;
+			} else {
+				$sql -> db_Update("generic", "gen_datestamp='".time()."', gen_chardata='".$query_check."' WHERE gen_type='search' AND gen_ip='".$ip."'");
+			}
+		} else {
+			$sql -> db_Insert("generic", "0, 'search', '".time()."', '', '".$ip."', '', '".$query_check."'");
+		}
+	}
+}
+
 require_once(HEADERF);
 	
 if (!isset($query) && isset($_GET['q'])) {
-	$ns->tablerender(LAN_180, LAN_201);
+	if (isset($_GET['q']) && strlen($_GET['q']) > 0) {
+		$ns->tablerender(LAN_180, LAN_417);
+	} else {
+		$ns->tablerender(LAN_180, LAN_201);
+	}
 }
 
 $con = new convert;
@@ -141,26 +164,30 @@ $text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_BOT_TABLE);
 $ns->tablerender(PAGE_NAME." ".SITENAME, $text);
 
 if (isset($query)) {
-	foreach ($search_info as $key => $a) {
-		if (isset($searchtype[$key])) {
-			unset($text);
-			if (file_exists($search_info[$key]['sfile'])) {
-				@require_once($search_info[$key]['sfile']);
-				$parms = $results.",".$search_prefs['search_res'].",".$_GET['r'].",".e_SELF."?q=".$_GET['q']."&t%5B".$key."%5D=on&r=[FROM]";
-				if ($results > $search_prefs['search_res']) {
-					$nextprev = ($results > $search_prefs['search_res']) ? LAN_SEARCH_10."&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}") : "";
-					$text .= "<div class='nextprev' style='text-align:center'>".$nextprev."</div>";
+	if ($perform_search) {
+		foreach ($search_info as $key => $a) {
+			if (isset($searchtype[$key])) {
+				unset($text);
+				if (file_exists($search_info[$key]['sfile'])) {
+					@require_once($search_info[$key]['sfile']);
+					$parms = $results.",".$search_prefs['search_res'].",".$_GET['r'].",".e_SELF."?q=".$_GET['q']."&t%5B".$key."%5D=on&r=[FROM]";
+					if ($results > $search_prefs['search_res']) {
+						$nextprev = ($results > $search_prefs['search_res']) ? LAN_SEARCH_10."&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}") : "";
+						$text .= "<div class='nextprev' style='text-align:center'>".$nextprev."</div>";
+					}
+					if ($results > 0) {
+						$res_from = $_GET['r'] + 1;
+						$res_to = ($_GET['r'] + $search_prefs['search_res']) > $results ? $results : ($_GET['r'] + $search_prefs['search_res']);
+						$res_display = $res_from." - ".$res_to." ".LAN_SEARCH_12." ".$results;
+					} else {
+						$res_display = "";
+					}
+					$ns->tablerender(LAN_SEARCH_11." ".$res_display." ".LAN_SEARCH_13." ".$search_info[$key]['qtype'], $text);
 				}
-				if ($results > 0) {
-					$res_from = $_GET['r'] + 1;
-					$res_to = ($_GET['r'] + $search_prefs['search_res']) > $results ? $results : ($_GET['r'] + $search_prefs['search_res']);
-					$res_display = $res_from." - ".$res_to." ".LAN_SEARCH_12." ".$results;
-				} else {
-					$res_display = "";
-				}
-				$ns->tablerender(LAN_SEARCH_11." ".$res_display." ".LAN_SEARCH_13." ".$search_info[$key]['qtype'], $text);
 			}
 		}
+	} else {
+		$ns->tablerender(LAN_SEARCH_16, LAN_SEARCH_17.$search_prefs['time_secs'].LAN_SEARCH_18);
 	}
 }
 

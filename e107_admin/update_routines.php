@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2005-03-16 15:09:30 $
+|     $Revision: 1.51 $
+|     $Date: 2005-03-16 17:38:27 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -513,6 +513,14 @@ function update_61x_to_700($type) {
 			$sql->db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs' ");
 		}
 		
+		// Search Update 5
+		if (!isset($search_prefs['time_restrict'])) {
+			$search_prefs['time_restrict'] = '';
+			$search_prefs['time_secs'] = '60';
+			$tmp = addslashes(serialize($search_prefs));
+			$sql->db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs' ");
+		}
+		
 } else {
 		// check if update is needed.
 		// FALSE = needed, TRUE = not needed.
@@ -529,7 +537,7 @@ function update_61x_to_700($type) {
 
         global $sysprefs;
         $search_prefs = $sysprefs -> getArray('search_prefs');
-		if (!isset($search_prefs['relevance'])) {
+		if (!isset($search_prefs['time_restrict'])) {
 			return FALSE;
 		} else {
 			return TRUE;
