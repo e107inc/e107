@@ -72,6 +72,7 @@ function forum_stage5() {
 function forum_stage6()
 {
 	global $sql;
+	global $PLUGINS_DIRECTORY;
 	if(!$sql->db_Count('plugin','(*)',"WHERE plugin_name = 'Forum'"))
 	{
 		$sql->db_Insert('plugin',"0,'Forum','1.0','forum',1");
@@ -81,6 +82,8 @@ function forum_stage6()
 	{
 		$sql->db_Update('plugin',"plugin_installflag = 1 WHERE plugin_name='Forum'");
 	}
+	$sql->db_Update('links',"link_url='{$PLUGINS_DIRECTORY}.forum/forum.php' WHERE link_name='Forum'");
+	
 }
 	
 	
