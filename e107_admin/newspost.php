@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.33 $
-|   $Date: 2005-02-10 07:03:53 $
+|   $Revision: 1.34 $
+|   $Date: 2005-02-10 08:39:50 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -120,6 +120,7 @@ if (IsSet($_POST['submitupload'])) {
 // required.
 if (IsSet($_POST['preview'])) {
 	$_POST['news_title'] = $tp->toDB($_POST['news_title']);
+   	$_POST['news_summary'] = $tp->toDB($_POST['news_summary']);
 	$newspost->preview_item($id);
 }
 
@@ -458,7 +459,7 @@ class newspost {
 			<tr>
 			<td style='width:20%' class='forumheader3'>".LAN_NEWS_27.":</td>
 			<td style='width:80%' class='forumheader3'>
-			<input class='tbox' type='text' name='news_summary' size='80' value='".$_POST['news_summary']."' maxlength='250' style='width:95%'/>
+			<input class='tbox' type='text' name='news_summary' size='80' value='".$tp->toForm($_POST['news_summary'])."' maxlength='250' style='width:95%'/>
 			</td>
 			</tr>
 
@@ -704,6 +705,7 @@ class newspost {
 		$_POST['news_datestamp'] = time();
 		$_PR = $_POST;
 		$_PR['news_title'] = $tp->post_toHTML($_PR['news_title']);
+		$_PR['news_summary'] = $tp->post_toHTML($_PR['news_summary']);
 		$_PR['data'] = $tp->post_toHTML($_PR['data']);
 		$_PR['news_extended'] = $tp->post_toHTML($_PR['news_extended']);
 		$_PR['news_body'] = (strstr($_PR['data'], "[img]http") ? $_PR['data'] : str_replace("[img]", "[img]../", $_PR['data']));
