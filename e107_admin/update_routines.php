@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.51 $
-|     $Date: 2005-03-16 17:38:27 $
+|     $Revision: 1.52 $
+|     $Date: 2005-03-16 17:57:52 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -537,7 +537,7 @@ function update_61x_to_700($type) {
 
         global $sysprefs;
         $search_prefs = $sysprefs -> getArray('search_prefs');
-		if (!isset($search_prefs['time_restrict'])) {
+		if (!isset($search_prefs['time_secs'])) {
 			return FALSE;
 		} else {
 			return TRUE;
