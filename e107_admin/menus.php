@@ -15,6 +15,8 @@
 require_once("../class2.php");
 if(!getperms("2")){ header("location:".e_BASE."index.php"); exit;}
 require_once("auth.php");
+require_once(e_HANDLER."form_handler.php");
+$frm = new form;
 
 function headerjs(){
 $headerjs =  "<script type=\"text/javascript\">
@@ -32,19 +34,26 @@ $row = $sql -> db_Fetch();
 $tmp = stripslashes($row['e107_value']);
 $menu_pref=unserialize($tmp);
 
-$tmp = explode(".", e_QUERY);
-$action = $tmp[0];
-$id = $tmp[1];
-$position = $tmp[2];
-$location = $tmp[3];
-
-$check_actions=array('sv','move','activate','deac','dec','inc');
-if(in_array($action,$check_actions))
-{
-	if(!e_REFERER_SELF){exit;}
+if($_POST['menuAct']){
+	$menu_act = $_POST['menuAct'];
+	$position = $_POST['menuPosition'];
+	if(preg_match("#move\.(\d+)#",$menu_act,$matches))
+	{
+		$menu_act = 'move';
+		$position = $matches[1];
+	}
+	$id = $_POST['menuId'];
+	$location= $_POST['menuLocation'];
 }
 
-if($action == "adv"){
+
+if($menu_act == 'config')
+{
+	header("location:".$_POST['ConfigPath']);
+	exit;
+}
+
+if($menu_act == "adv"){
         $sql -> db_Select("menus", "*", "menu_id='$id' ");
         $row = $sql -> db_Fetch(); extract($row);
         $text = "<div style=\"text-align:center\">
@@ -93,39 +102,55 @@ if($action == "adv"){
 }
 
 
-if($action == "sv"){
+
+if($menu_act == "sv"){
         $sql -> db_Update("menus", "menu_class='".$_POST['menu_class']."' WHERE menu_id='$id' ");
         $message = "<br />".MENLAN_8."<br />";
 }
 
-if($action == "move"){
+if($menu_act == "move"){
         $menu_count = $sql -> db_Count("menus", "(*)", " WHERE menu_location='$position' ");
         $sql -> db_Update("menus", "menu_location='$position', menu_order='".($menu_count+1)."' WHERE menu_id='$id' ");
-        header("location: ".e_SELF);
-        exit;
 }
 
-if($action == "activate"){
-        $menu_count = $sql -> db_Count("menus", "(*)", " WHERE menu_location='$position' ");
-        $sql -> db_Update("menus", "menu_location='$position', menu_order='".($menu_count+1)."' WHERE menu_id='$id' ");
-        header("location: ".e_SELF);
-        exit;
+if($_POST['activate'])
+{
+	list($act,$id,$position) = explode(".",$_POST['activate']);
+	
+	echo "position = $position <br />";
+	echo "id = $id <br />";
+
+	$menu_count = $sql -> db_Count("menus", "(*)", " WHERE menu_location='$position' ");
+	$sql -> db_Update("menus", "menu_location='$position', menu_order='".($menu_count+1)."' WHERE menu_id='$id' ");
 }
 
-if($action == "deac"){
+
+
+if($menu_act == "deac"){
         $sql -> db_Update("menus", "menu_location='0', menu_order='0' WHERE menu_id='$id' ");
         header("location: ".e_SELF);
         exit;
 }
 
-if($action == "dec"){
-        $sql -> db_Update("menus", "menu_order=menu_order-1 WHERE menu_order='".($position+1)."' AND menu_location='$location' ");
-        $sql -> db_Update("menus", "menu_order=menu_order+1 WHERE menu_id='$id' AND menu_location='$location' ");
-        header("location: ".e_SELF);
-        exit;
+if($menu_act == "bot")
+{
+   $menu_count = $sql -> db_Count("menus", "(*)", " WHERE menu_location='$location' ");
+	$sql -> db_Update("menus", "menu_order=".($menu_count+1)." WHERE menu_order='$position' AND menu_location='$location' ");
+	$sql -> db_Update("menus", "menu_order=menu_order-1 WHERE menu_location='$location' AND menu_order > $position");
 }
 
-if($action == "inc"){
+if($menu_act == "top")
+{
+	$sql -> db_Update("menus", "menu_order=menu_order+1 WHERE menu_location='$location' AND menu_order < $position");
+	$sql -> db_Update("menus", "menu_order=0 WHERE menu_id='$id' ");
+}
+
+if($menu_act == "dec"){
+        $sql -> db_Update("menus", "menu_order=menu_order-1 WHERE menu_order='".($position+1)."' AND menu_location='$location' ");
+        $sql -> db_Update("menus", "menu_order=menu_order+1 WHERE menu_id='$id' AND menu_location='$location' ");
+}
+
+if($menu_act == "inc"){
         $sql -> db_Update("menus", "menu_order=menu_order+1 WHERE menu_order='".($position-1)."' AND menu_location='$location' ");
         $sql -> db_Update("menus", "menu_order=menu_order-1 WHERE menu_id='$id' AND menu_location='$location' ");
         header("location: ".e_SELF);
@@ -220,15 +245,16 @@ while(list($menu_id, $menu_name, $menu_location, $menu_order) = $sql-> db_Fetch(
 </td>
 </tr>
 <td class=\"forumheader3\" style=\"text-align:center\">";
-        echo "<select name=\"activate\" onchange=\"urljump(this.options[selectedIndex].value)\" class=\"tbox\">
-        <option selected='selected'  value=\"0\">".MENLAN_12." ...</option>";
+	$text = $frm -> form_open("post",e_SELF,"menuActivation");
+	$text .= $frm -> form_select_open("activate","OnChange='this.form.submit()'");
+	$text .= $frm -> form_option(MENLAN_12." ...",TRUE, "");
+	
         for($a=1; $a<=$menus_used; $a++){
-                echo "<option value=\"".e_SELF."?activate.$menu_id.$a\">".MENLAN_13." $a</option>";
+				$text .= $frm -> form_option(MENLAN_13." ".$a,"", "activate.$menu_id.$a");
         }
-        echo "</select>";
-        if($menu <> $c){
-
-}
+			$text .= $frm -> form_select_close();
+			$text .= $frm -> form_close();
+			echo $text;
 
 echo "</td></tr>
 <tr><td><br /></td></tr>
@@ -252,6 +278,8 @@ function parseheader($LAYOUT){
 }
 function checklayout($str){
         global $pref, $menus_used, $menu_pref, $areas;
+        global $PLUGINS_DIRECTORY, $frm;
+        
         if(strstr($str, "LOGO")){
                 echo "[Logo]";
         }else if(strstr($str, "SITENAME")){
@@ -265,34 +293,57 @@ function checklayout($str){
                 $menu = preg_replace("/\{MENU=(.*?)\}/si", "\\1", $str);
                 echo "<div style=\"text-align:center; font-size:14px\" class=\"fborder\"><div class=\"forumheader\"><b>".MENLAN_14."  ".$menu."</b></div></div><br />";
                 unset($text);
-
+					
                 $sql9 = new db;
                 $sql9 -> db_Select("menus", "*",  "menu_location='$menu' ORDER BY menu_order");
                 $menu_count = $sql9 -> db_Rows();
                 while(list($menu_id, $menu_name, $menu_location, $menu_order) = $sql9-> db_Fetch()){
                         $menu_name = eregi_replace("_menu", "", $menu_name);
                         $caption = "<div style=\"text-align:center\">".$menu_name."</div>";
-                        $text = "<a href=\"".e_SELF."?deac.".$menu_id."\"><img style=\"border:0\" src=\"".e_IMAGE."generic/off.png\" alt=\"\" /> ".MENLAN_15."</a><br />";
 
+
+                        $text = "<div style='text-align:center'>";
+								$text .= $frm -> form_open("post",e_SELF,"frm_".$menu_name);
+								$text .= $frm -> form_hidden("menuId",$menu_id);
+								$text .= $frm -> form_hidden("menuLocation",$menu_location);
+								$text .= $frm -> form_hidden("menuPosition",$menu_order);
                         $config_path = e_PLUGIN.$menu_name."_menu/config.php";
+                        $conf = FALSE;
                         if(file_exists($config_path)){
-                                $text .= "<a href=\"$config_path\"><img style=\"border:0\" src=\"".e_IMAGE."generic/move.png\" alt=\"\" /> ".MENLAN_16."</a><br />";
+                        	$text .= $frm -> form_hidden("ConfigPath",SITEURL.$PLUGINS_DIRECTORY.$menu_name."_menu/config.php");
+                        	$conf = TRUE;
+                        	
                         }
+								$text .= $frm -> form_select_open("menuAct","OnChange='this.form.submit()'");
+								$text .= $frm -> form_option(MENLAN_25,TRUE,"");
+
+								$text .= $frm -> form_option(MENLAN_15,"","deac");
+
+								if($conf)
+								{
+									$text .= $frm -> form_option(MENLAN_16,"","config");
+								}
+                        	
+
                         if($menu_order != 1){
-                                $text .= "<a href=\"".e_SELF."?inc.".$menu_id.".".$menu_order.".".$menu."\"><img style=\"border:0\" src=\"".e_IMAGE."generic/up.gif\" alt=\"\" /> ".MENLAN_17."</a><br />";
+									$text .= $frm -> form_option(MENLAN_17,"","inc");
+									$text .= $frm -> form_option(MENLAN_24,"","top");
                         }
                         if($menu_count != $menu_order){
-                                $text .= "<a href=\"".e_SELF."?dec.".$menu_id.".".$menu_order.".".$menu."\"><img style=\"border:0\" src=\"".e_IMAGE."generic/down.gif\" alt=\"\" /> ".MENLAN_18."</a><br />";
+									$text .= $frm -> form_option(MENLAN_18,"","dec");
+									$text .= $frm -> form_option(MENLAN_23,"","bot");
                         }
                         for($c=1; $c<=$areas; $c++){
                                 if($menu <> $c){
-                                        $text .= "<a href=\"".e_SELF."?move.".$menu_id.".$c\"><img style=\"border:0\" src=\"".e_IMAGE."generic/move.png\" alt=\"\" /> ".MENLAN_19." ".$c."</a><br />";
+													$text .= $frm -> form_option(MENLAN_19." ".$c,"","move.".$c);
 
                                 }
                         }
 
-                        $text .= "<a href=\"".e_SELF."?adv.".$menu_id."\"><img style=\"border:0\" src=\"".e_IMAGE."generic/move.png\" alt=\"\" /> ".MENLAN_20."</a>";
-
+								$text .= $frm -> form_option(MENLAN_20,"","adv");
+								$text .= $frm -> form_select_close();
+								$text .= $frm -> form_close();
+                        $text .= "</div>";
 
                         $ns -> tablerender($caption, $text);
                         echo "<br />";
