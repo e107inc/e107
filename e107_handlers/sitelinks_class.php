@@ -12,22 +12,22 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-02-02 13:26:23 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.25 $
+|     $Date: 2005-02-10 06:14:51 $
+|     $Author: e107coders $
 +---------------------------------------------------------------+
 */
-	
+
 @include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitelinks.php");
 @include_once(e_LANGUAGEDIR."English/lan_sitelinks.php");
-	
+
 /**
 * @return void
 * @desc Outputs sitelinks
 */
-	
+
 class sitelinks {
-	
+
 	var $eLinkList;
 
 	function getlinks()
@@ -48,16 +48,16 @@ class sitelinks {
 				}
 			}
 		}
-		
+
 	}
 
 	function get() {
 		global $pref, $ns, $tp, $e107cache;
-	 
+
 		if ($data = $e107cache->retrieve('sitelinks')) {
 			return $data;
 		}
-		 
+
 		if (LINKDISPLAY == 4) {
 			require_once(e_PLUGIN.'ypslide_menu/ypslide_menu.php');
 			return;
@@ -73,10 +73,10 @@ class sitelinks {
 		{
 			define('POSTLINKTITLE', '');
 		}
-		 
+
 		$menu_count = 0;
 		$text = PRELINK;
-		 
+
 		if (LINKDISPLAY != 3) {
 			foreach ($this->eLinkList['head_menu'] as $link) {
 				$text .= $this->makeLink($link);
@@ -113,7 +113,7 @@ class sitelinks {
 		$e107cache->set('sitelinks', $text);
 		return $text;
 	}
-	 
+
 	function makeLink($linkInfo, $submenu = FALSE) {
 		global $pref;
 		if (!preg_match('#(http:|mailto:|ftp:)#', $linkInfo['link_url'])) {
@@ -123,12 +123,15 @@ class sitelinks {
 			$tmp = explode('.', $linkInfo['link_name'], 3);
 			$linkInfo['link_name'] = $tmp[2];
 		}
-		 
-		$_link = $linkInfo['link_button'] ? preg_replace('/\<img.*\>/si', '', LINKSTART) :
-		 LINKSTART;
+
+		if(defined("LINKSTART_HILITE") && eregi(str_replace("../","",$linkInfo['link_url']), e_SELF)){
+			$_link = $linkInfo['link_button'] ? preg_replace('/\<img.*\>/si', '', LINKSTART_HILITE) :  LINKSTART_HILITE;
+		}else{
+			$_link = $linkInfo['link_button'] ? preg_replace('/\<img.*\>/si', '', LINKSTART) :  LINKSTART;
+		}
 		$_link .= $linkInfo['link_button'] ? "<img src='".e_IMAGE."link_icons/".$linkInfo['link_button']."' alt='' style='vertical-align:middle' />" : "";
 		$_link .= ($submenu == TRUE && LINKDISPLAY != 3) ? "&nbsp;&nbsp;" : "";
-		 
+
 		if ($linkInfo['link_url']) {
 			$linkadd = defined('LINKCLASS') ? " class='".LINKCLASS."'" : "";
 			$screentip = '';
@@ -136,18 +139,18 @@ class sitelinks {
 			{
 				$screentip = " title = '".$linkInfo['link_description']."'";
 			}
-				
+
 //			$screentip = ($pref['linkpage_screentip'] && $linkInfo['link_description']) ? " title = '".$linkInfo['link_description']."'" : "";
 			$href = ($linkInfo['link_open'] == 4) ? " href=\"javascript:open_window('".$linkInfo['link_url']."')\"" : " href='".$linkInfo['link_url']."'";
 			$link_append = ($linkInfo['link_open'] == 1) ? " rel='external'" : "";
-			 
+
 			$_link .= "<a".$linkadd.$screentip.$href.$link_append.">".$linkInfo['link_name']."</a>\n";
 		} else {
 			$_link .= $linkInfo['link_name'];
 		}
-		 
+
 		return $_link.LINKEND;
 	}
 }
-	
+
 ?>

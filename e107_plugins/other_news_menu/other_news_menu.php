@@ -11,18 +11,21 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/other_news_menu/other_news_menu.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-09 12:54:17 $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-10 06:14:51 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 unset($text);
 global $OTHERNEWS_STYLE;
+
+$numb = ($OTHERNEWS_LIMIT) ? $OTHERNEWS_LIMIT : 10;
+
 if(!$OTHERNEWS_STYLE){
-   //	$OTHERNEWS_STYLE = "<img src='".THEME."images/bullet2.gif' alt='bullet' />&nbsp;{OTHERNEWS_LINK}<br />";
+   	$OTHERNEWS_STYLE = "<img src='".THEME."images/bullet2.gif' alt='bullet' />&nbsp;{OTHERNEWS_LINK}<br />";
 }
 
-if ($sql->db_Select("news", "*", "news_render_type=2 ORDER BY news_datestamp DESC LIMIT 0,10")) {
+if ($sql->db_Select("news", "*", "news_render_type=2 ORDER BY news_datestamp DESC LIMIT 0,$numb")) {
 	unset($text);
 	while ($row = $sql->db_Fetch()) {
 		extract($row);
@@ -43,7 +46,7 @@ if ($sql->db_Select("news", "*", "news_render_type=2 ORDER BY news_datestamp DES
 		  //	$text .= "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_BASE."news.php?item.$news_id'>$news_title</a><br />\n";
 		}
 	}
-	$ns->tablerender(TD_MENU_L1, $text, 'other_news');
+	$ns->tablerender(TD_MENU_L1, $text, 'other_news2');
 }
 
 ?>
