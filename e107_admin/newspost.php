@@ -282,7 +282,7 @@ class newspost{
 
 		$handle=opendir(e_IMAGE."newspost_images");
 		while ($file = readdir($handle)){
-			if($file != "." && $file != ".." && $file != "/" && $file != "index.html" && $file != "null.txt"){
+			if($file != "." && $file != ".." && $file != "/" && $file != "index.html" && $file != "null.txt" && $file != "CVS"){
 				if(!strstr($file, "thumb_")){
 					$imagelist[] = $file;
 				}else{
@@ -304,7 +304,7 @@ class newspost{
 
 		$handle=opendir(e_FILE."downloads");
 		while ($file = readdir($handle)){
-			if($file != "." && $file != ".." && $file != "/" && $file != "index.html" && $file != "null.txt"){
+			if($file != "." && $file != ".." && $file != "/" && $file != "index.html" && $file != "null.txt" && $file != "CVS"){
 				$filelist[$c][0] = "";
 				$filelist[$c][1] = $file;
 				$c++;
