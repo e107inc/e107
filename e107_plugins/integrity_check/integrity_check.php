@@ -1,80 +1,124 @@
 <?php
-
-require_once("../../class2.php");
-
-//Only "Master of Desaster" can use this thing!
-//Change to "P" If you wanna give your plugin-Admins the same rights
- if (!getperms("P")) { header("location:".e_BASE."index.php"); exit; } 
+/*
++----------------------
+|
+|	Integrity-Check-Plugin v0.03
+|
+|	Checks for corrupted and missing files
+|
+|	©HeX0R 2004
+|
+|	for the
+|
+|	e107 website system
+|	©Steve Dunstan 2001-2004
+|	http://e107.org
+|	jalist@e107.org
+|
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
+|
+|
++-----------------------
+*/
 
 //The following is for php < 4.3.0 not knowing file_get_contents
-if (!function_exists('file_get_contents'))
-{
-    function file_get_contents($filename, $use_include_path = 0)
-    { 
-        $file = @fopen($filename, 'rb', $use_include_path); 
-        if ($file) 
-        { 
-            if ($fsize = @filesize($filename)) 
-            { 
-                $data = fread($file, $fsize); 
-            } 
-            else 
-            { 
-                while (!feof($file)) 
-                { 
-                    $data .= fread($file, 1024); 
-                } 
-            } 
-            fclose($file); 
-        } 
-        return $data;
-    } 
+if (!function_exists('file_get_contents')) {
+	function file_get_contents($filename, $use_include_path = 0) {
+		$file = @fopen($filename, 'rb', $use_include_path);
+		if ($file) {
+			if ($fsize = @filesize($filename)) { $data = fread($file, $fsize); }
+			else {
+				while (!feof($file)) { $data .= fread($file, 1024); }
+			}
+			fclose($file);
+		} 
+		return $data;
+	}
 }
 
-//Load crc-file and check any of its files
-function check_sfv_file($filename, $check=""){
-	$errors_miss = "";
-	$errors_crc = "";
+//Count lines of File
+function lines($filename){
 	if (strpos($filename, ".gz") == strlen($filename)-3) { $p = 1; }
 	else { $p = 0; }
-	if ($p == 0) { $dh = @fopen($filename, "r"); }
-	else { $dh = @gzopen($filename, "rb"); }
-	while (!feof($dh)) {
-   		if ($p == 0) { $line = fgets($dh, 4096); }
-   		else { $line = gzgets($dh, 4096); }
+	$dh = ($p==0 ? @fopen($filename, "r") : @gzopen($filename, "rb"));
+	$i = 0;
+	$end = ($p==0 ? feof($dh) : gzeof($dh));
+	while (!$end) {
+		$a = ($p==0 ? fgets($dh, 4096) : gzgets($dh, 4096));
+		$i++;
+		$end = ($p==0 ? feof($dh) : gzeof($dh));
+	}
+	$a = ($p==0 ? fclose($dh) : gzclose($dh));
+	return $i;
+}
+
+//Load crc-file and check any of its files		
+function check_sfv_file($filename, $check="", $from=0, $counts=0){
+	global $_log, $dirs_1, $dirs_2, $o_path;
+	$_counter=1;
+	$the_end=1;
+	if ($_log[4]>1) {
+		$dh_crc= (file_exists($o_path."log_crc.txt") ? @fopen($o_path."log_crc.txt", "a") : FALSE);
+		$dh_miss= (file_exists($o_path."log_miss.txt") ? @fopen($o_path."log_miss.txt", "a") : FALSE);
+	}
+	if (strpos($filename, ".gz") == strlen($filename)-3) { $p = 1; }
+	else { $p = 0; }
+	$dh = ($p == 0 ? @fopen($filename, "r") : @gzopen($filename, "rb"));
+	$end = ($p==0 ? feof($dh) : gzeof($dh));
+	while (!$end && $counts >= $_counter) {
+		if ($from==0){
+   			$line = ($p == 0 ? fgets($dh, 4096) : $line = gzgets($dh, 4096));
+   			++$_counter;
+   		}
+   		else {
+   			if ($p==0) { fseek($dh, $from); }
+   			else { gzseek($dh, $from); }
+   			$line = ($p == 0 ? fgets($dh, 4096) : gzgets($dh, 4096));
+   			++$_counter;
+			$from=0;
+		}
 		$a = substr($line, 0, strpos($line, "<-:sfv:->"));
    		if ($a) {
    			$b = substr($line, (strpos($line, "<-:sfv:->")+9));
    			$a = str_replace($dirs_2, $dirs_1, $a);
    			if (file_exists(e_BASE.$a)) {
    				if (trim($b) != trim(generate_sfv_checksum(e_BASE.$a))) {
-   					if (!$errors_crc) {
-   						$errors_crc = "<br />
-   						<div align='center'><u>".Integ_04."*</u></div><br /><ul>";
-   					} 
-   					$errors_crc  .= "<li>".$a;
+   					if ($_log[4] == 1) {
+						$_log['crc']  .= "<li>".$a."</li>";
+					}
+					else {
+						if (!$dh_crc) { $dh_crc = @fopen($o_path."log_crc.txt", "w"); }
+						@fwrite($dh_crc, "<li>".$a."</li>\n");
+					}
    				}
    			}
    			elseif ($a != "install.php" && $a != "upgrade.php" && (strpos($a, "e107_themes/") !== 0 || !$check || strpos($a, "templates/") != 0)) {
-   				if (!$errors_miss) {
-   					$errors_miss = "<br />
-   					<div align='center'><u>".Integ_03."</u></div><br /><ul>";
-   				} 
-   				$errors_miss .= "<li>".$a;
+   				if ($_log[4] == 1) {
+					$_log['miss'] .= "<li>".$a."</li>";
+				}
+				else {
+					if (!$dh_miss) { $dh_miss = @fopen($o_path."log_miss.txt", "w"); }
+					@fwrite($dh_miss, "<li>".$a."</li>\n");
+				}
    			}
    		}
+   		$end = ($p==0 ? feof($dh) : gzeof($dh));
    	}
-	if ($p == 0) { fclose($dh); }
-	else { gzclose($dh); }
-   	//Error-Output
-   	$mess = "";
-   	if ($errors_crc) { $mess .= $errors_crc."</ul>"; }
-	if ($errors_miss) { $mess .= $errors_miss."</ul>"; }
-   	if (!$errors_crc && !$errors_miss) {
-   		$mess .= "<br />".Integ_15;
-   	}
-   	if ($errors_crc) { $mess .= Integ_29; }
-   	return $mess;
+	if ($end) { $the_end=0; }
+	if ($p == 0) {
+		$_log[5]=ftell($dh);
+		fclose($dh);
+	}
+	else {
+		$_log[5]=gztell($dh);
+		gzclose($dh);
+	}
+	if ($_log[4]>1){
+		if ($dh_crc) { fclose($dh_crc); }
+		if ($dh_miss) { fclose($dh_miss); }
+	}
+   	return $the_end;
 }
 //Generating Checksum for File
 function generate_sfv_checksum($filename) {
@@ -126,24 +170,37 @@ function hex_getdirs($dir, $root, $s="1", $path=e_BASE){
 	return $t_array;
 }
 
-//Format String : 1 -> 0001 , 12 -> 0012
-function format_string($string){
-	settype($string, "string");
-	$a = "0000".$string;
-	$b = strrpos($a, $string);
-	return substr($a, (strlen($a)-$b), 4);
-}
+
+require_once("../../class2.php");
+
+//Output-Path
+$o_path = "crc/";
+
+if (!getperms("P")) { header("location:".e_BASE."index.php"); exit; }
+
 if(e_QUERY){
 	$query = explode(".", e_QUERY);
 }
 
 //Language-definitions
-@include_once("languages/".e_LANGUAGE.".php");
-@include_once("languages/English.php");
+@include_once((file_exists("languages/".e_LANGUAGE.".php") ? "languages/".e_LANGUAGE.".php" : "languages/English.php"));
 
+if (file_exists($o_path."log.txt")){
+	$_log = explode(".-.", stripslashes(file_get_contents($o_path."log.txt")));
+	$steps=intval($_log[2] / $_log[4])+1;
+}
+else {
+	if (file_exists($o_path."log_crc.txt")) {
+		$err_1 = @unlink($o_path."log_crc.txt");
+	}
+	if (file_exists($o_path."log_miss.txt")) {
+		$err_2 = @unlink($o_path."log_miss.txt");
+	}
+	
+}
 //Load normal Header ?
-if (in_array("header", $query)) {
-        require_once(e_ADMIN."auth.php");
+if (in_array("header", $query) && ($_log[3] <= $steps || !isset($_log)) && (!isset($_POST['steps']) || $_POST['steps'] == 1)) {
+       require_once(e_ADMIN."auth.php");
 }
 else {
 	$adminfpage = (!$pref['adminstyle'] || $pref['adminstyle'] == "default" ? "admin.php" : $pref['adminstyle'].".php");
@@ -157,8 +214,11 @@ else {
         if(file_exists(e_FILE."e107.css")){ $text .= "\n<link rel='stylesheet' href='".e_FILE."e107.css' />\n"; }
         if(file_exists(e_FILE."style.css")){ $text .= "\n<link rel='stylesheet' href='".e_FILE."style.css' />\n"; }
         $text .= "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=".CHARSET."\" />
-        <meta http-equiv=\"content-style-type\" content=\"text/css\" />
-        <script type='text/javascript' src='".e_FILE."e107.js'></script>";
+        <meta http-equiv=\"content-style-type\" content=\"text/css\" />\n";
+        if ((file_exists($o_path."log.txt") && $_log[3] > $steps) || ($_POST['steps'] > 1 && file_exists($_POST['input_files']))) {
+		$text .= "<meta http-equiv=\"refresh\" content=\"5;url='".e_PLUGIN."integrity_check\integrity_check.php?".e_QUERY." '\">\n";
+	}
+        $text .="<script type='text/javascript' src='".e_FILE."e107.js'></script>";
         if(file_exists(THEME."theme.js")){ $text .= "<script type='text/javascript' src='".THEME."theme.js'></script>"; }
         if(file_exists(e_FILE."user.js")){ $text .= "<script type='text/javascript' src='".e_FILE."user.js'></script>\n"; }
         $text .= "</head>
@@ -175,9 +235,6 @@ else {
         echo "</td>
         <td style='width:60%; vertical-align: top;'>";
 }
-$text = "";
-
-
 
 //check Version you are using
 if(file_exists(e_ADMIN."ver.php")){
@@ -186,13 +243,10 @@ if(file_exists(e_ADMIN."ver.php")){
 
 //Arrays for replacing Directorys (if non-standard)
 $dirs_1 = array($ADMIN_DIRECTORY, $FILES_DIRECTORY, $IMAGES_DIRECTORY, $THEMES_DIRECTORY, $PLUGINS_DIRECTORY, $HANDLERS_DIRECTORY, $LANGUAGES_DIRECTORY, $HELP_DIRECTORY);
-$dirs_2 =array("e107_admin/", "e107_files/", "e107_images/", "e107_themes/", "e107_plugins/", "e107_handlers/", "e107_languages/", "e107_docs/help/");
+$dirs_2 = array("e107_admin/", "e107_files/", "e107_images/", "e107_themes/", "e107_plugins/", "e107_handlers/", "e107_languages/", "e107_docs/help/");
 
 //Files / Dirs never coming into core-sfv
-$exclude = array($FILES_DIRECTORY."backend", $FILES_DIRECTORY."downloadimages", $FILES_DIRECTORY."downloads", $FILES_DIRECTORY."downloadthumbs", $FILES_DIRECTORY."images", $FILES_DIRECTORY."misc", $FILES_DIRECTORY."public" , substr($IMAGES_DIRECTORY, 0, strlen($IMAGES_DIRECTORY)-1), $PLUGINS_DIRECTORY."custom", "e107_config.php", "CVS");
-
-//Output-Path
-$o_path = "crc/";
+$exclude = array($FILES_DIRECTORY."backend", $FILES_DIRECTORY."downloadimages", $FILES_DIRECTORY."downloads", $FILES_DIRECTORY."downloadthumbs", $FILES_DIRECTORY."images", $FILES_DIRECTORY."misc", $FILES_DIRECTORY."public" , substr($IMAGES_DIRECTORY, 0, strlen($IMAGES_DIRECTORY)-1), $PLUGINS_DIRECTORY."custom", "e107_config.php", "CVS", $PLUGINS_DIRECTORY."integrity_check/crc");
 
 unset($message);
 
@@ -207,37 +261,9 @@ if (IsSet($_POST['activate'])) {
 } else { $_arr = array(); }
 
 
-
-//Make a new core sfv-File
-if (IsSet($_POST['donew']) && IsSet($_POST['save_file_name'])) {
-	$file_array = hex_getdirs(e_BASE, $exclude , "1");
-	sort($file_array);
-	unset($t_array);
-	reset($file_array);
-	$data="";
-	foreach($file_array as $v){
-		$data .= str_replace($dirs_1, $dirs_2, $v)."<-:sfv:->".generate_sfv_checksum(e_BASE.$v)."\n";
-	}
-	if (!IsSet($_POST['gz_core'])){
-		$dh=@fopen($o_path.$_POST['save_file_name'], "w");
-		if (@fwrite($dh, $data)){
-			$message = "<div align='center'>".Integ_01."</div>";
-		}
-		else {
-			$message = "<div align='center'>".Integ_02."</div>";
-		}
-		fclose($dh);
-	}
-	else {
-		$dh=@gzopen($o_path.$_POST['save_file_name'].".gz", "wb");
-		if (@gzwrite($dh, $data)){
-			$message = "<div align='center'>".Integ_01."</div>";
-		}
-		else {
-			$message = "<div align='center'>".Integ_02."</div>";
-		}
-		gzclose($dh);
-	}
+if (file_exists("do_core_file.php")) {
+	require_once("do_core_file.php");
+	if (!function_exists('docorefile')){ $message = "<div align='center'><b>".Integ_39."</b></div>"; }
 }
 
 
@@ -273,10 +299,91 @@ if (IsSet($_POST['doplugfile']) && $_POST['save_plug_name'] != "") {
 	}
 }
 
-//Check existing sfv-File
+//Check existing sfv-File START
 if (IsSet($_POST['docheck']) && $_POST['input_files'] != "") {
-	if (file_exists($_POST['input_files'])) { $message .= check_sfv_file($_POST['input_files'],$_POST['theme_folders']); }
+	if (file_exists($_POST['input_files'])) {
+		$_log = array();
+		$_log[2]=lines($_POST['input_files']);
+		$steps = intval($_log[2] / $_POST['steps'])+1;
+		$_log[3]=$_log[2]-$steps;
+		$_log[4]=$_POST['steps'];
+		$the_end = check_sfv_file($_POST['input_files'],$_POST['theme_folders'],0,$steps);
+		if ($_log[3] > 0) {
+			$text = "<div align='center'>".str_replace("{counts}", $_log[3], Integ_38)."<br />".
+			Integ_36."<br /><a href=\"".e_PLUGIN."integrity_check/integrity_check.php?".e_QUERY." \">".Integ_37."</a>
+			</div>";
+			$ns -> tablerender("", "<b>".$text."</b>");
+		}
+		if ($the_end != 0) {
+			$_log[0]=$_POST['input_files'];
+			$_log[1]=$_POST['theme_folders'];
+			$tmp = addslashes($_log[0].".-.".$_log[1].".-.".$_log[2].".-.".$_log[3].".-.".$_log[4].".-.".$_log[5]);
+			$handle = @fopen($o_path."log.txt", "w");
+			@fwrite($handle, $tmp);
+			@fclose($handle);
+			exit;
+		}
+		elseif ($_log['crc'] || $_log['miss']) {
+			$message = "";
+			if ($_log['crc']) {
+				$message .= "<br />
+   				<div align='center'><u>".Integ_04."*</u></div><br /><ul>".
+   				$_log['crc']."</ul>";
+   			}
+   			if ($_log['miss']) {
+   				$message .= "<br />
+   				<div align='center'><u>".Integ_03."</u></div><br /><ul>".
+   				$_log['miss']."</ul>";
+   			}
+   			if ($_log['crc']) {
+   				$message .= Integ_29;
+   			}
+   		}
+   		else {
+   			$message = "<br />".Integ_15;
+   		}
+	}
 	else { $message = Integ_05; }
+}
+if (file_exists($o_path."log.txt")) {
+	$the_end = check_sfv_file($_log[0],$_log[1],$_log[5],$steps);
+	$_log[3] = $_log[3] - $steps;
+	if ($_log[3] > 0) {
+		$text = "<div align='center'>".str_replace("{counts}", $_log[3], Integ_38)."<br />".
+		Integ_36."<br /><a href=\"".e_PLUGIN."integrity_check/integrity_check.php?".e_QUERY." \">".Integ_37."</a>
+		</div>";
+		$ns -> tablerender("", "<b>".$text."</b>");
+	}
+	if ($the_end != 0 && $_log[3] > 0) {
+		$tmp = addslashes($_log[0].".-.".$_log[1].".-.".$_log[2].".-.".$_log[3].".-.".$_log[4].".-.".$_log[5]);
+		$handle = @fopen($o_path."log.txt", "w");
+		@fwrite($handle, $tmp);
+		@fclose($handle);
+		exit;
+	}
+	elseif (file_exists($o_path."log_crc.txt") || file_exists($o_path."log_miss.txt")) {
+		$message = "";
+		if (file_exists($o_path."log_crc.txt")) {
+			$message .= "<br />
+   			<div align='center'><u>".Integ_04."*</u></div><br /><ul>".
+   			file_get_contents($o_path."log_crc.txt")."</ul>";
+   		}
+   		if (file_exists($o_path."log_miss.txt")) {
+   			$message .= "<br />
+   			<div align='center'><u>".Integ_03."</u></div><br /><ul>".
+   			file_get_contents($o_path."log_miss.txt")."</ul>";
+   			@unlink($o_path."log_miss.txt");
+   		}
+   		if (file_exists($o_path."log_crc.txt")) {
+   			$message .= Integ_29;
+   			@unlink($o_path."log_crc.txt");
+   		}
+   		
+   	}
+   	else {
+   		$message = "<br />".Integ_15;
+   	}
+   	@unlink($o_path."log.txt");
 }
 
 //Message-Output
@@ -299,7 +406,7 @@ unset($t_array);
 
 
 //Start output here
-$text .="<div style='text-align:center'>
+$text ="<div style='text-align:center'>
 <form method='post' action='".e_SELF."?".e_QUERY."' name='integrity_check'>
 <table style='width:95%'>
 
@@ -333,8 +440,32 @@ if ($core_array[0]) {
 	$text .="<br /><hr>
 	<input type='checkbox' name='theme_folders' value='on'>".Integ_23."<br />";
 }
+if ($err_1 || $err_2 || !is_writeable($o_path)) {
+	$err_m = Integ_35."<br />";
+	if ($err_1) {
+		$err_m .= Integ_32."<br />";
+	}
+	if ($err_2) {
+		$err_m .= Integ_33."<br />";
+	}
+	if (!is_writeable($o_path)) {
+		$err_m .= Integ_34."<br />";
+	}
+}
+else {
+	$err_m = "";
+}
+	
+$text .= "<hr>".Integ_30."<br />".($err_m != "" ? $err_m."<br />" : "")."<br />".Integ_31."<select name='steps'>
+<option value='1' selected='selected'>1</option>\n";
+if (is_writeable($o_path) && !$err_1 && !$err_2) {
+	for($i=2;$i<11;$i++){
+		$text .= "<option value='".$i."'>".$i."</option>\n";
+	}
+}
 
-$text .="</td>
+$text .="</select>
+</td>
 <td style='width:40%' class='forumheader3'>
 <input class='button' type='submit' name='docheck' size='20' value='".Integ_08."' />
 </td>
@@ -343,9 +474,7 @@ $text .="</td>
 if(is_writable($o_path)){
 	
 	//do_core_file.php only available 4 dev-team sorry guys...
-	if (file_exists("do_core_file.php")) {
-		require_once("do_core_file.php");
-	}
+	if (function_exists('docorefile')) { $text .= docorefile(); }
 	$text .="<tr>
 	<td class='fcaption' colspan='2'>".Integ_18."
 	</td>
@@ -391,41 +520,18 @@ else {
 	</td>
 	</tr></table></form></div>";
 }
-$text .= "<br /><br /><br /><a href='".e_SELF."?header'>".Integ_26."</a><br />
-	<a href='".e_SELF."?footer'>".Integ_27."</a><br />
-	<a href='".e_SELF."?header.footer'>".Integ_28."</a>";	
+$text .= "<br /><br /><br /><a href='".e_SELF."?header'>".Integ_26."</a><br />";	
 
 //Render this fuck
 $ns -> tablerender(Integ_13, $text);
 
-//Load normal footer?
-if (in_array("footer", $query)) {
-        require_once(e_ADMIN."footer.php");
-}
-else {
-     	//Alternative Footer
-     	echo "\n
-        </td>
-        </tr>
-        </table></div>
-        </body>
-        </html>";
-}
-
-/*
-+----------------------
-|
-|   Loads of stupid
-|         Functions
-|         no one
-|         really
-|         needs
-|
-|         ;)
-|
-+-----------------------
-*/
-
+//Footer
+echo "\n
+</td>
+</tr>
+</table></div>
+</body>
+</html>";
 
 ?>
 

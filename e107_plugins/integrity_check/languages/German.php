@@ -26,8 +26,16 @@ define("Integ_23", "Überprüfe nur Themes-Ordner, die auf deinem Host auch existi
 define("Integ_24", "Administrator Haupt-Seite");
 define("Integ_25", "Verlasse Admin-Breich");
 define("Integ_26", "Lade Seite mit normalem Kopf");
-define("Integ_27", "Lade Seite mit normalem Fuss");
-define("Integ_28", "Lade Seite mit normalem Kopf & Fuss");
-define("Integ_29", "<br /><br /><b>*<u>CRC-FEHLER:</u></b><br />Dies sind Pr&uuml;fsummen-Fehler. Es gibt folgende Erkl&auml;rungen:<br />-Du hast an einer Datei rumgebastelt, so dass sie nicht mehr in der Originalform ist.<br />-Die genannte Datei ist besch&auml;digt, du solltest sie neu hochladen!");
 
+define("Integ_29", "<br /><br /><b>*<u>CRC-FEHLER:</u></b><br />Dies sind Pr&uuml;fsummen-Fehler. Es gibt folgende Erkl&auml;rungen:<br />-Du hast an einer Datei rumgebastelt, so dass sie nicht mehr in der Originalform ist.<br />-Die genannte Datei ist besch&auml;digt, du solltest sie neu hochladen!");
+define("Integ_30", "Du kannst, um die CPU-Intensit&auml;t zu verringern, das Checken des CRC-Files in bis zu 10 Schritten durchf&uuml;hren lassen.");
+define("Integ_31", "Schritte: ");
+define("Integ_32", "Du hast noch eine Datei namens <b>log_crc.txt</b> in deinem Crc-Ordner. Bitte l&ouml;schen! (Du kannst auch einen Refresh versuchen).");
+define("Integ_33", "Du hast noch eine Datei namens <b>log_miss.txt</b> in deinem Crc-Ordner.  Bitte l&ouml;schen! (Du kannst auch einen Refresh versuchen).");
+define("Integ_34", "Dein Crc-Ordner ist nicht beschreibbar!");
+define("Integ_35", "Aus den folgenden Gr&uuml;nden kannst du nur einen Schritt einstellen:");
+define("Integ_36", "Klicke hier, wenn du es nicht erwarten kannst, zum n&auml;chsten Schritt zu kommen:");
+define("Integ_37", "Klick mich");
+define("Integ_38", "Noch <i><u>{counts}</u></i> Zeilen zu bearbeiten...");
+define("Integ_39", "Bitte l&ouml;sche die Datei:<br />".e_PLUGIN."integrity_check/<u><i>do_core_file.php</i></u>!<br />Sie ist nicht mehr aktuell, und war eh nie f&uuml;r die &Ouml;ffentlichkeit gedacht...");
 ?>
