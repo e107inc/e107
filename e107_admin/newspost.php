@@ -316,7 +316,8 @@ class newspost{
 
         function create_item($sub_action, $id){
                 // ##### Display creation form ---------------------------------------------------------------------------------------------------------
-                global $sql, $rs, $ns,$pref;
+					/* 08-08-2004 - unknown - fixed `Insert Image' display to use $IMAGES_DIRECTORY */
+					global $sql, $rs, $ns, $pref, $IMAGES_DIRECTORY;
 
                 $handle=opendir(e_IMAGE."newspost_images");
                 while ($file = readdir($handle)){
@@ -426,10 +427,10 @@ class newspost{
                 }
                 $text .= "</select>
 
-                <select class='tbox' name='imageps' onChange=\"addtext('[img]' + this.form.imageps.options[this.form.imageps.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_50."')\" onMouseOut=\"help('')\">
+					<select class='tbox' name='imageps' onChange=\"addtext('[img]' + this.form.imageps.options[this.form.imageps.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_110."')\" onMouseOut=\"help('')\">
                 <option>".NWSLAN_81." ...</option>\n";
                 while(list($key, $image) = each($imagelist)){
-                       $text .= "<option value='".e_IMAGE."newspost_images/".$image."'>".$image."</option>\n";
+								$text .= "<option value='".SITEURL.$IMAGES_DIRECTORY."newspost_images/".$image."'>".$image."</option>\n";
                 }
                 $text .= "</select>
 
@@ -456,11 +457,11 @@ class newspost{
                 <input class='helpbox' type='text' name='help_ext' size='100' />
                 <br />
                                 ".ren_help("","addtext","help2")."
-                <select class='tbox' name='imageps2' onChange=\"addtext('[img]' + this.form.imageps2.options[this.form.imageps2.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onMouseOver=\"help2('".NWSLAN_50."')\" onMouseOut=\"help2('')\">
+                <select class='tbox' name='imageps2' onChange=\"addtext('[img]' + this.form.imageps2.options[this.form.imageps2.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onMouseOver=\"help2('".NWSLAN_110."')\" onMouseOut=\"help2('')\">
                 <option>".NWSLAN_81." ...</option>\n";
                 reset($imagelist);
                 while(list($key, $image) = each($imagelist)){
-                        $text .= "<option value='".e_IMAGE."newspost_images/".$image."'>".$image."</option>\n";
+						$text .= "<option value='".SITEURL.$IMAGES_DIRECTORY."newspost_images/".$image."'>".$image."</option>\n";
                 }
                 $text .= "</select>";
                 }
