@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-02-09 22:04:06 $
+|     $Revision: 1.13 $
+|     $Date: 2005-02-15 22:46:16 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -221,6 +221,10 @@ if ($action == "reply") {
 		"SELECT #comments.*, user_id, user_name, user_image, user_signature, user_join, user_comments, user_location FROM #comments
 			LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='$field' AND comment_type='$comtype'  ORDER BY comment_datestamp");
 	}
+}
+
+if($pref['trackbackEnabled']){
+	echo "<span class='smalltext'><b>".$pref['trackbackString']."</b> ".$e107->HTTPPath.e_PLUGIN."trackback/trackback.php?$id</span>";
 }
 	
 $comment_total = $sql->db_Select_gen($query);

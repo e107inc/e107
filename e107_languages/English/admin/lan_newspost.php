@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-02-13 06:19:13 $
-|     $Author: e107coders $
+|     $Revision: 1.10 $
+|     $Date: 2005-02-15 22:46:20 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("NWSLAN_1", "News story deleted.");
@@ -150,4 +150,10 @@ define("LAN_NEWS_30", "If selected, news item will appear above all others");
 define("LAN_NEWS_31", "This news post is <b>STICKY</b> (it will be shown above all other items). ");
 define("LAN_NEWS_32", "Datestamp");
 define("LAN_NEWS_33", "Set the datestamp for the current news item.");
+
+define("LAN_NEWS_34", "Trackback");
+define("LAN_NEWS_35", "Add trackback url's");
+define("LAN_NEWS_36", "<b>Pingback</b> (send a pingback to all url's in this post)");
+define("LAN_NEWS_37", "<b>Trackback url's:</b> (one url per line)");
+
 ?>
