@@ -11,24 +11,29 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-01-26 23:46:14 $
+|     $Revision: 1.12 $
+|     $Date: 2005-01-27 15:11:30 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
+global $eTraffic,$sql, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $CUSTOMFOOTER, $FOOTER;
+
 if(!is_object($sql)){
         // reinstigate db connection if another connection from third-party script closed it ...
-        global $sql, $sDBdbg, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $CUSTOMFOOTER, $FOOTER;
         $sql = new db;
         $sql -> db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
+}
+if (!is_object($eTraffic)) {
+    $eTraffic = new e107_traffic;
+    $eTraffic->Bump('Lost Traffic Counters');
 }
 
 unset($fh);
 if($e107_popup!=1){
         parseheader(($ph ? $cust_footer : $FOOTER));
-        $eTimingStop = explode(' ', microtime());
+        $eTimingStop = microtime();
         global $eTimingStart;
-        $rendertime = number_format((($eTimingStop[0]+$eTimingStop[1])-($eTimingStart[0]+$eTimingStart[1])), 4);
+        $rendertime = number_format($eTraffic->TimeDelta( $eTimingStart, $eTimingStop ), 4);
         $db_time    = number_format($db_time,4);
         $rinfo = '';
 
@@ -37,25 +42,30 @@ if($e107_popup!=1){
         if($pref['displaycacheinfo']){ $rinfo .= $cachestring."."; }
         echo ($rinfo ? "\n<div style='text-align:center' class='smalltext'>$rinfo</div>\n" : "");
         if (ADMIN && E107_DEBUG_LEVEL) {
-                global $db_debug, $ns;
+                global $db_debug,$ns;
+                echo "\n<!-- DEBUG -->\n";
                 if (!isset($ns)) {
                     echo "Why did ns go away?<br/>";
                     $ns = new e107table;
                 }
+                
+                $tmp = $eTraffic->Display();
+                if (strlen($tmp)) {
+                    $ns->tablerender('Traffic Counters',$tmp);
+                } else echo "No Traffic???";
                 $tmp = $db_debug->Show_Performance();
                 if (strlen($tmp)) {
                     $dbg_summary = "
-                    \n<!-- DEBUG -->\n
                     <div style='text-align:left' class='smalltext'>
                     ".$tmp."</div>";
-                    $ns->tablerender('Debug Time Analysis',$dbg_summary);
+                    $ns->tablerender('Time Analysis',$tmp);
                 }
                 $tmp = $db_debug->Show_SQL_Details();
                 if (strlen($tmp)) {
                     $dbg_details = "
                     <div style='text-align:left' class='smalltext'>
                     ".$tmp."</div>";
-                    $ns->tablerender('Debug SQL Analysis',$dbg_details);
+                    $ns->tablerender('SQL Analysis',$tmp);
                 }
         }
 }

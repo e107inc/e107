@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-01-26 23:48:13 $
+|     $Revision: 1.24 $
+|     $Date: 2005-01-27 15:11:40 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ $db_mySQLQueryCount = 0;    // Global total number of db object queries (all db'
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.23 $
+* @version $Revision: 1.24 $
 * @author $Author: mrpete $
 */
 class db {
@@ -48,7 +48,8 @@ class db {
 	* @access public
 	*/
 	function db() {
-		global $pref;
+		global $pref, $eTraffic;
+		$eTraffic->Bump('Create db object');
 		$langid = 'e107language_'.$pref['cookie_name'];
 		if ($pref['user_tracking'] == 'session') {
 			$this->mySQLlanguage = ($this->db_IsLang($_SESSION[$langid])) ? $_SESSION[$langid] : '';
@@ -144,7 +145,6 @@ class db {
 			$aTrace = debug_backtrace();
 			$nFields = $db_debug->Mark_Query($query, $rli, $aTrace);
 		}
-		$_dbTimeStart = explode(' ', microtime());
 		if ($debug == 'now') {
 			echo "** $query";
 		}
@@ -155,6 +155,7 @@ class db {
 		if ($log_type != '') {
 			$this->db_Write_log($log_type, $log_remark, $query);
 		}
+		$_dbTimeStart = explode(' ', microtime());
 		$sQryRes = is_null($rli) ? @mysql_query($query) : @mysql_query($query, $rli);
 		$_dbTimeEnd = explode(' ', microtime());
 		$mytime = ((float)$_dbTimeEnd[0] + (float)$_dbTimeEnd[1]) - ((float)$_dbTimeStart[0] + (float)$_dbTimeStart[1]);
@@ -289,7 +290,11 @@ class db {
 	* @access public
 	*/
 	function db_Fetch($mode = 'strip') {
-		if ($row = @mysql_fetch_array($this->mySQLresult)) {
+		global $eTraffic;
+       		$b = microtime();
+                $row = @mysql_fetch_array($this->mySQLresult);
+       		$eTraffic->Bump('db_Fetch',$b);
+		if ($row) {
 			if ($mode == 'strip') {
 				while (list($key, $val) = each($row)) {
 					$row[$key] = stripslashes($val);

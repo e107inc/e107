@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/debug_handler.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-26 23:50:11 $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-27 15:11:56 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -59,10 +59,10 @@ class e107_db_debug {
 	var $aTimeMarks;	// Overall time markers
 	var $curTimeMark;
 	var $nTimeMarks;     // Provide an array index for time marks. Stablizes 'current' function
+	var $aTrafficCounts;    // Overall system traffic counters
 	
 	function e107_db_debug() {
-	    global $eTimingStart,$sDBdbg;
-		$this->sDBdbg = '';
+                global $eTimingStart;
 		$this->aDBbyTable = array();
 		$this->aSQLdetails = array();
 		$this->aOBMarks = array(0 =>'');
@@ -72,9 +72,10 @@ class e107_db_debug {
 		$this->aGoodQueries = array();
 		$this->aBadQueries = array();
 		$this->nTimeMarks = 0;
+		$this->aTraffic = array();
 	}
 
-	function Mark_Time($sMarker) {
+	function Mark_Time($sMarker) { // Should move to traffic_class?
 		$nMarks = ++$this->nTimeMarks;
 		$timeNow = explode(' ',microtime());
 		if (!strlen($sMarker)) {
@@ -94,7 +95,7 @@ class e107_db_debug {
 
 // Add any desired notes to $aMarkNotes[$nMarks]... e.g.
 //global $eTimingStart;
-//$this->aMarkNotes[$nMarks] .= "verify start: ".$eTimingStart[0]." / ".$eTimingStart[1]."<br/>";
+//$this->aMarkNotes[$nMarks] .= "verify start: ".$eTimingStart."<br/>";
  	}
 
 	function Mark_Query($query, $rli, $aTrace) {
@@ -155,6 +156,9 @@ class e107_db_debug {
                 $this->aSQLdetails[$iQuery]['time'] = $mytime;
 	}
 	
+	function Mark_Fetch_Results($mytime, $curtable) {
+	}
+
 	function Show_SQL_Details() {
 	    global $sql;
 	    //
@@ -179,7 +183,7 @@ class e107_db_debug {
             
                 
             if ($badCount) {
-    	        $text .= "\n<table class='fborder' style='width: 100%;'>\n";
+    	        $text .= "\n<table class='fborder'>\n";
                 $text .="<tr><td class='fcaption' colspan='2'><b>$badCount Query Errors!</b></td></tr>\n";
                 $text .="<tr><td class='fcaption'><b>Index</b></td><td class='fcaption'><b>Query</b></td></tr>\n";
                 foreach ($this->aSQLdetails as $idx => $cQuery) {
@@ -195,7 +199,7 @@ class e107_db_debug {
 	    // Optionally list good queries
 	    //
             if ($okCount && E107_DBG_SQLQUERIES) {
-                $text .= "\n<table class='fborder' style='width: 100%;'>\n";
+                $text .= "\n<table class='fborder'>\n";
                 $text .="<tr><td class='fcaption' colspan='3'><b>{$okCount[TRUE]} Good Queries</b></td></tr>\n";
                 $text .="<tr><td class='fcaption'><b>Index</b></td><td class='fcaption'><b>Qtime</b></td><td class='fcaption'><b>Query</b></td></tr>\n";
                 foreach ($this->aSQLdetails as $idx => $cQuery) {
@@ -215,6 +219,7 @@ class e107_db_debug {
 	    // Optionally list query details
 	    //
 	    if (E107_DBG_SQLDETAILS) {
+
                 foreach ($this->aSQLdetails as $idx => $cQuery) {
 		    $text .= "\n<table class='fborder' style='width: 100%;'>\n";
 		    $text .= "<tr><td class='forumheader3' colspan='".$cQuery['nFields']."'><b>".
@@ -245,16 +250,14 @@ class e107_db_debug {
 		//
 		global $db_time;
 		global $sql;
-		global $eTimingStart,$eTimingStop;
+		global $eTimingStart,$eTimingStop, $eTraffic;
 		
 		$this->Mark_Time('Stop');
 		if (!E107_DBG_TIMEDETAILS) return '';
 		
 		$text = '';
-		$startTime=$eTimingStart[0]+$eTimingStart[1];
-		$stopTime=$eTimingStop[0]+$eTimingStop[1];
-		$totTime =$stopTime-$startTime;
-		$text .= "\n<table class='fborder' style='width: 100%;'>\n";
+		$totTime =$eTraffic->TimeDelta( $eTimingStart, $eTimingStop );
+		$text .= "\n<table class='fborder'>\n";
 		$bRowHeaders = FALSE;
 		reset( $this->aTimeMarks );
 		$aSum=$this->aTimeMarks[0];
@@ -309,7 +312,7 @@ class e107_db_debug {
 		// Stats by Table
 		//
 
-		$text .= "\n<table border='1' cellpadding='2' cellspacing='1'>\n";
+		$text .= "\n<table class='fborder'>\n";
 
 		$bRowHeaders = FALSE;
 		foreach ($this->aDBbyTable as $curTable) {
