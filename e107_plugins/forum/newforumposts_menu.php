@@ -1,15 +1,20 @@
 <?php
 /*
-+---------------------------------------------------------------+
-| e107 website system
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-| ©Steve Dunstan 2001-2002
-| http://e107.org
-| jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-| Released under the terms and conditions of the
-| GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/newforumposts_menu.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-25 12:07:31 $
+|     $Author: mcfly_e107 $
++----------------------------------------------------------------------------+
 */
 global $tp;
 $gen = new convert;
@@ -36,10 +41,8 @@ else
 	{
 		extract($forumInfo);
 		$datestamp = $gen->convert_date($thread_datestamp, "short");
-		
 		$topic = ($parent_name ? "[re: <i>$parent_name</i>]" : "[thread: <i>$thread_name</i>]");
-
-		$id = ($thread_parent ? $thread_parent : $thread_id);
+		$id = $thread_id;
 
 		if(!$thread_user)
 		{
@@ -58,7 +61,7 @@ else
 			$thread_thread = substr($thread_thread, 0, $menu_pref['newforumposts_characters']).$menu_pref['newforumposts_postfix'];
 		}
 				 
-		$text .= "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".e_PLUGIN."forum/forum_viewtopic.php?$id'><b>".$poster."</b> on ".$datestamp."</a><br/>";
+		$text .= "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".e_PLUGIN."forum/forum_viewtopic.php?{$id}.post'><b>".$poster."</b> on ".$datestamp."</a><br/>";
 		if ($menu_pref['newforumposts_title']) {
 			$text .= $topic."<br />";
 		}
