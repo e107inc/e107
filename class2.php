@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.72 $
-|     $Date: 2005-01-31 02:48:38 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.73 $
+|     $Date: 2005-02-01 05:39:16 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -285,6 +285,8 @@ if (isset($pref['frontpage']) && $pref['frontpage_type'] == "splash") {
 		}
 	}
 }
+
+echo $pref['plug_status'];
 
 e107_require_once(e_HANDLER."cache_handler.php");
 $e107cache=new ecache;
