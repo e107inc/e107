@@ -57,8 +57,8 @@ if(strstr(e_QUERY, "uninstall")){
 <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 <tr>
 <td class='forumheader3' style='text-align:center'>".EPL_ADLAN_2."<br /><br />
-<input class='button' type='submit' name='cancel' value='Cancel' />
-<input class='button' type='submit' name='confirm' value='Uninstall $plugin_name' />
+<input class='button' type='submit' name='cancel' value='".EPL_CANCEL."' />
+<input class='button' type='submit' name='confirm' value='".EPL_ADLAN_1." $plugin_name' />
 </td>
 </tr>
 </table>
@@ -341,22 +341,22 @@ while($row = $sql -> db_Fetch()){
 		
 	
 	$img <b>$plugin_name</b><br />version $plugin_version<br />
-	<td class='forumheader3' style='width:70%'><b>Author</b>: $eplug_author<br />[ email: $eplug_email | website: $eplug_url ]<br />
-	<b>Description</b>: $eplug_description<br />\n";
+	<td class='forumheader3' style='width:70%'><b>".EPL_ADLAN_12."</b>: $eplug_author<br />[ ".EPL_EMAIL.": $eplug_email | ".EPL_WEBSITE.": $eplug_url ]<br />
+	<b>".EPL_ADLAN_14."></b>: $eplug_description<br />\n";
 	if($eplug_readme){
 		$text .= "[ <a href='".e_PLUGIN.$eplug_folder."/".$eplug_readme."'>".$eplug_readme."</a> ]<br />";
 	}
 	if(is_array($eplug_table_names) || is_array($eplug_prefs)  || is_array($eplug_user_prefs) || is_array($eplug_parse)){
-		$text .= "<b>Options</b>: [ ".($plugin_installflag ? "<a href='".e_SELF."?uninstall.$plugin_id'>Uninstall</a>" : "<a href='".e_SELF."?install.$plugin_id'>Install</a>")." ]";
+		$text .= "<b>".EPL_OPTIONS."</b>: [ ".($plugin_installflag ? "<a href='".e_SELF."?uninstall.$plugin_id'> ".EPL_ADLAN_1."</a>" : "<a href='".e_SELF."?install.$plugin_id'>".EPL_ADLAN_0."</a>")." ]";
 	}else{
 		if($eplug_menu_name){
-			$text .= "No install required, just activate from your menus screen. To uninstall, delete the ".str_replace("..", "", e_PLUGIN.$plugin_path)."/ directory.";
+			$text .= EPL_NOINSTALL.str_replace("..", "", e_PLUGIN.$plugin_path)."/ ".EPL_DIRECTORY.";
 		}else{
-			$text .= "No install required, to remove delete the ".str_replace("..", "", e_PLUGIN.$plugin_path)."/ directory.";
+			$text .= EPL_NOINSTALL_1.str_replace("..", "", e_PLUGIN.$plugin_path)."/ ".EPL_DIRECTORY.";
 		}
 	}
 	if($plugin_version != $eplug_version && $plugin_installflag){
-		$text .= " [ <a href='".e_SELF."?upgrade.$plugin_id'>Upgrade</a> ]";
+		$text .= " [ <a href='".e_SELF."?upgrade.$plugin_id'>".EPL_UPGRADE."</a> ]";
 	}
 	$text .= "</td>
 	</tr>";
