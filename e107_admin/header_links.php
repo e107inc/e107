@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/header_links.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-15 13:53:09 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-02 09:56:18 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 unset($e107_var);
@@ -106,10 +106,6 @@ $e107_var['v']['perm'] = "T";
 $e107_var['w']['text'] = ADLAN_0;
 $e107_var['w']['link'] = e_ADMIN."newspost.php";
 $e107_var['w']['perm'] = "H";
-	
-$e107_var['x']['text'] = ADLAN_62;
-$e107_var['x']['link'] = e_ADMIN."newsfeed.php";
-$e107_var['x']['perm'] = "E";
 	
 $e107_var['y']['text'] = ADLAN_68;
 $e107_var['y']['link'] = e_ADMIN."phpinfo.php";
