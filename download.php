@@ -172,7 +172,7 @@ if($action == "view"){
 			require_once(e_BASE.$THEMES_DIRECTORY."templates/download_template.php");
 		}
 		$sql = new db;
-        if(!$sql -> db_Select("download", "*", "download_id='$id'")){
+        if(!$sql -> db_Select("download", "*", "download_id = {$id} AND download_active = 1")){
                 require_once(HEADERF);require_once(FOOTERF);
                 exit;
         }
@@ -259,13 +259,13 @@ if($action == "view"){
 		$text .= $download_view_table_start.$download_view_table_string.$download_view_table_end;
 
 		$dl_id = $download_id;
-		if($sql -> db_Select("download", "*", "download_category='$download_category_id' AND download_id<$dl_id ORDER BY download_datestamp DESC")){
+		if($sql -> db_Select("download", "*", "download_category='$download_category_id' AND download_id < $dl_id AND download_active = 1 ORDER BY download_datestamp DESC")){
 			$row = $sql -> db_Fetch(); extract($row);
 			$prev = "<div class='nextprev'><a href='".e_SELF."?view.$download_id'>&lt;&lt; ".LAN_dl_33." [$download_name]</a></div>\n";
 		}else{
 			$prev = "&nbsp;";
 		}
-        if($sql -> db_Select("download", "*", "download_category='$download_category_id' AND download_id>$dl_id ORDER BY download_datestamp ASC")){
+        if($sql -> db_Select("download", "*", "download_category='$download_category_id' AND download_id > $dl_id AND download_active = 1 ORDER BY download_datestamp ASC")){
 			$row = $sql -> db_Fetch(); extract($row);
 			$next = "<div class='nextprev'><a href='".e_SELF."?view.$download_id'>[$download_name] ".LAN_dl_34." &gt;&gt;</a></div>\n";
 		}else{
