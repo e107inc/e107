@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_theme.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-03-04 11:34:35 $
+|     $Revision: 1.4 $
+|     $Date: 2005-03-04 11:35:00 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -31,6 +31,6 @@ define("TPVLAN_18", "An error has occurred, unable to un-archive the file");
 define("TPVLAN_19", "Your theme has been uploaded and unzipped, please scroll down to see your theme in the list.");
 define("TPVLAN_20", "Auto theme upload and extraction is disabled as your themes folder does not have the correct permissions - please CHMOD your e107_themes folder to 777.");
 
-define("TPVLAN_21", "This is the currently selected default theme");
+define("TPVLAN_21", "This is the currently selected site theme");
 
 ?>
