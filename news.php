@@ -200,5 +200,57 @@ if($pref['nfp_display'] == 2){
 	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 }
 
+
+// ==CNN Style Categories. ============================================================
+ $nbr_cols = $pref['nbr_cols'];
+ $nbr_lst = 5;
+ $line_clr = "black";
+
+   //     $gen = new convert;
+//
+ // $pref['news_cats']=1;
+
+  if($pref['news_cats']=='1'){
+        $sql2 = new db;
+        $sql2 -> db_Select("news_category","*",  "category_id!='' ORDER BY category_name ASC");
+        $text3 .="<table border='0' style='width:96%' align='center' cellpadding='3' cellspacing='3'><tr>";
+                $t = 0;
+                while($row3 = $sql2-> db_Fetch()){
+                extract($row3);
+                $category_name = $aj -> tpa($category_name);
+                $category_icon = e_IMAGE."newsicons/".$category_icon;
+                $wid = 100/$nbr_cols;
+                $text3 .= "<td style='vertical-align:top; width:$wid%;'>";
+                $text3 .= "<div style='border-bottom:1px inset $line_clr; font-weight:bold;padding-bottom:1px;margin-bottom:5px'><img src='$category_icon' alt='' />&nbsp;<a href='news.php?cat.".$category_id."' style='text-decoration:none' >$category_name</a></div>";
+              //  $text3 .= "</td>";
+
+
+                $count = $sql -> db_SELECT("news", "*",  "news_category='$category_id' ORDER BY news_datestamp DESC LIMIT $from,$nbr_lst");
+                while($row = $sql-> db_Fetch()){
+                        extract($row);
+                        $news_title = $aj -> tpa($news_title);
+                        if($news_title == ""){ $news_title = "Untitled"; }
+                  //      $datestamp = $gen->convert_date($news_datestamp, "short");
+                        $text3 .= "• ";
+                        $text3 .= "<a href='news.php?extend.".$news_id."'>".$news_title."</a>
+                        <br />\n";
+                        }
+
+                       $text3 .="</td>";
+                       if($t == ($nbr_cols-1)){$text3 .="</tr><tr><td colspan='$nbr_cols' style='height:15px'></td></tr><tr>";
+                       $t =0;}else{
+                       $t++;
+                       }
+            }
+            $text3 .="</tr></table>";
+            $ns -> tablerender("News Categories", $text3);
+  }
+// =========================================================================
+
+
+
+
+
+
 require_once(FOOTERF);
 ?>
