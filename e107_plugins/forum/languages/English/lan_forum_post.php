@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_post.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-02-03 14:34:32 $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-26 18:30:41 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -100,4 +100,7 @@ define("LAN_412", "to go to the registration page.");
 define("LAN_413", "Your poll has been successfully posted.");
 define("LAN_414", "Click Here to view your poll");
 define("LAN_415", "Your reply has been successfully posted.");
+
+define("LAN_416", "Attach file");
+
 ?>
