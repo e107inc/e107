@@ -406,6 +406,7 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 				$row = $sql2 -> db_Fetch(); extract($row);
 				cachevars('user_row_'.$post_author_id,$row);
 			}
+			extract($row);
 			$POSTER =  "<a href='user.php?id.".$post_author_id."'><b>".$post_author_name."</b></a>";
 			if($user_image)
 			{
