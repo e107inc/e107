@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-12-13 13:20:44 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2004-12-13 22:50:07 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 if(CORRUPT_COOKIE === TRUE){
@@ -191,9 +191,9 @@ $text = "";
                 <input class='tbox' type='password' name='userpass' size='15' value='' maxlength='20' />\n\n<br />\n
                 ";
                 if($use_imagecode){
-                        $text .= "<input type='hidden' name='rand_num' value='".$sec_img -> random_number."'>";
+                        $text .= "<input type='hidden' name='rand_num' value='".$sec_img -> random_number."' />";
                         $text .= $sec_img -> r_image();
-                        $text .= "<br /><input class='tbox' type='text' name='code_verify' size='15' maxlength='20'><br />";
+                        $text .= "<br /><input class='tbox' type='text' name='code_verify' size='15' maxlength='20' /><br />";
                 }
                 $text .= "
                 <input class='button' type='submit' name='userlogin' value='".LOGIN_MENU_L28."' />\n\n
