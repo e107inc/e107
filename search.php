@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-03-09 09:03:40 $
+|     $Revision: 1.17 $
+|     $Date: 2005-03-09 10:47:43 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -48,16 +48,10 @@ if ($search_prefs['core_handlers']['downloads']) {
 	$search_info[] = array('sfile' => e_HANDLER.'search/search_download.php', 'qtype' => LAN_197, 'refpage' => 'download.php');
 }
 
-//load all plugin search routines
-$handle = opendir(e_PLUGIN);
-while (false !== ($file = readdir($handle))) {
-	if ($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)) {
-		$plugin_handle = opendir(e_PLUGIN.$file."/");
-		while (false !== ($file2 = readdir($plugin_handle))) {
-			if ($file2 == "e_search.php") {
-				require_once(e_PLUGIN.$file."/".$file2);
-			}
-		}
+//load plugin search routines
+foreach ($search_prefs['plug_handlers'] as $plug_dir => $active) {
+	if ($active) {
+		require_once(e_PLUGIN.$plug_dir."/e_search.php");
 	}
 }
 

@@ -11,14 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2005-03-09 08:50:15 $
-|     $Author: stevedunstan $
+|     $Revision: 1.42 $
+|     $Date: 2005-03-09 10:47:02 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 
-
+if (!defined("LAN_UPDATE_8")) { define("LAN_UPDATE_8", ""); }
+if (!defined("LAN_UPDATE_9")) { define("LAN_UPDATE_9", ""); }
 if(file_exists(e_PLUGIN.'forum/forum_update_check.php'))
 {
 	include_once(e_PLUGIN.'forum/forum_update_check.php');
@@ -35,7 +36,7 @@ function update_check() {
 	global $ns, $dbupdate;
 	foreach($dbupdate as $func => $rmks) {
 		if (function_exists("update_".$func)) {
-			if (!call_user_func("update_".$func)) {
+			if (!call_user_func("update_".$func, FALSE)) {
 				$update_needed = TRUE;
 				continue;
 			}
@@ -82,9 +83,7 @@ function update_61x_to_700($type) {
 
 
 		/* start poll update */
-
 		$sql -> db_Update("menus", "menu_path='poll' WHERE menu_name='poll_menu' ");
-
 		$query = "CREATE TABLE ".MPREFIX."polls (
 		  poll_id int(10) unsigned NOT NULL auto_increment,
 		  poll_datestamp int(10) unsigned NOT NULL default '0',
@@ -358,14 +357,36 @@ function update_61x_to_700($type) {
 		");
 		
 		// Search Update
-		$sql->db_Insert('core', "'search_prefs', 'a:4:{s:12:\"search_chars\";s:3:\"150\";s:11:\"search_sort\";s:3:\"php\";s:6:\"google\";s:2:\"on\";s:13:\"core_handlers\";a:4:{s:4:\"news\";s:2:\"on\";s:8:\"comments\";s:2:\"on\";s:9:\"downloads\";s:2:\"on\";s:5:\"users\";s:2:\"on\";}}'");
-		//INSERT INTO e107_core VALUES ('search_prefs', 'a:4:{s:12:"search_chars";s:3:"150";s:11:"search_sort";s:3:"php";s:6:"google";s:2:"on";s:13:"core_handlers";a:4:{s:4:"news";s:2:"on";s:8:"comments";s:2:"on";s:9:"downloads";s:2:"on";s:5:"users";s:2:"on";}}');
+		if (!$sql->db_Select("core", "e107_name", "e107_name='search_prefs'")) {
+			$sql->db_Insert('core', "'search_prefs', 'a:4:{s:12:\"search_chars\";s:3:\"150\";s:11:\"search_sort\";s:3:\"php\";s:6:\"google\";s:2:\"on\";s:13:\"core_handlers\";a:4:{s:4:\"news\";s:2:\"on\";s:8:\"comments\";s:2:\"on\";s:9:\"downloads\";s:2:\"on\";s:5:\"users\";s:2:\"on\";}}'");
+			//INSERT INTO e107_core VALUES ('search_prefs', 'a:4:{s:12:"search_chars";s:3:"150";s:11:"search_sort";s:3:"php";s:6:"google";s:2:"on";s:13:"core_handlers";a:4:{s:4:"news";s:2:"on";s:8:"comments";s:2:"on";s:9:"downloads";s:2:"on";s:5:"users";s:2:"on";}}');
+   		}
+        // Search Update 2
+        global $sysprefs;
+        $search_prefs = $sysprefs -> getArray('search_prefs');
+        if (!isset($search_prefs['plug_handlers'])) {
+      	  $handle = opendir(e_PLUGIN);
+			while (false !== ($file = readdir($handle))) {
+				if ($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)) {
+					$plugin_handle = opendir(e_PLUGIN.$file."/");
+					while (false !== ($file2 = readdir($plugin_handle))) {
+						if ($file2 == "e_search.php") {
+							$plugin_handlers[$file] = TRUE;
+						}
+					}
+				}
+			}
+			$search_prefs['plug_handlers'] = $plugin_handlers;
+			$tmp = addslashes(serialize($search_prefs));
+			$sql->db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs' ");
+		}
         
 } else {
 		// check if update is needed.
 		// FALSE = needed, TRUE = not needed.
-		
-		if ($sql->db_Select("core", "e107_name", "e107_name='search_prefs'")) {
+		global $sysprefs;
+		$search_prefs = $sysprefs -> getArray('search_prefs');
+		if (isset($search_prefs['plug_handlers'])) {
 			return TRUE;
 		} else {
 			return FALSE;
