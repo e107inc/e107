@@ -1,16 +1,20 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        /admin/download.php
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107/e107_admin/download.php,v $
+|     $Revision: 1.32 $
+|     $Date: 2004-10-21 18:39:54 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 if(!getperms("R")){ header("location:".e_BASE."index.php"); exit; }
@@ -72,14 +76,14 @@ if(IsSet($_POST['submit_download'])){
 
 
 if(IsSet($_POST['updateoptions'])){
-	$pref['download_php'] = $_POST['download_php'];
-	$pref['download_view'] = $_POST['download_view'];
-	$pref['download_sort'] = $_POST['download_sort'];
-	$pref['download_order'] = $_POST['download_order'];
-	$pref['agree_flag'] = $_POST['agree_flag'];
-	$pref['agree_text'] = $aj -> formtpa($_POST['agree_text']);
-	save_prefs();
-	$message = DOWLAN_65;
+        $pref['download_php'] = $_POST['download_php'];
+        $pref['download_view'] = $_POST['download_view'];
+        $pref['download_sort'] = $_POST['download_sort'];
+        $pref['download_order'] = $_POST['download_order'];
+        $pref['agree_flag'] = $_POST['agree_flag'];
+        $pref['agree_text'] = $aj -> formtpa($_POST['agree_text']);
+        save_prefs();
+        $message = DOWLAN_65;
 }
 
 if($action == "dlm"){
@@ -95,26 +99,26 @@ if($action == "create"){
 
 if($delete == 'category')
 {
-	if($sql -> db_Delete("download_category", "download_category_id='$del_id' "))
-	{
-		$sql -> db_Delete("download_category","download_category_parent='{$del_id}' ");
-		$download -> show_message(DOWLAN_49." #".$del_id." ".DOWLAN_36);
-		$download -> show_categories($sub_action, $del_id);
-	}
+        if($sql -> db_Delete("download_category", "download_category_id='$del_id' "))
+        {
+                $sql -> db_Delete("download_category","download_category_parent='{$del_id}' ");
+                $download -> show_message(DOWLAN_49." #".$del_id." ".DOWLAN_36);
+                $download -> show_categories($sub_action, $del_id);
+        }
 }
 
 if($action == "cat")
 {
-	$download -> show_categories($sub_action, $id);
+        $download -> show_categories($sub_action, $id);
 }
 
 if($delete == 'main')
 {
-	if($sql -> db_Delete("download", "download_id='$del_id' "))
-	{
-		$download -> show_message(DOWLAN_35." #".$del_id." ".DOWLAN_36);
-	}
-	unset($sub_action, $id);
+        if($sql -> db_Delete("download", "download_id='$del_id' "))
+        {
+                $download -> show_message(DOWLAN_35." #".$del_id." ".DOWLAN_36);
+        }
+        unset($sub_action, $id);
 }
 
 
@@ -262,10 +266,10 @@ class download{
                                 <td style='width:75%' class='forumheader3'>$download_name</td>
                                 <td style='width:20%; text-align:center' class='forumheader3'>
 
-											".$rs -> form_open("post", e_SELF,"myform_{$download_id}","",""," onsubmit=\"return confirm_('create','$delete_heading','$download_id')\"")."
-											<div>".$rs -> form_button("button", "main_edit_{$download_id}", DOWLAN_8, "onclick=\"document.location='".e_SELF."?create.edit.$download_id'\"")."
-											".$rs -> form_button("submit", "main_delete_{$download_id}", DOWLAN_9)."</div>
-											".$rs -> form_close()."
+                                                                                        ".$rs -> form_open("post", e_SELF,"myform_{$download_id}","",""," onsubmit=\"return confirm_('create','$delete_heading','$download_id')\"")."
+                                                                                        <div>".$rs -> form_button("button", "main_edit_{$download_id}", DOWLAN_8, "onclick=\"document.location='".e_SELF."?create.edit.$download_id'\"")."
+                                                                                        ".$rs -> form_button("submit", "main_delete_{$download_id}", DOWLAN_9)."</div>
+                                                                                        ".$rs -> form_close()."
 
 
                                 </td>
@@ -408,9 +412,8 @@ class download{
                 }
 
                 $etext = " - (".DOWLAN_68.")";
-                if(file_exists(e_FILE."public/".$download_url) || $download_url_external){
+                if(file_exists(e_FILE."public/".$download_url)){
                 $etext= "";
-                $found=1;
                 }
 
                 if(!$found && $download_url){
@@ -614,10 +617,10 @@ class download{
 
                                 <td style='width:20%; text-align:center' class='forumheader'>
 
-											".$rs -> form_open("post", e_SELF,"myform_{$download_category_id}","",""," onsubmit=\"return confirm_('create','$delete_heading','$download_category_id')\"")."
-											<div>".$rs -> form_button("button", "category_edit_{$download_category_id}", DOWLAN_8, "onclick=\"document.location='".e_SELF."?cat.edit.$download_category_id'\"")."
-											".$rs -> form_button("submit", "category_delete_{$download_category_id}", DOWLAN_9)."</div>
-											".$rs -> form_close()."
+                                                                                        ".$rs -> form_open("post", e_SELF,"myform_{$download_category_id}","",""," onsubmit=\"return confirm_('create','$delete_heading','$download_category_id')\"")."
+                                                                                        <div>".$rs -> form_button("button", "category_edit_{$download_category_id}", DOWLAN_8, "onclick=\"document.location='".e_SELF."?cat.edit.$download_category_id'\"")."
+                                                                                        ".$rs -> form_button("submit", "category_delete_{$download_category_id}", DOWLAN_9)."</div>
+                                                                                        ".$rs -> form_close()."
 
                                 </td>
                                 </tr>";
@@ -637,10 +640,10 @@ class download{
                                                 <td style='width:5%; text-align:center' class='forumheader3'>$files</td>
                                                 <td style='width:20%; text-align:center' class='forumheader3'>
 
-																".$rs -> form_open("post", e_SELF,"myform_{$download_category_id}","",""," onsubmit=\"return confirm_('create','$delete_heading','$download_category_id')\"")."
-																<div>".$rs -> form_button("button", "category_edit_{$download_category_id}", DOWLAN_8, "onclick=\"document.location='".e_SELF."?cat.edit.$download_category_id'\"")."
-																".$rs -> form_button("submit", "category_delete_{$download_category_id}", DOWLAN_9)."</div>
-																".$rs -> form_close()."
+                                                                                                                                ".$rs -> form_open("post", e_SELF,"myform_{$download_category_id}","",""," onsubmit=\"return confirm_('create','$delete_heading','$download_category_id')\"")."
+                                                                                                                                <div>".$rs -> form_button("button", "category_edit_{$download_category_id}", DOWLAN_8, "onclick=\"document.location='".e_SELF."?cat.edit.$download_category_id'\"")."
+                                                                                                                                ".$rs -> form_button("submit", "category_delete_{$download_category_id}", DOWLAN_9)."</div>
+                                                                                                                                ".$rs -> form_close()."
 
 
                                                 </td>
