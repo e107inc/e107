@@ -246,21 +246,25 @@ if(IsSet($_POST['newthread'])){
                         $poll = new poll;
                         $poll -> submit_poll(0, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], $thread_id, "forum");
                 }
+				if($pref['forum_redirect']){
+					redirect("".e_BASE."forum_viewtopic.php?".$thread_forum_id.".".$thread_id.".".$pages."#$iid");
+				}else{
 
-                require_once(HEADERF);
-                echo "<table style='width:100%' class='fborder'>
-                <tr>
-                <td class='fcaption' colspan='2'>".LAN_133."</td>
-                </tr><tr>
-                <td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'><img src='".e_IMAGE."forum/e.png' alt='' />&nbsp;</td>
-                <td style='vertical-align:center; width:80%' class='forumheader2'>
-                <br />".LAN_324."<br />
-                <span class='defaulttext'><a href='".e_BASE."forum_viewtopic.php?".$thread_forum_id.".".$thread_id."#$iid'>".LAN_325."</a><br />
-                <a href='".e_BASE."forum_viewforum.php?".$forum_id."'>".LAN_326."</a></span><br /><br />
-                </td></tr></table>";
-                clear_cache("newforumposts");
-                require_once(FOOTERF);
-                exit;
+					require_once(HEADERF);
+					echo "<table style='width:100%' class='fborder'>
+					<tr>
+					<td class='fcaption' colspan='2'>".LAN_133."</td>
+					</tr><tr>
+					<td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'><img src='".e_IMAGE."forum/e.png' alt='' />&nbsp;</td>
+					<td style='vertical-align:center; width:80%' class='forumheader2'>
+					<br />".LAN_324."<br />
+					<span class='defaulttext'><a href='".e_BASE."forum_viewtopic.php?".$thread_forum_id.".".$thread_id."#$iid'>".LAN_325."</a><br />
+					<a href='".e_BASE."forum_viewforum.php?".$forum_id."'>".LAN_326."</a></span><br /><br />
+					</td></tr></table>";
+					clear_cache("newforumposts");
+					require_once(FOOTERF);
+					exit;
+				}
         }
 }
 
@@ -340,27 +344,31 @@ if(IsSet($_POST['reply'])){
 
                 }
 
-                require_once(HEADERF);
 
                 $replies = $sql -> db_Count("forum_t", "(*)", "WHERE thread_parent='".$thread_id."'");
                 $pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
                 $pages = ((ceil($replies/$pref['forum_postspage']) -1) * $pref['forum_postspage']);
+				if($pref['forum_redirect']){
+					redirect("".e_BASE."forum_viewtopic.php?".$thread_forum_id.".".$thread_id.".".$pages."#$iid");
+				}else{
 
-                $text = "<table style='width:96%' class='fborder'>
-                <tr>
-                <td class='fcaption' colspan='2'>".LAN_133."</td>
-                </tr><tr>
-                <td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'><img src='".e_IMAGE."forum/e.png' alt='' />&nbsp;</td>
-                <td style='vertical-align:center; width:80%' class='forumheader2'>
-                <br />".LAN_324."<br />
+					require_once(HEADERF);
+					$text = "<table style='width:96%' class='fborder'>
+					<tr>
+					<td class='fcaption' colspan='2'>".LAN_133."</td>
+					</tr><tr>
+					<td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'><img src='".e_IMAGE."forum/e.png' alt='' />&nbsp;</td>
+					<td style='vertical-align:center; width:80%' class='forumheader2'>
+					<br />".LAN_324."<br />
 
-                <span class='defaulttext'><a href='".e_BASE."forum_viewtopic.php?".$thread_forum_id.".".$thread_id.".".$pages."#$iid'>".LAN_325."</a><br />
-                <a href='".e_BASE."forum_viewforum.php?".$forum_id."'>".LAN_326."</a></span><br /><br />
-                </td></tr></table>";
-				if($pref['forum_enclose']){ $ns -> tablerender($pref['forum_title'], $text); }else{ echo $text; }
-                clear_cache("newforumposts");
-                require_once(FOOTERF);
-                exit;
+					<span class='defaulttext'><a href='".e_BASE."forum_viewtopic.php?".$thread_forum_id.".".$thread_id.".".$pages."#$iid'>".LAN_325."</a><br />
+					<a href='".e_BASE."forum_viewforum.php?".$forum_id."'>".LAN_326."</a></span><br /><br />
+					</td></tr></table>";
+					if($pref['forum_enclose']){ $ns -> tablerender($pref['forum_title'], $text); }else{ echo $text; }
+					clear_cache("newforumposts");
+					require_once(FOOTERF);
+					exit;
+				}
         }
 }
 
@@ -737,6 +745,20 @@ function forumjump(){
         $text .= "</select> <input class='button' type='submit' name='fjsubmit' value='".LAN_387."' /></p></form>";
         return $text;
 }
+function redirect($url)
+{
+	global $ns;
+	if (@preg_match('/Microsoft|WebSTAR|Xitami/', getenv('SERVER_SOFTWARE')))
+	{
+		header('Refresh: 0; URL=' .$url);
+		$text = "<div style='text-align:center'>".LAN_408."<a href='".$url."'> ".LAN_409." </a>".LAN_410."</div>";
+		$ns -> tablerender(LAN_407, $text);
+		require_once(FOOTERF);
+		exit;
+	}
 
+	header('Location: ' . $url);
+	exit;
+}
 require_once(FOOTERF);
 ?>

@@ -25,17 +25,7 @@ if($eplug_css){ echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/cs
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=".CHARSET."\" />
 <meta http-equiv=\"content-style-type\" content=\"text/css\" />
 ".($pref['meta_tag'] ? $aj -> formtparev($pref['meta_tag'])."\n" : "");
-if(eregi("forum_post.php", e_SELF) && ($_POST['reply'] || $_POST['newthread']) && $pref['forum_redirect']){
-        $tmp = explode(".", e_QUERY);
-                $sql -> db_Select("forum_t", "thread_id", "thread_id ORDER BY thread_id DESC LIMIT 0,1");
-                list($forum_t['thread_id']) = $sql -> db_Fetch();
-                $tid = $forum_t['thread_id'];$tid = $tid + 1;
-                $treplies = $sql -> db_Count("forum_t", "(*)", "WHERE thread_parent='".$tmp[2]."'");
-                $treplies = $treplies +1;
-                $pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
-                $tpages = ((ceil($treplies/$pref['forum_postspage']) -1) * $pref['forum_postspage']);
-        echo "<meta http-equiv=\"refresh\" content=\"5;url='".e_BASE."forum_viewtopic.php?".$tmp[1].".".$tmp[2].".".$tpages."#".$tid."'>\n";
-}
+
 echo "<script type='text/javascript' src='".e_FILE."e107.js'></script>";
 if(file_exists(THEME."theme.js")){echo "<script type='text/javascript' src='".THEME."theme.js'></script>\n";}
 if(file_exists(e_FILE."user.js")){echo "<script type='text/javascript' src='".e_FILE."user.js'></script>\n";}
