@@ -3,7 +3,7 @@ if (ADMIN) {
 	require(e_ADMIN.'ad_links.php');
 	require_once(e_HANDLER.'admin_handler.php');
 	function adnav_cat($cat_title, $cat_link, $cat_img, $cat_id=FALSE) {
-		$text = "<a class='menuButton' href='".$cat_link."' style='background-image: url(".$cat_img."); background-repeat: no-repeat;  background-position: 3px 2px' ";
+		$text = "<a class='menuButton' href='".$cat_link."' style='background-image: url(".$cat_img."); background-repeat: no-repeat;  background-position: 3px 1px' ";
 		if ($cat_id) { 
 			$text .= "onclick=\"return buttonClick(event, '".$cat_id."');\" onmouseover=\"buttonMouseover(event, '".$cat_id."');\"";
 		}
@@ -34,7 +34,7 @@ if (ADMIN) {
 	<tr><td>
 	<div class='menuBar' style='width:100%;'>";
 
-	$text .= adnav_cat('Main', e_ADMIN.'admin.php', SML_IMG_NAV_MAIN);
+	$text .= adnav_cat('Main', e_ADMIN.'admin.php', E_16_NAV_MAIN);
 
 	for($i=1;$i<7;$i++){
 		$ad_tmpi = 0;
@@ -57,10 +57,10 @@ if (ADMIN) {
 	}
 	
 	$render_plugins = TRUE;
-	$plugin_text .= adnav_cat('Plugins', '', SML_IMG_NAV_PLUG, 'plugMenu');
+	$plugin_text .= adnav_cat('Plugins', '', E_16_CAT_PLUG, 'plugMenu');
 	$plugin_text .= "<div id='plugMenu' class='menu' onmouseover=\"menuMouseover(event)\">";
 	if (getperms('Z')) {
-		$plugin_text .= adnav_main(ADLAN_98, e_ADMIN.'plugin.php', SML_IMG_PLUGIN);
+		$plugin_text .= adnav_main(ADLAN_98, e_ADMIN.'plugin.php', E_16_PLUGMANAGER);
 		$render_plugins = TRUE;
 	}
 	if($sql -> db_Select("plugin", "*", "plugin_installflag=1")){
@@ -68,7 +68,7 @@ if (ADMIN) {
 			if(getperms('P'.$row['plugin_id'])){
 				include(e_PLUGIN.$row['plugin_path']."/plugin.php");
 				if($eplug_conffile){
-					$plugin_text .= adnav_main($eplug_name, e_PLUGIN.$row['plugin_path']."/".$eplug_conffile, SML_IMG_PLUGIN);
+					$plugin_text .= adnav_main($eplug_name, e_PLUGIN.$row['plugin_path']."/".$eplug_conffile, E_16_PLUGIN);
 				}
 				unset($eplug_conffile, $eplug_name, $eplug_caption);
 				$render_plugins = TRUE;
@@ -81,7 +81,7 @@ if (ADMIN) {
 		$text .= $plugin_text;
 	}
 	
-	$text .= adnav_cat('Docs', '', SML_IMG_NAV_DOCS, 'docsMenu');
+	$text .= adnav_cat('Docs', '', E_16_NAV_DOCS, 'docsMenu');
 	$text .= "<div id='docsMenu' class='menu' onmouseover=\"menuMouseover(event)\">";
 	if (!$handle=opendir(e_DOCS.e_LANGUAGE."/")) {
 		$handle=opendir(e_DOCS."English/");
@@ -89,7 +89,7 @@ if (ADMIN) {
 	$i=1;
 	while ($file = readdir($handle)) {
 		if ($file != "." && $file != "..") {
-			$text .= adnav_main($file, e_ADMIN."docs.php?".$i, SML_IMG_DOCS);
+			$text .= adnav_main($file, e_ADMIN."docs.php?".$i, E_16_DOCS);
 			$helplist[$i] = $file;
 			$i++;
 		}
@@ -103,8 +103,8 @@ if (ADMIN) {
 	<td style='width: 160px; white-space: nowrap'>
 	<div class='menuBar' style='width: 100%'>";
 	
-	$text .= adnav_cat(ADLAN_53, e_BASE.'index.php', SML_IMG_NAV_LEAV);
-	$text .= adnav_cat(ADLAN_46, e_ADMIN.'admin.php?logout', SML_IMG_NAV_LGOT);
+	$text .= adnav_cat(ADLAN_53, e_BASE.'index.php', E_16_NAV_LEAV);
+	$text .= adnav_cat(ADLAN_46, e_ADMIN.'admin.php?logout', E_16_NAV_LGOT);
 	
 	$text .= "</div>
 	</td>
