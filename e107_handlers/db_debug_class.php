@@ -11,8 +11,8 @@
 	 |     GNU General Public License (http://gnu.org).
 	 |
 	 |     $Source: /cvs_backup/e107_0.7/e107_handlers/db_debug_class.php,v $
-	 |     $Revision: 1.1 $
-	 |     $Date: 2005-01-28 20:14:31 $
+	 |     $Revision: 1.2 $
+	 |     $Date: 2005-01-29 00:05:50 $
 	 |     $Author: mrpete $
 	 +----------------------------------------------------------------------------+
 	 */
@@ -70,48 +70,55 @@
 		 //$this->aMarkNotes[$nMarks] .= "verify start: ".$eTimingStart."<br/>";
 		 }
 
-		 function Mark_Query($query, $rli, $aTrace) {
-			 global $sql;
-			 $query=str_replace(",", " , ", $query);
-			 $sQryRes=is_null($rli) ? mysql_query("EXPLAIN $query") : mysql_query("EXPLAIN $query", $rli);
-			 $nFields="";
+		function Mark_Query($query, $rli, $origQryRes, $aTrace, $mytime, $curtable) {
+			global $sql;  
+			
+			// Explain the query, if possible...
+			list($qtype,$args) = explode(" ", ltrim($query), 2);
 
-			 if ($sQryRes) { // There's something to explain
-				 $nFields = mysql_num_fields($sQryRes);
-			 }
+			$nFields=0;
+			if (!strcasecmp($qtype,'SELECT')) { 
+			 	$query=str_replace(",", " , ", $query);
+			 	$sQryRes=is_null($rli) ? mysql_query("EXPLAIN $query") : mysql_query("EXPLAIN $query", $rli);
 
-			 $sCallingFile=$aTrace[1]['file'];
-			 $sCallingLine=$aTrace[1]['line'];
-			 $iQuery=$sql->db_QueryCount();
-			 $this->aSQLdetails[$iQuery]['marker']=$this->curTimeMark;
-			 $this->aSQLdetails[$iQuery]['caller']="$sCallingFile($sCallingLine)";
-			 $this->aSQLdetails[$iQuery]['query']=$query;
-			 $this->aSQLdetails[$iQuery]['ok']=$sQryRes ? TRUE : FALSE;
-			 $this->aSQLdetails[$iQuery]['error']=$sQryRes ? '' : mysql_error();
-			 $this->aSQLdetails[$iQuery]['nFields']=$nFields;
+			 	if ($sQryRes) { // There's something to explain
+					$nFields = mysql_num_fields($sQryRes);
+			 	}
+         } else {
+         	$sQryRes = $origQryRes; 
+         	$nFields=0;
+         }
+         
+         // Record Basic query info
+			$sCallingFile=$aTrace[1]['file'];
+			$sCallingLine=$aTrace[1]['line'];
+
+			$t = &$this->aSQLdetails[$sql->db_QueryCount()];
+			$t['marker']=$this->curTimeMark;
+			$t['caller']="$sCallingFile($sCallingLine)";
+			$t['query']=$query;
+			$t['ok']=$sQryRes ? TRUE : FALSE;
+			$t['error']=$sQryRes ? '' : mysql_error();
+			$t['nFields']=$nFields;
+			$t['time']=$mytime;
 
 			 if ($sQryRes) {
 				 $bRowHeaders=FALSE;
 				 while ($row = @mysql_fetch_assoc($sQryRes)) {
 					 if (!$bRowHeaders) {
 						 $bRowHeaders=TRUE;
-						 $this->aSQLdetails[$iQuery]['explain']="<tr><td class='forumheader3'><b>".implode("</b></td><td class='forumheader3'><b>", array_keys($row))."</b></td></tr>\n";
+						 $t['explain']="<tr><td class='forumheader3'><b>".implode("</b></td><td class='forumheader3'><b>", array_keys($row))."</b></td></tr>\n";
 					 }
 
-					 $this->aSQLdetails[$iQuery]['explain'] .= "<tr><td class='forumheader3'>".implode("&nbsp;</td><td class='forumheader3'>", array_values($row))."&nbsp;</td></tr>\n";
+					 $t['explain'] .= "<tr><td class='forumheader3'>".implode("&nbsp;</td><td class='forumheader3'>", array_values($row))."&nbsp;</td></tr>\n";
 				 }
 			 } else {
-				 $this->aSQLdetails[$iQuery]['explain'] = '';
+				 $t['explain'] = '';
 			 }
-
-			 return $nFields;
-		 }
-
-		 function Mark_Query_Results($mytime, $curtable, $nFields) {
-			 global $sql;
+          
 			 $this->aTimeMarks[$this->nTimeMarks]['DB Time'] += $mytime;
 			 $this->aTimeMarks[$this->nTimeMarks]['DB Count']++;
-
+          
 			 if (array_key_exists($curtable, $this->aDBbyTable)) {
 				 $this->aDBbyTable[$curtable]['DB Time'] += $mytime;
 				 $this->aDBbyTable[$curtable]['DB Count']++;
@@ -122,12 +129,6 @@
 				 $this->aDBbyTable[$curtable]['DB Time']=$mytime;
 				 $this->aDBbyTable[$curtable]['DB Count']=1;
 			 }
-
-			 $iQuery=$sql->db_QueryCount();
-			 $this->aSQLdetails[$iQuery]['time']=$mytime;
-		 }
-
-		 function Mark_Fetch_Results($mytime, $curtable) {
 		 }
 
 		 function Show_SQL_Details() {
@@ -251,11 +252,11 @@
 				 $aSum['Time'] += $thisDelta;
 				 $aSum['DB Time'] += $tMarker['DB Time'];
 				 $aSum['DB Count'] += $tMarker['DB Count'];
-				 $tMarker['Time']=number_format($thisDelta, 4);
+				 $tMarker['Time']=number_format($thisDelta*1000.0, 1);
 				 $tMarker['%Time']=$totTime ? number_format(100.0 * ($thisDelta / $totTime), 0) : 0;
 				 $tMarker['%DB Count']=number_format(100.0 * $tMarker['DB Count'] / $sql->db_QueryCount(), 0);
 				 $tMarker['%DB Time']=$db_time ? number_format(100.0 * $tMarker['DB Time'] / $db_time, 0) : 0;
-				 $tMarker['DB Time']=number_format($tMarker['DB Time'], 4);
+				 $tMarker['DB Time']=number_format($tMarker['DB Time']*1000.0, 1);
 				 $tMarker['OB Lev']=$this->aOBMarks[$tKey];
 				 $text .= "<tr><td class='forumheader3' >".implode("&nbsp;</td><td class='forumheader3'  style='text-align:right'>", array_values($tMarker))."&nbsp;</td></tr>\n";
 
@@ -268,8 +269,8 @@
 			 $aSum['%Time']=$totTime ? number_format(100.0 * ($aSum['Time'] / $totTime), 0) : 0;
 			 $aSum['%DB Time']=$db_time ? number_format(100.0 * ($aSum['DB Time'] / $db_time), 0) : 0;
 			 $aSum['%DB Count']=($sql->db_QueryCount()) ? number_format(100.0 * ($aSum['DB Count'] / ($sql->db_QueryCount())), 0) : 0;
-			 $aSum['Time']=number_format($aSum['Time'], 4);
-			 $aSum['DB Time']=number_format($aSum['DB Time'], 4);
+			 $aSum['Time']=number_format($aSum['Time']*1000.0, 1);
+			 $aSum['DB Time']=number_format($aSum['DB Time']*1000.0, 1);
 
 			 $text .= "<tr><td class='fcaption'><b>".implode("</b>&nbsp;</td><td class='fcaption' style='text-align:right'><b>", $aSum)."</b>&nbsp;</td><td class='fcaption'>&nbsp;</td></tr>\n";
 			 $text .= "\n</table><br/>\n";
