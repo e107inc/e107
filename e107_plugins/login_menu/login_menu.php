@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-03-26 21:36:22 $
-|     $Author: sweetas $
+|     $Revision: 1.24 $
+|     $Date: 2005-03-29 11:42:08 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
@@ -181,7 +181,7 @@ if (USER == TRUE || ADMIN == TRUE) {
 	if ($pref['user_reg']) {
 		$text .= '<br /><br />';
 		if (!$pref['auth_method'] || $pref['auth_method'] == 'e107') {
-			$text .= '[ <a href="'.e_BASE.e_SIGNUP.'">'.LOGIN_MENU_L3.'</a> ]<br />[ <a href="'.e_BASE.'fpw.php">'.LOGIN_MENU_L4.'</a> ]';
+			$text .= '[ <a href="'.e_SIGNUP.'">'.LOGIN_MENU_L3.'</a> ]<br />[ <a href="'.e_BASE.'fpw.php">'.LOGIN_MENU_L4.'</a> ]';
 		}
 	}
 	$text .= '</div></form>';
