@@ -45,6 +45,7 @@ $pref['forum_eprefix'] = "[forum]";
 $pref['forum_enclose'] = "1";
 $pref['forum_title'] = "Forums";
 $pref['forum_postspage'] = "10";
+$pref['forum_highlightsticky'] = "1";
 $pref['user_tracking'] = "cookie";
 $pref['cookie_name'] = "e107cookie";
 $pref['resize_method'] = "gd2";
