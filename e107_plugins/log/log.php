@@ -142,6 +142,7 @@ function getbrowser(){
 } elseif(eregi("(lynx)/([0-9]{1,2}.[0-9]{1,2}.[0-9]{1,2})", $agent, $ver)){ $browser = "Lynx $ver[2]";
 } elseif(eregi("(msie) ([0-9]{1,2}.[0-9]{1,3})", $agent, $ver)){ $browser = "Internet Explorer $ver[2]";
 } elseif(eregi("Links", $agent)){ $browser = "Lynx";
+} elseif(eregi("(Firefox/)([0-9]{1,2}.[0-9]{1,3}){0,1}", $agent, $ver)){ $browser = "Firefox $ver[2]";
 } elseif(eregi("(Firebird/)([0-9]{1,2}.[0-9]{1,3}){0,1}", $agent, $ver)){ $browser = "Firebird $ver[2]";
 } elseif(eregi("Mozilla/5",$agent)){$browser = "Netscape 5";
 } elseif(eregi("Gecko", $agent)){ $browser = "Mozilla";
