@@ -40,7 +40,7 @@ define("ADLAN_36", "Users");
 define("ADLAN_37", "Moderate site members");
 define("ADLAN_38", "User Classes");
 define("ADLAN_39", "Create/edit user classes");
-define("ADLAN_40", "Maintainance");
+define("ADLAN_40", "Maintenance");
 define("ADLAN_41", "Take site down for maintenance");
 define("ADLAN_42", "Custom Menus");
 define("ADLAN_43", "Create custom menu items");
