@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/e107_update.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-27 19:52:24 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-28 14:47:46 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
+$e_sub_cat = 'database';
 require_once("auth.php");
 require_once("update_routines.php");
 	
