@@ -41,7 +41,7 @@ if(IsSet($_POST['pwsubmit'])){
 		}
 
 		if($user_id == 1 && $user_perms == 0){
-			sendemail($pref['siteadminemail'], "Attempted password reset", "Someone with ip address ".getip()." attempted to reset the main admin password.");
+			sendemail($pref['siteadminemail'], ".LAN_06.", "".LAN_07."".getip()." ".LAN_08");
 			echo "<script type='text/javascript'>document.location.href='index.php'</script>\n";
 			die();
 		}
@@ -63,7 +63,7 @@ if(IsSet($_POST['pwsubmit'])){
 		$message = LAN_215.$newpw."\n\n".LAN_218." $user_name\n\n".LAN_216."\n\n".$returnaddress."?".$validate;
 
 		
-		if(sendemail($_POST['email'], "Password reset from ".SITENAME, $message)){
+		if(sendemail($_POST['email'], "".LAN_09."".SITENAME, $message)){
 			$text = "<div style='text-align:center'>".LAN_01."</div>";
 		}else{
 			$text = "<div style='text-align:center'>".LAN_02."</div>";

@@ -7,6 +7,11 @@ define("LAN_02", "Sorry, unable to send email - please contact the main site adm
 define("LAN_03", "Password Reset");
 define("LAN_04", "Please enter your email address");
 define("LAN_05", "To reset your password please enter the email address you used when signing up ...");
+define("LAN_06", "Attempted password reset");
+define("LAN_07", "Someone with ip address ");
+define("LAN_08", "attempted to reset the main admin password.");
+define("LAN_09", "Password reset from ");
+
 define("LAN_112", "Email Address: ");
 define("LAN_156", "Submit");
 define("LAN_213", "That username/email address was not found in database.");

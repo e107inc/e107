@@ -73,7 +73,7 @@ $print_info[] = array( 'table' => 'content', 'handler' => '
 	<br />
 	".LAN_305.$content_subheading."
 	<br />
-	by ".$a_name."<br />
+	".LAN_87.$a_name."<br />
 	".$content_datestamp."
 	<br /><br />".
 	$content_content."

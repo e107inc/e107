@@ -35,6 +35,14 @@ define("LAN_408", "A user with that email address already exists. Please use the
 define("LAN_SIGNUP_1", "Min.");
 define("LAN_SIGNUP_2", "chars.");
 define("LAN_SIGNUP_3", "Code verification failed.");
+define("LAN_SIGNUP_4", "Your password must be at least ");
+define("LAN_SIGNUP_5", " characters long.");
+define("LAN_SIGNUP_6", "Your ");
+define("LAN_SIGNUP_7", " is required");
+define("LAN_SIGNUP_8", "Thankyou!");
+define("LAN_SIGNUP_9", "Unable to proceed.");
+define("LAN_SIGNUP_10", "Yes");
+define("LAN_SIGNUP_11", ".");
 
 define("LAN_409", "Invalid characters in username");
 define("LAN_410", "Enter code visible in the image");

@@ -3,6 +3,7 @@
 define("PAGE_NAME", "Printer Friendly");
 
 define("LAN_86", "Category:");
+define("LAN_87", "by ");
 define("LAN_94", "Posted by");
 define("LAN_135", "News Item: ");
 define("LAN_303", "This news item is from ");
