@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-03-31 18:49:58 $
+|     $Revision: 1.13 $
+|     $Date: 2005-03-31 18:54:31 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -194,7 +194,7 @@ function Color_Select($field){
 
 	$text ="<!-- Start of Color selector -->
 		<div style='margin-left:0px;margin-right:0px;width:180px;position:relative;z-index:1000;float:right;display:none' id='col_selector' onclick=\"this.style.display='none'\">";
-	$text .="<div style='position:absolute;bottom:35px;right:180px;'>";
+	$text .="<div style='position:absolute;bottom:30px;right:145px;width:180px'>";
 	$text .= "<table cellspacing=\"1px\" cellpadding=\"0px\"  style=\"width:180px;background-color:#000000;border:1px solid #cccccc;cursor: pointer;\">
     <tr>";
 
