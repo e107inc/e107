@@ -49,54 +49,34 @@ if($sql -> db_Select("headlines", "*", "headline_active='1' ")){
 			$dead = FALSE;
 			if(ini_get("allow_url_fopen")){
 				if(!$remote = @fopen ($headline_url, "r")){
-				        $dead = TRUE;
+					$dead = TRUE;
 					$text .= "<div style='text-align:center'>\n<table style='width:95%' class='forumheader3'>\n<tr>\n<td style='text-align:center' class='forumheader2'>\n<div class='smalltext'><a href='".$headline_url."' rel='external'>[".NFMENU_163." ".$tmp['host']."]</a></div></td></tr></table></div><br />";
 				}
-			}else{
+			} else {
 				if(!$remote = @fsockopen ($tmp['host'], 80 ,$errno, $errstr, 10)){
-				        $dead = TRUE;
+					$dead = TRUE;
 					$text .= "<div style='text-align:center'>\n<table style='width:95%' class='forumheader3'>\n<tr>\n<td style='text-align:center' class='forumheader2'>\n<div class='smalltext'><a href='".$headline_url."' rel='external'>[".NFMENU_163." ".$tmp['host']."]</a></div></td></tr></table></div><br />";
-				}else{
+				} else {
 					stream_set_timeout($remote, 10);
 					fputs($remote, "GET ".$headline_url." HTTP/1.0\r\n\r\n");
 				}
 			}
-
 			unset($data);
 			if (!$dead) {
-			while (!feof($remote)){
-				$data .= fgets ($remote, 4096);
+				while(!feof($remote)){
+					$data .= fgets ($remote);
+				}
+				fclose ($remote);
+				$data = eregi_replace("^.*\<\?xml", "<?xml", $data);
+				if(strstr($data, "Your Headline Reader Has Been Banned")){
+					$tmp = parse_url($headline_url);
+					$text .= "<div style='text-align:center'>\n<table style='width:95%' class='forumheader3'>\n<tr>\n<td style='text-align:center' class='forumheader2'>\n<div class='smalltext'><a href='".$headline_url."' rel='external'>[".NFMENU_163." ".$tmp['host']."]</a></div></td></tr></table></div><br />";
+				}
+				$rss = new parse_xml;
+				$rss -> parse_xml_($data);
+				$text .= $rss -> cache_results($headline_id);
 			}
-			fclose ($remote);
-
-			$data = eregi_replace("^.*\<\?xml", "<?xml", $data);
-
-			if(strstr($data, "Your Headline Reader Has Been Banned")){
-				$tmp = parse_url($headline_url);
-				$text .= "<div style='text-align:center'>\n<table style='width:95%' class='forumheader3'>\n<tr>\n<td style='text-align:center' class='forumheader2'>\n<div class='smalltext'><a href='".$headline_url."' rel='external'>[".NFMENU_163." ".$tmp['host']."]</a></div></td></tr></table></div><br />";
-			}
-			$rss = new parse_xml;
-			$rss -> parse_xml_($data);
-			$text .= $rss -> cache_results($headline_id);
-                        }
-
-
-			unset($data);
-			while (!feof($remote)){
-				$data .= fgets ($remote, 4096);
-			}
-			fclose ($remote);
-
-			$data = eregi_replace("^.*\<\?xml", "<?xml", $data);
-
-			if(strstr($data, "Your Headline Reader Has Been Banned")){
-				$tmp = parse_url($headline_url);
-				$text .= "<div style='text-align:center'>\n<table style='width:95%' class='forumheader3'>\n<tr>\n<td style='text-align:center' class='forumheader2'>\n<div class='smalltext'><a href='".$headline_url."' rel='external'>[".NFMENU_163." ".$tmp['host']."]</a></div></td></tr></table></div><br />";
-			}
-			$rss = new parse_xml;
-			$rss -> parse_xml_($data);
-			$text .= $rss -> cache_results($headline_id);
-		}else{
+		} else {
 			$text .= str_replace(ereg_replace("\.\.\/", "", THEME), THEME, $headline_data);
 		}
 	}
