@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-01-18 16:49:17 $
-|     $Author: streaky $
+|     $Revision: 1.14 $
+|     $Date: 2005-01-22 15:18:13 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -22,7 +22,7 @@ require_once('auth.php');
 require_once(e_HANDLER.'admin_handler.php');
 
 // update users using old layout names to their new names
-if ($pref['adminstyle'] == 'default') {
+if (!$pref['adminstyle'] || $pref['adminstyle'] == 'default') {
 	$pref['adminstyle'] = 'compact';
 	$update_prefs = true;
 }
