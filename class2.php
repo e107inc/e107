@@ -512,31 +512,28 @@ class textparse{
                         $text = str_replace($this->searcha, $this->replace, $text);
                         $text = str_replace($this->searchb, $this->replace, $text);
                 }
-                $text = str_replace("$", "&#36;", $text);
-                        if($referrer != "admin"){
-                                        $text = $this -> tpj($text);
-                                }
-                        if($mode != "nobreak"){ $text = nl2br($text); }
-                        $text = preg_replace("/\n/i", " ", $text);
-                        $text = str_replace("<br />", " <br />" , $text);
-                        $text = e107_parse($text,$referrer);
-						if($mode != "on"){
-							$text = $this -> wrap($text, $highlight_search);
-						}
-                        $text = $this -> bbcode($text, $mode, $referrer);
-                        if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
-                        $search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;span", "&lt;/span");
-                        $replace =  array("\"", "'", "\\", '\"', "\'", "<span", "</span");
-                        $text = str_replace($search, $replace, $text);
-                        $text = str_replace("<br /><br />", "<br />", $text);
-                        $text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $text);
-                        $text = substr($text, 1);
-                        $text = code($text, "notdef");
-                        $text = html($text);
-                        return $text;
+                $text = str_replace("$", "&#36;", $text);                
+                if($mode != "nobreak"){ $text = nl2br($text); }
+				$text = preg_replace("/\n/i", " ", $text);
+				$text = str_replace("<br />", " <br />" , $text);
+				$text = e107_parse($text,$referrer);
+				if($mode != "on"){
+					$text = $this -> wrap($text, $mode, $referrer, $highlight_search);
+				}
+				$text = $this -> bbcode($text, $mode, $referrer);
+				if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
+				$search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;span", "&lt;/span");
+				$replace =  array("\"", "'", "\\", '\"', "\'", "<span", "</span");
+				$text = str_replace($search, $replace, $text);
+				$text = str_replace("<br /><br />", "<br />", $text);
+				$text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $text);
+				$text = substr($text, 1);
+				$text = code($text, "notdef");
+				$text = html($text);
+				return $text;
                 }
 
-                function wrap($text, $highlight_search=FALSE){
+                function wrap($text, $mode, $referrer, $highlight_search=FALSE){
                         global $pref;
                         $wrapcount = 100;
                         $message_array = explode(" ", $text);
@@ -551,19 +548,22 @@ class textparse{
                                                 $url = $url[0];
                                                 $message_array[$i] = "<a href='".$message_array[$i]."' rel='external'>[".$url."]</a>";
                                         }else{
-                                        if(!strstr($message_array[$i], "[link=") && !strstr($message_array[$i], "[url=") && !strstr($message_array[$i], "href=") && !strstr($message_array[$i], "src=") && !strstr($message_array[$i], "action=") && !strstr($message_array[$i], "onclick=") && !strstr($message_array[$i], "url(") && !strstr($message_array[$i], "[img")){
+                                        if(!stristr($message_array[$i], "[link") && !stristr($message_array[$i], "[url") && !stristr($message_array[$i], "href=") && !stristr($message_array[$i], "src=") && !stristr($message_array[$i], "action=") && !stristr($message_array[$i], "onclick=") && !stristr($message_array[$i], "url(") && !stristr($message_array[$i], "[img") && !stristr($message_array[$i], "value=") && !stristr($message_array[$i], "pluginspage=") && !stristr($message_array[$i], "codebase=")){
                                                         $message_array[$i] = preg_replace("/([^\s]{".$wrapcount."})/", "$1<br />", $message_array[$i]);
                                                 }
                                         }
                                 }else{
-									if(!strstr($message_array[$i], "[link=") && !strstr($message_array[$i], "[url=") && !strstr($message_array[$i], "href=") && !strstr($message_array[$i], "src=") && !strstr($message_array[$i], "action=") && !strstr($message_array[$i], "onclick=") && !strstr($message_array[$i], "url(") && !strstr($message_array[$i], "[img")){
+									if(!stristr($message_array[$i], "[link") && !stristr($message_array[$i], "[url") && !stristr($message_array[$i], "href=") && !stristr($message_array[$i], "src=") && !stristr($message_array[$i], "action=") && !stristr($message_array[$i], "onclick=") && !stristr($message_array[$i], "url(") && !stristr($message_array[$i], "[img") && !stristr($message_array[$i], "value=") && !stristr($message_array[$i], "pluginspage=") && !stristr($message_array[$i], "codebase=")){
+										if($referrer != "admin" && !stristr($message_array[$i], "http://")){
+											$message_array[$i] = $this -> tpj($message_array[$i]);
+										}
 										$search = "#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i";
                                         $replace = ($pref['links_new_window'] ? '\1<a href="http://\2.\3" rel="external";">\2.\3</a>' : '\1<a href="http://\2.\3" >\2.\3</a>');
                                         $message_array[$i] = preg_replace($search, $replace, $message_array[$i]);
                                         $search = "#([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?([^.,]))#i";
                                         $replace = ($pref['links_new_window'] ? '<a href="\1://\2" rel="external";">\1://\2</a>' : '<a href="\1://\2">\1://\2</a>');
                                         $message_array[$i] = preg_replace($search, $replace, $message_array[$i]);
-                                        if($highlight_search && !strstr($message_array[$i], "http://")){
+                                        if($highlight_search && !stristr($message_array[$i], "http://")){
 											$tmp = explode(" ", $_POST['search_query']);
                                              foreach($tmp as $key){
 												 if(eregi($key, $message_array[$i])){
@@ -602,10 +602,8 @@ class textparse{
                 $replace[7] = ($pref['links_new_window'] ? '<a href="http://\1"> rel="external"\1</a>' : '<a href="http://\1">\1</a>');
                 $search[8] = "#\[url=([a-z]+?://){1}(.*?)\](.*?)\[/url\]#si";
                 $replace[8] = ($pref['links_new_window'] ? '<a href="\1\2" rel="external">\3</a>' : '<a href="\1\2">\3</a>');
-                $search[9] = "/\[quote=(.*?)\](.*?)/si";
-                $replace[9] = '<div class=\'indent\'>'.CORE_LAN2.' ...<br />';
-                $search[25] = "/\[\/quote\]/si";
-                $replace[25] = '</div>';
+				$search[9] = "#\[quote\](.*?)\[/quote\]#si";
+				$replace[9] = '<i>"\1"</i>';
                 $search[10] = "#\[b\](.*?)\[/b\]#si";
                 $replace[10] = '<b>\1</b>';
                 $search[11] = "#\[i\](.*?)\[/i\]#si";
@@ -648,8 +646,10 @@ class textparse{
 					$replace[23] = '[ '.CORE_LAN3.' ]';
 				}
 
-				$search[24] = "#\[quote\](.*?)\[/quote\]#si";
-				$replace[24] = '<i>"\1"</i>';
+                $search[24] = "/\[quote=(.*?)\](.*?)/si";
+                $replace[24] = '<div class=\'indent\'>'.CORE_LAN2.' ...<br />';
+                $search[25] = "/\[\/quote\]/si";
+                $replace[25] = '</div>';
 				$text = preg_replace($search, $replace, $text);
 				return $text;
 				}
