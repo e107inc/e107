@@ -520,40 +520,7 @@ select {
 
 
 
-/* Begin Calendar */
-#wp-calendar {
-	empty-cells: show;
-	margin: 10px auto 0;
-	width: 155px;
-	}
 
-#wp-calendar #next a {
-	padding-right: 10px;
-	text-align: right;
-	}
-
-#wp-calendar #prev a {
-	padding-left: 10px;
-	text-align: left;
-	}
-
-#wp-calendar a {
-	display: block;
-	}
-
-#wp-calendar caption {
-	text-align: center;
-	width: 100%;
-	}
-
-#wp-calendar td {
-	padding: 3px 0;
-	text-align: center;
-	}
-
-#wp-calendar td.pad:hover { /* Doesn't work in IE */
-	background-color: #fff; }
-/* End Calendar */
 
 
 
@@ -601,6 +568,20 @@ body	 	{ background: url("images/kubrickbgcolor.jpg"); }
 #page		{ background: url("images/kubrickbg.jpg") repeat-y top; border: none; }
 #header 	{ background: url("images/kubrickheader.jpg") no-repeat bottom center; }
 #footer 	{ background: url("images/kubrickfooter.jpg") no-repeat bottom; border: none;}
+
+.tbox{
+	background-color: #F4F7FA;
+	border: #5e5d63 1px solid;
+	color: #000000;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.helpbox {
+	border: 0px;
+	background-color: transparent;
+	color:#000;
+	font: 9px tahoma, verdana, arial, helvetica, sans-serif;
+}
 
 /* "Daisy, Daisy, give me your answer do. I'm half crazy all for the love of you.
 	It won't be a stylish marriage, I can't afford a carriage.
