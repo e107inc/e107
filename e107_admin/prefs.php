@@ -58,6 +58,8 @@ if(IsSet($_POST['updateprefs'])){
         $pref['membersonly_enabled'] = $_POST['membersonly_enabled'];
         $pref['ssl_enabled'] = $_POST['ssl_enabled'];
 
+        $pref['htmlarea'] = $_POST['htmlarea'];
+
         $pref['smtp_enable'] = $_POST['smtp_enable'];
         $pref['smtp_server'] = $aj -> formtpa($_POST['smtp_server']);
         $pref['smtp_username'] = $aj -> formtpa($_POST['smtp_username']);
@@ -322,6 +324,16 @@ $text .= "</select>
 </td>
 </tr>
 
+<tr>
+<td colspan='2'>
+<div class='border'><div class='caption'>Admin Display Options</div></div>
+</td>
+</tr><tr>
+<td style='width:50%' class='forumheader3'>Use HtmlArea for admin text-areas: </td>
+<td style='width:50%; text-align:right' class='forumheader3'>".
+($pref['htmlarea'] ? "<input type='checkbox' name='htmlarea' value='1'  checked>" : "<input type='checkbox' name='htmlarea' value='1'>")."
+</td>
+</tr>
 
 
 <tr>
