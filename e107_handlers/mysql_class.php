@@ -11,19 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2004-12-11 04:25:20 $
+|     $Revision: 1.11 $
+|     $Date: 2004-12-19 01:48:01 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
-$sDBdbg="";                //DB debug string
-$aDBbyTable = array();
-$aOBMarks = array();        // Track output buffer level at each time mark
-$aMarkNotes = array();        // Other notes can be added and output...
-$aTimeMarks = array();
-$aTimeMarks['Start']=array('What' => 'Start', '%Time'=>0,'%DB Time'=>0,'%DB Count'=>0,'Time' => $timing_start, 'DB Time'=>0,'DB Count'=>0);  // Overall time markers
-$curTimeMark = 'Start';
 $db_time=0.0;        //Time spent in database
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -74,10 +67,10 @@ class db {
 		$temp = $this->mySQLerror;
 		$this->mySQLerror = FALSE;
 		if(!$this->mySQL_access = @mysql_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword)) {
-			return "e1";
+			return 'e1';
 		} else {
 			if(!@mysql_select_db($this->mySQLdefaultdb)) {
-				return "e2";
+				return 'e2';
 			} else {
 				$this->dbError("dbConnect/SelectDB");
 			}
@@ -90,16 +83,16 @@ class db {
 	* Goal: break down performance by big-picture modules (i.e. side menus and main page content)
 	*/
 	function db_Mark_Time($sMarker) {
-		global $aTimeMarks,$curTimeMark,$aOBMarks,$aMarkNotes;
-
-		$timeNow = explode(' ',microtime());
-		$aTimeMarks[$sMarker]=array('What' => $sMarker, '%Time'=>0,'%DB Time'=>0,'%DB Count'=>0,'Time' => $timeNow,'DB Time'=>0,'DB Count'=>0);
-		$aOBMarks[$sMarker] = ob_get_level().'('.ob_get_length().')';
-		$curTimeMark = $sMarker;
-
-		//plh debug
-		//        global $timing_start;
-		//        $aMarkNotes[$sMarker] .= "time start now: {$timing_start[0]} / {$timing_start[1]}<br />";
+		if (E107_DEBUG_LEVEL > 0) {
+			global $db_debug;
+			$db_debug->Mark_Time($sMarker);
+		}
+//		global $aTimeMarks,$curTimeMark,$aOBMarks,$aMarkNotes;
+//
+//		$timeNow = explode(' ',microtime());
+//		$aTimeMarks[$sMarker]=array('What' => $sMarker, '%Time'=>0,'%DB Time'=>0,'%DB Count'=>0,'Time' => $timeNow,'DB Time'=>0,'DB Count'=>0);
+//		$aOBMarks[$sMarker] = ob_get_level().'('.ob_get_length().')';
+//		$curTimeMark = $sMarker;
 	}
 	/*
 	* Render debug/performance data
@@ -109,66 +102,11 @@ class db {
 	*
 	*/
 	function db_Show_Performance() {
-		global $sDBdbg,$aDBbyTable,$db_time,$dbq,$aTimeMarks,$aOBMarks,$timing_start,$timing_stop,$aMarkNotes;
-
-		//
-		// Stats by Time Marker
-		//
-		$this->db_Mark_Time('Stop');
-
-		$startTime=$timing_start[0]+$timing_start[1];
-		$stopTime=$timing_stop[0]+$timing_stop[1];
-		$totTime =$stopTime-$startTime;
-		echo "\n<table border='1' cellpadding='2' cellspacing='1'>\n";
-		$bRowHeaders = FALSE;
-		foreach ($aTimeMarks as $tMarker) {
-			if (!$bRowHeaders) {
-				// First time: emit headers
-				$bRowHeaders = TRUE;
-				echo "<tr><td><b>".implode("</b></td><td><b>",array_keys($tMarker))."</b></td><td><b>OB Lev</b></td></tr>\n";
-			}
-			if ($tMarker['What'] == 'Stop') {
-				break;        // We're on the 'stop' mark
-			}
-			// Convert from start time to delta time, i.e. from now to next entry
-			$nextMarker = current($aTimeMarks);
-			$nextTime = $nextMarker['Time'][0]+$nextMarker['Time'][1];
-			$thisTime = $tMarker['Time'][0]+$tMarker['Time'][1];
-			$thisDelta=$nextTime-$thisTime;
-			$thisWhat = $tMarker['What'];
-			$tMarker['Time'] = number_format($thisDelta, 4);
-			$tMarker['%Time'] = $totTime ? number_format(100.0*($thisDelta/$totTime),0) : 0;
-			$tMarker['%DB Count'] = number_format(100.0*$tMarker['DB Count']/$dbq,0);
-			$tMarker['%DB Time'] = number_format(100.0*$tMarker['DB Time']/$db_time,0);
-			$tMarker['DB Time'] = number_format($tMarker['DB Time'],4);
-			$tMarker['OB Lev'] = $aOBMarks[$thisWhat];
-			echo "<tr><td>".implode("&nbsp;</td><td style='text-align:right'>",array_values($tMarker))."&nbsp;</td></tr>\n";
-			if (strlen($aMarkNotes[$thisWhat])) {
-				echo '<tr><td>&nbsp;</td><td colspan="6">';
-				echo $aMarkNotes[$thisWhat],'</td></tr>',"\n";
-			}
+		if (E107_DEBUG_LEVEL > 0) {
+			$db_debug->Show_Performance();
 		}
-		echo "\n</table><br/>\n";
-
-		//
-		// Stats by Table
-		//
-
-		echo "\n<table border='1' cellpadding='2' cellspacing='1'>\n";
-
-		$bRowHeaders = FALSE;
-		foreach ($aDBbyTable as $curTable) {
-			if (!$bRowHeaders) {
-				$bRowHeaders = TRUE;
-				echo "<tr><td><b>".implode("</b></td><td><b>",array_keys($curTable))."</b></td></tr>\n";
-			}
-			$curTable['%DB Count'] = number_format(100.0*$curTable['DB Count']/$dbq,0);
-			$curTable['%DB Time'] = number_format(100.0*$curTable['DB Time']/$db_time,0);
-			$curTable['DB Time'] = number_format($curTable['DB Time'],4);
-			echo "<tr><td>".implode("&nbsp;</td><td style='text-align:right'>",array_values($curTable))."&nbsp;</td></tr>\n";
-		}
-		echo "\n</table><br/>\n";
 	}
+
 
 	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 	/**
@@ -188,65 +126,25 @@ class db {
 	* @global   string        $sDBdbg        accumulates debug info for this page. Displayed in footer.
 	* @global        int                $e107_debug        user-settable -- append ?[debug] or ?[debug=nn] to enable debug
 	*/
-	function db_Query($query,$rli = NULL ) {
-
+	function db_Query($query, $rli = NULL) {
 		global $dbq,$e107_debug,$db_time,$sDBdbg,$aTimeMarks,$aDBbyTable,$curTimeMark;
 		$dbq++;
 
-		if ($e107_debug) {
-			$query = str_replace(","," , ",$query);
-			$sQryRes =  is_null($rli) ? mysql_query("EXPLAIN $query") : mysql_query("EXPLAIN $query",$rli);
-			$nFields = "";
-			if ($sQryRes) { // There's something to explain
-			$nFields = mysql_num_fields($sQryRes);
-			}
+		if (E107_DEBUG_LEVEL > 0) {
+			global $db_debug;
 			$aTrace = debug_backtrace();
-			$sCallingFile=$aTrace[1]['file'];
-			$sCallingLine=$aTrace[1]['line'];
-
-			$sDBdbg .= "\n<table width=\"100%\" border='1' cellpadding='2' cellspacing='1'>\n";
-			$sDBdbg .= "<tr><td colspan=\"$nFields\"><b>Query:</b> [$curTimeMark - $sCallingFile($sCallingLine)]<br/>$query</td></tr>\n";
-			if ($sQryRes) {
-				$bRowHeaders = FALSE;
-				while ($row = @mysql_fetch_assoc($sQryRes)) {
-					if (!$bRowHeaders) {
-						$bRowHeaders = TRUE;
-						$sDBdbg .= "<tr><td><b>".implode("</b></td><td><b>",array_keys($row))."</b></td></tr>\n";
-					}
-					$sDBdbg .= "<tr><td>".implode("&nbsp;</td><td>",array_values($row))."&nbsp;</td></tr>\n";
-				}
-			}
+			$nFields = $db_debug->Mark_Query($query,$rli,$aTrace);
 		}
-
 		$_dbTimeStart = explode(' ',microtime());
 		$sQryRes = is_null($rli) ? @mysql_query($query) : @mysql_query($query,$rli);
 		$_dbTimeEnd = explode(' ',microtime());
 		$mytime= ((float)$_dbTimeEnd[0]+(float)$_dbTimeEnd[1]) - ((float)$_dbTimeStart[0]+(float)$_dbTimeStart[1]);
 		$db_time += $mytime;
 		$this->mySQLresult = $sQryRes;
-		if ($e107_debug && $sQryRes) {
-			$aTimeMarks[$curTimeMark]['DB Time']+=$mytime;
-			$aTimeMarks[$curTimeMark]['DB Count']++;
-
-			$aDBbyTable[$this->mySQLcurTable]['Table'] = $this->mySQLcurTable;
-			$aDBbyTable[$this->mySQLcurTable]['%DB Time'] = 0; // placeholder
-			$aDBbyTable[$this->mySQLcurTable]['%DB Count'] = 0; // placeholder
-			if(array_key_exists('DB Time',$aDBbyTable[$this->mySQLcurTable])) {
-				$aDBbyTable[$this->mySQLcurTable]['DB Time'] += $mytime;
-			} else {
-				$aDBbyTable[$this->mySQLcurTable]['DB Time'] = $mytime;
-			}
-				
-			if(array_key_exists('DB Count',$aDBbyTable[$this->mySQLcurTable])) {
-				$aDBbyTable[$this->mySQLcurTable]['DB Count'] ++;
-			} else {
-				$aDBbyTable[$this->mySQLcurTable]['DB Count'] = 1;
-			}
-
-			$mytime = number_format($mytime,4);  //round for local display
-			$sDBdbg .=  "<tr><td colspan=\"$nFields\"><b>Query time:</b> $mytime</td></tr></table><br />";
+		if (E107_DEBUG_LEVEL > 0 && $sQryRes) {
+			global $db_debug;
+			$db_debug->Mark_Query_Results($mytime, $this->mySQLcurTable,$nFields);
 		}
-
 		return $sQryRes;
 	}
 
@@ -312,8 +210,6 @@ class db {
 		if ($debug) {
 			echo "INSERT INTO ".MPREFIX.$table." VALUES (".htmlentities($arg).")";
 		}
-
-		//                if(!ANON && !USER && $table != "user"){ return FALSE; }
 
 		if ($result = $this->mySQLresult = $this->db_Query("INSERT INTO ".MPREFIX.$table." VALUES (".$arg.")" )) {
 			$tmp = mysql_insert_id();

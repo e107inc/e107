@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2004-12-18 16:39:09 $
+|     $Revision: 1.42 $
+|     $Date: 2004-12-19 01:47:38 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -68,18 +68,6 @@ if (preg_match("/\[(.*?)\].*?/i", $_SERVER['QUERY_STRING'], $matches)) {
 	define("e_QUERY", eregi_replace("&|/?".session_name().".*", "", $_SERVER['QUERY_STRING']));
 }
 
-if (strstr(e_MENU, "debug")) {
-	$e107_debug = 1;
-	// Default: debug=1
-	if (preg_match('/debug=(.*)/', e_MENU, $debug_param)) {
-		$e107_debug = $debug_param[1];
-	}
-	if ($e107_debug > 1) {
-		error_reporting(E_ALL);
-	} else {
-		error_reporting(E_ERROR | E_WARNING | E_PARSE);
-	}
-}
 
 $_SERVER['QUERY_STRING'] = e_QUERY;
 define('e_BASE', $link_prefix);
@@ -99,6 +87,16 @@ define("e_UC_MEMBER", 253);
 define("e_UC_ADMIN", 254);
 define("e_UC_NOBODY", 255);
 define("ADMINDIR", $ADMIN_DIRECTORY);
+
+if (strstr(e_MENU, "debug")) {
+	require_once(e_HANDLER.'debug_handler.php');
+	$e107_debug = new e107_debug;
+	$db_debug = new e107_db_debug;
+	$e107_debug->set_error_reporting();
+	$e107_debug_level = $e107_debug->debug_level;
+	define('E107_DEBUG_LEVEL',$e107_debug_level);
+	
+}
 
 // e107_config.php upgrade check
 // =====================

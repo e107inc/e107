@@ -32,14 +32,21 @@ if($e107_popup!=1){
 	if($pref['displaysql']){ $rinfo .= "DB queries: ".$dbq.". "; }
 	if($pref['displaycacheinfo']){ $rinfo .= $cachestring."."; }
 	echo ($rinfo ? "\n<div style='text-align:center' class='smalltext'>$rinfo</div>\n" : "");
-	if ($sDBdbg) {
-		echo "\n<!-- DEBUG -->\n";
-		echo "<br /><div class='header'>DB Debug Summary</div><br />\n";
-		echo "<div style='text-align:left' class='smalltext'>\n";
-		$sql->db_Show_Performance();
-		echo "</div><div class='header'>DB Debug Details</div><br />\n";
-		echo "<div style='text-align:left' class='smalltext'>\n";
-		echo $sDBdbg,"</div>\n";
+	if ($e107_debug_level) {
+		global $db_debug;
+		$dbg_summary = "
+		\n<!-- DEBUG -->\n
+		<div style='text-align:left' class='smalltext'>
+		".
+		$db_debug->Show_Performance().
+		"</div>";
+		$dbg_details = "
+		<div style='text-align:left' class='smalltext'>
+		".
+		$db_debug->sDBdbg.
+		"</div>";
+		$ns->tablerender('DB Debug Summary',$dbg_summary);
+		$ns->tablerender('DB Debug Details',$dbg_details);
 	}
 }
 
