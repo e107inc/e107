@@ -1,16 +1,20 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        code adapted from original by Lolo Irie (lolo@touchatou.com)
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107/e107_admin/plugin.php,v $
+|     $Revision: 1.18 $
+|     $Date: 2004-11-09 06:35:03 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 if(!getperms("Z")){ header("location:".e_BASE."index.php"); exit; }
@@ -21,65 +25,67 @@ require_once(e_HANDLER."parser_handler.php");
 $handle=opendir(e_PLUGIN);
 while(false !== ($file = readdir($handle)))
 {
-	if($file != "." && $file != ".." && is_dir(e_PLUGIN.$file))
-	{
-		$plugin_handle=opendir(e_PLUGIN.$file."/");
-		while(false !== ($file2 = readdir($plugin_handle)))
-		{
-			if($file2 == "plugin.php")
-			{
-				include(e_PLUGIN.$file."/".$file2);
-				if(!$sql -> db_Select("plugin", "*", "plugin_name='$eplug_name'"))
-				{
-					if(!$eplug_prefs && !$eplug_table_names && !$eplug_user_prefs && !$eplug_parse && !$eplug_userclass && !$eplug_module)
-					{
-						// new plugin, assign entry in plugin table, install is not necessary so mark it as intalled
-						$sql -> db_Insert("plugin", "0, '$eplug_name', '$eplug_version', '$eplug_folder', 1");        
-					}
-					else
-					{
-						// new plugin, assign entry in plugin table, install is necessary
-						$sql -> db_Insert("plugin", "0, '$eplug_name', '$eplug_version', '$eplug_folder', 0");        
-					}
-				}
-			}
-		}
-		closedir($plugin_handle);
-	}
+        if($file != "." && $file != ".." && is_dir(e_PLUGIN.$file))
+        {
+                $plugin_handle=opendir(e_PLUGIN.$file."/");
+                while(false !== ($file2 = readdir($plugin_handle)))
+                {
+                        if($file2 == "plugin.php")
+                        {
+                                include(e_PLUGIN.$file."/".$file2);
+                                if(!$sql -> db_Select("plugin", "*", "plugin_name='$eplug_name'"))
+                                {
+                                        if(!$eplug_prefs && !$eplug_table_names && !$eplug_user_prefs && !$eplug_parse && !$eplug_userclass && !$eplug_module)
+                                        {
+                                                // new plugin, assign entry in plugin table, install is not necessary so mark it as intalled
+                                                $sql -> db_Insert("plugin", "0, '$eplug_name', '$eplug_version', '$eplug_folder', 1");
+                                        }
+                                        else
+                                        {
+                                                // new plugin, assign entry in plugin table, install is necessary
+                                                $sql -> db_Insert("plugin", "0, '$eplug_name', '$eplug_version', '$eplug_folder', 0");
+                                        }
+                                }
+                        }
+                }
+                closedir($plugin_handle);
+        }
 }
 closedir($handle);
 
 $sql -> db_Select("plugin");
 while($row = $sql -> db_fetch())
 {
-	if(!is_dir(e_PLUGIN.$row[plugin_path]))
-	{
-		$sql -> db_Delete("plugin", "plugin_path='{$row['plugin_path']}'");
-	}
+        if(!is_dir(e_PLUGIN.$row[plugin_path]))
+        {
+                $sql -> db_Delete("plugin", "plugin_path='{$row['plugin_path']}'");
+        }
 }
 
-if(strstr(e_QUERY, "uninstall")){
+    if(strstr(e_QUERY, "uninstall")){
         $tmp = explode(".", e_QUERY);
         $id = intval($tmp[1]); unset($tmp);
 
         $sql -> db_Select("plugin", "*", "plugin_id='$id' ");
         $row = $sql -> db_Fetch(); extract($row);
         $text = "<div style='text-align:center'>
-<form method='post' action='".e_SELF."'>
-<table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
-<tr>
-<td class='forumheader3' style='text-align:center'>".EPL_ADLAN_2."<br /><br />
-<input class='button' type='submit' name='cancel' value='".EPL_CANCEL."' />
-<input class='button' type='submit' name='confirm' value='".EPL_ADLAN_1." $plugin_name' />
-</td>
-</tr>
-</table>
-<input type='hidden' name='id' value='$id' />
-</form>
-</div>";
-        $ns -> tablerender(EPL_ADLAN_3, $text);
-        require_once("footer.php");
-        exit;
+    <form method='post' action='".e_SELF."'>
+    <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
+    <tr>
+    <td class='forumheader3' style='text-align:center'>".EPL_ADLAN_2."<br /><br />
+    <input class='button' type='submit' name='cancel' value='".EPL_CANCEL."' />
+    <input class='button' type='submit' name='confirm' value='".EPL_ADLAN_1." $plugin_name' />
+    <input type='hidden' name='id' value='$id' /> 
+    </td>
+    </tr>
+    </table>
+
+    </form>
+    </div>";
+
+    $ns -> tablerender(EPL_ADLAN_3.": <b>".$plugin_name." v".$plugin_version."</b>", $text);
+    require_once("footer.php");
+    exit;
 }
 
 if(IsSet($_POST['cancel'])){
@@ -360,7 +366,7 @@ while($row = $sql -> db_Fetch()){
         unset($eplug_module, $eplug_parse, $eplug_name, $eplug_version, $eplug_author, $eplug_logo, $eplug_url, $eplug_email, $eplug_description, $eplug_compatible, $eplug_readme, $eplug_folder, $eplug_table_names, $eplug_userclass);
         include(e_PLUGIN.$plugin_path."/plugin.php");
 
-        if(is_array($eplug_table_names) || is_array($eplug_prefs)  || is_array($eplug_user_prefs) || is_array($eplug_parse) || $eplug_module || $eplug_userclass){
+        if($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs)  || is_array($eplug_user_prefs) || is_array($eplug_parse) || $eplug_module || $eplug_userclass){
                 $img = (!$plugin_installflag ? "<img src='".e_IMAGE."generic/uninstalled.png' alt='' />" : "<img src='".e_IMAGE."generic/installed.png' alt='' />");
         }else{
                 $img = "<img src='".e_IMAGE."generic/noinstall.png' alt='' />";
@@ -380,7 +386,7 @@ while($row = $sql -> db_Fetch()){
         if($eplug_readme){
                 $text .= "[ <a href='".e_PLUGIN.$eplug_folder."/".$eplug_readme."'>".$eplug_readme."</a> ]<br />";
         }
-        if($eplug_module || is_array($eplug_table_names) || is_array($eplug_prefs)  || is_array($eplug_user_prefs) || is_array($eplug_parse)){
+        if($eplug_conffile || $eplug_module || is_array($eplug_table_names) || is_array($eplug_prefs)  || is_array($eplug_user_prefs) || is_array($eplug_parse)){
                 $text .= "<b>".EPL_OPTIONS."</b>: [ ".($plugin_installflag ? "<a href='".e_SELF."?uninstall.$plugin_id' title='".EPL_ADLAN_1."'> ".EPL_ADLAN_1."</a>" : "<a href='".e_SELF."?install.$plugin_id' title='".EPL_ADLAN_0."'>".EPL_ADLAN_0."</a>")." ]";
         }else{
                 if($eplug_menu_name){
