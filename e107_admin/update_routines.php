@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-02-01 05:39:29 $
-|     $Author: sweetas $
+|     $Revision: 1.23 $
+|     $Date: 2005-02-02 21:12:03 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
-	
+
 $dbupdate = array(
 "61x_to_700" => LAN_UPDATE_8." .61x ".LAN_UPDATE_9." .7",
 	"616_to_617" => LAN_UPDATE_8." .616 ".LAN_UPDATE_9." .617",
@@ -26,8 +26,8 @@ $dbupdate = array(
 	"611_to_612" => LAN_UPDATE_8." .611 ".LAN_UPDATE_9." .612",
 	"603_to_604" => LAN_UPDATE_8." .603 ".LAN_UPDATE_9." .604",
 	);
-	
-	
+
+
 function update_check() {
 	global $ns, $dbupdate;
 	foreach($dbupdate as $func => $rmks) {
@@ -46,12 +46,12 @@ function update_check() {
 		$ns->tablerender(ADLAN_122, $txt);
 	}
 }
-	
+
 function update_61x_to_700($type) {
 	global $sql, $ns;
 	if ($type == "do") {
 		$sql->db_Update("userclass_classes", "userclass_editclass='254' WHERE userclass_editclass ='0' ");
-		 
+
 		mysql_query("ALTER TABLE ".MPREFIX."banner CHANGE banner_active banner_active TINYINT(3) UNSIGNED NOT NULL DEFAULT '0'");
 		mysql_query('DROP TABLE `'.MPREFIX.'cache`'); // db cache is no longer an available option..
 		$sql->db_Update("banner", "banner_active='255' WHERE banner_active = '0' ");
@@ -62,7 +62,7 @@ function update_61x_to_700($type) {
 		$sql->db_Update("wmessage", "wm_active='254' WHERE wm_id = '3' AND wm_active='1' ");
 		mysql_query("ALTER IGNORE TABLE `".MPREFIX."wmessage` ADD UNIQUE INDEX(wm_id)");
 		mysql_query("ALTER TABLE `".MPREFIX."wmessage` CHANGE `wm_id` `wm_id` TINYINT( 3 ) UNSIGNED NOT NULL AUTO_INCREMENT");
-		 
+
 		/*
 		changes by jalist 19/01/05:
 		altered structure of news table
@@ -74,9 +74,9 @@ function update_61x_to_700($type) {
 			extract($comments);
 			$sql->db_Update("news", "news_comment_total=$amount WHERE news_id=$id");
 		}
-		 
+
 		/* end */
-		 
+
 		// start links update -------------------------------------------------------------------------------------------
 		if ($sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."link_category")) {
 			global $IMAGES_DIRECTORY, $PLUGINS_DIRECTORY, $pref;
@@ -100,7 +100,7 @@ function update_61x_to_700($type) {
 				link_class tinyint(3) unsigned NOT NULL default '0',
 				PRIMARY KEY  (link_id)
 				) TYPE=MyISAM;");
-			 
+
 			$new_cat_id = 1;
 			$sql->db_Select("link_category", "*", "link_category_id!=1 ORDER BY link_category_id");
 			while ($row = $sql->db_Fetch()) {
@@ -114,13 +114,13 @@ function update_61x_to_700($type) {
 				$link_cat_del[] = $row['link_category_id'];
 				$new_cat_id++;
 			}
-			 
+
 			foreach ($link_cat_export as $link_cat_export_commit) {
 				if (!$sql->db_Insert("links_page_cat", $link_cat_export_commit)) {
 					$links_upd_failed = TRUE;
 				}
 			}
-			 
+
 			$sql->db_Select("links", "*", "link_category!=1 ORDER BY link_category");
 			while ($row = $sql->db_Fetch()) {
 				if ($row['link_button']) {
@@ -131,36 +131,36 @@ function update_61x_to_700($type) {
 				$link_export[] = "'0', '".$row['link_name']."', '".$row['link_url']."', '".$row['link_description']."', '".$link_button."', '".$link_cat_id[$row['link_category']]."', '".$row['link_order']."', '".$row['link_refer']."', '".$row['link_open']."', '".$row['link_class']."'";
 				$link_del[] = $row['link_id'];
 			}
-			 
+
 			foreach ($link_export as $link_export_commit) {
 				if (!$sql->db_Insert("links_page", $link_export_commit)) {
 					$links_upd_failed = TRUE;
 				}
 			}
-			 
+
 			if (!$links_upd_failed) {
 				$sql->db_Select_gen("DROP TABLE ".MPREFIX."link_category");
-				 
+
 				foreach ($link_del as $link_del_commit) {
 					$sql->db_Delete("links", "link_id='".$link_del_commit."'");
 				}
 			}
 			$sql->db_Insert("plugin", "0, 'Links Page', '1.0', 'links_page', 1");
 			$sql->db_Update("links", "link_url = '".$PLUGINS_DIRECTORY."links_page/links.php' WHERE link_url = 'links.php'");
-			 
+
 			$pref['plug_latest'] = $pref['plug_latest'].",links_page";
 			save_prefs();
 		}
 		// end links update -------------------------------------------------------------------------------------------
-		 
+
 		//  #########  McFly's 0.7 Updates ############
-		 
+
 		// parse table obsolete
 		mysql_query('DROP TABLE `'.MPREFIX.'parser`');
 		mysql_query("ALTER TABLE ".MPREFIX."menus ADD menu_path VARCHAR( 100 ) NOT NULL");
 		mysql_query("UPDATE ".MPREFIX."menus SET menu_path = 'custom', menu_name = substring(menu_name,8) WHERE substring(menu_name,1,6) = 'custom'");
 		mysql_query("UPDATE ".MPREFIX."menus SET menu_path = menu_name  WHERE menu_path = ''");
-		 
+
 		// New dblog table for logging db calls (admin log)
 		$sql->db_Select_gen(
 		"CREATE TABLE ".MPREFIX."dblog (
@@ -174,7 +174,7 @@ function update_61x_to_700($type) {
 			PRIMARY KEY  (dblog_id)
 			) TYPE=MyISAM;
 			");
-			
+
 		// New generic table for storing any miscellaneous data
 		$sql->db_Select_gen(
 		"CREATE TABLE ".MPREFIX."generic (
@@ -188,7 +188,7 @@ function update_61x_to_700($type) {
 			PRIMARY KEY  (gen_id)
 			) TYPE=MyISAM;
 		");
-			
+
 		// Update user_class field to use #,#,# instead of #.#.#. notation
 		if ($sql->db_Select('user', 'user_id, user_class')) {
 			$sql2 = new db;
@@ -204,27 +204,39 @@ function update_61x_to_700($type) {
 			}
 		}
 		// ############# END McFly's Updates  ##############
-		
+
 		// start chatbox update -------------------------------------------------------------------------------------------
 		global $pref;
 		$sql->db_Insert("plugin", "0, 'Chatbox', '1.0', 'chatbox_menu', 1");
 		$pref['plug_status'] = $pref['plug_status'].",chatbox_menu";
 		save_prefs();
-		// end chatbox update -------------------------------------------------------------------------------------------
-		
+
+    	// Cam's new PRESET Table. -------------------------------------------------------------------------------------------
+        $sql->db_Select_gen(
+        "CREATE TABLE ".MPREFIX."preset (
+		preset_id int(10) unsigned NOT NULL auto_increment,
+		preset_name varchar(80) NOT NULL default '',
+		preset_field varchar(80) NOT NULL default '',
+		preset_value varchar(255) NOT NULL default '',
+		PRIMARY KEY  (preset_id)
+		) TYPE=MyISAM;
+        ");
+
+
 	} else {
 		// check if update is needed.
 		// FALSE = needed, TRUE = not needed.
 		// return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."generic");
+        return $sql->db_Select("preset");
 		if ($sql->db_Select("plugin", "plugin_path", "plugin_path='chatbox_menu'")) {
 			return TRUE;
 		} else {
 			return FALSE;
-		}		 
+		}
 	}
 }
-	
-	
+
+
 function update_616_to_617($type) {
 	global $sql;
 	if ($type == "do") {
@@ -244,7 +256,7 @@ function update_616_to_617($type) {
 		return FALSE;
 	}
 }
-	
+
 function update_615_to_616($type) {
 	global $sql;
 	if ($type == "do") {
@@ -272,7 +284,7 @@ function update_615_to_616($type) {
 		return FALSE;
 	}
 }
-	
+
 function update_614_to_615($type) {
 	global $sql;
 	if ($type == "do") {
@@ -280,7 +292,7 @@ function update_614_to_615($type) {
 		mysql_query("ALTER TABLE ".MPREFIX."upload ADD upload_category TINYINT(3) UNSIGNED NOT NULL DEFAULT '0'");
 		mysql_query("ALTER TABLE ".MPREFIX."online ADD online_pagecount tinyint(3) unsigned NOT NULL default '0'");
 		mysql_query("ALTER TABLE ".MPREFIX."submitnews ADD submitnews_file VARCHAR(100) NOT NULL default '' ");
-		 
+
 		global $DOWNLOADS_DIRECTORY;
 		$sql2 = new db;
 		$sql->db_Select("download", "download_id, download_url", "download_filesize=0");
@@ -300,7 +312,7 @@ function update_614_to_615($type) {
 		return FALSE;
 	}
 }
-	
+
 function update_611_to_612($type) {
 	global $sql;
 	if ($type == "do") {
@@ -318,7 +330,7 @@ function update_611_to_612($type) {
 		return FALSE;
 	}
 }
-	
+
 function update_603_to_604($type) {
 	global $sql;
 	if ($type == "do") {
@@ -344,7 +356,7 @@ function update_603_to_604($type) {
 		}
 	}
 }
-	
+
 function update_extended_616() {
 	global $sql, $ns;
 	$sql2 = new db;
@@ -372,5 +384,5 @@ function update_extended_616() {
 	}
 	$ns->tablerender("Extended Users", "Updated extended user field data");
 }
-	
+
 ?>
