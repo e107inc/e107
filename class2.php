@@ -73,8 +73,10 @@ define("e_UC_ADMIN", 254);
 define("e_UC_NOBODY", 255);
 define("ADMINDIR", $ADMIN_DIRECTORY);
 
-include(e_HANDLER."errorhandler_class.php");
-set_error_handler("error_handler");
+if(!@include(e_HANDLER."errorhandler_class.php")){
+	echo "<div style='text-align:center; font: 12px Verdana, Tahoma'>Path error</div>";
+	exit;
+}
 
 if(!$mySQLuser){ header("location:install.php"); exit; }
 define("MPREFIX", $mySQLprefix);
