@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/forum_post.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-10-29 14:56:57 $
+|     $Revision: 1.4 $
+|     $Date: 2004-10-29 15:42:51 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -520,24 +520,30 @@ $text .= "<br />";
 require_once(e_HANDLER."emote.php");
 $text .= r_emote();
 
-if($pref['email_notify'] && $action == "nt"){
-        $text .= "
-        <span class='defaulttext'>".LAN_380."</span>".
-        ($_POST['email_notify'] ? "<input type='checkbox' name='email_notify' value='1' checked>" : "<input type='checkbox' name='email_notify' value='1'>");
+if($pref['email_notify'] && $action == "nt")
+{
+	$text .= "
+	<span class='defaulttext'>".LAN_380."</span>".
+	($_POST['email_notify'] ? "<input type='checkbox' name='email_notify' value='1' checked>" : "<input type='checkbox' name='email_notify' value='1'>");
 
 }
 
-if(ADMIN && getperms("5") && $action == "nt"){
+if(ADMIN && getperms("5") && $action == "nt")
+{
+	if(defined($_POST['threadtype']))
+	{
+		$thread_s = $_POST['threadtype'];
+	}
 
-        $text .= "<br />
-        <span class='defaulttext'>
-        ".LAN_400."
-        <input name='threadtype' type='radio' value='0'".(!$_POST['threadtype'] ? "checked" : "").">".LAN_1."
-        &nbsp;
-        <input name='threadtype' type='radio' value='1'".($_POST['threadtype'] == 1 ? "checked" : "").">".LAN_2."
-        &nbsp;
-        <input name='threadtype' type='radio' value='2'".($_POST['threadtype'] == 2 ? "checked" : "").">".LAN_3."
-        </span>";
+	$text .= "<br />
+	<span class='defaulttext'>
+	".LAN_400."
+	<input name='threadtype' type='radio' value='0'".(!$thread_s ? "checked" : "").">".LAN_1."
+	&nbsp;
+	<input name='threadtype' type='radio' value='1'".($thread_s == 1 ? "checked" : "").">".LAN_2."
+	&nbsp;
+	<input name='threadtype' type='radio' value='2'".($thread_s == 2 ? "checked" : "").">".LAN_3."
+	</span>";
 }
 
 
