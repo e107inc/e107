@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/filemanager.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-02-13 00:59:54 $
+|     $Revision: 1.10 $
+|     $Date: 2005-02-13 02:10:36 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -32,20 +32,23 @@ if(str_replace("../","",e_QUERY) == str_replace("../","",e_FILE."public/")){
 
 $imagedir = e_IMAGE."filemanager/";
 
-$choice .= e_FILE;
-
-$admin_choice = $_POST['admin_choice'];
-
-if ($admin_choice == "Custom" && getperms("I")) {
-	$choice = e_PLUGIN."custom/";
-}
-if ($admin_choice == "Custompages" && getperms("I")) {
-	$choice = e_PLUGIN."custompages/";
+	$dir_options[0] = FMLAN_47;
+	$dir_options[1] = FMLAN_35;
+	$dir_options[2] = FMLAN_40;
+if (getperms("I")) {
+	$dir_options[3] = FMLAN_36;
+	$dir_options[4] = FMLAN_37;
 }
 
-if ($admin_choice == "newsimages" && getperms("I")) {
-	$choice = e_IMAGE."newspost_images/";
-}
+$adchoice[0] = e_FILE."public/";
+$adchoice[1] = e_FILE;
+$adchoice[2] = e_IMAGE."newspost_images/";
+$adchoice[3] = e_PLUGIN."custom/";
+$adchoice[4] = e_PLUGIN."custompages/";
+
+
+$choice = ($_POST['admin_choice']) ? $adchoice[$_POST['admin_choice']] : $adchoice[0];
+
 
 if (isset($_POST['admin_choice'])) {
 	header("location:".e_SELF."?".$choice);
@@ -193,12 +196,13 @@ $text = "<div style='text-align:center'>\n
 	</td>\n
 	<td class='forumheader3' style='text-align:center; width:30%'>\n
 	<select name='admin_choice' class='tbox'>\n";
-($admin_choice == "Files" ? $text .= "<option value='Files' selected='selected'>".FMLAN_35."</option>" : $text .= "<option value='Files'>".FMLAN_35."</option>");
-if (getperms("I")) {
-	($admin_choice == "Custom" ? $text .= "<option value='Custom' selected='selected'>".FMLAN_36."</option>" : $text .= "<option value='Custom'>".FMLAN_36."</option>");
-	($admin_choice == "Custompages" ? $text .= "<option value='Custompages' selected='selected'>".FMLAN_37."</option>" : $text .= "<option value='Custompages'>".FMLAN_37."</option>");
-	($admin_choice == "newsimages" ? $text .= "<option value='newsimages' selected='selected'>".FMLAN_40."</option>" : $text .= "<option value='newsimages'>".FMLAN_40."</option>");
-}
+
+
+	foreach($dir_options as $key=>$opt){
+		$select = ($adchoice[$key] == e_QUERY) ? "selected='selected'" : "";
+		$text .= "<option value='$key' $select>".$opt."</option>\n";
+	}
+
 $text .= "</select>\n
 	</td>\n
 	</tr>\n\n
