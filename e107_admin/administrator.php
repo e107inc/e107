@@ -82,7 +82,7 @@ if($action == "edit"){
         }
 }
 
-if($action == "delete"){
+if($action == "delete" && $_POST['del_administrator_confirm']==1){
         $sql -> db_Select("user", "*", "user_id=$sub_action");
         $row = $sql-> db_Fetch();
         extract($row);
@@ -106,6 +106,8 @@ $sql -> db_Select("user", "*", "user_admin='1'");
 
 
 $text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 100px; overflow : auto; '>
+<form action=\"".e_SELF."\" method=\"post\" id=\"del_administrator\" >
+<input type=\"hidden\" name=\"del_administrator_confirm\" id=\"del_administrator_confirm\" value=\"1\" />
 <table class='fborder' style='width:100%'>
 <tr>
 <td style='width:5%' class='forumheader2'>ID</td>
@@ -122,12 +124,12 @@ while($row = $sql -> db_Fetch()){
 <td style='width:35%' class='forumheader3'>".($user_perms == "0" ? ADMSLAN_58 : ($user_perms ? str_replace(".", "", $user_perms) : "&nbsp;"))."</td>
 <td style='width:30%; text-align:center' class='forumheader3'>".
 ($user_perms == "0" ? "&nbsp;" :
-$rs -> form_button("submit", "main_edit", ADMSLAN_15, "onclick=\"document.location='".e_SELF."?edit.$user_id'\"").
-$rs -> form_button("submit", "main_delete", ADMSLAN_59, "onclick=\"confirm_($user_id, '$user_name')\""))."</td>
+$rs -> form_button("button", "main_edit", ADMSLAN_15, "onclick=\"document.location='".e_SELF."?edit.$user_id'\"").
+$rs -> form_button("button", "main_delete", ADMSLAN_59, "onclick=\"confirm_($user_id, '$user_name')\""))."</td>
 </tr>";
 }
 
-$text .= "</table>\n</div>\n</div>";
+$text .= "</table>\n</form></div>\n</div>";
 
 $ns -> tablerender(ADMSLAN_13, $text);
 
@@ -240,7 +242,8 @@ $script = "<script type=\"text/javascript\">
 function confirm_(user_id, user_name){
         var x=confirm(\"".ADMSLAN_60." \" + user_name + \"\");
         if(x){
-                window.location='".e_SELF."?delete.' + user_id;
+                document.getElementById('del_administrator').action='".e_SELF."?delete.' + user_id;
+                document.getElementById('del_administrator').submit();
         }
 }
 </script>";
