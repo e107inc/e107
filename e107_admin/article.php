@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/article.php,v $
-|   $Revision: 1.7 $
-|   $Date: 2005-01-10 09:49:02 $
+|   $Revision: 1.8 $
+|   $Date: 2005-01-13 09:24:54 $
 |   $Author: sweetas $
 
 +---------------------------------------------------------------+
@@ -203,9 +203,9 @@ if(IsSet($message)){
 // ##### Categories ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 if($action == "cat"){
-        $text = "<div style='text-align:center'><div style='padding : 4px; ".ADMIN_WIDTH."; height : 100px; overflow : auto; margin-left: auto; margin-right: auto; '>\n";
+        $text = "<div style='text-align:center'>\n";
         if($category_total = $sql -> db_Select("content", "*", "content_type='6' ")){
-                $text .= "<table class='fborder' style='width:99%'>
+                $text .= "<table style='".ADMIN_WIDTH."' class='fborder'>
                 <tr>
                 <td style='width:5%' class='fcaption'>&nbsp;</td>
                 <td style='width:75%' class='fcaption'>".ARLAN_59."</td>
@@ -231,7 +231,7 @@ if($action == "cat"){
         }else{
                 $text .= "<div style='text-align:center'>".ARLAN_63."</div>";
         }
-        $text .= "</div></div>";
+        $text .= "</div>";
         $ns -> tablerender(ARLAN_64, $text);
 
         $handle=opendir(e_IMAGE."link_icons");
@@ -338,10 +338,10 @@ if(!$action || $action == "confirm" || $action == 'c'){
         // ---------------------------------------------------------------------------
 
         $sql2 = new db;
-        $text .= "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; height : 400px; overflow : auto;  margin-left: auto; margin-right: auto;'>";
+        $text .= "<div style='text-align:center'>";
         if($article_total = $sql -> db_Select("content", "*", $query)){
                 if($article_total < 50 || $letter || $cat){
-                        $text .= "<table class='fborder' style='width:99%'>
+                        $text .= "<table style='".ADMIN_WIDTH."' class='fborder'>
                         <tr>
                         <td style='width:5%' class='fcaption'>&nbsp;</td>
                         <td style='width:50%' class='fcaption'>".ARLAN_20."</td>
@@ -374,7 +374,7 @@ if(!$action || $action == "confirm" || $action == 'c'){
         } else {
                 $text .= "<div style='text-align:center'>".ARLAN_14."</div>";
         }
-        $text .= "</div></div>";
+        $text .= "</div>";
         $ns -> tablerender(ARLAN_72, $text);
         }
 
@@ -554,9 +554,9 @@ if($action == "opt"){
 
 if($action == "sa"){
         global $sql, $rs, $ns, $aj;
-        $text = "<div style='text-align:center'><div style='padding : 1px; width :auto; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>\n";
+        $text = "<div style='text-align:center'>\n";
         if($article_total = $sql -> db_Select("content", "*", "content_type=15")){
-                $text .= "<table class='fborder' style='width:99%'>
+                $text .= "<table style='".ADMIN_WIDTH."' class='fborder'>
                 <tr>
                 <td style='width:5%' class='fcaption'>ID</td>
                 <td style='width:75%' class='fcaption'>".ARLAN_96."</td>
@@ -580,7 +580,7 @@ if($action == "sa"){
         }else{
                 $text .= "<div style='text-align:center'>".ARLAN_94."</div>";
         }
-        $text .= "</div></div>";
+        $text .= "</div>";
         $ns -> tablerender(ARLAN_93, $text);
 }
 

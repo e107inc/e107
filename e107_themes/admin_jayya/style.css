@@ -119,12 +119,16 @@ hr {
 	width: 100%;
 	background-color: #ffffff;
 	border-bottom: 1px solid #3D4251;
+	border-collapse:collapse;
+	border-spacing:0px;
 }
 
 .main_section {
 	width: 100%;
 	background-color: #ffffff;
 	border-bottom: 1px solid #3D4251;
+	border-collapse:collapse;
+	border-spacing:0px;
 }
  
 .default_menu {

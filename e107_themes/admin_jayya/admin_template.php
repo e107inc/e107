@@ -64,7 +64,7 @@ function adbutnorm(object) {
 // -->
 </script>
 
-<table cellpadding='0' cellspacing='0' border='0' class='top_section'>
+<table class='top_section'>
 <tr>
 <td style='vertical-align: top; padding: 0px 0px 0px 0px'>
 <img src='".THEME."images/adminlogo_2.png' style='width: 170px; height: 68px; display: block;' alt='' />
@@ -95,7 +95,7 @@ if (ADMIN) {
 		$ADMIN_HEADER .= "<script type='text/javascript' src='".e_FILE."admin_nav.js'></script>";
 	}
 	
-	$ADMIN_HEADER .= "<div style='width: 100%'><table border='0' cellspacing='0' cellpadding='0' style='width: 100%'>
+	$ADMIN_HEADER .= "<div style='width: 100%'><table style='width:100%; border-collapse: collapse; border-spacing: 0px;'>
 	<tr><td>
 	<div class='menuBar' style='width:100%;'>
 	&nbsp;
@@ -105,10 +105,10 @@ if (ADMIN) {
 	</table></div>";
 }
 
-$ADMIN_HEADER .= "<table cellpadding='0' cellspacing='0' border='0' class='main_section'>
+$ADMIN_HEADER .= "<table class='main_section'>
 <tr>
 <td class='left_menu'>
-<table cellpadding='0' cellspacing='0' border='0' style='width:100%;'>
+<table style='width:100%; border-collapse: collapse; border-spacing: 0px;'>
 <tr>
 <td>
 {SETSTYLE=leftmenu}
@@ -138,7 +138,7 @@ $ADMIN_FOOTER = "<br />
 
 if ($preright=='pre') {
 	$ADMIN_FOOTER .= "<td class='right_menu'>
-	<table cellpadding='0' cellspacing='0' border='0' style='width:100%;'>
+	<table style='width:100%; border-collapse: collapse; border-spacing: 0px;'>
 	<tr>
 	<td>
 	{SETSTYLE=rightmenu}
