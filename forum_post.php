@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/forum_post.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2004-11-04 13:48:16 $
-|     $Author: loloirie $
+|     $Revision: 1.7 $
+|     $Date: 2004-11-27 14:34:50 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -136,17 +136,17 @@ if(IsSet($_POST['submitpoll'])){
 }
 
 
-if(IsSet($_POST['fpreview'])){
-        if(USER ? $poster = USERNAME : $poster = ($_POST['anonname'] ? $_POST['anonname'] : LAN_311));
+if (IsSet($_POST['fpreview'])) {
+        if (USER ? $poster = USERNAME : $poster = ($_POST['anonname'] ? $_POST['anonname'] : LAN_311));
         $postdate = $gen->convert_date(time(), "forum");
 
-        if(!$pref['html_post']){
-                $tsubject = str_replace("<", "&lt;", $tsubject);str_replace(">", "&gt;", $tsubject);
-                $tpost = str_replace("<", "&lt;", $tpost);str_replace(">", "&gt;", $tpost);
-        }
+//        if (!$pref['html_post']) {
+//                $tsubject = str_replace("<", "&lt;", $tsubject);str_replace(">", "&gt;", $tsubject);
+//                $tpost = str_replace("<", "&lt;", $tpost);str_replace(">", "&gt;", $tpost);
+//        }
 
-        $tsubject = $aj -> tpa($_POST['subject']);
-        $tpost = $aj -> tpa($_POST['post']);
+        $tsubject = $tp -> post_toHTML($_POST['subject']);
+        $tpost = $tp -> post_toHTML($_POST['post']);
 
         if($_POST['poll_title'] != ""){
                 require_once(e_HANDLER."poll_class.php");
@@ -175,10 +175,12 @@ if(IsSet($_POST['fpreview'])){
 
         $ns -> tablerender(LAN_323, $text);
 
-
-        $anonname = ($_POST['anonname'] ? $aj -> formtpa($_POST['anonname'], "public") : LAN_311);
-        $post = (ADMIN ? $aj -> formtpa($_POST['post']) : $aj -> formtpa($_POST['post'], "public"));
-        $subject = (ADMIN ? $aj -> formtpa($_POST['subject']) : $aj -> formtpa($_POST['subject'], "public"));
+//        $anonname = ($_POST['anonname'] ? $aj -> formtpa($_POST['anonname'], "public") : LAN_311);
+//        $post = (ADMIN ? $aj -> formtpa($_POST['post']) : $aj -> formtpa($_POST['post'], "public"));
+//        $subject = (ADMIN ? $aj -> formtpa($_POST['subject']) : $aj -> formtpa($_POST['subject'], "public"));
+        $anonname = $_POST['anonname'];
+        $post = $tp -> post_toForm($_POST['post']);
+        $subject = $tp -> post_toForm($_POST['subject']);
 
         if($action == "edit"){
                 if($_POST['subject'] ? $action = "nt" : $action = "reply");
