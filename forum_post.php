@@ -312,7 +312,7 @@ if(IsSet($_POST['reply'])){
                 $pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
                 $pages = ((ceil($replies/$pref['forum_postspage']) -1) * $pref['forum_postspage']);
 
-                echo "<table style='width:100%' class='fborder'>
+                $text = "<table style='width:100%' class='fborder'>
                 <tr>
                 <td class='fcaption' colspan='2'>".LAN_133."</td>
                 </tr><tr>
@@ -323,6 +323,7 @@ if(IsSet($_POST['reply'])){
                 <span class='defaulttext'><a href='".e_BASE."forum_viewtopic.php?".$thread_forum_id.".".$thread_id.".".$pages."#$iid'>".LAN_325."</a><br />
                 <a href='".e_BASE."forum_viewforum.php?".$forum_id."'>".LAN_326."</a></span><br /><br />
                 </td></tr></table>";
+				if($pref['forum_enclose']){ $ns -> tablerender($pref['forum_title'], $text); }else{ echo $text; }
                 $sql -> db_Delete("cache", "cache_url='newforumposts'");
                 require_once(FOOTERF);
                 exit;
