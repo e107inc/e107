@@ -314,7 +314,7 @@ for($a=1; $a<=12; $a++){
 $text .= $rs -> form_select_close().
 $rs -> form_select_open("birth_year").
 $rs -> form_option("", 0);
-for($a=1950; $a<=$year; $a++){
+for($a=1900; $a<=$year; $a++){
         $text .= ($birth_year == $a ? $rs -> form_option($a, 1) : $rs -> form_option($a, 0));
 }
 
