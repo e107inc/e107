@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-01-20 04:07:50 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.21 $
+|     $Date: 2005-01-22 15:21:01 $
+|     $Author: sweetas $
 +---------------------------------------------------------------+
 */
 
@@ -27,16 +27,6 @@
 */
 
 class sitelinks {
-	var $linkadd;
-	
-	function sitelinks() {
-		if (defined('LINKCLASS')) {
-			$this->linkadd = ' class="'.LINKCLASS.'" ';
-		} else {
-			$this->linkadd = '';
-		}
-	}
-
 	function get() {
 		global $pref, $ns, $tp, $e107cache, $eLinkList;
 
@@ -99,7 +89,6 @@ class sitelinks {
 
 	function makeLink($linkInfo,$submenu=FALSE) {
 		global $pref;
-		$indent = ($submenu == TRUE && LINKDISPLAY != 3) ? "&nbsp;&nbsp;" : "";
 		if (!preg_match('#(http:|mailto:|ftp:)#', $linkInfo['link_url'])) {
 			$linkInfo['link_url'] = e_BASE.$linkInfo['link_url'];
 		}
@@ -108,17 +97,21 @@ class sitelinks {
 			$linkInfo['link_name'] = $tmp[2];
 		}
 
-		$linkstart = ($linkInfo['link_button'] ? preg_replace('/\<img.*\>/si', '', LINKSTART) : LINKSTART);
-		$link_append='';
+		$_link = $linkInfo['link_button'] ? preg_replace('/\<img.*\>/si', '', LINKSTART) : LINKSTART;
+		$_link .= $linkInfo['link_button'] ? "<img src='".e_IMAGE."link_icons/".$linkInfo['link_button']."' alt='' style='vertical-align:middle' />" : "";
+		$_link .= ($submenu == TRUE && LINKDISPLAY != 3) ? "&nbsp;&nbsp;" : "";
 
-		if ($linkInfo['link_open'] == 1) {
-			$link_append = "rel='external'";
-		}
-		if ($linkInfo['link_open'] == 4) {
-			$_link = $linkstart.$indent.($linkInfo['link_button'] ? '<img src="'.e_IMAGE."link_icons/{$linkInfo['link_button']}\" alt='' style='vertical-align:middle' /> " : '').($linkInfo['link_url'] ? '<a'.$linkadd.((in_array('linkpage_screentip',$pref) && $pref['linkpage_screentip']) ? " title = '{$linkInfo['link_description']}' " : "")." href=\"javascript:open_window('".$linkInfo['link_url']."')\">".$linkInfo['link_name'].'</a>' : $linkInfo['link_name'])."\n";
+		if ($linkInfo['link_url']) {
+			$linkadd = defined('LINKCLASS') ? " class='".LINKCLASS."'" : "";
+			$screentip = ($pref['linkpage_screentip'] && $linkInfo['link_description']) ? " title = '".$linkInfo['link_description']."'" : "";
+			$href = ($linkInfo['link_open'] == 4) ? " href=\"javascript:open_window('".$linkInfo['link_url']."')\"" : " href='".$linkInfo['link_url']."'";
+			$link_append = ($linkInfo['link_open'] == 1) ? " rel='external'" : "";
+			
+			$_link .= "<a".$linkadd.$screentip.$href.$link_append.">".$linkInfo['link_name']."</a>\n";
 		} else {
-			$_link = $linkstart.$indent.($linkInfo['link_button'] ? '<img src="'.e_IMAGE."link_icons/{$linkInfo['link_button']}\" alt='' style='vertical-align:middle' /> " : '').($linkInfo['link_url'] ? '<a'.$linkadd.((in_array('linkpage_screentip',$pref) && $pref['linkpage_screentip']) ? " title = '{$linkInfo['link_description']}' " : "")." href=\"".$linkInfo['link_url']."\"".$link_append.">".$linkInfo['link_name'].'</a>' : $linkInfo['link_name'])."\n";
+			$_link .= $linkInfo['link_name'];
 		}
+		
 		return $_link.LINKEND;
 	}
 
