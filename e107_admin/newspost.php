@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.27 $
-|   $Date: 2005-02-08 08:21:07 $
+|   $Revision: 1.28 $
+|   $Date: 2005-02-08 09:01:31 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -377,17 +377,6 @@ class newspost {
 		$thumblist = $fl->get_files(e_IMAGE."newspost_images/", '#thumb_#');
 		$rejecthumb = array('.','..','/','CVS','thumbs.db','*._$',"thumb_");
 		$imagelist = $fl->get_files(e_IMAGE."newspost_images/","",$rejecthumb);
-        /*$handle = opendir(e_IMAGE."newspost_images");
-        while ($file = readdir($handle)) {
-            if ($file != "." && $file != ".." && $file != "/" && $file != "index.html" && $file != "null.txt" && $file != "CVS") {
-                if (!strstr($file, "thumb_")) {
-                    $imagelist[] = $file;
-                } else {
-                    $thumblist[] = $file;
-                }
-            }
-        }
-        closedir($handle);*/
 
 		$sql->db_Select("download");
 		$c = 0;
@@ -497,10 +486,10 @@ class newspost {
 
 
 				$text .="
-				<select class='tbox' name='thumbps' onchange=\"addtext('[link=".e_IMAGE."newspost_images/' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '][img]".e_IMAGE."newspost_images/thumb_' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '[/img][/link]');this.selectedIndex=0;\" onmouseover=\"help('".NWSLAN_50."')\" onmouseout=\"help('')\">
+				<select class='tbox' name='thumbps' onchange=\"addtext('[img]".e_IMAGE."newspost_images/' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onmouseover=\"help('".NWSLAN_50."')\" onmouseout=\"help('')\">
 				<option>".NWSLAN_80." ...</option>\n";
 				foreach ($thumblist as $thmb){
-					$text .= "<option value='".$thmb['fname']."'>thumb_".$thmb['fname']."</option>\n";
+					$text .= "<option value='".$thmb['fname']."'>".$thmb['fname']."</option>\n";
 				}
 				$text .= "</select>
 
