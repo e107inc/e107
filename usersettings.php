@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-07 10:57:26 $
-|     $Author: pholzmann $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-07 15:11:27 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -90,7 +90,7 @@ if(IsSet($_POST['updatesettings'])){
         };
 
 
-	if(($user_entended = $sysprefs->getArray('user_entended'))){
+        if(($user_entended = $sysprefs->getArray('user_entended'))){
                 $c=0;
                 while(list($key, $u_entended) = each($user_entended)){
                     if($u_entended){
@@ -136,7 +136,7 @@ if(IsSet($_POST['updatesettings'])){
         }
 
 
-	if(($user_entended = $sysprefs->getArray('user_entended'))){
+        if(($user_entended = $sysprefs->getArray('user_entended'))){
                         $c=0;
                         while(list($key, $u_entended) = each($user_entended)){
                                 if($u_entended){
@@ -197,7 +197,7 @@ if(IsSet($_POST['updatesettings'])){
                 $_POST['customtitle'] = $aj -> formtpa($_POST['customtitle'], "public");
                 $sql -> db_Update("user", "user_password='$password', user_sess='$user_sess', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$birthday."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."', user_customtitle='".$_POST['customtitle']."' WHERE user_id='".$inp."' ");
 
-		if(($user_entended = $sysprefs->getArray('user_entended'))){
+                if(($user_entended = $sysprefs->getArray('user_entended'))){
                         while(list($key, $u_entended) = each($user_entended)){
                                 if($_POST["ue_{$key}"]){
                                 $val = $aj -> formtpa($_POST["ue_{$key}"], "public");
@@ -247,7 +247,7 @@ if($_uid){
 }else{
         $sql -> db_Select("user", "*", "user_id='".USERID."' ");
 }
-list($user_id, $name, $user_customtitle, $user_password, $user_sess, $email, $website, $icq, $aim, $msn, $location, $birthday, $signature, $image, $user_timezone, $hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_prefs, $user_new, $user_viewed, $user_visits, $user_admin, $user_login) = $sql -> db_Fetch();
+list($user_id, $name, $user_customtitle, $user_password, $user_sess, $email, $website, $icq, $aim, $msn, $location, $birthday, $signature, $image, $user_timezone, $hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_prefs, $user_new, $user_viewed, $user_visits, $user_admin, $user_login,$user_class) = $sql -> db_Fetch();
 
 $signature = $aj -> editparse($signature);
 $tmp = explode("-", $birthday);
@@ -351,7 +351,7 @@ if($sql -> db_Select("userclass_classes","*","userclass_editclass =0")){
     while($row3 = $sql-> db_Fetch()){
     extract($row3);
        if($userclass_editclass ==0){
-          $frm_checked = check_class($userclass_id) ? "checked='checked'" : "";
+          $frm_checked = check_class($userclass_id,$user_class) ? "checked='checked'" : "";
           $text .= "<tr><td class='defaulttext'>";
           $text .= "<input type='checkbox' name='usrclass[]' value='$userclass_id' $frm_checked />\n";
        //   $text .= $rs -> form_checkbox("usrclass[]", $userclass_id, $frm_checked);
