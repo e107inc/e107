@@ -17,8 +17,8 @@
 | GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/clock_menu/clock_menu.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-02-02 15:01:27 $
+|     $Revision: 1.12 $
+|     $Date: 2005-02-08 16:25:21 $
 |     $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
@@ -39,7 +39,7 @@ if (!defined("e_HTTP")) {
 	exit;
 }
 $text = "\n\n<!-- ### clock ### //-->\n<div id='Clock'>&nbsp;</div>\n";
-if (isset($clock_flat) && !$clock_flat) {
+if (!isset($clock_flat) || !$clock_flat) {
 	$ns->tablerender($menu_pref['clock_caption'], "<div style='text-align:center'>".$text."</div>", 'clock');
 } else {
 	echo $text;
