@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-01-11 23:44:49 $
+|     $Revision: 1.11 $
+|     $Date: 2005-01-13 02:00:00 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -206,17 +206,29 @@ $text .="</div>";
 */
 // end new.
 
-$text = "<form method='post' action='prefs.php' >
+$text = "<script type=\"text/javascript\">
+<!--
+var hideid=\"main\";
+function showhideit(showid){
+	if(hideid!=showid){
+ 		show=document.getElementById(showid).style;
+ 		hide=document.getElementById(hideid).style;
+		show.display=\"\";
+		hide.display=\"none\";
+		hideid = showid;
+	}
+}
+//-->
+</script>
+<form method='post' action='prefs.php' >
 <div style='text-align:center;'>
 <div style='text-align:center; ".ADMIN_WIDTH."; margin-left: auto; margin-right: auto'>
+<div id='main' style='text-align:center'>
 <table style='width:100%' class='fborder'>
 <tr>
-<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' onclick=\"expandit('main')\">".PRFLAN_1."</td>
+<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' colspan='2'>".PRFLAN_1."</td>
 </tr>
-</table>
 
-<div id='main' style='display:none; text-align:center'>
-<table style='width:100%;' class='fborder'>
 <tr>
 <td style='width:50%' class='forumheader3'>".PRFLAN_2.": </td>
 <td style='width:50%; text-align:right' class='forumheader3'>
@@ -272,20 +284,20 @@ $text = "<form method='post' action='prefs.php' >
 <td style='width:50%; text-align:right' class='forumheader3'>
 <textarea class='tbox' name='sitedisclaimer' cols='59' rows='3'>".SITEDISCLAIMER."</textarea>
 </td>
-</tr>
-</table>
-</div>
+</tr>";
 
-<table style='width:100%' class='fborder'>
-<tr>
-<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' onclick=\"expandit('theme')\">".PRFLAN_10."</td>
-</tr>
-</table>
+$text .= pref_submit();
+
+$text .= "</table>
+</div>
 
 <div id='theme' style='display:none; text-align:center'>
 <table style='width:100%' class='fborder'>
 <tr>
+<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' colspan='2'>".PRFLAN_10."</td>
+</tr>
 
+<tr>
 <td style='width:50%' class='forumheader3'>".PRFLAN_11.":<br /><span class='smalltext'>".PRFLAN_85."</span></td>
 <td style='width:50%; text-align:right' class='forumheader3'><a href='".e_ADMIN."theme_prev.php'>".PRFLAN_12."</a>
 <select name='sitetheme' class='tbox'>\n";
@@ -298,18 +310,19 @@ while(IsSet($dirlist[$counter])){
 }
 $text .= "</select>
 </td>
-</tr>
-</table>
+</tr>";
+
+$text .= pref_submit();
+
+$text .= "</table>
 </div>
 
+<div id='display' style='display:none; text-align:center'>
 <table style='width:100%' class='fborder'>
 <tr>
-<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' onclick=\"expandit('theme2')\">".PRFLAN_13."</td>
+<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' colspan='2'>".PRFLAN_13."</td>
 </tr>
-</table>
 
-<div id='theme2' style='display:none; text-align:center'>
-<table style='width:100%;' class='fborder'>
 <tr>
 <td style='width:50%' class='forumheader3'>".PRFLAN_14." </td>
 <td style='width:50%; text-align:right' class='forumheader3'>".
@@ -329,20 +342,19 @@ $text .= "</select>
 <td style='width:50%; text-align:right' class='forumheader3'>".
 ($pref['displaysql'] ? "<input type='checkbox' name='displaysql' value='1' checked='checked' />" : "<input type='checkbox' name='displaysql' value='1' />")."
 </td>
-</tr>
+</tr>";
 
-</table></div>";
+$text .= pref_submit();
+
+$text .= "</table></div>";
 
 // Admin Display Areas. .
 
-$text .="<table style='width:100%' class='fborder'>
-<tr>
-<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' onclick=\"expandit('admindisp')\">".PRFLAN_77."</td>
-</tr>
-</table>
-
-<div id='admindisp' style='display:none; text-align:center'>
+$text .="<div id='admindisp' style='display:none; text-align:center'>
 <table style='width:100%' class='fborder'>
+<tr>
+<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' colspan='2'>".PRFLAN_77."</td>
+</tr>
 
 <tr>
 <td style='width:50%' class='forumheader3'>".PRFLAN_54.": </td>
@@ -394,17 +406,17 @@ $text .= "<tr>
 </td>
 </tr>";
 
+$text .= pref_submit();
+
 $text .= "</table></div>";
 
 // Date options.
-$text .="<table style='width:100%' class='fborder'>
-<tr>
-<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' onclick=\"expandit('date')\">".PRFLAN_21."</td>
-</tr>
-</table>
-
-<div id='date' style='display:none; text-align:center'>
+$text .="<div id='date' style='display:none; text-align:center'>
 <table style='width:100%' class='fborder'>
+<tr>
+<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' colspan='2'>".PRFLAN_21."</td>
+</tr>
+
 <tr>";
 
 $ga = new convert;
@@ -470,18 +482,19 @@ $text .= "</select>
 <td style='width:50%; text-align:right' class='forumheader3'>
 <input class='tbox' type='text' name='timezone' size='20' value='".$pref['timezone']."' maxlength='50' />
 </td>
-</tr></table></div>";
+</tr>";
+
+$text .= pref_submit();
+
+$text .= "</table></div>";
 
 // =========== Registration Preferences. ==================
 
-$text .="<table style='width:100%' class='fborder'>
+$text .="<div id='registration' style='display:none; text-align:center'><table style='width:100%' class='fborder'>
 <tr>
-<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' onclick=\"expandit('registration')\">".PRFLAN_28."</td>
+<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' colspan='2'>".PRFLAN_28."</td>
 </tr>
-</table>
 
-<div id='registration' style='display:none; text-align:center'>
-<table style='width:100%' class='fborder'>
 <tr>
 <td style='width:50%' class='forumheader3'>".PRFLAN_29.": </td>
 <td style='width:50%; text-align:right' class='forumheader3'>".
@@ -536,19 +549,20 @@ $text .="
 <td class='forumheader3' style='width:50%;text-align:right' >
 <input type='text' class='tbox' size='3' name='signup_pass_len' value='".$pref['signup_pass_len']."' />
 (".PRFLAN_78.") </td>
-</tr></table></div>";
+</tr>";
+
+$text .= pref_submit();
+
+$text .= "</table></div>";
 
 
 // Signup options ===========================.
 
-$text .= "<table style='width:100%' class='fborder'>
+$text .= "<div id='signup' style='display:none; text-align:center'><table style='width:100%' class='fborder'>
 <tr>
-<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' onclick=\"expandit('signup')\">".PRFLAN_19."</td>
+<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' colspan='2'>".PRFLAN_19."</td>
 </tr>
-</table>
 
-<div id='signup' style='display:none; text-align:center'>
-<table style='width:100%' class='fborder'>
 <tr >
 <td class=\"forumheader\">".CUSTSIG_13."</td>
 <td class=\"forumheader\">".CUSTSIG_14."</td>
@@ -599,18 +613,19 @@ if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
         }
 }
 
+
+$text .= pref_submit();
+
+
 $text .="</table></div>";
 
  // Security Options. .
 
-$text .="<table style='width:100%' class='fborder'>
-<tr>
-<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' onclick=\"expandit('security')\">".PRFLAN_47."</td>
-</tr>
-</table>
-
-<div id='security' style='display:none; text-align:center'>
+$text .="<div id='security' style='display:none; text-align:center'>
 <table style='width:100%' class='fborder'>
+<tr>
+<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' colspan='2'>".PRFLAN_47."</td>
+</tr>
 
 <tr>
 <td style='width:50%' class='forumheader3'>".PRFLAN_60."<br /><span class='smalltext'>".PRFLAN_61."</span> </td>
@@ -720,75 +735,68 @@ if($autoban == 1){
 }
 $text .= "<br />
 <b class=\"smalltext\" >".PRFLAN_91."</b></td>
-</tr>
+</tr>";
 
-</table></div>";
+$text .= pref_submit();
 
-$text .="<table style='width:100%' class='fborder'>
-<tr>
-<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' onclick=\"expandit('comments')\">".PRFLAN_87."</td>
-</tr>
-</table>
+$text .= "</table></div>";
 
-<div id='comments' style='display:none; text-align:center'>
+$text .="<div id='comments' style='display:none; text-align:center'>
 <table style='width:100%' class='fborder'>
+<tr>
+<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' colspan='2'>".PRFLAN_87."</td>
+</tr>
+
 <tr>
 <td style='width:50%' class='forumheader3'>".PRFLAN_88.": </td>
 <td style='width:50%; text-align:right' class='forumheader3'>".
 ($pref['nested_comments'] ?  "<input type='checkbox' name='nested_comments' value='1'  checked='checked' />" : "<input type='checkbox' name='nested_comments' value='1' />"). "</td>
-</tr>
-</table></div>";
+</tr>";
 
-/*
-$text .="<table style='width:100%' class='fborder'>
-<tr>
-<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' onclick=\"expandit('update')\">e107</td>
-</tr>
-</table>
+$text .= pref_submit();
 
-<div id='update' style='display:none; text-align:center'>
-<table style='width:100%' class='fborder'>
-<tr>
-<td colspan='2' class='forumheader3'>".$auth_dropdown."
-<div style='text-align:center'><input class='button' type='submit' name='newver' value='".PRFLAN_51."' /></div>
-</td>
-</tr></table>
-</div>";
-*/
+$text .= "</table></div>";
 
-$text .="<div style='text-align:center'>
-<table style='width:100%' class='fborder'>
-<tr>
-<td colspan='2'  style='text-align:center' class='forumheader'>";
-
-// ML
-if(e_MLANG == 1){
-	//$text .="<input class='fcaption' type='submit' name='updateprefs' value='".PRFLAN_52."' />
-	$but_typ = array(""); // empty = submit
-	$but_nam = array("updateprefs"); // empty = autobutX with X autoincrement
-	$but_val = array("updateprefs"); // empty = Submit
-	$but_class = array("caption"); // empty = button
-	$butjs = array(""); // empty = ""
-	$buttitle = array(""); // empty = ""
-	$text .= e107ml_adpanel(1,$but_typ,$but_nam,$but_val,$but_class,$butjs,$buttitle);
-}else{
-	$text .="<input class='button' type='submit' name='updateprefs' value='".PRFLAN_52."' />";
-}
-
-// END ML
-
-
-
-$text .="</td>
-</tr>
-</table></div>
-
-</div></div></form>";
-
-
-
+$text .="</div></div></form>";
 
 $ns -> tablerender(PRFLAN_53, $text);
 
 require_once("footer.php");
+
+function pref_submit() {
+	$text ="<tr>
+	<td colspan='2' style='text-align:center' class='forumheader'>";
+
+	// ML
+	if(e_MLANG == 1){
+		//$text .="<input class='fcaption' type='submit' name='updateprefs' value='".PRFLAN_52."' />
+		$but_typ = array(""); // empty = submit
+		$but_nam = array("updateprefs"); // empty = autobutX with X autoincrement
+		$but_val = array("updateprefs"); // empty = Submit
+		$but_class = array("caption"); // empty = button
+		$butjs = array(""); // empty = ""
+		$buttitle = array(""); // empty = ""
+		$text .= e107ml_adpanel(1,$but_typ,$but_nam,$but_val,$but_class,$butjs,$buttitle);
+	}else{
+		$text .="<input class='button' type='submit' name='updateprefs' value='".PRFLAN_52."' />";
+	}
+	$text .= "</td>
+	</tr>";
+
+	// END ML
+	return $text;
+}
+
+function prefs_adminmenu(){
+		$var['main']['text']=PRFLAN_1;
+		$var['theme']['text']=PRFLAN_10;
+		$var['display']['text']=PRFLAN_13;
+		$var['admindisp']['text']=PRFLAN_77;
+		$var['date']['text']=PRFLAN_21;
+		$var['registration']['text']=PRFLAN_28;
+		$var['signup']['text']=PRFLAN_19;
+		$var['security']['text']=PRFLAN_47;
+		$var['comments']['text']=PRFLAN_87;
+		show_admin_menu(PRFLAN_99,$action,$var,TRUE);
+}
 ?>

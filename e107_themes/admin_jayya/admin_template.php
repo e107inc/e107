@@ -26,16 +26,16 @@ ob_end_clean();
 // [admin button style]
 
 if (!function_exists('show_admin_menu')) {
-	function show_admin_menu($title,$page,$e107_vars){
+	function show_admin_menu($title, $page, $e107_vars, $js = FALSE){
 		global $ns;
 		$text = "<div style='text-align:center; width:100%'><table class='fborder' style='width: 100%'>";
 		foreach (array_keys($e107_vars) as $act) {
 			$t=str_replace(" ","&nbsp;",$e107_vars[$act]['text']);
 			if (!$e107_vars[$act]['perm'] || getperms($e107_vars[$act]['perm'])) {
 				$arrow_icon = $page == $act ? E_16_NAV_ARROW_OVER : E_16_NAV_ARROW;
-				$menu_link = $page == $act ? "" : "onclick=\"document.location='".$e107_vars[$act]['link']."'; disabled=true;\"";
+				$on_click = $js ? "showhideit('".$act."');" : "document.location='".$e107_vars[$act]['link']."'; disabled=true;";
 				$text .= "<tr><td style='border-bottom: 1px solid #000'><div class='emenuBar' style='width:100%;'>
-				<div class='menuButton' onmouseover='adbutover(this)' onmouseout='adbutnorm(this)' ".$menu_link." 
+				<div class='menuButton' onmouseover='adbutover(this)' onmouseout='adbutnorm(this)' onclick=\"".$on_click."\"
 				style='background-image: url(".$arrow_icon."); background-repeat: no-repeat; background-position: 3px 1px; width: 100%; display: block;'>
 				".$t."</div>
 				</div>
@@ -49,29 +49,6 @@ if (!function_exists('show_admin_menu')) {
 		$ns -> tablerender($title,$text, array('id' => $title, 'style' => 'button_menu'));
 	}
 }
-/*
-function show_admin_menu($title,$page,$e107_vars){
-	global $ns;
-	$text = "<div style='text-align:center; width:100%'><table class='fborder' style='width:98%;'>";
-	foreach(array_keys($e107_vars) as $act) {
-		$pre = "";
-		$post = "";
-		if ($page == $act) {
-			$pre = "<b>&laquo;&nbsp;";
-			$post = "&nbsp;&raquo;</b>";
-		}
-		$t=str_replace(" ","&nbsp;",$e107_vars[$act]['text']);
-		if (!$e107_vars[$act]['perm'] || getperms($e107_vars[$act]['perm'])) {
-			$text .= "<tr><td><div style='width:100%; text-align:center'><a style='cursor:hand; cursor:pointer; text-decoration:none;' href='{$e107_vars[$act]['link']}'>{$pre}{$t}{$post}</a></div></td></tr>";
-		}
-	}
-	$text .= "</table></div>";
-	if ($title=="") {
-		return $text;
-	}
-	$ns -> tablerender($title, $text, array('id' => 'unique_id', 'style' => 'button_menu'));
-}
-*/
 
 // [layout]
 

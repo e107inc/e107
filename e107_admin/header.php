@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.9 $
-|   $Date: 2005-01-10 09:49:03 $
+|   $Revision: 1.10 $
+|   $Date: 2005-01-13 01:59:59 $
 |   $Author: sweetas $
 +---------------------------------------------------------------+
 */
@@ -77,7 +77,7 @@ $ns = new e107table;
 $e107_var = array();
 
 if (!function_exists('show_admin_menu')) {
-	function show_admin_menu($title,$page,$e107_vars){
+	function show_admin_menu($title, $page, $e107_vars, $js = FALSE){
 		global $ns;
 		$text = "<div style='text-align:center; width:100%'><table class='fborder' style='width:98%;'>";
 		foreach (array_keys($e107_vars) as $act) {
@@ -89,7 +89,9 @@ if (!function_exists('show_admin_menu')) {
 			}
 			$t=str_replace(" ","&nbsp;",$e107_vars[$act]['text']);
 			if (!$e107_vars[$act]['perm'] || getperms($e107_vars[$act]['perm'])) {
-				$text .= "<tr><td class='button'><div style='width:100%; text-align:center'><a style='cursor:hand; cursor:pointer; text-decoration:none;' href='{$e107_vars[$act]['link']}'>{$pre}{$t}{$post}</a></div></td></tr>";
+				//$on_click = $js ? "href='' onclick=\"showhideit('".$act."');\"" : "href='{$e107_vars[$act]['link']}'";
+				$on_click = $js ? "href=\"javascript:showhideit('".$act."');\"" : "href='{$e107_vars[$act]['link']}'";
+				$text .= "<tr><td class='button'><div style='width:100%; text-align:center'><a style='cursor:hand; cursor:pointer; text-decoration:none;' ".$on_click.">{$pre}{$t}{$post}</a></div></td></tr>";
 			}
 		}
 		$text .= "</table></div>";
