@@ -3,8 +3,8 @@
 // [prerenders]
 
 $style = "leftmenu";
-$preleft = $tp -> parseTemplate('{ADMIN_HELP}');
-$preleft .= $tp -> parseTemplate('{ADMIN_PWORD}');
+$prehelp = $tp -> parseTemplate('{ADMIN_HELP}');
+$preleft = $tp -> parseTemplate('{ADMIN_PWORD}');
 $preleft .= $tp -> parseTemplate('{ADMIN_MSG}');
 $preleft .= $tp -> parseTemplate('{ADMIN_PLUGINS}');
 
@@ -105,13 +105,13 @@ if (!ADMIN) {
 	$style='default';	
 }
 
-if ($preleft!='') {
-	$ADMIN_HEADER .= $preleft;
+if ($prehelp!='') {
+	$ADMIN_HEADER .= $prehelp;
 } else {
 	$ADMIN_HEADER .= "{ADMIN_SITEINFO}";
 }
 
-$ADMIN_HEADER .= "<br />
+$ADMIN_HEADER .= $preleft."<br />
 </td></tr></table>
 </td>
 <td class='default_menu'>
