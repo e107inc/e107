@@ -169,7 +169,7 @@ $text .= " <tr>
 if($pref['subnews_attach']){
     $text .="
     <tr>
-    <td style='width:20%' class='forumheader3'>Image File<br /><span class='smalltext'>(jpg, gif or png)</span></td>
+    <td style='width:20%' class='forumheader3'>".SUBNEWSLAN_5."<br /><span class='smalltext'>".SUBNEWSLAN_6."</span></td>
     <td style='width:80%' class='forumheader3'>
     <input class='tbox' type='file' name='file_userfile[]' style='width:90%' />
     </td>
