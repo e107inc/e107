@@ -140,7 +140,8 @@ class e107plugin {
 					unset($curvals[$i]);
 				}
 			}
-			$newvals = explode(',', $curvals);
+			// $newvals = explode(',', $curvals);
+			$newvals = $curvals;
 		}
 		$newvals = array_unique($newvals);
 		if(count($newvals) < 2)
