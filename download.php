@@ -350,7 +350,7 @@ function parse_download_cat_child_table($row){
 		$sql2 = new db; $sql3 = new db; $sql4 = new db; $sql5 = new db;
 
 		$total_filesize=0; $total_downloadcount=0;
-		if($filecount = $sql3 -> db_Select("download", "*", "download_category='".$download_category_id."'")){
+		if($filecount = $sql3 -> db_Select("download", "*", "download_category='".$download_category_id."' AND download_active='1'")){
 			while($row = $sql3 -> db_Fetch()){
 			extract($row);
 				$total_filesize += $download_filesize;
