@@ -203,7 +203,7 @@ for ($c=0; $c<$firstdayarray['wday']; $c++) {
 $loop = $firstdayarray['wday'];
 for ($c=1; $c<=32; $c++) {
 
-        $dayarray = getdate($start+($c*84460));
+        $dayarray = getdate($start+($c*86400));
 
 
         $stopp = mktime(24,0,0,$calmonth,$c,$calyear);
