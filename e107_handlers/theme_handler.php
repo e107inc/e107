@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-03-15 12:09:29 $
+|     $Revision: 1.13 $
+|     $Date: 2005-03-17 09:01:47 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -323,26 +323,9 @@ class themeHandler{
 						$text .= "
 						<input type='radio' name='themecss' value='".$css['name']."' ".($pref['themecss'] == $css['name'] || (!$pref['themecss'] && $css['name'] == "style.css") ? " checked='checked'" : "")." /><b>".$css['name'].":</b><br />".($css['info'] ? $css['info'] : ($css['name'] == "style.css" ? TPVLAN_23 : TPVLAN_24))."<br />\n";
 					}
-					
 				}
-				if($mode == 1)
-				{
-					$text .= "
-					</td>
-					</tr>
-					<td style='vertical-align:top; width:50%;'><b>".TPVLAN_30."</b></td><td style='vertical-align:top width:50%;'>
-					<input type='radio' name='image_preload' value='1'".($pref['image_preload'] ? " checked='checked'" : "")." /> ".TPVLAN_28."&nbsp;&nbsp;
-					<input type='radio' name='image_preload' value='0'".(!$pref['image_preload'] ? " checked='checked'" : "")." /> ".TPVLAN_29."
-					</td>
-					</tr>
-					<tr>
-					<td colspan='2' class='center'>
-					<input class='button' type='submit' name='submit_style' value='".TPVLAN_35."' />\n";
-				}
-				$text .= "
-				</td>
-				</tr>
-				</table>";
+				$text .= "</td></tr></table>";
+				
 			}
 			else
 			{
@@ -351,8 +334,29 @@ class themeHandler{
 				{
 					$text .= "<b>".$css['name'].":</b> ".($css['info'] ? $css['info'] : ($css['name'] == "style.css" ? TPVLAN_23 : TPVLAN_24))."<br />";
 				}
-			}			
+			}
 		}
+			
+			if($mode == 1)
+			{
+				$text .= "<table cellspacing='3' style='width:97%'>
+
+				<tr>
+				<td style='vertical-align:top; width:50%;'><b>".TPVLAN_30."</b></td><td style='vertical-align:top width:50%;'>
+				<input type='radio' name='image_preload' value='1'".($pref['image_preload'] ? " checked='checked'" : "")." /> ".TPVLAN_28."&nbsp;&nbsp;
+				<input type='radio' name='image_preload' value='0'".(!$pref['image_preload'] ? " checked='checked'" : "")." /> ".TPVLAN_29."
+				</td>
+				</tr>
+				<tr>
+				<td colspan='2' class='center'>
+				<input class='button' type='submit' name='submit_style' value='".TPVLAN_35."' />
+				</td></tr></table>";
+			}
+			
+
+
+
+		
 
 		if($mode == 2)
 		{
