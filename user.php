@@ -120,18 +120,10 @@ function renderuser($row){
 	$caption = LAN_142." ".$user_id.": ".$user_name;
 	$text = "<table style='width:95%'><tr>";
 
-	if($user_image != ""){
-		if(ereg("avatar_", $user_image)){
-			$avatarlist[0] = "";
-			$handle=opendir("themes/shared/avatars/");
-			while ($file = readdir($handle)){
-				if($file != "." && $file != ".."){
-					$avatarlist[] = $file;
-				}
-			}
-			$user_image = "themes/shared/avatars/".$avatarlist[substr(strrchr($user_image, "_"), 1)];
+	if($user_image){
+		if(!eregi("http://", $user_image)){
+			$user_image = e_BASE."themes/shared/avatars/".$user_image;
 		}
-
 		$text .= "<td colspan='2'><div class='spacer'><img src='".$user_image."' alt='' /></div></td></tr><tr>";
 	}
 

@@ -189,7 +189,7 @@ while ($file = readdir($handle)){
 closedir($handle);
 
 for($c=1; $c<=(count($avatarlist)-1); $c++){
-	$text .= "<a href='javascript:addtext2(\"$avatarlist[$c]\")'><img src='themes/shared/avatars/".$avatarlist[$c]."' style='border:0' alt='' />n";
+	$text .= "<a href='javascript:addtext2(\"$avatarlist[$c]\")'><img src='themes/shared/avatars/".$avatarlist[$c]."' style='border:0' alt='' /> ";
 //	$text .= "<a href='javascript:addtext2('avatar_$c')'><img src='themes/shared/avatars/".$avatarlist[$c]."' style='border:0' alt='' />\n";
 }
 

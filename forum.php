@@ -263,7 +263,7 @@ $text .= "</td></tr><tr><td style='width:95%' class='forumheader3'>
 			$text .= "<tr>
 			<td style='text-align:center; vertical-align:middle; width:6%'  class='forumheader3'>".$icon."</td>
 			<td style='vertical-align:middle; text-align:left; width:80%'  class='forumheader3'><span class='mediumtext'>".$thread_name."</span></td>
-			<td stqle='vertical-align:middle; text-align:center; width:14%'  class='forumheader3'><span class='mediumtext'><a href='".e_SELF."?untrack.".$thread_id."'>".LAN_392."</a></td>
+			<td style='vertical-align:middle; text-align:center; width:14%'  class='forumheader3'><span class='mediumtext'><a href='".e_SELF."?untrack.".$thread_id."'>".LAN_392."</a></td>
 			</tr>";
 		}
 	}

@@ -390,7 +390,7 @@ $rss = "<?xml version=\"1.0\"?>
 		for($a=0; $a<=100; $a++){
 			$nb .= $tmp[$a]." ";
 		}
-  		$nb = htmlentities($nb); 
+  		$nb = htmlspecialchars($nb); 
 		$text .= $news_title."\n".SITEURL."/comment.php?".$news_id."\n\n";
 		$rss .= "<item>
 <title>".$news_title."</title>

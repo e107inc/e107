@@ -180,20 +180,10 @@ if(!$post_author_id){
 	$row = $sql -> db_Fetch(); extract($row);
 
 	$poster .= "<a href='user.php?id.".$post_author_id."'><b>".$post_author_name."</b></a>";
+
 	if($user_image){
-		if(ereg("avatar_", $user_image)){
-			$avatarlist[0] = "";
-			$handle=opendir(e_BASE."themes/shared/avatars/");
-			while ($file = readdir($handle)){
-				if($file != "." && $file != ".."){
-					$avatarlist[] = $file;
-				}
-			}
-			$user_image = e_HTTP."themes/shared/avatars/".$avatarlist[substr(strrchr($user_image, "_"), 1)];
-		}else{
-//			if(!$fp = @fopen($user_image,"r")){
-//				$user_image = e_BASE."themes/shared/generic/broken.png";
-//			}
+		 if(!eregi("http://", $user_image)){
+			$user_image = e_BASE."themes/shared/avatars/".$user_image;
 		}
 		$starter_info .= "<div class='spacer'><img src='".$user_image."' alt='' /></div>";
 	}
@@ -328,23 +318,12 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 
 			$poster_info = "<a href='user.php?id.".$post_author_id."'><b>".$post_author_name."</b></a>";
 			if($user_image){
-				if(ereg("avatar_", $user_image)){
-					$avatarlist[0] = "";
-					$handle=opendir(e_BASE."themes/shared/avatars/");
-					while ($file = readdir($handle)){
-						if($file != "." && $file != ".."){
-							$avatarlist[] = $file;
-						}
-					}
-					$user_image = e_HTTP."themes/shared/avatars/".$avatarlist[substr(strrchr($user_image, "_"), 1)];
-				}else{
-//					if(!$fp = @fopen($user_image,"r")){
-//						$user_image = e_BASE."themes/shared/generic/broken.png";
-//					}
-				}
+				 if(!eregi("http://", $user_image)){
+				$user_image = e_BASE."themes/shared/avatars/".$user_image;
+			}
 				$starter_info .= "<div class='spacer'><img src='".$user_image."' alt='' /></div>";
 			}
-		
+
 			$starter_info .= "<div class='smallblacktext'>";
 			if(preg_match("/(^|\s)".preg_quote($post_author_name)."/", $forum_moderators)){
 				$starter_info .= "<img src='".FTHEME."moderator.png' alt='' style='border:0' /><br /><br />";

@@ -38,18 +38,11 @@ class comment{
 		if($sql -> db_Select("user", "*", "user_name='$comment_author'")){
 			$row = $sql -> db_Fetch();
 			extract($row);
-			if($user_image != ""){
-				if(ereg("avatar_", $user_image)){
-					$avatarlist[0] = "";
-					$handle=opendir("themes/shared/avatars/");
-					while ($file = readdir($handle)){
-						if($file != "." && $file != ".."){
-							$avatarlist[] = $file;
-						}
-					}
-					closedir($handle);
-					$user_image = "themes/shared/avatars/".$avatarlist[substr(strrchr($user_image, "_"), 1)];
+			if($user_image){
+				if(!eregi("http://", $user_image)){
+					$user_image = e_BASE."themes/shared/avatars/".$user_image;
 				}
+				
 			}
 		}else{
 			$user_id = 0;
@@ -97,7 +90,7 @@ class comment{
 		$replace[1] = $datestamp;
 
 		$search[2] = "/\{AVATAR\}(.*?)/si";
-		$replace[2] = ($user_image ? "<img src='".$user_image."' alt='' />" : "");
+		$replace[2] = ($user_image ? "<div class='spacer'><img src='".$user_image."' alt='' /></div>" : "");
 		
 		$search[3] = "/\{COMMENTS\}(.*?)/si";
 		$replace[3] = ($user_id ? LAN_99.": ".$user_comments : LAN_194);

@@ -31,7 +31,7 @@ if($table == "news"){
 	}else{
 		$sql -> db_Select("news_category", "*", "category_id='$news_category' ");
 		list($category_id, $category_name) = $sql-> db_Fetch();
-		$sql -> db_Select("admin", "*", "admin_id='$news_author' ");
+		$sql -> db_Select("user", "*", "user_id='$news_author' ");
 		list($a_id, $a_name) = $sql-> db_Fetch();
 	}
 	$news_datestamp = $con -> convert_date($news_datestamp, "long");
@@ -65,7 +65,7 @@ if($table == "news"){
 	$row = $sql -> db_Fetch();
 	extract($row);
 	$content_content = str_replace("{EMAILPRINT}", "", nl2br($content_content));
-	$sql -> db_Select("admin", "*", "admin_id='$content_author' ");
+	$sql -> db_Select("user", "*", "user_id='$content_author' ");
 	list($a_id, $a_name) = $sql-> db_Fetch();
 	$content_datestamp = $con -> convert_date($content_datestamp, "long");
 	$text = "<font style='FONT-SIZE: 11px; COLOR: black; FONT-FAMILY: Tahoma, Verdana, Arial, Helvetica; TEXT-DECORATION: none'>
