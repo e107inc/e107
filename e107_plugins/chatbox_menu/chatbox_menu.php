@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-01-28 17:58:03 $
+|     $Revision: 1.16 $
+|     $Date: 2005-01-28 18:33:17 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -137,8 +137,8 @@ if(!$text = $e107cache->retrieve("chatbox"))
 			if($pref['cb_linkreplace'])
 			{
 				$cb_message = " ".$cb_message;
-				$cb_message = preg_replace("#([\t\r\n ])([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="\2://\3">'.$pref['cb_linkc'].'</a>', $cb_message);
-				$cb_message = preg_replace("#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="http://\2.\3">'.$pref['cb_linkc'].'</a>', $cb_message);
+				$cb_message = preg_replace("#([\t\r\n ])([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="\2://\3" rel="external">'.$pref['cb_linkc'].'</a>', $cb_message);
+				$cb_message = preg_replace("#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="http://\2.\3" rel="external">'.$pref['cb_linkc'].'</a>', $cb_message);
 				$cb_message = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $cb_message);
 			}
 
