@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2004-11-27 16:01:44 $
+|     $Revision: 1.10 $
+|     $Date: 2004-11-27 16:08:03 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -509,13 +509,13 @@ function setNewsCache($cacheString)
         global $pref, $aj, $e107cache;
                 $cache = ob_get_contents();
                 echo $cache;
-                $e107cache->set($cacheString, $cache);
+                set_cache($cacheString, $cache);
 }
 
 function checkNewsCache($cacheString, $np = FALSE, $nfp = FALSE)
 {
         global $pref, $aj, $e107cache;
-        if($cache_data = $e107cache->retrieve($cacheString))
+        if($cache_data = retrieve_cache($cacheString))
         {
                 echo $cache_data;
                 if($np)
