@@ -22,7 +22,7 @@
 <a href="#problems">Common Problems</a> | 
 <a href="#support">Support</a> | 
 <a href="#development">Development</a> | 
-<a href="#thankyou">Thankyous</a> | 
+<a href="#thankyou">Thank Yous</a> | 
 <a href="#disclaimer">Disclaimer</a><br /><br /><br />
 
 
@@ -100,13 +100,25 @@
 
 <a name='#upgrading'></a><span class="headertext">Upgrading</span><br /><br />
 
-You should back up your database before applying any updates, see the section below on how to do that.<br />
+You should back up your database before applying any updates, see the section below on how to do that.<br /><br/>
+If upgrading from one version previous (v.614 to v.615)<br />
 
 <ul>
 	<li>Download the update package and unzip it</li>
 	<li>Open your FTP client and navigate to your e107 installation</li>
 	<li>Upload the files in the update package, overwriting the originals</li>
-	<li>Go to your administration section on your website, if there are any changes to be made to the e107 database you'll see a message informing you - click the button to carry out the database changes, then delete the sql update file in your e107_admin/sql/db_update folder</li>
+	<li>Go to your administration section on your website, if there are any changes to be made to the e107 database you'll see a message informing you - click the button to carry out the database changes.</li>
+</ul>
+<br />
+If upgrading from a version less than one number previous (v.610 to v.615). Versions .615 and above now include all updates back to .600.<br/>
+You can use this method to upgrade any e107 install that is greater than v.600.<br />
+
+<ul>
+	<li>Download the full install package and unzip it</li>
+	<li>Open your FTP client and navigate to your e107 installation</li>
+	<li><strong>Delete the e107_config.php and install.php files before uploading.</strong>Upload the files in the update package, overwriting the originals.</li>
+	<li><strong>Once again when updating using this method, DO NOT upload e107config.php it will overwrite your configuration settings.</strong></li>
+	<li>Go to your administration section on your website, if there are any changes to be made to the e107 database you'll see a message informing you - click the button to carry out the database changes.</li>
 </ul>
 <br />
 
@@ -158,6 +170,8 @@ All these places are very friendly, please dont hesitate to use them even if you
 <ul>
 	<li><b>e107 forums</b></br >
 	<a href='http://e107.org/forum.php'>http://e107.org/forum.php</a></li>
+	<li><b>e107 faq</b></br >
+	<a href='http://e107faq.bkwon.net'>http://e107faq.bkwon.net</a></li>
 	<li><b>IRC channel</b><br />
 	#e107 on <a href='irc://freenode.net'>irc.freenode.net</a></li><br />
 	<li><b>Third party plugin support: e107coders</b><br />
@@ -170,13 +184,14 @@ All these places are very friendly, please dont hesitate to use them even if you
 
 <a name='#development'></a><span class="headertext">Development</span><br /><br />
 e107 has been tested under Apache versions 1 and 2, and under IIS webservers.<br />
-It is developed by Steve Dunstan (jalist) under Windows XP running Apache2, PHP 4.3.2 and mySQL 3.23.57.<br />
-( I develop e107 alone to retain the best overall view of the code, although if you have made changes to the core you think might benefit others please email them to me at <a href='mailto:jalist@e107.org'>jalist@e107.org</a> and I'll consider adding your changes. }<br /><br /><br />
+It is developed by the e107 dev team (McFly, Cameron, Lolo, Chavo and Vilhelm).<br />
+( If you have made changes to the core you think might benefit others please email them to us at <a href='mailto:chavo@2sdw.com'>chavo@2sdw.com</a> and we'll consider adding your changes. }<br /><br /><br />
 
 
-<a name='#thankyou'></a><span class="headertext">Thankyou</span><br /><br />
+<a name='#thankyou'></a><span class="headertext">Thank you</span><br /><br />
 <ul>
-	<li>Thanks mainly to McFly, Terrence, Cameron, Lolo, Damon, que, chavo, nalenb and Dawn for their unstinting support.</li>
+	<li>Thanks first to jalist for starting this whole thing out and sticking with it for so long. </li>
+	<li>Thanks mainly to Terrence, Damon, que, nalenb, Dawn, HeX0R, JuhaH, bkwon, Knight, Aldrin for their unstinting support.</li>
 	<li>Also to everyone else who has assisted and submitted translations/fixes etc</li>
 	<li>Thanks to CraHan, NeXTer, Kuhndog, wols, [steev], rootrider, Claymore, demigod, maaneeack, Schmots, dreamer, galois and the others in [#ls.g] for their friendship.</li>
 	<li>Thanks to Jérôme C. Meijers and Craig Bramscher</li>
