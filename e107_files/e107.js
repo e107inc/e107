@@ -29,11 +29,6 @@ function urljump(url){
 	top.window.location = url; 
 }
 
-function dblclick(){
-	window.scrollTo(0,0)
-}
-if (document.layers) {document.captureEvents(Event.ONDBLCLICK);}
-document.ondblclick=dblclick;
 function open_window(url,type) {
 	if('full' == type){
 		pwindow = window.open(url);

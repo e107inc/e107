@@ -99,9 +99,6 @@ if(IsSet($_POST['updateprefs'])){
 
         $pref['signcode'] = $_POST['signcode'];
         $pref['logcode'] = $_POST['logcode'];
-        $pref['no_rightclick'] = $_POST['no_rightclick'];
-
-
 
         $pref['htmlarea'] = $_POST['htmlarea'];
 
@@ -693,13 +690,6 @@ if($search_restrict == 1){
         $text .= "<input type='checkbox' name='search_restrict' value='1'>";
 }
 $text .= "</td>
-</tr>
-
-<tr>
-<td style='width:50%' class='forumheader3'>".PRFLAN_84.": </td>
-<td style='width:50%; text-align:right' class='forumheader3'>".
-($pref['no_rightclick'] ? "<input type='checkbox' name='no_rightclick' value='1'  checked>" : "<input type='checkbox' name='no_rightclick' value='1'>")."
-</td>
 </tr>
 
 </table></div>";
