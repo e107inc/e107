@@ -52,7 +52,7 @@ function tick(article1) {
   timeString = (document.all)? timeString+", "+hours+minutes+seconds+" "+ap:timeString+" "+hours+minutes+" "+ap;
   var clock = (document.all) ? document.all("Clock") : document.getElementById("Clock");
   clock.innerHTML = timeString;
-  (document.all)?window.setTimeout("tick("+article1+");", 1000):window.setTimeout("tick("+article1+");", 6000);
+  (document.all)?window.setTimeout("tick(article1);", 1000):window.setTimeout("tick(article1);", 6000);
 }
 
 ////tick();
