@@ -1,17 +1,27 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system                                    |
-|        /pm_inc.php                                            |
-|                                                               |
-|                                                               |
-|        Released under the terms and conditions of the         |
-|        GNU General Public License (http://gnu.org).           |
-+---------------------------------------------------------------+
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107/e107_plugins/pm_menu/pm_inc.php,v $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-05 10:15:19 $
+|     $Author: pholzmann $
++----------------------------------------------------------------------------+
 */
 define("e_PM",e_PLUGIN."pm_menu/");
 @include_once(e_PLUGIN."pm_menu/languages/".e_LANGUAGE.".php");
 @include_once(e_PLUGIN."pm_menu/languages/English.php");
+$pm_stat_store = array();
+$pm_stored_stat_user = -1;	// cache at least for this page!
+$pm_stored_stat_time = -1;
 
 function pm_show_icon($to_id,$pm_icon=""){
         global $pref;
@@ -30,6 +40,10 @@ function pm_show_icon($to_id,$pm_icon=""){
 }
 
 function pm_get_stats($user=USERNAME,$time=USERLV){
+	global $pm_stat_store,$pm_stored_stat_user,$pm_stored_stat_time;
+	if ($user == $pm_stored_stat_user && $time == $pm_stored_stat_time) {
+		return $pm_stat_store;
+	}
         $sql = new db;
         $ret['new']=$sql -> db_Count("pm_messages", "(*)", "WHERE pm_to_user = '{$user}' AND pm_sent_datestamp > {$time}  ");
         $ret['received'] = $sql -> db_Count("pm_messages", "(*)", "WHERE pm_to_user = '{$user}' ");
@@ -37,6 +51,9 @@ function pm_get_stats($user=USERNAME,$time=USERLV){
         $ret['sent_pm'] = $sql -> db_Count("pm_messages", "(*)", "WHERE pm_from_user = '{$user}' ");
         $ret['unread_send_pm'] = $sql -> db_Count("pm_messages", "(*)", "WHERE pm_from_user = '{$user}' AND pm_rcv_datestamp = 0");
         $ret['blocks'] = $sql -> db_Count("pm_blocks", "(*)", "WHERE block_to = '{$user}' ");
+        $pm_stat_store = $ret;
+        $pm_stored_stat_user = $user;
+        $pm_stored_stat_time = $time;
         return $ret;
 }
 
