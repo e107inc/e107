@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-10 09:49:03 $
-|     $Author: sweetas $
+|     $Revision: 1.7 $
+|     $Date: 2005-01-13 00:57:30 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -576,7 +576,7 @@ class download{
         }
 
         function submit_download($sub_action, $id){
-                global $aj, $sql, $DOWNLOADS_DIRECTORY;
+                global $aj, $sql, $DOWNLOADS_DIRECTORY, $e_event;
 
                 if($_POST['download_url_external'] && $_POST['download_url']==''){
                         $durl = $_POST['download_url_external'];
@@ -602,8 +602,12 @@ class download{
                         $sql -> db_Update("download", "download_name='".$_POST['download_name']."', download_url='".$durl."', download_author='".$_POST['download_author']."', download_author_email='".$_POST['download_author_email']."', download_author_website='".$_POST['download_author_website']."', download_description='".$_POST['download_description']."', download_filesize='".$filesize."', download_category='".$_POST['download_category']."', download_active='".$_POST['download_active']."', download_datestamp='".time()."', download_thumb='".$_POST['download_thumb']."', download_image='".$_POST['download_image']."', download_comment='".$_POST['download_comment']."' WHERE download_id=$id");
                         $this->show_message(DOWLAN_2);
                 }else{
+                        $time = time();
+                        if($download_id = $sql -> db_Insert("download", "0, '".$_POST['download_name']."', '".$durl."', '".$_POST['download_author']."', '".$_POST['download_author_email']."', '".$_POST['download_author_website']."', '".$_POST['download_description']."', '".$filesize."', '0', '".$_POST['download_category']."', '".$_POST['download_active']."', '".$time."', '".$_POST['download_thumb']."', '".$_POST['download_image']."', '".$_POST['download_comment']."' ")){
 
-                        if($sql -> db_Insert("download", "0, '".$_POST['download_name']."', '".$durl."', '".$_POST['download_author']."', '".$_POST['download_author_email']."', '".$_POST['download_author_website']."', '".$_POST['download_description']."', '".$filesize."', '0', '".$_POST['download_category']."', '".$_POST['download_active']."', '".time()."', '".$_POST['download_thumb']."', '".$_POST['download_image']."', '".$_POST['download_comment']."' ")){
+                        $dlinfo = array("download_id" => $download_id, "download_name" => $_POST['download_name'], "download_url" => $durl, "download_author" => $_POST['download_author'], "download_author_email" => $_POST['download_author_email'], "download_author_website" => $_POST['download_author_website'], "download_description" => $_POST['download_description'], "download_filesize" => $filesize, "download_category" => $_POST['download_category'], "download_active" => $_POST['download_active'], "download_datestamp" => $time,"download_thumb" => $_POST['download_thumb'],"download_image" => $_POST['download_image'], "download_comment" => $_POST['download_comment'] );
+                        $e_event -> trigger("dlpost", $dlinfo);
+
 
                             if($_POST['remove_upload']){
                             $sql -> db_Delete("upload", "upload_id='".$_POST['remove_id']."' ");
