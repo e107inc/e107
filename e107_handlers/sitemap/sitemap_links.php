@@ -23,7 +23,7 @@ function sm_links() {
 				extract($row);
 				$row[1] = $aj->tpa($row[1]);
 				$row[2] = $aj->tpa($row[2]);
-				$texto .= "<a href=\"javascript:void(0);\" onfocus=\"this.blur;\" onclick=\"expandit('link_subcats_".$row[0]."');ejs_func_todo='view'\" class='smalltext' >".SM_ICO_EXP."</a> ".($row[3] != "" ? "<img src='".e_IMAGE."link_icons/".$row[3]."' alt='bullet' /> " : "")."<a  href='links.php?cat.".$row[0]."' >".$row[1]."</a>\n";
+				$texto .= "<a href=\"javascript:void(0);\" onfocus=\"this.blur;\" onclick=\"expandit('link_subcats_".$row[0]."');ejs_func_todo='view'\" class='smalltext' >".SM_ICO_EXP."</a> ".($row[3] != "" ? "<img src='".e_IMAGE."icons/".$row[3]."' alt='bullet' /> " : "")."<a  href='links.php?cat.".$row[0]."' >".$row[1]."</a>\n";
 				$nbr_link_cat++;
 				if ($sql2->db_Select("links", "link_id, link_name, link_url, link_class", "link_category='".$row[0]."' ORDER BY link_name DESC")) {
 					$texto .= "<br /><br /><div class='subcats' id='link_subcats_".$row[0]."' style='display:none;' ><div style='margin: 0px 0px 0px 30px;' >\n

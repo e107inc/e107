@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-02-11 06:59:45 $
-|     $Author: e107coders $
+|     $Revision: 1.27 $
+|     $Date: 2005-02-11 22:26:59 $
+|     $Author: stevedunstan $
 +---------------------------------------------------------------+
 */
 
@@ -129,7 +129,7 @@ class sitelinks {
 		}else{
 			$_link = $linkInfo['link_button'] ? preg_replace('/\<img.*\>/si', '', LINKSTART) :  LINKSTART;
 		}
-		$_link .= $linkInfo['link_button'] ? "<img src='".e_IMAGE."link_icons/".$linkInfo['link_button']."' alt='' style='vertical-align:middle' />" : "";
+		$_link .= $linkInfo['link_button'] ? "<img src='".e_IMAGE."icons/".$linkInfo['link_button']."' alt='' style='vertical-align:middle' />" : "";
 		$_link .= ($submenu == TRUE && LINKDISPLAY != 3) ? "&nbsp;&nbsp;" : "";
 
 		if ($linkInfo['link_url']) {
