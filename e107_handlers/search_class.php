@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search_class.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-02-12 10:06:44 $
+|     $Revision: 1.11 $
+|     $Date: 2005-02-12 11:43:17 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -20,7 +20,6 @@
 class e_search {
 	
 	var $query;
-	var $keywords;
 	var $text;
 	var $pos;
 	
@@ -32,65 +31,60 @@ class e_search {
 		}
 	}
 	
-	function search_query($table, $return_fields, $search_fields, $weights, $where, $order) {
-		global $sql, $query;
+	function parsesearch($table, $return_fields, $search_fields, $weights, $handler, $no_results, $where, $order) {
+		global $sql, $query, $tp;
 		$this -> query = $query;	
-		$this -> keywords = explode(' ', $this -> query);
-		/*
-				$limit = explode('.', e_QUERY);
-		if ($limit[0]) {
-			$limit_res = "LIMIT ".$limit[0].", 10";
-		}
-		
-		
-		.$limit_res
-		*/	
+		$keywords = explode(' ', $this -> query);
 		foreach ($search_fields as $field_key => $field) {
 			$search_query[] = "(".$weights[$field_key]." * (MATCH(".$field.") AGAINST ('".$this -> query."' IN BOOLEAN MODE)))";
 		}
 		$match_query = implode(' + ', $search_query);
 		$field_query = implode(',', $search_fields);		
-		return $results = $sql->db_Select_gen("SELECT ".$return_fields.", (".$match_query.") AS relevance FROM #".$table." WHERE ".$where." ( MATCH(".$field_query.") AGAINST ('".$this -> query."' IN BOOLEAN MODE) ) HAVING relevance > 0 ORDER BY relevance DESC ".$order.";");
+		if ($ps['results'] = $sql->db_Select_gen("SELECT ".$return_fields.", (".$match_query.") AS relevance FROM #".$table." WHERE ".$where." ( MATCH(".$field_query.") AGAINST ('".$this -> query."' IN BOOLEAN MODE) ) HAVING relevance > 0 ORDER BY relevance DESC ".$order.";")) {
+			while ($row = $sql->db_Fetch()) {
+				$res = call_user_func($handler, $row);
+				$matches = array($res['title'], $res['summary']);
+				$endcrop = FALSE;
+				$output = '';
+				$title = TRUE;
+				foreach ($matches as $this -> text) {
+					$this -> text = strip_tags($tp -> toHTML(str_replace(array('[', ']'), array('<', '>'), $this -> text), FALSE));
+					foreach ($keywords as $this -> query) {
+						if (strpos($this -> query, '-') == FALSE) {
+							if (strpos($this -> query, '*') !== FALSE) {
+								$regex_append = "";
+								$this -> query = str_replace('*', '', $this -> query);
+							} else {
+								$regex_append = "[[:>:]]";	
+							}
+							$this -> query = str_replace(array('"', '+'), array('', ''), $this -> query);
+							if (($match_start = stristr($this -> text, $this -> query)) !== FALSE) {
+								$this -> pos = strlen($this -> text) - strlen($match_start);
+								if (!$endcrop || !$title) {
+									$this -> parsesearch_crop();
+									$endcrop = TRUE;
+								}
+								$key = substr($this -> text, $this -> pos, strlen($this -> query));
+								$this -> text = eregi_replace("[[:<:]]".$this -> query.$regex_append, "<span class='searchhighlight'>".$key."</span>", $this -> text);
+							}
+						}
+					}
+					if ($title) {
+						$this -> text = "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <b><a href='".$res['link']."'>".$this -> text."</a></b><br />";
+					} else if (!$endcrop) {
+						$this -> parsesearch_crop();
+					}
+					$output .= $this -> text;
+					$title = FALSE;
+				}
+				$ps['text'] .= $output."<br /><span class='smalltext'>".$res['detail']." | Relevance: ".$row['relevance']."</span><br /><br />";
+			}
+		} else {
+			$ps['text'] = $no_results;
+		}
+		return $ps;
 	}
 	
-	function parsesearch($results, $link, $item_text, $relevance) {
-		global $tp;
-		$endcrop = FALSE;
-		$output = '';
-		$title = TRUE;
-		foreach ($results as $this -> text) {
-			$this -> text = strip_tags($tp -> toHTML(str_replace(array('[', ']'), array('<', '>'), $this -> text), FALSE));
-			foreach ($this -> keywords as $this -> query) {
-				if (strpos($this -> query, '-') == FALSE) {
-					if (strpos($this -> query, '*') !== FALSE) {
-						$regex_append = "";
-						$this -> query = str_replace('*', '', $this -> query);
-					} else {
-						$regex_append = "[[:>:]]";	
-					}
-					$this -> query = str_replace(array('"', '+'), array('', ''), $this -> query);
-					if (($match_start = stristr($this -> text, $this -> query)) !== FALSE) {
-						$this -> pos = strlen($this -> text) - strlen($match_start);
-						if (!$endcrop || !$title) {
-							$this -> parsesearch_crop();
-							$endcrop = TRUE;
-						}
-						$key = substr($this -> text, $this -> pos, strlen($this -> query));
-						$this -> text = eregi_replace("[[:<:]]".$this -> query.$regex_append, "<span class='searchhighlight'>".$key."</span>", $this -> text);
-					}
-				}
-			}
-			if ($title) {
-				$this -> text = "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <b><a href='".$link."'>".$this -> text."</a></b><br />";
-			} else if (!$endcrop) {
-				$this -> parsesearch_crop();
-			}
-			$output .= $this -> text;
-			$title = FALSE;
-		}
-		return $output."<br /><span class='smalltext'>".$item_text." | Relevance: ".$relevance."</span><br /><br />";
-	}
-
 	function parsesearch_crop() {
 		global $pref;
 		if (strlen($this -> text) > $pref['search_chars']) {
