@@ -51,4 +51,8 @@ define("LAN_422", "Go");
 define("LAN_423", "Click here to View User Comments");
 define("LAN_424", "Click here to View Forum Posts");
 
+
+define("LAN_425", "Send Private Message");
+
+
 ?>
