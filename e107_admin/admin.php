@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-03-09 10:39:58 $
-|     $Author: sweetas $
+|     $Revision: 1.19 $
+|     $Date: 2005-03-27 17:09:20 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -43,38 +43,41 @@ if ($pref['adminstyle'] == 'admin_classis') {
 	$pref['adminstyle'] = 'classis';
 	$update_prefs = true;
 }
-	
+
 // temporary code to switch users using admin_jayya to jayya
-	
+
 if ($pref['admintheme'] == 'admin_jayya') {
 	$pref['admintheme'] = 'jayya';
 	$update_prefs = true;
 }
-	
+
 if ($pref['sitetheme'] == 'admin_jayya') {
 	$pref['sitetheme'] = 'jayya';
 	$update_prefs = true;
 }
-	
+
 // ---------------------------------------------------------
-	
-	
+
+
 if ($update_prefs == true) {
 	save_prefs();
 }
-	
+
 // auto db update
 if ('0' == ADMINPERMS) {
 	require_once(e_ADMIN.'update_routines.php');
 	update_check();
 }
 // end auto db update
-	
+
 if (e_QUERY == 'purge') {
 	$sql->db_Delete("tmp", "tmp_ip='adminlog'");
 }
-	
+
 $td = 1;
+if(!defined("ADLINK_COLS")){
+	define("ADLINK_COLS",5);
+}
 function render_links($link, $title, $description, $perms, $icon = FALSE, $mode = FALSE) {
 	global $td;
 	$text = '';
@@ -85,7 +88,7 @@ function render_links($link, $title, $description, $perms, $icon = FALSE, $mode 
 				onmouseover=\"eover(this, 'forumheader5')\" onmouseout=\"eover(this, 'td')\" onclick=\"document.location.href='".$link."'\">
 				".$icon." <b>".$title."</b> ".($description ? "[ <span class='smalltext'>".$description."</span> ]" : "")."</div></td></tr>";
 		} else {
-			if ($td == 6) {
+			if ($td == (ADLINK_COLS+1)) {
 				$text .= '</tr>';
 				$td = 1;
 			}
@@ -99,16 +102,20 @@ function render_links($link, $title, $description, $perms, $icon = FALSE, $mode 
 			else if ($mode == 'classis') {
 				$text .= "<td style='text-align:center; vertical-align:top; width:20%'><a href='".$link."'>".$icon."</a><br />
 					<a href='".$link."'><b>".$title."</b></a><br />".$description."<br /><br /></td>";
+			}elseif ($mode == 'beginner'){
+                $text .= "<td style='text-align:center; vertical-align:top; width:20%' ><a href='".$link."' >".$icon."</a>
+					<div style='padding:5px'>
+					<a href='".$link."' title='".$description."' style='text-decoration:none'><b>".$title."</b></a></div><br /><br /><br /></td>";
 			}
 			$td++;
 		}
 	}
 	return $text;
 }
-	
+
 function render_clean() {
 	global $td;
-	while ($td <= 5) {
+	while ($td <= ADLINK_COLS) {
 		$text .= "<td class='td' style='width:20%;'></td>";
 		$td++;
 	}
@@ -116,11 +123,11 @@ function render_clean() {
 	$td = 1;
 	return $text;
 }
-	
+
 $newarray = asortbyindex($array_functions, 1);
-	
+
 require_once(e_ADMIN.'includes/'.$pref['adminstyle'].'.php');
-	
+
 function admin_info() {
 	global $tp;
 	$text = "<div style='text-align:center'>
@@ -129,23 +136,23 @@ function admin_info() {
 		<td style='width: 33%; vertical-align: top'>";
 
 	$text .= $tp->parseTemplate('{ADMIN_STATUS}');
-	 
+
 	$text .= "</td>
 		<td style='width: 33%; vertical-align: top'>";
-	 
+
 	$text .= $tp->parseTemplate('{ADMIN_LATEST}');
-	 
+
 	$text .= "</td>
 		<td style='width: 33%; vertical-align: top'>";
-	 
+
 	$text .= $tp->parseTemplate('{ADMIN_LOG}');
-	 
+
 	$text .= "</td>
 		</tr></table>";
 
 	return $text;
 }
-	
+
 function status_request() {
 	global $pref;
 	if ($pref['adminstyle'] == 'classis' || $pref['adminstyle'] == 'cascade') {
@@ -154,7 +161,7 @@ function status_request() {
 		return FALSE;
 	}
 }
-	
+
 function latest_request() {
 	global $pref;
 	if ($pref['adminstyle'] == 'classis' || $pref['adminstyle'] == 'cascade') {
@@ -163,7 +170,7 @@ function latest_request() {
 		return FALSE;
 	}
 }
-	
+
 function log_request() {
 	global $pref;
 	if ($pref['adminstyle'] == 'classis' || $pref['adminstyle'] == 'cascade') {
@@ -172,7 +179,7 @@ function log_request() {
 		return FALSE;
 	}
 }
-	
+
 require_once("footer.php");
-	
+
 ?>
