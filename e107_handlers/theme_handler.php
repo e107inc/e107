@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-02-24 17:42:33 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2005-03-04 11:31:04 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -153,7 +153,7 @@ class themeHandler{
 	}
 
 	function showThemes() {
-		global $ns;
+		global $ns, $pref;
 		if(!is_writable(e_THEME)) {
 			$ns->tablerender(TPVLAN_16, TPVLAN_15);
 			$text = "";
@@ -197,7 +197,8 @@ class themeHandler{
 			<tr><td style='vertical-align:top'><b>".TPVLAN_6."</b>:</td><td style='vertical-align:top'>".$theme['date']."</td></tr>
 			<tr><td style='vertical-align:top'><b>".TPVLAN_7."</b>:</td><td style='vertical-align:top'>".$theme['info']."</td></tr>
 			<tr><td style='vertical-align:top'><b>".TPVLAN_8."</b>:</td><td style='vertical-align:top'>
-			[ <a href='".e_SELF."?preview.".$theme['id']."'>".TPVLAN_9."</a> ] [ <a href='".e_SELF."?set.".$theme['id']."'>".TPVLAN_10."</a> ]
+			[ <a href='".e_SELF."?preview.".$theme['id']."'>".TPVLAN_9."</a> ] [ <a href='".e_SELF."?set.".$theme['id']."'>".TPVLAN_10."</a> ]\n".
+			($theme['name'] == $pref['sitetheme'] ? "<br /><br />".TPVLAN_21 : "")."
 			</td></tr>
 			</table>
 			</td>
