@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-03-03 22:55:25 $
+|     $Revision: 1.17 $
+|     $Date: 2005-03-20 10:33:26 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -358,14 +358,11 @@ $USERBOX = (ANON == TRUE && USER == FALSE ? $userbox : "");
 $SUBJECTBOX = ($action == "nt" ? $subjectbox : "");
 $POSTTYPE = ($action == "nt" ? LAN_63 : LAN_73);
 $POSTBOX = "<textarea class='tbox' name='post' cols='70' rows='10' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$post</textarea>\n<br />\n";
-if(!check_class($pref['wysiwyg'])){
+if(!$pref['wysiwyg'] || !check_class($pref['wysiwyg'])){
 	$POSTBOX .= ren_help(2);
 	require_once(e_HANDLER."emote.php");
 	$EMOTES = r_emote();
 }
-
-
-
 
 $emailnotify = "";
 if ($pref['email_notify'] && $action == "nt")

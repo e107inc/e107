@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_viewforum_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-08 16:51:01 $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-20 10:33:58 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ $FORUM_VIEW_START = "
 	<td  colspan='2' class='fcaption'>{BREADCRUMB}</td>
 	</tr>
 	<tr>
-	<td style='width:80%; vertical-align:middle'>&nbsp;<span class='mediumtext'>{FORUMTITLE}</span><br />{THREADPAGES}</td>
+	<td style='width:80%; vertical-align:middle; text-align: left;'>&nbsp;<span class='mediumtext'>{FORUMTITLE}</span><br />{THREADPAGES}</td>
 	<td style='width:20%; text-align:right'>
 	{NEWTHREADBUTTON}
 	</td></tr><tr>
