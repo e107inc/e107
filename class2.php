@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.81 $
-|     $Date: 2005-02-17 05:07:48 $
-|     $Author: e107coders $
+|     $Revision: 1.82 $
+|     $Date: 2005-02-20 13:05:29 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -570,9 +570,8 @@ if ($sql->db_Select('menus', '*', "menu_location > 0 AND menu_class IN (".USERCL
 }
 
 $sql->db_Mark_Time('(Start: Find/Load Theme)');
-//
-//
-if ((strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin")) && $pref['admintheme'] && !$_POST['sitetheme']) {
+
+if ((strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin")) && $pref['admintheme']) {
 	if (strstr(e_SELF, "menus.php")) {
 		checkvalidtheme($pref['sitetheme']);
 	} else if (strstr(e_SELF, "newspost.php")) {
@@ -590,14 +589,25 @@ if ((strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin")) && $pref['admi
 	}
 }
 
-if (strstr(e_SELF, $ADMIN_DIRECTORY)) {
-	if (file_exists(THEME.'admin_theme.php')) {
-		require_once(THEME.'admin_theme.php');
+if(strstr(e_QUERY, "themepreview") && ADMIN) {
+	list($action, $id) = explode('.', e_QUERY);
+	require_once(e_HANDLER."theme_handler.php");
+	$themeArray = themeHandler :: getThemes("id");
+
+	define("PREVIEWTHEME", e_THEME.$themeArray[$id]."/");
+	define("PREVIEWTHEMENAME", $themeArray[$id]);
+	require_once(PREVIEWTHEME.'theme.php');
+} else {
+
+	if (strstr(e_SELF, $ADMIN_DIRECTORY)) {
+		if (file_exists(THEME.'admin_theme.php')) {
+			require_once(THEME.'admin_theme.php');
+		} else {
+			require_once(THEME."theme.php");
+		}
 	} else {
 		require_once(THEME."theme.php");
 	}
-} else {
-	require_once(THEME."theme.php");
 }
 
 if ($pref['anon_post'] ? define("ANON", TRUE) : define("ANON", FALSE));
