@@ -130,7 +130,7 @@ if($class_total == "0"){
         $text .= "<span class='defaulttext'>".UCSLAN_8.":</span>
         <select name='existing' class='tbox'>";
         while(list($userclass_id_, $userclass_name_) = $sql-> db_Fetch()){
-        // Allow sub-admins to only modify their own userclass. 
+        // Allow sub-admins to only modify their own userclass.
                 if(check_class($userclass_id_) || getperms("0")){
                 $text .= "<option value='$userclass_id_'>".$userclass_name_."</option>";
                 }
@@ -196,7 +196,7 @@ If(IsSet($_POST['edit'])){
         <tr>
         <td style='width:45%; vertical-align:top'>
         ".UCSLAN_22."<br />
-        <select class='tbox' name='assignclass1' size='10' style='width:150px' multiple='multiple' onchange='moveOver();'>";
+        <select class='tbox' id='assignclass1' name='assignclass1' size='10' style='width:150px' multiple='multiple' onchange='moveOver();'>";
 
         for($a=0; $a<=($d-1); $a++){
                 $text .= "<option value=".$out_userid[$a].">".$out_username[$a]."</option>";
@@ -206,7 +206,7 @@ If(IsSet($_POST['edit'])){
         </td>
         <td style='width:45%; vertical-align:top'>
         ".UCSLAN_23."<br />
-        <select class='tbox' name='assignclass2' size='10' style='width:150px' multiple='multiple'>";
+        <select class='tbox' id='assignclass2' name='assignclass2' size='10' style='width:150px' multiple='multiple'>";
         for($a=0; $a<=($c-1); $a++){
                 $text .= "<option value=".$in_userid[$a].">".$in_username[$a]."</option>";
         }
@@ -232,22 +232,22 @@ $text .= "</form>
 $ns -> tablerender("<div style='text-align:center'>".UCSLAN_21."</div>", $text);
 
 require_once("footer.php");
-?>
+function headerjs(){
 
-<script type="text/javascript">
+$script_js= "<script type=\"text/javascript\">
 <!--
 <!-- Adapted from original:  Kathi O'Shea (Kathi.O'Shea@internet.com) -->
 function moveOver()
 {
-var boxLength = document.classForm.assignclass2.length;
-var selectedItem = document.classForm.assignclass1.selectedIndex;
-var selectedText = document.classForm.assignclass1.options[selectedItem].text;
-var selectedValue = document.classForm.assignclass1.options[selectedItem].value;
+var boxLength = document.getElementById('assignclass2').length;
+var selectedItem = document.getElementById('assignclass1').selectedIndex;
+var selectedText = document.getElementById('assignclass1').options[selectedItem].text;
+var selectedValue = document.getElementById('assignclass1').options[selectedItem].value;
 var i;
 var isNew = true;
 if (boxLength != 0) {
 for (i = 0; i < boxLength; i++) {
-thisitem = document.classForm.assignclass2.options[i].text;
+thisitem = document.getElementById('assignclass2').options[i].text;
 if (thisitem == selectedText) {
 isNew = false;
 break;
@@ -256,56 +256,63 @@ break;
 }
 if (isNew) {
 newoption = new Option(selectedText, selectedValue, false, false);
-document.classForm.assignclass2.options[boxLength] = newoption;
+document.getElementById('assignclass2').options[boxLength] = newoption;
 }
-document.classForm.assignclass1.selectedIndex=-1;
+document.getElementById('assignclass1').selectedIndex=-1;
 }
 function removeMe() {
-var boxLength = document.classForm.assignclass2.length;
+var boxLength = document.getElementById('assignclass2').length;
 arrSelected = new Array();
 var count = 0;
 for (i = 0; i < boxLength; i++) {
-if (document.classForm.assignclass2.options[i].selected) {
-arrSelected[count] = document.classForm.assignclass2.options[i].value;
+if (document.getElementById('assignclass2').options[i].selected) {
+arrSelected[count] = document.getElementById('assignclass2').options[i].value;
 }
 count++;
 }
 var x;
 for (i = 0; i < boxLength; i++) {
 for (x = 0; x < arrSelected.length; x++) {
-if (document.classForm.assignclass2.options[i].value == arrSelected[x]) {
-document.classForm.assignclass2.options[i] = null;
+if (document.getElementById('assignclass2').options[i].value == arrSelected[x]) {
+document.getElementById('assignclass2').options[i] = null;
    }
 }
-boxLength = document.classForm.assignclass2.length;
+boxLength = document.getElementById('assignclass2').length;
    }
 }
 
 function clearMe(clid){
-        location.href = document.location + "?clear." + clid;
+        location.href = document.location + \"?clear.\" + clid;
 }
 
 function saveMe(clid) {
-var strValues = "";
-var boxLength = document.classForm.assignclass2.length;
+var strValues = \"\";
+var boxLength = document.getElementById('assignclass2').length;
 var count = 0;
 if (boxLength != 0) {
 for (i = 0; i < boxLength; i++) {
 if (count == 0) {
-strValues = document.classForm.assignclass2.options[i].value;
+strValues = document.getElementById('assignclass2').options[i].value;
 }
 else {
-strValues = strValues + "." + document.classForm.assignclass2.options[i].value;
+strValues = strValues + \".\" + document.getElementById('assignclass2').options[i].value;
 }
 count++;
    }
 }
 if (strValues.length == 0) {
-//alert("You have not made any selections");
+//alert(\"You have not made any selections\");
 }
 else {
-location.href = document.location + "?" + clid + "-" + strValues;
+location.href = document.location + \"?\" + clid + \"-\" + strValues;
    }
 }
 // -->
-</script>
+</script>\n";
+ return $script_js;
+}
+
+
+
+?>
+
