@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-02-28 20:35:05 $
-|     $Author: stevedunstan $
+|     $Revision: 1.35 $
+|     $Date: 2005-03-04 01:13:09 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -99,11 +99,10 @@ class e_parse {
 
 	function textclean ($text, $wrap=100)
 	{
-		$text = trim ($text);
 		$text = str_replace ("\n\n\n", "\n\n", $text);
-		$text = ereg_replace("([^\s\<\>]{".$wrap."})","\\1\n", $text);
-		$text = str_replace (array ('<br /> ', ' <br />', ' <br /> '), '<br>', $text);
-		return trim ($text); 
+		$text = preg_replace("#([^\s\<\>]{".$wrap."})#","\\1\n", $text);
+		$text = str_replace (array ('<br /> ', ' <br />', ' <br /> '), '<br />', $text);
+		return $text; 
 	}
 	 
 	function toHTML($text, $parseBB = FALSE, $modifiers = "", $postID = "", $wrap=100) {
@@ -125,6 +124,10 @@ class e_parse {
 			}
 		}
 
+		if(!strstr($modifiers, 'nobreak')) {
+			$text = $this -> textclean($text, $wrap);
+		}
+
 		if (strpos($modifiers,'emotes_off') === FALSE) {
 			if ($pref['smiley_activate'] || strpos($modifiers,'emotes_on') !== FALSE) {
 				if (!is_object($this->e_emote)) {
@@ -133,10 +136,6 @@ class e_parse {
 				}
 				$text = $this->e_emote->filterEmotes($text);
 			}
-		}
-
-		if(!strstr($modifiers, 'nobreak')) {
-			$text = $this -> textclean($text, $wrap);
 		}
 
 		$search = array('&#39;', '&#039;', '&#036;', '&quot;', 'onerror', '&gt;', '&amp;#039;', '&amp;quot;');
