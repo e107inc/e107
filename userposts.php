@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/userposts.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-03-20 19:47:53 $
+|     $Revision: 1.10 $
+|     $Date: 2005-03-20 19:55:33 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -330,7 +330,7 @@ function parse_userposts_forum_table($row) {
 	 
 	$thread_thread = $tp->toHTML($thread_thread);
 	 
-	$USERPOSTS_FORUM_ICON = "<img src='".e_IMAGE."forum/new_small.png' alt='' />";
+	$USERPOSTS_FORUM_ICON = "<img src='".e_PLUGIN."forum/images/new_small.png' alt='' />";
 	$USERPOSTS_FORUM_TOPIC_HREF_PRE = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?".$tmp."'>";
 	$USERPOSTS_FORUM_TOPIC = $thread_name;
 	$USERPOSTS_FORUM_NAME_HREF_PRE = "<a href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_id."'>";
