@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-12-01 14:41:15 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-09 02:10:00 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -127,6 +127,11 @@ if($action == "list"){
         define("e_PAGETITLE", PAGE_NAME." / ".$download_category_name);
 
         require_once(HEADERF);
+        if(!check_class($download_category_class)){
+            $ns -> tablerender(LAN_dl_18, "<div style='text-align:center'>".LAN_dl_3."</div>");
+            require_once(FOOTERF);
+            exit;
+        }
 
                 if(!$DOWNLOAD_LIST_TABLE){
                   if(file_exists(THEME."download_template.php")){
@@ -196,6 +201,11 @@ if($action == "view"){
         define("e_PAGETITLE", PAGE_NAME." / ".$download_category_name." / ".$download_name);
 
         require_once(HEADERF);
+        if(!check_class($download_category_class)){
+            $ns -> tablerender(LAN_dl_18, "<div style='text-align:center'>".LAN_dl_3."</div>");
+            require_once(FOOTERF);
+            exit;
+        }
 
                 $DOWNLOAD_VIEW_NAME = $download_name;
                 $DOWNLOAD_VIEW_AUTHOR_LAN = LAN_dl_24;
