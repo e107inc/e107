@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-01-28 04:11:20 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.8 $
+|     $Date: 2005-01-28 13:35:37 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 	
@@ -61,6 +61,7 @@ require_once(HEADERF);
 	
 if (isset($_POST['updatesettings'])) {
 	 
+	$_POST['image'] = str_replace(array('\'', '"', '(', ')'), '', $_POST['image']); // these are invalid anyways, so why allow them? (XSS Fix)
 	// check prefs for required fields =================================.
 	$signupval = explode(".", $pref['signup_options']);
 	$signup_title = array(LAN_308, LAN_144, LAN_115, LAN_116, LAN_117, LAN_118, LAN_119, LAN_120, LAN_121, LAN_122);
