@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/class2.php,v $
-|     $Revision: 1.98 $
-|     $Date: 2004-10-18 11:24:43 $
-|     $Author: loloirie $
+|     $Revision: 1.99 $
+|     $Date: 2004-10-29 14:51:03 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -1082,7 +1082,7 @@ function init_session()
 			$result = $sql -> db_Fetch(); extract($result);
 			define("USERID", $user_id);
 			define("USERNAME", $user_name);
-			define("USERURL", $user_website);
+			define("USERURL", $user_homepage);
 			define("USEREMAIL", $user_email);
 			define("USER", TRUE);
 			define("USERCLASS", $user_class);
