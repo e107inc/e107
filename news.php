@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2005-02-15 00:41:08 $
+|     $Revision: 1.43 $
+|     $Date: 2005-02-15 06:48:16 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -26,14 +26,10 @@ if (isset($NEWSHEADER)) {
 }
 $cacheString = 'news.php_'.e_QUERY;
 $action = '';
-if (!defined("ITEMVIEW"))
-{
-	if (empty($pref['newsposts']))
-	{
+if (!defined("ITEMVIEW")){
+	if ($pref['newsposts']==""){
 		define("ITEMVIEW", 15);
-	}
-	else
-	{
+	} else {
 		define("ITEMVIEW", $pref['newsposts']);
 	}
 }
@@ -58,86 +54,74 @@ if (isset($tmp[1]) && $tmp[1] == 'list') {
 }
 
 $ix = new news;
-if ($action == 'cat') {
+if ($action == 'cat' || $action == 'all') {
 	checkNewsCache($cacheString);
 	ob_start();
 	$qs = explode(".", e_QUERY);
-	$category = $qs[1];
-	if ($category != 0) {
-		$gen = new convert;
 
+	$category = $qs[1];
+	if ($action == 'cat' && $category != 0) {
+		$gen = new convert;
 		$sql->db_Select("news_category", "*", "category_id='$category'");
 		$row = $sql->db_Fetch();
-		extract($row);  // still requires for the table-render. 
-
-		if(!$NEWSLISTSTYLE){
-		  	$NEWSLISTSTYLE = "
-			<div style='padding:3px;width:100%'>
-			<table style='border-bottom:1px solid black;width:100%' cellpadding='0' cellspacing='0'>
-			<tr>
-			<td style='vertical-align:top;padding:3px;width:20px'>
-			{NEWSCATICON}
-			</td><td style='text-align:left;padding:3px'>
-			{NEWSTITLELINK}
-			<br />
-			{NEWSSUMMARY}
-			<span class='smalltext'>
-			{NEWSDATE}
-			{NEWSCOMMENTS}
-			</span>
-			</td><td style='width:55px'>
-			{NEWSTHUMBNAIL}
-			</td></tr></table>
-			</div>\n";
-
-		}
-		$param['itemlink'] = (defined("NEWSLIST_ITEMLINK")) ? NEWSLIST_ITEMLINK : "";
-		$param['thumbnail'] =(defined("NEWSLIST_THUMB")) ? NEWSLIST_THUMB : "border:0px";
-		$param['catlink']  = (defined("NEWSLIST_CATLINK")) ? NEWSLIST_CATLINK : "";
-		$param['caticon'] =  (defined("NEWSLIST_CATICON")) ? NEWSLIST_CATICON : ICONSTYLE;
-		$from =0;
-
+		extract($row);  // still required for the table-render.  :(
+	}
+	if($action == 'all'){
+		if(!defined("ALLITEMS")){ define("ALLITEMS",10); }
+		// show archive of all news items using list-style template.
+		$news_total = $sql->db_Count("news", "(*)", "WHERE news_class IN (".USERCLASS_LIST.")");
 		$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_category={$category} ORDER BY n.news_datestamp DESC LIMIT $from,10";
-
-		$count = $sql->db_Select_gen($query);
-		while ($row = $sql->db_Fetch()) {
-
-		$text .= $ix->parse_newstemplate($row,$NEWSLISTSTYLE,$param);
-	/*
-
-		McFly - do we still need all this stuff ?
-
-
-			if (check_class($news_class)) {
-				$news_title = $tp->toHTML($news_title);
-				if ($news_title == "") {
-					$news_title = "Untitled";
-				}
-				$datestamp = $gen->convert_date($news_datestamp, "short");
-				$comment_total = $sql2->db_Count("comments", "(*)", "WHERE comment_item_id='$news_id' AND comment_type='0' ");
-	 $text .= "
-		hi there<img src='".THEME."images/bullet2.gif' alt='bullet' /> <b>
-			<a href='news.php?item.".$news_id."'>".$news_title."</a></b>
-			<br />&nbsp;&nbsp;
-			<span class='smalltext'>
-			".$datestamp.", ".LAN_99.": ". ($news_allow_comments ? COMMENTOFFSTRING : $comment_total)."
-			</span>
-			<br />\n";
-			} else {
-				$count --;
-			}
-          */
-		}
-
-		$text = $text."<div style='text-align:right'><img src='".e_IMAGE."icons/".$category_icon."' alt='' /> ". LAN_307.$count."&nbsp;<br />&nbsp;</div>";
-		$ns->tablerender(LAN_82." '".$category_name."'", $text);
-		setNewsCache($cacheString);
-		require_once(FOOTERF);
-		exit;
+		WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")  ORDER BY n.news_datestamp DESC LIMIT $from,".ALLITEMS;
+		$category_name = "All";
+	}elseif($action == 'cat'){
+		// show archive of all news items in a particular category using list-style template.   .
+		$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
+		LEFT JOIN #user AS u ON n.news_author = u.user_id
+		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
+		WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_category={$category} ORDER BY n.news_datestamp DESC LIMIT $from,".ITEMVIEW;
 	}
+
+	if(!$NEWSLISTSTYLE){
+		$NEWSLISTSTYLE = "
+		<div style='padding:3px;width:100%'>
+		<table style='border-bottom:1px solid black;width:100%' cellpadding='0' cellspacing='0'>
+		<tr>
+		<td style='vertical-align:top;padding:3px;width:20px'>
+		{NEWSCATICON}
+		</td><td style='text-align:left;padding:3px'>
+		{NEWSTITLELINK}
+		<br />
+		{NEWSSUMMARY}
+		<span class='smalltext'>
+		{NEWSDATE}
+		{NEWSCOMMENTS}
+		</span>
+		</td><td style='width:55px'>
+		{NEWSTHUMBNAIL}
+		</td></tr></table>
+		</div>\n";
+
+	}
+	$param['itemlink'] = (defined("NEWSLIST_ITEMLINK")) ? NEWSLIST_ITEMLINK : "";
+	$param['thumbnail'] =(defined("NEWSLIST_THUMB")) ? NEWSLIST_THUMB : "border:0px";
+	$param['catlink']  = (defined("NEWSLIST_CATLINK")) ? NEWSLIST_CATLINK : "";
+	$param['caticon'] =  (defined("NEWSLIST_CATICON")) ? NEWSLIST_CATICON : ICONSTYLE;
+
+	$count = $sql->db_Select_gen($query);
+	while ($row = $sql->db_Fetch()) {
+		$text .= $ix->parse_newstemplate($row,$NEWSLISTSTYLE,$param);
+	}
+	$icon = ($category_icon) ? "<img src='".e_IMAGE."icons/".$category_icon."' alt='' />" : "";
+	$text = $text."<div style='text-align:right'>".$icon.LAN_307.$count."&nbsp;<br />&nbsp;</div>";
+
+  // not working ->	$np = new nextprev("news.php", $from, ITEMVIEW, $news_total, LAN_84, ($action == "list" ? $action.".".$sub_action : ""));
+	$ns->tablerender(LAN_82." '".$category_name."'", $text);
+	setNewsCache($cacheString);
+	require_once(FOOTERF);
+	exit;
+
 }
 
 if ($action == "extend") {
@@ -189,7 +173,7 @@ if (Empty($order))
 if ($action == "list")
 {
 	$sub_action = intval($sub_action);
-	$news_total = $sql->db_Count("news", "(*)", "WHERE news_category=$sub_action");
+	$news_total = $sql->db_Count("news", "(*)", "WHERE news_category=$sub_action AND news_class IN (".USERCLASS_LIST.") AND news_render_type!=2");
 	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
