@@ -100,6 +100,23 @@ if(IsSet($_POST['confirm'])){
 			save_prefs();
 			$text .= EPL_ADLAN_29."<br />";
 		}
+		if(is_array($eplug_user_prefs)){
+			$sql = new db;
+			$sql -> db_Select("core", " e107_value", " e107_name='user_entended'");
+			$row = $sql -> db_Fetch();
+			$user_entended = unserialize($row[0]);
+			$user_entended = array_values(array_diff($user_entended, array_keys($eplug_user_prefs)));
+			if($user_entended == NULL){
+				$sql -> db_Delete("core", "e107_name='user_entended'");
+			}else{
+				$tmp = addslashes(serialize($user_entended));
+				$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='user_entended' ");
+			}
+			while(list($key, $e_user_pref) = each($eplug_user_prefs)){
+				unset($user_pref[$key]);
+			}
+			save_prefs("user");
+		}
 		if($eplug_menu_name){
 			$sql -> db_Delete("menus", "menu_name='$eplug_menu_name' ");
 		}
@@ -155,6 +172,24 @@ if(strstr(e_QUERY, "install")){
 			save_prefs();
 			$text .= EPL_ADLAN_20."<br />";
 			
+		}
+		if(is_array($eplug_user_prefs)){
+			$sql = new db;
+			$sql -> db_Select("core", " e107_value", " e107_name='user_entended'");
+			$row = $sql -> db_Fetch();
+			$user_entended = unserialize($row[0]);
+			while(list($e_user_pref, $default_value) = each($eplug_user_prefs)){
+			    $user_entended[] = $e_user_pref;
+				$user_pref['$e_user_pref'] = $default_value;
+			}
+			save_prefs("user");
+			$tmp = addslashes(serialize($user_entended));
+			if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
+				$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='user_entended' ");
+			}else{
+				$sql -> db_Insert("core", "'user_entended', '$tmp' ");
+			}
+			$text .= EPL_ADLAN_20."<br />";
 		}
 
 		if(is_array($eplug_parse)){
@@ -239,6 +274,36 @@ if(strstr(e_QUERY, "upgrade")){
 		}
 		save_prefs();
 	}
+	if(is_array($upgrade_add_user_prefs)){
+		$sql = new db;
+		$sql -> db_Select("core", " e107_value", " e107_name='user_entended'");
+		$row = $sql -> db_Fetch();
+		$user_entended = unserialize($row[0]);
+		while(list($key, $e_user_pref) = each($eplug_user_prefs)){
+		    $user_entended[] = $e_user_pref;
+		}
+		$tmp = addslashes(serialize($user_entended));
+		if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
+			$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='user_entended' ");
+		}else{
+			$sql -> db_Insert("core", "'user_entended', '$tmp' ");
+		}
+		$text .= EPL_ADLAN_8."<br />";
+	}
+
+	if(is_array($upgrade_remove_user_prefs)){
+		$sql = new db;
+		$sql -> db_Select("core", " e107_value", " e107_name='user_entended'");
+		$row = $sql -> db_Fetch();
+		$user_entended = unserialize($row[0]);
+		$user_entended = array_values(array_diff($user_entended, $eplug_user_prefs));
+		if($user_entended == NULL){
+			$sql -> db_Delete("core", "e107_name='user_entended'");
+		}else{
+			$tmp = addslashes(serialize($user_entended));
+			$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='user_entended' ");
+		}
+	}
 
 	$text .= "<br />".$eplug_upgrade_done;
 
@@ -261,7 +326,7 @@ while($row = $sql -> db_Fetch()){
 	unset($eplug_name, $eplug_version, $eplug_author, $eplug_logo, $eplug_url, $eplug_email, $eplug_description, $eplug_compatible, $eplug_readme, $eplug_folder, $eplug_table_names);
 	include(e_PLUGIN.$plugin_path."/plugin.php");
 
-	if(is_array($eplug_table_names) || is_array($eplug_prefs)){
+	if(is_array($eplug_table_names) || is_array($eplug_prefs)  || is_array($eplug_user_prefs) || is_array($eplug_parse)){
 		$img = (!$plugin_installflag ? "<img src='".e_IMAGE."generic/uninstalled.png' alt='' />" : "<img src='".e_IMAGE."generic/installed.png' alt='' />");
 	}else{
 		$img = "<img src='".e_IMAGE."generic/noinstall.png' alt='' />";
@@ -281,7 +346,7 @@ while($row = $sql -> db_Fetch()){
 	if($eplug_readme){
 		$text .= "[ <a href='".e_PLUGIN.$eplug_folder."/".$eplug_readme."'>".$eplug_readme."</a> ]<br />";
 	}
-	if(is_array($eplug_table_names) || is_array($eplug_prefs)){
+	if(is_array($eplug_table_names) || is_array($eplug_prefs)  || is_array($eplug_user_prefs) || is_array($eplug_parse)){
 		$text .= "<b>Options</b>: [ ".($plugin_installflag ? "<a href='".e_SELF."?uninstall.$plugin_id'>Uninstall</a>" : "<a href='".e_SELF."?install.$plugin_id'>Install</a>")." ]";
 	}else{
 		if($eplug_menu_name){
