@@ -75,9 +75,9 @@ if(IsSet($_POST['clientsubmit'])){
 			</tr>
 			<td colspan='7' class='forumheader3' style='text-align:center'>
 
-			Active: ". ($banner_active ? LAN_32 : "<b>".LAN_33."</b>")." | 
+			".LAN_36. ($banner_active ? LAN_32 : "<b>".LAN_33."</b>")." | 
 
-			Starts: ".$start_date.", ".LAN_34.": ".$end_date."</td></tr>";
+			".LAN_36. $start_date.", ".LAN_34.": ".$end_date."</td></tr>";
 			
 			if($banner_ip){
 				$tmp = explode("^", $banner_ip);

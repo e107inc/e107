@@ -45,5 +45,10 @@ define("LAN_58", "Reviews");
 define("LAN_59", "View");
 define("LAN_60", "Content");
 
+define("LAN_61", "Uncategorized");
+define("LAN_62", "Archive");
+define("LAN_63", "page");
+define("LAN_64", "This article has been rated: ");
+define("LAN_65", "Not rated");
 
 ?>

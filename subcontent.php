@@ -40,7 +40,7 @@ if(IsSet($_POST['preview'])){
 
 	$content_author = (!$_POST['content_author'] || $_POST['content_author'] == ARLAN_84 ? ADMINNAME : $_POST['content_author']."^".$_POST['content_author_email']);
 	if($content_author == "ADMINNAME"){$content_author = "<b>".ARLAN_92."<b>";}
-	$text = "<i>by $content_author</i><br /><span class='smalltext'>".$datestamp."</span><br /><br />Subheading: ".$aj -> tpa($content_subheading)."<br />Summary: ".$aj -> tpa($content_summary)."<br /><br />".$aj -> tpa($data);
+	$text = "<i>by $content_author</i><br /><span class='smalltext'>".$datestamp."</span><br /><br />Subheading: ".$aj -> tpa($content_subheading)."<br />".ARLAN_19.": ".$aj -> tpa($content_summary)."<br /><br />".$aj -> tpa($data);
 	$ns -> tablerender($aj -> tpa($content_heading), $text);
 	echo "<br /><br />";
 

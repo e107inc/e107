@@ -80,7 +80,7 @@ $text = "<div style='text-align:center'>
 
 <tr>
 <td style='text-align:center' colspan='2'' class='forumheader3'>".LAN_406." ".str_replace("\n", " | ", $pref['upload_allowedfiletype'])."<br />".LAN_407."<br />
-Maximum file size: ".($pref['upload_maxfilesize'] ? $pref['upload_maxfilesize'] : ini_get('upload_max_filesize'))."<br /> 
+".LAN_418.($pref['upload_maxfilesize'] ? $pref['upload_maxfilesize'] : ini_get('upload_max_filesize'))."<br /> 
 ".LAN_408."</td>
 </tr>";
 

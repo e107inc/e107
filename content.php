@@ -145,7 +145,7 @@ if($action == "review"){
 				<br /><br />
 				".$aj -> tpa($content_content, "off", "admin")."
 				<br /><br />
-				Rating: 
+				".LAN_42.": 
 				<table style='width:".($content_review_score*2)."px'>
 				<tr class='border'>
 				<td class='caption' style='width:100%; text-align:right'>$content_review_score%</td>
@@ -277,7 +277,7 @@ if($action == "review"){
 				$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
 				$text .= "<img src='".e_IMAGE."generic/hme.png' alt='' style='vertical-align:middle' /> <a href='".e_SELF."?review.$content_id'>$content_heading</a> ($datestamp)<br />";
 			}
-			$ns -> tablerender("Archive: ".$category, $text);
+			$ns -> tablerender(LAN_62.": ".$category, $text);
 		}
 		require_once(FOOTERF);
 		exit;
@@ -356,7 +356,7 @@ if($action == "review"){
 				<td class='forumheader3' style='width:10%; text-align:center' rowspan='2'>
 				&nbsp;
 				</td>
-				<td class='forumheader' style='width:90%'><b><a href='".e_SELF."?review.cat.0'>Uncategorized</a></b></td>
+				<td class='forumheader' style='width:90%'><b><a href='".e_SELF."?review.cat.0'>".LAN_61."</a></b></td>
 				</tr>
 				<tr>
 				<td class='forumheader3'><span class='smalltext'>( $total ".($total>1 ? LAN_33 : LAN_34)." )</span></td>
@@ -433,7 +433,7 @@ if($action == "article"){
 					}
 					if(($id+1) != $totalpages){ $text .= "<a href='content.php?article.$sub_action.".($id+1)."'>>> ".LAN_26."</a> "; }
 					if($epflag){ $text .= $ep; }
-					$content_heading .= ", page ".($id+1);
+					$content_heading .= ", ".LAN_63." ".($id+1);
 					$cachestr = ($id ? "article.item.$sub_action.$id" : "article.item.$sub_action");
 
 				}else{
@@ -465,7 +465,7 @@ if($action == "article"){
 		if($comflag){
 			unset($text);
 			if($ratearray = $rater -> getrating("article", $sub_action)){
-				$text = "This article has been rated: ";
+				$text = LAN_64;
 				for($c=1; $c<= $ratearray[1]; $c++){
 					$text .= "<img src='".e_IMAGE."rate/box.png' alt='' style='vertical-align:middle' />";
 				}
@@ -481,7 +481,7 @@ if($action == "article"){
 				$text .= "&nbsp;".$ratearray[1].".".$ratearray[2]." - ".$ratearray[0]."&nbsp;";
 				$text .= ($ratearray[0] == 1 ? LAN_38 : LAN_39);
 			}else{
-				$text .= "Not rated";
+				$text .= LAN_65;
 			}
 
 			if(!$rater -> checkrated("article", $sub_action) && USER){
@@ -511,7 +511,7 @@ if($action == "article"){
 				}
 			}
 			if(ADMIN && getperms("B")){
-				echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?content.$sub_action'>moderate comments</a></div><br />";
+				echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?content.$sub_action'>".LAN_29."</a></div><br />";
 			}
 			$cobj -> form_comment();
 		}
@@ -534,7 +534,7 @@ if($action == "article"){
 			ob_start();
 			if($sql -> db_Select("content", "*", "content_id=$id") || !$id){
 				$row = $sql -> db_Fetch(); extract($row);
-				$caption = "Recent Articles: ".$content_heading;
+				$caption = LAN_47.": ".$content_heading;
 				$category = $content_heading;
 				if($sql -> db_Select("content", "*", $query)){
 					$text = "<br />";
@@ -666,7 +666,7 @@ if($action == "article"){
 				<td class='forumheader3' style='width:10%; text-align:center' rowspan='2'>
 				&nbsp;
 				</td>
-				<td class='forumheader' style='width:90%'><b><a href='".e_SELF."?article.cat.0'>Uncategorized</a></b></td>
+				<td class='forumheader' style='width:90%'><b><a href='".e_SELF."?article.cat.0'>".LAN_61."</a></b></td>
 				</tr>
 				<tr>
 				<td class='forumheader3'><span class='smalltext'>( $total ".($total>1 ? LAN_48 : LAN_49)." )</span></td>
