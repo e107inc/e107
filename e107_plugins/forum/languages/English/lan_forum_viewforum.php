@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_viewforum.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-08 16:50:35 $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-24 14:49:17 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -59,10 +59,12 @@ define("LAN_410", "guests");
 //v.616
 define("LAN_411", "Important Threads");
 define("LAN_412", "Forum Threads");
-
 define("LAN_431", "Syndicate this forum: rss 0.92");
 define("LAN_432", "Syndicate this forum: rss 2.0");
 define("LAN_433", "Syndicate this forum: RDF");
+
+define("LAN_434", "Are you sure you want to delete this thread and any replies?");
+define("LAN_435", "Delete thread");
 	
 //v.617
 define("FORLAN_CLOSE", "Thread closed.");
