@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-10-06 13:03:59 $
+|     $Revision: 1.4 $
+|     $Date: 2004-10-30 00:15:53 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -139,7 +139,7 @@ if(!$text = retrieve_cache("chatbox"))
 				}
 				else
 				{
-					$cb_nick = $to -> toHTML($cb_nick);
+					$cb_nick = $tp -> toHTML($cb_nick);
 				}
 			}
 		}
