@@ -49,7 +49,7 @@ define("NWSLAN_46", "Categories");
 define("NWSLAN_47", "Submitted News");
 define("NWSLAN_48", "News Options");
 define("NWSLAN_49", "Submitted by");
-define("NWSLAN_50", "Insert image: Upload images to e107_images/newsicons");
+define("NWSLAN_50", "Insert image: Upload images to ".e_IMAGE."/newsicons");
 
 define("NWSLAN_51", "Existing News Categories");
 define("NWSLAN_52", "Category Name");
@@ -74,7 +74,7 @@ define("NWSLAN_67", "Image");
 define("NWSLAN_68", "File");
 define("NWSLAN_69", "Upload an image or file for use in the news item");
 define("NWSLAN_70", "The e107_files/downloads folder is not writable, you need to CHMOD 777 the folder before uploading");
-define("NWSLAN_71", "The e107_images/newspost_images folder is not writable, you need to CHMOD 777 the folder before uploading");
+define("NWSLAN_71", "The ".e_IMAGE."/newspost_images folder is not writable, you need to CHMOD 777 the folder before uploading");
 define("NWSLAN_72", "Only show news item between certain dates");
 define("NWSLAN_73", "Render type");
 define("NWSLAN_74", "Select how and where news item is posted");

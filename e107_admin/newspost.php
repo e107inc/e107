@@ -386,7 +386,7 @@ class newspost{
         if(!$pref['htmlarea']){$text .= ren_help()."
                 <input class='helpbox' type='text' name='helpb' size='100' />
                 <br />
-                <select class='tbox' name='thumbps' onChange=\"addtext('[link=e107_images/newspost_images/' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '][img]e107_images/newspost_images/thumb_' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '[/img][/link]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_50."')\" onMouseOut=\"help('')\">
+                <select class='tbox' name='thumbps' onChange=\"addtext('[link=".e_IMAGE."/newspost_images/' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '][img]".e_IMAGE."/newspost_images/thumb_' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '[/img][/link]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_50."')\" onMouseOut=\"help('')\">
                 <option>".NWSLAN_80." ...</option>\n";
                 while(list($key, $image) = each($thumblist)){
                         $image2 = str_replace("thumb_", "", $image);
@@ -397,7 +397,7 @@ class newspost{
                 <select class='tbox' name='imageps' onChange=\"addtext('[img]' + this.form.imageps.options[this.form.imageps.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_50."')\" onMouseOut=\"help('')\">
                 <option>".NWSLAN_81." ...</option>\n";
                 while(list($key, $image) = each($imagelist)){
-                        $text .= "<option value='e107_images/newspost_images/".$image."'>".$image."</option>\n";
+                        $text .= "<option value='".e_IMAGE."/newspost_images/".$image."'>".$image."</option>\n";
                 }
                 $text .= "</select>
 
@@ -428,7 +428,7 @@ class newspost{
                 <option>Insert image ...</option>\n";
                 reset($imagelist);
                 while(list($key, $image) = each($imagelist)){
-                        $text .= "<option value='e107_images/newspost_images/".$image."'>".$image."</option>\n";
+                        $text .= "<option value='".e_IMAGE."/newspost_images/".$image."'>".$image."</option>\n";
                 }
                 $text .= "</select>";
                 }
