@@ -11,14 +11,21 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-02-07 13:13:25 $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-07 13:34:40 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
 require_once("../../class2.php");
 require_once(HEADERF);
+
+if(!check_class($pref['statUserclass'])) {
+	$text = "<div style='text-align: center;'>You do not have permission to view this page.</div>";
+	$ns->tablerender("Site Statistics", $text);
+	require_once(FOOTERF);
+	exit;
+}
 
 if (!$pref['statActivate']) {
 	$text = (ADMIN ? "<div style='text-align:center'>".LAN_371."</div>" : "<div style='text-align:center'>The features on this page have been disabled.</div>");

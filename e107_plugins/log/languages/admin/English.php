@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/languages/admin/English.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-02-07 12:56:46 $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-07 13:34:40 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -22,7 +22,7 @@ define("ADSTAT_OFF", "Off");
 define("ADSTAT_L1", "This plugin will log all visits to your site, and build detailed statistic screens based on the information gathered.");
 define("ADSTAT_L2", "The statistics logger has been successfully installed. To activate, please go to the config screen and click Activate.<br /><b>You must set the permissions of the e107_plugins/log/logs folder to 777 (chmod 777)</b>");
 define("ADSTAT_L3", "Statistic Logging");
-define("ADSTAT_L4", "Activate Statistic Logging");
+define("ADSTAT_L4", "Activate statistic logging");
 define("ADSTAT_L5", "Statistic types");
 
 define("ADSTAT_L6", "Browsers");
@@ -40,6 +40,6 @@ define("ADSTAT_L14", "Page counts");
 define("ADSTAT_L15", "Update Statistic Settings");
 define("ADSTAT_L16", "Site Statistic Settings");
 define("ADSTAT_L17", "Statistic settings updated");
-
+define("ADSTAT_L18", "Allow access to main statistics page to ...");
 
 ?>
