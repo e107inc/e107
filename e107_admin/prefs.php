@@ -211,7 +211,7 @@ while ($file = readdir($handle)){
 }
 closedir($handle);
 // new
-
+/*
 $text .= "<div style='text-align:center'><div style='text-align:center; width:97%'>";
 $text .="<input type='button' class='button' style='width:280px' value='".PRFLAN_1."' onClick=\"expandit('main')\"><br/>";
 $text .="<input type='button' class='button' style='width:280px' value='".PRFLAN_21."' onClick=\"expandit('date')\"><br/>";
@@ -220,20 +220,16 @@ $text .="<input type='button' class='button' style='width:280px' value='".PRFLAN
 $text .="<input type='button' class='button' style='width:280px' value='".PRFLAN_47."' onClick=\"expandit('security')\"><br/>";
 $text .="<input type='button' class='button' style='width:280px' value='".PRFLAN_62."' onClick=\"expandit('mail')\"><br/>";
 $text .="</div>";
-
+*/
 // end new.
 
 
-$text .= "<div id='main' style='text-align:center'>
+$text .= "
+<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_1."</div>
+<div id='main' style='text-align:center'>
 <form method='post' action='prefs.php'>
 <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 <tr>
-
-<td colspan='2'>
-<div class='caption'>".PRFLAN_1."</div>
-</td>
-</tr><tr>
-
 <td style='width:50%' class='forumheader3'>".PRFLAN_2.": </td>
 <td style='width:50%; text-align:right' class='forumheader3'>
 <input class='tbox' type='text' name='sitename' size='50' value='".SITENAME."' maxlength='100' />
@@ -290,15 +286,14 @@ $text .= "<div id='main' style='text-align:center'>
 </td>
 </tr>
 
-<tr>
-<td colspan='2'>
-<div class='border'><div class='caption'>".PRFLAN_10."</div></div>
-</td>
-</tr><tr>
+</table></div>
+<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_10."</div>
+<div id='theme' style='display:none'>
+<table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 
 <td style='width:50%' class='forumheader3'>".PRFLAN_11.": </td>
 <td style='width:50%; text-align:right' class='forumheader3'><a href='".e_ADMIN."theme_prev.php'>".PRFLAN_12."</a>
-<select name='sitetheme' class='tbox'>\n";
+<select name='display' class='tbox'>\n";
 $counter = 0;
 while(IsSet($dirlist[$counter])){
         $text .= ($dirlist[$counter] == $pref['sitetheme'] ? "<option selected>".$dirlist[$counter]."</option>\n" : "<option>".$dirlist[$counter]."</option>\n");
@@ -308,13 +303,10 @@ $text .= "</select>
 </td>
 </tr>
 
-
-
-<tr>
-<td colspan='2'>
-<div class='border'><div class='caption'>".PRFLAN_13."</div></div>
-</td>
-</tr>
+</table></div>
+<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_13."</div>
+<div id='theme' style='display:none'>
+<table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 
 <tr>
 <td style='width:50%' class='forumheader3'>".PRFLAN_14." </td>
@@ -337,10 +329,11 @@ $text .= "</select>
 </td>
 </tr>
 
-<td colspan='2'>
-<div class='border'><div class='caption'>".PRFLAN_17."</div></div>
-</td>
-</tr>
+</table></div>
+<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_17."</div>
+<div id='theme' style='display:none'>
+<table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
+
 <tr>
 
 <td style='width:50%' class='forumheader3'>".PRFLAN_18.": </td>
@@ -363,14 +356,10 @@ $text .="</table></div>";
 
 // Admin Display Areas. .
 
-$text .="<div id='admindisp' style='display:none'>
+$text .="
+<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_77."</div>
+<div id='admindisp' style='display:none'>
 <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
-
-<tr>
-<td colspan='2'>
-<div class='caption'>".PRFLAN_77."</div></div>
-</td>
-</tr>
 
 <tr>
 <td style='width:50%' class='forumheader3'>".PRFLAN_54.": </td>
@@ -410,14 +399,11 @@ $text .= "</select>
 </tr></table></div>";
 
 // Date options.
-$text .="<div id='date' style='text-align:center; display:none'>
-<table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
+$text .="
 
-<tr>
-<td colspan='2'>
-<div class='border'><div class='caption'>".PRFLAN_21."</div></div>
-</td>
-</tr>
+<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_21."</div>
+<div id='date' style='text-align:center; display:none' >
+<table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 <tr>";
 
 $ga = new convert;
@@ -487,15 +473,11 @@ $text .= "</select>
 
 // =========== Registration Preferences. ==================
 
-$text .="<div id='registration' style='text-align:center; display:none'>
+$text .="
+
+<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_28."</div>
+<div id='registration' style='text-align:center; display:none'>
 <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
-
-<tr>
-<td colspan='2'>
-<div class='border'><div class='caption'>".PRFLAN_28."</div></div>
-</td>
-</tr>
-
 <tr>
 <td style='width:50%' class='forumheader3'>".PRFLAN_29.": </td>
 <td style='width:50%; text-align:right' class='forumheader3'>".
@@ -554,17 +536,19 @@ $text .="
 <tr>
 <td style='width:50%' class='forumheader3'>".CUSTSIG_16."</td>
 <td class='forumheader3' style='width:50%;text-align:right' >
-<input type='text' class='tbox' name='signup_pass_len' value='".$pref['signup_pass_len']."'>
+<input type='text' class='tbox' size='3' name='signup_pass_len' value='".$pref['signup_pass_len']."'>
 (".PRFLAN_78.") </td>
-</tr>";
+</tr></table></div>";
 // Signup options.
 
-$text .= "<div style='text-align:center'>
+$text .= "
+<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' title='".PRFLAN_80."' style='cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_19."</div>
+<div id='signup' style='text-align:center; display:none'>
 <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 <tr >
-<td class=\"caption\">".CUSTSIG_13."</td>
-<td class=\"caption\">".CUSTSIG_14."</td>
-<td class=\"caption\">".CUSTSIG_15."</td>
+<td class=\"fcaption\">".CUSTSIG_13."</td>
+<td class=\"fcaption\">".CUSTSIG_14."</td>
+<td class=\"fcaption\">".CUSTSIG_15."</td>
 <tr>
 <td style='width:50%' class='forumheader3'>".CUSTSIG_2."</td>
 <td style='width:25%' class='forumheader3'>".
@@ -710,19 +694,30 @@ $text .="</table></div>";
 
 
 
-$text .="<div id='security' style='text-align:center; display:none'>
-<table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
+$text .="
 
-<tr>
-<td colspan='2'>
-<div class='border'><div class='caption'>".PRFLAN_47."</div></div>
-</td>
-</tr>
+<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_47."</div>
+<div id='security' style='text-align:center; display:none'>
+<table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 
 <tr>
 <td style='width:50%' class='forumheader3'>".PRFLAN_60."<br /><span class='smalltext'>".PRFLAN_61."</span> </td>
 <td style='width:50%; text-align:right' class='forumheader3'>".
 ($pref['ssl_enabled'] ? "<input type='checkbox' name='ssl_enabled' value='1'  checked>" : "<input type='checkbox' name='ssl_enabled' value='1'>")."
+</td>
+</tr>
+
+<tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_76.": </td>
+<td style='width:50%; text-align:right' class='forumheader3'>".
+($pref['signcode'] ? "<input type='checkbox' name='signcode' value='1'  checked>" : "<input type='checkbox' name='signcode' value='1'>")."
+</td>
+</tr>
+
+<tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_81.": </td>
+<td style='width:50%; text-align:right' class='forumheader3'>".
+($pref['logcode'] ? "<input type='checkbox' name='logcode' value='1'  checked>" : "<input type='checkbox' name='logcode' value='1'>")."
 </td>
 </tr>
 
@@ -766,15 +761,10 @@ $text .= "(".PRFLAN_41.")
 
 </table></div>";
 
-$text .="<div id='mail' style='text-align:center; display:none'>
+$text .="
+<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">".PRFLAN_62."</div>
+<div id='mail' style='text-align:center; display:none'>
 <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
-
-
-<tr>
-<td colspan='2'>
-<div class='border'><div class='caption'>".PRFLAN_62."</div></div>
-</td>
-</tr>
 
 <tr>
 <td style='width:50%' class='forumheader3'>".PRFLAN_63."<br /><span class='smalltext'>".PRFLAN_64."</span></td>
@@ -819,13 +809,11 @@ $text .="<div id='cookie' style='text-align:center; display:none'>
 </table></div>";
 
 
-$text .="<div id='update' style='text-align:center; display:none'>
+$text .="
+
+<div style='text-align:center'><div class='caption' title='".PRFLAN_80."' style='cursor:hand;text-align:left;border:1px solid black;width:95%' onClick=\"expandit(this)\">e107</div>
+<div id='update' style='text-align:center; display:none'>
 <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>".$auth_dropdown."
-<tr>
-<td colspan='2'>
-<div class='border'><div class='caption'>e107</div>
-</td>
-</tr>
 
 <tr>
 <td colspan='2' class='forumheader3'>

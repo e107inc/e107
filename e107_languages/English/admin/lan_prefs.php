@@ -18,7 +18,7 @@ define("PRFLAN_15", "Display render time?");
 define("PRFLAN_16", "Display sql queries?");
 define("PRFLAN_17", "Language");
 define("PRFLAN_18", "Site Language");
-define("PRFLAN_19", "News options");
+define("PRFLAN_19", "Signup Page Options");
 define("PRFLAN_20", "News posts to display per page?");
 define("PRFLAN_21", "Date display options");
 define("PRFLAN_22", "Short date format");
@@ -79,12 +79,12 @@ define("PRFLAN_73", "SMTP Username");
 define("PRFLAN_74", "SMTP Password");
 define("PRFLAN_75", "The email could not be sent. Please review your SMTP settings, or disable SMTP and try again.");
 
-define("PRFLAN_76", "Activate Image-code protection.");
+define("PRFLAN_76", "Enable Image-code verification during signup.");
 define("PRFLAN_77", "Admin Display Options ");
 define("PRFLAN_78", "Leave blank to disable");
 define("PRFLAN_79", "Use HtmlArea for admin text-areas");
-
-
+define("PRFLAN_80", "Click here to view");
+define("PRFLAN_81", "Enable Image-code verification during login.");
 
 define("CUSTSIG_1", "Settings Saved!");
 define("CUSTSIG_2", "Real Name:");
@@ -98,7 +98,7 @@ define("CUSTSIG_9", "Update Signup Settings");
 define("CUSTSIG_10", "Custom-Signup Page Options");
 define("CUSTSIG_11", "Check-All");
 define("CUSTSIG_12", "unCheck-All");
-define("CUSTSIG_13", "Signup Page Options");
+define("CUSTSIG_13", "Fields");
 define("CUSTSIG_14", "Display");
 define("CUSTSIG_15", "Required");
 define("CUSTSIG_16", "Minimum Length for Passwords");
