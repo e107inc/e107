@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2004-12-01 15:05:31 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-05 09:48:49 $
+|     $Author: pholzmann $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -178,7 +178,7 @@ if($cache = $e107cache->retrieve("comment.php?$table.$id")){
                                 $subject = $aj -> formtpa($news['news_title']);
                                 define(e_PAGETITLE,  LAN_100." / ".LAN_99." / ".$subject."");
                                 require_once(HEADERF);
-                                ob_end_flush();
+				//ob_end_flush();
                                 ob_start();
                                 $sql -> db_Select("user", "user_name", "user_id='".$news['admin_id']."' ");
                                 list($news['admin_name']) = $sql -> db_Fetch();
