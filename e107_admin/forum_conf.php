@@ -10,6 +10,11 @@
 |
 |	Released under the terms and conditions of the	
 |	GNU General Public License (http://gnu.org).
+|
+| $Source: /cvs_backup/e107/e107_admin/forum_conf.php,v $
+| $Revision: 1.5 $
+| $Date: 2004-08-15 02:16:18 $
+| $Author: mcfly_e107 $ 
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -75,7 +80,6 @@ if($action == "confirm"){
 		if($replies){
 			$pages = ((ceil($replies/$pref['forum_postspage']) -1) * $pref['forum_postspage']);
 		}
-		
 		$url = e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_parent.($pages ? ".$pages" : "");	// set return url
 		$message = FORLAN_26;
 	}else{	// post is thread
@@ -86,6 +90,16 @@ if($action == "confirm"){
 		$url = e_BASE."forum_viewforum.php?".$forum_id;	// set return url
 		$message = FORLAN_6.($count ? ", ".$count." ".FORLAN_7."." : ".");
 	}
+
+	if($sql -> db_Select("forum_t", "*", "thread_forum_id='$forum_id' ORDER BY thread_datestamp DESC LIMIT 0,1")){
+		$row = $sql -> db_Fetch(); extract($row);
+		$new_forum_lastpost = $thread_user.".".$thread_datestamp;
+	}
+	else
+	{
+		$new_forum_lastpost = "";
+	}
+	$sql -> db_Update("forum", "forum_lastpost='{$new_forum_lastpost}' WHERE forum_id='$new_forum' ");
 }
 // end delete ----------------------------------------------------------------------------------------------------------------------------------------------
 
