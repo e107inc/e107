@@ -124,6 +124,7 @@ if(!$text = retrieve_cache("chatbox")){
 			$search[0] = "["; $search[1] = "]";
 			$replace[0] = "&lsqb;"; $replace[1] =  "&rsqb;";
 			$cb_message = str_replace($search, $replace, $cb_message);
+			$cb_message = str_replace('&amp;#','&#',$cb_message);
 
 			if($pref['cb_linkreplace']){
 				$cb_message = " ".$cb_message;
