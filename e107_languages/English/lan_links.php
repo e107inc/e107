@@ -35,5 +35,6 @@ define("LAN_104", "are");
 define("LAN_105", "total in");
 define("LAN_106", "Underlined fields are required.");
 
-
+define("LAN_Links_1", "Total links");
+define("LAN_Links_2", "Total links activated");
 ?>
