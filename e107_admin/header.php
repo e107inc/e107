@@ -12,7 +12,7 @@
 |        GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
-echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
+echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='iso-8859-1' ?>");
 if(file_exists(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_header.php")){@include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_header.php");}else{@include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_header.php");}
 
 ?>
