@@ -5,6 +5,10 @@ body, td {
 	text-align:left;
 }
 
+form {
+	margin: 2px 0px 0px 0px;
+}
+
 body, .finfobar {
 	background-color: #fdfdfd;
 }
@@ -247,4 +251,3 @@ ul{
 	margin-left: auto;
 	margin-right: auto;
 }
-
