@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/content.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2004-10-29 14:47:12 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.5 $
+|     $Date: 2004-11-05 02:59:20 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -1071,7 +1071,7 @@ function parse_content_article_table($row){
 	$sql = new db; $sql2 = new db;
 	$gen = new convert;
 
-	$textemailprint = $ep -> render_emailprint("article",$sub_action);
+                $textemailprint = $ep -> render_emailprint("content",$sub_action);
 	$category = $content_parent;
 
 	if(is_numeric($content_author)){

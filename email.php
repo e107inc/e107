@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/email.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:45 $
+|     $Revision: 1.2 $
+|     $Date: 2004-11-05 02:59:20 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -50,7 +50,7 @@ if(IsSet($_POST['emailsubmit'])){
         }else{
                 $row = $sql -> db_Fetch();
                 extract($row);
-                $message .= $comments."\n\n".SITEURL.e_BASE."content.php?".$id."\n\n".$content_heading."\n".$content_subheading."\n".$content_content."\n\n";
+                $message .= $comments."\n\n".SITEURL.e_BASE."content.php?article.".$id."\n\n".$content_heading."\n".$content_subheading."\n".$content_content."\n\n";
         }
         if($error == ""){
                 require_once(e_HANDLER."mail.php");
