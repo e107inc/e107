@@ -11,7 +11,7 @@
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
-$Id: content.php,v 1.15 2004-08-11 09:36:34 e107coders Exp $  
+$Id: content.php,v 1.16 2004-08-16 10:12:49 loloirie Exp $  
 */
 require_once("../class2.php");
     if($pref['htmlarea']){
@@ -38,7 +38,7 @@ if(e_QUERY){
 }
 
 foreach($_POST as $k => $v){
-        if(preg_match("#^main_delete_(\d*)$#",$k,$matches) && $_POST[$k] == 'Delete')
+        if(preg_match("#^main_delete_(\d*)$#",$k,$matches) && $_POST[$k] == CNTLAN_7)
         {
                 $delete_content=$matches[1];
         }
@@ -121,7 +121,7 @@ if(!$content_total = $sql -> db_Select("content", "*", "content_type='254' OR co
                 $text .= "<tr><td style='width:5%; text-align:center' class='forumheader3'>$content_id</td>
                 <td style='width:65%' class='forumheader3'>$content_title</td>
                 <td style='width:30%; text-align:center' class='forumheader3'>
-                ".$rs -> form_button("submit", "main_edit_{$content_id}", CNTLAN_6, "onclick=\"document.location='".e_SELF."?edit.$content_id'\"")."
+                ".$rs -> form_button("button", "main_edit_{$content_id}", CNTLAN_6, "onclick=\"document.location='".e_SELF."?edit.$content_id'\"")."
                 ".$rs -> form_button("submit", "main_delete_{$content_id}", CNTLAN_7)."
 
                 </td>\n</tr>";
