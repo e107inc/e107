@@ -18,6 +18,9 @@ if (ADMIN) {
 				}
 			}
 
+			if($amount = $sql -> db_Select("generic", "*", "gen_type='reported_post' OR gen_type='broken download' ")) {
+				$text .= "<br /><b><a href='".e_ADMIN."message.php'>".ADLAN_LAT_8." [".$amount."]</a></b>";
+			}
 			return $ns -> tablerender(ADLAN_LAT_1, $text, '', TRUE);	
 		}
 	}
