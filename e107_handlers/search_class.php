@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search_class.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-03-08 17:26:59 $
+|     $Revision: 1.19 $
+|     $Date: 2005-03-13 10:44:40 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -148,10 +148,13 @@ class e_search {
 				$sort_args[] = SORT_DESC;
 				call_user_func_array('array_multisort', $sort_args);
 				foreach ($output_array['weight'] as $arg_id => $arg_value) {
-					$ps['text'] .= $output_array['text'][$arg_id];
+					$ps_limit[] = $output_array['text'][$arg_id];
 				}
 			} else {
-				$ps['text'] = implode('', $output_array['text']);
+				$ps_limit = $output_array['text'];
+			}
+			for ($i = $_GET['r']; $i < ($_GET['r'] + $search_prefs['search_res']); $i++) {
+				$ps['text'] .= $ps_limit[$i];
 			}
 		} else {
 			$ps['text'] = $no_results;

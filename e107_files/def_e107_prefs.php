@@ -67,23 +67,10 @@ $pref['antiflood_timeout'] = "10";
 $pref['autoban'] = "1";
 $pref['sitelang_init'] = (isset($_POST['installlanguage']) ? $_POST['installlanguage'] :  "English");
 $pref['linkpage_screentip'] = "0";
-$pref['plug_latest'] = ",links_page";
+$pref['plug_status'] = "";
+$pref['plug_latest'] = "";
 $pref['wmessage_sc'] = "0";
 $pref['frontpage'] = "news.php";
-
-// Links page plugin pre-installed
-$pref['link_submit'] = "1";
-$pref['link_submit_class'] = "0";
-$pref['linkpage_categories'] = "0";
-
-// Chatbox plugin pre-installed
-$pref['chatbox_posts'] = "10";
-$pref['cb_linkc'] = " -link- ";
-$pref['cb_wordwrap'] = "20";
-$pref['cb_linkreplace'] = "1";
-$pref['cb_layer'] = "0";
-$pref['cb_layer_height'] = "200";
-$pref['cb_emote'] = "0";
 
 // Added
 $pref['signup_text'] = "";
@@ -115,13 +102,9 @@ $pref['subnews_htmlarea'] = 0;
 $pref['subnews_hide_news'] = "";
 $pref['news_newdateheader'] = 0;
 $pref['email_text'] = "";
-$pref['plug_status'] = "";
 $pref['useGeshi'] = 0;
-$pref['search_sort'] = "php";
 $pref['wysiwyg'] = 0;
 $pref['old_np'] = 0;
 $pref['make_clickable'] = 0;
-
-
 
 ?>
