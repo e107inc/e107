@@ -124,54 +124,6 @@ if(IsSet($_POST['register'])){
             }
         };
 
-         /*
-
-
-
-         if($pref['signup_icq'] && $pref['signup_icq_req'] && $_POST['icq'] == "" ){
-              message_handler("P_ALERT", "Your ICQ is required");
-              $error = TRUE;
-         }
-
-
-         if($pref['signup_msn'] && $pref['signup_msn_req'] && $_POST['msn'] == ""){
-              message_handler("P_ALERT", "Your MSN is Required");
-              $error = TRUE;
-         }
-
-
-
-         if($pref['signup_dob'] && $pref['signup_dob_req']){
-              if($_POST['birth_day'] == "" || $_POST['birth_month'] =="" || $_POST['birth_year'] == ""){
-              message_handler("P_ALERT", "Your Birthday is Required");
-              $error = TRUE;
-              }
-         }
-
-
-         if($pref['signup_loc'] && $pref['signup_loc_req'] && $_POST['location'] == ""){
-              message_handler("P_ALERT", "Your Location is Required");
-              $error = TRUE;
-         }
-
-
-        if($pref['signup_url'] && $pref['signup_url_req']){
-              if($_POST['website'] == "" || $_POST['website'] == "http://"){
-              message_handler("P_ALERT", "Your Website is Required");
-              $error = TRUE;
-              }
-         }
-
-        if($pref['signup_real'] && $pref['signup_real_req'] && $_POST['realname'] == ""){
-              message_handler("P_ALERT", "Your Real Name is Required");
-              $error = TRUE;
-         }
-
-        if($pref['signup_sig'] && $pref['signup_sig_req'] && $_POST['signature']==""){
-              message_handler("P_ALERT", "Your signature is Required");
-              $error = TRUE;
-        }
-        */
         if($sql -> db_Select("user", "user_email", "user_email='".$_POST['email']."' ")){
                 message_handler("P_ALERT", LAN_408);
                 $error = TRUE;
@@ -318,7 +270,7 @@ $text .="
 <td class='forumheader3' style='width:30%'>".LAN_308."</td>
 <td class='forumheader3' style='width:70%' >
 ".$rs -> form_text("realname", 40, $realname, 100)."
-".req("real")."</td>
+".req($signupval[0])."</td>
 </tr>";
 }
 
@@ -361,7 +313,7 @@ $text.="
 <td class='forumheader3' style='width:30%' >".LAN_144."</td>
 <td class='forumheader3' style='width:70%' >
 ".$rs -> form_text("website", 60, $website, 150)."
-".req("url")."</td>
+".req($signupval[1])."</td>
 </tr>";
 }
 
@@ -372,7 +324,7 @@ $text.="
 <td class='forumheader3' style='width:30%' >".LAN_115."</td>
 <td class='forumheader3' style='width:70%' >
 ".$rs -> form_text("icq", 20, $icq, 10)."
-".req("icq")."</td>
+".req($signupval[2])."</td>
 </tr>";
 }
 
@@ -383,7 +335,7 @@ $text.="
 <td class='forumheader3' style='width:30%' >".LAN_116."</td>
 <td class='forumheader3' style='width:70%; ' >
 <input class='tbox' type='text' name='aim' size='30' value='$aim' maxlength='100' />
-".req("aim")."</td>
+".req($signupval[3])."</td>
 </tr>";
 }
 
@@ -394,7 +346,7 @@ $text.="
 <td class='forumheader3' style='width:30%' >".LAN_117."</td>
 <td class='forumheader3' style='width:70%;'>
 <input class='tbox' type='text' name='msn' size='30' value='$msn' maxlength='100' />
-".req("msn")."</td>
+".req($signupval[4])."</td>
 </tr>";
    }
 
@@ -403,7 +355,7 @@ $text.="
         $text.="
         <tr>
         <td class='forumheader3' style='width:30%' >".LAN_118."</td>
-        <td class='forumheader3' style='width:70%; ' nowrap>".req("dob").
+        <td class='forumheader3' style='width:70%; ' nowrap>".req($signupval[5]).
 
         $rs -> form_select_open("birth_day").
         $rs -> form_option("", 0);
@@ -436,7 +388,7 @@ $text.="
 <td class='forumheader3' style='width:30%' >".LAN_119."</td>
 <td class='forumheader3' style='width:70%' >
 <input class='tbox' type='text' name='location' size='60' value='$location' maxlength='200' />
-".req("loc")."</td>
+".req($signupval[6])."</td>
 </tr>";
 }
 
@@ -471,7 +423,7 @@ $text .= "<tr>
 <td class='forumheader3' style='width:30%' style='vertical-align:top' >".LAN_120."</td>
 <td class='forumheader3' style='width:70%' >
 <textarea class='tbox' name='signature' cols='70' rows='4'>$signature</textarea>
-".req("sig")."<input class='helpbox' type='text' name='helpb' size='90' />
+".req($signupval[7])."<input class='helpbox' type='text' name='helpb' size='90' />
 ".ren_help("addtext");
 }
 
@@ -514,7 +466,7 @@ if($pref['photo_upload'] && FILE_UPLOADS){
 }
 
 
-$text .= req("avt")."</td>
+$text .= req($signupval[8])."</td>
                 </tr>";
 }
 
@@ -536,7 +488,7 @@ while($timezone[$count]){
         $count++;
 }
 
-$text .= "</select>".req("zone")."
+$text .= "</select>".req($signupval[9])."
 </td>
 </tr>";
 }
@@ -584,8 +536,7 @@ function timezone(){
 
 function req($field){
     global $pref;
-    $pref_name = "signup_".$field."_req";
-    if($pref[$pref_name]){
+    if($field ==2){
         $ret = "<span style='font-size:15px; color:red'> *</span>";
     }else{
     $ret = "";
