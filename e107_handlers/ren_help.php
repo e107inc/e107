@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-03-31 06:59:26 $
+|     $Revision: 1.11 $
+|     $Date: 2005-03-31 08:28:28 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -72,7 +72,7 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help") {
 	$fontsizes[4] = array("20", LANHELP_19);
 	$fontsizes[5] = array("28", LANHELP_20);
 
-	$imgpath = e_IMAGE."generic/bbcode/";
+	$imgpath = (file_exists(THEME."bbcode/bold.png") ? THEME."bbcode/" : e_IMAGE."generic/bbcode/");
 
 
 	while (list($key, $bbcode) = each($code)) {
@@ -152,7 +152,7 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	$img[10] = "code.png";
 	$img[11] = "list.png";
 
-	$imgpath = e_IMAGE."generic/bbcode/";
+	$imgpath = (file_exists(THEME."bbcode/bold.png") ? THEME."bbcode/" : e_IMAGE."generic/bbcode/");
 
 	while (list($key, $bbcode) = each($code)) {
 		//$string .= "<input class=\"button\" type=\"button\" value=\"".$bbcode[0]."\" onclick=\"{$addtextfunc}('".$bbcode[1]."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('','{$tagid}')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."','{$tagid}')\"" : "" ).($bbcode[3] ? " style='".$bbcode[3]."'" :"")." />\n";
