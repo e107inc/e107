@@ -12,7 +12,7 @@ if($results = $sql -> db_Select("content", "*", "content_type=1 AND content_clas
 			$content_subheading_ = $content_subheading_;
 		}
 		$content_content_ = parsesearch($content_content, $query);
-		$text .= "<br /><img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <b><a href=\"article.php?".$content_id."\">".$content_heading_."</a></b> <br />".$content_subheading_.$content_content_;
+		$text .= "<br /><img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <b><a href=\"content.php?content.".$content_id."\">".$content_heading_."</a></b> <br />".$content_subheading_.$content_content_;
 	}
 }else{
 	$text .= LAN_198;
