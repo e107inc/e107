@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-03-31 19:16:24 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.26 $
+|     $Date: 2005-04-01 16:14:42 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -23,7 +23,7 @@ if (!getperms("4")) {
 	 exit;
 }
 $e_sub_cat = 'users';
-$user = new users;	
+$user = new users;
 require_once("auth.php");
 
 require_once(e_HANDLER."form_handler.php");
@@ -38,26 +38,26 @@ if (e_QUERY) {
 	$from = ($tmp[3] ? $tmp[3] : 0);
 	unset($tmp);
 }
-	
+
 $from = ($from ? $from : 0);
 $amount = 30;
-	
+
 if (isset($_POST['resend_mail'])) {
 	$id = $_POST['resend_id'];
 	$key = $_POST['resend_key'];
 	$name = $_POST['resend_name'];
 	define("RETURNADDRESS", (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$id.".".$key : SITEURL."/signup.php?activate.".$id.".".$key));
-	 
+
 	$message = USRLAN_114." ".$_POST['resend_name']."\n\n".USRLAN_122." ".SITENAME."\n".USRLAN_123."\n\n".USRLAN_124."...\n\n";
 	$message .= RETURNADDRESS . "\n\n".USRLAN_115."\n\n ".USRLAN_125." ".SITENAME."\n".SITEURL;
-	 
+
 	require_once(e_HANDLER."mail.php");
 	sendemail($_POST['resend_email'], USRLAN_113." ".SITENAME, $message);
 	//  echo str_replace("\n","<br>",$message);
 	$user->show_message("Email Re-sent to: ".$name);
 	unset($id, $action, $sub_cation);
 }
-	
+
 if (isset($_POST['test_mail'])) {
 	require_once(e_HANDLER."mail.php");
 	$text = validatemail($_POST['test_email']);
@@ -67,7 +67,7 @@ if (isset($_POST['test_mail'])) {
 	$ns->tablerender($caption, $text[1]);
 	unset($id, $action, $sub_cation);
 }
-	
+
 if (isset($_POST['update_options'])) {
 	$pref['avatar_upload'] = (FILE_UPLOADS ? $_POST['avatar_upload'] : 0);
 	$pref['im_width'] = $_POST['im_width'];
@@ -79,7 +79,7 @@ if (isset($_POST['update_options'])) {
 	save_prefs();
 	$user->show_message(USRLAN_1);
 }
-	
+
 if (isset($_POST['prune'])) {
 	$sql2 = new db;
 	$text = USRLAN_56." ";
@@ -93,12 +93,12 @@ if (isset($_POST['prune'])) {
 	$ns->tablerender(USRLAN_57, "<div style='text-align:center'><b>".$text."</b></div>");
 	unset($text);
 }
-	
+
 if (isset($_POST['adduser'])) {
 	if (!$_POST['ac'] == md5(ADMINPWCHANGE)) {
 		exit;
 	}
-	 
+
 	require_once(e_HANDLER."message_handler.php");
 	if (strstr($_POST['name'], "#") || strstr($_POST['name'], "=")) {
 		message_handler("P_ALERT", USRLAN_92);
@@ -117,7 +117,7 @@ if (isset($_POST['adduser'])) {
 		message_handler("P_ALERT", USRLAN_67);
 		$error = TRUE;
 	}
-	 
+
 	if ($_POST['name'] == "" || $_POST['password1'] == "" || $_POST['password2'] = "") {
 		message_handler("P_ALERT", USRLAN_68);
 		$error = TRUE;
@@ -133,7 +133,7 @@ if (isset($_POST['adduser'])) {
 		if ($sql->db_Select("banlist", "*", "banlist_ip='".$_POST['email']."'")) {
 			exit;
 		}
-		 
+
 		$username = strip_tags($_POST['name']);
 		$ip = getip();
 		extract($_POST);
@@ -144,23 +144,23 @@ if (isset($_POST['adduser'])) {
 		$user->show_message(USRLAN_70);
 	}
 }
-	
+
 if ($_POST['useraction'] == 'userinfo') {
 	header('location:'.e_ADMIN."userinfo.php?{$_POST['userip']}");
 	exit;
 }
-	
+
 if ($_POST['useraction'] == 'usersettings') {
 	header('location:'.e_BASE."usersettings.php?{$_POST['userid']}");
 	exit;
 }
-	
+
 if ($_POST['useraction'] == 'userclass') {
 	header('location:'.e_ADMIN."userclass.php?{$_POST['userid']}");
 	exit;
 }
-	
-	
+
+
 if ($_POST['useraction'] == "ban") {
 	$sub_action = $_POST['userid'];
 	$sql->db_Select("user", "*", "user_id='$sub_action'");
@@ -175,7 +175,7 @@ if ($_POST['useraction'] == "ban") {
 	$action = "main";
 	$sub_action = "user_id";
 }
-	
+
 if ($_POST['useraction'] == "unban") {
 	$sub_action = $_POST['userid'];
 	$sql->db_Update("user", "user_ban='0' WHERE user_id='$sub_action' ");
@@ -183,15 +183,15 @@ if ($_POST['useraction'] == "unban") {
 	$action = "main";
 	$sub_action = "user_id";
 }
-	
-	
+
+
 if ($_POST['useraction'] == 'resend') {
 	$sub_action = $_POST['userid'];
 	if ($sql->db_Select("user", "*", "user_id='$sub_action' ")) {
 		$resend = $sql->db_Fetch();
 		$text .= "<form method='post' action='".e_SELF."'><div style='text-align:center'>\n";
 		$text .= USRLAN_116." <b>".$resend['user_name']."</b><br /><br />
-			 
+
 			<input type='hidden' name='resend_id' value='$sub_action' />\n
 			<input type='hidden' name='resend_name' value='".$resend['user_name']."' />\n
 			<input type='hidden' name='resend_key' value='".$resend['user_sess']."' />\n
@@ -201,7 +201,7 @@ if ($_POST['useraction'] == 'resend') {
 		$ns->tablerender($caption, $text);
 	}
 }
-	
+
 if ($_POST['useraction'] == 'test') {
 	$sub_action = $_POST['userid'];
 	if ($sql->db_Select("user", "*", "user_id='$sub_action' ")) {
@@ -214,7 +214,7 @@ if ($_POST['useraction'] == 'test') {
 		$ns->tablerender($caption, $text);
 	}
 }
-	
+
 if ($_POST['useraction'] == 'deluser') {
 	$sub_action = $_POST['userid'];
 	if ($_POST['confirm']) {
@@ -244,7 +244,7 @@ if ($_POST['useraction'] == 'deluser') {
 		}
 	}
 }
-	
+
 if ($_POST['useraction'] == "admin") {
 	$sub_action = $_POST['userid'];
 	$sql->db_Select("user", "*", "user_id='$sub_action'");
@@ -256,7 +256,7 @@ if ($_POST['useraction'] == "admin") {
 	$sub_action = "user_id";
 	$id = "DESC";
 }
-	
+
 if ($_POST['useraction'] == "unadmin") {
 	$sub_action = $_POST['userid'];
 	$sql->db_Select("user", "*", "user_id='$sub_action'");
@@ -272,7 +272,7 @@ if ($_POST['useraction'] == "unadmin") {
 		$id = "DESC";
 	}
 }
-	
+
 if ($_POST['useraction'] == "verify") {
 	$sub_action = $_POST['userid'];
 	if ($sql->db_Update("user", "user_ban='0' WHERE user_id=$sub_action")) {
@@ -282,53 +282,53 @@ if ($_POST['useraction'] == "verify") {
 		$id = "DESC";
 	}
 }
-	
+
 if ($action == "main" && is_numeric($sub_action)) {
 	$user->show_message(USRLAN_87);
 }
-	
+
 if ($action == "cu" && is_numeric($sub_action)) {
 	$user->show_message(USRLAN_88);
 	$action = "main";
 	$sub_action = "user_id";
 }
-	
+
 if (!e_QUERY || $action == "main") {
 	$user->show_existing_users($action, $sub_action, $id, $from, $amount);
 }
-	
+
 if ($action == "options") {
 	$user->show_prefs();
 }
-	
+
 if ($action == "prune") {
 	$user->show_prune();
 }
-	
+
 if ($action == "create") {
 	$user->add_user();
 }
-	
+
 require_once("footer.php");
 
 class users
 {
 	function show_existing_users($action, $sub_action, $id, $from, $amount) {
 		// ##### Display scrolling list of existing news items ---------------------------------------------------------------------------------------------------------
-		 
+
 		global $sql, $rs, $ns, $tp;
- 
+
 		if ($sql->db_Select("userclass_classes")) {
 			while ($row = $sql->db_Fetch()) {
 				extract($row);
 				$class[$userclass_id] = $userclass_name;
 			}
 		}
-		 
+
 		$text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; margin-left: auto; margin-right: auto;'>";
-		 
+
 		if (isset($_POST['searchquery'])) {
-			 
+
 			$query = (eregi("@", $_POST['searchquery']))?"user_email REGEXP('".$_POST['searchquery']."') OR ": "";
 			$query .= (eregi(".", $_POST['searchquery']))?"user_ip REGEXP('".$_POST['searchquery']."') OR ": "";
 			$query .= "user_login REGEXP('".$_POST['searchquery']."') OR ";
@@ -336,8 +336,8 @@ class users
 		} else {
 			$query = "ORDER BY ".($sub_action ? $sub_action : "user_id")." ".($id ? $id : "DESC")."  LIMIT $from, $amount";
 		}
-		 
-		 
+
+
 		if ($sql->db_Select("user", "*", $query, ($_POST['searchquery'] ? 0 : "nowhere"))) {
 			$text .= "<table class='fborder' style='width: 99%'>
 				<tr>
@@ -347,13 +347,13 @@ class users
 				<td style='width:15%' class='fcaption'><a href='".e_SELF."?main.user_class.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_91."</a></td>
 				<td style='width:30%' class='fcaption'>".USRLAN_75."</td>
 				</tr>";
-			 
+
 			while ($row = $sql->db_Fetch()) {
 				extract($row);
 				$text .= "<tr>
 					<td style='width:5%; text-align:center' class='forumheader3'>$user_id</td>
 					<td style='width:10%' class='forumheader3'>";
-				 
+
 				if ($user_perms == "0") {
 					$text .= "<img src='".e_LANIMAGE."/mainadmin.gif' alt='' style='vertical-align:middle' />";
 				}
@@ -368,11 +368,11 @@ class users
 				} else {
 					$text .= "&nbsp;";
 				}
-				 
+
 				$text .= "</td>
 					<td style='width:30%' class='forumheader3'><a href='".e_BASE."user.php?id.$user_id'>$user_name</a></td>
 					<td style='width:15%' class='forumheader3'>";
-				 
+
 				if ($user_class) {
 					$tmp = explode(",", $user_class);
 					while (list($key, $class_id) = each($tmp)) {
@@ -381,8 +381,8 @@ class users
 				} else {
 					$text .= "&nbsp;";
 				}
-				 
-				 
+
+
 				$text .= "</td>
 					<td style='width:30%; text-align:center' class='forumheader3'>
 					<form method='post' action='".e_SELF."'>
@@ -391,11 +391,11 @@ class users
 					<input type='hidden' name='userip' value='{$user_ip}' />
 					<select name='useraction' onchange='this.form.submit()' class='tbox'>
 					<option selected='selected' value=''></option>";
-				 
+
 				if ($user_perms != "0") {
 					$text .= "<option value='userinfo'>".USRLAN_80."</option>
-						<option value='usersettings'>".USRLAN_81."</option>";
-					 
+						<option value='usersettings'>".LAN_EDIT."</option>";
+
 					if ($user_ban == 1) {
 						$text .= "<option value='unban'>".USRLAN_33."</option>";
 					}
@@ -407,23 +407,23 @@ class users
 					} else {
 						$text .= "<option value='ban'>".USRLAN_30."</option>";
 					}
-					 
+
 					if (!$user_admin && !$user_ban && $user_ban != 2) {
 						$text .= "<option value='admin'>".USRLAN_35."</option>";
 					}
 					else if ($user_admin && $user_perms != "0") {
 						$text .= "<option value='unadmin'>".USRLAN_34."</option>";
 					}
-					 
+
 				}
 				if ($user_perms == "0" && !getperms("0")) {
 					$text .= "";
 				} elseif($user_id != USERID || getperms("0") ) {
 					$text .= "<option value='userclass'>".USRLAN_36."</option>";
 				}
-				 
+
 				if ($user_perms != "0") {
-					$text .= "<option value='deluser'>".USRLAN_29."</option>";
+					$text .= "<option value='deluser'>".LAN_DELETE."</option>";
 				}
 				$text .= "</select></div>";
 				$text .= "</form></td></tr>";
@@ -432,16 +432,16 @@ class users
 		}
 		$text .= "</div>";
 		$users = $sql->db_Count("user");
-		 
+
 		if ($users > $amount && !$_POST['searchquery']) {
 			$parms = "{$users},{$amount},{$from},".e_SELF."?".(e_QUERY ? "$action.$sub_action.$id." : "main.user_id.desc.")."[FROM]";
 			$text .= "<br />".USRLAN_89." ".$tp->parseTemplate("{NEXTPREV={$parms}}");
 		}
 		$text .= "<br /><form method='post' action='".e_SELF."'>\n<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n<input class='button' type='submit' name='searchsubmit' value='".USRLAN_90."' />\n</p>\n</form>\n</div>";
 		$ns->tablerender(USRLAN_77, $text);
-		 
+
 	}
-	 
+
 	function show_options($action) {
 		// ##### Display options ---------------------------------------------------------------------------------------------------------
 		if ($action == "") {
@@ -450,57 +450,57 @@ class users
 		// ##### Display options ---------------------------------------------------------------------------------------------------------
 		$var['main']['text'] = USRLAN_71;
 		$var['main']['link'] = e_SELF;
-		 
+
 		$var['create']['text'] = USRLAN_72;
 		$var['create']['link'] = e_SELF."?create";
-		 
+
 		$var['prune']['text'] = USRLAN_73;
 		$var['prune']['link'] = e_SELF."?prune";
-		 
+
 		$var['options']['text'] = USRLAN_75;
 		$var['options']['link'] = e_SELF."?options";
-		 
+
 		//  $var['mailing']['text']= USRLAN_121;
 		//   $var['mailing']['link']="mailout.php";
 		show_admin_menu(USRLAN_76, $action, $var);
 	}
-	 
+
 	function show_prefs() {
 		global $ns, $pref;
 		$text = "<div style='text-align:center'>
 			<form method='post' action='".e_SELF."?".e_QUERY."'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>
-			 
+
 			<tr>
 			<td style='width:50%' class='forumheader3'>".USRLAN_44.":</td>
-			<td style='width:50%' class='forumheader3'>". ($pref['avatar_upload'] ? "<input name='avatar_upload' type='radio' value='1' checked='checked' />".USRLAN_45."&nbsp;&nbsp;<input name='avatar_upload' type='radio' value='0' />".USRLAN_46 : "<input name='avatar_upload' type='radio' value='1' />".USRLAN_45."&nbsp;&nbsp;<input name='avatar_upload' type='radio' value='0' checked='checked' />".USRLAN_46). (!FILE_UPLOADS ? " <span class='smalltext'>(".USRLAN_58.")</span>" : "")."
+			<td style='width:50%' class='forumheader3'>". ($pref['avatar_upload'] ? "<input name='avatar_upload' type='radio' value='1' checked='checked' />".LAN_YES."&nbsp;&nbsp;<input name='avatar_upload' type='radio' value='0' />".LAN_NO : "<input name='avatar_upload' type='radio' value='1' />".USRLAN_45."&nbsp;&nbsp;<input name='avatar_upload' type='radio' value='0' checked='checked' />".USRLAN_46). (!FILE_UPLOADS ? " <span class='smalltext'>(".USRLAN_58.")</span>" : "")."
 			</td>
 			</tr>
-			 
+
 			<tr>
 			<td style='width:50%' class='forumheader3'>".USRLAN_53.":</td>
 			<td style='width:50%' class='forumheader3'>". ($pref['photo_upload'] ? "<input name='photo_upload' type='radio' value='1' checked='checked' />".USRLAN_45."&nbsp;&nbsp;<input name='photo_upload' type='radio' value='0' />".USRLAN_46 : "<input name='photo_upload' type='radio' value='1' />".USRLAN_45."&nbsp;&nbsp;<input name='photo_upload' type='radio' value='0' checked='checked' />".USRLAN_46). (!FILE_UPLOADS ? " <span class='smalltext'>(".USRLAN_58.")</span>" : "")."
 			</td>
 			</tr>
-			 
+
 			<tr>
 			<td style='width:50%' class='forumheader3'>".USRLAN_47.":</td>
 			<td style='width:50%' class='forumheader3'>
 			<input class='tbox' type='text' name='im_width' size='10' value='".$pref['im_width']."' maxlength='5' /> (".USRLAN_48.")
 			</td></tr>
-			 
+
 			<tr>
 			<td style='width:50%' class='forumheader3'>".USRLAN_49.":</td>
 			<td style='width:50%' class='forumheader3'>
 			<input class='tbox' type='text' name='im_height' size='10' value='".$pref['im_height']."' maxlength='5' /> (".USRLAN_50.")
 			</td></tr>
-			 
+
 			<tr>
 			<td style='width:50%' class='forumheader3'>".USRLAN_126.":</td>
 			<td style='width:50%' class='forumheader3'>". ($pref['profile_rate'] ? "<input name='profile_rate' type='radio' value='1' checked='checked' />".USRLAN_45."&nbsp;&nbsp;<input name='profile_rate' type='radio' value='0' />".USRLAN_46 : "<input name='profile_rate' type='radio' value='1' />".USRLAN_45."&nbsp;&nbsp;<input name='profile_rate' type='radio' value='0' checked='checked' />".USRLAN_46)."
 			</td>
 			</tr>
-			 
+
 			<tr>
 			<td style='width:50%' class='forumheader3'>".USRLAN_127.":</td>
 			<td style='width:50%' class='forumheader3'>". ($pref['profile_comments'] ? "<input name='profile_comments' type='radio' value='1' checked='checked' />".USRLAN_45."&nbsp;&nbsp;<input name='profile_comments' type='radio' value='0' />".USRLAN_46 : "<input name='profile_comments' type='radio' value='1' />".USRLAN_45."&nbsp;&nbsp;<input name='profile_comments' type='radio' value='0' checked='checked' />".USRLAN_46)."
@@ -513,24 +513,24 @@ class users
 			<td style='width:50%' class='forumheader3'>
 			<input class='tbox' type='text' name='del_unv' size='10' value='".$pref['del_unv']."' maxlength='5' /> ".USRLAN_95."
 			</td></tr>
-			 
+
 			<tr>
 			<td colspan='2' style='text-align:center' class='forumheader'>
 			<input class='button' type='submit' name='update_options' value='".USRLAN_51."' />
 			</td></tr>
-			 
+
 			</table></form></div>";
 		$ns->tablerender(USRLAN_52, $text);
 	}
-	 
+
 	function show_message($message) {
 		global $ns;
 		$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 	}
-	 
+
 	function show_prune() {
 		global $ns, $sql;
-		 
+
 		$unactive = $sql->db_Select("user", "*", "user_ban=2");
 		$text = "<div style='text-align:center'>".USRLAN_84." ".$unactive." ".USRLAN_85."<br /><br />
 			<form method='post' action='".e_SELF."'>
@@ -545,7 +545,7 @@ class users
 			</div>";
 		$ns->tablerender(USRLAN_55, $text);
 	}
-	 
+
 	function add_user() {
 		global $rs, $ns;
 		$text = "<div style='text-align:center'>". $rs->form_open("post", e_SELF, "adduserform")."
@@ -574,8 +574,8 @@ class users
 			".$rs->form_text("email", 60, "", 100)."
 			</td>
 			</tr>";
-		 
-		 
+
+
 		if (!is_object($sql)) $sql = new db;
 		if ($sql->db_Select("userclass_classes")) {
 			$text .= "<tr style='vertical-align:top'>
@@ -607,10 +607,10 @@ class users
 			</form>
 			</div>
 			";
-		 
+
 		$ns->tablerender(USRLAN_59, $text);
 	}
-	 
+
 }
 function users_adminmenu() {
 	global $user;
