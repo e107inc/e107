@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search/search_comment.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-02-13 09:02:27 $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-15 11:25:49 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -21,9 +21,11 @@ $return_fields = 'comment_item_id, comment_author, comment_datestamp, comment_co
 $search_fields = array('comment_comment', 'comment_author');
 $weights = array('1.2', '0.6');
 $no_results = LAN_198;
+$where = "";
+$order = array('comment_datestamp' => DESC);
 $sql2 = new db;
 
-$ps = $sch -> parsesearch('comments', $return_fields, $search_fields, $weights, 'search_comment', $no_results, '');
+$ps = $sch -> parsesearch('comments', $return_fields, $search_fields, $weights, 'search_comment', $no_results, $where, $order);
 $text .= $ps['text'];
 $results = $ps['results'];
 
