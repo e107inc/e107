@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/level_handler.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:26 $
+|     $Revision: 1.2 $
+|     $Date: 2004-11-07 21:05:55 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -87,10 +87,8 @@ function get_level($user_id, $user_forums, $user_comments, $user_chats, $user_vi
                 $rank = 7;
         }else if($level >= ($level_thresholds[7]+1) && $level <= $level_thresholds[8]){
                 $rank = 8;
-        }else if($level >= ($level_thresholds[8]+1) && $level <= $level_thresholds[9]){
+        }else if($level >= ($level_thresholds[8]+1)){
                 $rank = 9;
-        }else if($level >= ($level_thresholds[9]+1)){
-                $rank = 10;
         }
         if($rank_type == "image"){
                 (file_exists(THEME."forum/".$level_images[$rank]) ? $pic_lev = THEME."forum/".$level_images[$rank] : $pic_lev = e_IMAGE."forum/".$level_images[$rank]);
