@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-02-20 13:06:27 $
-|     $Author: stevedunstan $
+|     $Revision: 1.30 $
+|     $Date: 2005-02-22 04:37:13 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -570,7 +570,8 @@ $text .= "<div id='textpost' style='display:none; text-align:center'>
     <tr>
 	<td class='forumheader3' style='width:50%;'>".PRFLAN_122.":  <div class='smalltext'>".PRFLAN_123."</div></td>
 	<td class='forumheader3' style='width:50%; text-align: right;'>
-	".r_userclass('wysiwyg',$pref['wysiwyg'],'off','nobody,public, member, admin, classes')."
+	<input type='radio' name='wysiwyg' value='1'".($pref['wysiwyg'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
+	<input type='radio' name='wysiwyg' value='0'".(!$pref['wysiwyg'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
 	</tr>\n
 
