@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-02-07 05:20:02 $
-|     $Author: sweetas $
+|     $Revision: 1.23 $
+|     $Date: 2005-02-10 17:17:00 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
+include_once(e_HANDLER."userclass_class.php");
 
 if (isset($_POST['newver'])) {
 	header("location:http://e107.org/index.php");
@@ -544,6 +545,11 @@ $text .= "</table></div>";
 
 //$pref['link_text'] = str_replace("'", "#", $pref['link_text']);
 
+if(!isset($pref['post_html']))
+{
+	$pref['post_html'] = e_ADMIN;
+}
+
 $text .= "<div id='textpost' style='display:none; text-align:center'>
 	<table style='width:100%' class='fborder'>
 	<tr>
@@ -569,7 +575,6 @@ $text .= "<div id='textpost' style='display:none; text-align:center'>
 	</td>
 	</tr>
 	
-	
 	<tr>
 	<td class='forumheader3' style='width:50%;'>".PRFLAN_109.":  <div class='smalltext'>".PRFLAN_110."</div></td>
 	<td class='forumheader3' style='width:50%; text-align: right;'>
@@ -584,8 +589,12 @@ $text .= "<div id='textpost' style='display:none; text-align:center'>
 	</td>
 	</tr>
 	
-	
-	
+	<tr>
+	<td class='forumheader3' style='width:50%;'>".PRFLAN_116.":  <div class='smalltext'>".PRFLAN_117."</div></td>
+	<td class='forumheader3' style='width:50%; text-align: right;'>
+	".r_userclass('post_html',$pref['post_html'],'off','public, member, admin, classes')."
+	</td>
+	</tr>
 	
 	";
 	
