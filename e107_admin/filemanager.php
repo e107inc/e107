@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/filemanager.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-10 09:49:03 $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-15 07:08:02 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -32,6 +32,10 @@ if($admin_choice=="Custom" && getperms("I")){
 }
 if($admin_choice=="Custompages" && getperms("I")){
         $choice= e_PLUGIN."custompages/";
+}
+
+if (isset($_POST['admin_choice'])) {
+	header("location:".e_SELF."?".$choice); exit;
 }
 
 $path = str_replace("../", "", (e_QUERY ? e_QUERY : $choice));
@@ -135,7 +139,7 @@ $text = "<div style='text-align:center'>\n
 <td style='width:70%' class='forumheader3'>\n
 ".FMLAN_32."
 </td>\n
-<td style='width:30%' class='forumheader3' style='text-align:center'>\n
+<td class='forumheader3' style='text-align:center; width:30%'>\n
 <select name='admin_choice' class='tbox'>\n";
 ($admin_choice=="Files" ? $text .= "<option value='Files' selected='selected'>".FMLAN_35."</option>" : $text .= "<option value='Files'>".FMLAN_35."</option>");
 if(getperms("I")){
@@ -158,18 +162,18 @@ $text .= "</select>\n
 $ns -> tablerender(FMLAN_34, $text);
 
 
-$text = "<div class=\"fborder\">
-<div class=\"fcaption\">
-".FMLAN_29.": <b>root/".$pathd."</b>&nbsp;&nbsp;[ ".count($dirs)." ".$dstr.", ".count($files)." ".$cstr." ]
-</div>
-</div>
-<br />
+$text = "<form enctype=\"multipart/form-data\" action=\"".e_SELF.(e_QUERY ? "?".e_QUERY : "")."\" method=\"post\">
 <div style=\"text-align:center\">
-<table class='fborder' style=\"".ADMIN_WIDTH."\">
-
-<form ENCTYPE=\"multipart/form-data\" action=\"".e_SELF.(e_QUERY ? "?".e_QUERY : "")."\" method=\"post\">
 <input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"1000000\" />
-";
+<table class='fborder' style=\"".ADMIN_WIDTH."\">";
+
+$text .= "<tr>
+<td style=\"width:5%\" class=\"fcaption\">&nbsp;</td>
+<td style=\"width:30%\" class=\"fcaption\"><b>".FMLAN_17."</b></td>
+<td class=\"fcaption\"><b>".FMLAN_18."</b></td>
+<td style=\"width:30%\" class=\"fcaption\"><b>".FMLAN_19."</b></td>
+<td class=\"fcaption\"><b>".FMLAN_20."</b></td>
+</tr>";
 
 if($path != e_FILE){
         if(substr_count($path, "/") == 1){
@@ -183,23 +187,13 @@ if($path != e_FILE){
         </tr>";
 }
 
-$text .= "<tr>
-<td style=\"width:5%\" class=\"forumheader3\">&nbsp;</td>
-<td style=\"width:30%\" class=\"forumheader3\"><b>".FMLAN_17."</b></td>
-<td class=\"forumheader3\"><b>".FMLAN_18."</b></td>
-<td style=\"width:30%\" class=\"forumheader3\"><b>".FMLAN_19."</b></td>
-<td class=\"forumheader3\"><b>".FMLAN_20."</b></td>
-</tr>";
-
-
-
-
 $c=0;
 while($dirs[$c]){
         $dirsize = dirsize($path.$dirs[$c]);
         $text .= "<tr>
-        <td style=\"width:5%\" class=\"forumheader3\" style=\"vertical-align:middle; text-align:center\">
+        <td class=\"forumheader3\" style=\"vertical-align:middle; text-align:center; width:5%\">
         <a href=\"".e_SELF."?".$path.$dirs[$c]."/\"><img src=\"".$imagedir."folder.png\" alt=\"".$dirs[$c]." ".FMLAN_31."\" style=\"border:0\" /></a>
+        </td>
         <td style=\"width:30%\" class=\"forumheader3\">
         <a href=\"".e_SELF."?".$path.$dirs[$c]."/\">".$dirs[$c]."</a>
         </td>
@@ -208,8 +202,8 @@ while($dirs[$c]){
         <td class=\"forumheader3\">&nbsp;</td>
         <td class=\"forumheader3\">";
         if(FILE_UPLOADS){
-                $text .= "<input class=\"button\" type=\"button\" name=\"erquest\" value=\"".FMLAN_21."\" onClick=\"expandit(this)\">
-                <div style=\"display:none; &{head}\">
+                $text .= "<input class=\"button\" type=\"button\" name=\"erquest\" value=\"".FMLAN_21."\" onclick=\"expandit(this)\" />
+                <div style=\"display:none;\">
                 <input class=\"tbox\" type=\"file\" name=\"file_userfile[]\" size=\"50\" />
                 <input class=\"button\" type=\"submit\" name=\"upload\" value=\"".FMLAN_22."\" />
                 <input type=\"hidden\" name=\"upload_dir[]\" value=\"".$path.$dirs[$c]."\" />
@@ -233,26 +227,26 @@ while($files[$c]){
         }
         $size = parsesize(filesize(e_BASE.$path."/".$files[$c]));
         $text .= "<tr>
-        <td style=\"width:5%\" class=\"forumheader3\" style=\"vertical-align:middle; text-align:center\">
-        <img src=\"".$imagedir.$img.".png\" alt=\"".$files[$c]."\" style=\"border:0\" /></a>
+        <td class=\"forumheader3\" style=\"vertical-align:middle; text-align:center; width:5%\">
+        <img src=\"".$imagedir.$img.".png\" alt=\"".$files[$c]."\" style=\"border:0\" />
+        </td>
         <td style=\"width:30%\" class=\"forumheader3\">
         <a href=\"".e_SELF."?".$path.$files[$c]."\">".$files[$c]."</a>
         </td>";
         $text .= "<td style=\"width:10%\" class=\"forumheader3\">".$size."</td>
         <td style=\"width:30%\" class=\"forumheader3\">".date("F j Y, g:i a", filemtime(e_BASE.$path."/".$files[$c]))."</td>
         <td class=\"forumheader3\"><input class=\"button\" type=\"submit\" name=\"deletefile\" value=\"".FMLAN_23."\" />
-        <input type=\"checkbox\" name=\"deleteconfirm\" value=\"".$path.$files[$c]."\"><span class=\"smalltext\" /> ".FMLAN_24."</span></td>
+        <input type=\"checkbox\" name=\"deleteconfirm\" value=\"".$path.$files[$c]."\" /><span class=\"smalltext\"> ".FMLAN_24."</span></td>
         </tr>";
         $c++;
 }
 
-$text .= "
+$text .= "</table>
 <input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
-</form>
-</table>
-</div>";
+</div>
+</form>";
 
-$ns -> tablerender(FMLAN_25, $text);
+$ns -> tablerender(FMLAN_29.": <b>root/".$pathd."</b>&nbsp;&nbsp;[ ".count($dirs)." ".$dstr.", ".count($files)." ".$cstr." ]", $text);
 
 function dirsize($dir){
         $_SERVER["DOCUMENT_ROOT"].e_HTTP.$dir;
