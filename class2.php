@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.87 $
-|     $Date: 2005-02-22 17:42:51 $
-|     $Author: stevedunstan $
+|     $Revision: 1.88 $
+|     $Date: 2005-02-23 21:06:38 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -25,14 +25,12 @@ $eTimingStart = microtime();
 $register_globals = true;
 if(function_exists('ini_get')) {
 	if(ini_get('register_globals')){
-		if($register_globals){
-			while (list($global) = each($GLOBALS)) {
-				if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST|eTimingStart)$/', $global)) {
-					unset($$global);
-				}
+		while (list($global) = each($GLOBALS)) {
+			if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST|eTimingStart)$/', $global)) {
+				unset($$global);
 			}
-			unset($global);
 		}
+		unset($global);
 	}
 }
 
@@ -763,7 +761,7 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '') {
 				$pref[$key] = $tp->toDB($prefvalue, true);
 				$pref[$key] = str_replace('©', '&copy;', $pref[$key]);
 			}
-			
+
 			// Create the data to be stored
 			$PrefCache1 = $eArrayStorage->WriteArray($pref);
 			if(!$sql->db_Update('core', "e107_value='{$PrefCache1}' WHERE e107_name = 'SitePrefs'")){
