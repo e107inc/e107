@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.10 $
-|		$Date: 2005-02-12 09:52:53 $
+|		$Revision: 1.11 $
+|		$Date: 2005-03-01 23:13:47 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1284,6 +1284,14 @@ class contentform{
 								show.display=\"\";
 								hide.display=\"none\";
 								hideid = showid;
+							}
+						}
+						var hideidcolor=\"creationdiv\";
+						function setactive(showidcolor){
+							if (hideidcolor!=showidcolor){
+								document.getElementById(showidcolor).src = \"".e_IMAGE."admin_images/arrow_over_16.png\";
+								document.getElementById(hideidcolor).src = \"".e_IMAGE."admin_images/arrow_16.png\";
+								hideidcolor = showidcolor;						
 							}
 						}
 						//-->

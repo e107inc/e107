@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-02-20 22:35:39 $
+|     $Revision: 1.16 $
+|     $Date: 2005-03-01 23:13:47 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -463,7 +463,7 @@ define("CONTENT_LAN_73", "order_asc");
 define("CONTENT_LAN_74", "order_desc");
 define("CONTENT_LAN_75", "submit content item");
 define("CONTENT_LAN_76", "create pdf file of the");
-define("CONTENT_LAN_77", "");
+define("CONTENT_LAN_77", "content search");
 define("CONTENT_LAN_78", "");
 define("CONTENT_LAN_79", "");
 define("CONTENT_LAN_80", "");
