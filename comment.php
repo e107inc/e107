@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-02-16 20:16:52 $
+|     $Revision: 1.15 $
+|     $Date: 2005-02-16 20:43:39 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -168,34 +168,37 @@ if ($action == "reply") {
 			updated db query removed one call
 			*/
 			 
-			 
-			$query = "SELECT #news.*, user_id, user_name, user_customtitle, category_name, category_icon FROM #news
-				LEFT JOIN #user ON #news.news_author = #user.user_id
-				LEFT JOIN #news_category ON #news.news_category = #news_category.category_id
-				WHERE news_id=$id";
+			 if($pref['trackbackEnabled']) {
+				$query = "SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
+				LEFT JOIN #user AS u ON n.news_author = u.user_id
+				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id 
+				LEFT JOIN #trackback AS tb ON tb.trackback_pid  = n.news_id 
+				WHERE n.news_class IN (".USERCLASS_LIST.") 
+				AND n.news_id=$id 
+				AND n.news_allow_comments=0
+				GROUP by n.news_id";
+			 } else {
+				$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
+				LEFT JOIN #user AS u ON n.news_author = u.user_id
+				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id 
+				WHERE n.news_class IN (".USERCLASS_LIST.") 
+				AND n.news_id=$id 
+				AND n.news_allow_comments=0";
+			 }
 			 
 			if (!$sql->db_Select_gen($query)) {
 				header("location:".e_BASE."index.php");
 				exit;
 			} else {
 				$news = $sql->db_Fetch();
-				if ($news['news_allow_comments']) {
-					header("location:".e_BASE."index.php");
-					exit;
-				}
-				if (!check_class($news['news_class'])) {
-					header("location:".e_BASE."index.php");
-					exit;
-				} else {
-					$subject = $tp->toHTML($news['news_title']);
-					define(e_PAGETITLE, LAN_100." / ".LAN_99." / ".$subject."");
-					require_once(HEADERF);
-					ob_start();
-					$ix = new news;
-					$ix->render_newsitem($news, "default");
-					$field = $news['news_id'];
-					$comtype = 0;
-				}
+				$subject = $tp->toHTML($news['news_title']);
+				define(e_PAGETITLE, LAN_100." / ".LAN_99." / ".$subject."");
+				require_once(HEADERF);
+				ob_start();
+				$ix = new news;
+				$ix->render_newsitem($news, "default");
+				$field = $news['news_id'];
+				$comtype = 0;
 			}
 		}
 		else if($table == "poll") {

@@ -13,8 +13,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.38 $
-| $Date: 2005-02-16 20:18:32 $
+| $Revision: 1.39 $
+| $Date: 2005-02-16 20:45:27 $
 | $Author: stevedunstan $
 +---------------------------------------------------------------+
 */
@@ -331,13 +331,15 @@ class news {
 		$replace[20] = "<a href='".e_BASE."news.php?cat.$category_id'><img style='".$param['caticon']."'  src='$category_icon' alt='' /></a>";
 
 		$search[21] = "/\{TRACKBACK\}(.*?)/si";
-		$replace[21] = "<a href='".e_BASE."comment.php?comment.news.$news_id#track'>".$param['trackbackstring'].$tb_count."</a>";
-
+		if($pref['trackbackEnabled']) {
+			$replace[21] = "<a href='".e_BASE."comment.php?comment.news.$news_id#track'>".$param['trackbackstring'].$tb_count."</a>";
+		} else {
+			$replace[21] = "";
+		}
 
 		if (function_exists("news_style")) {
 			$NEWS_TEMPLATE = news_style($news);
 		}
-	 //	$text = preg_replace($search, $replace, ($news_render_type == 1 && strstr(e_SELF, "news.php") ? $NEWSLISTSTYLE : $NEWS_TEMPLATE));
 
 		$text = preg_replace($search, $replace, $NEWS_TEMPLATE);
 		return $text;

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-27 19:51:38 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-16 20:43:40 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -21,9 +21,13 @@ if (!e_QUERY) {
 	header("location: ".e_BASE."index.php");
 	exit;
 }
-	
+
+
+
+
+
+
 if (!is_numeric(e_QUERY)) {
-	 
 	if ($sql->db_Select("download", "*", "download_url='".e_QUERY."'", TRUE)) {
 		$row = $sql->db_Fetch();
 		 extract($row);
