@@ -74,22 +74,21 @@ if(!e_QUERY){
 	exit;
 }
 
+
 $tmp = explode(".", e_QUERY);
 if(is_numeric($tmp[0])){
-        $from = $tmp[0];
-        $action = $tmp[1];
-        $id = $tmp[2];
-        $view = $tmp[3];
-        $order = $tmp[4];
-        $sort = $tmp[5];
+        $from = intval($tmp[0]);
+        $action = preg_replace("#\W#","",$tmp[1]);
+        $id = intval($tmp[2]);
+        $view = intval($tmp[3]);
+        $order = intval($tmp[4]);
+        $sort = preg_replace("#\W#","",$tmp[5]);
 }else{
-        $action = $tmp[0];
-        $id = $tmp[1];
+        $action = preg_replace("#\W#","",$tmp[0]);
+        $id = intval($tmp[1]);
 }
 
 if(IsSet($_POST['commentsubmit'])){
-        $tmp = explode(".", e_QUERY);
-
         if(!$sql -> db_Select("download", "download_comment", "download_id='$id' ")){
                 header("location:".e_BASE."index.php");
                 exit;
