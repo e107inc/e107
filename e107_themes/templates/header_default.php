@@ -11,24 +11,19 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2004-12-15 04:03:44 $
+|     $Revision: 1.9 $
+|     $Date: 2004-12-15 06:47:51 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-if(!function_exists("parseheader"))
-{
+if (!function_exists("parseheader")) {
 	function parseheader($LAYOUT){
 		global $tp;
 		$tmp = explode("\n", $LAYOUT);
-		for($c=0; $c < count($tmp); $c++)
-		{
-			if(preg_match("/{.+?}/", $tmp[$c]))
-			{
+		for ($c=0; $c < count($tmp); $c++) {
+			if (preg_match("/{.+?}/", $tmp[$c])) {
 				echo $tp -> parseTemplate($tmp[$c]);
-			}
-			else
-			{
+			} else {
 				echo $tmp[$c];
 			}
 		}
@@ -42,7 +37,7 @@ echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='iso-8859-1
 <title>".SITENAME.(defined("e_PAGETITLE") ? ": ".e_PAGETITLE : (defined("PAGE_NAME") ? ": ".PAGE_NAME : ""))."</title>
 <link rel=\"stylesheet\" href=\"".e_FILE."e107.css\" type=\"text/css\" />
 <link rel=\"stylesheet\" href=\"".THEME."style.css\" type=\"text/css\" />
-<link rel=\"alternate\" type=\"application/rss+xml\" title=\"".SITENAME." RSS\" href=\"".e_FILE."backend\news.xml\" />";
+<link rel=\"alternate\" type=\"application/rss+xml\" title=\"".SITENAME." RSS\" href=\"".e_FILE."backend/news.xml\" />";
 if(file_exists(e_BASE."favicon.ico")){echo "\n<link rel=\"shortcut icon\" href=\"favicon.ico\" />"; }
 if(file_exists(e_FILE."style.css")){ echo "\n<link rel='stylesheet' href='".e_FILE."style.css' type=\"text/css\" />\n"; }
 if($eplug_css){ echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n"; }
@@ -60,8 +55,7 @@ if(function_exists("headerjs")){echo headerjs();  }
 echo "<script type=\"text/javascript\">
 <!--\n";
 if($pref['log_activate']){
-echo "
-document.write( '<link rel=\"stylesheet\" type=\"text/css\" href=\"".e_PLUGIN."log/log.php?referer=' + ref + '&color=' + colord + '&eself=' + eself + '&res=' + res + '\">' );";
+echo "document.write( '<link rel=\"stylesheet\" type=\"text/css\" href=\"".e_PLUGIN."log/log.php?referer=' + ref + '&color=' + colord + '&eself=' + eself + '&res=' + res + '\">' );\n";
 }
 //echo "var ejs_listpics = new Array();";
 
@@ -78,11 +72,7 @@ while ($file = readdir($handle)){
 $ejs_listpics = substr($ejs_listpics, 0, -1);
 
 closedir($handle);
-echo "\n
-
-ejs_preload('".THEME."images/','".$ejs_listpics."');\n
-// -->\n
-</script>
+echo "ejs_preload('".THEME."images/','".$ejs_listpics."');\n// -->\n</script>
 </head>
 <body".$body_onload.">";
 //echo "XX - ".$e107_popup;
