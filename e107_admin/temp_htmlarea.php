@@ -1,5 +1,7 @@
 <?
-// $Id: temp_htmlarea.php,v 1.2 2004-08-11 04:40:25 e107coders Exp $ 
+// $Id: temp_htmlarea.php,v 1.3 2004-08-11 04:51:23 e107coders Exp $
+
+
 require_once("../class2.php");
 require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
 $htmlarea_js = htmlarea("data");
@@ -173,4 +175,3 @@ window.onload = HTMLArea.init();
 
  // return $headertext;
 }
-
