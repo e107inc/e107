@@ -22,11 +22,10 @@ function sitelinks(){
         # - return                                parsed text
         # - scope                                        null
         */
-        global $pref,$ns;
+        global $pref,$ns, $tp;
 
         if($cache = retrieve_cache("sitelinks")){
-                $aj = new textparse;
-                echo $aj -> formtparev($cache);
+                echo $tp -> toHTML($cache,TRUE,'nobreak');
                 return;
         }
         ob_start();
@@ -136,6 +135,8 @@ function sitelinks(){
 }
 $text .= POSTLINK;
 
+$text = $tp -> toHTML($text,TRUE,'nobreak');
+
 if(LINKDISPLAY == 2){
         $ns = new e107table;
         $ns -> tablerender(LAN_183, $text);
@@ -150,8 +151,7 @@ if(LINKDISPLAY == 3){
 }
 
 if($pref['cachestatus']){
-        $aj = new textparse;
-        $cache = $aj -> formtpa(ob_get_contents(), "admin");
+        $cache = $tp -> toDB(ob_get_contents());
         set_cache("sitelinks", $cache);
 }
 
