@@ -11,14 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin_combo.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-06 17:45:42 $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-06 18:20:08 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 if (ADMIN) {
-	header('Location:admin.php');
+	header('Location:'.SITEURL.$ADMIN_DIRECTORY.'admin.php');
 	exit;
+} else {
+	header('Location:'.SITEURL.'index.php');
+	exit;	
 }
 ?>
