@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.64 $
-|   $Date: 2005-03-31 17:30:01 $
-|   $Author: stevedunstan $
+|   $Revision: 1.65 $
+|   $Date: 2005-04-02 07:58:19 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 
 */
@@ -225,7 +225,7 @@ if ($action == "create") {
 					{
 						$_POST['news_thumb'] = str_replace("thumb:", "", $att);
 					}
-					
+
 					if(strstr($att, "image:"))
 					{
 						$_POST['news_image'] = str_replace("image:", "", $att);
@@ -308,7 +308,7 @@ class newspost {
 
 				// Note: To fix the alignment bug. Put both buttons inside the Form.
 				// But make EDIT a 'button' and DELETE 'submit'
-				
+
 				$text .= "<tr>
 				<td style='width:5%' class='forumheader3'>$news_id</td>
 				<td style='width:55%' class='forumheader3'><a href='".e_BASE."comment.php?comment.news.$news_id'>".($news_title ? $tp->toHTML($news_title) : "[".NWSLAN_42."]")."</a></td>
@@ -405,7 +405,7 @@ class newspost {
 		{
 			$filelist[] = array("id" => 0, "name" => $value['fname'], "url" => $value['fname']);
 		}
-		
+
 
 		$sql->db_Select("download");
 		while ($row = $sql->db_Fetch()) {
@@ -595,7 +595,7 @@ class newspost {
 					";
 				}
 			}
-	
+
 			$text .= "</div>
 			</td>
 			</tr>\n";
@@ -628,13 +628,13 @@ class newspost {
 								$text .= "<a href='javascript:addtext(\"[link=e107_images/newspost_images/".$fi."][img]".$image['fname']."[/img][/link]\");'><img src='".e_IMAGE."generic/".IMODE."/image.png' alt='' style='vertical-align:middle;' /> ".$image['fname']."</a> (link to full image will be generated)<br />
 								";
 							}
-							else 
+							else
 							{
 								$text .= "<a href='javascript:addtext(\"[image]".$image['fname']."[/image]\");'><img src='".e_IMAGE."generic/".IMODE."/image.png' alt='' style='vertical-align:middle;' /> ".$image['fname']."</a><br />
 								";
 							}
 						}
-						else 
+						else
 						{
 							$text .= "<a href='javascript:addtext(\"[image]".$image['fname']."[/image]\");'><img src='".e_IMAGE."generic/".IMODE."/image.png' alt='' style='vertical-align:middle;' /> ".$image['fname']."</a><br />
 							";
@@ -702,9 +702,9 @@ class newspost {
 
 			<br />
 			".NWSLAN_21.":<br />";
-			
+
 			$_startdate = ($_POST['news_start'] > 0) ? date("d/m/Y", $_POST['news_start']) : "";
-			
+
 			$cal_options['firstDay'] = 0;
 			$cal_options['showsTime'] = false;
 			$cal_options['showOthers'] = false;
@@ -715,11 +715,11 @@ class newspost {
 			$cal_attrib['name'] = "news_start";
 			$cal_attrib['value'] = $_startdate;
 			$text .= $cal->make_input_field($cal_options, $cal_attrib);
-			
+
 		$text .= " - ";
 
 			$_enddate = ($_POST['news_end'] > 0) ? date("d/m/Y", $_POST['news_end']) : "";
-			
+
 			unset($cal_options);
 			unset($cal_attrib);
 			$cal_options['firstDay'] = 0;
@@ -887,7 +887,7 @@ class newspost {
 		// ##### Display news preview ---------------------------------------------------------------------------------------------------------
 		global $tp, $sql, $ix,$IMAGES_DIRECTORY;
 		$_POST['news_id'] = $id;
-		
+
 		if($_POST['news_start'])
 		{
 			$tmp = explode("/", $_POST['news_start']);
@@ -916,7 +916,7 @@ class newspost {
 		{
 			$_POST['news_datestamp'] = time();
 		}
-			
+
 		if($_POST['update_datestamp'])
 		{
 			$_POST['news_datestamp'] = time();
@@ -924,10 +924,11 @@ class newspost {
 
 		$sql->db_Select("news_category", "*", "category_id='".$_POST['cat_id']."' ");
 		list($_POST['category_id'], $_POST['category_name'], $_POST['category_icon']) = $sql->db_Fetch();
-		$_POST['admin_id'] = USERID;
-		$_POST['admin_name'] = USERNAME;
+		$_POST['user_id'] = USERID;
+		$_POST['user_name'] = USERNAME;
 		$_POST['comment_total'] = $comment_total;
 		$_PR = $_POST;
+
 		$_PR['data'] = str_replace($IMAGES_DIRECTORY,"../".$IMAGES_DIRECTORY,$_PR['data']);
 		$_PR['news_extended'] = str_replace($IMAGES_DIRECTORY,"../".$IMAGES_DIRECTORY,$_PR['news_extended']);
 		$_PR['news_title'] = $tp->post_toHTML($_PR['news_title']);
@@ -938,7 +939,7 @@ class newspost {
 
 		$_PR['news_file'] = $_POST['news_file'];
 		$_PR['news_image'] = $_POST['news_image'];
-
+  
 		$ix->render_newsitem($_PR);
 	}
 
@@ -975,7 +976,7 @@ class newspost {
 		{
 			$_POST['news_datestamp'] = time();
 		}
-			
+
 		if($_POST['update_datestamp'])
 		{
 			$_POST['news_datestamp'] = time();
