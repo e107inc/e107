@@ -97,6 +97,7 @@ if(IsSet($_POST['updateoptions'])){
 	$pref['forum_redirect'] = $_POST['forum_redirect'];
 	$pref['forum_user_customtitle'] = $_POST['forum_user_customtitle'];
 	$pref['reported_post_email'] = $_POST['reported_post_email'];
+	$pref['links_new_window'] = $_POST['links_new_window'];
 	save_prefs();
 	$forum -> show_message(FORLAN_10);
 }
@@ -290,12 +291,12 @@ class forum{
 			$sql3 = new db;
 		}
 		if(!$mode){
-			$text = "<div style='border : solid 1px #000; padding : 4px; width : auto; height : 200px; overflow : auto; '>";
+			$text = "<div style='border : solid 1px #000; padding : 4px; width : auto; height : 400px; overflow : auto; '>";
 		}else{
 			$text = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
 		}
 		$text .= "
-		<table style='width:100%' class='fborder'>
+		<table style='width:98%' class='fborder'>
 		<tr>
 		<td colspan='2' style='width:70%; text-align:center' class='fcaption'>".FORLAN_28."</td>
 		<td style='width:30%; text-align:center' class='fcaption'>".FORLAN_80."</td>
@@ -534,6 +535,12 @@ class forum{
 		<td style='width:25%' class='forumheader2' style='text-align:center'>".($pref['html_post'] ? "<input type='checkbox' name='html_post' value='1' checked='checked' />" : "<input type='checkbox' name='html_post' value='1' />")."</td>
 		</tr>
 
+
+		<tr>
+		<td style='width:75%' class='forumheader3'>".FORLAN_124."<br /><span class='smalltext'>".FORLAN_125."</span></td>
+		<td style='width:25%' class='forumheader2' style='text-align:center'>".($pref['links_new_window'] ? "<input type='checkbox' name='links_new_window' value='1' checked='checked' />" : "<input type='checkbox' name='links_new_window' value='1' />")."</td>
+		</tr>
+
 		<tr>
 		<td style='width:75%' class='forumheader3'>".FORLAN_49."<br /><span class='smalltext'>".FORLAN_50."</span></td>
 		<td style='width:25%' class='forumheader2' style='text-align:center'>".($pref['forum_poll'] ? "<input type='checkbox' name='forum_poll' value='1' checked='checked' />" : "<input type='checkbox' name='forum_poll' value='1' />")."</td>
@@ -593,7 +600,7 @@ class forum{
 
 	function show_reported ($sub_action, $id){
 			global $sql, $rs, $ns, $aj;
-			$text = "<div style='border : solid 1px #000; padding : 4px; width :auto; height : 200px; overflow : auto; '>\n";
+			$text = "<div style='border : solid 1px #000; padding : 4px; width :auto; height : 400px; overflow : auto; '>\n";
 			if($reported_total = $sql -> db_Select("tmp", "*", "tmp_ip='reported_post' ")){
 				$text .= "<table class='fborder' style='width:100%'>
 				<tr>
