@@ -107,10 +107,7 @@ if(IsSet($_POST['updateprefs'])){
         $pref['smtp_username'] = $aj -> formtpa($_POST['smtp_username']);
         $pref['smtp_password'] = $aj -> formtpa($_POST['smtp_password']);
 
-
-
-
-        $sql -> db_Delete("cache");
+        clear_cache();
         save_prefs();
         header("location:".e_ADMIN."prefs.php");
        echo "<script type='text/javascript'>document.location.href='prefs.php'</script>\n";
