@@ -107,7 +107,7 @@ define("USRLAN_102", "Action");
 
 define("USRLAN_103", "Field Type");
 define("USRLAN_104", "Default Value");
-define("USRLAN_105", "Enter values seperated by commas eg. value1,value2 etc <br> For DB table use the format: dbtable,field-value,field-name.");
+define("USRLAN_105", "Enter values seperated by commas eg. value1,value2 etc <br /> For DB table use the format: dbtable,field-value,field-name.");
 define("USRLAN_106", "This will determine who will see this field in their usersettings.");
 define("USRLAN_107", "This will determine who can see the value in the user page.");
 
@@ -122,7 +122,7 @@ define("USRLAN_114", "Dear ".$_POST['resend_name']."\n\nWelcome to ".SITENAME."\
 define("USRLAN_115", "\n\nThanks for your registration.\n\nFrom");
 define("USRLAN_116", "Please confirm that you wish to resend a confirmation email to:");
 define("USRLAN_117", "Click the button below to test the following email:");
-define("USRLAN_118", "Test Email"); 
+define("USRLAN_118", "Test Email");
 
 define("USRLAN_119", "Update Extended Field");
 
