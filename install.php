@@ -910,7 +910,7 @@ mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Members', 'user.php',
 $e107['e107_author'] = "Steve Dunstan (jalist)";
 $e107['e107_url'] = "http://e107.org";
 $e107['e107_version'] = "v5.4";
-$e107['e107_build'] = "beta4";
+$e107['e107_build'] = "beta5";
 $e107['e107_datestamp'] = time();
 $tmp = serialize($e107);
 mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('e107', '$tmp') ");

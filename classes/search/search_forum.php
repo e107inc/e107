@@ -23,7 +23,7 @@ if($results = $sql -> db_Select("forum_t", "*", "thread_name REGEXP('".$query."'
 				$tmp = $thread_id;
 			}
 
-			$text .= "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <b><a href=\"forum.php?view.$thread_forum_id.$tmp\">$thread_name</a></b><br />$thread_thread<br /><br />";
+			$text .= "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <b><a href=\"forum_viewtopic.php?$thread_forum_id.$tmp\">$thread_name</a></b><br />$thread_thread<br /><br />";
 		}
 	}
 }else{

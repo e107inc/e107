@@ -23,11 +23,19 @@ if(e_QUERY != ""){
 	$qs = explode(".", e_QUERY);
 	$action = $qs[0];
 	$id = $qs[1];
-	$sql -> db_Select("submitnews", "*", "submitnews_id ='$id' ");
-	list($submitnews_id, $submitnews_name, $submitnews_email, $submitnews_title, $submitnews_item, $submitnews_datestamp, $submitnews_ip, $submitnews_auth) = $sql-> db_Fetch();
-	$news_title = $submitnews_title;
-	$news_body = $submitnews_item;
-	$news_source = "Submitted by ".$submitnews_name." ( ".$submitnews_email." )";
+	if($action == "ne"){
+		$_POST['edit'] = TRUE;
+		$_POST['existing'] = $id;
+	}else if($action == "nd"){
+		$_POST['delete'] = TRUE;
+		$_POST['existing'] = $id;
+	}else{
+		$sql -> db_Select("submitnews", "*", "submitnews_id ='$id' ");
+		list($submitnews_id, $submitnews_name, $submitnews_email, $submitnews_title, $submitnews_item, $submitnews_datestamp, $submitnews_ip, $submitnews_auth) = $sql-> db_Fetch();
+		$news_title = $submitnews_title;
+		$data = $submitnews_item;
+		$news_source = "Submitted by ".$submitnews_name." ( ".$submitnews_email." )";
+	}
 }
 
 $ix = new news;
@@ -50,7 +58,7 @@ if(IsSet($_POST['edit'])){
 	$row = $ix -> edit_item($_POST['existing']);
 	extract($row);
 	$news_title = stripslashes($news_title);
-	$news_body = stripslashes($news_body);
+	$data = stripslashes($news_body);
 	$news_extended = stripslashes($news_extended);
 	$news_source = stripslashes($news_source);
 	$news_url = stripslashes($news_url);
@@ -64,8 +72,8 @@ if(IsSet($_POST['submit'])){
 	if(!$_POST['startmonth'] || !$_POST['startday'] || !$_POST['startyear'] ? $active_start = 0 : $active_start = mktime (0, 0, 0, $_POST['startmonth'], $_POST['startday'], $_POST['startyear']));
 	if(!$_POST['endmonth'] || !$_POST['endday'] || !$_POST['endyear'] ? $active_end = 0 : $active_end = mktime (0, 0, 0, $_POST['endmonth'], $_POST['endday'], $_POST['endyear']));
 
-	$message = $ix -> submit_item($_POST['news_id'], $_POST['news_title'], $_POST['news_body'], $_POST['news_extended'], $_POST['news_source'], $_POST['news_url'], $_POST['cat_id'], $_POST['news_allow_comments'], $active_start, $active_end, $always_active);
-	unset($news_id, $news_title, $news_body, $news_extended, $news_source, $news_url, $_POST['news_allow_comments'], $active_start, $active_end, $_POST['news_active']);
+	$message = $ix -> submit_item($_POST['news_id'], $_POST['news_title'], $_POST['data'], $_POST['news_extended'], $_POST['news_source'], $_POST['news_url'], $_POST['cat_id'], $_POST['news_allow_comments'], $active_start, $active_end, $always_active);
+	unset($news_id, $news_title, $data, $news_extended, $news_source, $news_url, $_POST['news_allow_comments'], $active_start, $active_end, $_POST['news_active']);
 	$rsd = new create_rss();
 }
 
@@ -92,15 +100,15 @@ $ns -> tablerender("Confirm Delete Category", $text);
 if(IsSet($_POST['preview'])){
 	if(!$_POST['startmonth'] || !$_POST['startday'] || !$_POST['startyear'] ? $active_start = 0 : $active_start = mktime (0, 0, 0, $_POST['startmonth'], $_POST['startday'], $_POST['startyear']));
 	if(!$_POST['endmonth'] || !$_POST['endday'] || !$_POST['endyear'] ? $active_end = 0 : $active_end = mktime (0, 0, 0, $_POST['endmonth'], $_POST['endday'], $_POST['endyear']));
-	$temp = $ix -> preview($news_id, $_POST['news_title'], $_POST['news_body'],  $_POST['news_extended'], $_POST['news_source'], $_POST['news_url'], $_POST['cat_id'], $_POST['news_allow_comments'], $active_start, $active_end, $_POST['news_active']);
+	$temp = $ix -> preview($news_id, $_POST['news_title'], $_POST['data'],  $_POST['news_extended'], $_POST['news_source'], $_POST['news_url'], $_POST['cat_id'], $_POST['news_allow_comments'], $active_start, $active_end, $_POST['news_active']);
 	$news_category = $temp[0];
 	$news_title = $temp[1];
-	$news_body = $temp[2];
+	$data = $temp[2];
 	$news_extended = $temp[3];
 	$news_source = $temp[4];
 	$news_url = $temp[5];
 	$news_title = $aj -> editparse($news_title);
-	$news_body = $aj -> editparse($news_body);
+	$data = $aj -> editparse($data);
 	$news_extended = $aj -> editparse($news_extended);
 	$news_source = $aj -> editparse($news_source);
 	$news_url = $aj -> editparse($news_url);
@@ -115,7 +123,7 @@ if(!$sql -> db_Select("news", "*", "ORDER BY news_datestamp DESC LIMIT 0,20", $m
 	<form method=\"post\" action=\"".e_SELF."\">";
 }else{
 	$text = "<div style=\"text-align:center\">
-	<form method=\"post\" action=\"".e_SELF."\" name=\"newspostform\">
+	<form method=\"post\" action=\"".e_SELF."\" name=\"dataform\">
 	Existing News: 
 	<select name=\"existing\" class=\"tbox\">";
 	
@@ -133,7 +141,15 @@ if(!$sql -> db_Select("news", "*", "ORDER BY news_datestamp DESC LIMIT 0,20", $m
 $text .= "
 <div style=\"text-align:center\">
 <table style=\"width:80%\">
-<tr> 
+
+<tr>
+<td colspan=\"2\" style=\"text-align:center\">
+<input class=\"button\" type=\"button\" onClick=\"openwindow()\"  value=\"Open HTML Editor\" />
+<br /><br />
+</td>
+</tr>
+
+<tr>
 <td style=\"width:20%\">Category: </td>
 <td style=\"width:80%\">";
 
@@ -163,18 +179,18 @@ $text .= " [ <a href=\"news_category.php\">Add/Edit Categories</a> ]
 </td>
 </tr>
 <tr> 
-<td style=\"width:20%\">Body:<br /><input class=\"tbox\" readonly type=\"text\" name=\"remLen1\" size=\"4\" maxlength=\"4\" value=\"0\"></td>
+<td style=\"width:20%\">Body:<br /></td>
 <td style=\"width:80%\">
-<textarea class=\"tbox\" name=\"news_body\" cols=\"80\" rows=\"10\" onKeyDown=\"textCounter(document.newspostform.news_body,document.newspostform.remLen1)\" onKeyUp=\"textCounter(document.newspostform.news_body,document.newspostform.remLen1)\">$news_body</textarea>
+<textarea class=\"tbox\" name=\"data\" cols=\"80\" rows=\"10\" onselect=\"storeCaret(this);\" onclick=\"storeCaret(this);\" onkeyup=\"storeCaret(this);\">$data</textarea>
 <br />
 <input class=\"helpbox\" type=\"text\" name=\"helpb\" size=\"100\" />";
 $text .= ren_help("addtext");
 $text .= "</td>
 </tr>
 <tr> 
-<td style=\"width:20%\">Extended:<br /><input class=\"tbox\" readonly type=\"text\" name=\"remLen2\" size=\"4\" maxlength=\"4\" value=\"0\"></td>
+<td style=\"width:20%\">Extended:<br /></td>
 <td style=\"width:80%\">
-<textarea class=\"tbox\" name=\"news_extended\" cols=\"80\" rows=\"10\" onKeyDown=\"textCounter(document.newspostform.news_extended,document.newspostform.remLen2)\" onKeyUp=\"textCounter(document.newspostform.news_extended,document.newspostform.remLen2)\">$news_extended</textarea>";
+<textarea class=\"tbox\" name=\"news_extended\" cols=\"80\" rows=\"10\" onselect=\"storeCaret2(this);\" onclick=\"storeCaret2(this);\" onkeyup=\"storeCaret2(this);\">$news_extended</textarea>";
 $text .= ren_help("addtext2");
 $text .= "</tr>
 <tr> 
@@ -279,21 +295,50 @@ Line breaks (&lt;br /&gt;) are auto added. <u>Underlined fields are required.</u
 </div>
 <input type=\"hidden\" name=\"news_id\" value=\"$news_id\">
 </form>";
+//<a href=\"#\" onclick=\"window.open('../htmlarea/index.php?Sent to textarea','Editor', 'top=100,left=100,resizable=no,width=670,height=600,scrollbars=no,menubar=no'); return false\">Open editor</a>";
 $ns -> tablerender("<div style=\"text-align:center\">News Post</div>", $text);
 ?>
 <script type="text/javascript">
-function addtext(sc){
-	document.newspostform.news_body.value += sc;
+
+function addtext(text) {
+	text = ' ' + text + ' ';
+	if (document.dataform.data.createTextRange && document.dataform.data.caretPos) {
+		var caretPos = document.dataform.data.caretPos;
+		caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == ' ' ? text + ' ' : text;
+		document.dataform.data.focus();
+	} else {
+	document.dataform.data.value  += text;
+	document.dataform.data.focus();
+	}
 }
-function addtext2(sc){
-	document.newspostform.news_extended.value += sc;
+
+function addtext2(text) {
+	text = ' ' + text + ' ';
+	if (document.dataform.news_extended.createTextRange && document.dataform.news_extended.caretPos) {
+		var caretPos = document.dataform.news_extended.caretPos;
+		caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == ' ' ? text + ' ' : text;
+		document.dataform.news_extended.focus();
+	} else {
+	document.dataform.news_extended  += text;
+	document.dataform.news_extended.focus();
+	}
 }
+
+function storeCaret (textEl) {
+	if (textEl.createTextRange) 
+	textEl.caretPos = document.selection.createRange().duplicate();
+}
+function storeCaret2 (textEl) {
+	if (textEl.createTextRange) 
+	textEl.caretPos = document.selection.createRange().duplicate();
+}
+
 function fclear(){
-	document.newspostform.news_body.value = "";
-	document.newspostform.news_extended.value = "";
+	document.dataform.data.value = "";
+	document.dataform.news_extended.value = "";
 }
 function help(help){
-	document.newspostform.helpb.value = help;
+	document.dataform.helpb.value = help;
 }
 </script>
 <?php
@@ -337,8 +382,8 @@ $rss = "<?xml version=\"1.0\"?>
 </image>
 ";
 
-  while(list($news_id, $news_title, $news_body, $news_datestamp, $news_author, $news_source, $news_url, $news_catagory) = $rsd-> db_Fetch()){
-  		$tmp = explode(" ", $news_body);
+  while(list($news_id, $news_title, $data, $news_datestamp, $news_author, $news_source, $news_url, $news_catagory) = $rsd-> db_Fetch()){
+  		$tmp = explode(" ", $data);
 		unset($nb);
 		for($a=0; $a<=100; $a++){
 			$nb .= $tmp[$a]." ";
@@ -372,9 +417,9 @@ $rss = "<?xml version=\"1.0\"?>
 function ren_help($func){
 	$str ="<br />
 <input class=\"button\" type=\"button\" value=\"link\" onclick=\"$func('[link=hyperlink url]hyperlink text[/link]')\" onMouseOver=\"help('Insert link: [link]http://mysite.com[/link] or  [link=http://yoursite.com]Visit My Site[/link]')\" onMouseOut=\"help('')\">
-<input class=\"button\" type=\"button\" value=\"b\" onclick=\"$func('[b][/b]')\" onMouseOver=\"help('Bold text: [b]This text will be bold[/b]')\" onMouseOut=\"help('')\">
-<input class=\"button\" type=\"button\" value=\"i\" onclick=\"$func('[i][/i]')\" onMouseOver=\"help('Italic text: [i]This text will be italicised[/i]')\" onMouseOut=\"help('')\">
-<input class=\"button\" type=\"button\" value=\"u\" onclick=\"$func('[u][/u]')\" onMouseOver=\"help('Underline text: [u]This text will be underlined[/u]')\" onMouseOut=\"help('')\">
+<input class=\"button\" type=\"button\" style=\"font-weight:bold; width: 20px\" value=\"b\" onclick=\"$func('[b][/b]')\" onMouseOver=\"help('Bold text: [b]This text will be bold[/b]')\" onMouseOut=\"help('')\">
+<input class=\"button\" type=\"button\" style=\"font-style:italic; width: 20px\" value=\"i\" onclick=\"$func('[i][/i]')\" onMouseOver=\"help('Italic text: [i]This text will be italicised[/i]')\" onMouseOut=\"help('')\">
+<input class=\"button\" type=\"button\" style=\"text-decoration: underline; width: 20px\" value=\"u\" onclick=\"$func('[u][/u]')\" onMouseOver=\"help('Underline text: [u]This text will be underlined[/u]')\" onMouseOut=\"help('')\">
 <input class=\"button\" type=\"button\" value=\"img\" onclick=\"$func('[img][/img]')\" onMouseOver=\"help('Insert image: [img]mypicture.jpg[/img]')\" onMouseOut=\"help('')\">
 <input class=\"button\" type=\"button\" value=\"center\" onclick=\"$func('[center][/center]')\" onMouseOver=\"help('Center align: [center]This text will be centered[/center]')\" onMouseOut=\"help('')\">
 <input class=\"button\" type=\"button\" value=\"left\" onclick=\"$func('[left][/left]')\" onMouseOver=\"help('Left align: [left]This text will be left aligned[/left]')\" onMouseOut=\"help('')\">

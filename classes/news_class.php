@@ -184,6 +184,14 @@ class news{
 			
 			$cls -> db_Select("news_category", "*",  "category_id='$category_id' ");
 			list($category_id, $category_name, $category_icon) = $cls-> db_Fetch();
+
+			$sql2 = new db;
+			if($sql2 -> db_Select("userclass_classes", "*", "userclass_name='PRIVATENEWS_".strtoupper($category_name)."' ")){
+				if(!check_class("PRIVATENEWS_".strtoupper($category_name))){
+					return;
+				}
+			}
+
 			if(eregi("images", $category_icon)){
 				$category_icon = THEME.$category_icon;
 			}else{
@@ -213,14 +221,14 @@ class news{
 			//	{PRINTICON}
 			//	{ENTENDEDSTRING}
 
-			$news_category = "<a href='index.php?cat.".$category_id."'>".$category_name."</a>";
+			$news_category = "<a href='".e_SELF."?cat.".$category_id."'>".$category_name."</a>";
 			$news_author = "<a href='mailto:".$a_email."'>".$a_name."</a>";
-			if(eregi("admin", e_SELF)){
-				$etext = " <a href=\"email.php?".$news_id."\"><img src=\"../themes/shared/generic/friend.gif\" style=\"border:0\" alt=\"email to someone\" /></a>";
-				$ptext = " <a href=\"print.php?".$news_id."\"><img src=\"../themes/shared/generic/printer.gif\" style=\"border:0\" alt=\"printer friendly\" /></a>";
-			}else{
-				$etext = " <a href=\"email.php?".$news_id."\"><img src=\"themes/shared/generic/friend.gif\" style=\"border:0\" alt=\"email to someone\" /></a>";
-				$ptext = "<a href=\"print.php?news.".$news_id."\"><img src=\"themes/shared/generic/printer.gif\" style=\"border:0\" alt=\"printer friendly\" /></a>";
+			$etext = " <a href=\"email.php?".$news_id."\"><img src=\"".e_BASE."themes/shared/generic/friend.gif\" style=\"border:0\" alt=\"email to someone\" /></a>";
+			$ptext = " <a href=\"print.php?".$news_id."\"><img src=\"".e_BASE."themes/shared/generic/printer.gif\" style=\"border:0\" alt=\"printer friendly\" /></a>";
+
+			if(ADMIN && getperms("H")){
+				$adminoptions .= "<a href=\"".e_BASE."admin/newspost.php?ne.".$news_id."\"><img src=\"".e_BASE."themes/shared/generic/newsedit.png\" alt=\"\" style=\"border:0\" /></a>
+				<a href=\"".e_BASE."admin/newspost.php?nd.".$news_id."\"><img src=\"".e_BASE."themes/shared/generic/newsdelete.png\" alt=\"\" style=\"border:0\" /></a>";
 			}
 
 			$search[0] = "/\{NEWSTITLE\}(.*?)/si";
@@ -234,11 +242,11 @@ class news{
 			}
 
 			$search[2] = "/\{NEWSICON\}(.*?)/si";
-			$replace[2] = "<a href='index.php?cat.$category_id'><img style='".ICONSTYLE."'  src='$category_icon' alt='' /></a>";
+			$replace[2] = "<a href='".e_SELF."?cat.$category_id'><img style='".ICONSTYLE."'  src='$category_icon' alt='' /></a>";
 			$search[3] = "/\{NEWSHEADER\}(.*?)/si";
 			$replace[3] = $category_icon;
 			$search[4] = "/\{NEWSCATEGORY\}(.*?)/si";
-			$replace[4] = "<a href='index.php?cat.$category_id'>".$category_name."</a>";
+			$replace[4] = "<a href='".e_SELF."?cat.$category_id'>".$category_name."</a>";
 			$search[5] = "/\{NEWSAUTHOR\}(.*?)/si";
 			$replace[5] = $news_author;
 			$search[6] = "/\{NEWSDATE\}(.*?)/si";
@@ -256,35 +264,38 @@ class news{
 			$search[10] = "/\{NEWSID\}(.*?)/si";
 			$replace[10] = $news_id;
 
-			$search[11] = "/\{EXTENDED\}(.*?)/si";
+			$search[11] = "/\{ADMINOPTIONS\}(.*?)/si";
+			$replace[11] = $adminoptions;
+
+			$search[12] = "/\{EXTENDED\}(.*?)/si";
 			if($news_extended != "" && !eregi("extend", e_QUERY)){
-				$replace[11] = "<a href='index.php?extend.".$news_id."'>".EXTENDEDSTRING."</a>";
+				$replace[12] = "<a href='".e_SELF."?extend.".$news_id."'>".EXTENDEDSTRING."</a>";
 			}
 
-			$search[12] = "/\{NEWSSOURCE\}(.*?)/si";
+			$search[13] = "/\{NEWSSOURCE\}(.*?)/si";
 			if($news_source){
-				$replace[12] = SOURCESTRING.$news_source;
+				$replace[13] = SOURCESTRING.$news_source;
 			}
 
-			$search[13] = "/\{NEWSURL\}(.*?)/si";
+			$search[14] = "/\{NEWSURL\}(.*?)/si";
 			if($news_url){
-				$replace[13] = URLSTRING.$news_url;
+				$replace[14] = URLSTRING.$news_url;
 			}
 
 			$text = preg_replace($search, $replace, $NEWSSTYLE);
+
 			echo $text;
 			if($modex == "preview"){ echo $info; }
 
 			return TRUE;
-
 		}
 
 // ---------------- old newsstyle code, depracated but left for -5.3 themes
 		$search = array("[administrator]", "[date and time]", "[count]", "[l]", "[/l]", "[nc]");
 		if($allow_comments == 1){
-			$replace = array("<a href=\"mailto:$a_email\">$a_name</a>", $datestamp, COMMENT_OFF_TEXT, "", "", "<a href=\"index.php?cat.".$category_id."\">".$category_name."</a>");
+			$replace = array("<a href=\"mailto:$a_email\">$a_name</a>", $datestamp, COMMENT_OFF_TEXT, "", "", "<a href=\"".e_SELF."?cat.".$category_id."\">".$category_name."</a>");
 		}else{
-			$replace = array("<a href=\"mailto:$a_email\">$a_name</a>", $datestamp, $comment_total, "<a href=\"comment.php?".$news_id."\">", "</a>", "<a href=\"index.php?cat.".$category_id."\">".$category_name."</a>");
+			$replace = array("<a href=\"mailto:$a_email\">$a_name</a>", $datestamp, $comment_total, "<a href=\"comment.php?".$news_id."\">", "</a>", "<a href=\"".e_SELF."?cat.".$category_id."\">".$category_name."</a>");
 		}
 		$info_text = str_replace($search,$replace, INFO_TEXT);
 
@@ -307,10 +318,10 @@ class news{
 		if(ICON_SHOW == TRUE && ICON_POSITION == "caption" && $category_icon != ""){
 			$tmp = "<table style=\"width:95%\"><tr><td style=\"width:50%\">";
 			if(ICON_ALIGN == "left"){
-				$tmp = "<a href=\"index.php?cat.".$category_id."\"><img style=\"float: ".ICON_ALIGN."; border:0\"  src=\"".$category_icon."\" alt=\"\" /></a>";
+				$tmp = "<a href=\"".e_SELF."?cat.".$category_id."\"><img style=\"float: ".ICON_ALIGN."; border:0\"  src=\"".$category_icon."\" alt=\"\" /></a>";
 				$caption = $tmp.$caption."</td></tr></table>";
 			}else{
-				$caption .= "</td><td style=\"text-align:right; width:50%\"><a href=\"index.php?cat.".$category_id."\"><img style=\"float: ".ICON_ALIGN."; border:0\"  src=\"".$category_icon."\" alt=\"\" /></a></td></tr></table>";
+				$caption .= "</td><td style=\"text-align:right; width:50%\"><a href=\"".e_SELF."?cat.".$category_id."\"><img style=\"float: ".ICON_ALIGN."; border:0\"  src=\"".$category_icon."\" alt=\"\" /></a></td></tr></table>";
 			}
 		}
 		if(INFO_POSITION == "belowcaption"){
@@ -319,7 +330,7 @@ class news{
 			unset($text);
 		}
 		if(ICON_SHOW == TRUE && ICON_POSITION == "body" && $category_icon != ""){
-			$text .= "<a href=\"index.php?cat.".$category_id."\"><img style=\"float: ".ICON_ALIGN."; border:0\"  src=\"".$category_icon."\" alt=\"\" /></a>";
+			$text .= "<a href=\"".e_SELF."?cat.".$category_id."\"><img style=\"float: ".ICON_ALIGN."; border:0\"  src=\"".$category_icon."\" alt=\"\" /></a>";
 		}
 		if(TITLE_POSITION == "body"){
 			$text .= "<div style=\"text-align:".TITLE_ALIGN."\">".TITLE_STYLE_START.$news_title.TITLE_STYLE_END."</div><br />";
@@ -330,7 +341,7 @@ class news{
 		if($modex == "preview" && $news_extended != ""){
 			$text .= "<br />[Extended text]: ".$news_extended;
 		}else if($news_extended != "" && $modex != "extend"){
-			$text .= "<br /><a href=\"index.php?extend.".$news_id."\">".EXTENDED_STRING."</a>";
+			$text .= "<br /><a href=\"".e_SELF."?extend.".$news_id."\">".EXTENDED_STRING."</a>";
 		}		
 		if($modex == "extend"){
 			$text .= "<br />".$news_extended;
@@ -378,7 +389,7 @@ function checklayoutn($str, $news_title, $news_body, $category_icon, $category_n
 	}else if(strstr($str, "NEWSHEADER")){
 		$text .= $category_icon;
 	}else if(strstr($str, "NEWSCATEGORY")){
-		$text .= "<a href='index.php?cat.".$category_id."'>".$category_name."</a>";
+		$text .= "<a href='".e_SELF."?cat.".$category_id."'>".$category_name."</a>";
 	}else if(strstr($str, "NEWSAUTHOR")){
 		$text .= "<a href='mailto:".$a_email."'>".$a_name."</a>";
 	}else if(strstr($str, "NEWSDATE")){

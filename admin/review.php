@@ -20,16 +20,16 @@ require_once("auth.php");
 $aj = new textparse;
 
 If(IsSet($_POST['submit'])){
-	if($_POST['content_content'] != "" && $_POST['content_content'] != ""){
+	if($_POST['data'] != ""){
 
 		$content_heading = $aj -> tp($_POST['content_heading'], $mode="on");
 		$content_subheading = $aj -> tp($_POST['content_subheading'], $mode="on");
-		$content_content = $aj -> tp($_POST['content_content'], $mode="on");
+		$data = $aj -> tp($_POST['data'], $mode="on");
 
         $content_parent = $_POST['parent_article'];
 
-		 $sql -> db_Insert("content", "0, '".$content_heading."', '".$content_subheading."', '$content_content', '0', '".time()."', '".ADMINID."', '".$_POST['content_comment']."', '".$_POST['content_summary']."', '3' ");
-		unset($content_heading, $content_subheading, $content_content, $content_parent);
+		 $sql -> db_Insert("content", "0, '".$content_heading."', '".$content_subheading."', '$data', '0', '".time()."', '".ADMINID."', '".$_POST['content_comment']."', '".$_POST['content_summary']."', '3' ");
+		unset($content_heading, $content_subheading, $data, $content_parent);
 		$message = "Review added to database.";
 	}else{
 		$message = "Fields left blank.";
@@ -39,18 +39,18 @@ If(IsSet($_POST['submit'])){
 If(IsSet($_POST['update'])){
 	$content_heading = $aj -> tp($_POST['content_heading'], $mode="on");
 	$content_subheading = $aj -> tp($_POST['content_subheading'], $mode="on");
-	$content_content = $aj -> tp($_POST['content_content'], $mode="on");
+	$data = $aj -> tp($_POST['data'], $mode="on");
     $content_parent = $_POST['parent_article'];
-	$sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_page='".$_POST['content_page']."', content_comment='".$_POST['content_comment']."', content_parent='".$content_parent."', content_summary='".$_POST['content_summary']."' WHERE content_id='".$_POST['content_id']."' ");
+	$sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$data', content_page='".$_POST['content_page']."', content_comment='".$_POST['content_comment']."', content_summary='".$_POST['content_summary']."' WHERE content_id='".$_POST['content_id']."' ");
 
-	unset($content_heading, $content_subheading, $content_content, $content_parent);
+	unset($content_heading, $content_subheading, $data, $content_parent);
 	$message = "Review updated in database.";
 }
 
 If(IsSet($_POST['edit'])){
 	$sql -> db_Select("content", "*", "content_id='".$_POST['existing']."' ");
-	list($content_id, $content_heading, $content_subheading, $content_content, $content_page, $content_datestamp, $content_author, $content_comment, $content_parent, $content_type) = $sql-> db_Fetch();
-	$content_content = $aj -> editparse($content_content);
+	list($content_id, $content_heading, $content_subheading, $data, $content_page, $content_datestamp, $content_author, $content_comment, $content_summary, $content_type) = $sql-> db_Fetch();
+	$data = $aj -> editparse($data);
 }
 
 If(IsSet($_POST['confirm'])){
@@ -114,7 +114,7 @@ No reviews yet.
 }
 
 $text .= "
-<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name=\"articlepostform\">\n
+<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name=\"dataform\">\n
 <table style=\"width:95%\">";
 
 
@@ -126,9 +126,16 @@ while(list($content_id_, $content_heading_) = $sql-> db_Fetch()){
 	    $text .= "<option value=\"$content_id_\">".$content_heading_."</option>";
     }
 }
-$text .= "</select></td></tr>";
+$text .= "</select></td></tr>
 
-$text .= "<tr>
+<tr>
+<td colspan=\"2\" style=\"text-align:center\">
+<input class=\"button\" type=\"button\" onClick=\"openwindow()\"  value=\"Open HTML Editor\" />
+<br /><br />
+</td>
+</tr>
+
+<tr>
 <td style=\"width:20%; vertical-align:top\"><u>Heading</u>:</td>
 <td style=\"width:80%\">
 <input class=\"tbox\" type=\"text\" name=\"content_heading\" size=\"60\" value=\"$content_heading\" maxlength=\"100\" />
@@ -152,19 +159,11 @@ $text .= "<tr>
 <tr>
 <td style=\"width:20%\"><u>Review</u>: </td>
 <td style=\"width:80%\">
-<textarea class=\"tbox\" name=\"content_content\" cols=\"70\" rows=\"30\">$content_content</textarea>
-<br />
-<input class=\"button\" type=\"button\" value=\"newpage\" onclick=\"addtext('[newpage]')\">
-<input class=\"button\" type=\"button\" value=\"link\" onclick=\"addtext('[link][/link]')\">
-<input class=\"button\" type=\"button\" value=\"b\" onclick=\"addtext('[b][/b]')\">
-<input class=\"button\" type=\"button\" value=\"i\" onclick=\"addtext('[i][/i]')\">
-<input class=\"button\" type=\"button\" value=\"u\" onclick=\"addtext('[u][/u]')\">
-<input class=\"button\" type=\"button\" value=\"img\" onclick=\"addtext('[img][/img]')\">
-<input class=\"button\" type=\"button\" value=\"center\" onclick=\"addtext('[center][/center]')\">
-<input class=\"button\" type=\"button\" value=\"left\" onclick=\"addtext('[left][/left]')\">
-<input class=\"button\" type=\"button\" value=\"right\" onclick=\"addtext('[right][/right]')\">
-<input class=\"button\" type=\"button\" value=\"blockquote\" onclick=\"addtext('[blockquote][/blockquote]')\">
-</td>
+<textarea class=\"tbox\" name=\"data\" cols=\"70\" rows=\"30\">$data</textarea>
+<br />";
+require_once("../classes/shortcuts.php");
+$text .= shortcuts("review");
+$text .="</td>
 </tr>
 
 <tr>
@@ -209,7 +208,7 @@ $ns -> tablerender("<div style=\"text-align:center\">Reviews</div>", $text);
 ?>
 <script type="text/javascript">
 function addtext(sc){
-	document.articlepostform.content_content.value += sc;
+	document.dataform.data.value += sc;
 }
 </script>
 <?php

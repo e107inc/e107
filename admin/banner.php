@@ -34,9 +34,13 @@ if($_POST['createbanner'] || $_POST['updatebanner']){
 	if(!$_POST['endmonth'] || !$_POST['endday'] || !$_POST['endyear'] ? $end_date = 0 : $end_date = mktime (0, 0, 0, $_POST['endmonth'], $_POST['endday'], $_POST['endyear']));
 
 	$cam = ($_POST['banner_campaign'] ? $_POST['banner_campaign'] : $_POST['banner_campaign_sel']);
+	$cli = ($_POST['client_name'] ? $_POST['client_name'] : $_POST['banner_client_sel']);
+
+
+		
 
 	if($_POST['createbanner']){
-		$sql -> db_Insert("banner", "0, '".$_POST['client_name']."', '".$_POST['client_login']."', '".$_POST['client_password']."', '".$_POST['banner_image']."', '".$_POST['click_url']."', '".$_POST['impressions_purchased']."', '$start_date', '$end_date', '".$_POST['banner_enabled']."', 0, 0, '', '".$_POST['banner_campaign']."' ");
+		$sql -> db_Insert("banner", "0, '".$cli."', '".$_POST['client_login']."', '".$_POST['client_password']."', '".$_POST['banner_image']."', '".$_POST['click_url']."', '".$_POST['impressions_purchased']."', '$start_date', '$end_date', '".$_POST['banner_enabled']."', 0, 0, '', '".$cam."' ");
 		$message = "Banner Created";
 	}else{
 		$sql -> db_Update("banner", "banner_clientname='".$_POST['client_name']."', banner_clientlogin='".$_POST['client_login']."', banner_clientpassword='".$_POST['client_password']."', banner_image='".$_POST['banner_image']."', banner_clickurl='".$_POST['click_url']."', banner_impurchased='".$_POST['impressions_purchased']."', banner_startdate='$start_date', banner_enddate='$end_date', banner_active='".$_POST['banner_enabled']."', banner_campaign='".$cam."' WHERE banner_id='".$_POST['eid']."' ");
@@ -73,10 +77,11 @@ if(IsSet($message)){
 	$ns -> tablerender("", "<div style=\"text-align:center\"><b>".$message."</b></div>");
 }
 
-if($sql -> db_Select("banner", "*", "banner_campaign!='' ")){
+if($sql -> db_Select("banner")){
 	while($row = $sql -> db_Fetch()){
 		extract($row);
-		$campaigns[] = $banner_campaign;
+		if($banner_campaign){ $campaigns[] = $banner_campaign; }
+		if($banner_clientname){ $clients[] = $banner_clientname; }
 	}
 }
 
@@ -169,8 +174,21 @@ enter new campaign
 
 <tr>
 <td class=\"forumheader3\">Client</td>
-<td class=\"forumheader3\">
-<input class=\"tbox\" type=\"text\" size=\"30\" maxlength=\"100\" name=\"client_name\" value=\"".$_POST['client_name']."\">
+<td class=\"forumheader3\">";
+
+if(count($clients)){
+	$text .= "<select name=\"banner_client_sel\" class=\"tbox\"><option></option>";
+	$c=0;
+	while($clients[$c]){
+		$text .=($_POST['client_name'] == $clients[$c] ? "<option selected>".$clients[$c]."</option>" : "<option>".$clients[$c]."</option>");
+		$c++;
+	}
+
+	$text .= "</select> choose existing client&nbsp;&nbsp;";
+}
+
+$text .= "<input class=\"tbox\" type=\"text\" size=\"30\" maxlength=\"100\" name=\"client_name\" value=\"\">
+enter new client
 </tr>
 
 <tr>
@@ -187,7 +205,9 @@ enter new campaign
 
 <tr>
 <td class=\"forumheader3\">Banner Image</td>
-<td class=\"forumheader3\">";
+<td class=\"forumheader3\">
+<input class=\"button\" type =\"button\" value=\"Choose banner image\" onClick=\"expandit(this)\">
+<div style=\"display:none\"><br />";
 $c=0;
 while($images[$c]){
 	$text .= "<input type=\"radio\" name=\"banner_image\" value=\"".$images[$c]."\"";
@@ -199,7 +219,7 @@ while($images[$c]){
 	$c++;
 }
 //<input class=\"tbox\" type=\"text\" size=\"70\" maxlength=\"150\" name=\"banner_image\" value=\"".$_POST['banner_image']."\">
-$text .= "</tr>
+$text .= "</div></td></tr>
 
 <tr>
 <td class=\"forumheader3\">Click URL</td>

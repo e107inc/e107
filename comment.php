@@ -60,7 +60,6 @@ if($table == "news"){
 	}
 }
 
-
 $comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='$field' AND comment_type='$comtype' ORDER BY comment_datestamp");
 if($comment_total){
 	while($row = $sql -> db_Fetch()){

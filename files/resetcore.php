@@ -139,7 +139,9 @@ This script will reset your preferences to their default value
 <?php
 
 if($message){
-	echo "<span class=\"installh\">".$message."</span>";
+	echo "<span class=\"installh\">".$message."</span>
+	</td></tr></table><br /></body></html>";
+	exit;
 }
 
 if($abort == TRUE){

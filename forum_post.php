@@ -277,7 +277,7 @@ $text .= ($action == "nt" ? LAN_63 : LAN_73);
 
 $text .= "</td>
 <td class=\"forumheader2\" style=\"width:85%\">
-<textarea class=\"tbox\" name=\"post\" cols=\"70\" rows=\"10\">".$post."</textarea>
+<textarea class=\"tbox\" name=\"post\" cols=\"70\" rows=\"10\" onselect=\"storeCaret(this);\" onclick=\"storeCaret(this);\" onkeyup=\"storeCaret(this);\">".$post."</textarea>
 <br />
 <input class=\"helpbox\" type=\"text\" name=\"helpb\" size=\"90\" />
 <br />
@@ -407,13 +407,30 @@ function forumjump(){
 }
 ?>
 <script type="text/javascript">
-function addtext(sc){
-	document.postforum.post.value += sc;
+
+function addtext(text) {
+	text = ' ' + text + ' ';
+	if (document.postforum.post.createTextRange && document.postforum.post.caretPos) {
+		var caretPos = document.postforum.post.caretPos;
+		caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == ' ' ? text + ' ' : text;
+		document.postforum.post.focus();
+	} else {
+	document.postforum.post.value  += text;
+	document.postforum.post.focus();
+	}
 }
+
+function storeCaret (textEl) {
+	if (textEl.createTextRange) 
+	textEl.caretPos = document.selection.createRange().duplicate();
+}
+
+
 function help(help){
 	document.postforum.helpb.value = help;
 }
 </script>
 <?php
 require_once(FOOTERF);
+
 ?>

@@ -106,7 +106,7 @@ if($sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, ".$cha
 			// default chatbox style
 			$CHATBOXSTYLE = "
 			<div class=\"spacer\">
-			<img src=\"themes/e107/images/bullet2.gif\" alt=\"bullet\" /><b>
+			<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /><b>
 			{USERNAME}
 			</b><br /><span class=\"smalltext\">
 			{TIMEDATE}
@@ -117,6 +117,7 @@ if($sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, ".$cha
 			{ADMINOPTIONS}
 			<br />";
 		}
+		$cb_message = eregi_replace("<img src=\"|<img src='" ,"<img src='".e_BASE, $cb_message);
 		$text .= parsechatbox($CHATBOXSTYLE, $cb_nick, $datestamp, $cb_id, $cb_message, $cb_ip, $cb_blocked);
 	}
 		
@@ -131,7 +132,6 @@ if($total_chats > $chatbox_posts){
 if($emessage != ""){
 	$text = "<div style='text-align:center'><b>".$emessage."</b></div><br />".$text;
 }
-
 $ns -> tablerender(LAN_182, $text);
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function parsechatbox($cbd, $cb_nick, $datestamp, $cb_id, $cb_message, $cb_ip, $cb_blocked){
@@ -163,11 +163,11 @@ function checklayoutcb($str, $cb_nick, $datestamp, $cb_id, $cb_message, $cb_ip, 
 	}else if(strstr($str, "ADMINOPTIONS")){
 		if(ADMIN == TRUE && getperms("C")){
 			if($cb_blocked == 1){
-				$var = "<div class=\"smalltext\">[<a href=\"admin/chatbox_conf.php?unblock-".$cb_id."-".$_SERVER['PHP_SELF']."\">".LAN_1."</a>]";
+				$var = "<div class=\"smalltext\">[<a href=\"".e_BASE."admin/chatbox_conf.php?unblock-".$cb_id."-".$_SERVER['PHP_SELF']."\">".LAN_1."</a>]";
 			}else{
-				$var = "<div class=\"smalltext\">[<a href=\"admin/chatbox_conf.php?block-".$cb_id."-".$_SERVER['PHP_SELF']."\">".LAN_2."</a>]";
+				$var = "<div class=\"smalltext\">[<a href=\"".e_BASE."admin/chatbox_conf.php?block-".$cb_id."-".$_SERVER['PHP_SELF']."\">".LAN_2."</a>]";
 			}
-			$var .= "[<a href=\"admin/chatbox_conf.php?delete-".$cb_id."-".$_SERVER['PHP_SELF']."\">".LAN_3."</a>][<a href=\"admin/userinfo.php?$cb_ip\">".LAN_4."</a>]</div>\n";
+			$var .= "[<a href=\"".e_BASE."admin/chatbox_conf.php?delete-".$cb_id."-".$_SERVER['PHP_SELF']."\">".LAN_3."</a>][<a href=\"".e_BASE."admin/userinfo.php?$cb_ip\">".LAN_4."</a>]</div>\n";
 		}
 	}
 	return $var;

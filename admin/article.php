@@ -74,7 +74,7 @@ No articles yet.
 }
 
 $text .= "
-<form method=\"post\" action=\"".e_SELF."\" name=\"articlepostform\">\n
+<form method=\"post\" action=\"".e_SELF."\" name=\"dataform\">\n
 <table style=\"width:95%\">";
 
 
@@ -86,9 +86,17 @@ while(list($content_id_, $content_heading_) = $sql-> db_Fetch()){
 	    $text .= "<option value=\"$content_id_\">".$content_heading_."</option>";
     }
 }
-$text .= "</select></td></tr>";
+$text .= "</select></td></tr>
 
-$text .= "<tr>
+<tr>
+<td colspan=\"2\" style=\"text-align:center\">
+<input class=\"button\" type=\"button\" onClick=\"openwindow()\"  value=\"Open HTML Editor\" />
+<br /><br />
+</td>
+</tr>
+
+
+<tr>
 <td style=\"width:20%; vertical-align:top\"><u>Heading</u>:</td>
 <td style=\"width:80%\">
 <input class=\"tbox\" type=\"text\" name=\"content_heading\" size=\"60\" value=\"".stripslashes($_POST['content_heading'])."\" maxlength=\"100\" />
@@ -112,11 +120,11 @@ $text .= "<tr>
 <tr>
 <td style=\"width:20%\"><u>Article</u>: </td>
 <td style=\"width:80%\">
-<textarea class=\"tbox\" name=\"content_content\" cols=\"70\" rows=\"30\">".stripslashes($_POST['content_content'])."</textarea>
+<textarea class=\"tbox\" name=\"data\" cols=\"70\" rows=\"30\">".stripslashes($_POST['data'])."</textarea>
 <br />";
 
 require_once("../classes/shortcuts.php");
-$text .= shortcuts(TRUE);
+$text .= shortcuts("article");
 
 $text .= "</td>
 </tr>
@@ -170,7 +178,7 @@ $ns -> tablerender("<div style=\"text-align:center\">Articles</div>", $text);
 ?>
 <script type="text/javascript">
 function addtext(sc){
-	document.articlepostform.content_content.value += sc;
+	document.dataform.data.value += sc;
 }
 </script>
 <?php
@@ -178,11 +186,11 @@ function addtext(sc){
 require_once("footer.php");
 
 function submit_article(){	
-	if($_POST['content_content'] && $_POST['content_content']){
+	if($_POST['data']){
 		$sql = new db;
 		article_pre_cleanup();
-		$sql -> db_Insert("content", "0, '".$_POST['content_heading']."', '".$_POST['content_subheading']."', '".$_POST['content_content']."', '0', '".time()."', '".ADMINID."', '".$_POST['content_comment']."', '".$_POST['content_summary']."', '0' ");
-		unset($_POST['content_heading'], $_POST['content_subheading'], $_POST['content_content'], $_POST['content_comment'], $_POST['content_summary']);
+		$sql -> db_Insert("content", "0, '".$_POST['content_heading']."', '".$_POST['content_subheading']."', '".$_POST['data']."', '0', '".time()."', '".ADMINID."', '".$_POST['content_comment']."', '".$_POST['content_summary']."', '0' ");
+		unset($_POST['content_heading'], $_POST['content_subheading'], $_POST['data'], $_POST['content_comment'], $_POST['content_summary']);
 		return "Article entered into database.";		
 	}else{
 		return "Fields left blank.";
@@ -193,17 +201,17 @@ function preview_article(){
 	$ns = new table;
 	$article = article_post_cleanup();
 	$datestamp = $obj->convert_date(time(), "long");
-	$text = "<i>by ".ADMINNAME."</i><br /><span class=\"smalltext\">".$datestamp."</span><br /><br />Subheading: ".$article['content_subheading']."<br />Summary: ".$article['content_summary']."<br /><br />".$article['content_content'];
+	$text = "<i>by ".ADMINNAME."</i><br /><span class=\"smalltext\">".$datestamp."</span><br /><br />Subheading: ".$article['content_subheading']."<br />Summary: ".$article['content_summary']."<br /><br />".$article['data'];
 	$ns -> tablerender($article['content_heading'], $text);
 	echo "<br /><br />";
 }
 function update_article(){
-	if($_POST['content_heading'] && $_POST['content_content']){
+	if($_POST['content_heading'] && $_POST['data']){
 		$sql = new db;
 		article_pre_cleanup();
 		if(!$content_id){ $content_id = $_POST['content_id']; }
-		$sql -> db_Update("content", " content_heading='".$_POST['content_heading']."', content_subheading='".$_POST['content_subheading']."', content_content='".$_POST['content_content']."', content_comment='".$_POST['content_comment']."', content_type='".$_POST['content_type']."', content_summary='".$_POST['content_summary']."' WHERE content_id='".$_POST['content_id']."' ");
-		unset($_POST['content_heading'], $_POST['content_subheading'], $_POST['content_content'], $_POST['content_comment'], $_POST['content_summary']);
+		$sql -> db_Update("content", " content_heading='".$_POST['content_heading']."', content_subheading='".$_POST['content_subheading']."', content_content='".$_POST['data']."', content_comment='".$_POST['content_comment']."', content_type='".$_POST['content_type']."', content_summary='".$_POST['content_summary']."' WHERE content_id='".$_POST['content_id']."' ");
+		unset($_POST['content_heading'], $_POST['content_subheading'], $_POST['data'], $_POST['content_comment'], $_POST['content_summary']);
 		return "Article updated in database.";
 	}else{
 		return "Fields left blank.";
@@ -213,19 +221,19 @@ function article_pre_cleanup(){
 	$aj = new textparse;
 	$_POST['content_heading'] = $aj -> tp($_POST['content_heading'], $mode="on");
 	$_POST['content_subheading'] = $aj -> tp($_POST['content_subheading'], $mode="on");
-	$_POST['content_content'] = $aj -> tp($_POST['content_content'], $mode="on");
+	$_POST['data'] = $aj -> tp($_POST['data'], $mode="on");
 	$_POST['content_summary'] = $aj -> tp($_POST['content_summary'], $mode="on");
-	$_POST['content_content'] = article_preserve_html($_POST['content_content']);
+	$_POST['data'] = article_preserve_html($_POST['data']);
 	
 }
 function article_post_cleanup(){
 	$aj = new textparse;
 	$article['content_heading'] = $aj -> tpa($_POST['content_heading'], $mode="off");
 	$article['content_subheading'] = $aj -> tpa($_POST['content_subheading'], $mode="off");
-	$article['content_content'] = $aj -> tpa($_POST['content_content'], $mode="on");
+	$article['data'] = $aj -> tpa($_POST['data'], $mode="on");
 	$article['content_summary'] = $aj -> tpa($_POST['content_summary'], $mode="off");
-	$article['content_content'] = article_preserve_html($article['content_content']);
-	$article['content_content'] = nl2br($article['content_content']);
+	$article['data'] = article_preserve_html($article['data']);
+	$article['data'] = nl2br($article['data']);
 	return $article;
 }
 function article_delete(){
@@ -241,10 +249,10 @@ function article_edit(){
 	$aj = new textparse;
 	$sql = new db;
 	$sql -> db_Select("content", "*", "content_id='".$_POST['existing']."' ");
-	list($_POST['content_id'], $_POST['content_heading'], $_POST['content_subheading'], $_POST['content_content'], $content_page, $content_datestamp, $content_author, $_POST['content_comment'], $_POST['content_summary'], $content_type) = $sql-> db_Fetch();
+	list($_POST['content_id'], $_POST['content_heading'], $_POST['content_subheading'], $_POST['data'], $content_page, $content_datestamp, $content_author, $_POST['content_comment'], $_POST['content_summary'], $content_type) = $sql-> db_Fetch();
 	$_POST['content_heading'] = $aj -> editparse($_POST['content_heading']);
 	$_POST['content_subheading'] = $aj -> editparse($_POST['content_subheading']);
-	$_POST['content_content'] = $aj -> editparse($_POST['content_content']);
+	$_POST['data'] = $aj -> editparse($_POST['data']);
 	$_POST['content_summary'] = $aj -> editparse($_POST['content_summary']);
 }
 function article_preserve_html($string){

@@ -1,18 +1,8 @@
 <?php
-/*
-+---------------------------------------------------------------+
-|								|
-|	language file: danish					|
-|                                                               |
-|	e107 website system					|
-|	©Steve Dunstan 2001-2002				|
-|	http://jalist.com					|										|
-|	stevedunstan@jalist.com					|	
-|	                                                        |																|
-|	Released under the terms and conditions of the		|
-|	GNU General Public License (http://gnu.org).		|		
-+---------------------------------------------------------------+
-*/
+
+// Danish language file by Jesper Olesen
+
+setlocale(LC_ALL, 'da_DK');
 
 //articles.php/comment.php
 define(LAN_0, "[blokeret af admin]");
@@ -22,7 +12,7 @@ define(LAN_3, "Slet");
 define(LAN_4, "Info");
 define(LAN_5, "Kommentarer ...");
 define(LAN_6, "Du Skal være logget ind for at skrive kommentarer på dette site - log ind hvis du er medlem. eller hvis du ikke er registreret klik <a href=\"signup.php\">her</a> for at blive medlem");
-define(LAN_7, "Navn: ");
+define(LAN_7, "Brugernavn: ");
 define(LAN_8, "Kommentar");
 define(LAN_9, "Tilføj kommentar");
 define(LAN_10, "Tilladte tegn: [b] [i] [u] [img] [cen] [bq]<br />brug [link] url [/link] for links<br />Linjeskift (&lt;br /&gt;) er automatisk tilføjet.");
@@ -37,12 +27,12 @@ define(LAN_15, "Nyhed er tilføjet databasen.");
 define(LAN_16, "Brugernavn: ");
 define(LAN_17, "Kodeord: ");
 define(LAN_18, "log venligst ind");
-define(LAN_19, "Unable to write news.xml file to server, please ensure the /backend directory has the correct permissions set (666)");
+define(LAN_19, "Ikke i stand til at skrive news.xml filen til server, kontroler venligst at /backend biblioteket har de rette rettigheder chmod (666)");
 define(LAN_20, "Fejl");
 define(LAN_21, "Side besøg i alt i dag: ");
 define(LAN_22, "Side besøg i alt: ");
 define(LAN_23, "Besøg på site i alt: ");
-define(LAN_24, "fuck|pis|lort|fisse|pik|røvhul|motherfucker|nar|bøsserøv|pussy|faggot");
+define(LAN_24, "fuck|pis|lort|fisse|pik|pikhoved|røvhul|motherfucker|nar|bøsserøv|pussy|faggot");
 define(LAN_25, "Forrige side");
 define(LAN_26, "Næste side");
 
@@ -62,7 +52,7 @@ define(LAN_38, ", Alle tider er CET.");
 define(LAN_39, "Emner i alt");
 define(LAN_40, "Poster i alt.");
 define(LAN_41, "Nyeste medlem: ");
-define(LAN_42, "Registret medlemmer ");
+define(LAN_42, "Registrede medlemmer ");
 define(LAN_43, "Disse forums kan ses, kommenteres og oprettes af alle brugere, men hvis du ønsker og sætte egenskaber skal du <a href=\"signup.php\">registreres</a> & logge ind.");
 define(LAN_44, "Disse forums kan ses, kommenteres og oprettes af alle brugere, ip adresse & host bliver logget");
 define(LAN_45, "Disse forums kan kun oprettes & kommenteres af registrerede & loggede ind medlemmer, klik <a href=\"signup.php\">her</a> for at komme til registreringssiden.");
@@ -74,7 +64,7 @@ define(LAN_50, "Admins");
 define(LAN_51, "Ingen forums endnu, kom igen senere.");
 define(LAN_52, "Ingen forums i denne sektion endnu, kom igen senere.");
 define(LAN_53, "Tråd");
-define(LAN_54, "Starter");
+define(LAN_54, "Startet af");
 define(LAN_55, "Kommentarer");
 define(LAN_56, "Læst");
 define(LAN_57, "Sidste post");
@@ -250,35 +240,35 @@ define(LAN_198, " Alle nye poster læst.");
 define(LAN_199, "Marker alle poster som læst");
 define(LAN_200, "Luk denne tråd");
 define(LAN_201, "genåben denne tråd");
-define(LAN_202, "En stinker");
-define(LAN_203, "Lukket tråd/stinker");
+define(LAN_202, "Prioriteret tråd");
+define(LAN_203, "Prioriteret/Lukket tråd");
 define(LAN_204, "Du <b>kan</b> starte nye indlæg");
-define(LAN_205, "Du <b>kan ikke</b> start new threads");
+define(LAN_205, "Du <b>kan ikke</b> start nye indlæg");
 define(LAN_206, "Du <b>kan</b> poste svar");
 define(LAN_207, "Du <b>kan ikke</b> poste svar");
 define(LAN_208, "Du <b>kan</b> redigere dine indlæg");
 define(LAN_209, "Du <b>kan ikke</b> redigere dine indlæg");
 define(LAN_210, "Du <b>kan</b> slette dine indlæg");
 define(LAN_211, "Du <b>kan ikke </b> slette dine indlæg");
-define(LAN_212, "Glemt password?");
+define(LAN_212, "Glemt kodeord?");
 define(LAN_213, "Brugernavn/email ikke fundet i databasen .");
-define(LAN_214, "Kan ikke resætte password");
-define(LAN_215, "Dit password til  ".SITENAME." er slettet. Nyt er\n\n");
-define(LAN_216, "For at verificere nyt kodeord gå til URL ...");
-define(LAN_217, "Tak. dit nye password er ok du kan gå videre.");
+define(LAN_214, "Kan ikke nulstille kodeord");
+define(LAN_215, "Dit kodeord til  ".SITENAME." er slettet. Nyt er\n\n");
+define(LAN_216, "For at godkende nyt kodeord gå til URL ...");
+define(LAN_217, "Tak. dit nye kodeord er ok du kan gå videre.");
 
 define(LAN_281, "Gæster: ");
 
 // NEW IN VERSION 5.3b4 - PLEASE UPDATE!
 
 define(LAN_300, "Dette brugernavn er ikke fundet i databasene.<br /><br />");
-define(LAN_301, "Forkert password.<br /><br />");
-define(LAN_302, "Du har ikke aktiveret din kontot. Du burde have modtaget en e-mail - med instruktioner om hvordan du godkender din konto, hvis ikke kontakt venligst administrator.<br /><br />");
+define(LAN_301, "Forkert kodeord.<br /><br />");
+define(LAN_302, "Du har ikke aktiveret din konto. Du burde have modtaget en e-mail - med instruktioner om hvordan du godkender din konto, hvis ikke kontakt venligst administrator.<br /><br />");
 define(LAN_303, "Denne nyhed er fra ");
 define(LAN_304, "Artikel overskrift: ");
 define(LAN_305, "underoverskrift: ");
 define(LAN_306, "Denne artikel er fra ");
-define(LAN_307, "Totale poster i denne kategori: ");
+define(LAN_307, "Inlæg i denne kategori ialt: ");
 define(LAN_308, "Rigtigt navn: ");
 define(LAN_309, "Skriv venligst oplysninger her under - <b>En godkendelses e-mail vil blive tilsendt den e-mail adresse du skriver her - Sørg for at være omhyggelig med den, </b>Hvis du ikke ønsker at få vist din e-mail adresse på denne site afkryds da  - skjul adresse boksen.");
 define(LAN_310, "Det er ikke mulligt at acceptere det ord da dette ord er brugt som brugernavn - Hvis det er dit brugernavn, log da venlist ind.");
@@ -289,14 +279,15 @@ define(LAN_314, "Klasser: ");
 define(LAN_315, "Bruger: ");
 define(LAN_316, "Gå til side ");
 define(LAN_317, "Ingen");
-define(LAN_318, "moderator valg: ");
-define(LAN_319, "Unstick");
-define(LAN_320, "Stick");
-define(LAN_321, "Moderatore: ");
+define(LAN_318, "bestyrer muligheder: ");
+define(LAN_319, "Fjern Prioritering");
+define(LAN_320, "Prioriter");
+define(LAN_321, "Bestyrer: ");
 define(LAN_322, "Oprettet: ");
 define(LAN_323, "Fremvis");
 define(LAN_324, "Din besked er postet.");
 define(LAN_325, "Klik her for at vise din besked");
 define(LAN_326, "Klik her for at retuner til forum");
 define(LAN_327, "Overblik");
+
 ?>

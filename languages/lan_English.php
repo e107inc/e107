@@ -1,15 +1,15 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system													|
-|	language file: english													|
-|																						|
-|	©Steve Dunstan 2001-2002										|
-|	http://jalist.com															|
-|	stevedunstan@jalist.com											|
-|																						|
-|	Released under the terms and conditions of the		|
-|	GNU General Public License (http://gnu.org).				|
+|        e107 website system                                                                                                        |
+|        language file: english                                                                                                        |
+|                                                                                                                                                                                |
+|        ©Steve Dunstan 2001-2002                                                                                |
+|        http://jalist.com                                                                                                                        |
+|        stevedunstan@jalist.com                                                                                        |
+|                                                                                                                                                                                |
+|        Released under the terms and conditions of the                |
+|        GNU General Public License (http://gnu.org).                                |
 +---------------------------------------------------------------+
 */
 
@@ -132,7 +132,7 @@ define(LAN_97, "No matches.");
 define(LAN_98, "News Items");
 define(LAN_99, "Comments");
 define(LAN_100, "Articles");
-define(LAN_101, "Chatbox"); 
+define(LAN_101, "Chatbox");
 define(LAN_102, "Links");
 define(LAN_103, "Forum");
 
@@ -299,4 +299,10 @@ define(LAN_324, "Your message has been successfully posted.");
 define(LAN_325, "Click Here to view your message");
 define(LAN_326, "Click here to return to the forum");
 define(LAN_327, "Review");
+define(LAN_328, "Settings");   // "Settings" as used in default-header.
+define(LAN_329, "Auto Login"); // Auto Login
+
+
+
+
 ?>

@@ -14,41 +14,32 @@
 */
 require_once("class2.php");
 
-$qs = explode(".", e_QUERY);
-$action = $qs[0]; $id = $qs[1];
+//$qs = explode(".", e_QUERY);
+//$action = $qs[0]; $id = $qs[1];
 
-if($action == "clientlogin"){
-	require_once(HEADERF);
-	echo "<div style=\"align:center\">";
-	$text =  "<form method=\"post\" action=\"".e_SELF."\">\n
-<table style=\"width:40%\" align=\"center\">
-<tr>
-<td style=\"width:15%\" class=\"defaulttext\">".LAN_16."</td>
-<td><input class=\"tbox\" type=\"text\" name=\"clientlogin\" size=\"30\" value=\"$id\" maxlength=\"20\" />\n</td>
-</tr>
-<tr>
-<td style=\"width:15%\" class=\"defaulttext\">".LAN_17."</td>
-<td><input class=\"tbox\" type=\"password\" name=\"clientpassword\" size=\"30\" value=\"\" maxlength=\"20\" />\n</td>
-</tr>
-<tr>
-<td style=\"width:15%\"></td>
-<td>
-<input class=\"button\" type=\"submit\" name=\"clientsubmit\" value=\"Continue\" />
-</td>
-</tr>
-</table>";
-$ns -> tablerender("Please enter your client login and password to continue", $text);
-require_once(FOOTERF);
-exit;
+if(e_QUERY){
+	$sql -> db_Select("banner", "*", "banner_id='".e_QUERY."' ");
+	$row = $sql -> db_Fetch(); extract($row);
+	$ip = getip();
+	$newip = (preg_match("/".$ip."\^/", $banner_ip) ? $banner_ip : $banner_ip.$ip."^");
+	$sql -> db_Update("banner", "banner_clicks=banner_clicks+1, banner_ip='$newip' WHERE banner_id='".e_QUERY."' ");
+	header("location: ".$banner_clickurl);
+	exit;
 }
 
+require_once(HEADERF);
+
 if(IsSet($_POST['clientsubmit'])){
-	require_once(HEADERF);
-	if(!$banner_total = $sql -> db_Select("banner", "*", "banner_clientlogin='".$_POST['clientlogin']."' AND banner_clientpassword='".$_POST['clientpassword']."' ")){
+	
+	if(!$sql -> db_Select("banner", "*", "banner_clientlogin='".$_POST['clientlogin']."' AND banner_clientpassword='".$_POST['clientpassword']."' ")){
 		$ns -> tablerender("Error", "<br /><div style=\"text-align:center\">Sorry, unable to find those details in the database. Please contact the site administrator for details.</div><br />");
 		require_once(FOOTERF);
 		exit;
 	}
+
+	$row = $sql -> db_Fetch(); extract($row);
+
+	$banner_total = $sql -> db_Select("banner", "*", "banner_clientname='$banner_clientname' ");
 
 	$text = "<table class=\"fborder\" style=\"width:98%\">
 	<tr><td colspan=\"7\" style=\"text-align:center\" class=\"fcaption\">Banners Statistics</td></tr>
@@ -115,19 +106,26 @@ if(IsSet($_POST['clientsubmit'])){
 	exit;
 }
 
+echo "<div style=\"align:center\">";
+$text =  "<form method=\"post\" action=\"".e_SELF."\">\n
+<table style=\"width:40%\" align=\"center\">
+<tr>
+<td style=\"width:15%\" class=\"defaulttext\">".LAN_16."</td>
+<td><input class=\"tbox\" type=\"text\" name=\"clientlogin\" size=\"30\" value=\"$id\" maxlength=\"20\" />\n</td>
+</tr>
+<tr>
+<td style=\"width:15%\" class=\"defaulttext\">".LAN_17."</td>
+<td><input class=\"tbox\" type=\"password\" name=\"clientpassword\" size=\"30\" value=\"\" maxlength=\"20\" />\n</td>
+</tr>
+<tr>
+<td style=\"width:15%\"></td>
+<td>
+<input class=\"button\" type=\"submit\" name=\"clientsubmit\" value=\"Continue\" />
+</td>
+</tr>
+</table>";
+$ns -> tablerender("Please enter your client login and password to continue", $text);
+require_once(FOOTERF);
 
-if(!e_QUERY){ header("location: ".e_BASE."index.php"); }
-
-
-
-$sql -> db_Select("banner", "*", "banner_id='".e_QUERY."' ");
-$row = $sql -> db_Fetch(); extract($row);
-
-$ip = getip();
-
-$newip = (preg_match("/".$ip."\^/", $banner_ip) ? $banner_ip : $banner_ip.$ip."^");
-
-$sql -> db_Update("banner", "banner_clicks=banner_clicks+1, banner_ip='$newip' WHERE banner_id='".e_QUERY."' ");
-header("location: ".$banner_clickurl);
 
 ?>

@@ -101,16 +101,16 @@ function checklayout($str){
 					<td class=\"mediumtext\">Welcome ".USERNAME."&nbsp;&nbsp;&nbsp;</td>
 					<td>.:.</td>";
 					if(ADMIN == TRUE){
-						echo "<td> <a href=\"".e_BASE."admin/admin.php\">Admin</a></td><td>.:.</td>";
+						echo "<td> <a href=\"".e_BASE."admin/admin.php\">".LAN_89."</a></td><td>.:.</td>";
 					}
-					echo "<td> <a href=\"" . e_BASE . "usersettings.php\">Settings</a></td><td>.:.</td><td><a href=\"".e_BASE."index.php?logout\">Logout</a></td><td>.:.</td></tr></table> ";
+					echo "<td> <a href=\"" . e_BASE . "usersettings.php\">".LAN_328."</a></td><td>.:.</td><td><a href=\"".e_BASE."index.php?logout\">Logout</a></td><td>.:.</td></tr></table> ";
 				}else{
 					echo  "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
 					<p>
-					Username: <input class=\"tbox\" type=\"text\" name=\"username\" size=\"15\" value=\"$username\" maxlength=\"20\" />&nbsp;&nbsp;
-					Password: <input class=\"tbox\" type=\"password\" name=\"userpass\" size=\"15\" value=\"\" maxlength=\"20\" />&nbsp;&nbsp;
-					<input type=\"checkbox\" name=\"autologin\" value=\"1\" /> Auto Login&nbsp;&nbsp;
-					<input class=\"button\" type=\"submit\" name=\"userlogin\" value=\"Login\" />&nbsp;&nbsp;<a href=\"signup.php\">Signup</a>
+					".LAN_16."<input class=\"tbox\" type=\"text\" name=\"username\" size=\"15\" value=\"$username\" maxlength=\"20\" />&nbsp;&nbsp;
+					".LAN_17."<input class=\"tbox\" type=\"password\" name=\"userpass\" size=\"15\" value=\"\" maxlength=\"20\" />&nbsp;&nbsp;
+					<input type=\"checkbox\" name=\"autologin\" value=\"1\" />".LAN_329."&nbsp;&nbsp;
+					<input class=\"button\" type=\"submit\" name=\"userlogin\" value=\"Login\" />&nbsp;&nbsp;<a href=\"signup.php\">".LAN_174."</a>
 					</p>
 					</form>";
 				}
@@ -119,7 +119,7 @@ function checklayout($str){
 			echo "<form method=\"post\" action=\"search.php\">
 			<p>
 			<input class=\"tbox\" type=\"text\" name=\"searchquery\" size=\"20\" value=\"\" maxlength=\"50\" />
-			<input class=\"button\" type=\"submit\" name=\"searchsubmit\" value=\"Search\" />
+			<input class=\"button\" type=\"submit\" name=\"searchsubmit\" value=\"".LAN_180."\" />
 			</p>
 			</form>";
 		}else if($custom == "quote"){

@@ -20,11 +20,11 @@ require_once("auth.php");
 $aj = new textparse;
 
 If(IsSet($_POST['submit'])){
-	if($_POST['content_content'] != "" && $_POST['content_content'] != ""){
+	if($_POST['data'] != ""){
 
 		$content_heading = $aj -> tp($_POST['content_heading'], $mode="on");
 		$content_subheading = $aj -> tp($_POST['content_subheading'], $mode="on");
-		$content_content = $aj -> tp($_POST['content_content'], $mode="on");
+		$content_content = $aj -> tp($_POST['data'], $mode="on");
 
 		 $sql -> db_Insert("content", "0, '".$content_heading."', '".$content_subheading."', '$content_content', '0', '".time()."', '".ADMINID."', '".$_POST['content_comment']."', '0', '1' ");
 		unset($content_heading, $content_subheading, $content_content, $content_parent);
@@ -44,13 +44,12 @@ If(IsSet($_POST['submit'])){
 	}else{
 		$message = "Fields left blank.";
 	}
-
 }
 
 If(IsSet($_POST['update'])){
 	$content_heading = $aj -> tp($_POST['content_heading'], $mode="on");
 	$content_subheading = $aj -> tp($_POST['content_subheading'], $mode="on");
-	$content_content = $aj -> tp($_POST['content_content'], $mode="on");
+	$content_content = $aj -> tp($_POST['data'], $mode="on");
     $content_parent = $_POST['parent_article'];
 	$sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_page='".$_POST['content_page']."', content_comment='".$_POST['content_comment']."', content_summary='".$content_parent."' WHERE content_id='".$_POST['content_id']."' ");
 
@@ -108,7 +107,7 @@ No content pages yet.
 }
 
 $text .= "
-<form method=\"post\" action=\"".e_SELF."\" name=\"articlepostform\">\n
+<form method=\"post\" action=\"".e_SELF."\" name=\"dataform\">\n
 <table style=\"width:95%\">";
 
 
@@ -120,9 +119,16 @@ while(list($content_id_, $content_heading_) = $sql-> db_Fetch()){
 	    $text .= "<option value=\"$content_id_\">".$content_heading_."</option>";
     }
 }
-$text .= "</select></td></tr>";
+$text .= "</select></td></tr>
 
-$text .= "<tr>
+<tr>
+<td colspan=\"2\" style=\"text-align:center\">
+<input class=\"button\" type=\"button\" onClick=\"openwindow()\"  value=\"Open HTML Editor\" />
+<br /><br />
+</td>
+</tr>
+
+<tr>
 <td style=\"width:20%; vertical-align:top\">Link name:</td>
 <td style=\"width:80%\">
 <input class=\"tbox\" type=\"text\" name=\"content_heading\" size=\"60\" value=\"$content_heading\" maxlength=\"100\" />
@@ -138,10 +144,10 @@ $text .= "<tr>
 <tr>
 <td style=\"width:20%\"><u>Content</u>: </td>
 <td style=\"width:80%\">
-<textarea class=\"tbox\" name=\"content_content\" cols=\"70\" rows=\"30\">$content_content</textarea>
+<textarea class=\"tbox\" name=\"data\" cols=\"70\" rows=\"30\">$content_content</textarea>
 <br />";
 require_once("../classes/shortcuts.php");
-$text .= shortcuts();
+$text .= shortcuts("content");
 $text .= "</td>
 </tr>
 

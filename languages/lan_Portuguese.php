@@ -1,15 +1,15 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system     									|
-|	language file: portuguese - last update: 31/dec/2002		|
-|	traduzido por: Fallen - lsk@crube.net  	  	                |
-|																|
-|   ©Steve Dunstan 2001-2002									|
-|	http://jalist.com - stevedunstan@jalist.com					|
-|																|
-|	Released under the terms and conditions of the		        |
-|	GNU General Public License (http://gnu.org).				|
+|        e107 website system                                                                             |
+|        language file: portuguese - last update: 31/dec/2002                |
+|        traduzido por: Fallen - lsk@crube.net                                    |
+|                                                                                                                                |
+|   ©Steve Dunstan 2001-2002                                                                        |
+|        http://jalist.com - stevedunstan@jalist.com                                        |
+|                                                                                                                                |
+|        Released under the terms and conditions of the                        |
+|        GNU General Public License (http://gnu.org).                                |
 +---------------------------------------------------------------+
 */
 
@@ -264,5 +264,37 @@ define(LAN_215, "Sua senha para ".SITENAME." foi recriada. Sua nova senha é\n\n"
 define(LAN_216, "Para validar sua nova senha, por favor visite o seguinte endereço...");
 define(LAN_217, "Obrigado, sua nova senha foi validada. Você já pode efeturar o login com esta senha.");
 
+          // NEW IN VERSION 5.3b4 - PLEASE UPDATE!
+
+define(LAN_300, "That username was not found in the database.<br /><br />");
+define(LAN_301, "Incorrect password.<br /><br />");
+define(LAN_302, "You have not activated your account. You should have received an email with instructions on how to confirm your account, if not please contact a site administrator.<br /><br />");
+define(LAN_303, "This news item is from ");
+define(LAN_304, "Article Title: ");
+define(LAN_305, "Subheading: ");
+define(LAN_306, "This article is from ");
+define(LAN_307, "Total posts in this category: ");
+define(LAN_308, "Real Name: ");
+define(LAN_309, "Please enter your details below - <b>a verification email will be sent to the email address you enter here so it must be valid, </b>if you do not wish to display your email address on this site please tick the hide email address box.");
+define(LAN_310, "Unable to accept post as that username is registered - if it is your username please login to post.");
+define(LAN_311, "Anonymous");
+define(LAN_312, "Duplicate post - unable to accept.");
+define(LAN_313, "Please choose which list you wish to display ...");
+define(LAN_314, "Classes: ");
+define(LAN_315, "Users: ");
+define(LAN_316, "Go to page ");
+define(LAN_317, "None");
+define(LAN_318, "moderator options: ");
+define(LAN_319, "Unstick");
+define(LAN_320, "Stick");
+define(LAN_321, "Moderators: ");
+define(LAN_322, "Posted: ");
+define(LAN_323, "Preview");
+define(LAN_324, "Your message has been successfully posted.");
+define(LAN_325, "Click Here to view your message");
+define(LAN_326, "Click here to return to the forum");
+define(LAN_327, "Review");
+define(LAN_328, "Ajustes");   // "Settings" as used in default-header.
+define(LAN_329, "Auto Login"); // Auto Login
 
 ?>

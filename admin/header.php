@@ -26,26 +26,25 @@ echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
 function textCounter(field,cntfield) {
 	cntfield.value = field.value.length;
 }
-      
-function changestate(val){
-	frm=document.forms[0]
-	if(val=="enabl") {
-		frm.cb_linkc.disabled=false
-	}
-	if(val=="disabl") {
-		frm.cb_linkc.disabled=true
-	}
+var ns6=document.getElementById&&!document.all?1:0
+var head="display:''"
+var folder=''
+function expandit(curobj){
+folder=ns6?curobj.nextSibling.nextSibling.style:document.all[curobj.sourceIndex+1].style
+if (folder.display=="none")
+folder.display=""
+else
+folder.display="none"
 }
+
 function urljump(url){
 	top.window.location = url; 
 }
-function SetState(obj_checkbox, obj_textarea){
-	if(obj_checkbox.checked){
-		obj_textarea.disabled = false;
-	}else{
-		obj_textarea.disabled = true;
-	}
+
+function openwindow() {
+	opener = window.open("htmlarea/index.php", "popup","top=100,left=100,resizable=no,width=670,height=520,scrollbars=no,menubar=no");
 }
+
 // -->
     </script>
   </head>

@@ -93,6 +93,7 @@ $NEWSSTYLE = "
 		{NEWSCOMMENTS}
 		{EMAILICON}
 		{PRINTICON}
+		{ADMINOPTIONS}
 		{EXTENDED}
 	</div>
 </div>";
@@ -141,6 +142,7 @@ function tablestyle($caption, $text, $mode=""){
 
 // [commentstyle]
 
+/*
 $COMMENTSTYLE = "
 <table style=\"width:95%\">
 <tr>
@@ -153,7 +155,6 @@ $COMMENTSTYLE = "
 {AVATAR}
 </div>
 <span class=\"smalltext\">
-Comments: 
 {COMMENTS}
 <br />
 Joined: 
@@ -166,7 +167,7 @@ Joined:
 </span>
 <br />
 {COMMENT}
-<br /><i><span class=\"smalltext\">Signature: 
+<br /><i><span class=\"smalltext\">
 {SIGNATURE}
 </span></i>
 <br />
@@ -177,6 +178,7 @@ Joined:
 </tr>
 </table>
 <br />";
+*/
 
 //	[chatboxstyle]
 

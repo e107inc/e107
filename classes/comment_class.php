@@ -29,6 +29,7 @@ class comment{
 	}
 
 	function render_comment($row){
+		global $COMMENTSTYLE;
 		$sql = new db;
 		$ns = new table;
 		extract($row);
@@ -62,7 +63,7 @@ class comment{
 		$delete = "[<a href=\"admin/comment_conf.php?delete-".$comment_id."-".$_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING']."\">".LAN_3."</a>] ";
 		$userinfo = "[<a href=\"admin/userinfo.php?".$comment_ip."\">".LAN_4."</a>]";
 	
-		if($COMMENTSTYLE == ""){
+		if(!$COMMENTSTYLE){
 			$COMMENTSTYLE = "<table style=\"width:95%\">
 			<tr>
 			<td style=\"width:30%; vertical-align=top\">
@@ -106,6 +107,7 @@ class comment{
 			case "download" : $type=2; break;
 			case "faq" : $type=3; break;
 			case "poll" : $type=4; break;
+			case "docs" : $type=5; break;
 		}
 
 
@@ -159,7 +161,9 @@ class comment{
 		}else if(strstr($str, "TIMEDATE")){
 			$text .= $datestamp;
 		}else if(strstr($str, "AVATAR")){
-			$text .= "<img src=\"".$user_image."\" alt=\"\" />";
+			if($user_image){
+				$text .= "<img src=\"".$user_image."\" alt=\"\" />";
+			}
 		}else if(strstr($str, "COMMENTS")){
 			if($user_id == 0){
 				$text .= "Guest";
@@ -174,9 +178,13 @@ class comment{
 				$text .= $aj -> tpa($comment_comment);
 			}	
 		}else if(strstr($str, "SIGNATURE")){
-			$text .= $user_signature;
+			if($user_signature){
+				$text .= $user_signature;
+			}
 		}else if(strstr($str, "JOINED")){
-			$text .= $user_join;
+			if($user_join != "01 Jan : 00:00"){
+				$text .= $user_join;
+			}
 		}else if(strstr($str, "ADMINOPTIONS")){
 			if(ADMIN == TRUE && getperms("B")){
 				if($comment_blocked == 1){
