@@ -179,7 +179,7 @@ function renderuser($row, $user_entended, $mode="verbose"){
                 $forumposts = $sql -> db_Count("forum_t");
                                 $actual_forums = $sql -> db_Count("forum_t", "(*)", "WHERE thread_user='$user_data'");
                                 $actual_chats = $sql -> db_Count("chatbox", "(*)", "WHERE cb_nick='$user_data'");
-                                $actual_comments = $sql -> db_Count("forum_t", "(*)", "WHERE comment_author='$user_data'");
+                                $actual_comments = $sql -> db_Count("comments", "(*)", "WHERE comment_author='$user_data'");
                 $chatper = round(($actual_chats/$chatposts)*100,2);
                 $commentper = round(($actual_comments/$commentposts)*100,2);
                 $forumper = round(($actual_forums/$forumposts)*100,2);
