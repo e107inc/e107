@@ -1,14 +1,15 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system													|
-|	language file: malay													|
-|																						|
-|	©translate in malay										|
-|	by eYtO															|
-|	eyt007@tm.net.my											|
-|																						|
-|	Released under the terms and conditions of the		|
+|	e107 website system											|
+|	language file: malay										|
+|																|
+|	©translate in malay											|
+|	by eYtO														|
+|	www.ieto.net												|
+|	eyt007@tm.net.my/ ieto@ieto.net								|
+|																|
+|	Released under the terms and conditions of the				|
 |	GNU General Public License (http://gnu.org).				|
 +---------------------------------------------------------------+
 */
@@ -27,8 +28,8 @@ define(LAN_9, "Hantar Komen");
 define(LAN_10, "Shortcut tags allowed: [b] [i] [u] [img] [cen] [bq]<br />use [link] url [/link] for links<br />Line breaks (&lt;br /&gt;) are auto added.");
 
 //chat.php
-define(LAN_11, "Borak (all posts)");
-define(LAN_12, "Chat Posts");
+define(LAN_11, "Borak (papar semua kiriman)");
+define(LAN_12, "Kiriman Chat");
 
 //class.php
 define(LAN_13, "Berita telah dipadam.");
@@ -37,7 +38,7 @@ define(LAN_15, "Berita dimasukkan dipangkalan data.");
 define(LAN_16, "Username: ");
 define(LAN_17, "Kata Laluan: ");
 define(LAN_18, "Sila Daftar Ahli");
-define(LAN_19, "Berita.xml tidak dapat ditulis/dipaparkan diserver, Sila pastikan /backend directory has the correct permissions set (666)");
+define(LAN_19, "Berita.xml tidak dapat ditulis/dipaparkan diserver, Sila pastikan /backend directory telah disetkan kepada (666)");
 define(LAN_20, "Error");
 define(LAN_21, "Jumlah laman dilawat hari ini: ");
 define(LAN_22, "Jumlah keseluruhan laman dilawat: ");
@@ -144,7 +145,7 @@ define(LAN_110, "Pendaftaran ahli");
 define(LAN_111, "Ulang kata laluan: ");
 define(LAN_112, "Alamat e-mail: ");
 define(LAN_113, "Sembunyi alamat e-mail?: ");
-define(LAN_114, "(This will prevent your email address from being displayed)");
+define(LAN_114, "(ini akan menghalang email anda dilihat oleh umum)");
 define(LAN_115, "ICQ Number: ");
 define(LAN_116, "AIM Nickname: ");
 define(LAN_117, "MSN Nickname: ");
@@ -161,7 +162,7 @@ define(LAN_125, "Jumlah laman dipaparkan: ");
 define(LAN_126, "Paparan mengikut muka laman: ");
 define(LAN_127, "Jumlah paparan mengikut laman: ");
 define(LAN_128, "Browser: ");
-define(LAN_129, "Operating system: ");
+define(LAN_129, "Sistem pengoperasian: ");
 define(LAN_130, "Negara/Domains visited from: ");
 define(LAN_131, "Referers: ");
 define(LAN_132, "Statistik Laman");
@@ -210,7 +211,7 @@ define(LAN_165, "Undian lama");
 
 //menus
 define(LAN_166, "Tiada artikel lagi.");
-define(LAN_167, "Jurnal eYtO");
+define(LAN_167, "Artikel");
 define(LAN_168, "Our headlines can be syndicated by using either our rss or text feeds.");
 define(LAN_169, "Backend");
 define(LAN_170, "W3C Compliance");
@@ -224,7 +225,7 @@ define(LAN_177, "Online kat laman ni: ");
 define(LAN_178, "Ahli berdaftar: ");
 define(LAN_179, "Online");
 define(LAN_180, "Carian");
-define(LAN_181, "Promosikan eYtO");
+define(LAN_181, "Promosikan laman");
 define(LAN_182, "Borak Online");
 define(LAN_183, "Menu Utama");
 define(LAN_184, "Undian");
@@ -245,7 +246,7 @@ define(LAN_196, "Anda telah baca ");
 define(LAN_197, " kiriman ini.");
 define(LAN_198, " Semua kiriman telah anda baca.");
 define(LAN_199, "Tandakan kiriman yang telah dibaca");
-define(LAN_200, "tutup topik ini");
+define(LAN_200, "Tutup topik ini");
 define(LAN_201, "Buka semula topik ini");
 define(LAN_202, "Topik penting");
 define(LAN_203, "Penting/tutup topik");
@@ -262,7 +263,127 @@ define(LAN_213, "username/alamat e-mail tiada dalam pangkalan data.");
 define(LAN_214, "tidak boleh ubah kata laluan");
 define(LAN_215, "Kata laluan anda untuk laman ".SITENAME." telah diubah. Kata laluan baru anda ialah\n\n");
 define(LAN_216, "Untuk mengaktifkan kata lauan anda, sila klik url ...");
-define(LAN_217, "terima kasih, kata laluan anda telah dikemaskini. Anda boleh masuk dengan kata laluan baru .");
+define(LAN_217, "Terima kasih, kata laluan anda telah dikemaskini. Anda boleh masuk dengan kata laluan baru .");
+
+define(LAN_281, "Tetamu: ");
+
+// NEW IN VERSION 5.3b4 - PLEASE UPDATE!
+
+define(LAN_300, "Username tersebut tida dalam pangkalan data.<br /><br />");
+define(LAN_301, "Password salah.<br /><br />");
+define(LAN_302, "Anda tidak mengaktifkan akaun anda. Sepatutnya anda telah menerima e-mail yang memberikan panduan untuk anda mengaktifkan akaun anda, Jika tidak, sila hubungi pengendali laman ini.<br /><br />");
+define(LAN_303, "Berita ini ditulis dari ");
+define(LAN_304, "Tajuk Artikel: ");
+define(LAN_305, "Sub tajuk: ");
+define(LAN_306, "Artikel ini ditulis dari ");
+define(LAN_307, "Jumlah mesej dalam kategori ini: ");
+define(LAN_308, "Nama penuh: ");
+define(LAN_309, "Sila masukkan maklumat dibawah - <b>pengesahan email tidak dapat dihantar ke email anda sehingga anda mengisi email yang betul, </b>Jika anda tidak ingin paparkan email kepada umum, sila klik pada sembunyikan email anda.");
+define(LAN_310, "Mesej anda tidak dapat diproses tanpa username yang sah - Jika username tersebut dimiliki oleh anda, sila masuk sebagai ahli untuk menghantar berita.");
+define(LAN_311, "Tetamu");
+define(LAN_312, "Mesej berganda - Maaf, tidak dapat diteruskan.");
+define(LAN_313, "Sila pilih pilihan anda untuk dipaparkan ...");
+define(LAN_314, "Classes: ");
+define(LAN_315, "Users: ");
+define(LAN_316, "Pergi ke laman ");
+define(LAN_317, "Tiada");
+define(LAN_318, "moderator options: ");
+define(LAN_319, "Tidak penting");
+define(LAN_320, "Penting");
+define(LAN_321, "Moderators: ");
+define(LAN_322, "Hantar: ");
+define(LAN_323, "Lihat dulu");
+define(LAN_324, "Mesej anda telah berjaya dihantar.");
+define(LAN_325, "Klik sini untuk melihat mesej yang anda hantar");
+define(LAN_326, "Klik sini untuk kembali ke Forum utama");
+define(LAN_327, "Review");
+
+//new update on jun 2003
+
+define("LAN_328", "Settings");   // "Settings" as used in default-header.
+define("LAN_329", "Auto Login"); // Auto Login
+
+define("LAN_350", "Tentukan Theme");
+define("LAN_351", "Pilih Theme");
+
+define("LAN_352", "Tentukan bahasa");
+define("LAN_353", "Pilih bahasa utama");
+
+define("LAN_354", "(Kawasan larangan)");
+define("LAN_355", "Tiada muat turun dalam kategori ini");
+define("LAN_356", "Jumlah saiz fail: ");
+define("LAN_357", "Muat turun fail: ");
+define("LAN_358", "Fail yang ada: ");
+define("LAN_359", "NIlai fail ini");
+define("LAN_360", "Terima kasih kerana menilai");
+define("LAN_361", "Muat turun dari");
+define("LAN_362", "Fail");
+define("LAN_363", "Muat turun");
+define("LAN_364", "Sort by");
+define("LAN_365", "Date");
+define("LAN_366", "Saiz Fail");
+define("LAN_367", "Muat turun");
+define("LAN_368", "Tiada muat turun lagi, Sila datang lagi");
+define("LAN_369", "Belum di nilai");
+define("LAN_370", "Rating: ");
+
+define("LAN_371", "Logging is not activated, to activate go to your admin section, click on Logger and tick the Activate Logging/Counter checkbox.");
+define("LAN_372", "Kandungan dalam page ini telah dinyahaktifkan.");
+define("LAN_373", "Tiada status lagi.");
+define("LAN_374", "Logging began:");
+define("LAN_375", "Lihat semua");
+define("LAN_376", "Last 10 unique visitors");
+define("LAN_377", "Semua");
+define("LAN_378", "top 10");
+define("LAN_379", "Resolusi paparan");
+
+define("LAN_380", "Jika anda ingin dimaklumkan melalui email apabila mesej anda dibalas, sila tandakan pada kotak");
+define("LAN_381", "Forum reply from ");
+define("LAN_382", "Post made: ");
+define("LAN_383", "Please click the following link to view the full thread ...");
+define("LAN_384", "Forum reply at ");
+define("LAN_385", "Post: ");
+define("LAN_386", "If you do not wish to add a poll to your thread leave the fields blank ");
+define("LAN_387", "You must be a logged-in member to vote in this poll.");
+define("LAN_388", "Popular thread");
 
 
+define("LAN_389", "Previous thread");
+define("LAN_390", "Next thread");
+define("LAN_391", "track this thread");
+define("LAN_392", "stop tracking this thread");
+
+define("LAN_393", "List tracked threads");
+define("LAN_394", "Closed forum");
+define("LAN_395", "[popular]");
+define("LAN_396", "Announcement");
+define("LAN_397", "Tracked threads");
+
+
+define("LAN_398", "Tiada ringkasan.");
+
+
+define("LAN_399", "Sambungan");
+define("LAN_400", "Usernames dan passwords are <b>case-sensitive</b>");
+define("LAN_401", "Tinggalkan ruangan kosong untuk mengekalkan password");
+
+define("LAN_402", "Anda mesti mendaftar sebagai sahabat jika ingin meng'upload' dalam server ini.");
+define("LAN_403", "Anda tidak dibenarkan meng'upload' data dalam server ini.");
+define("LAN_404", "Terima kasih. Your upload will be reviewed by an administrator and posted to the site if appropriate.");
+define("LAN_405", "File exceeds specified maximum size limit - deleted.");
+define("LAN_406", "<b>Please note</b><br />Allowed filetypes:");
+define("LAN_407", "Any other filetypes uploaded will be instantly deleted.");
+define("LAN_408", "<u>Underlined</u> fields are required");
+
+define("LAN_409", "Name of file");
+define("LAN_410", "Version");
+define("LAN_411", "File");
+define("LAN_412", "Screenshot");
+define("LAN_413", "Description");
+
+
+define("LAN_414", "Working demo");
+define("LAN_415", "enter URL to site where demo can be viewed");
+define("LAN_416", "Submit and Upload");
+define("LAN_417", "Upload File");
 ?>

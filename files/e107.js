@@ -1,5 +1,9 @@
 <!--
 
+if(parent.frames[0])
+{
+parent.location.href = self.location.href;
+}
 
 if(document.getElementById&&!document.all){ns6=1;}else{ns6=0;}
 var agtbrw=navigator.userAgent.toLowerCase();

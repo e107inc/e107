@@ -44,8 +44,10 @@ class poll{
 	}
 
 	function render_poll($poll_id, $poll_question, $poll_option, $votes, $mode, $type="menu"){
-
-		$poll_question = stripslashes($poll_question);
+		global $POLLSTYLE;
+		if(!$POLLSTYLE){
+			$POLLSTYLE = "<div style='text-align:center'>\n<br />\n<b><i>{QUESTION}</i></b>\n<hr />\n</div>\n<br />\n{OPTIONS=<b>OPTION</b><br />BAR<br /><span class='smalltext'>PERCENTAGE VOTES</span><br /><br />}\n<br />\n<div style='text-align:center' class='smalltext'>{VOTE_TOTAL} {COMMENTS}\n<br />\n{OLDPOLLS}\n";
+		}
 		$vote_total = array_sum($votes);
 		foreach($poll_option as $key => $value){
 			if(empty($value)){
@@ -54,16 +56,11 @@ class poll{
 		}
 		$options = count($poll_option);
 		for($count=0; $count<=$options; $count++){
-			if(IsSet($poll_option[$count])){
-				$poll_option[$count] = stripslashes($poll_option[$count]);
-			}else{
-				unset($poll_option[$count]);
-			}
+			$poll_option[$count] = (IsSet($poll_option[$count]) ? stripslashes($poll_option[$count]) : "");
 			if($vote_total){
 				$percentage[$count] = round(($votes[$count]/$vote_total)*100,2);
 			}
 		}
-
 
 		if($mode == "preview"){
 			echo "<div style='text-align:center'>\n<table style='width:350px'>\n<tr>\n<td>";
@@ -74,63 +71,62 @@ class poll{
 			$preview = TRUE;
 		}
 
-
-		$text = "<div style=\"text-align:center\">\n<br />\n<b><i>".$poll_question."</i></b>\n<hr />\n</div>\n<br />";	 // print poll question
-	
-		switch ($mode){
-
-			case "voted":
-				for($count=0; $count<=($options-1); $count++){
-					$text .= "<b>".$poll_option[$count]."</b>\n<br />\n<img src=\"".THEME."images/bar.jpg\" height=\"12\" width=\"".($percentage[$count])."%\" style=\"border : 1px solid Black\" alt=\"\" />\n<br />";
-					$text .= "<span class=\"smalltext\">".$percentage[$count]."% ";
-					if($votes[$count] == 0){
-						$vt = "No votes";
-					}else if($votes[$count] == 1){
-						$vt = "1 vote";
-					}else{
-						$vt = $votes[$count]." votes";
-					}
-					$text .= "[".$vt."]</span><br /><br />";	
-				}
-			break;
-
-			case "notvoted":
-				$text .= "<form method='post' action='".e_SELF;
-				if(e_QUERY){ $text .= "?".e_QUERY; }
-				$text .= "'><p>";
-				for($count=0; $count<=($options-1); $count++){
-					
-					
-					$text .= "\n<input type=\"radio\" name=\"votea\" value=\"".($count+1)."\" />\n<b>".$poll_option[$count]."</b>\n<br />";
-				}
-
-				if($type == "forum"){
-					$text .= "\n<br /></p><div style=\"text-align:center\">\n<p><input class=\"button\" type=\"submit\" name=\"pollvote\" value=\"".LAN_163."\" /></p></div>\n<p><input type='hidden' name='pollid' value='".$poll_id."' /></p></form>";
-				}else{
-					$text .= "\n<br /></p><div style=\"text-align:center\">\n<p><input class=\"button\" type=\"submit\" name=\"vote\" value=\"".LAN_163."\" /></p></div>\n<p><input type='hidden' name='pollid' value='".$poll_id."' /></p></form>";
-				}
-			break;
-
-			case "disallowed":
-				for($count=1; $count<=$options; $count++){
-					$text .= "<img src='".THEME."images/bullet3.gif' alt='bullet' /> <b>".$poll_option[$count]."</b><br />\n";
-				}
-				$text .= "\n<br /><div style=\"text-align:center\">".LAN_387."</div><br />";
-			break;
-		}
-
-		$vote_total = ($vote_total ? $vote_total : 0);
-	
 		$sql = new db;
 		$comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='$poll_id' AND comment_type='4'");
+		
+		$search[0] = "/\{QUESTION\}(.*?)/si";
+		$replace[0] = stripslashes($poll_question);
 
-		$text .= "<div style=\"text-align:center\" class=\"smalltext\">
-		".LAN_164.$vote_total;
+		$search[1] = "/\{VOTE_TOTAL\}(.*?)/si";
+		$replace[1] = LAN_164.$vote_total;
 
-		if($type == "menu"){
-			$text .= " <a href=\"comment.php?poll.".$poll_id."\">Comments: ".$comment_total."</a><br />\n[ <a href=\"oldpolls.php\">".LAN_165."</a> ]";
+		$search[2] = "/\{COMMENTS\}(.*?)/si";
+		$replace[2] = ($type == "menu" ? " <a href=\"comment.php?poll.".$poll_id."\">".LAN_99.": ".$comment_total."</a>" : "");
+
+		$search[3] = "/\{OLDPOLLS\}(.*?)/si";
+		$replace[3] = ($type == "menu" ? "<a href=\"oldpolls.php\">".LAN_165."</a>" : "");
+
+		$p_style = preg_replace($search, $replace, $POLLSTYLE);
+
+		preg_match("/\{OPTIONS=(.*?)\}/si", $POLLSTYLE, $res);
+		$optionstring = $res[1];
+
+		if($mode == "notvoted"){
+			$opt = "<form method='post' action='".e_SELF;
+			if(e_QUERY){ $opt .= "?".e_QUERY; }
+			$opt .= "'><p>";
 		}
-		$text .= "</div>";
+
+		for($count=0; $count<=($options-1); $count++){	
+
+			if($votes[$count] == 0){
+				$vt = "No votes";
+			}else if($votes[$count] == 1){
+				$vt = "1 vote";
+			}else{
+				$vt = $votes[$count]." votes";
+			}
+
+			if($mode == "voted"){
+				$search = array("OPTION", "BAR", "PERCENTAGE", "VOTES");
+				$replace = array($poll_option[$count], "<img src='".THEME."images/bar.jpg' height='12' width='".($percentage[$count])."%' style='border : 1px solid Black' alt='' />",  $percentage[$count]."% ", "[".$vt."]");
+			}else if($mode == "notvoted"){
+				$search = array("OPTION", "BAR", "PERCENTAGE", "VOTES", "<br /><br />");
+				$replace = array("<input type='radio' name='votea' value='".($count+1)."' /> ".$poll_option[$count], "", "", "", "<br />");
+			}else if($mode == "disallowed"){
+				$search = array("OPTION", "BAR", "PERCENTAGE", "VOTES");
+				$replace = array("<img src='".THEME."images/bullet3.gif' alt='bullet' /> <b>".$poll_option[$count], "", "", "");
+			}
+
+			$opt .= str_replace($search, $replace, $optionstring);
+		}
+
+		if($mode == "notvoted"){
+			$opt .= ($type == "forum" ? "\n<br /></p><div style='text-align:center'>\n<p><input class='button' type='submit' name='pollvote' value='".LAN_163."' /></p></div>\n<p><input type='hidden' name='pollid' value='".$poll_id."' /></p></form>" : "\n<br /></p><div style='text-align:center'>\n<p><input class='button' type='submit' name='vote' value='".LAN_163."' /></p></div>\n<p><input type='hidden' name='pollid' value='".$poll_id."' /></p></form>");
+		}
+
+		$text = preg_replace("/\{OPTIONS=.*\}/si", $opt, $p_style);
+
 
 		if(MODERATOR && $type == "forum"){
 			$qs = explode(".", e_QUERY);
@@ -147,7 +143,6 @@ class poll{
 		if($preview){
 			echo "</td></tr></table></div>";
 		}
-
 	}
 }
 ?>

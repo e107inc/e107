@@ -36,7 +36,7 @@ if($pref['user_reg'][1] == 1 || ADMIN == TRUE){
 			$new_comments ".($new_comments == 1 ? "comment" : "comments").", 
 			$new_forum ".($new_forum == 1 ? "forum post" : "forum posts")." and 
 			$new_users ".($new_users == 1 ? "new site member" : "new site members").".<span>";
-			$caption = (file_exists(THEME."images/login_menu.png") ? "<img src='".THEME."images/login_menu.png' alt='' /> ".LAN_30 : LAN_30);
+			$caption = (file_exists(THEME."images/login_menu.png") ? "<img src='".THEME."images/login_menu.png' alt='' /> ".LAN_30." ".USERNAME : LAN_30." ".USERNAME);
 			$ns -> tablerender($caption, $text);
 
 

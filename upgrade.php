@@ -14,7 +14,7 @@
 */
 require_once("config.php");
 
-define("VERSION", "0.554");
+define("VERSION", "0.555");
 define("BUILD", "beta");
 
 define("MSERVER", $mySQLserver);
@@ -441,21 +441,24 @@ function update_tables(){
 		}
 	}
 
-	$pref['user_tracking'][1] = "cookie";
-	$pref['resize_method'][1] = "gd2";
-	$pref['im_path'][1] = "/usr/local/bin/";
-	$pref['im_quality'][1] = "80";
-	$pref['im_width'][1] = "120";
-	$pref['upload_enabled'][1] = "0";
-	$pref['upload_allowedfiletype'][1] = ".zip\n.gz\n.jpg\n.png\n.gif\n.txt";
-	$pref['upload_storagetype'][1] = "2";
-	$pref['upload_maxfilesize'][1] = "";
-	$pref['upload_class'][1] = "999";
+	if(!$pref['user_tracking'][1]){
+		$pref['user_tracking'][1] = "cookie";
+		$pref['resize_method'][1] = "gd2";
+		$pref['im_path'][1] = "/usr/local/bin/";
+		$pref['im_quality'][1] = "80";
+		$pref['im_width'][1] = "120";
+		$pref['upload_enabled'][1] = "0";
+		$pref['upload_allowedfiletype'][1] = ".zip\n.gz\n.jpg\n.png\n.gif\n.txt";
+		$pref['upload_storagetype'][1] = "2";
+		$pref['upload_maxfilesize'][1] = "";
+		$pref['upload_class'][1] = "999";
+		$tmp = addslashes(serialize($pref));
+		$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='pref' ");
+		$sql -> db_Insert("core", "'pref_backup', '$tmp' ");
+	}
 
-	$tmp = addslashes(serialize($pref));
-	$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='pref' ");
-
-	$sql -> db_Insert("core", "'pref_backup', '$tmp' ");
+	@mysql_query("ALTER TABLE `e107_stat_counter` DROP `counter_today_total`");
+	@mysql_query("ALTER TABLE `e107_stat_counter` DROP `counter_today_unique`");
 
 	return $str;
 	

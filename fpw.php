@@ -49,9 +49,8 @@ if(IsSet($_POST['pwsubmit'])){
 		}
 
 		$sql -> db_Update("user", "user_sess='$newpw' WHERE user_name='".$_POST['name']."' AND user_email='".$_POST['email']."' ");
-
-		$message = LAN_215.$newpw."\n\n".LAN_216."\n\n".SITEURL."fpw.php?".$user_id;
-
+		$returnaddress = (substr(SITEURL, -1) == "/" ? SITEURL."fpw.php" : SITEURL."/fpw.php");
+		$message = LAN_215.$newpw."\n\n".LAN_216."\n\n".$returnaddress."?".$user_id;
 		require_once("classes/mail.php");
 		if(sendemail($_POST['email'], "Password reset from ".SITENAME, $message)){
 			$text = "<div style='text-align:center'>New password sent to ".$_POST['email'].", please follow the instructions in the email to validate your password.</div>";

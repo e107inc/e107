@@ -111,7 +111,7 @@ class comment{
 		}else if($user_admin){
 			$replace[6] = "Administrator";
 		}else{
-			$replace[6] = ($user_join != "01 Jan : 00:00" ? LAN_145.$user_join : "");
+			$replace[6] = ($user_join != "01 Jan : 00:00" && $user_join != "31 Dec : 19:00" ? LAN_145.$user_join : "");
 		}
 		$search[7] = "/\{ADMINOPTIONS\}(.*?)/si";
 		if(ADMIN == TRUE && getperms("B")){

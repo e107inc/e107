@@ -59,8 +59,8 @@ define("LAN_32", "There is 1 new post ");
 define("LAN_33", "There are");
 define("LAN_34", "new posts");
 define("LAN_35", "since your last visit.");
-define("LAN_36", "You last visit visited at ");
-define("LAN_37", "It is now is ");
+define("LAN_36", "You last visited at ");
+define("LAN_37", "It is now ");
 define("LAN_38", ", all times are GMT");
 define("LAN_39", "total topics");
 define("LAN_40", "total posts.");
@@ -385,4 +385,11 @@ define("LAN_414", "Working demo");
 define("LAN_415", "enter URL to site where demo can be viewed");
 define("LAN_416", "Submit and Upload");
 define("LAN_417", "Upload File");
+
+
+define("LAN_418", "days ago");
+define("LAN_419", "Daily average");
+define("LAN_420", "Weekly average");
+define("LAN_421", "Monthly average");
+define("LAN_422", "Not calculable yet");
 ?>

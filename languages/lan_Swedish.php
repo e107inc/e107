@@ -8,12 +8,14 @@
 |	http://jalist.com					|
 |	stevedunstan@jalist.com					|
 | 	Transalation by TheFrog					|																						|
-|	Updated 2003-04-27 by Kimmo
+|	Updated 2003-06-12 by Kimmo
 |								|
 |	Released under the terms and conditions of the		|
 |	GNU General Public License (http://gnu.org).		|
 +---------------------------------------------------------------+
 */
+
+setlocale(LC_ALL, 'swedish');
 
 //articles.php/comment.php
 define(LAN_0, "[blockerad av administratören]");
@@ -219,7 +221,7 @@ define(LAN_170, "Följer W3C standarden"); //...
 define(LAN_171, "Användarid icke godkännt (kan vara en korrupt kaka (cookie)).<br /><a href=\"index.php?logout\">Klicka här</a> för att nollställa kakan.");
 define(LAN_172, "Logga ut");
 define(LAN_173, "Fel vid inloggning");
-define(LAN_174, "Gå med"); //FIX
+define(LAN_174, "Bli medlem"); //FIX
 define(LAN_175, "Logga in"); //Might be changed to Logga in
 define(LAN_176, "Användare på denna sida: ");
 define(LAN_177, "Användare på siten: ");
@@ -317,7 +319,7 @@ define("LAN_365", "Datum" );
 define("LAN_366", "Filstorlek" );
 define("LAN_367", "Download" );
 define("LAN_368", "Inga filer tillgängliga, kom tillbaka senare!" );
-define("LAN_369", "Inte graderat än");
+define("LAN_369", "Inte rankat än");
 define("LAN_370", "Rankning: ");
 define("LAN_371", "Loggning är inte aktiverat än, gå till admin sidan, klicka på Logger och Activate Logging/Counter rutan.");
 define("LAN_372", "Egenskaperna på denna sida är inaktiverade.");
@@ -336,5 +338,45 @@ define("LAN_384", "Forum svar från ");
 define("LAN_385", "Posta: ");
 define("LAN_386", "Om du önskar att aktivera en omröstning för ditt inlägg, lämna då detta fält tomt ");
 define("LAN_387", "Du måste vara medlem samt inloggad för att kunna rösta.");
+define("LAN_388", "Populär tråd");
+
+
+define("LAN_389", "Föregående tråd");
+define("LAN_390", "Nästa tråd");
+define("LAN_391", "Spåra denna tråd");
+define("LAN_392", "Sluta spåra denna tråd"); // Track
+
+define("LAN_393", "Lista spårade trådar");
+define("LAN_394", "Stöngt forum");
+define("LAN_395", "[populär]");
+define("LAN_396", "Tillkännagivande"); // Announcement
+define("LAN_397", "Spårade trådar");
+
+
+define("LAN_398", "Ingen sammanfattning.");
+define("LAN_399", "Fortsätt");
+define("LAN_400", "Anändarnamn och lösenord är <b>case-sensitive</b>");
+define("LAN_401", "Lämna blankt för att behålla nuvarnade lösenord");
+
+define("LAN_402", "Du måste vara registrerad medlem för att kunna ladda upp filer på denna server.");
+define("LAN_403", "Du har inte rättigheter att ladda upp filer till denna server.");
+define("LAN_404", "Tack. Din uppladdning kommer att granskas av en administratör och eventuellt postas på denna site.");
+define("LAN_405", "Filen överskrider tillåten filstorlek - raderad.");
+define("LAN_406", "<b>Notera</b><br />Tillåtna filtyper:");
+define("LAN_407", "Övriga filtyper som laddas upp kommer att raderas omedelbart.");
+define("LAN_408", "<u>Understrykna</u> fält måste fyllas i");
+
+define("LAN_409", "Filnamn");
+define("LAN_410", "Version");
+define("LAN_411", "Fil");
+define("LAN_412", "Skärmdump");
+define("LAN_413", "Beskrivning");
+
+
+define("LAN_414", "Fungerande demo");
+define("LAN_415", "skriv in webadressen där en demo kan ses");
+define("LAN_416", "Skicka och ladda upp");
+define("LAN_417", "Ladda upp fil");
+
 
 ?>

@@ -15,8 +15,6 @@
 require_once("class2.php");
 require_once(HEADERF);
 
-
-
 if(!$pref['log_activate'][1]){
 	if(ADMIN){
 		$text = "<div style='text-align:center'>".LAN_371."</div>";
@@ -28,408 +26,183 @@ if(!$pref['log_activate'][1]){
 	exit;
 }
 
+$header = "colspan='2' class='forumheader3'";
+$leftcolumn = "style='width:25%' class='forumheader3'";
+$rightcolumn = "style='width:75%; text-align:right' class='forumheader3'";
 
-$maxwidth = 400;
+$text = "<div style='text-align:center'>\n<table style='width:95%' class='fborder'>\n";
 
-$dep = new dbFunc;
-
-if($dep -> dbQuery("SELECT * FROM ".MPREFIX."stat_counter ORDER BY counter_date")){
-	$row = $dep -> dbFetch();
+if($sql -> db_Select("stat_counter", "*", "ORDER BY counter_date", "no-where")){
+	$row = $sql -> db_Fetch();
 	$tmp = explode("-", $row['counter_date']);
 	$tmp2 = getdate(mktime(0, 0, 0, $tmp[1], $tmp[2], $tmp[0]));
 	$logstart = $tmp[2]." ".$tmp2['month']." ".$tmp[0];
+	$logdays = intval(abs(((((strtotime ($logstart) - time())/60)/60)/24)));
 }else{
 	$logstart = LAN_373;
+	$logdays = 0;
 }
-$text = "<b>".LAN_374."</b> ".$logstart."<br />";
+
+//$date_secs = strtotime ($logstart); echo $date_secs;
+//$timediff = (strtotime ($logstart) - time());
+
+
+$text .= "<tr>\n<td $leftcolumn>".LAN_374."</td>\n<td $rightcolumn><b>".$logstart."</b> ($logdays ".LAN_418.")</td>\n</tr>\n";
 $action = e_QUERY;
 
-$total_page_views = $dep -> dbCount("SELECT sum(counter_unique) FROM ".MPREFIX."stat_counter");
-$row = $dep -> dbFetch();
-$text .= "<b>".LAN_126."</b> ".$total_page_views."<br />";
+$total_unique_views = $sql -> db_Count("SELECT sum(counter_unique) FROM ".MPREFIX."stat_counter", "generic");
+$total_page_views = $sql -> db_Count("SELECT sum(counter_total) FROM ".MPREFIX."stat_counter", "generic");
 
-$total_page_views = $dep -> dbCount("SELECT sum(counter_total) FROM ".MPREFIX."stat_counter");
-$row = $dep -> dbFetch();
-$text .= "<b>".LAN_125."</b> ".$total_page_views."<br />";
-// ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-$c=0;
-$dep -> dbQuery("SELECT counter_url, sum(counter_unique) FROM ".MPREFIX."stat_counter GROUP BY counter_url");
-$text .= "<br /><b>".LAN_126."</b>";
-if($action == 1){
-	$text .= " (".LAN_377.")";
-}else{
-	$text .= " (".LAN_378.")";
-}
-$text .= "<br />";
+$daily_average = @round(($total_page_views/$logdays), 0);
+$weekly_average = @round(($total_page_views/($logdays/7)), 0);
+$monthly_average = @round(($total_page_views/($logdays/30)), 0);
 
-while($row= $dep -> dbFetch()){
-	$data1[$c][0] = $row[1];
-	$data1[$c][1] = substr($row[0], 1);
-	$c++;
-}
-if($c){
-	rsort($data1);
-}
-$w = 1;
-while($data1[0][0] / $w > $maxwidth){
-	$w++;
-}
+$text .= "<tr>\n<td $leftcolumn>".LAN_124."</td>\n<td $rightcolumn><b>".$total_unique_views."</b></td>\n</tr>\n<tr>\n<td $leftcolumn>".LAN_125."</td>\n<td $rightcolumn><b>".$total_page_views."</b></td>\n</tr>\n
 
-$c=0;
+<tr>
+<td $leftcolumn>".LAN_419.":</td>
+<td $rightcolumn>".($daily_average ? $daily_average : LAN_422)."</td>
+</tr>
 
-if($action == 1){
-	while($data1[$c][0]){
-		$width = $data1[$c][0]/$w;
-		$text .= "<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' width='".$width."' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /> ".
-		$data1[$c][0]." - ".$data1[$c][1]."<br />";
-		$c++;
-	}
-}else{
-	for($r=0; $r<=9; $r++){
-		$width = $data1[$c][0]/$w;
-		$text .= "<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' width='".$width."' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /> ".
-		$data1[$c][0]." - ".$data1[$c][1]."<br />";
-		$c++;
-	}
-	$text .= "<a href='".e_SELF."?1'>".LAN_375."</a><br />";
-}
-// ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-$c=0;
-$dep -> dbQuery("SELECT counter_url, sum(counter_total) FROM ".MPREFIX."stat_counter GROUP BY counter_url");
-$text .= "<br /><b>".LAN_127."</b>";
-if($action == 2){
-	$text .= " (".LAN_377.")";
-}else{
-	$text .= " (".LAN_378.")";
-}
-$text .= "<br />";
+<tr>
+<td $leftcolumn>".LAN_420.":</td>
+<td $rightcolumn>".($weekly_average ? $weekly_average : LAN_422)."</td>
+</tr>
 
-while($row= $dep -> dbFetch()){
+<tr>
+<td $leftcolumn>".LAN_421.":</td>
+<td $rightcolumn>".($monthly_average ? $monthly_average : LAN_422)."</td>
+</tr>
 
-	$data2[$c][0] = $row[1];
-	$data2[$c][1] = substr($row[0], 1);
-	$c++;
-}
-if($c){
-	rsort($data2);
-}
-$w = 1;
-while($data2[0][0] / $w > $maxwidth){
-	$w++;
-}
 
-$c=0;
-if($action == 2){
-	while($data2[$c][0]){
-		$width = $data2[$c][0]/$w;
-		$text .= "<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' width='".$width."' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /> ".
-		$data2[$c][0]." - ".$data2[$c][1]."<br />";
-		$c++;
-	}
-}else{
-	for($r=0; $r<=9; $r++){
-		$width = $data2[$c][0]/$w;
-		$text .= "<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' width='".$width."' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /> ".
-		$data2[$c][0]." - ".$data2[$c][1]."<br />";
-		$c++;
-	}
-	$text .= "<a href='".e_SELF."?2'>".LAN_375."</a><br />";
-}
-// ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// last 10 visitors
+</table>\n<br />
+";
+
+$sql -> db_Select_gen("SELECT counter_url, sum(counter_unique) FROM ".MPREFIX."stat_counter GROUP BY counter_url");
+$text .= ($action == 1 ? parse_data($row, 0, $total_unique_views, 1, LAN_126) : parse_data($row, 10, $total_unique_views, 1, LAN_126));
+
+$sql -> db_Select_gen("SELECT counter_url, sum(counter_total) FROM ".MPREFIX."stat_counter GROUP BY counter_url");
+$text .= ($action == 2 ? parse_data($row, 0, $total_page_views, 2, LAN_127) : parse_data($row, 10, $total_page_views, 2, LAN_127));
 
 $con = new convert;
-if($action == 8 && ADMIN == TRUE){
-	$text .= "<br /><b>Last ".$pref['log_lvcount'][1]." unique visitors (".LAN_377.")</b><br />";
-	$sql -> db_Select("stat_last", "*", "ORDER BY stat_last_date DESC", "no_where");
-}else{
-	$text .= "<br /><b>".LAN_376."</b><br />";
-	$sql -> db_Select("stat_last", "*", "ORDER BY stat_last_date DESC LIMIT 0,10", "no_where");
-}
-	
-while(list($stat_last_date, $stat_last_info) = $sql-> db_Fetch()){
-	$datestamp = $con -> convert_date($stat_last_date, "long");
-	$text .= "<span class='smalltext'>".$datestamp.":</span><br /> ".$stat_last_info."<br /><br />";
-}
+$tmp = str_replace("10", $pref['log_lvcount'][1], LAN_376);
+$text .= "<table style='width:95%' class='fborder'>
+<tr>
+<td class='forumheader3'><b>$tmp</b></td>
+</tr>";
 
-if(ADMIN == TRUE && $pref['log_lvcount'][1] >10){
-	$text .= "<a href='".e_SELF."?8'>".LAN_375."</a><br />";
-}
+$sql -> db_Select("stat_last", "*", "ORDER BY stat_last_date DESC LIMIT 0,".$pref['log_lvcount'][1], "no_where");
 
-// ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-$c=0;
-$dep -> dbQuery("SELECT info_name, SUM(info_count) FROM ".MPREFIX."stat_info WHERE info_type='1' GROUP BY info_name");
-$text .= "<br /><b>".LAN_128."</b>";
-if($action == 3){
-	$text .= " (".LAN_377.")";
-}else{
-	$text .= " (".LAN_378.")";
+while($row = $sql-> db_Fetch()){
+	extract($row);
+	$datestamp = $con -> convert_date($stat_last_date, "short");
+	$text .= "<tr>\n<td class='forumheader3'><span class='smalltext'>".$datestamp.": ".$stat_last_info."</b></span></td>\n</tr>";
 }
-$text .= "<br />";
-while($row= $dep -> dbFetch()){
+$text .= "</tr>\n</table>\n<br />";
 
-	$data3[$c][0] = $row[1];
-	$data3[$c][1] = $row[0];
-	$c++;
-}
-if($c){
-	rsort($data3);
-}
-$w = 1;
-while($data3[0][0] / $w > $maxwidth){
-	$w++;
-}
+$total_browsers = $sql -> db_Count("SELECT sum(info_count) FROM ".MPREFIX."stat_info WHERE info_type='1'", "generic");
+$sql -> db_Select_gen("SELECT info_name, SUM(info_count) FROM ".MPREFIX."stat_info WHERE info_type='1' GROUP BY info_name");
+$text .= ($action == 3 ? parse_data($row, 0, $total_browsers, 3, LAN_128) : parse_data($row, 10, $total_browsers, 3, LAN_128));
 
-$c=0;
-if($action == 3){
-	while($data3[$c][0]){
-		$width = $data3[$c][0]/$w;
-		if($data3[$c][1] == "Internet Explorer"){
-			$data3[$c][1] = "IE";
-		}
-		$text .= "<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' width='".$width."' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /> ".
-		$data3[$c][0]." - ".$data3[$c][1]."
-		<br />";
-		$c++;
-	}
-}else{
-	for($r=0; $r<=9; $r++){
-		$width = $data3[$c][0]/$w;
-		if($data3[$c][1] == "Internet Explorer"){
-			$data3[$c][1] = "IE";
-		}
-		$text .= "<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' width='".$width."' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /> ".
-		$data3[$c][0]." - ".$data3[$c][1]."
-		<br />";
-		$c++;
-	}
-	$text .= "<a href='".e_SELF."?3'>".LAN_375."</a><br />";
-}
-// ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-$c=0;
-$dep -> dbQuery("SELECT info_name, SUM(info_count) AS Total FROM ".MPREFIX."stat_info WHERE info_type='2' GROUP BY info_name");
-$text .= "<br /><b>".LAN_129."</b>";
-if($action == 4){
-	$text .= " (".LAN_377.")";
-}else{
-	$text .= " (".LAN_378.")";
-}
-$text .= "<br />";
-while($row= $dep -> dbFetch()){
+$total_os = $sql -> db_Count("SELECT sum(info_count) FROM ".MPREFIX."stat_info WHERE info_type='2'", "generic");
+$sql -> db_Select_gen("SELECT info_name, SUM(info_count) AS Total FROM ".MPREFIX."stat_info WHERE info_type='2' GROUP BY info_name");
+$text .= ($action == 4 ? parse_data($row, 0, $total_os, 4, LAN_129) : parse_data($row, 10, $total_os, 4, LAN_129));
 
-	$data4[$c][0] = $row[1];
-	$data4[$c][1] = $row[0];
-	$c++;
-}
-if($c){
-	rsort($data4);
-}
-$w = 1;
-while($data4[0][0] / $w > $maxwidth){
-	$w++;
-}
-$c=0;
-if($action == 4){
-	while($data4[$c][0]){
-		$width = $data4[$c][0]/$w;
-		$text .= "<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' width='".$width."' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /> ".
-		$data4[$c][0]." - ".$data4[$c][1]."
-		<br />";
-		$c++;
-	}
-}else{
-	for($r=0; $r<=9; $r++){
-		$width = $data4[$c][0]/$w;
-		$text .= "<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' width='".$width."' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /> ".
-		$data4[$c][0]." - ".$data4[$c][1]."
-		<br />";
-		$c++;
-	}
-	$text .= "<a href='".e_SELF."?4'>".LAN_375."</a><br />";
-}
-// ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-$c=0;
-$dep -> dbQuery("SELECT info_name, SUM(info_count) AS Total FROM ".MPREFIX."stat_info WHERE info_type='4' GROUP BY info_name");
-$text .= "<br /><b>".LAN_130."</b>";
-if($action == 5){
-	$text .= " (".LAN_377.")";
-}else{
-	$text .= " (".LAN_378.")";
-}
-$text .= "<br />";
-while($row= $dep -> dbFetch()){
+$total_country = $sql -> db_Count("SELECT sum(info_count) FROM ".MPREFIX."stat_info WHERE info_type='4'", "generic");
+$sql -> db_Select_gen("SELECT info_name, SUM(info_count) AS Total FROM ".MPREFIX."stat_info WHERE info_type='4' GROUP BY info_name");
+$text .= ($action == 5 ? parse_data($row, 0, $total_os, 5, LAN_130) : parse_data($row, 10, $total_os, 5, LAN_130));
 
-	$data6[$c][0] = $row[1];
-	$data6[$c][1] = $row[0];
-	$c++;
-}
-if($c){
-	rsort($data6);
-}
-$w = 1;
-while($data6[0][0] / $w > $maxwidth){
-	$w++;
-}
-$c=0;
-if($action == 5){
-	while($data6[$c][0]){
-		$width = $data6[$c][0]/$w;
-		$text .= "<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' width='".$width."' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /> ".
-		$data6[$c][0]." - ".$data6[$c][1]."
-		<br />";
-		$c++;
-	}
-}else{
-	for($r=0; $r<=9; $r++){
-		$width = $data6[$c][0]/$w;
-		$text .= "<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' width='".$width."' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /> ".
-		$data6[$c][0]." - ".$data6[$c][1]."
-		<br />";
-		$c++;
-	}
-	$text .= "<a href='".e_SELF."?5'>".LAN_375."</a><br />";
-}
-// ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-$c=0;
-$dep -> dbQuery("SELECT info_name, SUM(info_count) AS Total FROM ".MPREFIX."stat_info WHERE info_type='6' GROUP BY info_name");
-$text .= "<br /><b>".LAN_131."</b>";
-if($action == 6){
-	$text .= " (".LAN_377.")";
-}else{
-	$text .= " (".LAN_378.")";
-}
-$text .= "<br />";
-while($row= $dep -> dbFetch()){
-	$data7[$c][0] = $row[1];
-	$data7[$c][1] = $row[0];
-	$c++;
-}
-if($c){
-	rsort($data7);
-}
-$w = 1;
-while($data7[0][0] / $w > $maxwidth){
-	$w++;
-}
-$c=0;
-if($action == 6){
-	while($data7[$c][0]){
-		$width = $data7[$c][0]/$w;
-		$text .= "<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' width='".$width."' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /> ".
-		$data7[$c][0]." - ".$data7[$c][1]."
-		<br />";
-		$c++;
-	}
-}else{
-	for($r=0; $r<=9; $r++){
-		$width = $data7[$c][0]/$w;
-		$text .= "<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' width='".$width."' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /> ".
-		$data7[$c][0]." - ".$data7[$c][1]."
-		<br />";
-		$c++;
-	}
-	$text .= "<a href='".e_SELF."?6'>".LAN_375."</a><br />";
-}
-// ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+$total_refer = $sql -> db_Count("SELECT sum(info_count) FROM ".MPREFIX."stat_info WHERE info_type='6'", "generic");
+$sql -> db_Select_gen("SELECT info_name, SUM(info_count) AS Total FROM ".MPREFIX."stat_info WHERE info_type='6' GROUP BY info_name");
+$text .= ($action == 6 ? parse_data($row, 0, $total_refer, 6, LAN_131) : parse_data($row, 10, $total_refer, 6, LAN_131));
 
-$c=0;
-$dep -> dbQuery("SELECT info_name, SUM(info_count) AS Total FROM ".MPREFIX."stat_info WHERE info_type='5' GROUP BY info_name");
-$text .= "<br /><b>".LAN_379."</b>";
-if($action == 7){
-	$text .= " (".LAN_377.")";
-}else{
-	$text .= " (".LAN_378.")";
-}
-$text .= "<br />";
-while($row= $dep -> dbFetch()){
-	$data8[$c][0] = $row[1];
-	$data8[$c][1] = $row[0];
-	$c++;
-}
-if($c){
-	rsort($data8);
-}
-$w = 1;
-while($data8[0][0] / $w > $maxwidth){
-	$w++;
-}
-$c=0;
-if($action == 7){
-	while($data8[$c][0]){
-		$width = $data8[$c][0]/$w;
-		$text .= "<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' width='".$width."' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /> ".
-		$data8[$c][0]." - ".$data8[$c][1]."
-		<br />";
-		$c++;
-	}
-}else{
-	for($r=0; $r<=9; $r++){
-		$width = $data8[$c][0]/$w;
-		$text .= "<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' width='".$width."' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /> ".
-		$data8[$c][0]." - ".$data8[$c][1]."
-		<br />";
-		$c++;
-	}
-	$text .= "<a href='".e_SELF."?7'>".LAN_375."</a><br />";
-}
-$ns -> tablerender("<div style='text-align:center'>".LAN_132."</div>", $text);
+$total_res = $sql -> db_Count("SELECT sum(info_count) FROM ".MPREFIX."stat_info WHERE info_type='5'", "generic");
+$sql -> db_Select_gen("SELECT info_name, SUM(info_count) AS Total FROM ".MPREFIX."stat_info WHERE info_type='5' GROUP BY info_name");
+$text .= ($action == 7 ? parse_data($row, 0, $total_res, 7, LAN_379) : parse_data($row, 10, $total_res, 7, LAN_379));
+
+$text .= "</div>";
+
+$ns -> tablerender(LAN_132, $text);
 require_once(FOOTERF);
 
-class dbfunc{
-	var $mySQLserver;
-	var $mySQLuser;
-	var $mySQLpassword;
-	var $mySQLdefaultdb;
-	var $mySQLaccess;
-	var $mySQLresult;
-	var $mySQLrows;
-	var $mySQLerror;
+function parse_data($row, $amount, $total, $action_n, $lan){
+	global $sql, $action;
 
-	function dbRows(){
-		$rows = $this->mySQLrows = @mysql_num_rows($this->mySQLresult);
-		return $rows;
-		$this->dbError("dbRows");
+	$str .= "<table style='width:95%' class='fborder'>\n<tr>\n<td colspan='4' class='forumheader3'><b>$lan</b> ".($action == $action_n ? LAN_377 : LAN_378." ( <a href='".e_SELF."?$action_n'>".LAN_375."</a> )")."</td>\n</tr>";
+	$c=0;
+
+	while($row = $sql -> db_Fetch()){
+		$data[$c][0] = $row[1];
+		$data[$c][1] = $row[0];
+		$data[$c][2] = @round(($data[$c][0]/$total)*100,2);
+		$c++;
 	}
+	if($c){
+		rsort($data);
+	}
+	$c=0;
+	if(!$amount){
+		while($data[$c][0]){
+			if($action_n == 3 || $action_n == 4){
+				$imagepath = e_BASE."themes/shared/log/";
+				if(eregi("windows", $data[$c][1])){ $image = $imagepath."windows.png";
+				}else if(eregi("netscape", $data[$c][1])){ $image = $imagepath."netscape.png";
+				}else if(eregi("konqueror", $data[$c][1])){ $image = $imagepath."konqueror.png";
+				}else if(eregi("opera", $data[$c][1])){ $image = $imagepath."opera.png";
+				}else if(eregi("links", $data[$c][1]) || eregi("lynx",$data[$c][1])){ $image = $imagepath."lynx.png";
+				}else if(eregi("mac", $data[$c][1])){ $image = $imagepath."mac.png";
+				}else if(eregi("explorer", $data[$c][1])){ $image = $imagepath."ie.png";
+				}else if(file_exists($imagepath.strtolower($data[$c][1])).".png"){ $image = $imagepath.strtolower($data[$c][1]).".png";}else{unset($image);}
+			}
 
-	function dbCount($query){
-		if($this->mySQLresult = @mysql_query($query)){
-			$rows = $this->mySQLrows = @mysql_fetch_array($this->mySQLresult);
-			return $rows[0];
-		}else{
-			$this->dbError("dbCount ($query)");
+
+			$tmp = explode(".", $data[$c][2]); $width = $tmp[0];
+			if(eregi("http://", $data[$c][1])){
+				$data[$c][1] = "<a href='".$data[$c][1]."'>".$data[$c][1]."</a>";
+			}
+			$str .= "<tr>\n<td style='width:25%' class='forumheader3'>";
+			
+			if($image){
+				$str .= "<img src='$image' alt='' /> ";
+			}
+			$str .= $data[$c][1]."</td>\n<td style='width:55%' class='forumheader3'>\n<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' style='width:".$width."%' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' />\n</td>\n<td style='width:10%; text-align:center' class='forumheader3'>".$data[$c][0]."</td>\n<td style='width:10%; text-align:center' class='forumheader3'>".$data[$c][2]."%</td>\n</tr>\n";
+			$c++;
 		}
-	}
+	}else{
+		for($r=0; $r<=9; $r++){
+			if($data[$c][0]){
+				if($action_n == 3 || $action_n == 4){
+					$imagepath = e_BASE."themes/shared/log/";
+					if(eregi("windows", $data[$c][1])){ $image = $imagepath."windows.png";
+					}else if(eregi("netscape", $data[$c][1])){ $image = $imagepath."netscape.png";
+					}else if(eregi("konqueror", $data[$c][1])){ $image = $imagepath."konqueror.png";
+					}else if(eregi("opera", $data[$c][1])){ $image = $imagepath."opera.png";
+					}else if((eregi("links", $data[$c][1]) || eregi("lynx",$data[$c][1])) && !eregi("php", $data[$c][1])){ $image = $imagepath."lynx.png";
+					}else if(eregi("mac", $data[$c][1])){ $image = $imagepath."mac.png";
+					}else if(eregi("explorer", $data[$c][1])){ $image = $imagepath."ie.png";
+					}else if(file_exists($imagepath.strtolower($data[$c][1])).".png"){ $image = $imagepath.strtolower($data[$c][1]).".png";}else{unset($image);}
+				}
 
-	function dbQuery($query){
-		if($this->mySQLresult = @mysql_query($query)){
-			$this->dbError("dbQuery");
-			return $this->dbRows();
-		}else{
-			$this->dbError("dbQuery ($query)");
-			return FALSE;
-		}
-	}
 
-	function dbFetch(){
-		if($row = @mysql_fetch_array($this->mySQLresult)){
-			$this->dbError("dbFetch");
-			return $row;
-		}else{
-			$this->dbError("dbFetch");
-			return FALSE;
-		}
-	}
-	function dbError($from){
-		if($error_message = @mysql_error()){
-			if($this->mySQLerror == TRUE){
-				echo "<b>mySQL Error!</b> Function: $from. [".@mysql_errno()." - $error_message]<br />";
-				return $error_message;
+				$tmp = explode(".", $data[$c][2]); $width = $tmp[0];
+				if(eregi("http://", $data[$c][1])){
+					$data[$c][1] = "<a href='".$data[$c][1]."' onclick='window.open(this.href);return false;'>".$data[$c][1]."</a>";
+				}
+				$str .= "<tr>\n<td style='width:25%' class='forumheader3'>";
+				
+				if($image){
+					$str .= "<img src='$image' alt='' /> ";
+				}
+				
+				$str .= $data[$c][1]."</td>\n<td nowrap style='width:55%' class='forumheader3'>\n<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' style='width:".$width."%' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' />\n</td>\n<td style='width:10%; text-align:center' class='forumheader3'>".$data[$c][0]."</td>\n<td style='width:10%; text-align:center' class='forumheader3'>".$data[$c][2]."%</td>\n</tr>\n";
+				$c++;
 			}
 		}
 	}
-	function dbInsert($query){
-		return $this->mySQLresult = mysql_query($query);
-	}
-}
 
+	
+
+	$str .= "</tr></table><br />";
+	return $str;
+}
 ?>

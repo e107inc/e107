@@ -109,12 +109,12 @@ if($admin_logo == "1"){
 	if(ADMIN == TRUE){
 		$str = str_replace(".", "", ADMINPERMS);
 		if(ADMINPERMS == "0"){
-			echo "Logged in: ".ADMINNAME." (Main Site Administrator)";
+			echo ADLAN_48.": ".ADMINNAME." (".ADLAN_49.")";
 		}else{
-			echo "Logged in: ".ADMINNAME." (levels:  ".$str.")";
+			echo ADLAN_48.": ".ADMINNAME." (".ADLAN_50.":  ".$str.")";
 		}
 	}else{
-		echo "Login required to progress to secure admin area ...";
+		echo ADLAN_51." ...";
 	}
 }
 
@@ -124,111 +124,112 @@ echo "<table style=\"width:100%\" cellspacing=\"10\" cellpadding=\"10\">
 
 // security update added by que
 if(ADMIN == TRUE){
- if(!eregi("admin.php", e_SELF)){
-	 $text = "<a href=\"".e_ADMIN."admin.php\">Admin Front Page</a>
+ if(!eregi("/admin.php", $_SERVER['PHP_SELF'])){
+	 $text = "<a href=\"".e_ADMIN."admin.php\">".ADLAN_52."</a>
 <br />
-".(eregi("menu_config", e_SELF) ? "<a href=\"../../index.php\">Leave Admin Area</a>" : "<a href=\"../index.php\">Leave Admin Area</a>")."
+
+".(eregi("menu_config", e_SELF) ? "<a href=\"../../index.php\">".ADLAN_53."</a>" : "<a href=\"../index.php\">".ADLAN_53."</a>")."
+
 <br />
 <br />";
 
 if(getperms("H")){
-	$text .= "<a href=\"".e_ADMIN."newspost.php\">News</a><br />";
+	$text .= "<a href=\"".e_ADMIN."newspost.php\">".ADLAN_0."</a><br />";
 }
 if(getperms("7")){
-	$text .= "<a href=\"".e_ADMIN."news_category.php\">News Categories</a><br />";
+	$text .= "<a href=\"".e_ADMIN."news_category.php\">".ADLAN_2."</a><br />";
 }
 if(getperms("1")){
-	$text .= "<a href=\"".e_ADMIN."prefs.php\">Preferences</a><br />";
+	$text .= "<a href=\"".e_ADMIN."prefs.php\">".ADLAN_4."</a><br />";
 }
 if(getperms("2")){
-	$text .= "<a href=\"".e_ADMIN."menus.php\">Menus</a><br />";
+	$text .= "<a href=\"".e_ADMIN."menus.php\">".ADLAN_6."</a><br />";
 }
 if(getperms("3")){
-	$text .= "<a href=\"".e_ADMIN."administrator.php\">Administrators</a><br />";
+	$text .= "<a href=\"".e_ADMIN."administrator.php\">".ADLAN_8."</a><br />";
 }
-$text .= "<a href=\"".e_ADMIN."updateadmin.php\">Update admin password</a><br />";
+$text .= "<a href=\"".e_ADMIN."updateadmin.php\">".ADLAN_10."</a><br />";
 if(getperms("5")){
-	$text .= "<a href=\"".e_ADMIN."forum.php\">Forums</a><br />";
+	$text .= "<a href=\"".e_ADMIN."forum.php\">".ADLAN_12."</a><br />";
 }
 if(getperms("J")){
-	$text .= "<a href=\"".e_ADMIN."article.php\">Articles</a><br />";
+	$text .= "<a href=\"".e_ADMIN."article.php\">".ADLAN_14."</a><br />";
 }
 if(getperms("l")){
-	$text .= "<a href=\"".e_ADMIN."content.php\">Content</a><br />";
+	$text .= "<a href=\"".e_ADMIN."content.php\">".ADLAN_16."</a><br />";
 }
 if(getperms("K")){
-	$text .= "<a href=\"".e_ADMIN."review.php\">Reviews</a><br />";
+	$text .= "<a href=\"".e_ADMIN."review.php\">".ADLAN_18."</a><br />";
 }
 if(getperms("I")){
-	$text .= "<a href=\"".e_ADMIN."links.php\">Links</a><br />";
+	$text .= "<a href=\"".e_ADMIN."links.php\">".ADLAN_20."</a><br />";
 }
 if(getperms("8")){
-	$text .= "<a href=\"".e_ADMIN."link_category.php\">Link Categories</a><br />";
+	$text .= "<a href=\"".e_ADMIN."link_category.php\">".ADLAN_22."</a><br />";
 }
 if(getperms("R")){
-	$text .= "<a href=\"".e_ADMIN."download.php\">Downloads</a><br />";
+	$text .= "<a href=\"".e_ADMIN."download.php\">".ADLAN_24."</a><br />";
 }
 if(getperms("Q")){
-	$text .= "<a href=\"".e_ADMIN."download_category.php\">Download Categories</a><br />";
+	$text .= "<a href=\"".e_ADMIN."download_category.php\">".ADLAN_26."</a><br />";
 }
 if(getperms("M")){
-	$text .= "<a href=\"".e_ADMIN."wmessage.php\">Welcome Message</a><br />";
+	$text .= "<a href=\"".e_ADMIN."wmessage.php\">".ADLAN_28."</a><br />";
 }
 
 if(getperms("6")){
-	$text .= "<a href=\"".e_ADMIN."filemanager.php\">File Manager</a><br />";
+	$text .= "<a href=\"".e_ADMIN."filemanager.php\">".ADLAN_30."</a><br />";
 }
 if(getperms("N")){
-	$text .= "<a href=\"".e_ADMIN."submitnews.php\">Submitted News</a><br />";
+	$text .= "<a href=\"".e_ADMIN."submitnews.php\">".ADLAN_32."</a><br />";
 }
 
 
 if(getperms("4")){
-	$text .= "<a href=\"".e_ADMIN."banlist.php\">Bans</a><br />";
+	$text .= "<a href=\"".e_ADMIN."banlist.php\">".ADLAN_34."</a><br />";
 }
 
 if(getperms("4")){
-	$text .= "<a href=\"".e_ADMIN."users.php\">Users</a><br />";
+	$text .= "<a href=\"".e_ADMIN."users.php\">".ADLAN_36."</a><br />";
 }
 
 if(getperms("4")){
-	$text .= "<a href=\"".e_ADMIN."userclass2.php\">User Classes</a><br />";
+	$text .= "<a href=\"".e_ADMIN."userclass2.php\">".ADLAN_38."</a><br />";
 }
 
 if(getperms("9")){
-	$text .= "<a href=\"".e_ADMIN."ugflag.php\">Maintainence Flag</a><br />";
+	$text .= "<a href=\"".e_ADMIN."ugflag.php\">".ADLAN_40."</a><br />";
 }
 
 if(getperms("2")){
-	$text .= "<a href=\"".e_ADMIN."custommenu.php\">Custom Menus</a><br />";
+	$text .= "<a href=\"".e_ADMIN."custommenu.php\">".ADLAN_42."</a><br />";
 }
 
 if(getperms("0")){
-	$text .= "<a href=\"".e_ADMIN."db.php\">SQL</a><br />";
+	$text .= "<a href=\"".e_ADMIN."db.php\">".ADLAN_44."</a><br />";
 }
 
-
-	$text .= "<a href=\"".e_ADMIN."admin.php?logout\">Logout</a>";
+	$text .= "<a href=\"".e_ADMIN."admin.php?logout\">".ADLAN_46."</a>";
 	$ns -> tablerender("Admin Navigation", $text);
 
  }else{
-	$text = "<a href=\"".e_ADMIN."../index.php\">Leave Admin Area</a>";
+	$text = "<a href=\"".e_ADMIN."../index.php\">".ADLAN_53."</a>";
 	$ns -> tablerender("Admin Navigation", $text);
 	unset($text);
  }
 
 if($sql -> db_Select("submitnews", "*", "submitnews_auth ='0' ")){
 	$text = "<div class=\"defaulttext\" style=\"text-align:center\">
-<b>You have had a news item submitted.</b>
+<b>".ADLAN_54.".</b>
 </div>
-Please click <a href=\"".e_ADMIN."submitnews.php\">here</a> to review.";
-	$ns -> tablerender("Story Submitted", $text);
+<a href=\"".e_ADMIN."submitnews.php\">".ADLAN_55."</a> ".ADLAN_56;
+	$ns -> tablerender(ADLAN_57, $text);
 }
 
 if(ADMINPERMS == "0"){
 	if((ADMINPWCHANGE+2592000) < time()){
-		$text = "<div style=\"mediumtext; text-align:center\">It has been more than 30 days since you changed the main administrator password - <a href=\"".e_ADMIN."updateadmin.php\">Click here to change it now</a></div>";
-		$ns -> tablerender("Security", $text);
+		$text = "<div style=\"mediumtext; text-align:center\">".ADLAN_58." - <a href=\"".e_ADMIN."updateadmin.php\">".ADLAN_59."</a></div>";
+		$ns -> tablerender(ADLAN_60, $text);
 	}
  }
 
@@ -267,7 +268,7 @@ if(!MAGIC_QUOTES_GPC){
 }
 
 if(SAFE_MODE){
-	message_handler("ADMIN_MESSAGE", "Your server is running in safe mode, this could affect certain scripts such as the filemanager filemanager.", __LINE__, __FILE__);
+	message_handler("ADMIN_MESSAGE", "Your server is running in safe mode, this could affect certain scripts such as the filemanager.", __LINE__, __FILE__);
 }
 
 if(OPEN_BASEDIR){

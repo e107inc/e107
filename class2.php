@@ -172,6 +172,16 @@ class db{
 		# - scope					public
 		*/
 //		echo "SELECT COUNT".$fields." FROM ".MPREFIX.$table." ".$arg;
+
+		if($fields == "generic"){
+			if($this->mySQLresult = @mysql_query($table)){
+				$rows = $this->mySQLrows = @mysql_fetch_array($this->mySQLresult);
+				return $rows[0];
+			}else{
+				$this->dbError("dbCount ($query)");
+			}
+		}
+
 		if($this->mySQLresult = @mysql_query("SELECT COUNT".$fields." FROM ".MPREFIX.$table." ".$arg)){
 			$rows = $this->mySQLrows = @mysql_fetch_array($this->mySQLresult);
 			return $rows[0];
@@ -539,8 +549,6 @@ function ban(){
 				$pref=unserialize($row['e107_value']);
 				if(!is_array($pref)){
 					($sql -> db_Select("core", "*", "e107_name='pref' ") ? message_handler("CRITICAL_ERROR", 1,  __LINE__, __FILE__) : message_handler("CRITICAL_ERROR", 2,  __LINE__, __FILE__));
-
-
 					if($sql -> db_Select("core", "*", "e107_name='pref_backup' ")){
 						$row = $sql -> db_Fetch(); extract($row);
 						$tmp = addslashes(serialize($e107_value ));
@@ -552,7 +560,6 @@ function ban(){
 					}					
 				}
 			}
-
 			if($pref['user_tracking'][1] == "session"){ require_once(e_BASE."classes/session_handler.php"); }
 
 			$sql -> db_Select("core", "*", "e107_name='menu_pref' ");
@@ -596,7 +603,8 @@ function ban(){
 
 			define("SITENAME", $pref['sitename'][1]);
 			define("SITEURL", $pref['siteurl'][1]);
-			if(eregi("http:", $pref['sitebutton'][1]) ? define ("SITEBUTTON", $pref['sitebutton'][1]) : define("SITEBUTTON", e_HTTP.$pref['sitebutton'][1]));
+//			if(eregi("http:", $pref['sitebutton'][1]) ? define ("SITEBUTTON", $pref['sitebutton'][1]) : define("SITEBUTTON", e_HTTP.$pref['sitebutton'][1]));
+			define ("SITEBUTTON", $pref['sitebutton'][1]);
 			define("SITETAG", $pref['sitetag'][1]);
 			define("SITEDESCRIPTION", $pref['sitedescription'][1]);
 			define("SITEADMIN", $pref['siteadmin'][1]);
@@ -686,7 +694,6 @@ class textparse{
 		*/
 
 		if($mode == "off"){
-//			$text = str_replace("<", "&lt;", $text);
 			$text = strip_tags($text);
 		}
 
@@ -710,12 +717,6 @@ class textparse{
 		$replace[7] = '<a href="http://\1">\1</a>';
 		$search[8] = "#\[url=([a-z]+?://){1}(.*?)\](.*?)\[/url\]#si";
 		$replace[8] = '<a href="\1\2">\3</a>';
-		/*
-		$search[18] = "/\[u\](.*?)\[\/u\]/si";
-		$replace[18] = '<u>\1</u>';
-		$search[19] = "/\[br]/si";
-		$replace[19] = '<br />';
-		*/
 		$text = preg_replace($search, $replace, $text);
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -729,7 +730,7 @@ class textparse{
 	}
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-		addslashes($text);
+		stripslashes($text);
 		$text = trim(chop($text));
 		return($text);
 	}

@@ -32,7 +32,7 @@ $view=15;
 $sql -> db_Select("forum", "*", "forum_id='".$forum_id."' ");
 $row = $sql-> db_Fetch(); extract($row);
 
-if(!$forum_active || $forum_class && !check_class($forum_class)){ header("Location:".e_HTTP."forum.php"); exit;}
+if(!$forum_active || $forum_class && !check_class($forum_class) || !$forum_parent){ header("Location:".e_HTTP."forum.php"); exit;}
 
 //if(preg_match("/^".preg_quote(ADMINNAME)."/", $forum_moderators)){
 

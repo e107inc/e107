@@ -20,7 +20,9 @@ function emoticons($str){
 	$emote = unserialize($e107_value);
 	$c=0;
 	while(list($code, $name) = @each($emote[$c])){
-		$str = str_replace($code, "<img src=\"".e_BASE."themes/shared/emoticons/$name\" alt=\"\" style=\"vertical-align:absmiddle\" />", $str);
+//		$code = " ".$code;
+		$str = str_replace(" ".$code, "<img src=\"".e_BASE."themes/shared/emoticons/$name\" alt=\"\" style=\"vertical-align:absmiddle\" />", $str);
+		$str = str_replace($code." ", "<img src=\"".e_BASE."themes/shared/emoticons/$name\" alt=\"\" style=\"vertical-align:absmiddle\" />", $str);
 		$c++;
 	}
 	return $str;

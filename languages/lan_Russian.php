@@ -1,11 +1,11 @@
 <?php
 /*
 +-------------------------------------------------------+
-|	e107_rus website system
+|	e107 website system
 |	language file: Russian
 |
-|	Translated by Lin (March 2003)
-|	look2000@yandex.ru	
+|	Translated by X-Koder
+|	http://xirc.ru
 |
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
@@ -13,10 +13,10 @@
 */
 
 //articles.php/comment.php
-define(LAN_0, "[наложена блокировка]");
+define(LAN_0, "[заблокировано]");
 define(LAN_1, "Разблокировать");
 define(LAN_2, "Блокировать");
-define(LAN_3, "Уничтожить");
+define(LAN_3, "Удалить");
 define(LAN_4, "Информация");
 define(LAN_5, "Комментарии ...");
 define(LAN_6, "Комментарии можно оставить, только войдя под своим именем. Если вы еще не зарегистрировались, нажмите <a href=\"signup.php\">сюда</a>.");
@@ -49,7 +49,7 @@ define(LAN_26, "Следующая страница");
 define(LAN_27, "Вы не заполнили необходимые поля");
 define(LAN_28, "Да вы ничего и не написали ..");
 define(LAN_29, "Отредактировано");
-define(LAN_30, "Привет,");
+define(LAN_30, "Добро пожаловать");
 define(LAN_31, "Новых сообщений нет ");
 define(LAN_32, "Есть 1 новое сообщение ");
 define(LAN_33, "Есть ");
@@ -66,13 +66,13 @@ define(LAN_43, "Незарегистрированные пользователи могут добавлять и просматриват
 define(LAN_44, "Незарегистрированные пользователи могут добавлять и просматривать сообщения, при этом ip-адреса и хосты записываются.");
 define(LAN_45, "Только члены, вошедшие под своим именем, могут оставлять сообщения. Нажмите <a href=\"signup.php\">сюда</a> для регистрации.");
 define(LAN_46, "Форум");
-define(LAN_47, "Нитей");
+define(LAN_47, "Тем");
 define(LAN_48, "Ответов");
 define(LAN_49, "Последнее сообщение");
 define(LAN_50, "Модераторы");
 define(LAN_51, "Форумов пока нет. Попробуйте в другой раз.");
 define(LAN_52, "Форумов в этом разделе пока нет. Попробуйте в другой раз.");
-define(LAN_53, "Нить");
+define(LAN_53, "Тема");
 define(LAN_54, "Кто начал");
 define(LAN_55, "Ответов");
 define(LAN_56, "Просмотров");
@@ -83,8 +83,8 @@ define(LAN_60, "Создать новую тему");
 define(LAN_61, "Ваше имя: ");
 define(LAN_62, "Тема: ");
 define(LAN_63, "Сообщение: ");
-define(LAN_64, "Начать новую нить");
-define(LAN_65, "Вошел админ - включаю режим модерации");
+define(LAN_64, "Начать новую тема");
+define(LAN_65, "Вошел администратор - включаю режим модерации");
 define(LAN_66, "Эта тема закрыта");
 define(LAN_67, "сообщений");
 define(LAN_68, "редактировать");
@@ -93,10 +93,10 @@ define(LAN_70, "переместить");
 define(LAN_71, "Нет ответов.");
 define(LAN_72, "Первоначально написал");
 define(LAN_73, "Ответ: ");
-define(LAN_74, "Продолжить нить");
+define(LAN_74, "Продолжить тему");
 define(LAN_75, "Добавить ответ");
 define(LAN_76, "Ответ");
-define(LAN_77, "Обновить нить");
+define(LAN_77, "Обновить тему");
 define(LAN_78, "Обновить ответ");
 define(LAN_79, "Новых сообщений");
 define(LAN_80, "Новых сообщений нет");
@@ -127,7 +127,7 @@ define(LAN_96, "Голосований");
 define(LAN_97, "Ничего не найдено.");
 define(LAN_98, "Новости");
 define(LAN_99, "Комментарии");
-define(LAN_100, "Статьи");
+define(LAN_100, "сообщений");
 define(LAN_101, "Мини-чат"); 
 define(LAN_102, "Ссылки");
 define(LAN_103, "Форум");
@@ -244,12 +244,12 @@ define(LAN_196, "Вы прочли ");
 define(LAN_197, " этих сообщений.");
 define(LAN_198, " Все новые сообщения прочитаны.");
 define(LAN_199, "Пометить все сообщения как прочитанные");
-define(LAN_200, "закрыть эту нить");
-define(LAN_201, "переоткрыть эту нить");
-define(LAN_202, "Древняя нить");
-define(LAN_203, "Древняя/закрытая нить");
-define(LAN_204, "Вы <b>можете</b> начать новые нити");
-define(LAN_205, "Вы <b>не можете</b> начинать новые нити");
+define(LAN_200, "закрыть эту тему");
+define(LAN_201, "открыть эту тему");
+define(LAN_202, "Старая тема");
+define(LAN_203, "Старая/закрытая тема");
+define(LAN_204, "Вы <b>можете</b> начать новые темы");
+define(LAN_205, "Вы <b>не можете</b> начинать новые темы");
 define(LAN_206, "Вы <b>можете</b> отвечать на сообщения");
 define(LAN_207, "Вы <b>не можете</b> отвечать на сообщения");
 define(LAN_208, "Вы <b>можете</b> редактировать свои сообщения");
@@ -296,12 +296,71 @@ define(LAN_325, "Нажмите здесь, чтобы увидеть свое сообщение");
 define(LAN_326, "Нажмите здесь, чтобы вернуться в форум");
 define(LAN_327, "Резензия");
 define(LAN_328, "Установки");   // "Settings" as used in default-header.
-define(LAN_329, "Фоновая авторизация"); // Auto Login
+define(LAN_329, "Auto login"); // Auto Login
 
 define(LAN_350, "Активировать тему");
 define(LAN_351, "Выбрать тему");
 
+define("LAN_354", "(Закрыто)");
+define("LAN_355", "Нет файлов в этой категории");
+define("LAN_356", "Общий размер: ");
+define("LAN_357", "Скачано: ");
+define("LAN_358", "Доступно: ");
+define("LAN_359", "Оцените ");
+define("LAN_360", "спасибо за оценку");
+define("LAN_361", "downloads from");
+define("LAN_362", "files");
+define("LAN_363", "Раздел");
+define("LAN_364", "Сортировать по");
+define("LAN_365", "Дата");
+define("LAN_366", "Размер");
+define("LAN_367", "Скачать");
+define("LAN_368", "No downloads yet, please check back soon");
+define("LAN_369", "Еще нет оценок");
+define("LAN_370", "Оценка: ");
+
 define(LAN_352, "Активировать язык");
 define(LAN_353, "Выбрать язык интерфейса");
+
+define("LAN_371", "Logging is not activated, to activate go to your admin section, click on Logger and tick the Activate Logging/Counter checkbox.");
+define("LAN_372", "The features on this page have been disabled.");
+define("LAN_373", "No stats yet.");
+define("LAN_374", "Логирование началось:");
+define("LAN_375", "Просмотреть все");
+define("LAN_376", "10 последних посетителей");
+define("LAN_377", "все");
+define("LAN_378", "топ 10");
+define("LAN_379", "Разрешения экрана");
+
+define("LAN_380", "Получать уведомления по почте при ответе на эту тему ");
+define("LAN_381", "Forum reply from ");
+define("LAN_382", "Post made: ");
+define("LAN_383", "Пожалуйста, нажмите на эту ссылку, чтобы просмотреть всю тему ...");
+define("LAN_384", "Forum reply at ");
+define("LAN_385", "Post: ");
+define("LAN_386", "Если вы не желаете добавлять опрос к вашей теме, оставьте это поле пустым ");
+define("LAN_387", "Вы должны быть зарегистрированным пользователем, чтобы голосовать.");
+define("LAN_388", "Популярная тема");
+
+
+define("LAN_389", "Предыдущая тема");
+define("LAN_390", "Следующая тема");
+define("LAN_391", "следить за темой");
+define("LAN_392", "перестать следить за темой");
+
+define("LAN_393", "Список тем, за которыми вы следите");
+define("LAN_394", "Закрытый форум");
+define("LAN_395", "[популярно]");
+define("LAN_396", "Объявление");
+define("LAN_397", "Темы, за которыми вы следите");
+
+
+define("LAN_398", "No summary.");
+
+
+define("LAN_399", "Продолжить");
+
+define("LAN_401", "Оставьте пустым, чтобы сохранить старый пароль");
+
 
 ?>

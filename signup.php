@@ -86,7 +86,12 @@ if(IsSet($_POST['register'])){
 			$row = $sql -> db_Fetch();
 			$id = $row['user_id'];
 			
-			$message = "Welcome to ".SITENAME."\nYour registration has been received and created with the following login information ...\n\nUsername: ".$_POST['name']."\nPassword: ".$_POST['password1']."\n\nYour account is currently marked as being inactive, to activate your account please go to the following link ...\n\n".SITEURL."signup.php?activate.".$id.".".$key."\n\nPlease keep this email for your own information as your password has been encrypted and cannot be retrieved if you misplace or forget it. You can however request a new password if this happens.\n\nThanks for your registration.\n\nFrom ".SITENAME."\n".SITEURL;
+			$returnaddress = (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$id.".".$key : SITEURL."/signup.php?activate.".$id.".".$key);
+			echo $returnaddress;
+			exit;
+
+
+			$message = "Welcome to ".SITENAME."\nYour registration has been received and created with the following login information ...\n\nUsername: ".$_POST['name']."\nPassword: ".$_POST['password1']."\n\nYour account is currently marked as being inactive, to activate your account please go to the following link ...\n\n".$returnaddress."\n\nPlease keep this email for your own information as your password has been encrypted and cannot be retrieved if you misplace or forget it. You can however request a new password if this happens.\n\nThanks for your registration.\n\nFrom ".SITENAME."\n".SITEURL;
 
 			require_once("classes/mail.php");
 			sendemail($_POST['email'], "Registration details for ".SITENAME, $message);

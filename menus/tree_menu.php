@@ -20,7 +20,7 @@ $sql -> db_Select("links", "*", "link_category='1' AND link_name NOT REGEXP('sub
 while($row = $sql -> db_Fetch()){
 	extract($row);
 	
-		if($sql2 -> db_Select("links", "*", "link_name REGEXP('submenu.".$link_name."') ")){
+		if($sql2 -> db_Select("links", "*", "link_name REGEXP('submenu.".$link_name."') ORDER BY link_order")){
 			$mlink_name = $link_name;
 			$text .= "
 			<div class='spacer'>
