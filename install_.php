@@ -454,11 +454,12 @@ function create_tables(){
         mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Submit Review', 'subcontent.php?review', '', '', 1, 0, 0, 0, 255) ");
         mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'e107.org', 'http://e107.org', 'Home of the e107 website script', 'e107_images/button.png', 2, 0, 0, 0, 0) ");
         mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Stats', 'stats.php', '', '', 1, 0, 0, 0, 0) ");
+        mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Site Map', 'sitemap.php', '', '', 1, 0, 0, 0, 0) ");
 
 
         $e107['e107_author'] = "Steve Dunstan (jalist)";
         $e107['e107_url'] = "http://e107.org";
-        $e107['e107_version'] = "v0.612";
+        $e107['e107_version'] = "v0.617";
         $e107['e107_build'] = "";
         $e107['e107_datestamp'] = time();
         $tmp = serialize($e107);
