@@ -48,6 +48,10 @@ define("UPLLAN_42", "Actions");
 define("UPLLAN_43", "Uploads");
 define("UPLLAN_44", "Upload");
 
+define("UPLLAN_45", "Are you sure you want to delete the following file...");
+define("UPLLAN_46", "Delete");
+define("UPLLAN_47", "Cancel");
+
 define("UPLAN_COPYTODLM", "copy to download manager");
 define("UPLAN_IS", "is ");
 define("UPLAN_ARE", "are ");
