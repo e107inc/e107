@@ -10,9 +10,9 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/articles_menu/templates/default/content_author_template.php,v $
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_author_template.php,v $
 |     $Revision: 1.1 $
-|     $Date: 2005-02-03 23:20:38 $
+|     $Date: 2005-02-03 23:31:40 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */

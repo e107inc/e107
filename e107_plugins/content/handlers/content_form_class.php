@@ -11,9 +11,9 @@
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
 |
-|		$Source: /cvs_backup/e107_0.7/e107_plugins/articles_menu/handlers/content_form_class.php,v $
+|		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
 |		$Revision: 1.1 $
-|		$Date: 2005-02-03 23:20:36 $
+|		$Date: 2005-02-03 23:31:38 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */

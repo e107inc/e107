@@ -3,9 +3,9 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/articles_menu/languages/English/lan_content_help.php,v $
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content_help.php,v $
 |     $Revision: 1.1 $
-|     $Date: 2005-02-03 23:20:38 $
+|     $Date: 2005-02-03 23:31:40 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
