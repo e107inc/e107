@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/newsfeed_menu.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-02-28 20:03:51 $
+|     $Revision: 1.3 $
+|     $Date: 2005-03-02 09:06:47 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -43,12 +43,23 @@ if ($feeds = $sql -> db_Select("newsfeed", "*", "newsfeed_active=1 OR newsfeed_a
 	while($row = $sql->db_Fetch())
 	{
 		extract ($row);
-		$dataArray = parseData($newsfeed_data);
+		$rss = unserialize($newsfeed_data);
 		$FEEDNAME = "<a href='".e_SELF."?show.$newsfeed_id'>$newsfeed_name</a>";
 		$FEEDDESCRIPTION = $newsfeed_description;
 		if($newsfeed_image == "default")
 		{
-			$FEEDIMAGE = ($dataArray['image'] ? "<a href='".$dataArray['link']."' rel='external'><img src='".$dataArray['image']."' alt='' style='border: 0; vertical-align: middle;' /></a>" : "");
+			if($file = fopen ($dataArray['image'], "r"))
+			{
+				/* remote image exists - use it! */
+				$FEEDIMAGE = "<a href='".$rss -> image['link']."' rel='external'><img src='".$rss -> image['url']."' alt='".$rss -> image['title']."' style='border: 0; vertical-align: middle;' /></a>";
+			}
+			else
+			{
+				/* remote image doesn't exist - ghah! */
+				$FEEDIMAGE = "";
+			}
+
+
 		}else if ($newsfeed_image)
 		{
 			$FEEDIMAGE = $newsfeed_image;
@@ -57,32 +68,31 @@ if ($feeds = $sql -> db_Select("newsfeed", "*", "newsfeed_active=1 OR newsfeed_a
 		{
 			$FEEDIMAGE = "";
 		}
-		$FEEDLANGUAGE = $dataArray['language'];
-		$FEEDLASTBUILDDATE = NFLAN_33.($dataArray['lastbuilddate'] ? $dataArray['lastbuilddate'] : NFLAN_34);
-		$FEEDCOPYRIGHT = $tp -> toHTML($dataArray['copyright'], TRUE);
-		$FEEDTITLE = "<a href='".$dataArray['link']."' rel='external'>".$dataArray['title']."</a>";
-		$FEEDLINK = $dataArray['link'];
+		$FEEDLANGUAGE = $rss -> channel['language'];
+		$FEEDLASTBUILDDATE = NFLAN_33.($rss -> channel['lastbuilddate'] ? $rss -> channel['lastbuilddate'] : NFLAN_34);
+		$FEEDCOPYRIGHT = $tp -> toHTML($rss -> channel['copyright'], TRUE);
+		$FEEDTITLE = "<a href='".$rss -> channel['link']."' rel='external'>".$rss -> channel['title']."</a>";
+		$FEEDLINK = $rss -> channel['link'];
 		$LINKTOMAIN = "<a href='".e_PLUGIN."newsfeed/newsfeed.php?show.$newsfeed_id'>".NFLAN_39."</a>";
 
 		$data = "";
-		for($loop=0; $loop<=($items-1); $loop++)
+
+		$items = array_slice($rss->items, 0, 10);
+
+		foreach ($items as $item)
 		{
-			$FEEDITEMLINK = $dataArray['itemlink'][$loop];
-			$feeditemtext = $tp -> toHTML($dataArray['itemtext'][$loop], TRUE);
+			$FEEDITEMLINK = "<a href='".$item['link']."' rel='external'>".$tp -> toHTML($item['title'], TRUE)."</a>";
+			$feeditemtext = strip_tags(ereg_replace("&#091;.*]", "", $tp -> toHTML($item['description'], TRUE)));
 			$FEEDITEMTEXT = (strlen($feeditemtext) > $truncate ? substr($feeditemtext, 0, $truncate).$truncate_string : $feeditemtext);
-			$FEEDITEMCREATOR = $tp -> toHTML($dataArray['itemcreator'][$loop], TRUE);
+			$FEEDITEMCREATOR = $tp -> toHTML($item['author'], TRUE);
 			$data .= preg_replace("/\{(.*?)\}/e", '$\1', $NEWSFEED_MENU);
 		}
+
 		$BACKLINK = "<a href='".e_SELF."'>".NFLAN_31."</a>";
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $NEWSFEED_MENU_START) . $data . preg_replace("/\{(.*?)\}/e", '$\1', $NEWSFEED_MENU_END);
 	}
 }
 
 $ns->tablerender(NFLAN_38, $text);
-
-
-
-
-
 
 ?>

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/xml_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-02-28 19:35:51 $
+|     $Revision: 1.4 $
+|     $Date: 2005-03-02 09:04:50 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -45,7 +45,7 @@ class parseXml {
 				return FALSE;
 			}
 			curl_close ($cu);
-			return TRUE;
+			return $this -> xmlFileContents;
 		}
 
 		if(ini_get("allow_url_fopen"))
@@ -77,7 +77,7 @@ class parseXml {
 			$this -> xmlFileContents .= fgets ($remote, 4096);
 		}
 		fclose ($remote);
-		return TRUE;
+		return $this -> xmlFileContents;
 	}
 
 

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/templates/newsfeed_menu_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-28 18:23:56 $
+|     $Revision: 1.2 $
+|     $Date: 2005-03-02 09:06:47 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -22,26 +22,15 @@ $truncate_string = "...[more]";
 $items = 10;
 
 $NEWSFEED_MENU_START = "
-<table style='width: 100%;' class='fborder'>
-<tr>
-<td class='forumheader3' style='text-align: center; margin-left: auto; margin-right: auto;'>{FEEDIMAGE} {FEEDTITLE}</td>
-</tr>
-<tr>
-<td class='forumheader'>\n";
+<div style='text-align: center; margin-left: auto; margin-right: auto;'>{FEEDIMAGE}<br /><b>{FEEDTITLE}</b></div>\n<br />\n";
 
 $NEWSFEED_MENU = "
 <b>&raquo;</b>{FEEDITEMLINK}<br /><span class='smalltext'>{FEEDITEMTEXT}</span><br />\n";
 
 
 $NEWSFEED_MENU_END = "
-</td>
-</tr>
 
-<tr>
-<td class='forumheader3' style='text-align: right;'><span class='smalltext'>{FEEDLASTBUILDDATE}<br />{LINKTOMAIN}</td>
-</tr>
-
-</table>\n";
+<div style='text-align: right;'><span class='smalltext'>{FEEDLASTBUILDDATE}<br />{LINKTOMAIN}</div>\n";
 
 
 ?>
