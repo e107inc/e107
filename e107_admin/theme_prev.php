@@ -36,7 +36,7 @@ if(isSet($_POST['sitetheme'])) {
 	<tr>
 		<td >".TPVLAN_10."
 		<input type ='hidden' name='sitetheme' value='".$sitetheme."'>
-		<input class='button' type='submit' name='updateprefs' value='Submit'>
+		<input class='button' type='submit' name='updateprefs' value='".TPVLAN_13."'>
 		</td>
 	</tr>
 	<tr>

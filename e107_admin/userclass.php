@@ -29,7 +29,7 @@ if(IsSet($_POST['updateclass'])){
 		$svar .= $userclass[$a].".";
 	}
 	$sql -> db_Update("user", "user_class='$svar' WHERE user_id='$id' ");
-	$message = "Classes updated.";
+	$message = UCSLAN_8;
 	$sql -> db_Select("user", "user_name", "user_id='$id' ");
 	$row = $sql -> db_Fetch();
 	if($_POST['notifyuser']){
@@ -60,7 +60,7 @@ if($_POST['notifyuser']){
 	}
 	$send_to = $user_email;
 	$subject = UCSLAN_2;
-	$message = UCSLAN_3." " . $user_name. ",\n\n".UCSLAN_4." ".SITENAME."\n( ".SITEURL . " )\n\n".UCSLAN_5.": \n\n".$messaccess."\nRegards\n".SITEADMIN."\n( ".SITENAME." )";
+	$message = UCSLAN_3." " . $user_name. ",\n\n".UCSLAN_4." ".SITENAME."\n( ".SITEURL . " )\n\n".UCSLAN_5.": \n\n".$messaccess."\n".UCSLAN_8."\n".SITEADMIN."\n( ".SITENAME." )";
 	sendemail($send_to, $subject, $message);
 }
 

@@ -380,7 +380,7 @@ class newspost{
 		<input class='helpbox' type='text' name='helpb' size='100' />
 		<br />
 		<select class='tbox' name='thumbps' onChange=\"addtext('[link=e107_images/newspost_images/' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '][img]e107_images/newspost_images/thumb_' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '[/img][/link]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_50."')\" onMouseOut=\"help('')\">
-		<option>Insert thumbnail ...</option>\n";
+		<option>".NWSLAN_80." ...</option>\n";
 		while(list($key, $image) = each($thumblist)){
 			$image2 = str_replace("thumb_", "", $image);
 			$text .= "<option value='".$image2."'>thumb_".$image2."</option>\n";
@@ -388,14 +388,14 @@ class newspost{
 		$text .= "</select>
 
 		<select class='tbox' name='imageps' onChange=\"addtext('[img]' + this.form.imageps.options[this.form.imageps.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_50."')\" onMouseOut=\"help('')\">
-		<option>Insert image ...</option>\n";
+		<option>".NWSLAN_81." ...</option>\n";
                 while(list($key, $image) = each($imagelist)){
 			$text .= "<option value='e107_images/newspost_images/".$image."'>".$image."</option>\n";
 		}
 		$text .= "</select>
 
 		<select class='tbox' name='fileps' onChange=\"addtext('[file=request.php?' + this.form.fileps.options[this.form.fileps.selectedIndex].value + ']' + this.form.fileps.options[this.form.fileps.selectedIndex].value + '[/file]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_64."')\" onMouseOut=\"help('')\">
-		<option>Insert download ...</option>\n";
+		<option>".NWSLAN_82." ...</option>\n";
 		while(list($key, $file) = each($filelist)){
 			$text .= "<option value='".$file[1]."'>".$file[1]."</option>\n";
 		}
@@ -410,7 +410,7 @@ class newspost{
 		<td style='width:20%' class='forumheader3'>".NWSLAN_14.":</td>
 		<td style='width:80%' class='forumheader3'>
 
-		<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>Extended news post</a>
+		<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_83."</a>
 		<div style='display: none;'>
 
                 <textarea class='tbox' id='news_extended' name='news_extended' cols='80' rows='10'>".$_POST['news_extended']."</textarea>
@@ -513,7 +513,7 @@ class newspost{
 		for($a=2003; $a<=2010; $a++){
 			$text .= ($a == $_POST['startyear'] ? "<option selected>".$a."</option>" : "<option>".$a."</option>");
 		}
-		$text .= "</select> and <select name='endday' class='tbox'><option selected> </option>";
+		$text .= "</select> ".NWSLAN_83." <select name='endday' class='tbox'><option selected> </option>";
 		for($a=1; $a<=31; $a++){
 			$text .= ($a == $_POST['endday'] ? "<option selected>".$a."</option>" : "<option>".$a."</option>");
 		}
@@ -537,7 +537,7 @@ class newspost{
 		</td>
 		<td class='forumheader3'>
 			
-		<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>Choose which visitors will see news item</a>
+		<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_84."</a>
 		<div style='display: none;'>
 		".r_userclass("news_class",$_POST['news_class'])."
 		</div>
@@ -763,7 +763,7 @@ class newspost{
 				extract($row);
 				$text .= "<tr>
 				<td style='width:5%; text-align:center; vertical-align:top' class='forumheader3'>$submitnews_id</td>
-				<td style='width:75%' class='forumheader3'><b>".$aj -> tpa($submitnews_title)."</b> [ submitted by $submitnews_name ]<br />".$aj -> tpa($submitnews_item)."</td>
+				<td style='width:75%' class='forumheader3'><b>".$aj -> tpa($submitnews_title)."</b> [ ".NWSLAN_85." $submitnews_name ]<br />".$aj -> tpa($submitnews_item)."</td>
 				<td style='width:20%; text-align:center; vertical-align:top' class='forumheader3'>
 				".$rs -> form_button("submit", "category_edit", NWSLAN_58, "onClick=\"document.location='".e_SELF."?create.sn.$submitnews_id'\"")."
 				".$rs -> form_button("submit", "category_delete", NWSLAN_8, "onClick=\"confirm_('sn', $submitnews_id);\"")."

@@ -78,7 +78,7 @@ if(IsSet($_POST['preview'])){
 
 
 	$text = $poll -> render_poll($_POST['existing'], $_POST['poll_title'], $_POST['poll_option'], array($votes), "preview");
-	$ns -> tablerender("Poll Preview", $text);
+	$ns -> tablerender(POLLAN_23, $text);
 	$count=0;
 	while($_POST['poll_option'][$count]){
 		$_POST['poll_option'][$count] = stripslashes($_POST['poll_option'][$count]);

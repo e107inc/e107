@@ -76,4 +76,7 @@ define("LCLAN_79", "Description will be shown when the mouse hovers over the lin
 define("LCLAN_80", "View Images");
 define("LCLAN_81", "Clear Form");
 
+
+define("LCLAN_82", "Submitted by");
+
 ?>

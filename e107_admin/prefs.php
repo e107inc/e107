@@ -428,7 +428,7 @@ $date3 = $ga -> convert_date(time(), "forum");
 $text .= "<td style='width:50%' class='forumheader3'>".PRFLAN_22.": </td>
 <td style='width:50%; text-align:right' class='forumheader3'>
 <input class='tbox' type='text' name='shortdate' size='40' value='$shortdate' maxlength='50' />
-<br />example: $date1
+<br />".PRFLAN_83.": $date1
 </td>
 </tr>
 
@@ -436,7 +436,7 @@ $text .= "<td style='width:50%' class='forumheader3'>".PRFLAN_22.": </td>
 <td style='width:50%' class='forumheader3'>".PRFLAN_23.": </td>
 <td style='width:50%; text-align:right' class='forumheader3'>
 <input class='tbox' type='text' name='longdate' size='40' value='$longdate' maxlength='50' />
-<br />example: $date2
+<br />".PRFLAN_83.": $date2
 </td>
 </tr>
 
@@ -444,7 +444,7 @@ $text .= "<td style='width:50%' class='forumheader3'>".PRFLAN_22.": </td>
 <td style='width:50%' class='forumheader3'>".PRFLAN_24.": </td>
 <td style='width:50%; text-align:right' class='forumheader3'>
 <input class='tbox' type='text' name='forumdate' size='40' value='$forumdate' maxlength='50' />
-<br />example: $date3
+<br />".PRFLAN_83.": $date3
 </td>
 </tr>
 

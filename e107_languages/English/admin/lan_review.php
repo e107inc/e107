@@ -75,4 +75,6 @@ define("REVLAN_66", "Post");
 define("REVLAN_67", "Post User Submitted Article");
 define("REVLAN_68", "User submitted review saved in database");
 
+define("REVLAN_69", "Clear Form");
+
 ?>

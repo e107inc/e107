@@ -83,4 +83,11 @@ define("NWSLAN_77", "Post to other news menu");
 
 define("NWSLAN_78", "This option is disabled as file uploading is not enabled on your server");
 define("NWSLAN_79","Clear Form");
+define("NWSLAN_80","Insert thumbnail");
+define("NWSLAN_81","Insert Image");
+define("NWSLAN_82","Insert download");
+define("NWSLAN_83","Extended news post");
+define("NWSLAN_83","and");
+define("NWSLAN_84","Choose which visitors will see news item");
+define("NWSALAN_85", "submitted by");
 ?>

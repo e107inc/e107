@@ -23,4 +23,7 @@ define("UCSLAN_19", "Assign users to");
 define("UCSLAN_20", "class");
 define("UCSLAN_21", "User Class Settings");
 
+define("UCSLAN_22", "Users - click to move ...");
+define("UCSLAN_23", "Users in this class ...");
+
 ?>
