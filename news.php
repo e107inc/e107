@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-02-04 13:05:29 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.31 $
+|     $Date: 2005-02-08 00:41:24 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -107,7 +107,7 @@ if ($action == "extend") {
 	checkNewsCache($cacheString);
 	ob_start();
 	$extend_id = (int)substr(e_QUERY, (strpos(e_QUERY, ".")+1));
-	$sql->db_Select("news", "*", "news_id='$extend_id' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")");
+	$sql->db_Select("news", "*", "news_id='".$extend_id."' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")");
 	list($news['news_id'], $news['news_title'], $news['data'], $news['news_extended'], $news['news_datestamp'], $news['admin_id'], $news_category, $news['news_allow_comments'], $news['news_start'], $news['news_end'], $news['news_class']) = $sql->db_Fetch();
 	if (!check_class($news['news_class'])) {
 		header("location:".e_BASE."news.php");
@@ -158,11 +158,11 @@ if (Empty($order)) {
 if ($action == "list") {
 	$sub_action = intval($sub_action);
 	$news_total = $sql->db_Count("news", "(*)", "WHERE news_category=$sub_action");
-	$query = "news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_render_type!=2 AND news_category=$sub_action ORDER BY ".$order." DESC LIMIT $from,".ITEMVIEW;
+	$query = "SELECT * FROM ".MPREFIX."news WHERE news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_render_type!=2 AND news_category=$sub_action ORDER BY ".$order." DESC LIMIT $from,".ITEMVIEW;
 } elseif($action == "item") {
 	$sub_action = intval($sub_action);
-	$news_total = $sql->db_Count("news", "(*)", "WHERE news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_render_type!=2" );
-	$query = "news_id=$sub_action AND news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")";
+	$news_total = $sql->db_Count("news", "(*)", "WHERE news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_render_type!=2" );		
+	$query = "SELECT * FROM ".MPREFIX."news WHERE news_id=".$sub_action." AND news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")";
 }
 else if(strstr(e_QUERY, "month")) {
 	$tmp = explode(".", e_QUERY);
