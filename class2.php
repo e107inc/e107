@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2004-10-10 21:12:04 $
+|     $Revision: 1.12 $
+|     $Date: 2004-10-11 11:24:32 $
 |     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
@@ -653,7 +653,7 @@ function getperms($arg, $ap = ADMINPERMS)
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-function save_prefs($table = "core", $uid=USERID)
+function save_prefs($table = "core", $uid=USERID, $row_val="")
 {
 	global $pref, $user_pref, $tp;
 	$sql = new db;
@@ -664,7 +664,18 @@ function save_prefs($table = "core", $uid=USERID)
 			$pref[$key] = $tp -> toDB($prefvalue);
 		}
 		$tmp = addslashes(serialize($pref));
-		$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='pref'");
+		if($row_val=="")
+    {
+		  $sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='pref'");
+		}
+		else
+		{
+      if($sql -> db_Select("core", "e107_name", "e107_name='".$row_val."'")){
+        $sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='".$row_val."'");
+      }else{
+        $sql -> db_Insert("core", "'".$row_val."', '$tmp'");
+      }
+    }
 	}
 	else
 	{
