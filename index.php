@@ -13,7 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("class2.php");
-if($pref['membersonly_enabled']){
+if($pref['membersonly_enabled'] && !USER){
    header("location: ".e_BASE."login.php");
         exit;
 }
