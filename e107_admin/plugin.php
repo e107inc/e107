@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-03-20 15:46:34 $
+|     $Revision: 1.36 $
+|     $Date: 2005-03-22 15:31:34 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -227,19 +227,11 @@ if (isset($_POST['confirm'])) {
 		}
 		
 		if (file_exists(e_PLUGIN.$eplug_folder.'/e_search.php')) {
-			global $sysprefs;
-			$search_prefs = $sysprefs -> getArray('search_prefs');
-			unset($search_prefs['plug_handlers'][$eplug_folder]);
-			$tmp = addslashes(serialize($search_prefs));
-			$sql->db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs' ");
+			$plugin -> manage_search('remove', $eplug_folder);
 		}
 
 		if (file_exists(e_PLUGIN.$eplug_folder.'/comments_search.php')) {
-			global $sysprefs;
-			$search_prefs = $sysprefs -> getArray('search_prefs');
-			unset($search_prefs['comments_handlers'][$eplug_folder]);
-			$tmp = addslashes(serialize($search_prefs));
-			$sql->db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs' ");
+			$plugin -> manage_search('remove', $eplug_folder, 'comments');
 		}
 
 		$sql->db_Update('plugin', "plugin_installflag=0, plugin_version='{$eplug_version}' WHERE plugin_id='{$id}' ");
@@ -330,9 +322,17 @@ if ($action == 'upgrade') {
 			$sql->db_Update("core", "e107_value='$tmp' WHERE e107_name='user_entended' ");
 		}
 	}
+	
+	if (file_exists(e_PLUGIN.$eplug_folder.'/e_search.php')) {
+		$plugin -> manage_search('add', $eplug_folder);
+	}
+
+	if (file_exists(e_PLUGIN.$eplug_folder.'/comments_search.php')) {
+		$plugin -> manage_search('add', $eplug_folder, 'comments');
+	}
 
 	$text .= '<br />'.$eplug_upgrade_done;
-	$sql->db_Update('plugin', "plugin_version ='{$plug['eplug_version']}' WHERE plugin_id='$id' ");
+	$sql->db_Update('plugin', "plugin_version ='{$eplug_version}' WHERE plugin_id='$id' ");
 	$ns->tablerender(EPL_ADLAN_34, $text);
 }
 
