@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/frontpage.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-02-10 23:02:03 $
+|     $Revision: 1.12 $
+|     $Date: 2005-02-11 08:09:25 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -199,7 +199,7 @@ $text = "
 		
 			$array_mainparent = "";
 			if ($sql->db_Select("pcontent", "content_id, content_heading", "content_parent='0'")) {
-				$text .= $array_mainparent[$i][1];
+				$text .= $content_heading;
 				$text .= $rs -> form_select_open("frontpage_content_main");
 				$text .= $rs -> form_option("", "0", "");
 				while ($row = $sql->db_Fetch()) {
