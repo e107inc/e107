@@ -34,7 +34,14 @@ if($cache = retrieve_cache("article_menu")){
 			while($row = $sql -> db_Fetch()){
 				extract($row);
 				if(check_class($content_class)){
-					if($i = $sql2 -> db_Select("content", "*", "content_type='0' AND content_parent='".$content_id."' ")){
+				$i = $sql2 -> db_Select("content", "content_class", "content_type='0' AND content_parent='".$content_id."' ");
+					if($i){
+						while($row2 = $sql2 -> db_Fetch()){
+							extract($row2);
+							if(!check_class($content_class)){
+								$i = $i - 1;
+							}
+						}
 						$text .= "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_BASE."content.php?article.cat.".$content_id."'>".$content_heading."</a> (".$i.")<br />";
 					}
 				}

@@ -434,7 +434,15 @@ if($action == "review"){
 
 			while($row = $sql -> db_Fetch()){
 				extract($row);
-				$total = $sql2 -> db_Select("content", "*", "content_parent=$content_id AND content_type=3");
+				$total = $sql2 -> db_Select("content", "content_class", "content_parent=$content_id AND content_type=3");
+				if($total){
+					while($row2 = $sql2 -> db_Fetch()){
+						extract($row2);
+						if(!check_class($content_class)){
+							$total = $total - 1;
+						}
+					}
+				}
 				$text .= "<tr>
 				<td class='forumheader3' style='width:10%; text-align:center' rowspan='2'>
 				".($content_summary ? "<a href='".e_SELF."?review.cat.$content_id'><img src='".e_IMAGE."link_icons/".$content_summary."' alt='' style='vertical-align:middle; border:0' /></a>" : "&nbsp;")."
@@ -442,10 +450,18 @@ if($action == "review"){
 				<td class='forumheader' style='width:90%'><b><a href='".e_SELF."?review.cat.$content_id'>$content_heading</a></b></td>
 				</tr>
 				<tr>
-				<td class='forumheader3'>$content_subheading  <span class='smalltext'>( $total ".($total>1 ? LAN_33 : LAN_34)." )</span></td>
+				<td class='forumheader3'>$content_subheading  <span class='smalltext'>( $total ".($total==1 ? LAN_34 : LAN_33)." )</span></td>
 				</tr>\n";
 			}
-			if($total = $sql -> db_Select("content", "*", "content_type=3 AND content_parent=0")){
+			$total = $sql2 -> db_Select("content", "*", "content_type=3 AND content_parent=0");
+				if($total){
+					while($row2 = $sql2 -> db_Fetch()){
+						extract($row2);
+						if(!check_class($content_class)){
+							$total = $total - 1;
+						}
+					}
+				}
 				$text .= "<tr>
 				<td class='forumheader3' style='width:10%; text-align:center' rowspan='2'>
 				&nbsp;
@@ -453,9 +469,8 @@ if($action == "review"){
 				<td class='forumheader' style='width:90%'><b><a href='".e_SELF."?review.cat.0'>".LAN_61."</a></b></td>
 				</tr>
 				<tr>
-				<td class='forumheader3'><span class='smalltext'>( $total ".($total>1 ? LAN_33 : LAN_34)." )</span></td>
+				<td class='forumheader3'><span class='smalltext'>( $total ".($total == 1 ? LAN_34 : LAN_33)." )</span></td>
 				</tr>\n";
-			}
 			$text .= "</table>\n</div>\n";
 			$ns -> tablerender(LAN_35, $text);
 
@@ -748,7 +763,15 @@ if($action == "article"){
 			<table class='fborder' style='width:95%'>\n";
 			while($row = $sql -> db_Fetch()){
 				extract($row);
-				$total = $sql2 -> db_Select("content", "*", "content_parent=$content_id AND content_type=0");
+				$total = $sql2 -> db_Select("content", "content_class", "content_parent=$content_id AND content_type=0");
+				if($total){
+					while($row2 = $sql2 -> db_Fetch()){
+						extract($row2);
+						if(!check_class($content_class)){
+							$total = $total - 1;
+						}
+					}
+				}
 				$text .= "<tr>
 				<td class='forumheader3' style='width:10%; text-align:center' rowspan='2'>
 				".($content_summary ? "<a href='".e_SELF."?article.cat.$content_id'><img src='".e_IMAGE."link_icons/".$content_summary."' alt='' style='vertical-align:middle; border:0' /></a>" : "&nbsp;")."
@@ -756,11 +779,19 @@ if($action == "article"){
 				<td class='forumheader' style='width:90%'><b><a href='".e_SELF."?article.cat.$content_id'>$content_heading</a></b></td>
 				</tr>
 				<tr>
-				<td class='forumheader3'>$content_subheading  <span class='smalltext'>( $total ".($total>1 ? LAN_48 : LAN_49)." )</span></td>
+				<td class='forumheader3'>$content_subheading  <span class='smalltext'>( $total ".($total==1 ? LAN_49 : LAN_48)." )</span></td>
 				</tr>\n";
 			}
 
-			if($total = $sql -> db_Select("content", "*", "content_type=0 AND content_parent=0")){
+			    $total = $sql2 -> db_Select("content", "*", "content_type=0 AND content_parent=0");
+				if($total){
+					while($row2 = $sql2 -> db_Fetch()){
+						extract($row2);
+						if(!check_class($content_class)){
+							$total = $total - 1;
+						}
+					}
+				}
 				$text .= "<tr>
 				<td class='forumheader3' style='width:10%; text-align:center' rowspan='2'>
 				&nbsp;
@@ -768,9 +799,8 @@ if($action == "article"){
 				<td class='forumheader' style='width:90%'><b><a href='".e_SELF."?article.cat.0'>".LAN_61."</a></b></td>
 				</tr>
 				<tr>
-				<td class='forumheader3'><span class='smalltext'>( $total ".($total>1 ? LAN_48 : LAN_49)." )</span></td>
+				<td class='forumheader3'><span class='smalltext'>( $total ".($total==1 ? LAN_49 : LAN_48)." )</span></td>
 				</tr>\n";
-			}
 
 			$text .= "</table>\n</div>\n";
 			$ns -> tablerender(LAN_50, $text);
