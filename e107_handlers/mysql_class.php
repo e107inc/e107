@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-03-23 12:54:36 $
-|     $Author: stevedunstan $
+|     $Revision: 1.35 $
+|     $Date: 2005-03-26 17:04:13 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -25,8 +25,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.34 $
-* @author $Author: stevedunstan $
+* @version $Revision: 1.35 $
+* @author $Author: e107coders $
 */
 class db {
 
@@ -530,7 +530,7 @@ class db {
 				$mySQLtablelist[] = $temp;
 			}
 		}
-		$mltable = strtolower($this->mySQLlanguage.'_'.$table);
+		$mltable = "lan_".strtolower($this->mySQLlanguage.'_'.$table);
 		if (in_array(MPREFIX.$mltable, $mySQLtablelist)) {
 			return $mltable;
 		}
@@ -550,7 +550,7 @@ class db {
 			foreach($row as $key => $value) {
 				if (is_string($key)) {
 					if (strtoupper($fields) == 'ALL' || in_array ($key, $fields)) {
-			
+
 						if(!$ordermode)
 						{
 							$list[$counter][$key] = $value;
