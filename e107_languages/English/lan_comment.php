@@ -1,7 +1,17 @@
 <?php
 
-define("PAGE_NAME", "Comments");
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107/e107_languages/English/lan_comment.php,v $
+|     $Revision: 1.4 $
+|     $Date: 2004-12-13 22:19:34 $
+|     $Author: streaky $
++----------------------------------------------------------------------------+
+*/
 
+define("PAGE_NAME", "Comments");
 define("LAN_0", "[blocked by admin]");
 define("LAN_1", "Unblock");
 define("LAN_2", "Block");
@@ -32,6 +42,8 @@ define("LAN_314", "moderate comments");
 define("COMLAN_1", "here");
 define("COMLAN_2", "to signup");
 define("COMLAN_3", "Error!");
-
+define("COMLAN_4", 'Subject');
+define("COMLAN_5", 'Re:');
+define("COMLAN_6", 'Reply to this');
 
 ?>
