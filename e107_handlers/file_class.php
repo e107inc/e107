@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/file_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-09 08:50:27 $
-|     $Author: stevedunstan $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-10 00:29:58 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -26,6 +26,7 @@ class e_file {
 		if(substr($path,-1) == '/') {
 			$path = substr($path, 0, -1);
 		}
+
 		if(!$handle = opendir($path)) {
 			echo "Unable to open: $path <br />";
 			return $ret;
@@ -48,6 +49,10 @@ class e_file {
 					$xx = $this->get_files($path.'/'.$file, $fmask, $omit, $recurse_level, $current_level+1);
 					$ret = array_merge($ret,$xx);
 				}
+				if(!in_array($file,$rejectArray)){
+					$finfo['dir'] =	$file;
+					$ret[] = $finfo;
+				}
 			}
 			elseif ($fmask == '' || preg_match("#".$fmask."#", $file))
 			{
@@ -65,6 +70,7 @@ class e_file {
 				{
 					$finfo['path'] = $path;
 					$finfo['fname'] = $file;
+					$finfo['dir'] =	$dir;
 					$ret[] = $finfo;
 				}
 			}

@@ -11,44 +11,32 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/userlanguage_menu/userlanguage_menu.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-27 19:53:19 $
-|     $Author: streaky $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-10 00:30:03 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-	
-$handle = opendir(e_LANGUAGEDIR);
-while ($file = readdir($handle)) {
-	if ($file != "." && $file != ".." && $file != "/" && $file != "CVS" ) {
-		$lanlist[] = $file;
+require_once(e_HANDLER."file_class.php");
+	$fl = new e_file;
+	$reject = array('.','..','/','CVS','thumbs.db','*._$');
+	$lanlist = $fl->get_files(e_LANGUAGEDIR,"",$reject);
+	sort($lanlist);
+
+	$text = "<form method='post' action='".e_SELF."'>
+		<div style='text-align:center'>
+		<select name='sitelanguage' class='tbox' >";
+
+	foreach($lanlist as $langval) {
+		$langname = $langval;
+		$langval = ($langval['dir'] == $pref['sitelanguage']) ? "" : $langval['dir'];
+		$selected = ($langval == USERLAN) ? "selected='selected'" : "";
+		$text .= "<option value='".$langval."' $selected>".$langname['dir']."</option>\n ";
 	}
-}
-	
-closedir($handle);
-	
-$text = "
-	 
-	<form method='post' action='".e_SELF."'>
-	<div style='text-align:center'>
-	<select name='sitelanguage' class='tbox'>";
-sort($lanlist);
-	
-foreach($lanlist as $langval) {
-	$langname = $langval;
-	$langval = ($langval == $pref['sitelanguage']) ? "" :
-	 $langval;
-	$selected = ($langval == USERLAN) ? "selected='selected'" :
-	 "";
-	$text .= "<option value='".$langval."' $selected>$langname</option>\n ";
-}
-	
-$text .= "</select>
-	<br /><br />
-	<input class='button' type='submit' name='setlanguage' value='".UTHEME_MENU_L1."' />
-	</div>
-	</form>
-	";
-	
+
+	$text .= "</select>";
+	$text .= "<br /><br /><input class='button' type='submit' name='setlanguage' value='".UTHEME_MENU_L1."' />";
+	$text .= "</div></form>	";
+
 $ns->tablerender(UTHEME_MENU_L2, $text, 'user_lan');
-	
+
 ?>
