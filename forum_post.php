@@ -617,7 +617,9 @@ if($action == "rp" || $action == "cp"){
         $thread_datestamp  = $gen->convert_date($thread_datestamp , "forum");
         $thread_name = $aj -> tpa($thread_name, $mode="off");
         $thread_thread = $aj -> tpa($thread_thread, $mode="off");
-        $text .= "<div style='text-align:center'>".($action == "rp" ? "<div style='border:0;padding-right:2px;width:auto;height:400px;overflow:auto;text-align:right'>": "")."
+		$thread_thread = wrap($thread_thread);
+		$replies = $sql -> db_Count("forum_t" ,"(*)", "WHERE thread_parent='$id'");
+        $text .= "<div style='text-align:center'>".($action == "rp" ? "<div style='border:0;padding-right:2px;width:auto;height:400px;overflow:auto;'>": "")."
         <table style='width:97%' class='fborder'>
         <tr>
         <td colspan='2' class='fcaption' style='vertical-align:top'>".($action == "rp" ? LAN_100."</td></tr>" : $thread_name."</td></tr>");
@@ -625,26 +627,28 @@ if($action == "rp" || $action == "cp"){
         <td class='forumheader3' style='width:20%' style='vertical-align:top'><b>".$post_author_name."</b></td>
         <td class='forumheader3' style='width:80%'>
         <div class='smallblacktext' style='text-align:right'><img src='".e_IMAGE."forum/post.png' alt='' /> ".LAN_322.$thread_datestamp."</div>".$thread_thread."</td>
-        </tr>".($action == "rp" ? "
+        </tr>".($action == "rp"  && $replies ? "
         </table>
 		<br />
         <table style='width:97%' class='fborder'>
 		<tr><td colspan='2' class='fcaption' style='vertical-align:top'>".LAN_101."</td></tr>" : "");
 		$query = ($action == "cp" ? "thread_parent=$id ORDER by thread_datestamp" : "thread_parent=$id ORDER by thread_datestamp DESC LIMIT 0,10 ");
-        $sql -> db_Select("forum_t", "*", $query);
-        while($row = $sql-> db_Fetch("no_strip")){ extract($row);
-        $post_author_name = substr($thread_user, (strpos($thread_user, ".")+1));
-        $thread_datestamp  = $gen->convert_date($thread_datestamp , "forum");
-        $thread_name = $aj -> tpa($thread_name, $mode="off");
-        $thread_thread = $aj -> tpa($thread_thread, $mode="off");
-		$thread_thread = wrap($thread_thread);
-        $text .= "<tr>
-        <td class='forumheader3' style='width:20%' style='vertical-align:top'><b>".$post_author_name."</b></td>
-        <td class='forumheader3' style='width:80%'>
-        <div class='smallblacktext' style='text-align:right'><img src='".e_IMAGE."forum/post.png' alt='' /> ".LAN_322.$thread_datestamp."</div>".$thread_thread."</td>
-        </tr>";
+		if($replies){
+			$sql -> db_Select("forum_t", "*", $query);
+			while($row = $sql-> db_Fetch("no_strip")){ extract($row);
+			$post_author_name = substr($thread_user, (strpos($thread_user, ".")+1));
+			$thread_datestamp  = $gen->convert_date($thread_datestamp , "forum");
+			$thread_name = $aj -> tpa($thread_name, $mode="off");
+			$thread_thread = $aj -> tpa($thread_thread, $mode="off");
+			$thread_thread = wrap($thread_thread);
+			$text .= "<tr>
+			<td class='forumheader3' style='width:20%' style='vertical-align:top'><b>".$post_author_name."</b></td>
+			<td class='forumheader3' style='width:80%'>
+			<div class='smallblacktext' style='text-align:right'><img src='".e_IMAGE."forum/post.png' alt='' /> ".LAN_322.$thread_datestamp."</div>".$thread_thread."</td>
+			</tr>";
+			}
 		}
-        $text .= ($action == "rp" ? "<tr>
+        $text .= ($action == "rp" && $replies > 10 ? "<tr>
 		<td class='forumheader3'  colspan='2'><a href='javascript:open_window(\"forum_post.php?cp.".$forum_id.".".$id."\",\"full\")'>".LAN_103."</a></td>
 			</tr>" : "")."
 		</table>
