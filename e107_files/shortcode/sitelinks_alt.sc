@@ -54,7 +54,7 @@
 	foreach ($main_links as $links_exp) {
 		$link_icon = $links_exp['link_button'] ? e_IMAGE.'icons/'.$links_exp['link_button'] : e_IMAGE.'arrow_16.png';
 		if (check_class($links_exp['link_class'])) {
-		if ($sub_comp[$links_exp['link_name']]) {
+		if (isset($sub_comp[$links_exp['link_name']]) && $sub_comp[$links_exp['link_name']]) {
 			$text .= adnav_cat($links_exp['link_name'], '', $link_icon, $links_exp['link_name']);
 			$text .= "<div id='".$links_exp['link_name']."' class='menu' onmouseover=\"menuMouseover(event)\">";
 			foreach ($sub_comp[$links_exp['link_name']]['link_name'] as $sub_comp_key => $sub_comp_value) {
