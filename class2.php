@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2005-01-07 20:51:32 $
-|     $Author: e107coders $
+|     $Revision: 1.47 $
+|     $Date: 2005-01-10 05:05:51 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -263,7 +263,14 @@ if (!function_exists('checkvalidtheme')) {
         function checkvalidtheme($theme_check) {
                 // arg1 = theme to check
                 global $ADMIN_DIRECTORY;
-                if (@fopen(e_THEME.$theme_check."/theme.php", r)) {
+				if (strstr(e_SELF, $ADMIN_DIRECTORY)) {
+					if (file_exists(e_THEME.$theme_check.'admin_theme.php')) {
+						$theme_file = "/admin_theme.php";
+					} else {
+						$theme_file = "/theme.php";
+					}
+				}
+                if (@fopen(e_THEME.$theme_check.$theme_file, r)) {
                         define("THEME", e_THEME.$theme_check."/");
                 } else {
                         e107_require_once(e_HANDLER."debug_handler.php");
@@ -431,8 +438,15 @@ if ((strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin") ) && $pref['adm
                 checkvalidtheme($pref['sitetheme']);
         }
 }
-require_once(THEME."theme.php");
-
+if (strstr(e_SELF, $ADMIN_DIRECTORY)) {
+	if (file_exists(THEME.'admin_theme.php')) {
+		require_once(THEME.'admin_theme.php');
+	} else {
+		require_once(THEME."theme.php");
+	}
+} else {
+	require_once(THEME."theme.php");
+}
 if ($pref['anon_post'] ? define("ANON", TRUE) : define("ANON", FALSE));
 if (Empty($pref['newsposts']) ? define("ITEMVIEW", 15) : define("ITEMVIEW", $pref['newsposts']));
 
