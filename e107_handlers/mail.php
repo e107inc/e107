@@ -15,10 +15,13 @@
 
 function sendemail($send_to, $subject, $message,$format="plain"){
         global $pref;
-
-        $headers = "From: ".$pref['siteadminemail']." \n";
+ini_set("SMTP","smtp.west.cox.net");
+        $send_to = "<".$send_to.">";
+        $headers = "From: \"".$pref['siteadmin']."\" <".$pref['siteadminemail']."> \n";
+        $headers .= "Reply-To: ".$pref['siteadmin']." <".$pref['siteadminemail'].">\n";
+        $headers .= "Return-Path: <".$pref['siteadminemail'].">\n";
         $headers .= "X-Sender: ".$pref['siteadminemail']."\n";
-        $headers .= "X-Mailer: PHP\n";
+        $headers .= "X-Mailer: Microsoft Outlook Express 6.00.2720.3000\n";
         $headers .= "X-MimeOLE: Produced By e107 website system\n";
         $headers .= "X-Priority: 3\n";
         $headers .= "Content-transfer-encoding: 8bit\nDate: " . date('r', time()) . "\n";
