@@ -109,13 +109,13 @@ $text .= LAN_139;
 
 if($order == "ASC"){
         $text .= "<select name='order' class='tbox'>
-<option>".LAN_420."</option>
-<option selected='selected'>".LAN_421."</option>
+<option value='DESC'>".LAN_420."</option>
+<option value='ASC' selected='selected'>".LAN_421."</option>
 </select>";
 }else{
         $text .= "<select name='order' class='tbox'>
-<option selected='selected'>".LAN_420."</option>
-<option>".LAN_421."</option>
+<option value='DESC' selected='selected'>".LAN_420."</option>
+<option value='ASC'>".LAN_421."</option>
 </select>";
 }
 
