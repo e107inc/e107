@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search_class.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-03-16 10:06:08 $
+|     $Revision: 1.21 $
+|     $Date: 2005-03-16 14:57:41 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -76,8 +76,12 @@ class e_search {
 							$exact = TRUE;
 						}
 						$this -> text = nl2br($this -> text);
-						$search = array('&#39;', '&#039;', '&#036;', '&quot;', 'onerror', '&lt;', '&gt;', '<br />', '[', ']');
-						$replace = array("'", "'", '$', '"', 'one<i></i>rror', '<', '>', ' ', '<', '>');
+						$t_search = $tp -> search;
+						$t_replace = $tp -> replace;
+						$s_search = array('<br />', '[', ']');
+						$s_replace = array(' ', '<', '>');
+						$search = array_merge($t_search, $s_search);
+						$replace = array_merge($t_replace, $s_replace);
 						$this -> text = strip_tags(str_replace($search, $replace, $this -> text));
 						foreach ($keywords as $this -> query) {
 							if (strpos($this -> query, '-') == FALSE) {

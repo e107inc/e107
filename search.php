@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-03-13 10:44:42 $
+|     $Revision: 1.20 $
+|     $Date: 2005-03-16 14:57:42 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -123,7 +123,14 @@ $SEARCH_MAIN_CHECKALL = "<input class='button' type='button' name='CheckAll' val
 $SEARCH_MAIN_UNCHECKALL = "<input class='button' type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this); uncheckG();' />";
 $SEARCH_MAIN_SUBMIT = "<input type='hidden' name='r' value='0' /><input class='button' type='submit' name='s' value='".LAN_180."' />";
 	
-$text = preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_MAIN_TABLE);
+$text = preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_TOP_TABLE);
+
+if ($search_prefs['user_select']) {
+	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_CAT_TABLE);
+}
+
+
+$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_BOT_TABLE);
 	
 $ns->tablerender(PAGE_NAME." ".SITENAME, $text);
 
