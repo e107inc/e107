@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-03-20 19:47:52 $
+|     $Revision: 1.33 $
+|     $Date: 2005-03-21 12:28:41 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -101,7 +101,7 @@ else
 	
 	$cb_width = (defined("CBWIDTH") ? CBWIDTH : "100%");
 	
-	$texta .= "\n<textarea class='tbox chatbox' name='cmessage' rows='5' style='overflow:hidden;' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>\n<br />\n<input class='button' type='submit' name='chat_submit' value='".CHATBOX_L4."' />\n<input class='button' type='reset' name='reset' value='".CHATBOX_L5."' />";
+	$texta .= "\n<textarea class='tbox chatbox' name='cmessage' cols='20' rows='5' style='overflow:hidden;' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>\n<br />\n<input class='button' type='submit' name='chat_submit' value='".CHATBOX_L4."' />\n<input class='button' type='reset' name='reset' value='".CHATBOX_L5."' />";
 
 	if($pref['cb_emote']){
 		$texta .= " \n<input class='button' type ='button' style='cursor:hand; cursor:pointer' size='30' value='".CHATBOX_L14."' onclick='expandit(this)' />\n<span style='display:none;'>".r_emote()."\n</span>\n";

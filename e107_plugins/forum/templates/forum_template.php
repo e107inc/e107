@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-20 15:37:19 $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-21 12:28:41 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 if (!$FORUM_MAIN_START) {
-	$FORUM_MAIN_START = "<div style='text-align:center'>\n<div class='spacer'>\n<table style='width:95%' class='fborder' border='1'>\n<tr>\n<td colspan='2' style='width:60%; text-align:center' class='fcaption'>{FORUMTITLE}</td>\n<td style='width:10%; text-align:center' class='fcaption'>{THREADTITLE}</td>\n<td style='width:10%; text-align:center' class='fcaption'>{REPLYTITLE}</td>\n<td style='width:20%; text-align:center' class='fcaption'>{LASTPOSTITLE}</td>\n</tr>";
+	$FORUM_MAIN_START = "<div style='text-align:center; margin-left: auto; margin-right: auto;'>\n<div class='spacer'>\n<table style='width:95%' class='fborder'>\n<tr>\n<td colspan='2' style='width:60%; text-align:center' class='fcaption'>{FORUMTITLE}</td>\n<td style='width:10%; text-align:center' class='fcaption'>{THREADTITLE}</td>\n<td style='width:10%; text-align:center' class='fcaption'>{REPLYTITLE}</td>\n<td style='width:20%; text-align:center' class='fcaption'>{LASTPOSTITLE}</td>\n</tr>";
 }
 if (!$FORUM_MAIN_PARENT) {
 	$FORUM_MAIN_PARENT = " <tr>\n<td colspan='5' class='forumheader'>{PARENTNAME} {PARENTSTATUS}</td>\n</tr>";
