@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-03-21 12:28:41 $
-|     $Author: stevedunstan $
+|     $Revision: 1.34 $
+|     $Date: 2005-03-26 22:35:44 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
@@ -94,7 +94,7 @@ if(!USER && !$pref['anon_post']){
 }
 else
 {
-	$texta =  "<div style='text-align:center'>".(e_QUERY ? "\n<form id='chatbox' method='post' action='".e_SELF."?".e_QUERY."'><p>" : "\n<form id='chatbox' method='post' action='".e_SELF."'><p>");
+	$texta =  "<div style='text-align:center'>".(e_QUERY ? "\n<form id='chatbox' method='post' action='".e_SELF."?".e_QUERY."'><p>" : "\n<form id='chatbox' method='post' action='".e_SELF."'><div>");
 	if(($pref['anon_post'] == "1" && USER == FALSE)){
 		$texta .= "\n<input class='tbox' type='text' name='nick' value='' maxlength='50' style='width: 100%;' /><br />";
 	}
@@ -104,10 +104,10 @@ else
 	$texta .= "\n<textarea class='tbox chatbox' name='cmessage' cols='20' rows='5' style='overflow:hidden;' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>\n<br />\n<input class='button' type='submit' name='chat_submit' value='".CHATBOX_L4."' />\n<input class='button' type='reset' name='reset' value='".CHATBOX_L5."' />";
 
 	if($pref['cb_emote']){
-		$texta .= " \n<input class='button' type ='button' style='cursor:hand; cursor:pointer' size='30' value='".CHATBOX_L14."' onclick='expandit(this)' />\n<span style='display:none;'>".r_emote()."\n</span>\n";
+		$texta .= " \n<input class='button' type ='button' style='cursor:hand; cursor:pointer' size='30' value='".CHATBOX_L14."' onclick=\"expandit('emote')\" />\n<div style='display:none' id='emote'>".r_emote()."\n</div>\n";
 	}
 
-	$texta .="</p>\n</form>\n</div>\n";
+	$texta .="</div>\n</form>\n</div>\n";
 }
 
 if($emessage != ""){
