@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.18 $
-|   $Date: 2005-01-27 19:52:24 $
-|   $Author: streaky $
+|   $Revision: 1.19 $
+|   $Date: 2005-01-28 14:04:53 $
+|   $Author: mrpete $
 +---------------------------------------------------------------+
 	
 */
@@ -832,7 +832,7 @@ class newspost {
 		 
 		 
 		// ##### ADDED FOR NEWSARCHIVE --------------------------------------------------------------------
-		// the possible archive values are from "1" to "< $pref['newsposts']"
+		// the possible archive values are from "0" to "< $pref['newsposts']"
 		// this should really be made as an onchange event on the selectbox for $pref['newsposts'] ...
 		$text .= "
 			<tr>
