@@ -17,6 +17,7 @@ if(!getperms("J") && !getperms("K") && !getperms("L")){header("location:".e_BASE
 require_once("auth.php");
 $aj = new textparse;
 require_once(e_HANDLER."form_handler.php");
+require_once(e_HANDLER."userclass_class.php");
 $rs = new form;
 
 if(e_QUERY){
@@ -61,6 +62,20 @@ if(IsSet($_POST['create_article'])){
 	unset($action);
 }
 
+If(IsSet($_POST['sa_article'])){
+	if($_POST['category'] == -1){ unset($_POST['category']); }
+	$content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
+	$content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
+	$content_content = $aj -> formtpa($_POST['data'], "admin");
+	$content_summary = $aj -> formtpa($_POST['content_summary'], "admin");
+	$content_author = ($_POST['content_author'] && $_POST['content_author'] != ARLAN_84 ? $_POST['content_author']."^".$_POST['content_author_email'] : ADMINID);
+	$sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_parent='".$_POST['category']."', content_author='$content_author', content_comment='".$_POST['content_comment']."', content_summary='$content_summary', content_type='0',  content_pe_icon=".$_POST['add_icons'].", content_class='{$_POST['a_class']}' WHERE content_id=$id");
+	unset($content_heading, $content_subheading, $data, $content_summary);
+	$message = ARLAN_99;
+	unset($action);
+}
+
+
 If(IsSet($_POST['update_article'])){
 	if($_POST['category'] == -1){ unset($_POST['category']); }
 	$content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
@@ -73,6 +88,14 @@ If(IsSet($_POST['update_article'])){
 	$message = ARLAN_2;
 	unset($action);
 	clear_cache("article");
+}
+
+if(IsSet($_POST['updateoptions'])){
+	$pref['article_submit'] = $_POST['article_submit'];
+	$pref['article_submit_class'] = $_POST['article_submit_class'];
+	save_prefs();
+	$sql -> db_Update("links", "link_class=".($pref['article_submit'] ? "0" : "255")." WHERE link_url='subcontent.php?article' ");
+	$message = ARLAN_92;
 }
 
 if($action == "cat" && $sub_action == "confirm"){
@@ -262,6 +285,16 @@ if($action == "create"){
 		}
 	}
 
+	if($sub_action == "sa" && !$_POST['preview']){
+		if($sql -> db_Select("content", "*", "content_id=$id")){
+			$row = $sql -> db_Fetch(); extract($row);
+			$data = $content_content;
+			$tmp = explode("^", $content_author);
+			$content_author = $tmp[0];
+			$content_author_email = $tmp[1];
+		}
+	}
+
 	require_once(e_HANDLER."userclass_class.php");
 	$text = "<div style='text-align:center'>
 	".$rs -> form_open("post", e_SELF."?".e_QUERY."", "dataform")."
@@ -352,7 +385,7 @@ if($action == "create"){
 	<tr style='vertical-align:top'>
 	<td colspan='2'  style='text-align:center' class='forumheader'>".
 	(!$_POST['preview'] ? "<input class='button' type='submit' name='preview' value='".ARLAN_28."' />" : "<input class='button' type='submit' name='preview' value='".ARLAN_27."' />")." ".
-	($sub_action == "edit" || $_POST['editp']? "<input class='button' type='submit' name='update_article' value='".ADLAN_81." ".ARLAN_20."' />\n<input type='hidden' name='content_id' value='$id'>" : "<input class='button' type='submit' name='create_article' value='".ADLAN_85." ".ARLAN_20."' />")."
+	($sub_action == "edit" || $_POST['editp']? "<input class='button' type='submit' name='update_article' value='".ADLAN_81." ".ARLAN_20."' />\n<input type='hidden' name='content_id' value='$id'>" : ($sub_action == "sa" ? "<input class='button' type='submit' name='sa_article' value='".ARLAN_98."' />" : "<input class='button' type='submit' name='create_article' value='".ADLAN_85." ".ARLAN_20."' />"))."
 	</td>
 	</tr>
 	</table>
@@ -362,10 +395,75 @@ if($action == "create"){
 	$ns -> tablerender("<div style='text-align:center'>".ARLAN_15."</div>", $text);
 
 }
-
-
 // ##### End ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+if($action == "opt"){
+	global $pref, $ns;
+	$text = "<div style='text-align:center'>
+	<form method='post' action='".e_SELF."?".e_QUERY."'>\n
+	<table style='width:auto' class='fborder'>
+	<tr>
+	
+	<td style='width:70%' class='forumheader3'>
+	".ARLAN_86."<br />
+	<span class='smalltext'>".ARLAN_87."</span>
+	</td>
+	<td style='width:30%' class='forumheader2' style='text-align:center'>".
+	($pref['article_submit'] ? "<input type='checkbox' name='article_submit' value='1' checked>" : "<input type='checkbox' name='article_submit' value='1'>")."
+	</td>
+	</tr>
+
+	<tr>
+	<td style='width:70%' class='forumheader3'>
+	".ARLAN_88."<br />
+	<span class='smalltext'>".ARLAN_89."</span>
+	</td>
+	<td style='width:30%' class='forumheader2' style='text-align:center'>".r_userclass("article_submit_class", $pref['article_submit_class'])."</td>
+	</tr>
+
+	<tr style='vertical-align:top'> 
+	<td colspan='2'  style='text-align:center' class='forumheader'>
+	<input class='button' type='submit' name='updateoptions' value='".ARLAN_90."' />
+	</td>
+	</tr>
+
+	</table>
+	</form>
+	</div>";
+	$ns -> tablerender(ARLAN_91, $text);
+}
+
+if($action == "sa"){
+	global $sql, $rs, $ns, $aj;
+	$text = "<div style='border : solid 1px #000; padding : 4px; width :auto; height : 200px; overflow : auto; '>\n";
+	if($article_total = $sql -> db_Select("content", "*", "content_type=15")){
+		$text .= "<table class='fborder' style='width:100%'>
+		<tr>
+		<td style='width:5%' class='forumheader2'>ID</td>
+		<td style='width:75%' class='forumheader2'>".ARLAN_96."</td>
+		<td style='width:20%; text-align:center' class='forumheader2'>".ARLAN_60."</td>
+		</tr>";
+		while($row = $sql -> db_Fetch()){
+			extract($row);
+			$tmp = explode("^", $content_author);
+			$content_author = $tmp[0];
+			$content_author_email = ($tmp[1] ? $tmp[1] : ARLAN_95);
+			$text .= "<tr>
+			<td style='width:5%; text-align:center; vertical-align:top' class='forumheader3'>$content_id</td>
+			<td style='width:75%' class='forumheader3'><b>".$aj -> tpa($content_heading)."</b> [".$aj -> tpa($content_subheading)."]<br />$content_author ($content_author_email)</td>
+			<td style='width:20%; text-align:center; vertical-align:top' class='forumheader3'>
+			".$rs -> form_button("submit", "category_edit", ARLAN_97, "onClick=\"document.location='".e_SELF."?create.sa.$content_id'\"")."
+			".$rs -> form_button("submit", "category_delete", ARLAN_62, "onClick=\"confirm_('sa', '$content_heading', $content_id);\"")."
+			</td>
+			</tr>\n";
+		}
+		$text .= "</table>";
+	}else{
+		$text .= "<div style='text-align:center'>".ARLAN_94."</div>";
+	}
+	$text .= "</div>";
+	$ns -> tablerender(ARLAN_93, $text);
+}
 
 // ##### Display options --------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -378,6 +476,12 @@ if($action != "create"){
 }
 if($action != "cat"){
 	$text .= "<a href='".e_SELF."?cat'><div class='border'><div class='forumheader'>".ARLAN_78."</div></div></a>";
+}
+if($action != "opt"){
+	$text .= "<a href='".e_SELF."?opt'><div class='border'><div class='forumheader'>".ARLAN_60."</div></div></a>";
+}
+if($action != "sa"){
+	$text .= "<a href='".e_SELF."?sa'><div class='border'><div class='forumheader'>".ARLAN_93."</div></div></a>";
 }
 $text .= "</div>";
 $ns -> tablerender(ARLAN_79, $text);

@@ -136,6 +136,8 @@ $permicon2 = "<img src='".e_IMAGE."generic/rname.png' alt='' style='vertical-ali
 $active_uploads = $sql -> db_Select("upload", "*", "upload_active=0");
 $submitted_links = $sql -> db_Select("tmp", "*", "tmp_ip='submitted_link' ");
 $submitted_news = $sql -> db_Select("submitnews", "*", "submitnews_auth ='0' ");
+$submitted_articles = $sql -> db_Select("content", "*", "content_type ='15' ");
+$submitted_reviews = $sql -> db_Select("content", "*", "content_type ='16' ");
 
 $text = "<div style='text-align:center'>
 <table style='width:95%'>
@@ -145,12 +147,15 @@ $text = "<div style='text-align:center'>
 
 $text .= $permicon.ADLAN_110.": ".$members."<br />";
 $text .= $permicon.ADLAN_111.": ".$unverified."<br />";
-$text .= $permicon.ADLAN_112.": ".$banned."<br />";
+$text .= $permicon.ADLAN_112.": ".$banned."<br /><br />";
 
 $text .= ($submitted_news ? $permicon2."<a href='".e_ADMIN."newspost.php?sn'>".ADLAN_107.": $submitted_news</a>" : $permicon.ADLAN_107.": 0")."<br />";
-$text .= ($active_uploads ? $permicon2."<a href='".e_ADMIN."upload.php'>".ADLAN_108.": $active_uploads</a>" : $permicon.ADLAN_108.": ".$active_uploads)."<br />";
-
+$text .= ($submitted_articles ? $permicon2."<a href='".e_ADMIN."article.php?sa'>".ADLAN_123.": $submitted_articles</a>" : $permicon.ADLAN_123.": ".$submitted_articles)."<br />";
+$text .= ($submitted_reviews ? $permicon2."<a href='".e_ADMIN."review.php?sa'>".ADLAN_124.": $submitted_reviews</a>" : $permicon.ADLAN_124.": ".$submitted_reviews)."<br />";
 $text .= ($submitted_links ? $permicon2."<a href='".e_ADMIN."links.php?sn'>".ADLAN_119.": $submitted_links</a>" : $permicon.ADLAN_119.": ".$submitted_links)."<br /><br />";
+
+$text .= ($active_uploads ? $permicon2."<a href='".e_ADMIN."upload.php'>".ADLAN_108.": $active_uploads</a>" : $permicon.ADLAN_108.": ".$active_uploads)."<br /><br />";
+
 $text .= $permicon.ADLAN_113.": ".$forum_posts."<br />";
 $text .= $permicon.ADLAN_114.": ".$comments."<br />";
 $text .= $permicon.ADLAN_115.": ".$chatbox_posts;

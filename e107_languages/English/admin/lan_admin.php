@@ -127,4 +127,7 @@ define("ADLAN_120", "There is a database update available, please click button t
 define("ADLAN_121", "Install");
 define("ADLAN_122", "Update");
 
+define("ADLAN_123", "Unchecked submitted articles");
+define("ADLAN_124", "Unchecked submitted reviews");
+
 ?>

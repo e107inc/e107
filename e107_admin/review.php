@@ -20,6 +20,7 @@ if(!getperms("J") && !getperms("K") && !getperms("L")){
 require_once("auth.php");
 $aj = new textparse;
 require_once(e_HANDLER."form_handler.php");
+require_once(e_HANDLER."userclass_class.php");
 $rs = new form;
 
 if(e_QUERY){
@@ -74,6 +75,25 @@ If(IsSet($_POST['update_review'])){
 	unset($action);
 	$message = REVLAN_3;
 	clear_cache("review");
+}
+
+If(IsSet($_POST['sa_article'])){
+	if($_POST['category'] == -1){ unset($_POST['category']); }
+	$content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
+	$content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
+	$content_content = $aj -> formtpa($_POST['data'], "admin");
+	$content_author = ($_POST['content_author'] && $_POST['content_author'] != ARLAN_84 ? $_POST['content_author']."^".$_POST['content_author_email'] : ADMINID);
+	$sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_parent='".$_POST['category']."', content_author='$content_author', content_comment='".$_POST['content_comment']."', content_summary='".$_POST['content_summary']."',  content_type='3', content_review_score=".$_POST['content_rating'].", content_class='{$_POST['r_class']}' WHERE content_id='".$_POST['content_id']."'");
+	unset($action);
+	$message = REVLAN_68;
+}
+
+if(IsSet($_POST['updateoptions'])){
+	$pref['review_submit'] = $_POST['review_submit'];
+	$pref['review_submit_class'] = $_POST['review_submit_class'];
+	save_prefs();
+	$sql -> db_Update("links", "link_class=".($pref['review_submit'] ? "0" : "255")." WHERE link_url='subcontent.php?review' ");
+	$message = REVLAN_61;
 }
 
 if($action == "cat" && $sub_action == "confirm"){
@@ -243,6 +263,17 @@ if($action == "create"){
 		}
 	}
 
+	if($sub_action == "sa" && !$_POST['preview']){
+		if($sql -> db_Select("content", "*", "content_id=$id")){
+			$row = $sql -> db_Fetch(); extract($row);
+			$data = $content_content;
+			$tmp = explode("^", $content_author);
+			$content_author = $tmp[0];
+			$content_author_email = $tmp[1];
+			$content_rating = $content_review_score;
+		}
+	}
+
 	require_once(e_HANDLER."userclass_class.php");
 	$text = "<div style='text-align:center'>
 	".$rs -> form_open("post", e_SELF."?create", "dataform")."
@@ -351,6 +382,9 @@ if($action == "create"){
 	if($sub_action == "edit"){
 		$text .= "<input class='button' type='submit' name='update_review' value='".REVLAN_22."' />
 		<input type='hidden' name='content_id' value='$id'>";
+	}else if($sub_action == "sa"){
+		$text .= "<input class='button' type='submit' name='sa_article' value='".REVLAN_67."' />
+		<input type='hidden' name='content_id' value='$id'>";
 	}else{
 		$text .= "<input class='button' type='submit' name='create_review' value='".REVLAN_23."' />";
 	}
@@ -368,6 +402,74 @@ if($action == "create"){
 
 // ##### End ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+if($action == "opt"){
+	global $pref, $ns;
+	$text = "<div style='text-align:center'>
+	<form method='post' action='".e_SELF."?".e_QUERY."'>\n
+	<table style='width:auto' class='fborder'>
+	<tr>
+	
+	<td style='width:70%' class='forumheader3'>
+	".REVLAN_55."<br />
+	<span class='smalltext'>".REVLAN_56."</span>
+	</td>
+	<td style='width:30%' class='forumheader2' style='text-align:center'>".
+	($pref['review_submit'] ? "<input type='checkbox' name='review_submit' value='1' checked>" : "<input type='checkbox' name='review_submit' value='1'>")."
+	</td>
+	</tr>
+
+	<tr>
+	<td style='width:70%' class='forumheader3'>
+	".REVLAN_57."<br />
+	<span class='smalltext'>".REVLAN_58."</span>
+	</td>
+	<td style='width:30%' class='forumheader2' style='text-align:center'>".r_userclass("review_submit_class", $pref['review_submit_class'])."</td>
+	</tr>
+
+	<tr style='vertical-align:top'> 
+	<td colspan='2'  style='text-align:center' class='forumheader'>
+	<input class='button' type='submit' name='updateoptions' value='".REVLAN_59."' />
+	</td>
+	</tr>
+
+	</table>
+	</form>
+	</div>";
+	$ns -> tablerender(REVLAN_60, $text);
+}
+
+
+if($action == "sa"){
+	global $sql, $rs, $ns, $aj;
+	$text = "<div style='border : solid 1px #000; padding : 4px; width :auto; height : 200px; overflow : auto; '>\n";
+	if($article_total = $sql -> db_Select("content", "*", "content_type=16")){
+		$text .= "<table class='fborder' style='width:100%'>
+		<tr>
+		<td style='width:5%' class='forumheader2'>ID</td>
+		<td style='width:75%' class='forumheader2'>".REVLAN_65."</td>
+		<td style='width:20%; text-align:center' class='forumheader2'>".REVLAN_29."</td>
+		</tr>";
+		while($row = $sql -> db_Fetch()){
+			extract($row);
+			$tmp = explode("^", $content_author);
+			$content_author = $tmp[0];
+			$content_author_email = ($tmp[1] ? $tmp[1] : ARLAN_95);
+			$text .= "<tr>
+			<td style='width:5%; text-align:center; vertical-align:top' class='forumheader3'>$content_id</td>
+			<td style='width:75%' class='forumheader3'><b>".$aj -> tpa($content_heading)."</b> [".$aj -> tpa($content_subheading)."]<br />$content_author ($content_author_email)</td>
+			<td style='width:20%; text-align:center; vertical-align:top' class='forumheader3'>
+			".$rs -> form_button("submit", "category_edit", REVLAN_66, "onClick=\"document.location='".e_SELF."?create.sa.$content_id'\"")."
+			".$rs -> form_button("submit", "category_delete", REVLAN_9, "onClick=\"confirm_('sa', $content_id);\"")."
+			</td>
+			</tr>\n";
+		}
+		$text .= "</table>";
+	}else{
+		$text .= "<div style='text-align:center'>".REVLAN_63."</div>";
+	}
+	$text .= "</div>";
+	$ns -> tablerender(REVLAN_62, $text);
+}
 
 // ##### Display options --------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -380,6 +482,12 @@ if($action != "create"){
 }
 if($action != "cat"){
 	$text .= "<a href='".e_SELF."?cat'><div class='border'><div class='forumheader'>".REVLAN_47."</div></div></a>";
+}
+if($action != "opt"){
+	$text .= "<a href='".e_SELF."?opt'><div class='border'><div class='forumheader'>".REVLAN_29."</div></div></a>";
+}
+if($action != "sa"){
+	$text .= "<a href='".e_SELF."?sa'><div class='border'><div class='forumheader'>".REVLAN_62."</div></div></a>";
 }
 $text .= "</div>";
 $ns -> tablerender(REVLAN_48, $text);

@@ -65,4 +65,19 @@ define("ARLAN_83", "leave if article written by you");
 define("ARLAN_84", "author name");
 define("ARLAN_85", "author email address");
 
+define("ARLAN_86", "Allow articles to be submitted");
+define("ARLAN_87", "Allow visitors to submit articles to your site");
+define("ARLAN_88", "Submit articles class");
+define("ARLAN_89", "Select which users can submit articles");
+define("ARLAN_90", "Update Options");
+define("ARLAN_91", "Article Options");
+define("ARLAN_92", "Article options updated");
+define("ARLAN_93", "Submitted Articles");
+define("ARLAN_94", "No submitted articles");
+define("ARLAN_95", "No email address supplied");
+define("ARLAN_96", "Article Heading");
+define("ARLAN_97", "Post");
+define("ARLAN_98", "Post User Submitted Article");
+define("ARLAN_99", "User submitted article saved in database");
+
 ?>

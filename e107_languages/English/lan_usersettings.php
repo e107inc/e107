@@ -22,7 +22,7 @@ define("LAN_150", "Settings updated and saved into database.");
 define("LAN_151", "OK");
 define("LAN_152", "New Password: ");
 define("LAN_153", "Re-type New Password: ");
-define("LAN_154", "Update Settings");
+define("LAN_154", "Save Settings");
 define("LAN_155", "Update User Settings");
 define("LAN_185", "You left the password field blank ");
 define("LAN_308", "Real Name: ");
@@ -36,9 +36,25 @@ define("LAN_411", "Update Your Settings");
 define("LAN_412", "Change Your Password");
 define("LAN_413", "Choose An Avatar");
 define("LAN_414", "Upload Your Photograph");
-define("LAN_415", "Upload your avatar");
+define("LAN_415", "Upload your Avatar");
 
 define("LAN_416", "Yes");
 define("LAN_417", "No");
+
+define("LAN_418", "Registration Information");
+define("LAN_419", "Personal / Contact Information");
+define("LAN_420", "Avatar");
+define("LAN_421", "Choose site-stored avatar");
+define("LAN_422", "Use remote avatar");
+define("LAN_423", "Please type full address to image");
+define("LAN_424", "Click button to see avatars stored on this site");
+define("LAN_425", "Photograph");
+define("LAN_426", "This will be shown on your profile page");
+define("LAN_427", "Submit ...");
+define("LAN_428", "News Item");
+define("LAN_429", "Link");
+define("LAN_430", "Download");
+define("LAN_431", "Article");
+define("LAN_432", "Review");
 
 ?>

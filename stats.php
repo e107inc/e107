@@ -129,7 +129,7 @@ function parse_data($row, $amount, $total, $action_n, $lan){
 	global $sql, $action;
 
 	$str .= "<table style='width:95%' class='fborder'>\n<tr>\n<td colspan='4' class='forumheader3'><b>$lan</b> ".
-	($action == $action_n ? LAN_377 : LAN_378.(($action_n == 6 && ADMIN) || $action_n != 6 ? " ( <a href='".e_SELF."?$action_n'>".LAN_375."</a>" : ""))."</td>\n</tr>";
+	($action == $action_n ? LAN_377 : LAN_378.(($action_n == 6 && ADMIN) || $action_n != 6 ? " ( <a href='".e_SELF."?$action_n'>".LAN_375."</a> )" : ""))."</td>\n</tr>";
 
 
 	while($row = $sql -> db_Fetch()){

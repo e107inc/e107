@@ -69,4 +69,8 @@ define("LAN_398", "This forum is read only");
 
 define("LAN_399", "You are not authorized to post to this forum.");
 
+define("LAN_400", "post thread as");
+define("LAN_401", "Jump");
+
+
 ?>

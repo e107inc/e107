@@ -386,10 +386,10 @@ class textparse{
 		$search[12] = "#\[u\](.*?)\[/u\]#si";
 		$replace[12] = '<u>\1</u>';
 		$search[13] = "#\[img\](.*?)\[/img\]#si";
-		if($pref['image_post'] || $mode == "on" || ADMIN){
+		if(($pref['image_post'] && check_class($pref['image_post_class'])) || $mode == "on"){
 			$replace[13] = '<img src=\'\1\' alt=\'\' style=\'vertical-align:middle; border:0\' />';
 		}else if(!$pref['image_post_disabled_method']){
-			$replace[13] = '\1';
+			$replace[13] = 'Image: \1';
 		}else{
 			$replace[13] = '[ image disabled ]';
 		}
@@ -458,11 +458,14 @@ class textparse{
 			if(!$pref['html_post']){ $text = str_replace("<", "&lt;", $text); str_replace(">", "&gt;", $text); }
 			$text = str_replace("<script", "&lt;script", $text);
 			$text = str_replace("<iframe", "&lt;iframe", $text);
+			/*
 			if(($pref['image_post_class'] == 253 && !USER) || ($pref['image_post_class'] == 254 && !ADMIN)){
 				$text = preg_replace("#\[img\](.*?)\[/img\]#si", '&nbsp;', $text);
 			}else if(!check_class($pref['image_post_class'])){
 				$text = preg_replace("#\[img\](.*?)\[/img\]#si", '&nbsp;', $text);
 			}
+			*/
+		
 		}else{
 			$text = preg_replace("#\[img\](.*?)\[/img\]#si", '<img src=\'\1\' alt=\'\' style=\'vertical-align:middle; border:0\' />', $text);
 		}

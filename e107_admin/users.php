@@ -285,7 +285,7 @@ class users{
 				}
 				
 				$text .= "</td>
-				<td style='width:30%' class='forumheader3'><a href='".e_BASE."profile.php?$user_id'>$user_name</a></td>
+				<td style='width:30%' class='forumheader3'><a href='".e_BASE."user.php?id.$user_id'>$user_name</a></td>
 				<td style='width:15%' class='forumheader3'>";
 				
 				if($user_class){

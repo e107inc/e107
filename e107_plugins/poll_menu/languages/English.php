@@ -23,6 +23,6 @@ define("LAN_164", "Votes: ");
 define("LAN_165", "Old Surveys");
 define("LAN_184", "Poll");
 
-define("LAN_185", "Comments");
+define("LAN_500", "Comments");
 
 ?>

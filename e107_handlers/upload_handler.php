@@ -30,12 +30,10 @@ function file_upload($uploaddir, $avatar = FALSE){
 		extract($_FILES);
 		for($c=0; $c<=1; $c++){
 			if($file_userfile['tmp_name'][$c]){
-
 				$fileext1 = substr(strrchr($file_userfile['name'][$c], "."), 1);
 				$fileext2 = substr(strrchr($file_userfile['name'][$c], "."), 0); // in case user has left off the . in allowed_filetypes
-
-				if(!in_array($fileext1, $allowed_filetypes) && !in_array(strtolower($fileext1), $allowed_filetypes)){
-					if(!in_array($fileext2, $allowed_filetypes) && !in_array(strtolower($fileext2), $allowed_filetypes)){
+				if(!in_array($fileext1, $allowed_filetypes) && !in_array(strtolower($fileext1), $allowed_filetypes) && !in_array(strtolower($file_userfile['type'][$c]), $allowed_filetypes)){
+					if(!in_array($fileext2, $allowed_filetypes) && !in_array(strtolower($fileext2), $allowed_filetypes) && !in_array(strtolower($file_userfile['type'][$c]), $allowed_filetypes)){
 						require_once(e_HANDLER."message_handler.php");
 						message_handler("MESSAGE", "The filetype '".$file_userfile['type'][$c]."' is not allowed and has been deleted.");
 						return FALSE;
@@ -71,18 +69,12 @@ function file_upload($uploaddir, $avatar = FALSE){
 		if($files['size'][$key]){
 			$filesize[] = $files['size'][$key];
 			$name = ereg_replace("[^a-z0-9._]", "", str_replace(" ", "_", str_replace("%20", "_", strtolower($name))));
-
-			//$destination_file = substr($_SERVER['PATH_TRANSLATED'], 0, strrpos($_SERVER['PATH_TRANSLATED'], "/"))."/".$uploaddir.$name;
-
 			$destination_file  = getcwd()."/".$uploaddir."/".$name;
-
 			$uploadfile = $files['tmp_name'][$key];
-
 			$fileext1 = substr(strrchr($files['name'][$key], "."), 1);
 			$fileext2 = substr(strrchr($files['name'][$key], "."), 0);
-			
-			if(!in_array($fileext1, $allowed_filetypes) && !in_array(strtolower($fileext1), $allowed_filetypes)){
-					if(!in_array($fileext2, $allowed_filetypes) && !in_array(strtolower($fileext2), $allowed_filetypes)){
+			if(!in_array($fileext1, $allowed_filetypes) && !in_array(strtolower($fileext1), $allowed_filetypes) && !in_array(strtolower($files['type'][$c]), $allowed_filetypes)){
+				if(!in_array($fileext2, $allowed_filetypes) && !in_array(strtolower($fileext2), $allowed_filetypes) && !in_array(strtolower($files['type'][$c]), $allowed_filetypes)){
 					require_once(e_HANDLER."message_handler.php");
 					message_handler("MESSAGE", "The filetype ".$files['type'][$key]." is not allowed and has been deleted.", __LINE__, __FILE__);
 					return FALSE;

@@ -17,15 +17,16 @@ $res = $_REQUEST['res'];
 $self = $_REQUEST['eself'];
 $ref = $_REQUEST['referer'];
 
-$self = substr(strrchr(eregi_replace("\?.*", "", $self), "/"), 1);
-
-if($self == "/"){ $self = "index.php"; }
-
 $screenstats = $res." @ ".$colour;
 
 @include("../../e107_config.php");
-define("MPREFIX", $mySQLprefix);
 
+$self = eregi_replace("\?.*", "", $self);
+$self = preg_match("#(".e_HTTP.")(.*)#",$self,$matches);
+$self = eregi_replace("e107_plugins", "", $matches[2]);
+
+if($self == "/"){ $self = "index.php"; }
+define("MPREFIX", $mySQLprefix);
 require_once("../../e107_handlers/mysql_class.php");
 $sql = new db;
 $sql -> db_SetErrorReporting(FALSE);
@@ -35,7 +36,7 @@ $row = $sql -> db_Fetch();
 $tmp = stripslashes($row['e107_value']);
 $pref=unserialize($tmp);
 
-
+$siteurl = $pref['siteurl'];
 
 if($pref['log_activate']){
 

@@ -98,19 +98,21 @@ if(!e_QUERY || eregi("cat", e_QUERY)){ $from = 0; }else{ $from = e_QUERY; }
 if(Empty($order)){ $order = "news_datestamp"; }
 
 // ---> wmessage
-$sql -> db_Select("wmessage");
-list($wm_guest, $guestmessage, $wm_active1) = $sql-> db_Fetch();
-list($wm_member, $membermessage, $wm_active2) = $sql-> db_Fetch();
-list($wm_admin, $adminmessage, $wm_active3) = $sql-> db_Fetch();
-if(ADMIN == TRUE && $wm_active3){
-	$adminmessage = $aj -> tpa($adminmessage, "on");
-	$ns -> tablerender("", "<div style='text-align:center'><b>Administrators</b><br />".$adminmessage."</div>");
-}else if(USER == TRUE && $wm_active2){
-	$membermessage = $aj -> tpa($membermessage, "on");
-	$ns -> tablerender("", "<div style='text-align:center'>".$membermessage."</div>");
-}else if(USER == FALSE && $wm_active1){
-	$guestmessage = $aj -> tpa($guestmessage, "on");
-	$ns -> tablerender("", "<div style='text-align:center'>".$guestmessage."</div>");
+if(!defined("WMFLAG")){
+	$sql -> db_Select("wmessage");
+	list($wm_guest, $guestmessage, $wm_active1) = $sql-> db_Fetch();
+	list($wm_member, $membermessage, $wm_active2) = $sql-> db_Fetch();
+	list($wm_admin, $adminmessage, $wm_active3) = $sql-> db_Fetch();
+	if(ADMIN == TRUE && $wm_active3){
+		$adminmessage = $aj -> tpa($adminmessage, "on");
+		$ns -> tablerender("", "<div style='text-align:center'><b>Administrators</b><br />".$adminmessage."</div>");
+	}else if(USER == TRUE && $wm_active2){
+		$membermessage = $aj -> tpa($membermessage, "on");
+		$ns -> tablerender("", "<div style='text-align:center'>".$membermessage."</div>");
+	}else if(USER == FALSE && $wm_active1){
+		$guestmessage = $aj -> tpa($guestmessage, "on");
+		$ns -> tablerender("", "<div style='text-align:center'>".$guestmessage."</div>");
+	}
 }
 // ---> wmessage end
 
@@ -133,6 +135,9 @@ if(!$disablecache && !e_QUERY){
 		$cachestring = "Cache system activated (content originally served ".strftime("%A %d %B %Y - %H:%M:%S", $cache_datestamp).").";
 		require_once(e_HANDLER."np_class.php");
 		$ix = new nextprev("news.php", $from, ITEMVIEW, $news_total, LAN_84);
+		if($pref['nfp_display'] == 2){
+			require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
+		}
 		require_once(FOOTERF);
 		exit;
 	}

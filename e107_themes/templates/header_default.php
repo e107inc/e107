@@ -181,6 +181,22 @@ function checklayout($str){
 		}else if($custom == "clock"){
 			$clock_flat = TRUE;
 			require_once(e_PLUGIN."clock_menu/clock_menu.php");
+		
+
+		}else if($custom == "welcomemessage"){
+			$aj = new textparse;
+			$sql -> db_Select("wmessage");
+			list($wm_guest, $guestmessage, $wm_active1) = $sql-> db_Fetch();
+			list($wm_member, $membermessage, $wm_active2) = $sql-> db_Fetch();
+			list($wm_admin, $adminmessage, $wm_active3) = $sql-> db_Fetch();
+			if(ADMIN == TRUE && $wm_active3){
+				echo $aj -> tpa($adminmessage, "on");
+			}else if(USER == TRUE && $wm_active2){
+				echo $aj -> tpa($membermessage, "on");
+			}else if(USER == FALSE && $wm_active1){
+				echo $aj -> tpa($guestmessage, "on");
+			}
+			define("WMFLAG", TRUE);
 		}
 
 	}else if(strstr($str, "BANNER")){

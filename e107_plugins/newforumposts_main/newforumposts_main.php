@@ -46,12 +46,12 @@ if($sql -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHE
 			$replies = $sql2 -> db_Select("forum_t", "*", "thread_parent=$thread_id");
 
 			$text .= "<tr>
-			<td style='width:5%; text-align:center; border-bottom-style: dotted; border-bottom-width: 1; padding:3px'><img src='".e_IMAGE."forum/new_small.png' alt='' /></td>
-			<td style='width:45%; border-bottom-style: dotted; border-bottom-width: 1'><b><a href='".e_BASE."forum_viewtopic.php?$forum_id.$thread_id'>$thread_name</a></b> <span class='smalltext'>(<a href='".e_BASE."forum_viewforum.php?$forum_id'>$forum_name</a></span>}</td>
-			<td style='width:15%; text-align:center; border-bottom-style: dotted; border-bottom-width: 1'><a href='".e_BASE."user.php?id.$post_author_id'>$post_author_name</a></td>
-			<td style='width:5%; text-align:center; border-bottom-style: dotted; border-bottom-width: 1'>$thread_views</td>
-			<td style='width:5%; text-align:center; border-bottom-style: dotted; border-bottom-width: 1'>$replies</td>
-			<td style='width:25%; text-align:center; border-bottom-style: dotted; border-bottom-width: 1'>".($replies ? "<b><a href='".e_BASE."user.php?id.$r_id'>$r_name</a></b><br /><span class='smalltext'>$r_datestamp</span>" : "-")."</td>
+			<td style='width:5%; text-align:center' class='forumheader3'><img src='".e_IMAGE."forum/new_small.png' alt='' /></td>
+			<td style='width:45%' class='forumheader3'><b><a href='".e_BASE."forum_viewtopic.php?$forum_id.$thread_id'>$thread_name</a></b> <span class='smalltext'>(<a href='".e_BASE."forum_viewforum.php?$forum_id'>$forum_name</a></span>}</td>
+			<td style='width:15%; text-align:center' class='forumheader3'><a href='".e_BASE."user.php?id.$post_author_id'>$post_author_name</a></td>
+			<td style='width:5%; text-align:center' class='forumheader3'>$thread_views</td>
+			<td style='width:5%; text-align:center' class='forumheader3'>$replies</td>
+			<td style='width:25%; text-align:center' class='forumheader3'>".($replies ? "<b><a href='".e_BASE."user.php?id.$r_id'>$r_name</a></b><br /><span class='smalltext'>$r_datestamp</span>" : "-")."</td>
 			</tr>\n";
 		}
 	}
@@ -60,11 +60,14 @@ if($sql -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHE
 	$total_replies = $sql -> db_Count("forum_t", "(*)", " WHERE thread_parent!='0' ");
 	$total_views = $sql -> db_Count("SELECT sum(thread_views) FROM ".MPREFIX."forum_t", "generic");
 
-	$text .= "<tr>\n<td colspan='6' style='text-align:center' class='smalltext'>
-	Threads: <b>$total_topics</b> | Replies: <b>$total_replies</b> | Views: <b>$total_views</b>
+	$text .= "<tr>\n<td colspan='6' style='text-align:center' class='forumheader2'>
+	<span class='smalltext'>Threads: <b>$total_topics</b> | Replies: <b>$total_replies</b> | Views: <b>$total_views</b></span>
 	</td>\n</tr>\n";
 
 	$text .= "</table>\n</div>";
+
+
+	$text = ($pref['nfp_layer'] ? "<div style='border : 0; padding : 4px; width : auto; height : ".$pref['nfp_layer_height']."px; overflow : auto; '>".$text."</div>" : $text);
 
 	$ns -> tablerender($pref['nfp_caption'], $text);
 

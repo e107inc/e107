@@ -91,9 +91,6 @@ if(IsSet($message)){
 	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
-
-
-
 $text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 200px; overflow : auto; '>";
 if($poll_total = $sql -> db_Select("poll")){
 	$text .= "<table class='fborder' style='width:100%'>
@@ -115,19 +112,10 @@ if($poll_total = $sql -> db_Select("poll")){
 	}
 	$text .= "</table>";
 }else{
-	$text .= "<div style='text-align:center'>".LCLAN_61."</div>";
+	$text .= "<div style='text-align:center'>".POLLAN_22."</div>";
 }
 $text .= "</div></div>";
 $ns -> tablerender(POLLAN_3, $text);
-
-
-
-
-
-
-
-
-
 
 $poll_total = $sql -> db_Select("poll");
 

@@ -59,9 +59,20 @@ define("REVLAN_52", "leave if review written by you");
 define("REVLAN_53", "author name");
 define("REVLAN_54", "author email address");
 
+define("REVLAN_55", "Allow reviews to be submitted");
+define("REVLAN_56", "Allow visitors to submit reviews to your site");
+define("REVLAN_57", "Submit review class");
+define("REVLAN_58", "Select which users can submit reviews");
+define("REVLAN_59", "Update Options");
+define("REVLAN_60", "Review Options");
+define("REVLAN_61", "Review options updated");
 
-
-
-
+define("REVLAN_62", "Submitted Reviews");
+define("REVLAN_63", "No submitted reviews");
+define("REVLAN_64", "No email address supplied");
+define("REVLAN_65", "Review Heading");
+define("REVLAN_66", "Post");
+define("REVLAN_67", "Post User Submitted Article");
+define("REVLAN_68", "User submitted review saved in database");
 
 ?>

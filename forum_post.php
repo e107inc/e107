@@ -94,6 +94,11 @@ if(IsSet($_POST['fpreview'])){
 	$tsubject = $aj -> tpa($_POST['subject']);
 	$tpost = $aj -> tpa($_POST['post']);
 
+	if(!$pref['html_post']){
+		$tsubject = str_replace("<", "&lt;", $tsubject);str_replace(">", "&gt;", $tsubject);
+		$tpost = str_replace("<", "&lt;", $tpost);str_replace(">", "&gt;", $tpost);
+	}
+
 	if($_POST['poll_title'] != ""){
 		require_once(e_HANDLER."poll_class.php");
 		$poll = new poll;
@@ -487,7 +492,7 @@ if(ADMIN && getperms("5") && $action == "nt"){
 
 	$text .= "<br />
 	<span class='defaulttext'>
-	post thread as  
+	".LAN_400."  
 	<input name='threadtype' type='radio' value='0'".(!$_POST['threadtype'] ? "checked" : "").">".LAN_1."
 	&nbsp;
 	<input name='threadtype' type='radio' value='1'".($_POST['threadtype'] == 1 ? "checked" : "").">".LAN_2."
@@ -671,7 +676,7 @@ $ns -> tablerender(LAN_175, $text);
 function forumjump(){
 	global $sql;
 	$sql -> db_Select("forum", "*", "forum_parent !=0 AND forum_class!='255' ");
-	$text .= "<form method='post' action='".e_SELF."'><p>Jump: <select name='forumjump' class='tbox'>";
+	$text .= "<form method='post' action='".e_SELF."'><p>".LAN_401.": <select name='forumjump' class='tbox'>";
 	while($row = $sql -> db_Fetch()){
 		extract($row);
 		if(($forum_class && check_class($forum_class)) || ($forum_class == 254 && USER) || !$forum_class){

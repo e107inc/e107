@@ -92,7 +92,7 @@ class poll{
 		$replace[1] = LAN_164.$vote_total;
 
 		$search[2] = "/\{COMMENTS\}(.*?)/si";
-		$replace[2] = ($type == "menu" ? " <a href=\"".e_BASE."comment.php?poll.".$poll_id."\">".LAN_185.": ".$comment_total."</a>" : "");
+		$replace[2] = ($type == "menu" ? " <a href=\"".e_BASE."comment.php?poll.".$poll_id."\">".LAN_500.": ".$comment_total."</a>" : "");
 
 		$search[3] = "/\{OLDPOLLS\}(.*?)/si";
 		$replace[3] = ($type == "menu" ? "<a href=\"".e_BASE."oldpolls.php\">".LAN_165."</a>" : "");
@@ -123,7 +123,7 @@ class poll{
 
 			if($mode == "voted"){
 				$search = array("OPTION", "BAR", "PERCENTAGE", "VOTES");
-				$replace = array($poll_option[$count], "<div style='width: ".($percentage[$count])."%; height: 12px; background-image:  url(".THEME."images/bar.jpg);'> </div>".  $percentage[$count]."% ". "[".$vt."]");
+				$replace = array($poll_option[$count], "<img src='".THEME."images/bar.jpg' height='12' width='".($percentage[$count])."%' style='border : 1px solid Black' alt='' />",  $percentage[$count]."% ", "[".$vt."]");
 			}else if($mode == "notvoted"){
 				$search = array("OPTION", "BAR", "PERCENTAGE", "VOTES", "<br /><br />");
 				$replace = array("<input type='radio' name='votea' value='".($count+1)."' /> ".$poll_option[$count], "", "", "", "<br />");

@@ -19,8 +19,37 @@ require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."userclass_class.php");
 $rs = new form;
 
-if(IsSet($_POST['update_options'])){
+if(strstr(e_QUERY, "delp")){
+	$tmp = explode("-", e_QUERY);
+	$image = $tmp[1];
+	@unlink(e_FILE."public/avatars/".$image);
+	$sql -> db_Update("user", "user_image='' WHERE user_image='-upload-$image'");
+	$sql -> db_Update("user", "user_sess='' WHERE user_sess='$image'");
+	$message = $image." ".IMALAN_28;
+}
 
+
+
+if(e_QUERY == "del"){
+	$handle=opendir(e_FILE."public/avatars/");
+	while ($file = readdir($handle)){
+		if($file != "." && $file != ".." && $file != "index.html" && $file != "/"){
+			$dirlist[] = $file;
+		}
+	}
+	closedir($handle);
+	$count = 0;
+	while(list($key, $image_name) = each($dirlist)){
+		if(!$sql -> db_Select("user", "*", "user_image='-upload-$image_name' OR user_sess='$image_name'")){
+			unlink(e_FILE."public/avatars/".$image_name);
+			$count ++;
+		}
+	}
+	$message = $count." ".IMALAN_26;
+}
+
+
+if(IsSet($_POST['update_options'])){
 	$pref['image_post'] = $_POST['image_post'];
 	$pref['resize_method'] = $_POST['resize_method'];
 	$pref['im_path'] = $_POST['im_path'];
@@ -33,6 +62,87 @@ if(IsSet($_POST['update_options'])){
 if(IsSet($message)){
 	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
+
+
+if(IsSet($_POST['show_avatars'])){
+
+	$handle=opendir(e_FILE."public/avatars/");
+	while ($file = readdir($handle)){
+		if($file != "." && $file != ".." && $file != "index.html" && $file != "/"){
+			$dirlist[] = $file;
+		}
+	}
+	closedir($handle);
+
+	$text = "<div style='text-align:center'>\n";
+
+	if(!is_array($dirlist)){
+		$text .= IMALAN_29;
+	}else{
+
+
+
+		while(list($key, $image_name) = each($dirlist)){
+			$users = IMALAN_21." | ";
+			if($sql -> db_Select("user", "*", "user_image='-upload-$image_name' OR user_sess='$image_name'")){
+				while($row = $sql -> db_Fetch()){
+					extract($row);
+					$users .= "<a href='".e_BASE."user.php?id.$user_id'>$user_name</a> <span class='smalltext'>(".($user_sess == $image_name ? IMALAN_24 : IMALAN_23).")</span> | ";
+				}
+			}else{
+				$users = IMALAN_22;
+			}
+
+			$text .= "<div class='spacer'>
+			<table style='width:95%' class='fborder'>
+			<tr>
+			<td class='forumheader'>$image_name</td>
+			</tr>
+			<tr>
+			<td class='forumheader3'><img src='".e_FILE."public/avatars/".$image_name."' alt='' /><br />[ <a href='".e_SELF."?delp-$image_name'>".IMALAN_27." ]</a></td>
+			</tr>
+			<tr>
+			<td class='forumheader3'>$users</td>
+			</tr>
+			</table>
+			</div>";
+		}
+
+		$text .= "<div class='spacer'>
+		<table style='width:95%' class='fborder'>
+		<tr>
+		<td class='forumheader'><a href='".e_SELF."?del'>".IMALAN_25."</a></td>
+		</tr>
+		</table>";
+
+	}
+
+	$text .= "</div>";
+
+	$ns -> tablerender(IMALAN_18, $text);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>
@@ -74,9 +184,6 @@ $text .= "</select>
 </td>
 </tr>
 
-
-
-
 <tr>
 <td style='width:75%' class='forumheader3'>
 ".IMALAN_12."<br />
@@ -88,17 +195,6 @@ $text .= "</select>
 ($pref['image_post_disabled_method'] == "1" ? "<option value='1' selected>".IMALAN_15."</option>" : "<option value='1'>".IMALAN_15."</option>")."
 </td>
 </tr>
-
-
-
-
-
-
-
-
-
-
-
 
 <tr>
 <td style='width:75%' class='forumheader3'>".IMALAN_3."<br /><span class='smalltext'>".IMALAN_4."</span></td>
@@ -115,6 +211,12 @@ $text .= "</select>
 <td style='width:75%' class='forumheader3'>".IMALAN_5."<br /><span class='smalltext'>".IMALAN_6."</span></td>
 <td style='width:25%' class='forumheader3'  style='text-align:center'>
 <input class='tbox' type='text' name='im_path' size='40' value='".$pref['im_path']."' maxlength='200' />
+</tr>
+
+<tr>
+<td style='width:75%' class='forumheader3'>".IMALAN_16."</td>
+<td style='width:25%' class='forumheader3'  style='text-align:center'>
+<input class='button' type='submit' name='show_avatars' value='".IMALAN_17."' />
 </tr>
 
 <tr> 

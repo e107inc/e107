@@ -40,4 +40,6 @@ define("LOGIN_MENU_L24", "Click here to see list of new items");
 
 define("LOGIN_MENU_L25", "Since your last visit there have been");
 
+define("LOGIN_MENU_L26", "no");
+
 ?>

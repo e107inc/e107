@@ -115,7 +115,7 @@ if($sql -> db_Select("cache", "*", "cache_url='comment.php?$table.$id' ")){
 
 if(ADMIN && getperms("B")){
 	if(!strstr(e_QUERY, ".")){ $ct = "news."; }
-	echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?$ct".e_QUERY."'>moderate comments</a></div><br />";
+	echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?$ct".e_QUERY."'>".LAN_314."</a></div><br />";
 }
 
 $cobj -> form_comment();

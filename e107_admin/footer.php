@@ -12,7 +12,7 @@
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
-
+@include(e_LANGUAGEDIR.$language."/admin/lan_footer.php");
 echo "\n</td>
 <td style='width:20%; vertical-align:top'>";
 
@@ -33,42 +33,42 @@ if(file_exists($plugpath)){
 	require_once($plugpath);
 }
 
-$text = "<b>Site</b>
+$text = "<b>".FOOTLAN_1."</b>
 <br />".
 SITENAME." 
 <br /><br />
-<b>Head Admin</b>
+<b>".FOOTLAN_2."</b>
 <br />
 <a href=\"mailto:".SITEADMINEMAIL."\">".SITEADMIN."</a>
 <br />
 <br />
 <b>e107</b>
 <br />
-version ".$e107info['e107_version']. ($e107info['e107_build'] ? " build ".$e107info['e107_build'] : "")."
+".FOOTLAN_3." ".$e107info['e107_version']. ($e107info['e107_build'] ? " ".FOOTLAN_4." ".$e107info['e107_build'] : "")."
 <br /><br />
-<b>Theme</b>
+<b>".FOOTLAN_5."</b>
 <br />
-".$themename." v".$themeversion." by ".$themeauthor." (".$themedate.")
+".$themename." v".$themeversion." ".FOOTLAN_6." ".$themeauthor." (".$themedate.")
 <br />
-Info: ".$themeinfo."
+".FOOTLAN_7.": ".$themeinfo."
 <br /><br />
-<b>Install date</b>
+<b>".FOOTLAN_8."</b>
 <br />
 ".$install_date."
 <br /><br />
-<b>Server</b>
+<b>".FOOTLAN_9."</b>
 <br />".
- eregi_replace("PHP.*", "", $_SERVER['SERVER_SOFTWARE'])."<br />(host: ".$_SERVER['SERVER_NAME'].")
+ eregi_replace("PHP.*", "", $_SERVER['SERVER_SOFTWARE'])."<br />(".FOOTLAN_10.": ".$_SERVER['SERVER_NAME'].")
 <br /><br />
-<b>PHP Version</b>
+<b>".FOOTLAN_11."</b>
 <br />
 ".phpversion()."
 <br /><br />
-<b>mySQL Version</b>
+<b>".FOOTLAN_12."</b>
 <br />
 ".mysql_get_server_info().
 "<br />
-Database: ".$mySQLdefaultdb;
+".FOOTLAN_16.": ".$mySQLdefaultdb;
 $ns -> tablerender("Site Info", $text);
 
 $c=1;
@@ -94,14 +94,14 @@ if($pref['cachestatus']){
 }
 
 
-$text = "º <a style='cursor: pointer; cursor: hand' onclick=\"expandit(this)\">Show Docs</a>
+$text = "º <a style='cursor: pointer; cursor: hand' onclick=\"expandit(this)\">".FOOTLAN_14."</a>
 <div style='display: none;'>
 <br />";
 while(list($key, $value) = each($helplist)){ 
 	$text .= "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".e_ADMIN."docs.php?$key'>$value</a><br />"; 
 }
 $text .= "</div>";
-$ns -> tablerender("Documentation", $text);
+$ns -> tablerender(FOOTLAN_15, $text);
 
 
 }

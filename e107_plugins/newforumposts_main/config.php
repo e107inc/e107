@@ -22,6 +22,8 @@ if(IsSet($_POST['updatesettings'])){
 	$pref['nfp_display'] = $_POST['nfp_display'];
 	$pref['nfp_caption'] = $_POST['nfp_caption'];
 	$pref['nfp_amount'] = $_POST['nfp_amount'];
+	$pref['nfp_layer'] = $_POST['nfp_layer'];
+	$pref['nfp_layer_height'] = ($_POST['nfp_layer_height'] ? $_POST['nfp_layer_height'] : 200);
 	save_prefs();
 	$message = "New Forum Posts settings updated.";
 }
@@ -41,8 +43,8 @@ $text = "<div style='text-align:center'>
 <td style='width:60%' class='forumheader3'>
 <select class='tbox' name='nfp_display'>"
 .($pref['nfp_display'] == "0" ? "<option value=0 selected>Inactive</option>" : "<option value=0>Inactive</option>")
-.($pref['nfp_display'] == "1" ? "<option value=0 selected>Top of page</option>" : "<option value=1>Top of page</option>")
-.($pref['nfp_display'] == "2" ? "<option value=1 selected>Bottom of page</option>" : "<option value=2>Bottom of page</option>")
+.($pref['nfp_display'] == "1" ? "<option value=1 selected>Top of page</option>" : "<option value=1>Top of page</option>")
+.($pref['nfp_display'] == "2" ? "<option value=2 selected>Bottom of page</option>" : "<option value=2>Bottom of page</option>")
 ."</select>
 </td>
 </tr>
@@ -58,6 +60,12 @@ $text = "<div style='text-align:center'>
 <td style='width:40%' class='forumheader3'>Number of new posts to display: </td>
 <td style='width:60%' class='forumheader3'>
 <input class='tbox' type='text' name='nfp_amount' size='6' value='".$pref['nfp_amount']."' maxlength='3' />
+</td>
+</tr>
+
+<td class='forumheader3' style='width:40%'>Display inside scrolling layer?: </td>
+<td class='forumheader3' style='width:60%'>".
+($pref['nfp_layer'] ? "<input type='checkbox' name='nfp_layer' value='1' checked>" : "<input type='checkbox' name='nfp_layer' value='1'>")."&nbsp;&nbsp;Layer height: <input class='tbox' type='text' name='nfp_layer_height' size='8' value='".$pref['nfp_layer_height']."' maxlength='3' />
 </td>
 </tr>
 

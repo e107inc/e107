@@ -23,12 +23,7 @@ if(strstr(e_QUERY, "untrack")){
 }
 
 if(e_QUERY == "mark.all.as.read"){
-	$forum_id = e_QUERY;
-	if(!is_numeric($forum_id) && $forum_id != "tracked"){
-		$sql -> db_Select("forum_t", "thread_id", "thread_datestamp > '".USERLV."' ");
-	}else{
-		$sql -> db_Select("forum_t", "thread_id", "thread_forum_id='$forum_id' AND thread_datestamp > '".USERLV."' ");
-	}
+	$sql -> db_Select("forum_t", "thread_id", "thread_datestamp > '".USERLV."' ");
 	while($row = $sql -> db_Fetch()){
 		extract($row);
 		$u_new .= ".".$thread_id.".";
@@ -38,6 +33,22 @@ if(e_QUERY == "mark.all.as.read"){
 	header("location:".e_SELF);
 	exit;
 }
+
+if(strstr(e_QUERY, "mfar")){
+	$tmp = explode(".", e_QUERY);
+	$forum_id = $tmp[1];
+	$sql -> db_Select("forum_t", "thread_id", "thread_forum_id='$forum_id' AND thread_datestamp > '".USERLV."' ");
+	while($row = $sql -> db_Fetch()){
+		extract($row);
+		$u_new .= ".".$thread_id.".";
+	}
+	$u_new .= USERVIEWED;
+	$sql -> db_Update("user", "user_viewed='$u_new' WHERE user_id='".USERID."' ");
+	header("location:".e_SELF);
+	exit;
+}
+
+
 
 define("IMAGE_e", (file_exists(THEME."forum/e.png") ? "<img src='".THEME."forum/e.png' alt='' />" : "<img src='".e_IMAGE."forum/e.png' alt='' />"));
 define("IMAGE_nonew_small", (file_exists(THEME."forum/nonew_small.png") ? "<img src='".THEME."forum/nonew_small.png' alt='' />" : "<img src='".e_IMAGE."forum/nonew_small.png' alt='' />"));
@@ -268,7 +279,7 @@ function parse_forum($row, $restricted_string=""){
 			}
 		}
 	}
-	$NEWFLAG = ($newflag ? "<a href='".e_SELF."?".$forum_id."'>".IMAGE_new."</a></td>" : IMAGE_nonew);
+	$NEWFLAG = ($newflag ? "<a href='".e_SELF."?mfar.$forum_id'>".IMAGE_new."</a></td>" : IMAGE_nonew);
 	$FORUMNAME = "<a href='".e_BASE."forum_viewforum.php?$forum_id'>$forum_name</a>";
 	$FORUMDESCRIPTION = $forum_description.($restricted_string ? "<br /><span class='smalltext'><i>$restricted_string</i></span>" : "");;
 	$THREADS = $forum_threads;

@@ -1,4 +1,30 @@
 <?php
+
+if(IsSet($_POST['sub_news'])){
+	header("location:submitnews.php");
+	exit;
+}
+
+if(IsSet($_POST['sub_link'])){
+	header("location:links.php?submit");
+	exit;
+}
+
+if(IsSet($_POST['sub_download'])){
+	header("location:upload.php");
+	exit;
+}
+
+if(IsSet($_POST['sub_article'])){
+	header("location:subcontent.php?article");
+	exit;
+}
+
+if(IsSet($_POST['sub_review'])){
+	header("location:subcontent.php?review");
+	exit;
+}
+
 /*
 +---------------------------------------------------------------+
 |	e107 website system
@@ -119,83 +145,90 @@ $text = (e_QUERY ? $rs -> form_open("post", e_SELF."?".$user_id, "settings", "",
 
 $text .= "<div style='text-align:center'>
 <table style='width:auto' class='fborder'>
+
 <tr>
-<td style='width:20%' class='forumheader3'>".LAN_7."</td>
-<td style='width:80%; text-align:right' class='forumheader3'>".
+<td colspan='2' class='forumheader'>".LAN_418."</td>
+</tr>
+
+
+<tr>
+<td style='width:40%' class='forumheader3'>".LAN_7."</td>
+<td style='width:60%' class='forumheader2'>".
 $rs -> form_text("name", 20, $name, 100, "tbox", TRUE)
 ."</td>
 </tr>
 
 <tr>
-<td style='width:20%' class='forumheader3'>".LAN_308."</td>
-<td style='width:80%; text-align:right' class='forumheader3'>
-".$rs -> form_text("realname", 60, $user_login, 100)."
+<td style='width:30%' class='forumheader3'>".LAN_308."</td>
+<td style='width:70%' class='forumheader2'>
+".$rs -> form_text("realname", 40, $user_login, 100)."
 </td>
 </tr>
 
 <tr>
-<td style='width:20%' class='forumheader3'>".LAN_152."</td>
-<td style='width:80%; text-align:right' class='forumheader3'>
+<td style='width:20%' class='forumheader3'>".LAN_152."<br /><span class='smalltext'>".LAN_401."</span></td>
+<td style='width:80%' class='forumheader2'>
 ".$rs -> form_password("password1", 40, "", 20)."
-<br />
-<span class='smalltext'>".LAN_401."</span>
 </td>
 </tr>
 
 <tr>
-<td style='width:20%' class='forumheader3'>".LAN_153."</td>
-<td style='width:80%; text-align:right' class='forumheader3'>
+<td style='width:20%' class='forumheader3'>".LAN_153."<br /><span class='smalltext'>".LAN_401."</span></td>
+<td style='width:80%' class='forumheader2'>
 ".$rs -> form_password("password2", 40, "", 20)."
-<br />
-<span class='smalltext'>".LAN_401."</span>
 </td>
 </tr>
 
 <tr>
 <td style='width:20%' class='forumheader3'>".LAN_112."</td>
-<td style='width:80%; text-align:right' class='forumheader3'>
-".$rs -> form_text("email", 60, $email, 100)."
+<td style='width:80%' class='forumheader2'>
+".$rs -> form_text("email", 40, $email, 100)."
 </td>
 </tr>
 
 <tr>
-<td style='width:20%' class='forumheader3'>".LAN_113."</td>
-<td style='width:80%; text-align:right' class='forumheader3'>".
-($hideemail ? $rs ->form_radio("hideemail", 1, 1)." ".LAN_416."&nbsp;&nbsp;".$rs ->form_radio("hideemail", 0)." ".LAN_417 : $rs ->form_radio("hideemail", 1)." ".LAN_416."&nbsp;&nbsp;".$rs ->form_radio("hideemail", 0, 1)." ".LAN_417)."
+<td style='width:20%' class='forumheader3'>".LAN_113."<br /><span class='smalltext'>".LAN_114."</span></td>
+<td style='width:80%' class='forumheader2'><span class='defaulttext'>".
+($hideemail ? $rs ->form_radio("hideemail", 1, 1)." ".LAN_416."&nbsp;&nbsp;".$rs ->form_radio("hideemail", 0)." ".LAN_417 : $rs ->form_radio("hideemail", 1)." ".LAN_416."&nbsp;&nbsp;".$rs ->form_radio("hideemail", 0, 1)." ".LAN_417)."</span>
 <br />
-<span class='smalltext'>".LAN_114."
+</td>
+</tr>
 
-</td></tr><tr>
+<tr>
+<td colspan='2' class='forumheader'>".LAN_419."</td>
+</tr>
+
+<tr>
 <td style='width:20%' class='forumheader3'>".LAN_144."</td>
-<td style='width:80%; text-align:right' class='forumheader3'>
+<td style='width:80%' class='forumheader2'>
 ".$rs -> form_text("website", 60, $website, 150)."
 </td>
 </tr>
 
 <tr>
 <td style='width:20%' class='forumheader3'>".LAN_115."</td>
-<td style='width:80%; text-align:right' class='forumheader3'>
+<td style='width:80%' class='forumheader2'>
 ".$rs -> form_text("icq", 20, $icq, 10)."
 </td>
 </tr>
 
 <tr>
 <td style='width:20%' class='forumheader3'>".LAN_116."</td>
-<td style='width:80%; text-align:right' class='forumheader3'>
+<td style='width:80%' class='forumheader2'>
 <input class='tbox' type='text' name='aim' size='30' value='$aim' maxlength='100' />
 </td>
 </tr>
 
 <tr>
 <td style='width:20%' class='forumheader3'>".LAN_117."</td>
-<td style='width:80%; text-align:right' class='forumheader3'>
+<td style='width:80%' class='forumheader2'>
 <input class='tbox' type='text' name='msn' size='30' value='$msn' maxlength='100' />
 </td>
 </tr>
 
 <tr>
 <td style='width:20%' class='forumheader3'>".LAN_118."</td>
-<td style='width:80%; text-align:right' class='forumheader3'>
+<td style='width:80%' class='forumheader2'>
 
 ".$rs -> form_select_open("birth_day").
 $rs -> form_option("", 0);
@@ -222,7 +255,7 @@ $text .= "</td>
 
 <tr>
 <td style='width:20%' class='forumheader3'>".LAN_119."</td>
-<td style='width:80%; text-align:right' class='forumheader3'>
+<td style='width:80%' class='forumheader2'>
 <input class='tbox' type='text' name='location' size='60' value='$location' maxlength='200' />
 </td>
 </tr>";
@@ -238,7 +271,7 @@ if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
 		if($u_entended){
 			$text .= "<tr>
 			<td style='width:20%' class='forumheader3'>".$u_entended."</td>
-			<td style='width:80%; text-align:right' class='forumheader3'>
+			<td style='width:80%' class='forumheader3'>
 			<input class='tbox' type='text' name='".$u_entended."' size='60' value='".$user_pref[$u_entended]."' maxlength='200' />
 			</td>
 			</tr>";
@@ -249,7 +282,7 @@ if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
 
 $text .= "<tr>
 <td style='width:20%' style='vertical-align:top' class='forumheader3'>".LAN_120."</td>
-<td style='width:80%; text-align:right' class='forumheader3'>
+<td style='width:80%' class='forumheader2'>
 <textarea class='tbox' name='signature' cols='58' rows='4'>$signature</textarea>
 <br />
 <input class='helpbox' type='text' name='helpb' size='90' />
@@ -259,10 +292,45 @@ $text .= "<tr>
 </tr>
 
 <tr>
-<td style='width:20%; vertical-align:top' class='forumheader3'>".LAN_121."<br /><span class='smalltext'>(".LAN_402.")</span></td>
-<td style='width:80%; text-align:right' class='forumheader3'>
-<input class='tbox' type='text' name='image' size='60' value='$image' maxlength='100' />
+<td style='width:20%' class='forumheader3'>".LAN_122."</td>
+<td style='width:80%' class='forumheader2'>
+<select name='user_timezone' class='tbox'>\n";
+timezone();
+$count = 0;
+while($timezone[$count]){
+	if($timezone[$count] == $user_timezone){
+		$text .= "<option value='".$timezone[$count]."' selected>(GMT".$timezone[$count].") ".$timearea[$count]."</option>\n";
+	}else{
+		$text .= "<option value='".$timezone[$count]."'>(GMT".$timezone[$count].") ".$timearea[$count]."</option>\n";
+	}
+	$count++;
+}
 
+$text .= "</select>
+</td>
+</tr>
+
+<tr>
+<td colspan='2' class='forumheader'>".LAN_420."</td>
+</tr>
+
+<tr>
+<td colspan='2' class='forumheader3' style='text-align:center'>".LAN_404."</td>
+</tr>
+
+
+<tr>
+<td style='width:20%; vertical-align:top' class='forumheader3'>".LAN_422."<br /><span class='smalltext'>".LAN_423."</span></td>
+<td style='width:80%' class='forumheader2'>
+<input class='tbox' type='text' name='image' size='60' value='$image' maxlength='100' />
+</td>
+</tr>
+
+
+
+<tr>
+<td style='width:20%; vertical-align:top' class='forumheader3'>".LAN_421."<br /><span class='smalltext'>".LAN_424."</span></td>
+<td style='width:80%' class='forumheader2'>
 <input class='button' type ='button' style=''width: 35px'; cursor:hand' size='30' value='".LAN_403."' onClick='expandit(this)'>
 <div style='display:none' style=&{head};>";
 $avatarlist[0] = "";
@@ -279,51 +347,65 @@ for($c=1; $c<=(count($avatarlist)-1); $c++){
 }
 
 $text .= "<br />
-</div>";
+</div>
+</td>
+</tr>";
 
-if(e_QUERY && ADMIN){
-	$text .= "&nbsp;";
-}else{
+if($pref['avatar_upload'] && FILE_UPLOADS){
 
-	if($pref['avatar_upload'] && FILE_UPLOADS){
-		$text .= "<br /><span class='smalltext'>".LAN_415."</span> <input class='tbox' name='file_userfile[]' type='file' size='47'>
-		<br /><div class='smalltext'>".LAN_404."</div>";
-	}
+	$text .= "<tr>
+<td style='width:20%; vertical-align:top' class='forumheader3'>".LAN_415."<br /></td>
+<td style='width:80%' class='forumheader2'>
+<input class='tbox' name='file_userfile[]' type='file' size='47'>
+</td>
+</tr>";
+}
 
-	if($pref['photo_upload'] && FILE_UPLOADS){
-		$text .= "<br /><span class='smalltext'>Upload your photograph</span> <input class='tbox' name='file_userfile[]' type='file' size='47'>
-		<br /><div class='smalltext'>".LAN_404."</div>";
-	}
+if($pref['photo_upload'] && FILE_UPLOADS){
+	$text .= "<tr>
+<td colspan='2' class='forumheader'>".LAN_425."</td>
+</tr>
+	
+<tr>
+<td style='width:20%; vertical-align:top' class='forumheader3'>".LAN_414."<br /><span class='smalltext'>".LAN_426."</span></td>
+<td style='width:80%' class='forumheader2'>
+<input class='tbox' name='file_userfile[]' type='file' size='47'>
+</td>
+</tr>";
 }
 
 $text .= "</td>
 </tr>
 
 <tr>
-<td style='width:20%' class='forumheader3'>".LAN_122."</td>
-<td style='width:80%; text-align:right' class='forumheader3'>
-<select name='user_timezone' class='tbox'>\n";
-
-timezone();
-$count = 0;
-while($timezone[$count]){
-	if($timezone[$count] == $user_timezone){
-		$text .= "<option value='".$timezone[$count]."' selected>(GMT".$timezone[$count].") ".$timearea[$count]."</option>\n";
-	}else{
-		$text .= "<option value='".$timezone[$count]."'>(GMT".$timezone[$count].") ".$timearea[$count]."</option>\n";
-	}
-	$count++;
-}
-
-$text .= "</select>
-</td>
+<td colspan='2' class='forumheader'>".LAN_427."</td>
 </tr>
 
+<tr>
+<td colspan='2' class='forumheader3' style='text-align:center'>
+
+<input class='button' type='submit' name='sub_news' value='".LAN_428."' />&nbsp;&nbsp;";
+if($pref['link_submit'] && check_class($pref['link_submit_class'])){
+	$text .= "<input class='button' type='submit' name='sub_link' value='".LAN_429."' />&nbsp;&nbsp;";
+}
+if($pref['upload_enabled'] && (!$pref['upload_class'] || check_class($pref['upload_class']))){
+	$text .= "<input class='button' type='submit' name='sub_download' value='".LAN_430."' />&nbsp;&nbsp;";
+}
+
+if($pref['article_submit'] && check_class($pref['article_submit_class'])){
+	$text .= "<input class='button' type='submit' name='sub_article' value='".LAN_431."' />&nbsp;&nbsp;";
+}
+if($pref['review_submit'] && check_class($pref['review_submit_class'])){
+	$text .= "<input class='button' type='submit' name='sub_review' value='".LAN_432."' />&nbsp;&nbsp;";
+}
+
+$text .= "</td>
+</tr>
+
+
+
 <tr style='vertical-align:top'> 
-<td colspan='2' style='text-align:center' class='forumheader3'>
-<br />
-<input class='button' type='submit' name='updatesettings' value='".LAN_154."' />
-</td>
+<td colspan='2' style='text-align:center' class='forumheader'><input class='button' type='submit' name='updatesettings' value='".LAN_154."' /></td>
 </tr>
 </table>
 </div>

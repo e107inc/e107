@@ -1,6 +1,6 @@
 <?php
 
-define("UPLLAN_1", "Upload marked as not wanted.");
+define("UPLLAN_1", "Upload removed from list.");
 define("UPLLAN_2", "Settings saved in database");
 define("UPLLAN_3", "Upload ID");
 define("UPLLAN_4", "Date");
@@ -17,7 +17,7 @@ define("UPLLAN_13", "Description");
 define("UPLLAN_14", "Demo");
 define("UPLLAN_15", "Options");
 define("UPLLAN_16", "copy to newspost");
-define("UPLLAN_17", "mark as not wanted");
+define("UPLLAN_17", "remove upload from list");
 define("UPLLAN_18", "View details");
 define("UPLLAN_19", "There are no unmoderated public uploads");
 define("UPLLAN_20", "There");

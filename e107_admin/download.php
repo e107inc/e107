@@ -158,7 +158,7 @@ class download{
 	function create_download($sub_action, $id){
 		global $sql, $rs, $ns, $file_array, $image_array, $thumb_array;
 
-		if(!$sql -> db_Select("download_category")){
+		if(!$sql -> db_Select("download_category", "*", "download_category_parent !=0")){
 			$ns -> tablerender(DOWLAN_26, "<div style='text-align:center'>".DOWLAN_5."</div>");
 			return;
 		}

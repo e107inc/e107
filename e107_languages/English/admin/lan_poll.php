@@ -23,4 +23,6 @@ define("POLLAN_19", "Polls");
 define("POLLAN_20", "Options");
 define("POLLAN_21", "Are you sure you want to delete this poll?");
 
+define("POLLAN_22", "No polls");
+
 ?>

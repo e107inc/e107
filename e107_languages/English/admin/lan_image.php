@@ -20,3 +20,22 @@ define("IMALAN_13", "What to do with posted images if image posting is disabled"
 
 define("IMALAN_14", "Show image URL");
 define("IMALAN_15", "Show nothing");
+
+define("IMALAN_16", "Show uploaded avatars");
+define("IMALAN_17", "Click here");
+
+define("IMALAN_18", "Uploaded images");
+define("IMALAN_19", "Image name");
+define("IMALAN_20", "Image");
+define("IMALAN_21", "Used by");
+define("IMALAN_22", "Image not in use");
+
+define("IMALAN_23", "Avatar");
+define("IMALAN_24", "Photograph");
+define("IMALAN_25", "Click here to delete all unused images");
+define("IMALAN_26", "image(s) deleted");
+define("IMALAN_27", "delete");
+define("IMALAN_28", "deleted");
+define("IMALAN_29", "No images");
+
+?>
