@@ -51,8 +51,8 @@ class news{
 	function render_newsitem($news, $mode="default"){
 
 		if(function_exists("theme_render_newsitem")){
-			call_user_func("theme_render_newsitem",$news);
-			return;
+			$result = call_user_func("theme_render_newsitem",$news);
+			if($result == "return"){return;}
 		}
 
 		global $NEWSSTYLE, $NEWSLISTSTYLE, $aj,$sql;
