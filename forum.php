@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/forum.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-01-15 17:36:22 $
-|     $Author: pholzmann $
+|     $Revision: 1.15 $
+|     $Date: 2005-01-16 05:10:56 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -249,7 +249,7 @@ if(!$FORUM_MAIN_START)
 	}
 }
 include(e_BASE.$THEMES_DIRECTORY."templates/forum_template.php");
-
+require_once(HEADERF);
 $sql2 = new db;
 
 $parentList = getParents("forum_parent='0' ORDER BY forum_order ASC");
@@ -261,7 +261,6 @@ if(!$parentList)
 	exit;
 }
 
-require_once(HEADERF);
 $forumList = getForums();
 foreach($parentList as $row)
 {
