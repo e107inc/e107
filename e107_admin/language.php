@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-03-26 17:03:32 $
+|     $Revision: 1.13 $
+|     $Date: 2005-03-26 19:55:38 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -48,7 +48,7 @@ if (isset($_POST['del_existing']) && $_POST['lang_choices']) {
 	$lang = strtolower($_POST['lang_choices']);
 	foreach ($tabs as $del_table) {
 		if (db_Table_exists($lang."_".$del_table)) {
-			$message .= (mysql_query("DROP TABLE ".$mySQLprefix.$lang."_".$del_table)) ? $_POST['lang_choices']." ".$del_table." deleted<br />" :
+			$message .= (mysql_query("DROP TABLE ".$mySQLprefix."lan_".$lang."_".$del_table)) ? $_POST['lang_choices']." ".$del_table." deleted<br />" :
 			 $_POST['lang_choices']." $del_table couldn't be deleted<br />";
 		}
 	}
@@ -69,12 +69,12 @@ if (isset($_POST['create_tables']) && $_POST['language']) {
 	foreach ($tabs as $value) {
 		if ($_POST[$value]) {
 			$lang = strtolower($_POST['language']);
+            $copdata = ($_POST['copydata_'.$value]) ? 1 : 0;
 
-			if (copy_table($value, "lan_".$lang."_".$value, $_POST['drop'])) {
+			if (copy_table($value, "lan_".$lang."_".$value, $_POST['drop'],$copdata)) {
 				$message .= " ".$_POST['language']." ".$value." created<br />";
 			} else {
-				$message .= (!$_POST['drop'])? " ".$_POST['language']." ".$value." ".LANG_LAN_00."<br />":
-				 $_POST['language']." ".$value." ".LANG_LAN_01."<br />";
+				$message .= (!$_POST['drop'])? " ".$_POST['language']." ".$value." ".LANG_LAN_00."<br />" : $_POST['language']." ".$value." ".LANG_LAN_01."<br />";
 			}
 		} elseif(db_Table_exists($lang."_".$value)) {
 			if ($_POST['remove']) {
@@ -164,9 +164,9 @@ if ($_POST['edit_existing']) {
 			$text .= "<tr>
 				<td style='width:30%' class='forumheader3'>".ucfirst(str_replace("_", " ", $table_name))."</td>\n
 				<td style='width:70%' class='forumheader3'>\n";
-			$selected = (db_Table_exists($installed)) ? "checked='checked'" :
-			 "";
-			$text .= "<input type=\"checkbox\" name=\"$table_name\" value=\"1\" $selected />";
+			$selected = (db_Table_exists($installed)) ? "checked='checked'" : "";
+			$text .= "<input type=\"checkbox\" id='$table_name' name=\"$table_name\" value=\"1\" $selected onclick=\"if(document.getElementById('$table_name').checked){document.getElementById('datacopy_$table_name').style.display = '';} \"  />";
+			$text .= "<span id='datacopy_$table_name' style='display:none'>Tick to copy data from the default language.(useful for links, news-categories etc) <input type=\"checkbox\" name=\"copydata_$table_name\" value=\"1\" /> </span>";
 			$text .= "</td></tr>\n";
 		}
 
@@ -293,13 +293,17 @@ function db_Table_exists($table) {
 }
 // ----------------------------------------------------------------------------
 // Cam's Alternative - requires MySQL 4.1+
-// eg. copy_table("news","lan_french_news",1);
+// eg. copy_table("news","lan_french_news",1,0);
 
-function copy_table($oldtable, $newtable, $drop) {
+function copy_table($oldtable, $newtable, $drop, $data=0) {
 
-	$request = ($drop)? "DROP TABLE IF EXISTS $newtable":
-	"";
-	$request .= "CREATE TABLE ".MPREFIX.strtolower($newtable)." LIKE ".MPREFIX.$oldtable;
+	$request = ($drop)? "DROP TABLE IF EXISTS $newtable": "";
+	if ($data){ // structure and data
+    	$request .= "CREATE TABLE ".MPREFIX.strtolower($newtable)." SELECT * FROM ".MPREFIX.$oldtable." order by 1";
+	} else{  // structure only.
+		$request .= "CREATE TABLE ".MPREFIX.strtolower($newtable)." LIKE ".MPREFIX.$oldtable;
+	}
+
 	if (mysql_query($request)) {
 		return TRUE;
 	} else {
