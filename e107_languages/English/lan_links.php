@@ -33,6 +33,7 @@ define("LAN_102", "There");
 define("LAN_103", "is");
 define("LAN_104", "are");
 define("LAN_105", "total in");
+define("LAN_106", "Underlined fields are required.");
 
 
 ?>
