@@ -591,25 +591,25 @@ class forum{
 		<table style='width:auto' class='fborder'>
 
 		<tr>
-		<td class='forumheader2' style='width:40%'>Rank Name</td>
-		<td class='forumheader2' style='width:20%'>Threshold<br /><span class='smalltext'>number of points before level change</span></td>
-		<td class='forumheader2' style='width:40%'>Rank Image<br /><span class='smalltext'>upload images to e107_images/forum/</span></td>
+		<td class='forumheader2' style='width:40%'>".FORLAN_98."</td>
+		<td class='forumheader2' style='width:20%'>".FORLAN_102."<br /><span class='smalltext'>".FORLAN_99."</span></td>
+		<td class='forumheader2' style='width:40%'>".FORLAN_104."<br /><span class='smalltext'>".FORLAN_100."</span></td>
 		</tr>";
 
 		$text .= "<tr>
-		<td class='forumheader3' style='width:40%; text-align:center'><input class='tbox' type='text' name='rank_main_admin' size='30' value='".($pref['rank_main_admin'] ? $pref['rank_main_admin'] : "Main Site Admin")."' maxlength='30' /></td>
+		<td class='forumheader3' style='width:40%; text-align:center'><input class='tbox' type='text' name='rank_main_admin' size='30' value='".($pref['rank_main_admin'] ? $pref['rank_main_admin'] : FORLAN_101)."' maxlength='30' /></td>
 		<td class='forumheader3' style='width:40%'>&nbsp;</td>
 		<td class='forumheader3' style='width:40%; text-align:center'><input class='tbox' type='text' name='rank_main_admin_image' size='30' value='".($pref['rank_main_admin_image'] ? $pref['rank_main_admin_image'] : "main_admin.png")."' maxlength='30' /></td>
 		</tr>
 
 		<tr>
-		<td class='forumheader3' style='width:40%; text-align:center'><input class='tbox' type='text' name='rank_admin' size='30' value='".($pref['rank_admin'] ? $pref['rank_admin'] : "Site Admin")."' maxlength='30' /></td>
+		<td class='forumheader3' style='width:40%; text-align:center'><input class='tbox' type='text' name='rank_admin' size='30' value='".($pref['rank_admin'] ? $pref['rank_admin'] : FORLAN_103)."' maxlength='30' /></td>
 		<td class='forumheader3' style='width:40%'>&nbsp;</td>
 		<td class='forumheader3' style='width:40%; text-align:center'><input class='tbox' type='text' name='rank_admin_image' size='30' value='".($pref['rank_admin_image'] ? $pref['rank_admin_image'] : "admin.png")."' maxlength='30' /></td>
 		</tr>
 
 		<tr>
-		<td class='forumheader3' style='width:40%; text-align:center'><input class='tbox' type='text' name='rank_admin' size='30' value='".($pref['rank_moderator'] ? $pref['rank_moderator'] : "Forum Moderator")."' maxlength='30' /></td>
+		<td class='forumheader3' style='width:40%; text-align:center'><input class='tbox' type='text' name='rank_admin' size='30' value='".($pref['rank_moderator'] ? $pref['rank_moderator'] : FORLAN_105)."' maxlength='30' /></td>
 		<td class='forumheader3' style='width:40%'>&nbsp;</td>
 		<td class='forumheader3' style='width:40%; text-align:center'><input class='tbox' type='text' name='rank_moderator_image' size='30' value='".($pref['rank_moderator_image'] ? $pref['rank_moderator_image'] : "moderator.png")."' maxlength='30' /></td>
 		</tr>";
