@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-01-28 04:11:20 $
+|     $Revision: 1.10 $
+|     $Date: 2005-02-09 16:46:47 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -217,11 +217,10 @@ if (isset($_POST['register'])) {
 			 
 			// ========= save extended fields as serialized data. =====
 			if ($sql->db_Select("core", " e107_value", " e107_name='user_entended'")) {
-				$aj = new textparse;
 				$row = $sql->db_Fetch();
 				$user_entended = unserialize($row[0]);
 				while (list($key, $u_entended) = each($user_entended)) {
-					$val = $aj->formtpa($_POST["ue_{$key}"], "public");
+					$val = $tp->toDB($_POST["ue_{$key}"]);
 					$user_pref["ue_{$key}"] = $val;
 				}
 				$tmp = addslashes(serialize($user_pref));
@@ -229,8 +228,7 @@ if (isset($_POST['register'])) {
 			}
 			// ========== Send Email =====.                                                       // ==========================================================
 			define("RETURNADDRESS", (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$nid.".".$u_key : SITEURL."/signup.php?activate.".$nid.".".$u_key));
-			$pass_show = ($pref['user_reg_secureveri'])? "*******" :
-			 $_POST['password1'];
+			$pass_show = ($pref['user_reg_secureveri'])? "*******" : $_POST['password1'];
 			$message = LAN_403." ".SITENAME."\n".LAN_SIGNUP_18."\n\n".LAN_SIGNUP_19." ".$_POST['name']."\n".LAN_SIGNUP_20." ".$pass_show."\n\n".LAN_SIGNUP_21."\n\n";
 			$message .= RETURNADDRESS.LAN_407." ".SITENAME."\n".SITEURL;
 			 
@@ -265,11 +263,10 @@ if (isset($_POST['register'])) {
 			// ======== save extended fields as serialized data.
 			 
 			if ($sql->db_Select("core", " e107_value", " e107_name='user_entended'")) {
-				$aj = new textparse;
 				$row = $sql->db_Fetch();
 				$user_entended = unserialize($row[0]);
 				while (list($key, $u_entended) = each($user_entended)) {
-					$val = $aj->formtpa($_POST["ue_{$key}"], "public");
+					$val = $tp->toDB($_POST["ue_{$key}"]);
 					$user_pref["ue_{$key}"] = $val;
 				}
 				$tmp = addslashes(serialize($user_pref));
