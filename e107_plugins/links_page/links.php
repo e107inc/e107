@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-02 14:43:52 $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-05 15:03:39 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -61,7 +61,8 @@ if (e_QUERY == "submit" && check_class($pref['link_submit_class'])) {
 	exit;
 }
 	
-if (e_QUERY == "" && $pref['linkpage_categories'] == 1) {
+if (e_QUERY == "" && $pref['linkpage_categories'])
+{
 	if (!$LINK_MAIN_TABLE) {
 		if (file_exists(THEME."links_template.php")) {
 			require_once(THEME."links_template.php");
@@ -69,12 +70,12 @@ if (e_QUERY == "" && $pref['linkpage_categories'] == 1) {
 			require_once(e_PLUGIN."links_page/links_template.php");
 		}
 	}
-	 
 	$caption = LAN_61;
-	$category_total = $sql->db_Select("links_page_cat", "*");
 	$total_links = $sql->db_Count("links_page", "(*)");
+	$category_total = $sql->db_Select("links_page_cat", "*");
 	 
-	while ($row = $sql->db_Fetch()) {
+	while ($row = $sql->db_Fetch())
+	{
 		extract($row);
 		$link_main_table_string .= parse_link_main_table($row);
 	}
