@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.32 $
-|   $Date: 2005-02-10 06:14:06 $
+|   $Revision: 1.33 $
+|   $Date: 2005-02-10 07:03:53 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -279,19 +279,26 @@ class newspost {
 			$text .= "<table class='fborder' style='width:99%'>
 				<tr>
 				<td style='width:5%' class='fcaption'><a href='".e_SELF."?main.news_id.".($id == "desc" ? "asc" : "desc").".$from'>ID</a></td>
-				<td style='width:5%' class='fcaption'><a href='".e_SELF."?main.news_title.".($id == "desc" ? "asc" : "desc").".$from'>".NWSLAN_40."</a></td>
-				<td style='width:45%' class='fcaption'>".NWSLAN_41."</td>
+				<td style='width:55%' class='fcaption'><a href='".e_SELF."?main.news_title.".($id == "desc" ? "asc" : "desc").".$from'>".NWSLAN_40."</a></td>
+                <td style='width:15%' class='fcaption'>Render-type</td>
+				<td style='width:15%' class='fcaption'>".NWSLAN_41."</td>
 				</tr>";
 			while ($row = $sql->db_Fetch()) {
 				extract($row);
 
 				// Note: To fix the alignment bug. Put both buttons inside the Form.
 				// But make EDIT a 'button' and DELETE 'submit'
-
+                $ren_type = array("default","title","other-news","other-news 2");
 				$text .= "<tr>
 					<td style='width:5%' class='forumheader3'>$news_id</td>
-					<td style='width:75%' class='forumheader3'><a href='".e_BASE."comment.php?comment.news.$news_id'>".($news_title ? $tp->toHTML($news_title) : "[".NWSLAN_42."]")."</a></td>
-					<td style='width:20%; text-align:center' class='forumheader3'>
+					<td style='width:55%' class='forumheader3'><a href='".e_BASE."comment.php?comment.news.$news_id'>".($news_title ? $tp->toHTML($news_title) : "[".NWSLAN_42."]")."</a></td>
+                    <td style='20%' class='forumheader3'>";
+				$text .= $ren_type[$news_render_type];
+			//	$text .= $news_render_type;
+				$text .= "
+					</td>
+
+					<td style='width:15%; text-align:center' class='forumheader3'>
 					".$rs->form_open("post", e_SELF, "myform__{$news_id}", "", "", " onsubmit=\"return jsconfirm('".$tp->toJS(NWSLAN_39." [ID: $news_id ]")."')\"  ")."
 					<div>".$rs->form_button("button", "main_edit_{$news_id}", NWSLAN_7, "onclick=\"document.location='".e_SELF."?create.edit.$news_id'\"")."
 					".$rs->form_button("submit", "main_delete_{$news_id}", NWSLAN_8)."
