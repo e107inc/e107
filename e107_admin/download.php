@@ -20,7 +20,7 @@ require_once(e_HANDLER."userclass_class.php");
 $rs = new form;
 $aj = new textparse;
 $download = new download;
-
+$deltest = array_flip($_POST);
 if(e_QUERY){
         $tmp = explode(".", e_QUERY);
         $action = $tmp[0];
@@ -28,6 +28,12 @@ if(e_QUERY){
         $id = $tmp[2];
         $from = ($tmp[3] ? $tmp[3] : 0);
         unset($tmp);
+}
+
+if(preg_match("#(.*?)_delete_(\d+)#",$deltest['Delete'],$matches))
+{
+        $delete = $matches[1];
+        $del_id = $matches[2];
 }
 
 $from = ($from ? $from : 0);
@@ -82,23 +88,29 @@ if($action == "create"){
         $download -> create_download($sub_action, $id);
 }
 
-if($action == "cat"){
-        if($sub_action == "confirm"){
-                if($sql -> db_Delete("download_category", "download_category_id='$id' ")){
-                                                                $sql -> db_Delete("download_category","download_category_parent='{$id}' ");
-                        $download -> show_message(DOWLAN_49." #".$id." ".DOWLAN_36);
-                        $download -> show_categories($sub_action, $id);
-                }
-        }else{
-                $download -> show_categories($sub_action, $id);
-        }
+
+if($delete == 'category')
+{
+	if($sql -> db_Delete("download_category", "download_category_id='$del_id' "))
+	{
+		$sql -> db_Delete("download_category","download_category_parent='{$del_id}' ");
+		$download -> show_message(DOWLAN_49." #".$del_id." ".DOWLAN_36);
+		$download -> show_categories($sub_action, $del_id);
+	}
 }
 
-if($action == "main" && $sub_action == "confirm"){
-        if($sql -> db_Delete("download", "download_id='$id' ")){
-                $download -> show_message(DOWLAN_35." #".$id." ".DOWLAN_36);
-        }
-        unset($sub_action, $id);
+if($action == "cat")
+{
+	$download -> show_categories($sub_action, $id);
+}
+
+if($delete == 'main')
+{
+	if($sql -> db_Delete("download", "download_id='$del_id' "))
+	{
+		$download -> show_message(DOWLAN_35." #".$del_id." ".DOWLAN_36);
+	}
+	unset($sub_action, $id);
 }
 
 
@@ -208,15 +220,9 @@ $headerjs = "<script type=\"text/javascript\">
 
     function confirm_(mode, download_id){
             if(mode == 'cat'){
-                    var x=confirm(\"".DOWLAN_34." [ID: \" + download_id + \"]\");
+                    return confirm(\"".DOWLAN_34." [ID: \" + download_id + \"]\");
             }else{
-                    var x=confirm(\"".DOWLAN_33." [ID: \" + download_id + \"]\");
-            }
-    if(x)
-            if(mode == 'cat'){
-                    window.location='".e_SELF."?cat.confirm.' + download_id;
-            }else{
-                    window.location='".e_SELF."?main.confirm.' + download_id;
+                    return confirm(\"".DOWLAN_33." [ID: \" + download_id + \"]\");
             }
     }
     </script>";
@@ -249,11 +255,18 @@ class download{
                                 <td style='width:5%' class='forumheader3'>$download_id</td>
                                 <td style='width:75%' class='forumheader3'>$download_name</td>
                                 <td style='width:20%; text-align:center' class='forumheader3'>
-                                ".$rs -> form_button("submit", "main_edit_$download_id", DOWLAN_8, "onclick=\"document.location='".e_SELF."?create.edit.$download_id'\"")."
-                                ".$rs -> form_button("submit", "main_delete_$download_id", DOWLAN_9, "onclick=\"confirm_('create', $download_id)\"")."
+
+											".$rs -> form_open("post", e_SELF,"myform_{$download_id}","",""," onsubmit=\"return confirm_('create','$delete_heading','$download_id')\"")."
+											<div>".$rs -> form_button("button", "main_edit_{$download_id}", DOWLAN_8, "onclick=\"document.location='".e_SELF."?create.edit.$download_id'\"")."
+											".$rs -> form_button("submit", "main_delete_{$download_id}", DOWLAN_9)."</div>
+											".$rs -> form_close()."
+
+
                                 </td>
                                 </tr>";
                         }
+//                                ".$rs -> form_button("submit", "main_edit_$download_id", DOWLAN_8, "onclick=\"document.location='".e_SELF."?create.edit.$download_id'\"")."
+//                                ".$rs -> form_button("submit", "main_delete_$download_id", DOWLAN_9, "onclick=\"confirm_('create', $download_id)\"")."
                         $text .= "</table>";
                 }else{
                         $text .= "<div style='text-align:center'>".DOWLAN_6."</div>";
@@ -594,10 +607,16 @@ class download{
                                 <td colspan='2' style='width:70%' class='forumheader'><b>$download_category_name</b></td>
 
                                 <td style='width:20%; text-align:center' class='forumheader'>
-                                ".$rs -> form_button("submit", "main_edit_$download_category_id", DOWLAN_8, "onclick=\"document.location='".e_SELF."?cat.edit.$download_category_id'\"")."
-                                ".$rs -> form_button("submit", "main_delete_$download_category_id", DOWLAN_9, "onclick=\"confirm_('cat', $download_category_id)\"")."
+
+											".$rs -> form_open("post", e_SELF,"myform_{$download_category_id}","",""," onsubmit=\"return confirm_('create','$delete_heading','$download_category_id')\"")."
+											<div>".$rs -> form_button("button", "category_edit_{$download_category_id}", DOWLAN_8, "onclick=\"document.location='".e_SELF."?create.edit.$download_category_id'\"")."
+											".$rs -> form_button("submit", "category_delete_{$download_category_id}", DOWLAN_9)."</div>
+											".$rs -> form_close()."
+
                                 </td>
                                 </tr>";
+//                                ".$rs -> form_button("submit", "main_edit_$download_category_id", DOWLAN_8, "onclick=\"document.location='".e_SELF."?cat.edit.$download_category_id'\"")."
+//                                ".$rs -> form_button("submit", "main_delete_$download_category_id", DOWLAN_9, "onclick=\"confirm_('cat', $download_category_id)\"")."
                                 $parent_id = $download_category_id;
                                 if($sql2 -> db_Select("download_category", "*", "download_category_parent=$parent_id")){
                                         while($row = $sql2-> db_Fetch()){
@@ -611,10 +630,17 @@ class download{
                                                 <td style='width:70%' class='forumheader3'>$download_category_name<br /><span class='smalltext'>$download_category_description</span></td>
                                                 <td style='width:5%; text-align:center' class='forumheader3'>$files</td>
                                                 <td style='width:20%; text-align:center' class='forumheader3'>
-                                                ".$rs -> form_button("submit", "main_edit_$download_category_id", DOWLAN_8, "onclick=\"document.location='".e_SELF."?cat.edit.$download_category_id'\"")."
-                                                ".$rs -> form_button("submit", "main_delete_$download_category_id", DOWLAN_9, "onclick=\"confirm_('cat', $download_category_id)\"")."
+
+																".$rs -> form_open("post", e_SELF,"myform_{$download_category_id}","",""," onsubmit=\"return confirm_('create','$delete_heading','$download_category_id')\"")."
+																<div>".$rs -> form_button("button", "category_edit_{$download_category_id}", DOWLAN_8, "onclick=\"document.location='".e_SELF."?create.edit.$download_category_id'\"")."
+																".$rs -> form_button("submit", "category_delete_{$download_category_id}", DOWLAN_9)."</div>
+																".$rs -> form_close()."
+
+
                                                 </td>
                                                 </tr>";
+//                                                ".$rs -> form_button("submit", "main_edit_$download_category_id", DOWLAN_8, "onclick=\"document.location='".e_SELF."?cat.edit.$download_category_id'\"")."
+//                                                ".$rs -> form_button("submit", "main_delete_$download_category_id", DOWLAN_9, "onclick=\"confirm_('cat', $download_category_id)\"")."
                                                 $sub_parent_id = $download_category_id;
                                                 if($sql3 -> db_Select("download_category", "*", "download_category_parent=$sub_parent_id")){
                                                         while($row = $sql3-> db_Fetch()){
