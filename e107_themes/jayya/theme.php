@@ -90,6 +90,7 @@ $FOOTER = "<br />
 <div style='text-align:center'>
 <br />
 {SITEDISCLAIMER}
+<br /><br />
 </div>
 ";
 
