@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/forum_viewtopic_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-31 21:49:23 $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-13 21:08:22 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -118,7 +118,7 @@
 </tr>	
 <tr>
 <td class='nforumreply' style='vertical-align:top'>\n{AVATAR}\n<span class='smalltext'>\n{LEVEL}\n{MEMBERID}\n{JOINED}\n{POSTS}\n</span>\n</td>
-<td class='nforumreply' style='vertical-align:top'>\n{POST}\n{SIGNATURE}\n</td>
+<td class='nforumreply' style='vertical-align:top'>\n<div class='intwrapper'>{POST}\n{SIGNATURE}\n</div></td>
 </tr>		
 <tr>
 <td class='nforumreply2'>\n<span class='smallblacktext'>\n{TOP}\n</span>\n</td>

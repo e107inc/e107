@@ -42,6 +42,10 @@
 	background:transparent;
 }
 
+.intwrapper {
+	width: 98%;
+}
+
 #header {
 	height: 80px;
 	width: 100%;
@@ -76,7 +80,7 @@
 #wm {
 	voice-family: "\"}\"";
 	voice-family: inherit;
-	background: #f3eded url(images/wm.png) bottom right no-repeat;
+	background: #f3eded url(images/wblogo.png) bottom right no-repeat;
 	border: 1px solid #ede3e3;
 	padding: 10px 150px 10px 10px;
 	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
@@ -209,7 +213,7 @@ hr {
 
 .bodytable {
 	padding: 2px;
-	font: 0.8em verdana, tahoma, arial, helvetica, sans-serif;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
 	color: #000;
 }
 
