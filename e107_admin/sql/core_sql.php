@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-03-18 02:24:26 $
+|     $Revision: 1.18 $
+|     $Date: 2005-03-20 04:05:42 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -465,9 +465,9 @@ CREATE TABLE userclass_classes (
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
--- 
--- Table structure for table `e107_user_extended`
--- 
+# 
+# Table structure for table `e107_user_extended`
+# 
 
 CREATE TABLE user_extended (
   user_extended_id int(10) unsigned NOT NULL default '0',
@@ -476,9 +476,9 @@ CREATE TABLE user_extended (
 # --------------------------------------------------------
 
 
--- 
--- Table structure for table `e107_user_extended_struct`
--- 
+#
+# Table structure for table `e107_user_extended_struct`
+#
 
 CREATE TABLE user_extended_struct (
   user_extended_struct_id int(10) unsigned NOT NULL auto_increment,
@@ -493,8 +493,10 @@ CREATE TABLE user_extended_struct (
   user_extended_struct_required tinyint(3) unsigned NOT NULL default '0',
   user_extended_struct_signup tinyint(3) unsigned NOT NULL default '0',
   user_extended_struct_applicable tinyint(3) unsigned NOT NULL default '0',
+  user_extended_struct_order int(10) unsigned NOT NULL default '0',
+  user_extended_struct_icon varchar(255) NOT NULL default '',
   PRIMARY KEY  (user_extended_struct_id)
-) TYPE=MyISAM
+) TYPE=MyISAM;
 # --------------------------------------------------------
 
 

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2005-03-18 01:47:07 $
+|     $Revision: 1.54 $
+|     $Date: 2005-03-20 04:06:26 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -284,6 +284,8 @@ function update_61x_to_700($type) {
 		");
 
 		$sql->db_Select_gen("ALTER TABLE #user_extended_struct ADD user_extended_struct_applicable TINYINT( 3 ) UNSIGNED NOT NULL");
+		$sql->db_Select_gen("ALTER TABLE #user_extended_struct ADD user_extended_struct_order INT( 10 ) UNSIGNED NOT NULL");
+		$sql->db_Select_gen("ALTER TABLE #user_extended_struct ADD user_extended_struct_icon VARCHAR( 255 ) NOT NULL");
 
 		//Begin Extended user field conversion
 		require_once(e_HANDLER."user_extended_class.php");
@@ -526,15 +528,16 @@ function update_61x_to_700($type) {
 		// FALSE = needed, TRUE = not needed.
 		
 //		return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."user_extended_struct");
-/*
+
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."user_extended_struct");
-		$fieldname = mysql_field_name($fields,12);
-	 	return ($fieldname == "user_extended_struct_applicable") ? TRUE : FALSE;
-*/
+		$fieldname = mysql_field_name($fields,13);
+	 	return ($fieldname == "user_extended_struct_icon") ? TRUE : FALSE;
+
 		//return !$sql->db_Select("core","*","e107_name = 'user_entended'");
 
 //		$sql->db_Select_gen("DELETE FROM #core WHERE e107_name='user_entended'");
 
+/*
         global $sysprefs;
         $search_prefs = $sysprefs -> getArray('search_prefs');
 		if (!isset($search_prefs['time_secs'])) {
@@ -542,7 +545,7 @@ function update_61x_to_700($type) {
 		} else {
 			return TRUE;
 		}
-
+*/
 	}
 }
 

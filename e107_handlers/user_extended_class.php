@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-03-19 03:01:34 $
+|     $Revision: 1.7 $
+|     $Date: 2005-03-20 04:06:26 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -91,7 +91,7 @@ class e107_user_extended
 		return $sql->db_Count('user_extended_struct','(*)', "WHERE user_extended_struct_name = '{$name}'");
 	}
 
-	function user_extended_add($name, $text, $type, $parms, $values, $default, $required, $read, $write, $applicable)
+	function user_extended_add($name, $text, $type, $parms, $values, $default, $required, $read, $write, $applicable, $order, $icon)
 	{
 		global $sql;
 		if(is_array($name))
@@ -102,7 +102,7 @@ class e107_user_extended
 		{
 			$field_info = $this->user_extended_type_text($type, $default);
 			$sql->db_Select_gen("ALTER TABLE #user_extended ADD user_".$name.' '.$field_info);
-			$sql->db_Insert("user_extended_struct","0,'{$name}','{$text}','{$type}','{$parms}','{$values}','{$default}','{$read}','{$write}','{$required}','0','{$applicable}'");
+			$sql->db_Insert("user_extended_struct","0,'{$name}','{$text}','{$type}','{$parms}','{$values}','{$default}','{$read}','{$write}','{$required}','0','{$applicable}', '{$order}', '{$icon}'");
 			if ($this->user_extended_field_exist($name))
 			{
 				return TRUE;
@@ -111,7 +111,7 @@ class e107_user_extended
 		return FALSE;
 	}
 
-	function user_extended_modify($id, $name, $text, $type, $parms, $values, $default, $required, $read, $write, $applicable)
+	function user_extended_modify($id, $name, $text, $type, $parms, $values, $default, $required, $read, $write, $applicable, $order, $icon)
 	{
 		global $sql;
 		if ($this->user_extended_field_exist($name))
@@ -127,7 +127,9 @@ class e107_user_extended
 			user_extended_struct_required = '{$required}',
 			user_extended_struct_read = '{$read}',
 			user_extended_struct_write = '{$write}',
-			user_extended_struct_applicable = '{$applicable}'
+			user_extended_struct_applicable = '{$applicable}',
+			user_extended_struct_order = '{$order}',
+			user_extended_struct_icon = '{$icon}'
 			WHERE user_extended_struct_id = '{$id}'
 			";
 			$sql->db_Update("user_extended_struct", $newfield_info);
