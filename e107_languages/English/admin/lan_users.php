@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-03-06 01:53:05 $
+|     $Revision: 1.3 $
+|     $Date: 2005-03-10 13:31:08 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -109,9 +109,9 @@ define("USRLAN_95", "minutes");
 define("USRLAN_96", "Name");
 define("USRLAN_97", "Type");
 define("USRLAN_98", "Values");
-define("USRLAN_99", "Default");
-define("USRLAN_100", "Applicable to");
-define("USRLAN_101", "Visible to");
+define("USRLAN_99", "Req'd");
+define("USRLAN_100", "Read access");
+define("USRLAN_101", "Write access");
 define("USRLAN_102", "Action");
 
 define("USRLAN_103", "Field Type");
@@ -144,6 +144,15 @@ define("USRLAN_125", "From");
 
 define("USRLAN_126", "Allow users to rate users");
 define("USRLAN_127", "Allow comments in user profile");
+
+define("USRLAN_128", "Field Type parameters");
+define("USRLAN_129", "Field text");
+
+define("USRLAN_130", "This is the name of the field as stored in the table, it must be unique from any other");
+define("USRLAN_131", "This is the displayed name of the field in rendered pages");
+define("USRLAN_132", "Required");
+define("USRLAN_133", "Users will be required to enter a value in this field when updating their settings.");
+
 
 
 ?>

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-03-09 21:20:23 $
+|     $Revision: 1.2 $
+|     $Date: 2005-03-10 13:31:08 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -91,14 +91,14 @@ class e107_user_extended
 		return $sql->db_Count('user_extended_struct','(*)', "WHERE user_extended_struct_name = '{$name}'");
 	}
 
-	function user_extended_add($name, $text, $type, $parms, $values, $default, $read, $write)
+	function user_extended_add($name, $text, $type, $parms, $values, $default, $required, $read, $write)
 	{
 		global $sql;
 		if (!($this->user_extended_field_exist($name)))
 		{
 			$field_info = $this->user_extended_type_text($type, $default);
-			$sql->db_Select_gen("ALTER TABLE #user_extended ADD user_".$name.' '.$field_info);
-			$sql->db_Insert("user_extended_struct","0,'{$name}','{$text}','{$type}','{$parms}','{$values}','{$default}','{$read}','{$write}','0','0','0'");
+			$sql->db_Select_gen("ALTER TABLE #user_extended ADD user_".$name.' '.$field_info, TRUE);
+			$sql->db_Insert("user_extended_struct","0,'{$name}','{$text}','{$type}','{$parms}','{$values}','{$default}','{$read}','{$write}','{$required}','0','0'", TRUE);
 			if ($this->user_extended_field_exist($name))
 			{
 				return TRUE;
@@ -107,7 +107,7 @@ class e107_user_extended
 		return FALSE;
 	}
 
-	function user_extended_modify($id, $name, $text, $type, $parms, $values, $default, $read, $write)
+	function user_extended_modify($id, $name, $text, $type, $parms, $values, $default, $required, $read, $write)
 	{
 		global $sql;
 		if ($this->user_extended_field_exist($name))
@@ -120,6 +120,7 @@ class e107_user_extended
 			user_extended_struct_parms = '{$parms}',
 			user_extended_struct_values = '{$values}',
 			user_extended_struct_default = '{$default}',
+			user_extended_struct_required = '{$required}',
 			user_extended_struct_read = '{$read}',
 			user_extended_struct_write = '{$write}'
 			WHERE user_extended_struct_id = '{$id}'
