@@ -39,7 +39,7 @@ if(IsSet($_POST['moderate'])){
 			$sql -> db_Delete("chatbox", "cb_id='$id' ");
 		}
 	}
-	$sql -> db_Delete("cache", "cache_url='chatbox' ");
+	clear_cache("chatbox");
 	$message = CHBLAN_2;
 }
 

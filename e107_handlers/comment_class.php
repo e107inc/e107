@@ -183,7 +183,7 @@ class comment{
 					if(!$sql -> db_Insert("comments", "0, '$id', '$nick', '', '".time()."', '$comment', '0', '$ip', '$type' ")){
 						echo LAN_11;
 					}else{
-						$sql -> db_Delete("cache", "cache_url='news.php' ");
+						clear_cache("news.php");
 					}
 				}
 			}

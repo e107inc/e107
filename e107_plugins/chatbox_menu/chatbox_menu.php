@@ -46,7 +46,7 @@ if(IsSet($_POST['chat_submit'])){
 					}
 					if(!$emessage){
 						$sql -> db_Insert("chatbox", "0, '$nick', '$cmessage', '".time()."', '0' , '$ip' ");
-						$sql -> db_Delete("cache", "cache_url='chatbox' ");
+						clear_cache("chatbox");
 					}
 				}
 			}else{
@@ -55,8 +55,6 @@ if(IsSet($_POST['chat_submit'])){
 		}
 	}
 }
-
-if(strstr(e_BASE, "../")){ $sql -> db_Delete("cache", "cache_url ='chatbox' "); }
 
 $pref['cb_linkc'] = str_replace("e107_images/", e_IMAGE, $pref['cb_linkc']);
 if($pref['user_reg'] && !USER && !$pref['anon_post']){
