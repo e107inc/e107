@@ -76,14 +76,16 @@ $sql -> db_Update("forum_t", "thread_views=thread_views+1 WHERE thread_id='$thre
 
 $sql -> db_Select("forum", "*", "forum_id='".$forum_id."' ");
 $row = $sql-> db_Fetch(); extract($row);
+$fname = $row['forum_name'];
 
 if(($forum_class && !check_class($forum_class)) || ($forum_class == 254 && !USER)){ header("Location:".e_BASE."forum.php"); exit;}
 
-require_once(HEADERF);
-require_once(e_HANDLER."level_handler.php");
-
 $sql -> db_Select("forum_t", "*", "thread_id='".$thread_id."' ORDER BY thread_datestamp DESC ");
 $row = $sql-> db_Fetch("no_strip"); extract($row);
+define("e_PAGETITLE", LAN_01." / ".$fname." / ".$row['thread_name']);
+
+require_once(HEADERF);
+require_once(e_HANDLER."level_handler.php");
 
 define("MODERATOR", (preg_match("/".preg_quote(ADMINNAME)."/", $forum_moderators) && getperms("A") ? TRUE : FALSE));
 

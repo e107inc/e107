@@ -17,7 +17,6 @@ if(IsSet($_POST['fjsubmit'])){
 +---------------------------------------------------------------+
 */
 require_once("class2.php");
-require_once(HEADERF);
 require_once(e_HANDLER."ren_help.php");
 require_once(e_HANDLER."mail.php");
 $gen = new convert;
@@ -56,6 +55,40 @@ if($sql -> db_Select("tmp", "*",  "tmp_ip='$ip' ")){
         $sql -> db_Delete("tmp", "tmp_ip='$ip' ");
 }
 
+if(ANON == FALSE && USER == FALSE){
+        $text .= "<div style='text-align:center'>".LAN_45."</div>";
+        $ns -> tablerender(LAN_20, $text);
+        require_once(FOOTERF);
+        exit;
+}
+
+$sql -> db_Select("forum", "*", "forum_id='".$forum_id."' ");
+$row = $sql-> db_Fetch(); extract($row);
+$fname = $row['forum_name'];
+if($forum_class == e_UC_READONLY && !ADMIN){
+        $text .= "<div style='text-align:center'>".LAN_398."</div>";
+        $ns -> tablerender(LAN_20, $text);
+        require_once(FOOTERF);
+        exit;
+}
+
+
+if($thread_id){
+        $sql -> db_Select("forum_t", "*", "thread_id='".$thread_id."' ");
+        $row = $sql-> db_Fetch(); extract($row);
+}
+
+if($action != "nt" && !$thread_active){
+        $ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_397."</div>");
+        require_once(FOOTERF);
+        exit;
+}
+if($action == "cp"){
+	define("e_PAGETITLE", LAN_01." / ".$fname." / ".$row['thread_name']);
+}else{
+	define("e_PAGETITLE", LAN_01." / ".$fname." / ".($action == "rp" ? LAN_02.$row['thread_name'] : LAN_03));
+}
+require_once(HEADERF);
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 if(IsSet($_POST['addoption']) && $_POST['option_count'] < 10){
@@ -419,34 +452,6 @@ if($action == "edit" || $action == "quote"){
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-if(ANON == FALSE && USER == FALSE){
-        $text .= "<div style='text-align:center'>".LAN_45."</div>";
-        $ns -> tablerender(LAN_20, $text);
-        require_once(FOOTERF);
-        exit;
-}
-
-$sql -> db_Select("forum", "*", "forum_id='".$forum_id."' ");
-$row = $sql-> db_Fetch(); extract($row);
-
-if($forum_class == e_UC_READONLY && !ADMIN){
-        $text .= "<div style='text-align:center'>".LAN_398."</div>";
-        $ns -> tablerender(LAN_20, $text);
-        require_once(FOOTERF);
-        exit;
-}
-
-
-if($thread_id){
-        $sql -> db_Select("forum_t", "*", "thread_id='".$thread_id."' ");
-        $row = $sql-> db_Fetch(); extract($row);
-}
-
-if($action != "nt" && !$thread_active){
-        $ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_397."</div>");
-        require_once(FOOTERF);
-        exit;
-}
 if($action != "cp"){
 $text = "<div style='text-align:center'>
 <form enctype='multipart/form-data' method='post' action='".e_SELF."?".e_QUERY."' name='dataform'>

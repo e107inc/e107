@@ -54,6 +54,7 @@ if(!$FORUM_VIEW_START){
 
 $sql -> db_Select("forum", "*", "forum_id='".$forum_id."' ");
 $row = $sql-> db_Fetch(); extract($row);
+define("e_PAGETITLE", LAN_01." / ".$row['forum_name']);
 
 if($forum_class && !check_class($forum_class) || !$forum_parent){ header("Location:".e_BASE."forum.php"); exit;}
 
