@@ -12,9 +12,9 @@
 |	GNU General Public License (http://gnu.org).	
 |
 | $Source: /cvs_backup/e107/e107_handlers/news_class.php,v $
-| $Revision: 1.20 $
-| $Date: 2004-12-27 22:30:32 $
-| $Author: loloirie $ 
+| $Revision: 1.21 $
+| $Date: 2005-01-24 14:25:02 $
+| $Author: mrpete $ 
 +---------------------------------------------------------------+
 */
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -154,7 +154,7 @@ on
 		$ptext = " <a href='".e_BASE."print.php?news.".$news_id."'><img src='".e_IMAGE."generic/printer.gif' style='border:0' alt='printer friendly' title='printer friendly'/></a>";
 		*/
 		if(ADMIN && getperms("H")){
-			$adminoptions .= "<a href='".e_BASE.e_ADMIN."newspost.php?create.edit.".$news_id."'><img src='".e_IMAGE."generic/newsedit.png' alt='' style='border:0' /></a>\n";
+			$adminoptions .= "<a href='".e_BASE.e_ADMIN."newspost.php?create.edit.".$news_id."'><img src='".e_IMAGE."generic/newsedit.png' alt='admin edit' title='admin edit' style='border:0' /></a>\n";
 		}
 
 		$search[0] = "/\{NEWSTITLE\}(.*?)/si";
