@@ -39,9 +39,9 @@ function open_window(url,type) {
 
 function ejs_preload(ejs_path, ejs_imageString){
 	var ejs_imageArray = ejs_imageString.split(','); 
-	for(ejs_loadall=0; ejs_loadall<imageArray.length; ejs_loadall++){ 
+	for(ejs_loadall=0; ejs_loadall<ejs_imageArray.length; ejs_loadall++){ 
 		var ejs_LoadedImage=new Image(); 
-		ejs_LoadedImage.src=path + ejs_imageArray[ejs_loadall]; 
+		ejs_LoadedImage.src=ejs_path + ejs_imageArray[ejs_loadall]; 
 	} 
 } 
 
