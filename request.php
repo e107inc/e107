@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-03-01 19:24:35 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.9 $
+|     $Date: 2005-03-10 11:13:12 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
+
 if (!e_QUERY) {
 	header("location: ".e_BASE."index.php");
 	exit;
@@ -106,10 +107,16 @@ if ($type == "file") {
 				}
 			}
 		} else {
-			echo "<br /><br /><div style='text-align:center; font: 12px Verdana, Tahoma'>You do not have the correct permissions to download this file.</div>";
+			//echo "<br /><br /><div style='text-align:center; font: 12px Verdana, Tahoma'>You do not have the correct permissions to download this file.</div>";
+			require_once(HEADERF);
+			$ns -> tablerender(LAN_dl_61, LAN_dl_63);
+			require_once(FOOTERF);
 			exit;
 		}
 	}
+	require_once(HEADERF);
+	$ns -> tablerender(LAN_dl_61, "<div style='text-align:center'>".LAN_dl_65."<br /><br /><a href='javascript:history.back(1)'>".LAN_dl_64."</a></div>");
+	require_once(FOOTERF);
 	exit;
 }
 	
@@ -148,7 +155,7 @@ if (eregi("http", $image)) {
 		} else {
 			$disp = "<div style='text-align:center'><img src='".e_FILE."public/".$image."' alt='' /></div>";
 		}
-		$disp .= "<br /><div style='text-align:center'><a href='javascript:history.back(1)'>Back</a></div>";
+		$disp .= "<br /><div style='text-align:center'><a href='javascript:history.back(1)'>".LAN_dl_64."</a></div>";
 		$ns->tablerender($image, $disp);
 		 
 		require_once(FOOTERF);
@@ -158,7 +165,10 @@ if (eregi("http", $image)) {
 		} elseif(is_file(e_FILE."downloadimages/".$image)) {
 			echo "<img src='".e_FILE."downloadimages/".$image."' alt='' />";
 		} else {
-			echo "Not Found";
+			require_once(HEADERF);
+			$ns -> tablerender(LAN_dl_61, "<div style='text-align:center'>".LAN_dl_65."<br /><br /><a href='javascript:history.back(1)'>".LAN_dl_64."</a></div>");
+			require_once(FOOTERF);
+			exit;
 		}
 		exit;
 	}
