@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-02-03 16:50:09 $
-|     $Author: sweetas $
+|     $Revision: 1.23 $
+|     $Date: 2005-02-22 17:36:07 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 global $tp, $e107cache, $e_event;
@@ -96,7 +96,7 @@ else
 	if(($pref['anon_post'] == "1" && USER == FALSE)){
 		$texta .= "\n<input class='tbox' type='text' name='nick' value='' maxlength='50' style='width: 100%;' /><br />";
 	}
-	$texta .= "\n<textarea class='tbox' name='cmessage' rows='5' style='overflow:hidden; width: 100%;'></textarea>\n<br />\n<input class='button' type='submit' name='chat_submit' value='".CHATBOX_L4."' />\n<input class='button' type='reset' name='reset' value='".CHATBOX_L5."' />";
+	$texta .= "\n<textarea class='tbox' name='cmessage' rows='5' columns='1' style='overflow:hidden; width: 100%;'></textarea>\n<br />\n<input class='button' type='submit' name='chat_submit' value='".CHATBOX_L4."' />\n<input class='button' type='reset' name='reset' value='".CHATBOX_L5."' />";
 
 	if($pref['cb_emote']){
 		$texta .= " \n<input class='button' type ='button' style='cursor:hand; cursor:pointer' size='30' value='".CHATBOX_L14."' onclick='expandit(this)' />\n<span style='display:none;'>".emote()."\n</span>\n";
