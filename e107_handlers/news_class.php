@@ -55,7 +55,6 @@ class news{
 			$result = call_user_func("theme_render_newsitem",$news);
 			if($result == "return"){return;}
 		}
-
 		global $NEWSSTYLE, $NEWSLISTSTYLE;
 		if(!is_object($aj)) $aj = new textparse;
 		if(!is_object($sql)) $sql = new db;
@@ -85,7 +84,7 @@ on
 		if(IsSet($_POST['highlight_search'])){
 			$highlight_search = TRUE;
 		}
-		$news_body = $aj -> tpa($data, "off", "admin", $highlight_search=TRUE);
+		$news_body = $aj -> tpa($data, "off", "admin", $highlight_search);
 		$news_extended = trim(chop($aj -> tpa($news_extended, "off", "admin")));
 
 		if(!$comment_total) $comment_total = "0";
