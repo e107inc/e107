@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.1 $
-|   $Date: 2004-09-21 19:10:20 $
-|   $Author: e107coders $
+|   $Revision: 1.2 $
+|   $Date: 2004-09-23 15:50:39 $
+|   $Author: loloirie $
 +---------------------------------------------------------------+
 */
 echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='iso-8859-1' ?>");
@@ -85,7 +85,7 @@ if(ADMIN == TRUE){
 
 		$text .= show_admin_menu("",time(),$e107_var)."<br />";
 
-		require_once("header_links.php");
+		require_once(e_ADMIN."header_links.php");
 		$text .= get_admin_treemenu(ADLAN_93,time(),$e107_var,TRUE);
 		unset($e107_var);
 
@@ -220,7 +220,7 @@ function get_admin_treemenu($title,$page,$e107_vars,$sortlist=FALSE)
 		{
 			$func_list[]=$temp[$key]['text'];
 		}
-    setlocale("LC_ALL","deu");
+
     usort($func_list, 'strcoll');
 
 		foreach($func_list as $func_text)

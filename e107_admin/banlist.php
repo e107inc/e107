@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banlist.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:20 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-09-23 15:50:39 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -42,8 +42,8 @@ if(IsSet($_POST['update_ban'])){
         $aj = new textparse;
         $bd = $_POST['ban_ip'];
         $_POST['ban_reason'] = $aj -> formtpa($_POST['ban_reason'], "admin");
-        $sql -> db_Insert("banlist", "'$bd', '".ADMINID."', '".$_POST['ban_reason']."' ");
-                $sql -> db_Delete("banlist", "banlist_ip='".$_POST['old_ip']."'");
+        $sql -> db_Delete("banlist", "banlist_ip='".$_POST['old_ip']."'");
+		    $sql -> db_Insert("banlist", "'".$bd."', '".ADMINID."', '".$_POST['ban_reason']."' ");
         $message = BANLAN_14;
         unset($ban_ip);
 }
