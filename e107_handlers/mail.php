@@ -42,7 +42,7 @@ function sendemail($send_to, $subject, $message,$to_name,$send_from,$from_name,$
         $send_from = ($send_from)?$send_from:$pref['siteadminemail'];
         $from_name = ($from_name)?$from_name:$pref['siteadmin'];
         $to_name = ($to_name)?$to_name:$send_to;
-        $send_to = $to_name." <".$send_to.">\n";
+    //    $send_to = $to_name." <".$send_to.">\n";
 
         $headers = "Date: ".date("r")."\n";
         $headers.= "MIME-Version: 1.0\n";
