@@ -184,9 +184,11 @@ if($action == "unban"){
 }
 
 if($action == "main" && $sub_action == "confirm"){
-        if($sql -> db_Delete("user", "user_id=$id")){
+        if(!$sql -> db_Select("user","user_id","user_id='".$id."' AND user_perms!='0'"))){
+			if($sql -> db_Delete("user", "user_id=$id")){
                 $user -> show_message(USRLAN_10);
-        }
+       		}
+		}
         $sub_action = "user_id";
         $id = "DESC";
 }
