@@ -95,4 +95,23 @@ define("USRLAN_93", "Delete unverified users");
 define("USRLAN_94", "Delete signups if unverified after this amount of time - leave blank to not use this option");
 define("USRLAN_95", "minutes");
 
+define("USRLAN_96", "Name");
+define("USRLAN_97", "Type");
+define("USRLAN_98", "Values");
+define("USRLAN_99", "Default");
+define("USRLAN_100", "Applicable to");
+define("USRLAN_101", "Visible to");
+define("USRLAN_102", "Action");
+
+define("USRLAN_103", "Field Type");
+define("USRLAN_104", "Default Value");
+define("USRLAN_105", "Enter values seperated by commas eg. value1,value2 etc <br> For DB table use the format: dbtable,field-value,field-name.");
+define("USRLAN_106", "This will determine who will see this field in their usersettings.");
+define("USRLAN_107", "This will determine who can see the value in the user page.");
+
+define("USRLAN_108", "Text Box");
+define("USRLAN_109", "Radio Buttons");
+define("USRLAN_110", "Drop-Down Menu");
+define("USRLAN_111", "DB Table Field");
+
 ?>
