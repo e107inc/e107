@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_banner.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:11:04 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-12 10:56:58 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 define("BNRLAN_1", "Banner deleted.");
@@ -50,7 +50,7 @@ define("BNRLAN_36", "Start Date");
 
 define("BNRLAN_37", "End Date");
 define("BNRLAN_38", "blank = no limit");
-define("BNRLAN_39", "Active");
+define("BNRLAN_39", "visibility class");
 define("BNRLAN_40", "Update Banner");
 define("BNRLAN_41", "Create New Banner");
 define("BNRLAN_42", "Banner Rotation System");
@@ -59,5 +59,42 @@ define("BNRLAN_43", "Choose banner image");
 define("BNRLAN_44", "Edit");
 define("BNRLAN_45", "Starts");
 define("BNRLAN_46", "Code");
+
+
+
+define("BNRLAN_47", "visibility updated for banner");
+define("BNRLAN_48", "options updated");
+define("BNRLAN_49", "set campaign visibility");
+define("BNRLAN_50", "choose campaign ...");
+define("BNRLAN_51", "Campaign Visibility Configuration");
+define("BNRLAN_52", "visibility for banner");
+define("BNRLAN_53", "set visibility style");
+define("BNRLAN_54", "use individual banner visibility");
+define("BNRLAN_55", "use campaign visibility");
+define("BNRLAN_56", "update options");
+define("BNRLAN_57", "options");
+define("BNRLAN_58", "banner front page");
+define("BNRLAN_59", "create new banner");
+define("BNRLAN_60", "campaign visibility");
+define("BNRLAN_61", "options");
+define("BNRLAN_62", "banner options");
+define("BNRLAN_63", "visibility pages");
+define("BNRLAN_64", "");
+define("BNRLAN_65", "");
+define("BNRLAN_66", "");
+define("BNRLAN_67", "");
+define("BNRLAN_68", "");
+define("BNRLAN_69", "");
+define("BNRLAN_70", "");
+define("BNRLAN_71", "");
+define("BNRLAN_72", "");
+define("BNRLAN_73", "");
+define("BNRLAN_74", "");
+define("BNRLAN_75", "");
+define("BNRLAN_76", "");
+define("BNRLAN_77", "");
+define("BNRLAN_78", "");
+define("BNRLAN_79", "");
+define("BNRLAN_80", "");
 
 ?>
