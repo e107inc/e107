@@ -17,11 +17,11 @@ require_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_usersettings.php");
 $use_imagecode = ($pref['signcode'] && extension_loaded("gd"));
 
 if($pref['membersonly_enabled']){
-        $HEADER = "<div style='width:70%;margin-left:auto;margin-right:auto'><div style='text-align:center;'><br>";
+        $HEADER = "<div style='width:70%;margin-left:auto;margin-right:auto'><div style='text-align:center;'><br />";
         if(file_exists(THEME."images/login_logo.png")){
-        $HEADER .= "<img src='".THEME."images/login_logo.png'>\n";
+        $HEADER .= "<img src='".THEME."images/login_logo.png' alt='' />\n";
         } else{
-        $HEADER .= "<img src='".e_IMAGE."logo.png'>\n";
+        $HEADER .= "<img src='".e_IMAGE."logo.png' alt='' />\n";
         }
         $HEADER .= "<br />";
         $FOOTER = "</div></div>";
@@ -238,15 +238,15 @@ $qs = ($error ? "stage" : e_QUERY);
 
 if($pref['use_coppa'] == 1 && !ereg("stage", $qs)){
         if(eregi("stage", LAN_109)){
-                $text .= LAN_109."</b></div>";
+                $text .= LAN_109."</b></div>\n";
         }else{
-                $text .= LAN_109."<form method='post' action='signup.php?stage1'>
-        <br />
-        <input type='radio' name='coppa' value='0' checked> ".LAN_200."
-        <input type='radio' name='coppa' value='1'> ".LAN_201."<br>
+                $text .= LAN_109."</b>\n<form method='post' action='signup.php?stage1' >\n
+        <div><br />
+        <input type='radio' name='coppa' value='0' checked='checked' /> ".LAN_200."
+        <input type='radio' name='coppa' value='1' /> ".LAN_201."<br />
         <br />
         <input class='button' type='submit' name='newver' value='".LAN_399."' />
-        </form>
+        </div></form>
         </div>";
         }
 
@@ -302,7 +302,7 @@ $text .="
 ".$rs -> form_password("password1", 40, $password1, 20)."
 ";
 if($pref['signup_pass_len']){
-$text .= "<br><span class='smalltext'>  (".LAN_SIGNUP_1." {$pref['signup_pass_len']} ".LAN_SIGNUP_2.")</span>";
+$text .= "<br /><span class='smalltext'>  (".LAN_SIGNUP_1." {$pref['signup_pass_len']} ".LAN_SIGNUP_2.")</span>";
 }
 $text .="
 </td>
@@ -375,7 +375,7 @@ if($signupval[5]){
         $text.="
         <tr>
         <td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_118.req($signupval[5])."</td>
-        <td class='forumheader3' style='width:70%; ' nowrap>".
+        <td class='forumheader3' style='width:70%;white-space:nowrap' >".
 
         $rs -> form_select_open("birth_day").
         $rs -> form_option("", 0);
@@ -487,7 +487,7 @@ if($signupval[9]){
         $text.="
         <tr>
         <td class='forumheader3' style='width:30%' >".LAN_122.req($signupval[9])."</td>
-        <td class='forumheader3' style='width:70%' nowrap>
+        <td class='forumheader3' style='width:70%;white-space:nowrap'>
         <select name='timezone' class='tbox'>\n";
 
         timezone();
@@ -558,8 +558,8 @@ function req($field){
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-?>
-<script type="text/javascript">
+function headerjs(){
+$script_txt = "<script type=\"text/javascript\">
 function addtext(sc){
         document.signupform.image.value = sc;
 }
@@ -573,4 +573,9 @@ function help(help){
 
 
 }
-</script>
+</script>\n";
+ return $script_txt;
+}
+
+
+?>
