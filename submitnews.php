@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/submitnews.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-09-26 04:09:11 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2004-12-13 11:52:31 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -112,6 +112,8 @@ if($_FILES['file_userfile']){
                if($error == FALSE){
                 if(!file_exists(e_IMAGE."newspost_images/". $newname)){$newname = ""; }
                 $sql -> db_Insert("submitnews", "0, '$user', '$email', '$itemtitle', '".intval($_POST['cat_id'])."','$item', '".time()."', '$ip', '0', '$newname' ");
+		$edata_sn = array("user" => $user, "email" => $email, "itemtitle" => $itemtitle, "catid" => intval($_POST['cat_id']), "item" => $item, "ip" => $ip, "newname" => $newname);
+		$e_event -> trigger("subnews", $edata_sn);
                 $ns -> tablerender(LAN_133, "<div style='text-align:center'>".LAN_134."</div>");
                 require_once(FOOTERF);
                 exit;
