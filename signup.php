@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/signup.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2004-09-23 09:33:17 $
-|     $Author: loloirie $
+|     $Revision: 1.31 $
+|     $Date: 2005-01-07 10:40:42 $
+|     $Author: pholzmann $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -243,7 +243,7 @@ if(IsSet($_POST['register'])){
                                                 $sql -> db_Update("user", "user_prefs='$tmp' WHERE user_id='".$nid."' ");
                                         }
                                         // ==========================================================
-                $ns -> tablerender("<div style='text-align:center'>".LAN_SIGNUP_8."</div>", LAN_107."&nbsp;".SITENAME.", ".LAN_SIGNUP_12."<br /><br />".LAN_SIGNUP_13);
+                $ns -> tablerender("<div style='text-align:center'>".LAN_SIGNUP_8."</div>", LAN_107."&nbsp;".SITENAME.", ".LAN_SIGNUP_12."<br /><br />".LAN_SIGNUP_13."<a href='index.php'>".LAN_SIGNUP_22."</a> ".LAN_SIGNUP_23);
                 require_once(FOOTERF);
                 exit;
         }
@@ -321,7 +321,7 @@ $text .="
 ".$rs -> form_password("password1", 40, $password1, 20)."
 ";
 if($pref['signup_pass_len']){
-$text .= "<br /><span class='smalltext'>  (".LAN_SIGNUP_1." {$pref['signup_pass_len']} ".LAN_SIGNUP_2.")</span>";
+$text .= "<span class='smalltext'> (".LAN_SIGNUP_1." {$pref['signup_pass_len']} ".LAN_SIGNUP_2.")</span>";
 }
 $text .="
 </td>
@@ -527,7 +527,7 @@ $text .= "</select>
 
 if($use_imagecode){
         $text .= " <tr>
-        <td class='forumheader3' style='width:30%'>".LAN_410."</td>
+        <td class='forumheader3' style='width:30%'>".LAN_410.req(2)."</td>
         <td class='forumheader3' style='width:70%'>".
         $rs ->form_hidden("rand_num", $sec_img -> random_number).
         $sec_img -> r_image()."<br />".$rs -> form_text("code_verify", 20, "", 20)."
