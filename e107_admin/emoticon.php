@@ -81,7 +81,7 @@ if(e_QUERY == "w"){
 
 $smiley_activate = $pref['smiley_activate'];
 
-$text = "<div style='text-align:center'>
+$text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 400px; overflow : auto; '>
 <form method='post' action='".e_SELF."'>
 <table width='85%'>
 <tr> 
@@ -136,7 +136,7 @@ $text .= "<tr>
 </tr>
 </table>
 </form>
-</div>";
+</div></div>";
 
 $ns -> tablerender("<div style='text-align:center'>".EMOLAN_11."</div>", $text);
 require_once("footer.php");
