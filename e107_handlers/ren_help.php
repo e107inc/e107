@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-04-03 17:16:12 $
+|     $Revision: 1.24 $
+|     $Date: 2005-04-03 17:17:54 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -68,7 +68,7 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help") {
 	}
 
 	$text .= Size_Select();
-	$text .= Color_Select('color_'.$key);
+	$text .= Color_Select();
 	return $text;
 }
 
@@ -133,7 +133,7 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 */
 	if ($mode) {
 		$text .= Size_Select();
-		$text .= Color_Select('color_'.$key);
+		$text .= Color_Select();
 	}
 
 	return $text;
