@@ -1,0 +1,336 @@
+
+BODY {
+         margin-top : 6px;
+         margin-left : 6px;
+         margin-right : 6px;
+         margin-bottom : 0px;
+         padding : 0;
+         background-color : #98c8d6;	
+         background-image : url("images/shadow.gif");
+         background-repeat : repeat-x; 
+	 background-attachment:fixed;
+	 font-size: 12px;
+         color: #000000;
+	 font-family: Arial, Geneva, Helvetica, sans-serif;
+}
+.leftside { 
+            width: 1px; 
+            height: 1px; 
+            background-color: #000000; 
+            background-image: url(images/blank.gif); 
+}
+.rightside { 
+            width: 4px; 
+            height: 1px; 
+            background-color: #000000; 
+            background-image: url(images/blank.gif); 
+}
+.top { 
+            width: 1px; 
+            height: 25px; 
+            background-color: #000000; 
+            background-image: url(images/navbar.gif); 
+            font-family: Arial, Geneva, Helvetica, sans-serif; 
+            font-size: 12px; 
+            font-weight: 700; 
+            color: #ffffff; 
+}
+.content1 { 
+            width: 1px; 
+            height: 5px; 
+            background-color: #000000; 
+            background-image: url(images/shadow.gif); 
+}
+.logo { 
+            width: 200px; 
+            height: 97px; 
+            background-color: #98c8d6; 
+            background-repeat: no-repeat; 
+            background-image: url(images/logo.png); 
+}
+.logoline { 
+            width: 2px; 
+            height: 97px; 
+            background-color: #98c8d6; 
+            background-repeat: repeat-x; 
+            background-image: url(images/logobg.png); 
+}
+
+.content2 { 
+           width: 1px; 
+           height: 25px; 
+           background-color: #000000; 
+           background-image: url(images/navbar.gif); 
+}
+.content3 { 
+           width: 1px; 
+           height: 1px; 
+           background-color: #000000; 
+           background-image: url(images/blank.gif); 
+}
+.content4 { 
+           width: 1px; 
+           height: 1px; 
+           background-color: #000000; 
+           background-image: url(images/shadow.gif); 
+}
+.head { 
+            
+           height: 18px; 
+           background-color: #ffffff; 
+           background-image: url(images/headbg.gif); 
+}
+.head-left { 
+           width: 1px; 
+           height: 18px; 
+           background-color: #ffffff; 
+           background-image: url(images/headleft.gif); 
+}
+.head-right { 
+           width: 4px; 
+           height: 18px; 
+           background-color: #ffffff; 
+           background-image: url(images/headright.gif); 
+}
+.line-left { 
+           width: 1px; 
+           height: 1px; 
+           background-color: #000000; 
+          
+}
+
+.bottom { 
+            width: 1px; 
+            height: 10px; 
+            background-color: #000000; 
+            background-image: url(images/shadow.gif); 
+}
+.mytext a:link {
+           color: #000000; 
+           text-decoration: none
+} 
+.mytext a:visited {
+           color: #000000; 
+           text-decoration: none
+} 
+.mytext a:hover {
+           color: #98c8d6; 
+           text-decoration: none
+} 
+.mytext a:active {
+           color: #000000; 
+           text-decoration: none
+} 
+.mytext { 
+           background: transparent; 
+           font-family: Arial, Geneva, Helvetica, sans-serif; 
+           font-size: 11px; 
+           font-weight: 700; 
+           color: #000000; 
+}
+.mytext2 { 
+           background: transparent; 
+           font-family: Arial, Geneva, Helvetica, sans-serif; 
+           font-size: 12px; 
+           font-weight: 500; 
+           color: #ffffff; 
+}
+.mytext3 { 
+           background: transparent; 
+           font-family: Arial, Geneva, Helvetica, sans-serif; 
+           font-size: 10px; 
+           font-weight: 300; 
+           color: #ffffff; 
+}
+.mypoll { 
+           background: transparent; 
+           font-family: Arial, Geneva, Helvetica, sans-serif; 
+           font-size: 10px; 
+           font-weight: 300; 
+           color: #006699; 
+}
+.mycolor { 
+           background: transparent; 
+           font-family: Arial, Geneva, Helvetica, sans-serif; 
+           font-size: 10px; 
+           font-weight: 300; 
+           color: #006699; 
+}
+A:link {
+           color: #000000; font-weight: bold; text-decoration: none
+}
+A:visited {
+	   color: #000000; font-weight: bold; text-decoration:: none
+}
+A:active {
+	   color: #D2C2A9; font-weight: bold; text-decoration: none
+}
+A:hover {
+           color: #006699; text-decoration: none
+}
+.indexmenu {
+	   background-color: #D2C2A9; 
+	   border-left: #D2C2A9 2px solid; 
+	   border-top: #D2C2A9 2px solid
+}
+.borderindex {
+	  border-top: #D2C2A9 2px solid
+}
+.wallpapers {
+	   border-bottom: #ffffff 4px solid; 
+	   border-left: #ffffff 4px solid; 
+	   border-right: #ffffff 4px solid; 
+	   border-top: #ffffff 4px solid
+}
+.wallpaper {
+	   border-bottom:: #D2C2A9 1px solid; 
+	   border-left: #D2C2A9 1px solid; 
+	   border-right: #D2C2A9 1px solid; 
+	   border-top #D2C2A9 1px solid
+}
+.select {
+	   background-color: #D2C2A9; 
+	   color: #D2C2A9; 
+	   font-family: verdana; 
+	   font-size: 10px; width: 182px
+}
+.smalltext {
+	   background: transparent;
+	   font-family: Arial, Geneva, Helvetica, sans-serif;
+	   font-size: 9px;
+	   font-style: normal;
+	   color:#000000;
+}
+.defaulttext {
+	   background: transparent;
+	   font-family: Arial, Geneva, Helvetica, sans-serif;
+	   font-size: 10px;
+	   font-style: normal;
+	   color:#000000;
+}
+.defaultblacktext {
+	   background: transparent;
+	   font-family: Arial, Geneva, Helvetica, sans-serif;
+	   font-size: 10px;
+	   font-style: normal;
+	   color:#000000;
+}
+.smallblacktext {
+	   background: transparent;
+	   font-family: Arial, Geneva, Helvetica, sans-serif;
+	   font-size: 9px;
+	   font-style: normal;
+	   color:#000000;
+}
+.mediumtext {
+	   background: transparent;
+	   font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+	   font-size: 10px;
+	   font-style: normal;
+	   color:#000000;
+}
+
+
+.captiontext {
+           background: transparent;
+	   font-family: Arial, Geneva, Helvetica, sans-serif;
+	   font-size: 11px;
+	   font-style: normal;
+           font-weight: bold;
+	   color:#000000;
+}
+.bodytable {
+           background-color: transparent;
+	   padding-bottom: 5px;
+	   padding-left: 0px;
+	   padding-right: 5px;
+	   padding-top: 5px;
+	   font-family: Arial, Geneva, Helvetica, sans-serif;
+	   font-size: 10px;
+	   font-style: normal;
+	   color:#000000;
+}
+.spacer{
+	   padding-bottom : 2px;
+	   padding-left : 2px;
+	   padding-right : 2px;
+	   padding-top : 2px;
+}
+td {
+           background-color: #ffffff;
+	   font-family: Arial, Geneva, Helvetica, sans-serif;
+	   font-size: 10px;
+	   font-style: normal;
+	   color:#000000;
+	   padding-bottom: 0px;
+	   padding-left: 0px;
+	   padding-right: 0px;
+	   padding-top: 0px;
+}
+hr {
+	border-top: #8D7B65 1px solid;
+	border-bottom: #000000 1px solid;
+	height: 2px;
+	width: 100%;
+	text-align:center;
+}
+form {
+           background-color:transparent;
+	   margin: 5px 1px 1px 1px;
+	   padding-bottom: #ffffff 0px solid;
+	   padding-left: #000000 0px solid;
+	   padding-right: #000000 0px solid;
+	   padding-top: #000000 0px solid;
+	   color: #000000;
+}
+.button{
+	   background-color: #ffffff;
+	   border-bottom: #000000 1px solid;
+	   border-left: #000000 1px solid;
+	   border-right: #000000 1px solid;
+	   border-top: #000000 1px solid;
+	   color: #000000;
+	   font-family: Arial, Geneva, Helvetica, sans-serif;
+	   font -size: 9px;
+	   text-align: center;
+
+}
+.tbox{
+	   background-color: #ffffff;
+	   border-bottom: #98c8d6 1px solid;
+	   border-left: #98c8d6 1px solid;
+	   border-right: #98c8d6 1px solid;
+	   border-top: #98c8d6 1px solid;
+	   color: #000000;
+	   font-family: Arial, Geneva, Helvetica, sans-serif;
+	   font-size: 12px;
+	   text-align: left;
+
+}
+.tbox1{
+	   background-color: #000000;
+	   border-bottom: #D2C2A9 1px solid;
+	   border-left: #D2C2A9 1px solid;
+	   border-right: #D2C2A9 1px solid;
+	   border-top: #D2C2A9 1px solid;
+	   color: #ffffff;
+	   font-family: Arial, Geneva, Helvetica, sans-serif;
+	   font-size: 12px;
+	   text-align: left;
+
+}
+
+p {
+	margin-top: 0px
+}
+img{
+	   background-color: transparent;
+	   border-bottom: #000000 0px solid;
+	   border-left: #000000 0px solid;
+	   border-right: #000000 0px solid;
+	   border-top: #000000 0px solid;
+	   color: #000000;
+	   font-family: Arial, Geneva, Helvetica, sans-serif;
+	   font-size: 9px;
+	   text-align:center;
+}

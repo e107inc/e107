@@ -1,0 +1,266 @@
+A {
+	COLOR: #3C3C3C; 
+	FONT-STYLE: italic; 
+	FONT-FAMILY: Verdana, Arial, sans-serif; 
+	BACKGROUND-COLOR: transparent; 
+	TEXT-DECORATION: underline
+}
+A:link {
+	COLOR: #3C3C3C;
+	BACKGROUND-COLOR: transparent; 
+	TEXT-DECORATION: none
+}
+A:active {
+	COLOR: #3C3C3C;
+	BACKGROUND-COLOR: transparent; 
+	TEXT-DECORATION: none
+}
+A:visited {
+	COLOR: #3C3C3C;
+	BACKGROUND-COLOR: transparent; 
+	TEXT-DECORATION: none
+}
+A:hover {
+	COLOR: #657E85;
+	BACKGROUND-COLOR: transparent; 
+	TEXT-DECORATION: none
+}
+BODY {
+	FONT-SIZE: 12px;
+	COLOR: #646666;
+	FONT-FAMILY: Tahoma, Verdana, Arial, sans-serif;
+	BACKGROUND-COLOR: #FFF;
+	margin:0px;
+	PADDING-BOTTOM: 10px;
+	PADDING-LEFT: 20px;
+	PADDING-RIGHT: 20px;
+	PADDING-TOP: 10px;
+}
+.indent{
+	PADDING-BOTTOM: 3px;
+	PADDING-LEFT: 10px;
+	PADDING-RIGHT: 10px;
+	PADDING-TOP: 3px;
+	FONT-FAMILY: Verdana, Tahoma, Arial, sans-serif;
+	COLOR: #646666;
+	FONT-SIZE: 11px;
+	BACKGROUND-COLOR: transparent;
+}
+
+.smalltext {
+    background: none;
+	font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+	font-size: 9px;
+	font-style: normal;
+	color:#838A8B;
+}
+.smallblacktext {
+    background: none;
+	font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+	font-size: 9px;
+	font-style: normal;
+	color:#646666;
+}
+.defaulttext {
+    background: none;
+	font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-style: normal;
+	color:#646666;
+}
+
+td {
+    background: none;
+	font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	font-style: normal;
+	color:#646666;
+	PADDING-BOTTOM: 0px;
+	PADDING-LEFT: 0px;
+	PADDING-RIGHT: 0px;
+	PADDING-TOP: 0px;
+	text-align:left;
+}
+
+.defaultwhitetext {
+    background: none;
+	font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-style: normal;
+	color:#FFFFFF;
+}
+.defaultblacktext {
+    background: none;
+	font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-style: normal;
+	color:#646666;
+}
+.mediumtext {
+    background: none;
+	font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-style: normal;
+	color:#646666;
+}
+.captiontext {
+    background: none;
+	font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	font-style: bold;
+	color:#000;
+	LETTER-SPACING: 0.3em;
+}
+.tbox{
+	background-color: #ECECEC;
+	BORDER-BOTTOM: #5E5D63 1px solid;
+	BORDER-LEFT: #5E5D63 1px solid;
+	BORDER-RIGHT: #5E5D63 1px solid;
+	BORDER-TOP: #5E5D63 1px solid;
+	COLOR: #000000;
+	font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
+	FONT-SIZE: 10px;
+}
+.button{
+	BACKGROUND-COLOR: #ECECEC;
+	BORDER-BOTTOM: #000 1px solid;
+	BORDER-LEFT: #000 1px solid;
+	BORDER-RIGHT: #000 1px solid;
+	BORDER-TOP: #000 1px solid;
+	COLOR: #000000;
+	font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
+	FONT-SIZE: 9px;
+	text-align:center;
+}
+.np{
+	BACKGROUND-COLOR: #ffffff;
+	BORDER-BOTTOM: #D1D6D6 1px solid;
+	BORDER-LEFT: #D1D6D6 1px solid;
+	BORDER-RIGHT: #D1D6D6 1px solid;
+	BORDER-TOP: #D1D6D6 1px solid;
+	COLOR: #000000;
+	font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
+	FONT-SIZE: 9px;
+	text-align:center;
+	padding-bottom : 2px;
+	padding-left : 2px;
+	padding-right : 2px;
+	padding-top : 2px;
+}
+form {
+	margin: 2px 0px 0px 0px;
+	color: #000;
+	BACKGROUND-COLOR: #D1D6D6;
+}
+.spacer{
+	padding-bottom : 2px;
+	padding-left : 0px;
+	padding-right : 2px;
+	padding-top : 2px;
+}
+hr {
+	border-top: #666 1px solid;
+	border-bottom: #eee 1px solid;
+	height: 2px;
+	width: 92%;
+	text-align:center;
+}
+.border {
+	BORDER-BOTTOM: #FFF 1px solid;
+	BORDER-LEFT: #FFF 1px solid;
+	BORDER-RIGHT: #FFF 1px solid;
+	BORDER-TOP: #FFF 1px solid;
+}
+.caption {
+	PADDING-BOTTOM: 4px;
+	PADDING-LEFT: 4px;
+	PADDING-RIGHT: 4px;
+	PADDING-TOP: 4px;
+	BACKGROUND-COLOR: #FFF;
+	COLOR: #000;
+	font-family: Tahoma, Arial, Verdana, Helvetica, sans-serif;
+	font-size: 16px;
+	font-style: italic;
+}
+.bodytable {
+	BACKGROUND-COLOR: #FFF;
+	PADDING-BOTTOM: 8px;
+	PADDING-LEFT: 8px;
+	PADDING-RIGHT: 8px;
+	PADDING-TOP: 8px;
+	font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-style: normal;
+	color:#646666;
+}
+p {
+	margin-top: 0px
+}
+
+forumheader {
+	background-color: #bbb7b7;
+	font-family: tahoma, verdana, arial, helvetica, sans-serif;
+	font-size: 14px;
+	color:#fff;
+}
+
+.forumtable1{
+	background-color: #D6D6D6;
+	font-family: tahoma, verdana, arial, helvetica, sans-serif;
+	font-size: 9px;
+	background-image : none;
+}
+
+.forumtable2 {
+	background-color: #CBD3D3;
+	font-family: tahoma, verdana, arial, helvetica, sans-serif;
+	font-size: 9px;
+	background-image : none;
+	padding-bottom: 2px;
+	padding-left: 4px;
+	padding-right: 2px;
+	padding-top: 4px;
+}
+
+.forumtable3 {
+	background-color: #D8DEDE;
+	font-family: tahoma, verdana, arial, helvetica, sans-serif;
+	font-size: 9px;
+	background-image : none;
+	padding-bottom: 2px;
+	padding-left: 4px;
+	padding-right: 2px;
+	padding-top: 4px;
+}
+
+.fcaption {
+	border-bottom: #CBD3D3 1px solid;
+	border-left: #CBD3D3 1px solid;
+	border-right: #CBD3D3 1px solid;
+	border-top: #CBD3D3 1px solid;
+	padding-bottom: 2px;
+	padding-left: 8px;
+	padding-right: 0px;
+	padding-top: 2px;
+	background-color: #CBD3D3;
+	color: #000000;
+	background-image : none;
+	font-family: tahoma, verdana, arial, helvetica, sans-serif;
+	font-size: 12px;
+	letter-spacing: 0.3em; 
+}
+
+.maintable{ width: 60%; }
+.sidetable{ width: 20%; }
+
+.topcr{ width: 100%; background-repeat: repeat-x; background-image: url(images/top.png); }
+.toplf{ width: 10px; background-image: url(images/topleft.png); }
+.toprt{ width: 10px; background-image: url(images/topright.png); }
+
+.bodylt{ width: 9px; background-repeat: repeat-y; background-image: url(images/left.png); }
+.bodycr{ width: 100%; background: #D1D6D6; padding: 4px 5px 5px 4px; FONT-SIZE: 10px; COLOR: #646666; FONT-FAMILY: Verdana, Tahoma, Arial, sans-serif;}
+.bodyrt{ width: 9px; background-repeat: repeat-y; background-image: url(images/right.png); }
+
+.bottomlt{ width: 10px; background-image: url(images/bottomleft.png); }
+.bottomcr{ width: 100%; background-repeat: repeat-x; background-image: url(images/bottom.png);}
+.bottomrt{ width: 10px; background-image: url(images/bottomright.png); }

@@ -1,0 +1,4 @@
+<?php
+$text = "Use this page to upload files to your server.<br />To use the image resize functions you must have the php gd functions compiled in and enabled - if you're not sure try uploading a file to your server with the following text in ...<br /><code>&lt;?php php_info(); ?&gt;</code><br />Browse to the file and you'll see a php information page. Scroll down and hopefully you'll see a box headed 'gd', if not the gd module is not enabled. Contact your host for more details. <br />The gd library is availble from <a href=\"http://www.boutell.com/gd\">http://boutell.com/gd</a>.<br /><br />Any problems will be met by an error message - if you get a permission denied error you need to chmod certain directories on your server - see the readme.txt file for details. If an image isn't resizing and you have gd installed try using a different file type (ie try .jpg instead of .gif).";
+$ns -> tablerender("Upload Help", $text);
+?>
