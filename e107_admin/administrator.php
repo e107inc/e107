@@ -11,16 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/administrator.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-18 16:11:32 $
-|     $Author: streaky $
+|     $Revision: 1.7 $
+|     $Date: 2005-01-25 20:59:12 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 if(!getperms("3")){ header("location:".e_BASE."index.php"); exit; }
 $e_sub_cat = 'admin';
-require_once(e_HANDLER."textparse/basic.php");
-$etp = new e107_basicparse;
+if(!is_object($tp)) $tp = new e_parse;
 
 require_once("auth.php");
 require_once(e_HANDLER."form_handler.php");
@@ -249,10 +248,10 @@ $ns -> tablerender(ADMSLAN_54, $text);
 require_once("footer.php");
 
 function headerjs(){
-global $etp;
+global $tp;
 $script = "<script type=\"text/javascript\">
 function confirm_(user_id, user_name){
-        var x=confirm(\"".$etp->unentity(ADMSLAN_60)." \" + user_name + \"\");
+        var x=confirm(\"".$tp->toJS(ADMSLAN_60)." \" + user_name + \"\");
         if(x){
                 document.getElementById('del_administrator').action='".e_SELF."?delete.' + user_id;
                 document.getElementById('del_administrator').submit();

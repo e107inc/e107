@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/content.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-18 16:11:32 $
-|     $Author: streaky $
+|     $Revision: 1.7 $
+|     $Date: 2005-01-25 20:59:15 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
+if(!is_object($tp)) $tp = new e_parse;
     if($pref['htmlarea']){
         require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
        $htmlarea_js =  htmlarea("data");
@@ -26,9 +27,6 @@ if(!getperms("J") && !getperms("K") && !getperms("L")){
         exit;
 }
 $e_sub_cat = 'content';
-
-require_once(e_HANDLER."textparse/basic.php");
-$etp = new e107_basicparse;
 
 require_once("auth.php");
 require_once(e_HANDLER."userclass_class.php");
@@ -46,7 +44,7 @@ if(e_QUERY){
 }
 
 foreach($_POST as $k => $v){
-        if(preg_match("#^main_delete_(\d*)$#",$k,$matches) && $_POST[$k] == $etp->unentity(CNTLAN_7))
+        if(preg_match("#^main_delete_(\d*)$#",$k,$matches) && $_POST[$k] == $tp->toJS(CNTLAN_7))
         {
                 $delete_content=$matches[1];
         }
@@ -254,7 +252,7 @@ $ns -> tablerender(CNTLAN_18, $text);
 
 echo "<script type=\"text/javascript\">
 function confirm_(content_id){
-        return  confirm(\"".$etp->unentity(CNTLAN_27)."\");
+        return  confirm(\"".$tp->toJS(CNTLAN_27)."\");
 }
 </script>";
 
