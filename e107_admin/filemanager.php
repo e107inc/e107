@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/filemanager.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-02-13 00:39:55 $
+|     $Revision: 1.9 $
+|     $Date: 2005-02-13 00:59:54 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -78,20 +78,21 @@ foreach($_POST['deleteconfirm'] as $key=>$delfile){
 	// downloads folder
 		if (isset($_POST['movetodls'])){
 			if (preg_match("#^/#",$DOWNLOADS_DIRECTORY) || preg_match("#.:#",$DOWNLOADS_DIRECTORY)){
-				$newpath = $DOWNLOADS_DIRECTORY.$newfile;
+				$newpath = $DOWNLOADS_DIRECTORY;
 			} else {
-				$newpath = e_BASE.$DOWNLOADS_DIRECTORY.$newfile;
+				$newpath = e_BASE.$DOWNLOADS_DIRECTORY;
 			}
 		}
 	// download images folder.
 		if (isset($_POST['movetodlimages'])){
-			$newpath = e_FILE."downloadimages/".$newfile;
+			$newpath = e_FILE."downloadimages/";;
 		}
 
-		if (rename(e_BASE.$delfile,$newpath)){
-			$message .= FMLAN_38." ".$newpath."<br />";
+		if (rename(e_BASE.$delfile,$newpath.$newfile)){
+			$message .= FMLAN_38." ".$newpath.$newfile."<br />";
 		} else {
-			$message .= FMLAN_39." ".$newpath."<br />";
+			$message .= FMLAN_39." ".$newpath.$newfile."<br />";
+			$message .= (!is_writable($newpath)) ? $newpath.LAN_NOTWRITABLE : "";
 		}
 	}
 

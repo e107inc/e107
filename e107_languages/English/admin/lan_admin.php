@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-02-10 22:11:42 $
-|     $Author: stevedunstan $
+|     $Revision: 1.13 $
+|     $Date: 2005-02-13 00:59:54 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("ADLAN_0", "News");
@@ -202,6 +202,6 @@ define("LAN_PRESET","Preset");
 define("LAN_PRESET_SAVED","Preset saved successfully");
 define("LAN_PRESET_DELETED","Preset successfully deleted");
 define("LAN_PRESET_CONFIRMDEL","Are you sure you want to delete this preset?");
-
+define("LAN_NOTWRITABLE"," is not writable, you need to CHMOD 777 the folder first.");
 
 ?>
