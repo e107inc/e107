@@ -1,0 +1,42 @@
+<?php
+
+define(PMLAN_PM,"הודעה פרטית");
+define(PM_ADLAN_PM,"העברה פרטית");
+define(PM_ADLAN_1,"הגדר מאפייני הודעה פרטית");
+define(PM_ADLAN_2,"פעולות ניהול להודעה פרטית");
+define(PM_ADLAN_3,"עדכן מאפייני הודעה פרטית");
+define(PM_ADLAN_4,"בחר משתמש");
+define(PM_ADLAN_5,"הכל ההודעות נמחקו");
+define(PM_ADLAN_6,"הודעה אל/מ");
+define(PM_ADLAN_7,"נמחקו");
+define(PM_ADLAN_8,"הודעה ישנה מ ");
+define(PM_ADLAN_9,"ימים מאז שנשלחה");
+define(PM_ADLAN_10,"זה ימחק את כל ההודעות יותר מ ");
+define(PM_ADLAN_11,"אשר מחיקה");
+define(PM_ADLAN_12,"ביטול");
+define(PM_ADLAN_13,".אתה חייב להקליד ערך");
+define(PM_ADLAN_14,"מחק הודעות");
+define(PM_ADLAN_15,"זה ימחק את כל ההודעות ששלחת ושהתקבלו: ");
+define(PM_ADLAN_16,".אתה חייב לבחור משתמש לפני");
+define(PM_ADLAN_17,"מחק הודעות שהתקבלו / שנשלחו");
+define(PM_ADLAN_18,".זה ימחק את כל ההודעות ממערכת ההודעות הפרטיות עם הם נקראו או לא");
+define(PM_ADLAN_19,"מחק את כל ההודעות");
+define(PM_ADLAN_20,"עדכון מאפייני הודעה פרטית");
+define(PM_ADLAN_21,"כותרת המוד");
+define(PM_ADLAN_22,"הצג אנימצית הודעות פרטיות");
+define(PM_ADLAN_23,"הצג משתמשים ברשימה");
+define(PM_ADLAN_24,"מחק אוטומטית הודעות שנקראו");
+define(PM_ADLAN_25,"עצירת הודעות שנקראו");
+define(PM_ADLAN_26,"עצירת הודעות שלא נקראו");
+define(PM_ADLAN_27,"הקפץ חלון כאשר יש הודעה פרטית חדשה");
+define(PM_ADLAN_28,"הקפץ חלון כאשר השהתה את הזמן");
+define(PM_ADLAN_29,"הגבל הודעות פרטיות ל");
+define(PM_ADLAN_30,"כל המשתמשים הרשומים");
+define(PM_ADLAN_31,"קבוצות משתמשים");
+define(PM_ADLAN_32,"מחק הודעות יותר מ");
+define(PM_ADLAN_33,"כן");
+define(PM_ADLAN_34,"לא");
+define(PM_ADLAN_35,"שלח הודעה בדואר האלקטרוני");
+define(PM_ADLAN_36,"בבשה בדוק שסימנת את השדה");
+define(PM_ADLAN_37,"הודעה במערכת");
+?>
