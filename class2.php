@@ -234,6 +234,7 @@ define("e_LANGUAGE", (!USERLAN || !defined("USERLAN") ? $language : USERLAN));
 
 if($pref['maintainance_flag'] && ADMIN == FALSE && !eregi("admin", e_SELF)){
         @include(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitedown.php");
+        @include(e_LANGUAGEDIR."English/lan_sitedown.php");
         @require_once(e_BASE."sitedown.php"); exit;
 }
 
@@ -807,11 +808,11 @@ function online(){
                         if($online_user_id == $udata) {  //Matching user record
                                 if($online_timestamp < (time() - $online_timeout)){  //It has been at least 'timeout' seconds since this user has connected
                                         //Update user record with timestamp, current IP, current page and set pagecount to 1
-                                        $query = "online_timestamp='".time()."', online_ip='{$ip}', online_location='$page', online_pagecount=1 WHERE online_user_id='{$online_user_id}'";
+                                        $query = "online_timestamp='".time()."', online_ip='{$ip}', online_location='$page', online_pagecount=1 WHERE online_user_id='{$online_user_id}' LIMIT 1";
                                 } else {
                                         if(!ADMIN){$online_pagecount++;}
                                         //Update user record with current IP, current page and increment pagecount
-                                        $query = "online_ip='{$ip}', online_location='$page', online_pagecount={$online_pagecount} WHERE online_user_id='{$online_user_id}'";
+                                        $query = "online_ip='{$ip}', online_location='$page', online_pagecount={$online_pagecount} WHERE online_user_id='{$online_user_id}' LIMIT 1";
                                 }
                         } else {  //Found matching visitor record (ip only) for this user
                                 if($online_timestamp < (time() - $online_timeout)){  //It has been at least 'timeout' seconds since this user has connected
