@@ -56,7 +56,6 @@ $HEADER = "<table class='top_section'>
 
 <div>
 {SITELINKS_ALT}
-{SITELINKS=flat}
 </div>
 
 <table class='main_section'>
