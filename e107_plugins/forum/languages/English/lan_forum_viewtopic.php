@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_viewtopic.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-27 19:52:49 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-31 21:47:36 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Forum");
@@ -72,14 +72,13 @@ define("LAN_426", "Reporting post in topic: ");
 define("LAN_427", "Error sending mail");
 define("LAN_428", "Post has been reported");
 define("LAN_429", "Click here to return to forum");
-	
-	
 define("LAN_430", "poll");
-	
 define("FORLAN_26", "Reply deleted");
 define("FORLAN_10", "Begin New Thread");
-	
-	
 define("LAN_29", "Edited");
+
+define("LAN_431", "Syndicate this thread: rss 0.92");
+define("LAN_432", "Syndicate this thread: rss 2.0");
+define("LAN_433", "Syndicate this thread: RDF");
 	
 ?>
