@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-03-14 16:28:42 $
+|     $Revision: 1.18 $
+|     $Date: 2005-03-20 22:49:31 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -52,9 +52,16 @@ $LASTPOSTITLE = LAN_57;
 $VIEWTITLE = LAN_56;
 	
 if (!$FORUM_VIEW_START) {
-	if (file_exists(THEME."forum_viewforum_template.php")) {
+	if (file_exists(THEME."forum_viewforum_template.php"))
+	{
 		require_once(THEME."forum_viewforum_template.php");
-	} else {
+	}
+	else if (file_exists(THEME."forum_template.php"))
+	{
+		require_once(THEME."forum_template.php");
+	}
+	else
+	{
 		require_once(e_PLUGIN."forum/templates/forum_viewforum_template.php");
 	}
 }
