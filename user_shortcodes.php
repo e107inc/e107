@@ -118,7 +118,7 @@ return $gen -> computeLapse($user['user_join'])." ".LAN_426;
 SC_END
 
 SC_BEGIN USER_REALNAME_ICON
-return defined("USER_REALNAME_ICON") ? USER_REALNAME_ICON : "<img src='".e_IMAGE."user_icons/realname_".IMODE.".png' alt='' style='vertical-align:middle; height:16px; width:16px' /> ";
+return defined("USER_REALNAME_ICON") ? USER_REALNAME_ICON : "<img src='".e_IMAGE."user_icons/user_realname_".IMODE.".png' alt='' style='vertical-align:middle; height:16px; width:16px' /> ";
 SC_END
 
 SC_BEGIN USER_REALNAME
@@ -213,11 +213,7 @@ if($pref['profile_rate'] && USER)
 		$num = $rating[1];
 		for($i=1; $i<= $num; $i++)
 		{
-			$ret .= "<img src='".e_IMAGE."generic/star1.gif' style='border:0' alt='' />";
-		}
-		for($i=$num+1; $i<= 10; $i++)
-		{
-			$ret .= "<img src='".e_IMAGE."generic/star2.gif' style='border:0' alt='' />";
+			$ret .= "<img src='".e_IMAGE."user_icons/user_star_".IMODE.".png' style='border:0' alt='' />";
 		}
 	}
 	if($rater->checkrated('user', $user['user_id']))
