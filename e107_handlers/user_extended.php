@@ -11,11 +11,88 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:27 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-20 19:00:54 $
+|     $Author: asperon $
 +----------------------------------------------------------------------------+
 */
+
+/* 
+
+	User_extended rewrite for version 0.7
+	
+	this code uses two tables, 
+		user_extended
+		user_extended_struct
+	to store its data and structural information.
+
+*/
+
+
+function user_extended_field_exist($name) {
+
+	$found=FALSE;
+	$sql -> db_Query("SHOW COLUMNS FROM user_extended");
+	while($row = $sql-> db_Fetch() && !$found){
+		if ($row['Field']==$name) {
+			$found=TRUE;
+		}
+	}
+	return $found;
+}
+
+function user_extended_add($name,$type,$access, $default='',$values='') {
+
+	if (!(user_extended_field_exist($name))) {
+		$db_type='';
+		switch ($type) {
+			case 'radio':
+				$db_type='INT(11)';
+				break;
+			case 'dropdown':
+				$db_type='VARCHAR(255)';
+				break;
+			default:
+				$db_type=$type;
+				break;
+		}
+		$sql -> db_Query("ALTER TABLE user_extended ADD ".$name.' '.$db_type.($default!=''?' DEFAULT '.$default:''));
+		$access=explode(',',$access);
+		$sql -> db_Insert("user_extended_struct (0,'".$name."','".$type."','".$values."',".$access[0].",".$access[1].",".$access[2].",".$access[3].",".$access[4].");
+	}
+}
+
+function user_extended_remove($name) {
+
+	if (!(user_extended_field_exist($name)) {
+		$sql -> db_Query("ALTER TABLE user_extended DROP ".$name);
+		$sql -> db_Delete("user_extended_struct","user_extended_struct_name='".$name."'");
+	}
+}
+
+function user_extended_modify{$name,$type,$access,$default='',$values='') {
+
+	if (user_extended_field_exist($name)) {
+		$db_type='';
+		switch ($type) {
+			case 'radio':
+				$db_type='INT(11)';
+				break;
+			case 'dropdown':
+				$db_type='VARCHAR(255)';
+				break;
+			default:
+				$db_type=$type;
+				break;
+		}
+		$sql -> db_Query("ALTER TABLE user_extended MODIFY ".$name.' '.$db_type.($default!=''?' DEFAULT '.$default:''));
+		$access=explode(',',$access);
+		$sql -> db_Update("user_extended_struct", "user_extended_struct_type='".$type."',user_extended_struct_values='".$values."',user_extended_struct_read=".$access[0].",user_extended_struct_write=".$access[1].",user_extended_struct_required=".$access[2].",user_extended_struct_signup_show=".$access[3].",user_extended_struct_signup_required=".$access[4]." WHERE user_extended_struct_name='".$name."');
+	}
+}
+
+
+
 
 // $form_ext_name = extended-user-field string
 // Usage of $form_ext_name - "Name|type|values|default|applicable to|visible to"
