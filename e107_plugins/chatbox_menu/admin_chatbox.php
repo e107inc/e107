@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/admin_chatbox.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-02-03 10:59:04 $
+|     $Revision: 1.4 $
+|     $Date: 2005-03-20 09:14:56 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -94,9 +94,12 @@ if (!$sql->db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, 50", $
 	$text = "<div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>
 		<form method='post' action='".e_SELF."'>
 		<table style='width:99%' class='fborder'>";
-	 
-	$sql2 = new db;
-	while ($row = $sql->db_Fetch()) {
+
+	$cbArray = $sql -> db_getList();
+
+
+	foreach($cbArray as $row)
+	{
 		extract($row);
 		 
 		$datestamp = $con->convert_date($cb_datestamp, "short");
@@ -104,8 +107,8 @@ if (!$sql->db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, 50", $
 		$cb_ida = substr($cb_nick, 0, strpos($cb_nick, "."));
 		 
 		if ($cb_ida) {
-			$sql2->db_Select("user", "*", "user_id='$cb_ida' ");
-			$row = $sql2->db_Fetch();
+			$sql->db_Select("user", "*", "user_id='$cb_ida' ");
+			$row = $sql->db_Fetch();
 			 extract($row);
 			$cb_nick = "<a href='".e_BASE."user.php?id.".$user_id."'>".$user_name."</a>";
 			$cb_str = "".CHBLAN_4." ".$user_id;
