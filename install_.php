@@ -547,9 +547,9 @@ function create_tables(){
         mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES ('1', 'This text (if activated) will appear at the top of your front page all the time.', '0')");
         mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES ('2', 'Member message ----- This text (if activated) will appear at the top of your front page all the time - only logged in members will see this.', '0')");
         mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES ('3', 'Administrator message ----- This text (if activated) will appear at the top of your front page all the time - only logged in administrators will see this.', '0')");
-		mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES (4, 'This text (if activated) will appear on a page when "Forum Rules" link is clicked on.', '0')");
-		mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES (5, 'Member rules ----- This text (if activated) will appear on a page when "Forum Rules" link is clicked on - only logged in members will see this.', '0')");
-		mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES (6, 'Administrator rules ----- This text (if activated) will appear on a page when "Forum Rules" link is clicked on - only logged in administrators will see this.', '0')");
+		mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES (4, 'This text (if activated) will appear on a page when \"Forum Rules\" link is clicked on.', '0')");
+		mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES (5, 'Member rules ----- This text (if activated) will appear on a page when \"Forum Rules\" link is clicked on - only logged in members will see this.', '0')");
+		mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES (6, 'Administrator rules ----- This text (if activated) will appear on a page when \"Forum Rules\" link is clicked on - only logged in administrators will see this.', '0')");
 
         mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'login_menu', 1, 1, 0)");
         mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'search_menu', 0, 0, 0)");
