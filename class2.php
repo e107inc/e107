@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2004-12-11 04:25:06 $
+|     $Revision: 1.34 $
+|     $Date: 2004-12-11 17:13:55 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -363,18 +363,18 @@ define("SITEADMINEMAIL", $pref['siteadminemail']);
 define("SITEDISCLAIMER", $pref['sitedisclaimer']);
 
 if ($pref['maintainance_flag'] && ADMIN == FALSE && !eregi("admin", e_SELF)) {
-	e107_include(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitedown.php");
-	e107_include(e_LANGUAGEDIR."English/lan_sitedown.php");
+	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitedown.php");
+	e107_include_once(e_LANGUAGEDIR."English/lan_sitedown.php");
 	e107_require_once(e_BASE."sitedown.php");
 	exit;
 }
 
 if (strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin.php")) {
-	e107_include(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".e_PAGE);
-	e107_include(e_LANGUAGEDIR."English/admin/lan_".e_PAGE);
+	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".e_PAGE);
+	e107_include_once(e_LANGUAGEDIR."English/admin/lan_".e_PAGE);
 } else {
-	e107_include(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE);
-	e107_include(e_LANGUAGEDIR."English/lan_".e_PAGE);
+	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE);
+	e107_include_once(e_LANGUAGEDIR."English/lan_".e_PAGE);
 }
 
 if (IsSet($_POST['userlogin'])) {
