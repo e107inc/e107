@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2005-01-26 23:55:43 $
-|     $Author: mrpete $
+|     $Revision: 1.55 $
+|     $Date: 2005-01-27 04:52:01 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -521,7 +521,7 @@ function check_email($var) {
 	FALSE;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-function chk_class($var, $userclass, $debug) {
+function check_class($var, $userclass = USERCLASS, $debug = FALSE) {
 	if (preg_match ("/^([0-9]+)$/", $var)) {
 		if ($var == e_UC_MEMBER && USER == TRUE) {
 			return TRUE;
@@ -553,7 +553,7 @@ function chk_class($var, $userclass, $debug) {
 	}
 	// user has classes set - continue
 	if (preg_match ("/^([0-9]+)$/", $var)) {
-		$tmp = explode(".", $userclass);
+		$tmp = explode(',', $userclass);
 		if (is_numeric(array_search($var, $tmp))) {
 			if ($debug) {
 				echo "TRUE<br />";
@@ -565,7 +565,7 @@ function chk_class($var, $userclass, $debug) {
 		$sql = new db;
 		if ($sql->db_Select("userclass_classes", "*", "userclass_name='$var' ")) {
 			$row = $sql->db_Fetch();
-			$tmp = explode(".", $userclass);
+			$tmp = explode(',', $userclass);
 			if (is_numeric(array_search($row['userclass_id'], $tmp))) {
 				if ($debug) {
 					echo "TRUE<br />";
@@ -580,24 +580,6 @@ function chk_class($var, $userclass, $debug) {
 	return FALSE;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-function check_class($Classes, $userclass = USERCLASS, $debug = FALSE) {
-	if (!$Classes || $Classes == '') {
-		return true;
-	}
-	if (strpos($Classes, ',') == true) {
-		return chk_class($Classes, $userclass, $debug);
-	}
-	$vars = explode(',', $Classes);
-	foreach($vars as $var){
-		$ret = chk_class($var, $userclass, $debug);
-		if($ret == true) {
-			return true;
-		}
-	}
-	return false;
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function getperms($arg, $ap = ADMINPERMS) {
 	global $PLUGINS_DIRECTORY;
 	if ($ap == "0") {
@@ -606,12 +588,12 @@ function getperms($arg, $ap = ADMINPERMS) {
 	if ($ap == "") {
 		return FALSE;
 	}
-	$ap = ".".$ap;
-	if ($arg == "P" && preg_match("#(.*?)/".$PLUGINS_DIRECTORY."(.*?)/(.*?)#", e_SELF, $matches) ) {
+	$ap = '.'.$ap;
+	if ($arg == 'P' && preg_match("#(.*?)/".$PLUGINS_DIRECTORY."(.*?)/(.*?)#", e_SELF, $matches) ) {
 		$psql = new db;
-		if ($psql->db_Select("plugin", "plugin_id", "plugin_path = '".$matches[2]."' ")) {
+		if ($psql->db_Select('plugin', 'plugin_id', "plugin_path = '".$matches[2]."' ")) {
 			$row = $psql->db_Fetch();
-			$arg = "P".$row[0];
+			$arg = 'P'.$row[0];
 		}
 	}
 	if (preg_match("#\.".$arg."\.#", $ap)) {
@@ -889,6 +871,7 @@ function init_session() {
 			define("USERCLASS", "");
 		}
 	}
+	define('USERCLASS_LIST',class_list());
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function ban() {
@@ -926,6 +909,31 @@ function table_exists($check){
 		}
 	}
 }
+
+function class_list($uid='')
+{
+	$clist = array();
+	if($uid =='')
+	{
+		if(USER === TRUE)
+		{
+			$clist = explode(',',USERCLASS);
+			$clist[] = e_UC_MEMBER;
+			if(ADMIN === TRUE) 
+			{
+				$clist[] = e_UC_ADMIN;
+			}
+		}
+		else
+		{
+			$clist[] = e_UC_GUEST;
+		}
+		$clist[] = e_UC_READONLY;
+		$clist[] = e_UC_PUBLIC;
+		return implode(',',$clist);
+	}
+}
+
 // ---------------------------------------------------------------------------
 function e107_include($fname) {
 	global $e107_debug;
