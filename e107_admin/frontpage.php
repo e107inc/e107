@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/frontpage.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-02-01 00:45:08 $
+|     $Revision: 1.8 $
+|     $Date: 2005-02-01 00:49:37 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -125,7 +125,7 @@ if ($flag != TRUE) {
 	$text .= "checked='checked'";
 }
 	
-$text .= " />".FRTLAN_8.":
+$text .= " />".FRTLAN_15."
 	&nbsp;<input class='tbox' type='text' name='frontpage_url' size='50' value='";
 if ($flag != TRUE) {
 	$text .= $pref['frontpage'];
