@@ -96,4 +96,9 @@ define("NWSLAN_87", "News Category Columns?");
 define("NWSLAN_88", "News posts to display per page?");
 define("NWSLAN_89", "Save News Preferences");
 define("NWSLAN_90", "News Preferences");
+define("NWSLAN_100", "Enable Image uploading on Submit News page");
+define("NWSLAN_101", "Automatic resizing of submitted image");
+define("NWSLAN_102", "width in pixels<br> or leave blank to disable.");
+
+
 ?>
