@@ -37,8 +37,8 @@ if(e_QUERY){
 }
 if(preg_match("#(.*?)_delete_(\d+)#",$deltest[$etp->unentity(FORLAN_20)],$matches))
 {
-	$delete = $matches[1];
-	$del_id = $matches[2];
+        $delete = $matches[1];
+        $del_id = $matches[2];
 }
 
 If(IsSet($_POST['submit_parent'])){
@@ -143,6 +143,7 @@ if(IsSet($_POST['set_ranks'])){
         $pref['rank_main_admin_image'] = $_POST['rank_main_admin_image'];
         $pref['rank_admin'] = $_POST['rank_admin'];
         $pref['rank_admin_image'] = $_POST['rank_admin_image'];
+        $pref['rank_moderator'] = $_POST['rank_moderator'];  
         $pref['rank_moderator_image'] = $_POST['rank_moderator_image'];
         $pref['forum_levels'] = $r_names;
         $pref['forum_thresholds'] = $r_thresholds;
@@ -163,10 +164,10 @@ if(IsSet($_POST['frsubmit'])){
 
 if($delete == 'main')
 {
-	if($sql -> db_Delete("forum", "forum_id='$del_id' "))
-	{
-		$forum -> show_message(FORLAN_96);
-	}
+        if($sql -> db_Delete("forum", "forum_id='$del_id' "))
+        {
+                $forum -> show_message(FORLAN_96);
+        }
 }
 
 if($action == "create"){
@@ -180,17 +181,17 @@ if($action == "create"){
 
 if($delete == 'cat')
 {
-	if($sql -> db_Delete("forum", "forum_id='$del_id' "))
-	{
-		$sql -> db_Delete("forum", "forum_parent='$del_id' ");
-		$forum -> show_message(FORLAN_97);
-		$action = "main";
-	}
+        if($sql -> db_Delete("forum", "forum_id='$del_id' "))
+        {
+                $sql -> db_Delete("forum", "forum_parent='$del_id' ");
+                $forum -> show_message(FORLAN_97);
+                $action = "main";
+        }
 }
 
 if($action == "cat")
 {
-	$forum -> create_parents($sub_action, $id);
+        $forum -> create_parents($sub_action, $id);
 }
 
 if($action == "order"){
@@ -215,14 +216,14 @@ if($action == "rules"){
 
 if($delete == 'reported')
 {
-	$sql -> db_Delete("tmp", "tmp_time='$del_id' ");
-	$forum -> show_message(FORLAN_118);
-	$forum -> show_reported();
+        $sql -> db_Delete("tmp", "tmp_time='$del_id' ");
+        $forum -> show_message(FORLAN_118);
+        $forum -> show_reported();
 }
-	
+
 
 if($action == "sr"){
-	$forum -> show_reported();
+        $forum -> show_reported();
 }
 
 
@@ -328,13 +329,13 @@ class forum{
                                         }
                                         $text .= "</select>";
                                 }else{
-										$forum_heading = str_replace("&#39;", "\'", $forum_name);
+                                                                                $forum_heading = str_replace("&#39;", "\'", $forum_name);
                                         $text .= "
                                         ".$rs -> form_button("submit", "main_edit_{$forum_id}", FORLAN_19, "onclick=\"document.location='".e_SELF."?cat.edit.$forum_id'\"")."
 
-			                               	".$rs -> form_open("post", e_SELF,"","",""," onsubmit=\"return confirm_('parent',$forum_id,'$forum_heading')\"")."
-                                				".$rs -> form_button("submit", "cat_delete_{$forum_id}", FORLAN_20)."
-                                				".$rs -> form_close();
+                                                               ".$rs -> form_open("post", e_SELF,"","",""," onsubmit=\"return confirm_('parent',$forum_id,'$forum_heading')\"")."
+                                                                ".$rs -> form_button("submit", "cat_delete_{$forum_id}", FORLAN_20)."
+                                                                ".$rs -> form_close();
                                 }
                                 $text .= "</td></tr>";
 
@@ -370,13 +371,13 @@ class forum{
                                                         $text .= "</select>";
                                                 }else{
 
-														$forum_heading = str_replace("&#39;", "\'", $forum_name);
+                                                                                                                $forum_heading = str_replace("&#39;", "\'", $forum_name);
                                                         $text .= "
                                                         ".$rs -> form_button("submit", "main_edit_{$forum_id}", FORLAN_19, "onclick=\"document.location='".e_SELF."?create.edit.$forum_id'\"")."
 
-							                               		".$rs -> form_open("post", e_SELF,"","",""," onsubmit=\"return confirm_('forum',$forum_id,'$forum_heading')\"")."
-                                									".$rs -> form_button("submit", "main_delete_{$forum_id}", FORLAN_20)."
-                                									".$rs -> form_close();
+                                                                                                       ".$rs -> form_open("post", e_SELF,"","",""," onsubmit=\"return confirm_('forum',$forum_id,'$forum_heading')\"")."
+                                                                                                        ".$rs -> form_button("submit", "main_delete_{$forum_id}", FORLAN_20)."
+                                                                                                        ".$rs -> form_close();
 
 
 
@@ -636,9 +637,9 @@ class forum{
                                         $text .= "<tr>
                                         <td style='width:80%' class='forumheader3'><a href='".e_BASE."forum_viewtopic.php?".$reported[0].".".$reported[1]."#".$reported[2]."' rel='external'>".$reported[3]."</a></td>
                                         <td style='width:20%; text-align:center; vertical-align:top' class='forumheader3'>
-			                               	".$rs -> form_open("post", e_SELF,"","",""," onsubmit=\"return confirm_('sr',$tmp_time)\"")."
-   	                         				".$rs -> form_button("submit", "reported_delete_{$tmp_time}", FORLAN_20)."
-	     	                       				".$rs -> form_close()."
+                                                               ".$rs -> form_open("post", e_SELF,"","",""," onsubmit=\"return confirm_('sr',$tmp_time)\"")."
+                                                                    ".$rs -> form_button("submit", "reported_delete_{$tmp_time}", FORLAN_20)."
+                                                                            ".$rs -> form_close()."
                                         </td>
                                         </tr>\n";
                                 }
@@ -714,7 +715,7 @@ class forum{
                 </tr>
 
                 <tr>
-                <td class='forumheader3' style='width:40%; text-align:center'><input class='tbox' type='text' name='rank_admin' size='30' value='".($pref['rank_moderator'] ? $pref['rank_moderator'] : FORLAN_105)."' maxlength='30' /></td>
+                <td class='forumheader3' style='width:40%; text-align:center'><input class='tbox' type='text' name='rank_moderator' size='30' value='".($pref['rank_moderator'] ? $pref['rank_moderator'] : FORLAN_105)."' maxlength='30' /></td>
                 <td class='forumheader3' style='width:40%'>&nbsp;</td>
                 <td class='forumheader3' style='width:40%; text-align:center'><input class='tbox' type='text' name='rank_moderator_image' size='30' value='".($pref['rank_moderator_image'] ? $pref['rank_moderator_image'] : "moderator.png")."' maxlength='30' /></td>
                 </tr>";
