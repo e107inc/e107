@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/xml_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-08 21:43:52 $
+|     $Revision: 1.2 $
+|     $Date: 2005-02-28 18:23:54 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -45,6 +45,7 @@ class parseXml {
 				return FALSE;
 			}
 			curl_close ($cu);
+			return TRUE;
 		}
 
 		if(ini_get("allow_url_fopen"))
@@ -165,11 +166,6 @@ class parseXml {
 			$this -> xmlData [$this -> current_tag] [$this -> counterArray[$this -> current_tag]] = $data;
 		}
 	}
-
-	
-
-
-
 }
 
 ?>
