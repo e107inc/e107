@@ -194,6 +194,7 @@ if($cache = retrieve_cache("comment.php?$table.$id")){
 		} else {
 			$row = $sql -> db_Fetch();
 			extract($row);
+			if($poll_comment == 0){header("location:".e_BASE."index.php");}
 			$subject = $poll_title;
 			define(e_PAGETITLE,  LAN_101." / ".LAN_99." / ".$subject."");
 			require_once(HEADERF);

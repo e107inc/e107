@@ -48,8 +48,8 @@ if($action == "delete"){
 }
 
 if(IsSet($_POST['submit'])){
-        $message = $poll -> submit_poll($sub_action, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate']);
-        unset($_POST['poll_title'], $_POST['poll_option'], $_POST['activate']);
+        $message = $poll -> submit_poll($sub_action, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], $_POST['poll_comment']);
+        unset($_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], $_POST['poll_comment']);
 }
 
 if($action == "edit" && !$_POST['preview']  && !$_POST['addoption'] && !$_POST['submit']){
@@ -64,6 +64,7 @@ if($action == "edit" && !$_POST['preview']  && !$_POST['addoption'] && !$_POST['
                 $_POST['activate'] = $poll_active;
                 $_POST['option_count'] = count($_POST['poll_option']);
                 $_POST['poll_title'] = $poll_title;
+				$_POST['poll_comment'] = $poll_comment;
         }
 }
 
@@ -150,7 +151,12 @@ $text .= ($_POST['activate'] == 2 ? "<input name='activate' type='radio' value='
 
 $text .= "</td>
 </tr>
+<tr>
+<td class='forumheader3'>".POLLAN_24.": </td><td class='forumheader3'>".
 
+ ($_POST['poll_comment'] ? "<input name='poll_comment' type='radio' value='1' checked='checked' />".POLLAN_25."&nbsp;&nbsp;<input name='poll_comment' type='radio' value='0' />".POLLAN_26 : "<input name='poll_comment' type='radio' value='1' />".POLLAN_25."&nbsp;&nbsp;<input name='poll_comment' type='radio' value='0' checked='checked' />".POLLAN_26)."
+        </td>
+        </tr>
 <tr style='vertical-align:top'>
 <td colspan='2'  style='text-align:center' class='forumheader'>";
 

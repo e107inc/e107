@@ -26,4 +26,8 @@ define("POLLAN_21", "Are you sure you want to delete this poll?");
 define("POLLAN_22", "No polls");
 define("POLLAN_23", "Poll Preview");
 
+//v.617
+define("POLLAN_24", "Allow comments for this poll? ");
+define("POLLAN_25", "Yes");
+define("POLLAN_26", "No");
 ?>

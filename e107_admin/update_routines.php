@@ -3,6 +3,7 @@
 require_once("../class2.php");
 
 $dbupdate=array(	
+						"616_to_617" => LAN_UPDATE_8." .616 ".LAN_UPDATE_9." .617",
 						"615_to_616" => LAN_UPDATE_8." .615 ".LAN_UPDATE_9." .616",
 						"614_to_615" => LAN_UPDATE_8." .614 ".LAN_UPDATE_9." .615",
 						"613b_to_614" => LAN_UPDATE_8." .613b ".LAN_UPDATE_9." .614",
@@ -27,6 +28,25 @@ function update_check(){
 		<input class='button' type='submit' value='".ADLAN_122."' />
 		</form></div>";
 		$ns -> tablerender(ADLAN_122,$txt);
+	}
+}
+
+
+
+function update_616_to_617($type){
+	global $sql;
+	if($type=="do"){
+		mysql_query("ALTER TABLE  ".MPREFIX."poll ADD poll_comment TINYINT( 3 ) UNSIGNED DEFAULT '1' NOT NULL ");
+		$sql2 = new db;
+		$sql2 -> db_Update("poll", "poll_comment='1' WHERE poll_id!='0'");
+	} else {
+		global $mySQLdefaultdb;
+		$fields = mysql_list_fields($mySQLdefaultdb,MPREFIX."poll");
+		$columns = mysql_num_fields($fields);
+		for ($i = 0; $i < $columns; $i++) {
+	   	if("poll_comment" == mysql_field_name($fields, $i)){return TRUE;}
+		}
+		return FALSE;
 	}
 }
 

@@ -377,6 +377,7 @@ CREATE TABLE poll (
   poll_votes_10 int(10) unsigned NOT NULL default '0',
   poll_ip text NOT NULL,
   poll_active tinyint(3) unsigned NOT NULL default '0',
+  poll_comment tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (poll_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
