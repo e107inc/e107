@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-03-09 21:06:14 $
+|     $Revision: 1.17 $
+|     $Date: 2005-03-10 13:30:23 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -281,14 +281,14 @@ if ($_POST['useraction'] == "unadmin") {
 	
 if (isset($_POST['add_field']))
 {
-	if($ue->user_extended_add($_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $_POST['user_parms'], $_POST['user_values'], $_POST['user_default'], $_POST['user_read'], $_POST['user_write']))
+	if($ue->user_extended_add($_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $_POST['user_parms'], $_POST['user_values'], $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write']))
 	{
 		$message = USRLAN_2;
 	}
 }
 	
 if (isset($_POST['update_field'])) {
-	if($ue->user_extended_modify($sub_action, $_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $_POST['user_parms'], $_POST['user_values'], $_POST['user_default'], $_POST['user_read'], $_POST['user_write']))
+	if($ue->user_extended_modify($sub_action, $_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $_POST['user_parms'], $_POST['user_values'], $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write']))
 	{
 		$message = USRLAN_2;
 	}
@@ -628,8 +628,14 @@ class users {
 				$text .= "
 				<td class='forumheader3'>{$ext['user_extended_struct_name']}<br />[{$ext['user_extended_struct_text']}]</td>
 				<td class='forumheader3'>".$ue->user_extended_types[$ext['user_extended_struct_type']]."</td>
-				<td class='forumheader3'>{$ext['user_extended_struct_values']}</td>
-				<td class='forumheader3'>{$ext['user_extended_struct_default']}</td>
+				<td class='forumheader3'>{$ext['user_extended_struct_values']}";
+				if($ext['user_extended_struct_values'])
+				{
+					$text .= "<br />[{$ext['user_extended_struct_default']}]";
+				}
+				$text .= "
+				</td>
+				<td class='forumheader3'>".($ext['user_extended_struct_required'] ? LAN_YES : LAN_NO)."</td>
 				<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_read'])."</td>
 				<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_write'])."</td>
 				<td class='forumheader3' style='text-align:center;'>
@@ -733,16 +739,40 @@ class users {
 			</tr>
 			 
 			<tr>
+			<td style='width:30%' class='forumheader3'>".USRLAN_132."</td>
+			<td style='width:70%' class='forumheader3' colspan='3'>
+			<select class='tbox' type='text' name='user_required'>
+			";
+			if($current['user_extended_struct_required'])
+			{
+				$text .= "
+				<option value='1' selected='selected'>".LAN_YES."
+				<option value='0'>".LAN_NO;
+			}
+			else
+			{
+				$text .= "
+				<option value='1'>".LAN_YES."
+				<option value='0' selected='selected'>".LAN_NO;
+			}
+			$text .= "
+			</select>
+			<br />
+			<span class='smalltext'>".USRLAN_133."</span>
+			</td>
+			</tr>
+
+			<tr>
 			<td style='width:30%' class='forumheader3'>".USRLAN_100."</td>
 			<td style='width:70%' class='forumheader3' colspan='3'>
-			".r_userclass("user_read", $current['user_extended_struct_read'])."<br /><span class='smalltext'>".USRLAN_107."</span>
+			".r_userclass("user_read", $current['user_extended_struct_read'], 'off', 'member, admin, classes')."<br /><span class='smalltext'>".USRLAN_107."</span>
 			</td>
 			</tr>
 			 
 			<tr>
 			<td style='width:30%' class='forumheader3'>".USRLAN_101."</td>
 			<td style='width:70%' class='forumheader3' colspan='3'>
-			".r_userclass("user_write", $current['user_extended_struct_write'])."<br /><span class='smalltext'>".USRLAN_106."</span>
+			".r_userclass("user_write", $current['user_extended_struct_write'], 'off', 'member, admin, classes')."<br /><span class='smalltext'>".USRLAN_106."</span>
 			</td>
 			</tr>";
 		 
