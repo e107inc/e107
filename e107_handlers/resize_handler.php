@@ -13,6 +13,8 @@
 |
 +---------------------------------------------------------------+
 */
+/* 07-04-2004 - unknown: removed source/destination file rewriting, this should not break existing code */
+/* 09-04-2004 - unknown: source/destination file should be quoted, otherwise files with spaces can't be handled */
 function resize_image($source_file, $destination_file, $type = "upload", $model=""){
 
 	global $pref;
@@ -46,16 +48,15 @@ if($image_stats == null){ echo "<b>DEBUG</b> image_stats are null<br />"; return
 	$new_imageheight = round($imageheight / $ratio);
 
 	if($mode == "ImageMagick"){
-		$source_file = $_SERVER['DOCUMENT_ROOT'].e_HTTP.$source_file;
 		if ($destination_file == "stdout") {
 			/* if destination is stdout, output directly to the browser */
 			$destination_file = "jpg:-";
 			header("Content-type: image/jpeg");
-			passthru ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." ".$source_file." ".$destination_file);
+			passthru ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." '".$source_file."' '".$destination_file."'");
 		}else{
 			/* otherwise output to file */
-			$destination_file = $_SERVER['DOCUMENT_ROOT'].e_HTTP.$destination_file;
-			exec ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." ".$source_file." ".$destination_file);
+			exec ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." '".$source_file."' '".$destination_file."'");
+
 		}
 	}else if($mode == "gd1"){
 		if($image_stats[2] == 2)
