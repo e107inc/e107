@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-03-08 12:16:24 $
+|     $Revision: 1.9 $
+|     $Date: 2005-03-08 16:51:01 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -29,6 +29,7 @@ Query string: content_type.rss_type.[topic id]
 8: forum specific post (specify id)
 9: chatbox
 10: bugtracker
+11: forum
 */
 
 require_once("../../class2.php");
@@ -269,6 +270,38 @@ class rssCreate {
 					$this -> rssItems[$loop]['title'] = $value['bugtrack2_bugs_summary'];
 					$this -> rssItems[$loop]['link'] = $e107->HTTPPath.$PLUGINS_DIRECTORY."bugtracker2/bugtracker2.php?0.bug.".$value['bugtrack2_bugs_id'];
 					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? htmlspecialchars($value['bugtrack2_bugs_description']) : htmlspecialchars(substr($value['bugtrack2_bugs_description'], 0, 100)));
+					$loop++;
+				}
+			break;
+
+			case 11:
+				$this -> rssQuery = "SELECT tp.thread_name AS parent_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_anon, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name FROM e107_forum_t AS t
+				LEFT JOIN e107_user AS u ON t.thread_user = u.user_id
+				LEFT JOIN e107_forum_t AS tp ON t.thread_parent = tp.thread_id
+				LEFT JOIN e107_forum AS f ON f.forum_id = t.thread_forum_id
+				WHERE f.forum_class  IN (0, 255)
+				AND t.thread_forum_id = ".$this -> topicid." 
+				ORDER BY t.thread_datestamp DESC LIMIT 0, 9";
+				$sql->db_Select_gen($this -> rssQuery);
+				$tmp = $sql->db_getList();
+				$this -> contentType = "forum: ".$tmp[1]['forum_name'];
+				$this -> rssItems = array();
+				$loop=0;
+				foreach($tmp as $value) {
+					if($value['thread_user']) {
+						$this -> rssItems[$loop]['author'] = $value['user_name'] . " ( ".$e107->HTTPPath."user.php?id.".$value['thread_user']." )";
+					} else {
+						list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $value['thread_anon']);
+					}
+
+					if($value['parent_name']) {
+						$this -> rssItems[$loop]['title'] = "Re: ".htmlspecialchars($value['parent_name']);
+						$this -> rssItems[$loop]['link'] = $e107->HTTPPath.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_parent'];
+					} else {
+						$this -> rssItems[$loop]['title'] = htmlspecialchars($value['thread_name']);
+						$this -> rssItems[$loop]['link'] = $e107->HTTPPath.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'];
+					}
+					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? htmlspecialchars($value['thread_thread']) : htmlspecialchars(substr($value['thread_thread'], 0, 100)));
 					$loop++;
 				}
 			break;
