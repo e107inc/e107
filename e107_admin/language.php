@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-05 16:57:37 $
-|     $Author: sweetas $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-07 16:11:16 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -38,7 +38,6 @@ if(isset($_POST['submit_prefs']) ){
 }
 // ----------------- delete tables ---------------------------------------------
 if(isset($_POST['del_existing']) && $_POST['lang_choices']){
-        if($_POST['confirm_remove_table']){
 
             $lang = strtolower($_POST['lang_choices']);
             foreach ($tabs as $del_table) {
@@ -47,9 +46,6 @@ if(isset($_POST['del_existing']) && $_POST['lang_choices']){
                }
             }
 
-        }else{
-            $message = "You must check 'confirm delete' to delete a table";
-        }
 
     $ns -> tablerender("Result", $message);
 }
@@ -119,7 +115,7 @@ if(isset($_POST['create_tables']) && $_POST['language']){
 
         if($installed){
             $text .= " <input type='submit' class='button' name='edit_existing' value='".ADLAN_78."' />\n";
-            $text .= " <input type='submit' class='button' name='del_existing' value='".ADLAN_79."' />\n";
+            $text .= " <input type='submit' class='button' name='del_existing' value='".ADLAN_79."' onclick=\"return checkit('".$lanlist[$i]."')\" />\n";
         }else{
             $text .= "<input type='submit' class='button' name='edit_existing' value='".ADLAN_82."' />\n";
         }
@@ -306,5 +302,16 @@ function get_langlist(){
 
 }
 
+
+
+function headerjs(){
+$text = "
+    <script type='text/javascript'>
+        function checkit(langtab){
+        return confirm('Delete all '+langtab+' tables?');
+        }
+    </script>";
+return $text;
+}
 
 ?>
