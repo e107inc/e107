@@ -26,6 +26,9 @@ $admin_choice=$_POST['admin_choice'];
 if($admin_choice=="Custom" && getperms("I")){
 	$choice= e_PLUGIN."custom/";
 }
+if($admin_choice=="Custompages" && getperms("I")){
+	$choice= e_PLUGIN."custompages/";
+}
 
 $path = str_replace("../", "", (e_QUERY ? e_QUERY : $choice));
 if(!$path){ $path =  str_replace("../", "", $choice); }
@@ -133,6 +136,7 @@ $text = "<div style='text-align:center'>\n
 ($admin_choice=="Files" ? $text .= "<option value='Files' selected='selected'>".FMLAN_35."</option>" : $text .= "<option value='Files'>".FMLAN_35."</option>");
 if(getperms("I")){
 	($admin_choice=="Custom" ? $text .= "<option value='Custom' selected='selected'>".FMLAN_36."</option>" : $text .= "<option value='Custom'>".FMLAN_36."</option>");
+	($admin_choice=="Custompages" ? $text .= "<option value='Custompages' selected='selected'>".FMLAN_37."</option>" : $text .= "<option value='Custompages'>".FMLAN_37."</option>");
 }
 $text .= "</select>\n
 </td>\n
