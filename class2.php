@@ -514,19 +514,20 @@ class textparse{
 
         $search[24] = "#\[quote\](.*?)\[/quote\]#si";
         $replace[24] = '<i>"\1"</i>';
-
-        $text = preg_replace($search, $replace, $text);
+		
         if($referrer != "admin"){
         		$text = $this -> tpj($text);
         	}
+        if($mode != "nobreak"){ $text = nl2br($text); }
+		$text = preg_replace("/\n/i", " ", $text);
+		$text = str_replace("<br />", " <br />" , $text);
+		$text = $this -> wrap($text);
+        $text = preg_replace($search, $replace, $text);
         if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
         $search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;span", "&lt;/span");
         $replace =  array("\"", "'", "\\", '\"', "\'", "<span", "</span");
         $text = str_replace($search, $replace, $text);
-        if($mode != "nobreak"){ $text = nl2br($text); }
         $text = str_replace("<br /><br />", "<br />", $text);
-        $text = preg_replace("#([\t\r\n ])([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ .\"\n\r\t<]*)?)#i", '\1<a href="\2://\3" onclick="window.open(\'\2://\3\'); return false;">\2://\3</a>', $text);
-        $text = preg_replace("#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ .\"\n\r\t<]*)?)#i", '\1<a href="http://\2.\3" onclick="window.open(\'http://\2.\3\'); return false;">\2.\3</a>', $text);
         $text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $text);
         $text = substr($text, 1);
         $text = code($text, "notdef");
@@ -535,6 +536,35 @@ class textparse{
         $text = preg_replace("#\{\{.*?\}\}#","",$text);
         return $text;
         }
+
+		function wrap($text, $wrapcount){
+			$wrapcount = ($wrapcount ? $wrapcount : 100);
+			$message_array = explode(" ", $text);
+			for($i=0; $i<=(count($message_array)-1); $i++){
+				if(strlen($message_array[$i]) > $wrapcount){
+					if(substr($message_array[$i], 0, 7) == "http://"){
+						if(substr($message_array[$i], -1) == "."){
+							$message_array[$i] = substr_replace($message_array[$i], "", -1);
+					}
+						$url = str_replace("http://", "", $message_array[$i]);  
+						$url = explode("/", $url);  
+						$url = $url[0];
+						$message_array[$i] = "<a href=\"".$message_array[$i]."\" onclick=\"window.open('".$message_array[$i]."'); return false;\">[".$url."]</a>";
+					}else{
+						if(!strstr($message_array[$i], "[link=") && !strstr($message_array[$i], "[url=") && !strstr($message_array[$i], "href=")){
+							$message_array[$i] = preg_replace("/([^\s]{".$wrapcount."})/", "$1<br />", $message_array[$i]);
+						}
+						}
+				}else{
+					if(!strstr($message_array[$i], "[link=") && !strstr($message_array[$i], "[url=") && !strstr($message_array[$i], "href=") && !strstr($message_array[$i], "src=")){
+						$message_array[$i] = preg_replace("#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="http://\2.\3" onclick="window.open(\'http://\2.\3\'); return false;">\2.\3</a>', $message_array[$i]);
+						$message_array[$i] = preg_replace("#([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?([^.]))#i", '<a href="\1://\2" onclick="window.open(\'\1://\2\'); return false;">\1://\2</a>', $message_array[$i]);
+					}
+						}
+			}
+			$text = implode(" ",$message_array);
+			return $text;
+		}
 
         function formtpa($text, $mode="admin"){
                 global $sql, $pref;
