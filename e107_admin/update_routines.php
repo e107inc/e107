@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.69 $
-|     $Date: 2005-03-31 10:22:40 $
+|     $Revision: 1.70 $
+|     $Date: 2005-03-31 10:33:08 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -78,9 +78,9 @@ function update_61x_to_700($type) {
 		changes by jalist 07/02/2005:
 		description stat tables no longer required
 		*/
-		mysql_query("DROP TABLE ".MPREFIX."stat_counter");
-		mysql_query("DROP TABLE ".MPREFIX."stat_info");
-		mysql_query("DROP TABLE ".MPREFIX."stat_last");
+		// mysql_query("DROP TABLE ".MPREFIX."stat_counter");
+		// mysql_query("DROP TABLE ".MPREFIX."stat_info");
+		// mysql_query("DROP TABLE ".MPREFIX."stat_last");
 		/* end */
 
 
