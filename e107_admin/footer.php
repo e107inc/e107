@@ -80,7 +80,9 @@ SITENAME."
 $ns -> tablerender(FOOTLAN_13, $text);
 
 $c=1;
-$handle=opendir(e_DOCS.e_LANGUAGE."/");
+if (!$handle=opendir(e_DOCS.e_LANGUAGE."/")) {
+ $handle=opendir(e_DOCS."English/");
+}
 while ($file = readdir($handle)){
         if($file != "." && $file != ".."){
                 $helplist[$c] = $file;
