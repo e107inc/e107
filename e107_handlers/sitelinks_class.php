@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-03-12 10:10:42 $
-|     $Author: sweetas $
+|     $Revision: 1.35 $
+|     $Date: 2005-03-27 06:54:15 $
+|     $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -30,11 +30,10 @@ class sitelinks {
 
 	var $eLinkList;
 
-	function getlinks()
+	function getlinks($cat=1)
 	{
 		global $sql;
-		if ($sql->db_Select('links', '*', "link_category = 1 and link_class IN (".USERCLASS_LIST.") ORDER BY link_order ASC"))
-		{
+		if ($sql->db_Select('links', '*', "link_category = $cat and link_class IN (".USERCLASS_LIST.") ORDER BY link_order ASC")){
 			while ($row = $sql->db_Fetch())
 			{
 				if (substr($row['link_name'], 0, 8) == 'submenu.')
@@ -51,8 +50,9 @@ class sitelinks {
 
 	}
 
-	function get() {
+	function get($cat=1,$style='') {
 		global $pref, $ns, $tp, $e107cache;
+
 
 		if ($data = $e107cache->retrieve('sitelinks')) {
 			return $data;
@@ -63,24 +63,31 @@ class sitelinks {
 			return;
 		}
 
-		$this->getlinks();
+		$this->getlinks($cat);
 
-		if(!defined('PRELINKTITLE'))
-		{
+     // are these defines used at all ?
+
+		if(!defined('PRELINKTITLE')){
 			define('PRELINKTITLE', '');
 		}
-		if(!defined('PRELINKTITLE'))
-		{
+		if(!defined('PRELINKTITLE')){
 			define('POSTLINKTITLE', '');
+		}
+      // -----------------------------
+
+        if(!$style){
+			$style['prelink'] = PRELINK;
+			$style['linkdisplay'] = LINKDISPLAY;
+			$style['postlink'] = POSTLINK;
 		}
 
 		$menu_count = 0;
-		$text = PRELINK;
+		$text = $style['prelink'];
 
-		if (LINKDISPLAY != 3) {
+		if ($style['linkdisplay'] != 3) {
 			foreach ($this->eLinkList['head_menu'] as $link) {
 				$text .= $this->makeLink($link);
-				if (LINKDISPLAY != 1 && LINKDISPLAY != 2) {
+				if ($style['linkdisplay'] != 1 && $style['linkdisplay'] != 2) {
 					$main_linkname = $link['link_name'];
 					if (isset($this->eLinkList[$main_linkname]) && is_array($this->eLinkList[$main_linkname])) {
 						foreach ($this->eLinkList[$main_linkname] as $sub) {
@@ -89,8 +96,8 @@ class sitelinks {
 					}
 				}
 			}
-			$text .= POSTLINK;
-			if (LINKDISPLAY == 2) {
+			$text .= $style['postlink'];
+			if ($style['linkdisplay'] == 2) {
 				$text = $ns->tablerender(LAN_183, $text, 'sitelinks', TRUE);
 			}
 		} else {
@@ -98,17 +105,17 @@ class sitelinks {
 				if (!count($this->eLinkList[$link['link_name']])) {
 					$text .= $this->makeLink($link);
 				}
-				$text .= POSTLINK;
+				$text .= $style['postlink'];
 			}
 			$text = $ns->tablerender(LAN_183, $text, 'sitelinks_main', TRUE);
 			foreach(array_keys($this->eLinkList) as $k) {
-				$mnu = PRELINK;
+				$mnu = $style['prelink'];
 				foreach($this->eLinkList[$k] as $link) {
 					if ($k != 'head_menu') {
-						$mnu .= $this->makeLink($link, TRUE);
+						$mnu .= $this->makeLink($link, TRUE, $style);
 					}
 				}
-				$mnu .= POSTLINK;
+				$mnu .= $style['postlink'];
 				$text .= $ns->tablerender($k, $mnu, 'sitelinks_sub', TRUE);
 			}
 		}
@@ -116,8 +123,17 @@ class sitelinks {
 		return $text;
 	}
 
-	function makeLink($linkInfo, $submenu = FALSE) {
+	function makeLink($linkInfo, $submenu = FALSE, $style='') {
 		global $pref;
+
+		if(!$style){
+			$style['linkclass'] = defined('LINKCLASS') ? LINKCLASS : "";
+			$style['linkstart_hilite'] = defined('LINKSTART_HILITE') ? LINKSTART_HILITE : "";
+			$style['linkstart'] = LINKSTART;
+			$style['linkdisplay'] = LINKDISPLAY;
+			$style['linkend'] = LINKEND;
+		}
+
 		if (!preg_match('#(http:|mailto:|ftp:)#', $linkInfo['link_url'])) {
 			$linkInfo['link_url'] = e_BASE.$linkInfo['link_url'];
 		}
@@ -126,19 +142,19 @@ class sitelinks {
 			$linkInfo['link_name'] = $tmp[2];
 		}
 
-		if (hilite($linkInfo['link_url'])== TRUE){
-			$_link = $linkInfo['link_button'] ? preg_replace('/\<img.*\>/si', '', LINKSTART_HILITE) :  LINKSTART_HILITE;
+		if ($style['linkstart_hilite'] && hilite($linkInfo['link_url'])== TRUE){
+			$_link = $linkInfo['link_button'] ? preg_replace('/\<img.*\>/si', '', $style['linkstart_hilite']) :  $style['linkstart_hilite'];
 		}else{
-			$_link = $linkInfo['link_button'] ? preg_replace('/\<img.*\>/si', '', LINKSTART) :  LINKSTART;
+			$_link = $linkInfo['link_button'] ? preg_replace('/\<img.*\>/si', '', $style['linkstart']) :  $style['linkstart'];
 		}
 
 
 
 		$_link .= $linkInfo['link_button'] ? "<img src='".e_IMAGE."icons/".$linkInfo['link_button']."' alt='' style='vertical-align:middle' />" : "";
-		$_link .= ($submenu == TRUE && LINKDISPLAY != 3) ? "&nbsp;&nbsp;" : "";
+		$_link .= ($submenu == TRUE && $style['linkdisplay'] != 3) ? "&nbsp;&nbsp;" : "";
 
 		if ($linkInfo['link_url']) {
-			$linkadd = defined('LINKCLASS') ? " class='".LINKCLASS."'" : "";
+			$linkadd = ($style['linkclass']) ? " class='".$style['linkclass']."'" : "";
 			$screentip = '';
 			if(isset($pref['linkpage_screentip']) && $pref['linkpage_screentip'] && $linkInfo['link_description'])
 			{
@@ -154,7 +170,7 @@ class sitelinks {
 			$_link .= $linkInfo['link_name'];
 		}
 
-		return $_link.LINKEND;
+		return $_link.$style['linkend'];
 	}
 }
 
