@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-03-08 19:17:34 $
+|     $Revision: 1.16 $
+|     $Date: 2005-03-15 14:33:13 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -187,6 +187,10 @@ class comment {
 		} else {
 			$replace[10] = '';
 		}
+
+		$search[11] = "/\{IPADDRESS\}(.*?)/si";
+		require_once(e_HANDLER."encrypt_handler.php");
+		$replace[11] = (ADMIN ? "<a href='".e_BASE."userposts.php?0.comments.$comment_ip'>IP: ".decode_ip($comment_ip)."</a>" : "");
 		 
 		 
 		$text .= preg_replace($search, $replace, $renderstyle);
@@ -253,7 +257,6 @@ class comment {
 				} else {
 					$sql2 = new db;
 					if ($sql2->db_Select("user", "*", "user_name='".$_POST['author_name']."' ")) {
-						$ip = getip();
 						if ($sql2->db_Select("user", "*", "user_name='".$_POST['author_name']."' AND user_ip='$ip' ")) {
 							list($cuser_id, $cuser_name) = $sql2->db_Fetch();
 							$nick = $cuser_id.".".$cuser_name;
@@ -265,6 +268,9 @@ class comment {
 					}
 				}
 				if (!defined("emessage")) {
+						$ip = getip();
+						require_once(e_HANDLER."encrypt_handler.php");
+						$ip = encode_ip($ip);
 					if (!$sql->db_Insert("comments", "0, '$pid', '$id', '$subject', '$nick', '', '".time()."', '$comment', '0', '$ip', '$type' ")) {
 						echo "<b>".COMLAN_3."</b> ".LAN_11;
 					} else {

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/userposts.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-03-10 11:15:38 $
+|     $Revision: 1.8 $
+|     $Date: 2005-03-15 14:34:10 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -35,13 +35,19 @@ if (e_QUERY) {
 	exit;
 }
 	
-	
-	
-$sql->db_Select("user", "user_name", "user_id=".$id."");
-$row = $sql->db_Fetch();
- extract($row);
-$user_id = $id.".".$user_name."";
-	
+if(is_numeric($id))
+{
+	$sql->db_Select("user", "user_name", "user_id=".$id."");
+	$row = $sql->db_Fetch();
+	extract($row);
+	$user_id = $id.".".$user_name."";
+}
+else
+{
+	$user_name = UP_LAN_16.$id;
+}
+
+
 if ($action == "comments") {
 	 
 	if (!$USERPOSTS_COMMENTS_TABLE) {
@@ -52,12 +58,25 @@ if ($action == "comments") {
 		}
 	}
 	 
-	$ccaption = UP_LAN_1.$user_name;
-	$sql->db_Select("user", "user_comments", "user_id=".$id."");
-	list($user_comments) = $sql->db_Fetch();
-	$ctotal = $user_comments;
+	
 	$sql2 = new db;
-	if (!$sql->db_Select("comments", "*", "comment_author = '".$user_id."' ORDER BY comment_datestamp DESC LIMIT ".$from.", 10 ")) {
+	if(is_numeric($id))
+	{
+		$ccaption = UP_LAN_1.$user_name;
+		$sql->db_Select("user", "user_comments", "user_id=".$id."");
+		list($user_comments) = $sql->db_Fetch();
+		$ctotal = $user_comments;
+		$blah = $sql->db_Select("comments", "*", "comment_author = '".$user_id."' ORDER BY comment_datestamp DESC LIMIT ".$from.", 10 ");
+	}
+	else
+	{
+		require_once(e_HANDLER."encrypt_handler.php");
+		$dip = decode_ip($id);
+		$ccaption = UP_LAN_1.$dip;
+		$blah = $sql->db_Select("comments", "*", "comment_ip = '".$id."' ORDER BY comment_datestamp DESC LIMIT ".$from.", 10 ");
+	}
+	
+	if (!$blah) {
 		$ctext = "<span class='mediumtext'>".UP_LAN_7."</span>";
 	} else {
 		while ($row = $sql->db_Fetch()) {
