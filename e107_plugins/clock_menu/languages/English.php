@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/clock_menu/languages/English.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-09-28 08:42:16 $
+|     $Revision: 1.3 $
+|     $Date: 2004-09-28 12:02:47 $
 |     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
@@ -31,7 +31,7 @@ define('CLOCK_MENU_L11','Sunday,');
 define('CLOCK_MENU_L12','January');
 define('CLOCK_MENU_L13','February');
 define('CLOCK_MENU_L14','March');
-define('CLOCK_MENU_L14','April');
+define('CLOCK_MENU_L15','April');
 define('CLOCK_MENU_L16','May');
 define('CLOCK_MENU_L17','June');
 define('CLOCK_MENU_L18','July');
