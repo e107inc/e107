@@ -1,16 +1,20 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        search.php V53b2
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107/search.php,v $
+|     $Revision: 1.9 $
+|     $Date: 2004-11-11 01:02:42 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 
@@ -93,7 +97,7 @@ if($_POST['searchtype'] == "99"){
                 $_POST['searchtype'][] = $key;
         }
 }
-$text = "<div ><form name='searchform' method='post' action='".e_SELF."'>
+$text = "<div ><form id='searchform' method='post' action='".e_SELF."'>
 <table style='width:95%' class='fborder'>
 <tr>
 <td colspan='2' class='forumheader'>
@@ -121,7 +125,7 @@ foreach($search_info as $key => $si){
 
 $text .= "
 <input id='google' type='checkbox' name='searchtype[]'  onclick='uncheckAll(this)' value='98' />Google
-<br /><br /> 
+<br /><br />
 <input class='button' type='button' name='CheckAll' value='".LAN_SEARCH_1."'
 onclick='checkAll(this);' />
 <input class='button' type='button' name='UnCheckAll' value='".LAN_SEARCH_2."'
@@ -159,40 +163,44 @@ if($_POST['searchquery']){
 
 function parsesearch($text, $match)
 {
-	$text = strip_tags($text);
-	$temp = stristr($text,$match);
-	$pos = strlen($text)-strlen($temp);
-	$matchedText =  substr($text,$pos,strlen($match));
-	if($pos < 70){
-		$text = "...".substr($text, 0, 100)."...";
-	}
-	else
-	{
-		$text = "...".substr($text, ($pos-50), $pos+30)."...";
-	}
+        $text = strip_tags($text);
+        $temp = stristr($text,$match);
+        $pos = strlen($text)-strlen($temp);
+        $matchedText =  substr($text,$pos,strlen($match));
+        if($pos < 70){
+                $text = "...".substr($text, 0, 100)."...";
+        }
+        else
+        {
+                $text = "...".substr($text, ($pos-50), $pos+30)."...";
+        }
 $text = eregi_replace($match, "<span class='searchhighlight'>$matchedText</span>", $text);
 return($text);
 }
 
 function headerjs(){
 $script = "<script type='text/javascript'>
-function checkAll(allbox)
-{
-for (var i = 0; i < document.searchform[\"searchtype[]\"].length-1; i++)
-        document.searchform[\"searchtype[]\"][i].checked = true ;
-}
+//<![CDATA[
 
-function uncheckAll(allbox)
-{
-for (var i = 0; i < document.searchform[\"searchtype[]\"].length-1; i++)
-        document.searchform[\"searchtype[]\"][i].checked = false ;
-}
+    function checkAll(allbox)
+    {
+    for (var i = 0; i < document.getElementById('searchform')[\"searchtype[]\"].length-1; i++)
+            document.getElementById('searchform')[\"searchtype[]\"][i].checked = true ;
+    }
 
-function uncheckG(allbox)
-{
-i = document.searchform[\"searchtype[]\"].length;
-        document.searchform[\"searchtype[]\"][i].checked = false ;
-}
+    function uncheckAll(allbox)
+    {
+    for (var i = 0; i < document.getElementById('searchform')[\"searchtype[]\"].length-1; i++)
+            document.getElementById('searchform')[\"searchtype[]\"][i].checked = false ;
+    }
+
+    function uncheckG(allbox)
+    {
+    i = document.getElementById('searchform')[\"searchtype[]\"].length;
+            document.getElementById('searchform')[\"searchtype[]\"][i].checked = false ;
+    }
+
+ // ]]>
 </script>\n";
   return $script;
 }
