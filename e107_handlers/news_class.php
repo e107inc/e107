@@ -12,8 +12,8 @@
 |	GNU General Public License (http://gnu.org).	
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.2 $
-| $Date: 2004-09-25 02:19:43 $
+| $Revision: 1.3 $
+| $Date: 2004-10-06 13:03:09 $
 | $Author: mcfly_e107 $ 
 +---------------------------------------------------------------+
 */
@@ -134,15 +134,27 @@ on
 		$info .= "<br />Activation period: ".$active_start.$active_end."<br />";
 		$info .= "Body length: ".strlen($news_body)."b. Extended length: ".strlen($news_extended)."b.<br /><br /></div>";
 
-		$sql -> db_Select("comments", "comment_datestamp", "comment_item_id='".$news['news_id']."' AND comment_type='0' ORDER BY comment_datestamp DESC LIMIT 0,1");
-		list($comments['comment_datestamp']) = $sql -> db_Fetch();
-		$latest_comment = $comments['comment_datestamp'];
-		if($latest_comment > USERLV ){
-				$NEWIMAGE = IMAGE_new_small;
-		}else{
-				$NEWIMAGE = IMAGE_nonew_small;
+		if($comment_total)
+		{
+			
+			$sql -> db_Select("comments", "comment_datestamp", "comment_item_id='".$news['news_id']."' AND comment_type='0' ORDER BY comment_datestamp DESC LIMIT 0,1");
+			list($comments['comment_datestamp']) = $sql -> db_Fetch();
+			$latest_comment = $comments['comment_datestamp'];
+			if($latest_comment > USERLV )
+			{
+					$NEWIMAGE = IMAGE_new_small;
+			}
+			else
+			{
+					$NEWIMAGE = IMAGE_nonew_small;
+			}
 		}
-
+		else
+		{
+			$NEWIMAGE = IMAGE_nonew_small;
+		}
+		
+	
 		$news_category = "<a href='".e_BASE."news.php?cat.".$category_id."'>".$category_name."</a>";
 		$news_author = "<a href='".e_BASE."user.php?id.".$admin_id."'>".$admin_name."</a>";
 		
