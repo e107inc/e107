@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-01-15 04:36:19 $
+|     $Revision: 1.9 $
+|     $Date: 2005-01-15 04:42:20 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -38,9 +38,10 @@ function render_links($link, $title, $description, $perms, $icon = FALSE, $mode 
 	global $td;
 	if (getperms($perms)){
 		if ($mode=='adminb') {
-			$text = "<tr><td class='forumheader3' style='text-align:left; vertical-align:top; width:100%'
-			onmouseover=\"eover(this, 'forumheader5')\" onmouseout=\"eover(this, 'forumheader3')\" onclick=\"document.location.href='".$link."'\">".$icon."
-			<b>".$title."</b> ".($description ? "[ <span class='smalltext'>".$description."</span> ]" : "")."</td></tr>";
+			$text = "<tr><td class='forumheader3'>
+			<div class='td' style='text-align:left; vertical-align:top; width:100%'
+			onmouseover=\"eover(this, 'forumheader5')\" onmouseout=\"eover(this, 'td')\" onclick=\"document.location.href='".$link."'\">
+			".$icon."	<b>".$title."</b> ".($description ? "[ <span class='smalltext'>".$description."</span> ]" : "")."</div></td></tr>";
 		} else {
 			if ($td==6) { $text .= '</tr>'; $td = 1; }
 			if ($td==1) { $text .= '<tr>'; }
