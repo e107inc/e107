@@ -13,7 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-
+if(!getperms("6")){ header("location:".e_BASE."index.php"); exit; }
 if(e_QUERY){
         $tmp = explode(".", e_QUERY);
         $action = $tmp[0];
