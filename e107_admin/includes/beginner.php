@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/includes/beginner.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-04-02 21:08:05 $
+|     $Revision: 1.5 $
+|     $Date: 2005-04-03 08:27:17 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 if($_GET['mode'] == "e_advanced"){
-	$pref['adminstyle'] = "categories";
+	$pref['adminstyle'] = "classis";
   	save_prefs();
 	Header("Location:". e_ADMIN."admin.php");
 }

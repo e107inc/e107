@@ -11,16 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/ad_links.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-03-31 21:12:24 $
-|     $Author: sweetas $
+|     $Revision: 1.29 $
+|     $Date: 2005-04-03 08:26:47 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-	
+
 if (file_exists(THEME.'admin_images/admin_images.php')) {
 	e107_require_once(THEME.'admin_images/admin_images.php');
 }
-	
+
 // Small Category Images
 if (!defined('E_16_CAT_SETT')) {
 	define('E_16_CAT_SETT', e_IMAGE.'admin_images/cat_settings_16.png');
@@ -40,27 +40,27 @@ if (!defined('E_16_CAT_TOOL')) {
 if (!defined('E_16_CAT_PLUG')) {
 	define('E_16_CAT_PLUG', e_IMAGE.'admin_images/cat_plugins_16.png');
 }
-	
+
 // Large Category Images
 if (!defined('E_32_CAT_SETT')) {
-	define('E_32_CAT_SETT', "<img src='".e_IMAGE."admin_images/cat_settings_32.png' alt='' style='width: 32px; height: 32px' />");
+	define('E_32_CAT_SETT', "<img src='".e_IMAGE."admin_images/cat_settings_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_CAT_USER')) {
-	define('E_32_CAT_USER', "<img src='".e_IMAGE."admin_images/cat_users_32.png' alt='' style='width: 32px; height: 32px' />");
+	define('E_32_CAT_USER', "<img src='".e_IMAGE."admin_images/cat_users_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_CAT_CONT')) {
-	define('E_32_CAT_CONT', "<img src='".e_IMAGE."admin_images/cat_content_32.png' alt='' style='width: 32px; height: 32px' />");
+	define('E_32_CAT_CONT', "<img src='".e_IMAGE."admin_images/cat_content_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_CAT_FILE')) {
-	define('E_32_CAT_FILE', "<img src='".e_IMAGE."admin_images/cat_files_32.png' alt='' style='width: 32px; height: 32px' />");
+	define('E_32_CAT_FILE', "<img src='".e_IMAGE."admin_images/cat_files_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_CAT_TOOL')) {
-	define('E_32_CAT_TOOL', "<img src='".e_IMAGE."admin_images/cat_tools_32.png' alt='' style='width: 32px; height: 32px' />");
+	define('E_32_CAT_TOOL', "<img src='".e_IMAGE."admin_images/cat_tools_32.png' alt='' style='border:0px; width:32px; height:32px' />");
 }
 if (!defined('E_32_CAT_PLUG')) {
-	define('E_32_CAT_PLUG', "<img src='".e_IMAGE."admin_images/cat_plugins_32.png' alt='' style='width: 32px; height: 32px' />");
+	define('E_32_CAT_PLUG', "<img src='".e_IMAGE."admin_images/cat_plugins_32.png' alt='' style='border:0px; width:32px; height:32px' />");
 }
-	
+
 // Small Nav Images
 if (!defined('E_16_NAV_MAIN')) {
 	define('E_16_NAV_MAIN', e_IMAGE.'admin_images/main_16.png');
@@ -80,27 +80,27 @@ if (!defined('E_16_NAV_ARROW')) {
 if (!defined('E_16_NAV_ARROW_OVER')) {
 	define('E_16_NAV_ARROW_OVER', e_IMAGE.'admin_images/arrow_over_16.png');
 }
-	
+
 // Large Nav Images
 if (!defined('E_32_NAV_MAIN')) {
-	define('E_32_NAV_MAIN', "<img src='".e_IMAGE."'admin_images/main_32.png' alt='' style='width: 32px; height: 32px' />");
+	define('E_32_NAV_MAIN', "<img src='".e_IMAGE."'admin_images/main_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_NAV_DOCS')) {
-	define('E_32_NAV_DOCS', "<img src='".e_IMAGE."'admin_images/docs_32.png' alt='' style='width: 32px; height: 32px' />");
+	define('E_32_NAV_DOCS', "<img src='".e_IMAGE."'admin_images/docs_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_NAV_LEAV')) {
-	define('E_32_NAV_LEAV', "<img src='".e_IMAGE."'admin_images/leave_32.png' alt='' style='width: 32px; height: 32px' />");
+	define('E_32_NAV_LEAV', "<img src='".e_IMAGE."'admin_images/leave_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_NAV_LGOT')) {
-	define('E_32_NAV_LGOT', "<img src='".e_IMAGE."'admin_images/logout_32.png' alt='' style='width: 32px; height: 32px' />");
+	define('E_32_NAV_LGOT', "<img src='".e_IMAGE."'admin_images/logout_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_NAV_ARROW')) {
-	define('E_32_NAV_ARROW', "<img src='".e_IMAGE."'admin_images/arrow_32.png' alt='' style='width: 32px; height: 32px' />");
+	define('E_32_NAV_ARROW', "<img src='".e_IMAGE."'admin_images/arrow_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_NAV_ARROW_OVER')) {
-	define('E_32_NAV_ARROW_OVER', "<img src='".e_IMAGE."'admin_images/arrow_over_32.png' alt='' style='width: 32px; height: 32px' />");
+	define('E_32_NAV_ARROW_OVER', "<img src='".e_IMAGE."'admin_images/arrow_over_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
-	
+
 // Small Admin Main Link Images
 if (!defined('E_16_ADMIN')) {
 	define('E_16_ADMIN', "<img src='".e_IMAGE."admin_images/admins_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
@@ -195,7 +195,7 @@ if (!defined('E_16_USERCLASS')) {
 if (!defined('E_16_LANGUAGE')) {
 	define('E_16_LANGUAGE', "<img src='".e_IMAGE."admin_images/language_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
-	
+
 // Small Admin Other Link Images
 if (!defined('E_16_PLUGIN')) {
 	define('E_16_PLUGIN', "<img src='".e_IMAGE."admin_images/plugins_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
@@ -209,7 +209,7 @@ if (!defined('E_16_DOCS')) {
 if (!defined('E_16_THEMEMANAGER')) {
 	define('E_16_THEMEMANAGER', "<img src='".e_IMAGE."admin_images/themes_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
-	
+
 // Small Admin Other Images
 if (!defined('E_16_COMMENT')) {
 	define('E_16_COMMENT', "<img src='".e_IMAGE."admin_images/comments_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
@@ -217,7 +217,7 @@ if (!defined('E_16_COMMENT')) {
 if (!defined('E_16_ADMINLOG')) {
 	define('E_16_ADMINLOG', "<img src='".e_IMAGE."admin_images/adminlogs_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
-	
+
 // Large Admin Main Link Images
 if (!defined('E_32_ADMIN')) {
 	define('E_32_ADMIN', "<img src='".e_IMAGE."admin_images/admins_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
@@ -312,7 +312,7 @@ if (!defined('E_32_USERCLASS')) {
 if (!defined('E_32_LANGUAGE')) {
 	define('E_32_LANGUAGE', "<img src='".e_IMAGE."admin_images/language_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
-	
+
 // Large Admin Other Link Images
 if (!defined('E_32_PLUGIN')) {
 	define('E_32_PLUGIN', "<img src='".e_IMAGE."admin_images/plugins_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
@@ -330,7 +330,7 @@ if (!defined('E_32_MAIN')) {
 if (!defined('E_32_THEMEMANAGER')) {
 	define('E_32_THEMEMANAGER', "<img src='".e_IMAGE."admin_images/themes_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
-	
+
 // Large Admin Other Images
 if (!defined('E_32_COMMENT')) {
 	define('E_32_COMMENT', "<img src='".e_IMAGE."admin_images/comments_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
@@ -341,7 +341,7 @@ if (!defined('E_32_ADMINLOG')) {
 if (!defined('E_32_LOGOUT')) {
 	define('E_32_LOGOUT', "<img src='".e_IMAGE."admin_images/logout_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
-	
+
 $e_icon_array = array(
 'main' => E_32_MAIN,
 	'admin' => E_32_ADMIN,
@@ -377,22 +377,22 @@ $e_icon_array = array(
 	'user_extended' => E_32_USER_EXTENDED,
 	'users' => E_32_USER,
 	'wmessage' => E_32_WELCOME );
-	
+
 $admin_cat['title'][1] = ADLAN_CL_1;
 $admin_cat['id'][1] = 'setMenu';
 $admin_cat['img'][1] = E_16_CAT_SETT;
 $admin_cat['lrg_img'][1] = E_32_CAT_SETT;
-	
+
 $admin_cat['title'][2] = ADLAN_CL_2;
 $admin_cat['id'][2] = 'userMenu';
 $admin_cat['img'][2] = E_16_CAT_USER;
 $admin_cat['lrg_img'][2] = E_32_CAT_USER;
-	
+
 $admin_cat['title'][3] = ADLAN_CL_3;
 $admin_cat['id'][3] = 'contMenu';
 $admin_cat['img'][3] = E_16_CAT_CONT;
 $admin_cat['lrg_img'][3] = E_32_CAT_CONT;
-	
+
 $admin_cat['title'][4] = ADLAN_CL_6;
 $admin_cat['id'][4] = 'toolMenu';
 $admin_cat['img'][4] = E_16_CAT_TOOL;
@@ -402,7 +402,7 @@ $admin_cat['title'][5] = ADLAN_CL_7;
 $admin_cat['id'][5] = 'plugMenu';
 $admin_cat['img'][5] = E_16_CAT_PLUG;
 $admin_cat['lrg_img'][5] = E_32_CAT_PLUG;
-	
+
 // Info about attributes
 /*
 attribute 1 = link
@@ -413,7 +413,7 @@ attribute 5 = category
 attribute 6 = 16 x 16 image
 attribute 7 = 32 x 32 image
 */
-	
+
 $array_functions = array(
 	0 => array(e_ADMIN."administrator.php", ADLAN_8, ADLAN_9, "3", 2, E_16_ADMIN, E_32_ADMIN),
 	1 => array(e_ADMIN."updateadmin.php", ADLAN_10, ADLAN_11, "", 2, E_16_ADPASS, E_32_ADPASS),

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-03-27 17:09:20 $
+|     $Revision: 1.20 $
+|     $Date: 2005-04-03 08:26:47 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -155,7 +155,7 @@ function admin_info() {
 
 function status_request() {
 	global $pref;
-	if ($pref['adminstyle'] == 'classis' || $pref['adminstyle'] == 'cascade') {
+	if ($pref['adminstyle'] == 'classis' || $pref['adminstyle'] == 'cascade' || $pref['adminstyle'] == 'beginner') {
 		return TRUE;
 	} else {
 		return FALSE;
@@ -164,7 +164,7 @@ function status_request() {
 
 function latest_request() {
 	global $pref;
-	if ($pref['adminstyle'] == 'classis' || $pref['adminstyle'] == 'cascade') {
+	if ($pref['adminstyle'] == 'classis' || $pref['adminstyle'] == 'cascade' || $pref['adminstyle'] == 'beginner') {
 		return TRUE;
 	} else {
 		return FALSE;
@@ -173,7 +173,7 @@ function latest_request() {
 
 function log_request() {
 	global $pref;
-	if ($pref['adminstyle'] == 'classis' || $pref['adminstyle'] == 'cascade') {
+	if ($pref['adminstyle'] == 'classis' || $pref['adminstyle'] == 'cascade'|| $pref['adminstyle'] == 'beginner') {
 		return TRUE;
 	} else {
 		return FALSE;
