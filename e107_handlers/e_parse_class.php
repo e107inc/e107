@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2005-03-14 15:11:18 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.45 $
+|     $Date: 2005-03-15 17:25:23 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 	
@@ -21,6 +21,7 @@ class e_parse {
 	var $e_sc;
 	var $e_bb;
 	var $e_pf;
+	var $e_lw;
 	var $e_emote;
 	 
 	function toDB($text, $no_encode = FALSE) {
@@ -239,6 +240,14 @@ function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $ut
 				$this->e_pf = new e_profanityFilter;
 			}
 			$text = $this->e_pf->filterProfanities($text);
+		}
+
+		if ($pref['linkwords_active']) {
+			if (!is_object($this->e_lw)) {
+				require_once(e_PLUGIN."linkwords/linkwords.php");
+				$this->e_lw = new e_linkWords;
+			}
+			$text = $this->e_lw->linkWords($text);
 		}
 		 
 		$nl_replace = "<br />";
