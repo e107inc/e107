@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/user_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-04-05 02:43:43 $
+|     $Revision: 1.3 $
+|     $Date: 2005-04-06 03:53:01 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -89,15 +89,15 @@ $USER_FULL_TEMPLATE = "
 
 <tr>
 	<td style='width:100%' class='forumheader3'>
-		<span style='float:left'>".LAN_406."</span>
+		<span style='float:left'>".LAN_406.":</span>
 		<span style='float:right; text-align:right'>{USER_LEVEL}</span>
 	</td>
 </tr>
 
 <tr>
 	<td style='width:100%' class='forumheader3'>
-		<span style='float:left'>".LAN_404."</span>
-		<span style='float:right'>{USER_LASTVISIT}</span>
+		<span style='float:left'>".LAN_404.":&nbsp;&nbsp;</span>
+		<span style='float:right; text-align:right'>{USER_LASTVISIT}<br />{USER_LASTVISIT_LAPSE}</span>
 	</td>
 </tr>
 {$sendpm}

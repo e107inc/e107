@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-04-04 16:23:06 $
+|     $Revision: 1.18 $
+|     $Date: 2005-04-06 03:53:01 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -20,7 +20,7 @@
 require_once("class2.php");
 require_once(e_HANDLER."user_extended_class.php");
 $ue = new e107_user_extended;
-
+//echo "<pre>".print_r($_POST, true)."</pre>";
 if (isset($_POST['sub_news'])) {
 	header("location:".e_BASE."submitnews.php");
 	exit;
@@ -115,7 +115,12 @@ if (isset($_POST['updatesettings']))
 		}
 		else
 		{
+			$val = $tp->toDB($val);
 			$ue_fields .= ($ue_fields) ? ", " : "";
+			if(isset($_POST["hide_".$key]))
+			{
+				$val .= chr(1);
+			}
 			$ue_fields .= $key."='".$val."'";
 		}
 	}
@@ -458,10 +463,18 @@ $text .= "
 				$text .= "<tr><td colspan='2' class='forumheader'>{$catname}</td></tr>";
 			}
 			$prev_cat = $f['category_id'];
+			$fname = "user_".$f['user_extended_struct_name'];
+			$uVal = str_replace(chr(1), "", $curVal[$fname]);
 			$text .= "
 				<tr>
 					<td style='width:40%' class='forumheader3'>".$f['user_extended_struct_text']."</td>
-					<td style='width:60%' class='forumheader3'>".$ue->user_extended_edit($f, $curVal["user_".$f['user_extended_struct_name']])."</td>
+					<td style='width:60%' class='forumheader3'>".$ue->user_extended_edit($f, $uVal);
+					if(strpos($f['user_extended_struct_parms'], 'allow_hide') !== FALSE)
+					{
+						$text .= "&nbsp;&nbsp;".$ue->user_extended_hide($f, strpos($curVal[$fname], chr(1)));
+					}
+					$text .= "
+					</td>
 				</tr>
 			";
 		}

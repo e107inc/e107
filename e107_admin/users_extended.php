@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-04-01 18:55:08 $
+|     $Revision: 1.5 $
+|     $Date: 2005-04-06 03:52:34 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -99,7 +99,7 @@ if (isset($_POST['update_field'])) {
 
 if (isset($_POST['update_category']))
 {
-	$name = $tp->toHTML($_POST['user_field']);
+	$name = trim($tp->toHTML($_POST['user_field']));
 	if($sql->db_Update("user_extended_struct","user_extended_struct_name = '{$name}', user_extended_struct_read = '{$_POST['user_read']}', user_extended_struct_write = '{$_POST['user_write']}', user_extended_struct_applicable = '{$_POST['user_applicable']}' WHERE user_extended_struct_id = '{$sub_action}'"))
 	{
 		$message = EXTLAN_43;
@@ -281,8 +281,7 @@ class users_ext
 
 		<tr>
 		<td style='width:30%' class='forumheader3'>".EXTLAN_10.":</td>
-		<td style='width:70%' class='forumheader3' colspan='3'>user_
-		";
+		<td style='width:70%' class='forumheader3' colspan='3'>user_";
 		if(is_array($current))
 		{
 			$text .= $current['user_extended_struct_name']."
