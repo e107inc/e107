@@ -23,6 +23,11 @@ if(IsSet($_POST['dump_sql'])){
 	exit;
 }
 
+if(IsSet($_POST['db_update'])){
+	header("location: e107_update.php");
+	exit;
+}
+
 if(IsSet($_POST['verify_sql'])){
 	header("location: db_verify.php");
 	exit;
@@ -45,6 +50,12 @@ if(IsSet($_POST['backup_core'])){
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>\n
 <table style='width:85%' class='fborder'>
+
+<tr>
+<td style='width:70%' class='forumheader3'>".DBLAN_15."</td>
+<td style='width:30%' class='forumheader3' style='text-align:center'><input class='button' type='submit' name='db_update' value='".DBLAN_16."' /></td>
+</tr>
+
 <tr>
 <td style='width:70%' class='forumheader3'>".DBLAN_2."</td>
 <td style='width:30%' class='forumheader3' style='text-align:center'><input class='button' type='submit' name='dump_sql' value='".DBLAN_3."' /></td>

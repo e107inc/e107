@@ -14,5 +14,7 @@ define("DBLAN_11", "mySQL database");
 define("DBLAN_12", "optimized");
 define("DBLAN_13", "Back");
 define("DBLAN_14", "Done");
+define("DBLAN_15", "Click button to check for any available db updates");
+define("DBLAN_16", "Check for Updates");
 
 ?>
