@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-17 04:47:42 $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-17 15:28:45 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -30,8 +30,6 @@ if (isset($_POST['viewallevents'])) {
 if (isset($_POST['doit'])) {
 	Header("Location: ".e_PLUGIN."calendar_menu/event.php?ne.".$_POST['enter_new_val']);
 }
-	
-	
 	
 $ec_dir = e_PLUGIN."calendar_menu/";
 $lan_file = $ec_dir."languages/".e_LANGUAGE.".php";
@@ -57,9 +55,6 @@ $week = Array('S', 'M', 'T', 'W', 'T', 'F', 'S');
 $months = Array(EC_LAN_0, EC_LAN_1, EC_LAN_2, EC_LAN_3, EC_LAN_4, EC_LAN_5, EC_LAN_6, EC_LAN_7, EC_LAN_8, EC_LAN_9, EC_LAN_10, EC_LAN_11);
 $monthabb = Array(EC_LAN_JAN, EC_LAN_FEB, EC_LAN_MAR, EC_LAN_APR, EC_LAN_MAY, EC_LAN_JUN, EC_LAN_JUL, EC_LAN_AUG, EC_LAN_SEP, EC_LAN_OCT, EC_LAN_NOV, EC_LAN_DEC);
 $calendar_title = "<a href='".e_PLUGIN."calendar_menu/event.php' class='mmenu'>".$months[$datearray[mon]-1]." ".$current_year."</a>";
-// -----------------------------------------------------------------------------------------------------------
-	
-// ----------------------------------------------------------------------------------------------------------
 	
 // show events-------------------------------------------------------------------------------------------
 // get first and last days of month in unix format---------------------------------------------------
@@ -68,8 +63,6 @@ $firstdayarray = getdate($monthstart);
 $monthend = mktime(0, 0, 0, $month+1, 1, $year);
 $lastdayarray = getdate($monthend);
 // ----------------------------------------------------------------------------------------------------------
-	
-	
 // echo current month with links to previous/next months ----------------------------------------
 	
 $prevmonth = ($month-1);
@@ -103,7 +96,7 @@ $cal_text = "<table style='width:100%' class='fborder'>
 for ($ii = 0; $ii < 13; $ii++) {
 	$m = $ii+1;
 	$monthjump = mktime(0, 0, 0, $m, 1, $year);
-	$cal_text .= "<a class='forumlink' href='calendar.php?".$monthjump."'>".$monthabb[$ii]."</a> ";
+	$cal_text .= "<a href='calendar.php?".$monthjump."'>".$monthabb[$ii]."</a> ";
 }
 $cal_text .= "</td>
 	<td class='forumheader3' style='text-align:right'>
@@ -232,9 +225,8 @@ if($sql->db_Select_gen($qry))
 	
 $start = $monthstart;
 $text .= "<div style='text-align:center'>
-	<table cellpadding='0' cellspacing='1' class='fborder' style='background-color:#DDDDDD; width:580px'>
+	<table cellpadding='0' cellspacing='1' class='fborder' style='background-color:#DDDDDD; width:98%'>
 	<tr>";
-	
 	
 foreach($week as $day) {
 	$text .= "<td class='fcaption' style='z-index: -1;background-color:black; width:90px;height:20px;text-align:center'>
@@ -331,7 +323,6 @@ function show_event($event, $dom)
 			
 		$ret = "<br />
 			<img style='border:0' src='".e_PLUGIN."calendar_menu/images/".$event['event_cat_icon']."' alt='' height='8' width='8' />
-			&nbsp;
 			<a title='{$event['event_title']}' href='".e_PLUGIN."calendar_menu/event.php?".$linkut.".one'>
 			<span class='smalltext' style='color:black' >".$show_title."</span>
 			</a>";
