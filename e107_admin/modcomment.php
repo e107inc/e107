@@ -91,7 +91,7 @@ if(!$sql -> db_Select("comments", "*", "comment_type=$type AND comment_item_id=$
 			$comment_nick = eregi_replace("[0-9]+\.", "", $comment_author);
 		}
 		$comment_comment = $aj -> tpa($comment_comment);
-		$text .= "<tr><td class='forumheader3' style='width:5%; text-align: center;'>".($comment_blocked ? "<img src='".e_IMAGE."generic/blocked.png' />" : "&nbsp;")."</td><td class='forumheader3' style='width:15%'>$datestamp</td><td class='forumheader3' style='width:15%'><b>".$comment_nick."</b><br />".$comment_str."</td><td class='forumheader3' style='width:40%'>".$comment_comment."</td><td class='forumheader3' style='width:25%' style='text-align:center'>".($comment_blocked ?  "<input type='checkbox' name='comment_unblocked[]' value='$comment_id'> ".MDCLAN_5."" : "<input type='checkbox' name='comment_blocked[]' value='$comment_id'> ".MDCLAN_6."")."&nbsp;<input type='checkbox' name='comment_delete[]' value='$comment_id'> ".MDCLAN_7."</td></tr>";
+		$text .= "<tr><td class='forumheader3' style='width:5%; text-align: center;'>".($comment_blocked ? "<img src='".e_IMAGE."generic/blocked.png' />" : "&nbsp;")."</td><td class='forumheader3' style='width:15%'>$datestamp</td><td class='forumheader3' style='width:15%'><b>".$comment_nick."</b><br />".$comment_str."</td><td class='forumheader3' style='width:40%'>".$comment_comment."</td><td class='forumheader3' style='width:25%' style='text-align:center'>".($comment_blocked ?  "<input type='checkbox' name='comment_unblocked[]' value='$comment_id' /> ".MDCLAN_5."" : "<input type='checkbox' name='comment_blocked[]' value='$comment_id' /> ".MDCLAN_6."")."&nbsp;<input type='checkbox' name='comment_delete[]' value='$comment_id' /> ".MDCLAN_7."</td></tr>";
 
 	}
 

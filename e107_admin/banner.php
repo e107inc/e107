@@ -161,7 +161,7 @@ if(count($campaigns)){
 	$c=0;
 	while($campaigns[$c]){
 		if (!isset($for_var[$campaigns[$c]])){
-			$text .=($_POST['banner_campaign'] == $campaigns[$c] ? "<option selected>".$campaigns[$c]."</option>" : "<option>".$campaigns[$c]."</option>");
+			$text .=($_POST['banner_campaign'] == $campaigns[$c] ? "<option selected='selected'>".$campaigns[$c]."</option>" : "<option>".$campaigns[$c]."</option>");
 			$for_var[$campaigns[$c]] = $campaigns[$c];
 		}
 		$c++;
@@ -184,7 +184,7 @@ if(count($clients)){
 	$c=0;
 	while($clients[$c]){
 		if (!isset($for_var[$clients[$c]])){
-			$text .=($_POST['client_name'] == $clients[$c] ? "<option selected>".$clients[$c]."</option>" : "<option>".$clients[$c]."</option>");
+			$text .=($_POST['client_name'] == $clients[$c] ? "<option selected='selected'>".$clients[$c]."</option>" : "<option>".$clients[$c]."</option>");
 			$for_var[$clients[$c]] = $clients[$c];
 		}
 		$c++;
@@ -284,17 +284,17 @@ $text .= "</div></td></tr>
 
 <tr>
 <td class=\"forumheader3\">".BNRLAN_36."</td>
-<td class=\"forumheader3\"><select name=\"startday\" class=\"tbox\"><option selected> </option>";
+<td class=\"forumheader3\"><select name=\"startday\" class=\"tbox\"><option selected='selected'> </option>";
 for($a=1; $a<=31; $a++){
-	$text .= ($a == $_POST['startday'] ? "<option selected>".$a."</option>" : "<option>".$a."</option>");
+	$text .= ($a == $_POST['startday'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
 }
-$text .= "</select> <select name=\"startmonth\" class=\"tbox\"><option selected> </option>";
+$text .= "</select> <select name=\"startmonth\" class=\"tbox\"><option selected='selected'> </option>";
 for($a=1; $a<=12; $a++){
-	$text .= ($a == $_POST['startmonth'] ? "<option selected>".$a."</option>" : "<option>".$a."</option>");
+	$text .= ($a == $_POST['startmonth'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
 }
-$text .= "</select> <select name=\"startyear\" class=\"tbox\"><option selected> </option>";
+$text .= "</select> <select name=\"startyear\" class=\"tbox\"><option selected='selected'> </option>";
 for($a=2003; $a<=2010; $a++){
-	$text .= ($a == $_POST['startyear'] ? "<option selected>".$a."</option>" : "<option>".$a."</option>");
+	$text .= ($a == $_POST['startyear'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
 }
 $text .= "</select> ".BNRLAN_38."
 </td></tr>
@@ -302,17 +302,17 @@ $text .= "</select> ".BNRLAN_38."
 <tr>
 <td class=\"forumheader3\">".BNRLAN_37."</td>
 <td class=\"forumheader3\">
-<select name=\"endday\" class=\"tbox\"><option selected> </option>";
+<select name=\"endday\" class=\"tbox\"><option selected='selected'> </option>";
 for($a=1; $a<=31; $a++){
-	$text .= ($a == $_POST['endday'] ? "<option selected>".$a."</option>" : "<option>".$a."</option>");
+	$text .= ($a == $_POST['endday'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
 }
-$text .= "</select> <select name=\"endmonth\" class=\"tbox\"><option selected> </option>";
+$text .= "</select> <select name=\"endmonth\" class=\"tbox\"><option selected='selected'> </option>";
 for($a=1; $a<=12; $a++){
-	$text .= ($a == $_POST['endmonth'] ? "<option selected>".$a."</option>" : "<option>".$a."</option>");
+	$text .= ($a == $_POST['endmonth'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
 }
-$text .= "</select> <select name=\"endyear\" class=\"tbox\"><option selected> </option>";
+$text .= "</select> <select name=\"endyear\" class=\"tbox\"><option selected='selected'> </option>";
 for($a=2003; $a<=2010; $a++){
-	$text .= ($a == $_POST['endyear'] ? "<option selected>".$a."</option>" : "<option>".$a."</option>");
+	$text .= ($a == $_POST['endyear'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
 }
 $text .= "</select> ".BNRLAN_38."
 </td>
@@ -321,7 +321,7 @@ $text .= "</select> ".BNRLAN_38."
 <tr>
 <td class=\"forumheader3\">".BNRLAN_39."?</td>
 <td class=\"forumheader3\">
-<input name=\"banner_enabled\" type=\"radio\" value=\"1\" checked>".BNRLAN_19."&nbsp;&nbsp;<input name=\"banner_enabled\" type=\"radio\" value=\"0\">".BNRLAN_20."
+<input name=\"banner_enabled\" type=\"radio\" value=\"1\" checked='checked' />".BNRLAN_19."&nbsp;&nbsp;<input name=\"banner_enabled\" type=\"radio\" value=\"0\">".BNRLAN_20."
 </tr>
 
 <tr><td colspan=\"2\" style=\"text-align:center\" class=\"forumheader\">";

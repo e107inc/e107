@@ -34,7 +34,7 @@ if(e_QUERY == "u"){
 $maintainance_flag = $pref['maintainance_flag'];
 
 $text = "<div style='text-align:center'>
-<form method='post' action='".e_SELF."' name='dataform'>
+<form method='post' action='".e_SELF."' id='dataform'>
 <table style='width:85%' class='fborder'>
 <tr>
 <td style='width:30%' class='forumheader3'>".UGFLAN_2.": </td>
@@ -42,7 +42,7 @@ $text = "<div style='text-align:center'>
 
 
 if($maintainance_flag == 1){
-	$text .= "<input type='checkbox' name='maintainance_flag' value='1'  checked>";
+	$text .= "<input type='checkbox' name='maintainance_flag' value='1'  checked='checked' />";
 }else{
 	$text .= "<input type='checkbox' name='maintainance_flag' value='1'>";
 }

@@ -100,7 +100,7 @@ $text .= "
 <td style='width:20%' class='forumheader3'>".NWFLAN_16."</td>
 <td style='width:80%' class='forumheader3'>";
 if($headline_active == 1){
-	$text .= "<input type='checkbox' name='activate' value='1' checked>";
+	$text .= "<input type='checkbox' name='activate' value='1' checked='checked' />";
 }else{
 	$text .= "<input type='checkbox' name='activate' value='1'>";
 }

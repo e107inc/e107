@@ -119,7 +119,7 @@ if(IsSet($message)){
 $class_total = $sql -> db_Select("userclass_classes");
 
 $text = "<div style='text-align:center'>
-<form method='post' action='".e_SELF."' name='classForm'>
+<form method='post' action='".e_SELF."' id='classForm'>
 <table class='fborder' style='width:95%'>
 <tr>
 <td class='forumheader' style='text-align:center' colspan='2'>";
@@ -147,18 +147,18 @@ $text.="
 <tr>
 <td class='forumheader3' style='width:30%'>".UCSLAN_12."</td>
 <td class='forumheader3' style='width:70%'>
-<input class='tbox' type='text' size='30' maxlength='25' name='userclass_name' value='$userclass_name'></td>
+<input class='tbox' type='text' size='30' maxlength='25' name='userclass_name' value='$userclass_name' /></td>
 </tr>
 <tr>
 <td class='forumheader3'>".UCSLAN_13."</td>
-<td class='forumheader3' style='width:70%'><input class='tbox' type='text' size='60' maxlength='85' name='userclass_description' value='$userclass_description'></td>
+<td class='forumheader3' style='width:70%'><input class='tbox' type='text' size='60' maxlength='85' name='userclass_description' value='$userclass_description' /></td>
 </tr>
 
 <tr><td colspan='2' style='text-align:center' class='forumheader'>";
 
 If(IsSet($_POST['edit'])){
         $text .= "<input class='button' type='submit' name='updateclass' value='".UCSLAN_14."' />
-        <input type='hidden' name='userclass_id' value='$userclass_id'>";
+        <input type='hidden' name='userclass_id' value='$userclass_id' />";
 }else{
         $text .= "<input class='button' type='submit' name='createclass' value='".UCSLAN_15."' />";
 }
@@ -211,14 +211,14 @@ If(IsSet($_POST['edit'])){
                 $text .= "<option value=".$in_userid[$a].">".$in_username[$a]."</option>";
         }
         $text .= "</select><br /><br />
-        <input class='button' type='button' value='".UCSLAN_17."' onclick='removeMe();'>
-        <input class='button' type='button' value='".UCSLAN_18."' onclick='clearMe($userclass_id);'>
+        <input class='button' type='button' value='".UCSLAN_17."' onclick='removeMe();' />
+        <input class='button' type='button' value='".UCSLAN_18."' onclick='clearMe($userclass_id);' />
         <input type='hidden' name='class_id' value='$userclass_id'>
 
         </td></tr></table>
         </td></tr>
         <tr><td colspan='2' style='text-align:center' class='forumheader'>
-        <input class='button' type='button' value='".UCSLAN_19." ".$userclass_name." ".UCSLAN_20."' onclick='saveMe($userclass_id);'>
+        <input class='button' type='button' value='".UCSLAN_19." ".$userclass_name." ".UCSLAN_20."' onclick='saveMe($userclass_id);' />
         </tr>
         </td>
         </table>";

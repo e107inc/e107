@@ -51,27 +51,27 @@ if($action == "adv"){
 <td>
 	
 	<input name=\"menu_class\" type=\"radio\" value=\"0\" ";
-	if(!$menu_class){ $text .= "checked"; }
-	$text .= ">".MENLAN_1."<br />
+	if(!$menu_class){ $text .= "checked='checked'"; }
+	$text .= " />".MENLAN_1."<br />
 	
 	<input name=\"menu_class\" type=\"radio\" value=\"252\" ";
-	if($menu_class == 252){ $text .= "checked"; }
-	$text .= ">".MENLAN_21."<br />
+	if($menu_class == 252){ $text .= "checked='checked'"; }
+	$text .= " />".MENLAN_21."<br />
 	
 	<input name=\"menu_class\" type=\"radio\" value=\"253\" ";
-	if($menu_class == 253){ $text .= "checked"; }
-	$text .= ">".MENLAN_2."<br />
+	if($menu_class == 253){ $text .= "checked='checked'"; }
+	$text .= " />".MENLAN_2."<br />
 
 	<input name=\"menu_class\" type=\"radio\" value=\"254\" ";
-	if($menu_class == 254){ $text .= "checked"; }
-	$text .= ">".MENLAN_3."<br />";
+	if($menu_class == 254){ $text .= "checked='checked'"; }
+	$text .= " />".MENLAN_3."<br />";
 
 
 	$sql -> db_Select("userclass_classes");
 	while($row = $sql -> db_Fetch()){ 
 		extract($row);
 		$text .= "<input name=\"menu_class\" type=\"radio\" value=\"".$userclass_id."\"";
-		if($menu_class == $userclass_id){ $text .= "checked"; }
+		if($menu_class == $userclass_id){ $text .= "checked='checked'"; }
 		$text .= ">".MENLAN_4." ".$userclass_name." ".MENLAN_5."<br />";
 	}
 
@@ -138,7 +138,7 @@ while(false !== ($file = readdir($handle))){
 			$handle2=opendir(e_PLUGIN."custom/");
 			$d=0;
 			while(false !== ($file2 = readdir($handle2))){
-				if($file2 != "." && $file2 != ".." && $file2 != "/"){
+				if($file2 != "." && $file2 != ".." && $file2 != "/" && $file2 != "Readme.txt"){
 					$file2 = "custom_".str_replace(".php", "", $file2);
 					if(!$sql -> db_Select("menus", "*", "menu_name='$file2'")){
 						$sql -> db_Insert("menus", " 0, '$file2', 0, 0, 0 ");

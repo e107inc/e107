@@ -88,7 +88,7 @@ if(IsSet($message)){
 }
 
 $text = "<div style='text-align:center'>
-<form method='post' action='".e_SELF."' name='dataform'>
+<form method='post' action='".e_SELF."' id='dataform'>
 <table style='width:85%' class='fborder'>
 <tr>
 
@@ -123,14 +123,14 @@ $text .= "
 <tr>
 <td style='width:30%' class='forumheader3'>".CUSLAN_11.": </td>
 <td style='width:70%' class='forumheader3'>
-<input class='tbox' type='text' size='30' maxlength='25' name='menu_name' value='".$_POST['menu_name']."'>
+<input class='tbox' type='text' size='30' maxlength='25' name='menu_name' value='".$_POST['menu_name']."' />
 </td>
 </tr>
 
 <tr>
 <td style='width:30%' class='forumheader3'>".CUSLAN_12.": </td>
 <td style='width:70%' class='forumheader3'>
-<input class='tbox' type='text' size='60' maxlength='25' name='menu_caption' value='".$_POST['menu_caption']."'>
+<input class='tbox' type='text' size='60' maxlength='25' name='menu_caption' value='".$_POST['menu_caption']."' />
 </td>
 </tr>
 

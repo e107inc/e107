@@ -154,7 +154,7 @@ $text = "<div style='text-align:center'>
 <span class='smalltext'>".IMALAN_2."</span>
 </td>
 <td style='width:25%' class='forumheader3' style='text-align:center'>".
-($pref['image_post'] ? "<input type='checkbox' name='image_post' value='1' checked>" : "<input type='checkbox' name='image_post' value='1'>")."
+($pref['image_post'] ? "<input type='checkbox' name='image_post' value='1' checked='checked' />" : "<input type='checkbox' name='image_post' value='1'>")."
 </td>
 </tr>
 
@@ -192,8 +192,8 @@ $text .= "</select>
 </td>
 <td style='width:25%' class='forumheader3' style='text-align:center'>
 <select name='image_post_disabled_method' class='tbox'>".
-($pref['image_post_disabled_method'] == "0" ? "<option value='1' selected>".IMALAN_14."</option>" : "<option value='0'>".IMALAN_14."</option>").
-($pref['image_post_disabled_method'] == "1" ? "<option value='1' selected>".IMALAN_15."</option>" : "<option value='1'>".IMALAN_15."</option>")."
+($pref['image_post_disabled_method'] == "0" ? "<option value='1' selected='selected'>".IMALAN_14."</option>" : "<option value='0'>".IMALAN_14."</option>").
+($pref['image_post_disabled_method'] == "1" ? "<option value='1' selected='selected'>".IMALAN_15."</option>" : "<option value='1'>".IMALAN_15."</option>")."
 </td>
 </tr>
 
@@ -201,9 +201,9 @@ $text .= "</select>
 <td style='width:75%' class='forumheader3'>".IMALAN_3."<br /><span class='smalltext'>".IMALAN_4."</span></td>
 <td style='width:25%' class='forumheader3'  style='text-align:center'>
 <select name='resize_method' class='tbox'>".
-($pref['resize_method'] == "gd1" ? "<option selected>gd1</option>" : "<option>gd1</option>").
-($pref['resize_method'] == "gd2" ? "<option selected>gd2</option>" : "<option>gd2</option>").
-($pref['resize_method'] == "ImageMagick" ? "<option selected>ImageMagick</option>" : "<option>ImageMagick</option>")."
+($pref['resize_method'] == "gd1" ? "<option selected='selected'>gd1</option>" : "<option>gd1</option>").
+($pref['resize_method'] == "gd2" ? "<option selected='selected'>gd2</option>" : "<option>gd2</option>").
+($pref['resize_method'] == "ImageMagick" ? "<option selected='selected'>ImageMagick</option>" : "<option>ImageMagick</option>")."
 </select>
 </td>
 </tr>

@@ -130,9 +130,9 @@ $text = "<div style='text-align:center'>\n
 </td>\n
 <td style='width:30%' class='forumheader3' style='text-align:center'>\n
 <select name='admin_choice' class='tbox'>\n";
-($admin_choice=="Files" ? $text .= "<option value='Files' selected>".FMLAN_35."</option>" : $text .= "<option value='Files'>".FMLAN_35."</option>");
+($admin_choice=="Files" ? $text .= "<option value='Files' selected='selected'>".FMLAN_35."</option>" : $text .= "<option value='Files'>".FMLAN_35."</option>");
 if(getperms("I")){
-	($admin_choice=="Custom" ? $text .= "<option value='Custom' selected>".FMLAN_36."</option>" : $text .= "<option value='Custom'>".FMLAN_36."</option>");
+	($admin_choice=="Custom" ? $text .= "<option value='Custom' selected='selected'>".FMLAN_36."</option>" : $text .= "<option value='Custom'>".FMLAN_36."</option>");
 }
 $text .= "</select>\n
 </td>\n

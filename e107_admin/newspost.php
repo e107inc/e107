@@ -351,7 +351,7 @@ class newspost{
                 }
 
                 $text = "<div style='text-align:center'>
-                <form ".(FILE_UPLOADS ? "enctype='multipart/form-data'" : "")." method='post' action='".e_SELF."?".e_QUERY."' name='dataform'>
+                <form ".(FILE_UPLOADS ? "enctype='multipart/form-data'" : "")." method='post' action='".e_SELF."?".e_QUERY."' id='dataform'>
                 <table style='width:95%' class='fborder'>
 
                 <tr>
@@ -730,12 +730,12 @@ class newspost{
                 <td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_87."</span></td>
                 <td class='forumheader3' style='width:40%'>
                 <select class='tbox' name='nbr_cols'>
-                <option value='1' ".($pref['nbr_cols']==1 ? "selected='selected'" : "").">1</option>
-                <option value='2' ".($pref['nbr_cols']==2 ? "selected='selected'" : "").">2</option>
-                <option value='3' ".($pref['nbr_cols']==3 ? "selected='selected'" : "").">3</option>
-                <option value='4' ".($pref['nbr_cols']==4 ? "selected='selected'" : "").">4</option>
-                <option value='5' ".($pref['nbr_cols']==5 ? "selected='selected'" : "").">5</option>
-                <option value='6' ".($pref['nbr_cols']==6 ? "selected='selected'" : "").">6</option>
+                <option value='1' ".($pref['nbr_cols']==1 ? "selected='selected'>" : "").">1</option>
+                <option value='2' ".($pref['nbr_cols']==2 ? "selected='selected'>" : "").">2</option>
+                <option value='3' ".($pref['nbr_cols']==3 ? "selected='selected'>" : "").">3</option>
+                <option value='4' ".($pref['nbr_cols']==4 ? "selected='selected'>" : "").">4</option>
+                <option value='5' ".($pref['nbr_cols']==5 ? "selected='selected'>" : "").">5</option>
+                <option value='6' ".($pref['nbr_cols']==6 ? "selected='selected'>" : "").">6</option>
                 </select></td>
                 </tr>
 
@@ -743,13 +743,13 @@ class newspost{
                 <td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_88."</span></td>
                 <td class='forumheader3' style='width:40%'>
                 <select class='tbox' name='newsposts'>
-                <option value='1' ".($pref['newsposts']==1 ? "selected='selected'" : "").">1</option>
-                <option value='2' ".($pref['newsposts']==2 ? "selected='selected'" : "").">2</option>
-                <option value='3' ".($pref['newsposts']==3 ? "selected='selected'" : "").">3</option>
-                <option value='5' ".($pref['newsposts']==5 ? "selected='selected'" : "").">5</option>
-                <option value='10' ".($pref['newsposts']==10 ? "selected='selected'" : "").">10</option>
-                <option value='15' ".($pref['newsposts']==15 ? "selected='selected'" : "").">15</option>
-                <option value='20' ".($pref['newsposts']==20 ? "selected='selected'" : "").">20</option>
+                <option value='1' ".($pref['newsposts']==1 ? "selected='selected'>" : "").">1</option>
+                <option value='2' ".($pref['newsposts']==2 ? "selected='selected'>" : "").">2</option>
+                <option value='3' ".($pref['newsposts']==3 ? "selected='selected'>" : "").">3</option>
+                <option value='5' ".($pref['newsposts']==5 ? "selected='selected'>" : "").">5</option>
+                <option value='10' ".($pref['newsposts']==10 ? "selected='selected'>" : "").">10</option>
+                <option value='15' ".($pref['newsposts']==15 ? "selected='selected'>" : "").">15</option>
+                <option value='20' ".($pref['newsposts']==20 ? "selected='selected'>" : "").">20</option>
 
                 </select></td>
                 </tr>";

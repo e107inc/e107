@@ -153,10 +153,10 @@ if($action == "resend"){
      $text .= "<form method='post' action='".e_SELF."'><div style='text-align:center'>\n";
      $text .= USRLAN_116." <b>".$resend['user_name']."</b><br><br>
 
-     <input type='hidden' name='resend_id' value='$sub_action'>\n
-     <input type='hidden' name='resend_name' value='".$resend['user_name']."'>\n
-     <input type='hidden' name='resend_key' value='".$resend['user_sess']."'>\n
-     <input type='hidden' name='resend_email' value='".$resend['user_email']."'>\n
+     <input type='hidden' name='resend_id' value='$sub_action' />\n
+     <input type='hidden' name='resend_name' value='".$resend['user_name']."' />\n
+     <input type='hidden' name='resend_key' value='".$resend['user_sess']."' />\n
+     <input type='hidden' name='resend_email' value='".$resend['user_email']."' />\n
      <input class='button' type='submit' name='resend_mail' value='".USRLAN_112."' />\n</div></form>\n";
      $caption = USRLAN_112;
      $ns -> tablerender($caption, $text);
@@ -168,7 +168,7 @@ if($action == "test"){
      $test = $sql -> db_Fetch();
      $text .= "<form method='post' action='".e_SELF."'><div style='text-align:center'>\n";
      $text .= USRLAN_117." <br><b>".$test['user_email']."</b><br><br>
-     <input type='hidden' name='test_email' value='".$test['user_email']."'>\n
+     <input type='hidden' name='test_email' value='".$test['user_email']."' />\n
      <input class='button' type='submit' name='test_mail' value='".USRLAN_118."' />\n</div></form>\n";
      $caption = USRLAN_118;
      $ns -> tablerender($caption, $text);
@@ -499,7 +499,7 @@ class users{
                 <tr>
                 <td style='width:50%' class='forumheader3'>".USRLAN_44.":</td>
                 <td style='width:50%' class='forumheader3'>".
-                ($pref['avatar_upload'] ? "<input name='avatar_upload' type='radio' value='1' checked>".USRLAN_45."&nbsp;&nbsp;<input name='avatar_upload' type='radio' value='0'>".USRLAN_46 : "<input name='avatar_upload' type='radio' value='1'>".USRLAN_45."&nbsp;&nbsp;<input name='avatar_upload' type='radio' value='0' checked>".USRLAN_46).
+                ($pref['avatar_upload'] ? "<input name='avatar_upload' type='radio' value='1' checked='checked' />".USRLAN_45."&nbsp;&nbsp;<input name='avatar_upload' type='radio' value='0' />".USRLAN_46 : "<input name='avatar_upload' type='radio' value='1' />".USRLAN_45."&nbsp;&nbsp;<input name='avatar_upload' type='radio' value='0' checked='checked' />".USRLAN_46).
                 (!FILE_UPLOADS ? " <span class='smalltext'>(".USRLAN_58.")</span>" : "")."
                 </td>
                 </tr>
@@ -507,7 +507,7 @@ class users{
                 <tr>
                 <td style='width:50%' class='forumheader3'>".USRLAN_53.":</td>
                 <td style='width:50%' class='forumheader3'>".
-                ($pref['photo_upload'] ? "<input name='photo_upload' type='radio' value='1' checked>".USRLAN_45."&nbsp;&nbsp;<input name='photo_upload' type='radio' value='0'>".USRLAN_46 : "<input name='photo_upload' type='radio' value='1'>".USRLAN_45."&nbsp;&nbsp;<input name='photo_upload' type='radio' value='0' checked>".USRLAN_46).
+                ($pref['photo_upload'] ? "<input name='photo_upload' type='radio' value='1' checked='checked' />".USRLAN_45."&nbsp;&nbsp;<input name='photo_upload' type='radio' value='0' />".USRLAN_46 : "<input name='photo_upload' type='radio' value='1' />".USRLAN_45."&nbsp;&nbsp;<input name='photo_upload' type='radio' value='0' checked='checked' />".USRLAN_46).
                 (!FILE_UPLOADS ? " <span class='smalltext'>(".USRLAN_58.")</span>" : "")."
                 </td>
                 </tr>
@@ -618,7 +618,7 @@ class users{
 
      for ($i=0; $i<count($typevalue); $i++) {
      $selected = ($uf_type == $typevalue[$i])? " selected": "";
-     $text .="<option value='".$typevalue[$i]."' $selected>".$typename[$i]."</option>";
+     $text .="<option value='".$typevalue[$i]."' $selected='selected'>".$typename[$i]."</option>";
      };
 
                 $text .="

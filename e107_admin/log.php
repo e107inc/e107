@@ -59,9 +59,9 @@ $text = "<div style='text-align:center'>
 <td style='width:30%' class='forumheader3'>".LOGLAN_3.": </td>
 <td style='width:70%' class='forumheader3'>";
 if($log_activate == 1){
-	$text .= "<input type='checkbox' name='log_activate' value='1'  checked>";
+	$text .= "<input type='checkbox' name='log_activate' value='1'  checked='checked' />";
 }else{
-	$text .= "<input type='checkbox' name='log_activate' value='1'>";
+	$text .= "<input type='checkbox' name='log_activate' value='1' />";
 }
 
 $text .= "</td>
@@ -72,11 +72,11 @@ $text .= "</td>
 <td style='width:70%' class='forumheader3'>";
 
 if($pref['log_refertype'] == 0){
-	$text .= LOGLAN_5.": <input type='radio' name='refertype' value='0' checked>
-	".LOGLAN_6.": <input type='radio' name='refertype' value='1'>";
+	$text .= LOGLAN_5.": <input type='radio' name='refertype' value='0' checked='checked' />
+	".LOGLAN_6.": <input type='radio' name='refertype' value='1' />";
 }else{
-	$text .= LOGLAN_5.": <input type='radio' name='refertype' value='0'>
-	".LOGLAN_6.": <input type='radio' name='refertype' value='1' checked>";
+	$text .= LOGLAN_5.": <input type='radio' name='refertype' value='0' />
+	".LOGLAN_6.": <input type='radio' name='refertype' value='1' checked='checked' />";
 }
 
 $text .= "</td>
@@ -93,8 +93,8 @@ $text .= "</td>
 <tr>
 <td style='width:30%' class='forumheader3'>".LOGLAN_8.": </td>
 <td style='width:70%' class='forumheader3'>
-<input type='checkbox' name='log_wipe_info' value='1'> ".LOGLAN_9."<br />
-<input type='checkbox' name='log_wipe_counter' value='1'> ".LOGLAN_10."<br />
+<input type='checkbox' name='log_wipe_info' value='1' /> ".LOGLAN_9."<br />
+<input type='checkbox' name='log_wipe_counter' value='1' /> ".LOGLAN_10."<br />
 <input class='button' type='submit' name='wipe' value='".LOGLAN_11."' />
 </td>
 </tr>

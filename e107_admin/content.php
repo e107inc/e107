@@ -132,7 +132,7 @@ if($action == "edit"){
 $article_total = $sql -> db_Select("content", "*", "content_type='254' OR content_type='255' OR content_type='1' ");
 
 $text = "<div style='text-align:center'>
-<form method='post' action='".e_SELF."' name='dataform'>
+<form method='post' action='".e_SELF."' id='dataform'>
 <table style='width:80%' class='fborder'>
 
 <tr>

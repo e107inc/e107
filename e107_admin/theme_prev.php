@@ -108,14 +108,14 @@ $text .= "<div style='text-align:center'>
 $counter = 0;
 while(IsSet($dirlist[$counter])){
 	if($dirlist[$counter] == $pref['sitetheme'][1]){
-		$text .= "<option selected>".$dirlist[$counter]."</option>\n";
+		$text .= "<option selected='selected'>".$dirlist[$counter]."</option>\n";
 	}else{
 		$text .= "<option>".$dirlist[$counter]."</option>\n";
 	}
 	$counter++;
 }
 $text .= "</select>
-<input class='button' type='submit' name='previewtheme' value='".TPVLAN_6."'>
+<input class='button' type='submit' name='previewtheme' value='".TPVLAN_6."' />
 </td>
 </tr>
 <tr>

@@ -183,7 +183,7 @@ if($action == "cat"){
         <td class='forumheader3' style='width:70%'>
         ".$rs -> form_text("category_button", 60, $content_summary, 100)."
         <br />
-        <input class='button' type ='button' style=''width: 35px'; cursor:hand' size='30' value='".REVLAN_36."' onClick='expandit(this)'>
+        <input class='button' type ='button' style=''width: 35px'; cursor:hand' size='30' value='".REVLAN_36."' onClick='expandit(this)' />
         <div style='display:none' style=&{head};>";
         while(list($key, $icon) = each($iconlist)){
                 $text .= "<a href='javascript:addtext2(\"$icon\")'><img src='".e_IMAGE."link_icons/".$icon."' style='border:0' alt='' /></a> ";
@@ -196,12 +196,12 @@ if($action == "cat"){
         </tr>
         <tr><td colspan='2' style='text-align:center' class='forumheader'>";
         if($id){
-                $text .= "<input class='button' type='submit' name='update_category' value='".REVLAN_38."'>
+                $text .= "<input class='button' type='submit' name='update_category' value='".REVLAN_38."' />
                 ".$rs -> form_button("submit", "category_clear", REVLAN_69).
                 $rs -> form_hidden("category_id", $id)."
                 </td></tr>";
         }else{
-                $text .= "<input class='button' type='submit' name='create_category' value='".REVLAN_39."'></td></tr>";
+                $text .= "<input class='button' type='submit' name='create_category' value='".REVLAN_39."' /></td></tr>";
         }
         $text .= "</table>
         ".$rs -> form_close()."
@@ -358,7 +358,7 @@ if($action == "create"){
         <select name='content_rating' class='tbox'>
         <option value='0'>".REVLAN_17." ...</option>";
         for($a=1; $a<=100; $a++){
-                $text .= ($content_rating == $a ? "<option value='$a' selected>$a</option>" : "<option value='$a'>$a</option>");
+                $text .= ($content_rating == $a ? "<option value='$a' selected='selected'>$a</option>" : "<option value='$a'>$a</option>");
         }
         $text .= "</select>
         </td>
@@ -371,11 +371,11 @@ if($action == "create"){
 
 
         if($content_comment == "0"){
-                $text .= REVLAN_19.": <input type='radio' name='content_comment' value='1'>
-                ".REVLAN_20.": <input type='radio' name='content_comment' value='0' checked>";
+                $text .= REVLAN_19.": <input type='radio' name='content_comment' value='1' />
+                ".REVLAN_20.": <input type='radio' name='content_comment' value='0' checked='checked' />";
         }else{
-                $text .= REVLAN_19.": <input type='radio' name='content_comment' value='1' checked>
-                ".REVLAN_20.": <input type='radio' name='content_comment' value='0'>";
+                $text .= REVLAN_19.": <input type='radio' name='content_comment' value='1' checked='checked' />
+                ".REVLAN_20.": <input type='radio' name='content_comment' value='0' />";
         }
 
         $text .= "</td></tr>";
@@ -383,7 +383,7 @@ if($action == "create"){
         $text.="
         <tr>
         <td  class='forumheader3'>".REVLAN_71.":&nbsp;&nbsp;</td><td class='forumheader3'>".
-        ($content_pe_icon ? REVLAN_72.": <input type='radio' name='add_icons' value='1' checked>".REVLAN_73.": <input type='radio' name='add_icons' value='0'>" : REVLAN_72.": <input type='radio' name='add_icons' value='1'>".REVLAN_73.": <input type='radio' name='add_icons' value='0' checked>")."
+        ($content_pe_icon ? REVLAN_72.": <input type='radio' name='add_icons' value='1' checked='checked' />".REVLAN_73.": <input type='radio' name='add_icons' value='0'>" : REVLAN_72.": <input type='radio' name='add_icons' value='1'>".REVLAN_73.": <input type='radio' name='add_icons' value='0' checked='checked' />")."
         </td>
         </tr>
 
@@ -432,7 +432,7 @@ if($action == "opt"){
         <span class='smalltext'>".REVLAN_56."</span>
         </td>
         <td style='width:30%' class='forumheader2' style='text-align:center'>".
-        ($pref['review_submit'] ? "<input type='checkbox' name='review_submit' value='1' checked>" : "<input type='checkbox' name='review_submit' value='1'>")."
+        ($pref['review_submit'] ? "<input type='checkbox' name='review_submit' value='1' checked='checked' />" : "<input type='checkbox' name='review_submit' value='1' />")."
         </td>
         </tr>
 
