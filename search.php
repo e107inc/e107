@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-03-26 02:46:55 $
+|     $Revision: 1.30 $
+|     $Date: 2005-04-06 20:20:04 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -270,19 +270,19 @@ function headerjs() {
 	<!--
 	function checkAll(allbox) {
 		for (var i = 0; i < ".$search_count."; i++)
-		document.searchform[\"t[\" + i + \"]\"].checked = true ;
+		document.getElementById('searchform')[\"t[\" + i + \"]\"].checked = true ;
 		uncheckG();
 	}
 		 
 	function uncheckAll(allbox) {
 		for (var i = 0; i < ".$search_count."; i++)
-		document.searchform[\"t[\" + i + \"]\"].checked = false ;
+		document.getElementById('searchform')[\"t[\" + i + \"]\"].checked = false ;
 	}\n";
 		
 	if (check_class($search_prefs['google'])) {
 	$script .= "
 	function uncheckG() {
-		document.searchform[\"t[".$google_id."]\"].checked = false ;
+		document.getElementById('searchform')[\"t[".$google_id."]\"].checked = false ;
 	}\n";
 	}
 	
