@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2004-10-06 11:43:15 $
+|     $Revision: 1.10 $
+|     $Date: 2004-10-06 14:56:47 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -1046,10 +1046,8 @@ class e_parse
 			$text = $this -> e_pf -> filterProfanities($text);
 		}
 	
-		if(strpos($modifiers,'nobreak') == FALSE)
-		{
-			$text = str_replace('[E_NL]','<br />',$text);
-		}
+		$nl_replace = (strpos($modifiers,'nobreak') === FALSE) ? "<br />" : "";
+		$text = str_replace('[E_NL]',$nl_replace,$text);
 		return $text;
 	}
 }
