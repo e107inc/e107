@@ -1,7 +1,7 @@
 <?php
 
 // HTMLAREA handler for e107.
-// $Id: htmlarea.inc.php,v 1.10 2004-08-11 09:26:35 e107coders Exp $
+// $Id: htmlarea.inc.php,v 1.11 2004-08-12 15:10:31 e107coders Exp $
 
 // Settings ==========================================================
     $width = "520px";  // htmlarea width
@@ -13,12 +13,9 @@
     $tidy = 0; // Html Tidy Plugin.
     $context = 1; // Context Menu Plugin
     $imgmanager = 1; // Load IMage-Manager
+    $charmap = 1; // Load Character Map
  // ========================================================================
-    $plgcnt =0; // do not change.
-    $imagebut = (ADMIN) ? "insertimage" : "space"; // image button for  ADMINS only
-    $popupeditor = $fullscreen == 1 ? "popupeditor":"space";
 
-// ==================================================
 function htmlarea($ta_name,$page=''){
 /*  usage:
     $name should be the name of the <textarea> element you wish to replace with Htmlarea.
@@ -32,7 +29,17 @@ function htmlarea($ta_name,$page=''){
     htmlarea("post");
 */
 
-  global $display_emoticons,$tableops,$spelling,$plgcnt,$height,$width,$context, $tidy,$imagebut, $imgmanager;
+  global $charmap,$display_emoticons,$tableops,$spelling,$plgcnt,$height,$width,$context, $tidy,$imagebut, $imgmanager;
+    $plgcnt =0; // do not change.
+    $imagebut = (ADMIN) ? "insertimage" : "space"; // image button for  ADMINS only
+    $popupeditor = $fullscreen == 1 ? "popupeditor":"space";
+    $charmapon = $charmap ==1 ? "'insertcharacter',":"";
+
+// ==================================================
+
+
+
+
 
 $areajs = "\n\n<script type='text/javascript'>\n _editor_url = '".e_HANDLER."htmlarea/';_editor_lang = 'en'; </script>\n";
 $areajs .= "<script type='text/javascript' src='".e_HANDLER."htmlarea/htmlarea.js'></script>\n";
@@ -42,6 +49,7 @@ $areajs .= ($tableops==1) ? "HTMLArea.loadPlugin('TableOperations');\n":"";
 $areajs .= ($spelling==1) ? "HTMLArea.loadPlugin('SpellChecker');\n":"";
 $areajs .= ($imgmanager==1) ? "HTMLArea.loadPlugin('ImageManager');\n":"";
 $areajs .= ($tidy==1) ? "HTMLArea.loadPlugin('HtmlTidy');\n":"";
+$areajs .= ($charmap==1) ? "HTMLArea.loadPlugin('CharacterMap');\n":"";
 $areajs .= "</script>\n\n";
 
 
@@ -55,6 +63,7 @@ $name = explode(",",$ta_name);
         $areajs .= ($spelling==1) ? " editor_".$name[$i].".registerPlugin(SpellChecker);\n ":"";
         $areajs .= ($tidy==1) ? " editor_".$name[$i].".registerPlugin(HtmlTidy);\n ":"";
         $areajs .= ($imgmanager==1) ? " editor_".$name[$i].".registerPlugin(ImageManager);\n ":"";
+        $areajs .= ($charmap==1) ? " editor_".$name[$i].".registerPlugin(CharacterMap);\n ":"";
 
         $areajs .="editor_".$name[$i].".config.toolbar =
 
@@ -69,7 +78,7 @@ $name = explode(",",$ta_name);
                   'lefttoright', 'righttoleft', 'separator',
                   'orderedlist', 'unorderedlist', 'outdent', 'indent', 'separator',
                   'forecolor', 'hilitecolor', 'separator',
-                  'inserthorizontalrule', 'createlink', '".$imagebut."', 'inserttable', 'htmlmode', 'separator',
+                  'inserthorizontalrule', 'createlink', '".$imagebut."', 'inserttable', ".$charmapon." 'separator', 'htmlmode',
                   'popupeditor', 'separator', 'showhelp' ]";
 
         $areajs .= $display_emoticons ? ",[".htmlarea_emote(2)."]":"";
