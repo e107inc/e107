@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/tree_menu/tree_menu.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-02-13 13:13:15 $
-|     $Author: sweetas $
+|     $Revision: 1.13 $
+|     $Date: 2005-02-13 16:31:30 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 	
@@ -128,7 +128,7 @@ function setlink($link_name, $link_url, $link_open, $link_description) {
 		default:
 		$link_append = '';
 	}
-	if (!strstr($link_url, "http:")) {
+	if (!strstr($link_url, "http:") && !strstr($link_url, "void")) {
 		$link_url = e_BASE.$link_url;
 	}
 	if ($link_open == 4) {
