@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db_verify.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-04-02 21:24:51 $
+|     $Revision: 1.11 $
+|     $Date: 2005-04-02 21:38:20 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -197,7 +197,7 @@ function check_tables($what) {
 			}
 		} else {    // Table Missing.
 			$text .= "<tr><td class='forumheader3' style='text-align:center'>$k</td><td class='forumheader3' style='text-align:center'>&nbsp;</td><td class='forumheader' style='text-align:center'>".DBLAN_13."<br /><td class='forumheader3' style='text-align:center'>&nbsp;".fix_form($k,$tf,$tablines[$k],"create")."</td></tr>";
-            $fix_active = TRUE; 
+            $fix_active = TRUE;
 		}
 	}
 	$text .= "</table></div>";
@@ -243,7 +243,7 @@ if (!$_POST && !$_POST['do_fix']) {
 // --------------------------------------------------------------
 
 if(isset($_POST['do_fix'])){
-
+        $text = "<div><table class='fborder' style='width:100%'>";
 	foreach( $_POST['fix_active'] as $key=>$val){
 		$table= $_POST['fix_table'][$key][0];
 		$field= $key;
@@ -268,16 +268,17 @@ if(isset($_POST['do_fix'])){
 		}
 
 		if($mode == "create"){
-			$query = "CREATE TABLE ".MPREFIX.$table." (".$newval.") TYPE=MyISAM;";
+			$query = "CREATE TABLE ".MPREFIX.$table." ($newval) TYPE=MyISAM;";
 		}
 
-		$text .= "<div>";
-		$text .= $query;
+
+		$text .= "<tr><td class='forumheader3' style='vertical-align:top;width:70%'>".$query."</td><td class='forumheader3' style='vertical-align:top;width:30%'>";
 		$text .= (mysql_query($query)) ? " - <b>".LAN_UPDATED."</b>" : " - <b>".LAN_UPDATED_FAILED."</b>";
-		$text .= "</div>";
+		$text .= "</td></tr>";
 
 
 	}
+		$text .= "</table></div>";
 		$text .="<div style='text-align:center'><br />
 				<form method='POST' action='db.php'>
 				<input class='button' type='submit' name='back' value='".DBLAN_17."' />
