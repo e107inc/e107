@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-01-10 09:49:03 $
+|     $Revision: 1.8 $
+|     $Date: 2005-01-18 04:30:09 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -119,14 +119,23 @@ if(IsSet($_POST['confirm'])){
                         save_prefs();
                         $text .= EPL_ADLAN_29."<br />";
                 }
-                                        if($eplug_module){
-                                                $mods=explode(",",$pref['modules']);
-                                                foreach($mods as $k => $v){
-                                                        if($v == $eplug_folder){unset($mods[$k]);}
-                                                }
-                                                $pref['modules'] = implode(",",$mods);
-                  save_prefs();
-                }
+			if($eplug_module){
+				$mods=explode(",",$pref['modules']);
+				foreach($mods as $k => $v){
+					if($v == $eplug_folder){unset($mods[$k]);}
+				}
+				$pref['modules'] = implode(",",$mods);
+				save_prefs();
+			}
+
+			if($eplug_latest){
+				$lats=explode(",",$pref['plug_latest']);
+				foreach($lats as $k => $v){
+					if($v == $eplug_folder){unset($lats[$k]);}
+				}
+				$pref['plug_latest'] = implode(",",$lats);
+				save_prefs();
+			}
 
 
                 if(is_array($eplug_user_prefs)){
@@ -202,16 +211,24 @@ if(strstr(e_QUERY, "install")){
                         $text .= EPL_ADLAN_20."<br />";
 
                 }
-                                        if($eplug_module){
-                                                $mods = explode(",",$pref['modules']);
-                                                if(!in_array($eplug_folder,$mods)){
-                                                        $mods[]=$eplug_folder;
-                                                }
-                                                $pref['modules'] = implode(",",$mods);
-                  save_prefs();
-               }
+			if($eplug_module){
+				$mods = explode(",",$pref['modules']);
+				if(!in_array($eplug_folder,$mods)){
+					$mods[]=$eplug_folder;
+				}
+				$pref['modules'] = implode(",",$mods);
+				save_prefs();
+			}
 
-
+			if($eplug_latest){
+				$lats = explode(",",$pref['plug_latest']);
+				if(!in_array($eplug_folder,$lats)){
+					$lats[]=$eplug_folder;
+				}
+				$pref['plug_latest'] = implode(",",$lats);
+				save_prefs();
+			}
+			
                 if(is_array($eplug_user_prefs)){
                         $sql = new db;
                         $sql -> db_Select("core", " e107_value", " e107_name='user_entended'");
