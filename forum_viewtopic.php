@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/forum_viewtopic.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2004-10-29 18:02:45 $
+|     $Revision: 1.5 $
+|     $Date: 2004-10-30 01:12:49 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -283,47 +283,54 @@ if((ANON || USER) && ($forum_class != e_UC_READONLY || MODERATOR)){
 $post_author_id = substr($thread_user, 0, strpos($thread_user, "."));
 $post_author_name = substr($thread_user, (strpos($thread_user, ".")+1));
 if(strstr($post_author_name, chr(1))){
-        $tmp = explode(chr(1), $post_author_name);
-        $post_author_name = $tmp[0];
-        $ip = $tmp[1];
-        $host = gethostbyaddr($ip);
-        $iphost = "<div class='smalltext' style='text-align:right'>IP: <a href='".e_ADMIN."userinfo.php?$ip'>$ip ( $host )</a></div>";
+	$tmp = explode(chr(1), $post_author_name);
+	$post_author_name = $tmp[0];
+	$ip = $tmp[1];
+	$host = gethostbyaddr($ip);
+	$iphost = "<div class='smalltext' style='text-align:right'>IP: <a href='".e_ADMIN."userinfo.php?$ip'>$ip ( $host )</a></div>";
 }
 
-if(!$post_author_id || !$sql -> db_Select("user", "*", "user_id='".$post_author_id."' ")){        // guest
-        $POSTER = "<b>".$post_author_name."</b>";
-        $AVATAR = "<br /><span class='smallblacktext'>".LAN_194."</span>";
-}else{        // regged member - get member info
-        unset($iphost);
-        $row = $sql -> db_Fetch(); extract($row);
-        $POSTER = "<a href='user.php?id.".$post_author_id."'><b>".$post_author_name."</b></a>";
-        if($user_image){
-                require_once(e_HANDLER."avatar_handler.php");
-                $AVATAR = "<div class='spacer'><img src='".avatar($user_image)."' alt='' /></div><br />";
-        }else{
-                unset($AVATAR);
-        }
+if(!$post_author_id || !$sql -> db_Select("user", "*", "user_id='".$post_author_id."' "))        // guest
+{
+	$POSTER = "<b>".$post_author_name."</b>";
+	$AVATAR = "<br /><span class='smallblacktext'>".LAN_194."</span>";
+}
+else
+{        // regged member - get member info
+	unset($iphost);
+	$row = $sql -> db_Fetch(); extract($row);
+	cachevars('user_'.$post_author_id,$row);
+	$POSTER = "<a href='user.php?id.".$post_author_id."'><b>".$post_author_name."</b></a>";
+	if($user_image)
+	{
+		require_once(e_HANDLER."avatar_handler.php");
+		$AVATAR = "<div class='spacer'><img src='".avatar($user_image)."' alt='' /></div><br />";
+	}
+	else
+	{
+		unset($AVATAR);
+	}
 
-        $JOINED = ($user_perms == "0" ? "" : LAN_06." ".$gen->convert_date($user_join, "forum")."<br />");
-        $LOCATION = ($user_location ? LAN_07.": ".$user_location."<br />" : "");
-        $CUSTOMTITLE = ($user_customtitle ? $aj -> tpa($user_customtitle)."<br />" : "");
-        $WEBSITE = ($user_homepage ? LAN_08.": ".$user_homepage."<br />" : "");
-        $POSTS = LAN_67." ".$user_forums."<br />";
-        $VISITS = LAN_09.": ".$user_visits;
+	$JOINED = ($user_perms == "0" ? "" : LAN_06." ".$gen->convert_date($user_join, "forum")."<br />");
+	$LOCATION = ($user_location ? LAN_07.": ".$user_location."<br />" : "");
+	$CUSTOMTITLE = ($user_customtitle ? $aj -> tpa($user_customtitle)."<br />" : "");
+	$WEBSITE = ($user_homepage ? LAN_08.": ".$user_homepage."<br />" : "");
+	$POSTS = LAN_67." ".$user_forums."<br />";
+	$VISITS = LAN_09.": ".$user_visits;
 
-        $ldata = get_level($user_id, $user_forums, $user_comments, $user_chats, $user_visits, $user_join, $user_admin, $user_perms, $pref);
-        $MEMBERID = $ldata[0];
-        $LEVEL = $ldata[1];
+	$ldata = get_level($user_id, $user_forums, $user_comments, $user_chats, $user_visits, $user_join, $user_admin, $user_perms, $pref);
+	$MEMBERID = $ldata[0];
+	$LEVEL = $ldata[1];
 
-        $SIGNATURE = ($user_signature ? "<br /><hr style='width:15%; text-align:left'><span class='smalltext'>".$aj -> tpa($user_signature) : "");
+	$SIGNATURE = ($user_signature ? "<br /><hr style='width:15%; text-align:left'><span class='smalltext'>".$aj -> tpa($user_signature) : "");
 
-        $PROFILEIMG = (USER ? $tp -> parseTemplate("{PROFILE={$user_id}}") : "");
-        $EMAILIMG = (!$user_hideemail ? $tp -> parseTemplate("{EMAILTO={$user_email}}") : "");
+	$PROFILEIMG = (USER ? $tp -> parseTemplate("{PROFILE={$user_id}}") : "");
+	$EMAILIMG = (!$user_hideemail ? $tp -> parseTemplate("{EMAILTO={$user_email}}") : "");
 
-        $PRIVMESSAGE = $tp -> parseTemplate("{pm_menu.sendpm={$post_author_id}}");
+	$PRIVMESSAGE = $tp -> parseTemplate("{pm_menu.sendpm={$post_author_id}}");
 
-        $WEBSITEIMG = ($user_homepage && $user_homepage != "http://" ? "<a href='$user_homepage'>".IMAGE_website."</a>" : "");
-        $RPG = rpg($user_join, $user_forums);
+	$WEBSITEIMG = ($user_homepage && $user_homepage != "http://" ? "<a href='$user_homepage'>".IMAGE_website."</a>" : "");
+	$RPG = rpg($user_join, $user_forums);
 }
 
 $EDITIMG = ($post_author_id != "0" && $post_author_name == USERNAME && $thread_active ? "<a href='forum_post.php?edit.".$forum_id.".".$thread_id."'>".IMAGE_edit."</a> " : "");
@@ -371,90 +378,105 @@ $forthr = preg_replace("/\{(.*?)\}/e", '$\1', $FORUMTHREADSTYLE);
 unset($forrep);
 if(!$FORUMREPLYSTYLE) $FORUMREPLYSTYLE = $FORUMTHREADSTYLE;
 
-if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY thread_datestamp ASC LIMIT ".$from.", ".$pref['forum_postspage'])){
-        $sql2 = new db;
-        while($row = $sql-> db_Fetch()){
-                extract($row);
-                $post_author_id = substr($thread_user, 0, strpos($thread_user, "."));
-                $post_author_name = substr($thread_user, (strpos($thread_user, ".")+1));
-                if(strstr($post_author_name, chr(1))){
-                        $tmp = explode(chr(1), $post_author_name);
-                        $post_author_name = $tmp[0];
-                        $ip = $tmp[1];
-                        $host = gethostbyaddr($ip);
-                        $iphost = "<div class='smalltext' style='text-align:right'>IP: <a href='".e_ADMIN."userinfo.php?$ip'>$ip ( $host )</a></div>";
-                }
-                //$post_author_count = $sql -> db_Count("forum_t", "(*)", " WHERE thread_user='$thread_user' OR thread_user='$post_author_name' ");
+if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY thread_datestamp ASC LIMIT ".$from.", ".$pref['forum_postspage']))
+{
+	$sql2 = new db;
+	while($row = $sql-> db_Fetch())
+	{
+		extract($row);
+		$post_author_id = substr($thread_user, 0, strpos($thread_user, "."));
+		$post_author_name = substr($thread_user, (strpos($thread_user, ".")+1));
+		if(strstr($post_author_name, chr(1)))
+		{
+			$tmp = explode(chr(1), $post_author_name);
+			$post_author_name = $tmp[0];
+			$ip = $tmp[1];
+			$host = gethostbyaddr($ip);
+			$iphost = "<div class='smalltext' style='text-align:right'>IP: <a href='".e_ADMIN."userinfo.php?$ip'>$ip ( $host )</a></div>";
+		}
 
-                if(!$post_author_id || !$sql2 -> db_Select("user", "*", "user_id='".$post_author_id."' ")){        // guest
-                        $POSTER = "<b>".$post_author_name."</b>";
-                        $AVATAR = "<br /><span class='smallblacktext'>".LAN_194."</span>";
-                        unset($JOINED, $LOCATION, $CUSTOMTITLE, $WEBSITE, $POSTS, $VISITS, $MEMBERID, $SIGNATURE, $RPG, $LEVEL, $PRIVMESSAGE, $PROFILEIMG, $EMAILIMG, $WEBSITEIMG);
-                }else{        // regged member - get member info
-                        unset($iphost);
+		unset($row);
+		$row = getcachedvars('user_'.$post_author_id);
+		if(!$row && (!$post_author_id || !$sql2 -> db_Select("user", "*", "user_id='".$post_author_id."' ")))        // guest
+		{
+			$POSTER = "<b>".$post_author_name."</b>";
+			$AVATAR = "<br /><span class='smallblacktext'>".LAN_194."</span>";
+			unset($JOINED, $LOCATION, $CUSTOMTITLE, $WEBSITE, $POSTS, $VISITS, $MEMBERID, $SIGNATURE, $RPG, $LEVEL, $PRIVMESSAGE, $PROFILEIMG, $EMAILIMG, $WEBSITEIMG);
+		}
+		else
+		{        // regged member - get member info
+			unset($iphost);
+			if(!$row)
+			{
+				$row = $sql2 -> db_Fetch(); extract($row);
+				cachevars('user_'.$post_author_id,$row);
+			}
+			$POSTER =  "<a href='user.php?id.".$post_author_id."'><b>".$post_author_name."</b></a>";
+			if($user_image)
+			{
+				require_once(e_HANDLER."avatar_handler.php");
+				$AVATAR = "<div class='spacer'><img src='".avatar($user_image)."' alt='' /></div><br />";
+			}
+			else
+			{
+				unset($AVATAR);
+			}
 
-                        $row = $sql2 -> db_Fetch(); extract($row);
-                        $POSTER =  "<a href='user.php?id.".$post_author_id."'><b>".$post_author_name."</b></a>";
-                        if($user_image){
-                                require_once(e_HANDLER."avatar_handler.php");
-                                $AVATAR = "<div class='spacer'><img src='".avatar($user_image)."' alt='' /></div><br />";
-                        }else{
-                                unset($AVATAR);
-                        }
+			$JOINED = ($user_perms == "0" ? "" : LAN_06.": ".$gen->convert_date($user_join, "forum")."<br />");
+			$LOCATION = ($user_location ? LAN_07.": ".$user_location."<br />" : "");
+			$CUSTOMTITLE = ($user_customtitle ? $aj -> tpa($user_customtitle)."<br />" : "");
+			$WEBSITE = ($user_homepage ? LAN_08.": ".$user_homepage."<br />" : "");
+			$POSTS = LAN_67." ".$user_forums."<br />";
+			$VISITS = LAN_09.": ".$user_visits;
 
-                        $JOINED = ($user_perms == "0" ? "" : LAN_06.": ".$gen->convert_date($user_join, "forum")."<br />");
-                        $LOCATION = ($user_location ? LAN_07.": ".$user_location."<br />" : "");
-                        $CUSTOMTITLE = ($user_customtitle ? $aj -> tpa($user_customtitle)."<br />" : "");
-                        $WEBSITE = ($user_homepage ? LAN_08.": ".$user_homepage."<br />" : "");
-                        $POSTS = LAN_67." ".$user_forums."<br />";
-                        $VISITS = LAN_09.": ".$user_visits;
+			$ldata = get_level($user_id, $user_forums, $user_comments, $user_chats, $user_visits, $user_join, $user_admin, $user_perms, $pref);
+			$MEMBERID = $ldata[0];
+			$LEVEL = $ldata[1];
 
-                        $ldata = get_level($user_id, $user_forums, $user_comments, $user_chats, $user_visits, $user_join, $user_admin, $user_perms, $pref);
-                        $MEMBERID = $ldata[0];
-                        $LEVEL = $ldata[1];
+			$SIGNATURE = ($user_signature ? "<br /><hr style='width:15%; text-align:left'><span class='smalltext'>".$aj -> tpa($user_signature) : "");
+			$PROFILEIMG = (USER ? $tp -> parseTemplate("{PROFILE={$user_id}}") : "");
 
-                        $SIGNATURE = ($user_signature ? "<br /><hr style='width:15%; text-align:left'><span class='smalltext'>".$aj -> tpa($user_signature) : "");
-                        $PROFILEIMG = (USER ? $tp -> parseTemplate("{PROFILE={$user_id}}") : "");
+			$EMAILIMG = (!$user_hideemail ? $tp -> parseTemplate("{EMAILTO={$user_email}}") : "");
 
-                        $EMAILIMG = (!$user_hideemail ? $tp -> parseTemplate("{EMAILTO={$user_email}}") : "");
+			$PRIVMESSAGE = $tp -> parseTemplate("{pm_menu.sendpm={$post_author_id}}");
 
-                        $PRIVMESSAGE = $tp -> parseTemplate("{pm_menu.sendpm={$post_author_id}}");
+			$WEBSITEIMG = ($user_homepage && $user_homepage != "http://" ? "<a href='$user_homepage'>".IMAGE_website."</a>" : "");
+			$RPG = rpg($user_join, $user_forums);
 
-                        $WEBSITEIMG = ($user_homepage && $user_homepage != "http://" ? "<a href='$user_homepage'>".IMAGE_website."</a>" : "");
-                        $RPG = rpg($user_join, $user_forums);
+		}
+		$EDITIMG = ($post_author_id != "0" && $post_author_name == USERNAME && $thread_active ? "<a href='forum_post.php?edit.".$forum_id.".".$thread_id."'>".IMAGE_edit."</a> " : "");
+		if(!$T_ACTIVE){
+			$QUOTEIMG = "<a href='forum_post.php?quote.".$forum_id.".".$thread_id."'>".IMAGE_quote."</a>";
+		}
+		$REPORTIMG = (USER ? "<a href='forum_viewtopic.php?".$forum_id.".".$thread_id.".".$from.".report'>".IMAGE_report."</a> " : "");
+		if(MODERATOR){
 
-                }
-                $EDITIMG = ($post_author_id != "0" && $post_author_name == USERNAME && $thread_active ? "<a href='forum_post.php?edit.".$forum_id.".".$thread_id."'>".IMAGE_edit."</a> " : "");
-                if(!$T_ACTIVE){
-                        $QUOTEIMG = "<a href='forum_post.php?quote.".$forum_id.".".$thread_id."'>".IMAGE_quote."</a>";
-                }
-                $REPORTIMG = (USER ? "<a href='forum_viewtopic.php?".$forum_id.".".$thread_id.".".$from.".report'>".IMAGE_report."</a> " : "");
-                if(MODERATOR){
+			$MODOPTIONS = "
+			<form method='post' action='".e_HTTP."forum_viewtopic.php?{$forum_id}.{$thread_parent}' id='frmMod_{$forum_id}_{$thread_id}'>
+			<div>
+			<a href='forum_post.php?edit.".$forum_id.".".$thread_id."'>".IMAGE_admin_edit."</a>
+			<input type='image' ".IMAGE_admin_delete." name='delete_{$thread_id}' value='thread_action' onclick=\"return confirm_('reply', $forum_id, $thread_id, '{$post_author_name}')\" />
+			<a href='".e_ADMIN."forum_conf.php?move.".$forum_id.".".$thread_id."'>".IMAGE_admin_move."</a>
+			</div>
+			</form>";
+		}
 
-        $MODOPTIONS = "
-                <form method='post' action='".e_HTTP."forum_viewtopic.php?{$forum_id}.{$thread_parent}' id='frmMod_{$forum_id}_{$thread_id}'>
-                <div>
-                <a href='forum_post.php?edit.".$forum_id.".".$thread_id."'>".IMAGE_admin_edit."</a>
-                <input type='image' ".IMAGE_admin_delete." name='delete_{$thread_id}' value='thread_action' onclick=\"return confirm_('reply', $forum_id, $thread_id, '{$post_author_name}')\" />
-                <a href='".e_ADMIN."forum_conf.php?move.".$forum_id.".".$thread_id."'>".IMAGE_admin_move."</a>
-                </div>
-                </form>";
-}
+		unset($newflag);
+		if(USER)
+		{
+			if($thread_datestamp > USERLV && (!ereg("\.".$thread_id."\.", USERVIEWED)))
+			{
+				$NEWFLAG = IMAGE_new." ";
+				$u_new .= ".".$thread_id.".";
+			}
+		}
 
-                unset($newflag);
-                if(USER){
-                        if($thread_datestamp > USERLV && (!ereg("\.".$thread_id."\.", USERVIEWED))){
-                                $NEWFLAG = IMAGE_new." ";
-                                $u_new .= ".".$thread_id.".";
-                        }
-                }
+		$THREADDATESTAMP = "<a id='$thread_id'>".IMAGE_post."</a> ".$gen->convert_date($thread_datestamp, "forum");
+		$POST = $aj -> tpa($thread_thread, "forum", "off", $highlight_search,$post_author_id);
+		if(ADMIN && $iphost){ $POST .= "<br />".$iphost; }
 
-                $THREADDATESTAMP = "<a id='$thread_id'>".IMAGE_post."</a> ".$gen->convert_date($thread_datestamp, "forum");
-                $POST = $aj -> tpa($thread_thread, "forum", "off", $highlight_search,$post_author_id);
-                if(ADMIN && $iphost){ $POST .= "<br />".$iphost; }
-
-                $forrep .= preg_replace("/\{(.*?)\}/e", '$\1', $FORUMREPLYSTYLE);
-        }
+		$forrep .= preg_replace("/\{(.*?)\}/e", '$\1', $FORUMREPLYSTYLE);
+	}
 }
 
 if((ANON || USER) && ($forum_class != e_UC_READONLY || MODERATOR) && !$T_ACTIVE ){
