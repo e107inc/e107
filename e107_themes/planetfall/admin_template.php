@@ -52,7 +52,7 @@ $ADMIN_HEADER = "<table style='	border: solid 1px #9DA6B3;'>
 <img src=".THEME."images/admin_logo.jpg alt='' style='display:block;border:0px' />
 </td>
 <td class='top_section_mid' style='width: 100%'>
-<div style='margin-bottom: 3px;vertical-align:top'>
+<div style='margin-bottom: 3px;vertical-align:top;padding-left:15px'>
 {ADMIN_LOGGED}
 <br />
 {ADMIN_SEL_LAN}
