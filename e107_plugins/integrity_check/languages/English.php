@@ -24,7 +24,7 @@ define("Integ_21", "Select the plugin you want to create a crc-file for.");
 define("Integ_22", "Use gzip");
 define("Integ_23", "Check only themes actually existant on your host");
 define("Integ_24", "Admin Front Page");
-define("Integ_25", "Admin Front Page");
+define("Integ_25", "Leave Admin Area");
 define("Integ_26", "Load Site with normal header");
 define("Integ_27", "Load Site with normal footer");
 define("Integ_28", "Load Site with normal footer & header");
