@@ -22,7 +22,11 @@ if($self == "/"){ $self = "index.php"; }
 $screenstats = $res." @ ".$colour;
 @include("../../e107_config.php");
 define("MPREFIX", $mySQLprefix);
-require_once(e_HANDLER."mysql_class.php");
+if($HANDLERS_DIRECTORY){
+	@require_once("../../{$HANDLERS_DIRECTORY}mysql_class.php");
+} else {
+	@require_once("../../e107_handlers/mysql_class.php");
+}
 $sql = new db;
 $sql -> db_SetErrorReporting(FALSE);
 $sql -> db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
