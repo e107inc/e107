@@ -12,15 +12,15 @@
 |	GNU General Public License (http://gnu.org).	
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.9 $
-| $Date: 2004-12-11 04:25:20 $
-| $Author: mcfly_e107 $ 
+| $Revision: 1.10 $
+| $Date: 2004-12-12 15:33:51 $
+| $Author: sweetas $ 
 +---------------------------------------------------------------+
 */
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 class news{
 	function submit_item($news){
-		global $e107cache;
+		global $e107cache, $e_event;
 			if(!is_object($tp)) $tp = new e_parse;
 		if(!is_object($sql)) $sql = new db;
 		extract($news);
@@ -31,6 +31,7 @@ class news{
 			$vals = $update_datestamp ? "news_datestamp = ".time().", " : "";
 			$vals .= " news_title='$news_title', news_body='$news_body', news_extended='$news_extended', news_category='$cat_id', news_allow_comments='$news_allow_comments', news_start='$active_start', news_end='$active_end', news_class='$news_class', news_render_type='$news_rendertype' WHERE news_id='$news_id' ";
 			if($sql -> db_Update("news",$vals)){
+				$e_event -> trigger("newsupd", $news);
 				$message = LAN_NEWS_21;
         		$e107cache->clear("news.php");
 			}else{
@@ -41,9 +42,9 @@ class news{
 			$news_body = $tp -> toDB($data,TRUE);
 			$news_extended = $tp -> toDB($news_extended,TRUE);
 			if($sql -> db_Insert("news", "0, '$news_title', '$news_body', '$news_extended', ".time().", ".USERID.", $cat_id, $news_allow_comments, $active_start, $active_end, '$news_class', '$news_rendertype' ")){
-		
-			 $message = LAN_NEWS_6;
-             $e107cache->clear("news.php");
+				$e_event -> trigger("newspost", $news);
+				$message = LAN_NEWS_6;
+				$e107cache->clear("news.php");
 			}else{
 				$message = LAN_NEWS_7;
 			}
