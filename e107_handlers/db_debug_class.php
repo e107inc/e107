@@ -11,8 +11,8 @@
 	 |     GNU General Public License (http://gnu.org).
 	 |
 	 |     $Source: /cvs_backup/e107_0.7/e107_handlers/db_debug_class.php,v $
-	 |     $Revision: 1.4 $
-	 |     $Date: 2005-01-29 18:09:30 $
+	 |     $Revision: 1.5 $
+	 |     $Date: 2005-01-29 18:52:45 $
 	 |     $Author: mrpete $
 	 +----------------------------------------------------------------------------+
 	 */
@@ -174,7 +174,9 @@
 			 if ($okCount && E107_DBG_SQLQUERIES) {
 				 $text .= "\n<table class='fborder'>\n";
 				 $text .= "<tr><td class='fcaption' colspan='3'><b>{$okCount[TRUE]} Good Queries</b></td></tr>\n";
-				 $text .= "<tr><td class='fcaption'><b>Index</b></td><td class='fcaption'><b>Qtime</b></td><td class='fcaption'><b>Query</b></td></tr>\n";
+				 $text .= "<tr><td class='fcaption'><b>Index</b></td><td class='fcaption'><b>Qtime</b></td><td class='fcaption'><b>Query</b></td></tr>\n
+				 <tr><td class='fcaption'>&nbsp;</td><td class='fcaption'><b>(msec)</b></td><td class='fcaption'>&nbsp;</td></tr>\n
+				 ";
 
 				 foreach ($this->aSQLdetails as $idx => $cQuery) {
 					 if ($cQuery['ok']) {
@@ -200,7 +202,7 @@
 						 $text .= "<tr><td class='forumheader3' ><b>Error in query:</b></td></tr>\n<tr><td class='forumheader3'>".$cQuery['error']."</td></tr>\n";
 					 }
 
-					 $text .= "<tr><td class='forumheader3'  colspan='".$cQuery['nFields']."'><b>Query time:</b> ".number_format($cQuery['time'] * 1000.0, 4).' msec.</td></tr></table><br />'."\n";
+					 $text .= "<tr><td class='forumheader3'  colspan='".$cQuery['nFields']."'><b>Query time:</b> ".number_format($cQuery['time'] * 1000.0, 4).' (ms)</td></tr></table><br />'."\n";
 				 }
 			 }
 
@@ -236,6 +238,20 @@
 					 // First time: emit headers
 					 $bRowHeaders=TRUE;
 					 $text .= "<tr><td class='fcaption' style='text-align:right'><b>".implode("</b>&nbsp;</td><td class='fcaption' style='text-align:right'><b>", array_keys($tMarker))."</b>&nbsp;</td><td class='fcaption' style='text-align:right'><b>OB Lev&nbsp;</b></td></tr>\n";
+					$aUnits = $tMarker;
+					foreach ($aUnits as $key=>$val) {
+					 	switch ($key) {
+					 	case 'DB Time':
+					 	case 'Time': 
+					 		$aUnits[$key] = '(msec)'; 
+					 		break;
+					 	default:
+					 		$aUnits[$key] = '';
+					 		break;
+					 	}
+					}
+					$aUnits['OB Lev'] = 'lev(buf bytes)';
+					 $text .= "<tr><td class='fcaption' style='text-align:right'><b>".implode("</b>&nbsp;</td><td class='fcaption' style='text-align:right'><b>", $aUnits)."</b>&nbsp;</td></tr>\n";
 				 }
 
 				 if ($tMarker['What'] == 'Stop') {
@@ -287,6 +303,18 @@
 				 if (!$bRowHeaders) {
 					 $bRowHeaders=TRUE;
 					 $text .= "<tr><td class='fcaption'><b>".implode("</b></td><td class='fcaption'><b>", array_keys($curTable))."</b></td></tr>\n";
+					$aUnits = $curTable;
+					foreach ($aUnits as $key=>$val) {
+					 	switch ($key) {
+					 	case 'DB Time':
+					 		$aUnits[$key] = '(msec)'; 
+					 		break;
+					 	default:
+					 		$aUnits[$key] = '';
+					 		break;
+					 	}
+					}
+					$text .= "<tr><td class='fcaption' style='text-align:right'><b>".implode("</b>&nbsp;</td><td class='fcaption' style='text-align:right'><b>", $aUnits)."</b>&nbsp;</td></tr>\n";
 				 }
 
 				 $curTable['%DB Count']=number_format(100.0 * $curTable['DB Count'] / $sql->db_QueryCount(), 0);
