@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/e107_admin/links.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2004-08-31 13:57:21 $
-|     $Author: loloirie $
+|     $Revision: 1.26 $
+|     $Date: 2004-11-10 06:49:12 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -47,14 +47,14 @@ if(preg_match("#(.*?)_delete_(\d+)#",$deltest[$etp->unentity(LCLAN_10)],$matches
 
 if(preg_match("#create_sn_(\d+)#",$deltest[$etp->unentity(LCLAN_14)],$matches))
 {
-	$action='create';
-	$sub_action='sn';
-	$id=$matches[1];
+        $action='create';
+        $sub_action='sn';
+        $id=$matches[1];
 }
 
 // ##### Main loop -----------------------------------------------------------------------------------------------------------------------
 
-if($action == "dec" && strpos($_SERVER['HTTP_REFERER'],"links"))
+if($action == "dec" && strpos(e_SELF,"links"))
 {
         $qs = explode(".", e_QUERY);
         $action = $qs[0];
@@ -68,8 +68,9 @@ if($action == "dec" && strpos($_SERVER['HTTP_REFERER'],"links"))
         exit;
 }
 
-if($action == "inc" && strpos($_SERVER['HTTP_REFERER'],"links"))
+if($action == "inc" && strpos(e_SELF,"links"))
 {
+       echo "action=".$action;
         $qs = explode(".", e_QUERY);
         $action = $qs[0];
         $linkid = $qs[1];
@@ -137,15 +138,15 @@ if($delete == 'category')
 
 if($delete == "sn")
 {
-	if($sql -> db_Delete("tmp", "tmp_time='$del_id' "))
-	{
-		$linkpost -> show_message(LCLAN_77);
-	}
+        if($sql -> db_Delete("tmp", "tmp_time='$del_id' "))
+        {
+                $linkpost -> show_message(LCLAN_77);
+        }
 }
 
 if($action == "sn")
 {
-	$linkpost -> show_submitted($sub_action, $id);
+        $linkpost -> show_submitted($sub_action, $id);
 }
 
 
@@ -464,16 +465,20 @@ class links{
                         if($lamount = $sql2 -> db_Select("links", "*", "link_category ='$link_category_id' ORDER BY link_order ASC ")){
                                 $text .= "<tr><td colspan='3' class='forumheader'>$link_category_name ".LCLAN_59."</td></tr>";
                                 while(list($link_id, $link_name, $link_url, $link_description, $link_button, $link_category, $link_order, $link_refer) = $sql2-> db_Fetch()){
-                                        $text .= "<tr>\n<td style='width:30%' class='forumheader3'>".$link_order." - ".$link_name."</td>\n<td style='width:30%; text-align:center' class='forumheader3'>\n<select name='link_order[]' class='tbox'>";
+                                        $text .= "<tr>\n<td style='width:30%' class='forumheader3'>".$link_order." - ".$link_name."</td>\n<td style='width:30%; text-align:center' class='forumheader3'>\n";
+                                        $text .= "<table><tr><td><select name='link_order[]' class='tbox'>";
                                         for($a=1; $a<= $lamount; $a++){
                                                 $text .= ($link_order == $a ? "<option value='$link_id.$a' selected='selected'>$a</option>\n" : "<option value='$link_id.$a'>$a</option>\n");
                                         }
 
-                                        $text .= "</select> <select name='activate' onchange='urljump(this.options[selectedIndex].value)' class='tbox'>
-                                        <option value='links.php' selected='selected'></option>
-                                        <option value='links.php?inc.".$link_id.".".$link_order.".".$link_category."'>".LCLAN_30."</option>
-                                        <option value='links.php?dec.".$link_id.".".$link_order.".".$link_category."'>".LCLAN_31."</option>
-                                        </select>
+                                        $text .= "</select>&nbsp;</td><td>";
+
+                                        $text .= "<a href='links.php?inc.".$link_id.".".$link_order.".".$link_category."' ><img src='".e_IMAGE."generic/up.png' style='border:0px' alt='".LCLAN_30."' title='".LCLAN_30."' /></a>";
+                                        $text .= "<br />";
+                                        $text .= "<a href='links.php?dec.".$link_id.".".$link_order.".".$link_category."' ><img src='".e_IMAGE."generic/down.png' style='border:0px' alt='".LCLAN_31."' title='".LCLAN_31."' /></a>";
+                                        $text .= "</td></tr></table>";
+
+                                        $text .="
                                         </td>
                                         <td style='width:40%' class='forumheader3'>&nbsp;".$aj->tpa($link_description)."</td>
                                         </tr>";
