@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-03-08 16:46:07 $
-|     $Author: sweetas $
+|     $Revision: 1.38 $
+|     $Date: 2005-03-11 09:26:22 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -451,7 +451,21 @@ $text .= "<div id='registration' style='display:none; text-align:center'><table 
 	<td class='forumheader3' style='width:50%;text-align:right' >
 	<input type='text' class='tbox' size='3' name='signup_pass_len' value='".$pref['signup_pass_len']."' />
 	</td>
-	</tr>";
+	</tr>
+	
+	<tr>
+	<td style='width:50%' class='forumheader3'>".CUSTSIG_18."<br /><span class='smalltext'>".CUSTSIG_19."</span></td>
+	<td class='forumheader3' style='width:50%;text-align:right' >
+	<textarea class='tbox' name='signup_disallow_text' cols='1' rows='3' style='width: 80%;'>".$pref['signup_disallow_text']."</textarea>
+	</td>
+	</tr>
+	
+	
+	
+	
+	
+	
+	";
 
 $text .= pref_submit();
 

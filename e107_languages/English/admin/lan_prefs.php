@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-03-08 16:31:37 $
-|     $Author: sweetas $
+|     $Revision: 1.22 $
+|     $Date: 2005-03-11 09:26:40 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_1", "Site Information");
@@ -122,7 +122,8 @@ define("CUSTSIG_14", "Display");
 define("CUSTSIG_15", "Required");
 define("CUSTSIG_16", "Minimum Length for Passwords");
 define("CUSTSIG_17", "Subscribe to content/mailouts");
-
+define("CUSTSIG_18", "Disallow usernames");
+define("CUSTSIG_19", "usernames containing the following text will be rejected, seperate entries by commas");
 
 
 define("PRFLAN_89", "Site Header:");

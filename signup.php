@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-03-09 10:03:23 $
+|     $Revision: 1.14 $
+|     $Date: 2005-03-11 09:26:40 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -75,9 +75,7 @@ $signup_name = array("realname", "website", "icq", "aim", "msn", "birth_year", "
 if (isset($_POST['register'])) {
 	extract($_POST);
 	require_once(e_HANDLER."message_handler.php");
-	 
-	 
-	//        if(strlen($_POST['email']) > 100){exit;}
+
 	if ($use_imagecode) {
 		if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify'])) {
 			message_handler("P_ALERT", LAN_SIGNUP_3);
@@ -96,7 +94,21 @@ if (isset($_POST['register'])) {
 		$error = TRUE;
 		$name = "";
 	}
-	 
+
+	if(isset($pref['signup_disallow_text']))
+	{
+		$tmp = explode(",", $pref['signup_disallow_text']);
+		foreach($tmp as $disallow)
+		{
+			if(strstr($_POST['name'], $disallow))
+			{
+				message_handler("P_ALERT", LAN_103);
+				$error = TRUE;
+				$name = "";
+			}
+		}
+	}
+
 	if (strlen($_POST['name']) > 30) {
 		exit;
 	}
