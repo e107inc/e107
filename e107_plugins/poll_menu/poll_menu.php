@@ -19,8 +19,8 @@ if($sql -> db_Select("poll", "*", "poll_active='1' OR poll_active='2' ")){
 	list($poll_id, $poll_datestamp, $poll_end_datestamp, $poll_admin_id, $poll_title, $poll_option[0], $poll_option[1], $poll_option[2], $poll_option[3], $poll_option[4], $poll_option[5], $poll_option[6], $poll_option[7], $poll_option[8], $poll_option[9], $votes[0], $votes[1], $votes[2], $votes[3], $votes[4], $votes[5], $votes[6], $votes[7], $votes[8], $votes[9], $poll_ip, $poll_active, $poll_comment) = $sql-> db_Fetch();
 
 	$user_id = ($poll_active == 1 ? getip() : USERID);
-
-	if(preg_match("/".$user_id."\^/", $poll_ip)){
+	$voted_ids = explode("^",substr($poll_ip,0,-1));
+	if(in_array($user_id,$voted_ids)){
 		$mode = "voted";
 	}else if($poll_active == 2 && !USER){
 		$mode = "disallowed";
