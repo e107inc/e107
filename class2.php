@@ -12,31 +12,34 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.82 $
-|     $Date: 2005-02-20 13:05:29 $
-|     $Author: stevedunstan $
+|     $Revision: 1.83 $
+|     $Date: 2005-02-20 20:48:28 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
-$eTimingStart = microtime(); // Honest global beginning point for processing time
+// Honest global beginning point for processing time
+$eTimingStart = microtime();
 
+// Find out if register globals is enabled and destroy them if so
 $register_globals = true;
 if(function_exists('ini_get')) {
-	$register_globals = ini_get('register_globals');
-}
-if($register_globals){
-	while (list($global) = each($GLOBALS)) {
-		if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST|eTimingStart)$/', $global)) {
-			unset($$global);
+	if(ini_get('register_globals')){
+		if($register_globals){
+			while (list($global) = each($GLOBALS)) {
+				if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST|eTimingStart)$/', $global)) {
+					unset($$global);
+				}
+			}
+			unset($global);
 		}
 	}
-	unset($global);
 }
-
 
 // Grab e107_config, get directory paths, and create the $e107 object
 @include_once(dirname(__FILE__).'/e107_config.php');
 if(!isset($ADMIN_DIRECTORY)){
+	// e107_config.php is either empty, not valid or doesn't exist so redirect to installer..
 	header("Location: install.php");
 }
 
@@ -49,7 +52,7 @@ if(defined("COMPRESS_OUTPUT") && COMPRESS_OUTPUT === true) {
 }
 $e107 = new e107($Paths, __FILE__, $OutputCompression);
 
-$start_ob_level=ob_get_level();
+$start_ob_level = ob_get_level();
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 if (!$mySQLserver) {
@@ -183,23 +186,17 @@ else if ($merror == "e2") {
 /* New compatabilty mode.
 At a later date add a check to load e107 compat mode by $pref
 PHP Compatabilty should *always* be on. */
-
 e107_require_once(e_HANDLER."PHP_Compat_handler.php");
 e107_require_once(e_HANDLER."e107_Compat_handler.php");
 
-// New parser code #########
-//$parsethis = array();
-//if ($sql->db_Select("parser", "parser_pluginname,parser_regexp", "")) {
-// while ($row = $sql->db_Fetch('nostrip')) {
-//  $parsethis[$row['parser_regexp']] = $row['parser_pluginname'];
-// }
-//}
-// End parser code #########
 
+// Extract core prefs from the database
 e107_require_once(e_HANDLER.'cache_handler.php');
 e107_require_once(e_HANDLER.'arraystorage_class.php');
+
 $eArrayStorage = new ArrayData();
 $PrefCache = ecache::retrieve('SitePrefs', 24 * 60, true);
+
 if(!$PrefCache){
 	// No cache of the prefs array, going for the db copy..
 	$sql->db_Select('core', '*', '`e107_name` = \'SitePrefs\'');
@@ -239,10 +236,12 @@ if(!$PrefCache){
 }
 $pref = $eArrayStorage->ReadArray($PrefCache);
 
+
+
+
 if (!$pref['cookie_name']) {
 	$pref['cookie_name'] = "e107cookie";
 }
-
 //if($pref['user_tracking'] == "session"){ @require_once(e_HANDLER."session_handler.php"); }        // if your server session handling is misconfigured uncomment this line and comment the next to use custom session handler
 if ($pref['user_tracking'] == "session") {
 	session_start();
