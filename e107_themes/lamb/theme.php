@@ -28,7 +28,7 @@ $HEADER = "<div id='header'>
 <div id='logo'>&nbsp;</div>
 </div>
 <div id='banner'>
-{BANNER=camp2}
+{BANNER}
 </div>
 
 <table style='width: 100%;' cellpadding='0' cellspacing='0'>

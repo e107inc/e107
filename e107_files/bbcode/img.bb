@@ -15,6 +15,10 @@ $parmStr="";
 foreach($imgParms as $k => $v) {
 	$parmStr .= "$k='{$v}' ";
 }
+
+echo "image post pref: ".$pref['image_post_disabled_method']."<br />PostID: ".$postID."<br />";
+
+
 if (!$postID) {
 	return "<img src='{$code_text}' {$parmStr} />";
 } else {
@@ -31,6 +35,13 @@ if (!$postID) {
 		if (check_class($pref['image_post_class'],$uc)) {
 			return "<img src='{$code_text}' {$parmStr} />";
 		}
+		else
+		{
+			return ($pref['image_post_disabled_method'] ? "[ image disabled ]" : "Image: $code_text");
+		}
+	}
+	else
+	{
 		if ($pref['image_post_disabled_method']) {
 			return '[ image disabled ]';
 		} else {
