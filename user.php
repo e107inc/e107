@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-03-09 10:57:29 $
-|     $Author: stevedunstan $
+|     $Revision: 1.12 $
+|     $Date: 2005-03-09 21:04:44 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -74,7 +74,18 @@ if (isset($id)) {
 	}
 
 
-	if (!$sql->db_Select("user", "*", "user_id='".$id."' ")) {
+	if (isset($_POST['commentsubmit']) && $pref['profile_comments'])
+	{
+		$cobj = new comment;
+		$cobj->enter_comment($_POST['author_name'], $_POST['comment'], 'profile', $id, $pid, $_POST['subject']);
+	}
+
+	$qry = "
+	SELECT u.*, ue.* FROM #user AS u
+	LEFT JOIN #user_extended AS ue ON u.user_id = ue.user_extended_id
+	WHERE u.user_id = {$id}
+	";
+	if (!$sql->db_Select_gen($qry)) {
 		$text = "<div style='text-align:center'>".LAN_400."</div>";
 		$ns->tablerender(LAN_20, $text);
 		require_once(FOOTERF);
@@ -90,11 +101,6 @@ if (isset($id)) {
 		include_once(e_HANDLER."rate_class.php");
 	}
 
-	if (isset($_POST['commentsubmit']) && $pref['profile_comments'])
-	{
-		$cobj = new comment;
-		$cobj->enter_comment($_POST['author_name'], $_POST['comment'], 'profile', $id, $pid, $_POST['subject']);
-	}
 	$text = renderuser($sql->db_Fetch());
 	$ns->tablerender(LAN_402, $text);
 	unset($text);
@@ -349,23 +355,24 @@ function renderuser($row, $user_entended, $mode = "verbose") {
 
 		//        extended fields ...
 
-		if ($sql->db_Select("core", " e107_value", " e107_name='user_entended'")) {
-
-			// added by cam
-			require_once(e_HANDLER."user_extended.php");
-
-			$row = $sql->db_Fetch();
-			$user_entended = unserialize($row[0]);
+		if ($sql->db_Select("user_extended_struct"))
+		{
+			require_once(e_HANDLER."user_extended_class.php");
+			$ue = new e107_user_extended;
+			$ueList = $sql->db_getList();
 
 			$str .= "<tr><td colspan='2' class='forumheader'>".LAN_410."</td></tr>";
-
-			$user_prefs = unserialize($user_prefs);
-
-			while (list($key, $u_entended) = each($user_entended)) {
-				$ut = explode("|", $u_entended);
-				if (!$ut[5] || check_class($ut[5]) == TRUE) {
-					$str .= "<tr><td style='width:40%' class='forumheader3'>".user_extended_name($u_entended)."</td>
-					<td style='width:60%' class='forumheader3'>".($user_prefs["ue_{$key}"] ? $user_prefs["ue_{$key}"] : "<i>".LAN_401."</i>")."</td></tr>";
+//			$user_prefs = unserialize($user_prefs);
+			foreach($ueList as $ext)
+			{
+				if (check_class($ext['user_extended_struct_read']))
+				{
+					$str .= "
+						<tr>
+							<td style='width:40%' class='forumheader3'>".$ext['user_extended_struct_text']."</td>
+							<td style='width:60%' class='forumheader3'>".($$ext['user_extended_struct_name'] ? $$ext['user_extended_struct_name'] : LAN_401)."</td>
+						</tr>
+						";
 				}
 			}
 		}

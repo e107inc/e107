@@ -11,14 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-01-28 13:35:37 $
-|     $Author: mrpete $
+|     $Revision: 1.9 $
+|     $Date: 2005-03-09 21:04:43 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
 	
 require_once("class2.php");
+require_once(e_HANDLER."user_extended_class.php");
+$ue = new e107_user_extended;
 	
 if (isset($_POST['sub_news'])) {
 	header("location:".e_BASE."submitnews.php");
@@ -59,8 +61,11 @@ $_uid = e_QUERY;
 	
 require_once(HEADERF);
 	
-if (isset($_POST['updatesettings'])) {
-	 
+if (isset($_POST['updatesettings']))
+{
+//	echo "<pre>".print_r($_POST, TRUE)."</pre>";	
+//	exit;
+	
 	$_POST['image'] = str_replace(array('\'', '"', '(', ')'), '', $_POST['image']); // these are invalid anyways, so why allow them? (XSS Fix)
 	// check prefs for required fields =================================.
 	$signupval = explode(".", $pref['signup_options']);
@@ -72,10 +77,8 @@ if (isset($_POST['updatesettings'])) {
 		$avheight = $size[1];
 		$avmsg = "";
 		 
-		$pref['im_width'] = ($pref['im_width']) ? $pref['im_width'] :
-		 120;
-		$pref['im_height'] = ($pref['im_height']) ? $pref['im_height'] :
-		 100;
+		$pref['im_width'] = ($pref['im_width']) ? $pref['im_width'] : 120;
+		$pref['im_height'] = ($pref['im_height']) ? $pref['im_height'] : 100;
 		if ($avwidth > $pref['im_width']) {
 			$avmsg .= LAN_USET_1."<br />".LAN_USET_2.": {$pref['im_width']}<br /><br />";
 		}
@@ -95,24 +98,25 @@ if (isset($_POST['updatesettings'])) {
 		}
 	};
 	 
-	 
-	if (($user_entended = $sysprefs->getArray('user_entended'))) {
-		$c = 0;
-		while (list($key, $u_entended) = each($user_entended)) {
-			if ($u_entended) {
-				 
-				if ($_POST[str_replace(" ", "_", $u_entended)] === "" && $pref['signup_ext'.$key] == 2) {
-					$ut = explode("|", $u_entended);
-					$u_name = ($ut[0] != "") ? trim($ut[0]) :
-					 trim($u_entended);
-					$error_ext = LAN_SIGNUP_6."<b>".$u_name."</b>".LAN_SIGNUP_7;
-					$error .= $error_ext."<br />";
-				}
-				 
-			}
+	if($sql->db_Select('user_extended_struct'))
+	{
+		while($row = $sql->db_Fetch())
+		{
+			$extList["user_".$row['user_extended_struct_name']] = $row;
 		}
 	}
 	 
+	$ue_fields = "";
+	foreach($_POST['ue'] as $key => $val)
+	{
+		if($val == '' && $extList[$key]['user_extended_struct_required'] == TRUE)
+		{
+			//Required field is blank!
+		}
+		$ue_fields .= ($ue_fields) ? ", " : "";
+		$ue_fields .= $key."='".$val."'";
+	}
+
 	// ====================================================================
 	 
 	if ($_POST['password1'] != $_POST['password2']) {
@@ -140,24 +144,6 @@ if (isset($_POST['updatesettings'])) {
 	if ($sql->db_Select("user", "user_email", "user_email='".$_POST['email']." AND user_id!=".USERID."' ")) {
 		message_handler("P_ALERT", LAN_408);
 		$error = TRUE;
-	}
-	 
-	 
-	if (($user_entended = $sysprefs->getArray('user_entended'))) {
-		$c = 0;
-		while (list($key, $u_entended) = each($user_entended)) {
-			if ($u_entended) {
-				if ($pref['signup_ext'.$key] == 2 && $_POST["ue_{$key}"] == "") {
-					$ut = explode("|", $u_entended);
-					$u_name = ($ut[0] != "") ? trim($ut[0]) :
-					 trim($u_entended);
-					$error_ext = LAN_SIGNUP_6.$u_name.LAN_SIGNUP_7;
-					message_handler("P_ALERT", $error_ext);
-					$error = TRUE;
-				}
-				 
-			}
-		}
 	}
 	 
 	if (preg_match('#^www\.#si', $_POST['website'])) {
@@ -190,7 +176,6 @@ if (isset($_POST['updatesettings'])) {
 				// photograph uploaded
 				$user_sess = ($pref['avatar_upload'] ? $uploaded[1]['name'] : $uploaded[0]['name']);
 				resize_image(e_FILE."public/avatars/".$user_sess, e_FILE."public/avatars/".$user_sess, 180);
-				 
 			}
 		}
 	}
@@ -204,31 +189,20 @@ if (isset($_POST['updatesettings'])) {
 		} else {
 			$inp = USERID;
 		}
-		$_POST['signature'] = $aj->formtpa($_POST['signature'], "public");
-		$_POST['location'] = $aj->formtpa($_POST['location'], "public");
-		$_POST['website'] = $aj->formtpa($_POST['website'], "public");
-		$_POST['msn'] = $aj->formtpa($_POST['msn'], "public");
-		$_POST['aim'] = $aj->formtpa($_POST['aim'], "public");
-		$_POST['realname'] = $aj->formtpa($_POST['realname'], "public");
-		$_POST['customtitle'] = $aj->formtpa($_POST['customtitle'], "public");
+		$_POST['signature'] = $tp->toDB($_POST['signature']);
+		$_POST['location'] = $tp->toDB($_POST['location']);
+		$_POST['website'] = $tp->toDB($_POST['website']);
+		$_POST['msn'] = $tp->toDB($_POST['msn']);
+		$_POST['aim'] = $tp->toDB($_POST['aim']);
+		$_POST['realname'] = $tp->toDB($_POST['realname']);
+		$_POST['customtitle'] = $tp->toDB($_POST['customtitle']);
 		$sql->db_Update("user", "user_password='$password', user_sess='$user_sess', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$birthday."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."', user_customtitle='".$_POST['customtitle']."' WHERE user_id='".$inp."' ");
-		 
-		if (($user_entended = $sysprefs->getArray('user_entended'))) {
-			while (list($key, $u_entended) = each($user_entended)) {
-				if ($_POST["ue_{$key}"]) {
-					$val = $aj->formtpa($_POST["ue_{$key}"], "public");
-					$user_pref["ue_{$key}"] = $val;
-				} else {
-					unset($user_pref["ue_{$key}"]);
-				}
-			}
-			save_prefs("user", $inp);
+		if($ue_fields)
+		{
+			$sql->db_Update("user_extended", $ue_fields." WHERE user_extended_id = '{$inp}'");
 		}
 		 
-		 
 		// Update Userclass =======
-		 
-		 
 		if ($_POST['usrclass']) {
 			if(is_array($_POST['usrclass'])) {
 				if(count($_POST['usrclass'] == 1)) {
@@ -249,9 +223,6 @@ if (isset($_POST['updatesettings'])) {
 			exit;
 		}
 		 
-		 
-		 
-		 
 		$text = "<div style='text-align:center'>".LAN_150."</div>";
 		$ns->tablerender(LAN_151, $text);
 	}
@@ -261,39 +232,38 @@ if ($error) {
 	$ns->tablerender("<div style='text-align:center'>".LAN_20."</div>", $error);
 }
 	
-if ($_uid) {
-	$sql->db_Select("user", "*", "user_id='".$_uid."' ");
-} else {
-	$sql->db_Select("user", "*", "user_id='".USERID."' ");
+
+if ($_uid)
+{
+	$uuid = $_uid;
 }
-list($user_id, $name, $user_customtitle, $user_password, $user_sess, $email, $website, $icq, $aim, $msn, $location, $birthday, $signature, $image, $user_timezone, $hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_prefs, $user_new, $user_viewed, $user_visits, $user_admin, $user_login, $user_class) = $sql->db_Fetch();
-	
-$signature = $aj->editparse($signature);
-$tmp = explode("-", $birthday);
-$user_customtitle = ($_POST['customtitle'])? $_POST['customtitle']:
-$user_customtitle;
-$birth_day = ($_POST['birth_day'])? $_POST['birth_day']:
-$tmp[2];
-$birth_month = ($_POST['birth_month'])? $_POST['birth_month']:
-$tmp[1];
-$birth_year = ($_POST['birth_year'])? $_POST['birth_year']:
-$tmp[0];
-$user_login = ($_POST['realname'])? $_POST['realname']:
-$user_login;
-$location = ($_POST['location'])? $_POST['location']:
-$location;
-$icq = ($_POST['icq'])? $_POST['icq']:
-$icq;
-$msn = ($_POST['msn'])? $_POST['msn']:
-$msn;
-$aim = ($_POST['aim'])? $_POST['aim']:
-$aim;
-$website = ($_POST['website'])? $_POST['website']:
-$website;
-$signature = ($_POST['signature'])? $_POST['signature']:
-$signature;
-$user_timezone = ($_POST['user_timezone'])? $_POST['user_timezone']:
-$user_timezone;
+else
+{
+	$uuid = USERID;
+}
+
+$qry = "
+SELECT u.*, ue.* FROM #user AS u
+LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id
+WHERE u.user_id='{$uuid}'
+";
+
+$sql->db_Select_gen($qry);
+$curVal=$sql->db_Fetch();
+//echo "<pre>".print_r($curVal, TRUE)."</pre>";
+list($birth_year, $birth_month, $birth_day) = explode("-", $curVal['user_birthday']);
+extract($curVal);
+//list($user_id, $name, $user_customtitle, $user_password, $user_sess, $email, $website, $icq, $aim, $msn, $location, $birthday, $signature, $image, $user_timezone, $hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_prefs, $user_new, $user_viewed, $user_visits, $user_admin, $user_login, $user_class) = $sql->db_Fetch();
+//$signature = $tp->toFORM($user_signature);
+//$user_customtitle = ($_POST['customtitle'])? $_POST['customtitle']: $user_customtitle;
+//$user_login = ($_POST['realname'])? $_POST['realname']: $user_login;
+//$location = ($_POST['location'])? $_POST['location']: $user_location;
+//$icq = ($_POST['icq'])? $_POST['icq']: $user_icq;
+//$msn = ($_POST['msn'])? $_POST['msn']: $user_msn;
+//$aim = ($_POST['aim'])? $_POST['aim']: $user_aim;
+//$website = ($_POST['website'])? $_POST['website']: $user_website;
+//$signature = ($_POST['signature'])? $_POST['signature']: $user_signature;
+//$user_timezone = ($_POST['user_timezone'])? $_POST['user_timezone']: $user_timezone;
 	
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
@@ -307,17 +277,15 @@ $text .= "<div style='text-align:center'>
 	<td colspan='2' class='forumheader'>".LAN_418."</td>
 	</tr>
 	 
-	 
 	<tr>
 	<td style='width:40%' class='forumheader3'>".LAN_7."</td>
-	<td style='width:60%' class='forumheader2'>". $rs->form_text("name", 20, $name, 100, "tbox", TRUE)
-."</td>
+	<td style='width:60%' class='forumheader2'>". $rs->form_text("name", 20, $curVal['user_name'], 100, "tbox", TRUE)."</td>
 	</tr>
 	 
 	<tr>
 	<td style='width:30%' class='forumheader3'>".LAN_308."</td>
 	<td style='width:70%' class='forumheader2'>
-	".$rs->form_text("realname", 40, $user_login, 100)."
+	".$rs->form_text("realname", 40, $curVal['user_login'], 100)."
 	</td>
 	</tr>";
 if ($pref['forum_user_customtitle'] || ADMIN) {
@@ -325,7 +293,7 @@ if ($pref['forum_user_customtitle'] || ADMIN) {
 		<tr>
 		<td style='width:30%' class='forumheader3'>".LAN_CUSTOMTITLE."</td>
 		<td style='width:70%' class='forumheader2'>
-		".$rs->form_text("customtitle", 40, $user_customtitle, 100)."
+		".$rs->form_text("customtitle", 40, $curVal['user_customtitle'], 100)."
 		</td>
 		</tr>";
 }
@@ -353,13 +321,13 @@ $text .= "
 	<tr>
 	<td style='width:20%' class='forumheader3'>".LAN_112."</td>
 	<td style='width:80%' class='forumheader2'>
-	".$rs->form_text("email", 40, $email, 100)."
+	".$rs->form_text("email", 40, $curVal['user_email'], 100)."
 	</td>
 	</tr>
 	 
 	<tr>
 	<td style='width:20%' class='forumheader3'>".LAN_113."<br /><span class='smalltext'>".LAN_114."</span></td>
-	<td style='width:80%' class='forumheader2'><span class='defaulttext'>". ($hideemail ? $rs->form_radio("hideemail", 1, 1)." ".LAN_416."&nbsp;&nbsp;".$rs->form_radio("hideemail", 0)." ".LAN_417 : $rs->form_radio("hideemail", 1)." ".LAN_416."&nbsp;&nbsp;".$rs->form_radio("hideemail", 0, 1)." ".LAN_417)."</span>
+	<td style='width:80%' class='forumheader2'><span class='defaulttext'>". ($curVal['user_hideemail'] ? $rs->form_radio("hideemail", 1, 1)." ".LAN_416."&nbsp;&nbsp;".$rs->form_radio("hideemail", 0)." ".LAN_417 : $rs->form_radio("hideemail", 1)." ".LAN_416."&nbsp;&nbsp;".$rs->form_radio("hideemail", 0, 1)." ".LAN_417)."</span>
 	<br />
 	</td>
 	</tr>";
@@ -408,28 +376,28 @@ $text .= "<tr>
 	<tr>
 	<td style='width:20%' class='forumheader3'>".LAN_144."</td>
 	<td style='width:80%' class='forumheader2'>
-	".$rs->form_text("website", 60, $website, 150)."
+	".$rs->form_text("website", 60, $curVal['user_website'], 150)."
 	</td>
 	</tr>
 	 
 	<tr>
 	<td style='width:20%' class='forumheader3'>".LAN_115."</td>
 	<td style='width:80%' class='forumheader2'>
-	".$rs->form_text("icq", 20, $icq, 10)."
+	".$rs->form_text("icq", 20, $curVal['user_icq'], 10)."
 	</td>
 	</tr>
 	 
 	<tr>
 	<td style='width:20%' class='forumheader3'>".LAN_116."</td>
 	<td style='width:80%' class='forumheader2'>
-	<input class='tbox' type='text' name='aim' size='30' value='$aim' maxlength='100' />
+	<input class='tbox' type='text' name='aim' size='30' value='{$curVal['user_aim']}' maxlength='100' />
 	</td>
 	</tr>
 	 
 	<tr>
 	<td style='width:20%' class='forumheader3'>".LAN_117."</td>
 	<td style='width:80%' class='forumheader2'>
-	<input class='tbox' type='text' name='msn' size='30' value='$msn' maxlength='100' />
+	<input class='tbox' type='text' name='msn' size='30' value='{$curVal['user_msn']}' maxlength='100' />
 	</td>
 	</tr>
 	 
@@ -458,23 +426,30 @@ $text .= $rs->form_select_close()."</td>
 	<tr>
 	<td style='width:20%' class='forumheader3'>".LAN_119."</td>
 	<td style='width:80%' class='forumheader2'>
-	<input class='tbox' type='text' name='location' size='60' value='$location' maxlength='200' />
+	<input class='tbox' type='text' name='location' size='60' value='{$curVal['user_location']}' maxlength='200' />
 	</td>
 	</tr>";
 	
-if (($user_entended = $sysprefs->getArray('user_entended'))) {
-	$c = 0;
-	 
-	$user_pref = unserialize($user_prefs);
-	 
-	while (list($key, $u_entended) = each($user_entended)) {
-		if ($u_entended) {
-			require_once(e_HANDLER."user_extended.php");
-			$text .= user_extended_edit($key, $u_entended, "forumheader3", "left");
+if ($sql->db_Select("user_extended_struct"))
+{
+	$ueList = $sql->db_getList();
+
+	$text .= "<tr><td colspan='2' class='forumheader'>".LAN_410."</td></tr>";
+
+	foreach($ueList as $ext)
+	{
+		if (check_class($ext['user_extended_struct_write']))
+		{
+			$text .= "
+				<tr>
+					<td style='width:40%' class='forumheader3'>".$ext['user_extended_struct_text']."</td>
+					<td style='width:60%' class='forumheader3'>".$ue->user_extended_edit($ext, $curVal["user_".$ext['user_extended_struct_name']])."</td>
+				</tr>
+				";
 		}
 	}
 }
-	
+
 $text .= "<tr>
 	<td style='width:20%;vertical-align:top' class='forumheader3'>".LAN_120."</td>
 	<td style='width:80%' class='forumheader2'>

@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.93 $
-|     $Date: 2005-03-09 10:57:28 $
-|     $Author: stevedunstan $
+|     $Revision: 1.94 $
+|     $Date: 2005-03-09 21:04:40 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -932,7 +932,7 @@ function init_session() {
 	# - return boolean
 	# - scope public
 	*/
-	global $sql, $pref, $user_pref, $tp;
+	global $sql, $pref, $user_pref, $tp, $currentUser;
 
 	if (!$_COOKIE[$pref['cookie_name']] && !$_SESSION[$pref['cookie_name']]) {
 		define("USER", FALSE);
@@ -955,9 +955,16 @@ function init_session() {
 			define("LOGINMESSAGE", "Corrupted cookie detected - logged out.<br /><br />");
 			return (FALSE);
 		}
-		if ($sql->db_Select("user", "*", "user_id='$uid' AND md5(user_password)='$upw'")) {
+		$qry = "
+		SELECT u.*, ue.* FROM #user AS u
+		LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id
+		WHERE u.user_id='{$uid}' AND md5(u.user_password)='{$upw}'
+		";
+		if ($sql->db_Select_gen($qry))
+		{
 			$result=$sql->db_Fetch();
 			extract($result);
+			$currentUser = $result;
 			define("USERID", $user_id);
 			define("USERNAME", $user_name);
 			define("USERURL", $user_homepage);
