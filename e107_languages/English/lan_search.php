@@ -26,9 +26,22 @@ define("LAN_200", "Categories:");
 
 define("LAN_201", "Please redefine your search query");
 define("LAN_416", "You must be logged in to access this page");
-
 define("LAN_417", "Search terms must be at least 3 characters.");
-define("LAN_418", "You must be logged in to access this page");
-define("LAN_419", "You must be logged in to access this page");
+
+define("LAN_SEARCH_1", "Check All");
+define("LAN_SEARCH_2", "Uncheck All");
+define("LAN_SEARCH_3", "item posted on ");
+define("LAN_SEARCH_4", "Match found in news title");
+define("LAN_SEARCH_5", "Match found in news text");
+define("LAN_SEARCH_6", "Match found in extended news text");
+define("LAN_SEARCH_7", "posted by ");
+define("LAN_SEARCH_8", " on ");
+define("LAN_SEARCH_9", "Untitled");
+
+
+
+
+
+
 
 ?>
