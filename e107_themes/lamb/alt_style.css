@@ -489,27 +489,3 @@ a.forumlink:hover {
 	color: #bbb;
 	text-decoration: underline;
 }
-
-.treeclass1 {
-	background-color: #F4F7FA;
-	border: #5e5d63 1px solid;
-	color: #000000;
-	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
-	padding: 2px -2px 2px 2px;
-}
-
-.treeclass2 {
-	background-color: #F4F7FA;
-	border: #000 1px solid;
-	color: #000000;
-	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
-	padding: 2px -2px 2px 2px;
-}
-
-.treeclass3 {
-	background-color: #F4F7FA;
-	color: #000000;
-	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
-	padding: 1px;
-	width: 100%;
-}
