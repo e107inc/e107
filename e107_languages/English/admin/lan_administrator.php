@@ -50,7 +50,7 @@ define("ADMSLAN_46", "Welcome message");
 define("ADMSLAN_47", "Moderate submitted news");
 define("ADMSLAN_48", "Configure plugins");
 define("ADMSLAN_49", "Check All");
-define("ADMSLAN_51", "Unheck All");
+define("ADMSLAN_51", "Uncheck All");
 define("ADMSLAN_52", "Update administrator");
 define("ADMSLAN_53", "Add administrator");
 define("ADMSLAN_54", "Site Administrators");
