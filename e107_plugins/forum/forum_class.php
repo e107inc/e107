@@ -526,9 +526,23 @@ function img_path($filename, $eMLANG_folder = FALSE, $eMLANG_pref = FALSE) {
 	if ($eMLANG_folder) {
 		return eMLANG_path($filename, $eMLANG_folder);
 	} else {
-		return file_exists(THEME.'forum/'.$filename) ? THEME.'forum/'.$filename :
-		 e_PLUGIN.'forum/images/'.$filename;
+		if(file_exists(THEME.'forum/'.$filename))
+		{
+			$image = THEME.'forum/'.$filename;
+		}
+		else
+		{
+			if(defined("IMODE"))
+			{
+				$image = e_PLUGIN."forum/images/".IMODE."/".$filename;
+			}
+			else
+			{
+				$image = e_PLUGIN."forum/images/lite/".$filename;
+			}
+		}
 	}
+	return $image;
 }
 	
 function eMLANG_path($file_name, $sub_folder) {

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-03-20 22:49:31 $
+|     $Revision: 1.19 $
+|     $Date: 2005-03-24 13:08:02 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -132,17 +132,17 @@ $ICONKEY = "
 	<td style='width:10%' class='smallblacktext'>".LAN_79."</td>
 	<td style='vertical-align:center; text-align:center; width:2%'>".IMAGE_nonew_small."</td>
 	<td style='width:10%' class='smallblacktext'>".LAN_80."</td>
-	<td style='vertical-align:center; text-align:center; width:2%'>".IMAGE_sticky."</td>
+	<td style='vertical-align:center; text-align:center; width:2%'>".IMAGE_sticky_small."</td>
 	<td style='width:10%' class='smallblacktext'>".LAN_202."</td>
-	<td style='vertical-align:center; text-align:center; width:2%'>".IMAGE_announce."</td>
+	<td style='vertical-align:center; text-align:center; width:2%'>".IMAGE_announce_small."</td>
 	<td style='width:10%' class='smallblacktext'>".LAN_396."</td>
 	</tr>
 	<tr>
-	<td style='vertical-align:center; text-align:center; width:2%'>".IMAGE_new_popular."</td>
+	<td style='vertical-align:center; text-align:center; width:2%'>".IMAGE_new_popular_small."</td>
 	<td style='width:2%' class='smallblacktext'>".LAN_79." ".LAN_395."</td>
-	<td style='vertical-align:center; text-align:center; width:2%'>".IMAGE_nonew_popular."</td>
+	<td style='vertical-align:center; text-align:center; width:2%'>".IMAGE_nonew_popular_small."</td>
 	<td style='width:10%' class='smallblacktext'>".LAN_80." ".LAN_395."</td>
-	<td style='vertical-align:center; text-align:center; width:2%'>".IMAGE_stickyclosed."</td>
+	<td style='vertical-align:center; text-align:center; width:2%'>".IMAGE_stickyclosed_small."</td>
 	<td style='width:10%' class='smallblacktext'>".LAN_203."</td>
 	<td style='vertical-align:center; text-align:center; width:2%'>".IMAGE_closed_small."</td>
 	<td style='width:10%' class='smallblacktext'>".LAN_81."</td>
@@ -263,7 +263,7 @@ function parse_thread($thread_info) {
 	}
 	 
 	$THREADDATE = $gen->convert_date($thread_info['thread_datestamp'], 'forum');
-	$ICON = ($newflag ? IMAGE_new_small : IMAGE_nonew_small);
+	$ICON = ($newflag ? IMAGE_new : IMAGE_nonew);
 	if ($REPLIES >= $pref['forum_popular'] && $REPLIES != "None") {
 		$ICON = ($newflag ? IMAGE_new_popular : IMAGE_nonew_popular);
 	}
@@ -276,7 +276,7 @@ function parse_thread($thread_info) {
 		$ICON = IMAGE_announce;
 		$THREADTYPE = '['.LAN_396.']';
 	} elseif(!$thread_info['thread_active']) {
-		$ICON = IMAGE_closed_small;
+		$ICON = IMAGE_closed;
 	}
 
 //	echo $thread_info['thread_id'].' = ['.$thread_info['thread_active'].']';
