@@ -65,7 +65,7 @@ If(IsSet($_POST['update'])){
         $content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
         $content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
         $content_content = $aj -> formtpa($_POST['data'], "admin");
-        $sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_parent='".$_POST['auto_line_breaks']."',  content_comment='".$_POST['content_comment']."', content_class='{$_POST['c_class']}' WHERE content_id='".$_POST['content_id']."'");
+        $sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_parent='".$_POST['auto_line_breaks']."',  content_comment='".$_POST['content_comment']."', content_type='1', content_class='{$_POST['c_class']}' WHERE content_id='".$_POST['content_id']."'");
         $sql -> db_Update("links", "link_class='".$_POST['c_class']."' WHERE link_name='$content_heading' ");
         unset($content_heading, $content_subheading, $content_content, $content_parent);
         $message = CNTLAN_2;
