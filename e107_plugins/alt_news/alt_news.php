@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/alt_news/alt_news.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-28 20:03:47 $
+|     $Revision: 1.7 $
+|     $Date: 2005-03-20 19:47:51 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -46,7 +46,7 @@ function alt_news($news_category) {
 					$news_body = strip_tags(substr($news_body, 0, 100))." ...";
 					$comment_total = $sql2->db_Count("comments", "(*)", "WHERE comment_item_id='$news_id' AND comment_type='0' ");
 					$text .= "<div class='mediumtext'>
-						<img src='".THEME."images/bullet2.gif' alt='bullet' /> ";
+						<img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='bullet' /> ";
 
 					if ($news_allow_comments) {
 						$text .= "<a href='news.php?extend.".$news_id."'>".$news_title."</a>";

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/review_menu/review_menu.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-01-27 19:53:16 $
-|     $Author: streaky $
+|     $Revision: 1.8 $
+|     $Date: 2005-03-20 19:47:53 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 if ($cache = $e107cache->retrieve("review_menu")) {
@@ -21,13 +21,13 @@ if ($cache = $e107cache->retrieve("review_menu")) {
 } else {
 	 
 	ob_start();
-	$text = ($menu_pref['reviews_mainlink'] ? "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_BASE."content.php?review'> ".$menu_pref['reviews_mainlink']."</a><br/>" : "");
+	$text = ($menu_pref['reviews_mainlink'] ? "<img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='bullet' /> <a href='".e_BASE."content.php?review'> ".$menu_pref['reviews_mainlink']."</a><br/>" : "");
 	$sql2 = new db;
 	 
 	if ($menu_pref['reviews_parents']) {
 		$text .= "<br />";
 		if ($i = $sql->db_Select("content", "*", "content_type='3' AND content_parent='0' ")) {
-			$text .= "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".e_BASE."content.php?review.cat.0'>Uncategorized</a> (".$i.")<br />";
+			$text .= "<img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' /> <a href='".e_BASE."content.php?review.cat.0'>Uncategorized</a> (".$i.")<br />";
 		}
 		unset($i);
 		if ($sql->db_Select("content", "*", "content_type='10' ORDER BY content_heading ASC")) {
@@ -43,7 +43,7 @@ if ($cache = $e107cache->retrieve("review_menu")) {
 							}
 						}
 						if ($i) {
-							$text .= "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_BASE."content.php?review.cat.".$content_id."'>".$content_heading."</a> (".$i.")<br />";
+							$text .= "<img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='bullet' /> <a href='".e_BASE."content.php?review.cat.".$content_id."'>".$content_heading."</a> (".$i.")<br />";
 						}
 					}
 				}
@@ -68,12 +68,12 @@ if ($cache = $e107cache->retrieve("review_menu")) {
 					}
 				}
 				if ($ok) {
-					$text .= "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_BASE."content.php?review.".$content_id."'>".$content_heading."</a><br />";
+					$text .= "<img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='bullet' /> <a href='".e_BASE."content.php?review.".$content_id."'>".$content_heading."</a><br />";
 				}
 			}
 		}
 		if ($menu_pref['reviews_submitlink'] && check_class($pref['review_submit_class'])) {
-			$text .= "<br /><img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_BASE."subcontent.php?review'> ".LAN_190."</a>";
+			$text .= "<br /><img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='bullet' /> <a href='".e_BASE."subcontent.php?review'> ".LAN_190."</a>";
 		}
 		$caption = (file_exists(THEME."images/review_menu.png") ? "<img src='".THEME."images/review_menu.png' alt='' style='vertical-align:middle' /> ".$menu_pref['reviews_caption'] : $menu_pref['reviews_caption']);
 		$ns->tablerender($caption, $text, 'review');

@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-03-01 23:13:47 $
-|     $Author: lisa_ $
+|     $Revision: 1.17 $
+|     $Date: 2005-03-20 19:47:52 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -190,7 +190,7 @@ define("CONTENT_ADMIN_OPT_LAN_87", "does the date need to be shown?");
 define("CONTENT_ADMIN_OPT_LAN_88", "does the author need to be shown?");
 define("CONTENT_ADMIN_OPT_LAN_89", "does the subheading need to be shown?");
 define("CONTENT_ADMIN_OPT_LAN_90", "define the icon to display");
-define("CONTENT_ADMIN_OPT_LAN_91", "none (), bullet (<img src='".e_THEME.$pref['sitetheme']."/images/bullet2.gif'>), middot (&middot), white bullet (º), arrow (&raquo;)");
+define("CONTENT_ADMIN_OPT_LAN_91", "none (), bullet (<img src='".e_THEME.$pref['sitetheme']."/images/".(defined("BULLET") ? BULLET : "bullet2.gif")."'>), middot (&middot), white bullet (º), arrow (&raquo;)");
 define("CONTENT_ADMIN_OPT_LAN_92", "define the width of the icon");
 define("CONTENT_ADMIN_OPT_LAN_93", "if you have chosen to display the 'content icon', specify the width of the content icon to show. enter only a numeric value of the amount of pixels you want. do not add the 'px' to the number.");
 define("CONTENT_ADMIN_OPT_LAN_94", ", category_icon()");

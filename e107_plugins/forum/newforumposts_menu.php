@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/newforumposts_menu.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-02-25 12:07:31 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.4 $
+|     $Date: 2005-03-20 19:47:52 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 global $tp;
@@ -61,7 +61,7 @@ else
 			$thread_thread = substr($thread_thread, 0, $menu_pref['newforumposts_characters']).$menu_pref['newforumposts_postfix'];
 		}
 				 
-		$text .= "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".e_PLUGIN."forum/forum_viewtopic.php?{$id}.post'><b>".$poster."</b> on ".$datestamp."</a><br/>";
+		$text .= "<img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' /> <a href='".e_PLUGIN."forum/forum_viewtopic.php?{$id}.post'><b>".$poster."</b> on ".$datestamp."</a><br/>";
 		if ($menu_pref['newforumposts_title']) {
 			$text .= $topic."<br />";
 		}
