@@ -160,7 +160,7 @@ class parse_xml {
 		$logoimage = ($headline_image ? $headline_image : $this->channel['url']);
 
 		$text = "<div style='text-align:center'>\n<table style='width:95%' class='forumheader3'>\n<tr>\n<td style='text-align:center' class='forumheader2'>\n<a href='".$this->channel['link']."' onclick=\"window.open('".$this->channel['link']."'); return false;\">
-		".($this->channel['url'] || $logoimage ? "<img src='$logoimage' alt='' style='border:0; vertical-align:center'>" : $this->channel['title'])."</a></td></tr>";
+		".($this->channel['url'] || $logoimage ? "<img src='$logoimage' alt='' style='border:0; vertical-align:center' />" : $this->channel['title'])."</a></td></tr>";
 
 		$text2 = $text;
 
