@@ -31,8 +31,7 @@ if(e_QUERY){
 $from = ($from ? $from : 0);
 $amount = 50;
 
-//print_r($_POST);
-//exit;
+
 
 if(IsSet($_POST['resend_mail'])){
     $id = $_POST['resend_id'];
