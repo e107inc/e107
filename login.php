@@ -1,8 +1,7 @@
 <?php
 /*
-+---------------------------------------------------------------+
++ ----------------------------------------------------------------------------+
 |        e107 website system
-|        /customlogin.php
 |
 |        ©Steve Dunstan 2001-2002
 |        http://e107.org
@@ -10,7 +9,12 @@
 |
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|
+|     $Source: /cvs_backup/e107/login.php,v $
+|     $Revision: 1.11 $
+|     $Date: 2005-01-05 10:33:46 $
+|     $Author: pholzmann $
++----------------------------------------------------------------------------+
 */
 
 
@@ -83,7 +87,7 @@ $ns -> tablerender($login_message, $text);
 echo "<div style='width:70%;margin-right:auto;margin-left:auto'><div style='text-align:center'><br />";
 
 if($pref['user_reg']){
-        echo "<a href='".e_SIGNUP."'>Signup</a>";
+        echo "<a href='".e_SIGNUP."'>Register as a New User</a>";
 }
 echo "&nbsp;&nbsp;&nbsp;<a href='fpw.php'>Forgot Password</a></div></div>";
 

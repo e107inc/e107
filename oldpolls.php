@@ -1,8 +1,7 @@
 <?php
 /*
-+---------------------------------------------------------------+
++ ----------------------------------------------------------------------------+
 |	e107 website system
-|	/oldpolls.php
 |
 |	©Steve Dunstan 2001-2002
 |	http://e107.org
@@ -10,7 +9,12 @@
 |
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|
+|     $Source: /cvs_backup/e107/oldpolls.php,v $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-05 10:33:46 $
+|     $Author: pholzmann $
++----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 require_once(HEADERF);
@@ -110,7 +114,7 @@ while(list($poll_id, $poll_datestamp, $poll_end_datestamp, $poll_admin_id, $poll
 if($pref['cachestatus']){
 	set_cache($p_query,ob_get_contents());
 }
-
+ob_end_flush(); /* dump collected data */
 
 require_once(e_HANDLER."np_class.php");
 $ix = new nextprev("oldpolls.php", $from, 10, $poll_total, LAN_96);

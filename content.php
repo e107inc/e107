@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/content.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2004-11-05 02:57:03 $
-|     $Author: e107coders $
+|     $Revision: 1.29 $
+|     $Date: 2005-01-05 10:33:45 $
+|     $Author: pholzmann $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -125,6 +125,7 @@ if($action == "content"){
 
         if($cache = retrieve_cache("content.$sub_action")){
                 echo $aj -> formtparev($cache);
+		$comment_total = 1; /* assume there are some, so moderation works! */
         }else{
                 ob_start();
 
@@ -164,8 +165,12 @@ if($action == "content"){
                         $cache = $aj -> formtpa(ob_get_contents(), "admin");
                         set_cache("content.$sub_action", $cache);
                 }
+		ob_end_flush(); /* dump collected data */
         }
 
+	if (ADMIN) {
+		echo '<span style="text-align:right">(<a href="',e_ADMIN,'content.php?edit.',$sub_action,'">Admin Edit</a>)<br /></span>';
+	}
         if($content_comment){
                 if($cache = retrieve_cache("comment.content.$sub_action")){
                         echo $aj -> formtparev($cache);
@@ -188,6 +193,7 @@ if($action == "content"){
                                         set_cache("comment.content.$sub_action", $cache);
                                 }
                         }
+		ob_end_flush(); /* dump collected data */			
                 }
                 if(ADMIN && getperms("B") && $comment_total){
                         echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?content.$sub_action'>".LAN_29."</a></div><br />";
@@ -285,6 +291,7 @@ if($action == "review"){
                                 $cache = $aj -> formtpa(ob_get_contents(), "admin");
                                 set_cache("review.item.$sub_action", $cache);
                         }
+			ob_end_flush(); /* dump collected data */
                 }
 
                 if($sql -> db_Select("content", "*", "content_id=$sub_action")){
@@ -313,6 +320,7 @@ if($action == "review"){
                                                 set_cache("comment.content.$sub_action", $cache);
                                         }
                                 }
+				ob_end_flush(); /* dump collected data */	
                         }
                         if(ADMIN && getperms("B")){
                                 echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?content.$sub_action'>".LAN_29."</a></div><br />";
@@ -395,10 +403,8 @@ if($action == "review"){
                                         }
                                         $ns -> tablerender(LAN_46.": ".$category, $text);
                                 }
-
-
-
                         }
+		ob_end_flush(); /* dump collected data */			
                 }
 
                 unset($text);
@@ -516,6 +522,7 @@ if($action == "review"){
                                  set_cache("review.main", $cache);
                         }
                 }
+		ob_end_flush(); /* dump collected data */
         }
 }
 
@@ -561,6 +568,7 @@ if($action == "article"){
                                 $cache = $aj -> formtpa(ob_get_contents(), "admin");
                                 set_cache($cachestr, $cache);
                         }
+			ob_end_flush(); /* dump collected data */			
                 }
 
                 if($sql -> db_Select("content", "*", "content_id=$sub_action")){
@@ -600,6 +608,7 @@ if($action == "article"){
                                                 set_cache("comment.content.$sub_action", $cache);
                                                         }
                                                 }
+					ob_end_flush(); /* dump collected data */		
                                         }
                         if(ADMIN && getperms("B")){
                                 echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?content.$sub_action'>".LAN_29."</a></div><br />";
@@ -665,6 +674,7 @@ if($action == "article"){
                                          set_cache("article.cat.$id", $cache);
                                 }
                         }
+		ob_end_flush(); /* dump collected data */
                 }
                 // ##### ----------------------------------------------------------------------------------
 
@@ -784,6 +794,7 @@ if($action == "article"){
                                  set_cache("article.main", $cache);
                         }
                 }
+		ob_end_flush(); /* dump collected data */		
         }
 }
 

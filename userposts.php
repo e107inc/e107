@@ -1,16 +1,21 @@
 <?php
 /*
-+---------------------------------------------------------------+
++ ----------------------------------------------------------------------------+
 |	e107 website system
 |	/userposts.php
 |
-|	©chavo 2004
+|     ©Steve Dunstan 2001-2002
 |	http://e107.org
-|	chavo@2sdw.com
+|     jalist@e107.org
 |
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|
+|     $Source: /cvs_backup/e107/userposts.php,v $
+|     $Revision: 1.10 $
+|     $Date: 2005-01-05 10:33:47 $
+|     $Author: pholzmann $
++----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 require_once(HEADERF);
@@ -82,7 +87,7 @@ if($action == "forums" || isset($_POST['fsearch'])){
 
 	if(isset($_POST['f_query']) && $_POST['f_query'] != ""){
 		extract($_POST);
-		$fcaption = UP_LAN_11.$user_name;
+		$fcaption = UP_LAN_12.' '.$user_name;
 		$f_query = $_POST['f_query'];
 		$db_query = "SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHERE ".MPREFIX."forum.forum_id=".MPREFIX."forum_t.thread_forum_id AND ".MPREFIX."forum_t.thread_user='".$user_id."' AND (".MPREFIX."forum_t.thread_name REGEXP('".$f_query."') OR ".MPREFIX."forum_t.thread_thread REGEXP('".$f_query."')) ORDER BY ".MPREFIX."forum_t.thread_datestamp DESC ";
 	}else{
@@ -143,6 +148,7 @@ function parse_userposts_comments_table($row){
 			$poster = substr($comment_author, (strpos($comment_author, ".")+1));
 			$gen = new convert;
 			$datestamp = $gen->convert_date($comment_datestamp, "short");
+			$DATESTAMP = $datestamp;
 
 			$comment_comment = $aj -> tpa($comment_comment);
 
@@ -274,6 +280,7 @@ function parse_userposts_forum_table($row){
 
 			$poster = substr($thread_user, (strpos($thread_user, ".")+1));
 			$datestamp = $gen->convert_date($thread_datestamp, "short");			
+			$DATESTAMP = $datestamp;			
 
 			if($thread_parent){
 				
