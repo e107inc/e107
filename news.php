@@ -77,8 +77,9 @@ if($action == "cat"){
 
 if($action == "extend"){
 	$extend_id = substr(e_QUERY, (strpos(e_QUERY, ".")+1));
-	$sql -> db_Select("news", "*", "news_id='$extend_id' ");
+	$sql -> db_Select("news", "*", "news_id='$extend_id' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")");
 	list($news['news_id'], $news['news_title'], $news['data'], $news['news_extended'], $news['news_datestamp'], $news['admin_id'], $news_category, $news['news_allow_comments'],  $news['news_start'], $news['news_end'], $news['news_class']) = $sql -> db_Fetch();
+	if(!check_class($news['news_class'])){ header("location: news.php"); }
 	$sql -> db_Select("news_category", "*",  "category_id='$news_category' ");
 	list($news['category_id'], $news['category_name'], $news['category_icon']) = $sql-> db_Fetch();
 	$news['comment_total'] = $sql -> db_Count("comments", "(*)",  "WHERE comment_item_id='".$news['news_id']."' AND comment_type='0' ");
@@ -225,16 +226,18 @@ if($pref['nfp_display'] == 2){
               //  $text3 .= "</td>";
 
 
-                $count = $sql -> db_SELECT("news", "*",  "news_category='$category_id' ORDER BY news_datestamp DESC LIMIT $from,$nbr_lst");
+                $count = $sql -> db_SELECT("news", "*",  "news_category='$category_id' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")  ORDER BY news_datestamp DESC LIMIT $from,$nbr_lst");
                 while($row = $sql-> db_Fetch()){
                         extract($row);
-                        $news_title = $aj -> tpa($news_title);
-                        if($news_title == ""){ $news_title = "Untitled"; }
-                  //      $datestamp = $gen->convert_date($news_datestamp, "short");
-                        $text3 .= "• ";
-                        $text3 .= "<a href='news.php?extend.".$news_id."'>".$news_title."</a>
-                        <br />\n";
-                        }
+							if(check_class($news_class)){
+							$news_title = $aj -> tpa($news_title);
+							if($news_title == ""){ $news_title = "Untitled"; }
+					  //      $datestamp = $gen->convert_date($news_datestamp, "short");
+							$text3 .= "• ";
+							$text3 .= "<a href='news.php?extend.".$news_id."'>".$news_title."</a>
+							<br />\n";
+							}
+				}
 
                        $text3 .="</td>";
                        if($t == ($nbr_cols-1)){$text3 .="</tr><tr><td colspan='$nbr_cols' style='height:15px'></td></tr><tr>";
