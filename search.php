@@ -11,14 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-03-08 11:34:20 $
-|     $Author: stevedunstan $
+|     $Revision: 1.13 $
+|     $Date: 2005-03-08 17:12:03 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 e107_require(e_HANDLER."search_class.php");
 $sch = new e_search;
+$search_prefs = $sysprefs -> getArray('search_prefs');
 
 if (!USER && $pref['search_restrict'] == 1) {
 	require_once(HEADERF);
@@ -36,14 +37,19 @@ if (!isset($_POST['searchquery'])) {
 $search_info = array();
 	
 //load all core search routines
-$search_info[] = array('sfile' => e_HANDLER.'search/search_news.php', 'qtype' => LAN_98, 'refpage' => 'news.php');
-$search_info[] = array('sfile' => e_HANDLER.'search/search_comment.php', 'qtype' => LAN_99, 'refpage' => 'comment.php');
-$search_info[] = array('sfile' => e_HANDLER.'search/search_chatbox.php', 'qtype' => LAN_101, 'refpage' => 'chatbox.php');
-$search_info[] = array('sfile' => e_HANDLER.'search/search_links.php', 'qtype' => LAN_102, 'refpage' => 'links.php');
-$search_info[] = array('sfile' => e_HANDLER.'search/search_forum.php', 'qtype' => LAN_103, 'refpage' => 'forum.php');
-$search_info[] = array('sfile' => e_HANDLER.'search/search_user.php', 'qtype' => LAN_140, 'refpage' => 'user.php');
-$search_info[] = array('sfile' => e_HANDLER.'search/search_download.php', 'qtype' => LAN_197, 'refpage' => 'download.php');
-	
+if ($search_prefs['core_handlers']['news']) {
+	$search_info[] = array('sfile' => e_HANDLER.'search/search_news.php', 'qtype' => LAN_98, 'refpage' => 'news.php');
+}
+if ($search_prefs['core_handlers']['comments']) {
+	$search_info[] = array('sfile' => e_HANDLER.'search/search_comment.php', 'qtype' => LAN_99, 'refpage' => 'comment.php');
+}
+if ($search_prefs['core_handlers']['users']) {
+	$search_info[] = array('sfile' => e_HANDLER.'search/search_user.php', 'qtype' => LAN_140, 'refpage' => 'user.php');
+}
+if ($search_prefs['core_handlers']['downloads']) {
+	$search_info[] = array('sfile' => e_HANDLER.'search/search_download.php', 'qtype' => LAN_197, 'refpage' => 'download.php');
+}
+
 //load all plugin search routines
 $handle = opendir(e_PLUGIN);
 while (false !== ($file = readdir($handle))) {
@@ -101,30 +107,9 @@ if (isset($_POST['searchtype']) && $_POST['searchtype']) {
 			}
 		}
 	}
-	if (eregi("article.php", $refpage)) {
-		preg_match("/\?(.*?)\./", $refpage, $result);
-		$sql->db_Select("content", "*", "content_id='".$result[1]."'");
-		$row = $sql->db_Fetch();
-		 extract($row);
-		if ($content_type == 0) {
-			$searchtype = 3;
-		}
-		if ($content_type == 3) {
-			$searchtype = 4;
-		}
-		if ($content_type == 1) {
-			$searchtype = 5;
-		}
-	}
-	//        if(!$searchtype){ $searchtype = 1; }
+
 	if (isset($_POST['searchtype']) && $_POST['searchtype'] == 0 && !$searchtype || $refpage == "news.php") {
 		$searchtype = 0;
-	}
-}
-if (isset($_POST['searchtype']) && $_POST['searchtype'] == "99") {
-	unset($_POST['searchtype']);
-	foreach($search_info as $key => $si) {
-		$_POST['searchtype'][] = $key;
 	}
 }
 
@@ -138,16 +123,18 @@ if (!isset($SEARCH_MAIN_TABLE)) {
 
 $SEARCH_MAIN_CHECKBOXES = '';
 foreach($search_info as $key => $si) {
-	(isset($_POST['searchtype'][$key]) && $_POST['searchtype'][$key]==$key) ? $sel=" checked" : $sel="";
+	(isset($_POST['searchtype'][$key]) && $_POST['searchtype'][$key]) ? $sel=" checked" : $sel="";
 	$SEARCH_MAIN_CHECKBOXES .= "<span style='white-space:nowrap; padding-bottom:7px;padding-top:7px'><input onclick='uncheckG();' type='checkbox' name='searchtype[".$key."]' ".$sel." />".$si['qtype']."</span>\n".$AFTERCHECKBOXES."\n";
 }
-	
-$SEARCH_MAIN_CHECKBOXES .= "<input id='google' type='checkbox' name='searchtype[".$google_id."]'  onclick='uncheckAll(this)' />Google";
+
+if ($search_prefs['google']) {
+	$SEARCH_MAIN_CHECKBOXES .= "<input id='google' type='checkbox' name='searchtype[".$google_id."]'  onclick='uncheckAll(this)' />Google";
+}
 $SEARCH_MAIN_SEARCHFIELD = "<input class='tbox' type='text' name='searchquery' size='60' value='".$query."' maxlength='50' />";
 $SEARCH_MAIN_CHECKALL = "<input class='button' type='button' name='CheckAll' value='".LAN_SEARCH_1."' onclick='checkAll(this);' />";
 $SEARCH_MAIN_UNCHECKALL = "<input class='button' type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this); uncheckG();' />";
 $SEARCH_MAIN_SUBMIT = "<input class='button' type='submit' name='searchsubmit' value='".LAN_180."' />";
-
+	
 $text = preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_MAIN_TABLE);
 	
 $ns->tablerender(PAGE_NAME." ".SITENAME, $text);
