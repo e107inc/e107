@@ -10,6 +10,7 @@ var agtbrw=navigator.userAgent.toLowerCase();
 var operaaa=(agtbrw.indexOf('opera')!=-1);
 var head="display:''";
 var folder='';
+
 function expandit(curobj){
 if(document.getElementById(curobj)){
   folder=document.getElementById(curobj).style;
@@ -33,8 +34,14 @@ function open_window(url,type) {
 	if('full' == type){
 		pwindow = window.open(url);
 	} else {
-		pwindow = window.open(url,'Name', 'top=100,left=100,resizable=yes,width=600,height=400,scrollbars=yes,menubar=yes')
+		if (type > 0 ) {
+			mywidth=type;
+		} else { 
+			mywidth=600;
 	}
+		pwindow = window.open(url,'Name', 'top=100,left=100,resizable=yes,width='+mywidth+',height=400,scrollbars=yes,menubar=yes')
+	}
+	pwindow.focus();
 }
 
 function ejs_preload(ejs_path, ejs_imageString){
@@ -51,6 +58,7 @@ function textCounter(field,cntfield) {
 
 function openwindow() {
 	opener = window.open("htmlarea/index.php", "popup","top=50,left=100,resizable=no,width=670,height=520,scrollbars=no,menubar=no");            
+	opener.focus();
 }
 function setCheckboxes(the_form, do_check){
 	var elts = (typeof(document.forms[the_form].elements['perms[]']) != 'undefined') ? document.forms[the_form].elements['perms[]'] : document.forms[the_form].elements['perms[]'];
@@ -78,8 +86,8 @@ var is_nav = ((clientPC.indexOf('mozilla')!=-1) && (clientPC.indexOf('spoofer')=
 var is_moz = 0;
 var is_win = ((clientPC.indexOf("win")!=-1) || (clientPC.indexOf("16bit") != -1));
 var is_mac = (clientPC.indexOf("mac")!=-1);
-var selectedInputArea;
-
+var e107_selectedInputArea;
+var e107_selectedRange;
 
 // From http://www.massless.org/mozedit/
 function mozWrap(txtarea, open, close){
@@ -95,37 +103,43 @@ function mozWrap(txtarea, open, close){
 }
 
 function storeCaret (textAr){
-	selectedInputArea = textAr;
+	e107_selectedInputArea = textAr;
 	if (textAr.createTextRange){
-		selectedRange = document.selection.createRange().duplicate();
+		e107_selectedRange = document.selection.createRange().duplicate();
 	}
 }
 
 function addtext(text){
-	if (window.selectedInputArea){
-		var ta = selectedInputArea;
+	if (window.e107_selectedInputArea){
+		var ta = e107_selectedInputArea;
 		val = text.split('][');
+				
 		if ((clientVer >= 4) && is_ie && is_win){
-			theSelection = document.selection.createRange().text;
+			theSelection = document.selection.createRange().text; /* wrap selected text */
 			if (theSelection) {
 				document.selection.createRange().text = val[0] +']' +  theSelection + '[' + val[1];
 				ta.focus();
 				theSelection = '';
 				return;
 			}
+			
 		}else if (ta.selectionEnd && (ta.selectionEnd - ta.selectionStart > 0)){
-			mozWrap(ta, val[0] +']', '[' + val[1]);
+			mozWrap(ta, val[0] +']', '[' + val[1]); /* wrap selected text */
 			return;
 		}
 		text = ' ' + text + ' ';
-		if (ta.createTextRange && selectedRange) {
-			var caretPos = selectedRange;
+		if (ta.createTextRange && e107_selectedRange) {
+			var caretPos = e107_selectedRange; /* IE */
 			caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == ' ' ? caretPos.text + text + ' ' : caretPos.text + text;
-			ta.focus();
+		} else if (ta.selectionStart || ta.selectionStart == '0') { /* Moz */
+		   	var startPos = ta.selectionStart;
+			var endPos = ta.selectionEnd;
+			var charb4 = ta.value.charAt(endPos-1);
+			ta.value = ta.value.substring(0, endPos)+ text + ta.value.substring(endPos);
 		} else {
 			ta.value  += text;
-			ta.focus();
 		}
+		ta.focus();
 	}
 }
 
