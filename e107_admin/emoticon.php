@@ -1,74 +1,70 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
++---------------------------------------------------------------+
+|        e107 website system
+|        /admin/emoticon_conf.php
 |
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
+|        ©Steve Dunstan 2001-2002
+|        http://e107.org
+|        jalist@e107.org
 |
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.7/e107_admin/emoticon.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:20 $
-|     $Author: e107coders $
-+----------------------------------------------------------------------------+
+|        Released under the terms and conditions of the
+|        GNU General Public License (http://gnu.org).
++---------------------------------------------------------------+
 */
 require_once("../class2.php");
 if(!getperms("F")){ header("location:".e_BASE."index.php"); exit; }
 
-if(IsSet($_POST['updatesettings'])){
-        $aj = new textparse;
-        while(list($id, $name) = each($_POST['emote_code'])){
-                $emote[] = array($aj -> formtpa($name) => $_POST['emote_text'][$id]);
-        }
-        $tmp = addslashes(serialize($emote));
-        $sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='emote' ");
-        if($_POST['smiley_activate'] != $pref['smiley_activate'])
-        {
-                clear_cache();
-        }
-        $pref['smiley_activate'] = $_POST['smiley_activate'];
-        save_prefs();
-        header("location:".e_ADMIN."emoticon.php?u");
-        exit;
+if(IsSet($_POST['updatesettings']))
+{
+	$aj = new textparse;
+	while(list($id, $name) = each($_POST['emote_code']))
+	{
+		$emote[] = array($aj -> formtpa($name) => $_POST['emote_text'][$id]);
+	}
+	$sysprefs -> setArray('emote');
+	if($_POST['smiley_activate'] != $pref['smiley_activate'])
+	{
+		clear_cache();
+	}
+	$pref['smiley_activate'] = $_POST['smiley_activate'];
+	save_prefs();
+	header("location:".e_ADMIN."emoticon.php?u");
+	exit;
 }
 
-if(!$sql -> db_Select("core", "*", "e107_name='emote'")){
-        $e107_value = setdefault();
-}else{
-        $row = $sql -> db_Fetch(); extract($row);
+$emote = $sysprefs->getArray('emote');
+if(!is_array($emote))
+{
+	$tmp=setdefault();
+	$sysprefs->set($tmp,'emote');
+	$emote = $sysprefs->getArray('emote');
 }
-$emote = unserialize($e107_value);
 
-if(IsSet($_POST['addemote'])){
-        if($_POST['emote_new_code'] && $_POST['emote_new_image']){
-                $aj = new textparse;
-                $emote[count($emote)] = array($aj -> formtpa($_POST['emote_new_code']) => $_POST['emote_new_image']);
-                $tmp = addslashes(serialize($emote));
-                $sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='emote' ");
-                header("location:".e_ADMIN."emoticon.php?v");
-                exit;
-        }
+if(IsSet($_POST['addemote']))
+{
+	if($_POST['emote_new_code'] && $_POST['emote_new_image'])
+	{
+		$aj = new textparse;
+		$emote[count($emote)] = array($tp -> toDB($_POST['emote_new_code']) => $_POST['emote_new_image']);
+		$sysprefs -> setArray('emote');
+		header("location:".e_ADMIN."emoticon.php?v");
+		exit;
+	}
 }
 
 $tmp = explode(".", e_QUERY);
 
-if($tmp[0] == "del"){
-        if(!e_REFERER_SELF){exit;}
-        unset($emote[$tmp[1]]);
-
- //Fix Thermo to allow emote deletion
-        $newemote=array_values($emote);
-        $emote=$newemote;
- //End Change Chris
-
-        $tmp = addslashes(serialize($emote));
-        $sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='emote' ");
-        header("location:".e_ADMIN."emoticon.php?w");
-        exit;
+if($tmp[0] == "del")
+{
+	if(!e_REFERER_SELF){exit;}
+	unset($emote[$tmp[1]]);
+	$newemote=array_values($emote);
+	$emote=$newemote;
+	$tmp = addslashes(serialize($emote));
+	$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='emote' ");
+	header("location:".e_ADMIN."emoticon.php?w");
+	exit;
 }
 
 require_once("auth.php");
