@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-03-09 10:47:43 $
+|     $Revision: 1.18 $
+|     $Date: 2005-03-10 07:16:19 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -90,7 +90,7 @@ if (isset($_POST['searchtype']) && $_POST['searchtype']) {
 		}
 	}
 
-	if (!isset($searchtype)) {
+	if (!isset($searchtype) && isset($query)) {
 		$searchtype[0] = TRUE;
 	}
 }
