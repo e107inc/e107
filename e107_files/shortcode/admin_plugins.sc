@@ -1,6 +1,7 @@
 if (ADMIN) {
 	global $e107_plug, $ns, $pref;
 	if ($pref['admin_alerts_ok'] == 1) {
+		ob_start();
 		$text = "";
 		$i = 0;
 		if (strstr(e_SELF, "/admin.php")) {
@@ -36,5 +37,8 @@ if (ADMIN) {
 		if ($i>0 && $pref['admin_alerts_uniquemenu'] == 1) {
 			$ns -> tablerender($caption, $text);
 		}
+		$plug_text = ob_get_contents();
+		ob_end_clean();
+		return $plug_text;
 	}
 }

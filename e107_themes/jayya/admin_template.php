@@ -2,22 +2,18 @@
 
 // [prerenders]
 
-ob_start();
 $style = "leftmenu";
-$tp -> parseTemplate('{ADMIN_HELP}');
-$tp -> parseTemplate('{ADMIN_PWORD}');
-$tp -> parseTemplate('{ADMIN_MSG}');
-$tp -> parseTemplate('{ADMIN_PLUGINS}');
-$style = "default";
-$preleft = ob_get_contents();
-ob_end_clean();
+$preleft = $tp -> parseTemplate('{ADMIN_HELP}');
+$preleft .= $tp -> parseTemplate('{ADMIN_PWORD}');
+$preleft .= $tp -> parseTemplate('{ADMIN_MSG}');
+$preleft .= $tp -> parseTemplate('{ADMIN_PLUGINS}');
 
 $style = "rightmenu";
-$preright = $tp -> parseTemplate('{ADMIN_MENU=pre}');
-$preright_info = $tp -> parseTemplate('{ADMIN_STATUS=request}');
-$preright_info .= $tp -> parseTemplate('{ADMIN_LATEST=request}');
-$preright_info .= $tp -> parseTemplate('{ADMIN_PRESET}');
-$preright_info .= $tp -> parseTemplate('{ADMIN_LOG=request}');
+$preright = $tp -> parseTemplate('{ADMIN_MENU}');
+$preright .= $tp -> parseTemplate('{ADMIN_STATUS=request}');
+$preright .= $tp -> parseTemplate('{ADMIN_LATEST=request}');
+$preright .= $tp -> parseTemplate('{ADMIN_PRESET}');
+$preright .= $tp -> parseTemplate('{ADMIN_LOG=request}');
 $style = "default";
 
 // [admin button style]
@@ -124,14 +120,13 @@ $ADMIN_HEADER .= "<br />
 $ADMIN_FOOTER = "<br />
 </td>";
 
-if ($preright=='pre' || $preright_info) {
+if ($preright) {
 	$ADMIN_FOOTER .= "<td class='right_menu'>
 	<table style='width:100%; border-collapse: collapse; border-spacing: 0px;'>
 	<tr>
 	<td>
 	{SETSTYLE=rightmenu}
-	{ADMIN_MENU}
-	".$preright_info."
+	".$preright."
 	<br />
 	</td></tr></table>
 	</td>";

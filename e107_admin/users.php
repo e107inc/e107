@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-01-27 19:52:25 $
-|     $Author: streaky $
+|     $Revision: 1.10 $
+|     $Date: 2005-02-04 08:16:22 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -23,9 +23,9 @@ if (!getperms("4")) {
 	 exit;
 }
 $e_sub_cat = 'users';
-	
+$user = new users;	
 require_once("auth.php");
-$user = new users;
+
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 	

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-29 00:47:58 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-04 08:17:24 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -28,13 +28,12 @@ $e_sub_cat = 'forum';
 	
 require_once(e_HANDLER."textparse/basic.php");
 $etp = new e107_basicparse;
-	
+$forum = new forum;
 require_once(e_ADMIN.'auth.php');
 require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."ren_help.php");
 $rs = new form;
-$forum = new forum;
 $aj = new textparse;
 	
 $deltest = array_flip($_POST);
