@@ -24,6 +24,8 @@ class db{
 	var $mySQLresult;
 	var $mySQLrows;
 	var $mySQLerror;
+	var $mySQLcurTable;
+
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 	function db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb){
 		/*
@@ -53,6 +55,33 @@ class db{
 			}
 		}
 	}
+function db_Mark_Time($sMarker)
+{
+//Placeholder. Allows code changes elsewhere to be integrated.
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+		/**
+      		* @return   object 	query result
+		* @param string $query	SQL query string
+		* @param object $rli	(optional) mysql Record Locator
+		* @desc General query - use for ALL queries other than admin log.
+		* @desc Does the actual mysql_query(). Gives a centralized place for analysis and debugging.
+		* @access	private
+		*/
+	function db_Query($query,$rli = NULL ) {
+		global $dbq, $e107_debug, $db_time, $sDBdbg, $aTimeMarks, $aDBbyTable, $curTimeMark;
+	$dbq++; 
+	$_dbTimeStart = explode(' ',microtime());
+	$sQryRes = is_null($rli) ? @mysql_query($query) : @mysql_query($query,$rli);
+	$_dbTimeEnd = explode(' ',microtime());
+	$mytime= ((float)$_dbTimeEnd[0]+(float)$_dbTimeEnd[1]) - ((float)$_dbTimeStart[0]+(float)$_dbTimeStart[1]);
+	$db_time += $mytime;
+	$this->mySQLresult = $sQryRes;
+
+  return $sQryRes;
+}
+
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 	function db_Select($table, $fields="*", $arg="", $mode="default", $debug=FALSE){
 		/*
@@ -65,12 +94,11 @@ class db{
 		# - return				affected rows
 		# - scope					public
 		*/
-		global $dbq;
-		$dbq++;
 
+		$this->$mySQLcurTable = $table;
 		if($arg != "" && $mode=="default"){
 			if($debug){ echo "SELECT ".$fields." FROM ".MPREFIX.$table." WHERE ".$arg."<br />"; }
-			if($this->mySQLresult = @mysql_query("SELECT ".$fields." FROM ".MPREFIX.$table." WHERE ".$arg)){
+			if($this->mySQLresult = $this->db_Query("SELECT ".$fields." FROM ".MPREFIX.$table." WHERE ".$arg)){
 				$this->dbError("dbQuery");
 				return $this->db_Rows();
 			}else{
@@ -79,7 +107,7 @@ class db{
 			}
 		}else if($arg != "" && $mode != "default"){
 			if($debug){ echo "@@SELECT ".$fields." FROM ".MPREFIX.$table." ".$arg."<br />"; }
-			if($this->mySQLresult = @mysql_query("SELECT ".$fields." FROM ".MPREFIX.$table." ".$arg)){
+			if($this->mySQLresult = $this->db_Query("SELECT ".$fields." FROM ".MPREFIX.$table." ".$arg)){
 				$this->dbError("dbQuery");
 				return $this->db_Rows();
 			}else{
@@ -88,7 +116,7 @@ class db{
 			}
 		}else{
 			if($debug){ echo "SELECT ".$fields." FROM ".MPREFIX.$table."<br />"; }
-			if($this->mySQLresult = @mysql_query("SELECT ".$fields." FROM ".MPREFIX.$table)){
+			if($this->mySQLresult = $this->db_Query("SELECT ".$fields." FROM ".MPREFIX.$table)){
 				$this->dbError("dbQuery");
 				return $this->db_Rows();
 			}else{
@@ -108,13 +136,14 @@ class db{
 		# - scope					public
 		*/
 
+		$this->$mySQLcurTable = $table;
 		if($debug){
 			echo "INSERT INTO ".MPREFIX.$table." VALUES (".htmlentities($arg).")";
 		}
 
 //		if(!ANON && !USER && $table != "user"){ return FALSE; }
 
-		if($result = $this->mySQLresult = @mysql_query("INSERT INTO ".MPREFIX.$table." VALUES (".$arg.")" )){
+		if($result = $this->mySQLresult = $this->db_Query("INSERT INTO ".MPREFIX.$table." VALUES (".$arg.")" )){
 			$tmp = mysql_insert_id();
 
 			if(strstr(e_SELF, ADMINDIR) && $table != "online"){
@@ -136,10 +165,10 @@ class db{
 		# - return				sql identifier, or error if (error reporting = on, error occured, boolean)
 		# - scope					public
 		*/
-		global $dbq;
-		$dbq++;
+
+		$this->$mySQLcurTable = $table;
 		if($debug){ echo "UPDATE ".MPREFIX.$table." SET ".$arg."<br />"; }	
-		if($result = $this->mySQLresult = @mysql_query("UPDATE ".MPREFIX.$table." SET ".$arg)){
+		if($result = $this->mySQLresult = $this->db_Query("UPDATE ".MPREFIX.$table." SET ".$arg)){
 			$result = mysql_affected_rows();
 			if(strstr(e_SELF, ADMINDIR) && $table != "online"){
 				if(!strstr($arg, "link_order")){
@@ -162,6 +191,8 @@ class db{
 		# - return				result array, or error if (error reporting = on, error occured, boolean)
 		# - scope					public
 		*/
+		
+		$this->$mySQLcurTable = $table;
 		if($row = @mysql_fetch_array($this->mySQLresult)){
 			if($mode == 'strip'){
 				while (list($key,$val) = each($row)){
@@ -186,12 +217,12 @@ class db{
 		# - return				result array, or error if (error reporting = on, error occured, boolean)
 		# - scope					public
 		*/
+		
+		$this->$mySQLcurTable = $table;
 //		echo "SELECT COUNT".$fields." FROM ".MPREFIX.$table." ".$arg;
 
-		global $dbq;
-		$dbq++;
 		if($fields == "generic"){
-			if($this->mySQLresult = @mysql_query($table)){
+			if($this->mySQLresult = $this->db_Query($table)){
 				$rows = $this->mySQLrows = @mysql_fetch_array($this->mySQLresult);
 				return $rows[0];
 			}else{
@@ -199,7 +230,7 @@ class db{
 			}
 		}
 
-		if($this->mySQLresult = @mysql_query("SELECT COUNT".$fields." FROM ".MPREFIX.$table." ".$arg)){
+		if($this->mySQLresult = $this->db_Query("SELECT COUNT".$fields." FROM ".MPREFIX.$table." ".$arg)){
 			$rows = $this->mySQLrows = @mysql_fetch_array($this->mySQLresult);
 			return $rows[0];
 		}else{
@@ -228,11 +259,13 @@ class db{
 		# - return				result array, or error if (error reporting = on, error occured, boolean)
 		# - scope					public
 		*/
+		
+		$this->$mySQLcurTable = $table;
 		if($table == "user"){
 	//		echo "DELETE FROM ".MPREFIX.$table." WHERE ".$arg."<br />";			// debug
 		}
 		if(!$arg){
-			if($result = $this->mySQLresult = @mysql_query("DELETE FROM ".MPREFIX.$table)){
+			if($result = $this->mySQLresult = $this->db_Query("DELETE FROM ".MPREFIX.$table)){
 				if(strstr(e_SELF, ADMINDIR) && $table != "online" && $table != "tmp"){
 					$str = addslashes(str_replace("WHERE", "", substr($arg, strpos($arg, "WHERE"))));
 
@@ -250,7 +283,7 @@ class db{
 				return FALSE;
 			}
 		}else{
-			if($result = $this->mySQLresult = @mysql_query("DELETE FROM ".MPREFIX.$table." WHERE ".$arg)){
+			if($result = $this->mySQLresult = $this->db_Query("DELETE FROM ".MPREFIX.$table." WHERE ".$arg)){
 				$tmp = mysql_affected_rows();
 				if(strstr(e_SELF, ADMINDIR) && $table != "online" && $table != "tmp"){
 					$str = addslashes(str_replace("WHERE", "", substr($arg, strpos($arg, "WHERE"))));
@@ -300,10 +333,9 @@ class db{
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 	function db_Select_gen($arg){
-		global $dbq;
-		$dbq++;
+
 		//echo "\mysql_query($arg)";
-		if($this->mySQLresult = @mysql_query($arg)){
+		if($this->mySQLresult = $this->db_Query($arg)){
 			$this->dbError("db_Select_gen");
 			return $this->db_Rows();
 		}else{
@@ -316,6 +348,14 @@ class db{
 	function db_Fieldname($offset){
 
 		$result = @mysql_field_name($this->mySQLresult, $offset);
+		return $result;
+	}
+
+/* 
+ * use immediately after a seek for info on next field 
+ */
+	function db_Field_info(){ 
+		$result = @mysql_fetch_field($this->mySQLresult);
 		return $result;
 	}
 
