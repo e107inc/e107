@@ -132,4 +132,11 @@ define("ADLAN_124", "Unchecked submitted reviews");
 
 define("ADLAN_125", "Unchecked reported forum posts");
 
+define("ADLAN_126", "Main Options");
+define("ADLAN_127", "Users");
+define("ADLAN_128", "Content");
+define("ADLAN_129", "Communication");
+define("ADLAN_130", "Files Management");
+define("ADLAN_131", "Other tools");
+
 ?>
