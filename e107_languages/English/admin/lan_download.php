@@ -67,6 +67,9 @@ define("DOWLAN_63", "Descending");
 define("DOWLAN_64", "Update Options");
 define("DOWLAN_65", "Options Updated");
 define("DOWLAN_66", "filesize");
+
+define("DOWLAN_100", "Activate Download Agreement");
+define("DOWLAN_101", "Agreement Text");
 define("DOWLAN_67", "ID");
 
 ?>

@@ -14,6 +14,8 @@
 */
 require_once("class2.php");
 unset($text);
+$agreetext = $pref['agree_text'];
+
 if(!e_QUERY){
 require_once(HEADERF);
 	// no qs - render categories ...
@@ -217,6 +219,14 @@ if($action == "list"){
 			$rating = ($ratearray[2] ? $ratearray[1].".".$ratearray[2]."/".$ratearray[0] : $ratearray[1]."/".$ratearray[0]);
 		}
 
+		if($pref['agree_flag'] == 1){
+			$dnld_link = "<a href='request.php?".$download_id."' onClick= \"return confirm('$agreetext');\">";
+		}else{
+
+			$dnld_link = "<a href='request.php?".$download_id."'>";
+		}
+
+
 		$text .= "<tr>
 		<td class='forumheader3' style='vertical-align:middle'>$new  <b><a href='".e_SELF."?view.$download_id'>$download_name</a></b></td>
 		<td style='text-align:center' class='forumheader3'><span class='smalltext'>$datestamp</span></td>
@@ -224,7 +234,7 @@ if($action == "list"){
 		<td style='text-align:center' class='forumheader3'><span class='smalltext'>$download_filesize</span></td>
 		<td style='text-align:center' class='forumheader3'><span class='smalltext'>$download_requested</span></td>
 		<td style='text-align:center' class='forumheader3'><span class='smalltext'>$rating</span></td>
-		<td style='text-align:center' class='forumheader3'><a href='request.php?".$download_id."'><img src='".e_IMAGE."generic/download.png' alt='' style='border:0' /></a></td>
+		<td style='text-align:center' class='forumheader3'> $dnld_link <img src='".e_IMAGE."generic/download.png' alt='' style='border:0' /></a></td>
 		</tr>";
 
 		$tdownloads += $download_requested;
@@ -314,6 +324,12 @@ if($action == "view"){
 		</tr>";
 	}
 
+	if($pref['agree_flag'] == 1){
+			$dnld_link = "<a href='request.php?".$download_id."' onClick= \"return confirm('$agreetext');\">";
+		}else{
+			$dnld_link = "<a href='request.php?".$download_id."'>";
+	}
+
 	$text .= "<tr>
 	<td style='width:20%' class='forumheader3'>".LAN_dl_10.": </td>
 	<td style='width:80%' class='forumheader3'>".parsesize($download_filesize)."</td>
@@ -326,7 +342,7 @@ if($action == "view"){
 
 	<tr>
 	<td style='width:20%' class='forumheader3'>".LAN_dl_32.": </td>
-	<td style='width:80%' class='forumheader3'><a href='request.php?".$download_id."'><img src='".e_IMAGE."generic/download.png' alt='' style='border:0' /></a></td>
+	<td style='width:80%' class='forumheader3'> $dnld_link <img src='".e_IMAGE."generic/download.png' alt='' style='border:0' /></a></td>
 	</tr>
 
 	<tr>
