@@ -9,13 +9,13 @@
 // Version 3.0 developed by Mihai Bazon.
 //   http://dynarch.com/mishoo
 //
-// $Id: htmlarea.js,v 1.3 2004-03-16 07:22:51 e107coders Exp $
+// $Id: htmlarea.js,v 1.4 2004-03-16 20:12:58 e107coders Exp $
 
 if (typeof _editor_url == "string") {
         // Leave exactly one backslash at the end of _editor_url
         _editor_url = _editor_url.replace(/\x2f*$/, '/');
 } else {
-        alert("WARNING: _editor_url is not set!  You should set this variable to the editor files path; it should preferably be an absolute path, like in '/htmlarea', but it can be relative if you prefer.  Further we will try to load the editor files correctly but we'll probably fail.");
+        alert("WARNING: _editor_url is not set!  You should set this variable to the editor files path; it should preferably be an absolute path, like in '/htmlarea/', but it can be relative if you prefer.  Further we will try to load the editor files correctly but we'll probably fail.");
         _editor_url = '';
 }
 
@@ -662,9 +662,11 @@ HTMLArea.prototype.generate = function () {
 
         // add a handler for the "back/forward" case -- on body.unload we save
         // the HTML content into the original textarea.
-        window.onunload = function() {
-                editor._textArea.value = editor.getHTML();
-        };
+        try {
+                window.onunload = function() {
+                        editor._textArea.value = editor.getHTML();
+                };
+        } catch(e) {};
 
         // creates & appends the toolbar
         this._createToolbar();
@@ -741,8 +743,8 @@ HTMLArea.prototype.generate = function () {
                         html += "<head>\n";
                         if (editor.config.baseURL)
                                 html += '<base href="' + editor.config.baseURL + '" />';
-                        html += "<style> html,body { border: 0px; } " +
-                                editor.config.pageStyle + "</style>\n";
+                        html += "<style>" + editor.config.pageStyle +
+                                " html,body { border: 0px; }</style>\n";
                         html += "</head>\n";
                         html += "<body>\n";
                         html += editor._textArea.value;
@@ -781,6 +783,10 @@ HTMLArea.prototype.generate = function () {
                         var plugin = editor.plugins[i].instance;
                         if (typeof plugin.onGenerate == "function")
                                 plugin.onGenerate();
+                        if (typeof plugin.onGenerateOnce == "function") {
+                                plugin.onGenerateOnce();
+                                plugin.onGenerateOnce = null;
+                        }
                 }
 
                 setTimeout(function() {
@@ -839,6 +845,12 @@ HTMLArea.prototype.setMode = function(mode) {
         }
         this._editMode = mode;
         this.focusEditor();
+
+        for (var i in editor.plugins) {
+                var plugin = editor.plugins[i].instance;
+                if (typeof plugin.onMode == "function") plugin.onMode(mode);
+        }
+
 };
 
 HTMLArea.prototype.setFullHTML = function(html) {
@@ -876,6 +888,10 @@ HTMLArea.prototype.setFullHTML = function(html) {
 HTMLArea.prototype.registerPlugin2 = function(plugin, args) {
         if (typeof plugin == "string")
                 plugin = eval(plugin);
+        if (typeof plugin == "undefined") {
+                /* FIXME: This should never happen. But why does it do? */
+                return false;
+        }
         var obj = new plugin(this, args);
         if (obj) {
                 var clone = {};
@@ -1003,8 +1019,11 @@ HTMLArea.prototype.forceRedraw = function() {
 // focuses the iframe window.  returns a reference to the editor document.
 HTMLArea.prototype.focusEditor = function() {
         switch (this._editMode) {
-            case "wysiwyg" : this._iframe.contentWindow.focus(); break;
-            case "textmode": this._textArea.focus(); break;
+            // notice the try { ... } catch block to avoid some rare exceptions in FireFox
+            // (perhaps also in other Gecko browsers). Manual focus by user is required in
+        // case of an error. Somebody has an idea?
+            case "wysiwyg" : try { this._iframe.contentWindow.focus() } catch (e) {} break;
+            case "textmode": try { this._textArea.focus() } catch (e) {} break;
             default           : alert("ERROR: mode " + this._editMode + " is not defined");
         }
         return this._doc;
@@ -1098,6 +1117,7 @@ HTMLArea.prototype.updateToolbar = function(noStatus) {
                         }
                 }
         }
+
         for (var i in this._toolbarObjects) {
                 var btn = this._toolbarObjects[i];
                 var cmd = i;
@@ -1210,6 +1230,7 @@ HTMLArea.prototype.updateToolbar = function(noStatus) {
                         editor._timerUndo = null;
                 }, this.config.undoTimeout);
         }
+
         // check if any plugins have registered refresh handlers
         for (var i in this.plugins) {
                 var plugin = this.plugins[i].instance;
@@ -1404,18 +1425,33 @@ HTMLArea.prototype._createLink = function(link) {
                 if (!param)
                         return false;
                 var a = link;
-                if (!a) {
+                if (!a) try {
                         editor._doc.execCommand("createlink", false, param.f_href);
                         a = editor.getParentElement();
                         var sel = editor._getSelection();
                         var range = editor._createRange(sel);
                         if (!HTMLArea.is_ie) {
                                 a = range.startContainer;
-                                if (!/^a$/i.test(a.tagName))
+                                if (!/^a$/i.test(a.tagName)) {
                                         a = a.nextSibling;
+                                        if (a == null)
+                                                a = range.startContainer.parentNode;
+                                }
                         }
-                } else a.href = param.f_href.trim();
-                if (!/^a$/i.test(a.tagName))
+                } catch(e) {}
+                else {
+                        var href = param.f_href.trim();
+                        editor.selectNodeContents(a);
+                        if (href == "") {
+                                editor._doc.execCommand("unlink", false, null);
+                                editor.updateToolbar();
+                                return false;
+                        }
+                        else {
+                                a.href = href;
+                        }
+                }
+                if (!(a && /^a$/i.test(a.tagName)))
                         return false;
                 a.target = param.f_target.trim();
                 a.title = param.f_title.trim();
@@ -1442,8 +1478,7 @@ HTMLArea.prototype._insertImage = function(image) {
                 f_vert   : image.vspace,
                 f_horiz  : image.hspace
         };
-    //    this._popupDialog("insert_image.html", function(param) {
-          this._popupDialog("insert_image.php", function(param) {
+        this._popupDialog("insert_image.php", function(param) {
                 if (!param) {        // user must have pressed Cancel
                         return false;
                 }
@@ -1464,6 +1499,7 @@ HTMLArea.prototype._insertImage = function(image) {
                 } else {
                         img.src = param.f_url;
                 }
+
                 for (field in param) {
                         var value = param[field];
                         switch (field) {
@@ -1490,6 +1526,7 @@ HTMLArea.prototype._insertTable = function() {
                 // create the table element
                 var table = doc.createElement("table");
                 // assign the given arguments
+
                 for (var field in param) {
                         var value = param[field];
                         if (!value) {
@@ -1499,8 +1536,8 @@ HTMLArea.prototype._insertTable = function() {
                             case "f_width"   : table.style.width = value + param["f_unit"]; break;
                             case "f_align"   : table.align         = value; break;
                             case "f_border"  : table.border         = parseInt(value); break;
-                            case "f_spacing" : table.cellspacing = parseInt(value); break;
-                            case "f_padding" : table.cellpadding = parseInt(value); break;
+                            case "f_spacing" : table.cellSpacing = parseInt(value); break;
+                            case "f_padding" : table.cellPadding = parseInt(value); break;
                         }
                 }
                 var tbody = doc.createElement("tbody");
@@ -1578,13 +1615,12 @@ HTMLArea.prototype.execCommand = function(cmdID, UI, param) {
                 if (HTMLArea.is_ie) {
                         //if (confirm(HTMLArea.I18N.msg["IE-sucks-full-screen"]))
                         {
-                         //       window.open(this.popupURL("fullscreen.html"), "ha_fullscreen",
-                                  window.open(this.popupURL("../index.php"), "ha_fullscreen",
+                                window.open(this.popupURL("fullscreen.php"), "ha_fullscreen",
                                             "toolbar=no,location=no,directories=no,status=no,menubar=no," +
-                                            "scrollbars=no,resizable=yes,width=640,height=480");
+                                            "scrollbars=no,resizable=yes,width=800,height=600");
                         }
                 } else {
-                        window.open(this.popupURL("fullscreen.html"), "ha_fullscreen",
+                        window.open(this.popupURL("fullscreen.php"), "ha_fullscreen",
                                     "toolbar=no,menubar=no,personalbar=no,width=640,height=480," +
                                     "scrollbars=no,resizable=yes");
                 }
@@ -1612,9 +1648,14 @@ HTMLArea.prototype.execCommand = function(cmdID, UI, param) {
                         this._doc.execCommand(cmdID, UI, param);
                 } catch (e) {
                         if (HTMLArea.is_gecko) {
-                                if (confirm("Unprivileged scripts cannot access Cut/Copy/Paste programatically " +
-                                            "for security reasons.  Click OK to see a technical note at mozilla.org " +
-                                            "which shows you how to allow a script to access the clipboard."))
+                                if (typeof HTMLArea.I18N.msg["Moz-Clipboard"] == "undefined") {
+                                        HTMLArea.I18N.msg["Moz-Clipboard"] =
+                                                "Unprivileged scripts cannot access Cut/Copy/Paste programatically " +
+                                                "for security reasons.  Click OK to see a technical note at mozilla.org " +
+                                                "which shows you how to allow a script to access the clipboard.\n\n" +
+                                                "[FIXME: please translate this message in your language definition file.]";
+                                }
+                                if (confirm(HTMLArea.I18N.msg["Moz-Clipboard"]))
                                         window.open("http://mozilla.org/editor/midasdemo/securityprefs.html");
                         }
                 }
@@ -1643,13 +1684,14 @@ HTMLArea.prototype.execCommand = function(cmdID, UI, param) {
 HTMLArea.prototype._editorEvent = function(ev) {
         var editor = this;
         var keyEvent = (HTMLArea.is_ie && ev.type == "keydown") || (ev.type == "keypress");
+
         if (keyEvent) {
                 for (var i in editor.plugins) {
                         var plugin = editor.plugins[i].instance;
                         if (typeof plugin.onKeyPress == "function") plugin.onKeyPress(ev);
                 }
         }
-        if (keyEvent && ev.ctrlKey) {
+        if (keyEvent && ev.ctrlKey && !ev.altKey) {
                 var sel = null;
                 var range = null;
                 var key = String.fromCharCode(HTMLArea.is_ie ? ev.keyCode : ev.charCode).toLowerCase();
@@ -1990,6 +2032,10 @@ HTMLArea.getHTML = function(root, outputRoot, editor) {
                                         continue;
                                 }
                                 var name = a.nodeName.toLowerCase();
+                                if (/_moz_editor_bogus_node/.test(name)) {
+                                        html = "";
+                                        break;
+                                }
                                 if (/_moz|contenteditable|_msh/.test(name)) {
                                         // avoid certain attributes
                                         continue;
@@ -2028,7 +2074,9 @@ HTMLArea.getHTML = function(root, outputRoot, editor) {
                                 }
                                 html += " " + name + '="' + value + '"';
                         }
-                        html += closed ? " />" : ">";
+                        if (html != "") {
+                                html += closed ? " />" : ">";
+                        }
                 }
                 for (i = root.firstChild; i; i = i.nextSibling) {
                         html += HTMLArea.getHTML(i, true, editor);
