@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-02-02 18:54:29 $
+|     $Revision: 1.15 $
+|     $Date: 2005-02-15 01:07:15 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -52,9 +52,13 @@ class e_bbcode {
 			$done = TRUE;
 			$i++;
 			foreach(array_keys($this->bbLocation) as $code) {
-				if ($code && strpos($text, "[$code") !== FALSE) {
+				if ($code && ($pos = strpos($text, "[$code")) !== FALSE) {
 					$text = preg_replace_callback("/\[({$code}([a-zA-Z]*))([\d]*?)([^\]]*)\](.*?)\[\/{$code}\\2\\3\]/s", array($this, 'doCode'), $text);
 					$done = FALSE;
+					if($text{$pos} == "[")
+					{
+						$text = str_replace("[".$code, "&#091;".$code, $text);
+					}
 				}
 			}
 			if($i > 200) {
