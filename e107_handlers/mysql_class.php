@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2004-11-17 04:13:36 $
+|     $Revision: 1.6 $
+|     $Date: 2004-11-18 03:12:40 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -39,10 +39,18 @@ class db{
         var $mySQLrows;
         var $mySQLerror;
         var $mySQLcurTable;
+        var $mySQLlanguage;
 
-    var $mySQLlanguage;
-    var $mySQLtablelist;
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+        function db() { // need to add session support as well. 
+
+            $this->mySQLlanguage = ($_COOKIE['userlan']) ? $_COOKIE['userlan'] : "";
+
+        }
+
+// -------------------------------------------------------------------------------------------
+
+
         function db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb){
                 /*
                 # Connect to mySQL server and select database
@@ -54,6 +62,8 @@ class db{
                 # - return                                error if encountered
                 # - scope                                        public
                 */
+
+
 
                 $this->mySQLserver = $mySQLserver;
                 $this->mySQLuser = $mySQLuser;
@@ -292,7 +302,7 @@ function db_Show_Performance()
                 # - return                                sql identifier, or error if (error reporting = on, error occured, boolean)
                 # - scope                                        public
                 */
-
+           //     $table = "french";
                 $table = $this->db_IsLang($table);
 
                 $this->$mySQLcurTable = $table;
@@ -379,7 +389,7 @@ function db_Show_Performance()
                 # - scope                                        public
                 */
 
-$table = $this->db_IsLang($table);
+                $table = $this->db_IsLang($table);
 
                 $this->$mySQLcurTable = $table;
 //                echo "SELECT COUNT".$fields." FROM ".MPREFIX.$table." ".$arg;
@@ -423,12 +433,15 @@ $table = $this->db_IsLang($table);
                 # - scope                                        public
                 */
 
+
+                 $table = $this->db_IsLang($table);
+
                 $this->$mySQLcurTable = $table;
                 if($table == "user"){
         //                echo "DELETE FROM ".MPREFIX.$table." WHERE ".$arg."<br />";                        // debug
                 }
 
-                $table = $this->db_IsLang($table);
+
 
 
                 if(!$arg){
@@ -497,7 +510,6 @@ $table = $this->db_IsLang($table);
                 $this->mySQLerror = $mode;
         }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
         function db_Select_gen($arg){
 
@@ -529,21 +541,24 @@ $table = $this->db_IsLang($table);
 // ----------------------------------------------------------------------------
          function db_IsLang($table){
 
-             //   Return table name based on mySQLlanguage.
+             // Return table name based on mySQLlanguage.
+             // Uses $GLOBALS to share table list between DB objects.
 
                 if(!$this->mySQLlanguage){
                 return $table;   // multi-lang turned off
                 }
 
-                if(!$this->mySQLtablelist){
+
+                if(!$GLOBALS['mySQLtablelist']){
                     $tablist = mysql_list_tables($this->mySQLdefaultdb);
                     while (list($temp) = mysql_fetch_array($tablist)){
-                        $this -> mySQLtablelist[] = $temp;
+                        $GLOBALS['mySQLtablelist'][] = $temp;
                     }
                 }
 
+
                 $mltable = strtolower($this->mySQLlanguage."_".$table);
-                if(in_array(MPREFIX.$mltable,$this->mySQLtablelist)){
+                 if(in_array(MPREFIX.$mltable,$GLOBALS['mySQLtablelist'])){
                     return $mltable;  // language table found.
                 }
                 return $table; // language table not found.
