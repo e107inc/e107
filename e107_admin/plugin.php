@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-01-18 04:30:09 $
+|     $Revision: 1.9 $
+|     $Date: 2005-01-18 05:40:34 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -128,6 +128,15 @@ if(IsSet($_POST['confirm'])){
 				save_prefs();
 			}
 
+			if($eplug_status){
+				$stas=explode(",",$pref['plug_status']);
+				foreach($stas as $k => $v){
+					if($v == $eplug_folder){unset($stas[$k]);}
+				}
+				$pref['plug_status'] = implode(",",$stas);
+				save_prefs();
+			}
+			
 			if($eplug_latest){
 				$lats=explode(",",$pref['plug_latest']);
 				foreach($lats as $k => $v){
@@ -220,6 +229,15 @@ if(strstr(e_QUERY, "install")){
 				save_prefs();
 			}
 
+			if($eplug_status){
+				$stas = explode(",",$pref['plug_status']);
+				if(!in_array($eplug_folder,$stas)){
+					$stas[]=$eplug_folder;
+				}
+				$pref['plug_status'] = implode(",",$stas);
+				save_prefs();
+			}
+			
 			if($eplug_latest){
 				$lats = explode(",",$pref['plug_latest']);
 				if(!in_array($eplug_folder,$lats)){
