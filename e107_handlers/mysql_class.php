@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2004-11-18 03:12:40 $
+|     $Revision: 1.7 $
+|     $Date: 2004-12-04 07:14:48 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -42,12 +42,16 @@ class db{
         var $mySQLlanguage;
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-        function db() { // need to add session support as well. 
+        function db() { // need to add session support as well.
 
-            $this->mySQLlanguage = ($_COOKIE['userlan']) ? $_COOKIE['userlan'] : "";
+              $langid =  "e107language_".$GLOBALS['pref']['cookie_name'];
+              if($GLOBALS['pref']['user_tracking'] == "session"){
+                $this->mySQLlanguage = ($this->db_IsLang($_SESSION[$langid])) ? $_SESSION[$langid] : "";
+              }else{
+                $this->mySQLlanguage = ($this->db_IsLang($_COOKIE[$langid])) ? $_COOKIE[$langid] : "";
+              }
 
         }
-
 // -------------------------------------------------------------------------------------------
 
 
@@ -544,7 +548,7 @@ function db_Show_Performance()
              // Return table name based on mySQLlanguage.
              // Uses $GLOBALS to share table list between DB objects.
 
-                if(!$this->mySQLlanguage){
+                if(!$this->mySQLlanguage || !$GLOBALS['pref']['multilanguage']){
                 return $table;   // multi-lang turned off
                 }
 
