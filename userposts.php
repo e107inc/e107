@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/userposts.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-03-20 20:25:18 $
+|     $Revision: 1.12 $
+|     $Date: 2005-04-01 07:21:16 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -32,24 +32,23 @@ if (e_QUERY)
 	header("location:".e_BASE."index.php");
 	exit;
 }
-	
-if(is_numeric($id))
-{
-	$sql->db_Select("user", "user_name", "user_id=".$id."");
-	$row = $sql->db_Fetch();
-	extract($row);
-	$user_id = $id.".".$user_name."";
-}
-else
-{
-	$user_name = UP_LAN_16.$id;
-}
 
 if(!defined("BULLET"))	 define("BULLET", "bullet2.gif");
 
 
 if ($action == "comments") {
-	 
+	if(is_numeric($id))
+	{
+		$sql->db_Select("user", "user_name", "user_id=".$id."");
+		$row = $sql->db_Fetch();
+		extract($row);
+		$user_id = $id.".".$user_name."";
+	}
+	else
+	{
+		$user_name = UP_LAN_16.$id;
+	}
+
 	if (!$USERPOSTS_COMMENTS_TABLE) {
 		if (file_exists(THEME."userposts_template.php")) {
 			require_once(THEME."userposts_template.php");
@@ -100,6 +99,15 @@ if ($action == "comments") {
 	
 if ($action == "forums" || isset($_POST['fsearch'])) {
 	 
+	if(is_numeric($id))
+	{
+		$user_id = $id;
+	}
+	else
+	{
+		$user_name = 0;
+	}
+
 	if (!$USERPOSTS_FORUM_TABLE) {
 		if (file_exists(THEME."userposts_template.php")) {
 			require_once(THEME."userposts_template.php");
@@ -112,13 +120,14 @@ if ($action == "forums" || isset($_POST['fsearch'])) {
 		extract($_POST);
 		$fcaption = UP_LAN_12.' '.$user_name;
 		$f_query = $_POST['f_query'];
-		$db_query = "SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHERE ".MPREFIX."forum.forum_id=".MPREFIX."forum_t.thread_forum_id AND ".MPREFIX."forum_t.thread_user='".$user_id."' AND (".MPREFIX."forum_t.thread_name REGEXP('".$f_query."') OR ".MPREFIX."forum_t.thread_thread REGEXP('".$f_query."')) ORDER BY ".MPREFIX."forum_t.thread_datestamp DESC ";
+		$db_query = "SELECT * FROM #forum_t, #forum WHERE #forum.forum_id=#forum_t.thread_forum_id AND #forum_t.thread_user='".$user_id."' AND (#forum_t.thread_name REGEXP('".$f_query."') OR #forum_t.thread_thread REGEXP('".$f_query."')) ORDER BY #forum_t.thread_datestamp DESC ";
 	} else {
 		if (!is_object($sql2)) {
 			$sql2 = new db;
 		}
 		$ftotal = 0;
-		$sql2->db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHERE ".MPREFIX."forum.forum_id=".MPREFIX."forum_t.thread_forum_id AND ".MPREFIX."forum_t.thread_user='".$user_id."'" );
+
+		$sql2->db_Select_gen("SELECT * FROM #forum_t, #forum WHERE #forum.forum_id=#forum_t.thread_forum_id AND #forum_t.thread_user=$user_id" );
 		while ($row = $sql2->db_Fetch()) {
 			extract($row);
 			if (check_class($forum_class)) {
@@ -128,11 +137,11 @@ if ($action == "forums" || isset($_POST['fsearch'])) {
 		}
 		$limit_ids = implode(",", $limit_ids);
 		$fcaption = UP_LAN_0.$user_name;
-		$db_query = "SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHERE ".MPREFIX."forum.forum_id=".MPREFIX."forum_t.thread_forum_id AND ".MPREFIX."forum_t.thread_user='".$user_id."' AND ".MPREFIX."forum_t.thread_id IN ($limit_ids) ORDER BY ".MPREFIX."forum_t.thread_datestamp DESC LIMIT ".$from.", 10";
+		$db_query = "SELECT * FROM #forum_t, #forum WHERE #forum.forum_id=#forum_t.thread_forum_id AND #forum_t.thread_user='".$user_id."' AND #forum_t.thread_id IN ($limit_ids) ORDER BY #forum_t.thread_datestamp DESC LIMIT ".$from.", 10";
 	}
 	 
 	$sql = new db;
-	if (!$sql->db_Select_gen("".$db_query."")) {
+	if (!$sql->db_Select_gen($db_query)) {
 		$ftext .= "<span class='mediumtext'>".UP_LAN_8."</span>";
 	} else {
 		 
@@ -174,27 +183,7 @@ function parse_userposts_comments_table($row) {
 	$DATESTAMP = $datestamp;
 	 
 	$comment_comment = $tp->toHTML($comment_comment);
-	 
-	if ($pref['cb_linkreplace']) {
-		$comment_comment .= " ";
-		$comment_comment = preg_replace("#\>(.*?)\</a\>[\s]#si", ">".$pref['cb_linkc']."</a> ", $comment_comment);
-		$comment_comment = $tp->toHTML(strip_tags($comment_comment));
-	}
-	 
-	if (!eregi("<a href|<img|&#", $thread_thread)) {
-		$message_array = explode(" ", $comment_comment);
-		for($i = 0; $i <= (count($message_array)-1); $i++) {
-			if (strlen($message_array[$i]) > 20) {
-				$message_array[$i] = preg_replace("/([^\s]{20})/", "$1<br />", $message_array[$i]);
-			}
-		}
-		$comment_comment = implode(" ", $message_array);
-	}
-	/*
-	if (strlen($comment_comment) > $menu_pref['comment_characters']){
-	$comment_comment = substr($comment_comment, 0, $menu_pref['comment_characters']).$menu_pref['comment_postfix'];
-	}
-	*/
+	
 	$sql2 = new db;
 	if ($comment_type == "0") {
 		$sql2->db_Select("news", "news_title, news_class", "news_id = '".$comment_item_id."' ");
@@ -342,7 +331,7 @@ function parse_userposts_forum_table($row) {
 	 
 	$thread_thread = $tp->toHTML($thread_thread);
 	 
-	$USERPOSTS_FORUM_ICON = "<img src='".e_PLUGIN."forum/images/new_small.png' alt='' />";
+	$USERPOSTS_FORUM_ICON = "<img src='".e_PLUGIN."forum/images/".IMODE."/new_small.png' alt='' />";
 	$USERPOSTS_FORUM_TOPIC_HREF_PRE = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?".$tmp."'>";
 	$USERPOSTS_FORUM_TOPIC = $thread_name;
 	$USERPOSTS_FORUM_NAME_HREF_PRE = "<a href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_id."'>";
