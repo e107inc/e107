@@ -11,15 +11,15 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.21 $
-|   $Date: 2005-01-30 20:17:42 $
-|   $Author: stevedunstan $
+|   $Revision: 1.22 $
+|   $Date: 2005-02-03 09:56:46 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
-	
+
 */
 require_once("../class2.php");
 if (!is_object($tp)) $tp = new e_parse;
-	
+
 if ($pref['htmlarea']) {
 	require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
 	$htmlarea_js = (eregi("MSIE", $_SERVER['HTTP_USER_AGENT']))? htmlarea("data,news_extended"):
@@ -30,33 +30,42 @@ if (!getperms("H")) {
 	 exit;
 }
 $e_sub_cat = 'news';
-	
+
 require_once("auth.php");
 require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."news_class.php");
 require_once(e_HANDLER."ren_help.php");
 require_once(e_HANDLER."form_handler.php");
-	
+
+// -------- Presets. ------------
+require_once(e_HANDLER."preset_class.php");
+$pst = new e_preset;
+$pst->form = array("dataform"); // form id of the form that will have it's values saved.
+$pst->page = array("newspost.php?create"); // display preset options on which page(s).
+$pst->save_preset("admin_newspost");  // unique name(s) for the presets - comma separated.
+// ------------------------------
+
+
 $rs = new form;
 $ix = new news;
 $newspost = new newspost;
-	
+
 $deltest = array_flip($_POST);
 if (e_QUERY) {
 	list($action, $sub_action, $id, $from) = explode(".", e_QUERY);
 	unset($tmp);
 }
-	
+
 $from = ($from ? $from : 0);
 $amount = 50;
-	
+
 // ##### Main loop -----------------------------------------------------------------------------------------------------------------------
-	
+
 if (preg_match("#(.*?)_delete_(\d+)#", $deltest[$tp->toJS(NWSLAN_8)], $matches)) {
 	$delete = $matches[1];
 	$del_id = $matches[2];
 }
-	
+
 if ($delete == "main" && $del_id) {
 	if ($sql->db_Delete("news", "news_id='$del_id' ")) {
 		$e_event->trigger("newsdel", $del_id);
@@ -65,16 +74,16 @@ if ($delete == "main" && $del_id) {
 		$ix->create_rss();
 	}
 	unset($delete, $del);
-	 
+
 }
-	
+
 if ($delete == "category" && $del_id) {
 	if ($sql->db_Delete("news_category", "category_id='$del_id' ")) {
 		$newspost->show_message(NWSLAN_33." #".$del_id." ".NWSLAN_32);
 		unset($delete, $del_id);
 	}
 }
-	
+
 if ($delete == "sn" && $del_id) {
 	if ($sql->db_Delete("submitnews", "submitnews_id='$del_id' ")) {
 		$newspost->show_message(NWSLAN_34." #".$del_id." ".NWSLAN_32);
@@ -82,7 +91,7 @@ if ($delete == "sn" && $del_id) {
 		unset($delete, $del_id);
 	}
 }
-	
+
 if (IsSet($_POST['submitupload'])) {
 	$pref['upload_storagetype'] = "1";
 	require_once(e_HANDLER."upload_handler.php");
@@ -92,19 +101,20 @@ if (IsSet($_POST['submitupload'])) {
 		resize_image(e_IMAGE."newspost_images/".$uploaded[0]['name'], e_IMAGE."newspost_images/".$uploaded[0]['name'], 250, "copy");
 	}
 }
-	
-$_POST['news_title'] = $tp->toDB($_POST['news_title']);
+
+
 // required.
 if (IsSet($_POST['preview'])) {
+	$_POST['news_title'] = $tp->toDB($_POST['news_title']);
 	$newspost->preview_item($id);
 }
-	
+
 if (IsSet($_POST['submit'])) {
 	$newspost->submit_item($sub_action, $id);
 	$action = "main";
 	unset($sub_action, $id);
 }
-	
+
 if (IsSet($_POST['create_category'])) {
 	if ($_POST['category_name']) {
 		if (empty($_POST['category_button'])) {
@@ -122,7 +132,7 @@ if (IsSet($_POST['create_category'])) {
 		$newspost->show_message(NWSLAN_35);
 	}
 }
-	
+
 if (IsSet($_POST['update_category'])) {
 	if ($_POST['category_name']) {
 		$category_button = ($_POST['category_button'] ? $_POST['category_button'] : "");
@@ -131,15 +141,15 @@ if (IsSet($_POST['update_category'])) {
 		$newspost->show_message(NWSLAN_36);
 	}
 }
-	
+
 if (IsSet($_POST['save_prefs'])) {
 	$pref['newsposts'] = $_POST['newsposts'];
-	 
+
 	// ##### ADDED FOR NEWSARCHIVE --------------------------------------------------------------------
 	$pref['newsposts_archive'] = $_POST['newsposts_archive'];
 	$pref['newsposts_archive_title'] = $_POST['newsposts_archive_title'];
 	// ##### END --------------------------------------------------------------------------------------
-	 
+
 	$pref['news_cats'] = $_POST['news_cats'];
 	$pref['nbr_cols'] = $_POST['nbr_cols'];
 	$pref['subnews_attach'] = $_POST['subnews_attach'];
@@ -147,27 +157,29 @@ if (IsSet($_POST['save_prefs'])) {
 	$pref['subnews_class'] = $_POST['subnews_class'];
 	$pref['subnews_htmlarea'] = $_POST['subnews_htmlarea'];
 	$pref['subnews_hide_news'] = $_POST['subnews_hide_news'];
-	 
+
 	/*
 	changes by jalist 22/01/2005:
 	added pref to render new date header
 	*/
 	$pref['news_newdateheader'] = $_POST['news_newdateheader'];
-	 
-	 
+
+
 	save_prefs();
 	$e107cache->clear("news.php");
 	$newspost->show_message("Settings Saved");
 }
-	
-	
-	
-	
+
+
+
+
 if (!e_QUERY || $action == "main") {
 	$newspost->show_existing_items($action, $sub_action, $id, $from, $amount);
 }
-	
+
 if ($action == "create") {
+	$preset = $pst->read_preset("admin_newspost");  //only works here because $_POST is used.
+
 	if ($sub_action == "edit" && !$_POST['preview'] && !$_POST['submit']) {
 		if ($sql->db_Select("news", "*", "news_id='$id' ")) {
 			$row = $sql->db_Fetch();
@@ -196,29 +208,29 @@ if ($action == "create") {
 	}
 	$newspost->create_item($sub_action, $id);
 }
-	
+
 if ($action == "cat") {
 	$newspost->show_categories($sub_action, $id);
 }
-	
+
 if ($action == "sn") {
 	$newspost->submitted_news($sub_action, $id);
 }
-	
+
 if ($action == "pref") {
 	$newspost->show_news_prefs($sub_action, $id);
 }
-	
+
 // ##### End ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	
+
 // ##### Display options --------------------------------------------------------------------------------------------------------------------------------------------------------
-	
+
 //$newspost->show_options($action);
-	
+
 // ##### End ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 print "<script type=\"text/javascript\">
-	 
-	 
+
+
 	function addtext3(str){
 	document.getElementById('dataform').category_button.value = str;
 	}
@@ -229,9 +241,9 @@ print "<script type=\"text/javascript\">
 	document.getElementById('dataform').data.value = \"\";
 	document.getElementById('dataform').news_extended.value = \"\";
 	}
-	 
+
 	</script>\n";
-	
+
 echo "<script type=\"text/javascript\">
 	function confirm_(mode, news_id){
 	if (mode == 'cat'){
@@ -245,21 +257,21 @@ echo "<script type=\"text/javascript\">
 	</script>";
 require_once("footer.php");
 exit;
-	
+
 class newspost {
-	 
-	 
+
+
 	function show_existing_items($action, $sub_action, $id, $from, $amount) {
 		// ##### Display scrolling list of existing news items ---------------------------------------------------------------------------------------------------------
 		global $sql, $rs, $ns, $tp;
 		$text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; height : 300px; overflow : auto; margin-left: auto; margin-right: auto;'>";
-		 
+
 		if (IsSet($_POST['searchquery'])) {
 			$query = "news_title REGEXP('".$_POST['searchquery']."') OR news_body REGEXP('".$_POST['searchquery']."') OR news_extended REGEXP('".$_POST['searchquery']."') ORDER BY news_datestamp DESC";
 		} else {
 			$query = "ORDER BY ".($sub_action ? $sub_action : "news_datestamp")." ".($id ? $id : "DESC")."  LIMIT $from, $amount";
 		}
-		 
+
 		if ($sql->db_Select("news", "*", $query, ($_POST['searchquery'] ? 0 : "nowhere"))) {
 			$text .= "<table class='fborder' style='width:99%'>
 				<tr>
@@ -269,10 +281,10 @@ class newspost {
 				</tr>";
 			while ($row = $sql->db_Fetch()) {
 				extract($row);
-				 
+
 				// Note: To fix the alignment bug. Put both buttons inside the Form.
 				// But make EDIT a 'button' and DELETE 'submit'
-				 
+
 				$text .= "<tr>
 					<td style='width:5%' class='forumheader3'>$news_id</td>
 					<td style='width:75%' class='forumheader3'><a href='".e_BASE."comment.php?comment.news.$news_id'>".($news_title ? $tp->toHTML($news_title) : "[".NWSLAN_42."]")."</a></td>
@@ -289,9 +301,9 @@ class newspost {
 			$text .= "<div style='text-align:center'>".NWSLAN_43."</div>";
 		}
 		$text .= "</div>";
-		 
+
 		$newsposts = $sql->db_Count("news");
-		 
+
 		if ($newsposts > $amount && !$_POST['searchquery']) {
 			$a = $newsposts/$amount;
 			$r = explode(".", $a);
@@ -305,30 +317,30 @@ class newspost {
 				$text .= "<br />";
 			}
 		}
-		 
+
 		$text .= "<br /><form method='post' action='".e_SELF."'>\n<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n<input class='button' type='submit' name='searchsubmit' value='".NWSLAN_63."' />\n</p>\n</form>\n</div>";
-		 
-		 
-		 
+
+
+
 		$ns->tablerender(NWSLAN_43, $text);
 	}
-	 
+
 	function show_options($action) {
 		global $sql;
-		 
+
 		if ($action == "") {
 			$action = "main";
 		}
 		$var['main']['text'] = NWSLAN_44;
 		$var['main']['link'] = e_SELF;
-		 
+
 		$var['create']['text'] = NWSLAN_45;
 		$var['create']['link'] = e_SELF."?create";
-		 
+
 		$var['cat']['text'] = NWSLAN_46;
 		$var['cat']['link'] = e_SELF."?cat";
 		$var['cat']['perm'] = "7";
-		 
+
 		$var['pref']['text'] = NWSLAN_90;
 		$var['pref']['link'] = e_SELF."?pref";
 		$var['pref']['perm'] = "N";
@@ -337,17 +349,18 @@ class newspost {
 			$var['sn']['link'] = e_SELF."?sn";
 			$var['sn']['perm'] = "N";
 		}
-		 
+
 		show_admin_menu(NWSLAN_48, $action, $var);
-		 
-		 
+
+
 	}
-	 
+
 	function create_item($sub_action, $id) {
 		// ##### Display creation form ---------------------------------------------------------------------------------------------------------
 		/* 08-08-2004 - unknown - fixed `Insert Image' display to use $IMAGES_DIRECTORY */
-		global $sql, $rs, $ns, $pref, $IMAGES_DIRECTORY, $tp;
-		 
+		global $sql, $rs, $ns, $pref, $IMAGES_DIRECTORY, $tp, $pst;
+
+
 		$handle = opendir(e_IMAGE."newspost_images");
 		while ($file = readdir($handle)) {
 			if ($file != "." && $file != ".." && $file != "/" && $file != "index.html" && $file != "null.txt" && $file != "CVS") {
@@ -359,7 +372,7 @@ class newspost {
 			}
 		}
 		closedir($handle);
-		 
+
 		$sql->db_Select("download");
 		$c = 0;
 		while ($row = $sql->db_Fetch()) {
@@ -368,8 +381,8 @@ class newspost {
 			$filelist[$c][1] = $download_url;
 			$c++;
 		}
-		 
-		 
+
+
 		$handle = opendir(e_FILE."downloads");
 		while ($file = readdir($handle)) {
 			if ($file != "." && $file != ".." && $file != "/" && $file != "index.html" && $file != "null.txt" && $file != "CVS") {
@@ -379,11 +392,11 @@ class newspost {
 			}
 		}
 		closedir($handle);
-		 
+
 		if ($sub_action == "sn" && !$_POST['preview']) {
 			if ($sql->db_Select("submitnews", "*", "submitnews_id=$id", TRUE)) {
 				list($id, $submitnews_name, $submitnews_email, $_POST['news_title'], $submitnews_category, $_POST['data'], $submitnews_datestamp, $submitnews_ip, $submitnews_auth, $submitnews_file) = $sql->db_Fetch();
-				 
+
 				if ($pref['htmlarea']) {
 					$_POST['data'] .= "<br /><b>".NWSLAN_49." ".$submitnews_name."</b>";
 					$_POST['data'] .= ($submitnews_file)? "<br /><br /><img src='".e_IMAGE."newspost_images/$submitnews_file' style='float:right; margin-left:5px;margin-right:5px;margin-top:5px;margin-bottom:5px; border:1px solid' />":
@@ -396,35 +409,37 @@ class newspost {
 				$_POST['cat_id'] = $submitnews_category;
 			}
 		}
-		 
+
 		if ($sub_action == "upload" && !$_POST['preview']) {
 			if ($sql->db_Select("upload", "*", "upload_id=$id")) {
 				$row = $sql->db_Fetch();
 				 extract($row);
-				 
+
 				$post_author_id = substr($upload_poster, 0, strpos($upload_poster, "."));
 				$post_author_name = substr($upload_poster, (strpos($upload_poster, ".")+1));
-				 
+
 				$_POST['news_title'] = NWSLAN_66.": ".$upload_name;
 				$_POST['data'] = $upload_description."\n[b]".NWSLAN_49." <a href='user.php?id.".$post_author_id."'>".$post_author_name."</a>[/b]\n\n[file=request.php?".$id."]".$upload_name."[/file]\n";
 			}
 		}
-		 
+
+
+
 		$text = "<div style='text-align:center'>
 			<form ".(FILE_UPLOADS ? "enctype='multipart/form-data'" : "")." method='post' action='".e_SELF."?".e_QUERY."' id='dataform'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>
-			 
+
 			<tr>
 			<td style='width:20%' class='forumheader3'>".NWSLAN_6.": </td>
 			<td style='width:80%' class='forumheader3'>";
-		 
+
 		if (!$sql->db_Select("news_category")) {
 			$text .= NWSLAN_10;
 		} else {
-			 
+
 			$text .= "
 				<select name='cat_id' class='tbox'>";
-			 
+
 			while (list($cat_id, $cat_name, $cat_icon) = $sql->db_Fetch()) {
 				$text .= ($_POST['cat_id'] == $cat_id ? "<option value='$cat_id' selected='selected'>".$cat_name."</option>" : "<option value='$cat_id'>".$cat_name."</option>");
 			}
@@ -441,7 +456,7 @@ class newspost {
 			<tr>
 			<td style='width:20%' class='forumheader3'>".NWSLAN_13.":<br /></td>
 			<td style='width:80%' class='forumheader3'>";
-		 
+
 		$insertjs = (!$pref['htmlarea'])?"rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'":
 		"rows='25' style='width:100%' ";
 		$_POST['data'] = $tp->toForm($_POST['data']);
@@ -459,21 +474,21 @@ class newspost {
 				$text .= "<option value='".$image2."'>thumb_".$image2."</option>\n";
 			}
 			$text .= "</select>
-				 
+
 				<select class='tbox' name='imageps' onChange=\"addtext('[img]' + this.form.imageps.options[this.form.imageps.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_110."')\" onMouseOut=\"help('')\">
 				<option>".NWSLAN_81." ...</option>\n";
 			while (list($key, $image) = each($imagelist)) {
 				$text .= "<option value='".SITEURL.$IMAGES_DIRECTORY."newspost_images/".$image."'>".$image."</option>\n";
 			}
 			$text .= "</select>
-				 
+
 				<select class='tbox' name='fileps' onChange=\"addtext('[file=request.php?' + this.form.fileps.options[this.form.fileps.selectedIndex].value + ']' + this.form.fileps.options[this.form.fileps.selectedIndex].value + '[/file]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_64."')\" onMouseOut=\"help('')\">
 				<option>".NWSLAN_82." ...</option>\n";
 			while (list($key, $file) = each($filelist)) {
 				$text .= "<option value='".$file[1]."'>".$file[1]."</option>\n";
 			}
 			$text .= "</select>";
-			 
+
 		} // end of htmlarea check.
 		//Extended news form textarea
 		$text .= "
@@ -503,24 +518,24 @@ class newspost {
 			</div>
 			</td>
 			</tr>
-			 
+
 			<tr>
 			<td style='width:20%' class='forumheader3'>".NWSLAN_66."</td>
 			<td style='width:80%' class='forumheader3'>
 			<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_69."</a>
 			<div style='display: none;'>";
-		 
+
 		if (!FILE_UPLOADS) {
 			$text .= "<b>".NWSLAN_78."</b>";
 		} else {
-			 
+
 			if (!is_writable(e_FILE."downloads")) {
 				$text .= "<b>".NWSLAN_70."</b><br />";
 			}
 			if (!is_writable(e_IMAGE."newspost_images")) {
 				$text .= "<b>".NWSLAN_71."</b><br />";
 			}
-			 
+
 			$text .= "<input class='tbox' type='file' name='file_userfile[]' size='50' />
 				<select class='tbox' name='uploadtype'>
 				<option>".NWSLAN_67."</option>
@@ -533,44 +548,44 @@ class newspost {
 		$text .= "</div>
 			</td>
 			</tr>
-			 
-			 
-			 
-			 
+
+
+
+
 			<tr>
 			<td style='width:20%' class='forumheader3'>".NWSLAN_15."</td>
 			<td style='width:80%' class='forumheader3'>
 			<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_18."</a>
 			<div style='display: none;'>
-			 
-			 
+
+
 			". ($_POST['news_allow_comments'] ? "<input name='news_allow_comments' type='radio' value='0' />".NWSLAN_16."&nbsp;&nbsp;<input name='news_allow_comments' type='radio' value='1' checked='checked' />".NWSLAN_17 : "<input name='news_allow_comments' type='radio' value='0' checked='checked' />".NWSLAN_16."&nbsp;&nbsp;<input name='news_allow_comments' type='radio' value='1' />".NWSLAN_17)."
 			</div>
 			</td>
 			</tr>
-			 
+
 			<tr>
 			<td style='width:20%' class='forumheader3'>".NWSLAN_73.":</td>
 			<td style='width:80%' class='forumheader3'>
 			<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_74."</a>
-			<div style='display: none;'>".  
+			<div style='display: none;'>".
 		(!$_POST['news_rendertype'] ? "<input name='news_rendertype' type='radio' value='0' checked='checked' />" : "<input name='news_rendertype' type='radio' value='0' />").NWSLAN_75."<br />". ($_POST['news_rendertype'] == 1 ? "<input name='news_rendertype' type='radio' value='1' checked='checked' />" : "<input name='news_rendertype' type='radio' value='1' />").NWSLAN_76."<br />". ($_POST['news_rendertype'] == 2 ? "<input name='news_rendertype' type='radio' value='2' checked='checked' />" : "<input name='news_rendertype' type='radio' value='2' />").NWSLAN_77."
-			 
+
 			</div>
 			</td>
 			</tr>
-			 
-			 
+
+
 			<tr>
 			<td style='width:20%' class='forumheader3'>".NWSLAN_19.":</td>
 			<td style='width:80%' class='forumheader3'>
-			 
+
 			<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_72."</a>
 			<div style='display: none;'>
-			 
+
 			<br />
-			 
-			 
+
+
 			".NWSLAN_21.": <select name='startday' class='tbox'><option selected='selected'> </option>";
 		for($a = 1; $a <= 31; $a++) {
 			$text .= ($a == $_POST['startday'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
@@ -595,27 +610,27 @@ class newspost {
 		for($a = 2003; $a <= 2010; $a++) {
 			$text .= ($a == $_POST['endyear'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
 		}
-		 
+
 		$text .= "</select>
 			</div>
 			</td>
 			</tr>
-			 
+
 			<tr>
 			<td class='forumheader3'>
 			".NWSLAN_22.":
 			</td>
 			<td class='forumheader3'>
-			 
+
 			<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_84."</a>
 			<div style='display: none;'>
 			".r_userclass("news_class", $_POST['news_class'])."
 			</div>
 			</td></tr>
-			 
+
 			<tr style='vertical-align: top;'>
 			<td colspan='2'  style='text-align:center' class='forumheader'>";
-		 
+
 		if (IsSet($_POST['preview'])) {
 			$text .= "<input class='button' type='submit' name='preview' value='".NWSLAN_24."' /> ";
 			if ($id && $sub_action != "sn" && $sub_action != "upload") {
@@ -630,13 +645,13 @@ class newspost {
 		$text .= "<input type='hidden' name='news_id' value='$news_id' />  \n</td>
 			</tr>
 			</table>
-			 
+
 			</form>
 			</div>";
 		$ns->tablerender(NWSLAN_29, $text);
 	}
-	 
-	 
+
+
 	function preview_item($id) {
 		// ##### Display news preview ---------------------------------------------------------------------------------------------------------
 		global $tp, $sql, $ix;
@@ -659,7 +674,7 @@ class newspost {
 	//	$_POST['news_title'] = $tp->toFORM($_POST['news_title']);
 	//	$_POST['news_extended'] = $tp->toFORM($_POST['news_extended']);
 	}
-	 
+
 	function submit_item($sub_action, $id) {
 		// ##### Format and submit item ---------------------------------------------------------------------------------------------------------
 		global $tp, $ix, $sql;
@@ -679,13 +694,13 @@ class newspost {
 		$this->show_message($ix->submit_item($_POST));
 		unset($_POST['news_title'], $_POST['cat_id'], $_POST['data'], $_POST['news_extended'], $_POST['news_allow_comments'], $_POST['startday'], $_POST['startmonth'], $_POST['startyear'], $_POST['endday'], $_POST['endmonth'], $_POST['endyear'], $_POST['news_id'], $_POST['news_class']);
 	}
-	 
+
 	function show_message($message) {
 		// ##### Display comfort ---------------------------------------------------------------------------------------------------------
 		global $ns;
 		$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 	}
-	 
+
 	function show_categories($sub_action, $id) {
 		// ##### Display scrolling list of existing news items ---------------------------------------------------------------------------------------------------------
 		global $sql, $rs, $ns, $tp;
@@ -699,11 +714,11 @@ class newspost {
 				</tr>";
 			while ($row = $sql->db_Fetch()) {
 				extract($row);
-				 
+
 				if ($category_icon) {
 					$icon = (strstr($category_icon, "images/") ? THEME."$category_icon" : e_IMAGE."newsicons/$category_icon");
 				}
-				 
+
 				$text .= "<tr>
 					<td style='width:5%; text-align:center' class='forumheader3'><img src='$icon' alt='' style='vertical-align:middle' /></td>
 					<td style='width:75%' class='forumheader3'>$category_name</td>
@@ -712,8 +727,8 @@ class newspost {
 					<div>".$rs->form_button("button", "category_edit_{$category_id}", NWSLAN_7, "onclick=\"document.location='".e_SELF."?cat.edit.$category_id'\"")."
 					".$rs->form_button("submit", "category_delete_{$category_id}", NWSLAN_8)."
 					</div>".$rs->form_close()."
-					 
-					 
+
+
 					</td>
 					</tr>\n";
 			}
@@ -723,7 +738,7 @@ class newspost {
 		}
 		$text .= "</div>";
 		$ns->tablerender(NWSLAN_51, $text);
-		 
+
 		$handle = opendir(e_IMAGE."newsicons");
 		while ($file = readdir($handle)) {
 			if ($file != "." && $file != ".." && $file != "/" && $file != "null.txt" && $file != "CVS") {
@@ -731,16 +746,16 @@ class newspost {
 			}
 		}
 		closedir($handle);
-		 
+
 		unset($category_name, $category_icon);
-		 
+
 		if ($sub_action == "edit") {
 			if ($sql->db_Select("news_category", "*", "category_id='$id' ")) {
 				$row = $sql->db_Fetch();
 				 extract($row);
 			}
 		}
-		 
+
 		$text = "<div style='text-align:center'>
 			".$rs->form_open("post", e_SELF."?cat", "dataform")."
 			<table class='fborder' style='".ADMIN_WIDTH."'>
@@ -760,7 +775,7 @@ class newspost {
 		}
 		$text .= "</div></td>
 			</tr>
-			 
+
 			<tr><td colspan='2' style='text-align:center' class='forumheader'>";
 		if ($id) {
 			$text .= "<input class='button' type='submit' name='update_category' value='".NWSLAN_55."' />
@@ -772,13 +787,13 @@ class newspost {
 		$text .= "</table>
 			".$rs->form_close()."
 			</div>";
-		 
+
 		$ns->tablerender(NWSLAN_56, $text);
 	}
-	 
+
 	function show_news_prefs() {
 		global $sql, $rs, $ns, $pref;
-		 
+
 		$text = "<div style='text-align:center'>
 			".$rs->form_open("post", e_SELF."?pref", "dataform")."
 			<table class='fborder' style='".ADMIN_WIDTH."'>
@@ -787,9 +802,9 @@ class newspost {
 			<td class='forumheader3' style='width:40%'>
 			<input type='checkbox' name='news_cats' value='1' ".($pref['news_cats'] == 1 ? " checked='checked'" : "")." />
 			</td>
-			 
+
 			</tr>
-			 
+
 			<tr>
 			<td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_87."</span></td>
 			<td class='forumheader3' style='width:40%'>
@@ -802,7 +817,7 @@ class newspost {
 			<option value='6' ".($pref['nbr_cols'] == 6 ? "selected='selected'>" : "").">6</option>
 			</select></td>
 			</tr>
-			 
+
 			<tr>
 			<td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_88."</span></td>
 			<td class='forumheader3' style='width:40%'>
@@ -816,18 +831,18 @@ class newspost {
 			<option value='20' ".($pref['newsposts'] == 20 ? "selected='selected'" : "").">20</option>
 			</select></td>
 			</tr>";
-			 
+
 //			<tr>
 //			<td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_108."</span><br /><i>".NWSLAN_109."</i></td>
 //			<td class='forumheader3' style='width:40%'>
 //			<input type='checkbox' name='subnews_hide_news' value='1' ".($pref['subnews_hide_news'] == 1 ? " checked='checked'" : "")." />
 //			</td>
 //			</tr>";
-		 
-		 
-		 
-		 
-		 
+
+
+
+
+
 		// ##### ADDED FOR NEWSARCHIVE --------------------------------------------------------------------
 		// the possible archive values are from "0" to "< $pref['newsposts']"
 		// this should really be made as an onchange event on the selectbox for $pref['newsposts'] ...
@@ -843,7 +858,7 @@ class newspost {
 		}
 		$text .= "</select></td>
 			</tr>
-			 
+
 			<tr>
 			<td class='forumheader3' style='width:60%'><span class='defaulttext'>set the title for the newsarchive</span></td>
 			<td class='forumheader3' style='width:40%'>
@@ -852,15 +867,15 @@ class newspost {
 			</tr>
 			";
 		// ##### END --------------------------------------------------------------------------------------
-		 
-		 
+
+
 		require_once(e_HANDLER."userclass_class.php");
 		$text .= " <tr>
 			<td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_106."</span></td>
 			<td class='forumheader3' style='width:40%'>
 			".r_userclass("subnews_class", $pref['subnews_class']). "</td></tr>";
-		 
-		 
+
+
 		$text .= "
 			<tr>
 			<td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_107."</span></td>
@@ -868,8 +883,8 @@ class newspost {
 			<input type='checkbox' name='subnews_htmlarea' value='1' ".($pref['subnews_htmlarea'] == 1 ? " checked='checked'" : "")." />
 			</td>
 			</tr>";
-		 
-		 
+
+
 		$text .= "
 			<tr>
 			<td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_100."</span></td>
@@ -877,36 +892,36 @@ class newspost {
 			<input type='checkbox' name='subnews_attach' value='1' ".($pref['subnews_attach'] == 1 ? " checked='checked'" : "")." />
 			</td>
 			</tr>
-			 
+
 			<tr>
 			<td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_101."</span></td>
 			<td class='forumheader3' style='width:40%'>
 			<input class='tbox' type='text' style='width:50px' name='subnews_resize' value='".$pref['subnews_resize']."' />
 			<span class='smalltext'>".NWSLAN_102."</span></td>
 			</tr>
-			 
-			 
+
+
 			<tr>
 			<td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_111."</span><br /><i>".NWSLAN_112."</i></td>
 			<td class='forumheader3' style='width:40%'>
 			<input type='checkbox' name='news_newdateheader' value='1' ".($pref['news_newdateheader'] == 1 ? " checked='checked'" : "")." />
 			</td>
 			</tr>
-			 
-			 
+
+
 			<tr><td colspan='2' style='text-align:center' class='forumheader'>";
 		$text .= "<input class='button' type='submit' name='save_prefs' value='".NWSLAN_89."' /></td></tr>";
-		 
+
 		$text .= "</table>
 			".$rs->form_close()."
 			</div>";
-		 
+
 		$ns->tablerender(NWSLAN_90, $text);
 	}
-	 
-	 
-	 
-	 
+
+
+
+
 	function submitted_news($sub_action, $id) {
 		global $sql, $rs, $ns, $tp;
 		$text = "<div style='padding : 1px; ".ADMIN_WIDTH."; height : 300px; overflow : auto; margin-left: auto; margin-right: auto;'>\n";
@@ -941,15 +956,15 @@ class newspost {
 		}
 		$text .= "</div>";
 		$ns->tablerender(NWSLAN_60, $text);
-		 
+
 	}
-	 
+
 }
-	
+
 function newspost_adminmenu() {
 	global $newspost;
 	global $action;
 	$newspost->show_options($action);
 }
-	
+
 ?>

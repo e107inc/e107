@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-02-03 06:25:55 $
+|     $Revision: 1.25 $
+|     $Date: 2005-02-03 09:56:46 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -211,29 +211,29 @@ function update_61x_to_700($type) {
 		$pref['plug_status'] = $pref['plug_status'].",chatbox_menu";
 		save_prefs();
 
-    	// Cam's new PRESET Table. -------------------------------------------------------------------------------------------
-        $sql->db_Select_gen(
-        "CREATE TABLE ".MPREFIX."preset (
+		// Cam's new PRESET Table. -------------------------------------------------------------------------------------------
+		$sql->db_Select_gen(
+		"CREATE TABLE ".MPREFIX."preset (
 		preset_id int(10) unsigned NOT NULL auto_increment,
 		preset_name varchar(80) NOT NULL default '',
 		preset_field varchar(80) NOT NULL default '',
 		preset_value varchar(255) NOT NULL default '',
 		PRIMARY KEY  (preset_id)
 		) TYPE=MyISAM;
-        ");
+		");
 
 
 	} else {
 		// check if update is needed.
 		// FALSE = needed, TRUE = not needed.
 		// return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."generic");
-        $fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."preset");
-        return ($fields) ? TRUE : FALSE;
-        /*if ($sql->db_Select("plugin", "plugin_path", "plugin_path='chatbox_menu'")) {
-            return TRUE;
-        } else {
-            return FALSE;
-        }*/
+		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."preset");
+		return ($fields) ? TRUE : FALSE;
+		/*if ($sql->db_Select("plugin", "plugin_path", "plugin_path='chatbox_menu'")) {
+			return TRUE;
+		} else {
+			return FALSE;
+		}*/
 	}
 }
 

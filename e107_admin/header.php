@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.19 $
-|   $Date: 2005-02-02 10:11:41 $
+|   $Revision: 1.20 $
+|   $Date: 2005-02-03 09:56:46 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -73,11 +73,11 @@ if ($htmlarea_js) {
 	echo $htmlarea_js;
 }
 echo "<script type='text/javascript'>
-		function savepreset(ps){
-        document.getElementById(ps).action='".e_SELF."?savepreset';
-        document.getElementById(ps).submit();
+		function savepreset(ps,pid){
+			document.getElementById(ps).action='".e_SELF."?savepreset.'+pid;
+			document.getElementById(ps).submit();
 		}
-     </script> ";
+	</script> ";
 if ($eplug_js) {
 	echo "<script type='text/javascript' src='{$eplug_js}'></script>\n";
 }

@@ -11,29 +11,37 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-01-27 19:52:24 $
-|     $Author: streaky $
+|     $Revision: 1.19 $
+|     $Date: 2005-02-03 09:56:46 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-	
+
 require_once('../class2.php');
 if (!is_object($tp)) $tp = new e_parse;
 if (!getperms('I')) {
 	header('location:'.e_BASE.'index.php');
 }
 $e_sub_cat = 'links';
-	
+
 require_once('auth.php');
-	
+
 require_once(e_HANDLER.'userclass_class.php');
 require_once(e_HANDLER.'form_handler.php');
+// Presets.
+require_once(e_HANDLER."preset_class.php");
+$pst = new e_preset;
+$pst->form = "linkform";
+$pst->page = "links.php?create";
+$pst->save_preset("admin_links");
+
 $rs = new form;
 $aj = new textparse;
 $linkpost = new links;
-	
+
+
 $deltest = array_flip($_POST);
-	
+
 if (e_QUERY) {
 	$tmp = explode('.', e_QUERY);
 	$action = $tmp[0];
@@ -45,7 +53,7 @@ if (preg_match("#(.*?)_delete_(\d+)#", $deltest[$tp->toJS(LCLAN_10)], $matches))
 	$delete = $matches[1];
 	$del_id = $matches[2];
 }
-	
+
 if (IsSet($_POST['inc'])) {
 	$qs = explode(".", $_POST['inc']);
 	$linkid = $qs[0];
@@ -53,7 +61,7 @@ if (IsSet($_POST['inc'])) {
 	$sql->db_Update("links", "link_order=link_order+1 WHERE link_order='".($link_order-1)."'");
 	$sql->db_Update("links", "link_order=link_order-1 WHERE link_id='".$linkid."'");
 }
-	
+
 if (IsSet($_POST['dec'])) {
 	$qs = explode(".", $_POST['dec']);
 	$linkid = $qs[0];
@@ -61,7 +69,7 @@ if (IsSet($_POST['dec'])) {
 	$sql->db_Update("links", "link_order=link_order-1 WHERE link_order='".($link_order+1)."'");
 	$sql->db_Update("links", "link_order=link_order+1 WHERE link_id='".$linkid."'");
 }
-	
+
 if (isset($_POST['update'])) {
 	foreach ($_POST['link_order'] as $loid) {
 		$tmp = explode(".", $loid);
@@ -73,13 +81,13 @@ if (isset($_POST['update'])) {
 	$e107cache->clear("sitelinks");
 	$linkpost->show_message(LCLAN_97);
 }
-	
+
 if (isset($_POST['updateoptions'])) {
 	$pref['linkpage_screentip'] = $_POST['linkpage_screentip'];
 	save_prefs();
 	$linkpost->show_message(LCLAN_1);
 }
-	
+
 if ($delete == 'main') {
 	$sql->db_Select("links", "link_order", "link_id='".$del_id."'");
 	$row = $sql->db_Fetch();
@@ -93,26 +101,26 @@ if ($delete == 'main') {
 		$linkpost->show_message(LCLAN_53." #".$del_id." ".LCLAN_54);
 	}
 }
-	
+
 if (isset($_POST['add_link'])) {
 	$linkpost->submit_link($sub_action, $id);
 	unset($id);
 }
-	
+
 if ($action == 'create') {
 	$linkpost->create_link($sub_action, $id);
 }
-	
+
 if (!e_QUERY || $action == 'main') {
 	$linkpost->show_existing_items();
 }
-	
+
 if ($action == 'opt') {
 	$linkpost->show_pref_options();
 }
-	
+
 require_once('footer.php');
-	
+
 function headerjs() {
 	global $tp;
 	$headerjs = "<script type=\"text/javascript\">
@@ -120,20 +128,20 @@ function headerjs() {
 		document.getElementById('linkform').link_button.value = sc;
 		}
 		</script>\n";
-	 
+
 	$headerjs .= "<script type=\"text/javascript\">
 		function confirm_(mode, link_id){
 		return confirm(\"".$tp->toJS(LCLAN_58)." \" + link_id);
 		}
 		</script>";
-	 
+
 	return $headerjs;
 }
-	
+
 exit;
-	
+
 // End ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	
+
 class links {
 	function show_existing_items() {
 		global $sql, $rs, $ns, $aj;
@@ -184,22 +192,25 @@ class links {
 		}
 		$ns->tablerender(LCLAN_8, $text);
 	}
-	 
+
 	function show_message($message) {
 		global $ns;
 		$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 	}
-	 
+
 	function create_link($sub_action, $id) {
-		global $sql, $rs, $ns;
-		 
+		global $sql, $rs, $ns, $pst;
+
+		$preset = $pst->read_preset("admin_links");
+		extract($preset);
+
 		if ($sub_action == "edit" && !$_POST['submit']) {
 			if ($sql->db_Select("links", "*", "link_id='$id' ")) {
 				$row = $sql->db_Fetch();
 				extract($row);
 			}
 		}
-		 
+
 		$handle = opendir(e_IMAGE."link_icons");
 		while ($file = readdir($handle)) {
 			if ($file != "." && $file != ".." && $file != "/") {
@@ -207,7 +218,7 @@ class links {
 			}
 		}
 		closedir($handle);
-		 
+
 		$text = "<div style='text-align:center'>
 			<form method='post' action='".e_SELF."?".e_QUERY."' id='linkform'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>
@@ -217,40 +228,40 @@ class links {
 			<input class='tbox' type='text' name='link_name' size='60' value='$link_name' maxlength='100' />
 			</td>
 			</tr>
-			 
+
 			<tr>
 			<td style='width:30%' class='forumheader3'>".LCLAN_16.": </td>
 			<td style='width:70%' class='forumheader3'>
 			<input class='tbox' type='text' name='link_url' size='60' value='$link_url' maxlength='200' />
 			</td>
 			</tr>
-			 
+
 			<tr>
 			<td style='width:30%' class='forumheader3'>".LCLAN_17.": </td>
 			<td style='width:70%' class='forumheader3'>
 			<textarea class='tbox' name='link_description' cols='59' rows='3'>$link_description</textarea>
 			</td>
 			</tr>
-			 
+
 			<tr>
 			<td style='width:30%' class='forumheader3'>".LCLAN_18.": </td>
 			<td style='width:70%' class='forumheader3'>
 			<input class='tbox' type='text' name='link_button' size='60' value='$link_button' maxlength='100' />
-			 
+
 			<br />
 			<input class='button' type ='button' style='cursor:hand' size='30' value='".LCLAN_39."' onclick='expandit(this)' />
 			<div style='display:none;{head}'>";
-		 
+
 		while (list($key, $icon) = each($iconlist)) {
 			$text .= "<a href='javascript:addtext(\"$icon\")'><img src='".e_IMAGE."link_icons/".$icon."' style='border:0' alt='' /></a> ";
 		}
-		 
+
 		// 0 = same window
 		// 1 = _blank
 		// 2 = _parent
 		// 3 = _top
 		// 4 = miniwindow
-		 
+
 		$text .= "</div></td>
 			</tr>
 			<tr>
@@ -264,7 +275,7 @@ class links {
 			<td style='width:30%' class='forumheader3'>".LCLAN_25.":<br /><span class='smalltext'>(".LCLAN_26.")</span></td>
 			<td style='width:70%' class='forumheader3'>".r_userclass("link_class", $link_class, "off", "public,guest,nobody,member,admin,classes")."
 			</td></tr>
-			 
+
 			<tr style='vertical-align:top'>
 			<td colspan='2' style='text-align:center' class='forumheader'>";
 		if ($id && $sub_action == "edit") {
@@ -279,16 +290,16 @@ class links {
 			</div>";
 		$ns->tablerender(LCLAN_29, $text);
 	}
-	 
+
 	function submit_link($sub_action, $id) {
 		global $aj, $sql, $e107cache;
 		$link_name = $aj->formtpa($_POST['link_name'], "admin");
 		$link_url = $aj->formtpa($_POST['link_url'], "admin");
 		$link_description = $aj->formtpa($_POST['link_description'], "admin");
 		$link_button = $aj->formtpa($_POST['link_button'], "admin");
-		 
+
 		$link_t = $sql->db_Count("links", "(*)");
-		 
+
 		if ($id) {
 			$sql->db_Update("links", "link_name='$link_name', link_url='$link_url', link_description='$link_description', link_button= '$link_button', link_category='1', link_open='".$_POST['linkopentype']."', link_class='".$_POST['link_class']."' WHERE link_id='$id'");
 			$e107cache->clear("sitelinks");
@@ -299,7 +310,7 @@ class links {
 			$this->show_message(LCLAN_2);
 		}
 	}
-	 
+
 	function show_pref_options() {
 		global $pref, $ns;
 		$text = "<div style='text-align:center'>
@@ -313,20 +324,20 @@ class links {
 			<td class='forumheader3' style='width:30%;text-align:center'>". ($pref['linkpage_screentip'] ? "<input type='checkbox' name='linkpage_screentip' value='1' checked='checked' />" : "<input type='checkbox' name='linkpage_screentip' value='1' />")."
 			</td>
 			</tr>
-			 
+
 			<tr style='vertical-align:top'>
 			<td colspan='2' style='text-align:center' class='forumheader'>
 			<input class='button' type='submit' name='updateoptions' value='".LCLAN_87."' />
 			</td>
 			</tr>
-			 
+
 			</table>
 			</form>
 			</div>";
 		$ns->tablerender(LCLAN_88, $text);
 	}
 }
-	
+
 function links_adminmenu() {
 	global $action;
 	if ($action == "") {
@@ -334,17 +345,17 @@ function links_adminmenu() {
 	}
 	$var['main']['text'] = LCLAN_62;
 	$var['main']['link'] = e_SELF;
-	 
+
 	$var['create']['text'] = LCLAN_63;
 	$var['create']['link'] = e_SELF."?create";
-	 
+
 	$var['opt']['text'] = LCLAN_67;
 	$var['opt']['link'] = e_SELF."?opt";
-	 
+
 	$var['sub']['text'] = LCLAN_83;
 	$var['sub']['link'] = "submenusgen.php";
-	 
+
 	show_admin_menu(LCLAN_68, $action, $var);
 }
-	
+
 ?>
