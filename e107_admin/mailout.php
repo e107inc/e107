@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-01-18 16:11:32 $
-|     $Author: streaky $
+|     $Revision: 1.13 $
+|     $Date: 2005-01-18 19:22:57 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -41,36 +41,31 @@
         }
 }
 
-
-
-
-
-
-
-
-
-
 if(isset($_POST['submit'])){
 
     if($_POST['email_to'] == "all" || $_POST['email_to']== "unverified"){
        $insert = ($_POST['email_to']== "unverified")? "user_ban='2' ":"user_id !='' ";   // send to all.
-       $sql -> db_Select("user", "user_name, user_email, user_class", " $insert ORDER BY user_name");
+       $sql -> db_Select("user", "user_id,user_name, user_email, user_class, user_sess", " $insert ORDER BY user_name");
        $c=0;
            while($row = $sql -> db_Fetch()){
                extract($row);
                $recipient_name[$c] = $user_name;
                $recipient[$c]= $user_email;
+               $recipient_key[$c] = $user_sess;
+               $recipient_id[$c] = $user_id;
                $c++;
            }
     }else{       // send to a user-class.
 
-        $sql -> db_Select("user", "user_name, user_email, user_class", "ORDER BY user_name", "no-where");
+        $sql -> db_Select("user", "user_id,user_name, user_email, user_class", "ORDER BY user_name", "no-where");
         $c=0;
         while($row = $sql -> db_Fetch()){
             extract($row);
                 if(check_class($_POST['email_to'], $user_class)){
                     $recipient_name[$c] = $user_name;
                     $recipient[$c]= $user_email;
+                    $recipient_key[$c] = $user_sess;
+                    $recipient_id[$c] = $user_id;
                     $c++;
                 }
 
@@ -87,12 +82,24 @@ if(isset($_POST['submit'])){
     $mail->From     = ($_POST['email_from_email'])? $_POST['email_from_email']:$pref['siteadminemail'];
     $mail->FromName = ($_POST['email_from_name'])? $_POST['email_from_name']:$pref['siteadmin'];
   //  $mail->Host     = "smtp1.site.com;smtp2.site.com";
-    $mail->Mailer   = "mail";
+  if($pref['smtp_enable']){
+        $mail->Mailer   = "smtp";
+        $mail->SMTPKeepAlive = TRUE;
+        $mail->SMTPAuth = TRUE;
+        $mail->Username = $pref['smtp_username'];
+        $mail->Password = $pref['smtp_password'];
+        $mail->Host     = $pref['smtp_server'];
+    }else{
+        $mail->Mailer   = "mail";
+    }
+
     $mail->AddCC = ($_POST['email_cc']);
     $mail->WordWrap = 50;
     $mail->Charset  = CHARSET;
     $mail->Subject = $_POST['email_subject'];
     $mail->IsHTML(true);
+
+
     $attach = chop($_POST['email_attachment']);
 
     $root = (preg_match("#^/#",$DOWNLOADS_DIRECTORY) || preg_match("#.:#",$DOWNLOADS_DIRECTORY))? "" : e_BASE;
@@ -138,6 +145,10 @@ if(isset($_POST['submit'])){
     $text .="<td class='forumheader3' style='width:40%'>".$recipient[$i]."</td>";
 
     $mes_body = str_replace("{USERNAME}",$recipient_name[$i],$message_body);
+    $mes_body = str_replace("{USERID}",$recipient_id[$i],$mes_body);
+
+    $activator = (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$recipient_id[$i].".".$recipient_key[$i] : SITEURL."/signup.php?activate.".$recipient_id[$i].".".$recipient_key[$i]);
+    $mes_body = str_replace("{SIGNUP_LINK}","<a href='$activator'>$activator</a>",$mes_body);
 
     $mail->Body    = str_replace("\n","<br>",$mes_body);
     $mail->AltBody = strip_tags(str_replace("<br>","\n",$mes_body));
@@ -156,7 +167,7 @@ if(isset($_POST['submit'])){
 
 
     $mail->ClearAddresses();
-
+    if($pref['smtp_enable']){  $mail->SmtpClose(); }
 
 
      // ---- end loop. ---
@@ -288,7 +299,15 @@ if(isset($message)){
    </td>
    </tr>
 
-   ";
+    <tr>
+   <td style='width:30%' class='forumheader3'>Insert Variables: </td>
+   <td style='width:70%' class='forumheader3'>
+   <input type='button' class='tbox' name='usrname' value='username' onclick=\"add_text('{USERNAME}')\" />
+   <input type='button' class='tbox' name='usrlink' value='signup link' onclick=\"add_text('{SIGNUP_LINK}')\" />
+   <input type='button' class='tbox' name='usrid' value='user id' onclick=\"add_text('{USERID}')\" />
+   </td>
+   </tr>";
+
 
 
    $text .="<tr style='vertical-align:top'>
@@ -370,6 +389,23 @@ $text .="";
 
 
 require_once(e_ADMIN."footer.php");
+
+
+
+function headerjs(){
+
+$jscode = "
+<script type='text/javascript'>
+ function add_text(text){
+        document.getElementById('email_body').value += text;
+        document.getElementById('email_body').focus();
+ }
+</script>";
+
+  return $jscode;
+
+
+}
 
 
 
