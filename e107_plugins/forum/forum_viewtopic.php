@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-03-14 17:49:57 $
+|     $Revision: 1.20 $
+|     $Date: 2005-03-20 22:49:31 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -266,9 +266,16 @@ if (eregi("\[".LAN_430."\]", $thread_info['head']['thread_name']))
 //Load forum templates
 
 if (!$FORUMSTART) {
-	if (file_exists(THEME."forum_viewtopic_template.php")) {
+	if (file_exists(THEME."forum_viewtopic_template.php"))
+	{
 		require_once(THEME."forum_viewtopic_template.php");
-	} else {
+	}
+	else if (file_exists(THEME."forum_template.php"))
+	{
+		require_once(THEME."forum_template.php");
+	}
+	else
+	{
 		require_once(e_PLUGIN."forum/templates/forum_viewtopic_template.php");
 	}
 }
