@@ -4,6 +4,45 @@ if(parent.frames[0])
 {
 parent.location.href = self.location.href;
 }
+/*
+ * NOTE: KEEP THIS AT THE TOP OF E107.JS!
+ * localTime is recorded ASAP after page load; SyncWithServerTime is called at the END
+ * of page processing. We want localTime and serverTime set in close chronological order.
+ * Page Processing order is as follows:
+ * A) All PHP code encountered sequentially in page
+ * B) All Javascript code encountered sequentially in page NOT including function internals
+ * So best proximity is achieved by setting 
+ * serverTime at END of php code, and localTime at START of js code.
+ * NOTE: this method means reported times include transfer delay. It's slightly MORE accurate this way!
+ * Final product: tdOffset cookie contains server-browser time difference in seconds,
+ * independent of time zone. tzOffset contains browser time zone in minutes.
+ */
+					 
+var nowLocal = new Date();		/* time at very beginning of js execution */
+var localTime = Math.floor(nowLocal.getTime()/1000);	/* time, in ms -- recorded at top of jscript */
+/* NOTE: if serverDelta is needed for js functions, you must pull it from
+ * the cookie (as calculated during a previous page load!)
+ * The value calculated in SyncWithServerTime is not known until after the
+ * entire page has been processed.
+ */
+function SyncWithServerTime(serverTime)
+{
+	if (serverTime) {
+	  	/* update time difference cookie */
+		tdCookie='e107_tdOffset=';
+		tdSetTimeCookie='e107_tdSetTime=';
+		serverDelta=Math.floor(localTime-serverTime);
+	  	document.cookie = tdCookie+serverDelta;
+	  	document.cookie = tdSetTimeCookie+(localTime-serverDelta); /* server time when set */
+	}
+
+	tzCookie = 'e107_tzOffset=';
+	if (document.cookie.indexOf(tzCookie) < 0) {
+		/* set if not already set */
+		timezoneOffset = nowLocal.getTimezoneOffset(); /* client-to-GMT in minutes */
+		document.cookie = tzCookie + timezoneOffset;
+	}
+}
 
 if(document.getElementById&&!document.all){ns6=1;}else{ns6=0;}
 var agtbrw=navigator.userAgent.toLowerCase();
@@ -157,6 +196,8 @@ function externalLinks() {
  } 
 } 
 
-
+function eover(object, over) {
+	object.className = over;
+}
 
 //-->
