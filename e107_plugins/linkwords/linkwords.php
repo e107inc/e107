@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/linkwords/linkwords.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-04-03 07:50:03 $
+|     $Revision: 1.4 $
+|     $Date: 2005-04-05 21:12:35 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -32,18 +32,22 @@ class e_linkwords
 			foreach($linkWords as $words)
 			{
 				$word = $words['linkword_word'];
-				$this -> linkwords[] = " ".$word;
-				$this -> linkwords[] = $word." ";
-				$this -> linkurls[] = "<a href='".$words['linkword_link']."' rel='external'>$word</a>";
+				$this -> linkwords[] = $word;
+				$this -> linkurls[] = " <a href='".$words['linkword_link']."' rel='external'>$word</a>";
 			}
 		}
 	}
 
 	function linkwords($text)
 	{
-		return str_replace($this -> linkwords, $this -> linkurls, $text);
+		$content = preg_split('#(<.*>)#mis', $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
+		$ptext = "";
+		foreach($content as $cont)
+		{
+			$ptext .= (strstr($cont, "<") ? $cont : str_replace($this -> linkwords, $this -> linkurls, $cont));
+		}
+		return $ptext;
 	}
-
 }
 	
 ?>
