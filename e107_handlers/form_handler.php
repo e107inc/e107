@@ -89,8 +89,8 @@ class form{
 	}
 
 	function form_option($form_option, $form_selected="", $form_value="", $form_js=""){
-		$selected = ($form_value ? " value='".$form_value."'" : "");
-		$value = ($form_selected ? " selected" : "");
+		$value = ($form_value ? " value='".$form_value."'" : "");
+		$selected = ($form_selected ? " selected" : "");
 		return "\n<option".$value.$selected." ".$form_js." >".$form_option."</option>";
 	}
 
