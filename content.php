@@ -810,8 +810,17 @@ function parse_content_article_table($row){
 			$user_name = $tmp[0];
 			$user_email = $tmp[1];
 		}
-		$CONTENT_ARTICLE_AUTHOR = ($user_name != "" ? "<a href='mailto:$user_email'>$user_name</a>" : "");
-			$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
+
+		if($user_hideemail)
+		{
+			$CONTENT_ARTICLE_AUTHOR = ($user_name != "" ? "<a href='user.php?id.$content_author'>$user_name</a>" : "");
+		}
+		else
+		{
+			$CONTENT_ARTICLE_AUTHOR = ($user_name != "" ? "<a href='mailto:$user_email'>$user_name</a>" : "");
+		}
+
+		$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
 		$CONTENT_ARTICLE_DATESTAMP = ($datestamp != "" ? $datestamp : "");
 
 		$sql2 -> db_Select("content", "content_id, content_summary", "content_id=$category");
