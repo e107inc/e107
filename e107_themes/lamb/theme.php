@@ -28,7 +28,7 @@ $HEADER = "<div id='header'>
 <div id='logo'>&nbsp;</div>
 </div>
 <div id='banner'>
-{BANNER}
+{BANNER=camp2}
 </div>
 
 <table style='width: 100%;' cellpadding='0' cellspacing='0'>
@@ -77,6 +77,7 @@ $FOOTER = "
 $NEWSSTYLE = "
 <h3>
 {STICKY_ICON}
+{NEWSICON}&nbsp;
 {NEWSTITLE}
 </h3>
 <div class='bodytable' style='text-align:left'>
@@ -90,8 +91,6 @@ on
 <br />
 <img src='".e_IMAGE."admin_images/userclass_16.png' alt='' style='vertical-align: middle;' />
 {NEWSCOMMENTS}{TRACKBACK}
-<br />
- | <a href='".e_BASE."submitnews.php'>Submit a news item</a>
 </div>
 <br />";
 define("ICONSTYLE", "float: left; border:0");
@@ -153,6 +152,8 @@ $POLLSTYLE = <<< EOF
 {OLDPOLLS}
 </div>
 EOF;
+
+define("CBWIDTH", "150px");
 
 $CHATBOXSTYLE = "
 <img src='".e_IMAGE."admin_images/chatbox_16.png' alt='' style='vertical-align: middle;' />
