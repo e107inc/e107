@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-02-17 18:58:23 $
+|     $Revision: 1.17 $
+|     $Date: 2005-02-17 19:11:22 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -220,8 +220,10 @@ if ($action == "reply") {
 		}
 		require_once(HEADERF);
 		$query = ($pref['nested_comments'] ? 
-		"comment_item_id='$field' AND comment_type='$comtype' AND comment_pid='0' ORDER BY comment_datestamp" :
-		"SELECT #comments.*, user_id, user_name, user_image, user_signature, user_join, user_comments, user_location FROM #comments
+			"SELECT #comments.*, user_id, user_name, user_image, user_signature, user_join, user_comments, user_location FROM #comments
+			LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='$field' AND comment_type='$comtype' AND comment_pid='0' ORDER BY comment_datestamp"
+			:
+			"SELECT #comments.*, user_id, user_name, user_image, user_signature, user_join, user_comments, user_location FROM #comments
 			LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='$field' AND comment_type='$comtype'  ORDER BY comment_datestamp");
 	}
 }
@@ -236,7 +238,7 @@ if ($comment_total) {
 	while ($row = $sql->db_Fetch()) {
 		if ($pref['nested_comments']) {
 			$text = $cobj->render_comment($row, $table, $action, $id, $width, $subject);
-			$ns->tablerender(LAN_5, $text);
+			$ns->tablerender("", $text);
 		} else {
 			$text .= $cobj->render_comment($row, $table, $action, $id, $width, $subject);
 		}
