@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-01-27 15:11:40 $
+|     $Revision: 1.25 $
+|     $Date: 2005-01-27 18:38:28 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ $db_mySQLQueryCount = 0;    // Global total number of db object queries (all db'
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.24 $
+* @version $Revision: 1.25 $
 * @author $Author: mrpete $
 */
 class db {
@@ -49,7 +49,7 @@ class db {
 	*/
 	function db() {
 		global $pref, $eTraffic;
-		$eTraffic->Bump('Create db object');
+		$eTraffic->BumpWho('Create db object',1);
 		$langid = 'e107language_'.$pref['cookie_name'];
 		if ($pref['user_tracking'] == 'session') {
 			$this->mySQLlanguage = ($this->db_IsLang($_SESSION[$langid])) ? $_SESSION[$langid] : '';
