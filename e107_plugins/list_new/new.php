@@ -118,6 +118,26 @@ if($comments = $sql -> db_Select("comments", "*", "comment_datestamp>$lvisit ORD
 			break;
 
 		}
+			$handle=opendir(e_PLUGIN);
+					while(false !== ($file = readdir($handle))){
+							if($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)){
+									$plugin_handle=opendir(e_PLUGIN.$file."/");
+									while(false !== ($file2 = readdir($plugin_handle))){
+											if($file2 == "e_comment.php"){
+													include(e_PLUGIN.$file."/".$file2);
+													if($comment_type == $e_plug_table){
+														$sql2 -> db_Select("".$db_table."", "".$link_name."", "".$db_id."=$comment_item_id ");
+														$row = $sql2 -> db_Fetch(); extract($row);
+														$nid = $comment_item_id;
+														$link = $row[0];
+														$str .= $bullet."[ ".$plugin_name." ] Re: <a href='".$reply_location."'>".$aj -> tpa($link)."</a><br />";
+														$comment_count++;
+														break 2;
+													}
+											}
+									}
+							}
+					}
 	}
 }
 if($comment_count==0){
