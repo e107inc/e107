@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107/e107_admin/header.php,v $
-|   $Revision: 1.22 $
-|   $Date: 2004-09-03 21:54:45 $
+|   $Revision: 1.23 $
+|   $Date: 2004-09-06 11:36:42 $
 |   $Author: loloirie $
 +---------------------------------------------------------------+
 */
@@ -155,7 +155,8 @@ while(false !== ($file = readdir($handle)))
 	{
 		if(eregi($file, e_SELF))
 		{
-			@require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/help/".$file);
+			if(file_exists(e_LANGUAGEDIR.e_LANGUAGE."/admin/help/".$file)){@require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/help/".$file);}
+			else{@require_once(e_LANGUAGEDIR."English/admin/help/".$file);}
 		}
 	}
 }
@@ -219,7 +220,9 @@ function get_admin_treemenu($title,$page,$e107_vars,$sortlist=FALSE)
 		{
 			$func_list[]=$temp[$key]['text'];
 		}
-		sort($func_list);
+    setlocale("LC_ALL","deu");
+    usort($func_list, 'strcoll');
+
 		foreach($func_list as $func_text)
 		{
 			foreach(array_keys($temp) as $key)
