@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-01-27 19:52:26 $
-|     $Author: streaky $
+|     $Revision: 1.9 $
+|     $Date: 2005-02-01 07:01:53 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -66,21 +66,6 @@ CREATE TABLE banner (
   banner_ip text NOT NULL,
   banner_campaign varchar(150) NOT NULL default '',
   PRIMARY KEY  (banner_id)
-) TYPE=MyISAM;
-# --------------------------------------------------------
-
-#
-# Table structure for table `chatbox`
-#
-
-CREATE TABLE chatbox (
-  cb_id int(10) unsigned NOT NULL auto_increment,
-  cb_nick varchar(30) NOT NULL default '',
-  cb_message text NOT NULL,
-  cb_datestamp int(10) unsigned NOT NULL default '0',
-  cb_blocked tinyint(3) unsigned NOT NULL default '0',
-  cb_ip varchar(15) NOT NULL default '',
-  PRIMARY KEY  (cb_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
