@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/class2.php,v $
-|     $Revision: 1.102 $
-|     $Date: 2004-11-05 03:18:21 $
-|     $Author: e107coders $
+|     $Revision: 1.103 $
+|     $Date: 2004-11-07 18:52:48 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -73,7 +73,11 @@ define("e_MENU", $matches[1]);
 }else{
         define("e_QUERY", eregi_replace("&|/?PHPSESSID.*", "", $_SERVER['QUERY_STRING']));
 }
-if(strstr(e_MENU, "debug")){ error_reporting(E_ALL); }
+if(strstr(e_MENU, "debug"))
+{
+	error_reporting(E_ALL);
+	define('e_DEBUG',TRUE);
+}
 $_SERVER['QUERY_STRING'] = e_QUERY;
 define('e_BASE',$link_prefix);
 define("e_ADMIN", e_BASE.$ADMIN_DIRECTORY);
@@ -182,10 +186,11 @@ if($pref['cachestatus']){
         $e107cache = new ecache;
 }
 
-function retrieve_cache($query){
-        global $e107cache;
-        if(!is_object($e107cache)){return FALSE;}
-   return $e107cache -> retrieve($query);
+function retrieve_cache($query)
+{
+	global $e107cache;
+	if(!is_object($e107cache)){return FALSE;}
+	return $e107cache -> retrieve($query);
 }
 
 function set_cache($query, $text){
@@ -602,7 +607,6 @@ class textparse
                 $search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;span", "&lt;/span");
                 $replace =  array("\"", "'", "\\", '\"', "\'", "<span", "</span");
                 $text = str_replace($search, $replace, $text);
-                $text = str_replace("<br /><br />", "<br />", $text);
                 $text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $text);
                 $text = substr($text, 1);
                 $text = html($text);
