@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-01-17 08:14:04 $
+|     $Revision: 1.15 $
+|     $Date: 2005-01-17 12:36:56 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -60,7 +60,7 @@ if(IsSet($_POST['updateprefs'])){
         $pref['user_reg_veri'] = $_POST['user_reg_veri'];
         $pref['user_reg_secureveri'] = $_POST['user_reg_secureveri'];
         $pref['user_tracking'] = $_POST['user_tracking'];
-        $pref['cookie_name'] = ereg_replace("[^[:alpha:]]", "", $_POST['cookie_name']);
+        $pref['cookie_name'] = ereg_replace("[^[:alnum:]]", "", $_POST['cookie_name']);
         $pref['auth_method'] = $_POST['auth_method'];
         $pref['displaythemeinfo'] = $_POST['displaythemeinfo'];
         $pref['displayrendertime'] = $_POST['displayrendertime'];
