@@ -13,8 +13,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.41 $
-| $Date: 2005-02-17 20:24:06 $
+| $Revision: 1.42 $
+| $Date: 2005-02-18 20:22:33 $
 | $Author: stevedunstan $
 +---------------------------------------------------------------+
 */
@@ -281,7 +281,7 @@ class news {
 		$search[6] = "/\{NEWSDATE\}(.*?)/si";
 		$replace[6] = $datestamp;
 		$search[7] = "/\{NEWSCOMMENTS\}(.*?)/si";
-		$replace[7] = ($news_allow_comments ? $param['commentoffstring'] : "".$NEWIMAGE." <a href='".e_BASE."comment.php?comment.news.$news_id'>".$param['commentlink'].$news_comment_total."</a>");
+		$replace[7] = ($news_allow_comments ? $param['commentoffstring'] : "".($pref['comments_icon'] ? $NEWIMAGE : "")." <a href='".e_BASE."comment.php?comment.news.$news_id'>".$param['commentlink'].$news_comment_total."</a>");
 		$search[8] = "/\{EMAILICON\}(.*?)/si";
 		$replace[8] = $textemail;
 		$search[9] = "/\{PRINTICON\}(.*?)/si";

@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-02-17 19:12:39 $
+|     $Revision: 1.14 $
+|     $Date: 2005-02-18 20:22:33 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -120,10 +120,14 @@ class comment {
 				</td>
 				</tr>
 				</table>";
-			if ($comment_datestamp > USERLV ) {
-				$NEWIMAGE = IMAGE_new_comments;
+			if($pref['comments_icon']) {
+				if ($comment_datestamp > USERLV ) {
+					$NEWIMAGE = IMAGE_new_comments;
+				} else {
+					$NEWIMAGE = IMAGE_nonew_comments;
+				}
 			} else {
-				$NEWIMAGE = IMAGE_nonew_comments;
+				$NEWIMAGE = "";
 			}
 		} else {
 			$renderstyle = $COMMENTSTYLE;
