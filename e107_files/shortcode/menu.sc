@@ -36,6 +36,7 @@ foreach($eMenuList[$menu] as $row)
 	}
 	if(check_class($menu_class) && $show_menu)
 	{
+		$sql->db_Mark_Time($menu_name);
 		if(strstr($menu_name, "custom_"))
 		{
 			require_once(e_PLUGIN."custom/".str_replace("custom_", "", $menu_name).".php");
@@ -46,5 +47,6 @@ foreach($eMenuList[$menu] as $row)
 			@include(e_PLUGIN.$menu_name."/languages/English.php");
 			require_once(e_PLUGIN.$menu_name."/".$menu_name.".php");
 		}
+		$sql->db_Mark_Time("(After $menu_name)");
 	}
 }

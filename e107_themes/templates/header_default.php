@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-10-08 04:47:01 $
-|     $Author: chavo $
+|     $Revision: 1.4 $
+|     $Date: 2004-11-07 20:39:19 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if(!function_exists("parseheader"))
@@ -34,6 +34,7 @@ if(!function_exists("parseheader"))
 		}
 	}
 }
+$sql->db_Mark_Time("(Header Top)");
 $aj = new textparse;
 echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='iso-8859-1' ?>")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
 <html xmlns=\"http://www.w3.org/1999/xhtml\">
@@ -131,6 +132,7 @@ if($e107_popup != 1)
 		}
 		parseheader(($ph ? $CUSTOMHEADER : $HEADER));
 	}
+	$sql->db_Mark_Time("Main Page Body");
 	unset($text);
 }
 ?>

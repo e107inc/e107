@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2004-11-06 01:27:34 $
-|     $Author: loloirie $
+|     $Revision: 1.18 $
+|     $Date: 2004-11-07 20:39:11 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -30,7 +30,7 @@ unset($global);
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //ob_start ("ob_gzhandler")
 ob_start ();
-$timing_start = explode(' ', microtime());
+$eTimingStart = explode(' ', microtime());
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 if(!$mySQLserver)
@@ -73,11 +73,15 @@ else
 {
 	define("e_QUERY", eregi_replace("&|/?".session_name().".*", "", $_SERVER['QUERY_STRING']));
 }
-if(strstr(e_MENU, "debug"))
-{
+
+if(strstr(e_MENU, "debug")){ 
 	error_reporting(E_ALL);
-	$HTTP_db_debug = TRUE;
+	$e107_debug=1;	// Default: debug=1
+	if (preg_match('/debug=(.*)/',e_MENU,$debug_param)) {
+		$e107_debug=$debug_param[1];
+	}
 }
+
 $_SERVER['QUERY_STRING'] = e_QUERY;
 define('e_BASE',$link_prefix);
 define("e_ADMIN", e_BASE.$ADMIN_DIRECTORY);
@@ -217,15 +221,24 @@ if($pref['cachestatus'])
 
 function retrieve_cache($query)
 {
-	global $e107cache;
+	global $e107cache, $e107_debug;
 	if(!is_object($e107cache)){return FALSE;}
-	return $e107cache -> retrieve($query);
+	$ret = $e107cache -> retrieve($query);
+	if($e107_debug && $ret)
+	{
+		echo "cache used for: $query <br />";
+	}
+	return $ret;
 }
 
 function set_cache($query, $text)
 {
 	global $e107cache;
 	if(!is_object($e107cache)){return FALSE;}
+	if($e107_debug)
+	{
+		echo "cache set for: $query <br />";
+	}
 	$e107cache -> set($query,$text);
 }
 

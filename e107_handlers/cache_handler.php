@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2004-10-30 02:30:06 $
+|     $Revision: 1.6 $
+|     $Date: 2004-11-07 20:39:18 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -35,14 +35,14 @@ class ecache
 
 	function retrieve($query)
 	{
-		global $pref,$FILES_DIRECTORY;
+		global $pref, $FILES_DIRECTORY;
 		if($pref['cachestatus'])  //Save to file
 		{
 			if($cache_file = $this -> cache_fname($query))
 			{
 				$ret = file_get_contents($cache_file);
 				$ret = substr($ret, 6);
-				if($ret == false){ return false; }
+				if($ret == false){ return FALSE; }
 				return ('' == $ret) ? '<!-- null -->' : $ret;
 			}
 			else
