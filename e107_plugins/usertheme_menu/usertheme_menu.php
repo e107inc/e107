@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/usertheme_menu/usertheme_menu.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-27 19:53:20 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-13 08:49:26 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if (USER == TRUE) {
@@ -37,7 +37,7 @@ if (USER == TRUE) {
 	 
 	while ($row = $sql->db_Fetch()) {
 		$up = unserialize($row['user_prefs']);
-		$themecount[$up['sitetheme']]++;
+		if (isset($themecount[$up['sitetheme']])) { $themecount[$up['sitetheme']]++; }
 	}
 	 
 	$defaultusers = $sql->db_Count("user") - $totalct;
@@ -49,7 +49,7 @@ if (USER == TRUE) {
 		<select name='sitetheme' class='tbox'>";
 	$counter = 0;
 	 
-	while ($themelist[$counter]) {
+	while (isset($themelist[$counter]) && $themelist[$counter]) {
 		$text .= "<option value='".$themelist[$counter]."' ";
 		if (($themelist[$counter] == USERTHEME) || (USERTHEME == FALSE && $themelist[$counter] == $defaulttheme)) {
 			$text .= "selected";
