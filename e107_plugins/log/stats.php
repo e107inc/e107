@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-02-10 17:20:09 $
+|     $Revision: 1.9 $
+|     $Date: 2005-02-14 17:22:40 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -489,20 +489,24 @@ class siteStats {
 			$statRefer = unserialize($row['log_data']);
 		}
 
+
 		/* temp consolidate today's data ... */
 		foreach($this -> fileReferInfo as $name => $count) {
-			$statRefer[$name]['ttl'] += $count;
+			$statRefer[$name]['url'] = $count['url'];
+			$statRefer[$name]['ttl'] = $count['ttl'];
 		}
 
-		if(!is_array($statRefer)) {
+		if(!count($statRefer)) {
 			return "<div style='text-align: center;'>No statistics yet.</div>";
 		}
 
 		$statArray = $this -> arraySort($statRefer, 'ttl');
 
+		$total = 0;
 		foreach($statArray as $key => $info) {
 			$total += $info['ttl'];
 		}
+
 		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 40%;'>Site Referrals</td>\n<td class='fcaption' style='width: 50%;'>Total</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
 		foreach($statArray as $key => $info) {
 			$percentage = round(($info['ttl']/$total) * 100, 2);
