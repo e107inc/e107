@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/class2.php,v $
-|     $Revision: 1.91 $
-|     $Date: 2004-09-01 10:09:55 $
-|     $Author: e107coders $
+|     $Revision: 1.92 $
+|     $Date: 2004-09-01 13:27:05 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 
@@ -220,9 +220,11 @@ if(!function_exists('checkvalidtheme')){
                         define("THEME", e_THEME.$theme_check."/");
                 }else {
                         @require_once(e_HANDLER."debug_handler.php");
+                        @require_once(e_HANDLER."textparse/basic.php");
+                        $etp = new e107_basicparse;
                         $e107tmp_theme = search_validtheme();
                         define("THEME", e_THEME.$e107tmp_theme."/");
-                        if(ADMIN && !strstr(e_SELF, $ADMIN_DIRECTORY)){echo '<script>alert("'.CORE_LAN1.'")</script>';}
+                        if(ADMIN && !strstr(e_SELF, $ADMIN_DIRECTORY)){echo '<script>alert("'.$etp->unentity(CORE_LAN1).'")</script>';}
                 }
         }
 }

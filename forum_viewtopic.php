@@ -14,6 +14,10 @@
 */
 
 require_once("class2.php");
+
+require_once(e_HANDLER."textparse/basic.php");
+$etp = new e107_basicparse;
+
 if(IsSet($_POST['fjsubmit'])){
 	header("location:".e_BASE."forum_viewforum.php?".$_POST['forumjump']);
 	exit;
@@ -540,9 +544,9 @@ function rpg($user_join, $user_forums){
 echo "<script type=\"text/javascript\">
 function confirm_(mode, forum_id, thread_id, thread){
 	if(mode == 'thread'){
-		return confirm(\"".LAN_409."\");
+		return confirm(\"".$etp->unentity(LAN_409)."\");
 	}else{
-		return confirm(\"".LAN_410." [ ".LAN_411."\" + thread + \" ]\");
+		return confirm(\"".$etp->unentity(LAN_410)." [ ".$etp->unentity(LAN_411)."\" + thread + \" ]\");
 	}
 }
 </script>";
