@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:21 $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-07 13:27:21 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 
-$dbupdate=array(
+$dbupdate=array(                                "61x_to_700" => LAN_UPDATE_8." .61x ".LAN_UPDATE_9." .7",
                                                 "616_to_617" => LAN_UPDATE_8." .616 ".LAN_UPDATE_9." .617",
                                                 "615_to_616" => LAN_UPDATE_8." .615 ".LAN_UPDATE_9." .616",
                                                 "614_to_615" => LAN_UPDATE_8." .614 ".LAN_UPDATE_9." .615",
@@ -47,6 +47,19 @@ function update_check(){
         }
 }
 
+
+function update_61x_to_700($type){
+        global $sql,$ns;
+        if($type=="do"){
+            $sql -> db_Update("userclass_classes", "userclass_editclass='254' WHERE userclass_editclass ='0' ");
+        }else{
+           if(!$sql -> db_Select("userclass_classes", "*", "userclass_editclass='254'") && $sql -> db_Count("userclass_classes") > 0 ){
+               return FALSE;
+           }else{
+               return TRUE;
+           }
+        }
+}
 
 
 function update_616_to_617($type){
