@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-02-14 17:22:40 $
+|     $Revision: 1.10 $
+|     $Date: 2005-02-14 17:34:43 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -177,10 +177,11 @@ class siteStats {
 		$logfile = e_PLUGIN."log/logs/log_".date("z.Y", time()).".php";
 		if(is_readable($logfile)) {
 			require($logfile);
-		} else {
+		} 
+		/* else {
 			$this -> error = "Unable to read logfile ".$logfile.".";
 			return;
-		}
+		}*/
 
 		/* set order var */
 		global $order;
