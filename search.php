@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-02-10 14:14:16 $
+|     $Revision: 1.8 $
+|     $Date: 2005-02-10 17:26:14 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -27,19 +27,9 @@ if (!USER && $pref['search_restrict'] == 1) {
 	require_once(FOOTERF);
 	exit;
 }
-	
+
 $_POST['searchquery'] = trim(chop($_POST['searchquery']));
-if (isset($_POST['searchquery']) && $_POST['searchtype'][0] == "98") {
-	header("location:http://www.google.com/search?q=".stripslashes(str_replace(" ", "+", $_POST['searchquery'])));
-	exit;
-}
-require_once(HEADERF);
-	
-if ($_POST['searchquery'] && strlen($_POST['searchquery']) < 3) {
-	$ns->tablerender(LAN_180, LAN_201);
-	unset($_POST['searchquery']);
-}
-	
+
 $search_info = array();
 	
 //load all core search routines
@@ -66,6 +56,22 @@ while (false !== ($file = readdir($handle))) {
 		}
 	}
 }
+
+$search_count = count($search_info);
+$google_id = $search_count + 1;
+if (isset($_POST['searchquery']) && $_POST['searchtype'][$google_id]) {
+	header("location:http://www.google.com/search?q=".stripslashes(str_replace(" ", "+", $_POST['searchquery'])));
+	exit;
+}
+
+require_once(HEADERF);
+	
+if ($_POST['searchquery'] && strlen($_POST['searchquery']) < 3) {
+	$ns->tablerender(LAN_180, LAN_201);
+	unset($_POST['searchquery']);
+}
+	
+
 	
 //$search_info[99]=array( 'sfile' => '','qtype' => LAN_192);
 	
@@ -114,15 +120,17 @@ if ($_POST['searchtype'] == "99") {
 		$_POST['searchtype'][] = $key;
 	}
 }
-	
+
+
 foreach($search_info as $key => $si) {
 	(isset($_POST['searchtype'][$key]) && $_POST['searchtype'][$key]==$key) ? $sel=" checked" : $sel="";
-	$SEARCH_MAIN_CHECKBOXES .= "<span style='white-space:nowrap; padding-bottom:7px;padding-top:7px'><input onclick=\"getElementById('google').checked = false\"   type='checkbox' name='searchtype[$key]' value='{$key}' ".$sel." />{$si['qtype']}</span>\n";
+	$SEARCH_MAIN_CHECKBOXES .= "<span style='white-space:nowrap; padding-bottom:7px;padding-top:7px'><input onclick='uncheckG();' type='checkbox' name='searchtype[$key]' ".$sel." />".$si['qtype']."</span>\n";
 }
-$SEARCH_MAIN_CHECKBOXES .= "<input id='google' type='checkbox' name='searchtype[]'  onclick='uncheckAll(this)' value='98' />Google";
+	
+$SEARCH_MAIN_CHECKBOXES .= "<input id='google' type='checkbox' name='searchtype[".$google_id."]'  onclick='uncheckAll(this)' />Google";
 $SEARCH_MAIN_SEARCHFIELD = "<input class='tbox' type='text' name='searchquery' size='40' value='$query' maxlength='50' />";
 $SEARCH_MAIN_CHECKALL = "<input class='button' type='button' name='CheckAll' value='".LAN_SEARCH_1."' onclick='checkAll(this);' />";
-$SEARCH_MAIN_UNCHECKALL = "<input class='button' type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this);' />";
+$SEARCH_MAIN_UNCHECKALL = "<input class='button' type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this); uncheckG();' />";
 $SEARCH_MAIN_SUBMIT = "<input class='button' type='submit' name='searchsubmit' value='".LAN_180."' />";
 	
 if (!$SEARCH_MAIN_TABLE) {
@@ -172,20 +180,21 @@ function parsesearch($text, $match) {
 }
 
 function headerjs() {
+	global $search_count, $google_id;
 	$script = "<script type='text/javascript'>
 		function checkAll(allbox) {
-		for (var i = 0; i < document.searchform[\"searchtype[]\"].length-1; i++)
-		document.searchform[\"searchtype[]\"][i].checked = true ;
+		for (var i = 0; i < ".$search_count."; i++)
+		document.searchform[\"searchtype[\" + i + \"]\"].checked = true ;
+		uncheckG();
 		}
 		 
 		function uncheckAll(allbox) {
-		for (var i = 0; i < document.searchform[\"searchtype[]\"].length-1; i++)
-		document.searchform[\"searchtype[]\"][i].checked = false ;
+		for (var i = 0; i < ".$search_count."; i++)
+		document.searchform[\"searchtype[\" + i + \"]\"].checked = false ;
 		}
 		
-		function uncheckG(allbox) {
-		i = document.searchform[\"searchtype[]\"].length;
-		document.searchform[\"searchtype[]\"][i].checked = false ;
+		function uncheckG() {
+		document.searchform[\"searchtype[".$google_id."]\"].checked = false ;
 		}
 		</script>\n";
 	return $script;
