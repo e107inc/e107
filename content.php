@@ -26,7 +26,9 @@ if(e_QUERY){
 	require_once(FOOTERF);
 	exit;
 }
+$query="";
 if($action == "content"){
+	$sub_action=intval($sub_action);
 	$query = "content_id='".$sub_action."' ";
 	$page = LAN_60." /";
 	}
@@ -57,6 +59,7 @@ if($action == "review"){
 	}
 }
 if($query){
+//	echo $query; exit;
 if($sql -> db_Select("content", "*", $query)){ 
 	$row = $sql -> db_Fetch(); extract($row);
 	define("e_PAGETITLE", $page." ".$content_heading);

@@ -48,7 +48,7 @@ class secure_image {
 	function r_image(){
 		global $HANDLERS_DIRECTORY;
 		$code = $this -> create_code();
-		return "<img src='".e_BASE.$HANDLERS_DIRECTORY."secure_img_render.php?REC.{$code}' />";
+		return "<img src='".e_BASE.$HANDLERS_DIRECTORY."secure_img_render.php?{$code}' />";
 	}
 }
 ?>

@@ -13,10 +13,11 @@
 $imgtypes=array("jpeg", "png", "gif");
 
 define("e_QUERY", eregi_replace("&|/?PHPSESSID.*", "", $_SERVER['QUERY_STRING']));
-$qs = explode(".",e_QUERY,2);
+$recnum = preg_replace("#\D#","",e_QUERY);
 ob_clean();
 @include("e107_config.php");
 $a=0;
+$p="";
 while(!$mySQLserver && $a<5){
 	$a++;
 	$p.="../";
@@ -24,7 +25,7 @@ while(!$mySQLserver && $a<5){
 }
 mysql_connect($mySQLserver, $mySQLuser, $mySQLpassword);
 mysql_select_db($mySQLdefaultdb);
-$result = mysql_query("SELECT tmp_info FROM {$mySQLprefix}tmp WHERE tmp_ip = '{$qs[1]}'");
+$result = mysql_query("SELECT tmp_info FROM {$mySQLprefix}tmp WHERE tmp_ip = '{$recnum}'");
 $row = mysql_fetch_array($result);
 list($code,$url) = explode(",",$row['tmp_info']);
 
