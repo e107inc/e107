@@ -16,28 +16,32 @@ require_once("../class2.php");
 if(!getperms("4")){ header("location:".e_BASE."index.php"); exit;}
 require_once("auth.php");
 
+function check_allowed($class_id){
+	global $sql;
+	if(!$sql -> db_Select("userclass_classes","*","userclass_id = {$class_id}")){
+		header("location:".SITEURL);
+		exit;
+	}
+	$row = $sql -> db_Fetch();
+	extract($row);
+	if(!getperms("0") && !check_class($userclass_editclass)){
+		header("location:".SITEURL);
+		exit;
+	}
+}
+
 if(!e_QUERY){
         header("location:".e_ADMIN."admin.php");
         exit;
 }else{
         $id = e_QUERY;
 }
-// Disallow editing of one's own userclass unless user-perms = 0
-if($id == 1 && !getperms("0")){
-    header("location:".e_ADMIN."admin.php");
-    exit;
-}
-// Disallow editing of one's own userclass unless user-perms = 0  
-if ($id == USERID && !getperms("0")){
-header("location:".e_ADMIN."admin.php");
-    exit;
-}
-
 
 if(IsSet($_POST['updateclass'])){
         $remuser = TRUE;
         extract($_POST);
         for($a=0; $a<=(count($_POST['userclass'])-1); $a++){
+        		check_allowed($userclass[$a]);
                 $svar .= $userclass[$a].".";
         }
         $sql -> db_Update("user", "user_class='$svar' WHERE user_id='$id' ");
@@ -49,17 +53,18 @@ if(IsSet($_POST['updateclass'])){
         }
 }
 
-
 $sql -> db_Select("user", "*", "user_id='$id' ");
 $row = $sql -> db_Fetch(); extract($row);
 
 $sql -> db_Select("userclass_classes");
 $c=0;
 while($row = $sql -> db_Fetch()){
+	if(getperms("0") || check_class($row['userclass_editclass'])){
         $class[$c][0] = $row['userclass_id'];
         $class[$c][1] = $row['userclass_name'];
         $class[$c][2] = $row['userclass_description'];
         $c++;
+    }
 }
 
 if($_POST['notifyuser']){
