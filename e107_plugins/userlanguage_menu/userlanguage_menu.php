@@ -11,26 +11,27 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/userlanguage_menu/userlanguage_menu.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-02-10 00:30:03 $
-|     $Author: e107coders $
+|     $Revision: 1.8 $
+|     $Date: 2005-02-26 02:32:39 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once(e_HANDLER."file_class.php");
 	$fl = new e_file;
-	$reject = array('.','..','/','CVS','thumbs.db','*._$');
-	$lanlist = $fl->get_files(e_LANGUAGEDIR,"",$reject);
+	$lanlist = $fl->get_dirs(e_LANGUAGEDIR);
 	sort($lanlist);
 
 	$text = "<form method='post' action='".e_SELF."'>
 		<div style='text-align:center'>
 		<select name='sitelanguage' class='tbox' >";
-
-	foreach($lanlist as $langval) {
-		$langname = $langval;
-		$langval = ($langval['dir'] == $pref['sitelanguage']) ? "" : $langval['dir'];
-		$selected = ($langval == USERLAN) ? "selected='selected'" : "";
-		$text .= "<option value='".$langval."' $selected>".$langname['dir']."</option>\n ";
+	foreach($lanlist as $langval)
+	{
+		$selected ="";
+		if($langval == USERLAN || ($langval == $pref['sitelanguage'] && USERLAN == ""))
+		{
+			$selected = "selected='selected'";
+		}
+		$text .= "<option value='".$langval."' $selected>".$langval."</option>\n ";
 	}
 
 	$text .= "</select>";
