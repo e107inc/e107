@@ -94,8 +94,10 @@ echo ($spelling==1 && $plgcnt<1) ? " editor.registerPlugin('SpellChecker');\n ":
         $plgcnt++;
 echo "
 
+  var check = '$name';
+  if(document.getElementById(check)){
   editor.generate();
-
+  }
 </script>\n";
 }
 
