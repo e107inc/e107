@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/footer.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-03-02 12:55:43 $
+|     $Revision: 1.8 $
+|     $Date: 2005-03-04 11:08:58 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -37,7 +37,7 @@ if (ADMIN == TRUE) {
 	}
 }
 parse_admin($ADMIN_FOOTER);
-echo "<div style='text-align: center; margin-left: auto; margin-right: auto;'><a href='credits.php'>Credits</a></div>";
+echo "<div style='text-align: center; margin-left: auto; margin-right: auto;'><a href='".e_ADMIN."credits.php'>Credits</a></div>";
 ?>
 
 </body>
