@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2005-03-27 08:01:52 $
+|     $Revision: 1.53 $
+|     $Date: 2005-03-30 05:42:40 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -174,6 +174,7 @@ function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $ut
 
 	function textclean ($text, $wrap=100)
 	{
+		$text = preg_replace("#>\W*<#", "><", $text);
 		$text = str_replace ("\n\n\n", "\n\n", $text);
 		$text = $this -> htmlwrap($text, $wrap);
 		$text = str_replace (array ("<br /> ", " <br />", " <br /> "), "<br />", $text);	
@@ -201,11 +202,11 @@ function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $ut
 			}
 		}
 
-		if(!strstr($modifiers, 'nobreak')) {
+		if (strpos($modifiers, 'nobreak') === FALSE) {
 			$text = $this -> textclean($text, $wrap);
 		}
 
-		if (strpos($modifiers,'emotes_off') === FALSE) {
+		if (strpos($modifiers, 'emotes_off') === FALSE) {
 			if ($pref['smiley_activate'] || strpos($modifiers,'emotes_on') !== FALSE) {
 				if (!is_object($this->e_emote)) {
 					require_once(e_HANDLER.'emote_filter.php');
@@ -215,7 +216,7 @@ function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $ut
 			}
 		}
 		$text = str_replace($this -> search, $this -> replace, $text);
-		if (strpos($modifiers, 'nobreak') == FALSE) {
+		if (strpos($modifiers, 'nobreak') === FALSE) {
 			$text = preg_replace("#[\r]*\n[\r]*#", "[E_NL]", $text);
 		}
 		 
