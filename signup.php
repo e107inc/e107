@@ -191,12 +191,15 @@ if(IsSet($_POST['register'])){
                         $id = $row['user_id'];
 
 
-
-
                         define("RETURNADDRESS", (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$id.".".$key : SITEURL."/signup.php?activate.".$id.".".$key));
 
                         $message = LAN_403.RETURNADDRESS.LAN_407." ".SITENAME."\n".SITEURL;
+
                         require_once(e_HANDLER."mail.php");
+                        if(file_exists(THEME."emails.php")){
+                            require_once(THEME."emails.php");
+                            $message = ($SIGNUPEMAIL)? $SIGNUPEMAIL:$message;
+                        }
                         sendemail($_POST['email'], LAN_404." ".SITENAME, $message);
         // ================== save extended fields as serialized data.
 
