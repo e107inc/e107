@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/index.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:45 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-11-07 19:03:26 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 
 require_once("class2.php");
 if($pref['membersonly_enabled'] && !USER){
-   header("location: ".e_BASE.e_LOGIN);
+   header("location: ".e_LOGIN);
         exit;
 }
 
