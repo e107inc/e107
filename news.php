@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-01-20 04:07:20 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.19 $
+|     $Date: 2005-01-22 16:48:39 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -191,13 +191,37 @@ WHERE news_class != '255' AND (news_start=0 || news_start < ".time().") AND (new
 
 checkNewsCache($cacheString,TRUE,TRUE);
 
+/*
+changes by jalist 22/01/2005:
+added ability to add a new date header to news posts, turn on and off from news -> prefs
+*/
+$newpostday = 0;
+$thispostday = 0;
+$pref['newsHeaderDate'] = 1;
+$gen = new convert();
+
+if(!defined("DATEHEADERCLASS"))
+{
+	define("DATEHEADERCLASS", "nextprev");	// if not defined in the theme, default class nextprev will be used for new date header
+}
+
 // #### normal newsitems, rendered via render_newsitem(), the $query is changed above (no other changes made) ---------
 ob_start();
 
 if(!$sql -> db_Select_gen($query)) {
 	echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_462 : LAN_83)."</b></div><br /><br />";
 } else {
-	while($news = $sql -> db_Fetch()) {
+	while($news = $sql -> db_Fetch())
+	{
+		//	render new date header if pref selected ...
+		$thispostday = strftime("%j", $news['news_datestamp']);
+		if($newpostday != $thispostday && $pref['news_newdateheader'])
+		{
+			echo "<div class='".DATEHEADERCLASS."'>".strftime("%A %d %B %Y", $news['news_datestamp'])."</div>";
+		}
+
+		$newpostday = $thispostday;
+		
 		$news['category_id'] = $news['news_category'];
 		if (check_class($news['news_class'])) {
 			if($action == "item"){ unset($news['news_rendertype']); }

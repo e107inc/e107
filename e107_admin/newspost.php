@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.13 $
-|   $Date: 2005-01-19 17:11:37 $
+|   $Revision: 1.14 $
+|   $Date: 2005-01-22 16:48:20 $
 |   $Author: stevedunstan $
 +---------------------------------------------------------------+
 
@@ -161,6 +161,13 @@ if(IsSet($_POST['save_prefs']))
 	$pref['subnews_class'] = $_POST['subnews_class'];
 	$pref['subnews_htmlarea'] = $_POST['subnews_htmlarea'];
 	$pref['subnews_hide_news'] = $_POST['subnews_hide_news'];
+
+	/*
+	changes by jalist 22/01/2005:
+	added pref to render new date header
+	*/
+	$pref['news_newdateheader'] = $_POST['news_newdateheader'];
+
 
 	save_prefs();
 	$e107cache->clear("news.php");
@@ -893,6 +900,15 @@ class newspost{
                 <input class='tbox' type='text' style='width:50px' name='subnews_resize' value='".$pref['subnews_resize']."' />
                 <span class='smalltext'>".NWSLAN_102."</span></td>
                 </tr>
+
+				
+				<tr>
+                <td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_111."</span><br /><i>".NWSLAN_112."</i></td>
+                <td class='forumheader3' style='width:40%'>
+                <input type='checkbox' name='news_newdateheader' value='1' ".($pref['news_newdateheader']==1 ? " checked='checked'" : "")." />
+				</td>
+                </tr>
+
 
                 <tr><td colspan='2' style='text-align:center' class='forumheader'>";
                 $text .= "<input class='button' type='submit' name='save_prefs' value='".NWSLAN_89."' /></td></tr>";
