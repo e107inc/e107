@@ -4,8 +4,8 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/wysiwyg.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-02-22 04:38:35 $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-24 02:43:35 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -20,15 +20,16 @@ $text = "
 		theme : 'advanced',
 		plugins : 'table,";
 
-// $text .= "emotions,";
+ $text .= "emoticons,";
 $text .= (ADMIN) ? "ibrowser," : "image,";
 $text .= "iespell,zoom,flash,forecolor',
-		theme_advanced_buttons1 : 'bold,italic,underline,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,forecolor,cut,copy,paste,separator,link,unlink,";
+		theme_advanced_buttons1 : 'bold,italic,underline,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,outdent, indent,separator, forecolor,cut,copy,paste,separator,link,unlink',";
 
-$text .= (ADMIN) ? "ibrowser'," : "image',";
+
 $text .= "theme_advanced_buttons2	: 'tablecontrols,separator,undo,redo,separator";
-// $text .= ",emotions";
+ $text .= ",emoticons";
 $text .= ",charmap,iespell,flash";
+$text .= (ADMIN) ? ",ibrowser," : ",image";
 $text .= (ADMIN) ? ",code" : "";
 $text .= "',
 		theme_advanced_buttons3 : '',
@@ -43,7 +44,7 @@ $text .= "',
 		popup_css: '".THEME."style.css',
 		verify_css_classes : false";
 
-$text .= (ADMIN) ? ", external_link_list_url: '../".$HANDLERS_DIRECTORY."tiny_mce/filelist.php'" : "";
+$text .= (ADMIN) ? "\n, external_link_list_url: '../".$HANDLERS_DIRECTORY."tiny_mce/filelist.php'" : "";
 
 $text .= "
 
