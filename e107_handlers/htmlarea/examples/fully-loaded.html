@@ -35,6 +35,8 @@
       HTMLArea.loadPlugin("FullPage");
       HTMLArea.loadPlugin("CSS");
       HTMLArea.loadPlugin("ContextMenu");
+      HTMLArea.loadPlugin("HtmlTidy");
+      HTMLArea.loadPlugin("ListType");
 </script>
 
 <style type="text/css">
@@ -65,6 +67,12 @@ function initEditor() {
 
   // register the SpellChecker plugin
   editor.registerPlugin(SpellChecker);
+  
+  // register the HtmlTidy plugin
+  editor.registerPlugin(HtmlTidy);
+
+  // register the ListType plugin
+  editor.registerPlugin(ListType);
 
   // register the CSS plugin
   editor.registerPlugin(CSS, {

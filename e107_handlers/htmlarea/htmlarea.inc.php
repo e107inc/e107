@@ -8,6 +8,7 @@
     $spelling = 0;  // Spell Checking Plugin.
     $tidy = 0; // Html Tidy Plugin.
     $context = 1; // Context Menu Plugin
+    $imgmanager = 1; // Load IMage-Manager
  // ========================================================================
     $plgcnt =0; // do not change.
     $imagebut = (ADMIN) ? "insertimage" : "space"; // image button for  ADMINS only
@@ -20,6 +21,8 @@ $areajs .= "<script type=\"text/javascript\" >\n";
 $areajs .= ($context==1) ? "HTMLArea.loadPlugin('ContextMenu');\n":"";
 $areajs .= ($tableops==1) ? "HTMLArea.loadPlugin('TableOperations');\n":"";
 $areajs .= ($spelling==1) ? "HTMLArea.loadPlugin('SpellChecker');\n":"";
+$areajs .= ($imgmanager==1) ? "HTMLArea.loadPlugin('ImageManager');\n":"";
+
 $areajs .= ($tidy==1) ? "HTMLArea.loadPlugin('HtmlTidy');\n":"";
 
 $areajs .= "var config = new HTMLArea.Config(); // create a new configuration object\n";
@@ -65,7 +68,7 @@ function htmlarea($name){
     htmlarea("post");
 */
 
-  global $tableops,$spelling,$plgcnt, $context, $tidy;
+  global $tableops,$spelling,$plgcnt, $context, $tidy,$imgmanager;
 
 
 echo "\n<script type=\"text/javascript\" defer=\"defer\">\n";
@@ -75,7 +78,7 @@ echo ($context==1 && $plgcnt<1) ? " editor_$name.registerPlugin('ContextMenu');\
 echo  ($tableops==1 && $plgcnt<1) ? " editor_$name.registerPlugin(TableOperations);\n ":"";
 echo ($spelling==1 && $plgcnt<1) ? " editor_$name.registerPlugin(SpellChecker);\n ":"";
 echo ($tidy==1 && $plgcnt<1) ? " editor_$name.registerPlugin(HtmlTidy);\n ":"";
-
+echo ($imgmanager==1 && $plgcnt<1) ? " editor_$name.registerPlugin(ImageManager);\n ":"";
 
         $plgcnt++;
 echo "  setTimeout(function() {

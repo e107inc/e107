@@ -49,7 +49,9 @@ function Init() {
 
 function onOK() {
   var required = {
-    "f_href": i18n("You must enter the URL where this link points to")
+    // f_href shouldn't be required or otherwise removing the link by entering an empty
+    // url isn't possible anymore.
+    // "f_href": i18n("You must enter the URL where this link points to")
   };
   for (var i in required) {
     var el = document.getElementById(i);

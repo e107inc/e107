@@ -226,8 +226,8 @@ onclick="window.open('http://dynarch.com/htmlarea/');">
 class="letter letter2">T</span><span
 class="letter letter3">M</span><span
 class="letter letter4">L</span>Area <span class="letter">/&gt;</span>
-<span class="version">3.0 <span style="position: relative; top: -0.6em; font-size: 50%; font-weight: normal">[ rev. rc1 ]</span></span></div>
-<div class="release">Compiled on Mar  1, 2004 19:37 GMT</div>
+<span class="version"><% $version.$release %></span></div>
+<div class="release">Compiled on <% $time %></div>
 <div class="visit">Go to http://dynarch.com/htmlarea/ [latest milestone release]</div>
 </div>
 
@@ -285,9 +285,10 @@ href="http://dynarch.com" title="http://dynarch.com/" target="_blank">dynarch.co
   </p>
 
   <ul>
-    <li><a href="http://www.neomedia.ro">Neomedia</a> (Romania)</li>
+    <li><a href="http://www.computerlove.co.uk" target="_blank">Code Computer Love Ltd.</a> (UK)</li>
+    <li><a href="http://www.neomedia.ro" target="_blank">Neomedia</a> (Romania)</li>
     <li><a href="http://www.os3.it" target="_blank">OS3</a> (Italy)</li>
-    <li><a href="http://www.softwerk.net">SoftWerk</a> (Italy)</li>
+    <li><a href="http://www.softwerk.net" target="_blank">SoftWerk</a> (Italy)</li>
   </ul>
 
   <p>Also many thanks to all people at InteractiveTools.com
@@ -375,4 +376,17 @@ POSSIBILITY OF SUCH DAMAGE.
 
 </body></html>
 
+<%ARGS>
+  $version => '3.0'
+  $release => 'beta+'
+  $basename => 'HTMLArea-3.0-beta'
+</%ARGS>
 
+<%INIT>;
+if ($release =~ /\S/) {
+    $release = ' <span style="position: relative; top: -0.6em; font-size: 50%; font-weight: normal">[ rev. '.$release.' ]</span>';
+}
+
+use POSIX qw(strftime);
+my $time = strftime '%b %e, %Y %H:%M GMT', gmtime;
+</%INIT>
