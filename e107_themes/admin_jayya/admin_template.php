@@ -50,10 +50,10 @@ function show_admin_menu($title, $page, $e107_vars, $js = FALSE){
 
 $ADMIN_HEADER = "<table class='top_section'>
 <tr>
-<td style='vertical-align: top; padding: 0px 0px 0px 0px'>
+<td class='top_section_left' style='width: 170px'>
 <img src='".THEME."images/adminlogo_2.png' style='width: 170px; height: 68px; display: block;' alt='' />
 </td>
-<td style='vertical-align: bottom; text-align: right; padding: 3px 5px 3px 0px; background-color: #efefef; border-left: 1px solid #3D4251; width: 100%; background-image: url(".THEME."images/computer.jpg); background-repeat: no-repeat'>
+<td class='top_section_mid'>
 <div style='margin-bottom: 3px;'>
 {ADMIN_LOGGED}
 {ADMIN_SEL_LAN}
@@ -62,7 +62,7 @@ $ADMIN_HEADER = "<table class='top_section'>
 {SITELINKS=flat}
 </td>
 
-<td style='width: 68px; padding: 0px 18px 0px 18px; text-align: center; vertical-align: middle; border-left: 1px solid #3D4251; background-color: #f3f3f3; background-image: url(".THEME."images/screen.png); background-repeat: no-repeat'>
+<td class='top_section_right' style='padding: 0px 18px 0px 18px; width: 68px'>
 <div style='height: 32px;'>
 {ADMIN_ICON}
 </div>
