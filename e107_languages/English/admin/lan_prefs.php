@@ -92,6 +92,10 @@ define("PRFLAN_84", "Disable Right Mouse-Click");
 define("PRFLAN_85", "If a theme does not show up make sure it was uploaded correctly and read permissions are assigned.");
 define("PRFLAN_86", "Click here to verify language files");
 
+
+define("PRFLAN_87", "Comments");
+define("PRFLAN_88", "Click here to view nested comments");
+
 define("CUSTSIG_1", "Settings Saved!");
 define("CUSTSIG_2", "Real Name:");
 define("CUSTSIG_3", "Website:");

@@ -216,35 +216,38 @@ function tablestyle($caption, $text, $mode=""){
 
 
 $COMMENTSTYLE = "
-<table style='width:95%'>
+<div style='text-align:center'>
+<table style='width:100%'>
 <tr>
-<td style='width:20%; vertical-align:top'>
-<img src='".THEME."images/bullet2.gif' alt='bullet' /> 
+<td colspan='2' class='forumheader3'>
+{SUBJECT}
 <b>
 {USERNAME}
 </b>
+ | 
+ {TIMEDATE}
+</td>
+</tr>
+<tr>
+<td style='width:30%; vertical-align:top'>
 <div class='spacer'>
 {AVATAR}
 </div>
 <span class='smalltext'>
+{LEVEL}
 {COMMENTS}
 <br />
-Joined: 
 {JOINED}
+<br />
+{REPLY}
 </span>
 </td>
-<td style='width:80%; vertical-align:top'>
-<span class='smalltext'>
-{TIMEDATE}
-</span>
-<br />
+<td style='width:70%; vertical-align:top'>
 {COMMENT}
-<br /><i><span class='smalltext'>
-{SIGNATURE}
-</span></i>
 </td>
 </tr>
 </table>
+</div>
 <br />";
 
 

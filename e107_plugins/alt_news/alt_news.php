@@ -44,7 +44,7 @@ function alt_news($news_category){
 				if($news_allow_comments){
 					$text .= "<a href='news.php?extend.".$news_id."'>".$news_title."</a>";
 				}else{
-					$text .= "<a href='comment.php?".$news_id."'>".$news_title."</a>";
+					$text .= "<a href='comment.php?comment.news.".$news_id."'>".$news_title."</a>";
 				}
 				$text .= "<br />
 				".LAN_100." ".$datestamp." (".LAN_99.": ";

@@ -47,9 +47,13 @@ if(IsSet($_POST['moderate'])){
 	}
 	if(is_array($comment_delete)){
 		while (list ($key, $cid) = each ($comment_delete)){ 
-			$sql -> db_Delete("comments", "comment_id='$cid' ");
+			if($sql -> db_Select("comments", "*",  "comment_id='$cid' ")){
+				$row = $sql -> db_Fetch(); 
+				delete_children($row, $cid);
+			}
 		}
 	}
+
 	if($table == "news" || $table == "poll"){
 		clear_cache("comment.php?".e_QUERY);
 	}else if($table == "content"){
@@ -58,7 +62,6 @@ if(IsSet($_POST['moderate'])){
 	}
 	$message = MDCLAN_1;
 }
-
 
 if(IsSet($message)){
 	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
@@ -88,15 +91,38 @@ if(!$sql -> db_Select("comments", "*", "comment_type=$type AND comment_item_id=$
 			$comment_nick = eregi_replace("[0-9]+\.", "", $comment_author);
 		}
 		$comment_comment = $aj -> tpa($comment_comment);
-		$text .= "<tr><td class='forumheader3' style='width:5%; text-align: center;'>".($comment_blocked ? "<img src='".e_IMAGE."generic/blocked.png' />" : "&nbsp;")."</td><td class='forumheader3' style='width:15%'>$datestamp</td><td class='forumheader3' style='width:20%'><b>".$comment_nick."</b><br />".$comment_str."</td><td class='forumheader3' style='width:40%'>".$comment_comment."</td><td class='forumheader3' style='width:20%' style='text-align:center'>".($comment_blocked ?  "<input type='checkbox' name='comment_unblocked[]' value='$comment_id'> ".MDCLAN_5."" : "<input type='checkbox' name='comment_blocked[]' value='$comment_id'> ".MDCLAN_6."")."&nbsp;<input type='checkbox' name='comment_delete[]' value='$comment_id'> ".MDCLAN_7."</td></tr>";
+		$text .= "<tr><td class='forumheader3' style='width:5%; text-align: center;'>".($comment_blocked ? "<img src='".e_IMAGE."generic/blocked.png' />" : "&nbsp;")."</td><td class='forumheader3' style='width:15%'>$datestamp</td><td class='forumheader3' style='width:15%'><b>".$comment_nick."</b><br />".$comment_str."</td><td class='forumheader3' style='width:40%'>".$comment_comment."</td><td class='forumheader3' style='width:25%' style='text-align:center'>".($comment_blocked ?  "<input type='checkbox' name='comment_unblocked[]' value='$comment_id'> ".MDCLAN_5."" : "<input type='checkbox' name='comment_blocked[]' value='$comment_id'> ".MDCLAN_6."")."&nbsp;<input type='checkbox' name='comment_delete[]' value='$comment_id'> ".MDCLAN_7."</td></tr>";
 
 	}
 
-	$text .= "<tr><td colspan='5' class='forumheader' style='text-align:center'><input class='button' type='submit' name='moderate' value='".MDCLAN_8."' /></td></tr></table></form></div>";
+	$text .= "<tr><td colspan='5' class='forumheader' style='text-align:center'>".MDCLAN_9."</td></tr>
+	<tr><td colspan='5' class='forumheader' style='text-align:center'><input class='button' type='submit' name='moderate' value='".MDCLAN_8."' /></td></tr></table></form></div>";
 
 }
 
 $ns -> tablerender(MDCLAN_8, $text);
 
 require_once("footer.php");
+
+
+	function delete_children($row, $cid){
+		global $sql;
+		extract($row);
+		$tmp = explode(".", $row['comment_author']);
+		$u_id = $tmp[0];
+		if($u_id >= 1){
+			$sql -> db_Update("user", "user_comments=user_comments-1 WHERE user_id='$u_id'");
+		}
+		$sql2 = new db;
+		if($sql2 -> db_Select("comments", "*", "comment_pid='$comment_id'")){
+				while($row = $sql2 -> db_Fetch()){
+					delete_children($row, $row['comment_id']);
+				}
+		}
+		$c_del[] = $cid;
+		while (list ($key, $cid) = each ($c_del)){ 
+			
+			$sql -> db_Delete("comments", "comment_id='$cid'");
+		}
+	}
 ?>	

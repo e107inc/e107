@@ -244,7 +244,7 @@ if(USER){
 	}
 }
 
-$THREADDATESTAMP = "<a id='anchor_$thread_id'>".IMAGE_post."</a> ".$gen->convert_date($thread_datestamp, "forum");
+$THREADDATESTAMP = "<a id='$thread_id'>".IMAGE_post."</a> ".$gen->convert_date($thread_datestamp, "forum");
 $thread_thread = wrap($thread_thread);
 $POST = $aj -> tpa($thread_thread, "forum");
 if(ADMIN && $iphost){ $POST .= "<br />".$iphost; }
@@ -328,7 +328,7 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 			}
 		}
 
-		$THREADDATESTAMP = "<a id='anchor_$thread_id'>".IMAGE_post."</a> ".$gen->convert_date($thread_datestamp, "forum");
+		$THREADDATESTAMP = "<a id='$thread_id'>".IMAGE_post."</a> ".$gen->convert_date($thread_datestamp, "forum");
 		$thread_thread = wrap($thread_thread);
 		$POST = $aj -> tpa($thread_thread, "forum");
 		if(ADMIN && $iphost){ $POST .= "<br />".$iphost; }

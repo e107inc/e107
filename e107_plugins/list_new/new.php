@@ -30,7 +30,7 @@ if($news_items = $sql -> db_Select("news", "*", "news_datestamp>$lvisit  ORDER B
 	while($row = $sql -> db_Fetch()){
 		extract($row);
 		if(check_class($news_class)){
-			$str .= "$bullet<a href='".e_BASE."comment.php?$news_id'>$news_title<br />";
+			$str .= "$bullet<a href='".e_BASE."comment.php?comment.news.$news_id'>$news_title<br />";
 		}
 	}
 }else{
@@ -54,7 +54,7 @@ if($comments = $sql -> db_Select("comments", "*", "comment_datestamp>$lvisit ORD
 				$sql2 -> db_Select("news", "*", "news_id=$comment_item_id ");
 				$row = $sql2 -> db_Fetch(); extract($row);
 				if(check_class($news_class)){
-					$str .= $bullet."[ News item ] Re: <a href='".e_BASE."comment.php?$comment_item_id'>$news_title</a><br />";
+					$str .= $bullet."[ News item ] Re: <a href='".e_BASE."comment.php?comment.news.$comment_item_id'>$news_title</a><br />";
 				}
 			break;
 
@@ -95,7 +95,7 @@ if($comments = $sql -> db_Select("comments", "*", "comment_datestamp>$lvisit ORD
 			case 4:	//	poll comment
 				$sql2 -> db_Select("poll", "*", "poll_id=$comment_item_id ");
 				$row = $sql2 -> db_Fetch(); extract($row);
-				$str .= $bullet."[ Poll ] Re: <a href='".e_BASE."comment.php?poll.$comment_item_id'>$poll_title</a><br />";
+				$str .= $bullet."[ Poll ] Re: <a href='".e_BASE."comment.php?comment.poll..$comment_item_id'>$poll_title</a><br />";
 			break;
 
 			

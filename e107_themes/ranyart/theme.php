@@ -239,16 +239,15 @@ function tablestyle($caption, $text){
 }
 
 $COMMENTSTYLE = "
-<div style='text-align:center'>
 <table style='width:95%'>
 <tr>
-<td colspan='2' class='alttd9'>
-<img src='".THEME."images/bullet2.gif' alt='' /> 
+<td colspan='2' class='forumheader3'>
+{SUBJECT}
 <b>
 {USERNAME}
 </b>
- | 
- {TIMEDATE}
+|
+{TIMEDATE}
 </td>
 </tr>
 <tr>
@@ -261,13 +260,14 @@ $COMMENTSTYLE = "
 <br />
 {JOINED}
 </span>
+<br/>
+{REPLY}
 </td>
 <td style='width:70%; vertical-align:top'>
 {COMMENT}
 </td>
 </tr>
 </table>
-</div>
 <br />";
 
 $POLLSTYLE = <<< EOF
