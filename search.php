@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-03-22 14:16:34 $
+|     $Revision: 1.28 $
+|     $Date: 2005-03-23 21:15:34 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -36,9 +36,9 @@ if (isset($_GET)) {
 }
 
 $search_info = array();
-
+$auto_order = 1000;
 function search_info($id, $type, $plug_require, $info='') {
-	global $tp, $search_prefs;
+	global $tp, $search_prefs, $auto_order;
 	if (check_class($search_prefs[$type.'_handlers'][$id]['class'])) {
 		if ($plug_require) {
 			require_once($plug_require);
@@ -50,6 +50,8 @@ function search_info($id, $type, $plug_require, $info='') {
 		$ret['results'] = $search_prefs[$type.'_handlers'][$id]['results'];
 		$ret['pre_title'] = $search_prefs[$type.'_handlers'][$id]['pre_title'];
 		$ret['pre_title_alt'] = $tp -> toHtml($search_prefs[$type.'_handlers'][$id]['pre_title_alt']);
+		$ret['order'] = $search_prefs[$type.'_handlers'][$id]['order'] ? $search_prefs[$type.'_handlers'][$id]['order'] : $auto_order;
+		$auto_order++;
 		return $ret;
 	} else {
 		return FALSE;
@@ -76,6 +78,20 @@ foreach ($search_prefs['plug_handlers'] as $plug_dir => $active) {
 		$search_id++;
 	}
 }
+
+function arraySort($array, $column, $order = SORT_DESC){
+	/* sorts multi-dimentional array based on which field is passed */
+	$i=0;
+	foreach($array as $info) {
+		$sortarr[]=$info[$column];
+		$i++;
+	}
+	array_multisort($sortarr, $order, $array, $order);
+	return($array);
+	/* end method */
+}
+
+$search_info = arraySort($search_info, 'order', SORT_ASC);
 
 $search_count = count($search_info);
 $google_id = $search_count + 1;

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/search.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-03-22 13:42:19 $
+|     $Revision: 1.12 $
+|     $Date: 2005-03-23 21:13:44 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -49,6 +49,7 @@ if (isset($_POST['updatesettings'])) {
 		$search_prefs['core_handlers'][$s_key]['results'] = $tp -> toDB($_POST['core_handlers'][$s_key]['results']);
 		$search_prefs['core_handlers'][$s_key]['pre_title'] = $_POST['core_handlers'][$s_key]['pre_title'];
 		$search_prefs['core_handlers'][$s_key]['pre_title_alt'] = $tp -> toDB($_POST['core_handlers'][$s_key]['pre_title_alt']);
+		$search_prefs['core_handlers'][$s_key]['order'] = $_POST['core_handlers'][$s_key]['order'];
 	}
 
 	foreach ($search_prefs['plug_handlers'] as $plug_dir => $active) {
@@ -57,6 +58,7 @@ if (isset($_POST['updatesettings'])) {
 		$search_prefs['plug_handlers'][$plug_dir]['results'] = $tp -> toDB($_POST['plug_handlers'][$plug_dir]['results']);
 		$search_prefs['plug_handlers'][$plug_dir]['pre_title'] = $_POST['plug_handlers'][$plug_dir]['pre_title'];
 		$search_prefs['plug_handlers'][$plug_dir]['pre_title_alt'] = $tp -> toDB($_POST['plug_handlers'][$plug_dir]['pre_title_alt']);
+		$search_prefs['plug_handlers'][$plug_dir]['order'] = $_POST['plug_handlers'][$plug_dir]['order'];
 	}
 	
 	foreach ($search_prefs['comments_handlers'] as $key => $value) {
@@ -71,12 +73,13 @@ if (isset($_POST['updatesettings'])) {
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 
+$handlers_total = count($search_prefs['core_handlers']) + count($search_prefs['plug_handlers']);
+
 if (isset($message)) {
 		$ns->tablerender("", "<div style='text-align:center'><b>".LAN_UPDATED."</b></div>");
 }
 
-$text = "<div style='text-align:center'>
-<form method='post' action='".e_SELF."'>
+$text = "<form method='post' action='".e_SELF."'><div style='text-align:center'>
 <table style='".ADMIN_WIDTH."' class='fborder'>";
 
 $text .= "<tr>
@@ -132,13 +135,13 @@ $text .= "<tr>
 </tr>";
 
 $text .= "</table>
-</div>";
+</div><br />";
 
 $text .= "<div style='text-align:center'>
 <table style='".ADMIN_WIDTH."' class='fborder'>";
 
 $text .= "<tr>
-<td class='fcaption' colspan='5'>".SEALAN_21."</td>
+<td class='fcaption' colspan='6'>".SEALAN_21."</td>
 </tr>";
 
 $text .= "<tr>
@@ -147,11 +150,12 @@ $text .= "<tr>
 <td class='forumheader'>".SEALAN_27."</td>
 <td class='forumheader'>".SEALAN_28."</td>
 <td class='forumheader'>".SEALAN_26."</td>
+<td class='forumheader'>".SEALAN_29."</td>
 </tr>";
 
 foreach($search_handlers as $key => $value) {
 	$text .= "<tr>
-	<td style='width:45%; white-space:nowrap' class='forumheader3'>".$value."</td>
+	<td style='width:40%; white-space:nowrap' class='forumheader3'>".$value."</td>
 	<td style='width:10%' class='forumheader3'>";
 	$text .= r_userclass("core_handlers[".$key."][class]", $search_prefs['core_handlers'][$key]['class'], "off", "public,guest,nobody,member,admin,classes");
 	$text .= "</td>
@@ -162,14 +166,21 @@ foreach($search_handlers as $key => $value) {
 	<input type='radio' name='core_handlers[".$key."][pre_title]' value='0'".(($search_prefs['core_handlers'][$key]['pre_title'] == 0) ? " checked='checked'" : "")." /> ".SEALAN_17."&nbsp;&nbsp;
 	<input type='radio' name='core_handlers[".$key."][pre_title]' value='2'".(($search_prefs['core_handlers'][$key]['pre_title'] == 2) ? " checked='checked'" : "")." /> ".SEALAN_23."&nbsp;&nbsp;
 	".$rs -> form_text("core_handlers[".$key."][pre_title_alt]", 20, $tp -> toForm($search_prefs['core_handlers'][$key]['pre_title_alt']))."
-	</td>
-	</tr>";
+	</td>";
+	$text .= "<td style='width:5%; text-align:center' class='forumheader3'>";
+	$text .= "<select name='core_handlers[".$key."][order]' class='tbox'>";
+	for($a = 1; $a <= $handlers_total; $a++) {
+		$text .= ($search_prefs['core_handlers'][$key]['order'] == $a) ? "<option value='".$a."' selected='selected'>".$a."</option>" : "<option value='".$a."'>".$a."</option>";
+	}
+	$text .= "</select>";
+	$text .= "</td>";
+	$text .= "</tr>";
 }
 
 foreach ($search_prefs['plug_handlers'] as $plug_dir => $active) {
 	require_once(e_PLUGIN.$plug_dir."/e_search.php");
 	$text .= "<tr>
-	<td style='width:45%; white-space:nowrap' class='forumheader3'>".$search_info[0]['qtype']."</td>
+	<td style='width:40%; white-space:nowrap' class='forumheader3'>".$search_info[0]['qtype']."</td>
 	<td style='width:10%' class='forumheader3'>";
 	$text .= r_userclass("plug_handlers[".$plug_dir."][class]", $search_prefs['plug_handlers'][$plug_dir]['class'], "off", "public,guest,nobody,member,admin,classes");
 	unset($search_info);
@@ -181,33 +192,50 @@ foreach ($search_prefs['plug_handlers'] as $plug_dir => $active) {
 	<input type='radio' name='plug_handlers[".$plug_dir."][pre_title]' value='0'".(($search_prefs['plug_handlers'][$plug_dir]['pre_title'] == 0) ? " checked='checked'" : "")." /> ".SEALAN_17."&nbsp;&nbsp;
 	<input type='radio' name='plug_handlers[".$plug_dir."][pre_title]' value='2'".(($search_prefs['plug_handlers'][$plug_dir]['pre_title'] == 2) ? " checked='checked'" : "")." /> ".SEALAN_23."&nbsp;&nbsp;
 	".$rs -> form_text("plug_handlers[".$plug_dir."][pre_title_alt]", 20, $tp -> toForm($search_prefs['plug_handlers'][$plug_dir]['pre_title_alt']))."
-	</td>
-	</tr>";
+	</td>";
+	$text .= "<td style='width:5%; text-align:center' class='forumheader3'>";
+	$text .= "<select name='plug_handlers[".$plug_dir."][order]' class='tbox'>";
+	for($a = 1; $a <= $handlers_total; $a++) {
+		$text .= ($search_prefs['plug_handlers'][$plug_dir]['order'] == $a) ? "<option value='".$a."' selected='selected'>".$a."</option>" : "<option value='".$a."'>".$a."</option>";
+	}
+	$text .= "</select>";
+	$text .= "</td>";
+	$text .= "</tr>";
 }
 
 $text .= "<tr>
-<td style='width:45%; white-space:nowrap' class='forumheader3'>Google</td>
-<td style='width:55%' colspan='4' class='forumheader3'>";
+<td style='width:40%; white-space:nowrap' class='forumheader3'>Google</td>
+<td style='width:55%' colspan='5' class='forumheader3'>";
 $sel = (isset($search_prefs['google']) && $search_prefs['google']) ? " checked='checked'" : "";
 $text .= r_userclass("google", $search_prefs['google'], "off", "public,guest,nobody,member,admin,classes");
 $text .= "</td>
 </tr>";
 
 $text .= "<tr>
-<td class='fcaption' colspan='5'>".SEALAN_18."</td>
+<td colspan='6' style='text-align:center' class='forumheader'>".$rs -> form_button("submit", "updatesettings", LAN_UPDATE)."</td>
+</tr>";
+
+$text .= "</table>
+</div><br />";
+
+$text .= "<div style='text-align:center'>
+<table style='".ADMIN_WIDTH."' class='fborder'>";
+
+$text .= "<tr>
+<td class='fcaption' colspan='6'>".SEALAN_18."</td>
 </tr>";
 
 $text .= "<tr>
 <td class='forumheader'>".SEALAN_24."</td>
-<td class='forumheader' colspan='4'>".SEALAN_25."</td>
+<td class='forumheader' colspan='5'>".SEALAN_25."</td>
 </tr>";
 
 foreach ($search_prefs['comments_handlers'] as $key => $value) {
 	$path = ($value['dir'] == 'core') ? e_HANDLER.'search/comments_'.$key.'.php' : e_PLUGIN.$value['dir'].'/comments_search.php';
 	require_once($path);
 	$text .= "<tr>
-	<td style='width:45%; white-space:nowrap' class='forumheader3'>".$comments_title."</td>
-	<td style='width:55%;' colspan='4' class='forumheader3'>";
+	<td style='width:40%; white-space:nowrap' class='forumheader3'>".$comments_title."</td>
+	<td style='width:60%;' colspan='4' class='forumheader3'>";
 	$text .= r_userclass("comments_handlers[".$key."][class]", $search_prefs['comments_handlers'][$key]['class'], "off", "public,guest,nobody,member,admin,classes");
 	$text .= "</td>
 	</tr>";
@@ -219,8 +247,8 @@ $text .= "<tr>
 </tr>";
 
 $text .= "</table>
-</form>
-</div>";
+</div>
+</form>";
 
 $ns -> tablerender(SEALAN_1, $text);
 
