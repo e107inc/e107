@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-02-17 05:08:54 $
-|     $Author: e107coders $
+|     $Revision: 1.11 $
+|     $Date: 2005-02-17 21:02:23 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -205,6 +205,10 @@ if ($action == "opt") {
 	$forum->show_prefs();
 }
 
+if ($action == "mods") {
+	$forum->show_mods();
+}
+
 if ($action == "prune") {
 	$forum->show_prune();
 }
@@ -235,16 +239,18 @@ if (!e_QUERY || $action == "main") {
 
 //$forum->show_options($action);
 require_once(e_ADMIN."footer.php");
-function headerjs() {
+function headerjs()
+{
+	global $tp;
 // These functions need to be removed and replaced with the generic jsconfirm() function. 
 	$headerjs = "<script type=\"text/javascript\">
 		function confirm_(mode, forum_id, forum_name) {
 		if (mode == 'sr') {
-		return confirm(\"".$tp->unentity(FORLAN_117)."\");
+		return confirm(\"".$tp->toJS(FORLAN_117)."\");
 		} else if(mode == 'parent') {
-		return confirm(\"".$tp->unentity(FORLAN_81)." [ID: \" + forum_name + \"]\");
+		return confirm(\"".$tp->toJS(FORLAN_81)." [ID: \" + forum_name + \"]\");
 		} else {
-		return confirm(\"".$tp->unentity(FORLAN_82)." [ID: \" + forum_name + \"]\");
+		return confirm(\"".$tp->toJS(FORLAN_82)." [ID: \" + forum_name + \"]\");
 		}
 		}
 		</script>";
@@ -281,6 +287,10 @@ class forum {
 			$var['sr']['text'] = FORLAN_116;
 			$var['sr']['link'] = e_SELF."?sr";
 		}
+		$var['mods']['text'] = FORLAN_33;
+		$var['mods']['link'] = e_SELF."?mods";
+		
+	
 		show_admin_menu(FORLAN_7, $action, $var);
 	}
 	function show_existing_forums($sub_action, $id, $mode = FALSE) {
@@ -871,6 +881,62 @@ class forum {
 			document.getElementById('wmform').helpadmin.value = help;
 			}
 			</script>";
+	}
+	
+	
+	function show_mods()
+	{
+		global $sql, $ns;
+		if($sql->db_Select('forum','forum_id, forum_name, forum_moderators','forum_parent != 0'))
+		{
+			while($row = $sql->db_Fetch())
+			{
+				$forumList[] = $row;
+			}
+		}
+		if($sql->db_Select('user','user_name','user_admin != 0'))
+		{
+			while($row = $sql->db_Fetch())
+			{
+				$adminList[] = $row;
+			}
+		}
+		$txt = "<form><table><tr><td> &nbsp; </td>";
+		foreach($adminList as $name)
+		{
+			$txt .= "<td>";
+			for($i=0; $i<strlen($name['user_name']); $i++)
+			{
+				$txt .= $name['user_name']{$i}."<br />";
+			}
+			$txt .= "</td>";
+		}
+		$txt .= "</tr>";
+		foreach($forumList as $f)
+		{
+			$mods = explode(",",$f['forum_moderators']);
+			foreach($mods as $k => $v)
+			{
+				$mods[$k] = trim($v);
+			}
+			$txt .= "<tr><td>{$f['forum_name']}</td>";
+			foreach($adminList as $name)
+			{
+
+				if(in_array($name['user_name'],$mods))
+				{
+					$chk = " checked = 'checked' ";
+				}
+				else
+				{
+					$chk = "";
+				}
+				$txt .= "<td><input type='checkbox' {$chk} /></td>";
+			}
+			$txt .= "</tr>";
+		}
+		$txt .= "</table>";		
+		$ns->tablerender("WORK IN PROGRESS !!!", $txt);
 	}
 }
 
