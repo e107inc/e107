@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-01-28 13:24:15 $
-|     $Author: mrpete $
+|     $Revision: 1.12 $
+|     $Date: 2005-02-03 19:09:04 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 @include("e107_handlers/errorhandler_class.php");
@@ -493,10 +493,8 @@ function create_tables() {
 	mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Downloads', 'download.php', '', '', 1, 3, 0, 0, 0) ");
 	mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Members', 'user.php', '', '', 1, 4, 0, 0, 0) ");
 	mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Submit News', 'submitnews.php', '', '', 1, 5, 0, 0, 0) ");
-	mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Submit Article', 'subcontent.php?article', '', '', 1, 6, 0, 0, 255) ");
-	mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Submit Review', 'subcontent.php?review', '', '', 1, 7, 0, 0, 255) ");
-	mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Stats', 'stats.php', '', '', 1, 8, 0, 0, 0) ");
-	mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Site Map', 'sitemap.php', '', '', 1, 9, 0, 0, 0) ");
+	mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Stats', 'stats.php', '', '', 1, 6, 0, 0, 0) ");
+	mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Site Map', 'sitemap.php', '', '', 1, 7, 0, 0, 0) ");
 	 
 	 
 	$e107['e107_author'] = "Steve Dunstan (jalist)";
