@@ -1,9 +1,17 @@
+table { margin-left:auto; margin-right:auto; }
+.searchhighlight{text-decoration: underline;color:#FF0000;font-weight:bold;}
+
+/*
+ * Please DO NOT USE or reference any of the following class definitions.
+ * They are not referenced anywhere in the e107 core. (0.700, 7 Feb 2005)
+ * This file will be eliminated after the remaining definitions (above) 
+ *   have been either verified as unnecessary, or added to all themes.
+ */
+
 .defaulttable, .fbdefault, .fdefault, .f2default, .f3default, .fcdefault{ display: block; width: auto; }
 .center{ text-align:center; }
 .right { text-align:right; }
 .left { text-align:left; }
-table { margin-left:auto; margin-right:auto; }
-.searchhighlight{text-decoration: underline;color:#FF0000;font-weight:bold;}
 .day {
   text-align: center;
   background: #F1EAE1;
