@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/class2.php,v $
-|     $Revision: 1.110 $
-|     $Date: 2005-01-11 15:27:37 $
-|     $Author: pholzmann $
+|     $Revision: 1.111 $
+|     $Date: 2005-01-20 20:15:02 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -1136,7 +1136,7 @@ function init_session() {
 		define('USERCLASS','');
 	} else {
 		list($uid, $upw) = ($_COOKIE[$pref['cookie_name']] ? explode(".", $_COOKIE[$pref['cookie_name']]) : explode(".", $_SESSION[$pref['cookie_name']]));
-		if (empty($uid) || empty($upw)) // corrupt cookie?
+		if (empty($uid) || empty($upw) || !preg_match('/^[A-Fa-f0-9]{32}$/', $upw)) // corrupt cookie?
 		{
 			cookie($pref['cookie_name'], "", (time()-2592000));
 			$_SESSION[$pref['cookie_name']] = "";
@@ -1147,7 +1147,7 @@ function init_session() {
 			define("LOGINMESSAGE", "Corrupted cookie detected - logged out.<br /><br />");
 			return(FALSE);
 		}
-		if ($sql->db_Select("user", "*", "user_id='$uid' AND md5(user_password)='$upw'")) {
+		if ($sql->db_Select("user", "*", "user_id='".intval($uid)."' AND md5(user_password)='$upw'")) {
 			$result = $sql->db_Fetch();
 			extract($result);
 			define("USERID", $user_id);
