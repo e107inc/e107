@@ -235,7 +235,7 @@ if(strstr(e_QUERY, "install")){
                                 $i++;
                         }
                         if($i<255){
-                                $sql -> db_Insert("userclass_classes", $i.", '".strip_tags(strtoupper($eplug_userclass))."', '$eplug_userclass_description' ");
+                                $sql -> db_Insert("userclass_classes", $i.", '".strip_tags(strtoupper($eplug_userclass))."', '{$eplug_userclass_description}' ,".e_UC_PUBLIC);
                         }
                 }
 
