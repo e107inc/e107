@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-03-08 17:12:03 $
+|     $Revision: 1.14 $
+|     $Date: 2005-03-09 05:28:42 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -66,7 +66,7 @@ while (false !== ($file = readdir($handle))) {
 $search_count = count($search_info);
 $google_id = $search_count + 1;
 
-if (isset($_POST['searchquery'][$google_id]) && $_POST['searchtype'][$google_id]) {
+if (isset($_POST['searchquery']) && isset($_POST['searchtype'][$google_id]) && $_POST['searchtype'][$google_id]) {
 	header("location:http://www.google.com/search?q=".stripslashes(str_replace(" ", "+", $_POST['searchquery'])));
 	exit;
 }
@@ -77,20 +77,17 @@ if ($_POST['searchquery'] && strlen($_POST['searchquery']) < 3) {
 	$ns->tablerender(LAN_180, LAN_201);
 	unset($_POST['searchquery']);
 }
-	
 
-	
-//$search_info[99]=array( 'sfile' => '','qtype' => LAN_192);
-	
 $con = new convert;
+echo $_SERVER['HTTP_REFERER'];
 if (isset($_SERVER['HTTP_REFERER'])) {
-if (!$refpage = substr($_SERVER['HTTP_REFERER'], (strrpos($_SERVER['HTTP_REFERER'], "/")+1))) {
-	$refpage = "index.php";
-}
+	if (!$refpage = substr($_SERVER['HTTP_REFERER'], (strrpos($_SERVER['HTTP_REFERER'], "/")+1))) {
+		$refpage = "index.php";
+	}
 } else {
 	$refpage = "";
 }
-	
+echo $refpage;
 if (isset($_POST['searchquery']) && $_POST['searchquery'] != "") {
 	$query = $_POST['searchquery'];
 } else {
