@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/filemanager.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-02-13 02:10:36 $
-|     $Author: e107coders $
+|     $Revision: 1.11 $
+|     $Date: 2005-02-19 16:33:27 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -110,12 +110,7 @@ if (isset($_POST['upload'])) {
 	}
 	$pref['upload_storagetype'] = "1";
 	require_once(e_HANDLER."upload_handler.php");
-
 	$files = $_FILES['file_userfile'];
-
-
-
-
 	foreach($files['name'] as $key => $name) {
 		if ($files['size'][$key]) {
 			$uploaded = file_upload(e_BASE.$_POST['upload_dir'][$key]);
