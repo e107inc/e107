@@ -562,15 +562,15 @@ function req($field){
 function headerjs(){
 $script_txt = "<script type=\"text/javascript\">
 function addtext3(sc){
-        document.signupform.image.value = sc;
+        document.getElementById('signupform').image.value = sc;
 }
 
 function addsig(sc){
-        document.signupform.signature.value += sc;
+        document.getElementById('signupform').signature.value += sc;
 
 }
 function help(help){
-        document.signupform.helpb.value = help;
+        document.getElementById('signupform').helpb.value = help;
 
 
 }
