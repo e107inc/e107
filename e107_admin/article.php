@@ -311,6 +311,7 @@ if($action == "create"){
         }
 
         require_once(e_HANDLER."userclass_class.php");
+        	
         $text = "<div style='text-align:center'>
         ".$rs -> form_open("post", e_SELF."?".e_QUERY."", "dataform")."
 
@@ -336,8 +337,8 @@ if($action == "create"){
                 <a href=\"javascript:void(0);\" onclick=\"expandit(this);\" >".ARLAN_100."</a>\n
         <span style=\"display: none;\" >
                 <br /><br />
-                <input class='tbox' type='text' name='content_author' size='60' value='".($content_author ? $content_author : ARLAN_84)."' maxlength='100' ".($content_author ? "" : "onFocus=\"document.dataform.content_author.value='';\"")." /><br />
-        <input class='tbox' type='text' name='content_author_email' size='60' value='".($content_author_email ? $content_author_email : ARLAN_85)."' maxlength='100' ".($content_author_email ? "" : "onFocus=\"document.dataform.content_author_email.value='';\"")." /><br />
+                <input class='tbox' type='text' name='content_author' size='60' value='".($content_author ? $content_author : ARLAN_84)."' maxlength='100' ".($content_author ? "" : "onFocus=\"if(document.dataform.content_author.value=='".ARLAN_84."'){document.dataform.content_author.value='';}\"")." /><br />
+        <input class='tbox' type='text' name='content_author_email' size='60' value='".($content_author_email ? $content_author_email : ARLAN_85)."' maxlength='100' ".($content_author_email ? "" : "onFocus=\"if(document.dataform.content_author_email.value=='".ARLAN_85."'){document.dataform.content_author_email.value='';}\"")." /><br />
         </span>
                 </td>
         </tr>
