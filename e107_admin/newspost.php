@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.7 $
-|   $Date: 2004-12-12 15:26:21 $
+|   $Revision: 1.8 $
+|   $Date: 2004-12-12 22:47:36 $
 |   $Author: sweetas $
 +---------------------------------------------------------------+
 
@@ -480,7 +480,7 @@ class newspost{
                 <td style='width:80%' class='forumheader3'>
                 <a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_83."</a>
                 <div style='display: none;'>
-                <textarea class='tbox' id='news_extended' name='news_extended' cols='80' rows='15' style='width:100%;height:50px' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".(strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]../", "[img]", $_POST['news_extended']))."</textarea>
+                <textarea class='tbox' id='news_extended' name='news_extended' cols='80' rows='15' style='width:100%;height:50px' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".(strstr($_POST['news_extended'], "[img]http") ? $_POST['news_extended'] : str_replace("[img]../", "[img]", $_POST['news_extended']))."</textarea>
                 ";
         if($pref['htmlarea'] && ($pref['htmlarea'] && !eregi("MSIE",$_SERVER['HTTP_USER_AGENT']))){ $text .="<br />
                 <input class='helpbox' type='text' name='help_ext' size='100' />
