@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-31 21:49:21 $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-31 21:54:22 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -148,7 +148,9 @@ class rssCreate {
 					}
 					$this -> rssItems[$loop]['title'] = htmlspecialchars($value['thread_name']);
 					$this -> rssItems[$loop]['link'] = $e107->HTTPPath.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'];
-					$this -> rssItems[$loop]['description'] = htmlspecialchars($value['thread_thread']);
+
+					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? htmlspecialchars($value['thread_thread']) : htmlspecialchars(substr($value['thread_thread'], 0, 100)));
+
 					$loop++;
 				}
 				break;
@@ -179,7 +181,9 @@ class rssCreate {
 						$this -> rssItems[$loop]['title'] = htmlspecialchars($value['thread_name']);
 						$this -> rssItems[$loop]['link'] = $e107->HTTPPath.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'];
 					}
-					$this -> rssItems[$loop]['description'] = htmlspecialchars($value['thread_thread']);
+
+					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? htmlspecialchars($value['thread_thread']) : htmlspecialchars(substr($value['thread_thread'], 0, 100)));
+
 					$loop++;
 				}
 				break;
@@ -217,7 +221,7 @@ class rssCreate {
 				$this -> rssItems[$loop]['title'] = htmlspecialchars($topic['thread_name']);
 				$this -> rssItems[$loop]['link'] = $e107->HTTPPath.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$topic['thread_id'];
 				
-				$this -> rssItems[$loop]['description'] = htmlspecialchars($topic['thread_thread']);
+				$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? htmlspecialchars($value['thread_thread']) : htmlspecialchars(substr($value['thread_thread'], 0, 100)));
 				
 				$loop ++;
 
