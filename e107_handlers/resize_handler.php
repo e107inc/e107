@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/resize_handler.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:27 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-15 22:38:40 $
+|     $Author: pholzmann $
 +----------------------------------------------------------------------------+
 */
 /* 07-04-2004 - unknown: removed source/destination file rewriting, this should not break existing code */
@@ -61,7 +61,7 @@ if($image_stats == null){ echo "<b>DEBUG</b> image_stats are null<br />"; return
                         /* if destination is stdout, output directly to the browser */
                         $destination_file = "jpg:-";
                         header("Content-type: image/jpeg");
-                        passthru ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." '".$source_file."' '".$destination_file."'");
+			passthru ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." ".escapeshellarg($source_file)." '".$destination_file."'");
                 }else{
                         /* otherwise output to file */
                         if($model == "copy"){
