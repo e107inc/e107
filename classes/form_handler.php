@@ -2,7 +2,7 @@
 /*
 +---------------------------------------------------------------+
 |	e107 website system
-|	/classes/form_class.php
+|	/classes/form_handler.php
 |
 |	©Steve Dunstan 2001-2002
 |	http://e107.org
@@ -15,11 +15,11 @@
 
 class form{
 
-	function form_open($form_method, $form_action, $form_name="", $form_target = ""){
+	function form_open($form_method, $form_action, $form_name="", $form_target = "", $form_enctype=""){
 		$method = ($form_method ? "method='".$form_method."'" : ""); 
 		$target = ($form_target ? " target='".$form_target."'" : "");
 		$name = ($form_name ? " name='".$form_name."'" : "");
-		return "\n<form action='".$form_action."' ".$method.$target.$name.">";
+		return "\n<form action='".$form_action."' ".$method.$target.$name.$form_enctype.">";
 	}
 
 	function form_text($form_name, $form_size, $form_value, $form_maxlength, $form_class="tbox", $form_readonly="", $form_tooltip=""){
@@ -29,6 +29,15 @@ class form{
 		$readonly = ($form_readonly ? " readonly='readonly'" : "");
 		$tooltip = ($form_tooltip ? " title='".$form_tooltip."'" : "");
 		return "\n<input class='".$form_class."' type='text' name='".$form_name."' ".$value.$size.$maxlength.$readonly.$tooltip." />";
+	}
+
+	function form_password($form_name, $form_size, $form_value, $form_maxlength, $form_class="tbox", $form_readonly="", $form_tooltip=""){
+		$value = ($form_value ? " value='".$form_value."'" : "");
+		$size = ($form_size ? " size='".$form_size."'" : "");
+		$maxlength = ($form_maxlength ? " maxlength='".$form_maxlength."'" : "");
+		$readonly = ($form_readonly ? " readonly='readonly'" : "");
+		$tooltip = ($form_tooltip ? " title='".$form_tooltip."'" : "");
+		return "\n<input class='".$form_class."' type='password' name='".$form_name."' ".$value.$size.$maxlength.$readonly.$tooltip." />";
 	}
 
 	function form_button($form_type, $form_name, $form_value, $form_js="", $form_image="", $form_tooltip=""){

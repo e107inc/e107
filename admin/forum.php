@@ -13,7 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("5")){ header("location:".e_HTTP."index.php"); }
+if(!getperms("5")){ header("location:".e_HTTP."index.php"); exit; }
 require_once("auth.php");
 
 
@@ -28,12 +28,14 @@ if($action == "dec"){
 	$sql -> db_Update("forum", "forum_order=forum_order-1 WHERE forum_order='".($forum_order+1)."' ");
 	$sql -> db_Update("forum", "forum_order=forum_order+1 WHERE forum_id='$forum_id' ");
 	header("location: ".e_SELF);
+	exit;
 }
 
 if($action == "inc"){
 	$sql -> db_Update("forum", "forum_order=forum_order+1 WHERE forum_order='".($forum_order-1)."' ");
 	$sql -> db_Update("forum", "forum_order=forum_order-1 WHERE forum_id='$forum_id' ");
 	header("location: ".e_SELF);
+	exit;
 }
 
 $sql2 = new db;

@@ -186,6 +186,7 @@ if(USER == TRUE){
 	$text .= LAN_35;
 	if($total_new_threads == $total_read_threads && $total_new_threads !=0){
 		$text .= LAN_198;
+		$allread = TRUE;
 	}else if($total_read_threads != 0){
 		$text .= " (".LAN_196.$total_read_threads.LAN_197.")";
 	}
@@ -206,7 +207,7 @@ if(USER == TRUE){
 	}
 }
 
-if(USER){
+if(USER && $allread != TRUE){
 	$text .= "<br /><a href='".e_SELF."?mark.all.as.read'>".LAN_199."</a>";
 }
 

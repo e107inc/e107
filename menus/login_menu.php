@@ -13,33 +13,31 @@ if($pref['user_reg'][1] == 1 || ADMIN == TRUE){
 			}
 			$text .= "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_BASE."usersettings.php'>Settings</a>
 <br />
-<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".$_SERVER['PHP_SELF']."?logout'>".LAN_172."</a>";
+<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_BASE."?logout'>".LAN_172."</a>";
 		
 
 			if(!$sql -> db_Select("online", "*", "online_ip='$ip' AND online_user_id='0' ")){
 				$sql -> db_Delete("online", "online_ip='$ip' AND online_user_id='0' ");
-				$sql -> db_Insert("online", " '$timestamp', '1', '".USERID."', '$ip', '".$_SERVER['PHP_SELF']."' ");
 			}
 
 			$time = USERLV;
-			$new_news = $sql -> db_Count("news", "(*)", "WHERE news_datestamp>'".$time."' ");
-			$new_comments = $sql -> db_Count("comments", "(*)", "WHERE comment_datestamp>'".$time."' ");
-			$new_chat = $sql -> db_Count("chatbox", "(*)", "WHERE cb_datestamp>'".$time."' ");
-			$new_forum = $sql -> db_Count("forum_t", "(*)", "WHERE thread_datestamp>'".$time."' ");
-			$new_users = $sql -> db_Count("user", "(*)", "WHERE user_join>'".$time."' ");
+			$new_news = $sql -> db_Count("news", "(*)", "WHERE news_datestamp>'".$time."' "); if(!$new_news){ $new_news = "no"; }
+			$new_comments = $sql -> db_Count("comments", "(*)", "WHERE comment_datestamp>'".$time."' "); if(!$new_comments){ $new_comments = "no"; }
+			$new_chat = $sql -> db_Count("chatbox", "(*)", "WHERE cb_datestamp>'".$time."' "); if(!$new_chat){ $new_chat = "no"; }
+			$new_forum = $sql -> db_Count("forum_t", "(*)", "WHERE thread_datestamp>'".$time."' "); if(!$new_forum){ $new_forum = "no"; }
+			$new_users = $sql -> db_Count("user", "(*)", "WHERE user_join>'".$time."' "); if(!$new_users){ $new_users = "no"; }
 
 
 			$text .= "<br /><br />
 			<span class='smalltext'>
-			Since your last visit ...
-			<br />
-			$new_news news item(s)<br />
-			$new_chat chatbox post(s)<br />
-			$new_comments news comment(s)<br />
-			$new_forum forum post(s)<br />
-			$new_users new site member(s)</span>";
-
-			$ns -> tablerender(LAN_30." ".USERNAME, $text);
+			Since your last visit there have been 
+			$new_news ".($new_news == 1 ? "news item" : "news items").", 
+			$new_chat ".($new_chat == 1 ? "chatbox post" : "chatbox posts").", 
+			$new_comments ".($new_comments == 1 ? "comment" : "comments").", 
+			$new_forum ".($new_forum == 1 ? "forum post" : "forum posts")." and 
+			$new_users ".($new_users == 1 ? "new site member" : "new site members").".<span>";
+			$caption = (file_exists(THEME."images/login_menu.png") ? "<img src='".THEME."images/login_menu.png' alt='' /> ".LAN_30 : LAN_30);
+			$ns -> tablerender($caption, $text);
 
 
 		}else{
@@ -69,11 +67,12 @@ $text .= "'><p>
 <br />
 <input type='checkbox' name='autologin' value='1' /> Auto Login
 <br /><br />
-[ <a href='".e_BASE."signup.php'>".LAN_174."</a> ]<br />[ <a href='".e_BASE."fpw.php'>".LAN_212."</a> ]
+[ <a href='".e_BASE."signup.php'>".LAN_174."</a> ]<br />[ <a href='".e_BASE."fpw.php'> ".LAN_212."</a> ]
 </p>
 </form>
 </div>";
-		$ns -> tablerender(LAN_175, $text);
+		$caption = (file_exists(THEME."images/login_menu.png") ? "<img src='".THEME."images/login_menu.png' alt='' /> ".LAN_30 : LAN_30);
+		$ns -> tablerender($caption, $text);
 	}
 }
 ?>

@@ -21,7 +21,9 @@ if(!$pref['frontpage'][1] || $pref['frontpage_type'][1] == "splash"){
 	exit;
 }else if(eregi("http", $pref['frontpage'][1])){
 	header("location: ".e_BASE.$pref['frontpage'][1]);
+	exit;
 }else{
 	header("location: ".e_BASE.$pref['frontpage'][1].".php");
+	exit;
 }
 ?>

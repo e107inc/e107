@@ -20,6 +20,7 @@ require_once("class2.php");
 
 if(!e_QUERY){
 	header("Location:".e_HTTP."forum.php");
+	exit;
 }else{
 	$tmp = explode(".", e_QUERY);
 	$forum_id = $tmp[0]; $from = $tmp[1];
@@ -31,7 +32,7 @@ $view=15;
 $sql -> db_Select("forum", "*", "forum_id='".$forum_id."' ");
 $row = $sql-> db_Fetch(); extract($row);
 
-if(!$forum_active || $forum_class && !check_class($forum_class)){ header("Location:".e_HTTP."forum.php"); }
+if(!$forum_active || $forum_class && !check_class($forum_class)){ header("Location:".e_HTTP."forum.php"); exit;}
 
 //if(preg_match("/^".preg_quote(ADMINNAME)."/", $forum_moderators)){
 
@@ -65,9 +66,32 @@ $text = "<table style='width:100%' class='fborder'>
 	
 if($pages){
 	$text .= "<br />".LAN_316;
-	for($c=0; $c < $pages; $c++){
-		if($view*$c == $from ? $text .= "<b>".($c+1)."</b> " : $text .= "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
+	if($pages > 10){
+		$current = ($from/$view)+1;
+		for($c=0; $c<=2; $c++){
+			$text .= ($view*$c == $from ? "<u>".($c+1)."</u> " : "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
+		}
+		if($current >=3 && $current <= 5){
+			for($c=3; $c<=$current; $c++){
+				$text .= ($view*$c == $from ? "<u>".($c+1)."</u> " : "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
+			}
+		}else if($current >= 6){
+			$text .= " ... ";
+			for($c=($current-2); $c<=$current; $c++){
+				$text .= ($view*$c == $from ? "<u>".($c+1)."</u> " : "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
+			}
+		}
+		$text .= " ... ";
+		$tmp = $pages-3;
+		for($c=$tmp; $c<=($pages-1); $c++){
+			$text .= ($view*$c == $from ? "<u>".($c+1)."</u> " : "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
+		}
+	}else{
+		for($c=0; $c < $pages; $c++){
+			if($view*$c == $from ? $text .= "<u>".($c+1)."</u> " : $text .= "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
+		}
 	}
+	$text .= "<br />";
 }
 	
 $text .= "</td>
@@ -155,26 +179,8 @@ if(!$topics){
 		}else if(!$thread_active){
 			$icon = "<img src='".FTHEME."closed_small.png' alt='' />";
 		}
-		
-		
 
 		echo $icon;
-
-/*é
-		if($thread_s){
-			if(!$thread_active){
-				echo "<img src='".FTHEME."stickyclosed.png' alt='' />";
-			}else{
-				echo "<img src='".FTHEME."sticky.png' alt='' />";
-			}
-		}else if(!$thread_active){
-			echo "<img src='".FTHEME."closed.png' alt='' />";
-		}else if($newflag){
-			echo "<img src='".FTHEME."new.png' alt='' />";
-		}else{
-			echo "<img src='".FTHEME."nonew.png' alt='' />";
-		}
-*/
 
 		$result = preg_split("/\]/", $thread_name);
 
@@ -216,9 +222,31 @@ $text = "<table style='width:100%'>
 <tr>
 <td style='width:80%'>";
 if($pages){
-$text .= LAN_316;
-	for($c=0; $c < $pages; $c++){
-		if($view*$c == $from ? $text .= "<u>".($c+1)."</u> " : $text .= "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
+	$text .= "<br />".LAN_316;
+	if($pages > 10){
+		$current = ($from/$view)+1;
+		for($c=0; $c<=2; $c++){
+			$text .= ($view*$c == $from ? "<u>".($c+1)."</u> " : "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
+		}
+		if($current >=3 && $current <= 5){
+			for($c=3; $c<=$current; $c++){
+				$text .= ($view*$c == $from ? "<u>".($c+1)."</u> " : "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
+			}
+		}else if($current >= 6){
+			$text .= " ... ";
+			for($c=($current-2); $c<=$current; $c++){
+				$text .= ($view*$c == $from ? "<u>".($c+1)."</u> " : "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
+			}
+		}
+		$text .= " ... ";
+		$tmp = $pages-3;
+		for($c=$tmp; $c<=($pages-1); $c++){
+			$text .= ($view*$c == $from ? "<u>".($c+1)."</u> " : "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
+		}
+	}else{
+		for($c=0; $c < $pages; $c++){
+			if($view*$c == $from ? $text .= "<u>".($c+1)."</u> " : $text .= "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
+		}
 	}
 	$text .= "<br />";
 }

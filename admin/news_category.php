@@ -13,7 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("7")){ header("location:".e_HTTP."index.php"); }
+if(!getperms("7")){ header("location:".e_HTTP."index.php"); exit;}
 require_once("auth.php");
 
 $qs = explode(".", e_QUERY);

@@ -13,12 +13,13 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("9")){ header("location:".e_HTTP."index.php"); }
+if(!getperms("9")){ header("location:".e_HTTP."index.php"); exit;}
 
 if(IsSet($_POST['updatesettings'])){
 	$pref['maintainance_flag'][1] = $_POST['maintainance_flag'];
 	save_prefs();
 	header("location:".e_SELF."?u");
+	exit;
 }
 
 require_once("auth.php");

@@ -13,11 +13,15 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("4")){ header("location:".e_HTTP."index.php"); }
+if(!getperms("4")){ header("location:".e_HTTP."index.php"); exit;}
 require_once("auth.php");
 
-if(!e_QUERY ? header("location:admin.php") : $id = e_QUERY);
-
+if(!e_QUERY){
+	header("location:admin.php");
+	exit;
+}else{
+	$id = e_QUERY;
+}
 if(IsSet($_POST['updateclass'])){
 	extract($_POST);
 	for($a=0; $a<=(count($_POST['userclass'])-1); $a++){

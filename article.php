@@ -80,6 +80,7 @@ if(IsSet($_POST['jump'])){
 
 if(!$sql -> db_Select("content", "*", " content_id='$id' ")){
 	header("location: ".e_HTTP."index.php");
+	exit;
 }
 
 $cobj = new comment;

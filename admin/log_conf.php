@@ -13,7 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("P")){ header("location:".e_HTTP."index.php"); }
+if(!getperms("P")){ header("location:".e_HTTP."index.php"); exit;}
 
 if(IsSet($_POST['updatesettings'])){
 
@@ -22,6 +22,7 @@ if(IsSet($_POST['updatesettings'])){
 	$pref['log_lvcount'][1] = $_POST['lvcount'];
 	save_prefs();
 	header("location:log_conf.php?u");
+	exit;
 }
 
 if(e_QUERY == "u"){

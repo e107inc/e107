@@ -21,7 +21,7 @@ if(IsSet($_POST['submit'])){
 		$fp = new floodprotect;
 		if($fp -> flood("submitnews", "submitnews_datestamp") == FALSE){
 			header("location:".e_HTTP."index.php");
-			die();
+			exit;
 		}
 		$aj = new textparse;
 		$itemtitle = $aj -> tp($_POST['itemtitle']);

@@ -4,5 +4,6 @@ $text = "<div style=\"text-align:center\">
 <br />
 <a href=\"http://jigsaw.w3.org/css-validator/\"><img style=\"border:0\" src=\"http://jigsaw.w3.org/css-validator/images/vcss\" alt=\"Valid CSS!\" height=\"31\" width=\"88\" /></a>
 </div>";
-$ns -> tablerender(LAN_170, $text);
+$caption = (file_exists(THEME."images/compliance_menu.png") ? "<img src='".THEME."images/compliance_menu.png' alt='' /> ".LAN_170 : LAN_170);
+$ns -> tablerender($caption, $text);
 ?>

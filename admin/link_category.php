@@ -13,13 +13,17 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("8")){ header("location:".e_HTTP."index.php"); }
+if(!getperms("8")){ header("location:".e_HTTP."index.php"); exit; }
 require_once("auth.php");
 
 if(IsSet($_POST['add_category'])){
-	$sql -> db_Insert("link_category", "0, '".$_POST['category_name']."', '".$_POST['category_description']."' ");
-	$message = "Category added to database.";
-	unset($category_name, $category_description);
+	if($_POST['category_name'] && $_POST['category_description']){
+		$sql -> db_Insert("link_category", "0, '".$_POST['category_name']."', '".$_POST['category_description']."' ");
+		$message = "Category added to database.";
+		unset($category_name, $category_description);
+	}else{
+		message_handler("ALERT", 5);
+	}
 }
 
 if(IsSet($_POST['update_category'])){

@@ -1,15 +1,21 @@
 <!--
 
-var ns6=document.getElementById&&!document.all?1:0
-var head="display:''"
-var folder=''
+
+if(document.getElementById&&!document.all){ns6=1;}else{ns6=0;}
+var agtbrw=navigator.userAgent.toLowerCase();
+var operaaa=(agtbrw.indexOf('opera')!=-1);
+var head="display:''";
+var folder='';
 function expandit(curobj){
-folder=ns6?curobj.nextSibling.nextSibling.style:document.all[curobj.sourceIndex+1].style
-if (folder.display=="none")
-folder.display=""
-else
-folder.display="none"
+if(ns6==1||operaaa==true){
+	folder=curobj.nextSibling.nextSibling.style;
+}else{
+	folder=document.all[curobj.sourceIndex+1].style;
 }
+
+if (folder.display=="none"){folder.display="";}else{folder.display="none";}
+}
+
 
 function urljump(url){
 top.window.location = url; 
@@ -24,5 +30,4 @@ document.ondblclick=dblclick;
 function openwindow(url) {
 pwindow = window.open(url,'Name', 'top=100,left=100,resizable=yes,width=600,height=400,scrollbars=yes,menubar=yes')
 }
-
 //-->

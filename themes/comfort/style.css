@@ -9,7 +9,8 @@ a:hover {
 }
 
 body {
-	margin: 10px;
+	margin-left: 100px;
+	margin-right: 100px;
 	background-color: #999999;
 	scrollbar-face-color: #354463;
 	scrollbar-highlight-color: #758393; 
@@ -34,12 +35,17 @@ body {
 
 .smalltext {
     font: normal 10px tahoma, verdana, arial, helvetica, sans-serif;
+	color:#000;
+}
+
+.smallwhitetext {
+    font: normal 10px tahoma, verdana, arial, helvetica, sans-serif;
 	color:#fff;
 }
 
 .smallblacktext {
 	font: normal 10px tahoma, verdana, arial, helvetica, sans-serif;
-	color:#fff;
+	color:#000;
 }
 
 td {
@@ -177,8 +183,6 @@ hr {
 	color:#101842;
 }
 
-
-
 p {
 	margin-top: 0px
 }
@@ -271,4 +275,9 @@ a.forumlink{
 	background-color: transparent;
 	color:#000;
 	font: 9px tahoma, verdana, arial, helvetica, sans-serif;
+}
+
+.linktext {
+	font: normal 12px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
 }

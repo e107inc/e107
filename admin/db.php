@@ -31,6 +31,12 @@ if(IsSet($_POST['optimize_sql'])){
 	exit;
 }
 
+if(IsSet($_POST['backup_core'])){
+	backup_core();
+	message_handler("MESSAGE", "Core settings backed up in database.");
+}
+
+
 
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>\n
@@ -50,6 +56,11 @@ $text = "<div style='text-align:center'>
 <td style='width:30%' class='forumheader3' style='text-align:center'><input class='button' type='submit' name='optimize_sql' value='Optimize SQL database' /></td>
 </tr>
 
+<tr>
+<td style='width:70%' class='forumheader3'>Click button to backup your core settings</td>
+<td style='width:30%' class='forumheader3' style='text-align:center'><input class='button' type='submit' name='backup_core' value='Backup core' /></td>
+</tr>
+
 </table>
 <input type='hidden' name=\"sqltext\" value=`$sqltext`>
 </form>
@@ -57,7 +68,15 @@ $text = "<div style='text-align:center'>
 
 $ns -> tablerender("SQL Utilities", $text);
 
-
+function backup_core(){
+	global $pref, $sql;
+	if($sql -> db_Select("core", "*", "e107_name='pref_backup' ")){
+		save_prefs();
+	}else{
+		$tmp = serialize($pref);
+		$sql -> db_Insert("core", "'pref_backup', '$tmp' ");
+	}
+}
 
 function optimizesql($mySQLdefaultdb){
 

@@ -26,15 +26,19 @@ echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
 function textCounter(field,cntfield) {
 	cntfield.value = field.value.length;
 }
-var ns6=document.getElementById&&!document.all?1:0
-var head="display:''"
-var folder=''
+if(document.getElementById&&!document.all){ns6=1;}else{ns6=0;}
+var agtbrw=navigator.userAgent.toLowerCase();
+var operaaa=(agtbrw.indexOf('opera')!=-1);
+var head="display:''";
+var folder='';
 function expandit(curobj){
-folder=ns6?curobj.nextSibling.nextSibling.style:document.all[curobj.sourceIndex+1].style
-if (folder.display=="none")
-folder.display=""
-else
-folder.display="none"
+if(ns6==1||operaaa==true){
+	folder=curobj.nextSibling.nextSibling.style;
+}else{
+	folder=document.all[curobj.sourceIndex+1].style;
+}
+
+if (folder.display=="none"){folder.display="";}else{folder.display="none";}
 }
 
 function urljump(url){
@@ -233,7 +237,6 @@ if(!eregi("menu_config", e_SELF)){
 		$text = "";
 		while ($file = readdir($handle)){	
 			if($file != "." && $file != ".."){
-	//			 echo "help/".$file."<br />";
 				 if(eregi($file, e_SELF)){
 					require_once("help/".$file);
 				 }
@@ -242,7 +245,22 @@ if(!eregi("menu_config", e_SELF)){
 		closedir($handle);
 	}
 }
-
+/*
+$helppath = $_SERVER['DOCUMENT_ROOT'].e_ADMIN."help/";
+if(!eregi("menu_config", e_SELF)){
+	$handle=opendir($helppath);
+		$text = "";
+		while ($file = readdir($handle)){	
+			if($file != "." && $file != ".."){
+				 if(eregi($file, e_SELF)){
+					require_once($helppath.$file);
+				 }
+			}
+		}
+		closedir($handle);
+	}
+}
+*/
 echo "<br />";
 if(!MAGIC_QUOTES_GPC){
 	message_handler("ADMIN_MESSAGE", "The PHP setting 'MAGIC_QUOTES_GPC' is set to 0 (off), this could cause problems with text containing apostrophes or quotation marks not being entered into the database. To resolve, either edit your php.ini file and set the magic_quotes_gpc entry to 'On', or if your site is on a remote server use a .htaccess file to set the value (see http://e107.org/faq.php for an explanatiion on how to do this). If you cannot do either of these things try opening your config.php file in a text editor and uncommenting the define(\"MQ\", TRUE); line (remove the //).", __LINE__, __FILE__);

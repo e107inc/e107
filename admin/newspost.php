@@ -13,7 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("H")){ header("location:".e_HTTP."index.php"); }
+if(!getperms("H")){ header("location:".e_HTTP."index.php"); exit;}
 
 require_once("auth.php");
 require_once(e_BASE."classes/news_class.php");
@@ -30,6 +30,22 @@ if(e_QUERY != ""){
 	}else if($action == "nd"){
 		$_POST['delete'] = TRUE;
 		$_POST['existing'] = $id;
+
+
+	}else if($action == "news"){
+		$sql -> db_Select("upload", "*", "upload_id=$id");
+		$row = $sql -> db_Fetch(); extract($row);
+
+		$post_author_id = substr($upload_poster, 0, strpos($upload_poster, "."));
+		$post_author_name = substr($upload_poster, (strpos($upload_poster, ".")+1));
+		$poster = (!$post_author_id ? "<b>".$post_author_name."</b>" : "<a href='".e_BASE."user.php?id.".$post_author_id."'><b>".$post_author_name."</b></a>");
+
+		$news_title = $upload_filename;
+		$data = $upload_type."\n".$upload_filename." by ".$poster." ...\n[blockquote]".$upload_description."[/blockquote]";
+
+
+
+
 	}else{
 		$sql -> db_Select("submitnews", "*", "submitnews_id ='$id' ");
 		list($submitnews_id, $submitnews_name, $submitnews_email, $submitnews_title, $submitnews_item, $submitnews_datestamp, $submitnews_ip, $submitnews_auth) = $sql-> db_Fetch();
@@ -103,17 +119,17 @@ if(IsSet($_POST['preview'])){
 	if(!$_POST['startmonth'] || !$_POST['startday'] || !$_POST['startyear'] ? $active_start = 0 : $active_start = mktime (0, 0, 0, $_POST['startmonth'], $_POST['startday'], $_POST['startyear']));
 	if(!$_POST['endmonth'] || !$_POST['endday'] || !$_POST['endyear'] ? $active_end = 0 : $active_end = mktime (0, 0, 0, $_POST['endmonth'], $_POST['endday'], $_POST['endyear']));
 	$temp = $ix -> preview($news_id, $_POST['news_title'], $_POST['data'],  $_POST['news_extended'], $_POST['news_source'], $_POST['news_url'], $_POST['cat_id'], $_POST['news_allow_comments'], $active_start, $active_end, $_POST['news_active']);
-	$news_category = $temp[0];
-	$news_title = $temp[1];
-	$data = $temp[2];
-	$news_extended = $temp[3];
-	$news_source = $temp[4];
-	$news_url = $temp[5];
-	$news_title = $aj -> editparse($news_title);
-	$data = $aj -> editparse($data);
-	$news_extended = $aj -> editparse($news_extended);
-	$news_source = $aj -> editparse($news_source);
-	$news_url = $aj -> editparse($news_url);
+	$news_category = stripslashes($temp[0]);
+	$news_title = stripslashes(str_replace("\"", "&quot;", $temp[1]));
+	$data = stripslashes($temp[2]);
+	$news_extended = stripslashes($temp[3]);
+	$news_source = stripslashes(str_replace("\"", "&quot;", $temp[4]));
+	$news_url = stripslashes(str_replace("\"", "&quot;", $temp[5]));
+//	$news_title = $aj -> editparse($news_title);
+//	$data = $aj -> editparse($data);
+//	$news_extended = $aj -> editparse($news_extended);
+//	$news_source = $aj -> editparse($news_source);
+//	$news_url = $aj -> editparse($news_url);
 }
 
 if(IsSet($message)){
@@ -122,7 +138,7 @@ if(IsSet($message)){
 
 $text = "<div style=\"text-align:center\">
 <form method=\"post\" action=\"".e_SELF."\" name=\"dataform\">
-<table style=\"width:80%\" class=\"fborder\">
+<table style=\"width:95%\" class=\"fborder\">
 <tr>
 <td colspan=\"2\" style=\"text-align:center\" class=\"forumheader\">";
 
@@ -159,30 +175,30 @@ if(!$sql -> db_Select("news_category")){
 }else{
 
 	$text .= "
-	<select name=\"cat_id\" class=\"tbox\">";
+	<select name='cat_id' class='tbox'>";
 	
 	while(list($cat_id, $cat_name, $cat_icon) = $sql-> db_Fetch()){
 		if($news_category == $cat_id){
-			$text .= "<option value=\"$cat_id\" selected>".$cat_name."</option>";
+			$text .= "<option value='$cat_id' selected>".$cat_name."</option>";
 		}else{
-			$text .= "<option value=\"$cat_id\">".$cat_name."</option>";
+			$text .= "<option value='$cat_id'>".$cat_name."</option>";
 		}
 	}
 	$text .= "</select>";
 }
-$text .= " [ <a href=\"news_category.php\">Add/Edit Categories</a> ]
+$text .= " [ <a href='news_category.php'>Add/Edit Categories</a> ]
 </td>
 </tr>
 <tr> 
-<td style=\"width:20%\" class=\"forumheader3\">Title:</td>
-<td style=\"width:80%\" class=\"forumheader3\">
-<input class=\"tbox\" type=\"text\" name=\"news_title\" size=\"80\" value=`$news_title` maxlength=\"200\" />
+<td style='width:20%' class='forumheader3'>Title:</td>
+<td style='width:80%' class='forumheader3'>
+<input class='tbox' type='text' name='news_title' size='80' value=\"$news_title\" maxlength='200' />
 </td>
 </tr>
 <tr> 
 <td style=\"width:20%\" class=\"forumheader3\">Body:<br /></td>
 <td style=\"width:80%\" class=\"forumheader3\">
-<textarea class=\"tbox\" name=\"data\" cols=\"80\" rows=\"10\" onselect=\"storeCaret(this);\" onclick=\"storeCaret(this);\" onkeyup=\"storeCaret(this);\">$data</textarea>
+<textarea class=\"tbox\" name=\"data\" cols=\"80\" rows=\"10\">$data</textarea>
 <br />
 <input class=\"helpbox\" type=\"text\" name=\"helpb\" size=\"100\" />
 <br />
@@ -193,7 +209,7 @@ $text .= "</td>
 <tr> 
 <td style=\"width:20%\" class=\"forumheader3\">Extended:<br /></td>
 <td style=\"width:80%\" class=\"forumheader3\">
-<textarea class=\"tbox\" name=\"news_extended\" cols=\"80\" rows=\"10\" onselect=\"storeCaret2(this);\" onclick=\"storeCaret2(this);\" onkeyup=\"storeCaret2(this);\">$news_extended</textarea>
+<textarea class=\"tbox\" name=\"news_extended\" cols=\"80\" rows=\"10\">$news_extended</textarea>
 <br />
 ";
 $text .= ren_help("addtext2");
@@ -302,37 +318,13 @@ $ns -> tablerender("<div style=\"text-align:center\">News Post</div>", $text);
 ?>
 <script type="text/javascript">
 
-function addtext(text) {
-	text = ' ' + text + ' ';
-	if (document.dataform.data.createTextRange && document.dataform.data.caretPos) {
-		var caretPos = document.dataform.data.caretPos;
-		caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == ' ' ? text + ' ' : text;
-		document.dataform.data.focus();
-	} else {
-	document.dataform.data.value  += text;
-	document.dataform.data.focus();
-	}
+
+function addtext(str){
+	document.dataform.data.value += str;
 }
 
-function addtext2(text) {
-	text = ' ' + text + ' ';
-	if (document.dataform.news_extended.createTextRange && document.dataform.news_extended.caretPos) {
-		var caretPos = document.dataform.news_extended.caretPos;
-		caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == ' ' ? text + ' ' : text;
-		document.dataform.news_extended.focus();
-	} else {
-	document.dataform.news_extended  += text;
-	document.dataform.news_extended.focus();
-	}
-}
-
-function storeCaret (textEl) {
-	if (textEl.createTextRange) 
-	textEl.caretPos = document.selection.createRange().duplicate();
-}
-function storeCaret2 (textEl) {
-	if (textEl.createTextRange) 
-	textEl.caretPos = document.selection.createRange().duplicate();
+function addtext2(str){
+	document.dataform.news_extended.value += str;
 }
 
 function fclear(){
@@ -344,6 +336,13 @@ function help(help){
 }
 </script>
 <?php
+
+/*function storeCaret (textEl) {
+	if (textEl.createTextRange) 
+	textEl.caretPos = document.selection.createRange().duplicate();
+}
+*/
+
 require_once("footer.php");
 
 class create_rss{

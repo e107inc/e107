@@ -16,7 +16,19 @@ require_once("class2.php");
 require_once(HEADERF);
 
 
-// Put your content here ...
+/*
+
+Your PHP content goes here ...
+
+If you wish to use HTML ...
+
+<?
+
+Your HTML goes here ...
+
+<?php
+
+*/
 
 
 

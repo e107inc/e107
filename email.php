@@ -16,7 +16,7 @@ require_once("class2.php");
 require_once(HEADERF);
 
 $qs = explode(".", e_QUERY);
-if($qs[0] == ""){ header("location:".e_HTTP."index.php"); }
+if($qs[0] == ""){ header("location:".e_HTTP."index.php"); exit;}
 $table = $qs[0];
 $id = $qs[1];
 $type = ($table == "news" ? "news item" : "article");

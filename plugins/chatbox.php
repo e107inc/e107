@@ -14,18 +14,19 @@
 */
 
 if(IsSet($_POST['chat_submit'])){
-	$message = $_POST['message'];
+	$cmessage = $_POST['cmessage'];
 	$nick = trim(chop($_POST['nick']));
 	$fp = new floodprotect;
 	$tp = new textparse;
 	if(!$fp -> flood("chatbox", "cb_datestamp")){
 		header("location:index.php");
+		exit;
 	}else{
-		if((strlen($message) < 1000) && $message != ""){
-			if($sql -> db_Select("chatbox", "*", "cb_message='$message' AND cb_datestamp+84600>".time())){
+		if((strlen($cmessage) < 1000) && $cmessage != ""){
+			if($sql -> db_Select("chatbox", "*", "cb_message='$cmessage' AND cb_datestamp+84600>".time())){
 				$emessage = "Unable to post";
 			}else{
-				$message = $tp -> tp($message, "off");
+				$cmessage = $tp -> tp($cmessage, "off");
 				$datestamp = time();
 				if(USER){
 					$nick = USERID.".".USERNAME;
@@ -41,7 +42,7 @@ if(IsSet($_POST['chat_submit'])){
 					}
 				}
 				if(!$emessage){
-					$sql -> db_Insert("chatbox", "0, '$nick', '$message', '".time()."', '0' , '$ip' ");
+					$sql -> db_Insert("chatbox", "0, '$nick', '$cmessage', '".time()."', '0' , '$ip' ");
 				}
 			}
 		}
@@ -63,13 +64,14 @@ if($pref['user_reg'][1] == 1 && USER != TRUE && $pref['anon_post'][1] != "1"){
 if(($pref['anon_post'][1] == "1" && USER == FALSE)){
 	$text .= "\n<input class='tbox' type='text' name='nick' size='27' value='' maxlength='50' /><br />";
 }
-$text .= "\n<textarea class='tbox' name='message' cols='26' rows='5' style='overflow:hidden'></textarea>
+$text .= "\n<textarea class='tbox' name='cmessage' cols='26' rows='5' style='overflow:hidden'></textarea>
 <br />
 <input class='button' type='submit' name='chat_submit' value='".LAN_156."' />
 <input class='button' type='reset' name='reset' value='".LAN_157."' />
 </p>
 </form>
-</div>";
+</div>
+<br />";
 }
 global $nickstore;
 if($sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, ".$chatbox_posts, $mode="no_where")){
@@ -99,7 +101,8 @@ if($sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, ".$cha
 		$datestamp = $obj2->convert_date($cb_datestamp, "short");
 		$cb_message = $aj -> tpa($cb_message, "on");
 		if($pref['cb_linkreplace'][1]){
-			$cb_message = preg_replace("#\>(.*?)\</a#si", ">".$pref['cb_linkc'][1]."</a", $cb_message);
+			$cb_message .= " ";
+			$cb_message = preg_replace("#\>(.*?)\</a\>[\s]#si", ">".$pref['cb_linkc'][1]."</a> ", $cb_message);
 		}
 
 		$cb_message = preg_replace("#src='#si" ,"src='".e_BASE, $cb_message);
@@ -111,14 +114,13 @@ if($sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, ".$cha
 				}
 			}
 			$cb_message = implode(" ",$message_array);
-
 		}
 		if(CB_STYLE != "CB_STYLE"){
 			$CHATBOXSTYLE = CB_STYLE;
 		}else{
 			// default chatbox style
 			$CHATBOXSTYLE = "<!-- chatbox -->\n<div class='spacer'>
-			<img src='".THEME."images/bullet2.gif' alt='bullet' /><b>{USERNAME}</b><br /><span class='smalltext'>{TIMEDATE}</span><br /><div class='smallblacktext'>{MESSAGE}</div></div>{ADMINOPTIONS}<br />\n";
+			<img src='".THEME."images/bullet2.gif' alt='bullet' /> <b>{USERNAME}</b><br /><span class='smalltext'>{TIMEDATE}</span><br /><div class='smallblacktext'>{MESSAGE}</div></div>{ADMINOPTIONS}<br />\n";
 		}
 
 		$search[0] = "/\{USERNAME\}(.*?)/si";
@@ -126,14 +128,15 @@ if($sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, ".$cha
 		$search[1] = "/\{TIMEDATE\}(.*?)/si";
 		$replace[1] = $datestamp;
 		$search[2] = "/\{MESSAGE\}(.*?)/si";
-		$replace[2] = ($cb_blocked ? LAN_0 : $cb_message);
+		$replace[2] = ($cb_blocked ? LAN_0 : preg_quote($cb_message));
 		$search[3] = "/\{ADMINOPTIONS\}(.*?)/si";
 		if(ADMIN){
 			$replace[3] = ($cb_blocked ? "<div class='smalltext'>[<a href='".e_ADMIN."chatbox_conf.php?unblock-".$cb_id."-".$_SERVER['PHP_SELF']."'>".LAN_1."</a>]" : "<div class='smalltext'>[<a href='".e_ADMIN."chatbox_conf.php?block-".$cb_id."-".$_SERVER['PHP_SELF']."'>".LAN_2."</a>]")."[<a href='".e_ADMIN."chatbox_conf.php?delete-".$cb_id."-".$_SERVER['PHP_SELF']."'>".LAN_3."</a>][<a href='".e_ADMIN."userinfo.php?$cb_ip'>".LAN_4."</a>]</div>";
 		}else{
 			$replace[3] = "<br />";
 		}
-		$text .= preg_replace($search, $replace, $CHATBOXSTYLE);
+		$str = preg_replace($search, $replace, $CHATBOXSTYLE);	
+		$text .= stripslashes($str);
 	}
 
 }else{
@@ -142,11 +145,14 @@ if($sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, ".$cha
 }
 $total_chats = $sql -> db_Count("chatbox");
 if($total_chats > $chatbox_posts){
-	$text .= "<br /><div style='text-align:center'><a href='chat.php'>".LAN_159."</a> (".$total_chats.")</div>";
+	$text .= "<br /><div style='text-align:center'><a href='".e_BASE."chat.php'>".LAN_159."</a> (".$total_chats.")</div>";
 }
 
 if($emessage != ""){
 	$text = "<div style='text-align:center'><b>".$emessage."</b></div><br />".$text;
 }
-$ns -> tablerender(LAN_182, $text);
+
+$caption = (file_exists(THEME."images/chatbox_menu.png") ? "<img src='".THEME."images/chatbox_menu.png' alt='' /> ".LAN_182 : LAN_182);
+$ns -> tablerender($caption, $text);
+
 ?>

@@ -22,6 +22,7 @@ $fp = new floodprotect;
 
 if(!e_QUERY){
 	header("Location:".e_HTTP."forum.php");
+	exit;
 }else{
 	$tmp = explode(".", e_QUERY);
 	$action = $tmp[0]; $forum_id = $tmp[1]; $thread_id = $tmp[2];
@@ -78,6 +79,10 @@ if(IsSet($_POST['preview'])){
 	$tsubject = $aj -> tpa($_POST['subject'], $mode="off");
 	$tpost = $aj -> tpa($_POST['post'], $mode="off");
 
+	$tsubject = stripslashes($tsubject);
+	$tpost = stripslashes($tpost);
+
+
 	if($_POST['poll_title'] != ""){
 		require_once(e_BASE."classes/poll_class.php");
 		$poll = new poll;
@@ -116,11 +121,12 @@ if(IsSet($_POST['preview'])){
 if(IsSet($_POST['newthread'])){
 
 	if(!$_POST['subject'] || !$_POST['post']){
-		$error = "<div style='text-align:center'>".LAN_27."</div>";
+//		$error = "<div style='text-align:center'>".LAN_27."</div>";
+		message_handler("ALERT", 5);
 	}else{
 		if($fp -> flood("forum_t", "thread_datestamp") == FALSE){
 			header("location: ".e_HTTP."index.php");
-			die();
+			exit;
 		}
 
 		if(USER){
@@ -139,8 +145,12 @@ if(IsSet($_POST['newthread'])){
 			}
 		}
 
-		$post = $aj -> tp($_POST['post']);
-		$subject = $aj -> tp($_POST['subject']);
+//		$post = $aj -> tp($_POST['post']);
+//		$subject = $aj -> tp($_POST['subject']);
+
+		$post = htmlentities($_POST['post']);
+		$subject = htmlentities($_POST['subject']);
+
 		$email_notify = ($_POST['email_notify'] ? 99 : 1);
 		$lastpost = $user.".".time();
 
@@ -158,7 +168,7 @@ if(IsSet($_POST['newthread'])){
 		$sql -> db_Update("forum", "forum_threads=forum_threads+1, forum_lastpost='$lastpost' WHERE forum_id='$forum_id' ");
 		$sql -> db_Update("user", "user_forums=user_forums+1 WHERE user_id='".USERID."' ");
 		$sql -> db_Select("forum_t", "*", "thread_thread='$post' ");
-		$row = $sql-> db_Fetch(); extract($row);
+		$row = $sql -> db_Fetch(); extract($row);
 		
 		if($_POST['poll_title'] != "" && $_POST['poll_option'][0] != "" && $_POST['poll_option'][1] != ""){
 			require_once(e_BASE."classes/poll_class.php");
@@ -185,11 +195,12 @@ if(IsSet($_POST['newthread'])){
 
 if(IsSet($_POST['reply'])){
 	if(!$_POST['post']){
-		$error = "<div style='text-align:center'>".LAN_28."</div>";
+//		$error = "<div style='text-align:center'>".LAN_28."</div>";
+		message_handler("ALERT", 5);
 	}else{
 		if($fp -> flood("forum_t", "thread_datestamp") == FALSE){
 			header("location: ".e_HTTP."index.php");
-			die();
+			exit;
 		}
 		if(USER){
 			$user = USERID.".".USERNAME;
@@ -204,7 +215,9 @@ if(IsSet($_POST['reply'])){
 				exit;
 			}
 		}
-		$post = $aj -> tp($_POST['post']);
+//		$post = $aj -> tp($_POST['post']);
+		$post = htmlentities($_POST['post']);
+
 		$lastpost = $user.".".time();
 
 		$sql -> db_Select("forum_t", "*", "thread_id='$thread_id' ");
@@ -258,12 +271,17 @@ if(IsSet($_POST['update_thread'])){
 	if($_POST['subject'] == "" || $_POST['post'] == ""){
 		$error = "<div style='text-align:center'>".LAN_27."</div>";
 	}else{
-		$subject = $aj -> tp($_POST['subject']);
-		$post = $aj -> tp($_POST['post']);
+//		$subject = $aj -> tp($_POST['subject']);
+//		$post = $aj -> tp($_POST['post']);
+
+		$post = htmlentities($_POST['post']);
+		$subject = htmlentities($_POST['subject']);
+
 		$datestamp = $gen->convert_date(time(), "forum");
-		$post .= "\n<span class=\'smallblacktext\'>[ ".LAN_29." ".$datestamp." ]</span>";
+		$post .= "\n[edited]".LAN_29." ".$datestamp."[/edited]";
 		$sql -> db_Update("forum_t", "thread_name='".$subject."', thread_thread='".$post."' WHERE thread_id='$thread_id' ");
 		header("location: forum_viewtopic.php?".$forum_id.".".$thread_id);
+		exit;
 	}
 }
 
@@ -273,8 +291,13 @@ if(IsSet($_POST['update_reply'])){
 	}else{
 		$datestamp = $gen->convert_date(time(), "forum");
 		$post = $aj -> tp($_POST['post'])."\n<span class=\'smallblacktext\'>[ ".LAN_29." ".$datestamp." ]</span>";
+
+		$post = htmlentities($_POST['post']);
+		$subject = htmlentities($_POST['subject']);
+
 		$sql -> db_Update("forum_t", "thread_thread='".$post."' WHERE thread_id=".$thread_id);
 		header("location: forum_viewtopic.php?".$forum_id.".".$_POST['thread_id']);
+		exit;
 	}
 }
 
@@ -282,10 +305,9 @@ if($action == "edit" || $action == "quote"){
 	$sql -> db_Select("forum", "*", "forum_id='".$forum_id."' ");
 	$row = $sql-> db_Fetch(); extract($row);
 	$sql -> db_Select("forum_t", "*", "thread_id='".$thread_id."' ");
-	$row = $sql-> db_Fetch(); extract($row);
+	$row = $sql-> db_Fetch("no_strip"); extract($row);
 	$subject = $thread_name;
-	$post = eregi_replace("\n<span class='smallblacktext'>\[.*", "", $thread_thread);
-	$post = $aj -> editparse($post);
+	$post = $aj -> editparse($thread_thread);
 	if($action == "quote"){
 		$post_author_name = substr($thread_user, (strpos($thread_user, ".")+1));
 		$post = "[quote=$post_author_name]".$post."[/quote]\n";
@@ -319,7 +341,7 @@ if($thread_id){
 echo "
 <form method='post' action='".e_SELF."?".e_QUERY."' name='postforum'>
 <table style='width:100%' class='fborder'>
-<tr><td colspan='2' class='fcaption'><a style='color:$captionlinkcolour' href='".e_HTTP."forum.php'>Forums</a> -> <a style='color:$captionlinkcolour' href='".e_HTTP."forum.php?forum.".$forum_id."'>".$forum_name."</a> -> ";
+<tr><td colspan='2' class='fcaption'><a class='forumlink' href='".e_HTTP."forum.php'>Forums</a> -> <a class='forumlink' href='".e_HTTP."forum.php?forum.".$forum_id."'>".$forum_name."</a> -> ";
 
 if($action == "nt"){
 	echo ($eaction ? LAN_77 : LAN_60);
@@ -461,7 +483,7 @@ echo $text;
 if($action == "rp"){
 	// review
 	$sql -> db_Select("forum_t", "*", "thread_id = '$thread_id' ");
-	$row = $sql-> db_Fetch(); extract($row);
+	$row = $sql-> db_Fetch("no_strip"); extract($row);
 	$post_author_name = substr($thread_user, (strpos($thread_user, ".")+1));
 	
 	$thread_datestamp  = $gen->convert_date($thread_datestamp , "forum");
@@ -548,7 +570,6 @@ function forumjump(){
 <script type="text/javascript">
 
 function addtext(text) {
-	text = ' ' + text + ' ';
 	if (document.postforum.post.createTextRange && document.postforum.post.caretPos) {
 		var caretPos = document.postforum.post.caretPos;
 		caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == ' ' ? text + ' ' : text;

@@ -13,7 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("P")){ header("location:".e_HTTP."index.php"); }
+if(!getperms("P")){ header("location:".e_HTTP."index.php"); exit; }
 
 if(IsSet($_POST['updatesettings'])){
 	while(list($id, $name) = each($_POST['emote_code'])){
@@ -24,6 +24,7 @@ if(IsSet($_POST['updatesettings'])){
 	$pref['smiley_activate'][1] = $_POST['smiley_activate'];
 	save_prefs();
 	header("location:emoticon_conf.php?u");
+	exit;
 }
 
 if(!$sql -> db_Select("core", "*", "e107_name='emote'")){
@@ -39,6 +40,7 @@ if(IsSet($_POST['addemote'])){
 	$tmp = addslashes(serialize($emote));
 	$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='emote' ");
 	header("location:emoticon_conf.php?v");
+	exit;
 }
 
 $tmp = explode(".", e_QUERY);
@@ -47,6 +49,7 @@ if($tmp[0] == "del"){
 	$tmp = addslashes(serialize($emote));
 	$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='emote' ");
 	header("location:emoticon_conf.php?w");
+	exit;
 }
 
 

@@ -301,7 +301,7 @@ define(LAN_326, "Hier klicken um zum Forum zurückzukehren...");
 define(LAN_327, "Rückschau");
 
 ######## Added again.
-define(LAN_328, "Nur für Mitglieder")
+define(LAN_328, "Nur für Mitglieder");
 define(LAN_328, "Zeit");
 define(LAN_329, "Zitat des Tages");
 

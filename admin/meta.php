@@ -22,9 +22,10 @@ if(IsSet($_POST['metasubmit'])){
 	$pref['meta_tag'][1] = $meta;
 	save_prefs();
 	header("location:meta.php?e");
+	exit;
 }
 
-if(!getperms("C")){ header("location:".e_HTTP."index.php"); }
+if(!getperms("C")){ header("location:".e_HTTP."index.php"); exit; }
 require_once("auth.php");
 
 if(e_QUERY != ""){

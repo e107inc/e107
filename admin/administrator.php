@@ -13,7 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("3")){ header("location:".e_HTTP."index.php"); }
+if(!getperms("3")){ header("location:".e_HTTP."index.php"); exit; }
 require_once("auth.php");
 
 if(IsSet($_POST['add_admin'])){

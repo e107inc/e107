@@ -13,7 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("P")){ header("location:".e_HTTP."index.php"); }
+if(!getperms("P")){ header("location:".e_HTTP."index.php"); exit; }
 
 if(IsSet($_POST['updatesettings'])){
 	if($_POST['frontpage'] == "other"){
@@ -30,7 +30,6 @@ if(IsSet($_POST['updatesettings'])){
 	}else{
 		$sql -> db_Delete("links", "link_url='news.php'");
 	}
-//	header("location:".e_SELF."?u");
 }
 
 require_once("auth.php");

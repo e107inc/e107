@@ -21,7 +21,7 @@ if($qs != ""){
 	if($user_sess != ""){
 		$newpw = md5($user_sess);
 		$sql -> db_Update("user", "user_password='$newpw', user_sess='' WHERE user_id='$user_id' ");
-		setcookie('userkey', '', time()+3600*24*30, '/', '', 0);
+		setcookie('userkey', '', 0, '/', '', 0);
 		$_SESSION["userkey"] = "";
 		$set = TRUE;
 	}

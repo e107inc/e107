@@ -17,6 +17,7 @@ require_once("classes/news_class.php");
 require_once("classes/comment_class.php");
 if(!e_QUERY){
 	header("location:".e_HTTP);
+	exit;
 }
 $qs = explode(".", e_QUERY);
 $table = $qs[0];
@@ -33,11 +34,13 @@ if(IsSet($_POST['commentsubmit'])){
 if($table == "news"){
 	if(!$sql -> db_Select("news", "*", "news_id='$id' ")){
 		header("location:".e_HTTP."index.php");
+		exit;
 	}else{
 		$row = $sql -> db_Fetch();
 		extract($row);
 		if($news_allow_comments == 1){
 			header("location:".e_HTTP."index.php");
+			exit;
 		}else{
 			require_once(HEADERF);
 			$comment_total = $sql -> db_Count("comments", "(*)", " WHERE comment_item_id='$news_id' AND comment_type='0' ");
@@ -50,6 +53,7 @@ if($table == "news"){
 }else if($table == "poll"){
 	if(!$sql -> db_Select("poll", "*", "poll_id='$id' ")){
 		header("location:".e_HTTP."index.php");
+		exit;
 	}else{
 		$row = $sql -> db_Fetch();
 		extract($row);

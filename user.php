@@ -121,9 +121,10 @@ function renderuser($row){
 	$text = "<table style='width:95%'><tr>";
 
 	if($user_image){
-		if(!eregi("http://", $user_image)){
-			$user_image = e_BASE."themes/shared/avatars/".$user_image;
-		}
+		
+		require_once(e_BASE."classes/avatar_handler.php");
+		$user_image = avatar($user_image);
+
 		$text .= "<td colspan='2'><div class='spacer'><img src='".$user_image."' alt='' /></div></td></tr><tr>";
 	}
 

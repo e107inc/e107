@@ -137,12 +137,12 @@ define("LAN_102", "Links");
 define("LAN_103", "Forum");
 
 //signup.php
-define("LAN_104", "That user name already exists in the database, please choose a different user name.");
-define("LAN_105", "The two passwords do not match, please re-enter.");
-define("LAN_106", "That doesn't appear to be a valid email address, please re-enter.");
+define("LAN_104", "That user name already exists in the database, please choose a different user name");
+define("LAN_105", "The two passwords do not match");
+define("LAN_106", "That doesn't appear to be a valid email address");
 define("LAN_107", "Thankyou! You are now a registered member of ".SITENAME.", please keep your username and password written down in a safe place as if lost they cannot be retrieved.<br /><br />You can now login from the Login box.");
 define("LAN_108", "Registration complete");
-define("LAN_109", "This site complies with The Children's Online Privacy Protection Act of 1998 (COPPA) and as such cannot accept registrations from users under the age of 13 without a written permission document from their parent or guardian. For more information you can read the legislation <a href=\"http://www.cdt.org/legislation/105th/privacy/coppa.html\">here</a>. Please contact the main site admin <a href=\"mailto:".SITEADMINEMAIL."\">here</a> if you require assistance.<br /><br /><div style=\"text-align:center\"><b>Please certify you are over the age of 13");
+define("LAN_109", "This site complies with The Children's Online Privacy Protection Act of 1998 (COPPA) and as such cannot accept registrations from users under the age of 13 without a written permission document from their parent or guardian. For more information you can read the legislation <a href=\"http://www.cdt.org/legislation/105th/privacy/coppa.html\">here</a>. Please contact the main site admin <a href=\"mailto:".SITEADMINEMAIL."\">here</a> if you require assistance.<br /><br /><div style=\"text-align:center\"><b>Please certify you are 13 or over the age of 13");
 define("LAN_110", "Registration");
 define("LAN_111", "Re-type Password: ");
 define("LAN_112", "Email Address: ");
@@ -197,7 +197,7 @@ define("LAN_152", "New Password: ");
 define("LAN_153", "Re-type New Password: ");
 define("LAN_154", "Update Settings");
 define("LAN_155", "Update User Settings");
-define("LAN_185", "You left the password field blank,");
+define("LAN_185", "You left the password field blank ");
 
 //plugins
 define("LAN_156", "Submit");
@@ -362,19 +362,27 @@ define("LAN_397", "Tracked threads");
 define("LAN_398", "No summary.");
 
 
+define("LAN_399", "Continue");
+define("LAN_400", "Usernames and passwords are <b>case-sensitive</b>");
+define("LAN_401", "Leave blank to keep existing password");
+
+define("LAN_402", "You must be a registered member to upload files to this server.");
+define("LAN_403", "You do not have the correct permissions to upload files to this server.");
+define("LAN_404", "Thankyou. Your upload will be reviewed by an administrator and posted to the site if appropriate.");
+define("LAN_405", "File exceeds specified maximum size limit - deleted.");
+define("LAN_406", "<b>Please note</b><br />Allowed filetypes:");
+define("LAN_407", "Any other filetypes uploaded will be instantly deleted.");
+define("LAN_408", "<u>Underlined</u> fields are required");
+
+define("LAN_409", "Name of file");
+define("LAN_410", "Version");
+define("LAN_411", "File");
+define("LAN_412", "Screenshot");
+define("LAN_413", "Description");
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+define("LAN_414", "Working demo");
+define("LAN_415", "enter URL to site where demo can be viewed");
+define("LAN_416", "Submit and Upload");
+define("LAN_417", "Upload File");
 ?>

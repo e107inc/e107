@@ -21,10 +21,15 @@ define("FTHEME", (file_exists(THEME."forum/newthread.png")) ? THEME."forum/" : "
 
 if(!e_QUERY){
 	header("Location:".e_HTTP."forum.php");
+	exit;
 }else{
 	$tmp = explode(".", e_QUERY);
 	$forum_id = $tmp[0]; $thread_id = $tmp[1]; $from = $tmp[2]; $action = $tmp[3];
 	if(!$from){ $from = 0; }
+	if(!$thread_id){
+		header("Location:".e_HTTP."forum.php");
+		exit;
+	}
 }
 
 if($action == "track"){
@@ -48,12 +53,12 @@ $sql -> db_Update("forum_t", "thread_views=thread_views+1 WHERE thread_id='$thre
 $sql -> db_Select("forum", "*", "forum_id='".$forum_id."' ");
 $row = $sql-> db_Fetch(); extract($row);
 
-if(!$forum_active || $forum_class && !check_class($forum_class)){ header("Location:".e_HTTP."forum.php"); }
+if(!$forum_active || $forum_class && !check_class($forum_class)){ header("Location:".e_HTTP."forum.php"); exit;}
 
 require_once(HEADERF);
 
 $sql -> db_Select("forum_t", "*", "thread_id='".$thread_id."' ORDER BY thread_datestamp DESC ");
-$row = $sql-> db_Fetch(); extract($row);
+$row = $sql-> db_Fetch("no_strip"); extract($row);
 
 if(preg_match("/".preg_quote(ADMINNAME)."/", $forum_moderators) && getperms("A")){
 	define("MODERATOR", TRUE);
@@ -182,9 +187,8 @@ if(!$post_author_id){
 	$poster .= "<a href='user.php?id.".$post_author_id."'><b>".$post_author_name."</b></a>";
 
 	if($user_image){
-		 if(!eregi("http://", $user_image)){
-			$user_image = e_BASE."themes/shared/avatars/".$user_image;
-		}
+		require_once(e_BASE."classes/avatar_handler.php");
+		$user_image = avatar($user_image);
 		$starter_info .= "<div class='spacer'><img src='".$user_image."' alt='' /></div>";
 	}
 
@@ -202,8 +206,11 @@ $thread_datestamp = $gen->convert_date($thread_datestamp, "forum");
 if($post_author_id){ $starter_info .= LAN_67.": $starter_count"; }
 
 $date_info = "<div class='smallblacktext'><img src='".FTHEME."post.png' alt='' /> ".$thread_datestamp."</div>";
+
+
 $post_info .= $aj -> tpa($thread_thread, $mode="off");
-$post_info = preg_replace("/([^s]{80})/", "$1\n", $post_info);
+
+$post_info = wrap($post_info);
 
 if($user_signature){
 	$user_signature = $aj -> tpa($user_signature);
@@ -244,7 +251,7 @@ if($flag){
 	$text .= "<table cellspacing='0' cellpadding='0' style='width:100%'>
 	<tr>
 	<td style='width:2%'>".$flag."</td>
-	<td style='text-align:left'>&nbsp;".$poster."</td>
+	<td style='text-align:left' class='forumheader'>&nbsp;".$poster."</td>
 	</tr>
 	</table>";
 }else{
@@ -289,7 +296,7 @@ $ta = $thread_active;
 
 if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY thread_datestamp ASC")){
 	$sql2 = new db;
-	while($row = $sql-> db_Fetch()){
+	while($row = $sql-> db_Fetch("no_strip")){
 		extract($row);
 
 		$post_author_id = substr($thread_user, 0, strpos($thread_user, "."));
@@ -318,9 +325,8 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 
 			$poster_info = "<a href='user.php?id.".$post_author_id."'><b>".$post_author_name."</b></a>";
 			if($user_image){
-				 if(!eregi("http://", $user_image)){
-				$user_image = e_BASE."themes/shared/avatars/".$user_image;
-			}
+				require_once(e_BASE."classes/avatar_handler.php");
+				$user_image = avatar($user_image);
 				$starter_info .= "<div class='spacer'><img src='".$user_image."' alt='' /></div>";
 			}
 
@@ -336,7 +342,7 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 
 		$date_info = "<div class='smallblacktext'><img src='".FTHEME."post.png' alt='' /> ".$gen->convert_date($thread_datestamp, "forum")."</div>";
 		$post_info .= $aj -> tpa($thread_thread, $mode="off");
-		$post_info = preg_replace("/([^s]{80})/", "$1\n", $post_info);
+		$post_info = wrap($post_info);
 
 		if($user_signature){
 			$user_signature = $aj -> tpa($user_signature);
@@ -370,7 +376,7 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 			$text .= "<table cellspacing='0' cellpadding='0' style='width:100%'>
 			<tr>
 			<td style='width:2%'>".$flag."</td>
-			<td style='text-align:left'>&nbsp;".$poster_info."</td>
+			<td style='text-align:left' class='forumheader'>&nbsp;".$poster_info."</td>
 			</tr>
 			</table>";
 		}else{
@@ -459,4 +465,18 @@ function forumjump(){
 	$text .= "</select> <input class='button' type='submit' name='fjsubmit' value='Go' />&nbsp;&nbsp;&nbsp;&nbsp;<a href='".e_SELF."?".$_SERVER['QUERY_STRING']."#top'>Back to top</a></p></form>";
 	return $text;
 }
+
+function wrap($data){
+	$wrapcount = 80;
+	$message_array = explode(" ", $data);
+	for($i=0; $i<=(count($message_array)-1); $i++){
+		if(strlen($message_array[$i]) > $wrapcount){
+			$message_array[$i] = preg_replace("/([^\s]{".$wrapcount."})/", "$1<br />", $message_array[$i]);
+		}
+	}
+	$data = implode(" ",$message_array);
+	return $data;
+}
+
+
 ?>

@@ -16,44 +16,36 @@ if(ADMIN == TRUE){
 	$language =  $pref['sitelanguage'][1]; if(!$language){ $language = "English"; }
 	if(file_exists("languages/admin_lan_".$language.".php")){
 		require_once("languages/admin_lan_".$language.".php");
-	}else{
+	}else if(file_exists("languages/admin_lan_English.php")){
 		require_once("languages/admin_lan_English.php");
+	}else{
+		require_once("../languages/admin_lan_English.php");
 	}
-	require_once("header.php");
+	if(file_exists("header.php")){
+		require_once("header.php");
+	}else{
+		require_once("../header.php");
+	}
 }else{
 	if($_POST['authsubmit']){
 		$obj = new auth;
 
 		$row = $authresult = $obj -> authcheck($_POST['authname'], $_POST['authpass']);
 		if($row[0] == "fop"){
-			if(!eregi("Apache", $_SERVER['SERVER_SOFTWARE'])){
-				header("Refresh: 0; URL: admin.php?e");
-			}else{
-				header("Location: ".e_SELF."?e");
-			}
-			exit;
+			echo "<script type='text/javascript'>document.location.href='admin.php?e'</script>\n";
 		}else if($row[0] == "fon"){
-			if(!eregi("Apache", $_SERVER['SERVER_SOFTWARE'])){
-				header("Refresh: 0; URL: admin.php?f");
-			}else{
-				header("Location: ".e_SELF."?f");
-			}
-			exit;
+			echo "<script type='text/javascript'>document.location.href='admin.php?f'</script>\n";
 		}else{
 
 			$sql -> db_Select("user", "*", "user_name='".$_POST['authname']."'");
-			list($user_id, $user_name, $user_pass) = $sql-> db_Fetch();
-//			if($pref['tracktype'][1] == "cookie"){
-				setcookie('userkey', $user_id.".".$user_pass, time()+3600*24*30, '/', '', 0);
-//			}else{
-//				$_SESSION['userkey'] = $user_id.".".$userpass;
-//			}
-			if(!eregi("Apache", $_SERVER['SERVER_SOFTWARE'])){
-				header("Refresh: 0; URL: admin.php");
+			list($user_id, $user_name, $userpass) = $sql-> db_Fetch();
+			if($pref['tracktype'][1] == "session"){
+				$_SESSION['userkey'] = $user_id.".".$userpass;
 			}else{
-				header("Location: admin.php");
+				setcookie('userkey', $user_id.".".$userpass, time()+3600*24*30, '/', '', 0);
+//				echo $user_id.".".$userpass;
 			}
-			exit;
+			echo "<script type='text/javascript'>document.location.href='admin.php'</script>\n";
 		}
 	}
 

@@ -39,10 +39,8 @@ class comment{
 			$row = $sql -> db_Fetch();
 			extract($row);
 			if($user_image){
-				if(!eregi("http://", $user_image)){
-					$user_image = e_BASE."themes/shared/avatars/".$user_image;
-				}
-				
+				require_once(e_BASE."classes/avatar_handler.php");
+				$user_image = avatar($user_image);
 			}
 		}else{
 			$user_id = 0;
@@ -96,12 +94,14 @@ class comment{
 		$replace[3] = ($user_id ? LAN_99.": ".$user_comments : LAN_194);
 
 		$search[4] = "/\{COMMENT\}(.*?)/si";
-		$replace[4] = ($comment_blocked ? LAN_0 : $aj -> tpa($comment_comment));
+		$replace[4] = ($comment_blocked ? LAN_0 : preg_quote($aj -> tpa($comment_comment)));
 
 		$search[5] = "/\{SIGNATURE\}(.*?)/si";
 		if($user_signature){
-			$user_signature = preg_replace("/\[img\](.*?)\[\/img\]/si", "\\1", $user_signature);
-			$user_signature = "[ ".$aj -> tpa($user_signature)." ]";
+//			$user_signature = preg_replace("/\[img\](.*?)\[\/img\]/si", "\\1", $user_signature);
+//			$user_signature = "[ ".$aj -> tpa($user_signature)." ]"; // uncomment if you want images removed from signatures
+			
+			$user_signature = $aj -> tpa($user_signature);
 		}
 		$replace[5] = $user_signature;
 
@@ -123,15 +123,15 @@ class comment{
 			$tmp .= $delete.$userinfo;
 		}
 		$replace[8] = $tmp;
-
-		return preg_replace($search, $replace, $COMMENTSTYLE);
+		$text = preg_replace($search, $replace, $COMMENTSTYLE);
+		return stripslashes($text);
 	}
 	
 	function enter_comment($author_name, $comment, $table, $id){
 		$fp = new floodprotect;
 		if($fp -> flood("comments", "comment_datestamp") == FALSE){
 			header("location:index.php");
-			die();
+			exit;
 		}
 		$aj = new textparse;
 		$comment = $aj -> tp($_POST['comment'], "off");

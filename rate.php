@@ -18,6 +18,7 @@ $qs = explode("-", e_QUERY);
 
 if(!$qs[0] || USER == FALSE){
 	header("location:".e_HTTP."index.php");
+	exit;
 }
 
 $table = $qs[0];
@@ -37,6 +38,7 @@ if($sql -> db_Select("rate", "*", "rate_table='$table' AND rate_itemid='$itemid'
 }
 
 header("location:".$returnurl);
+exit;
 
 /*
 echo "Table: ".$table."<br />

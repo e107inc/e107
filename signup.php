@@ -13,9 +13,9 @@
 +---------------------------------------------------------------+
 */
 require_once("class2.php");
-if($pref['user_reg'][1] == 0){header("location:".e_HTTP."index.php");}
+if($pref['user_reg'][1] == 0){header("location:".e_HTTP."index.php"); exit; }
 
-if(USER){header("location:".e_HTTP."index.php");}
+if(USER){header("location:".e_HTTP."index.php"); exit; }
 
 if(e_QUERY != ""){
 	$qs = explode(".", e_QUERY);
@@ -31,41 +31,48 @@ if(e_QUERY != ""){
 			}
 		}else{
 			header("location: ".e_HTTP."index.php");
+			exit;
 		}
 	}
 }
 
 if(IsSet($_POST['register'])){
+	require_once(e_BASE."classes/message_handler.php");
 	$_POST['name'] = trim(chop($_POST['name']));
 	if($_POST['name'] == "Anonymous"){
-		$error = LAN_104."<br />";
+		message_handler("P_ALERT", LAN_104);
+		$error = TRUE;
 	}
 	if($sql -> db_Select("user", "*", "user_name='".$_POST['name']."' ")){
-		$error = LAN_104."<br />";
+		message_handler("P_ALERT", LAN_104);
+		$error = TRUE;
 	}	
 	if($_POST['password1'] != $_POST['password2']){
-		$error .= LAN_105."<br />";
+		message_handler("P_ALERT", LAN_105);
+		$error = TRUE;
 	}
 	if($_POST['name'] == "" || $_POST['password1'] =="" || $_POST['password2'] = ""){
-		$error .= LAN_185."<br />";
+		message_handler("P_ALERT", LAN_185);
+		$error = TRUE;
 	}
 	 if(!preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]+@([-0-9A-Z]+\.)+([0-9A-Z]){2,4}$/i', $_POST['email'])){
-		 $error .= LAN_106;
+		 message_handler("P_ALERT", LAN_106);
+		 $error = TRUE;
 	 }
 	 if (preg_match('#^www\.#si', $_POST['website'])) {
 		$_POST['website'] = "http://$homepage";
 	}else if (!preg_match('#^[a-z0-9]+://#si', $_POST['website'])){
 		$_POST['website'] = ""; 
     }
-	if($error == ""){	
+	if(!$error){
 		$fp = new floodprotect;
 		if($fp -> flood("user", "user_join") == FALSE){
 			header("location:index.php");
-			die();
+			exit;
 		}
 
 		if($sql -> db_Select("user", "*", "user_email='".$_POST['email']."' AND user_ban='1' ")){
-			die();
+			exit;
 		}
 
 		$username = strip_tags($_POST['name']);
@@ -100,23 +107,25 @@ if(IsSet($_POST['register'])){
 }
 
 require_once(HEADERF);
-
-if($error != ""){
+/*
+if($error){
 	$ns -> tablerender("<div style='text-align:center'>".LAN_20."</div>", $error);
 	require_once(FOOTERF);
 	exit;
 }
-
-$qs = e_QUERY;
+*/
+$qs = ($error ? "stage" : e_QUERY);
 
 if($pref['use_coppa'][1] == 1 && !ereg("stage", $qs)){
 	if(eregi("stage", LAN_109)){
 		$text .= LAN_109."</b></div>";
 	}else{
 		$text .= LAN_109."<form method='post' action='signup.php?stage1'>
+	<br />
 	<input type='radio' name='coppa' value='0' checked> No
 	<input type='radio' name='coppa' value='1'> Yes<br>
-	<input class='button' type='submit' name='newver' value='".LAN_156."' />
+	<br />
+	<input class='button' type='submit' name='newver' value='".LAN_399."' />
 	</form>
 	</div>";
 	}
@@ -144,53 +153,64 @@ $text .= "<div style='text-align:center'>";
 if($pref['user_reg_veri'][1]){
 	$text .=	LAN_309."<br /><br />";
 }
-$text .= "<form method='post' action='".e_SELF."'  name='signupform'>\n
+
+
+
+$text .= LAN_400;
+
+require_once(e_BASE."classes/form_handler.php");
+$rs = new form;
+
+$text .= $rs -> form_open("post", e_SELF, "signupform")."
 <table style='width:60%'>
 <tr>
 <td style='width:30%'>".LAN_7."</td>
 <td style='width:70%'>
-<input class='tbox' type='text' name='name' size='40' value='$name' maxlength='100' />
-</td>
-</tr>
 
-<tr>
-<td style='width:30%'>".LAN_308."</td>
-<td style='width:70%'>
-<input class='tbox' type='text' name='realname' size='40' value='$realname' maxlength='100' />
+".$rs -> form_text("name", 40, "", 100)."
+
 </td>
 </tr>
 
 <tr>
 <td style='width:30%'>".LAN_17."</td>
 <td style='width:70%'>
-<input class='tbox' type='password' name='password1' size='40' value='' maxlength='20' /> (case sensitive)
+
+".$rs -> form_password("password1", 40, "", 20)."
+
+
 </td>
 </tr>
 
 <tr>
 <td style='width:30%'>".LAN_111."</td>
 <td style='width:70%'>
-<input class='tbox' type='password' name='password2' size='40' value='' maxlength='20' /> (case sensitive)
+
+".$rs -> form_password("password2", 40, "", 20)."
+
 </td>
 </tr>
 
 <tr>
 <td style='width:30%'>".LAN_112."</td>
 <td style='width:70%'>
-<input class='tbox' type='text' name='email' size='60' value='$email' maxlength='100' />
+
+".$rs -> form_text("email", 60, "", 100)."
+
 </td>
 </tr>
 
 <tr>
 <td style='width:30%'>".LAN_113."</td>
-<td style='width:70%'>";
-if($hide_email == 1){
-	$text .= "<input type='checkbox' name='hideemail' value='1'  checked>";
-}else{
-	$text .= "<input type='checkbox' name='hideemail' value='1'>";
-}
+<td style='width:70%'>".
 
-$text .= "</tr>
+
+
+
+$rs ->form_radio("hideemail", 1)." Yes&nbsp;&nbsp;".$rs ->form_radio("hideemail", 0, 1)." No
+
+</td>
+</tr>
 <tr style='vertical-align:top'> 
 <td colspan='2'  style='text-align:center'>
 <br />

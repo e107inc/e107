@@ -13,12 +13,14 @@
 +---------------------------------------------------------------+
 */
 
-$emessage[1] = "<b>[1]: Unable to read core settings from database - Core settings exist but cannot be unserialized. Please run the <a href='".e_BASE."files/resetcore.php'>resetcore</a> utility to rebuild your core settings.</b>";
+$emessage[1] = "<b>[1]: Unable to read core settings from database - Core settings exist but cannot be unserialized. Attempting to restore core backup ...</b>";
 $emessage[2] = "<b>[2]: Unable to read core settings from database - non-existant core settings.</b>";
+$emessage[3] = "<b>[3]: Core settings saved - backup made active.</b>";
+$emessage[4] = "<b>[4]: No core backup found. Please run the <a href='".e_BASE."files/resetcore.php'>Reset_Core</a> utility to rebuild your core settings. <br />After rebuilding your core please save a backup from the admin/sql screen.</b>";
+$emessage[5] = "Field(s) have been left blank. Please resubmit the form and fill in the required fields.";
 
 
-
-function message_handler($mode, $message, $line, $file){
+function message_handler($mode, $message, $line=0, $file=""){
 	global $emessage;
 	$ns = new table;
 	switch($mode){
@@ -30,6 +32,12 @@ function message_handler($mode, $message, $line, $file){
 		break;
 		case "ADMIN_MESSAGE":
 			$ns -> tablerender("Admin Message", "<div style='text-align:center'><b>".$message."</b></div>");
+		break;
+		case "ALERT":
+			echo "<script type='text/javascript'>alert(\"".$emessage[$message]."\"); window.history.go(-1); </script>\n";
+		break;
+		case "P_ALERT":
+			echo "<script type='text/javascript'>alert(\"".$message."\"); </script>\n";
 		break;
 	}
 }

@@ -13,7 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("R")){ header("location:".e_HTTP."index.php"); }
+if(!getperms("R")){ header("location:".e_HTTP."index.php"); exit; }
 require_once("auth.php");
 $aj = new textparse;
 
@@ -25,11 +25,29 @@ $qs = explode(".", $_SERVER['QUERY_STRING']);
 $action = $qs[0];
 $id = $qs[1];
 
+// dlm -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+if($action == "dlm"){
+	$sql -> db_Select("upload", "*", "upload_id=$id");
+	$row = $sql -> db_Fetch(); extract($row);
+	$download_name = $upload_name;
+	$download_url = $upload_file;
+	$download_author_email = $upload_email;
+	$download_author_website = $upload_website;
+	$download_description = $upload_description;
+	$download_image = $upload_ss;
+	$download_filesize = $upload_filesize;
+	$file_array[] = $download_url;
+	$image_array[] = $upload_ss;
+	$download_author = substr($upload_poster, (strpos($upload_poster, ".")+1));
+}
+
+// from -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 if($action == "from"){
 
 	$sql -> db_Select("userfile", "*", "userfile_id='$id'");
-	$row = $sql -> db_Fetch();
-	extract($row);
+	$row = $sql -> db_Fetch(); extract($row);
 
 	$download_name = $userfile_filename;
 	$download_url = $userfile_file;
@@ -50,7 +68,7 @@ If(IsSet($_POST['submit'])){
 		$filesize = $_POST['download_filesize_external'];
 	}else{
 		$durl = $_POST['download_url'];
-		$filesize = filesize($_SERVER["DOCUMENT_ROOT"].e_HTTP."files/downloads/".$_POST['download_url']);
+		$filesize = ($_POST['download_filesize_external'] ? $_POST['download_filesize_external'] : filesize($_SERVER["DOCUMENT_ROOT"].e_HTTP."files/downloads/".$_POST['download_url']));
 	}
 
 	$download_description = $aj -> tp($_POST['download_description']);
@@ -150,9 +168,6 @@ $text .= "</select>
 
 </td>
 </tr>
-
-
-
 
 <tr>
 <td style=\"width:20%; vertical-align:top\" class=\"forumheader3\"><u>Name</u>:</td>

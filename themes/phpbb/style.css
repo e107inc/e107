@@ -3,9 +3,6 @@ body {
 	background-color: #E5E5E5;
 	margin:10px;
 	text-align:left;
-
-font: bold 10px Verrdana, Arial, Helvectica;
-
 }
 a {
 	color: #006699;
@@ -215,13 +212,13 @@ p {
 	background-image : url(forum/finfobar.png);
 }
 
-a.forumlink{
+.forumlink{
 	color: #fff;
 	text-decoration: underline;
 }
 
 .helpbox {
-	border: transparent;
+	border: 0px none red;
 	background-color: transparent;
 	color:#000;
 	font: 9px tahoma, verdana, arial, helvetica, sans-serif;

@@ -23,7 +23,7 @@
 */
 require_once("class2.php");
 
-if(IsSet($_POST['searchquery']) && $_POST['searchtype'] == "0"){ header("location:http://www.google.com/search?q=".$_POST['searchquery']); }
+if(IsSet($_POST['searchquery']) && $_POST['searchtype'] == "0"){ header("location:http://www.google.com/search?q=".$_POST['searchquery']); exit; }
 
 require_once(HEADERF);
 

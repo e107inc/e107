@@ -27,33 +27,38 @@ $location = $tmp[3];
 if($action == "deac"){
 	$sql -> db_Update("menus", "menu_location='0', menu_order='0' WHERE menu_id='$id' ");
 	header("location:".e_SELF);
+	exit;
 }
 
 if($action == "act"){
 	$menu_count = $sql -> db_Count("menus", "(*)", " WHERE menu_location='$position' ");
 	$sql -> db_Update("menus", "menu_location='$position', menu_order='".($menu_count+1)."' WHERE menu_id='$id' ");
 	header("location:".e_SELF);
+	exit;
 }
 
 if($action == "dec"){
 	$sql -> db_Update("menus", "menu_order=menu_order-1 WHERE menu_order='".($position+1)."' AND menu_location='$location' ");
 	$sql -> db_Update("menus", "menu_order=menu_order+1 WHERE menu_id='$id' AND menu_location='$location' ");
 	header("location:".e_SELF);
+	exit;
 }
 
 if($action == "inc"){
 	$sql -> db_Update("menus", "menu_order=menu_order+1 WHERE menu_order='".($position-1)."' AND menu_location='$location' ");
 	$sql -> db_Update("menus", "menu_order=menu_order-1 WHERE menu_id='$id' AND menu_location='$location' ");
 	header("location:".e_SELF);
+	exit;
 }
 
 if($action == "move"){
 	$menu_count = $sql -> db_Count("menus", "(*)", " WHERE menu_location='$position' ");
 	$sql -> db_Update("menus", "menu_location='$position', menu_order='".($menu_count+1)."' WHERE menu_id='$id' ");
 	header("location:".e_SELF);
+	exit;
 }
 
-if(!getperms("2")){ header("location:".e_HTTP."index.php"); }
+if(!getperms("2")){ header("location:".e_HTTP."index.php"); exit; }
 
 require_once("auth.php");
 

@@ -139,8 +139,10 @@ class poll{
 			$text .= "<br /><div style='text-align:right' class='smallblacktext'>[ moderator - <a href='".e_ADMIN."forum_conf.php?delete_poll.".$forum_id.".".$thread_id.".".$poll_id."'>delete poll only</a> ]</div>";
 		}
 
-		$ps = new table;
-		$ps -> tablerender(LAN_184, $text);
+		$ns = new table;
+
+		$caption = (file_exists(THEME."images/poll_menu.png") ? "<img src='".THEME."images/poll_menu.png' alt='' /> ".LAN_184 : LAN_184);
+		$ns -> tablerender($caption, $text);
 
 		if($preview){
 			echo "</td></tr></table></div>";

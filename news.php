@@ -19,7 +19,6 @@ require_once(HEADERF);
 if(file_exists("install.php")){ echo "<div class='installe' style='text-align:center'><b>*** Please delete install.php from your server ***</b><br />if you do not there is a potential security risk to your website</div><br /><br />"; }
 
 $ix = new news;
-
 if(eregi("cat", e_QUERY)){
 	$qs = explode(".", e_QUERY);
 	$category = $qs[1];
@@ -115,6 +114,5 @@ if(!$sql -> db_Select("news", "*", "news_active=0 AND (news_start=0 || news_star
 }
 require_once(e_BASE."classes/np_class.php");
 $ix = new nextprev("news.php", $from, ITEMVIEW, $news_total, LAN_84);
-
 require_once(FOOTERF);
 ?>

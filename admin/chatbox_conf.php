@@ -58,6 +58,7 @@ if(IsSet($_POST['updatesettings'])){
 	
 	save_prefs();
 	header("location:chatbox_conf.php?u");
+	exit;
 }
 
 if(IsSet($message)){

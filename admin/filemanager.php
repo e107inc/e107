@@ -13,7 +13,9 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("6")){ header("location:".e_HTTP."index.php"); }
+
+
+if(!getperms("6")){ header("location:".e_HTTP."index.php"); exit; }
 require_once("auth.php");
 
 $imagedir = e_BASE."themes/shared/filemanager/";
@@ -82,7 +84,9 @@ if(strpos(e_QUERY, ".")){
 
 $files=array();
 $dirs=array();
-$path=explode("?",$path); // remove ?arguments 
+$path=explode("?",$path);
+$path=$path[0];
+$path=explode(".. ",$path);
 $path=$path[0];
 
 if($handle = opendir(e_BASE.$path)){
@@ -179,8 +183,8 @@ while($dirs[$c]){
 	<input class=\"button\" type=\"button\" name=\"erquest\" value=\"Upload file to this dir\" onClick=\"expandit(this)\">
 	</td>
 	</tr>
-		
-	<tr style=\"display:none\">
+	
+	<tr style=\"display:none; &{head}\">
 	<td colspan=\"5\" style=\"text-align:center\" class=\"forumheader3\">
 	<input class=\"tbox\" type=\"file\" name=\"userfile[]\" size=\"50\"> 
 	<input class=\"button\" type=\"submit\" name=\"upload\" value=\"Upload\" />

@@ -29,7 +29,7 @@ $clock_flat = TRUE;
 $HEADER = 
 "<a name=\"top\"></a>
 <div style=\"text-align:center\">
-<table style=\"width:750px\" cellspacing=\"1\" cellpadding=\"3\" class=\"mainwindow\"><tr><td colspan=\"3\" style=\"text-align:left\">
+<table style=\"width:100%\" cellspacing=\"1\" cellpadding=\"3\" class=\"mainwindow\"><tr><td colspan=\"3\" style=\"text-align:left\">
 <span class=\"captiontextorange\"> &gt; </span>
 <span class=\"captiontext\">
 {SITENAME}
@@ -47,6 +47,11 @@ strftime("%A, %d %B, %Y .:. %H:%M:%S %Z", time())."
 <td valign=\"top\" bgcolor=\"#CCCCCC\"> 
 <table width=\"100%\" border=\"0\" cellspacing=\"2\" cellpadding=\"3\">
 <tr>
+</td><td style=\"width:30%; vertical-align:top\">
+(SITELINKS=menu}
+{SETSTYLE=menu}
+{MENU=1}
+</td>
 <td style=\"width:70%; vertical-align: top;\">
 ";
 
@@ -57,11 +62,7 @@ while($row = $sql -> db_Fetch()){
 }
 
 $FOOTER = 
-"</td><td style=\"width:30%; vertical-align:top\">
-(SITELINKS=menu}
-{SETSTYLE=menu}
-{MENU=1}
-</td>
+"
 </tr>
 </table>
 <td bgcolor=\"#253047\" valign=\"top\" width=\"3\">&nbsp;</td>
@@ -72,7 +73,7 @@ $links
 </td>
 </tr>
 <tr bgcolor=\"#101842\">
-<td colspan=\"3\" style=\"text-align:right\" class=\"smalltext\">
+<td colspan=\"3\" style=\"text-align:right\" class=\"smallwhitetext\">
 {SITEDISCLAIMER}
 </td>
 </tr>
@@ -81,8 +82,6 @@ $links
 ";
 
 //	[newsstyle]
-
-
 
 
 $NEWSSTYLE = "
@@ -136,17 +135,9 @@ define("POST_URLSTRING", "<br />");
 // [linkstyle]
 
 
-
-
-
-
-
-
-
-
 define("PRELINK", "<table cellpadding=\"2\" cellspacing=\"1\" bgcolor=\"#000000\" style=\"width:100%\"><tr><td class=\"caption2\">:: Navigation : </td></tr>");
 define("POSTLINK", "</table></div></div><br />");
-define("LINKSTART", "<tr bgcolor=\"#354463\"> <td onMouseOver=\"this.style.backgroundColor='#101842';\" onMouseOut=\"this.style.backgroundColor='#354463'\"> <span class=\"smalltext\">[..] ");
+define("LINKSTART", "<tr bgcolor=\"#758393\"> <td onMouseOver=\"this.style.backgroundColor='#9DA8B3';\" onMouseOut=\"this.style.backgroundColor='#758393'\"> <span class='linktext'>");
 define("LINKEND", "</span></td>");
 define("LINKDISPLAY", 1);			// 1 - along top, 2 - in left or right column
 define("LINKALIGN", "left");

@@ -14,7 +14,7 @@
 */
 require_once("../class2.php");
 
-if(!getperms("1")){ header("location:".e_HTTP."index.php"); }
+if(!getperms("1")){ header("location:".e_HTTP."index.php"); exit;}
 
 if(IsSet($_POST['updateprefs'])){
 
@@ -42,9 +42,12 @@ if(IsSet($_POST['updateprefs'])){
 	$pref['flood_hits'][1] = $_POST['flood_hits'];
 	$pref['flood_time'][1] = $_POST['flood_time'];
 	$pref['user_reg_veri'][1] = $_POST['user_reg_veri'];
+	$pref['user_tracking'][1] = $_POST['user_tracking'];
+	
 
 	save_prefs();
 	header("location:".e_SELF);
+	exit;
 }
 
 
@@ -63,6 +66,7 @@ $time_offset = $pref['time_offset'][1];
 $flood_hits = $pref['flood_hits'][1];
 $flood_time = $pref['flood_time'][1];
 $user_reg_veri = $pref['user_reg_veri'][1];
+$user_tracking = $pref['user_tracking'][1];
 
 require_once("auth.php");
 
@@ -421,6 +425,25 @@ if($use_coppa == 1){
 $text .= "(for more info on COPPA see <a href='http://www.cdt.org/legislation/105th/privacy/coppa.html'>here</a>)
 </td>
 </tr>
+
+
+<td colspan='2'>
+<div class='border'><div class='caption'>User tracking</div></div>
+</td>
+</tr><tr>
+
+<td style='width:50%' class='forumheader3'>Tracking method: </td>
+<td style='width:50%; text-align:right' class='forumheader3'>".
+($user_tracking == "cookie" ? "<input type='radio' name='user_tracking' value='cookie' checked> Cookies" : "<input type='radio' name='user_tracking' value='cookie'> Cookies").
+($user_tracking == "session" ? "<input type='radio' name='user_tracking' value='session' checked> Sessions" : "<input type='radio' name='user_tracking' value='session'> Sessions")."
+
+</td>
+</tr>
+
+
+
+
+
 
 <tr>
 <td colspan='2' class='forumheader3'>

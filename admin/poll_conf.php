@@ -13,7 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("P")){ header("location:".e_HTTP."index.php"); }
+if(!getperms("P")){ header("location:".e_HTTP."index.php"); exit;}
 require_once("auth.php");
 require_once("../classes/poll_class.php");
 

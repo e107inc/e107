@@ -13,7 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("I")){ header("location:".e_HTTP."index.php"); }
+if(!getperms("I")){ header("location:".e_HTTP."index.php"); exit; }
 require_once("auth.php");
 
 if(e_QUERY){
@@ -29,12 +29,14 @@ if($action == "dec"){
 	$sql -> db_Update("links", "link_order=link_order-1 WHERE link_order='".($link_order+1)."' AND link_category='$location' ");
 	$sql -> db_Update("links", "link_order=link_order+1 WHERE link_id='$linkid' AND link_category='$location' ");
 	header("location: ".e_SELF);
+	exit;
 }
 
 if($action == "inc"){
 	$sql -> db_Update("links", "link_order=link_order+1 WHERE link_order='".($link_order-1)."' AND link_category='$location' ");
 	$sql -> db_Update("links", "link_order=link_order-1 WHERE link_id='$linkid' AND link_category='$location' ");
 	header("location: ".e_SELF);
+	exit;
 }
 
 

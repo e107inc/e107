@@ -17,9 +17,11 @@
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
-$text = "<div id=\"Clock\" style=\"text-align:center\">&nbsp;</div>";
+$text = "<div id='Clock'>&nbsp;</div>";
 if(!$clock_flat){
 	$ns -> tablerender($menu_pref['clock_caption'], $text);
+}else{
+	echo $text;
 }
 
 ?>
@@ -98,7 +100,7 @@ function tick() {
   } else {
      seconds = ":"+intSeconds;
   }
-  timeString = (document.all)? timeString+"<br>"+hours+minutes+seconds+" "+ap:timeString+"<br>"+hours+minutes+" "+ap;
+  timeString = (document.all)? timeString+", "+hours+minutes+seconds+" "+ap:timeString+" "+hours+minutes+" "+ap;
   var clock = (document.all) ? document.all("Clock") : document.getElementById("Clock");
   clock.innerHTML = timeString;
   (document.all)?window.setTimeout("tick();", 1000):window.setTimeout("tick();", 6000);

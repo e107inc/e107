@@ -21,7 +21,7 @@ $themeauthor = "jalist";
 $themedate = "26/08/02";
 $themeinfo = "compatible with e107 v5+<br />Made as an example of using different styles for left/right/center columns";
 
-define("THEME_DISCLAIMER", "<br />nordranious theme by jalist (e107 default)");
+define("THEME_DISCLAIMER", "<br /><i>nordranious theme by jalist (e107 default)</i>");
 
 
 // [layout]
@@ -40,6 +40,7 @@ $HEADER = "
 {SITETAG}
 </td>
 <td style=\"text-align:right; vertical-align:bottom\">
+{CUSTOM=search}
 {SITELINKS=flat}
 </td>
 </tr></table>
@@ -77,17 +78,6 @@ $FOOTER = "
 </div>";
 
 
-
-
-
-
-
-
-
-
-
-
-
 //	[newsstyle]
 
 define(TITLE_POSITION, "caption");	// put news title in caption or body?
@@ -110,10 +100,10 @@ define(SOURCE_TEXT, "Story source: ");
 
 // [linkstyle]
 
-define(PRELINK, "- ");
+define(PRELINK, "| ");
 define(POSTLINK, "");
 define(LINKSTART, "");
-define(LINKEND, " - ");
+define(LINKEND, " | ");
 define(LINKDISPLAY, 1);
 define(LINKALIGN, "right");
 

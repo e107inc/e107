@@ -99,12 +99,12 @@ while($row = $sql -> db_Fetch()){
 	<table style='width:95%'>
 	<tr>
 	<td style='width:50%'>
-	<a href='request.php?".$download_id."'><img src='themes/shared/generic/download.png' alt='' style='border:0' /></a> 
-	<b><u><a href='request.php?".$download_id."'>".$download_name."</a></u></b>
+	<a href='request.php?".$download_id."' onMouseOver=\"(window.status='Click to download'); return true\" onMouseDown=\"(window.status='Click to download');\" OnMouseout=\"window.status=' ';\"><img src='themes/shared/generic/download.png' alt='' style='border:0' /></a> 
+	<b><u><a href='request.php?".$download_id."' onMouseOver=\"(window.status='Click to download'); return true\" onMouseDown=\"(window.status='Click to download');\" OnMouseout=\"window.status=' ';\">".$download_name."</a></u></b>
 	</td>
 
 	<td style='width:50%; text-align:right'>
-	<a href='request.php?".$download_id."'><img src='themes/shared/generic/download.png' alt='' style='border:0' /></a>
+	<a href='request.php?".$download_id."' onMouseOver=\"(window.status='Click to download'); return true\" onMouseDown=\"(window.status='Click to download');\" OnMouseout=\"window.status=' ';\"><img src='themes/shared/generic/download.png' alt='' style='border:0' /></a>
 	</td>
 	</tr>
 
@@ -129,7 +129,7 @@ while($row = $sql -> db_Fetch()){
 		$text .= "<tr><td colspan='2' class='defaulttext'>".$download_description."</td></tr>";
 	}
 
-	if($download_thumb != ""){
+	if($download_thumb){
 		$text .= "<tr><td colspan='2'>Image: ";
 		if($download_image != ""){
 			$text .= " <a href='".e_BASE."files/downloadimages/".$download_image."'><img src='".e_BASE."files/downloadthumbs/".$download_thumb."' alt='' style='border:1px solid black' /></a>";
@@ -137,6 +137,10 @@ while($row = $sql -> db_Fetch()){
 			$text .= "<img src='".e_BASE."files/downloadthumbs/".$download_thumb."' alt='' style='border:1px solid black' />";
 		}
 		$text .= "</td></tr>";
+	}else if($download_image){
+		$text .= "<tr><td colspan='2'>Image: <a href='".e_BASE."request.php?download.".$download_id."'>- Here -</a>";
+	
+
 	}
 
 	$tdownloads += $download_requested;

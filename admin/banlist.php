@@ -13,7 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("4")){ header("location:".e_HTTP."index.php"); }
+if(!getperms("4")){ header("location:".e_HTTP."index.php"); exit; }
 require_once("auth.php");
 
 if(e_QUERY){ $ban_ip = e_QUERY; }

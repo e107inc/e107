@@ -13,11 +13,12 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("P")){ header("location:".e_HTTP."index.php"); }
+if(!getperms("P")){ header("location:".e_HTTP."index.php"); exit; }
 
 if(IsSet($_POST['clearcache'])){
 	$sql -> db_Delete("cache");
 	header("location:".e_SELF."?c");
+	exit;
 }
 
 if(IsSet($_POST['updatesettings'])){
@@ -25,6 +26,7 @@ if(IsSet($_POST['updatesettings'])){
 	$pref['cache_timeout'][1] = ($_POST['cache_timeout'] ? $_POST['cache_timeout'] : 600);
 	save_prefs();
 	header("location:".e_SELF."?u");
+	exit;
 }
 
 require_once("auth.php");

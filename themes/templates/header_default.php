@@ -39,9 +39,12 @@ if(eregi("forum_post.php", e_SELF) && ($_POST['reply'] || $_POST['newthread'])){
 if(file_exists(THEME."theme.js")){echo "<script type='text/javascript' src='".THEME."theme.js'></script>";}
 if(file_exists(e_BASE."files/user.js")){echo "<script type='text/javascript' src='".e_BASE."files/user.js'></script>\n";}
 ?>
+
 </head>
 <body>
+
 <?php
+
 
 $page = substr(strrchr(e_SELF, "/"), 1);
 if(eregi($page, $CUSTOMPAGES) ? parseheader($CUSTOMHEADER) : parseheader($HEADER)) ;
@@ -148,7 +151,15 @@ function checklayout($str){
 				$quote = stripslashes(htmlspecialchars($quotes[rand(0, count($quotes))]));
 			}
 			echo $quote;
+		
+
+		}else if($custom == "clock"){
+			$clock_flat = TRUE;
+			require_once("menus/clock_menu.php");
 		}
+
+
+
 	}else if(strstr($str, "BANNER")){
 		$campaign = trim(chop(preg_replace("/\{BANNER=(.*?)\}/si", "\\1", $str)));
 		mt_srand ((double) microtime() * 1000000);

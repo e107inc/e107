@@ -53,6 +53,20 @@ CREATE TABLE banner (
 # --------------------------------------------------------
 
 #
+# Table structure for table `binary`
+#
+
+CREATE TABLE binary (
+  binary_id int(10) unsigned NOT NULL auto_increment,
+  binary_name varchar(200) NOT NULL default '',
+  binary_filetype varchar(100) NOT NULL default '',
+  binary_data longblob NOT NULL,
+  PRIMARY KEY  (binary_id)
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+
+#
 # Table structure for table `cache`
 #
 
@@ -378,6 +392,20 @@ CREATE TABLE rate (
 # --------------------------------------------------------
 
 #
+# Table structure for table `session`
+#
+
+CREATE TABLE session (
+  session_id varchar(32) NOT NULL default '',
+  session_expire int(10) unsigned NOT NULL default '0',
+  session_datestamp int(10) unsigned NOT NULL default '0',
+  session_ip varchar(200) NOT NULL default '',
+  session_data text NOT NULL
+) TYPE=MyISAM;
+
+# --------------------------------------------------------
+
+#
 # Table structure for table `stat_counter`
 #
 
@@ -439,6 +467,29 @@ CREATE TABLE tmp (
   tmp_time int(10) unsigned NOT NULL default '0',
   tmp_info text NOT NULL
 ) TYPE=MyISAM;
+# --------------------------------------------------------
+
+#
+# Table structure for table `upload`
+#
+
+CREATE TABLE upload (
+  upload_id int(10) unsigned NOT NULL auto_increment,
+  upload_poster varchar(100) NOT NULL default '',
+  upload_email varchar(100) NOT NULL default '',
+  upload_website varchar(100) NOT NULL default '',
+  upload_datestamp int(10) unsigned NOT NULL default '0',
+  upload_name varchar(100) NOT NULL default '',
+  upload_version varchar(10) NOT NULL default '',
+  upload_file varchar(100) NOT NULL default '',
+  upload_ss varchar(100) NOT NULL default '',
+  upload_description text NOT NULL,
+  upload_demo varchar(100) NOT NULL default '',
+  upload_filesize int(10) unsigned NOT NULL default '0',
+  upload_active tinyint(3) unsigned NOT NULL default '0',
+  PRIMARY KEY  (upload_id)
+) TYPE=MyISAM;
+
 # --------------------------------------------------------
 
 #

@@ -20,12 +20,13 @@ if($id != ""){
 	$sql -> db_Select("links", "*", "link_id='$id' ");
 	list($link_id, $link_name, $link_url) = $sql-> db_Fetch();
 	header("location:".$link_url);
+	exit;
 }
 
 require_once(HEADERF);
 
 $ns -> tablerender("<div class='centre'>Links</div>", "");
-$sql -> db_Select("link_category", "*", "link_category_id != '1' ");
+$sql -> db_Select("link_category", "*", "link_category_name != 'Main' AND link_category_name != 'Main_Sub'");
 $sql2 = new db;
 while(list($link_category_id, $link_category_name, $link_category_description) = $sql-> db_Fetch()){
 	if($sql2 -> db_Select("links", "*", "link_category ='$link_category_id' ORDER BY link_order ")){

@@ -13,11 +13,12 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("N")){ header("location:".e_HTTP."index.php"); }
+if(!getperms("N")){ header("location:".e_HTTP."index.php"); exit;}
 
 if(IsSet($_POST['transfer'])){ 
 	$sql -> db_Update("submitnews", "submitnews_auth='1' WHERE submitnews_id ='".$_POST['id']."' ");
-	header("location:newspost.php?sn.".$_POST['id']); 
+	header("location:newspost.php?sn.".$_POST['id']);
+	exit;
 }
 
 require_once("auth.php");

@@ -15,7 +15,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("I")){ header("location:".e_HTTP."index.php"); }
+if(!getperms("I")){ header("location:".e_HTTP."index.php"); exit; }
 require_once("auth.php");
 require_once(e_BASE."classes/ren_help.php");
 $aj = new textparse;

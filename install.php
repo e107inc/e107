@@ -2,8 +2,8 @@
 //if(filesize("config.php") != 0 && $_POST['stage'] == ""){
 //	 header("location: index.php");
 //}
-if(IsSet($_POST['frontpage'])){ header("location: index.php"); }
-if(IsSet($_POST['adminpage'])){ header("location: admin/admin.php"); }
+if(IsSet($_POST['frontpage'])){ header("location: index.php"); exit;}
+if(IsSet($_POST['adminpage'])){ header("location: admin/admin.php"); exit;}
 if(!$_POST['mysql_server']){ $_POST['mysql_server'] = "localhost"; }
 if(!$_POST['mysql_prefix'] && !$_POST['stage_2']){ $_POST['mysql_prefix'] = "e107_"; }
 if(!$_POST['admin_email']){ $_POST['admin_email'] = "you@yoursite.com"; }
@@ -595,7 +595,7 @@ mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Stats', 'stats.php', 
 
 $e107['e107_author'] = "Steve Dunstan (jalist)";
 $e107['e107_url'] = "http://e107.org";
-$e107['e107_version'] = "v0.553beta";
+$e107['e107_version'] = "v0.551beta";
 $e107['e107_build'] = "";
 $e107['e107_datestamp'] = time();
 $tmp = serialize($e107);
@@ -644,6 +644,17 @@ $pref['forum_poll'][1] = "0";
 $pref['forum_popular'][1] = "10";
 $pref['forum_track'][1] = "0";
 $pref['forum_eprefix'][1] = "[forum]";
+$pref['user_tracking'][1] = "cookie";
+$pref['resize_method'][1] = "gd2";
+$pref['im_path'][1] = "/usr/local/bin/";
+$pref['im_quality'][1] = "80";
+$pref['im_width'][1] = "120";
+$pref['upload_enabled'][1] = "0";
+$pref['upload_allowedfiletype'][1] = ".zip\n.gz\n.jpg\n.png\n.gif\n.txt";
+$pref['upload_storagetype'][1] = "2";
+$pref['upload_maxfilesize'][1] = "";
+$pref['upload_class'][1] = "999";
+
 $tmp = serialize($pref);
 mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('pref', '$tmp') ");
 
@@ -661,11 +672,12 @@ mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES ('2', 'Member message -
 mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES ('3', 'Administrator message ----- This text (if activated) will appear at the top of your front page all the time - only logged in administrators will see this.', '0')");
 
 mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'login_menu', 1, 1, 0)");
-mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'search_menu', 1, 2, 0)");
+mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'search_menu', 0, 0, 0)");
 mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'chatbox_menu', 1, 3, 0)");
 mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'sitebutton_menu', 1, 4, 0)");
 mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'online_menu', 1, 5, 0)");
 mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'compliance_menu', 1, 6, 0)");
+mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'powered_by_menu', 1, 7, 0)");
 
 mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'clock_menu', 2, 1, 0)");
 mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'articles_menu', 2, 2, 0)");
