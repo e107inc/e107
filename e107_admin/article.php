@@ -47,7 +47,7 @@ if(IsSet($_POST['update_category'])){
 }
 
 if(IsSet($_POST['create_article'])){
-	if($_POST['data']){
+	if($_POST['data'] && $_POST['content_heading']){
 		$content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
 		$content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
 		$content_content = $aj -> formtpa($_POST['data'], "admin");
@@ -63,31 +63,39 @@ if(IsSet($_POST['create_article'])){
 }
 
 If(IsSet($_POST['sa_article'])){
-	if($_POST['category'] == -1){ unset($_POST['category']); }
-	$content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
-	$content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
-	$content_content = $aj -> formtpa($_POST['data'], "admin");
-	$content_summary = $aj -> formtpa($_POST['content_summary'], "admin");
-	$content_author = ($_POST['content_author'] && $_POST['content_author'] != ARLAN_84 ? $_POST['content_author']."^".$_POST['content_author_email'] : ADMINID);
-	$sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_parent='".$_POST['category']."', content_datestamp='".time()."', content_author='$content_author', content_comment='".$_POST['content_comment']."', content_summary='$content_summary', content_type='0',  content_pe_icon=".$_POST['add_icons'].", content_class='{$_POST['a_class']}' WHERE content_id=$id", TRUE);
-	unset($content_heading, $content_subheading, $data, $content_summary);
-	$message = ARLAN_99;
-	unset($action);
+	if($_POST['data'] && $_POST['content_heading']){
+		if($_POST['category'] == -1){ unset($_POST['category']); }
+		$content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
+		$content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
+		$content_content = $aj -> formtpa($_POST['data'], "admin");
+		$content_summary = $aj -> formtpa($_POST['content_summary'], "admin");
+		$content_author = ($_POST['content_author'] && $_POST['content_author'] != ARLAN_84 ? $_POST['content_author']."^".$_POST['content_author_email'] : ADMINID);
+		$sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_parent='".$_POST['category']."', content_datestamp='".time()."', content_author='$content_author', content_comment='".$_POST['content_comment']."', content_summary='$content_summary', content_type='0',  content_pe_icon=".$_POST['add_icons'].", content_class='{$_POST['a_class']}' WHERE content_id=$id");
+		unset($content_heading, $content_subheading, $data, $content_summary);
+		$message = ARLAN_99;
+		unset($action);
+	}else{
+		$message = ARLAN_1;
+	}
 }
 
 
 If(IsSet($_POST['update_article'])){
-	if($_POST['category'] == -1){ unset($_POST['category']); }
-	$content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
-	$content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
-	$content_content = $aj -> formtpa($_POST['data'], "admin");
-	$content_summary = $aj -> formtpa($_POST['content_summary'], "admin");
-	$content_author = ($_POST['content_author'] && $_POST['content_author'] != ARLAN_84 ? $_POST['content_author']."^".$_POST['content_author_email'] : ADMINID);
-	$sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_parent='".$_POST['category']."', content_datestamp='".time()."', content_author='$content_author', content_comment='".$_POST['content_comment']."', content_summary='$content_summary', content_pe_icon=".$_POST['add_icons'].", content_class='{$_POST['a_class']}' WHERE content_id='".$_POST['content_id']."'");
-	unset($content_heading, $content_subheading, $data, $content_summary);
-	$message = ARLAN_2;
-	unset($action);
-	clear_cache("article");
+	if($_POST['data'] && $_POST['content_heading']){
+		if($_POST['category'] == -1){ unset($_POST['category']); }
+		$content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
+		$content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
+		$content_content = $aj -> formtpa($_POST['data'], "admin");
+		$content_summary = $aj -> formtpa($_POST['content_summary'], "admin");
+		$content_author = ($_POST['content_author'] && $_POST['content_author'] != ARLAN_84 ? $_POST['content_author']."^".$_POST['content_author_email'] : ADMINID);
+		$sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_parent='".$_POST['category']."', content_datestamp='".time()."', content_author='$content_author', content_comment='".$_POST['content_comment']."', content_summary='$content_summary', content_pe_icon=".$_POST['add_icons'].", content_class='{$_POST['a_class']}' WHERE content_id='".$_POST['content_id']."'");
+		unset($content_heading, $content_subheading, $data, $content_summary);
+		$message = ARLAN_2;
+		unset($action);
+		clear_cache("article");
+	}else{
+		$message = ARLAN_1;
+	}
 }
 
 if(IsSet($_POST['updateoptions'])){
@@ -114,20 +122,20 @@ if($action == "confirm"){
 if(IsSet($_POST['preview'])){
 	$obj = new convert;
 	$datestamp = $obj->convert_date(time(), "long");
-	$content_heading = $aj -> formtpa($_POST['content_heading']); $content_heading = $aj -> tpa($content_heading);
-	$content_subheading = $aj -> formtpa($_POST['content_subheading']); $content_subheading = $aj -> tpa($content_subheading);
-	$data = (strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]", "[img]../", $_POST['data']));
-	$data = $aj -> formtpa($data); $data = $aj -> tpa($data);
-	$content_summary= $aj -> formtpa($_POST['content_summary']); $content_summary= $aj -> tpa($content_summary);
-	$content_author = ($_POST['content_author'] && $_POST['content_author'] != ARLAN_84 ? $_POST['content_author'] : ADMINNAME);
-	$text = "<i>by $content_author</i><br /><span class='smalltext'>".$datestamp."</span><br /><br />Subheading: $content_subheading<br />Summary: $content_summary<br /><br />$data";
+	$ch = $aj -> formtpa($_POST['content_heading']); $ch = $aj -> tpa($ch);
+	$cs = $aj -> formtpa($_POST['content_subheading']); $cs = $aj -> tpa($ch);
+	$dt = (strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]", "[img]../", $_POST['data']));
+	$dt = $aj -> formtpa($dt); $dt = $aj -> tpa($dt);
+	$cu= $aj -> formtpa($_POST['content_summary']); $cu= $aj -> tpa($cu);
+	$ca = ($_POST['content_author'] && $_POST['content_author'] != ARLAN_84 ? $_POST['content_author'] : ADMINNAME);
+	$text = "<i>by $ca</i><br /><span class='smalltext'>".$datestamp."</span><br /><br />Subheading: $cs<br />Summary: $cu<br /><br />$dt";
 	$ns -> tablerender($content_heading, $text);
 	echo "<br /><br />";
 	// make form friendly ...
-	$_POST['content_heading'] = $aj -> formtparev($content_heading);
-	$_POST['content_subheading'] = $aj -> formtparev($content_subheading);
-	$data = str_replace("../", "", $aj -> formtparev($data));
-	$_POST['content_summary'] = $aj -> formtparev($content_summary);
+	$content_heading = $aj -> formtparev($_POST['content_heading']);
+	$content_subheading = $aj -> formtparev($_POST['content_subheading']);
+	$data = $aj -> formtparev(str_replace("../", "", $_POST['data']));
+	$content_summary = $aj -> formtparev($_POST['content_summary']);
 	$content_parent = $_POST['category'];
 }
 
@@ -201,7 +209,7 @@ if($action == "cat"){
 	<input class='button' type ='button' style=''width: 35px'; cursor:hand' size='30' value='".ARLAN_67."' onClick='expandit(this)'>
 	<div style='display:none' style=&{head};>";
 	while(list($key, $icon) = each($iconlist)){
-		$text .= "<a href='javascript:addtext(\"$icon\")'><img src='".e_IMAGE."link_icons/".$icon."' style='border:0' alt='' /></a> ";
+		$text .= "<a href='javascript:addtext2(\"$icon\")'><img src='".e_IMAGE."link_icons/".$icon."' style='border:0' alt='' /></a> ";
 	}
 	$text .= "</td>
 	</tr>
@@ -351,13 +359,13 @@ if($action == "create"){
 	<tr>
 	<td style='width:20%' class='forumheader3'>".ARLAN_20.": </td>
 	<td style='width:80%' class='forumheader3'>
-	<textarea class='tbox' name='data' cols='90' rows='30'>$data</textarea>
+	<textarea class='tbox' name='data' cols='90' rows='30' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$data</textarea>
 	<br />
 	<input class='helpbox' type='text' name='helpb' size='100' />
 	<br />";
 
 	require_once(e_HANDLER."ren_help.php");
-	$text .= ren_help("addtext2", TRUE)."
+	$text .= ren_help()."
 	</td>
 	</tr>
 
@@ -491,16 +499,10 @@ $ns -> tablerender(ARLAN_79, $text);
 require_once("footer.php");
 ?>
 <script type="text/javascript">
-function addtext(sc){
+function addtext2(sc){
 	document.dataform.category_button.value = sc;
 }
 
-function addtext2(sc){
-	document.dataform.data.value += sc;
-}
-function help(help){
-	document.dataform.helpb.value = help;
-}
 </script>
 <?php
 echo "<script type=\"text/javascript\">

@@ -12,7 +12,8 @@
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
-include(e_LANGUAGEDIR.e_LAN."/lan_sitelinks.php");
+@include(e_LANGUAGEDIR.e_LAN."/lan_sitelinks.php");
+@include(e_LANGUAGEDIR."English/lan_sitelinks.php");
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function sitelinks(){
 	/*
@@ -32,9 +33,9 @@ function sitelinks(){
 	if(ADMIN == TRUE){
 		$linkstart = (file_exists(e_IMAGE."link_icons/admin.png") ? preg_replace("/\<img.*\>/si", "", LINKSTART)." " : LINKSTART);
 		if(LINKDISPLAY != 3) {
-			$text .= $linkstart.(file_exists(e_IMAGE."link_icons/admin.png") ? "<img src='".e_IMAGE."link_icons/admin.png' alt='' style='vertical-align:middle' /> " : "")."<a".$linkadd." href=\"".e_ADMIN.(!$pref['adminstyle'] || $pref['adminstyle'] == "default" ? "admin.php" : $pref['adminstyle'].".php")."\">Admin Area</a>".LINKEND."\n";
+			$text .= $linkstart.(file_exists(e_IMAGE."link_icons/admin.png") ? "<img src='".e_IMAGE."link_icons/admin.png' alt='' style='vertical-align:middle' /> " : "")."<a".$linkadd." href=\"".e_ADMIN.(!$pref['adminstyle'] || $pref['adminstyle'] == "default" ? "admin.php" : $pref['adminstyle'].".php")."\">".LAN_502."</a>".LINKEND."\n";
 		} else {
-			$menu_main .= $linkstart.(file_exists(e_IMAGE."link_icons/admin.png") ? "<img src='".e_IMAGE."link_icons/admin.png' alt='' style='vertical-align:middle' /> " : "")."<a".$linkadd." href=\"".e_ADMIN.(!$pref['adminstyle'] || $pref['adminstyle'] == "default" ? "admin.php" : $pref['adminstyle'].".php")."\">Admin Area</a>".LINKEND."\n";
+			$menu_main .= $linkstart.(file_exists(e_IMAGE."link_icons/admin.png") ? "<img src='".e_IMAGE."link_icons/admin.png' alt='' style='vertical-align:middle' /> " : "")."<a".$linkadd." href=\"".e_ADMIN.(!$pref['adminstyle'] || $pref['adminstyle'] == "default" ? "admin.php" : $pref['adminstyle'].".php")."\">".LAN_502."</a>".LINKEND."\n";
 		}
 	}
 	$sql = new db; $sql2 = new db;

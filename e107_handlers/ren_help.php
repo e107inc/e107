@@ -1,62 +1,63 @@
 <?php
-function ren_help($func, $rencolsize=FALSE){
-	unset($str);
+function ren_help($mode=1){
+
+	//	$mode == TRUE : fontsize and colour dialogs are rendered
+	//	$mode == 2 : no helpbox
+
 	if(strstr(e_SELF, "article")){
-		$str = "<input class=\"button\" type=\"button\" value=\"newpage\" onclick=\"addtext2('[newpage]')\" onMouseOver=\"help('Insert newpage tag, splits article into more than one page')\" onMouseOut=\"help('')\"> ";
+		$code[0] = array("newpage", "[newpage]", "Insert newpage tag, splits article into more than one page");
 	}
-	
-	$str .= <<< HELPSTR
-<input class="button" type="button" value="link" onclick="$func('[link=hyperlink url]hyperlink text[/link]')" onMouseOver="help('Insert link: [link]http://mysite.com[/link] or  [link=http://yoursite.com]Visit My Site[/link]')" onMouseOut="help('')">
-<input class="button" type="button" style="font-weight:bold; width: 20px" value="b" onclick="$func('[b][/b]')" onMouseOver="help('Bold text: [b]This text will be bold[/b]')" onMouseOut="help('')">
-<input class="button" type="button" style="font-style:italic; width: 20px" value="i" onclick="$func('[i][/i]')" onMouseOver="help('Italic text: [i]This text will be italicised[/i]')" onMouseOut="help('')">
-<input class="button" type="button" style="text-decoration: underline; width: 20px" value="u" onclick="$func('[u][/u]')" onMouseOver="help('Underline text: [u]This text will be underlined[/u]')" onMouseOut="help('')">
-<input class="button" type="button" value="img" onclick="$func('[img][/img]')" onMouseOver="help('Insert image: [img]mypicture.jpg[/img]')" onMouseOut="help('')">
-<input class="button" type="button" value="center" onclick="$func('[center][/center]')" onMouseOver="help('Center align: [center]This text will be centered[/center]')" onMouseOut="help('')">
-<input class="button" type="button" value="left" onclick="$func('[left][/left]')" onMouseOver="help('Left align: [left]This text will be left aligned[/left]')" onMouseOut="help('')">
-<input class="button" type="button" value="right" onclick="$func('[right][/right]')" onMouseOver="help('Right align: [right]This text will be right aligned[/right]')" onMouseOut="help('')">
-<input class="button" type="button" value="bq" onclick="$func('[blockquote][/blockquote]')" onMouseOver="help('Blockquote text: [blockquote]This text will be indented[/blockquote]')" onMouseOut="help('')"> 
-<input class="button" type="button" value="code" onclick="$func('[code][/code]')" onMouseOver="help('Code - preformatted text: [code]\$var = foobah;[/code]')" onMouseOut="help('')"> 
-HELPSTR;
+	$code[1] = array("link", "[link=hyperlink url][/link]", "Insert link: [link]http://mysite.com[/link] or  [link=http://yoursite.com]Visit My Site[/link]");
+	$code[2] = array("b", "[b][/b]", "Bold text: [b]This text will be bold[/b]", "font-weight:bold; width: 20px");
+	$code[3] = array("i", "[i][/i]", "Italic text: [i]This text will be italicised[/i]", "font-style:italic; width: 20px");
+	$code[4] = array("u", "[u][/u]", "Underline text: [u]This text will be underlined[/u]", "text-decoration: underline; width: 20px");
+	$code[5] = array("img", "[img][/img]", "Insert image: [img]mypicture.jpg[/img]");
+	$code[6] = array("center", "[center][/center]", "Center align: [center]This text will be centered[/center]");
+	$code[7] = array("left", "[left][/left]", "Left align: [left]This text will be left aligned[/left]");
+	$code[8] = array("right", "[right][/right]", "Right align: [right]This text will be right aligned[/right]");
+	$code[9] = array("bq", "[blockquote][/blockquote]", "Blockquote text: [blockquote]This text will be blockquoted (indented)[/blockquote]");
+	$code[10] = array("code", "[code][/code]", "Code - preformatted text: [code]\$foo = bah;[/code]");
+	if(ADMIN){
+		$code[11] = array("html", "[html][/html]", "HTML - removes linebreaks from text: [html]<table><tr><td> etc[/html]");
+	}
 
-if(ADMIN){
-	$str .= <<< HELPSTR
-<input class="button" type="button" value="html" onclick="$func('[html][/html]')" onMouseOver="help('HTML - removes linebreaks from text: [html]<table><tr><td> etc[/html]')" onMouseOut="help('')">
-HELPSTR;
-}
+	$colours[0] = "Black";
+	$colours[1] = "Blue";
+	$colours[2] = "Brown";
+	$colours[3] = "Cyan";
+	$colours[4] = "Dark Blue";
+	$colours[5] = "Dark Red";
+	$colours[6] = "Green";
+	$colours[7] = "Indigo";
+	$colours[8] = "Olive";
+	$colours[9] = "Orange";
+	$colours[10] = "Red";
+	$colours[11] = "Violet";
+	$colours[12] = "White";
+	$colours[13] = "Yellow";
 
-if($rencolsize){
+	$fontsizes[0] = array("7", "Tiny");
+	$fontsizes[1] = array("9", "Small");
+	$fontsizes[2] = array("11", "Normal");
+	$fontsizes[3] = array("16", "Large");
+	$fontsizes[4] = array("20", "Larger");
+	$fontsizes[5] = array("28", "Massive");
 
-	$str .= <<< HELPSTR
-<br />
-<select class="tbox" name="fontcol" onChange="$func('[color=' + this.options[this.selectedIndex].value + '] [/color]');this.selectedIndex=0;" onMouseOver="help('Font Color: [color]Black[/color]')" onMouseOut="help('')">
-<option value="">Color ..</option>
-<option style="color:black" value="black">Black</option>
-<option style="color:blue" value="blue">Blue</option>
-<option style="color:brown" value="brown">Brown</option>
-<option style="color:cyan" value="cyan">Cyan</option>
-<option style="color:darkblue" value="darkblue">Dark Blue</option>
-<option style="color:darkred" value="darkred">Dark Red</option>
-<option style="color:green" value="green">Green</option>
-<option style="color:indigo" value="indigo">Indigo</option>
-<option style="color:olive" value="olive">Olive</option>
-<option style="color:orange" value="orange">Orange</option>
-<option style="color:red" value="red">Red</option>
-<option style="color:violet" value="violet">Violet</option>
-<option style="color:white" value="white">White</option>
-<option style="color:yellow" value="yellow">Yellow</option>
-</select>
-<select class="tbox" name="fontsiz" onChange="$func('[size=' + this.options[this.selectedIndex].value + '] [/size]');this.selectedIndex=0;" onMouseOver="help('Font Size: [size]Big[/size]')" onMouseOut="help('')">
-<option>Size ..</option>
-<option value="7">Tiny</option>
-<option value="9">Small</option>
-<option value="11">Normal</option>
-<option value="16">Large</option>
-<option  value="20">Larger</option>
-<option  value="28">Massive</option>
-</select>
+	while(list($key, $bbcode) = each($code)){ 
+		$string .= "<input class=\"button\" type=\"button\" value=\"".$bbcode[0]."\" onclick=\"addtext('".$bbcode[1]."')\" ".($mode != 2 ? "onmouseout=\"help('')\" onmouseover=\"help('".$bbcode[2]."')\"" : "" ).($bbcode[3] ? " style='".$bbcode[3]."'" : "")." />\n";
+	}
+	if($mode){
+		$string .= "<br />\n<select class=\"tbox\" name=\"fontcol\" onchange=\"addtext('[color=' + this.options[this.selectedIndex].value + '][/color]');this.selectedIndex=0;\"".($mode != 2 ? " onmouseover=\"help('Font Color: [color]Blue[/color]')\" onmouseout=\"help('')\"" : "").">\n<option value=\"\">Color ..</option>\n";
+		while(list($key, $bbcode) = each($colours)){
+			$string .= "<option style=\"color:".strtolower($bbcode)."\" value=\"".strtolower($bbcode)."\">".$bbcode."</option>\n";
+		}
+		$string .= "</select>\n<select class=\"tbox\" name=\"fontsiz\" onchange=\"addtext('[size=' + this.options[this.selectedIndex].value + '][/size]');this.selectedIndex=0;\"".($mode != 2 ? " onmouseover=\"help('Font Size: [size]Big[/size]')\" onmouseout=\"help('')\">" : "" )."\n<option>Size ..</option>\n";
 
-HELPSTR;
-}
-	return $str;
+		while(list($key, $bbcode) = each($fontsizes)){
+			$string .= "<option value=\"".$bbcode[0]."\">".$bbcode[1]."</option>\n";
+		}
+		$string .= "</select>";
+	}
+	return $string;
 }
 ?>

@@ -19,7 +19,8 @@ if(!USER){
 }
 
 require_once(HEADERF);
-require_once(e_PLUGIN."list_new/languages/".e_LANGUAGE.".php");
+@include(e_PLUGIN."list_new/languages/".e_LANGUAGE.".php");
+@include(e_PLUGIN."list_new/languages/English.php");
 
 $bullet = "<img src='".THEME."images/bullet2.gif' alt='bullet' /> ";
 
@@ -65,13 +66,13 @@ if($comments = $sql -> db_Select("comments", "*", "comment_datestamp>$lvisit ORD
 				
 				switch($content_type){
 					case 0:	//	article
-						$str .= $bullet."[ Article ] Re: <a href='".e_BASE."article.php?$comment_item_id.0'>$content_heading</a><br />";
+						$str .= $bullet."[ Article ] Re: <a href='".e_BASE."content.php?article.$comment_item_id'>$content_heading</a><br />";
 					break;
 					case 1:	//	content page
-						$str .= $bullet."[ Content ] Re: <a href='".e_BASE."article.php?$comment_item_id.255'>$content_heading</a><br />";
+						$str .= $bullet."[ Content ] Re: <a href='".e_BASE."content.php?content.$comment_item_id'>$content_heading</a><br />";
 					break;
 					case 3:	//	review
-						$str .= $bullet."[ Review ] Re: <a href='".e_BASE."article.php?$comment_item_id.0'>$content_heading</a><br />";
+						$str .= $bullet."[ Review ] Re: <a href='".e_BASE."content.php?review.$comment_item_id.'>$content_heading</a><br />";
 					break;
 				}
 			break;

@@ -13,17 +13,18 @@
 +---------------------------------------------------------------+
 */
 @include(e_LANGUAGEDIR.$language."/lan_comment.php");
+@include(e_LANGUAGEDIR."English/lan_comment.php");
 class comment{
 
 	function form_comment(){
-		require_once(e_HANDLER."shortcuts.php");
+		require_once(e_HANDLER."ren_help.php");
 		if(ANON == TRUE || USER == TRUE){
 			$ns = new e107table;
 			$text = "\n<form method='post' action='".e_SELF."?".e_QUERY."' name='dataform'>\n<table style='width:95%'>";
 			if(ANON == TRUE && USER == FALSE){
 				$text .= "<tr>\n<td style='width:20%'>".LAN_16."</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='author_name' size='60' value='$author_name' maxlength='100' />\n</td>\n</tr>";
 			}
-			$text .= "<tr> \n<td style='width:20%'>".LAN_8.":</td>\n<td style='width:80%'>\n<textarea class='tbox' name='comment' cols='70' rows='10'></textarea>\n<br />".shortcuts("addtext")."</td></tr>\n<tr style='vertical-align:top'> \n<td style='width:20%'></td>\n<td style='width:80%'>\n<input class='button' type='submit' name='commentsubmit' value='".LAN_9."' />\n</td>\n</tr>\n</table>\n</form>";
+			$text .= "<tr> \n<td style='width:20%'>".LAN_8.":</td>\n<td style='width:80%'>\n<textarea class='tbox' name='comment' cols='70' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>\n<br />".ren_help(2)."</td></tr>\n<tr style='vertical-align:top'> \n<td style='width:20%'></td>\n<td style='width:80%'>\n<input class='button' type='submit' name='commentsubmit' value='".LAN_9."' />\n</td>\n</tr>\n</table>\n</form>";
 			$ns -> tablerender(LAN_9, $text);
 		}else{
 			echo "<br /><div style='text-align:center'><b>".LAN_6."</b></div>";
@@ -191,9 +192,3 @@ class comment{
 		}
 	}
 }
-?>
-<script type="text/javascript">
-function addtext(str){
-	document.dataform.comment.value += str;
-}
-</script>

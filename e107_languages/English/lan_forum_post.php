@@ -54,7 +54,6 @@ define("LAN_386", "If you do not wish to add a poll to your thread leave the fie
 define("LAN_387", "Go");
 define("LAN_388", "Back to top");
 define("LAN_389", "Duplicate post, redirecting ...");
-
 define("LAN_390", "Attach file / image");
 define("LAN_391", "Option");
 define("LAN_392", "File to attach");
@@ -62,15 +61,14 @@ define("LAN_393", "<b>Please note</b><br />Allowed filetypes:");
 define("LAN_394", "Any other filetypes uploaded will be instantly deleted.");
 define("LAN_395", "Maximum file size");
 define("LAN_396", "bytes");
-
 define("LAN_397", "This thread is locked.");
-
 define("LAN_398", "This forum is read only");
-
 define("LAN_399", "You are not authorized to post to this forum.");
-
 define("LAN_400", "post thread as");
 define("LAN_401", "Jump");
 
+define("LAN_402", "poll");
+define("LAN_403", "announcement");
+define("LAN_404", "sticky");
 
 ?>

@@ -42,7 +42,7 @@ class nextprev{
 		}
 
 		if($pages){
-			$nppage= "Go to page ";
+			$nppage= NP_3." ";
 			if($pages > 10){
 				$current = ($from/$view)+1;
 

@@ -13,5 +13,9 @@
 */
 
 define("COUNTER_L1", "Counter");
+define("COUNTER_L2", "Today");
+define("COUNTER_L3", "Ever");
+define("COUNTER_L4", "Record");
+define("COUNTER_L5", "Stat logging is disabled, go to admin -> Log Stats to enable");
 
 ?>

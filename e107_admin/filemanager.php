@@ -23,53 +23,27 @@ if(!$path){ $path =  str_replace("../", "", e_FILE); }
 
 if(IsSet($_POST['deletefile'])){
 	if(!$_POST['ac'] == md5(ADMINPWCHANGE)){ exit; }
-	$destination_file = str_replace($ADMIN_DIRECTORY, "", substr($_SERVER['PATH_TRANSLATED'], 0, strrpos($_SERVER['PATH_TRANSLATED'], "/"))."/".$_POST['deleteconfirm']);
+	$destination_file  = e_BASE.$_POST['deleteconfirm'];
 	if(@unlink($destination_file)){
-		$message = "Deleted '".$destination_file."' successfully.";
+		$message = FMLAN_26." '".$destination_file."' ".FMLAN_27.".";
 	}else{
-		$message = "Unable to delete '".$destination_file."'.";
+		$message = FMLAN_28." '".$destination_file."'.";
 	}
 }
 
 if(IsSet($_POST['upload'])){
 	if(!$_POST['ac'] == md5(ADMINPWCHANGE)){ exit; }
-	$files = $_FILES['userfile'];
+	$pref['upload_storagetype'] = "1";
+	require_once(e_HANDLER."upload_handler.php");
+	
+	$files = $_FILES['file_userfile'];
+
+	
+
+
 	foreach($files['name'] as $key => $name){
 		if($files['size'][$key]){
-			$name = ereg_replace("[^a-z0-9._]", "", str_replace(" ", "_", str_replace("%20", "_", strtolower($name))));
-
-			$destination_file = str_replace($ADMIN_DIRECTORY, "", substr($_SERVER['PATH_TRANSLATED'], 0, strrpos($_SERVER['PATH_TRANSLATED'], "/"))."/".$_POST['upload_dir'][$key]."/".$name);
-
-			$uploadfile = $files['tmp_name'][$key];
-			if(@move_uploaded_file($uploadfile, $destination_file)){
-				@chmod($destination_file, 0644);
-				$message .= " ".FMLAN_1." '".$files['name'][$key]."' ".FMLAN_2." ".$_POST['upload_dir'][$key]." ".FMLAN_3.".";
-			}else{
-				switch ($files['error'][$key]){
-					case 0:
-						$error = FALSE;
-					break;
-					case 1:
-						$error = FMLAN_4;
-					break;
-					case 2:
-						$error = FMLAN_5;
-					break;
-					case 3:
-						$error = FMLAN_6;
-					break;
-					case 4:
-						$error = FMLAN_7;
-					break;
-					case 5:
-						$error = FMLAN_8;
-					break;
-				}
-				$message .= FMLAN_9.": '".$files['name'][$key]."' - ".FMLAN_10.": ".$error;
-				if(!$error){
-					$message .= FMLAN_11;
-				}
-			}
+			$uploaded = file_upload(e_BASE.$_POST['upload_dir'][$key]);
 		}
 	}
 }
@@ -188,7 +162,7 @@ while($dirs[$c]){
 	if(FILE_UPLOADS){
 		$text .= "<input class=\"button\" type=\"button\" name=\"erquest\" value=\"".FMLAN_21."\" onClick=\"expandit(this)\">
 		<div style=\"display:none; &{head}\">
-		<input class=\"tbox\" type=\"file\" name=\"userfile[]\" size=\"50\"> 
+		<input class=\"tbox\" type=\"file\" name=\"file_userfile[]\" size=\"50\"> 
 		<input class=\"button\" type=\"submit\" name=\"upload\" value=\"".FMLAN_22."\" />
 		<input type=\"hidden\" name=\"upload_dir[]\" value=\"".$path.$dirs[$c]."\">
 		</div>";

@@ -1,9 +1,9 @@
 <?php
 
 	$text = ONLINE_EL1.GUESTS_ONLINE.", ";
-	if($pref['user_reg'] == 1){
+//	if($pref['user_reg'] == 1){
 		$text .= ONLINE_EL2.MEMBERS_ONLINE." ...<br />";
-	}
+//	}
 
 	if(MEMBERS_ONLINE){
 		$sql -> db_Select("online", "*", "online_user_id!='0' ");

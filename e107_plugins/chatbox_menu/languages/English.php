@@ -28,5 +28,6 @@ define("CHATBOX_L13", "moderate chatbox");
 define("CHATBOX_L14", "Emotes");
 define("CHATBOX_L15", "Post too long, or empty post submitted");
 define("CHATBOX_L16", "Anonymous");
+define("CHATBOX_L17", "Duplicate post");
 
 ?>

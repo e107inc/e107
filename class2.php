@@ -47,14 +47,14 @@ $num_levels=substr_count($tmp[0],"/");
 for($i=1;$i<=$num_levels;$i++){ 
 	$link_prefix.="../";
 }
-
+if(strstr($_SERVER['QUERY_STRING'], "'") || strstr($_SERVER['QUERY_STRING'], ";")){ die("Access denied."); }
 if(preg_match("/\[(.*?)\].*?/i", $_SERVER['QUERY_STRING'], $matches)){
 define("e_MENU", $matches[1]);
 	define("e_QUERY", str_replace($matches[0], "", eregi_replace("(.?)([a-zA-Z]*\(.*\))(.*)", "\\1\\3", eregi_replace("&|/?PHPSESSID.*", "", $_SERVER['QUERY_STRING']))));
 }else{
 	define("e_QUERY", eregi_replace("(.?)([a-zA-Z]*\(.*\))(.*)", "\\1\\3", eregi_replace("&|/?PHPSESSID.*", "", $_SERVER['QUERY_STRING'])));
 }
-
+if(strstr(e_MENU, "debug")){ error_reporting(E_ALL); }
 $_SERVER['QUERY_STRING'] = e_QUERY;
 define('e_BASE',$link_prefix);
 define("e_ADMIN", e_BASE.$ADMIN_DIRECTORY);
@@ -144,8 +144,6 @@ online();
 
 $fp = ($pref['frontpage'] ? $pref['frontpage'].".php" : "news.php index.php");
 define("e_SIGNUP", (file_exists(e_BASE."customsignup.php") ? "customsignup.php" : "signup.php"));
-
-
 
 if($pref['membersonly_enabled'] && !USER && !strstr($fp, e_PAGE) && e_PAGE != e_SIGNUP && e_PAGE != "index.php" && e_PAGE != "fpw.php" && !strstr(e_PAGE, "admin")){
 	echo "<br /><br /><div style='text-align:center; font: 12px Verdana, Tahoma'>This is a restricted area, to access it either log in or <a href='".e_BASE.e_SIGNUP."'>register as a member</a>.<br /><br /><a href='".e_BASE."index.php'>Click here to return to front page</a>.</div>";
@@ -453,7 +451,6 @@ class textparse{
 		$text = str_replace($search, $replace, $text);
 		if($mode != "nobreak"){ $text = nl2br($text); }
 		$text = str_replace("<br /><br />", "<br />", $text);
-		$text = " " . $text;
 		$text = preg_replace("#([\t\r\n ])([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="\2://\3" onclick="window.open(\'\2://\3\'); return false;">\2://\3</a>', $text);
 		$text = preg_replace("#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="http://\2.\3" onclick="window.open(\'http://\2.\3\'); return false;">\2.\3</a>', $text);
 		$text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $text);
@@ -703,16 +700,22 @@ function init_session(){
 	if(!$_COOKIE[$pref['cookie_name']] && !$_SESSION[$pref['cookie_name']]){
 		define("USER", FALSE); define("USERTHEME", FALSE); define("ADMIN", FALSE);
 	}else{
-		$tmp = ($_COOKIE[$pref['cookie_name']] ? explode(".", $_COOKIE[$pref['cookie_name']]) : explode(".", $_SESSION[$pref['cookie_name']])); $uid = $tmp[0]; $upw = $tmp[1];
-		if(Empty($upw)){	 // corrupt cookie?
+		list($uid, $upw) = ($_COOKIE[$pref['cookie_name']] ? explode(".", $_COOKIE[$pref['cookie_name']]) : explode(".", $_SESSION[$pref['cookie_name']]));
+		if(empty($uid) || empty($upw)){	 // corrupt cookie?
 			cookie($pref['cookie_name'], "", (time()-2592000));
 			$_SESSION[$pref['cookie_name']] = "";
 			session_destroy();
 			define("ADMIN", FALSE); define("USER", FALSE); define("LOGINMESSAGE", "Corrupted cookie detected - logged out.<br /><br />");
 			return(FALSE);
 		}
-		if($sql -> db_Select("user", "*", "user_id='$uid' AND user_password='$upw' ")){
+		if($sql -> db_Select("user", "*", "user_id='$uid' AND md5(user_password)='$upw'")){
 			$result = $sql -> db_Fetch(); extract($result);
+
+		/*	echo "<pre>";
+			print_r($result);
+			echo "</pre>";
+			exit;	*/
+
 			define("USERID", $user_id); define("USERNAME", $user_name); define("USERURL", $user_website); define("USEREMAIL", $user_email); define("USER", TRUE); define("USERLV", $user_lastvisit); define("USERVIEWED", $user_viewed); define("USERCLASS", $user_class); define("USERREALM", $user_realm);
 			if($user_ban == 1){ exit; }
 			$user_pref = unserialize($user_prefs);
@@ -726,16 +729,10 @@ function init_session(){
 				$user_pref['sitelanguage'] = ($pref['sitelanguage'] == $_POST['sitelanguage'] ? "" : $_POST['sitelanguage']);
 				save_prefs($user);
 			}
-			if($user_pref['sitetheme'] && @fopen(e_THEME.$user_pref['sitetheme']."/theme.php","r")){
-				define("USERTHEME", $user_pref['sitetheme']);
-			}else{
-				define("USERTHEME", FALSE);
-			}
-			if($user_pref['sitelanguage'] && @fopen(e_LANGUAGEDIR.$user_pref['sitelanguage']."/lan_".e_PAGE,"r")){
-				define("USERLAN", $user_pref['sitelanguage']);
-			}else{
-				define("USERLAN", FALSE);
-			}
+
+			define("USERTHEME", ($user_pref['sitetheme'] && file_exists(e_THEME.$user_pref['sitetheme']."/theme.php") ? $user_pref['sitetheme'] : FALSE));
+			define("USERLAN", ($user_pref['sitelanguage'] && file_exists(e_LANGUAGEDIR.$user_pref['sitelanguage']."/lan_".e_PAGE) ? $user_pref['sitelanguage'] : FALSE));
+
 			if($user_currentvisit + 3600 < time()){
 				$sql -> db_Update("user", "user_visits=user_visits+1 WHERE user_name='".USERNAME."' ");
 				$sql -> db_Update("user", "user_lastvisit='$user_currentvisit', user_currentvisit='".time()."', user_viewed='$r' WHERE user_name='".USERNAME."' ");

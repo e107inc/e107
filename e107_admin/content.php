@@ -147,12 +147,12 @@ $text = "<div style='text-align:center'>
 <tr>
 <td style='width:20%' class='forumheader3'><u>".CNTLAN_12."</u>: </td>
 <td style='width:80%' class='forumheader3'>
-<textarea class='tbox' name='data' cols='70' rows='30'>$content_content</textarea>
+<textarea class='tbox' name='data' cols='70' rows='30' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$content_content</textarea>
 <br />
 <input class='helpbox' type='text' name='helpb' size='100' />
 <br />";
 require_once(e_HANDLER."ren_help.php");
-$text .= ren_help("addtext", TRUE)."
+$text .= ren_help()."
 </td>
 </tr>
 
@@ -213,17 +213,6 @@ $text .= "</td>
 
 $ns -> tablerender("<div style='text-align:center'>".CNTLAN_18."</div>", $text);
 
-?>
-<script type="text/javascript">
-function addtext(sc){
-	document.dataform.data.value += sc;
-}
-function help(help){
-	document.dataform.helpb.value = help;
-}
-</script>
-
-<?php
 echo "<script type=\"text/javascript\">
 function confirm_(content_id){
 	var x=confirm(\"".CNTLAN_27." [ID: \" + content_id + \"]\");
@@ -232,11 +221,5 @@ if(x)
 }
 </script>";
 
-
-
-
-
-</script>
-<?php
 require_once("footer.php");
 ?>

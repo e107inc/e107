@@ -6,11 +6,11 @@
  *  file:   blogcalendar_menu.php                                 *
  *  author: Thomas Bouve                                          *
  *  email:  crahan@gmx.net                                        *
- *  date:   2004-02-02                                            *
+ *  date:   2004-02-08                                            *
  *                                                                *
 \******************************************************************/
-require_once("calendar.php");
-require_once("functions.php");
+require_once(e_PLUGIN."blogcalendar_menu/calendar.php");
+require_once(e_PLUGIN."blogcalendar_menu/functions.php");
 
 // ------------------------------
 // initialization + fetch options
@@ -20,7 +20,7 @@ $prefix = e_PLUGIN."blogcalendar_menu";
 $marray = array(BLOGCAL_M1,BLOGCAL_M2,BLOGCAL_M3,BLOGCAL_M4,
 	        BLOGCAL_M5,BLOGCAL_M6,BLOGCAL_M7,BLOGCAL_M8,
 		BLOGCAL_M9,BLOGCAL_M10,BLOGCAL_M11,BLOGCAL_M12);
-
+$pref['blogcal_ws'] = "monday";
 
 // ----------------------------------------------
 // get the requested and current date information
@@ -80,7 +80,7 @@ while($news =  $sql -> db_Fetch()){
 // -------------------------------
 // create the month selection item
 // -------------------------------
-$month_selector =  "<div class='forumheader' style='border: 1px solid #000; text-align: center; margin-bottom: 2px;'>";
+$month_selector =  "<div class='forumheader' style='text-align: center; margin-bottom: 2px;'>";
 $month_selector .= "<select name='activate' onChange='urljump(this.options[selectedIndex].value)' class='tbox'>";
 
 // get all newsposts since the beginning of the year till now
@@ -116,7 +116,7 @@ $month_selector .= "</select></div>";
 $menu = "<div style='text-align: center;'><table border='0' cellspacing='7'>";
 $menu .= "<tr><td>$month_selector";
 $menu .= "<div style='text-align:center'>".calendar($req_day, $req_month, $req_year, $day_links, $pref['blogcal_ws'])."</div>";
-$menu .= "<div class='forumheader' style='border: 1px solid #000; text-align: center; margin-top:2px;'><span class='smalltext'><a href='$prefix/archive.php'>Archive</a></span></div></td></tr>";
+$menu .= "<div class='forumheader' style='text-align: center; margin-top:2px;'><span class='smalltext'><a href='$prefix/archive.php'>Archive</a></span></div></td></tr>";
 $menu .= "</table></div>";
 $ns -> tablerender(BLOGCAL_L1." ".$req_year, $menu);
 ?>

@@ -81,4 +81,6 @@ define("NWSLAN_75", "Default - post to front page");
 define("NWSLAN_76", "Title only - post to front page");
 define("NWSLAN_77", "Post to other news menu");
 
+define("NWSLAN_78", "This option is disabled as file uploading is not enabled on your server");
+
 ?>

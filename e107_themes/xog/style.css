@@ -23,7 +23,8 @@ body {
 .indent{
 	padding: 3px 10px 3px 10px;
 	font: 11px verdana, tahoma, arial, sans-serif;
-	color: #000040;
+	color: #aaa;
+	border: 1px solid #545454;
 }
 .smalltext {
 	font: 10px verdana, tahoma, arial, helvetica, sans-serif;

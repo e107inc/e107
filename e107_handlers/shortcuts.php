@@ -16,7 +16,7 @@ function shortcuts($mode=FALSE){
 <input class=\"button\" type=\"button\" value=\"right\" onclick=\"addtext('[right][/right]')\">
 <input class=\"button\" type=\"button\" value=\"blockquote\" onclick=\"addtext('[blockquote][/blockquote]')\">
 
-<select class=\"tbox\" name=\"fontcol\" onChange=\"addtext('[color=' + this.form.fontcol.options[this.form.fontcol.selectedIndex].value + '] [/color]');this.selectedIndex=0;\">
+<select class=\"tbox\" name=\"fontcol\" onChange=\"addtext('[color=' + this.form.fontcol.options[this.form.fontcol.selectedIndex].value + '][/color]');this.selectedIndex=0;\">
 <option value=\"\">Color ..</option>
 <option style=\"color:black\" value=\"black\">Black</option>
 <option style=\"color:blue\" value=\"blue\">Blue</option>
@@ -34,7 +34,7 @@ function shortcuts($mode=FALSE){
 <option style=\"color:yellow\" value=\"yellow\">Yellow</option>
 </select>
 
-<select class=\"tbox\" name=\"fontsiz\" onChange=\"addtext('[size=' + this.form.fontsiz.options[this.form.fontsiz.selectedIndex].value + '] [/size]');this.selectedIndex=0;\">
+<select class=\"tbox\" name=\"fontsiz\" onChange=\"addtext('[size=' + this.form.fontsiz.options[this.form.fontsiz.selectedIndex].value + '][/size]');this.selectedIndex=0;\">
 <option>Size ..</option>
 <option value=\"7\">Tiny</option>
 <option value=\"9\">Small</option>

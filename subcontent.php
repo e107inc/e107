@@ -31,21 +31,22 @@ if(e_QUERY){
 if(IsSet($_POST['preview'])){
 	$obj = new convert;
 	$datestamp = $obj->convert_date(time(), "long");
-	$content_heading = $aj -> tpa($_POST['content_heading']);
-	$content_subheading = $aj -> tpa($_POST['content_subheading']);
-	$data = $aj -> tpa($_POST['data']);
-	$content_summary= $aj -> tpa($_POST['content_summary']);
+
+
+	$content_heading = $aj -> formtpa($_POST['content_heading']);
+	$content_subheading = $aj -> formtpa($_POST['content_subheading']);
+	$content_summary = $aj -> formtpa($_POST['content_summary']);
+	$data = $aj -> formtpa($_POST['data']);
+
 	$content_author = (!$_POST['content_author'] || $_POST['content_author'] == ARLAN_84 ? ADMINNAME : $_POST['content_author']."^".$_POST['content_author_email']);
-
 	if($content_author == "ADMINNAME"){$content_author = "<b>".ARLAN_92."<b>";}
-
-	$text = "<i>by $content_author</i><br /><span class='smalltext'>".$datestamp."</span><br /><br />Subheading: $content_subheading<br />Summary: $content_summary<br /><br />$data";
-	$ns -> tablerender($content_heading, $text);
+	$text = "<i>by $content_author</i><br /><span class='smalltext'>".$datestamp."</span><br /><br />Subheading: ".$aj -> tpa($content_subheading)."<br />Summary: ".$aj -> tpa($content_summary)."<br /><br />".$aj -> tpa($data);
+	$ns -> tablerender($aj -> tpa($content_heading), $text);
 	echo "<br /><br />";
-	$_POST['content_heading'] = $aj -> formtpa($_POST['content_heading'], "admin");
-	$_POST['content_subheading'] = $aj -> formtpa($_POST['content_subheading'], "admin");
-	$_POST['data'] = $aj -> formtpa($_POST['data'], "admin");
-	$_POST['content_summary'] = $aj -> formtpa($_POST['content_summary'], "admin");
+
+
+//	echo $content_heading." --- ".$content_subheading;
+
 	$content_parent = $_POST['category'];
 	if($content_author = "<b>".ARLAN_92."<b>"){ $content_author = ""; }
 }
@@ -186,7 +187,7 @@ if($action == "review"){
 	<table style='width:95%' class='fborder'>
 	<tr>
 	
-	<td style='width:20%; vertical-align:top' class='forumheader3'><u>".ARLAN_74."</u>:</td>
+	<td style='width:20%; vertical-align:top' class='forumheader3'><span style='text-decoration: underline;'>".ARLAN_74."</span>:</td>
 	<td style='width:80%' class='forumheader3'>";
 
 	$sql -> db_Select("content", "*", "content_type=10 ");
@@ -211,7 +212,7 @@ if($action == "review"){
 	}
 
 	$text .= "<tr>
-	<td style='width:20%; vertical-align:top' class='forumheader3'><u>".ARLAN_17."</u>:</td>
+	<td style='width:20%; vertical-align:top' class='forumheader3'><span style='text-decoration: underline;'>".ARLAN_17."</span>:</td>
 	<td style='width:80%' class='forumheader3'>
 	<input class='tbox' type='text' name='content_heading' size='60' value='$content_heading' maxlength='100' />
 
@@ -232,7 +233,7 @@ if($action == "review"){
 	</tr>
 
 	<tr>
-	<td style='width:20%' class='forumheader3'><u>".ARLAN_86."</u>: </td>
+	<td style='width:20%' class='forumheader3'><span style='text-decoration: underline;'>".ARLAN_86."</span>: </td>
 	<td style='width:80%' class='forumheader3'>
 	<textarea class='tbox' name='data' cols='70' rows='30'>$data</textarea>
 	<br />

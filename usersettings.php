@@ -141,7 +141,7 @@ $birth_year = $tmp[0];
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 
-$text = (e_QUERY ? $rs -> form_open("post", e_SELF."?".$user_id, "settings", "", "enctype='multipart/form-data'") : $rs -> form_open("post", e_SELF, "settings", "", "enctype='multipart/form-data'"));
+$text = (e_QUERY ? $rs -> form_open("post", e_SELF."?".$user_id, "dataform", "", " enctype='multipart/form-data'") : $rs -> form_open("post", e_SELF, "dataform", "", " enctype='multipart/form-data'"));
 
 $text .= "<div style='text-align:center'>
 <table style='width:auto' class='fborder'>
@@ -287,11 +287,11 @@ if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
 $text .= "<tr>
 <td style='width:20%' style='vertical-align:top' class='forumheader3'>".LAN_120."</td>
 <td style='width:80%' class='forumheader2'>
-<textarea class='tbox' name='signature' cols='58' rows='4'>$signature</textarea>
+<textarea class='tbox' name='signature' cols='58' rows='4' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$signature</textarea>
 <br />
 <input class='helpbox' type='text' name='helpb' size='90' />
 <br />
-".ren_help("addtext", TRUE)."
+".ren_help()."
 </td>
 </tr>
 
@@ -439,13 +439,8 @@ function timezone(){
 
 ?>
 <script type="text/javascript">
-function addtext(sc){
-        document.settings.signature.value += sc;
-}
 function addtext2(sc){
         document.settings.image.value = sc;
 }
-function help(help){
-        document.settings.helpb.value = help;
-}
+
 </script>

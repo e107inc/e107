@@ -21,7 +21,15 @@ if(e_QUERY){
 	$sub_action = $tmp[1];
 	$id = $tmp[2];
 	unset($tmp);
+}else{	
+	$text = "<a href='".e_SELF."?article'>".LAN_59." ".LAN_57."</a>\n<br />\n<a href='".e_SELF."?review'>".LAN_59." ".LAN_58."</a>";
+	$ns -> tablerender(LAN_60, $text);
+	require_once(FOOTERF);
+	exit;
 }
+
+
+
 
 $ep = "<div style='text-align:right'>
 <a href='email.php?article.".$sub_action."'><img src='".e_IMAGE."generic/friend.gif' style='border:0' alt='email to someone' /></a>
@@ -111,8 +119,6 @@ if($action == "review"){
 					require_once(FOOTERF);
 					exit;
 				}
-
-
 				
 				$sql2 = new db;
 				$gen = new convert; 
@@ -285,7 +291,6 @@ if($action == "review"){
 		ob_start();
 		if($sql -> db_Select("content", "*", "content_type=3 ORDER BY content_datestamp DESC LIMIT 0,10")){
 			$text = "<br />";
-			
 			$sql2 = new db;
 			$gen = new convert; 
 			while($row = $sql -> db_Fetch()){
@@ -323,10 +328,11 @@ if($action == "review"){
 				}
 			}
 		}else{
-			echo LAN_31;
+			$ns -> tablerender(LAN_32, LAN_55);
+			require_once(FOOTERF);
+			exit;
 		}
-		$caption = LAN_32;
-		$ns -> tablerender($caption, $text);
+		$ns -> tablerender(LAN_32, $text);
 
 		if($sql -> db_Select("content", "*", "content_type=10")){
 			$text = "<div style='text-align:center'>
@@ -423,7 +429,7 @@ if($action == "article"){
 					$text .=  $aj -> tpa($articlepages[(!$id ? 0 : $id)]."<br /><br />");
 					if($id != 0){ $text .= "<a href='content.php?article.$sub_action.".($id-1)."'>".LAN_25." <<</a> "; }
 					for($c=1; $c<= $totalpages; $c++){
-						$text .= ($c == ($id+1) ? "<u>$c</u>&nbsp;&nbsp;" : "<a href='content.php?article.$sub_action.".($c-1)."'>$c</a>&nbsp;&nbsp;");
+						$text .= ($c == ($id+1) ? "<span style='text-decoration: underline;'>$c</span>&nbsp;&nbsp;" : "<a href='content.php?article.$sub_action.".($c-1)."'>$c</a>&nbsp;&nbsp;");
 					}
 					if(($id+1) != $totalpages){ $text .= "<a href='content.php?article.$sub_action.".($id+1)."'>>> ".LAN_26."</a> "; }
 					if($epflag){ $text .= $ep; }
@@ -631,7 +637,9 @@ if($action == "article"){
 				}
 			}
 		}else{
-			$text .= "<tr><td>".LAN_45."</td></tr>";
+			$ns -> tablerender(LAN_47, LAN_56);
+			require_once(FOOTERF);
+			exit;
 		}
 		$text .= "</table>";
 		$ns -> tablerender(LAN_47, $text);

@@ -17,9 +17,9 @@ require_once("class2.php");
 require_once(HEADERF);
 
 if(e_QUERY){
-	if($sql -> db_Select("user", "*", "user_login='".e_QUERY."' ")){
+	if($sql -> db_Select("user", "*", "user_viewed='".e_QUERY."' ")){
 		$row = $sql -> db_Fetch(); extract($row);
-		$sql -> db_Update("user", "user_password='$user_sess', user_sess='', user_login='' WHERE user_id='$user_id' ");
+		$sql -> db_Update("user", "user_password='$user_sess', user_sess='', user_viewed='' WHERE user_id='$user_id' ");
 		cookie($pref['cookie_name'], "", (time()-2592000));
 		$_SESSION[$pref['cookie_name']] = "";
 		$ns -> tablerender(LAN_03, "<div style='text-align:center'>".LAN_217."</div>");
@@ -58,7 +58,7 @@ if(IsSet($_POST['pwsubmit'])){
 		}
 		
 		
-		$sql -> db_Update("user", "user_sess='$mdnewpw', user_login='$validate' WHERE user_email='".$_POST['email']."' ");
+		$sql -> db_Update("user", "user_sess='$mdnewpw', user_viewed='$validate' WHERE user_email='".$_POST['email']."' ");
 		$returnaddress = (substr(SITEURL, -1) == "/" ? SITEURL."fpw.php" : SITEURL."/fpw.php");
 		$message = LAN_215.$newpw."\n\n".LAN_218." $user_name\n\n".LAN_216."\n\n".$returnaddress."?".$validate;
 

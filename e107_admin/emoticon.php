@@ -36,12 +36,14 @@ if(!$sql -> db_Select("core", "*", "e107_name='emote'")){
 $emote = unserialize($e107_value);
 
 if(IsSet($_POST['addemote'])){
-	$aj = new textparse;
-	$emote[count($emote)] = array($aj -> formtpa($_POST['emote_new_code']) => $_POST['emote_new_image']);
-	$tmp = addslashes(serialize($emote));
-	$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='emote' ");
-	header("location:emoticon.php?v");
-	exit;
+	if($_POST['emote_new_code'] && $_POST['emote_new_image']){
+		$aj = new textparse;
+		$emote[count($emote)] = array($aj -> formtpa($_POST['emote_new_code']) => $_POST['emote_new_image']);
+		$tmp = addslashes(serialize($emote));
+		$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='emote' ");
+		header("location:emoticon.php?v");
+		exit;
+	}
 }
 
 $tmp = explode(".", e_QUERY);

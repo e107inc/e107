@@ -47,15 +47,12 @@ $aj = new textparse;
 while($row = $sql-> db_Fetch()){
 	$datestamp = $obj2->convert_date($row['cb_datestamp'], "long");
 	$cb_nick = eregi_replace("[0-9]+\.", "", $row['cb_nick']);
-	$cb_message = $aj -> tpa($row['cb_message']);
+	$cb_message = ($row['cb_blocked']  ? LAN_16 : $aj -> tpa($row['cb_message']));
 	if(!eregi("<a href|<img|&#", $cb_message)){
 		$cb_message = preg_replace("/([^\s]{100})/", "$1\n", $cb_message);
 	}
 	$text .= "\n<div class='spacer'>
-<img src='".THEME."images/bullet2.gif' alt='bullet' />
-<b>".$cb_nick."</b> ".LAN_13." ".$datestamp."<br /><div class='defaulttext'><i>".$cb_message."</i></div>
-</div>
-<br />\n";
+<img src='".THEME."images/bullet2.gif' alt='bullet' /> \n<b>".$cb_nick."</b> ".LAN_13." ".$datestamp."<br /><div class='defaulttext'><i>".$cb_message."</i></div>\n</div>\n<br />\n";
 	}
 $ns -> tablerender(LAN_11, $text);
 if(!$fs){

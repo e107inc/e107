@@ -68,4 +68,67 @@ var colord = window.screen.colorDepth;
 var res = window.screen.width + "x" + window.screen.height;
 var eself = document.location;
 
+// From http://phpbb.com
+var clientPC = navigator.userAgent.toLowerCase();
+var clientVer = parseInt(navigator.appVersion);
+var is_ie = ((clientPC.indexOf("msie") != -1) && (clientPC.indexOf("opera") == -1));
+var is_nav = ((clientPC.indexOf('mozilla')!=-1) && (clientPC.indexOf('spoofer')==-1) && (clientPC.indexOf('compatible') == -1) && (clientPC.indexOf('opera')==-1) && (clientPC.indexOf('webtv')==-1) && (clientPC.indexOf('hotjava')==-1));
+var is_moz = 0;
+var is_win = ((clientPC.indexOf("win")!=-1) || (clientPC.indexOf("16bit") != -1));
+var is_mac = (clientPC.indexOf("mac")!=-1);
+var selectedInputArea;
+
+
+// From http://www.massless.org/mozedit/
+function mozWrap(txtarea, open, close){
+	var selLength = txtarea.textLength;
+	var selStart = txtarea.selectionStart;
+	var selEnd = txtarea.selectionEnd;
+	if (selEnd == 1 || selEnd == 2) selEnd = selLength;
+	var s1 = (txtarea.value).substring(0,selStart);
+	var s2 = (txtarea.value).substring(selStart, selEnd)
+	var s3 = (txtarea.value).substring(selEnd, selLength);
+	txtarea.value = s1 + open + s2 + close + s3;
+	return;
+}
+
+function storeCaret (textAr){
+	selectedInputArea = textAr;
+	if (textAr.createTextRange){
+		selectedRange = document.selection.createRange().duplicate();
+	}
+}
+
+function addtext(text){
+	if (window.selectedInputArea){
+		var ta = selectedInputArea;
+		val = text.split('][');
+		if ((clientVer >= 4) && is_ie && is_win){
+			theSelection = document.selection.createRange().text;
+			if (theSelection) {
+				document.selection.createRange().text = val[0] +']' +  theSelection + '[' + val[1];
+				ta.focus();
+				theSelection = '';
+				return;
+			}
+		}else if (ta.selectionEnd && (ta.selectionEnd - ta.selectionStart > 0)){
+			mozWrap(ta, val[0] +']', '[' + val[1]);
+			return;
+		}
+		text = ' ' + text + ' ';
+		if (ta.createTextRange && selectedRange) {
+			var caretPos = selectedRange;
+			caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == ' ' ? caretPos.text + text + ' ' : caretPos.text + text;
+			ta.focus();
+		} else {
+			ta.value  += text;
+			ta.focus();
+		}
+	}
+}
+
+function help(help){
+	document.dataform.helpb.value = help;
+}
+
 //-->

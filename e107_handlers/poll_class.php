@@ -12,7 +12,8 @@
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
-include(e_PLUGIN."poll_menu/languages/".e_LANGUAGE.".php");
+@include(e_PLUGIN."poll_menu/languages/".e_LANGUAGE.".php");
+@include(e_PLUGIN."poll_menu/languages/English.php");
 class poll{	
 
 	function delete_poll($existing){

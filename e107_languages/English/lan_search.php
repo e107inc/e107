@@ -19,5 +19,10 @@ define("LAN_195", "Searching");
 define("LAN_196", "matches");
 
 define("LAN_197", "Downloads");
+define("LAN_198", "No matches found");
+define("LAN_199", "Search for");
+define("LAN_200", "in");
+
+define("LAN_201", "Please redefine your search query");
 
 ?>

@@ -30,8 +30,8 @@ $HEADER =
 "<div style='text-align:left'>
 <table style='width:850px' cellspacing='0' cellpadding='0'>
 <tr>
-<td class='box2' style='width:150px; vertical-align: top;'>
-<div class='spacer'><img src='".THEME."images/logo.png' alt='' /></div>
+<td class='box2' style='width:150px; vertical-align: middle; text-align:center'>
+<div class='spacer'><img src='".e_IMAGE."button.png' alt='' /></div>
 </td>
 <td class='box2' style='width:700px; vertical-align: middle; text-align:center;'>
 {BANNER}

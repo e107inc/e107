@@ -1,0 +1,323 @@
+a {
+	color: #eee; 
+	font: verdana, arial, sans-serif;
+	text-decoration: underline;
+}
+a:hover {
+	color: #ff0000;
+	text-decoration: underline;
+}
+body {
+	font: 12px tahoma, verdana, arial, sans-serif;
+	background-color: #182030;
+	scrollbar-3dlight-color:#FFD700; 
+	scrollbar-arrow-color:#FFFF00;
+	scrollbar-base-color:#FF6347;
+	scrollbar-darkshadow-color:#FFA500;
+	scrollbar-face-color:#7688AE;
+	scrollbar-highlight-color:#000;
+	scrollbar-shadow-color:#000
+}
+.indent{
+	margin: 5px;
+	padding: 10px;
+	font: 11px verdana, tahoma, arial, sans-serif;
+	color: #000;
+	border-top: 1px solid #000;
+	border-left: 1px solid #000;
+	border-bottom: 1px solid #eee;
+	border-right: 1px solid #eee;
+	background-color: #6DA9F2;
+}
+.smalltext {
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+	letter-spacing: -1px;
+}
+td {
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#222;
+	padding: 0px;
+	text-align:left;
+}
+.mediumtext {
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+}
+.captiontext {
+	letter-spacing: -1px;
+	font: 16px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#fff;
+	font-weight: bold;
+	padding:8px;	
+}
+
+.tbox{
+	border-left-color: #545454;
+	border-bottom-color: #545454;
+	font: 11px verdana,arial,helvetica,sans-serif;
+	color: #e7e7e7;
+	border-top-color: #545454;
+	background-color: #303030;
+	border-right-color: #545454;
+	text-indent:2px;
+}
+.button{
+	background: #303030;
+	font: 10px verdana,arial,helvetica,sans-serif;
+	color: #e7e7e7;
+	border-left-color: #545454;
+	border-bottom-color: #545454;
+	border-top-color: #545454;
+	border-right-color: #545454;
+	text-align:center;
+}
+form {
+	margin: 2px 0px 0px 0px;
+}
+.spacer{
+	padding: 4px 0px 2px 4px;
+}
+hr {
+	border-top: #8CB6CE 1px solid;
+	border-bottom: #8CB6CE 1px solid;
+	height: 1px;
+	width: 100%;
+	padding:0px;
+	margin:-5px;
+}
+.border {
+	border: #000 1px solid;
+}
+.caption {
+	letter-spacing: -1px;
+	background-color: #7688AE;
+	font: 12px verdana, helvetica, sans-serif;
+	color: #000;
+	background-image : url(images/caption.png);
+	height:31px;
+	padding-left:4px;
+	padding-top:1px;
+}
+
+.caption2 {
+	letter-spacing: -1px;
+	background-color: #7688AE;
+	font: 11px verdana, helvetica, sans-serif;
+	color: #000;
+	background-image : url(images/caption3.png);
+	height:22px;
+	padding-left:4px;
+	padding-top:4px;
+	font-weight: bold;
+}
+
+.bodytable {
+	background-color: #016D9E;
+	padding-left:12px;
+	padding-right:12px;
+	padding-bottom:10px;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#fff;
+}
+
+.bodytable2 {
+	background-color: #016D9E;
+	padding: 4px;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#fff;
+}
+
+p {
+	margin-top: 0px
+}
+.forumheader{
+	background-color: #EBEFF2;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+	padding: 4px;
+	background-image : url(images/cap1.png);
+	border: #000 1px solid;
+}
+.forumheader2{
+	background-color: #6B8EBD;
+	font: 14px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+	padding: 4px;
+	border: #45699B 1px solid;
+}
+.forumheader3{
+	background-color: #8A99AA;
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+	padding: 4px;
+	border: #384350 1px solid;
+}
+.forumborder{
+	border: #000080 1px solid;
+}
+.fcaption {
+	border: #000 1px solid;
+	padding: 2px 0px 2px 8px;
+	background-color: #C9C7C7;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+	background-image : url(images/fcap.png);
+	color:#fff;
+}
+.finfobar{
+	background-color: #324460;
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+	padding: 4px;
+	border: #000 1px solid;
+//	background-image : url(../e107_images/forum/finfobar.png);
+}
+a.forumlink{
+	color: #fff;
+	text-decoration: underline;
+}
+.helpbox {
+	border: transparent;
+	background-color: transparent;
+	color:#000;
+	font: 9px tahoma, verdana, arial, helvetica, sans-serif;
+}
+
+.box {
+	background-color: #075A81;
+	border-top: #0892D2 1px solid;
+	border-right: #033045 1px solid;
+	border-bottom: #033045 1px solid;
+	border-left: #0892D2 1px solid;
+	padding: 2px;
+}
+
+.box2 {
+	background-color: #687A93;
+	border-top: #BDC6D5 1px solid;
+	border-right: #313942 1px solid;
+	border-bottom: #313942 1px solid;
+	border-left: #BDC6D5 1px solid;
+	padding: 4px;
+}
+
+.linkbox {
+	background-color: #213142;
+	border: #000;
+	color: #CA9338;
+	text-align:center;
+	padding: 4px;
+}
+
+.shadow_left {
+	width: 7px;
+	background-image : url(images/shadow_left.png);
+}
+
+.shadow_right {
+	width: 7px;
+	background-image : url(images/shadow_right.png);
+}
+
+.shadow_middle {
+	width: 100%;
+	background-image : url(images/shadow_middle.png);
+	background-repeat: repeat-x;
+}
+
+.nforumholder {
+	border: 1px solid #345487;
+	padding: 0px;
+	background-color: #fff;
+}
+
+.nforumcaption {
+	background-image: url(images/nforumcaption.png);
+	padding: 8px 4px 8px 4px;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #fff;
+}
+
+.nforumcaption2 {
+	background-image: url(images/nforumcaption2.png);
+	padding: 8px 0px 8px 4px;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #000;
+	font-weight: bold;
+}
+
+.nforumcaption3 {
+	border: 1px solid #45699B;
+	padding: 4px;
+	background-color: #6B8EBD;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumthread {
+	border: 1px solid #315175;
+	padding: 4px;
+	background-color: #7C9FC6;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumthread2 {
+	border: 1px solid #245388;
+	padding: 4px;
+	background-color: #3780D3;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumreplycaption {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-color: #E2EDF2;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumreply {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-color: #EDF4F7;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumreply2 {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-color: #CFE0EB;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+.nforumdisclaimer {
+	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#5d6e75;
+}
+
+.nforumview1 {
+	border: 1px solid #6188B3;
+	padding: 4px;
+	background-color: #9AB2CE;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #000;
+}
+
+.nforumview2 {
+	border: 1px solid #617489;
+	padding: 4px;
+	background-color: #94A3B4;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #000;
+}
+
+.nforumview3 {
+	padding: 4px;
+	background-color: #BCD0ED;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #263448;
+}
+
+.nforumview4 {
+	padding: 4px;
+	background-color: #E4EAF2;
+	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #3A4F6C;
+}

@@ -26,4 +26,8 @@ define("FMLAN_23", "Delete");
 define("FMLAN_24", "tick to confirm");
 define("FMLAN_25", "e107 Filemanager");
 
+define("FMLAN_26", "Deleted");
+define("FMLAN_27", "successfully");
+define("FMLAN_28", "Unable to delete");
+
 ?>

@@ -6,7 +6,7 @@
  *  file:     config.php                                          *
  *  author:   Thomas Bouve                                        *
  *  email:    crahan@gmx.net                                      *
- *  Date:     2004-02-02                                          *
+ *  Date:     2004-02-08                                          *
  *                                                                *
 \******************************************************************/
 require_once("../../class2.php");
@@ -26,21 +26,6 @@ if(IsSet($_POST['update_menu'])){
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."?".e_QUERY."' name='menu_conf_form'>
 <table style='width:85%' class='fborder' >
-<tr>
-<td style='width:40%' class='forumheader3'>Start of week: </td>
-<td style='width:60%' class='forumheader3'>
-<select class='tbox' name='blogcal_ws'><option value='sunday' ";
-
-// if no ws hasn't been defined, set it to sunday
-$weekstart = $pref['blogcal_ws']?$pref['blogcal_ws']:"sunday";
-$text .= $weekstart=="sunday"?"selected":"";
-$text .= ">sunday</option><option value='monday' ";
-$text .= $weekstart=="monday"?"selected":"";
-
-$text .= ">monday</option>
-</select>
-</td>
-</tr>
 
 <tr>
 <td style='width:40%' class='forumheader3'>Months/row: </td>
@@ -56,6 +41,17 @@ for($i=1; $i<=12; $i++){
 } 
 
 $text .= "</select>
+</td>
+</tr>
+
+<tr>
+<td style='width:40%' class='forumheader3'>Cellpadding: </td>
+<td style='width:60%' class='forumheader3'>
+<input class='tbox' type='text' name='blogcal_padding' size='20' value='";
+// if the cellpadding isn't defined
+$padding = $pref['blogcal_padding']?$pref['blogcal_padding']:"2";
+$text .= $padding;
+$text.= "' maxlength='100' />
 </td>
 </tr>
 

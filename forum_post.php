@@ -191,13 +191,13 @@ if(IsSet($_POST['newthread'])){
 		}
 
 		if($_POST['poll_title'] != "" && $_POST['poll_option'][0] != "" && $_POST['poll_option'][1] != ""){
-			$subject = "[poll] ".$subject;
+			$subject = "[".LAN_402."] ".$subject;
 		}
 
 		if($_POST['threadtype'] == 2){
-			$subject = "[announcement] ".$subject;
+			$subject = "[".LAN_403."] ".$subject;
 		}else if($_POST['threadtype'] == 1){
-			$subject = "[sticky] ".$subject;
+			$subject = "[".LAN_404."] ".$subject;
 		}
 
 		$iid = $sql -> db_Insert("forum_t", "0, '".$subject."', '".$post."', '$forum_id', '".time()."', '0', '$user', 0, $email_notify, '".time()."', '".$_POST['threadtype']."' ");
@@ -437,7 +437,7 @@ if($action != "nt" && !$thread_active){
 }
 
 $text = "<div style='text-align:center'>
-<form enctype='multipart/form-data' method='post' action='".e_SELF."?".e_QUERY."' name='postforum'>
+<form enctype='multipart/form-data' method='post' action='".e_SELF."?".e_QUERY."' name='dataform'>
 <table style='width:95%' class='fborder'>
 <tr><td colspan='2' class='fcaption'><a class='forumlink' href='".e_BASE."forum.php'>Forums</a> -> <a class='forumlink' href='".e_HTTP."forum_viewforum.php?".$forum_id."'>".$forum_name."</a> -> ";
 
@@ -473,11 +473,8 @@ $text .= ($action == "nt" ? LAN_63 : LAN_73);
 
 $text .= "</td>
 <td class='forumheader2' style='width:80%'>
-<textarea class='tbox' name='post' cols='70' rows='10'>".$post."</textarea>
-<br />
-<input class='helpbox' type='text' name='helpb' size='90' />
-<br />
-".ren_help("addtext", TRUE);
+<textarea class='tbox' name='post' cols='70' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".$post."</textarea>
+<br />\n".ren_help(2);
 
 $text .= "<br />";
 require_once(e_HANDLER."emote.php");
@@ -688,17 +685,5 @@ function forumjump(){
 	$text .= "</select> <input class='button' type='submit' name='fjsubmit' value='".LAN_387."' /></p></form>";
 	return $text;
 }
-?>
-
-<script type="text/javascript">
-function addtext(str){
-	document.postforum.post.value += str;
-}
-
-function help(help){
-	document.postforum.helpb.value = help;
-}
-</script>
-<?php
 require_once(FOOTERF);
 ?>

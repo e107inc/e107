@@ -119,7 +119,7 @@ if($action == "list"){
 	$news_total = $sql -> db_Count("news", "(*)", "WHERE news_category=$sub_action");
 	$query = "news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_render_type!=2 AND news_category=$sub_action ORDER BY ".$order." DESC LIMIT $from,".ITEMVIEW;
 }else if($action == "item"){
-	$news_total = $sql -> db_Count("news");
+	$news_total = $sql -> db_Count("news", "(*)", "WHERE news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_render_type!=2" );
 	$query = "news_id=$sub_action AND news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")";
 }else if(strstr(e_QUERY, "month")){
 	$tmp = explode(".", e_QUERY);
@@ -141,7 +141,7 @@ if($action == "list"){
 	$enddate = mktime(23,59,59,$month,$day,$year);
 	$query = "news_datestamp > $startdate AND news_datestamp < $enddate AND news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY ".$order." DESC";
 }else{
-	$news_total = $sql -> db_Count("news");
+	$news_total = $sql -> db_Count("news", "(*)", "WHERE news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_render_type!=2" );
 	$query = "news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_render_type!=2 ORDER BY ".$order." DESC LIMIT $from,".ITEMVIEW;
 }
 

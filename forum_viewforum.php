@@ -176,22 +176,22 @@ if($pages){
 	if($pages > 10){
 		$current = ($from/$view)+1;
 		for($c=0; $c<=2; $c++){
-			$THREADPAGES .= ($view*$c == $from ? "<u>".($c+1)."</u> " : "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
+			$THREADPAGES .= ($view*$c == $from ? "<span style='text-decoration: underline;'>".($c+1)."</span> " : "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
 		}
 		if($current >=3 && $current <= 5){
 			for($c=3; $c<=$current; $c++){
-				$THREADPAGES .= ($view*$c == $from ? "<u>".($c+1)."</u> " : "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
+				$THREADPAGES .= ($view*$c == $from ? "<span style='text-decoration: underline;'>".($c+1)."</span> " : "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
 			}
 		}else if($current >= 6){
 			$text .= " ... ";
 			for($c=($current-2); $c<=$current; $c++){
-				$THREADPAGES .= ($view*$c == $from ? "<u>".($c+1)."</u> " : "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
+				$THREADPAGES .= ($view*$c == $from ? "<span style='text-decoration: underline;'>".($c+1)."</span> " : "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
 			}
 		}
 		$text .= " ... ";
 		$tmp = $pages-3;
 		for($c=$tmp; $c<=($pages-1); $c++){
-			$THREADPAGES .= ($view*$c == $from ? "<u>".($c+1)."</u> " : "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
+			$THREADPAGES .= ($view*$c == $from ? "<span style='text-decoration: underline;'>".($c+1)."</span> " : "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
 		}
 	}else{
 		for($c=0; $c < $pages; $c++){
@@ -326,7 +326,7 @@ function parse_thread($row){
 		$ICON = IMAGE_closed_small;
 	}
 
-	$thread_name = $aj -> tpa($thread_name);
+	$thread_name = strip_tags($aj -> tpa($thread_name));
 	$result = preg_split("/\]/", $thread_name);
 	$THREADNAME = ($result[1] ? $result[0]."] <a href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id."'>".ereg_replace("\[.*\]", "", $thread_name)."</a>" : "<a href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id."'>".$thread_name."</a>");
 

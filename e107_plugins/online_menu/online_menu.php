@@ -1,8 +1,8 @@
 <?php
 $text = ONLINE_L1.GUESTS_ONLINE."<br />";
-if($pref['user_reg'] == 1){
+//if($pref['user_reg'] == 1){
 	$text .= ONLINE_L2.MEMBERS_ONLINE.(MEMBERS_ONLINE ? ", ": "").MEMBER_LIST."<br />";
-}
+//}
 $text .= ONLINE_L3.ON_PAGE;
 $caption = (file_exists(THEME."images/online_menu.png") ? "<img src='".THEME."images/online_menu.png' alt='' /> ".ONLINE_L4 : ONLINE_L4);
 

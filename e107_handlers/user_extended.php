@@ -84,7 +84,7 @@ function user_extended_edit($form_ext_name,$tdclass="",$alignit="left"){
                                 $fieldid = $row[$tmp[1]];
                                 $fieldvalue = $row[$tmp[2]];
                             $checked = ($fieldid == $user_pref[$form_ext_name])? " selected" : "";
-                            if(!USEDR){ $checked = ($_POST[$form_ext_name] == $fieldid)? " selected" : "";}
+                            if(!USER){ $checked = ($_POST[$form_ext_name] == $fieldid)? " selected" : "";}
                             $ret .="<option value='".$fieldid."' $checked /> $fieldvalue </option>";
                             }
                             $ret .="</select>";

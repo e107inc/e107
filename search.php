@@ -14,12 +14,14 @@
 */
 require_once("class2.php");
 
-
 $_POST['searchquery'] = trim(chop($_POST['searchquery']));
-
-if(IsSet($_POST['searchquery']) && $_POST['searchtype'] == "0"){ header("location:http://www.google.com/search?q=".stripslashes(str_replace(" ", "+", $_POST['searchquery']))); exit; }
-
+if(IsSet($_POST['searchquery']) && $_POST['searchtype'] == "98"){ header("location:http://www.google.com/search?q=".stripslashes(str_replace(" ", "+", $_POST['searchquery']))); exit; }
 require_once(HEADERF);
+
+if($_POST['searchquery'] && strlen($_POST['searchquery']) < 3){
+	$ns -> tablerender(LAN_180, LAN_201);
+	unset($_POST['searchquery']);
+}
 
 $search_info=array();
 
@@ -71,14 +73,14 @@ if($_POST['searchtype']){
 		if($content_type == 3){ $searchtype = 4; }
 		if($content_type == 1){ $searchtype = 5; }
 	}
-	if(!$searchtype){ $searchtype = 1; }
+//	if(!$searchtype){ $searchtype = 1; }
 	if($_POST['searchtype']==0 && !$searchtype || $refpage == "news.php"){ $searchtype = 0; }
 }
 
 $text = "<div style='text-align:center'><form method='post' action='".e_SELF."'>
 <p>
-Search for <input class='tbox' type='text' name='searchquery' size='20' value='$query' maxlength='50' />
-&nbsp;in <select name='searchtype' class='tbox'>";
+".LAN_199." <input class='tbox' type='text' name='searchquery' size='20' value='$query' maxlength='50' />
+&nbsp;".LAN_200." <select name='searchtype' class='tbox'>";
 
 foreach($search_info as $key => $si){
 	($searchtype==$key) ? $sel=" selected" : $sel="";
@@ -86,7 +88,7 @@ foreach($search_info as $key => $si){
 }
 
 $text .= "
-<option value='0'>Google</option>
+<option value='98'>Google</option>
 </select>
 <input class='button' type='submit' name='searchsubmit' value='".LAN_180."' />
 </p>
@@ -121,7 +123,7 @@ function parsesearch($text, $match){
 	}else{
 		$text = "...".substr($text, ($pos-70), 140)."...";
 	}
-	$text = eregi_replace($match, "<u><b>$match</b></u>", $text);	
+	$text = eregi_replace($match, "<span style='text-decoration: underline;'><b>$match</b></span>", $text);	
 	return($text);
 }
 

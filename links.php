@@ -95,7 +95,7 @@ if(eregi("cat", e_QUERY)){
 		$sql -> db_Select("links", "*", "link_id='$id AND link_class!=255' ");
 		$row = $sql -> db_Fetch(); extract($row);
 
-		if($link_open == 4){
+		if($link_open == 4 || $link_open == 1){
 			echo "<script type='text/javascript'>open_window('$link_url')</script>\n";
 		}else{
 			header("location:".$link_url);

@@ -6,13 +6,15 @@
  *  file:     calendar.php                                        *
  *  author:   Thomas Bouve                                        *
  *  email:    crahan@gmx.net                                      *
- *  Date:     2004-02-02                                          *
+ *  Date:     2004-02-08                                          *
  *  Based on: PHP Calendar by Keith Devens                        *
  *            http://www.keithdevens.com/software/php_calendar/   *
  *                                                                *
 \******************************************************************/
 function calendar($req_day, $req_month, $req_year, $links = NULL, $ws = "sunday"){
-   
+    // get access to the preferences
+    global $pref;
+    
     // prepare the day array
     $darray = array(BLOGCAL_D1,BLOGCAL_D2,BLOGCAL_D3,BLOGCAL_D4,
 		    BLOGCAL_D5,BLOGCAL_D6,BLOGCAL_D7);
@@ -23,6 +25,9 @@ function calendar($req_day, $req_month, $req_year, $links = NULL, $ws = "sunday"
         case "sunday": array_unshift($darray, array_pop($darray));
 		       $ws="0";
     }
+    
+    // what's the padding we should use for the cells?
+    $padding = $pref['blogcal_padding']?$pref['blogcal_padding']:"2";
 
     $date = mktime(0,0,0,$req_month,1,$req_year);
     $last_day = date('t',$date);
@@ -34,7 +39,7 @@ function calendar($req_day, $req_month, $req_year, $links = NULL, $ws = "sunday"
     $calendar = "<table class='fborder'>";
     $calendar .= '<tr>';
     foreach($darray as $dheader){
-	$calendar .= "<td class='forumheader'><span class='smalltext'>$dheader</span></td>";
+	$calendar .= "<td class='forumheader' style='padding: ".$padding."px;'><span class='smalltext'>$dheader</span></td>";
     }
     $calendar .= "</tr>";
     $calendar .= '<tr>';
@@ -61,7 +66,7 @@ function calendar($req_day, $req_month, $req_year, $links = NULL, $ws = "sunday"
         }else{
             $day_style =  ($links[$day_of_month] ? "indent" : "forumheader3");
         }
-        $calendar .= "<td class='$day_style'><span class='smalltext'>";		          
+        $calendar .= "<td class='$day_style' style='padding: ".$padding."px;'><span class='smalltext'>";		          
 	$calendar .= ($links[$day_of_month]? "<a href='".$links[$day_of_month]."'>":""); 
         $calendar .= $day_of_month;
         $calendar .= ($links[$day_of_month]? "</a>":"");
@@ -74,7 +79,7 @@ function calendar($req_day, $req_month, $req_year, $links = NULL, $ws = "sunday"
     }
     $calendar .= "</tr>";
     if($tablerow != 6){
-        $calendar .= "<tr><td style='padding:5px;' colspan='6'>&nbsp;</td></tr>";
+        $calendar .= "<tr><td style='padding: ".$padding."px;' colspan='6'>&nbsp;</td></tr>";
     }
    
     $calendar .= "</table>";

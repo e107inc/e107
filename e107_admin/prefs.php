@@ -413,7 +413,7 @@ $text .= "<td style='width:50%' class='forumheader3'>".PRFLAN_22.": </td>
 <td style='width:50%' class='forumheader3'>".PRFLAN_26.": </td>
 <td style='width:50%; text-align:right' class='forumheader3'>
 <select name='time_offset' class='tbox'>\n";
-$toffset = array("-12", "-11", "-10", "-9", "-8", "-7", "-6", "-5", "-4", "-3", "-2", "-1", "0", "+1", "+2", "+3", "+4", "+5", "+6", "+7", "+8", "+9", "+10", "+11", "+12", "+13");
+$toffset = array("-12", "-11", "-10", "-9", "-8", "-7", "-6", "-5", "-4", "-3", "-2", "-1", "0", "+1", "+2", "+3", "+4", "+5", "+6", "+7", "+8", "+9", "+10", "+11", "+12", "+13", "+14");
 $counter = 0;
 while(IsSet($toffset[$counter])){
 	if($toffset[$counter] == $pref['time_offset']){
@@ -620,9 +620,12 @@ $text .= "(".PRFLAN_46.")
 </td>
 </tr>".$auth_dropdown."
 <tr>
-<td colspan='2' class='forumheader3'>
+<td colspan='2'>
 <div class='border'><div class='caption'>e107</div></div>
-<br />
+</td>
+</tr>
+<tr>
+<td colspan='2' class='forumheader3'>
 <div style='text-align:center'><input class='button' type='submit' name='newver' value='".PRFLAN_51."' /></div>
 </td>
 </tr>

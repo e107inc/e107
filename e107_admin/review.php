@@ -178,7 +178,7 @@ if($action == "cat"){
 	<input class='button' type ='button' style=''width: 35px'; cursor:hand' size='30' value='".REVLAN_36."' onClick='expandit(this)'>
 	<div style='display:none' style=&{head};>";
 	while(list($key, $icon) = each($iconlist)){
-		$text .= "<a href='javascript:addtext(\"$icon\")'><img src='".e_IMAGE."link_icons/".$icon."' style='border:0' alt='' /></a> ";
+		$text .= "<a href='javascript:addtext2(\"$icon\")'><img src='".e_IMAGE."link_icons/".$icon."' style='border:0' alt='' /></a> ";
 	}
 	$text .= "</td>
 	</tr>
@@ -331,12 +331,12 @@ if($action == "create"){
 	<tr>
 	<td style='width:20%' class='forumheader3'><u>".REVLAN_15."</u>: </td>
 	<td style='width:80%' class='forumheader3'>
-	<textarea class='tbox' name='data' cols='70' rows='30'>$data</textarea>
+	<textarea class='tbox' name='data' cols='70' rows='30' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$data</textarea>
 	<br />
 	<input class='helpbox' type='text' name='helpb' size='100' />
 	<br />";
 	require_once(e_HANDLER."ren_help.php");
-	$text .= ren_help("addtext2", TRUE)."
+	$text .= ren_help()."
 	</td>
 	</tr>
 
@@ -498,15 +498,8 @@ $ns -> tablerender(REVLAN_48, $text);
 require_once("footer.php");
 ?>
 <script type="text/javascript">
-function addtext(sc){
-	document.dataform.category_button.value = sc;
-}
-
 function addtext2(sc){
-	document.dataform.data.value += sc;
-}
-function help(help){
-	document.dataform.helpb.value = help;
+	document.dataform.category_button.value = sc;
 }
 </script>
 <?php

@@ -27,12 +27,15 @@ if(ADMIN){
 			echo "<script type='text/javascript'>document.location.href='admin.php?f'</script>\n";
 		}else{
 
+			$userpass = md5($_POST['authpass']);
+			$cookieval = $row['user_id'].".".md5($userpass);
+
 			$sql -> db_Select("user", "*", "user_name='".$_POST['authname']."'");
 			list($user_id, $user_name, $userpass) = $sql-> db_Fetch();
 			if($pref['tracktype'] == "session"){
-				$_SESSION[$pref['cookie_name']] = $user_id.".".$userpass;
+				$_SESSION[$pref['cookie_name']] = $cookieval;
 			}else{
-				cookie($pref['cookie_name'], $user_id.".".$userpass, ( time()+3600*24*30));
+				cookie($pref['cookie_name'], $cookieval, ( time()+3600*24*30));
 			}
 			echo "<script type='text/javascript'>document.location.href='admin.php'</script>\n";
 		}

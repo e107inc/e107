@@ -53,7 +53,7 @@ if($sql -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHE
 
 			$text .= "<tr>
 			<td style='width:5%; text-align:center' class='forumheader3'><img src='".e_IMAGE."forum/new_small.png' alt='' /></td>
-			<td style='width:45%' class='forumheader3'><b><a href='".e_BASE."forum_viewtopic.php?$forum_id.$thread_id'>$thread_name</a></b> <span class='smalltext'>(<a href='".e_BASE."forum_viewforum.php?$forum_id'>$forum_name</a></span>}</td>
+			<td style='width:45%' class='forumheader3'><b><a href='".e_BASE."forum_viewtopic.php?$forum_id.$thread_id'>$thread_name</a></b> <span class='smalltext'>(<a href='".e_BASE."forum_viewforum.php?$forum_id'>$forum_name</a>}</span></td>
 			<td style='width:15%; text-align:center' class='forumheader3'><a href='".e_BASE."user.php?id.$post_author_id'>$post_author_name</a></td>
 			<td style='width:5%; text-align:center' class='forumheader3'>$thread_views</td>
 			<td style='width:5%; text-align:center' class='forumheader3'>$replies</td>

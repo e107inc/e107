@@ -58,7 +58,7 @@ if($action == "sn" && $sub_action == "confirm"){
 if(IsSet($_POST['submitupload'])){
 	$pref['upload_storagetype'] = "1";
 	require_once(e_HANDLER."upload_handler.php");
-	$uploaded = file_upload(($_POST['uploadtype'] == "Image" ? e_IMAGE."newspost_images/" : e_FILE."downloads/"));
+	$uploaded = file_upload(($_POST['uploadtype'] == NWSLAN_67 ? e_IMAGE."newspost_images/" : e_FILE."downloads/"));
 	if($_POST['uploadtype'] == "Image" && $_POST['imagecrethumb']){
 		require_once(e_HANDLER."resize_handler.php");
 		resize_image(e_IMAGE."newspost_images/".$uploaded[0]['name'], e_IMAGE."newspost_images/".$uploaded[0]['name'], 250, "copy");
@@ -138,10 +138,7 @@ $newspost -> show_options($action);
 require_once("footer.php");
 ?>
 <script type="text/javascript">
-function addtext(str){
-	document.dataform.data.value += str;
-	document.forms.dataform.data.focus();
-}
+
 function addtext2(str){
 	document.dataform.news_extended.value += str;
 	document.forms.dataform.news_extended.focus();
@@ -153,9 +150,7 @@ function fclear(){
 	document.dataform.data.value = "";
 	document.dataform.news_extended.value = "";
 }
-function help(help){
-	document.dataform.helpb.value = help;
-}
+
 </script>
 <?php
 echo "<script type=\"text/javascript\">
@@ -318,7 +313,7 @@ class newspost{
 		}
 
 		$text = "<div style='text-align:center'>
-		<form enctype='multipart/form-data' method='post' action='".e_SELF."?".e_QUERY."' name='dataform'>
+		<form ".(FILE_UPLOADS ? "enctype='multipart/form-data'" : "")." method='post' action='".e_SELF."?".e_QUERY."' name='dataform'>
 		<table style='width:95%' class='fborder'>
 		<tr>
 
@@ -354,11 +349,11 @@ class newspost{
 		<tr> 
 		<td style='width:20%' class='forumheader3'>".NWSLAN_13.":<br /></td>
 		<td style='width:80%' class='forumheader3'>
-		<textarea class='tbox' name='data' cols='80' rows='15'>".(strstr($_POST['data'], "[img]http") ? "" : str_replace("[img]../", "[img]", $_POST['data']))."</textarea>
+		<textarea class='tbox' name='data' cols='80' rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".(strstr($_POST['data'], "[img]http") ? "" : str_replace("[img]../", "[img]", $_POST['data']))."</textarea>
 		<br />
 		<input class='helpbox' type='text' name='helpb' size='100' />
 		<br />
-		".ren_help("addtext", TRUE)."<br />
+		".ren_help()."<br />
 
 		<select class='tbox' name='thumbps' onChange=\"addtext('[link=e107_images/newspost_images/' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '][img]e107_images/newspost_images/thumb_' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '[/img][/link]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_50."')\" onMouseOut=\"help('')\">
 		<option>Insert thumbnail ...</option>\n";
@@ -374,9 +369,6 @@ class newspost{
 			$text .= "<option value='e107_images/newspost_images/".$image."'>".$image."</option>\n";
 		}
 		$text .= "</select>
-
-
-
 
 		<select class='tbox' name='fileps' onChange=\"addtext('[file=request.php?' + this.form.fileps.options[this.form.fileps.selectedIndex].value + ']' + this.form.fileps.options[this.form.fileps.selectedIndex].value + '[/file]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_64."')\" onMouseOut=\"help('')\">
 		<option>Insert download ...</option>\n";
@@ -415,22 +407,27 @@ class newspost{
 		<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_69."</a>
 		<div style='display: none;'>";
 
-		if(!is_writable(e_FILE."downloads")){
-			$text .= "<b>".NWSLAN_70."</b><br />";
-		}
-		if(!is_writable(e_IMAGE."newspost_images")){
-			$text .= "<b>".NWSLAN_71."</b><br />";
-		}
+		if(!FILE_UPLOADS){
+			$text .= "<b>".NWSLAN_78."</b>";
+		}else{
 
-		$text .= "<input class='tbox' type='file' name='file_userfile[]' size='50'>
-		<select class='tbox' name='uploadtype'>
-		<option>".NWSLAN_67."</option>
-		<option>".NWSLAN_68."</option>
-		</select>
-		<br />
-		<input type='checkbox' name='imagecrethumb' value='1'><span class='smalltext'>".NWSLAN_65."</span>&nbsp;&nbsp; 
-		<input class='button' type='submit' name='submitupload' value='".NWSLAN_66."' />
-		</div>
+			if(!is_writable(e_FILE."downloads")){
+				$text .= "<b>".NWSLAN_70."</b><br />";
+			}
+			if(!is_writable(e_IMAGE."newspost_images")){
+				$text .= "<b>".NWSLAN_71."</b><br />";
+			}
+
+			$text .= "<input class='tbox' type='file' name='file_userfile[]' size='50'>
+			<select class='tbox' name='uploadtype'>
+			<option>".NWSLAN_67."</option>
+			<option>".NWSLAN_68."</option>
+			</select>
+			<br />
+			<input type='checkbox' name='imagecrethumb' value='1'><span class='smalltext'>".NWSLAN_65."</span>&nbsp;&nbsp; 
+			<input class='button' type='submit' name='submitupload' value='".NWSLAN_66."' />\n";
+		}
+		$text .= "</div>
 		</td>
 		</tr>
 
@@ -712,6 +709,7 @@ class create_rss{
 		# - scope					public
 		*/
 		global $sql;
+		setlocale (LC_TIME, "en");
 		$pubdate = strftime("%a, %d %b %Y %I:%M:00 GMT", time());
 
 		$sitebutton = (strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", e_IMAGE).SITEBUTTON);

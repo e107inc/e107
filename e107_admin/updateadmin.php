@@ -16,11 +16,13 @@ require_once("../class2.php");
 require_once("auth.php");
 
 if(IsSet($_POST['update_settings'])){
-	if($_POST['a_password'] != "" && $_POST['a_password2'] != "" && ($_POST['a_password'] == $_POST['a_password2'])){
-		$sql -> db_Update("user", "user_password='".md5($_POST['a_password'])."', user_pwchange='".time()."' WHERE user_name='".ADMINNAME."' ");
-		$se = TRUE;
-	}else{
-		$message = UDALAN_1;
+	if($_POST['ac'] == md5(ADMINPWCHANGE)){
+		if($_POST['a_password'] != "" && $_POST['a_password2'] != "" && ($_POST['a_password'] == $_POST['a_password2'])){
+			$sql -> db_Update("user", "user_password='".md5($_POST['a_password'])."', user_pwchange='".time()."' WHERE user_name='".ADMINNAME."' ");
+			$se = TRUE;
+		}else{
+			$message = UDALAN_1;
+		}
 	}
 }
 
@@ -64,6 +66,7 @@ $text = "<div style='text-align:center'>
 </td>
 </tr>
 </table>
+<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
 </form>
 </div>";
 

@@ -6,7 +6,7 @@
  *  file:   archive.php                                           *
  *  author: Thomas Bouve                                          *
  *  email:  crahan@gmx.net                                        *
- *  date:   2004-02-02                                            *
+ *  date:   2004-02-08                                            *
  *                                                                *
 \******************************************************************/
 require_once("../../class2.php");
@@ -23,7 +23,9 @@ $prefix = e_PLUGIN."blogcalendar_menu";
 $marray = array(BLOGCAL_M1,BLOGCAL_M2,BLOGCAL_M3,BLOGCAL_M4,
 	        BLOGCAL_M5,BLOGCAL_M6,BLOGCAL_M7,BLOGCAL_M8,
 		BLOGCAL_M9,BLOGCAL_M10,BLOGCAL_M11,BLOGCAL_M12);
+// if nr of rows per month is not set, default to 3
 $months_per_row = $pref['blogcal_mpr']?$pref['blogcal_mpr']:"3";
+$pref['blogcal_ws'] = "monday";
 
 // -------------------------------------
 // what year are we supposed to display?
@@ -51,7 +53,7 @@ $end_year = $cur_year;
 // ----------------------
 // build the yearselector
 // ----------------------   
-$year_selector = "<div class=\"forumheader\" style=\"border: 1px solid #000; text-align: center; margin-bottom:2px;\">";   
+$year_selector = "<div class='forumheader' style='text-align: center; margin-bottom: 2px;'>";   
 $year_selector .= "Select archive: <select name='activate' onChange='urljump(this.options[selectedIndex].value)' class='tbox'>";
 
 for($i=$start_year; $i<=$end_year; $i++){
@@ -84,7 +86,7 @@ $year_selector .= "</select>";
 // create the archive display
 // --------------------------
 $newline = 0;
-$archive = "<div style='text-align:center'><table border='0' class='fborder' cellspacing='7'><tr>";
+$archive = "<div style='text-align:center'><table border='0' cellspacing='7'><tr>";
 $archive .= "<td colspan='$months_per_row'><div>$year_selector</div></td></tr><tr>";
 for($i=1; $i<=12; $i++){
     if(++$newline == $months_per_row+1){
@@ -92,7 +94,7 @@ for($i=1; $i<=12; $i++){
 	$newline = 1; 
     }
     $archive .= "<td style='vertical-align:top'>";
-    $archive .= "<div class='fcaption' style='border: 1px solid #000; text-align:center; margin-bottom:2px;'>";
+    $archive .= "<div class='fcaption' style='text-align:center; margin-bottom:2px;'>";
 
     // href the current month regardless of newsposts or any month with news
     if(($req_year == $cur_year && $i == $cur_month) || $day_links[$i]){

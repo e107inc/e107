@@ -56,28 +56,20 @@ chr(36)."ns -> tablerender(".chr(36)."caption, ".chr(36)."text);\n?".chr(62);
 }
 
 if(IsSet($_POST['preview'])){
-
-	$_POST['menu_name'] = $aj -> tpa($_POST['menu_name'], $mode="on");
-	$_POST['menu_caption'] = $aj -> tpa($_POST['menu_caption'], $mode="on");
-	$_POST['menu_text'] = $aj -> tpa($_POST['menu_text'], $mode="on");
+	$menu_caption = $aj -> tpa($_POST['menu_caption']);
+	$menu_text = $aj -> tpa($_POST['menu_text']);
 	echo "<div style='text-align:center'>
 	<table style='width:200px'>
 	<tr>
 	<td>";
-	$ns -> tablerender($_POST['menu_caption'], nl2br($_POST['menu_text']));
+	$ns -> tablerender($menu_caption, $menu_text);
 	echo "</td></tr></table></div><br /><br />";
-
-	$_POST['menu_caption'] = $aj -> editparse($_POST['menu_caption']);
-	$_POST['menu_text'] = $aj -> editparse($_POST['menu_text']);
-
 }else if(IsSet($_POST['edit'])){
 	$menu = e_PLUGIN."custom/".$_POST['existing'];
 	if($fp = @fopen($menu,"r")){
 		$buffer = str_replace("\n", "", fread($fp, filesize($menu)));
 		fclose($fp);
-
 		preg_match_all("/\"(.*?)\"/", $buffer, $result);
-
 		$_POST['menu_caption'] = stripslashes($result[1][0]);
 		$_POST['menu_text'] = stripslashes($result[1][1]);
 		$_POST['menu_text'] = str_replace("<br />", "", $_POST['menu_text']);
@@ -92,7 +84,7 @@ if(IsSet($message)){
 }
 
 $text = "<div style='text-align:center'>
-<form method='post' action='".e_SELF."' name='menupostform'>
+<form method='post' action='".e_SELF."' name='dataform'>
 <table style='width:85%' class='fborder'>
 <tr>
 
@@ -141,7 +133,7 @@ $text .= "
 <tr>
 <td style='width:30%' class='forumheader3'>".CUSLAN_13.": </td>
 <td style='width:70%' class='forumheader3'>
-<textarea class='tbox' name='menu_text' cols='59' rows='10'>".$_POST['menu_text']."</textarea>
+<textarea class='tbox' name='menu_text' cols='59' rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".$_POST['menu_text']."</textarea>
 </td>
 </tr>
 
@@ -150,7 +142,7 @@ $text .= "
 <td class='forumheader3'>
 <input class='helpbox' type='text' name='helpb' size='100' />
 <br />";
-$text .= ren_help("addtext");
+$text .= ren_help();
 
 $text .= "</td>
 </tr>
@@ -182,22 +174,5 @@ $text .= "</td>
 
 $ns -> tablerender("<div style='text-align:center'>".CUSLAN_18."</div>", $text);
 
-
-
-
-
-?>
-<script type="text/javascript">
-function addtext(sc){
-	document.menupostform.menu_text.value += sc;
-}
-function fclear(){
-	document.menupostform.menu_text.value = "";
-}
-function help(help){
-	document.menupostform.helpb.value = help;
-}
-</script>
-<?php
 require_once("footer.php");
 ?>	
