@@ -35,6 +35,14 @@ class userlogin{
 			}
 		}
 
+		if($pref['logcode'] && extension_loaded("gd")){
+			require_once(e_HANDLER."secure_img_handler.php");
+			$sec_img = new secure_image;
+			if(!$sec_img -> verify_code($_POST['rand_num'],$_POST['code_verify'])){
+				define("LOGINMESSAGE", LAN_303."<br /><br />");
+				return FALSE;
+			}
+		}
 		if($username != "" && $userpass != ""){
 			$username = ereg_replace("\sOR\s|\=|\#", "", $username);
 			$userpass = md5($userpass);
