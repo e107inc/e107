@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm_menu/pm\cjdss.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-02-11 14:02:24 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2005-02-13 18:36:19 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 class pm {
@@ -299,7 +299,7 @@ class pm {
 		$ret .= "<td style='text-align:center' class='fcaption'>".PMLAN_43."</td>";
 		$ret .= "<td style='text-align:center' class='fcaption'>".PMLAN_31."</td>";
 		$ret .= "<td style='text-align:center' class='fcaption'>".PMLAN_44."</td></tr>";
-		while (list($pm_msg_id, $pm_from_user, $pm_to_user, $pm_send_datestamp, $pm_rcv_datestamp, $pm_subject, $pm_message) = $pm_sql->db_Fetch()) {
+		while (list($pm_msg_id, $pm_from_user, $pm_to_user, $pm_send_datestamp, $pm_rcv_datestamp, $pm_subject, $pm_message) = $sql->db_Fetch()) {
 			$ret .= "<tr>";
 			if ($pm_rcv_datestamp > 0) {
 				$ret .= "<td style='width:5%; text-align:center' class='forumheader3'><img src='images/nonew.png' alt='' /></td>";
