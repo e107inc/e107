@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-01-10 05:09:34 $
+|     $Revision: 1.12 $
+|     $Date: 2005-01-15 01:26:39 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -35,15 +35,18 @@ echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET.
 <html xmlns='http://www.w3.org/1999/xhtml'>
 <head>
 <title>".SITENAME.(defined("e_PAGETITLE") ? ": ".e_PAGETITLE : (defined("PAGE_NAME") ? ": ".PAGE_NAME : ""))."</title>\n";
-echo "<meta http-equiv='Content-Type' content='text/html; charset=".CHARSET."' />
-<meta http-equiv='content-style-type' content='text/css' />
-<link rel='stylesheet' href='".THEME."style.css' type='text/css' />\n";
+echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
+<meta http-equiv='content-style-type' content='text/css' />\n";
+echo "<link rel='alternate' type='application/rss+xml' title='".SITENAME." RSS' href='".e_FILE."backend/news.xml' />\n";
+echo "<link rel='stylesheet' href='".THEME."style.css' type='text/css' />\n";
 if (file_exists(THEME.'e107.css')) {
 	echo "<link rel='stylesheet' href='".THEME."e107.css' type='text/css' />\n";
 } else if (file_exists(e_FILE.'e107.css')) {
 	echo "<link rel='stylesheet' href='".e_FILE."e107.css' type='text/css' />\n";
 }
-echo "<link rel='alternate' type='application/rss+xml' title='".SITENAME." RSS' href='".e_FILE."backend/news.xml' />\n";
+if(function_exists('theme_head')){
+	echo theme_head();
+}
 if (file_exists(e_BASE."favicon.ico")) { echo "\n<link rel=\"shortcut icon\" href=\"favicon.ico\" />\n"; }
 if ($eplug_css) { echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n"; }
 echo $pref['meta_tag'] ? $aj -> formtparev($pref['meta_tag'])."\n" : "";
