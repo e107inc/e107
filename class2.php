@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2005-01-10 05:05:51 $
+|     $Revision: 1.48 $
+|     $Date: 2005-01-10 09:41:04 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -263,14 +263,7 @@ if (!function_exists('checkvalidtheme')) {
         function checkvalidtheme($theme_check) {
                 // arg1 = theme to check
                 global $ADMIN_DIRECTORY;
-				if (strstr(e_SELF, $ADMIN_DIRECTORY)) {
-					if (file_exists(e_THEME.$theme_check.'admin_theme.php')) {
-						$theme_file = "/admin_theme.php";
-					} else {
-						$theme_file = "/theme.php";
-					}
-				}
-                if (@fopen(e_THEME.$theme_check.$theme_file, r)) {
+                if (@fopen(e_THEME.$theme_check."/theme.php", r)) {
                         define("THEME", e_THEME.$theme_check."/");
                 } else {
                         e107_require_once(e_HANDLER."debug_handler.php");
