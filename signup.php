@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-03-11 09:26:40 $
+|     $Revision: 1.15 $
+|     $Date: 2005-03-12 08:53:30 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -480,7 +480,7 @@ if ($signupval[5]) {
 		$text .= ($birth_month == $a ? $rs->form_option($a, 1, $a) : $rs->form_option($a, 0, $a));
 	}
 	$text .= $rs->form_select_close(). $rs->form_select_open("birth_year"). $rs->form_option("", 0);
-	for($a = 1950; $a <= $year; $a++) {
+	for($a = 1900; $a <= $year; $a++) {
 		$text .= ($birth_year == $a ? $rs->form_option($a, 1) : $rs->form_option($a, 0));
 	}
 	 
