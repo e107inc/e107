@@ -66,6 +66,7 @@ if(IsSet($_POST['register'])){
 
 	require_once(e_HANDLER."message_handler.php");
 
+//	if(strlen($_POST['email']) > 100){exit;}
 	if($use_imagecode){
 		if(!$sec_img -> verify_code($_POST['rand_num'],$_POST['code_verify'])){
 			message_handler("P_ALERT", LAN_SIGNUP_3);
@@ -151,7 +152,7 @@ if(IsSet($_POST['register'])){
 
 	// ========== End Added. ====================================================
 
-	if(!preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]+@([-0-9A-Z]+\.)+([0-9A-Z]){2,4}$/i', $_POST['email'])){
+	if(!preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]{1,50}@([-0-9A-Z]+\.){1,50}([0-9A-Z]){2,4}$/i', $_POST['email'])){
 		message_handler("P_ALERT", LAN_106);
 		$error = TRUE;
 	}
