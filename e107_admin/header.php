@@ -302,7 +302,7 @@ function show_admin_menu($title,$page,$e107_vars){
                 }
                 $t=str_replace(" ","&nbsp;",$e107_vars[$act]['text']);
                 if(!$e107_vars[$act]['perm'] || getperms($e107_vars[$act]['perm'])){
-                        $text .= "<tr><td class='button'><a style='cursor:hand; cursor:pointer; text-decoration:none;' href='{$e107_vars[$act]['link']}'><div style='width:100%; text-align:center;'>{$pre}{$t}{$post}</div></a></td></tr>";
+                        $text .= "<tr><td class='button'><div style='width:100%; text-align:center'><a style='cursor:hand; cursor:pointer; text-decoration:none;' href='{$e107_vars[$act]['link']}'>{$pre}{$t}{$post}</a></div></td></tr>";
                 }
         }
         $text .= "</table></div>";

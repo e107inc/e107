@@ -160,24 +160,21 @@ if($action == "pref"){
 //$newspost -> show_options($action);
 
 // ##### End ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-require_once("footer.php");
-?>
-<script type="text/javascript">
+print "<script type=\"text/javascript\">
 
 function addtext3(str){
         document.dataform.category_button.value = str;
 }
 function help2(help){
-	document.dataform.help_ext.value = help;
+        document.dataform.help_ext.value = help;
 }
 function fclear(){
-        document.dataform.data.value = "";
-        document.dataform.news_extended.value = "";
+        document.dataform.data.value = \"\";
+        document.dataform.news_extended.value = \"\";
 }
 
-</script>
-<?php
+</script>\n";
+
 echo "<script type=\"text/javascript\">
 function confirm_(mode, news_id){
         if(mode == 'cat'){
@@ -197,7 +194,7 @@ if(x)
         }
 }
 </script>";
-
+require_once("footer.php");
 exit;
 
 class newspost{
@@ -263,7 +260,7 @@ class newspost{
         }
 
         function show_options($action){
-			global $sql;
+                        global $sql;
 
                 if($action==""){$action="main";}
                 $var['main']['text']=NWSLAN_44;
@@ -279,11 +276,11 @@ class newspost{
                 $var['pref']['text']=NWSLAN_90;
                 $var['pref']['link']=e_SELF."?pref";
                 $var['pref']['perm']="N";
-				if($sql -> db_Select("submitnews", "*", "submitnews_auth ='0' ")){
-					$var['sn']['text']=NWSLAN_47;
-					$var['sn']['link']=e_SELF."?sn";
-					$var['sn']['perm']="N";
-				}
+                                if($sql -> db_Select("submitnews", "*", "submitnews_auth ='0' ")){
+                                        $var['sn']['text']=NWSLAN_47;
+                                        $var['sn']['link']=e_SELF."?sn";
+                                        $var['sn']['perm']="N";
+                                }
 
                 show_admin_menu(NWSLAN_48,$action,$var);
 
@@ -369,7 +366,7 @@ class newspost{
                         <select name='cat_id' class='tbox'>";
 
                         while(list($cat_id, $cat_name, $cat_icon) = $sql-> db_Fetch()){
-                                $text .= ($_POST['cat_id'] == $cat_id ? "<option value='$cat_id' selected>".$cat_name."</option>" : "<option value='$cat_id'>".$cat_name."</option>");
+                                $text .= ($_POST['cat_id'] == $cat_id ? "<option value='$cat_id' selected='selected'>".$cat_name."</option>" : "<option value='$cat_id'>".$cat_name."</option>");
                         }
                         $text .= "</select>";
                 }
@@ -384,14 +381,16 @@ class newspost{
                 </tr>
                 <tr>
                 <td style='width:20%' class='forumheader3'>".NWSLAN_13.":<br /></td>
-                <td style='width:80%' class='forumheader3'>
-                <textarea class='tbox' id='data' name='data' cols='80' rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".(strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]../", "[img]", $_POST['data']))."</textarea>
+                <td style='width:80%' class='forumheader3'>";
+
+                $insertjs = (!$pref['htmlarea'])?"onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'":"";
+                $text .="<textarea class='tbox' id='data' name='data' cols='80' rows='15'  $insertjs>".(strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]../", "[img]", $_POST['data']))."</textarea>
                 ";
 //Main news body textarea
         if(!$pref['htmlarea']){$text .= "
                 <input class='helpbox' type='text' name='helpb' size='100' />
                 <br />".
-        			ren_help()."
+                                ren_help()."
                 <select class='tbox' name='thumbps' onChange=\"addtext('[link=".e_IMAGE."/newspost_images/' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '][img]".e_IMAGE."/newspost_images/thumb_' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '[/img][/link]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_50."')\" onMouseOut=\"help('')\">
                 <option>".NWSLAN_80." ...</option>\n";
                 while(list($key, $image) = each($thumblist)){
@@ -429,7 +428,7 @@ class newspost{
         if(!$pref['htmlarea']){ $text .="<br />
                 <input class='helpbox' type='text' name='help_ext' size='100' />
                 <br />
-        			".ren_help("","addtext","help2")."
+                                ".ren_help("","addtext","help2")."
                 <select class='tbox' name='imageps2' onChange=\"addtext('[img]' + this.form.imageps2.options[this.form.imageps2.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onMouseOver=\"help2('".NWSLAN_50."')\" onMouseOut=\"help2('')\">
                 <option>".NWSLAN_81." ...</option>\n";
                 reset($imagelist);
@@ -460,13 +459,13 @@ class newspost{
                                 $text .= "<b>".NWSLAN_71."</b><br />";
                         }
 
-                        $text .= "<input class='tbox' type='file' name='file_userfile[]' size='50'>
+                        $text .= "<input class='tbox' type='file' name='file_userfile[]' size='50' />
                         <select class='tbox' name='uploadtype'>
                         <option>".NWSLAN_67."</option>
                         <option>".NWSLAN_68."</option>
                         </select>
                         <br />
-                        <input type='checkbox' name='imagecrethumb' value='1'><span class='smalltext'>".NWSLAN_65."</span>&nbsp;&nbsp;
+                        <input type='checkbox' name='imagecrethumb' value='1' /><span class='smalltext'>".NWSLAN_65."</span>&nbsp;&nbsp;
                         <input class='button' type='submit' name='submitupload' value='".NWSLAN_66."' />\n";
                 }
                 $text .= "</div>
@@ -484,7 +483,7 @@ class newspost{
 
 
                 ".
-                ($_POST['news_allow_comments'] ? "<input name='news_allow_comments' type='radio' value='0'>".NWSLAN_16."&nbsp;&nbsp;<input name='news_allow_comments' type='radio' value='1' checked>".NWSLAN_17 : "<input name='news_allow_comments' type='radio' value='0' checked>".NWSLAN_16."&nbsp;&nbsp;<input name='news_allow_comments' type='radio' value='1'>".NWSLAN_17)."
+                ($_POST['news_allow_comments'] ? "<input name='news_allow_comments' type='radio' value='0' />".NWSLAN_16."&nbsp;&nbsp;<input name='news_allow_comments' type='radio' value='1' checked='checked' />".NWSLAN_17 : "<input name='news_allow_comments' type='radio' value='0' checked='checked' />".NWSLAN_16."&nbsp;&nbsp;<input name='news_allow_comments' type='radio' value='1' />".NWSLAN_17)."
                 </div>
                  </td>
                 </tr>
@@ -495,9 +494,9 @@ class newspost{
                 <a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_74."</a>
                 <div style='display: none;'>".
 
-                (!$_POST['news_rendertype'] ? "<input name='news_rendertype' type='radio' value='0' checked />" : "<input name='news_rendertype' type='radio' value='0' />").NWSLAN_75."<br />".
-                ($_POST['news_rendertype'] == 1 ? "<input name='news_rendertype' type='radio' value='1' checked />" : "<input name='news_rendertype' type='radio' value='1' />").NWSLAN_76."<br />".
-                ($_POST['news_rendertype'] == 2 ? "<input name='news_rendertype' type='radio' value='2' checked />" : "<input name='news_rendertype' type='radio' value='2' />").NWSLAN_77."
+                (!$_POST['news_rendertype'] ? "<input name='news_rendertype' type='radio' value='0' checked='checked' />" : "<input name='news_rendertype' type='radio' value='0' />").NWSLAN_75."<br />".
+                ($_POST['news_rendertype'] == 1 ? "<input name='news_rendertype' type='radio' value='1' checked='checked' />" : "<input name='news_rendertype' type='radio' value='1' />").NWSLAN_76."<br />".
+                ($_POST['news_rendertype'] == 2 ? "<input name='news_rendertype' type='radio' value='2' checked='checked' />" : "<input name='news_rendertype' type='radio' value='2' />").NWSLAN_77."
 
                 </div>
                 </td>
@@ -514,29 +513,29 @@ class newspost{
                 <br />
 
 
-                ".NWSLAN_21.": <select name='startday' class='tbox'><option selected> </option>";
+                ".NWSLAN_21.": <select name='startday' class='tbox'><option selected='selected'> </option>";
                 for($a=1; $a<=31; $a++){
-                        $text .= ($a == $_POST['startday'] ? "<option selected>".$a."</option>" : "<option>".$a."</option>");
+                        $text .= ($a == $_POST['startday'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
                 }
-                $text .= "</select> <select name='startmonth' class='tbox'><option selected> </option>";
+                $text .= "</select> <select name='startmonth' class='tbox'><option selected='selected'> </option>";
                 for($a=1; $a<=12; $a++){
-                        $text .= ($a == $_POST['startmonth'] ? "<option selected>".$a."</option>" : "<option>".$a."</option>");
+                        $text .= ($a == $_POST['startmonth'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
                 }
-                $text .= "</select> <select name='startyear' class='tbox'><option selected> </option>";
+                $text .= "</select> <select name='startyear' class='tbox'><option selected='selected'> </option>";
                 for($a=2003; $a<=2010; $a++){
-                        $text .= ($a == $_POST['startyear'] ? "<option selected>".$a."</option>" : "<option>".$a."</option>");
+                        $text .= ($a == $_POST['startyear'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
                 }
-                $text .= "</select> ".NWSLAN_83." <select name='endday' class='tbox'><option selected> </option>";
+                $text .= "</select> ".NWSLAN_83." <select name='endday' class='tbox'><option selected='selected'> </option>";
                 for($a=1; $a<=31; $a++){
-                        $text .= ($a == $_POST['endday'] ? "<option selected>".$a."</option>" : "<option>".$a."</option>");
+                        $text .= ($a == $_POST['endday'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
                 }
-                $text .= "</select> <select name='endmonth' class='tbox'><option selected> </option>";
+                $text .= "</select> <select name='endmonth' class='tbox'><option selected='selected'> </option>";
                 for($a=1; $a<=12; $a++){
-                        $text .= ($a == $_POST['endmonth'] ? "<option selected>".$a."</option>" : "<option>".$a."</option>");
+                        $text .= ($a == $_POST['endmonth'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
                 }
-                $text .= "</select> <select name='endyear' class='tbox'><option selected> </option>";
+                $text .= "</select> <select name='endyear' class='tbox'><option selected='selected'> </option>";
                 for($a=2003; $a<=2010; $a++){
-                        $text .= ($a == $_POST['endyear'] ? "<option selected>".$a."</option>" : "<option>".$a."</option>");
+                        $text .= ($a == $_POST['endyear'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
                 }
 
                 $text .= "</select>
@@ -570,10 +569,10 @@ class newspost{
                 } else {
                         $text .= "<input class='button' type='submit' name='preview' value='".NWSLAN_27."' />";
                 }
-                $text .= "\n</td>
+                $text .= "<input type='hidden' name='news_id' value='$news_id' />  \n</td>
                 </tr>
                 </table>
-                <input type='hidden' name='news_id' value='$news_id'>
+
                 </form>
                 </div>";
                 $ns -> tablerender("<div style='text-align:center'>".NWSLAN_29."</div>", $text);
@@ -689,7 +688,7 @@ class newspost{
                 <td class='forumheader3' style='width:70%'>
                 ".$rs -> form_text("category_button", 60, $category_icon, 100)."
                 <br />
-                <input class='button' type ='button' style=''width: 35px'; cursor:hand' size='30' value='".NWSLAN_54."' onClick='expandit(this)'>
+                <input class='button' type ='button' style=''width: 35px'; cursor:hand' size='30' value='".NWSLAN_54."' onClick='expandit(this)' />
                 <div style='display:none'>";
                 while(list($key, $icon) = each($iconlist)){
                         $text .= "<a href='javascript:addtext3(\"$icon\")'><img src='".e_IMAGE."newsicons/".$icon."' style='border:0' alt='' /></a> ";
@@ -699,12 +698,12 @@ class newspost{
 
                 <tr><td colspan='2' style='text-align:center' class='forumheader'>";
                 if($id){
-                        $text .= "<input class='button' type='submit' name='update_category' value='".NWSLAN_55."'>
+                        $text .= "<input class='button' type='submit' name='update_category' value='".NWSLAN_55."' />
                         ".$rs -> form_button("submit", "category_clear", NWSLAN_79).
                         $rs -> form_hidden("category_id", $id)."
                         </td></tr>";
                 }else{
-                        $text .= "<input class='button' type='submit' name='create_category' value='".NWSLAN_56."'></td></tr>";
+                        $text .= "<input class='button' type='submit' name='create_category' value='".NWSLAN_56."' /></td></tr>";
                 }
                 $text .= "</table>
                 ".$rs -> form_close()."
@@ -722,7 +721,7 @@ class newspost{
                 <tr>
                 <td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_86."</span></td>
                 <td class='forumheader3' style='width:40%'>
-                <input type='checkbox' name='news_cats' value='1' ".($pref['news_cats']==1 ? " checked" : "").">
+                <input type='checkbox' name='news_cats' value='1' ".($pref['news_cats']==1 ? " checked='checked'" : "")." />
                         </td>
 
                 </tr>
@@ -731,12 +730,12 @@ class newspost{
                 <td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_87."</span></td>
                 <td class='forumheader3' style='width:40%'>
                 <select class='tbox' name='nbr_cols'>
-                <option value='1' ".($pref['nbr_cols']==1 ? "selected" : "").">1</option>
-                <option value='2' ".($pref['nbr_cols']==2 ? "selected" : "").">2</option>
-                <option value='3' ".($pref['nbr_cols']==3 ? "selected" : "").">3</option>
-                <option value='4' ".($pref['nbr_cols']==4 ? "selected" : "").">4</option>
-                <option value='5' ".($pref['nbr_cols']==5 ? "selected" : "").">5</option>
-                <option value='6' ".($pref['nbr_cols']==6 ? "selected" : "").">6</option>
+                <option value='1' ".($pref['nbr_cols']==1 ? "selected='selected'" : "").">1</option>
+                <option value='2' ".($pref['nbr_cols']==2 ? "selected='selected'" : "").">2</option>
+                <option value='3' ".($pref['nbr_cols']==3 ? "selected='selected'" : "").">3</option>
+                <option value='4' ".($pref['nbr_cols']==4 ? "selected='selected'" : "").">4</option>
+                <option value='5' ".($pref['nbr_cols']==5 ? "selected='selected'" : "").">5</option>
+                <option value='6' ".($pref['nbr_cols']==6 ? "selected='selected'" : "").">6</option>
                 </select></td>
                 </tr>
 
@@ -744,13 +743,13 @@ class newspost{
                 <td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_88."</span></td>
                 <td class='forumheader3' style='width:40%'>
                 <select class='tbox' name='newsposts'>
-                <option value='1' ".($pref['newsposts']==1 ? "selected" : "").">1</option>
-                <option value='2' ".($pref['newsposts']==2 ? "selected" : "").">2</option>
-                <option value='3' ".($pref['newsposts']==3 ? "selected" : "").">3</option>
-                <option value='5' ".($pref['newsposts']==5 ? "selected" : "").">5</option>
-                <option value='10' ".($pref['newsposts']==10 ? "selected" : "").">10</option>
-                <option value='15' ".($pref['newsposts']==15 ? "selected" : "").">15</option>
-                <option value='20' ".($pref['newsposts']==20 ? "selected" : "").">20</option>
+                <option value='1' ".($pref['newsposts']==1 ? "selected='selected'" : "").">1</option>
+                <option value='2' ".($pref['newsposts']==2 ? "selected='selected'" : "").">2</option>
+                <option value='3' ".($pref['newsposts']==3 ? "selected='selected'" : "").">3</option>
+                <option value='5' ".($pref['newsposts']==5 ? "selected='selected'" : "").">5</option>
+                <option value='10' ".($pref['newsposts']==10 ? "selected='selected'" : "").">10</option>
+                <option value='15' ".($pref['newsposts']==15 ? "selected='selected'" : "").">15</option>
+                <option value='20' ".($pref['newsposts']==20 ? "selected='selected'" : "").">20</option>
 
                 </select></td>
                 </tr>";
@@ -776,19 +775,19 @@ class newspost{
                 <tr>
                 <td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_100."</span></td>
                 <td class='forumheader3' style='width:40%'>
-                <input type='checkbox' name='subnews_attach' value='1' ".($pref['subnews_attach']==1 ? " checked" : "").">
+                <input type='checkbox' name='subnews_attach' value='1' ".($pref['subnews_attach']==1 ? " checked='checked'" : "")." />
                 </td>
                 </tr>
 
                 <tr>
                 <td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_101."</span></td>
                 <td class='forumheader3' style='width:40%'>
-                <input class='tbox' type='text' style='width:50px' name='subnews_resize' value='".$pref['subnews_resize']."' >
+                <input class='tbox' type='text' style='width:50px' name='subnews_resize' value='".$pref['subnews_resize']."' />
                 <span class='smalltext'>".NWSLAN_102."</span></td>
                 </tr>
 
                 <tr><td colspan='2' style='text-align:center' class='forumheader'>";
-                $text .= "<input class='button' type='submit' name='save_prefs' value='".NWSLAN_89."'></td></tr>";
+                $text .= "<input class='button' type='submit' name='save_prefs' value='".NWSLAN_89."' /></td></tr>";
 
                 $text .= "</table>
                 ".$rs -> form_close()."

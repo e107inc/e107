@@ -39,51 +39,51 @@ if(e_QUERY){
 $aj = new textparse;
 
 If(IsSet($_POST['submit'])){
-	if($_POST['data'] != ""){
-		$content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
-		$content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
-		$content_content = $aj -> $_POST['data'];
-		$sql -> db_Insert("content", "0, '".$content_heading."', '".$content_subheading."', '$content_content', '".$_POST['auto_line_breaks']."', '".time()."', '".ADMINID."', '".$_POST['content_comment']."', '', '1', 0, 0,  {$_POST['c_class']}");
-		if($_POST['content_heading']){
-			$sql -> db_Select("content", "*", "ORDER BY content_datestamp DESC LIMIT 0,1 ", $mode="no_where");
-			list($content_id, $content_heading) = $sql-> db_Fetch();
-			$sql -> db_Insert("links", "0, '".$content_heading."', 'content.php?content.$content_id', '', '', '1', '0', '0', '0', {$_POST['c_class']} ");
-			clear_cache("sitelinks");
-			$message = CNTLAN_24;
-		} else {
-			$sql -> db_Select("content", "*", "ORDER BY content_datestamp DESC LIMIT 0,1 ", $mode="no_where");
-			list($content_id, $content_heading) = $sql-> db_Fetch();
-			$message = CNTLAN_23." - 'article.php?".$content_id.".255'.";
-		}
-		clear_cache("content");
-		unset($content_heading, $content_subheading, $content_content, $content_parent);
-	} else {
-		$message = CNTLAN_1;
-	}
+        if($_POST['data'] != ""){
+                $content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
+                $content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
+                $content_content = $aj -> $_POST['data'];
+                $sql -> db_Insert("content", "0, '".$content_heading."', '".$content_subheading."', '$content_content', '".$_POST['auto_line_breaks']."', '".time()."', '".ADMINID."', '".$_POST['content_comment']."', '', '1', 0, 0,  {$_POST['c_class']}");
+                if($_POST['content_heading']){
+                        $sql -> db_Select("content", "*", "ORDER BY content_datestamp DESC LIMIT 0,1 ", $mode="no_where");
+                        list($content_id, $content_heading) = $sql-> db_Fetch();
+                        $sql -> db_Insert("links", "0, '".$content_heading."', 'content.php?content.$content_id', '', '', '1', '0', '0', '0', {$_POST['c_class']} ");
+                        clear_cache("sitelinks");
+                        $message = CNTLAN_24;
+                } else {
+                        $sql -> db_Select("content", "*", "ORDER BY content_datestamp DESC LIMIT 0,1 ", $mode="no_where");
+                        list($content_id, $content_heading) = $sql-> db_Fetch();
+                        $message = CNTLAN_23." - 'article.php?".$content_id.".255'.";
+                }
+                clear_cache("content");
+                unset($content_heading, $content_subheading, $content_content, $content_parent);
+        } else {
+                $message = CNTLAN_1;
+        }
 }
 
 if(IsSet($_POST['update'])){
-	$content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
-	$content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
-	$content_content = $aj -> formtpa($_POST['data'], "admin");
-	$sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_parent='".$_POST['auto_line_breaks']."',  content_comment='".$_POST['content_comment']."', content_type='1', content_class='{$_POST['c_class']}' WHERE content_id='".$_POST['content_id']."'");
-	$sql -> db_Update("links", "link_class='".$_POST['c_class']."' WHERE link_name='$content_heading' ");
-	unset($content_heading, $content_subheading, $content_content, $content_parent);
-	$message = CNTLAN_2;
-	clear_cache("content");
-	clear_cache("sitelinks");
+        $content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
+        $content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
+        $content_content = $aj -> formtpa($_POST['data'], "admin");
+        $sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_parent='".$_POST['auto_line_breaks']."',  content_comment='".$_POST['content_comment']."', content_type='1', content_class='{$_POST['c_class']}' WHERE content_id='".$_POST['content_id']."'");
+        $sql -> db_Update("links", "link_class='".$_POST['c_class']."' WHERE link_name='$content_heading' ");
+        unset($content_heading, $content_subheading, $content_content, $content_parent);
+        $message = CNTLAN_2;
+        clear_cache("content");
+        clear_cache("sitelinks");
 }
 
 if($action == "delete"){
-	$sql = new db;
-	$sql -> db_Select("content", "*", "content_id=$sub_action");
-	$row = $sql -> db_Fetch(); extract($row);
-	$sql -> db_Delete("links", "link_name='".$content_heading."' ");
-	$sql -> db_Delete("content", "content_id=$sub_action");
-	$message = CNTLAN_20;
-	unset($content_heading, $content_subheading, $content_content);
-	clear_cache("content");
-	clear_cache("sitelinks");
+        $sql = new db;
+        $sql -> db_Select("content", "*", "content_id=$sub_action");
+        $row = $sql -> db_Fetch(); extract($row);
+        $sql -> db_Delete("links", "link_name='".$content_heading."' ");
+        $sql -> db_Delete("content", "content_id=$sub_action");
+        $message = CNTLAN_20;
+        unset($content_heading, $content_subheading, $content_content);
+        clear_cache("content");
+        clear_cache("sitelinks");
 }
 
 if(IsSet($message)){
@@ -150,8 +150,9 @@ $text = "<div style='text-align:center'>
 </tr>
 <tr>
 <td style='width:20%' class='forumheader3'><u>".CNTLAN_12."</u>: </td>
-<td style='width:80%' class='forumheader3'>
-<textarea class='tbox' id='data' name='data' cols='70' rows='30' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$content_content</textarea>";
+<td style='width:80%' class='forumheader3'>";
+$insertjs = (!$pref['htmlarea'])? "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'":"";
+$text .="<textarea class='tbox' id='data' name='data' style='width:100%' rows='30' $insertjs >$content_content</textarea>";
 
 if(!$pref['htmlarea']){
     $text .="

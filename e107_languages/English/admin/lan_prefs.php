@@ -46,7 +46,7 @@ define("PRFLAN_43", "Filter words");
 define("PRFLAN_44", "words to censor, seperate with a comma");
 define("PRFLAN_45", "Use COPPA on signup page?");
 define("PRFLAN_46", "for more info on COPPA see <a href='http://www.cdt.org/legislation/105th/privacy/coppa.html'>here</a>");
-define("PRFLAN_47", "Security & Protection");
+define("PRFLAN_47", "Security &amp; Protection");
 define("PRFLAN_48", "User Tracking method");
 define("PRFLAN_49", "Cookies");
 define("PRFLAN_50", "Sessions");
