@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/poll_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-27 19:52:28 $
-|     $Author: streaky $
+|     $Revision: 1.6 $
+|     $Date: 2005-02-13 08:17:47 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 @include(e_PLUGIN."poll_menu/languages/".e_LANGUAGE.".php");
@@ -118,8 +118,10 @@ class poll {
 				$opt .= "?".e_QUERY;
 			}
 			$opt .= "'><p>";
+		} else {
+			$opt = '';	
 		}
-		 
+		$text = '';
 		for($count = 0; $count <= ($options-1); $count++) {
 			 
 			if ($votes[$count] == 0) {
@@ -154,7 +156,7 @@ class poll {
 		$text .= preg_replace("/\{OPTIONS=.*\}/si", $opt, $p_style);
 		 
 		 
-		if (MODERATOR && $type == "forum") {
+		if (defined('MODERATOR') && MODERATOR && $type == "forum") {
 			$qs = explode(".", e_QUERY);
 			$forum_id = $qs[0];
 			$thread_id = $qs[1];
@@ -164,7 +166,7 @@ class poll {
 		$ns = new e107table;
 		 
 		$caption = (file_exists(THEME."images/poll_menu.png") ? "<img src='".THEME."images/poll_menu.png' alt='' /> ".POLL_184 : POLL_184);
-		if (!$preview && $type != "forum") {
+		if (!isset($preview) || !$preview && $type != "forum") {
 			$ns->tablerender($caption, $text, 'poll');
 		} else {
 			return $text."</td></tr></table></div>";
