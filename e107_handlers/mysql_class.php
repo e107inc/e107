@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-01-19 17:11:49 $
+|     $Revision: 1.17 $
+|     $Date: 2005-01-19 18:58:18 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ $db_time = 0.0;
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.16 $
+* @version $Revision: 1.17 $
 * @author $Author: stevedunstan $
 */
 class db {
@@ -445,6 +445,8 @@ class db {
 		*/
 
 		$arg = str_replace("#", MPREFIX, $arg);
+
+		//echo $arg;
 
 		if ($this->mySQLresult = $this->db_Query($arg)) {
 			$this->dbError('db_Select_gen');

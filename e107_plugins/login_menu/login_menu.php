@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-01-05 16:57:39 $
-|     $Author: sweetas $
+|     $Revision: 1.12 $
+|     $Date: 2005-01-19 18:58:51 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -75,49 +75,8 @@ if(USER == TRUE || ADMIN == TRUE){
 	}
 	if(!$menu_pref['login_menu'] || $menu_pref['login_menu']['new_comments'] == true){
 		$new_comments=0;
-		$comments = $sql->db_Select('comments', '*', '`comment_datestamp` > '.$time);
-		if($comments){
-			while($row = $sql -> db_Fetch()){
-				extract($row);
-				switch($comment_type){
-					case 0:        // news
-					$sql2->db_Select('news', '*', '`news_id` = '.$comment_item_id);
-					$row = $sql2->db_Fetch();
-					if(check_class($row['news_class'])){
-						$new_comments++;
-					}
-					break;
-					case 1: // article, review or content page
-					$sql2->db_Select('content', '`content_heading`, `content_type`, `content_class`', '`content_id` = '.$comment_item_id);
-					$row = $sql2->db_Fetch();
-					if(check_class($row['content_class'])){
-						$new_comments++;
-					}
-					break;
-					case 2: // downloads
-					$mp = MPREFIX;
-					$qry = 'SELECT `download_name`, `'.$mp.'download_category.download_category_class`
-							 FROM `'.$mp.'download`
-							 LEFT JOIN `'.$mp.'download_category` ON `'.$mp.'download.download_category` = `'.$mp.'download_category.download_category_id`
-							 WHERE `'.$mp.'download.download_id` = '.$comment_item_id;
-					$sql2->db_Select_gen($qry);
-					$row = $sql2->db_Fetch();
-					if(check_class($row['download_category_class'])){
-						$new_comments++;
-					}
-					break;
-					case 3: // FAQ
-					$new_comments++;
-					break;
-					case 4: // Poll Comment
-					$new_comments++;
-					break;
-					case 6: // Bugtracker Comment
-					$new_comments++;
-					break;
-				}
-			}
-		}
+		$new_comments = $sql->db_Select('comments', '*', '`comment_datestamp` > '.$time);
+		
 		$handle = opendir(e_PLUGIN);
 		while(false !== ($file = readdir($handle))){
 			if($file != '.' && $file != '..' && is_dir(e_PLUGIN.$file)){

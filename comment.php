@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-01-19 17:10:08 $
+|     $Revision: 1.8 $
+|     $Date: 2005-01-19 18:56:21 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -162,58 +162,77 @@ if($cache = $e107cache->retrieve("comment.php?$table.$id")){
         exit;
 } else {
         if($table == "news"){
-                if(!$sql -> db_Select("news", "*", "news_id='$id' ")){
-                        header("location:".e_BASE."index.php");
-                        exit;
-                } else {
+			/*
+			changes by jalist 19/01/05:
+			updated db query removed one call
+			*/
 
-                        list($news['news_id'], $news['news_title'], $news['data'], $news['news_extended'], $news['news_datestamp'], $news['admin_id'], $news_category, $news['news_allow_comments'],  $news['news_start'], $news['news_end'], $news['news_class'], $news['news_render_type'], $news['news_comment_total']) = $sql -> db_Fetch();
-                        if($news['news_allow_comments']){
-                                header("location:".e_BASE."index.php");
-                                exit;
-                        }
-                        if(!check_class($news['news_class'])){
-                                header("location:".e_BASE."index.php");
-                                exit;
-                        } else {
-                                $subject = $aj -> formtpa($news['news_title']);
-                                define(e_PAGETITLE,  LAN_100." / ".LAN_99." / ".$subject."");
-                                require_once(HEADERF);
-				//ob_end_flush();
-                                ob_start();
-                                $sql -> db_Select("user", "user_name", "user_id='".$news['admin_id']."' ");
-                                list($news['admin_name']) = $sql -> db_Fetch();
-                                $sql -> db_Select("news_category", "*",  "category_id='$news_category' ");
-                                list($news['category_id'], $news['category_name'], $news['category_icon']) = $sql-> db_Fetch();
-                                
-                                $ix = new news;
-                                $ix -> render_newsitem($news, "default");
-                                $field = $news['news_id'];
-                                $comtype = 0;
-                        }
-                }
-        } else if($table == "poll") {
-                if(!$sql -> db_Select("poll", "*", "poll_id='$id' ")){
-                        header("location:".e_BASE."index.php");
-                        exit;
-                } else {
-                        $row = $sql -> db_Fetch();
-                        extract($row);
-                        if($poll_comment == 0){header("location:".e_BASE."index.php");}
-                        $subject = $poll_title;
-                        define(e_PAGETITLE,  LAN_101." / ".LAN_99." / ".$subject."");
-                        require_once(HEADERF);
-                        require_once(e_PLUGIN."poll_menu/poll_menu.php");
-                        $field = $poll_id;
-                        $comtype = 4;
-                }
+
+			$query = "SELECT #news.*, user_id, user_name, user_customtitle, category_name, category_icon FROM #news 
+LEFT JOIN #user ON #news.news_author = #user.user_id 
+LEFT JOIN #news_category ON #news.news_category = #news_category.category_id 
+WHERE news_id=$id";
+
+			if(!$sql -> db_Select_gen($query))
+			{
+				header("location:".e_BASE."index.php");
+				exit;
+			}
+			else
+			{
+				$news = $sql -> db_Fetch();
+				if($news['news_allow_comments'])
+				{
+					header("location:".e_BASE."index.php");
+					exit;
+				}
+				if(!check_class($news['news_class']))
+				{
+					header("location:".e_BASE."index.php");
+					exit;
+				}
+				else
+				{
+					$subject = $aj -> formtpa($news['news_title']);
+					define(e_PAGETITLE,  LAN_100." / ".LAN_99." / ".$subject."");
+					require_once(HEADERF);
+					ob_start();      
+					$ix = new news;
+					$ix -> render_newsitem($news, "default");
+					$field = $news['news_id'];
+					$comtype = 0;
+				}
+			}
+        }
+		else if($table == "poll")
+		{
+			if(!$sql -> db_Select("poll", "*", "poll_id='$id' ")){
+				header("location:".e_BASE."index.php");
+				exit;
+			}
+			else
+			{
+				$row = $sql -> db_Fetch();
+				extract($row);
+				if($poll_comment == 0){header("location:".e_BASE."index.php");}
+				$subject = $poll_title;
+				define(e_PAGETITLE,  LAN_101." / ".LAN_99." / ".$subject."");
+				require_once(HEADERF);
+				require_once(e_PLUGIN."poll_menu/poll_menu.php");
+				$field = $poll_id;
+				$comtype = 4;
+			}
         }
         require_once(HEADERF);
-        $query = ($pref['nested_comments'] ? "comment_item_id='$field' AND comment_type='$comtype' AND comment_pid='0' ORDER BY comment_datestamp" : "comment_item_id='$field' AND comment_type='$comtype'  ORDER BY comment_datestamp");
+        $query = ($pref['nested_comments'] ? 
+			"comment_item_id='$field' AND comment_type='$comtype' AND comment_pid='0' ORDER BY comment_datestamp" 
+			: 
+			"SELECT #comments.*, user_id, user_name, user_image, user_signature, user_join, user_location FROM #comments 
+			LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='$field' AND comment_type='$comtype'  ORDER BY comment_datestamp");
 }
 }
 
-$comment_total = $sql -> db_Select("comments", "*",  "".$query."");
+$comment_total = $sql -> db_Select_gen($query);
 if($comment_total){
         $width = 0;
         while($row = $sql -> db_Fetch()){
