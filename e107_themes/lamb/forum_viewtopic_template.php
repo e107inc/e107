@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/forum_viewtopic_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-01-29 18:06:35 $
-|     $Author: sweetas $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-30 15:59:25 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
         $FORUMSTART = "
@@ -56,7 +56,7 @@
 <table cellspacing='0' cellpadding='0' style='width:100%'>
 <tr>
 <td class='smallblacktext'>\n{THREADDATESTAMP}\n</td>
-<td style='text-align:right'>\n{EDITIMG}{QUOTEIMG}\n</td>
+<td style='text-align:right'>\n{REPORTIMG}\n{EDITIMG}\n{QUOTEIMG}\n</td>
 </tr>
 </table>
 </td>
@@ -104,7 +104,7 @@
 <table cellspacing='0' cellpadding='0' style='width:100%'>
 <tr>
 <td class='smallblacktext'>\n{THREADDATESTAMP}\n</td>
-<td style='text-align:right'>\n{EDITIMG}{QUOTEIMG}\n</td>
+<td style='text-align:right'>\n{REPORTIMG}\n{EDITIMG}\n{QUOTEIMG}\n</td>
 </tr>
 </table>
 </td>
