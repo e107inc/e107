@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-03-22 16:29:36 $
-|     $Author: sweetas $
+|     $Revision: 1.16 $
+|     $Date: 2005-03-24 22:56:36 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,12 +27,10 @@ class e107plugin {
 	 */
 	function getall() {
 		global $sql;
-		if ($sql->db_Select('plugin')) {
+		if ($sql->db_Select('plugin','*',"plugin_id !='' order by plugin_installflag DESC,plugin_name ASC")) {
 			while ($row = $sql->db_Fetch()) {
 				$ret[ucfirst($row['plugin_name'])] = $row;
 			}
-
-			ksort($ret, SORT_STRING);
 
 			return $ret;
 		}
@@ -237,7 +235,7 @@ class e107plugin {
 		}
 		save_prefs();
 	}
-	
+
 	function manage_search($action, $eplug_folder) {
 		global $sql, $sysprefs;
 		$search_prefs = $sysprefs -> getArray('search_prefs');
@@ -283,7 +281,7 @@ class e107plugin {
 	 */
 	function install_plugin($id) {
 		global $sql, $ns, $sysprefs;
-		
+
 		// install plugin ...
 		$plug = $this->getinfo($id);
 
@@ -364,9 +362,9 @@ class e107plugin {
 			if ($eplug_userclass) {
 				$this->manage_userclass('add', $eplug_userclass, $eplug_userclass_description);
 			}
-			
+
 			$this -> manage_search('add', $eplug_folder);
-			
+
 			$sql->db_Update('plugin', "plugin_installflag=1 WHERE plugin_id='$id' ");
 			$text .= ($eplug_done ? "<br />".$eplug_done : "");
 		} else {
