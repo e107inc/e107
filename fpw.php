@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/fpw.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-14 12:57:05 $
-|     $Author: lisa_ $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-18 16:10:42 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -71,7 +71,7 @@ if(e_QUERY){
         }
 }
 
-if(IsSet($_POST['pwsubmit'])){
+if(isset($_POST['pwsubmit'])){
         require_once(e_HANDLER."mail.php");
         $email = $_POST['email'];
 

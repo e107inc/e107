@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/chatbox.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-10 09:49:02 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-18 16:11:32 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -26,7 +26,7 @@ if($action == "u"){
         $message = CHBLAN_1;
 }
 
-if(IsSet($_POST['moderate'])){
+if(isset($_POST['moderate'])){
 
         extract($_POST);
         if(is_array($cb_blocked)){
@@ -48,7 +48,7 @@ if(IsSet($_POST['moderate'])){
         $message = CHBLAN_2;
 }
 
-if(IsSet($_POST['updatesettings'])){
+if(isset($_POST['updatesettings'])){
 
         $pref['chatbox_posts'] = $_POST['chatbox_posts'];
         $aj = new textparse;
@@ -63,7 +63,7 @@ if(IsSet($_POST['updatesettings'])){
         exit;
 }
 
-if(IsSet($_POST['prune'])){
+if(isset($_POST['prune'])){
         $chatbox_prune = $_POST['chatbox_prune'];
         $prunetime = time() - $chatbox_prune;
 
@@ -73,7 +73,7 @@ if(IsSet($_POST['prune'])){
 
 
 
-if(IsSet($message)){
+if(isset($message)){
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/upload.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-01-10 09:49:03 $
-|     $Author: sweetas $
+|     $Revision: 1.8 $
+|     $Date: 2005-01-18 16:11:32 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -96,7 +96,7 @@ $gen = new convert;
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 
-if(IsSet($_POST['optionsubmit'])){
+if(isset($_POST['optionsubmit'])){
 
         $pref['upload_storagetype'] = $_POST['upload_storagetype'];
         $pref['upload_maxfilesize'] = $_POST['upload_maxfilesize'];
@@ -115,7 +115,7 @@ if(IsSet($_POST['optionsubmit'])){
         $message = UPLLAN_2;
 }
 
-if(IsSet($message)){
+if(isset($message)){
         require_once(e_HANDLER."message_handler.php");
         message_handler("ADMIN_MESSAGE", $message);
 }

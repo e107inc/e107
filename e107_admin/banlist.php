@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banlist.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-10 09:49:02 $
-|     $Author: sweetas $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-18 16:11:32 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -31,7 +31,7 @@ if(e_QUERY){
         unset($tmp);
 }
 
-if(IsSet($_POST['add_ban'])){
+if(isset($_POST['add_ban'])){
         $aj = new textparse;
         $bd = $_POST['ban_ip'];
         $_POST['ban_reason'] = $aj -> formtpa($_POST['ban_reason'], "admin");
@@ -39,7 +39,7 @@ if(IsSet($_POST['add_ban'])){
         unset($ban_ip);
 }
 
-if(IsSet($_POST['update_ban'])){
+if(isset($_POST['update_ban'])){
         $aj = new textparse;
         $bd = $_POST['ban_ip'];
         $_POST['ban_reason'] = $aj -> formtpa($_POST['ban_reason'], "admin");
@@ -54,7 +54,7 @@ if($action == "remove" && isset($_POST['ban_secure'])){
         $message = BANLAN_1;
 }
 
-if(IsSet($message)){
+if(isset($message)){
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 if($action != "edit"){

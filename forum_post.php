@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/forum_post.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2004-12-21 06:57:32 $
-|     $Author: sweetas $
+|     $Revision: 1.10 $
+|     $Date: 2005-01-18 16:10:42 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
 require_once("class2.php");
-if(IsSet($_POST['fjsubmit'])){
+if(isset($_POST['fjsubmit'])){
         header("location:".e_BASE."forum_viewforum.php?".$_POST['forumjump']);
         exit;
 }
@@ -108,14 +108,14 @@ else
 require_once(HEADERF);
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-if(IsSet($_POST['addoption']) && $_POST['option_count'] < 10){
+if(isset($_POST['addoption']) && $_POST['option_count'] < 10){
         $_POST['option_count']++;
         $anonname = $aj -> formtpa($_POST['anonname']);
         $subject = $aj -> formtpa($_POST['subject']);
         $post = $aj -> formtpa($_POST['post']);
 }
 
-if(IsSet($_POST['submitpoll'])){
+if(isset($_POST['submitpoll'])){
         require_once(e_HANDLER."poll_class.php");
         $poll = new poll;
         $poll -> submit_poll(0, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], 0, $forum_id, "forum");
@@ -137,7 +137,7 @@ if(IsSet($_POST['submitpoll'])){
 }
 
 
-if (IsSet($_POST['fpreview'])) {
+if (isset($_POST['fpreview'])) {
         if (USER ? $poster = USERNAME : $poster = ($_POST['anonname'] ? $_POST['anonname'] : LAN_311));
         $postdate = $gen->convert_date(time(), "forum");
 
@@ -192,7 +192,7 @@ if (IsSet($_POST['fpreview'])) {
         }
 }
 
-if(IsSet($_POST['newthread'])){
+if(isset($_POST['newthread'])){
 
         if(trim(chop($_POST['subject'])) == "" || trim(chop($_POST['post'])) == ""){
                 message_handler("ALERT", 5);
@@ -286,7 +286,7 @@ if(IsSet($_POST['newthread'])){
         }
 }
 
-if(IsSet($_POST['reply'])){
+if(isset($_POST['reply'])){
         if(!$_POST['post']){
                 message_handler("ALERT", 5);
         }else{
@@ -390,7 +390,7 @@ if(IsSet($_POST['reply'])){
         }
 }
 
-if(IsSet($_POST['update_thread'])){
+if(isset($_POST['update_thread'])){
 
         if(!$_POST['subject'] || !$_POST['post']){
                 $error = "<div style='text-align:center'>".LAN_27."</div>";
@@ -411,7 +411,7 @@ if(IsSet($_POST['update_thread'])){
         }
 }
 
-if(IsSet($_POST['update_reply'])){
+if(isset($_POST['update_reply'])){
 
         if(!$_POST['post']){
                 $error = "<div style='text-align:center'>".LAN_27."</div>";

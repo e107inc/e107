@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-09-26 16:19:59 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-18 16:10:43 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -38,7 +38,7 @@ if(!USER){
         exit;
 }
 
-if(IsSet($_POST['records'])){
+if(isset($_POST['records'])){
         $records = $_POST['records'];
         $order = $_POST['order'];
         $from = 0;
@@ -60,7 +60,7 @@ $order = $qs[2];
 if($records >30){ $records = 30; }
 
 
-if(IsSet($id)){
+if(isset($id)){
 
         if($id == 0){
                 $text = "<div style='text-align:center'>".LAN_137." ".SITENAME."</div>";

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newforumposts_menu/config.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:32 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-18 16:11:55 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -24,7 +24,7 @@ $lan_file = e_PLUGIN."newforumposts_menu/languages/".e_LANGUAGE.".php";
 require_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."newforumposts_menu/languages/English.php");
 
 
-if(IsSet($_POST['update_menu'])){
+if(isset($_POST['update_menu'])){
         while(list($key, $value) = each($_POST)){
                 if($value != NFP_9){ $menu_pref[$key] = $value; }
         }

@@ -11,18 +11,18 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:06 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-18 16:11:38 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
 define("PAGE_NAME", "Event List");
-if(IsSet($_POST['viewallevents'])){
+if(isset($_POST['viewallevents'])){
 Header("Location: ".e_PLUGIN."calendar_menu/calendar.php?".$_POST['enter_new_val']);
 }
 
-if(IsSet($_POST['doit'])){
+if(isset($_POST['doit'])){
 Header("Location: ".e_PLUGIN."calendar_menu/event.php?ne.".$_POST['enter_new_val']);
 }
 
@@ -39,7 +39,7 @@ $aj = new textparse();
 
 
 
-if(IsSet($_POST['ne_cat_create'])){
+if(isset($_POST['ne_cat_create'])){
         if($_POST['ne_new_category'] != "" && $_POST['ne_new_category_icon'] != ""){
                 $sql -> db_Insert("event_cat", " 0, '".$_POST['ne_new_category']."', '".$_POST['ne_new_category_icon']."' ");
                 header("location:event.php?".$_POST['qs'].".m1");
@@ -49,7 +49,7 @@ if(IsSet($_POST['ne_cat_create'])){
 }
 // ----------------------------------------------------------------------------------------------------------
 // enter new event into db ----------------------------------------------------------------------------
-if(IsSet($_POST['ne_insert']) && USER == TRUE){
+if(isset($_POST['ne_insert']) && USER == TRUE){
         if($_POST['ne_event'] != ""){
 
                 $ev_start = mktime( $_POST['ne_hour'], $_POST['ne_minute'], 0, $_POST['ne_month'], $_POST['ne_day'], $_POST['ne_year']);
@@ -79,7 +79,7 @@ if(IsSet($_POST['ne_insert']) && USER == TRUE){
 // ----------------------------------------------------------------------------------------------------------
 // update event in db ----------------------------------------------------------------------------------
 
-if(IsSet($_POST['ne_update']) && USER == TRUE){
+if(isset($_POST['ne_update']) && USER == TRUE){
         if($_POST['ne_event'] != ""){
 
                 $ev_start = mktime( $_POST['ne_hour'], $_POST['ne_minute'], 0, $_POST['ne_month'], $_POST['ne_day'], $_POST['ne_year']);
@@ -112,7 +112,7 @@ if(IsSet($_POST['ne_update']) && USER == TRUE){
 
 require_once(HEADERF);
 
-if(IsSet($_POST['jump'])){
+if(isset($_POST['jump'])){
         $smarray = getdate(mktime(0,0,0,$_POST['jumpmonth'], 1, $_POST['jumpyear']));
         $month = $smarray['mon'];
         $year = $smarray['year'];
@@ -131,7 +131,7 @@ if(IsSet($_POST['jump'])){
         }
 }
 
-if(IsSet($_POST['confirm'])){
+if(isset($_POST['confirm'])){
         $sql -> db_Delete("event", "event_id='".$_POST['existing']."' ");
         $message = EC_LAN_51; //Event Deleted
 }
@@ -151,7 +151,7 @@ $ns -> tablerender(EC_LAN_46, $text); // Confirm Delete Event
         require_once(FOOTERF);
         exit;
 }
-if(IsSet($_POST['cancel'])){
+if(isset($_POST['cancel'])){
         $message = EC_LAN_47;  // Delete Cancelled
 }
 
@@ -175,7 +175,7 @@ if($qs[2] == "m1"){
         $message = EC_LAN_45; // "Event updated in database.";
 }
 
-if(IsSet($message)){
+if(isset($message)){
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 

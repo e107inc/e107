@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/filemanager.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-15 07:08:02 $
-|     $Author: sweetas $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-18 16:11:32 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -41,7 +41,7 @@ if (isset($_POST['admin_choice'])) {
 $path = str_replace("../", "", (e_QUERY ? e_QUERY : $choice));
 if(!$path){ $path =  str_replace("../", "", $choice); }
 
-if(IsSet($_POST['deletefile'])){
+if(isset($_POST['deletefile'])){
         if(!$_POST['ac'] == md5(ADMINPWCHANGE)){ exit; }
         $destination_file  = e_BASE.$_POST['deleteconfirm'];
         if(@unlink($destination_file)){
@@ -51,7 +51,7 @@ if(IsSet($_POST['deletefile'])){
         }
 }
 
-if(IsSet($_POST['upload'])){
+if(isset($_POST['upload'])){
         if(!$_POST['ac'] == md5(ADMINPWCHANGE)){ exit; }
         $pref['upload_storagetype'] = "1";
         require_once(e_HANDLER."upload_handler.php");
@@ -68,7 +68,7 @@ if(IsSet($_POST['upload'])){
         }
 }
 
-if(IsSet($message)){
+if(isset($message)){
         $ns -> tablerender("", "<div style=\"text-align:center\"><b>".$message."</b></div>");
 }
 

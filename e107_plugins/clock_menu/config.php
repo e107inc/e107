@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/clock_menu/config.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-10-07 11:09:57 $
-|     $Author: loloirie $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-18 16:11:39 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -24,7 +24,7 @@ require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 
-if(IsSet($_POST['update_menu'])){
+if(isset($_POST['update_menu'])){
         while(list($key, $value) = each($_POST)){
                 if($key != "update_menu"){ $menu_pref[$key] = $value; }
         }

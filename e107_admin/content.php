@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/content.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-10 09:49:02 $
-|     $Author: sweetas $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-18 16:11:32 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -54,7 +54,7 @@ foreach($_POST as $k => $v){
 
 $aj = new textparse;
 
-If(IsSet($_POST['submit'])){
+If(isset($_POST['submit'])){
         if($_POST['data'] != ""){
                 $content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
                 $content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
@@ -78,7 +78,7 @@ If(IsSet($_POST['submit'])){
         }
 }
 
-if(IsSet($_POST['update'])){
+if(isset($_POST['update'])){
         $content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
         $content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
         $content_content = $aj -> formtpa($_POST['data'], "admin");
@@ -103,7 +103,7 @@ if($delete_content)
         $e107cache->clear("sitelinks");
 }
 
-if(IsSet($message))
+if(isset($message))
 {
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }

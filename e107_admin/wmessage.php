@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/wmessage.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-10 09:49:03 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-18 16:11:32 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -22,7 +22,7 @@ $e_sub_cat = 'wmessage';
 require_once("auth.php");
 require_once(e_HANDLER."ren_help.php");
 $aj = new textparse;
-if(IsSet($_POST['wmsubmit'])){
+if(isset($_POST['wmsubmit'])){
 
         $guestmessage = $aj -> formtpa($_POST['guestmessage'], "admin");
         $membermessage = $aj -> formtpa($_POST['membermessage'], "admin");
@@ -32,7 +32,7 @@ if(IsSet($_POST['wmsubmit'])){
         $sql -> db_Update("wmessage", "wm_text ='$adminmessage', wm_active='".$_POST['wm_active3']."' WHERE wm_id='3' ");
 }
 
-if(IsSet($message)){
+if(isset($message)){
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 

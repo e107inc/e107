@@ -11,17 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-17 13:03:44 $
-|     $Author: lisa_ $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-18 16:10:43 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 @include("e107_handlers/errorhandler_class.php");
 set_error_handler("error_handler");
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
-if(IsSet($_POST['frontpage'])){ header("location: index.php"); exit;}
-if(IsSet($_POST['adminpage'])){ header("location: admin/admin.php"); exit;}
+if(isset($_POST['frontpage'])){ header("location: index.php"); exit;}
+if(isset($_POST['adminpage'])){ header("location: admin/admin.php"); exit;}
 if(!$_POST['mysql_server']){ $_POST['mysql_server'] = "localhost"; }
 if(!$_POST['mysql_prefix'] && !$_POST['stage_2']){ $_POST['mysql_prefix'] = "e107_"; }
 if(!$_POST['admin_email']){ $_POST['admin_email'] = "you@yoursite.com"; }
@@ -89,7 +89,7 @@ function stage1(){
         $counter = 0;
         $sellan = "English";
         $lanlist = get_lan();
-        while(IsSet($lanlist[$counter])){
+        while(isset($lanlist[$counter])){
                 if($lanlist[$counter] == $sellan){
                         $text .= "<option selected>".$lanlist[$counter]."</option>\n";
                 }else{

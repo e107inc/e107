@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/forum_viewtopic.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2004-12-21 06:57:32 $
-|     $Author: sweetas $
+|     $Revision: 1.9 $
+|     $Date: 2005-01-18 16:10:42 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -22,12 +22,12 @@ require_once("class2.php");
 require_once(e_HANDLER."textparse/basic.php");
 $etp = new e107_basicparse;
 
-if (IsSet($_POST['fjsubmit'])) {
+if (isset($_POST['fjsubmit'])) {
 	header("location:".e_BASE."forum_viewforum.php?".$_POST['forumjump']);
 	exit;
 }
 $highlight_search = FALSE;
-if (IsSet($_POST['highlight_search'])) {
+if (isset($_POST['highlight_search'])) {
 	$highlight_search = TRUE;
 }
 
@@ -68,7 +68,7 @@ if ($action == "untrack" && USER) {
 	exit;
 }
 if ($action == "report") {
-	if (IsSet($_POST['report_thread'])) {
+	if (isset($_POST['report_thread'])) {
 		$user = $_POST['user'];$report_thread_id = $_POST['report_thread_id'];$report_thread_name = $_POST['report_thread_name'];
 		if ($pref['reported_post_email']) {
 			require_once(e_HANDLER."mail.php");
@@ -162,7 +162,7 @@ if ($message) {
 	$ns -> tablerender("",$message);
 }
 
-If (IsSet($_POST['pollvote'])) {
+If (isset($_POST['pollvote'])) {
 	$sql -> db_Select("poll", "poll_active, poll_ip", "poll_id='".$_POST['pollid']."' ");
 	$row = $sql -> db_Fetch();
 	extract($row);

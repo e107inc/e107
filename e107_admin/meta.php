@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/meta.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-10 09:49:03 $
-|     $Author: sweetas $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-18 16:11:32 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -21,7 +21,7 @@ if(!getperms("C")){ header("location:".e_BASE."index.php"); exit; }
 $e_sub_cat = 'meta';
 require_once("auth.php");
 
-if(IsSet($_POST['metasubmit'])){
+if(isset($_POST['metasubmit'])){
     $aj = new textparse;
     $pref['meta_tag'] = $aj -> formtpa($_POST['meta'], "admin");
     save_prefs();

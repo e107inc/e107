@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/forum.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:26 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-18 16:11:36 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -31,7 +31,7 @@ if(e_QUERY){
 
 $sql2 = new db;
 
-if(IsSet($_POST['prune'])){
+if(isset($_POST['prune'])){
         if(!$_POST['prune_days']){
                 $message = FORLAN_1;
         }else{
@@ -65,7 +65,7 @@ if(IsSet($_POST['prune'])){
         }
 }
 
-if(IsSet($_POST['doprune'])){
+if(isset($_POST['doprune'])){
         if($_POST['prune_type'] == "delete"){
                 $prunedate = time() - ($_POST['prune_days']*86400);
                 if($sql -> db_Select("forum_t", "*", "thread_lastpost<$prunedate AND thread_parent=0 AND thread_s!=1")){
@@ -109,7 +109,7 @@ if($action == "inc"){
 }
 */
 
-if(IsSet($_POST['update_order'])){
+if(isset($_POST['update_order'])){
         extract($_POST);
         while(list($key, $id) = each($forum_order_)){
                 $tmp = explode(".", $id);
@@ -135,7 +135,7 @@ while($row = $sql -> db_Fetch()){
         $c++;
 }
 
-if(IsSet($_POST['updateoptions'])){
+if(isset($_POST['updateoptions'])){
         $pref['email_notify'] = $_POST['email_notify'];
         $pref['forum_poll'] = $_POST['forum_poll'];
         $pref['forum_popular'] = $_POST['forum_popular'];
@@ -152,7 +152,7 @@ if(IsSet($_POST['updateoptions'])){
         $message = FORLAN_10;
 }
 
-If(IsSet($_POST['submit'])){
+If(isset($_POST['submit'])){
 
         $c = 0;
         while($_POST['mod'][$c]){
@@ -172,7 +172,7 @@ If(IsSet($_POST['submit'])){
         $message = FORLAN_11;
 }
 
-If(IsSet($_POST['update'])){
+If(isset($_POST['update'])){
 
         $c = 0;
         while($_POST['mod'][$c]){
@@ -190,33 +190,33 @@ If(IsSet($_POST['update'])){
         $message = FORLAN_12;
 }
 
-If(IsSet($_POST['psubmit'])){
+If(isset($_POST['psubmit'])){
         $_POST['parent'] = $aj -> formtpa($_POST['parent'], "admin");
         $sql -> db_Insert("forum", "0, '".$_POST['parent']."', '', '', '".time()."', '0', '0', '0', '', '".$_POST['parent_class']."', 0 ");
         unset($parent);
         $message = FORLAN_13;
 }
 
-If(IsSet($_POST['pupdate'])){
+If(isset($_POST['pupdate'])){
         $_POST['parent'] = $aj -> formtpa($_POST['parent'], "admin");
         $sql -> db_Update("forum", "forum_name='".$_POST['parent']."', forum_class='".$_POST['parent_class']."' WHERE forum_id='".$_POST['existing']."' ");
         unset($parent);
         $message = FORLAN_14;
 }
 
-If(IsSet($_POST['pedit'])){
+If(isset($_POST['pedit'])){
         $sql -> db_Select("forum", "*", "forum_id='".$_POST['existing']."' ");
         list($forum_id, $parent, $forum_description, $forum_parent, $forum_datestamp, $forum_moderators, $forum_threads, $forum_replies, $forum_lastpost, $parent_class) = $sql-> db_Fetch();
         $parent = stripslashes($parent);
 }
 
-If(IsSet($_POST['edit'])){
+If(isset($_POST['edit'])){
         $sql -> db_Select("forum", "*", "forum_id='".$_POST['existing']."' ");
         list($forum_id, $forum_name, $forum_description, $forum_parent, $forum_datestamp, $forum_moderators, $forum_threads, $forum_replies, $forum_lastpost, $forum_class) = $sql-> db_Fetch();
         $parent = stripslashes($parent);
 }
 
-If(IsSet($_POST['delete'])){
+If(isset($_POST['delete'])){
         if($_POST['confirm']){
                 $sql -> db_Select("forum", "forum_id, forum_parent", "forum_id='".$_POST['existing']."' ");
                 $row = $sql -> db_Fetch();
@@ -230,7 +230,7 @@ If(IsSet($_POST['delete'])){
 }
 
 
-if(IsSet($message)){
+if(isset($message)){
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
@@ -278,7 +278,7 @@ $text .= "
 $text .= "<tr style='vertical-align:top'>
 <td colspan='2'  style='text-align:center' class='forumheader'>";
 
-if(IsSet($_POST['pedit'])){
+if(isset($_POST['pedit'])){
         $text .= "<input class='button' type='submit' name='pupdate' value='".FORLAN_25."' />
 <input type='hidden' name='existing' value='".$_POST['existing']."'>";
 }else{
@@ -383,7 +383,7 @@ $text .= "</td>
 <td colspan='2'  style='text-align:center' class='forumheader'>";
 
 
-If(IsSet($_POST['edit'])){
+If(isset($_POST['edit'])){
         $text .= "<input class='button' type='submit' name='update' value='".FORLAN_35."' />
         <input type='hidden' name='forum_id' value='".$forum_id."'>";
 }else{

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/modcomment.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-05 16:57:37 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-18 16:11:32 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -40,7 +40,7 @@ switch($table){
         ****************************************/
 }
 
-if(IsSet($_POST['moderate'])){
+if(isset($_POST['moderate'])){
         extract($_POST);
         if(is_array($comment_blocked)){
                 while (list ($key, $cid) = each ($comment_blocked)){
@@ -65,7 +65,7 @@ if(IsSet($_POST['moderate'])){
         $message = MDCLAN_1;
 }
 
-if(IsSet($message)){
+if(isset($message)){
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/submitnews.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-08 23:23:15 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-18 16:10:43 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -37,7 +37,7 @@ if(!check_class($pref['subnews_class'])){
 $author_name=textparse::tpj($_POST['author_name'],TRUE);
 $author_email=check_email($_POST['author_email']);
 
-if(IsSet($_POST['submit'])){
+if(isset($_POST['submit'])){
 
         if($_POST['itemtitle'] == ""){
         $message .= SUBNEWSLAN_1;

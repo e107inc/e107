@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/image.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-10 09:49:03 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-18 16:11:32 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -54,7 +54,7 @@ if(e_QUERY == "del"){
 }
 
 
-if(IsSet($_POST['update_options'])){
+if(isset($_POST['update_options'])){
         $pref['image_post'] = $_POST['image_post'];
         $pref['resize_method'] = $_POST['resize_method'];
         $pref['im_path'] = $_POST['im_path'];
@@ -64,12 +64,12 @@ if(IsSet($_POST['update_options'])){
         $message = IMALAN_9;
 }
 
-if(IsSet($message)){
+if(isset($message)){
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
 
-if(IsSet($_POST['show_avatars'])){
+if(isset($_POST['show_avatars'])){
 
         $handle=opendir(e_FILE."public/avatars/");
         while ($file = readdir($handle)){

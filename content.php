@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/content.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-01-05 10:34:26 $
-|     $Author: pholzmann $
+|     $Revision: 1.12 $
+|     $Date: 2005-01-18 16:10:42 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -75,7 +75,7 @@ if($sql -> db_Select("content", "*", $query)){
 }
 
 $highlight_search = FALSE;
-if(IsSet($_POST['highlight_search'])){
+if(isset($_POST['highlight_search'])){
 	$highlight_search = TRUE;
 }
 require_once(HEADERF);
@@ -95,7 +95,7 @@ require_once(e_HANDLER."comment_class.php");
 $cobj = new comment;
 require_once(e_HANDLER."rate_class.php");
 $rater = new rater;
-if(IsSet($_POST['commentsubmit'])){
+if(isset($_POST['commentsubmit'])){
 	$tmp = explode(".", e_QUERY);
 
         if(!$sql -> db_Select("content", "content_comment", "content_id='$sub_action' ")){

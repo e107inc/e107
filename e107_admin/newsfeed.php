@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/newsfeed.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-10 09:49:03 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-18 16:11:32 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -22,7 +22,7 @@ $e_sub_cat = 'newsfeed';
 require_once("auth.php");
 
 
-if(IsSet($_POST['add_headline'])){
+if(isset($_POST['add_headline'])){
 
         $datestamp = time();
         if($_POST['headline_url']){
@@ -34,13 +34,13 @@ if(IsSet($_POST['add_headline'])){
         }
 }
 
-if(IsSet($_POST['update_headline'])){
+if(isset($_POST['update_headline'])){
         $sql -> db_Update("headlines", "headline_url='".$_POST['headline_url']."', headline_timestamp='0', headline_image='".$_POST['headline_image']."', headline_active='".$_POST['activate']."' WHERE headline_id='".$_POST['headline_id']."'");
         $message = NWFLAN_2;
         unset($headline_url, $headline_image);
 }
 
-if(IsSet($_POST['delete'])){
+if(isset($_POST['delete'])){
         if($_POST['confirm']){
                 $sql -> db_Delete("headlines", "headline_url='".$_POST['existing']."' ");
                 $message = NWFLAN_3;
@@ -49,12 +49,12 @@ if(IsSet($_POST['delete'])){
         }
 }
 
-if(IsSet($_POST['edit'])){
+if(isset($_POST['edit'])){
         $sql -> db_Select("headlines", "*", "headline_url='".$_POST['existing']."' ");
         $row = $sql -> db_Fetch(); extract($row);
 }
 
-if(IsSet($message)){
+if(isset($message)){
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
@@ -115,7 +115,7 @@ $text .= "</td>
 <tr style='vertical-align:top'>
 <td colspan='2' style='text-align:center' class='forumheader'>";
 
-if(IsSet($_POST['edit'])){
+if(isset($_POST['edit'])){
 
         $text .= "<input class='button' type='submit' name='update_headline' value='".NWFLAN_17."' />
 <input type='hidden' name='headline_id' value='$headline_id'>";

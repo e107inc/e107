@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banner.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-01-13 22:05:33 $
-|     $Author: lisa_ $
+|     $Revision: 1.10 $
+|     $Date: 2005-01-18 16:11:32 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -70,7 +70,7 @@ if($_POST['createbanner'] || $_POST['updatebanner']){
         unset($_POST['client_name'], $_POST['client_login'], $_POST['client_password'], $_POST['banner_image'], $_POST['click_url'], $_POST['impressions_purchased'], $start_date, $end_date, $_POST['banner_enabled'], $_POST['startday'], $_POST['startmonth'], $_POST['startyear'], $_POST['endday'], $_POST['endmonth'], $_POST['endyear'], $_POST['banner_class'], $_POST['banner_pages'], $_POST['banner_listtype']);
 }
 
-if(IsSet($_POST['confirm'])){
+if(isset($_POST['confirm'])){
         $sql -> db_Delete("banner", "banner_id='".$_POST['id']."' ");
         $message = BNRLAN_1;
 }
@@ -90,11 +90,11 @@ if($action == "delete" && $sub_action){
         require_once("footer.php");
         exit;
 }
-if(IsSet($_POST['cancel'])){
+if(isset($_POST['cancel'])){
         $message = BNRLAN_6;
 }
 
-if(IsSet($_POST['updatevisibility'])){
+if(isset($_POST['updatevisibility'])){
 
 	foreach($_POST as $k => $v){
 		if(preg_match("#^banner_#",$k)){
@@ -120,7 +120,7 @@ if(IsSet($_POST['updatevisibility'])){
 	$message = BNRLAN_47." ".$sub_action."";
 }
 
-if(IsSet($_POST['updateoptions'])){
+if(isset($_POST['updateoptions'])){
 	foreach($_POST as $k => $v){
 		if(preg_match("#^banner_#",$k)){
 			$menu_pref[$k] = $v;
@@ -132,7 +132,7 @@ if(IsSet($_POST['updateoptions'])){
 	$message = BNRLAN_48;
 }
 
-if(IsSet($message)){
+if(isset($message)){
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 

@@ -250,8 +250,8 @@ $exclude = array($FILES_DIRECTORY."backend", $FILES_DIRECTORY."downloadimages", 
 unset($message);
 
 //for core-crc-files: merging arrays together
-if (IsSet($_POST['activate'])) {
-	if (IsSet($_POST['Arr'])){
+if (isset($_POST['activate'])) {
+	if (isset($_POST['Arr'])){
 		$_arr = array_merge($_POST['Arr'], array($_POST['activate']));
 	}
 	else {
@@ -267,7 +267,7 @@ if (file_exists("do_core_file.php")) {
 
 
 //Make a new plugin-crc-file
-if (IsSet($_POST['doplugfile']) && $_POST['save_plug_name'] != "") {
+if (isset($_POST['doplugfile']) && $_POST['save_plug_name'] != "") {
 	$file_array = hex_getdirs($_POST['plug_activate']."/", array() , "1", e_PLUGIN."/");
 	sort($file_array);
 	unset($t_array);
@@ -276,7 +276,7 @@ if (IsSet($_POST['doplugfile']) && $_POST['save_plug_name'] != "") {
 	foreach($file_array as $v){
 		$data .= str_replace($dirs_1, $dirs_2, $v)."<-:sfv:->".generate_sfv_checksum(e_BASE."/".$v)."\n";
 	}
-	if (!IsSet($_POST['gz_plug'])){
+	if (!isset($_POST['gz_plug'])){
 		$dh=@fopen($o_path.$_POST['save_plug_name'], "w");
 		if (@fwrite($dh, $data)){
 			$message = "<div align='center'>".Integ_01."</div>";
@@ -299,7 +299,7 @@ if (IsSet($_POST['doplugfile']) && $_POST['save_plug_name'] != "") {
 }
 
 //Check existing sfv-File START
-if (IsSet($_POST['docheck']) && $_POST['input_files'] != "") {
+if (isset($_POST['docheck']) && $_POST['input_files'] != "") {
 	if (file_exists($_POST['input_files'])) {
 		$_log = array();
 		$_log[2]=lines($_POST['input_files']);
@@ -386,7 +386,7 @@ if (file_exists($o_path."log.txt")) {
 }
 
 //Message-Output
-if (IsSet($message)) {
+if (isset($message)) {
 	$ns -> tablerender("", "<b>".$message."</b>");
 }
 

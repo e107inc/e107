@@ -1,5 +1,5 @@
 <?php
-if(IsSet($_POST['reset'])){
+if(isset($_POST['reset'])){
 	if(!check_class("FAKE","",TRUE)){
 		$text = "<b>Operation Not allowed</b><br /><br />";
 	} else {

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-11-25 21:09:18 $
-|     $Author: lisa_ $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-18 16:10:43 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -27,7 +27,7 @@ if(!USER && $pref['search_restrict']==1){
 }
 
 $_POST['searchquery'] = trim(chop($_POST['searchquery']));
-if(IsSet($_POST['searchquery']) && $_POST['searchtype'][0] == "98"){ header("location:http://www.google.com/search?q=".stripslashes(str_replace(" ", "+", $_POST['searchquery']))); exit; }
+if(isset($_POST['searchquery']) && $_POST['searchtype'][0] == "98"){ header("location:http://www.google.com/search?q=".stripslashes(str_replace(" ", "+", $_POST['searchquery']))); exit; }
 require_once(HEADERF);
 
 if($_POST['searchquery'] && strlen($_POST['searchquery']) < 3){
@@ -67,7 +67,7 @@ while(false !== ($file = readdir($handle))){
 $con=new convert;
 if(!$refpage = substr($_SERVER['HTTP_REFERER'], (strrpos($_SERVER['HTTP_REFERER'], "/")+1))){ $refpage = "index.php"; }
 
-if(IsSet($_POST['searchquery']) && $_POST['searchquery'] != ""){ $query = $_POST['searchquery']; }
+if(isset($_POST['searchquery']) && $_POST['searchquery'] != ""){ $query = $_POST['searchquery']; }
 
 if($_POST['searchtype']){
         $searchtype = $_POST['searchtype'];

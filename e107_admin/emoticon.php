@@ -16,7 +16,7 @@ require_once("../class2.php");
 if(!getperms("F")){ header("location:".e_BASE."index.php"); exit; }
 $e_sub_cat = 'emoticon';
 
-if(IsSet($_POST['updatesettings']))
+if(isset($_POST['updatesettings']))
 {
 	$aj = new textparse;
 	while(list($id, $name) = each($_POST['emote_code']))
@@ -42,7 +42,7 @@ if(!is_array($emote))
 	$emote = $sysprefs->getArray('emote');
 }
 
-if(IsSet($_POST['addemote']))
+if(isset($_POST['addemote']))
 {
 	if($_POST['emote_new_code'] && $_POST['emote_new_image'])
 	{

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-10 09:49:03 $
-|     $Author: sweetas $
+|     $Revision: 1.7 $
+|     $Date: 2005-01-18 16:11:32 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -42,7 +42,7 @@ $amount = 50;
 
 
 
-if(IsSet($_POST['resend_mail'])){
+if(isset($_POST['resend_mail'])){
     $id = $_POST['resend_id'];
     $key = $_POST['resend_key'];
     $name = $_POST['resend_name'];
@@ -58,7 +58,7 @@ if(IsSet($_POST['resend_mail'])){
    unset($id,$action,$sub_cation);
 }
 
-if(IsSet($_POST['test_mail'])){
+if(isset($_POST['test_mail'])){
    require_once(e_HANDLER."mail.php");
    $text = validatemail($_POST['test_email']);
    $caption = $_POST['test_email']." - ";
@@ -67,7 +67,7 @@ if(IsSet($_POST['test_mail'])){
    unset($id,$action,$sub_cation);
 }
 
-if(IsSet($_POST['update_options'])){
+if(isset($_POST['update_options'])){
         $pref['avatar_upload'] = (FILE_UPLOADS ? $_POST['avatar_upload'] : 0);
         $pref['im_width'] = $_POST['im_width'];
         $pref['im_height'] = $_POST['im_height'];
@@ -77,7 +77,7 @@ if(IsSet($_POST['update_options'])){
         $user -> show_message(USRLAN_1);
 }
 
-if(IsSet($_POST['prune'])){
+if(isset($_POST['prune'])){
         $sql2 = new db;
         $text = USRLAN_56." ";
         if($sql -> db_Select("user", "user_id, user_name", "user_ban=2")){
@@ -91,7 +91,7 @@ if(IsSet($_POST['prune'])){
         unset($text);
 }
 
-if(IsSet($_POST['adduser'])){
+if(isset($_POST['adduser'])){
         if(!$_POST['ac'] == md5(ADMINPWCHANGE)){
                 exit;
         }
@@ -286,7 +286,7 @@ if($_POST['useraction'] == "unadmin")
         }
 }
 
-if(IsSet($_POST['add_field'])){
+if(isset($_POST['add_field'])){
         extract($_POST);
         $sql -> db_Select("core", " e107_value", " e107_name='user_entended'");
         $row = $sql -> db_Fetch();
@@ -304,7 +304,7 @@ if(IsSet($_POST['add_field'])){
         $message = USRLAN_2;
 }
 
-if(IsSet($_POST['update_field'])){
+if(isset($_POST['update_field'])){
         extract($_POST);
         $sql -> db_Select("core", " e107_value", " e107_name='user_entended'");
         $row = $sql -> db_Fetch();
@@ -433,7 +433,7 @@ class users{
 
                 $text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>";
 
-                if(IsSet($_POST['searchquery'])){
+                if(isset($_POST['searchquery'])){
 
                         $query = (eregi("@",$_POST['searchquery']))?"user_email REGEXP('".$_POST['searchquery']."') OR ":"";
                         $query .= (eregi(".",$_POST['searchquery']))?"user_ip REGEXP('".$_POST['searchquery']."') OR ":"";

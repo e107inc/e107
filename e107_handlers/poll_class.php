@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/poll_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-12-14 19:26:27 $
-|     $Author: sweetas $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-18 16:11:36 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 @include(e_PLUGIN."poll_menu/languages/".e_LANGUAGE.".php");
@@ -66,7 +66,7 @@ class poll{
                 }
                 $options = count($poll_option);
                 for($count=0; $count<=$options; $count++){
-                        $poll_option[$count] = (IsSet($poll_option[$count]) ? stripslashes($poll_option[$count]) : "");
+                        $poll_option[$count] = (isset($poll_option[$count]) ? stripslashes($poll_option[$count]) : "");
                         if($vote_total){
                                 $percentage[$count] = round(($votes[$count]/$vote_total)*100,2);
                         }

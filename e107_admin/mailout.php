@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-01-18 05:19:15 $
-|     $Author: e107coders $
+|     $Revision: 1.12 $
+|     $Date: 2005-01-18 16:11:32 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -32,7 +32,7 @@
 
     $aj = new textparse;
 
-    if(IsSet($_POST['testemail'])){
+    if(isset($_POST['testemail'])){
         require_once(e_HANDLER."mail.php");
         if(!sendemail(SITEADMINEMAIL, PRFLAN_66." ".SITENAME, PRFLAN_67)){
                 $message = ($pref['smtp_enable'] ? PRFLAN_75 : PRFLAN_68);
@@ -50,7 +50,7 @@
 
 
 
-if(IsSet($_POST['submit'])){
+if(isset($_POST['submit'])){
 
     if($_POST['email_to'] == "all" || $_POST['email_to']== "unverified"){
        $insert = ($_POST['email_to']== "unverified")? "user_ban='2' ":"user_id !='' ";   // send to all.
@@ -116,7 +116,7 @@ if(IsSet($_POST['submit'])){
     $message_body = stripslashes($_POST['email_body']);
     $message_body = eregi_replace('src="','src="'.SITEURL,$message_body);
 
-    if(IsSet($_POST['use_theme'])){
+    if(isset($_POST['use_theme'])){
         $theme = $THEMES_DIRECTORY.$pref['sitetheme']."/";
         $mail_style = "<link rel=\"stylesheet\" href=\"".SITEURL.$theme."style.css\" type=\"text/css\" />";
         $mail_style .= "<div style='text-align:center; width:100%'>";
@@ -177,7 +177,7 @@ if(IsSet($_POST['submit'])){
 }
 //. Update Preferences.
 
-if(IsSet($_POST['updateprefs'])){
+if(isset($_POST['updateprefs'])){
 
         $pref['smtp_enable'] = $_POST['smtp_enable'];
         $pref['smtp_server'] = $aj -> formtpa($_POST['smtp_server']);
@@ -189,7 +189,7 @@ if(IsSet($_POST['updateprefs'])){
 }
 
 
-if(IsSet($message)){
+if(isset($message)){
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 

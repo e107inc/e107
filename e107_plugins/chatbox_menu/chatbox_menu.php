@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2004-12-13 13:20:42 $
-|     $Author: sweetas $
+|     $Revision: 1.12 $
+|     $Date: 2005-01-18 16:11:39 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 global $tp, $e107cache, $e_event;
-if(IsSet($_POST['chat_submit']))
+if(isset($_POST['chat_submit']))
 {
 	if(!USER && !$pref['anon_post'])
 	{

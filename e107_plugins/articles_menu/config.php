@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/articles_menu/config.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-12-11 14:21:03 $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-18 16:11:37 $
 |     $Author: streaky $
 |
 |     Based on code by Edwin van der Wal (evdwal@xs4all.nl), Multilanguage by Juan     
@@ -28,7 +28,7 @@ if(!@require_once(e_PLUGIN."articles_menu/languages/".e_LANGUAGE.".php")){
 if(!getperms("1")){ header("location:".e_BASE."index.php"); exit ;}
 require_once(e_ADMIN."auth.php");
 
-if(IsSet($_POST['update_menu']))
+if(isset($_POST['update_menu']))
 {
   $e107cache->clear("article_menu");
         while(list($key, $value) = each($_POST))

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/poll.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-10 09:49:03 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-18 16:11:32 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -36,7 +36,7 @@ if(e_QUERY){
         unset($tmp);
 }
 
-if(IsSet($_POST['addoption']) && $_POST['option_count'] < 10){
+if(isset($_POST['addoption']) && $_POST['option_count'] < 10){
         $_POST['option_count']++;
         $_POST['poll_title'] = $aj -> formtpa($_POST['poll_title'], "admin");
         $c=0;
@@ -46,7 +46,7 @@ if(IsSet($_POST['addoption']) && $_POST['option_count'] < 10){
         }
 }
 
-if(IsSet($_POST['reset'])){
+if(isset($_POST['reset'])){
         unset($poll_id, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate']);
 }
 
@@ -55,7 +55,7 @@ if($action == "delete" && $_POST['del_poll_confirm']==1){
         unset($poll_id, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate']);
 }
 
-if(IsSet($_POST['submit'])){
+if(isset($_POST['submit'])){
         $message = $poll -> submit_poll($sub_action, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], $_POST['poll_comment']);
         unset($_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], $_POST['poll_comment']);
 }
@@ -77,7 +77,7 @@ if($action == "edit" && !$_POST['preview']  && !$_POST['addoption'] && !$_POST['
         }
 }
 
-if(IsSet($_POST['preview'])){
+if(isset($_POST['preview'])){
 
         $_POST['poll_title'] = $aj -> formtpa($_POST['poll_title'], "admin");
         $c=0;
@@ -97,7 +97,7 @@ if(IsSet($_POST['preview'])){
         $_POST['poll_title'] = stripslashes($_POST['poll_title']);
 }
 
-if(IsSet($message)){
+if(isset($message)){
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
@@ -172,7 +172,7 @@ $text .= "</td>
 <tr style='vertical-align:top'>
 <td colspan='2'  style='text-align:center' class='forumheader'>";
 
-if(IsSet($_POST['preview'])){
+if(isset($_POST['preview'])){
         $text .= "<input class='button' type='submit' name='preview' value='".POLLAN_14."' /> ";
         if($action == "edit"){
                 $text .= "<input class='button' type='submit' name='submit' value='".POLLAN_15."' /> ";
@@ -182,7 +182,7 @@ if(IsSet($_POST['preview'])){
 }else{
         $text .= "<input class='button' type='submit' name='preview' value='".POLLAN_17."' /> ";
 }
-if(IsSet($poll_id)){
+if(isset($poll_id)){
         $text .= "<input class='button' type='submit' name='reset' value='".POLLAN_18."' /> ";
 }
 

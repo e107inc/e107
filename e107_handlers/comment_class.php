@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-12-13 22:17:30 $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-18 16:11:34 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -143,7 +143,7 @@ class comment {
 		$replace[3] = ($user_id ? LAN_99.": ".$user_comments : LAN_194)."<br />";
 
 		$highlight_search = FALSE;
-		if (IsSet($_POST['highlight_search'])) {
+		if (isset($_POST['highlight_search'])) {
 			$highlight_search = TRUE;
 		}
 

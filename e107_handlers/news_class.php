@@ -13,9 +13,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.14 $
-| $Date: 2004-12-27 22:35:25 $
-| $Author: loloirie $
+| $Revision: 1.15 $
+| $Date: 2005-01-18 16:11:36 $
+| $Author: streaky $
 +---------------------------------------------------------------+
 */
 
@@ -100,7 +100,7 @@ class news {
 					";
 		}
 		$highlight_search = FALSE;
-		if (IsSet($_POST['highlight_search'])) {
+		if (isset($_POST['highlight_search'])) {
 			$highlight_search = TRUE;
 		}
 		if (!$comment_total) $comment_total = "0";

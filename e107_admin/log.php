@@ -11,16 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/log.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-10 09:49:03 $
-|     $Author: sweetas $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-18 16:11:32 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 if(!getperms("S")){ header("location:".e_BASE."index.php"); exit;}
 $e_sub_cat = 'log';
 
-if(IsSet($_POST['updatesettings'])){
+if(isset($_POST['updatesettings'])){
 
         $pref['log_activate'] = $_POST['log_activate'];
         $pref['log_refertype'] = $_POST['refertype'];
@@ -36,20 +36,20 @@ if(e_QUERY == "u"){
 
 require_once("auth.php");
 
-if(IsSet($_POST['wipe'])){
+if(isset($_POST['wipe'])){
 
-        if(IsSet($_POST['log_wipe_info'])){
+        if(isset($_POST['log_wipe_info'])){
                 $sql -> db_Delete("stat_info", "");
                 $sql -> db_Delete("stat_last", "");
         }
-        if(IsSet($_POST['log_wipe_counter'])){
+        if(isset($_POST['log_wipe_counter'])){
                 $sql -> db_Delete("stat_counter", "");
         }
 
         $message = LOGLAN_2;
 }
 
-if(IsSet($message)){
+if(isset($message)){
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 

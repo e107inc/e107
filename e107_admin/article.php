@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/article.php,v $
-|   $Revision: 1.8 $
-|   $Date: 2005-01-13 09:24:54 $
-|   $Author: sweetas $
+|   $Revision: 1.9 $
+|   $Date: 2005-01-18 16:11:32 $
+|   $Author: streaky $
 
 +---------------------------------------------------------------+
 */
@@ -52,7 +52,7 @@ if(preg_match("#(.*?)_delete_(\d+)#",$deltest[$etp->unentity(ARLAN_62)],$matches
 
 // ##### DB --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-if(IsSet($_POST['create_category'])){
+if(isset($_POST['create_category'])){
         $_POST['category_name'] = $aj -> formtpa($_POST['category_name'], "admin");
         $_POST['category_description'] = $aj -> formtpa($_POST['category_description'], "admin");
         $sql -> db_Insert("content", " '0', '".$_POST['category_name']."', '".$_POST['category_description']."', '', 0, ".time().", '".ADMINID."', 0, '".$_POST['category_button']."', 6, 0, 0, 0");
@@ -61,7 +61,7 @@ if(IsSet($_POST['create_category'])){
         $action = "cat";
 }
 
-if(IsSet($_POST['update_category'])){
+if(isset($_POST['update_category'])){
         $_POST['category_name'] = $aj -> formtpa($_POST['category_name'], "admin");
         $_POST['category_description'] = $aj -> formtpa($_POST['category_description'], "admin");
         $sql -> db_Update("content", "content_heading='".$_POST['category_name']."', content_subheading='".$_POST['category_description']."', content_summary='".$_POST['category_button']."' WHERE content_id='".$_POST['category_id']."' ");
@@ -70,7 +70,7 @@ if(IsSet($_POST['update_category'])){
         $action = "cat";
 }
 
-if(IsSet($_POST['create_article'])){
+if(isset($_POST['create_article'])){
         if($_POST['data'] && $_POST['content_heading']){
                 $content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
                 $content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
@@ -86,7 +86,7 @@ if(IsSet($_POST['create_article'])){
         unset($action, $sub_action);
 }
 
-If(IsSet($_POST['sa_article'])){
+If(isset($_POST['sa_article'])){
 
         if($_POST['data'] && $_POST['content_heading']){
                 if($_POST['category'] == -1){ unset($_POST['category']); }
@@ -105,7 +105,7 @@ If(IsSet($_POST['sa_article'])){
 }
 
 
-If(IsSet($_POST['update_article'])){
+If(isset($_POST['update_article'])){
         if($_POST['data'] && $_POST['content_heading']){
                 if($_POST['category'] == -1){ unset($_POST['category']); }
                 $content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
@@ -123,7 +123,7 @@ If(IsSet($_POST['update_article'])){
         }
 }
 
-if(IsSet($_POST['updateoptions'])){
+if(isset($_POST['updateoptions'])){
         $pref['article_submit'] = $_POST['article_submit'];
         $pref['article_submit_class'] = $_POST['article_submit_class'];
         save_prefs();
@@ -156,7 +156,7 @@ if($delete == "main")
 }
 
 
-if(IsSet($_POST['preview']))
+if(isset($_POST['preview']))
 {
 	$obj = new convert;
 	$datestamp = $obj->convert_date(time(), "long");
@@ -195,7 +195,7 @@ if(IsSet($_POST['preview']))
 // ##### End ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-if(IsSet($message)){
+if(isset($message)){
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
