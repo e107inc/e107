@@ -12,15 +12,15 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.4 $
-|   $Date: 2005-02-23 19:25:19 $
+|   $Revision: 1.5 $
+|   $Date: 2005-02-24 18:40:45 $
 |   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 	
 @include(e_LANGUAGEDIR.e_LANGUAGE."/lan_upload_handler.php");
 @include(e_LANGUAGEDIR."English/lan_upload_handler.php");
-function file_upload($uploaddir, $avatar = FALSE) {
+function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "") {
 	 
 	if (!$uploaddir) $uploaddir = e_FILE."public/";
 	global $pref, $sql;
@@ -79,7 +79,7 @@ function file_upload($uploaddir, $avatar = FALSE) {
 			$filesize[] = $files['size'][$key];
 			$name = ereg_replace("[^a-z0-9._]", "", str_replace(" ", "_", str_replace("%20", "_", strtolower($name))));
 			if ($avatar == "attachment") {
-				$name = time()."_".USERID."_".$name;
+				$name = time()."_".USERID."_".$fileinfo.$name;
 			}
 			$destination_file = getcwd()."/".$uploaddir."/".$name;
 			if (file_exists($destination_file)) {
