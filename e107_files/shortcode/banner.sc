@@ -20,13 +20,16 @@ if($menu_pref['banner_campaign']){
 	$bannerarray = $bn -> getBanner();
 }
 
-
 // ##### set banner_id query for banner retrieval
 unset($banneridquery);
 for($i = 0 ;$i < count($bannerarray) ; $i++){
 	$banneridquery .= " banner_id = '".$bannerarray[$i]."' OR ";
 }
 $banneridquery = substr($banneridquery, 0, -3);
+if($banneridquery == '')
+{
+	$banneridquery = '1 ';
+}
 
 // ##### retrieve banners from db
 unset($text);
@@ -48,9 +51,6 @@ if($sql -> db_Select("banner", "*", $banneridquery." ORDER BY RAND($seed) ")){
 		} else {
 			return "<a href='".e_BASE."banner.php?".$banner_id."' rel='external'><img src='".e_IMAGE."banners/".$banner_image."' alt='".$banner_clickurl."' style='border:0' /></a>";
 		}
-	
 		$sql2 -> db_Update("banner", "banner_impressions=banner_impressions+1 WHERE banner_id='$banner_id' ");
-
 	}
 }
-
