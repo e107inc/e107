@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/custommenu.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-03-25 16:37:54 $
-|     $Author: stevedunstan $
+|     $Revision: 1.20 $
+|     $Date: 2005-03-26 16:09:14 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -133,6 +133,8 @@ if (isset($_POST['preview'])){
 	$_POST['menu_text'] = str_replace("../".$IMAGES_DIRECTORY,$IMAGES_DIRECTORY,$_POST['menu_text']);
 
 	$_POST['menu_text'] = str_replace("<br />", "\n", $_POST['menu_text']);
+
+ // Read Menu Information.
 } elseif (isset($_POST['edit'])){
 	$menu = e_PLUGIN."custom/".$_POST['existing'];
 
@@ -142,9 +144,9 @@ if (isset($_POST['preview'])){
 		fclose($fp);
 	*/
 
-		
-	if($fileArray = file($menu))
-	{
+
+	if($fileArray = file($menu)){
+
 		$data = implode("\n", $fileArray);
 
 		preg_match("/<MENU(.*?)MENU;/si", $data, $match);
@@ -161,14 +163,19 @@ if (isset($_POST['preview'])){
 	} else {
 		$message .= CUSLAN_6." '".$_POST['existing']."' ".CUSLAN_7;
 	}
-} elseif (isset($_POST['edit2'])){
-	$menu = e_PLUGIN."custompages/".$_POST['existingpages'];
-	if ($fp = @fopen($menu, "r")) {
-		$buffer = str_replace("\n", "", fread($fp, filesize($menu)));
-		fclose($fp);
-		preg_match_all("/\"(.*?)\"/", $buffer, $result);
-		$_POST['menu_caption'] = $tp->toHTML($result[1][1]);
-		$_POST['menu_text'] = $tp->toHTML($result[1][2]);
+
+ // Read Page Information.
+
+} elseif (isset($_POST['edit2'])){  
+	$page = e_PLUGIN."custompages/".$_POST['existingpages'];
+    if ($fileArray = file($page)){
+		$data = implode("\n", $fileArray);
+        preg_match("/<TEXT(.*?)TEXT;/si", $data, $match);
+		$_POST['menu_text'] = $tp -> toFORM($match[1]);
+
+		preg_match("/<CAPTION(.*?)CAPTION;/si", $data, $match);
+		$_POST['menu_caption'] = $tp -> toFORM($match[1]);
+
 		if ($pref['wysiwyg']){
 			$_POST['menu_text'] = str_replace("../../".$IMAGES_DIRECTORY,SITEURL.$IMAGES_DIRECTORY,$_POST['menu_text']);
 		}
