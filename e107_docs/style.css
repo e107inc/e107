@@ -29,3 +29,10 @@ a:hover {
 	font: 16px verdana, tahoma, arial, sans-serif;
 	font-weight: bold;
 }
+
+.indent {
+	border: 1px solid #D1CFCF;
+	background-color: #efefef;
+	color: #000;
+	padding: 10px;
+}
