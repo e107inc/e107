@@ -13,7 +13,6 @@
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
-
 if($cache = retrieve_cache("review_menu")){
 	$aj = new textparse;
 	$cache = str_replace("e107_themes/", e_THEME, $cache);
@@ -66,7 +65,9 @@ if($cache = retrieve_cache("review_menu")){
 				}
 			}
 		}
-
+	if($menu_pref['reviews_submitlink'] && check_class($pref['review_submit_class'])){
+		$text .= "<br /><img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_BASE."subcontent.php?review'> ".LAN_190."</a>";
+	}
 		$caption = (file_exists(THEME."images/review_menu.png") ? "<img src='".THEME."images/review_menu.png' alt='' style='vertical-align:middle' /> ".$menu_pref['reviews_caption'] : $menu_pref['reviews_caption']);
 		$ns -> tablerender($caption, $text);
 	}

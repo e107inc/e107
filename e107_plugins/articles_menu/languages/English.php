@@ -22,6 +22,8 @@ define("ARTICLE_MENU_L6", "Title for articles list page:");
 define("ARTICLE_MENU_L7", "Articles Menu Configuration");
 define("ARTICLE_MENU_L8", "Update Menu Settings");
 define("ARTICLE_MENU_L9", "Articles menu configuration saved");
+define("ARTICLE_MENU_L10", "Show link to Submit Article");
+define("ARTICLE_MENU_L11", "Submit Article");
 
 
 ?>

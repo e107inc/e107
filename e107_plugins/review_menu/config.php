@@ -21,11 +21,13 @@ require_once(e_ADMIN."auth.php");
 if(IsSet($_POST['update_menu'])){
 	while(list($key, $value) = each($_POST)){
 		if($key=="reviews_parents"){$value="1"; $found=1;}
+		if($key=="reviews_submitlink"){$value="1"; $found1=1;}
 		if($value != "Update Menu Settings"){ 
 			$menu_pref[$key] = $value; 
 		}
 	}
 	if(!$found){unset($menu_pref['reviews_parents']);}
+	if(!$found1){unset($menu_pref['reviews_submitlink']);}
 	$tmp = addslashes(serialize($menu_pref));
 	$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='menu_pref' ");
 	$ns -> tablerender("", "<div style='text-align:center'><b>Reviews menu configuration saved</b></div>");
@@ -62,6 +64,13 @@ $text = "<div style='text-align:center'>
 </td>
 <td style='width:60%' class='forumheader3'>
 <input class='tbox' type='text' name='reviews_mainlink' size='30' value='".$menu_pref['reviews_mainlink']."' maxlength='200' />
+</td>
+</tr>
+
+<tr>
+<td style='width:40%' class='forumheader3'>Show link to submit review?</td>
+<td style='width:60%' class='forumheader3'>
+<input type='checkbox' name='reviews_submitlink' value='".$menu_pref['reviews_submitlink']."' ".($menu_pref['reviews_submitlink'] ? "checked" : "")." />
 </td>
 </tr>
 

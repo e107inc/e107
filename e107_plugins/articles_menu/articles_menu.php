@@ -64,6 +64,9 @@ if($cache = retrieve_cache("article_menu")){
 			}
 		}
 
+	if($menu_pref['articles_submitlink'] && check_class($pref['article_submit_class'])){
+		$text .= "<br /><img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_BASE."subcontent.php?article'> ".ARTICLE_MENU_L11."</a>";
+	}
 		$caption = (file_exists(THEME."images/article_menu.png") ? "<img src='".THEME."images/article_menu.png' alt='' style='vertical-align:middle' /> ".$menu_pref['article_caption'] : $menu_pref['article_caption']);
 
 		$ns -> tablerender($caption, $text);
