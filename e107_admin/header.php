@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.20 $
-|   $Date: 2005-02-03 09:56:46 $
+|   $Revision: 1.21 $
+|   $Date: 2005-02-19 12:12:32 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -84,7 +84,7 @@ if ($eplug_js) {
 if ($eplug_css) {
 	echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n";
 }
-
+if ($WYSIWYG == TRUE && check_class($pref['wysiwyg'])) { require_once(e_HANDLER."tiny_mce/wysiwyg.php"); }  
 echo "</head>
 	<body>";
 

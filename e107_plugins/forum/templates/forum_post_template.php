@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_post_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-02-03 14:34:32 $
-|     $Author: stevedunstan $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-19 12:12:45 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -22,14 +22,14 @@
 $userbox = "<tr>
 <td class='forumheader2' style='width:20%'>".LAN_61."</td>
 <td class='forumheader2' style='width:80%'>
-<input class='tbox' type='text' name='anonname' size='71' value='".$anonname."' maxlength='20' />
+<input class='tbox' type='text' name='anonname' size='71' value='".$anonname."' maxlength='20' style='width:95%' />
 </td>
 </tr>";
 
 $subjectbox = "<tr>
 <td class='forumheader2' style='width:20%'>".LAN_62."</td>
 <td class='forumheader2' style='width:80%'>
-<input class='tbox' type='text' name='subject' size='71' value='".$subject."' maxlength='100' />
+<input class='tbox' type='text' name='subject' size='71' value='".$subject."' maxlength='100' style='width:95%' />
 </td>
 </tr>";
 
@@ -44,10 +44,10 @@ $poll = "<tr>
 </td>
 </tr>
 <tr><td style='width:20%' class='forumheader3'><div class='normaltext'>".LAN_5."</div></td><td style='width:80%'class='forumheader3'><input class='tbox' type='text' name='poll_title' size='70' value=\"".$tp->toDB($_POST['poll_title'])."\" maxlength='200' />";
-	 
+
 $option_count = ($_POST['option_count'] ? $_POST['option_count'] : 1);
 $poll .= "<input type='hidden' name='option_count' value='$option_count'>";
-	 
+
 for($count = 1; $count <= $option_count; $count++) {
 	$var = "poll_option_".$count;
 	$option = stripslashes($$var);

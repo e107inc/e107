@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-02-18 20:22:34 $
-|     $Author: stevedunstan $
+|     $Revision: 1.15 $
+|     $Date: 2005-02-19 12:12:33 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_1", "Site Information");
@@ -167,4 +167,7 @@ define("PRFLAN_118", "Use Geshi for syntax highlighting");
 define("PRFLAN_119", "Geshi is an open source multi-language syntax highlighter, see http://qbnz.com/highlighter/ for more information");
 define("PRFLAN_120", "Default Geshi syntax language");
 define("PRFLAN_121", "if no language is specified in the code bbtag, this language will be used for highlighting");
+
+define("PRFLAN_122", "Enable WYSIWYG textareas");
+define("PRFLAN_123", "Will display a what-you-see-is-what-you-get editor in textareas when available.");
 ?>
