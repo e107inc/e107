@@ -65,6 +65,7 @@ if(IsSet($_POST['register'])){
 
         require_once(e_HANDLER."message_handler.php");
 
+
 //        if(strlen($_POST['email']) > 100){exit;}
         if($use_imagecode){
                 if(!$sec_img -> verify_code($_POST['rand_num'],$_POST['code_verify'])){
@@ -128,26 +129,25 @@ if(IsSet($_POST['register'])){
                 $error = TRUE;
         }
 
-
-        if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
-                $row = $sql -> db_Fetch();
-                $user_entended = unserialize($row[0]);
-                $c=0;
-                $user_pref = unserialize($user_prefs);
-                while(list($key, $u_entended) = each($user_entended)){
-                        if($u_entended){
-
-                                if($pref['signup_ext'.$key] ==2 && $_POST[str_replace(" ", "_", $u_entended)] == ""){
-                                        $ut = explode("|",$u_entended);
-                                        $u_name = ($ut[0] != "") ? trim($ut[0]) : trim($u_entended);
-                                        $error_ext = LAN_SIGNUP_6.$u_name.LAN_SIGNUP_7;
-                                        message_handler("P_ALERT", $error_ext);
-                                        $error = TRUE;
-                                }
-
-                        }
-                }
-        }
+		if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
+			$row = $sql -> db_Fetch();
+			$user_entended = unserialize($row[0]);
+			$c=0;
+			$user_pref = unserialize($user_prefs);
+			while(list($key, $u_entended) = each($user_entended)){
+				if($u_entended){
+					if($pref['signup_ext'.$key] ==2 && $_POST["ue_{$key}"] == ""){
+						$ut = explode("|",$u_entended);
+						$u_name = ($ut[0] != "") ? trim($ut[0]) : trim($u_entended);
+						$error_ext = LAN_SIGNUP_6.$u_name.LAN_SIGNUP_7;
+						message_handler("P_ALERT", $error_ext);
+						$error = TRUE;
+					}
+		
+				}
+			}
+		}
+		
 
         // ========== End of verification.. ====================================================
 
@@ -183,29 +183,26 @@ if(IsSet($_POST['register'])){
                 $birthday = $_POST['birth_year']."/".$_POST['birth_month']."/".$_POST['birth_day'];
 
                 if($pref['user_reg_veri']){
-                        $key = md5(uniqid(rand(),1));
+                	      $key = md5(uniqid(rand(),1));
                         $nid = $sql -> db_Insert("user", "0, \"".$username."\", '', \"".md5($_POST['password1'])."\", '$key', \"".$_POST['email']."\",         \"".$_POST['website']."\", \"".$_POST['icq']."\", \"".$_POST['aim']."\", \"".$_POST['msn']."\", \"".$_POST['location']."\", \"".$birthday."\", \"".$_POST['signature']."\", \"".$_POST['image']."\", \"".$_POST['timezone']."\", \"".$_POST['hideemail']."\", \"".$time."\", '0', \"".$time."\", '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '', '0', \"".$_POST['realname']."\", '', '', '', '' ");
                         $sql -> db_Select("user", "*", "user_name='".$_POST['name']."' AND user_join='".$time."' ");
                         $row = $sql -> db_Fetch();
                         $id = $row['user_id'];
-                                                // ================== save extended fields as serialized data.
-
-                                                if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
-                                                        $aj = new textparse;
-                                                        $row = $sql -> db_Fetch();
-                                                        $user_entended = unserialize($row[0]);
-                                                        $c=0;
-                                                        while(list($key, $u_entended) = each($user_entended)){
-                                                                $val = $aj -> formtpa($_POST[str_replace(" ", "_", $u_entended)], "public");
-                                                                $user_pref[$u_entended] = $val;
-                                                                $c++;
-                                                        }
-                                                        $tmp = addslashes(serialize($user_pref));
-                                                        $sql -> db_Update("user", "user_prefs='$tmp' WHERE user_id='".$nid."' ");
-                                                }
-                                // ==========================================================
-
-
+								
+								// ================== save extended fields as serialized data.
+								
+								if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
+									$aj = new textparse;
+									$row = $sql -> db_Fetch();
+									$user_entended = unserialize($row[0]);
+									while(list($key, $u_entended) = each($user_entended)){
+										$val = $aj -> formtpa($_POST["ue_{$key}"], "public");
+										$user_pref["ue_{$key}"] = $val;
+									}
+									$tmp = addslashes(serialize($user_pref));
+									$sql -> db_Update("user", "user_prefs='$tmp' WHERE user_id='".$nid."' ");
+								}
+								// ==========================================================
                         define("RETURNADDRESS", (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$id.".".$key : SITEURL."/signup.php?activate.".$id.".".$key));
 
                         $message = LAN_403.RETURNADDRESS.LAN_407." ".SITENAME."\n".SITEURL;
@@ -227,22 +224,20 @@ if(IsSet($_POST['register'])){
                 }else{
                 require_once(HEADERF);
                 $nid = $sql -> db_Insert("user", "0, '".$username."', '', '".md5($_POST['password1'])."', '$key', '".$_POST['email']."',         '".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$birthday."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '' ");
-                                // ================== save extended fields as serialized data.
-
-                                if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
-                                        $aj = new textparse;
-                                        $row = $sql -> db_Fetch();
-                                        $user_entended = unserialize($row[0]);
-                                        $c=0;
-                                        while(list($key, $u_entended) = each($user_entended)){
-                                                $val = $aj -> formtpa($_POST[str_replace(" ", "_", $u_entended)], "public");
-                                                $user_pref[$u_entended] = $val;
-                                                $c++;
-                                        }
-                                        $tmp = addslashes(serialize($user_pref));
-                                        $sql -> db_Update("user", "user_prefs='$tmp' WHERE user_id='".$nid."' ");
-                                }
-        // ==========================================================
+					// ================== save extended fields as serialized data.
+					
+					if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
+						$aj = new textparse;
+						$row = $sql -> db_Fetch();
+						$user_entended = unserialize($row[0]);
+						while(list($key, $u_entended) = each($user_entended)){
+							$val = $aj -> formtpa($_POST["ue_{$key}"], "public");
+							$user_pref["ue_{$key}"] = $val;
+						}
+						$tmp = addslashes(serialize($user_pref));
+						$sql -> db_Update("user", "user_prefs='$tmp' WHERE user_id='".$nid."' ");
+					}
+					// ==========================================================
                 $ns -> tablerender("<div style='text-align:center'>".LAN_SIGNUP_8."</div>", LAN_107);
                 require_once(FOOTERF);
                 exit;
@@ -442,7 +437,7 @@ if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
                 if($u_entended){
                         $signup_ext = "signup_ext".$key;
                         if($pref[$signup_ext]){
-                                $text .= user_extended_edit($u_entended,"forumheader3","left");
+                                $text .= user_extended_edit($key,$u_entended,"forumheader3","left");
                                 $c++;
                         }
                 }
