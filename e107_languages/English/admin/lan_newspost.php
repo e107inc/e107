@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-08 08:22:36 $
-|     $Author: e107coders $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-11 02:29:42 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("NWSLAN_1", "News story deleted.");
@@ -97,7 +97,6 @@ define("NWSLAN_80","Insert thumbnail");
 define("NWSLAN_81","Insert Image");
 define("NWSLAN_82","Insert download");
 define("NWSLAN_83","Extended news post");
-define("NWSLAN_83","and");
 define("NWSLAN_84","Choose which visitors will see news item");
 define("NWSLAN_85", "submitted by");
 
@@ -144,5 +143,10 @@ define("LAN_NEWS_24", "Image + Auto-Thumbnail");
 define("LAN_NEWS_25", "Auto-Thumbnail size");
 define("LAN_NEWS_26", "add");
 define("LAN_NEWS_27", "Summary");   
+
+define("LAN_NEWS_28", "Sticky");   
+define("LAN_NEWS_29", "Select if news item will be sticky");   
+define("LAN_NEWS_30", "If selected, news item will appear above all others");   
+define("LAN_NEWS_31", "This news post is <b>STICKY</b> (it will be shown above all other items). ");
 
 ?>

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2005-02-10 08:28:00 $
-|     $Author: e107coders $
+|     $Revision: 1.37 $
+|     $Date: 2005-02-11 02:29:42 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -218,7 +218,7 @@ else
 	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type<2 ORDER BY ".$order." DESC LIMIT $from,".$ITEMVIEW1;
+		WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type<2 ORDER BY news_sticky DESC, ".$order." DESC LIMIT $from,".$ITEMVIEW1;
 
 	// news archive
 	$query2 = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n

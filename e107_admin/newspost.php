@@ -11,19 +11,21 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.35 $
-|   $Date: 2005-02-10 22:03:08 $
-|   $Author: stevedunstan $
+|   $Revision: 1.36 $
+|   $Date: 2005-02-11 02:28:21 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 
 */
 require_once("../class2.php");
 if (!is_object($tp)) $tp = new e_parse;
 
+echo "<pre>".print_r($_POST,TRUE)."</pre>";
+
 if ($pref['htmlarea']) {
 	require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
 	$htmlarea_js = (eregi("MSIE", $_SERVER['HTTP_USER_AGENT']))? htmlarea("data,news_extended"):
-	 htmlarea("data");
+	htmlarea("data");
 }
 if (!getperms("H")) {
 	header("location:".e_BASE."index.php");
@@ -49,12 +51,9 @@ require_once(e_HANDLER."ren_help.php");
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."file_class.php");
 
-
 $fl = new e_file;
 $rs = new form;
 $ix = new news;
-
-
 
 $deltest = array_flip($_POST);
 if (e_QUERY) {
@@ -79,7 +78,6 @@ if ($delete == "main" && $del_id) {
 		$e107cache->clear("news.php");
 	}
 	unset($delete, $del);
-
 }
 
 if ($delete == "category" && $del_id) {
@@ -115,12 +113,10 @@ if (IsSet($_POST['submitupload'])) {
 
 }
 
-
-
 // required.
 if (IsSet($_POST['preview'])) {
 	$_POST['news_title'] = $tp->toDB($_POST['news_title']);
-   	$_POST['news_summary'] = $tp->toDB($_POST['news_summary']);
+  	$_POST['news_summary'] = $tp->toDB($_POST['news_summary']);
 	$newspost->preview_item($id);
 }
 
@@ -180,15 +176,10 @@ if (IsSet($_POST['save_prefs'])) {
 	$pref['news_newdateheader'] = $_POST['news_newdateheader'];
 	$pref['news_unstemplate'] = $_POST['news_unstemplate'];
 
-
-
 	save_prefs();
 	$e107cache->clear("news.php");
 	$newspost->show_message("Settings Saved");
 }
-
-
-
 
 if (!e_QUERY || $action == "main") {
 	$newspost->show_existing_items($action, $sub_action, $id, $from, $amount);
@@ -208,6 +199,7 @@ if ($action == "create") {
 			$_POST['news_class'] = $news_class;
 			$_POST['news_thumb'] = $news_thumb;
 			$_POST['news_summary'] = $news_summary;
+			$_POST['news_sticky'] = $news_sticky;
 
 			$_POST['cat_id'] = $news_category;
 			if ($news_start) {
@@ -583,15 +575,11 @@ class newspost {
 			$text .="</div></td>
 			</tr>
 
-
-
-
 			<tr>
 			<td style='width:20%' class='forumheader3'>".NWSLAN_15."</td>
 			<td style='width:80%' class='forumheader3'>
 			<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_18."</a>
 			<div style='display: none;'>
-
 
 			". ($_POST['news_allow_comments'] ? "<input name='news_allow_comments' type='radio' value='0' />".NWSLAN_16."&nbsp;&nbsp;<input name='news_allow_comments' type='radio' value='1' checked='checked' />".NWSLAN_17 : "<input name='news_allow_comments' type='radio' value='0' checked='checked' />".NWSLAN_16."&nbsp;&nbsp;<input name='news_allow_comments' type='radio' value='1' />".NWSLAN_17)."
 			</div>
@@ -623,9 +611,7 @@ class newspost {
 			<div style='display: none;'>
 
 			<br />
-
-
-			".NWSLAN_21.": <select name='startday' class='tbox'><option selected='selected'> </option>";
+			".NWSLAN_21.":<br /><select name='startday' class='tbox'><option selected='selected'> </option>";
 		for($a = 1; $a <= 31; $a++) {
 			$text .= ($a == $_POST['startday'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
 		}
@@ -637,7 +623,7 @@ class newspost {
 		for($a = 2003; $a <= 2010; $a++) {
 			$text .= ($a == $_POST['startyear'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
 		}
-		$text .= "</select> ".NWSLAN_83." <select name='endday' class='tbox'><option selected='selected'> </option>";
+		$text .= "</select> ".LAN_NEWS_26." <select name='endday' class='tbox'><option selected='selected'> </option>";
 		for($a = 1; $a <= 31; $a++) {
 			$text .= ($a == $_POST['endday'] ? "<option selected='selected'>".$a."</option>" : "<option>".$a."</option>");
 		}
@@ -664,6 +650,28 @@ class newspost {
 			<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_84."</a>
 			<div style='display: none;'>
 			".r_userclass("news_class", $_POST['news_class'])."
+			</div>
+			</td></tr>
+
+
+			<tr>
+			<td class='forumheader3'>
+			".LAN_NEWS_28.":
+			</td>
+			<td class='forumheader3'>
+
+			<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".LAN_NEWS_29."</a>
+			<div style='display: none;'>
+			";
+			if($_POST['news_sticky'])
+			{
+				$sel = " checked='checked' ";
+			}
+			else
+			{
+				$sel = "";
+			}
+			$text .= "<input type='checkbox' {$sel} name='news_sticky' value='1' /> ".LAN_NEWS_30."
 			</div>
 			</td></tr>
 
@@ -723,7 +731,6 @@ class newspost {
 		$_POST['admin_id'] = USERID;
 		$_POST['admin_name'] = USERNAME;
 		$_POST['news_datestamp'] = time();
-
 
 		if ($id && $sub_action != "sn" && $sub_action != "upload") {
 			$_POST['news_id'] = $id;
