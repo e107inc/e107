@@ -11,8 +11,8 @@
 	 |     GNU General Public License (http://gnu.org).
 	 |
 	 |     $Source: /cvs_backup/e107_0.7/e107_handlers/db_debug_class.php,v $
-	 |     $Revision: 1.2 $
-	 |     $Date: 2005-01-29 00:05:50 $
+	 |     $Revision: 1.3 $
+	 |     $Date: 2005-01-29 17:08:38 $
 	 |     $Author: mrpete $
 	 +----------------------------------------------------------------------------+
 	 */
@@ -194,8 +194,9 @@
 				 foreach ($this->aSQLdetails as $idx => $cQuery) {
 					 $text .= "\n<table class='fborder' style='width: 100%;'>\n";
 					 $text .= "<tr><td class='forumheader3' colspan='".$cQuery['nFields']."'><b>".$idx.") Query:</b> [".$cQuery['marker']." - ".$cQuery['caller']."]<br/>".$cQuery['query']."</td></tr>\n";
-					 $text .= $cQuery['explain'];
-
+					 if (isset($cQuery['explain'])) {
+					 	$text .= $cQuery['explain'];
+					}
 					 if (strlen($cQuery['error'])) {
 						 $text .= "<tr><td class='forumheader3' ><b>Error in query:</b></td></tr>\n<tr><td class='forumheader3'>".$cQuery['error']."</td></tr>\n";
 					 }
@@ -247,7 +248,7 @@
 				 $aNextT=$nextMarker['Time'];
 				 $aThisT=$tMarker['Time'];
 				 
-				 $thisDelta=$eTraffic->TimeDelta($aThisT, $aNextT); $thisTime;
+				 $thisDelta=$eTraffic->TimeDelta($aThisT, $aNextT);
 				 $thisWhat=$tMarker['What'];
 				 $aSum['Time'] += $thisDelta;
 				 $aSum['DB Time'] += $tMarker['DB Time'];
