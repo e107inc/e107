@@ -23,7 +23,7 @@ SC_BEGIN THREADDATESTAMP
 global $post_info;
 global $gen;
 global $thread_id;
-return "<a id='{$thread_id}'>".IMAGE_post."</a> ".$gen->convert_date($post_info['thread_datestamp'], "forum");
+return "<a id='post_{$post_info['thread_id']}'>".IMAGE_post."</a> ".$gen->convert_date($post_info['thread_datestamp'], "forum");
 SC_END
 	
 SC_BEGIN POST
