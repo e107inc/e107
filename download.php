@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-02-08 21:34:53 $
+|     $Revision: 1.10 $
+|     $Date: 2005-02-13 21:08:22 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -249,7 +249,7 @@ if ($action == "view") {
 	 
 	$DOWNLOAD_VIEW_NAME = $download_name;
 
-	$DOWNLOAD_VIEW_NAME_LINKED = "<a href='".e_BASE."request.php?download.".$download_id."' title='".LAN_dl_46."'>$download_name</a>";
+	$DOWNLOAD_VIEW_NAME_LINKED = "<a href='".e_BASE."request.php?".$download_id."' title='".LAN_dl_46."'>$download_name</a>";
 
 	$DOWNLOAD_VIEW_AUTHOR_LAN = LAN_dl_24;
 	$DOWNLOAD_VIEW_AUTHOR = ($download_author ? $download_author : "&nbsp;");
