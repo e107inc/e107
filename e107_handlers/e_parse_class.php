@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-03-04 01:13:09 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.36 $
+|     $Date: 2005-03-04 14:51:57 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 	
@@ -97,10 +97,79 @@ class e_parse {
 		// End parse {XXX} codes
 	}
 
+
+
+function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $utf = false)
+{
+	/*
+	* htmlwrap() function - v1.1
+	* Copyright (c) 2004 Brian Huisman AKA GreyWyvern
+	*
+	* This program may be distributed under the terms of the GPL
+	*   - http://www.gnu.org/licenses/gpl.txt
+	*/
+
+	$content = preg_split("/([<>])/", $str, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+	$nobreak = explode(" ", $nobreak);
+	$nobr = explode(" ", $nobr);
+	$intag = false;
+	$innbk = array();
+	$innbr = array();
+	$drain = "";
+	$utf = ($utf) ? "u" : "";
+	$lbrks = "/?!%)-}]\\\"':;";
+	if ($break == "\r")
+	{
+		$break = "\n";
+	}
+	while (list(, $value) = each($content))
+	{
+		switch ($value)
+		{
+			case "<": $intag = true; break;
+			case ">": $intag = false; break;
+			default:
+				if ($intag)
+				{
+					if ($value{0} != "/")
+					{
+						preg_match("/^(.*?)(\s|$)/$utf", $value, $t);
+						if ((!count($innbk) && in_array($t[1], $nobreak)) || in_array($t[1], $innbk)) $innbk[] = $t[1];
+						if ((!count($innbr) && in_array($t[1], $nobr)) || in_array($t[1], $innbr)) $innbr[] = $t[1];
+					} else {
+						if (in_array(substr($value, 1), $innbk)) unset($innbk[count($innbk)]);
+						if (in_array(substr($value, 1), $innbr)) unset($innbr[count($innbr)]);
+					}
+				} else if ($value)
+				{
+					if (!count($innbr)) $value = str_replace("\n", "\r", str_replace("\r", "", $value));
+						if (!count($innbk))
+						{
+							do
+							{
+								$store = $value;
+								if (preg_match("/^(.*?\s|^)(([^\s&]|&(\w{2,5}|#\d{2,4});){".$width."})(?!(".preg_quote($break, "/")."|\s))(.*)$/s$utf", $value, $match)) 
+								{
+									for ($x = 0, $ledge = 0; $x < strlen($lbrks); $x++) $ledge = max($ledge, strrpos($match[2], $lbrks{$x}));
+									if (!$ledge) $ledge = strlen($match[2]) - 1;
+									$value = $match[1].substr($match[2], 0, $ledge + 1).$break.substr($match[2], $ledge + 1).$match[6];
+								}
+							}
+							while ($store != $value);
+						}
+					if (!count($innbr)) $value = str_replace("\r", "<br />\n", $value);
+				}
+			}
+			$drain .= $value;
+		}
+		return $drain;
+	}
+
+
 	function textclean ($text, $wrap=100)
 	{
 		$text = str_replace ("\n\n\n", "\n\n", $text);
-		$text = preg_replace("#([^\s\<\>]{".$wrap."})#","\\1\n", $text);
+		$text = $this -> htmlwrap($text, $wrap);
 		$text = str_replace (array ('<br /> ', ' <br />', ' <br /> '), '<br />', $text);
 		return $text; 
 	}
