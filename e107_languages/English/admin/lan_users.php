@@ -114,4 +114,11 @@ define("USRLAN_109", "Radio Buttons");
 define("USRLAN_110", "Drop-Down Menu");
 define("USRLAN_111", "DB Table Field");
 
+define("USRLAN_112", "Resend Email");
+define("USRLAN_113", "Registration details for");
+define("USRLAN_114", "Dear ".$_POST['resend_name']."\n\nWelcome to ".SITENAME."\nYour registration has been received and created.\n\nYour account is currently marked as being inactive, to activate your account please go to the following link ...\n\n");
+define("USRLAN_115", "\n\nThanks for your registration.\n\nFrom");
+define("USRLAN_116", "Please confirm that you wish to resend a confirmation email to:");
+define("USRLAN_117", "Click the button below to test the following email:");
+define("USRLAN_118", "Test Email"); 
 ?>
