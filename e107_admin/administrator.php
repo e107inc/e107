@@ -1,15 +1,15 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system
-|	/admin/administrator.php
+|        e107 website system
+|        /admin/administrator.php
 |
-|	©Steve Dunstan 2001-2002
-|	http://e107.org
-|	jalist@e107.org
+|        ©Steve Dunstan 2001-2002
+|        http://e107.org
+|        jalist@e107.org
 |
-|	Released under the terms and conditions of the
-|	GNU General Public License (http://gnu.org).
+|        Released under the terms and conditions of the
+|        GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -19,87 +19,87 @@ require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 
 if(e_QUERY){
-	$tmp = explode(".", e_QUERY);
-	$action = $tmp[0];
-	$sub_action = $tmp[1];
-	unset($tmp);
+        $tmp = explode(".", e_QUERY);
+        $action = $tmp[0];
+        $sub_action = $tmp[1];
+        unset($tmp);
 }
 
 if(IsSet($_POST['add_admin'])){
-	if($_POST['ac'] == md5(ADMINPWCHANGE)){
-		if(!$_POST['ad_name'] || !$_POST['a_password']){
-			$message = ADMSLAN_55;
-		}else{
+        if($_POST['ac'] == md5(ADMINPWCHANGE)){
+                if(!$_POST['ad_name'] || !$_POST['a_password']){
+                        $message = ADMSLAN_55;
+                }else{
                         for ($i=0; $i<=count($_POST['perms']); $i++){
-				if($_POST['perms'][$i]){
-					$perm .= $_POST['perms'][$i].".";
-				}
-			}
-			
-			if(!$sql -> db_Select("user", "*", "user_name='".$_POST['ad_name']."' ")){
-				$sql -> db_Insert("user", "0, '".$_POST['ad_name']."', '', '".md5($_POST['a_password'])."', '', '".$_POST['ad_email']."', 	'".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$_POST['birthday']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".time()."', '0', '".time()."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '1', '', '', '$perm', '', '' ");
-				$message = ADMSLAN_0." ".$_POST['ad_name']."<br />";
-			}else{
-				$sql -> db_Update("user", "user_admin='1', user_perms='$perm' WHERE user_name='".$_POST['ad_name']."' ");
-			}
-			$message = $_POST['ad_name']." ".ADMSLAN_1."<br />";
-		}
-	}
+                                if($_POST['perms'][$i]){
+                                        $perm .= $_POST['perms'][$i].".";
+                                }
+                        }
+
+                        if(!$sql -> db_Select("user", "*", "user_name='".$_POST['ad_name']."' ")){
+                                $sql -> db_Insert("user", "0, '".$_POST['ad_name']."', '', '".md5($_POST['a_password'])."', '', '".$_POST['ad_email']."',         '".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$_POST['birthday']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".time()."', '0', '".time()."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '1', '', '', '$perm', '', '' ");
+                                $message = ADMSLAN_0." ".$_POST['ad_name']."<br />";
+                        }else{
+                                $sql -> db_Update("user", "user_admin='1', user_perms='$perm' WHERE user_name='".$_POST['ad_name']."' ");
+                        }
+                        $message = $_POST['ad_name']." ".ADMSLAN_1."<br />";
+                }
+        }
 }
 
 if(IsSet($_POST['update_admin'])){
-	$sql -> db_Select("user", "*", "user_id='".$_POST['a_id']."' ");
-	$row = $sql -> db_Fetch();
-	$a_name = $row['user_name'];
-	if($_POST['a_password'] == ""){
-		$admin_password = $row['user_password'];
-	}else{
-		$admin_password = md5($_POST['a_password']);
-	}
+        $sql -> db_Select("user", "*", "user_id='".$_POST['a_id']."' ");
+        $row = $sql -> db_Fetch();
+        $a_name = $row['user_name'];
+        if($_POST['a_password'] == ""){
+                $admin_password = $row['user_password'];
+        }else{
+                $admin_password = md5($_POST['a_password']);
+        }
 
        for ($i=0; $i<=count($_POST['perms']); $i++){
-		if($_POST['perms'][$i]){
-			$perm .= $_POST['perms'][$i].".";
-		}
-	}
-	$sql -> db_Update("user", "user_password='$admin_password', user_perms='$perm' WHERE user_name='$a_name' ");
-	unset($ad_name, $a_password, $a_perms);
-	$message = "Administrator ".$_POST['ad_name']." ".ADMSLAN_2."<br />";
+                if($_POST['perms'][$i]){
+                        $perm .= $_POST['perms'][$i].".";
+                }
+        }
+        $sql -> db_Update("user", "user_password='$admin_password', user_perms='$perm' WHERE user_name='$a_name' ");
+        unset($ad_name, $a_password, $a_perms);
+        $message = "Administrator ".$_POST['ad_name']." ".ADMSLAN_2."<br />";
 }
 
 if($action == "edit"){
-	$sql -> db_Select("user", "*", "user_id=$sub_action");
-	$row = $sql-> db_Fetch();
-	extract($row);
-	$a_id = $user_id; $ad_name = $user_name; $a_perms = $user_perms;
-	if($a_perms == "0"){
-		$text = "<div style='text-align:center'>$ad_name ".ADMSLAN_3."
-		<br /><br />
-		<a href='administrator.php'>".ADMSLAN_4."</a></div>";
-		$ns -> tablerender("<div style='text-align:center'>".ADMSLAN_5."</div>", $text);
-		require_once("footer.php");
-		exit;
-	}
+        $sql -> db_Select("user", "*", "user_id=$sub_action");
+        $row = $sql-> db_Fetch();
+        extract($row);
+        $a_id = $user_id; $ad_name = $user_name; $a_perms = $user_perms;
+        if($a_perms == "0"){
+                $text = "<div style='text-align:center'>$ad_name ".ADMSLAN_3."
+                <br /><br />
+                <a href='administrator.php'>".ADMSLAN_4."</a></div>";
+                $ns -> tablerender("<div style='text-align:center'>".ADMSLAN_5."</div>", $text);
+                require_once("footer.php");
+                exit;
+        }
 }
 
 if($action == "delete"){
-	$sql -> db_Select("user", "*", "user_id=$sub_action");
-	$row = $sql-> db_Fetch();
-	extract($row);
-	if($user_perms == "0"){
-		$text = "<div style='text-align:center'>$user_name ".ADMSLAN_6."
-		<br /><br />
-		<a href='administrator.php'>".ADMSLAN_4."</a>";
-		$ns -> tablerender("<div style='text-align:center'>".ADMSLAN_5."</div>", $text);
-		require_once("footer.php");
-		exit;
-	}
-	$sql -> db_Update("user", "user_admin=0, user_perms='' WHERE user_id=$sub_action");
-	$message = ADMSLAN_61;
+        $sql -> db_Select("user", "*", "user_id=$sub_action");
+        $row = $sql-> db_Fetch();
+        extract($row);
+        if($user_perms == "0"){
+                $text = "<div style='text-align:center'>$user_name ".ADMSLAN_6."
+                <br /><br />
+                <a href='administrator.php'>".ADMSLAN_4."</a>";
+                $ns -> tablerender("<div style='text-align:center'>".ADMSLAN_5."</div>", $text);
+                require_once("footer.php");
+                exit;
+        }
+        $sql -> db_Update("user", "user_admin=0, user_perms='' WHERE user_id=$sub_action");
+        $message = ADMSLAN_61;
 }
 
 if(IsSet($message)){
-	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+        $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
 $sql -> db_Select("user", "*", "user_admin='1'");
@@ -115,15 +115,15 @@ $text = "<div style='text-align:center'><div style='border : solid 1px #000; pad
 </tr>";
 
 while($row = $sql -> db_Fetch()){
-	extract($row);
-	$text .= "<tr>
+        extract($row);
+        $text .= "<tr>
 <td style='width:5%' class='forumheader3'>$user_id</td>
 <td style='width:30%' class='forumheader3'>$user_name</td>
 <td style='width:35%' class='forumheader3'>".($user_perms == "0" ? ADMSLAN_58 : ($user_perms ? str_replace(".", "", $user_perms) : "&nbsp;"))."</td>
 <td style='width:30%; text-align:center' class='forumheader3'>".
-($user_perms == "0" ? "&nbsp;" : 
-$rs -> form_button("submit", "main_edit", ADMSLAN_15, "onClick=\"document.location='".e_SELF."?edit.$user_id'\"").
-$rs -> form_button("submit", "main_delete", ADMSLAN_59, "onClick=\"confirm_($user_id, '$user_name')\""))."</td>
+($user_perms == "0" ? "&nbsp;" :
+$rs -> form_button("submit", "main_edit", ADMSLAN_15, "onclick=\"document.location='".e_SELF."?edit.$user_id'\"").
+$rs -> form_button("submit", "main_delete", ADMSLAN_59, "onclick=\"confirm_($user_id, '$user_name')\""))."</td>
 </tr>";
 }
 
@@ -133,7 +133,7 @@ $ns -> tablerender(ADMSLAN_13, $text);
 
 
 $text = "<div style='text-align:center'>
-<form method='post' action='".e_SELF."' name='myform'>
+<form method='post' action='".e_SELF."' id='myform' name='myform'>
 <table style='width:95%' class='fborder'>
 <tr>
 <td style='width:30%' class='forumheader3'>".ADMSLAN_16.": </td>
@@ -149,17 +149,17 @@ $text = "<div style='text-align:center'>
 </td>
 </tr>
 
-<tr> 
+<tr>
 <td style='width:30%' class='forumheader3'>".ADMSLAN_18.": <br /></td>
 <td style='width:70%' class='forumheader3'>";
 
 function checkb($arg, $perms){
-	if(getperms($arg, $perms)){
-		$par = "<input type='checkbox' name='perms[]' value='$arg' checked>\n";
-	}else{
-		$par = "<input type='checkbox' name='perms[]' value='$arg'>\n";
-	}
-	return $par;
+        if(getperms($arg, $perms)){
+                $par = "<input type='checkbox' name='perms[]' value='$arg' checked='checked' />\n";
+        }else{
+                $par = "<input type='checkbox' name='perms[]' value='$arg' />\n";
+        }
+        return $par;
 }
 
 $text .= checkb("1", $a_perms).ADMSLAN_19."<br />";
@@ -209,36 +209,42 @@ $text .= checkb("P".$plugin_id, $a_perms)."Plugin - ".$plugin_name."<br />";
 
 $text .= "
 <br />
-<a href='".e_SELF."?checkall=1' onclick=\"setCheckboxes('myform', true); return false;\">".ADMSLAN_49."</a> - 
+<a href='".e_SELF."?checkall=1' onclick=\"setCheckboxes('myform', true); return false;\">".ADMSLAN_49."</a> -
 <a href='".e_SELF."' onclick=\"setCheckboxes('myform', false); return false;\">".ADMSLAN_51."</a>
 
 </td>
 </tr>";
 
-$text .= "<tr style='vertical-align:top'> 
+$text .= "<tr style='vertical-align:top'>
 <td colspan='2' style='text-align:center' class='forumheader'>";
 
 if($action == "edit"){
-	$text .= "<input class='button' type='submit' name='update_admin' value='".ADMSLAN_52."' />
-	<input type='hidden' name='a_id' value='$a_id'>";
+        $text .= "<input class='button' type='submit' name='update_admin' value='".ADMSLAN_52."' />
+        <input type='hidden' name='a_id' value='$a_id'>";
 }else{
-	$text .= "<input class='button' type='submit' name='add_admin' value='".ADMSLAN_53."' />";
+        $text .= "<input class='button' type='submit' name='add_admin' value='".ADMSLAN_53."' />";
 }
 $text .= "</td>
 </tr>
 </table>
-<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
+<div><input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' /></div>
 </form>
 </div>";
 
 $ns -> tablerender("<div style='text-align:center'>".ADMSLAN_54."</div>", $text);
-echo "<script type=\"text/javascript\">
+
+require_once("footer.php");
+
+function headerjs(){
+$script = "<script type=\"text/javascript\">
 function confirm_(user_id, user_name){
-	var x=confirm(\"".ADMSLAN_60." \" + user_name + \"\");
-	if(x){
-		window.location='".e_SELF."?delete.' + user_id;
-	}
+        var x=confirm(\"".ADMSLAN_60." \" + user_name + \"\");
+        if(x){
+                window.location='".e_SELF."?delete.' + user_id;
+        }
 }
 </script>";
-require_once("footer.php");
+return $script;
+}
+
 ?>
