@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2005-03-08 16:24:10 $
-|     $Author: sweetas $
+|     $Revision: 1.41 $
+|     $Date: 2005-03-09 08:50:15 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -82,6 +82,9 @@ function update_61x_to_700($type) {
 
 
 		/* start poll update */
+
+		$sql -> db_Update("menus", "menu_path='poll' WHERE menu_name='poll_menu' ");
+
 		$query = "CREATE TABLE ".MPREFIX."polls (
 		  poll_id int(10) unsigned NOT NULL auto_increment,
 		  poll_datestamp int(10) unsigned NOT NULL default '0',
