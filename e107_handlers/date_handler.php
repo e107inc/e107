@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/date_handler.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-03-10 10:35:39 $
-|     $Author: stevedunstan $
+|     $Revision: 1.4 $
+|     $Date: 2005-03-29 14:49:56 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 @include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_date.php");
@@ -42,7 +42,7 @@ class convert
 		}
 	}
 
-	function computeLapse($older_date, $newer_date = FALSE, $mode = FALSE) 
+	function computeLapse($older_date, $newer_date = FALSE, $mode = FALSE, $show_secs = TRUE) 
 	{
 
 		/*
@@ -59,9 +59,12 @@ class convert
 			array(604800, LANDT_03, LANDT_03s),
 			array(86400 , LANDT_04, LANDT_04s),
 			array(3600 , LANDT_05, LANDT_05s),
-			array(60 , LANDT_06, LANDT_06s),
-			array(1 , LANDT_07, LANDT_07s)
+			array(60 , LANDT_06, LANDT_06s)
 		);
+		if($show_secs)
+		{
+			$timings[] = array(1 , LANDT_07, LANDT_07s);
+		}
 		$newer_date = ($newer_date == FALSE ? (time()) : $newer_date);
 		$since = $newer_date - $older_date;
 
