@@ -34,6 +34,8 @@ define("ARLAN_30", "Article deleted.");
 define("ARLAN_31", "First letters.");
 define("ARLAN_32", "Please select a letter above.");
 
+define("ARLAN_33", "Submitted article deleted.");
+
 
 define("ARLAN_55", "Visible to");
 define("ARLAN_56", "Article Category Saved");
