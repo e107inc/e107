@@ -78,10 +78,10 @@ $FOOTER = "<br />
 
 // [linkstyle]
 
-define(PRELINK, "::  ");
+define(PRELINK, "|  ");
 define(POSTLINK, "");
 define(LINKSTART, "");
-define(LINKEND, "  ::  ");
+define(LINKEND, "  |  ");
 define(LINKDISPLAY, 1);
 define(LINKALIGN, "right");
 

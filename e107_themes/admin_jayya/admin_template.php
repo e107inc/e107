@@ -93,27 +93,50 @@ function adbutnorm(object) {
 <img src='".THEME."images/adminlogo_2.png' style='width: 170px; height: 68px; display: block;' alt='' />
 </td>
 <td style='vertical-align: bottom; text-align: right; padding: 3px 5px 3px 0px; background-color: #efefef; border-left: 1px solid #3D4251; width: 100%; background-image: url(".THEME."images/computer.jpg); background-repeat: no-repeat'>
-<div style='height: 23px'>
-{CUSTOM=search}
-</div>
 <div style='margin-bottom: 3px;'>
 {ADMIN_LOGGED}
 {ADMIN_SEL_LAN}
 {ADMIN_USERLAN}
 </div>
 {SITELINKS=flat}
-</td>
-<td style='width: 68px; padding: 0px 18px 0px 18px; text-align: center; vertical-align: middle; border-left: 1px solid #3D4251; background-color: #f3f3f3; background-image: url(".THEME."images/screen.png); background-repeat: no-repeat'>
+</td>";
+
+if (ADMIN) {
+	$ADMIN_HEADER .= "<td style='vertical-align: middle; text-align: center; padding: 0px; background-color: #f3f3f3; border-left: 1px solid #3D4251; white-space: nowrap; padding: 0px 5px 0px 6px'>
+	<div style='height: 17px'>
+	{CUSTOM=search.default.15}
+	</div>
+	</td>";
+}
+
+$ADMIN_HEADER .= "<td style='width: 68px; padding: 0px 18px 0px 18px; text-align: center; vertical-align: middle; border-left: 1px solid #3D4251; background-color: #f3f3f3; background-image: url(".THEME."images/screen.png); background-repeat: no-repeat'>
 <div style='height: 32px;'>
 {ADMIN_ICON}
 </div>
 </td>
 </tr>
-</table>
+</table>";
 
-{ADMIN_ALT_NAV}
+if (ADMIN) {
+	$ADMIN_HEADER .= "{ADMIN_ALT_NAV}";
+} else {
+	if (file_exists(THEME.'admin_nav.js')) {
+		$ADMIN_HEADER .= "<script type='text/javascript' src='".THEME."admin_nav.js'></script>";
+	} else {
+		$ADMIN_HEADER .= "<script type='text/javascript' src='".e_FILE."admin_nav.js'></script>";
+	}
+	
+	$ADMIN_HEADER .= "<div style='width: 100%'><table border='0' cellspacing='0' cellpadding='0' style='width: 100%'>
+	<tr><td>
+	<div class='menuBar' style='width:100%;'>
+	&nbsp;
+	</div>
+	</td>
+	</tr>
+	</table></div>";
+}
 
-<table cellpadding='0' cellspacing='0' border='0' class='main_section'>
+$ADMIN_HEADER .= "<table cellpadding='0' cellspacing='0' border='0' class='main_section'>
 <tr>
 <td class='left_menu'>
 <table cellpadding='0' cellspacing='0' border='0' style='width:100%;'>
@@ -121,6 +144,12 @@ function adbutnorm(object) {
 <td>
 {SETSTYLE=leftmenu}
 {ADMIN_LANG}";
+
+if (!ADMIN) {
+	$style='leftmenu';
+	$ADMIN_HEADER .= $ns -> tablerender('Welcome', '', '', TRUE);
+	$style='default';	
+}
 
 if ($preleft!='') {
 	$ADMIN_HEADER .= $preleft;

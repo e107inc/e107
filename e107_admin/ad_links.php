@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/ad_links.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-01-12 04:10:21 $
+|     $Revision: 1.10 $
+|     $Date: 2005-01-12 09:38:55 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -133,6 +133,7 @@ if (!defined('E_32_MAIN')) { define('E_32_MAIN', "<img src='".e_IMAGE."admin_ima
 // Large Admin Other Images
 if (!defined('E_32_COMMENT')) { define('E_32_COMMENT', "<img src='".e_IMAGE."admin_images/comments_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
 if (!defined('E_32_ADMINLOG')) { define('E_32_ADMINLOG', "<img src='".e_IMAGE."admin_images/adminlogs_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
+if (!defined('E_32_LOGOUT')) { define('E_32_LOGOUT', "<img src='".e_IMAGE."admin_images/logout_32.png' alt='' style='border:0px; width: 32px; height: 32px' />"); }
 
 $e_icon_array = array(
 	'main' => E_32_MAIN,
