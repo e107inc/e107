@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/list_new/new.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-03-12 10:06:43 $
+|     $Revision: 1.9 $
+|     $Date: 2005-03-20 09:03:03 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -27,7 +27,7 @@ require_once(HEADERF);
 @include(e_PLUGIN."list_new/languages/".e_LANGUAGE.".php");
 @include(e_PLUGIN."list_new/languages/English.php");
 	
-$bullet = "<img src='".THEME."images/bullet2.gif' alt='bullet' /> ";
+$bullet = (defined("BULLET") ? "<img src='".THEME."images/".BULLET."' alt='' style='vertical-align: middle;' />" : "<img src='".THEME."images/bullet2.gif' alt='bullet' style='vertical-align: middle;' />");
 	
 $sql2 = new db;
 $lvisit = USERLV;

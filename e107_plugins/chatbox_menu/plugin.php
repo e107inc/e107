@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/plugin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-01 05:15:01 $
-|     $Author: sweetas $
+|     $Revision: 1.2 $
+|     $Date: 2005-03-20 09:02:09 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 // Plugin info -------------------------------------------------------------------------------------------------------
@@ -67,7 +67,7 @@ $eplug_tables = array(
 	cb_blocked tinyint(3) unsigned NOT NULL default '0',
 	cb_ip varchar(15) NOT NULL default '',
 	PRIMARY KEY  (cb_id)
-	) TYPE=MyISAM AUTO_INCREMENT=3;"
+	) TYPE=MyISAM;"
 );
 	
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
