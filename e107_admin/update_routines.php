@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-02-02 21:12:03 $
+|     $Revision: 1.24 $
+|     $Date: 2005-02-03 06:25:55 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -48,7 +48,7 @@ function update_check() {
 }
 
 function update_61x_to_700($type) {
-	global $sql, $ns;
+	global $sql, $ns,$mySQLdefaultdb;
 	if ($type == "do") {
 		$sql->db_Update("userclass_classes", "userclass_editclass='254' WHERE userclass_editclass ='0' ");
 
@@ -227,12 +227,13 @@ function update_61x_to_700($type) {
 		// check if update is needed.
 		// FALSE = needed, TRUE = not needed.
 		// return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."generic");
-        return $sql->db_Select("preset");
-		if ($sql->db_Select("plugin", "plugin_path", "plugin_path='chatbox_menu'")) {
-			return TRUE;
-		} else {
-			return FALSE;
-		}
+        $fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."preset");
+        return ($fields) ? TRUE : FALSE;
+        /*if ($sql->db_Select("plugin", "plugin_path", "plugin_path='chatbox_menu'")) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }*/
 	}
 }
 
