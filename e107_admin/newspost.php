@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.43 $
-|   $Date: 2005-02-14 19:15:12 $
+|   $Revision: 1.44 $
+|   $Date: 2005-02-15 22:46:18 $
 |   $Author: stevedunstan $
 +---------------------------------------------------------------+
 
@@ -738,11 +738,22 @@ class newspost {
 			{
 				$sel = "";
 			}
-			$text .= "<input type='checkbox' {$sel} name='news_sticky' value='1' /> ".LAN_NEWS_30."
-			</div>
-			</td></tr>
+			$text .= "<input type='checkbox' {$sel} name='news_sticky' value='1' /> ".LAN_NEWS_30."\n</div>\n</td>\n</tr>\n";
 
-			<tr style='vertical-align: top;'>
+			if($pref['trackbackEnabled']){
+				$text .= "<tr>
+				<td class='forumheader3'>".LAN_NEWS_34.":</td>
+				<td class='forumheader3'><a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".LAN_NEWS_35."</a>
+				<div style='display: none;'>";
+				//<span class='smalltext'><input type='checkbox' name='pingback_urls' /> ".LAN_NEWS_34."<br />
+				$text .= "<span class='smalltext'>".LAN_NEWS_37."</span><br />
+				<textarea class='tbox' name='trackback_urls' style='width:95%;height:100px'>".$_POST['trackback_urls']."</textarea>
+				</div>
+				</td>
+				</tr>\n";
+			}
+
+			$text .= "<tr style='vertical-align: top;'>
 			<td colspan='2'  style='text-align:center' class='forumheader'>";
 
 		if (IsSet($_POST['preview'])) {
