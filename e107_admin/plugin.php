@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-03-22 16:28:24 $
-|     $Author: sweetas $
+|     $Revision: 1.38 $
+|     $Date: 2005-03-24 09:21:11 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -418,7 +418,7 @@ foreach($pluginList as $plug) {
 		$text .="</td></tr>
 		<tr><td style='vertical-align:top'><b>".EPL_ADLAN_13."</b>:</td><td style='vertical-align:top'><span style='vertical-align:top'> $eplug_compatible&nbsp</span>";
     	if ($eplug_compliant) {
-			$text .= "&nbsp;&nbsp;<img src='".e_IMAGE."generic/compliant.gif' alt='' style='margin-top:0px' />";
+			$text .= "&nbsp;&nbsp;<img src='".e_IMAGE."generic/valid-xhtml11_small.png' alt='' style='margin-top:0px' />";
 		}
 		$text .="</td></tr>\n";
  
