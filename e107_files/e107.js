@@ -11,13 +11,13 @@ parent.location.href = self.location.href;
  * Page Processing order is as follows:
  * A) All PHP code encountered sequentially in page
  * B) All Javascript code encountered sequentially in page NOT including function internals
- * So best proximity is achieved by setting 
+ * So best proximity is achieved by setting
  * serverTime at END of php code, and localTime at START of js code.
  * NOTE: this method means reported times include transfer delay. It's slightly MORE accurate this way!
  * Final product: tdOffset cookie contains server-browser time difference in seconds,
  * independent of time zone. tzOffset contains browser time zone in minutes.
  */
-					 
+
 var nowLocal = new Date();		/* time at very beginning of js execution */
 var localTime = Math.floor(nowLocal.getTime()/1000);	/* time, in ms -- recorded at top of jscript */
 /* NOTE: if serverDelta is needed for js functions, you must pull it from
@@ -66,7 +66,11 @@ if (folder.display=="none"){folder.display="";}else{folder.display="none";}
 
 
 function urljump(url){
-	top.window.location = url; 
+	top.window.location = url;
+}
+
+function jsconfirm(thetext){
+		return confirm(thetext);
 }
 
 function open_window(url,type) {
@@ -75,7 +79,7 @@ function open_window(url,type) {
 	} else {
 		if (type > 0 ) {
 			mywidth=type;
-		} else { 
+		} else {
 			mywidth=600;
 	}
 		pwindow = window.open(url,'Name', 'top=100,left=100,resizable=yes,width='+mywidth+',height=400,scrollbars=yes,menubar=yes')
@@ -84,19 +88,19 @@ function open_window(url,type) {
 }
 
 function ejs_preload(ejs_path, ejs_imageString){
-	var ejs_imageArray = ejs_imageString.split(','); 
-	for(ejs_loadall=0; ejs_loadall<ejs_imageArray.length; ejs_loadall++){ 
-		var ejs_LoadedImage=new Image(); 
-		ejs_LoadedImage.src=ejs_path + ejs_imageArray[ejs_loadall]; 
-	} 
-} 
+	var ejs_imageArray = ejs_imageString.split(',');
+	for(ejs_loadall=0; ejs_loadall<ejs_imageArray.length; ejs_loadall++){
+		var ejs_LoadedImage=new Image();
+		ejs_LoadedImage.src=ejs_path + ejs_imageArray[ejs_loadall];
+	}
+}
 
 function textCounter(field,cntfield) {
 	cntfield.value = field.value.length;
 }
 
 function openwindow() {
-	opener = window.open("htmlarea/index.php", "popup","top=50,left=100,resizable=no,width=670,height=520,scrollbars=no,menubar=no");            
+	opener = window.open("htmlarea/index.php", "popup","top=50,left=100,resizable=no,width=670,height=520,scrollbars=no,menubar=no");
 	opener.focus();
 }
 function setCheckboxes(the_form, do_check){
@@ -113,7 +117,7 @@ function setCheckboxes(the_form, do_check){
 }
 
 var ref=""+escape(top.document.referrer);
-var colord = window.screen.colorDepth; 
+var colord = window.screen.colorDepth;
 var res = window.screen.width + "x" + window.screen.height;
 var eself = document.location;
 
@@ -152,7 +156,7 @@ function addtext(text){
 	if (window.e107_selectedInputArea){
 		var ta = e107_selectedInputArea;
 		val = text.split('][');
-				
+
 		if ((clientVer >= 4) && is_ie && is_win){
 			theSelection = document.selection.createRange().text; /* wrap selected text */
 			if (theSelection) {
@@ -161,7 +165,7 @@ function addtext(text){
 				theSelection = '';
 				return;
 			}
-			
+
 		}else if (ta.selectionEnd && (ta.selectionEnd - ta.selectionStart > 0)){
 			mozWrap(ta, val[0] +']', '[' + val[1]); /* wrap selected text */
 			return;
@@ -185,19 +189,23 @@ function addtext(text){
 function help(help){
 	document.getElementById('dataform').helpb.value = help;
 }
-function externalLinks() { 
- if (!document.getElementsByTagName) return; 
- var anchors = document.getElementsByTagName("a"); 
- for (var i=0; i<anchors.length; i++) { 
-   var anchor = anchors[i]; 
-   if (anchor.getAttribute("href") && 
-       anchor.getAttribute("rel") == "external") 
-     anchor.target = "_blank"; 
- } 
-} 
+function externalLinks() {
+ if (!document.getElementsByTagName) return;
+ var anchors = document.getElementsByTagName("a");
+ for (var i=0; i<anchors.length; i++) {
+   var anchor = anchors[i];
+   if (anchor.getAttribute("href") &&
+       anchor.getAttribute("rel") == "external")
+     anchor.target = "_blank";
+ }
+}
 
 function eover(object, over) {
 	object.className = over;
 }
+
+
+
+
 
 //-->

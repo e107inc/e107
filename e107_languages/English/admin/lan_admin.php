@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-01-23 21:35:34 $
+|     $Revision: 1.10 $
+|     $Date: 2005-02-02 10:13:00 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -197,6 +197,10 @@ define("LAN_RESET","Reset");
 define("LAN_CLEAR","Clear");
 define("LAN_OK","OK");
 
+define("LAN_PRESET","Preset");
+define("LAN_PRESET_SAVED","Preset saved successfully");
+define("LAN_PRESET_DELETED","Preset successfully deleted");
+define("LAN_PRESET_CONFIRMDEL","Are you sure you want to delete this preset?");
 
 
 ?>
