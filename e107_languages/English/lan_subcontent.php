@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_subcontent.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:11:56 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-10-09 03:32:07 $
+|     $Author: chavo $
 +----------------------------------------------------------------------------+
 */
 define("ARLAN_0", "Thank you, your article has been saved and will be reviewed by a site administrator in due course.");
@@ -48,5 +48,15 @@ define("ARLAN_95", "User submission of Articles is currently disabled");
 define("ARLAN_96", "User submission of Reviews is currently disabled");
 define("ARLAN_97", "You do not have enough privileges to Submit Articles");
 define("ARLAN_98", "You do not have enough privileges to Submit Reviews");
+
+
+define("ARLAN_99", "What would you like to submit?");
+define("ARLAN_100", "News");
+define("ARLAN_101", " Event");
+define("ARLAN_102", "Article");
+define("ARLAN_103", "Review");
+define("ARLAN_104", "Link");
+define("ARLAN_105", "Download");
+define("ARLAN_106", "Submit Item");
 
 ?>

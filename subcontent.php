@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/subcontent.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:45 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-10-09 03:32:17 $
+|     $Author: chavo $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -34,9 +34,24 @@ if($action == "article"){
         define("e_PAGETITLE", ARLAN_15.(IsSet($_POST['preview']) ? " / ".ARLAN_28 : ""));
 }elseif($action == "review"){
         define("e_PAGETITLE", ARLAN_89);
+}elseif($action == ""){
+        define("e_PAGETITLE", ARLAN_106);
 }
 
 require_once(HEADERF);
+
+if($action == ""){
+	$events_installed = ($sql -> db_Select("event", "*", "") && (check_class($pref['eventpost_admin']) || getperms('0')) ? TRUE : FALSE);
+	$text = "<div style='text-align:center'><strong>".ARLAN_99."</strong><br/><br/><span class='mediumtext'>".
+	  (check_class($pref['subnews_class']) ? "| <a href='".e_BASE."submitnews.php'>".ARLAN_100."</a> " : "").
+	  ($events_installed ? "| <a href='".e_PLUGIN."calendar_menu/event.php?ne.1086062400 '>".ARLAN_101."</a> " : "").
+	  ($pref['article_submit'] && check_class($pref['article_submit_class']) ? "| <a href='".e_BASE."subcontent.php?article'>".ARLAN_102."</a> " : "").
+	  ($pref['review_submit'] && check_class($pref['review_submit_class']) ? "| <a href='".e_BASE."subcontent.php?review'>".ARLAN_103."</a> " : "").
+	  ($pref['link_submit'] && check_class($pref['link_submit_class']) ? "| <a href='".e_BASE."links.php?submit'>".ARLAN_104."</a> " : "").
+	  ($pref['upload_enabled'] && (!$pref['upload_class'] || check_class($pref['upload_class'])) ? "| <a href='".e_BASE."upload.php'>".ARLAN_105."</a> " : "")."| </span> </div>";
+	 $ns -> tablerender(ARLAN_106, $text);
+}
+
 if(IsSet($_POST['preview'])){
         $obj = new convert;
         $datestamp = $obj->convert_date(time(), "long");
