@@ -34,7 +34,7 @@ define("LAN_407", "\n\nPlease keep this email for your own information as your p
 define("LAN_408", "A user with that email address already exists. Please use the forgot password screen to retrieve your password.");
 define("LAN_SIGNUP_1", "Min.");
 define("LAN_SIGNUP_2", "chars.");
-
+define("LAN_SIGNUP_3", "Code verification failed.");
 
 define("LAN_409", "Invalid characters in username");
 define("LAN_410", "Enter code visible in the image");
