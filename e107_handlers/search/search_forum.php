@@ -1,7 +1,7 @@
 <?php
 // search module for Forum.
 
-if($results = $sql -> db_Select("forum_t", "*", "thread_name REGEXP('".$query."') OR thread_thread REGEXP('".$query."')")){
+if($results = $sql -> db_Select("forum_t", "*", "thread_name LIKE('%".$query."%') OR thread_thread LIKE('%".$query."%')")){
 	$c = 0;
 	$sql2 = new db;
 	while(list($thread_id, $thread_name, $thread_thread, $thread_forum_id, $thread_datestamp, $thread_parent, $thread_user, $thread_views, $thread_active, $thread_lastpost, $thread_s) = $sql -> db_Fetch()){

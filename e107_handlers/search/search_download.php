@@ -1,7 +1,7 @@
 <?php
 // search module for User.
 $c = 0;
-if($results = $sql -> db_Select("download", "download_id, download_category, download_name, download_author, download_description, download_author_website", "download_name REGEXP('".$query."') OR download_author REGEXP('".$query."') OR download_description  REGEXP('".$query."') OR download_author_website REGEXP('".$query."') ")){
+if($results = $sql -> db_Select("download", "download_id, download_category, download_name, download_author, download_description, download_author_website", "download_name LIKE('%".$query."%') OR download_author LIKE('%".$query."%') OR download_description  LIKE('%".$query."%') OR download_author_website LIKE('%".$query."%') ")){
         while(list($download_id, $download_category, $download_name, $download_author, $download_description, $download_author_website) = $sql -> db_Fetch()){
 
                 $download_name = parsesearch($download_name, $query);

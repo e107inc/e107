@@ -64,6 +64,9 @@ $con=new convert;
 if(!$refpage = substr($_SERVER['HTTP_REFERER'], (strrpos($_SERVER['HTTP_REFERER'], "/")+1))){ $refpage = "index.php"; }
 
 if(IsSet($_POST['searchquery']) && $_POST['searchquery'] != ""){ $query = $_POST['searchquery']; }
+//$query = str_replace('[','\[',$query);
+//$query = str_replace(']','\]',$query);
+//$_POST['searchquery'] = $query;
 
 if($_POST['searchtype']){
         $searchtype = $_POST['searchtype'];
@@ -154,17 +157,21 @@ if($_POST['searchquery']){
         echo "</div>";
 }
 
-function parsesearch($text, $match){
-        $text = strip_tags($text);
-        $temp = stristr($text,$match);
-        $pos = strlen($text)-strlen($temp);
-        if($pos < 70){
-                $text = "...".substr($text, 0, 100)."...";
-        }else{
-                $text = "...".substr($text, ($pos-70), 140)."...";
-        }
-        $text = eregi_replace($match, "<span class='searchhighlight'>$match</span>", $text);
-        return($text);
+function parsesearch($text, $match)
+{
+	$text = strip_tags($text);
+	$temp = stristr($text,$match);
+	$pos = strlen($text)-strlen($temp);
+	$matchedText =  substr($text,$pos,strlen($match));
+	if($pos < 70){
+		$text = "...".substr($text, 0, 100)."...";
+	}
+	else
+	{
+		$text = "...".substr($text, ($pos-50), $pos+30)."...";
+	}
+$text = eregi_replace($match, "<span class='searchhighlight'>$matchedText</span>", $text);
+return($text);
 }
 
 function headerjs(){

@@ -2,7 +2,7 @@
 // search module for comments.
 
 	$sql2 = new db;
-	$results = $sql -> db_Select("comments", "*", "comment_comment REGEXP('".$query."') OR comment_author REGEXP('".$query."') ");
+	$results = $sql -> db_Select("comments", "*", "comment_comment LIKE('%".$query."%') OR comment_author LIKE('%".$query."%') ");
 		while(list($comment_id, $comment_pid, $comment_item_id, $comment_subject, $comment_author, $comment_author_email, $comment_datestamp, $comment_comment, $comment_blocked, $comment_ip, $comment_type) = $sql -> db_Fetch()){
 			$c = 0;
 			$nick = eregi_replace("[0-9]+\.", "", $comment_author);

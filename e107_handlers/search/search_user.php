@@ -1,7 +1,7 @@
 <?php
 // search module for User.
 
-if($results = $sql -> db_Select("user", "user_id, user_name, user_email, user_homepage, user_location, user_signature", "user_name REGEXP('".$query."') OR user_email REGEXP('".$query."') OR user_homepage  REGEXP('".$query."') OR user_location REGEXP('".$query."') OR user_signature REGEXP('".$query."') ")){
+if($results = $sql -> db_Select("user", "user_id, user_name, user_email, user_homepage, user_location, user_signature", "user_name LIKE('%".$query."%') OR user_email LIKE('%".$query."%') OR user_homepage LIKE('%".$query."%') OR user_location LIKE('%".$query."%') OR user_signature LIKE('%".$query."%') ")){
 	while(list($user_id, $user_name, $user_email, $user_homepage, $user_location, $user_signature) = $sql -> db_Fetch()){
 		$user_name = parsesearch($user_name, $query);
 		$user_email = parsesearch($user_email, $query);

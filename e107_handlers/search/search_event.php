@@ -1,8 +1,8 @@
 <?php
 // search module for Event calendar.
 
-	$results = $sql -> db_Select("event", "*", "event_stake REGEXP('".$query."') OR event_ward REGEXP('".$query."') OR event_organisation REGEXP('".$query."') OR event_title REGEXP('".$query."') 
-                     OR event_location REGEXP('".$query."') OR event_details REGEXP('".$query."') OR event_thread REGEXP('".$query."') ");
+	$results = $sql -> db_Select("event", "*", "event_stake LIKE('%".$query."%') OR event_ward LIKE('%".$query."%') OR event_organisation LIKE('%".$query."%') OR event_title LIKE('%".$query."%') 
+                     OR event_location LIKE('%".$query."%') OR event_details LIKE('%".$query."%') OR event_thread LIKE('%".$query."%') ");
 	while(list($event_id, $event_stake, $event_ward, $event_organisation, $event_start, $event_end, $event_allday,,, $event_title, $event_location, $event_details, $event_author, $event_contact, $event_category, $event_url ) = $sql -> db_Fetch()){
 
 	$sql2 -> db_select("event_cat", "event_cat_name, event_cat_icon", "event_cat_id='".$event_category."' ");

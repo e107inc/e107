@@ -1,7 +1,7 @@
 <?php
 // search module for Chatbox search.
 
-if($results = $sql -> db_Select("chatbox", "*", "(cb_nick REGEXP('".$query."') OR cb_message REGEXP('".$query."')) AND cb_blocked='0' ")){
+if($results = $sql -> db_Select("chatbox", "*", "(cb_nick LIKE('%".$query."%') OR cb_message LIKE('%".$query."%')) AND cb_blocked='0' ")){
 	while(list($cb_id, $cb_nick, $cb_message, $cb_datestamp, $cb_blocked, $cb_ip) = $sql -> db_Fetch()){
 		$cb_nick = eregi_replace("[0-9]+\.", "", $cb_nick);
 

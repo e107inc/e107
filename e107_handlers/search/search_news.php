@@ -1,7 +1,7 @@
 <?php
 // search module for news.
 $c = 0;
-$results = $sql -> db_Select("news", "*", "(news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")  AND (news_title REGEXP('".$query."') OR news_body REGEXP('".$query."') OR news_extended REGEXP('".$query."')) ORDER BY news_id DESC ");
+$results = $sql -> db_Select("news", "*", "(news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")  AND (news_title LIKE('%".$query."%') OR news_body LIKE('%".$query."%') OR news_extended LIKE('%".$query."%')) ORDER BY news_id DESC ");
 	while($row = $sql -> db_Fetch()){
 		extract($row);$c ++;
 		if(check_class($news_class)){
