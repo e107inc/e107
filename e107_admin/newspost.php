@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107/e107_admin/newspost.php,v $
-|   $Revision: 1.40 $
-|   $Date: 2004-08-16 10:12:49 $
+|   $Revision: 1.41 $
+|   $Date: 2004-08-31 16:02:51 $
 |   $Author: loloirie $
 +---------------------------------------------------------------+
 
@@ -23,6 +23,10 @@ if($pref['htmlarea']){
     $htmlarea_js = (eregi("MSIE",$_SERVER['HTTP_USER_AGENT']))? htmlarea("data,news_extended"): htmlarea("data");
 }
 if(!getperms("H")){ header("location:".e_BASE."index.php"); exit;}
+
+require_once(e_HANDLER."textparse/basic.php");
+$etp = new e107_basicparse;
+
 require_once("auth.php");
 require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."news_class.php");
@@ -45,7 +49,7 @@ $amount = 50;
 
 // ##### Main loop -----------------------------------------------------------------------------------------------------------------------
 
-if(preg_match("#(.*?)_delete_(\d+)#",$deltest[NWSLAN_8],$matches))
+if(preg_match("#(.*?)_delete_(\d+)#",$deltest[$etp->unentity(NWSLAN_8)],$matches))
 {
         $delete = $matches[1];
         $del_id = $matches[2];
@@ -216,11 +220,11 @@ function fclear(){
 echo "<script type=\"text/javascript\">
 function confirm_(mode, news_id){
         if(mode == 'cat'){
-                return confirm(\"".NWSLAN_37." [ID: \" + news_id + \"]\");
+                return confirm(\"".$etp->unentity(NWSLAN_37)." [ID: \" + news_id + \"]\");
         }else if(mode == 'sn'){
-                return confirm(\"".NWSLAN_38." [ID: \" + news_id + \"]\");
+                return confirm(\"".$etp->unentity(NWSLAN_38)." [ID: \" + news_id + \"]\");
         }else{
-                return confirm(\"".NWSLAN_39." [ID: \" + news_id + \"]\");
+                return confirm(\"".$etp->unentity(NWSLAN_39)." [ID: \" + news_id + \"]\");
         }
 }
 </script>";

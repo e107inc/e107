@@ -11,7 +11,7 @@
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
-$Id: review.php,v 1.21 2004-08-13 10:12:45 loloirie Exp $  
+$Id: review.php,v 1.22 2004-08-31 16:02:51 loloirie Exp $  
 */
 require_once("../class2.php");
     if($pref['htmlarea']){
@@ -22,6 +22,10 @@ if(!getperms("J") && !getperms("K") && !getperms("L")){
         header("location:".e_BASE."index.php");
         exit;
 }
+
+require_once(e_HANDLER."textparse/basic.php");
+$etp = new e107_basicparse;
+
 require_once("auth.php");
 $aj = new textparse;
 require_once(e_HANDLER."form_handler.php");
@@ -37,7 +41,7 @@ if(e_QUERY){
         $id = $tmp[2];
         unset($tmp);
 }
-if(preg_match("#(.*?)_delete_(\d+)#",$deltest[REVLAN_9],$matches))
+if(preg_match("#(.*?)_delete_(\d+)#",$deltest[$etp->unentity(REVLAN_9)],$matches))
 {
         $delete = $matches[1];
         $del_id = $matches[2];
@@ -564,7 +568,7 @@ function review_adminmenu(){
 require_once("footer.php");
 
 function headerjs(){
-
+global $etp;
 $script = "<script type=\"text/javascript\">
 function addtext2(sc){
         document.getElementById('dataform').category_button.value = sc;
@@ -577,9 +581,9 @@ function addtext2(sc){
 $script .= "<script type=\"text/javascript\">
 function confirm_(mode, content_heading, content_id){
         if(mode == 'cat'){
-                return confirm(\"".REVLAN_49." [ID \" + content_id + \": \" + content_heading + \"]\");
+                return confirm(\"".$etp->unentity(REVLAN_49)." [ID \" + content_id + \": \" + content_heading + \"]\");
         }else{
-                return confirm(\"".REVLAN_50." [ID \" + content_id + \": \" + content_heading + \"]\");
+                return confirm(\"".$etp->unentity(REVLAN_50)." [ID \" + content_id + \": \" + content_heading + \"]\");
         }
 }
 </script>";
