@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/links.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-10-10 21:12:04 $
+|     $Revision: 1.3 $
+|     $Date: 2004-11-06 01:17:57 $
 |     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
@@ -263,8 +263,28 @@ function parse_link_cat_table($row){
 
                 // Body
                 if(isset($category)){
-                        $link_append = "<a href='".e_SELF."?".$link_id.".cat.{$category}'>";
-                } else {
+      					   if($qs[0] == "cat"){
+                      $link_append = "<a href='".e_SELF."?".$link_id.".cat.{$category}'>";
+                   }else{
+                      switch ($link_open) { 
+            					case 1:
+            						$link_append = "<a href='".e_SELF."?".$link_id.".cat.{$category}' rel='external'>";
+            					break; 
+            					case 2:
+            					   $link_append = "<a href='".e_SELF."?".$link_id.".cat.{$category}'>";
+            					break;
+            					case 3:
+            					   $link_append = "<a href='".e_SELF."?".$link_id.".cat.{$category}'>";
+            					break;
+            					case 4:
+            						$link_append = "<a href=\"javascript:open_window('".e_SELF."?".$link_id.".cat.{$category}')\">";
+            					break;
+            					default:
+            					   $link_append = "<a href='".e_SELF."?".$link_id.".cat.{$category}'>";
+            					}
+                   }
+      						
+      					} else {
 
                         switch ($link_open) {
                         case 1:
