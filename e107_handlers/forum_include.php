@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/forum_include.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-27 19:52:27 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-03-31 09:01:20 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 	
@@ -45,8 +45,7 @@ function img_path($filename, $eMLANG_folder = FALSE, $eMLANG_pref = FALSE) {
 		}
 		$image = eMLANG_path($filename, $eMLANG_folder);
 	} else {
-		$image = file_exists(THEME.'forum/'.$filename) ? THEME.'forum/'.$filename :
-		 e_IMAGE.'forum/'.$filename;
+		$image = file_exists(THEME.'forum/'.$filename) ? THEME.'forum/'.$filename : e_IMAGE.'forum/'.$filename;
 	}
 	return $image;
 }
