@@ -679,7 +679,7 @@ class newspost{
 		<tr><td colspan='2' style='text-align:center' class='forumheader'>";
 		if($id){
 			$text .= "<input class='button' type='submit' name='update_category' value='".NWSLAN_55."'> 
-			".$rs -> form_button("submit", "category_clear", "Clear Form").
+			".$rs -> form_button("submit", "category_clear", NWSLAN_79).
 			$rs -> form_hidden("category_id", $id)."
 			</td></tr>";
 		}else{
@@ -882,4 +882,3 @@ class create_rss{
 }
 }
 ?>
-
