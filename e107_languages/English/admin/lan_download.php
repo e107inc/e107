@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_download.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:11:04 $
+|     $Revision: 1.2 $
+|     $Date: 2004-11-26 07:20:40 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -85,5 +85,9 @@ define("DOWLAN_70", "Checking this will send all download requests through PHP."
 define("DOWLAN_100", "Activate Download Agreement");
 define("DOWLAN_101", "Agreement Text");
 define("DOWLAN_102", "Allow Comments?");
+
+define("DOWLAN_103", "Remove from Uploads");
+define("DOWLAN_104", "was removed from public uploads");
+define("DOWLAN_105", "Back to Public Uploads");
 
 ?>
