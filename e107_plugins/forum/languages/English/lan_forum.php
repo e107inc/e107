@@ -4,12 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-02-24 18:57:07 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.4 $
+|     $Date: 2005-03-14 15:50:46 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Forum");
+define("e_PAGETITLE", "Forum");
 	
 define("LAN_30", "Welcome");
 define("LAN_31", "There are no new posts ");
