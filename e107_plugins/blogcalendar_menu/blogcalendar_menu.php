@@ -116,7 +116,7 @@ $month_selector .= "</select></div>";
 $menu = "<div style='text-align: center;'><table border='0' cellspacing='7'>";
 $menu .= "<tr><td>$month_selector";
 $menu .= "<div style='text-align:center'>".calendar($req_day, $req_month, $req_year, $day_links, $pref['blogcal_ws'])."</div>";
-$menu .= "<div class='forumheader' style='text-align: center; margin-top:2px;'><span class='smalltext'><a href='$prefix/archive.php'>Archive</a></span></div></td></tr>";
+$menu .= "<div class='forumheader' style='text-align: center; margin-top:2px;'><span class='smalltext'><a href='$prefix/archive.php'>".BLOGCAL_L2."</a></span></div></td></tr>";
 $menu .= "</table></div>";
 $ns -> tablerender(BLOGCAL_L1." ".$req_year, $menu);
 ?>
