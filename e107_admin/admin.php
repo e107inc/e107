@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-01-22 15:18:13 $
+|     $Revision: 1.15 $
+|     $Date: 2005-01-23 14:57:02 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -42,6 +42,22 @@ if ($pref['adminstyle'] == 'admin_classis') {
 	$pref['adminstyle'] = 'classis';
 	$update_prefs = true;
 }
+
+// temporary code to switch users using admin_jayya to jayya
+
+if ($pref['admintheme'] == 'admin_jayya') {
+	$pref['admintheme'] = 'jayya';
+	$update_prefs = true;
+}
+
+if ($pref['sitetheme'] == 'admin_jayya') {
+	$pref['sitetheme'] = 'jayya';
+	$update_prefs = true;
+}
+
+// ---------------------------------------------------------
+
+
 if ($update_prefs == true){
 	save_prefs();
 }
