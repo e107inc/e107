@@ -1,19 +1,19 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system													|
-|	/admin/plugin_conf/headlines_conf.php						|
-|																						|
-|	©Steve Dunstan 2001-2002										|
-|	http://jalist.com															|
-|	stevedunstan@jalist.com											|
-|																						|
-|	Released under the terms and conditions of the		|
-|	GNU General Public License (http://gnu.org).				|
+|	e107 website system
+|	/admin/headlines_conf.php
+|
+|	©Steve Dunstan 2001-2002
+|	http://e107.org
+|	jalist@e107.org
+|
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("P")){ header("location:../index.php"); }
+if(!getperms("P")){ header("location:".e_HTTP."index.php"); }
 require_once("auth.php");
 
 if(IsSet($_POST['add_headline'])){
@@ -89,7 +89,7 @@ if($headline_total == "0"){
 
 
 $text .= "
-<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
+<form method=\"post\" action=\"".e_SELF."\">
 <table style=\"width:95%\">
 <tr>
 <td style=\"width:30%\">Backend URL: </td>

@@ -1,10 +1,21 @@
 <?php
+/*
++---------------------------------------------------------------+
+|	e107 website system
+|	/chat.php
+|
+|	©Steve Dunstan 2001-2002
+|	http://jalist.com
+|	stevedunstan@jalist.com
+|
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
++---------------------------------------------------------------+
+*/
 require_once("class2.php");
 require_once(HEADERF);
-
-if($_SERVER['QUERY_STRING']){ $from = $_SERVER['QUERY_STRING']; }else{ $from = 0; }
+if(e_QUERY ? $from = e_QUERY : $from = 0);
 if(Empty($view)){ $view = 30; }
-
 $chat_total = $sql -> db_Count("chatbox");
 $text = "";
 $sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT $from, ".$view, $mode="no_where");
@@ -21,11 +32,7 @@ while($row = $sql-> db_Fetch()){
 </div>
 <br />\n";
 	}
-
 $ns -> tablerender(LAN_11, $text);
-
 $ix = new nextprev("chat.php", $from, 30, $chat_total, LAN_12);
-
-
 require_once(FOOTERF);
 ?>

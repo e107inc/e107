@@ -5,15 +5,11 @@
 |	/admin/header.php
 |
 |	©Steve Dunstan 2001-2002
-|	http://jalist.com
-|	stevedunstan@jalist.com
+|	http://e107.org
+|	jalist@e107.org
 |
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
-+---------------------------------------------------------------+
-| 03/12/02
-| + js for newspost character counter (added by DeViLbOi)
 +---------------------------------------------------------------+
 */
 echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
@@ -22,7 +18,7 @@ echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title><?php echo $sitename; ?></title>
-    <link rel="stylesheet" href="<?php echo "../".THEME; ?>style.css" />
+    <link rel="stylesheet" href="<?php echo THEME; ?>style.css" />
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
     <meta http-equiv="content-style-type" content="text/css" />
     <script type="text/javascript">
@@ -55,6 +51,7 @@ function SetState(obj_checkbox, obj_textarea){
   </head>
 <body>
 <?php
+
 $ns = new table;
 echo "
 <div style=\"text-align:center\">";
@@ -74,7 +71,7 @@ if($admin_logo == "1"){
 	<td style=\"background-color:#ccc\">&nbsp;";
 	if(ADMIN == TRUE){
 		$str = str_replace(".", "", ADMINPERMS);
-		if(ADMINPERMS == 0){
+		if(ADMINPERMS == "0"){
 			echo "Logged in: ".ADMINNAME." (Main Site Administrator)";
 		}else{
 			echo "Logged in: ".ADMINNAME." (levels: ".$str.")";
@@ -93,7 +90,7 @@ if($admin_logo == "1"){
 	<br />";
 	if(ADMIN == TRUE){
 		$str = str_replace(".", "", ADMINPERMS);
-		if(ADMINPERMS == 0){
+		if(ADMINPERMS == "0"){
 			echo "Logged in: ".ADMINNAME." (Main Site Administrator)";
 		}else{
 			echo "Logged in: ".ADMINNAME." (levels:  ".$str.")";
@@ -173,6 +170,12 @@ if(getperms("4")){
 	unset($text);
  }
 
+if(getperms("P") && !ereg("userfile.php", e_SELF)){
+	if($sql -> db_Select("userfile", "userfile_authorized='0' ")){
+		$text = "<div style=\"text-align:center\">You have un-authorized userfiles in your upload directory - click <a href=\"userfile.php\">here</a> to review.</div>";
+		$ns -> tablerender("Userfile Uploaded", $text);
+	}	
+}
 if($sql -> db_Select("submitnews", "*", "submitnews_auth ='0' ")){
 	$text = "<div class=\"defaulttext\" style=\"text-align:center\">
 <b>You have had a news item submitted.</b>
@@ -181,10 +184,8 @@ Please click <a href=\"submitnews.php\">here</a> to review.";
 	$ns -> tablerender("Story Submitted", $text);
 }
 
-if(ADMINPERMS == 0){
-	$sql -> db_Select("admin", "*", "admin_permissions='0'");
-	list($a_id, $a_name, $null, $a_email, $null, $a_perms, $a_pwchange) = $sql-> db_Fetch();
-	if(($a_pwchange+2592000) < time()){
+if(ADMINPERMS == "0"){
+	if((ADMINPWCHANGE+2592000) < time()){
 		$text = "<div style=\"mediumtext; text-align:center\">It has been more than 30 days since you changed the main administrator password - <a href=\"updateadmin.php\">Click here to change it now</a></div>";
 		$ns -> tablerender("Security", $text);
 	}
@@ -195,7 +196,7 @@ $handle=opendir("help/");
 	while ($file = readdir($handle)){	
 		if($file != "." && $file != ".."){
 //			 echo "help/".$file."<br />";
-			 if(eregi($file, $_SERVER['PHP_SELF'])){
+			 if(eregi($file, e_SELF)){
 				require_once("help/".$file);
 			 }
 		}

@@ -2,21 +2,21 @@
 /*
 +---------------------------------------------------------------+
 |	e107 website system
-|	/admin/menusort.php
+|	/admin/menus2.php
 |
 |	©Steve Dunstan 2001-2002
-|	http://jalist.com
-|	stevedunstan@jalist.com
+|	http://e107.org
+|	jalist@e107.org
 |
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("2")){ header("location:../index.php"); }
+if(!getperms("2")){ header("location:".e_HTTP."index.php"); }
 require_once("auth.php");
 
-$tmp = explode(".", $_SERVER['QUERY_STRING']);
+$tmp = explode(".", e_QUERY);
 $action = $tmp[0];
 $id = $tmp[1];
 $position = $tmp[2];
@@ -25,31 +25,31 @@ $location = $tmp[3];
 if($action == "move"){
 	$menu_count = $sql -> db_Count("menus", "(*)", " WHERE menu_location='$position' ");
 	$sql -> db_Update("menus", "menu_location='$position', menu_order='".($menu_count+1)."' WHERE menu_id='$id' ");
-	header("location:menus2.php");
+	header("location: ".e_SELF);
 }
 
 if($action == "activate"){
 	$menu_count = $sql -> db_Count("menus", "(*)", " WHERE menu_location='$position' ");
 	$sql -> db_Update("menus", "menu_location='$position', menu_order='".($menu_count+1)."' WHERE menu_id='$id' ");
-	header("location:menus2.php");
+	header("location: ".e_SELF);
 }
 
 if($action == "deac"){
 	$sql -> db_Update("menus", "menu_location='0', menu_order='0' WHERE menu_id='$id' ");
-	header("location:menus2.php");
+	header("location: ".e_SELF);
 }
 
 if($action == "dec"){
 	$sql -> db_Update("menus", "menu_order=menu_order-1 WHERE menu_order='".($position+1)."' AND menu_location='$location' ");
 	$sql -> db_Update("menus", "menu_order=menu_order+1 WHERE menu_id='$id' AND menu_location='$location' ");
-	header("location:menus2.php");
+	header("location: ".e_SELF);
 }
 
 if($action == "inc"){
 	echo "INC";
 	$sql -> db_Update("menus", "menu_order=menu_order+1 WHERE menu_order='".($position-1)."' AND menu_location='$location' ");
 	$sql -> db_Update("menus", "menu_order=menu_order-1 WHERE menu_id='$id' AND menu_location='$location' ");
-	header("location:menus2.php");
+	header("location: ".e_SELF);
 }
 
 $sql2 = new db;
@@ -64,7 +64,7 @@ for($a=1; $a<=20; $a++){
 	}
 }
 
-$handle=opendir("../menus/");
+$handle=opendir(e_BASE."menus/");
 	$c=0;
 	while ($file = readdir($handle)){	
 		if($file != "." && $file != ".." && $file != "plugins" && $file != "index.html" && $file !=	"log_menu.php"){
@@ -98,7 +98,6 @@ if($message != ""){
 
 $tmp1 = str_replace("<table", "<table border=1", $HEADER);
 $tmp2 = str_replace("<table ", "<table border=1", $FOOTER);
-
 
 parseheader($tmp1, $menus_used);
 
@@ -168,16 +167,16 @@ function checklayout($str){
 		while(list($menu_id, $menu_name, $menu_location, $menu_order) = $sql9-> db_Fetch()){
 			$menu_name = eregi_replace("_menu", "", $menu_name);
 			$caption = "<div style=\"text-align:center\">".$menu_name."</div>";
-			$text = "<a href=\"".$_SERVER['PHP_SELF']."?deac.".$menu_id."\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/off.png\" alt=\"\" /> Deactivate</div></a>";
+			$text = "<a href=\"".e_SELF."?deac.".$menu_id."\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/off.png\" alt=\"\" /> Deactivate</div></a>";
 			if($menu_order != 1){
-				$text .= "<a href=\"".$_SERVER['PHP_SELF']."?inc.".$menu_id.".".$menu_order.".".$menu."\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/up.gif\" alt=\"\" /> Move Up</div></a>";
+				$text .= "<a href=\"".e_SELF."?inc.".$menu_id.".".$menu_order.".".$menu."\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/up.gif\" alt=\"\" /> Move Up</div></a>";
 			}
 			if($menu_count != $menu_order){
-				$text .= "<a href=\"".$_SERVER['PHP_SELF']."?dec.".$menu_id.".".$menu_order.".".$menu."\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/down.gif\" alt=\"\" /> Move Down</div></a>";
+				$text .= "<a href=\"".e_SELF."?dec.".$menu_id.".".$menu_order.".".$menu."\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/down.gif\" alt=\"\" /> Move Down</div></a>";
 			}
 			for($c=1; $c<=5; $c++){
 				if($menu <> $c){
-					$text .= "<a href=\"".$_SERVER['PHP_SELF']."?move.".$menu_id.".$c\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/move.png\" alt=\"\" /> Move to Area ".$c."</div></a>";
+					$text .= "<a href=\"".e_SELF."?move.".$menu_id.".$c\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/move.png\" alt=\"\" /> Move to Area ".$c."</div></a>";
 					
 				}
 			}

@@ -1,28 +1,28 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system													|
-|	/admin/userinfo.php													|
-|																						|
-|	©Steve Dunstan 2001-2002										|
-|	http://jalist.com															|
-|	stevedunstan@jalist.com											|
-|																						|
-|	Released under the terms and conditions of the		|
-|	GNU General Public License (http://gnu.org).				|
+|	e107 website system
+|	/admin/userinfo.php
+|
+|	©Steve Dunstan 2001-2002
+|	http://e107.org
+|	jalist@e107.org
+|
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("4")){ header("location:../index.php"); }
+if(!getperms("4")){ header("location:".e_HTTP."index.php"); }
 require_once("auth.php");
 
-if(!$_SERVER['QUERY_STRING']){
+if(!e_QUERY){
 	$text = "<div style=\"text-align:center\">Unable to find poster's IP address - no information is availble.</div>";
 	$ns -> tablerender("Error", $text);
 	require_once("footer.php");
 	exit;
 }else{
-	$ipd = $_SERVER['QUERY_STRING'];
+	$ipd = e_QUERY;
 }
 
 if(IsSet($ipd)){
@@ -35,8 +35,10 @@ if(IsSet($ipd)){
 	<br /><br />";
 	while(list($cb_id, $cb_nick, $cb_message, $cb_datestamp, $cb_blocked, $cb_ip ) = $sql-> db_Fetch()){
 		$datestamp = $obj->convert_date($cb_datestamp, "short");
-		$text .= "<img src=\"../".THEME."images/bullet2.gif\" alt=\"bullet\" />
-<span class=\"defaulttext\"><i>".$cb_nick."</i></span>\n<div class=\"mediumtext\">".$datestamp."<br />".
+		$post_author_id = substr($cb_nick, 0, strpos($cb_nick, "."));
+		$post_author_name = substr($cb_nick, (strpos($cb_nick, ".")+1));
+		$text .= "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" />
+<span class=\"defaulttext\"><i>".$post_author_name." (UserID: ".$post_author_id.")</i></span>\n<div class=\"mediumtext\">".$datestamp."<br />".
 $cb_message."
 </div><br />";
 	}
@@ -46,8 +48,10 @@ $cb_message."
 	$sql -> db_Select("comments", "*", "comment_ip='$ipd' LIMIT 0,20");
 	while(list($comment_id, $comment_item_id, $comment_author, $comment_author_email, $comment_datestamp, $comment_comment, $comment_blocked, 	$comment_ip) = $sql-> db_Fetch()){
 		$datestamp = $obj->convert_date($comment_datestamp, "short");
-		$text .= "<img src=\"../".THEME."images/bullet2.gif\" alt=\"bullet\" />
-<span class=\"defaulttext\"><i>".$comment_author."</i></span>\n<div class=\"mediumtext\">".$datestamp."<br />".
+		$post_author_id = substr($comment_author, 0, strpos($comment_author, "."));
+		$post_author_name = substr($comment_author, (strpos($comment_author, ".")+1));
+		$text .= "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" />
+<span class=\"defaulttext\"><i>".$post_author_name." (UserID: ".$post_author_id.")</i></span>\n<div class=\"mediumtext\">".$datestamp."<br />".
 $comment_comment."</div><br />";
 	}
 

@@ -5,8 +5,8 @@
 |	/sitedown.php
 |
 |	©Steve Dunstan 2001-2002
-|	http://jalist.com
-|	stevedunstan@jalist.com
+|	http://e107.org
+|	jalist@e107.org
 |
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
@@ -21,7 +21,6 @@ $text = "<font style=\"FONT-SIZE: 11px; COLOR: black; FONT-FAMILY: Tahoma, Verda
 <br />
 
 <div style=\"text-align:center\"><b>- Temporarily Closed -</b><br /><br />We have temporarily closed the site for some essential maintainance. This shouldn't take too long - please check back soon, apologies for the inconvinience.
-
 </font>";
 
 echo $text;

@@ -1,17 +1,22 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system													|
-|	language file: dutch													|
-|																						|
-|	¸Steve Dunstan 2001-2002										|
-|	http://jalist.com															|
-|	stevedunstan@jalist.com											|
-|																						|
-|	Released under the terms and conditions of the		|
-|	GNU General Public License (http://gnu.org).				|
+|	e107 website system
+|	language file: dutch
+|
+|	¸Steve Dunstan 2001-2002
+|	http://jalist.com
+|	stevedunstan@jalist.com
+|
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
+|	translation by André Koot
 +---------------------------------------------------------------+
 */
+
+
+setlocale(LC_ALL, 'nl');
+
 
 //articles.php/comment.php
 define(LAN_0, "[geblokkeerd door admin]");
@@ -264,5 +269,39 @@ define(LAN_215, "Je wachtwoord voor ".SITENAME." is gereset. Je nieuwe wachtwoor
 define(LAN_216, "Om het nieuwe wachtwoord te activeren moet je de volgende pagina openen ...");
 define(LAN_217, "Bedankt, je nieuwe wachtwoord is nu geactiveerd. Je kunt nu met het nieuwe wachtwoord inloggen.");
 
+
+define(LAN_281, "Gasten: ");
+
+
+// NEW IN VERSION 5.3b4 - PLEASE UPDATE!
+
+define(LAN_300, "Deze naam is niet in de database aangetroffen.<br /><br />");
+define(LAN_301, "Wachtwoord onjuist.<br /><br />");
+define(LAN_302, "Je hebt je account niet geactiveerd. Je hebt eerder een mailtje met instructies over het activeren van je account ontvangen. Zo niet, neem even contact op met de beheerder.<br /><br />");
+define(LAN_303, "Dit nieuwsbericht is van ");
+define(LAN_304, "Titel: ");
+define(LAN_305, "Onderkop: ");
+define(LAN_306, "Dit artikel is van ");
+define(LAN_307, "Aantal berichten in deze categorie: ");
+define(LAN_308, "Echte naam: ");
+define(LAN_309, "Vul je detailgegevens hieronder in - <b>een bevestigingsmailtje wordt gezonden aan je email adres, dus je moet dus een geldig adres opgeven. </b>Als je niet wilt dat je emailadres wordt weergegeven, kruis dan het veldje Verbergen e-mail adres aan.");
+define(LAN_310, "Dit bericht kan niet worden geplaatst, omdat deze naam al geregistreerd is  - als dit jouw gebruikersnaam is, log dan eerst in om het bericht te plaatsen.");
+define(LAN_311, "Anoniem");
+define(LAN_312, "Dubbel bericht - wordt niet geplaatst.");
+define(LAN_313, "Kies welke lijst je wilt weergeven ...");
+define(LAN_314, "Klassen: ");
+define(LAN_315, "Gebruikers: ");
+define(LAN_316, "Ga naar pagina ");
+define(LAN_317, "Geen");
+define(LAN_318, "moderator opties: ");
+define(LAN_319, "Vrijgeven");
+define(LAN_320, "Blokkeren");
+define(LAN_321, "Moderators: ");
+define(LAN_322, "Geplaatst: ");
+define(LAN_323, "Bekijk");
+define(LAN_324, "Je bericht is succesvol geplaatst.");
+define(LAN_325, "Klik hier om je bericht te bekijken");
+define(LAN_326, "Klik hier om terug te keren naar het forum");
+define(LAN_327, "Controleer");
 
 ?>

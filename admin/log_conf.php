@@ -1,31 +1,30 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system													|
-|	/admin/login_conf.php													|
-|																						|
-|	©Steve Dunstan 2001-2002										|
-|	http://jalist.com															|
-|	stevedunstan@jalist.com											|
-|																						|
-|	Released under the terms and conditions of the		|
-|	GNU General Public License (http://gnu.org).				|
+|	e107 website system
+|	/admin/log_conf.php
+|
+|	©Steve Dunstan 2001-2002
+|	http://e107.org
+|	jalist@e107.org
+|
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("P")){ header("location:../index.php"); }
+if(!getperms("P")){ header("location:".e_HTTP."index.php"); }
 
 if(IsSet($_POST['updatesettings'])){
-	$sql -> db_Update("prefs", "pref_value='".$_POST['log_activate']."' WHERE pref_name='log_activate' ");
-	$sql -> db_Update("prefs", "pref_value='".$_POST['refertype']."' WHERE pref_name='log_refertype' ");
-	$sql -> db_Update("prefs", "pref_value='".$_POST['lvcount']."' WHERE pref_name='log_lvcount' ");
+
+	$pref['log_activate'][1] = $_POST['log_activate'];
 	$pref['log_refertype'][1] = $_POST['refertype'];
+	$pref['log_lvcount'][1] = $_POST['lvcount'];
+	$sql -> db_Update("core", "e107_value='".addslashes(serialize($pref))."' WHERE e107_name='pref' ");
 	header("location:log_conf.php?u");
 }
 
-
-
-if($_SERVER['QUERY_STRING'] == "u"){
+if(e_QUERY == "u"){
 	$message = "Logger settings updated.";
 }
 
@@ -44,7 +43,7 @@ $log_activate = $pref['log_activate'][1];
 $lvcount = $pref['log_lvcount'][1];
 
 $text = "
-<form method=\"post\" action=\"$PHP_SELF\">
+<form method=\"post\" action=\"".e_SELF."\">
 <table style=\"width:95%\">
 
 <tr>

@@ -1,3 +1,3 @@
 <?php
-$text .= wad("userclass_conf.php", "User Classes", "Assign classes to users", "P");
+$text .= wad("userclass2.php", "User Classes", "Create/edit user classes", "4");
 ?>

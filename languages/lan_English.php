@@ -13,6 +13,9 @@
 +---------------------------------------------------------------+
 */
 
+setlocale(LC_ALL, 'en');
+
+
 //articles.php/comment.php
 define(LAN_0, "[blocked by admin]");
 define(LAN_1, "Unblock");
@@ -21,7 +24,7 @@ define(LAN_3, "Delete");
 define(LAN_4, "Info");
 define(LAN_5, "Comments ...");
 define(LAN_6, "You must be logged in to post comments on this site - please either log in or if you are not registered click <a href=\"signup.php\">here</a> to signup");
-define(LAN_7, "Name: ");
+define(LAN_7, "Login Name: ");
 define(LAN_8, "Comment");
 define(LAN_9, "Submit comment");
 define(LAN_10, "Shortcut tags allowed: [b] [i] [u] [img] [center] [link]<br />use [link=link text] link url [/link] for links<br />Line breaks (&lt;br /&gt;) are auto added.");
@@ -47,7 +50,7 @@ define(LAN_25, "Previous page");
 define(LAN_26, "Next page");
 
 //forum.php
-define(LAN_27, "You left required fields blank");
+define(LAN_27, "You left required field(s) blank");
 define(LAN_28, "Err you didn't post anything ..");
 define(LAN_29, "Edited");
 define(LAN_30, "Welcome");
@@ -58,7 +61,7 @@ define(LAN_34, "new posts");
 define(LAN_35, "since your last visit.");
 define(LAN_36, "You last visit visited at ");
 define(LAN_37, "It is now is ");
-define(LAN_38, ", all times are GMT.");
+define(LAN_38, ", all times are GMT");
 define(LAN_39, "total topics");
 define(LAN_40, "total posts.");
 define(LAN_41, "Newest member: ");
@@ -139,7 +142,7 @@ define(LAN_105, "The two passwords do not match, please re-enter.");
 define(LAN_106, "That doesn't appear to be a valid email address, please re-enter.");
 define(LAN_107, "Thankyou! You are now a registered member of ".SITENAME.", please keep your username and password written down in a safe place as if lost they cannot be retrieved.<br /><br />You can now login from the Login box.");
 define(LAN_108, "Registration complete");
-define(LAN_109, "This site complies with The Children's Online Privacy Protection Act of 1998 (COPPA) and as such cannot accept registrations from users under the age of 13 without a written permission document from their parent or guardian. For more information you can read the legislation <a href=\"http://www.cdt.org/legislation/105th/privacy/coppa.html\">here</a>. Please contact the main site admin <a href=\"mailto:".SITEADMINEMAIL."\">here</a> if you require assistance.<br /><br /><div style=\"text-align:center\"><b>If you are over the age of 13 please click <a href=\"signup.php?stage1\">here</a> to continue the registration process.");
+define(LAN_109, "This site complies with The Children's Online Privacy Protection Act of 1998 (COPPA) and as such cannot accept registrations from users under the age of 13 without a written permission document from their parent or guardian. For more information you can read the legislation <a href=\"http://www.cdt.org/legislation/105th/privacy/coppa.html\">here</a>. Please contact the main site admin <a href=\"mailto:".SITEADMINEMAIL."\">here</a> if you require assistance.<br /><br /><div style=\"text-align:center\"><b>Please certify you are over the age of 13");
 define(LAN_110, "Registration");
 define(LAN_111, "Re-type Password: ");
 define(LAN_112, "Email Address: ");
@@ -188,7 +191,7 @@ define(LAN_148, "Comments posted: ");
 define(LAN_149, "Forum posts: ");
 
 //usersettings.php
-define(LAN_150, "Settings updated.");
+define(LAN_150, "Settings updated and saved into database.");
 define(LAN_151, "OK");
 define(LAN_152, "New Password: ");
 define(LAN_153, "Re-type New Password: ");
@@ -266,4 +269,34 @@ define(LAN_217, "Thankyou, your new password is now validated. You may now login
 
 define(LAN_281, "Guests: ");
 
+// NEW IN VERSION 5.3b4 - PLEASE UPDATE!
+
+define(LAN_300, "That username was not found in the database.<br /><br />");
+define(LAN_301, "Incorrect password.<br /><br />");
+define(LAN_302, "You have not activated your account. You should have received an email with instructions on how to confirm your account, if not please contact a site administrator.<br /><br />");
+define(LAN_303, "This news item is from ");
+define(LAN_304, "Article Title: ");
+define(LAN_305, "Subheading: ");
+define(LAN_306, "This article is from ");
+define(LAN_307, "Total posts in this category: ");
+define(LAN_308, "Real Name: ");
+define(LAN_309, "Please enter your details below - <b>a verification email will be sent to the email address you enter here so it must be valid, </b>if you do not wish to display your email address on this site please tick the hide email address box.");
+define(LAN_310, "Unable to accept post as that username is registered - if it is your username please login to post.");
+define(LAN_311, "Anonymous");
+define(LAN_312, "Duplicate post - unable to accept.");
+define(LAN_313, "Please choose which list you wish to display ...");
+define(LAN_314, "Classes: ");
+define(LAN_315, "Users: ");
+define(LAN_316, "Go to page ");
+define(LAN_317, "None");
+define(LAN_318, "moderator options: ");
+define(LAN_319, "Unstick");
+define(LAN_320, "Stick");
+define(LAN_321, "Moderators: ");
+define(LAN_322, "Posted: ");
+define(LAN_323, "Preview");
+define(LAN_324, "Your message has been successfully posted.");
+define(LAN_325, "Click Here to view your message");
+define(LAN_326, "Click here to return to the forum");
+define(LAN_327, "Review");
 ?>

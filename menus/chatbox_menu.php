@@ -1,4 +1,4 @@
 <?php
 $text = "";
-require_once("plugins/chatbox.php");
+require_once(e_BASE."plugins/chatbox.php");
 ?>

@@ -9,10 +9,15 @@ You can use these shortcuts instead of typing the whole tag out, on posting the 
 <br /><br />
 <b>Links</b>
 <br />
-Remember if adding a local link (ie a link to another page on your site), you must add ../ to move up a directory or the link will point to your admin directory, ie<br />
-<code>&lt;a href=\"blah.php\"&gt;Foo&lt;/a&gt;</code>
-<br />should be entered as<br />
-<code>&lt;a href=\"../blah.php\"&gt;Foo&lt;/a&gt;</code>
+Please use full paths to any links even if they are local or they may not be parsed correctly.
+<br /><br />
+<b>Status</b>
+<br />
+If you click the Disabled button the news item will not be displayed on your front page at all.
+<br /><br />
+<b>Activation</b>
+<br />
+If you set a start and/or end date your news item will only be displayed between these dates.
 ";
 $ns -> tablerender($caption, $text);
 ?>

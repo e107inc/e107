@@ -17,11 +17,11 @@ class comment{
 	function form_comment(){
 		if(ANON == TRUE || USER == TRUE){
 			$ns = new table;
-			$text = "\n<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING']."\">\n<table style=\"width:95%\">";
+			$text = "\n<form method=\"post\" action=\"".e_SELF."?".e_QUERY."\">\n<table style=\"width:95%\">";
 			if(ANON == TRUE && USER == FALSE){
-				$text .= "<tr>\n<td style=\"width:20%\">".LAN_7."</td>\n<td style=\"width:80%\">\n<input class=\"tbox\" type=\"text\" name=\"author_name\" size=\"60\" value=\"$author_name\" maxlength=\"100\" />\n</td>\n</tr>";
+				$text .= "<tr>\n<td style=\"width:20%\">".LAN_16."</td>\n<td style=\"width:80%\">\n<input class=\"tbox\" type=\"text\" name=\"author_name\" size=\"60\" value=\"$author_name\" maxlength=\"100\" />\n</td>\n</tr>";
 			}
-			$text .= "<tr> \n<td style=\"width:20%\">".LAN_8."</td>\n<td style=\"width:80%\">\n<textarea class=\"tbox\" name=\"comment\" cols=\"70\" rows=\"10\"></textarea>\n</td></tr>\n<tr style=\"vertical-align:top\"> \n<td style=\"width:20%\"></td>\n<td style=\"width:80%\">\n<input class=\"button\" type=\"submit\" name=\"commentsubmit\" value=\"".LAN_9."\" />\n<br /><br />\n<span class=\"smalltext\">\n".LAN_10."\n</span>\n</td>\n</tr>\n</table>\n</form>";
+			$text .= "<tr> \n<td style=\"width:20%\">".LAN_8.":</td>\n<td style=\"width:80%\">\n<textarea class=\"tbox\" name=\"comment\" cols=\"70\" rows=\"10\"></textarea>\n</td></tr>\n<tr style=\"vertical-align:top\"> \n<td style=\"width:20%\"></td>\n<td style=\"width:80%\">\n<input class=\"button\" type=\"submit\" name=\"commentsubmit\" value=\"".LAN_9."\" />\n<br /><br />\n<span class=\"smalltext\">\n".LAN_10."\n</span>\n</td>\n</tr>\n</table>\n</form>";
 			$ns -> tablerender(LAN_9, $text);
 		}else{
 			echo "<br /><div style=\"text-align:center\"><b>".LAN_6."</b></div>";
@@ -103,6 +103,7 @@ class comment{
 		switch($table){
 			case "news": $type=0; break;
 			case "content" : $type=1; break;
+			case "download" : $type=2; break;
 			case "faq" : $type=3; break;
 			case "poll" : $type=4; break;
 		}
@@ -110,28 +111,34 @@ class comment{
 
 		if(!$sql -> db_Select("comments", "*", "comment_comment='".$comment."' AND comment_item_id='$id' AND comment_type='$type' ")){
 			if($_POST['comment'] != ""){
-				if(USER != TRUE){
-					if($_POST['author_name'] == ""){
-						$author = "0.Anonymous";
-					}else{
-						
-						$author = "0.". $aj -> tp($_POST['author_name'], "off", 1);
-					}
-				}else{
-					$author = USERID.".".USERNAME;
+				if(USER == TRUE){
+					$nick = USERID.".".USERNAME;
 					$sql -> db_Update("user", "user_comments=user_comments+1, user_lastpost='".time()."' WHERE user_id='".USERID."' ");
+				}else if($_POST['author_name'] == ""){
+					$nick = "0.Anonymous";
+				}else{
+					$sql2 = new db;
+					if($sql2 -> db_Select("user", "*", "user_name='".$_POST['author_name']."' ")){
+						$ip = getip();
+						if($sql2 -> db_Select("user", "*", "user_name='".$_POST['author_name']."' AND user_ip='$ip' ")){
+							list($cuser_id, $cuser_name) = $sql2-> db_Fetch();
+							$nick = $cuser_id.".".$cuser_name;
+						}else{
+							//$nick = "0.Anonymous";
+							define("emessage", LAN_310);
+						}
+					}else{
+						$nick = "0.".$author_name;
+					}
 				}
-
-				$ip = getip();
-				if(!$sql -> db_Insert("comments", "0, '$id', '$author', '', '".time()."', '$comment', '0', '$ip', '$type' ")){
-					$search = array("\"", "'", "\\");
-					$replace = array("&quot;", "&#39;", "&#92;");
-					$comment = str_replace($search, $replace, $comment);
-					if(!$sql -> db_Insert("comments", "0, '$id', '$author', '', '".time()."', '$comment', '0', '$ip', '$type' ")){
-						$emessage = "<b>Error!</b> Was unable to enter your comment into the database - please retype leaving out any non-standard characters.";
+				if(!defined("emessage")){
+					if(!$sql -> db_Insert("comments", "0, '$id', '$nick', '', '".time()."', '$comment', '0', '$ip', '$type' ")){
+						echo  "<b>Error!</b> Was unable to enter your comment into the database - please retype leaving out any non-standard characters.";
 					}
 				}
 			}
+		}else{
+			define("emessage", LAN_312);
 		}
 	}
 
@@ -148,7 +155,7 @@ class comment{
 	}
 	function checklayoutc($str, $user_id, $user_name, $datestamp, $user_image, $user_comments, $user_join, $user_signature, $comment_comment, $comment_blocked, $unblock, $block, $delete, $userinfo){
 		if(strstr($str, "USERNAME")){
-			$text .= "<a href=\"user.php?".$user_id."\">".$user_name."</a>\n";
+			$text .= "<a href=\"user.php?id.".$user_id."\">".$user_name."</a>\n";
 		}else if(strstr($str, "TIMEDATE")){
 			$text .= $datestamp;
 		}else if(strstr($str, "AVATAR")){

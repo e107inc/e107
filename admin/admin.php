@@ -5,8 +5,8 @@
 |	/admin/admin.php
 |
 |	©Steve Dunstan 2001-2002
-|	http://jalist.com
-|	stevedunstan@jalist.com
+|	http://e107.org
+|	jalist@e107.org
 |
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
@@ -18,7 +18,7 @@ require_once("auth.php");
 function wad($link, $title, $description, $perms){
 
 	if(getperms($perms)){
-		$tmp = "<td style=\"text-align:center; vertical-align:top\"><a href=\"".$link."\"><img src=\"e107.png\" alt=\"bullet\" style=\"border:0\"/></a><br /><a href=\"".$link."\"><b>".$title."</b></a><br />".$description."<br /><br /></td>";
+		$tmp = "<td style=\"text-align:center; vertical-align:top; width:20%\"><a href=\"".$link."\"><img src=\"e107.png\" alt=\"bullet\" style=\"border:0\"/></a><br /><a href=\"".$link."\"><b>".$title."</b></a><br />".$description."<br /><br /></td>";
 	}else{
 		$tmp = "<td style=\"text-align:center; vertical-align:top\"><img src=\"e1073.png\" alt=\"bullet\" style=\"border:0\"/><br /><b>".$title."</b><br />".$description."<br /><br /></td>";
 	}
@@ -55,23 +55,29 @@ $text .= wad("banlist.php", "Banlist", "Ban visitors by IP address", "4");
 $text .= wad("users.php", "Users", "Moderate site members", "4");
 $text .= wad("ugflag.php", "Maintainance", "Display custom site is down page", "9");
 $text .= wad("admin.php?logout", "Logout", "", "");
-$text .= "</tr><tr>";
+$text .= "</tr>";
 
 
 
-$text .= "</tr></table>";
+//$text .= "</tr></table>";
 
-$ns -> tablerender("<div style=\"text-align:center\">Welcome ".ADMINNAME."</div>", $text);
+//$ns -> tablerender("<div style=\"text-align:center\">Welcome ".ADMINNAME."</div>", $text);
 
-$text = "<table style=\"width:95%\">
+//$text = "<table style=\"width:95%\">
+$text .= "<tr>
+<td colspan=\"5\">
+<div style=\"text-align:center\">
+<div class=\"border\"><div class=\"caption\">Plugins</div></div></div>
+<br />
+</td>
 <tr>";
 
-	$handle=opendir("../menus/plugins/");
-	$c=0;
+	$handle=opendir(e_BASE."menus/plugins/");
+	$c=1;
 	while ($file = readdir($handle)){	
 		if($file != "." && $file != ".."){
-			require_once("../menus/plugins/".$file);
-			if($c == 4){
+			require_once(e_BASE."menus/plugins/".$file);
+			if($c == 5){
 				$text .= "</tr><tr>";
 				$c=0;
 			}
@@ -80,11 +86,13 @@ $text = "<table style=\"width:95%\">
 	}
 	$text .= "</tr></table>";
 	closedir($handle);
+	$ns -> tablerender("<div style=\"text-align:center\">Welcome ".ADMINNAME."</div>", $text);
+	/*
 	if($text != ""){
 		$ns -> tablerender("<div style=\"text-align:center\">Plugins</div>", "<div style=\"text-align:center\">".$text."</div>");
 	}else{
 		$ns -> tablerender("<div style=\"text-align:center\">Plugins</div>", "No plugins loaded.");
 	}
-
+	*/
 require_once("footer.php");
 ?>

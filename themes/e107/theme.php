@@ -66,22 +66,43 @@ $FOOTER =
 
 //	[newsstyle]
 
-define(TITLE_POSITION, "caption");	// put news title in caption or body?
-define(TITLE_ALIGN,  "left");
-define(TITLE_STYLE_START, "");
-define(TITLE_STYLE_END, "");
-define(ICON_SHOW, TRUE);
-define(ICON_POSITION, "body");	 // put icon in caption or body?
-define(ICON_ALIGN, "left");
-define(TEXT_ALIGN, "justify");
-define(EXTENDED_STRING, "<div class=\"mediumtext\">Read more ...</div>");
-define(SHOW_EMAIL_PRINT, TRUE);	// show email and print icons?
-define(INFO_TEXT, "<hr />Category: [nc] | posted by [administrator] on [date and time] <br /> [l] Comments: [count] [/l]"); // please leave the text inside square brackets intact
-define(COMMENT_OFF_TEXT, " turned off for this item");
-define(INFO_POSITION, "body");	// caption or body
-define(INFO_ALIGN, "center");
-define(URL_TEXT, "Link: ");
-define(SOURCE_TEXT, "Story source: ");
+$NEWSSTYLE = "
+<div class='border'>
+	<div class='caption'>
+		{NEWSTITLE}
+	</div>
+</div>
+<div class='bodytable'>
+{NEWSICON}
+	<div style='text-align:justify'>
+		{NEWSBODY}
+		<br />
+		{NEWSSOURCE}
+		<br />
+		{NEWSURL}
+		<br />
+	</div>
+	<div style='text-align:center'>
+		<hr />Category: 
+		{NEWSCATEGORY}
+		Posted by: 
+		{NEWSAUTHOR}
+		on
+		{NEWSDATE}
+		<br />
+		{NEWSCOMMENTS}
+		{EMAILICON}
+		{PRINTICON}
+		{EXTENDED}
+	</div>
+</div>";
+
+define("ICONSTYLE", "float: left; border:0");
+define("COMMENTLINK", "Comments: ");
+define("COMMENTOFFSTRING", "Comments are turned off for this item");
+define("EXTENDEDSTRING", "Read more ...");
+define("SOURCESTRING", "Source: ");
+define("URLSTRING", "Link: ");
 
 
 // [linkstyle]
@@ -168,6 +189,9 @@ $CHATBOXSTYLE = "
 </span><br />
 <div class=\"mediumtext\" style=\"text-align:right\">
 {MESSAGE}
+</div>
+<div class=\"smalltext\">
+{ADMINOPTIONS}
 </div></div>";
 
 define(CB_STYLE, $CHATBOXSTYLE);

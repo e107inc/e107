@@ -1,23 +1,23 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system													|
-|	/admin/links.php															|
-|																						|
-|	©Steve Dunstan 2001-2002										|
-|	http://jalist.com															|
-|	stevedunstan@jalist.com											|
-|																						|
-|	Released under the terms and conditions of the		|
-|	GNU General Public License (http://gnu.org).				|
+|	e107 website system
+|	/admin/links.php
+|
+|	©Steve Dunstan 2001-2002
+|	http://e107.org
+|	jalist@e107.org
+|
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("I")){ header("location:../index.php"); }
+if(!getperms("I")){ header("location:".e_HTTP."index.php"); }
 require_once("auth.php");
 
-if($_SERVER['QUERY_STRING'] != ""){
-	$qs = explode(".", $_SERVER['QUERY_STRING']);
+if(e_QUERY != ""){
+	$qs = explode(".", e_QUERY);
 	$action = $qs[0];
 	$linkid = $qs[1];
 }
@@ -26,7 +26,7 @@ if($_POST['add_link'] != ""){
 	$sql -> db_Select("link_category", "*", "link_category_name='".$_POST['cat_name']."' ");
 	$row = $sql -> db_Fetch();
 	$link_cat_id = $row['link_category_id'];
-	$sql -> db_Insert("links", "0, '".$_POST['link_name']."', '".$_POST['link_url']."', '".$_POST['link_description']."', '".$_POST['link_button']."', '$link_cat_id', '0', '0' ");
+	$sql -> db_Insert("links", "0, '".$_POST['link_name']."', '".$_POST['link_url']."', '".$_POST['link_description']."', '".$_POST['link_button']."', '$link_cat_id', '0', '0', '".$_POST['linkopentype']."' ");
 	$message = "Link added to database.";
 	unset ($link_id, $link_name, $link_url, $link_description, $link_button, $link_main);
 }
@@ -35,7 +35,7 @@ if(IsSet($_POST['update_link'])){
 	$sql -> db_Select("link_category", "*", "link_category_name='".$_POST['cat_name']."' ");
 	$row = $sql -> db_Fetch();
 	$link_cat_id = $row['link_category_id'];
-	$sql -> db_Update("links", "link_name='".$_POST['link_name']."', link_url='".$_POST['link_url']."', link_description='".$_POST['link_description']."', link_button= '".$_POST['link_button']."', link_category='$link_cat_id' WHERE link_id='".$_POST['link_id']."' ");
+	$sql -> db_Update("links", "link_name='".$_POST['link_name']."', link_url='".$_POST['link_url']."', link_description='".$_POST['link_description']."', link_button= '".$_POST['link_button']."', link_category='$link_cat_id', link_open='".$_POST['linkopentype']."' WHERE link_id='".$_POST['link_id']."' ");
 	$message = "Link updated in database.";
 	unset ($link_id, $link_name, $link_url, $link_description, $link_button, $link_main);
 }
@@ -65,7 +65,7 @@ if(IsSet($_POST['delete']) || $action == "delete"){
 	$text = "<div style=\"text-align:center\">
 	<b>Please confirm you wish to delete the '$link_name' link - once deleted it cannot be retrieved</b>
 <br /><br />
-<form method=\"post\" action=\"$PHP_SELF\">
+<form method=\"post\" action=\"".e_SELF."\">
 <input class=\"button\" type=\"submit\" name=\"cancel\" value=\"Cancel\" /> 
 <input class=\"button\" type=\"submit\" name=\"confirm\" value=\"Confirm Delete\" />"; 
 if($action == "delete"){
@@ -85,8 +85,6 @@ if(IsSet($_POST['cancel'])){
 	$message = "Delete cancelled.";
 }
 
-
-
 if(IsSet($_POST['update_order'])){
 	extract($_POST);
 	$sql -> db_Select("links");
@@ -98,9 +96,6 @@ if(IsSet($_POST['update_order'])){
 	$message = "Order updated.";
 
 }
-
-
-
 
 if(IsSet($message)){
 	$ns -> tablerender("", "<div style=\"text-align:center\"><b>".$message."</b></div>");
@@ -116,7 +111,7 @@ if($link_total == "0"){
 	";
 }else{
 $text = "<div style=\"text-align:center\">
-	<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
+	<form method=\"post\" action=\"".e_SELF."\">
 	Existing Links: 
 	<select name=\"existing\" class=\"tbox\">";
 	while(list($link_id_, $link_name_) = $sql-> db_Fetch()){
@@ -131,7 +126,7 @@ $text = "<div style=\"text-align:center\">
 }
 
 $text .= "
-<form method=\"post\" action=\"$PHP_SELF\">
+<form method=\"post\" action=\"".e_SELF."\">
 <table style=\"width:95%\">
 <tr>
 <td style=\"width:30%\">Link Category: </td>
@@ -183,8 +178,21 @@ $text .= "<span class=\"twelvept\"> [ <a href=\"link_category.php\">Add/Edit Cat
 
 </td>
 </tr>
+<tr>
+<td style=\"width:30%\">Link Open Type: </td>
+<td style=\"width:70%\">
+<select name=\"linkopentype\" class=\"tbox\">
+<option value=\"0\" selected>opens in same window</option>
+<option value=\"1\">_target=blank</option>
+<option value=\"2\">_target=parent</option>
+<option value=\"3\">_target=top</option>
+<option value=\"4\">open in 600x400 miniwindow</option>
+</select>
+
+</td>
+</tr>
 <tr style=\"vertical-align:top\"> 
-<td colspan=\"2\"  style=\"text-align:center\">";
+<td colspan=\"2\"  style=\"text-align:center\"><br />";
 if(IsSet($_POST['edit']) || $action == "edit"){
 	$text .= "<input class=\"button\" type=\"submit\" name=\"update_link\" value=\"Update Link\" />
 <input type=\"hidden\" name=\"link_id\" value=\"$link_id\">";
@@ -198,10 +206,7 @@ $text .= "</td>
 
 $ns -> tablerender("<div style=\"text-align:center\">Links</div>", $text);
 
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-// link order
-
-$text = "<form method=\"post\" action=\"$PHP_SELF\">
+$text = "<form method=\"post\" action=\"".e_SELF."\">
 <table style=\"width:95%\">";
 
 $sql -> db_Select("link_category");
@@ -229,12 +234,6 @@ $text .= "
 </form>";
 
 $ns -> tablerender("<div style=\"text-align:center\">Link Order</div>", $text);
-
-
-
-
-
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 require_once("footer.php");
 ?>	

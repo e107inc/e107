@@ -1,35 +1,36 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system													|
-|	/admin/plugin_conf/chatbox_conf.php						|
-|																						|
-|	©Steve Dunstan 2001-2002										|
-|	http://jalist.com															|
-|	stevedunstan@jalist.com											|
-|																						|
-|	Released under the terms and conditions of the		|
-|	GNU General Public License (http://gnu.org).				|
+|	e107 website system
+|	/admin/emoticon_conf.php
+|
+|	©Steve Dunstan 2001-2002
+|	http://e107.org
+|	jalist@e107.org
+|
+|	Released under the terms and conditions of the	
+|	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("P")){ header("location:../index.php"); }
+if(!getperms("P")){ header("location:".e_HTTP."index.php"); }
 
 if(IsSet($_POST['updatesettings'])){
-	$sql -> db_Update("prefs", "pref_value='".$_POST['smiley_activate']."' WHERE pref_name='smiley_activate' ");
+	$pref['smiley_activate'][1] = $_POST['smiley_activate'];
+	$sql -> db_Update("core", "e107_value='".serialize($pref)."' WHERE e107_name='pref' ");
 	header("location:emoticon_conf.php?u");
 }
 
 require_once("auth.php");
 
-if($_SERVER['QUERY_STRING'] == "u"){
+if(e_QUERY == "u"){
 	$ns -> tablerender("", "<div style=\"text-align:center\"><b>Emoticon settings updated.</b></div>");
 }
 
 $smiley_activate = $pref['smiley_activate'][1];
 
 $text = "
-<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
+<form method=\"post\" action=\"".e_SELF."\">
 <table style=\"width:95%\">
 <tr>
 <td style=\"width:30%\">Activate emoticons?: </td>

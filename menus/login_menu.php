@@ -3,14 +3,12 @@ $text = "";
 if($pref['user_reg'][1] == 1 || ADMIN == TRUE){
 
 	if(USER == TRUE || ADMIN == TRUE){
-		if(IsSet($_SESSION['userkey'])){ $uk = $_SESSION['userkey']; }else{ $uk = $_COOKIE['userkey']; }
-		$tmp = explode(".", $uk); $uid = $tmp[0]; $upw = $tmp[1];
+		$uk = $_COOKIE['userkey']; $tmp = explode(".", $uk); $uid = $tmp[0]; $upw = $tmp[1];
 		$sql = new db;
 		if($sql -> db_Select("user", "*", "user_id='$uid' AND user_password='$upw' ")){
 			if(ADMIN == TRUE){
-				$text = "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <a href=\"admin/admin.php\">Admin</a><br />";
-			}else{
-				unset($text);
+				$text = ($pref['maintainance_flag'][1]==1 ? "<div style=\"text-align:center\"><b>The maintenance flag is true - this means normal visitors are being redirected to sitedown.php. To reset the flag go to admin/maintenance.</div></b><br />" : "" );
+				$text .= "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <a href=\"admin/admin.php\">Admin</a><br />";
 			}
 			$text .= "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <a href=\"usersettings.php\">Settings</a>
 <br />
@@ -53,7 +51,12 @@ if($pref['user_reg'][1] == 1 || ADMIN == TRUE){
 			$text = "<div style=\"text-align:center\">".LOGINMESSAGE."</div>";
 		}
 		$text .=  "<div style=\"text-align:center\">
-<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><p>
+<form method=\"post\" action=\"".e_SELF;
+if(e_QUERY){
+	$text .= "?".e_QUERY;
+}
+
+$text .= "\"><p>
 ".LAN_16."<br />
 <input class=\"tbox\" type=\"text\" name=\"username\" size=\"15\" value=\"\" maxlength=\"20\" />\n
 <br />

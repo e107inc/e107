@@ -5,18 +5,18 @@
 |	/signup.php
 |
 |	©Steve Dunstan 2001-2002
-|	http://jalist.com
-|	stevedunstan@jalist.com
+|	http://e107.org
+|	jalist@e107.org
 |
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 require_once("class2.php");
-if($pref['user_reg'][1] == 0){header("location:index.php");}
+if($pref['user_reg'][1] == 0){header("location:".e_HTTP."index.php");}
 
-if($_SERVER['QUERY_STRING'] != ""){
-	$qs = explode(".", $_SERVER['QUERY_STRING']);
+if(e_QUERY != ""){
+	$qs = explode(".", e_QUERY);
 	if($qs[0] == "activate"){
 		if($sql -> db_Select("user", "*", "user_sess='".$qs[2]."' ")){
 			if($row = $sql -> db_Fetch()){
@@ -28,7 +28,7 @@ if($_SERVER['QUERY_STRING'] != ""){
 				exit;
 			}
 		}else{
-			header("location:index.php");
+			header("location: ".e_HTTP."index.php");
 		}
 	}
 }
@@ -62,26 +62,35 @@ if(IsSet($_POST['register'])){
 			die();
 		}
 
-
+		$username = strip_tags($_POST['name']);
 		$time=time();	
 		$ip = getip();
-		$key = md5(uniqid(rand(),1));
-		$sql -> db_Insert("user", "0, '".$_POST['name']."', '".md5($_POST['password1'])."', '$key', '".$_POST['email']."', 	'".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$_POST['birthday']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '', '0' ");
-		$sql -> db_Select("user", "*", "user_name='".$_POST['name']."' AND user_join='".$time."' ");
-		$row = $sql -> db_Fetch();
-		$id = $row['user_id'];
-		$headers .= "From: ".SITENAME."<".SITEADMINEMAIL.">\n";
-		$headers .= "X-Sender: <mail@".SITEURL.">\n";
-		$headers .= "X-Mailer: PHP\n";
-		$headers .= "X-Priority: 3\n";
-		$headers .= "Return-Path: <mail@".SITEURL.">\n";
-		$message = "Welcome to ".SITENAME."\nYour registration has been received and created with the following login information ...\n\nUsername: ".$_POST['name']."\nPassword: ".$_POST['password1']."\n\nYour account is currently marked as being inactive, to activate your account please go to the following link ...\n\n".SITEURL."/signup.php?activate.".$id.".".$key."\n\nPlease keep this email for your own information as your password has been encrypted and cannot be retrieved if you misplace or forget it. You can however request a new password if this happens.\n\nThanks for your registration.\n\nFrom ".SITENAME."\n".SITEURL;
-		mail($_POST['email'], "Registration details for ".SITENAME, $message, $headers);
-		require_once(HEADERF);
-		$text = "This stage of registation is complete, you will be receiving a confirmation email containing your login details, please follow the link in the email to complete the signup process and activate your account.";
-		$ns -> tablerender("<div style=\"text-align:center\">Thankyou!</div>", $text);
-		require_once(FOOTERF);
-		exit;
+
+		if($pref['user_reg_veri'][1]){
+			$key = md5(uniqid(rand(),1));
+			$sql -> db_Insert("user", "0, '".$username."', '".md5($_POST['password1'])."', '$key', '".$_POST['email']."', 	'".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$_POST['birthday']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '' ");
+			$sql -> db_Select("user", "*", "user_name='".$_POST['name']."' AND user_join='".$time."' ");
+			$row = $sql -> db_Fetch();
+			$id = $row['user_id'];
+			$headers .= "From: ".SITENAME."<".SITEADMINEMAIL.">\n";
+			$headers .= "X-Sender: <mail@".SITEURL.">\n";
+			$headers .= "X-Mailer: PHP\n";
+			$headers .= "X-Priority: 3\n";
+			$headers .= "Return-Path: <mail@".SITEURL.">\n";
+			$message = "Welcome to ".SITENAME."\nYour registration has been received and created with the following login information ...\n\nUsername: ".$_POST['name']."\nPassword: ".$_POST['password1']."\n\nYour account is currently marked as being inactive, to activate your account please go to the following link ...\n\n".SITEURL."signup.php?activate.".$id.".".$key."\n\nPlease keep this email for your own information as your password has been encrypted and cannot be retrieved if you misplace or forget it. You can however request a new password if this happens.\n\nThanks for your registration.\n\nFrom ".SITENAME."\n".SITEURL;
+			mail($_POST['email'], "Registration details for ".SITENAME, $message, $headers);
+			require_once(HEADERF);
+			$text = "This stage of registation is complete, you will be receiving a confirmation email containing your login details, please follow the link in the email to complete the signup process and activate your account.";
+			$ns -> tablerender("<div style=\"text-align:center\">Thankyou!</div>", $text);
+			require_once(FOOTERF);
+			exit;
+		}else{
+			require_once(HEADERF);
+			$sql -> db_Insert("user", "0, '".$username."', '".md5($_POST['password1'])."', '$key', '".$_POST['email']."', 	'".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$_POST['birthday']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '' ");
+			$ns -> tablerender("<div style=\"text-align:center\">Thankyou!</div>", LAN_107);
+			require_once(FOOTERF);
+			exit;
+		}
 	}
 }
 
@@ -93,10 +102,20 @@ if($error != ""){
 	exit;
 }
 
-$qs = $_SERVER['QUERY_STRING'];
+$qs = e_QUERY;
 
 if($pref['use_coppa'][1] == 1 && !ereg("stage", $qs)){
-	$text = LAN_109."</b></div>";
+	if(eregi("stage", LAN_109)){
+		$text .= LAN_109."</b></div>";
+	}else{
+		$text .= LAN_109."<form method=\"post\" action=\"signup.php?stage1\">
+	<input type=\"radio\" name=\"coppa\" value=\"0\" checked> No
+	<input type=\"radio\" name=\"coppa\" value=\"1\"> Yes<br>
+	<input class=\"button\" type=\"submit\" name=\"newver\" value=\"".LAN_156."\" />
+	</form>
+	</div>";
+	}
+
 	$ns -> tablerender("<div style=\"text-align:center\">".LAN_110."</div>", $text);
 	require_once(FOOTERF);
 	exit;
@@ -106,155 +125,77 @@ if(!$website){
 	$website = "http://";
 }
 
-$text = "
-<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"  name=\"signupform\">\n
-<table style=\"width:95%\">
+if(!eregi("stage", LAN_109)){
+	if(IsSet($_POST['newver'])){
+		if(!$_POST['coppa']){
+			$text = "Unable to proceed.";
+			$ns -> tablerender("<div style=\"text-align:center\">Registration failed</div>", "<div style=\"text-align:center\">".$text."</div>");
+			require_once(FOOTERF);
+			exit;
+		}
+	}
+}
+$text .= "<div style='text-align:center'>";
+if($pref['user_reg_veri'][1]){
+	$text .=	LAN_309."<br /><br />";
+}
+$text .= "<form method=\"post\" action=\"".e_SELF."\"  name=\"signupform\">\n
+<table style=\"width:60%\">
 <tr>
-<td style=\"width:20%\"><u>".LAN_7."</u>:</td>
-<td style=\"width:80%\">
+<td style=\"width:30%\">".LAN_7."</td>
+<td style=\"width:70%\">
 <input class=\"tbox\" type=\"text\" name=\"name\" size=\"40\" value=\"$name\" maxlength=\"100\" />
 </td>
 </tr>
 
 <tr>
-<td style=\"width:20%\"><u>".LAN_17."</u>:</td>
-<td style=\"width:80%\">
+<td style=\"width:30%\">".LAN_308."</td>
+<td style=\"width:70%\">
+<input class=\"tbox\" type=\"text\" name=\"realname\" size=\"40\" value=\"$realname\" maxlength=\"100\" />
+</td>
+</tr>
+
+<tr>
+<td style=\"width:30%\">".LAN_17."</td>
+<td style=\"width:70%\">
 <input class=\"tbox\" type=\"password\" name=\"password1\" size=\"40\" value=\"\" maxlength=\"20\" /> (case sensitive)
 </td>
 </tr>
 
 <tr>
-<td style=\"width:20%\"><u>".LAN_111."</u>:</td>
-<td style=\"width:80%\">
+<td style=\"width:30%\">".LAN_111."</td>
+<td style=\"width:70%\">
 <input class=\"tbox\" type=\"password\" name=\"password2\" size=\"40\" value=\"\" maxlength=\"20\" /> (case sensitive)
 </td>
 </tr>
 
 <tr>
-<td style=\"width:20%\"><u>".LAN_112."</u>:</td>
-<td style=\"width:80%\">
+<td style=\"width:30%\">".LAN_112."</td>
+<td style=\"width:70%\">
 <input class=\"tbox\" type=\"text\" name=\"email\" size=\"60\" value=\"$email\" maxlength=\"100\" />
 </td>
 </tr>
 
 <tr>
-<td style=\"width:20%\">".LAN_113."</td>
-<td style=\"width:80%\">";
+<td style=\"width:30%\">".LAN_113."</td>
+<td style=\"width:70%\">";
 if($hide_email == 1){
 	$text .= "<input type=\"checkbox\" name=\"hideemail\" value=\"1\"  checked>";
 }else{
 	$text .= "<input type=\"checkbox\" name=\"hideemail\" value=\"1\">";
 }
 
-$text .= LAN_114."</td></tr><tr>
-<td style=\"width:20%\">Website:</td>
-<td style=\"width:80%\">
-<input class=\"tbox\" type=\"text\" name=\"website\" size=\"60\" value=\"$website\" maxlength=\"150\" />
-</td>
-</tr>
-
-<tr>
-<td style=\"width:20%\">".LAN_115."</td>
-<td style=\"width:80%\">
-<input class=\"tbox\" type=\"text\" name=\"icq\" size=\"20\" value=\"$icq\" maxlength=\"10\" />
-</td>
-</tr>
-
-<tr>
-<td style=\"width:20%\">".LAN_116."</td>
-<td style=\"width:80%\">
-<input class=\"tbox\" type=\"text\" name=\"aim\" size=\"30\" value=\"$aim\" maxlength=\"100\" />
-</td>
-</tr>
-
-<tr>
-<td style=\"width:20%\">".LAN_117."</td>
-<td style=\"width:80%\">
-<input class=\"tbox\" type=\"text\" name=\"msn\" size=\"30\" value=\"$msn\" maxlength=\"100\" />
-</td>
-</tr>
-
-<tr>
-<td style=\"width:20%\">".LAN_118."</td>
-<td style=\"width:80%\">
-<input class=\"tbox\" type=\"text\" name=\"birthday\" size=\"12\" value=\"$birthday\" maxlength=\"20\" /> (yyyy/mm/dd)
-</td>
-</tr>
-
-<tr>
-<td style=\"width:20%\">".LAN_119."</td>
-<td style=\"width:80%\">
-<input class=\"tbox\" type=\"text\" name=\"location\" size=\"60\" value=\"$location\" maxlength=\"200\" />
-</td>
-</tr>
-
-<tr>
-<td style=\"width:20%\">".LAN_120."</td>
-<td style=\"width:80%\">
-<textarea class=\"tbox\" name=\"signature\" cols=\"70\" rows=\"4\">$signature</textarea>
-</td>
-</tr>
-
-<tr>
-<td style=\"width:20%; vertical-align:top\">".LAN_121."<br /><span class=\"smalltext\">(Type path or choose avatar)</span></td>
-<td style=\"width:80%\">
-<input class=\"tbox\" type=\"text\" name=\"image\" size=\"60\" value=\"$image\" maxlength=\"100\" />
-
-<input class=\"button\" type =\"button\" style=\"\"width: 35px\"; cursor:hand\" size=\"30\" value=\"Choose avatar\" onClick=\"expandit(this)\">
-<div style=\"display:none\" style=&{head};>";
-$avatarlist[0] = "";
-$handle=opendir("themes/shared/avatars/");
-while ($file = readdir($handle)){
-	if($file != "." && $file != ".."){
-		$avatarlist[] = $file;
-	}
-}
-closedir($handle);
-
-for($c=1; $c<=(count($avatarlist)-1); $c++){
-	$text .= "<a href=\"javascript:addtext('avatar_$c')\"><img src=\"themes/shared/avatars/".$avatarlist[$c]."\" style=\"border:0\" alt=\"\" />\n";
-}
-
-$text .= "<br />
-</div>
-
-</td>
-</tr>
-
-<tr>
-<td style=\"width:20%\">".LAN_122."</td>
-<td style=\"width:80%\">
-<select name=\"timezone\" class=\"tbox\">\n";
-
-timezone();
-$count = 0;
-while($timezone[$count]){
-	if($timezone[$count] == "GMT"){
-		$text .= "<option value=\"".$timezone[$count]."\" selected>(".$timezone[$count].") ".$timearea[$count]."</option>\n";
-	}else{
-		$text .= "<option value=\"".$timezone[$count]."\">(GMT".$timezone[$count].") ".$timearea[$count]."</option>\n";
-	}
-	$count++;
-}
-
-$text .= "</select>
-</td>
-</tr>
-
-
-</tr>
+$text .= "</tr>
 <tr style=\"vertical-align:top\"> 
 <td colspan=\"2\"  style=\"text-align:center\">
+<br />
 <input class=\"button\" type=\"submit\" name=\"register\" value=\"".LAN_123."\" />
+<br />
 </td>
 </tr>
 </table>
 </form>
-<br />
-<br />
-<span class=\"smalltext\">
-".LAN_10."
-</span>
+</div>
 ";
 
 $ns -> tablerender(LAN_123, $text);

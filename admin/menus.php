@@ -2,11 +2,11 @@
 /*
 +---------------------------------------------------------------+
 |	e107 website system
-|	/admin/menusort.php
+|	/admin/menus.php
 |
 |	©Steve Dunstan 2001-2002
-|	http://jalist.com
-|	stevedunstan@jalist.com
+|	http://e107.org
+|	jalist@e107.org
 |
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
@@ -14,12 +14,11 @@
 */
 require_once("../class2.php");
 if($HEADER != ""){
-	header("location:menus2.php");
+	header("location:".e_ADMIN."menus2.php");
 	exit;
 }
 
-
-$tmp = explode(".", $_SERVER['QUERY_STRING']);
+$tmp = explode(".", e_QUERY);
 $action = $tmp[0];
 $id = $tmp[1];
 $position = $tmp[2];
@@ -27,42 +26,41 @@ $location = $tmp[3];
 
 if($action == "deac"){
 	$sql -> db_Update("menus", "menu_location='0', menu_order='0' WHERE menu_id='$id' ");
-	header("location:".$_SERVER['PHP_SELF']);
+	header("location:".e_SELF);
 }
 
 if($action == "act"){
 	$menu_count = $sql -> db_Count("menus", "(*)", " WHERE menu_location='$position' ");
 	$sql -> db_Update("menus", "menu_location='$position', menu_order='".($menu_count+1)."' WHERE menu_id='$id' ");
-	header("location:".$_SERVER['PHP_SELF']);
+	header("location:".e_SELF);
 }
 
 if($action == "dec"){
 	$sql -> db_Update("menus", "menu_order=menu_order-1 WHERE menu_order='".($position+1)."' AND menu_location='$location' ");
 	$sql -> db_Update("menus", "menu_order=menu_order+1 WHERE menu_id='$id' AND menu_location='$location' ");
-	header("location:".$_SERVER['PHP_SELF']);
+	header("location:".e_SELF);
 }
 
 if($action == "inc"){
 	$sql -> db_Update("menus", "menu_order=menu_order+1 WHERE menu_order='".($position-1)."' AND menu_location='$location' ");
 	$sql -> db_Update("menus", "menu_order=menu_order-1 WHERE menu_id='$id' AND menu_location='$location' ");
-	header("location:".$_SERVER['PHP_SELF']);
+	header("location:".e_SELF);
 }
 
 if($action == "move"){
 	$menu_count = $sql -> db_Count("menus", "(*)", " WHERE menu_location='$position' ");
 	$sql -> db_Update("menus", "menu_location='$position', menu_order='".($menu_count+1)."' WHERE menu_id='$id' ");
-	header("location:".$_SERVER['PHP_SELF']);
+	header("location:".e_SELF);
 }
 
-if(!getperms("2")){ header("location:../index.php"); }
+if(!getperms("2")){ header("location:".e_HTTP."index.php"); }
 
 require_once("auth.php");
 
-
-$handle=opendir("../menus/");
+$handle=opendir(e_BASE."menus/");
 	$c=0;
 	while ($file = readdir($handle)){	
-		if($file != "." && $file != ".." && $file != "plugins" && $file != "index.html" && $file !=	"log_menu.php"){
+		if($file != "." && $file != ".." && $file != "plugins" && $file != "index.html" && $file != "log_menu.php"){
 			$tmp = eregi_replace(".php", "", $file);
 			if(!$sql -> db_Select("menus", "*", "menu_name='$tmp'")){
 				$sql -> db_Insert("menus", " 0, '$tmp', 0, 0 ");
@@ -103,24 +101,24 @@ if($menus_used[2]){
 	while(list($menu_id, $menu_name, $menu_location, $menu_order) = $sql-> db_Fetch()){
 		$menu_name = eregi_replace("_menu", "", $menu_name);
 		$text = "<div class=\"mediumtext\"><u><b>".$menu_name."</u></b></div><br />
-		<a href=\"".$_SERVER['PHP_SELF']."?deac.".$menu_id."\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/off.gif\" alt=\"\" /> Deactivate</div></a>";
+		<a href=\"".e_SELF."?deac.".$menu_id."\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/off.gif\" alt=\"\" /> Deactivate</div></a>";
 		if($menu_order != 1){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?inc.".$menu_id.".".$menu_order.".3\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/up.gif\" alt=\"\" /> Move Up</div></a>";
+			$text .= "<a href=\"".e_SELF."?inc.".$menu_id.".".$menu_order.".3\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/up.gif\" alt=\"\" /> Move Up</div></a>";
 		}
 		if($menu_count != $menu_order){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?dec.".$menu_id.".".$menu_order.".3\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/down.gif\" alt=\"\" /> Move Down</div></a>";
+			$text .= "<a href=\"".e_SELF."?dec.".$menu_id.".".$menu_order.".3\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/down.gif\" alt=\"\" /> Move Down</div></a>";
 		}
 		if($menus_used[0]){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?move.".$menu_id.".1\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/right.gif\" alt=\"\" /> Move to Left menu</div></a>";
+			$text .= "<a href=\"".e_SELF."?move.".$menu_id.".1\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/right.gif\" alt=\"\" /> Move to Left menu</div></a>";
 		}
 		if($menus_used[1]){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?move.".$menu_id.".2\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/right.gif\" alt=\"\" /> Move to Rightmenu</div></a>";
+			$text .= "<a href=\"".e_SELF."?move.".$menu_id.".2\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/right.gif\" alt=\"\" /> Move to Rightmenu</div></a>";
 		}
 		if($menus_used[4]){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?move.".$menu_id.".5\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/right.gif\" alt=\"\" /> Move to Centermenu</div></a>";
+			$text .= "<a href=\"".e_SELF."?move.".$menu_id.".5\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/right.gif\" alt=\"\" /> Move to Centermenu</div></a>";
 		}
 		if($menus_used[3]){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?move.".$menu_id.".4\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/right.gif\" alt=\"\" /> Move to FarRightmenu</div></a>";
+			$text .= "<a href=\"".e_SELF."?move.".$menu_id.".4\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/right.gif\" alt=\"\" /> Move to FarRightmenu</div></a>";
 		}
 		
 		$text .= "<br />";
@@ -141,24 +139,24 @@ if($menus_used[0]){
 	while(list($menu_id, $menu_name, $menu_location, $menu_order) = $sql-> db_Fetch()){
 		$menu_name = eregi_replace("_menu", "", $menu_name);
 		$text = "<div class=\"mediumtext\"><u><b>".$menu_name."</u></b></div><br />
-		<a href=\"".$_SERVER['PHP_SELF']."?deac.".$menu_id."\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/off.gif\" alt=\"\" /> Deactivate</div></a>";
+		<a href=\"".e_SELF."?deac.".$menu_id."\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/off.gif\" alt=\"\" /> Deactivate</div></a>";
 		if($menu_order != 1){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?inc.".$menu_id.".".$menu_order.".1\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/up.gif\" alt=\"\" /> Move Up</div></a>";
+			$text .= "<a href=\"".e_SELF."?inc.".$menu_id.".".$menu_order.".1\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/up.gif\" alt=\"\" /> Move Up</div></a>";
 		}
 		if($menu_count != $menu_order){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?dec.".$menu_id.".".$menu_order.".1\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/down.gif\" alt=\"\" /> Move Down</div></a>";
+			$text .= "<a href=\"".e_SELF."?dec.".$menu_id.".".$menu_order.".1\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/down.gif\" alt=\"\" /> Move Down</div></a>";
 		}
 		if($menus_used[2]){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?move.".$menu_id.".3\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/left.gif\" alt=\"\" /> Move to FarLeft menu</div></a>";
+			$text .= "<a href=\"".e_SELF."?move.".$menu_id.".3\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/left.gif\" alt=\"\" /> Move to FarLeft menu</div></a>";
 		}
 		if($menus_used[1]){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?move.".$menu_id.".2\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/right.gif\" alt=\"\" /> Move to Rightmenu</div></a>";
+			$text .= "<a href=\"".e_SELF."?move.".$menu_id.".2\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/right.gif\" alt=\"\" /> Move to Rightmenu</div></a>";
 		}
 		if($menus_used[4]){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?move.".$menu_id.".5\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/right.gif\" alt=\"\" /> Move to Centermenu</div></a>";
+			$text .= "<a href=\"".e_SELF."?move.".$menu_id.".5\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/right.gif\" alt=\"\" /> Move to Centermenu</div></a>";
 		}
 		if($menus_used[3]){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?move.".$menu_id.".4\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/right.gif\" alt=\"\" /> Move to FarRightmenu</div></a>";
+			$text .= "<a href=\"".e_SELF."?move.".$menu_id.".4\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/right.gif\" alt=\"\" /> Move to FarRightmenu</div></a>";
 		}
 		
 		$text .= "<br />";
@@ -178,24 +176,24 @@ if($menus_used[4]){
 	while(list($menu_id, $menu_name, $menu_location, $menu_order) = $sql-> db_Fetch()){
 		$menu_name = eregi_replace("_menu", "", $menu_name);
 		$text = "<div class=\"mediumtext\"><u><b>".$menu_name."</u></b></div><br />
-		<a href=\"".$_SERVER['PHP_SELF']."?deac.".$menu_id."\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/off.gif\" alt=\"\" /> Deactivate</div></a>";
+		<a href=\"".e_SELF."?deac.".$menu_id."\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/off.gif\" alt=\"\" /> Deactivate</div></a>";
 		if($menu_order != 1){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?inc.".$menu_id.".".$menu_order.".5\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/up.gif\" alt=\"\" /> Move Up</div></a>";
+			$text .= "<a href=\"".e_SELF."?inc.".$menu_id.".".$menu_order.".5\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/up.gif\" alt=\"\" /> Move Up</div></a>";
 		}
 		if($menu_count != $menu_order){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?dec.".$menu_id.".".$menu_order.".5\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/down.gif\" alt=\"\" /> Move Down</div></a>";
+			$text .= "<a href=\"".e_SELF."?dec.".$menu_id.".".$menu_order.".5\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/down.gif\" alt=\"\" /> Move Down</div></a>";
 		}
 		if($menus_used[2]){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?move.".$menu_id.".3\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/left.gif\" alt=\"\" /> Move to FarLeft menu</div></a>";
+			$text .= "<a href=\"".e_SELF."?move.".$menu_id.".3\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/left.gif\" alt=\"\" /> Move to FarLeft menu</div></a>";
 		}
 		if($menus_used[1]){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?move.".$menu_id.".2\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/right.gif\" alt=\"\" /> Move to Rightmenu</div></a>";
+			$text .= "<a href=\"".e_SELF."?move.".$menu_id.".2\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/right.gif\" alt=\"\" /> Move to Rightmenu</div></a>";
 		}
 		if($menus_used[0]){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?move.".$menu_id.".1\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/left.gif\" alt=\"\" /> Move to Leftmenu</div></a>";
+			$text .= "<a href=\"".e_SELF."?move.".$menu_id.".1\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/left.gif\" alt=\"\" /> Move to Leftmenu</div></a>";
 		}
 		if($menus_used[3]){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?move.".$menu_id.".4\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/right.gif\" alt=\"\" /> Move to FarRightmenu</div></a>";
+			$text .= "<a href=\"".e_SELF."?move.".$menu_id.".4\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/right.gif\" alt=\"\" /> Move to FarRightmenu</div></a>";
 		}
 		
 		$text .= "<br />";
@@ -211,8 +209,8 @@ $sql -> db_Select("menus", "*", "menu_location='0' ");
 while(list($menu_id, $menu_name, $menu_location, $menu_order) = $sql-> db_Fetch()){
 	$menu_name = eregi_replace("_menu", "", $menu_name);
 	$text .= "<div class=\"mediumtext\"><u><b>".$menu_name."</u></b></div>
-	<a href=\"".$_SERVER['PHP_SELF']."?act.".$menu_id.".1\">[activate in leftmenu]
-	<a href=\"".$_SERVER['PHP_SELF']."?act.".$menu_id.".2\">[activate in rightmenu]<br /><br />
+	<a href=\"".e_SELF."?act.".$menu_id.".1\">[activate in leftmenu]
+	<a href=\"".e_SELF."?act.".$menu_id.".2\">[activate in rightmenu]<br /><br />
 	";
 }
 $ns -> tablerender("<div style=\"text-align:center\">Inactive Menus</div>", $text);
@@ -228,24 +226,24 @@ if($menus_used[1]){
 	while(list($menu_id, $menu_name, $menu_location, $menu_order) = $sql-> db_Fetch()){
 		$menu_name = eregi_replace("_menu", "", $menu_name);
 		$text = "<div class=\"mediumtext\"><u><b>".$menu_name."</u></b></div><br />
-		<a href=\"".$_SERVER['PHP_SELF']."?deac.".$menu_id."\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/off.gif\" alt=\"\" /> Deactivate</div></a>";
+		<a href=\"".e_SELF."?deac.".$menu_id."\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/off.gif\" alt=\"\" /> Deactivate</div></a>";
 		if($menu_order != 1){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?inc.".$menu_id.".".$menu_order.".2\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/up.gif\" alt=\"\" /> Move Up</div></a>";
+			$text .= "<a href=\"".e_SELF."?inc.".$menu_id.".".$menu_order.".2\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/up.gif\" alt=\"\" /> Move Up</div></a>";
 		}
 		if($menu_count != $menu_order){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?dec.".$menu_id.".".$menu_order.".2\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/down.gif\" alt=\"\" /> Move Down</div></a>";
+			$text .= "<a href=\"".e_SELF."?dec.".$menu_id.".".$menu_order.".2\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/down.gif\" alt=\"\" /> Move Down</div></a>";
 		}
 		if($menus_used[2]){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?move.".$menu_id.".3\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/left.gif\" alt=\"\" /> Move to FarLeft menu</div></a>";
+			$text .= "<a href=\"".e_SELF."?move.".$menu_id.".3\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/left.gif\" alt=\"\" /> Move to FarLeft menu</div></a>";
 		}
 		if($menus_used[0]){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?move.".$menu_id.".1\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/left.gif\" alt=\"\" /> Move to Leftmenu</div></a>";
+			$text .= "<a href=\"".e_SELF."?move.".$menu_id.".1\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/left.gif\" alt=\"\" /> Move to Leftmenu</div></a>";
 		}
 		if($menus_used[4]){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?move.".$menu_id.".5\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/left.gif\" alt=\"\" /> Move to Centermenu</div></a>";
+			$text .= "<a href=\"".e_SELF."?move.".$menu_id.".5\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/left.gif\" alt=\"\" /> Move to Centermenu</div></a>";
 		}
 		if($menus_used[3]){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?move.".$menu_id.".4\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/right.gif\" alt=\"\" /> Move to FarRightmenu</div></a>";
+			$text .= "<a href=\"".e_SELF."?move.".$menu_id.".4\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/right.gif\" alt=\"\" /> Move to FarRightmenu</div></a>";
 		}
 		
 		$text .= "<br />";
@@ -263,24 +261,24 @@ if($menus_used[3]){
 	while(list($menu_id, $menu_name, $menu_location, $menu_order) = $sql-> db_Fetch()){
 		$menu_name = eregi_replace("_menu", "", $menu_name);
 		$text = "<div class=\"mediumtext\"><u><b>".$menu_name."</u></b></div><br />
-		<a href=\"".$_SERVER['PHP_SELF']."?deac.".$menu_id."\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/off.gif\" alt=\"\" /> Deactivate</div></a>";
+		<a href=\"".e_SELF."?deac.".$menu_id."\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/off.gif\" alt=\"\" /> Deactivate</div></a>";
 		if($menu_order != 1){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?inc.".$menu_id.".".$menu_order.".4\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/up.gif\" alt=\"\" /> Move Up</div></a>";
+			$text .= "<a href=\"".e_SELF."?inc.".$menu_id.".".$menu_order.".4\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/up.gif\" alt=\"\" /> Move Up</div></a>";
 		}
 		if($menu_count != $menu_order){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?dec.".$menu_id.".".$menu_order.".4\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/down.gif\" alt=\"\" /> Move Down</div></a>";
+			$text .= "<a href=\"".e_SELF."?dec.".$menu_id.".".$menu_order.".4\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/down.gif\" alt=\"\" /> Move Down</div></a>";
 		}
 		if($menus_used[2]){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?move.".$menu_id.".3\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/left.gif\" alt=\"\" /> Move to FarLeft menu</div></a>";
+			$text .= "<a href=\"".e_SELF."?move.".$menu_id.".3\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/left.gif\" alt=\"\" /> Move to FarLeft menu</div></a>";
 		}
 		if($menus_used[1]){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?move.".$menu_id.".2\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/left.gif\" alt=\"\" /> Move to Rightmenu</div></a>";
+			$text .= "<a href=\"".e_SELF."?move.".$menu_id.".2\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/left.gif\" alt=\"\" /> Move to Rightmenu</div></a>";
 		}
 		if($menus_used[4]){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?move.".$menu_id.".5\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/left.gif\" alt=\"\" /> Move to Centermenu</div></a>";
+			$text .= "<a href=\"".e_SELF."?move.".$menu_id.".5\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/left.gif\" alt=\"\" /> Move to Centermenu</div></a>";
 		}
 		if($menus_used[0]){
-			$text .= "<a href=\"".$_SERVER['PHP_SELF']."?move.".$menu_id.".1\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/left.gif\" alt=\"\" /> Move to Leftmenu</div></a>";
+			$text .= "<a href=\"".e_SELF."?move.".$menu_id.".1\"><div class=\"smallblacktext\"><img style=\"border:0\" src=\"../themes/shared/generic/left.gif\" alt=\"\" /> Move to Leftmenu</div></a>";
 		}
 		
 		$text .= "<br />";
@@ -289,13 +287,7 @@ if($menus_used[3]){
 	}
 	echo "</td>";
 }
-
-
 echo "</tr></table>";
-
-
-
-
 
 require_once("footer.php");
 ?>

@@ -1,19 +1,19 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system													|
-|	/admin/submitnews.php												|
-|																						|
-|	©Steve Dunstan 2001-2002										|
-|	http://jalist.com															|
-|	stevedunstan@jalist.com											|
-|																						|
-|	Released under the terms and conditions of the		|
-|	GNU General Public License (http://gnu.org).				|
+|	e107 website system
+|	/admin/submitnews.php
+|
+|	©Steve Dunstan 2001-2002
+|	http://e107.org
+|	jalist@e107.org
+|
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("N")){ header("location:../index.php"); }
+if(!getperms("N")){ header("location:".e_HTTP."index.php"); }
 
 if(IsSet($_POST['transfer'])){ 
 	$sql -> db_Update("submitnews", "submitnews_auth='1' WHERE submitnews_id ='".$_POST['id']."' ");
@@ -31,7 +31,7 @@ if($_POST['delete']){
 	$text = "<div style=\"text-align:center\">
 	<b>Please confirm you wish to delete this submitted news post - once deleted it cannot be retrieved</b>
 <br /><br />
-<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
+<form method=\"post\" action=\"".e_SELF."\">
 <input class=\"button\" type=\"submit\" name=\"cancel\" value=\"Cancel\" /> 
 <input class=\"button\" type=\"submit\" name=\"confirm\" value=\"Confirm Delete\" /> 
 <input type=\"hidden\" name=\"id\" value=\"".$_POST['id']."\">
@@ -87,7 +87,7 @@ if(!$sql -> db_Select("submitnews", "*", "submitnews_auth ='0' ORDER BY submitne
 		</span>
 		<br />
 		<br />";
-		$text .= "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
+		$text .= "<form method=\"post\" action=\"".e_SELF."\">
 		<input type=\"hidden\" name=\"news_body\" value=\"$submitnews_item\">
 		<input type=\"hidden\" name=\"news_source\" value=\"Submitted by $submitnews_name [$submitnews_email]\">
 		<input type=\"hidden\" name=\"id\" value=\"$submitnews_id\">
@@ -116,7 +116,7 @@ if($sub_total == "0"){
 		$datestamp = $obj->convert_date($submitnews_datestamp, "short");
 		$item = substr($submitnews_item, 0, 75)." ...";
 		if($submitnews_ip == ""){ $submitnews_ip = "Unknown"; }
-		$text .= "<form method=\"post\" action=\"$PHP_SELF?id=$submitnews_id\">
+		$text .= "<form method=\"post\" action=\"".e_SELF."?id=$submitnews_id\">
 		Submitted by <b>".$submitnews_name. "</b>
 		<br />
 		[email address: ".$submitnews_email." (ip: ".$submitnews_ip.")]

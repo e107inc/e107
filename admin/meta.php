@@ -2,11 +2,11 @@
 /*
 +---------------------------------------------------------------+
 |	e107 website system
-|	/admin//meta.php
+|	/admin/meta.php
 |
 |	©Steve Dunstan 2001-2002
-|	http://jalist.com
-|	stevedunstan@jalist.com
+|	http://e107.org
+|	jalist@e107.org
 |
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
@@ -15,19 +15,21 @@
 require_once("../class2.php");
 
 if(IsSet($_POST['metasubmit'])){
-	$sql -> db_Update("prefs", "pref_value='".$_POST['meta']."' WHERE pref_name='meta_tag' ");
+
+	$pref['meta_tag'][1] = $_POST['meta'];
+	$sql -> db_Update("core", "e107_value='".addslashes(serialize($pref))."' WHERE e107_name='pref' ");
 	header("location:meta.php?e");
 }
 
-if(!getperms("C")){ header("location:../index.php"); }
+if(!getperms("C")){ header("location:".e_HTTP."index.php"); }
 require_once("auth.php");
 
-if($_SERVER['QUERY_STRING'] != ""){
+if(e_QUERY != ""){
 	$ns -> tablerender("Updated", "<div style=\"text-align:center\">Meta tags updated in database.</div>");
 }
 
 $text = "
-<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
+<form method=\"post\" action=\"".e_SELF."\">
 <table style=\"width:95%\">
 <tr>
 <td style=\"width:20%\">Enter meta-tags: </td>

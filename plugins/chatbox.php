@@ -12,10 +12,6 @@
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
-if($iframe == TRUE){
-	require_once("../class2.php");
-}
-
 if(IsSet($_POST['chat_submit'])){
 	$message = $_POST['message'];
 	$nick = $_POST['nick'];
@@ -29,13 +25,6 @@ if(IsSet($_POST['chat_submit'])){
 
 			$datestamp = time();
 			$ip = getip();
-
-			if(USER == TRUE){
-				$nick = USERNAME;
-
-			list($user_id, $user_name) = $sql-> db_Fetch();
-
-			}
 			if(!$sql -> db_Select("chatbox", "*", "cb_message='$message' ")){
 				if(USER == TRUE){
 					$nick = USERID.".".USERNAME;
@@ -50,13 +39,16 @@ if(IsSet($_POST['chat_submit'])){
 							list($cuser_id, $cuser_name) = $sql2-> db_Fetch();
 							$nick = $cuser_id.".".$cuser_name;
 						}else{
-							$nick = "0.Anonymous";
+							//$nick = "0.Anonymous";
+							$emessage = LAN_310;
 						}
 					}else{
 						$nick = "0.".$nick;
 					}
 				}
-				$sql -> db_Insert("chatbox", "0, '$nick', '$message', '".time()."', '0' , '$ip' ");
+				if($emessage == ""){
+					$sql -> db_Insert("chatbox", "0, '$nick', '$message', '".time()."', '0' , '$ip' ");
+				}
 			}
 		}
 	}
@@ -105,10 +97,9 @@ if($sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, ".$cha
 		$datestamp = $obj2->convert_date($cb_datestamp, "short");
 		$cb_message = $aj -> tpa($cb_message, "on");
 		if($pref['cb_linkreplace'][1]){
-			$cb_message = eregi_replace("(^|[>[:space:]\n])([[:alnum:]]+)://([^[:space:]]*)([[:alnum:]#?/&=])([<[:space:]\n]|$)","\\1<a href=\"\\2://\\3\\4\">".$pref['cb_linkc'][1]."</a>\\5", $cb_message);
+			$cb_message = preg_replace("#\>(.*?)\</#i", ">".$pref['cb_linkc'][1]."</", $cb_message);
 		}
 		$cb_message = preg_replace("/([^\s]{".$cb_wordwrap."})/", "$1\n", $cb_message);
-
 		if(CB_STYLE != "CB_STYLE"){
 			$CHATBOXSTYLE = CB_STYLE;
 		}else{
@@ -135,6 +126,10 @@ if($sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, ".$cha
 $total_chats = $sql -> db_Count("chatbox");
 if($total_chats > $chatbox_posts){
 	$text .= "<br /><div style=\"text-align:center\"><a href=\"chat.php\">".LAN_159."</a> (".$total_chats.")</div>";
+}
+
+if($emessage != ""){
+	$text = "<div style='text-align:center'><b>".$emessage."</b></div><br />".$text;
 }
 
 $ns -> tablerender(LAN_182, $text);

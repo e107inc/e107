@@ -1,55 +1,87 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system													|
-|	/index.php																	|
-|																						|
-|	©Steve Dunstan 2001-2002										|
-|	http://jalist.com															|
-|	stevedunstan@jalist.com											|
-|																						|
-|	Released under the terms and conditions of the		|
-|	GNU General Public License (http://gnu.org).				|
+|	e107 website system
+|	/index.php
+|
+|	©Steve Dunstan 2001-2002
+|	http://e107.org
+|	jalist@e107.org
+|
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 require_once("class2.php");
+require_once("classes/news_class.php");
 require_once(HEADERF);
+
+if(file_exists("install.php")){ echo "<div class=\"installe\" style=\"text-align:center\"><b>*** Please delete install.php from your server ***</b><br />if you do not there is a potential security risk to your website</div><br /><br />"; }
+
 $ix = new news;
 
-if(eregi("cat", $_SERVER['QUERY_STRING'])){
-	$qs = explode(".", $_SERVER['QUERY_STRING']);
+if(eregi("cat", e_QUERY)){
+	$qs = explode(".", e_QUERY);
 	$category = $qs[1];
 	if($category != 0){
+		$gen = new convert;
+		$sql2 = new db;
 		$sql -> db_Select("news_category", "*", "category_id='$category'");
 		list($category_id, $category_name, $category_icon) = $sql-> db_Fetch();
-		$sql -> db_SELECT("news", "*",  "news_category='$category' ORDER BY news_datestamp DESC");
+		if(eregi("images", $category_icon)){
+			$category_icon = THEME.$category_icon;
+		}else{
+			$category_icon = e_HTTP.$category_icon;
+		}
+		$count = $sql -> db_SELECT("news", "*",  "news_category='$category' ORDER BY news_datestamp DESC");
 		while(list($news_id, $news_title, $news_body, $news_extended, $news_datestamp, $news_author, $news_source, $news_url, $news_category, $news_allow_comments) = $sql-> db_Fetch()){
 			if($news_title == ""){ $news_title = "Untitled"; }
-			$text .= "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <a href=\"comment.php?".$news_id."\">".$news_title."</a><br />\n";
+			$datestamp = $gen->convert_date($news_datestamp, "short");
+			$news_body = strip_tags(substr($news_body, 0, 100))." ...";
+			$comment_total = $sql2 -> db_Count("comments", "(*)",  "WHERE comment_item_id='$news_id' AND comment_type='0' ");
+			$text .= "<div class=\"mediumtext\">
+			<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> ";
+
+			if($news_allow_comments){
+				$text .= $news_title;
+			}else{
+				$text .= "<a href=\"comment.php?".$news_id."\">".$news_title."</a>";
+			}
+			$text .= "<br />
+			On ".$datestamp." (".LAN_99.": ";
+			if($news_allow_comments){
+				$text .= COMMENTOFFSTRING.")";
+			}else{
+				$text .= $comment_total.")";
+			}
+			$text .= "</div>
+			".$news_body."
+			<br /><br />\n";
 		}
-		$text = "<img src=\"".THEME."$category_icon\" alt=\"\" /><br /><br />".$text;
+		$text = "<img src=\"$category_icon\" alt=\"\" /><br />".
+		LAN_307.$count."
+		<br /><br />".$text;
 		$ns -> tablerender(LAN_82." '".$category_name."'", $text);
 		require_once(FOOTERF);
 		exit;
 	}
 }
-if(eregi("extend", $_SERVER['QUERY_STRING'])){
-	$qs = explode(".", $_SERVER['QUERY_STRING']);
+
+
+if(eregi("extend", e_QUERY)){
+	$qs = explode(".", e_QUERY);
 	$extend_id = $qs[1];
 	$sql -> db_Select("news", "*", "news_id='$extend_id' ");
-	list($news_id, $news_title, $news_body, $news_extended, $news_datestamp, $news_author, $news_source, $news_url, $news_category) = $sql-> db_Fetch();
-	$sql2 = new db;
-	$sql2 -> db_Select("news_category", "*", "category_id='$news_category' ");
-	list($category_id, $category_name, $category_icon) = $sql2-> db_Fetch();
+	$row = $sql -> db_Fetch(); extract($row);
 	$comment_total = $sql -> db_Count("comments", "(*)", " WHERE comment_item_id='$news_id' AND comment_type='0' ");
 
-	$ix -> render_newsitem($news_id, $news_title, $news_body, $news_extended, $news_source, $news_url, $news_author, $comment_total, $category_id, $news_datestamp, $news_allow_comments, $mode="extend");
+	$ix -> render_newsitem($news_id, $news_title, $news_body, $news_extended, $news_source, $news_url, $news_author, $comment_total, $news_category, $news_datestamp, $news_allow_comments, $news_start, $news_end, $news_active, $mode="extend");
 
 	require_once(FOOTERF);
 	exit;
 }
 
-if(!$_SERVER['QUERY_STRING'] || eregi("cat", $_SERVER['QUERY_STRING'])){ $from = 0; }else{ $from = $_SERVER['QUERY_STRING']; }
+if(!e_QUERY || eregi("cat", e_QUERY)){ $from = 0; }else{ $from = e_QUERY; }
 if(Empty($order)){ $order = "news_datestamp"; }
 
 // ---> wmessage
@@ -66,19 +98,19 @@ if(ADMIN == TRUE && $wm_active3){
 }
 // ---> wmessage end
 
-$news_total = $sql -> db_Count("news");
 
-if(!$sql -> db_Select("news", "*", "ORDER BY ".$order." DESC LIMIT $from,".ITEMVIEW, $mode="no_where")){
+
+$news_total = $sql -> db_Count("news");
+if(!$sql -> db_Select("news", "*", "news_active=0 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY ".$order." DESC LIMIT $from,".ITEMVIEW)){
 	echo "<br /><br /><div style=\"text-align:center\"><b>".LAN_83."</b></div><br /><br />";
 }else{
 	$sql2 = new db;	
-	while(list($news_id, $news_title, $news_body, $news_extended, $news_datestamp, $news_author, $news_source, $news_url, $news_category, $news_allow_comments) = $sql-> db_Fetch()){
-		$sql2 -> db_Select("news_category", "*", "category_id='$news_category' ");
-		list($category_id, $category_name, $category_icon) = $sql2-> db_Fetch();
-		$comment_total = $sql2 -> db_Select("comments", "*",  "comment_item_id='$news_id' AND comment_type='0' ");
-		$news_title=stripslashes($news_title);
-		$news_body=stripslashes($news_body);
-		$ix -> render_newsitem($news_id, $news_title, $news_body, $news_extended, $news_source, $news_url, $news_author, $comment_total, $category_id, $news_datestamp, $news_allow_comments);
+	while($row = $sql -> db_Fetch()){
+		extract($row);
+		if(!$news_active){
+			$comment_total = $sql2 -> db_Count("comments", "(*)",  "WHERE comment_item_id='$news_id' AND comment_type='0' ");
+			$ix -> render_newsitem($news_id, $news_title, $news_body, $news_extended, $news_source, $news_url, $news_author, $comment_total, $news_category, $news_datestamp, $news_allow_comments, $news_start, $news_end, $news_active);
+		}
 	}
 }
 

@@ -1,22 +1,22 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system													|
-|	/template.php																|
-|																						|
-|	©Steve Dunstan 2001-2002										|
-|	http://jalist.com															|
-|	stevedunstan@jalist.com											|
-|																						|
-|	Released under the terms and conditions of the		|
-|	GNU General Public License (http://gnu.org).				|
+|	e107 website system
+|	/email.php
+|
+|	©Steve Dunstan 2001-2002
+|	http://e107.org
+|	jalist@e107.org
+|
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 require_once("class2.php");
 require_once(HEADERF);
 
-$id = $_SERVER['QUERY_STRING'];
-if($id == ""){ header("location:index.php"); }
+$id = e_QUERY;
+if($id == ""){ header("location:".e_HTTP."index.php"); }
 
 if(IsSet($_POST['emailsubmit'])){
 	if(!preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]+@([-0-9A-Z]+\.)+([0-9A-Z]){2,4}$/i', $_POST['email_send'])){
@@ -48,7 +48,7 @@ if(IsSet($_POST['emailsubmit'])){
 	}
 }
 
-$text = "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."?$id\">\n
+$text = "<form method=\"post\" action=\"".e_SELF."?$id\">\n
 <table style=\"width:95%\">";
 
 if(USER != TRUE){

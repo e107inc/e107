@@ -1,15 +1,15 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system													|
-|	/stats.php																	|
-|																						|
-|	©Steve Dunstan 2001-2002										|
-|	http://jalist.com															|
-|	stevedunstan@jalist.com											|
-|																						|
-|	Released under the terms and conditions of the		|
-|	GNU General Public License (http://gnu.org).				|
+|	e107 website system
+|	/stats.php
+|
+|	©Steve Dunstan 2001-2002
+|	http://e107.org
+|	jalist@e107.org
+|
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -27,7 +27,7 @@ $logstart = $tmp[2]." ".$month[$tmp[1]]." ".$tmp[0];
 
 $text = "<b>Logging began:</b> ".$logstart."<br />";
 
-$action = $_SERVER['QUERY_STRING'];
+$action = e_QUERY;
 
 
 $total_page_views = $dep -> dbCount("SELECT sum(counter_unique) FROM ".MUSER."stat_counter");
@@ -77,7 +77,7 @@ if($action == 1){
 		$data1[$c][0]." - ".$data1[$c][1]."<br />";
 		$c++;
 	}
-	$text .= "<a href=\"".$_SERVER['PHP_SELF']."?1\">View all</a><br />";
+	$text .= "<a href=\"".e_SELF."?1\">View all</a><br />";
 }
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 $c=0;
@@ -119,7 +119,7 @@ if($action == 2){
 		$data2[$c][0]." - ".$data2[$c][1]."<br />";
 		$c++;
 	}
-	$text .= "<a href=\"".$_SERVER['PHP_SELF']."?2\">View all</a><br />";
+	$text .= "<a href=\"".e_SELF."?2\">View all</a><br />";
 }
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // last 10 visitors
@@ -139,7 +139,7 @@ while(list($stat_last_date, $stat_last_info) = $sql-> db_Fetch()){
 }
 
 if(ADMIN == TRUE && $pref['log_lvcount'][1] >10){
-	$text .= "<a href=\"".$_SERVER['PHP_SELF']."?8\">View all</a><br />";
+	$text .= "<a href=\"".e_SELF."?8\">View all</a><br />";
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -189,7 +189,7 @@ if($action == 3){
 		<br />";
 		$c++;
 	}
-	$text .= "<a href=\"".$_SERVER['PHP_SELF']."?3\">View all</a><br />";
+	$text .= "<a href=\"".e_SELF."?3\">View all</a><br />";
 }
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 $c=0;
@@ -231,7 +231,7 @@ if($action == 4){
 		<br />";
 		$c++;
 	}
-	$text .= "<a href=\"".$_SERVER['PHP_SELF']."?4\">View all</a><br />";
+	$text .= "<a href=\"".e_SELF."?4\">View all</a><br />";
 }
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 $c=0;
@@ -273,7 +273,7 @@ if($action == 5){
 		<br />";
 		$c++;
 	}
-	$text .= "<a href=\"".$_SERVER['PHP_SELF']."?5\">View all</a><br />";
+	$text .= "<a href=\"".e_SELF."?5\">View all</a><br />";
 }
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 $c=0;
@@ -314,7 +314,7 @@ if($action == 6){
 		<br />";
 		$c++;
 	}
-	$text .= "<a href=\"".$_SERVER['PHP_SELF']."?6\">View all</a><br />";
+	$text .= "<a href=\"".e_SELF."?6\">View all</a><br />";
 }
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -356,11 +356,72 @@ if($action == 7){
 		<br />";
 		$c++;
 	}
-	$text .= "<a href=\"".$_SERVER['PHP_SELF']."?7\">View all</a><br />";
+	$text .= "<a href=\"".e_SELF."?7\">View all</a><br />";
 }
 
 
 $ns -> tablerender("<div style=\"text-align:center\">".LAN_132."</div>", $text);
 
 require_once(FOOTERF);
+
+class dbfunc{
+
+	// NOTE: This class is now depracated, kept in for third-party plugin compatibilty.
+
+	var $mySQLserver;
+	var $mySQLuser;
+	var $mySQLpassword;
+	var $mySQLdefaultdb;
+	var $mySQLaccess;
+	var $mySQLresult;
+	var $mySQLrows;
+	var $mySQLerror;
+
+	function dbRows(){
+		$rows = $this->mySQLrows = @mysql_num_rows($this->mySQLresult);
+		return $rows;
+		$this->dbError("dbRows");
+	}
+
+	function dbCount($query){
+		if($this->mySQLresult = @mysql_query($query)){
+			$rows = $this->mySQLrows = @mysql_fetch_array($this->mySQLresult);
+			return $rows[0];
+		}else{
+			$this->dbError("dbCount ($query)");
+		}
+	}
+
+	function dbQuery($query){
+		if($this->mySQLresult = @mysql_query($query)){
+			$this->dbError("dbQuery");
+			return $this->dbRows();
+		}else{
+			$this->dbError("dbQuery ($query)");
+			return FALSE;
+		}
+	}
+
+	function dbFetch(){
+		if($row = @mysql_fetch_array($this->mySQLresult)){
+			$this->dbError("dbFetch");
+			return $row;
+		}else{
+			$this->dbError("dbFetch");
+			return FALSE;
+		}
+	}
+	function dbError($from){
+		if($error_message = @mysql_error()){
+			if($this->mySQLerror == TRUE){
+				echo "<b>mySQL Error!</b> Function: $from. [".@mysql_errno()." - $error_message]<br />";
+				return $error_message;
+			}
+		}
+	}
+	function dbInsert($query){
+		return $this->mySQLresult = mysql_query($query);
+	}
+}
+
 ?>

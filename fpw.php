@@ -1,19 +1,19 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system													|
-|	/template.php																|
-|																						|
-|	©Steve Dunstan 2001-2002										|
-|	http://jalist.com															|
-|	stevedunstan@jalist.com											|
-|																						|
-|	Released under the terms and conditions of the		|
-|	GNU General Public License (http://gnu.org).				|
+|	e107 website system
+|	/fpw.php
+|
+|	©Steve Dunstan 2001-2002
+|	http://e107.org
+|	jalist@e107.org
+|
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 require_once("class2.php");
-$qs = $_SERVER['QUERY_STRING'];
+$qs = e_QUERY;
 if($qs != ""){
 	$sql -> db_Select("user", "*", "user_id='$qs'");
 	$row = $sql -> db_Fetch();
@@ -69,7 +69,7 @@ if(IsSet($_POST['pwsubmit'])){
 }
 
 $text = "<div style=\"text-align:center\">
-<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n
+<form method=\"post\" action=\"".e_SELF."\">\n
 <table style=\"width:70%\">
 <tr>
 <td style=\"width:20%\">".LAN_7."</td>

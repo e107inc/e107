@@ -1,4 +1,17 @@
 <?php
+/*
++---------------------------------------------------------------+
+|	e107 website system
+|	/submitnews.php
+|
+|	©Steve Dunstan 2001-2002
+|	http://e107.org
+|	jalist@e107.org
+|
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
++---------------------------------------------------------------+
+*/
 require_once("class2.php");
 require_once(HEADERF);
 
@@ -7,7 +20,7 @@ if(IsSet($_POST['submit'])){
 		$ip = getip();	
 		$fp = new floodprotect;
 		if($fp -> flood("submitnews", "submitnews_datestamp") == FALSE){
-			header("location:index.php");
+			header("location:".e_HTTP."index.php");
 			die();
 		}
 		$aj = new textparse;
@@ -23,7 +36,7 @@ if(IsSet($_POST['submit'])){
 
 
 $text = "
-<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n
+<form method=\"post\" action=\"".e_SELF."\">\n
 <table style=\"width:95%\">
 <tr>
 <td style=\"width:20%\">".LAN_7."</td>

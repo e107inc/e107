@@ -30,15 +30,14 @@ echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
 <body>
 <?php
 
-$page = substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
+$page = substr(strrchr(e_SELF, "/"), 1);
 if(eregi($page, $CUSTOMPAGES) ? parseheader($CUSTOMHEADER) : parseheader($HEADER)) ;
 unset($text);
-
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function parseheader($LAYOUT){
 	$tmp = explode("\n", $LAYOUT);
 	for($c=0; $c < count($tmp); $c++){ 
-		if(ereg("{|}", $tmp[$c])){
+		if(preg_match("/[\{|\}]/", $tmp[$c])){
 			$str = checklayout($tmp[$c]);
 		}else{
 			echo $tmp[$c];
@@ -46,9 +45,9 @@ function parseheader($LAYOUT){
 	}
 }
 function checklayout($str){
-	global $pref, $style, $userthemes;
+	global $pref, $style, $userthemes, $udirs, $userclass;
 	if(strstr($str, "LOGO")){
-		echo "<img src=\"themes/shared/logo.png\" alt=\"Logo\" />\n";
+		echo "<img src=\"".e_HTTP."themes/shared/logo.png\" alt=\"Logo\" />\n";
 	}else if(strstr($str, "SITENAME")){
 		echo SITENAME."\n";
 	}else if(strstr($str, "SITETAG")){
@@ -64,13 +63,7 @@ function checklayout($str){
 		$sql9 = new db;
 		$sql9 -> db_Select("menus", "*",  "menu_location='$menu' ORDER BY menu_order");
 		while(list($menu_id, $menu_name, $menu_location, $menu_order) = $sql9-> db_Fetch()){
-			if(eregi("private", $menu_name) && USERCLASS_PRIVATEMENU != TRUE){
-				break;
-			}else if(eregi("admin", $menu_name) && ADMIN != TRUE){
-				break;
-			}else{
-				require_once("menus/".$menu_name.".php");
-			}
+			require_once(e_BASE."menus/".$menu_name.".php");
 		}
 	}else if(strstr($str, "SETSTYLE")){
 		$tmp = explode("=", $str);
@@ -90,7 +83,7 @@ function checklayout($str){
 					}
 					echo "<td> <a href=\"usersettings.php\">Settings</a></td>
 					<td>.:.</td>
-					<td><a href=\"".$_SERVER['PHP_SELF']."?logout\">Logout</a></td>
+					<td><a href=\"".e_SELF."?logout\">Logout</a></td>
 					<td>.:.</td>
 					</tr></table> ";
 				}else{
@@ -112,8 +105,7 @@ function checklayout($str){
 			</p>
 			</form>";
 		}else if($custom == "quote"){
-			$qotd_file = $pref['qotd_file'][1];
-			if(!file_exists($qotd_file)){
+			if(!file_exists(e_HTTP."quote.txt")){
 				$quote = "Quote file not found ($qotd_file)";
 			}else{
 				$quotes = file($qotd_file);
@@ -122,7 +114,7 @@ function checklayout($str){
 			echo $quote;
 		}
 	}else if(strstr($str, "BANNER")){
-		$handle=opendir("themes/shared/banners");
+		$handle=opendir(e_BASE."themes/shared/banners");
 		while ($file = readdir($handle)){	
 			if($file != "." && $file != ".." && $file != "bannerimages"){
 				$files[] = $file;
@@ -131,7 +123,7 @@ function checklayout($str){
 		closedir($handle);
 
 		$tmp = $files[rand(0,(count($files)-1))];
-		require_once("themes/shared/banners/".$tmp);
+		require_once(e_BASE."themes/shared/banners/".$tmp);
 	}
 
 	

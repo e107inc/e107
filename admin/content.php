@@ -1,20 +1,20 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system													|
-|	/admin/content.php														|
-|																						|
-|	©Steve Dunstan 2001-2002										|
-|	http://jalist.com															|
-|	stevedunstan@jalist.com											|
-|																						|
-|	Released under the terms and conditions of the		|
-|	GNU General Public License (http://gnu.org).				|
+|	e107 website system
+|	/admin//content.php
+|
+|	©Steve Dunstan 2001-2002
+|	http://e107.org
+|	jalist@e107.org
+|
+|	Released under the terms and conditions of the	
+|	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
 if(!getperms("J") && !getperms("K") && !getperms("L")){
-	header("location:../index.php");
+	header("location:".e_HTTP."index.php");
 }
 require_once("auth.php");
 $aj = new textparse;
@@ -33,7 +33,7 @@ If(IsSet($_POST['submit'])){
 		if($_POST['content_heading'] != ""){
 			$sql -> db_Select("content", "*", "ORDER BY content_datestamp DESC LIMIT 0,1 ", $mode="no_where");
 			list($content_id, $content_heading) = $sql-> db_Fetch();
-			$sql -> db_Insert("links", "0, '".$content_heading."', 'article.php?".$content_id.".255', '', '', '1', '0', '0' ");
+			$sql -> db_Insert("links", "0, '".$content_heading."', 'article.php?".$content_id.".255', '', '', '1', '0', '0', '0' ");
 			$message = "Content page added and link created in Main Navigation menu.";
 		}else{
 			$sql -> db_Select("content", "*", "ORDER BY content_datestamp DESC LIMIT 0,1 ", $mode="no_where");
@@ -64,36 +64,18 @@ If(IsSet($_POST['edit'])){
 	$content_content = $aj -> editparse($content_content);
 }
 
-If(IsSet($_POST['confirm'])){
-	$sql -> db_Select("content", "*", "content_id='".$_POST['existing']."' ");
-	list($null, $content_heading, $null, $null, $content_page) = $sql-> db_Fetch();
-	if($content_type == 255){
-		$sql -> db_Delete("links", "link_name='".$content_heading."' ");
-	}
-	$sql -> db_Delete("content", "content_id='".$_POST['existing']."' ");
-	$message = "Content Page deleted.";
-	unset($content_heading, $content_page);
-}
-
 If(IsSet($_POST['delete'])){
-	$sql -> db_Select("content", "content_id='".$_POST['existing']."' ");
-	list($null, $content_heading_) = $sql-> db_Fetch();
-	$text = "<div style=\"text-align:center\">
-	<b>Please confirm you wish to delete this content page $content_heading_ - once deleted it cannot be retrieved</b>
-<br /><br />
-<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
-<input class=\"button\" type=\"submit\" name=\"cancel\" value=\"Cancel\" />
-<input class=\"button\" type=\"submit\" name=\"confirm\" value=\"Confirm Delete\" />
-<input type=\"hidden\" name=\"existing\" value=\"".$_POST['existing']."\">
-</form>
-</div>";
-$ns -> tablerender("Confirm Delete Content Page", $text);
-
-	require_once("footer.php");
-	exit;
-}
-If(IsSet($_POST['cancel'])){
-	$message = "Delete cancelled.";
+	if($_POST['confirm']){
+		$sql = new db;
+		$sql -> db_Select("content", "*", "content_id='".$_POST['existing']."' ");
+		$row = $sql -> db_Fetch(); extract($row);
+		$sql -> db_Delete("links", "link_name='".$content_heading."' ");
+		$sql -> db_Delete("content", "content_id='".$_POST['existing']."' ");
+		$message = "Content page deleted.";
+		unset($content_heading, $content_subheading, $content_content);
+	}else{
+		$message = "Please tick the confirm box to delete this content page";
+	}
 }
 
 if(IsSet($message)){
@@ -109,7 +91,7 @@ No content pages yet.
 	";
 }else{
 	$text = "<div style=\"text-align:center\">
-	<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
+	<form method=\"post\" action=\"".e_SELF."\">
 
 	Existing Content Pages:
 	<select name=\"existing\" class=\"tbox\">";
@@ -119,13 +101,14 @@ No content pages yet.
 	$text .= "</select>
 	<input class=\"button\" type=\"submit\" name=\"edit\" value=\"Edit\" />
 	<input class=\"button\" type=\"submit\" name=\"delete\" value=\"Delete\" />
+	<input type=\"checkbox\" name=\"confirm\" value=\"1\"><span class=\"smalltext\"> tick to confirm</span>
 	</form>
 	</div>
 	<br />";
 }
 
 $text .= "
-<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name=\"articlepostform\">\n
+<form method=\"post\" action=\"".e_SELF."\" name=\"articlepostform\">\n
 <table style=\"width:95%\">";
 
 
@@ -156,18 +139,10 @@ $text .= "<tr>
 <td style=\"width:20%\"><u>Content</u>: </td>
 <td style=\"width:80%\">
 <textarea class=\"tbox\" name=\"content_content\" cols=\"70\" rows=\"30\">$content_content</textarea>
-<br />
-<input class=\"button\" type=\"button\" value=\"newpage\" onclick=\"addtext('[newpage]')\">
-<input class=\"button\" type=\"button\" value=\"link\" onclick=\"addtext('[link][/link]')\">
-<input class=\"button\" type=\"button\" value=\"b\" onclick=\"addtext('[b][/b]')\">
-<input class=\"button\" type=\"button\" value=\"i\" onclick=\"addtext('[i][/i]')\">
-<input class=\"button\" type=\"button\" value=\"u\" onclick=\"addtext('[u][/u]')\">
-<input class=\"button\" type=\"button\" value=\"img\" onclick=\"addtext('[img][/img]')\">
-<input class=\"button\" type=\"button\" value=\"center\" onclick=\"addtext('[center][/center]')\">
-<input class=\"button\" type=\"button\" value=\"left\" onclick=\"addtext('[left][/left]')\">
-<input class=\"button\" type=\"button\" value=\"right\" onclick=\"addtext('[right][/right]')\">
-<input class=\"button\" type=\"button\" value=\"blockquote\" onclick=\"addtext('[blockquote][/blockquote]')\">
-</td>
+<br />";
+require_once("../classes/shortcuts.php");
+$text .= shortcuts();
+$text .= "</td>
 </tr>
 
 <tr>
@@ -216,6 +191,5 @@ function addtext(sc){
 }
 </script>
 <?php
-
 require_once("footer.php");
 ?>

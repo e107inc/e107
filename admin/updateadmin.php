@@ -1,26 +1,22 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system													|
-|	/admin/updateadmin.php											|
-|																						|
-|	©Steve Dunstan 2001-2002										|
-|	http://jalist.com															|
-|	stevedunstan@jalist.com											|
-|																						|
-|	Released under the terms and conditions of the		|
-|	GNU General Public License (http://gnu.org).				|
+|	e107 website system
+|	/admin/updateadmin.php
+|
+|	©Steve Dunstan 2001-2002
+|	http://e107.org
+|	jalist@e107.org
+|
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
 
 if(IsSet($_POST['update_settings'])){
 	if($_POST['a_name'] != "" && $_POST['a_email'] != "" && $_POST['a_password'] != "" && $_POST['a_password2'] != "" && ($_POST['a_password'] == $_POST['a_password2'])){
-		$admin_ip = getip();
-//		session_destroy(); session_unregister();
-		$sql -> db_Update("admin", "admin_name='".$_POST['a_name']."', admin_password='".md5($_POST['a_password'])."', admin_email='".$_POST['a_email']."', admin_pwchange='".time()."' WHERE admin_id='".ADMINID."' ");
-
-		$sql -> db_Update("user", "user_password='".md5($_POST['a_password'])."' WHERE user_name='".ADMINNAME."' ");
+		$sql -> db_Update("user", "user_password='".md5($_POST['a_password'])."', user_pwchange='".time()."' WHERE user_name='".ADMINNAME."' ");
 		$se = TRUE;
 	}else{
 		$message = "Error - please re-submit";
@@ -40,7 +36,7 @@ if(IsSet($message)){
 }
 
 $text = "<div style=\"text-align:center\">
-<form method=\"post\" action=\"$PHP_SELF\">\n
+<form method=\"post\" action=\"".e_SELF."\">\n
 
 <table style=\"width:95%\">
 <tr>

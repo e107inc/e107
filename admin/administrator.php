@@ -1,19 +1,19 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system													|
-|	/admin/administrator.php											|
-|																						|
-|	©Steve Dunstan 2001-2002										|
-|	http://jalist.com															|
-|	stevedunstan@jalist.com											|
-|																						|
-|	Released under the terms and conditions of the		|
-|	GNU General Public License (http://gnu.org).				|
+|	e107 website system
+|	/admin/administrator.php
+|
+|	©Steve Dunstan 2001-2002
+|	http://e107.org
+|	jalist@e107.org
+|
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("3")){ header("location:../index.php"); }
+if(!getperms("3")){ header("location:".e_HTTP."index.php"); }
 require_once("auth.php");
 
 if(IsSet($_POST['add_admin'])){
@@ -22,23 +22,22 @@ if(IsSet($_POST['add_admin'])){
 			$perm .= $_POST['perms'][$i].".";
 		}
 	}
-	if(!$sql -> db_Select("admin", "*", "admin_name='".$_POST['ad_name']."' ")){
-		$sql -> db_Insert("admin", "0, '".$_POST['ad_name']."', '".md5($_POST ['a_password'])."', '".$_POST['ad_email']."', '', '".$perm."', '".time()."' ");
-		if(!$sql -> db_Select("user", "*", "user_name='".$_POST['ad_name']."' ")){
-			$sql -> db_Insert("user", "0, '".$_POST['ad_name']."', '".md5($_POST['a_password'])."', '', '".$_POST['ad_email']."', 	'".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$_POST['birthday']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".time()."', '0', '".time()."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '1' ");
-		}else{
-			$sql -> db_Update("user", "user_admin='1' WHERE user_name='".$_POST['ad_name']."' ");
-		}
+	
+	if(!$sql -> db_Select("user", "*", "user_name='".$_POST['ad_name']."' ")){
+		$sql -> db_Insert("user", "0, '".$_POST['ad_name']."', '".md5($_POST['a_password'])."', '', '".$_POST['ad_email']."', 	'".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$_POST['birthday']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".time()."', '0', '".time()."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '1', '', '', '$perm', '', '' ");
+		$message = "New user/admin entry created for ".$_POST['ad_name']."<br />";
+	}else{
+		$sql -> db_Update("user", "user_admin='1', user_perms='$perm' WHERE user_name='".$_POST['ad_name']."' ");
 	}
-	$message = "Administrator ".$_POST['ad_name']." added to database.<br />";
+	$message = $_POST['ad_name']." now has admin status.<br />";
 }
 
 if(IsSet($_POST['update_admin'])){
-	$sql -> db_Select("admin", "*", "admin_id='".$_POST['a_id']."' ");
+	$sql -> db_Select("user", "*", "user_id='".$_POST['a_id']."' ");
 	$row = $sql -> db_Fetch();
-	$a_name = $row['admin_name'];
+	$a_name = $row['user_name'];
 	if($_POST['a_password'] == ""){
-		$admin_password = $row['admin_password'];
+		$admin_password = $row['user_password'];
 	}else{
 		$admin_password = md5($_POST['a_password']);
 	}
@@ -49,14 +48,16 @@ if(IsSet($_POST['update_admin'])){
 		}
 	}
 	$sql -> db_Update("admin", "admin_name='".$_POST['ad_name']."', admin_password='$admin_password', admin_email='".$_POST['ad_email']."', admin_permissions='".$perm."' WHERE admin_id='".$_POST['a_id']."' ");
-	$sql -> db_Update("user", "user_password='$admin_password' WHERE user_name='$a_name' ");
+	$sql -> db_Update("user", "user_password='$admin_password', user_perms='$perm', user_email='".$_POST['ad_email']."' WHERE user_name='$a_name' ");
 	unset($ad_name, $a_password, $ad_email, $a_perms);
 	$message = "Administrator ".$_POST['ad_name']." updated in database.<br />";
 }
 
 if(IsSet($_POST['edit'])){
-	$sql -> db_Select("admin", "*", "admin_id='".$_POST['existing']."' ");
-	list($a_id, $ad_name, $null, $ad_email, $null, $a_perms) = $sql-> db_Fetch();
+	$sql -> db_Select("user", "*", "user_id='".$_POST['existing']."' ");
+	$row = $sql-> db_Fetch();
+	extract($row);
+	$a_id = $user_id; $ad_name = $user_name; $ad_email = $user_email; $a_perms = $user_perms;
 	if($a_perms == "0"){
 		$text = "<div style=\"text-align:center\">$ad_name is the main site administrator and cannot be edited.
 		<br /><br />
@@ -68,13 +69,14 @@ if(IsSet($_POST['edit'])){
 }
 
 if(IsSet($_POST['delete'])){
-	$sql -> db_Select("admin", "*", "admin_id='".$_POST['existing']."' ");
-	list($admin_id, $admin_name, $admin_password, $admin_email, $admin_ip, $admin_permissions) = $sql-> db_Fetch();
+	$sql -> db_Select("user", "*", "user_id='".$_POST['existing']."' ");
+	$row = $sql-> db_Fetch();
+	extract($row);
 
 	$text = "<div style=\"text-align:center\">";
 
-	if($admin_permissions == 0){
-		$text .= "$admin_name is the main site administrator and cannot be deleted.
+	if($user_perms == "0"){
+		$text .= "$user_name is the main site administrator and cannot be deleted.
 		<br /><br />
 		<a href=\"administrator.php\">Continue</a>";
 		$ns -> tablerender("<div style=\"text-align:center\">Error!</div>", $text);
@@ -83,12 +85,12 @@ if(IsSet($_POST['delete'])){
 	}
 
 
-	$text .= "<b>Please confirm you wish to delete '$admin_name' from the database - once deleted this administrator's record cannot be retrieved</b>
+	$text .= "<b>Please confirm you wish to delete '$user_name' from the admin database</b>
 <br /><br />
-<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
+<form method=\"post\" action=\"".e_SELF."\">
 <input class=\"button\" type=\"submit\" name=\"cancel\" value=\"Cancel\" /> 
 <input class=\"button\" type=\"submit\" name=\"confirm\" value=\"Confirm Delete\" /> 
-<input type=\"hidden\" name=\"existing\" value=\"$admin_name\">
+<input type=\"hidden\" name=\"existing\" value=\"$user_name\">
 </form>
 </div>";
 $ns -> tablerender("Confirm Delete Administrator", $text);
@@ -103,22 +105,19 @@ if(IsSet($_POST['cancel'])){
 }
 
 if(IsSet($_POST['confirm'])){
-	echo "AN: ".$_POST['existing'];
-	$sql -> db_Delete("admin", "admin_name='".$_POST['existing']."' ");
-	$sql -> db_Update("user", "user_admin=0 WHERE user_name='".$_POST['existing']."' ");
+	$sql -> db_Update("user", "user_admin=0, user_perms='' WHERE user_name='".$_POST['existing']."' ");
 	$message = "Administrator deleted.";
 }
-
 
 if(IsSet($message)){
 	$ns -> tablerender("", "<div style=\"text-align:center\"><b>".$message."</b></div>");
 }
 
-$sql -> db_Select("admin");
+$sql -> db_Select("user", "*", "user_admin='1'");
 
 $text = "<div style=\"text-align:center\">";
 
-$text .= "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
+$text .= "<form method=\"post\" action=\"".e_SELF."\">
 Existing Administrators: 
 <select name=\"existing\" class=\"tbox\">";
 while(list($admin_id_, $admin_name_) = $sql-> db_Fetch()){

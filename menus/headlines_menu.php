@@ -1,3 +1,3 @@
 <?php
-require_once("plugins/headlines.php");
+require_once(e_BASE."plugins/headlines.php");
 ?>

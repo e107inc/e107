@@ -1,15 +1,15 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system													|
-|	/template.php																|
-|																						|
-|	©Steve Dunstan 2001-2002										|
-|	http://jalist.com															|
-|	stevedunstan@jalist.com											|
-|																						|
-|	Released under the terms and conditions of the		|
-|	GNU General Public License (http://gnu.org).				|
+|	e107 website system
+|	/user.php
+|
+|	©Steve Dunstan 2001-2002
+|	http://e107.org
+|	jalist@e107.org
+|
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -19,16 +19,16 @@ if(IsSet($_POST['records'])){
 	$records = $_POST['records'];
 	$order = $_POST['order'];
 	$from = 0;
-}else if(!$_SERVER['QUERY_STRING']){
+}else if(!e_QUERY){
 	$records = 20;
 	$from = 0;
 	$order="DESC";
 }else{
-	$qs = explode(".", $_SERVER['QUERY_STRING']);
+	$qs = explode(".", e_QUERY);
 	if($qs[0] == "id"){
 		$id = $qs[1];
 	}else{
-		$qs = explode(".", $_SERVER['QUERY_STRING']);
+		$qs = explode(".", e_QUERY);
 		$from = $qs[0];
 		$records = $qs[1];
 		$order = $qs[2];
@@ -50,10 +50,10 @@ if(IsSet($id)){
 		require_once(FOOTERF);
 		exit;
 	}
-	
-	list($user_id, $user_name, $null, $user_sess, $user_email, $user_homepage, $user_icq, $user_aim, $user_msn, $user_location, $user_birthday, $user_signature, $user_image, $user_timezone, $user_hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_prefs, $user_new, $user_viewed, $user_visits)  = $sql -> db_Fetch();
 
-	renderuser($user_id, $user_name, $null, $user_sess, $user_email, $user_homepage, $user_icq, $user_aim, $user_msn, $user_location, $user_birthday, $user_signature, $user_image, $user_timezone, $user_hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_prefs, $user_new, $user_viewed, $user_visits);
+	list($user_id, $user_name, $null, $user_sess, $user_email, $user_homepage, $user_icq, $user_aim, $user_msn, $user_location, $user_birthday, $user_signature, $user_image, $user_timezone, $user_hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_prefs, $user_new, $user_viewed, $user_visits, $user_admin, $user_login)  = $sql -> db_Fetch();
+
+	renderuser($user_id, $user_name, $null, $user_sess, $user_email, $user_homepage, $user_icq, $user_aim, $user_msn, $user_location, $user_birthday, $user_signature, $user_image, $user_timezone, $user_hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_prefs, $user_new, $user_viewed, $user_visits, $user_admin, $user_login);
 	require_once(FOOTERF);
 	exit;
 }
@@ -62,7 +62,7 @@ $users_total = $sql -> db_Count("user");
 
 $text = "<div style=\"text-align:center\">
 ".LAN_138." ".$users_total."<br /><br />
-<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
+<form method=\"post\" action=\"".e_SELF."\">
 <p>
 Show: ";
 
@@ -109,15 +109,15 @@ $ns -> tablerender("<div style=\"text-align:center\">".LAN_140."</div>", $text);
 if(!$sql -> db_Select("user", "*",  "ORDER BY user_id $order LIMIT $from,$records", $mode="no_where")){
 	echo "<div style=\"text-align:center\"><b>".LAN_141."</b></div>";
 }else{
-	while(list($user_id, $user_name, $null, $user_sess, $user_email, $user_homepage, $user_icq, $user_aim, $user_msn, $user_location, $user_birthday, $user_signature, $user_image, $user_timezone, $user_hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_prefs, $user_new, $user_viewed, $user_visits)  = $sql -> db_Fetch()){
+	while(list($user_id, $user_name, $null, $user_sess, $user_email, $user_homepage, $user_icq, $user_aim, $user_msn, $user_location, $user_birthday, $user_signature, $user_image, $user_timezone, $user_hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_prefs, $user_new, $user_viewed, $user_visits, $user_admin, $user_login)  = $sql -> db_Fetch()){
 
-		renderuser($user_id, $user_name, $null, $user_sess, $user_email, $user_homepage, $user_icq, $user_aim, $user_msn, $user_location, $user_birthday, $user_signature, $user_image, $user_timezone, $user_hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_prefs, $user_new, $user_viewed, $user_visits);
+		renderuser($user_id, $user_name, $null, $user_sess, $user_email, $user_homepage, $user_icq, $user_aim, $user_msn, $user_location, $user_birthday, $user_signature, $user_image, $user_timezone, $user_hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_prefs, $user_new, $user_viewed, $user_visits, $user_admin, $user_login);
 	}
 }
 
 $ix = new nextprev("user.php", $from, $records, $users_total, LAN_138, $records.".".$order);
 
-function renderuser($user_id, $user_name, $null, $user_sess, $user_email, $user_homepage, $user_icq, $user_aim, $user_msn, $user_location, $user_birthday, $user_signature, $user_image, $user_timezone, $user_hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_prefs, $user_new, $user_viewed, $user_visits){
+function renderuser($user_id, $user_name, $null, $user_sess, $user_email, $user_homepage, $user_icq, $user_aim, $user_msn, $user_location, $user_birthday, $user_signature, $user_image, $user_timezone, $user_hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_prefs, $user_new, $user_viewed, $user_visits, $user_admin, $user_login){
 	$caption = LAN_142." ".$user_id.": ".$user_name."</div>";
 	$text = "<table style=\"width:95%\"><tr>";
 
@@ -137,9 +137,14 @@ function renderuser($user_id, $user_name, $null, $user_sess, $user_email, $user_
 	}
 
 
+if($user_login != ""){
+	$text .= "<td style=\"width:40%\">".LAN_308."</td>
+<td style=\"width:60%\">".$user_login."</td></tr>";
+}
 
-$text .= "<td style=\"width:25%\">".LAN_112."</td>
-<td style=\"width:75%\">";
+
+$text .= "<td style=\"width:40%\">".LAN_112."</td>
+<td style=\"width:60%\">";
 
 	if($user_hideemail == 1){
 		$text .= LAN_143;
@@ -148,27 +153,27 @@ $text .= "<td style=\"width:25%\">".LAN_112."</td>
 	}
 	$text .= "</td></tr><tr>";
 	if($user_homepage != "" && $user_homepage != "http://"){
-		$text .= "<td style=\"width:25%\">".LAN_144."</td>
-		<td style=\"width:75%\"><a href=\"".$user_homepage."\">".$user_homepage."</a></td></tr>";
+		$text .= "<td style=\"width:40%\">".LAN_144."</td>
+		<td style=\"width:60%\"><a href=\"".$user_homepage."\">".$user_homepage."</a></td></tr>";
 	}
 	if($user_icq != ""){
-		$text .= "<tr><td style=\"width:25%\">".LAN_115."</td>
-		<td style=\"width:75%\">".$user_icq."</td></tr>";
+		$text .= "<tr><td style=\"width:40%\">".LAN_115."</td>
+		<td style=\"width:60%\">".$user_icq."</td></tr>";
 	}
 		
 	if($user_aim != ""){
-		$text .= "<tr><td style=\"width:25%\">".LAN_116."</td>
-		<td style=\"width:75%\">".$user_aim."</td></tr>";
+		$text .= "<tr><td style=\"width:40%\">".LAN_116."</td>
+		<td style=\"width:60%\">".$user_aim."</td></tr>";
 	}
 
 	if($user_msn != ""){
-		$text .= "<tr><td style=\"width:25%\">".LAN_117."</td>
-		<td style=\"width:75%\">".$user_msn."</td></tr>";
+		$text .= "<tr><td style=\"width:40%\">".LAN_117."</td>
+		<td style=\"width:60%\">".$user_msn."</td></tr>";
 	}
 
 	if($user_location != ""){
-		$text .= "<tr><td style=\"width:25%\">".LAN_119."</td>
-		<td style=\"width:75%\">".$user_location."</td></tr>";
+		$text .= "<tr><td style=\"width:40%\">".LAN_119."</td>
+		<td style=\"width:60%\">".$user_location."</td></tr>";
 	}
 
 	if($user_birthday != "" && $user_birthday != "0000-00-00"){
@@ -177,40 +182,39 @@ $text .= "<td style=\"width:25%\">".LAN_112."</td>
 		$user_birthday = "$regs[3].$regs[2].$regs[1]";
 	}
 
-	$text .= "<tr><td style=\"width:25%\">".LAN_118."</td>
-		<td style=\"width:75%\">".$user_birthday."</td></tr>";
+	$text .= "<tr><td style=\"width:40%\">".LAN_118."</td>
+		<td style=\"width:60%\">".$user_birthday."</td></tr>";
 	}
 
 	$aj = new textparse();
 
 	if($user_signature != ""){
 		$user_signature = $aj -> tpa($user_signature);
-		$text .= "<tr><td style=\"width:25%; vertical-align:top\">".LAN_120."</td>
-		<td style=\"width:75%\">".$user_signature."</td></tr>";
+		$text .= "<tr><td style=\"width:40%; vertical-align:top\">".LAN_120."</td>
+		<td style=\"width:60%\">".$user_signature."</td></tr>";
 	}
 
 	$gen = new convert;
 	$datestamp = $gen->convert_date($user_join, "long");
 
-	$text .= "<tr><td style=\"width:25%\">".LAN_145."</td>
-	<td style=\"width:75%\">".$datestamp."</td></tr>
+	$text .= "<tr><td style=\"width:40%\">".LAN_145."</td>
+	<td style=\"width:60%\">".$datestamp."</td></tr>
 
-	<tr><td style=\"width:25%\">".LAN_146."</td>
-	<td style=\"width:75%\">".$user_visits."</td></tr>
+	<tr><td style=\"width:40%\">".LAN_146."</td>
+	<td style=\"width:60%\">".$user_visits."</td></tr>
 
-	<tr><td style=\"width:25%\">".LAN_147."</td>
-	<td style=\"width:75%\">".$user_chats."</td></tr>
+	<tr><td style=\"width:40%\">".LAN_147."</td>
+	<td style=\"width:60%\">".$user_chats."</td></tr>
 
-	<tr><td style=\"width:25%\">".LAN_148."</td>
-	<td style=\"width:75%\">".$user_comments."</td></tr>
+	<tr><td style=\"width:40%\">".LAN_148."</td>
+	<td style=\"width:60%\">".$user_comments."</td></tr>
 
-	<tr><td style=\"width:25%\">".LAN_149."</td>
-	<td style=\"width:75%\">".$user_forums."</td></tr>";
+	<tr><td style=\"width:40%\">".LAN_149."</td>
+	<td style=\"width:60%\">".$user_forums."</td></tr>";
 	$text .= "</table>";
 	$ns = new table;
 	$ns -> tablerender($caption, $text);
 }
-
 
 require_once(FOOTERF);
 ?>

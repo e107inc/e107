@@ -1,19 +1,19 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system													|
-|	/admin/admin_category.php										|
-|																						|
-|	©Steve Dunstan 2001-2002										|
-|	http://jalist.com															|
-|	stevedunstan@jalist.com											|
-|																						|
-|	Released under the terms and conditions of the		|
-|	GNU General Public License (http://gnu.org).				|
+|	e107 website system
+|	/admin/news_category.php
+|
+|	©Steve Dunstan 2001-2002
+|	http://e107.org
+|	jalist@e107.org
+|
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("7")){ header("location:../index.php"); }
+if(!getperms("7")){ header("location:".e_HTTP."index.php"); }
 require_once("auth.php");
 
 if(IsSet($_POST['add_category'])){
@@ -40,7 +40,7 @@ if(IsSet($_POST['delete'])){
 	$text = "<div style=\"text-align:center\">
 	<b>Please confirm you wish to delete the '$category_name' news category - once deleted it cannot be retrieved</b>
 <br /><br />
-<form method=\"post\" action=\"$PHP_SELF\">
+<form method=\"post\" action=\"".e_SELF."\">
 <input class=\"button\" type=\"submit\" name=\"cancel\" value=\"Cancel\" /> 
 <input class=\"button\" type=\"submit\" name=\"confirm\" value=\"Confirm Delete\" /> 
 <input type=\"hidden\" name=\"existing\" value=\"".$_POST['existing']."\">
@@ -72,7 +72,7 @@ if($category_total == "0"){
 	<div style=\"text-align:center\">";
 }else{
 	$text = "<div style=\"text-align:center\">
-	<form method=\"post\" action=\"$PHP_SELF\">
+	<form method=\"post\" action=\"".e_SELF."\">
 	
 	Existing Categories: 
 	<select name=\"existing\" class=\"tbox\">";
@@ -87,9 +87,8 @@ if($category_total == "0"){
 	<br />";
 }
 
-
 $text .= "
-<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
+<form method=\"post\" action=\"".e_SELF."\">
 <table style=\"width:95%\">
 <tr>
 <td style=\"width:30%\">Category Name: </td>

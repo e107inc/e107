@@ -1,22 +1,22 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system													|
-|	/admin/banlist.php														|
-|																						|
-|	©Steve Dunstan 2001-2002										|
-|	http://jalist.com															|
-|	stevedunstan@jalist.com											|
-|																						|
-|	Released under the terms and conditions of the		|
-|	GNU General Public License (http://gnu.org).				|
+|	e107 website system
+|	/admin/banlist.php
+|
+|	©Steve Dunstan 2001-2002
+|	http://e107.org
+|	jalist@e107.org
+|
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("4")){ header("location:../index.php"); }
+if(!getperms("4")){ header("location:".e_HTTP."index.php"); }
 require_once("auth.php");
 
-if(IsSet($_SERVER['QUERY_STRING'])){ $ban_ip = $_SERVER['QUERY_STRING']; }
+if(e_QUERY){ $ban_ip = e_QUERY; }
 
 if(IsSet($_POST['add_ban'])){
 	$sql -> db_Insert("banlist", "'".$_POST['ban_ip']."', '".ADMINID."', '".$_POST['ban_reason']."' ");
@@ -54,7 +54,7 @@ if($ban_total == "0"){
 }
 
 $text .= "
-<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
+<form method=\"post\" action=\"".e_SELF."\">
 <table style=\"width:95%\">
 <tr>
 <td style=\"width:30%\">Ban by IP: </td>
@@ -80,7 +80,7 @@ $text .= "
 <tr style=\"vertical-align:top\"> 
 <td colspan=\"2\"  style=\"text-align:center\">
 
-<input class=\"button\" type=\"submit\" name=\"add_ban\" value=\"Add Banned IP Address\" />
+<input class=\"button\" type=\"submit\" name=\"add_ban\" value=\"Ban User\" />
 
 </td>
 </tr>

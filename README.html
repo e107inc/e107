@@ -29,13 +29,14 @@ e107 readme.html
 <td style="background-color:#000; vertical-align: top;"></td>
 </tr>
 <tr>
-<td style="vertical-align: top;"><br />
-<table style="width:100%" cellpadding="10" cellspacing="10">
+<td style="vertical-align: top;">
+<table style="width:100%; background-color:#EAEAEA;" cellpadding="10" cellspacing="10">
 <tr>
-<td style="background-color:#fff; ">
+<td style="background-color:#EAEAEA;">
 
+<img src="themes/e107/images/installlogo.png" alt="" />
 <br />
-<div class="mediumtext">e107 website system version 5.3b2<br />
+<div class="mediumtext">e107 website system version 5.4beta1<br />
 by Steve Dunstan</a> (jalist)<br />
 <a href="mailto:jalist@e107.org">jalist@e107.org</a><br />
 <a href="http://www.jalist.com">http://e107.org</a><br />
@@ -69,7 +70,7 @@ Upgrading your version/build ---
 </ul>
 
 
-For security reasons you should chmod your config.php file back to 644 after installation is complete.<br />
+<div class="installe">For security reasons you should chmod your config.php file back to 644 after installation is complete, and delete install.php from your server.</div>
 <br />
 You also need to chmod the two files (news.xml and news.txt) in the /backend directory to 666 for your xml generation to work properly.
 
@@ -78,11 +79,11 @@ You also need to chmod the two files (news.xml and news.txt) in the /backend dir
 
 <div class="mediumtext">Common problems</div>
 Most problems are related to not having a recent enough version of PHP installed on the server. If you keep returning to the same stage during install you are probably running a version of PHP older than 4.1.<br />
-You need cookies enabled in your browser to log in.<br />
-Your logo is situated at /themes/shared/logo.png, change this file to alter your logo
+You need cookies enabled in your browser to log in.<br /><br />
+<b>If for any reason your site becomes totally unreachable due to fatal errors etc, try running /files/resetcore.php in your browser, this will restore the default core values back into the database - none of your content will be altered by running this script.</b>
 <br /><hr /><br />
 <div class="mediumtext">Thankyous</div>
-Thanks mainly to Bill Nalens (nalenb) and que for their unstinting support. Also to CraHan, NeXTer, Kuhndog, wols, [steev], rootrider, Claymore and the others in [shhhh] for their friendship.<br />
+Thanks mainly to McFly, Bill Nalens (nalenb) and que for their unstinting support. Also to CraHan, NeXTer, Kuhndog, wols, [steev], rootrider, Claymore and the others in [shhhh] for their friendship.<br />
 Jim Dunn and StellarTech1 for hosting.<br />
 Many thanks to the beta-test team for their bughunting.<br />
 Thanks to all of you who have taken the time to create plugins/themes etc</br />

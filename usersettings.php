@@ -1,21 +1,21 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system													|
-|	/prefs.php																	|
-|																						|
-|	©Steve Dunstan 2001-2002										|
-|	http://jalist.com															|
-|	stevedunstan@jalist.com											|
-|																						|
-|	Released under the terms and conditions of the		|
-|	GNU General Public License (http://gnu.org).				|
+|	e107 website system
+|	/usersettings.php
+|
+|	©Steve Dunstan 2001-2002
+|	http://e107.org
+|	jalist@e107.org
+|
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 require_once("class2.php");
-if(USER == FALSE && ADMIN == FALSE){ header("location:index.php"); }
+if(USER == FALSE && ADMIN == FALSE){ header("location:".e_HTTP."index.php"); }
 
-$_uid = $_SERVER['QUERY_STRING'];
+$_uid = e_QUERY;
 
 if(IsSet($_POST['_uid'])){ $_uid = $_POST['_uid']; }
 require_once(HEADERF);
@@ -43,12 +43,10 @@ if(IsSet($_POST['updatesettings'])){
 
 	if($error == ""){
 		if($_uid != ""){ $inp = $_uid; }else{ $inp = USERID; }
-		$sql -> db_Update("user", "user_password='$password', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$_POST['birthday']."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."' WHERE user_id='".$inp."' ");
+		$sql -> db_Update("user", "user_password='$password', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$_POST['birthday']."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."' WHERE user_id='".$inp."' ");
 
 		$text = "<div style=\"text-align:center\">".LAN_150."</div>";
 		$ns -> tablerender(LAN_151, $text);
-		require_once(FOOTERF);
-		exit;
 	}
 }
 
@@ -61,10 +59,10 @@ if($_uid != ""){
 }else{
 	$sql -> db_Select("user", "*", "user_id='".USERID."' ");
 }
-list($user_id, $name, $user_password, $user_sess, $email, $website, $icq, $aim, $msn, $location, $birthday, $signature, $image, $user_timezone, $hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_new, $user_viewed, $user_prefs, $user_new, $user_viewed, $user_visits, $user_admin)  = $sql -> db_Fetch();
+list($user_id, $name, $user_password, $user_sess, $email, $website, $icq, $aim, $msn, $location, $birthday, $signature, $image, $user_timezone, $hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_prefs, $user_new, $user_viewed, $user_visits, $user_admin, $user_login) = $sql -> db_Fetch();
 
 $text = "
-<form  name=\"settings\" method=\"post\" action=\"".$_SERVER['PHP_SELF']."?stage2\">\n
+<form  name=\"settings\" method=\"post\" action=\"".e_SELF."?stage2\">\n
 <table style=\"width:95%\">
 <tr>
 <td style=\"width:20%\">".LAN_7."</td>
@@ -74,21 +72,28 @@ $name
 </tr>
 
 <tr>
-<td style=\"width:20%\"><u>".LAN_152."</u></td>
+<td style=\"width:20%\">".LAN_308."</td>
+<td style=\"width:80%\">
+<input class=\"tbox\" type=\"text\" name=\"realname\" size=\"60\" value=\"$user_login\" maxlength=\"100\" />
+</td>
+</tr>
+
+<tr>
+<td style=\"width:20%\">".LAN_152."</td>
 <td style=\"width:80%\">
 <input class=\"tbox\" type=\"password\" name=\"password1\" size=\"40\" value=\"\" maxlength=\"20\" /> (case sensitive)
 </td>
 </tr>
 
 <tr>
-<td style=\"width:20%\"><u>".LAN_153."</u></td>
+<td style=\"width:20%\">".LAN_153."</td>
 <td style=\"width:80%\">
 <input class=\"tbox\" type=\"password\" name=\"password2\" size=\"40\" value=\"\" maxlength=\"20\" /> (case sensitive)
 </td>
 </tr>
 
 <tr>
-<td style=\"width:20%\"><u>".LAN_112."</u></td>
+<td style=\"width:20%\">".LAN_112."</td>
 <td style=\"width:80%\">
 <input class=\"tbox\" type=\"text\" name=\"email\" size=\"60\" value=\"$email\" maxlength=\"100\" />
 </td>
@@ -206,7 +211,7 @@ while($timezone[$count]){
 $text .= "</select>
 </td>
 </tr>
-</tr>
+
 <tr style=\"vertical-align:top\"> 
 <td colspan=\"2\"  style=\"text-align:center\">
 <br />

@@ -1,43 +1,36 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system													|
-|	/plugins/poll.php															|
-|																						|
-|	©Steve Dunstan 2001-2002										|
-|	http://jalist.com															|
-|	stevedunstan@jalist.com											|
-|																						|
-|	Released under the terms and conditions of the		|
-|	GNU General Public License (http://gnu.org).				|
+|	e107 website system
+|	/plugins/poll.php
+|
+|	©Steve Dunstan 2001-2002
+|	http://e107.org
+|	jalist@e107.org
+|
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 define(PT, $poll_title);
-$sql -> db_Select("poll", "*", "poll_active='1'");
+$sql -> db_Select("poll", "*", "poll_active!='0' ");
 list($poll_id, $poll_datestamp, $poll_end_datestamp, $poll_admin_id, $poll_title_, $poll_option[1], $poll_option[2], $poll_option[3], $poll_option[4], $poll_option[5], $poll_option[6], $poll_option[7], $poll_option[8], $poll_option[9], $poll_option[10], $votes[1], $votes[2], $votes[3], $votes[4], $votes[5], $votes[6], $votes[7], $votes[8], $votes[9], $votes[10], $poll_ip, $poll_active) = $sql-> db_Fetch();
-$vote_ip = explode("^", $poll_ip);
 
-$user_ip = getip();
+$user_id = ($poll_active == 1 ? getip() : USERID)."^";
 
-for($a=0; $a<count($vote_ip)-1; $a++){
-	if($vote_ip[$a] == $user_ip){
-		$mode = "voted";
-	}
+if(strpos($poll_ip, $user_id)){
+	$mode = "voted";
+}else if($poll_active == 2 && USER == FALSE){
+	$mode = "disallowed";
+}else{
+	$mode = "notvoted";
 }
 
 If(IsSet($_POST['vote'])){
-
-	if(!eregi($user_ip, $poll_ip)){
-		if($_POST['votea'] != "") {
+	if(!strpos($poll_ip, $user_id)){
+		if($_POST['votea']){
 			$num = "poll_votes_".$_POST['votea'];
-			if ($poll_ip != "" && $poll_ip != "0") {
-				$new_ip = $poll_ip.$user_ip."^";
-			}
-			else {
-				$new_ip = $user_ip."^";
-			}
-			$sql3 = new db;
-			$sql3 -> db_Update("poll", "$num=$num+1, poll_ip='$new_ip' WHERE poll_active='1' ");
+			$sql -> db_Update("poll", "$num=$num+1, poll_ip='".$poll_ip.$user_id."' WHERE poll_active='1' OR poll_active='2' ");
 			$mode = "voted";
 		}
 	}
@@ -45,16 +38,13 @@ If(IsSet($_POST['vote'])){
 
 $po = new poll;
 
-if(!$sql -> db_Select("poll", "*", "poll_active='1' ")){
+if(!$sql -> db_Select("poll", "*", "poll_active!='0' ")){
 	$text = "<div style=\"text-align:center\">".LAN_162."</div>";
 }else{
 	list($poll_id, $poll_datestamp, $poll_end_datestamp, $poll_admin_id, $poll_title_, $poll_option[1], $poll_option[2], $poll_option[3], $poll_option[4], $poll_option[5], $poll_option[6], $poll_option[7], $poll_option[8], $poll_option[9], $poll_option[10], $votes[1], $votes[2], $votes[3], $votes[4], $votes[5], $votes[6], $votes[7], $votes[8], $votes[9], $votes[10], $poll_ip, $poll_active) = $sql-> db_Fetch();
 
-	if($mode == "voted"){
-		$po -> render_poll($poll_id, $poll_title_, $poll_option[1], $poll_option[2], $poll_option[3], $poll_option[4], $poll_option[5], $poll_option[6], $poll_option[7], $poll_option[8], $poll_option[9], $poll_option[10], "voted", $votes[1], $votes[2], $votes[3], $votes[4], $votes[5], $votes[6], $votes[7], $votes[8], $votes[9], $votes[10]);
-	}else{
-		$po -> render_poll($poll_id, $poll_title_, $poll_option[1], $poll_option[2], $poll_option[3], $poll_option[4], $poll_option[5], $poll_option[6], $poll_option[7], $poll_option[8], $poll_option[9], $poll_option[10], "notvoted", $votes[1], $votes[2], $votes[3], $votes[4], $votes[5], $votes[6], $votes[7], $votes[8], $votes[9], $votes[10]);
-	}
+	$po -> render_poll($poll_id, $poll_title_, $poll_option[1], $poll_option[2], $poll_option[3], $poll_option[4], $poll_option[5], $poll_option[6], $poll_option[7], $poll_option[8], $poll_option[9], $poll_option[10], $mode, $votes[1], $votes[2], $votes[3], $votes[4], $votes[5], $votes[6], $votes[7], $votes[8], $votes[9], $votes[10]);
+
 }
 
 class poll{
@@ -98,7 +88,7 @@ class poll{
 	}
 	for($counter=1; $counter<=$options; $counter++){
 	
-		if ($mode == "normal" || $mode=="preview") {
+		if ($mode == "normal" || $mode=="preview" || $mode == "disallowed") {
 			$text .= "<input type=\"radio\" name=\"votea\" value=\"$counter\" />
 <b>".stripslashes($poll[$counter])."</b>
 <br />
@@ -114,59 +104,41 @@ class poll{
 <br />";
 		}
 		if ($mode == "notvoted") {
-			$text .= "<input type=\"radio\" name=\"votea\" value=\"$counter\" />
-<b>".stripslashes($poll[$counter])."</b>";
+			$text .= "<input type=\"radio\" name=\"votea\" value=\"$counter\" />\n<b>".stripslashes($poll[$counter])."</b>\n";
 		}
 
-		if($percen[$counter] == ""){
-			$percen[$counter] = 0;
-		}
-		if($votes[$counter] == ""){
-			$votes[$counter] = 0;
-		}
+		if($percen[$counter] == ""){ $percen[$counter] = 0;}
+		if($votes[$counter] == ""){$votes[$counter] = 0;}
 
-		if ($mode == "normal" || $mode=="voted" || $mode=="preview") {
-			$text .= "<span class=\"smalltext\">".$percen[$counter]."% ";
-			if($votes[$counter] == 0){
-				$vt = "No votes";
-			}else if($votes[$counter] == 1){
-				$vt = "1 vote";
-			}else{
-				$vt = $votes[$counter]." votes";
-			}
+		$text .= "<span class=\"smalltext\">".$percen[$counter]."% ";
+		if($votes[$counter] == 0){
+			$vt = "No votes";
+		}else if($votes[$counter] == 1){
+			$vt = "1 vote";
+		}else{
+			$vt = $votes[$counter]." votes";
+		}
 				
-			$text .= "[".$vt."]
-</span>";
-		}
-		$text .= "<br /><br />";		
+		$text .= "[".$vt."]</span><br /><br />";		
 	}
-
-	$text .= "<br />";
 
 	if ($mode == "normal" || $mode=="notvoted"){
-		$text .= "\n</p>
-<p style=\"text-align:center\">
-<input  style=\"text-align:center\" class=\"button\" type=\"submit\" name=\"vote\" value=\"".LAN_163."\" />
-</p>
-";
+		$text .= "\n</p>\n<div style=\"text-align:center\">\n<input  style=\"text-align:center\" class=\"button\" type=\"submit\" name=\"vote\" value=\"".LAN_163."\" /></div>";
+	}elseif($mode == "disallowed"){
+		$text .= "\n</p>\n<div style=\"text-align:center\">".LAN_328."</div><br />";
 	}
-	$text .= "";
 
 	if ($mode == "normal" || $mode=="notvoted"){
 		$text .= "</form>";
 	}
 
-	if($p_total == ""){
-		$p_total = 0;
-	}
+	if($p_total == ""){$p_total = 0;}
 	
 	$sql = new db;
 	$comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='$poll_id' AND comment_type='4'");
 
-
-	$text .= "<div style=\"text-align:center\">
-	".LAN_164." $p_total
-	<br />
+	$text .= "<div style=\"text-align:center\" class=\"smalltext\">
+	".LAN_164.$p_total." - 
 	<a href=\"comment.php?poll.".$poll_id."\">Comments: ".$comment_total."</a><br />
 	[ <a href=\"oldpolls.php\">".LAN_165."</a> ]
 	</div>";

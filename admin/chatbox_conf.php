@@ -5,21 +5,19 @@
 |	/admin//chatbox_conf.php
 |
 |	©Steve Dunstan 2001-2002
-|	http://jalist.com
-|	stevedunstan@jalist.com
+|	http://e107.org
+|	jalist@e107.org
 |
 |	Released under the terms and conditions of the	
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("C")){ header("location:../index.php"); }
+if(!getperms("C")){ header("location:".e_HTTP."index.php"); }
 require_once("auth.php");
 
-echo "--- > ".$_POST['cb_linkreplace'];
-
-if($_SERVER['QUERY_STRING'] != ""){
-	$temp = explode("-", $_SERVER['QUERY_STRING']);
+if(e_QUERY != ""){
+	$temp = explode("-", e_QUERY);
 	$action = $temp[0];
 	$id = $temp[1];
 	$url = $temp[2];
@@ -49,12 +47,11 @@ if($action == "u"){
 }
 
 if(IsSet($_POST['updatesettings'])){
-
-	$sql -> db_Update("prefs", "pref_value='".$_POST['chatbox_posts']."' WHERE pref_name='chatbox_posts' ");
-	$sql -> db_Update("prefs", "pref_value='".$_POST['cb_linkc']."' WHERE pref_name='cb_linkc' ");
-	$sql -> db_Update("prefs", "pref_value='".$_POST['cb_wordwrap']."' WHERE pref_name='cb_wordwrap' ");
-	$sql -> db_Update("prefs", "pref_value='".$_POST['cb_linkreplace']."' WHERE pref_name='cb_linkreplace' ");
-
+	$pref['chatbox_posts'][1] = $_POST['chatbox_posts'];
+	$pref['cb_linkc'][1] = $_POST['cb_linkc'];
+	$pref['cb_wordwrap'][1] = $_POST['cb_wordwrap'];
+	$pref['cb_linkreplace'][1] = $_POST['cb_linkreplace'];
+	$sql -> db_Update("core", "e107_value='".serialize($pref)."' WHERE e107_name='pref' ");
 	header("location:chatbox_conf.php?u");
 }
 
@@ -68,7 +65,7 @@ $cb_linkc = $pref['cb_linkc'][1];
 $cb_wordwrap = $pref['cb_wordwrap'][1];
 
 $text = "
-<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name=\"cbform\">
+<form method=\"post\" action=\"".e_SELF."\" name=\"cbform\">
 <table style=\"width:95%\">
 <tr>
 <td style=\"width:20%\">Chatbox posts to display?: </td>
@@ -140,10 +137,7 @@ $text .= "
 </form>";
 
 $ns -> tablerender("<div style=\"text-align:center\">Chatbox Settings</div>", $text);
-require_once("footer.php");
-
 ?>
-
 <script language="javascript">
 <!--
 function disable(){
@@ -154,10 +148,8 @@ function enable(){
 	frm=document.forms[0];
 	frm.cb_linkc.disabled=false;
 }
-
-
-
-
-
 //-->
 </script>
+<?php
+require_once("footer.php");
+?>

@@ -1,19 +1,19 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system													|
-|	/admin/link_category.php											|
-|																						|
-|	©Steve Dunstan 2001-2002										|
-|	http://jalist.com															|
-|	stevedunstan@jalist.com											|
-|																						|
-|	Released under the terms and conditions of the		|
-|	GNU General Public License (http://gnu.org).				|
+|	e107 website system
+|	/admin/link_category.php
+|
+|	©Steve Dunstan 2001-2002
+|	http://e107.org
+|	jalist@e107.org
+|
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("8")){ header("location:../index.php"); }
+if(!getperms("8")){ header("location:".e_HTTP."index.php"); }
 require_once("auth.php");
 
 if(IsSet($_POST['add_category'])){
@@ -36,7 +36,13 @@ if(IsSet($_POST['confirm'])){
 if(IsSet($_POST['delete'])){
 	$sql -> db_Select("link_category", "*", "link_category_id='".$_POST['existing']."' ");
 	list($category_id, $category_name, $category_icon) = $sql-> db_Fetch();
-	
+
+	if($category_name == "Main"){
+		$ns -> tablerender("Unable to delete", "<div style=\"text-align:center\">Cannot delete the main category.</div>");
+		require_once("footer.php");
+		exit;
+	}
+
 	$text = "<div style=\"text-align:center\">
 	<b>Please confirm you wish to delete the '".$category_name."' link category - once deleted it cannot be retrieved</b>
 <br /><br />
@@ -59,6 +65,11 @@ if(IsSet($_POST['edit'])){
 	
 	$sql -> db_Select("link_category", "*", "link_category_id='".$_POST['existing']."' ");
 	list($category_id, $category_name, $category_description) = $sql-> db_Fetch();
+	if($category_name == "Main"){
+		$ns -> tablerender("Unable to edit", "<div style=\"text-align:center\">Cannot edit the main category.</div>");
+		require_once("footer.php");
+		exit;
+	}
 }
 
 if(IsSet($message)){
@@ -74,7 +85,7 @@ if($category_total == "0"){
 	<div style=\"text-align:center\">";
 }else{
 	$text = "<div style=\"text-align:center\">
-	<form method=\"post\" action=\"$PHP_SELF\">
+	<form method=\"post\" action=\"".e_SELF."\">
 	
 	Existing categories: 
 	<select name=\"existing\" class=\"tbox\">";
@@ -91,7 +102,7 @@ if($category_total == "0"){
 
 
 $text .= "
-<form method=\"post\" action=\"$PHP_SELF\">
+<form method=\"post\" action=\"".e_SELF."\">
 <table style=\"width:95%\">
 <tr>
 <td style=\"width:30%\">Link Category Name: </td>

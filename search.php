@@ -1,23 +1,19 @@
 <?php
-if($_POST['searchquery'] == ""){ header("location:index.php"); }
 /*
 +---------------------------------------------------------------+
 |	e107 website system
-|	/template.php
+|	/search.php
 |
 |	©Steve Dunstan 2001-2002
-|	http://jalist.com
-|	stevedunstan@jalist.com	
+|	http://e107.org
+|	jalist@e107.org
 |
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
-+---------------------------------------------------------------+
-| 03/12/02
-| + search no longer case sensitive (added by McFly)
-+---------------------------------------------------------------+
 */
 require_once("class2.php");
+if($_POST['searchquery'] == ""){ header("location:".e_HTTP."index.php"); }
 require_once(HEADERF);
 
 $con = new convert;
@@ -45,7 +41,7 @@ if(IsSet($_POST['searchquery'])){
 	}
 }
 
-$text = "<div style=\"text-align:center\"><form method=\"post\" action=\"search.php\">
+$text = "<div style=\"text-align:center\"><form method=\"post\" action=\"".e_SELF."\">
 <p>
 Search for <input class=\"tbox\" type=\"text\" name=\"searchquery\" size=\"20\" value=\"$query\" maxlength=\"50\" />
 &nbsp;in <select name=\"searchtype\" class=\"tbox\">";
@@ -172,7 +168,7 @@ if($searchtype == 3){
 			$content_subheading_ = $content_subheading_;
 		}
 		$content_content_ = parsesearch($content_content, $query);
-		$text .= "<br /><img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <b><a href=\"article.php?".$content_id."\">".$content_heading_."</a></b> <br />".$content_subheading_.$content_content_;
+		$text .= "<br /><img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <b><a href=\"article.php?".$content_id.".0\">".$content_heading_."</a></b> <br />".$content_subheading_.$content_content_;
 	}
 	if($text == ""){ $text = LAN_97; }
 	$ns -> tablerender("Search Results (Matches: $results):".LAN_100, $text);
@@ -194,7 +190,7 @@ if($searchtype == 4){
 			$content_subheading_ = $content_subheading_;
 		}
 		$content_content_ = parsesearch($content_content, $query);
-		$text .= "<br /><img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <b><a href=\"article.php?".$content_id."\">".$content_heading_."</a></b> <br />".$content_subheading_.$content_content_;
+		$text .= "<br /><img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <b><a href=\"article.php?".$content_id.".0\">".$content_heading_."</a></b> <br />".$content_subheading_.$content_content_;
 	}
 	if($text == ""){ $text = LAN_97; }
 	$ns -> tablerender("Search Results (Matches: $results):".LAN_101, $text);
@@ -243,43 +239,52 @@ if($searchtype == 6){
 // forum item search -------------------------------
 
 if($searchtype == 7){
+	$sql2 = new db;
 	unset($text);
-	$results = $sql -> db_Select("forum_t", "*", "thread_name REGEXP('".$query."') OR thread_thread REGEXP('".$query."') ");
+	
+	$results = $sql -> db_Select("forum_t", "*", "thread_name REGEXP('".$query."') OR thread_thread REGEXP('".$query."')");
+
 	while(list($thread_id, $thread_name, $thread_thread, $thread_forum_id, $thread_datestamp, $thread_parent, $thread_user, $thread_views, $thread_active) = $sql -> db_Fetch()){
 
-		$thread_name = parsesearch($thread_name, $query);
+		$sql2 -> db_Select("forum", "*", "forum_id='$thread_forum_id' ");
+		$row = $sql2 -> db_Fetch();
+		@extract($row);
+		if($forum_active && (!$forum_class || check_class($forum_class))){
+			$thread_name = parsesearch($thread_name, $query);
 	
-		if($thread_name == "......"){
-			$thread_name = "No title";
-		}
+			if($thread_name == "......"){
+				$thread_name = "No title";
+			}
 
-		$thread_thread = parsesearch($thread_thread, $query);
+			$thread_thread = parsesearch($thread_thread, $query);
 		
-		if($thread_parent != 0){
-			$tmp = $thread_parent;
-		}else{
-			$tmp = $thread_id;
-		}
+			if($thread_parent != 0){
+				$tmp = $thread_parent;
+			}else{
+				$tmp = $thread_id;
+			}
 
-		$text .= "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <b><a href=\"forum.php?view.$thread_forum_id.$tmp\">$thread_name</a></b><br />$thread_thread<br /><br />";
+			$text .= "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <b><a href=\"forum.php?view.$thread_forum_id.$tmp\">$thread_name</a></b><br />$thread_thread<br /><br />";
+		}
 	}
 	if($text == ""){ $text = LAN_97; }
 	$ns -> tablerender("Search Results (Matches: $results):".LAN_103, $text);
 }
 
 function parsesearch($text, $match){
-	$text = htmlentities($text);
+	$text = strip_tags($text);
 	$temp = stristr($text,$match);
 	$pos = strlen($text)-strlen($temp);
 
-	$text = eregi_replace($match, "<u><b>$match</b></u>", $text);
+
 	if($pos < 70){
 		$text = "...".substr($text, 0, 100)."...";
 	}else{
 		$text = "...".substr($text, ($pos-70), 140)."...";
 	}
+	$text = eregi_replace($match, "<u><b>$match</b></u>", $text);	
 	
-	return $text;
+	return($text);
 }
 
 require_once(FOOTERF);

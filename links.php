@@ -1,7 +1,19 @@
 <?php
+/*
++---------------------------------------------------------------+
+|	e107 website system
+|	/links.php
+|
+|	©Steve Dunstan 2001-2002
+|	http://e107.org
+|	jalist@e107.org
+|
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
++---------------------------------------------------------------+
+*/
 require_once("class2.php");
-
-$id = $_SERVER['QUERY_STRING'];
+$id = e_QUERY;
 
 if($id != ""){
 	$sql -> db_Update("links", "link_refer=link_refer+1 WHERE link_id='$id' ");
@@ -18,26 +30,43 @@ $sql2 = new db;
 while(list($link_category_id, $link_category_name, $link_category_description) = $sql-> db_Fetch()){
 	if($sql2 -> db_Select("links", "*", "link_category ='$link_category_id' ")){
 		unset($text);
-		while(list($link_id, $link_name, $link_url, $link_description, $link_button, $link_category, $link_order, $link_refer) = $sql2-> db_Fetch()){
+		while($row = $sql2-> db_Fetch()){
+			extract($row);
 			$text .= "<table style=\"width:95%\" cellspacing=\"5\">";
 			$caption = LAN_86." $link_category_name";
 			if($link_category_description != ""){
 				$caption .= " <i>[$link_category_description]</i>";
 			}
+
+			switch ($link_open) { 
+			case 1:
+				$link_append = "<a href=\"".e_SELF."?".$link_id."\" target=\"_blank\">";
+			break; 
+			case 2:
+			   $link_append = "<a href=\"".e_SELF."?".$link_id."\" target=\"_parent\">";
+			break;
+			case 3:
+			   $link_append = "<a href=\"".e_SELF."?".$link_id."\" target=\"_top\">";
+			break;
+			case 4:
+				$link_append = "<a href=\"javascript:openwindow('".e_SELF."?".$link_id."')\">";
+			break;
+			default:
+			   unset($link_append);
+			}
+
 			$text .= "\n<tr><td style=\"width:95px; vertical-align: top\">";
 			if($link_button != ""){
-				$text .= "<a href=\"".$_SERVER['PHP_SELF']."?$link_id\"><img style=\"border:0\" src=\"$link_button\" alt=\"".LAN_87." $link_name\" /></a>";
+				$text .= $link_append."<img style=\"border:0\" src=\"$link_button\" alt=\"".LAN_87." $link_name\" /></a>";
 			}else{
-				$text .= "<a href=\"".$_SERVER['PHP_SELF']."?$link_id\"><img style=\"border:0\" src=\"themes/shared/generic/blankbutton.png\" alt=\"".LAN_87." $link_name\" /></a>";
+				$text .= $link_append."<img style=\"border:0\" src=\"themes/shared/generic/blankbutton.png\" alt=\"".LAN_87." $link_name\" /></a>";
 			}
 			$text .= "</td>
-			<td style=\"vertical-align: top;\">
-			<a href=\"".$_SERVER['PHP_SELF']."?$link_id\">
-			<b>
-			<span class=\"defaultblacktext\">$link_name</span>
-			</b>
-			</a>
-			<i>[$link_url]</i>
+			<td style=\"vertical-align: top;\">";
+
+			$text .=  $link_append."<b>".$link_name."</b></a>\n";
+
+			$text .= "<i>[$link_url]</i>
 			<br />
 			$link_description
 			</td>

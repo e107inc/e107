@@ -1,57 +1,53 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system													|
-|	/admin/prefs.php															|
-|																						|
-|	©Steve Dunstan 2001-2002										|
-|	http://jalist.com															|
-|	stevedunstan@jalist.com											|
-|																						|
-|	Released under the terms and conditions of the		|
-|	GNU General Public License (http://gnu.org).				|
+|	e107 website system
+|	/admin/prefs.php
+|
+|	©Steve Dunstan 2001-2002
+|	http://e107.org
+|	jalist@e107.org
+|
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-$sql -> db_Select("e107");
-list($e107_author, $e107_url, $e107_version, $e107_build, $e107_datestamp) = $sql-> db_Fetch();
-if(IsSet($_POST['newver'])){ header("location:http://jalist.com/check.php?".$e107_version."-".$e107_build); }
 
-if(!getperms("1")){ header("location:../index.php"); }
-
-//if($_POST['user_reg'] == 1){
-//	if(!$sql -> db_Select("links", "*", "link_name='Members' ")){
-//		$sql -> db_Insert("links",  "0, 'Members', 'user.php', '', '', '1', '0', '0' ");
-//	}
-//}
+if(!getperms("1")){ header("location:".e_HTTP."index.php"); }
 
 if(IsSet($_POST['updateprefs'])){
-	$sql -> db_Update("prefs", "pref_value='".$_POST['sitename']."' WHERE pref_name='sitename' ");
-	$sql -> db_Update("prefs", "pref_value='".$_POST['siteurl']."' WHERE pref_name='siteurl' ");
-	$sql -> db_Update("prefs", "pref_value='".$_POST['sitebutton']."' WHERE pref_name='sitebutton' ");
-	$sql -> db_Update("prefs", "pref_value='".$_POST['sitetag']."' WHERE pref_name='sitetag' ");
-	$sql -> db_Update("prefs", "pref_value='".$_POST['sitedescription']."' WHERE pref_name='sitedescription' ");
-	$sql -> db_Update("prefs", "pref_value='".$_POST['siteadmin']."' WHERE pref_name='siteadmin' ");
-	$sql -> db_Update("prefs", "pref_value='".$_POST['siteadminemail']."' WHERE pref_name='siteadminemail' ");
-	$sql -> db_Update("prefs", "pref_value='".$_POST['sitetheme']."' WHERE pref_name='sitetheme' ");
-	$sql -> db_Update("prefs", "pref_value='".$_POST['sitedisclaimer']."' WHERE pref_name='sitedisclaimer' ");
-	$sql -> db_Update("prefs", "pref_value='".$_POST['newsposts']."' WHERE pref_name='newsposts' ");
-	$sql -> db_Update("prefs", "pref_value='".$_POST['flood_protect']."' WHERE pref_name='flood_protect' ");
-	$sql -> db_Update("prefs", "pref_value='".$_POST['anon_post']."' WHERE pref_name='anon_post' ");
-	$sql -> db_Update("prefs", "pref_value='".$_POST['user_reg']."' WHERE pref_name='user_reg' ");
-	$sql -> db_Update("prefs", "pref_value='".$_POST['profanity_filter']."' WHERE pref_name='profanity_filter' ");
-	$sql -> db_Update("prefs", "pref_value='".$_POST['profanity_replace']."' WHERE pref_name='profanity_replace' ");
-	$sql -> db_Update("prefs", "pref_value='".$_POST['use_coppa']."' WHERE pref_name='use_coppa' ");
-	$sql -> db_Update("prefs", "pref_value='".$_POST['shortdate']."' WHERE pref_name='shortdate' ");
-	$sql -> db_Update("prefs", "pref_value='".$_POST['longdate']."' WHERE pref_name='longdate' ");
-	$sql -> db_Update("prefs", "pref_value='".$_POST['forumdate']."' WHERE pref_name='forumdate' ");
-	$sql -> db_Update("prefs", "pref_value='".$_POST['sitelanguage']."' WHERE pref_name='sitelanguage' ");
-	$sql -> db_Update("prefs", "pref_value='".$_POST['sitelocale']."' WHERE pref_name='sitelocale' ");
-	$sql -> db_Update("prefs", "pref_value='".$_POST['time_offset']."' WHERE pref_name='time_offset' ");
-	$sql -> db_Update("prefs", "pref_value='".$_POST['flood_hits']."' WHERE pref_name='flood_hits' ");
-	$sql -> db_Update("prefs", "pref_value='".$_POST['flood_time']."' WHERE pref_name='flood_time' ");
-	header("location:prefs.php");
+
+	$pref['sitename'][1] = stripslashes($_POST['sitename']);
+	$pref['siteurl'][1] = stripslashes($_POST['siteurl']);
+	$pref['sitebutton'][1] = stripslashes($_POST['sitebutton']);
+	$pref['sitetag'][1] = stripslashes($_POST['sitetag']);
+	$pref['sitedescription'][1] = stripslashes($_POST['sitedescription']);
+	$pref['siteadmin'][1] = stripslashes($_POST['siteadmin']);
+	$pref['siteadminemail'][1] = stripslashes($_POST['siteadminemail']);
+	$pref['sitetheme'][1] = $_POST['sitetheme'];
+	$pref['sitedisclaimer'][1] = stripslashes($_POST['sitedisclaimer']);
+	$pref['newsposts'][1] = $_POST['newsposts'];
+	$pref['flood_protect'][1] = $_POST['flood_protect'];
+	$pref['anon_post'][1] = $_POST['anon_post'];
+	$pref['user_reg'][1] = $_POST['user_reg'];
+	$pref['profanity_filter'][1] = $_POST['profanity_filter'];
+	$pref['profanity_replace'][1] = stripslashes($_POST['profanity_replace']);
+	$pref['use_coppa'][1] = $_POST['use_coppa'];
+	$pref['shortdate'][1] = $_POST['shortdate'];
+	$pref['longdate'][1] = $_POST['longdate'];
+	$pref['forumdate'][1] = $_POST['forumdate'];
+	$pref['sitelanguage'][1] = $_POST['sitelanguage'];
+	$pref['time_offset'][1] = $_POST['time_offset'];
+	$pref['flood_hits'][1] = $_POST['flood_hits'];
+	$pref['flood_time'][1] = $_POST['flood_time'];
+	$pref['user_reg_veri'][1] = $_POST['user_reg_veri'];
+
+	$tmp = addslashes(serialize($pref));
+	$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='pref' ");
+	header("location:".e_SELF);
 }
+
 
 //added prefs since v2.0 ...
 $flood_protect = $pref['flood_protect'][1];
@@ -67,6 +63,7 @@ $sitelocale = $pref['sitelocale'][1];
 $time_offset = $pref['time_offset'][1];
 $flood_hits = $pref['flood_hits'][1];
 $flood_time = $pref['flood_time'][1];
+$user_reg_veri = $pref['user_reg_veri'][1];
 
 require_once("auth.php");
 
@@ -74,7 +71,7 @@ if(IsSet($message)){
 	$ns -> tablerender("", "<div style=\"text-align:center\"><b>".$message."</b></div>");
 }
 
-$handle=opendir("../themes/");
+$handle=opendir(e_BASE."themes/");
 while ($file = readdir($handle)){
 	if($file != "." && $file != ".." && $file != "templates" && $file != "shared"){
 		$dirlist[] = $file;
@@ -82,7 +79,7 @@ while ($file = readdir($handle)){
 }
 closedir($handle);
 
-$handle=opendir("../languages/");
+$handle=opendir(e_BASE."languages/");
 while ($file = readdir($handle)){
 	if($file != "." && $file != ".."){
 		$lanlist[] = eregi_replace("lan_|.php", "", $file);
@@ -92,7 +89,7 @@ closedir($handle);
 
 
 $text = "<div style=\"text-align:center\">
-<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
+<form method=\"post\" action=\"".e_SELF."\">
 <table style=\"width:95%\" class=\"fborder\" cellspacing=\"1\" cellpadding=\"0\">
 <tr>
 
@@ -202,13 +199,6 @@ $text .= "</select>
 </td>
 </tr>
 
-<td style=\"width:50%; vertical-align:top\"  class=\"forumheader3\">Site Locale: </td>
-<td style=\"width:50%; text-align:right\" class=\"forumheader3\">
-<input class=\"tbox\" type=\"text\" name=\"sitelocale\" size=\"15\" value=\"$sitelocale\" maxlength=\"5\" /> 
-<br /> (Please note, not all servers supports locales - for more information see <a href=\"http://www.php.net/manual/en/function.setlocale.php\">the setlocale page at php.net</a>)
-</td>
-</tr>
-
 <tr>
 <td colspan=\"2\">
 <div class=\"border\"><div class=\"caption\">News options</div></div>
@@ -263,7 +253,7 @@ $date3 = $ga -> convert_date(time(), "forum");
 
 $text .= "<td style=\"width:50%\" class=\"forumheader3\">Short date format: </td>
 <td style=\"width:50%; text-align:right\" class=\"forumheader3\">
-<input class=\"tbox\" type=\"text\" name=\"shortdate\" size=\"15\" value=\"$shortdate\" maxlength=\"50\" /> 
+<input class=\"tbox\" type=\"text\" name=\"shortdate\" size=\"40\" value=\"$shortdate\" maxlength=\"50\" /> 
 <br />example: $date1
 </td>
 </tr>
@@ -271,7 +261,7 @@ $text .= "<td style=\"width:50%\" class=\"forumheader3\">Short date format: </td
 <tr>
 <td style=\"width:50%\" class=\"forumheader3\">Long date format: </td>
 <td style=\"width:50%; text-align:right\" class=\"forumheader3\">
-<input class=\"tbox\" type=\"text\" name=\"longdate\" size=\"15\" value=\"$longdate\" maxlength=\"50\" /> 
+<input class=\"tbox\" type=\"text\" name=\"longdate\" size=\"40\" value=\"$longdate\" maxlength=\"50\" /> 
 <br />example: $date2
 </td>
 </tr>
@@ -279,7 +269,7 @@ $text .= "<td style=\"width:50%\" class=\"forumheader3\">Short date format: </td
 <tr>
 <td style=\"width:50%\" class=\"forumheader3\">Forum date format: </td>
 <td style=\"width:50%; text-align:right\" class=\"forumheader3\">
-<input class=\"tbox\" type=\"text\" name=\"forumdate\" size=\"15\" value=\"$forumdate\" maxlength=\"50\" /> 
+<input class=\"tbox\" type=\"text\" name=\"forumdate\" size=\"40\" value=\"$forumdate\" maxlength=\"50\" /> 
 <br />example: $date3
 </td>
 </tr>
@@ -329,6 +319,19 @@ if($user_reg == 1){
 
 $text .= " (allow users to register as members on your site)
 
+
+
+</tr><tr>
+
+<td style=\"width:50%\" class=\"forumheader3\">Use email verification for signups?: </td>
+<td style=\"width:50%; text-align:right\" class=\"forumheader3\">";
+if($user_reg_veri == 1){
+	$text .= "<input type=\"checkbox\" name=\"user_reg_veri\" value=\"1\"  checked>";
+}else{
+	$text .= "<input type=\"checkbox\" name=\"user_reg_veri\" value=\"1\">";
+}
+
+$text .= "
 </td>
 </tr>
 <tr>

@@ -1,22 +1,22 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system													|
-|	/admin/forum_conf.php												|
-|																						|
-|	©Steve Dunstan 2001-2002										|
-|	http://jalist.com															|
-|	stevedunstan@jalist.com											|
-|																						|
-|	Released under the terms and conditions of the		|
-|	GNU General Public License (http://gnu.org).				|
+|	e107 website system
+|	/admin/forum_conf.php
+|
+|	©Steve Dunstan 2001-2002
+|	http://e107.org
+|	jalist@e107.org
+|
+|	Released under the terms and conditions of the	
+|	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("A")){ header("location:../index.php"); }
+if(!getperms("A")){ header("location:".e_HTTP."index.php"); }
 require_once("auth.php");
 
-$qs = explode(".", $_SERVER['QUERY_STRING']);
+$qs = explode(".", e_QUERY);
 $action = $qs[0];
 $forum_id = $qs[1];
 $thread_id = $qs[2];
@@ -92,7 +92,7 @@ if($action == "delete"){
 <b>'".$thread_thread."' <br />posted by ".$thread_user."</b><br /><br />
 Are you absolutely certain you want to delete this forum post? Once deleted it <b><u>cannot</u></b> be retreived.
 <br /><br />
-<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING'].".".$thread_parent."\">
+<form method=\"post\" action=\"".e_SELF."?".e_QUERY.".".$thread_parent."\">
 <input class=\"button\" type=\"submit\" name=\"deletecancel\" value=\"Cancel\" /> 
 <input class=\"button\" type=\"submit\" name=\"deleteconfirm\" value=\"Confirm Delete\" /> 
 </form>
@@ -106,7 +106,7 @@ $ns -> tablerender("Confirm Delete Forum Post", $text);
 if($action == "move"){
 $forum_total = $sql -> db_Select("forum", "*", "forum_parent!='0' ");
 $text = "
-<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING'].".".$thread_parent."\">
+<form method=\"post\" action=\"".e_SELF."?".e_QUERY.".".$thread_parent."\">
 <div style=\"text-align:center\">
 <table style=\"width:50%\">
 <tr> 
