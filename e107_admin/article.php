@@ -27,6 +27,7 @@ if($pref['htmlarea']){
 
 $rs = new form;
 
+
 if(e_QUERY){
         $tmp = explode(".", e_QUERY);
         $action = $tmp[0];
@@ -72,6 +73,7 @@ if(IsSet($_POST['create_article'])){
 }
 
 If(IsSet($_POST['sa_article'])){
+
         if($_POST['data'] && $_POST['content_heading']){
                 if($_POST['category'] == -1){ unset($_POST['category']); }
                 $content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
@@ -138,11 +140,11 @@ if($action == "confirm"){
 if(IsSet($_POST['preview'])){
         $obj = new convert;
         $datestamp = $obj->convert_date(time(), "long");
-        $ch = $aj -> formtpa($_POST['content_heading']); $ch = $aj -> tpa($ch);
-        $cs = $aj -> formtpa($_POST['content_subheading']); $cs = $aj -> tpa($ch);
+        $ch = $aj -> formtpa($_POST['content_heading'],"admin"); $ch = $aj -> tpa($ch,"nobreak","admin");
+        $cs = $aj -> formtpa($_POST['content_subheading'],"admin"); $cs = $aj -> tpa($ch,"nobreak","admin");
         $dt = (strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]", "[img]../", $_POST['data']));
-        $dt = $aj -> formtpa($dt); $dt = $aj -> tpa($dt);
-        $cu= $aj -> formtpa($_POST['content_summary']); $cu= $aj -> tpa($cu);
+        $dt = $aj -> formtpa($dt,"admin"); $dt = $aj -> tpa($dt,"nobreak","admin");
+        $cu= $aj -> formtpa($_POST['content_summary'],"admin"); $cu= $aj -> tpa($cu,"nobreak","admin");
         $ca = ($_POST['content_author'] && $_POST['content_author'] != ARLAN_84 ? $_POST['content_author'] : ADMINNAME);
         $text = "<i>by $ca</i><br /><span class='smalltext'>".$datestamp."</span><br /><br />".ARLAN_18.": $cs<br />".ARLAN_19.": $cu<br /><br />$dt";
         $ns -> tablerender($content_heading, $text);
@@ -154,10 +156,10 @@ if(IsSet($_POST['preview'])){
         $data = $aj -> formtparev(str_replace("../", "", $_POST['data']));
         $content_summary = $aj -> formtparev($_POST['content_summary']);
                 */
-                $content_heading = $aj -> formtpa($_POST['content_heading']);
-        $content_subheading = $aj -> formtpa($_POST['content_subheading']);
-        $data = $aj -> formtpa(str_replace("../", "", $_POST['data']));
-        $content_summary = $aj -> formtpa($_POST['content_summary']);
+                $content_heading = $aj -> formtpa($_POST['content_heading'],"admin");
+        $content_subheading = $aj -> formtpa($_POST['content_subheading'],"admin");
+        $data = $aj -> formtpa(str_replace("../", "", $_POST['data']),"admin");
+        $content_summary = $aj -> formtpa($_POST['content_summary'],"admin");
 
         $content_parent = $_POST['category'];
                 $content_class = $_POST['a_class'];
