@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-10-10 21:13:18 $
+|     $Revision: 1.3 $
+|     $Date: 2004-10-25 15:59:26 $
 |     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
@@ -74,6 +74,8 @@ if(IsSet($_POST['updateprefs'])){
         $pref['antiflood1'] = $_POST['antiflood1'];
         $pref['antiflood_timeout'] = $_POST['antiflood_timeout'];
         $pref['autoban'] = $_POST['autoban'];
+        $pref['admin_alerts_ok'] = $_POST['admin_alerts_ok'];
+        $pref['admin_alerts_uniquemenu'] = $_POST['admin_alerts_uniquemenu'];
 
         // Signup. ====================================================
 
@@ -408,15 +410,33 @@ while(IsSet($adminlist[$counter])){
 }
 $text .= "</select>
 </td>
-</tr>
+</tr>";
 
 
-<tr>
+$text .= "<tr>
 <td style='width:50%' class='forumheader3'>".PRFLAN_79.":</td>
 <td style='width:50%; text-align:right' class='forumheader3'>".
 ($pref['htmlarea'] ? "<input type='checkbox' name='htmlarea' value='1'  checked='checked' />" : "<input type='checkbox' name='htmlarea' value='1' />")."
 </td>
-</tr></table></div>";
+</tr>";
+
+$text .= "<tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_95."</td>
+<td style='width:50%; text-align:right' class='forumheader3'>".
+($pref['admin_alerts_ok'] ? "<input type='checkbox' name='admin_alerts_ok' value='1'  checked='checked' />" : "<input type='checkbox' name='admin_alerts_ok' value='1' />")."
+<br />".PRFLAN_96."
+</td>
+</tr>";
+
+$text .= "<tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_97."</td>
+<td style='width:50%; text-align:right' class='forumheader3'>".
+($pref['admin_alerts_uniquemenu'] ? "<input type='checkbox' name='admin_alerts_uniquemenu' value='1'  checked='checked' />" : "<input type='checkbox' name='admin_alerts_uniquemenu' value='1' />")."
+<br />".PRFLAN_98."
+</td>
+</tr>";
+
+$text .= "</table></div>";
 
 // Date options.
 $text .="
