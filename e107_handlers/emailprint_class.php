@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/emailprint_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-07 15:47:05 $
-|     $Author: lisa_ $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-24 10:33:41 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 	
@@ -75,7 +75,7 @@ class emailprint {
 			if (defined("ICONPRINT") && file_exists(THEME."images/".ICONPRINT)) {
 				$ico_print = THEME."images/".ICONPRINT;
 			} else {
-				$ico_print = e_IMAGE."generic/printer.gif";
+				$ico_print = e_IMAGE."generic/printer_".IMODE.".png";
 			}
 			$text_emailprint .= "<a href='".e_BASE."print.php?".$print.".".$id."'><img src='".$ico_print."' style='border:0' alt='printer friendly' title='printer friendly'/></a>";
 		}

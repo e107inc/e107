@@ -2,7 +2,7 @@
 	if (isset($parm) && $parm && $parm != 'no_icons') {
 		$icon = $parm;
 	} else {
-		$icon = e_IMAGE.'arrow_16.png';
+		$icon = e_IMAGE.'generic/arrow.png';
 	}
 	function adnav_cat($cat_title, $cat_link, $cat_img, $cat_id=FALSE) {
 		$text = "<a class='menuButton' href='".e_BASE.$cat_link."' ";
