@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newforumposts_main/newforumposts_main.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-27 19:53:09 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-28 00:52:23 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -57,9 +57,10 @@ else if(!$NEWFORUMPOSTSTYLE_HEADER) {
 }
 	
 $results = $sql->db_Select_gen("
-	SELECT thread_id, thread_name, thread_datestamp, thread_user, thread_views, thread_lastpost, thread_anon, thread_lastuser, thread_total_replies, forum_id, forum_name, user_name FROM #forum_t, #forum
+	SELECT thread_id, thread_name, thread_datestamp, thread_user, thread_views, thread_lastpost, thread_anon, thread_lastuser, thread_total_replies, forum_id, forum_name, forum_class, user_name FROM #forum_t, #forum
 	LEFT JOIN #user ON #forum_t.thread_user = #user.user_id
-	WHERE #forum.forum_id=#forum_t.thread_forum_id AND #forum_t.thread_parent=0 ORDER BY #forum_t.$query DESC LIMIT 0, ".$pref['nfp_amount']);
+	WHERE #forum.forum_id=#forum_t.thread_forum_id AND #forum_t.thread_parent=0 AND forum_class IN (".USERCLASS_LIST.") 
+	ORDER BY #forum_t.$query DESC LIMIT 0, ".$pref['nfp_amount']);
 	
 $forumArray = $sql->db_getList();
 	
