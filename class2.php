@@ -206,6 +206,77 @@ if($pref['modules']){
                 }
         }
 }
+
+//###########  Module redifinable functions ###############
+if(!function_exists('checkvalidtheme')){
+	function checkvalidtheme($theme_check){
+		// arg1 = theme to check
+		global $ADMIN_DIRECTORY;
+		if(@fopen(e_THEME.$theme_check."/theme.php", r)){
+			define("THEME", e_THEME.$theme_check."/");
+		}else {
+			@require_once(e_HANDLER."debug_handler.php");
+			$e107tmp_theme = search_validtheme();
+			define("THEME", e_THEME.$e107tmp_theme."/");
+			if(ADMIN && !strstr(e_SELF, $ADMIN_DIRECTORY)){echo '<script>alert("'.CORE_LAN1.'")</script>';}
+		}
+	}
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+if(!class_exists('convert')){
+	class convert{
+		function convert_date($datestamp, $mode="long"){
+			/*
+			# Date convert
+			# - parameter #1:                string $datestamp, unix stamp
+			# - parameter #2:                string $mode, date format, default long
+			# - return                                parsed text
+			# - scope                                        public
+			*/
+			global $pref;
+		
+			$datestamp += (TIMEOFFSET*3600);
+			if($mode == "long"){
+				return strftime($pref['longdate'], $datestamp);
+			}else if($mode == "short"){
+				return strftime($pref['shortdate'], $datestamp);
+			}else {
+				return strftime($pref['forumdate'], $datestamp);
+			}
+		}
+	}
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+if(!class_exists('e107_table')){
+	class e107table{
+		function tablerender($caption, $text, $mode="default", $return=FALSE){
+			/*
+			# Render style table
+			# - parameter #1:                string $caption, caption text
+			# - parameter #2:                string $text, body text
+			# - return                                null
+			# - scope                                        public
+			*/
+			if(function_exists("theme_tablerender")){
+				$result = call_user_func("theme_tablerender",$caption,$text,$mode,$return);
+				if($result == "return"){return;}
+				extract($result);
+			}
+			if($return){
+				ob_end_flush();
+				ob_start();
+				tablestyle($caption, $text, $mode);
+				$ret = ob_get_contents();
+				ob_end_clean();
+				return($ret);
+			}else {
+				tablestyle($caption, $text, $mode);
+			}
+		}
+	}
+}
+//#############################################################
+
 init_session();
 online();
 
@@ -317,35 +388,6 @@ define("e_ADMIN", $e_BASE.$ADMIN_DIRECTORY);
 //@require_once(e_HANDLER."debug_handler.php");
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-
-
-class e107table{
-        function tablerender($caption, $text, $mode="default", $return=FALSE){
-                /*
-                # Render style table
-                # - parameter #1:                string $caption, caption text
-                # - parameter #2:                string $text, body text
-                # - return                                null
-                # - scope                                        public
-                */
-                if(function_exists("theme_tablerender")){
-                        $result = call_user_func("theme_tablerender",$caption,$text,$mode,$return);
-                        if($result == "return"){return;}
-                        extract($result);
-                }
-                if($return){
-                        ob_end_flush();
-                        ob_start();
-                        tablestyle($caption, $text, $mode);
-                        $ret = ob_get_contents();
-                        ob_end_clean();
-                        return($ret);
-                }else{
-                tablestyle($caption, $text, $mode);
-        }
-}
-}
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function e107_parse($text,$referrer){
         preg_match_all("#{CODE=(.*?)}#",$text,$matches,PREG_SET_ORDER);
@@ -702,29 +744,6 @@ class textparse{
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-class convert{
-
-        function convert_date($datestamp, $mode="long"){
-                /*
-                # Date convert
-                # - parameter #1:                string $datestamp, unix stamp
-                # - parameter #2:                string $mode, date format, default long
-                # - return                                parsed text
-                # - scope                                        public
-                */
-                global $pref;
-
-                $datestamp += (TIMEOFFSET*3600);
-                if($mode == "long"){
-                        return strftime($pref['longdate'], $datestamp);
-                }else if($mode == "short"){
-                        return strftime($pref['shortdate'], $datestamp);
-                }else{
-                        return strftime($pref['forumdate'], $datestamp);
-                }
-        }
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function check_email($var){
         return (preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]+@([-0-9A-Z]+\.)+([0-9A-Z]){2,4}$/i', $var)) ? $var : FALSE;
 }
@@ -1076,17 +1095,5 @@ function code($string, $mode="default"){
 	}
 	return $string;
 }
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-function checkvalidtheme($theme_check){
-        // arg1 = theme to check
-        global $ADMIN_DIRECTORY;
-    if(@fopen(e_THEME.$theme_check."/theme.php", r)){
-                define("THEME", e_THEME.$theme_check."/");
-        }else{
-                @require_once(e_HANDLER."debug_handler.php");
-                $e107tmp_theme = search_validtheme();
-                define("THEME", e_THEME.$e107tmp_theme."/");
-                if(ADMIN && !strstr(e_SELF, $ADMIN_DIRECTORY)){echo '<script>alert("'.CORE_LAN1.'")</script>';}
-        }
-}
+
 ?>
