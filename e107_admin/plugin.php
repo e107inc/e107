@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-02-19 17:45:19 $
-|     $Author: stevedunstan $
+|     $Revision: 1.28 $
+|     $Date: 2005-03-07 08:42:33 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -49,7 +49,7 @@ if (isset($_POST['upload'])) {
 		$fileName = $file_userfile['name'][0];
 		$fileSize = $file_userfile['size'][0];
 		$fileType = $file_userfile['type'][0];
-		
+
 		if(strstr($file_userfile['type'][0], "gzip")) {
 			$fileType = "tar";
 		} else if (strstr($file_userfile['type'][0], "zip")) {
@@ -487,24 +487,41 @@ foreach($pluginList as $plug) {
 
 	$text .= "
 		<tr>
-		<td class='forumheader3' style='width:30%; text-align:center; vertical-align:top'>".$plugin_icon."
-		<br />
-		<br />
+		<td class='forumheader3' style='width:160px; text-align:center; vertical-align:top'>
+		<table style='width:100%'><tr><td style='text-align:left;width:40px;vertical-align:top'>
+		".$plugin_icon."
+		</td><td>
 		$img <b>{$plug['plugin_name']}</b><br />".EPL_ADLAN_11." {$plug['plugin_version']}
-		<br />
+		<br />";
+
+
+	$text .="
+		</tr></table>
 		</td>
 		<td class='forumheader3' style='width:70%;vertical-align:top'>
-		<table cellspacing='3' style='width:97%'>
-		<tr><td style='vertical-align:top;width:24%'><b>".EPL_ADLAN_12."</b>:</td><td style='vertical-align:top'><a href='mailto:$eplug_email' title='$eplug_email'>$eplug_author</a>&nbsp;</td></tr>
-		<tr><td style='vertical-align:top'><b>".EPL_WEBSITE."</b>:</td><td style='vertical-align:top'> $eplug_url&nbsp;</td></tr>
-		<tr><td style='vertical-align:top'><b>".EPL_ADLAN_14."</b>:</td><td style='vertical-align:top'> $eplug_description&nbsp;</td></tr>
-		<tr><td style='vertical-align:top'><b>".EPL_ADLAN_13."</b>:</td><td style='vertical-align:top'> $eplug_compatible&nbsp; </td></tr>\n";
-	if ($eplug_readme) {
-		$text .= "<tr><td><b>&nbsp;</b></td><td>[ <a href='".e_PLUGIN.$eplug_folder."/".$eplug_readme."'>".$eplug_readme."</a> ]</td></tr>";
-	}
+		<table cellspacing='3' style='width:98%'>
+		<tr><td style='vertical-align:top;width:15%'><b>".EPL_ADLAN_12."</b>:</td><td style='vertical-align:top'><a href='mailto:$eplug_email' title='$eplug_email'>$eplug_author</a>&nbsp;";
+        if($eplug_url){
+        $text .= "&nbsp;&nbsp;[ <a href='$eplug_url' title='$eplug_url' >".EPL_WEBSITE."</a> ] ";
+		}
+		$text .="</td></tr>
+		<tr><td style='vertical-align:top'><b>".EPL_ADLAN_14."</b>:</td><td style='vertical-align:top'> $eplug_description&nbsp;";
+        if ($eplug_readme) {
+			$text .= "[ <a href='".e_PLUGIN.$eplug_folder."/".$eplug_readme."'>".$eplug_readme."</a> ]";
+		}
 
-	if ($eplug_conffile || $eplug_module || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_user_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_status || $eplug_latest) {
-		$text .= "<tr><td><b>".EPL_OPTIONS."</b>:</td><td> [ ".($plug['plugin_installflag'] ? "<a href='".e_SELF."?uninstall.{$plug['plugin_id']}' title='".EPL_ADLAN_1."'> ".EPL_ADLAN_1."</a>" : "<a href='".e_SELF."?install.{$plug['plugin_id']}' title='".EPL_ADLAN_0."'>".EPL_ADLAN_0."</a>")." ]";
+		$text .="</td></tr>
+		<tr><td style='vertical-align:top'><b>".EPL_ADLAN_13."</b>:</td><td style='vertical-align:top'><span style='vertical-align:top'> $eplug_compatible&nbsp</span>";
+    	if ($eplug_compliant) {
+			$text .= "&nbsp;&nbsp;<img src='".e_IMAGE."generic/compliant.gif' alt='' style='margin-top:0px' />";
+		}
+		$text .="</td></tr>\n";
+ 
+
+	$text .= "</table></td>";
+	$text .= "<td class='forumheader3' style='width:15p%;text-align:center'>";
+    if ($eplug_conffile || $eplug_module || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_user_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_status || $eplug_latest) {
+		$text .= ($plug['plugin_installflag'] ? "<input type='button' class='button' onclick=\"location.href='".e_SELF."?uninstall.{$plug['plugin_id']}'\" title='".EPL_ADLAN_1."' value='".EPL_ADLAN_1."' />" : "<input type='button' class='button' onclick=\"location.href='".e_SELF."?install.{$plug['plugin_id']}'\" title='".EPL_ADLAN_0."' value='".EPL_ADLAN_0."' />");
 	} else {
 		if ($eplug_menu_name) {
 			$text .= EPL_NOINSTALL.str_replace("..", "", e_PLUGIN.$plug['plugin_path'])."/ ".EPL_DIRECTORY;
@@ -514,15 +531,11 @@ foreach($pluginList as $plug) {
 	}
 
 	if ($plug['plugin_version'] != $eplug_version && $plug['plugin_installflag']) {
-		$text .= " [ <a href='".e_SELF."?upgrade.{$plug['plugin_id']}' title='".EPL_UPGRADE." to v".$eplug_version."'>".EPL_UPGRADE."</a> ]";
-	}
-	$text .= "</td></tr>";
-
-	if ($eplug_compliant) {
-		$text .= "<tr><td colspan='2' style='text-align:right'><img src='".e_IMAGE."generic/compliant.gif' alt='' /></td></tr>";
+		$text .= "<input type='button' class='button' onclick=\"location.href='".e_SELF."?upgrade.{$plug['plugin_id']}'\" title='".EPL_UPGRADE." to v".$eplug_version."' value='".EPL_UPGRADE."' />";
 	}
 
-	$text .= "</table></td></tr>";
+	$text .="</td>";
+	$text .= "</tr>";
 }
 
 $text .= "</table>
