@@ -135,24 +135,33 @@ if(eregi("http", $image)){
 }
 
 
-function send_file($file){
-     global $DOWNLOADS_DIRECTORY;
-  //   $thedir = e_BASE.$DOWNLOADS_DIRECTORY;
-    $thedir = $DOWNLOADS_DIRECTORY;
-     $thefile = htmlentities(basename($file));
-     $fullpath = $thedir . $thefile;
-     $filesize = filesize($fullpath);
-     @set_time_limit(600);
-     $fp = fopen("$fullpath", 'rb');
-     header("Expires: 0");
-  //  header("Cache-Control: max-age=30" );
-     header("Cache-Control: " );
-     header("Content-Type: application/force-download; name=\"$thefile\"");
-     header("Content-Transfer-Encoding: binary");
-     header("Content-Length: $filesize");
-     header("Content-Disposition:attachment; filename=\"$thefile\"");
-     header("Pragma: public");
-     fpassthru($fp);
-}
 
+// File retrieval function. by Cam.
+
+function send_file($file){
+      global $DOWNLOADS_DIRECTORY;
+      $fullpath = $DOWNLOADS_DIRECTORY . $file;
+      $file = basename($file);
+        if (strstr($_SERVER['HTTP_USER_AGENT'], "MSIE")){
+        $file = preg_replace('/\./', '%2e', $file,substr_count($file, '.') - 1);
+        }
+
+      @set_time_limit(600);
+      if(file_exists($fullpath)){
+       header("Cache-control: private");
+       header('Pragma: no-cache');
+       header("Content-Type: application/force-download");
+       header("Content-Disposition:$disposition; filename=\"".trim(htmlentities($file))."\"");
+       header("Content-Description: ".trim(htmlentities($file)));
+       header("Content-length:".(string)(filesize($fullpath)));
+
+       $fd=fopen($fullpath,'rb');
+       while(!feof($fd)) {
+         print fread($fd, 4096);
+       }
+       fclose($fd);
+      }else{
+      header("location: ".e_BASE."index.php");
+      }
+}
 ?>

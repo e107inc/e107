@@ -23,7 +23,8 @@ $HANDLERS_DIRECTORY = "e107_handlers/";
 $LANGUAGES_DIRECTORY = "e107_languages/";
 $HELP_DIRECTORY = "e107_docs/help/";
 $DOWNLOADS_DIRECTORY =  "e107_files/downloads/";
-// $DOWNLOADS_DIRECTORY =  "../temp/";
+// $DOWNLOADS_DIRECTORY =  "<fullpath>/downloads/";
+// eg. $DOWNLOADS_DIRECTORY =  "/home/downloads/";
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //ob_start ("ob_gzhandler")
