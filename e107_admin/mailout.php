@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-05 16:57:37 $
-|     $Author: sweetas $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-07 20:51:34 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,6 +27,27 @@
     require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
     htmlarea('email_body');
     }
+
+
+    $aj = new textparse;
+
+    if(IsSet($_POST['testemail'])){
+        require_once(e_HANDLER."mail.php");
+        if(!sendemail(SITEADMINEMAIL, PRFLAN_66." ".SITENAME, PRFLAN_67)){
+                $message = ($pref['smtp_enable'] ? PRFLAN_75 : PRFLAN_68);
+        }else{
+                $message = PRFLAN_69;
+        }
+}
+
+
+
+
+
+
+
+
+
 
 if(IsSet($_POST['submit'])){
 
@@ -138,12 +159,25 @@ if(IsSet($_POST['submit'])){
     require_once(e_ADMIN."footer.php");
     exit;
 }
+//. Update Preferences.
+
+if(IsSet($_POST['updateprefs'])){
+
+        $pref['smtp_enable'] = $_POST['smtp_enable'];
+        $pref['smtp_server'] = $aj -> formtpa($_POST['smtp_server']);
+        $pref['smtp_username'] = $aj -> formtpa($_POST['smtp_username']);
+        $pref['smtp_password'] = $aj -> formtpa($_POST['smtp_password']);
+
+          save_prefs();
+          $message = "Settings Saved";
+}
 
 
+if(IsSet($message)){
+        $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+}
 
-
-
-// Display Form.
+// Display Mailout Form.
 
 
 
@@ -153,21 +187,21 @@ if(IsSet($_POST['submit'])){
    <form method='post' action='".e_SELF."' id='linkform'>
    <table style='".ADMIN_WIDTH."' class='fborder'>
    <tr>
-   <td style='width:30%' class='forumheader3'>From Name: </td>
+   <td style='width:30%' class='forumheader3'>".MAILAN_01.": </td>
    <td style='width:70%' class='forumheader3'>
    <input type='text' name='email_from_name' class='tbox' style='width:80%' value='$email_from_name' />
    </td>
    </tr>
 
    <tr>
-   <td style='width:30%' class='forumheader3'>From Email: </td>
+   <td style='width:30%' class='forumheader3'>".MAILAN_02.": </td>
    <td style='width:70%' class='forumheader3'>
    <input type='text' name='email_from_email' class='tbox' style='width:80%' value='$email_from_email' />
    </td>
    </tr>
 
    <tr>
-   <td style='width:30%' class='forumheader3'>To: </td>
+   <td style='width:30%' class='forumheader3'>".MAILAN_03.": </td>
    <td style='width:70%' class='forumheader3'>
    ".userclasses("email_to")."$email_to</td>
    </tr>";
@@ -175,7 +209,7 @@ if(IsSet($_POST['submit'])){
    $text .="
 
    <tr>
-   <td style='width:30%' class='forumheader3'>Cc: </td>
+   <td style='width:30%' class='forumheader3'>".MAILAN_04.": </td>
    <td style='width:70%' class='forumheader3'>
    <input type='text' name='email_cc' class='tbox' style='width:80%' value='' />
    $email_cc
@@ -184,7 +218,7 @@ if(IsSet($_POST['submit'])){
 
 
    <tr>
-   <td style='width:30%' class='forumheader3'>Bcc: </td>
+   <td style='width:30%' class='forumheader3'>".MAILAN_05.": </td>
    <td style='width:70%' class='forumheader3'>
    <input type='text' name='email_bcc' class='tbox' style='width:80%' value='' />
    $email_bcc
@@ -192,7 +226,7 @@ if(IsSet($_POST['submit'])){
    </tr>
 
    <tr>
-   <td style='width:30%' class='forumheader3'>Subject: </td>
+   <td style='width:30%' class='forumheader3'>".MAILAN_06.": </td>
    <td style='width:70%' class='forumheader3'>
    <input type='text' name='email_subject' class='tbox' style='width:80%' value='' />
    $email_subject
@@ -203,7 +237,7 @@ if(IsSet($_POST['submit'])){
    // Attachment.
 
    $text .= "<tr>
-   <td style='width:30%' class='forumheader3'>Attachment: </td>
+   <td style='width:30%' class='forumheader3'>".MAILAN_07.": </td>
    <td style='width:70%' class='forumheader3'>";
    $text .= "<select class='tbox' name='email_attachment' >
        <option></option>";
@@ -233,7 +267,7 @@ if(IsSet($_POST['submit'])){
 
    $text .="<tr style='vertical-align:top'>
    <td colspan='2' style='text-align:center' class='forumheader'>";
-   $text .= "<input class='button' type='submit' name='submit' value='Send Email' />";
+   $text .= "<input class='button' type='submit' name='submit' value='".MAILAN_08."' />";
    $text .= "</td>
    </tr>
    </table>
@@ -244,7 +278,87 @@ if(IsSet($_POST['submit'])){
    $ns -> tablerender($caption, $text);
 
 
+
+
+   $text ="
+<form method='post' action='".e_SELF."' id='mailsettingsform'>
+<div id='mail' style='text-align:center;'>
+<table style='".ADMIN_WIDTH."' class='fborder' cellspacing='0' cellpadding='0'>
+<tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_63."<br /><span class='smalltext'>".PRFLAN_64."</span></td>
+<td style='width:50%; text-align:right' class='forumheader3'><input class='button' type='submit' name='testemail' value='".PRFLAN_65." ".SITEADMINEMAIL."' />
+</td>
+</tr>
+
+<tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_70."<br /><span class='smalltext'>".PRFLAN_71."</span></td>
+<td style='width:50%; text-align:right' class='forumheader3'>".
+($pref['smtp_enable'] ? "<input type='checkbox' name='smtp_enable' value='1' checked='checked' />" : "<input type='checkbox' name='smtp_enable' value='1' />")." </td>
+</tr>
+
+
+<tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_72.": </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<input class='tbox' type='text' name='smtp_server' size='30' value='".$pref['smtp_server']."' maxlength='50' />
+</td>
+</tr>
+
+<tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_73.": </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<input class='tbox' type='text' name='smtp_username' size='30' value='".$pref['smtp_username']."' maxlength='50' />
+</td>
+</tr>
+
+<tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_74.": </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<input class='tbox' type='password' name='smtp_password' size='30' value='".$pref['smtp_password']."' maxlength='50' />
+</td>
+</tr>
+
+<tr>
+<td style='text-align:center' colspan='2' class='forumheader'>
+<input class='button' type='submit' name='updateprefs' value='".PRFLAN_52."' />
+</td>
+</tr>
+
+
+
+
+
+</table></div></form>";
+
+$text .="";
+ $caption = "Preferences";
+   $ns -> tablerender($caption, $text);
+
+
+
+
+
+
+
+
+
+
 require_once(e_ADMIN."footer.php");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function userclasses($name){
     global $sql;
@@ -253,8 +367,8 @@ function userclasses($name){
        $sql -> db_Select("userclass_classes");
        while($row = $sql-> db_Fetch()){
            extract($row);
-
-       $text .="<option value=\"$userclass_id\" $selected>Userclass - $userclass_name</option>";
+       $public = ($userclass_editclass==0)? "(".MAILAN_10.")" : "";
+       $text .="<option value=\"$userclass_id\" $selected>Userclass - $userclass_name  $public</option>";
        }
    $text .= " </select>";
 
@@ -264,13 +378,13 @@ function userclasses($name){
 
   function show_options($action){
                 // ##### Display options ---------------------------------------------------------------------------------------------------------
-                                if($action==""){$action="main";}
+                                /*   if($action==""){$action="main";}
                                 // ##### Display options ---------------------------------------------------------------------------------------------------------
-                                $var['main']['text']=USRLAN_71;
-                                $var['main']['link']= "users.php";
+                                $var['main']['text']= "Mails Prefs";//USRLAN_71;
+                                $var['main']['link']= "mailout.php";
 
-                                $var['create']['text']=USRLAN_72;
-                                $var['create']['link']="users.php?create";
+                                $var['create']['text']="Mail-Out";USRLAN_72;
+                                $var['create']['link']="mailout.php?mailout";
 
                                 $var['prune']['text']=USRLAN_73;
                                 $var['prune']['link']="users.php?prune";
@@ -282,16 +396,16 @@ function userclasses($name){
                                 $var['options']['link']="users.php?options";
 
                                 $var['mailing']['text']= USRLAN_121;
-                                $var['mailing']['link']="mailout.php";
-                                show_admin_menu(USRLAN_76,$action,$var);
+                                $var['mailing']['link']="mailout.php";*/
+                             //   show_admin_menu(USRLAN_76,$action,$var);
                    }
 
-function mailout_adminmenu(){
+/*function mailout_adminmenu(){
         global $user;
         global $action;
         $action = "mailing";
         show_options($action);
-}
+}*/
 
 
 ?>
