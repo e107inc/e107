@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:21 $
+|     $Revision: 1.2 $
+|     $Date: 2004-11-09 06:36:53 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -75,13 +75,15 @@ if(strstr(e_QUERY, "uninstall")){
 <td class='forumheader3' style='text-align:center'>".EPL_ADLAN_2."<br /><br />
 <input class='button' type='submit' name='cancel' value='".EPL_CANCEL."' />
 <input class='button' type='submit' name='confirm' value='".EPL_ADLAN_1." $plugin_name' />
+    <input type='hidden' name='id' value='$id' /> 
 </td>
 </tr>
 </table>
-<input type='hidden' name='id' value='$id' />
+
 </form>
 </div>";
-        $ns -> tablerender(EPL_ADLAN_3, $text);
+
+    $ns -> tablerender(EPL_ADLAN_3.": <b>".$plugin_name." v".$plugin_version."</b>", $text);
         require_once("footer.php");
         exit;
 }
@@ -364,7 +366,7 @@ while($row = $sql -> db_Fetch()){
         unset($eplug_module, $eplug_parse, $eplug_name, $eplug_version, $eplug_author, $eplug_logo, $eplug_url, $eplug_email, $eplug_description, $eplug_compatible, $eplug_readme, $eplug_folder, $eplug_table_names, $eplug_userclass);
         include(e_PLUGIN.$plugin_path."/plugin.php");
 
-        if(is_array($eplug_table_names) || is_array($eplug_prefs)  || is_array($eplug_user_prefs) || is_array($eplug_parse) || $eplug_module || $eplug_userclass){
+        if($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs)  || is_array($eplug_user_prefs) || is_array($eplug_parse) || $eplug_module || $eplug_userclass){
                 $img = (!$plugin_installflag ? "<img src='".e_IMAGE."generic/uninstalled.png' alt='' />" : "<img src='".e_IMAGE."generic/installed.png' alt='' />");
         }else{
                 $img = "<img src='".e_IMAGE."generic/noinstall.png' alt='' />";
@@ -384,7 +386,7 @@ while($row = $sql -> db_Fetch()){
         if($eplug_readme){
                 $text .= "[ <a href='".e_PLUGIN.$eplug_folder."/".$eplug_readme."'>".$eplug_readme."</a> ]<br />";
         }
-        if($eplug_module || is_array($eplug_table_names) || is_array($eplug_prefs)  || is_array($eplug_user_prefs) || is_array($eplug_parse)){
+        if($eplug_conffile || $eplug_module || is_array($eplug_table_names) || is_array($eplug_prefs)  || is_array($eplug_user_prefs) || is_array($eplug_parse)){
                 $text .= "<b>".EPL_OPTIONS."</b>: [ ".($plugin_installflag ? "<a href='".e_SELF."?uninstall.$plugin_id' title='".EPL_ADLAN_1."'> ".EPL_ADLAN_1."</a>" : "<a href='".e_SELF."?install.$plugin_id' title='".EPL_ADLAN_0."'>".EPL_ADLAN_0."</a>")." ]";
         }else{
                 if($eplug_menu_name){
