@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-18 16:10:42 $
-|     $Author: streaky $
+|     $Revision: 1.7 $
+|     $Date: 2005-01-19 17:10:08 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -33,7 +33,7 @@ $xid = $qs[4];
 $cobj = new comment;
 $aj = new textparse;
 
-if(isset($_POST['commentsubmit'])){
+if(IsSet($_POST['commentsubmit'])){
         if(!$sql -> db_Select("news", "news_allow_comments", "news_id='$id' ") && $table == "news"){
                 header("location:".e_BASE."index.php");
                 exit;
@@ -50,7 +50,7 @@ if(isset($_POST['commentsubmit'])){
                 }
         }
 }
-if(isset($_POST['replysubmit'])){
+if(IsSet($_POST['replysubmit'])){
         if($table == "news" && !$sql -> db_Select("news", "news_allow_comments", "news_id='$nid' ")){
                 header("location:".e_BASE."index.php");
                 exit;
@@ -166,7 +166,8 @@ if($cache = $e107cache->retrieve("comment.php?$table.$id")){
                         header("location:".e_BASE."index.php");
                         exit;
                 } else {
-                        list($news['news_id'], $news['news_title'], $news['data'], $news['news_extended'], $news['news_datestamp'], $news['admin_id'], $news_category, $news['news_allow_comments'],  $news['news_start'], $news['news_end'], $news['news_class']) = $sql -> db_Fetch();
+
+                        list($news['news_id'], $news['news_title'], $news['data'], $news['news_extended'], $news['news_datestamp'], $news['admin_id'], $news_category, $news['news_allow_comments'],  $news['news_start'], $news['news_end'], $news['news_class'], $news['news_render_type'], $news['news_comment_total']) = $sql -> db_Fetch();
                         if($news['news_allow_comments']){
                                 header("location:".e_BASE."index.php");
                                 exit;
@@ -184,7 +185,7 @@ if($cache = $e107cache->retrieve("comment.php?$table.$id")){
                                 list($news['admin_name']) = $sql -> db_Fetch();
                                 $sql -> db_Select("news_category", "*",  "category_id='$news_category' ");
                                 list($news['category_id'], $news['category_name'], $news['category_icon']) = $sql-> db_Fetch();
-                                $news['comment_total'] = $sql -> db_Count("comments", "(*)",  "WHERE comment_item_id='".$news['news_id']."' AND comment_type='0' ");
+                                
                                 $ix = new news;
                                 $ix -> render_newsitem($news, "default");
                                 $field = $news['news_id'];

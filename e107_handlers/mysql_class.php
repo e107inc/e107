@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2004-12-22 15:47:45 $
-|     $Author: streaky $
+|     $Revision: 1.16 $
+|     $Date: 2005-01-19 17:11:49 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,8 +24,8 @@ $db_time = 0.0;
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.15 $
-* @author $Author: streaky $
+* @version $Revision: 1.16 $
+* @author $Author: stevedunstan $
 */
 class db {
 
@@ -437,6 +437,15 @@ class db {
 	* @access private
 	*/
 	function db_Select_gen($arg) {
+
+		/*
+		changes by jalist 19/01/05:
+		added string replace on table prefix to tidy up long database queries
+		usage: instead of sending "SELECT * FROM ".MPREFIX."table", do "SELECT * FROM #table" 
+		*/
+
+		$arg = str_replace("#", MPREFIX, $arg);
+
 		if ($this->mySQLresult = $this->db_Query($arg)) {
 			$this->dbError('db_Select_gen');
 			return $this->db_Rows();
