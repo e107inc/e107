@@ -560,12 +560,12 @@ class textparse{
 						$url = $url[0];
 						$message_array[$i] = "<a href=\"".$message_array[$i]."\" onclick=\"window.open('".$message_array[$i]."'); return false;\">[".$url."]</a>";
 					}else{
-						if(!strstr($message_array[$i], "[link=") && !strstr($message_array[$i], "[url=") && !strstr($message_array[$i], "href=")){
+						if(!strstr($message_array[$i], "[link=") && !strstr($message_array[$i], "[url=") && !strstr($message_array[$i], "href=") && !strstr($message_array[$i], "src=") && !strstr($message_array[$i], "action=") && !strstr($message_array[$i], "onclick=") && !strstr($message_array[$i], "url(")){
 							$message_array[$i] = preg_replace("/([^\s]{".$wrapcount."})/", "$1<br />", $message_array[$i]);
 						}
 						}
 				}else{
-					if(!strstr($message_array[$i], "[link=") && !strstr($message_array[$i], "[url=") && !strstr($message_array[$i], "href=") && !strstr($message_array[$i], "src=")){
+					if(!strstr($message_array[$i], "[link=") && !strstr($message_array[$i], "[url=") && !strstr($message_array[$i], "href=") && !strstr($message_array[$i], "src=") && !strstr($message_array[$i], "action=") && !strstr($message_array[$i], "onclick=") && !strstr($message_array[$i], "url(")){
 						$message_array[$i] = preg_replace("#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="http://\2.\3" onclick="window.open(\'http://\2.\3\'); return false;">\2.\3</a>', $message_array[$i]);
 						$message_array[$i] = preg_replace("#([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?([^.]))#i", '<a href="\1://\2" onclick="window.open(\'\1://\2\'); return false;">\1://\2</a>', $message_array[$i]);
 					}
