@@ -18,8 +18,17 @@ if(!getperms("6")){ header("location:".e_BASE."index.php"); exit; }
 require_once("auth.php");
 
 $imagedir = e_IMAGE."filemanager/";
-$path = str_replace("../", "", (e_QUERY ? e_QUERY : e_FILE));
-if(!$path){ $path =  str_replace("../", "", e_FILE); }
+
+$choice .= e_FILE;
+
+$admin_choice=$_POST['admin_choice'];
+
+if($admin_choice=="Custom" && getperms("I")){
+	$choice="../e107_plugins/custom/";
+}
+
+$path = str_replace("../", "", (e_QUERY ? e_QUERY : $choice));
+if(!$path){ $path =  str_replace("../", "", $choice); }
 
 if(IsSet($_POST['deletefile'])){
 	if(!$_POST['ac'] == md5(ADMINPWCHANGE)){ exit; }
@@ -110,6 +119,37 @@ if(count($dirs) == 1){
 }
 
 $pathd = $path;
+
+$text = "<div style='text-align:center'>\n
+<form method='post' action='".e_SELF."?".e_QUERY."'>\n
+<table style='width:auto' class='fborder'>\n
+<tr>\n\n
+
+<td style='width:70%' class='forumheader3'>\n
+".FMLAN_32."
+</td>\n
+<td style='width:30%' class='forumheader3' style='text-align:center'>\n
+<select name='admin_choice' class='tbox'>\n";
+($admin_choice=="Files" ? $text .= "<option value='Files' selected>".FMLAN_35."</option>" : $text .= "<option value='Files'>".FMLAN_35."</option>");
+if(getperms("I")){
+	($admin_choice=="Custom" ? $text .= "<option value='Custom' selected>".FMLAN_36."</option>" : $text .= "<option value='Custom'>".FMLAN_36."</option>");
+}
+$text .= "</select>\n
+</td>\n
+</tr>\n\n
+
+<tr style='vertical-align:top'>\n
+<td colspan='2'  style='text-align:center' class='forumheader'>\n
+<input class='button' type='submit' name='updateoptions' value='".FMLAN_33."' />\n
+</td>\n
+</tr>\n\n
+
+</table>\n
+</form>\n
+</div>";
+$ns -> tablerender(FMLAN_34, $text);
+
+
 $text = "<div class=\"border\">
 <div class=\"caption\">
 ".FMLAN_29.": <b>root/".$pathd."</b>&nbsp;&nbsp;[ ".count($dirs)." ".$dstr.", ".count($files)." ".$cstr." ]
