@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.62 $
-|     $Date: 2005-03-29 04:12:43 $
+|     $Revision: 1.63 $
+|     $Date: 2005-03-29 16:19:54 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -550,6 +550,7 @@ function update_61x_to_700($type) {
 
         if($pref['cb_linkreplace']){
         	$pref['link_text'] = $pref['cb_linkreplace'];
+			$pref['link_replace '] =1;
 			save_prefs();
 		}
 
@@ -568,16 +569,6 @@ function update_61x_to_700($type) {
 
 //		$sql->db_Select_gen("DELETE FROM #core WHERE e107_name='user_entended'");
 
-
-// ---- news check. ------------
-
-		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."news");
-		$columns = mysql_num_fields($fields);
-		if($columns != 16){
-		return FALSE;
-		}
-
-// ----- ----------------------
 
 		global $pref;
 		if (!isset($pref['search_highlight'])) {
