@@ -13,6 +13,7 @@ $ADMIN_HEADER = "<div style='text-align:center'>
 {ADMIN_PWORD}
 {ADMIN_HELP}
 {ADMIN_MSG}
+{ADMIN_PLUGINS}
 </td>
 <td style='width:60%; vertical-align: top;'>
 ";

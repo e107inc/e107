@@ -1,5 +1,5 @@
 if(ADMIN){
-	global $ns, $pref;
+	global $ns, $pref, $e107_plug;
 	$adminfpage = (!$pref['adminstyle'] || $pref['adminstyle'] == "default" ? "admin.php" : $pref['adminstyle'].".php");
 	if(!strstr(e_SELF, "/".$adminfpage) || strstr(e_SELF, "/".$adminfpage."?")){
 		$e107_var['x']['text']=ADLAN_52;
@@ -16,18 +16,18 @@ if(ADMIN){
 
 		// Plugin links menu
 
-		$sql2 = new db;
-		if($sql2 -> db_Select("plugin", "*", "plugin_installflag=1"))
+		$sql = new db;
+		if($sql -> db_Select("plugin", "*", "plugin_installflag=1"))
 		{
-			while($row = $sql2 -> db_Fetch())
+			//Link Plugin Manager
+			$e107_var['x']['text'] = "<b>".ADLAN_98."</b>";
+			$e107_var['x']['link'] = e_ADMIN."plugin.php";
+			$e107_var['x']['perm'] = "P";
+      while($rowplug = $sql -> db_Fetch())
 			{
-				extract($row);
+				extract($rowplug);
+				$e107_plug[$rowplug[1]] = $rowplug[3];
 				include(e_PLUGIN.$plugin_path."/plugin.php");
-
-				//Link Plugin Manager
-				$e107_var['x']['text'] = "<b>".ADLAN_98."</b>";
-				$e107_var['x']['link'] = e_ADMIN."plugin.php";
-				$e107_var['x']['perm'] = "P";
 
 				// Links Plugins
 				if($eplug_conffile)
