@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2004-12-01 14:41:39 $
-|     $Author: streaky $
+|     $Revision: 1.8 $
+|     $Date: 2004-12-02 20:23:56 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 
@@ -429,7 +429,7 @@ class links{
 
         function submit_link($sub_action, $id){
                 // ##### Format and submit link ---------------------------------------------------------------------------------------------------------
-                global $aj, $sql;
+                global $aj, $sql, $e107cache;
                 $link_name = $aj -> formtpa($_POST['link_name'], "admin");
                 $link_url = $aj -> formtpa($_POST['link_url'], "admin");
                 $link_description = $aj -> formtpa($_POST['link_description'], "admin");
