@@ -1,17 +1,22 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        /admin/links.php
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107/e107_admin/links.php,v $
+|     $Revision: 1.23 $
+|     $Date: 2004-08-14 01:52:09 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
+
 require_once("../class2.php");
 if(!getperms("I")){ header("location:".e_BASE."index.php"); }
 
@@ -382,7 +387,7 @@ class links{
                 </tr>
                 <tr>
                 <td style='width:30%' class='forumheader3'>".LCLAN_25.":<br /><span class='smalltext'>(".LCLAN_26.")</span></td>
-                <td style='width:70%' class='forumheader3'>".r_userclass("link_class",$link_class)."
+                <td style='width:70%' class='forumheader3'>".r_userclass("link_class",$link_class,"off","public,guest,nobody,member,admin,classes")."
 
                 </td></tr>
 
