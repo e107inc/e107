@@ -1,18 +1,17 @@
 global $sql;
 global $ns;
-$menu = $parm;
 global $eMenuList;
-if (!array_key_exists($menu,$eMenuList)) {
+if (!array_key_exists($parm,$eMenuList)) {
 	return;
 }
-foreach($eMenuList[$menu] as $row) {
-	extract($row);
+foreach($eMenuList[$parm] as $row) {
 	$show_menu = TRUE;
-	if($menu_pages) {
-		list($listtype,$listpages) = explode("-",$menu_pages);
+	if($row['menu_pages']) {
+		list($listtype,$listpages) = explode("-",$row['menu_pages']);
 		$pagelist = explode("|",$listpages);
 		$check_url = e_SELF."?".e_QUERY;
-		if($listtype == '1') { //show menu
+		if($listtype == '1')  //show menu
+		{
 			$show_menu = FALSE;
 			foreach($pagelist as $p) {
 				if(strpos($check_url,$p) !== FALSE) {
@@ -20,7 +19,8 @@ foreach($eMenuList[$menu] as $row) {
 				}
 			}
 		}
-		if($listtype == '2') { //hide menu
+		elseif($listtype == '2') //hide menu
+		{
 			$show_menu = TRUE;
 			foreach($pagelist as $p) {
 				if(strpos($check_url,$p) !== FALSE) {
@@ -30,28 +30,16 @@ foreach($eMenuList[$menu] as $row) {
 		}
 	}
 	if($show_menu) {
-		$sql->db_Mark_Time($menu_name);
-		if($menu_path != 'custom')
+		$sql->db_Mark_Time($row['menu_name']);
+		if($row['menu_path'] != 'custom')
 		{
-			include(e_PLUGIN.$menu_name."/languages/".e_LANGUAGE.".php");
+			@include(e_PLUGIN.$row['menu_path']."/languages/".e_LANGUAGE.".php");
 			if(e_LANGUAGE != 'English')
 			{
-				include(e_PLUGIN.$menu_name."/languages/English.php");
+				@include(e_PLUGIN.$row['menu_path']."/languages/English.php");
 			}
 		}
-		include(e_PLUGIN.$menu_path."/".$menu_name.".php");
-			
-/*
-		if(strstr($menu_name, "custom_")) {
-			e107_require_once(e_PLUGIN."custom/".str_replace("custom_", "", $menu_name).".php");
-		} else {
-			include(e_PLUGIN.$menu_name."/languages/".e_LANGUAGE.".php");
-			if(e_LANGUAGE != 'English') {
-				include(e_PLUGIN.$menu_name."/languages/English.php");
-			}
-			include(e_PLUGIN.$menu_name."/".$menu_name.".php");
-		}
-*/
-		$sql->db_Mark_Time("(After $menu_name)");
+		include(e_PLUGIN.$row['menu_path']."/".$row['menu_name'].".php");
+		$sql->db_Mark_Time("(After {$row['menu_name']})");
 	}
 }
