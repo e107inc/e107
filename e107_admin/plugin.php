@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-02-06 23:32:40 $
+|     $Revision: 1.21 $
+|     $Date: 2005-02-06 23:39:27 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -182,9 +182,7 @@ if ($action == 'install') {
 
 
 		if (is_array($eplug_sc)) {
-			echo "before: pref - plug_sc = ".$pref['plug_sc']." <br />";
 			$plugin->manage_plugin_prefs('add', 'plug_sc', $eplug_folder, $eplug_sc);
-			echo "after: pref - plug_sc = ".$pref['plug_sc']." <br />";
 		}
 
 		if (is_array($eplug_bb)) {
