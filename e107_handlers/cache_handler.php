@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-09-27 02:18:03 $
+|     $Revision: 1.4 $
+|     $Date: 2004-10-06 17:58:20 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -22,7 +22,7 @@ class ecache
 {
 	function e107cache_page_md5()
 	{
-		return md5(e_BASE.e_LANGUAGE.THEME.USERCLASS);
+		return md5(e_BASE.e_LANGUAGE.THEME.USERCLASS.e_QUERY);
 	}
 
 	function cache_fname($query)
