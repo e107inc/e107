@@ -26,4 +26,7 @@ define("UCSLAN_21", "User Class Settings");
 define("UCSLAN_22", "Users - click to move ...");
 define("UCSLAN_23", "Users in this class ...");
 
+define("UCSLAN_24", "Who can manage class");
+
+
 ?>
