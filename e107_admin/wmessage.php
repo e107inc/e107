@@ -11,13 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/wmessage.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-02-05 07:04:11 $
-|     $Author: e107coders $
+|     $Revision: 1.16 $
+|     $Date: 2005-02-13 05:41:48 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
-require_once(e_HANDLER.'e_parse_class.php');
 if (!getperms("M")) {
 	header("location:".e_BASE."index.php");
 	 exit;
@@ -48,12 +47,12 @@ if (e_QUERY) {
 
 if (isset($_POST['wm_update'])) {
 	$wm_text = $tp->toDB($_POST['wm_text']);
-	$message = ($sql->db_Update("wmessage", "wm_text ='$wm_text', wm_active='".$_POST['wm_active']."' WHERE wm_id='".$_POST['wm_id']."' ")) ? LAN_UPDATED : LAN_UPDATED_FAILED;
+	$message = ($sql->db_Update("generic", "gen_chardata ='$wm_text', gen_intdata='".$_POST['wm_active']."' WHERE gen_id='".$_POST['wm_id']."' ")) ? LAN_UPDATED : LAN_UPDATED_FAILED;
 }
 
 if (isset($_POST['wm_insert'])) {
 	$wmtext = $tp->toDB($_POST['wm_text']);
-	$message = ($sql->db_Insert("wmessage", "0, '$wmtext', '".$_POST['wm_active']."' ")) ? LAN_CREATED :  LAN_CREATED_FAILED ;
+	$message = ($sql->db_Insert("generic", "0, 'wmessage', '".time()."', ".USERID.", '', '{$_POST['wm_active']}', '{$wmtext}' ")) ? LAN_CREATED :  LAN_CREATED_FAILED ;
 }
 
 if (isset($_POST['updateoptions'])) {
@@ -70,9 +69,8 @@ if (preg_match("#(.*?)_delete_(\d+)#", $deltest[$tp->toJS(LAN_DELETE)], $matches
 }
 
 if ($delete && $del_id) {
-	$message = ($sql->db_Delete("wmessage", "wm_id='".$del_id."'  ")) ? LAN_DELETED : LAN_DELETED_FAILED ;
+	$message = ($sql->db_Delete("generic", "gen_id='".$del_id."' ")) ? LAN_DELETED : LAN_DELETED_FAILED ;
 }
-
 
 if (isset($message)) {
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
@@ -80,8 +78,8 @@ if (isset($message)) {
 
 // Show Existing -------
 if ($action == "main" || $action == "") {
-	if ($wm_total = $sql->db_Select("wmessage", "*", "ORDER BY wm_id, wm_id ASC", "nowhere")) {
-		$text = $rs->form_open("post", e_SELF, "myform_{$link_id}", "", "");
+	if ($wm_total = $sql->db_Select("generic", "gen_id, gen_intdata, gen_chardata", "gen_type='wmessage' ORDER BY gen_id ASC")) {
+		$text = $rs->form_open("post", e_SELF, "myform_{$gen_id}", "", "");
 		$text .= "<div style='text-align:center'>
 			<table class='fborder' style='".ADMIN_WIDTH."'>
 			<tr>
@@ -91,16 +89,16 @@ if ($action == "main" || $action == "") {
 			<td class='fcaption' style='width:15%'>".LAN_OPTIONS."</td>
 			</tr>";
 		while ($row = $sql->db_Fetch()) {
-			extract($row);
+//			extract($row);
 			$text .= "<tr><td class='forumheader3' style='width:5%; text-align: center; vertical-align: middle'>";
 			//   $text .= $wm_id ? "<img src='".e_IMAGE."link_icons/".$link_button."' alt='' /> ":"";
-			$text .= $wm_id;
-			$text .= "</td><td style='width:70%' class='forumheader3'>".$wm_text."</td>";
-			$text .= "</td><td style='width:70%' class='forumheader3'>".r_userclass_name($wm_active)."</td>";
+			$text .= $row['gen_id'];
+			$text .= "</td><td style='width:70%' class='forumheader3'>".$row['gen_chardata']."</td>";
+			$text .= "</td><td style='width:70%' class='forumheader3'>".r_userclass_name($row['gen_intdata'])."</td>";
 
 			$text .= "</td><td style='width:15%; text-align:center; white-space: nowrap' class='forumheader3'>";
-			$text .= $rs->form_button("button", "main_edit_{$wm_id}", LAN_EDIT, "onclick=\"document.location='".e_SELF."?create.edit.$wm_id'\"");
-			$text .= $rs->form_button("submit", "main_delete_".$wm_id, LAN_DELETE, "onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [ ID: $wm_id ]")."' )\"");
+			$text .= $rs->form_button("button", "main_edit_{$row['gen_id']}", LAN_EDIT, "onclick=\"document.location='".e_SELF."?create.edit.{$row['gen_id']}'\"");
+			$text .= $rs->form_button("submit", "main_delete_".$row['gen_id'], LAN_DELETE, "onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [ ID: {$row['gen_id']} ]")."' )\"");
 			$text .= "</td>";
 			$text .= "</tr>";
 		}
@@ -115,10 +113,10 @@ if ($action == "main" || $action == "") {
 
 // Create and Edit
 if ($action == "create" || $action == "edit") {
+
 	if ($sub_action == "edit"){
-		$sql->db_Select("wmessage", "*", "wm_id = $id");
+		$sql->db_Select("generic", "gen_intdata, gen_chardata", "gen_id = $id");
 		$row = $sql->db_Fetch();
-		extract($row);
 	}
 
 	if ($sub_action != 'edit'){
@@ -136,7 +134,7 @@ if ($action == "create" || $action == "edit") {
 
 		<td style='width:20%' class='forumheader3'>".WMLAN_04."</td>
 		<td style='width:60%' class='forumheader3'>
-		<textarea class='tbox' name='wm_text' cols='70' rows='10' style='width:90%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this)'>".$wm_text."</textarea>
+		<textarea class='tbox' name='wm_text' cols='70' rows='10' style='width:90%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this)'>".$row['gen_chardata']."</textarea>
 		<br />
 		<input id='helpguest' class='helpbox' type='text' name='helpguest' size='100' />
 		<br />
@@ -146,7 +144,7 @@ if ($action == "create" || $action == "edit") {
 		</tr>";
 
 	$text .= "<tr><td class='forumheader3'>".WMLAN_03."</td>
-		<td class='forumheader3'>".r_userclass("wm_active", $wm_active, "off", "public,guest,nobody,member,admin,classes")."</td></tr>";
+		<td class='forumheader3'>".r_userclass("wm_active", $row['gen_intdata'], "off", "public,guest,nobody,member,admin,classes")."</td></tr>";
 
 	$text .= "
 		<tr style='vertical-align:top'>
