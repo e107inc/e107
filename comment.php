@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-01-28 13:22:11 $
-|     $Author: mrpete $
+|     $Revision: 1.12 $
+|     $Date: 2005-02-09 22:04:06 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -31,7 +31,6 @@ $id = $qs[2];
 $nid = $qs[3];
 $xid = $qs[4];
 $cobj = new comment;
-$aj = new textparse;
 	
 if (IsSet($_POST['commentsubmit'])) {
 	if (!$sql->db_Select("news", "news_allow_comments", "news_id='$id' ") && $table == "news") {
@@ -108,7 +107,7 @@ if ($action == "reply") {
 	$query = "comment_id='$id' LIMIT 0,1";
 	if ($sql->db_Select("comments", "comment_subject", "comment_id='$id'")) {
 		list($comments['comment_subject']) = $sql->db_Fetch();
-		$subject = $aj->formtpa($comments['comment_subject']);
+		$subject = $tp->toHTML($comments['comment_subject']);
 	}
 	if ($subject == "") {
 		if ($table == "news") {
@@ -188,7 +187,7 @@ if ($action == "reply") {
 					header("location:".e_BASE."index.php");
 					exit;
 				} else {
-					$subject = $aj->formtpa($news['news_title']);
+					$subject = $tp->toHTML($news['news_title']);
 					define(e_PAGETITLE, LAN_100." / ".LAN_99." / ".$subject."");
 					require_once(HEADERF);
 					ob_start();
