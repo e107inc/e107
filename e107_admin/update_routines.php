@@ -39,10 +39,10 @@ function update_615_to_616($type){
 		mysql_query("ALTER TABLE ".MPREFIX."parser ADD UNIQUE (parser_regexp)");
 	} else {
 		global $mySQLdefaultdb;
-		$fields = mysql_list_fields($mySQLdefaultdb,MPREFIX."user");
+		$fields = mysql_list_fields($mySQLdefaultdb,MPREFIX."download");
 		$columns = mysql_num_fields($fields);
 		for ($i = 0; $i < $columns; $i++) {
-	   	if("user_customtitle" == mysql_field_name($fields, $i)){return TRUE;}
+	   	if("download_comment" == mysql_field_name($fields, $i)){return TRUE;}
 		}
 		return FALSE;
 	}
