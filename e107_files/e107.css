@@ -1,21 +1,36 @@
-/*
-+---------------------------------------------------------------+
-|	e107 website system
-|	/files/e107.css
-|
-|	©Steve Dunstan 2001-2002
-|	http://e107.org
-|	jalist@e107.org
-|
-|	Released under the terms and conditions of the
-|	GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
-This file is here for a possible future project of making themes more css compatible
-*/
-
 .defaulttable, .fbdefault, .fdefault, .f2default, .f3default, .fcdefault{ display: block; width: auto; }
 .center{ text-align:center; }
 .right { text-align:right; }
 .left { text-align:left; }
 table { margin-left:auto; margin-right:auto; }
 .searchhighlight{text-decoration: underline;color:#FF0000;font-weight:bold;}
+.day {
+  text-align: center;
+  background: #F1EAE1;
+  font: 10px tahoma, verdana, arial, helvetica, sans-serif;
+  padding: 2px 1px 2px 1px;
+}
+.dayentry {
+  text-align: center;
+  background: #F1C7B7;
+  font: 10px tahoma, verdana, arial, helvetica, sans-serif;
+  padding: 2px 1px 2px 1px;
+}
+.forumheader4{
+	background-color: #EBEFF2;
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 11px;
+	color:#000;
+	padding: 4px;
+	border: #C3BDBD 1px solid;
+	cursor: pointer;
+}
+.forumheader5{
+	background-color: #BCD5EA;
+	color:#000;
+	cursor: pointer;
+}
+ul{
+	margin-top:0px;
+	margin-bottom:0px;
+}
