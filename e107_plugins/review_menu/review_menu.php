@@ -85,6 +85,8 @@ if($cache = retrieve_cache("review_menu")){
 		$cache = $aj -> formtpa(ob_get_contents(), "admin");
 		set_cache("review_menu", $cache);
 	}
+	
+	ob_end_flush(); /* dump collected data */
 }
 
 ?>
