@@ -314,20 +314,23 @@ class e107table{
 }
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-function e107_parse($text){
-        global $parsethis;
-        @require_once(e_HANDLER.'parser_functions.php');
-        foreach($parsethis as $parser_regexp => $parser_name){
-                preg_match_all($parser_regexp,$text,$matches,PREG_SET_ORDER);
-                for ($i=0; $i< count($matches); $i++) {
-                        @require_once(e_PLUGIN.$parser_name.'/parser.php');
-                        if(function_exists($parser_name.'_parse')) {
-                                $newtext=call_user_func($parser_name.'_parse',$matches[$i]);
-                                $text = str_replace($matches[$i][0],$newtext,$text);
-                        }
-                }
-        }
-        return $text;
+function e107_parse($text,$referrer){
+//	if($referrer != "admin"){return $text;}
+	global $parsethis;
+	@require_once(e_HANDLER.'parser_functions.php');
+	foreach($parsethis as $parser_regexp => $parser_name){
+		preg_match_all($parser_regexp,$text,$matches,PREG_SET_ORDER);
+		for ($i=0; $i< count($matches); $i++) {
+			if($parser_name != "e107_core" && file_exists(e_PLUGIN.$parser_name.'/parser.php')){
+				@require_once(e_PLUGIN.$parser_name.'/parser.php');
+			}
+			if(function_exists($parser_name.'_parse')) {
+				$newtext=call_user_func($parser_name.'_parse',$matches[$i],$referrer);
+				$text = str_replace($matches[$i][0],$newtext,$text);
+			}
+		}
+	}
+	return $text;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 class textparse{
@@ -538,7 +541,7 @@ class textparse{
         $text = substr($text, 1);
         $text = code($text, "notdef");
         $text = html($text);
-        $text = e107_parse($text);
+        $text = e107_parse($text,$referrer);
         $text = preg_replace("#\{\{.*?\}\}#","",$text);
         return $text;
         }
