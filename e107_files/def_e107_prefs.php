@@ -87,5 +87,6 @@ $pref['cb_emote'] = "0";
 
 // Added
 $pref['signup_text'] = "";
-	
+$pref['make_clickable'] = 1;
+
 ?>
