@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/admin_config.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-02-07 12:56:44 $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-07 13:34:39 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -38,6 +38,7 @@ if(!is_writable(LOGPATH."logs")) {
 	
 if (isset($_POST['updatesettings'])) {
 	$pref['statActivate'] = $_POST['statActivate'];
+	$pref['statUserclass'] = $_POST['statUserclass'];
 	$pref['statBrowser'] = $_POST['statBrowser'];
 	$pref['statOs'] = $_POST['statOs'];
 	$pref['statScreen'] = $_POST['statScreen'];
@@ -74,15 +75,20 @@ $text = "<div style='text-align:center'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
 	 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".ADSTAT_L4.": </td>
+	<td style='width:50%' class='forumheader3'>".ADSTAT_L4."</td>
 	<td style='width:50%; text-align: right;' class='forumheader3'>
 	<input type='radio' name='statActivate' value='1'".($pref['statActivate'] ? " checked='checked'" : "")." /> ".ADSTAT_ON."&nbsp;&nbsp;
 	<input type='radio' name='statActivate' value='0'".(!$pref['statActivate'] ? " checked='checked'" : "")." /> ".ADSTAT_OFF."
 	</td>
 	</tr>
+
+	<tr>
+	<td style='width:50%' class='forumheader3'>".ADSTAT_L18."</td>
+	<td style='width:50%; text-align: right;' class='forumheader3'>".r_userclass("statUserclass", $pref['statUserclass'])."</td>
+	</tr>
 	 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".ADSTAT_L5.": </td>
+	<td style='width:50%' class='forumheader3'>".ADSTAT_L5."</td>
 	<td style='width:50%; text-align: right;' class='forumheader3'>
 	".ADSTAT_L6."&nbsp;&nbsp;
 	<input type='radio' name='statBrowser' value='1'".($pref['statBrowser'] ? " checked='checked'" : "")." /> ".ADSTAT_ON."&nbsp;&nbsp;
