@@ -32,14 +32,13 @@ $HEADER = "<div id='header'>
 </div>
 
 <table style='width: 100%;' cellpadding='0' cellspacing='0'>
-
-<tr><td style='width: 180px; border-right: 1px solid #000;'></td><td style='width: *;'></td><td style='width: 180px; border-left: 1px solid #000;'></td></tr>
-
 <tr>
 <td id='leftcontent'>
+<div class='menuwrapper'>
 <div class='columnwrap'>
 {SITELINKS}
 {MENU=1}
+</div>
 </div>
 </td>
 
@@ -52,8 +51,10 @@ $FOOTER = "
 </td>
 
 <td id='rightcontent'>
+<div class='menuwrapper'>
 <div class='columnwrap'>
 {MENU=2}
+</div>
 </div>
 </td>
 </tr>
@@ -118,7 +119,7 @@ define('LINKALIGN', "left");
 
 function tablestyle($caption, $text, $mode)
 {
-	echo "<h4><img src='".THEME."images/bluearrow_greybg.png' alt='' />  $caption</h4>\n<br />\n$text\n<br /><br />\n";	
+	echo "<h4><img src='".THEME."images/bluearrow_greybg.png' alt='' width='6' height='9' />  $caption</h4>\n<br />\n$text\n<br /><br />\n";	
 }
 
 $COMMENTSTYLE = "
