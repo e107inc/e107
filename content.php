@@ -123,6 +123,11 @@ if($action == "content"){
 		echo $aj -> formtparev($cache);
 	}else{
 		ob_start();		
+
+		$search = array("{e_BASE}", "{e_ADMIN}", "{e_IMAGE}", "{e_THEME}", "{e_PLUGIN}", "{e_FILE}", "{e_HANDLER}", "{e_LANGUAGEDIR}", "{e_DOCS}", "{e_DOCROOT}");
+		$replace = array(e_BASE, e_ADMIN, e_IMAGE, e_THEME, e_PLUGIN, e_FILE, e_HANDLER, e_LANGUAGEDIR, e_DOCS, e_DOCROOT);
+		$content_content = str_replace($search, $replace, $content_content);
+
 		$textemailprint = $ep -> render_emailprint("content",$sub_action);
 		if(strstr($content_content, "{EMAILPRINT}")){
 			$content_content = str_replace("{EMAILPRINT}", $textemailprint, $content_content);
@@ -231,6 +236,10 @@ if($action == "review"){
 				$content_summary
 				<br /><br />";
 			
+				$search = array("{e_BASE}", "{e_ADMIN}", "{e_IMAGE}", "{e_THEME}", "{e_PLUGIN}", "{e_FILE}", "{e_HANDLER}", "{e_LANGUAGEDIR}", "{e_DOCS}", "{e_DOCROOT}");
+				$replace = array(e_BASE, e_ADMIN, e_IMAGE, e_THEME, e_PLUGIN, e_FILE, e_HANDLER, e_LANGUAGEDIR, e_DOCS, e_DOCROOT);
+				$content_content = str_replace($search, $replace, $content_content);
+
 				$content_content = $aj -> tpa($content_content, "off", "admin", $highlight_search);
 				$reviewpages = explode("[newpage]",$content_content);
 				$totalpages = count($reviewpages);
@@ -753,6 +762,10 @@ if($action == "article"){
 function parse_content_article_table($row){
 		global $CONTENT_ARTICLE_TABLE, $rater, $aj, $ep, $id;
 		extract($row);
+
+		$search = array("{e_BASE}", "{e_ADMIN}", "{e_IMAGE}", "{e_THEME}", "{e_PLUGIN}", "{e_FILE}", "{e_HANDLER}", "{e_LANGUAGEDIR}", "{e_DOCS}", "{e_DOCROOT}");
+		$replace = array(e_BASE, e_ADMIN, e_IMAGE, e_THEME, e_PLUGIN, e_FILE, e_HANDLER, e_LANGUAGEDIR, e_DOCS, e_DOCROOT);
+		$content_content = str_replace($search, $replace, $content_content);
 
 		$category = $content_parent;
  		$sub_action = $content_id;
