@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/emailprint_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:26 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-07 10:51:56 $
+|     $Author: pholzmann $
 +----------------------------------------------------------------------------+
 */
 
@@ -43,7 +43,7 @@ class emailprint{
                         }else{
                                 $ico_mail = e_IMAGE."generic/friend.gif";
                         }
-                        $text_emailprint .= "<a href='email.php?".$email.".".$id."'><img src='".$ico_mail."' style='border:0' alt='email to someone' /></a> ";
+                        $text_emailprint .= "<a href='email.php?".$email.".".$id."'><img src='".$ico_mail."' style='border:0' alt='email to someone' title='email to someone' /></a> ";
                 }
                 if($look==0 || $look==2){
                         if(defined("ICONPRINT")&&file_exists(THEME."images/".ICONPRINT)){
@@ -51,7 +51,7 @@ class emailprint{
                         }else{
                                 $ico_print = e_IMAGE."generic/printer.gif";
                         }
-                        $text_emailprint .= "<a href='print.php?".$print.".".$id."'><img src='".$ico_print."' style='border:0' alt='printer friendly' /></a>";
+                        $text_emailprint .= "<a href='print.php?".$print.".".$id."'><img src='".$ico_print."' style='border:0' alt='printer friendly' title='printer friendly'/></a>";
                 }
                 return $text_emailprint;
         }
