@@ -55,6 +55,6 @@ function tick() {
   (document.all)?window.setTimeout("tick();", 1000):window.setTimeout("tick();", 6000);
 }
 
-tick();
+////tick();
 
 //-->
