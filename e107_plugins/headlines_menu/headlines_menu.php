@@ -13,13 +13,13 @@ if(strstr(($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENA
 	if($feeds = $sql -> db_Select("headlines", "*", "headline_active='1' ")){
 		$column = ($feeds/2);
 		$rss = new parse_xml;
-		$text = "<div style='text-align:center'>\n<table style='width:95%'>\n<tr>\n";
+		$text = "<div id='headlinehead' style='text-align:center'>\n<table style='width:95%'>\n<tr>\n";
 		$text .= "<td style='width:50%; vertical-align:top'>";
 		while($row = $sql -> db_Fetch()){
 			extract($row);
 			
 			$rss = new parse_xml;
-			$text .= str_replace("e107_themes/", e_THEME, $headline_description);
+			$text .= $headline_description;
 
 			$c++;
 
@@ -39,12 +39,12 @@ if(strstr(($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENA
 	
 }
 
-$text = "<br />";
+$text = "";
 if($sql -> db_Select("headlines", "*", "headline_active='1' ")){
 	while($row = $sql -> db_Fetch()){
 		extract($row);
 		if(!$headline_url){ break; }
-		if($headline_timestamp+$headline_update < time() && !strstr(THEME, "../")){
+		if($headline_timestamp+$headline_update < time()){
 			$tmp = parse_url($headline_url);
 			$dead = FALSE;
 			if(ini_get("allow_url_fopen")){
@@ -77,12 +77,12 @@ if($sql -> db_Select("headlines", "*", "headline_active='1' ")){
 				$text .= $rss -> cache_results($headline_id);
 			}
 		} else {
-			$text .= str_replace(ereg_replace("\.\.\/", "", THEME), THEME, $headline_data);
+			$text .= $headline_data;
 		}
 	}
 
 	$gen = new convert; $datestamp = $gen->convert_date(($headline_timestamp ? $headline_timestamp : time()), "short");
-	$text .= "<div class='smalltext' style='text-align:right'>".NFMENU_162.": ".$datestamp."</div><a href='".e_PLUGIN."headlines_menu/headlines_menu.php'>".NFMENU_166."</a>";
+	$text .= "<div id='headlinefoot' class='smalltext' style='text-align:right'>".NFMENU_162.": ".$datestamp."</div><a href='".e_PLUGIN."headlines_menu/headlines_menu.php'>".NFMENU_166."</a>";
 	$ns -> tablerender(NFMENU_161, stripslashes($text));
 }
 
