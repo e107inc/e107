@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-01-27 19:52:29 $
-|     $Author: streaky $
+|     $Revision: 1.23 $
+|     $Date: 2005-01-31 02:49:12 $
+|     $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 	
@@ -27,9 +27,33 @@
 */
 	
 class sitelinks {
+	
+	var $eLinkList;
+
+	function getlinks()
+	{
+		global $sql;
+		if ($sql->db_Select('links', '*', "link_category = 1 and link_class IN (".USERCLASS_LIST.") ORDER BY link_order ASC"))
+		{
+			while ($row = $sql->db_Fetch())
+			{
+				if (substr($row['link_name'], 0, 8) == 'submenu.')
+				{
+					$tmp=explode('.', $row['link_name'], 3);
+					$this->eLinkList[$tmp[1]][]=$row;
+				}
+				else
+				{
+					$this->eLinkList['head_menu'][] = $row;
+				}
+			}
+		}
+		
+	}
+
 	function get() {
-		global $pref, $ns, $tp, $e107cache, $eLinkList;
-		 
+		global $pref, $ns, $tp, $e107cache;
+	 
 		if ($data = $e107cache->retrieve('sitelinks')) {
 			return $data;
 		}
@@ -38,24 +62,27 @@ class sitelinks {
 			require_once(e_PLUGIN.'ypslide_menu/ypslide_menu.php');
 			return;
 		}
-		define('PRELINKTITLE', '');
-		define('POSTLINKTITLE', '');
+
+		$this->getlinks();
+
+		if(!defined('PRELINKTITLE'))
+		{
+			define('PRELINKTITLE', '');
+		}
+		if(!defined('PRELINKTITLE'))
+		{
+			define('POSTLINKTITLE', '');
+		}
 		 
 		$menu_count = 0;
 		$text = PRELINK;
-		//  $main_links = $this->getLinks("link_category='1' && link_name NOT REGEXP('submenu') ORDER BY link_order ASC");
-		//  $sub_links = $this->getLinks("link_category='1' && link_name REGEXP('submenu') ORDER BY link_order ASC");
-		//  foreach ($sub_links as $sub) {
-		//   $mainName = substr($sub['link_name'],0,strpos($sub['link_name'],'.submenu.'));
-		//   $submenu[$mainName][]=$sub;
-		//  }
 		 
 		if (LINKDISPLAY != 3) {
-			foreach ($eLinkList['head_menu'] as $link) {
+			foreach ($this->eLinkList['head_menu'] as $link) {
 				$text .= $this->makeLink($link);
 				$main_linkname = $link['link_name'];
-				if (is_array($eLinkList[$main_linkname])) {
-					foreach ($eLinkList[$main_linkname] as $sub) {
+				if (is_array($this->eLinkList[$main_linkname])) {
+					foreach ($this->eLinkList[$main_linkname] as $sub) {
 						$text .= $this->makeLink($sub, TRUE);
 					}
 				}
@@ -65,16 +92,16 @@ class sitelinks {
 				$text = $ns->tablerender(LAN_183, $text, 'sitelinks', TRUE);
 			}
 		} else {
-			foreach($eLinkList['head_menu'] as $link) {
-				if (!count($eLinkList[$link['link_name']])) {
+			foreach($this->eLinkList['head_menu'] as $link) {
+				if (!count($this->eLinkList[$link['link_name']])) {
 					$text .= $this->makeLink($link);
 				}
 				$text .= POSTLINK;
 			}
 			$text = $ns->tablerender(LAN_183, $text, 'sitelinks_main', TRUE);
-			foreach(array_keys($eLinkList) as $k) {
+			foreach(array_keys($this->eLinkList) as $k) {
 				$mnu = PRELINK;
-				foreach($eLinkList[$k] as $link) {
+				foreach($this->eLinkList[$k] as $link) {
 					if ($k != 'head_menu') {
 						$mnu .= $this->makeLink($link, TRUE);
 					}
@@ -121,17 +148,6 @@ class sitelinks {
 		 
 		return $_link.LINKEND;
 	}
-	 
-	// function getLinks($extra='1') {
-	//  global $sql;
-	//  $ret=array();
-	//  if ($sql->db_Select('links','*',$extra)) {
-	//   while($row = $sql->db_Fetch()) {
-	//    $ret[]=$row;
-	//   }
-	//  }
-	//  return $ret;
-	// }
 }
 	
 ?>
