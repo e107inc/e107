@@ -12,8 +12,6 @@
 +---------------------------------------------------------------+
 */
 
-if(!defined("e_THEME")){ exit; }
-
 // [theme]
 $themename = "lamb";
 $themeversion = "1.0";
@@ -32,41 +30,46 @@ $HEADER = "<div id='header'>
 <div id='banner'>
 {BANNER}
 </div>
-<div id='mainleft'>
-<div id='mainright'>
-<div id='leftcontent'>
+
+<table style='width: 100%;' cellpadding='0' cellspacing='0'>
+
+<tr><td style='width: 180px; border-right: 1px solid #000;'></td><td></td><td style='width: 180px; border-left: 1px solid #000;'></tr>
+
+<tr>
+<td id='leftcontent'>
 <div class='columnwrap'>
 {SITELINKS}
 {MENU=1}
 </div>
-</div>
-<div id='rightcontent'>
-<div class='columnwrap'>
-{MENU=2}
-</div>
-</div>
-<div id='centercontent'>
-<div class='menuwrapper'>
+</td>
+
+<td id='centercontent'>
 <div class='columnwrap'>
 ";
 
 $FOOTER = "
 </div>
+</td>
+
+<td id='rightcontent'>
+<div class='columnwrap'>
+{MENU=2}
 </div>
-<div class='cleaner'>&nbsp;</div>
-</div>
-</div>
-</div>
+</td>
+</tr>
+</table>
+
+
 <div id='footer'>
 <div class='columnwrap'>
 <div style='text-align: center;' class='smalltext'>
 {SITEDISCLAIMER}
 <br />
-<img src='".e_IMAGE."generic/php-small-trans-light.gif' alt='' /> <img src='".e_IMAGE."button.png' alt='' />
+<img src='".e_IMAGE."generic/php-small-trans-light.gif' alt='' /> <img src='".e_IMAGE."button.png' alt='' /> 
 <img src='".e_IMAGE."generic/poweredbymysql-88.png' alt=''  /> &nbsp;&nbsp;&nbsp;&nbsp;
-<a href='http://validator.w3.org/check?uri=http://cvs.e107.org/news.php' rel='external'><img src='".THEME."images/valid-xhtml11.png' alt='' style='border: 0;' /></a>
-<a href='http://jigsaw.w3.org/css-validator/validator?uri=http://cvs.e107.org/news.php' rel='external'><img src='".THEME."images/vcss.png' alt='' style='border: 0;' /></a>
-</div>
+<a href='http://validator.w3.org/check?uri=referer' rel='external'><img src='".THEME."images/valid-xhtml11.png' alt='' style='border: 0;' /></a> 
+<a href='http://jigsaw.w3.org/css-validator/check/referer' rel='external'><img src='".THEME."images/vcss.png' alt='' style='border: 0;' /></a>
+</div>		
 </div>
 </div>
 ";
@@ -106,7 +109,6 @@ define("TRACKBACKBEFORESTRING", " | ");
 define('PRELINK', "");
 define('POSTLINK', "");
 define('LINKSTART', "<img src='".THEME."images/bullet2.gif' alt='' /> ");
-define("LINKSTART_HILITE", "<img src='".THEME."images/bluearrow_greybg.png' alt='' /> ");
 define('LINKEND', "<br />");
 define('LINKDISPLAY', 2);
 define('LINKALIGN', "left");
@@ -116,7 +118,7 @@ define('LINKALIGN', "left");
 
 function tablestyle($caption, $text, $mode)
 {
-	echo "<h4><img src='".THEME."images/bluearrow_greybg.png' alt='' />  $caption</h4>\n<br />\n$text\n<br /><br />\n";
+	echo "<h4><img src='".THEME."images/bluearrow_greybg.png' alt='' />  $caption</h4>\n<br />\n$text\n<br /><br />\n";	
 }
 
 $COMMENTSTYLE = "
