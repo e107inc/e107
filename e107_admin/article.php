@@ -10,8 +10,13 @@
 |
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
+|
+|   $Source: /cvs_backup/e107/e107_admin/article.php,v $
+|   $Revision: 1.25 $
+|   $Date: 2004-08-14 00:00:32 $
+|   $Author: mcfly_e107 $
+
 +---------------------------------------------------------------+
-$Id: article.php,v 1.24 2004-08-13 10:12:45 loloirie Exp $
 */
 require_once("../class2.php");
 if($pref['htmlarea']){
@@ -146,36 +151,37 @@ if($delete == "main")
         }
 }
 
-if(IsSet($_POST['preview'])){
-        $obj = new convert;
-        $datestamp = $obj->convert_date(time(), "long");
-        $ch = $aj -> formtpa($_POST['content_heading'],"admin"); $ch = $aj -> tpa($ch,"nobreak","admin");
-        $cs = $aj -> formtpa($_POST['content_subheading'],"admin"); $cs = $aj -> tpa($ch,"nobreak","admin");
-        $dt = (strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]", "[img]../", $_POST['data']));
-        $dt = $aj -> formtpa($dt,"admin"); $dt = $aj -> tpa($dt,"off","admin");
-        $cu= $aj -> formtpa($_POST['content_summary'],"admin"); $cu= $aj -> tpa($cu,"nobreak","admin");
-        $ca = ($_POST['content_author'] && $_POST['content_author'] != ARLAN_84 ? $_POST['content_author'] : ADMINNAME);
-        $text = "<i>by $ca</i><br /><span class='smalltext'>".$datestamp."</span><br /><br />".ARLAN_18.": $cs<br />".ARLAN_19.": $cu<br /><br />$dt";
 
-                 /* 9 Aug 2004 - unknown - the article preview looks more like the actual article */
-                 $text = '<div style="text-align: center"><table class="fborder" style="width:95%" border="0"><tr><td>'.$text.'</td></tr></table></div>';
-
-        $ns -> tablerender($content_heading, $text);
-        echo "<br /><br />";
-        // make form friendly ...
-        /* Before bug fixing for apostroph
-                $content_heading = $aj -> formtparev($_POST['content_heading']);
-        $content_subheading = $aj -> formtparev($_POST['content_subheading']);
-        $data = $aj -> formtparev(str_replace("../", "", $_POST['data']));
-        $content_summary = $aj -> formtparev($_POST['content_summary']);
-                */
-                $content_heading = $aj -> formtpa($_POST['content_heading'],"admin");
-        $content_subheading = $aj -> formtpa($_POST['content_subheading'],"admin");
-        $data = $aj -> formtpa(str_replace("../", "", $_POST['data']),"admin");
-        $content_summary = $aj -> formtpa($_POST['content_summary'],"admin");
-
-        $content_parent = $_POST['category'];
-                $content_class = $_POST['a_class'];
+if(IsSet($_POST['preview']))
+{
+	$obj = new convert;
+	$datestamp = $obj->convert_date(time(), "long");
+	$content_heading = $aj -> formtpa($_POST['content_heading'],"admin"); $ch = $aj -> tpa($content_heading,"nobreak","admin");
+	$content_subheading = $aj -> formtpa($_POST['content_subheading'],"admin"); $cs = $aj -> tpa($content_subheading,"nobreak","admin");
+	$dt = (strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]", "[img]../", $_POST['data']));
+	$dt = $aj -> formtpa($dt,"admin"); $dt = $aj -> tpa($dt,"off","admin");
+	$content_summary = $aj -> formtpa($_POST['content_summary'],"admin"); $cu= $aj -> tpa($content_summary,"nobreak","admin");
+	$ca = ($_POST['content_author'] && $_POST['content_author'] != ARLAN_84 ? $_POST['content_author'] : ADMINNAME);
+	$text = "<i>".ARLAN_101." $ca</i><br /><span class='smalltext'>".$datestamp."</span><br />";
+	if( $cs != '' ){$text .= '<br />'.ARLAN_18.": $cs";}
+	if( $cu != '' ){$text .= '<br />'.ARLAN_19.": $cu";}
+	$text .= "<br /><br />$dt";
+	$content_comment = $_POST['content_comment'];
+	$content_pe_icon = $_POST['add_icons'];
+	/* 9 Aug 2004 - unknown - the article preview looks more like the actual article */
+	$text = '<div style="text-align: center"><table class="fborder" style="width:95%" border="0"><tr><td>'.$text.'</td></tr></table></div>';
+	echo "<br /><br />";
+	// make form friendly ...
+	/* Before bug fixing for apostroph
+	$content_heading = $aj -> formtparev($_POST['content_heading']);
+	$content_subheading = $aj -> formtparev($_POST['content_subheading']);
+	$data = $aj -> formtparev(str_replace("../", "", $_POST['data']));
+	$content_summary = $aj -> formtparev($_POST['content_summary']);
+	*/
+	$data = $aj -> formtpa(str_replace("../", "", $_POST['data']),"admin");
+	$content_parent = $_POST['category'];
+	$content_class = $_POST['a_class'];
+	$ns -> tablerender($content_heading, $text);
 }
 
 
@@ -420,7 +426,7 @@ if($action == "create"){
 
         <tr>
         <td style='width:20%; vertical-align:top' class='forumheader3'>".ARLAN_82.":<br /><span class='smalltext'>(".ARLAN_83.")</span></td>
-        <td style='width:80%' class='forumheader3'>
+        <td style='width:80%; vertical-align:top' class='forumheader3'>
                 <a href=\"javascript:void(0);\" onclick=\"expandit(this);\" >".ARLAN_100."</a>\n
         <span style=\"display: none;\" >
                 <br /><br />
