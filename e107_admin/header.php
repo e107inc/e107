@@ -19,7 +19,7 @@ if(file_exists(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_header.php")){@include_once(
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title><?php echo $sitename; ?></title>
+<title><?php echo SITENAME." : ".LAN_head_4; ?></title>
 <link rel="stylesheet" href="<?php echo THEME; ?>style.css" />
 <?php if(file_exists(e_FILE."e107.css")){ echo "\n<link rel='stylesheet' href='".e_FILE."e107.css' />\n"; } ?>
 <?php if(file_exists(e_FILE."style.css")){ echo "\n<link rel='stylesheet' href='".e_FILE."style.css' />\n"; } ?>
