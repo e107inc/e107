@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-10 15:42:28 $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-14 19:40:27 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -328,7 +328,7 @@ if ($error) {
 	
 if ($action == 'edit' || $action == 'quote') {
 	if ($action == "edit") {
-		if ((!$thread_info[0]['user_id'] || $thread_info[0]['user_id'] != USERID) && !ADMIN) {
+		if ((!$thread_info[0]['thread_user'] || $thread_info[0]['thread_user'] != USERID) && !ADMIN) {
 			$ns->tablerender(LAN_95, "<div style='text-align:center'>".LAN_96."</div>");
 			require_once(FOOTERF);
 			exit;
