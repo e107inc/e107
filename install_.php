@@ -504,6 +504,7 @@ function create_tables(){
 	$pref['im_path'] = "/usr/X11R6/bin/convert";
 	$pref['im_quality'] = "80";
 	$pref['im_width'] = "120";
+	$pref['im_height'] = "100";
 	$pref['upload_enabled'] = "0";
 	$pref['upload_allowedfiletype'] = ".zip\n.gz\n.jpg\n.png\n.gif\n.txt";
 	$pref['upload_storagetype'] = "2";

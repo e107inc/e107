@@ -19,13 +19,15 @@ function resize_image($source_file, $destination_file, $type = "upload", $model=
 
 	global $pref;
 
+	$new_height=0;
 	$mode = ($pref['resize_method'] ? $pref['resize_method'] : "gd2");
 	if($type == "upload"){
 		$new_size = ($pref['im_width'] ? $pref['im_width'] : 400);
 	}else if(is_numeric($type)){
 		$new_size = $type;
 	}else{
-		$new_size = ($pref['im_width'] ? $pref['im_width'] : 70);	//avatar
+		$new_size = ($pref['im_width'] ? $pref['im_width'] : 120);	//avatar
+		$new_height = ($pref['im_height'] ? $pref['im_height'] : 100);	//avatar
 	}
 
 	$im_quality = ($pref['im_quality'] ? $pref['im_quality'] : 99);
@@ -40,13 +42,17 @@ if($image_stats == null){ echo "<b>DEBUG</b> image_stats are null<br />"; return
 		echo "<b>DEBUG</b> Wrong image type<br />";
 		return FALSE;
 	}
-
 	$imagewidth = $image_stats[0];
-	if($imagewidth <= $new_size){ return TRUE; }
 	$imageheight = $image_stats[1];
+	if($imagewidth <= $new_size && ($imageheight <= $new_height || $new_height == 0)){ return TRUE; }
 	$ratio = ($imagewidth / $new_size);
 	$new_imageheight = round($imageheight / $ratio);
-
+	if(($new_height <= $new_imageheight) && $new_height > 0){
+		$ratio = $new_imageheight / $new_height;
+		$new_imageheight = $new_height;
+		$new_size = round($new_size / $ratio);
+		
+	}
 	if($mode == "ImageMagick"){
 		if ($destination_file == "stdout") {
 			/* if destination is stdout, output directly to the browser */
