@@ -19,6 +19,8 @@ $themeversion = "1.0";
 $themeauthor = "e107";
 $themedate = "22/12/04";
 $themeinfo = "";
+$xhtmlcompliant = TRUE;
+$csscompliant = TRUE;
 
 define("THEME_DISCLAIMER", "");
 define("IMODE", "lite");
@@ -61,26 +63,8 @@ $HEADER = "<table class='top_section'>
 <table class='main_section'>
 <tr>
 <td class='left_menu'>
-</td>
-<td style='width: *'>
-</td>
-<td class='right_menu'>
-</td>
-</tr>
-
-<tr>
-<td class='left_menu'>
-<table style='width: 170px; border-collapse: collapse; border-spacing: 0px;'>
-<tr>
-<td style='width: 170px'>
-</td>
-</tr>
-<tr>
-<td>
 {SETSTYLE=leftmenu}
 {MENU=1}
-<br />
-</td></tr></table>
 </td>
 <td class='default_menu'>
 {SETSTYLE=default}
@@ -91,17 +75,8 @@ $FOOTER = "<br />
 </td>
 
 <td class='right_menu'>
-<table style='width: 170px; border-collapse: collapse; border-spacing: 0px;'>
-<tr>
-<td style='width: 170px'>
-</td>
-</tr>
-<tr>
-<td>
 {SETSTYLE=rightmenu}
 {MENU=2}
-<br />
-</td></tr></table>
 </td>
 </tr>
 </table>
@@ -136,7 +111,7 @@ $NEWSSTYLE = "<div class='cap_border'><div class='main_caption'>
 <table class='news_info'>
 <tr>
 <td style='text-align: center; padding: 3px; padding-bottom: 0px; white-space: nowrap'>
-<img src='".THEME."images/postedby_16.png' style='width: 16px; height: 16px' />
+<img src='".THEME."images/postedby_16.png' style='width: 16px; height: 16px' alt='' />
 </td>
 <td style='width: 100%; padding: 0px; padding-bottom: 0px; padding-left: 2px'>
 Posted by 
@@ -145,7 +120,7 @@ Posted by
 {NEWSDATE}
 
 </td><td style='text-align: center; padding: 3px; padding-bottom: 0px; white-space: nowrap'>
-<img src='".THEME."images/comments_16.png' style='width: 16px; height: 16px' />
+<img src='".THEME."images/comments_16.png' style='width: 16px; height: 16px' alt='' />
 </td>
 <td style='padding: 0px; padding-bottom: 0px; padding-left: 2px; white-space: nowrap'>
 {NEWSCOMMENTS}

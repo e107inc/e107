@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-03-23 21:15:34 $
+|     $Revision: 1.29 $
+|     $Date: 2005-03-26 02:46:55 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -267,6 +267,7 @@ function headerjs() {
 	global $search_count, $google_id, $search_prefs;
 	if ($search_prefs['multisearch']) {
 	$script = "<script type='text/javascript'>
+	<!--
 	function checkAll(allbox) {
 		for (var i = 0; i < ".$search_count."; i++)
 		document.searchform[\"t[\" + i + \"]\"].checked = true ;
@@ -285,7 +286,8 @@ function headerjs() {
 	}\n";
 	}
 	
-	$script .= "</script>\n";
+	$script .= "// -->
+	</script>\n";
 	return $script;
 	}
 }
