@@ -467,11 +467,11 @@ class textparse{
 
         if($referrer != "admin"){
                 $search[25] = "#script#si";
-                $replace[25] = 'scrï<i></i>pt';
+                $replace[25] = 'scri<i></i>pt';
                 $search[26] = "#document#si";
-                $replace[26] = 'döcu<i></i>ment';
+                $replace[26] = 'docu<i></i>ment';
                 $search[27] = "#expression#si";
-                $replace[27] = 'expres<i></i>sïon';
+                $replace[27] = 'expres<i></i>sion';
                 $search[28] = "#onmouseover#si";
                 $replace[28] = 'onmouse<i></i>over';
                 $search[29] = "#onclick#si";
