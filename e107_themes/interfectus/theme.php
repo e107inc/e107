@@ -283,28 +283,10 @@ $text
 	}
 }
 
-$COMMENTSTYLE = "
-<table style='width: 100%;'>
-<tr>
-<td style='width: 30%; text-align: right;'>{USERNAME} @ <span class='smalltext'>{TIMEDATE}</span><br />{AVATAR}<span class='smalltext'>{REPLY}</span></td>
-<td style='width: 70%;'>
-<div id='lbqtop'>
-<div id='pgFrontUserInner'>
-<div id='lbqbottom'>
-<div id='bglefright'>
-<div id='bqcontent'>
-<div id='bqtext'>
-{COMMENT}
-<div style='text-align: right;' class='smallext'>{IPADDRESS}</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</td>
-</tr>
-</table>
+$COMMENTSTYLE = "<br /><br />
+<div class='captiontext'><img src='".THEME."images/bullet1.gif' alt='' style='vertical-align: middle;' /> {USERNAME} | {TIMEDATE}</div>
+{COMMENT}<br />
+<span class='smalltext'>{REPLY}{IPADDRESS}</span>
 ";
 
 
