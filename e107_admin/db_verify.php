@@ -8,6 +8,8 @@ Mar 02, 2004 (McFly)
         + Will now work with table that have multiple KEYs
 
 *****************************************************/
+require_once("../class2.php");
+require_once("auth.php");
 
 $filename = "sql/core_sql.php";
 @$fd = fopen ($filename, "r");
@@ -21,8 +23,6 @@ if(!$sql_data){
 
 $tables["core"]=$sql_data;
 
-require_once("../class2.php");
-require_once("auth.php");
 // require_once(HEADERF);
 
 if(!getperms("0")){ header("location:".e_BASE."index.php"); exit; }
@@ -46,6 +46,7 @@ while(false !== ($file = readdir($handle))){
         }
 }
 closedir($handle);
+
 
 function read_tables($tab){
         global $tablines;
