@@ -32,7 +32,7 @@ if(IsSet($_POST['update_menu'])){
 }
 
 if(!$menu_pref['banner_caption']){
-	$menu_pref['banner_caption'] = "Advertisement";
+	$menu_pref['banner2_caption'] = BANNER_MENU_L1;
 }
 
 $text = "<div style='text-align:center'>
@@ -40,7 +40,7 @@ $text = "<div style='text-align:center'>
 <table style='width:85%' class='fborder' >
 
 <tr>
-<td style='width:40%' class='forumheader3'>Caption: </td>
+<td style='width:40%' class='forumheader3'>".BANNER_MENU_L3.": </td>
 <td style='width:60%' class='forumheader3'>
 <input class='tbox' type='text' name='banner_caption' size='20' value='".$menu_pref['banner_caption']."' maxlength='100' />
 </td>
@@ -48,7 +48,7 @@ $text = "<div style='text-align:center'>
 
 
 <tr>
-<td style='width:40%' class='forumheader3'>Campaign: </td>
+<td style='width:40%' class='forumheader3'>".BANNER_MENU_L4.": </td>
 <td style='width:60%' class='forumheader3'>
 <input class='tbox' type='text' name='banner_campaign' size='30' value='".$menu_pref['banner_campaign']."' maxlength='100' />
 </td>
@@ -60,7 +60,7 @@ $text = "<div style='text-align:center'>
 </table>
 </form>
 </div>";
-$ns -> tablerender("Banner Menu Configuration", $text);
+$ns -> tablerender(BANNER_MENU_L5, $text);
 
 require_once(e_ADMIN."footer.php");
 ?>
