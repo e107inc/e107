@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss_menu.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-31 21:49:22 $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-10 18:42:50 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -32,6 +32,10 @@ if(strstr(e_SELF, "forum")) {
 if(strstr(e_SELF, "forum_viewtopic")) {
 	$type = 7;
 	$des = BACKEND_MENU_L6;
+}
+if(strstr(e_SELF, "chat")) {
+	$type = 9;
+	$des = BACKEND_MENU_L7;
 }
 if(!$des) {
 	$type = 1;

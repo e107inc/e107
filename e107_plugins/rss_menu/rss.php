@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-03 21:15:29 $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-10 18:42:50 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -27,6 +27,7 @@ Query string: content_type.rss_type.[topic id]
 6: forum threads
 7: forum posts
 8: forum specific post (specify id)
+9: chatbox
 */
 	
 require_once("../../class2.php");
@@ -232,6 +233,24 @@ class rssCreate {
 					$loop++;
 				}
 				break;
+
+				case 9:
+					$this -> contentType = "chatbox posts";
+					$sql->db_Select("chatbox", "*", "cb_blocked=0 ORDER BY cb_datestamp DESC LIMIT 0, 9");
+					$tmp = $sql->db_getList();
+					$this -> rssItems = array();
+					$loop=0;
+					foreach($tmp as $value) {
+						$nick = eregi_replace("[0-9]+\.", "", $value['cb_nick']);
+						$this -> rssItems[$loop]['author'] = $nick;
+						$this -> rssItems[$loop]['title'] = "";
+						$this -> rssItems[$loop]['link'] = $e107->HTTPPath.$PLUGINS_DIRECTORY."chat.php";
+						$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? htmlspecialchars($value['cb_message']) : htmlspecialchars(substr($value['cb_message'], 0, 100)));
+
+						$loop++;
+					}
+				break;
+
 		}
 	}
 
