@@ -57,7 +57,7 @@ $HEADER = "<table class='top_section'>
 </table>
 
 <div>
-{SITELINKS_ALT}
+{SITELINKS_ALT=".THEME."images/arrow.png}
 </div>
 
 <table class='main_section'>
