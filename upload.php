@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/upload.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-08 23:23:16 $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-08 23:25:11 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -154,12 +154,12 @@ $text .= "
 
 <tr>
 <td style='width:30%' class='forumheader3'>".LAN_144."</td>
-<td style='width:70%' class='forumheader3'><input class='tbox' name='file_website' type='text' size='50' maxlength='100 value=".(defined(USERURL) ? USERURL : "")."' /></td>
+<td style='width:70%' class='forumheader3'><input class='tbox' style='width:90%' name='file_website' type='text' size='50' maxlength='100 value=".(defined(USERURL) ? USERURL : "")."' /></td>
 </tr>
 
 <tr>
 <td style='width:30%' class='forumheader3'>".LAN_414."<br /><span class='smalltext'>".LAN_415."</span></td>
-<td style='width:70%' class='forumheader3'><input class='tbox' name='file_demo' type='text' size='50' maxlength='100' /></td>
+<td style='width:70%' class='forumheader3'><input class='tbox' style='width:90%' name='file_demo' type='text' size='50' maxlength='100' /></td>
 </tr>
 
 <tr>
