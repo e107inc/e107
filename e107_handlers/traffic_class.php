@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/traffic_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-29 00:12:30 $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-29 17:17:10 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -79,7 +79,7 @@ class e107_traffic {
             $bTimed = FALSE;
         }
         if (!isset($this->{$vName}[$sWhat])) {
-            $this->{$vname}[$sWhat] = array();
+            $this->{$vName}[$sWhat] = array();
             $t = & $this->{$vName}[$sWhat];
 			$t['Count'] = 0;
             if ($bTimed) {
