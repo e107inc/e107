@@ -521,7 +521,7 @@ function headerjs(){
 
 $headerjs = "<script type=\"text/javascript\">
 function addtext2(sc){
-        document.dataform.category_button.value = sc;
+        document.getElementById('dataform').category_button.value = sc;
 }
 </script>\n";
 
