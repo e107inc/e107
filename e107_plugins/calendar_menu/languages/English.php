@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: English.php,v 1.3 2005-01-27 19:52:37 streaky Exp $
+// $Id: English.php,v 1.4 2005-01-29 16:02:20 stevedunstan Exp $
 	
 	
 define('EC_ADLAN_1', "Event Calendar");
@@ -120,8 +120,13 @@ define('EC_LAN_82', "To activate please go to your menus screen and select the c
 define('EC_LAN_83', "Calendar");
 	
 	
-	
-	
+define('EC_LAN_84', "Css element to use for day header");
+define('EC_LAN_85', "Default is 'forumheader'");
+define('EC_LAN_86', "Css element to use for day list");
+define('EC_LAN_87', "Default is 'forumheader3'");
+define('EC_LAN_88', "Css element to use for selected day");
+define('EC_LAN_89', "Default is 'indent'");
+
 	
 	
 	
