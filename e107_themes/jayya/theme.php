@@ -108,8 +108,6 @@ define(LINKALIGN, "right");
 
 // [newsstyle]
 
-function news_style($news) {
-print_r($news);
 $NEWSSTYLE = "<div class='cap_border'><div class='main_caption'>
 {NEWSTITLE}
 </div></div>
@@ -139,9 +137,6 @@ Posted by
 {PRINTICON}
 </td></tr></table>
 <br /></div>";
-
-return $NEWSSTYLE;
-}
 
 define("ICONMAIL", "email_16.png");
 define("ICONPRINT", "print_16.png");
