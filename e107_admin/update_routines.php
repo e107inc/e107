@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2005-02-13 05:41:47 $
+|     $Revision: 1.37 $
+|     $Date: 2005-03-01 17:33:30 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -288,14 +288,28 @@ function update_61x_to_700($type) {
 		mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_image` `news_summary` TEXT DEFAULT NULL;");
 		mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_thumb` `news_thumb` VARCHAR( 60 ) DEFAULT NULL;");
 		mysql_query("ALTER TABLE ".MPREFIX."news ADD news_sticky TINYINT ( 3 ) UNSIGNED NOT NULL");
+		
+		// Downloads updates - Added March 1, 2005 by McFly
+		mysql_query("ALTER TABLE ".MPREFIX."download ADD download_class TINYINT ( 3 ) UNSIGNED NOT NULL");
+		mysql_query("ALTER TABLE ".MPREFIX."download_category ADD download_category_order INT ( 10 ) UNSIGNED NOT NULL");
+		$sql->db_Select_gen(
+		"CREATE TABLE ".MPREFIX."download_requests (
+  			download_request_id int(10) unsigned NOT NULL auto_increment,
+  			download_request_userid int(10) unsigned NOT NULL default '0',
+  			download_request_ip varchar(30) NOT NULL default '',
+  			download_request_download_id int(10) unsigned NOT NULL default '0',
+  			download_request_datestamp int(10) unsigned NOT NULL default '0',
+  			PRIMARY KEY  (download_request_id)
+			) TYPE=MyISAM;
+		");
 } else {
 		// check if update is needed.
 		// FALSE = needed, TRUE = not needed.
 		// return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."generic");
-//		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."news");
-//		$fieldname = mysql_field_name($fields,15);
-//	 	return ($fieldname == "news_sticky") ? TRUE : FALSE;
-		return $sql->db_Count('generic','(*)',"WHERE gen_type = 'forum_rules_guest'");
+		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."download");
+		$fieldname = mysql_field_name($fields,15);
+	 	return ($fieldname == "download_class") ? TRUE : FALSE;
+//		return $sql->db_Count('generic','(*)',"WHERE gen_type = 'forum_rules_guest'");
 		/*if ($sql->db_Select("plugin", "plugin_path", "plugin_path='chatbox_menu'")) {
 			return TRUE;
 		} else {

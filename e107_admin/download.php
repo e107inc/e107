@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-02-28 20:47:32 $
+|     $Revision: 1.23 $
+|     $Date: 2005-03-01 17:33:30 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -87,7 +87,7 @@ if ($sql->db_Select("rbinary"))
 if ($image_array = getfiles($e_file."downloadimages/", 1)) {
 	sort($image_array);
 }
- unset($t_array);
+unset($t_array);
 if ($thumb_array = getfiles($e_file."downloadthumbs/", 1)) {
 	sort($thumb_array);
 }
@@ -111,13 +111,60 @@ if (isset($_POST['updateoptions']))
 	$pref['download_order'] = $_POST['download_order'];
 	$pref['agree_flag'] = $_POST['agree_flag'];
 	$pref['agree_text'] = $tp->toDB($_POST['agree_text']);
-	$pref['download_count'] = intval($_POST['download_count']);
-	$pref['download_count_days'] = intval($_POST['download_count_days']);
-	$pref['download_bw'] = intval($_POST['download_bw']);
-	$pref['download_bw_days'] = intval($_POST['download_bw_days']);
 	save_prefs();
 	$message = DOWLAN_65;
 }
+
+if(isset($_POST['addlimit']))
+{
+	if($sql->db_Select('generic','gen_id',"gen_type = 'download_limit' AND gen_datestamp = {$_POST['newlimit_class']}"))
+	{
+		$message = DOWLAN_116;
+	}
+	else
+	{
+		if($sql->db_Insert('generic',"0, 'download_limit', '{$_POST['newlimit_class']}', '{$_POST['new_bw_num']}', '{$_POST['new_bw_days']}', '{$_POST['new_count_num']}', '{$_POST['new_count_days']}'"))
+		{
+			$message = DOWLAN_117;
+		}
+		else
+		{
+			$message = DOWLAN_118;
+		}
+	}
+}
+	
+if(isset($_POST['updatelimits']))
+{
+	
+	if($pref['download_limits'] != $_POST['download_limits'])
+	{
+		$pref['download_limits'] = ($_POST['download_limits'] == 'on') ? 1 : 0;
+		save_prefs();
+		$message .= DOWLAN_126."<br />";
+	}
+	foreach(array_keys($_POST['count_num']) as $id)
+	{
+		if($_POST['count_num'][$id] == "" && $_POST['count_days'][$id] == "" && $_POST['bw_num'][$id] == "" && $_POST['bw_days'][$id] == "")
+		{
+			//All entries empty - Remove record
+			if($sql->db_Delete('generic',"gen_id = {$id}"))
+			{
+				$message .= $id." - ".DOWLAN_119."<br />";
+			}
+			else
+			{
+				$message .= $id." - ".DOWLAN_120."<br />";
+			}
+		}
+		else
+		{
+			$sql->db_Update('generic',"gen_user_id = '{$_POST['bw_num'][$id]}', gen_ip = '{$_POST['bw_days'][$id]}', gen_intdata = '{$_POST['count_num'][$id]}', gen_chardata = '{$_POST['count_days'][$id]}' WHERE gen_id = {$id}");
+			$message .= $id." - ".DOWLAN_121."<br />";
+		}
+	}
+}
+
 
 if ($action == "dlm")
 {
@@ -213,29 +260,6 @@ if ($action == "opt") {
 		</td>
 		</tr>
 
-
-		<tr><td style='width:70%' class='forumheader3'>
-		".DOWLAN_107."
-		</td>
-		<td class='forumheader3' style='width:30%;text-align:left'>
-		<input name='download_count' class='tbox' size='4' value='{$pref['download_count']}' />&nbsp;".
-		DOWLAN_26." ".DOWLAN_109."
-		<input name='download_count_days' class='tbox' size='4' value='{$pref['download_count_days']}' />&nbsp;".
-		DOWLAN_110."
-		</td>
-		</tr>
-
-		<tr><td style='width:70%' class='forumheader3'>
-		".DOWLAN_108."
-		</td>
-		<td class='forumheader3' style='width:30%;text-align:left'>
-		<input name='download_bw' class='tbox' size='4' value='{$pref['download_bw']}' />&nbsp;".
-		DOWLAN_111." ".DOWLAN_109."
-		<input name='download_bw_days' class='tbox' size='4' value='{$pref['download_bw_days']}' />&nbsp;".
-		DOWLAN_110."
-		</td>
-		</tr>
-
 		<tr style='vertical-align:top'>
 		<td colspan='2'  style='text-align:center' class='forumheader'>
 		<input class='button' type='submit' name='updateoptions' value='".DOWLAN_64."' />
@@ -248,6 +272,101 @@ if ($action == "opt") {
 	$ns->tablerender(DOWLAN_54, $text);
 }
 
+if($action == 'limits')
+{
+	if($sql->db_Select('userclass_classes','userclass_id, userclass_name'))
+	{
+		$classList = $sql->db_getList();
+	}
+	if($sql->db_Select("generic", "gen_id as limit_id, gen_datestamp as limit_classnum, gen_user_id as limit_bw_num, gen_ip as limit_bw_days, gen_intdata as limit_count_num, gen_chardata as limit_count_days", "gen_type = 'download_limit'"))
+	{
+		while($row = $sql->db_Fetch())
+		{
+			$limitList[$row['limit_classnum']] = $row;
+		}
+	}
+	$txt = "
+		<form method='post'>
+		<table style='width:100%'>
+		<tr>
+			<td colspan='4' class='forumheader3' style='text-align:left'>
+		";
+		if($pref['download_limits'] == 1)
+		{
+			$chk = "checked = 'checked'";
+		}
+		else
+		{
+			$chk = "";
+		}
+		
+		$txt .= "
+			<input class='tbox' type='checkbox' name='download_limits' {$chk}> ".DOWLAN_125."
+			</td>
+		</tr>
+		<tr>
+			<td class='fcaption'>".DOWLAN_67."</td>
+			<td class='fcaption'>".DOWLAN_113."</td>
+			<td class='fcaption'>".DOWLAN_107."</td>
+			<td class='fcaption'>".DOWLAN_108."</td>
+		</tr>
+	";
+	
+	foreach($limitList as $row)
+	{
+		$txt .= "
+		<tr>
+		<td class='forumheader3'>".$row['limit_id']."</td>
+		<td class='forumheader3'>".r_userclass_name($row['limit_classnum'])."</td>
+		<td class='forumheader'>
+			<input type='text' class='tbox' size='5' name='count_num[{$row['limit_id']}]' value='{$row['limit_count_num']}' /> ".DOWLAN_109."
+			<input type='text' class='tbox' size='5' name='count_days[{$row['limit_id']}]' value='{$row['limit_count_days']}' /> ".DOWLAN_110."
+		</td>
+		<td class='forumheader'>
+			<input type='text' class='tbox' size='5' name='bw_num[{$row['limit_id']}]' value='{$row['limit_bw_num']}' /> ".DOWLAN_111." ".DOWLAN_109."
+			<input type='text' class='tbox' size='5' name='bw_days[{$row['limit_id']}]' value='{$row['limit_bw_days']}' /> ".DOWLAN_110."
+		</td>
+		</tr>
+		";
+	}
+
+	$txt .= "
+	<tr>
+	<td colspan='4' style='text-align:center'>
+	<input type='submit' class='button' name='updatelimits' value='".DOWLAN_115."' />
+	</td>
+	</tr>
+	<tr>
+	<td colspan='4'><br /><br /></td>
+	</tr>
+	<tr>
+	<td colspan='2' class='forumheader3'>".r_userclass("newlimit_class", 0, "off", "guest, member, admin, classes")."</td>
+	<td class='forumheader'>
+		<input type='text' class='tbox' size='5' name='new_count_num' value='' /> ".DOWLAN_109."
+		<input type='text' class='tbox' size='5' name='new_count_days' value='' /> ".DOWLAN_110."
+	</td>
+	<td class='forumheader'>
+		<input type='text' class='tbox' size='5' name='new_bw_num' value='' /> ".DOWLAN_111." ".DOWLAN_109."
+		<input type='text' class='tbox' size='5' name='new_bw_days' value='' /> ".DOWLAN_110."
+	</td>
+	</tr>
+	<tr>
+	<td colspan='4' style='text-align:center'>
+	<input type='submit' class='button' name='addlimit' value='".DOWLAN_114."' />
+	</td>
+	</tr>
+	";
+
+
+
+	
+	$txt .= "</table>";
+	
+	$ns->tablerender(DOWLAN_112, $txt);
+	require_once(e_ADMIN.'footer.php');
+	exit;
+}
+
 //$download->show_options($action);
 
 require_once("footer.php");
@@ -257,7 +376,7 @@ class download {
 
 	function show_existing_items($action, $sub_action, $id, $from, $amount) {
 		global $sql, $rs, $ns, $tp;
-		$text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>";
+		$text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; margin-left: auto; margin-right: auto;'>";
 
 		if (isset($_POST['searchquery'])) {
 			$query = "download_name REGEXP('".$_POST['searchquery']."') OR download_url REGEXP('".$_POST['searchquery']."') OR download_author REGEXP('".$_POST['searchquery']."') OR download_description  REGEXP('".$_POST['searchquery']."') ORDER BY download_datestamp DESC";
@@ -335,13 +454,18 @@ class download {
 		$var['cat']['link'] = e_SELF."?cat";
 		$var['cat']['perm'] = "Q";
 
+		$var['limits']['text'] = DOWLAN_112;
+		$var['limits']['link'] = e_SELF."?limits";
+
 		show_admin_menu(DOWLAN_32, $action, $var);
 
 	}
 
 	function create_download($sub_action, $id) {
 		global $sql, $rs, $ns, $file_array, $image_array, $thumb_array,$pst;
-
+		$download_status[0] = DOWLAN_122;
+		$download_status[1] = DOWLAN_123;
+		$download_status[2] = DOWLAN_124;
 		$preset = $pst->read_preset("admin_downloads");  // read preset values into array
 		extract($preset);
 
@@ -520,16 +644,23 @@ class download {
 
 			<tr>
 			<td style='width:20%' class='forumheader3'>".DOWLAN_21.":</td>
-			<td style='width:80%' class='forumheader3'>";
+			<td style='width:80%' class='forumheader3'>
+			<select name='download_active' class='tbox'>
+			";
 
-
-		if ($download_active == "0") {
-			$text .= DOWLAN_22.": <input type='radio' name='download_active' value='1' />
-				".DOWLAN_23.": <input type='radio' name='download_active' value='0' checked='checked' />";
-		} else {
-			$text .= DOWLAN_22.": <input type='radio' name='download_active' value='1' checked='checked' />
-				".DOWLAN_23.": <input type='radio' name='download_active' value='0' />";
-		}
+			foreach($download_status as $key => $val)
+			{
+				if($download_active == $key)
+				{
+					$sel = " selected = 'selected' ";
+				}
+				else
+				{
+					$sel = "";
+				}
+				$text .= "<option value='{$key}' {$sel}>{$val}</option>\n";
+			}
+			$text .= "</select>";
 
 		$text .= "</td>
 			</tr>
@@ -745,8 +876,7 @@ class download {
 		$preset = $pst->read_preset("admin_dl_cat");  // read preset values into array
 		extract($preset);
 
-		$frm_action = (isset($_POST['add_category'])) ? e_SELF."?cat" :
-		 e_SELF."?".e_QUERY;
+		$frm_action = (isset($_POST['add_category'])) ? e_SELF."?cat" : e_SELF."?".e_QUERY;
 		$text = "<div style='text-align:center'>
 			<form method='post' action='{$frm_action}' id='dlform'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-02-28 20:46:53 $
+|     $Revision: 1.6 $
+|     $Date: 2005-03-01 17:32:22 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -67,7 +67,10 @@ if ($type == "file") {
 		$row = $sql->db_Fetch();
 		if (check_class($row['download_category_class']) && check_class($row['download_class']))
 		{
-			check_download_limits();
+			if($pref['download_limits'] && $row['download_active'] == 1)
+			{
+				check_download_limits();
+			}
 			extract($row);
 			//increment download count
 			$sql->db_Update("download", "download_requested=download_requested+1 WHERE download_id='$id' ");
@@ -210,19 +213,19 @@ function send_file($file) {
 function check_download_limits()
 {
 	global $pref, $sql, $ns;
-	$cutoff = time() - (86400*$pref['download_count_days']);
-	if(USER)
+
+	// Check download count limits
+	$qry = "
+	SELECT gen_intdata, gen_chardata, (gen_intdata/gen_chardata) as count_perday 
+	FROM #generic 
+	WHERE gen_datestamp IN (".USERCLASS_LIST.") AND (gen_chardata > 0 AND gen_intdata > 0)
+	ORDER BY count_perday DESC
+	";
+	if($sql->db_Select_gen($qry))
 	{
-		$where = "dr.download_request_datestamp > $cutoff AND dr.download_request_userid = ".USERID;
-	}
-	else
-	{
-		$ip = getip();
-		$where = "dr.download_request_datestamp > $cutoff AND dr.download_request_ip = '$ip'";
-	}
-	if($pref['download_count'] && $pref['download_count_days'])
-	{
-		$cutoff = time() - (86400*$pref['download_count_days']);
+		$limits = $sql->db_Fetch();
+		echo "<br />Allowed {$limits['gen_intdata']} downloads every {$limits['gen_chardata']} days <br />";
+		$cutoff = time() - (86400*$limits['gen_chardata']);
 		if(USER)
 		{
 			$where = "dr.download_request_datestamp > $cutoff AND dr.download_request_userid = ".USERID;
@@ -232,18 +235,39 @@ function check_download_limits()
 			$ip = getip();
 			$where = "dr.download_request_datestamp > $cutoff AND dr.download_request_ip = '$ip'";
 		}
-		if($sql->db_Select_gen("SELECT COUNT(*) AS count FROM #download_requests AS dr WHERE {$where}"))
+
+		$qry = "
+		SELECT COUNT(d.download_id) as count
+		FROM #download_requests as dr
+		LEFT JOIN #download as d ON dr.download_request_download_id = d.download_id AND d.download_active = 1
+		WHERE {$where}
+		GROUP by dr.download_request_userid
+		";
+		if($sql->db_Select_gen($qry, TRUE))
 		{
 			$row=$sql->db_Fetch();
-			if($row['count'] >= $pref['download_count'])
+			if($row['count'] >= $limits['gen_intdata'])
 			{
 				// Exceeded download count limit
+				echo "exceeded count!   {$row['count']} exceeds {$limits['gen_intdata']}<br />";
+				exit;
 			}
 		}
 	}
-	if($pref['download_bw'] && $pref['download_bw_days'])
+		
+
+	// Check download bandwidth limits
+
+	$qry = "
+	SELECT gen_user_id, gen_ip, (gen_user_id/gen_ip) as bw_perday 
+	FROM #generic 
+	WHERE gen_datestamp IN (".USERCLASS_LIST.") AND (gen_user_id > 0 AND gen_ip > 0)
+	ORDER BY bw_perday DESC
+	";
+	if($sql->db_Select_gen($qry, TRUE))
 	{
-		$cutoff = time() - (86400*$pref['download_bw_days']);
+		$limit = $sql->db_Fetch();
+		$cutoff = time() - (86400*$limit['gen_ip']);
 		if(USER)
 		{
 			$where = "dr.download_request_datestamp > $cutoff AND dr.download_request_userid = ".USERID;
@@ -256,14 +280,14 @@ function check_download_limits()
 		$qry = "
 		SELECT SUM(d.download_filesize) as total_bw
 		FROM #download_requests as dr
-		LEFT JOIN #download as d ON dr.download_request_download_id = d.download_id
+		LEFT JOIN #download as d ON dr.download_request_download_id = d.download_id AND d.download_active = 1
 		WHERE {$where}
 		GROUP by dr.download_request_userid
 		";
-		if($sql->db_Select_gen($qry))
+		if($sql->db_Select_gen($qry, TRUE))
 		{
 			$row=$sql->db_Fetch();
-			if($row['total_bw']/1024 > $pref['download_bw'])
+			if($row['total_bw']/1024 > $limit['gen_user_id'])
 			{
 				//Exceed bandwith limit
 				echo "exceeded bw limit!";

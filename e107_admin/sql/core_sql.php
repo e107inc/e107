@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-02-15 13:01:25 $
+|     $Revision: 1.13 $
+|     $Date: 2005-03-01 17:33:30 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -142,6 +142,7 @@ CREATE TABLE download (
   download_thumb varchar(150) NOT NULL default '',
   download_image varchar(150) NOT NULL default '',
   download_comment tinyint(3) unsigned NOT NULL default '0',
+  download_class tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (download_id),
   UNIQUE KEY download_name (download_name)
 ) TYPE=MyISAM;
@@ -157,10 +158,26 @@ CREATE TABLE download_category (
   download_category_description text NOT NULL,
   download_category_icon varchar(100) NOT NULL default '',
   download_category_parent int(10) unsigned NOT NULL default '0',
-  download_category_class varchar(100) NOT NULL default '',
+  download_category_class tinyint(3) unsigned NOT NULL default '0',
+  download_category_order int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (download_category_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
+
+
+#
+# Table structure for table `download_requests`
+#
+CREATE TABLE download_requests (
+  download_request_id int(10) unsigned NOT NULL auto_increment,
+  download_request_userid int(10) unsigned NOT NULL default '0',
+  download_request_ip varchar(30) NOT NULL default '',
+  download_request_download_id int(10) unsigned NOT NULL default '0',
+  download_request_datestamp int(10) unsigned NOT NULL default '0',
+  PRIMARY KEY  (download_request_id)
+) TYPE=MyISAM;
+# --------------------------------------------------------
+
 
 #
 # Table structure for table `flood`
@@ -471,12 +488,26 @@ CREATE TABLE user (
 #
 # Table structure for table `userclass_classes`
 #
-
 CREATE TABLE userclass_classes (
   userclass_id tinyint(3) unsigned NOT NULL default '0',
   userclass_name varchar(100) NOT NULL default '',
   userclass_description varchar(250) NOT NULL default '',
   userclass_editclass tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (userclass_id)
+) TYPE=MyISAM;
+# --------------------------------------------------------
+
+#
+# Table structure for table `generic`
+#
+CREATE TABLE generic (
+  gen_id int(10) unsigned NOT NULL auto_increment,
+  gen_type varchar(80) NOT NULL default '',
+  gen_datestamp int(10) unsigned NOT NULL default '0',
+  gen_user_id int(10) unsigned NOT NULL default '0',
+  gen_ip varchar(80) NOT NULL default '',
+  gen_intdata int(10) unsigned NOT NULL default '0',
+  gen_chardata text NOT NULL,
+  PRIMARY KEY  (gen_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
