@@ -50,6 +50,7 @@ class secure_image {
 
 	function render_image($rec_num){
 		global $sql;
+		ob_clean();
 		if($sql -> db_Select("tmp","tmp_info","tmp_ip = '{$rec_num}'")){
 			$row = $sql -> db_Fetch();
 			$code = $row['tmp_info'];
