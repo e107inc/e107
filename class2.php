@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.75 $
-|     $Date: 2005-02-01 21:54:23 $
-|     $Author: streaky $
+|     $Revision: 1.76 $
+|     $Date: 2005-02-02 15:19:21 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -272,7 +272,8 @@ if (isset($_POST['setlanguage'])) {
 	}
 }
 
-if ($pref['multilanguage']) {
+$user_language='';
+if (isset($pref['multilanguage']) && $pref['multilanguage']) {
 	if ($pref['user_tracking'] == "session") {
 		$user_language=$_SESSION['e107language_'.$pref['cookie_name']];
 		$sql->mySQLlanguage=($user_language) ? $user_language : "";
@@ -312,7 +313,7 @@ if (isset($pref['frontpage']) && $pref['frontpage_type'] == "splash") {
 
 $e107cache=new ecache;
 
-if ($pref['del_unv']) {
+if (isset($pref['del_unv']) && $pref['del_unv']) {
 	$threshold=(time() - ($pref['del_unv'] * 60));
 	$sql->db_Delete("user", "user_ban = 2 AND user_join<'$threshold' ");
 }
@@ -323,7 +324,7 @@ $override=new override;
 e107_require_once(e_HANDLER."event_class.php");
 $e_event=new e107_event;
 
-if ($pref['modules']) {
+if (isset($pref['modules']) && $pref['modules']) {
 	$mods=explode(",", $pref['modules']);
 	foreach ($mods as $mod) {
 		if (file_exists(e_PLUGIN."{$mod}/module.php")) {
@@ -625,11 +626,14 @@ define("OPEN_BASEDIR", (ini_get('open_basedir') ? TRUE : FALSE));
 define("SAFE_MODE", (ini_get('safe_mode') ? TRUE : FALSE));
 define("FILE_UPLOADS", (ini_get('file_uploads') ? TRUE : FALSE));
 define("INIT", TRUE);
-define("e_REFERER_SELF", ($_SERVER["HTTP_REFERER"] == e_SELF));
+if(isset($_SERVER['HTTP_REFERER'])) {
+	define("e_REFERER_SELF", ($_SERVER["HTTP_REFERER"] == e_SELF));
+} else {
+	define('e_REFERER_SELF', FALSE);
+}
 
 //@require_once(e_HANDLER."IPB_int.php");
 //@require_once(e_HANDLER."debug_handler.php");
-
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function check_email($var) {
 	return (preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]+@([-0-9A-Z]+\.)+([0-9A-Z]){2,4}$/i', $var)) ? $var : FALSE;
@@ -858,6 +862,7 @@ function online() {
 	$total_online=$sql->db_Count("online");
 
 	if ($members_online = $sql->db_Select("online", "*", "online_user_id != '0' ")) {
+		$member_list= '';
 		$listuserson=array();
 		while ($row = $sql->db_Fetch()) {
 			extract($row);
