@@ -14,6 +14,12 @@ ORDER BY RAND($seed)";
 if($sql -> db_Select("banner", "*", $query))
 {
 	$row = $sql->db_Fetch();
+
+	if(!$row['banner_image'])
+	{
+		return "<a href='".e_BASE."banner.php?".$row['banner_id']."' rel='external'>no image assigned to this banner</a>";
+	}
+
 	$fileext1 = substr(strrchr($row['banner_image'], "."), 1);
 	$sql->db_Update("banner", "banner_impressions=banner_impressions+1 WHERE banner_id='{$row['banner_id']}' ");
 	if ($fileext1 == 'swf')
