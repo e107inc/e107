@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.41 $
-|   $Date: 2005-02-13 06:18:43 $
+|   $Revision: 1.42 $
+|   $Date: 2005-02-13 06:54:25 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -464,7 +464,7 @@ class newspost {
 		$text .= "<textarea class='tbox' id='data' name='data'  cols='80'  style='width:95%' $insertjs>".(strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]../", "[img]", $_POST['data']))."</textarea>
 			";
 
-		//Main news body textarea
+//Main news body textarea
 		if (!$pref['htmlarea']) {
 			$text .= "<input id='helpb' class='helpbox' type='text' name='helpb' size='100' style='width:95%'/>
 			<br />". display_help("helpb");
@@ -488,7 +488,7 @@ class newspost {
 			$text .= "</select>";
 		} // end of htmlarea check.
 
-		//Extended news form textarea
+//Extended news form textarea
 		$text .= "
 			</td>
 			</tr>
@@ -497,7 +497,7 @@ class newspost {
 			<td style='width:80%' class='forumheader3'>
 			<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_83."</a>
 			<div style='display: none;'>
-			<textarea class='tbox' id='news_extended' name='news_extended' cols='80' rows='15' style='width:95%;height:100px' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".(strstr($_POST['news_extended'], "[img]http") ? $_POST['news_extended'] : str_replace("[img]../", "[img]", $_POST['news_extended']))."</textarea>
+			<textarea class='tbox' id='news_extended' name='news_extended' cols='80' rows='15' style='width:95%;height:100px' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".(strstr($_POST['news_extended'], "[img]http") ? $_POST['news_extended'] : str_replace("[img]../", "[img]", $tp->toForm($_POST['news_extended'])))."</textarea>
 			";
 		if (!$pref['htmlarea'] || ($pref['htmlarea'] && !eregi("MSIE", $_SERVER['HTTP_USER_AGENT']))) {
 			$text .= "<br />
@@ -667,37 +667,37 @@ class newspost {
 			<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".LAN_NEWS_33."</a>
 			<div style='display: none;'>";
 			$update_checked = ($_POST['update_datestamp']) ? "checked='checked'" : "";
-			$text .= "<div style='padding-top:5px'>".LAN_DATE.":<select name='ds_day' class='tbox'><option selected='selected'> </option>";
+			$text .= "<div style='padding-top:5px'>".LAN_DATE.":<select name='ds_day' class='tbox'>\n<option selected='selected'> </option>\n";
 			for($a = 1; $a <= 31; $a++) {
 				$day_select = ($a == $today_day) ? "selected='selected'" : "";
-				$text .= "<option value='$a' $day_select>".$a."</option>";
+				$text .= "<option value='$a' $day_select>".$a."</option>\n";
 			}
-			$text .= "</select> <select name='ds_month' class='tbox'><option selected='selected'> </option>";
+			$text .= "</select> <select name='ds_month' class='tbox'><option selected='selected'> </option>\n";
 			for($a = 1; $a <= 12; $a++) {
 	 			$mon_select = ($a == $today_month) ? "selected='selected'" : "";
-				$text .= "<option value='$a' $mon_select>".date ("M", mktime(0,0,0,$a,1,2000))."</option>";
+				$text .= "<option value='$a' $mon_select>".date ("M", mktime(0,0,0,$a,1,2000))."</option>\n";
 			}
-			$text .= "</select> <select name='ds_year' class='tbox'><option selected='selected'> </option>";
+			$text .= "</select> <select name='ds_year' class='tbox'><option selected='selected'> </option>\n";
 			for($a = 2002; $a <= 2010; $a++) {
 				$year_select = ($a == $today_year) ? "selected='selected'" : "";
-				$text .= "<option value='$a' $year_select>".$a."</option>";
+				$text .= "<option value='$a' $year_select>".$a."</option>\n";
 			}
 
 			$text .= "</select>  ".LAN_TIME.":<select name='ds_hour' class='tbox'><option selected='selected'> </option>";
 			for($a = 0; $a <= 23; $a++) {
 				$hour_select = ($a == $today_hour) ? "selected='selected'" : "";
-				$text .= "<option value='$a' $hour_select>".$a."</option>";
+				$text .= "<option value='$a' $hour_select>".$a."</option>\n";
 			}
 
-			$text .= "</select> <select name='ds_min' class='tbox'><option selected='selected'> </option>";
+			$text .= "</select> <select name='ds_min' class='tbox'>\n<option selected='selected'> </option>\n";
 			for($a = 0; $a <= 59; $a++) {
 				$min_select = ($a == $today_min) ? "selected='selected'" : "";
-				$text .= "<option value='$a' $min_select>".$a."</option>";
+				$text .= "<option value='$a' $min_select>".$a."</option>\n";
 			}
-			$text .= "</select> <select name='ds_sec' class='tbox'><option selected='selected'> </option>";
+			$text .= "</select> <select name='ds_sec' class='tbox'>\n<option selected='selected'> </option>\n";
 			for($a = 0; $a <= 59; $a++) {
 				$sec_select = ($a == $today_sec) ? "selected='selected'" : "";
-				$text .= "<option value='$a' $sec_select>".$a."</option>";
+				$text .= "<option value='$a' $sec_select>".$a."</option>\n";
 			}
 
 
