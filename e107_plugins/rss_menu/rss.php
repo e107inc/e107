@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-03-08 16:51:01 $
+|     $Revision: 1.10 $
+|     $Date: 2005-03-10 19:45:29 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -56,7 +56,7 @@ class rssCreate {
 
 	function rssCreate($content_type, $rss_type, $topic_id) {
 		// constructor
-		global $sql, $e107, $PLUGINS_DIRECTORY;
+		global $tp, $sql, $e107, $PLUGINS_DIRECTORY;
 		$this -> path = e_PLUGIN."rss_menu/";
 		$this -> rssType = $rss_type;
 		$this -> topicid = $topic_id;
@@ -81,9 +81,9 @@ class rssCreate {
 
 
 
-					$this -> rssItems[$loop]['title'] = htmlspecialchars($value['news_title']);
+					$this -> rssItems[$loop]['title'] = $tp -> toRss($value['news_title']);
 					$this -> rssItems[$loop]['link'] = "http://".$_SERVER['HTTP_HOST'].e_HTTP."news.php?item.".$value['news_id'].".".$value['news_category'];
-					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? htmlspecialchars($value['news_body']) : htmlspecialchars(substr($value['news_body'], 0, 100)));
+					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['news_body']) : $tp -> toRss(substr($value['news_body'], 0, 100)));
 
 					$this -> rssItems[$loop]['author'] = $value['user_name'] . "( http://".$_SERVER['HTTP_HOST'].e_HTTP."user.php?id.".$value['news_author']." )";
 					$this -> rssItems[$loop]['category'] = "<category domain='".SITEURL."news.php?cat.".$value['news_category']."'>".$value['category_name']."</category>";
@@ -116,7 +116,7 @@ class rssCreate {
 				$this -> rssItems = array();
 				$loop=0;
 				foreach($tmp as $value) {
-					$this -> rssItems[$loop]['title'] = htmlspecialchars($value['comment_subject']);
+					$this -> rssItems[$loop]['title'] = $tp -> toRss($value['comment_subject']);
 
 					switch ($value['comment_type']) {
 						case 0:
@@ -127,7 +127,7 @@ class rssCreate {
 							break;
 					}
 
-					$this -> rssItems[$loop]['description'] = htmlspecialchars($value['comment_comment']);
+					$this -> rssItems[$loop]['description'] = $tp -> toRss($value['comment_comment']);
 					$this -> rssItems[$loop]['author'] = substr($value['comment_author'], (strpos($value['comment_author'], ".")+1));
 					$loop++;
 				}
@@ -152,10 +152,10 @@ class rssCreate {
 					} else {
 						list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $value['thread_anon']);
 					}
-					$this -> rssItems[$loop]['title'] = htmlspecialchars($value['thread_name']);
+					$this -> rssItems[$loop]['title'] = $tp -> toRss($value['thread_name']);
 					$this -> rssItems[$loop]['link'] = $e107->HTTPPath.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'];
 
-					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? htmlspecialchars($value['thread_thread']) : htmlspecialchars(substr($value['thread_thread'], 0, 100)));
+					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['thread_thread']) : $tp -> toRss(substr($value['thread_thread'], 0, 100)));
 
 					$loop++;
 				}
@@ -181,14 +181,14 @@ class rssCreate {
 					}
 
 					if($value['parent_name']) {
-						$this -> rssItems[$loop]['title'] = "Re: ".htmlspecialchars($value['parent_name']);
+						$this -> rssItems[$loop]['title'] = "Re: ".$tp -> toRss($value['parent_name']);
 						$this -> rssItems[$loop]['link'] = $e107->HTTPPath.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_parent'];
 					} else {
-						$this -> rssItems[$loop]['title'] = htmlspecialchars($value['thread_name']);
+						$this -> rssItems[$loop]['title'] = $tp -> toRss($value['thread_name']);
 						$this -> rssItems[$loop]['link'] = $e107->HTTPPath.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'];
 					}
 
-					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? htmlspecialchars($value['thread_thread']) : htmlspecialchars(substr($value['thread_thread'], 0, 100)));
+					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['thread_thread']) : $tp -> toRss(substr($value['thread_thread'], 0, 100)));
 
 					$loop++;
 				}
@@ -225,9 +225,9 @@ class rssCreate {
 				} else {
 					list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $topic['thread_anon']);
 				}
-				$this -> rssItems[$loop]['title'] = htmlspecialchars($topic['thread_name']);
+				$this -> rssItems[$loop]['title'] = $tp -> toRss($topic['thread_name']);
 				$this -> rssItems[$loop]['link'] = $e107->HTTPPath.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$topic['thread_id'];
-				$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? htmlspecialchars($topic['thread_thread']) : htmlspecialchars(substr($topic['thread_thread'], 0, 100)));
+				$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($topic['thread_thread']) : $tp -> toRss(substr($topic['thread_thread'], 0, 100)));
 				$loop ++;
 				foreach($replies as $value) {
 					if($value['thread_user']) {
@@ -235,9 +235,9 @@ class rssCreate {
 					} else {
 						list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $value['thread_anon']);
 					}
-					$this -> rssItems[$loop]['title'] = "Re: ".htmlspecialchars($topic['thread_name']);
+					$this -> rssItems[$loop]['title'] = "Re: ".$tp -> toRss($topic['thread_name']);
 					$this -> rssItems[$loop]['link'] = $e107->HTTPPath.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$this -> topicid;
-					$this -> rssItems[$loop]['description'] = htmlspecialchars($value['thread_thread']);
+					$this -> rssItems[$loop]['description'] = $tp -> toRss($value['thread_thread']);
 					$loop++;
 				}
 			break;
@@ -253,7 +253,7 @@ class rssCreate {
 					$this -> rssItems[$loop]['author'] = $nick;
 					$this -> rssItems[$loop]['title'] = "";
 					$this -> rssItems[$loop]['link'] = $e107->HTTPPath.$PLUGINS_DIRECTORY."chat.php";
-					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? htmlspecialchars($value['cb_message']) : htmlspecialchars(substr($value['cb_message'], 0, 100)));
+					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['cb_message']) : $tp -> toRss(substr($value['cb_message'], 0, 100)));
 					$loop++;
 				}
 			break;
@@ -269,7 +269,7 @@ class rssCreate {
 					$this -> rssItems[$loop]['author'] = $nick;
 					$this -> rssItems[$loop]['title'] = $value['bugtrack2_bugs_summary'];
 					$this -> rssItems[$loop]['link'] = $e107->HTTPPath.$PLUGINS_DIRECTORY."bugtracker2/bugtracker2.php?0.bug.".$value['bugtrack2_bugs_id'];
-					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? htmlspecialchars($value['bugtrack2_bugs_description']) : htmlspecialchars(substr($value['bugtrack2_bugs_description'], 0, 100)));
+					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['bugtrack2_bugs_description']) : $tp -> toRss(substr($value['bugtrack2_bugs_description'], 0, 100)));
 					$loop++;
 				}
 			break;
@@ -295,19 +295,24 @@ class rssCreate {
 					}
 
 					if($value['parent_name']) {
-						$this -> rssItems[$loop]['title'] = "Re: ".htmlspecialchars($value['parent_name']);
+						$this -> rssItems[$loop]['title'] = $tp -> toRss("Re: ".$value['parent_name']);
 						$this -> rssItems[$loop]['link'] = $e107->HTTPPath.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_parent'];
 					} else {
-						$this -> rssItems[$loop]['title'] = htmlspecialchars($value['thread_name']);
+						$this -> rssItems[$loop]['title'] = $tp -> toRss($value['thread_name']);
 						$this -> rssItems[$loop]['link'] = $e107->HTTPPath.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'];
 					}
-					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? htmlspecialchars($value['thread_thread']) : htmlspecialchars(substr($value['thread_thread'], 0, 100)));
+					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['thread_thread']) : $tp -> toRss(substr($value['thread_thread'], 0, 100)));
 					$loop++;
 				}
 			break;
 		}
 	}
 
+	function striptags($text)
+	{
+		
+		return $text;
+	}
 
 	function buildRss() {
 		global $sql, $pref;

@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.56 $
-|   $Date: 2005-03-10 18:33:46 $
+|   $Revision: 1.57 $
+|   $Date: 2005-03-10 19:44:44 $
 |   $Author: stevedunstan $
 +---------------------------------------------------------------+
 
@@ -199,7 +199,6 @@ if ($action == "create") {
 			$_POST['news_extended'] = $news_extended;
 			$_POST['news_allow_comments'] = $news_allow_comments;
 			$_POST['news_class'] = $news_class;
-			$_POST['news_thumb'] = $news_thumb;
 			$_POST['news_summary'] = $news_summary;
 			$_POST['news_sticky'] = $news_sticky;
 			$_POST['news_datestamp'] = $news_datestamp;

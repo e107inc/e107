@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2005-03-08 09:11:32 $
+|     $Revision: 1.42 $
+|     $Date: 2005-03-10 19:45:29 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -259,8 +259,17 @@ function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $ut
 		$trans_tbl = array_flip ($trans_tbl);
 		return strtr ($stringarray, $trans_tbl);
 	}
-	 
-	 
+
+	function toRss($text)
+	{
+		$search = array("&amp;#039;", "&amp;#036;", "&#039;", "&#036;");
+		$replace = array("'", "$", "'", "$");
+		$text = strip_tags($text);
+		$text = preg_replace("#\[.*\]#", "", $text);
+		$text = str_replace($search, $replace, $text);
+		$text = htmlspecialchars($text);
+		return $text;
+	}
 	 
 }
 ?>
