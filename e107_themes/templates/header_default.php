@@ -11,27 +11,27 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2004-12-15 06:47:51 $
-|     $Author: sweetas $
+|     $Revision: 1.10 $
+|     $Date: 2005-01-07 16:59:58 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!function_exists("parseheader")) {
-	function parseheader($LAYOUT){
-		global $tp;
-		$tmp = explode("\n", $LAYOUT);
-		for ($c=0; $c < count($tmp); $c++) {
-			if (preg_match("/{.+?}/", $tmp[$c])) {
-				echo $tp -> parseTemplate($tmp[$c]);
-			} else {
-				echo $tmp[$c];
-			}
-		}
-	}
+        function parseheader($LAYOUT){
+                global $tp;
+                $tmp = explode("\n", $LAYOUT);
+                for ($c=0; $c < count($tmp); $c++) {
+                        if (preg_match("/{.+?}/", $tmp[$c])) {
+                                echo $tp -> parseTemplate($tmp[$c]);
+                        } else {
+                                echo $tmp[$c];
+                        }
+                }
+        }
 }
 $sql->db_Mark_Time("(Header Top)");
 $aj = new textparse;
-echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='iso-8859-1' ?>")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
+echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET."' ?>")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
 <html xmlns=\"http://www.w3.org/1999/xhtml\">
 <head>
 <title>".SITENAME.(defined("e_PAGETITLE") ? ": ".e_PAGETITLE : (defined("PAGE_NAME") ? ": ".PAGE_NAME : ""))."</title>
@@ -65,9 +65,9 @@ $body_onload =($fader_onload != "" || $links_onload != "" ? " onload='".$links_o
 $ejs_listpics = "";
 $handle=opendir(THEME."images");
 while ($file = readdir($handle)){
-	if(!strstr($file, "._") && strstr($file,".") && $file != "." && $file != ".." && $file != "Thumbs.db" && $file != ".DS_Store"){
-		$ejs_listpics .= $file.",";
-	}
+        if(!strstr($file, "._") && strstr($file,".") && $file != "." && $file != ".." && $file != "Thumbs.db" && $file != ".DS_Store"){
+                $ejs_listpics .= $file.",";
+        }
 }
 $ejs_listpics = substr($ejs_listpics, 0, -1);
 
@@ -79,62 +79,62 @@ echo "ejs_preload('".THEME."images/','".$ejs_listpics."');\n// -->\n</script>
 // require $e107_popup =1; to use it as header for popup without menus
 if($e107_popup != 1)
 {
-	if($pref['no_rightclick'])
-	{
-		echo "<script language=\"javascript\">
-		<!--
-		var message=\"Not Allowed\";
-		function click(e) {
-		if (document.all) {
-		if (event.button==2||event.button==3) {
-		alert(message);
-		return false;
-		}
-		}
-		if (document.layers) {
-		if (e.which == 3) {
-		alert(message);
-		return false;
-		}
-		}
-		}
-		if (document.layers) {
-		document.captureevents(event.mousedown);
-		}
-		document.onmousedown=click;
-		// -->
-		</script>\n";
-	}
+        if($pref['no_rightclick'])
+        {
+                echo "<script language=\"javascript\">
+                <!--
+                var message=\"Not Allowed\";
+                function click(e) {
+                if (document.all) {
+                if (event.button==2||event.button==3) {
+                alert(message);
+                return false;
+                }
+                }
+                if (document.layers) {
+                if (e.which == 3) {
+                alert(message);
+                return false;
+                }
+                }
+                }
+                if (document.layers) {
+                document.captureevents(event.mousedown);
+                }
+                document.onmousedown=click;
+                // -->
+                </script>\n";
+        }
 
-	if (is_array($CUSTOMPAGES)) {
-		foreach ($CUSTOMPAGES as $cust_key => $cust_value) {
-			$custompage[$cust_key] = explode(' ', $cust_value);
-		}
-	} else {
-		$custompage['no_array'] = explode(' ', $CUSTOMPAGES);
-	}
+        if (is_array($CUSTOMPAGES)) {
+                foreach ($CUSTOMPAGES as $cust_key => $cust_value) {
+                        $custompage[$cust_key] = explode(' ', $cust_value);
+                }
+        } else {
+                $custompage['no_array'] = explode(' ', $CUSTOMPAGES);
+        }
 
-	if (e_PAGE == 'news.php' && $NEWSHEADER) {
-		parseheader($NEWSHEADER);
-	} else {
-		foreach ($custompage as $key_extract => $cust_extract) {
-			foreach ($cust_extract as $key => $kpage) {
-				if ($kpage && strstr(e_SELF, $kpage)) {
-					$ph = TRUE;
-					if ($key_extract=='no_array') {
-						$cust_header = $CUSTOMHEADER ? $CUSTOMHEADER : $HEADER;
-						$cust_footer = $CUSTOMFOOTER ? $CUSTOMFOOTER : $FOOTER;
-					} else {
-						$cust_header = $CUSTOMHEADER[$key_extract] ? $CUSTOMHEADER[$key_extract] : $HEADER;
-						$cust_footer = $CUSTOMFOOTER[$key_extract] ? $CUSTOMFOOTER[$key_extract] : $FOOTER;
-					}
-					break;
-				}
-			}
-		}
-		parseheader(($ph ? $cust_header : $HEADER));
-	}
-	$sql->db_Mark_Time("Main Page Body");
-	unset($text);
+        if (e_PAGE == 'news.php' && $NEWSHEADER) {
+                parseheader($NEWSHEADER);
+        } else {
+                foreach ($custompage as $key_extract => $cust_extract) {
+                        foreach ($cust_extract as $key => $kpage) {
+                                if ($kpage && strstr(e_SELF, $kpage)) {
+                                        $ph = TRUE;
+                                        if ($key_extract=='no_array') {
+                                                $cust_header = $CUSTOMHEADER ? $CUSTOMHEADER : $HEADER;
+                                                $cust_footer = $CUSTOMFOOTER ? $CUSTOMFOOTER : $FOOTER;
+                                        } else {
+                                                $cust_header = $CUSTOMHEADER[$key_extract] ? $CUSTOMHEADER[$key_extract] : $HEADER;
+                                                $cust_footer = $CUSTOMFOOTER[$key_extract] ? $CUSTOMFOOTER[$key_extract] : $FOOTER;
+                                        }
+                                        break;
+                                }
+                        }
+                }
+                parseheader(($ph ? $cust_header : $HEADER));
+        }
+        $sql->db_Mark_Time("Main Page Body");
+        unset($text);
 }
 ?>
