@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/usersession_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-15 19:39:46 $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-16 02:09:25 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -74,7 +74,6 @@ class eUserSession {
 			$_POST['autologin'] = intval($_POST['autologin']);
 			$this->LoginUser(USERLOGIN_TYPE_POST, $_POST['username'], $_POST['userpass'], false, $_POST['autologin']);
 		} elseif ($this->_UserTrackingType == 'session' && $_COOKIE[$this->$_SessionName]){
-			session_start();
 		} elseif ($this->_UserTrackingType == 'cookie' && isset($_COOKIE[$this->_CookieName])){
 			$Cookie = explode('.', $_COOKIE[$this->_CookieName]);
 			if (count($Cookie) != 2) {
@@ -95,7 +94,7 @@ class eUserSession {
 		$RetrieveFields = '`user_name`, `user_id`, `user_email`, `user_lastvisit`, `user_currentvisit`, `user_join`, `user_lastpost`, `user_prefs`, `user_admin`, `user_perms`';
 		switch ($LoginType) {
 			case USERLOGIN_TYPE_COOKIE:
-				if(!$sql->db_Select('users', $RetrieveFields, '`user_id` = \''.$UserID.'\' AND md5(`user_password`) = \''.$UserPassword.'\'', 'default', true)){
+				if(!$sql->db_Select('user', $RetrieveFields, '`user_id` = \''.$UserID.'\' AND md5(`user_password`) = \''.$UserPassword.'\'', 'default', true)){
 					$this->_LoginResult = LOGINRESULT_INVALIDCOOKIE;
 				} else {
 					$row = $sql->db_Fetch();
@@ -174,6 +173,11 @@ class eUserSession {
 		$this->UserIsAdmin = false;
 		$this->SuperAdmin = false;
 		$this->_Permissions = array();
+	}
+	
+	function CompatabiltyMode(){
+		
+		
 	}
 }
 
