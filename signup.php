@@ -183,8 +183,8 @@ if(IsSet($_POST['register'])){
                 $birthday = $_POST['birth_year']."/".$_POST['birth_month']."/".$_POST['birth_day'];
 
                 if($pref['user_reg_veri']){
-                	      $key = md5(uniqid(rand(),1));
-                        $nid = $sql -> db_Insert("user", "0, \"".$username."\", '', \"".md5($_POST['password1'])."\", '$key', \"".$_POST['email']."\",         \"".$_POST['website']."\", \"".$_POST['icq']."\", \"".$_POST['aim']."\", \"".$_POST['msn']."\", \"".$_POST['location']."\", \"".$birthday."\", \"".$_POST['signature']."\", \"".$_POST['image']."\", \"".$_POST['timezone']."\", \"".$_POST['hideemail']."\", \"".$time."\", '0', \"".$time."\", '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '', '0', \"".$_POST['realname']."\", '', '', '', '' ");
+                	      $u_key = md5(uniqid(rand(),1));
+                        $nid = $sql -> db_Insert("user", "0, \"".$username."\", '', \"".md5($_POST['password1'])."\", '$u_key', \"".$_POST['email']."\",         \"".$_POST['website']."\", \"".$_POST['icq']."\", \"".$_POST['aim']."\", \"".$_POST['msn']."\", \"".$_POST['location']."\", \"".$birthday."\", \"".$_POST['signature']."\", \"".$_POST['image']."\", \"".$_POST['timezone']."\", \"".$_POST['hideemail']."\", \"".$time."\", '0', \"".$time."\", '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '', '0', \"".$_POST['realname']."\", '', '', '', '' ");
                         $sql -> db_Select("user", "*", "user_name='".$_POST['name']."' AND user_join='".$time."' ");
                         $row = $sql -> db_Fetch();
                         $id = $row['user_id'];
@@ -203,7 +203,7 @@ if(IsSet($_POST['register'])){
 									$sql -> db_Update("user", "user_prefs='$tmp' WHERE user_id='".$nid."' ");
 								}
 								// ==========================================================
-                        define("RETURNADDRESS", (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$id.".".$key : SITEURL."/signup.php?activate.".$id.".".$key));
+                        define("RETURNADDRESS", (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$id.".".$u_key : SITEURL."/signup.php?activate.".$id.".".$u_key));
 
                         $message = LAN_403.RETURNADDRESS.LAN_407." ".SITENAME."\n".SITEURL;
 
@@ -223,7 +223,7 @@ if(IsSet($_POST['register'])){
                         exit;
                 }else{
                 require_once(HEADERF);
-                $nid = $sql -> db_Insert("user", "0, '".$username."', '', '".md5($_POST['password1'])."', '$key', '".$_POST['email']."',         '".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$birthday."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '' ");
+                $nid = $sql -> db_Insert("user", "0, '".$username."', '', '".md5($_POST['password1'])."', '$u_key', '".$_POST['email']."',         '".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$birthday."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '' ");
 					// ================== save extended fields as serialized data.
 					
 					if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
