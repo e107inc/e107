@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-03-14 16:42:21 $
+|     $Revision: 1.31 $
+|     $Date: 2005-03-23 12:54:22 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -163,6 +163,16 @@ if(isset($_POST['updatelimits']))
 			$message .= $id." - ".DOWLAN_121."<br />";
 		}
 	}
+}
+
+if(isset($_POST['submit_mirror']))
+{
+	$download->submit_mirror($sub_action, $id);
+}
+
+if($action == "mirror")
+{
+	$download -> show_existing_mirrors();
 }
 
 
@@ -457,6 +467,9 @@ class download {
 		$var['limits']['text'] = DOWLAN_112;
 		$var['limits']['link'] = e_SELF."?limits";
 
+		$var['mirror']['text'] = DOWLAN_128;
+		$var['mirror']['link'] = e_SELF."?mirror";
+
 		show_admin_menu(DOWLAN_32, $action, $var);
 
 	}
@@ -478,6 +491,25 @@ class download {
 			if ($sql->db_Select("download", "*", "download_id='$id' ")) {
 				$row = $sql->db_Fetch();
 				extract($row);
+
+				if($download_mirror)
+				{
+
+					$mirrorTArray = explode(chr(1), $download_mirror);
+					$mirrorArray = array();
+
+					$count=0;
+					foreach($mirrorTArray as $mirror)
+					{
+						if($mirror)
+						{
+							list($mid, $murl) = explode(",", $mirror);
+							$mirrorArray[$count]['id'] = $mid;
+							$mirrorArray[$count]['url'] = $murl;
+							$count++;
+						}
+					}
+				}
 			}
 		}
 
@@ -504,7 +536,7 @@ class download {
 			<form method='post' action='".e_SELF."?".e_QUERY."' id='myform'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
-			<td style='width:20%' class='forumheader3'>".DOWLAN_11.":</td>
+			<td style='width:20%' class='forumheader3'>".DOWLAN_11."</td>
 			<td style='width:80%' class='forumheader3'>";
 
 		$sql->db_Select("download_category", "*", "download_category_parent !=0");
@@ -529,9 +561,13 @@ class download {
 			</tr>
 
 			<tr>
-			<td style='width:20%; vertical-align:top' class='forumheader3'><span style='text-decoration:underline'>".DOWLAN_13."</span>:</td>
+			<td style='width:20%; vertical-align:top' class='forumheader3'><span style='text-decoration:underline'>".DOWLAN_13."</span>:<div class='smalltext'>".DOWLAN_127."</div></td>
 			<td style='width:80%' class='forumheader3'>
-			<select name='download_url' class='tbox'>
+
+			<table style='width: 100%;'>
+			<tr>
+			<td style='width: 40%;'>".DOWLAN_131."</td>
+			<td style='width: 60%;' colspan='2'><select name='download_url' class='tbox'>
 			<option></option>
 			";
 
@@ -563,18 +599,75 @@ class download {
 		}
 
 		$text .= "</select>
-			<br />
-			<span class='smalltext'> ".DOWLAN_14.": ";
+			</td>
+			</tr>
+
+			<tr>
+			<td style='width: 40%;'>".DOWLAN_14."</td>
+			
 
 
+			<td style='width: 30%;'>
+			<input class='tbox' type='text' name='download_url_external' size='40' value='$download_url_external' maxlength='100' />
+			</td>
 
-		$text .= "<input class='tbox' type='text' name='download_url_external' size='40' value='$download_url_external' maxlength='100' />
-			&nbsp;&nbsp;".DOWLAN_66.":
+			<td style='width: 30%; text-align: right;'>".DOWLAN_66."
 			<input class='tbox' type='text' name='download_filesize_external' size='8' value='$download_filesize' maxlength='10' />
-			</span>
+			</td>
+			</tr>
+			</table>
 
 			</td>
 			</tr>
+
+			<tr>
+			<td style='width:20%' class='forumheader3'>".DOWLAN_128.":<div class='smalltext'>".DOWLAN_129."</div></td>
+			<td style='width:80%' class='forumheader3'>".DOWLAN_132."<br />
+			<div id='mirrorsection'>";
+
+			$sql -> db_Select("download_mirror");
+			$mirrorList = $sql -> db_getList();
+	
+			$m_count = (count($mirrorArray) ? count($mirrorArray) : 1);
+
+			for($count = 1; $count <= $m_count; $count++)
+			{
+				
+				$opt = ($count==1) ? "id='mirror'" : "";
+				$text .="<span $opt>
+				<select name='download_mirror_name[]' class='tbox'>
+					<option></option>";
+
+				foreach($mirrorList as $mirror)
+				{
+					extract($mirror);
+					$text .= "<option value='$mirror_id'".($mirror_id == $mirrorArray[($count-1)]['id'] ? " selected='selected'" : "").">$mirror_name</option>\n";
+				}
+
+				$text .= "</select>
+				<input  class='tbox' type='text' name='download_mirror[]' style='width: 75%;' value=\"".$mirrorArray[($count-1)]['url']."\" maxlength='200' />";
+				$text .= "</span><br />";
+			}
+
+			$text .="</div><input class='button' type='button' name='addoption' value='".DOWLAN_130."' onclick=\"duplicateHTML('mirror','mirrorsection')\" /><br />
+
+
+
+			
+			
+			</td>
+			</tr>
+				
+			<tr>
+			<td style='width:20%' class='forumheader3'>Mirror display type:<div class='smalltext'>if using mirrors, select how they will be displayed</div></td>
+			<td style='width:80%' class='forumheader3'>
+
+			<input type='radio' name='download_mirror_type' value='1'".($download_mirror_type ? " checked='checked'" : "")." /> show mirror list, allow user to choose mirror<br />
+			<input type='radio' name='download_mirror_type' value='0'".(!$download_mirror_type ? " checked='checked'" : "")." /> use random mirror - no user choice
+			</td>
+			</tr>
+
+			
 
 			<tr>
 			<td style='width:20%' class='forumheader3'>".DOWLAN_15.":</td>
@@ -750,12 +843,28 @@ class download {
 		$_POST['download_name'] = $tp->toDB($_POST['download_name']);
 		$_POST['download_author'] = $tp->toDB($_POST['download_author']);
 
-		if ($id) {
-			$sql->db_Update("download", "download_name='".$_POST['download_name']."', download_url='".$durl."', download_author='".$_POST['download_author']."', download_author_email='".$_POST['download_author_email']."', download_author_website='".$_POST['download_author_website']."', download_description='".$_POST['download_description']."', download_filesize='".$filesize."', download_category='".$_POST['download_category']."', download_active='".$_POST['download_active']."', download_datestamp='".time()."', download_thumb='".$_POST['download_thumb']."', download_image='".$_POST['download_image']."', download_comment='".$_POST['download_comment']."', download_class = '{$_POST['download_class']}' WHERE download_id=$id");
+
+		$mirrorStr = "";
+		$mirrorReq = "";
+		
+		if($mirrors = count($_POST['download_mirror_name']))
+		{
+			for($a=0; $a<$mirrors; $a++)
+			{
+				$mirror_id = $_POST['download_mirror_name'][$a];
+				$mirror_url = $_POST['download_mirror'][$a];
+				$mirrorStr .= $mirror_id.",".$mirror_url.",0".chr(1);
+			}
+		}
+		
+		if ($id)
+		{
+
+			$sql->db_Update("download", "download_name='".$_POST['download_name']."', download_url='".$durl."', download_author='".$_POST['download_author']."', download_author_email='".$_POST['download_author_email']."', download_author_website='".$_POST['download_author_website']."', download_description='".$_POST['download_description']."', download_filesize='".$filesize."', download_category='".$_POST['download_category']."', download_active='".$_POST['download_active']."', download_datestamp='".time()."', download_thumb='".$_POST['download_thumb']."', download_image='".$_POST['download_image']."', download_comment='".$_POST['download_comment']."', download_class = '{$_POST['download_class']}', download_mirror='$mirrorStr', download_mirror_type=".$_POST['download_mirror_type']." WHERE download_id=$id");
 			$this->show_message(DOWLAN_2);
 		} else {
 			$time = time();
-			if ($download_id = $sql->db_Insert("download", "0, '".$_POST['download_name']."', '".$durl."', '".$_POST['download_author']."', '".$_POST['download_author_email']."', '".$_POST['download_author_website']."', '".$_POST['download_description']."', '".$filesize."', '0', '".$_POST['download_category']."', '".$_POST['download_active']."', '".$time."', '".$_POST['download_thumb']."', '".$_POST['download_image']."', '".$_POST['download_comment']."', '{$_POST['download_class']}'")) {
+			if ($download_id = $sql->db_Insert("download", "0, '".$_POST['download_name']."', '".$durl."', '".$_POST['download_author']."', '".$_POST['download_author_email']."', '".$_POST['download_author_website']."', '".$_POST['download_description']."', '".$filesize."', '0', '".$_POST['download_category']."', '".$_POST['download_active']."', '".$time."', '".$_POST['download_thumb']."', '".$_POST['download_image']."', '".$_POST['download_comment']."', '{$_POST['download_class']}', '$mirrorStr', ".$_POST['download_mirror_type'])) {
 
 				$dlinfo = array("download_id" => $download_id, "download_name" => $_POST['download_name'], "download_url" => $durl, "download_author" => $_POST['download_author'], "download_author_email" => $_POST['download_author_email'], "download_author_website" => $_POST['download_author_website'], "download_description" => $_POST['download_description'], "download_filesize" => $filesize, "download_category" => $_POST['download_category'], "download_active" => $_POST['download_active'], "download_datestamp" => $time, "download_thumb" => $_POST['download_thumb'], "download_image" => $_POST['download_image'], "download_comment" => $_POST['download_comment'] );
 				$e_event->trigger("dlpost", $dlinfo);
@@ -976,6 +1085,176 @@ class download {
 			$sql->db_Delete("tmp", "tmp_time='$id' ");
 		}
 	}
+
+
+
+	function show_existing_mirrors()
+	{
+
+		global $sql, $ns, $tp, $sub_action, $id, $delete, $del_id;
+
+		if($delete == "mirror")
+		{
+			$sql -> db_Delete("download_mirror", "mirror_id=".$del_id);
+			$this->show_message(DOWLAN_135);
+		}
+
+
+		if(!$sql -> db_Select("download_mirror"))
+		{
+			$text = "<div style='text-align:center;'>No mirrors defined yet</div>";
+		}
+		else
+		{
+
+			$text = "<div style='text-align:center'>
+			<table style='".ADMIN_WIDTH."' class='fborder'>
+			<tr>
+			<td style='width: 10%; text-align: center;' class='forumheader'>ID</td>
+			<td style='width: 30%;' class='forumheader'>".DOWLAN_12."</td>
+			<td style='width: 30%;' class='forumheader'>".DOWLAN_136."</td>
+			<td style='width: 30%; text-align: center;' class='forumheader'>".DOWLAN_28."</td>
+			</tr>
+			";
+		
+			$mirrorList = $sql -> db_getList();
+			
+			foreach($mirrorList as $mirror)
+			{
+				extract($mirror);
+				$text .= "
+				
+				<form method='post' action='".e_SELF."?".e_QUERY."' onsubmit=\"return jsconfirm('".DOWLAN_137." [ID: $mirror_id ]')\">
+				<tr>
+				<td style='width: 10%; text-align: center;' class='forumheader3'>$mirror_id</td>
+				<td style='width: 30%;' class='forumheader3'>".$tp -> toHTML($mirror_name)."</td>
+				<td style='width: 30%;' class='forumheader3'>".($mirror_image ? "<img src='".e_FILE."downloadimages/".$mirror_image."' alt='' />" : "None")."</td>
+				<td style='width: 30%; text-align: center;' class='forumheader3'>
+				<input class='button' type='button' onclick=\"document.location='".e_SELF."?mirror.edit.$mirror_id'\" value='".DOWLAN_8."' id='edit_$mirror_id' name='edit_$mirror_id' />
+				<input class='button' type='submit'  value='".DOWLAN_9."' id='mirror_delete_$mirror_id' name='mirror_delete_$mirror_id' />
+				</td>
+				</tr>
+				</form>
+				";
+			}
+
+			$text .= "</table></div>";
+
+		}
+
+		$ns -> tablerender(DOWLAN_138, $text);
+
+		require_once(e_HANDLER."file_class.php");
+		$fl = new e_file;
+		$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$',"thumb_", 'index', 'null*');
+		$imagelist = $fl->get_files(e_FILE."downloadimages/","",$rejecthumb);
+
+		if($sub_action == "edit" && !defined("SUBMITTED"))
+		{
+			$sql -> db_Select("download_mirror", "*", "mirror_id=".$id);	
+			$row = $sql -> db_Fetch();
+			extract($mirror);
+			$edit = TRUE;
+		}
+		else
+		{
+			unset($mirror_name, $mirror_url, $mirror_image, $mirror_location, $mirror_description);
+			$edit = FALSE;
+		}
+
+
+
+		$text = "<div style='text-align:center'>
+		<form method='post' action='".e_SELF."?".e_QUERY."' id='dataform'>\n
+		<table style='".ADMIN_WIDTH."' class='fborder'>
+
+		<tr>
+		<td style='width: 30%;' class='forumheader3'>".DOWLAN_12."</td>
+		<td style='width: 70%;' class='forumheader3'>
+		<input class='tbox' type='text' name='mirror_name' size='60' value='$mirror_name' maxlength='200' />
+		</td>
+		</tr>
+
+		<tr>
+		<td style='width: 30%;' class='forumheader3'>".DOWLAN_139."</td>
+		<td style='width: 70%;' class='forumheader3'>
+		<input class='tbox' type='text' name='mirror_url' size='70' value='$mirror_url' maxlength='200' />
+		</td>
+		</tr>
+
+		<tr>
+		<td style='width: 30%;' class='forumheader3'>".DOWLAN_136."</td>
+		<td style='width: 70%;' class='forumheader3'>
+		<input class='tbox' type='text' name='mirror_image' size='60' value='$mirror_image' maxlength='200' />
+
+
+		<br /><input class='button' type ='button' style='cursor:hand' size='30' value='".DOWLAN_42."' onclick='expandit(this)' />
+		<div id='imagefile' style='display:none;{head}'>";
+
+		$text .= DOWLAN_140."<br /><br />";
+
+		foreach($imagelist as $file){
+			$text .= "<a href=\"javascript:insertext('".$file['fname']."','mirror_image','null')\"><img src='".e_FILE."downloadimages/".$file['fname']."' alt='' /></a><br />";
+		}
+
+		$text .= "</div>
+
+		</td>
+		</tr>
+
+		<tr>
+		<td style='width: 30%;' class='forumheader3'>".DOWLAN_141."</td>
+		<td style='width: 70%;' class='forumheader3'>
+		<input class='tbox' type='text' name='mirror_location' size='60' value='$mirror_location' maxlength='200' />
+		</td>
+		</tr>
+
+		<tr>
+		<td style='width: 30%;' class='forumheader3'>".DOWLAN_18."</td>
+		<td style='width: 70%;' class='forumheader3'>
+		<textarea class='tbox' name=' mirror_description' cols='70' rows='6'>$mirror_description</textarea>
+		</td>
+		</tr>
+
+		<tr>
+		<td colspan='2' class='forumheader' style='text-align:center;'>
+		".($edit ? "<input class='button' type='submit' name='submit_mirror' value='".DOWLAN_142."' /><input type='hidden' name='id' value='$mirror_id' />" : "<input class='button' type='submit' name='submit_mirror' value='".DOWLAN_143."' />")."
+		</tr>
+
+		</table>
+		</form>
+		</div>";
+
+		$caption = ($edit ? DOWLAN_142 : DOWLAN_143);
+
+		$ns -> tablerender($caption, $text);
+	}
+
+	function submit_mirror()
+	{
+		global $tp, $sql;
+		define("SUBMITTED", TRUE);
+		if(isset($_POST['mirror_name']) && isset($_POST['mirror_url']))
+		{
+			$name = $tp -> toDB($_POST['mirror_name']);
+			$url = $tp -> toDB($_POST['mirror_url']);
+			$location = $tp -> toDB($_POST['mirror_location']);
+			
+			$description = $tp -> toDB($_POST['mirror_description']);
+
+			if(isset($_POST['id']))
+			{
+				$sql -> db_Update("download_mirror", "mirror_name='$name', mirror_url='$url', mirror_image='".$_POST['mirror_image']."', mirror_location='$location', mirror_description='$description' WHERE mirror_id=".$_POST['id']);
+				$this->show_message(DOWLAN_133);
+			}
+			else
+			{
+				$sql -> db_Insert("download_mirror", "0, '$name', '$url', '".$_POST['mirror_image']."', '$location', '$description', 0");
+				$this->show_message(DOWLAN_134);
+			}
+		}
+	}
+
 }
 
 function getfiles($dir, $sub = 0) {
@@ -1009,6 +1288,8 @@ function download_adminmenu($parms) {
 	global $action;
 	$download->show_options($action);
 }
+
+
 
 
 ?>

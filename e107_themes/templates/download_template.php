@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/download_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-02-28 20:47:33 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2005-03-23 12:54:37 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 // ##### CAT TABLE --------------------------------------------------------------------------------
@@ -273,4 +273,44 @@ if(!$DOWNLOAD_VIEW_TABLE_END){
 }
 // ##### ------------------------------------------------------------------------------------------
 
+// ##### MIRROR LIST -------------------------------------------------------------------------------
+
+if(!$DOWNLOAD_MIRROR_START)
+{
+	$DOWNLOAD_MIRROR_START = "
+	<div style='text-align:center'>
+	<table class='fborder' style='width:100%'>
+	<tr>
+	<td class='fcaption' colspan='4'>{DOWNLOAD_MIRROR_REQUEST}</td>
+	</tr>
+	<tr>
+	<td class='forumheader' style='width: 30%; text-align: center;'>{DOWNLOAD_MIRROR_HOST_LAN}</td>
+	<td class='forumheader' style='width: 40%;'>{DOWNLOAD_MIRROR_DESCRIPTION_LAN}</td>
+	<td class='forumheader' style='width: 20%; text-align: center;'>{DOWNLOAD_MIRROR_LOCATION_LAN}</td>
+	<td class='forumheader' style='width: 10%; text-align: center;'>{DOWNLOAD_MIRROR_GET_LAN}</td>
+	</tr>
+	";
+}
+
+if(!$DOWNLOAD_MIRROR)
+{
+	$DOWNLOAD_MIRROR = "
+	<tr>
+	<td class='forumheader3' style='width: 30%; text-align: center;'>{DOWNLOAD_MIRROR_IMAGE}<br /><br /><div class='smalltext'>{DOWNLOAD_MIRROR_REQUESTS}<br />{DOWNLOAD_TOTAL_MIRROR_REQUESTS}</div></td>
+	<td class='forumheader3' style='width: 40%'><div class='smalltext'>{DOWNLOAD_MIRROR_DESCRIPTION}</div></td>
+	<td class='forumheader3' style='width: 20%;; text-align: center;'>{DOWNLOAD_MIRROR_LOCATION}</td>
+	<td class='forumheader3' style='width: 10%; text-align: center;'><div class='smalltext'>{DOWNLOAD_MIRROR_LINK} {DOWNLOAD_MIRROR_FILESIZE}</div></td>
+	</tr>
+	";
+}
+
+if(!$DOWNLOAD_MIRROR_END)
+{
+	$DOWNLOAD_MIRROR_END = "
+	</table>
+	</div>
+	";
+}
+
+// ##### ------------------------------------------------------------------------------------------
 ?>

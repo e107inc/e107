@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_download.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-03-01 17:38:02 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.4 $
+|     $Date: 2005-03-23 12:54:36 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("DOWLAN_1", "Download added to database.");
@@ -22,7 +22,7 @@ define("DOWLAN_10", "tick to confirm");
 define("DOWLAN_11", "Category");
 define("DOWLAN_12", "Name");
 define("DOWLAN_13", "File");
-define("DOWLAN_14", "enter url if external file");
+define("DOWLAN_14", "Enter address if download is an external file");
 define("DOWLAN_15", "Author");
 define("DOWLAN_16", "Author Email");
 define("DOWLAN_17", "Author Website");
@@ -74,22 +74,17 @@ define("DOWLAN_62", "Ascending");
 define("DOWLAN_63", "Descending");
 define("DOWLAN_64", "Update Options");
 define("DOWLAN_65", "Options Updated");
-define("DOWLAN_66", "filesize");
+define("DOWLAN_66", "Enter filesize");
 define("DOWLAN_67", "ID");
 define("DOWLAN_68", "File Missing!");
-
 define("DOWLAN_69", "Downloads handled by PHP");
 define("DOWLAN_70", "Checking this will send all download requests through PHP.");
-
-
 define("DOWLAN_100", "Activate Download Agreement");
 define("DOWLAN_101", "Agreement Text");
 define("DOWLAN_102", "Allow Comments?");
-
 define("DOWLAN_103", "Remove from Uploads");
 define("DOWLAN_104", "was removed from public uploads");
 define("DOWLAN_105", "Back to Public Uploads");
-
 define("DOWLAN_106", "Download available to");
 define("DOWLAN_107", "Limit download count");
 define("DOWLAN_108", "Limit download bandwidth");
@@ -106,12 +101,28 @@ define("DOWLAN_118", "Limit not added - unknown error");
 define("DOWLAN_119", "Limit successfully removed");
 define("DOWLAN_120", "Limit not removed - unknown error");
 define("DOWLAN_121", "Limit successfully updated");
-
 define("DOWLAN_122", "Inactive");
 define("DOWLAN_123", "Active - File is subject to download limits");
 define("DOWLAN_124", "Active - File is NOT subject to download limits");
 define("DOWLAN_125", "Download limits active");
 define("DOWLAN_126", "Activation status updated");
+define("DOWLAN_127", "Only enter filesize if the download is an external file");
+define("DOWLAN_128", "Mirrors");
+define("DOWLAN_129", "leave blank if not using mirrors");
+define("DOWLAN_130", "Add another mirror");
+define("DOWLAN_131", "Select local file");
+define("DOWLAN_132", "Please enter mirror to use, then address to download");
 
+define("DOWLAN_133", "Mirror updated in database");
+define("DOWLAN_134", "Mirror saved in database");
+define("DOWLAN_135", "Mirror deleted");
+define("DOWLAN_136", "image");
+define("DOWLAN_137", "Are you sure you want to delete this mirror?");
+define("DOWLAN_138", "Existing Mirrors");
+define("DOWLAN_139", "Address");
+define("DOWLAN_140", "Upload local images to e107_files/downloadimages to show them here, or enter full address if image is remote");
+define("DOWLAN_141", "Location");
+define("DOWLAN_142", "Update Mirror");
+define("DOWLAN_143", "Create Mirror");
 
 ?>

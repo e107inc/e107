@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-03-10 11:13:12 $
+|     $Revision: 1.10 $
+|     $Date: 2005-03-23 12:52:53 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -38,7 +38,63 @@ if (!is_numeric(e_QUERY)) {
 		exit;
 	}
 }
+
+if(strstr(e_QUERY, "mirror"))
+{
+	list($action, $download_id, $mirror_id) = explode(".", e_QUERY);
+	$qry = "
+	SELECT d.*, dc.download_category_class FROM #download as d
+	LEFT JOIN #download_category AS dc ON dc.download_category_id = d.download_id
+	WHERE d.download_id = $download_id;
+	";
 	
+	if ($sql->db_Select_gen($qry))
+	{
+		$row = $sql->db_Fetch();
+		extract($row);
+
+		if (check_class($download_category_class) && check_class($download_class))
+		{
+			if($pref['download_limits'] && $download_active == 1)
+			{
+				check_download_limits();
+			}
+			
+			$mirrorList = explode(chr(1), $download_mirror);
+			$mstr = "";
+			foreach($mirrorList as $mirror)
+			{
+				if($mirror)
+				{
+					$tmp = explode(",", $mirror);
+					$mid = $tmp[0];
+					$address = $tmp[1];
+					$requests = $tmp[2];
+					if($tmp[0] == $mirror_id)
+					{
+						$gaddress = $address;
+						$requests ++;
+					}
+
+					$mstr .= $mid.",".$address.",".$requests.chr(1);
+				}
+
+			}
+
+			$sql -> db_Update("download", "download_requested=download_requested+1, download_mirror='$mstr' WHERE download_id=".$download_id);
+			$sql -> db_Update("download_mirror", "mirror_count=mirror_count+1 WHERE mirror_id=".$mirror_id);
+
+			header("location: ".$gaddress);
+			exit;
+		}
+	}
+}
+
+
+
+
+
+
 $tmp = explode(".", e_QUERY);
 if (!$tmp[1]) {
 	$id = $tmp[0];
@@ -56,7 +112,9 @@ if (preg_match("#.*\.[a-z,A-Z]{3,4}#", e_QUERY)) {
 	return;
 }
 	
-if ($type == "file") {
+if ($type == "file")
+{
+
 	$qry = "
 	SELECT d.*, dc.download_category_class FROM #download as d
 	LEFT JOIN #download_category AS dc ON dc.download_category_id = d.download_id
@@ -66,6 +124,7 @@ if ($type == "file") {
 	if ($sql->db_Select_gen($qry))
 	{
 		$row = $sql->db_Fetch();
+
 		if (check_class($row['download_category_class']) && check_class($row['download_class']))
 		{
 			if($pref['download_limits'] && $row['download_active'] == 1)
@@ -73,6 +132,56 @@ if ($type == "file") {
 				check_download_limits();
 			}
 			extract($row);
+
+			if($download_mirror)
+			{
+				$array = explode(chr(1), $download_mirror);
+
+				$c = (count($array)-1); 
+				for ($i=1; $i < $c; $i++)
+				{ 
+					$d = mt_rand(0, $i); 
+					$tmp = $array[$i]; 
+					$array[$i] = $array[$d]; 
+					$array[$d] = $tmp; 
+				}
+
+				$tmp = explode(",", $array[0]);
+				$mirror_id = $tmp[0];
+
+
+				$mstr = "";
+				foreach($array as $mirror)
+				{
+					if($mirror)
+					{
+						$tmp = explode(",", $mirror);
+						$mid = $tmp[0];
+						$address = $tmp[1];
+						$requests = $tmp[2];
+						if($tmp[0] == $mirror_id)
+						{
+							$gaddress = $address;
+							$requests ++;
+						}
+
+						$mstr .= $mid.",".$address.",".$requests.chr(1);
+					}
+
+				}
+
+				$sql -> db_Update("download", "download_requested=download_requested+1, download_mirror='$mstr' WHERE download_id=".$download_id);
+				$sql -> db_Update("download_mirror", "mirror_count=mirror_count+1 WHERE mirror_id=".$mirror_id);
+
+				header("location: ".$gaddress);
+				exit;
+			}
+
+
+
+
+
+
 			//increment download count
 			$sql->db_Update("download", "download_requested=download_requested+1 WHERE download_id='$id' ");
 			$user_id = USER ? USERID : 0;
