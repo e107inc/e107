@@ -11,13 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2005-04-02 21:06:52 $
-|     $Author: e107coders $
+|     $Revision: 1.43 $
+|     $Date: 2005-04-06 17:07:19 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 include_once(e_HANDLER."userclass_class.php");
+include_once(e_HANDLER."user_extended_class.php");
+$ue = new e107_user_extended;
 
 if (isset($_POST['newver'])) {
 	header("location:http://e107.org/index.php");
@@ -40,32 +42,21 @@ $signup_title = array(CUSTSIG_2, CUSTSIG_3, "ICQ", "Aim", "MSN", CUSTSIG_4, CUST
 $signup_name = array("real", "url", "icq", "aim", "msn", "dob", "loc", "sig", "avt", "zone", "usrclass");
 
 
-if (isset($_POST['updateprefs'])) {
+if (isset($_POST['updateprefs']))
+{
 	unset($_POST['updateprefs']);
-
-	foreach($_POST as $key => $value) {
-		if(is_string($value)) {
-			$pref[$key] = $tp->toDB($value, TRUE);
-		} else {
-			$pref[$key] = $value;
+	foreach($_POST as $key => $value)
+	{
+		if(substr($key, 0, 9) != "uesignup_")
+		{
+			$pref[$key] = $tp->toDB($value);
+		}
+		else
+		{
+			$fid = intval(substr($key, 9));
+			$sql->db_Update("user_extended_struct", "user_extended_struct_signup = '{$value}' WHERE user_extended_struct_id = '{$fid}'", TRUE);
 		}
 	}
-
-	if ($sql->db_Select("core", " e107_value", " e107_name='user_entended'")) {
-		$row = $sql->db_Fetch();
-		$user_entended = unserialize($row[0]);
-		$c = 0;
-		$user_pref = unserialize($user_prefs);
-		while (list($key, $u_entended) = each($user_entended)) {
-			if ($u_entended) {
-				$signup_ext = "signup_ext".$key;
-				$pref[$signup_ext] = $_POST[$signup_ext];
-				$signup_ext_req = "signup_ext_req".$key;
-				$pref[$signup_ext_req] = $_POST[$signup_ext_req];
-			}
-		}
-	}
-
 	$signup_options = "";
 	for ($i = 0; $i < count($signup_title); $i++) {
 		$valuesignup = $signup_name[$i];
@@ -74,13 +65,9 @@ if (isset($_POST['updateprefs'])) {
 		"";
 	}
 	$pref['signup_options'] = $signup_options;
-
 	$e107cache->clear();
-
 	save_prefs();
-
 	header("location:".e_ADMIN."prefs.php?u");
-	echo "<script type='text/javascript'>document.location.href='prefs.php'</script>\n";
 	exit;
 
 }
@@ -407,18 +394,10 @@ $text .= "<div id='registration' style='display:none; text-align:center'><table 
 	<textarea class='tbox' name='signup_disallow_text' cols='1' rows='3' style='width: 80%;'>".$pref['signup_disallow_text']."</textarea>
 	</td>
 	</tr>
-
-
-
-
-
-
 	";
 
 $text .= pref_submit();
-
 $text .= "</table></div>";
-
 
 // Signup options ===========================.
 
@@ -439,50 +418,47 @@ $text .= "<div id='signup' style='display:none; text-align:center'>
 	<td class='forumheader'>".CUSTSIG_14."</td>
 	</tr>";
 $signupval = explode(".", $pref['signup_options']);
-for ($i = 0; $i < count($signup_title); $i++) {
+for ($i = 0; $i < count($signup_title); $i++)
+{
 	$text .= "
 		<tr>
-		<td style='width:50%' class='forumheader3'>".$signup_title[$i]."</td>
-		<td style='width:50%;text-align:center' class='forumheader3' >". ($signupval[$i] == "0" || $$signup_name[$i] == "" ? "<input type='radio' name='".$signup_name[$i]."' value='0' checked='checked' /> ".CUSTSIG_12 : "<input type='radio' name='".$signup_name[$i]."' value='0' /> ".CUSTSIG_12)."&nbsp;&nbsp;". ($signupval[$i] == "1" ? "<input type='radio' name='".$signup_name[$i]."' value='1' checked='checked' /> ".CUSTSIG_14 : "<input type='radio' name='".$signup_name[$i]."' value='1' /> ".CUSTSIG_14)."&nbsp;&nbsp;". ($signupval[$i] == "2" ? "<input type='radio' name='".$signup_name[$i]."' value='2' checked='checked' /> ".CUSTSIG_15 : "<input type='radio' name='".$signup_name[$i]."' value='2' /> ".CUSTSIG_15)."&nbsp;&nbsp;
-
-		</td></tr>";
+			<td style='width:50%' class='forumheader3'>".$signup_title[$i]."</td>
+			<td style='width:50%' class='forumheader3' >". ($signupval[$i] == "0" || $$signup_name[$i] == "" ? "<input type='radio' name='".$signup_name[$i]."' value='0' checked='checked' /> ".CUSTSIG_12 : "<input type='radio' name='".$signup_name[$i]."' value='0' /> ".CUSTSIG_12)."&nbsp;&nbsp;". ($signupval[$i] == "1" ? "<input type='radio' name='".$signup_name[$i]."' value='1' checked='checked' /> ".CUSTSIG_14 : "<input type='radio' name='".$signup_name[$i]."' value='1' /> ".CUSTSIG_14)."&nbsp;&nbsp;". ($signupval[$i] == "2" ? "<input type='radio' name='".$signup_name[$i]."' value='2' checked='checked' /> ".CUSTSIG_15 : "<input type='radio' name='".$signup_name[$i]."' value='2' /> ".CUSTSIG_15)."&nbsp;&nbsp;</td>
+		</tr>";
 }
 
 // Custom Fields.
 
-if ($sql->db_Select("core", " e107_value", " e107_name='user_entended'")) {
-	$row = $sql->db_Fetch();
-	$user_entended = unserialize($row[0]);
-	$c = 0;
-	$user_pref = unserialize($user_prefs);
-	while (list($key, $u_entended) = each($user_entended)) {
-		if ($u_entended) {
-			$ut = explode("|", $u_entended);
-			$u_name = ($ut[0] != "") ? str_replace("_", " ", $ut[0]):
-			 $u_entended;
-			$u_type = $ut[1];
-			$u_value = $ut[2];
-			$signup_ext = "signup_ext";
-			$text .= "
-				<tr>
-				<td style='width:50%' class='forumheader3'>".$u_name." <span class='smalltext'>(custom field)</span></td>
-				<td style='width:50%;text-align:right' class='forumheader3' >". ($pref['signup_ext'.$key] == "0" || $pref['signup_ext'.$key] == "" ? "<input type='radio' name='signup_ext".$key."' value='0' checked='checked' /> ".CUSTSIG_12 : "<input type='radio' name='signup_ext".$key."' value='0' /> ".CUSTSIG_12)."&nbsp;&nbsp;". ($pref['signup_ext'.$key] == "1" ? "<input type='radio' name='signup_ext".$key."' value='1' checked='checked' /> ".CUSTSIG_14 : "<input type='radio' name='signup_ext".$key."' value='1' /> ".CUSTSIG_14)."&nbsp;&nbsp;". ($pref['signup_ext'.$key] == "2" ? "<input type='radio' name='signup_ext".$key."' value='2' checked='checked' /> ".CUSTSIG_15 : "<input type='radio' name='signup_ext".$key."' value='2' /> ".CUSTSIG_15)."&nbsp;&nbsp;". "</td>
-				</tr>";
-		}
+$extList = $ue->user_extended_get_fieldList();
+if($extList)
+{
+	foreach($extList as $ext)
+	{
+		$fname = $ext['user_extended_struct_name'];
+		$fid = $ext['user_extended_struct_id'];
+		$curval = $ext['user_extended_struct_signup'];
+		$text .= "
+			<tr>
+				<td style='width:50%' class='forumheader3'>".$fname." <span class='smalltext'>(custom field)</span></td>
+				<td style='width:50%' class='forumheader3' >
+		";
+		$chk = (!$curval) ? " checked='checked' " : "";
+		$text .= "\n<input type='radio' name='uesignup_{$fid}' {$chk} value='0' /> ".CUSTSIG_12."&nbsp;\n";
+
+		$chk = ($curval == 1) ? " checked='checked' " : "";
+		$text .= "<input type='radio' name='uesignup_{$fid}' {$chk} value='1' /> ".CUSTSIG_14."&nbsp;\n";
+
+		$chk = ($curval == 2) ? " checked='checked' " : "";
+		$text .= "<input type='radio' name='uesignup_{$fid}' {$chk} value='2' /> ".CUSTSIG_15."\n";
+		$text .= "</td></tr>";
+		
 	}
 }
-
-
+	
 $text .= pref_submit();
-
-
 $text .= "</table></div>";
 
-
 /* text render options */
-
-
-//$pref['link_text'] = str_replace("'", "#", $pref['link_text']);
 
 if(!isset($pref['post_html']))
 {
@@ -584,16 +560,7 @@ $text .= "<div id='textpost' style='display:none; text-align:center'>
 
 
 $text .= pref_submit();
-
 $text .= "</table></div>";
-
-
-
-
-
-
-
-
 
 // Security Options. .
 
