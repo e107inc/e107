@@ -71,6 +71,7 @@ if(IsSet($_POST['submitupload'])){
         }
 }
 
+$_POST['news_title'] = $aj -> formtpa($_POST['news_title']);
 if(IsSet($_POST['preview'])){
         $newspost -> preview_item($id);
 }
@@ -325,8 +326,8 @@ class newspost{
                                 list($id, $submitnews_name, $submitnews_email, $_POST['news_title'], $submitnews_category, $_POST['data'], $submitnews_datestamp, $submitnews_ip, $submitnews_auth, $submitnews_file) = $sql-> db_Fetch();
 
                                 if($pref['htmlarea']){
-                                $_POST['data'] .= "<br><b>".NWSLAN_49." ".$submitnews_name."</b>";
-                                $_POST['data'] .= ($submitnews_file)? "<br><br><img src='".e_IMAGE."newspost_images/$submitnews_file' style='float:right; margin-left:5px;margin-right:5px;margin-top:5px;margin-bottom:5px; border:1px solid' />":"";
+                                $_POST['data'] .= "<br /><b>".NWSLAN_49." ".$submitnews_name."</b>";
+                                $_POST['data'] .= ($submitnews_file)? "<br /><br /><img src='".e_IMAGE."newspost_images/$submitnews_file' style='float:right; margin-left:5px;margin-right:5px;margin-top:5px;margin-bottom:5px; border:1px solid' />":"";
                                 }else {
                                 $_POST['data'] .= "\n[[b]".NWSLAN_49." ".$submitnews_name."[/b]]";
                                 $_POST['data'] .= ($submitnews_file)?"\n\n[img]".e_IMAGE."newspost_images/".$submitnews_file." [/img]":"";
@@ -367,6 +368,7 @@ class newspost{
                         }
                         $text .= "</select>";
                 }
+//					$_POST['news_title'] = htmlentities($_POST['news_title'],ENT_QUOTES);
                 $text .= "</td>
                 </tr>
                 <tr>
@@ -552,8 +554,14 @@ class newspost{
                 <td colspan='2'  style='text-align:center' class='forumheader'>";
 
                 if(IsSet($_POST['preview'])){
-                        $text .= "<input class='button' type='submit' name='preview' value='".NWSLAN_24."' /> ".($id && $sub_action != "sn" && $sub_action != "upload" ? "<input class='button' type='submit' name='submit' value='".NWSLAN_25."' /> " : "<input class='button' type='submit' name='submit' value='".NWSLAN_26."' /> ");
-                }else{
+                        $text .= "<input class='button' type='submit' name='preview' value='".NWSLAN_24."' /> ";
+                        if($id && $sub_action != "sn" && $sub_action != "upload"){
+                        	$text .= "<input class='button' type='submit' name='submit' value='".NWSLAN_25."' /> ";
+								$text .= "<br /><span class='smalltext'><input type='checkbox' class='tbox' name='update_datestamp' /> ".NWSLAN_105."</span>";
+                        } else {
+                         $text .= "<input class='button' type='submit' name='submit' value='".NWSLAN_26."' /> ";
+                        }
+                } else {
                         $text .= "<input class='button' type='submit' name='preview' value='".NWSLAN_27."' />";
                 }
                 $text .= "\n</td>
@@ -579,7 +587,6 @@ class newspost{
                 $_POST['comment_total'] = $comment_total;
                 $_POST['news_datestamp'] = time();
 
-                $_POST['news_title'] = $aj -> formtpa($_POST['news_title']);
                 $_POST['data'] = (strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]", "[img]../", $_POST['data']));
                 $_POST['data'] = $aj -> formtpa($_POST['data']);
                 $_POST['news_extended'] = $aj -> formtpa($_POST['news_extended']);
@@ -598,14 +605,14 @@ class newspost{
                 $_POST['admin_id'] = USERID;
                 $_POST['admin_name'] = USERNAME;
                 $_POST['news_datestamp'] = time();
-                if($id && $sub_action != "sn" && $sub_action != "upload"){ $_POST['news_id'] = $id; }
-                else{
-                $sql -> db_Update("submitnews", "submitnews_auth='1' WHERE submitnews_id ='".$id."' ");
-                }
+                if($id && $sub_action != "sn" && $sub_action != "upload"){ 
+                	$_POST['news_id'] = $id;
+                 } else {
+                 	$sql -> db_Update("submitnews", "submitnews_auth='1' WHERE submitnews_id ='".$id."' ");
+                 }
                 if(!$_POST['cat_id']){ $_POST['cat_id'] = 1; }
                 $this->show_message($ix -> submit_item($_POST));
                 unset($_POST['news_title'], $_POST['cat_id'], $_POST['data'], $_POST['news_extended'], $_POST['news_allow_comments'], $_POST['startday'], $_POST['startmonth'], $_POST['startyear'], $_POST['endday'], $_POST['endmonth'], $_POST['endyear'], $_POST['news_id'], $_POST['news_class']);
-                $rsd = new create_rss();
         }
 
         function show_message($message){
@@ -807,116 +814,4 @@ class newspost{
 }
 
 
-class create_rss{
-        function create_rss(){
-                /*
-                # rss create
-                # - parameters                none
-                # - return                                null
-                # - scope                                        public
-                */
-                global $sql;
-                setlocale (LC_TIME, "en");
-                $pubdate = strftime("%a, %d %b %Y %I:%M:00 GMT", time());
-
-                $sitebutton = (strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", e_IMAGE).SITEBUTTON);
-                $sitedisclaimer = ereg_replace("<br />|\n", "", SITEDISCLAIMER);
-
-        $rss = "<?xml version=\"1.0\"?>
-<rss version=\"2.0\">
-<channel>
-  <title>".SITENAME."</title>
-  <link>http://".$_SERVER['HTTP_HOST'].e_HTTP."index.php</link>
-  <description>".SITEDESCRIPTION."</description>
-  <language>en-gb</language>
-  <copyright>".$sitedisclaimer."</copyright>
-  <managingEditor>".SITEADMIN." - ".SITEADMINEMAIL."</managingEditor>
-  <webMaster>".SITEADMINEMAIL."</webMaster>
-  <pubDate>$pubdate</pubDate>
-  <lastBuildDate>$pubdate</lastBuildDate>
-  <docs>http://backend.userland.com/rss</docs>
-  <generator>e107 website system (http://e107.org)</generator>
-  <ttl>60</ttl>
-
-  <image>
-    <title>".SITENAME."</title>
-    <url>".$sitebutton."</url>
-    <link>http://".$_SERVER['HTTP_HOST'].e_HTTP."index.php</link>
-    <width>88</width>
-    <height>31</height>
-    <description>".SITETAG."</description>
-  </image>
-
-  <textInput>
-    <title>Search</title>
-    <description>Search ".SITENAME."</description>
-    <name>query</name>
-    <link>".SITEURL.(substr(SITEURL, -1) == "/" ? "" : "/")."search.php</link>
-  </textInput>
-  ";
-
-        $sql2 = new db;
-
-        $sql -> db_Select("news", "*", "news_class=0 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY news_datestamp DESC LIMIT 0, 10");
-        while($row = $sql -> db_Fetch()){
-                extract($row);
-                $sql2 -> db_Select("news_category", "*",  "category_id='$news_category' ");
-                $row = $sql2 -> db_Fetch(); extract($row);
-                $sql2 -> db_Select("user", "user_name, user_email", "user_id=$news_author");
-                $row = $sql2 -> db_Fetch(); extract($row);
-                $tmp = explode(" ", $news_body);
-                unset($nb);
-                for($a=0; $a<=100; $a++){
-                        $nb .= $tmp[$a]." ";
-                }
-                if($tmp[($a-2)]){ $nb .= " [more ...]"; }
-                  $nb = htmlentities($nb);
-                $nb = str_replace('&pound', '&amp;#163;', $nb);
-                $nb = str_replace('&copy;', 'c.', $nb);
-                // Code from Lisa
-                $search = array();
-                $replace = array();
-                $search[0] = "/\<a href=\"(.*?)\">(.*?)<\/a>/si";
-                $replace[0] = '\\2';
-                $search[1] = "/\<a href='(.*?)'>(.*?)<\/a>/si";
-                $replace[1] = '\\2';
-                $search[2] = "/\<a href='(.*?)'>(.*?)<\/a>/si";
-                $replace[2] = '\\2';
-                $search[3] = "/\<a href=&quot;(.*?)&quot;>(.*?)<\/a>/si";
-                $replace[3] = '\\2';
-                $news_title = preg_replace($search, $replace, $news_title);
-                // End of code from Lisa
-                $wlog .= $news_title."\n".SITEURL."comment.php?".$news_id."\n\n";
-                $itemdate = strftime("%a, %d %b %Y %I:%M:00 GMT", $news_datestamp);
-
-  $rss .= "<item>
-    <title>$news_title</title>
-    <link>http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?".$news_id."</link>
-    <description>$nb</description>
-    <category domain=\"".SITEURL."\">$category_name</category>
-    <comments>http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?".$news_id."</comments>
-    <author>$user_name - $user_email</author>
-    <pubDate>$itemdate</pubDate>
-    <guid isPermaLink=\"true\">http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?".$news_id."</guid>
-  </item>
-  ";
-
-        }
-
-
-        $rss .= "</channel>
-</rss>";
-        $rss = str_replace("&nbsp;", " ", $rss);
-        $fp = fopen(e_FILE."backend/news.xml","w");
-        @fwrite($fp, $rss);
-        fclose($fp);
-        $fp = fopen(e_FILE."backend/news.txt","w");
-        @fwrite($fp, $wlog);
-        fclose($fp);
-        if(!fwrite){
-                $text = "<div style='text-align:center'>".LAN_19."</div>";
-                $ns -> tablerender("<div style='text-align:center'>".LAN_20."</div>", $text);
-        }
-}
-}
 ?>
