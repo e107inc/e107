@@ -228,9 +228,9 @@ if($_POST['useraction'] == 'deluser')
                 {
                         $row = $sql -> db_Fetch();
                         $text .= "<form method='post' action='".e_SELF."'><div style='text-align:center'>\n";
-                        $text .= "
-                        <input type='hidden' name='useraction' value='deluser' />
-                        <input type='hidden' name='userid' value='{$row['user_id']}' />".
+                        $text .= "<div>
+                         <input type='hidden' name='useraction' value='deluser' />
+                        <input type='hidden' name='userid' value='{$row['user_id']}' /></div>".
                         USRLAN_13."
                         <br /><br /><span class='indent'>#{$row['user_id']} : {$row['user_name']}</span>
                         <br /><br />
@@ -477,6 +477,7 @@ class users{
                                 $text .= "</td>
                                 <td style='width:30%; text-align:center' class='forumheader3'>
                                 <form method='post' action='".e_SELF."'>
+                                <div>
                                 <input type='hidden' name='userid' value='{$user_id}' />
                                 <input type='hidden' name='userip' value='{$user_ip}' />
                                 <select name='useraction' onchange='this.form.submit()' class='tbox'>
@@ -514,7 +515,7 @@ class users{
                                                 $text .= "<option value='deluser'>".USRLAN_29."</option>";
 //                                        $text .= $rs -> form_button("submit", "main_$user_id", USRLAN_29, "onclick=\"confirm_('main', '$user_id', '$user_name');\"");
                                 }
-                                $text .= "</select>";
+                                $text .= "</select></div>";
                                  $text .="</form></td></tr>";
                         }
                         $text .= "</table>";
@@ -672,9 +673,11 @@ class users{
                                         </span>
                                         &nbsp;
                                         <form method='post' action='".e_SELF."?extended' onsubmit='return confirm(\"".USRLAN_16."\")'>
+                                        <div>
                                         <input type='hidden' name='eu_action' value='delext' />
                                         <input type='hidden' name='key' value='{$key}' />
                                         <input type='submit' class='button' name='eudel' value='".USRLAN_29."' />
+                                        </div>
                                         </form>
                                         </td>
                                         </tr>";
