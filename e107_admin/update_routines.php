@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2005-03-04 12:41:24 $
-|     $Author: stevedunstan $
+|     $Revision: 1.40 $
+|     $Date: 2005-03-08 16:24:10 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -353,13 +353,27 @@ function update_61x_to_700($type) {
   			PRIMARY KEY  (download_request_id)
 			) TYPE=MyISAM;
 		");
+		
+		// Search Update
+		$sql->db_Insert('core', "'search_prefs', 'a:4:{s:12:\"search_chars\";s:3:\"150\";s:11:\"search_sort\";s:3:\"php\";s:6:\"google\";s:2:\"on\";s:13:\"core_handlers\";a:4:{s:4:\"news\";s:2:\"on\";s:8:\"comments\";s:2:\"on\";s:9:\"downloads\";s:2:\"on\";s:5:\"users\";s:2:\"on\";}}'");
+		//INSERT INTO e107_core VALUES ('search_prefs', 'a:4:{s:12:"search_chars";s:3:"150";s:11:"search_sort";s:3:"php";s:6:"google";s:2:"on";s:13:"core_handlers";a:4:{s:4:"news";s:2:"on";s:8:"comments";s:2:"on";s:9:"downloads";s:2:"on";s:5:"users";s:2:"on";}}');
+        
 } else {
 		// check if update is needed.
 		// FALSE = needed, TRUE = not needed.
+		
+		if ($sql->db_Select("core", "e107_name", "e107_name='search_prefs'")) {
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+		
 		// return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."generic");
+		/*
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."download");
 		$fieldname = mysql_field_name($fields,15);
 	 	return ($fieldname == "download_class") ? TRUE : FALSE;
+	 	*/
 //		return $sql->db_Count('generic','(*)',"WHERE gen_type = 'forum_rules_guest'");
 		/*if ($sql->db_Select("plugin", "plugin_path", "plugin_path='chatbox_menu'")) {
 			return TRUE;

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search_class.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-02-15 11:26:40 $
+|     $Revision: 1.17 $
+|     $Date: 2005-03-08 16:25:03 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -24,20 +24,22 @@ class e_search {
 	var $pos;
 	
 	function e_search() {
-		global $pref;
-		$pref['search_sort'] = 'php';
-		if (!$pref['search_chars']) {
-			$pref['search_chars'] = 150;
+		/*
+		global $search_prefs;
+		$search_prefs['search_sort'] = 'php';
+		if (!$search_prefs['search_chars']) {
+			$search_prefs['search_chars'] = 150;
 		}
 		save_prefs();
+		*/
 	}
 	
 	function parsesearch($table, $return_fields, $search_fields, $weights, $handler, $no_results, $where, $order) {
-		global $sql, $query, $tp, $pref;
+		global $sql, $query, $tp, $search_prefs;
 		$this -> query = $query;	
 		$keywords = explode(' ', $this -> query);
 		$field_query = implode(',', $search_fields);
-		if($pref['search_sort'] == 'php') {
+		if($search_prefs['search_sort'] == 'php') {
 			foreach ($keywords as $key) {
 				foreach ($search_fields as $field) {
 					$search_query[] = " ".$field." REGEXP '[[:<:]]".$key."[[:>:]]' ";
@@ -56,7 +58,7 @@ class e_search {
 			}
 			$sql_query = "SELECT ".$return_fields.", (".$match_query.") AS relevance FROM #".$table." WHERE ".$where." ( MATCH(".$field_query.") AGAINST ('".$this -> query."' IN BOOLEAN MODE) ) HAVING relevance > 0 ORDER BY relevance DESC ".$sql_order.";";
 		}
-		if($pref['search_sort'] == 'php') {
+		if($search_prefs['search_sort'] == 'php') {
 			if (count($keywords) > 1) {
 				$php_keywords[] = $query;
 				foreach ($keywords as $php_key) {
@@ -76,15 +78,19 @@ class e_search {
 					$endcrop = FALSE;
 					$output = '';
 					$title = TRUE;
-					if($pref['search_sort'] == 'php') {
+					if($search_prefs['search_sort'] == 'php') {
 						$weight = 0;
 						$x = 0;
 					}
 					foreach ($matches as $this -> text) {
-						if($pref['search_sort'] == 'php') {
+						if($search_prefs['search_sort'] == 'php') {
 							$exact = TRUE;
 						}
-						$this -> text = strip_tags($tp -> toHTML(str_replace(array('<br />', '[', ']'), array(' ', '<', '>'), nl2br($this -> text)), FALSE));
+						//$this -> text = strip_tags($tp -> toHTML(str_replace(array('<br />', '[', ']'), array(' ', '<', '>'), nl2br($this -> text)), FALSE, 'emotes_off, nobreak'));
+						$this -> text = nl2br($this -> text);
+						$search = array('&#39;', '&#039;', '&#036;', '&quot;', 'onerror', '&lt;', '&gt;', '<br />', '[', ']');
+						$replace = array("'", "'", '$', '"', 'one<i></i>rror', '<', '>', ' ', '<', '>');
+						$this -> text = strip_tags(str_replace($search, $replace, $this -> text));
 						foreach ($keywords as $this -> query) {
 							if (strpos($this -> query, '-') == FALSE) {
 								if (strpos($this -> query, '*') !== FALSE) {
@@ -96,7 +102,7 @@ class e_search {
 								$this -> query = str_replace(array('"', '+'), array('', ''), $this -> query);
 								if (($match_start = stristr($this -> text, $this -> query)) !== FALSE) {
 									$this -> pos = strlen($this -> text) - strlen($match_start);
-									if($pref['search_sort'] == 'php') {
+									if($search_prefs['search_sort'] == 'php') {
 										if ($exact) {
 											$weight += (($weights[$x] * 2) * ($keycount));
 											$endweight = TRUE;
@@ -112,7 +118,7 @@ class e_search {
 									$this -> text = eregi_replace("[[:<:]]".$this -> query.$regex_append, "<span class='searchhighlight'>".$key."</span>", $this -> text);
 								}
 							}
-							if($pref['search_sort'] == 'php') {
+							if($search_prefs['search_sort'] == 'php') {
 								$exact = FALSE;
 							}
 						}
@@ -123,12 +129,12 @@ class e_search {
 						}
 						$output .= $this -> text;
 						$title = FALSE;
-						if($pref['search_sort'] == 'php') {
+						if($search_prefs['search_sort'] == 'php') {
 							$endweight = FALSE;
 							$x++;
 						}
 					}
-					if($pref['search_sort'] == 'php') {
+					if($search_prefs['search_sort'] == 'php') {
 						$relevance = $weight;
 						$output_array['weight'][] = $weight;
 						foreach ($order as $order_key => $order_value) {
@@ -143,7 +149,7 @@ class e_search {
 					$res['omit_result'] = FALSE;
 				}
 			}
-			if($pref['search_sort'] == 'php') {
+			if($search_prefs['search_sort'] == 'php') {
 				$sort_args[] = $output_array['weight'];
 				$sort_args[] = SORT_DESC;
 				foreach ($order as $order_key => $order_value) {
@@ -166,14 +172,14 @@ class e_search {
 	}
 	
 	function parsesearch_crop() {
-		global $pref;
-		if (strlen($this -> text) > $pref['search_chars']) {
-			if ($this -> pos < ($pref['search_chars'] - strlen($this -> query))) {
-				$this -> text = substr($this -> text, 0, $pref['search_chars'])."...";
-			} else if ($this -> pos > (strlen($this -> text) - ($pref['search_chars'] - strlen($this -> query)))) {
-				$this -> text = "...".substr($this -> text, (strlen($this -> text) - ($pref['search_chars'] - strlen($this -> query))));
+		global $search_prefs;
+		if (strlen($this -> text) > $search_prefs['search_chars']) {
+			if ($this -> pos < ($search_prefs['search_chars'] - strlen($this -> query))) {
+				$this -> text = substr($this -> text, 0, $search_prefs['search_chars'])."...";
+			} else if ($this -> pos > (strlen($this -> text) - ($search_prefs['search_chars'] - strlen($this -> query)))) {
+				$this -> text = "...".substr($this -> text, (strlen($this -> text) - ($search_prefs['search_chars'] - strlen($this -> query))));
 			} else {
-				$this -> text = "...".substr($this -> text, ($this -> pos - round(($pref['search_chars'] / 3))), $pref['search_chars'])."...";
+				$this -> text = "...".substr($this -> text, ($this -> pos - round(($search_prefs['search_chars'] / 3))), $search_prefs['search_chars'])."...";
 			}
 			$match_start = stristr($this -> text, $this -> query);
 			$this -> pos = strlen($this -> text) - strlen($match_start);

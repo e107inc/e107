@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_search.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:11:56 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-03-08 16:25:04 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Search");
@@ -14,14 +14,8 @@ define("PAGE_NAME", "Search");
 define("LAN_20", "Error");
 define("LAN_98", "News Items");
 define("LAN_99", "Comments");
-define("LAN_100", "Articles");
-define("LAN_101", "Chatbox");
-define("LAN_102", "Links");
-define("LAN_103", "Forum");
 define("LAN_140", "Registered members");
 define("LAN_180", "Search");
-define("LAN_190", "Reviews");
-define("LAN_191", "Content");
 define("LAN_192", "All categories");
 define("LAN_193", "Event Calendar");
 define("LAN_194", "All Categories");

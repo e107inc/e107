@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/administrator.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-01-27 19:52:24 $
-|     $Author: streaky $
+|     $Revision: 1.9 $
+|     $Date: 2005-03-08 16:24:10 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -195,6 +195,7 @@ $text .= checkb("G", $a_perms).ADMSLAN_32."<br />";
 $text .= checkb("S", $a_perms).ADMSLAN_33."<br />";
 $text .= checkb("T", $a_perms).ADMSLAN_34."<br />";
 $text .= checkb("V", $a_perms).ADMSLAN_35."<br />";
+$text .= checkb("X", $a_perms).ADMSLAN_66."<br />";
 	
 $text .= checkb("A", $a_perms).ADMSLAN_36."<br />";
 $text .= checkb("B", $a_perms).ADMSLAN_37."<br />";
