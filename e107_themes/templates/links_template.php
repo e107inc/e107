@@ -78,5 +78,64 @@ if(!$LINK_CAT_TABLE_END){
 }
 // ##### ------------------------------------------------------------------------------------------
 
+// ##### SUBMIT -----------------------------------------------------------------------------------
+if(!$LINK_SUBMIT_TABLE_START){
+	$LINK_SUBMIT_TABLE_START = "
+	<div style='text-align:center'>
+	<form method='post' action='".e_SELF."'>
+	<table class='fborder' cellspacing='0' cellpadding='0' style='width:95%'>";
+}
+if(!$LINK_SUBMIT_TABLE){   
+		$LINK_SUBMIT_TABLE .= "
+		<tr>
+			<td colspan='2' style='text-align:center' class='forumheader2'>".LAN_93."</td>
+		</tr>
+		<tr>
+			<td class='forumheader3' style='width:30%'>".LAN_86."</td>
+			<td class='forumheader3' style='width:70%'>
+				{LINK_SUBMIT_CAT}
+			</td>
+		</tr>
+		<tr>
+			<td class='forumheader3' style='width:30%'><u>".LAN_94."</u></td>
+			<td class='forumheader3' style='width:30%'>
+				<input class='tbox' type='text' name='link_name' size='60' value='' maxlength='100' />
+			</td>
+		</tr>
+		<tr>
+			<td class='forumheader3' style='width:30%'><u>".LAN_95."</u></td>
+			<td class='forumheader3' style='width:30%'>
+				<input class='tbox' type='text' name='link_url' size='60' value='' maxlength='200' />
+			</td>
+		</tr>
+		<tr>
+			<td class='forumheader3' style='width:30%'><u>".LAN_96."</u></td>
+			<td class='forumheader3' style='width:30%'>
+				<textarea class='tbox' name='link_description' cols='59' rows='3'></textarea>
+			</td>
+		</tr>
+		<tr>
+			<td class='forumheader3' style='width:30%'>".LAN_97."</td>
+			<td class='forumheader3' style='width:30%'>
+				<input class='tbox' type='text' name='link_button' size='60' value='' maxlength='200' />
+			</td>
+		</tr>
+		<tr>
+			<td colspan='2' style='text-align:center' class='forumheader3'><span class='smalltext'>".LAN_106."</span></td>
+		</tr>
+		<tr>
+			<td colspan='2' style='text-align:center' class='forumheader'>
+				<input class='button' type='submit' name='add_link' value='".LAN_98."' />
+			</td>
+		</tr>
+		";
+
+}
+if(!$LINK_SUBMIT_TABLE_END){
+	$LINK_SUBMIT_TABLE_END = "
+	</table></form></div>\n";
+}
+// ##### ------------------------------------------------------------------------------------------
+
 
 ?>
