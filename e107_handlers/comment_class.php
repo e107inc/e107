@@ -12,7 +12,7 @@
 |	GNU General Public License (http://gnu.org).	
 +---------------------------------------------------------------+
 */
-@include(e_LANGUAGEDIR.$language."/lan_comment.php");
+@include(e_LANGUAGEDIR.e_LANGUAGE."/lan_comment.php");
 @include(e_LANGUAGEDIR."English/lan_comment.php");
 class comment{
 
