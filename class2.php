@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.89 $
-|     $Date: 2005-02-23 21:15:22 $
+|     $Revision: 1.90 $
+|     $Date: 2005-02-23 22:08:03 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -170,29 +170,29 @@ PHP Compatabilty should *always* be on. */
 e107_require_once(e_HANDLER."PHP_Compat_handler.php");
 e107_require_once(e_HANDLER."e107_Compat_handler.php");
 
+
+e107_require_once(e_HANDLER."pref_class.php");
+$sysprefs = new prefs;
+
 // Extract core prefs from the database
 e107_require_once(e_HANDLER.'cache_handler.php');
 e107_require_once(e_HANDLER.'arraystorage_class.php');
+$eArrayStorage = new ArrayData();
 
 $sql->db_Mark_Time('Start: Extracting Core Prefs');
-$eArrayStorage = new ArrayData();
 $PrefCache = ecache::retrieve('SitePrefs', 24 * 60, true);
-
 if(!$PrefCache){
 	// No cache of the prefs array, going for the db copy..
-	$sql->db_Select('core', '*', '`e107_name` = \'SitePrefs\'');
-	$row = $sql->db_Fetch();
-	$pref = $eArrayStorage->ReadArray($row['e107_value']);
+	$sysprefs->ExtractPrefs();
+	$PrefData = $sysprefs->get('SitePrefs');
+	$pref = $eArrayStorage->ReadArray($PrefData);
 	if(!$pref){
 		message_handler("CRITICAL_ERROR", 3, __LINE__, __FILE__);
-		$sql->db_Select('core', '*', '`e107_name` = \'SitePrefs_Backup\'');
-		$row = $sql->db_Fetch();
-		$PrefStored = $row['e107_value'];
-		$pref = $eArrayStorage->ReadArray($row['e107_value']);
+		$PrefData = $sysprefs->get('SitePrefs_Backup');
+		$pref = $eArrayStorage->ReadArray($PrefData);
 		if(!$pref){
-			$sql->db_Select("core", '*', '`e107_name` = \'pref\'');
-			$row = $sql->db_Fetch();
-			$pref = unserialize($row['e107_value']);
+			$PrefData = $sysprefs->get('pref');
+			$pref = unserialize($PrefData);
 			if(!is_array($pref)){
 				message_handler("CRITICAL_ERROR", 4, __LINE__, __FILE__);
 				exit;
@@ -214,8 +214,17 @@ if(!$PrefCache){
 	}
 	$PrefCache = $eArrayStorage->WriteArray($pref, false);
 	ecache::set('SitePrefs', $PrefCache);
+} else {
+	$sysprefs->DefaultIgnoreRows .= '|SitePrefs';
+	$sysprefs->prefVals['core']['SitePrefs'] = $PrefCache;
+	$sysprefs->ExtractPrefs();
+	$pref = $eArrayStorage->ReadArray($PrefCache);
 }
-$pref = $eArrayStorage->ReadArray($PrefCache);
+
+//print_r($sysprefs->prefVals);
+
+$menu_pref = unserialize(stripslashes($sysprefs->get('menu_pref')));
+
 $sql->db_Mark_Time('(Extracting Core Prefs Done)');
 
 if (!$pref['cookie_name']) {
@@ -229,11 +238,6 @@ if ($pref['user_tracking'] == "session") {
 $pref['htmlarea']=false;
 
 define("e_SELF", ($pref['ssl_enabled'] ? "https://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']) : "http://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'])));
-
-e107_require_once(e_HANDLER."pref_class.php");
-$sysprefs=new prefs;
-
-$menu_pref=$sysprefs->getArray('menu_pref');
 
 // Cameron's Mult-lang switch. ==================
 
