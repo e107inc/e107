@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banner.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-04-02 10:04:21 $
-|     $Author: e107coders $
+|     $Revision: 1.15 $
+|     $Date: 2005-04-06 21:27:44 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -663,28 +663,14 @@ function banner_adminmenu() {
 	$var['create']['text'] = BNRLAN_59;
 	$var['create']['link'] = e_SELF."?create";
 
-	$var['campaign']['text'] = "campaigns";
+	$var['campaign']['text'] = BNRLAN_60;
 	$var['campaign']['link'] = e_SELF."?cam";
 
-	$var['menu']['text'] = "banner menu";
+	$var['menu']['text'] = BNRLAN_61;
 	$var['menu']['link'] = e_SELF."?menu";
 
 	show_admin_menu(BNRLAN_62, $act, $var);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 require_once("footer.php");
 
