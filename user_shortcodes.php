@@ -315,7 +315,7 @@ if ($ueList)
 	$ret = $EXTENDED_START;
 	foreach($ueList as $key => $ext)
 	{
-		if($ue_name = $tp->parseTemplate("{EXTENDED={$key}.name.{$user_id}}", TRUE))
+		if($ue_name = $tp->parseTemplate("{EXTENDED={$key}.text.{$user_id}}", TRUE))
 		{
 			$extended_record = str_replace("EXTENDED_ICON","EXTENDED={$key}.icon", $EXTENDED_TABLE);
 			$extended_record = str_replace("{EXTENDED_NAME}", $ue_name, $extended_record);

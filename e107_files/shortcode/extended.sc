@@ -1,4 +1,4 @@
-//USAGE:  {EXTENDED=<field_name>.[name|value|icon].<user_id>}
+//USAGE:  {EXTENDED=<field_name>.[text|value|icon].<user_id>}
 //EXAMPLE: {EXTENDED=user_gender.value.5}  will show the value of the extended field user_gender for user #5
 $parms = explode(".", $parm);
 global $currentUser, $sql, $tp;
@@ -14,10 +14,10 @@ else
 	if(!$udata)
 	{
 		$qry = "
-			SELECT u.*, ue.* FROM #user AS u
-			LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id
-			WHERE u.user_id='{$parms[2]}'
-			";
+		SELECT u.*, ue.* FROM #user AS u
+		LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id
+		WHERE u.user_id='{$parms[2]}'
+		";
 		if($sql->db_Select_gen($qry))
 		{
 			$udata = $sql->db_Fetch();
@@ -31,18 +31,18 @@ if(!check_class($ueStruct[$parms[0]]['user_extended_struct_applicable'], $udata[
 	return FALSE;
 }
 
-if ($parms[1] == 'name')
+if ($parms[1] == 'text')
 {
-	return $ueStruct[$parms[0]]['user_extended_struct_name'];
+	return $ueStruct[$parms[0]]['user_extended_struct_text'];
 }
 
 if ($parms[1] == 'icon')
 {
 	if(defined(strtoupper($parms[0])."_ICON"))
 	{
-		return constant(strtoupper($parms[0])."_ICON");	
+		return constant(strtoupper($parms[0])."_ICON");
 	}
-		elseif(file_exists(e_IMAGE."user_icons/{$parms[0]}.png"))
+	elseif(file_exists(e_IMAGE."user_icons/{$parms[0]}.png"))
 	{
 		return "<img src='".e_IMAGE."user_icons/{$parms[0]}.png' style='width:16px; height:16px' alt='' />";
 	}
