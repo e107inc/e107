@@ -89,7 +89,7 @@ define("NWSLAN_82","Insert download");
 define("NWSLAN_83","Extended news post");
 define("NWSLAN_83","and");
 define("NWSLAN_84","Choose which visitors will see news item");
-define("NWSALAN_85", "submitted by");
+define("NWSLAN_85", "submitted by");
 
 define("NWSLAN_86", "Show News-Category Footer Menu");
 define("NWSLAN_87", "News Category Columns?");

@@ -320,8 +320,9 @@ class newspost{
 
                 if($sub_action == "sn" && !$_POST['preview']){
                         if($sql -> db_Select("submitnews", "*", "submitnews_id=$id", TRUE)){
-                                list($id, $submitnews_name, $submitnews_email, $_POST['news_title'], $_POST['data']) = $sql-> db_Fetch();
+                                list($id, $submitnews_name, $submitnews_email, $_POST['news_title'], $submitnews_category, $_POST['data']) = $sql-> db_Fetch();
                                 $_POST['data'] .= "\n[[b]".NWSLAN_49." ".$submitnews_name."[/b]]";
+								$_POST['cat_id'] = $submitnews_category;
                         }
                 }
 
