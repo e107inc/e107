@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/upload.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-27 19:51:38 $
-|     $Author: streaky $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-09 16:42:44 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -25,14 +25,6 @@ if (!$pref['upload_enabled'] || $pref['upload_class'] == 255) {
 	
 require_once(HEADERF);
 	
-/*
-if ($pref['upload_class'] == 254 && !USER){
-$text = "<div style='text-align:center'>".LAN_402."</div>";
-$ns->tablerender(LAN_20, $text);
-require_once(FOOTERF);
-exit;
-}else if(!check_class($pref['upload_class']) && $pref['upload_class']){
-*/
 if (!check_class($pref['upload_class'])) {
 	$text = "<div style='text-align:center'>".LAN_403."</div>";
 	$ns->tablerender(LAN_20, $text);
@@ -63,7 +55,7 @@ if (isset($_POST['upload'])) {
 			if (is_array($uploaded)) {
 				$poster = (USER ? USERID.".".USERNAME : "0".$_POST['file_poster']);
 				$_POST['file_email'] = ($_POST['file_email'] ? $_POST['file_email'] : USEREMAIL);
-				$_POST['file_description'] = $aj->formtpa($_POST['file_description'], "public");
+				$_POST['file_description'] = $tp->toDB($_POST['file_description']);
 				$sql->db_Insert("upload", "0, '$poster', '".$_POST['file_email']."', '".$_POST['file_website']."', '".time()."', '".$_POST['file_name']."', '".$_POST['file_version']."', '".$file."', '".$image."', '".$_POST['file_description']."', '".$_POST['file_demo']."', '".$filesize."', 0, '".$_POST['download_category']."'");
 				$message .= "<br />".LAN_404;
 			}
