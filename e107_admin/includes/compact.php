@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/includes/compact.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-03-08 16:58:38 $
+|     $Revision: 1.6 $
+|     $Date: 2005-03-09 10:40:42 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -23,7 +23,8 @@ $text = "<div style='text-align:center'>
 while (list($key, $funcinfo) = each($newarray)) {
 	$text .= render_links($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3], $funcinfo[5], 'default');
 }
-	
+
+$text_cat = '';
 while ($td <= 5) {
 	$text_cat .= "<td class='td' style='width:20%;' ></td>";
 	$td++;

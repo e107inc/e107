@@ -1,6 +1,6 @@
 if (ADMIN) {
+	global $ns, $sql, $pref;
 	if ($pref['multilanguage']) {
-		global $ns, $sql, $pref;
 		require_once(e_PLUGIN."userlanguage_menu/languages/".e_LANGUAGE.".php");
 		$handle=opendir(e_LANGUAGEDIR);
 		while ($file = readdir($handle)){

@@ -1,6 +1,6 @@
 if(ADMIN){
 	global $sql,$pst,$ns,$tp,$e_wysiwyg,$pref;
-	if($pst->form && $pst->page){
+	if(isset($pst) && $pst->form && $pst->page){
 		$thispage = urlencode(e_SELF."?".e_QUERY);
 		if(is_array($pst->page)){
 		for ($i=0; $i<count($pst->page); $i++) {

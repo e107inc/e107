@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-01-30 03:43:12 $
+|     $Revision: 1.18 $
+|     $Date: 2005-03-09 10:39:58 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -22,6 +22,7 @@ require_once('auth.php');
 require_once(e_HANDLER.'admin_handler.php');
 
 // update users using old layout names to their new names
+$update_prefs = FALSE;
 if (!$pref['adminstyle'] || $pref['adminstyle'] == 'default') {
 	$pref['adminstyle'] = 'compact';
 	$update_prefs = true;
@@ -64,8 +65,8 @@ if ($update_prefs == true) {
 	
 // auto db update
 if ('0' == ADMINPERMS) {
-	@require_once(e_ADMIN.'update_routines.php');
-	@update_check();
+	require_once(e_ADMIN.'update_routines.php');
+	update_check();
 }
 // end auto db update
 	
@@ -76,6 +77,7 @@ if (e_QUERY == 'purge') {
 $td = 1;
 function render_links($link, $title, $description, $perms, $icon = FALSE, $mode = FALSE) {
 	global $td;
+	$text = '';
 	if (getperms($perms)) {
 		if ($mode == 'adminb') {
 			$text = "<tr><td class='forumheader3'>
@@ -125,7 +127,7 @@ function admin_info() {
 		<table style='width: 100%; border-collapse:collapse; border-spacing:0px;'>
 		<tr>
 		<td style='width: 33%; vertical-align: top'>";
-	 
+
 	$text .= $tp->parseTemplate('{ADMIN_STATUS}');
 	 
 	$text .= "</td>
@@ -140,7 +142,7 @@ function admin_info() {
 	 
 	$text .= "</td>
 		</tr></table>";
-	 
+
 	return $text;
 }
 	
