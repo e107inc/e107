@@ -33,8 +33,12 @@ if(file_exists(THEME."theme.js")){echo "<script type='text/javascript' src='".TH
 if(file_exists(e_FILE."user.js")){echo "<script type='text/javascript' src='".e_FILE."user.js'></script>\n";}
 
 echo "<script type=\"text/javascript\">
-<!--
-var listpics = new Array();
+<!--\n";
+if($pref['log_activate']){
+	echo "
+document.write( '<link rel=\"stylesheet\" type=\"text/css\" href=\"".e_PLUGIN."log/log.php?referer=' + ref + '&color=' + colord + '&eself=' + eself + '&res=' + res + '\">' );";
+}
+echo "var listpics = new Array();
 ";
 $handle=opendir(THEME."images");
 $nbrpic=0;

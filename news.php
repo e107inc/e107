@@ -93,6 +93,10 @@ if(eregi("extend", e_QUERY)){
 	exit;
 }
 
+if($pref['nfp_display'] == 1){
+	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
+}
+
 if(!e_QUERY || eregi("cat", e_QUERY)){ $from = 0; }else{ $from = e_QUERY; }
 if(Empty($order)){ $order = "news_datestamp"; }
 

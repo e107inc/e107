@@ -17,6 +17,7 @@
 if($cache = retrieve_cache("review_menu")){
 	$aj = new textparse;
 	$cache = str_replace("e107_themes/", e_THEME, $cache);
+	$cache = str_replace("<a href=&#39;", "<a href=&#39;".e_BASE, $cache);
 	echo $aj -> formtparev($cache);
 }else{
 

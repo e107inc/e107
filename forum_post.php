@@ -215,7 +215,6 @@ if(IsSet($_POST['newthread'])){
 		<td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'><img src='".e_IMAGE."forum/e.png' alt='' />&nbsp;</td>
 		<td style='vertical-align:center; width:80%' class='forumheader2'>
 		<br />".LAN_324."<br />
-
 		<span class='defaulttext'><a href='".e_BASE."forum_viewtopic.php?".$thread_forum_id.".".$thread_id."#$iid'>".LAN_325."</a><br />
 		<a href='".e_BASE."forum_viewforum.php?".$forum_id."'>".LAN_326."</a></span><br /><br />
 		</td></tr></table>";
@@ -231,12 +230,6 @@ if(IsSet($_POST['reply'])){
 	}else{
 		if($fp -> flood("forum_t", "thread_datestamp") == FALSE){
 			header("location: ".e_BASE."index.php");
-			exit;
-		}
-
-		if($sql -> db_Select("forum_t", "*", "thread_thread='".$_POST['post']."' AND thread_id='$thread_id' ")){
-			$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_389."</div>");
-			require_once(FOOTERF);
 			exit;
 		}
 
@@ -263,6 +256,12 @@ if(IsSet($_POST['reply'])){
 
 		$post = (ADMIN ? $aj -> formtpa($_POST['post']) : $aj -> formtpa($_POST['post'], "public"));
 		$subject = (ADMIN ? $aj -> formtpa($_POST['subject']) : $aj -> formtpa($_POST['subject'], "public"));
+
+		if($sql -> db_Select("forum_t", "*", "thread_thread='$post' AND thread_id='$thread_id' ")){
+			$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_389."</div>");
+			require_once(FOOTERF);
+			exit;
+		}
 
 		if(strstr($user, chr(1))){
 			$tmp = explode(chr(1), $user);
@@ -302,6 +301,11 @@ if(IsSet($_POST['reply'])){
 		}
 
 		require_once(HEADERF);
+
+		$replies = $sql -> db_Count("forum_t", "(*)", "WHERE thread_parent='".$thread_id."'");
+		$pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
+		$pages = ((ceil($replies/$pref['forum_postspage']) -1) * $pref['forum_postspage']);
+
 		echo "<table style='width:100%' class='fborder'>
 		<tr>
 		<td class='fcaption' colspan='2'>".LAN_133."</td>
@@ -310,7 +314,7 @@ if(IsSet($_POST['reply'])){
 		<td style='vertical-align:center; width:80%' class='forumheader2'>
 		<br />".LAN_324."<br />
 
-		<span class='defaulttext'><a href='".e_BASE."forum_viewtopic.php?".$thread_forum_id.".".$thread_id."#$iid'>".LAN_325."</a><br />
+		<span class='defaulttext'><a href='".e_BASE."forum_viewtopic.php?".$thread_forum_id.".".$thread_id.".".$pages."#$iid'>".LAN_325."</a><br />
 		<a href='".e_BASE."forum_viewforum.php?".$forum_id."'>".LAN_326."</a></span><br /><br />
 		</td></tr></table>";
 		$sql -> db_Delete("cache", "cache_url='newforumposts'");

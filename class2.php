@@ -47,16 +47,18 @@ $num_levels=substr_count($tmp[0],"/");
 for($i=1;$i<=$num_levels;$i++){ 
 	$link_prefix.="../";
 }
-$e_BASE = $link_prefix;
+
 define("e_QUERY", eregi_replace("(.?)([a-zA-Z]*\(.*\))(.*)", "\\1\\3", eregi_replace("&|/?PHPSESSID.*", "", $_SERVER['QUERY_STRING'])));
 $_SERVER['QUERY_STRING'] = e_QUERY;
-define("e_IMAGE", $e_BASE.$IMAGES_DIRECTORY);
-define("e_THEME", $e_BASE.$THEMES_DIRECTORY);
-define("e_PLUGIN", (defined("CORE_PATH") ? $e_BASE.SUBDIR_SITE."/".$PLUGINS_DIRECTORY : $e_BASE.$PLUGINS_DIRECTORY));
-define("e_FILE", $e_BASE.$FILES_DIRECTORY);
-define("e_HANDLER", $e_BASE.$HANDLERS_DIRECTORY);
-define("e_LANGUAGEDIR", $e_BASE.$LANGUAGES_DIRECTORY);
-define("e_DOCS", $e_BASE.$HELP_DIRECTORY);
+define('e_BASE',$link_prefix);
+define("e_ADMIN", e_BASE.$ADMIN_DIRECTORY);
+define("e_IMAGE", e_BASE.$IMAGES_DIRECTORY);
+define("e_THEME", e_BASE.$THEMES_DIRECTORY);
+define("e_PLUGIN", (defined("CORE_PATH") ? e_BASE.SUBDIR_SITE."/".$PLUGINS_DIRECTORY : e_BASE.$PLUGINS_DIRECTORY));
+define("e_FILE", e_BASE.$FILES_DIRECTORY);
+define("e_HANDLER", e_BASE.$HANDLERS_DIRECTORY);
+define("e_LANGUAGEDIR", e_BASE.$LANGUAGES_DIRECTORY);
+define("e_DOCS", e_BASE.$HELP_DIRECTORY);
 define("e_DOCROOT",$_SERVER['DOCUMENT_ROOT']."/");
 define("e_UC_PUBLIC", 0);
 define("e_UC_READONLY", 251);
@@ -75,7 +77,7 @@ require_once(e_HANDLER."message_handler.php");
 require_once(e_HANDLER."mysql_class.php");
 
 $sql = new db;
-$sql -> db_SetErrorReporting(TRUE);
+$sql -> db_SetErrorReporting(FALSE);
 $merror = $sql -> db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
 
 if($merror == "e1"){ message_handler("CRITICAL_ERROR", 6,  ": generic, ", "class2.php"); exit;
@@ -102,6 +104,7 @@ if(!is_array($pref)){
 	}
 }
 if(!$pref['cookie_name']){ $pref['cookie_name'] = "e107cookie"; }
+//if($pref['user_tracking'] == "session"){ require_once(e_HANDLER."session_handler.php"); }	// if your server session handling is misconfigured uncomment this line and comment the next to use custom session handler
 if($pref['user_tracking'] == "session"){ session_start(); }
 
 define("e_SELF", ($pref['ssl_enabled'] ? "https://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']) : "http://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'])));
@@ -124,7 +127,7 @@ if($pref['frontpage'] && $pref['frontpage_type'] == "splash"){
 			header("location: ".$pref['frontpage']);
 			exit;
 		}else{
-			header("location: ".$e_BASE.$pref['frontpage'].".php");
+			header("location: ".e_BASE.$pref['frontpage'].".php");
 			exit;
 		}
 	}
@@ -134,9 +137,9 @@ init_session();
 online();
 
 $fp = ($pref['frontpage'] ? $pref['frontpage'].".php" : "news.php index.php");
-$signuplink = (file_exists($e_BASE."customsignup.php"))? "customsignup.php" : "signup.php";
-if($pref['membersonly_enabled'] && !USER && !strstr($fp, e_PAGE) && e_PAGE != "$signuplink" && e_PAGE != "index.php"){
-	echo "<br /><br /><div style='text-align:center; font: 12px Verdana, Tahoma'>This is a restricted area, to access it either log in or <a href='".$e_BASE.$signuplink."'>register as a member</a>.<br /><br /><a href='".$e_BASE."index.php'>Click here to return to front page</a>.</div>";
+$signuplink = (file_exists(e_BASE."customsignup.php"))? "customsignup.php" : "signup.php";
+if($pref['membersonly_enabled'] && !USER && !strstr($fp, e_PAGE) && e_PAGE != "$signuplink" && e_PAGE != "index.php" && e_PAGE != "fpw.php"){
+	echo "<br /><br /><div style='text-align:center; font: 12px Verdana, Tahoma'>This is a restricted area, to access it either log in or <a href='".e_BASE.$signuplink."'>register as a member</a>.<br /><br /><a href='".e_BASE."index.php'>Click here to return to front page</a>.</div>";
 	exit;
 }
 
@@ -172,7 +175,7 @@ define(e_LANGUAGE, (!USERLAN || !defined("USERLAN") ? $language : USERLAN));
 
 if($pref['maintainance_flag'] && ADMIN == FALSE && !eregi("admin", e_SELF)){
 	@include(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitedown.php");
-	require_once($e_BASE."sitedown.php"); exit;
+	require_once(e_BASE."sitedown.php"); exit;
 }
 
 if(defined("CORE_PATH") && ($page == "index.php" || !$page)){ $page = "news.php"; }
@@ -192,7 +195,7 @@ if(IsSet($_POST['userlogin'])){
 if(e_QUERY == "logout"){
 	if($pref['user_tracking'] == "session"){ session_destroy(); $_SESSION[$pref['cookie_name']] = ""; }
 	cookie($pref['cookie_name'], "", (time()-2592000));
-	echo "<script type='text/javascript'>document.location.href='".$e_BASE."index.php'</script>\n";
+	echo "<script type='text/javascript'>document.location.href='".e_BASE."index.php'</script>\n";
 	exit;
 }
 ban();
@@ -240,11 +243,7 @@ define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
 define("FILE_UPLOADS", (ini_get('file_uploads') ? TRUE : FALSE));
 define("INIT", TRUE);
 
-define("e_BASE", (defined("CORE_PATH") ? e_HTTP."/index.php?" : $e_BASE));
-
 define("e_ADMIN", $e_BASE.$ADMIN_DIRECTORY);
-define("e_ADMIN_L", (defined("CORE_PATH") ? e_HTTP."/admin.php?" : $e_BASE.$ADMIN_DIRECTORY));
-
 
 
 //require_once(e_HANDLER."IPB_int.php");
@@ -425,6 +424,8 @@ class textparse{
 		$search[25] = "#\[quote\](.*?)\[/quote\]#si";
 		$replace[25] = '<i>"\1"</i>';
 
+
+
 		$text = preg_replace($search, $replace, $text);
 		if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
 		$search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;span", "&lt;/span");
@@ -446,6 +447,12 @@ class textparse{
 		global $sql, $pref;
 
 		if($mode != "admin"){
+			if(strstr($text, "javascript") || strstr($text, "expression")){
+				$ip = getip();
+				$text = "<br />This message has been generated by e107 ...<br /><b>I attempted to post malicious code to this site. My user name is ".(defined("USERNAME") ? USERNAME : "Anonymous").", my IP address is $ip".(USEREMAIL ? ", my email address is ".USEREMAIL : "").". Please inform the site administrator immediately.</b>";
+				return $text;
+			}
+
 			for($r=0; $r<=strlen($text); $r++){
 				$chars[$text[$r]] = 1;
 			}
@@ -575,7 +582,7 @@ function save_prefs($table = "core", $uid=USERID){
 
 function online(){
 	global $e_BASE;
-	$page = e_SELF;
+	$page = (strstr(e_SELF, "forum_") ? e_SELF.".".e_QUERY : e_SELF);
 	$sql = new db;
 	$ip = getip();
 	$udata = (USER ? USERID.".".USERNAME : 0);

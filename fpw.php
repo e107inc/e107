@@ -64,8 +64,6 @@ if(IsSet($_POST['pwsubmit'])){
 			$text = "<div style='text-align:center'>".LAN_02."</div>";
 		}
 
-		echo $message;
-
 		$ns -> tablerender(LAN_03, $text);
 		require_once(FOOTERF);
 		exit;

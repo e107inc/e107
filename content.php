@@ -39,6 +39,61 @@ if(IsSet($_POST['commentsubmit'])){
 	$sql -> db_Delete("cache", "cache_url='comment.content.$sub_action' ");
 }
 
+// content page -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+if($action == "content"){
+
+	if(!$sql -> db_Select("content", "*", "content_id=$sub_action AND content_type=1")){
+		header("location: ".e_BASE."index.php");
+		exit;
+	}
+	$row = $sql -> db_Fetch(); extract($row);
+
+	if($cache = retrieve_cache("content.$sub_action")){
+		echo $aj -> formtparev($cache);
+	}else{
+		ob_start();
+		
+		if(!check_class($content_class)){
+			$ns->tablerender(LAN_52, "<div style='text-align:center'>".LAN_51."</div>");
+			require_once(FOOTERF);
+			exit;
+		}
+
+		$text = ($content_parent ? $aj -> tpa($content_content, "nobreak") : $aj -> tpa($content_content));
+		$caption = $aj -> tpa($content_subheading);
+		$ns -> tablerender($caption, $text);
+		
+		if($pref['cachestatus']){
+			$cache = $aj -> formtpa(ob_get_contents(), "admin");
+			set_cache("content.$sub_action", $cache);
+		}
+	}
+
+	if($content_comment){
+		if($cache = retrieve_cache("comment.content.$sub_action")){
+			echo $aj -> formtparev($cache);
+		}else{
+			ob_start();
+			unset($text);
+			if($comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='$sub_action' AND comment_type='1' ORDER BY comment_datestamp")){
+				while($row = $sql -> db_Fetch()){
+					$text .= $cobj -> render_comment($row);
+				}
+				$ns -> tablerender(LAN_5, $text);
+				if($pref['cachestatus']){
+					$cache = $aj -> formtpa(ob_get_contents(), "admin");
+					set_cache("comment.content.$sub_action", $cache);
+				}
+			}
+		}
+		if(ADMIN && getperms("B") && $comment_total){
+			echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?content.$sub_action'>".LAN_29."</a></div><br />";
+		}
+		$cobj -> form_comment();
+	}
+}
+	
+
 // ##### Review List -----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 if($action == "review"){

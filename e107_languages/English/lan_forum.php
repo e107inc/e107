@@ -13,8 +13,7 @@ define("LAN_37", "It is now ");
 define("LAN_38", ", all times are ");
 define("LAN_41", "Newest member: ");
 define("LAN_42", "Registered members: ");
-define("LAN_43", "These forums can be browsed and posted to by non-registered users, but if you wish to see info related to new posts, edit/delete your posts etc you will have to <a href='".e_BASE."signup.php'>register</a> and log in.");
-define("LAN_44", "These forums can be browsed and posted to by non-registered users, ip addresses and host will be logged.");
+define("LAN_44", "These forums can be used by non-registered users, but please be aware that your IP Address will be logged if you make a post.<br />To access the full features of this forum  you will need to <a href='".e_BASE."signup.php'>register</a> and log in.");
 define("LAN_45", "These forums can only be posted to by registered and logged in members, please click <a href='".e_BASE."signup.php'>here</a> to go to the registration page.");
 define("LAN_46", "Forum");
 define("LAN_47", "Threads");
@@ -28,7 +27,7 @@ define("LAN_81", "Closed thread");
 define("LAN_100", "articles");
 define("LAN_180", "Search");
 define("LAN_191", "Information");
-define("LAN_192", "The users of this forum have posted a total of ");
+define("LAN_192", "The users of this forum have made a total of ");
 define("LAN_196", "You have read ");
 define("LAN_197", " of these posts.");
 define("LAN_198", " All new posts have been read.");
@@ -49,5 +48,15 @@ define("LAN_400", "This forum can only be browsed by registered members");
 define("LAN_401", "Members only");
 
 define("LAN_402", "This forum is read only");
+
+define("LAN_403", "No posts yet");
+define("LAN_404", "posts");
+define("LAN_405", "Read Only");
+
+define("LAN_406", "This forum is restricted to administrators only");
+define("LAN_407", "This forum is restricted to members only");
+define("LAN_408", "This is a read-only forum");
+define("LAN_409", "This is a class restricted forum");
+define("LAN_410", "Welcome guest");
 
 ?>

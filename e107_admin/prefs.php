@@ -490,7 +490,7 @@ $text .= "</select>
 </tr>
 
 <tr>
-<td style='width:50%' class='forumheader3'>".PRFLAN_60.": </td>
+<td style='width:50%' class='forumheader3'>".PRFLAN_60."<br /><span class='smalltext'>".PRFLAN_61."</span> </td>
 <td style='width:50%; text-align:right' class='forumheader3'>".
 ($pref['ssl_enabled'] ? "<input type='checkbox' name='ssl_enabled' value='1'  checked>" : "<input type='checkbox' name='ssl_enabled' value='1'>")."
 </td>

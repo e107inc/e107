@@ -14,13 +14,14 @@
 +---------------------------------------------------------------+
 */
 
+echo e_BASE;
 
 if($cache = retrieve_cache("article_menu")){
 	$aj = new textparse;
 	$cache = str_replace("e107_themes/", e_THEME, $cache);
+	$cache = str_replace("<a href=&#39;", "<a href=&#39;".e_BASE, $cache);
 	echo $aj -> formtparev($cache);
 }else{
-
 	ob_start();
 	$text = ($menu_pref['articles_mainlink'] ? "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_BASE."content.php?article'> ".($menu_pref['articles_mainlink'] ? $menu_pref['articles_mainlink'] : ARTICLE_MENU_L1)."</a><br/>" : "");
 

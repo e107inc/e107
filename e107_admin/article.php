@@ -106,7 +106,7 @@ if(IsSet($_POST['preview'])){
 	$_POST['content_subheading'] = $aj -> formtpa($_POST['content_subheading'], "admin");
 	$_POST['data'] = $aj -> formtpa($_POST['data'], "admin");
 	$_POST['content_summary'] = $aj -> formtpa($_POST['content_summary'], "admin");
-
+	$content_parent = $_POST['category'];
 }
 
 
@@ -136,7 +136,7 @@ if($action == "cat"){
 			<td style='width:75%' class='forumheader3'>$content_heading [$content_subheading]</td>
 			<td style='width:20%; text-align:center' class='forumheader3'>
 			".$rs -> form_button("submit", "category_edit", ARLAN_61, "onClick=\"document.location='".e_SELF."?cat.edit.$content_id'\"")."
-			".$rs -> form_button("submit", "category_delete", ARLAN_62, "onClick=\"confirm_('cat');\"")."
+			".$rs -> form_button("submit", "category_delete", ARLAN_62, "onClick=\"confirm_('cat', '$content_heading', $content_id);\"")."
 			</td>
 			</tr>";
 		}
@@ -228,7 +228,7 @@ if(!$action || $action == "confirm"){
 			<td style='width:75%' class='forumheader3'><a href='".e_BASE."content.php?article.$content_id'>$content_heading</a> [$content_subheading]</td>
 			<td style='width:20%; text-align:center' class='forumheader3'>
 			".$rs -> form_button("submit", "main_edit", ARLAN_61, "onClick=\"document.location='".e_SELF."?create.edit.$content_id'\"")."
-			".$rs -> form_button("submit", "main_delete", ARLAN_62, "onClick=\"confirm_('create')\"")."
+			".$rs -> form_button("submit", "main_delete", ARLAN_62, "onClick=\"confirm_('create', '$content_heading', $content_id)\"")."
 			</td>
 			</tr>";
 		}
@@ -401,17 +401,17 @@ function help(help){
 </script>
 <?php
 echo "<script type=\"text/javascript\">
-function confirm_(mode){
+function confirm_(mode, content_heading, content_id){
 	if(mode == 'cat'){
-		var x=confirm(\"".ARLAN_80."\");
+		var x=confirm(\"".ARLAN_80." [ID \" + content_id + \": \" + content_heading + \"]\");
 	}else{
-		var x=confirm(\"".ARLAN_81."\");
+		var x=confirm(\"".ARLAN_81." [ID \" + content_id + \": \" + content_heading + \"]\");
 	}
 if(x)
 	if(mode == 'cat'){
-		window.location='".e_SELF."?cat.confirm.$content_id';
+		window.location='".e_SELF."?cat.confirm.' + content_id;
 	}else{
-		window.location='".e_SELF."?confirm.$content_id';
+		window.location='".e_SELF."?confirm.' + content_id;
 	}
 }
 </script>";

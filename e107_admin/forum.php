@@ -91,7 +91,6 @@ if(IsSet($_POST['updateoptions'])){
 	$pref['forum_title'] = $_POST['forum_title'];
 	$pref['forum_postspage'] = $_POST['forum_postspage'];
 	$pref['forum_levels'] = $_POST['forum_levels'];
-	$pref['image_post'] = $_POST['image_post'];
 	$pref['html_post'] = $_POST['html_post'];
 	$pref['forum_attach'] = $_POST['forum_attach'];
 	save_prefs();
@@ -493,7 +492,7 @@ class forum{
 
 		<tr>
 		<td style='width:75%' class='forumheader3'>".FORLAN_65."<br /><span class='smalltext'>".FORLAN_46."</span></td>
-		<td style='width:25%' class='forumheader2' style='text-align:center'><input class='tbox' type='text' name='forum_title' size='15' value='".$pref['forum_title']."' maxlength='20' /></td>
+		<td style='width:25%' class='forumheader2' style='text-align:center'><input class='tbox' type='text' name='forum_title' size='15' value='".$pref['forum_title']."' maxlength='100' /></td>
 		</tr>
 
 		<tr>

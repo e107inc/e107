@@ -23,9 +23,21 @@ if($self == "/"){ $self = "index.php"; }
 
 $screenstats = $res." @ ".$colour;
 
-require_once("../../class2.php");
+@include("../../e107_config.php");
+define("MPREFIX", $mySQLprefix);
 
-if($pref['log_activate'] && !ADMIN){
+require_once("../../e107_handlers/mysql_class.php");
+$sql = new db;
+$sql -> db_SetErrorReporting(FALSE);
+$sql -> db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
+$sql -> db_Select("core", "*", "e107_name='pref' ");
+$row = $sql -> db_Fetch();
+$tmp = stripslashes($row['e107_value']);
+$pref=unserialize($tmp);
+
+
+
+if($pref['log_activate']){
 
 	$agent = $_SERVER['HTTP_USER_AGENT'];
 	$browser = getbrowser();
@@ -130,8 +142,10 @@ if($pref['log_activate'] && !ADMIN){
 }
 
 // end last visitors -----------------------------------------------------------------------------------------------------------------------------------------------------------
-header("Content-type: image/gif");
-readfile("images/trans.gif");
+//header("Content-type: image/gif");
+//readfile("images/trans.gif");
+
+echo ".DUMMY {color: green;}";
 // functions -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 function getbrowser(){
 	$agent = $_SERVER['HTTP_USER_AGENT'];
@@ -444,4 +458,30 @@ function getcountry(){
 		return $scountry;
 }
 
+function getip(){
+	if(getenv('HTTP_X_FORWARDED_FOR')){
+		$ip = $_SERVER['REMOTE_ADDR'];
+		if(preg_match("/^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/", getenv('HTTP_X_FORWARDED_FOR'), $ip3)){
+			$ip2 = array('/^0\./', '/^127\.0\.0\.1/', '/^192\.168\..*/', '/^172\.16\..*/', '/^10..*/', '/^224..*/', '/^240..*/');
+			$ip = preg_replace($ip2, $ip, $ip3[1]);
+		}
+	}else{
+		$ip = $_SERVER['REMOTE_ADDR'];
+	}
+	if($ip == ""){ $ip = "x.x.x.x"; }
+	return $ip;
+}
+class convert{
+	function convert_date($datestamp, $mode="long"){
+		global $pref;
+		$datestamp += (TIMEOFFSET*3600);
+		if($mode == "long"){
+			return strftime($pref['longdate'], $datestamp);
+		}else if($mode == "short"){
+			return strftime($pref['shortdate'], $datestamp);
+		}else{
+			return strftime($pref['forumdate'], $datestamp);
+		}
+	}
+}
 ?>

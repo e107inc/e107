@@ -38,21 +38,6 @@ if($pref['displaysql']){ $rinfo .= "DB queries: ".$dbq.". "; }
 if($pref['displaycacheinfo']){ $rinfo .= $cachestring."."; }
 echo ($rinfo ? "<div style='text-align:center' class='smalltext'>$rinfo</div>" : "");
 
-if($pref['log_activate']){
-	echo "
-<!-- log -->
-<script type=\"text/javascript\">
-<!--
-var ref=\"\"+escape(top.document.referrer);
-var colord = window.screen.colorDepth; 
-var res = window.screen.width + \"x\" + window.screen.height;
-var eself = document.location;
-
-
-document.write(\"<img src='".e_PLUGIN."log/log.php?referer=\"+ref+\"&amp;color=\"+colord+\"&amp;eself=\"+eself+\"&amp;res=\"+res+\"' style='float:left; border:0' alt='' />\");\n
-//-->
-</script>";
-}
 echo "</body>
 </html>";
 

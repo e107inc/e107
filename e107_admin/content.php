@@ -19,8 +19,16 @@ if(!getperms("J") && !getperms("K") && !getperms("L")){
 }
 require_once("auth.php");
 require_once(e_HANDLER."userclass_class.php");
+require_once(e_HANDLER."form_handler.php");
+$rs = new form;
 
-$content_comment = TRUE; // set default to On
+if(e_QUERY){
+	$tmp = explode(".", e_QUERY);
+	$action = $tmp[0];
+	$sub_action = $tmp[1];
+	$id = $tmp[2];
+	unset($tmp);
+}
 
 $aj = new textparse;
 
@@ -29,9 +37,8 @@ If(IsSet($_POST['submit'])){
 		$content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
 		$content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
 		$content_content = $aj -> formtpa($_POST['data'], "admin");
-
-		 $sql -> db_Insert("content", "0, '".$content_heading."', '".$content_subheading."', '$content_content', '0', '".time()."', '".ADMINID."', '".$_POST['content_comment']."', '', '1', 0, 0,  {$_POST['c_class']}");
-		if($_POST['content_heading'] != ""){
+		 $sql -> db_Insert("content", "0, '".$content_heading."', '".$content_subheading."', '$content_content', '".$_POST['auto_line_breaks']."', '".time()."', '".ADMINID."', '".$_POST['content_comment']."', '', '1', 0, 0,  {$_POST['c_class']}");
+		if($_POST['content_heading']){
 			$sql -> db_Select("content", "*", "ORDER BY content_datestamp DESC LIMIT 0,1 ", $mode="no_where");
 			list($content_id, $content_heading) = $sql-> db_Fetch();
 			$sql -> db_Insert("links", "0, '".$content_heading."', 'article.php?".$content_id.".255', '', '', '1', '0', '0', '0', {$_POST['c_class']} ");
@@ -41,6 +48,7 @@ If(IsSet($_POST['submit'])){
 			list($content_id, $content_heading) = $sql-> db_Fetch();
 			$message = CNTLAN_23." - 'article.php?".$content_id.".255'.";
 		}
+		clear_cache("content");
 		unset($content_heading, $content_subheading, $content_content, $content_parent);
 	}else{
 		$message = CNTLAN_1;
@@ -48,41 +56,68 @@ If(IsSet($_POST['submit'])){
 }
 
 If(IsSet($_POST['update'])){
-
 	$content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
 	$content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
 	$content_content = $aj -> formtpa($_POST['data'], "admin");
-	$sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_comment='".$_POST['content_comment']."', content_class='{$_POST['c_class']}' WHERE content_id='".$_POST['content_id']."'");
-
+	$sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_parent='".$_POST['auto_line_breaks']."',  content_comment='".$_POST['content_comment']."', content_class='{$_POST['c_class']}' WHERE content_id='".$_POST['content_id']."'");
 	$sql -> db_Update("links", "link_class='".$_POST['c_class']."' WHERE link_name='$content_heading' ");
-
 	unset($content_heading, $content_subheading, $content_content, $content_parent);
 	$message = CNTLAN_2;
+	clear_cache("content");
 }
 
-If(IsSet($_POST['edit'])){
-	$sql -> db_Select("content", "*", "content_id='".$_POST['existing']."' ");
-	$row = $sql -> db_Fetch();
-	extract($row);
-	$content_content = $aj -> editparse($content_content);
-}
-
-If(IsSet($_POST['delete'])){
-	if($_POST['confirm']){
-		$sql = new db;
-		$sql -> db_Select("content", "*", "content_id='".$_POST['existing']."' ");
-		$row = $sql -> db_Fetch(); extract($row);
-		$sql -> db_Delete("links", "link_name='".$content_heading."' ");
-		$sql -> db_Delete("content", "content_id='".$_POST['existing']."' ");
-		$message = CNTLAN_20;
-		unset($content_heading, $content_subheading, $content_content);
-	}else{
-		$message = CNTLAN_3;
-	}
+if($action == "delete"){
+	$sql = new db;
+	$sql -> db_Select("content", "*", "content_id=$sub_action");
+	$row = $sql -> db_Fetch(); extract($row);
+	$sql -> db_Delete("links", "link_name='".$content_heading."' ");
+	$sql -> db_Delete("content", "content_id=$sub_action");
+	$message = CNTLAN_20;
+	unset($content_heading, $content_subheading, $content_content);
+	clear_cache("content");
 }
 
 if(IsSet($message)){
 	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+}
+
+$text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 100px; overflow : auto; '>\n";
+if(!$content_total = $sql -> db_Select("content", "*", "content_type='254' OR content_type='255' OR content_type='1' ")){
+	$text .= "<div style='text-align:center'>".CNTLAN_4."</div>";
+}else{
+	$text .= "<table class='fborder' style='width:100%'>
+	<tr>
+	<td style='width:5%' class='forumheader2'>&nbsp;</td>
+<td style='width:65%' class='forumheader2'>".CNTLAN_25."</td>
+<td style='width:30%' class='forumheader2'>".CNTLAN_26."</td>
+
+
+</tr>";
+
+	while($row = $sql -> db_Fetch()){
+		extract($row);
+		$text .= "<td style='width:5%; text-align:center' class='forumheader3'>$content_id</td>
+		<td style='width:65%' class='forumheader3'>$content_heading</td>
+		<td style='width:30%; text-align:center' class='forumheader3'>
+		".$rs -> form_button("submit", "main_edit", CNTLAN_6, "onClick=\"document.location='".e_SELF."?edit.$content_id'\"")." 
+		".$rs -> form_button("submit", "main_delete", CNTLAN_7, "onClick=\"confirm_($content_id)\"")."
+		
+		</td>\n</tr>";
+	}
+	$text .= "</table>\n";
+}
+$text .= "</div>";
+
+$ns -> tablerender(CNTLAN_5, $text);
+
+unset($content_heading, $content_subheading, $content_content, $content_parent, $content_comment);
+
+if($action == "edit"){
+	if($sql -> db_Select("content", "*", "content_id=$sub_action")){
+		$row = $sql -> db_Fetch(); extract($row);
+	}
+}else{
+	$content_comment = TRUE;
 }
 
 $article_total = $sql -> db_Select("content", "*", "content_type='254' OR content_type='255' OR content_type='1' ");
@@ -91,26 +126,6 @@ $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."' name='dataform'>
 <table style='width:80%' class='fborder'>
 <tr>
-<td class='forumheader' style='text-align:center' colspan='2'>";
-
-if($article_total == "0"){
-	$text .= CNTLAN_4;
-}else{
-	$text .= "<span class='defaulttext'>".CNTLAN_5.":</span>
-	<select name='existing' class='tbox'>";
-	while(list($content_id_, $content_heading_) = $sql-> db_Fetch()){
-		if(!$content_heading_){ $content_heading_ = "Content Page ID $content_id_"; }
-		$text .= "<option value='$content_id_'>".$content_heading_."</option>";
-	}
-	$text .= "</select>
-	<input class='button' type='submit' name='edit' value='".CNTLAN_6."' />
-	<input class='button' type='submit' name='delete' value='".CNTLAN_7."' />
-	<input type='checkbox' name='confirm' value='1'><span class='smalltext'> ".CNTLAN_8."</span>
-	</td>
-	</tr>";
-}
-
-$text .= "<tr>
 <td colspan='2' style='text-align:center' class='forumheader2'>
 <input class='button' type='button' onClick='openwindow()'  value='".CNTLAN_9."' />
 </td>
@@ -145,12 +160,12 @@ $text .= ren_help("addtext", TRUE)."
 <td style='width:20%' class='forumheader3'>".CNTLAN_21."?:</td>
 <td style='width:80%' class='forumheader3'>";
 
-if($content_page){
-	$text .= CNTLAN_14.": <input type='radio' name='content_page' value='0'>
-	".CNTLAN_15.": <input type='radio' name='content_page' value='1' checked>";
+if($content_parent){
+	$text .= CNTLAN_14.": <input type='radio' name='auto_line_breaks' value='0'>
+	".CNTLAN_15.": <input type='radio' name='auto_line_breaks' value='1' checked>";
 }else{
-	$text .= CNTLAN_14.": <input type='radio' name='content_page' value='0' checked>
-	".CNTLAN_15.": <input type='radio' name='content_page' value='1'>";
+	$text .= CNTLAN_14.": <input type='radio' name='auto_line_breaks' value='0' checked>
+	".CNTLAN_15.": <input type='radio' name='auto_line_breaks' value='1'>";
 }
 $text .= "<span class='smalltext'>".CNTLAN_22."</span>
 </td></tr>
@@ -182,7 +197,7 @@ $text.="
 <td colspan='2'  style='text-align:center' class='forumheader'>";
 
 
-If(IsSet($_POST['edit'])){
+if($action == "edit"){
 	$text .= "<input class='button' type='submit' name='update' value='".CNTLAN_16."' />
 	<input type='hidden' name='content_id' value='$content_id'>";
 }else{
@@ -206,6 +221,21 @@ function addtext(sc){
 function help(help){
 	document.dataform.helpb.value = help;
 }
+</script>
+
+<?php
+echo "<script type=\"text/javascript\">
+function confirm_(content_id){
+	var x=confirm(\"".CNTLAN_27." [ID: \" + content_id + \"]\");
+if(x)
+	window.location='".e_SELF."?delete.' + content_id;
+}
+</script>";
+
+
+
+
+
 </script>
 <?php
 require_once("footer.php");

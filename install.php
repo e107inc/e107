@@ -512,6 +512,7 @@ function create_tables(){
 	$pref['displaythemeinfo'] = "1";
 	$pref['link_submit'] = "1";
 	$pref['link_submit_class'] = "0";
+	$pref['timezone'] = "GMT";
 
 	$tmp = serialize($pref);
 	mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('pref', '$tmp') ");
