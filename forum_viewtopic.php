@@ -168,7 +168,7 @@ If(IsSet($_POST['pollvote'])){
 	}
 }
 
-if(eregi("\[poll\]", $thread_name)){
+if(eregi("\[".LAN_430."\]", $thread_name)){
 	if($sql -> db_Select("poll", "*", "poll_datestamp='$thread_id' ")){
 		list($poll_id, $poll_datestamp, $poll_end_datestamp, $poll_admin_id, $poll_title, $poll_option[0], $poll_option[1], $poll_option[2], $poll_option[3], $poll_option[4], $poll_option[5], $poll_option[6], $poll_option[7], $poll_option[8], $poll_option[9], $votes[0], $votes[1], $votes[2], $votes[3], $votes[4], $votes[5], $votes[6], $votes[7], $votes[8], $votes[9], $poll_ip, $poll_active) = $sql-> db_Fetch();
 
