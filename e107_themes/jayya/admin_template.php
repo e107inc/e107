@@ -137,6 +137,7 @@ $ADMIN_FOOTER .= "</tr>
 <div style='text-align:center'>
 <br />
 {SITEDISCLAIMER}
+<br /><br />
 </div>
 ";
 ?>
