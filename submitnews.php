@@ -11,22 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/submitnews.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-03-07 11:38:50 $
+|     $Revision: 1.9 $
+|     $Date: 2005-03-07 11:40:17 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
-	
-	
 require_once("class2.php");
-/*
-if ($pref['subnews_htmlarea']) {
-	require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
-	$htmlarea_js = htmlarea("item");
-}
-*/
 require_once(HEADERF);
-	
+
 if (!isset($pref['subnews_class'])) {
 	$pref['subnews_class'] = "0";
 }
@@ -107,8 +99,7 @@ if (isset($_POST['submit'])) {
 			}
 			 
 		}
-		 
-		// ==========================================================
+
 		if ($error == FALSE) {
 			if (!file_exists(e_IMAGE."newspost_images/". $newname)) {
 				$newname = "";
@@ -125,15 +116,7 @@ if (isset($_POST['submit'])) {
 		}
 	}
 }
-// ==============================================================
-	
-	
-	
-	
-	
-	
-	
-	
+
 $text = "<div style='text-align:center'>
 	<form id='dataform' method='post' action='".e_SELF."' enctype='multipart/form-data' >\n
 	<table style='width:95%' class='fborder'>";
@@ -193,9 +176,6 @@ if ($pref['subnews_attach']) {
 }
 	
 $text .= "
-	 
-	 
-	 
 	<tr>
 	<td colspan='2' style='text-align:center' class='forumheader'>
 	<input class='button' type='submit' name='submit' value='".LAN_136."' />
