@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banner.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-04-06 21:27:44 $
+|     $Revision: 1.16 $
+|     $Date: 2005-04-06 21:29:36 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -555,7 +555,7 @@ if ($action == "menu")
 
 
 
-	$ns->tablerender("Banner Configuration", $text);
+	$ns->tablerender(BANNER_MENU_L5, $text);
 	echo "<script type=\"text/javascript\">
 		//<!--
 		//<!-- Adapted from original:  Kathi O'Shea (Kathi.O'Shea@internet.com) -->
