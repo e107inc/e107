@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-03-01 17:33:30 $
+|     $Revision: 1.38 $
+|     $Date: 2005-03-01 18:15:34 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -187,7 +187,7 @@ function update_61x_to_700($type) {
 			gen_user_id int(10) unsigned NOT NULL default '0',
 			gen_ip varchar(80) NOT NULL default '',
 			gen_intdata int(10) unsigned NOT NULL default '0',
-			gen_chardata varchar(255) NOT NULL default '',
+			gen_chardata text NOT NULL,
 			PRIMARY KEY  (gen_id)
 			) TYPE=MyISAM;
 		");
