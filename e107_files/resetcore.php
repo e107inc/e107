@@ -100,7 +100,7 @@ if(IsSet($_POST['reset_core_sub']) && $_POST['mode'] == 2){
 	define('e_BASE',$link_prefix);
 	$e_path = (!strpos($_SERVER['SCRIPT_FILENAME'], ".php") ? $_SERVER['PATH_TRANSLATED'] : $_SERVER['SCRIPT_FILENAME']);
 	define("e_PATH", $e_path);
-	require_once($FILES_DIRECTORY."def_e107_prefs.php");
+	require_once(e_BASE.$FILES_DIRECTORY."def_e107_prefs.php");
 
 	$tmp = addslashes(serialize($pref));
 
