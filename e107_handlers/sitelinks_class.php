@@ -212,7 +212,7 @@ function sitelinks()
 
 	if($pref['cachestatus'])
 	{
-		$cache = $tp -> toDB(ob_get_contents());
+		$cache = ob_get_contents();
 		set_cache("sitelinks", $cache);
 	}
 
