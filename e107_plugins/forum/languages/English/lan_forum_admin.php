@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_admin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-03-07 12:38:52 $
+|     $Revision: 1.7 $
+|     $Date: 2005-03-07 12:55:29 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -163,5 +163,5 @@ define("FORLAN_136", "Create link to full size image");
 define("FORLAN_137", "Enabling this will resize larger images and also create a link to the original full size image.  If disabled, original image will be discarded");
 
 define("FORLAN_138", "Prune these forums");
-	
+define("FORLAN_139", "To use this setting you also need to tick 'Enable image posting' on the <a href='".e_ADMIN."image.php'>images</a> page");	
 ?>
