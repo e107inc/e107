@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_download.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-23 12:54:36 $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-23 13:17:51 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -124,5 +124,5 @@ define("DOWLAN_140", "Upload local images to e107_files/downloadimages to show t
 define("DOWLAN_141", "Location");
 define("DOWLAN_142", "Update Mirror");
 define("DOWLAN_143", "Create Mirror");
-
+define("DOWLAN_144", "No mirrors defined, go to mirror section to add them.");
 ?>
