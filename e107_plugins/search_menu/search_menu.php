@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/search_menu/search_menu.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-03-24 16:52:09 $
+|     $Revision: 1.13 $
+|     $Date: 2005-03-25 03:38:16 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -44,8 +44,8 @@ if (strstr(e_PAGE, "news.php")) {
 
 if (isset($custom_query[1]) && $custom_query[1] != '') {
 	$image_file = ($custom_query[1] != 'default') ? $custom_query[1] : e_PLUGIN.'search_menu/images/search.png';
-	$width = $custom_query[2] ? $custom_query[2] : '16';
-	$height = $custom_query[3] ? $custom_query[3] : '16';
+	$width = (isset($custom_query[2]) && $custom_query[2]) ? $custom_query[2] : '16';
+	$height = (isset($custom_query[3]) && $custom_query[3]) ? $custom_query[3] : '16';
 	$search_button = "<input type='image' src='".$image_file."' value='".LAN_180."' style='width: ".$width."px; height: ".$height."px; border: 0px; vertical-align: middle' name='s' />";
 } else {
 	$search_button = "<input class='button search' type='submit' name='s' value='".LAN_180."' />";
