@@ -105,6 +105,14 @@ hr {
 p {
 	margin-top: 0px
 }
+.nextprev{
+	background-color: #EBEFF2;
+	font: 14px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#C3C160;
+	padding: 4px;
+	background-image : url(../../e107_images/forum/fcap.png);
+	border: #000 1px solid;
+}
 .fborder {
 	border: #000000 1px solid;
 	background-color: #1D3257;

@@ -78,7 +78,7 @@ class nextprev{
 					if($view*$c == $from ? $nppage .= "[<span class='text-decoration:underline'>".($c+1)."</span>] " : $nppage .= "<a href='$url?".($view*$c).($qs ? ".".$qs : "")."'>".($c+1)."</a> ");
 				}
 			}
-			$text = "<div style='text-align:right'><div class='forumheader'><span class='smalltext'>".$nppage."</span></div></div><br /><br />";
+			$text = "<div style='text-align:right'><div class='nextprev'><span class='smalltext'>".$nppage."</span></div></div><br /><br />";
 			echo $text;
 		}
 		
