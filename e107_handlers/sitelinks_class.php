@@ -23,7 +23,7 @@ function sitelinks()
 	# - return        	parsed text
 	# - scope          	null
 	*/
-	global $pref,$ns, $tp, $sql, $sql2, $ml;
+	global $pref,$ns, $tp, $sql, $sql2, $ml, $e107cache;
 	if(!is_object($sql)){$sql = new db;}
   if(!is_object($sql2)){$sql2 = new db;}
 	if($cache = retrieve_cache("sitelinks"))
@@ -211,12 +211,8 @@ function sitelinks()
 		}
 	}
 
-	if($pref['cachestatus'])
-	{
 		$cache = ob_get_contents();
-		set_cache("sitelinks", $cache);
-	}
-
-
+		$e107cache->set("sitelinks", $cache);
 }
+
 ?>

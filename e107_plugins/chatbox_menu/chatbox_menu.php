@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2004-11-20 14:50:18 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2004-12-01 14:10:50 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 global $tp;
@@ -190,7 +190,8 @@ if(!$text = retrieve_cache("chatbox"))
 	{
 		$text .= "<br /><div style='text-align:center'><a href='".e_BASE."chat.php'>".CHATBOX_L12."</a> (".$total_chats.")</div>";
 	}
-	set_cache("chatbox", $text);
+	global $e107cache;
+	$e107cache->set("chatbox", $text);
 }
 
 if(ADMIN && getperms("C")){$text .= "<br />[ <a href='".e_ADMIN."chatbox.php'>".CHATBOX_L13."</a> ]";}

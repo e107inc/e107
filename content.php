@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/content.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2004-11-25 19:52:13 $
-|     $Author: lisa_ $
+|     $Revision: 1.7 $
+|     $Date: 2004-12-01 14:09:52 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -218,7 +218,7 @@ if($action == "content")
 		if($pref['cachestatus'])
 		{
 			$cache = $aj -> formtpa(ob_get_contents(), "admin");
-			set_cache("content.$sub_action", $cache);
+			$e107cache->set("content.$sub_action", $cache);
 		}
 	}
 
@@ -249,7 +249,7 @@ if($action == "content")
 				if(!$pref['nested_comments']){$ns -> tablerender(LAN_5, $text);        }
 				if($pref['cachestatus']){
 					$cache = $aj -> formtpa(ob_get_contents(), "admin");
-					set_cache("comment.content.$sub_action", $cache);
+					$e107cache->set("comment.content.$sub_action", $cache);
 				}
 			}
 		}
@@ -359,7 +359,7 @@ $text .= "<div style='text-align:right'><a href='".e_SELF."?review.cat.$content_
 $ns -> tablerender($caption, $text);
 if($pref['cachestatus']){
 	$cache = $aj -> formtpa(ob_get_contents(), "admin");
-	set_cache("review.item.$sub_action", $cache);
+	$e107cache->set("review.item.$sub_action", $cache);
 }
 }
 $tmp_ok = 0;
@@ -394,7 +394,7 @@ if($content_comment){
 	if(!$pref['nested_comments']){$ns -> tablerender(LAN_5, $text);        }
 	if($pref['cachestatus']){
 		$cache = $aj -> formtpa(ob_get_contents(), "admin");
-		set_cache("comment.content.$sub_action", $cache);
+		$e107cache->set("comment.content.$sub_action", $cache);
 	}
 }
 }
@@ -483,7 +483,7 @@ $ns -> tablerender(LAN_32.": ".$category, $text);
 
 if($pref['cachestatus']){
 	$cache = $aj -> formtpa(ob_get_contents(), "admin");
-	set_cache("review.cat.$id", $cache);
+	$e107cache->set("review.cat.$id", $cache);
 }
 
 
@@ -683,7 +683,7 @@ if($tmp_ok == 1){
 
 	if($pref['cachestatus']){
 		$cache = $aj -> formtpa(ob_get_contents(), "admin");
-		set_cache("review.main", $cache);
+		$e107cache->set("review.main", $cache);
 	}
 }
 }
@@ -738,7 +738,7 @@ if($action == "article"){
 
 	if($pref['cachestatus']){
 		$cache = $aj -> formtpa(ob_get_contents(), "admin");
-		set_cache($cachestr, $cache);
+		$e107cache->set($cachestr, $cache);
 	}
 }
 
@@ -786,7 +786,7 @@ if($content_comment && $comflag){
 	if(!$pref['nested_comments']){$ns -> tablerender(LAN_5, $text);        }
 	if($pref['cachestatus']){
 		$cache = $aj -> formtpa(ob_get_contents(), "admin");
-		set_cache("comment.content.$sub_action", $cache);
+		$e107cache->set("comment.content.$sub_action", $cache);
 	}
 }
 }
@@ -872,7 +872,7 @@ if($tmp_ok == 1){
 $ns -> tablerender($caption, $text);
 if($pref['cachestatus']){
 	$cache = $aj -> formtpa(ob_get_contents(), "admin");
-	set_cache("article.cat.$id", $cache);
+	$e107cache->set("article.cat.$id", $cache);
 }
 }
 }
@@ -1048,7 +1048,7 @@ if($tmp_ok == 1){
 
 	if($pref['cachestatus']){
 		$cache = $aj -> formtpa(ob_get_contents(), "admin");
-		set_cache("article.main", $cache);
+			$e107cache->set("article.main", $cache);
 	}
 }
 }

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:09:30 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-01 14:09:52 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -236,9 +236,9 @@ $cobj -> form_comment($action, $table, $id, $subject, $content_type);
 
 if(!strstr(e_QUERY, "poll")){
         $cache = ob_get_contents();
-        set_cache("comment.php?{$table}.{$field}",$cache);
+        $e107cache->set("comment.php?{$table}.{$field}",$cache);
 }
 
-
 require_once(FOOTERF);
+
 ?>

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/comment_menu/comment_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:08 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-01 14:10:50 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 if(!is_object($aj)){ $aj = new textparse; }
@@ -97,7 +97,7 @@ if($cache = retrieve_cache("newcomments")){
                 $text = "</span>".preg_replace("/\<br \/\>$/", "", $text);
                 if($pref['cachestatus']){
                         $cache = $aj -> formtpa($text, "admin");
-                        set_cache("newcomments",$cache);
+                        $e107cache->set("newcomments", $cache);
                 }
         }
 }
