@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-01-31 22:55:58 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.22 $
+|     $Date: 2005-02-01 05:39:29 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -204,23 +204,23 @@ function update_61x_to_700($type) {
 			}
 		}
 		// ############# END McFly's Updates  ##############
+		
+		// start chatbox update -------------------------------------------------------------------------------------------
+		global $pref;
+		$sql->db_Insert("plugin", "0, 'Chatbox', '1.0', 'chatbox_menu', 1");
+		$pref['plug_status'] = $pref['plug_status'].",chatbox_menu";
+		save_prefs();
+		// end chatbox update -------------------------------------------------------------------------------------------
+		
 	} else {
 		// check if update is needed.
 		// FALSE = needed, TRUE = not needed.
-//		return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."generic");
-		if($sql->db_Query("SHOW COLUMNS FROM ".MPREFIX.'menus'))
-		{
-			$list = $sql->db_getList();
-			foreach($list as $f)
-			{
-				if($f['Field'] == 'menu_path')
-				{
-					return TRUE;
-				}
-			}
+		// return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."generic");
+		if ($sql->db_Select("plugin", "plugin_path", "plugin_path='chatbox_menu'")) {
+			return TRUE;
+		} else {
 			return FALSE;
-		}
-		 
+		}		 
 	}
 }
 	
