@@ -26,5 +26,5 @@ $text = "<div style='text-align:center'><a href='".e_BASE."banner.php?".$banner_
 $sql -> db_Update("banner", "banner_impressions=banner_impressions+1 WHERE banner_id='$banner_id' ");
 
 
-$ns -> tablerender(BANNER_MENU_L1, $text);
+$ns -> tablerender($menu_pref['banner_caption'], $text);
 ?>

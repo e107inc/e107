@@ -17,14 +17,18 @@ require_once("../../class2.php");
 if(!getperms("1")){ header("location:".e_BASE."index.php"); exit ;}
 require_once(e_ADMIN."auth.php");
 
+@include_once(e_PLUGIN."banner_menu/languages/".e_LANGUAGE.".php");
+@include_once(e_PLUGIN."banner_menu/languages/English.php");
+
 if(IsSet($_POST['update_menu'])){
-	while(list($key, $value) = each($_POST)){
-		$menu_pref[$key] = $value;
+	foreach($_POST as $k => $v){
+		if(preg_match("#^banner_#",$k)){
+			$menu_pref[$k] = $v;
+		}
 	}
-	if(!$found){unset($menu_pref['articles_parents']);}
 	$tmp = addslashes(serialize($menu_pref));
 	$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='menu_pref' ");
-	$ns -> tablerender("", "<div style='text-align:center'><b>Articles menu configuration saved</b></div>");
+	$ns -> tablerender("", "<div style='text-align:center'><b>".BANNER_MENU_L2."</b></div>");
 }
 
 if(!$menu_pref['banner_caption']){
