@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/trackback/trackbackClass.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-04-03 14:19:19 $
+|     $Revision: 1.4 $
+|     $Date: 2005-04-03 18:37:06 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -109,22 +109,29 @@ class trackbackClass
 			$errorMessage = "This site does not allow trackbacks.";
 		}
 
-		if(isset($_GET['pid']))
+		$pid = (isset($_GET['pid']) ? $_GET['pid'] : $_POST['pid']);
+		$permLink = (isset($_GET['url']) ? $_GET['url'] : $_POST['url']);
+		$blog_name = (isset($_GET['blog_name']) ? $_GET['blog_name'] : $_POST['blog_name']);
+		$title = (isset($_GET['title']) ? $_GET['title'] : $_POST['title']);
+		$excerpt = (isset($_GET['excerpt']) ? $_GET['excerpt'] : $_POST['excerpt']);
+
+		/* debug	 */
+		/*
+		$debug_str = "Query string: ".e_TBQS."\n";
+		$debug_str .= "GET INFO: \n";
+		foreach($_GET as $key => $get)
 		{
-			$pid = $_GET['pid'];
-			$permLink = $_GET['url'];
-			$blog_name = $_GET['blog_name'];
-			$title = $_GET['title'];
-			$excerpt = $_GET['excerpt'];
+			$debug_str .= "$key => $get\n";
 		}
-		else
+		$debug_str .= "POST INFO: \n";
+		foreach($_POST as $key => $get)
 		{
-			$pid = $_POST['pid'];
-			$permLink = $_POST['url'];
-			$blog_name = $_POST['blog_name'];
-			$title = $_POST['title'];
-			$excerpt = $_POST['excerpt'];
+			$debug_str .= "$key => $get\n";
 		}
+		$sql -> db_Insert("debug", "0, '".time()."', '$debug_str' ");
+		*/
+		/* end debug */
+
 
 		if(!$pid)
 		{
