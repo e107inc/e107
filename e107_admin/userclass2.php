@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass2.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-10 09:49:03 $
-|     $Author: sweetas $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-18 16:11:32 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -86,7 +86,7 @@ if(strstr(e_QUERY, "clear")){
         }
 }
 
-If(IsSet($_POST['delete'])){
+If(isset($_POST['delete'])){
         $sql2=new db;
         $class_id = $_POST['existing'];
    check_allowed($class_id);
@@ -110,13 +110,13 @@ If(IsSet($_POST['delete'])){
         }
 }
 
-If(IsSet($_POST['edit'])){
+If(isset($_POST['edit'])){
         check_allowed($_POST['existing']);
         $sql -> db_Select("userclass_classes", "*", "userclass_id='".$_POST['existing']."' ");
         $row = $sql -> db_Fetch(); extract($row);
 }
 
-if(IsSet($_POST['updateclass'])){
+if(isset($_POST['updateclass'])){
         check_allowed($_POST['userclass_id']);
         $_POST['userclass_name'] = $aj -> formtpa($_POST['userclass_name'], "admin");
         $_POST['userclass_description'] = $aj -> formtpa($_POST['userclass_description'], "admin");
@@ -124,7 +124,7 @@ if(IsSet($_POST['updateclass'])){
         $message = UCSLAN_5;
 }
 
-if(IsSet($_POST['createclass'])){
+if(isset($_POST['createclass'])){
         $_POST['userclass_name'] = $aj -> formtpa($_POST['userclass_name'], "admin");
         $_POST['userclass_description'] = $aj -> formtpa($_POST['userclass_description'], "admin");
 
@@ -144,7 +144,7 @@ if(IsSet($_POST['createclass'])){
         }
 }
 
-if(IsSet($message)){
+if(isset($message)){
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
@@ -196,7 +196,7 @@ $text .= "
 $text .="
 <tr><td colspan='2' style='text-align:center' class='forumheader'>";
 
-If(IsSet($_POST['edit'])){
+If(isset($_POST['edit'])){
         $text .= "<input class='button' type='submit' name='updateclass' value='".UCSLAN_14."' />
         <input type='hidden' name='userclass_id' value='$userclass_id' />";
 }else{
@@ -205,7 +205,7 @@ If(IsSet($_POST['edit'])){
 
 $text .= "</td></tr></table>";
 
-If(IsSet($_POST['edit'])){
+If(isset($_POST['edit'])){
 
         $sql -> db_Select("user", "user_id, user_name, user_class, user_login", "ORDER BY user_name", "no-where");
         $c=0; $d=0;

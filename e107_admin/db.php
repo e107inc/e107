@@ -15,7 +15,7 @@
 require_once("../class2.php");
 $e_sub_cat = 'database';
 
-if(IsSet($_POST['dump_sql'])){
+if(isset($_POST['dump_sql'])){
 	if(!getperms("0")){
 		header("location: ".e_ADMIN."admin.php");
 		exit;
@@ -24,24 +24,24 @@ if(IsSet($_POST['dump_sql'])){
 	exit;
 }
 
-if(IsSet($_POST['db_update'])){
+if(isset($_POST['db_update'])){
 	header("location: ".e_ADMIN."e107_update.php");
 	exit;
 }
 
-if(IsSet($_POST['verify_sql'])){
+if(isset($_POST['verify_sql'])){
 	header("location: ".e_ADMIN."db_verify.php");
 	exit;
 }
 
 require_once("auth.php");
-if(IsSet($_POST['optimize_sql'])){
+if(isset($_POST['optimize_sql'])){
 	optimizesql($mySQLdefaultdb);
 	require_once("footer.php");
 	exit;
 }
 
-if(IsSet($_POST['backup_core'])){
+if(isset($_POST['backup_core'])){
 	backup_core();
 	message_handler("MESSAGE", DBLAN_1);
 }

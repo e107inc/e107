@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-01-10 09:49:03 $
-|     $Author: sweetas $
+|     $Revision: 1.9 $
+|     $Date: 2005-01-18 16:11:32 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -222,7 +222,7 @@ $text .= "
 <select name='sitelanguage' class='tbox'>\n";
 $counter = 0;
 $sellan = eregi_replace("lan_*.php", "", $pref['sitelanguage']);
-while(IsSet($lanlist[$counter])){
+while(isset($lanlist[$counter])){
         if($lanlist[$counter] == $sellan){
                 $text .= "<option selected='selected'>".$lanlist[$counter]."</option>\n";
         }else{

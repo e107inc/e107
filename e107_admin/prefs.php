@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-01-17 12:36:56 $
-|     $Author: sweetas $
+|     $Revision: 1.16 $
+|     $Date: 2005-01-18 16:11:32 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 
-if(IsSet($_POST['newver'])){
+if(isset($_POST['newver'])){
         header("location:http://e107.org/index.php");
         exit;
 }
@@ -34,7 +34,7 @@ $signup_title = array(CUSTSIG_2,CUSTSIG_3,"ICQ","Aim","MSN",CUSTSIG_4,CUSTSIG_5,
 $signup_name = array("real","url","icq","aim","msn","dob","loc","sig","avt","zone","usrclass");
 
 $aj = new textparse;
-if(IsSet($_POST['updateprefs'])){
+if(isset($_POST['updateprefs'])){
         $pref['sitename'] = $aj -> formtpa($_POST['sitename']);
         $pref['siteurl'] = $aj -> formtpa($_POST['siteurl']);
         $pref['sitebutton'] = $aj -> formtpa($_POST['sitebutton']);
@@ -170,7 +170,7 @@ $autoban = $pref['autoban'];
 
 require_once("auth.php");
 
-if(IsSet($message)){
+if(isset($message)){
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
@@ -289,7 +289,7 @@ closedir($handle);
    <td style='width:50%; text-align:right' class='forumheader3'><a href='".e_ADMIN."theme_prev.php'>".PRFLAN_12."</a>
    <select name='sitetheme' class='tbox'>\n";
    $counter = 0;
-   while(IsSet($dirlist[$counter])){
+   while(isset($dirlist[$counter])){
            if (!strstr($dirlist[$counter], 'admin_')) {
            $text .= ($dirlist[$counter] == $pref['sitetheme'] ? "<option selected='selected'>".$dirlist[$counter]."</option>\n" : "<option>".$dirlist[$counter]."</option>\n");
            }
@@ -355,7 +355,7 @@ closedir($handle);
    <td style='width:50%; text-align:right' class='forumheader3'>
    <select name='admintheme' class='tbox'>\n";
    $counter = 0;
-   while(IsSet($dirlist[$counter])){
+   while(isset($dirlist[$counter])){
            $text .= ($dirlist[$counter] == $pref['admintheme'] ? "<option selected='selected'>".$dirlist[$counter]."</option>\n" : "<option>".$dirlist[$counter]."</option>\n");
            $counter++;
    }
@@ -368,7 +368,7 @@ closedir($handle);
    <td style='width:50%; text-align:right' class='forumheader3'>
    <select name='adminstyle' class='tbox'>\n";
    $counter = 0;
-   while(IsSet($adminlist[$counter])){
+   while(isset($adminlist[$counter])){
            $text .= ($adminlist[$counter] == $pref['adminstyle'] ? "<option selected='selected'>".$adminlist[$counter]."</option>\n" : "<option>".$adminlist[$counter]."</option>\n");
            $counter++;
    }
@@ -454,7 +454,7 @@ closedir($handle);
    <select name='time_offset' class='tbox'>\n";
    $toffset = array("-12", "-11", "-10", "-9", "-8", "-7", "-6", "-5", "-4", "-3", "-2", "-1", "0", "+1", "+2", "+3", "+4", "+5", "+6", "+7", "+8", "+9", "+10", "+11", "+12", "+13", "+14", "+15", "+16");
    $counter = 0;
-   while(IsSet($toffset[$counter])){
+   while(isset($toffset[$counter])){
            if($toffset[$counter] == $pref['time_offset']){
                    $text .= "<option selected='selected'>".$toffset[$counter]."</option>\n";
            }else{

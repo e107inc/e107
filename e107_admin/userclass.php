@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-10 09:49:03 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-18 16:11:32 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -42,7 +42,7 @@ if(!e_QUERY){
         $id = e_QUERY;
 }
 
-if(IsSet($_POST['updateclass'])){
+if(isset($_POST['updateclass'])){
         $remuser = TRUE;
         extract($_POST);
         for($a=0; $a<=(count($_POST['userclass'])-1); $a++){

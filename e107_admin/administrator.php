@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/administrator.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-10 09:49:02 $
-|     $Author: sweetas $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-18 16:11:32 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -33,7 +33,7 @@ if(e_QUERY){
         unset($tmp);
 }
 
-if(IsSet($_POST['add_admin'])){
+if(isset($_POST['add_admin'])){
         if($_POST['ac'] == md5(ADMINPWCHANGE)){
                 if(!$_POST['ad_name'] || !$_POST['a_password']){
                         $message = ADMSLAN_55;
@@ -55,7 +55,7 @@ if(IsSet($_POST['add_admin'])){
         }
 }
 
-if(IsSet($_POST['update_admin'])){
+if(isset($_POST['update_admin'])){
         $sql -> db_Select("user", "*", "user_id='".$_POST['a_id']."' ");
         $row = $sql -> db_Fetch();
         $a_name = $row['user_name'];
@@ -106,7 +106,7 @@ if($action == "delete" && $_POST['del_administrator_confirm']==1){
         $message = ADMSLAN_61;
 }
 
-if(IsSet($message)){
+if(isset($message)){
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 

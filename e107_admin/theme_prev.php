@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/theme_prev.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-10 09:49:03 $
-|     $Author: sweetas $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-18 16:11:32 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
-if (IsSet($_POST['updateprefs'])) {
+if (isset($_POST['updateprefs'])) {
         require_once("../class2.php");
         require_once(e_ADMIN."auth.php");
         $pref['sitetheme'] = $_POST['sitetheme'];
@@ -93,7 +93,7 @@ $e_sub_cat = 'prefs';
 
 require_once("auth.php");
 
-$text = (IsSet($message) ? $message : "");
+$text = (isset($message) ? $message : "");
 
 $text .= "<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>
@@ -125,7 +125,7 @@ function theme_dropdown(){
         closedir($handle);
         $text ="<select name='sitetheme' class='tbox'>\n";
         $counter = 0;
-        while(IsSet($dirlist[$counter])){
+        while(isset($dirlist[$counter])){
                 if($dirlist[$counter] == $pref['sitetheme'][1] || $dirlist[$counter] == USERTHEME){
                         $text .= "<option selected='selected'>".$dirlist[$counter]."</option>\n";
                 }else{

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/admin_config.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-01-10 00:34:25 $
-|     $Author: sweetas $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-18 16:11:38 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -24,7 +24,7 @@ $lan_file = e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php";
 include(file_exists($lan_file) ? $lan_file : e_PLUGIN."calendar_menu/languages/English.php");
 
 
-if(IsSet($_POST['updatesettings'])){
+if(isset($_POST['updatesettings'])){
         $pref['eventpost_admin'] = $_POST['eventpost_admin'];
                 save_prefs();
         $message = EC_LAN_75; // "Calendar settings updated.";

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll_menu/poll_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:38 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-18 16:11:57 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -32,7 +32,7 @@ if($sql -> db_Select("poll", "*", "poll_active='1' OR poll_active='2' ")){
                 $mode = "notvoted";
         }
 
-        If(IsSet($_POST['vote'])){
+        If(isset($_POST['vote'])){
                 if(!strpos($poll_ip, $user_id)){
                         if($_POST['votea']){
                                 $num = "poll_votes_".$_POST['votea'];

@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/forum_viewforum.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2004-12-21 06:57:32 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-18 16:10:42 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
 require_once("class2.php");
 
-if(IsSet($_POST['fjsubmit'])){
+if(isset($_POST['fjsubmit'])){
         header("location:".e_BASE."forum_viewforum.php?".$_POST['forumjump']);
         exit;
 }

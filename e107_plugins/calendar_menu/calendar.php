@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:06 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-18 16:11:38 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -23,11 +23,11 @@ require_once("../../class2.php");
 require_once(HEADERF);
 $num = $_POST['num'];
 
-if(IsSet($_POST['viewallevents'])){
+if(isset($_POST['viewallevents'])){
 Header("Location: ".e_PLUGIN."calendar_menu/event.php?".$_POST['enter_new_val']);
 }
 
-if(IsSet($_POST['doit'])){
+if(isset($_POST['doit'])){
 Header("Location: ".e_PLUGIN."calendar_menu/event.php?ne.".$_POST['enter_new_val']);
 }
 

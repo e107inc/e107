@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/subcontent.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-10-09 03:32:17 $
-|     $Author: chavo $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-18 16:10:43 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -31,7 +31,7 @@ if(e_QUERY){
         unset($tmp);
 }
 if($action == "article"){
-        define("e_PAGETITLE", ARLAN_15.(IsSet($_POST['preview']) ? " / ".ARLAN_28 : ""));
+        define("e_PAGETITLE", ARLAN_15.(isset($_POST['preview']) ? " / ".ARLAN_28 : ""));
 }elseif($action == "review"){
         define("e_PAGETITLE", ARLAN_89);
 }elseif($action == ""){
@@ -52,7 +52,7 @@ if($action == ""){
 	 $ns -> tablerender(ARLAN_106, $text);
 }
 
-if(IsSet($_POST['preview'])){
+if(isset($_POST['preview'])){
         $obj = new convert;
         $datestamp = $obj->convert_date(time(), "long");
 
@@ -86,7 +86,7 @@ if(IsSet($_POST['preview'])){
         if($content_author == "<b>".ARLAN_92."<b>"){ $content_author = ""; }
 }
 
-if(IsSet($_POST['create_article'])){
+if(isset($_POST['create_article'])){
         if(USER){
                 $_POST['content_author'] = USERNAME;
                 $_POST['content_author_email'] = USEREMAIL;
@@ -108,7 +108,7 @@ if(IsSet($_POST['create_article'])){
         }
 }
 
-if(IsSet($_POST['create_review'])){
+if(isset($_POST['create_review'])){
         if(USER){
                 $_POST['content_author'] = USERNAME;
                 $_POST['content_author_email'] = USEREMAIL;
@@ -130,7 +130,7 @@ if(IsSet($_POST['create_review'])){
         }
 }
 
-if(IsSet($message)){
+if(isset($message)){
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
         require_once(FOOTERF);
         exit;
@@ -146,7 +146,7 @@ if($action == "article"){
                 $articlesubmit = ARLAN_97;
         }
 
-        if(IsSet($articlesubmit)){
+        if(isset($articlesubmit)){
                 $ns -> tablerender("", "<div style='text-align:center'><b>".$articlesubmit."</b></div>");
                 require_once(FOOTERF);
                 exit;
@@ -238,7 +238,7 @@ if($action == "review"){
                 $reviewsubmit = ARLAN_98;
         }
 
-        if(IsSet($reviewsubmit)){
+        if(isset($reviewsubmit)){
                 $ns -> tablerender("", "<div style='text-align:center'><b>".$reviewsubmit."</b></div>");
                 require_once(FOOTERF);
                 exit;

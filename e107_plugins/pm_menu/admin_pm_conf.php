@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm_menu/admin_pm_conf.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-01-10 00:34:26 $
-|     $Author: sweetas $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-18 16:11:56 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -49,7 +49,7 @@ function pm_UpdateParm($parmname){
         $pref[$parmname]=$_POST[$parmname];
 }
 
-if(IsSet($_POST['updatesettings'])){
+if(isset($_POST['updatesettings'])){
 
         if($_POST['pm_userclass']==e_UC_PUBLIC){$_POST['pm_userclass']=e_UC_MEMBER;}
         pm_UpdateParm("pm_title");

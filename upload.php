@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/upload.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-08 23:25:11 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-18 16:10:43 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -40,7 +40,7 @@ if(!check_class($pref['upload_class'])){
         exit;
 }
 
-if(IsSet($_POST['upload'])){
+if(isset($_POST['upload'])){
         if(($_POST['file_email'] || USER==TRUE) && $_POST['file_name'] && $_POST['file_description']){
 
                 require_once(e_HANDLER."upload_handler.php");
@@ -75,7 +75,7 @@ if(IsSet($_POST['upload'])){
         }
 }
 
-if(IsSet($message)){
+if(isset($message)){
         $ns -> tablerender("", "<div style=\"text-align:center\"><b>".$message."</b></div>");
         require_once(FOOTERF);
         exit;

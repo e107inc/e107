@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-15 09:10:44 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-18 16:10:42 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -92,7 +92,7 @@ if(is_numeric($tmp[0])){
         $id = intval($tmp[1]);
 }
 
-if(IsSet($_POST['commentsubmit'])){
+if(isset($_POST['commentsubmit'])){
         if(!$sql -> db_Select("download", "download_comment", "download_id='$id' ")){
                 header("location:".e_BASE."index.php");
                 exit;
@@ -107,7 +107,7 @@ if(IsSet($_POST['commentsubmit'])){
 
 if($action == "list"){
 
-        if(IsSet($_POST['view'])){
+        if(isset($_POST['view'])){
                 extract($_POST);
         }
 
@@ -183,7 +183,7 @@ if($action == "view"){
         $aj = new textparse;
         $sql2 = new db;
                 $highlight_search = FALSE;
-                if(IsSet($_POST['highlight_search'])){
+                if(isset($_POST['highlight_search'])){
                         $highlight_search = TRUE;
                 }
 

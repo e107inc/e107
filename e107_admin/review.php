@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/review.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-10 09:49:03 $
-|     $Author: sweetas $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-18 16:11:32 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -53,7 +53,7 @@ if(preg_match("#(.*?)_delete_(\d+)#",$deltest[$etp->unentity(REVLAN_9)],$matches
 
 // ##### DB --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-if(IsSet($_POST['create_category'])){
+if(isset($_POST['create_category'])){
         $_POST['category_name'] = $aj -> formtpa($_POST['category_name'], "admin");
         $_POST['category_description'] = $aj -> formtpa($_POST['category_description'], "admin");
         $sql -> db_Insert("content", " '0', '".$_POST['category_name']."', '".$_POST['category_description']."', 0, 0, ".time().", '".ADMINID."', 0, '".$_POST['category_button']."', 10, 0, 0, 0");
@@ -62,7 +62,7 @@ if(IsSet($_POST['create_category'])){
         $action = "cat";
 }
 
-if(IsSet($_POST['update_category'])){
+if(isset($_POST['update_category'])){
         $_POST['category_name'] = $aj -> formtpa($_POST['category_name'], "admin");
         $_POST['category_description'] = $aj -> formtpa($_POST['category_description'], "admin");
         $sql -> db_Update("content", "content_heading='".$_POST['category_name']."', content_subheading='".$_POST['category_description']."', content_summary='".$_POST['category_button']."' WHERE content_id='".$_POST['category_id']."' ");
@@ -71,7 +71,7 @@ if(IsSet($_POST['update_category'])){
         $action = "cat";
 }
 
-if(IsSet($_POST['create_review'])){
+if(isset($_POST['create_review'])){
         if($_POST['data'] != ""){
                 $content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
                 $content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
@@ -87,7 +87,7 @@ if(IsSet($_POST['create_review'])){
         unset($action);
 }
 
-If(IsSet($_POST['update_review'])){
+If(isset($_POST['update_review'])){
         if($_POST['category'] == -1){ unset($_POST['category']); }
         $content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
         $content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
@@ -99,7 +99,7 @@ If(IsSet($_POST['update_review'])){
         $e107cache->clear("review");
 }
 
-If(IsSet($_POST['sa_article'])){
+If(isset($_POST['sa_article'])){
         if($_POST['category'] == -1){ unset($_POST['category']); }
         $content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
         $content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
@@ -110,7 +110,7 @@ If(IsSet($_POST['sa_article'])){
         $message = REVLAN_68;
 }
 
-if(IsSet($_POST['updateoptions'])){
+if(isset($_POST['updateoptions'])){
         $pref['review_submit'] = $_POST['review_submit'];
         $pref['review_submit_class'] = $_POST['review_submit_class'];
         save_prefs();
@@ -164,7 +164,7 @@ if($action == "confirm"){
 // ##### End ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-if(IsSet($message)){
+if(isset($message)){
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 

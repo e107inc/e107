@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-15 19:04:48 $
-|     $Author: e107coders $
+|     $Revision: 1.7 $
+|     $Date: 2005-01-18 16:10:43 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -66,7 +66,7 @@ $signup_title = array(LAN_308,LAN_144,LAN_115,LAN_116,LAN_117,LAN_118,LAN_119,LA
 $signup_name = array("realname","website","icq","aim","msn","birth_year","location","signature","image","timezone","usrclass");
 
 
-if(IsSet($_POST['register'])){
+if(isset($_POST['register'])){
                 extract($_POST);
         require_once(e_HANDLER."message_handler.php");
 
@@ -300,7 +300,7 @@ if(!$website){
 }
 
 if(!eregi("stage", LAN_109)){
-        if(IsSet($_POST['newver'])){
+        if(isset($_POST['newver'])){
                 if(!$_POST['coppa']){
                         $ns -> tablerender("<div style='text-align:center'>".LAN_202."</div>", "<div style='text-align:center'>".LAN_SIGNUP_9."</div>");
                         require_once(FOOTERF);

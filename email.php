@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/email.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-11-05 02:59:20 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-18 16:10:42 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -28,7 +28,7 @@ $type = ($table == "news" ? "news item" : "article");
 $comments = textparse::tpj($_POST['comment'],TRUE);
 $author = textparse::tpj($_POST['author_name'],TRUE);
 $email_send = check_email($_POST['email_send']);
-if(IsSet($_POST['emailsubmit'])){
+if(isset($_POST['emailsubmit'])){
         if(!$email_send){
                  $error .= LAN_106;
          }

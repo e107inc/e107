@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/fader_menu/admin_config.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-01-10 00:34:25 $
-|     $Author: sweetas $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-18 16:11:55 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,7 +27,7 @@ if(file_exists($lan_file)){
 if(!getperms("4")){ header("location:".e_BASE."index.php"); exit ;}
 require_once(e_ADMIN."auth.php");
 
-if(IsSet($_POST['update_menu'])){
+if(isset($_POST['update_menu'])){
         $aj = new textparse;
         $_POST['fader_height'] = ($_POST['fader_height'] ? $_POST['fader_height'] : 200);
         $_POST['fader_delay'] = ($_POST['fader_delay'] ? $_POST['fader_delay'] : 3000);

@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2005-01-15 20:42:20 $
+|     $Revision: 1.50 $
+|     $Date: 2005-01-18 16:10:42 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -192,7 +192,7 @@ $menu_pref = $sysprefs->getArray('menu_pref');
 
 // Cameron's Mult-lang switch. ==================
 
-if (IsSet($_POST['setlanguage'])) {
+if (isset($_POST['setlanguage'])) {
         $sql->mySQLlanguage = $_POST['sitelanguage'];
 
         if ($pref['user_tracking'] == "session"){
@@ -387,7 +387,7 @@ if (strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin.php")) {
         e107_include_once(e_LANGUAGEDIR."English/lan_".e_PAGE);
 }
 
-if (IsSet($_POST['userlogin'])) {
+if (isset($_POST['userlogin'])) {
         e107_require_once(e_HANDLER."login.php");
         $usr = new userlogin($_POST['username'], $_POST['userpass'], $_POST['autologin']);
 }
@@ -816,7 +816,7 @@ function init_session() {
                                 exit;
                         }
                         $user_pref = unserialize($user_prefs);
-                        if (IsSet($_POST['settheme'])) {
+                        if (isset($_POST['settheme'])) {
                                 $user_pref['sitetheme'] = ($pref['sitetheme'] == $_POST['sitetheme'] ? "" : $_POST['sitetheme']);
                                 save_prefs($user);
                         }

@@ -11,16 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/links.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2004-12-13 12:00:55 $
-|     $Author: sweetas $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-18 16:10:43 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 
 require_once(HEADERF);
 
-if(IsSet($_POST['add_link']) && check_class($pref['link_submit_class'])){
+if(isset($_POST['add_link']) && check_class($pref['link_submit_class'])){
         if($_POST['link_name'] && $_POST['link_url'] && $_POST['link_description']){
                 $link_name = $aj -> formtpa($_POST['link_name'], "public");
                 $link_url = $aj -> formtpa($_POST['link_url'], "public");

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/resetcore.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:23 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-18 16:11:33 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../e107_config.php");
@@ -41,7 +41,7 @@ echo "<?xml version='1.0' encoding='iso-8859-1' ?>\n";
 
 <?php
 
-if(IsSet($_POST['usubmit'])){
+if(isset($_POST['usubmit'])){
 
         $a_name = $_POST['a_name'];
         $a_password = md5($_POST['a_password']);
@@ -79,7 +79,7 @@ if(IsSet($_POST['usubmit'])){
 }
 
 
-if(IsSet($_POST['reset_core_sub']) && $_POST['mode'] == 2){
+if(isset($_POST['reset_core_sub']) && $_POST['mode'] == 2){
         $a_name = $_POST['a_name'];
         $a_password = $_POST['a_password'];
         if(!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_name='$a_name' AND user_password='$a_password' AND user_perms='0' ")){
@@ -119,7 +119,7 @@ if(IsSet($_POST['reset_core_sub']) && $_POST['mode'] == 2){
 }
 
 
-if(IsSet($_POST['coreedit_sub'])){
+if(isset($_POST['coreedit_sub'])){
         $a_name = $_POST['a_name'];
         $a_password = $_POST['a_password'];
         if(!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_name='$a_name' AND user_password='$a_password' AND user_perms='0' ")){
@@ -144,7 +144,7 @@ if(IsSet($_POST['coreedit_sub'])){
 
 }
 
-if(IsSet($_POST['reset_core_sub']) && $_POST['mode'] == 3){
+if(isset($_POST['reset_core_sub']) && $_POST['mode'] == 3){
         $a_name = $_POST['a_name'];
         $a_password = $_POST['a_password'];
         if(!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_name='$a_name' AND user_password='$a_password' AND user_perms='0' ")){
@@ -166,7 +166,7 @@ if(IsSet($_POST['reset_core_sub']) && $_POST['mode'] == 3){
 }
 
 
-if(IsSet($_POST['reset_core_sub']) && $_POST['mode'] == 1){
+if(isset($_POST['reset_core_sub']) && $_POST['mode'] == 1){
 
         $a_name = $_POST['a_name'];
         $a_password = $_POST['a_password'];

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/banner.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-14 12:57:04 $
-|     $Author: lisa_ $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-18 16:10:41 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -32,7 +32,7 @@ if(e_QUERY){
 
 require_once(HEADERF);
 
-if(IsSet($_POST['clientsubmit'])){
+if(isset($_POST['clientsubmit'])){
 
 		if(!$sql -> db_Select("banner", "*", "banner_clientlogin='".$_POST['clientlogin']."' AND banner_clientpassword='".$_POST['clientpassword']."' ")){
 			$ns -> tablerender(LAN_38, "<br /><div style='text-align:center'>".LAN_20."</div><br />");

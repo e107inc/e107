@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-01-12 23:43:19 $
-|     $Author: e107coders $
+|     $Revision: 1.13 $
+|     $Date: 2005-01-18 16:11:32 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -85,19 +85,19 @@ if($action == "inc" && strpos(e_SELF,"links"))
      //   exit;
 }
 
-if(IsSet($_POST['create_category'])){
+if(isset($_POST['create_category'])){
         $_POST['link_category_name'] = $aj -> formtpa($_POST['link_category_name'], "admin");
         $sql -> db_Insert("link_category", " '0', '".$_POST['link_category_name']."', '".$_POST['link_category_description']."', '".$_POST['link_category_icon']."'");
         $linkpost -> show_message(LCLAN_51);
 }
 
-if(IsSet($_POST['update_category'])){
+if(isset($_POST['update_category'])){
         $_POST['category_name'] = $aj -> formtpa($_POST['category_name'], "admin");
         $sql -> db_Update("link_category", "link_category_name ='".$_POST['link_category_name']."', link_category_description='".$_POST['link_category_description']."',  link_category_icon='".$_POST['link_category_icon']."' WHERE link_category_id='".$_POST['link_category_id']."'");
         $linkpost -> show_message(LCLAN_52);
 }
 
-if(IsSet($_POST['update_order'])){
+if(isset($_POST['update_order'])){
         extract($_POST);
         while(list($key, $id) = each($link_order)){
                 $tmp = explode(".", $id);
@@ -107,7 +107,7 @@ if(IsSet($_POST['update_order'])){
         $linkpost -> show_message(LCLAN_6);
 }
 
-if(IsSet($_POST['updateoptions'])){
+if(isset($_POST['updateoptions'])){
         $pref['linkpage_categories'] = $_POST['linkpage_categories'];
         $pref['link_submit'] = $_POST['link_submit'];
         $pref['link_submit_class'] = $_POST['link_submit_class'];
@@ -152,7 +152,7 @@ if($action == "sn")
 }
 
 
-if(IsSet($_POST['add_link'])){
+if(isset($_POST['add_link'])){
         $linkpost -> submit_link($sub_action, $id);
         unset($id);
 }

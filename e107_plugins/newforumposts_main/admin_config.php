@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newforumposts_main/admin_config.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-01-10 00:34:26 $
-|     $Author: sweetas $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-18 16:11:55 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -28,7 +28,7 @@ if(file_exists($lan_file)){
 if(!getperms("1")){ header("location:".e_BASE."index.php"); exit ;}
 require_once(e_ADMIN."auth.php");
 
-if(IsSet($_POST['updatesettings'])){
+if(isset($_POST['updatesettings'])){
         $pref['nfp_display'] = $_POST['nfp_display'];
         $pref['nfp_caption'] = $_POST['nfp_caption'];
         $pref['nfp_amount'] = $_POST['nfp_amount'];

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-01-18 05:40:34 $
-|     $Author: sweetas $
+|     $Revision: 1.10 $
+|     $Date: 2005-01-18 16:11:32 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -89,11 +89,11 @@ if(strstr(e_QUERY, "uninstall")){
         exit;
 }
 
-if(IsSet($_POST['cancel'])){
+if(isset($_POST['cancel'])){
         $ns -> tablerender("", "<div style='text-align:center'>".EPL_ADLAN_4."</div>");
 }
 
-if(IsSet($_POST['confirm'])){
+if(isset($_POST['confirm'])){
 
         $id = $_POST['id'];
         $sql -> db_Select("plugin", "*", "plugin_id='$id' ");

@@ -12,9 +12,9 @@
 |	GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_admin/forum_conf.php,v $
-| $Revision: 1.3 $
-| $Date: 2005-01-10 09:49:03 $
-| $Author: sweetas $ 
+| $Revision: 1.4 $
+| $Date: 2005-01-18 16:11:32 $
+| $Author: streaky $ 
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -52,7 +52,7 @@ if($action == "unstick"){
 	$url = e_BASE."forum_viewforum.php?".$forum_id;
 }
 
-if(IsSet($_POST['deletepollconfirm'])){
+if(isset($_POST['deletepollconfirm'])){
 	$sql -> db_Delete("poll", "poll_id='$thread_parent' ");
 	$sql -> db_Select("forum_t", "*", "thread_id='".$thread_id."' ");
 	$row = $sql -> db_Fetch(); extract($row);
@@ -103,7 +103,7 @@ if($action == "confirm"){
 }
 // end delete ----------------------------------------------------------------------------------------------------------------------------------------------
 
-if(IsSet($_POST['move'])){
+if(isset($_POST['move'])){
 
 	$new_forum = $_POST['forum_move'];
 		
@@ -138,7 +138,7 @@ if(IsSet($_POST['move'])){
 	$url = e_BASE."forum_viewforum.php?".$new_forum;
 }
 
-if(IsSet($_POST['movecancel'])){
+if(isset($_POST['movecancel'])){
 	$message = FORLAN_10;
 	$url = e_BASE."forum_viewforum.php?".$forum_id.".".$thread_id;
 }

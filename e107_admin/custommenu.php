@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/custommenu.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-10 09:49:02 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-18 16:11:32 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -41,7 +41,7 @@ $cm2 = array();
 unset($message);
 
 // Create link
-if(IsSet($_POST['mainmenu_link']) && $_POST['type_content']==2){
+if(isset($_POST['mainmenu_link']) && $_POST['type_content']==2){
   //global $PLUGINS_DIRECTORY;
   if(!$sql -> db_Select("links","link_id","link_name='".$_POST['menu_name']."' AND link_category='1' ")){
     $sql -> db_Insert("links", "0, '".$_POST['menu_name']."', '".$PLUGINS_DIRECTORY."custompages/".$_POST['menu_name'].".php', '', '', '1', '0', '0', '0', '0'");
@@ -51,7 +51,7 @@ if(IsSet($_POST['mainmenu_link']) && $_POST['type_content']==2){
   }
 }
 
-if((IsSet($_POST['add_menu']) || IsSet($_POST['update_menu'])) && $_POST['type_content']==1){
+if((isset($_POST['add_menu']) || isset($_POST['update_menu'])) && $_POST['type_content']==1){
 
         if(!$_POST['menu_name'] || !$_POST['menu_caption'] || !$_POST['menu_text']){
                 $message .= CUSLAN_1;
@@ -87,13 +87,13 @@ $_POST['menu_text'] = $etp -> e107out_basic($_POST['menu_text']);
                         $message .= CUSLAN_2.e_PLUGIN.CUSLAN_3;
                 }else{
                         fclose($fp);
-                        $message .= (IsSet($_POST['update_menu']) ? CUSLAN_4 : CUSLAN_5);
+                        $message .= (isset($_POST['update_menu']) ? CUSLAN_4 : CUSLAN_5);
                         unset($_POST['menu_name'], $_POST['menu_caption'], $_POST['menu_text'], $_POST['edit'], $_POST['type_content']);
                 }
         }
 }
 
-if((IsSet($_POST['add_menu']) || IsSet($_POST['update_menu'])) && $_POST['type_content']==2){
+if((isset($_POST['add_menu']) || isset($_POST['update_menu'])) && $_POST['type_content']==2){
 
         if(!$_POST['menu_name'] || !$_POST['menu_caption'] || !$_POST['menu_text']){
                 $message .= CUSLAN_1;
@@ -132,13 +132,13 @@ $_POST['menu_text'] = $etp -> e107out_basic($_POST['menu_text']);
                         $message .= CUSLAN_20.e_PLUGIN.CUSLAN_21;
                 }else{
                         fclose($fp);
-                        $message .= (IsSet($_POST['update_menu']) ? CUSLAN_4 : CUSLAN_24." ".SITEURL.CUSLAN_29);
+                        $message .= (isset($_POST['update_menu']) ? CUSLAN_4 : CUSLAN_24." ".SITEURL.CUSLAN_29);
                         unset($_POST['menu_name'], $_POST['menu_caption'], $_POST['menu_text'], $_POST['edit'], $_POST['type_content']);
                 }
         }
 }
 
-if(IsSet($_POST['preview'])){
+if(isset($_POST['preview'])){
         $menu_caption = $aj -> tpa($_POST['menu_caption']);
         $menu_text = $aj -> tpa($_POST['menu_text'],"on","admin");
         echo "<div style='text-align:center'>
@@ -150,7 +150,7 @@ if(IsSet($_POST['preview'])){
         $_POST['menu_caption'] = $aj -> tpa($_POST['menu_caption']);
         $_POST['menu_text'] = $aj -> tpa($_POST['menu_text']);
         $_POST['menu_text'] = str_replace("<br />", "", $_POST['menu_text']);
-}else if(IsSet($_POST['edit'])){
+}else if(isset($_POST['edit'])){
         $menu = e_PLUGIN."custom/".$_POST['existing'];
         if($fp = @fopen($menu,"r")){
                 $buffer = str_replace("\n", "", fread($fp, filesize($menu)));
@@ -164,7 +164,7 @@ if(IsSet($_POST['preview'])){
         }else{
                 $message .= CUSLAN_6." '".$_POST['existing']."' ".CUSLAN_7;
         }
-}else if(IsSet($_POST['edit2'])){
+}else if(isset($_POST['edit2'])){
         $menu = e_PLUGIN."custompages/".$_POST['existingpages'];
         if($fp = @fopen($menu,"r")){
                 $buffer = str_replace("\n", "", fread($fp, filesize($menu)));
@@ -180,7 +180,7 @@ if(IsSet($_POST['preview'])){
         }
 }
 
-if(IsSet($message)){
+if(isset($message)){
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
@@ -298,19 +298,19 @@ $text .= "<tr>
 $text .="
 <tr style='vertical-align:top'>
 <td colspan='2'  style='text-align:center' class='forumheader'>";
-if(IsSet($_POST['preview'])){
+if(isset($_POST['preview'])){
         $text .= "<input class='button' type='submit' name='preview' value='".CUSLAN_14."' /> ";
-        if(IsSet($_POST['edit'])){
+        if(isset($_POST['edit'])){
                 $text .= "<input type='hidden' name='edit' value='".$_POST['edit']."'>";
         }
 }else{
         $text .= "<input class='button' type='submit' name='preview' value='".CUSLAN_15."' /> ";
-        if(IsSet($_POST['edit'])){
+        if(isset($_POST['edit'])){
                 $text .= "<input type='hidden' name='edit' value='".$_POST['edit']."'>";
         }
 }
 
-if(IsSet($_POST['edit'])){
+if(isset($_POST['edit'])){
         $text .= "<input class='button' type='submit' name='update_menu' value='".CUSLAN_16."' />";
 }else{
         $text .= "<input class='button' type='submit' name='add_menu' value='".CUSLAN_17."' />";

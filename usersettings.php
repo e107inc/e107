@@ -11,36 +11,36 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-07 15:11:27 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-18 16:10:43 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
 
 require_once("class2.php");
 
-if(IsSet($_POST['sub_news'])){
+if(isset($_POST['sub_news'])){
         header("location:".e_BASE."submitnews.php");
         exit;
 }
 
-if(IsSet($_POST['sub_link'])){
+if(isset($_POST['sub_link'])){
         header("location:".e_BASE."links.php?submit");
         exit;
 }
 
-if(IsSet($_POST['sub_download'])){
+if(isset($_POST['sub_download'])){
         header("location:".e_BASE."upload.php");
         exit;
 }
 
-if(IsSet($_POST['sub_article'])){
+if(isset($_POST['sub_article'])){
         header("location:".e_BASE."subcontent.php?article");
         exit;
 }
 
-if(IsSet($_POST['sub_review'])){
+if(isset($_POST['sub_review'])){
         header("location:".e_BASE."subcontent.php?review");
         exit;
 }
@@ -56,7 +56,7 @@ $_uid = e_QUERY;
 
 require_once(HEADERF);
 
-if(IsSet($_POST['updatesettings'])){
+if(isset($_POST['updatesettings'])){
 
         // check prefs for required fields =================================.
     $signupval = explode(".",$pref['signup_options']);

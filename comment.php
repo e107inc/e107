@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-05 09:48:49 $
-|     $Author: pholzmann $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-18 16:10:42 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -33,7 +33,7 @@ $xid = $qs[4];
 $cobj = new comment;
 $aj = new textparse;
 
-if(IsSet($_POST['commentsubmit'])){
+if(isset($_POST['commentsubmit'])){
         if(!$sql -> db_Select("news", "news_allow_comments", "news_id='$id' ") && $table == "news"){
                 header("location:".e_BASE."index.php");
                 exit;
@@ -50,7 +50,7 @@ if(IsSet($_POST['commentsubmit'])){
                 }
         }
 }
-if(IsSet($_POST['replysubmit'])){
+if(isset($_POST['replysubmit'])){
         if($table == "news" && !$sql -> db_Select("news", "news_allow_comments", "news_id='$nid' ")){
                 header("location:".e_BASE."index.php");
                 exit;

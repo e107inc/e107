@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-01-13 00:57:30 $
-|     $Author: e107coders $
+|     $Revision: 1.8 $
+|     $Date: 2005-01-18 16:11:32 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -65,18 +65,18 @@ if($sql -> db_Select("rbinary")){
 if($image_array = getfiles($e_file."downloadimages/",1)){ sort($image_array); } unset($t_array);
 if($thumb_array = getfiles($e_file."downloadthumbs/",1)){ sort($thumb_array); } unset($t_array);
 
-if(IsSet($_POST['add_category'])){
+if(isset($_POST['add_category'])){
         $download -> create_category($sub_action, $id);
 }
 
-if(IsSet($_POST['submit_download'])){
+if(isset($_POST['submit_download'])){
         $download -> submit_download($sub_action, $id);
         $action = "main";
         unset($sub_action, $id);
 }
 
 
-if(IsSet($_POST['updateoptions'])){
+if(isset($_POST['updateoptions'])){
         $pref['download_php'] = $_POST['download_php'];
         $pref['download_view'] = $_POST['download_view'];
         $pref['download_sort'] = $_POST['download_sort'];
@@ -123,7 +123,7 @@ if($delete == 'main')
 }
 
 
-if(IsSet($message)){
+if(isset($message)){
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
@@ -247,7 +247,7 @@ class download{
                 global $sql, $rs, $ns, $aj;
                 $text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>";
 
-                if(IsSet($_POST['searchquery'])){
+                if(isset($_POST['searchquery'])){
                         $query = "download_name REGEXP('".$_POST['searchquery']."') OR download_url REGEXP('".$_POST['searchquery']."') OR download_author REGEXP('".$_POST['searchquery']."') OR download_description  REGEXP('".$_POST['searchquery']."') ORDER BY download_datestamp DESC";
                 }else{
                         $query = "ORDER BY ".($sub_action ? $sub_action : "download_datestamp")." ".($id ? $id : "DESC")."  LIMIT $from, $amount";
@@ -395,7 +395,7 @@ class download{
                 ";
 
                 $counter = 0;
-                while(IsSet($file_array[$counter])){
+                while(isset($file_array[$counter])){
 
                         if(eregi($download_url,$file_array[$counter])){
                         $selected = " selected='selected'";
@@ -470,7 +470,7 @@ class download{
                 <option></option>
                 ";
                 $counter = 0;
-                while(IsSet($image_array[$counter])){
+                while(isset($image_array[$counter])){
                         if($image_array[$counter] == $download_image){
                                 $text .= "<option selected='selected'>".$image_array[$counter]."</option>\n";
                         }else{
@@ -489,7 +489,7 @@ class download{
                 <option></option>
                 ";
                 $counter = 0;
-                while(IsSet($thumb_array[$counter])){
+                while(isset($thumb_array[$counter])){
                         if($thumb_array[$counter] == $download_thumb){
                                 $text .= "<option selected='selected'>".$thumb_array[$counter]."</option>\n";
                         }else{
