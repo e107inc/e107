@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-03-07 13:30:39 $
-|     $Author: stevedunstan $
+|     $Revision: 1.15 $
+|     $Date: 2005-03-10 05:21:43 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 	
@@ -147,7 +147,6 @@ $SEARCH = "
 	<p>
 	<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />
 	<input class='button' type='submit' name='searchsubmit' value='".LAN_180."' />
-	<input type='hidden' name='searchtype' value='7' />
 	</p>
 	</form>";
 	
