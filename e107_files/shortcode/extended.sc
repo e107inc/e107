@@ -2,8 +2,14 @@
 //EXAMPLE: {EXTENDED=user_gender.value.5}  will show the value of the extended field user_gender for user #5
 $parms = explode(".", $parm);
 global $currentUser, $sql, $tp;
-require_once(e_HANDLER."user_extended_class.php");
-$ueStruct = e107_user_extended::user_extended_getStruct();
+$ueStruct = getcachedvars("user_extended_struct");
+if(!$ueStruct)
+{
+	require_once(e_HANDLER."user_extended_class.php");
+	$ueStruct = e107_user_extended::user_extended_getStruct();
+	cachevars("user_extended_struct", $ueStruct);
+}
+
 if($parms[2] == USERID)
 {
 	$udata = $currentUser;
@@ -26,14 +32,17 @@ else
 	}
 }
 
-if(!check_class($ueStruct[$parms[0]]['user_extended_struct_applicable'], $udata['user_class']) || !check_class($ueStruct[$parms[0]]['user_extended_struct_read']))
+//echo $parms[0]."<br />";
+//echo "<pre>".print_r($ueStruct, true)."</pre>";
+//echo "{$parms[0]} {$parms[1]} = read_class = ".$ueStruct['user_'.$parms[0]]['user_extended_struct_read']."<br />";
+if(!check_class($ueStruct[$parms[0]]['user_extended_struct_applicable'], $udata['user_class']) || !check_class($ueStruct["user_".$parms[0]]['user_extended_struct_read']))
 {
 	return FALSE;
 }
 
 if ($parms[1] == 'text')
 {
-	return $ueStruct[$parms[0]]['user_extended_struct_text'];
+	return ($ueStruct["user_".$parms[0]]['user_extended_struct_text']) ? $ueStruct["user_".$parms[0]]['user_extended_struct_text'] : TRUE;
 }
 
 if ($parms[1] == 'icon')
@@ -46,15 +55,15 @@ if ($parms[1] == 'icon')
 	{
 		return "<img src='".e_IMAGE."user_icons/{$parms[0]}.png' style='width:16px; height:16px' alt='' />";
 	}
-	return FALSE;
+	return "";
 }
 
 if ($parms[1] == 'value')
 {
-	if($ueStruct[$parms[0]]['user_extended_struct_type'] == '4')
+	if($ueStruct["user_".$parms[0]]['user_extended_struct_type'] == '4')
 	{
-		$tmp = explode(",",$ueStruct[$parms[0]]['user_extended_struct_values']);
-		if($sql->db_Select($tmp[0],"{$tmp[1]}, {$tmp[2]}","{$tmp[1]} = {$udata[$parms[0]]}"))
+		$tmp = explode(",",$ueStruct["user_".$parms[0]]['user_extended_struct_values']);
+		if($sql->db_Select($tmp[0],"{$tmp[1]}, {$tmp[2]}","{$tmp[1]} = {$udata["user_".$parms[0]]}"))
 		{
 			$row = $sql->db_Fetch();
 			$ret_data = $row[$tmp[2]];
@@ -66,11 +75,12 @@ if ($parms[1] == 'value')
 	}
 	else
 	{
-		$ret_data = $udata[$parms[0]];
+		$ret_data = $udata['user_'.$parms[0]];
 	}
 	if($ret_data)
 	{
 		return $tp->toHTML($ret_data, TRUE, "", "class:{$udata['user_class']}");
 	}
+	return "nothing found";
 }
-return FALSE;
+return TRUE;

@@ -344,27 +344,41 @@ if (USERID == $user['user_id'] || (ADMIN && getperms("4")))
 SC_END
 
 SC_BEGIN USER_EXTENDED_ALL
-global $user, $tp;
-global $EXTENDED_START, $EXTENDED_END, $EXTENDED_TABLE;
+global $user, $tp, $sql;
+global $EXTENDED_CATEGORY_START, $EXTENDED_CATEGORY_END, $EXTENDED_CATEGORY_TABLE;
+$qry = "
+	SELECT f.*, c.user_extended_struct_name AS category_name, c.user_extended_struct_id AS category_id FROM #user_extended_struct as f
+	LEFT JOIN #user_extended_struct as c ON f.user_extended_struct_parent = c.user_extended_struct_id
+	ORDER BY c.user_extended_struct_order ASC, f.user_extended_struct_order ASC
+";
 require_once(e_HANDLER."user_extended_class.php");
 $ue = new e107_user_extended;
-$ueList = $ue->user_extended_getStruct();
-if ($ueList)
+$ueCatList = $ue->user_extended_get_categories();
+$ueFieldList = $ue->user_extended_get_fields();
+$ueCatList[0][0] = array('user_extended_struct_name' => LAN_410);
+
+foreach($ueCatList as $catnum => $cat)
 {
-	$ret = $EXTENDED_START;
-	foreach($ueList as $key => $ext)
+	$key = $cat[0]['user_extended_struct_name'];
+	$cat_name = $tp->parseTemplate("{EXTENDED={$key}.text.{$user_id}}", TRUE);
+	if($cat_name !== FALSE)
 	{
-		if($ue_name = $tp->parseTemplate("{EXTENDED={$key}.text.{$user_id}}", TRUE))
+		$ret .= str_replace("{EXTENDED_NAME}", $key, $EXTENDED_CATEGORY_START);
+		foreach($ueFieldList[$catnum] as $f)
 		{
-			$extended_record = str_replace("EXTENDED_ICON","EXTENDED={$key}.icon", $EXTENDED_TABLE);
-			$extended_record = str_replace("{EXTENDED_NAME}", $ue_name, $extended_record);
-			$extended_record = str_replace("EXTENDED_VALUE","EXTENDED={$key}.value.{$user['user_id']}", $extended_record);
-			$ret .= $tp->parseTemplate($extended_record, TRUE);
+			$key = $f['user_extended_struct_name'];
+			if($ue_name = $tp->parseTemplate("{EXTENDED={$key}.text.{$user_id}}", TRUE))
+			{
+				$extended_record = str_replace("EXTENDED_ICON","EXTENDED={$key}.icon", $EXTENDED_CATEGORY_TABLE);
+				$extended_record = str_replace("{EXTENDED_NAME}", $ue_name, $extended_record);
+				$extended_record = str_replace("EXTENDED_VALUE","EXTENDED={$key}.value.{$user['user_id']}", $extended_record);
+				$ret .= $tp->parseTemplate($extended_record, TRUE);
+			}
 		}
 	}
-	$ret .= $EXTENDED_END;
-	return $ret;
+	$ret .= $EXTENDED_CATEGORY_END;
 }
+return $ret;
 SC_END
 
 

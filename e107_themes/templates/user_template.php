@@ -11,15 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/user_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-03-21 04:25:38 $
+|     $Revision: 1.2 $
+|     $Date: 2005-04-05 02:43:43 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
-$EXTENDED_START = "<tr><td colspan='2' class='forumheader'>".LAN_410."</td></tr>";
+global $user_shortcodes;
+$EXTENDED_CATEGORY_START = "<tr><td colspan='2' class='forumheader' style='text-align:left'>{EXTENDED_NAME}</td></tr>";
 
-$EXTENDED_TABLE = "
+$EXTENDED_CATEGORY_TABLE = "
 	<tr>
 		<td style='width:40%' class='forumheader3'>
 			{EXTENDED_ICON}&nbsp;
@@ -41,18 +42,14 @@ $USER_SHORT_TEMPLATE = "
 </tr>
 ";
 
-$span = $pm_installed ? 6 : 5;
 
-$sc_style['USER_PICTURE']['pre'] = "<tr><td rowspan='{$span}' class='forumheader3' style='width:20%; vertical-align:middle; text-align:center'>";
-$sc_style['USER_PICTURE']['post'] = "</td></tr>";
+$sc_style['USER_SENDPM']['pre'] = "<tr><td style='width:100%' class='forumheader3'><span style='float:left'>";
+$sc_style['USER_SENDPM']['post'] = "</span><span style='float:right;'>".LAN_425."</span></td></tr>";
 
-$sc_style['USER_SENDPM']['pre'] = "
-	<tr>
-		<td style='width:80%' class='forumheader3' colspan='2'>
-			<table style='width:100%'>
-				<tr>
-					<td style='width:30%'>";
-$sc_style['USER_SENDPM']['post'] = " ".LAN_425."</td></tr></table></td></tr>";
+$sendpm = $tp->parseTemplate("{USER_SENDPM}", FALSE, $user_shortcodes);
+
+//$sc_style['USER_PICTURE']['pre'] = "";
+//$sc_style['USER_PICTURE']['post'] = $sendpm;
 
 $sc_style['USER_SIGNATURE']['pre'] = "<tr><td colspan='2' class='forumheader3' style='text-align:left'>";
 $sc_style['USER_SIGNATURE']['post'] = "</td></tr>";
@@ -66,55 +63,55 @@ $sc_style['USER_FORUM_LINK']['post'] = "</td></tr>";
 $sc_style['USER_UPDATE_LINK']['pre'] = "<tr><td colspan='2' class='forumheader3' style='text-align:center'>";
 $sc_style['USER_UPDATE_LINK']['post'] = "</td></tr>";
 
+$span = ($sendpm) ? 5 : 4;
 $USER_FULL_TEMPLATE = "
 <div style='text-align:center'>
 <table style='width:95%' class='fborder'>
 <tr>
 	<td colspan='2' class='fcaption' style='text-align:center'>".LAN_142." {USER_ID}: {USER_NAME}</td>
 </tr>
-{USER_PICTURE}
 <tr>
-<td style='width:80%' class='forumheader3'>
-	<table style='width:100%'>
-		<tr>
-			<td style='width:30%'>{USER_REALNAME_ICON} ".LAN_308."</td>
-			<td style='width:70%; text-align:right'>{USER_REALNAME}</td>
-		</tr>
-	</table>
-</td>
-</tr>
-
-<tr>
-	<td style='width:80%' class='forumheader3'>
-		<table style='width:100%'>
-			<tr>
-				<td style='width:30%'>{USER_EMAIL_ICON} ".LAN_112."</td>
-				<td style='width:70%; text-align:right'>{USER_EMAIL_LINK}</td>
-			</tr>
-		</table>
+	<td rowspan='{$span}' class='forumheader3' style='width:20%; vertical-align:middle; text-align:center'>
+	{USER_PICTURE}
+	</td>
+	<td class='forumheader3' style='width:100%'>
+		<span style='float:left'>{USER_REALNAME_ICON} ".LAN_308."</span>
+		<span style='float:right; text-align:right'>{USER_REALNAME}</span>
 	</td>
 </tr>
 
 <tr>
-	<td style='width:80%' class='forumheader3'>
-		<table style='width:100%'>
-			<tr>
-				<td style='width:30%'>{USER_BIRTHDAY_ICON} ".LAN_118."</td>
-				<td style='width:70%; text-align:right'>{USER_BIRTHDAY}</td>
-			</tr>
-		</table>
+	<td style='width:100%' class='forumheader3'>
+		<span style='float:left'>{USER_EMAIL_ICON} ".LAN_112."</span>
+		<span style='float:right; text-align:right'>{USER_EMAIL_LINK}</span>
 	</td>
 </tr>
-{USER_SENDPM}
+
+<tr>
+	<td style='width:100%' class='forumheader3'>
+		<span style='float:left'>".LAN_406."</span>
+		<span style='float:right; text-align:right'>{USER_LEVEL}</span>
+	</td>
+</tr>
+
+<tr>
+	<td style='width:100%' class='forumheader3'>
+		<span style='float:left'>".LAN_404."</span>
+		<span style='float:right'>{USER_LASTVISIT}</span>
+	</td>
+</tr>
+{$sendpm}
 {USER_SIGNATURE}
 {USER_EXTENDED_ALL}
 <tr>
 	<td colspan='2' class='forumheader'>".LAN_403."</td>
 </tr>
+
 <tr>
 	<td style='width:30%' class='forumheader3'>".LAN_145."</td>
 	<td style='width:70%' class='forumheader3'>{USER_JOIN}<br />{USER_DAYSREGGED}</td>
 </tr>
+
 <tr>
 	<td style='width:30%' class='forumheader3'>".LAN_147."</td>
 	<td style='width:70%' class='forumheader3'>{USER_CHATPOSTS} ( {USER_CHATPER}% )</td>
@@ -134,14 +131,6 @@ $USER_FULL_TEMPLATE = "
 <tr>
 	<td style='width:30%' class='forumheader3'>".LAN_146."</td>
 	<td style='width:70%' class='forumheader3'>{USER_VISITS}</td>
-</tr>
-<tr>
-	<td style='width:30%' class='forumheader3'>".LAN_404."</td>
-	<td style='width:70%' class='forumheader3'>{USER_LASTVISIT}</td>
-</tr>
-<tr>
-	<td style='width:30%' class='forumheader3'>".LAN_406."</td>
-	<td style='width:70%' class='forumheader3'>{USER_LEVEL}</td>
 </tr>
 {USER_UPDATE_LINK}
 <tr>
