@@ -30,7 +30,8 @@ define("ONLINE_EL13", "Forum");
 define("ONLINE_EL14", "Thread");
 define("ONLINE_EL15", "Page");
 
-define("ARTICLE", "Article/Review");
+define("CLASSRESTRICTED", "Class Restricted Page");
+define("ARTICLEPAGE", "Article/Review");
 define("CHAT", "Chat");
 define("COMMENT", "Comments");
 define("DOWNLOAD", "Downloads");
@@ -39,6 +40,7 @@ define("FORUM", "Main Forum Index");
 define("LINKS", "Links");
 define("NEWS", "News");
 define("OLDPOLLS", "Old Polls");
+define("POLLCOMMENT", "Poll");
 define("PRINTPAGE", "Print");
 define("LOGIN", "Logging In");
 define("SEARCH", "Searching");
@@ -51,6 +53,8 @@ define("ONLINE", "Online Users");
 define("LISTNEW", "List New Items");
 define("USERPOSTS", "User Posts");
 define("SUBCONTENT", "Submit Article/Review");
+define("TOP", "Top Posters/Most Active Threads");
+define("ADMINAREA", "Admin Area");
 
 //commnly used plugin pages
 define("BUGTRACKER", "Bugtracker");
@@ -59,5 +63,8 @@ define("CALENDAR", "Events Calendar");
 define("FAQ", "Faq");
 define("PM", "Private Messaging");
 define("SURVEY", "Survey");
+define("ARTICLE", "Article");
+define("CONTENT", "Content Page");
+define("REVIEW", "Review");
 
 ?>
