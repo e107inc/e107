@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2004-11-27 13:23:52 $
-|     $Author: streaky $
+|     $Revision: 1.22 $
+|     $Date: 2004-11-27 15:12:25 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -892,101 +892,127 @@ function message_handler($mode, $message, $line = 0, $file = "") {
 	show_emessage($mode, $message, $line, $file);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-class e_parse {
+class e_parse
+{
 	var $e_sc;
 	var $e_bb;
 	var $e_pf;
 	var $e_emote;
 
-	function toDB($text, $no_encode = FALSE) {
-		if (MAGIC_QUOTES_GPC == TRUE) {
+	function toDB($text,$no_encode = FALSE)
+	{
+		if(MAGIC_QUOTES_GPC == TRUE)
+		{
 			$text = stripslashes($text);
 		}
-		$search = array('$', '"', "'", '\\');
-		$replace = array('&#036;','&quot;','&#039;','&#092;');
-		$text = str_replace($search, $replace, $text);
-		return (ADMIN || $no_encode) ? $text :
-		htmlentities($text, ENT_QUOTES, CHARSET);
+		$search = array('$','"',"'",'\\','&');
+		$replace = array('&#036;','&quot;','&#039;','&#092;','&amp;');
+		$text = str_replace($search,$replace,$text);
+		if (ADMIN == FALSE && $no_encode == FALSE) {
+			$search = array('<','>');
+			$replace = array('[e_LT]','[e_GT]');
+			$text = str_replace($search,$replace,$text);
+		}
+		return $text;
+//		return (ADMIN || $no_encode) ? $text : htmlentities($text,ENT_QUOTES,CHARSET);
 	}
 
-	function toForm($text, $single_quotes = FALSE) {
-		$mode = ($single_quotes) ? ENT_QUOTES :
-		ENT_COMPAT;
-		if (MAGIC_QUOTES_GPC == TRUE) {
+	function toForm($text,$single_quotes = FALSE)
+	{
+		$mode = ($single_quotes) ? ENT_QUOTES : ENT_COMPAT;
+		if(MAGIC_QUOTES_GPC == TRUE)
+		{
 			$text = stripslashes($text);
 		}
-		$search = array('&#036;', '&quot;');
-		$replace = array('$', '"');
-		$text = str_replace($search, $replace, $text);
-		return html_entity_decode($text, $mode, CHARSET);
-	}
-
-	function post_toHTML($text) {
-		return $this->toDB($text);
-	}
-
-	function post_toForm($text) {
-		if (MAGIC_QUOTES_GPC == TRUE) {
-			return addslashes($text);
-		}
+		$search = array('&#036;','&quot;','[e_LT]','[e_GT]');
+		$replace = array('$','"','<','>');
+		$text = str_replace($search,$replace,$text);
 		return $text;
 	}
 
-	function parseTemplate($text, $parseSCFiles = TRUE, $extraCodes = "") {
-		// Start parse {XXX} codes
-		if (!class_exists('e_shortcode')) {
-			require_once(e_HANDLER."shortcode_handler.php");
-			$this->e_sc = new e_shortcode;
+	function post_toHTML($text)
+	{
+		return $this -> toHTML($text,TRUE);
+	}
+
+	function post_toForm($text)
+	{
+		if(MAGIC_QUOTES_GPC == TRUE)
+		{
+			return addslashes($text);
 		}
-		return $this->e_sc->parseCodes($text, $parseSCFiles, $extraCodes);
+		$search = array('&');
+		$replace = array('&amp;');
+		$text = str_replace($search,$replace,$text);
+		return $text;
+	}
+
+	function parseTemplate($text,$parseSCFiles=TRUE,$extraCodes="")
+	{
+		// Start parse {XXX} codes
+		if(!class_exists('e_shortcode'))
+		{
+			require_once(e_HANDLER."shortcode_handler.php");
+			$this -> e_sc = new e_shortcode;
+		}
+		return $this -> e_sc -> parseCodes($text,$parseSCFiles,$extraCodes);
 		// End parse {XXX} codes
 	}
 
-	function toHTML($text, $parseBB = FALSE, $modifiers = "", $postID = "") {
-		if ($text == '') {
-			return $text;
-		}
+	function toHTML($text,$parseBB=FALSE,$modifiers="",$postID="")
+	{
+		if($text==''){return $text;}
 		global $pref;
-		if (MAGIC_QUOTES_GPC == TRUE) {
+		if(MAGIC_QUOTES_GPC == TRUE)
+		{
 			$text = stripslashes($text);
 		}
 
-		$search = array('&#039;', '&#036;', '&quot;');
-		$replace = array("'", '$', '"');
-		$text = str_replace($search, $replace, $text);
-		if (strpos($modifiers, 'nobreak') == FALSE) {
-			$text = preg_replace("#[\r]*\n[\r]*#", "[E_NL]", $text);
+		$search = array('&#039;','&#036;','&quot;');
+		$replace = array("'",'$','"');
+		$text = str_replace($search,$replace,$text);
+		if(strpos($modifiers,'nobreak') == FALSE)
+		{
+			$text = preg_replace("#[\r]*\n[\r]*#","[E_NL]",$text);
 		}
 
-		if ($pref['smiley_activate']) {
-			if (!is_object($this->e_emote)) {
+		if($pref['smiley_activate'])
+		{
+			if(!is_object($this -> e_emote))
+			{
 				require_once(e_HANDLER."emote_filter.php");
-				$this->e_emote = new e_emoteFilter;
+				$this -> e_emote = new e_emoteFilter;
 			}
-			$text = $this->e_emote->filterEmotes($text);
+			$text = $this -> e_emote -> filterEmotes($text);
 		}
 
 		// Start parse [bb][/bb] codes
-		if ($parseBB === TRUE) {
-			if (!is_object($this->e_bb)) {
+		if($parseBB === TRUE)
+		{
+			if(!is_object($this -> e_bb))
+			{
 				require_once(e_HANDLER."bbcode_handler.php");
-				$this->e_bb = new e_bbcode;
+				$this -> e_bb = new e_bbcode;
 			}
-			$text = $this->e_bb->parseBBCodes($text, $postID);
+			$text = $this -> e_bb -> parseBBCodes($text,$postID);
 		}
 		// End parse [bb][/bb] codes
 
-		if ($pref['profanity_filter']) {
-			if (!is_object($this->e_pf)) {
+		if($pref['profanity_filter'])
+		{
+			if(!is_object($this -> e_pf))
+			{
 				require_once(e_HANDLER."profanity_filter.php");
-				$this->e_pf = new e_profanityFilter;
+				$this -> e_pf = new e_profanityFilter;
 			}
-			$text = $this->e_pf->filterProfanities($text);
+			$text = $this -> e_pf -> filterProfanities($text);
 		}
 
-		$nl_replace = (strpos($modifiers, 'nobreak') === FALSE) ? "<br />" :
-		"";
-		$text = str_replace('[E_NL]', $nl_replace, $text);
+		$nl_replace = (strpos($modifiers,'nobreak') === FALSE) ? "<br />" : "";
+		$text = str_replace('[E_NL]',$nl_replace,$text);
+		$search = array('[e_LT]','[e_GT]');
+		$replace = array('&lt;','&gt;');
+		$text = str_replace($search,$replace,$text);
 		return $text;
 	}
 }
