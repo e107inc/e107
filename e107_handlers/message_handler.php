@@ -40,10 +40,12 @@ function message_handler($mode, $message, $line=0, $file=""){
 			$ns -> tablerender("Admin Message", "<div style='text-align:center'><b>".$message."</b></div>");
 		break;
 		case "ALERT":
-			echo "<script type='text/javascript'>alert(\"".$emessage[$message]."\"); window.history.go(-1); </script>\n";
+			@require_once(e_HANDLER."textparse/basic.php");
+      $etp = new e107_basicparse;
+      echo "<script type='text/javascript'>alert(\"".$etp->unentity($emessage[$message])."\"); window.history.go(-1); </script>\n";
 		break;
 		case "P_ALERT":
-			echo "<script type='text/javascript'>alert(\"".$message."\"); </script>\n";
+			echo "<script type='text/javascript'>alert(\"".$etp->unentity($message)."\"); </script>\n";
 		break;
 	}
 }

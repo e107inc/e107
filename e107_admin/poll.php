@@ -14,6 +14,10 @@
 */
 require_once("../class2.php");
 if(!getperms("U")){ header("location:".e_BASE."index.php"); exit;}
+
+require_once(e_HANDLER."textparse/basic.php");
+$etp = new e107_basicparse;
+
 require_once("auth.php");
 require_once(e_HANDLER."poll_class.php");
 require_once(e_HANDLER."form_handler.php");
@@ -184,9 +188,10 @@ $text .= "</td></tr></table>
 $ns -> tablerender("<div style='text-align:center'>".POLLAN_19."</div>", $text);
 require_once("footer.php");
 function headerjs(){
+global $etp;
 $headerjs = "<script type=\"text/javascript\">
 function confirm_(poll_id){
-        var x=confirm(\"".POLLAN_21." [ID: \" + poll_id + \"]\");
+        var x=confirm(\"".$etp->unentity(POLLAN_21)." [ID: \" + poll_id + \"]\");
         if(x){
                 document.getElementById('del_poll').action='".e_SELF."?delete.' + poll_id;
                 document.getElementById('del_poll').submit();
