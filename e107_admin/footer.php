@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/footer.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-27 19:52:24 $
-|     $Author: streaky $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-30 06:14:08 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined("e_HTTP")) {
@@ -21,18 +21,17 @@ if (!defined("e_HTTP")) {
 }
 if (ADMIN == TRUE) {
 	if ($pref['cachestatus']) {
-		if (!$sql->db_Select("tmp", "*", " tmp_ip='var_store' && tmp_time='1' ")) // var_store 1 == cache empty time
+		if (!$sql->db_Select('generic', '*', "gen_type='empty_cache'"))
 		{
-			$sql->db_Insert("tmp", "'var_store', 1, '0' ");
+			$sql->db_Insert('generic', "0,'empty_cache',".time().",'','','',''");
 		} else {
 			$row = $sql->db_Fetch();
-			 extract($row);
-			if (($tmp_info+604800) < time()) // If cache not cleared in last 7 days, clear it.
+			if (($row['gen_datestamp']+604800) < time()) // If cache not cleared in last 7 days, clear it.
 			{
 				require_once(e_HANDLER."cache_handler.php");
 				$ec = new ecache;
 				$ec->clear();
-				$sql->db_Update("tmp", "tmp_info='".time()."' WHERE tmp_ip='var_store' AND tmp_time=1 ");
+				$sql->db_Update('generic', "gen_datestamp='".time()."' WHERE gen_type='empty_cache'");
 			}
 		}
 	}
