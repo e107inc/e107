@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-05 16:57:37 $
-|     $Author: sweetas $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-07 20:51:34 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -452,7 +452,7 @@ class users{
                         <td style='width:15%' class='forumheader'><a href='".e_SELF."?main.user_class.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_91."</a></td>
                         <td style='width:30%' class='forumheader'>".USRLAN_75."</td>
                         </tr>";
-                        require_once(e_HANDLER."multilang/pictures.php");
+
                         while($row = $sql -> db_Fetch()){
                                 extract($row);
                                 $text .= "<tr>
@@ -460,13 +460,13 @@ class users{
                                 <td style='width:10%' class='forumheader3'>";
 
                                 if($user_perms == "0"){
-                                        $text .= "<img src='".eMLANG_path("mainadmin.gif","generic")."' alt='' style='vertical-align:middle' />";
+                                        $text .= "<img src='".e_LANIMAGE."/mainadmin.gif' alt='' style='vertical-align:middle' />";
                                 }else if($user_admin){
-                                        $text .= "<a href='".e_SELF."?main.user_admin.".($id == "desc" ? "asc" : "desc")."'><img src='".eMLANG_path("admin.gif","generic")."' alt='' style='vertical-align:middle; border:0' /></a>";
+                                        $text .= "<a href='".e_SELF."?main.user_admin.".($id == "desc" ? "asc" : "desc")."'><img src='".e_LANIMAGE."admin.gif' alt='' style='vertical-align:middle; border:0' /></a>";
                                 }else if($user_ban == 1){
-                                        $text .= "<a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc")."'><img src='".eMLANG_path("banned.gif","generic")."' alt='' style='vertical-align:middle; border:0' /></a>";
+                                        $text .= "<a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc")."'><img src='".e_LANIMAGE."banned.gif' alt='' style='vertical-align:middle; border:0' /></a>";
                                 }else if($user_ban == 2){
-                                        $text .= "<img src='".eMLANG_path("not_verified.gif","generic")."' alt='' style='vertical-align:middle' />";
+                                        $text .= "<img src='".e_LANIMAGE."not_verified.gif' alt='' style='vertical-align:middle' />";
                                 }else{
                                         $text .= "&nbsp;";
                                 }
@@ -573,8 +573,8 @@ class users{
                                 $var['options']['text']=USRLAN_75;
                                 $var['options']['link']=e_SELF."?options";
 
-                                $var['mailing']['text']= USRLAN_121;
-                                $var['mailing']['link']="mailout.php";
+                              //  $var['mailing']['text']= USRLAN_121;
+                             //   $var['mailing']['link']="mailout.php";
                                 show_admin_menu(USRLAN_76,$action,$var);
                    }
 

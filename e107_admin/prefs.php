@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-06 17:31:46 $
-|     $Author: sweetas $
+|     $Revision: 1.7 $
+|     $Date: 2005-01-07 20:51:34 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -25,11 +25,10 @@ if(IsSet($_POST['newver'])){
 
 if(!getperms("1")){ header("location:".e_BASE."index.php"); exit;}
 if(!$pref['timezone']){ $pref['timezone'] = "GMT"; }
-// ML
+
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
-require_once(e_HANDLER."multilang/ml_adpanel.php");
-// END ML
+
 $signup_title = array(CUSTSIG_2,CUSTSIG_3,"ICQ","Aim","MSN",CUSTSIG_4,CUSTSIG_5,CUSTSIG_6,CUSTSIG_7,CUSTSIG_8);
 $signup_name = array("real","url","icq","aim","msn","dob","loc","sig","avt","zone");
 
@@ -113,23 +112,13 @@ if(IsSet($_POST['updateprefs'])){
 
         $pref['htmlarea'] = $_POST['htmlarea'];
 
-        $pref['smtp_enable'] = $_POST['smtp_enable'];
-        $pref['smtp_server'] = $aj -> formtpa($_POST['smtp_server']);
-        $pref['smtp_username'] = $aj -> formtpa($_POST['smtp_username']);
-        $pref['smtp_password'] = $aj -> formtpa($_POST['smtp_password']);
 
         $e107cache->clear();
-        // ML
-        if(e_MLANG && isset($_POST['list_lang']) && $_POST['list_lang']!=e_LAN){
-    			$tmp_mainlang = $pref['sitelanguage'];
-          unset ($pref['sitelanguage']);
-          save_prefs("core",-1,"ml_".$_POST['list_lang']);
-          $pref['sitelanguage'] = $tmp_mainlang;
-    		}else{ // END ML
-    			//$pref['sitelanguage'] = $_POST['sitelanguage'];
-    			save_prefs();
-    		}
-        
+
+       // $pref['sitelanguage'] = $_POST['sitelanguage'];
+       save_prefs();
+
+
        header("location:".e_ADMIN."prefs.php");
        echo "<script type='text/javascript'>document.location.href='prefs.php'</script>\n";
         exit;
@@ -181,18 +170,6 @@ $antiflood_timeout = $pref['antiflood_timeout'];
 $autoban = $pref['autoban'];
 
 require_once("auth.php");
-
-
-if(IsSet($_POST['testemail'])){
-        require_once(e_HANDLER."mail.php");
-        if(!sendemail(SITEADMINEMAIL, PRFLAN_66." ".SITENAME, PRFLAN_67)){
-                $message = ($pref['smtp_enable'] ? PRFLAN_75 : PRFLAN_68);
-        }else{
-                $message = PRFLAN_69;
-        }
-}
-
-
 
 if(IsSet($message)){
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
@@ -313,10 +290,10 @@ $text = "<form method='post' action='prefs.php' >
 <select name='sitetheme' class='tbox'>\n";
 $counter = 0;
 while(IsSet($dirlist[$counter])){
-	if (!strstr($dirlist[$counter], 'admin_')) {
+        if (!strstr($dirlist[$counter], 'admin_')) {
         $text .= ($dirlist[$counter] == $pref['sitetheme'] ? "<option selected='selected'>".$dirlist[$counter]."</option>\n" : "<option>".$dirlist[$counter]."</option>\n");
-	}
-	$counter++;
+        }
+        $counter++;
 }
 $text .= "</select>
 </td>
@@ -754,49 +731,6 @@ $text .= "<br />
 
 </table></div>";
 
-
-
-
-
-// Mail settings..........................
-$text .="
-<div class='caption' title='".PRFLAN_80."' style='cursor:pointer;cursor:hand;text-align:left;border:1px solid black' onclick=\"expandit(this)\">".PRFLAN_62."</div>
-<div id='mail' style='text-align:center; display:none'>
-<table style='width:100%' class='fborder' cellspacing='1' cellpadding='0'>
-<tr>
-<td style='width:50%' class='forumheader3'>".PRFLAN_63."<br /><span class='smalltext'>".PRFLAN_64."</span></td>
-<td style='width:50%; text-align:right' class='forumheader3'><input class='button' type='submit' name='testemail' value='".PRFLAN_65." ".SITEADMINEMAIL."' />
-</td>
-</tr>
-
-<tr>
-<td style='width:50%' class='forumheader3'>".PRFLAN_70."<br /><span class='smalltext'>".PRFLAN_71."</span></td>
-<td style='width:50%; text-align:right' class='forumheader3'>".
-($pref['smtp_enable'] ? "<input type='checkbox' name='smtp_enable' value='1' checked='checked' />" : "<input type='checkbox' name='smtp_enable' value='1' />")." </td>
-</tr>
-
-
-<tr>
-<td style='width:50%' class='forumheader3'>".PRFLAN_72.": </td>
-<td style='width:50%; text-align:right' class='forumheader3'>
-<input class='tbox' type='text' name='smtp_server' size='30' value='".$pref['smtp_server']."' maxlength='50' />
-</td>
-</tr>
-
-<tr>
-<td style='width:50%' class='forumheader3'>".PRFLAN_73.": </td>
-<td style='width:50%; text-align:right' class='forumheader3'>
-<input class='tbox' type='text' name='smtp_username' size='30' value='".$pref['smtp_username']."' maxlength='50' />
-</td>
-</tr>
-
-<tr>
-<td style='width:50%' class='forumheader3'>".PRFLAN_74.": </td>
-<td style='width:50%; text-align:right' class='forumheader3'>
-<input class='tbox' type='password' name='smtp_password' size='30' value='".$pref['smtp_password']."' maxlength='50' />
-</td>
-</tr></table></div>";
-
 $text .="
 <div class='caption' title='".PRFLAN_87."' style='cursor:pointer;cursor:hand;text-align:left;border:1px solid black' onclick=\"expandit(this)\">".PRFLAN_87."</div>
 <div id='comments' style='text-align:center; display:none'>
@@ -829,16 +763,16 @@ $text .="<div style='text-align:center'>
 
 // ML
 if(e_MLANG == 1){
-	//$text .="<input class='caption' type='submit' name='updateprefs' value='".PRFLAN_52."' />
-	$but_typ = array(""); // empty = submit
-	$but_nam = array("updateprefs"); // empty = autobutX with X autoincrement
-	$but_val = array("updateprefs"); // empty = Submit
-	$but_class = array("caption"); // empty = button
-	$butjs = array(""); // empty = ""
-	$buttitle = array(""); // empty = ""
-	$text .= e107ml_adpanel(1,$but_typ,$but_nam,$but_val,$but_class,$butjs,$buttitle);
+        //$text .="<input class='caption' type='submit' name='updateprefs' value='".PRFLAN_52."' />
+        $but_typ = array(""); // empty = submit
+        $but_nam = array("updateprefs"); // empty = autobutX with X autoincrement
+        $but_val = array("updateprefs"); // empty = Submit
+        $but_class = array("caption"); // empty = button
+        $butjs = array(""); // empty = ""
+        $buttitle = array(""); // empty = ""
+        $text .= e107ml_adpanel(1,$but_typ,$but_nam,$but_val,$but_class,$butjs,$buttitle);
 }else{
-	$text .="<input class='caption' type='submit' name='updateprefs' value='".PRFLAN_52."' />";
+        $text .="<input class='caption' type='submit' name='updateprefs' value='".PRFLAN_52."' />";
 }
 
 // END ML

@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2005-01-07 16:15:41 $
+|     $Revision: 1.46 $
+|     $Date: 2005-01-07 20:51:32 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -78,6 +78,7 @@ define("e_PLUGIN", e_BASE.$PLUGINS_DIRECTORY);
 define("e_FILE", e_BASE.$FILES_DIRECTORY);
 define("e_HANDLER", e_BASE.$HANDLERS_DIRECTORY);
 define("e_LANGUAGEDIR", e_BASE.$LANGUAGES_DIRECTORY);
+
 define("e_DOCS", e_BASE.$HELP_DIRECTORY);
 define("e_DOCROOT", $_SERVER['DOCUMENT_ROOT']."/");
 define("e_UC_PUBLIC", 0);
@@ -359,7 +360,7 @@ e107_include(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.".php");
 foreach($pref as $key => $prefvalue) {
         $pref[$key] = $tp->toFORM($prefvalue);
 }
-
+define("e_LANIMAGE",e_BASE.$IMAGES_DIRECTORY."lan_images/".e_LANGUAGE."/");
 define("SITENAME", $pref['sitename']);
 define("SITEURL", (substr($pref['siteurl'], -1) == "/" ? $pref['siteurl'] : $pref['siteurl']."/"));
 define("SITEBUTTON", $pref['sitebutton']);
@@ -810,7 +811,7 @@ function init_session() {
                                 $user_pref['sitetheme'] = ($pref['sitetheme'] == $_POST['sitetheme'] ? "" : $_POST['sitetheme']);
                                 save_prefs($user);
                         }
-                      
+
 
                         define("USERTHEME", ($user_pref['sitetheme'] && file_exists(e_THEME.$user_pref['sitetheme']."/theme.php") ? $user_pref['sitetheme'] : FALSE));
                         global $ADMIN_DIRECTORY, $PLUGINS_DIRECTORY;
