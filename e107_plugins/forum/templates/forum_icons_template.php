@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_icons_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-27 19:52:49 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2005-03-07 13:32:10 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 	
@@ -32,9 +32,9 @@ define("IMAGE_pm", "<img src='".img_path('pm.png')."' alt='".LAN_399."' title='"
 define("IMAGE_website", "<img src='".img_path('website.png')."' alt='".LAN_396."' title='".LAN_396."' style='border:0' />");
 define("IMAGE_edit", "<img src='".img_path('edit.png')."' alt='".LAN_400."' title='".LAN_400."' style='border:0' />");
 define("IMAGE_quote", "<img src='".img_path('quote.png')."' alt='".LAN_401."' title='".LAN_401."' style='border:0' />");
-define("IMAGE_admin_edit", "<img src='".img_path('admin_edit.png')."' alt='".LAN_406."' title='".LAN_406."' style='border:0' />");
-define("IMAGE_admin_move", "<img src='".img_path('admin_move.png')."' alt='".LAN_402."' title='".LAN_402."' style='border:0' />");
-define("IMAGE_admin_move2", "<img src='".img_path('admin_move.png')."' alt='".LAN_408."' title='".LAN_408."' style='border:0' />");
+define("IMAGE_admin_edit", "<img src='".img_path('admin_edit.png')."' alt='".LAN_406."' title='".LAN_406."' style='border:0; vertical-align: top;' />");
+define("IMAGE_admin_move", "<img src='".img_path('admin_move.png')."' alt='".LAN_402."' title='".LAN_402."' style='border:0; vertical-align: top;' />");
+define("IMAGE_admin_move2", "<img src='".img_path('admin_move.png')."' alt='".LAN_408."' title='".LAN_408."' style='border:0; vertical-align: top;' />");
 define("IMAGE_post", "<img src='".img_path('post.png')."' alt='' title='' style='border:0' />");
 define("IMAGE_post2", "<img src='".img_path('post2.png')."' alt='' title='' style='border:0; vertical-align:bottom' />");
 define("IMAGE_report", "<img src='".img_path('report.png')."' alt='".LAN_413."' title='".LAN_413."' style='border:0' />");
