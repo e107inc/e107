@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.68 $
-|     $Date: 2005-01-29 16:37:26 $
+|     $Revision: 1.69 $
+|     $Date: 2005-01-29 18:15:28 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -1076,9 +1076,14 @@ function table_exists($check) {
 function class_list($uid = '') {
 	$clist=array();
 
-	if ($uid == '') {
-		if (USER === TRUE) {
-			$clist=explode(',', USERCLASS);
+	if ($uid == '')
+	{
+		if (USER === TRUE)
+		{
+			if(USERCLASS)
+			{
+				$clist=explode(',', USERCLASS);
+			}
 			$clist[]=e_UC_MEMBER;
 			if (ADMIN === TRUE) {
 				$clist[] = e_UC_ADMIN;
@@ -1086,7 +1091,6 @@ function class_list($uid = '') {
 		} else {
 			$clist[] = e_UC_GUEST;
 		}
-
 		$clist[]=e_UC_READONLY;
 		$clist[]=e_UC_PUBLIC;
 		return implode(',', $clist);
