@@ -25,8 +25,7 @@ if(IsSet($_POST['chat_submit'])){
 			header("location:index.php");
 			exit;
 		}else{
-			$cmessage = trim(chop($cmessage));
-			if((strlen($cmessage) < 1000) && $cmessage != ""){
+			if((strlen(trim(chop($cmessage))) < 1000) && trim(chop($cmessage)) != ""){
 				$cmessage = $aj -> formtpa($cmessage, "public");
 				if($sql -> db_Select("chatbox", "*", "cb_message='$cmessage' AND cb_datestamp+84600>".time())){
 					$emessage = "Duplicate post";
@@ -63,14 +62,14 @@ $pref['cb_linkc'] = str_replace("e107_images/", e_IMAGE, $pref['cb_linkc']);
 if($pref['user_reg'] && !USER && !$pref['anon_post']){
 	$texta = "<div style='text-align:center'>".CHATBOX_L3."</div><br /><br />";
 }else{
-	$texta =  "<div style='text-align:center'>".(e_QUERY ? "\n<form name='chatbox' method='post' action='".e_SELF."?".e_QUERY."'><p>" : "\n<form name='chatbox' method='post' action='".e_SELF."'><p>");
+	$texta =  "<div style='text-align:center'>".(e_QUERY ? "\n<form id='chatbox' method='post' action='".e_SELF."?".e_QUERY."'><p>" : "\n<form id='chatbox' method='post' action='".e_SELF."'><p>");
 	if(($pref['anon_post'] == "1" && USER == FALSE)){
 		$texta .= "\n<input class='tbox' type='text' name='nick' size='27' value='' maxlength='50' /><br />";
 	}
 	$texta .= "\n<textarea class='tbox' name='cmessage' cols='26' rows='5' style='overflow:hidden'></textarea>\n<br />\n<input class='button' type='submit' name='chat_submit' value='".CHATBOX_L4."' />\n<input class='button' type='reset' name='reset' value='".CHATBOX_L5."' />";
 		
 	if($pref['cb_emote']){
-		$texta .= " <input class='button' type ='button' style=''width: 35px'; cursor:hand' size='30' value='".CHATBOX_L14."' onClick='expandit(this)'>\n<div style='display:none'>".emote()."</div>";
+		$texta .= " \n<input class='button' type ='button' style='cursor:hand; cursor:pointer' size='30' value='".CHATBOX_L14."' onclick='expandit(this)' />\n<span style='display:none;'>".emote()."\n</span>\n";
 	}
 	
 	$texta .="</p>\n</form>\n</div>\n<br />\n";
@@ -185,26 +184,23 @@ function emote(){
 	$sql -> db_Select("core", "*", "e107_name='emote'");
 	$row = $sql -> db_Fetch(); extract($row);
 	$emote = unserialize($e107_value);
-
-	$str = "<div class='spacer'>";
-
+	$str="<br />";
 	$c=0;
 	while(list($code, $name) = @each($emote[$c])){
 		if(!$orig[$name]){
-			$str .= "<a href=\"javascript:caddtext(' $code')\"><img src=\"".e_IMAGE."emoticons/$name\" style=\"border:0\" alt=\"\" /></a> \n";
+			$code = htmlentities($code);
+			$str .= "\n<a href=\"javascript:caddtext(' $code')\"><img src=\"".e_IMAGE."emoticons/$name\" style=\"border:0; padding-top:2px;\" alt=\"\" /></a> ";
 			$orig[$name] = TRUE;
 		}
 		$c++;
 	}
-
-	$str .= "</div>";
 	return $str;
 }
 
 echo "
-<script type=\"text/javascript\">
+<script type='text/javascript'>
 function caddtext(sc){
-	document.chatbox.cmessage.value += sc;
+	document.getElementById('chatbox').cmessage.value +=sc;
 }
 </script>";
 

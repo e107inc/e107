@@ -23,11 +23,13 @@ define("ARLAN_75", "None");
 define("ARLAN_82", "Author Details");
 define("ARLAN_84", "author name");
 define("ARLAN_85", "author email address");
-
-
 define("ARLAN_86", "Review");
-
 define("ARLAN_87", "Rating");
 define("ARLAN_88", "Please select rating");
 define("ARLAN_89", "Submit Review");
+
+define("ARLAN_90", "Fields left blank, please press the back button in your browser and confirm all fields are filled in.");
+define("ARLAN_91", "Preview again");
+define("ARLAN_92", "Please enter your name/email address");
+
 ?>

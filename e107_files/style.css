@@ -20,7 +20,7 @@
 	padding: 4px;
 	border: #C3BDBD 1px solid;
 	cursor: hand;
-	pointer: hand;
+	cursor: pointer;
 }
 
 .forumheader5{

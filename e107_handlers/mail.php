@@ -14,16 +14,25 @@
 */
 
 function sendemail($send_to, $subject, $message){
-	$tmp = parse_url(SITEURL);
-	$headers = "From: ".SITENAME."<".SITEADMINEMAIL.">\n";
-	$headers .= "X-Sender: <mail@".$tmp['host'].">\n";
+	global $pref;
+
+	$headers = "From: ".SITENAME." ".$pref['siteadminemail']." \n";
+	$headers .= "X-Sender: ".$pref['siteadminemail']."\n";
 	$headers .= "X-Mailer: PHP\n";
+	$headers .= "X-MimeOLE: Produced By e107 website system\n";
 	$headers .= "X-Priority: 3\n";
+	$headers .= "Content-transfer-encoding: 8bit\nDate: " . date('r', time()) . "\n";
+	$headers .= "MIME-Version: 1.0\n";
 	$headers .= "Content-Type: text/plain; charset=".CHARSET."\n";
-	$headers .= "Return-Path: <mail@".$tmp['host'].">\n";
-	if(file_exists(e_HANDLER."smtp.php")){
+	$headers .= "Return-Path: ".$pref['siteadminemail']."\n";
+
+	if($pref['smtp_enable']){
 		require_once(e_HANDLER."smtp.php");
-		smtpmail($send_to, $subject, $message, $headers);
+		if(smtpmail($send_to, $subject, $message, $headers)){
+			return TRUE;
+		}else{
+			return FALSE;
+		}
 	}else{
 		if(@mail($send_to, $subject, $message, $headers)){
 			return TRUE;

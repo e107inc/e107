@@ -64,4 +64,20 @@ define("PRFLAN_60", "Enable SSL");
 
 define("PRFLAN_61", "Only enable SSL if <b>you are sure you know what you are doing!</b>");
 
+define("PRFLAN_62", "Email");
+define("PRFLAN_63", "Send test email");
+define("PRFLAN_64", "Clicking button will send test email to main admin email address");
+define("PRFLAN_65", "Click to send email to");
+define("PRFLAN_66", "Test email from");
+define("PRFLAN_67", "This is a test email, it appears that your email settings are working ok!\n\nRegards\nfrom the e107 website system.");
+define("PRFLAN_68", "The email could not be sent. It appears that your server is not correctly configured to send emails, please try again using SMTP, or contact your hosts and ask them to check their sendmail / email server settings.");
+define("PRFLAN_69", "The email has been successfully sent, please check your inbox.");
+define("PRFLAN_70", "Enable SMTP");
+define("PRFLAN_71", "Ticking will attempt to use SMTP server to send emails");
+define("PRFLAN_72", "SMTP Server");
+define("PRFLAN_73", "SMTP Username");
+define("PRFLAN_74", "SMTP Password");
+define("PRFLAN_75", "The email could not be sent. Please review your SMTP settings, or disable SMTP and try again.");
+
+
 ?>

@@ -99,6 +99,9 @@ while(list($key, $funcinfo) = each($newarray)){
 if(!$tdc){ $text .= "</tr>"; }
 
 if(getperms("P")){
+
+	unset($tdc);
+
 	$text .= "<tr>
 	<td colspan='5'><br />
 	</td>

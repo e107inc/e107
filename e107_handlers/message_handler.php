@@ -17,7 +17,7 @@ $emessage[1] = "<b>[1]: Unable to read core settings from database - Core settin
 $emessage[2] = "<b>[2]: Unable to read core settings from database - non-existant core settings.</b>";
 $emessage[3] = "<b>[3]: Core settings saved - backup made active.</b>";
 $emessage[4] = "<b>[4]: No core backup found. Please run the <a href='".e_FILE."resetcore.php'>Reset_Core</a> utility to rebuild your core settings. <br />After rebuilding your core please save a backup from the admin/sql screen.</b>";
-$emessage[5] = "<b>[5]: Field(s) have been left blank. Please resubmit the form and fill in the required fields.</b>";
+$emessage[5] = "[5]: Field(s) have been left blank. Please resubmit the form and fill in the required fields.";
 $emessage[6] = "<b>[6]: Unable to form a valid connection to mySQL. Please check that your e107_config.php contains the correct information.</b>";
 $emessage[7] = "<b>[7]: mySQL is running but database ($mySQLdefaultdb) couldn't be connected to.<br />Please check it exists and that your e107_config.php contains the correct information.</b>";
 

@@ -38,6 +38,12 @@ if($sql -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHE
 			list($null, $null, $null, $null, $r_datestamp, $null, $r_user) = $sql2 -> db_Fetch();
 			$r_id = substr($r_user, 0, strpos($r_user, "."));
 			$r_name = substr($r_user, (strpos($r_user, ".")+1));
+
+			if(strstr($r_name, chr(1))){
+				$tmp = explode(chr(1), $r_name);
+				$r_name = $tmp[0];
+			}
+
 			$r_datestamp = $gen->convert_date($r_datestamp, "forum");
 
 			$post_author_id = substr($thread_user, 0, strpos($thread_user, "."));

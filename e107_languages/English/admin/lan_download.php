@@ -56,4 +56,7 @@ define("DOWLAN_47", "Category created");
 define("DOWLAN_48", "Category Updated");
 define("DOWLAN_49", "Download Category");
 
+define("DOWLAN_50", "Go to page: ");
+define("DOWLAN_51", "Search downloads");
+
 ?>

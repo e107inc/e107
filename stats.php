@@ -142,7 +142,7 @@ function parse_data($row, $amount, $total, $action_n, $lan){
 		rsort($data);
 	}
 	$c=0;
-	if(!$amount){
+	if(!$amount && $amount != 6){
 		while($data[$c][0]){
 			if($action_n == 3 || $action_n == 4){
 				$imagepath = e_IMAGE."log/";
@@ -153,6 +153,7 @@ function parse_data($row, $amount, $total, $action_n, $lan){
 				}else if(eregi("links", $data[$c][1]) || eregi("lynx",$data[$c][1])){ $image = $imagepath."lynx.png";
 				}else if(eregi("mac", $data[$c][1])){ $image = $imagepath."mac.png";
 				}else if(eregi("explorer", $data[$c][1])){ $image = $imagepath."explorer.png";
+				}else if(eregi("firebird", $data[$c][1])){ $image = $imagepath."firebird.png";
 				}else if(file_exists($imagepath.strtolower($data[$c][1])).".png"){ $image = $imagepath.strtolower($data[$c][1]).".png";}else{unset($image);}
 			}
 
@@ -181,6 +182,7 @@ function parse_data($row, $amount, $total, $action_n, $lan){
 					}else if((eregi("links", $data[$c][1]) || eregi("lynx",$data[$c][1])) && !eregi("php", $data[$c][1])){ $image = $imagepath."lynx.png";
 					}else if(eregi("mac", $data[$c][1])){ $image = $imagepath."mac.png";
 					}else if(eregi("explorer", $data[$c][1])){ $image = $imagepath."explorer.png";
+					}else if(eregi("firebird", $data[$c][1])){ $image = $imagepath."firebird.png";
 					}else if(file_exists($imagepath.strtolower($data[$c][1])).".png"){ $image = $imagepath.strtolower($data[$c][1]).".png";}else{unset($image);}
 				}
 

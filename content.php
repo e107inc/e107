@@ -48,17 +48,17 @@ if($action == "content"){
 	}
 	$row = $sql -> db_Fetch(); extract($row);
 
+	if(!check_class($content_class)){
+		$ns->tablerender(LAN_52, "<div style='text-align:center'>".LAN_54."</div>");
+		require_once(FOOTERF);
+		exit;
+	}
+
+
 	if($cache = retrieve_cache("content.$sub_action")){
 		echo $aj -> formtparev($cache);
 	}else{
 		ob_start();
-		
-		if(!check_class($content_class)){
-			$ns->tablerender(LAN_52, "<div style='text-align:center'>".LAN_51."</div>");
-			require_once(FOOTERF);
-			exit;
-		}
-
 		$text = ($content_parent ? $aj -> tpa($content_content, "nobreak") : $aj -> tpa($content_content));
 		$caption = $aj -> tpa($content_subheading);
 		$ns -> tablerender($caption, $text);
@@ -200,7 +200,7 @@ if($action == "review"){
 			ob_start();
 			if($sql -> db_Select("content", "*", "content_id=$id") || !$id){
 				$row = $sql -> db_Fetch(); extract($row);
-				$caption = "Recent Reviews: ".$content_heading;
+				$category = $content_heading;
 				if($sql -> db_Select("content", "*", $query)){
 					$text = "<br />";
 					$icon = $content_summary;
@@ -239,17 +239,33 @@ if($action == "review"){
 					$text .= "<table><tr><td>".LAN_45."</td></tr>";
 				}
 				$text .= "</table><div style='text-align:right'><a href='".e_SELF."?review'><< ".LAN_30."</a></div>";
-				$ns -> tablerender($caption, $text);
+				$ns -> tablerender(LAN_32.": ".$category, $text);
 
 				if($pref['cachestatus']){
 					$cache = $aj -> formtpa(ob_get_contents(), "admin");
 					 set_cache("review.cat.$id", $cache);
 				}
+
+
+
+				unset($text);
+				if($sql -> db_Select("content", "content_id, content_heading, content_datestamp ", "content_parent=$id AND content_type=3 ORDER BY content_datestamp DESC LIMIT 10,200")){
+					while($row = $sql -> db_Fetch()){
+						extract($row);
+						if(!is_object($gen)){ $gen = new convert; }
+						$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
+						$text .= "<img src='".e_IMAGE."generic/hme.png' alt='' style='vertical-align:middle' /> <a href='".e_SELF."?review.$content_id'>$content_heading</a> ($datestamp)<br />";
+					}
+					$ns -> tablerender(LAN_46.": ".$category, $text);
+				}
+
+
+
 			}
 		}
 
 		unset($text);
-		if($sql -> db_Select("content", "content_id, content_heading ", "content_subheading REGEXP('^-$id-') AND content_type=3 ORDER BY content_datestamp DESC LIMIT 10,200")){
+		if($sql -> db_Select("content", "content_id, content_heading, content_datestamp ", "content_subheading REGEXP('^-$id-') AND content_type=3 ORDER BY content_datestamp DESC LIMIT 10,200")){
 			while($row = $sql -> db_Fetch()){
 				extract($row);
 				$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
@@ -357,6 +373,7 @@ if($action == "review"){
 // ##### Article List -----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 if($action == "article"){
+	unset($text);
 	if(is_numeric($sub_action)){
 		$cachestr = ($id ? "article.item.$sub_action.$id" : "article.item.$sub_action");
 		if($cache = retrieve_cache($cachestr)){
@@ -559,9 +576,10 @@ if($action == "article"){
 		}
 
 		unset($text);
-		if($sql -> db_Select("content", "content_id, content_heading ", "content_parent=$id AND content_type=0 ORDER BY content_datestamp DESC LIMIT 10,200")){
+		if($sql -> db_Select("content", "content_id, content_heading, content_datestamp ", "content_parent=$id AND content_type=0 ORDER BY content_datestamp DESC LIMIT 10,200")){
 			while($row = $sql -> db_Fetch()){
 				extract($row);
+				if(!is_object($gen)){ $gen = new convert; }
 				$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
 				$text .= "<img src='".e_IMAGE."generic/hme.png' alt='' style='vertical-align:middle' /> <a href='".e_SELF."?article.$content_id'>$content_heading</a> ($datestamp)<br />";
 			}

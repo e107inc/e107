@@ -138,7 +138,7 @@ online();
 
 $fp = ($pref['frontpage'] ? $pref['frontpage'].".php" : "news.php index.php");
 $signuplink = (file_exists(e_BASE."customsignup.php"))? "customsignup.php" : "signup.php";
-if($pref['membersonly_enabled'] && !USER && !strstr($fp, e_PAGE) && e_PAGE != "$signuplink" && e_PAGE != "index.php" && e_PAGE != "fpw.php"){
+if($pref['membersonly_enabled'] && !USER && !strstr($fp, e_PAGE) && e_PAGE != "$signuplink" && e_PAGE != "index.php" && e_PAGE != "fpw.php" && !strstr(e_PAGE, "admin")){
 	echo "<br /><br /><div style='text-align:center; font: 12px Verdana, Tahoma'>This is a restricted area, to access it either log in or <a href='".e_BASE.$signuplink."'>register as a member</a>.<br /><br /><a href='".e_BASE."index.php'>Click here to return to front page</a>.</div>";
 	exit;
 }
@@ -388,10 +388,12 @@ class textparse{
 		$search[13] = "#\[img\](.*?)\[/img\]#si";
 		if(($pref['image_post'] && check_class($pref['image_post_class'])) || $mode == "on"){
 			$replace[13] = '<img src=\'\1\' alt=\'\' style=\'vertical-align:middle; border:0\' />';
-		}else if(!$pref['image_post_disabled_method']){
+		}else if(!$pref['image_post_disabled_method'] && !ADMIN){
 			$replace[13] = 'Image: \1';
-		}else{
+		}else if(!ADMIN){
 			$replace[13] = '[ image disabled ]';
+		}else{
+			$replace[13] = '<img src=\'\1\' alt=\'\' style=\'vertical-align:middle; border:0\' />';
 		}
 
 		$search[14] = "#\[center\](.*?)\[/center\]#si";

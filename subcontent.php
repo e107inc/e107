@@ -35,8 +35,10 @@ if(IsSet($_POST['preview'])){
 	$content_subheading = $aj -> tpa($_POST['content_subheading']);
 	$data = $aj -> tpa($_POST['data']);
 	$content_summary= $aj -> tpa($_POST['content_summary']);
-	$content_author = $_POST['content_author'];
-	$content_author_email = $_POST['content_author_email'];
+	$content_author = (!$_POST['content_author'] || $_POST['content_author'] == ARLAN_84 ? ADMINNAME : $_POST['content_author']."^".$_POST['content_author_email']);
+
+	if($content_author == "ADMINNAME"){$content_author = "<b>".ARLAN_92."<b>";}
+
 	$text = "<i>by $content_author</i><br /><span class='smalltext'>".$datestamp."</span><br /><br />Subheading: $content_subheading<br />Summary: $content_summary<br /><br />$data";
 	$ns -> tablerender($content_heading, $text);
 	echo "<br /><br />";
@@ -45,6 +47,7 @@ if(IsSet($_POST['preview'])){
 	$_POST['data'] = $aj -> formtpa($_POST['data'], "admin");
 	$_POST['content_summary'] = $aj -> formtpa($_POST['content_summary'], "admin");
 	$content_parent = $_POST['category'];
+	if($content_author = "<b>".ARLAN_92."<b>"){ $content_author = ""; }
 }
 
 if(IsSet($_POST['create_article'])){
@@ -53,9 +56,13 @@ if(IsSet($_POST['create_article'])){
 		$content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
 		$content_content = $aj -> formtpa($_POST['data'], "admin");
 		$content_author = (!$_POST['content_author'] || $_POST['content_author'] == ARLAN_84 ? ADMINID : $_POST['content_author']."^".$_POST['content_author_email']);
-		$sql -> db_Insert("content", "0, '$content_heading', '$content_subheading', '$content_content', '".$_POST['category']."', '".time()."', '$content_author', '".$_POST['content_comment']."', '".$_POST['content_summary']."', '15' ,'0' ,0 , 0");
-		unset($content_heading, $content_subheading, $data, $content_summary, $content_author);
-		$message = ARLAN_0;
+		if($content_author == "ADMINID"){
+			$message = ARLAN_90;
+		}else{
+			$sql -> db_Insert("content", "0, '$content_heading', '$content_subheading', '$content_content', '".$_POST['category']."', '".time()."', '$content_author', '".$_POST['content_comment']."', '".$_POST['content_summary']."', '15' ,'0' ,0 , 0");
+			unset($content_heading, $content_subheading, $data, $content_summary, $content_author);
+			$message = ARLAN_0;
+		}
 	}else{
 		$message = ARLAN_1;
 	}
@@ -67,9 +74,13 @@ if(IsSet($_POST['create_review'])){
 		$content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
 		$content_content = $aj -> formtpa($_POST['data'], "admin");
 		$content_author = (!$_POST['content_author'] || $_POST['content_author'] == ARLAN_84 ? ADMINID : $_POST['content_author']."^".$_POST['content_author_email']);
-		 $sql -> db_Insert("content", "0, '".$content_heading."', '".$content_subheading."', '$content_content', '".$_POST['category']."', '".time()."', '".$content_author."', '".$_POST['content_comment']."', '".$_POST['content_summary']."', '16', ".$_POST['content_rating'].", 0, 0");
-		unset($content_heading, $content_subheading, $data, $content_summary);
-		$message = ARLAN_2;
+		if($content_author == "ADMINID"){
+			$message = ARLAN_90;
+		}else{
+			 $sql -> db_Insert("content", "0, '".$content_heading."', '".$content_subheading."', '$content_content', '".$_POST['category']."', '".time()."', '".$content_author."', '".$_POST['content_comment']."', '".$_POST['content_summary']."', '16', ".$_POST['content_rating'].", 0, 0");
+			unset($content_heading, $content_subheading, $data, $content_summary);
+			$message = ARLAN_2;
+		}
 	}else{
 		$message = ARLAN_1;
 	}
@@ -77,15 +88,14 @@ if(IsSet($_POST['create_review'])){
 
 if(IsSet($message)){
 	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+	require_once(FOOTERF);
+	exit;
 }
 
 if($action == "article"){
-
 	$text = "<div style='text-align:center'>
 	".$rs -> form_open("post", e_SELF."?".e_QUERY."", "dataform")."
-
 	<table style='width:95%' class='fborder'>
-	
 
 	<tr>
 	<td style='width:20%; vertical-align:top' class='forumheader3'>".ARLAN_74.":</td>
@@ -99,17 +109,20 @@ if($action == "article"){
 	}
 	$text .= $rs -> form_select_close()."
 	</td>
-	</tr>
+	</tr>";
 
-	<tr>
+	if(!USER){
+
+	$text .= "<tr>
 	<td style='width:20%; vertical-align:top' class='forumheader3'>".ARLAN_82.":</td>
 	<td style='width:80%' class='forumheader3'>
 	<input class='tbox' type='text' name='content_author' size='60' value='".($content_author ? $content_author : ARLAN_84)."' maxlength='100' ".($content_author ? "" : "onFocus=\"document.dataform.content_author.value='';\"")." /><br />
 	<input class='tbox' type='text' name='content_author_email' size='60' value='".($content_author_email ? $content_author_email : ARLAN_85)."' maxlength='100' ".($content_author_email ? "" : "onFocus=\"document.dataform.content_author_email.value='';\"")." /><br />
 	</td>
-	</tr>
+	</tr>";
+	}
 
-	<tr>
+	$text .= "<tr>
 	<td style='width:20%; vertical-align:top' class='forumheader3'>".ARLAN_17.":</td>
 	<td style='width:80%' class='forumheader3'>
 	<input class='tbox' type='text' name='content_heading' size='60' value='$content_heading' maxlength='100' />
@@ -145,7 +158,7 @@ if($action == "article"){
 
 	<tr style='vertical-align:top'>
 	<td colspan='2'  style='text-align:center' class='forumheader'>".
-	(!$_POST['preview'] ? "<input class='button' type='submit' name='preview' value='".ARLAN_28."' />" : "<input class='button' type='submit' name='preview' value='".ARLAN_27."' />")." ".
+	(!$_POST['preview'] ? "<input class='button' type='submit' name='preview' value='".ARLAN_28."' />" : "<input class='button' type='submit' name='preview' value='".ARLAN_91."' />")." ".
 	($sub_action == "edit" || $_POST['editp']? "<input class='button' type='submit' name='update_article' value='".ADLAN_81." ".ARLAN_20."' />\n<input type='hidden' name='content_id' value='$id'>" : "<input class='button' type='submit' name='create_article' value='".ARLAN_27."' />")."
 	</td>
 	</tr>
@@ -176,17 +189,20 @@ if($action == "review"){
 	}
 	$text .= $rs -> form_select_close()."
 	</td>
-	</tr>
+	</tr>";
 
-	<tr>
+	if(!USER){
+
+	$text .= "<tr>
 	<td style='width:20%; vertical-align:top' class='forumheader3'>".ARLAN_82.":</td>
 	<td style='width:80%' class='forumheader3'>
 	<input class='tbox' type='text' name='content_author' size='60' value='".($content_author ? $content_author : ARLAN_84)."' maxlength='100' ".($content_author ? "" : "onFocus=\"document.dataform.content_author.value='';\"")." /><br />
 	<input class='tbox' type='text' name='content_author_email' size='60' value='".($content_author_email ? $content_author_email : ARLAN_85)."' maxlength='100' ".($content_author_email ? "" : "onFocus=\"document.dataform.content_author_email.value='';\"")." /><br />
 	</td>
-	</tr>
+	</tr>";
+	}
 
-	<tr>
+	$text .= "<tr>
 	<td style='width:20%; vertical-align:top' class='forumheader3'><u>".ARLAN_17."</u>:</td>
 	<td style='width:80%' class='forumheader3'>
 	<input class='tbox' type='text' name='content_heading' size='60' value='$content_heading' maxlength='100' />
@@ -245,19 +261,8 @@ if($action == "review"){
 	$ns -> tablerender("<div style='text-align:center'>".ARLAN_89."</div>", $text);
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
 require_once(FOOTERF);
+
 ?>
 
 <script type="text/javascript">

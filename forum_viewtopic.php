@@ -273,7 +273,7 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 		if(!$post_author_id || !$sql2 -> db_Select("user", "*", "user_id='".$post_author_id."' ")){	// guest
 			$POSTER = "<a name='$thread_id'>\n<b>".$post_author_name."</b>";
 			$AVATAR = "<br /><span class='smallblacktext'>".LAN_194."</span>";
-			unset($JOINED, $LOCATION, $WEBSITE, $POSTS, $VISITS, $MEMBERID, $SIGNATURE, $RPG, $LEVEL, $PRIVMESSAGE);
+			unset($JOINED, $LOCATION, $WEBSITE, $POSTS, $VISITS, $MEMBERID, $SIGNATURE, $RPG, $LEVEL, $PRIVMESSAGE, $PROFILEIMG, $EMAILIMG, $WEBSITEIMG);
 		}else{	// regged member - get member info
 			unset($iphost);
 			

@@ -17,15 +17,10 @@ $res = $_REQUEST['res'];
 $self = $_REQUEST['eself'];
 $ref = $_REQUEST['referer'];
 
-$screenstats = $res." @ ".$colour;
-
-@include("../../e107_config.php");
-
-$self = eregi_replace("\?.*", "", $self);
-$self = preg_match("#(".e_HTTP.")(.*)#",$self,$matches);
-$self = eregi_replace("e107_plugins", "", $matches[2]);
-
+$self = substr(strrchr(eregi_replace("\?.*", "", $self), "/"), 1);
 if($self == "/"){ $self = "index.php"; }
+$screenstats = $res." @ ".$colour;
+@include("../../e107_config.php");
 define("MPREFIX", $mySQLprefix);
 require_once("../../e107_handlers/mysql_class.php");
 $sql = new db;
@@ -99,8 +94,8 @@ if($pref['log_activate']){
 		}
 		$referer = $ref;
 		if($referer != "" && $ref != "\" ref \"" && !eregi("blocked", $referer)){
-			$siteurl = parse_url(SITEURL);
-			if(!eregi($siteurl['host'], $referer) && !eregi("localhost", $referer)){
+			$siteurl = parse_url($pref['siteurl']);
+			if(!strstr($referer, $siteurl['host']) && !strstr($referer, "localhost")){
 				if($pref['log_refertype'] == 0){
 					// log domain only
 					$rl = parse_url($referer);
@@ -143,9 +138,7 @@ if($pref['log_activate']){
 }
 
 // end last visitors -----------------------------------------------------------------------------------------------------------------------------------------------------------
-//header("Content-type: image/gif");
-//readfile("images/trans.gif");
-
+header("Content-type: text/css");
 echo ".DUMMY {color: green;}";
 // functions -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 function getbrowser(){
@@ -156,11 +149,12 @@ function getbrowser(){
 	}else if(eregi("(lynx)/([0-9]{1,2}.[0-9]{1,2}.[0-9]{1,2})", $agent, $ver)){ $browser = "Lynx $ver[2]";
 	}else if(eregi("(msie) ([0-9]{1,2}.[0-9]{1,3})", $agent, $ver)){ $browser = "Internet Explorer $ver[2]";
 	}else if(eregi("Links", $agent)){ $browser = "Lynx";
-	}else if(eregi("Gecko", $agent)){ $browser = "Mozilla";
+	}else if(eregi("(Firebird/)([0-9]{1,2}.[0-9]{1,3}){0,1}", $agent, $ver)){ $browser = "Firebird $ver[2]";
 	}else if(eregi("Mozilla/5",$agent)){$browser = "Netscape 5";
 	}else if(eregi("Safari",$agent)){ $browser = "OS-X Safari";
 	}else if(eregi("(netscape6)/(6.[0-9]{1,3})", $agent, $ver)){ $browser = "Netscape $ver[2]";
 	}else if(eregi("(Mozilla)/([0-9]{1,2}.[0-9]{1,3})", $agent, $ver)){ $browser = "Netscape $ver[2]";
+	}else if(eregi("Gecko", $agent)){ $browser = "Mozilla";
 	}else if(eregi("Galeon", $agent)){ $browser = "Galeon";
 	}else if(eregi("(lynx)/([0-9]{1,2}.[0-9]{1,2}.[0-9]{1,2})", $agent, $ver) ){$browser = "Lynx $ver[2]";
 	}else if(eregi("Avant Browser", $agent)){ $browser = "Avant";

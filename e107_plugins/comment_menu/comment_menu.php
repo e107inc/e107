@@ -67,18 +67,23 @@ if($sql -> db_Select("cache", "*", "cache_url='newcomments' ")){
 				$sql2 -> db_Select("content", "*", "content_id=$comment_item_id");
 				$row = $sql2 -> db_Fetch(); extract($row);
 				if($content_type == 0){
-					$text .= "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".e_BASE."content.php?article.$comment_item_id'><b>".$poster."</b> on ".$datestamp."</a>";
+					$tmp = "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".e_BASE."content.php?article.$comment_item_id'><b>".$poster."</b> on ".$datestamp."</a>";
 				}else if($content_type == 3){
-					$text .= "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".e_BASE."content.php?review.$comment_item_id'><b>".$poster."</b> on ".$datestamp."</a>";
+					$tmp = "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".e_BASE."content.php?review.$comment_item_id'><b>".$poster."</b> on ".$datestamp."</a>";
 				}else if($content_type == 1){
-					$text .= "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".e_BASE."content.php?content.$comment_item_id'><b>".$poster."</b> on ".$datestamp."</a>";
+					$tmp = "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".e_BASE."content.php?content.$comment_item_id'><b>".$poster."</b> on ".$datestamp."</a>";
 				}
 				if($menu_pref['comment_title']) {
 					$sql2 -> db_Select("content", "content_heading", "content_id=$comment_item_id");
 					list($article_title) = $sql2->db_Fetch();
-					$text .= "<br /> [ Re: <i>$article_title</i> ]";
+					$tmp .= "<br /> [ Re: <i>$article_title</i> ]";
 				} 
-				$text .= "<br />".($comment_blocked ? CM_L2 : $comment_comment)."<br /><br />";
+				$tmp .= "<br />".($comment_blocked ? CM_L2 : $comment_comment)."<br /><br />";
+	
+				if(check_class($content_class)){
+					$text .=$tmp;
+				}
+
 			}
 			if($comment_type_ == "2"){
 					//This code is not tested... [edwin]

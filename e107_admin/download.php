@@ -26,8 +26,12 @@ if(e_QUERY){
 	$action = $tmp[0];
 	$sub_action = $tmp[1];
 	$id = $tmp[2];
+	$from = ($tmp[3] ? $tmp[3] : 0);
 	unset($tmp);
 }
+
+$from = ($from ? $from : 0);
+$amount = 50;
 
 $e_file = str_replace("../", "", e_FILE);
 
@@ -41,7 +45,8 @@ if(IsSet($_POST['add_category'])){
 
 if(IsSet($_POST['submit_download'])){
 	$download -> submit_download($sub_action, $id);
-	unset($id);
+	$action = "main";
+	unset($sub_action, $id);
 }
 
 if($action == "dlm"){
@@ -72,7 +77,7 @@ if($action == "main" && $sub_action == "confirm"){
 }
 
 if(!e_QUERY || $action == "main"){
-	$download -> show_existing_items();
+	$download -> show_existing_items($action, $sub_action, $id, $from, $amount);
 }
 
 
@@ -110,10 +115,17 @@ exit;
 
 class download{
 
-	function show_existing_items(){
+	function show_existing_items($action, $sub_action, $id, $from, $amount){
 		global $sql, $rs, $ns, $aj;
 		$text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 200px; overflow : auto; '>";
-		if($news_total = $sql -> db_Select("download", "*", "ORDER BY download_datestamp  DESC", "nowhere")){
+
+		if(IsSet($_POST['searchquery'])){
+			$query = "download_name REGEXP('".$_POST['searchquery']."') OR download_url REGEXP('".$_POST['searchquery']."') OR download_author REGEXP('".$_POST['searchquery']."') OR download_description  REGEXP('".$_POST['searchquery']."') ORDER BY download_datestamp DESC";
+		}else{
+			$query = "ORDER BY ".($sub_action ? $sub_action : "download_datestamp")." ".($id ? $id : "DESC")."  LIMIT $from, $amount";
+		}
+
+		if($sql -> db_Select("download", "*", $query, ($_POST['searchquery'] ? 0 : "nowhere"))){
 			$text .= "<table class='fborder' style='width:100%'>
 			<tr>
 			<td style='width:5%' class='forumheader2'>ID</td>
@@ -135,7 +147,27 @@ class download{
 		}else{
 			$text .= "<div style='text-align:center'>".DOWLAN_6."</div>";
 		}
-		$text .= "</div></div>";
+		$text .= "</div>";
+
+		$downloads = $sql -> db_Count("download");
+
+		if($downloads > $amount && !$_POST['searchquery']){
+			$a = $downloads/$amount;
+			$r = explode(".", $a);
+			if($r[1] != 0 ? $pages = ($r[0]+1) : $pages = $r[0]);
+			if($pages){
+				$current = ($from/$amount)+1;
+				$text .= "<br />".DOWLAN_50." ";
+				for($a=1; $a<=$pages; $a++){
+					$text .= ($current == $a ? " <b>[$a]</b>" : " [<a href='".e_SELF."?".(e_QUERY ? "$action.$sub_action.$id." : "main.download_datestamp.desc.").(($a-1)*$amount)."'>$a</a>] ");
+				}
+				$text .= "<br />";
+			}
+		}
+
+		$text .= "<br /><form method='post' action='".e_SELF."'>\n<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n<input class='button' type='submit' name='searchsubmit' value='".DOWLAN_51."' />\n</p>\n</form>\n</div>";
+
+
 		$ns -> tablerender(DOWLAN_7, $text);
 	}
 
@@ -158,7 +190,7 @@ class download{
 	function create_download($sub_action, $id){
 		global $sql, $rs, $ns, $file_array, $image_array, $thumb_array;
 
-		if(!$sql -> db_Select("download_category", "*", "download_category_parent !=0")){
+		if(!$sql -> db_Select("download_category")){
 			$ns -> tablerender(DOWLAN_26, "<div style='text-align:center'>".DOWLAN_5."</div>");
 			return;
 		}
@@ -387,7 +419,7 @@ class download{
 			$sql3 = new db;
 		}
 		$text = "<div style='border : solid 1px #000; padding : 4px; width : auto; height : 200px; overflow : auto; '>";
-		if($news_total = $sql -> db_Select("download_category", "*", "download_category_parent=0")){
+		if($download_total = $sql -> db_Select("download_category", "*", "download_category_parent=0")){
 			$text .= "<table class='fborder' style='width:100%'>
 			<tr>
 			<td style='width:5%' class='forumheader2'>&nbsp;</td>

@@ -18,7 +18,6 @@ if(!e_QUERY){
 	exit;
 }
 
-
 $tmp = explode(".", e_QUERY);
 if(!$tmp[1]){
 	$id = $tmp[0];
@@ -30,31 +29,39 @@ if(!$tmp[1]){
 }
 
 if($type == "file"){
-	$sql -> db_Select("download", "*", "download_id= '$id' ");
-	$row = $sql -> db_Fetch(); extract($row);
-	$sql -> db_Update ("download", "download_requested=download_requested+1 WHERE download_id='$id' ");
-	if(preg_match("/Binary\s(.*?)\/.*/", $download_url, $result)){
-		$bid = $result[1];
-		$result = @mysql_query("SELECT * FROM ".MPREFIX."rbinary WHERE binary_id='$bid' ");
-		$binary_data = @mysql_result($result, 0, "binary_data");
-		$binary_filetype = @mysql_result($result, 0, "binary_filetype");
-		$binary_name = @mysql_result($result, 0, "binary_name");
-		header("Content-type: ".$binary_filetype);
-		header("Content-length: ".$download_filesize);
-		header("Content-Disposition: attachment; filename=".$binary_name);
-		header("Content-Description: PHP Generated Data");
-		echo $binary_data;
-		exit;
-	}
-	if(strstr($row['download_url'], "http") || strstr($row['download_url'], "ftp")){
-		header("location:".$row['download_url']);
-		exit;
-	}else{
-		if(file_exists(e_FILE."downloads/".$row['download_url'])){
-			header("location:".e_FILE."downloads/".$row['download_url']);
-			exit;
-		}else if(file_exists(e_FILE."public/".$row['download_url'])){
-			header("location:".e_FILE."public/".$row['download_url']);
+	if($sql -> db_Select("download", "*", "download_id= '$id' ")){
+		$row = $sql -> db_Fetch(); extract($row);
+		$sql -> db_Select("download_category", "*", "download_category_id=$download_category");
+		$row = $sql -> db_Fetch(); extract($row);
+		if(check_class($download_category_class)){
+			$sql -> db_Update ("download", "download_requested=download_requested+1 WHERE download_id='$id' ");
+			if(preg_match("/Binary\s(.*?)\/.*/", $download_url, $result)){
+				$bid = $result[1];
+				$result = @mysql_query("SELECT * FROM ".MPREFIX."rbinary WHERE binary_id='$bid' ");
+				$binary_data = @mysql_result($result, 0, "binary_data");
+				$binary_filetype = @mysql_result($result, 0, "binary_filetype");
+				$binary_name = @mysql_result($result, 0, "binary_name");
+				header("Content-type: ".$binary_filetype);
+				header("Content-length: ".$download_filesize);
+				header("Content-Disposition: attachment; filename=".$binary_name);
+				header("Content-Description: PHP Generated Data");
+				echo $binary_data;
+				exit;
+			}
+			if(strstr($download_url, "http") || strstr($download_url, "ftp")){
+				header("location:".$download_url);
+				exit;
+			}else{
+				if(file_exists(e_FILE."downloads/".$download_url)){
+					header("location:".e_FILE."downloads/".$download_url);
+					exit;
+				}else if(file_exists(e_FILE."public/".$download_url)){
+					header("location:".e_FILE."public/".$download_url);
+					exit;
+				}
+			}
+		}else{
+			echo "<br /><br /><div style='text-align:center; font: 12px Verdana, Tahoma'>You do not have the correct permissions to download this file.</div>";
 			exit;
 		}
 	}

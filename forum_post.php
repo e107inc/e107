@@ -91,13 +91,13 @@ if(IsSet($_POST['fpreview'])){
 	if(USER ? $poster = USERNAME : $poster = ($_POST['anonname'] ? $_POST['anonname'] : LAN_311));
 	$postdate = $gen->convert_date(time(), "forum");
 
-	$tsubject = $aj -> tpa($_POST['subject']);
-	$tpost = $aj -> tpa($_POST['post']);
-
 	if(!$pref['html_post']){
 		$tsubject = str_replace("<", "&lt;", $tsubject);str_replace(">", "&gt;", $tsubject);
 		$tpost = str_replace("<", "&lt;", $tpost);str_replace(">", "&gt;", $tpost);
 	}
+
+	$tsubject = $aj -> tpa($_POST['subject']);
+	$tpost = $aj -> tpa($_POST['post']);
 
 	if($_POST['poll_title'] != ""){
 		require_once(e_HANDLER."poll_class.php");

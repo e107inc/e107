@@ -176,13 +176,9 @@ function checklayout($str){
 				$quote = stripslashes(htmlspecialchars($quotes[rand(0, count($quotes))]));
 			}
 			echo $quote;
-		
-
 		}else if($custom == "clock"){
 			$clock_flat = TRUE;
 			require_once(e_PLUGIN."clock_menu/clock_menu.php");
-		
-
 		}else if($custom == "welcomemessage"){
 			$aj = new textparse;
 			$sql -> db_Select("wmessage");

@@ -60,6 +60,12 @@ if(IsSet($_POST['updateprefs'])){
 	$pref['adminstyle'] = $_POST['adminstyle'];
 	$pref['membersonly_enabled'] = $_POST['membersonly_enabled'];
 	$pref['ssl_enabled'] = $_POST['ssl_enabled'];
+
+	$pref['smtp_enable'] = $_POST['smtp_enable'];
+	$pref['smtp_server'] = $aj -> formtpa($_POST['smtp_server']);
+	$pref['smtp_username'] = $aj -> formtpa($_POST['smtp_username']);
+	$pref['smtp_password'] = $aj -> formtpa($_POST['smtp_password']);
+
 	$sql -> db_Delete("cache");
 	save_prefs();
 	header("location:prefs.php");
@@ -111,6 +117,18 @@ $user_reg_veri = $pref['user_reg_veri'];
 $user_tracking = $pref['user_tracking'];
 
 require_once("auth.php");
+
+
+if(IsSet($_POST['testemail'])){
+	require_once(e_HANDLER."mail.php");
+	if(!sendemail(SITEADMINEMAIL, PRFLAN_66." ".SITENAME, PRFLAN_67)){
+		$message = ($pref['smtp_enable'] ? PRFLAN_75 : PRFLAN_68);
+	}else{
+		$message = PRFLAN_69;
+	}
+}
+
+
 
 if(IsSet($message)){
 	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
@@ -543,6 +561,51 @@ $text .= "(".PRFLAN_46.")
 </td>
 </tr>
 
+
+<tr>
+<td colspan='2'>
+<div class='border'><div class='caption'>".PRFLAN_62."</div></div>
+</td>
+</tr>
+
+<tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_63."<br /><span class='smalltext'>".PRFLAN_64."</span></td>
+<td style='width:50%; text-align:right' class='forumheader3'><input class='button' type='submit' name='testemail' value='".PRFLAN_65." ".SITEADMINEMAIL."' />
+</td>
+</tr>
+
+<tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_70."<br /><span class='smalltext'>".PRFLAN_71."</span></td>
+<td style='width:50%; text-align:right' class='forumheader3'>".
+($pref['smtp_enable'] ? "<input type='checkbox' name='smtp_enable' value='1' checked>" : "<input type='checkbox' name='smtp_enable' value='1'>")." </td>
+</tr>
+
+
+<tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_72.": </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<input class='tbox' type='text' name='smtp_server' size='30' value='".$pref['smtp_server']."' maxlength='50' />
+</td>
+</tr>
+
+<tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_73.": </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<input class='tbox' type='text' name='smtp_username' size='30' value='".$pref['smtp_username']."' maxlength='50' />
+</td>
+</tr>
+
+<tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_74.": </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<input class='tbox' type='password' name='smtp_password' size='30' value='".$pref['smtp_password']."' maxlength='50' />
+</td>
+</tr>
+
+
+
+
+<tr>
 <td colspan='2'>
 <div class='border'><div class='caption'>".PRFLAN_47."</div></div>
 </td>
@@ -563,9 +626,6 @@ $text .= "(".PRFLAN_46.")
 <div style='text-align:center'><input class='button' type='submit' name='newver' value='".PRFLAN_51."' /></div>
 </td>
 </tr>
-
-<tr>
-<tr><td colspan='2'  class='forumheader3'><br /></td></tr>
 
 <tr style='vertical-align:top'> 
 <td colspan='2'  style='text-align:center' class='forumheader3'>

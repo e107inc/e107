@@ -35,7 +35,7 @@ if($pref['user_reg'] == 1 || ADMIN == TRUE){
 			$new_news ".($new_news == 1 ? LOGIN_MENU_L14 : LOGIN_MENU_L15).", 
 			$new_chat ".($new_chat == 1 ? LOGIN_MENU_L16 : LOGIN_MENU_L17).", 
 			$new_comments ".($new_comments == 1 ? LOGIN_MENU_L18 : LOGIN_MENU_L19).", 
-			$new_forum ".($new_forum == 1 ? LOGIN_MENU_L20 : LOGIN_MENU_L21)." and 
+			$new_forum ".($new_forum == 1 ? LOGIN_MENU_L20 : LOGIN_MENU_L21)." ".LOGIN_MENU_L27." 
 			$new_users ".($new_users == 1 ? LOGIN_MENU_L22 : LOGIN_MENU_L23).".</span>
 			<br /><a href='".e_PLUGIN."list_new/new.php'>".LOGIN_MENU_L24."</a>";
 			$caption = (file_exists(THEME."images/login_menu.png") ? "<img src='".THEME."images/login_menu.png' alt='' /> ".LOGIN_MENU_L5." ".USERNAME : LOGIN_MENU_L5." ".USERNAME);
@@ -65,12 +65,14 @@ $text .= "'><p>
 <br />
 <input class='tbox' type='password' name='userpass' size='15' value='' maxlength='20' />\n
 <br />
-<input class='button' type='submit' name='userlogin' value='Login' />\n
+<input class='button' type='submit' name='userlogin' value='".LOGIN_MENU_L28."' />\n
 <br />
 <input type='checkbox' name='autologin' value='1' /> ".LOGIN_MENU_L6."
-<br /><br />
-[ <a href='".e_BASE."signup.php'>".LOGIN_MENU_L3."</a> ]<br />[ <a href='".e_BASE."fpw.php'> ".LOGIN_MENU_L4."</a> ]
-</p>
+<br /><br />";
+if($pref['auth_method'] != "ldap"){
+	$text .= "[ <a href='".e_BASE."signup.php'>".LOGIN_MENU_L3."</a> ]<br />[ <a href='".e_BASE."fpw.php'> ".LOGIN_MENU_L4."</a> ]";
+}
+$text .= "</p>
 </form>
 </div>";
 		$caption = (file_exists(THEME."images/login_menu.png") ? "<img src='".THEME."images/login_menu.png' alt='' /> ".LOGIN_MENU_L5 : LOGIN_MENU_L5);

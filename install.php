@@ -444,8 +444,8 @@ function create_tables(){
 
 	$e107['e107_author'] = "Steve Dunstan (jalist)";
 	$e107['e107_url'] = "http://e107.org";
-	$e107['e107_version'] = "v0.603";
-	$e107['e107_build'] = "Revision #6";
+	$e107['e107_version'] = "v0.612";
+	$e107['e107_build'] = "";
 	$e107['e107_datestamp'] = time();
 	$tmp = serialize($e107);
 	mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('e107', '$tmp') ");
@@ -456,7 +456,7 @@ function create_tables(){
 	$pref['sitename'] = "e107 powered website";
 	$pref['siteurl'] = $e_HTTP;
 	$pref['sitebutton'] = "button.png";
-	$pref['sitetag'] = "Website System ".$e107['e107_version']." ".$e107['e107_build'];
+	$pref['sitetag'] = "e107 website system";
 	$pref['sitedescription'] = "";
 	$pref['siteadmin'] = $_POST['admin_name'];
 	$pref['siteadminemail'] = $_POST['admin_email'];
