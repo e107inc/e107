@@ -792,6 +792,8 @@ function save_prefs($table = "core", $uid=USERID){
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function online(){
         $page = (strstr(e_SELF, "forum_")) ? e_SELF.".".e_QUERY : e_SELF;
+        $page = (strstr(e_SELF, "comment")) ? e_SELF.".".e_QUERY : $page;
+        $page = (strstr(e_SELF, "content")) ? e_SELF.".".e_QUERY : $page;
         $online_timeout = 300;
         $online_warncount = 90;
         $online_bancount = 100;

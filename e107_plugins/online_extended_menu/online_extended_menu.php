@@ -14,6 +14,8 @@
 			if($pinfo == "log.php" || $pinfo == "error.php"){ $online_location_page = "news.php"; $pinfo = "news.php"; }
 			if($online_location_page == "request.php"){ $pinfo = "download.php"; }
 			if(strstr($online_location_page, "forum")){ $pinfo = "forum.php"; $online_location_page = "forum.php"; }
+			if(strstr($online_location_page, "content")){ $pinfo = "content.php"; $online_location_page = "content.php"; }
+			if(strstr($online_location_page, "comment")){ $pinfo = "comment.php"; $online_location_page = "comment.php"; }
 			$text .= "<img src='".e_PLUGIN."online_extended_menu/images/user.png' alt='' style='vertical-align:middle' /> <a href='".e_BASE."user.php?id.$oid'>$oname</a> ".ONLINE_EL7." <a href='{$pinfo}'>$online_location_page</a><br />";
 		}
 	}
