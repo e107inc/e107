@@ -62,6 +62,9 @@ if(IsSet($_POST['updateprefs'])){
         $pref['ssl_enabled'] = $_POST['ssl_enabled'];
         $pref['search_restrict'] = $_POST['search_restrict'];
         $pref['nested_comments'] = $_POST['nested_comments'];
+        $pref['antiflood1'] = $_POST['antiflood1'];
+        $pref['antiflood_timeout'] = $_POST['antiflood_timeout'];
+        $pref['autoban'] = $_POST['autoban'];
 
         // Signup. ====================================================
 
@@ -151,6 +154,9 @@ $sitelocale = $pref['sitelocale'];
 $time_offset = $pref['time_offset'];
 $user_reg_veri = $pref['user_reg_veri'];
 $user_tracking = $pref['user_tracking'];
+$antiflood1 = $pref['antiflood1'];
+$antiflood_timeout = $pref['antiflood_timeout'];
+$autoban = $pref['autoban'];
 
 require_once("auth.php");
 
@@ -663,8 +669,46 @@ if($search_restrict == 1){
 $text .= "</td>
 </tr>
 
+<tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_35.": </td>
+<td style='width:50%; text-align:right' class='forumheader3'>";
+if($antiflood1 == 1){
+        $text .= "<input type='checkbox' name='antiflood1' value='1'  checked='checked' />";
+}else{
+        $text .= "<input type='checkbox' name='antiflood1' value='1' />";
+}
+$text .= "</td>
+</tr>
+
+<tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_36.": </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<input class='tbox' type='text' name='antiflood_timeout' size='3' value='$antiflood_timeout' maxlength='3' />
+<br />
+<b class=\"smalltext\" >".PRFLAN_38."</b>
+</td>
+</tr>
+
+
+<tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_37.": </td>
+<td style='width:50%; text-align:right' class='forumheader3'>";
+if($autoban == 1){
+        $text .= "<input type='checkbox' name='autoban' value='1'  checked='checked' />";
+}else{
+        $text .= "<input type='checkbox' name='autoban' value='1' />";
+}
+$text .= "<br />
+<b class=\"smalltext\" >".PRFLAN_91."</b></td>
+</tr>
+
 </table></div>";
 
+
+
+
+
+// Mail settings..........................
 $text .="
 <div class='caption' title='".PRFLAN_80."' style='cursor:pointer;cursor:hand;text-align:left;border:1px solid black' onclick=\"expandit(this)\">".PRFLAN_62."</div>
 <div id='mail' style='text-align:center; display:none'>
