@@ -58,7 +58,7 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
 		extract($row3);
 
 		$search[0] = "/\{NEWSCAT_CATICON\}(.*?)/si";
-		$replace[0] = ($category_icon) ? "<a href='news.php?cat.".$category_id."'><img src='".e_IMAGE."newsicons/".$category_icon."' alt='' style='border:0px' /></a>" : "";
+		$replace[0] = ($category_icon) ? "<a href='news.php?cat.".$category_id."'><img src='".e_IMAGE."icons/".$category_icon."' alt='' style='border:0px' /></a>" : "";
 
 		$search[1] = "/\{NEWSCAT_CATNAME\}(.*?)/si";
 		$replace[1] = ($category_name) ? "<a href='news.php?cat.".$category_id."' style='".NEWSCAT_CATLINKSTYLE."' >".$tp->toHTML($category_name)."</a>" : "";
