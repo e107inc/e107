@@ -1,9 +1,9 @@
-$np_parms['prev'] = "&nbsp;&nbsp;<<&nbsp;&nbsp;";
-$np_parms['next'] = "&nbsp;&nbsp;>>&nbsp;&nbsp;";
-$np_parms['template'] = "[PREV]&nbsp;&nbsp;[DROPDOWN]&nbsp;&nbsp;[NEXT]";
+$np_parm['template'] = "[PREV]&nbsp;&nbsp;[DROPDOWN]&nbsp;&nbsp;[NEXT]";
+$np_parms['prev'] = "&nbsp;&nbsp;&lt;&lt;&nbsp;&nbsp;";
+$np_parms['next'] = "&nbsp;&nbsp;&gt;&gt;&nbsp;&nbsp;";
 $np_parms['np_class'] = 'tbox';
 $np_parms['dropdown_class'] = 'tbox';
-$np_parms['perpage'] = 1;
+
 if($cached_parms = getcachedvars('nextprev'))
 {
 	$tmp = $cached_parms;
@@ -12,38 +12,44 @@ if($cached_parms = getcachedvars('nextprev'))
 		$np_parms[$key]=$val;
 	}
 }
+list($total_items, $perpage, $current_start, $url) = explode(".", $parm, 4);
+while(substr($url,-1) == ".")
+{
+	$url=substr($url,0,-1);
+}
+
+$current_page = ($current_start/$perpage) + 1;
+$total_pages = ceil($total_items/$perpage);
+
 $prev="";
 $next="";
-if($np_parms['currentpage'] > 1)
+if($current_page > 1)
 {
-	$pp = ($np_parms['currentpage']-2)*$np_parms['perpage'];
-	$link = str_replace("[FROM]", $pp, $np_parms['action']);
+	$prevstart = ($current_start - $perpage);
+	$link = str_replace("[FROM]", $prevstart, $url);
 	$prev = "<a class='{$np_parms['np_class']}' style='text-decoration:none' href='{$link}'>{$np_parms['prev']}</a>";
 }
-if($np_parms['currentpage'] < $np_parms['totalpages'])
+if($current_page < $total_pages)
 {
-	$np = ($np_parms['currentpage'])*$np_parms['perpage'];
-	$link = str_replace("[FROM]", $np, $np_parms['action']);
+	$nextstart = ($current_start + $perpage);
+	$link = str_replace("[FROM]", $nextstart, $url);
 	$next = "<a class='{$np_parms['np_class']}' style='text-decoration:none' href='{$link}'>{$np_parms['next']}</a>";
 }
-$form_start = "<span><form method='post' id='frmNextPrev' action='{$np_parms['action']}'>";
-$form_end = "</form></span>";
-
-$dropdown = "<select class='{$np_parms['dropdown_class']}' name='pageSelect' OnChange='location.href=this.options[selectedIndex].value'>";
-for($i = 1; $i <= $np_parms['totalpages']; $i++)
+$dropdown = "<select class='{$np_parms['dropdown_class']}' name='pageSelect' onchange='location.href=this.options[selectedIndex].value'>";
+for($i = 1; $i <= $total_pages; $i++)
 {
 	$sel = "";
-	if($np_parms['currentpage'] == $i)
+	if($current_page == $i)
 	{
 		$sel = " selected='selected' ";
 	}
-	$np = ($i-1)*$np_parms['perpage'];
-	$link = str_replace("[FROM]", $np, $np_parms['action']);
+	$newstart = ($i-1)*$perpage;
+	$link = str_replace("[FROM]", $newstart, $url);
 	$dropdown .= "<option value='{$link}' {$sel}>{$i}</option>\n";
 }
 $dropdown .= "</select>";
-$ret = $np_parms['template'];
+$ret = $np_parm['template'];
 $ret = str_replace('[DROPDOWN]', $dropdown, $ret);
 $ret = str_replace('[PREV]', $prev, $ret);
 $ret = str_replace('[NEXT]', $next, $ret);
-return $form_start.$ret.$form_end;
+return $ret;

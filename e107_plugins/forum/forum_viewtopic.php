@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-02-20 04:59:36 $
+|     $Revision: 1.11 $
+|     $Date: 2005-02-21 04:14:32 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -267,25 +267,11 @@ if ($pref['forum_track'] && USER) {
 $MODERATORS = LAN_321.$forum_info['forum_moderators'];
 $THREADSTATUS = (!$thread_info['head']['thread_active'] ? LAN_66 : "");
 
-
 $pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
 $pages = ceil($replies/$pref['forum_postspage']);
 if ($pages > 1) {
-		$np_parm['template'] = LAN_02." [PREV]&nbsp;&nbsp;[DROPDOWN]&nbsp;&nbsp;[NEXT]";
-		$np_parm['currentpage'] = ($from/$pref['forum_postspage'])+1;
-		$np_parm['totalpages'] = $pages;
-		$np_parm['action'] = e_SELF.'?'.$thread_id.'.[FROM]';
-		$np_parm['perpage'] = $pref['forum_postspage'];
-		cachevars('nextprev', $np_parm);
-		$GOTOPAGES = $tp->parseTemplate("{NEXTPREV}");
-//	$currentpage = ($from/$pref['forum_postspage'])+1;
-//	$prevpage = $from - $pref['forum_postspage'];
-//	$nextpage = $from + $pref['forum_postspage'];
-//	$GOTOPAGES = LAN_02." ".($currentpage > 1 ? " <a href='".e_SELF."?".$thread_id.".".$prevpage."'>".LAN_04."</a> " : "");
-//	for ($a = 0; $a <= ($pages-1); $a++) {
-//		$GOTOPAGES .= (($a+1) == $currentpage ? "-".($a+1) : "-<a href='".e_SELF."?".$thread_id.".".($a * $pref['forum_postspage'])."'>".($a+1)."</a>");
-//	}
-//	$GOTOPAGES .= ($nextpage < $replies ? " <a href='".e_SELF."?".$thread_id.".".$nextpage."'>".LAN_05."</a> " : "");
+		$parms = "{$replies}.{$pref['forum_postspage']}.{$from}.".e_SELF.'?'.$thread_id.'.[FROM]';
+		$GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
 }
 
 if ((ANON || USER) && ($forum_info['forum_class'] != e_UC_READONLY || MODERATOR)) {

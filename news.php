@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2005-02-20 05:11:37 $
+|     $Revision: 1.49 $
+|     $Date: 2005-02-21 04:14:32 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -48,26 +48,29 @@ if (isset($tmp[1]) && $tmp[1] == 'list') {
 	$from = intval($tmp[0]);
 	$sub_action = intval($tmp[2]);
 }
-if (isset($tmp[1]) && $tmp[1] == 'all') {
-	$action = 'all';
+if (isset($tmp[1]) && ($tmp[1] == 'cat' || $tmp[1] == 'cat')) {
+	$action = $tmp[1];
 	$from = intval($tmp[0]);
 	$sub_action = intval($tmp[2]);
 }
 
 $ix = new news;
-if ($action == 'cat' || $action == 'all') {
+if ($action == 'cat' || $action == 'all')
+{
 	checkNewsCache($cacheString);
 	ob_start();
 	$qs = explode(".", e_QUERY);
 
 	$category = $qs[1];
-	if ($action == 'cat' && $category != 0) {
+	if ($action == 'cat' && $category != 0)
+	{
 		$gen = new convert;
 		$sql->db_Select("news_category", "*", "category_id='$category'");
 		$row = $sql->db_Fetch();
 		extract($row);  // still required for the table-render.  :(
 	}
-	if($action == 'all'){
+	if($action == 'all')
+	{
 		if(!defined("ALLITEMS")){ define("ALLITEMS",10); }
 		// show archive of all news items using list-style template.
 		$news_total = $sql->db_Count("news", "(*)", "WHERE news_class IN (".USERCLASS_LIST.")");
@@ -76,12 +79,15 @@ if ($action == 'cat' || $action == 'all') {
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 		WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")  ORDER BY n.news_datestamp DESC LIMIT $from,".ALLITEMS;
 		$category_name = "All";
-	}elseif($action == 'cat'){
+	}
+	elseif($action == 'cat')
+	{
 		// show archive of all news items in a particular category using list-style template.   .
+		$news_total = $sql->db_Count("news", "(*)", "WHERE news_class IN (".USERCLASS_LIST.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().") AND news_category={$sub_action} ");
 		$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_category={$category} ORDER BY n.news_datestamp DESC LIMIT $from,".ITEMVIEW;
+		WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_category={$sub_action} ORDER BY n.news_datestamp DESC LIMIT $from,".ITEMVIEW;
 	}
 
 	if(!$NEWSLISTSTYLE){
@@ -110,22 +116,13 @@ if ($action == 'cat' || $action == 'all') {
 	$param['catlink']  = (defined("NEWSLIST_CATLINK")) ? NEWSLIST_CATLINK : "";
 	$param['caticon'] =  (defined("NEWSLIST_CATICON")) ? NEWSLIST_CATICON : ICONSTYLE;
 
-	$news_total = $sql->db_Select_gen($query);
+	$sql->db_Select_gen($query);
 	while ($row = $sql->db_Fetch()) {
 		$text .= $ix->parse_newstemplate($row,$NEWSLISTSTYLE,$param);
 	}
 	$icon = ($row['category_icon']) ? "<img src='".e_IMAGE."icons/".$row['category_icon']."' alt='' />" : "";
-//	$text = $text."<div style='text-align:right'>".$icon.LAN_307.$news_total."&nbsp;<br />&nbsp;</div>";
-			
-	$np_parm['template'] = LAN_NEWS_22." [PREV]&nbsp;&nbsp;[DROPDOWN]&nbsp;&nbsp;[NEXT]";
-	$np_parm['currentpage'] = ($from/ITEMVIEW)+1;
-	$np_parm['totalpages'] = ($news_total/ITEMVIEW)+1;
-	$np_parm['action'] = e_SELF.'?'."[FROM].".$action.".".$sub_action;
-	$np_parm['perpage'] = ITEMVIEW;
-	cachevars('nextprev', $np_parm);
-	$text .= $tp->parseTemplate("{NEXTPREV}");
-	
-  // not working ->	$np = new nextprev("news.php", $from, ITEMVIEW, $news_total, LAN_84, ($action == "list" ? $action.".".$sub_action : ""));
+	$parms = $news_total.".".ITEMVIEW.".".$from.".".e_SELF.'?'."[FROM].".$action.".".$sub_action;
+	$text .= LAN_NEWS_22."&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}");
 	$ns->tablerender(LAN_82." '".$category_name."'", $text);
 	setNewsCache($cacheString);
 	require_once(FOOTERF);
@@ -397,23 +394,18 @@ if ($action != "item" && $action != 'list' && $pref['newsposts_archive']) {
 // #### END -----------------------------------------------------------------------------------------------------------
 
 if ($action != "item") {
-	$np_parm['template'] = LAN_NEWS_22." [PREV]&nbsp;&nbsp;[DROPDOWN]&nbsp;&nbsp;[NEXT]";
-	$np_parm['currentpage'] = ($from/ITEMVIEW)+1;
-	$np_parm['totalpages'] = ($news_total/ITEMVIEW) + 1;
-	$np_parm['action'] = e_SELF.'?'."[FROM].".$action.".".$sub_action;
-	$np_parm['perpage'] = ITEMVIEW;
-	cachevars('nextprev', $np_parm);
-	$nextprev = $tp->parseTemplate("{NEXTPREV}");
+	if(is_numeric($action))
+	{
+		$action = "";
+	}
+	$parms = $news_total.".".ITEMVIEW.".".$from.".".e_SELF.'?'."[FROM].".$action.".".$sub_action;
+	$nextprev = LAN_NEWS_22."&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}");
 	echo "<div class='nextprev' style='text-align:center'>".$nextprev."</div>";
 }
 
 if ($pref['nfp_display'] == 2) {
 	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 }
-
-
-
-
 
 // --  CNN Style Categories. ----
 if (isset($pref['news_cats']) && $pref['news_cats'] == '1') {
@@ -440,13 +432,8 @@ function checkNewsCache($cacheString, $np = FALSE, $nfp = FALSE) {
 	if ($cache_data) {
 		echo $cache_data;
 		if ($np) {
-			$np_parm['template'] = LAN_NEWS_22." [PREV]&nbsp;&nbsp;[DROPDOWN]&nbsp;&nbsp;[NEXT]";
-			$np_parm['currentpage'] = ($from/ITEMVIEW)+1;
-			$np_parm['totalpages'] = ($news_total/ITEMVIEW) + 1;
-			$np_parm['action'] = e_SELF.'?'."[FROM].".$action.".".$sub_action;
-			$np_parm['perpage'] = ITEMVIEW;
-			cachevars('nextprev', $np_parm);
-			$nextprev = $tp->parseTemplate("{NEXTPREV}");
+			$parms = $news_total.".".ITEMVIEW.".".$from.".".e_SELF.'?'."[FROM].".$action.".".$sub_action;
+			$nextprev = LAN_NEWS_22."&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}");
 			echo "<div class='nextprev' style='text-align:center'>".$nextprev."</div>";
 		}
 		if ($nfp && $pref['nfp_display'] == 2) {
