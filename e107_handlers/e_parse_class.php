@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-02-18 17:58:38 $
-|     $Author: stevedunstan $
+|     $Revision: 1.30 $
+|     $Date: 2005-02-23 12:33:37 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -101,8 +101,8 @@ class e_parse {
 	{
 		$text = trim ($text);
 		$text = str_replace ("\n\n\n", "\n\n", $text);
-		$text = ereg_replace("([^ \/]{".$wrap."})","\\1<wbr>",$text);
-		$text = str_replace (array ('<br> ', ' <br>', ' <br> '), '<br>', $text);
+		$text = ereg_replace("([^ \/]{".$wrap."})","\\1<br />",$text);
+		$text = str_replace (array ('<br /> ', ' <br />', ' <br /> '), '<br>', $text);
 		return trim ($text); 
 	}
 	 
