@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/xml_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-02-28 18:23:54 $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-28 19:35:51 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -39,9 +39,9 @@ class parseXml {
 			curl_setopt ($cu, CURLOPT_HEADER, 0);
 			curl_setopt ($cu, CURLOPT_TIMEOUT, 10);
 			$this -> xmlFileContents = curl_exec($cu);
-			if (curl_error($remote))
+			if (curl_error($cu))
 			{
-				$this -> error =  "Error: ".curl_errno($ch).", ".curl_error($ch);
+				$this -> error =  "Error: ".curl_errno($cu).", ".curl_error($cu);
 				return FALSE;
 			}
 			curl_close ($cu);
