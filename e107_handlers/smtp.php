@@ -6,7 +6,7 @@
  *   copyright            : (C) 2001 The phpBB Group
  *   email                : support@phpbb.com
  *
- *   $Id: smtp.php,v 1.3 2004-04-08 21:10:22 mcfly_e107 Exp $
+ *   $Id: smtp.php,v 1.4 2004-09-03 03:36:35 mcfly_e107 Exp $
  *
  ***************************************************************************/
 
@@ -125,13 +125,15 @@ function smtpmail($mail_to, $subject, $message, $headers = "")
 		return FALSE;
 	}
 	server_parse($socket, "220");
+	$myIP = gethostbyname ($_SERVER['SERVER_NAME']);
+	$myServer = gethostbyaddr($myIP);
 
 	if( !empty($pref['smtp_username']) && !empty($pref['smtp_password']) )
 	{ 
 		// Send the RFC2554 specified EHLO. 
 		// This improved as provided by SirSir to accomodate
 		// both SMTP AND ESMTP capable servers
-		fputs($socket, "EHLO " . $pref['smtp_server'] . "\r\n"); 
+		fputs($socket, "EHLO " . $myServer . "\r\n"); 
 		server_parse($socket, "250"); 
 
 		fputs($socket, "AUTH LOGIN\r\n"); 
@@ -144,7 +146,7 @@ function smtpmail($mail_to, $subject, $message, $headers = "")
 	else 
 	{ 
 		// Send the RFC821 specified HELO. 
-		fputs($socket, "HELO " . $pref['smtp_server'] . "\r\n"); 
+		fputs($socket, "HELO " . $myServer . "\r\n"); 
 		server_parse($socket, "250"); 
 	}
 
