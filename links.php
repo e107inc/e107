@@ -59,7 +59,6 @@ if(e_QUERY == "submit" && check_class($pref['link_submit_class'])){
 	exit;
 }
 
-
 if(e_QUERY == "" &&  $pref['linkpage_categories'] == 1){
 	
 	$caption = LAN_61;
@@ -78,29 +77,40 @@ if(e_QUERY == "" &&  $pref['linkpage_categories'] == 1){
 	$ns -> tablerender($caption, $text);
 }else{
 
-if(eregi("cat", e_QUERY)){
-	$qs = explode(".", e_QUERY);
-	$category = $qs[1];	
-	if($category == "all"){		
-		$sql -> db_Select("link_category", "*", "link_category_id != '1' ");
-	}else{
-		$sql -> db_Select("link_category", "*", "link_category_id='$category'");
-	}
-}else{
-	$id = e_QUERY;
+$id = e_QUERY;
+$qs=explode(".",e_QUERY);
+if($qs[0] == "cat"){
+	$category = $qs[1];
+	unset($id);
+} elseif($qs[1] == "cat"){
+	$category = $qs[2];
+	$id=$qs[0];
+}
+
+if(isset($id)){
+	$id = $qs[0];
 	if($id){
 		$sql -> db_Update("links", "link_refer=link_refer+1 WHERE link_id='$id' ");
 		$sql -> db_Select("links", "*", "link_id='$id AND link_class!=255' ");
 		$row = $sql -> db_Fetch(); extract($row);
 
-		if($link_open == 4 || $link_open == 1){
+		if($link_open == 4){ // miniwindow
 			echo "<script type='text/javascript'>open_window('$link_url')</script>\n";
+		} elseif($link_open == 1){ // _blank
+			echo "<script type='text/javascript'>open_window('$link_url','full')</script>\n";
 		}else{
 			header("location:".$link_url);
 		}
 
 	}
 	$sql -> db_Select("link_category", "*", "link_category_id != '1' ");
+}
+if($category){
+	if($category == "all"){		
+		$sql -> db_Select("link_category", "*", "link_category_id != '1' ");
+	}else{
+		$sql -> db_Select("link_category", "*", "link_category_id='$category'");
+	}
 }
 
 		$sql2 = new db;
@@ -116,7 +126,11 @@ if(eregi("cat", e_QUERY)){
 						$caption .= " <i>[$link_category_description]</i>";
 					}
 
-					$link_append = "<a href='".e_SELF."?".$link_id."'>";
+					if(isset($category)){
+						$link_append = "<a href='".e_SELF."?".$link_id.".cat.{$category}'>";
+					} else {
+						$link_append = "<a href='".e_SELF."?".$link_id."'>";
+					}
 
 					$text .= "\n<tr><td style='width:10%; vertical-align: top'>";
 					if($link_button){
