@@ -148,7 +148,12 @@ function stage2(){
                 $errorstr .= "<b>e107_files/public/</b> ".INSLAN61." ".INSLAN62." <b>e107_files/public/avatars/</b> ".INSLAN12.".</b> ";
         }
 
-        if($error[2] || $error[3] || $error[4] || $error[5]){
+        if(!is_writable("e107_plugins/custom/") || !is_writable("e107_plugins/custompages/")){
+                $error[6] = TRUE;
+                $errorstr .= "<br /><b>e107_plugins/custom/</b> ".INSLAN61." ".INSLAN62." <b>e107_plugins/custompages/</b> ".INSLAN61." ".INSLAN12.".</b> ";
+        }
+
+        if($error[2] || $error[3] || $error[4] || $error[5] || $error[6]){
                 $text .= "<td style='width:33%' class='installboxfail'>* ".INSLAN4." *</td>
                 </tr>
                 <tr>
@@ -168,7 +173,7 @@ function stage2(){
                 echo "\n\n</body>\n</html>";
                 exit;
 
-        }else if($error[2] || $error[3] || $error[4] || $error[5]){
+        }else if($error[2] || $error[3] || $error[4] || $error[5] || $error[6]){
                 $text .= "
                 <input class='button' type='submit' name='retest' value='".INSLAN18."' />
                 <input type='hidden' name='stage' value='2'><input type='hidden' name='installlanguage' value='".$_POST['installlanguage']."'><br /><br />";
