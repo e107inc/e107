@@ -168,10 +168,10 @@ $text = "<div style='text-align:center'>
 
 
 <select class='tbox' name='image_post_class'>
-<option value='".e_UC_PUBLIC."'".($pref['image_post_class'] == e_UC_PUBLIC ? " selected" : "").">Everyone (public)</option>
-<option value='".e_UC_PUBLIC."'".($pref['image_post_class'] == e_UC_GUEST ? " selected" : "").">Guests only</option>
-<option value='".e_UC_MEMBER."'".($pref['image_post_class'] == e_UC_MEMBER ? " selected" : "").">Members only</option>
-<option value='".e_UC_ADMIN."'".($pref['image_post_class'] == e_UC_ADMIN ? " selected" : "").">Admin only</option>\n";
+<option value='".e_UC_PUBLIC."'".($pref['image_post_class'] == e_UC_PUBLIC ? " selected" : "").">".IMALAN_30."</option>
+<option value='".e_UC_PUBLIC."'".($pref['image_post_class'] == e_UC_GUEST ? " selected" : "").">".IMALAN_31."</option>
+<option value='".e_UC_MEMBER."'".($pref['image_post_class'] == e_UC_MEMBER ? " selected" : "").">".IMALAN_32."</option>
+<option value='".e_UC_ADMIN."'".($pref['image_post_class'] == e_UC_ADMIN ? " selected" : "").">".IMALAN_33."</option>\n";
 
 
 if($sql -> db_Select("userclass_classes")){
