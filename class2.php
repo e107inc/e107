@@ -12,15 +12,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2005-01-26 02:54:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.54 $
+|     $Date: 2005-01-26 23:55:43 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
+$eTimingStart = explode(' ', microtime()); // Honest global beginning point for processing time
+
 //unset any globals created by register_globals being turned ON
 while (list($global) = each($GLOBALS)) {
-	if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST)$/', $global)) {
+	if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST|eTimingStart)$/', $global)) {
 		unset($$global);
 	}
 }
@@ -32,7 +34,6 @@ unset($global);
 
 ob_start ();
 $start_ob_level = ob_get_level();
-$eTimingStart = explode(' ', microtime());
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 if (!$mySQLserver) {
@@ -89,6 +90,15 @@ define("e_UC_ADMIN", 254);
 define("e_UC_NOBODY", 255);
 define("ADMINDIR", $ADMIN_DIRECTORY);
 
+//
+// Some bits for different debug levels (all intended for ADMIN only)
+// 8 bits for each set of details
+// 1...128 = basics
+// 256...32768 = gory details
+// Thus:
+// 255 = all basics
+// 65535 = all basic and all gory details
+
 if (strstr(e_MENU, "debug")) {
 	require_once(e_HANDLER.'debug_handler.php');
 	$e107_debug = new e107_debug;
@@ -96,8 +106,28 @@ if (strstr(e_MENU, "debug")) {
 	$e107_debug->set_error_reporting();
 	$e107_debug_level = $e107_debug->debug_level;
 	define('E107_DEBUG_LEVEL',$e107_debug_level);
-
+} else {
+	define('E107_DEBUG_LEVEL',0);
 }
+
+
+// Basic levels
+define('E107_DBG_BASIC',(E107_DEBUG_LEVEL & 1));         // error level and other basics, incl query error counts
+define('E107_DBG_FILLIN2',(E107_DEBUG_LEVEL & 2));     // fill in what it is...already in use?
+define('E107_DBG_FILLIN4',(E107_DEBUG_LEVEL & 4));       // fill in what it is...already in use?
+define('E107_DBG_SQLQUERIES',(E107_DEBUG_LEVEL & 8));    // display all sql queries
+define('E107_DBG_FILLIN16',(E107_DEBUG_LEVEL & 16));         // fill in what it is
+define('E107_DBG_FILLIN32',(E107_DEBUG_LEVEL & 32));         // fill in what it is
+define('E107_DBG_FILLIN64',(E107_DEBUG_LEVEL & 64));         // fill in what it is
+define('E107_DBG_FILLIN128',(E107_DEBUG_LEVEL & 128));         // fill in what it is
+
+// Gory detail levels
+define('E107_DBG_TIMEDETAILS',(E107_DEBUG_LEVEL & 256)); // detailed time profile
+define('E107_DBG_SQLDETAILS',(E107_DEBUG_LEVEL & 512));  // detailed sql analysis
+define('E107_DBG_FILLIN1024',(E107_DEBUG_LEVEL & 1024));         // fill in what it is
+define('E107_DBG_FILLIN2048',(E107_DEBUG_LEVEL & 2048));         // fill in what it is
+//...
+define('E107_DBG_ALLERRORS',(E107_DEBUG_LEVEL & 32768));     // show ALL errors//...
 
 // e107_config.php upgrade check
 // =====================
