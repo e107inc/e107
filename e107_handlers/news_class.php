@@ -12,9 +12,9 @@
 |	GNU General Public License (http://gnu.org).	
 |
 | $Source: /cvs_backup/e107/e107_handlers/news_class.php,v $
-| $Revision: 1.18 $
-| $Date: 2004-12-11 14:22:11 $
-| $Author: mcfly_e107 $ 
+| $Revision: 1.19 $
+| $Date: 2004-12-20 20:16:02 $
+| $Author: sweetas $ 
 +---------------------------------------------------------------+
 */
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -300,18 +300,25 @@ function create_rss(){
                 //$replace[3] = '\\2';
                 //$news_title = preg_replace($search, $replace, $news_title);
                 // End of code from Lisa
-                $wlog .= strip_tags($aj -> tpa($news_title))."\n".SITEURL."comment.php?comment.news.".$news_id."\n\n";
+ 			if (!$news_allow_comments) {
+				$rsslink = "comment.php?comment.news.";
+			} else {
+				$rsslink = $news_extended ? "news.php?extend." : "news.php?item.";
+			}
+                $wlog .= strip_tags($aj -> tpa($news_title))."\n".SITEURL.$rsslink.$news_id."\n\n";
                 $itemdate = strftime("%a, %d %b %Y %I:%M:00 GMT", $news_datestamp);
 
   $rss .= "<item>
     <title>".$this->make_xml_compatible(strip_tags($aj -> tpa($news_title)))."</title>
-    <link>http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$news_id."</link>
+    <link>http://".$_SERVER['HTTP_HOST'].e_HTTP.$rsslink.$news_id."</link>
     <description>".$this->make_xml_compatible($nb)."</description>
-    <category domain=\"".SITEURL."\">$category_name</category>
-    <comments>http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$news_id."</comments>
-    <author>".$this->make_xml_compatible($user_name)." - $user_email</author>
+    <category domain=\"".SITEURL."\">$category_name</category>";
+    	if (!$news_allow_comments) {
+		$rss .= "<comments>http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$news_id."</comments>";
+	}
+    $rss .= "<author>".$this->make_xml_compatible($user_name)." - $user_email</author>
     <pubDate>$itemdate</pubDate>
-    <guid isPermaLink=\"true\">http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$news_id."</guid>
+    <guid isPermaLink=\"true\">http://".$_SERVER['HTTP_HOST'].e_HTTP.$rsslink.$news_id."</guid>
   </item>
   ";
 
