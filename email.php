@@ -48,7 +48,7 @@ if(IsSet($_POST['emailsubmit'])){
 	if($error == ""){
 		require_once(e_HANDLER."mail.php");
 		if(sendemail($_POST['email_send'], LAN_email_3.SITENAME, $message)){
-			$text = "<div class='center'>".LAN_10." ".$_POST['email_send']."</div>";
+			$text = "<div style='text-align:center'>".LAN_10." ".$_POST['email_send']."</div>";
 		}else{
 			$text = "<div class='center'>".LAN_9."</div>";
 		}
