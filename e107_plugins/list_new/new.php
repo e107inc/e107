@@ -106,7 +106,7 @@ if($comments = $sql -> db_Select("comments", "*", "comment_datestamp>$lvisit ORD
 			case 6:	//	bugtracker
 				$sql2 -> db_Select("bugtrack", "bugtrack_summary", "bugtrack_id=$comment_item_id ");
 				$row = $sql2 -> db_Fetch(); extract($row);
-				$str .= $bullet."[ Bugtracker ] Re: <a href='".e_PLUGIN."bugtracker/0.bugtracker.php?show.$comment_item_id'>$bugtrack_summary</a><br />";
+				$str .= $bullet."[ Bugtracker ] Re: <a href='".e_PLUGIN."bugtracker/bugtracker.php?show.$comment_item_id'>$bugtrack_summary</a><br />";
 			break;
 
 		}
