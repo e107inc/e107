@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/languages/English.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-04 08:28:46 $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-20 22:18:52 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -37,7 +37,7 @@ define("POLLAN_10", "yes");
 define("POLLAN_11", "no");
 define("POLLAN_12", "Show results");
 define("POLLAN_13", "after voting");
-define("POLLAN_14", "by clicking view results link");
+define("POLLAN_14", "by clicking view results link - comments must be turned on to use this option");
 define("POLLAN_15", "Allow to vote on this poll");
 define("POLLAN_16", "Vote storage method");
 define("POLLAN_17", "cookie");
@@ -57,10 +57,14 @@ define("POLLAN_30", "Submit");
 define("POLLAN_31", "votes");
 define("POLLAN_32", "Click here to see results");
 define("POLLAN_33", "No previous polls yet.");
-
 define("POLLAN_34", "Title");
 define("POLLAN_35", "Posted by");
 define("POLLAN_36", "Active");
 define("POLLAN_37", "active from");
 define("POLLAN_38", "to");
+
+
+define("POLLAN_39", "Thankyou for voting!");
+define("POLLAN_40", "Click here to see results");
+
 ?>
