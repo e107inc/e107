@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-03-09 08:59:28 $
+|     $Revision: 1.22 $
+|     $Date: 2005-03-20 22:35:08 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -24,33 +24,46 @@ if (!e_QUERY) {
 	header("location:".e_BASE."index.php");
 	exit;
 }
-$qs = explode(".", e_QUERY);
-$action = $qs[0];
-$table = $qs[1];
-$id = $qs[2];
-$nid = $qs[3];
-$xid = $qs[4];
+
+list($action, $table, $id, $nid, $xid) = explode(".", e_QUERY);
 $cobj = new comment;
 	
-if (IsSet($_POST['commentsubmit'])) {
-	if (!$sql->db_Select("news", "news_allow_comments", "news_id='$id' ") && $table == "news") {
-		header("location:".e_BASE."index.php");
-		exit;
-	} else {
-		$row = $sql->db_Fetch();
-		if (!$row[0] && (ANON === TRUE || USER === TRUE)) {
-			if (!$pid) {
-				$pid = 0;
-			}
-			$cobj->enter_comment($_POST['author_name'], $_POST['comment'], $table, $id, $pid, $_POST['subject']);
-			if ($table == "news") {
-				$e107cache->clear("news");
-			} else {
-				$e107cache->clear("comment.php?$table.$id");
-			}
+if (IsSet($_POST['commentsubmit']))
+{
+
+	if($table == "poll")
+	{
+		if (!$sql->db_Select("polls", "poll_title", "poll_id=$id AND poll_comment=1"))
+		{
+			header("location:".e_BASE."index.php");
+			exit;
+		}
+	}
+	else if($table == "news")
+	{
+		if (!$sql->db_Select("news", "news_allow_comments", "news_id=$id AND news_allow_comments=0")) {
+			header("location:".e_BASE."index.php");
+			exit;
+		}
+	}
+	
+
+//	echo "<pre>"; print_r($row); echo "</pre>"; exit;
+
+
+	if (ANON === TRUE || USER === TRUE) {
+		if (!$pid) {
+			$pid = 0;
+		}
+		$cobj->enter_comment($_POST['author_name'], $_POST['comment'], $table, $id, $pid, $_POST['subject']);
+		if ($table == "news") {
+			$e107cache->clear("news");
+		} else {
+			$e107cache->clear("comment.php?$table.$id");
 		}
 	}
 }
+
 if (IsSet($_POST['replysubmit'])) {
 	if ($table == "news" && !$sql->db_Select("news", "news_allow_comments", "news_id='$nid' ")) {
 		header("location:".e_BASE."index.php");
