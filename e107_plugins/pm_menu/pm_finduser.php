@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm_menu/pm_finduser.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-27 19:53:13 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2005-03-18 01:44:13 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -33,17 +33,23 @@ echo "
 	";
 	
 	
-function findusers($s) {
+function findusers($s)
+{
 	global $sql;
-	if ($sql->db_Select("user", "*", "user_name LIKE '%{$s}%' ")) {
-		while ($row = $sql->db_Fetch()) {
+	if ($sql->db_Select("user", "*", "user_name LIKE '%{$s}%' "))
+	{
+		while ($row = $sql->db_Fetch())
+		{
 			$ret[] = $row['user_name'];
 		}
-	} else {
-		$ret[] = "No matches found";
+	}
+	else
+	{
+		$ret = FALSE;
 	}
 	return $ret;
 }
+
 function close_window() {
 	this.close;
 }
@@ -60,10 +66,18 @@ $text = "
 	
 if ($_POST['dosrch']) {
 	$userlist = findusers($_POST['srch']);
+	if($userlist == FALSE)
+	{
+		$fcount= 0;
+	}
+	else
+	{
+		$fcount = count($userlist);
+	}
 	$text .= "
 		<form name='results' action=".e_SELF." method='POST'>
 		<table style='width:100%'>
-		<tr><td class='fcaption'>".count($userlist)." ".PMLAN_55."</td></tr>
+		<tr><td class='fcaption'>{$fcount} ".PMLAN_55."</td></tr>
 		<tr>
 		<td class='forumheader2'>
 		<select name='usersel' width='60' ondblclick='SelectUser()'>
