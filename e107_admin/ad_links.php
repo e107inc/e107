@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/ad_links.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-03-02 09:56:17 $
+|     $Revision: 1.22 $
+|     $Date: 2005-03-03 18:35:54 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -412,12 +412,11 @@ $array_functions = array(
 	16 => array(e_ADMIN."meta.php", ADLAN_66, ADLAN_67, "T", 1, E_16_META, E_32_META),
 	17 => array(e_ADMIN."newspost.php", ADLAN_0, ADLAN_1, "H", 3, E_16_NEWS, E_32_NEWS),
 	18 => array(e_ADMIN."phpinfo.php", ADLAN_68, ADLAN_69, "0", 5, E_16_PHP, E_32_PHP),
-	19 => array(e_ADMIN."poll.php", ADLAN_70, ADLAN_71, "U", 3, E_16_POLLS, E_32_POLLS),
-	20 => array(e_ADMIN."prefs.php", ADLAN_4, ADLAN_5, "1", 1, E_16_PREFS, E_32_PREFS),
-	21 => array(e_ADMIN."upload.php", ADLAN_72, ADLAN_73, "V", 3, E_16_UPLOADS, E_32_UPLOADS),
-	22 => array(e_ADMIN."users.php", ADLAN_36, ADLAN_37, "4", 2, E_16_USER, E_32_USER),
-	23 => array(e_ADMIN."userclass2.php", ADLAN_38, ADLAN_39, "4", 2, E_16_USERCLASS, E_32_USERCLASS),
-	24 => array(e_ADMIN."language.php", ADLAN_132, ADLAN_133, "0", 1, E_16_LANGUAGE, E_32_LANGUAGE),
-	25 => array(e_ADMIN."mailout.php", ADLAN_136, ADLAN_137, "W", 2, E_16_MAIL, E_32_MAIL),
+	19 => array(e_ADMIN."prefs.php", ADLAN_4, ADLAN_5, "1", 1, E_16_PREFS, E_32_PREFS),
+	20 => array(e_ADMIN."upload.php", ADLAN_72, ADLAN_73, "V", 3, E_16_UPLOADS, E_32_UPLOADS),
+	21 => array(e_ADMIN."users.php", ADLAN_36, ADLAN_37, "4", 2, E_16_USER, E_32_USER),
+	22 => array(e_ADMIN."userclass2.php", ADLAN_38, ADLAN_39, "4", 2, E_16_USERCLASS, E_32_USERCLASS),
+	23 => array(e_ADMIN."language.php", ADLAN_132, ADLAN_133, "0", 1, E_16_LANGUAGE, E_32_LANGUAGE),
+	24 => array(e_ADMIN."mailout.php", ADLAN_136, ADLAN_137, "W", 2, E_16_MAIL, E_32_MAIL),
 	);
 ?>

@@ -216,6 +216,11 @@ if ($post_info['thread_edit_datestamp']) {
 return $gen->convert_date($post_info['thread_edit_datestamp'],'forum');
 }
 SC_END
-	
+
+SC_BEGIN POLL
+global $pollstr;
+return "<br />".$pollstr."<br />";
+SC_END
+
 */
 ?>

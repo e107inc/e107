@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/forum_viewtopic_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-16 12:43:32 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.7 $
+|     $Date: 2005-03-03 18:36:13 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
         $FORUMSTART = "
@@ -63,7 +63,7 @@
 </tr>	
 <tr>
 <td class='nforumthread' style='vertical-align:top'>\n{AVATAR}\n<span class='smalltext'>\n{LEVEL}\n{MEMBERID}\n{JOINED}\n{POSTS}\n</span>\n</td>
-<td class='nforumthread' style='vertical-align:top'>\n{POST}\n{SIGNATURE}\n</td>
+<td class='nforumthread' style='vertical-align:top'>{POLL}\n{POST}\n{SIGNATURE}\n</td>
 </tr>		
 <tr>
 <td class='nforumthread2'>\n<span class='smallblacktext'>\n{TOP}\n</span>\n</td>

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-02-25 03:55:04 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.14 $
+|     $Date: 2005-03-03 18:35:56 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -209,33 +209,55 @@ if ($message) {
 	$ns->tablerender("", $message);
 }
 
-If (IsSet($_POST['pollvote'])) {
-	$sql->db_Select("poll", "poll_active, poll_ip", "poll_id='".$_POST['pollid']."' ");
-	$row = $sql->db_Fetch();
-	extract($row);
-	$user_id = ($poll_active == 9 ? getip() : USERID);
-	if (!preg_match("/".$user_id."\^/", $poll_ip)) {
-		if ($_POST['votea']) {
-			$num = "poll_votes_".$_POST['votea'];
-			$sql->db_Update("poll", "$num=$num+1, poll_ip='".$poll_ip.$user_id."^' WHERE poll_id='".$_POST['pollid']."' ");
+If (IsSet($_POST['pollvote']))
+{
+	if ($_POST['votea'])
+	{
+		if($sql -> db_Select("poll", "*", "poll_datestamp=$thread_id"))
+		{
+			$row = $sql -> db_Fetch();
+			extract($row);
+			$votes = explode(chr(1), $poll_votes);
+			if(is_array($_POST['votea']))
+			{
+				/* multiple choice vote */
+				foreach($_POST['votea'] as $vote)
+				{
+					$votes[($vote-1)] ++;
+				}
+			}
+			else
+			{
+				$votes[($_POST['votea']-1)] ++;
+			}
+
+			$votep = implode(chr(1), $votes);
+
+			$sql->db_Update("poll", "poll_votes = '$votep' WHERE poll_id=".$poll_id, TRUE);
+			$POLLMODE = "voted";
+
 		}
 	}
 }
 
-if (eregi("\[".LAN_430."\]", $thread_info['head']['thread_name'])) {
-	if ($sql->db_Select("poll", "*", "poll_datestamp='{$thread_info['head']['thread_id']}'")) {
-		list($poll_id, $poll_datestamp, $poll_end_datestamp, $poll_admin_id, $poll_title, $poll_option[0], $poll_option[1], $poll_option[2], $poll_option[3], $poll_option[4], $poll_option[5], $poll_option[6], $poll_option[7], $poll_option[8], $poll_option[9], $votes[0], $votes[1], $votes[2], $votes[3], $votes[4], $votes[5], $votes[6], $votes[7], $votes[8], $votes[9], $poll_ip, $poll_active) = $sql->db_Fetch();
-		$user_id = ($poll_active == 9 ? getip() : USERID);
-		if (preg_match("/".$user_id."\^/", $poll_ip)) {
-			$mode = "voted";
-		} elseif($poll_active == 2 && !USER) {
-			$mode = "disallowed";
-		} else {
-			$mode = "notvoted";
+if (eregi("\[".LAN_430."\]", $thread_info['head']['thread_name']))
+{
+	if ($sql->db_Select("poll", "*", "poll_datestamp='{$thread_info['head']['thread_id']}'"))
+	{
+		$pollArray = $sql -> db_Fetch();
+
+		$cookiename = "poll_".$pollArray['poll_id'];
+		if(isset($_COOKIE[$cookiename]))
+		{
+			$POLLMODE = "voted";
 		}
-		require_once(e_HANDLER."poll_class.php");
+		else
+		{
+			$POLLMODE = "notvoted";
+		}
+		require_once(e_PLUGIN."poll/poll_class.php");
 		$poll = new poll;
-		$pollstr = "<div class='spacer'>".$poll->render_poll($poll_id, $poll_title, $poll_option, $votes, $mode, "forum")."</div>";
+		$pollstr = "<div class='spacer'>".$poll->render_poll($pollArray, "forum", $POLLMODE, TRUE)."</div>";
 	}
 }
 //Load forum templates
@@ -281,6 +303,7 @@ if ((ANON || USER) && ($forum_info['forum_class'] != e_UC_READONLY || MODERATOR)
 	$BUTTONS .= "<a href='".e_PLUGIN."forum/forum_post.php?nt.".$forum_info['forum_id']."'>".IMAGE_newthread."</a>";
 }
 
+$POLL = $pollstr;
 $FORUMJUMP = forumjump();
 
 $forstr = preg_replace("/\{(.*?)\}/e", '$\1', $FORUMSTART);
@@ -302,14 +325,14 @@ for($i = 0; $i < count($thread_info)-1; $i++) {
 		$post_info['anon'] = FALSE;
 	}
 
-	// unset($newflag);
-	// if (USER) {
-	//  if ($thread_datestamp > USERLV && (!ereg("\.".$thread_id."\.", USERVIEWED))) {
-	//   $NEWFLAG = IMAGE_new." ";
-	//   $u_new .= ".".$thread_id.".";
-	//  }
-	// }
-	$forrep .= $tp->parseTemplate($FORUMREPLYSTYLE, FALSE, $forum_shortcodes)."\n";
+	if($post_info['thread_parent'])
+	{
+		$forrep .= $tp->parseTemplate($FORUMREPLYSTYLE, FALSE, $forum_shortcodes)."\n";
+	}
+	else
+	{
+		$forthr = $tp->parseTemplate($FORUMTHREADSTYLE, FALSE, $forum_shortcodes)."\n";
+	}
 }
 
 
@@ -322,7 +345,8 @@ if ((ANON || USER) && ($forum_class != e_UC_READONLY || MODERATOR) && $thread_in
 }
 
 $forend = preg_replace("/\{(.*?)\}/e", '$\1', $FORUMEND);
-$forumstring = $pollstr.$forstr.$forrep.$forend;
+$forumstring = $forstr.$forthr.$forrep.$forend;
+
 
 if ($thread_info['head']['thread_lastpost'] > USERLV && (!ereg("\.{$thread_info['head']['thread_id']}\.", USERVIEWED))) {
 	$tst = $forum->thread_markasread($thread_info['head']['thread_id']);
@@ -335,10 +359,6 @@ if ($pref['forum_enclose']) {
 }
 
 
-//$u_new = USERVIEWED . $u_new;
-//if ($u_new != "") {
-// $sql->db_Update("user", "user_viewed='$u_new' WHERE user_id='".USERID."' ");
-//}
 // end -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 echo "<script type=\"text/javascript\">
