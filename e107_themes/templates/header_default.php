@@ -22,6 +22,7 @@ echo "<?xml version='1.0' encoding='iso-8859-1' ?>
 <link rel=\"stylesheet\" href=\"".e_FILE."e107.css\" type=\"text/css\" />";
 if(file_exists(e_BASE."favicon.ico")){echo "\n<link rel=\"shortcut icon\" href=\"favicon.ico\" />"; }
 if(file_exists(e_FILE."style.css")){ echo "\n<link rel='stylesheet' href='".e_FILE."style.css' type=\"text/css\" />\n"; }
+if($eplug_css){ echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n"; }
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=".CHARSET."\" />
 <meta http-equiv=\"content-style-type\" content=\"text/css\" />
 ".($pref['meta_tag'] ? $aj -> formtparev($pref['meta_tag'])."\n" : "");
@@ -39,6 +40,7 @@ if(eregi("forum_post.php", e_SELF) && ($_POST['reply'] || $_POST['newthread']) &
 echo "<script type='text/javascript' src='".e_FILE."e107.js'></script>";
 if(file_exists(THEME."theme.js")){echo "<script type='text/javascript' src='".THEME."theme.js'></script>";}
 if(file_exists(e_FILE."user.js")){echo "<script type='text/javascript' src='".e_FILE."user.js'></script>\n";}
+if($eplug_js){echo "<script type='text/javascript' src='{$eplug_js}'></script>\n";}
 
 echo "<script type=\"text/javascript\">
 <!--\n";
@@ -127,7 +129,11 @@ function checklayout($str){
         $sql = new db;
         global $pref, $style, $userthemes, $udirs, $userclass, $dbq, $menu_pref, $dbq;
         if(strstr($str, "LOGO")){
+        		if(function_exists("theme_logo")){
+        			call_user_func("theme_logo");
+        		} else {
                 echo "<img src='".e_IMAGE."logo.png' alt='Logo' />\n";
+            }
         }else if(strstr($str, "SITENAME")){
                 echo SITENAME."\n";
         }else if(strstr($str, "SITETAG")){
@@ -136,8 +142,12 @@ function checklayout($str){
                 if(!$sql -> db_Select("menus", "*", "(menu_name='edynamic_menu' OR menu_name REGEXP('tree_menu')) AND menu_location!=0")){
                         $linktype = substr($str,(strpos($str, "=")+1), 4);
                         define("LINKDISPLAY", ($linktype == "menu" ? 2 : 1));
-                        require_once(e_HANDLER."sitelinks_class.php");
-                        sitelinks();
+                        if(function_exists("theme_sitelinks")){
+                        	call_user_func("theme_sitelinks");
+                        } else {
+                        	require_once(e_HANDLER."sitelinks_class.php");
+                        	sitelinks();
+                        }
                 }
         }else if(strstr($str, "MENU")){
                 $sql = new db;
