@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/class2.php,v $
-|     $Revision: 1.88 $
-|     $Date: 2004-08-14 01:48:47 $
-|     $Author: e107coders $
+|     $Revision: 1.89 $
+|     $Date: 2004-08-26 02:53:54 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -514,6 +514,7 @@ class textparse{
 
 
         function tpj($text, $strip=FALSE){
+        						$text = preg_replace_callback("/&#([0-9]{1,3});/",create_function('$matches','return chr($matches[1]);'),$text);
                         $search[0] = "#script#si";
                         $replace[0] = 'scri<i></i>pt';
                         $search[1] = "#document#si";
@@ -536,8 +537,11 @@ class textparse{
                         $replace[9] = 'onmouse<i></i>move';
                         $search[10] = "#onload#si";
                         $replace[10] = 'on<i></i>load';
-                        $search[11] = "#background:url#si";
+                        $search[11] = "#background: *?url#si";
                         $replace[11] = 'background<i></i>:url';
+								$search[12] = "#(meta )#si";
+								$replace[12] = '\1<i></i>';
+                        
                         if($strip){
                                 $text = strip_tags($text);
                         }
@@ -606,7 +610,7 @@ class textparse{
                                                 }
                                         }
                                 }else{
-                                                                        if(!stristr($message_array[$i], "[link") && !stristr($message_array[$i], "[url") && !stristr($message_array[$i], "href=") && !stristr($message_array[$i], "src=") && !stristr($message_array[$i], "action=") && !stristr($message_array[$i], "onclick=") && !stristr($message_array[$i], "url(") && !stristr($message_array[$i], "[img") && !stristr($message_array[$i], "value=") && !stristr($message_array[$i], "pluginspage=") && !stristr($message_array[$i], "codebase=")){
+                                                                        if(!stristr($message_array[$i], "[link") && !stristr($message_array[$i], "[url") && !stristr($message_array[$i], "href=") && !stristr($message_array[$i], "src=") && !stristr($message_array[$i], "action=") && !stristr($message_array[$i], "onclick=") && !stristr($message_array[$i], "[img") && !stristr($message_array[$i], "value=") && !stristr($message_array[$i], "pluginspage=") && !stristr($message_array[$i], "codebase=")){
                                                                                 if($referrer != "admin" && !stristr($message_array[$i], "http://")){
                                                                                         $message_array[$i] = $this -> tpj($message_array[$i]);
                                                                                 }
