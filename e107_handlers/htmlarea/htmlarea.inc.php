@@ -1,7 +1,7 @@
 <?php
 
 // HTMLAREA handler for e107.
-// $Id: htmlarea.inc.php,v 1.13 2004-08-13 23:42:43 e107coders Exp $
+// $Id: htmlarea.inc.php,v 1.14 2004-11-21 07:18:56 e107coders Exp $
 
 // Settings ==========================================================
     $width = "520px";  // htmlarea width
@@ -40,23 +40,28 @@ function htmlarea($ta_name){
 // ==================================================
 
 
-$areajs = "\n\n<script type='text/javascript'>\n _editor_url = '".e_HANDLER."htmlarea/'; \n _editor_lang = 'en'; \n</script>\n";
-$areajs .= "<script type='text/javascript' src='".e_HANDLER."htmlarea/htmlarea.js'></script>\n";
-$areajs .= "<script type='text/javascript' >\n";
-$areajs .= ($context==1) ? "HTMLArea.loadPlugin('ContextMenu');\n":"";
-$areajs .= ($tableops==1) ? "HTMLArea.loadPlugin('TableOperations');\n":"";
-$areajs .= ($spelling==1) ? "HTMLArea.loadPlugin('SpellChecker');\n":"";
-$areajs .= ($imgmanager==1 && ADMIN) ? "HTMLArea.loadPlugin('ImageManager');\n":"";
-$areajs .= ($tidy==1) ? "HTMLArea.loadPlugin('HtmlTidy');\n":"";
-$areajs .= ($charmap==1) ? "HTMLArea.loadPlugin('CharacterMap');\n":"";
-$areajs .= "</script>\n\n";
+    $areajs = "\n\n<script type='text/javascript'>\n _editor_url = '".e_HANDLER."htmlarea/'; \n _editor_lang = 'en'; \n</script>\n";
+    $areajs .= "<script type='text/javascript' src='".e_HANDLER."htmlarea/htmlarea.js'></script>\n";
+    $areajs .= "<script type='text/javascript' >\n";
+    $areajs .= ($context==1) ? "HTMLArea.loadPlugin('ContextMenu');\n":"";
+    $areajs .= ($tableops==1) ? "HTMLArea.loadPlugin('TableOperations');\n":"";
+    $areajs .= ($spelling==1) ? "HTMLArea.loadPlugin('SpellChecker');\n":"";
+    $areajs .= ($imgmanager==1 && ADMIN) ? "HTMLArea.loadPlugin('ImageManager');\n":"";
+    $areajs .= ($tidy==1) ? "HTMLArea.loadPlugin('HtmlTidy');\n":"";
+    $areajs .= ($charmap==1) ? "HTMLArea.loadPlugin('CharacterMap');\n":"";
+    $areajs .= "</script>\n\n";
 
 
-$areajs .= "\n<script type='text/javascript' >\n";
-$areajs .= "function initEditor() { \n";
-$name = explode(",",$ta_name);
+    $areajs .= "\n<script type='text/javascript' >\n";
+    $name = explode(",",$ta_name);
+
     for ($i=0; $i<count($name); $i++) {
-        $areajs .= "var editor_".$name[$i]." = new HTMLArea('".$name[$i]."');\n";
+        $areajs .= "var editor_".$name[$i]."\n";
+    }
+
+    $areajs .= "function initEditor() { \n";
+    for ($i=0; $i<count($name); $i++) {
+        $areajs .= "editor_".$name[$i]." = new HTMLArea('".$name[$i]."');\n";
         $areajs .= ($context==1) ? " editor_".$name[$i].".registerPlugin('ContextMenu');\n ":"";
         $areajs .=  ($tableops==1) ? " editor_".$name[$i].".registerPlugin(TableOperations);\n ":"";
         $areajs .= ($spelling==1) ? " editor_".$name[$i].".registerPlugin(SpellChecker);\n ":"";
