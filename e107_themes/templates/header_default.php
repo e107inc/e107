@@ -179,12 +179,12 @@ function checklayout($str){
                         @include(e_PLUGIN."login_menu/languages/English.php");
 
                         if(USER == TRUE){
-                                echo "<table><tr>\n<td class='mediumtext'>".LOGIN_MENU_L5." ".USERNAME."&nbsp;&nbsp;&nbsp;</td>\n<td>.:.</td>";
+                                echo "<span class='mediumtext'>".LOGIN_MENU_L5." ".USERNAME."&nbsp;&nbsp;&nbsp;.:. ";
                                 if(ADMIN == TRUE){
-                                        echo "<td><a href='".e_ADMIN.(!$pref['adminstyle'] || $pref['adminstyle'] == "default" ? "admin.php" : $pref['adminstyle'].".php")."'>".LOGIN_MENU_L11."</a></td><td>.:.</td>";
+                                        echo "<a href='".e_ADMIN.(!$pref['adminstyle'] || $pref['adminstyle'] == "default" ? "admin.php" : $pref['adminstyle'].".php")."'>".LOGIN_MENU_L11."</a> .:. ";
                                 }
-                                echo "<td>
-                                 <a href='".e_BASE."user.php?id.".USERID."'>".LOGIN_MENU_L13."</a>\n</td><td>.:.</td><td><td> <a href='" . e_BASE . "usersettings.php'>".LOGIN_MENU_L12."</a></td><td>.:.</td><td><a href='".e_BASE."?logout'>".LOGIN_MENU_L8."</a></td><td>.:.</td></tr></table> ";
+                                echo "
+                                 <a href='".e_BASE."user.php?id.".USERID."'>".LOGIN_MENU_L13."</a>\n.:. <a href='" . e_BASE . "usersettings.php'>".LOGIN_MENU_L12."</a> .:. <a href='".e_BASE."?logout'>".LOGIN_MENU_L8."</a> .:.</span>";
                         }else{
                                 echo  "<form method='post' action='".e_SELF."'>\n<p>\n".LOGIN_MENU_L1."<input class='tbox' type='text' name='username' size='15' value='$username' maxlength='20' />&nbsp;&nbsp;\n".LOGIN_MENU_L2."<input class='tbox' type='password' name='userpass' size='15' value='' maxlength='20' />&nbsp;&nbsp;\n<input type='checkbox' name='autologin' value='1' />".LOGIN_MENU_L6."&nbsp;&nbsp;\n<input class='button' type='submit' name='userlogin' value='Login' />";
                                 if($pref['user_reg']){
