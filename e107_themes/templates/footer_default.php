@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-01-26 09:30:45 $
-|     $Author: stevedunstan $
+|     $Revision: 1.11 $
+|     $Date: 2005-01-26 23:46:14 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 if(!is_object($sql)){
@@ -32,27 +32,31 @@ if($e107_popup!=1){
         $db_time    = number_format($db_time,4);
         $rinfo = '';
 
-		
-
         if($pref['displayrendertime']){ $rinfo .= "Render time: ".$rendertime." second(s); ".$db_time." of that for queries. "; }
-        if($pref['displaysql']){ $rinfo .= "DB queries: ".$dbq.". "; }
+        if($pref['displaysql']){ $rinfo .= "DB queries: ".$sql -> db_QueryCount().". "; }
         if($pref['displaycacheinfo']){ $rinfo .= $cachestring."."; }
         echo ($rinfo ? "\n<div style='text-align:center' class='smalltext'>$rinfo</div>\n" : "");
-        if ($e107_debug_level) {
-                global $db_debug;
-                $dbg_summary = "
-                \n<!-- DEBUG -->\n
-                <div style='text-align:left' class='smalltext'>
-                ".
-                $db_debug->Show_Performance().
-                "</div>";
-                $dbg_details = "
-                <div style='text-align:left' class='smalltext'>
-                ".
-                $db_debug->sDBdbg.
-                "</div>";
-                $ns->tablerender('DB Debug Summary',$dbg_summary);
-                $ns->tablerender('DB Debug Details',$dbg_details);
+        if (ADMIN && E107_DEBUG_LEVEL) {
+                global $db_debug, $ns;
+                if (!isset($ns)) {
+                    echo "Why did ns go away?<br/>";
+                    $ns = new e107table;
+                }
+                $tmp = $db_debug->Show_Performance();
+                if (strlen($tmp)) {
+                    $dbg_summary = "
+                    \n<!-- DEBUG -->\n
+                    <div style='text-align:left' class='smalltext'>
+                    ".$tmp."</div>";
+                    $ns->tablerender('Debug Time Analysis',$dbg_summary);
+                }
+                $tmp = $db_debug->Show_SQL_Details();
+                if (strlen($tmp)) {
+                    $dbg_details = "
+                    <div style='text-align:left' class='smalltext'>
+                    ".$tmp."</div>";
+                    $ns->tablerender('Debug SQL Analysis',$dbg_details);
+                }
         }
 }
 
@@ -63,8 +67,6 @@ changes by jalist 24/01/2005:
 show sql queries
 usage: add ?showsql to query string, must be admin
 */
-
-
 
 if(is_array($queryinfo) && ADMIN)
 {
@@ -80,8 +82,6 @@ if(is_array($queryinfo) && ADMIN)
 	}
 	echo "</table>";
 }
-
-
 
 // Provide a way to sync user and server time -- see e107.js and class2.php
 // This should be done as late as possible in page processing.
