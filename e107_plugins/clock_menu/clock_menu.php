@@ -15,9 +15,23 @@
 |
 | Released under the terms and conditions of the
 | GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/clock_menu/clock_menu.php,v $
+|     $Revision: 1.11 $
+|     $Date: 2005-02-02 15:01:27 $
+|     $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 global $menu_pref;
+$indexArray = array('clock_dateprefix','clock_format','clock_datesuffix1','clock_datesuffix2','clock_datesuffix3','clock_datesuffix4');
+foreach($indexArray as $ind)
+{
+	if(!isset($menu_pref[$ind]))
+	{
+		$menu_pref[$ind]='';
+	}
+}
+
 $ec_dir = e_PLUGIN."clock_menu/";
 $lan_file = $ec_dir."languages/".e_LANGUAGE.".php";
 e107_include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."clock_menu/languages/English.php");
@@ -25,7 +39,7 @@ if (!defined("e_HTTP")) {
 	exit;
 }
 $text = "\n\n<!-- ### clock ### //-->\n<div id='Clock'>&nbsp;</div>\n";
-if (!$clock_flat) {
+if (isset($clock_flat) && !$clock_flat) {
 	$ns->tablerender($menu_pref['clock_caption'], "<div style='text-align:center'>".$text."</div>", 'clock');
 } else {
 	echo $text;
@@ -40,5 +54,9 @@ var MnthNam = new Array(
 //-->
 </script>
 <?php
-echo "<script type='text/javascript' src='".e_PLUGIN."clock_menu/clock.js'></script>\n\n<script type=\"text/javascript\">\nwindow.setTimeout(\"tick('".$menu_pref['clock_dateprefix']."', '".$menu_pref['clock_format']."', '".$menu_pref['clock_datesuffix1']."', '".$menu_pref['clock_datesuffix2']."', '".$menu_pref['clock_datesuffix3']."', '".$menu_pref['clock_datesuffix4']."')\",150);\n</script>\n<!-- ### end clock ### //-->\n\n";
+echo "
+<script type='text/javascript' src='".e_PLUGIN."clock_menu/clock.js'></script>
+
+<script type=\"text/javascript\">\nwindow.setTimeout(\"tick('".$menu_pref['clock_dateprefix']."', '".$menu_pref['clock_format']."', '".$menu_pref['clock_datesuffix1']."', '".$menu_pref['clock_datesuffix2']."', '".$menu_pref['clock_datesuffix3']."', '".$menu_pref['clock_datesuffix4']."')\",150);\n</script>
+<!-- ### end clock ### //-->\n\n";
 ?>
