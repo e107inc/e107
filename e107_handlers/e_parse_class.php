@@ -75,8 +75,8 @@ class e_parse
 			$text = stripslashes($text);
 		}
 
-		$search = array('&#039;','&#036;','&quot;');
-		$replace = array("'",'$','"');
+		$search = array('&#039;','&#036;','&quot;', 'onerror');
+		$replace = array("'",'$','"', 'one<i></i>rror');
 		$text = str_replace($search,$replace,$text);
 		if(strpos($modifiers,'nobreak') == FALSE) {
 			$text = preg_replace("#[\r]*\n[\r]*#","[E_NL]",$text);
