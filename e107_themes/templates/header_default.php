@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-01-15 04:32:21 $
+|     $Revision: 1.14 $
+|     $Date: 2005-01-16 05:28:50 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -51,7 +51,7 @@ echo $pref['meta_tag'] ? $aj -> formtparev($pref['meta_tag'])."\n" : "";
 
 echo "<script type='text/javascript' src='".e_FILE."e107.js'></script>\n";
 if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME."theme.js'></script>\n"; }
-if (file_exists(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE."user.js'></script>\n"; }
+if (filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE."user.js'></script>\n"; }
 if ($eplug_js) { echo "<script type='text/javascript' src='".$eplug_js."'></script>\n"; }
 if ($htmlarea_js) { echo $htmlarea_js; }
 if (function_exists('headerjs')){echo headerjs();  }
