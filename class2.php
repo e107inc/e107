@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2004-11-27 15:25:01 $
-|     $Author: streaky $
+|     $Revision: 1.24 $
+|     $Date: 2004-11-27 15:35:36 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -905,8 +905,8 @@ class e_parse
 		{
 			$text = stripslashes($text);
 		}
-		$search = array('$','"',"'",'\\','&');
-		$replace = array('&#036;','&quot;','&#039;','&#092;','&amp;');
+		$search = array('$','"',"'",'\\');
+		$replace = array('&#036;','&quot;','&#039;','&#092;');
 		$text = str_replace($search,$replace,$text);
 		if (ADMIN == FALSE && $no_encode == FALSE) {
 			$search = array('<','>');
