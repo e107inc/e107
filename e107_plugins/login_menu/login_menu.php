@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-02-02 14:43:15 $
+|     $Revision: 1.19 $
+|     $Date: 2005-02-02 18:37:25 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -112,7 +112,7 @@ if (USER == TRUE || ADMIN == TRUE) {
 		{
 			$display_chats = FALSE;
 		}
-		if (!$new_chat) {
+		if (isset($new_chat) && !$new_chat) {
 			$new_chat = ($display_chats ? LOGIN_MENU_L26 : '');
 		}
 		if ($display_chats == true) {

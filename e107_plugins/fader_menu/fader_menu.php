@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/fader_menu/fader_menu.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-27 19:52:48 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-02 18:37:27 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 $fader = "
@@ -32,11 +32,11 @@ $fader = "
 	 
 	";
 	
-$aj = new textparse;
+global $tp;
 for($a = 1; $a <= 10; $a++) {
 	$var = "fader_message_$a";
 	if ($menu_pref[$var]) {
-		$var2 = str_replace("\"", "'", $aj->tpa($menu_pref[$var]));
+		$var2 = str_replace("\"", "'", $tp->toHTML($menu_pref[$var]));
 		$var2 = str_replace("\r\n", "", $var2);
 		$fader .= "fcontent[".($a-1)."] = \"".$var2."\";\n";
 	}
@@ -133,4 +133,4 @@ document.write('<div id="fscroller" style="width:'+fwidth+';height:'+fheight+';p
 
 TEXT;
 
-$ns -> tablerender($menu_pref['fader_caption'], $fader, 'fader');
+$ns -> tablerender($menu_pref['fader_caption'], $fader, 'fader');
