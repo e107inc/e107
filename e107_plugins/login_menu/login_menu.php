@@ -11,6 +11,7 @@ if($use_imagecode){
 	$sec_img = new secure_image;
 }
 
+$sql2 = new db;
 $text = "";
 	if(USER == TRUE || ADMIN == TRUE){
 		if(ADMIN == TRUE){
@@ -38,7 +39,6 @@ $text = "";
 
 		$new_comments=0;
 		if($comments = $sql -> db_Select("comments", "*", "comment_datestamp>$time ORDER BY comment_datestamp DESC ")){
-			$sql2 = new db;;
 			while($row = $sql -> db_Fetch()){
 				extract($row);
 				switch($comment_type){
