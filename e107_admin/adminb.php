@@ -96,7 +96,6 @@ while(list($key, $funcinfo) = each($newarray)){
 
 if(!$tdc){ $text .= "</tr>"; }
 
-if(getperms("P")){
 
 	$text .= "<tr>
 	<td colspan='5'>
@@ -105,18 +104,17 @@ if(getperms("P")){
 	</td>
 	<tr>";
 
-	$text .= wad(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "P", e_PLUGIN.e_IMAGE."generic/plugin.png");
+        $text .= wad(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z", e_PLUGIN.e_IMAGE."generic/plugin.png");
 
 	if($sql -> db_Select("plugin", "*", "plugin_installflag=1")){
 		while($row = $sql -> db_Fetch()){
 			extract($row);
 			include(e_PLUGIN.$plugin_path."/plugin.php");
 			if($eplug_conffile){
-				$text .= wad(e_PLUGIN.$plugin_path."/".$eplug_conffile, $eplug_name, $eplug_caption, "P", $eplug_icon);
+                                $text .= wad(e_PLUGIN.$plugin_path."/".$eplug_conffile, $eplug_name, $eplug_caption, "P".$plugin_id, $eplug_icon);
 			}
 		}
 	}
-}
 $text .= "</tr>
 </table></div>";
 $ns -> tablerender("<div style='text-align:center'>".ADLAN_47." ".ADMINNAME."</div>", $text);
