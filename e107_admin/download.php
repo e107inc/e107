@@ -65,8 +65,8 @@ if(IsSet($_POST['updateoptions'])){
         $pref['download_view'] = $_POST['download_view'];
         $pref['download_sort'] = $_POST['download_sort'];
         $pref['download_order'] = $_POST['download_order'];
-	  $pref['agree_flag'] = $_POST['agree_flag'];
-	  $pref['agree_text'] = $aj -> formtpa($_POST['agree_text']);
+          $pref['agree_flag'] = $_POST['agree_flag'];
+          $pref['agree_text'] = $aj -> formtpa($_POST['agree_text']);
         save_prefs();
         $message = DOWLAN_65;
 }
@@ -112,8 +112,8 @@ if(!e_QUERY || $action == "main"){
 
 if($action == "opt"){
         global $pref, $ns;
-	  $agree_flag = $pref['agree_flag'];
-	  $agree_text = $pref['agree_text'];
+          $agree_flag = $pref['agree_flag'];
+          $agree_text = $pref['agree_text'];
         $text = "<div style='text-align:center'>
         <form method='post' action='".e_SELF."?".e_QUERY."'>\n
         <table style='width:auto' class='fborder'>
@@ -157,17 +157,17 @@ if($action == "opt"){
         </td>
         </tr>
 
-	  <tr>
-	  <td style='width:70%' class='forumheader3'>".DOWLAN_100."</td>
+          <tr>
+          <td style='width:70%' class='forumheader3'>".DOWLAN_100."</td>
         <td style='width:30%' class='forumheader3' style='text-align:center'>".
-	  ($agree_flag ? "<input type='checkbox' name='agree_flag' value='1' checked>" : "<input type='checkbox' name='agree_flag' value='1'>")."</td>
-	  </tr>
+          ($agree_flag ? "<input type='checkbox' name='agree_flag' value='1' checked>" : "<input type='checkbox' name='agree_flag' value='1'>")."</td>
+          </tr>
 
-	  <td style='width:70%' class='forumheader3'>
+          <td style='width:70%' class='forumheader3'>
         ".DOWLAN_101."
         </td>
         <td style='width:30%' class='forumheader3' style='text-align:center'>
-	  <textarea class='tbox' name='agree_text' cols='59' rows='10'>$agree_text</textarea>
+          <textarea class='tbox' name='agree_text' cols='59' rows='10'>$agree_text</textarea>
         </td>
         </tr>
 
@@ -270,21 +270,21 @@ class download{
         }
 
         function show_options($action){
-        	
-        			if($action==""){$action="main";}
-					$var['main']['text']=DOWLAN_29;
-					$var['main']['link']=e_SELF;
-			
-					$var['opt']['text']=DOWLAN_28;
-					$var['opt']['link']=e_SELF."?opt";
 
-					$var['create']['text']=DOWLAN_30;
-					$var['create']['link']=e_SELF."?create";
+                                if($action==""){$action="main";}
+                                        $var['main']['text']=DOWLAN_29;
+                                        $var['main']['link']=e_SELF;
 
-					$var['cat']['text']=DOWLAN_31;
-					$var['cat']['link']=e_SELF."?cat";
-					$var['cat']['perm']="Q";
-					show_admin_menu(DOWLAN_32,$action,$var);
+                                        $var['opt']['text']=DOWLAN_28;
+                                        $var['opt']['link']=e_SELF."?opt";
+
+                                        $var['create']['text']=DOWLAN_30;
+                                        $var['create']['link']=e_SELF."?create";
+
+                                        $var['cat']['text']=DOWLAN_31;
+                                        $var['cat']['link']=e_SELF."?cat";
+                                        $var['cat']['perm']="Q";
+                                        show_admin_menu(DOWLAN_32,$action,$var);
 
         }
 
@@ -502,7 +502,11 @@ class download{
                         $filesize = $_POST['download_filesize_external'];
                 }else{
                         $durl = $_POST['download_url'];
-                        $filesize = ($_POST['download_filesize_external'] ? $_POST['download_filesize_external'] : filesize(e_BASE.$DOWNLOADS_DIRECTORY.$_POST['download_url']));
+                        if(preg_match("#^/#",$DOWNLOADS_DIRECTORY) || preg_match("#.:#",$DOWNLOADS_DIRECTORY)){
+                        $filesize = filesize($DOWNLOADS_DIRECTORY.$durl);
+                        }else{
+                        $filesize = filesize(e_BASE.$DOWNLOADS_DIRECTORY.$durl);
+                        }
                 }
 
                 if(!$filesize){
