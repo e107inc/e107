@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.100 $
-|     $Date: 2005-04-03 05:56:38 $
-|     $Author: sweetas $
+|     $Revision: 1.101 $
+|     $Date: 2005-04-03 14:18:30 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -89,6 +89,7 @@ if (preg_match("/\[(.*?)\].*?/i", $_SERVER['QUERY_STRING'], $matches)) {
 	define("e_QUERY", eregi_replace("&|/?".session_name().".*", "", $_SERVER['QUERY_STRING']));
 }
 
+define("e_TBQS", $_SERVER['QUERY_STRING']);
 $_SERVER['QUERY_STRING']=e_QUERY;
 define('e_BASE', $link_prefix);
 define("e_ADMIN", e_BASE.$ADMIN_DIRECTORY);

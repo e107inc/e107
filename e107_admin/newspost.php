@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.67 $
-|   $Date: 2005-04-02 21:06:52 $
-|   $Author: e107coders $
+|   $Revision: 1.68 $
+|   $Date: 2005-04-03 14:19:18 $
+|   $Author: stevedunstan $
 +---------------------------------------------------------------+
 
 */
@@ -861,6 +861,10 @@ class newspost {
 				</td>
 				</tr>\n";
 			}
+			else
+		{
+				echo "<b>Trackback not enabled.</b> ".$variable." <br />";
+		}
 
 			$text .= "<tr style='vertical-align: top;'>
 			<td colspan='2'  style='text-align:center' class='forumheader'>";

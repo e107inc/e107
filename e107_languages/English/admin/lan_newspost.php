@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-04-02 21:08:06 $
-|     $Author: e107coders $
+|     $Revision: 1.18 $
+|     $Date: 2005-04-03 14:19:18 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("NWSLAN_1", "News story deleted.");
@@ -117,13 +117,13 @@ define("NWSLAN_117", "set the title for the newsarchive");
 define("NWSLAN_118", "View Images");
 define("NWSLAN_119", "Settings Saved");
 
-// define("LAN_NEWS_5", "Error! - Was unable to update news item into database!");
-// define("LAN_NEWS_6", "News entered into database.");
-// define("LAN_NEWS_7", "Error! - Was unable to enter news item into database!");
-// define("LAN_NEWS_9", "Title only is set - <b>only the news title will be shown</b>");
-// define("LAN_NEWS_10", "This news post is <b>inactive</b> (It will be not shown on front page). ");
-// define("LAN_NEWS_11", "This news post is <b>active</b> (it will be shown on front page). ");
-// define("LAN_NEWS_12", "Comments are turned <b>on</b>.");
+define("LAN_NEWS_5", "Error! - Was unable to update news item into database!");
+define("LAN_NEWS_6", "News entered into database.");
+define("LAN_NEWS_7", "Error! - Was unable to enter news item into database!");
+//define("LAN_NEWS_9", "Title only is set - <b>only the news title will be shown</b>");
+//define("LAN_NEWS_10", "This news post is <b>inactive</b> (It will be not shown on front page). ");
+//define("LAN_NEWS_11", "This news post is <b>active</b> (it will be shown on front page). ");
+//define("LAN_NEWS_12", "Comments are turned <b>on</b>.");
 // define("LAN_NEWS_13", "Comments are turned <b>off</b>.");
 // define("LAN_NEWS_14", "<br />Activation period: ");
 // define("LAN_NEWS_15", "Body length: ");

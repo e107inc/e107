@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/trackback/trackbackClass.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-02-16 18:42:20 $
+|     $Revision: 1.3 $
+|     $Date: 2005-04-03 14:19:19 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -23,24 +23,26 @@ class trackbackClass
 	function sendTrackback ($permLink, $pingUrl, $title, $excerpt)
 	{
 		global $e107;
-		
 
 		$title = urlencode(stripslashes($title));
 		$excerpt = urlencode(stripslashes($excerpt));
 		$blog_name = urlencode(stripslashes(SITENAME));
 		$permLink = urlencode(stripslashes($e107->HTTPPath.$permLink));
-		$query_string = "title=$title&url=$permLink&blog_name=$blog_name&excerpt=$excerpt";
+		$query_string = "title=".$title."&url=".$permLink."&blog_name=".$blog_name."&excerpt=".$excerpt;
 
-		if (strstr($trackback_url, '?'))
+		
+		
+
+		if (strstr($pingUrl, '?'))
 		{
 			$pingUrl .= "&".$query_string;
-			$fp = fopen($trackback_url, 'r');
+			$fp = fopen($pingUrl, 'r');
 			$response = fread($fp, 4096);
 			fclose($fp);
 		}
 		else
 		{
-
+			
 			$trackback_url = parse_url($pingUrl);
 
 			if ((isset($trackback_url["query"])) && ($trackback_url["query"] != ""))
@@ -124,14 +126,14 @@ class trackbackClass
 			$excerpt = $_POST['excerpt'];
 		}
 
-		if(!$permLink)
+		if(!$pid)
 		{
 			$errorMessage = "No permanent ID sent.";
 		}
 
 		if(!isset($pid) || !is_numeric($pid))
 		{
-			$errorMessage = "No known item with that pid.";
+			$errorMessage = "No known item with that pid (pid sent as ".$pid.").";
 		}
 
 		$excerpt = ($excerpt ? strip_tags($excerpt) : "I found your news item interesting, I've added a trackback to it on my website :)");
@@ -142,7 +144,7 @@ class trackbackClass
 		{
 			if(!$sql -> db_Insert("trackback", "0, $pid, '$title', '$excerpt', '$permLink', '$blog_name' "))
 			{
-				$errorMessage = "Unable to enter your trackback information into the database.";
+				$errorMessage = "Unable to enter your trackback information into the database -> 0, $pid, '$title', '$excerpt', '$permLink', '$blog_name'";
 			}
 		}
 
