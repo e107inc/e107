@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/chatbox.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-01-27 19:52:24 $
-|     $Author: streaky $
+|     $Revision: 1.8 $
+|     $Date: 2005-02-03 00:10:40 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -186,20 +186,7 @@ $text .= "</select>
 	</td>
 	</tr>
 	 
-	<tr>
-	<td class='forumheader3' style='width:40%'>".CHBLAN_13."?:  <div class='smalltext'>".CHBLAN_14."</div></td>
-	<td class='forumheader3' style='width:60%'>". ($cb_linkreplace ? "<input type='checkbox' name='cb_linkreplace' value='1' checked='checked' />" : "<input type='checkbox' name='cb_linkreplace' value='1' />")."
-	</td>
-	</tr>
-	 
-	 
-	<tr>
-	<td class='forumheader3' style='width:40%'>".CHBLAN_15.": <div class='smalltext'>".CHBLAN_16."</div></td>
-	<td class='forumheader3' style='width:60%'>
-	<input class='tbox' type='text' name='cb_linkc' size='50' value='$cb_linkc' maxlength='200' />
-	</td>
-	</tr>
-	 
+	
 	<tr><td class='forumheader3' style='width:40%'>".CHBLAN_31."?: </td>
 	<td class='forumheader3' style='width:60%'>". ($pref['cb_emote'] ? "<input type='checkbox' name='cb_emote' value='1' checked='checked' />" : "<input type='checkbox' name='cb_emote' value='1' />")."
 	</td>
