@@ -35,5 +35,7 @@ define("LIST_18", "Poll");
 define("LIST_19", "Docs");
 define("LIST_20", "Bugtracker");
 
+define("LIST_21", "Articles");
+
 
 ?>
