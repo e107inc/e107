@@ -1,16 +1,20 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        /public_upload.php
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107/upload.php,v $
+|     $Revision: 1.5 $
+|     $Date: 2004-09-10 02:58:10 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 
@@ -91,15 +95,20 @@ $text = "<div style='text-align:center'>
             $text .= "<option value='$download_category_id'>".$download_category_name."</option>\n";
         }
         }
-$text .= "</select>
-</td>
-</tr>
+    $text .= "</select>
+    </td>
+    </tr>
 
-<tr>
-<td style='text-align:center' colspan='2' class='forumheader3'>".LAN_406." ".str_replace("\n", " | ", $pref['upload_allowedfiletype'])."<br />".LAN_407."<br />
-".LAN_418.($pref['upload_maxfilesize'] ? $pref['upload_maxfilesize'] : ini_get('upload_max_filesize'))."<br />
-".LAN_408."</td>
-</tr>";
+    <tr>
+    <td style='text-align:center' colspan='2' class='forumheader3'>";
+
+    $text .= "<b>".LAN_406."</b><br />".LAN_419.":";
+
+    $text .= " ".str_replace("\n", " | ", $pref['upload_allowedfiletype'])."<br />".LAN_407."<br />
+    ".LAN_418.($pref['upload_maxfilesize'] ? $pref['upload_maxfilesize'] : ini_get('upload_max_filesize'))."<br />";
+
+    $text .= "<span style='text-decoration:underline'>".LAN_408."</span> ".LAN_420."</td>
+    </tr>";
 
 if(!USER){
         $text .= "<tr>

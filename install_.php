@@ -1,5 +1,21 @@
 <?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107/install_.php,v $
+|     $Revision: 1.19 $
+|     $Date: 2004-09-10 02:58:10 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
 @include("e107_handlers/errorhandler_class.php");
 set_error_handler("error_handler");
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
@@ -97,13 +113,16 @@ function stage2(){
         <td style='width:33%' class='installboxgeneric'>".phpversion()."</td>";
         $verreq = str_replace(".","", "4.0.6");
         $server = str_replace(".","", phpversion());
-		if(strlen($server) < 3) {$server = $server."0";} 
+                if(strlen($server) < 3) {$server = $server."0";}
         if($server <= $verreq){
                 $error[0] = TRUE;
                 $text .= "<td style='width:33%' class='installboxfail'>* ".INSLAN4." *</td>
                 </tr>
                 <tr>
-                <td colspan='3' class='installboxfail'><br />".INSLAN5."<br /><br />".INSLAN6."<br /><br /></td></tr></table></td></tr></table></div>";
+                <td colspan='3' class='installboxfail'><br />";
+
+                $text .= "<b>".INSLAN5."<br />(".INSLAN65.").</b><br /><br />".INSLAN66."<br />".INSLAN67." <a href='http://php.net'>php.net</a> ".INSLAN68."<br />".INSLAN69."<br />".INSLAN70."<br />".INSLAN71;
+                $text .= "<br /><br />".INSLAN6."<br /><br /></td></tr></table></td></tr></table></div>";
                 tablestyle(INSLAN14." ...", $text);
                 exit;
         }else{
@@ -119,7 +138,10 @@ function stage2(){
                 $text .= "<td style='width:33%' class='installboxfail'>* Fail *</td>
                 </tr>
                 <tr>
-                <td colspan='3' class='installboxgeneric'><br />".INSLAN9."<br /><br /></td></tr>";
+                <td colspan='3' class='installboxgeneric'><br />";
+
+                $text .= "<b>".INSLAN9."</b><br /><br /> ".INSLAN72."<br />".INSLAN73."<br />".INSLAN74."<br />".INSLAN75;
+                $text .= "<br /><br /></td></tr>";
         }else{
                 $text .= "<td style='width:33%; text-align:center' class='installboxpass'>* ".INSLAN7." *</td>
                 </tr>";
@@ -444,7 +466,10 @@ function create_tables(){
                 if(!mysql_query($sql_table)){        return INSLAN55; }
         }
 
-        $welcome_message = "<b>".INSLAN56."</b><br /><br />".INSLAN57."\n\n[b]Support[/b]\ne107 Homepage: http://e107.org, ".INSLAN58."\nForums: http://e107.org/forum.php\n\n[b]Downloads[/b]\nPlugins: http://e107coders.org\nThemes: http://e107themes.org\n<br /><br />".INSLAN59."";
+        $welcome_message = "<b>".INSLAN56."</b><br /><br />";
+        $welcome_message .= INSLAN57. "<br />".INSLAN76." <a href='e107_admin/admin.php'>".INSLAN77."</a>, ".INSLAN78;
+        $welcome_message .= "\n\n[b]Support[/b]\ne107 Homepage: http://e107.org, ".INSLAN58."\nForums: http://e107.org/forum.php\n\n[b]Downloads[/b]\nPlugins: http://e107coders.org\nThemes: http://e107themes.org\n<br /><br />".INSLAN59."";
+
         $search = array("'", "'");
         $replace = array("&quot;", "&#39;");
         $welcome_message = str_replace($search, $replace, $welcome_message);
@@ -495,9 +520,9 @@ function create_tables(){
         mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES ('1', 'This text (if activated) will appear at the top of your front page all the time.', '0')");
         mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES ('2', 'Member message ----- This text (if activated) will appear at the top of your front page all the time - only logged in members will see this.', '0')");
         mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES ('3', 'Administrator message ----- This text (if activated) will appear at the top of your front page all the time - only logged in administrators will see this.', '0')");
-		mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES (4, 'This text (if activated) will appear on a page when \"Forum Rules\" link is clicked on.', '0')");
-		mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES (5, 'Member rules ----- This text (if activated) will appear on a page when \"Forum Rules\" link is clicked on - only logged in members will see this.', '0')");
-		mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES (6, 'Administrator rules ----- This text (if activated) will appear on a page when \"Forum Rules\" link is clicked on - only logged in administrators will see this.', '0')");
+                mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES (4, 'This text (if activated) will appear on a page when \"Forum Rules\" link is clicked on.', '0')");
+                mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES (5, 'Member rules ----- This text (if activated) will appear on a page when \"Forum Rules\" link is clicked on - only logged in members will see this.', '0')");
+                mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES (6, 'Administrator rules ----- This text (if activated) will appear on a page when \"Forum Rules\" link is clicked on - only logged in administrators will see this.', '0')");
 
         mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'login_menu', 1, 1, 0, '')");
         mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'search_menu', 0, 0, 0, '')");
@@ -526,12 +551,12 @@ function create_tables(){
 
         mysql_query("INSERT INTO ".$mySQLprefix."userclass_classes VALUES (1, 'PRIVATEMENU', 'Grants access to private menu items')");
         mysql_query("INSERT INTO ".$mySQLprefix."userclass_classes VALUES (2, 'PRIVATEFORUM1', 'Example private forum class')");
-		mysql_query("INSERT INTO ".$mySQLprefix."parser VALUES (0,'e107core','/{(PROFILE)=([0-9]+)}/') ");
-		mysql_query("INSERT INTO ".$mySQLprefix."parser VALUES (0,'e107core','/{(EMAILTO)=(.+?)}/') ");
-		mysql_query("INSERT INTO ".$mySQLprefix."parser VALUES (0,'e107core','/{(AVATAR)(=(.+?))*}/') ");
-		mysql_query("INSERT INTO ".$mySQLprefix."parser VALUES (0,'e107core','/{(PICTURE)(=(.+?))*}/') ");
-		mysql_query("INSERT INTO ".$mySQLprefix."parser VALUES (0,'e107core','/{(USERNAME)}/') ");
-		mysql_query("INSERT INTO ".$mySQLprefix."plugin VALUES (0, 'Integrity Check', '0.03', 'integrity_check', 1) ");
+                mysql_query("INSERT INTO ".$mySQLprefix."parser VALUES (0,'e107core','/{(PROFILE)=([0-9]+)}/') ");
+                mysql_query("INSERT INTO ".$mySQLprefix."parser VALUES (0,'e107core','/{(EMAILTO)=(.+?)}/') ");
+                mysql_query("INSERT INTO ".$mySQLprefix."parser VALUES (0,'e107core','/{(AVATAR)(=(.+?))*}/') ");
+                mysql_query("INSERT INTO ".$mySQLprefix."parser VALUES (0,'e107core','/{(PICTURE)(=(.+?))*}/') ");
+                mysql_query("INSERT INTO ".$mySQLprefix."parser VALUES (0,'e107core','/{(USERNAME)}/') ");
+                mysql_query("INSERT INTO ".$mySQLprefix."plugin VALUES (0, 'Integrity Check', '0.03', 'integrity_check', 1) ");
 
 
 

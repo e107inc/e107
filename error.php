@@ -1,4 +1,24 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107/error.php,v $
+|     $Revision: 1.4 $
+|     $Date: 2004-09-10 02:58:10 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
+
+
+
 require_once("class2.php");
 require_once(HEADERF);
 
@@ -20,7 +40,7 @@ switch(e_QUERY){
                 <br /><div class='installh'>".LAN_2."<a href='index.php'>".LAN_20."</a></div>";
         break;
         default:
-                $text = "<div class='installe'>".LAN_13."</div><br /><div class='installh'>".LAN_14."</div><br /><div class='smalltext'>".LAN_15."</div>
+                $text = "<div class='installe'>".LAN_13." (".$_SERVER['QUERY_STRING'].")</div><br /><div class='installh'>".LAN_14."</div><br /><div class='smalltext'>".LAN_15."</div>
                 <br /><div class='installh'>".LAN_2."<a href='index.php'>".LAN_20."</a></div>";
 }
 $ns -> tablerender(PAGE_NAME." ".e_QUERY, $text);
