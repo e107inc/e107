@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/class2.php,v $
-|     $Revision: 1.106 $
-|     $Date: 2004-11-25 17:45:15 $
+|     $Revision: 1.107 $
+|     $Date: 2004-12-11 14:22:10 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -149,7 +149,9 @@ $pref = unserialize($tmp);
 foreach($pref as $key => $prefvalue) {
 	$pref[$key] = textparse::formtparev($prefvalue);
 }
-
+if (!in_array('links_new_window',$pref)) {
+	$pref['links_new_window'] = FALSE;
+}
 
 if (!is_array($pref)) {
 	$pref = unserialize($row['e107_value']);
@@ -519,7 +521,7 @@ class textparse {
 			$this->emotes = unserialize($e107_value);
 
 			$c = 0;
-			while (list($code, $name) = each($this->emotes[$c])) {
+			while (is_array($this->emotes[$c]) && list($code, $name) = each($this->emotes[$c])) {
 				$this->searcha[$c] = " ".$code;
 				$this->searchb[$c] = "\n".$code;
 				$this->replace[$c] = " <img src='".e_IMAGE."emoticons/$name' alt='' style='vertical-align:middle; border:0' /> ";
@@ -752,7 +754,7 @@ class textparse {
 		$replace[21] = '<span class=\'smallblacktext\'>[ \1 ]</span>';
 		$search[22] = "#\[br\]#si";
 		$replace[22] = '<br />';
-		if ($pref['forum_attach'] && FILE_UPLOADS || $referrer == "admin") {
+		if (array_key_exists('forum_attach',$pref) && $pref['forum_attach'] && FILE_UPLOADS || $referrer == "admin") {
 			$search[23] = "#\[file=(.*?)\](.*?)\[/file\]#si";
 			$replace[23] = '<a href="\1"><img src="'.e_IMAGE.'generic/attach1.png" alt="" style="border:0; vertical-align:middle" /> \2</a>';
 		} else {
@@ -1128,6 +1130,7 @@ function init_session() {
 		define("USERTHEME", FALSE);
 		define("ADMIN", FALSE);
 		define("GUEST", TRUE);
+		define('USERCLASS','');
 	} else {
 		list($uid, $upw) = ($_COOKIE[$pref['cookie_name']] ? explode(".", $_COOKIE[$pref['cookie_name']]) : explode(".", $_SESSION[$pref['cookie_name']]));
 		if (empty($uid) || empty($upw)) // corrupt cookie?
@@ -1195,7 +1198,7 @@ function init_session() {
 			define("USERTHEME", FALSE);
 			define("ADMIN", FALSE);
 			define("CORRUPT_COOKIE", TRUE);
-			define("USERCLASS", "");
+			define("USERCLASS", ".");
 		}
 	}
 }

@@ -97,31 +97,19 @@ $text .= "</script>
 $ns -> tablerender(LAN_183, $text);
 
 
-function setlink($link_name, $link_url, $link_open){
-                switch ($link_open){
-                        case 1:
-                                $link_append = "rel='external'";
-                        break;
-                        case 2:
-                                $link_append = "";
-                        break;
-                        case 3:
-                                $link_append = "";
-                        break;
-                        default:
-                                unset($link_append);
-                }
-                if(!strstr($link_url, "http:")){ $link_url = e_BASE.$link_url; }
-                if($link_open == 4){
-                        $link =  "<a style='text-decoration:none' href=\"javascript:open_window('".$link_url."')\">".$link_name."</a>\n";
-                }else{
-                        $link =  "<a style='text-decoration:none' href=\"".$link_url."\" ".$link_append.">".$link_name."</a>\n";
-                }
-        return $link;
+function setlink($link_name, $link_url, $link_open) {
+	if ($link_open == 1) {
+		$link_append = "rel='external'";
+	} else {
+		$link_append='';
+	}
+	if(!strstr($link_url, "http:")){ $link_url = e_BASE.$link_url; }
+	if($link_open == 4) {
+		$link =  "<a style='text-decoration:none' href=\"javascript:open_window('".$link_url."')\">".$link_name."</a>\n";
+	} else {
+		$link =  "<a style='text-decoration:none' href=\"".$link_url."\" ".$link_append.">".$link_name."</a>\n";
+	}
+	return $link;
 }
-
-
-
-
 
 ?>

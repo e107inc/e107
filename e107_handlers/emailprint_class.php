@@ -19,6 +19,7 @@ class emailprint{
 		// $look = 1  --->  display email icon only
 		// $look = 2  --->  display print icon only
 		$text_emailprint="";
+		$tab='';
 		switch($mode){
 			case "article":
 				$email = "article";

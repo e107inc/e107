@@ -11,7 +11,7 @@
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
 |
-|   $Id: header_default.php,v 1.39 2004-12-05 21:55:47 mcfly_e107 Exp $
+|   $Id: header_default.php,v 1.40 2004-12-11 14:22:11 mcfly_e107 Exp $
 +---------------------------------------------------------------+
 */
 if(!function_exists("parseheader"))
@@ -373,7 +373,7 @@ if($e107_popup != 1)
 	{
 	while(list($key, $kpage) = each($custompage))
 	{
-		if(strstr(e_SELF, $kpage)){
+		if($kpage && strstr(e_SELF, $kpage)){
 			$ph = TRUE;
 			break;
 		}

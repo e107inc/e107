@@ -180,9 +180,7 @@ if(!$text = retrieve_cache("chatbox")){
 if(ADMIN && getperms("C")){$text .= "<br />[ <a href='".e_ADMIN."chatbox.php'>".CHATBOX_L13."</a> ]";}
 $caption = (file_exists(THEME."images/chatbox_menu.png") ? "<img src='".THEME."images/chatbox_menu.png' alt='' /> ".CHATBOX_L2 : CHATBOX_L2);
 
-
 $text = ($pref['cb_layer'] ? $texta."<div style='border : 0; padding : 4px; width : auto; height : ".$pref['cb_layer_height']."px; overflow : auto; '>".$text."</div>" : $texta.$text);
-
 
 $ns -> tablerender($caption, $text);
 
@@ -193,8 +191,9 @@ function emote(){
 	$emote = unserialize($e107_value);
 	$str="<br />";
 	$c=0;
+	$orig=array();
 	while(list($code, $name) = @each($emote[$c])){
-		if(!$orig[$name]){
+		if(!array_key_exists($name,$orig)){
 			$code = htmlentities($code);
 			$str .= "\n<a href=\"javascript:caddtext(' $code')\"><img src=\"".e_IMAGE."emoticons/$name\" style=\"border:0; padding-top:2px;\" alt=\"\" /></a> ";
 			$orig[$name] = TRUE;

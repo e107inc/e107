@@ -163,7 +163,7 @@ class db{
 		# - scope					public
 		*/
 		if($row = @mysql_fetch_array($this->mySQLresult)){
-			if($mode == strip){
+			if($mode == 'strip'){
 				while (list($key,$val) = each($row)){
 					$row[$key] = stripslashes($val);
 				}

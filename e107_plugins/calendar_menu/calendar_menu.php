@@ -13,8 +13,8 @@
 */
 
 $ec_dir = e_PLUGIN."calendar_menu/";
-$lan_file = $ec_dir."languages/".e_LANGUAGE.".php";
-include(file_exists($lan_file) ? $lan_file : e_PLUGIN."calendar_menu/languages/English.php");
+//$lan_file = $ec_dir."languages/".e_LANGUAGE.".php";
+//include(file_exists($lan_file) ? $lan_file : e_PLUGIN."calendar_menu/languages/English.php");
 
 $datearray = getdate();
 $current_day = $datearray['mday'];
@@ -32,6 +32,7 @@ $lastdayarray = getdate($monthend);
 
 $sql -> db_Select("event", "*", "(event_start>='$monthstart' AND event_start<= '$monthend') OR (event_rec_y='$current_month')");
 $events = $sql -> db_Rows();
+$event_true=array();
 while($row = $sql -> db_Fetch()){
         extract($row);
         $evf = getdate($event_start);
@@ -81,7 +82,7 @@ for($c=1; $c<=31; $c++){
                         $text .="<td class='forumheader3' style='text-align:center'>";
                 }
 
-                if($event_true[($c)]){
+                if(array_key_exists($c,$event_true) && $event_true[($c)]){
                         $sql -> db_Select("event_cat", "*", "event_cat_id='".$event_true[($c)]."' ");
                         $icon = $sql -> db_Fetch();
                         extract($icon);

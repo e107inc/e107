@@ -12,9 +12,9 @@
 |	GNU General Public License (http://gnu.org).	
 |
 | $Source: /cvs_backup/e107/e107_handlers/news_class.php,v $
-| $Revision: 1.17 $
-| $Date: 2004-11-08 08:29:42 $
-| $Author: loloirie $ 
+| $Revision: 1.18 $
+| $Date: 2004-12-11 14:22:11 $
+| $Author: mcfly_e107 $ 
 +---------------------------------------------------------------+
 */
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -116,7 +116,7 @@ on
 			$category_icon = (strstr(SITEBUTTON, "http") ? SITEBUTTON : e_IMAGE.SITEBUTTON);
 		}else{
 			$category_icon = str_replace("../", "", $category_icon);
-			if(strstr("images", $category_icon)){
+			if($category_icon && strstr("images", $category_icon)){
 				$category_icon = THEME.$category_icon;
 			}else{
 				$category_icon = e_IMAGE."newsicons/".$category_icon;
