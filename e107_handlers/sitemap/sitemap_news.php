@@ -23,7 +23,7 @@ function sm_news() {
 			while ($row = $sql->db_Fetch()) {
 				extract($row);
 				$row[1] = $aj->tpa($row[1]);
-				$texto .= "<a href=\"javascript:void(0);\" onfocus=\"this.blur;\" onclick=\"expandit('news_subcats_".$row[0]."');ejs_func_todo='view';\" class='smalltext' >".SM_ICO_EXP."</a> <img src='".e_IMAGE."link_icons/".$row[2]."' alt='bullet' /> <a  href='news.php?cat.".$row[0]."' >".$row[1]."</a>\n";
+				$texto .= "<a href=\"javascript:void(0);\" onfocus=\"this.blur;\" onclick=\"expandit('news_subcats_".$row[0]."');ejs_func_todo='view';\" class='smalltext' >".SM_ICO_EXP."</a> <img src='".e_IMAGE."icons/".$row[2]."' alt='bullet' /> <a  href='news.php?cat.".$row[0]."' >".$row[1]."</a>\n";
 				$nbr_news_cat++;
 				if ($sql2->db_Select("news", "news_id, news_title, news_datestamp, news_class", "news_category='".$row[0]."' ORDER BY news_datestamp DESC")) {
 					$texto .= "<br /><br /><div class='subcats' id='news_subcats_".$row[0]."' style='display:none;' ><div style='margin: 0px 0px 0px 30px;' >\n

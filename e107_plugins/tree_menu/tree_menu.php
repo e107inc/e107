@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/tree_menu/tree_menu.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-01-27 19:53:18 $
-|     $Author: streaky $
+|     $Revision: 1.10 $
+|     $Date: 2005-02-11 22:27:12 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 	
@@ -81,13 +81,13 @@ foreach($mainLinkArray as $links) {
 		// sublinks found ...
 		$url = "javascript: void(0);";
 		$spanName = str_replace(" ", "_", $name);
-		$image = ($image ? "<img src='".e_IMAGE."link_icons/".$image."' alt='' style='vertical-align:middle;' />" : "&raquo;");
+		$image = ($image ? "<img src='".e_IMAGE."icons/".$image."' alt='' style='vertical-align:middle;' />" : "&raquo;");
 		$text .= "<div class='spacer'>\n<div class='button' style='width:100%; cursor: pointer;' onclick='expandit(\"span_".$spanName."\");updatecook(\"".$name."\");'>".$image.setLink($name, $url, $openMethod, $description)."</div>\n</div>\n";
 	} else {
 		// no sublinks found ...
 		$linkName = $url;
 		$spanName = "";
-		$image = ($image ? "<img src='".e_IMAGE."link_icons/".$image."' alt='' style='vertical-align:middle;' />" : "&middot;");
+		$image = ($image ? "<img src='".e_IMAGE."icons/".$image."' alt='' style='vertical-align:middle;' />" : "&middot;");
 		$text .= "<div class='spacer'>\n<div class='button' style='width:100%; cursor: pointer;'>".$image.setLink($name, $url, $openMethod, $description)."</div>\n</div>\n";
 	}
 	 
@@ -96,7 +96,7 @@ foreach($mainLinkArray as $links) {
 		$text .= "<span style=\"display:none\" id=\"span_".$spanName."\">\n";
 		foreach($sublink as $link) {
 			extract($link);
-			$image = ($image ? "<img src='".e_IMAGE."link_icons/".$image."' alt='' style='vertical-align:middle' />  " : "&middot; ");
+			$image = ($image ? "<img src='".e_IMAGE."icons/".$image."' alt='' style='vertical-align:middle' />  " : "&middot; ");
 			$spanName = str_replace(" ", "_", $parent_name);
 			 
 			$text .= $image.setLink($name, $url, $openMethod, $description)."<br />\n";

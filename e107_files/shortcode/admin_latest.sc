@@ -18,7 +18,14 @@ if (ADMIN) {
 				}
 			}
 
-			if($amount = $sql -> db_Select("generic", "*", "gen_type='reported_post' OR gen_type='broken download' ")) {
+			$messageTypes = array("Reported Forum Post", "Broken Download", "Dev Team Message");
+			$queryString = "";
+			foreach($messageTypes as $types) {
+				$queryString .= " gen_type='$types' OR";
+			}
+			$queryString = substr($queryString, 0, -3);
+
+			if($amount = $sql -> db_Select("generic", "*", $queryString)) {
 				$text .= "<br /><b><a href='".e_ADMIN."message.php'>".ADLAN_LAT_8." [".$amount."]</a></b>";
 			}
 			return $ns -> tablerender(ADLAN_LAT_1, $text, '', TRUE);	
