@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/class2.php,v $
-|     $Revision: 1.100 $
-|     $Date: 2004-10-31 20:38:08 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.101 $
+|     $Date: 2004-11-04 14:47:57 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 
@@ -834,6 +834,7 @@ function check_email($var){
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function check_class($var, $userclass=USERCLASS, $debug=FALSE){
+        if($!var || $var==""){return TRUE;}
         if(preg_match ("/^([0-9]+)$/", $var)){
                 if($var == e_UC_MEMBER && USER==TRUE){return TRUE;}
                 if($var == e_UC_GUEST && USER==FALSE){return TRUE;}

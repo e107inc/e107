@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/upload.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2004-09-10 02:58:10 $
-|     $Author: e107coders $
+|     $Revision: 1.6 $
+|     $Date: 2004-11-04 14:47:57 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -25,12 +25,16 @@ if(!$pref['upload_enabled'] || $pref['upload_class'] == 255){
 
 require_once(HEADERF);
 
+/*
 if($pref['upload_class'] == 254 && !USER){
         $text = "<div style='text-align:center'>".LAN_402."</div>";
         $ns -> tablerender(LAN_20, $text);
         require_once(FOOTERF);
         exit;
-}else if(!check_class($pref['upload_class']) && $pref['upload_class']){
+}else
+
+*/
+if(!check_class($pref['upload_class']) && $pref['upload_class']){
         $text = "<div style='text-align:center'>".LAN_403."</div>";
         $ns -> tablerender(LAN_20, $text);
         require_once(FOOTERF);

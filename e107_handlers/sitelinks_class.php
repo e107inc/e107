@@ -92,7 +92,8 @@ function sitelinks(){
                         while($row = $sql2 -> db_Fetch()){
                                 extract($row);
                                 $link_name = str_replace("submenu.".$main_linkname.".", "", $link_name);
-                                if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
+                                // if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
+                                if(check_class($link_class)){
                                         $linkstart = ($link_button ? preg_replace("/\<img.*\>/si", "", LINKSTART)." " : LINKSTART);
                                         switch ($link_open) {
                                                 case 1:

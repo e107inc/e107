@@ -150,7 +150,8 @@ $sql -> db_Select("forum", "*", "forum_id='".$forum_id."' ");
 $row = $sql-> db_Fetch(); extract($row);
 $fname = $row['forum_name'];
 
-if(($forum_class && !check_class($forum_class)) || ($forum_class == 254 && !USER)){ header("Location:".e_BASE."forum.php"); exit;}
+// if(($forum_class && check_class($forum_class)) || ($forum_class == 254 && USER) || !$forum_class){
+if(check_class($forum_class)){{ header("Location:".e_BASE."forum.php"); exit;}
 
 $sql -> db_Select("forum_t", "*", "thread_id='".$thread_id."' ORDER BY thread_datestamp DESC ");
 $row = $sql-> db_Fetch("no_strip"); extract($row);
@@ -465,7 +466,8 @@ function forumjump(){
 	$text .= "<form method='post' action='".e_SELF."'><p>".LAN_65.": <select name='forumjump' class='tbox'>";
 	while($row = $sql -> db_Fetch()){
 		extract($row);
-		if(($forum_class && check_class($forum_class)) || ($forum_class == 254 && USER) || !$forum_class){
+		// if(($forum_class && check_class($forum_class)) || ($forum_class == 254 && USER) || !$forum_class){
+    if(check_class($forum_class)){
 			$text .= "\n<option value='".$forum_id."'>".$forum_name."</option>";
 		}
 	}

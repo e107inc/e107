@@ -34,7 +34,8 @@ while($row = $sql -> db_Fetch()){
         $link_name=strip_tags($link_name);
         $textadd1 = ""; $textadd2 = "";
 		if($sql2 -> db_Select("links", "*", "link_name REGEXP('submenu.".$link_name."') ORDER BY link_order")){
-				if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
+				// if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
+         if(check_class($link_class)){
                         $mlink_name = $link_name;
                         $textadd1 .= "
                         <div class='spacer'>
@@ -45,7 +46,8 @@ while($row = $sql -> db_Fetch()){
                         $sublink_exist = 0;
 						while($row = $sql2 -> db_Fetch()){
                                 extract($row);
-                                if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
+                                // if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
+                                if(check_class($link_class)){
                                         $link_name2 = str_replace("submenu.".$mlink_name.".", "", $link_name);
                                         $textadd2 .= ($link_button!="" ? "<img src='".e_IMAGE."link_icons/".$link_button."' alt='' style='vertical-align:middle' />  " : "&middot; " ).setlink($link_name2, $link_url, $link_open)."\n<br />";
                                 	$sublink_exist = 1;
@@ -56,7 +58,8 @@ while($row = $sql -> db_Fetch()){
 						$text .= $textadd1.$textadd1b.$textadd2."</span></div>\n";
                 }
           }else{
-                if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
+                // if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
+                if(check_class($link_class)){
                         $text .= "<div class='spacer'><div class='button' style='width:100%; cursor: pointer; cursor: hand' onclick=\"clearcook();\">".($link_button!="" ? "<img src='".e_IMAGE."link_icons/".$link_button."' alt='' style='vertical-align:middle' />  " : "&middot; " ).
                         setlink($link_name, $link_url, $link_open)."
                         </div></div>";
