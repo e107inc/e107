@@ -21,7 +21,7 @@ $themedate = "22/12/04";
 $themeinfo = "";
 
 define("THEME_DISCLAIMER", "");
-
+define("IMODE", "lite");
 
 // [output js nav css in <head>]
 

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/human_condition/theme.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-03-21 11:13:48 $
+|     $Revision: 1.8 $
+|     $Date: 2005-03-24 10:11:45 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -31,7 +31,7 @@ $themeinfo = "based on the Wordpress theme, <a href='http://wordpress.org'>http:
 define("STANDARDS_MODE", TRUE);
 $xhtmlcompliant = TRUE;
 $csscompliant = TRUE;
-
+define("IMODE", "lite");
 define("THEME_DISCLAIMER", "<br /><br /><i>".LAN_THEME_1."</i>");
 
 // [layout]
