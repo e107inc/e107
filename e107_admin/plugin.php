@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-02-19 16:53:21 $
+|     $Revision: 1.24 $
+|     $Date: 2005-02-19 17:00:24 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -407,7 +407,7 @@ while ($row = $sql->db_fetch()) {
 /* plugin upload form */
 
 if(!is_writable(e_PLUGIN)) {
-	$ns->tablerender(EPL_ADLAN_40, EPL_ADLAN_39);
+	$ns->tablerender(EPL_ADLAN_40, EPL_ADLAN_44);
 } else {
 	$text = "<div style='text-align:center'>
 	<form enctype='multipart/form-data' method='post' action='".e_SELF."'>
