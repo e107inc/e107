@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-02-19 17:06:34 $
+|     $Revision: 1.27 $
+|     $Date: 2005-02-19 17:45:19 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -50,7 +50,11 @@ if (isset($_POST['upload'])) {
 		$fileSize = $file_userfile['size'][0];
 		$fileType = $file_userfile['type'][0];
 		
-		if($fileType != "application/x-zip-compressed" && $fileType != "application/x-gzip-compressed" && $fileType != "application/x-zip") {
+		if(strstr($file_userfile['type'][0], "gzip")) {
+			$fileType = "tar";
+		} else if (strstr($file_userfile['type'][0], "zip")) {
+			$fileType = "zip";
+		} else {
 			/* not zip or tar - spawn error message */
 			$ns->tablerender(EPL_ADLAN_40, EPL_ADLAN_41);
 			require_once("footer.php");
@@ -64,28 +68,44 @@ if (isset($_POST['upload'])) {
 			$uploaded = file_upload(e_PLUGIN);
 			$pref['upload_storagetype'] = $opref;
 
-			$archiveName = $uploaded[0]['name'];	/* update name - it'll have been renamed by upload handler */
+			$archiveName = $uploaded[0]['name'];
 
 			/* attempt to unarchive ... */
 
-			if($fileType == "application/x-zip-compressed" || $fileType == "application/x-zip") {
+			if($fileType == "zip") {
 				require_once(e_HANDLER."pclzip.lib.php");
 				$archive = new PclZip(e_PLUGIN.$archiveName);
-				if($archive->extract(PCLZIP_OPT_PATH, e_PLUGIN)) {
-					$ns->tablerender(EPL_ADLAN_40, EPL_ADLAN_43);
-				} else {
-					$error = "PCLZIP extract error: ".$archive -> errorName(true);
-					$ns->tablerender(EPL_ADLAN_40, EPL_ADLAN_42." ".$archiveName." ".$error);
-				}
+				$unarc = ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_PLUGIN));
 			} else {
 				require_once(e_HANDLER."pcltar.lib.php");
-				if(PclTarExtract($archiveName, e_PLUGIN)) {
-					$ns->tablerender(EPL_ADLAN_40, EPL_ADLAN_43);
+				$unarc = ($fileList = PclTarExtract($archiveName, e_PLUGIN));
+			}
+
+			if(!$unarc) {
+				/* unarc failed ... */
+				if($fileType == "zip") {
+					$error = "PCLZIP extract error: '".$archive -> errorName(TRUE)."'";
 				} else {
 					$error = "PCLTAR extract error: ".PclErrorString().", code: ".intval(PclErrorCode());
-					$ns->tablerender(EPL_ADLAN_40, EPL_ADLAN_42." ".$archiveName." ".$error);
 				}
+				$ns->tablerender(EPL_ADLAN_40, EPL_ADLAN_42." ".$archiveName." ".$error);
+				require_once("footer.php");
+				exit;
 			}
+
+			/* ok it looks like the unarc succeeded - continue */
+
+			/* get folder name ... */
+			$folderName = substr($fileList[0]['stored_filename'], 0, (strpos($fileList[0]['stored_filename'], "/")));
+
+			if(file_exists(e_PLUGIN.$folderName."/plugin.php")) {
+				/* upload is a plugin */
+				$ns->tablerender(EPL_ADLAN_40, EPL_ADLAN_43);
+			} else {
+				/* upload is a menu */
+				$ns->tablerender(EPL_ADLAN_40, EPL_ADLAN_45);
+			}
+
 			/* attempt to delete uploaded archive */
 			@unlink(e_PLUGIN.$archiveName);
 		}
