@@ -115,12 +115,12 @@ $FOOTER = "<br />
 
 // [linkstyle]
 
-define(PRELINK, "");
-define(POSTLINK, "");
-define(LINKSTART, "");
-define(LINKEND, "");
-define(LINKDISPLAY, 1);
-define(LINKALIGN, "right");
+define("PRELINK", "");
+define("POSTLINK", "");
+define("LINKSTART", "");
+define("LINKEND", "");
+define("LINKDISPLAY", 1);
+define("LINKALIGN", "right");
 
 
 // [newsstyle]
