@@ -49,8 +49,18 @@ class news{
 		return $message;
 	}
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-	function render_newsitem($news, $mode="default"){
-
+	function render_newsitem($news, $mode="default", $n_restrict=""){
+    if($n_restrict=="userclass"){
+      $news['news_id'] = 0;
+      $news['news_title'] = LAN_NEWS_1;
+      $news['data'] = LAN_NEWS_2;
+      $news['news_extended'] = "";
+      $news['news_allow_comments'] = 1;
+      $news['news_start'] = 0;
+      $news['news_end'] = 0;
+      $news['news_rendertype'] = 0;
+      $news['comment_total'] = 0;
+    }
 		if(function_exists("theme_render_newsitem")){
 			$result = call_user_func("theme_render_newsitem",$news);
 			if($result == "return"){return;}

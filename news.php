@@ -208,6 +208,21 @@ if(!$sql -> db_Select("news", "*", $query)){
                         if($action == "item"){ unset($news['news_rendertype']); }
                         $ix -> render_newsitem($news);
                 }
+                // To hide messages for restricted news and only display valid news, comment the following else statement
+                else{
+                    if($pref['subnews_hide_news']==1){
+                      if($news['admin_id'] == 1 && $pref['siteadmin']){
+                              $news['admin_name'] = $pref['siteadmin'];
+                      }else if(!$news['admin_name'] = getcachedvars($news['admin_id'])){
+                              $sql2 -> db_Select("user", "user_name", "user_id='".$news['admin_id']."' ");
+                              list($news['admin_name']) = $sql2 -> db_Fetch();
+                              cachevars($news['admin_id'], $news['admin_name']);
+                      }
+                      $sql2 -> db_Select("news_category", "*",  "category_id='$news_category' ");
+                      list($news['category_id'], $news['category_name'], $news['category_icon']) = $sql2-> db_Fetch();
+                      $ix -> render_newsitem($news,"","userclass");
+                    }
+                }
         }
 }
 // ##### --------------------------------------------------------------------------------------------------------------
