@@ -11,7 +11,7 @@
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
 |
-|   $Id: submitnews.php,v 1.13 2004-08-12 15:54:52 e107coders Exp $
+|   $Id: submitnews.php,v 1.14 2005-01-09 16:01:14 e107coders Exp $
 +---------------------------------------------------------------+
 */
 
@@ -164,7 +164,7 @@ $text .= " <tr>
 <tr>
 <td style='width:20%' class='forumheader3'>".LAN_135."</td>
 <td style='width:80%' class='forumheader3'>
-<textarea class='tbox' id='item' name='item' cols='70' rows='10'></textarea>
+<textarea class='tbox' id='item' name='item' cols='70' rows='10' style='width:90%'></textarea>
 </td>
 </tr>\n";
 
