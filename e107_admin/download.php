@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-03-04 05:11:11 $
-|     $Author: e107coders $
+|     $Revision: 1.26 $
+|     $Date: 2005-03-05 14:51:39 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -937,7 +937,7 @@ class download {
 			$sql->db_Update("download_category", "download_category_name='$download_category_name', download_category_description='$download_category_description', download_category_icon ='$download_category_icon', download_category_parent= '".$_POST['download_category_parent']."', download_category_class='".$_POST['download_category_class']."' WHERE download_category_id='$id'");
 			$this->show_message(DOWLAN_48);
 		} else {
-			$sql->db_Insert("download_category", "0, '$download_category_name', '$download_category_description', '$download_category_icon', '".$_POST['download_category_parent']."', '".$_POST['download_category_class']."' ");
+			$sql->db_Insert("download_category", "0, '$download_category_name', '$download_category_description', '$download_category_icon', '".$_POST['download_category_parent']."', '".$_POST['download_category_class']."', 0");
 			$this->show_message(DOWLAN_47);
 		}
 		if ($sub_action == "sn") {
