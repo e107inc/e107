@@ -14,10 +14,10 @@
 global $tp;
 $gen = new convert;
 
-$query2 = "SELECT tp.thread_name AS parent_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_anon, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name FROM e107_forum_t AS t 
-LEFT JOIN e107_user AS u ON t.thread_user = u.user_id 
-LEFT JOIN e107_forum_t AS tp ON t.thread_parent = tp.thread_id 
-LEFT JOIN e107_forum AS f ON f.forum_id = t.thread_forum_id 
+$query2 = "SELECT tp.thread_name AS parent_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_anon, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name FROM #forum_t AS t 
+LEFT JOIN #user AS u ON t.thread_user = u.user_id 
+LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id 
+LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id 
 WHERE f.forum_class  IN (".USERCLASS_LIST.") 
 ORDER BY t.thread_datestamp DESC LIMIT 0, ".$menu_pref['newforumposts_display'];
 
