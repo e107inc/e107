@@ -7,7 +7,8 @@ if(!$sql -> db_Select("menus", "*", "(menu_name='edynamic_menu' OR menu_name REG
 		call_user_func($override_function);
 	} else {	
 		require_once(e_HANDLER."sitelinks_class.php");
-		sitelinks();
+		$sitelinks = new sitelinks;
+		return $sitelinks->get();
 	}
 	return "";
 }
