@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/credits.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-03-02 13:15:42 $
-|     $Author: stevedunstan $
+|     $Revision: 1.3 $
+|     $Date: 2005-03-25 03:18:27 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
+$e_sub_cat = 'credits';
 require_once("auth.php");
 
 
