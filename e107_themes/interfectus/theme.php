@@ -12,12 +12,16 @@
 +---------------------------------------------------------------+
 */
 
+// [multilanguage]
+@include_once(e_THEME."interfectus/languages/".e_LANGUAGE.".php");
+@include_once(e_THEME."interfectus/languages/English.php");
+
 // [theme]
 $themename = "interfectus";
 $themeversion = "1.0";
 $themeauthor = "Steve Dunstan [jalist]";
 $themedate = "16/03/2005";
-$themeinfo = "";
+$themeinfo = "Dark theme suitable for gaming / clan sites";
 define("STANDARDS_MODE", TRUE);
 
 // [layout]
@@ -30,7 +34,6 @@ $HEADER = "
 <td id='logo'><div id='sitename'>[ <a href='".e_BASE."index.php'>{SITENAME}</a> ]</div></td>
 </tr>
 </table>
-
 <table class='maintable' cellpadding='0' cellspacing='0'>
 <tr>
 <td id='collefttop'></td>
@@ -47,18 +50,13 @@ $HEADER = "
 <td id='colrighttop'></td>
 </tr>
 </table>
-
 <table class='maintable' cellpadding='0' cellspacing='0'>
 <tr>
-	
 <td id='colleft'></td>
 <td>
-
 <table class='tablewrapper' cellpadding='0' cellspacing='0'>
 <tr>
-
 <td id='contentarea'>
-
 <div class='padder'>
 <table class='tablewrapper' cellpadding='0' cellspacing='0'>
 <tr><td class='pageheader'></td></tr>
@@ -72,11 +70,8 @@ $FOOTER = "
 <tr><td class='pagefooter'></td></tr>
 </table>
 </div>
-
 </td>
-
 <td id='menuarea'>
-
 <table class='menutable' cellpadding='0' cellspacing='0'>
 <tr>
 <td class='menutop'></td>
@@ -94,16 +89,13 @@ $FOOTER = "
 <td class='menubottom'></td>
 </tr>
 </table>
-
 </td>
 </tr>
 </table>
-
 </td>
 <td id='colright'></td>
 </tr>
 </table>
-
 <table class='maintable' cellpadding='0' cellspacing='0'>
 <tr>
 <td id='colbotleft'><img src='".THEME."images/blank.gif' width='14' height='14' alt='' style='display: block;' /></td>
@@ -140,7 +132,6 @@ $CUSTOMHEADER = "
 <td id='logo'><div id='sitename'>[ <a href='".e_BASE."index.php'>{SITENAME}</a> ]</div></td>
 </tr>
 </table>
-
 <table class='maintable' cellpadding='0' cellspacing='0'>
 <tr>
 <td id='collefttop'></td>
@@ -157,18 +148,13 @@ $CUSTOMHEADER = "
 <td id='colrighttop'></td>
 </tr>
 </table>
-
 <table class='maintable' cellpadding='0' cellspacing='0'>
 <tr>
-	
 <td id='colleft'></td>
 <td>
-
 <table class='tablewrapper' cellpadding='0' cellspacing='0'>
 <tr>
-
 <td id='fullcontentarea'>
-
 <div class='padder'>
 <table class='tablewrapper' cellpadding='0' cellspacing='0'>
 <tr><td class='pageheader'></td></tr>
@@ -183,18 +169,13 @@ $CUSTOMFOOTER = "
 <tr><td class='pagefooter'></td></tr>
 </table>
 </div>
-
 </td>
-
-
 </tr>
 </table>
-
 </td>
 <td id='colright'></td>
 </tr>
 </table>
-
 <table class='maintable' cellpadding='0' cellspacing='0'>
 <tr>
 <td id='colbotleft'><img src='".THEME."images/blank.gif' width='14' height='14' alt='' style='display: block;' /></td>
@@ -226,12 +207,12 @@ on
 <br />";
 
 define("ICONSTYLE", "");
-define("COMMENTLINK", "Read/Post Comment: ");
-define("COMMENTOFFSTRING", "Comments are turned off for this item");
+define("COMMENTLINK", LAN_THEME_2);
+define("COMMENTOFFSTRING", LAN_THEME_3);
 define("PRE_EXTENDEDSTRING", "<br /><br />[ ");
-define("EXTENDEDSTRING", "Read the rest ...");
+define("EXTENDEDSTRING", LAN_THEME_4);
 define("POST_EXTENDEDSTRING", " ]<br />");
-define("TRACKBACKSTRING", "Trackbacks: ");
+define("TRACKBACKSTRING", LAN_THEME_5);
 define("TRACKBACKBEFORESTRING", " | ");
 
 
@@ -240,7 +221,7 @@ define("TRACKBACKBEFORESTRING", " | ");
 define('PRELINK', "");
 define('POSTLINK', "");
 define('LINKSTART', "<div class='link1' onmouseover=\"this.className='link2';\" onmouseout=\"this.className='link1';\"><div class='linktext'><img src='".THEME."images/bullet1.gif' alt='' />&nbsp;&nbsp;");
-define("LINKSTART_HILITE", "");
+define("LINKSTART_HILITE", "<div class='link2' onmouseover=\"this.className='link1';\" onmouseout=\"this.className='link2';\"><div class='linktext'><img src='".THEME."images/bullet1.gif' alt='' />&nbsp;&nbsp;");
 define('LINKEND', "</div></div>");
 define('LINKDISPLAY', 1);
 define('LINKALIGN', "left");
