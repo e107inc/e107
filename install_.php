@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-03-17 09:06:56 $
-|     $Author: stevedunstan $
+|     $Revision: 1.19 $
+|     $Date: 2005-03-22 18:21:45 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 @include("e107_handlers/errorhandler_class.php");
@@ -516,6 +516,9 @@ function create_tables() {
 
 	$menu_conf = 'a:23:{s:15:"comment_caption";s:15:"Latest Comments";s:15:"comment_display";s:2:"10";s:18:"comment_characters";s:2:"50";s:15:"comment_postfix";s:12:"[ more ... ]";s:13:"comment_title";i:0;s:15:"article_caption";s:8:"Articles";s:16:"articles_display";s:2:"10";s:17:"articles_mainlink";s:23:"Articles Front Page ...";s:21:"newforumposts_caption";s:18:"Latest Forum Posts";s:21:"newforumposts_display";s:2:"10";s:19:"forum_no_characters";s:2:"20";s:13:"forum_postfix";s:10:"[more ...]";s:11:"update_menu";s:20:"Update menu Settings";s:17:"forum_show_topics";s:1:"1";s:24:"newforumposts_characters";s:2:"50";s:21:"newforumposts_postfix";s:10:"[more ...]";s:19:"newforumposts_title";i:0;s:13:"clock_caption";s:11:"Date / Time";s:15:"reviews_caption";s:7:"Reviews";s:15:"reviews_display";s:2:"10";s:15:"reviews_parents";s:1:"1";s:16:"reviews_mainlink";s:21:"Review Front Page ...";s:16:"articles_parents";s:1:"1";}';
 	mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('menu_pref', '$menu_conf') ");
+
+	$search_prefs = 'a:10:{s:11:"search_sort";s:3:"php";s:11:"multisearch";s:1:"1";s:9:"relevance";s:1:"1";s:11:"user_select";s:1:"1";s:13:"time_restrict";s:1:"0";s:9:"time_secs";s:2:"60";s:6:"google";s:1:"0";s:13:"core_handlers";a:4:{s:4:"news";a:5:{s:5:"class";s:1:"0";s:9:"pre_title";s:1:"0";s:13:"pre_title_alt";s:0:"";s:5:"chars";s:3:"150";s:7:"results";s:2:"10";}s:8:"comments";a:5:{s:5:"class";s:1:"0";s:9:"pre_title";s:1:"1";s:13:"pre_title_alt";s:0:"";s:5:"chars";s:3:"150";s:7:"results";s:2:"10";}s:5:"users";a:5:{s:5:"class";s:1:"0";s:9:"pre_title";s:1:"1";s:13:"pre_title_alt";s:0:"";s:5:"chars";s:3:"150";s:7:"results";s:2:"10";}s:9:"downloads";a:5:{s:5:"class";s:1:"0";s:9:"pre_title";s:1:"1";s:13:"pre_title_alt";s:0:"";s:5:"chars";s:3:"150";s:7:"results";s:2:"10";}}s:17:"comments_handlers";a:2:{s:4:"news";a:3:{s:2:"id";i:0;s:3:"dir";s:4:"core";s:5:"class";s:1:"0";}s:8:"download";a:3:{s:2:"id";i:2;s:3:"dir";s:4:"core";s:5:"class";s:1:"0";}}s:13:"plug_handlers";N;}';
+	mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('search_prefs', '$search_prefs') ");
 
 	mysql_query("INSERT INTO ".$mySQLprefix."banner VALUES (0, 'e107', 'e107login', 'e107password', 'e107.jpg', 'http://e107.org', 0, 0, 0, 0, 0, 0, '', 'campaign_one') ");
 
