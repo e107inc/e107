@@ -233,6 +233,8 @@ if($found2){
         $text .= "<span class='defaulttext'>".CUSLAN_10."</span>";
 }
 
+$_POST['menu_text'] = str_replace("&nbsp;","&#38;nbsp;",$_POST['menu_text']);
+
 $text .= "
 </td>
 </tr>";
