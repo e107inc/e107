@@ -18,7 +18,7 @@ if (url != null)
 
 		document.forms[0].href.value = tinyMCE.getWindowArg('href');
 		document.forms[0].linktitle.value = tinyMCE.getWindowArg('title');
-		document.forms[0].insert.value = tinyMCE.getLang('lang_' + tinyMCE.getWindowArg('action'));
+		document.forms[0].insert.value = tinyMCE.getLang('lang_' + tinyMCE.getWindowArg('action'), 'Insert', true); 
 
 		// Handle file browser
 		if (tinyMCE.getParam("file_browser_callback") != null) {
@@ -35,6 +35,14 @@ if (url != null)
 			html += ' class="mceButtonNormal" alt="' + tinyMCE.getLang('lang_browse') + '" />';
 
 			document.getElementById('browser').innerHTML = html;
+		}
+
+		// Auto select link in list
+		if (typeof(tinyMCELinkList) != "undefined" && tinyMCELinkList.length > 0) {
+			for (var i=0; i<formObj.link_list.length; i++) {
+				if (formObj.link_list.options[i].value == tinyMCE.getWindowArg('href'))
+					formObj.link_list.options[i].selected = true;
+			}
 		}
 
 		window.focus();
