@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_search.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-03-20 15:46:35 $
+|     $Revision: 1.8 $
+|     $Date: 2005-03-21 22:11:42 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -23,9 +23,19 @@ define("SEALAN_11", "Allow user to select searchable areas:");
 define("SEALAN_12", "Restrict time allowed between searches (max 5 mins):");
 define("SEALAN_13", "Restrict to one search every");
 define("SEALAN_14", "seconds");
-define("SEALAN_15", "Restrict search page to members:");
+define("SEALAN_15", "Search page accessible to user class");
 define("SEALAN_16", "On");
 define("SEALAN_17", "Off");
-define("SEALAN_18", "Searchable comments areas (when comments search is activated):");
+define("SEALAN_18", "Searchable Comments Areas (when comments search is activated)");
+define("SEALAN_19", "Allow users to search more than one area at a time:");
+define("SEALAN_20", "General Settings");
+define("SEALAN_21", "Searchable Areas");
+define("SEALAN_22", "Default");
+define("SEALAN_23", "Alternative:");
+define("SEALAN_24", "Type");
+define("SEALAN_25", "Class");
+define("SEALAN_26", "Pre-Title Text");
+define("SEALAN_27", "Chars");
+define("SEALAN_28", "Results");
 
 ?>

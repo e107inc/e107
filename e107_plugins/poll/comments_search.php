@@ -9,7 +9,8 @@ function com_search_4($row) {
 	$nick = eregi_replace("[0-9]+\.", "", $row['comment_author']);
 	$datestamp = $con -> convert_date($row['comment_datestamp'], "long");
 	$res['link'] = e_PLUGIN."poll/oldpolls.php?".$row['poll_id'];
-	$res['title'] = 'Posted in reply to poll: '.$row['poll_title'];
+	$res['pre_title'] = 'Posted in reply to poll: ';
+	$res['title'] = $row['poll_title'];
 	$res['summary'] = $row['comment_comment'];
 	$res['detail'] = LAN_SEARCH_7.$nick.LAN_SEARCH_8.$datestamp;
 	return $res;

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search/search_comment.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-03-20 15:46:35 $
+|     $Revision: 1.6 $
+|     $Date: 2005-03-21 22:11:39 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -20,8 +20,8 @@
 $return_fields = 'c.comment_item_id, c.comment_author, c.comment_datestamp, c.comment_comment, c.comment_type';
 
 foreach ($search_prefs['comments_handlers'] as $h_key => $value) {
-	if ($value['active']) {
-		$path = ($value['dir'] == 'core') ? e_HANDLER.'search/'.$value['handler'] : e_PLUGIN.$value['dir'].'/comments_search.php';
+	if (check_class($value['class'])) {
+		$path = ($value['dir'] == 'core') ? e_HANDLER.'search/comments_'.$h_key.'.php' : e_PLUGIN.$value['dir'].'/comments_search.php';
 		require_once($path);
 		$in[] = "'".$value['id']."'";
 		$join[] = $comments_table[$h_key];

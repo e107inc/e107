@@ -9,7 +9,8 @@ function com_search_0($row) {
 	$nick = eregi_replace("[0-9]+\.", "", $row['comment_author']);
 	$datestamp = $con -> convert_date($row['comment_datestamp'], "long");
 	$res['link'] = "comment.php?comment.news.".$row['comment_item_id'];
-	$res['title'] = $row['news_title'] ? "Posted in reply to news item: ".$row['news_title'] : LAN_SEARCH_9;
+	$res['pre_title'] = $row['news_title'] ? "Posted in reply to news item: " : "";
+	$res['title'] = $row['news_title'] ? $row['news_title'] : LAN_SEARCH_9;
 	$res['summary'] = $row['comment_comment'];
 	$res['detail'] = LAN_SEARCH_7.$nick.LAN_SEARCH_8.$datestamp;
 	return $res;

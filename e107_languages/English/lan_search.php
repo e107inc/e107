@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_search.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-03-16 17:38:53 $
+|     $Revision: 1.6 $
+|     $Date: 2005-03-21 22:11:43 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -49,5 +49,8 @@ define("LAN_SEARCH_15", "Author:");
 define("LAN_SEARCH_16", "Search Restricted");
 define("LAN_SEARCH_17", "Sorry, search is restricted to one search every ");
 define("LAN_SEARCH_18", " seconds.");
+define("LAN_SEARCH_19", "Search in:");
+define("LAN_SEARCH_20", "Authorisation Required");
+define("LAN_SEARCH_21", "You are not authorised to view this page.");
 
 ?>
