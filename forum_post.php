@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/forum_post.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2004-12-01 14:41:15 $
-|     $Author: streaky $
+|     $Revision: 1.9 $
+|     $Date: 2004-12-21 06:57:32 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,6 +24,7 @@ if(IsSet($_POST['fjsubmit'])){
 }
 require_once(e_HANDLER."ren_help.php");
 require_once(e_HANDLER."mail.php");
+require_once(e_HANDLER.'forum_include.php');
 $gen = new convert;
 $aj = new textparse();
 $fp = new floodprotect;
@@ -124,7 +125,7 @@ if(IsSet($_POST['submitpoll'])){
         <tr>
         <td class='fcaption' colspan='2'>".LAN_133."</td>
         </tr><tr>
-        <td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'><img src='".e_IMAGE."forum/e.png' alt='' />&nbsp;</td>
+        <td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
         <td style='vertical-align:center; width:80%' class='forumheader2'>
         <br />".LAN_384."<br />
 
@@ -168,7 +169,7 @@ if (IsSet($_POST['fpreview'])) {
         $text .= "<tr>
         <td class='forumheader3' style='width:20%' style='vertical-align:top'><b>".$poster."</b></td>
         <td class='forumheader3' style='width:80%'>
-        <div class='smallblacktext' style='text-align:right'><img src='".e_IMAGE."forum/post.png' alt='' /> ".LAN_322.$postdate."</div>".$tpost."</td>
+        <div class='smallblacktext' style='text-align:right'>".IMAGE_post2." ".LAN_322.$postdate."</div>".$tpost."</td>
         </tr>
         </table>
         </div>";
@@ -272,7 +273,7 @@ if(IsSet($_POST['newthread'])){
                                         <tr>
                                         <td class='fcaption' colspan='2'>".LAN_133."</td>
                                         </tr><tr>
-                                        <td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'><img src='".e_IMAGE."forum/e.png' alt='' />&nbsp;</td>
+                                        <td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
                                         <td style='vertical-align:center; width:80%' class='forumheader2'>
                                         <br />".LAN_324."<br />
                                         <span class='defaulttext'><a href='".e_BASE."forum_viewtopic.php?".$thread_forum_id.".".$thread_id."#$iid'>".LAN_325."</a><br />
@@ -374,7 +375,7 @@ if(IsSet($_POST['reply'])){
                                         <tr>
                                         <td class='fcaption' colspan='2'>".LAN_133."</td>
                                         </tr><tr>
-                                        <td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'><img src='".e_IMAGE."forum/e.png' alt='' />&nbsp;</td>
+                                        <td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
                                         <td style='vertical-align:center; width:80%' class='forumheader2'>
                                         <br />".LAN_324."<br />
 
@@ -670,7 +671,7 @@ if($action == "rp" || $action == "cp"){
         $text .= "<tr>
         <td class='forumheader3' style='width:20%' style='vertical-align:top'><b>".$post_author_name."</b></td>
         <td class='forumheader3' style='width:80%'>
-        <div class='smallblacktext' style='text-align:right'><img src='".e_IMAGE."forum/post.png' alt='' /> ".LAN_322.$thread_datestamp."</div>".$thread_thread."</td>
+        <div class='smallblacktext' style='text-align:right'>".IMAGE_post2." ".LAN_322.$thread_datestamp."</div>".$thread_thread."</td>
         </tr>".($action == "rp"  && $replies ? "
         </table>
                 <br />
@@ -691,7 +692,7 @@ if($action == "rp" || $action == "cp"){
                         $text .= "<tr>
                         <td class='forumheader3' style='width:20%' style='vertical-align:top'><b>".$post_author_name."</b></td>
                         <td class='forumheader3' style='width:80%'>
-                        <div class='smallblacktext' style='text-align:right'><img src='".e_IMAGE."forum/post.png' alt='' /> ".LAN_322.$thread_datestamp."</div>".$thread_thread."</td>
+                        <div class='smallblacktext' style='text-align:right'>".IMAGE_post2." ".LAN_322.$thread_datestamp."</div>".$thread_thread."</td>
                         </tr>";
                         }
                 }

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/forum_viewtopic.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2004-11-28 17:34:23 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.8 $
+|     $Date: 2004-12-21 06:57:32 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -31,30 +31,7 @@ if (IsSet($_POST['highlight_search'])) {
 	$highlight_search = TRUE;
 }
 
-require_once(e_HANDLER."multilang/pictures.php");
-define("IMAGE_reply", "<img src='".eMLANG_path("reply.png","forum")."' alt='' title='' style='border:0' />");
-define("IMAGE_newthread", "<img src='".eMLANG_path("newthread.png","forum")."' alt='' title='' style='border:0' />");
-//define("IMAGE_reply", (file_exists(THEME."forum/reply.png") ? "<img src='".THEME."forum/reply.png' alt='' style='border:0' />" : "<img src='".e_IMAGE."forum/reply.png' alt='' style='border:0' />"));
-//define("IMAGE_newthread", (file_exists(THEME."forum/newthread.png") ? "<img src='".THEME."forum/newthread.png' alt='' style='border:0' />" : "<img src='".e_IMAGE."forum/newthread.png' alt='' style='border:0' />"));
-//define("IMAGE_profile", (file_exists(THEME."forum/profile.png") ? "<img src='".THEME."forum/profile.png' alt='".LAN_398."' style='border:0' />" : "<img src='".e_IMAGE."forum/profile.png' alt='".LAN_398."' style='border:0' />"));
-( $pref['rank_moderator_image'] ? $tmp_pic = $pref['rank_moderator_image'] : $tmp_pic = 'moderator.png' );
-define("IMAGE_rank_moderator_image", "<img src='".eMLANG_path($tmp_pic,"forum")."' alt='' />");
-( $pref['rank_main_admin_image'] ? $tmp_pic = $pref['rank_main_admin_image'] : $tmp_pic = 'main_admin.png' );
-define("IMAGE_rank_main_admin_image", "<img src='".eMLANG_path($tmp_pic,"forum")."' alt='' />");
-( $pref['rank_admin_image'] ? $tmp_pic = $pref['rank_admin_image'] : $tmp_pic = 'admin.png' );
-define("IMAGE_rank_admin_image", "<img src='".eMLANG_path($tmp_pic,"forum")."' alt='' />");
-define("IMAGE_pm", (file_exists(THEME."forum/pm.png") ? "<img src='".THEME."forum/pm.png' alt='".LAN_399."' style='border:0' />" : "<img src='".e_IMAGE."forum/pm.png' alt='".LAN_399."' style='border:0' />"));
-define("IMAGE_website", (file_exists(THEME."forum/website.png") ? "<img src='".THEME."forum/website.png' alt='".LAN_396."' style='border:0' />" : "<img src='".e_IMAGE."forum/website.png' alt='".LAN_396."' style='border:0' />"));
-define("IMAGE_edit", (file_exists(THEME."forum/edit.png") ? "<img src='".THEME."forum/edit.png' alt='".LAN_400."' style='border:0' />" : "<img src='".e_IMAGE."forum/edit.png' alt='".LAN_400."' style='border:0' />"));
-define("IMAGE_quote", (file_exists(THEME."forum/quote.png") ? "<img src='".THEME."forum/quote.png' alt='".LAN_401."' style='border:0' />" : "<img src='".e_IMAGE."forum/quote.png' alt='".LAN_401."' style='border:0' />"));
-define("IMAGE_admin_edit", (file_exists(THEME."forum/admin_edit.png") ? "<img src='".THEME."forum/admin_edit.png' alt='".LAN_406."' style='border:0' />" : "<img src='".e_IMAGE."forum/admin_edit.png' alt='".LAN_406."' style='border:0' />"));
-define("IMAGE_admin_move", (file_exists(THEME."forum/admin_move.png") ? "<img src='".THEME."forum/admin_move.png' alt='".LAN_408."' style='border:0' />" : "<img src='".e_IMAGE."forum/admin_move.png' alt='".LAN_408."' style='border:0' />"));
-define("IMAGE_new", (file_exists(THEME."forum/new.png") ? "<img src='".THEME."forum/new.png' alt='' style='float:left' />" : "<img src='".e_IMAGE."forum/new.png' alt='' style='float:left' />"));
-define("IMAGE_post", (file_exists(THEME."forum/post.png") ? "<img src='".THEME."forum/post.png' alt='' style='border:0' />" : "<img src='".e_IMAGE."forum/post.png' alt='' style='border:0' />"));
-define("IMAGE_report", (file_exists(THEME."forum/report.png") ? "<img src='".THEME."forum/report.png' alt='".LAN_413."' style='border:0' />" : "<img src='".e_IMAGE."forum/report.png' alt='".LAN_413."' style='border:0' />"));
-
-define("IMAGE_admin_delete", (file_exists(THEME."forum/admin_delete.png") ? "src='".THEME."forum/admin_delete.png' alt='".LAN_407."' title='".LAN_407."' style='border:0' " : " src='".e_IMAGE."forum/admin_delete.png' alt='".LAN_407."' title='".LAN_407."' style='border:0' "));
-
+require_once(e_HANDLER.'forum_include.php');
 
 if (!e_QUERY) {
 	//No paramters given, redirect to forum home
@@ -338,7 +315,7 @@ if (MODERATOR) {
 	<div>
 	<a href='forum_post.php?edit.".$forum_id.".".$thread_id."'>".IMAGE_admin_edit."</a>
 	<input type='image' ".IMAGE_admin_delete." name='delete_{$thread_id}' value='thread_action' onclick=\"return confirm_('thread', $forum_id, $thread_id, '')\" />
-	<a href='".e_ADMIN."forum_conf.php?move.".$forum_id.".".$thread_id."'>".IMAGE_admin_move."</a>
+	<a href='".e_ADMIN."forum_conf.php?move.".$forum_id.".".$thread_id."'>".IMAGE_admin_move2."</a>
 	</div>
 	</form>";
 }
@@ -435,7 +412,7 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 			<div>
 			<a href='forum_post.php?edit.".$forum_id.".".$thread_id."'>".IMAGE_admin_edit."</a>
 			<input type='image' ".IMAGE_admin_delete." name='delete_{$thread_id}' value='thread_action' onclick=\"return confirm_('reply', $forum_id, $thread_id, '{$post_author_name}')\" />
-			<a href='".e_ADMIN."forum_conf.php?move.".$forum_id.".".$thread_id."'>".IMAGE_admin_move."</a>
+			<a href='".e_ADMIN."forum_conf.php?move.".$forum_id.".".$thread_id."'>".IMAGE_admin_move2."</a>
 			</div>
 			</form>";
 		}
