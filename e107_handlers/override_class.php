@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/override_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-12-15 19:56:46 $
-|     $Author: sweetas $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-22 23:11:12 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -31,13 +31,15 @@ class override {
 	}
 	
 	function override_check($override) {
-		if ($this->includes[$override]) {
+		if (isset($this->includes[$override])) {
 			if (file_exists($this->includes[$override])) {
 				include_once($this->includes[$override]);
 			}
-		}
-		if (function_exists($this->functions[$override])) {
-			return $this->functions[$override];
+			if (function_exists($this->functions[$override])) {
+				return $this->functions[$override];
+			} else {
+				return FALSE;
+			}
 		} else {
 			return FALSE;
 		}
