@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-02-16 03:01:04 $
+|     $Revision: 1.9 $
+|     $Date: 2005-02-16 13:05:07 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -562,7 +562,7 @@ class forum {
 			</tr>
 			 
 			<tr>
-			<td style='width:75%' class='forumheader3'>".FORLAN_70."<br /><span class='smalltext'>".FORLAN_71." <a href='upload.php'>".FORLAN_130."</a> ". FORLAN_131."</span></td>
+			<td style='width:75%' class='forumheader3'>".FORLAN_70."<br /><span class='smalltext'>".FORLAN_71." <a href='".e_ADMIN."upload.php'>".FORLAN_130."</a> ". FORLAN_131."</span></td>
 			<td style='width:25%;text-align:center' class='forumheader3' >".($pref['forum_attach'] ? "<input type='checkbox' name='forum_attach' value='1' checked='checked' />" : "<input type='checkbox' name='forum_attach' value='1' />")."</td>
 			</tr>
 			 
@@ -630,7 +630,7 @@ class forum {
 	}
 	 
 	function show_reported ($sub_action, $id) {
-		global $sql, $rs, $ns, $aj;
+		global $sql, $rs, $ns;
 		$text = "<div style='padding : 1px; ".ADMIN_WIDTH."; height : 400px; overflow : auto; margin-left: auto; margin-right: auto;'>\n";
 		if ($reported_total = $sql->db_Select("tmp", "*", "tmp_ip='reported_post' ")) {
 			$text .= "<table class='fborder' style='width:99%'>
