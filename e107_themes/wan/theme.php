@@ -40,7 +40,7 @@ $HEADER = "
 <table cellspacing='0' cellpadding='1' border='0' bgcolor='#7C8AA4' width='100%'>
 		
 <tr><td bgcolor='#5A6F5A' align='left'><h3>".SITENAME." // ".SITETAG."</h3></td></tr>
-<tr><td bgcolor='#5A6F5A' align='right' class='small'><b>:.&#183;.: :'': :&#183;.: :&#183;: :::. ::''&nbsp;&nbsp;</b></td></tr>
+<tr><td bgcolor='#5A6F5A' align='right' class='small'><b>:.·.: :'': :·.: :·: :::. ::''&nbsp;&nbsp;</b></td></tr>
 </table>
 </td>
 </tr>
@@ -74,7 +74,7 @@ $FOOTER = "
 </td>		
 </tr></table>
 <tr>
-<td align='right' class='small' bgcolor='#5A6F5A' width='100%'>.:&#183; 
+<td align='right' class='small' bgcolor='#5A6F5A' width='100%'>.:· 
 {CUSTOM=quote}
 </td>
 </tr>	
@@ -103,7 +103,7 @@ function tablestyle($caption, $text){
 		<table cellspacing='0' cellpadding='1' border='0' bgcolor='#5A6F5A' width='100%'><tr><td>
 		<table cellspacing='0' cellpadding='2' border='0' bgcolor='#ffffff' width='100%'><tr><td>
 			<table cellspacing='2' cellpadding='2' border='0' bgcolor='#7F907F' width='100%'>
-				<tr><td class='small' bgcolor='#7F907F'><b>".$caption." .:&#183;</b></td></tr>
+				<tr><td class='small' bgcolor='#7F907F'><b>".$caption." .:·</b></td></tr>
 				<tr><td class='basic' bgcolor='#9FAC9F'>".$text."</td></tr>
 			</table>
 		</td></tr></table>							
@@ -138,7 +138,7 @@ $NEWSSTYLE = "
 <table cellspacing='2' cellpadding='2' border='0' bgcolor='#7F907F' width='100%'>
 <tr><td class='small' bgcolor='#7F907F'><b>
 {NEWSTITLE}
- .:&#183;</b></td></tr>
+ .:·</b></td></tr>
 <tr><td class='basic' bgcolor='#9FAC9F'>
 {NEWSICON}
 {NEWSBODY}
@@ -167,7 +167,8 @@ define("COMMENTOFFSTRING", "Comments are turned off for this item");
 define("EXTENDEDSTRING", "Read more ...");
 define("SOURCESTRING", "Source: ");
 define("URLSTRING", "Link: ");
-
+define("ICONMAIL", "iconmail.png");
+define("ICONPRINT", "iconprint.png");
 
 // [linkstyle]
 
