@@ -13,9 +13,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.33 $
-| $Date: 2005-02-14 18:15:58 $
-| $Author: mcfly_e107 $
+| $Revision: 1.34 $
+| $Date: 2005-02-15 00:40:34 $
+| $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -109,7 +109,7 @@ class news {
 		$param['image_nonew_small'] = IMAGE_nonew_small;
 		$param['image_new_small'] = IMAGE_new_small;
 		$param['image_sticky'] = IMAGE_sticky;
-		$param['iconstyle'] = ICONSTYLE;
+		$param['caticon'] = ICONSTYLE;
 		$param['commentoffstring'] = COMMENTOFFSTRING;
 		$param['commentlink'] = COMMENTLINK;
 
@@ -146,7 +146,7 @@ class news {
 		News text parser - to allow plugins to parse news items etc.
 		$news = array of news field values.
 		$param = array of style types that will come from definitions..
-			$param['iconstyle'] = ICONSTYLE ( see above);
+			$param['caticon'] = ICONSTYLE ( see above);
 			The $param will be used below, instead of the definitions - to allow multiple styles to be used.
 			Definitions will still be used in the theme.php.
 */
@@ -155,7 +155,7 @@ class news {
 
 		$category_name = $tp->toHTML($news['category_name']);
 		$category_icon = $news['category_icon'];
-		$category_id   = $news['category_id'];
+		$category_id   = $news['news_category'];
 
 	$preview = substr($preview,0,7);
 
@@ -217,11 +217,11 @@ class news {
 		$search[1] = "/\{NEWSBODY\}(.*?)/si";
 		$replace[1] = (strstr(e_QUERY, "extend") ? $news_body."<br /><br />".$news_extended : $news_body);
 		$search[2] = "/\{NEWSICON\}(.*?)/si";
-		$replace[2] = "<a href='".e_BASE."news.php?cat.$category_id'><img style='".$param['iconstyle']."'  src='$category_icon' alt='' /></a>";
+		$replace[2] = "<a href='".e_BASE."news.php?cat.$category_id'><img style='".$param['caticon']."'  src='$category_icon' alt='' /></a>";
 		$search[3] = "/\{NEWSHEADER\}(.*?)/si";
 		$replace[3] = $category_icon;
 		$search[4] = "/\{NEWSCATEGORY\}(.*?)/si";
-		$replace[4] = "<a href='".e_BASE."news.php?cat.$category_id'>".$category_name."</a>";
+		$replace[4] = "<a style='".$param['catlink']."' href='".e_BASE."news.php?cat.$category_id'>".$category_name."</a>";
 		$search[5] = "/\{NEWSAUTHOR\}(.*?)/si";
 		$replace[5] = $news_author;
 		$search[6] = "/\{NEWSDATE\}(.*?)/si";
@@ -267,16 +267,16 @@ class news {
 		$replace[16] = ($news_summary) ? $news_summary."<br />" : "";
 
 		$search[17] = "/\{NEWSTHUMBNAIL\}(.*?)/si";
-		$replace[17] = ($news_thumb) ? "<a href='".e_BASE."news.php?item.$news_id'><img src='".e_IMAGE."newspost_images/".$news_thumb."' alt='' style='border:0px' /></a>" : "";
+		$replace[17] = ($news_thumb) ? "<a href='".e_BASE."news.php?item.$news_id'><img src='".e_IMAGE."newspost_images/".$news_thumb."' alt='' style='".$param['thumbnail']."' /></a>" : "";
 
 		$search[18] = "/\{STICKY_ICON\}(.*?)/si";
 		$replace[18] = ($news['news_sticky'])? $param['image_sticky'] : "";
 
 		$search[19] = "/\{NEWSTITLELINK\}(.*?)/si";
-		$replace[19] = "<a href='".e_BASE."news.php?item.$news_id'>".$news_title."</a>";
+		$replace[19] = "<a style='".$param['itemlink']."' href='".e_BASE."news.php?item.$news_id'>".$news_title."</a>";
 
 		$search[20] = "/\{NEWSCATICON\}(.*?)/si";
-		$replace[20] = "<a href='".e_BASE."news.php?cat.$category_id'><img style='".ICONSTYLE."'  src='$category_icon' alt='' /></a>";
+		$replace[20] = "<a href='".e_BASE."news.php?cat.$category_id'><img style='".$param['caticon']."'  src='$category_icon' alt='' /></a>";
 
 
 		if (function_exists("news_style")) {
