@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:20 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-09-30 11:23:29 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -225,7 +225,7 @@ echo "<div style='font-size:14px' class='fborder'><div class='forumheader'><b>".
 echo $frm -> form_open("post",e_SELF,"menuActivation");
 echo "<table style='width:96%' class='fborder'>";
 
-$sql -> db_Select("menus", "*", "menu_location='0' ");
+$sql -> db_Select("menus", "*", "menu_location='0' ORDER BY menu_name ");
 while(list($menu_id, $menu_name, $menu_location, $menu_order) = $sql-> db_Fetch())
 {
         $text="";
