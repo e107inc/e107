@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-03-31 19:16:22 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2005-03-31 21:12:26 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -28,7 +28,7 @@ if (isset($_POST['cancel']))
 	exit;
 }
 
-$e_sub_cat = 'users';
+$e_sub_cat = 'user_extended';
 $user = new users_ext;
 require_once("auth.php");
 require_once(e_HANDLER."user_extended_class.php");

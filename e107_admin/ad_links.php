@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/ad_links.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-03-31 19:16:24 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.28 $
+|     $Date: 2005-03-31 21:12:24 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 	
@@ -187,7 +187,7 @@ if (!defined('E_16_USER')) {
 	define('E_16_USER', "<img src='".e_IMAGE."admin_images/users_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_USER_EXTENDED')) {
-	define('E_16_USER_EXTENDED', "<img src='".e_IMAGE."admin_images/users_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+	define('E_16_USER_EXTENDED', "<img src='".e_IMAGE."admin_images/extended_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_USERCLASS')) {
 	define('E_16_USERCLASS', "<img src='".e_IMAGE."admin_images/userclass_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
@@ -304,7 +304,7 @@ if (!defined('E_32_USER')) {
 	define('E_32_USER', "<img src='".e_IMAGE."admin_images/users_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_USER_EXTENDED')) {
-	define('E_32_USER_EXTENDED', "<img src='".e_IMAGE."admin_images/users_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+	define('E_32_USER_EXTENDED', "<img src='".e_IMAGE."admin_images/extended_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
 if (!defined('E_32_USERCLASS')) {
 	define('E_32_USERCLASS', "<img src='".e_IMAGE."admin_images/userclass_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
