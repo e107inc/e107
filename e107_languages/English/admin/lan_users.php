@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-03-31 19:18:27 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.7 $
+|     $Date: 2005-04-02 08:43:41 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("USRLAN_1", "Options Saved.");
@@ -36,7 +36,7 @@ define("USRLAN_25", "Status");
 define("USRLAN_26", "Descending");
 define("USRLAN_27", "Ascending");
 define("USRLAN_28", "Sort");
-define("USRLAN_29", "Delete");
+
 define("USRLAN_30", "Ban");
 define("USRLAN_31", "Ban -unactivated-");
 define("USRLAN_32", "Activate");
@@ -49,8 +49,7 @@ define("USRLAN_38", "Search returned");
 define("USRLAN_39", "result(s)");
 define("USRLAN_40", "None defined");
 define("USRLAN_44", "Allow members to upload an avatar?");
-define("USRLAN_45", "Yes");
-define("USRLAN_46", "No");
+
 define("USRLAN_47", "Maximum avatar width (in pixels)");
 define("USRLAN_48", "default is 120");
 define("USRLAN_49", "Maximum avatar height (in pixels)");
@@ -84,7 +83,7 @@ define("USRLAN_77", "Existing Users");
 define("USRLAN_78", "User Name");
 define("USRLAN_79", "Status");
 define("USRLAN_80", "Info");
-define("USRLAN_81", "Edit");
+
 define("USRLAN_82", "Are you sure you want to delete this user?");
 define("USRLAN_84", "There are");
 define("USRLAN_85", "users who haven't activated their account - click below to delete.");
