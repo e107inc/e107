@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/forum_post.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2004-09-14 12:37:42 $
+|     $Revision: 1.25 $
+|     $Date: 2004-10-29 14:56:01 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -83,10 +83,12 @@ if($thread_id){
         $row = $sql-> db_Fetch(); extract($row);
 }
 
-if($action != "nt" && !$thread_active){
-        $ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_397."</div>");
-        require_once(FOOTERF);
-        exit;
+if($action != "nt" && !$thread_active)
+{
+	require_once(HEADERF);
+	$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_397."</div>");
+	require_once(FOOTERF);
+	exit;
 }
 if($action == "cp"){
         define("e_PAGETITLE", LAN_01." / ".$fname." / ".$row['thread_name']);
