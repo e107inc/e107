@@ -2,8 +2,6 @@
 
 if(USER == TRUE){
 
-@require_once(e_PLUGIN."usertheme_menu/languages/".e_LANGUAGE.".php");
-
 $handle=opendir(e_THEME);
 while ($file = readdir($handle)){
 	if($file != "." && $file != ".." && $file != "templates" && $file != "" && $file != "CVS"){
@@ -30,13 +28,13 @@ $defaultusers = $sql -> db_Count("user") - $totalct;
 $themecount[$defaulttheme] += $defaultusers;
 
 $text = "
-<div style=\"text-align:center\">
-<form method=\"post\" action=\"".e_SELF."\">
-<select name=\"sitetheme\" class=\"tbox\">";
+<div style='text-align:center'>
+<form method='post' action='".e_SELF."'>
+<select name='sitetheme' class='tbox'>";
 $counter = 0;
 
 while($themelist[$counter]){
-        $text .= "<option value=\"".$themelist[$counter]."\" ";
+        $text .= "<option value='".$themelist[$counter]."' ";
         if(($themelist[$counter] == USERTHEME) || (USERTHEME == FALSE && $themelist[$counter] == $defaulttheme)){
                 $text .= "selected";
         }
@@ -45,7 +43,7 @@ while($themelist[$counter]){
 }
 $text .= "</select>
 <br /><br />
-<input class=\"button\" type=\"submit\" name=\"settheme\" value=\"".LAN_350."\" />
+<input class='button' type='submit' name='settheme' value='".LAN_350."' />
 </form>
 </div>";
 
