@@ -59,12 +59,12 @@ td {
 	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
 	text-align:center;
 }
-.np{
+.nextprev{
 	background-color: #ffffff;
 	border: #d1d6d6 1px solid;
 	color: #000000;
 	font-: 9px verdana, tahoma, arial, helvetica, sans-serif;
-	text-align:center;
+	text-align:right;
 	padding : 2px;
 }
 form {

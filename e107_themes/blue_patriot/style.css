@@ -162,7 +162,7 @@ blockquote {
 	text-align:center;
 }
 
-.np{
+.nextprev{
 	background-color: #eaeef2;
 	border-bottom: #000 1px solid;
 	border-left: #000 1px solid;
@@ -171,7 +171,7 @@ blockquote {
 	color: #000000;
 	font-family: verdana, tahoma, arial, helvetica, sans-serif;
 	font-size: 9px;
-	text-align:center;
+	text-align:right;
 	padding-bottom : 2px;
 	padding-left : 2px;
 	padding-right : 2px;
@@ -278,7 +278,6 @@ p {
 	padding: 4px;
 	
 }
-
 .forumheader2{
 	background-color: #fff;
 	font-family: verdana, tahoma, arial, helvetica, sans-serif;

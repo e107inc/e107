@@ -90,7 +90,7 @@ blockquote {
 	border: 1px solid #696C6C;
 	color: #000;
 	font: normal 9px verdana, tahoma, arial, helvetica, sans-serif;
-	text-align:center;
+	text-align:right;
 	padding : 2px, 2px, 2px, 2px;
 	background-image : url(images/button.png);
 }

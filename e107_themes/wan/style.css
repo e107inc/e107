@@ -210,6 +210,15 @@ td {
 	font-size: 10px;
 	font-style: normal;
 }
+.nextprev {
+	background-color: #E3E1E1;
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 11px;
+	color:#000;
+	padding: 4px;
+	border: #C3BDBD 1px solid;
+	text-align:right;
+}
 .fborder {
 	border-bottom: #000000 1px solid;
 	border-left: #000000 1px solid;

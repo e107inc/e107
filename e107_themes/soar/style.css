@@ -131,6 +131,15 @@ hr {
 p {
 	margin-top: 0px
 }
+.nextprev {
+	letter-spacing: -1px;
+	background-color: #7688AE;
+	font: 12px verdana, helvetica, sans-serif;
+	color: #000;
+	background-image : url(images/caption.png);
+	padding:3px;
+	text-align:right;
+}
 .forumheader{
 	background-color: #EBEFF2;
 	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
