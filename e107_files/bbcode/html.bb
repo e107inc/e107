@@ -3,8 +3,8 @@ if($pref['smiley_activate'])
 {
 	$code_text = $tp -> e_emote -> filterEmotesRev($code_text);
 }
-$search = array('&#039','[e_LT]','[e_GT]');
-$replace = array("'",'<','>');
+$search = array('&#039');
+$replace = array("'");
 $code_text = str_replace($search,$replace,$code_text);
 $code_text = htmlentities($code_text,ENT_QUOTES,CHARSET);
 $divClass = ($parm) ? $parm : 'indent';
