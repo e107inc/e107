@@ -1,8 +1,11 @@
 <?php
 // Secure handler for queries in URLs
 
-include_once(e_LANGUAGEDIR."English/lan_equery_secure.php");
-include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_equery_secure.php");
+if(file_exists(e_LANGUAGEDIR.e_LANGUAGE."/lan_equery_secure.php")){
+  include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_equery_secure.php");
+}else{
+  include_once(e_LANGUAGEDIR."English/lan_equery_secure.php");
+}
 require_once(HEADERF);
 
 $caption = EQSEC_LAN2;
