@@ -115,11 +115,11 @@ class poll{
 		for($count=0; $count<=($options-1); $count++){	
 
 			if($votes[$count] == 0){
-				$vt = "No votes";
+				$vt = POLL_6;
 			}else if($votes[$count] == 1){
-				$vt = "1 vote";
+				$vt = POLL_7;
 			}else{
-				$vt = $votes[$count]." votes";
+				$vt = $votes[$count].POLL_8;
 			}
 
 			if($mode == "voted"){

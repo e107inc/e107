@@ -18,6 +18,10 @@ define("POLL_3", "Old Surveys");
 define("POLL_4", "Submit Vote");
 define("POLL_5", "Poll");
 
+define("POLL_6", "No votes");
+define("POLL_7", "1 vote");
+define("POLL_8", " votes");
+
 define("LAN_163", "Submit Vote");
 define("LAN_164", "Votes: ");
 define("LAN_165", "Old Surveys");
