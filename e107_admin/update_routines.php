@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2005-03-13 10:43:43 $
-|     $Author: sweetas $
+|     $Revision: 1.48 $
+|     $Date: 2005-03-15 03:02:45 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -54,8 +54,9 @@ function update_check() {
 function update_61x_to_700($type) {
 	global $sql, $ns,$mySQLdefaultdb, $pref;
 	if ($type == "do") {
-		$sql->db_Update("userclass_classes", "userclass_editclass='254' WHERE userclass_editclass ='0' ");
+		set_time_limit(180);
 
+		$sql->db_Update("userclass_classes", "userclass_editclass='254' WHERE userclass_editclass ='0' ");
 
 		/*
 		changes by jalist 19/01/05:
@@ -285,11 +286,81 @@ function update_61x_to_700($type) {
 
 		$sql->db_Select_gen("ALTER TABLE #user_extended_struct ADD user_extended_struct_applicable TINYINT( 3 ) UNSIGNED NOT NULL");
 
+		//Begin Extended user field conversion
+		require_once(e_HANDLER."user_extended_class.php");
+		$ue = new e107_user_extended;
+		
+		$sql->db_Select("core", " e107_value", " e107_name='user_entended'", 'default');
+		$row = $sql->db_Fetch();
+		
+		$user_extended = unserialize($row['e107_value']);
+		$new_types = array('text' => 1, 'radio' => 2, 'dropdown' => 3, 'table' => 4);
+		
+		foreach($user_extended as $key => $val)
+		{
+			unset($new_field);
+			$parms = explode("|", $val);
+			$ext_name['ue_'.$key] = 'user_'.$parms[0];
+			$new_field['name'] = preg_replace("#\W#","",$parms[0]);
+			$new_field['text'] = $parms[0];
+			$new_field['type'] = $new_types[$parms[1]];
+			$new_field['values'] = $parms[2];
+			$new_field['default'] = $parms[3];
+			$new_field['applicable'] = $parms[4];
+			$new_field['read'] = $parms[5];
+			$new_field['write'] = e_UC_MEMBER;
+			$new_field['signup'] = $pref['signup_ext'.$key];
+			$new_field['parms'] = "";
+			$new_field['required'] = 0;
+			unset($pref['signup_ext'.$key]);
+			unset($pref['signup_ext_req'.$key]);
+			$ue->user_extended_add($new_field);
+		}
+		save_prefs('core');
+		if($sql->db_Select('user','user_id, user_prefs',"1 ORDER BY user_id"))
+		{
+			$sql2 = new db;
+			while($row = $sql->db_Fetch())
+			{
+				set_time_limit(30);
+				$user_pref = unserialize($row['user_prefs']);
+				$new_values = "";
+				foreach($user_pref as $key => $val)
+				{
+					if(array_key_exists($key, $ext_name))
+					{
+						unset($user_pref[$key]);
+						if($val)
+						{
+							if($new_values)
+							{
+								$new_values .= " ,";
+							}
+							$new_values .= $ext_name[$key]."='".$val."'";
+						}
+					}
+				}
+				foreach ($user_pref as $key => $prefvalue) {
+					$user_pref[$key] = $tp->toDB($prefvalue);
+				}
+				$tmp=addslashes(serialize($user_pref));
+				$sql2->db_Update("user", "user_prefs='$tmp' WHERE user_id='{$row['user_id']}'");
+				if($new_values)
+				{
+					$sql2->db_Select_gen("INSERT INTO #user_extended (user_extended_id) values ('{$row['user_id']}')");
+					$sql2->db_Update('user_extended', $new_values." WHERE user_extended_id = '{$row['user_id']}'");
+				}
+			}
+		}
+		$sql->db_Select_gen("DELETE FROM #core WHERE e107_name='user_entended'");
+
 		if(!array_key_exists('ue_upgrade', $pref))
 		{
 			$pref['ue_upgrade'] = 1;
 			save_prefs();
 		}
+		//End Extended user field conversion
+
 
 		// Update user_class field to use #,#,# instead of #.#.#. notation
 		if ($sql->db_Select('user', 'user_id, user_class')) {
@@ -442,6 +513,12 @@ function update_61x_to_700($type) {
 		$fieldname = mysql_field_name($fields,12);
 	 	return ($fieldname == "user_extended_struct_applicable") ? TRUE : FALSE;
 */
+		return !$sql->db_Select("core","*","e107_name = 'user_entended'");
+
+//		$sql->db_Select_gen("DELETE FROM #core WHERE e107_name='user_entended'");
+
+
+/*
         global $sysprefs;
         $search_prefs = $sysprefs -> getArray('search_prefs');
 		if (!isset($search_prefs['search_res'])) {
@@ -449,7 +526,7 @@ function update_61x_to_700($type) {
 		} else {
 			return TRUE;
 		}
-//		return $sql->db_Count('generic','(*)',"WHERE gen_type = 'forum_rules_guest'");
+*/
 	}
 }
 
