@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/comment_menu/comment_menu.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-02-28 20:03:49 $
+|     $Revision: 1.9 $
+|     $Date: 2005-03-20 19:47:52 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -60,13 +60,13 @@ else
 
 		switch ($comment_type) {
 			case 0:
-				$link = "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".$e107->HTTPPath."comment.php?comment.news.$comment_item_id'><b>".$poster."</b> on ".$datestamp."</a><br />";
+				$link = "<img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' /> <a href='".$e107->HTTPPath."comment.php?comment.news.$comment_item_id'><b>".$poster."</b> on ".$datestamp."</a><br />";
 				break;
 			case 2:
-				$link = "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".$e107->HTTPPath."content.php?article.$comment_item_id'><b>".$poster."</b> on ".$datestamp."</a><br />";
+				$link = "<img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' /> <a href='".$e107->HTTPPath."content.php?article.$comment_item_id'><b>".$poster."</b> on ".$datestamp."</a><br />";
 				break;
 			case 4:
-				$link = "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".$e107->HTTPPath."content.php?poll.$comment_item_id'><b>".$poster."</b> on ".$datestamp."</a><br />";
+				$link = "<img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' /> <a href='".$e107->HTTPPath."content.php?poll.$comment_item_id'><b>".$poster."</b> on ".$datestamp."</a><br />";
 				break;
 
 		}

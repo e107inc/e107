@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-03-05 15:03:39 $
+|     $Revision: 1.6 $
+|     $Date: 2005-03-20 19:47:53 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -180,7 +180,7 @@ function parse_link_main_table($row) {
 	if ($link_category_icon) {
 		$LINK_MAIN_ICON = (strstr($link_category_icon, "/") ? "<img src='".e_BASE.$link_category_icon."' alt='' style='vertical-align:middle' /></a>" : "<img src='".e_PLUGIN."links_page/cat_images/".$link_category_icon."' alt='' style='vertical-align:middle' /></a>");
 	} else {
-		$LINK_MAIN_ICON = "<img src='".THEME."images/bullet2.gif' alt='' style='vertical-align:middle;' />";
+		$LINK_MAIN_ICON = "<img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' style='vertical-align:middle;' />";
 	}
 	$LINK_MAIN_HEADING = (!$total_links_cat ? $link_category_name : "<a href='links.php?cat.".$link_category_id."'>".$link_category_name."</a>");
 	$LINK_MAIN_DESC = $link_category_description;

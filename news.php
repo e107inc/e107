@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2005-03-17 19:41:18 $
+|     $Revision: 1.58 $
+|     $Date: 2005-03-20 19:47:53 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -378,7 +378,7 @@ if ($action != "item" && $action != 'list' && $pref['newsposts_archive']) {
 					<table style='width:98%;'>
 					<tr>
 					<td>
-					<div><img src='".THEME."images/bullet2.gif' style='border:0px' alt='' /> <b><a href='news.php?item.".$news2['news_id']."'>".$news2['news_title']."</a></b> <span class='smalltext'><i><a href='".e_BASE."user.php?id.".$news2['user_id']."'>".$news2['user_name']."</a> @ (".$news2['news_datestamp'].") (".$news2['category_name'].")</i></span></div>
+					<div><img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' style='border:0px' alt='' /> <b><a href='news.php?item.".$news2['news_id']."'>".$news2['news_title']."</a></b> <span class='smalltext'><i><a href='".e_BASE."user.php?id.".$news2['user_id']."'>".$news2['user_name']."</a> @ (".$news2['news_datestamp'].") (".$news2['category_name'].")</i></span></div>
 					</td>
 					</tr>
 					</table>

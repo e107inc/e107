@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userinfo.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-27 19:52:25 $
-|     $Author: streaky $
+|     $Revision: 1.6 $
+|     $Date: 2005-03-20 19:47:05 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -45,19 +45,21 @@ if (isset($ipd)) {
 		$datestamp = $obj->convert_date($cb_datestamp, "short");
 		$post_author_id = substr($cb_nick, 0, strpos($cb_nick, "."));
 		$post_author_name = substr($cb_nick, (strpos($cb_nick, ".")+1));
-		$text .= "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" />
+		$text .= "<img src='".THEME."images/".BULLET."' alt='bullet' />
 			<span class=\"defaulttext\"><i>".$post_author_name." (".USFLAN_6.": ".$post_author_id.")</i></span>\n<div class=\"mediumtext\">".$datestamp."<br />". $cb_message."
 			</div><br />";
 	}
 	 
 	$text .= "<hr />";
+
+	if(!defined("BULLET"))	 define("BULLET", "bullet2.gif");
 	 
 	$sql->db_Select("comments", "*", "comment_ip='$ipd' LIMIT 0,20");
 	while (list($comment_id, $comment_item_id, $comment_author, $comment_author_email, $comment_datestamp, $comment_comment, $comment_blocked, $comment_ip) = $sql->db_Fetch()) {
 		$datestamp = $obj->convert_date($comment_datestamp, "short");
 		$post_author_id = substr($comment_author, 0, strpos($comment_author, "."));
 		$post_author_name = substr($comment_author, (strpos($comment_author, ".")+1));
-		$text .= "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" />
+		$text .= "<img src='".THEME."images/".BULLET."' alt='bullet' />
 			<span class=\"defaulttext\"><i>".$post_author_name." (".USFLAN_6.": ".$post_author_id.")</i></span>\n<div class=\"mediumtext\">".$datestamp."<br />". $comment_comment."</div><br />";
 	}
 	 
