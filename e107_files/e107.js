@@ -9,8 +9,8 @@ parent.location.href = self.location.href;
 |	e107 website system - Javascript File.
 |
 |	$Source: /cvs_backup/e107_0.7/e107_files/e107.js,v $
-|	$Revision: 1.8 $
-|	$Date: 2005-02-07 09:22:24 $
+|	$Revision: 1.9 $
+|	$Date: 2005-02-08 08:22:34 $
 |	$Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -244,7 +244,7 @@ function duplicateHTML(copy,paste){
 			var br = document.createElement('br');
 
 			but.type = 'button';
-			but.value = 'del';
+			but.value = 'x';
 			but.className = 'button';
 			but.onclick = function(){ this.parentNode.parentNode.removeChild(this.parentNode); };
 

@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.26 $
-|   $Date: 2005-02-05 07:04:11 $
+|   $Revision: 1.27 $
+|   $Date: 2005-02-08 08:21:07 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -47,11 +47,13 @@ require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."news_class.php");
 require_once(e_HANDLER."ren_help.php");
 require_once(e_HANDLER."form_handler.php");
+require_once(e_HANDLER."file_class.php");
 
 
-
+$fl = new e_file;
 $rs = new form;
 $ix = new news;
+
 
 
 $deltest = array_flip($_POST);
@@ -99,12 +101,21 @@ if ($delete == "sn" && $del_id) {
 if (IsSet($_POST['submitupload'])) {
 	$pref['upload_storagetype'] = "1";
 	require_once(e_HANDLER."upload_handler.php");
-	$uploaded = file_upload(($_POST['uploadtype'] == NWSLAN_67 ? e_IMAGE."newspost_images/" : e_FILE."downloads/"));
-	if ($_POST['uploadtype'] == "Image" && $_POST['imagecrethumb']) {
-		require_once(e_HANDLER."resize_handler.php");
-		resize_image(e_IMAGE."newspost_images/".$uploaded[0]['name'], e_IMAGE."newspost_images/".$uploaded[0]['name'], 250, "copy");
-	}
+
+		$uploaded = file_upload(($_POST['uploadtype'] == "file"  ? e_FILE."downloads/" : e_IMAGE."newspost_images/"));
+		print_r($uploaded);
+
+		if($_POST['uploadtype'] == "thumb"){
+			rename(e_IMAGE."newspost_images/".$uploaded[0]['name'],e_IMAGE."newspost_images/thumb_".$uploaded[0]['name']);
+		}
+
+		if ($_POST['uploadtype'] == "resize" && $_POST['resize_value']) {
+			require_once(e_HANDLER."resize_handler.php");
+			resize_image(e_IMAGE."newspost_images/".$uploaded[0]['name'], e_IMAGE."newspost_images/".$uploaded[0]['name'], $_POST['resize_value'], "copy");
+		}
+
 }
+
 
 
 // required.
@@ -195,6 +206,9 @@ if ($action == "create") {
 			$_POST['news_extended'] = $news_extended;
 			$_POST['news_allow_comments'] = $news_allow_comments;
 			$_POST['news_class'] = $news_class;
+			$_POST['news_thumb'] = $news_thumb;
+			$_POST['news_summary'] = $news_summary;
+
 			$_POST['cat_id'] = $news_category;
 			if ($news_start) {
 				$tmp = getdate($news_start);
@@ -359,20 +373,21 @@ class newspost {
 	function create_item($sub_action, $id) {
 		// ##### Display creation form ---------------------------------------------------------------------------------------------------------
 		/* 08-08-2004 - unknown - fixed `Insert Image' display to use $IMAGES_DIRECTORY */
-		global $sql, $rs, $ns, $pref, $IMAGES_DIRECTORY, $tp, $pst;
-
-
-		$handle = opendir(e_IMAGE."newspost_images");
-		while ($file = readdir($handle)) {
-			if ($file != "." && $file != ".." && $file != "/" && $file != "index.html" && $file != "null.txt" && $file != "CVS") {
-				if (!strstr($file, "thumb_")) {
-					$imagelist[] = $file;
-				} else {
-					$thumblist[] = $file;
-				}
-			}
-		}
-		closedir($handle);
+		global $sql, $rs, $ns, $pref, $fl, $IMAGES_DIRECTORY, $tp, $pst;
+		$thumblist = $fl->get_files(e_IMAGE."newspost_images/", '#thumb_#');
+		$rejecthumb = array('.','..','/','CVS','thumbs.db','*._$',"thumb_");
+		$imagelist = $fl->get_files(e_IMAGE."newspost_images/","",$rejecthumb);
+        /*$handle = opendir(e_IMAGE."newspost_images");
+        while ($file = readdir($handle)) {
+            if ($file != "." && $file != ".." && $file != "/" && $file != "index.html" && $file != "null.txt" && $file != "CVS") {
+                if (!strstr($file, "thumb_")) {
+                    $imagelist[] = $file;
+                } else {
+                    $thumblist[] = $file;
+                }
+            }
+        }
+        closedir($handle);*/
 
 		$sql->db_Select("download");
 		$c = 0;
@@ -451,9 +466,18 @@ class newspost {
 			<tr>
 			<td style='width:20%' class='forumheader3'>".NWSLAN_12.":</td>
 			<td style='width:80%' class='forumheader3'>
-			<input class='tbox' type='text' name='news_title' size='80' value='".$_POST['news_title']."' maxlength='200' />
+			<input class='tbox' type='text' name='news_title' size='80' value='".$_POST['news_title']."' maxlength='200' style='width:95%'/>
 			</td>
 			</tr>
+
+			<tr>
+			<td style='width:20%' class='forumheader3'>".LAN_NEWS_27.":</td>
+			<td style='width:80%' class='forumheader3'>
+			<input class='tbox' type='text' name='news_summary' size='80' value='".$_POST['news_summary']."' maxlength='250' style='width:95%'/>
+			</td>
+			</tr>
+
+
 			<tr>
 			<td style='width:20%' class='forumheader3'>".NWSLAN_13.":<br /></td>
 			<td style='width:80%' class='forumheader3'>";
@@ -461,34 +485,32 @@ class newspost {
 		$insertjs = (!$pref['htmlarea'])?"rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'":
 		"rows='25' style='width:100%' ";
 		$_POST['data'] = $tp->toForm($_POST['data']);
-		$text .= "<textarea class='tbox' id='data' name='data'  cols='80'   $insertjs>".(strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]../", "[img]", $_POST['data']))."</textarea>
+		$text .= "<textarea class='tbox' id='data' name='data'  cols='80'  style='width:95%' $insertjs>".(strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]../", "[img]", $_POST['data']))."</textarea>
 			";
+
 		//Main news body textarea
 		if (!$pref['htmlarea']) {
-			$text .= "
-				<input id='helpb' class='helpbox' type='text' name='helpb' size='100' />
-				<br />". display_help("helpb")."
-				<select class='tbox' name='thumbps' onChange=\"addtext('[link=".e_IMAGE."newspost_images/' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '][img]".e_IMAGE."newspost_images/thumb_' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '[/img][/link]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_50."')\" onMouseOut=\"help('')\">
+
+
+			$text .= "<input id='helpb' class='helpbox' type='text' name='helpb' size='100' style='width:95%'/>
+			<br />". display_help("helpb");
+
+
+				$text .="
+				<select class='tbox' name='thumbps' onchange=\"addtext('[link=".e_IMAGE."newspost_images/' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '][img]".e_IMAGE."newspost_images/thumb_' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '[/img][/link]');this.selectedIndex=0;\" onmouseover=\"help('".NWSLAN_50."')\" onmouseout=\"help('')\">
 				<option>".NWSLAN_80." ...</option>\n";
-			while (list($key, $image) = each($thumblist)) {
-				$image2 = str_replace("thumb_", "", $image);
-				$text .= "<option value='".$image2."'>thumb_".$image2."</option>\n";
-			}
-			$text .= "</select>
+				foreach ($thumblist as $thmb){
+					$text .= "<option value='".$thmb['fname']."'>thumb_".$thmb['fname']."</option>\n";
+				}
+				$text .= "</select>
 
-				<select class='tbox' name='imageps' onChange=\"addtext('[img]' + this.form.imageps.options[this.form.imageps.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_110."')\" onMouseOut=\"help('')\">
+				<select class='tbox' name='imageps' onchange=\"addtext('[img]' + this.form.imageps.options[this.form.imageps.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onmouseover=\"help('".NWSLAN_110."')\" onmouseout=\"help('')\">
 				<option>".NWSLAN_81." ...</option>\n";
-			while (list($key, $image) = each($imagelist)) {
-				$text .= "<option value='".SITEURL.$IMAGES_DIRECTORY."newspost_images/".$image."'>".$image."</option>\n";
-			}
-			$text .= "</select>
+				foreach ($imagelist as $image) {
+					$text .= "<option value='".SITEURL.$IMAGES_DIRECTORY."newspost_images/".$image['fname']."'>".$image['fname']."</option>\n";
+				}
+				$text .= "</select>";
 
-				<select class='tbox' name='fileps' onChange=\"addtext('[file=request.php?' + this.form.fileps.options[this.form.fileps.selectedIndex].value + ']' + this.form.fileps.options[this.form.fileps.selectedIndex].value + '[/file]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_64."')\" onMouseOut=\"help('')\">
-				<option>".NWSLAN_82." ...</option>\n";
-			while (list($key, $file) = each($filelist)) {
-				$text .= "<option value='".$file[1]."'>".$file[1]."</option>\n";
-			}
-			$text .= "</select>";
 
 		} // end of htmlarea check.
 		//Extended news form textarea
@@ -500,18 +522,18 @@ class newspost {
 			<td style='width:80%' class='forumheader3'>
 			<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_83."</a>
 			<div style='display: none;'>
-			<textarea class='tbox' id='news_extended' name='news_extended' cols='80' rows='15' style='width:100%;height:50px' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".(strstr($_POST['news_extended'], "[img]http") ? $_POST['news_extended'] : str_replace("[img]../", "[img]", $_POST['news_extended']))."</textarea>
+			<textarea class='tbox' id='news_extended' name='news_extended' cols='80' rows='15' style='width:95%;height:100px' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".(strstr($_POST['news_extended'], "[img]http") ? $_POST['news_extended'] : str_replace("[img]../", "[img]", $_POST['news_extended']))."</textarea>
 			";
-		if ($pref['htmlarea'] && ($pref['htmlarea'] && !eregi("MSIE", $_SERVER['HTTP_USER_AGENT']))) {
+		if (!$pref['htmlarea'] || ($pref['htmlarea'] && !eregi("MSIE", $_SERVER['HTTP_USER_AGENT']))) {
 			$text .= "<br />
-				<input id='help_ext' class='helpbox' type='text' name='help_ext' size='100' />
+				<input id='help_ext' class='helpbox' type='text' name='help_ext' size='100' style='width:95%'/>
 				<br />
 				".display_help("help_ext")."
-				<select class='tbox' name='imageps2' onchange=\"addtext('[img]' + this.form.imageps2.options[this.form.imageps2.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onmouseover=\"help('".NWSLAN_110."')\" onmouseout=\"help('')\">
+				<select class='tbox' name='imageps2' onchange=\"addtext('[img]' + this.form.imageps2.options[this.form.imageps2.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onmouseover=\"help('".NWSLAN_110."','help_ext')\" onmouseout=\"help('','help_ext')\">
 				<option>".NWSLAN_81." ...</option>\n";
 			reset($imagelist);
-			while (list($key, $image) = each($imagelist)) {
-				$text .= "<option value='".SITEURL.$IMAGES_DIRECTORY."newspost_images/".$image."'>".$image."</option>\n";
+			foreach ($imagelist as $image){
+				$text .= "<option value='".SITEURL.$IMAGES_DIRECTORY."newspost_images/".$image['fname']."'>".$image['fname']."</option>\n";
 			}
 			$text .= "</select>";
 		}
@@ -537,17 +559,48 @@ class newspost {
 				$text .= "<b>".NWSLAN_71."</b><br />";
 			}
 
-			$text .= "<input class='tbox' type='file' name='file_userfile[]' size='50' />
-				<select class='tbox' name='uploadtype'>
-				<option>".NWSLAN_67."</option>
-				<option>".NWSLAN_68."</option>
-				</select>
-				<br />
-				<input type='checkbox' name='imagecrethumb' value='1' /><span class='smalltext'>".NWSLAN_65."</span>&nbsp;&nbsp;
-				<input class='button' type='submit' name='submitupload' value='".NWSLAN_66."' />\n";
-		}
+			$up_name = array(LAN_NEWS_24,NWSLAN_67,LAN_NEWS_22,NWSLAN_68);
+			$up_value = array("resize","image","thumb","file");
+
+			$text .= "<div id='up_container' >
+				<span id='upline' style='white-space:nowrap'>
+				<input class='tbox' type='file' name='file_userfile[]' size='40' />
+				<select class='tbox' name='uploadtype'>";
+				for ($i=0; $i<count($up_value); $i++) {
+					$selected = ($_POST['uploadtype'] == $up_value[$i]) ? "selected='selected'" : "";
+					$text .= "<option value='".$up_value[$i]."' $selected>".$up_name[$i]."</option>\n";
+				};
+
+			$text .="</select>&nbsp;</span>
+
+				</div>
+				<table style='width:100%'>
+				<tr><td><input type='button' class='button' value='".LAN_NEWS_26."' onclick=\"duplicateHTML('upline','up_container');\"  /></td>
+				<td><span class='smalltext'>".LAN_NEWS_25."</span>&nbsp;<input class='tbox' type='text' name='resize_value' value='".$_POST['resize_value']."' size='3' />&nbsp;px</td>
+				<td><input class='button' type='submit' name='submitupload' value='".NWSLAN_66."' /></td>
+				</tr></table>";
+
+}
 		$text .= "</div>
 			</td>
+			</tr>
+
+			<tr>
+			<td class='forumheader3'>".LAN_NEWS_22."</td>
+			<td class='forumheader3'>
+			<a style='cursor: pointer' onclick='expandit(this);'>".LAN_NEWS_23."</a>
+			<div style='display: none;'>
+
+			<input class='tbox' type='text' name='news_thumb' size='60' value='".$_POST['news_thumb']."' maxlength='100' />
+			<input class='button' type ='button' style='cursor:hand' size='30' value='".LCLAN_39."' onclick='expandit(this)' />
+			<div id='newsicn' style='display:none;{head}'>";
+
+			foreach($thumblist as $icon){
+			$text .= "<a href=\"javascript:insertext('".$icon['fname']."','news_thumb','newsicn')\"><img src='".$icon['path']."/".$icon['fname']."' style='border:0' alt='' /></a> ";
+			}
+
+
+			$text .="</div></td>
 			</tr>
 
 
@@ -636,7 +689,7 @@ class newspost {
 			$text .= "<input class='button' type='submit' name='preview' value='".NWSLAN_24."' /> ";
 			if ($id && $sub_action != "sn" && $sub_action != "upload") {
 				$text .= "<input class='button' type='submit' name='submit' value='".NWSLAN_25."' /> ";
-				$text .= "<br /><span class='smalltext'><input type='checkbox' class='tbox' name='update_datestamp' /> ".NWSLAN_105."</span>";
+				$text .= "<br /><span class='smalltext'><input type='checkbox' name='update_datestamp' /> ".NWSLAN_105."</span>";
 			} else {
 				$text .= "<input class='button' type='submit' name='submit' value='".NWSLAN_26."' /> ";
 			}
@@ -684,6 +737,8 @@ class newspost {
 		$_POST['admin_id'] = USERID;
 		$_POST['admin_name'] = USERNAME;
 		$_POST['news_datestamp'] = time();
+
+
 		if ($id && $sub_action != "sn" && $sub_action != "upload") {
 			$_POST['news_id'] = $id;
 		} else {

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/meta.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-02-05 07:04:10 $
+|     $Revision: 1.8 $
+|     $Date: 2005-02-08 08:21:06 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -26,7 +26,7 @@ require_once("auth.php");
 
 if (isset($_POST['metasubmit'])) {
 
-	$pref['meta_tag'] = $tp->toDB($_POST['meta']);
+	$pref['meta_tag'] = $tp->toForm($_POST['meta']);
 	save_prefs();
 	$message = METLAN_1;
 }
