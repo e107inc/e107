@@ -37,11 +37,6 @@ function update_615_to_616($type){
 		mysql_query("ALTER TABLE ".MPREFIX."comments ADD comment_subject VARCHAR( 100 ) NOT NULL AFTER comment_item_id ");
 		mysql_query("ALTER TABLE ".MPREFIX."user ADD user_customtitle VARCHAR( 100 ) NOT NULL AFTER user_name ");
 		mysql_query("ALTER TABLE ".MPREFIX."parser ADD UNIQUE (parser_regexp)");
-		mysql_query("INSERT INTO ".MPREFIX."parser VALUES (0,'e107core','/{(PROFILE)=([0-9]+)}/') ");
-		mysql_query("INSERT INTO ".MPREFIX."parser VALUES (0,'e107core','/{(EMAILTO)=(.+?)}/') ");
-		mysql_query("INSERT INTO ".MPREFIX."parser VALUES (0,'e107core','/{(AVATAR)(=(.+?))*}/') ");
-		mysql_query("INSERT INTO ".MPREFIX."parser VALUES (0,'e107core','/{(PICTURE)(=(.+?))*}/') ");
-		mysql_query("INSERT INTO ".MPREFIX."parser VALUES (0,'e107core','/{(USERNAME)}/') ");
 	} else {
 		global $mySQLdefaultdb;
 		$fields = mysql_list_fields($mySQLdefaultdb,MPREFIX."user");
