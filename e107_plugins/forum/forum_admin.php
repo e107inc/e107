@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-13 00:58:59 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-13 21:47:58 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -72,7 +72,7 @@ If(IsSet($_POST['submit_forum'])) {
 If(IsSet($_POST['update_forum'])) {
 	$mods = implode(", ", $_POST['mod']);
 	$_POST['forum_name'] = $tp->toDB($_POST['forum_name']);
-	$_POST['forum_description'] = $aj->formtpa($_POST['forum_description'], "admin");
+	$_POST['forum_description'] = $tp->toDB($_POST['forum_description']);
 	$forum_parent = $row['forum_id'];
 	$sql->db_Update("forum", "forum_name='".$_POST['forum_name']."', forum_description='".$_POST['forum_description']."', forum_parent='".$_POST['forum_parent']."', forum_moderators='".$mods."', forum_class='".$_POST['forum_class']."' WHERE forum_id=$id");
 	$forum->show_message(FORLAN_12);
