@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2004-12-20 16:29:41 $
+|     $Revision: 1.14 $
+|     $Date: 2004-12-22 15:33:58 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ $db_time = 0.0;
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.13 $
+* @version $Revision: 1.14 $
 * @author $Author: streaky $
 */
 class db {
@@ -42,8 +42,8 @@ class db {
 
 	/**
 	* @return db
-	* @desc db constructor - what does this do??
-	* @scope internal
+	* @desc db constructor gets language options from the cookie or session
+	* @access public
 	*/
 	function db() {
 		global $pref;
@@ -56,13 +56,22 @@ class db {
 	}
 
 	/**
-	* @return string error code or Null
-	* @param string $mySQLserver
-	* @param string $mySQLuser
-	* @param string $mySQLpassword
-	* @param string $mySQLdefaultdb
-	* @desc Connects to the MySQL server with the credentials supplied.
-	* @scope public
+	* @return null or string error code
+	* @param string $mySQLserver IP Or hostanem of the MySQL server
+	* @param string $mySQLuser MySQL username
+	* @param string $mySQLpassword MySQL Password
+	* @param string $mySQLdefaultdb The database schema to connect to
+	* @desc Connects to mySQL server and selects database - generally not required if your table is in the main DB.<br />
+	* <br />
+	* Example using e107 database with variables defined in config.php:<br />
+	* <code>$sql = new db;
+	* $sql -> db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);</code>
+	* <br />
+	* OR to connect an other database:<br />
+	* <code>$sql = new db;
+	* $sql -> db_Connect('url_server_database', 'user_database', 'password_database', 'name_of_database');</code>
+	* 
+	* @access public
 	*/
 	function db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb) {
 		$this->mySQLserver = $mySQLserver;
@@ -86,7 +95,7 @@ class db {
 	* @return void
 	* @param unknown $sMarker
 	* @desc Enter description here...
-	* @scope internal
+	* @access private
 	*/
 	function db_Mark_Time($sMarker) {
 		if (E107_DEBUG_LEVEL > 0) {
@@ -98,7 +107,7 @@ class db {
 	/**
 	* @return void
 	* @desc Enter description here...
-	* @scope internal
+	* @access private
 	*/
 	function db_Show_Performance() {
 		if (E107_DEBUG_LEVEL > 0) {
@@ -111,7 +120,7 @@ class db {
 	* @param unknown $query
 	* @param unknown $rli
 	* @desc Enter description here...
-	* @scope internal
+	* @access private
 	*/
 	function db_Query($query, $rli = NULL) {
 		global $dbq, $e107_debug, $db_time, $sDBdbg, $aTimeMarks, $aDBbyTable, $curTimeMark;
@@ -149,11 +158,11 @@ class db {
 	* If you need more requests think to call the class.<br />
 	* <br />
 	* Example using a unique connection to database:<br />
-	* $sql->db_Select("comments", "*", "comment_item_id='$id' AND comment_type='1' ORDER BY comment_datestamp");<br />
+	* <code>$sql->db_Select("comments", "*", "comment_item_id = '$id' AND comment_type = '1' ORDER BY comment_datestamp");</code><br />
 	* <br />
 	* OR as second connection:<br />
-	* $sql2 = new db;<br />
-	* $sql2->db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT $from, ".$view, $mode="no_where");<br />
+	* <code>$sql2 = new db;
+	* $sql2->db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT $from, ".$view, 'no_where');</code>
 	* 
 	* @access public
 	*/
@@ -197,12 +206,16 @@ class db {
 	}
 
 	/**
-	* @return unknown
-	* @param unknown $table
-	* @param unknown $arg
-	* @param unknown $debug
-	* @desc Enter description here...
-	* @scope public
+	* @return int Last insert ID or false on error
+	* @param string $table
+	* @param string $arg
+	* @param string $debug
+	* @desc Insert a row into the table<br />
+	* <br />
+	* Example:<br />
+	* <code>$sql -> db_Insert("links", "0, 'News', 'news.php', '', '', 1, 0, 0, 0");</code>
+	* 
+	* @access public
 	*/
 	function db_Insert($table, $arg, $debug = FALSE) {
 		$table = $this->db_IsLang($table);
@@ -226,12 +239,22 @@ class db {
 	}
 
 	/**
-	* @return unknown
-	* @param unknown $table
-	* @param unknown $arg
-	* @param unknown $debug
-	* @desc Enter description here...
-	* @scope public
+	* @return int number of affected rows, or false on error
+	* @param string $table
+	* @param string $arg
+	* @param bool $debug
+	* @desc Update fields in ONE table of the database corresponding to your $arg variable<br />
+	* <br />
+	* Think to call it if you need to do an update while retrieving data.<br />
+	* <br />
+	* Example using a unique connection to database:<br />
+	* <code>$sql -> db_Update("user", "user_viewed='$u_new' WHERE user_id='".USERID."' ");</code>
+	* <br />
+	* OR as second connection<br />
+	* <code>$sql2 = new db;<br />
+	* $sql2 -> db_Update("user", "user_viewed = '$u_new' WHERE user_id = '".USERID."' ");</code><br />
+	* 
+	* @access public
 	*/
 	function db_Update($table, $arg, $debug = FALSE) {
 		$table = $this->db_IsLang($table);
@@ -255,10 +278,16 @@ class db {
 	}
 
 	/**
-	* @return unknown
-	* @param unknown $mode
-	* @desc Enter description here...
-	* @scope public
+	* @return array MySQL row
+	* @param string $mode
+	* @desc Fetch an array containing row data (see PHP's mysql_fetch_array() docs)<br />
+	* <br />
+	* Example :<br />
+	* <code>while($row = $sql -> db_Fetch()){
+	* 	$text .= $row['username'];
+	* }</code>
+	* 
+	* @access public
 	*/
 	function db_Fetch($mode = 'strip') {
 		if ($row = @mysql_fetch_array($this->mySQLresult)) {
@@ -277,12 +306,16 @@ class db {
 	}
 
 	/**
-	* @return unknown
-	* @param unknown $table
-	* @param unknown $fields
-	* @param unknown $arg
-	* @desc Enter description here...
-	* @scope public
+	* @return int number of affected rows or false on error
+	* @param string $table
+	* @param string $fields
+	* @param string $arg
+	* @desc Count the number of rows in a select<br />
+	* <br />
+	* Example:<br />
+	* <code>$topics = $sql -> db_Count("forum_t", "(*)", " WHERE thread_forum_id='".$forum_id."' AND thread_parent='0' ");</code>
+	* 
+	* @access public
 	*/
 	function db_Count($table, $fields = '(*)', $arg = '') {
 		$table = $this->db_IsLang($table);
@@ -305,8 +338,15 @@ class db {
 
 	/**
 	* @return void
-	* @desc Enter description here...
-	* @scope public
+	* @desc Closes the mySQL server connection.<br />
+	* <br />
+	* Only required if you open a second connection.<br />
+	* Native e107 connection is closed in the footer.php file<br />
+	* <br />
+	* Example :<br />
+	* <code>$sql -> db_Close();</code>
+	* 
+	* @access public
 	*/
 	function db_Close() {
 		mysql_close();
@@ -314,11 +354,15 @@ class db {
 	}
 
 	/**
-	* @return unknown
-	* @param unknown $table
-	* @param unknown $arg
-	* @desc Enter description here...
-	* @scope public
+	* @return int number of affected rows, or false on error
+	* @param string $table
+	* @param string $arg
+	* @desc Delete rows from a table<br />
+	* <br />
+	* Example:
+	* <code>$sql -> db_Delete("tmp", "tmp_ip='$ip'");</code><br />
+	* <br />
+	* @access public
 	*/
 	function db_Delete($table, $arg = '') {
 		$table = $this->db_IsLang($table);
@@ -352,7 +396,7 @@ class db {
 	/**
 	* @return unknown
 	* @desc Enter description here...
-	* @scope internal
+	* @access private
 	*/
 	function db_Rows() {
 		$rows = $this->mySQLrows = @mysql_num_rows($this->mySQLresult);
@@ -364,7 +408,7 @@ class db {
 	* @return unknown
 	* @param unknown $from
 	* @desc Enter description here...
-	* @scope internal
+	* @access private
 	*/
 	function dbError($from) {
 		if ($error_message = @mysql_error()) {
@@ -379,7 +423,7 @@ class db {
 	* @return void
 	* @param unknown $mode
 	* @desc Enter description here...
-	* @scope internal
+	* @access private
 	*/
 	function db_SetErrorReporting($mode) {
 		$this->mySQLerror = $mode;
@@ -390,7 +434,7 @@ class db {
 	* @return unknown
 	* @param unknown $arg
 	* @desc Enter description here...
-	* @scope internal
+	* @access private
 	*/
 	function db_Select_gen($arg) {
 		if ($this->mySQLresult = $this->db_Query($arg)) {
@@ -406,7 +450,7 @@ class db {
 	* @return unknown
 	* @param unknown $offset
 	* @desc Enter description here...
-	* @scope internal
+	* @access private
 	*/
 	function db_Fieldname($offset) {
 		$result = @mysql_field_name($this->mySQLresult, $offset);
@@ -416,7 +460,7 @@ class db {
 	/**
 	* @return unknown
 	* @desc Enter description here...
-	* @scope internal
+	* @access private
 	*/
 	function db_Field_info() {
 		$result = @mysql_fetch_field($this->mySQLresult);
@@ -426,7 +470,7 @@ class db {
 	/**
 	* @return unknown
 	* @desc Enter description here...
-	* @scope internal
+	* @access private
 	*/
 	function db_Num_fields() {
 		$result = @mysql_num_fields($this->mySQLresult);
@@ -437,7 +481,7 @@ class db {
 	* @return unknown
 	* @param unknown $table
 	* @desc Enter description here...
-	* @scope internal
+	* @access private
 	*/
 	function db_IsLang($table) {
 		global $pref, $mySQLtablelist;
