@@ -795,7 +795,7 @@ function save_prefs($table = "core", $uid=USERID){
                 $sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='pref'");
         } else {
                 foreach($user_pref as $key => $prefvalue){
-                        $user_pref[$key] = $tp -> formtpa($prefvalue);
+                        $user_pref[$key] = textparse::formtpa($prefvalue);
                 }
                 $tmp = addslashes(serialize($user_pref));
                 $sql -> db_Update("user", "user_prefs='$tmp' WHERE user_id=$uid");
