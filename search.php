@@ -11,13 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-28 13:31:12 $
-|     $Author: mrpete $
+|     $Revision: 1.6 $
+|     $Date: 2005-02-08 18:00:36 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
-	
+e107_require(e_HANDLER."search_class.php");
+$sch = new e_search;
+
 // Restrict access to members
 if (!USER && $pref['search_restrict'] == 1) {
 	require_once(HEADERF);
@@ -136,7 +138,7 @@ $ns->tablerender(PAGE_NAME." ".SITENAME, $text);
 	
 // only search when a query is filled.
 if ($_POST['searchquery']) {
-	echo "<div style='border:0;padding-right:2px;width:auto;height:400px;overflow:auto;'>";
+	//echo "<div style='border:0;padding-right:2px;width:auto;height:400px;overflow:auto;'>";
 	unset($text);
 	extract($_POST);
 	$key = $_POST['searchtype'];
@@ -147,9 +149,9 @@ if ($_POST['searchquery']) {
 			$ns->tablerender(LAN_195." ".$search_info[$key[$a]]['qtype']." : ".LAN_196.": ".$results, $text);
 		}
 	}
-	echo "</div>";
+	//echo "</div>";
 }
-	
+
 function parsesearch($text, $match) {
 	$text = strip_tags($text);
 	$temp = stristr($text, $match);
@@ -162,10 +164,10 @@ function parsesearch($text, $match) {
         {
                 $text = "...".substr($text, ($pos-50), $pos+30)."...";
         }
-$text = eregi_replace($match, "<span class='searchhighlight'>$matchedText</span>", $text);
+	$text = eregi_replace($match, "<span class='searchhighlight'>$matchedText</span>", $text);
 	return($text);
 }
-	
+
 function headerjs() {
 	$script = "<script type='text/javascript'>
 		function checkAll(allbox) {
