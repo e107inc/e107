@@ -104,6 +104,8 @@ if(IsSet($_POST['save_prefs'])){
         $pref['nbr_cols'] = $_POST['nbr_cols'];
         $pref['subnews_attach'] = $_POST['subnews_attach'];
         $pref['subnews_resize'] = $_POST['subnews_resize'];
+        $pref['subnews_class'] = $_POST['subnews_class'];
+        $pref['subnews_htmlarea'] = $_POST['subnews_htmlarea'];
 
         save_prefs();
         $newspost -> show_message("Settings Saved");
@@ -205,7 +207,7 @@ class newspost{
         function show_existing_items($action, $sub_action, $id, $from, $amount){
                 // ##### Display scrolling list of existing news items ---------------------------------------------------------------------------------------------------------
                 global $sql, $rs, $ns, $aj;
-                $text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 200px; overflow : auto; '>";
+                $text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 300px; overflow : auto; '>";
 
                 if(IsSet($_POST['searchquery'])){
                         $query = "news_title REGEXP('".$_POST['searchquery']."') OR news_body REGEXP('".$_POST['searchquery']."') OR news_extended REGEXP('".$_POST['searchquery']."') ORDER BY news_datestamp DESC";
@@ -263,26 +265,26 @@ class newspost{
 
         function show_options($action){
 
-		if($action==""){$action="main";}
-		$var['main']['text']=NWSLAN_44;
-		$var['main']['link']=e_SELF;
+                if($action==""){$action="main";}
+                $var['main']['text']=NWSLAN_44;
+                $var['main']['link']=e_SELF;
 
-		$var['create']['text']=NWSLAN_45;
-		$var['create']['link']=e_SELF."?create";
+                $var['create']['text']=NWSLAN_45;
+                $var['create']['link']=e_SELF."?create";
 
-		$var['cat']['text']=NWSLAN_46;
-		$var['cat']['link']=e_SELF."?cat";
-		$var['cat']['perm']="7";
+                $var['cat']['text']=NWSLAN_46;
+                $var['cat']['link']=e_SELF."?cat";
+                $var['cat']['perm']="7";
 
-		$var['pref']['text']=NWSLAN_90;
-		$var['pref']['link']=e_SELF."?pref";
-		$var['pref']['perm']="N";
+                $var['pref']['text']=NWSLAN_90;
+                $var['pref']['link']=e_SELF."?pref";
+                $var['pref']['perm']="N";
 
-		$var['sn']['text']=NWSLAN_47;
-		$var['sn']['link']=e_SELF."?sn";
-		$var['sn']['perm']="N";
+                $var['sn']['text']=NWSLAN_47;
+                $var['sn']['link']=e_SELF."?sn";
+                $var['sn']['perm']="N";
 
-		show_admin_menu(NWSLAN_48,$action,$var);
+                show_admin_menu(NWSLAN_48,$action,$var);
 
 
         }
@@ -370,7 +372,7 @@ class newspost{
                         }
                         $text .= "</select>";
                 }
-//					$_POST['news_title'] = htmlentities($_POST['news_title'],ENT_QUOTES);
+//                                        $_POST['news_title'] = htmlentities($_POST['news_title'],ENT_QUOTES);
                 $text .= "</td>
                 </tr>
                 <tr>
@@ -558,8 +560,8 @@ class newspost{
                 if(IsSet($_POST['preview'])){
                         $text .= "<input class='button' type='submit' name='preview' value='".NWSLAN_24."' /> ";
                         if($id && $sub_action != "sn" && $sub_action != "upload"){
-                        	$text .= "<input class='button' type='submit' name='submit' value='".NWSLAN_25."' /> ";
-								$text .= "<br /><span class='smalltext'><input type='checkbox' class='tbox' name='update_datestamp' /> ".NWSLAN_105."</span>";
+                                $text .= "<input class='button' type='submit' name='submit' value='".NWSLAN_25."' /> ";
+                                                                $text .= "<br /><span class='smalltext'><input type='checkbox' class='tbox' name='update_datestamp' /> ".NWSLAN_105."</span>";
                         } else {
                          $text .= "<input class='button' type='submit' name='submit' value='".NWSLAN_26."' /> ";
                         }
@@ -607,10 +609,10 @@ class newspost{
                 $_POST['admin_id'] = USERID;
                 $_POST['admin_name'] = USERNAME;
                 $_POST['news_datestamp'] = time();
-                if($id && $sub_action != "sn" && $sub_action != "upload"){ 
-                	$_POST['news_id'] = $id;
+                if($id && $sub_action != "sn" && $sub_action != "upload"){
+                        $_POST['news_id'] = $id;
                  } else {
-                 	$sql -> db_Update("submitnews", "submitnews_auth='1' WHERE submitnews_id ='".$id."' ");
+                         $sql -> db_Update("submitnews", "submitnews_auth='1' WHERE submitnews_id ='".$id."' ");
                  }
                 if(!$_POST['cat_id']){ $_POST['cat_id'] = 1; }
                 $this->show_message($ix -> submit_item($_POST));
@@ -626,7 +628,7 @@ class newspost{
         function show_categories($sub_action, $id){
                 // ##### Display scrolling list of existing news items ---------------------------------------------------------------------------------------------------------
                 global $sql, $rs, $ns, $aj;
-                $text = "<div style='border : solid 1px #000; padding : 4px; width :auto; height : 100px; overflow : auto; '>\n";
+                $text = "<div style='border : solid 1px #000; padding : 4px; width :auto; height : 200px; overflow : auto; '>\n";
                 if($category_total = $sql -> db_Select("news_category")){
                         $text .= "<table class='fborder' style='width:100%'>
                         <tr>
@@ -749,8 +751,26 @@ class newspost{
                 <option value='20' ".($pref['newsposts']==20 ? "selected" : "").">20</option>
 
                 </select></td>
-                </tr>
+                </tr>";
 
+                require_once(e_HANDLER."userclass_class.php");
+                $text .= " <tr>
+                <td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_106."</span></td>
+                <td class='forumheader3' style='width:40%'>
+                ".r_userclass("subnews_class",$pref['subnews_class']).
+                "</td></tr>";
+
+
+                $text .="
+                <tr>
+                <td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_107."</span></td>
+                <td class='forumheader3' style='width:40%'>
+                <input type='checkbox' name='subnews_htmlarea' value='1' ".($pref['subnews_htmlarea']==1 ? " checked='checked'" : "")." />
+                </td>
+                </tr>";
+
+
+                  $text .="
                 <tr>
                 <td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_100."</span></td>
                 <td class='forumheader3' style='width:40%'>
@@ -782,7 +802,7 @@ class newspost{
 
 
                 global $sql, $rs, $ns, $aj;
-                $text = "<div style='border : solid 1px #000; padding : 4px; width :auto; height : 200px; overflow : auto; '>\n";
+                $text = "<div style='border : solid 1px #000; padding : 4px; width :auto; height : 300px; overflow : auto; '>\n";
                 if($category_total = $sql -> db_Select("submitnews","*","submitnews_id !='' ORDER BY submitnews_id DESC")){
                         $text .= "<table class='fborder' style='width:100%'>
                         <tr>
@@ -816,9 +836,9 @@ class newspost{
 }
 
 function newspost_adminmenu(){
-	global $newspost;
-	global $action;
-	$newspost -> show_options($action);
+        global $newspost;
+        global $action;
+        $newspost -> show_options($action);
 }
 
 ?>
