@@ -130,4 +130,6 @@ define("ADLAN_122", "Update");
 define("ADLAN_123", "Unchecked submitted articles");
 define("ADLAN_124", "Unchecked submitted reviews");
 
+define("ADLAN_125", "Unchecked reported forum posts");
+
 ?>

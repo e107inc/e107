@@ -190,7 +190,7 @@ class links{
 
 		// ##### Display scrolling list of existing links ---------------------------------------------------------------------------------------------------------
 		global $sql, $rs, $ns, $aj;
-		$text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 200px; overflow : auto; '>";
+		$text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 400px; overflow : auto; '>";
 		if($link_total = $sql -> db_Select("links", "*", "ORDER BY link_category, link_id ASC", "nowhere")){
 			$text .= "<table class='fborder' style='width:100%'>
 			<tr>

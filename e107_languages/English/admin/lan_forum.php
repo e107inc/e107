@@ -123,4 +123,11 @@ define("FORLAN_112", "Enable Redirect");
 define("FORLAN_113", "Tick this to make browser redirect to forum page after replying");
 define("FORLAN_114", "User Custom Title");
 define("FORLAN_115", "Tick this to allow users to change their Custom Title");
+define("FORLAN_116", "Reported Posts");
+define("FORLAN_117", "This will delete the record of the reported post. Not the post itself.");
+define("FORLAN_118", "Reported post deleted");
+define("FORLAN_119", "Clicking links will open forum in a new window.");
+define("FORLAN_120", "Tick this to allow users to change their Custom Title");
+define("FORLAN_121", "No reported posts");
+define("FORLAN_122", "Click here to email admin when someone reports a forum post");
 ?>
