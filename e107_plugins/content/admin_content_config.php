@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.7 $
-|		$Date: 2005-02-07 12:21:46 $
+|		$Revision: 1.8 $
+|		$Date: 2005-02-08 14:36:02 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -568,7 +568,7 @@ function headerjs(){
 			newoption = new Option(selectedText, selectedValue, false, false);
 			document.getElementById('assignclass2').options[boxLength] = newoption;
 			document.getElementById('assignclass1').options[selectedItem].text = '';
-			newvalues = selectedValue + '.'
+			newvalues = selectedValue + ','
 		}
 		document.getElementById('assignclass1').selectedIndex=-1;
 		document.getElementById('class_id').value = document.getElementById('class_id').value + newvalues
@@ -606,7 +606,7 @@ function headerjs(){
 		var newvalues = '';
 		for (i = 0; i < boxLengthvalues; i++) {
 			selectedValuevalues = document.getElementById('assignclass2').options[i].value;
-			newvalues = newvalues + selectedValuevalues + '.'
+			newvalues = newvalues + selectedValuevalues + ','
 		}
 		document.getElementById('class_id').value = newvalues
 	}	

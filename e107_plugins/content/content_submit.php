@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_submit.php,v $
-|		$Revision: 1.2 $
-|		$Date: 2005-02-04 10:36:07 $
+|		$Revision: 1.3 $
+|		$Date: 2005-02-08 14:36:02 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -99,7 +99,7 @@ if(IsSet($message)){
 }
 
 if(!isset($type)){
-		if(!$sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_icon, content_pref as prefvalue", "content_parent = '0' ORDER BY content_heading")){
+		if(!$sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_icon, content_pref as prefvalue", "content_parent = '0' AND content_class IN (".USERCLASS_LIST.") ORDER BY content_heading")){
 			$text .= "<div style='text-align:center;'>".CONTENT_ADMIN_SUBMIT_LAN_0."</div>";
 		}else{
 			if(!$CONTENT_SUBMIT_TYPE_TABLE){
@@ -140,12 +140,17 @@ if(!isset($type)){
 }
 
 if($type=="type" && is_numeric($type_id) && !isset($action)){
-		$parentarray = $aa -> getParent("", "", $type_id, "1");
-		if(empty($parentarray)){
+
+		//check if valid categories exist for this main parent
+		$sql2 = new db;
+		$contenttotal = $sql2 -> db_Count($plugintable, "(*)", "WHERE (content_parent = '0' AND content_id = '".$type_id."' || LEFT(content_parent,".(strlen($type_id)+2).") = '0.".$type_id."') AND content_refer != 'sa' ".$datequery." AND content_class IN (".USERCLASS_LIST.")" );
+		if($contenttotal == "0"){
 			header("location:".e_SELF); exit;
 		}else{
 			$aform -> show_content_create("submit");
 		}
+
+
 }
 
 require_once(FOOTERF);

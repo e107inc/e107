@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.3 $
-|		$Date: 2005-02-07 12:21:48 $
+|		$Revision: 1.4 $
+|		$Date: 2005-02-08 14:36:55 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -458,20 +458,23 @@ class contentform{
 							$text .= "<tr><td colspan='2' class='fcaption'>".CONTENT_ADMIN_ITEM_LAN_54."</td></tr>";
 						}
 						$existing_custom = "0";
-						foreach($custom as $k => $v){
-							if(!($k == "content_custom_score" || $k == "content_custom_meta")){
-								$key = substr($k,15);
-								if($checkcustomnumber){
-									$text .= "
-									<tr>
-										<td class='forumheader3' style='width:30%'>".$rs -> form_text("content_custom_key_".$existing_custom."", 30, $key, 100)."</td>
-										<td class='forumheader3' style='width:70%'>".$rs -> form_text("content_custom_value_".$existing_custom."", 100, $v, 250)."</td>
-									</tr>";
-								}else{
-									$text .= $rs -> form_hidden("content_custom_key_".$existing_custom, $key);
-									$text .= $rs -> form_hidden("content_custom_value_".$existing_custom, $v);
+
+						if(!empty($custom)){
+							foreach($custom as $k => $v){
+								if(!($k == "content_custom_score" || $k == "content_custom_meta")){
+									$key = substr($k,15);
+									if($checkcustomnumber){
+										$text .= "
+										<tr>
+											<td class='forumheader3' style='width:30%'>".$rs -> form_text("content_custom_key_".$existing_custom."", 30, $key, 100)."</td>
+											<td class='forumheader3' style='width:70%'>".$rs -> form_text("content_custom_value_".$existing_custom."", 100, $v, 250)."</td>
+										</tr>";
+									}else{
+										$text .= $rs -> form_hidden("content_custom_key_".$existing_custom, $key);
+										$text .= $rs -> form_hidden("content_custom_value_".$existing_custom, $v);
+									}
+									$existing_custom = $existing_custom + 1;
 								}
-								$existing_custom = $existing_custom + 1;
 							}
 						}
 						for($i=$existing_custom;$i<$checkcustomnumber;$i++){
@@ -577,9 +580,9 @@ class contentform{
 							}
 							$aa -> ContentManagerValidCategoryCheck($sub_action);
 
-							if(!is_object($sql)){ $sql = new db; }
-							$sql -> db_Select($plugintable, "content_parent", "content_id = '".$action."' ");
-							list($parentparent) = $sql -> db_Fetch();
+							//if(!is_object($sql)){ $sql = new db; }
+							//$sql -> db_Select($plugintable, "content_parent", "content_id = '".$action."' ");
+							//list($parentparent) = $sql -> db_Fetch();
 
 							//use user restriction (personal admin)
 							if(getperms("0")){
@@ -883,19 +886,8 @@ class contentform{
 
 
 		function show_contentmanager($mode, $userid="", $username=""){
-						global $sql, $ns, $rs, $type, $plugintable, $aa;
+						global $sql, $ns, $rs, $type, $type_id, $plugintable, $aa;
 						$personalmanagercheck = FALSE;
-
-						//use user restriction (personal admin)
-						if(getperms("0")){
-							$userid = USERID;
-							$username = USERNAME;
-						}
-						if($userid != "" && $username != ""){
-							$userquery = " AND (content_author = '".$userid."' OR SUBSTRING_INDEX(content_author, '^', 1) = '".$userid."' OR SUBSTRING_INDEX(content_author, '^', 2) = '".$userid."^".$username."')";
-						}else{
-							$userquery = "";
-						}						
 
 						if(!$CONTENT_CONTENTMANAGER_TABLE){
 							if(!$content_pref["content_theme_{$type_id}"]){
@@ -909,29 +901,35 @@ class contentform{
 							}
 						}
 
-						if(!is_object($sql)){ $sql = new db; }
-						if(!$sql -> db_Select($plugintable, "content_id, content_heading, content_parent, content_class, content_pref as contentprefvalue", "content_parent!='0' AND LEFT(content_parent,1) = '0' ORDER BY content_datestamp, content_heading, content_parent")){
-							header("location:".e_PLUGIN."content/content.php"); exit;
-						}else{
-							while($row = $sql -> db_Fetch()){
-								extract($row);
-								$tmp = explode(".", $contentprefvalue);
-								if(in_array($userid, $tmp) || getperms("0")){
-									$personalmanagercheck = TRUE;
-									$breadcrumbarray = $aa -> getBreadCrumb($content_id);
-									$parentheading = $aa -> printBreadCrumb($breadcrumbarray, "nobase", "nolink");
+						if(!is_object($sql2)){ $sql2 = new db; }
+						if($sql2 -> db_Select($plugintable, "content_id", " content_parent='0' ORDER BY content_heading")){
+							while(list($parent_id) = $sql2 -> db_Fetch()){
+								$type_id = $parent_id;
+								$prefetchbreadcrumb = $aa -> prefetchBreadCrumb( $type_id );
 
-									unset($catidstring);
-									$tmp = array_reverse( $breadcrumbarray );
-									for($i=0;$i<count($tmp);$i++){
-										$catidstring .= "-".$tmp[$i][0];
+								$checkquery = (getperms("0") ? "" : " AND FIND_IN_SET('".$userid."',content_pref) ");
+								if(!is_object($sql)){ $sql = new db; }
+								if(!$sql -> db_Select($plugintable, "content_id", "LEFT(content_parent, ".(strlen($type_id)+2).") = '0.".$type_id."' ".$checkquery." ORDER BY content_parent")){
+									//	header("location:".e_PLUGIN."content/content.php"); exit;
+								}else{
+									while($row = $sql -> db_Fetch()){
+										extract($row);
+											$personalmanagercheck = TRUE;
+										
+											$parentheading = $aa -> drawBreadcrumb($prefetchbreadcrumb, $content_id, "nobase", "nolink");
+											for($i=0; $i<count($prefetchbreadcrumb); $i++){
+												if($content_id == $prefetchbreadcrumb[$i][0]){
+													$catidstring = $prefetchbreadcrumb[$i][3];
+												}
+											}
+											$catidstring = str_replace(".","-",$catidstring);
+											$CONTENT_CONTENTMANAGER_ICONEDIT = "<a href='".e_SELF."?".$type.".".$type_id.".c.".$catidstring."'>".CONTENT_ICON_EDIT."</a>";
+											$CONTENT_CONTENTMANAGER_ICONNEW = "<a href='".e_SELF."?".$type.".".$type_id.".create.".$catidstring."'>".CONTENT_ICON_NEW."</a>";
+
+
+											$CONTENT_CONTENTMANAGER_CATEGORY = $parentheading;
+											$content_contentmanager_table_string .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CONTENTMANAGER_TABLE);
 									}
-									$catidstring = $tmp[0][0].$catidstring;
-
-									$CONTENT_CONTENTMANAGER_CATEGORY = $parentheading;
-									$CONTENT_CONTENTMANAGER_ICONEDIT = "<a href='".e_SELF."?".$type.".".$tmp[0][0].".c.".$catidstring."'>".CONTENT_ICON_EDIT."</a>";
-									$CONTENT_CONTENTMANAGER_ICONNEW = "<a href='".e_SELF."?".$type.".".$tmp[0][0].".create.".$catidstring."'>".CONTENT_ICON_NEW."</a>";
-									$content_contentmanager_table_string .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CONTENTMANAGER_TABLE);
 								}
 							}
 							if($personalmanagercheck == TRUE){
@@ -1026,7 +1024,7 @@ class contentform{
 							header("location:".e_SELF."?".$type.".".$type_id.".cat.".$id); exit;
 						}
 
-						$personalcontentusers = explode(".", $contentprefvalue);
+						$personalcontentusers = explode(",", $contentprefvalue);
 						for($i=0;$i<count($personalcontentusers);$i++){
 							if(empty($personalcontentusers[$i])){ unset($personalcontentusers[$i]); }
 						}
@@ -1346,6 +1344,10 @@ class contentform{
 						<tr>
 							<td colspan='4' class='forumheader3' style='width:70%'>".CONTENT_ADMIN_OPT_LAN_18."</td>
 							<td colspan='2' class='forumheader3' style='width:30%; text-align:center'>".$rs -> form_checkbox("content_breadcrumb_{$id}", 1, ($content_pref["content_breadcrumb_{$id}"] ? "1" : "0"))."</td>
+						</tr>
+						<tr>
+							<td colspan='4' class='forumheader3' style='width:70%'>".CONTENT_ADMIN_OPT_LAN_83."</td>
+							<td colspan='2' class='forumheader3' style='width:30%; text-align:center'>".$rs -> form_text("content_breadcrumb_seperator{$id}", 1, $content_pref["content_breadcrumb_seperator{$id}"], 3)."</td>
 						</tr>
 						<tr>
 							<td colspan='4' class='forumheader3'>".CONTENT_ADMIN_OPT_LAN_19."</td>

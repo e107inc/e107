@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.5 $
-|		$Date: 2005-02-08 00:15:59 $
+|		$Revision: 1.6 $
+|		$Date: 2005-02-08 14:36:55 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -83,6 +83,7 @@ class content{
 				$content_pref["content_blank_icon_{$id}"] = "1";						//use blank icon if no icon present
 				$content_pref["content_blank_caticon_{$id}"] = "1";						//use blank caticon if no caticon present
 				$content_pref["content_breadcrumb_{$id}"] = "1";						//show breadcrumb
+				$content_pref["content_breadcrumb_seperator{$id}"] = ">";				//seperator character between breadcrumb
 				$content_pref["content_breadcrumb_rendertype_{$id}"] = "2";				//how to render the breadcrumb
 				$content_pref["content_searchmenu_{$id}"] = "1";						//show searchmenu
 
@@ -222,6 +223,7 @@ class content{
 				$content_pref["content_blank_icon_{$id}"] = $_POST["content_blank_icon_{$id}"];
 				$content_pref["content_blank_caticon_{$id}"] = $_POST["content_blank_caticon_{$id}"];
 				$content_pref["content_breadcrumb_{$id}"] = $_POST["content_breadcrumb_{$id}"];
+				$content_pref["content_breadcrumb_seperator{$id}"] = $_POST["content_breadcrumb_seperator{$id}"];
 				$content_pref["content_breadcrumb_rendertype_{$id}"] = $_POST["content_breadcrumb_rendertype_{$id}"];
 				$content_pref["content_searchmenu_{$id}"] = $_POST["content_searchmenu_{$id}"];
 
@@ -293,14 +295,6 @@ class content{
 						if(!check_class($content_class)){
 							$UnValidArticleIds .= " content_id != '".$content_id."' AND";
 						}else{
-							/*
-							if($content_parent != "0"){
-								$checkparent = $this -> checkParentValidity($content_parent);
-								if($checkparent == FALSE){
-									$UnValidArticleIds .= " content_id != '".$content_id."' AND";
-								}
-							}
-							*/
 							if($content_parent != "0"){
 								$parentidarray[$count] = $content_parent;
 							}
@@ -346,8 +340,7 @@ class content{
 						}
 					}
 				}
-				return $UnValidArticleIds;
-		
+				return $UnValidArticleIds;		
 		}
 
 		function checkMainCat($type_id){
@@ -372,20 +365,22 @@ class content{
 				if($sqlcheckparentvalidity -> db_Select($plugintable, "content_id, content_parent, content_class", "content_parent = '".$id."' ".$datequery." " )){
 					while(list($content_id, $content_parent, $content_class) = $sqlcheckparentvalidity -> db_Fetch()){
 						if(!check_class($content_class)){
-							$UnValidArticleIds .= " content_parent != '".$type_id.".".$type_id.".".$content_id."' AND";
+							if($type_id != "0"){
+								$type_id = substr($id,2);
+							}
+							$UnValidArticleIds .= " content_parent != '".$type_id.".".$type_id.".".$content_id."' AND";							
 						}
 						$UnValidArticleIds .= $this -> checkSubCat($id.".".$content_id);
 					}
 				}
 				return $UnValidArticleIds;
-				
 		}
 
 		function checkItem($query){
 				global $plugintable, $datequery, $type_id;
-
+				//AND content_class IN (".USERCLASS_LIST.")
 				if(!is_object($sqlcheckparentvalidity)){ $sqlcheckparentvalidity = new db; }
-				if($sqlcheckparentvalidity -> db_Select($plugintable, "content_id, content_parent, content_class", " ".$query." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ORDER BY content_datestamp" )){
+				if($sqlcheckparentvalidity -> db_Select($plugintable, "content_id, content_parent, content_class", " ".$query." ".$datequery." ORDER BY content_datestamp" )){
 					while(list($content_id, $content_parent, $content_class) = $sqlcheckparentvalidity -> db_Fetch()){
 						if(!check_class($content_class)){
 							$UnValidArticleIds .= " content_parent != '".$type_id.".".$type_id.".".$content_id."' AND";
@@ -393,48 +388,9 @@ class content{
 						$UnValidArticleIds .= $this -> checkSubCat($id.".".$content_id);
 					}
 				}
-				return $UnValidArticleIds;
-				
+				return $UnValidArticleIds;				
 		}
 		
-		function checkValidCat($id){
-				global $plugintable, $datequery, $type_id;
-				//$id holds the main parents' content_parent value (0 for main cat, 0.x for subcat, 0.x.y for subsubcat, ...)
-//articles = 2
-//interviews = 25
-//1) check main cat
-//2) check all subcats
-//3) check all subsubcats
-
-				if($id == "0"){
-					$checkid = $type_id;
-				}elseif(strpos($id, ".")){
-					$tmp = explode(".", $id);
-					for($i=1;$i<count($tmp);$i++){
-					}
-				}else{
-				}
-				if(!is_object($sqlcheckparentvalidity)){ $sqlcheckparentvalidity = new db; }
-				if($sqlcheckparentvalidity -> db_Select($plugintable, "content_id, content_parent, content_class", "content_id = '".$checkid."' ".$datequery." " )){
-					while(list($content_id, $content_parent, $content_class) = $sqlcheckparentvalidity -> db_Fetch()){
-						if(!check_class($content_class)){
-							//$UnValidArticleIds .= " content_id != '".$content_id."' AND";
-							$UnValidArticleIds .= " content_parent != '".$type_id.".".$type_id.".".$content_id."' AND";
-						}
-					}
-				}
-				if($sqlcheckparentvalidity -> db_Select($plugintable, "content_id, content_class", "content_parent = '".$parent."' ".$datequery." " )){
-					while(list($content_id, $content_class) = $sqlcheckparentvalidity -> db_Fetch()){
-						if(!check_class($content_class)){
-							$UnValidArticleIds .= " content_id != '".$content_id."' AND";
-							$UnValidArticleIds .= " content_parent != '".$type_id.".".$type_id.".".$content_id."' AND";
-							
-						}
-					}
-				}
-				return $UnValidArticleIds;
-		
-		}
 		
 		/*
 		function checkParentValidity($parent){
@@ -487,15 +443,11 @@ class content{
 				global $plugintable, $datequery;
 
 				if(!is_object($sqlgetcontent)){ $sqlgetcontent = new db; }
-				if(!$sqlgetcontent -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class, content_pref as contentprefvalue", "content_id='".$id."' ".$datequery." ")){
+				if(!$sqlgetcontent -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class, content_pref as contentprefvalue", "content_id='".$id."' ".$datequery." AND content_class IN (".USERCLASS_LIST.")")){
 					return FALSE;
 				}else{
 					$row = $sqlgetcontent -> db_Fetch();
-					if(check_class($row['content_class'])){
-						return $row;
-					}else{
-						return FALSE;
-					}
+					return $row;
 				}
 		}
 
@@ -534,37 +486,27 @@ class content{
 					$id = "0.".$id;
 				}
 				$query = ($mode != "" ? " AND content_id = '".$mode."' " : "");
+				$classquery = ($classcheck == "1" ? "AND content_class IN (".USERCLASS_LIST.")" : "");
 				if(!$level) { $level = "0"; }
 				if(!is_object($sqlgetparent)){ $sqlgetparent = new db; }
-				if(!$sqlgetparent -> db_Select($plugintable, "*", "content_parent='".$id."' ".$query." ".$datequery." ")){
+				if(!$sqlgetparent -> db_Select($plugintable, "*", "content_parent='".$id."' ".$query." ".$datequery." ".$classquery." ")){
 					$parent = FALSE;
 				}else{
 					while($row = $sqlgetparent -> db_Fetch()){
 					extract($row);
 
-						if($classcheck=="1"){
-							if(check_class($content_class)){
-								$parent[] = array($content_id, $content_heading, $content_subheading, $content_summary, $content_text, $content_author, $content_icon, $content_file, $content_image, $content_parent, $content_comment, $content_rate, $content_pe, $content_refer, $content_datestamp, $content_class, $level);
-								$reloop = TRUE;
-							}else{
-								$reloop = FALSE;
-							}
-						}else{
-								$parent[] = array($content_id, $content_heading, $content_subheading, $content_summary, $content_text, $content_author, $content_icon, $content_file, $content_image, $content_parent, $content_comment, $content_rate, $content_pe, $content_refer, $content_datestamp, $content_class, $level);
-								$reloop = TRUE;
-						}
-						if($reloop == TRUE){
-							$level2 = $level+1;
-							$nid = ($content_parent == "0" ? $content_id : $content_parent.".".$content_id);
-							$parentchild = $this -> getParent($nid, $level2, "", ($classcheck=="1" ? "1" : ""));
-							if($parentchild == TRUE){
-								if(is_array($parentchild[0])){
-									for($a=0;$a<count($parentchild);$a++){
-										$parent[] = $parentchild[$a];
-									}
-								}else{
-									$parent[] = $parentchild;
+						$parent[] = array($content_id, $content_heading, $content_subheading, $content_summary, $content_text, $content_author, $content_icon, $content_file, $content_image, $content_parent, $content_comment, $content_rate, $content_pe, $content_refer, $content_datestamp, $content_class, $level);
+
+						$level2 = $level+1;
+						$nid = ($content_parent == "0" ? $content_id : $content_parent.".".$content_id);
+						$parentchild = $this -> getParent($nid, $level2, "", ($classcheck=="1" ? "1" : ""));
+						if($parentchild == TRUE){
+							if(is_array($parentchild[0])){
+								for($a=0;$a<count($parentchild);$a++){
+									$parent[] = $parentchild[$a];
 								}
+							}else{
+								$parent[] = $parentchild;
 							}
 						}
 					}
@@ -677,6 +619,110 @@ class content{
 				return $string;
 		}
 
+		/*
+		Array (
+			[0] => Array ( [0] => 2 [1] => article [2] => 0 [3] => 2.2 )
+			[1] => Array ( [0] => 24 [1] => recensies [2] => 0.2 [3] => 2.2.24 )
+			[2] => Array ( [0] => 25 [1] => interviews [2] => 0.2 [3] => 2.2.25 )
+			[3] => Array ( [0] => 95 [1] => interview sub 1 [2] => 0.2.25 [3] => 2.2.25.95 )
+			[4] => Array ( [0] => 26 [1] => essays [2] => 0.2 [3] => 2.2.26 )
+		)
+		*/		
+		function prefetchBreadCrumb($id, $mode="", $all=""){
+				global $plugintable, $datequery, $type_id;
+
+				if($id != ""){
+					if($id == $type_id){
+						$query = " content_id='".$id."' ";
+					}else{
+						$query = " content_parent='".$id."' ";
+					}
+					if(!is_object($sqlprefetchbreadcrumb)){ $sqlprefetchbreadcrumb = new db; }
+					if(!$sqlprefetchbreadcrumb -> db_Select($plugintable, "content_id, content_heading, content_parent", " ".$query."  ")){
+						$parent = FALSE;
+					}else{
+						while(list($parent_id, $parent_heading, $parent_parent) = $sqlprefetchbreadcrumb -> db_Fetch()){
+							
+							if($parent_parent == "0"){
+								$cat = $type_id.".".$type_id;
+							}else{
+								$cat = $type_id.".".substr($parent_parent,2).".".$parent_id;
+							}
+							$parent[] = array($parent_id, $parent_heading, $parent_parent, $cat);
+							if($mode == ""){
+								if($parent_parent == "0"){	//maincat
+									$parentchild = $this -> prefetchBreadCrumb("0.".$parent_id);
+								}else{
+									$parentchild = $this -> prefetchBreadCrumb($parent_parent.".".$parent_id);
+								}
+								if($parentchild == TRUE){
+									if(is_array($parentchild[0])){
+										for($a=0;$a<count($parentchild);$a++){
+											$parent[] = $parentchild[$a];
+										}
+									}else{
+										$parent[] = $parentchild;
+									}
+								}
+							}
+						}
+					}
+				}else{
+					$parent = "";
+				}
+				return $parent;
+		}
+
+		function drawBreadcrumb($prefetchbreadcrumb, $content_parent, $base="", $nolink=""){
+				global $plugintable, $type_id, $content_pref;
+
+				$sep = ($content_pref["content_breadcrumb_seperator{$type_id}"] ? $content_pref["content_breadcrumb_seperator{$type_id}"] : ">");
+
+				if(strpos($content_parent, ".")){
+					$checkid = $content_parent;
+				}else{
+					if($content_parent == $prefetchbreadcrumb[0][0]){	//is main cat
+						$checkid = $prefetchbreadcrumb[0][3];
+					}else{												//is sub cat
+						for($i=0; $i<count($prefetchbreadcrumb); $i++){
+							if($content_parent == $prefetchbreadcrumb[$i][0]){
+								$checkid = $prefetchbreadcrumb[$i][3];
+							}
+						}
+					}
+				}
+				for($i=0; $i<count($prefetchbreadcrumb); $i++){
+					if($checkid == $prefetchbreadcrumb[$i][3]){
+						$parentmatch = $prefetchbreadcrumb[$i][3];
+					}
+				}
+				$tmp = explode(".", $parentmatch);
+				for($k=1; $k<count($tmp); $k++){
+					for($i=0; $i<count($prefetchbreadcrumb); $i++){
+						if($tmp[$k] == $prefetchbreadcrumb[$i][0]){
+							if($nolink){
+								$parentparentname .= $prefetchbreadcrumb[$i][1]." ".$sep." ";
+							}else{
+								$parentparentname .= "<a href='".e_SELF."?type.".$type_id.".cat.".$prefetchbreadcrumb[$i][0]."'>".$prefetchbreadcrumb[$i][1]."</a> ".$sep." ";
+							}
+						}
+					}
+				}
+				if($base == "base"){
+					if($nolink){
+						$parentparentname = CONTENT_LAN_58." ".$sep." ".CONTENT_LAN_59." ".$sep." ".CONTENT_LAN_60." ".$sep." ".$parentparentname;
+					}else{
+						$parentparentname = "<a href='".e_BASE."'>".CONTENT_LAN_58."</a> ".$sep." <a href='".e_SELF."'>".CONTENT_LAN_59."</a> ".$sep." <a href='".e_SELF."?type.".$type_id."'>".CONTENT_LAN_60."</a> ".$sep." ".$parentparentname;
+					}
+				}
+				$drawbreadcrumb = substr($parentparentname,0,-strlen($sep)-2);
+				return $drawbreadcrumb;
+		}
+
+
+
+
+		/*
 		//get parent tree from a content item (content_parent)
 		function getBreadCrumb($id=""){
 				global $plugintable, $datequery;
@@ -713,7 +759,8 @@ class content{
 				}
 				return $parent;
 		}
-
+		*/
+		/*
 		function printBreadCrumb($breadcrumb="", $mode="", $nolink=""){
 				global $content_pref, $type, $type_id;
 				$contentpreflimit = "5";
@@ -752,7 +799,7 @@ class content{
 				}
 				return substr($breadcrumbstring, 0, -3);
 		}
-
+		*/
 
 		function getOrder(){
 				global $type, $type_id, $action, $sub_action, $id, $content_pref;
@@ -861,19 +908,13 @@ class content{
 
 				$tmp = array_reverse( explode("-", $fullcat) );
 				if(!is_object($sql)){ $sql = new db; }
-				if(!$sql -> db_Select($plugintable, "content_id, content_heading, content_parent, content_class, content_pref as contentprefvalue", "LEFT(content_parent,1) = '0' AND content_id = '".$tmp[0]."' ".$datequery." ")){
+				$checkquery = (getperms("0") ? "" : " AND FIND_IN_SET('".USERID."',content_pref) ");
+				if(!$sql -> db_Select($plugintable, "content_id, content_heading, content_parent, content_class, content_pref as contentprefvalue", "LEFT(content_parent,2) = '0.' AND content_id = '".$tmp[0]."' ".$checkquery." ")){
 					header("location:".e_SELF); exit;
 				}else{
-					while($row = $sql -> db_Fetch()){
-						extract($row);
-						$tmp = explode(".", $contentprefvalue);
-						if(($tmp[0] != "" && in_array($userid, $tmp)) || getperms("0") ){
-							return;
-						}else{
-							header("location:".e_SELF); exit;
-						}
-					}
+					return;
 				}
+				
 		}
 
 
