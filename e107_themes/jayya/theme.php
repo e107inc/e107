@@ -12,6 +12,13 @@
 +---------------------------------------------------------------+
 */
 if(!defined("e_THEME")){ exit; }
+
+// [multilanguage]
+
+@include_once(e_THEME."jayya/languages/".e_LANGUAGE.".php");
+@include_once(e_THEME."jayya/languages/English.php");
+
+
 // [theme]
 
 $themename = "Jayya";
@@ -21,9 +28,9 @@ $themedate = "22/12/04";
 $themeinfo = "";
 $xhtmlcompliant = TRUE;
 $csscompliant = TRUE;
-
 define("THEME_DISCLAIMER", "");
 define("IMODE", "lite");
+
 
 // [output js nav css in <head>]
 
@@ -38,7 +45,7 @@ $no_core_css = TRUE;
 
 
 // [layout]
-// <img src='".THEME."images/logo.png' style='width: 170px; height: 71px; display: block;' alt='' />
+
 $layout = "_default";
 
 $HEADER = "<table class='top_section'>
@@ -90,12 +97,12 @@ $FOOTER = "<br />
 
 // [linkstyle]
 
-define("PRELINK", "");
-define("POSTLINK", "");
-define("LINKSTART", "");
-define("LINKEND", "");
-define("LINKDISPLAY", 1);
-define("LINKALIGN", "right");
+define('PRELINK', '');
+define('POSTLINK', '');
+define('LINKSTART', '');
+define('LINKEND', '');
+define('LINKDISPLAY', 1);
+define('LINKALIGN', 'left');
 
 
 // [newsstyle]
@@ -118,26 +125,30 @@ Posted by
 {NEWSAUTHOR}
  on 
 {NEWSDATE}
-
 </td><td style='text-align: center; padding: 3px; padding-bottom: 0px; white-space: nowrap'>
 <img src='".THEME."images/comments_16.png' style='width: 16px; height: 16px' alt='' />
 </td>
-<td style='padding: 0px; padding-bottom: 0px; padding-left: 2px; white-space: nowrap'>
+<td style='padding: 0px; padding-left: 2px; white-space: nowrap'>
 {NEWSCOMMENTS}
+</td><td style='padding: 0px; white-space: nowrap'>
+{TRACKBACK}
 </td><td style='text-align: center; padding: 3px; padding-bottom: 0px; padding-left: 7px; white-space: nowrap'>
 {EMAILICON}
 {PRINTICON}
+{ADMINOPTIONS}
 </td></tr></table>
 <br /></div>";
 
-define("ICONMAIL", "email_16.png");
-define("ICONPRINT", "print_16.png");
-define("ICONSTYLE", "float: left; border:0");
-define("COMMENTLINK", "Read/Post Comment: ");
-define("COMMENTOFFSTRING", "Comments are turned off for this item");
-define("PRE_EXTENDEDSTRING", "<br /><br />[ ");
-define("EXTENDEDSTRING", "Read the rest...");
-define("POST_EXTENDEDSTRING", " ]<br />");
+define('ICONMAIL', 'email_16.png');
+define('ICONPRINT', 'print_16.png');
+define('ICONSTYLE', 'float: left; border:0');
+define('COMMENTLINK', LAN_THEME_2);
+define('COMMENTOFFSTRING', LAN_THEME_1);
+define('PRE_EXTENDEDSTRING', '<br /><br />[ ');
+define('EXTENDEDSTRING', LAN_THEME_3);
+define('POST_EXTENDEDSTRING', ' ]<br />');
+define('TRACKBACKSTRING', LAN_THEME_4);
+define('TRACKBACKBEFORESTRING', '&nbsp;|&nbsp;');
 
 
 //	[tablestyle]
