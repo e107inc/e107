@@ -603,7 +603,7 @@ class textparse{
                 $search[8] = "#\[url=([a-z]+?://){1}(.*?)\](.*?)\[/url\]#si";
                 $replace[8] = ($pref['links_new_window'] ? '<a href="\1\2" rel="external">\3</a>' : '<a href="\1\2">\3</a>');
                 $search[9] = "/\[quote=(.*?)\](.*?)/si";
-                $replace[9] = '<div class=\'indent\'><i>Originally posted by \1</i> ...<br />"\2"';
+                $replace[9] = '<div class=\'indent\'><i>Originally posted by \1</i> ...<br />';
                 $search[25] = "/\[\/quote\]/si";
                 $replace[25] = '</div>';
                 $search[10] = "#\[b\](.*?)\[/b\]#si";
@@ -621,38 +621,38 @@ class textparse{
                         $replace[13] = '[ image disabled ]';
                 }else{
                 $replace[13] = '<img src=\'\1\' alt=\'\' style=\'vertical-align:middle; border:0\' />';
-                                }
-
-                                $search[14] = "#\[center\](.*?)\[/center\]#si";
-                                $replace[14] = '<div style=\'text-align:center\'>\1</div>';
-                                $search[15] = "#\[left\](.*?)\[/left\]#si";
-                                $replace[15] = '<div style=\'text-align:left\'>\1</div>';
-                                $search[16] = "#\[right\](.*?)\[/right\]#si";
-                                $replace[16] = '<div style=\'text-align:right\'>\1</div>';
-                                $search[17] = "#\[blockquote\](.*?)\[/blockquote\]#si";
-                                $replace[17] = '<div class=\'indent\'>\1</div>';
-                                $search[19] = "/\[color=(.*?)\](.*?)\[\/color\]/si";
-                                $replace[19] = '<span style=\'color:\1\'>\2</span>';
-                                $search[20] = "/\[size=([1-2]?[0-9])\](.*?)\[\/size\]/si";
-                                $replace[20] = '<span style=\'font-size:\1px\'>\2</span>';
-                                $search[21] = "#\[edited\](.*?)\[/edited\]#si";
-                                $replace[21] = '<span class=\'smallblacktext\'>[ \1 ]</span>';
-                                $search[22] = "#\[br\]#si";
-                                $replace[22] = '<br />';
-
-                                if($pref['forum_attach'] && FILE_UPLOADS || $referrer == "admin"){
-                                                $search[23] = "#\[file=(.*?)\](.*?)\[/file\]#si";
-                                                $replace[23] = '<a href="\1"><img src="'.e_IMAGE.'generic/attach1.png" alt="" style="border:0; vertical-align:middle" /> \2</a>';
-                                }else{
-                                $search[23] = "#\[file=(.*?)\](.*?)\[/file\]#si";
-                                $replace[23] = '[ file attachment disabled ]';
-                                }
-
-                                $search[24] = "#\[quote\](.*?)\[/quote\]#si";
-                                $replace[24] = '<i>"\1"</i>';
-                                $text = preg_replace($search, $replace, $text);
-                                return $text;
                 }
+
+				$search[14] = "#\[center\](.*?)\[/center\]#si";
+				$replace[14] = '<div style=\'text-align:center\'>\1</div>';
+				$search[15] = "#\[left\](.*?)\[/left\]#si";
+				$replace[15] = '<div style=\'text-align:left\'>\1</div>';
+				$search[16] = "#\[right\](.*?)\[/right\]#si";
+				$replace[16] = '<div style=\'text-align:right\'>\1</div>';
+				$search[17] = "#\[blockquote\](.*?)\[/blockquote\]#si";
+				$replace[17] = '<div class=\'indent\'>\1</div>';
+				$search[19] = "/\[color=(.*?)\](.*?)\[\/color\]/si";
+				$replace[19] = '<span style=\'color:\1\'>\2</span>';
+				$search[20] = "/\[size=([1-2]?[0-9])\](.*?)\[\/size\]/si";
+				$replace[20] = '<span style=\'font-size:\1px\'>\2</span>';
+				$search[21] = "#\[edited\](.*?)\[/edited\]#si";
+				$replace[21] = '<span class=\'smallblacktext\'>[ \1 ]</span>';
+				$search[22] = "#\[br\]#si";
+				$replace[22] = '<br />';
+
+                if($pref['forum_attach'] && FILE_UPLOADS || $referrer == "admin"){
+					$search[23] = "#\[file=(.*?)\](.*?)\[/file\]#si";
+					$replace[23] = '<a href="\1"><img src="'.e_IMAGE.'generic/attach1.png" alt="" style="border:0; vertical-align:middle" /> \2</a>';
+				}else{
+					$search[23] = "#\[file=(.*?)\](.*?)\[/file\]#si";
+					$replace[23] = '[ file attachment disabled ]';
+				}
+
+				$search[24] = "#\[quote\](.*?)\[/quote\]#si";
+				$replace[24] = '<i>"\1"</i>';
+				$text = preg_replace($search, $replace, $text);
+				return $text;
+				}
 
         function formtpa($text, $mode="admin"){
                 global $sql, $pref;
