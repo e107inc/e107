@@ -78,7 +78,7 @@ define("LAN_424", "New threads");
 define("LAN_425", "Re:");
 
 define("LAN_426", "Who's Online: ");
-define("LAN_427", "View detailed list");
+define("LAN_427", "View detailed list.");
 define("LAN_428", "Re:");
 define("LAN_429", "Top Posters");
 define("LAN_430", "Most Active Threads");
@@ -87,4 +87,5 @@ define("LAN_432", "My Settings");
 define("LAN_433", "Forum Rules");
 define("LAN_434", "Return to forums");
 define("LAN_435", "My Profile");
+define("LAN_436", " (Will open a new window.)");
 ?>

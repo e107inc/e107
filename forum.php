@@ -128,7 +128,7 @@ foreach($listuserson as $uinfo => $pinfo){
 	$c ++;
 	$USERLIST .= "<a href='".e_BASE."user.php?id.$oid'>$oname</a>".($c == MEMBERS_ONLINE ? "." :", ");
 }
-$USERLIST .= "<br /><a href='online.php'>".LAN_427."</a>";
+$USERLIST .= "<br /><a rel='external' href='online.php'>".LAN_427."</a> ".LAN_436."";
 $ICONKEY = "
 <table style='width:100%'>\n<tr>
 <td style='width:2%'>".IMAGE_new_small."</td>
