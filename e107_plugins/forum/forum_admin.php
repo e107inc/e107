@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-02-13 21:47:58 $
-|     $Author: stevedunstan $
+|     $Revision: 1.8 $
+|     $Date: 2005-02-16 03:01:04 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -350,7 +350,7 @@ class forum {
 					while ($row = $sql2->db_Fetch()) {
 						extract($row);
 						 
-						$text .= "<tr><td style='width:5%; text-align:center' class='forumheader3'><img src='".e_IMAGE."forum/new.png' alt='' /></td>\n<td style='width:55%' class='forumheader3'><a href='".e_BASE."forum_viewforum.php?".$forum_id."'>".$forum_name."</a>" ;
+						$text .= "<tr><td style='width:5%; text-align:center' class='forumheader3'><img src='".e_PLUGIN."images/new.png' alt='' /></td>\n<td style='width:55%' class='forumheader3'><a href='".e_BASE."forum_viewforum.php?".$forum_id."'>".$forum_name."</a>" ;
 						 
 						if ($forum_class == e_UC_MEMBER) {
 							$text .= "(".FORLAN_84.")";
