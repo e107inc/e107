@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/frontpage.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-03-09 03:31:58 $
-|     $Author: sweetas $
+|     $Revision: 1.15 $
+|     $Date: 2005-03-15 17:43:11 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -204,6 +204,9 @@ $text = "
 		</tr>";
 	}
 
+	
+/*
+
 	$count = 0;
 	for($i=0;$i<count($array_mainparent);$i++){
 		if ($sql2->db_Select("pcontent", "content_id, content_heading", "LEFT(content_parent,".(strlen($array_mainparent[$i][0])+2).") = '0.".$array_mainparent[$i][0]."' ")) {
@@ -278,7 +281,7 @@ $text = "
 			$count = $count + 1;
 		}
 	}
-
+*/
 	$text .= "
 	<tr>
 		<td style='width:2%;' class='forumheader3'>".$rs -> form_radio("frontpage", "other", ($flag != TRUE ? "1" : "0"))."</td>
