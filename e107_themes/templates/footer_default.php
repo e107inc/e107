@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-01-27 18:39:50 $
+|     $Revision: 1.14 $
+|     $Date: 2005-01-29 00:54:38 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
@@ -87,6 +87,17 @@ if(is_array($queryinfo) && ADMIN)
 	echo "</table>";
 }
 
+//
+// Just before we quit: dump quick timer if there is any
+// Works any time we get this far. Not calibrated, but it is quick and simple to use.
+// To use: eQTimeOn(); eQTimeOff();
+//
+$tmp = eQTimeElapsed();
+if (strlen($tmp)) {
+	global $ns;
+	$ns->tablerender('Quick Admin Timer',"Results: $tmp microseconds");
+}
+
 // Provide a way to sync user and server time -- see e107.js and class2.php
 // This should be done as late as possible in page processing.
 $_serverTime=time();
@@ -96,10 +107,9 @@ if (abs($_serverTime - $lastSet) > 120) {
          * Benefit: account for user time corrections and changes in internet delays
          * Drawback: each update may cause all server times to display a bit different
          */
-       // echo "<script type='text/javascript'>\n";
-      //  echo "SyncWithServerTime('{$_serverTime}');
-      //  </script>\n";
-      // commented out until error is fixed. missing the function ?
+       echo "<script type='text/javascript'>\n";
+       echo "SyncWithServerTime('{$_serverTime}');
+       </script>\n";
 }
 global $start_ob_level;
 if (ob_get_level() != $start_ob_level ) {
