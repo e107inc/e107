@@ -25,7 +25,7 @@ if(ADMIN == TRUE){
 	$amtext .= wad(e_ADMIN."review.php", ADMIN_MENU_L12, "K");
 
 	$amtext .= wad(e_ADMIN."links.php", ADMIN_MENU_L13, "I");
-	$amtext .= wad(e_ADMIN."link_category.php", ADMIN_MENU_L14, "8");
+	$amtext .= wad(e_ADMIN."links.php?cat", ADMIN_MENU_L14, "8");
 	$amtext .= wad(e_ADMIN."wmessage.php", ADMIN_MENU_L15, "M");
 	$amtext .= wad(e_ADMIN."upload.php", ADMIN_MENU_L16, "6");
 	$amtext .= wad(e_ADMIN."submitnews.php", ADMIN_MENU_L17, "N");
