@@ -58,7 +58,7 @@ if($image_stats == null){ echo "<b>DEBUG</b> image_stats are null<br />"; return
 			/* if destination is stdout, output directly to the browser */
 			$destination_file = "jpg:-";
 			header("Content-type: image/jpeg");
-			passthru ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." '".$source_file."' '".$destination_file."'");
+			passthru ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." ".escapeshellarg($source_file)." '".$destination_file."'");
 		}else{
 			/* otherwise output to file */
 			if($model == "copy"){
