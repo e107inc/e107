@@ -21,6 +21,7 @@ if(IsSet($_POST['chat_submit']))
 	} else
 	{
 		$cmessage = $_POST['cmessage'];
+		$cmessage = htmlentities($cmessage);
 		$nick = trim(chop(preg_replace("/\[.*\]/si", "", $_POST['nick'])));
 		$fp = new floodprotect;
 		if(!$fp -> flood("chatbox", "cb_datestamp"))
