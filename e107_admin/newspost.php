@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.52 $
-|   $Date: 2005-02-22 08:03:46 $
-|   $Author: e107coders $
+|   $Revision: 1.53 $
+|   $Date: 2005-02-26 14:10:26 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 
 */
@@ -64,11 +64,16 @@ if (preg_match("#(.*?)_delete_(\d+)#", $deltest[$tp->toJS(NWSLAN_8)], $matches))
 	$del_id = $matches[2];
 }
 
-if ($delete == "main" && $del_id) {
-	if ($sql->db_Delete("news", "news_id='$del_id' ")) {
+if ($delete == "main" && $del_id)
+{
+	if ($sql->db_Count('news','(*)',"WHERE news_id = '{$del_id}'"))
+	{
 		$e_event->trigger("newsdel", $del_id);
-		$newspost->show_message(NWSLAN_31." #".$del_id." ".NWSLAN_32);
-		$e107cache->clear("news.php");
+		if($sql->db_Delete("news", "news_id='$del_id' "))
+		{
+			$newspost->show_message(NWSLAN_31." #".$del_id." ".NWSLAN_32);
+			$e107cache->clear("news.php");
+		}
 	}
 	unset($delete, $del);
 }
