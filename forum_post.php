@@ -102,7 +102,7 @@ if(IsSet($_POST['addoption']) && $_POST['option_count'] < 10){
 if(IsSet($_POST['submitpoll'])){
         require_once(e_HANDLER."poll_class.php");
         $poll = new poll;
-        $poll -> submit_poll(0, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], $forum_id, "forum");
+        $poll -> submit_poll(0, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], 0, $forum_id, "forum");
 
         require_once(HEADERF);
         echo "<table style='width:100%' class='fborder'>
@@ -244,7 +244,7 @@ if(IsSet($_POST['newthread'])){
                 if($_POST['poll_title'] != "" && $_POST['poll_option'][0] != "" && $_POST['poll_option'][1] != ""){
                         require_once(e_HANDLER."poll_class.php");
                         $poll = new poll;
-                        $poll -> submit_poll(0, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], $thread_id, "forum");
+                        $poll -> submit_poll(0, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], 0, $thread_id, "forum");
                 }
 				if($pref['forum_redirect']){
 					redirect("".e_BASE."forum_viewtopic.php?".$thread_forum_id.".".$thread_id.".".$pages."#$iid");
@@ -759,6 +759,5 @@ function redirect($url)
 
 	header('Location: ' . $url);
 	exit;
-}
-require_once(FOOTERF);
+}require_once(FOOTERF);
 ?>
