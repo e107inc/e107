@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/ad_links.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-03-25 03:18:27 $
-|     $Author: sweetas $
+|     $Revision: 1.27 $
+|     $Date: 2005-03-31 19:16:24 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -186,6 +186,9 @@ if (!defined('E_16_UPLOADS')) {
 if (!defined('E_16_USER')) {
 	define('E_16_USER', "<img src='".e_IMAGE."admin_images/users_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
+if (!defined('E_16_USER_EXTENDED')) {
+	define('E_16_USER_EXTENDED', "<img src='".e_IMAGE."admin_images/users_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+}
 if (!defined('E_16_USERCLASS')) {
 	define('E_16_USERCLASS', "<img src='".e_IMAGE."admin_images/userclass_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
@@ -300,6 +303,9 @@ if (!defined('E_32_UPLOADS')) {
 if (!defined('E_32_USER')) {
 	define('E_32_USER', "<img src='".e_IMAGE."admin_images/users_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
+if (!defined('E_32_USER_EXTENDED')) {
+	define('E_32_USER_EXTENDED', "<img src='".e_IMAGE."admin_images/users_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+}
 if (!defined('E_32_USERCLASS')) {
 	define('E_32_USERCLASS', "<img src='".e_IMAGE."admin_images/userclass_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
@@ -368,6 +374,7 @@ $e_icon_array = array(
 	'maintain' => E_32_MAINTAIN,
 	'upload' => E_32_UPLOADS,
 	'userclass' => E_32_USERCLASS,
+	'user_extended' => E_32_USER_EXTENDED,
 	'users' => E_32_USER,
 	'wmessage' => E_32_WELCOME );
 	
@@ -435,5 +442,6 @@ $array_functions = array(
 	24 => array(e_ADMIN."userclass2.php", ADLAN_38, ADLAN_39, "4", 2, E_16_USERCLASS, E_32_USERCLASS),
 	25 => array(e_ADMIN."language.php", ADLAN_132, ADLAN_133, "0", 1, E_16_LANGUAGE, E_32_LANGUAGE),
 	26 => array(e_ADMIN."mailout.php", ADLAN_136, ADLAN_137, "W", 2, E_16_MAIL, E_32_MAIL),
+	27 => array(e_ADMIN."users_extended.php", ADLAN_78, ADLAN_79, "4", 2, E_16_USER_EXTENDED, E_32_USER_EXTENDED),
 	);
 ?>

@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-03-26 17:21:25 $
-|     $Author: e107coders $
+|     $Revision: 1.21 $
+|     $Date: 2005-03-31 19:18:27 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("ADLAN_0", "News");
@@ -84,6 +84,8 @@ define("ADLAN_73", "Configure public file uploads");
 define("ADLAN_74", "Cache");
 define("ADLAN_75", "Set cache status");
 define("ADLAN_77", "You have had a news item submitted - please click here to check.");
+define("ADLAN_78", "Extended User Fields");
+define("ADLAN_79", "Edit extended user fields");
 
 
 define("ADLAN_86", "Incorrect password ");

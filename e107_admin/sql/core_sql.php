@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-03-31 03:58:08 $
-|     $Author: sweetas $
+|     $Revision: 1.23 $
+|     $Date: 2005-03-31 19:18:27 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -511,7 +511,7 @@ CREATE TABLE user_extended_struct (
   user_extended_struct_signup tinyint(3) unsigned NOT NULL default '0',
   user_extended_struct_applicable tinyint(3) unsigned NOT NULL default '0',
   user_extended_struct_order int(10) unsigned NOT NULL default '0',
-  user_extended_struct_icon varchar(255) NOT NULL default '',
+  user_extended_struct_parent int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (user_extended_struct_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------

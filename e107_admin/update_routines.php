@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.70 $
-|     $Date: 2005-03-31 10:33:08 $
-|     $Author: sweetas $
+|     $Revision: 1.71 $
+|     $Date: 2005-03-31 19:16:24 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -560,6 +560,10 @@ function update_61x_to_700($type) {
 		mysql_query("ALTER TABLE `".MPREFIX."download_category` CHANGE `download_category_class` `download_category_class` TINYINT( 3 ) UNSIGNED DEFAULT '0' NOT NULL");
 		mysql_query("ALTER TABLE `".MPREFIX."generic` CHANGE `gen_chardata` `gen_chardata` TEXT NOT NULL");
 
+		mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` DROP `user_extended_struct_icon` ;");
+		mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` ADD `user_extended_struct_parent` INT( 10 ) UNSIGNED NOT NULL ;");
+
+
 		// start poll update -------------------------------------------------------------------------------------------
 		if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='poll'")) {
 			$sql->db_Insert("plugin", "0, 'Poll', '2.0', 'poll', 1");
@@ -600,19 +604,20 @@ function update_61x_to_700($type) {
 		// check if update is needed.
 		// FALSE = needed, TRUE = not needed.
 
-//		return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."user_extended_struct");
+		//return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."user_extended_struct");
 
-//		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."user_extended_struct");
-//		$fieldname = mysql_field_name($fields,13);
-//	 	return ($fieldname == "user_extended_struct_icon") ? TRUE : FALSE;
+		if($sql -> db_Select("menus", "*", "menu_name = 'newforumposts_menu' and menu_path='newforumposts_menu' ")){
+			return FALSE;
+		}
+
+		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."user_extended_struct");
+		$fieldname = mysql_field_name($fields,13);
+	 	return ($fieldname == "user_extended_struct_parent") ? TRUE : FALSE;
 
 		//return !$sql->db_Select("core","*","e107_name = 'user_entended'");
 
 //		$sql->db_Select_gen("DELETE FROM #core WHERE e107_name='user_entended'");
 
-		if($sql -> db_Select("menus", "*", "menu_name = 'newforumposts_menu' and menu_path='newforumposts_menu' ")){
-			return FALSE;
-		}
 
 		global $pref;
 		if (!isset($pref['search_highlight'])) {
