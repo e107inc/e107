@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-01-27 19:52:24 $
-|     $Author: streaky $
+|     $Revision: 1.18 $
+|     $Date: 2005-02-02 17:42:09 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
-	
+
 if (isset($_POST['newver'])) {
 	header("location:http://e107.org/index.php");
 	exit;
@@ -38,57 +38,25 @@ $rs = new form;
 $signup_title = array(CUSTSIG_2, CUSTSIG_3, "ICQ", "Aim", "MSN", CUSTSIG_4, CUSTSIG_5, CUSTSIG_6, CUSTSIG_7, CUSTSIG_8, CUSTSIG_17);
 $signup_name = array("real", "url", "icq", "aim", "msn", "dob", "loc", "sig", "avt", "zone", "usrclass");
 	
+
+
+
 $aj = new textparse;
 if (isset($_POST['updateprefs'])) {
-	$pref['sitename'] = $aj->formtpa($_POST['sitename']);
-	$pref['siteurl'] = $aj->formtpa($_POST['siteurl']);
-	$pref['sitebutton'] = $aj->formtpa($_POST['sitebutton']);
-	$pref['sitetag'] = $aj->formtpa($_POST['sitetag']);
-	$pref['sitedescription'] = $aj->formtpa($_POST['sitedescription']);
-	$pref['siteadmin'] = $aj->formtpa($_POST['siteadmin']);
-	$pref['siteadminemail'] = $aj->formtpa($_POST['siteadminemail']);
-	$pref['sitetheme'] = ($_POST['sitetheme'] && $_POST['sitetheme'] != "/" ? $_POST['sitetheme'] : "leap of faith");
-	$pref['admintheme'] = ($_POST['admintheme'] && $_POST['admintheme'] != "/" ? $_POST['admintheme'] : "leap of faith");
-	$pref['sitedisclaimer'] = $aj->formtpa($_POST['sitedisclaimer']);
-	 
-	$pref['anon_post'] = $_POST['anon_post'];
-	$pref['user_reg'] = $_POST['user_reg'];
-	$pref['profanity_filter'] = $_POST['profanity_filter'];
-	$pref['profanity_replace'] = $aj->formtpa($_POST['profanity_replace']);
-	$pref['profanity_words'] = $aj->formtpa($_POST['profanity_words']);
-	$pref['use_coppa'] = $_POST['use_coppa'];
-	$pref['shortdate'] = $aj->formtpa($_POST['shortdate']);
-	$pref['longdate'] = $aj->formtpa($_POST['longdate']);
-	$pref['forumdate'] = $aj->formtpa($_POST['forumdate']);
-	//$pref['sitelanguage'] = $_POST['sitelanguage'];
-	$pref['time_offset'] = $_POST['time_offset'];
-	$pref['user_reg_veri'] = $_POST['user_reg_veri'];
-	$pref['user_reg_secureveri'] = $_POST['user_reg_secureveri'];
-	$pref['user_tracking'] = $_POST['user_tracking'];
-	$pref['cookie_name'] = ereg_replace("[^[:alnum:]]", "", $_POST['cookie_name']);
-	$pref['auth_method'] = $_POST['auth_method'];
-	$pref['displaythemeinfo'] = $_POST['displaythemeinfo'];
-	$pref['displayrendertime'] = $_POST['displayrendertime'];
-	$pref['displaysql'] = $_POST['displaysql'];
-	$pref['image_preload'] = $_POST['image_preload'];
-	$pref['timezone'] = $_POST['timezone'];
-	$pref['adminstyle'] = $_POST['adminstyle'];
-	$pref['membersonly_enabled'] = $_POST['membersonly_enabled'];
-	$pref['ssl_enabled'] = $_POST['ssl_enabled'];
-	$pref['search_restrict'] = $_POST['search_restrict'];
-	$pref['nested_comments'] = $_POST['nested_comments'];
-	$pref['antiflood1'] = $_POST['antiflood1'];
-	$pref['antiflood_timeout'] = $_POST['antiflood_timeout'];
-	$pref['autoban'] = $_POST['autoban'];
-	$pref['admin_alerts_ok'] = $_POST['admin_alerts_ok'];
-	$pref['admin_alerts_uniquemenu'] = $_POST['admin_alerts_uniquemenu'];
-	 
-	// Signup. ====================================================
-	 
-	$pref['signup_pass_len'] = $_POST['signup_pass_len'];
-	 
-	 
-	// Create prefs to custom fields.
+	unset($_POST['updateprefs']);
+	foreach($_POST as $key => $value) {
+		if(is_string($value)) {
+			$pref[$key] = $tp->toDB($value, TRUE);
+		} else {
+			$pref[$key] = $value;
+		}
+	}
+
+
+//echo "<pre>"; print_r($pref); echo "</pre>"; exit;
+
+
+
 	if ($sql->db_Select("core", " e107_value", " e107_name='user_entended'")) {
 		$row = $sql->db_Fetch();
 		$user_entended = unserialize($row[0]);
@@ -112,23 +80,17 @@ if (isset($_POST['updateprefs'])) {
 		"";
 	}
 	$pref['signup_options'] = $signup_options;
-	 
-	// =========================
-	 
-	$pref['signcode'] = $_POST['signcode'];
-	$pref['logcode'] = $_POST['logcode'];
-	$pref['htmlarea'] = $_POST['htmlarea'];
-	 
+
 	$e107cache->clear();
 	 
 	save_prefs();
-	 
-	 
-	header("location:".e_ADMIN."prefs.php");
+
+	header("location:".e_ADMIN."prefs.php?u");
 	echo "<script type='text/javascript'>document.location.href='prefs.php'</script>\n";
 	exit;
+
 }
-	
+
 $sql->db_Select("plugin", "*", "plugin_installflag='1' ");
 while ($row = $sql->db_Fetch()) {
 	extract($row);
@@ -154,31 +116,15 @@ if ($authlist) {
 	$pref['auth_method'] = "";
 }
 	
-	
-//added prefs since v2.0 ...
-$anon_post = $pref['anon_post'];
-$user_reg = $pref['user_reg'];
-$profanity_filter = $pref['profanity_filter'];
-$profanity_replace = $pref['profanity_replace'];
-$profanity_words = $pref['profanity_words'];
-$search_restrict = $pref['search_restrict'];
-$use_coppa = $pref['use_coppa'];
-$shortdate = $pref['shortdate'];
-$longdate = $pref['longdate'];
-$forumdate = $pref['forumdate'];
-$sitelocale = $pref['sitelocale'];
-$time_offset = $pref['time_offset'];
-$user_reg_veri = $pref['user_reg_veri'];
-$user_reg_secureveri = $pref['user_reg_secureveri'];
-$user_tracking = $pref['user_tracking'];
-$antiflood1 = $pref['antiflood1'];
-$antiflood_timeout = $pref['antiflood_timeout'];
-$autoban = $pref['autoban'];
-	
+
 require_once("auth.php");
 	
 if (isset($message)) {
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+}
+
+if(e_QUERY == "u") {
+	$ns->tablerender("", "<div style='text-align:center'><b>".PRFLAN_106."</b></div>");
 }
 	
 $handle = opendir(e_THEME);
@@ -226,7 +172,7 @@ $text = "<script type=\"text/javascript\">
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_2.": </td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input class=\"tbox\" type=\"text\" name=\"sitename\" size=\"50\" value=\"".SITENAME."\" maxlength=\"100\" />
+	<input class='tbox' type='text' name='sitename' size='50' value='".SITENAME."' maxlength='100' />
 	</td>
 	</tr>
 	 
@@ -421,7 +367,7 @@ $date3 = $ga->convert_date(time(), "forum");
 	
 $text .= "<td style='width:50%' class='forumheader3'>".PRFLAN_22.": </td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input class='tbox' type='text' name='shortdate' size='40' value='$shortdate' maxlength='50' />
+	<input class='tbox' type='text' name='shortdate' size='40' value='".$pref['shortdate']."' maxlength='50' />
 	<br />".PRFLAN_83.": $date1
 	</td>
 	</tr>
@@ -429,7 +375,7 @@ $text .= "<td style='width:50%' class='forumheader3'>".PRFLAN_22.": </td>
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_23.": </td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input class='tbox' type='text' name='longdate' size='40' value='$longdate' maxlength='50' />
+	<input class='tbox' type='text' name='longdate' size='40' value='".$pref['longdate']."' maxlength='50' />
 	<br />".PRFLAN_83.": $date2
 	</td>
 	</tr>
@@ -437,7 +383,7 @@ $text .= "<td style='width:50%' class='forumheader3'>".PRFLAN_22.": </td>
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_24.": </td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input class='tbox' type='text' name='forumdate' size='40' value='$forumdate' maxlength='50' />
+	<input class='tbox' type='text' name='forumdate' size='40' value='".$pref['forumdate']."' maxlength='50' />
 	<br />".PRFLAN_83.": $date3
 	</td>
 	</tr>
@@ -491,20 +437,20 @@ $text .= "<div id='registration' style='display:none; text-align:center'><table 
 	 
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_29.": </td>
-	<td style='width:50%; text-align:right' class='forumheader3'>". ($user_reg ? "<input type='checkbox' name='user_reg' value='1'  checked='checked' />" : "<input type='checkbox' name='user_reg' value='1' />")."
+	<td style='width:50%; text-align:right' class='forumheader3'>". ($pref['user_reg'] ? "<input type='checkbox' name='user_reg' value='1'  checked='checked' />" : "<input type='checkbox' name='user_reg' value='1' />")."
 	(".PRFLAN_30.")
 	</td>
 	</tr>
 	 
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_31.": </td>
-	<td style='width:50%; text-align:right' class='forumheader3'>". ($user_reg_veri ? "<input type='checkbox' name='user_reg_veri' value='1'  checked='checked' />" : "<input type='checkbox' name='user_reg_veri' value='1' />")."
+	<td style='width:50%; text-align:right' class='forumheader3'>". ($pref['user_reg_veri'] ? "<input type='checkbox' name='user_reg_veri' value='1'  checked='checked' />" : "<input type='checkbox' name='user_reg_veri' value='1' />")."
 	</td>
 	</tr>
 	 
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_32.": </td>
-	<td style='width:50%; text-align:right' class='forumheader3'>". ($anon_post ? "<input type='checkbox' name='anon_post' value='1'  checked='checked' />" : "<input type='checkbox' name='anon_post' value='1' />")."
+	<td style='width:50%; text-align:right' class='forumheader3'>". ($pref['anon_post'] ? "<input type='checkbox' name='anon_post' value='1'  checked='checked' />" : "<input type='checkbox' name='anon_post' value='1' />")."
 	(".PRFLAN_33.")
 	</td>
 	</tr>
@@ -512,7 +458,7 @@ $text .= "<div id='registration' style='display:none; text-align:center'><table 
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_45.": </td>
 	<td style='width:50%; text-align:right' class='forumheader3'>";
-if ($use_coppa == 1) {
+if ($pref['use_coppa']) {
 	$text .= "<input type='checkbox' name='use_coppa' value='1'  checked='checked' />";
 } else {
 	$text .= "<input type='checkbox' name='use_coppa' value='1' />";
@@ -554,8 +500,8 @@ $text .= "<div id='signup' style='display:none; text-align:center'><table style=
 	</tr>
 	 
 	<tr >
-	<td class=\"forumheader\">".CUSTSIG_13."</td>
-	<td class=\"forumheader\">".CUSTSIG_14."</td>
+	<td class='forumheader'>".CUSTSIG_13."</td>
+	<td class='forumheader'>".CUSTSIG_14."</td>
 	</tr>";
 $signupval = explode(".", $pref['signup_options']);
 for ($i = 0; $i < count($signup_title); $i++) {
@@ -596,7 +542,45 @@ $text .= pref_submit();
 	
 	
 $text .= "</table></div>";
+
+
+/* text render options */
+
+$text .= "<div id='textpost' style='display:none; text-align:center'>
+	<table style='width:100%' class='fborder'>
+	<tr>
+	<td class='forumheader3' style='width:40%'>".PRFLAN_102."?:  <div class='smalltext'>".PRFLAN_103."</div></td>
+	<td class='forumheader3' style='width:60%'>". ($pref['link_replace'] ? "<input type='checkbox' name='link_replace' value='1' checked='checked' />" : "<input type='checkbox' name='link_replace' value='1' />")."
+	</td>
+	</tr>
+	 
+	 
+	<tr>
+	<td class='forumheader3' style='width:40%'>".PRFLAN_104.": <div class='smalltext'>".PRFLAN_105."</div></td>
+	<td class='forumheader3' style='width:60%'>
+	<input class='tbox' type='text' name='link_text' size='50' value='".$tp -> toForm($pref['link_text'])."' maxlength='200' />
+	</td>
+	</tr>
+
+	<tr>
+	<td class='forumheader3' style='width:40%'>".PRFLAN_107.": <div class='smalltext'>".PRFLAN_108."</div></td>
+	<td class='forumheader3' style='width:60%'>
+	<input class='tbox' type='text' name='email_text' size='50' value='".$tp -> toForm($pref['email_text'])."' maxlength='200' />
+	</td>
+	</tr>";
 	
+$text .= pref_submit();
+
+$text .= "</table></div>";
+
+
+
+
+
+
+
+
+
 // Security Options. .
 	
 $text .= "<div id='security' style='display:none; text-align:center'>
@@ -625,13 +609,13 @@ $text .= "<div id='security' style='display:none; text-align:center'>
 	 
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_92.": </td>
-	<td style='width:50%; text-align:right' class='forumheader3'>". ($user_reg_secureveri ? "<input type='checkbox' name='user_reg_secureveri' value='1'  checked='checked' />" : "<input type='checkbox' name='user_reg_secureveri' value='1' />")."
+	<td style='width:50%; text-align:right' class='forumheader3'>". ($pref['user_reg_secureveri'] ? "<input type='checkbox' name='user_reg_secureveri' value='1'  checked='checked' />" : "<input type='checkbox' name='user_reg_secureveri' value='1' />")."
 	</td>
 	</tr>
 	 
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_48.": </td>
-	<td style='width:50%; text-align:right' class='forumheader3'>". ($user_tracking == "cookie" ? "<input type='radio' name='user_tracking' value='cookie' checked='checked' /> ".PRFLAN_49 : "<input type='radio' name='user_tracking' value='cookie' /> ".PRFLAN_49). ($user_tracking == "session" ? "<input type='radio' name='user_tracking' value='session' checked='checked' /> ".PRFLAN_50 : "<input type='radio' name='user_tracking' value='session' /> ".PRFLAN_50)."
+	<td style='width:50%; text-align:right' class='forumheader3'>". ($pref['user_tracking'] == "cookie" ? "<input type='radio' name='user_tracking' value='cookie' checked='checked' /> ".PRFLAN_49 : "<input type='radio' name='user_tracking' value='cookie' /> ".PRFLAN_49). ($pref['user_tracking'] == "session" ? "<input type='radio' name='user_tracking' value='session' checked='checked' /> ".PRFLAN_50 : "<input type='radio' name='user_tracking' value='session' /> ".PRFLAN_50)."
 	<br />
 	".PRFLAN_55.": <input class='tbox' type='text' name='cookie_name' size='20' value='".$pref['cookie_name']."' maxlength='20' />
 	</td>
@@ -640,7 +624,7 @@ $text .= "<div id='security' style='display:none; text-align:center'>
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_40.": </td>
 	<td style='width:50%; text-align:right' class='forumheader3'>";
-if ($profanity_filter == 1) {
+if ($pref['profanity_filter']) {
 	$text .= "<input type='checkbox' name='profanity_filter' value='1'  checked='checked' />";
 } else {
 	$text .= "<input type='checkbox' name='profanity_filter' value='1' />";
@@ -653,14 +637,14 @@ $text .= "(".PRFLAN_41.")
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_42.": </td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input class='tbox' type='text' name='profanity_replace' size='30' value='$profanity_replace' maxlength='20' />
+	<input class='tbox' type='text' name='profanity_replace' size='30' value='".$pref['profanity_replace']."' maxlength='20' />
 	</td>
 	</tr>
 	 
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_43.": </td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
-	<textarea class='tbox' name='profanity_words' cols='59' rows='2'>".$profanity_words."</textarea>
+	<textarea class='tbox' name='profanity_words' cols='59' rows='2'>".$pref['profanity_words']."</textarea>
 	<br />".PRFLAN_44."
 	</td>
 	</tr>
@@ -668,7 +652,7 @@ $text .= "(".PRFLAN_41.")
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_82.": </td>
 	<td style='width:50%; text-align:right' class='forumheader3'>";
-if ($search_restrict == 1) {
+if ($pref['search_restrict']) {
 	$text .= "<input type='checkbox' name='search_restrict' value='1'  checked='checked' />";
 } else {
 	$text .= "<input type='checkbox' name='search_restrict' value='1' />";
@@ -679,7 +663,7 @@ $text .= "</td>
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_35.": </td>
 	<td style='width:50%; text-align:right' class='forumheader3'>";
-if ($antiflood1 == 1) {
+if ($pref['antiflood1']) {
 	$text .= "<input type='checkbox' name='antiflood1' value='1'  checked='checked' />";
 } else {
 	$text .= "<input type='checkbox' name='antiflood1' value='1' />";
@@ -690,7 +674,7 @@ $text .= "</td>
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_36.": </td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input class='tbox' type='text' name='antiflood_timeout' size='3' value='$antiflood_timeout' maxlength='3' />
+	<input class='tbox' type='text' name='antiflood_timeout' size='3' value='".$pref['antiflood_timeout']."' maxlength='3' />
 	<br />
 	<b class=\"smalltext\" >".PRFLAN_38."</b>
 	</td>
@@ -700,7 +684,7 @@ $text .= "</td>
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_37.": </td>
 	<td style='width:50%; text-align:right' class='forumheader3'>";
-if ($autoban == 1) {
+if ($pref['autoban']) {
 	$text .= "<input type='checkbox' name='autoban' value='1'  checked='checked' />";
 } else {
 	$text .= "<input type='checkbox' name='autoban' value='1' />";
@@ -766,6 +750,7 @@ function prefs_adminmenu() {
 	$var['date']['text'] = PRFLAN_21;
 	$var['registration']['text'] = PRFLAN_28;
 	$var['signup']['text'] = PRFLAN_19;
+	$var['textpost']['text'] = PRFLAN_101;
 	$var['security']['text'] = PRFLAN_47;
 	$var['comments']['text'] = PRFLAN_87;
 	show_admin_menu(PRFLAN_99, $action, $var, TRUE);
