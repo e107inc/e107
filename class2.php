@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/class2.php,v $
-|     $Revision: 1.99 $
-|     $Date: 2004-10-29 14:51:03 $
+|     $Revision: 1.100 $
+|     $Date: 2004-10-31 20:38:08 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -586,7 +586,7 @@ class textparse
 		}
 		$text = str_replace("$", "&#36;", $text);
 		$text = code($text, "notdef");
-		$text = preg_replace("#[\r]*\n[\r]*#","[e_NL]",$text);
+		$text = preg_replace("#[\r]*\n[\r]*#"," [e_NL]",$text);
 
 		//            if($mode != "nobreak"){ $text = nl2br($text); }
 
@@ -607,7 +607,7 @@ class textparse
 		$text = substr($text, 1);
 		$text = html($text);
 		$nl_replace = ($mode != "nobreak") ? "<br />" : "";
-		$text = str_replace("[e_NL]",$nl_replace,$text);
+		$text = str_replace(" [e_NL]",$nl_replace,$text);
 		return $text;
 	}
 
