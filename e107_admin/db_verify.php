@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db_verify.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-04-01 16:10:26 $
+|     $Revision: 1.10 $
+|     $Date: 2005-04-02 21:24:51 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -197,8 +197,8 @@ function check_tables($what) {
 			}
 		} else {    // Table Missing.
 			$text .= "<tr><td class='forumheader3' style='text-align:center'>$k</td><td class='forumheader3' style='text-align:center'>&nbsp;</td><td class='forumheader' style='text-align:center'>".DBLAN_13."<br /><td class='forumheader3' style='text-align:center'>&nbsp;".fix_form($k,$tf,$tablines[$k],"create")."</td></tr>";
-
-}
+            $fix_active = TRUE; 
+		}
 	}
 	$text .= "</table></div>";
 
