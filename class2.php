@@ -383,14 +383,8 @@ define("FILE_UPLOADS", (ini_get('file_uploads') ? TRUE : FALSE));
 define("INIT", TRUE);
 
 define("e_ADMIN", $e_BASE.$ADMIN_DIRECTORY);
+define("e_REFERER_SELF",($_SERVER["HTTP_REFERER"] == e_SELF));
 
-
-// Security Add on for queries in URLs
-
-if(strpos(e_SELF,$ADMIN_DIRECTORY) && ADMIN && e_QUERY && !count($_POST) && !defined("e_NOCHECK")){
-	list($tmp_s_ref,)=explode("?",$_SERVER["HTTP_REFERER"],2);
-	if($tmp_s_ref != e_SELF){require_once(e_HANDLER."equery_secure.php");}
-}
 
 //@require_once(e_HANDLER."IPB_int.php");
 //@require_once(e_HANDLER."debug_handler.php");
@@ -992,7 +986,7 @@ function init_session(){
                         cookie($pref['cookie_name'], "", (time()-2592000));
                         $_SESSION[$pref['cookie_name']] = "";
                         session_destroy();
-                        define("ADMIN", FALSE); define("USER", FALSE); define("LOGINMESSAGE", "Corrupted cookie detected - logged out.<br /><br />");
+                        define("ADMIN", FALSE); define("USER", FALSE); define("USERCLASS",""); define("LOGINMESSAGE", "Corrupted cookie detected - logged out.<br /><br />");
                         return(FALSE);
                 }
                 if($sql -> db_Select("user", "*", "user_id='$uid' AND md5(user_password)='$upw'")){
@@ -1038,7 +1032,7 @@ function init_session(){
                         }
                 } else {
                         define("USER", FALSE); define("USERTHEME", FALSE); define("ADMIN", FALSE);
-                        define("CORRUPT_COOKIE",TRUE);
+                        define("CORRUPT_COOKIE",TRUE); define("USERCLASS","");
                 }
         }
 }
