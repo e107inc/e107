@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2005-03-24 19:22:07 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.39 $
+|     $Date: 2005-03-24 23:15:58 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -818,10 +818,17 @@ class download {
 			$filesize = $_POST['download_filesize_external'];
 		} else {
 			$durl = $_POST['download_url'];
-			if (preg_match("#^/#", $DOWNLOADS_DIRECTORY) || preg_match("#.:#", $DOWNLOADS_DIRECTORY)) {
-				$filesize = filesize($DOWNLOADS_DIRECTORY.$durl);
-			} else {
-				$filesize = filesize(e_BASE.$DOWNLOADS_DIRECTORY.$durl);
+			if($_POST['download_filesize_external'])
+			{
+				$filesize = $_POST['download_filesize_external'];
+			}
+			else
+			{
+				if (preg_match("#^/#", $DOWNLOADS_DIRECTORY) || preg_match("#.:#", $DOWNLOADS_DIRECTORY)) {
+					$filesize = filesize($DOWNLOADS_DIRECTORY.$durl);
+				} else {
+					$filesize = filesize(e_BASE.$DOWNLOADS_DIRECTORY.$durl);
+				}
 			}
 		}
 
