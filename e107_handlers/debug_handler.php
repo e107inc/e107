@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/debug_handler.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-01-29 18:31:22 $
-|     $Author: mrpete $
+|     $Revision: 1.9 $
+|     $Date: 2005-02-11 15:52:13 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */  
 
@@ -40,8 +40,26 @@ class e107_debug {
 	);
 	
 	function e107_debug() {
-		if (preg_match('/debug=(.*)/', e_MENU, $debug_param)) {
-			$dVal = $debug_param[1];
+		if (preg_match('/debug=(.*)/', e_MENU, $debug_param) || isset($_COOKIE['e107_debug_level'])) {
+			if(isset($_COOKIE['e107_debug_level']))
+			{
+				$dVal = substr($_COOKIE['e107_debug_level'],6);
+			}
+			if(preg_match('/debug=(.*)/', e_MENU))
+			{
+				$dVal = $debug_param[1];
+			}
+
+			if(substr($dVal,-6) == ',stick')
+			{
+				$dVal = substr($dVal,0,-6);
+				cookie('e107_debug_level', 'level='.$dVal, time() + 86400);
+			}
+			if($dVal == 'unstick')
+			{
+				cookie('e107_debug_level', '', time() - 3600);
+			}
+
 			if (isset($this->aDebugShortcuts[$dVal])) {
 				$this->debug_level = $this->aDebugShortcuts[$dVal];
 			} else {
@@ -63,7 +81,7 @@ class e107_debug {
 // Process 'command line' to determine debug level on this page
 //
 
-if (strstr(e_MENU, "debug")) {
+if (strstr(e_MENU, "debug") || isset($_COOKIE['e107_debug_level'])) {
 	$e107_debug = new e107_debug;
 	require_once(e_HANDLER.'db_debug_class.php');
 	$db_debug = new e107_db_debug;
