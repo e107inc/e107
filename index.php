@@ -11,30 +11,41 @@ e107 website system
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/index.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-27 19:51:38 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-31 03:47:04 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
 require_once("class2.php");
-if ($pref['membersonly_enabled'] && !USER) {
+if ($pref['membersonly_enabled'] && !USER)
+{
 	header("location: ".e_LOGIN);
 	exit;
 }
 	
-if (!$pref['frontpage'] || $pref['frontpage_type'] == "splash") {
+if (!$pref['frontpage'] || $pref['frontpage_type'] == "splash")
+{
 	header("location: ".e_BASE."news.php");
 	exit;
 }
-else if(is_numeric($pref['frontpage'])) {
+elseif(is_numeric($pref['frontpage'])) 
+{
 	header("location: ".e_BASE."content.php?content.".$pref['frontpage']."");
 	exit;
 }
-else if(eregi("http", $pref['frontpage'])) {
+elseif(eregi("http", $pref['frontpage']))
+{
 	header("location: ".e_BASE.$pref['frontpage']);
 	exit;
-} else {
+}
+elseif ($pref['frontpage'] == 'forum')
+{
+	header("location: ".e_PLUGIN."forum/forum.php");
+	exit;
+}
+else
+{
 	header("location: ".e_BASE.$pref['frontpage'].".php");
 	exit;
 }
