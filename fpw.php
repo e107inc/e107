@@ -58,7 +58,7 @@ if(e_QUERY){
                 cookie($pref['cookie_name'], "", (time()-2592000));
                 $_SESSION[$pref['cookie_name']] = "";
 
-                $txt = LAN_FPW8." {$username} ".LAN_FPW9." {$newpw}<br /><br />".LAN_FPW10;
+                $txt = LAN_FPW8." {$username} ".LAN_FPW9." {$newpw}<br /><br />".LAN_FPW10." <a href='".e_BASE."index.php'>".LAN_FPW11."</a> ".LAN_FPW12;
                 fpw_error($txt);
 
         } else {
