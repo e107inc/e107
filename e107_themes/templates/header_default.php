@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-01-20 04:07:50 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.16 $
+|     $Date: 2005-01-29 00:54:01 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 if (!function_exists("parseheader")) {
@@ -38,21 +38,28 @@ echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET.
 echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
 <meta http-equiv='content-style-type' content='text/css' />\n";
 echo "<link rel='alternate' type='application/rss+xml' title='".SITENAME." RSS' href='".e_FILE."backend/news.xml' />\n";
-echo "<link rel='stylesheet' href='".THEME."style.css' type='text/css' />\n";
+if (isset($theme_css_php) && $theme_css_php) {
+	echo "<link rel='stylesheet' href='".THEME."theme-css.php' type='text/css' />";
+} else {
+	echo "<link rel='stylesheet' href='".THEME."style.css' type='text/css' />";
 if (!$no_core_css) {
 	echo "<link rel='stylesheet' href='".e_FILE."e107.css' type='text/css' />\n";
+	if ($eplug_css) { echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n"; }
+	}
 }
 if(function_exists('theme_head')){
 	echo theme_head();
 }
 if (file_exists(e_BASE."favicon.ico")) { echo "\n<link rel=\"shortcut icon\" href=\"favicon.ico\" />\n"; }
-if ($eplug_css) { echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n"; }
 echo $pref['meta_tag'] ? $aj -> formtparev($pref['meta_tag'])."\n" : "";
-
+if (isset($theme_js_php) && $theme_js_php) {
+	echo "<link rel='stylesheet' href='".THEME."theme-js.php' type='text/css' />";
+} else {
 echo "<script type='text/javascript' src='".e_FILE."e107.js'></script>\n";
 if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME."theme.js'></script>\n"; }
 if (filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE."user.js'></script>\n"; }
 if ($eplug_js) { echo "<script type='text/javascript' src='".$eplug_js."'></script>\n"; }
+}
 if ($htmlarea_js) { echo $htmlarea_js; }
 if (function_exists('headerjs')){echo headerjs();  }
 
