@@ -12,6 +12,13 @@
 |        GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
+//unset any globals created by register_globals being turned ON
+while (list($global) = each($GLOBALS)){
+ if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS)$/', $global)){
+  unset($$global);
+ }
+}
+unset($global);
 
 // If you need to change the names of any of your directories, change the value here then rename the respective folder on your server ...
 $ADMIN_DIRECTORY = "e107_admin/";
@@ -32,13 +39,6 @@ ob_start ();
 $timing_start = explode(' ', microtime());
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
-//unset any globals created by register_globals being turned ON
-while (list($global) = each($GLOBALS)){
- if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS)$/', $global)){
-  unset($$global);
- }
-}
-unset($global);
 
 if(!$mySQLserver){
         @include("e107_config.php");
