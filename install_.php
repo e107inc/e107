@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-02-08 22:25:28 $
-|     $Author: stevedunstan $
+|     $Revision: 1.15 $
+|     $Date: 2005-02-17 05:17:12 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 @include("e107_handlers/errorhandler_class.php");
@@ -494,7 +494,7 @@ function create_tables() {
 	mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Members', 'user.php', '', '', 1, 4, 0, 0, 0) ");
 	mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Submit News', 'submitnews.php', '', '', 1, 5, 0, 0, 0) ");
 	mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Stats', 'stats.php', '', '', 1, 6, 0, 0, 0) ");
-	mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Site Map', 'sitemap.php', '', '', 1, 7, 0, 0, 0) ");
+
 	 
 	 
 	$e107['e107_author'] = "Steve Dunstan (jalist)";
