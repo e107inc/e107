@@ -17,7 +17,12 @@
 */
 
 .sitelinks { text-align: center; font: 10px 'Lucida Grande', Verdana, Arial, Sans-Serif; padding: 2px 0 2px 20px; margin: 5px 0 0 5px; width: 700px; }
-.sitetag { text-align: center; font: 12px 'Lucida Grande', Verdana, Arial, Sans-Serif; }
+.sitetag {
+	font-size: 1.2em;
+	text-align: center;
+	margin-top: -60px;
+	color: #ffffff;
+}
 
 /* Begin Typography & Colors */
 body {
