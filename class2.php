@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.76 $
-|     $Date: 2005-02-02 15:19:21 $
+|     $Revision: 1.77 $
+|     $Date: 2005-02-02 16:09:46 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -563,7 +563,7 @@ $sql->db_Mark_Time('Start: Get menus');
 //
 //
 
-if ($sql->db_Select('menus', '*', 'menu_location > 0 ORDER BY menu_order')) {
+if ($sql->db_Select('menus', '*', "menu_location > 0 AND menu_class IN (".USERCLASS_LIST.") ORDER BY menu_order")) {
 	while ($row = $sql->db_Fetch()) {
 		$eMenuList[$row['menu_location']][]=$row;
 		$eMenuActive[]=$row['menu_name'];
