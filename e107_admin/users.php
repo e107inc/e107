@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-09-23 14:14:29 $
-|     $Author: loloirie $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-05 16:57:37 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -430,7 +430,7 @@ class users{
                 }
 
 
-                $text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 200px; overflow : auto; '>";
+                $text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>";
 
                 if(IsSet($_POST['searchquery'])){
 
@@ -444,13 +444,13 @@ class users{
 
 
                 if($sql -> db_Select("user", "*", $query, ($_POST['searchquery'] ? 0 : "nowhere"))){
-                        $text .= "<table class='fborder' style='width:100%'>
+                        $text .= "<table class='fborder' style='width: 99%'>
                         <tr>
-                        <td style='width:5%' class='forumheader2'><a href='".e_SELF."?main.user_id.".($id == "desc" ? "asc" : "desc").".$from'>ID</a></td>
-                        <td style='width:10%' class='forumheader2'><a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_79."</a></td>
-                        <td style='width:30%' class='forumheader2'><a href='".e_SELF."?main.user_name.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_78."</a></td>
-                        <td style='width:15%' class='forumheader2'><a href='".e_SELF."?main.user_class.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_91."</a></td>
-                        <td style='width:30%' class='forumheader2'>".USRLAN_75."</td>
+                        <td style='width:5%' class='forumheader'><a href='".e_SELF."?main.user_id.".($id == "desc" ? "asc" : "desc").".$from'>ID</a></td>
+                        <td style='width:10%' class='forumheader'><a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_79."</a></td>
+                        <td style='width:30%' class='forumheader'><a href='".e_SELF."?main.user_name.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_78."</a></td>
+                        <td style='width:15%' class='forumheader'><a href='".e_SELF."?main.user_class.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_91."</a></td>
+                        <td style='width:30%' class='forumheader'>".USRLAN_75."</td>
                         </tr>";
                         require_once(e_HANDLER."multilang/pictures.php");
                         while($row = $sql -> db_Fetch()){
@@ -582,7 +582,7 @@ class users{
                 global $ns, $pref;
                 $text = "<div style='text-align:center'>
                 <form method='post' action='".e_SELF."?".e_QUERY."'>
-                <table style='width:85%' class='fborder'>
+                <table style='".ADMIN_WIDTH."' class='fborder'>
 
                 <tr>
                 <td style='width:50%' class='forumheader3'>".USRLAN_44.":</td>
@@ -644,19 +644,19 @@ class users{
       //    $text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 200px; overflow : auto; '>";
 
                 $text .="
-                <table style='width:97%' class='fborder'><tr>
+                <table style='".ADMIN_WIDTH."' class='fborder'><tr>
                 <td class='fcaption'>".USRLAN_96."</td>
                 <td class='fcaption'>".USRLAN_97."</td>
                 <td class='fcaption'>".USRLAN_98."</td>
-                                <td class='fcaption'>".USRLAN_99."</td>
-                                <td class='fcaption'>".USRLAN_100."</td>
-                                <td class='fcaption'>".USRLAN_101."</td>
+                <td class='fcaption'>".USRLAN_99."</td>
+                <td class='fcaption'>".USRLAN_100."</td>
+                <td class='fcaption'>".USRLAN_101."</td>
                 <td class='fcaption'>".USRLAN_102."</td></tr>
                 \n";
 
                 if(!$row[0]){
                         $text .= "<tr>
-                        <td colspan='4' class='forumheader3' style='text-align:center'>".USRLAN_40."</td>
+                        <td colspan='7' class='forumheader3' style='text-align:center'>".USRLAN_40."</td>
                         </tr>";
                 }else{
                         $c=0;
@@ -675,9 +675,9 @@ class users{
                                         <td class='forumheader3' >".$u_name."&nbsp; </td>
                                         <td class='forumheader3' >".$u_type."&nbsp; </td>
                                         <td class='forumheader3' >".$u_value."&nbsp; </td>
-                                                                                <td class='forumheader3' >".$u_default."&nbsp; </td>
-                                                                                <td class='forumheader3' >".r_userclass_name($u_visible)."&nbsp; </td>
-                                                                                <td class='forumheader3' >".r_userclass_name($u_hide)."&nbsp; </td>
+                                        <td class='forumheader3' >".$u_default."&nbsp; </td>
+                                        <td class='forumheader3' >".r_userclass_name($u_visible)."&nbsp; </td>
+                                        <td class='forumheader3' >".r_userclass_name($u_hide)."&nbsp; </td>
                                         <td class='forumheader3' style='text-align:center;'>
                                         <span class='button' style='height:16px; width:50%;'>
                                         <a style='text-decoration:none' href='".e_SELF."?editext.$key'>".USRLAN_81."</a>
@@ -702,7 +702,7 @@ class users{
                 </table>
                 <form method='post' action='".e_SELF."?".e_QUERY."'>
                 ";
-                $text .="<div><br /></div><table style='width:97%' class='fborder'>  ";
+                $text .="<div><br /></div><table style='".ADMIN_WIDTH."' class='fborder'>  ";
                 $text .= "<tr>
                 <td style='width:30%' class='forumheader3'>".USRLAN_41.":</td>
                 <td style='width:70%' class='forumheader3' colspan='3'>
@@ -781,7 +781,7 @@ class users{
                 $unactive = $sql -> db_Select("user", "*", "user_ban=2");
                 $text = "<div style='text-align:center'>".USRLAN_84." ".$unactive." ".USRLAN_85."<br /><br />
                 <form method='post' action='".e_SELF."'>
-                <table style='width:85%' class='fborder'>
+                <table style='".ADMIN_WIDTH."' class='fborder'>
                 <tr>
                 <td class='forumheader3' style='text-align:center'>
                 <input class='button' type='submit' name='prune' value='".USRLAN_54."' />
@@ -797,7 +797,7 @@ class users{
                 global $rs, $ns;
                 $text = "<div style='text-align:center'>".
                 $rs -> form_open("post", e_SELF, "adduserform")."
-                <table style='width:85%' class='fborder'>
+                <table style='".ADMIN_WIDTH."' class='fborder'>
                 <tr>
                 <td style='width:30%' class='forumheader3'>".USRLAN_61."</td>
                 <td style='width:70%' class='forumheader3'>

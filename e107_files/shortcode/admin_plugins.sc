@@ -1,11 +1,9 @@
 if (ADMIN) {
 	global $e107_plug, $ns, $pref;
 	if ($pref['admin_alerts_ok'] == 1) {
-		ob_start();
 		$text = "";
 		$i = 0;
-		$adminfpage = (!$pref['adminstyle'] || $pref['adminstyle'] == "default" ? "admin.php" : $pref['adminstyle'].".php");
-		if (strstr(e_SELF, "/".$adminfpage)) {
+		if (strstr(e_SELF, "/admin.php")) {
 			global $sql;
 			if ($sql -> db_Select("plugin", "*", "plugin_installflag=1")) {
 				while($rowplug = $sql -> db_Fetch()){
@@ -38,8 +36,5 @@ if (ADMIN) {
 		if ($i>0 && $pref['admin_alerts_uniquemenu'] == 1) {
 			$ns -> tablerender($caption, $text);
 		}
-		$ret = ob_get_contents();
-		ob_end_clean();
-		return $ret;
 	}
 }

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass2.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:21 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-05 16:57:37 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -267,7 +267,7 @@ If(IsSet($_POST['edit'])){
 $text .= "</form>
 </div>";
 
-$ns -> tablerender("<div style='text-align:center'>".UCSLAN_21."</div>", $text);
+$ns -> tablerender(UCSLAN_21, $text);
 
 require_once("footer.php");
 function headerjs(){

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/image.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:20 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-05 16:57:37 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -98,7 +98,7 @@ if(IsSet($_POST['show_avatars'])){
                         }
 
                         $text .= "<div class='spacer'>
-                        <table style='width:95%' class='fborder'>
+                        <table style='".ADMIN_WIDTH."' class='fborder'>
                         <tr>
                         <td class='forumheader'>$image_name</td>
                         </tr>
@@ -113,7 +113,7 @@ if(IsSet($_POST['show_avatars'])){
                 }
 
                 $text .= "<div class='spacer'>
-                <table style='width:95%' class='fborder'>
+                <table style='".ADMIN_WIDTH."' class='fborder'>
                 <tr>
                 <td class='forumheader'><a href='".e_SELF."?del'>".IMALAN_25."</a></td>
                 </tr>
@@ -128,26 +128,9 @@ if(IsSet($_POST['show_avatars'])){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>
-<table style='width:85%' class='fborder'>
+<table style='".ADMIN_WIDTH."' class='fborder'>
 
 <tr>
 <td style='width:75%' class='forumheader3'>
@@ -228,7 +211,7 @@ $text .= "</select>
 </tr>
 
 </table></form></div>";
-$ns -> tablerender("<div style='text-align:center'>".IMALAN_7."</div>", $text);
+$ns -> tablerender(IMALAN_7, $text);
 
 
 require_once("footer.php");

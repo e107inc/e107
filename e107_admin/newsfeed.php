@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/newsfeed.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:20 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-05 16:57:37 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -63,7 +63,7 @@ $headline_total = $sql -> db_Select("headlines");
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>\n
 
-<table style='width:85%' class='fborder'>
+<table style='".ADMIN_WIDTH."' class='fborder'>
 <tr>
 <td colspan='2' style='text-align:center' class='forumheader'>";
 
@@ -128,7 +128,7 @@ $text .= "</td>
 </form>
 </div>";
 
-$ns -> tablerender("<div style='text-align:center'>".NWFLAN_19."</div>", $text);
+$ns -> tablerender(NWFLAN_19, $text);
 
 require_once("footer.php");
 ?>

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/chatbox.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-12-01 14:41:39 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-05 16:57:36 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -83,9 +83,9 @@ if(!$sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, 50", 
         $con = new convert;
         $aj = new textparse();
 
-        $text = "<div style='border : solid 1px #000; padding : 4px; width : auto; height : 200px; overflow : auto; '>
+        $text = "<div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>
 <form method='post' action='".e_SELF."'>
-<table style='width:100%' class='fborder'>";
+<table style='width:99%' class='fborder'>";
 
         $sql2 = new db;
         while($row = $sql -> db_Fetch()){
@@ -141,7 +141,7 @@ $cb_wordwrap = $pref['cb_wordwrap'];
 
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."' id='cbform'>
-<table style='width:85%' class='fborder'>
+<table style='".ADMIN_WIDTH."' class='fborder'>
 <tr>
 <td class='forumheader3' style='width:40%'>".CHBLAN_11."?:  <div class='smalltext'>".CHBLAN_12."</div></td>
 <td class='forumheader3' style='width:60%'>
@@ -235,7 +235,7 @@ CHBLAN_30.": <input class='tbox' type='text' name='cb_layer_height' size='8' val
 </form>
 </div>";
 
-$ns -> tablerender("<div style='text-align:center'>".CHBLAN_20."</div>", $text);
+$ns -> tablerender(CHBLAN_20, $text);
 
 require_once("footer.php");
 ?>

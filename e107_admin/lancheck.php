@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/lancheck.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:20 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-05 16:57:37 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -28,7 +28,7 @@ function show_comparison($language,$filename){
 
         $keys = array_keys($English[$filename]);
         natsort($keys);
-        $ret .= "<table class='fborder'>
+        $ret .= "<table class='fborder' style='".ADMIN_WIDTH."'>
         <tr>
         <td class='fcaption' style='text-align:center;'>".LAN_CHECK_7."</td>
         <td class='fcaption' style='text-align:center;'>{$LANGUAGES_DIRECTORY}<br />English/{$filename}</td>
@@ -95,7 +95,7 @@ function check_core_lanfiles($checklan){
         $English = get_lan_phrases("English");
         $check = get_lan_phrases($checklan);
 
-        $text .= "<table class='fborder'>";
+        $text .= "<table class='fborder' style='".ADMIN_WIDTH."'>";
         $keys = array_keys($English);
         sort($keys);
         foreach($keys as $k){
@@ -136,7 +136,7 @@ function show_languages(){
                 }
                 $text .= "
                 <form name='lancheck' method='POST'>
-                <table class='fborder'>
+                <table class='fborder' style='".ADMIN_WIDTH."'>
                 <tr>
                 <td class='forumheader'>".LAN_CHECK_1."</td></tr>
                 <tr><td class='forumheader3'>";
@@ -166,9 +166,9 @@ if($_POST['check_lang']){
         exit;
 }
 
-$ns -> tablerender(" ",show_languages());
+$ns -> tablerender("",show_languages());
 //$text = check_core_lanfiles();
-//$ns -> tablerender("<div style='text-align:center'>".LOGLAN_13."</div>", $text);
+//$ns -> tablerender(LOGLAN_13, $text);
 require_once("footer.php");
 
 ?>

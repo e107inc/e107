@@ -12,6 +12,7 @@ if (ADMIN) {
 
 		$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."'>
+		<div>
 		<select name='sitelanguage' class='tbox'>
 		<option value=''>".$pref['sitelanguage']."</option>";
 
@@ -29,6 +30,7 @@ if (ADMIN) {
 		$text .= "</select>
 		<br /><br />
 		<input class='button' type='submit' name='setlanguage' value='".UTHEME_MENU_L1."' />
+		</div>
 		</form>
 		</div>";
 

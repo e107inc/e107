@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/forum.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:20 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-05 16:57:37 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -294,12 +294,12 @@ class forum{
                         $sql3 = new db;
                 }
                 if(!$mode){
-                        $text = "<div style='border : solid 1px #000; padding : 4px; width : auto; height : 400px; overflow : auto; '>";
+                        $text = "<div style='padding : 1px; ".ADMIN_WIDTH."; height : 400px; overflow : auto; margin-left: auto; margin-right: auto;'>";
                 }else{
                         $text = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
                 }
                 $text .= "
-                <table style='width:98%' class='fborder'>
+                <table style='".ADMIN_WIDTH."' class='fborder'>
                 <tr>
                 <td colspan='2' style='width:70%; text-align:center' class='fcaption'>".FORLAN_28."</td>
                 <td style='width:30%; text-align:center' class='fcaption'>".FORLAN_80."</td>
@@ -412,7 +412,7 @@ class forum{
                 }
                 $text = "<div style='text-align:center'>
                 <form method='post' action='".e_SELF."?".e_QUERY."'>\n
-                <table style='width:auto' class='fborder'>
+                <table style='".ADMIN_WIDTH."' class='fborder'>
 
                 <tr>
                 <td style='width:40%' class='forumheader3'>".FORLAN_31.":</td>
@@ -455,7 +455,7 @@ class forum{
 
                 $text = "<div style='text-align:center'>
                 <form method='post' action='".e_SELF."?".e_QUERY."'>\n
-                <table style='width:auto' class='fborder'>
+                <table style='".ADMIN_WIDTH."' class='fborder'>
                 <tr>
                 <td style='width:40%' class='forumheader3'>".FORLAN_22.":</td>
                 <td style='width:60%' class='forumheader3'>";
@@ -531,7 +531,7 @@ class forum{
                 global $pref, $ns;
                 $text = "<div style='text-align:center'>
                 <form method='post' action='".e_SELF."?".e_QUERY."'>\n
-                <table style='width:auto' class='fborder'>
+                <table style='".ADMIN_WIDTH."' class='fborder'>
 
                 <tr>
                 <td style='width:75%' class='forumheader3'>".FORLAN_44."<br /><span class='smalltext'>".FORLAN_45."</span></td>
@@ -629,9 +629,9 @@ class forum{
 
         function show_reported ($sub_action, $id){
                         global $sql, $rs, $ns, $aj;
-                        $text = "<div style='border : solid 1px #000; padding : 4px; width :auto; height : 400px; overflow : auto; '>\n";
+                        $text = "<div style='padding : 1px; ".ADMIN_WIDTH."; height : 400px; overflow : auto; margin-left: auto; margin-right: auto;'>\n";
                         if($reported_total = $sql -> db_Select("tmp", "*", "tmp_ip='reported_post' ")){
-                                $text .= "<table class='fborder' style='width:100%'>
+                                $text .= "<table class='fborder' style='width:99%'>
                                 <tr>
                                 <td style='width:80%' class='forumheader2'>".FORLAN_119."</td>
                                 <td style='width:20%; text-align:center' class='forumheader2'>".FORLAN_80."</td>
@@ -661,7 +661,7 @@ class forum{
                 global $ns;
                 $text = "<div style='text-align:center'>
                 <form method='post' action='".e_SELF."?".e_QUERY."'>\n
-                <table style='width:auto' class='fborder'>
+                <table style='".ADMIN_WIDTH."' class='fborder'>
                 <tr>
                 <td style='text-align:center' class='forumheader2'>".FORLAN_60."</td>
                 </tr>
@@ -699,7 +699,7 @@ class forum{
 
                 $text = "<div style='text-align:center'>
                 <form method='post' action='".e_SELF."?".e_QUERY."'>\n
-                <table style='width:auto' class='fborder'>
+                <table style='".ADMIN_WIDTH."' class='fborder'>
 
                 <tr>
                 <td class='forumheader2' style='width:40%'>".FORLAN_98."</td>
@@ -761,7 +761,7 @@ class forum{
                 $text = "
                 <div style='text-align:center'>
                 <form method='post' action='".$_SERVER['PHP_SELF']."'  id='wmform'>
-                <table style='width:85%' class='fborder'>
+                <table style='".ADMIN_WIDTH."' class='fborder'>
                 <tr>";
 
                 $text .= "

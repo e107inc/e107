@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2004-12-02 20:23:56 $
-|     $Author: loloirie $
+|     $Revision: 1.9 $
+|     $Date: 2005-01-05 16:57:37 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -222,14 +222,14 @@ class links{
 
                 // ##### Display scrolling list of existing links ---------------------------------------------------------------------------------------------------------
                 global $sql, $rs, $ns, $aj;
-                $text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 400px; overflow : auto; '>";
+                $text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; height : 400px; overflow : auto; margin-left: auto; margin-right: auto;'>";
                 if($link_total = $sql -> db_Select("links", "*", "ORDER BY link_category, link_id ASC", "nowhere")){
-                        $text .= "<table class='fborder' style='width:100%'>
+                        $text .= "<table class='fborder' style='width:99%'>
                         <tr>
-                        <td style='width:5%' class='forumheader2'>ID</td>
-                        <td style='width:10%' class='forumheader2'>".LCLAN_59."</td>
-                        <td style='width:50%' class='forumheader2'>".LCLAN_53."</td>
-                        <td style='width:18%' class='forumheader2'>".LCLAN_60."</td>
+                        <td style='width:5%' class='forumheader'>ID</td>
+                        <td style='width:10%' class='forumheader'>".LCLAN_59."</td>
+                        <td style='width:50%' class='forumheader'>".LCLAN_53."</td>
+                        <td style='width:18%' class='forumheader'>".LCLAN_60."</td>
                         </tr>";
                         while($row = $sql -> db_Fetch()){
                                 extract($row);
@@ -329,7 +329,7 @@ class links{
 
                 $text = "<div style='text-align:center'>
                 <form method='post' action='".e_SELF."?".e_QUERY."' id='linkform'>
-                <table style='width:95%' class='fborder'>
+                <table style='".ADMIN_WIDTH."' class='fborder'>
                 <tr>
                 <td style='width:30%' class='forumheader3'>".LCLAN_12.": </td>
                 <td style='width:70%' class='forumheader3'>";
@@ -422,7 +422,7 @@ class links{
                 </table>
                 </form>
                 </div>";
-                $ns -> tablerender("<div style='text-align:center'>".LCLAN_29."</div>", $text);
+                $ns -> tablerender(LCLAN_29, $text);
 
         }
 
@@ -456,7 +456,7 @@ class links{
                 global $sql, $ns, $aj;
                 $text = "<div style='text-align:center'>
                 <form method='post' action='".e_SELF."?order'>
-                <table style='width:85%' class='fborder'>";
+                <table style='".ADMIN_WIDTH."' class='fborder'>";
 
                 $sql -> db_Select("link_category");
                 $sql2 = new db;
@@ -502,9 +502,9 @@ class links{
         function show_categories($sub_action, $id){
                 // ##### Display scrolling list of existing categories ---------------------------------------------------------------------------------------------------------
                 global $sql, $rs, $ns, $aj;
-                $text = "<div style='border : solid 1px #000; padding : 4px; width :auto; height : 200px; overflow : auto; '>\n";
+                $text = "<div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>\n";
                 if($category_total = $sql -> db_Select("link_category")){
-                        $text .= "<table class='fborder' style='width:100%'>
+                        $text .= "<table class='fborder' style='width:99%'>
                         <tr>
                         <td style='width:5%' class='forumheader2'>&nbsp;</td>
                         <td style='width:75%' class='forumheader2'>".LCLAN_59."</td>
@@ -552,7 +552,7 @@ class links{
 
                 $text = "<div style='text-align:center'>
                 ".$rs -> form_open("post", e_SELF."?cat", "linkform")."
-                <table class='fborder' style='width:auto'>
+                <table class='fborder' style='".ADMIN_WIDTH."'>
                 <tr>
                 <td class='forumheader3' style='width:30%'><span class='defaulttext'>".LCLAN_71."</span></td>
                 <td class='forumheader3' style='width:70%'>".$rs -> form_text("link_category_name", 50, $link_category_name, 200)."</td>
@@ -593,9 +593,9 @@ class links{
 
         function show_submitted($sub_action, $id){
                 global $sql, $rs, $ns, $aj;
-                $text = "<div style='border : solid 1px #000; padding : 4px; width :auto; height : 200px; overflow : auto; '>\n";
+                $text = "<div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>\n";
                 if($submitted_total = $sql -> db_Select("tmp", "*", "tmp_ip='submitted_link' ")){
-                        $text .= "<table class='fborder' style='width:100%'>
+                        $text .= "<table class='fborder' style='width:99%'>
                         <tr>
                         <td style='width:50%' class='forumheader2'>".LCLAN_53."</td>
                         <td style='width:30%' class='forumheader2'>".LCLAN_45."</td>
@@ -628,7 +628,7 @@ class links{
                 global $pref, $ns;
                 $text = "<div style='text-align:center'>
                 <form method='post' action='".e_SELF."?".e_QUERY."'>\n
-                <table style='width:auto' class='fborder'>
+                <table style='".ADMIN_WIDTH."' class='fborder'>
                 <tr>
                 <td style='width:70%' class='forumheader3'>
                 ".LCLAN_40."<br />

@@ -203,7 +203,6 @@ if (in_array("header", $query) && ($_log[3] <= $steps || !isset($_log)) && (!iss
        require_once(e_ADMIN."auth.php");
 }
 else {
-	$adminfpage = (!$pref['adminstyle'] || $pref['adminstyle'] == "default" ? "admin.php" : $pref['adminstyle'].".php");
      	//Alternative Header
      	$text = "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n
         <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
@@ -230,7 +229,7 @@ else {
         <tr>
         <td style='width:15%; vertical-align: top;'>";
         echo $text;
-        $text ="<a href='".e_ADMIN.$adminfpage."'>".Integ_24."</a><br /><a href='".e_BASE."index.php'>".Integ_25."</a><br /><br />";
+        $text ="<a href='".e_ADMIN."admin.php'>".Integ_24."</a><br /><a href='".e_BASE."index.php'>".Integ_25."</a><br /><br />";
         $ns -> tablerender("Admin", $text);
         echo "</td>
         <td style='width:60%; vertical-align: top;'>";

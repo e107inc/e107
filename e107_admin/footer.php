@@ -11,15 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/footer.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-09-28 12:52:27 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-05 16:57:37 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HTTP")){ exit; }
-@include(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_footer.php");
-@include(e_LANGUAGEDIR."English/admin/lan_footer.php");
-
 if(ADMIN == TRUE)
 {
 	if($pref['cachestatus'])

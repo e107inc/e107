@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.8 $
-|   $Date: 2004-12-12 22:47:36 $
+|   $Revision: 1.9 $
+|   $Date: 2005-01-05 16:57:37 $
 |   $Author: sweetas $
 +---------------------------------------------------------------+
 
@@ -252,7 +252,7 @@ class newspost{
         function show_existing_items($action, $sub_action, $id, $from, $amount){
                 // ##### Display scrolling list of existing news items ---------------------------------------------------------------------------------------------------------
                 global $sql, $rs, $ns, $tp;
-                $text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 300px; overflow : auto; '>";
+                $text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; height : 300px; overflow : auto; margin-left: auto; margin-right: auto;'>";
 
                 if(IsSet($_POST['searchquery'])){
                         $query = "news_title REGEXP('".$_POST['searchquery']."') OR news_body REGEXP('".$_POST['searchquery']."') OR news_extended REGEXP('".$_POST['searchquery']."') ORDER BY news_datestamp DESC";
@@ -261,12 +261,12 @@ class newspost{
                 }
 
                 if($sql -> db_Select("news", "*", $query, ($_POST['searchquery'] ? 0 : "nowhere"))){
-                        $text .= "<table class='fborder' style='width:100%'>
+                        $text .= "<table class='fborder' style='width:99%'>
                         <tr>
 
-                        <td style='width:5%' class='forumheader2'><a href='".e_SELF."?main.news_id.".($id == "desc" ? "asc" : "desc").".$from'>ID</a></td>
-                        <td style='width:5%' class='forumheader2'><a href='".e_SELF."?main.news_title.".($id == "desc" ? "asc" : "desc").".$from'>".NWSLAN_40."</a></td>
-                        <td style='width:45%' class='forumheader2'>".NWSLAN_41."</td>
+                        <td style='width:5%' class='forumheader'><a href='".e_SELF."?main.news_id.".($id == "desc" ? "asc" : "desc").".$from'>ID</a></td>
+                        <td style='width:5%' class='forumheader'><a href='".e_SELF."?main.news_title.".($id == "desc" ? "asc" : "desc").".$from'>".NWSLAN_40."</a></td>
+                        <td style='width:45%' class='forumheader'>".NWSLAN_41."</td>
                         </tr>";
                         while($row = $sql -> db_Fetch()){
                                 extract($row);
@@ -408,7 +408,7 @@ class newspost{
 
                 $text = "<div style='text-align:center'>
                 <form ".(FILE_UPLOADS ? "enctype='multipart/form-data'" : "")." method='post' action='".e_SELF."?".e_QUERY."' id='dataform'>
-                <table style='width:95%' class='fborder'>
+                <table style='".ADMIN_WIDTH."' class='fborder'>
 
                 <tr>
                 <td style='width:20%' class='forumheader3'>".NWSLAN_6.": </td>
@@ -632,7 +632,7 @@ class newspost{
 
                 </form>
                 </div>";
-                $ns -> tablerender("<div style='text-align:center'>".NWSLAN_29."</div>", $text);
+                $ns -> tablerender(NWSLAN_29, $text);
         }
 
 
@@ -697,13 +697,13 @@ class newspost{
         function show_categories($sub_action, $id){
                 // ##### Display scrolling list of existing news items ---------------------------------------------------------------------------------------------------------
                 global $sql, $rs, $ns, $tp;
-                $text = "<div style='border : solid 1px #000; padding : 4px; width :auto; height : 200px; overflow : auto; '>\n";
+                $text = "<div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>\n";
                 if($category_total = $sql -> db_Select("news_category")){
-                        $text .= "<table class='fborder' style='width:100%'>
+                        $text .= "<table class='fborder' style='width:99%'>
                         <tr>
-                        <td style='width:5%' class='forumheader2'>&nbsp;</td>
-                        <td style='width:75%' class='forumheader2'>".NWSLAN_6."</td>
-                        <td style='width:20%; text-align:center' class='forumheader2'>".NWSLAN_41."</td>
+                        <td style='width:5%' class='forumheader'>&nbsp;</td>
+                        <td style='width:75%' class='forumheader'>".NWSLAN_6."</td>
+                        <td style='width:20%; text-align:center' class='forumheader'>".NWSLAN_41."</td>
                         </tr>";
                         while($row = $sql -> db_Fetch()){
                                 extract($row);
@@ -750,7 +750,7 @@ class newspost{
 
                 $text = "<div style='text-align:center'>
                 ".$rs -> form_open("post", e_SELF."?cat", "dataform")."
-                <table class='fborder' style='width:auto'>
+                <table class='fborder' style='".ADMIN_WIDTH."'>
                 <tr>
                 <td class='forumheader3' style='width:30%'><span class='defaulttext'>".NWSLAN_52."</span></td>
                 <td class='forumheader3' style='width:70%'>".$rs -> form_text("category_name", 30, $category_name, 200)."</td>
@@ -789,7 +789,7 @@ class newspost{
 
                 $text = "<div style='text-align:center'>
                 ".$rs -> form_open("post", e_SELF."?pref", "dataform")."
-                <table class='fborder' style='width:94%'>
+                <table class='fborder' style='".ADMIN_WIDTH."'>
                 <tr>
                 <td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_86."</span></td>
                 <td class='forumheader3' style='width:40%'>
@@ -909,9 +909,9 @@ class newspost{
 
         function submitted_news($sub_action, $id){
                 global $sql, $rs, $ns, $tp;
-                $text = "<div style='border : solid 1px #000; padding : 4px; width :auto; height : 300px; overflow : auto; '>\n";
+                $text = "<div style='padding : 1px; ".ADMIN_WIDTH."; height : 300px; overflow : auto; margin-left: auto; margin-right: auto;'>\n";
                 if($category_total = $sql -> db_Select("submitnews","*","submitnews_id !='' ORDER BY submitnews_id DESC")){
-                        $text .= "<table class='fborder' style='width:100%'>
+                        $text .= "<table class='fborder' style='width:99%'>
                         <tr>
                         <td style='width:5%' class='forumheader2'>ID</td>
                         <td style='width:70%' class='forumheader2'>".NWSLAN_57."</td>

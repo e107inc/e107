@@ -12,9 +12,9 @@
 |	GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_admin/forum_conf.php,v $
-| $Revision: 1.1 $
-| $Date: 2004-09-21 19:10:20 $
-| $Author: e107coders $ 
+| $Revision: 1.2 $
+| $Date: 2005-01-05 16:57:37 $
+| $Author: sweetas $ 
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -201,7 +201,7 @@ $forum_total = $sql -> db_Select("forum", "forum_id,forum_name", "forum_parent!=
 $text = "
 <form method='post' action='".e_SELF."?".e_QUERY.".".$thread_parent."'>
 <div style='text-align:center'>
-<table style='width:90%'>
+<table style='".ADMIN_WIDTH."'>
 <tr> 
 <td style='text-align:right'>".FORLAN_24.": </td>
 <td style='text-align:left'>

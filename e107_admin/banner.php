@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banner.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-12-15 01:41:19 $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-05 16:57:36 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -88,8 +88,8 @@ if($sql -> db_Select("banner")){
         }
 }
 
-$text = "<table class=\"fborder\" style=\"width:98%\">
-<tr><td colspan=\"8\" style=\"text-align:center\" class=\"fcaption\">".BNRLAN_7."</td></tr>
+$text = "<div style='text-align: center;'><table class=\"fborder\" style=\"".ADMIN_WIDTH."\">
+<tr><td colspan=\"7\" style=\"text-align:center\" class=\"fcaption\">".BNRLAN_7."</td></tr>
 <tr>
 <td class=\"forumheader\" style=\"text-align:center\"><span class=\"smallblacktext\">".BNRLAN_8."</span></td>
 <td class=\"forumheader\" style=\"text-align:center\"><span class=\"smallblacktext\">".BNRLAN_9."</span></td>
@@ -102,7 +102,7 @@ $text = "<table class=\"fborder\" style=\"width:98%\">
 
 if(!$banner_total = $sql -> db_Select("banner")){
         $text .= "<tr>
-        <td colspan=\"8\" class=\"forumheader2\" style=\"text-align:center\">".BNRLAN_15."</td></tr>";
+        <td colspan=\"7\" class=\"forumheader2\" style=\"text-align:center\">".BNRLAN_15."</td></tr>";
 }else{
         while($row = $sql-> db_Fetch()){
                 extract($row);
@@ -137,21 +137,21 @@ if(!$banner_total = $sql -> db_Select("banner")){
                 <td class=\"forumheader3\" style=\"text-align:center\">".$impressions_left."</td>
                 <td class=\"forumheader3\" style=\"text-align:center\"><a href=\"".e_SELF."?edit.".$banner_id."\">".BNRLAN_44."</a> - <a href=\"".e_SELF."?delete.".$banner_id."\">".BNRLAN_18."</a></td>
                 </tr><tr>
-                <td colspan=\"8\" class=\"forumheader3\" style=\"text-align:center\">
+                <td colspan=\"7\" class=\"forumheader3\" style=\"text-align:center\">
 
                 ".BNRLAN_39.": ". ($banner_active ? BNRLAN_19 : "<b>".BNRLAN_20."</b>")." |
 
                 ".BNRLAN_45.": ".$start_date." &lt;&gt; ".BNRLAN_21.": ".$end_date."</td></tr>
-                <tr><td colspan=\"8\">&nbsp;</td></tr>";
+                <tr><td colspan=\"7\">&nbsp;</td></tr>";
         }
 }
 
-$text .= "</table>
+$text .= "</table></div>
 <br /><br />
 
+<div style='text-align: center;'>
 <form method=\"post\" action=\"".e_SELF."\">
-
-<table class=\"fborder\" style=\"width:98%\">
+<table class=\"fborder\" style=\"".ADMIN_WIDTH."\">
 <tr><td colspan=\"2\" style=\"text-align:center\" class=\"fcaption\">";
 
 $text .= ($edit ? BNRLAN_22 : BNRLAN_23);
@@ -331,7 +331,7 @@ $text .= "</select> ".BNRLAN_38."
 <tr><td colspan=\"2\" style=\"text-align:center\" class=\"forumheader\">";
 $text .= ($edit ? "<input class=\"button\" type=\"submit\" name=\"updatebanner\" value=\"".BNRLAN_40."\" /><input type=\"hidden\" name=\"eid\" value=\"".$id."\"" : "<input class=\"button\" type=\"submit\" name=\"createbanner\" value=\"".BNRLAN_41."\" />");
 
-$text .= "</td></tr></table>
+$text .= "</td></tr></table></div>
 </form>";
 
 $ns -> tablerender(BNRLAN_42, $text);

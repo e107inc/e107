@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2004-12-26 21:11:40 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-05 16:57:37 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -82,7 +82,7 @@ if(IsSet($_POST['submit'])){
     }
     // ============================  Render Results and Mailit =========
 
-    $text = "<div style='overflow:auto;height:300px'>";
+    $text = "<div style='overflow:auto;height:300px; ".ADMIN_WIDTH."'>";
     $text .= "<table class='fborder' style='width:100%'>";
     $text .= "<tr><td class='fcaption'>Username</td><td class='fcaption'>Email</td><td class='fcaption'>Status</td></tr>";
     $message_subject = stripslashes($_POST['email_subject']);
@@ -151,7 +151,7 @@ if(IsSet($_POST['submit'])){
    $text .= ($pref['smtp_enable']==0)? "<div style='text-align:center'>It is recommended that you enable <a href='prefs.php'>SMTP</a> for sending large numbers of emails.<br /><br /></div>":"";
    $text .= "<div style='text-align:center'>
    <form method='post' action='".e_SELF."' id='linkform'>
-   <table style='width:96%' class='fborder'>
+   <table style='".ADMIN_WIDTH."' class='fborder'>
    <tr>
    <td style='width:30%' class='forumheader3'>From Name: </td>
    <td style='width:70%' class='forumheader3'>

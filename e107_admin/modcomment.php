@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/modcomment.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-12-17 12:59:47 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-05 16:57:37 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -71,7 +71,7 @@ if(IsSet($message)){
 
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."?".e_QUERY."'>
-<table style='width:95%' class='fborder'>";
+<table style='".ADMIN_WIDTH."' class='fborder'>";
 
 if(!$sql -> db_Select("comments", "*", "(comment_type='".$type."' OR comment_type='".$tid."') AND comment_item_id=$id")){
         $text .= "<tr><td class='forumheader3' style='text-align:center'>".MDCLAN_2.".</td></tr></table></form></div>";

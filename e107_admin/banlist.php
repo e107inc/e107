@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banlist.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-09-23 15:50:39 $
-|     $Author: loloirie $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-05 16:57:36 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -57,14 +57,14 @@ if(IsSet($message)){
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 if($action != "edit"){
-        $text = $rs -> form_open("post", e_SELF, "ban_form").$rs -> form_hidden("ban_secure","1")."<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 400px; overflow : auto; '>\n";
+        $text = $rs -> form_open("post", e_SELF, "ban_form").$rs -> form_hidden("ban_secure","1")."<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; height : 400px; overflow : auto; margin-left: auto; margin-right: auto;'>\n";
         if(!$ban_total = $sql -> db_Select("banlist")){
                         $text .= "<div style='text-align:center'>".BANLAN_2."</div>";
         }else{
-                        $text .= "<table class='fborder' style='width:100%'>
+                        $text .= "<table class='fborder' style='width:99%;'>
                         <tr>
-                        <td style='width:70%' class='forumheader2'>".BANLAN_10."</td>
-        <td style='width:30%' class='forumheader2'>".BANLAN_11."</td>
+                        <td style='width:70%' class='forumheader'>".BANLAN_10."</td>
+        <td style='width:30%' class='forumheader'>".BANLAN_11."</td>
         </tr>";
                         $count =0;
                         while($row = $sql -> db_Fetch()){
@@ -89,7 +89,7 @@ if($action == "edit"){
 }
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>
-<table style='width:85%' class='fborder'>
+<table style='".ADMIN_WIDTH."' class='fborder'>
 
 <tr>
 <td style='width:30%' class='forumheader3'>".BANLAN_5.": </td>
@@ -116,7 +116,7 @@ $text = "<div style='text-align:center'>
 </form>
 </div>";
 
-$ns -> tablerender("<div style='text-align:center'>".BANLAN_9."</div>", $text);
+$ns -> tablerender(BANLAN_9, $text);
 
 require_once("footer.php");
 ?>

@@ -11,83 +11,34 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-10-10 21:13:18 $
-|     $Author: loloirie $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-05 16:57:36 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-require_once("../class2.php");
-require_once("auth.php");
+require_once('../class2.php');
+require_once('auth.php');
+require(e_ADMIN.'ad_links.php');
+require_once(e_HANDLER.'admin_handler.php');
 
-
-// auto db update ...
-if("0" == ADMINPERMS){
-        @require_once(e_ADMIN."update_routines.php");
-        @update_check();
+// auto db update
+if ('0' == ADMINPERMS) {
+	@require_once(e_ADMIN.'update_routines.php');
+	@update_check();
 }
-//        end auto db update
+// end auto db update
 
-if(e_QUERY == "purge"){
-        $sql -> db_Delete("tmp", "tmp_ip='adminlog' ");
-}
-
-$tdc=0;
-function wad($link, $title, $description, $perms, $icon = FALSE, $mode = FALSE){
-        global $tdc;
-        $permicon = ($mode == TRUE ? e_IMAGE."generic/rname.png" : e_IMAGE."generic/location.png");
-        if(getperms($perms)){
-                if(!$tdc){$tmp1 = "<tr>";}
-                if($tdc == 4){$tmp2 = "</tr>";$tdc=-1;}
-                $tdc++;
-                $tmp = $tmp1."<td class='td' style='text-align:left; vertical-align:top; width:20%; whitespace:nowrap' onmouseover='tdover(this)' onmouseout='tdnorm(this)'
-                onclick=\"document.location.href='$link'\"><img src='$permicon' alt='$description' style='border:0; vertical-align:middle'/> $title</td>\n\n".$tmp2;
-        }
-        return $tmp;
+if (e_QUERY == 'purge') {
+	$sql -> db_Delete("tmp", "tmp_ip='adminlog'");
 }
 
-require_once(e_ADMIN."ad_links.php");
-
-$newarray = asortbyindex ($array_functions, 1);
-
-$text = "<div style='text-align:center'>
-<table style='width:95%'>";
-
-while(list($key, $funcinfo) = each($newarray)){
-        $text .= wad($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3]);
-}
-
-if(!$tdc){ $text .= "</tr>"; }
-
-
-
-        unset($tdc);
-
-        $text .= "</tr><tr>
-        <td colspan='5'><br />
-        </td>
-        </tr>";
-
-        $text .= wad(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z", "", TRUE);
-
-        if($sql -> db_Select("plugin", "*", "plugin_installflag=1")){
-                while($row = $sql -> db_Fetch()){
-                        extract($row);
-                        include(e_PLUGIN.$plugin_path."/plugin.php");
-                        if($eplug_conffile){
-                                $text .= wad(e_PLUGIN.$plugin_path."/".$eplug_conffile, $eplug_name, $eplug_caption, "P".$plugin_id, "", TRUE);
-                        }
-                        unset($eplug_conffile, $eplug_name, $eplug_caption);
-                }
-        }
-
-$text .= "</tr>
-</table></div>";
-$ns -> tablerender("<div style='text-align:center'>".ADLAN_47." ".ADMINNAME."</div>", $text);
+$adminfpage = (!$pref['adminstyle'] || $pref['adminstyle'] == 'default') ? 'admin_default.php' : $pref['adminstyle'].'.php';
+require_once(e_ADMIN.'includes/'.$adminfpage);
 
 
 
 // info -------------------------------------------------------
-
+if ($admin_info) {
 $members = $sql -> db_Count("user");
 $unverified = $sql -> db_Count("user", "(*)", "WHERE user_ban=2");
 $banned = $sql -> db_Count("user", "(*)", "WHERE user_ban=1");
@@ -103,102 +54,88 @@ $submitted_news = $sql -> db_Select("submitnews", "*", "submitnews_auth ='0' ");
 $submitted_articles = $sql -> db_Select("content", "*", "content_type ='15' ");
 $submitted_reviews = $sql -> db_Select("content", "*", "content_type ='16' ");
 
-$text = "<div style='text-align:center'>
-<table style='width:95%'>
-<tr>
-<td style='width:50%'>";
-
-
-$text .= $permicon.ADLAN_110.": ".$members."<br />";
-$text .= $permicon.ADLAN_111.": ".$unverified."<br />";
-$text .= $permicon.ADLAN_112.": ".$banned."<br /><br />";
-
-$text .= ($submitted_news ? $permicon2."<a href='".e_ADMIN."newspost.php?sn'>".ADLAN_107.": $submitted_news</a>" : $permicon.ADLAN_107.": 0")."<br />";
-$text .= ($submitted_articles ? $permicon2."<a href='".e_ADMIN."article.php?sa'>".ADLAN_123.": $submitted_articles</a>" : $permicon.ADLAN_123.": ".$submitted_articles)."<br />";
-$text .= ($submitted_reviews ? $permicon2."<a href='".e_ADMIN."review.php?sa'>".ADLAN_124.": $submitted_reviews</a>" : $permicon.ADLAN_124.": ".$submitted_reviews)."<br />";
-$text .= ($submitted_links ? $permicon2."<a href='".e_ADMIN."links.php?sn'>".ADLAN_119.": $submitted_links</a>" : $permicon.ADLAN_119.": ".$submitted_links)."<br /><br />";
-
-$text .= ($reported_posts ? $permicon2."<a href='".e_ADMIN."forum.php?sr'>".ADLAN_125.": $reported_posts</a>" : $permicon.ADLAN_125.": ".$reported_posts)."<br /><br />";
-
-$text .= ($active_uploads ? $permicon2."<a href='".e_ADMIN."upload.php'>".ADLAN_108.": $active_uploads</a>" : $permicon.ADLAN_108.": ".$active_uploads)."<br /><br />";
-
-$text .= $permicon.ADLAN_113.": ".$forum_posts."<br />";
-$text .= $permicon.ADLAN_114.": ".$comments."<br />";
-$text .= $permicon.ADLAN_115.": ".$chatbox_posts;
-
-$text .= "</td>
-<td style='width:50%; vertical-align:top'>";
-
-$text .= $permicon." <a style='cursor: pointer; cursor: hand' onclick=\"expandit(this)\">".ADLAN_116."</a>\n";
-if(e_QUERY != "logall"){
-        $text .= "<div style='display: none;'>";
+if ($admin_info_style) {
+	$text = "<div style='text-align:center'>
+	<table class='fborder' style='width:95%'>
+	<tr><td class='forumheader'>".ADLAN_134."</td><td class='forumheader'>".ADLAN_135."</td></tr>";
+	$text .= "<tr><td class='forumheader3' style='width:50%; vertical-align:top'>";
+} else {
+	$text = "<div style='text-align:center'>
+	<table style='width:95%'>
+	<tr>
+	<td style='width:50%; vertical-align:top'>";
 }
-if(e_QUERY == "logall"){
-        $sql -> db_Select("tmp", "*", "tmp_ip='adminlog' ORDER BY tmp_time DESC");
-}else{
-        $sql -> db_Select("tmp", "*", "tmp_ip='adminlog' ORDER BY tmp_time DESC LIMIT 0,10");
+
+$text .= "<div style='padding-bottom: 2px;'>".SML_IMG_USER." ".ADLAN_110.": ".$members."</div>";
+$text .= "<div style='padding-bottom: 2px;'>".SML_IMG_USER." ".ADLAN_111.": ".$unverified."</div>";
+$text .= "<div style='padding-bottom: 2px;'>".SML_IMG_BANLIST." ".ADLAN_112.": ".$banned."<br /><br /></div>";
+
+$text .= "<div style='padding-bottom: 2px;'>".SML_IMG_NEWS.($submitted_news ? " <a href='".e_ADMIN."newspost.php?sn'>".ADLAN_107.": $submitted_news</a>" : " ".ADLAN_107.": 0")."</div>";
+$text .= "<div style='padding-bottom: 2px;'>".SML_IMG_ARTICLE.($submitted_articles ? " <a href='".e_ADMIN."article.php?sa'>".ADLAN_123.": $submitted_articles</a>" : " ".ADLAN_123.": ".$submitted_articles)."</div>";
+$text .= "<div style='padding-bottom: 2px;'>".SML_IMG_REVIEW.($submitted_reviews ? " <a href='".e_ADMIN."review.php?sa'>".ADLAN_124.": $submitted_reviews</a>" : " ".ADLAN_124.": ".$submitted_reviews)."</div>";
+$text .= "<div style='padding-bottom: 2px;'>".SML_IMG_LINKS.($submitted_links ? " <a href='".e_ADMIN."links.php?sn'>".ADLAN_119.": $submitted_links</a>" : " ".ADLAN_119.": ".$submitted_links)."<br /><br /></div>";
+
+$text .= "<div style='padding-bottom: 2px;'>".SML_IMG_FORUM.($reported_posts ? " <a href='".e_ADMIN."forum.php?sr'>".ADLAN_125.": $reported_posts</a>" : " ".ADLAN_125.": ".$reported_posts)."<br /><br /></div>";
+
+$text .= "<div style='padding-bottom: 2px;'>".SML_IMG_UPLOADS.($active_uploads ? " <a href='".e_ADMIN."upload.php'>".ADLAN_108.": $active_uploads</a>" : " ".ADLAN_108.": ".$active_uploads)."<br /><br /></div>";
+
+$text .= "<div style='padding-bottom: 2px;'>".SML_IMG_FORUM." ".ADLAN_113.": ".$forum_posts."</div>";
+$text .= "<div style='padding-bottom: 2px;'>".SML_IMG_COMMENT." ".ADLAN_114.": ".$comments."</div>";
+$text .= "<div style='padding-bottom: 2px;'>".SML_IMG_CHAT." ".ADLAN_115.": ".$chatbox_posts."</div>";
+
+if ($admin_info_style) {
+	$text .= "</td>
+	<td class='forumheader3' style='width:50%; vertical-align:top'>";
+} else {
+	$text .= "</td>
+	<td style='width:50%; vertical-align:top'>";
 }
-$text .= "<ul>";
+
+$text .= SML_IMG_ADMINLOG." <a style='cursor: pointer; cursor: hand' onclick=\"expandit(this)\">".ADLAN_116."</a>\n";
+if (e_QUERY != "logall") {
+	$text .= "<div style='display: none;'>";
+}
+if (e_QUERY == "logall") {
+	$sql -> db_Select("tmp", "*", "tmp_ip='adminlog' ORDER BY tmp_time DESC");
+} else {
+	$sql -> db_Select("tmp", "*", "tmp_ip='adminlog' ORDER BY tmp_time DESC LIMIT 0,10");
+}
+$text .= '<ul>';
 $gen = new convert;
-while($row = $sql -> db_Fetch()){
-        extract($row);
-        $datestamp = $gen->convert_date($tmp_time, "short");
-        $text .= "<li>".$datestamp.$tmp_info."</li>";
+while ($row = $sql -> db_Fetch()) {
+        $datestamp = $gen->convert_date($row['tmp_time'], 'short');
+        $text .= '<li>'.$datestamp.$row['tmp_info'].'</li>';
 }
-$text .= "</ul>";
+$text .= '</ul>';
 
 $text .= "[ <a href='".e_SELF."?logall'>".ADLAN_117."</a> ][ <a href='".e_SELF."?purge'>".ADLAN_118."</a> ]\n</div>
-</td></tr></table></div>
-
-";
+</td></tr></table></div>";
 
 $ns -> tablerender(ADLAN_109, $text);
+}
 
 require_once("footer.php");
 
-// Multi indice array sort by sweetland@whoadammit.com
-function asortbyindex ($sortarray, $index) {
-        $lastindex = count ($sortarray) - 1;
-        for ($subindex = 0; $subindex < $lastindex; $subindex++) {
-                $lastiteration = $lastindex - $subindex;
-                for ($iteration = 0; $iteration < $lastiteration;    $iteration++) {
-                        $nextchar = 0;
-                        if (comesafter ($sortarray[$iteration][$index], $sortarray[$iteration + 1][$index])) {
-                                $temp = $sortarray[$iteration];
-                                $sortarray[$iteration] = $sortarray[$iteration + 1];
-                                $sortarray[$iteration + 1] = $temp;
-                        }
-                }
-        }
-        return ($sortarray);
-}
-
-function comesafter ($s1, $s2) {
-        $order = 1;
-        if (strlen ($s1) > strlen ($s2)) {
-                $temp = $s1;
-                $s1 = $s2;
-                $s2 = $temp;
-                $order = 0;
-        }
-        for ($index = 0; $index < strlen ($s1); $index++) {
-                if ($s1[$index] > $s2[$index]) return ($order);
-                if ($s1[$index] < $s2[$index]) return (1 - $order);
-        }
-        return ($order);
-}
-
 function headerjs(){
-$script =  "<script type=\"text/javascript\">
-function tdover(object) {
-  if (object.className == 'td') object.className = 'forumheader5';
+	global $pref;
+	if ($pref['adminstyle']=='adminb') {
+		$norm_class = 'forumheader3';
+		$over_class = 'forumheader4';
+	} else {
+		$norm_class = 'td';
+		$over_class = 'forumheader5';
+	}
+	$script =  "<script type=\"text/javascript\">
+	function tdover(object) {
+		if (object.className == '".$norm_class."') object.className = '".$over_class."';
+	}
+
+	function tdnorm(object) {
+		if (object.className == '".$over_class."') object.className = '".$norm_class."';
+	}
+	</script>\n";
+
+	return $script;
 }
 
-function tdnorm(object) {
-  if (object.className == 'forumheader5') object.className = 'td';
-}
-</script>\n";
-
-return $script;
-}
 ?>

@@ -49,31 +49,31 @@ if(IsSet($_POST['backup_core'])){
 
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>\n
-<table style='width:85%' class='fborder'>
+<table style='".ADMIN_WIDTH."' class='fborder'>
 
 <tr>
 <td style='width:70%' class='forumheader3'>".DBLAN_15."</td>
-<td class='forumheader3' style='width:30%;text-align:center'><input class='button' type='submit' name='db_update' value='".DBLAN_16."' /></td>
+<td class='forumheader3' style='width:30%;text-align:center'><input class='button' style='width: 100%' type='submit' name='db_update' value='".DBLAN_16."' /></td>
 </tr>
 
 <tr>
 <td style='width:70%' class='forumheader3'>".DBLAN_2."</td>
-<td class='forumheader3' style='width:30%;text-align:center'><input class='button' type='submit' name='dump_sql' value='".DBLAN_3."' /></td>
+<td class='forumheader3' style='width:30%;text-align:center'><input class='button' style='width: 100%' type='submit' name='dump_sql' value='".DBLAN_3."' /></td>
 </tr>
 
 <tr>
 <td style='width:70%' class='forumheader3'>".DBLAN_4."</td>
-<td class='forumheader3' style='width:30%;text-align:center'><input class='button' type='submit' name='verify_sql' value='".DBLAN_5."' /></td>
+<td class='forumheader3' style='width:30%;text-align:center'><input class='button' style='width: 100%' type='submit' name='verify_sql' value='".DBLAN_5."' /></td>
 </tr>
 
 <tr>
 <td style='width:70%' class='forumheader3'>".DBLAN_6."</td>
-<td class='forumheader3' style='width:30%;text-align:center'><input class='button' type='submit' name='optimize_sql' value='".DBLAN_7."' /></td>
+<td class='forumheader3' style='width:30%;text-align:center'><input class='button' style='width: 100%' type='submit' name='optimize_sql' value='".DBLAN_7."' /></td>
 </tr>
 
 <tr>
 <td style='width:70%' class='forumheader3'>".DBLAN_8."</td>
-<td class='forumheader3' style='width:30%;text-align:center'><input class='button' type='submit' name='backup_core' value='".DBLAN_9."' />
+<td class='forumheader3' style='width:30%;text-align:center'><input class='button' style='width: 100%' type='submit' name='backup_core' value='".DBLAN_9."' />
 <input type='hidden' name='sqltext' value='$sqltext' />
 </td></tr>
 </table>

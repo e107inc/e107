@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/admin_template.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-01-05 10:34:26 $
-|     $Author: pholzmann $
+|     $Revision: 1.10 $
+|     $Date: 2005-01-05 16:57:39 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,10 +24,9 @@ $ADMIN_HEADER = "<div style='text-align:center'>
 {ADMIN_SEL_LAN}
 {ADMIN_USERLAN}
 </div>
-{ADMIN_MULTILANG}
 <table style='width:100%' cellspacing='10' cellpadding='10'>
 <tr>
-<td style='width:19%; vertical-align: top;'>
+<td style='width:17%; vertical-align: top;'>
 {ADMIN_NAV}
 {ADMIN_LANG}
 {ADMIN_PWORD}
@@ -39,7 +38,7 @@ $ADMIN_HEADER = "<div style='text-align:center'>
 ";
 
 $ADMIN_FOOTER = "</td>
-<td style='width:19%; vertical-align:top'>
+<td style='width:17%; vertical-align:top'>
 {ADMIN_MENU}
 {ADMIN_SITEINFO}
 {ADMIN_DOCS}
