@@ -2,13 +2,9 @@ if (ADMIN) {
 	global $ns, $sql, $pref;
 	if ($pref['multilanguage']) {
 		require_once(e_PLUGIN."userlanguage_menu/languages/".e_LANGUAGE.".php");
-		$handle=opendir(e_LANGUAGEDIR);
-		while ($file = readdir($handle)){
-			if($file != "." && $file != ".." && $file != "/" && $file != "CVS" ){
-				$lanlist[] = $file;
-			}
-		}
-		closedir($handle);
+		require_once(e_HANDLER."file_class.php");
+		$fl = new e_file;
+		$lanlist = $fl->get_dirs(e_LANGUAGEDIR);
 
 		$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."'>
@@ -22,7 +18,7 @@ if (ADMIN) {
 			$langname = $langval;
 			$langval = ($langval == $pref['sitelanguage']) ? "" : $langval;
 			$selected = ($langval == $sql->mySQLlanguage) ? "selected='selected'" : "";
-			if (table_exists($langname)) {
+			if (table_exists("lan_".$langname)) {
 				$text .= "<option value='".$langval."' $selected>$langname</option>\n ";
 			}
 		}

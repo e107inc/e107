@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-02-05 03:49:22 $
+|     $Revision: 1.12 $
+|     $Date: 2005-03-26 17:03:32 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -26,12 +26,12 @@ if (!getperms("ML")) {
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 
-
-// still requires some "LAN" work - once fully tested.
-
 $tabs = table_list(); // array("news","content","links");
-$lanlist = get_langlist();
 // list of languages.
+require_once(e_HANDLER."file_class.php");
+$fl = new e_file;
+$lanlist = $fl->get_dirs(e_LANGUAGEDIR);
+
 
 if (isset($_POST['submit_prefs']) ) {
 
@@ -39,7 +39,7 @@ if (isset($_POST['submit_prefs']) ) {
 	$pref['sitelanguage'] = $_POST['sitelanguage'];
 
 	save_prefs();
-	$ns->tablerender("Saved", "<div style='text-align:center'>Saved</div>");
+	$ns->tablerender("Saved", "<div style='text-align:center'>".LAN_SAVED."</div>");
 
 }
 // ----------------- delete tables ---------------------------------------------
@@ -70,7 +70,7 @@ if (isset($_POST['create_tables']) && $_POST['language']) {
 		if ($_POST[$value]) {
 			$lang = strtolower($_POST['language']);
 
-			if (copy_table($value, $lang."_".$value, $_POST['drop'])) {
+			if (copy_table($value, "lan_".$lang."_".$value, $_POST['drop'])) {
 				$message .= " ".$_POST['language']." ".$value." created<br />";
 			} else {
 				$message .= (!$_POST['drop'])? " ".$_POST['language']." ".$value." ".LANG_LAN_00."<br />":
@@ -79,8 +79,7 @@ if (isset($_POST['create_tables']) && $_POST['language']) {
 		} elseif(db_Table_exists($lang."_".$value)) {
 			if ($_POST['remove']) {
 				// Remove table.
-				$message .= (mysql_query("DROP TABLE ".$mySQLprefix.$lang."_".$value)) ? $_POST['language']." ".$value." deleted<br />" :
-				 $_POST['language']." $value ".LANG_LAN_02."<br />";
+				$message .= (mysql_query("DROP TABLE ".$mySQLprefix."lan_".$lang."_".$value)) ? $_POST['language']." ".$value." ".LAN_DELETED."<br />" :  $_POST['language']." $value ".LANG_LAN_02."<br />";
 			} else {
 				// leave table.
 				$message = $_POST['language']." ".$value." was disabled but left intact.";
@@ -126,10 +125,10 @@ for($i = 0; $i < count($lanlist); $i++) {
 	$text .= "<div style='text-align: center'>\n";
 
 	if ($installed) {
-		$text .= " <input type='submit' class='button' name='edit_existing' value='".ADLAN_78."' />\n";
-		$text .= " <input type='submit' class='button' name='del_existing' value='".ADLAN_79."' onclick=\"return jsconfirm('Delete all tables in ".$lanlist[$i]." ?')\" />\n";
+		$text .= " <input type='submit' class='button' name='edit_existing' value='".LAN_EDIT."' />\n";
+		$text .= " <input type='submit' class='button' name='del_existing' value='".LAN_DELETE."' onclick=\"return jsconfirm('Delete all tables in ".$lanlist[$i]." ?')\" />\n";
 	} else {
-		$text .= "<input type='submit' class='button' name='edit_existing' value='".ADLAN_82."' />\n";
+		$text .= "<input type='submit' class='button' name='edit_existing' value='".LAN_CREATE."' />\n";
 	}
 	$text .= "<input type='hidden' name='lang_choices' value='".$lanlist[$i]."' />";
 	$text .= "</div>";
@@ -286,7 +285,7 @@ function db_Table_exists($table) {
 	global $mySQLdefaultdb;
 	$tables = mysql_list_tables($mySQLdefaultdb);
 	while (list($temp) = mysql_fetch_array($tables)) {
-		if ($temp == strtolower(MPREFIX.$table)) {
+		if ($temp == strtolower(MPREFIX."lan_".$table)) {
 			return TRUE;
 		}
 	}
@@ -294,7 +293,7 @@ function db_Table_exists($table) {
 }
 // ----------------------------------------------------------------------------
 // Cam's Alternative - requires MySQL 4.1+
-// eg. copy_table("news","french_news",1);
+// eg. copy_table("news","lan_french_news",1);
 
 function copy_table($oldtable, $newtable, $drop) {
 
@@ -315,35 +314,26 @@ function table_list() {
 	// grab default language lists.
 	global $mySQLdefaultdb;
 
-	$exclude[] = "banlist";
-	 $exclude[] = "banner";
-	$exclude[] = "cache";
-	 $exclude[] = "core";
-	$exclude[] = "online";
-	 $exclude[] = "parser";
-	$exclude[] = "plugin";
-	 $exclude[] = "user";
-	$exclude[] = "upload";
-	 $exclude[] = "userclass_classes";
-	$exclude[] = "rbinary";
-	 $exclude[] = "session";
-	$exclude[] = "tmp";
-	 $exclude[] = "flood";
-	$exclude[] = "stat_info";
-	 $exclude[] = "stat_last";
-	$exclude[] = "submit_news";
-	 $exclude[] = "rate";
-	$exclude[] = "stat_counter";
-
-	$exclude[] = "french_news"; // still trying to find an efficient way to remove
-	//  tables of non-default languages eg french_news. any ideas?
+	$exclude[] = "banlist";		$exclude[] = "banner";
+	$exclude[] = "cache";		$exclude[] = "core";
+	$exclude[] = "online";		$exclude[] = "parser";
+	$exclude[] = "plugin";		$exclude[] = "user";
+	$exclude[] = "upload";		$exclude[] = "userclass_classes";
+	$exclude[] = "rbinary";		$exclude[] = "session";
+	$exclude[] = "tmp";	 		$exclude[] = "flood";
+	$exclude[] = "stat_info";	$exclude[] = "stat_last";
+	$exclude[] = "submit_news";	$exclude[] = "rate";
+	$exclude[] = "stat_counter";$exclude[] = "user_extended";
+	$exclude[] = "user_extended_struc";
+	$exclude[] = "pm_messages";
+	$exclude[] = "pm_blocks";
 
 	//   print_r($search);
 
 	$tables = mysql_list_tables($mySQLdefaultdb);
 	while (list($temp) = mysql_fetch_array($tables)) {
 		$e107tab = str_replace(MPREFIX, "", $temp);
-		if (str_replace($exclude, "", $e107tab)) {
+		if (str_replace($exclude, "", $e107tab) && !eregi("lan_",$e107tab)) {
 			$tabs[] = $e107tab;
 		}
 	}
@@ -353,19 +343,5 @@ function table_list() {
 
 // ----------------------------------------------------------------------------
 
-function get_langlist() {
-	global $pref;
-	$handle = opendir(e_LANGUAGEDIR);
-	while ($file = readdir($handle)) {
-		if (!strstr($file, ".") && $file != $pref['sitelanguage'] && $file != "CVS") {
-			$lanlist[] = $file;
-
-		}
-	}
-	closedir($handle);
-
-	return $lanlist;
-
-}
 
 ?>
