@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-01-27 19:52:27 $
-|     $Author: streaky $
+|     $Revision: 1.8 $
+|     $Date: 2005-01-28 17:53:44 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 	
@@ -76,15 +76,51 @@ class e_parse {
 		return $this->e_sc->parseCodes($text, $parseSCFiles, $extraCodes);
 		// End parse {XXX} codes
 	}
+
+	function textclean ($text, $wrap=75)
+	{
+		
+		$text = trim ($text);
+		$text = str_replace ("nnn", "nn", $text);
+
+		list ($words) = array (explode (" ", $text));
+		$text = ""; 
+		foreach ($words as $word)
+		{ 
+			if (strlen ($word) > 60 and !ereg ("[[|]|//|.com|<img|&#]", $word))
+			{
+				$word = wordwrap ($word, $wrap, "<br />", 1); 
+			}
+			$text .= " " . $word; 
+		}
+		$text = str_replace (array ('<br> ', ' <br>', ' <br> '), '<br>', $text);
+
+		return trim ($text); 
+		
+	}
+
+	function linewrap ($text, $wrap=60)
+	{
+		$wrap -= 2;
+		preg_match_all("/bw.{1,$wrap}wb/", $text, $parts);
+		return (implode("<br>", $parts[0]));
+	}
+
 	 
-	function toHTML($text, $parseBB = FALSE, $modifiers = "", $postID = "") {
-		if ($text == '') {
+	function toHTML($text, $parseBB = FALSE, $modifiers = "", $postID = "", $wrap=75) {
+		if ($text == '')
+		{
 			return $text;
 		}
 		global $pref;
 		if (MAGIC_QUOTES_GPC == TRUE) {
 			$text = stripslashes($text);
 		}
+
+		$text = preg_replace("#([\t\r\n ])([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="\2://\3" rel="external">\2://\3</a>', $text);
+		$text = preg_replace("#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="http://\2.\3" rel="external">\2.\3</a>', $text);
+		$text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $text);
+		$text = $this -> textclean($text, $wrap);
 		 
 		$search = array('&#039;', '&#036;', '&quot;', 'onerror');
 		$replace = array("'", '$', '"', 'one<i></i>rror');
@@ -122,6 +158,12 @@ class e_parse {
 		$nl_replace = (strpos($modifiers, 'nobreak') === FALSE) ? "<br />" :
 		 "";
 		$text = str_replace('[E_NL]', $nl_replace, $text);
+
+
+
+
+
+
 		return $text;
 	}
 	 
