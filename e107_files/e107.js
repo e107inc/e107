@@ -37,10 +37,13 @@ function open_window(url,type) {
 	}
 }
 
-function preloadimages(nbrpic,pic){
-     myimages=new Image();
-     myimages.src=pic;
-}
+function ejs_preload(ejs_path, ejs_imageString){
+	var ejs_imageArray = ejs_imageString.split(','); 
+	for(ejs_loadall=0; ejs_loadall<imageArray.length; ejs_loadall++){ 
+		var ejs_LoadedImage=new Image(); 
+		ejs_LoadedImage.src=path + ejs_imageArray[ejs_loadall]; 
+	} 
+} 
 
 function textCounter(field,cntfield) {
 	cntfield.value = field.value.length;
