@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2005-03-15 13:49:55 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.50 $
+|     $Date: 2005-03-16 15:09:30 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -476,6 +476,7 @@ function update_61x_to_700($type) {
 			$sql->db_Insert('core', "'search_prefs', 'a:4:{s:12:\"search_chars\";s:3:\"150\";s:11:\"search_sort\";s:3:\"php\";s:6:\"google\";s:2:\"on\";s:13:\"core_handlers\";a:4:{s:4:\"news\";s:2:\"on\";s:8:\"comments\";s:2:\"on\";s:9:\"downloads\";s:2:\"on\";s:5:\"users\";s:2:\"on\";}}'");
    		}
 
+		// Search Update 2
         global $sysprefs;
         $search_prefs = $sysprefs -> getArray('search_prefs');
         if (!isset($search_prefs['plug_handlers'])) {
@@ -497,11 +498,21 @@ function update_61x_to_700($type) {
 			$sql->db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs' ");
 		}
 		
+		// Search Update 3
 		if (!isset($search_prefs['search_res'])) {
 			$search_prefs['search_res'] = '10';
 			$tmp = addslashes(serialize($search_prefs));
 			$sql->db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs' ");
 		}
+		
+		// Search Update 4
+		if (!isset($search_prefs['relevance'])) {
+			$search_prefs['relevance'] = 'on';
+			$search_prefs['user_select'] = 'on';
+			$tmp = addslashes(serialize($search_prefs));
+			$sql->db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs' ");
+		}
+		
 } else {
 		// check if update is needed.
 		// FALSE = needed, TRUE = not needed.
@@ -512,20 +523,18 @@ function update_61x_to_700($type) {
 		$fieldname = mysql_field_name($fields,12);
 	 	return ($fieldname == "user_extended_struct_applicable") ? TRUE : FALSE;
 */
-		return !$sql->db_Select("core","*","e107_name = 'user_entended'");
+		//return !$sql->db_Select("core","*","e107_name = 'user_entended'");
 
 //		$sql->db_Select_gen("DELETE FROM #core WHERE e107_name='user_entended'");
 
-
-/*
         global $sysprefs;
         $search_prefs = $sysprefs -> getArray('search_prefs');
-		if (!isset($search_prefs['search_res'])) {
+		if (!isset($search_prefs['relevance'])) {
 			return FALSE;
 		} else {
 			return TRUE;
 		}
-*/
+
 	}
 }
 
