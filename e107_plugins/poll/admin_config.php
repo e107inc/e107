@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/admin_config.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-03-03 18:36:13 $
+|     $Revision: 1.2 $
+|     $Date: 2005-03-03 22:52:33 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -131,30 +131,30 @@ if ($poll_total = $sql->db_Select("poll")) {
 		<td style='width:5%' class='fcaption'>ID
 		<input type=\"hidden\" name=\"del_poll_confirm\" id=\"del_poll_confirm\" value=\"1\" />
 		</td>
-		<td style='width:75%' class='fcaption'>".POLLAN_7."</td>
-		<td style='width:20%' class='fcaption'>".POLLAN_20."</td>
+		<td style='width:75%' class='fcaption'>".POLLAN_3."</td>
+		<td style='width:20%' class='fcaption'>".POLLAN_4."</td>
 		</tr>";
 	while ($row = $sql->db_Fetch()) {
 		extract($row);
 		$text .= "<tr>
 			<td style='width:5%' class='forumheader3'>$poll_id</td>
 			<td style='width:75%' class='forumheader3'>$poll_title</td>
-			<td style='width:20%; text-align:center' class='forumheader3'><div>". $rs->form_button("button", "main_edit_{$poll_id}", POLLAN_4, "onclick=\"document.location='".e_SELF."?edit.$poll_id'\""). $rs->form_button("submit", "main_delete_{$poll_id}", POLLAN_5, "onclick=\"confirm_($poll_id)\"")."
+			<td style='width:20%; text-align:center' class='forumheader3'><div>". $rs->form_button("button", "main_edit_{$poll_id}", POLLAN_5, "onclick=\"document.location='".e_SELF."?edit.$poll_id'\""). $rs->form_button("submit", "main_delete_{$poll_id}", POLLAN_6, "onclick=\"confirm_($poll_id)\"")."
 			</div></td>
 			</tr>";
 	}
 	$text .= "</table>";
 } else {
-	$text .= "<div style='text-align:center'>".POLLAN_22."</div>";
+	$text .= "<div style='text-align:center'>".POLLAN_7."</div>";
 }
 $text .= "</form></div></div>";
-$ns->tablerender(POLLAN_3, $text);
+$ns->tablerender(POLLAN_1, $text);
 
 $poll_total = $sql->db_Select("poll");
 
 $text = $poll -> renderPollForm();
 
-$ns->tablerender(POLLAN_19, $text);
+$ns->tablerender(POLLAN_2, $text);
 require_once("footer.php");
 function headerjs() {
 	global $tp;
