@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-02-24 12:27:51 $
+|     $Revision: 1.14 $
+|     $Date: 2005-02-24 18:39:55 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -30,8 +30,6 @@ require_once(e_PLUGIN.'forum/forum_class.php');
 $forum = new e107forum;
 
 if (!e_QUERY) {
-	echo "no query!";
-	 exit;
 	header("Location:".e_PLUGIN."forum/forum.php");
 	exit;
 } else {
@@ -522,10 +520,20 @@ function redirect($url) {
 
 function process_upload()
 {
-	global $pref;
+	global $pref, $forum_info, $thread_info;
+	
+	if(isset($thread_info['head']['thread_id']))
+	{
+		$tid = $thread_info['head']['thread_id'];
+	}
+	else
+	{
+		$tid = 0;
+	}
+	
 	if (isset($_FILES['file_userfile']['error']) && $_FILES['file_userfile']['error'] != 4) {
 		require_once(e_HANDLER."upload_handler.php");
-		if ($uploaded = file_upload('/'.e_FILE."public/", "attachment")) {
+		if ($uploaded = file_upload('/'.e_FILE."public/", "attachment", "FT{$tid}_")) {
 			if(strstr($uploaded[0]['type'], "image"))
 			{
 				if(isset($pref['forum_maxwidth']) && $pref['forum_maxwidth'] > 0)
