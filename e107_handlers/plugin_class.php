@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-03-16 03:38:49 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.13 $
+|     $Date: 2005-03-20 15:46:34 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -333,7 +333,14 @@ class e107plugin {
 				$tmp = addslashes(serialize($search_prefs));
 				$sql->db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs' ");
 			}
-
+			
+			if (file_exists(e_PLUGIN.$eplug_folder.'/comments_search.php')) {
+				$search_prefs = $sysprefs -> getArray('search_prefs');
+				require_once(e_PLUGIN.$eplug_folder.'/comments_search.php');
+				$search_prefs['comments_handlers'][$eplug_folder] = array('id' => $comments_type_id, 'active' => 'on', 'dir' => $eplug_folder);
+				$tmp = addslashes(serialize($search_prefs));
+				$sql->db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs' ");
+			}
 			$sql->db_Update('plugin', "plugin_installflag=1 WHERE plugin_id='$id' ");
 			$text .= ($eplug_done ? "<br />".$eplug_done : "");
 		} else {
