@@ -291,6 +291,14 @@ blockquote {
 	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
 }
 
+.tbox.chatbox{
+	background-color: #F4F7FA;
+	border: #5e5d63 1px solid;
+	color: #000000;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	width: 90%;
+}
+
 .nextprev{
 	background-color: #eaeef2;
 	border: #000 1px solid;
