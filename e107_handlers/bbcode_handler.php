@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-02-25 18:44:35 $
+|     $Revision: 1.19 $
+|     $Date: 2005-02-25 20:27:39 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -30,7 +30,7 @@ class e_bbcode {
 			'br', 'color', 'size', 'code', 
 			'html', 'flash', 'link', 'email', 
 			'url', 'quote', 'left', 'right', 
-			'blockquote', 'justify', 'file'
+			'blockquote', 'justify', 'file', 'stream'
 			);
 		foreach($core_bb as $c)
 		{
