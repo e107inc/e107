@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/footer.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-03-28 00:52:13 $
-|     $Author: e107coders $
+|     $Revision: 1.10 $
+|     $Date: 2005-04-04 09:17:02 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -38,7 +38,9 @@ if (ADMIN == TRUE) {
 		}
 	}
 }
-parse_admin($ADMIN_FOOTER);
+if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
+	parse_admin($ADMIN_FOOTER);
+}
 echo "<div style='text-align: center; margin-left: auto; margin-right: auto;'><a href='".e_ADMIN."credits.php'>Credits</a></div>";
 ?>
 
