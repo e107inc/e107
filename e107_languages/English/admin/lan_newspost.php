@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-02-11 06:59:45 $
+|     $Revision: 1.9 $
+|     $Date: 2005-02-13 06:19:13 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -144,9 +144,10 @@ define("LAN_NEWS_25", "Auto-Thumbnail size");
 define("LAN_NEWS_26", "add new upload");
 define("LAN_NEWS_27", "Summary");
 
-define("LAN_NEWS_28", "Sticky");   
-define("LAN_NEWS_29", "Select if news item will be sticky");   
-define("LAN_NEWS_30", "If selected, news item will appear above all others");   
+define("LAN_NEWS_28", "Sticky");
+define("LAN_NEWS_29", "Select if news item will be sticky");
+define("LAN_NEWS_30", "If selected, news item will appear above all others");
 define("LAN_NEWS_31", "This news post is <b>STICKY</b> (it will be shown above all other items). ");
-
+define("LAN_NEWS_32", "Datestamp");
+define("LAN_NEWS_33", "Set the datestamp for the current news item.");
 ?>

@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.40 $
-|   $Date: 2005-02-12 06:13:48 $
+|   $Revision: 1.41 $
+|   $Date: 2005-02-13 06:18:43 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -198,6 +198,7 @@ if ($action == "create") {
 			$_POST['news_thumb'] = $news_thumb;
 			$_POST['news_summary'] = $news_summary;
 			$_POST['news_sticky'] = $news_sticky;
+			$_POST['news_datestamp'] = $news_datestamp;
 
 			$_POST['cat_id'] = $news_category;
 			if ($news_start) {
@@ -271,7 +272,7 @@ class newspost {
 				<tr>
 				<td style='width:5%' class='fcaption'><a href='".e_SELF."?main.news_id.".($id == "desc" ? "asc" : "desc").".$from'>ID</a></td>
 				<td style='width:55%' class='fcaption'><a href='".e_SELF."?main.news_title.".($id == "desc" ? "asc" : "desc").".$from'>".NWSLAN_40."</a></td>
-                <td style='width:15%' class='fcaption'>Render-type</td>
+				<td style='width:15%' class='fcaption'>Render-type</td>
 				<td style='width:15%' class='fcaption'>".NWSLAN_41."</td>
 				</tr>";
 			while ($row = $sql->db_Fetch()) {
@@ -279,11 +280,11 @@ class newspost {
 
 				// Note: To fix the alignment bug. Put both buttons inside the Form.
 				// But make EDIT a 'button' and DELETE 'submit'
-                $ren_type = array("default","title","other-news","other-news 2");
+				$ren_type = array("default","title","other-news","other-news 2");
 				$text .= "<tr>
 					<td style='width:5%' class='forumheader3'>$news_id</td>
 					<td style='width:55%' class='forumheader3'><a href='".e_BASE."comment.php?comment.news.$news_id'>".($news_title ? $tp->toHTML($news_title) : "[".NWSLAN_42."]")."</a></td>
-                    <td style='20%' class='forumheader3'>";
+					<td style='20%' class='forumheader3'>";
 				$text .= $ren_type[$news_render_type];
 				if($news_sticky)
 				{
@@ -486,6 +487,7 @@ class newspost {
 			}
 			$text .= "</select>";
 		} // end of htmlarea check.
+
 		//Extended news form textarea
 		$text .= "
 			</td>
@@ -644,9 +646,69 @@ class newspost {
 		$text .= "</select>
 			</div>
 			</td>
-			</tr>
+			</tr>";
 
-			<tr>
+  // datestamp ----------------
+
+
+			$today = ($_POST['news_datestamp'] || $_POST['ds_day'] ) ? getdate($_POST['news_datestamp']) : getdate(time());
+			$today_day = ($_POST['ds_day']) ? $_POST['ds_day'] : $today["mday"];
+			$today_month = ($_POST['ds_month']) ? $_POST['ds_month'] : $today["mon"];;
+			$today_year = ($_POST['ds_year']) ? $_POST['ds_year'] : $today["year"];;
+			$today_hour = ($_POST['ds_hour']) ? $_POST['ds_hour'] : $today["hours"];;
+			$today_min = ($_POST['ds_min']) ? $_POST['ds_min'] : $today["minutes"];;
+			$today_sec = ($_POST['ds_sec']) ? $_POST['ds_sec'] : $today["seconds"];;
+
+			$text .="<tr>
+			<td class='forumheader3'>
+			".LAN_NEWS_32.":
+			</td>
+			<td class='forumheader3'>
+			<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".LAN_NEWS_33."</a>
+			<div style='display: none;'>";
+			$update_checked = ($_POST['update_datestamp']) ? "checked='checked'" : "";
+			$text .= "<div style='padding-top:5px'>".LAN_DATE.":<select name='ds_day' class='tbox'><option selected='selected'> </option>";
+			for($a = 1; $a <= 31; $a++) {
+				$day_select = ($a == $today_day) ? "selected='selected'" : "";
+				$text .= "<option value='$a' $day_select>".$a."</option>";
+			}
+			$text .= "</select> <select name='ds_month' class='tbox'><option selected='selected'> </option>";
+			for($a = 1; $a <= 12; $a++) {
+	 			$mon_select = ($a == $today_month) ? "selected='selected'" : "";
+				$text .= "<option value='$a' $mon_select>".date ("M", mktime(0,0,0,$a,1,2000))."</option>";
+			}
+			$text .= "</select> <select name='ds_year' class='tbox'><option selected='selected'> </option>";
+			for($a = 2002; $a <= 2010; $a++) {
+				$year_select = ($a == $today_year) ? "selected='selected'" : "";
+				$text .= "<option value='$a' $year_select>".$a."</option>";
+			}
+
+			$text .= "</select>  ".LAN_TIME.":<select name='ds_hour' class='tbox'><option selected='selected'> </option>";
+			for($a = 0; $a <= 23; $a++) {
+				$hour_select = ($a == $today_hour) ? "selected='selected'" : "";
+				$text .= "<option value='$a' $hour_select>".$a."</option>";
+			}
+
+			$text .= "</select> <select name='ds_min' class='tbox'><option selected='selected'> </option>";
+			for($a = 0; $a <= 59; $a++) {
+				$min_select = ($a == $today_min) ? "selected='selected'" : "";
+				$text .= "<option value='$a' $min_select>".$a."</option>";
+			}
+			$text .= "</select> <select name='ds_sec' class='tbox'><option selected='selected'> </option>";
+			for($a = 0; $a <= 59; $a++) {
+				$sec_select = ($a == $today_sec) ? "selected='selected'" : "";
+				$text .= "<option value='$a' $sec_select>".$a."</option>";
+			}
+
+
+			$text .= "</select></div>
+			<input type='checkbox' name='update_datestamp' $update_checked />".NWSLAN_105."
+			</div>
+			</td></tr>";
+
+// -------- end of datestamp ---------------------
+
+		$text .="	<tr>
 			<td class='forumheader3'>
 			".NWSLAN_22.":
 			</td>
@@ -687,7 +749,7 @@ class newspost {
 			$text .= "<input class='button' type='submit' name='preview' value='".NWSLAN_24."' /> ";
 			if ($id && $sub_action != "sn" && $sub_action != "upload") {
 				$text .= "<input class='button' type='submit' name='submit' value='".NWSLAN_25."' /> ";
-				$text .= "<br /><span class='smalltext'><input type='checkbox' name='update_datestamp' /> ".NWSLAN_105."</span>";
+			  //	$text .= "<br /><span class='smalltext'><input type='checkbox' name='update_datestamp' /> ".NWSLAN_105."</span>";
 			} else {
 				$text .= "<input class='button' type='submit' name='submit' value='".NWSLAN_26."' /> ";
 			}
@@ -715,7 +777,7 @@ class newspost {
 		$_POST['admin_id'] = USERID;
 		$_POST['admin_name'] = USERNAME;
 		$_POST['comment_total'] = $comment_total;
-		$_POST['news_datestamp'] = time();
+		$_POST['news_datestamp'] = ($_POST['update_datestamp']) ? time() :  mktime($_POST['ds_hour'],$_POST['ds_min'],$_POST['ds_sec'],$_POST['ds_month'],$_POST['ds_day'],$_POST['ds_year']);
 		$_PR = $_POST;
 		$_PR['news_title'] = $tp->post_toHTML($_PR['news_title']);
 		$_PR['news_summary'] = $tp->post_toHTML($_PR['news_summary']);
