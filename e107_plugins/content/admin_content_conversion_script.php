@@ -3,7 +3,7 @@
 
 require_once("../../class2.php");
 $lan_file = e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content.php';
-include(file_exists($lan_file) ? $lan_file : e_PLUGIN.'content/languages/English/lan_content.php');
+include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN.'content/languages/English/lan_content.php');
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
@@ -54,20 +54,26 @@ if(isset($_POST['convert_table'])){
 	if($totaloldrowscat_content > "0"){
 					//insert a content main parent cat, then insert all content pages into this main parent
 					if(!$sql2 -> db_Select($plugintable, "content_heading", "content_heading = 'content' AND content_parent = '0' ")){
-						$sql2 -> db_Insert($plugintable, "'0', 'content', '', '', '', '1', '', '', '', '0', '0', '0', '0', '', '".time()."', '0', '0', '' ");
-						$content_mainparent = CONTENT_ADMIN_CONVERSION_LAN_0." ".CONTENT_ADMIN_CONVERSION_LAN_7."<br />";
-						$mainparentcontent = "1";
+						$sql2 -> db_Insert($plugintable, "'0', 'content', '', '', '', '1', '', '', '', '0', '0', '0', '0', '', '".time()."', '0', '0', '', '' ");
 
-						//select main content parent id
-						$sql3 -> db_Select($plugintable, "content_id", "content_heading = 'content' AND content_parent = '0' ");
-						list($content_main_id) = $sql3 -> db_Fetch();
+						//check if row is present in the db (is it a valid insert)
+						if(!$sql3 -> db_Select($plugintable, "content_id", "content_heading = 'content' ")){
+							$content_mainparent = CONTENT_ADMIN_CONVERSION_LAN_45;
+						}else{
+							$content_mainparent = CONTENT_ADMIN_CONVERSION_LAN_0." ".CONTENT_ADMIN_CONVERSION_LAN_7."<br />";
+							$mainparentcontent = "1";
 
-						//insert default prefs into the main content cat
-						unset($content_pref, $tmp);
-						$content_pref = $aa -> ContentDefaultPrefs($content_main_id);
-						$tmp = addslashes(serialize($content_pref));
-						$sql4 -> db_Update($plugintable, "content_pref='$tmp' WHERE content_id='$content_main_id' ");
-						$content_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_0." ".CONTENT_ADMIN_CONVERSION_LAN_8."<br />";
+							//select main content parent id
+							$sql3 -> db_Select($plugintable, "content_id", "content_heading = 'content' AND content_parent = '0' ");
+							list($content_main_id) = $sql3 -> db_Fetch();
+
+							//insert default prefs into the main content cat
+							unset($content_pref, $tmp);
+							$content_pref = $aa -> ContentDefaultPrefs($content_main_id);
+							$tmp = addslashes(serialize($content_pref));
+							$sql4 -> db_Update($plugintable, "content_pref='$tmp' WHERE content_id='$content_main_id' ");
+							$content_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_0." ".CONTENT_ADMIN_CONVERSION_LAN_8."<br />";
+						}
 					}
 	}else{
 		$content_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_9." ".CONTENT_ADMIN_CONVERSION_LAN_0." ".CONTENT_ADMIN_CONVERSION_LAN_10."<br />";
@@ -78,20 +84,26 @@ if(isset($_POST['convert_table'])){
 	if($totaloldrowscat_review > "0"){
 					//insert a review main parent cat, then insert all review cats into this main parent
 					if(!$sql2 -> db_Select($plugintable, "content_heading", "content_heading = 'review' AND content_parent = '0' ")){
-						$sql2 -> db_Insert($plugintable, "'0', 'review', '', '', '', '1', '', '', '', '0', '0', '0', '0', '', '".time()."', '0', '0', '' ");
-						$review_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_1." ".CONTENT_ADMIN_CONVERSION_LAN_7."<br />";
-						$mainparentreview = "1";
+						$sql2 -> db_Insert($plugintable, "'0', 'review', '', '', '', '1', '', '', '', '0', '0', '0', '0', '', '".time()."', '0', '0', '', '' ");
 
-						//select main review parent id
-						$sql3 -> db_Select($plugintable, "content_id", "content_heading = 'review' AND content_parent = '0' ");
-						list($review_main_id) = $sql3 -> db_Fetch();
+						//check if row is present in the db (is it a valid insert)
+						if(!$sql3 -> db_Select($plugintable, "content_id", "content_heading = 'review' ")){
+							$review_mainparent = CONTENT_ADMIN_CONVERSION_LAN_45;
+						}else{
+							$review_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_1." ".CONTENT_ADMIN_CONVERSION_LAN_7."<br />";
+							$mainparentreview = "1";
 
-						//insert default prefs into the main review cat
-						unset($content_pref, $tmp);
-						$content_pref = $aa -> ContentDefaultPrefs($review_main_id);
-						$tmp = addslashes(serialize($content_pref));
-						$sql4 -> db_Update($plugintable, "content_pref='$tmp' WHERE content_id='$review_main_id' ");
-						$review_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_1." ".CONTENT_ADMIN_CONVERSION_LAN_8."<br />";
+							//select main review parent id
+							$sql3 -> db_Select($plugintable, "content_id", "content_heading = 'review' AND content_parent = '0' ");
+							list($review_main_id) = $sql3 -> db_Fetch();
+
+							//insert default prefs into the main review cat
+							unset($content_pref, $tmp);
+							$content_pref = $aa -> ContentDefaultPrefs($review_main_id);
+							$tmp = addslashes(serialize($content_pref));
+							$sql4 -> db_Update($plugintable, "content_pref='$tmp' WHERE content_id='$review_main_id' ");
+							$review_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_1." ".CONTENT_ADMIN_CONVERSION_LAN_8."<br />";
+						}
 					}
 	}else{
 		$review_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_9." ".CONTENT_ADMIN_CONVERSION_LAN_1." ".CONTENT_ADMIN_CONVERSION_LAN_10."<br />";
@@ -102,19 +114,26 @@ if(isset($_POST['convert_table'])){
 	if($totaloldrowscat_article > "0"){
 					//insert a article main parent cat, then insert all article cats into this main parent
 					if(!$sql2 -> db_Select($plugintable, "content_heading", "content_heading = 'article' AND content_parent = '0' ")){
-						$sql2 -> db_Insert($plugintable, "'0', 'article', '', '', '', '1', '', '', '', '0', '0', '0', '0', '', '".time()."', '0', '0', '' ");
-						$article_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_2." ".CONTENT_ADMIN_CONVERSION_LAN_7."<br />";
+						$sql2 -> db_Insert($plugintable, "'0', 'article', '', '', '', '1', '', '', '', '0', '0', '0', '0', '', '".time()."', '0', '0', '', '' ");
 
-						//select main article parent id
-						$sql3 -> db_Select($plugintable, "content_id", "content_heading = 'article' AND content_parent = '0' ");
-						list($article_main_id) = $sql3 -> db_Fetch();
+						//check if row is present in the db (is it a valid insert)
+						if(!$sql3 -> db_Select($plugintable, "content_id", "content_heading = 'article' ")){
+							$article_mainparent = CONTENT_ADMIN_CONVERSION_LAN_45;
+						}else{
+							$article_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_2." ".CONTENT_ADMIN_CONVERSION_LAN_7."<br />";
+							$mainparentarticle = "1";
 
-						//insert default prefs into the main article cat
-						unset($content_pref, $tmp);
-						$content_pref = $aa -> ContentDefaultPrefs($article_main_id);
-						$tmp = addslashes(serialize($content_pref));
-						$sql4 -> db_Update($plugintable, "content_pref='$tmp' WHERE content_id='$article_main_id' ");
-						$article_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_2." ".CONTENT_ADMIN_CONVERSION_LAN_8."<br />";
+							//select main article parent id
+							$sql3 -> db_Select($plugintable, "content_id", "content_heading = 'article' AND content_parent = '0' ");
+							list($article_main_id) = $sql3 -> db_Fetch();
+
+							//insert default prefs into the main article cat
+							unset($content_pref, $tmp);
+							$content_pref = $aa -> ContentDefaultPrefs($article_main_id);
+							$tmp = addslashes(serialize($content_pref));
+							$sql4 -> db_Update($plugintable, "content_pref='$tmp' WHERE content_id='$article_main_id' ");
+							$article_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_2." ".CONTENT_ADMIN_CONVERSION_LAN_8."<br />";
+						}
 					}
 	}else{
 		$article_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_9." ".CONTENT_ADMIN_CONVERSION_LAN_2." ".CONTENT_ADMIN_CONVERSION_LAN_10."<br />";
@@ -125,6 +144,7 @@ if(isset($_POST['convert_table'])){
 	if(!$sql -> db_Select("content", "*", "content_parent = '0' AND content_type = '1' ORDER BY content_id " )){
 		$content_present = "0";
 	}else{
+		$count = 1;
 		$content_present = "1";
 		while($row = $sql -> db_Fetch()){
 		extract($row);
@@ -151,7 +171,7 @@ if(isset($_POST['convert_table'])){
 					$newcontent_class = $content_class;
 					$newcontent_pref = "";
 
-					$sql6 -> db_Insert($plugintable, "'0', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."' ");
+					$sql6 -> db_Insert($plugintable, "'0', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '".$count."' ");
 
 					if(!$sql6 -> db_Select($plugintable, "content_id, content_heading", "content_heading = '".$newcontent_heading."' ")){
 						$bug_content_insert[] = $content_id." ".$content_heading;
@@ -159,6 +179,7 @@ if(isset($_POST['convert_table'])){
 						$valid_content_insert[] = $content_id." ".$content_heading;
 						$countcontent = $countcontent + 1;
 					}
+					$count = $count + 1;
 		}
 	}
 
@@ -167,6 +188,7 @@ if(isset($_POST['convert_table'])){
 	if(!$sql -> db_Select("content", "*", "content_parent = '0' AND content_type = '10' ORDER BY content_id " )){
 		$review_cat_present = "0";
 	}else{
+		$count = 1;
 		$review_cat_present = "1";
 		while($row = $sql -> db_Fetch()){
 		extract($row);
@@ -193,7 +215,7 @@ if(isset($_POST['convert_table'])){
 					$newcontent_class = $content_class;
 					$newcontent_pref = "";
 
-					$sql6 -> db_Insert($plugintable, "'0', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."' ");
+					$sql6 -> db_Insert($plugintable, "'0', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '".$count."' ");
 
 					if(!$sql6 -> db_Select($plugintable, "content_id, content_heading", "content_heading = '".$newcontent_heading."' ")){
 						$bug_review_cat_insert[] = $content_id." ".$content_heading;
@@ -201,6 +223,7 @@ if(isset($_POST['convert_table'])){
 						$valid_review_cat_insert[] = $content_id." ".$content_heading;
 						$countreviewcat = $countreviewcat + 1;
 					}
+					$count = $count + 1;
 		}
 	}
 
@@ -209,6 +232,7 @@ if(isset($_POST['convert_table'])){
 	if(!$sql -> db_Select("content", "*", "content_parent = '0' AND content_type = '6' ORDER BY content_id " )){
 		$article_cat_present = "0";
 	}else{
+		$count = 1;
 		$article_cat_present = "1";
 		while($row = $sql -> db_Fetch()){
 		extract($row);
@@ -235,7 +259,7 @@ if(isset($_POST['convert_table'])){
 					$newcontent_class = $content_class;
 					$newcontent_pref = "";
 
-					$sql6 -> db_Insert($plugintable, "'0', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."' ");
+					$sql6 -> db_Insert($plugintable, "'0', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '".$count."' ");
 
 					if(!$sql6 -> db_Select($plugintable, "content_id, content_heading", "content_heading = '".$newcontent_heading."' ")){
 						$bug_article_cat_insert[] = $content_id." ".$content_heading;
@@ -243,6 +267,7 @@ if(isset($_POST['convert_table'])){
 						$valid_article_cat_insert[] = $content_id." ".$content_heading;
 						$countarticlecat = $countarticlecat + 1;
 					}
+					$count = $count + 1;
 		}
 	}
 
@@ -251,6 +276,7 @@ if(isset($_POST['convert_table'])){
 	if(!$sql7 -> db_Select("content", "*", "content_type = '3' || content_type = '16' ORDER BY content_id " )){
 		$review_present = "0";
 	}else{
+		$count = 1;
 		$review_present = "1";
 		while($row = $sql7 -> db_Fetch()){
 		extract($row);					
@@ -306,7 +332,7 @@ if(isset($_POST['convert_table'])){
 					$contentreviewprefvalue = addslashes(serialize($custom));
 					$newcontent_pref = $contentreviewprefvalue;
 
-					$sql5 -> db_Insert($plugintable, "'0', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."' ");
+					$sql5 -> db_Insert($plugintable, "'0', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '".$count."' ");
 
 					if(!$sql5 -> db_Select($plugintable, "content_id, content_heading", "content_heading = '".$newcontent_heading."' ")){
 						$bug_review_insert[] = $content_id." ".$content_heading;
@@ -314,6 +340,7 @@ if(isset($_POST['convert_table'])){
 						$valid_review_insert[] = $content_id." ".$content_heading;
 						$countreview = $countreview + 1;
 					}
+					$count = $count + 1;
 		}
 	}
 
@@ -322,6 +349,7 @@ if(isset($_POST['convert_table'])){
 	if(!$sql7 -> db_Select("content", "*", "content_type = '0' || content_type = '15' ORDER BY content_id " )){
 		$article_present = "0";
 	}else{
+		$count = 1;
 		$article_present = "1";
 		while($row = $sql7 -> db_Fetch()){
 		extract($row);					
@@ -376,7 +404,7 @@ if(isset($_POST['convert_table'])){
 
 					if(!is_object($sql5)){ $sql5 = new db; }
 
-					$sql5 -> db_Insert($plugintable, "'0', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."' ");
+					$sql5 -> db_Insert($plugintable, "'0', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '".$count."' ");
 
 					if(!$sql5 -> db_Select($plugintable, "content_id, content_heading", "content_heading = '".$newcontent_heading."' ")){
 						$bug_article_insert[] = $content_id." ".$content_heading;
@@ -384,6 +412,7 @@ if(isset($_POST['convert_table'])){
 						$valid_article_insert[] = $content_id." ".$content_heading;
 						$countarticle = $countarticle + 1;
 					}
+					$count = $count + 1;
 		}
 	}
 
@@ -427,12 +456,12 @@ if(isset($_POST['convert_table'])){
 	//main parents
 	$text .= "
 	<tr><td class='fcaption' colspan='2'>".CONTENT_ADMIN_CONVERSION_LAN_20."</td></tr>
-	<tr><td class='forumheader3' colspan='2'>".$content_mainparent."</td></tr>
+	<tr><td class='forumheader3' colspan='2'>".($mainparentcontent == "1" ? CONTENT_ICON_OK : CONTENT_ICON_ERROR)." ".$content_mainparent."</td></tr>
 	<tr><td class='fcaption' colspan='2'>".CONTENT_ADMIN_CONVERSION_LAN_21."</td></tr>
-	<tr><td class='forumheader3' colspan='2'>".$review_mainparent."</td></tr>
+	<tr><td class='forumheader3' colspan='2'>".($mainparentreview == "1" ? CONTENT_ICON_OK : CONTENT_ICON_ERROR)." ".$review_mainparent."</td></tr>
 	<tr><td class='fcaption' colspan='2'>".CONTENT_ADMIN_CONVERSION_LAN_22."</td></tr>
-	<tr><td class='forumheader3' colspan='2'>".$article_mainparent."</td></tr>
-	
+	<tr><td class='forumheader3' colspan='2'>".($mainparentarticle == "1" ? CONTENT_ICON_OK : CONTENT_ICON_ERROR)." ".$article_mainparent."</td></tr>
+
 	<tr><td class='forumheader3' colspan='2'><br /></td></tr>";
 
 	//content

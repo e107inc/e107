@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-02-10 14:10:05 $
+|     $Revision: 1.11 $
+|     $Date: 2005-02-10 19:56:25 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -454,7 +454,7 @@ define("CONTENT_ADMIN_CONVERSION_LAN_42", "conversion results of the old content
 define("CONTENT_ADMIN_CONVERSION_LAN_43", "press the button to convert the old content table");
 define("CONTENT_ADMIN_CONVERSION_LAN_44", "the new content table already contains data !<br />are you sure you want to convert the old content table to the new content table ?<br /><br />if you still would like to convert the table, the old content data will be added to the already existing new content table, but no garantee can be made to assure that all items will be added to already existing new categories in a correct manner !");
 
-define("CONTENT_ADMIN_CONVERSION_LAN_45", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_45", "insertion failed: main parent not inserted");
 define("CONTENT_ADMIN_CONVERSION_LAN_46", "");
 define("CONTENT_ADMIN_CONVERSION_LAN_47", "");
 define("CONTENT_ADMIN_CONVERSION_LAN_48", "");
