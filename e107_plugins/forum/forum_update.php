@@ -30,6 +30,7 @@ function forum_stage1() {
 	$sql->db_Select_gen("ALTER TABLE {$ttab} ADD thread_lastuser VARCHAR( 30 ) NOT NULL");
 	$sql->db_Select_gen("ALTER TABLE {$ttab} ADD thread_lastuser VARCHAR( 30 ) NOT NULL");
 	$sql->db_Select_gen("ALTER TABLE {$ttab} ADD thread_total_replies INT UNSIGNED NOT NULL");
+	$sql->db_Select_gen("ALTER TABLE ".MPREFIX."forum ADD forum_postclass TINYINT( 3 ) UNSIGNED DEFAULT '0' NOT NULL ;");
 	return "Updating table structure <br />";
 }
 	
@@ -75,14 +76,19 @@ function forum_stage6()
 	global $PLUGINS_DIRECTORY;
 	if(!$sql->db_Count('plugin','(*)',"WHERE plugin_name = 'Forum'"))
 	{
-		$sql->db_Insert('plugin',"0,'Forum','1.0','forum',1");
+		$sql->db_Insert('plugin',"0,'Forum','1.1','forum',1");
 		return "Forum entry added to plugin table, set as installed.<br />";
 	}
 	else
 	{
 		$sql->db_Update('plugin',"plugin_installflag = 1 WHERE plugin_name='Forum'");
+		$sql->db_Update('plugin',"plugin_version = '1.1' WHERE plugin_name='Forum'");
 	}
 	$sql->db_Update('links',"link_url='{$PLUGINS_DIRECTORY}.forum/forum.php' WHERE link_name='Forum'");
+
+
+
+
 	
 }
 	

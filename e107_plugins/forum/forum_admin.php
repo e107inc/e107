@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-03-07 12:55:00 $
-|     $Author: stevedunstan $
+|     $Revision: 1.18 $
+|     $Date: 2005-03-25 03:32:11 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -31,8 +31,11 @@ require_once(e_ADMIN.'auth.php');
 require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."ren_help.php");
+require_once(e_PLUGIN."forum/forum_class.php");
 $rs = new form;
 
+
+define("IMAGE_new", "<img src='".img_path('new.png')."' alt='' style='border:0' />");
 
 $deltest = array_flip($_POST);
 if (e_QUERY) {
@@ -42,10 +45,17 @@ if (e_QUERY) {
 	$id = $tmp[2];
 	unset($tmp);
 }
-if (preg_match("#(.*?)_delete_(\d+)#", $deltest[$tp->toJS(FORLAN_20)], $matches)) {
-	$delete = $matches[1];
-	$del_id = $matches[2];
+
+if(isset($_POST['delete']))
+{
+	$tmp = array_pop(array_flip($_POST['delete']));
+	list($delete, $del_id) = explode("_", $tmp);
 }
+
+//if (preg_match("#(.*?)_delete_(\d+)#", $deltest[$tp->toJS(FORLAN_20)], $matches)) {
+//	$delete = $matches[1];
+//	$del_id = $matches[2];
+//}
 
 if(isset($_POST['setMods']))
 {
@@ -60,13 +70,13 @@ if(isset($_POST['setMods']))
 
 if(isset($_POST['submit_parent'])) {
 	$_POST['forum_name'] = $tp->toDB($_POST['forum_name']);
-	$sql->db_Insert("forum", "0, '".$_POST['forum_name']."', '', '', '".time()."', '0', '0', '0', '', '".$_POST['forum_class']."', 0");
+	$sql->db_Insert("forum", "0, '".$_POST['forum_name']."', '', '', '".time()."', '0', '0', '0', '', '".$_POST['forum_class']."', 0, '{$_POST['forum_postclass']}'");
 	$forum->show_message(FORLAN_13);
 }
 
 if(isset($_POST['update_parent'])) {
 	$_POST['forum_name'] = $tp->toDB($_POST['forum_name']);
-	$sql->db_Update("forum", "forum_name='".$_POST['forum_name']."', forum_class='".$_POST['forum_class']."' WHERE forum_id=$id");
+	$sql->db_Update("forum", "forum_name='".$_POST['forum_name']."', forum_class='".$_POST['forum_class']."', forum_postclass='{$_POST['forum_postclass']}'  WHERE forum_id=$id");
 	$forum->show_message(FORLAN_14);
 	$action = "main";
 }
@@ -75,7 +85,7 @@ if(isset($_POST['submit_forum'])) {
 	$mods = implode(", ", $_POST['mod']);
 	$_POST['forum_name'] = $tp->toDB($_POST['forum_name']);
 	$_POST['forum_description'] = $tp->toDB($_POST['forum_description'], "admin");
-	$sql->db_Insert("forum", "0, '".$_POST['forum_name']."', '".$_POST['forum_description']."', '".$_POST['forum_parent']."', '".time()."', '".$mods."', 0, 0, 0, '".$_POST['forum_class']."', 0");
+	$sql->db_Insert("forum", "0, '".$_POST['forum_name']."', '".$_POST['forum_description']."', '".$_POST['forum_parent']."', '".time()."', '".$mods."', 0, 0, 0, '".$_POST['forum_class']."', 0, '{$_POST['forum_postclass']}'");
 	$forum->show_message(FORLAN_11);
 }
 
@@ -84,7 +94,7 @@ if(isset($_POST['update_forum'])) {
 	$_POST['forum_name'] = $tp->toDB($_POST['forum_name']);
 	$_POST['forum_description'] = $tp->toDB($_POST['forum_description']);
 	$forum_parent = $row['forum_id'];
-	$sql->db_Update("forum", "forum_name='".$_POST['forum_name']."', forum_description='".$_POST['forum_description']."', forum_parent='".$_POST['forum_parent']."', forum_moderators='".$mods."', forum_class='".$_POST['forum_class']."' WHERE forum_id=$id");
+	$sql->db_Update("forum", "forum_name='".$_POST['forum_name']."', forum_description='".$_POST['forum_description']."', forum_parent='".$_POST['forum_parent']."', forum_moderators='".$mods."', forum_class='".$_POST['forum_class']."', forum_postclass='{$_POST['forum_postclass']}' WHERE forum_id=$id");
 	$forum->show_message(FORLAN_12);
 	$action = "main";
 }
@@ -321,7 +331,7 @@ class forum {
 		show_admin_menu(FORLAN_7, $action, $var);
 	}
 	function show_existing_forums($sub_action, $id, $mode = FALSE) {
-		global $sql, $rs, $ns, $sql2, $sql3;
+		global $sql, $rs, $ns, $sql2, $sql3, $tp;
 		if (!is_object($sql2)) {
 			$sql2 = new db;
 		}
@@ -334,6 +344,7 @@ class forum {
 			$text = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
 		}
 		$text .= "
+			<form method='post' action='".e_SELF."'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
 			<td colspan='2' style='width:70%; text-align:center' class='fcaption'>".FORLAN_28."</td>
@@ -347,18 +358,27 @@ class forum {
 			 $sql3 = new db;
 			while ($row = $sql->db_Fetch()) {
 				extract($row);
+	//			if ($forum_class == e_UC_MEMBER) {
+	//				$text .= "<tr><td colspan='2' class='forumheader'>".$forum_name." (".FORLAN_84.")</td>";
+	//			} elseif($forum_class == e_UC_NOBODY) {
+	//				$text .= "<tr><td colspan='2' class='forumheader'>".$forum_name." (".FORLAN_38.")</td>";
+//				} elseif($forum_class == e_UC_ADMIN) {
+//					$text .= "<tr><td colspan='2' class='forumheader'>".$forum_name." (".FORLAN_39.")</td>";
+//				} elseif($forum_class) {
+//					$text .= "<tr><td colspan='2' class='forumheader'>".$forum_name." (".FORLAN_40.")</td>";
+//				} else {
+//					$text .= "<tr><td colspan='2' class='forumheader'>".$forum_name."</td>";
+//				}
 
-				if ($forum_class == e_UC_MEMBER) {
-					$text .= "<tr><td colspan='2' class='forumheader'>".$forum_name." (".FORLAN_84.")</td>";
-				} elseif($forum_class == e_UC_NOBODY) {
-					$text .= "<tr><td colspan='2' class='forumheader'>".$forum_name." (".FORLAN_38.")</td>";
-				} elseif($forum_class == e_UC_ADMIN) {
-					$text .= "<tr><td colspan='2' class='forumheader'>".$forum_name." (".FORLAN_39.")</td>";
-				} elseif($forum_class) {
-					$text .= "<tr><td colspan='2' class='forumheader'>".$forum_name." (".FORLAN_40.")</td>";
-				} else {
-					$text .= "<tr><td colspan='2' class='forumheader'>".$forum_name."</td>";
-				}
+				$text .= "
+				<tr>
+					<td colspan='2' class='forumheader'>".$forum_name."
+					<br /><b>".FORLAN_140.":</b> ".r_userclass_name($forum_class)."&nbsp;&nbsp;<b>".FORLAN_141.":</b> ".r_userclass_name($forum_postclass)."
+					</td>";
+				
+
+//							<br /><b>".FORLAN_140.":</b> ".r_userclass_name($forum_class)."&nbsp;&nbsp;<b>".FORLAN_141.":</b> ".r_userclass_name($forum_postclass)."
+
 
 				$text .= "<td class='forumheader' style='text-align:center'>";
 
@@ -371,12 +391,19 @@ class forum {
 				} else {
 					$forum_heading = str_replace("&#39;", "\'", $forum_name);
 
-					$text .= $rs->form_open("post", e_SELF, "parent_{$forum_id}", "", "", " onsubmit=\"return confirm_('parent',$forum_id,'$forum_heading')\"")."
-						<div>".$rs->form_button("button", "main_edit_{$forum_id}", FORLAN_19, "onclick=\"document.location='".e_SELF."?cat.edit.$forum_id'\"")."
-						".$rs->form_button("submit", "cat_delete_{$forum_id}", FORLAN_20)."
-						</div>".$rs->form_close();
+//					$text .= $rs->form_open("post", e_SELF, "parent_{$forum_id}", "", "", " onsubmit=\"return confirm_('parent',$forum_id,'$forum_heading')\"")."
+					$text .= "
+						<a href='".e_SELF."?cat.edit.{$forum_id}'>".ADMIN_EDIT_ICON."</a>
+						<input type='image' title='".LAN_DELETE."' name='delete[cat_{$forum_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(FORLAN_82." [ID: $forum_heading ]")."') \" />
+						";
+					
 				}
 				$text .= "</td></tr>";
+
+//						<div>".$rs->form_button("button", "main_edit_{$forum_id}", FORLAN_19, "onclick=\"document.location='".e_SELF."?cat.edit.$forum_id'\"")."
+//						".$rs->form_button("submit", "cat_delete_{$forum_id}", FORLAN_20)."
+//						</div>".$rs->form_close();
+
 
 				$forums = $sql2->db_Select("forum", "*", "forum_parent='".$forum_id."' ORDER BY forum_order ASC");
 				if (!$forums) {
@@ -385,8 +412,11 @@ class forum {
 					while ($row = $sql2->db_Fetch()) {
 						extract($row);
 
-						$text .= "<tr><td style='width:5%; text-align:center' class='forumheader3'><img src='".e_PLUGIN."forum/images/new.png' alt='' /></td>\n<td style='width:55%' class='forumheader3'><a href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_id."'>".$forum_name."</a>" ;
+						$text .= "
+						<tr>
+							<td style='width:5%; text-align:center' class='forumheader3'>".IMAGE_new."</td>\n<td style='width:55%' class='forumheader3'><a href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_id."'>".$forum_name."</a>" ;
 
+/*
 						if ($forum_class == e_UC_MEMBER) {
 							$text .= "(".FORLAN_84.")";
 						} elseif($forum_class == e_UC_NOBODY) {
@@ -398,8 +428,13 @@ class forum {
 						} elseif($forum_class) {
 							$text .= "(".FORLAN_40.")";
 						}
-
-						$text .= "<br /><span class='smallblacktext'>".$forum_description."</span></td>
+*/
+						$text .= "
+							<br /><span class='smallblacktext'>".$forum_description."</span>
+							<br /><b>".FORLAN_140.":</b> ".r_userclass_name($forum_class)."&nbsp;&nbsp;<b>".FORLAN_141.":</b> ".r_userclass_name($forum_postclass)."
+						
+						</td>
+						
 							<td colspan='2' class='forumheader3' style='text-align:center'>";
 
 						if ($mode) {
@@ -412,11 +447,14 @@ class forum {
 
 							$forum_heading = str_replace("&#39;", "\'", $forum_name);
 							$text .= "
+									<a href='".e_SELF."?create.edit.{$forum_id}'>".ADMIN_EDIT_ICON."</a>
+									<input type='image' title='".LAN_DELETE."' name='delete[main_{$forum_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(FORLAN_82." [ID: $forum_heading ]")."') \" />
+								";
 
-								".$rs->form_open("post", e_SELF, "existing_{$forum_id}", "", "", " onsubmit=\"return confirm_('forum',$forum_id,'$forum_heading')\"")."
-								<div>".$rs->form_button("button", "main_edit_{$forum_id}", FORLAN_19, "onclick=\"document.location='".e_SELF."?create.edit.$forum_id'\"")."
-								".$rs->form_button("submit", "main_delete_{$forum_id}", FORLAN_20)."
-								</div>".$rs->form_close();
+//								".$rs->form_open("post", e_SELF, "existing_{$forum_id}", "", "", " onsubmit=\"return confirm_('forum',$forum_id,'$forum_heading')\"")."
+//								<div>".$rs->form_button("button", "main_edit_{$forum_id}", FORLAN_19, "onclick=\"document.location='".e_SELF."?create.edit.$forum_id'\"")."
+//								".$rs->form_button("submit", "main_delete_{$forum_id}", FORLAN_20)."
+//								</div>".$rs->form_close();
 
 
 
@@ -452,17 +490,23 @@ class forum {
 			<table style='".ADMIN_WIDTH."' class='fborder'>
 
 			<tr>
-			<td style='width:40%' class='forumheader3'>".FORLAN_31.":</td>
-			<td style='width:60%' class='forumheader3'>
-			<input class='tbox' type='text' name='forum_name' size='60' value='$forum_name' maxlength='250' />
-			</td>
+				<td style='width:40%' class='forumheader3'>".FORLAN_31.":</td>
+				<td style='width:60%' class='forumheader3'>
+					<input class='tbox' type='text' name='forum_name' size='60' value='$forum_name' maxlength='250' />
+				</td>
 			</tr>
 
 			<tr>
-			<td style='width:40%' class='forumheader3'>".FORLAN_23.":<br /><span class='smalltext'>(".FORLAN_24.")</span></td>
-			<td style='width:60%' class='forumheader3'>".r_userclass("forum_class", $forum_class);
-		$text .= "</td></tr>";
-		$text .= "<tr style='vertical-align:top'>
+				<td style='width:40%' class='forumheader3'>".FORLAN_23.":<br /><span class='smalltext'>(".FORLAN_24.")</span></td>
+				<td style='width:60%' class='forumheader3'>".r_userclass("forum_class", $forum_class, 'off', 'nobody,public,member,admin,classes')."</td>
+			</tr>
+
+			<tr>
+				<td style='width:40%' class='forumheader3'>".FORLAN_23.":<br /><span class='smalltext'>(".FORLAN_24.")</span></td>
+				<td style='width:60%' class='forumheader3'>".r_userclass("forum_postclass", $forum_postclass, 'off', 'nobody,public,member,admin,classes')."</td>
+			</tr>
+
+			<tr style='vertical-align:top'>
 			<td colspan='2'  style='text-align:center' class='forumheader'>";
 
 		if ($sub_action == "edit") {
@@ -542,10 +586,18 @@ class forum {
 		$text .= "</td>
 			</tr>
 			<tr>
-			<td style='width:40%' class='forumheader3'>".FORLAN_23.":<br /><span class='smalltext'>(".FORLAN_24.")</span></td>
-			<td style='width:60%' class='forumheader3'>".r_userclass("forum_class", $forum_class, "on");
-		$text .= "</td></tr>";
-		$text .= "<tr style='vertical-align:top'>
+				<td style='width:40%' class='forumheader3'>".FORLAN_23.":<br /><span class='smalltext'>(".FORLAN_24.")</span></td>
+				<td style='width:60%' class='forumheader3'>".r_userclass("forum_class", $forum_class, 'off', 'nobody,public,member,admin,classes')."</td>
+			</tr>
+
+
+			<tr>
+				<td style='width:40%' class='forumheader3'>".FORLAN_142.":<br /><span class='smalltext'>(".FORLAN_143.")</span></td>
+				<td style='width:60%' class='forumheader3'>".r_userclass("forum_postclass", $forum_postclass, 'off', 'nobody,public,member,admin,classes')."</td>
+			</tr>
+
+
+		<tr style='vertical-align:top'>
 			<td colspan='2'  style='text-align:center' class='forumheader'>";
 		if ($sub_action == "edit") {
 			$text .= "<input class='button' type='submit' name='update_forum' value='".FORLAN_35."' />";

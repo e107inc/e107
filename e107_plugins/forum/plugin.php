@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/plugin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-03-09 10:40:42 $
-|     $Author: sweetas $
+|     $Revision: 1.6 $
+|     $Date: 2005-03-25 03:32:11 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -22,7 +22,7 @@
 	
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = 'Forum';
-$eplug_version = '1.0';
+$eplug_version = '1.1';
 $eplug_author = 'e107dev';
 $eplug_url = 'http://e107.org';
 $eplug_email = '';
@@ -71,6 +71,7 @@ $eplug_tables = array(
 	forum_lastpost varchar(200) NOT NULL default '',
 	forum_class varchar(100) NOT NULL default '',
 	forum_order int(10) unsigned NOT NULL default '0',
+	forum_postclass tinyint(3) unsigned NOT NULL default '0',
 	PRIMARY KEY  (forum_id)
 	) TYPE=MyISAM AUTO_INCREMENT=1;",
 	"CREATE TABLE ".MPREFIX."forum_t (
@@ -104,5 +105,9 @@ $eplug_link_url = e_PLUGIN.'forum/forum.php';
 $eplug_done = 'Your forum is now installed';
 	
 $eplug_upgrade_done = 'Forum successfully upgraded, now using version: '.$eplug_version;
+
+$upgrade_alter_tables = array(
+"ALTER TABLE ".MPREFIX."forum ADD forum_postclass TINYINT( 3 ) UNSIGNED DEFAULT '0' NOT NULL ;"
+);
 	
 ?>

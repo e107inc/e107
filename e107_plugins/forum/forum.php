@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-03-20 15:36:59 $
-|     $Author: stevedunstan $
+|     $Revision: 1.14 $
+|     $Date: 2005-03-25 03:32:11 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -131,9 +131,6 @@ if (USER == TRUE) {
 	}
 
 	$INFO = LAN_30." ".USERNAME."<br />";
-	// $sql->db_Select("user", "*",  "user_name='".USERNAME."' ");
-	// $row = $sql->db_Fetch();
-	// extract($row);
 	$lastvisit_datestamp = $gen->convert_date(USERLV, 'long');
 	$datestamp = $gen->convert_date(time(), "long");
 	if (!$total_new_threads) {
@@ -221,6 +218,8 @@ foreach ($parent_list as $parent) {
 }
 
 function parse_parent($parent) {
+
+/*
 	if ($parent['forum_class'] == e_UC_NOBODY) {
 		$status[0] = "{ ".LAN_398." )";
 		$status[1] = FALSE;
@@ -244,6 +243,21 @@ function parse_parent($parent) {
 		$status[1] = TRUE;
 	}
 	return ($status);
+*/
+	if(check_class($parent['forum_class']))
+	{
+		$status[0]="";
+		$status[1] = TRUE;
+		if(!check_class($parent['forum_postclass']))
+		{
+			$status[0] = "( ".LAN_405." )";
+		}
+	}
+	else
+	{
+		$status[1] = FALSE;
+	}
+	return $status;
 }
 
 function parse_forum($f, $restricted_string = "") {

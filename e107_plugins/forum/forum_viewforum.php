@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-03-24 14:47:54 $
-|     $Author: stevedunstan $
+|     $Revision: 1.21 $
+|     $Date: 2005-03-25 03:32:11 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -67,17 +67,17 @@ if (!$FORUM_VIEW_START) {
 }
 	
 $forum_info = $forum->forum_get($forum_id);
-$forum_info['forum_name'] = $tp -> toHTML($forum_info['forum_name'], TRUE);
-$forum_info['forum_description'] = $tp -> toHTML($forum_info['forum_description'], TRUE);
 
-
-define("e_PAGETITLE", LAN_01." / ".$forum_info['forum_name']);
-	
-if (($forum_info['forum_class'] && !check_class($forum_info['forum_class'])) || !$forum_info['forum_parent']) {
+if (!check_class($forum_info['forum_class']) || !check_class($forum_info['parent_class']) || !$forum_info['forum_parent'])
+{
 	header("Location:".e_PLUGIN."forum/forum.php");
 	exit;
 }
-	
+
+$forum_info['forum_name'] = $tp -> toHTML($forum_info['forum_name'], TRUE);
+$forum_info['forum_description'] = $tp -> toHTML($forum_info['forum_description'], TRUE);
+
+define("e_PAGETITLE", LAN_01." / ".$forum_info['forum_name']);
 define("MODERATOR", (preg_match("/".preg_quote(ADMINNAME)."/", $forum_info['forum_moderators']) && getperms("A") ? TRUE : FALSE));
 	
 $message = "";
@@ -115,7 +115,8 @@ if ($pages)
 	}
 }
 	
-if ((ANON || USER) && ($forum_info['forum_class'] != e_UC_READONLY || MODERATOR)) {
+if (check_class($forum_info['forum_postclass']) && check_class($forum_info['parent_postclass']))
+{
 	$NEWTHREADBUTTON = "<a href='".e_PLUGIN."forum/forum_post.php?nt.".$forum_id."'>".IMAGE_newthread."</a>";
 }
 	
@@ -123,7 +124,6 @@ $BREADCRUMB = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a> 
 $FORUMTITLE = $forum_info['forum_name'];
 $MODERATORS = LAN_404.": ".$forum_info['forum_moderators'];
 $BROWSERS = $users." ".($users == 1 ? LAN_405 : LAN_406)." (".$member_users." ".($member_users == 1 ? LAN_407 : LAN_409).", ".$guest_users." ".($guest_users == 1 ? LAN_408 : LAN_410).")";
-	
 	
 $ICONKEY = "
 	<table style='width:100%'>

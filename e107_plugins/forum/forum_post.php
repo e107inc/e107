@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-03-20 10:33:26 $
-|     $Author: stevedunstan $
+|     $Revision: 1.18 $
+|     $Date: 2005-03-25 03:32:11 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -52,7 +52,7 @@ if ($action == 'rp') {
 	$forum_info = $forum->forum_get($thread_info['head']['thread_forum_id']);
 }
 
-if (!check_class($forum_info['forum_class'])) {
+if (!check_class($forum_info['forum_postclass']) || !check_class($forum_info['parent_postclass'])) {
 	require_once(HEADERF);
 	$ns->tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
 	require_once(FOOTERF);
