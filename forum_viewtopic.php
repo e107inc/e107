@@ -48,21 +48,25 @@ define("IMAGE_admin_delete", (file_exists(THEME."forum/admin_delete.png") ? "src
 if(!e_QUERY){
 	header("Location:".e_BASE."forum.php");
 	exit;
-}else{
+}
+else
+{
 	$tmp = explode(".", e_QUERY);
 	$forum_id = $tmp[0]; $thread_id = $tmp[1]; $from = $tmp[2]; $action = $tmp[3];
 	if(!$from){ $from = 0; }
-	if(!$thread_id || !is_numeric($thread_id)){
+	if(!$thread_id || !is_numeric($thread_id))
+	{
 		header("Location:".e_BASE."forum.php");
 		exit;
 	}
 }
 $sql -> db_Select("forum_t", "*", "thread_id='".$thread_id."'  LIMIT 1 ");
-	$row = $sql-> db_Fetch(); extract($row);
-	if($thread_forum_id != $forum_id){
-		header("Location:".e_BASE."forum.php");
-		exit;
-	}
+$row = $sql-> db_Fetch(); extract($row);
+if($thread_forum_id != $forum_id)
+{
+	header("Location:".e_BASE."forum.php");
+	exit;
+}
 
 if($action == "track" && USER){
 	$sql -> db_Update("user", "user_realm='".USERREALM."-".$thread_id."-' WHERE user_id='".USERID."' ");
@@ -144,17 +148,22 @@ $pm_installed = ($pref['pm_title'] ? TRUE : FALSE);
 $gen = new convert;
 $aj = new textparse();
 
-$sql -> db_Update("forum_t", "thread_views=thread_views+1 WHERE thread_id='$thread_id' ");
-
-$sql -> db_Select("forum", "*", "forum_id='".$forum_id."' ");
-$row = $sql-> db_Fetch(); extract($row);
+$forumList = getForums();
+//$sql -> db_Select("forum", "*", "forum_id='".$forum_id."' ");
+//$row = $sql-> db_Fetch(); 
+$row = $forumList[$forum_id];
+extract($row);
 $fname = $row['forum_name'];
+if(!check_class($forum_class))
+{
+	header("Location:".e_BASE."forum.php"); 
+	exit;
+}
 
-// if(($forum_class && check_class($forum_class)) || ($forum_class == 254 && USER) || !$forum_class){
-if(check_class($forum_class)){{ header("Location:".e_BASE."forum.php"); exit;}
-
+$sql -> db_Update("forum_t", "thread_views=thread_views+1 WHERE thread_id='$thread_id' ");
 $sql -> db_Select("forum_t", "*", "thread_id='".$thread_id."' ORDER BY thread_datestamp DESC ");
-$row = $sql-> db_Fetch("no_strip"); extract($row);
+$row = $sql-> db_Fetch("no_strip"); 
+extract($row);
 define("e_PAGETITLE", LAN_01." / ".$fname." / ".$row['thread_name']);
 
 define("MODERATOR", (preg_match("/".preg_quote(ADMINNAME)."/", $forum_moderators) && getperms("A") ? TRUE : FALSE));
@@ -204,9 +213,6 @@ if(eregi("\[".LAN_430."\]", $thread_name)){
 		$pollstr = "<div class='spacer'>".$poll -> render_poll($poll_id, $poll_title, $poll_option, $votes, $mode, "forum")."</div>";
 	}
 }
-
-
-
 
 $sql -> db_Select("forum_t", "thread_id",  "thread_forum_id='".$forum_id."' AND thread_parent='0' ORDER BY thread_s ASC, thread_lastpost ASC, thread_datestamp ASC");
 $c = 0;
@@ -285,7 +291,9 @@ if(!$post_author_id || !$sql -> db_Select("user", "*", "user_id='".$post_author_
 	$AVATAR = "<br /><span class='smallblacktext'>".LAN_194."</span>";
 }else{	// regged member - get member info
 	unset($iphost);
-	$row = $sql -> db_Fetch(); extract($row);
+	$row = $sql -> db_Fetch(); 
+	extract($row);
+	cachevars('user_row_'.$post_author_id, $row);
 	$POSTER = "<a href='user.php?id.".$post_author_id."'><b>".$post_author_name."</b></a>";
 	if($user_image){
 		require_once(e_HANDLER."avatar_handler.php");
@@ -375,21 +383,31 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 			$host = gethostbyaddr($ip);
 			$iphost = "<div class='smalltext' style='text-align:right'>IP: <a href='".e_ADMIN."userinfo.php?$ip'>$ip ( $host )</a></div>";
 		}
-		//$post_author_count = $sql -> db_Count("forum_t", "(*)", " WHERE thread_user='$thread_user' OR thread_user='$post_author_name' ");
 
-		if(!$post_author_id || !$sql2 -> db_Select("user", "*", "user_id='".$post_author_id."' ")){	// guest
+		unset($row);
+		$row = getcachedvars('user_row_'.$post_author_id);
+		if(!$row && (!$post_author_id || !$sql2 -> db_Select("user", "*", "user_id='".$post_author_id."' ")))        // guest
+		{
 			$POSTER = "<b>".$post_author_name."</b>";
 			$AVATAR = "<br /><span class='smallblacktext'>".LAN_194."</span>";
 			unset($JOINED, $LOCATION, $CUSTOMTITLE, $WEBSITE, $POSTS, $VISITS, $MEMBERID, $SIGNATURE, $RPG, $LEVEL, $PRIVMESSAGE, $PROFILEIMG, $EMAILIMG, $WEBSITEIMG);
-		}else{	// regged member - get member info
+		}
+		else  // regged member - get member info
+		{	
 			unset($iphost);
-			
-			$row = $sql2 -> db_Fetch(); extract($row);
+			if(!$row)
+			{
+				$row = $sql2 -> db_Fetch(); extract($row);
+				cachevars('user_row_'.$post_author_id,$row);
+			}
 			$POSTER =  "<a href='user.php?id.".$post_author_id."'><b>".$post_author_name."</b></a>";
-			if($user_image){
+			if($user_image)
+			{
 				require_once(e_HANDLER."avatar_handler.php");
 				$AVATAR = "<div class='spacer'><img src='".avatar($user_image)."' alt='' /></div><br />";
-			}else{
+			}
+			else
+			{
 				unset($AVATAR);
 			}
 			
@@ -460,19 +478,36 @@ if($u_new != ""){ $sql -> db_Update("user", "user_viewed='$u_new' WHERE user_id=
 
 // end -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-function forumjump(){
-	global $sql;
-	$sql -> db_Select("forum", "*", "forum_parent !=0 AND forum_class!='255' ");
+function forumjump()
+{
+	global $forumList;
+	
+//	global $sql;
+//	$sql -> db_Select("forum", "*", "forum_parent !=0 AND forum_class ! = '".e_UC_NOBODY."' ");
 	$text .= "<form method='post' action='".e_SELF."'><p>".LAN_65.": <select name='forumjump' class='tbox'>";
-	while($row = $sql -> db_Fetch()){
+	foreach($forumList as $row)
+	{
+//	while($row = $sql -> db_Fetch())
+//	{
 		extract($row);
-		// if(($forum_class && check_class($forum_class)) || ($forum_class == 254 && USER) || !$forum_class){
-    if(check_class($forum_class)){
-			$text .= "\n<option value='".$forum_id."'>".$forum_name."</option>";
-		}
+		$text .= "\n<option value='".$forum_id."'>".$forum_name."</option>";
 	}
 	$text .= "</select> <input class='button' type='submit' name='fjsubmit' value='".LAN_03."' />&nbsp;&nbsp;&nbsp;&nbsp;<a href='".e_SELF."?".$_SERVER['QUERY_STRING']."#top'>".LAN_10."</a></p></form>";
 	return $text;
+}
+
+function getForums()
+{
+	global $sql;
+	$sql -> db_Select("forum", "*", "forum_parent !=0 AND forum_class != '".e_UC_NOBODY."' ");
+	while($row = $sql -> db_Fetch())
+	{
+		if(check_class($row['forum_class']))
+		{
+			$ret[$row['forum_id']] = $row;
+		}
+	}
+	return $ret;
 }
 
 function rpg($user_join, $user_forums){
