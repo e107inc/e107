@@ -11,11 +11,9 @@
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
-if(strstr(e_BASE, "../")){ $sql -> db_Delete("cache", "cache_url ='newforumposts' "); }
 if(!is_object($aj)){ $aj = new textparse; }
-if($sql -> db_Select("cache", "*", "cache_url='newforumposts' ")){
-	$row = $sql -> db_Fetch(); extract($row);
-	$text = $aj -> formtparev($cache_data); 
+if($cache = retrieve_cache("newforumposts")){
+	$text = $aj -> formtparev($cache); 
 }else{
 	$gen = new convert;
 	$sql2 = new db;
@@ -79,9 +77,9 @@ if($sql -> db_Select("cache", "*", "cache_url='newforumposts' ")){
 		}
 	}
 	$text = "</span>".preg_replace("/\<br \/\>$/", "", $text);
-	if($pref['cachestatus'] && !strstr(e_BASE, "../")){
+	if($pref['cachestatus']){
 		$cache = $aj -> formtpa($text, "admin");
-		$sql -> db_Insert("cache", "'newforumposts', '".time()."', '$cache' ");
+		set_cache("newforumposts",$cache);
 	}
 }
 $ns -> tablerender($menu_pref['newforumposts_caption'], $text);

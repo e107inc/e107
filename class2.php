@@ -880,7 +880,7 @@ function set_cache($query, $text){
 function clear_cache($query){
         global $pref, $sql;
         if($pref['cachestatus']){
-                $sql -> db_Delete("cache", "cache_url LIKE '%".$query."%' ");
+                return $sql -> db_Delete("cache", "cache_url LIKE '%".$query."%' ");
         }
 }
 

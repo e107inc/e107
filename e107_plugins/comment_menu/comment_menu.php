@@ -11,11 +11,9 @@
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
-if(strstr(e_BASE, "../")){ $sql -> db_Delete("cache", "cache_url ='newcomments' "); }
 if(!is_object($aj)){ $aj = new textparse; }
-if($sql -> db_Select("cache", "*", "cache_url='newcomments' ")){
-	$row = $sql -> db_Fetch(); extract($row);
-	$text = $aj -> formtparev($cache_data);
+if($cache = retrieve_cache("newcomments")){
+	$text = $aj -> formtparev($cache);
 }else{
 
 
@@ -92,9 +90,9 @@ if($sql -> db_Select("cache", "*", "cache_url='newcomments' ")){
 		}
 
 		$text = "</span>".preg_replace("/\<br \/\>$/", "", $text);
-		if($pref['cachestatus'] && !strstr(e_BASE, "../")){
+		if($pref['cachestatus']){
 			$cache = $aj -> formtpa($text, "admin");
-			$sql -> db_Insert("cache", "'newcomments', '".time()."', '$cache' ");
+			set_cache("newcomments",$cache);
 		}
 	}
 }

@@ -51,11 +51,10 @@ if(IsSet($_POST['moderate'])){
 		}
 	}
 	if($table == "news" || $table == "poll"){
-		$sql -> db_Delete("cache", "cache_url='comment.php?".e_QUERY."' ");
+		clear_cache("comment.php?".e_QUERY);
 	}else if($table == "content"){
 		$eq = str_replace("content.", "", e_QUERY);
-		$sql -> db_Delete("cache", "cache_url='article.php?".$eq."' ");
-		$sql -> db_Delete("cache", "cache_url='article.php?".$eq.".0' ");
+		clear_cache("article.php?".$eq);
 	}
 	$message = MDCLAN_1;
 }

@@ -30,10 +30,10 @@ if(e_QUERY){
 	if($action == "delete"){
 		$sql -> db_Delete("comments", "comment_id='$id' ");
 	}
-	if(!$sql -> db_Delete("cache", "cache_url ='$item' ")){
+	if(!clear_cache($item)){
 		$tmp = explode("?", $item);
 		$item = $tmp[0]."?news.".$c_item;
-		$sql -> db_Delete("cache", "cache_url ='$item' ");
+		clear_cache($item);
 	}
 }
 echo "<script type='text/javascript'>window.history.go(-1);</script>\n";
