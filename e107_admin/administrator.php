@@ -14,6 +14,10 @@
 */
 require_once("../class2.php");
 if(!getperms("3")){ header("location:".e_BASE."index.php"); exit; }
+
+require_once(e_HANDLER."textparse/basic.php");
+$etp = new e107_basicparse;
+
 require_once("auth.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
@@ -238,9 +242,10 @@ $ns -> tablerender("<div style='text-align:center'>".ADMSLAN_54."</div>", $text)
 require_once("footer.php");
 
 function headerjs(){
+global $etp;
 $script = "<script type=\"text/javascript\">
 function confirm_(user_id, user_name){
-        var x=confirm(\"".ADMSLAN_60." \" + user_name + \"\");
+        var x=confirm(\"".$etp->unentity(ADMSLAN_60)." \" + user_name + \"\");
         if(x){
                 document.getElementById('del_administrator').action='".e_SELF."?delete.' + user_id;
                 document.getElementById('del_administrator').submit();

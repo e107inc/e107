@@ -11,7 +11,7 @@
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
-$Id: content.php,v 1.16 2004-08-16 10:12:49 loloirie Exp $  
+$Id: content.php,v 1.17 2004-08-31 16:02:51 loloirie Exp $  
 */
 require_once("../class2.php");
     if($pref['htmlarea']){
@@ -22,6 +22,10 @@ if(!getperms("J") && !getperms("K") && !getperms("L")){
         header("location:".e_HTTP."index.php");
         exit;
 }
+
+require_once(e_HANDLER."textparse/basic.php");
+$etp = new e107_basicparse;
+
 require_once("auth.php");
 require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."form_handler.php");
@@ -38,7 +42,7 @@ if(e_QUERY){
 }
 
 foreach($_POST as $k => $v){
-        if(preg_match("#^main_delete_(\d*)$#",$k,$matches) && $_POST[$k] == CNTLAN_7)
+        if(preg_match("#^main_delete_(\d*)$#",$k,$matches) && $_POST[$k] == $etp->unentity(CNTLAN_7))
         {
                 $delete_content=$matches[1];
         }
@@ -246,7 +250,7 @@ $ns -> tablerender("<div style='text-align:center'>".CNTLAN_18."</div>", $text);
 
 echo "<script type=\"text/javascript\">
 function confirm_(content_id){
-        return  confirm(\"".CNTLAN_27."\");
+        return  confirm(\"".$etp->unentity(CNTLAN_27)."\");
 }
 </script>";
 

@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107/e107_admin/article.php,v $
-|   $Revision: 1.25 $
-|   $Date: 2004-08-14 00:00:32 $
-|   $Author: mcfly_e107 $
+|   $Revision: 1.26 $
+|   $Date: 2004-08-31 16:02:51 $
+|   $Author: loloirie $
 
 +---------------------------------------------------------------+
 */
@@ -25,6 +25,10 @@ if($pref['htmlarea']){
   //  htmlarea("content_summary");
 }
 if(!getperms("J") && !getperms("K") && !getperms("L")){header("location:".e_BASE."index.php"); exit; }
+
+require_once(e_HANDLER."textparse/basic.php");
+$etp = new e107_basicparse;
+
 require_once("auth.php");
 $aj = new textparse;
 require_once(e_HANDLER."form_handler.php");
@@ -40,7 +44,7 @@ if(e_QUERY){
         $id = $tmp[2];
         unset($tmp);
 }
-if(preg_match("#(.*?)_delete_(\d+)#",$deltest[ARLAN_62],$matches))
+if(preg_match("#(.*?)_delete_(\d+)#",$deltest[$etp->unentity(ARLAN_62)],$matches))
 {
         $delete = $matches[1];
         $del_id = $matches[2];
@@ -628,6 +632,7 @@ function article_adminmenu(){
 require_once("footer.php");
 
 function headerjs(){
+global $etp;
 $script = "<script type=\"text/javascript\">
 function addtext2(sc){
         document.getElementById('dataform').category_button.value = sc;
@@ -638,9 +643,9 @@ function addtext2(sc){
 $script .= "<script type=\"text/javascript\">
 function confirm_(mode, content_heading, content_id){
         if(mode == 'cat'){
-                return confirm(\"".ARLAN_80." [ID \" + content_id + \": \" + content_heading + \"]\");
+                return confirm(\"".$etp->unentity(ARLAN_80)." [ID \" + content_id + \": \" + content_heading + \"]\");
         }else{
-                return confirm(\"".ARLAN_81." [ID \" + content_id + \": \" + content_heading + \"]\");
+                return confirm(\"".$etp->unentity(ARLAN_81)." [ID \" + content_id + \": \" + content_heading + \"]\");
         }
 }
 </script>";

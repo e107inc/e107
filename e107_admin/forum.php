@@ -14,6 +14,10 @@
 */
 require_once("../class2.php");
 if(!getperms("5")){ header("location:".e_BASE."index.php"); exit; }
+
+require_once(e_HANDLER."textparse/basic.php");
+$etp = new e107_basicparse;
+
 require_once("auth.php");
 require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."form_handler.php");
@@ -31,7 +35,7 @@ if(e_QUERY){
         $id = $tmp[2];
         unset($tmp);
 }
-if(preg_match("#(.*?)_delete_(\d+)#",$deltest[FORLAN_20],$matches))
+if(preg_match("#(.*?)_delete_(\d+)#",$deltest[$etp->unentity(FORLAN_20)],$matches))
 {
 	$delete = $matches[1];
 	$del_id = $matches[2];
@@ -229,14 +233,15 @@ if(!e_QUERY || $action == "main"){
 //$forum -> show_options($action);
 require_once("footer.php");
 function headerjs(){
+global $etp;
 $headerjs =  "<script type=\"text/javascript\">
 function confirm_(mode, forum_id, forum_name){
         if(mode == 'sr'){
-                return confirm(\"".FORLAN_117."\");
+                return confirm(\"".$etp->unentity(FORLAN_117)."\");
         }else if(mode == 'parent'){
-                return confirm(\"".FORLAN_81." [ID: \" + forum_name + \"]\");
+                return confirm(\"".$etp->unentity(FORLAN_81)." [ID: \" + forum_name + \"]\");
         }else{
-                return confirm(\"".FORLAN_82." [ID: \" + forum_name + \"]\");
+                return confirm(\"".$etp->unentity(FORLAN_82)." [ID: \" + forum_name + \"]\");
         }
 }
 </script>";

@@ -14,6 +14,10 @@
 */
 require_once("../class2.php");
 if(!getperms("R")){ header("location:".e_BASE."index.php"); exit; }
+
+require_once(e_HANDLER."textparse/basic.php");
+$etp = new e107_basicparse;
+
 require_once("auth.php");
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."userclass_class.php");
@@ -30,7 +34,7 @@ if(e_QUERY){
         unset($tmp);
 }
 
-if(preg_match("#(.*?)_delete_(\d+)#",$deltest[DOWLAN_9],$matches))
+if(preg_match("#(.*?)_delete_(\d+)#",$deltest[$etp->unentity(DOWLAN_9)],$matches))
 {
         $delete = $matches[1];
         $del_id = $matches[2];
@@ -211,6 +215,7 @@ if($action == "opt"){
 
 require_once("footer.php");
 function headerjs(){
+global $etp;
 $headerjs = "<script type=\"text/javascript\">
 
     function addtext2(str){
@@ -221,9 +226,9 @@ $headerjs = "<script type=\"text/javascript\">
     function confirm_(mode, tit_content, download_id){
             if(download_id=='undefined'){download_id==tit_content;}
             if(mode == 'cat'){
-                    return confirm(\"".DOWLAN_34." [ID: \" + download_id + \"] \"+tit_content);
+                    return confirm(\"".$etp->unentity(DOWLAN_34)." [ID: \" + download_id + \"] \"+tit_content);
             }else{
-                    return confirm(\"".DOWLAN_33." [ID: \" + download_id + \"] \"+tit_content);
+                    return confirm(\"".$etp->unentity(DOWLAN_33)." [ID: \" + download_id + \"] \"+tit_content);
             }
     }
     </script>";
