@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-01-25 02:12:23 $
+|     $Revision: 1.9 $
+|     $Date: 2005-01-25 04:17:29 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -61,7 +61,7 @@ function update_61x_to_700($type){
                          $sql -> db_Update("wmessage", "wm_active='252' WHERE wm_id = '1' AND wm_active='1' ");
                          $sql -> db_Update("wmessage", "wm_active='253' WHERE wm_id = '2' AND wm_active='1' ");
                          $sql -> db_Update("wmessage", "wm_active='254' WHERE wm_id = '3' AND wm_active='1' ");
-                         mysql_query("ALTER TABLE `".MPREFIX."wmessage` ADD PRIMARY KEY ( `wm_id` )");
+                         mysql_query("ALTER IGNORE TABLE `".MPREFIX."wmessage` ADD UNIQUE INDEX(wm_id)");
                          mysql_query("ALTER TABLE `".MPREFIX."wmessage` CHANGE `wm_id` `wm_id` TINYINT( 3 ) UNSIGNED NOT NULL AUTO_INCREMENT");
 
                         /*
@@ -143,12 +143,13 @@ function update_61x_to_700($type){
 
                         // end links update -------------------------------------------------------------------------------------------
 
-                }else{
-                        if ($sql -> db_Select("wmessage","*", "wm_active='255' ")){
-                                return FALSE;
-                        } else {
-                                return TRUE;
-                        }
+                }else{  // check if update is needed.
+                        // FALSE = needed, TRUE = not needed.
+
+                     //   $fields = mysql_list_fields($mySQLdefaultdb,MPREFIX."wmessage");
+                    //    $columns = mysql_num_fields($fields);
+                        return (!$sql->db_Select("wmessage","*","wm_active > 1")) ? FALSE : TRUE;
+
                 }
 }
 
