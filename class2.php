@@ -1,5 +1,5 @@
 <?php
-	
+
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -12,14 +12,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2005-01-27 19:51:37 $
+|     $Revision: 1.59 $
+|     $Date: 2005-01-27 20:14:46 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
-	
+
 $eTimingStart = microtime(); // Honest global beginning point for processing time
-	
+
 //unset any globals created by register_globals being turned ON
 while (list($global) = each($GLOBALS)) {
 	if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST|eTimingStart)$/', $global)) {
@@ -27,15 +27,15 @@ while (list($global) = each($GLOBALS)) {
 	}
 }
 unset($global);
-	
+
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-	
+
 //ob_start ("ob_gzhandler"); // Uncomment to enable gz output compression.
-	
+
 ob_start ();
 $start_ob_level = ob_get_level();
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
-	
+
 if (!$mySQLserver) {
 	@include("e107_config.php");
 	$a = 0;
@@ -50,7 +50,7 @@ if (!$mySQLserver) {
 		exit;
 	}
 }
-	
+
 $link_prefix = "";
 $url_prefix = substr($_SERVER['PHP_SELF'], strlen(e_HTTP), strrpos($_SERVER['PHP_SELF'], "/")+1-strlen(e_HTTP));
 $tmp = explode("?", $url_prefix);
@@ -61,15 +61,15 @@ for($i = 1; $i <= $num_levels; $i++) {
 if (strstr($_SERVER['QUERY_STRING'], "'") || strstr($_SERVER['QUERY_STRING'], ";") ) {
 	die("Access denied.");
 }
-	
+
 if (preg_match("/\[(.*?)\].*?/i", $_SERVER['QUERY_STRING'], $matches)) {
 	define("e_MENU", $matches[1]);
 	define("e_QUERY", str_replace($matches[0], "", eregi_replace("&|/?".session_name().".*", "", $_SERVER['QUERY_STRING'])));
 } else {
 	define("e_QUERY", eregi_replace("&|/?".session_name().".*", "", $_SERVER['QUERY_STRING']));
 }
-	
-	
+
+
 $_SERVER['QUERY_STRING'] = e_QUERY;
 define('e_BASE', $link_prefix);
 define("e_ADMIN", e_BASE.$ADMIN_DIRECTORY);
@@ -79,7 +79,7 @@ define("e_PLUGIN", e_BASE.$PLUGINS_DIRECTORY);
 define("e_FILE", e_BASE.$FILES_DIRECTORY);
 define("e_HANDLER", e_BASE.$HANDLERS_DIRECTORY);
 define("e_LANGUAGEDIR", e_BASE.$LANGUAGES_DIRECTORY);
-	
+
 define("e_DOCS", e_BASE.$HELP_DIRECTORY);
 define("e_DOCROOT", $_SERVER['DOCUMENT_ROOT']."/");
 define("e_UC_PUBLIC", 0);
@@ -89,7 +89,7 @@ define("e_UC_MEMBER", 253);
 define("e_UC_ADMIN", 254);
 define("e_UC_NOBODY", 255);
 define("ADMINDIR", $ADMIN_DIRECTORY);
-	
+
 //
 // Some bits for different debug levels (all intended for ADMIN only)
 // 8 bits for each set of details
@@ -98,7 +98,7 @@ define("ADMINDIR", $ADMIN_DIRECTORY);
 // Thus:
 // 255 = all basics
 // 65535 = all basic and all gory details
-	
+
 if (strstr(e_MENU, "debug")) {
 	require_once(e_HANDLER.'debug_handler.php');
 	$e107_debug = new e107_debug;
@@ -109,8 +109,8 @@ if (strstr(e_MENU, "debug")) {
 } else {
 	define('E107_DEBUG_LEVEL', 0);
 }
-	
-	
+
+
 // Basic levels
 define('E107_DBG_BASIC', (E107_DEBUG_LEVEL & 1));
 // basics: worst php errors, sql errors, etc
@@ -128,7 +128,7 @@ define('E107_DBG_FILLIN64', (E107_DEBUG_LEVEL & 64));
 // fill in what it is
 define('E107_DBG_FILLIN128', (E107_DEBUG_LEVEL & 128));
 // fill in what it is
-	
+
 // Gory detail levels
 define('E107_DBG_TIMEDETAILS', (E107_DEBUG_LEVEL & 256)); // detailed time profile
 define('E107_DBG_SQLDETAILS', (E107_DEBUG_LEVEL & 512));
@@ -140,14 +140,14 @@ define('E107_DBG_FILLIN2048', (E107_DEBUG_LEVEL & 2048));
 //...
 define('E107_DBG_ALLERRORS', (E107_DEBUG_LEVEL & 32768));
 // show ALL errors//...
-	
+
 // e107_config.php upgrade check
 // =====================
 if (!$ADMIN_DIRECTORY && !$DOWNLOADS_DIRECTORY) {
 	message_handler("CRITICAL_ERROR", 8, ": generic, ", "e107_config.php");
 	exit;
 }
-	
+
 if (!e107_include(e_HANDLER."errorhandler_class.php")) {
 	echo "<div style='text-align:center; font: 12px Verdana, Tahoma'>Path error</div>";
 	exit;
@@ -160,18 +160,18 @@ if (!$mySQLuser) {
 	exit;
 }
 define("MPREFIX", $mySQLprefix);
-	
+
 e107_require_once(e_HANDLER."mysql_class.php");
 e107_require_once(e_HANDLER.'e_parse_class.php');
 e107_require_once(e_HANDLER.'traffic_class.php');
-	
+
 $eTraffic = new e107_traffic; // Traffic counts can begin now
 $eTraffic->Calibrate($eTraffic);
 $tp = new e_parse;
 $sql = new db;
 $sql->db_SetErrorReporting(FALSE);
 $merror = $sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
-	
+
 if ($merror == "e1") {
 	message_handler("CRITICAL_ERROR", 6, ": generic, ", "class2.php");
 	exit;
@@ -180,14 +180,14 @@ else if($merror == "e2") {
 	message_handler("CRITICAL_ERROR", 7, ": generic, ", "class2.php");
 	exit;
 }
-	
+
 /* New compatabilty mode.
 At a later date add a check to load e107 compat mode by $pref
 PHP Compatabilty should *always* be on. */
-	
+
 e107_require_once(e_HANDLER."PHP_Compat_handler.php");
 e107_require_once(e_HANDLER."e107_Compat_handler.php");
-	
+
 // New parser code #########
 //$parsethis = array();
 //if ($sql->db_Select("parser", "parser_pluginname,parser_regexp", "")) {
@@ -196,13 +196,13 @@ e107_require_once(e_HANDLER."e107_Compat_handler.php");
 // }
 //}
 // End parser code #########
-	
+
 global $sysprefs;
 e107_require_once(e_HANDLER."pref_class.php");
 $sysprefs = new prefs;
 $tmp = $sysprefs->get('pref');
 $pref = unserialize($tmp);
-	
+
 if (!is_array($pref)) {
 	$pref = $sysprefs->getArray('pref');
 	if (!is_array($pref)) {
@@ -218,7 +218,7 @@ if (!is_array($pref)) {
 		}
 	}
 }
-	
+
 if (!$pref['cookie_name']) {
 	$pref['cookie_name'] = "e107cookie";
 }
@@ -226,18 +226,18 @@ if (!$pref['cookie_name']) {
 if ($pref['user_tracking'] == "session") {
 	session_start();
 }
-	
+
 $pref['htmlarea'] = false;
-	
+
 define("e_SELF", ($pref['ssl_enabled'] ? "https://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']) : "http://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'])));
-	
+
 $menu_pref = $sysprefs->getArray('menu_pref');
-	
+
 // Cameron's Mult-lang switch. ==================
-	
+
 if (isset($_POST['setlanguage'])) {
 	$sql->mySQLlanguage = $_POST['sitelanguage'];
-	 
+
 	if ($pref['user_tracking'] == "session") {
 		$_SESSION['e107language_'.$pref['cookie_name']] = $_POST['sitelanguage'];
 	} else {
@@ -252,18 +252,18 @@ if ($pref['multilanguage']) {
 	if ($pref['user_tracking'] == "session") {
 		$user_language = $_SESSION['e107language_'.$pref['cookie_name']];
 		$sql->mySQLlanguage = ($user_language) ? $user_language :
-		 "";
+		"";
 	} else {
 		$user_language = $_COOKIE['e107language_'.$pref['cookie_name']];
 		$sql->mySQLlanguage = ($user_language) ? $user_language :
-		 "";
+		"";
 	}
 }
 // =====================
-	
+
 $page = substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
 define("e_PAGE", $page);
-	
+
 if ($pref['frontpage'] && $pref['frontpage_type'] == "splash") {
 	$ip = getip();
 	if (!$sql->db_Count("online", "(*)", "WHERE online_ip='{$ip}' ")) {
@@ -281,22 +281,22 @@ if ($pref['frontpage'] && $pref['frontpage_type'] == "splash") {
 		}
 	}
 }
-	
+
 e107_require_once(e_HANDLER."cache_handler.php");
 $e107cache = new ecache;
-	
-	
+
+
 if ($pref['del_unv']) {
 	$threshold = (time() - ($pref['del_unv'] * 60));
 	$sql->db_Delete("user", "user_ban = 2 AND user_join<'$threshold' ");
 }
-	
+
 e107_require_once(e_HANDLER."override_class.php");
 $override = new override;
-	
+
 e107_require_once(e_HANDLER."event_class.php");
 $e_event = new e107_event;
-	
+
 if ($pref['modules']) {
 	$mods = explode(",", $pref['modules']);
 	foreach($mods as $mod) {
@@ -305,8 +305,8 @@ if ($pref['modules']) {
 		}
 	}
 }
-	
-	
+
+
 //###########  Module redifinable functions ###############
 if (!function_exists('checkvalidtheme')) {
 	function checkvalidtheme($theme_check) {
@@ -338,7 +338,7 @@ if (!class_exists('convert')) {
 			# - scope          public
 			*/
 			global $pref;
-			 
+
 			$datestamp += (TIMEOFFSET * 3600);
 			if ($mode == "long") {
 				return strftime($pref['longdate'], $datestamp);
@@ -383,23 +383,23 @@ if (!class_exists('e107_table')) {
 	}
 }
 //#############################################################
-	
+
 $ns = new e107table;
 init_session();
 online();
-	
-	
+
+
 $fp = ($pref['frontpage'] ? $pref['frontpage'].".php" : "news.php index.php");
 define("e_SIGNUP", (file_exists(e_BASE."customsignup.php") ? e_BASE."customsignup.php" : e_BASE."signup.php"));
 define("e_LOGIN", (file_exists(e_BASE."customlogin.php") ? e_BASE."customlogin.php" : e_BASE."login.php"));
-	
+
 if ($pref['membersonly_enabled'] && !USER && e_PAGE != e_SIGNUP && e_PAGE != "index.php" && e_PAGE != "fpw.php" && e_PAGE != e_LOGIN && !strstr(e_PAGE, "admin") && e_PAGE != 'membersonly.php') {
 	header("location: ".e_BASE."membersonly.php");
 	exit;
 }
-	
+
 $sql->db_Delete("tmp", "tmp_time < '".(time()-300)."' AND tmp_ip!='data' AND tmp_ip!='adminlog' AND tmp_ip!='submitted_link' AND tmp_ip!='reported_post' AND tmp_ip!='var_store' ");
-	
+
 $language = ($pref['sitelanguage'] ? $pref['sitelanguage'] : "English");
 define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
 define("e_LAN", $language);
@@ -418,14 +418,14 @@ define("SITEDESCRIPTION", $pref['sitedescription']);
 define("SITEADMIN", $pref['siteadmin']);
 define("SITEADMINEMAIL", $pref['siteadminemail']);
 define("SITEDISCLAIMER", $pref['sitedisclaimer']);
-	
+
 if ($pref['maintainance_flag'] && ADMIN == FALSE && !eregi("admin", e_SELF)) {
 	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitedown.php");
 	e107_include_once(e_LANGUAGEDIR."English/lan_sitedown.php");
 	e107_require_once(e_BASE."sitedown.php");
 	exit;
 }
-	
+
 if (strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin.php")) {
 	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".e_PAGE);
 	e107_include_once(e_LANGUAGEDIR."English/admin/lan_".e_PAGE);
@@ -434,12 +434,12 @@ else if (!strstr(e_SELF, $PLUGINS_DIRECTORY)) {
 	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE);
 	e107_include_once(e_LANGUAGEDIR."English/lan_".e_PAGE);
 }
-	
+
 if (isset($_POST['userlogin'])) {
 	e107_require_once(e_HANDLER."login.php");
 	$usr = new userlogin($_POST['username'], $_POST['userpass'], $_POST['autologin']);
 }
-	
+
 if (e_QUERY == 'logout') {
 	$ip = getip();
 	$udata = (USER === TRUE) ? USERID.".".USERNAME :
@@ -455,16 +455,16 @@ if (e_QUERY == 'logout') {
 	exit;
 }
 ban();
-	
+
 define("TIMEOFFSET", $pref['time_offset']);
-	
+
 if ($sql->db_Select('menus', '*', 'menu_location > 0 ORDER BY menu_order')) {
 	while ($row = $sql->db_Fetch()) {
 		$eMenuList[$row['menu_location']][] = $row;
 		$eMenuActive[] = $row['menu_name'];
 	}
 }
-	
+
 if ($sql->db_Select('links', '*', 'link_category = 1 ORDER BY link_order ASC')) {
 	while ($row = $sql->db_Fetch()) {
 		if (check_class($row['link_class'])) {
@@ -477,11 +477,11 @@ if ($sql->db_Select('links', '*', 'link_category = 1 ORDER BY link_order ASC')) 
 		}
 	}
 }
-	
+
 //echo '<pre>';
 //print_r($eLinkList);
 //echo '</pre>';
-	
+
 if ((strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin") ) && $pref['admintheme'] && !$_POST['sitetheme']) {
 	if (strstr(e_SELF, "menus.php")) {
 		checkvalidtheme($pref['sitetheme']);
@@ -509,13 +509,13 @@ if (strstr(e_SELF, $ADMIN_DIRECTORY)) {
 	require_once(THEME."theme.php");
 }
 if ($pref['anon_post'] ? define("ANON", TRUE) : define("ANON", FALSE));
-	if (Empty($pref['newsposts']) ? define("ITEMVIEW", 15) : define("ITEMVIEW", $pref['newsposts']));
-	 
+if (Empty($pref['newsposts']) ? define("ITEMVIEW", 15) : define("ITEMVIEW", $pref['newsposts']));
+
 if ($pref['antiflood1'] == 1) {
 	define('FLOODPROTECT', TRUE);
 	define('FLOODTIMEOUT', $pref['antiflood_timeout']);
 }
-	
+
 define ("HEADERF", e_THEME."templates/header".$layout.".php");
 define ("FOOTERF", e_THEME."templates/footer".$layout.".php");
 if (!file_exists(HEADERF)) {
@@ -524,17 +524,17 @@ if (!file_exists(HEADERF)) {
 if (!file_exists(FOOTERF)) {
 	message_handler("CRITICAL_ERROR", "Unable to find file: ".FOOTERF, __LINE__-2, __FILE__);
 }
-	
+
 define("LOGINMESSAGE", "");
 define("OPEN_BASEDIR", (ini_get('open_basedir') ? TRUE : FALSE));
 define("SAFE_MODE", (ini_get('safe_mode') ? TRUE : FALSE));
 define("FILE_UPLOADS", (ini_get('file_uploads') ? TRUE : FALSE));
 define("INIT", TRUE);
 define("e_REFERER_SELF", ($_SERVER["HTTP_REFERER"] == e_SELF));
-	
+
 //@require_once(e_HANDLER."IPB_int.php");
 //@require_once(e_HANDLER."debug_handler.php");
-	
+
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function check_email($var) {
 	return (preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]+@([-0-9A-Z]+\.)+([0-9A-Z]){2,4}$/i', $var)) ? $var :
@@ -623,7 +623,7 @@ function getperms($arg, $ap = ADMINPERMS) {
 	}
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-	
+
 function save_prefs($table = "core", $uid = USERID, $row_val = "") {
 	global $pref, $user_pref, $tp;
 	$sql = new db;
@@ -650,7 +650,7 @@ function save_prefs($table = "core", $uid = USERID, $row_val = "") {
 		return $tmp;
 	}
 }
-	
+
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function online() {
 	$page = (strstr(e_SELF, "forum_")) ? e_SELF.".".e_QUERY :
@@ -667,7 +667,7 @@ function online() {
 	$ip = getip();
 	$udata = (USER === TRUE) ? USERID.".".USERNAME :
 	"0";
-	 
+
 	if (USER) {
 		// Find record that matches IP or visitor, or matches user info
 		if ($sql->db_Select("online", "*", "(online_ip='{$ip}' AND online_user_id = '0') OR online_user_id = '{$udata}'")) {
@@ -724,7 +724,7 @@ function online() {
 			$sql->db_Insert("online", " '".time()."', 'null', '0', '{$ip}', '{$page}', 1");
 		}
 	}
-	 
+
 	if (ADMIN || $pref['autoban'] != 1) {
 		$online_pagecount = 1;
 	}
@@ -737,7 +737,7 @@ function online() {
 		echo "<div style='text-align:center; font: 11px verdana, tahoma, arial, helvetica, sans-serif;'><b>Warning!</b><br /><br />The flood protection on this site has been activated and you are warned that if you carry on requesting pages you could be banned.<br /></div>";
 		exit;
 	}
-	 
+
 	$sql->db_Delete("online", "online_timestamp<".(time() - $online_timeout));
 	$total_online = $sql->db_Count("online");
 	if ($members_online = $sql->db_Select("online", "*", "online_user_id != '0' ")) {
@@ -755,7 +755,7 @@ function online() {
 	define("ON_PAGE", $sql->db_Count("online", "(*)", "WHERE online_location='$page' "));
 	define("MEMBER_LIST", $member_list);
 }
-	
+
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function cachevars($id, $var) {
 	global $cachevar;
@@ -821,13 +821,13 @@ function init_session() {
 	# - scope public
 	*/
 	global $sql, $pref, $user_pref, $tp;
-	 
+
 	if (!$_COOKIE[$pref['cookie_name']] && !$_SESSION[$pref['cookie_name']]) {
 		define("USER", FALSE);
 		define("USERTHEME", FALSE);
 		define("ADMIN", FALSE);
 		define("GUEST", TRUE);
-		 
+
 	} else {
 		list($uid, $upw) = ($_COOKIE[$pref['cookie_name']] ? explode(".", $_COOKIE[$pref['cookie_name']]) : explode(".", $_SESSION[$pref['cookie_name']]));
 		if (empty($uid) || empty($upw)) // corrupt cookie?
@@ -868,11 +868,11 @@ function init_session() {
 				$user_pref['sitetheme'] = ($pref['sitetheme'] == $_POST['sitetheme'] ? "" : $_POST['sitetheme']);
 				save_prefs($user);
 			}
-			 
-			 
+
+
 			define("USERTHEME", ($user_pref['sitetheme'] && file_exists(e_THEME.$user_pref['sitetheme']."/theme.php") ? $user_pref['sitetheme'] : FALSE));
 			global $ADMIN_DIRECTORY, $PLUGINS_DIRECTORY;
-			 
+
 			if ($user_admin) {
 				define("ADMIN", TRUE);
 				define("ADMINID", $user_id);
@@ -898,9 +898,11 @@ function ban() {
 	$sql = new db;
 	$ip = getip();
 	$wildcard = substr($ip, 0, strrpos($ip, ".")).".*";
-	if ($sql->db_Select("banlist", "*", "banlist_ip='".$_SERVER['REMOTE_ADDR']."' OR banlist_ip='".USEREMAIL."' OR banlist_ip='$ip' OR banlist_ip='$wildcard'")) {
-		// enter a message here if you want some text displayed to banned users ...
-		exit;
+	if($ip != '127.0.0.1'){
+		if ($sql->db_Select("banlist", "*", "banlist_ip='".$_SERVER['REMOTE_ADDR']."' OR banlist_ip='".USEREMAIL."' OR banlist_ip='$ip' OR banlist_ip='$wildcard'")) {
+			// enter a message here if you want some text displayed to banned users ...
+			exit;
+		}
 	}
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -918,10 +920,10 @@ function table_exists($check) {
 		$tablist = mysql_list_tables($GLOBALS['mySQLdefaultdb']);
 		while (list($temp) = mysql_fetch_array($tablist)) {
 			$GLOBALS['mySQLtablelist'][] = $temp;
-			 
+
 		}
 	}
-	 
+
 	$mltable = MPREFIX.strtolower($check);
 	foreach($GLOBALS['mySQLtablelist'] as $lang) {
 		if (eregi($mltable, $lang)) {
@@ -929,7 +931,7 @@ function table_exists($check) {
 		}
 	}
 }
-	
+
 function class_list($uid = '') {
 	$clist = array();
 	if ($uid == '') {
@@ -947,7 +949,7 @@ function class_list($uid = '') {
 		return implode(',', $clist);
 	}
 }
-	
+
 // ---------------------------------------------------------------------------
 function e107_include($fname) {
 	global $e107_debug;
@@ -957,7 +959,7 @@ function e107_include_once($fname) {
 	global $e107_debug;
 	return ($e107_debug ? include_once($fname) : @include_once($fname));
 }
-	
+
 function e107_require_once($fname) {
 	global $e107_debug;
 	return ($e107_debug ? require_once($fname) : @require_once($fname));
@@ -966,5 +968,5 @@ function e107_require($fname) {
 	global $e107_debug;
 	return ($e107_debug ? require($fname) : @require($fname));
 }
-	
+
 ?>
