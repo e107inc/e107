@@ -20,6 +20,8 @@ define("LWLAN_17", "Delete");
 define("LWLAN_18", "Are you sure you want to delete this linkword?");
 define("LWLAN_19", "Linkword deleted.");
 define("LWLAN_20", "Unable to find that linkword entry.");
+define("LWLAN_21","Word to autolink");
+define("LWLAN_22","Activate?");
 
 define("LWLANINS_1", "Linkwords");
 define("LWLANINS_2", "This plugin will link specified words with a defined link");

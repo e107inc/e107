@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/linkwords/admin_config.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-03-23 15:03:16 $
+|     $Revision: 1.3 $
+|     $Date: 2005-04-06 21:41:31 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -149,21 +149,21 @@ $text = "
 <table style='".ADMIN_WIDTH."' class='fborder'>
 
 <tr>
-<td style='width:50%' class='forumheader3'>Word to autolink</td>
+<td style='width:50%' class='forumheader3'>".LWLAN_21."</td>
 <td style='width:50%' class='forumheader3'>
 <input class='tbox' type='text' name='linkword_word' size='40' value='".$linkword_word."' maxlength='100' />
 </td>
 </tr>
 
 <tr>
-<td style='width:50%' class='forumheader3'>Link</td>
+<td style='width:50%' class='forumheader3'>".LWLAN_6."</td>
 <td style='width:50%' class='forumheader3'>
 <input class='tbox' type='text' name='linkword_link' size='40' value='".$linkword_link."' maxlength='150' />
 </td>
 </tr>
 
 <tr>
-<td style='width:50%' class='forumheader3'>Activate?</td>
+<td style='width:50%' class='forumheader3'>".LWLAN_22."</td>
 <td style='width:50%; text-align:right' class='forumheader3'>
 <input type='radio' name='linkword_active' value='0'".(!$linkword_active ? " checked='checked'" : "")." /> ".LWLAN_9."&nbsp;&nbsp;
 <input type='radio' name='linkword_active' value='1'".($linkword_active ? " checked='checked'" : "")." /> ".LWLAN_10."
