@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-02-11 02:29:42 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.38 $
+|     $Date: 2005-02-12 07:57:14 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -69,7 +69,7 @@ if ($action == 'cat') {
 		$sql->db_Select("news_category", "*", "category_id='$category'");
 		list($category_id, $category_name, $category_icon) = $sql->db_Fetch();
 		$category_name = $tp->toHTML($category_name);
-		$category_icon = e_IMAGE."newsicons/".$category_icon;
+		$category_icon = e_IMAGE."icons/".$category_icon;
 
 		$count = $sql->db_SELECT("news", "*", "news_category='$category' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY news_datestamp DESC");
 		while ($row = $sql->db_Fetch()) {

@@ -13,9 +13,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.28 $
-| $Date: 2005-02-11 14:14:46 $
-| $Author: mcfly_e107 $
+| $Revision: 1.29 $
+| $Date: 2005-02-12 07:56:41 $
+| $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -28,7 +28,7 @@ class news {
 		$news_title = $tp->toDB($news_title, TRUE);
 		$news_body = $tp->toDB($data, TRUE);
 		$news_extended = $tp->toDB($news_extended, TRUE);
-		$news_summary = $tp->toDB($news_summary, TRUE);  
+		$news_summary = $tp->toDB($news_summary, TRUE);
 		if(!isset($news_sticky)) {$news_sticky = 0;}
 
 		if ($news_id) {
@@ -137,7 +137,7 @@ class news {
 			if ($category_icon && strstr("images", $category_icon)) {
 				$category_icon = THEME.$category_icon;
 			} else {
-				$category_icon = e_IMAGE."newsicons/".$category_icon;
+				$category_icon = e_IMAGE."icons/".$category_icon;
 			}
 		}
 		$active_start = ($active_start ? str_replace(" - 00:00:00", "", $con->convert_date($active_start, "long")) : LAN_NEWS_19);
@@ -234,7 +234,7 @@ class news {
 		{
 			$replace[15] = '';
 		}
-			
+
 
 		if (function_exists("news_style")) {
 			$NEWSSTYLE = news_style($news);
