@@ -14,7 +14,7 @@
 
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = PMLAN_PM;
-$eplug_version = "2.06";
+$eplug_version = "2.07";
 $eplug_author = "McFly";
 $eplug_logo = "/images/icon_pm.png";
 $eplug_url = "http://mcfly.gotdns.org";
@@ -22,7 +22,6 @@ $eplug_email = "mcfly@e107.org";
 $eplug_description = "This plugin is a fully featured Private Messaging system.";
 $eplug_compatible = "e107v6+";
 $eplug_readme = "pm_readme.txt";	// leave blank if no readme file
-$eplug_parse= array("/{{(SENDPM)=([0-9]+)}}/");
 
 // Name of the plugin's folder -------------------------------------------------------------------------------------
 $eplug_folder = "pm_menu";

@@ -339,22 +339,42 @@ class e107table{
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function e107_parse($text,$referrer){
-//	if($referrer != "admin"){return $text;}
-	global $parsethis;
-	@require_once(e_HANDLER.'parser_functions.php');
-	foreach($parsethis as $parser_regexp => $parser_name){
-		preg_match_all($parser_regexp,$text,$matches,PREG_SET_ORDER);
-		for ($i=0; $i< count($matches); $i++) {
-			if($parser_name != "e107_core" && file_exists(e_PLUGIN.$parser_name.'/parser.php')){
-				@require_once(e_PLUGIN.$parser_name.'/parser.php');
-			}
-			if(function_exists($parser_name.'_parse')) {
-				$newtext=call_user_func($parser_name.'_parse',$matches[$i],$referrer);
-				$text = str_replace($matches[$i][0],$newtext,$text);
+	preg_match_all("#{CODE=(.*?)}#",$text,$matches,PREG_SET_ORDER);
+	for ($i=0; $i< count($matches); $i++) {
+		$p = explode(".",$matches[$i][1]);
+		$parse_func = "parse_".$p[1];
+		if(!function_exists($parse_func)){
+			$parse_file = ('CORE' == $p[0]) ?  e_HANDLER."parse/" : e_PLUGIN.$p[0]."/parse/";
+			$parse_file .= "parse_{$p[1]}.php";
+			if(file_exists($parse_file)){
+				@require_once($parse_file);
 			}
 		}
+		if(function_exists($parse_func)){
+			$newtext = call_user_func($parse_func,$matches[$i],$referrer);
+		} else {
+			$newtext = "";
+		}
+		$text = str_replace($matches[$i][0],$newtext,$text);
 	}
-	$text = preg_replace("#{{.*?}}#","",$text);
+
+	global $parsethis;
+	if($parsethis){
+		@require_once(e_HANDLER.'parser_functions.php');
+		foreach($parsethis as $parser_regexp => $parser_name){
+			preg_match_all($parser_regexp,$text,$matches,PREG_SET_ORDER);
+			for ($i=0; $i< count($matches); $i++) {
+				if($parser_name != "e107_core" && file_exists(e_PLUGIN.$parser_name.'/parser.php')){
+					@require_once(e_PLUGIN.$parser_name.'/parser.php');
+				}
+				if(function_exists($parser_name.'_parse')) {
+					$newtext=call_user_func($parser_name.'_parse',$matches[$i],$referrer);
+					$text = str_replace($matches[$i][0],$newtext,$text);
+				}
+			}
+		}
+		$text = preg_replace("#{{.*?}}#","",$text);
+	}
 	return $text;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
