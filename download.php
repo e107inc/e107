@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-03-01 17:32:21 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.14 $
+|     $Date: 2005-03-14 17:01:58 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -263,7 +263,7 @@ if ($action == "view") {
 
 	if ($download_author_email) {
 		$DOWNLOAD_VIEW_AUTHOREMAIL_LAN = LAN_dl_30;
-		$DOWNLOAD_VIEW_AUTHOREMAIL = str_replace("@", ".at.", $download_author_email);
+		$DOWNLOAD_VIEW_AUTHOREMAIL = $download_author_email;
 	}
 
 	if ($download_author_website) {
