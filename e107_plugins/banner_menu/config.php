@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/banner_menu/config.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:06 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-05 10:23:00 $
+|     $Author: pholzmann $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -29,8 +29,7 @@ if(IsSet($_POST['update_menu'])){
                         $menu_pref[$k] = $v;
                 }
         }
-        $tmp = addslashes(serialize($menu_pref));
-        $sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='menu_pref' ");
+	$sysprefs->setArray('menu_pref');
         $ns -> tablerender("", "<div style='text-align:center'><b>".BANNER_MENU_L2."</b></div>");
 }
 

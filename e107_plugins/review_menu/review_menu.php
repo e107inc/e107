@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/review_menu/review_menu.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2004-12-13 13:20:45 $
-|     $Author: sweetas $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-05 10:23:01 $
+|     $Author: pholzmann $
 +----------------------------------------------------------------------------+
 */
 if($cache = $e107cache->retrieve("review_menu")){
@@ -103,7 +103,8 @@ else
 		$cache = $aj -> formtpa(ob_get_contents(), "admin");
 		$e107cache->set("review_menu", $cache);
 	}
-	ob_end_clean();
+	
+	ob_end_flush(); /* dump collected data */
 }
 
 ?>
