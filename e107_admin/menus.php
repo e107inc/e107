@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-02-04 16:09:16 $
+|     $Revision: 1.14 $
+|     $Date: 2005-02-09 12:50:13 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -196,8 +196,8 @@ if ($menu_act == "inc") {
 }
 	
 $efile = new e_file;
-$fileList = $efile->get_files(e_PLUGIN,"#_menu\.php$#",'standard',2);
-$customList = $efile->get_files(e_PLUGIN.'custom',"#\.php$#",'standard',1);
+$fileList = $efile->get_files(e_PLUGIN,"_menu\.php$",'standard',2);
+$customList = $efile->get_files(e_PLUGIN.'custom',"\.php$",'standard',1);
 
 foreach($customList as $custom)
 {
