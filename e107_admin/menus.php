@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-01-28 14:02:44 $
-|     $Author: mrpete $
+|     $Revision: 1.8 $
+|     $Date: 2005-01-31 22:55:57 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -24,6 +24,7 @@ if (!getperms("2")) {
 $e_sub_cat = 'menus';
 require_once("auth.php");
 require_once(e_HANDLER."form_handler.php");
+require_once(e_HANDLER."file_class.php");
 $frm = new form;
 	
 if (isset($_POST['custom_select'])) {
@@ -190,44 +191,41 @@ if ($menu_act == "inc") {
 	$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_id='$id' AND menu_location='$location' ");
 }
 	
-$handle = opendir(e_PLUGIN);
-$c = 0;
-while (false !== ($file = readdir($handle))) {
-	if ($file != "." && $file != ".." && $file != "index.html" && (strstr($file, "menu") || (strstr($file, "custom") && !strstr($file, "custompage")))) {
-		if ($file == "custom") {
-			$handle2 = opendir(e_PLUGIN."custom/");
-			$d = 0;
-			while (false !== ($file2 = readdir($handle2))) {
-				if ($file2 != "." && $file2 != ".." && $file2 != "/" && $file2 != "Readme.txt") {
-					$file2 = "custom_".str_replace(".php", "", $file2);
-					if (!$sql->db_Select("menus", "*", "menu_name='$file2'")) {
-						$sql->db_Insert("menus", " 0, '$file2', 0, 0, 0, '' ");
-						$message .= "<b>".MENLAN_9." - ".$file2."</b><br />";
-					}
-					$menustr .= "&".$file2;
-					$d++;
-				}
-			}
-			closedir($handle2);
-		}
-		else if (!$sql->db_Select("menus", "*", "menu_name='$file'")) {
-			if (file_exists(e_PLUGIN.$file."/plugin.php")) {
-				@include(e_PLUGIN.$file."/plugin.php");
-				if ($sql->db_Select("plugin", "*", "plugin_name='$eplug_name' AND plugin_installflag='1' ")) {
-					$sql->db_Insert("menus", " 0, '$file', 0, 0, 0, '' ");
-					$message .= "<b>".MENLAN_10." - ".$file."</b><br />";
-				}
-			} else {
-				$sql->db_Insert("menus", " 0, '$file', 0, 0, 0, '' ");
-				$message .= "<b>".MENLAN_10." - ".$file."</b><br />";
-			}
-		}
-		$menustr .= "&".str_replace(".php", "", $file);
-		$c++;
+$efile = new e_file;
+$fileList = $efile->get_files(e_PLUGIN,"#_menu\.php$#",'standard',2);
+$customList = $efile->get_files(e_PLUGIN.'custom',"#\.php$#",'standard',1);
+
+foreach($customList as $custom)
+{
+	$custom['path'] = str_replace(e_PLUGIN,"",$custom['path']);
+	$custom['fname'] = str_replace(".php","",$custom['fname']);
+
+	if (!$sql->db_Count("menus", "(*)", "WHERE menu_name='{$custom['fname']}'")) {
+		$sql->db_Insert("menus", " 0, '{$custom['fname']}', 0, 0, 0, '', 'custom'");
+		$message .= "<b>".MENLAN_9." - ".$custom['fname']."</b><br />";
 	}
+	$menustr .= "&".$custom['fname'];
 }
-closedir($handle);
-	
+
+foreach($fileList as $file) {
+	list($parent_dir) = explode('/',str_replace(e_PLUGIN,"",$file['path']));
+	$file['path'] = str_replace(e_PLUGIN,"",$file['path']);
+	$file['fname'] = str_replace(".php","",$file['fname']);
+	if (!$sql->db_Count("menus", "(*)", "WHERE menu_name='{$file['fname']}'")) {
+		if (file_exists($parent_dir."/plugin.php")) {
+			@include($parent_dir."/plugin.php");
+			if ($sql->db_Select("plugin", "*", "plugin_name='$eplug_name' AND plugin_installflag='1' ")) {
+				$sql->db_Insert("menus", " 0, '{$file['fname']}', 0, 0, 0, '' ,'{$file['path']}'");
+				$message .= "<b>".MENLAN_10." - ".$file['fname']."</b><br />";
+			}
+		} else {
+			$sql->db_Insert("menus", " 0, '{$file['fname']}', 0, 0, 0, '' ,'{$file['path']}'");
+			$message .= "<b>".MENLAN_10." - ".$file['fname']."</b><br />";
+		}
+	}
+	$menustr .= "&".str_replace(".php", "", $file['fname']);
+}	
+
 $sql2 = new db;
 foreach ($menu_areas as $menu_act) {
 	if ($sql->db_Select("menus", "*", "menu_location='$menu_act' ORDER BY menu_order ASC")) {
