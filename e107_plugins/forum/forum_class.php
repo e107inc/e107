@@ -263,7 +263,7 @@ class e107forum {
 				while ($row = $sql->db_Fetch()) {
 					$threadList[$i++] = $row['thread_id'];
 				}
-				$this->showvar($threadList);
+				//$this->showvar($threadList);
 				$id = array_search($thread_id, $threadList);
 				if ($id) {
 					if ($id != 99) {
