@@ -28,25 +28,29 @@ if(e_QUERY){
 }
 if($action == "content"){
 	$query = "content_id='".$sub_action."' ";
-	$page = LAN_60.":";
+	$page = LAN_60." /";
 	}
 if($action == "article"){
 	if(is_numeric($sub_action)){
 		$query = "content_id='".$sub_action."' ";
-		$page = LAN_1.":";
+		$page = LAN_1." /";
 	}elseif($sub_action == "cat" ){
-		$query = "content_id='".$id."' ";
-		$page = LAN_1.": ".LAN_3.":";
+		if($id == "0"){
+			$page = LAN_57." / ".LAN_61;
+		}else{
+			$query = "content_id='".$id."' ";
+			$page = LAN_1." / ".LAN_3." /";
+		}
 	}else{		
 		$page = LAN_50;
 	}
 }
 if($action == "review"){
 	if(is_numeric($sub_action)){
-		$page = LAN_2.":";
+		$page = LAN_2." /";
 		$query = "content_id='".$sub_action."' ";
 	}elseif($sub_action == "cat"){
-		$page = LAN_2.": ".LAN_3.":";
+		$page = LAN_2." / ".LAN_3." /";
 		$query = "content_id='".$id."' ";
 	}else{		
 		$page = LAN_35;
@@ -89,7 +93,7 @@ if(IsSet($_POST['commentsubmit'])){
 		$row = $sql -> db_Fetch();
 		if($row[0] && (ANON===TRUE || USER===TRUE)){
 			$cobj -> enter_comment($_POST['author_name'], $_POST['comment'], "content", $sub_action, $pid, $_POST['subject']);
-			$sql -> db_Delete("cache", "cache_url='comment.content.$sub_action' ");
+			clear_cache("comment.content.{$sub_action}");
 		}
 	}
 }

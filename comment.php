@@ -79,6 +79,7 @@ if($action == "reply"){
 			}else{
 				list($news['news_title']) = $sql -> db_Fetch();
 				$subject = $news['news_title'];
+				$title = LAN_100;
 			}
 		}elseif($table == "poll"){
 			if(!$sql -> db_Select("poll", "poll_title", "poll_id='$nid' ")){
@@ -87,10 +88,11 @@ if($action == "reply"){
 			}else{
 				list($poll['poll_title']) = $sql -> db_Fetch();
 				$subject = $poll['poll_title'];
+				$title = LAN_101;
 			}
 		}elseif($table == "content"){
 				$sql -> db_Select("content", "content_heading", "content_id='$nid'");
-				$subject = $poll['content_heading'];
+				$subject = $content['content_heading'];
 			}
 	}
 	if($table == "content"){
@@ -98,13 +100,17 @@ if($action == "reply"){
 		list($content['content_type']) = $sql -> db_Fetch();
 			if($content['content_type'] == "0"){
 				$content_type = "article";
+				$title = LAN_103;
 			}elseif($content['content_type'] == "3"){
 				$content_type = "review";
+				$title = LAN_104;
 			}elseif($content['content_type'] == "1"){
 				$content_type = "content";
+				$title = LAN_105;
 		}
 	}
-	define(e_PAGETITLE,  LAN_99." : ".$subject."");
+	
+	define(e_PAGETITLE,  $title." / ".LAN_99." / ".LAN_102.$subject."");
 	require_once(HEADERF);
 }else{
 if($cache = retrieve_cache("comment.php?$table.$id")){
@@ -127,7 +133,7 @@ if($cache = retrieve_cache("comment.php?$table.$id")){
 					exit;
 				}else{
 					$subject = $aj -> formtpa($news['news_title']);
-					define(e_PAGETITLE,  "Comments : ".$subject."");
+					define(e_PAGETITLE,  LAN_100." / ".LAN_99." / ".$subject."");
 					require_once(HEADERF);
 					ob_start();
 					$sql -> db_Select("user", "user_name", "user_id='".$news['admin_id']."' ");
@@ -150,15 +156,14 @@ if($cache = retrieve_cache("comment.php?$table.$id")){
 			}else{
 				$row = $sql -> db_Fetch();
 				extract($row);
-				$subject = $poll_title;
-				define(e_PAGETITLE,  LAN_99." : ".$subject."");
+				$subject = $poll_title;				
+				define(e_PAGETITLE,  LAN_101." / ".LAN_99." / ".$subject."");
 				require_once(HEADERF);
 				require_once(e_PLUGIN."poll_menu/poll_menu.php");
 				$field = $poll_id;
 				$comtype = 4;
 			}
 		}
-	define(e_PAGETITLE,  LAN_99." : ".$subject."");
 	require_once(HEADERF);
 	$query = ($pref['nested_comments'] ? "comment_item_id='$field' AND comment_type='$comtype' AND comment_pid='0' ORDER BY comment_datestamp" : "comment_item_id='$field' AND comment_type='$comtype'  ORDER BY comment_datestamp");
 	}
