@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2004-10-11 09:27:26 $
-|     $Author: loloirie $
+|     $Revision: 1.6 $
+|     $Date: 2004-10-30 00:13:59 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -214,7 +214,7 @@ $query2 = "news_class != '255' AND (news_start=0 || news_start < ".time().") AND
 
 //if(!$disablecache && !e_QUERY){
 	if($cache_data = retrieve_cache("news.php")){
-		echo $tp -> toHTML($cache_data);
+		echo $cache_data;
 		$cachestring = "Cache system activated (content originally served ".strftime("%A %d %B %Y - %H:%M:%S", $cache_datestamp).").";
 		require_once(e_HANDLER."np_class.php");
 		$ix = new nextprev("news.php", $from, ITEMVIEW, $news_total, LAN_84);
@@ -465,7 +465,7 @@ $ns -> tablerender("News Categories", $text3);
 
 if(!$disablecache && !e_QUERY)
 {
-	$cache = $tp -> toDB(ob_get_contents());
+	$cache = ob_get_contents();
 	set_cache("news.php", $cache);
 }
 else
