@@ -122,7 +122,7 @@ class e107plugin {
 	 
 	function manage_plugin_prefs($action, $prefname, $plugin_folder, $varArray = '') {
 		global $pref;
-		if ($prefnam == 'plug_sc') {
+		if ($prefname == 'plug_sc') {
 			foreach($varArray as $code) {
 				$prefvals[] = "$code:$plugin_folder";
 			}
@@ -143,7 +143,14 @@ class e107plugin {
 			$newvals = explode(',', $curvals);
 		}
 		$newvals = array_unique($newvals);
-		$pref[$prefname] = implode(',', $newvals);
+		if(count($newvals) < 2)
+		{
+			$pref[$prefname] = $newvals[0];
+		}
+		else
+		{
+			$pref[$prefname] = implode(',', $newvals);
+		}
 		save_prefs();
 	}
 }

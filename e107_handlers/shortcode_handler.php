@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.7 $
-| $Date: 2005-01-27 19:52:29 $
-| $Author: streaky $
+| $Revision: 1.8 $
+| $Date: 2005-01-30 01:36:51 $
+| $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -22,7 +22,30 @@ class e_shortcode {
 	var $scList;
 	var $parseSCFiles;
 	var $addedCodes;
-	 
+	var $registered_codes;
+
+	function e_shortcode()
+	{
+		global $pref;
+		if($pref['plug_sc'] != '')
+		{
+			$tmp = explode(',',$pref['plug_sc']);
+			foreach($tmp as $val)
+			{
+				list($code, $path) = explode(':',$val);
+				$this->registered_codes[$code]['type'] = 'plugin';
+				$this->registered_codes[$code]['path'] = $path;
+			}
+		}
+		if(is_array($register_sc))
+		{
+			foreach($register_sc as $code)
+			{
+				$this->registered_codes[$code]['type'] = 'theme';
+			}
+		}
+	}
+		 
 	function parseCodes($text, $useSCFiles = TRUE, $extraCodes = '') {
 		$this->parseSCFiles = $useSCFiles;
 		$ret = '';
@@ -42,24 +65,41 @@ class e_shortcode {
 		return $ret;
 	}
 	 
-	function doCode($matches) {
+	function doCode($matches)
+	{
 		global $pref, $e107cache, $menu_pref;
-		if (strpos($matches[1], '=')) {
+		if (strpos($matches[1], '='))
+		{
 			list($code, $parm) = explode("=", $matches[1], 2);
-		} else {
+		}
+		else
+		{
 			$code = $matches[1];
 			$parm = '';
 		}
 		$parm = trim(chop($parm));
-		if (is_array($this->scList) && array_key_exists($code, $this->scList)) {
+		if (is_array($this->scList) && array_key_exists($code, $this->scList))
+		{
 			$shortcode = $this->scList[$code];
-		} else {
-			if ($this->parseSCFiles == TRUE) {
-				if (($pos = strpos($code, ".")) != FALSE) {
-					list($tmp1, $tmp2) = explode(".", $code, 2);
-					$scFile = e_PLUGIN.strtolower($tmp1)."/".strtolower($tmp2).".sc";
-				} else {
-					$scFile = e_FILE."shortcode/".strtolower($code).".sc";
+		}
+		else
+		{
+			if ($this->parseSCFiles == TRUE) 
+			{
+				if (array_key_exists($code, $this->registered_codes))
+				{
+					if($this->registered_codes[$code]['type'] == 'plugin')
+					{
+						$scFile = e_PLUGIN.strtolower($this->registered_codes[$code]['path']).'/'.strtolower($code).'.sc';
+					}
+					else
+					{
+						$scFile = THEME.strtolower($code).'.sc';
+					}
+				}
+				else
+				{
+						$scFile = e_FILE."shortcode/".strtolower($code).".sc";
 				}
 				if (file_exists($scFile)) {
 					$shortcode = file_get_contents($scFile);

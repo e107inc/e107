@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm_menu/plugin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-27 19:53:13 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-30 01:36:52 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -22,7 +22,7 @@
 	
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = PMLAN_PM;
-$eplug_version = "2.07";
+$eplug_version = "2.08";
 $eplug_author = "McFly";
 $eplug_url = "http://mcfly.gotdns.org";
 $eplug_email = "mcfly@e107.org";
@@ -40,6 +40,8 @@ $eplug_menu_name = "pm_menu";
 // Name of the admin configuration file --------------------------------------------------------------------------
 $eplug_conffile = "admin_pm_conf.php";
 	
+$eplug_sc = array('SENDPM');
+
 // Icon image and caption text ------------------------------------------------------------------------------------
 $eplug_icon = $eplug_folder."/images/pvt_message_32.png";
 $eplug_icon_small = $eplug_folder."/images/pvt_message_16.png";
@@ -92,6 +94,8 @@ $eplug_link_url = "";
 // Text to display after plugin successfully installed ------------------------------------------------------------------
 $eplug_done = PM_ADLAN_44; // "To activate please go to your menus screen and select the pm_menu into one of your menu areas.";
 	
+$upgrade_add_eplug_sc = array('SENDPM');
+
 $eplug_upgrade_done = PM_ADLAN_45." ".$eplug_version;
 	
 ?>

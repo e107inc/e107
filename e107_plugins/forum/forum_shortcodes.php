@@ -41,7 +41,7 @@ SC_END
 SC_BEGIN PRIVMESSAGE
 global $post_info;
 global $tp;
-return $tp->parseTemplate("{pm_menu.sendpm={$post_info['user_id']}}");
+return $tp->parseTemplate("{SENDPM={$post_info['user_id']}}");
 SC_END
 	
 SC_BEGIN AVATAR
