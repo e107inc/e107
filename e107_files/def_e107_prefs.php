@@ -12,7 +12,7 @@ $pref['sitetheme'] = "e107v4a";
 $pref['image_preload'] = "0";
 $pref['admintheme'] = "jayya";
 $pref['adminstyle'] = "compact";
-$pref['sitedisclaimer'] = "All trademarks are &copy; their respective owners, all other content is &copy; e107 powered website.<br />e107 is &copy; e107.org 2002-2005 and is released under the <a href=&#39;http://www.gnu.org/&#39;>GNU GPL license</a>.";
+$pref['sitedisclaimer'] = 'All trademarks are &copy; their respective owners, all other content is &copy; e107 powered website.<br />e107 is &copy; e107.org 2002-2005 and is released under the <a href="http://www.gnu.org/">GNU GPL license</a>.';
 $pref['newsposts'] = "10";
 $pref['flood_protect'] = "1";
 $pref['flood_timeout'] = "5";
@@ -74,7 +74,7 @@ $pref['frontpage'] = "news.php";
 // Links page plugin pre-installed
 $pref['link_submit'] = "1";
 $pref['link_submit_class'] = "0";
-$pref['linkpage_categories'] = "0";	
+$pref['linkpage_categories'] = "0";
 
 // Chatbox plugin pre-installed
 $pref['chatbox_posts'] = "10";
