@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-02-02 13:48:24 $
+|     $Revision: 1.19 $
+|     $Date: 2005-02-02 14:28:47 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -117,7 +117,6 @@ if(!$text = $e107cache->retrieve("chatbox"))
 	{
 		$obj2 = new convert;
 		$cb_wordwrap = $pref['cb_wordwrap'];
-		$sql2 = new db;
 		while(list($cb_id, $cb_nick, $cb_message, $cb_datestamp, $cb_blocked, $cb_ip) = $sql-> db_Fetch())
 		{
 			// get available vars
