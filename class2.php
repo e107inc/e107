@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-09-23 15:49:20 $
-|     $Author: loloirie $
+|     $Revision: 1.3 $
+|     $Date: 2004-09-25 02:19:43 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -104,6 +104,7 @@ define("MPREFIX", $mySQLprefix);
 @require_once(e_HANDLER."message_handler.php");
 @require_once(e_HANDLER."mysql_class.php");
 
+$tp = new e_parse;
 $sql = new db;
 $sql -> db_SetErrorReporting(FALSE);
 $merror = $sql -> db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
@@ -399,392 +400,88 @@ define("e_REFERER_SELF",($_SERVER["HTTP_REFERER"] == e_SELF));
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function e107_parse($text,$referrer){
-        preg_match_all("#{CODE=(.*?)}#",$text,$matches,PREG_SET_ORDER);
-        for ($i=0; $i< count($matches); $i++) {
-                $p = explode(".",$matches[$i][1]);
-                $parse_func = "parse_".$p[1];
-                if(!function_exists($parse_func)){
-                        $parse_file = ('CORE' == $p[0]) ?  e_HANDLER."parse/" : e_PLUGIN.$p[0]."/parse/";
-                        $parse_file .= "parse_{$p[1]}.php";
-                        if(file_exists($parse_file)){
-                                @require_once($parse_file);
-                        }
-                }
-                if(function_exists($parse_func)){
-                        $newtext = call_user_func($parse_func,$matches[$i],$referrer);
-                } else {
-                        $newtext = "";
-                }
-                $text = str_replace($matches[$i][0],$newtext,$text);
-        }
+	preg_match_all("#{CODE=(.*?)}#",$text,$matches,PREG_SET_ORDER);
+	for ($i=0; $i< count($matches); $i++)
+	{
+		$p = explode(".",$matches[$i][1]);
+		$parse_func = "parse_".$p[1];
+		if(!function_exists($parse_func))
+		{
+			$parse_file = ('CORE' == $p[0]) ?  e_HANDLER."parse/" : e_PLUGIN.$p[0]."/parse/";
+			$parse_file .= "parse_{$p[1]}.php";
+			if(file_exists($parse_file))
+			{
+				@require_once($parse_file);
+			}
+		}
+		if(function_exists($parse_func))
+		{
+			$newtext = call_user_func($parse_func,$matches[$i],$referrer);
+		} else {
+			$newtext = "";
+		}
+		$text = str_replace($matches[$i][0],$newtext,$text);
+	}
 
-        global $parsethis;
-        if($parsethis){
-                @require_once(e_HANDLER.'parser_functions.php');
-                foreach($parsethis as $parser_regexp => $parser_name){
-                        preg_match_all($parser_regexp,$text,$matches,PREG_SET_ORDER);
-                        for ($i=0; $i< count($matches); $i++) {
-                                if($parser_name != "e107_core" && file_exists(e_PLUGIN.$parser_name.'/parser.php')){
-                                        @require_once(e_PLUGIN.$parser_name.'/parser.php');
-                                }
-                                if(function_exists($parser_name.'_parse')) {
-                                        $newtext=call_user_func($parser_name.'_parse',$matches[$i],$referrer);
-                                        $text = str_replace($matches[$i][0],$newtext,$text);
-                                }
-                        }
-                }
-                $text = preg_replace("#{{.*?}}#","",$text);
-        }
-        return $text;
+	global $parsethis;
+	if($parsethis)
+	{
+		@require_once(e_HANDLER.'parser_functions.php');
+		foreach($parsethis as $parser_regexp => $parser_name)
+		{
+			preg_match_all($parser_regexp,$text,$matches,PREG_SET_ORDER);
+			for ($i=0; $i< count($matches); $i++)
+			{
+				if($parser_name != "e107_core" && file_exists(e_PLUGIN.$parser_name.'/parser.php'))
+				{
+					@require_once(e_PLUGIN.$parser_name.'/parser.php');
+				}
+				if(function_exists($parser_name.'_parse'))
+				{
+					$newtext=call_user_func($parser_name.'_parse',$matches[$i],$referrer);
+					$text = str_replace($matches[$i][0],$newtext,$text);
+				}
+			}
+		}
+		$text = preg_replace("#{{.*?}}#","",$text);
+	}
+	return $text;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-class textparse{
+class textparse
+{
+	function editparse($text, $mode="off")
+	{
+		global $tp;
+		return $tp -> toForm($text);
+	}
 
-        var $emotes;
-        var $searcha;
-        var $searchb;
-        var $replace;
-        var $profan;
+	function tpa($text, $mode, $referrer='', $highlight_search=FALSE, $poster_id)
+	{
+		global $tp;
+		return $tp -> toHTML($text,TRUE,$mode,$poster_id);
+	}
 
-        function textparse(){
-                // constructor
-                global $pref;
-                                $pref['profanity_words'] = preg_replace("#(,$)#", "", $pref['profanity_words']);
-                if($pref['profanity_filter']){
-                        $this->profan = str_replace(",", "|", $pref['profanity_words']);
-                }
+	function formtpa($text,$mode)
+	{
+		global $tp;
+		$no_encode = ($mode == 'admin') ? TRUE : FALSE;
+		return $tp -> toDB($text,$no_encode);
+	}
 
-                if($pref['smiley_activate']){
-                        $sql = new db;
-                        $sql -> db_Select("core", "*", "e107_name='emote'");
-                        $row = $sql -> db_Fetch(); extract($row);
-                        $this->emotes = unserialize($e107_value);
-
-                        $c=0;
-                        while(list($code, $name) = each($this->emotes[$c])){
-                                $this->searcha[$c] = " ".$code;
-                                $this->searchb[$c] = "\n".$code;
-                                $this->replace[$c] = " <img src='".e_IMAGE."emoticons/$name' alt='' style='vertical-align:middle; border:0' /> ";
-                                $c++;
-                        }
-                }
-        }
-
-        function editparse($text, $mode="off"){
-                /*
-                # Edit parse
-                # - parameter #1:                string $text, text to parse
-                # - parameter #2:                string $mode, on=links not parsed, default=off
-                # - return                                parsed text
-                # - scope                                        public
-                */
-                //                $text = stripslashes($text);
-                $search = array();
-                $replace = array();
-                $search[0] = "/\<div class=\"indent\"\>\<i\>'.CORE_LAN2.' (.*?)\<\/i\>\<br \/\>\"(.*?)\"\<\/div\>/si";
-                $replace[0] = '[quote=\1]\2[/quote]';
-                $search[1] = "/\<div class=\"indent\"\>\<i\>'.CORE_LAN2.' (.*?)\<\/i\> ...\<br \/\>\"(.*?)\"\<\/div\>/si";
-                $replace[1] = '[quote=\1]\2[/quote]';
-                $search[2] = "/\<div class=\"indent\"\>(.*?)\<\/div\>/si";
-                $replace[2] = '[blockquote]\1[/blockquote]';
-                $search[3] = "/\<b>(.*?)\<\/b\>/si";
-                $replace[3] = '[b]\1[/b]';
-                $search[4] = "/\<i>(.*?)\<\/i\>/si";
-                $replace[4] = '[i]\1[/i]';
-                $search[5] = "/\<u>(.*?)\<\/u\>/si";
-                $replace[5] = '[u]\1[/u]';
-                $search[6] = "/\<img alt=\"\" src=\"(.*?)\" \/>/si";
-                $replace[6] = '[img]\1[/img]';
-                $search[7] =  "/\<div style=\"text-align:center\"\>(.*?)\<\/div\>/si";
-                $replace[7] = '[center]\1[/center]';
-                $search[8] =  "/\<div style=\"text-align:left\"\>(.*?)\<\/div\>/si";
-                $replace[8] = '[left]\1[/left]';
-                $search[9] =  "/\<div style=\"text-align:right\"\>(.*?)\<\/div\>/si";
-                $replace[9] = '[right]\1[/right]';
-                $search[10] = "/\<code>(.*?)\<\/code\>/si";
-                $replace[10] = '[code]\1[/code]';
-                if($mode == "off"){
-                        $search[11] = "/\<a href=\"(.*?)\">(.*?)<\/a>/si";
-                        $replace[11] = '[link=\\1]\\2[/link]';
-                }
-                $search[12] = "#\[edited\](.*?)\[/edited\]#si";
-                $replace[12] = '';
-                $text = preg_replace($search, $replace, $text);
-                return $text;
-        }
-
-
-        function tpj($text, $strip=FALSE){
-                                                        $text = preg_replace_callback("/&#([0-9]{1,3});/",create_function('$matches','return chr($matches[1]);'),$text);
-                        $search[0] = "#script#si";
-                        $replace[0] = 'scri<i></i>pt';
-                        $search[1] = "#document#si";
-                        $replace[1] = 'docu<i></i>ment';
-                        $search[2] = "#expression#si";
-                        $replace[2] = 'expres<i></i>sion';
-                        $search[3] = "#onmouseover#si";
-                        $replace[3] = 'onmouse<i></i>over';
-                        $search[4] = "#onclick#si";
-                        $replace[4] = 'on<i></i>click';
-                        $search[5] = "#onmousedown#si";
-                        $replace[5] = 'onmouse<i></i>down';
-                        $search[6] = "#onmouseup#si";
-                        $replace[6] = 'onmouse<i></i>up';
-                        $search[7] = "#ondblclick#si";
-                        $replace[7] = 'on<i></i>dblclick';
-                        $search[8] = "#onmouseout#si";
-                        $replace[8] = 'onmouse<i></i>out';
-                        $search[9] = "#onmousemove#si";
-                        $replace[9] = 'onmouse<i></i>move';
-                        $search[10] = "#onload#si";
-                        $replace[10] = 'on<i></i>load';
-                        $search[11] = "#background: *?url#si";
-                        $replace[11] = 'background<i></i>:url';
-                                                                $search[12] = "#(meta )#si";
-                                                                $replace[12] = '\1<i></i>';
-
-                        if($strip){
-                                $text = strip_tags($text);
-                        }
-         $text = preg_replace($search, $replace, $text);
-         return $text;
-        }
-
-        function tpa($text, $mode="off", $referrer="", $highlight_search=FALSE, $poster_id=""){
-                /*
-                # Post parse
-                # - parameter #1:                string $text, text to parse
-                # - parameter #2:                string $mode, on=line breaks not replaced, default off
-                # - return                                        parsed text
-                # - scope                                        public
-                */
-                global $pref;
-                global $referrer;
-                global $poster_userid;
-                $poster_userid=$poster_id;
-                $text = " ".$text;
-                if($pref['profanity_filter'] && $this->profan){
-                        $text = eregi_replace($this->profan, $pref['profanity_replace'], $text);
-                }
-                if($pref['smiley_activate']){
-                        $text = str_replace($this->searcha, $this->replace, $text);
-                        $text = str_replace($this->searchb, $this->replace, $text);
-                }
-                $text = str_replace("$", "&#36;", $text);
-                                $text = code($text, "notdef");
-            if($mode != "nobreak"){ $text = nl2br($text); }
-                                $text = preg_replace("/\n/i", " ", $text);
-                                $text = str_replace("<br />", " <br />" , $text);
-                                $text = e107_parse($text,$referrer);
-                                $text = $this -> bbcode($text, $mode, $referrer);
-                                if($mode != "on"){
-                                        $text = $this -> wrap($text, $mode, $referrer, $highlight_search);
-                                }
-                                if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
-                                $search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;span", "&lt;/span");
-                                $replace =  array("\"", "'", "\\", '\"', "\'", "<span", "</span");
-                                $text = str_replace($search, $replace, $text);
-                                $text = str_replace("<br /><br />", "<br />", $text);
-                                $text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $text);
-                                $text = substr($text, 1);
-                                $text = html($text);
-                                return $text;
-                }
-
-                function wrap($text, $mode, $referrer, $highlight_search=FALSE){
-                        global $pref;
-                        $wrapcount = 100;
-                        $message_array = explode(" ", $text);
-                        for($i=0; $i<=(count($message_array)-1); $i++){
-                                if(strlen($message_array[$i]) > $wrapcount){
-                                        if(substr($message_array[$i], 0, 7) == "http://"){
-                                                if(substr($message_array[$i], -1) == "."){
-                                                        $message_array[$i] = substr_replace($message_array[$i], "", -1);
-                                        }
-                                                $url = str_replace("http://", "", $message_array[$i]);
-                                                $url = explode("/", $url);
-                                                $url = $url[0];
-                                                $message_array[$i] = "<a href='".$message_array[$i]."' rel='external'>[".$url."]</a>";
-                                        }else{
-                                        if(!stristr($message_array[$i], "[link") && !stristr($message_array[$i], "[url") && !stristr($message_array[$i], "href=") && !stristr($message_array[$i], "src=") && !stristr($message_array[$i], "action=") && !stristr($message_array[$i], "onclick=") && !stristr($message_array[$i], "url(") && !stristr($message_array[$i], "[img") && !stristr($message_array[$i], "value=") && !stristr($message_array[$i], "pluginspage=") && !stristr($message_array[$i], "codebase=")){
-                                                        $message_array[$i] = preg_replace("/([^\s]{".$wrapcount."})/", "$1<br />", $message_array[$i]);
-                                                }
-                                        }
-                                }else{
-                                                                        if(!stristr($message_array[$i], "[link") && !stristr($message_array[$i], "[url") && !stristr($message_array[$i], "href=") && !stristr($message_array[$i], "src=") && !stristr($message_array[$i], "action=") && !stristr($message_array[$i], "onclick=") && !stristr($message_array[$i], "[img") && !stristr($message_array[$i], "value=") && !stristr($message_array[$i], "pluginspage=") && !stristr($message_array[$i], "codebase=")){
-                                                                                if($referrer != "admin" && !stristr($message_array[$i], "http://")){
-                                                                                        $message_array[$i] = $this -> tpj($message_array[$i]);
-                                                                                }
-                                                                                $search = "#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i";
-                                        $replace = ($pref['links_new_window'] ? '\1<a href="http://\2.\3" rel="external";">\2.\3</a>' : '\1<a href="http://\2.\3" >\2.\3</a>');
-                                        $message_array[$i] = preg_replace($search, $replace, $message_array[$i]);
-                                        $search = "#([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?([^).,]))#i";
-                                        $replace = ($pref['links_new_window'] ? '<a href="\1://\2" rel="external";">\1://\2</a>' : '<a href="\1://\2">\1://\2</a>');
-                                        $message_array[$i] = preg_replace($search, $replace, $message_array[$i]);
-                                        if($highlight_search && !stristr($message_array[$i], "http://")){
-                                                                                        $tmp = explode(" ", $_POST['search_query']);
-                                             foreach($tmp as $key){
-                                                                                                 if(eregi($key, $message_array[$i])){
-                                                                                                        $message_array[$i] = eregi_replace($key, "<span class='searchhighlight'>$key</span>", $message_array[$i]);
-                                                 }
-                                             }
-                                          }
-                                      }
-                                  }
-                        }
-                        $text = implode(" ",$message_array);
-                        return $text;
-                }
-                function bbcode($text, $mode="off", $referrer="") {
-                global $pref;
-                $text = " " . $text;
-                if (! (strpos($text, "[") && strpos($text, "]")) ){
-                                        $text = substr($text, 1);
-                                        return $text;
-                                }
-                                        $text = preg_replace_callback("#\[img\](.*?)\[/img\]#si", array($this,"img_parse"),$text);
-                $search[0] = "#\[link\]([a-z]+?://){1}(.*?)\[/link\]#si";
-                $replace[0] = ($pref['links_new_window'] ? '<a href="\1\2" rel="external">\1\2</a>' : '<a href="\1\2">\1\2</a>');
-                $search[1] = "#\[link\](.*?)\[/link\]#si";
-                $replace[1] = ($pref['links_new_window'] ? '<a href="http://\1" rel="external">\1</a>' : '<a href="http://\1">\1</a>');
-                $search[2] = "#\[link=([a-z]+?://){1}(.*?)\](.*?)\[/link\]#si";
-                $replace[2] = ($pref['links_new_window'] ? '<a href="\1\2" rel="external">\3</a>' : '<a href="\1\2">\3</a>');
-                $search[3] = "#\[link=(.*?)\](.*?)\[/link\]#si";
-                $replace[3] = ($pref['links_new_window'] ? '<a href="\1" rel="external">\2</a>' : '<a href="\1">\2</a>');
-                $search[4] = "#\[email\](.*?)\[/email\]#si";
-                $replace[4] = '<a href="mailto:\1">\1</a>';
-                $search[5] = "#\[email=(.*?){1}(.*?)\](.*?)\[/email\]#si";
-                $replace[5] = '<a href="mailto:\1\2">\3</a>';
-                $search[6] = "#\[url\]([a-z]+?://){1}(.*?)\[/url\]#si";
-                $replace[6] = ($pref['links_new_window'] ? '<a href="\1\2" rel="external">\1\2</a>' : '<a href="\1\2">\1\2</a>');
-                $search[7] = "#\[url\](.*?)\[/url\]#si";
-                $replace[7] = ($pref['links_new_window'] ? '<a href="http://\1"> rel="external"\1</a>' : '<a href="http://\1">\1</a>');
-                $search[8] = "#\[url=([a-z]+?://){1}(.*?)\](.*?)\[/url\]#si";
-                $replace[8] = ($pref['links_new_window'] ? '<a href="\1\2" rel="external">\3</a>' : '<a href="\1\2">\3</a>');
-                                $search[9] = "#\[quote\](.*?)\[/quote\]#si";
-                                $replace[9] = '<i>"\1"</i>';
-            $search[10] = "#\[b\](.*?)\[/b\]#si";
-            $replace[10] = '<b>\1</b>';
-            $search[11] = "#\[i\](.*?)\[/i\]#si";
-            $replace[11] = '<i>\1</i>';
-            $search[12] = "#\[u\](.*?)\[/u\]#si";
-            $replace[12] = '<u>\1</u>';
-                                $search[14] = "#\[center\](.*?)\[/center\]#si";
-                                $replace[14] = '<div style=\'text-align:center\'>\1</div>';
-                                $search[15] = "#\[left\](.*?)\[/left\]#si";
-                                $replace[15] = '<div style=\'text-align:left\'>\1</div>';
-                                $search[16] = "#\[right\](.*?)\[/right\]#si";
-                                $replace[16] = '<div style=\'text-align:right\'>\1</div>';
-                                $search[17] = "#\[blockquote\]#si";
-                                $replace[17] = '<div class=\'indent\'>';
-                                $search[18] = "#\[/blockquote\]#si";
-                                $replace[18] = '</div>';
-                                $search[19] = "/\[color=(.*?)\](.*?)\[\/color\]/si";
-                                $replace[19] = '<span style=\'color:\1\'>\2</span>';
-                                $search[20] = "/\[size=([1-2]?[0-9])\](.*?)\[\/size\]/si";
-                                $replace[20] = '<span style=\'font-size:\1px\'>\2</span>';
-                                $search[21] = "#\[edited\](.*?)\[/edited\]#si";
-                                $replace[21] = '<span class=\'smallblacktext\'>[ \1 ]</span>';
-                                $search[22] = "#\[br\]#si";
-                                $replace[22] = '<br />';
-            if($pref['forum_attach'] && FILE_UPLOADS || $referrer == "admin"){
-                                        $search[23] = "#\[file=(.*?)\](.*?)\[/file\]#si";
-                                        $replace[23] = '<a href="\1"><img src="'.e_IMAGE.'generic/attach1.png" alt="" style="border:0; vertical-align:middle" /> \2</a>';
-                                }else{
-                                        $search[23] = "#\[file=(.*?)\](.*?)\[/file\]#si";
-                                        $replace[23] = '[ '.CORE_LAN3.' ]';
-                                }
-
-                $search[24] = "/\[quote=(.*?)\](.*?)/si";
-                $replace[24] = '<div class=\'indent\'>'.CORE_LAN2.' ...<br />';
-                $search[25] = "/\[\/quote\]/si";
-                $replace[25] = '</div>';
-                                $text = preg_replace($search, $replace, $text);
-                                return $text;
-                                }
-
-                function img_parse($matches)
-                {
-                        global $poster_userid,$pref;
-                        if(preg_match("#\.php\?.*#",$matches[1]))
-                        {
-                                return "";
-                        }
-                        if(!$poster_userid){
-                                return "<img src='{$matches[1]}' alt='' style='vertical-align:middle; border:0' />";
-                        }
-                        else
-                        {
-                                if($pref['image_post'])
-                                {
-                                        if(!function_exists('e107_userGetuserclass'))
-                                        {
-                                                require_once(e_HANDLER.'user_func.php');
-                                        }
-                                        if(check_class($pref['image_post_class'],e107_userGetuserclass($poster_userid)))
-                                        {
-                                                return "<img src='{$matches[1]}' alt='' style='vertical-align:middle; border:0' />";
-                                        }
-                                }
-                                if($pref['image_post_disabled_method'])
-                                {
-                                        return '[ image disabled ]';
-                                }
-                                else
-                                {
-                                        return "Image: $matches[1]";
-                                }
-                        }
-                }
-        function formtpa($text, $mode="admin"){
-                global $sql, $pref;
-
-                if($mode != "admin" && !ADMIN){
-
-                        for($r=0; $r<=strlen($text); $r++){
-                                $chars[$text[$r]] = 1;
-                        }
-                        $ch = array_count_values($chars);
-                        if((strlen($text) > 50 && $ch[1] < 10) || (strlen($text) > 10 && $ch[1] < 3) || (strlen($text) > 100 && $ch[1] < 20)){
-                                echo "<script type='text/javascript'>document.location.href='index.php'</script>\n";
-                                exit;
-                        }
-                        $text = code($text);
-                        if(!$pref['html_post']){ $text = str_replace("<", "&lt;", $text); str_replace(">", "&gt;", $text); }
-                        $text = str_replace("<script", "&lt;script", $text);
-                        $text = str_replace("<iframe", "&lt;iframe", $text);
-                        /*
-                        if(($pref['image_post_class'] == 253 && !USER) || ($pref['image_post_class'] == 254 && !ADMIN)){
-                        $text = preg_replace("#\[img\](.*?)\[/img\]#si", '&nbsp;', $text);
-                        }else if(!check_class($pref['image_post_class'])){
-                        $text = preg_replace("#\[img\](.*?)\[/img\]#si", '&nbsp;', $text);
-                        }
-                        */
-
-                }else if(ADMIN && !strstr(e_PAGE, "newspost.php") && !strstr(e_PAGE, "article.php") && !strstr(e_PAGE, "review.php")){
-                        $text = preg_replace("#\[img\](.*?)\[/img\]#si", '<img src=\'\1\' alt=\'\' style=\'vertical-align:middle; border:0\' />', $text);
-                }
-
-                if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
-                $search = array("\"", "'", "\\", '\"', "\'", "$");
-                $replace = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&#036;");
-                $text = str_replace($search, $replace, $text);
-                return $text;
-        }
-
-        function formtparev($text){
-                $search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;");
-                $replace = array("\"", "'", "\\", '\"', "\'");
-                $text = str_replace($search, $replace, $text);
-                return $text;
-        }
+	function formtparev($text)
+	{
+		global $tp;
+		return $tp -> toFORM($text);
+	}
 
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-function check_email($var){
-        return (preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]+@([-0-9A-Z]+\.)+([0-9A-Z]){2,4}$/i', $var)) ? $var : FALSE;
+function check_email($var)
+{
+	return (preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]+@([-0-9A-Z]+\.)+([0-9A-Z]){2,4}$/i', $var)) ? $var : FALSE;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function check_class($var, $userclass=USERCLASS, $debug=FALSE){
@@ -824,23 +521,29 @@ function check_class($var, $userclass=USERCLASS, $debug=FALSE){
         return FALSE;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-function getperms($arg, $ap = ADMINPERMS){
-        global $PLUGINS_DIRECTORY;
-        if($ap == "0"){return TRUE;}
-        if($ap == ""){return FALSE;}
-        $ap = ".".$ap;
-        if($arg == "P" && preg_match("#(.*?)/".$PLUGINS_DIRECTORY."(.*?)/(.*?)#",e_SELF,$matches) ){
-                $psql = new db;
-                if($psql -> db_Select("plugin","plugin_id","plugin_path = '".$matches[2]."' ")){
-                        $row = $psql -> db_Fetch();
-                        $arg = "P".$row[0];
-                }
-        }
-        if(preg_match("#\.".$arg."\.#", $ap)){
-                return TRUE;
-        } else {
-                return FALSE;
-        }
+function getperms($arg, $ap = ADMINPERMS)
+{
+	global $PLUGINS_DIRECTORY;
+	if($ap == "0"){return TRUE;}
+	if($ap == ""){return FALSE;}
+	$ap = ".".$ap;
+	if($arg == "P" && preg_match("#(.*?)/".$PLUGINS_DIRECTORY."(.*?)/(.*?)#",e_SELF,$matches) )
+	{
+		$psql = new db;
+		if($psql -> db_Select("plugin","plugin_id","plugin_path = '".$matches[2]."' "))
+		{
+			$row = $psql -> db_Fetch();
+			$arg = "P".$row[0];
+		}
+	}
+	if(preg_match("#\.".$arg."\.#", $ap))
+	{
+		return TRUE;
+	}
+	else
+	{
+		return FALSE;
+	}
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
@@ -1088,49 +791,123 @@ function cookie($name, $value, $expire, $path="/", $domain="", $secure=0){
         setcookie($name, $value, $expire, $path, $domain, $secure);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-function html($string){
-        global $pref, $aj;
-        $match_count = preg_match_all("#\[html\](.*?)\[/html\]#si", $string, $result);
-        for ($a = 0; $a < $match_count; $a++){
-                if($pref['smiley_activate']){
-                        if(!is_object($aj)){$aj = new textparse;}
-                     $after_replace = str_replace($aj->replace, $aj->searcha, $result[1][$a]);
-                } else {
-                        $after_replace= $result[1][$a];
-                }
-                $after_replace = str_replace("<br />", "\n", $after_replace);
-                $after_replace=nl2br($after_replace);
-                $string = str_replace("[html]".$result[1][$a]."[/html]", $after_replace, $string);
-        }
-        return $string;
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-function code($string, $mode="default"){
-        global $pref, $aj;
-        $search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;span", "&lt;/span");
-        $replace =  array("\"", "'", "\\", '\"', "\'", "<span", "</span");
-        $string = str_replace($search, $replace, $string);
-        $match_count = preg_match_all("#(\[code[=]*(.*?)\])(.*?)\[/code\]#si", $string, $result);
-        for ($a = 0; $a < $match_count; $a++){
-                if($pref['smiley_activate']){
-                        if(!is_object($aj)){$aj = new textparse;}
-                            $after_replace = str_replace($aj->replace, $aj->searcha, $result[3][$a]);
-                } else {
-                        $after_replace= $result[3][$a];
-                }
-                if(strpos($result[2][$a],'highlight')){
-                        $after_replace = str_replace("&#036;","$",$after_replace);
-                        $after_replace=highlight_string($after_replace,TRUE);
-                        $after_replace=str_replace("<br />","",$after_replace);
-                        $class='indent';
-                } else {
-                        $after_replace = str_replace("&#036;","$",$after_replace);
-                        $after_replace=htmlentities($after_replace);
-                        $class = (strlen(trim($result[2][$a]))) ? $result[2][$a] : 'indent';
-                }
-                $string = str_replace($result[1][$a].$result[3][$a]."[/code]", "<div class='{$class}'>".$after_replace."</div>", $string);
-        }
-        return $string;
+class e_parse
+{
+	var $e_sc;
+	var $e_bb;
+	var $e_pf;
+	var $e_emote;
+
+	function toDB($text,$no_encode = FALSE)
+	{
+		if(MAGIC_QUOTES_GPC == TRUE)
+		{
+			$text = stripslashes($text);
+		}
+		$search = array('$','"',"'",'\\');
+		$replace = array('&#036;','&quot;','&#039;','&#092;');
+		$text = str_replace($search,$replace,$text);
+		return (ADMIN || $no_encode) ? $text : htmlentities($text,ENT_QUOTES,CHARSET);
+	}
+	
+	function toForm($text,$single_quotes = FALSE)
+	{
+		$mode = ($single_quotes) ? ENT_QUOTES : ENT_COMPAT;
+		if(MAGIC_QUOTES_GPC == TRUE)
+		{
+			$text = stripslashes($text);
+		}
+		$search = array('&#036;','&quot;');
+		$replace = array('$','"');
+		$text = str_replace($search,$replace,$text);
+		return html_entity_decode($text,$mode,CHARSET);
+	}
+
+	function post_toHTML($text)
+	{
+		return $this -> toDB($text);
+	}
+
+	function post_toForm($text)
+	{
+		if(MAGIC_QUOTES_GPC == TRUE)
+		{
+			return addslashes($text);
+		}
+		return $text;
+	}
+
+	function parseTemplate($text,$parseSCFiles=TRUE,$extraCodes="")
+	{
+		// Start parse {XXX} codes
+		if($parse_codes === TRUE)
+		{
+			if(!class_exists('e_shortcode'))
+			{
+				require_once(e_HANDLER."shortcode_handler.php");
+				$this -> e_sc = new e_shortcode;
+			}
+			$text = $this -> e_sc -> parseCodes($text,$parseSCFiles,$extraCodes);
+		}
+		return $text;
+		// End parse {XXX} codes
+	}
+
+	function toHTML($text,$parseBB=FALSE,$modifiers="",$postID="")
+	{
+		if($text==''){return $text;}
+		global $pref;
+		if(MAGIC_QUOTES_GPC == TRUE)
+		{
+			$text = stripslashes($text);
+		}
+
+		$search = array('&#039;','&#036;','&quot;');
+		$replace = array("'",'$','"');
+		$text = str_replace($search,$replace,$text);
+		if(strpos($modifiers,'nobreak') == FALSE)
+		{
+			$text = preg_replace("#[\r]*\n[\r]*#","[E_NL]",$text);
+		}
+
+		if($pref['smiley_activate'])
+		{
+			if(!is_object($this -> e_emote))
+			{
+				require_once(e_HANDLER."emote_filter.php");
+				$this -> e_emote = new e_emoteFilter;
+			}
+			$text = $this -> e_emote -> filterEmotes($text);
+		}
+
+		// Start parse [bb][/bb] codes
+		if($parseBB === TRUE)
+		{
+			if(!is_object($this -> e_bb))
+			{
+				require_once(e_HANDLER."bbcode_handler.php");
+				$this -> e_bb = new e_bbcode;
+			}
+			$text = $this -> e_bb -> parseBBCodes($text,$postID);
+		}
+		// End parse [bb][/bb] codes
+
+		if($pref['profanity_filter'])
+		{
+			if(!is_object($this -> e_pf))
+			{
+				require_once(e_HANDLER."profanity_filter.php");
+				$this -> e_pf = new e_profanityFilter;
+			}
+			$text = $this -> e_pf -> filterProfanities($text);
+		}
+	
+		if(strpos($modifiers,'nobreak') == FALSE)
+		{
+			$text = str_replace('[E_NL]','<br />',$text);
+		}
+		return $text;
+	}
 }
 
 ?>
