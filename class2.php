@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-09-25 02:19:43 $
+|     $Revision: 1.4 $
+|     $Date: 2004-09-26 04:09:11 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -463,6 +463,11 @@ class textparse
 		return $tp -> toHTML($text,TRUE,$mode,$poster_id);
 	}
 
+	function tpj($text)
+	{
+		return $text;
+	}
+
 	function formtpa($text,$mode)
 	{
 		global $tp;
@@ -840,19 +845,15 @@ class e_parse
 	function parseTemplate($text,$parseSCFiles=TRUE,$extraCodes="")
 	{
 		// Start parse {XXX} codes
-		if($parse_codes === TRUE)
+		if(!class_exists('e_shortcode'))
 		{
-			if(!class_exists('e_shortcode'))
-			{
-				require_once(e_HANDLER."shortcode_handler.php");
-				$this -> e_sc = new e_shortcode;
-			}
-			$text = $this -> e_sc -> parseCodes($text,$parseSCFiles,$extraCodes);
+			require_once(e_HANDLER."shortcode_handler.php");
+			$this -> e_sc = new e_shortcode;
 		}
-		return $text;
+		return $this -> e_sc -> parseCodes($text,$parseSCFiles,$extraCodes);
 		// End parse {XXX} codes
 	}
-
+	
 	function toHTML($text,$parseBB=FALSE,$modifiers="",$postID="")
 	{
 		if($text==''){return $text;}
