@@ -516,6 +516,12 @@ select {
 #sidebar form {
 	margin: 0;
 	}
+
+.smalltext {
+	font: 1em 'Lucida Grande', Verdana, Arial, Sans-Serif;
+}
+
+
 /* End Sidebar */
 
 
