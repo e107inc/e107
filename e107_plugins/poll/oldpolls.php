@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/oldpolls.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-03-04 12:41:24 $
+|     $Revision: 1.6 $
+|     $Date: 2005-03-25 09:37:12 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -64,20 +64,19 @@ if(e_QUERY)
 		</tr>";
 
 		$count = 0;
+
+		$barl = (file_exists(THEME."images/barl.png") ? THEME."images/barl.png" : e_PLUGIN."poll/images/barl.png");
+		$barr = (file_exists(THEME."images/barr.png") ? THEME."images/barr.png" : e_PLUGIN."poll/images/barr.png");
+		$bar = (file_exists(THEME."images/bar.png") ? THEME."images/bar.png" : e_PLUGIN."poll/images/bar.png");
+
 		foreach($optionArray as $option)
 		{
 			$text .= "<tr>
-			<td style='width:40% 'class='mediumtext'><b>".$tp -> toHTML($option)."</b></td>
+			<td style='width:40%; text-align: right' class='mediumtext'><b>".$tp -> toHTML($option)."</b>&nbsp;&nbsp;</td>
 			<td class='smalltext'>
-			<img src='".THEME."/images/bar.jpg' height='12' width='";
+			
 		 
-			if (($percentage[$count] * 3) > 180) {
-				$perc = 180;
-			} else {
-				$perc = ($percentage[$count] * 3);
-			}
-		 
-			$text .= $perc."' style='border:1px solid #000;'> ".$percentage[$count]."% [Votes: ".$voteArray[$count]."]</div>
+			<div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div><div style='background-image: url($bar); width: ".(floor($percentage[$count]) != 100 ? floor($percentage[$count]) : 95)."%; height: 14px; float: left;'></div><div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div>".$percentage[$count]."% [Votes: ".$voteArray[$count]."]</div>
 			</td>
 			</tr>\n";
 			$count++;
