@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.38 $
-|   $Date: 2005-02-11 06:58:54 $
-|   $Author: e107coders $
+|   $Revision: 1.39 $
+|   $Date: 2005-02-11 17:23:03 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 
 */
@@ -284,6 +284,10 @@ class newspost {
 					<td style='width:55%' class='forumheader3'><a href='".e_BASE."comment.php?comment.news.$news_id'>".($news_title ? $tp->toHTML($news_title) : "[".NWSLAN_42."]")."</a></td>
                     <td style='20%' class='forumheader3'>";
 				$text .= $ren_type[$news_render_type];
+				if($news_sticky)
+				{
+					$text .= " <img src='".e_IMAGE."generic/sticky.png' alt='' />";
+				}
 			//	$text .= $news_render_type;
 				$text .= "
 					</td>
