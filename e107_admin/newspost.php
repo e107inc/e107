@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.53 $
-|   $Date: 2005-02-26 14:10:26 $
-|   $Author: mcfly_e107 $
+|   $Revision: 1.54 $
+|   $Date: 2005-03-02 14:45:44 $
+|   $Author: stevedunstan $
 +---------------------------------------------------------------+
 
 */
@@ -180,7 +180,7 @@ if (IsSet($_POST['save_prefs'])) {
 
 	save_prefs();
 	$e107cache->clear("news.php");
-	$newspost->show_message("Settings Saved");
+	$newspost->show_message(NWSLAN_119);
 }
 
 if (!e_QUERY || $action == "main") {
