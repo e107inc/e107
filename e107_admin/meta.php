@@ -24,7 +24,7 @@ if(IsSet($_POST['metasubmit'])){
 }
 
 if($message){
-	$ns -> tablerender("Updated", "<div style='text-align:center'>".METLAN_1.".</div>");
+	$ns -> tablerender(METLAN_4, "<div style='text-align:center'>".METLAN_1.".</div>");
 }
 
 $text = "<div style='text-align:center'>
@@ -37,9 +37,9 @@ $text = "<div style='text-align:center'>
 <textarea class='tbox' name='meta' cols='70' rows='10'>".$pref['meta_tag']."</textarea>
 <br />";
 $text .= <<< EOT
-<input class="button" type="button" value="description" onclick="addtext2('<meta name=\'description\' content=\'type your description here\' />')">
-<input class="button" type="button" value="keywords" onclick="addtext2('<meta name=\'keywords\' content=\'type, a, list, of, your, keywords, here\' />')">
-<input class="button" type="button" value="copyright" onclick="addtext2('<meta name=\'copyright\' content=\'type your copyright info here\' />')">
+<input class="button" type="button" value="description" onclick="addtext2('<meta name=\'description\' content=\'".METLAN_5."\' />')">
+<input class="button" type="button" value="keywords" onclick="addtext2('<meta name=\'keywords\' content=\'".METLAN_6."\' />')">
+<input class="button" type="button" value="copyright" onclick="addtext2('<meta name=\'copyright\' content=\'".METLAN_7."\' />')">
 EOT;
 $text .= "</td>
 </tr>
@@ -52,7 +52,7 @@ $text .= "</td>
 </form>
 </div>";
 
-$ns -> tablerender("Meta Tags", $text);
+$ns -> tablerender(METLAN_8, $text);
 ?>
 <script type="text/javascript">
 function addtext2(str){
