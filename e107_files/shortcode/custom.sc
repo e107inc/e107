@@ -6,7 +6,7 @@ switch($custom_query[0])
 	case "login noprofile":
 		@include(e_PLUGIN."login_menu/languages/".e_LANGUAGE.".php");
 		@include(e_PLUGIN."login_menu/languages/English.php");
-		
+
 		if(USER == TRUE)
 		{
 			$ret .= "<span class='mediumtext'>".LOGIN_MENU_L5." ".USERNAME."&nbsp;&nbsp;&nbsp;.:. ";
@@ -52,11 +52,43 @@ switch($custom_query[0])
 		return $quote;
 		break;
 
+	case "language":
+
+		require_once(e_HANDLER."file_class.php");
+		$fl = new e_file;
+		$reject = array('.','..','/','CVS','thumbs.db','*._$');
+		$lanlist = $fl->get_files(e_LANGUAGEDIR,"",$reject);
+		sort($lanlist);
+		$lantext = "<form method='post' action='".e_SELF."'>
+		<span style='text-align:center'>
+		<select name='sitelanguage' class='tbox' onchange='this.form.submit()'>";
+
+		foreach($lanlist as $langval) {
+			$langname = $langval;
+			$langval = ($langval['dir'] == $pref['sitelanguage']) ? "" : $langval['dir'];
+			$selected = ($langval == USERLAN) ? "selected='selected'" : "";
+			$lantext .= "<option value='".$langval."' $selected>".$langname['dir']."</option>\n ";
+		}
+
+		$lantext .= "</select>";
+		$lantext .= "<input type='hidden' name='setlanguage' value='1' />";
+		$lantext .= "</span></form>";
+		return $lantext;
+		break;
+
+
+
 	case "clock":
 		$clock_flat = TRUE;
 		include_once(e_PLUGIN."clock_menu/clock_menu.php");
 		return "";
 		break;
+
+
+
+
+
+
 
 	case "welcomemessage":
 		if(GUEST == TRUE && $sql -> db_Select("wmessage",wm_text,"wm_id = 1 AND wm_active = 1"))
@@ -64,13 +96,13 @@ switch($custom_query[0])
 			$row = $sql -> db_Fetch();
 			$ret .= $tp -> toHTML($row['wm_text']);
 		}
-				
+
 		if(USER == TRUE && $sql -> db_Select("wmessage",wm_text,"wm_id = 2 AND wm_active = 1"))
 		{
 			$row = $sql -> db_Fetch();
 			$ret .= $tp -> toHTML($row['wm_text']);
 		}
-		
+
 		if(ADMIN == TRUE && $sql -> db_Select("wmessage",wm_text,"wm_id = 3 AND wm_active = 1"))
 		{
 			$row = $sql -> db_Fetch();
