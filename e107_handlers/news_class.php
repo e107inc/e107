@@ -12,9 +12,9 @@
 |	GNU General Public License (http://gnu.org).	
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.7 $
-| $Date: 2004-12-03 22:33:22 $
-| $Author: e107coders $ 
+| $Revision: 1.8 $
+| $Date: 2004-12-10 03:54:55 $
+| $Author: mcfly_e107 $ 
 +---------------------------------------------------------------+
 */
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -100,7 +100,9 @@ on
 			$highlight_search = TRUE;
 		}
 		$news_body = $tp -> toHTML($data,TRUE);
-		$news_extended = trim(chop($tp -> toHTML($news_extended,TRUE)));
+		if($news_extended && ($preview == "Preview" || strstr(e_QUERY, "extend"))) {  //Do not parse news_extended if not needed
+			$news_extended = trim(chop($tp -> toHTML($news_extended,TRUE)));
+		}
 
 		if(!$comment_total) $comment_total = "0";
 		$con = new convert;
