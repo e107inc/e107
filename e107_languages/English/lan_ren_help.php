@@ -35,7 +35,7 @@ define("LANHELP_29", "Left align: [left]This text will be left aligned[/left]");
 define("LANHELP_30", "Right align: [right]This text will be right aligned[/right]");
 define("LANHELP_31", "Blockquote text: [blockquote]This text will be blockquoted (indented)[/blockquote]");
 define("LANHELP_32", "Code - preformatted text: [code]\$foo = bah;[/code]");
-define("LANHELP_33", "HTML - removes linebreaks from text: [html]<table><tr><td> etc[/html]");
+define("LANHELP_33", "HTML - removes linebreaks from text: [html]&lt;table&gt;&lt;tr&gt;&lt;td&gt; etc[/html]");
 define("LANHELP_34", "Insert newpage tag, splits article into more than one page");
 
 define("LANHELP_35", "hyperlink url");

@@ -43,7 +43,7 @@ $adminmessage = $aj -> formtparev($aj -> editparse($adminmessage));
 
 $text = "
 <div style='text-align:center'>
-<form method='post' action='".$_SERVER['PHP_SELF']."'  id='getElementById('wmform')'>
+<form method='post' action='".e_SELF."'  id='wmform'>
 <table style='width:85%' class='fborder'>
 <tr>";
 
@@ -83,7 +83,7 @@ $text .= "</td>
 <br />
 ".ren_help(1,"addtext2","help2")."
 </td>
-
+</tr>
 
 <tr>
 <td style='width:20%' class='forumheader3'>".WMGLAN_3.": <br />
