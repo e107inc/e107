@@ -26,17 +26,17 @@ function sendemail($send_to, $subject, $message,$to_name,$send_from,$from_name,$
         $lb = "\n";
         // Clean up the HTML. ==
 
-        if(preg_match('/<(html|font|br|a|img)/i', $message)){
-        $Html = $message;
+        if(preg_match('/^<(html|font|br|a|img)/i', $message)){
+        	$Html = $message; // Assume html if it begins with one of these tags
         }else{
-        $Html = preg_replace("/\n/","<br />",$message);
-        $Html = eregi_replace('(((f|ht){1}t(p|ps)://)[-a-zA-Z0-9@:%_\+.~#?&//=]+)',    '<a href="\\1">\\1</a>', $Html);
+	        $Html = str_replace("\n","<br />\n", htmlentities($message));	// Correctly put in breaks
+		$Html = preg_replace('%(http|ftp|https)(://\S+)%', '<a href="\1\2">\1\2</a>', $Html);
         $Html = eregi_replace('([[:space:]()[{}])(www.[-a-zA-Z0-9@:%_\+.~#?&//=]+)',    '\\1<a href="http://\\2">\\2</a>', $Html);
         $Html = eregi_replace('([_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,3})',    '<a href="mailto:\\1">\\1</a>', $Html);
         }
 
-        $text = preg_replace("#<br />#","\n",$message);
-        $text = strip_tags(preg_replace("#<br>#","\n",$message));
+        $text = str_replace("<br />","\n",$message);
+        $text = strip_tags(str_replace("<br>","\n",$text));
         $OB="----=_OuterBoundary_000". md5(uniqid(mt_rand(), 1));
         $IB="----=_InnerBoundery_001" . md5(uniqid(mt_rand(), 1));
 
@@ -66,7 +66,8 @@ function sendemail($send_to, $subject, $message,$to_name,$send_from,$from_name,$
         //plaintext section
         $body.="\n--".$IB."\n";
         $body.="Content-Type: text/plain;\n\tcharset=".CHARSET."\n";
-        $body.="Content-Transfer-Encoding: quoted-printable\n\n";
+//        $body.="Content-Transfer-Encoding: quoted-printable\n\n"; // it is NOT quoted-p encoded!!!
+	$body.="\n";	// extra blank before body...
         // plaintext goes here
         $body.=$text."\n\n";
 
