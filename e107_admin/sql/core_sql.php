@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-02-08 21:36:58 $
-|     $Author: stevedunstan $
+|     $Revision: 1.12 $
+|     $Date: 2005-02-15 13:01:25 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -220,6 +220,7 @@ CREATE TABLE menus (
   menu_order tinyint(3) unsigned NOT NULL default '0',
   menu_class tinyint(3) unsigned NOT NULL default '0',
   menu_pages text NOT NULL,
+  menu_path varchar(100) NOT NULL default '',  
   PRIMARY KEY  (menu_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
@@ -242,6 +243,9 @@ CREATE TABLE news (
   news_class tinyint(3) unsigned NOT NULL default '0',
   news_render_type tinyint(3) unsigned NOT NULL default '0',
   news_comment_total int(11) NOT NULL default '0',
+  news_summary text,
+  news_thumb varchar(60) default NULL,
+  news_sticky tinyint(3) unsigned NOT NULL default '0',  
   PRIMARY KEY  (news_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
@@ -475,16 +479,4 @@ CREATE TABLE userclass_classes (
   userclass_editclass tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (userclass_id)
 ) TYPE=MyISAM;
-# --------------------------------------------------------
-
-#
-# Table structure for table `wmessage`
-#
-
-CREATE TABLE wmessage (
-  wm_id tinyint(3) unsigned NOT NULL default '0',
-  wm_text text NOT NULL,
-  wm_active tinyint(3) unsigned NOT NULL default '0'
-) TYPE=MyISAM;
-
 # --------------------------------------------------------
