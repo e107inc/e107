@@ -13,8 +13,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.24 $
-| $Date: 2005-02-08 08:22:36 $
+| $Revision: 1.25 $
+| $Date: 2005-02-10 08:26:48 $
 | $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -28,6 +28,7 @@ class news {
 		$news_title = $tp->toDB($news_title, TRUE);
 		$news_body = $tp->toDB($data, TRUE);
 		$news_extended = $tp->toDB($news_extended, TRUE);
+		$news_summary = $tp->toDB($news_summary, TRUE);  
 
 		if ($news_id) {
 			$vals = $update_datestamp ? "news_datestamp = ".time().", " :

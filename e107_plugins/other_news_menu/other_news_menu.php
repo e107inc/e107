@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/other_news_menu/other_news_menu.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-02-10 06:14:51 $
+|     $Revision: 1.6 $
+|     $Date: 2005-02-10 08:27:59 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 unset($text);
-global $OTHERNEWS_STYLE;
+global $OTHERNEWS_STYLE,$tp;
 
 $numb = ($OTHERNEWS_LIMIT) ? $OTHERNEWS_LIMIT : 10;
 
