@@ -73,4 +73,7 @@ define("LAN_USET_4", "Maximum allowable height is");
 define("LAN_CUSTOMTITLE", "Custom Title");
 define("LAN_ICQNUMBER", "ICQ number must contain only numbers");
 
+//v.617
+define("LAN_408", "A user with that email address already exists. ");
+
 ?>

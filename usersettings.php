@@ -128,6 +128,32 @@ if(IsSet($_POST['updatesettings'])){
                  $error .= LAN_106;
          }
 
+
+        if($sql -> db_Select("user", "user_email", "user_email='".$_POST['email']." AND user_id!=".USERID."' ")){
+                message_handler("P_ALERT", LAN_408);
+                $error = TRUE;
+        }
+
+
+		if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
+			$row = $sql -> db_Fetch();
+			$user_entended = unserialize($row[0]);
+			$c=0;
+			$user_pref = unserialize($user_prefs);
+			while(list($key, $u_entended) = each($user_entended)){
+				if($u_entended){
+					if($pref['signup_ext'.$key] ==2 && $_POST["ue_{$key}"] == ""){
+						$ut = explode("|",$u_entended);
+						$u_name = ($ut[0] != "") ? trim($ut[0]) : trim($u_entended);
+						$error_ext = LAN_SIGNUP_6.$u_name.LAN_SIGNUP_7;
+						message_handler("P_ALERT", $error_ext);
+						$error = TRUE;
+					}
+		
+				}
+			}
+		}
+		
          if (preg_match('#^www\.#si', $_POST['website'])) {
                 $_POST['website'] = "http://$homepage";
         }else if (!preg_match('#^[a-z0-9]+://#si', $_POST['website'])){
