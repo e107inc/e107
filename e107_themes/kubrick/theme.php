@@ -116,10 +116,16 @@ function tablestyle($caption, $text, $mode)
 }
 
 $COMMENTSTYLE = "
-<div style='width: 450px;'>
-<div style='width: 100px; float: left;'>{USERNAME}<br /><span class='smalltext'>{TIMEDATE}</span><br />{AVATAR}{REPLY}</div>
-<div style='width: 345px; float: right;'><div class='smalltext'>{COMMENT}</div></div>
-</div>
+<table style='width: 450px;'>
+<tr>
+<td style='width: 30%; vertical-align: top;'><span class='mediumtext'>{USERNAME}</span><br /><span class='smalltext'>{TIMEDATE}</span><br />{AVATAR}{REPLY}</td>
+<td style='width: 70%; vertical-align: top;'><span class='mediumtext'>{COMMENT}</span></td>
+</tr>
+</table>
+<br /><br />
+
+
+
 <br /><br />
 ";
 

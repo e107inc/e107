@@ -26,7 +26,12 @@ body {
 	background-color: #d5d6d7;
 	color: #333;
 	text-align: center;
-	}
+}
+
+.mediumtext {
+	
+	font: 12px 'Lucida Grande', Verdana, Arial, Sans-Serif;
+}
 
 #page {
 	background-color: white;
@@ -604,13 +609,10 @@ body	 	{ background: url("images/kubrickbgcolor.jpg"); }
 td {
     background: none;
 	font-family: tahoma, verdana, arial, helvetica, sans-serif;
-	font-size: 9px;
+	font-size: 10px;
 	font-style: normal;
 	color:#5d6e75;
-	padding-bottom: 0px;
-	padding-left: 0px;
-	padding-right: 0px;
-	padding-top: 0px;
+	padding: 0px;
 	text-align:left;
 }
 
