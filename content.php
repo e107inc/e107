@@ -206,6 +206,7 @@ if($action == "review"){
 			if($sql -> db_Select("content", "*", "content_id=$sub_action")){	
 				$row = $sql -> db_Fetch(); extract($row);
 
+				$textemailprint = $ep -> render_emailprint("review",$sub_action);
 				if(!check_class($content_class)){
 					$ns -> tablerender(LAN_52, "<div style='text-align:center'>".LAN_53."</div>");
 					require_once(FOOTERF);
