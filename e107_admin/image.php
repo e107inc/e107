@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/image.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-27 19:52:24 $
-|     $Author: streaky $
+|     $Revision: 1.7 $
+|     $Date: 2005-03-23 16:34:05 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -80,7 +80,7 @@ if (isset($_POST['show_avatars'])) {
 	 
 	$handle = opendir(e_FILE."public/avatars/");
 	while ($file = readdir($handle)) {
-		if ($file != "." && $file != ".." && $file != "index.html" && $file != "/") {
+		if ($file != "." && $file != ".." && $file != "index.html" && $file != "/" && !is_dir($file)) {
 			$dirlist[] = $file;
 		}
 	}
