@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/userlanguage_menu/userlanguage_menu.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2004-12-13 13:20:46 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-04 15:34:49 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,8 +27,9 @@
     closedir($handle);
 
     $text = "
-    <div style='text-align:center'>
+
     <form method='post' action='".e_SELF."'>
+    <div style='text-align:center'>
     <select name='sitelanguage' class='tbox'>";
     sort($lanlist);
 
@@ -42,8 +43,9 @@
     $text .= "</select>
     <br /><br />
     <input class='button' type='submit' name='setlanguage' value='".UTHEME_MENU_L1."' />
+    </div>
     </form>
-    </div>";
+    ";
 
 $ns -> tablerender(UTHEME_MENU_L2, $text, 'user_lan');
 
