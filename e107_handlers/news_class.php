@@ -12,8 +12,8 @@
 |	GNU General Public License (http://gnu.org).	
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.8 $
-| $Date: 2004-12-10 03:54:55 $
+| $Revision: 1.9 $
+| $Date: 2004-12-11 04:25:20 $
 | $Author: mcfly_e107 $ 
 +---------------------------------------------------------------+
 */
@@ -72,7 +72,7 @@ class news{
 		}
 		global $NEWSSTYLE, $NEWSLISTSTYLE;
 		if(!is_object($tp)) $tp = new e_parse;
-		if(!is_object($sql)) $sql = new db;
+//		if(!is_object($sql)) $sql = new db;
 		extract($news);
 
 		define("IMAGE_nonew_small", (file_exists(THEME."generic/nonew_comments.png") ? "<img src='".THEME."generic/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/nonew_comments.png' alt=''  />"));

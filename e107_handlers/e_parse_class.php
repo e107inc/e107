@@ -21,6 +21,15 @@ class e_parse
 	}
 	
 	function toForm($text,$single_quotes = FALSE) {
+		
+//		$x =  debug_backtrace();
+//		echo "<pre>".var_export($x)."</pre>";
+//		echo "$f - $l <br /<";
+		
+//		$sCallingFile=$aTrace[1]['file'];
+//		$sCallingLine=$aTrace[1]['line'];
+
+		
 		$mode = ($single_quotes) ? ENT_QUOTES : ENT_COMPAT;
 		if(MAGIC_QUOTES_GPC == TRUE) {
 			$text = stripslashes($text);

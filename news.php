@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2004-12-10 03:15:30 $
+|     $Revision: 1.16 $
+|     $Date: 2004-12-11 04:25:06 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -25,6 +25,7 @@ if($NEWSHEADER) {
 	exit;
 }
 $cacheString = 'news.php_'.e_QUERY;
+$action='';
 if (Empty($pref['newsposts']) ? define("ITEMVIEW", 15) : define("ITEMVIEW", $pref['newsposts']));
 if (file_exists("install.php") && ADMIN){ echo "<div class='installe' style='text-align:center'><b>*** ".LAN_NEWS_3." ***</b><br />".LAN_NEWS_4."</div><br /><br />"; }
 
