@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.61 $
-|   $Date: 2005-03-31 05:49:15 $
-|   $Author: stevedunstan $
+|   $Revision: 1.62 $
+|   $Date: 2005-03-31 16:49:09 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 
 */
@@ -212,19 +212,7 @@ if ($action == "create") {
 
 			$_POST['cat_id'] = $news_category;
 			$_POST['news_start'] = $news_start;
-//			if ($news_start) {
-//				$tmp = getdate($news_start);
-//				$_POST['startmonth'] = $tmp['mon'];
-//				$_POST['startday'] = $tmp['mday'];
-//				$_POST['startyear'] = $tmp['year'];
-//			}
 			$_POST['news_end'] = $news_end;
-//			if ($news_end) {
-//				$tmp = getdate($news_end);
-//				$_POST['endmonth'] = $tmp['mon'];
-//				$_POST['endday'] = $tmp['mday'];
-//				$_POST['endyear'] = $tmp['year'];
-//			}
 			$_POST['comment_total'] = $sql->db_Count("comments", "(*)", " WHERE comment_item_id='$news_id' AND comment_type='0' ");
 			$_POST['news_rendertype'] = $news_render_type;
 
@@ -900,7 +888,7 @@ class newspost {
 		}
 		else
 		{
-			$_POST['news_start'] = '';
+			$_POST['news_start'] = 0;
 		}
 
 		if($_POST['news_end'])
@@ -910,13 +898,18 @@ class newspost {
 		}
 		else
 		{
-			$_POST['news_end'] = '';
+			$_POST['news_end'] = 0;
 		}
 
 		if(preg_match("#(.*?)/(.*?)/(.*?) (.*?):(.*?):(.*?)$#", $_POST['news_datestamp'], $matches))
 		{
 			$_POST['news_datestamp'] = mktime($matches[4], $matches[5], $matches[6], $matches[2], $matches[1], $matches[3]);
 		}
+		else
+		{
+			$_POST['news_datestamp'] = time();
+		}
+		
 		if($_POST['update_datestamp'])
 		{
 			$_POST['news_datestamp'] = time();
@@ -953,7 +946,7 @@ class newspost {
 		}
 		else
 		{
-			$_POST['news_start'] = '';
+			$_POST['news_start'] = 0;
 		}
 
 		if($_POST['news_end'])
@@ -963,12 +956,16 @@ class newspost {
 		}
 		else
 		{
-			$_POST['news_end'] = '';
+			$_POST['news_end'] = 0;
 		}
 
 		if(preg_match("#(.*?)/(.*?)/(.*?) (.*?):(.*?):(.*?)$#", $_POST['news_datestamp'], $matches))
 		{
 			$_POST['news_datestamp'] = mktime($matches[4], $matches[5], $matches[6], $matches[2], $matches[1], $matches[3]);
+		}
+		else
+		{
+			$_POST['news_datestamp'] = time();
 		}
 		if($_POST['update_datestamp'])
 		{
@@ -976,10 +973,6 @@ class newspost {
 		}
 		$_POST['admin_id'] = USERID;
 		$_POST['admin_name'] = USERNAME;
-		if($_POST['update_datestamp'])
-		{
-			$_POST['news_datestamp'] = time();
-		}
 
 		if ($id && $sub_action != "sn" && $sub_action != "upload")
 		{
