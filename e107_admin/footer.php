@@ -28,6 +28,13 @@ if(file_exists(e_ADMIN."ver.php")){ require_once(e_ADMIN."ver.php"); }
 $obj = new convert;
 $install_date = $obj->convert_date($e107info['e107_datestamp'], "long");
 
+//Show upper_right menu if the function exists
+$tmp = explode(".",e_PAGE);
+$adminmenu_func = $tmp[0]."_adminmenu";
+if(function_exists($adminmenu_func)){
+	call_user_func($adminmenu_func,$adminmenu_parms);
+}
+
 $plugindir = (str_replace("/","",str_replace("..","",e_PLUGIN))."/");
 $plugpath = e_PLUGIN.str_replace(basename(e_SELF),"",str_replace($plugindir,"",strstr(e_SELF,$plugindir)))."admin_menu.php";
 if(file_exists($plugpath)){
