@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2005-03-15 12:08:01 $
-|     $Author: stevedunstan $
+|     $Revision: 1.41 $
+|     $Date: 2005-03-16 18:14:43 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -38,9 +38,6 @@ $rs = new form;
 
 $signup_title = array(CUSTSIG_2, CUSTSIG_3, "ICQ", "Aim", "MSN", CUSTSIG_4, CUSTSIG_5, CUSTSIG_6, CUSTSIG_7, CUSTSIG_8, CUSTSIG_17);
 $signup_name = array("real", "url", "icq", "aim", "msn", "dob", "loc", "sig", "avt", "zone", "usrclass");
-
-
-
 
 
 if (isset($_POST['updateprefs'])) {
@@ -674,14 +671,6 @@ $text .= "<div id='security' style='display:none; text-align:center'>
 	<td style='width:50%; text-align:right' class='forumheader3'>
 	<textarea class='tbox' name='profanity_words' cols='59' rows='2'>".$pref['profanity_words']."</textarea>
 	<br />".PRFLAN_44."
-	</td>
-	</tr>
-
-	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_82.": </td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input type='radio' name='search_restrict' value='1'".($pref['search_restrict'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
-	<input type='radio' name='search_restrict' value='0'".(!$pref['search_restrict'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
 	</tr>
 

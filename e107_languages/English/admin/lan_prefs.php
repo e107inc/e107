@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-03-11 14:08:50 $
-|     $Author: stevedunstan $
+|     $Revision: 1.24 $
+|     $Date: 2005-03-16 18:15:47 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_1", "Site Information");
@@ -88,7 +88,6 @@ define("PRFLAN_77", "Admin Display Options ");
 define("PRFLAN_78", "Leave blank to disable");
 define("PRFLAN_80", "Click here to view");
 define("PRFLAN_81", "Enable Image-code verification during login.");
-define("PRFLAN_82", "Restrict Search page to members");
 define("PRFLAN_83", "example");
 define("PRFLAN_85", "If a theme does not show up make sure it was uploaded correctly and read permissions are assigned.");
 define("PRFLAN_86", "Click here to verify language files");
