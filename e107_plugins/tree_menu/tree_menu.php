@@ -22,7 +22,7 @@
 - Add a PHP function to read cookie (if existing) when page is loaded and restore menu status (writing or not window.onload js function)
 */
 
-include(e_LANGUAGEDIR.e_LAN."/lan_sitelinks.php");
+include(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitelinks.php");
 
 // Many thanks to Lolo Irie for fixing the javascript that drives this menu item
 unset($text);
