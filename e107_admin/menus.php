@@ -16,17 +16,15 @@ require_once("../class2.php");
 if(!getperms("2")){ header("location:".e_BASE."index.php"); exit;}
 require_once("auth.php");
 
-?>
-<script type="text/javascript">
+echo "<script type=\"text/javascript\">
 <!--
-image1 = new Image(); image1.src = "../e107_images/generic/off.png";
-image2 = new Image(); image2.src = "../e107_images/generic/move.png";
-image3 = new Image(); image3.src = "../e107_images/generic/up.png";
-image4 = new Image(); image4.src = "../e107_images/generic/up.png";
+image1 = new Image(); image1.src = \"".e_IMAGE."generic/off.png\";
+image2 = new Image(); image2.src = \"".e_IMAGE."generic/move.png\";
+image3 = new Image(); image3.src = \"".e_IMAGE."generic/up.png\";
+image4 = new Image(); image4.src = \"".e_IMAGE."generic/up.png\";
 // -->
-</script>
+</script>";
 
-<?php
 
 $sql -> db_Select("core", "*", "e107_name='menu_pref' ");
 $row = $sql -> db_Fetch();
