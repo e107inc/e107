@@ -1,0 +1,1 @@
+return "<strong class='bbcode'>$code_text</strong>";

@@ -1,0 +1,1 @@
+return "<img src='".e_IMAGE."logo.png' style='border=0' />";

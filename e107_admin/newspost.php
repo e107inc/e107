@@ -11,13 +11,15 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.1 $
-|   $Date: 2004-09-21 19:10:20 $
-|   $Author: e107coders $
+|   $Revision: 1.2 $
+|   $Date: 2004-09-25 02:19:43 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 
 */
 require_once("../class2.php");
+if(!is_object($tp)) $tp = new e_parse;
+
 if($pref['htmlarea']){
     require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
     $htmlarea_js = (eregi("MSIE",$_SERVER['HTTP_USER_AGENT']))? htmlarea("data,news_extended"): htmlarea("data");
@@ -34,7 +36,6 @@ require_once(e_HANDLER."ren_help.php");
 require_once(e_HANDLER."form_handler.php");
 
 $rs = new form;
-$aj = new textparse;
 $ix = new news;
 $newspost = new newspost;
 
@@ -83,17 +84,19 @@ if($delete == "sn" && $del_id){
         }
 }
 
-if(IsSet($_POST['submitupload'])){
-        $pref['upload_storagetype'] = "1";
-        require_once(e_HANDLER."upload_handler.php");
-        $uploaded = file_upload(($_POST['uploadtype'] == NWSLAN_67 ? e_IMAGE."newspost_images/" : e_FILE."downloads/"));
-        if($_POST['uploadtype'] == "Image" && $_POST['imagecrethumb']){
-                require_once(e_HANDLER."resize_handler.php");
-                resize_image(e_IMAGE."newspost_images/".$uploaded[0]['name'], e_IMAGE."newspost_images/".$uploaded[0]['name'], 250, "copy");
-        }
+if(IsSet($_POST['submitupload']))
+{
+	$pref['upload_storagetype'] = "1";
+	require_once(e_HANDLER."upload_handler.php");
+	$uploaded = file_upload(($_POST['uploadtype'] == NWSLAN_67 ? e_IMAGE."newspost_images/" : e_FILE."downloads/"));
+	if($_POST['uploadtype'] == "Image" && $_POST['imagecrethumb'])
+	{
+		require_once(e_HANDLER."resize_handler.php");
+		resize_image(e_IMAGE."newspost_images/".$uploaded[0]['name'], e_IMAGE."newspost_images/".$uploaded[0]['name'], 250, "copy");
+	}
 }
 
-$_POST['news_title'] = $aj -> formtpa($_POST['news_title']);
+//$_POST['news_title'] = $tp -> toDB($_POST['news_title']);
 if(IsSet($_POST['preview'])){
         $newspost -> preview_item($id);
 }
@@ -104,79 +107,91 @@ if(IsSet($_POST['submit'])){
         unset($sub_action, $id);
 }
 
-if(IsSet($_POST['create_category'])){
-        if($_POST['category_name']){
-                                if(empty($_POST['category_button'])){
-                                        $handle=opendir(e_IMAGE."newsicons");
-                                        while ($file = readdir($handle)){
-                                                        if($file != "." && $file != ".." && $file != "/" && $file != "null.txt" && $file != "CVS"){
-                                                                        $iconlist[] = $file;
-                                                        }
-                                        }
-                                        closedir($handle);
-                                        $_POST['category_button'] = $iconlist[0];
-                                }
-                $_POST['category_name'] = $aj -> formtpa($_POST['category_name'], "admin");
-                $sql -> db_Insert("news_category", " '0', '".$_POST['category_name']."', '".$_POST['category_button']."'");
-                $newspost -> show_message(NWSLAN_35);
-        }
+if(IsSet($_POST['create_category']))
+{
+	if($_POST['category_name'])
+	{
+		if(empty($_POST['category_button']))
+		{
+			$handle=opendir(e_IMAGE."newsicons");
+			while ($file = readdir($handle))
+			{
+				if($file != "." && $file != ".." && $file != "/" && $file != "null.txt" && $file != "CVS")
+				{
+					$iconlist[] = $file;
+				}
+			}
+			closedir($handle);
+			$_POST['category_button'] = $iconlist[0];
+		}
+		$_POST['category_name'] = $tp -> toDB($_POST['category_name'], TRUE);
+		$sql -> db_Insert("news_category", " '0', '".$_POST['category_name']."', '".$_POST['category_button']."'");
+		$newspost -> show_message(NWSLAN_35);
+	}
 }
 
-if(IsSet($_POST['update_category'])){
-        if($_POST['category_name']){
-                $category_button = ($_POST['category_button'] ? $_POST['category_button'] : "");
-                $_POST['category_name'] = $aj -> formtpa($_POST['category_name'], "admin");
-                $sql -> db_Update("news_category", "category_name='".$_POST['category_name']."', category_icon='".$category_button."' WHERE category_id='".$_POST['category_id']."'");
-                $newspost -> show_message(NWSLAN_36);
-        }
+if(IsSet($_POST['update_category']))
+{
+	if($_POST['category_name'])
+	{
+		$category_button = ($_POST['category_button'] ? $_POST['category_button'] : "");
+		$_POST['category_name'] = $tp -> toDB($_POST['category_name'], TRUE);
+		$sql -> db_Update("news_category", "category_name='".$_POST['category_name']."', category_icon='".$category_button."' WHERE category_id='".$_POST['category_id']."'");
+		$newspost -> show_message(NWSLAN_36);
+	}
 }
 
-if(IsSet($_POST['save_prefs'])){
-        $pref['newsposts'] = $_POST['newsposts'];
+if(IsSet($_POST['save_prefs']))
+{
+	$pref['newsposts'] = $_POST['newsposts'];
 
-                // ##### ADDED FOR NEWSARCHIVE --------------------------------------------------------------------
-                $pref['newsposts_archive'] = $_POST['newsposts_archive'];
-                $pref['newsposts_archive_title'] = $_POST['newsposts_archive_title'];
-                // ##### END --------------------------------------------------------------------------------------
+	// ##### ADDED FOR NEWSARCHIVE --------------------------------------------------------------------
+	$pref['newsposts_archive'] = $_POST['newsposts_archive'];
+	$pref['newsposts_archive_title'] = $_POST['newsposts_archive_title'];
+	// ##### END --------------------------------------------------------------------------------------
 
-        $pref['news_cats'] = $_POST['news_cats'];
-        $pref['nbr_cols'] = $_POST['nbr_cols'];
-        $pref['subnews_attach'] = $_POST['subnews_attach'];
-        $pref['subnews_resize'] = $_POST['subnews_resize'];
-        $pref['subnews_class'] = $_POST['subnews_class'];
-        $pref['subnews_htmlarea'] = $_POST['subnews_htmlarea'];
-        $pref['subnews_hide_news'] = $_POST['subnews_hide_news'];
+	$pref['news_cats'] = $_POST['news_cats'];
+	$pref['nbr_cols'] = $_POST['nbr_cols'];
+	$pref['subnews_attach'] = $_POST['subnews_attach'];
+	$pref['subnews_resize'] = $_POST['subnews_resize'];
+	$pref['subnews_class'] = $_POST['subnews_class'];
+	$pref['subnews_htmlarea'] = $_POST['subnews_htmlarea'];
+	$pref['subnews_hide_news'] = $_POST['subnews_hide_news'];
 
-        save_prefs();
-        clear_cache("news.php");
-        $newspost -> show_message("Settings Saved");
+	save_prefs();
+	clear_cache("news.php");
+	$newspost -> show_message("Settings Saved");
 }
 
 
 
 
-if(!e_QUERY || $action == "main"){
-        $newspost -> show_existing_items($action, $sub_action, $id, $from, $amount);
+if(!e_QUERY || $action == "main")
+{
+	$newspost -> show_existing_items($action, $sub_action, $id, $from, $amount);
 }
 
-if($action == "create"){
-        if($sub_action == "edit" && !$_POST['preview']  && !$_POST['submit']){
-                if($sql -> db_Select("news", "*", "news_id='$id' ")){
-                        $row = $sql-> db_Fetch();
-                        extract($row);
-                        $_POST['news_title'] = $news_title;
-                        $_POST['data'] = $aj -> formtparev($news_body);
-                        $_POST['news_extended'] = $aj -> formtparev($news_extended);
-                        $_POST['news_allow_comments'] = $news_allow_comments;
-                        $_POST['news_class'] = $news_class;
-                        $_POST['cat_id'] = $news_category;
-                        if($news_start){$tmp = getdate($news_start);$_POST['startmonth'] = $tmp['mon'];$_POST['startday'] = $tmp['mday'];$_POST['startyear'] = $tmp['year'];}
-                        if($news_end){$tmp = getdate($news_end);$_POST['endmonth'] = $tmp['mon'];$_POST['endday'] = $tmp['mday'];$_POST['endyear'] = $tmp['year'];}
-                        $_POST['comment_total'] = $sql -> db_Count("comments", "(*)", " WHERE comment_item_id='$news_id' AND comment_type='0' ");
-                        $_POST['news_rendertype'] = $news_render_type;
-                }
-        }
-        $newspost -> create_item($sub_action, $id);
+if($action == "create")
+{
+	if($sub_action == "edit" && !$_POST['preview']  && !$_POST['submit'])
+	{
+		if($sql -> db_Select("news", "*", "news_id='$id' "))
+		{
+			$row = $sql-> db_Fetch();
+			extract($row);
+			$_POST['news_title'] = $news_title;
+			$_POST['data'] = $news_body;
+			$_POST['news_extended'] = $news_extended;
+			$_POST['news_allow_comments'] = $news_allow_comments;
+			$_POST['news_class'] = $news_class;
+			$_POST['cat_id'] = $news_category;
+			if($news_start){$tmp = getdate($news_start);$_POST['startmonth'] = $tmp['mon'];$_POST['startday'] = $tmp['mday'];$_POST['startyear'] = $tmp['year'];}
+			if($news_end){$tmp = getdate($news_end);$_POST['endmonth'] = $tmp['mon'];$_POST['endday'] = $tmp['mday'];$_POST['endyear'] = $tmp['year'];}
+			$_POST['comment_total'] = $sql -> db_Count("comments", "(*)", " WHERE comment_item_id='$news_id' AND comment_type='0' ");
+			$_POST['news_rendertype'] = $news_render_type;
+		}
+	}
+	$newspost -> create_item($sub_action, $id);
 }
 
 if($action == "cat"){
@@ -190,9 +205,6 @@ if($action == "sn"){
 if($action == "pref"){
         $newspost -> show_news_prefs($sub_action, $id);
 }
-
-
-
 
 // ##### End ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -236,7 +248,7 @@ class newspost{
 
         function show_existing_items($action, $sub_action, $id, $from, $amount){
                 // ##### Display scrolling list of existing news items ---------------------------------------------------------------------------------------------------------
-                global $sql, $rs, $ns, $aj;
+                global $sql, $rs, $ns, $tp;
                 $text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 300px; overflow : auto; '>";
 
                 if(IsSet($_POST['searchquery'])){
@@ -261,7 +273,7 @@ class newspost{
 
                                 $text .= "<tr>
                                 <td style='width:5%' class='forumheader3'>$news_id</td>
-                                <td style='width:75%' class='forumheader3'><a href='".e_BASE."comment.php?comment.news.$news_id'>".($news_title ? $aj -> tpa($news_title) : "[".NWSLAN_42."]")."</a></td>
+                                <td style='width:75%' class='forumheader3'><a href='".e_BASE."comment.php?comment.news.$news_id'>".($news_title ? $tp -> toHTML($news_title) : "[".NWSLAN_42."]")."</a></td>
                                 <td style='width:20%; text-align:center' class='forumheader3'>
                                 ".$rs -> form_open("post", e_SELF,"myform__{$news_id}","",""," onsubmit=\"return confirm_('create',$news_id)\"")."
                                 <div>".$rs -> form_button("button", "main_edit_{$news_id}", NWSLAN_7, "onclick=\"document.location='".e_SELF."?create.edit.$news_id'\"")."
@@ -330,7 +342,7 @@ class newspost{
         function create_item($sub_action, $id){
                 // ##### Display creation form ---------------------------------------------------------------------------------------------------------
                                         /* 08-08-2004 - unknown - fixed `Insert Image' display to use $IMAGES_DIRECTORY */
-                                        global $sql, $rs, $ns, $pref, $IMAGES_DIRECTORY;
+                                        global $sql, $rs, $ns, $pref, $IMAGES_DIRECTORY, $tp;
 
                 $handle=opendir(e_IMAGE."newspost_images");
                 while ($file = readdir($handle)){
@@ -411,7 +423,6 @@ class newspost{
                         }
                         $text .= "</select>";
                 }
-//                                        $_POST['news_title'] = htmlentities($_POST['news_title'],ENT_QUOTES);
                 $text .= "</td>
                 </tr>
                 <tr>
@@ -425,6 +436,7 @@ class newspost{
                 <td style='width:80%' class='forumheader3'>";
 
                 $insertjs = (!$pref['htmlarea'])?"rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'":"rows='25' style='width:100%' ";
+                $_POST['data'] = $tp -> toForm($_POST['data']);
                 $text .="<textarea class='tbox' id='data' name='data'  cols='80'   $insertjs>".(strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]../", "[img]", $_POST['data']))."</textarea>
                 ";
 //Main news body textarea
@@ -433,7 +445,7 @@ class newspost{
                 <input class='helpbox' type='text' name='helpb' size='100' />
                 <br />".
                                 ren_help()."
-                <select class='tbox' name='thumbps' onChange=\"addtext('[link=".e_IMAGE."newspost_images/' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '][img]".e_IMAGE."newspost_images/thumb_' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '[/img][/link]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_50." ".e_IMAGE."/newsicons')\" onMouseOut=\"help('')\">
+                <select class='tbox' name='thumbps' onChange=\"addtext('[link=".e_IMAGE."newspost_images/' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '][img]".e_IMAGE."newspost_images/thumb_' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '[/img][/link]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_50."')\" onMouseOut=\"help('')\">
                 <option>".NWSLAN_80." ...</option>\n";
                 while(list($key, $image) = each($thumblist)){
                         $image2 = str_replace("thumb_", "", $image);
@@ -498,7 +510,7 @@ class newspost{
                                 $text .= "<b>".NWSLAN_70."</b><br />";
                         }
                         if(!is_writable(e_IMAGE."newspost_images")){
-                                $text .= "<b>".NWSLAN_71." ".e_IMAGE."/newspost_images ".NWSLAN_110."</b><br />";
+                                $text .= "<b>".NWSLAN_71."</b><br />";
                         }
 
                         $text .= "<input class='tbox' type='file' name='file_userfile[]' size='50' />
@@ -623,7 +635,7 @@ class newspost{
 
         function preview_item($id){
                 // ##### Display news preview ---------------------------------------------------------------------------------------------------------
-                global $aj, $sql, $ix;
+                global $tp, $sql, $ix;
                 $_POST['news_id'] = $id;
                 $_POST['active_start'] = (!$_POST['startmonth'] || !$_POST['startday'] || !$_POST['startyear'] ? 0 : mktime (0, 0, 0, $_POST['startmonth'], $_POST['startday'], $_POST['startyear']));
                 $_POST['active_end'] = (!$_POST['endmonth'] || !$_POST['endday'] || !$_POST['endyear'] ? 0 : mktime (0, 0, 0, $_POST['endmonth'], $_POST['endday'], $_POST['endyear']));
@@ -634,19 +646,30 @@ class newspost{
                 $_POST['comment_total'] = $comment_total;
                 $_POST['news_datestamp'] = time();
 
-                $_POST['data'] = (strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]", "[img]../", $_POST['data']));
-                $_POST['data'] = $aj -> formtpa($_POST['data']);
-                $_POST['news_extended'] = $aj -> formtpa($_POST['news_extended']);
 
-                $ix -> render_newsitem($_POST);
-                $_POST['news_title'] = $aj -> formtpa($_POST['news_title']);
-                $_POST['data'] = str_replace("../", "", $aj -> formtparev($_POST['data']));
-                $_POST['news_extended'] = $aj -> formtparev($_POST['news_extended']);
+
+					$_PR = $_POST;
+
+                $_PR['news_title'] = $tp -> post_toHTML($_PR['news_title']);
+                $_PR['data'] = $tp -> post_toHTML($_PR['data']);
+                $_PR['news_extended'] = $tp -> post_toHTML($_PR['news_extended']);
+
+                $_POST['news_title'] = $tp -> post_toForm($_POST['news_title']);
+  	             $_POST['data'] = $tp -> post_toForm($_POST['data']);
+     	          $_POST['news_extended'] = $tp -> post_toForm($_POST['news_extended']);
+   	          
+
+                $_PR['data'] = (strstr($_PR['data'], "[img]http") ? $_PR['data'] : str_replace("[img]", "[img]../", $_PR['data']));
+
+                $ix -> render_newsitem($_PR);
+                $_POST['data'] = $tp -> toForm($_POST['data'],TRUE);
+                $_POST['news_title'] = $tp -> toFORM($_POST['news_title']);
+                $_POST['news_extended'] = $tp -> toFORM($_POST['news_extended']);
         }
 
         function submit_item($sub_action, $id){
                 // ##### Format and submit item ---------------------------------------------------------------------------------------------------------
-                global $aj, $ix,$sql;
+                global $tp, $ix,$sql;
                 $_POST['active_start'] = (!$_POST['startmonth'] || !$_POST['startday'] || !$_POST['startyear'] ? 0 : mktime (0, 0, 0, $_POST['startmonth'], $_POST['startday'], $_POST['startyear']));
                 $_POST['active_end'] = (!$_POST['endmonth'] || !$_POST['endday'] || !$_POST['endyear'] ? 0 : mktime (0, 0, 0, $_POST['endmonth'], $_POST['endday'], $_POST['endyear']));
                 $_POST['admin_id'] = USERID;
@@ -670,7 +693,7 @@ class newspost{
 
         function show_categories($sub_action, $id){
                 // ##### Display scrolling list of existing news items ---------------------------------------------------------------------------------------------------------
-                global $sql, $rs, $ns, $aj;
+                global $sql, $rs, $ns, $tp;
                 $text = "<div style='border : solid 1px #000; padding : 4px; width :auto; height : 200px; overflow : auto; '>\n";
                 if($category_total = $sql -> db_Select("news_category")){
                         $text .= "<table class='fborder' style='width:100%'>
@@ -882,9 +905,7 @@ class newspost{
 
 
         function submitted_news($sub_action, $id){
-
-
-                global $sql, $rs, $ns, $aj;
+                global $sql, $rs, $ns, $tp;
                 $text = "<div style='border : solid 1px #000; padding : 4px; width :auto; height : 300px; overflow : auto; '>\n";
                 if($category_total = $sql -> db_Select("submitnews","*","submitnews_id !='' ORDER BY submitnews_id DESC")){
                         $text .= "<table class='fborder' style='width:100%'>
@@ -898,8 +919,8 @@ class newspost{
                                 $text .= "<tr>
                                 <td style='width:5%; text-align:center; vertical-align:top' class='forumheader3'>$submitnews_id</td>
                                 <td style='width:70%' class='forumheader3'>";
-                                $text .=($submitnews_auth == 0)? "<b>".$aj -> tpa($submitnews_title)."</b>":$aj -> tpa($submitnews_title);
-                                $text .=" [ ".NWSLAN_104." $submitnews_name on ".date("D dS M y, g:ia",$submitnews_datestamp)."]<br />".$aj -> tpa($submitnews_item)."</td>
+                                $text .=($submitnews_auth == 0)? "<b>".$tp -> toHTML($submitnews_title)."</b>":$tp -> toHTML($submitnews_title);
+                                $text .=" [ ".NWSLAN_104." $submitnews_name on ".date("D dS M y, g:ia",$submitnews_datestamp)."]<br />".$tp -> toHTML($submitnews_item)."</td>
                                 <td style='width:25%; text-align:right; vertical-align:top' class='forumheader3'>";
                                 $buttext = ($submitnews_auth == 0)? NWSLAN_58 : NWSLAN_103;
                                 $text .=

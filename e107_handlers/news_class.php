@@ -12,9 +12,9 @@
 |	GNU General Public License (http://gnu.org).	
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.1 $
-| $Date: 2004-09-21 19:10:26 $
-| $Author: e107coders $ 
+| $Revision: 1.2 $
+| $Date: 2004-09-25 02:19:43 $
+| $Author: mcfly_e107 $ 
 +---------------------------------------------------------------+
 */
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -24,13 +24,13 @@ class news{
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 	function submit_item($news){
 		
-		if(!is_object($aj)) $aj = new textparse;
+		if(!is_object($tp)) $tp = new e_parse;
 		if(!is_object($sql)) $sql = new db;
 		extract($news);
 		if($news_id){
-			$news_title = $aj -> formtpa($news_title);
-			$news_body = $aj -> formtpa($data);
-			$news_extended = $aj -> formtpa($news_extended);
+			$news_title = $tp -> toDB($news_title,TRUE);
+			$news_body = $tp -> toDB($data,TRUE);
+			$news_extended = $tp -> toDB($news_extended,TRUE);
 			$vals = $update_datestamp ? "news_datestamp = ".time().", " : "";
 			$vals .= " news_title='$news_title', news_body='$news_body', news_extended='$news_extended', news_category='$cat_id', news_allow_comments='$news_allow_comments', news_start='$active_start', news_end='$active_end', news_class='$news_class', news_render_type='$news_rendertype' WHERE news_id='$news_id' ";
 			if($sql -> db_Update("news",$vals)){
@@ -40,9 +40,9 @@ class news{
 				$message = "<strong>Error! - Was unable to update news item into database!</strong>";
 			}
 		}else{
-			$news_title = $aj -> formtpa($news_title);
-			$news_body = $aj -> formtpa($data);
-			$news_extended = $aj -> formtpa($news_extended);
+			$news_title = $tp -> toDB($news_title,TRUE);
+			$news_body = $tp -> toDB($data,TRUE);
+			$news_extended = $tp -> toDB($news_extended,TRUE);
 			if($sql -> db_Insert("news", "0, '$news_title', '$news_body', '$news_extended', ".time().", ".USERID.", $cat_id, $news_allow_comments, $active_start, $active_end, '$news_class', '$news_rendertype' ")){
 				$message = "News entered into database.";
              clear_cache("news.php");
@@ -55,6 +55,8 @@ class news{
 	}
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 	function render_newsitem($news, $mode="default", $n_restrict=""){
+		global $tp;
+		if(!is_object($tp)) $tp = new e_parse;
     if($n_restrict=="userclass"){
       $news['news_id'] = 0;
       $news['news_title'] = LAN_NEWS_1;
@@ -71,7 +73,7 @@ class news{
 			if($result == "return"){return;}
 		}
 		global $NEWSSTYLE, $NEWSLISTSTYLE;
-		if(!is_object($aj)) $aj = new textparse;
+		if(!is_object($tp)) $tp = new e_parse;
 		if(!is_object($sql)) $sql = new db;
 		extract($news);
 
@@ -94,13 +96,13 @@ on
 ";
 	}
 
-		$news_title = $aj -> tpa($news_title, "off", "admin");
+		$news_title = $tp -> toHTML($news_title,TRUE);
 		$highlight_search = FALSE;
 		if(IsSet($_POST['highlight_search'])){
 			$highlight_search = TRUE;
 		}
-		$news_body = $aj -> tpa($data, "off", "admin", $highlight_search);
-		$news_extended = trim(chop($aj -> tpa($news_extended, "off", "admin")));
+		$news_body = $tp -> toHTML($data,TRUE);
+		$news_extended = trim(chop($tp -> toHTML($news_extended,TRUE)));
 
 		if(!$comment_total) $comment_total = "0";
 		$con = new convert;
@@ -213,9 +215,9 @@ on
 	}
 	
 function make_xml_compatible($original){
-	global $aj;
-  if(!is_object($aj)) $aj = new textparse;
-  $original = $aj -> tpa($original);
+	global $tp;
+  if(!is_object($tp)) $tp = new e_parse;
+  $original = $tp -> toHTML($original,TRUE);
   // remove html-only entities
   $original = str_replace('&pound', '&amp;#163;', $original);
   $original = str_replace('&copy;', '(c)', $original);
@@ -231,8 +233,8 @@ function create_rss(){
                 # - scope                                        public
                 */
                 global $sql;
-  							global $aj;
-								if(!is_object($aj)) $aj = new textparse;
+  							global $tp;
+								if(!is_object($tp)) $tp = new e_parse;
                 setlocale (LC_TIME, CORE_LC);
                 $pubdate = strftime("%a, %d %b %Y %I:%M:00 GMT", time());
                 $sitebutton = (strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", e_IMAGE).SITEBUTTON);
@@ -300,11 +302,11 @@ function create_rss(){
                 //$replace[3] = '\\2';
                 //$news_title = preg_replace($search, $replace, $news_title);
                 // End of code from Lisa
-                $wlog .= strip_tags($aj -> tpa($news_title))."\n".SITEURL."comment.php?comment.news.".$news_id."\n\n";
+                $wlog .= strip_tags($tp -> toHTML($news_title,TRUE))."\n".SITEURL."comment.php?comment.news.".$news_id."\n\n";
                 $itemdate = strftime("%a, %d %b %Y %I:%M:00 GMT", $news_datestamp);
 
   $rss .= "<item>
-    <title>".$this->make_xml_compatible(strip_tags($aj -> tpa($news_title)))."</title>
+    <title>".$this->make_xml_compatible(strip_tags($tp -> toHTML($news_title)))."</title>
     <link>http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$news_id."</link>
     <description>".$this->make_xml_compatible($nb)."</description>
     <category domain=\"".SITEURL."\">$category_name</category>
