@@ -55,6 +55,14 @@ define("LAN_387", "Go");
 define("LAN_388", "Back to top");
 define("LAN_389", "Duplicate post, redirecting ...");
 
+define("LAN_390", "Attach file / image");
+define("LAN_391", "Option");
+define("LAN_392", "File to attach");
+define("LAN_393", "<b>Please note</b><br />Allowed filetypes:");
+define("LAN_394", "Any other filetypes uploaded will be instantly deleted.");
+define("LAN_395", "Maximum file size");
+define("LAN_396", "bytes");
 
+define("LAN_397", "This thread is locked.");
 
 ?>

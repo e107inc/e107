@@ -135,11 +135,11 @@ function getsql($mySQLdefaultdb){
 				$sqltext .= ' NOT NULL';
 			}
 			if($var['Extra'] != ""){
-				$sqltext .= ' ' . $row['Extra'];
+				$sqltext .= ' ' . $var['Extra'];
 			}
-			$sqltext .= ",".$es;
+			$sqltext .= ",$es";
 		}
-		$sqltext = ereg_replace(','.$es.'$', "", $sqltext);
+		$sqltext = ereg_replace(','. $es .'$', "", $sqltext); 
 		$sql -> db_Select_gen("SHOW KEYS FROM $row[0]");
 		while ($var = $sql -> db_Fetch()){
 			$kname = $var['Key_name'];

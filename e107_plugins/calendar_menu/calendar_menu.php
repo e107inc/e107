@@ -56,10 +56,10 @@ if($events){
 $start = $monthstart;
 
 $text .= "<br /><br />
-<table cellpadding='0' cellspacing='1' style='width:91%' class='fborder'><tr>";
+<table cellpadding='0' cellspacing='1' class='fborder'><tr>";
 
 foreach($week as $day){
-        $text .= "<td class='forumheader3' style='width:13%; text-align:center'>".$day."</td>";
+        $text .= "<td class='day' style='text-align:center'>".$day."</td>";
 }
 $text .= "</tr><tr >";
 
@@ -67,7 +67,7 @@ $thismonth = $datearray['mon'];
 $thisday = $datearray['mday'];
 
 for($c=0; $c<$firstdayarray['wday']; $c++){
-                $text .= "<td class='forumheader3' style='width:13%; text-align:center'><br /></td>";
+                $text .= "<td class='day' style='text-align:center'><br /></td>";
 }
 $loop = $firstdayarray['wday'];
 for($c=1; $c<=31; $c++){
@@ -76,18 +76,18 @@ for($c=1; $c<=31; $c++){
 
         if($dayarray['mon'] == $thismonth){
                 if($thisday == $c){
-                        $text .=  "<td class='fborder' style='width:13%; text-align:center'>";
+                        $text .=  "<td class='dayentry' style='text-align:center'>";
                 }else{
-                        $text .="<td class='forumheader3' style='width:13%; text-align:center'>";
+                        $text .="<td class='day' style='text-align:center'>";
                 }
 
                 if($event_true[($c)]){
                         $sql -> db_Select("event_cat", "*", "event_cat_id='".$event_true[($c)]."' ");
                         $icon = $sql -> db_Fetch();
                         extract($icon);
-                        $img = "<img style='border:0' src='".$ec_dir."images/".$event_cat_icon."' alt='' height='10' width='10' />";
+                        $img = "<img style='border:0' src='".$ec_dir."images/".$event_cat_icon."' alt='' />";
                 }else{
-                        $img = "<img style='border:0' src='".$ec_dir."images/cal1.png' alt='' height='10' width='10' />";
+                        $img = "<img style='border:0' src='".$ec_dir."images/cal1.png' alt='' />";
                 }
 
                 $linkut = mktime(0 ,0 ,0 ,$dayarray['mon'], $c, $datearray['year']);
@@ -108,7 +108,7 @@ for($c=1; $c<=31; $c++){
 }
 
 for($a=($loop+1); $a<=7; $a++){
-	$text .="<td class='forumheader3' style='width:13%; text-align:center'>&nbsp;</td>";
+	$text .="<td class='day' style='text-align:center'>&nbsp;</td>";
 }
 
 $text .= "</tr></table></div>";

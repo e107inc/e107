@@ -102,7 +102,7 @@ function setlink($link_name, $link_url, $link_class, $link_open){
 		}
 		if(!strstr($link_url, "http:")){ $link_url = e_BASE.$link_url; }
 		if($link_open == 4){
-			$link =  "<a style='text-decoration:none' href=\"javascript:openwindow('".$link_url."')\">".$link_name."</a>\n";
+			$link =  "<a style='text-decoration:none' href=\"javascript:open_window('".$link_url."')\">".$link_name."</a>\n";
 		}else{
 			$link =  "<a style='text-decoration:none' href=\"".$link_url."\"".$link_append.">".$link_name."</a>\n";
 		}

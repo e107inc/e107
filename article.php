@@ -111,7 +111,7 @@ if($id == "list"){
 					<td style='width:95%; vertical-align:middle'><div class='mediumtext'><b>$content_heading</b></div><div class='smalltext'>$content_subheading</div><br /></td>
 					</tr>";
 				} else {
-					$text.=LAN_401;
+					$text.=LAN_ARTICLE_2;
 				}
 			} else {
 				$text .= "<table style='width:90%'>
@@ -197,7 +197,8 @@ $row = $sql -> db_Fetch(); extract($row);
 
 if(!check_class($content_class)){
 	$content_type==3 ? $caption=LAN_190 : $caption=LAN_100;
-	$ns->tablerender(LAN_400, LAN_401);
+	if($content_type == 1){$caption="";}
+	$ns->tablerender($caption,LAN_ARTICLE_2);
 	require_once(FOOTERF);
 	exit;
 }

@@ -163,7 +163,8 @@ while(false !== ($file = readdir($handle))){
 }
 closedir($handle);
 
-$areas = substr_count($HEADER.$FOOTER, "MENU");
+$areas = substr_count(($NEWSHEADER ? $NEWSHEADER : $HEADER).$FOOTER, "MENU");
+
 
 $sql2 = new db;
 for($a=1; $a<=$areas; $a++){
@@ -186,14 +187,14 @@ while(list($menu_id, $menu_name, $menu_location, $menu_order) = $sql-> db_Fetch(
 	}
 }
 
-$menus_used = (substr_count($HEADER, "MENU")+ substr_count($FOOTER, "MENU"));
+$menus_used = (substr_count(($NEWSHEADER ? $NEWSHEADER : $HEADER).$FOOTER, "MENU"));
 $sql -> db_Update("menus", "menu_location='0', menu_order='0' WHERE menu_location>'$menus_used' ");
 
 if($message != ""){
 	echo "<div style=\"text-align:center\"><b>".$message."</b></div>";
 }
 
-parseheader($HEADER, $menus_used);
+parseheader(($NEWSHEADER ? $NEWSHEADER : $HEADER), $menus_used);
 
 echo "<div style=\"text-align:center\">
 <div style=\"font-size:14px\" class=\"fborder\"><div class=\"forumheader\"><b>Inactive Menus</b></div></div><br />
@@ -212,7 +213,7 @@ while(list($menu_id, $menu_name, $menu_location, $menu_order) = $sql-> db_Fetch(
 	echo "<select name=\"activate\" onChange=\"urljump(this.options[selectedIndex].value)\" class=\"tbox\">
 	<option selected  value=\"0\">".MENLAN_12." ...</option>";
 	for($a=1; $a<=$menus_used; $a++){
-		echo "<option value=\"menus.php?activate.$menu_id.$a\">".MENLAN_13." $a</option>";
+		echo "<option value=\"".e_SELF."?activate.$menu_id.$a\">".MENLAN_13." $a</option>";
 	}
 	echo "</select>";
 	if($menu <> $c){
@@ -240,7 +241,7 @@ function parseheader($LAYOUT){
 	}
 }
 function checklayout($str){
-	global $pref, $menus_used, $menu_pref;
+	global $pref, $menus_used, $menu_pref, $areas;
 	if(strstr($str, "LOGO")){
 		echo "[Logo]";
 	}else if(strstr($str, "SITENAME")){
@@ -273,7 +274,7 @@ function checklayout($str){
 			if($menu_count != $menu_order){
 				$text .= "<a href=\"".e_SELF."?dec.".$menu_id.".".$menu_order.".".$menu."\"><img style=\"border:0\" src=\"".e_IMAGE."generic/down.gif\" alt=\"\" /> ".MENLAN_18."</a><br />";
 			}
-			for($c=1; $c<=5; $c++){
+			for($c=1; $c<=$areas; $c++){
 				if($menu <> $c){
 					$text .= "<a href=\"".e_SELF."?move.".$menu_id.".$c\"><img style=\"border:0\" src=\"".e_IMAGE."generic/move.png\" alt=\"\" /> ".MENLAN_19." ".$c."</a><br />";
 					

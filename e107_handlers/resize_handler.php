@@ -28,10 +28,10 @@ function resize_image($source_file, $destination_file, $type = "upload"){
 	$im_quality = ($pref['im_quality'] ? $pref['im_quality'] : 99);
 
 	$image_stats = getimagesize($source_file);
-	if($image_stats == null){ return false; }
+	if($image_stats == null){ echo "<b>DEBUG</b> image_stats are null<br />"; return false; }
 
 	if ($image_stats[2] != 2 && $image_stats[2] != 3 && ($mode == 'gd1' || $mode == 'gd2')){
-		echo "Unable to resize that image type - not supported under GD.<br />";
+		echo "<b>DEBUG</b> Wrong image type<br />";
 		return FALSE;
 	}
 

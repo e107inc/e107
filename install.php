@@ -442,8 +442,8 @@ function create_tables(){
 
 	$e107['e107_author'] = "Steve Dunstan (jalist)";
 	$e107['e107_url'] = "http://e107.org";
-	$e107['e107_version'] = "v0.601";
-	$e107['e107_build'] = "0";
+	$e107['e107_version'] = "v0.600beta";
+	$e107['e107_build'] = "";
 	$e107['e107_datestamp'] = time();
 	$tmp = serialize($e107);
 	mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('e107', '$tmp') ");

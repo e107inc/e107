@@ -71,6 +71,7 @@ if(IsSet($_POST['cedit'])){
 	$_POST['c_category_description'] = $download_category_description;
 	$_POST['c_category_icon'] = $download_category_icon;
 	$_POST['c_download_class'] = $download_category_class;
+	$_POST['c_category_parent'] = $download_category_parent;
 	$dlcat = $download_category_id;
 }
 

@@ -16,6 +16,12 @@ require_once("class2.php");
 require_once(e_HANDLER."news_class.php");
 require_once(HEADERF);
 
+if($NEWSHEADER){
+	require_once(FOOTERF);
+	exit;
+}
+
+
 if(file_exists("install.php")){ echo "<div class='installe' style='text-align:center'><b>*** ".LAN_00."</div><br /><br />"; }
 
 if(!is_object($aj)){ $aj = new textparse; }
@@ -38,6 +44,8 @@ if(eregi("cat", e_QUERY)){
 		$count = $sql -> db_SELECT("news", "*",  "news_category='$category' ORDER BY news_datestamp DESC");
 		while($row = $sql-> db_Fetch()){
 			extract($row);
+			$news_title = $aj -> tpa($news_title);
+			$news_body = $aj -> tpa($news_body);
 			if($news_title == ""){ $news_title = "Untitled"; }
 			$datestamp = $gen->convert_date($news_datestamp, "short");
 			$news_body = strip_tags(substr($news_body, 0, 100))." ...";
@@ -94,13 +102,13 @@ list($wm_guest, $guestmessage, $wm_active1) = $sql-> db_Fetch();
 list($wm_member, $membermessage, $wm_active2) = $sql-> db_Fetch();
 list($wm_admin, $adminmessage, $wm_active3) = $sql-> db_Fetch();
 if(ADMIN == TRUE && $wm_active3){
-	$adminmessage = $aj -> tpa($adminmessage);
+	$adminmessage = $aj -> tpa($adminmessage, "on");
 	$ns -> tablerender("", "<div style='text-align:center'><b>Administrators</b><br />".$adminmessage."</div>");
 }else if(USER == TRUE && $wm_active2){
-	$membermessage = $aj -> tpa($membermessage);
+	$membermessage = $aj -> tpa($membermessage, "on");
 	$ns -> tablerender("", "<div style='text-align:center'>".$membermessage."</div>");
 }else if(USER == FALSE && $wm_active1){
-	$guestmessage = $aj -> tpa($guestmessage);
+	$guestmessage = $aj -> tpa($guestmessage, "on");
 	$ns -> tablerender("", "<div style='text-align:center'>".$guestmessage."</div>");
 }
 // ---> wmessage end

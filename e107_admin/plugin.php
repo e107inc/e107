@@ -107,6 +107,11 @@ if(IsSet($_POST['confirm'])){
 			$sql -> db_Delete("links", "link_name='$eplug_link_name' ");
 		}
 
+		if($eplug_userclass){
+			$sql -> db_Delete("userclass_classes", "userclass_name='$eplug_userclass' ");
+		}
+
+
 		$sql -> db_Update("plugin", "plugin_installflag=0, plugin_version='$eplug_version' WHERE plugin_id='$id' ");
 		$text .= "<br />".EPL_ADLAN_31." <b>".e_PLUGIN.$eplug_folder."</b> ".EPL_ADLAN_32;
 		$ns->tablerender(EPL_ADLAN_1." ".$eplug_name, $text);
@@ -152,6 +157,16 @@ if(strstr(e_QUERY, "install")){
 			$path = str_replace("../", "", $eplug_link_url);
 			if(!$sql -> db_Select("links", "*", "link_name='$eplug_link_name' ")){
 				$sql -> db_Insert("links", "0, '$eplug_link_name', '$path', '', '', '1', '0', '0', '0', '' ");
+			}
+		}
+
+		if($eplug_userclass){
+			$i=1;
+			while($sql -> db_Select("userclass_classes", "*", "userclass_id='".$i."' ") && $i<255){
+				$i++;
+			}
+			if($i<255){
+				$sql -> db_Insert("userclass_classes", $i.", '".strip_tags(strtoupper($eplug_userclass))."', '$eplug_userclass_description' ");
 			}
 		}
 

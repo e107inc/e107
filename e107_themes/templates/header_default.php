@@ -60,9 +60,18 @@ echo "\nfor(i=0;i<(".$nbrpic."-1);i++){ preloadimages(i,listpics[i]); }
 </head>
 <body>";
 
+
 $custompage = explode(" ", $CUSTOMPAGES);
 $page = substr(strrchr(e_SELF, "/"), 1);
-if(in_array ($page, $custompage) ? parseheader($CUSTOMHEADER) : parseheader($HEADER)) ; 
+
+if(in_array($page, $custompage)){
+	parseheader($CUSTOMHEADER);
+}else if($page == "news.php" && $NEWSHEADER){
+	parseheader($NEWSHEADER);
+}else{
+	parseheader($HEADER);
+}
+
 unset($text);
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -114,7 +123,6 @@ function checklayout($str){
 				if(strstr($menu_name, "custom_")){
 					require_once(e_PLUGIN."custom/".str_replace("custom_", "", $menu_name).".php");
 				}else{
-
 					if(@fopen(e_PLUGIN.$menu_name."/languages/".e_LANGUAGE.".php","r")){
 						@include(e_PLUGIN.$menu_name."/languages/".e_LANGUAGE.".php");
 						require_once(e_PLUGIN.$menu_name."/".$menu_name.".php");
@@ -143,7 +151,7 @@ function checklayout($str){
 					<td class='mediumtext'>".LOGIN_MENU_L5." ".USERNAME."&nbsp;&nbsp;&nbsp;</td>
 					<td>.:.</td>";
 					if(ADMIN == TRUE){
-						echo "<td> <a href='".e_ADMIN."admin.php'>".LOGIN_MENU_L11."</a></td><td>.:.</td>";
+						echo "<td><a href='".e_ADMIN.(!$pref['adminstyle'] || $pref['adminstyle'] == "default" ? "admin.php" : $pref['adminstyle'].".php")."'>".LOGIN_MENU_L11."</a></td><td>.:.</td>";
 					}
 					echo "<td> <a href='" . e_BASE . "usersettings.php'>".LOGIN_MENU_L12."</a></td><td>.:.</td><td><a href='".e_BASE."index.php?logout'>".LOGIN_MENU_L8."</a></td><td>.:.</td></tr></table> ";
 				}else{
@@ -175,8 +183,6 @@ function checklayout($str){
 			require_once(e_PLUGIN."clock_menu/clock_menu.php");
 		}
 
-
-
 	}else if(strstr($str, "BANNER")){
 		$campaign = trim(chop(preg_replace("/\{BANNER=(.*?)\}/si", "\\1", $str)));
 		mt_srand ((double) microtime() * 1000000);
@@ -192,7 +198,12 @@ function checklayout($str){
 			echo "<a href='".e_BASE."banner.php?".$banner_id."'><img src='".e_IMAGE."banners/".$banner_image."' alt='".$banner_clickurl."' style='border:0' /></a>";
 			$sql -> db_Update("banner", "banner_impressions=banner_impressions+1 WHERE banner_id='$banner_id' ");
 		}
+	}else if(strstr($str, "NEWS_CATEGORY")){
+		$news_category = trim(chop(preg_replace("/\{NEWS_CATEGORY=(.*?)\}/si", "\\1", $str)));
+		require_once(e_PLUGIN."alt_news/alt_news.php");
+		alt_news($news_category);
 	}
+
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 ?>

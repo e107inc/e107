@@ -43,10 +43,15 @@ class db{
 		$this->mySQLdefaultdb = $mySQLdefaultdb;
 		$temp = $this->mySQLerror;
 		$this->mySQLerror = FALSE;
-		$this->mySQL_access = @mysql_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword);
-		@mysql_select_db($this->mySQLdefaultdb);
-		$this->dbError("dbConnect/SelectDB");
-		return $this->mySQLerror = $temp;
+		if(!$this->mySQL_access = @mysql_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword)){
+			return "e1";
+		}else{
+			if(!@mysql_select_db($this->mySQLdefaultdb)){
+				return "e2";
+			}else{
+				$this->dbError("dbConnect/SelectDB");
+			}
+		}
 	}
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 	function db_Select($table, $fields="*", $arg="", $mode="default"){
@@ -105,9 +110,12 @@ class db{
 		# - scope					public
 		*/
 
-//		if($table == "forum_t"){
-//			echo "INSERT INTO ".MPREFIX.$table." VALUES (".htmlentities($arg).")";
-//		}
+	//	if($table == "user"){
+	//		echo "INSERT INTO ".MPREFIX.$table." VALUES (".htmlentities($arg).")";
+	//	}
+
+//		if(!ANON && !USER && $table != "user"){ return FALSE; }
+
 		if($result = $this->mySQLresult = @mysql_query("INSERT INTO ".MPREFIX.$table." VALUES (".$arg.")" )){
 			return mysql_insert_id();
 		}else{

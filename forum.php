@@ -158,11 +158,11 @@ if(USER == TRUE){
 		$text .= " (".LAN_196.$total_read_threads.LAN_197.")";
 	}
 
-	if($pref['time_offset'] == "0" ? $tmp = "." : $tmp = $pref['time_offset'].".");
+//	if($pref['time_offset'] == "0" ? $tmp = "." : $tmp = $pref['time_offset'].".");
 
 	$text .= "<br />
 	".LAN_36." ".$lastvisit_datestamp."<br />
-	".LAN_37." ".$datestamp.LAN_38.$tmp;
+	".LAN_37." ".$datestamp.LAN_38.$pref['timezone'];
 }else{
 	$text .= "<td style='width:95%' class='forumheader3'>";
 	if(ANON == TRUE && USER == FALSE){
@@ -183,7 +183,7 @@ if(USERREALM && USER){
 }
 $text .= "</td></tr><tr><td style='width:95%' class='forumheader3'>
 
-".LAN_192.($total_topics+$total_replies)." ".LAN_100.".<br />".LAN_42.$total_members."<br />".LAN_41."<a href='user.php?id.".$nuser_id."'>".$nuser_name."</a>.<br />
+".LAN_192.($total_topics+$total_replies)." ".LAN_100.".<br />".LAN_42.$total_members."<br />".LAN_41."<a href='".e_BASE."user.php?id.".$nuser_id."'>".$nuser_name."</a>.<br />
 
 
 </td>
@@ -223,7 +223,7 @@ $text .= "</td></tr><tr><td style='width:95%' class='forumheader3'>
 
 			$result = preg_split("/\]/", $thread_name);
 
-			$thread_name = ($result[1] ? $result[0]."] <a href='forum_viewtopic.php?".$thread_forum_id.".".$thread_id."'>".ereg_replace("\[.*\]", "", $thread_name)."</a>" : "<a href='forum_viewtopic.php?".$thread_forum_id.".".$thread_id."'>".$thread_name."</a>");
+			$thread_name = ($result[1] ? $result[0]."] <a href='".e_BASE."forum_viewtopic.php?".$thread_forum_id.".".$thread_id."'>".ereg_replace("\[.*\]", "", $thread_name)."</a>" : "<a href='".e_BASE."forum_viewtopic.php?".$thread_forum_id.".".$thread_id."'>".$thread_name."</a>");
 
 			$text .= "<tr>
 			<td style='text-align:center; vertical-align:middle; width:6%'  class='forumheader3'>".$icon."</td>
@@ -330,7 +330,7 @@ function render_forum($row, $newflag, $forum_id){
 	}
 
 	$text = "<tr><td style='width:5%; text-align:center' class='forumheader2'>".($newflag ? "<a href='".e_SELF."?".$forum_id."'><img src='".FTHEME."new.png' alt='".LAN_199."' style='border:0' /></a></td>" : "<img src='".FTHEME."nonew.png' alt='' /></td>")."
-	<td style='width:55%' class='forumheader2'><a href='forum_viewforum.php?".$forum_id."'>".$forum_name."</a><br /><span class='smallblacktext'>".$forum_description."</span></td>
+	<td style='width:55%' class='forumheader2'><a href='".e_BASE."forum_viewforum.php?".$forum_id."'>".$forum_name."</a><br /><span class='smallblacktext'>".$forum_description."</span></td>
 	<td style='width:10%; text-align:center' class='forumheader3'>".$forum_threads."</td>
 	<td style='width:10%; text-align:center' class='forumheader3'>".$forum_replies."</td>
 	<td style='width:20%; text-align:center' class='forumheader3'><span class='smallblacktext'>";
@@ -350,7 +350,7 @@ function render_forum($row, $newflag, $forum_id){
 		$lastpost_datestamp = $gen->convert_date($thread_datestamp, "forum");
 		$text .= $lastpost_datestamp."<br />".
 								
-		($lastpost_author_id ? "<a href='user.php?id.".$lastpost_author_id."'>".$lastpost_author_name."</a> " : $lastpost_author_name);
+		($lastpost_author_id ? "<a href='".e_BASE."user.php?id.".$lastpost_author_id."'>".$lastpost_author_name."</a> " : $lastpost_author_name);
 
 		if($thread_parent){
 			$text .= "&nbsp;&nbsp;<a href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_parent."'><img src='".FTHEME."post.png' alt='' style='border:0' /></a></span></td>";

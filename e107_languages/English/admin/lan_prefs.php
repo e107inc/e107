@@ -56,4 +56,9 @@ define("PRFLAN_53", "Site Preferences");
 define("PRFLAN_54", "Admin Area Theme");
 define("PRFLAN_55", "Cookie name (if cookies selected)");
 
+define("PRFLAN_56", "Timezone");
+
+define("PRFLAN_57", "Admin Front Page Style");
+
+
 ?>

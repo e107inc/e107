@@ -326,7 +326,7 @@ CREATE TABLE online (
 # --------------------------------------------------------
 
 #
-# Table structure for table `poll`
+# Table structure for table `plugin`
 #
 
 CREATE TABLE plugin (
@@ -347,7 +347,7 @@ CREATE TABLE poll (
   poll_id int(10) unsigned NOT NULL auto_increment,
   poll_datestamp int(10) unsigned NOT NULL default '0',
   poll_end_datestamp int(10) unsigned NOT NULL default '0',
-  poll_admin_id tinyint(3) unsigned NOT NULL default '0',
+  poll_admin_id int(10) unsigned NOT NULL default '0',
   poll_title varchar(250) NOT NULL default '',
   poll_option_1 varchar(250) NOT NULL default '',
   poll_option_2 varchar(250) NOT NULL default '',

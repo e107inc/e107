@@ -133,7 +133,7 @@ if(!$topics){
 			if(strstr($r_name, chr(1))){ $tmp = explode(chr(1), $r_name); $r_name = $tmp[0]; }
 
 			$r_datestamp = $gen->convert_date($r_datestamp, "forum");
-			if(!$r_id ? $lastreply = $r_datestamp."<br />".$r_name : $lastreply = $r_datestamp."<br /><a href='user.php?id.".$r_id."'>".$r_name."</a>");
+			if(!$r_id ? $lastreply = $r_datestamp."<br />".$r_name : $lastreply = $r_datestamp."<br /><a href='".e_BASE."user.php?id.".$r_id."'>".$r_name."</a>");
 
 		}else{
 			$replies = LAN_317;
@@ -175,13 +175,13 @@ if(!$topics){
 
 		$text .= $icon;
 		$result = preg_split("/\]/", $thread_name);
-		$thread_name = ($result[1] ? $result[0]."] <a href='forum_viewtopic.php?".$forum_id.".".$thread_id."'>".ereg_replace("\[.*\]", "", $thread_name)."</a>" : "<a href='forum_viewtopic.php?".$forum_id.".".$thread_id."'>".$thread_name."</a>");
+		$thread_name = ($result[1] ? $result[0]."] <a href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id."'>".ereg_replace("\[.*\]", "", $thread_name)."</a>" : "<a href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id."'>".$thread_name."</a>");
 		$text .= "</td><td style='vertical-align:middle; text-align:left; width:47%'  class='forumheader3'><span class='mediumtext'>".$thread_name."</span>";
 		$pages = ceil($replies/$pref['forum_postspage']);
 		if($pages>1){
 			$text .= "<br /><span class='smalltext'>[ goto page ";
 			for($a=0; $a<=($pages-1); $a++){
-				$text .= "-<a href='forum_viewtopic.php?".$forum_id.".".$thread_id.".".($a*$pref['forum_postspage'])."'>".($a+1)."</a>";
+				$text .= "-<a href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id.".".($a*$pref['forum_postspage'])."'>".($a+1)."</a>";
 			}
 			$text .= " ]</span>";
 		}
@@ -208,7 +208,7 @@ if(!$topics){
 			
 		$text .= "</td>
 <td style='vertical-align:top; text-align:center; width:20%' class='forumheader3'>".$thread_datestamp."<br />";
-$text .= (!$post_author_id ? $post_author_name :  "<a href='user.php?id.".$post_author_id."'>".$post_author_name."</a>");
+$text .= (!$post_author_id ? $post_author_name :  "<a href='".e_BASE."user.php?id.".$post_author_id."'>".$post_author_name."</a>");
 $text .= "</td><td style='vertical-align:center; text-align:center; width:5%' class='forumheader3'>$replies</td>
 <td style='vertical-align:center; text-align:center; width:5%' class='forumheader3'>$thread_views</td>
 <td style='vertical-align:top; text-align:center; width:20%' class='forumheader3'>$lastreply</td>
@@ -226,7 +226,7 @@ $text .= "</td>
 <td style='width:20%; text-align:right'>";
 
 if(ANON || USER){
-	$text .= "<a href='forum_post.php?nt.".$forum_id."'><img src='".FTHEME."newthread.png' alt='' style='border:0' /></a>";
+	$text .= "<a href='".e_BASE."forum_post.php?nt.".$forum_id."'><img src='".FTHEME."newthread.png' alt='' style='border:0' /></a>";
 }else{
 	$text .= LAN_59;
 }

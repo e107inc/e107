@@ -24,15 +24,9 @@ class userlogin{
 		# - scope					public
 		*/
 		global $pref;
-
-///////////////////////////////////////////////////////////////////////////
-//		$pref['auth_method']="ldap";
-		if($pref['auth_method'] && $pref['auth_method'] != "e107"){
-			require_once(e_HANDLER."alt_login_class.php");
-			$result = new alt_login($pref['auth_method'],$username, $userpass);
-		}
-//////////////////////////////////////////////////////////////////////////
 		$sql = new db;
+
+
 		if($username != "" && $userpass != ""){
 			$userpass = md5($userpass);
 			if(!$sql -> db_Select("user",  "*", "user_name='$username' ")){

@@ -39,6 +39,63 @@ $HEADER = "
 </td><td style='width:70%; vertical-align: top;'>
 ";
 
+$NEWSHEADER = "
+<div style='text-align:center'>
+<table style='width:100%' cellspacing='3'><tr><td colspan='3' style='text-align:left'>
+{LOGO}
+<br />
+{SITETAG}
+</td></tr><tr> <td style='width:15%; vertical-align: top;'>
+{SETSTYLE=leftmenu}
+{SITELINKS=menu}
+{MENU=1}
+</td><td style='width:70%; vertical-align: top;'>
+<div style='text-align:center'>
+<table style='width:95%'>
+<tr>
+<td style='width:50%; vertical-align:top'>
+{NEWS_CATEGORY=1}
+</td>
+<td style='width:50%; vertical-align:top'>
+{NEWS_CATEGORY=2}
+</td>
+</tr>
+<tr>
+<td colspan='2'>
+<hr />
+<table style='width:100%'>
+<tr>
+<td style='width:33%; vertical-align:top'>
+{MENU=6}
+</td>
+<td style='width:33%; vertical-align:top'>
+{MENU=7}
+</td>
+<td style='width:33%; vertical-align:top'>
+{MENU=8}
+</td>
+</tr>
+</table>
+<hr />
+</td>
+</tr>
+
+<tr>
+<td style='width:50%; vertical-align:top'>
+{NEWS_CATEGORY=3}
+</td>
+<td style='width:50%; vertical-align:top'>
+{NEWS_CATEGORY=4}
+</td>
+</tr>
+
+
+</table>
+</div>
+";
+
+
+
 $FOOTER = <<<EOT
 </td><td style='width:15%; vertical-align:top'>
 {MENU=2}
@@ -96,6 +153,24 @@ $NEWSSTYLE = "
 	</div>
 </div>";
 
+
+$NEWSLISTSTYLE = "
+{NEWSICON}
+<b>
+{NEWSTITLE}
+</b>
+<div class='smalltext'>
+{NEWSAUTHOR}
+on
+{NEWSDATE}
+{NEWSCOMMENTS}
+</div>
+<hr />
+";
+
+
+
+
 define("ICONSTYLE", "float: left; border:0");
 define("COMMENTLINK", "Comments: ");
 define("COMMENTOFFSTRING", "Comments are turned off for this item");
@@ -106,7 +181,8 @@ define("EXTENDEDSTRING", "Read more ...");
 
 define(PRELINK, "");
 define(POSTLINK, "");
-define(LINKSTART, "<img src='".THEME."images/bullet2.gif' alt='bullet' /> ");
+//define(LINKSTART, "<img src='".THEME."images/bullet2.gif' alt='bullet' /> ");
+define(LINKSTART, " ");
 define(LINKEND, "<br />");
 //define(LINKDISPLAY, 2);			// 1 - along top, 2 - in left or right column
 define(LINKALIGN, "left");

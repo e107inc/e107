@@ -20,6 +20,27 @@ require_once(e_HANDLER."news_class.php");
 require_once(e_HANDLER."ren_help.php");
 $aj = new textparse;
 
+
+/*
+//	added for possible future extention to news sectioning ...
+$filename = MAINTHEME."theme.php";
+$fd = fopen ($filename, "r");
+$themefile = fread ($fd, filesize ($filename));
+fclose ($fd);
+define("SECTIONING", (strstr($themefile, "\$NEWSHEADER") ? TRUE : FALSE));
+$categories = substr_count($themefile, "NEWS_CATEGORY");
+if(SECTIONING){
+	echo "Sectioning enabled, categories: ".$categories;
+}else{
+	echo "Cant find \$NEWSHEADER";
+}
+*/
+
+if($_POST['titleonly']){
+	$_POST['data'] = "&nbsp;".$_POST['data'];
+}
+
+
 if(e_QUERY){
 	$qs = explode(".", e_QUERY);
 	$action = $qs[0];
@@ -29,6 +50,7 @@ if(e_QUERY){
 		$_POST['existing'] = $id;
 	}else if($action == "nd"){
 		$_POST['delete'] = TRUE;
+		$_POST['confirm'] = TRUE;
 		$_POST['existing'] = $id;
 
 
@@ -210,6 +232,14 @@ $text .= "
 </tr>
 
 <tr> 
+<td style='width:20%' class='forumheader3'>".NWSLAN_30.":</td>
+<td style='width:80%' class='forumheader3'>
+".(substr($_POST['data'], 0, 6) == "&nbsp;" ? "<input name='titleonly' type='radio' value='1' checked>".NWSLAN_16."&nbsp;&nbsp;<input name='titleonly' type='radio' value='0'>".NWSLAN_17 : "<input name='titleonly' type='radio' value='1'>".NWSLAN_16."&nbsp;&nbsp;<input name='titleonly' type='radio' value='0' checked>".NWSLAN_17)."
+</td>
+</tr>
+
+
+<tr> 
 <td style='width:20%' class='forumheader3'>".NWSLAN_19.":<br /><span class='smalltext'>(".NWSLAN_20.")</span></td>
 <td style='width:80%' class='forumheader3'>";
 
@@ -345,7 +375,7 @@ class create_rss{
     <title>Search</title>
     <description>Search ".SITENAME."</description>
     <name>query</name>
-    <link>".SITEURL."search.php</link>
+    <link>".SITEURL.(substr(SITEURL, -1) == "/" ? "" : "/")."search.php</link>
   </textInput>
   ";
 
@@ -392,6 +422,10 @@ class create_rss{
    
 	$rss .= "</channel>
 </rss>";
+
+	$rss = str_replace("&nbsp;", " ", $rss);
+
+
 	$fp = fopen(e_FILE."backend/news.xml","w");
 	@fwrite($fp, $rss);
 	fclose($fp);

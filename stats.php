@@ -57,7 +57,7 @@ $daily_average = @round(($total_page_views/$logdays), 0);
 $weekly_average = @round(($total_page_views/($logdays/7)), 0);
 $monthly_average = @round(($total_page_views/($logdays/30)), 0);
 
-$text .= "<tr>\n<td $leftcolumn>".LAN_124."</td>\n<td $rightcolumn><b>".$total_unique_views."</b></td>\n</tr>\n<tr>\n<td $leftcolumn>".LAN_125."</td>\n<td $rightcolumn><b>".$total_page_views."</b></td>\n</tr>\n
+$text .= "<tr>\n<td $leftcolumn>".LAN_124."</td>\n<td $rightcolumn><b>".($total_unique_views ? $total_unique_views : "&nbsp;")."</b></td>\n</tr>\n<tr>\n<td $leftcolumn>".LAN_125."</td>\n<td $rightcolumn><b>".($total_page_views? $total_page_views : "&nbsp;")."</b></td>\n</tr>\n
 
 <tr>
 <td $leftcolumn>".LAN_419.":</td>

@@ -20,7 +20,7 @@ if(IsSet($_POST['newver'])){
 }
 
 if(!getperms("1")){ header("location:".e_BASE."index.php"); exit;}
-
+if(!$pref['timezone']){ $pref['timezone'] = "GMT"; }
 
 if(IsSet($_POST['updateprefs'])){
 	$aj = new textparse;
@@ -56,6 +56,8 @@ if(IsSet($_POST['updateprefs'])){
 	$pref['displaythemeinfo'] = $_POST['displaythemeinfo'];
 	$pref['displayrendertime'] = $_POST['displayrendertime'];
 	$pref['displaysql'] = $_POST['displaysql'];
+	$pref['timezone'] = $_POST['timezone'];
+	$pref['adminstyle'] = $_POST['adminstyle'];
 	$sql -> db_Delete("cache");
 	save_prefs();
 	header("location:".e_SELF);
@@ -107,7 +109,7 @@ $flood_time = $pref['flood_time'];
 $user_reg_veri = $pref['user_reg_veri'];
 $user_tracking = $pref['user_tracking'];
 
-require_once(e_ADMIN."auth.php");
+require_once("auth.php");
 
 if(IsSet($message)){
 	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
@@ -129,6 +131,15 @@ while ($file = readdir($handle)){
 }
 closedir($handle);
 
+$handle=opendir(e_ADMIN);
+while ($file = readdir($handle)){
+	if(strstr($file, "admin") && $file != "administrator.php" && $file != "updateadmin.php"){
+		$file = str_replace(".php", "", $file);
+		if($file == "admin"){ $file = "default"; }
+		$adminlist[] = $file;
+	}
+}
+closedir($handle);
 
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>
@@ -215,7 +226,6 @@ $text .= "</select>
 </tr>
 
 <tr>
-
 <td style='width:50%' class='forumheader3'>".PRFLAN_54.": </td>
 <td style='width:50%; text-align:right' class='forumheader3'>
 <select name='admintheme' class='tbox'>\n";
@@ -227,6 +237,26 @@ while(IsSet($dirlist[$counter])){
 $text .= "</select>
 </td>
 </tr>
+
+
+
+
+<tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_57.": </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<select name='adminstyle' class='tbox'>\n";
+$counter = 0;
+while(IsSet($adminlist[$counter])){
+	$text .= ($adminlist[$counter] == $pref['adminstyle'] ? "<option selected>".$adminlist[$counter]."</option>\n" : "<option>".$adminlist[$counter]."</option>\n");
+	$counter++;
+}
+$text .= "</select>
+</td>
+</tr>
+
+
+
+
 
 
 <tr>
@@ -384,6 +414,16 @@ $text .= "</select>
 (".PRFLAN_27.")
 </td>
 </tr>
+
+<tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_56.": </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<input class='tbox' type='text' name='timezone' size='20' value='".$pref['timezone']."' maxlength='50' /> 
+</td>
+</tr>
+
+
+
 
 <tr>
 <td colspan='2'>

@@ -84,7 +84,7 @@ class comment{
 		$aj = new textparse;
 
 		$search[0] = "/\{USERNAME\}(.*?)/si";
-		$replace[0] = ($user_id ? "<a href='user.php?id.".$user_id."'>".$user_name."</a>\n" : $user_name."\n");
+		$replace[0] = ($user_id ? "<a href='".e_BASE."user.php?id.".$user_id."'>".$user_name."</a>\n" : $user_name."\n");
 
 		$search[1] = "/\{TIMEDATE\}(.*?)/si";
 		$replace[1] = $datestamp;

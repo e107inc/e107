@@ -78,7 +78,7 @@ if(eregi("cat", e_QUERY)){
 					   $link_append = "<a href='".e_SELF."?".$link_id."' target='_top'>";
 					break;
 					case 4:
-						$link_append = "<a href='javascript:openwindow('".e_SELF."?".$link_id."')'>";
+						$link_append = "<a href='javascript:open_window('".e_SELF."?".$link_id."')'>";
 					break;
 					default:
 					   $link_append = "<a href='".e_SELF."?".$link_id."'>";

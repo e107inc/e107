@@ -61,7 +61,7 @@ $text .= "
 <tr>
 <td style='width:30%' class='forumheader3'>".BANLAN_5.": </td>
 <td style='width:70%' class='forumheader3'>
-<input class='tbox' type='text' name='ban_ip' size='40' value='' maxlength='200' />
+<input class='tbox' type='text' name='ban_ip' size='40' value='$ban_ip' maxlength='200' />
 </td>
 </tr>
 

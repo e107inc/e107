@@ -16,6 +16,7 @@
 function file_upload($uploaddir, $avatar = FALSE){
 	if(!$uploaddir) $uploaddir=e_FILE."public/";
 	global $pref, $sql;
+	$uploaddir = str_replace("../", "", $uploaddir);
 
 	$allowed_filetypes = ($pref['upload_allowedfiletype'] ? explode("\n", $pref['upload_allowedfiletype']) : array(".zip", ".gz", ".jpg", ".png", ".gif", ".txt"));
 
@@ -23,7 +24,7 @@ function file_upload($uploaddir, $avatar = FALSE){
 		$allowed_filetypes[$a] = trim(chop($allowed_filetypes[$a]));
 	}
 
-	if($pref['upload_storagetype'] == "2" && $avatar == FALSE){
+	if(($pref['upload_storagetype'] == "2" && $avatar == FALSE) || $avatar != "attachment"){
 		extract($_FILES);
 		for($c=0; $c<=1; $c++){
 			if($file_userfile['tmp_name'][$c]){
@@ -31,8 +32,8 @@ function file_upload($uploaddir, $avatar = FALSE){
 				$fileext1 = substr(strrchr($file_userfile['name'][$c], "."), 1);
 				$fileext2 = substr(strrchr($file_userfile['name'][$c], "."), 0); // in case user has left off the . in allowed_filetypes
 
-				if(!in_array($fileext1, $allowed_filetypes)){
-					if(!in_array($fileext2, $allowed_filetypes)){
+				if(!in_array($fileext1, $allowed_filetypes) && !in_array(strtolower($fileext1), $allowed_filetypes)){
+					if(!in_array($fileext2, $allowed_filetypes) && !in_array(strtolower($fileext2), $allowed_filetypes)){
 						require_once(e_HANDLER."message_handler.php");
 						message_handler("MESSAGE", "The filetype '".$file_userfile['type'][$c]."' is not allowed and has been deleted.");
 						return FALSE;
@@ -59,6 +60,7 @@ function file_upload($uploaddir, $avatar = FALSE){
 		return FALSE;
 	}
 	*/
+
 	$files = $_FILES['file_userfile'];
 	if(!is_array($files)){ return FALSE; }
 	$c=0;
@@ -67,15 +69,18 @@ function file_upload($uploaddir, $avatar = FALSE){
 		if($files['size'][$key]){
 			$filesize[] = $files['size'][$key];
 			$name = ereg_replace("[^a-z0-9._]", "", str_replace(" ", "_", str_replace("%20", "_", strtolower($name))));
-			$destination_file = $_SERVER['DOCUMENT_ROOT'].e_HTTP.$uploaddir.$name;
+
+			//$destination_file = substr($_SERVER['PATH_TRANSLATED'], 0, strrpos($_SERVER['PATH_TRANSLATED'], "/"))."/".$uploaddir.$name;
+
+			$destination_file  = getcwd()."/".$uploaddir."/".$name;
 
 			$uploadfile = $files['tmp_name'][$key];
 
 			$fileext1 = substr(strrchr($files['name'][$key], "."), 1);
 			$fileext2 = substr(strrchr($files['name'][$key], "."), 0);
 			
-			if(!in_array($fileext1, $allowed_filetypes)){
-				if(!in_array($fileext2, $allowed_filetypes)){
+			if(!in_array($fileext1, $allowed_filetypes) && !in_array(strtolower($fileext1), $allowed_filetypes)){
+					if(!in_array($fileext2, $allowed_filetypes) && !in_array(strtolower($fileext2), $allowed_filetypes)){
 					require_once(e_HANDLER."message_handler.php");
 					message_handler("MESSAGE", "The filetype ".$files['type'][$key]." is not allowed and has been deleted.", __LINE__, __FILE__);
 					return FALSE;
@@ -88,20 +93,27 @@ function file_upload($uploaddir, $avatar = FALSE){
 			$uploaded[$c]['type'] = $files['type'][$key];
 			$uploaded[$c]['size'] = $files['size'][$key];
 
-			if(@move_uploaded_file($uploadfile, $destination_file)){
+			$method = (OPEN_BASEDIR == FALSE ? "copy" : "move_uploaded_file");
+
+			if(@$method($uploadfile, $destination_file)){
 				@chmod($destination_file, 0644);
 				$tmp = explode(".", $name);
 				$rename = $tmp[0].time().".".$tmp[1];
 				if(@rename(e_FILE."public/avatars/".$name, e_FILE."public/avatars/".$rename)){
 					$uploaded[$c]['name'] = $rename;
 				}
+
+				if($method == "copy"){
+					@unlink($uploadfile);
+				}
+
 				require_once(e_HANDLER."message_handler.php");
 				message_handler("MESSAGE", "Successfully uploaded '".$files['name'][$key]."'", __LINE__, __FILE__);
 				$message .= "Successfully uploaded '".$files['name'][$key]."'.<br />";
 				$uploaded[$c]['size'] = $files['size'][$key];
 			}else{
 				switch ($files['error'][$key]){
-					case 0: $error = "None specified ..."; break;
+					case 0: $error = "Either destination folder does not exist or is not writable."; break;
 					case 1: $error = "The uploaded file exceeds the upload_max_filesize directive in php.ini."; break;
 					case 2: $error = "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the html form."; break;
 					case 3: $error = "The uploaded file was only partially uploaded."; break;

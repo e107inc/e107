@@ -30,11 +30,11 @@ if(strstr(e_QUERY, "del")){
 require_once("auth.php");
 
 if(IsSet($_POST['update_options'])){
-	$pref['avatar_upload'] = $_POST['avatar_upload'];
+	$pref['avatar_upload'] = (FILE_UPLOADS ? $_POST['avatar_upload'] : 0);
 	$pref['im_width'] = $_POST['im_width'];
 	$pref['resize_method'] = $_POST['resize_method'];
 	$pref['im_path'] = $_POST['im_path'];
-	$pref['photo_upload'] = $_POST['photo_upload'];	
+	$pref['photo_upload'] = (FILE_UPLOADS ? $_POST['photo_upload'] : 0);	
 	save_prefs();
 	$message = USRLAN_1;
 }
@@ -52,6 +52,20 @@ if(IsSet($_POST['add_field'])){
 		$sql -> db_Insert("core", "'user_entended', '$tmp' ");
 	}
 	$message = USRLAN_2;
+}
+
+if(IsSet($_POST['prune'])){
+	$sql2 = new db;
+	$text = USRLAN_56." ";
+	if($sql -> db_Select("user", "user_id, user_name", "user_ban=2")){
+		while($row = $sql -> db_Fetch()){
+			extract($row);
+			$text .= $user_name." ";
+			$sql2 -> db_Delete("user", "user_id='$user_id' ");
+		}
+	}
+	$ns -> tablerender(USRLAN_57, "<div style='text-align:center'><b>".$text."</b></div>");
+	unset($text);
 }
 
 if(IsSet($message)){
@@ -220,6 +234,22 @@ if(IsSet($_POST['searchsubmit'])){
 
 echo "<br />";
 
+
+$text = "<div style='text-align:center'>
+<form method='post' action='".e_SELF."'>
+<table style='width:85%' class='fborder'>
+<tr>
+<td class='forumheader3' style='text-align:center'>
+<input class='button' type='submit' name='prune' value='".USRLAN_54."' />
+</td>
+</tr>
+</table>
+</form>
+</div>";
+$ns -> tablerender(USRLAN_55, $text);
+
+echo "<br />";
+
 $sql -> db_Select("core", " e107_value", " e107_name='user_entended'");
 $row = $sql -> db_Fetch();
 $user_entended = unserialize($row[0]);
@@ -269,14 +299,16 @@ $text = "<div style='text-align:center'>
 <tr>
 <td style='width:50%' class='forumheader3'>".USRLAN_44.":</td>
 <td style='width:50%' class='forumheader3'>".
-($pref['avatar_upload'] ? "<input name='avatar_upload' type='radio' value='1' checked>".USRLAN_45."&nbsp;&nbsp;<input name='avatar_upload' type='radio' value='0'>".USRLAN_46 : "<input name='avatar_upload' type='radio' value='1'>".USRLAN_45."&nbsp;&nbsp;<input name='avatar_upload' type='radio' value='0' checked>".USRLAN_46)."
+($pref['avatar_upload'] ? "<input name='avatar_upload' type='radio' value='1' checked>".USRLAN_45."&nbsp;&nbsp;<input name='avatar_upload' type='radio' value='0'>".USRLAN_46 : "<input name='avatar_upload' type='radio' value='1'>".USRLAN_45."&nbsp;&nbsp;<input name='avatar_upload' type='radio' value='0' checked>".USRLAN_46).
+(!FILE_UPLOADS ? " <span class='smalltext'>(".USRLAN_58.")</span>" : "")."
 </td>
 </tr>
 
 <tr>
 <td style='width:50%' class='forumheader3'>".USRLAN_53.":</td>
 <td style='width:50%' class='forumheader3'>".
-($pref['photo_upload'] ? "<input name='photo_upload' type='radio' value='1' checked>".USRLAN_45."&nbsp;&nbsp;<input name='photo_upload' type='radio' value='0'>".USRLAN_46 : "<input name='photo_upload' type='radio' value='1'>".USRLAN_45."&nbsp;&nbsp;<input name='photo_upload' type='radio' value='0' checked>".USRLAN_46)."
+($pref['photo_upload'] ? "<input name='photo_upload' type='radio' value='1' checked>".USRLAN_45."&nbsp;&nbsp;<input name='photo_upload' type='radio' value='0'>".USRLAN_46 : "<input name='photo_upload' type='radio' value='1'>".USRLAN_45."&nbsp;&nbsp;<input name='photo_upload' type='radio' value='0' checked>".USRLAN_46).
+(!FILE_UPLOADS ? " <span class='smalltext'>(".USRLAN_58.")</span>" : "")."
 </td>
 </tr>
 
@@ -284,22 +316,7 @@ $text = "<div style='text-align:center'>
 <td style='width:50%' class='forumheader3'>".USRLAN_47.":</td>
 <td style='width:50%' class='forumheader3'>
 <input class='tbox' type='text' name='im_width' size='10' value='".$pref['im_width']."' maxlength='5' /> (".USRLAN_48.")
-
-<tr>
-<td style='width:50%' class='forumheader3'>".USRLAN_49.":</td>
-<td style='width:50%' class='forumheader3'>
-<select name='resize_method' class='tbox'>".
-($pref['resize_method'] == "gd1" ? "<option selected>gd1</option>" : "<option>gd1</option>").
-($pref['resize_method'] == "gd2" ? "<option selected>gd2</option>" : "<option>gd2</option>").
-($pref['resize_method'] == "ImageMagick" ? "<option selected>ImageMagick</option>" : "<option>ImageMagick</option>")."
-</select>
-</td>
 </tr>
-
-<tr>
-<td style='width:50%' class='forumheader3'>".USRLAN_50.":</td>
-<td style='width:50%' class='forumheader3'>
-<input class='tbox' type='text' name='im_path' size='40' value='".$pref['im_path']."' maxlength='200' />
 
 <tr> 
 <td colspan='2' style='text-align:center' class='forumheader'>

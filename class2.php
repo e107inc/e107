@@ -45,8 +45,9 @@ for($i=1;$i<=$num_levels;$i++){
 	$link_prefix.="../";
 }
 
-define("e_SELF", "http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);
-define("e_QUERY", eregi_replace("&|/?PHPSESSID.*", "", $_SERVER['QUERY_STRING']));
+define("e_SELF", "http://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']));
+define("e_QUERY", eregi_replace("(.?)([a-zA-Z]*\(.*\))(.*)", "\\1\\3", eregi_replace("&|/?PHPSESSID.*", "", $_SERVER['QUERY_STRING'])));
+$_SERVER['QUERY_STRING'] = e_QUERY;
 define('e_BASE',$link_prefix);
 define("e_ADMIN", e_BASE.$ADMIN_DIRECTORY);
 define("e_IMAGE", e_BASE.$IMAGES_DIRECTORY);
@@ -58,7 +59,8 @@ define("e_LANGUAGEDIR", e_BASE.$LANGUAGES_DIRECTORY);
 define("e_DOCS", e_BASE.$HELP_DIRECTORY);
 define("e_DOCROOT",$_SERVER['DOCUMENT_ROOT']."/");
 define("e_UC_PUBLIC", 0);
-define("e_UC_MEMBER", 254);
+define("e_UC_MEMBER", 253);
+define("e_UC_ADMIN", 254);
 define("e_UC_NOBODY", 255);
 
 include(e_HANDLER."errorhandler_class.php");
@@ -72,7 +74,16 @@ require_once(e_HANDLER."mysql_class.php");
 
 $sql = new db;
 $sql -> db_SetErrorReporting(TRUE);
-$sql -> db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
+$merror = $sql -> db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
+
+if($merror == "e1"){
+	message_handler("CRITICAL_ERROR", 6,  ": generic, ", "class2.php");
+	exit;
+}else if($merror == "e2"){
+	message_handler("CRITICAL_ERROR", 7,  ": generic, ", "class2.php");
+	exit;
+}
+
 
 $sql -> db_Select("core", "*", "e107_name='pref' ");
 $row = $sql -> db_Fetch();
@@ -108,7 +119,7 @@ if($pref['frontpage'] && $pref['frontpage_type'] == "splash"){
 	$ip = getip();
 	if(!$sql -> db_Select("online", "*", "online_ip='$ip' ")){
 
-		online(e_SELF);
+		online();
 		if(is_numeric($pref['frontpage'])){
 			header("location: article.php?".$pref['frontpage'].".255");
 			exit;
@@ -123,7 +134,7 @@ if($pref['frontpage'] && $pref['frontpage_type'] == "splash"){
 }
 
 init_session();
-online(e_SELF);
+online();
 
 $sql -> db_Delete("tmp", "tmp_time < '".(time()-300)."' AND tmp_ip!='data' ");
 
@@ -183,7 +194,14 @@ define("FLOODTIME", $pref['flood_time']);
 define("FLOODHITS", $pref['flood_hits']);
 
 if(strstr(e_SELF, $ADMIN_DIRECTORY) && $pref['admintheme'] && !$_POST['sitetheme']){
-	define("THEME", e_THEME.$pref['admintheme']."/");
+	if(strstr(e_SELF, "menus.php")){
+		define("THEME", e_THEME.$pref['sitetheme']."/");
+	}else if(strstr(e_SELF, "newspost.php")){
+		define("MAINTHEME", e_THEME.$pref['sitetheme']."/");
+		define("THEME", e_THEME.$pref['admintheme']."/");
+	}else{
+		define("THEME", e_THEME.$pref['admintheme']."/");
+	}
 }else{
 	if(USERTHEME != FALSE && USERTHEME != "USERTHEME"){
 		define("THEME", (@fopen(e_THEME.USERTHEME."/theme.php", r) ? e_THEME.USERTHEME."/" : e_THEME."e107/"));
@@ -211,7 +229,10 @@ $ns = new e107table;
 define("OPEN_BASEDIR", (ini_get('open_basedir') ? TRUE : FALSE));
 define("SAFE_MODE", (ini_get('safe_mode') ? TRUE : FALSE));
 define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
+define("FILE_UPLOADS", (ini_get('file_uploads') ? TRUE : FALSE));
 define("INIT", TRUE);
+
+//require_once(e_HANDLER."IPB_int.php");
 
 //require_once(e_HANDLER."debug_handler.php");
 
@@ -256,7 +277,7 @@ class textparse{
 			$c=0;
 			while(list($code, $name) = each($this->emotes[$c])){
 				$this->searcha[$c] = " ".$code;
-				$this->searchb[$c] = $code." ";
+				$this->searchb[$c] = "\n".$code;
 				$this->replace[$c] = " <img src='".e_IMAGE."emoticons/$name' alt='' style='vertical-align:middle' /> ";
 				$c++;
 			}
@@ -351,7 +372,14 @@ class textparse{
 		$search[12] = "#\[u\](.*?)\[/u\]#si";
 		$replace[12] = '<u>\1</u>';
 		$search[13] = "#\[img\](.*?)\[/img\]#si";
-		$replace[13] = '<img src=\'\1\' alt=\'\' />';
+		if($pref['image_post'] || $mode == "on"){
+			$replace[13] = '<img src=\'\1\' alt=\'\' style=\'vertical-align:middle; border:0\' />';
+		}else if(!$pref['image_post_disabled_method']){
+			$replace[13] = '\1';
+		}else{
+			$replace[13] = '';
+		}
+
 		$search[14] = "#\[center\](.*?)\[/center\]#si";
 		$replace[14] = '<div style=\'text-align:center\'>\1</div>';
 		$search[15] = "#\[left\](.*?)\[/left\]#si";
@@ -360,8 +388,6 @@ class textparse{
 		$replace[16] = '<div style=\'text-align:right\'>\1</div>';
 		$search[17] = "#\[blockquote\](.*?)\[/blockquote\]#si";
 		$replace[17] = '<div class=\'indent\'>\1</div>';
-	//	$search[18] = "#\[code\](.*?)\[/code\]#si";
-	//	$replace[18] = '<div class=\'indent\'>\1</div>';
 		$search[19] = "/\[color=(.*?)\](.*?)\[\/color\]/si";
 		$replace[19] = '<span style=\'color:\1\'>\2</span>';
 		$search[20] = "/\[size=([1-2]?[0-9])\](.*?)\[\/size\]/si";
@@ -370,10 +396,21 @@ class textparse{
 		$replace[21] = '<span class=\'smallblacktext\'>[ \1 ]</span>';
 		$search[22] = "#onmouseover|onclick|onmousedown|onmouseup|ondblclick|onmouseout|onmousemove|onload/#si";
 		$replace[22] = '';
+		$search[23] = "#\[br\]/si";
+		$replace[23] = '<br />';
+
+		if($pref['forum_attach'] && FILE_UPLOADS){
+			$search[24] = "#\[file=(.*?)\](.*?)\[/file\]#si";
+			$replace[24] = '<a href="\1"><img src="'.e_IMAGE.'generic/attach1.png" alt="" style="border:0; vertical-align:middle" /> \2</a>';
+		}else{
+			$search[24] = "#\[file=(.*?)\](.*?)\[/file\]#si";
+			$replace[24] = '[ file attachment disabled ]';
+		}
+
 		$text = preg_replace($search, $replace, $text);
 		if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
-		$search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;");
-		$replace =  array("\"", "'", "\\", '\"', "\'");
+		$search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;span", "&lt;/span");
+		$replace =  array("\"", "'", "\\", '\"', "\'", "<span", "</span");
 		$text = str_replace($search, $replace, $text);
 		if($mode != "nobreak"){ $text = nl2br($text); }
 		$text = str_replace("<br /><br />", "<br />", $text);
@@ -387,13 +424,29 @@ class textparse{
 	}
 
 	function formtpa($text, $mode="admin"){
-		global $sql;
+		global $sql, $pref;
+
+		for($r=0; $r<=strlen($text); $r++){
+			$chars[$text[$r]] = 1;
+		}
+
+		$ch = array_count_values($chars);
+
+		if((strlen($text) > 50 && $ch[1] < 10) || (strlen($text) > 10 && $ch[1] < 3) || (strlen($text) > 100 && $ch[1] < 20)){
+			echo "<script type='text/javascript'>document.location.href='index.php'</script>\n";
+			exit;
+		}
 
 		if($mode != "admin"){
-			// check for [code] tags ...
 			$text = code($text);
-			$text = strip_tags($text);
+			if(!$pref['html_post']){ $text = str_replace("<", "&lt;", $text); str_replace(">", "&gt;", $text); }
+			if(($pref['image_post_class'] == 253 && !USER) || ($pref['image_post_class'] == 254 && !ADMIN)){
+				$text = preg_replace("#\[img\](.*?)\[/img\]#si", '', $text);
+			}else if(!check_class($pref['image_post_class'])){
+				$text = preg_replace("#\[img\](.*?)\[/img\]#si", '', $text);
+			}
 		}
+
 		if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
 		$search = array("\"", "'", "\\", '\"', "\'", "$");
 		$replace = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&#036;");
@@ -436,11 +489,12 @@ class convert{
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function check_class($var, $userclass=USERCLASS){
-	if(ADMIN == TRUE){ $debug=0; }else{ $debug=0; }
+	//$debug = (ADMIN == TRUE ? TRUE : FALSE);
 	if(preg_match ("/^([0-9]+)$/", $var)){
 		if($var == e_UC_MEMBER && USER==TRUE){return TRUE;}
 		if($var == e_UC_PUBLIC){return TRUE;}
 		if($var == e_UC_NOBODY) {return FALSE;}
+		if($var == e_UC_ADMIN && ADMIN) {return TRUE;}
 	}
 	if($debug){ echo "USERCLASS: ".$userclass.", \$var = $var : "; }
 	if(!defined("USERCLASS") || $userclass == ""){
@@ -494,8 +548,8 @@ function save_prefs($table = "core"){
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-function online($page){
-	if($page == 'log2.php'){return;}
+function online(){
+	$page = e_SELF;
 	$sql = new db;
 	$ip = getip();
 	$udata = (USER ? USERID.".".USERNAME : 0);
@@ -663,6 +717,7 @@ function ban(){
 	}
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+
 function glte($table, $order, $amount, $element, $value, $mode){
 
 	/*

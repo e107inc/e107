@@ -19,7 +19,6 @@ require_once(e_ADMIN."auth.php");
 
 if(IsSet($_POST['update_menu'])){
 	while(list($key, $value) = each($_POST)){
-		echo "$key => $value<br />";
 		$menu_pref[$key] = $value;
 	}
 	if(!$found){unset($menu_pref['articles_parents']);}
@@ -28,8 +27,8 @@ if(IsSet($_POST['update_menu'])){
 	$ns -> tablerender("", "<div style='text-align:center'><b>Articles menu configuration saved</b></div>");
 }
 
-if(!$menu_pref['banner_campaign']){
-	$menu_pref['banner_campaign'] = "Advertisement";
+if(!$menu_pref['banner_caption']){
+	$menu_pref['banner_caption'] = "Advertisement";
 }
 
 $text = "<div style='text-align:center'>

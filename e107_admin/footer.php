@@ -14,6 +14,8 @@ $sql -> db_Select("core", "*", "e107_name='e107' ");
 $row = $sql -> db_Fetch();
 $e107info = unserialize($row['e107_value']);
 
+if(file_exists(e_ADMIN."ver.php")){ require_once(e_ADMIN."ver.php"); }
+
 $obj = new convert;
 $install_date = $obj->convert_date($e107info['e107_datestamp'], "long");
 
@@ -33,7 +35,7 @@ SITENAME."
 <br />
 <b>e107</b>
 <br />
-version ".$e107info['e107_version']. " build ".$e107info['e107_build']."
+version ".$e107info['e107_version']. ($e107info['e107_build'] ? " build ".$e107info['e107_build'] : "")."
 <br /><br />
 <b>Theme</b>
 <br />

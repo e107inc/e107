@@ -49,7 +49,7 @@ class poll{
 
 	function render_poll($poll_id, $poll_question, $poll_option, $votes, $mode, $type="menu"){
 
-		global $POLLSTYLE;
+		global $POLLSTYLE, $sql;
 		if(!$POLLSTYLE){
 			$POLLSTYLE = "<div style='text-align:center'>\n<br />\n<b><i>{QUESTION}</i></b>\n<hr />\n</div>\n<br />\n{OPTIONS=<b>OPTION</b><br />BAR<br /><span class='smalltext'>PERCENTAGE VOTES</span><br /><br />}\n<br />\n<div style='text-align:center' class='smalltext'>{VOTE_TOTAL} {COMMENTS}\n<br />\n{OLDPOLLS}\n</div>";
 		}
@@ -76,6 +76,12 @@ class poll{
 			$preview = TRUE;
 		}
 
+		$sql -> db_Select("poll", "poll_admin_id", "poll_id='$poll_id' ");
+		$row = $sql -> db_Fetch(); extract($row);
+		$sql -> db_Select("user", "user_name", "user_id=".$poll_admin_id);
+		$row = $sql -> db_Fetch(); extract($row);
+
+
 		$sql = new db;
 		$comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='$poll_id' AND comment_type='4'");
 		
@@ -90,6 +96,9 @@ class poll{
 
 		$search[3] = "/\{OLDPOLLS\}(.*?)/si";
 		$replace[3] = ($type == "menu" ? "<a href=\"".e_BASE."oldpolls.php\">".LAN_165."</a>" : "");
+
+		$search[4] = "/\{AUTHOR\}(.*?)/si";
+		$replace[4] = "Posted by <a href='".e_BASE."user.php?id.$poll_admin_id'>$user_name</a>";
 
 		$p_style = preg_replace($search, $replace, $POLLSTYLE);
 

@@ -311,14 +311,16 @@ $ns -> tablerender("<div style='text-align:center'>".DOWLAN_26."</div>", $text);
 require_once("footer.php");
 
 function getfiles($dir){
-	global $t_array;
+	global $t_array, $FILES_DIRECTORY;
 	$pathdir = e_BASE.$dir;
 	$dh = opendir($pathdir);
 	$size = 0;
+	$search = array("../", $FILES_DIRECTORY, "downloads/", "downloadimages/", "downloadthumbs/");
+	$replace = array("", "", "", "", "");
 	while($file = readdir($dh)){
-		if($file != "." and $file != ".." and $file != "index.html"){
+		if($file != "." and $file != ".." && $file != "index.html" && $file != "null.txt"){
 			if(is_file($pathdir.$file)){
-				$t_array[] = ereg_replace("../|e107_files/|downloads/|downloadimages/|downloadthumbs/", "", $pathdir.$file);
+				$t_array[] = str_replace($search, $replace, $pathdir.$file);
 			}else{
 				getfiles(str_replace("../", "", $pathdir.$file)."/");
 			}

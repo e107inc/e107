@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title><e107 readme ...></title>
-<link rel="stylesheet" href="themes/e107/style.css" />
+<link rel="stylesheet" href="../e107_themes/e107/style.css" />
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <meta http-equiv="content-style-type" content="text/css" />
 </head>
@@ -12,7 +12,7 @@
 <table style="width:100%" cellspacing="0" cellpadding="0">
 <tr>
 <td style="background-color:#E2E2E2; text-align:left\">
-<img src="themes/shared/logo.png" alt="Logo" />
+<img src="../e107_images/logo.png" alt="Logo" />
 <br />
 <div class="smalltext" style="text-align:right">&nbsp;©Steve Dunstan 2002. See gpl.txt for licence details.</div>
 </td>
@@ -33,18 +33,16 @@ e107 readme.html
 <table style="width:100%; background-color:#EAEAEA;" cellpadding="10" cellspacing="10">
 <tr>
 <td style="background-color:#EAEAEA;">
-
-<img src="themes/e107/images/installlogo.png" alt="" />
 <br />
-<div class="mediumtext">e107 website system version 0.600<br />
+<div class="mediumtext">e107 website system version 0.602<br />
 by Steve Dunstan</a> (jalist)<br />
 <a href="mailto:jalist@e107.org">jalist@e107.org</a><br />
 <a href="http://www.jalist.com">http://e107.org</a><br />
 
 
 </div><br /><br />
-This software is free, released under GNU GPL Licence - for more information see <a href="http://www.gnu.org/">http://www.gnu.org</a> or gpl.txt
-You may alter in any way you want and redistribute this software, but if you do please do the right thing and leave the original author details intact and offer the source-code for download.<br />
+This software is free, released under version 2 of the GNU GPL Licence - for more information see <a href="http://www.gnu.org/">http://www.gnu.org</a> or gpl.txt included in this package.<br />
+You may alter in any way you want and redistribute this software, but if you do please do the right thing and leave the original author details and copyright intact and offer the source-code for download.<br />
 <br /><hr /><br />
 
 <div class="mediumtext">Requirements</div>
@@ -53,9 +51,14 @@ e107 will only work with version 4.1.0 or newer of PHP. If you need to upgrade s
 <div class="mediumtext">Installation Instructions</div>
 Fresh Install ---
 <ul>
-<li>If you wish e107 to use it's own database, create one using phpMyAdmin - you can call the database anything you wish.</li>
+<li>e107 needs a mysql database to store all your site content, you can either create one manually, or the install script will create one for you if you have the correct permissions. e107 can also share a database with other scripts if you so wish (use a table prefix to avoid conflicts).
 <li>Upload all the files to your server, leaving the file structure intact.</li>
-<li>In your ftp client, change the file permissions of /config.php to 666 (CHMOD 666)</li>
+<li>In your FTP client, change the file permissions of the following files ...<br />
+<b>e107_config.php</b> : 777<br />
+<b>e107_files/backend/news.xml</b> : 777<br />
+<b>e107_files/backend/news.txt</b> : 777<br />
+<b>e107_files/public/</b> : 777<br />
+<b>e107_files/public/avatars</b> : 777<br />
 <li>Open your browser and navigate to install.php (ie http://<i>yourURL.com</i>/install.php).  Follow the instructions to install e107. If there are any problems you will be informed.</li>
 </ul>
 During the install process you will be asked to set up the main site admin, please write the details you enter down as for security purposes they cannot be retrieved later.
@@ -64,21 +67,20 @@ During the install process you will be asked to set up the main site admin, plea
 
 Upgrading your version/build ---
 <ul>
-<li><b>Backup your config.php file</b></li>
-<li>Upload all files to your server EXCEPT config.php - don't overwrite this file</li>
+<li><b>Backup your e107_config.php file</b></li>
+<li>Upload all files to your server EXCEPT e107_config.php - don't overwrite this file</li>
 <li>If upgrade.php exists navigate to it in your browser and follow the instructions</li>
 </ul>
 
 
-<div class="installe">For security reasons you should chmod your config.php file back to 644 after installation is complete, and delete install.php from your server.</div>
+<div class="installe">For security reasons you should chmod your e107_config.php file back to 644 after installation is complete, and delete install.php from your server.</div>
 <br />
-You also need to chmod the two files (news.xml and news.txt) in the /backend directory to 666 for your xml generation to work properly.<br />
 <br /><hr /><br />
 
 <div class="mediumtext">Common problems</div>
 <b>If for any reason your site becomes totally unreachable due to fatal errors etc, try running /e107_files/resetcore.php in your browser, this will restore the default core values back into the database - none of your content will be altered by running this script.</b><br />
 You need cookies enabled in your browser to log in.<br />
-e107 was developed under WindowsXP/Apache2/PHP 4.3.1-dev/mySQL 3.23.54-nt, and Unix/Apache1.3.27/PHP 4.2.3/mySQL 3.23.54. If you are using a non Apache server then please contact me with bugs so I can ensure e107 is multi-server compatible. It has been tested and works with IIS servers.<br />
+e107 was developed under WindowsXP/Apache2/PHP 4.3.1-dev/mySQL 3.23.54-nt, and Unix/Apache1.3.27/PHP 4.2.3/mySQL 3.23.54. It has also been thoroughly tested under a IIS server environment. If you use a different setup and are experiencing problems please contact me.<br />
 If you are having trouble setting e107 up on a free host then it's probably because your generous host has disabled too many features for e107 to work. Free hosts are free for a reason.<br />
 <br /><hr /><br />
 
@@ -91,10 +93,16 @@ Both these places are very friendly, please dont hesitate to use them even if yo
 <div class="mediumtext">Thankyous</div>
 Thanks mainly to McFly, Terrence, Cameron, Lolo, Damon, que, chavo and nalenb for their unstinting support.<br />
 Also to everyone else who has assisted and submitted translations/fixes etc<br />
-Thanks to CraHan, NeXTer, Kuhndog, wols, [steev], rootrider, Claymore and the others in [#ls.g] for their friendship.<br />
+Thanks to CraHan, NeXTer, Kuhndog, wols, [steev], rootrider, Claymore, demigod, maaneeack, Schmots, dreamer, galois and the others in [#ls.g] for their friendship.<br />
+Thanks to Jérôme C. Meijers and Craig Bramscher<br />
 e107.net for donated hosting, your generousity astounds me :)<br />
 Thanks to all of you who have taken the time to create plugins/themes/hacks, answer questions in the forums and IRC channel etc. We have a wonderful community here and it's because of people like you.</br />
-And thanks to you for trying e107, I hope you like it and it fits your website needs.<br />
+And thanks to you for trying e107, I hope you like it and it fits your website needs. If it doesn't try <a href='http://opensourcecms.com'>OpenSourceCMS</a> for a full list of alternative systems.<br /><br />
+A couple of third-party scripts have been integrated into e107 to make your life easier, so thankyou to ...<br />
+InteractiveTools (<a href='http://interactivetools.com'>http://interactivetools.com</a>) for HTMLArea<br />
+Mihai Bazon (<a href='http://dynarch.com/mishoo/home.epl'>http://dynarch.com/mishoo/home.epl</a>) for the calendar widget
+<br />
+(Both these scripts are released under the GPL licence and as stated the copyright information has been left intact in the scripts themselves, if you want to use these scripts in your own code you must abide by the GPL licence).<br />
 <br /><hr /><br />
 <div class="mediumtext">Disclaimer</div>
 This software is free and as such comes without warrenty as stated in the GNU GPL Licence v2 (included in this package). Any problems encountered due to deficiancies in this software is not the responsibility of the author.

@@ -33,7 +33,7 @@ if($sql -> db_Select("cache", "*", "cache_url='$p_query' ")){
 
 ob_start();
 
-if($poll_total == 1){
+if(!$poll_total){
 	$ns -> tablerender(LAN_92, "<div style='text-align:center'>".LAN_93."</div>");
 	require_once(FOOTERF);
 	exit;
@@ -64,7 +64,7 @@ while(list($poll_id, $poll_datestamp, $poll_end_datestamp, $poll_admin_id, $poll
 	<tr>
 	<td colspan='2' class='mediumtext' style='text-align:center'>
 	<b>".stripslashes($poll_title)."</b>
-	<div class='smalltext'>".LAN_94." <a href='mailto:$user_email'>".$user_name."</a>. Active from ".$datestamp." to ".$end_datestamp.". ".LAN_95." $p_total</div>
+	<div class='smalltext'>".LAN_94." <a href='".e_BASE."user.php?id.$user_id'>".$user_name."</a>. Active from ".$datestamp." to ".$end_datestamp.". ".LAN_95." $p_total</div>
 	<br />
 
 	</td>

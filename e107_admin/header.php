@@ -16,53 +16,18 @@ echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <title><?php echo $sitename; ?></title>
-    <link rel="stylesheet" href="<?php echo THEME; ?>style.css" />
-    <meta http-equiv="Content-Type" content="text/html; charset=<?php echo CHARSET; ?>" />
-    <meta http-equiv="content-style-type" content="text/css" />
-    <script type="text/javascript">
-      <!--
-function textCounter(field,cntfield) {
-	cntfield.value = field.value.length;
-}
-if(document.getElementById&&!document.all){ns6=1;}else{ns6=0;}
-var agtbrw=navigator.userAgent.toLowerCase();
-var operaaa=(agtbrw.indexOf('opera')!=-1);
-var head="display:''";
-var folder='';
-function expandit(curobj){
-if(ns6==1||operaaa==true){
-	folder=curobj.nextSibling.nextSibling.style;
-}else{
-	folder=document.all[curobj.sourceIndex+1].style;
-}
-
-if (folder.display=="none"){folder.display="";}else{folder.display="none";}
-}
-
-function urljump(url){
-	top.window.location = url;
-}
-
-function openwindow() {
-	opener = window.open("<? echo e_ADMIN ?>htmlarea/index.php", "popup","top=50,left=100,resizable=no,width=670,height=520,scrollbars=no,menubar=no");            
-}
-function setCheckboxes(the_form, do_check){
-	var elts = (typeof(document.forms[the_form].elements['perms[]']) != 'undefined') ? document.forms[the_form].elements['perms[]'] : document.forms[the_form].elements['perms[]'];
-    var elts_cnt  = (typeof(elts.length) != 'undefined') ? elts.length : 0;
-    if(elts_cnt){
-		for(var i = 0; i < elts_cnt; i++){
-			elts[i].checked = do_check;
-        }
-	}else{
-		elts.checked        = do_check;
-    }
-	return true;
-}
-image1 = new Image(); image1.src = "../e107_images/generic/e107.gif";
-// -->
-</script>
+<head>
+<title><?php echo $sitename; ?></title>
+<link rel="stylesheet" href="<?php echo THEME; ?>style.css" />
+<?php if(file_exists(e_FILE."e107.css")){ echo "\n<link rel='stylesheet' href='".e_FILE."e107.css' />\n"; } ?>
+<?php if(file_exists(e_FILE."style.css")){ echo "\n<link rel='stylesheet' href='".e_FILE."style.css' />\n"; } ?>
+<meta http-equiv="Content-Type" content="text/html; charset=<?php echo CHARSET; ?>" />
+<meta http-equiv="content-style-type" content="text/css" />
+<?php
+echo "<script type='text/javascript' src='".e_FILE."e107.js'></script>";
+if(file_exists(THEME."theme.js")){echo "<script type='text/javascript' src='".THEME."theme.js'></script>";}
+if(file_exists(e_FILE."user.js")){echo "<script type='text/javascript' src='".e_FILE."user.js'></script>\n";}
+?>
 </head>
 <body>
 <?php
@@ -93,7 +58,7 @@ echo "
 
 if(ADMIN == TRUE){
 	if(!eregi("/admin.php", e_SELF)){
-	$text = "<a href='".e_ADMIN."admin.php'>".ADLAN_52."</a><br /><a href='".e_BASE."index.php'>".ADLAN_53."</a><br /><br />";
+	$text = "<a href='".e_ADMIN.(!$pref['adminstyle'] || $pref['adminstyle'] == "default" ? "admin.php" : $pref['adminstyle'].".php")."'>".ADLAN_52."</a><br /><a href='".e_BASE."index.php'>".ADLAN_53."</a><br /><br />";
 	$text .= "º <a style='cursor: pointer; cursor: hand' onclick=\"expandit(this);\">".ADLAN_93."</a>
 	<div style='display: none;'>
 	<br />";
@@ -126,6 +91,7 @@ if(ADMIN == TRUE){
 	if(getperms("T")){$text .= "<a href='".e_ADMIN."meta.php'>".ADLAN_66."</a><br />";}
 	if(getperms("0")){$text .= "<a href='".e_ADMIN."phpinfo.php'>".ADLAN_68."</a><br />";}
 	if(getperms("U")){$text .= "<a href='".e_ADMIN."poll.php'>".ADLAN_70."</a><br />";}
+	if(getperms("4")){$text .= "<a href='".e_ADMIN."image.php'>".ADLAN_105."</a><br />";}
 	if(getperms("V")){$text .= "<a href='".e_ADMIN."upload.php'>".ADLAN_72."</a><br />";}
 	if(getperms("9")){$text .= "<a href='".e_ADMIN."ugflag.php'>".ADLAN_40."</a><br />";}
 	if(getperms("0")){$text .= "<a href='".e_ADMIN."cache.php'>".ADLAN_74."</a><br />";}
@@ -176,11 +142,11 @@ if(file_exists($plugpath)){
 
 echo "<br />";
 
-/*
-if(SAFE_MODE){
-	message_handler("ADMIN_MESSAGE", "Your server is running in safe mode, this could affect certain scripts such as the filemanager.", __LINE__, __FILE__);
-}
 
+if(!FILE_UPLOADS){
+	message_handler("ADMIN_MESSAGE", "Your server does not allow HTTP file uploads so it will not be possible for your users to uploads avatars/files etc. To rectify this set file_uploads to On in your php.ini and restart your server. If you dont have access to your php.ini contact your hosts.", __LINE__, __FILE__);
+}
+/*
 if(OPEN_BASEDIR){
 	message_handler("ADMIN_MESSAGE", "Your server is running with a basedir restriction in effect. This disallows usage of any file outside of your home directory and as such could affect certain scripts such as the filemanager.", __LINE__, __FILE__);
 }

@@ -186,7 +186,7 @@ $text .= $rs -> form_open("post", e_SELF, "signupform")."
 <tr>
 <td style='width:30%'>".LAN_113."</td>
 <td style='width:70%'>".
-$rs ->form_radio("hideemail", 1)." Yes&nbsp;&nbsp;".$rs ->form_radio("hideemail", 0, 1)." No
+$rs ->form_radio("hideemail", 1)." Yes&nbsp;&nbsp;".$rs ->form_radio("hideemail", 0, 1)." ".LAN_200."
 </td>
 </tr>
 <tr style='vertical-align:top'> 

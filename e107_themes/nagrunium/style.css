@@ -127,9 +127,15 @@ p {
 	color:#000;
 	padding: 4px;
 	border: #C3BDBD 1px solid;
-	background-image : url(../shared/forum/finfobar.png);
+	background-image : url(../e107_images/forum/finfobar.png);
 }
 a.forumlink{
 	color: #fff;
 	text-decoration: underline;
+}
+.helpbox {
+	border: transparent;
+	background-color: transparent;
+	color:#000;
+	font: 9px tahoma, verdana, arial, helvetica, sans-serif;
 }

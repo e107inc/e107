@@ -128,6 +128,9 @@ if(IsSet($_POST['updateoptions'])){
 	$pref['forum_title'] = $_POST['forum_title'];
 	$pref['forum_postspage'] = $_POST['forum_postspage'];
 	$pref['forum_levels'] = $_POST['forum_levels'];
+	$pref['image_post'] = $_POST['image_post'];
+	$pref['html_post'] = $_POST['html_post'];
+	$pref['forum_attach'] = $_POST['forum_attach'];
 	save_prefs();
 	$message = FORLAN_10;
 }
@@ -454,12 +457,35 @@ $text = "<div style='text-align:center'>
 
 <tr>
 <td style='width:75%' class='forumheader3'>
+".FORLAN_68."<br />
+<span class='smalltext'>".FORLAN_69."</span>
+</td>
+<td style='width:25%' class='forumheader2' style='text-align:center'>".
+($pref['html_post'] ? "<input type='checkbox' name='html_post' value='1' checked>" : "<input type='checkbox' name='html_post' value='1'>")."
+</td>
+</tr>
+
+<tr>
+<td style='width:75%' class='forumheader3'>
 ".FORLAN_49."<br />
 <span class='smalltext'>".FORLAN_50."</span>
 </td>
 <td style='width:25%' class='forumheader2' style='text-align:center'>".
 ($pref['forum_poll'] ? "<input type='checkbox' name='forum_poll' value='1' checked>" : "<input type='checkbox' name='forum_poll' value='1'>")."
 </tr>
+
+<tr>
+<td style='width:75%' class='forumheader3'>
+".FORLAN_70."<br />
+<span class='smalltext'>".FORLAN_71."</span>
+</td>
+<td style='width:25%' class='forumheader2' style='text-align:center'>".
+($pref['forum_attach'] ? "<input type='checkbox' name='forum_attach' value='1' checked>" : "<input type='checkbox' name='forum_attach' value='1'>")."
+</td>
+</tr>
+
+
+
 
 <tr>
 <td style='width:75%' class='forumheader3'>

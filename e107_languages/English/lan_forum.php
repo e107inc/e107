@@ -10,7 +10,7 @@ define("LAN_34", "new posts");
 define("LAN_35", "since your last visit.");
 define("LAN_36", "You last visited at ");
 define("LAN_37", "It is now ");
-define("LAN_38", ", all times are GMT");
+define("LAN_38", ", all times are ");
 define("LAN_41", "Newest member: ");
 define("LAN_42", "Registered members: ");
 define("LAN_43", "These forums can be browsed and posted to by non-registered users, but if you wish to see info related to new posts, edit/delete your posts etc you will have to <a href='".e_BASE."signup.php'>register</a> and log in.");

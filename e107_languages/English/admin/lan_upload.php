@@ -42,8 +42,6 @@ define("UPLLAN_37", "Permission");
 define("UPLLAN_38", "Select to allow only certain users to upload");
 define("UPLLAN_39", "Submit");
 define("UPLLAN_40", "Options");
-define("UPLLAN_41", "No");
-define("UPLLAN_42", "No");
-define("UPLLAN_43", "No");
+define("UPLLAN_41", "Please note - file uploads are disabled from your php.ini, it will not be possible to upload files until you set it to On.");
 
 ?>

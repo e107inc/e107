@@ -66,12 +66,14 @@ $text .= wad("log.php", ADLAN_64, ADLAN_65, "S");
 $text .= wad("meta.php", ADLAN_66, ADLAN_67, "T");
 $text .= wad("phpinfo.php", ADLAN_68, ADLAN_69, "0");
 $text .= wad("poll.php", ADLAN_70, ADLAN_71, "U");
-$text .= wad("upload.php", ADLAN_72, ADLAN_73, "V");
+$text .= wad("image.php", ADLAN_105, ADLAN_106, "5");
 
+$text .= wad("upload.php", ADLAN_72, ADLAN_73, "V");
 $text .= wad("cache.php", ADLAN_74, ADLAN_75, "0");
 $text .= wad("ugflag.php", ADLAN_40, ADLAN_41, "9");
 $text .= wad("custommenu.php", ADLAN_42, ADLAN_43, "2");
 $text .= wad("db.php",ADLAN_44, ADLAN_45,"0");
+
 $text .= wad("admin.php?logout", ADLAN_46, "", "");
 
 if(!$tdc){ $text .= "</tr>"; }
@@ -92,7 +94,9 @@ if(getperms("P")){
 		while($row = $sql -> db_Fetch()){
 			extract($row);
 			include(e_PLUGIN.$plugin_path."/plugin.php");
-			$text .= wad(e_PLUGIN.$plugin_path."/".$eplug_conffile, $eplug_name, $eplug_caption, "P", $eplug_icon);
+			if($eplug_conffile){
+				$text .= wad(e_PLUGIN.$plugin_path."/".$eplug_conffile, $eplug_name, $eplug_caption, "P", $eplug_icon);
+			}
 		}
 	}
 }

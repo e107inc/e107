@@ -113,7 +113,7 @@ class manualparse{
 	$text = "<div style=\"text-align:center\"><table style=\"width:95%\" cellspacing=\"1\"><tr><td>".$text."</td></tr></table></div>";
 	$ns = new e107table;
 
-	$text = str_replace("e107_themes/", e_THEME, $text);
+	$text = eregi_replace("<img src=\"themes" ,"<img src=\"".e_BASE."themes", $text);
 
 
 	$ns -> tablerender(NFMENU_161, stripslashes($text));

@@ -41,11 +41,17 @@ if($action == "inc"){
 
 if(IsSet($_POST['updateoptions'])){
 	$pref['linkpage_categories'] = $_POST['linkpage_categories'];
-
-
 	save_prefs();
 	$message = LCLAN_1;
 }
+
+$handle=opendir(e_IMAGE."link_icons");
+while ($file = readdir($handle)){
+	if($file != "." && $file != ".." && $file != "/"){
+		$iconlist[] = $file;
+	}
+}
+closedir($handle);
 
 
 if($_POST['add_link'] != ""){
@@ -84,8 +90,12 @@ if(IsSet($_POST['edit']) || $action == "edit"){
         list($link_id, $link_name, $link_url, $link_description, $link_button, $link_category, $link_order, $link_refer, $link_open, $link_class) = $sql-> db_Fetch();
 }
 
+if($action == "delete"){
+	$sql -> db_Delete("links", "link_id='$linkid'");
+	$message = LCLAN_4;
+}
 
-if(IsSet($_POST['delete']) || $action == "delete"){
+if(IsSet($_POST['delete'])){
     if($_POST['confirm']){
 		$sql -> db_Delete("links", "link_id='".$_POST['existing']."' ");
         $message = LCLAN_4;
@@ -114,7 +124,7 @@ if(IsSet($message)){
 $link_total = $sql -> db_Select("links");
 
 $text = "<div style='text-align:center'>
-<form method='post' action='".e_SELF."'>
+<form method='post' action='".e_SELF."' name='linkform'>
 <table style='width:85%' class='fborder'>
 <tr>
 <td colspan='2' class='forumheader' style='text-align:center'>";
@@ -184,7 +194,26 @@ $text .= "<span class='twelvept'> [ <a href='link_category.php'>".LCLAN_14."</a>
 <td style='width:70%' class='forumheader3'>
 <input class='tbox' type='text' name='link_button' size='60' value='$link_button' maxlength='100' />
 
-</td>
+<br />
+<input class='button' type ='button' style=''width: 35px'; cursor:hand' size='30' value='".LCLAN_39."' onClick='expandit(this)'>
+<div style='display:none' style=&{head};>";
+
+
+
+while(list($key, $icon) = each($iconlist)){
+	$text .= "<a href='javascript:addtext(\"$icon\")'><img src='".e_IMAGE."link_icons/".$icon."' style='border:0' alt='' /></a> ";
+}
+
+
+
+
+
+
+
+
+
+
+$text .= "</td>
 </tr>
 <tr>
 <td style='width:30%' class='forumheader3'>".LCLAN_19.": </td>
@@ -279,7 +308,7 @@ $text = "<div style='text-align:center'>
 <table style='width:85%' class='fborder'>
 <tr>
 <td style='width:90%' class='forumheader3'>
-Show only link categories<br />
+".LCLAN_40."<br />
 <span class='smalltext'>".LCLAN_34."</span>
 </td>
 <td style='width:10%' class='forumheader2' style='text-align:center'>".
@@ -301,3 +330,8 @@ Show only link categories<br />
 $ns -> tablerender(LCLAN_36, $text);
 require_once("footer.php");
 ?>
+<script type="text/javascript">
+function addtext(sc){
+	document.linkform.link_button.value = sc;
+}
+</script>

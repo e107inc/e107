@@ -26,6 +26,7 @@ if(!e_QUERY){
 
 		$text = "<div style='text-align:center'>
 		<table style='width:95%' class='fborder'>
+		<tr>
 		<td style='width:3%; text-align:center' class='fcaption'>&nbsp;</td>
 		<td style='width:60%; text-align:center' class='fcaption'>".LAN_dl_19."</td>
 		<td style='width:10%; text-align:center' class='fcaption'>".LAN_dl_20."</td>
@@ -38,12 +39,10 @@ if(!e_QUERY){
 		extract($row);
 
 		if(($download_category_class && check_class($download_category_class)) || !$download_category_class || ($download_category_class == 254 && USER) ){
-			
-				$text .= "<tr><td colspan='5' class='forumheader'>".
-				($download_category_icon ? "<img src='".THEME."images/".$download_category_icon."' alt='' style='float-left' />" : "&nbsp;")."
-				".$download_category_name."</b></td></tr>";
-				$parent_status == "open";
-
+			$text .= "<tr><td colspan='5' class='forumheader'><b>".
+			($download_category_icon ? "<img src='".THEME."images/".$download_category_icon."' alt='' style='float-left' />" : "&nbsp;")."
+			".$download_category_name."</b></td></tr>";
+			$parent_status == "open";
 		}else{
 			$parent_status == "closed";
 		}

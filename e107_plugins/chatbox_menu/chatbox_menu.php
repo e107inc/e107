@@ -119,7 +119,7 @@ if($sql -> db_Select("cache", "*", "cache_url='chatbox' ")){
 				$message_array = explode(" ", $cb_message);
 				for($i=0; $i<=(count($message_array)-1); $i++){
 					if(strlen($message_array[$i]) > $cb_wordwrap){
-						$message_array[$i] = wordwrap( $message_array[$i], $cb_wordwrap, "\n", 1);
+						$message_array[$i] = wordwrap( $message_array[$i], $cb_wordwrap, "<br />", 1);
 					}
 				}
 				$cb_message = implode(" ",$message_array);

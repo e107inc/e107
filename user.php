@@ -189,11 +189,11 @@ function renderuser($row, $user_entended, $mode="verbose"){
 		if($user_sess && file_exists(e_FILE."public/avatars/".$user_sess)){
 			$str .= "<img src='".e_FILE."public/avatars/".$user_sess."' alt='' />";
 
-			if(ADMIN){
+			if(ADMIN && getperms("4")){
 				$str .= "<br /><span class='smalltext'>".$user_sess."</span>";
 			}
 
-			if(USERID == $user_id || ADMIN){
+			if(USERID == $user_id || (ADMIN && getperms("4"))){
 				$str .= "<br /><br /><span class='smalltext'>[ <a href='".e_SELF."?delp.".USERID."'>".LAN_413."</a> ]</span>";
 			}
 
@@ -225,7 +225,7 @@ function renderuser($row, $user_entended, $mode="verbose"){
 		</td></tr>
 
 		<td style='width:80%'class='forumheader3'>
-			<table style='width:100%'><tr><td style='width:30%'> <img src='".e_IMAGE."generic/hme.png' alt=''  style='vertical-align:middle' /> ".LAN_144."</td><td style='width:70%; text-align:right'>".($user_homepage ? "<a href=\"javascript:openwindow('".$user_homepage."')\">$user_homepage</a>" : "<i>".LAN_401."</i>")."</td></tr></table>
+			<table style='width:100%'><tr><td style='width:30%'> <img src='".e_IMAGE."generic/hme.png' alt=''  style='vertical-align:middle' /> ".LAN_144."</td><td style='width:70%; text-align:right'>".($user_homepage ? "<a href=\"javascript:open_window('".$user_homepage."')\">$user_homepage</a>" : "<i>".LAN_401."</i>")."</td></tr></table>
 		</td></tr>
 
 		<td style='width:80%'class='forumheader3'>

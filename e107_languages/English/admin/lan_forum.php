@@ -25,13 +25,11 @@ define("FORLAN_22", "Parent");
 define("FORLAN_23", "Accessable to?");
 define("FORLAN_24", "tick to make accessable to users in the ticked class");
 define("FORLAN_25", "Update Parent");
-
 define("FORLAN_26", "Create Parent");
 define("FORLAN_27", "You need to define at least one forum parent before creating a forum.");
 define("FORLAN_28", "Forums");
 define("FORLAN_29", "No forums yet.");
 define("FORLAN_30", "Existing Forums");
-
 define("FORLAN_31", "Name");
 define("FORLAN_32", "Description");
 define("FORLAN_33", "Moderators");
@@ -42,18 +40,15 @@ define("FORLAN_37", "Order");
 define("FORLAN_38", "Closed");
 define("FORLAN_39", "Members Only");
 define("FORLAN_40", "Restricted");
-
 define("FORLAN_41", "move up");
 define("FORLAN_42", "move down");
 define("FORLAN_43", "Preview / Forum Order");
 define("FORLAN_44", "Enclose tables");
 define("FORLAN_45", "Tick this to render the forum within theme table");
-define("FORLAN_65", "Forum Title");
 define("FORLAN_46", "Title displayed in caption if enclose tables is ticked");
 define("FORLAN_47", "Enable email nofication");
 define("FORLAN_48", "Tick this to allow your users to have the option of receiving an email when somebody replies to their post");
 define("FORLAN_49", "Enable polls");
-
 define("FORLAN_50", "Tick this to allow your users to set polls in the forums");
 define("FORLAN_51", "Enable tracking");
 define("FORLAN_52", "Tick this to allow your users to track threads and be emailed when the thread is replied to");
@@ -64,12 +59,19 @@ define("FORLAN_56", "Number of posts made to a thread before it is marked as pop
 define("FORLAN_57", "Posts per page");
 define("FORLAN_58", "Number of posts displayed per page");
 define("FORLAN_59", "Prune");
-
 define("FORLAN_60", "This will delete all threads that have not received a reply in the number of days you enter. <b>Please be careful using this function!</b>");
 define("FORLAN_61", "Update Options");
 define("FORLAN_62", "Forum Options");
-
 define("FORLAN_63", "Levels");
 define("FORLAN_64", "Enter your levels here, if left blank generic stars will be used to denote level. Seperate levels with comma. Maximum of 10 levels, lowest first.");
+define("FORLAN_65", "Forum Title");
+
+
+
+define("FORLAN_68", "Enable HTML post");
+define("FORLAN_69", "Allow public users to post HTML code, this will apply sitewide (comments, chatbox etc)");
+
+define("FORLAN_70", "Enable file / image attachments");
+define("FORLAN_71", "Allow users to upload file or image with their forum post, <a href='upload.php'>click here</a> to set max file size, allowed types etc");
 
 ?>

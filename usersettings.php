@@ -70,6 +70,7 @@ if(IsSet($_POST['updatesettings'])){
 	if(!$error){
 		if($_uid && ADMIN){ $inp = $_uid; }else{ $inp = USERID; }
 		$_POST['signature'] = $aj -> formtpa($_POST['signature'], "public");
+		$_POST['location'] = $aj -> formtpa($_POST['location'], "public");
 		$sql -> db_Update("user", "user_password='$password', user_sess='$user_sess', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$birthday."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."' WHERE user_id='".$inp."' ");
 
 		if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
@@ -275,16 +276,20 @@ for($c=1; $c<=(count($avatarlist)-1); $c++){
 $text .= "<br />
 </div>";
 
-if($pref['avatar_upload']){
-	$text .= "<br /><span class='smalltext'>Upload your avatar</span> <input class='tbox' name='file_userfile[]' type='file' size='47'>
-	<br /><div class='smalltext'>".LAN_404."</div>";
-}
+if(e_QUERY && ADMIN){
+	$text .= "&nbsp;";
+}else{
 
-if($pref['photo_upload']){
-	$text .= "<br /><span class='smalltext'>Upload your photograph</span> <input class='tbox' name='file_userfile[]' type='file' size='47'>
-	<br /><div class='smalltext'>".LAN_404."</div>";
-}
+	if($pref['avatar_upload'] && FILE_UPLOADS){
+		$text .= "<br /><span class='smalltext'>Upload your avatar</span> <input class='tbox' name='file_userfile[]' type='file' size='47'>
+		<br /><div class='smalltext'>".LAN_404."</div>";
+	}
 
+	if($pref['photo_upload'] && FILE_UPLOADS){
+		$text .= "<br /><span class='smalltext'>Upload your photograph</span> <input class='tbox' name='file_userfile[]' type='file' size='47'>
+		<br /><div class='smalltext'>".LAN_404."</div>";
+	}
+}
 
 $text .= "</td>
 </tr>

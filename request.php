@@ -85,9 +85,12 @@ if(eregi("http", $image)){
 		require_once(HEADERF);
 		if(file_exists(e_FILE."download/".$image)){
 			echo "<img src='".e_FILE."download/".$image."' alt='' />";
+		}else if(file_exists(e_FILE."downloadimages/".$image)){
+			echo "<img src='".e_FILE."downloadimages/".$image."' alt='' />";
 		}else{
 			echo "<img src='".e_FILE."public/".$image."' alt='' />";
 		}
+		echo "<br /><a href='javascript:history.back(1)'>Back</a>";
 		require_once(FOOTERF);
 	}else{
 		echo "<img src='".e_FILE."public/".$image."' alt='' />";

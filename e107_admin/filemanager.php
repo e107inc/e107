@@ -22,10 +22,11 @@ $path = str_replace("../", "", (e_QUERY ? e_QUERY : e_FILE));
 if(!$path){ $path =  str_replace("../", "", e_FILE); }
 
 if(IsSet($_POST['deletefile'])){
-	if(@unlink($_SERVER["DOCUMENT_ROOT"].e_HTTP.$_POST['deleteconfirm'])){
-		$message = "Deleted '".e_HTTP.$_POST['deleteconfirm']."' successfully.";
+	$destination_file = str_replace($ADMIN_DIRECTORY, "", substr($_SERVER['PATH_TRANSLATED'], 0, strrpos($_SERVER['PATH_TRANSLATED'], "/"))."/".$_POST['deleteconfirm']);
+	if(@unlink($destination_file)){
+		$message = "Deleted '".$destination_file."' successfully.";
 	}else{
-		$message = "Unable to delete '".e_HTTP.$_POST['deleteconfirm']."'";
+		$message = "Unable to delete '".$destination_file."'.";
 	}
 }
 
@@ -34,7 +35,9 @@ if(IsSet($_POST['upload'])){
 	foreach($files['name'] as $key => $name){
 		if($files['size'][$key]){
 			$name = ereg_replace("[^a-z0-9._]", "", str_replace(" ", "_", str_replace("%20", "_", strtolower($name))));
-			$destination_file = $_SERVER['DOCUMENT_ROOT'].e_HTTP.$_POST['upload_dir'][$key]."/".$name;
+
+			$destination_file = str_replace($ADMIN_DIRECTORY, "", substr($_SERVER['PATH_TRANSLATED'], 0, strrpos($_SERVER['PATH_TRANSLATED'], "/"))."/".$_POST['upload_dir'][$key]."/".$name);
+
 			$uploadfile = $files['tmp_name'][$key];
 			if(@move_uploaded_file($uploadfile, $destination_file)){
 				@chmod($destination_file, 0644);
@@ -179,15 +182,18 @@ while($dirs[$c]){
 	<td class=\"forumheader3\">".$dirsize."
 	</td>
 	<td class=\"forumheader3\">&nbsp;</td>
-	<td class=\"forumheader3\">
-	<input class=\"button\" type=\"button\" name=\"erquest\" value=\"".FMLAN_21."\" onClick=\"expandit(this)\">
-	
-	<div style=\"display:none; &{head}\">
-	<input class=\"tbox\" type=\"file\" name=\"userfile[]\" size=\"50\"> 
-	<input class=\"button\" type=\"submit\" name=\"upload\" value=\"".FMLAN_22."\" />
-	<input type=\"hidden\" name=\"upload_dir[]\" value=\"".$path.$dirs[$c]."\">
-	</div>
-	</td>
+	<td class=\"forumheader3\">";
+	if(FILE_UPLOADS){
+		$text .= "<input class=\"button\" type=\"button\" name=\"erquest\" value=\"".FMLAN_21."\" onClick=\"expandit(this)\">
+		<div style=\"display:none; &{head}\">
+		<input class=\"tbox\" type=\"file\" name=\"userfile[]\" size=\"50\"> 
+		<input class=\"button\" type=\"submit\" name=\"upload\" value=\"".FMLAN_22."\" />
+		<input type=\"hidden\" name=\"upload_dir[]\" value=\"".$path.$dirs[$c]."\">
+		</div>";
+	}else{
+		$text .= "&nbsp;";
+	}
+	$text .= "</td>
 	</tr>
 	
 	

@@ -105,4 +105,7 @@ define("ADLAN_102", "It has been more than 30 days since you changed the main ad
 define("ADLAN_103", "Click here to change it now");
 define("ADLAN_104", "Security");
 
+define("ADLAN_105", "Images");
+define("ADLAN_106", "Image Settings");
+
 ?>

@@ -37,6 +37,24 @@ if($action == "news"){
 }
 
 
+if($action == "dl"){
+
+	$id = str_replace("%20", " ", $id);
+
+	if(preg_match("/Binary\s(.*?)\/.*/", $id, $result)){
+		$bid = $result[1];
+		$result = @mysql_query("SELECT * FROM ".MPREFIX."rbinary WHERE binary_id='$bid' ");
+		$binary_data = @mysql_result($result, 0, "binary_data");
+		$binary_filetype = @mysql_result($result, 0, "binary_filetype");
+		$binary_name = @mysql_result($result, 0, "binary_name");
+		header("Content-type: ".$binary_filetype);
+		header("Content-length: ".$download_filesize);
+		header("Content-Disposition: attachment; filename=".$binary_name);
+		header("Content-Description: PHP Generated Data");
+		echo $binary_data;
+		exit;
+	}
+}
 
 require_once("auth.php");
 require_once(e_HANDLER."userclass_class.php");
@@ -50,8 +68,7 @@ if(IsSet($_POST['optionsubmit'])){
         $pref['upload_maxfilesize'] = $_POST['upload_maxfilesize'];
         $pref['upload_allowedfiletype'] = $_POST['upload_allowedfiletype'];
         $pref['upload_class'] = $_POST['upload_class'];
-        $pref['upload_enabled'] = $_POST['upload_enabled'];
-
+        $pref['upload_enabled'] = (FILE_UPLOADS ? $_POST['upload_enabled'] : 0);
         if($pref['upload_enabled'] && !$sql -> db_Select("links", "*", "link_url='upload.php' ")){
                 $sql -> db_Insert("links", "0, 'Upload', 'upload.php', '', '', 1,0,0,0,0");
         }
@@ -68,6 +85,11 @@ if(IsSet($message)){
         require_once(e_HANDLER."message_handler.php");
         message_handler("ADMIN_MESSAGE", $message);
 }
+
+if(!FILE_UPLOADS){
+	message_handler("ADMIN_MESSAGE", UPLLAN_41);
+}
+
 
 // view -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -110,7 +132,7 @@ if($action == "view"){
 
         <tr>
         <td style='width:30%' class='forumheader3'>".UPLLAN_8."</td>
-        <td style='width:70%' class='forumheader3'>".($upload_name ? $upload_name : " - ")."</td>
+        <td style='width:70%' class='forumheader3'>".($upload_name ? $upload_name: " - ")."</td>
         </tr>
 
         <tr>
@@ -120,7 +142,7 @@ if($action == "view"){
 
         <tr>
         <td style='width:30%' class='forumheader3'>".UPLLAN_10."</td>
-        <td style='width:70%' class='forumheader3'>".(is_numeric($upload_file) ? "Binary file ID ".$upload_file : $upload_file)."</td>
+        <td style='width:70%' class='forumheader3'>".(is_numeric($upload_file) ? "Binary file ID ".$upload_file :  "<a href='".e_SELF."?dl.$upload_file'>$upload_file</a>")."</td>
         </tr>
 
         <tr>

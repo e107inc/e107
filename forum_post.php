@@ -152,6 +152,13 @@ if(IsSet($_POST['newthread'])){
 			}
 		}
 
+		if($file_userfile['error'] != 4){
+			require_once(e_HANDLER."upload_handler.php");
+			if($uploaded = file_upload(e_FILE."public/", "attachment")){
+				$_POST['post'] .= "\n\n".(strstr($uploaded[0]['type'], "image") ? "[img]".e_FILE."public/".$uploaded[0]['name']."[/img] \n<span class='smalltext'>[ ".$uploaded[0]['name']." ]</span>" : "[file=".e_FILE."public/".$uploaded[0]['name']."]".$uploaded[0]['name']."[/file]");
+			}
+		}
+
 		$post = $aj -> formtpa($_POST['post'], "public");
 		$subject = $aj -> formtpa($_POST['subject'], "public");
 
@@ -230,6 +237,14 @@ if(IsSet($_POST['reply'])){
 				exit;
 			}
 		}
+
+		if($file_userfile['error'] != 4){
+			require_once(e_HANDLER."upload_handler.php");
+			if($uploaded = file_upload(e_FILE."public/", "attachment")){
+				$_POST['post'] .= "\n\n".(strstr($uploaded[0]['type'], "image") ? "[img]".e_FILE."public/".$uploaded[0]['name']."[/img] \n<span class='smalltext'>[ ".$uploaded[0]['name']." ]</span>" : "[file=".e_FILE."public/".$uploaded[0]['name']."]".$uploaded[0]['name']."[/file]");
+			}
+		}
+
 		$post = $aj -> formtpa($_POST['post'], "public");
 		$subject = $aj -> formtpa($_POST['subject'], "public");
 
@@ -370,10 +385,16 @@ if($thread_id){
 	$row = $sql-> db_Fetch(); extract($row);
 }
 
+if($action != "nt" && !$thread_active){
+	$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_397."</div>");
+	require_once(FOOTERF);
+	exit;
+}
+
 $text = "<div style='text-align:center'>
-<form method='post' action='".e_SELF."?".e_QUERY."' name='postforum'>
+<form enctype='multipart/form-data' method='post' action='".e_SELF."?".e_QUERY."' name='postforum'>
 <table style='width:95%' class='fborder'>
-<tr><td colspan='2' class='fcaption'><a class='forumlink' href='".e_BASE."forum.php'>Forums</a> -> <a class='forumlink' href='".e_HTTP."forum.php?forum.".$forum_id."'>".$forum_name."</a> -> ";
+<tr><td colspan='2' class='fcaption'><a class='forumlink' href='".e_BASE."forum.php'>Forums</a> -> <a class='forumlink' href='".e_HTTP."forum_viewforum.php?".$forum_id."'>".$forum_name."</a> -> ";
 
 if($action == "nt"){
 	$text .= ($eaction ? LAN_77 : LAN_60);
@@ -465,7 +486,7 @@ if($action == "nt" && $pref['forum_poll'] && !eregi("edit", e_QUERY)){
 		$var = "poll_option_".$count;
 		$option = stripslashes($$var);
 		$text .= "<tr>
-	<td style='width:20%' class='forumheader3'>Option ".$count.":</td>
+	<td style='width:20%' class='forumheader3'>".LAN_391." ".$count.":</td>
 	<td style='width:80%' class='forumheader3'>
 	<input class='tbox' type='text' name='poll_option[]' size='60' value=`".$_POST['poll_option'][($count-1)]."` maxlength='200' />";
 		if($option_count == $count){
@@ -484,6 +505,28 @@ if($action == "nt" && $pref['forum_poll'] && !eregi("edit", e_QUERY)){
 	$text .= "</td>
 	</tr>";
 }
+
+
+if($pref['forum_attach'] && !eregi("edit", e_QUERY) && FILE_UPLOADS && check_class($pref['upload_class'])){
+	$text .= "<tr>
+	<td colspan='2' class='fcaption'>".LAN_390."</td>
+	</tr>
+	<tr>
+	<td style='width:20%' class='forumheader3'>".LAN_392."</td>
+	<td style='width:80%' class='forumheader3'>
+
+	".LAN_393." | ".str_replace("\n", " | ", $pref['upload_allowedfiletype'])." |<br />".LAN_394."<br />".LAN_395.": ".($pref['upload_maxfilesize'] ? $pref['upload_maxfilesize'].LAN_396 : ini_get('upload_max_filesize'))."<br /> 
+
+
+	<input class='tbox' name='file_userfile[]' type='file' size='47'>
+	</td>
+	</tr>
+	
+	";
+}
+
+
+
 
 
 $text .= "<tr style='vertical-align:top'> 
