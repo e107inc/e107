@@ -13,7 +13,8 @@
 +---------------------------------------------------------------+
 */
 require_once("class2.php");
-require_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_usersettings.php");
+@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_usersettings.php");
+@include_once(e_LANGUAGEDIR."English/lan_usersettings.php");
 $use_imagecode = ($pref['signcode'] && extension_loaded("gd"));
 
 if($pref['membersonly_enabled']){
