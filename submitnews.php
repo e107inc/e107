@@ -18,16 +18,16 @@ require_once("class2.php");
 
 require_once(HEADERF);
 if($pref['subnews_htmlarea']){
-	require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
-	htmlarea("item");
+        require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
+        htmlarea("item");
 }
 if(!isset($pref['subnews_class'])){
-	$pref['subnews_class']="0";
+        $pref['subnews_class']="0";
 }
 if(!check_class($pref['subnews_class'])){
-	$ns -> tablerender(NWSLAN_12,NWSLAN_11);
-	require_once(FOOTERF);
-	exit;
+        $ns -> tablerender(NWSLAN_12,NWSLAN_11);
+        require_once(FOOTERF);
+        exit;
 }
 
 $author_name=textparse::tpj($_POST['author_name'],TRUE);
@@ -169,9 +169,9 @@ $text .= " <tr>
 if($pref['subnews_attach']){
     $text .="
     <tr>
-    <td style='width:20%' class='forumheader3'>Image File<br><span class='smalltext'>(jpg, gif or png)</span></td>
+    <td style='width:20%' class='forumheader3'>Image File<br /><span class='smalltext'>(jpg, gif or png)</span></td>
     <td style='width:80%' class='forumheader3'>
-    <input class='tbox' type='file' name='file_userfile[]' style='width:90%' >
+    <input class='tbox' type='file' name='file_userfile[]' style='width:90%' />
     </td>
     </tr>\n";
 }

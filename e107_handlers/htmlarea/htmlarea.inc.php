@@ -57,7 +57,7 @@ function htmlarea($name){
   global $tableops,$spelling,$plgcnt;
 
 
-echo "<script type=\"text/javascript\" defer=\"1\">
+echo "<script type=\"text/javascript\" defer=\"defer\">
      var editor_$name = new HTMLArea('$name', config);";
 echo  ($tableops==1 && $plgcnt<1) ? " editor_$name.registerPlugin(TableOperations);\n ":"";
 echo ($spelling==1 && $plgcnt<1) ? " editor_$name.registerPlugin(SpellChecker);\n ":"";

@@ -12,7 +12,7 @@ define("LAN_404", "Thank you. Your upload will be reviewed by an administrator a
 define("LAN_405", "File exceeds specified maximum size limit - deleted.");
 define("LAN_406", "<b>Please note</b><br />Allowed filetypes:");
 define("LAN_407", "Any other filetypes uploaded will be instantly deleted.");
-define("LAN_408", "<u>Underlined</u> fields are required");
+define("LAN_408", "<span style='text-decoration:underline'>Underlined</span> fields are required");
 define("LAN_409", "Name of file");
 define("LAN_410", "Version");
 define("LAN_411", "File");

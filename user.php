@@ -88,21 +88,21 @@ $text = "<div style='text-align:center'>
 
 if($records == 10){
         $text .= "<select name='records' class='tbox'>
-<option selected>10</option>
-<option>20</option>
-<option>30</option>
+<option value='10' selected='selected'>10</option>
+<option value='20'>20</option>
+<option value='30'>30</option>
 </select>  ";
 }else if($records == 20){
         $text .= "<select name='records' class='tbox'>
-<option>10</option>
-<option selected>20</option>
-<option>30</option>
+<option value='10'>10</option>
+<option value='20' selected='selected'>20</option>
+<option value='30'>30</option>
 </select>  ";
 }else{
         $text .= "<select name='records' class='tbox'>
-<option>10</option>
-<option>20</option>
-<option selected>30</option>
+<option value='10'>10</option>
+<option value='20'>20</option>
+<option value='30' selected='selected'>30</option>
 </select>  ";
 }
 $text .= LAN_139;
@@ -110,11 +110,11 @@ $text .= LAN_139;
 if($order == "ASC"){
         $text .= "<select name='order' class='tbox'>
 <option>".LAN_420."</option>
-<option selected>".LAN_421."</option>
+<option selected='selected'>".LAN_421."</option>
 </select>";
 }else{
         $text .= "<select name='order' class='tbox'>
-<option selected>".LAN_420."</option>
+<option selected='selected'>".LAN_420."</option>
 <option>".LAN_421."</option>
 </select>";
 }
@@ -173,13 +173,13 @@ function renderuser($row, $user_entended, $mode="verbose"){
                 <td class='forumheader3' style='width:20%'>$datestamp</td>
                 </tr>";
         }else{
-				$user_data = $user_id.".".$user_name;
+                                $user_data = $user_id.".".$user_name;
                 $chatposts = $sql -> db_Count("chatbox");
                 $commentposts = $sql -> db_Count("comments");
                 $forumposts = $sql -> db_Count("forum_t");
-				$actual_forums = $sql -> db_Count("forum_t", "(*)", "WHERE thread_user='$user_data'");
-				$actual_chats = $sql -> db_Count("chatbox", "(*)", "WHERE cb_nick='$user_data'");
-				$actual_comments = $sql -> db_Count("forum_t", "(*)", "WHERE comment_author='$user_data'");
+                                $actual_forums = $sql -> db_Count("forum_t", "(*)", "WHERE thread_user='$user_data'");
+                                $actual_chats = $sql -> db_Count("chatbox", "(*)", "WHERE cb_nick='$user_data'");
+                                $actual_comments = $sql -> db_Count("forum_t", "(*)", "WHERE comment_author='$user_data'");
                 $chatper = round(($actual_chats/$chatposts)*100,2);
                 $commentper = round(($actual_comments/$commentposts)*100,2);
                 $forumper = round(($actual_forums/$forumposts)*100,2);
@@ -279,11 +279,11 @@ function renderuser($row, $user_entended, $mode="verbose"){
 
                         $user_prefs = unserialize($user_prefs);
                         while(list($key, $u_entended) = each($user_entended)){
-							$ut = explode("|", $u_entended);
-							if(!$ut[5] || check_class($ut[5])==TRUE){
+                                                        $ut = explode("|", $u_entended);
+                                                        if(!$ut[5] || check_class($ut[5])==TRUE){
                                 $str .= "<tr><td style='width:40%' class='forumheader3'>".user_extended_name($u_entended)."</td>
                                 <td style='width:60%' class='forumheader3'>".($user_prefs[$u_entended] ? $user_prefs[$u_entended] : "<i>".LAN_401."</i>")."</td></tr>";
-							}
+                                                        }
                         }
                 }
 
@@ -309,26 +309,26 @@ function renderuser($row, $user_entended, $mode="verbose"){
                 <td style='width:70%'class='forumheader3'>$user_comments ( ".$commentper."% )</td>
                 </tr>";
 
-				if($user_comments){
-					$str .= "
-					<tr>
-					<td colspan='2' class='forumheader3'><a href='".e_BASE."userposts.php?0.comments.".$user_id."'>".LAN_423."</a></td>
-					</tr>";
-				}
-				$str .= "
+                                if($user_comments){
+                                        $str .= "
+                                        <tr>
+                                        <td colspan='2' class='forumheader3'><a href='".e_BASE."userposts.php?0.comments.".$user_id."'>".LAN_423."</a></td>
+                                        </tr>";
+                                }
+                                $str .= "
 
                 <tr>
                 <td style='width:30%'class='forumheader3'>".LAN_149."</td>
                 <td style='width:70%'class='forumheader3'>$user_forums ( ".$forumper."% )</td>
                 </tr>";
 
-				if($user_forums){
-					$str .= "
-					<tr>
-					<td colspan='2' class='forumheader3'><a href='".e_BASE."userposts.php?0.forums.".$user_id."'>".LAN_424."</a></td>
-					</tr>";
-				}
-				$str .= "
+                                if($user_forums){
+                                        $str .= "
+                                        <tr>
+                                        <td colspan='2' class='forumheader3'><a href='".e_BASE."userposts.php?0.forums.".$user_id."'>".LAN_424."</a></td>
+                                        </tr>";
+                                }
+                                $str .= "
 
                 <tr>
                 <td style='width:30%'class='forumheader3'>".LAN_146."</td>
