@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-03-30 15:15:08 $
-|     $Author: e107coders $
+|     $Revision: 1.8 $
+|     $Date: 2005-03-31 06:44:23 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 @include(e_LANGUAGEDIR.e_LANGUAGE."/lan_ren_help.php");
@@ -36,23 +36,19 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help") {
 	$code[8] = array("right", "[right][/right]", LANHELP_30);
 	$code[9] = array("bq", "[blockquote][/blockquote]", LANHELP_31);
 	$code[10] = array("code", "[code][/code]", LANHELP_32 );
-	if (ADMIN) {
-		$code[11] = array("html", "[html][/html]", LANHELP_33);
-	}
-	$code[12] = array("list", "[list][/list]", LANHELP_36);
+	$code[11] = array("list", "[list][/list]", LANHELP_36);
 
-	$img[1] = "link.gif";
-	$img[2] = "bold.gif";
-	$img[3] = "italic.gif";
-	$img[4] = "underline.gif";
-	$img[5] = "image.gif";
-	$img[6] = "center.gif";
-	$img[7] = "left.gif";
-	$img[8] = "right.gif";
-	$img[9] = "quote.gif";
-	$img[10] = "ecode.gif";
-	$img[11] = "code.gif";
-	$img[12] = "bullist.gif";
+	$img[1] = "link.png";
+	$img[2] = "bold.png";
+	$img[3] = "italic.png";
+	$img[4] = "underline.png";
+	$img[5] = "image.png";
+	$img[6] = "center.png";
+	$img[7] = "left.png";
+	$img[8] = "right.png";
+	$img[9] = "blockquote.png";
+	$img[10] = "code.png";
+	$img[11] = "list.png";
 
 	$colours[0] = array("black", LANHELP_1);
 	$colours[1] = array("blue", LANHELP_2);
@@ -76,12 +72,12 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help") {
 	$fontsizes[4] = array("20", LANHELP_19);
 	$fontsizes[5] = array("28", LANHELP_20);
 
-	$imgpath = e_HANDLER."tiny_mce/themes/advanced/images/";
+	$imgpath = e_IMAGE."generic/bbcode/";
 
 
 	while (list($key, $bbcode) = each($code)) {
 	  //	$string .= "<input class=\"button\" type=\"button\" value=\"ya".$bbcode[0]."\" onclick=\"{$addtextfunc}('".$bbcode[1]."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" ).($bbcode[3] ? " style='".$bbcode[3]."'" :	"")." />\n";
-        $string .= "<img class='button bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"{$addtextfunc}('".$bbcode[1]."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />";
+        $string .= "<img src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"{$addtextfunc}('".$bbcode[1]."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />";
 	}
 	if ($mode) {
 		$string .= "\n<span><select class=\"tbox\" name=\"fontcol\" onchange=\"{$addtextfunc}('[color=' + this.options[this.selectedIndex].value + '][/color]');this.selectedIndex=0;\"".($mode != 2 ? " onmouseover=\"{$helpfunc}('Font Color: [color]Blue[/color]')\" onmouseout=\"{$helpfunc}('')\"" : "")." >\n<option value=\"\">".LANHELP_21."</option>\n";
