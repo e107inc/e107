@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-01-28 16:14:39 $
-|     $Author: mrpete $
+|     $Revision: 1.10 $
+|     $Date: 2005-01-28 17:57:23 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 	
@@ -51,7 +51,7 @@ class comment {
 		//echo "<pre>"; print_r($row); echo "</pre>";
 		 
 		 
-		global $COMMENTSTYLE, $pref, $aj;
+		global $COMMENTSTYLE, $pref, $tp;
 		require_once(e_HANDLER."level_handler.php");
 		if (!$width) {
 			$width = 0;
@@ -62,7 +62,7 @@ class comment {
 		$ns = new e107table;
 		extract($row);
 		$comment_author = eregi_replace("[0-9]+\.", '', $comment_author);
-		$comment_subject = (empty($comment_subject) ? $subject : $aj->tpa($comment_subject));
+		$comment_subject = (empty($comment_subject) ? $subject : $tp->toHTML($comment_subject, TRUE));
 		$gen = new convert;
 		$datestamp = $gen->convert_date($comment_datestamp, "short");
 		if ($user_id) {
@@ -152,7 +152,7 @@ class comment {
 		}
 		 
 		$search[4] = "/\{COMMENT\}(.*?)/si";
-		$replace[4] = ($comment_blocked ? LAN_0 : preg_quote($aj->tpa($comment_comment, "off", "public", $highlight_search)));
+		$replace[4] = ($comment_blocked ? LAN_0 : $tp->toHTML($comment_comment, TRUE));
 		 
 		$search[5] = "/\{SIGNATURE\}(.*?)/si";
 		if ($user_signature) {
