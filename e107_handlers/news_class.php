@@ -13,9 +13,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.31 $
-| $Date: 2005-02-14 13:07:18 $
-| $Author: e107coders $
+| $Revision: 1.32 $
+| $Date: 2005-02-14 16:20:47 $
+| $Author: sweetas $
 +---------------------------------------------------------------+
 */
 
@@ -100,7 +100,7 @@ class news {
 			define("IMAGE_new_small", (file_exists(THEME."images/new_comments.png") ? "<img src='".THEME."images/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/new_comments.png' alt=''  /> "));
 		}
 		if (!defined("IMAGE_sticky")){
-			define("IMAGE_sticky", (file_exists(THEME."images/sticky.png") ? "<img src='".THEME."images/sticky.png' alt=''  /> " : "<img src='".e_IMAGE."generic/sticky.png' alt=''  /> "));
+			define("IMAGE_sticky", (file_exists(THEME."images/sticky.png") ? "<img src='".THEME."images/sticky.png' alt=''  /> " : "<img src='".e_IMAGE."generic/sticky.png' alt='' style='width: 14px; height: 14px; vertical-align: bottom' /> "));
 		}
 
 // definitions converted to params for use in the parser function.
