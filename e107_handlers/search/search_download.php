@@ -1,7 +1,24 @@
 <?php
-// search module for User.
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107/e107_handlers/search/search_download.php,v $
+|     $Revision: 1.6 $
+|     $Date: 2004-12-03 21:08:35 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
+
 $c = 0;
-if($results = $sql -> db_Select("download", "download_id, download_category, download_name, download_author, download_description, download_author_website", "download_name LIKE('%".$query."%') OR download_author LIKE('%".$query."%') OR download_description  LIKE('%".$query."%') OR download_author_website LIKE('%".$query."%') ")){
+if($results = $sql -> db_Select("download", "download_id, download_category, download_name, download_author, download_description, download_author_website", "(download_name LIKE('%".$query."%') OR download_author LIKE('%".$query."%') OR download_description  LIKE('%".$query."%') OR download_author_website LIKE('%".$query."%')) AND download_active='1' ")){
         while(list($download_id, $download_category, $download_name, $download_author, $download_description, $download_author_website) = $sql -> db_Fetch()){
 
                 $download_name = parsesearch($download_name, $query);
@@ -13,10 +30,10 @@ if($results = $sql -> db_Select("download", "download_id, download_category, dow
                 $download_author_website = parsesearch($download_author_website, $query);
 
 
-				$action = "download.php?view.".$download_id."";
-				$text .= "<form method='post' action='$action' id='download_".$c."'>
-				<input type='hidden' name='highlight_search' value='1' /><input type='hidden' name='search_query' value='$query' /><img src='".THEME."images/bullet2.gif' alt='bullet' /> <b><a href='javascript:document.getElementById(\"download_".$c."\").submit()'>$download_name</a></b></form><br />$download_description<br /><br />";
-				$c ++;
+                                $action = "download.php?view.".$download_id."";
+                                $text .= "<form method='post' action='$action' id='download_".$c."'>
+                                <input type='hidden' name='highlight_search' value='1' /><input type='hidden' name='search_query' value='$query' /><img src='".THEME."images/bullet2.gif' alt='bullet' /> <b><a href='javascript:document.getElementById(\"download_".$c."\").submit()'>$download_name</a></b></form><br />$download_description<br /><br />";
+                                $c ++;
 
         }
 }else{
