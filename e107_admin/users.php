@@ -313,7 +313,7 @@ if($action == "create"){
         $user -> add_user();
 }
 
-$user -> show_options($action);
+//$user -> show_options($action);
 require_once("footer.php");
 
 echo "<script type=\"text/javascript\">
@@ -458,44 +458,28 @@ class users{
 
                 $ns -> tablerender(USRLAN_77, $text);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         }
 
         function show_options($action){
                 // ##### Display options ---------------------------------------------------------------------------------------------------------
-                global $sql, $rs, $ns;
-                $text = "<div style='text-align:center'>";
-                if(e_QUERY && $action != "main"){
-                        $text .= "<a href='".e_SELF."'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".USRLAN_71."</div></div></a>";
-                }
-                if($action != "create"){
-                        $text .= "<a href='".e_SELF."?create'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".USRLAN_72."</div></div></a>";
-                }
-                if($action != "prune"){
-                        $text .= "<a href='".e_SELF."?prune'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".USRLAN_73."</div></div></a>";
-                }
-                if($action != "extended"){
-                        $text .= "<a href='".e_SELF."?extended'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".USRLAN_74."</div></div></a>";
-                }
-                if($action != "options"){
-                        $text .= "<a href='".e_SELF."?options'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".USRLAN_75."</div></div></a>";
-                }
-                $text .= "</div>";
-                $ns -> tablerender(USRLAN_76, $text);
-        }
+				if($action==""){$action="main";}
+				// ##### Display options ---------------------------------------------------------------------------------------------------------
+				$var['main']['text']=USRLAN_71;
+				$var['main']['link']=e_SELF;
+				
+				$var['create']['text']=USRLAN_72;
+				$var['create']['link']=e_SELF."?create";
+		
+				$var['prune']['text']=USRLAN_73;
+				$var['prune']['link']=e_SELF."?prune";
+		
+				$var['extended']['text']=USRLAN_74;
+				$var['extended']['link']=e_SELF."?extended";
+		
+				$var['options']['text']=USRLAN_75;
+				$var['options']['link']=e_SELF."?options";
+				show_admin_menu(USRLAN_76,$action,$var);
+		   }
 
         function show_prefs(){
                 global $ns, $pref;
@@ -743,3 +727,9 @@ class users{
         }
 
 }
+function users_adminmenu(){
+	global $user;
+	global $action;
+	$user -> show_options($action);
+}
+?>

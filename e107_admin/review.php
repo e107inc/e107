@@ -489,28 +489,31 @@ if($action == "sa"){
         $ns -> tablerender(REVLAN_62, $text);
 }
 
-// ##### Display options --------------------------------------------------------------------------------------------------------------------------------------------------------
-
-$text = "<div style='text-align:center'>";
-if(e_QUERY && $action != "confirm"){
-        $text .= "<a href='".e_SELF."'><div class='border'><div class='forumheader'>".REVLAN_45."</div></div></a>";
-}
-if($action != "create"){
-        $text .= "<a href='".e_SELF."?create'><div class='border'><div class='forumheader'>".REVLAN_46."</div></div></a>";
-}
-if($action != "cat"){
-        $text .= "<a href='".e_SELF."?cat'><div class='border'><div class='forumheader'>".REVLAN_47."</div></div></a>";
-}
-if($action != "opt"){
-        $text .= "<a href='".e_SELF."?opt'><div class='border'><div class='forumheader'>".REVLAN_29."</div></div></a>";
-}
-if($action != "sa"){
-        $text .= "<a href='".e_SELF."?sa'><div class='border'><div class='forumheader'>".REVLAN_62."</div></div></a>";
-}
-$text .= "</div>";
-$ns -> tablerender(REVLAN_48, $text);
-
 // ##### End ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function review_adminmenu(){
+	
+		global $action;
+		$act=$action;	
+		if($act==""){$act="main";}
+		$var['main']['text']=REVLAN_45;
+		$var['main']['link']=e_SELF;
+	
+		$var['create']['text']=REVLAN_46;
+		$var['create']['link']=e_SELF."?create";
+	
+		$var['cat']['text']=REVLAN_47;
+		$var['cat']['link']=e_SELF."?cat";
+
+		$var['opt']['text']=REVLAN_29;
+		$var['opt']['link']=e_SELF."?opt";
+
+		$var['sa']['text']=REVLAN_62;
+		$var['sa']['link']=e_SELF."?sa";
+
+		show_admin_menu(ARLAN_79,$act,$var);
+}
+
 
 
 require_once("footer.php");

@@ -262,27 +262,29 @@ class newspost{
         }
 
         function show_options($action){
-                // ##### Display options ---------------------------------------------------------------------------------------------------------
-                global $sql, $rs, $ns;
-                $text = "<div style='text-align:center'>";
-                if(e_QUERY && $action != "main"){
-								$text .= "<input onclick='window.location.href=\"".e_SELF."\"' class='button' type='button' style='width:100%' value='".NWSLAN_44."' />";
-                }
-                if($action != "create"){
-								$text .= "<input onclick='window.location.href=\"".e_SELF."?create\"' class='button' type='button' style='width:100%' value='".NWSLAN_45."' />";
-                }
-                if($action != "cat" && getperms("7")){
-								$text .= "<input onclick='window.location.href=\"".e_SELF."?cat\"' class='button' type='button' style='width:100%' value='".NWSLAN_46."' />";
-                }
 
-                if($action != "pref" && getperms("N")){
-								$text .= "<input onclick='window.location.href=\"".e_SELF."?pref\"' class='button' type='button' style='width:100%' value='".NWSLAN_90."' />";
-                }
-                if($action != "sn" && getperms("N")){
-								$text .= "<input onclick='window.location.href=\"".e_SELF."?sn\"' class='button' type='button' style='width:100%' value='".NWSLAN_47."' />";
-                }
-                $text .= "</div>";
-                $ns -> tablerender(NWSLAN_48, $text);
+		if($action==""){$action="main";}
+		$var['main']['text']=NWSLAN_44;
+		$var['main']['link']=e_SELF;
+
+		$var['create']['text']=NWSLAN_45;
+		$var['create']['link']=e_SELF."?create";
+
+		$var['cat']['text']=NWSLAN_46;
+		$var['cat']['link']=e_SELF."?cat";
+		$var['cat']['perm']="7";
+
+		$var['pref']['text']=NWSLAN_90;
+		$var['pref']['link']=e_SELF."?pref";
+		$var['pref']['perm']="N";
+
+		$var['sn']['text']=NWSLAN_47;
+		$var['sn']['link']=e_SELF."?sn";
+		$var['sn']['perm']="N";
+
+		show_admin_menu(NWSLAN_48,$action,$var);
+
+
         }
 
         function create_item($sub_action, $id){

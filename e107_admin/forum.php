@@ -221,34 +221,24 @@ exit;
 class forum{
 
 	function show_options($action){
+		if($action==""){$action="main";}
 		// ##### Display options ---------------------------------------------------------------------------------------------------------
-		global $sql, $rs, $ns;
-		$text = "<div style='text-align:center'><form action='".e_SELF."'>";
-		if(e_QUERY && $action != "main"){
-			$text .= "<input onclick='window.location.href=\"".e_SELF."\"' class='button' type='button' style='width:100%' value='".FORLAN_76."' />";
-		}
-		if($action != "cat"){
-			$text .= "<input onclick='window.location.href=\"".e_SELF."?cat\"' class='button' type='button' style='width:100%' value='".FORLAN_83."' />";
-		}
-		if($action != "create"){
-			$text .= "<input onclick='window.location.href=\"".e_SELF."?create\"' class='button' type='button' style='width:100%' value='".FORLAN_77."' />";
-		}
-		if($action != "order"){
-			$text .= "<input onclick='window.location.href=\"".e_SELF."?order\"' class='button' type='button' style='width:100%' value='".FORLAN_78."' />";
-		}
-		if($action != "opt"){
-			$text .= "<input onclick='window.location.href=\"".e_SELF."?opt\"' class='button' type='button' style='width:100%' value='".FORLAN_79."' />";
-		}
-		if($action != "prune"){
-			$text .= "<input onclick='window.location.href=\"".e_SELF."?prune\"' class='button' type='button' style='width:100%' value='".FORLAN_59."' />";
-		}
-		if($action != "rank"){
-			$text .= "<input onclick='window.location.href=\"".e_SELF."?rank\"' class='button' type='button' style='width:100%' value='".FORLAN_63."' />";
-		}
-		$text .= "</form></div>";
-		$ns -> tablerender(FORLAN_7, $text);
+		$var['main']['text']=FORLAN_76;
+		$var['main']['link']=e_SELF;
+		$var['cat']['text']=FORLAN_83;
+		$var['cat']['link']=e_SELF."?cat";
+		$var['create']['text']=FORLAN_77;
+		$var['create']['link']=e_SELF."?create";
+		$var['order']['text']=FORLAN_78;
+		$var['order']['link']=e_SELF."?order";
+		$var['opt']['text']=FORLAN_79;
+		$var['opt']['link']=e_SELF."?opt";
+		$var['prune']['text']=FORLAN_59;
+		$var['prune']['link']=e_SELF."?prune";
+		$var['rank']['text']=FORLAN_63;
+		$var['rank']['link']=e_SELF."?rank";
+		show_admin_menu(FORLAN_7,$action,$var);
 	}
-
 	function show_existing_forums($sub_action, $id, $mode=FALSE){
 		global $sql, $rs, $ns, $sql2, $sql3;
 		if(!is_object($sql2)){

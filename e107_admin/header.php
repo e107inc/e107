@@ -62,10 +62,17 @@ echo "
 if(ADMIN == TRUE){
 
         if(!strstr(e_SELF, "/".$adminfpage) || strstr(e_SELF, "/".$adminfpage."?")){
+				$var['x']['text']=ADLAN_52;
+				$var['x']['link']=e_ADMIN.$adminfpage;
+			
+				$var['y']['text']=ADLAN_53;
+				$var['y']['link']=e_BASE."index.php";
+
     //    $text = "<a href='".e_ADMIN.$adminfpage."'>".ADLAN_52."</a><br /><a href='".e_BASE."index.php'>".ADLAN_53."</a><br /><br />";
          $text ="<div style='text-align:center'>";
-         $text .= "<input type='button' class='button' style='width:100%' onClick=\"document.location='".e_ADMIN.$adminfpage."'\" value='".ADLAN_52."' /><br />
-         <input type='button' class='button' style='width:100%' onClick=\"document.location='".e_BASE."index.php'\" value='".ADLAN_53."' /><br /><br />";
+			$text .= show_admin_menu("",$act,$var);
+//         $text .= "<input type='button' class='button' style='width:100%' onClick=\"document.location='".e_ADMIN.$adminfpage."'\" value='".ADLAN_52."' /><br />
+//         <input type='button' class='button' style='width:100%' onClick=\"document.location='".e_BASE."index.php'\" value='".ADLAN_53."' /><br /><br />";
 
 
         $text .= "º <a style='cursor: pointer; cursor: hand' onclick=\"expandit(this);\">".ADLAN_93."</a>
@@ -105,17 +112,22 @@ if(ADMIN == TRUE){
         if(getperms("M")){$text .= "<a href='".e_ADMIN."wmessage.php'>".ADLAN_28."</a><br />";}
         $text .= "</div><br />";
 
-    //    $text .= "<br /><a href='".e_ADMIN."admin.php?logout'>".ADLAN_46."</a>";
-      $text .= "<br /><input type='button' class='button' style='width:100%' onClick=\"document.location='".e_ADMIN."admin.php?logout'\" value='".ADLAN_46."' />";
+			unset($var);
+			$var['x']['text']=ADLAN_46;
+			$var['x']['link']=e_ADMIN."admin.php?logout";
+			$text .= "<br />".show_admin_menu("",$act,$var);
+
       $text .="</div>";
 
         $ns -> tablerender(LAN_head_1, $text);
 
  }else{
 
-    //    $text = "<a href='".e_ADMIN."../index.php'>".ADLAN_53."</a>";
      $text = "<div style='text-align:center'>";
-     $text .= "<input type='button' class='button' style='width:100%' onClick=\"document.location='".e_ADMIN."../index.php'\" value='".ADLAN_53."' />";
+		unset($var);
+		$var['x']['text']=ADLAN_53;
+		$var['x']['link']=e_ADMIN."../index.php";
+		$text .= show_admin_menu("",$act,$var);
      $text  .="</div>";
      $ns -> tablerender(LAN_head_1, $text);
         unset($text);
@@ -159,4 +171,27 @@ if(OPEN_BASEDIR){
 
 echo "</td>
 <td style='width:60%; vertical-align: top;'>";
+
+function show_admin_menu($title,$page,$vars){
+	global $ns;
+	$text = "<table class='fborder' style='width:100%;'>";
+	foreach(array_keys($vars) as $act){
+		$pre = "";
+		$post = "";
+		if($page == $act){
+			$pre = "<b> &laquo; ";
+			$post = " &raquo; </b>";
+		}
+		if(!$vars[$act]['perm'] || getperms($vars[$act]['perm'])){
+			$text .= "<tr><td class='button' style='text-align:center;'>{$pre}<a style='text-decoration:none;' href='{$vars[$act]['link']}'>{$vars[$act]['text']}</a>{$post}</td></tr>";
+		}
+	}
+	$text .= "</table>";
+	if($title==""){
+		return $text;
+	}
+	$ns -> tablerender($title,$text);
+}
+
+
 ?>
