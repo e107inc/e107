@@ -11,14 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/e107_admin/links.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2004-08-27 21:19:44 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.25 $
+|     $Date: 2004-08-31 13:57:21 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 
 require_once("../class2.php");
 if(!getperms("I")){ header("location:".e_BASE."index.php"); }
+
+require_once(e_HANDLER."textparse/basic.php");
+$etp = new e107_basicparse;
 
 require_once("auth.php");
 require_once(e_HANDLER."userclass_class.php");
@@ -36,13 +39,13 @@ if(e_QUERY){
         $id = $tmp[2];
         unset($tmp);
 }
-if(preg_match("#(.*?)_delete_(\d+)#",$deltest[LCLAN_10],$matches))
+if(preg_match("#(.*?)_delete_(\d+)#",$deltest[$etp->unentity(LCLAN_10)],$matches))
 {
         $delete = $matches[1];
         $del_id = $matches[2];
 }
 
-if(preg_match("#create_sn_(\d+)#",$deltest[LCLAN_14],$matches))
+if(preg_match("#create_sn_(\d+)#",$deltest[$etp->unentity(LCLAN_14)],$matches))
 {
 	$action='create';
 	$sub_action='sn';
@@ -174,6 +177,7 @@ if($action == "opt"){
 
 require_once("footer.php");
 function headerjs(){
+global $etp;
 $headerjs  = "<script type=\"text/javascript\">
 function addtext(sc){
         document.getElementById('linkform').link_button.value = sc;
@@ -186,11 +190,11 @@ function addtext2(sc){
 $headerjs .= "<script type=\"text/javascript\">
 function confirm_(mode, link_id){
         if(mode == 'cat'){
-                return confirm(\"".LCLAN_56." [ID: \" + link_id + \"]\");
+                return confirm(\"".$etp->unentity(LCLAN_56)." [ID: \" + link_id + \"]\");
         }else if(mode == 'sn'){
-                return confirm(\"".LCLAN_57." [ID: \" + link_id + \"]\");
+                return confirm(\"".$etp->unentity(LCLAN_57)." [ID: \" + link_id + \"]\");
         }else{
-                return confirm(\"".LCLAN_58." [ID: \" + link_id + \"]\");
+                return confirm(\"".$etp->unentity(LCLAN_58)." [ID: \" + link_id + \"]\");
         }
 }
 </script>";
