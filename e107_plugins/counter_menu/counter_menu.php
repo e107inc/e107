@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/counter_menu/counter_menu.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-02-07 12:52:39 $
+|     $Revision: 1.6 $
+|     $Date: 2005-02-10 18:16:33 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 $text = "";
-if ($pref['log_activate']) {
+if ($pref['statActivate']) {
 	$logfile = e_PLUGIN."log/logs/log_".date("z.Y", time()).".php";
 	if(!is_readable($logfile)) {
 		echo $logfile;
