@@ -355,6 +355,8 @@ p {
 .helpbox {
 	color:#000;
 	font: 9px tahoma, verdana, arial, helvetica, sans-serif;
+	border: 0px none red;
+	background-color: transparent;
 }
 
 .nforumholder {
