@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-01-06 23:25:56 $
+|     $Revision: 1.14 $
+|     $Date: 2005-01-10 22:55:15 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -22,7 +22,7 @@
 * Class to cache data as files, improving site speed and throughput.
 *
 * @package     e107
-* @version     $Revision: 1.13 $
+* @version     $Revision: 1.14 $
 * @author      $Author: streaky $
 */
 class ecache {
@@ -36,8 +36,9 @@ class ecache {
 	* @scope private
 	*/
 	function cache_fname($CacheTag) {
-		if($this->CachePageMD5 == ''){
-			$this->CachePageMD5 = md5(e_BASE.e_LANGUAGE.THEME.USERCLASS.e_QUERY);
+		
+		if(!$this->CachePageMD5){
+			$this->CachePageMD5 = md5(e_BASE.e_LANGUAGE.THEME.USERCLASS.e_QUERY.filemtime(THEME.'theme.php'));
 		}
 		global $FILES_DIRECTORY;
 		$q = preg_replace("#\W#", "_", $CacheTag);
@@ -54,8 +55,7 @@ class ecache {
 	*/
 	function retrieve($CacheTag, $MaximumAge = false) {
 		global $pref, $FILES_DIRECTORY;
-		if ($pref['cachestatus']) //Save to file
-		{
+		if ($pref['cachestatus']) {
 			$cache_file = $this->cache_fname($CacheTag);
 			if(file_exists($cache_file)){
 				if($MaximumAge != false && (filemtime($cache_file) + ($MaximumAge * 60)) < time()){
@@ -79,9 +79,9 @@ class ecache {
 	* @desc Creates / overwrites the cache file for $query, $text is the data to store for $query.
 	* @scope public
 	*/
-	function set($CacheTag, $Data) {
+	function set($CacheTag, $Data, $ForceCache = false) {
 		global $pref, $FILES_DIRECTORY;
-		if ($pref['cachestatus']) {
+		if ($pref['cachestatus'] || $ForceCache == true) {
 			$cache_file = $this->cache_fname($CacheTag);
 			file_put_contents($cache_file, '<?php'.$Data);
 			@chmod($cache_file, 0777);
