@@ -36,7 +36,7 @@ var listpics = new Array();
 $handle=opendir("e107_install/images");
 $nbrpic=0;
 while ($file = readdir($handle)){
-        if($file != "." && $file != ".."){
+        if(strstr($file,".") && $file != "." && $file != ".."){
                 $imagelist[] = $file;
                 echo "listpics[".$nbrpic."]='e107_install/images/".$file."';";
                 $nbrpic++;
