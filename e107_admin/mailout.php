@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-11-06 23:52:23 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2004-12-23 16:44:29 $
+|     $Author: pholzmann $
 +----------------------------------------------------------------------------+
 */
 
@@ -82,8 +82,9 @@ if(IsSet($_POST['submit'])){
     $text = "<div style='overflow:auto;height:300px'>";
     $text .= "<table class='fborder' style='width:100%'>";
     $text .= "<tr><td class='fcaption'>Username</td><td class='fcaption'>Email</td><td class='fcaption'>Status</td></tr>";
-    $message_body = eregi_replace('src="','src="'.SITEURL,$_POST['email_body']);
-    $message_body .="<br />";
+    $message_subject = stripslashes($_POST['email_subject']);
+    $message_body = stripslashes($_POST['email_body']);
+    $message_body = eregi_replace('src="','src="'.SITEURL,$message_body);
 
     $sent_no = 0;
 
