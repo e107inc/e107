@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_usersettings.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-07 04:08:44 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-29 14:18:01 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "User Settings");
@@ -38,7 +38,7 @@ define("LAN_308", "Real Name: ");
 define("LAN_401", "Leave blank to keep existing password");
 define("LAN_402", "Type path or choose avatar");
 define("LAN_403", "Choose avatar");
-define("LAN_404", "Please note: Any image uploaded to this server which is deemed inappropriate by the administrators will be deleted immediately.");
+define("LAN_404", "Please note: Any image uploaded to this server that is deemed inappropriate by the administrators will be deleted immediately.");
 
 define("LAN_410", "Settings for");
 define("LAN_411", "Update Your Settings");
@@ -73,9 +73,9 @@ define("LAN_SIGNUP_5", " characters long.");
 define("LAN_SIGNUP_6", "Your ");
 define("LAN_SIGNUP_7", " is required");
 
-define("LAN_USET_1", "Your avatar width is too large");
+define("LAN_USET_1", "Your avatar is too wide");
 define("LAN_USET_2", "Maximum allowable width is");
-define("LAN_USET_3", "Your avatar height is too large");
+define("LAN_USET_3", "Your avatar is too high");
 define("LAN_USET_4", "Maximum allowable height is");
 
 // v.616
@@ -84,8 +84,8 @@ define("LAN_ICQNUMBER", "ICQ number must contain only numbers");
 
 //v.617
 define("LAN_408", "A user with that email address already exists. ");
-define("MAX_AVWIDTH", "Maximum avatar width is ");
-define("MAX_AVHEIGHT", "Maximum avatar height is ");
+define("MAX_AVWIDTH", "Maximum avatar size (wxh) is ");
+define("MAX_AVHEIGHT", " x ");
 define("GIF_RESIZE", "Please resize gif image or convert to different format");
 define("RESIZE_NOT_SUPPORTED", "Resize method not supported by this server. Please resize image or choose another. File has been deleted.");
 
