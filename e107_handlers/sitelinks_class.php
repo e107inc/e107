@@ -1,20 +1,16 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
++---------------------------------------------------------------+
+|        e107 website system
+|        /sitelinks_class.php
 |
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
+|        ©Steve Dunstan 2001-2002
+|        http://e107.org
+|        jalist@e107.org
 |
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:27 $
-|     $Author: e107coders $
-+----------------------------------------------------------------------------+
+|        Released under the terms and conditions of the
+|        GNU General Public License (http://gnu.org).
++---------------------------------------------------------------+
 */
 @include(e_LANGUAGEDIR.e_LAN."/lan_sitelinks.php");
 @include(e_LANGUAGEDIR."English/lan_sitelinks.php");
@@ -62,7 +58,7 @@ function sitelinks(){
         $sql -> db_Select("links", "*", "link_category='1' && link_name NOT REGEXP('submenu') ORDER BY link_order ASC");
         while($row = $sql -> db_Fetch()){
                 extract($row);
-                if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
+                if(!$link_class || check_class($link_class)){
                         if(!preg_match("#(http:|mailto:|ftp:)#",$link_url)){ $link_url = e_BASE.$link_url; }
                         $linkstart = ($link_button ? preg_replace("/\<img.*\>/si", "", LINKSTART) : LINKSTART);
                         switch ($link_open) {
