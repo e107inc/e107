@@ -62,7 +62,6 @@ if(IsSet($_POST['updateprefs'])){
         $pref['ssl_enabled'] = $_POST['ssl_enabled'];
         $pref['search_restrict'] = $_POST['search_restrict'];
         $pref['nested_comments'] = $_POST['nested_comments'];
-        $pref['standards_mode'] = $_POST['standards_mode'];
 
         // Signup. ====================================================
 
@@ -291,14 +290,6 @@ while(IsSet($dirlist[$counter])){
         $counter++;
 }
 $text .= "</select>
-</td>
-</tr>
-
-<tr>
-<td style='width:50%' class='forumheader3'>".PRFLAN_89." <br />
-<span class='smalltext'>".PRFLAN_90."</span></td>
-<td style='width:50%; text-align:right' class='forumheader3'>".
-($pref['standards_mode'] ? "<input type='checkbox' name='standards_mode' value='1' checked='checked' />" : "<input type='checkbox' name='standards_mode' value='1' />")."
 </td>
 </tr>
 
