@@ -43,6 +43,7 @@ if(IsSet($_POST['create_category'])){
         $sql -> db_Insert("content", " '0', '".$_POST['category_name']."', '".$_POST['category_description']."', 0, 0, ".time().", '".ADMINID."', 0, '".$_POST['category_button']."', 10, 0, 0, 0");
         $message = REVLAN_25;
         clear_cache("review");
+        $action = "cat";
 }
 
 if(IsSet($_POST['update_category'])){
@@ -51,6 +52,7 @@ if(IsSet($_POST['update_category'])){
         $sql -> db_Update("content", "content_heading='".$_POST['category_name']."', content_subheading='".$_POST['category_description']."', content_summary='".$_POST['category_button']."' WHERE content_id='".$_POST['category_id']."' ");
         $message = REVLAN_26;
         clear_cache("review");
+        $action = "cat";
 }
 
 if(IsSet($_POST['create_review'])){
@@ -107,6 +109,8 @@ if(IsSet($_POST['updateoptions'])){
 if($action == "cat" && $sub_action == "confirm"){
         if($sql -> db_Delete("content", "content_id='$id' ")){
                 $message = REVLAN_27;
+				unset($sub_action,	$id);
+				$action = "cat";
         }
 }
 
@@ -114,9 +118,7 @@ if($action == "confirm"){
         if($sql -> db_Delete("content", "content_id='$sub_action' ")){
                 $message = REVLAN_4;
                 clear_cache("review");
-				$action = "";
-				$sub_action = "";
-				$id = "";
+				unset($action, $sub_action,	$id);
         }
 }
 
@@ -525,7 +527,7 @@ require_once("footer.php");
 
 function headerjs(){
 
-$headerjs = "<script type=\"text/javascript\">
+$script = "<script type=\"text/javascript\">
 function addtext2(sc){
         document.getElementById('dataform').category_button.value = sc;
 }
