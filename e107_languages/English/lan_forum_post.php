@@ -70,5 +70,6 @@ define("LAN_401", "Jump");
 define("LAN_402", "poll");
 define("LAN_403", "announcement");
 define("LAN_404", "sticky");
-
+define("LAN_405", "Forums");
+define("LAN_406", "Re:");
 ?>
