@@ -24,8 +24,8 @@ if (IsSet($_POST['updateprefs'])) {
 }
 
 if(isSet($_POST['sitetheme'])) {
-    $sitetheme = $_POST['sitetheme'];
-    define("USERTHEME", $sitetheme);
+    $temp_sitetheme = $_POST['sitetheme'];
+    define("USERTHEME", $temp_sitetheme);
     require_once("../class2.php");
     require_once(HEADERF);
     $text = "<form method='post' action='".e_SELF."'>
@@ -35,12 +35,14 @@ if(isSet($_POST['sitetheme'])) {
 	</tr>
 	<tr>
 		<td >".TPVLAN_10."
-		<input type ='hidden' name='sitetheme' value='".$sitetheme."'>
-		<input class='button' type='submit' name='updateprefs' value='".TPVLAN_13."'>
+		<input type ='hidden' name='sitetheme' value='".USERTHEME."'>
+		<input class='button' type='submit' name='updateprefs' value='".TPVLAN_15."'>
 		</td>
 	</tr>
 	<tr>
-		<td ><a href='".e_SELF."'>".TPVLAN_9."</a></td>
+		<td ><br />".TPVLAN_9."<br />"
+		.theme_dropdown()."
+	<input class='button' type='submit' name='previewtheme' value='".TPVLAN_6."' /></td>
 	</tr>
 	</table>
 	</form>
@@ -86,15 +88,6 @@ require_once("../class2.php");
 if(!getperms("1")){ header("location:".e_BASE."index.php"); exit;}
 
 require_once("auth.php");
-$handle=opendir(e_THEME);
-while ($file = readdir($handle)){
-	if($file != "." && $file != ".." && $file != "templates" && $file != "shared"){
-		if (is_readable(e_THEME.$file."/theme.php") && is_readable(e_THEME.$file."/style.css")){
-			$dirlist[] = $file;
-		}
-	}
-}
-closedir($handle);
 
 $text = (IsSet($message) ? $message : "");
 
@@ -103,18 +96,9 @@ $text .= "<div style='text-align:center'>
 <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 <tr>
 <td style='width:50%' class='forumheader3'>".TPVLAN_5.":<br /><span class='smalltext'>".TPVLAN_14."</span></td>
-<td style='width:50%; text-align:right' class='forumheader3'>
-<select name='sitetheme' class='tbox'>\n";
-$counter = 0;
-while(IsSet($dirlist[$counter])){
-	if($dirlist[$counter] == $pref['sitetheme'][1]){
-		$text .= "<option selected='selected'>".$dirlist[$counter]."</option>\n";
-	}else{
-		$text .= "<option>".$dirlist[$counter]."</option>\n";
-	}
-	$counter++;
-}
-$text .= "</select>
+<td style='width:50%; text-align:right' class='forumheader3'>".
+theme_dropdown()."
+
 <input class='button' type='submit' name='previewtheme' value='".TPVLAN_6."' />
 </td>
 </tr>
@@ -126,4 +110,27 @@ $text .= "</select>
 $ns -> tablerender("<div style='text-align:center'>".TPVLAN_7."</div>", $text);
 
 require_once("footer.php");
+function theme_dropdown(){
+	$handle=opendir(e_THEME);
+	while ($file = readdir($handle)){
+		if($file != "." && $file != ".." && $file != "templates" && $file != "shared"){
+			if (is_readable(e_THEME.$file."/theme.php") && is_readable(e_THEME.$file."/style.css")){
+				$dirlist[] = $file;
+			}
+		}
+	}
+	closedir($handle);
+	$text ="<select name='sitetheme' class='tbox'>\n";
+	$counter = 0;
+	while(IsSet($dirlist[$counter])){
+		if($dirlist[$counter] == $pref['sitetheme'][1] || $dirlist[$counter] == USERTHEME){
+			$text .= "<option selected='selected'>".$dirlist[$counter]."</option>\n";
+		}else{
+			$text .= "<option>".$dirlist[$counter]."</option>\n";
+		}
+		$counter++;
+	}
+	$text .= "</select>";
+	return $text;
+}
 ?>	

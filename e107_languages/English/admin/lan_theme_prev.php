@@ -13,6 +13,6 @@ define("TPVLAN_10", "Click Submit to set as site theme. ");
 define("TPVLAN_11", "info");
 define("TPVLAN_12", "Theme preferences saved.");
 define("TPVLAN_13", "Theme");
-define("TPVLAN_13", "Submit");
+define("TPVLAN_15", "Submit");
 define("TPVLAN_14", "If a theme does not show up make sure it was uploaded correctly and read permissions are assigned.");
 ?>
