@@ -1,5 +1,5 @@
 $ret = "";
-$custom_query = explode('.', $parm);
+$custom_query = explode('+', $parm);
 switch($custom_query[0])
 {
 	case "login":
