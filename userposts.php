@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/userposts.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-03-20 19:55:33 $
+|     $Revision: 1.11 $
+|     $Date: 2005-03-20 20:25:18 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -25,11 +25,9 @@ if (!USER) {
 }
 	
 $_POST['f_query'] = trim(chop($_POST['f_query']));
-if (e_QUERY) {
-	$tmp = explode(".", e_QUERY);
-	$from = $tmp[0];
-	$action = $tmp[1];
-	$id = $tmp[2];
+if (e_QUERY)
+{
+	list($from, $action, $id) = explode(".", e_QUERY);
 } else {
 	header("location:".e_BASE."index.php");
 	exit;
@@ -81,7 +79,8 @@ if ($action == "comments") {
 	if (!$blah) {
 		$ctext = "<span class='mediumtext'>".UP_LAN_7."</span>";
 	} else {
-		while ($row = $sql->db_Fetch()) {
+		while ($row = $sql->db_Fetch())
+		{
 			extract($row);
 			$userposts_comments_table_string .= parse_userposts_comments_table($row);
 		}
@@ -264,6 +263,19 @@ function parse_userposts_comments_table($row) {
 		$USERPOSTS_COMMENTS_COMMENT = $comment_comment;
 		$USERPOSTS_COMMENTS_HREF_PRE = "<a href='".e_BASE."comment.php?comment.poll.".$comment_item_id."'>";
 		$USERPOSTS_COMMENTS_TYPE = "poll";
+	}
+
+	if ($comment_type == "5") {
+		$sql2->db_Select("documentation", "*", "doc_id=$comment_item_id");
+		$row = $sql2->db_Fetch();
+		 extract($row);
+		 
+		$USERPOSTS_COMMENTS_ICON = "<img src='".THEME."images/".BULLET."' alt='' />";
+		$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_9." ".$datestamp;
+		$USERPOSTS_COMMENTS_HEADING = $doc_title;
+		$USERPOSTS_COMMENTS_COMMENT = $comment_comment;
+		$USERPOSTS_COMMENTS_HREF_PRE = "<a href='".e_PLUGIN."documentation/documentation.php?".$comment_item_id."'>";
+		$USERPOSTS_COMMENTS_TYPE = "documentation";
 	}
 	 
 	// added a check for not numeric comment_types (=custom comments for your own plugins)
