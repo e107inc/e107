@@ -97,27 +97,15 @@ function tablestyle($caption, $text, $mode)
 }
 
 $COMMENTSTYLE = "
-<table style='width: 100%;'>
-<tr>
-<td style='width: 30%; text-align: right;'>{USERNAME} @ <span class='smalltext'>{TIMEDATE}</span><br />{AVATAR}<span class='smalltext'>{REPLY}</span></td>
-<td style='width: 70%;'>
-<div id='lbqtop'>
-<div id='pgFrontUserInner'>
-<div id='lbqbottom'>
-<div id='bglefright'>
-<div id='bqcontent'>
-<div id='bqtext'>
-{COMMENT}
+<div style='width: 450px;'>
+<div style='width: 100px; float: left;'>{USERNAME}<br /><span class='smalltext'>{TIMEDATE}</span><br />{AVATAR}{REPLY}</div>
+<div style='width: 345px; float: right;'><div class='smalltext'>{COMMENT}</div></div>
 </div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</td>
-</tr>
-</table>
+<br /><br />
 ";
+
+
+
 
 $POLLSTYLE = <<< EOF
 <b>Poll:</b> {QUESTION}
