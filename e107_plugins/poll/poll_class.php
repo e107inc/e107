@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-03-20 19:16:43 $
+|     $Revision: 1.8 $
+|     $Date: 2005-03-20 22:19:36 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -172,21 +172,33 @@ class poll
 			break;
 
 			case "voted":
-				$text = preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_VOTED_START : $POLL_VOTED_START));
-				$count = 0;
-				foreach($optionArray as $option)
+
+				if($pollArray['poll_result_type'] && !strstr(e_SELF, "comment.php"))
 				{
-					$MODE = $mode;		/* debug */
-					$OPTION = $option;
+					$text = "<div style='text-align: center;'><br /><br />".POLLAN_39."<br /><br /><a href='".e_BASE."comment.php?comment.poll.".$pollArray['poll_id']."'>".POLLAN_40."</a></div><br /><br />";
+					
+				}
+				else
+				{
 
-					$BAR = ($percentage[$count] ? "<div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div><div style='background-image: url($bar); width: ".$percentage[$count]."%; height: 14px; float: left;'></div><div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div>" : "");
 
-					$PERCENTAGE = $percentage[$count]."%";
-					$VOTES = POLLAN_31.": ".$voteArray[$count];
-					$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_VOTED_LOOP : $POLL_VOTED_LOOP));
-					$count ++;
+					$text = preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_VOTED_START : $POLL_VOTED_START));
+					$count = 0;
+					foreach($optionArray as $option)
+					{
+						$MODE = $mode;		/* debug */
+						$OPTION = $option;
+
+						$BAR = ($percentage[$count] ? "<div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div><div style='background-image: url($bar); width: ".$percentage[$count]."%; height: 14px; float: left;'></div><div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div>" : "");
+
+						$PERCENTAGE = $percentage[$count]."%";
+						$VOTES = POLLAN_31.": ".$voteArray[$count];
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_VOTED_LOOP : $POLL_VOTED_LOOP));
+						$count ++;
+					}
 				}
 				$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_VOTED_END : $POLL_VOTED_END));
+				
 			break;
 
 			case "disallowed":
@@ -353,8 +365,8 @@ class poll
 
 		<tr>
 		<td class='forumheader3'>".POLLAN_20.": </td><td class='forumheader3'>
-		<input type='radio' name='poll_comment' value='0'".(!$_POST['poll_comment'] ? " checked='checked'" : "")." /> ".POLLAN_10."
-		<input type='radio' name='poll_comment' value='1'".($_POST['poll_comment'] ? " checked='checked'" : "")." /> ".POLLAN_11."
+		<input type='radio' name='poll_comment' value='1'".($_POST['poll_comment'] ? " checked='checked'" : "")." /> ".POLLAN_10."
+		<input type='radio' name='poll_comment' value='0'".(!$_POST['poll_comment'] ? " checked='checked'" : "")." /> ".POLLAN_11."
 		</td>
 		</tr>
 		<tr style='vertical-align:top'>
