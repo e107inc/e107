@@ -182,9 +182,11 @@ if(IsSet($message)){
 
 $handle=opendir(e_THEME);
 while ($file = readdir($handle)){
-        if($file != "." && $file != ".." && $file != "templates" && $file != "/"){
-                $dirlist[] = $file;
-        }
+	if($file != "." && $file != ".." && $file != "templates" && $file != "/"){
+		if (is_readable(e_THEME.$file."/theme.php") && is_readable(e_THEME.$file."/style.css")){
+			$dirlist[] = $file;
+		}
+	}
 }
 closedir($handle);
 
@@ -286,7 +288,8 @@ $text .= "
 <div id='theme' style='display:none'>
 <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 
-<td style='width:50%' class='forumheader3'>".PRFLAN_11.": </td>
+
+<td style='width:50%' class='forumheader3'>".PRFLAN_11.":<br /><span class='smalltext'>".PRFLAN_85."</span></td>
 <td style='width:50%; text-align:right' class='forumheader3'><a href='".e_ADMIN."theme_prev.php'>".PRFLAN_12."</a>
 <select name='sitetheme' class='tbox'>\n";
 $counter = 0;

@@ -89,7 +89,9 @@ require_once("auth.php");
 $handle=opendir(e_THEME);
 while ($file = readdir($handle)){
 	if($file != "." && $file != ".." && $file != "templates" && $file != "shared"){
-		$dirlist[] = $file;
+		if (is_readable(e_THEME.$file."/theme.php") && is_readable(e_THEME.$file."/style.css")){
+			$dirlist[] = $file;
+		}
 	}
 }
 closedir($handle);
@@ -100,7 +102,7 @@ $text .= "<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>
 <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 <tr>
-<td style='width:50%' class='forumheader3'>".TPVLAN_5.": </td>
+<td style='width:50%' class='forumheader3'>".TPVLAN_5.":<br /><span class='smalltext'>".TPVLAN_14."</span></td>
 <td style='width:50%; text-align:right' class='forumheader3'>
 <select name='sitetheme' class='tbox'>\n";
 $counter = 0;

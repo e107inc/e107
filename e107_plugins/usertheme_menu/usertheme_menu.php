@@ -6,10 +6,12 @@ if(USER == TRUE){
 
 $handle=opendir(e_THEME);
 while ($file = readdir($handle)){
-        if($file != "." && $file != ".." && $file != "templates" && $file != "" && $file != "CVS"){
-                $themelist[] = $file;
-                $themecount[$file] = 0;
-        }
+	if($file != "." && $file != ".." && $file != "templates" && $file != "" && $file != "CVS"){
+		if(is_readable(e_THEME.$file."/theme.php") && is_readable(e_THEME.$file."/style.css")){
+			$themelist[] = $file;
+			$themecount[$file] = 0;
+		}
+	}
 }
 closedir($handle);
 

@@ -89,6 +89,7 @@ define("PRFLAN_82", "Restrict Search page to members");
 
 define("PRFLAN_83", "example");
 define("PRFLAN_84", "Disable Right Mouse-Click");   
+define("PRFLAN_85", "If a theme does not show up make sure it was uploaded correctly and read permissions are assigned.");
 
 define("CUSTSIG_1", "Settings Saved!");
 define("CUSTSIG_2", "Real Name:");
