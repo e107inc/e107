@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/trackback/languages/English.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-15 22:46:23 $
+|     $Revision: 1.2 $
+|     $Date: 2005-02-22 18:20:52 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -28,5 +28,10 @@ define("TRACKBACK_L8", "Trackback URL text");
 define("TRACKBACK_L9", "Save Settings");
 define("TRACKBACK_L10", "Trackback Settings");
 define("TRACKBACK_L11", "Trackback address for this post:");
+
+define("TRACKBACK_L12", "No trackbacks for this item");
+define("TRACKBACK_L13", "Moderate trackbacks");
+define("TRACKBACK_L14", "Delete");
+define("TRACKBACK_L15", "Trackbacks deleted.");
 
 ?>
