@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-03-22 14:44:17 $
-|     $Author: sweetas $
+|     $Revision: 1.29 $
+|     $Date: 2005-03-27 17:42:16 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -229,10 +229,9 @@ class links {
 			<tr>
 			<td style='width:30%' class='forumheader3'>".LCLAN_18.": </td>
 			<td style='width:70%' class='forumheader3'>
-			<input class='tbox' type='text' name='link_button' size='60' value='$link_button' maxlength='100' />
+			<input class='tbox' type='text' name='link_button' size='42' value='$link_button' maxlength='100' />
 
-			<br />
-			<input class='button' type ='button' style='cursor:hand' size='30' value='".LCLAN_39."' onclick='expandit(this)' />
+					<input class='button' type ='button' style='cursor:hand' size='30' value='".LCLAN_39."' onclick='expandit(this)' />
 			<div id='linkicn' style='display:none;{head}'>";
 
 		while (list($key, $icon) = each($iconlist)) {
@@ -245,6 +244,7 @@ class links {
 		// 3 = _top
 		// 4 = miniwindow
 
+
 		$text .= "</div></td>
 			</tr>
 			<tr>
@@ -252,6 +252,19 @@ class links {
 			<td style='width:70%' class='forumheader3'>
 			<select name='linkopentype' class='tbox'>". ($link_open == 0 ? "<option value='0' selected='selected'>".LCLAN_20."</option>" : "<option value='0'>".LCLAN_20."</option>"). ($link_open == 1 ? "<option value='1' selected='selected'>".LCLAN_23."</option>" : "<option value='1'>".LCLAN_23."</option>"). ($link_open == 4 ? "<option value='4' selected='selected'>".LCLAN_24."</option>" : "<option value='4'>".LCLAN_24."</option>")."
 			</select>
+			</td>
+			</tr>
+            <tr>
+			<td style='width:30%' class='forumheader3'>".LCLAN_12.": </td>
+			<td style='width:70%' class='forumheader3'>
+			<select name='linkrender' class='tbox'>";
+			$rentype = array("","Main","Alt","Alt", "Alt");
+            for ($i=1; $i<count($rentype); $i++) {
+			$sel = ($link_category == $i) ? "selected='selected'" : "";
+            $text .="<option value='$i' $sel>$i - ".$rentype[$i]."</option>";
+            };
+
+            $text .="</select><span class='smalltext'> Shown in your theme as {SITELINKS=flat:[rendertype number]}</span>
 			</td>
 			</tr>
 			<tr>
@@ -287,11 +300,11 @@ class links {
 		$link_t = $sql->db_Count("links", "(*)");
 
 		if ($id) {
-			$sql->db_Update("links", "link_name='$link_name', link_url='$link_url', link_description='$link_description', link_button= '$link_button', link_category='1', link_open='".$_POST['linkopentype']."', link_class='".$_POST['link_class']."' WHERE link_id='$id'");
+			$sql->db_Update("links", "link_name='$link_name', link_url='$link_url', link_description='$link_description', link_button= '$link_button', link_category='".$_POST['linkrender']."', link_open='".$_POST['linkopentype']."', link_class='".$_POST['link_class']."' WHERE link_id='$id'");
 			$e107cache->clear("sitelinks");
 			$this->show_message(LCLAN_3);
 		} else {
-			$sql->db_Insert("links", "0, '$link_name', '$link_url', '$link_description', '$link_button', '1', '".($link_t+1)."', '0', '".$_POST['linkopentype']."', '".$_POST['link_class']."'");
+			$sql->db_Insert("links", "0, '$link_name', '$link_url', '$link_description', '$link_button', '".$_POST['linkrender']."', '".($link_t+1)."', '0', '".$_POST['linkopentype']."', '".$_POST['link_class']."'");
 			$e107cache->clear("sitelinks");
 			$this->show_message(LCLAN_2);
 		}
