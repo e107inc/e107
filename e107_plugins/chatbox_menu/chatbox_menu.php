@@ -45,6 +45,7 @@ if(IsSet($_POST['chat_submit'])){
 						}
 					}
 					if(!$emessage){
+						$cmessage = str_replace("<iframe", "&lt;iframe", $cmessage);
 						$sql -> db_Insert("chatbox", "0, '$nick', '$cmessage', '".time()."', '0' , '$ip' ");
 						clear_cache("chatbox");
 					}
