@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-01-27 19:51:38 $
-|     $Author: streaky $
+|     $Revision: 1.9 $
+|     $Date: 2005-01-28 04:11:20 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -203,10 +203,14 @@ if (isset($_POST['register'])) {
 			 
 			// ==== Update Userclass =======
 			if ($_POST['usrclass']) {
-				unset($insert_class);
-				sort($_POST['usrclass']);
-				foreach($_POST['usrclass'] as $value) {
-					$insert_class .= $value.".";
+				if(is_array($_POST['usrclass'])) {
+					if(count($_POST['usrclass'] == 1)) {
+						$nid = $_POST['usrclass'][0];
+					} else {
+						$nid = explode(',',array_dif($_POST['usrclass'],array('')));
+					}
+				} else {
+					$nid = $_POST['usrclass'];
 				}
 				$sql->db_Update("user", "user_class='$insert_class' WHERE user_id='".$nid."' ");
 			}
