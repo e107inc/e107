@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.60 $
-|     $Date: 2005-03-28 13:42:26 $
+|     $Revision: 1.61 $
+|     $Date: 2005-03-29 03:18:38 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -149,7 +149,8 @@ function update_61x_to_700($type) {
 		  PRIMARY KEY  (mirror_id)
 		) TYPE=MyISAM;";
 		$sql->db_Select_gen($query);
-
+		mysql_query("ALTER TABLE ".MPREFIX."download ADD download_class TINYINT ( 3 ) UNSIGNED NOT NULL");
+		mysql_query("ALTER TABLE ".MPREFIX."download_category ADD download_category_order INT ( 10 ) UNSIGNED NOT NULL");
 		mysql_query("ALTER TABLE `".MPREFIX."download` ADD `download_mirror` TEXT NOT NULL , ADD `download_mirror_type` TINYINT( 1 ) UNSIGNED NOT NULL");
 		/*	end	*/
 
@@ -474,13 +475,12 @@ function update_61x_to_700($type) {
 		) TYPE=MyISAM;
 		");
 		// News Updates
-		mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_image` `news_summary` TEXT DEFAULT NULL;");
-		mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_thumb` `news_attach` TEXT DEFAULT NULL;");
+		mysql_query("ALTER TABLE `".MPREFIX."news` ADD `news_summary` TEXT DEFAULT NULL;");
+		mysql_query("ALTER TABLE `".MPREFIX."news` ADD `news_attach` TEXT DEFAULT NULL;");
 		mysql_query("ALTER TABLE ".MPREFIX."news ADD news_sticky TINYINT ( 3 ) UNSIGNED NOT NULL");
 
 		// Downloads updates - Added March 1, 2005 by McFly
-		mysql_query("ALTER TABLE ".MPREFIX."download ADD download_class TINYINT ( 3 ) UNSIGNED NOT NULL");
-		mysql_query("ALTER TABLE ".MPREFIX."download_category ADD download_category_order INT ( 10 ) UNSIGNED NOT NULL");
+
 		$sql->db_Select_gen(
 		"CREATE TABLE ".MPREFIX."download_requests (
   			download_request_id int(10) unsigned NOT NULL auto_increment,
@@ -547,6 +547,16 @@ function update_61x_to_700($type) {
 
 //		$sql->db_Select_gen("DELETE FROM #core WHERE e107_name='user_entended'");
 
+
+// ---- news check. ------------
+
+        $fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."news");
+		$columns = mysql_num_fields($fields);
+		if($columns != 16){
+		return FALSE;
+		}
+
+// ----- ----------------------
 
         global $pref;
 		if (!isset($pref['search_highlight'])) {
