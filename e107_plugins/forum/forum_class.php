@@ -31,7 +31,7 @@ class e107forum {
 						$parentList[] = $row['forum_id'];
 					}
 					foreach($parentList as $id) {
-						echo "Updating forum #{$id}<br />";
+//						echo "Updating forum #{$id}<br />";
 						$this->update_lastpost('forum', $id);
 					}
 				}
@@ -57,8 +57,8 @@ class e107forum {
 						}
 					}
 					$sql2->db_Update('forum', "forum_lastpost = '{$forum_lpinfo}' WHERE forum_id={$id}");
-					echo "Forum $id lastpost info: $forum_lpinfo <br />";
-					echo "Updated $cnt threads <br />";
+//					echo "Forum $id lastpost info: $forum_lpinfo <br />";
+//					echo "Updated $cnt threads <br />";
 				}
 			}
 		}
@@ -236,7 +236,7 @@ class e107forum {
 				t.thread_datestamp DESC
 				LIMIT {$from}, {$limit}
 				";
-			echo $qry.'<br />';
+//			echo $qry.'<br />';
 			if ($sql->db_Select_gen($qry)) {
 				$i = 0;
 				while ($row = $sql->db_Fetch()) {
