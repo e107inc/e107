@@ -36,7 +36,7 @@ if($action == "dis")
 		$row = $sql -> db_Fetch(); extract($row);
 		require_once(e_HANDLER."form_handler.php");
 		$rs = new form;
-		include_once("header.php");
+		require_once(e_ADMIN."auth.php");
 		$caption = UPLLAN_17;
 		$txt = UPLLAN_45."<br /><br />";
 		$txt .= UPLLAN_10.": ".(is_numeric($upload_file) ? "Binary file ID ".$upload_file :  $upload_file);
