@@ -311,8 +311,9 @@ class e107table{
 		# - scope                                        public
 		*/
 		if(function_exists("theme_tablerender")){
-			$result = call_user_func("theme_tablerender",&$caption,&$text,&$mode);
+			$result = call_user_func("theme_tablerender",$caption,$text,$mode,$return);
 			if($result == "return"){return;}
+			extract($result);
 		}
 		if($return){
 			ob_end_flush();
