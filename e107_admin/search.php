@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/search.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-03-13 10:43:42 $
+|     $Revision: 1.4 $
+|     $Date: 2005-03-16 14:56:16 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -35,6 +35,8 @@ if (isset($_POST['updatesettings'])) {
 	$search_prefs['search_chars'] = $_POST['search_chars'];
 	$search_prefs['search_sort'] = $_POST['search_sort'];
 	$search_prefs['search_res'] = $_POST['search_res'];
+	$search_prefs['relevance'] = $_POST['relevance'];
+	$search_prefs['user_select'] = $_POST['user_select'];
 	foreach($search_handlers as $s_key => $s_value) {
 		$search_prefs['core_handlers'][$s_key] = $_POST['core_handlers'][$s_key];
 	}
@@ -52,19 +54,6 @@ if (isset($_POST['updatesettings'])) {
 
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
-
-//load all plugin search routines
-$handle = opendir(e_PLUGIN);
-while (false !== ($file = readdir($handle))) {
-	if ($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)) {
-		$plugin_handle = opendir(e_PLUGIN.$file."/");
-		while (false !== ($file2 = readdir($plugin_handle))) {
-			if ($file2 == "e_search.php") {
-				require_once(e_PLUGIN.$file."/".$file2);
-			}
-		}
-	}
-}
 
 if (isset($message)) {
 		$ns->tablerender("", "<div style='text-align:center'><b>".LAN_UPDATED."</b></div>");
@@ -91,6 +80,16 @@ $text .= "<tr>
 </tr>";
 
 $text .= "<tr>
+<td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_10."</td>
+<td style='width:50%;' colspan='2' class='forumheader3'>".$rs -> form_checkbox('relevance', '1', $search_prefs['relevance'])."</td>
+</tr>";
+
+$text .= "<tr>
+<td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_11."</td>
+<td style='width:50%;' colspan='2' class='forumheader3'>".$rs -> form_checkbox('user_select', '1', $search_prefs['user_select'])."</td>
+</tr>";
+
+$text .= "<tr>
 <td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_4."</td>
 <td style='width:50%;' colspan='2' class='forumheader3'>";
 
@@ -99,12 +98,11 @@ foreach($search_handlers as $key => $value) {
 	$text .= "<span style='white-space:nowrap'><input type='checkbox' name='core_handlers[".$key."]' ".$sel." />".$value."</span>\n";
 }
 
-$i = 0;
 foreach ($search_prefs['plug_handlers'] as $plug_dir => $active) {
 	require_once(e_PLUGIN.$plug_dir."/e_search.php");
 	$sel = $active ? " checked='checked'" : "";
-	$text .= "<span style='white-space:nowrap'><input type='checkbox' name='plug_handlers[".$plug_dir."]' ".$sel." />".$search_info[$i]['qtype']."</span>\n";
-	$i++;
+	$text .= "<span style='white-space:nowrap'><input type='checkbox' name='plug_handlers[".$plug_dir."]' ".$sel." />".$search_info[0]['qtype']."</span>\n";
+	unset($search_info);
 }
 
 $sel = (isset($search_prefs['google']) && $search_prefs['google']) ? " checked='checked'" : "";

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2005-03-16 03:38:49 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.47 $
+|     $Date: 2005-03-16 14:57:41 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 	
@@ -24,6 +24,8 @@ class e_parse {
 //	var $e_lw;
 	var $e_emote;
 	var $e_hook;
+	var $search = array('&#39;', '&#039;', '&#036;', '&quot;', 'onerror', '&gt;', '&amp;#039;', '&amp;quot;');
+	var $replace = array("'", "'", '$', '"', 'one<i></i>rror', '>', "'", '"');
 
 	 
 	function toDB($text, $no_encode = FALSE) {
@@ -213,9 +215,7 @@ function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $ut
 			}
 		}
 
-		$search = array('&#39;', '&#039;', '&#036;', '&quot;', 'onerror', '&gt;', '&amp;#039;', '&amp;quot;');
-		$replace = array("'", "'", '$', '"', 'one<i></i>rror', '>', "'", '"');
-		$text = str_replace($search, $replace, $text);
+		$text = str_replace($this -> search, $this -> replace, $text);
 		if (strpos($modifiers, 'nobreak') == FALSE) {
 			$text = preg_replace("#[\r]*\n[\r]*#", "[E_NL]", $text);
 		}
