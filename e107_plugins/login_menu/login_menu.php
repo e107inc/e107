@@ -87,8 +87,18 @@ $text = "";
 		}
 		$new_total = $new_total + $new_comments;
 		if(!$new_comments){ $new_comments = LOGIN_MENU_L26; }
-		$new_chat = $sql -> db_Count("chatbox", "(*)", "WHERE cb_datestamp>'".$time."' "); $new_total = $new_total + $new_chat;
-		if(!$new_chat){ $new_chat = LOGIN_MENU_L26; }
+		$display_chats = TRUE;
+		if($sql -> db_Select("menus", "menu_class", "menu_name='chatbox_menu' AND menu_location!='0'")){
+			list($menus['menu_class']) = $sql -> db_Fetch();
+			if(check_class($menus['menu_class'])){
+				$new_chat = $sql -> db_Count("chatbox", "(*)", "WHERE cb_datestamp>'".$time."' "); $new_total = $new_total + $new_chat;
+			}else{				
+				$display_chats = FALSE;
+			}
+		}else{
+			$display_chats = FALSE; 
+		}
+		if(!$new_chat){ $new_chat = ($display_chats ? LOGIN_MENU_L26 : ""); }
 
 		$new_forum = $sql -> db_Select("forum_t", "*", "thread_datestamp>$time ORDER BY thread_datestamp DESC");
 		while($row = $sql -> db_Fetch()){
@@ -106,9 +116,11 @@ $text = "";
 		if(!$new_users){ $new_users = LOGIN_MENU_L26; }
 
 		$text .= "<br /><br />\n<span class='smalltext'>\n".LOGIN_MENU_L25." 
-		$new_news ".($new_news == 1 ? LOGIN_MENU_L14 : LOGIN_MENU_L15).", 
-		$new_chat ".($new_chat == 1 ? LOGIN_MENU_L16 : LOGIN_MENU_L17).", 
-		$new_comments ".($new_comments == 1 ? LOGIN_MENU_L18 : LOGIN_MENU_L19).", 
+		$new_news ".($new_news == 1 ? LOGIN_MENU_L14 : LOGIN_MENU_L15).", ";
+		if($display_chats == TRUE){
+			$text .= $new_chat ." ".($new_chat == 1 ? LOGIN_MENU_L16 : LOGIN_MENU_L17).", ";
+		}
+		$text .= $new_comments ." ".($new_comments == 1 ? LOGIN_MENU_L18 : LOGIN_MENU_L19).", 
 		$new_forum ".($new_forum == 1 ? LOGIN_MENU_L20 : LOGIN_MENU_L21)." ".LOGIN_MENU_L27." 
 		$new_users ".($new_users == 1 ? LOGIN_MENU_L22 : LOGIN_MENU_L23).".</span>";
 		if($new_total){
