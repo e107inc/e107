@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-01-23 21:34:52 $
+|     $Revision: 1.8 $
+|     $Date: 2005-01-25 02:12:23 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -144,7 +144,7 @@ function update_61x_to_700($type){
                         // end links update -------------------------------------------------------------------------------------------
 
                 }else{
-                        if ($sql -> db_Select("link_category", "link_category_id")){
+                        if ($sql -> db_Select("wmessage","*", "wm_active='255' ")){
                                 return FALSE;
                         } else {
                                 return TRUE;
