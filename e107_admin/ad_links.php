@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/ad_links.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-01-30 18:29:09 $
+|     $Revision: 1.17 $
+|     $Date: 2005-01-30 19:43:41 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -363,7 +363,6 @@ $e_icon_array = array(
 	'download' => E_32_DOWNL,
 	'emoticon' => E_32_EMOTE,
 	'filemanage' => E_32_FILE,
-	'forum' => E_32_FORUM,
 	'frontpage' => E_32_FRONT,
 	'image' => E_32_IMAGES,
 	'language' => E_32_LANGUAGE,
