@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/admin_config.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-07 12:52:40 $
+|     $Revision: 1.2 $
+|     $Date: 2005-02-07 12:56:44 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -30,8 +30,11 @@ if (!getperms("P")) {
 	 exit;
 }
 
+if(!is_writable(LOGPATH."logs")) {
+	$message = "<b>You must set the permissions of the e107_plugins/log/logs folder to 777 (chmod 777)</b>";
+}
 
-$e_sub_cat = 'log';
+
 	
 if (isset($_POST['updatesettings'])) {
 	$pref['statActivate'] = $_POST['statActivate'];
