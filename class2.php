@@ -477,8 +477,10 @@ class textparse{
                 $replace[7] = '<a href="http://\1">\1</a>';
                 $search[8] = "#\[url=([a-z]+?://){1}(.*?)\](.*?)\[/url\]#si";
                 $replace[8] = '<a href="\1\2">\3</a>';
-                $search[9] = "/\[quote=(.*?)\](.*?)\[\/quote\]/si";
-                $replace[9] = '<div class=\'indent\'><i>Originally posted by \1</i> ...<br />"\2"</div>';
+                $search[9] = "/\[quote=(.*?)\](.*?)/si";
+                $replace[9] = '<div class=\'indent\'><i>Originally posted by \1</i> ...<br />"\2"';
+                $search[25] = "/\[\/quote\]/si";
+                $replace[25] = '</div>';
                 $search[10] = "#\[b\](.*?)\[/b\]#si";
                 $replace[10] = '<b>\1</b>';
                 $search[11] = "#\[i\](.*?)\[/i\]#si";
