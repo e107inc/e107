@@ -25,8 +25,8 @@ if(!$pref['timezone']){ $pref['timezone'] = "GMT"; }
 $signup_title = array(CUSTSIG_2,CUSTSIG_3,"ICQ","Aim","MSN",CUSTSIG_4,CUSTSIG_5,CUSTSIG_6,CUSTSIG_7,CUSTSIG_8);
 $signup_name = array("real","url","icq","aim","msn","dob","loc","sig","avt","zone");
 
+$aj = new textparse;
 if(IsSet($_POST['updateprefs'])){
-        $aj = new textparse;
         $pref['sitename'] = $aj -> formtpa($_POST['sitename']);
         $pref['siteurl'] = $aj -> formtpa($_POST['siteurl']);
         $pref['sitebutton'] = $aj -> formtpa($_POST['sitebutton']);
@@ -216,7 +216,6 @@ $text .="</div>";
 */
 // end new.
 
-
 $text = "<form method='post' action='prefs.php' >
 <div style='text-align:center;margin-left: auto;margin-right: auto'>
 <div style='text-align:center;width:95%;margin-left: auto;margin-right: auto'>
@@ -227,7 +226,7 @@ $text = "<form method='post' action='prefs.php' >
 <tr>
 <td style='width:50%' class='forumheader3'>".PRFLAN_2.": </td>
 <td style='width:50%; text-align:right' class='forumheader3'>
-<input class='tbox' type='text' name='sitename' size='50' value='".SITENAME."' maxlength='100' />
+<input class=\"tbox\" type=\"text\" name=\"sitename\" size=\"50\" value=\"".SITENAME."\" maxlength=\"100\" />
 </td>
 </tr>
 
