@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-02-13 09:02:44 $
-|     $Author: sweetas $
+|     $Revision: 1.12 $
+|     $Date: 2005-03-08 11:34:20 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -128,18 +128,6 @@ if (isset($_POST['searchtype']) && $_POST['searchtype'] == "99") {
 	}
 }
 
-$SEARCH_MAIN_CHECKBOXES = '';
-foreach($search_info as $key => $si) {
-	(isset($_POST['searchtype'][$key]) && $_POST['searchtype'][$key]==$key) ? $sel=" checked" : $sel="";
-	$SEARCH_MAIN_CHECKBOXES .= "<span style='white-space:nowrap; padding-bottom:7px;padding-top:7px'><input onclick='uncheckG();' type='checkbox' name='searchtype[".$key."]' ".$sel." />".$si['qtype']."</span>\n";
-}
-	
-$SEARCH_MAIN_CHECKBOXES .= "<input id='google' type='checkbox' name='searchtype[".$google_id."]'  onclick='uncheckAll(this)' />Google";
-$SEARCH_MAIN_SEARCHFIELD = "<input class='tbox' type='text' name='searchquery' size='40' value='".$query."' maxlength='50' />";
-$SEARCH_MAIN_CHECKALL = "<input class='button' type='button' name='CheckAll' value='".LAN_SEARCH_1."' onclick='checkAll(this);' />";
-$SEARCH_MAIN_UNCHECKALL = "<input class='button' type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this); uncheckG();' />";
-$SEARCH_MAIN_SUBMIT = "<input class='button' type='submit' name='searchsubmit' value='".LAN_180."' />";
-	
 if (!isset($SEARCH_MAIN_TABLE)) {
 	if (file_exists(THEME."search_template.php")) {
 		require_once(THEME."search_template.php");
@@ -147,6 +135,19 @@ if (!isset($SEARCH_MAIN_TABLE)) {
 		require_once(e_BASE.$THEMES_DIRECTORY."templates/search_template.php");
 	}
 }
+
+$SEARCH_MAIN_CHECKBOXES = '';
+foreach($search_info as $key => $si) {
+	(isset($_POST['searchtype'][$key]) && $_POST['searchtype'][$key]==$key) ? $sel=" checked" : $sel="";
+	$SEARCH_MAIN_CHECKBOXES .= "<span style='white-space:nowrap; padding-bottom:7px;padding-top:7px'><input onclick='uncheckG();' type='checkbox' name='searchtype[".$key."]' ".$sel." />".$si['qtype']."</span>\n".$AFTERCHECKBOXES."\n";
+}
+	
+$SEARCH_MAIN_CHECKBOXES .= "<input id='google' type='checkbox' name='searchtype[".$google_id."]'  onclick='uncheckAll(this)' />Google";
+$SEARCH_MAIN_SEARCHFIELD = "<input class='tbox' type='text' name='searchquery' size='60' value='".$query."' maxlength='50' />";
+$SEARCH_MAIN_CHECKALL = "<input class='button' type='button' name='CheckAll' value='".LAN_SEARCH_1."' onclick='checkAll(this);' />";
+$SEARCH_MAIN_UNCHECKALL = "<input class='button' type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this); uncheckG();' />";
+$SEARCH_MAIN_SUBMIT = "<input class='button' type='submit' name='searchsubmit' value='".LAN_180."' />";
+
 $text = preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_MAIN_TABLE);
 	
 $ns->tablerender(PAGE_NAME." ".SITENAME, $text);
