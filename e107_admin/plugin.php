@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-02-19 16:33:27 $
+|     $Revision: 1.23 $
+|     $Date: 2005-02-19 16:53:21 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -34,19 +34,8 @@ if (isset($_POST['upload'])) {
 	if (!$_POST['ac'] == md5(ADMINPWCHANGE)) {
 		exit;
 	}
-
 	extract($_FILES);
-
-	//echo "<pre>"; print_r($file_userfile); echo "</pre>"; exit;
-
 	/* check if e_PLUGIN dir is writable ... */
-	if(!is_writable(e_PLUGIN)) {
-		/* it's not - attempt to make it so ... */
-		$old = umask(0);
-		chmod(e_PLUGIN, 0755);
-		umask($old);
-	}
-	/* check again ... */
 	if(!is_writable(e_PLUGIN)) {
 		/* still not writable - spawn error message */
 		$ns->tablerender(EPL_ADLAN_40, EPL_ADLAN_39);
@@ -413,31 +402,35 @@ while ($row = $sql->db_fetch()) {
 // ----------------------------------------------------------
 //        render plugin information ...
 
-$text = "<div style='text-align:center'>
-<form enctype='multipart/form-data' method='post' action='".e_SELF."'>
-<table style='".ADMIN_WIDTH."' class='fborder'>";
+
 
 /* plugin upload form */
 
-$text .= "
-<tr>
-<td class='forumheader3' style='width: 50%;'>".EPL_ADLAN_37."</td>
-<td class='forumheader3' style='width: 50%;'>
-<input type='hidden' name='MAX_FILE_SIZE' value='1000000' />
-<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
-<input class='tbox' type='file' name='file_userfile[]' size='50' />
-</td>
-</tr>
-<tr>
-<td colspan='2' style='text-align:center' class='forumheader'>
-<input class='button' type='submit' name='upload' value='".EPL_ADLAN_38."' />
-</td>
-</tr>
-</table>
-</form>
-<br />
+if(!is_writable(e_PLUGIN)) {
+	$ns->tablerender(EPL_ADLAN_40, EPL_ADLAN_39);
+} else {
+	$text = "<div style='text-align:center'>
+	<form enctype='multipart/form-data' method='post' action='".e_SELF."'>
+	<table style='".ADMIN_WIDTH."' class='fborder'>
+	<tr>
+	<td class='forumheader3' style='width: 50%;'>".EPL_ADLAN_37."</td>
+	<td class='forumheader3' style='width: 50%;'>
+	<input type='hidden' name='MAX_FILE_SIZE' value='1000000' />
+	<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
+	<input class='tbox' type='file' name='file_userfile[]' size='50' />
+	</td>
+	</tr>
+	<tr>
+	<td colspan='2' style='text-align:center' class='forumheader'>
+	<input class='button' type='submit' name='upload' value='".EPL_ADLAN_38."' />
+	</td>
+	</tr>
+	</table>
+	</form>
+	<br />\n";
+}
 
-<table style='".ADMIN_WIDTH."' class='fborder'>";
+$text .= "<table style='".ADMIN_WIDTH."' class='fborder'>";
 
 
 $pluginList = $plugin->getall();
