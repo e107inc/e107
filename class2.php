@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2004-09-27 02:17:49 $
+|     $Revision: 1.7 $
+|     $Date: 2004-09-27 19:52:48 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -547,42 +547,72 @@ function check_email($var)
 	return (preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]+@([-0-9A-Z]+\.)+([0-9A-Z]){2,4}$/i', $var)) ? $var : FALSE;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-function check_class($var, $userclass=USERCLASS, $debug=FALSE){
-        if(preg_match ("/^([0-9]+)$/", $var)){
-                if($var == e_UC_MEMBER && USER==TRUE){return TRUE;}
-                if($var == e_UC_GUEST && USER==FALSE){return TRUE;}
-                if($var == e_UC_PUBLIC){return TRUE;}
-                if($var == e_UC_NOBODY) {return FALSE;}
-                if($var == e_UC_ADMIN && ADMIN) {return TRUE;}
-                if($var == e_UC_READONLY){return TRUE;}
-        }
-        if($debug){ echo "USERCLASS: ".$userclass.", \$var = $var : "; }
-        if(!defined("USERCLASS") || $userclass == ""){
-                if($debug){ echo "FALSE<br />"; }
-                return FALSE;
-        }
-        // user has classes set - continue
-        if(preg_match ("/^([0-9]+)$/", $var)){
-                $tmp = explode(".", $userclass);
-                if(is_numeric(array_search($var,$tmp))){
-                        if($debug){ echo "TRUE<br />"; }
-                        return TRUE;
-                }
-        } else {
-                // var is name of class ...
-                $sql = new db;
-                if($sql -> db_Select("userclass_classes", "*", "userclass_name='$var' ")){
-                        $row = $sql -> db_Fetch();
-                        $tmp = explode(".", $userclass);
-                        if(is_numeric(array_search($row['userclass_id'],$tmp))){
-                                if($debug){ echo "TRUE<br />"; }
-                                return TRUE;
-                        }
-                }
-        }
-        if($debug){  echo "NOTNUM! FALSE<br />"; }
-        return FALSE;
+function chk_class($var, $userclass, $debug)
+{
+	if(preg_match ("/^([0-9]+)$/", $var))
+	{
+		if($var == e_UC_MEMBER && USER==TRUE){return TRUE;}
+		if($var == e_UC_GUEST && USER==FALSE){return TRUE;}
+		if($var == e_UC_PUBLIC){return TRUE;}
+		if($var == e_UC_NOBODY) {return FALSE;}
+		if($var == e_UC_ADMIN && ADMIN) {return TRUE;}
+		if($var == e_UC_READONLY){return TRUE;}
+	}
+	if($debug){ echo "USERCLASS: ".$userclass.", \$var = $var : "; }
+	if(!defined("USERCLASS") || $userclass == "")
+	{
+		if($debug){ echo "FALSE<br />"; }
+		return FALSE;
+	}
+	// user has classes set - continue
+	if(preg_match ("/^([0-9]+)$/", $var))
+	{
+		$tmp = explode(".", $userclass);
+		if(is_numeric(array_search($var,$tmp)))
+		{
+			if($debug){ echo "TRUE<br />"; }
+			return TRUE;
+		}
+	}
+	else
+	{
+		// var is name of class ...
+		$sql = new db;
+		if($sql -> db_Select("userclass_classes", "*", "userclass_name='$var' "))
+		{
+			$row = $sql -> db_Fetch();
+			$tmp = explode(".", $userclass);
+			if(is_numeric(array_search($row['userclass_id'],$tmp)))
+			{
+				if($debug){ echo "TRUE<br />"; }
+				return TRUE;
+			}
+		}
+	}
+	if($debug){  echo "NOTNUM! FALSE<br />"; }
+	return FALSE;
 }
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+function check_class($var, $userclass=USERCLASS, $debug=FALSE)
+{
+	if(strpos($var,",") == FALSE)
+	{
+		return chk_class($var,$userclass,$debug);
+	}
+	$vars = explode(",",$var);
+	$ret = FALSE;
+	$i = 1;
+	while($ret == FALSE && $i < count($vars))
+	{
+		foreach($vars as $v)
+		{
+			$ret = chk_class($var,$userclass,$debug);
+		}
+		$i++;
+	}
+	return $ret;
+}
+
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function getperms($arg, $ap = ADMINPERMS)
 {
