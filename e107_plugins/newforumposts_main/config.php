@@ -1,17 +1,17 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system
-|	/admin/menu_conf/articles_conf.php
+|        e107 website system
+|        /admin/menu_conf/articles_conf.php
 |
-|	©Steve Dunstan 2001-2002
-|	http://e107.org
-|	jalist@e107.org
+|        ©Steve Dunstan 2001-2002
+|        http://e107.org
+|        jalist@e107.org
 |
-|	Released under the terms and conditions of the
-|	GNU General Public License (http://gnu.org).
+|        Released under the terms and conditions of the
+|        GNU General Public License (http://gnu.org).
 |
-|	Based on code by Edwin van der Wal (evdwal@xs4all.nl)
+|        Based on code by Edwin van der Wal (evdwal@xs4all.nl)
 +---------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -19,22 +19,22 @@ require_once(e_HANDLER."userclass_class.php");
 
 $lan_file=e_PLUGIN."newforumposts_main/languages/".e_LANGUAGE.".php";
 if(file_exists($lan_file)){
-	require_once($lan_file);
+        require_once($lan_file);
 } else {
-	require_once(e_PLUGIN."newforumposts_main/languages/English.php");
+        require_once(e_PLUGIN."newforumposts_main/languages/English.php");
 }
 if(!getperms("1")){ header("location:".e_BASE."index.php"); exit ;}
 require_once(e_ADMIN."auth.php");
 
 if(IsSet($_POST['updatesettings'])){
-	$pref['nfp_display'] = $_POST['nfp_display'];
-	$pref['nfp_caption'] = $_POST['nfp_caption'];
-	$pref['nfp_amount'] = $_POST['nfp_amount'];
-	$pref['nfp_layer'] = $_POST['nfp_layer'];
-	$pref['nfp_posts'] = $_POST['nfp_posts'];
-	$pref['nfp_layer_height'] = ($_POST['nfp_layer_height'] ? $_POST['nfp_layer_height'] : 200);
-	save_prefs();
-	$message = "".NFPM_L14."";
+        $pref['nfp_display'] = $_POST['nfp_display'];
+        $pref['nfp_caption'] = $_POST['nfp_caption'];
+        $pref['nfp_amount'] = $_POST['nfp_amount'];
+        $pref['nfp_layer'] = $_POST['nfp_layer'];
+        $pref['nfp_posts'] = $_POST['nfp_posts'];
+        $pref['nfp_layer_height'] = ($_POST['nfp_layer_height'] ? $_POST['nfp_layer_height'] : 200);
+        save_prefs();
+        $message = "".NFPM_L14."";
 }
 
 if($message){
@@ -44,16 +44,16 @@ if($message){
 
 
 $text = "<div style='text-align:center'>
-<form method='post' action='".e_SELF."?".e_QUERY."' name='menu_conf_form'>
+<form method='post' action='".e_SELF."?".e_QUERY."' id='menu_conf_form'>
 <table style='width:85%' class='fborder'>
 
 <tr>
 <td style='width:40%' class='forumheader3'>".NFPM_L4."</td>
 <td style='width:60%' class='forumheader3'>
 <select class='tbox' name='nfp_display'>"
-.($pref['nfp_display'] == "0" ? "<option value=0 selected>".NFPM_L5."</option>" : "<option value=0>".NFPM_L5."</option>")
-.($pref['nfp_display'] == "1" ? "<option value=1 selected>".NFPM_L6."</option>" : "<option value=1>".NFPM_L6."</option>")
-.($pref['nfp_display'] == "2" ? "<option value=2 selected>".NFPM_L7."</option>" : "<option value=2>".NFPM_L7."</option>")
+.($pref['nfp_display'] == "0" ? "<option value='0' selected='selected'>".NFPM_L5."</option>" : "<option value='0'>".NFPM_L5."</option>")
+.($pref['nfp_display'] == "1" ? "<option value='1' selected='selected'>".NFPM_L6."</option>" : "<option value='1'>".NFPM_L6."</option>")
+.($pref['nfp_display'] == "2" ? "<option value='2' selected='selected'>".NFPM_L7."</option>" : "<option value='2'>".NFPM_L7."</option>")
 ."</select>
 </td>
 </tr>
@@ -75,14 +75,14 @@ $text = "<div style='text-align:center'>
 <tr>
 <td class='forumheader3' style='width:40%'>".NFPM_L15." </td>
 <td class='forumheader3' style='width:60%'>".
-($pref['nfp_posts'] ? "<input type='checkbox' name='nfp_posts' value='1' checked>" : "<input type='checkbox' name='nfp_posts' value='1'>")."
+($pref['nfp_posts'] ? "<input type='checkbox' name='nfp_posts' value='1' checked='checked' />" : "<input type='checkbox' name='nfp_posts' value='1' />")."
 </td>
 </tr>
 
 <tr>
 <td class='forumheader3' style='width:40%'>".NFPM_L10.": </td>
 <td class='forumheader3' style='width:60%'>".
-($pref['nfp_layer'] ? "<input type='checkbox' name='nfp_layer' value='1' checked>" : "<input type='checkbox' name='nfp_layer' value='1'>")."&nbsp;&nbsp;".NFPM_L11.": <input class='tbox' type='text' name='nfp_layer_height' size='8' value='".$pref['nfp_layer_height']."' maxlength='3' />
+($pref['nfp_layer'] ? "<input type='checkbox' name='nfp_layer' value='1' checked='checked' />" : "<input type='checkbox' name='nfp_layer' value='1' />")."&nbsp;&nbsp;".NFPM_L11.": <input class='tbox' type='text' name='nfp_layer_height' size='8' value='".$pref['nfp_layer_height']."' maxlength='3' />
 </td>
 </tr>
 

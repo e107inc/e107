@@ -33,38 +33,38 @@ if(e_QUERY){
 }
 if(preg_match("#(.*?)_delete_(\d+)#",$deltest['Delete'],$matches))
 {
-	$delete = $matches[1];
-	$del_id = $matches[2];
+        $delete = $matches[1];
+        $del_id = $matches[2];
 }
 
 // ##### Main loop -----------------------------------------------------------------------------------------------------------------------
 
 if($action == "dec" && strpos($_SERVER['HTTP_REFERER'],"links"))
 {
-	$qs = explode(".", e_QUERY);
-	$action = $qs[0];
-	$linkid = $qs[1];
-	$link_order = $qs[2];
-	$location = $qs[3];
-	$sql -> db_Update("links", "link_order=link_order-1 WHERE link_order='".($link_order+1)."' AND link_category='$location' ");
-	$sql -> db_Update("links", "link_order=link_order+1 WHERE link_id='$linkid' AND link_category='$location' ");
-	clear_cache("sitelinks");
-	header("location: ".e_ADMIN."links.php?order");
-	exit;
+        $qs = explode(".", e_QUERY);
+        $action = $qs[0];
+        $linkid = $qs[1];
+        $link_order = $qs[2];
+        $location = $qs[3];
+        $sql -> db_Update("links", "link_order=link_order-1 WHERE link_order='".($link_order+1)."' AND link_category='$location' ");
+        $sql -> db_Update("links", "link_order=link_order+1 WHERE link_id='$linkid' AND link_category='$location' ");
+        clear_cache("sitelinks");
+        header("location: ".e_ADMIN."links.php?order");
+        exit;
 }
 
 if($action == "inc" && strpos($_SERVER['HTTP_REFERER'],"links"))
 {
-	$qs = explode(".", e_QUERY);
-	$action = $qs[0];
-	$linkid = $qs[1];
-	$link_order = $qs[2];
-	$location = $qs[3];
-	$sql -> db_Update("links", "link_order=link_order+1 WHERE link_order='".($link_order-1)."' AND link_category='$location' ");
-	$sql -> db_Update("links", "link_order=link_order-1 WHERE link_id='$linkid' AND link_category='$location' ");
-	clear_cache("sitelinks");
-	header("location: ".e_ADMIN."links.php?order");
-	exit;
+        $qs = explode(".", e_QUERY);
+        $action = $qs[0];
+        $linkid = $qs[1];
+        $link_order = $qs[2];
+        $location = $qs[3];
+        $sql -> db_Update("links", "link_order=link_order+1 WHERE link_order='".($link_order-1)."' AND link_category='$location' ");
+        $sql -> db_Update("links", "link_order=link_order-1 WHERE link_id='$linkid' AND link_category='$location' ");
+        clear_cache("sitelinks");
+        header("location: ".e_ADMIN."links.php?order");
+        exit;
 }
 
 if(IsSet($_POST['create_category'])){
@@ -104,20 +104,20 @@ if($action == "order"){
 
 if($delete == 'main')
 {
-	if($sql -> db_Delete("links", "link_id='$del_id' "))
-	{
-		clear_cache("sitelinks");
-		$linkpost -> show_message(LCLAN_53." #".$del_id." ".LCLAN_54);
-	}
+        if($sql -> db_Delete("links", "link_id='$del_id' "))
+        {
+                clear_cache("sitelinks");
+                $linkpost -> show_message(LCLAN_53." #".$del_id." ".LCLAN_54);
+        }
 }
 
 if($delete == 'category')
 {
-	if($sql -> db_Delete("link_category", "link_category_id='$del_id' "))
-	{
-		$linkpost -> show_message(LCLAN_55." #".$del_id." ".LCLAN_54);
-		unset($id);
-	}
+        if($sql -> db_Delete("link_category", "link_category_id='$del_id' "))
+        {
+                $linkpost -> show_message(LCLAN_55." #".$del_id." ".LCLAN_54);
+                unset($id);
+        }
 }
 
 if(IsSet($_POST['add_link'])){
@@ -215,12 +215,12 @@ class links{
                                 <td style='width:10%' class='forumheader3'>".$cat[$link_category]."</td>
                                 <td style='width:50%' class='forumheader3'><a href='".e_BASE."comment.php?comment.news.$link_id'></a>$link_name</td>
                                 <td style='width:25%; text-align:center' class='forumheader3'>".
-                                $rs -> form_button("submit", "main_edit_{$link_id}", LCLAN_9, "onclick=\"document.location='".e_SELF."?create.edit.$link_id'\"")."
+                                $rs -> form_open("post", e_SELF,"myform_{$link_id}","",""," onsubmit=\"return confirm_('create',$link_id)\"")."<div>".
+                                $rs -> form_button("button", "main_edit_{$link_id}", LCLAN_9, "onclick=\"document.location='".e_SELF."?create.edit.$link_id'\"")."
 
-                                ".$rs -> form_open("post", e_SELF,"","",""," onsubmit=\"return confirm_('create',$link_id)\"")."
                                 ".$rs -> form_button("submit", "main_delete_{$link_id}", LCLAN_10)."
-                                ".$rs -> form_close()."
-                              
+                                </div>".$rs -> form_close()."
+
                                 </td>
                                 </tr>";
                         }
@@ -491,11 +491,11 @@ class links{
                                 <td style='width:75%' class='forumheader3'>$link_category_name<br /><span class='smalltext'>$link_category_description</span></td>
                                 <td style='width:20%; text-align:center' class='forumheader3'>
                                 ".$rs -> form_button("submit", "category_edit_{$link_category_id}", LCLAN_9, "onclick=\"document.location='".e_SELF."?cat.edit.$link_category_id'\"")."
-  
+
                                 ".$rs -> form_open("post", e_SELF,"","",""," onsubmit=\"return confirm_('cat',$link_category_id)\"")."
                                 ".$rs -> form_button("submit", "category_delete_{$link_category_id}", LCLAN_10)."
                                 ".$rs -> form_close()."
-  
+
                                 </td>
                                 </tr>\n";
                         }

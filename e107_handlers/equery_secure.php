@@ -18,7 +18,7 @@ $text .= "<table style='text-align:center;'>
 <br />";
 $text .= "<br />
 <form action=\"".e_SELF."?".e_QUERY."\" method=\"post\" >
-<input class='button' type='submit' value='".EQSEC_LAN6."' name='equery_secure' id='equery_secure' />
+<div><input class='button' type='submit' value='".EQSEC_LAN6."' name='equery_secure' id='equery_secure' /></div>
 </form>
 <br /><br />
 
