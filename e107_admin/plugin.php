@@ -194,7 +194,9 @@ if(strstr(e_QUERY, "install")){
 
 		if(is_array($eplug_parse)){
 			while(list($key, $e_regexp) = each($eplug_parse)){
-				register_parser($eplug_folder,$e_regexp);
+				if(register_parser($eplug_folder,$e_regexp) == 2){
+					$text .= EPL_ADLAN_36."<br />";
+				}
 			}
 			$text .= EPL_ADLAN_35."<br />";
 		}
