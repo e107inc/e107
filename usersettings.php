@@ -133,7 +133,7 @@ if(IsSet($_POST['updatesettings'])){
                 $_POST['website'] = "";
     }
 
-	if(!is_numeric($_POST['icq'])){
+	if($_POST['icq'] && !is_numeric($_POST['icq'])){
 		$error = LAN_ICQNUMBER;
 		$_POST['icq'] = "";
 	}
