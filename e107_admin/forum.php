@@ -587,7 +587,7 @@ class forum{
 					extract($row);
 					$reported = explode("^", $tmp_info);
 					$text .= "<tr>
-					<td style='width:80%' class='forumheader3'><a href='".e_BASE."forum_viewtopic.php?".$reported[0].".".$reported[1]."#".$reported[2]."' onclick=\"window.open('".e_BASE."forum_viewtopic.php?".$reported[0].".".$reported[1]."#".$reported[2]."'); return false;\">".$reported[3]."</a></td>
+					<td style='width:80%' class='forumheader3'><a href='".e_BASE."forum_viewtopic.php?".$reported[0].".".$reported[1]."#".$reported[2]."' rel='external'>".$reported[3]."</a></td>
 					<td style='width:20%; text-align:center; vertical-align:top' class='forumheader3'>
 					".$rs -> form_button("submit", "reported_delete", FORLAN_20, "onClick=\"confirm_('sr', $tmp_time);\"")."
 					</td>

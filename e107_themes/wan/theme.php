@@ -82,7 +82,7 @@ $FOOTER = "
 </td>
 </tr>
 <tr>
-<td align='right' class='smalltext'>design: <a href='http://www.oswd.org/userinfo.phtml?user=deadbeat' target='_blank'>wanker</a> by <a href='mailto:jeff@hype52.com' target='_blank'>deadbeat</a> // based on <a href='http://www.oswd.org/userinfo.phtml?user=whompy' target='_blank'>libra</a> by <a href='http://www.oswd.org/userinfo.phtml?user=whompy' target='_blank'>whompy</a> // <a href='http://www.oswd.org' target='_blank'>open source web design</a></td>
+<td align='right' class='smalltext'>design: <a href='http://www.oswd.org/userinfo.phtml?user=deadbeat' rel='external'>wanker</a> by <a href='mailto:jeff@hype52.com' rel='external'>deadbeat</a> // based on <a href='http://www.oswd.org/userinfo.phtml?user=whompy' rel='external'>libra</a> by <a href='http://www.oswd.org/userinfo.phtml?user=whompy' rel='external'>whompy</a> // <a href='http://www.oswd.org' rel='external'>open source web design</a></td>
 </tr>
 </table>
 </td></tr>

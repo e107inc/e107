@@ -50,12 +50,12 @@ if($sql -> db_Select("headlines", "*", "headline_active='1' ")){
 			if(ini_get("allow_url_fopen")){
 				if(!$remote = @fopen ($headline_url, "r")){
 				        $dead = TRUE;
-					$text .= "<div style='text-align:center'>\n<table style='width:95%' class='forumheader3'>\n<tr>\n<td style='text-align:center' class='forumheader2'>\n<div class='smalltext'><a href='".$headline_url."' onclick=\"window.open('".$headline_url."'); return false;\">[".NFMENU_163." ".$tmp['host']."]</a></div></td></tr></table></div><br />";
+					$text .= "<div style='text-align:center'>\n<table style='width:95%' class='forumheader3'>\n<tr>\n<td style='text-align:center' class='forumheader2'>\n<div class='smalltext'><a href='".$headline_url."' rel='external'>[".NFMENU_163." ".$tmp['host']."]</a></div></td></tr></table></div><br />";
 				}
 			}else{
-				if(!$remote = fsockopen ($tmp['host'], 80 ,$errno, $errstr, 10)){
+				if(!$remote = @fsockopen ($tmp['host'], 80 ,$errno, $errstr, 10)){
 				        $dead = TRUE;
-					$text .= "<div style='text-align:center'>\n<table style='width:95%' class='forumheader3'>\n<tr>\n<td style='text-align:center' class='forumheader2'>\n<div class='smalltext'><a href='".$headline_url."' onclick=\"window.open('".$headline_url."'); return false;\">[".NFMENU_163." ".$tmp['host']."]</a></div></td></tr></table></div><br />";
+					$text .= "<div style='text-align:center'>\n<table style='width:95%' class='forumheader3'>\n<tr>\n<td style='text-align:center' class='forumheader2'>\n<div class='smalltext'><a href='".$headline_url."' rel='external'>[".NFMENU_163." ".$tmp['host']."]</a></div></td></tr></table></div><br />";
 				}else{
 					stream_set_timeout($remote, 10);
 					fputs($remote, "GET ".$headline_url." HTTP/1.0\r\n\r\n");
@@ -73,7 +73,7 @@ if($sql -> db_Select("headlines", "*", "headline_active='1' ")){
 
 			if(strstr($data, "Your Headline Reader Has Been Banned")){
 				$tmp = parse_url($headline_url);
-				$text .= "<div style='text-align:center'>\n<table style='width:95%' class='forumheader3'>\n<tr>\n<td style='text-align:center' class='forumheader2'>\n<div class='smalltext'><a href='".$headline_url."' onclick=\"window.open('".$headline_url."'); return false;\">[".NFMENU_163." ".$tmp['host']."]</a></div></td></tr></table></div><br />";
+				$text .= "<div style='text-align:center'>\n<table style='width:95%' class='forumheader3'>\n<tr>\n<td style='text-align:center' class='forumheader2'>\n<div class='smalltext'><a href='".$headline_url."' rel='external'>[".NFMENU_163." ".$tmp['host']."]</a></div></td></tr></table></div><br />";
 			}
 			$rss = new parse_xml;
 			$rss -> parse_xml_($data);
@@ -91,7 +91,7 @@ if($sql -> db_Select("headlines", "*", "headline_active='1' ")){
 
 			if(strstr($data, "Your Headline Reader Has Been Banned")){
 				$tmp = parse_url($headline_url);
-				$text .= "<div style='text-align:center'>\n<table style='width:95%' class='forumheader3'>\n<tr>\n<td style='text-align:center' class='forumheader2'>\n<div class='smalltext'><a href='".$headline_url."' onclick=\"window.open('".$headline_url."'); return false;\">[".NFMENU_163." ".$tmp['host']."]</a></div></td></tr></table></div><br />";
+				$text .= "<div style='text-align:center'>\n<table style='width:95%' class='forumheader3'>\n<tr>\n<td style='text-align:center' class='forumheader2'>\n<div class='smalltext'><a href='".$headline_url."' rel='external'>[".NFMENU_163." ".$tmp['host']."]</a></div></td></tr></table></div><br />";
 			}
 			$rss = new parse_xml;
 			$rss -> parse_xml_($data);
@@ -181,16 +181,16 @@ class parse_xml {
 
 		$logoimage = ($headline_image ? $headline_image : $this->channel['url']);
 
-		$text = "<div style='text-align:center'>\n<table style='width:95%' class='forumheader3'>\n<tr>\n<td style='text-align:center' class='forumheader2'>\n<a href='".$this->channel['link']."' onclick=\"window.open('".$this->channel['link']."'); return false;\">
+		$text = "<div style='text-align:center'>\n<table style='width:95%' class='forumheader3'>\n<tr>\n<td style='text-align:center' class='forumheader2'>\n<a href='".$this->channel['link']."' rel='external'>
 		".($this->channel['url'] || $logoimage ? "<img src='$logoimage' alt='' style='border:0; vertical-align:center' />" : $this->channel['title'])."</a></td></tr>";
 
 		$text2 = $text;
 
 		for($a=0; $a<=9; $a++){
 			if($this->rssdata['link'][$a]){
-				$text2 .= "<tr><td><img src='".THEME."images/bullet2.gif' alt='' style='vertical-align:middle' /> <b><a href='".$this->rssdata['link'][$a]."' onclick=\"window.open('".$this->rssdata['link'][$a]."'); return false;\">".$this->rssdata['title'][$a]."</a></b><br />".($this->rssdata['description'][$a] && !strstr($this->rssdata['description'][$a], "Search") ? "<span class='smalltext'>" .wordwrap(substr($this->rssdata['description'][$a], 0, 300), 30, "\n", 1)." ...</span>" : "")."</td></tr>";
+				$text2 .= "<tr><td><img src='".THEME."images/bullet2.gif' alt='' style='vertical-align:middle' /> <b><a href='".$this->rssdata['link'][$a]."' rel='external'>".$this->rssdata['title'][$a]."</a></b><br />".($this->rssdata['description'][$a] && !strstr($this->rssdata['description'][$a], "Search") ? "<span class='smalltext'>" .wordwrap(substr($this->rssdata['description'][$a], 0, 300), 30, "\n", 1)." ...</span>" : "")."</td></tr>";
 				
-				$text .= "<tr><td  class='smalltext'><img src='".THEME."images/bullet2.gif' alt='' style='vertical-align:middle' /> <a href='".$this->rssdata['link'][$a]."' onclick=\"window.open('".$this->rssdata['link'][$a]."'); return false;\">".$this->rssdata['title'][$a]."</a></td></tr>";
+				$text .= "<tr><td  class='smalltext'><img src='".THEME."images/bullet2.gif' alt='' style='vertical-align:middle' /> <a href='".$this->rssdata['link'][$a]."' rel='external'>".$this->rssdata['title'][$a]."</a></td></tr>";
 			}
 		}
 		$text .= "</table></div><br />\n";
