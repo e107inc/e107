@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-01-29 00:54:01 $
-|     $Author: mrpete $
+|     $Revision: 1.17 $
+|     $Date: 2005-02-02 14:18:56 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!function_exists("parseheader")) {
@@ -42,9 +42,9 @@ if (isset($theme_css_php) && $theme_css_php) {
 	echo "<link rel='stylesheet' href='".THEME."theme-css.php' type='text/css' />";
 } else {
 	echo "<link rel='stylesheet' href='".THEME."style.css' type='text/css' />";
-if (!$no_core_css) {
+if (isset($no_core_css) && !$no_core_css) {
 	echo "<link rel='stylesheet' href='".e_FILE."e107.css' type='text/css' />\n";
-	if ($eplug_css) { echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n"; }
+	if (isset($eplug_css) && $eplug_css) { echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n"; }
 	}
 }
 if(function_exists('theme_head')){
@@ -58,9 +58,9 @@ if (isset($theme_js_php) && $theme_js_php) {
 echo "<script type='text/javascript' src='".e_FILE."e107.js'></script>\n";
 if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME."theme.js'></script>\n"; }
 if (filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE."user.js'></script>\n"; }
-if ($eplug_js) { echo "<script type='text/javascript' src='".$eplug_js."'></script>\n"; }
+if (isset($eplug_js) && $eplug_js) { echo "<script type='text/javascript' src='".$eplug_js."'></script>\n"; }
 }
-if ($htmlarea_js) { echo $htmlarea_js; }
+if (isset($htmlarea_js) && $htmlarea_js) { echo $htmlarea_js; }
 if (function_exists('headerjs')){echo headerjs();  }
 
 if ($pref['log_activate']) {
@@ -81,7 +81,7 @@ if ($pref['image_preload']) {
 
 	$script_text .= "ejs_preload('".THEME."images/','".$ejs_listpics."');\n";
 }
-if ($script_text) {
+if (isset($script_text) && $script_text) {
 	echo "<script type='text/javascript'>\n";
 	echo "<!--\n";
 	echo $script_text;
@@ -89,9 +89,12 @@ if ($script_text) {
 	echo "</script>\n";
 }
 
-if(in_array('fader_menu',$eMenuActive)) {
+$fader_onload='';
+if(in_array('fader_menu',$eMenuActive))
+{
 	$fader_onload = 'changecontent(); ';
 }
+
 $links_onload = 'externalLinks();';
 $body_onload = ($fader_onload != '' || $links_onload != '') ? " onload='".$fader_onload.$links_onload."'" : "";
 
@@ -99,8 +102,12 @@ echo "</head>
 <body".$body_onload.">\n";
 //echo "XX - ".$e107_popup;
 // require $e107_popup =1; to use it as header for popup without menus
+if(!isset($e107_popup))
+{
+	$e107_popup = 0;
+}
 if ($e107_popup != 1) {
-	if ($pref['no_rightclick']) {
+	if (isset($pref['no_rightclick']) && $pref['no_rightclick']) {
 		echo "<script language='javascript'>\n";
 		echo "<!--\n";
 		echo "var message=\"Not Allowed\";\n";
@@ -126,15 +133,27 @@ if ($e107_popup != 1) {
 		echo "</script>\n";
 	}
 
-        if (is_array($CUSTOMPAGES)) {
-                foreach ($CUSTOMPAGES as $cust_key => $cust_value) {
-                        $custompage[$cust_key] = explode(' ', $cust_value);
-                }
-        } else {
-                $custompage['no_array'] = explode(' ', $CUSTOMPAGES);
-        }
+		if(isset($CUSTOMPAGES))
+		{
+			if (is_array($CUSTOMPAGES)) 
+        	{
+         	foreach ($CUSTOMPAGES as $cust_key => $cust_value)
+         	{
+            	$custompage[$cust_key] = explode(' ', $cust_value);
+				}
+			}
+			else
+			{
+				$custompage['no_array'] = explode(' ', $CUSTOMPAGES);
+			}
+		}
+		else
+		{
+			$custompage['no_array'] ='';
+		}
 
-        if (e_PAGE == 'news.php' && $NEWSHEADER) {
+        $ph = FALSE;
+        if (e_PAGE == 'news.php' && isset($NEWSHEADER)) {
                 parseheader($NEWSHEADER);
         } else {
                 foreach ($custompage as $key_extract => $cust_extract) {
