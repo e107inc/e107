@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-03-16 14:57:42 $
+|     $Revision: 1.21 $
+|     $Date: 2005-03-16 15:18:58 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -84,19 +84,25 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 	$refpage = "";
 }
 
-if (isset($_GET['t']) && $_GET['t']) {
-	$searchtype = $_GET['t'];
-} else {
+if (!$search_prefs['user_select']) {
 	foreach($search_info as $key => $si) {
-		if ($si['refpage']) {
-			if (eregi($si['refpage'], $refpage)) {
-				$searchtype[$key] = TRUE;
+		$searchtype[$key] = TRUE;
+	}
+} else {
+	if (isset($_GET['t']) && $_GET['t']) {
+		$searchtype = $_GET['t'];
+	} else {
+		foreach($search_info as $key => $si) {
+			if ($si['refpage']) {
+				if (eregi($si['refpage'], $refpage)) {
+					$searchtype[$key] = TRUE;
+				}
 			}
 		}
-	}
 
-	if (!isset($searchtype) && isset($query)) {
-		$searchtype[0] = TRUE;
+		if (!isset($searchtype) && isset($query)) {
+			$searchtype[0] = TRUE;
+		}
 	}
 }
 
