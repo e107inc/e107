@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.59 $
-|     $Date: 2005-03-20 23:06:45 $
+|     $Revision: 1.60 $
+|     $Date: 2005-04-01 11:03:58 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -163,6 +163,13 @@ if (!$pref['wmessage_sc']) {
 	}
 }
 // --->wmessage end
+
+// --->feature box
+if (isset($pref['fb_active']))
+{
+	require_once(e_PLUGIN."featurebox/featurebox.php");
+}
+// --->feature end
 
 if (isset($pref['nfp_display']) && $pref['nfp_display'] == 1){
 	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
