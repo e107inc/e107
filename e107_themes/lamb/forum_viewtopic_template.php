@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/forum_viewtopic_template.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-03-03 18:36:13 $
+|     $Revision: 1.8 $
+|     $Date: 2005-04-03 08:15:47 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -36,7 +36,7 @@
 
 <table style='width:100%'>
 <tr>
-<td style='width:80%'><div class='mediumtext'><img src='".e_PLUGIN."forum/images/e.png' style='vertical-align:middle' alt=''/> <b>{THREADNAME}</b></div><br />{GOTOPAGES}</td>
+<td style='width:80%'><div class='mediumtext'><img src='".e_PLUGIN."forum/images/lite/e.png' style='vertical-align:middle' alt=''/> <b>{THREADNAME}</b></div><br />{GOTOPAGES}</td>
 <td style='width:20%; vertical-align:bottom;'>{BUTTONS}</td>
 </tr>
 </table>
