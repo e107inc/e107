@@ -4,7 +4,7 @@ if (defined("ICONMAIL") && file_exists(THEME."images/".ICONMAIL))
 }
 else
 {
-	$icon = e_IMAGE."generic/friend.gif";
+	$icon = e_IMAGE."generic/".IMODE."/email.png";
 }
 $parms = explode("^",$parm);
 // message^source^other_parms
