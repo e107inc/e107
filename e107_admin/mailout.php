@@ -11,16 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-02-05 07:04:10 $
+|     $Revision: 1.20 $
+|     $Date: 2005-02-24 02:43:28 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 require_once("../class2.php");
 $e_sub_cat = 'mail';
-require_once(e_HANDLER."e_parse_class.php");
-if (!is_object($tp)) $tp = new e_parse;
+$e_wysiwyg = "email_body";
+
 require_once(e_ADMIN."auth.php");
 if (!getperms("W")) {
 	header("location:".e_BASE."index.php");
@@ -56,7 +56,7 @@ if (isset($_POST['submit'])) {
 				$insert = "user_ban='2' ";
 			break;
 			case "all":
-				$insert = "user_id !='' ";
+				$insert = "user_ban='0' ";
 			break;
 		}
 
@@ -334,11 +334,20 @@ $text .= "
 
 	<tr>
 	<td style='width:30%' class='forumheader3'>".MAILAN_11.": </td>
-	<td style='width:70%' class='forumheader3'>
-	<input type='button' class='button' name='usrname' value='username' onclick=\"addtext('{USERNAME}')\" />
+	<td style='width:70%' class='forumheader3'>";
+
+if($pref['wysiwyg']){
+	$text .="<input type='button' class='button' name='usrname' value='username' onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{USERNAME}')\" />
+	<input type='button' class='button' name='usrlink' value='signup link' onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{SIGNUP_LINK}')\" />
+	<input type='button' class='button' name='usrid' value='user id' onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{USERID}')\" />";
+}else{
+    $text .="<input type='button' class='button' name='usrname' value='username' onclick=\"addtext('{USERNAME}')\" />
 	<input type='button' class='button' name='usrlink' value='signup link' onclick=\"addtext('{SIGNUP_LINK}')\" />
-	<input type='button' class='button' name='usrid' value='user id' onclick=\"addtext('{USERID}')\" />
-	</td>
+	<input type='button' class='button' name='usrid' value='user id' onclick=\"addtext('{USERID}')\" />";
+}
+
+
+	$text .="</td>
 	</tr>";
 
 

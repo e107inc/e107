@@ -54,6 +54,12 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
 			define("NEWSCAT_THUMB","border:0px");
 	}
 
+	if(!defined("NEWSCAT_CELL")){
+			define("NEWSCAT_CELL","vertical-align:top");
+	}
+
+
+
 	$param['itemlink'] = NEWSCAT_ITEMLINK;
 	$param['thumbnail'] = NEWSCAT_THUMB;
 	$param['catlink'] = NEWSCAT_CATLINK;
@@ -64,7 +70,7 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
 
 	$text3 = "\n\n\n
 	<div style='width:100%;text-align:center;margin-left:auto;margin-right:auto'>
-	<table  style='".NEWSCAT_STYLE."'  cellpadding='0' cellspacing='0'>
+	<table style='".NEWSCAT_STYLE."'  cellpadding='0' cellspacing='0'>
 	\n";
 	$t = 0;
 			$wid = floor(100/$nbr_cols);
@@ -78,7 +84,7 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
 		$replace[1] = ($category_name) ? "<a href='".e_BASE."news.php?cat.".$category_id."' style='".$param['catlink']."' >".$tp->toHTML($category_name)."</a>" : "";
 
 		$text3 .= ($t % $nbr_cols == 0) ? "<tr>" : "";
-		$text3 .= "\n<td style='vertical-align:top; width:$wid%;'>\n";
+		$text3 .= "\n<td style='".NEWSCAT_CELL."; width:$wid%;'>\n";
 
 // Grab each news item.--------------
 
@@ -110,7 +116,7 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
 	}
 
 	while ($t % $nbr_cols != 0){
-		$text3 .= "<td style='width:$wid'>&nbsp;</td>\n";
+		$text3 .= "<td style='".NEWSCAT_CELL.";width:$wid'>&nbsp;</td>\n";
 		$text3 .= (($t+1) % nbr_cols == 0) ? "</tr>" : "";
 		$t++;
 	}
