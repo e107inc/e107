@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-02-24 10:49:52 $
+|     $Revision: 1.18 $
+|     $Date: 2005-02-25 07:43:15 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -213,6 +213,6 @@ define("LAN_TIME","Time");
 define("LAN_YES","Yes");
 define("LAN_NO","No");
 define("LAN_EMPTY","There are no entries in the database yet");
-
+define("LAN_EXISTING","Existing Entries"); 
 
 ?>

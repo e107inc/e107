@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.23 $
-|   $Date: 2005-02-22 04:36:58 $
+|   $Revision: 1.24 $
+|   $Date: 2005-02-25 07:42:37 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -37,9 +37,9 @@ if (!defined('ADMIN_WIDTH')) {
 	define('ADMIN_WIDTH', 'width: 95%');
 }
 if (file_exists(THEME.'admin_template.php')) {
-	require_once(THEME.'admin_template.php');
+  	require_once(THEME.'admin_template.php');
 } else {
-	require_once(e_BASE.$THEMES_DIRECTORY.'templates/admin_template.php');
+  	require_once(e_BASE.$THEMES_DIRECTORY.'templates/admin_template.php');
 }
 
 echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
@@ -57,7 +57,7 @@ if (!$no_core_css) {
 	echo "<link rel='stylesheet' href='".e_FILE."e107.css' type='text/css' />\n";
 }
 if (function_exists('theme_head')) {
-	echo theme_head();
+   	echo theme_head();
 }
 echo "<script type='text/javascript' src='".e_FILE."e107.js'></script>\n";
 if (file_exists(THEME."theme.js")) {
@@ -85,7 +85,7 @@ if ($eplug_css) {
 	echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n";
 }
 if((ADMIN || $pref['allow_html']) && $pref['wysiwyg'] && $e_wysiwyg == TRUE){
-	require_once(e_HANDLER."tiny_mce/wysiwyg.php");
+  	require_once(e_HANDLER."tiny_mce/wysiwyg.php");
 	echo wysiwyg($e_wysiwyg);
 }
 echo "</head>
@@ -101,6 +101,7 @@ if (!function_exists('show_admin_menu')) {
 		foreach (array_keys($e107_vars) as $act) {
 			$pre = "";
 			$post = "";
+		
 			if ($page == $act) {
 				$pre = "<b>&laquo;&nbsp;";
 				$post = "&nbsp;&raquo;</b>";
