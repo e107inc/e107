@@ -632,7 +632,7 @@ class newspost{
 
 		$handle=opendir(e_IMAGE."newsicons");
 		while ($file = readdir($handle)){
-			if($file != "." && $file != ".." && $file != "/" && $file != "null.txt"){
+			if($file != "." && $file != ".." && $file != "/" && $file != "null.txt" && $file != "CVS"){
 				$iconlist[] = $file;
 			}
 		}
