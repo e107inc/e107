@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-02-03 10:41:21 $
+|     $Revision: 1.12 $
+|     $Date: 2005-02-09 22:09:27 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -133,7 +133,6 @@ class comment {
 		} else {
 			$renderstyle = $COMMENTSTYLE;
 		}
-		$aj = new textparse;
 		$search[0] = "/\{USERNAME\}(.*?)/si";
 		$replace[0] = ($user_id ? "<a href='".e_BASE."user.php?id.".$user_id."'>".$user_name."</a>\n" : $user_name."\n");
 		 
@@ -156,7 +155,7 @@ class comment {
 		 
 		$search[5] = "/\{SIGNATURE\}(.*?)/si";
 		if ($user_signature) {
-			$user_signature = $aj->tpa($user_signature);
+			$user_signature = $tp->toHTML($user_signature);
 		}
 		$replace[5] = $user_signature;
 		$search[6] = "/\{JOINED\}(.*?)/si";
@@ -167,7 +166,7 @@ class comment {
 		}
 		 
 		$search[7] = "/\{LOCATION\}(.*?)/si";
-		$replace[7] = ($user_location ? LAN_313.": ".$aj->tpa($user_location) : '');
+		$replace[7] = ($user_location ? LAN_313.": ".$tp->toHTML($user_location) : '');
 		 
 		$search[8] = "/\{LEVEL\}(.*?)/si";
 		define("IMAGE_rank_main_admin_image", ($pref['rank_main_admin_image'] && file_exists(THEME."forum/".$pref['rank_main_admin_image']) ? "<img src='".THEME."forum/".$pref['rank_main_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/main_admin.png' alt='' />"));
@@ -211,10 +210,7 @@ class comment {
 		return stripslashes($text);
 	}
 	function enter_comment($author_name, $comment, $table, $id, $pid, $subject) {
-		global $sql, $aj, $e107cache;
-		if (!is_object($aj)) {
-			$aj = new textparse;
-		}
+		global $sql, $tp, $e107cache;
 		switch($table) {
 			case "news":
 			$type = 0;
@@ -245,8 +241,8 @@ class comment {
 		if (!Isset($type)) {
 			$type = $table;
 		}
-		$comment = $aj->formtpa($comment, "public");
-		$subject = $aj->formtpa($subject, "public");
+		$comment = $tp->toDB($comment, "public");
+		$subject = $tp->toDB($subject, "public");
 		if (!$sql->db_Select("comments", "*", "comment_comment='".$comment."' AND comment_item_id='$id' AND comment_type='$type' ")) {
 			if ($_POST['comment']) {
 				if (USER == TRUE) {
@@ -266,7 +262,7 @@ class comment {
 							define("emessage", LAN_310);
 						}
 					} else {
-						$nick = "0.".$aj->formtpa($author_name, "public");
+						$nick = "0.".$tp->toDB($author_name, "public");
 					}
 				}
 				if (!defined("emessage")) {
