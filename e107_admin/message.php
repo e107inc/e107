@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/message.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-02-11 22:04:47 $
+|     $Revision: 1.3 $
+|     $Date: 2005-03-21 14:11:15 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -31,9 +31,12 @@ $gen = new convert;
 
 if(isset($_POST['delete_message']))
 {
-	$id = substr($_POST['delete_message'], -1);
-	$sql->db_Delete("generic", "gen_id=$id");
-	$message = MESSLAN_3;
+	if(preg_match("/\s[0-9]+/si", $_POST['delete_message'], $match))
+	{
+		$id = $match[0];
+		$sql->db_Delete("generic", "gen_id=$id");
+		$message = MESSLAN_3;
+	}
 }
 
 if(isset($_POST['delete_all']) && isset($_POST['deleteconfirm']))
