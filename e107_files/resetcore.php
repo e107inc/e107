@@ -2,7 +2,6 @@
 /*
 +---------------------------------------------------------------+
 |	e107 website system
-|	/template.php
 |
 |	©Steve Dunstan 2001-2002
 |	http://e107.org
@@ -10,7 +9,12 @@
 |
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|
+|     $Source: /cvs_backup/e107/e107_files/resetcore.php,v $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-12 05:09:18 $
+|     $Author: pholzmann $
++----------------------------------------------------------------------------+
 */
 require_once("../e107_config.php");
 mysql_connect($mySQLserver, $mySQLuser, $mySQLpassword);
