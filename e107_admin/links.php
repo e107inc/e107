@@ -244,7 +244,8 @@ class links{
 		if($action != "opt"){
 			$text .= "<a href='".e_SELF."?opt'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".LCLAN_67."</div></div></a>";
 		}
-
+		
+		$text .= "<a href='submenusgen.php'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".LCLAN_83."</div></div></a>";
 
 		$text .= "</div>";
 		$ns -> tablerender(LCLAN_68, $text);
@@ -631,5 +632,4 @@ class links{
 
 
 }
-
 

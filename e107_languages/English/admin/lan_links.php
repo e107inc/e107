@@ -78,5 +78,5 @@ define("LCLAN_81", "Clear Form");
 
 
 define("LCLAN_82", "Submitted by");
-
+define("LCLAN_83", "Submenus Generator");
 ?>
