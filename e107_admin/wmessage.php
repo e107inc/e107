@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/wmessage.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-02-04 08:22:58 $
-|     $Author: e107coders $
+|     $Revision: 1.13 $
+|     $Date: 2005-02-04 13:08:23 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -79,9 +79,6 @@ if (isset($message)) {
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
-
-
-
 // Show Existing -------
 if ($action == "main" || $action == "") {
 	if ($wm_total = $sql->db_Select("wmessage", "*", "ORDER BY wm_id, wm_id ASC", "nowhere")) {
@@ -109,29 +106,27 @@ if ($action == "main" || $action == "") {
 			$text .= "</tr>";
 		}
 
-
 		$text .= "</table></div>";
 		$text .= $rs->form_close();
 	} else {
 		$text .= "<div style='text-align:center'>".LCLAN_61."</div>";
 	}
 	$ns->tablerender(WMLAN_00, $text);
-
-
 }
-
 
 // Create and Edit
 if ($action == "create" || $action == "edit") {
-
-	if ($action == "edit"){
+	if ($sub_action == "edit"){
 		$sql->db_Select("wmessage", "*", "wm_id = $id");
 		$row = $sql->db_Fetch();
-		 extract($row);
+		extract($row);
 	}
 
-	$preset = $pst->read_preset("admin_wmessage");
-	extract($preset);
+	if($sub_action != 'edit')
+	{
+		$preset = $pst->read_preset("admin_wmessage");
+		extract($preset);
+	}
 
 	$text = "
 		<div style='text-align:center'>
