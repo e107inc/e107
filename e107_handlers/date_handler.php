@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/date_handler.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-03-09 10:53:58 $
+|     $Revision: 1.2 $
+|     $Date: 2005-03-09 12:58:17 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -42,40 +42,45 @@ class convert
 		}
 	}
 
-	function computeLapse($older_date, $newer_date = false) 
-	{ 
-		$chunks = array(
-			array(60 * 60 * 24 * 365 , LANDT_01),
-			array(60 * 60 * 24 * 30 , LANDT_02),
-			array(60 * 60 * 24 * 7, LANDT_03),
-			array(60 * 60 * 24 , LANDT_04),
-			array(60 * 60 , LANDT_05),
-			array(60 , LANDT_06),
-		);
-		$newer_date = ($newer_date == false) ? (time()) : $newer_date;
+	function computeLapse($older_date, $newer_date = FALSE, $mode = FALSE) 
+	{
+
+		/*
+		$mode = TRUE :: return array
+		$mode = FALSE :: return string
+		*/
+
+		$newer_date = ($newer_date == FALSE ? (time()) : $newer_date);
 		$since = $newer_date - $older_date;
-		for ($i = 0, $j = count($chunks); $i < $j; $i++)
+
+		$timings = array(
+			array(31536000 , LANDT_01,LANDT_01s),
+			array(2592000 , LANDT_02, LANDT_02s),
+			array(604800, LANDT_03, LANDT_03s),
+			array(86400 , LANDT_04, LANDT_04s),
+			array(3600 , LANDT_05, LANDT_05s),
+			array(60 , LANDT_06, LANDT_06s),
+			array(1 , LANDT_07, LANDT_07s)
+		);
+		$newer_date = ($newer_date == FALSE ? (time()) : $newer_date);
+		$since = $newer_date - $older_date;
+
+		$outputArray = array();
+		$total = $since;
+		$value = FALSE;
+		foreach($timings as $time)
 		{
-			$seconds = $chunks[$i][0];
-			$name = $chunks[$i][1];
-			if (($count = floor($since / $seconds)) != 0)
+			$seconds = floor($total / $time[0]);
+			if($seconds || $value)
 			{
-				break;
+				$outputArray[] = $seconds." ".($seconds == 1 ? $time[1] : $time[2]);
+				$value = TRUE;
 			}
+			$total = fmod($total, $time[0]);
 		}
 
-		$output = ($count == 1) ? '1 '.$name : "$count {$name}".LANDT_PLURAL;
+		return ($mode ? $outputArray : implode(", ", $outputArray));
 
-		if ($i + 1 < $j)
-		{
-			$seconds2 = $chunks[$i + 1][0];
-			$name2 = $chunks[$i + 1][1];
-	  
-			if (($count2 = floor(($since - ($seconds * $count)) / $seconds2)) != 0)
-			{
-				$output .= ($count2 == 1) ? ', 1 '.$name2 : ", $count2 {$name2}".LANDT_PLURAL;
-			}
-		}
-	return $output;
 	}
+
 }
