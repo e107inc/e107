@@ -118,7 +118,7 @@ return $gen -> computeLapse($user['user_join'])." ".LAN_426;
 SC_END
 
 SC_BEGIN USER_REALNAME_ICON
-return defined("USER_REALNAME_ICON") ? USER_REALNAME_ICON : "<img src='".e_IMAGE."generic/rname.png' alt='' style='vertical-align:middle; height:16px; width:16px' /> ";
+return defined("USER_REALNAME_ICON") ? USER_REALNAME_ICON : "<img src='".e_IMAGE."user_icons/realname_".IMODE.".png' alt='' style='vertical-align:middle; height:16px; width:16px' /> ";
 SC_END
 
 SC_BEGIN USER_REALNAME
@@ -127,7 +127,7 @@ return $user['user_login'] ? $user['user_login'] : "<i>".LAN_401."</i>";
 SC_END
 
 SC_BEGIN USER_EMAIL_ICON
-return defined("USER_EMAIL_ICON") ? USER_EMAIL_ICON : "<img src='".e_IMAGE."generic/email.png' alt='' style='vertical-align:middle; height:16px; width:16px' /> ";
+return defined("USER_EMAIL_ICON") ? USER_EMAIL_ICON : "<img src='".e_IMAGE."generic/email_".IMODE.".png' alt='' style='vertical-align:middle; height:16px; width:16px' /> ";
 SC_END
 
 SC_BEGIN USER_EMAIL_LINK
@@ -141,12 +141,12 @@ return ($user['user_hideemail'] && !ADMIN) ? "<i>".LAN_143."</i>" : "<a href='ma
 SC_END
 
 SC_BEGIN USER_ICON
-return defined("USER_ICON") ? USER_ICON : "<img src='".e_IMAGE."generic/user.png' alt='' style='vertical-align:middle; height:16px; width:16px; border:0' /> ";
+return defined("USER_ICON") ? USER_ICON : "<img src='".e_IMAGE."generic/user_".IMODE.".png' alt='' style='vertical-align:middle; height:16px; width:16px; border:0' /> ";
 SC_END
 
 SC_BEGIN USER_ICON_LINK
 global $user;
-$icon = defined("USER_ICON") ? USER_ICON : "<img src='".e_IMAGE."generic/user.png' alt='' style='vertical-align:middle; height:16px; width:16px; border:0' /> ";
+$icon = defined("USER_ICON") ? USER_ICON : "<img src='".e_IMAGE."generic/user_".IMODE.".png' alt='' style='vertical-align:middle; height:16px; width:16px; border:0' /> ";
 return "<a href='".e_SELF."?id.{$user['user_id']}'>{$icon}</a>";
 SC_END
 
