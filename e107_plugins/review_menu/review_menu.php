@@ -31,13 +31,22 @@ if($cache = retrieve_cache("review_menu")){
 		if($i = $sql -> db_Select("content", "*", "content_type='3' AND content_parent='0' ")){
 			$text .= "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".e_BASE."content.php?review.cat.0'>Uncategorized</a> (".$i.")<br />";
 		}
-
+		unset($i);
 		if($sql -> db_Select("content", "*", "content_type='10' ORDER BY content_heading ASC")){
 			while($row = $sql -> db_Fetch()){
 				extract($row);
 				if(check_class($content_class)){
-					if($i = $sql2 -> db_Select("content", "*", "content_type='3' AND content_parent='".$content_id."' ")){
-						$text .= "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_BASE."content.php?review.cat.".$content_id."'>".$content_heading."</a> (".$i.")<br />";
+				$i = $sql2 -> db_Select("content", "content_class", "content_type='3' AND content_parent='".$content_id."' ");
+					if($i){
+						while($row2 = $sql2 -> db_Fetch()){
+							extract($row2);
+							if(!check_class($content_class)){
+								$i = $i - 1;
+							}
+						}
+						if($i){
+							$text .= "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_BASE."content.php?review.cat.".$content_id."'>".$content_heading."</a> (".$i.")<br />";
+						}
 					}
 				}
 			}
