@@ -751,10 +751,11 @@ if($action == "article"){
 // ##### End ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 function parse_content_article_table($row){
-		global $CONTENT_ARTICLE_TABLE, $rater, $aj, $ep;
+		global $CONTENT_ARTICLE_TABLE, $rater, $aj, $ep, $id;
 		extract($row);
 
 		$category = $content_parent;
+ 		$sub_action = $content_id;
 
 		$sql = new db; $sql2 = new db;
 		$gen = new convert;
@@ -794,11 +795,11 @@ function parse_content_article_table($row){
 		$CONTENT_ARTICLE_PAGES = "";
 		if($totalpages > 1){
 			$CONTENT_ARTICLE_PAGES .=  $articlepages[(!$id ? 0 : $id)]."<br /><br />";
-			if($id != 0){ $CONTENT_ARTICLE_PAGES .= "<a href='content.php?article.$sub_action.".($id-1)."'>".LAN_25." <<</a> "; }
+ 			if($id != 0){ $CONTENT_ARTICLE_PAGES .= "<a href='content.php?article.$sub_action.".($id-1)."'>".LAN_25." &lt;&lt;</a> "; }
 			for($c=1; $c<= $totalpages; $c++){
 				$CONTENT_ARTICLE_PAGES .= ($c == ($id+1) ? "<span style='text-decoration: underline;'>$c</span>&nbsp;&nbsp;" : "<a href='content.php?article.$sub_action.".($c-1)."'>$c</a>&nbsp;&nbsp;");
 			}
-			if(($id+1) != $totalpages){ $CONTENT_ARTICLE_PAGES .= "<a href='content.php?article.$sub_action.".($id+1)."'>>> ".LAN_26."</a> "; }
+ 			if(($id+1) != $totalpages){ $CONTENT_ARTICLE_PAGES .= "<a href='content.php?article.$sub_action.".($id+1)."'>&gt;&gt; ".LAN_26."</a> "; }
 			if($epflag){
 				$CONTENT_ARTICLE_EMAILPRINT = $textemailprint;
 			}
