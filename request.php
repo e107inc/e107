@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-03-01 17:32:22 $
+|     $Revision: 1.7 $
+|     $Date: 2005-03-01 19:08:18 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -218,13 +218,13 @@ function check_download_limits()
 	$qry = "
 	SELECT gen_intdata, gen_chardata, (gen_intdata/gen_chardata) as count_perday 
 	FROM #generic 
-	WHERE gen_datestamp IN (".USERCLASS_LIST.") AND (gen_chardata > 0 AND gen_intdata > 0)
+	WHERE gen_type = 'download_limit' AND gen_datestamp IN (".USERCLASS_LIST.") AND (gen_chardata > 0 AND gen_intdata > 0)
 	ORDER BY count_perday DESC
 	";
 	if($sql->db_Select_gen($qry))
 	{
 		$limits = $sql->db_Fetch();
-		echo "<br />Allowed {$limits['gen_intdata']} downloads every {$limits['gen_chardata']} days <br />";
+//		echo "<br />Allowed {$limits['gen_intdata']} downloads every {$limits['gen_chardata']} days <br />";
 		$cutoff = time() - (86400*$limits['gen_chardata']);
 		if(USER)
 		{
@@ -243,13 +243,17 @@ function check_download_limits()
 		WHERE {$where}
 		GROUP by dr.download_request_userid
 		";
-		if($sql->db_Select_gen($qry, TRUE))
+		if($sql->db_Select_gen($qry))
 		{
 			$row=$sql->db_Fetch();
 			if($row['count'] >= $limits['gen_intdata'])
 			{
 				// Exceeded download count limit
-				echo "exceeded count!   {$row['count']} exceeds {$limits['gen_intdata']}<br />";
+				@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_download.php");
+				@include_once(e_LANGUAGEDIR."English/lan_download.php");
+				require(HEADERF);
+				$ns->tablerender(LAN_dl_61, LAN_dl_62);
+				require(FOOTERF);
 				exit;
 			}
 		}
@@ -261,10 +265,10 @@ function check_download_limits()
 	$qry = "
 	SELECT gen_user_id, gen_ip, (gen_user_id/gen_ip) as bw_perday 
 	FROM #generic 
-	WHERE gen_datestamp IN (".USERCLASS_LIST.") AND (gen_user_id > 0 AND gen_ip > 0)
+	WHERE gen_type='download_limit' AND gen_datestamp IN (".USERCLASS_LIST.") AND (gen_user_id > 0 AND gen_ip > 0)
 	ORDER BY bw_perday DESC
 	";
-	if($sql->db_Select_gen($qry, TRUE))
+	if($sql->db_Select_gen($qry))
 	{
 		$limit = $sql->db_Fetch();
 		$cutoff = time() - (86400*$limit['gen_ip']);
@@ -284,13 +288,17 @@ function check_download_limits()
 		WHERE {$where}
 		GROUP by dr.download_request_userid
 		";
-		if($sql->db_Select_gen($qry, TRUE))
+		if($sql->db_Select_gen($qry))
 		{
 			$row=$sql->db_Fetch();
 			if($row['total_bw']/1024 > $limit['gen_user_id'])
 			{
 				//Exceed bandwith limit
-				echo "exceeded bw limit!";
+				@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_download.php");
+				@include_once(e_LANGUAGEDIR."English/lan_download.php");
+				require(HEADERF);
+				$ns->tablerender(LAN_dl_61, LAN_dl_62);
+				require(FOOTERF);
 				exit;
 			}
 		}
