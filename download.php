@@ -75,16 +75,17 @@ if(!e_QUERY){
 					// check for subsub cats ...
 
 					if($sql3 -> db_Select("download_category", "*", "download_category_parent=$download_category_id")){
-						$text .= "<br />";
+						$text .= "<br /><span class='defaulttext'>".LAN_dl_42.": ";
 						while($row = $sql3 -> db_Fetch()){
 							extract($row);
 							$new = (USER && $sql4 -> db_Count("download", "(*)", "WHERE download_category='$download_category_id' AND download_datestamp>".USERLV) ? "<img src='".e_IMAGE."generic/new.png' alt='' style='vertical-align:middle' />" : "");
 							if($sql4 -> db_Select("download", "*", "download_category=$download_category_id")){
-								$text .= "[ <a href='".e_SELF."?list.$download_category_id'>$download_category_name</a> ] ";
+								$text .= "<a href='".e_SELF."?list.$download_category_id'>$download_category_name</a> ";
 							}else{
-								$text .= "[ ".$new.$download_category_name." ] ";
+								$text .= " ".$new.$download_category_name." ";
 							}
 						}
+						$text .= "</span>";
 					}
 					
 					

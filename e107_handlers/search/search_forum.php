@@ -27,6 +27,6 @@ if($results = $sql -> db_Select("forum_t", "*", "thread_name REGEXP('".$query."'
 		}
 	}
 }else{
-	$text .= "No matches.";
+	$text .= LAN_198;
 }
 ?>

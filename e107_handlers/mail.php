@@ -16,7 +16,7 @@
 function sendemail($send_to, $subject, $message){
 	global $pref;
 
-	$headers = "From: ".SITENAME." ".$pref['siteadminemail']." \n";
+	$headers = "From: ".$pref['siteadminemail']." \n";
 	$headers .= "X-Sender: ".$pref['siteadminemail']."\n";
 	$headers .= "X-Mailer: PHP\n";
 	$headers .= "X-MimeOLE: Produced By e107 website system\n";
@@ -24,7 +24,6 @@ function sendemail($send_to, $subject, $message){
 	$headers .= "Content-transfer-encoding: 8bit\nDate: " . date('r', time()) . "\n";
 	$headers .= "MIME-Version: 1.0\n";
 	$headers .= "Content-Type: text/plain; charset=".CHARSET."\n";
-	$headers .= "Return-Path: ".$pref['siteadminemail']."\n";
 
 	if($pref['smtp_enable']){
 		require_once(e_HANDLER."smtp.php");
@@ -34,6 +33,7 @@ function sendemail($send_to, $subject, $message){
 			return FALSE;
 		}
 	}else{
+		$headers .= "Return-Path: <".$pref['siteadminemail'].">\n";
 		if(@mail($send_to, $subject, $message, $headers)){
 			return TRUE;
 		}else{

@@ -15,6 +15,15 @@
 require_once("class2.php");
 require_once(HEADERF);
 
+
+$sql -> db_Select("menus", "*", "menu_name='chatbox_menu'");
+$row = $sql -> db_Fetch(); extract($row);
+if(!check_class($menu_class)){
+	$ns -> tablerender(LAN_14, "<div style='text-align:center'>".LAN_15."</div>");
+	require_once(FOOTERF);
+	exit;
+}
+
 if(strstr(e_QUERY, "fs")){
 	$cgtm = str_replace(".fs", "", e_QUERY);
 	$fs = TRUE;

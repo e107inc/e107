@@ -10,6 +10,6 @@ if($results = $sql -> db_Select("links", "*", "link_name REGEXP('".$query."') OR
 		$text .= "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <a href=\"".$link_url."\">".$link_name."</a><br />";
 	}
 }else{
-	$text .= "No matches.";
+	$text .= LAN_198;
 }
 ?>

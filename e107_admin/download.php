@@ -36,6 +36,15 @@ $amount = 50;
 $e_file = str_replace("../", "", e_FILE);
 
 if($file_array = getfiles($e_file."downloads/")){ sort($file_array); } unset($t_array);
+if($sql -> db_Select("rbinary")){
+	while($row = $sql -> db_Fetch()){
+		extract($row);
+		$file_array[] = "Binary ".$binary_id."/".$binary_name;
+	}
+}
+
+
+
 if($image_array = getfiles($e_file."downloadimages/")){ sort($image_array); } unset($t_array);
 if($thumb_array = getfiles($e_file."downloadthumbs/")){ sort($thumb_array); } unset($t_array);
 
@@ -74,6 +83,7 @@ if($action == "main" && $sub_action == "confirm"){
 	if($sql -> db_Delete("download", "download_id='$id' ")){
 		$download -> show_message(DOWLAN_35." #".$id." ".DOWLAN_36);
 	}
+	unset($sub_action, $id);
 }
 
 if(!e_QUERY || $action == "main"){
@@ -207,7 +217,7 @@ class download{
 			if($sql -> db_Select("upload", "*", "upload_id='$id' ")){
 				$row = $sql-> db_Fetch();
 				extract($row);
-				$download_name = $upload_name ." - " . $upload_version;
+				$download_name = $upload_name.($upload_version ? " - " . $upload_version : "");
 				$download_url = $upload_file;
 				$download_author_email = $upload_email;
 				$download_author_website = $upload_website;
@@ -398,6 +408,12 @@ class download{
 			$filesize = ($_POST['download_filesize_external'] ? $_POST['download_filesize_external'] : filesize(e_FILE."downloads/".$_POST['download_url']));
 		}
 
+		if(!$filesize){
+			$sql -> db_Select("upload", "upload_filesize", "upload_file='$durl'");
+			$row = $sql -> db_Fetch(); extract($row);
+			$filesize = $upload_filesize;
+		}
+
 		$_POST['download_description'] = $aj -> formtpa($_POST['download_description'], "admin");
 
 		if($id){
@@ -416,22 +432,26 @@ class download{
 			$sql2 = new db;
 		}
 		if(!is_object($sql3)){
-			$sql3 = new db;
+			$sql3 = new db; $sql4 = new db;
 		}
 		$text = "<div style='border : solid 1px #000; padding : 4px; width : auto; height : 200px; overflow : auto; '>";
 		if($download_total = $sql -> db_Select("download_category", "*", "download_category_parent=0")){
 			$text .= "<table class='fborder' style='width:100%'>
+
 			<tr>
-			<td style='width:5%' class='forumheader2'>&nbsp;</td>
-			<td style='width:50%' class='forumheader2'>".DOWLAN_11."</td>
-			<td style='width:45%' class='forumheader2'>".DOWLAN_28."</td>
+			<td style='width:5%; text-align:center' class='fcaption'>&nbsp;</td>
+			<td style='width:70%; text-align:center' class='fcaption'>".DOWLAN_11."</td>
+			<td style='width:5%; text-align:center' class='fcaption'>".DOWLAN_52."</td>
+			<td style='width:25%; text-align:center' class='fcaption'>".DOWLAN_28."</td>
 			</tr>";
+
 			while($row = $sql -> db_Fetch()){
 				extract($row);
 				$text .= "<tr>
-				<td style='width:5%; text-align:center' class='forumheader3'>".($download_category_icon ? "<img src='".e_IMAGE."download_icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")."</td>
-				<td style='width:75%' class='forumheader3'>$download_category_name</a></td>
-				<td style='width:20%; text-align:center' class='forumheader3'>
+				<td style='width:5%; text-align:center' class='forumheader'>".($download_category_icon ? "<img src='".e_IMAGE."download_icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")."</td>
+				<td colspan='2' style='width:70%' class='forumheader'><b>$download_category_name</b></a></td>
+				
+				<td style='width:20%; text-align:center' class='forumheader'>
 				".$rs -> form_button("submit", "main_edit", DOWLAN_8, "onClick=\"document.location='".e_SELF."?cat.edit.$download_category_id'\"")."
 				".$rs -> form_button("submit", "main_delete", DOWLAN_9, "onClick=\"confirm_('cat', $download_category_id)\"")."
 				</td>
@@ -440,9 +460,14 @@ class download{
 				if($sql2 -> db_Select("download_category", "*", "download_category_parent=$parent_id")){
 					while($row = $sql2-> db_Fetch()){
 						extract($row);
+
+						$files = $sql4 -> db_Count("download", "(*)", "WHERE download_category='".$download_category_id."'");
+
+
 						$text .= "<tr>
-						<td style='width:5%; text-align:center' class='forumheader3'>&nbsp;</td>
-						<td style='width:75%' class='forumheader3'> --> ".($download_category_icon ? "<img src='".e_IMAGE."download_icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")." $download_category_name</a></td>
+						<td style='width:5%; text-align:center' class='forumheader3'>".($download_category_icon ? "<img src='".e_IMAGE."download_icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")."</td>
+						<td style='width:70%' class='forumheader3'>$download_category_name<br /><span class='smalltext'>$download_category_description</span></td>
+						<td style='width:5%; text-align:center' class='forumheader3'>$files</td>
 						<td style='width:20%; text-align:center' class='forumheader3'>
 						".$rs -> form_button("submit", "main_edit", DOWLAN_8, "onClick=\"document.location='".e_SELF."?cat.edit.$download_category_id'\"")."
 						".$rs -> form_button("submit", "main_delete", DOWLAN_9, "onClick=\"confirm_('cat', $download_category_id)\"")."
@@ -452,9 +477,11 @@ class download{
 						if($sql3 -> db_Select("download_category", "*", "download_category_parent=$sub_parent_id")){
 							while($row = $sql3-> db_Fetch()){
 								extract($row);
+								$files = $sql4 -> db_Count("download", "(*)", "WHERE download_category='".$download_category_id."'");
 								$text .= "<tr>
-								<td style='width:5%; text-align:center' class='forumheader3'>&nbsp;</td>
-								<td style='width:75%' class='forumheader3'> ----> ".($download_category_icon ? "<img src='".e_IMAGE."download_icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")." $download_category_name</a></td>
+								<td style='width:5%; text-align:center' class='forumheader3'>".($download_category_icon ? "<img src='".e_IMAGE."download_icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")."</td>
+								<td style='width:70%' class='forumheader3'>&nbsp;&nbsp;&nbsp;&nbsp;".DOWLAN_53.": $download_category_name<br />&nbsp;&nbsp;&nbsp;&nbsp;<span class='smalltext'>$download_category_description</span></td>
+								<td style='width:5%; text-align:center' class='forumheader3'>$files</td>
 								<td style='width:20%; text-align:center' class='forumheader3'>
 								".$rs -> form_button("submit", "main_edit", DOWLAN_8, "onClick=\"document.location='".e_SELF."?cat.edit.$download_category_id'\"")."
 								".$rs -> form_button("submit", "main_delete", DOWLAN_9, "onClick=\"confirm_('cat', $download_category_id)\"")."

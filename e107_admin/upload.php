@@ -32,7 +32,7 @@ if($action == "dlm"){
 }
 
 if($action == "news"){
-        header("location: newspost.php?news.".$id);
+        header("location: newspost.php?create.upload.".$id);
         exit;
 }
 
@@ -52,6 +52,9 @@ if($action == "dl"){
 		header("Content-Disposition: attachment; filename=".$binary_name);
 		header("Content-Description: PHP Generated Data");
 		echo $binary_data;
+		exit;
+	}else{
+		header("location:".e_FILE."public/".str_replace("dl.", "", e_QUERY));
 		exit;
 	}
 }

@@ -13,6 +13,7 @@
 +---------------------------------------------------------------+
 */
 @include(e_LANGUAGEDIR.$language."/admin/lan_footer.php");
+@include(e_LANGUAGEDIR."English/admin/lan_footer.php");
 echo "\n</td>
 <td style='width:20%; vertical-align:top'>";
 

@@ -12,8 +12,8 @@
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
-require_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_np.php");
-
+@include(e_LANGUAGEDIR.e_LANGUAGE."/lan_np.php");
+@include(e_LANGUAGEDIR."English/lan_np.php");
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 class nextprev{
 	function nextprev($url, $from, $view, $total, $td, $qs=""){

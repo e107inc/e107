@@ -11,6 +11,6 @@ if($results = $sql -> db_Select("user", "user_id, user_name, user_email, user_ho
 		$text .= "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <a href=\"user.php?id.".$user_id."\">".$user_name."</a><br />";
 	}
 }else{
-	$text .= "No matches.";
+	$text .= LAN_198;
 }
 ?>

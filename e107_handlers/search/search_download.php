@@ -17,6 +17,6 @@ if($results = $sql -> db_Select("download", "download_id, download_category, dow
 
         }
 }else{
-        $text .= "No matches.";
+        $text .= LAN_198;
 }
 ?>

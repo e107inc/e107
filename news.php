@@ -26,8 +26,17 @@ if(file_exists("install.php")){ echo "<div class='installe' style='text-align:ce
 
 if(!is_object($aj)){ $aj = new textparse; }
 
+if(e_QUERY){
+	$tmp = explode(".", e_QUERY);
+	$action = $tmp[0];
+	$sub_action = $tmp[1];
+	$id = $tmp[2];
+}
+
+$from = (!is_numeric($action) || !e_QUERY ? 0 : ($action ? $action : e_QUERY));
+
 $ix = new news;
-if(strstr(e_QUERY, "cat")){
+if($action == "cat"){
 	$qs = explode(".", e_QUERY);
 	$category = $qs[1];
 	if($category != 0){
@@ -42,29 +51,18 @@ if(strstr(e_QUERY, "cat")){
 		while($row = $sql-> db_Fetch()){
 			extract($row);
 			$news_title = $aj -> tpa($news_title);
-			$news_body = $aj -> tpa($news_body);
 			if($news_title == ""){ $news_title = "Untitled"; }
 			$datestamp = $gen->convert_date($news_datestamp, "short");
-			$news_body = strip_tags(substr($news_body, 0, 100))." ...";
 			$comment_total = $sql2 -> db_Count("comments", "(*)",  "WHERE comment_item_id='$news_id' AND comment_type='0' ");
-			$text .= "<div class='mediumtext'>
-			<img src='".THEME."images/bullet2.gif' alt='bullet' /> ";
-
-			if($news_allow_comments){
-				$text .= "<a href='news.php?extend.".$news_id."'>".$news_title."</a>";
-			}else{
-				$text .= "<a href='comment.php?".$news_id."'>".$news_title."</a>";
-			}
-			$text .= "<br />
-			".LAN_100." ".$datestamp." (".LAN_99.": ";
-			if($news_allow_comments){
-				$text .= COMMENTOFFSTRING.")";
-			}else{
-				$text .= $comment_total.")";
-			}
-			$text .= "</div>
-			".$news_body."
-			<br /><br />\n";
+			$text .= "
+			<img src='".THEME."images/bullet2.gif' alt='bullet' /> <b>
+			<a href='news.php?item.".$news_id."'>".$news_title."</a></b>
+			<br />&nbsp;&nbsp;
+			<span class='smalltext'>
+			".$datestamp.", ".LAN_99.": ".
+			($news_allow_comments ? COMMENTOFFSTRING : $comment_total)."
+			</span>
+			<br />\n";
 		}
 		$text = "<img src='$category_icon' alt='' /><br />".
 		LAN_307.$count."
@@ -76,7 +74,8 @@ if(strstr(e_QUERY, "cat")){
 }
 
 
-if(eregi("extend", e_QUERY)){
+
+if($action == "extend"){
 	$extend_id = substr(e_QUERY, (strpos(e_QUERY, ".")+1));
 	$sql -> db_Select("news", "*", "news_id='$extend_id' ");
 	list($news['news_id'], $news['news_title'], $news['data'], $news['news_extended'], $news['news_datestamp'], $news['admin_id'], $news_category, $news['news_allow_comments'],  $news['news_start'], $news['news_end'], $news['news_class']) = $sql -> db_Fetch();
@@ -94,7 +93,6 @@ if($pref['nfp_display'] == 1){
 	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 }
 
-if(!e_QUERY || eregi("cat", e_QUERY)){ $from = 0; }else{ $from = e_QUERY; }
 if(Empty($order)){ $order = "news_datestamp"; }
 
 // ---> wmessage
@@ -116,15 +114,37 @@ if(!defined("WMFLAG")){
 }
 // ---> wmessage end
 
-if(strstr(e_QUERY, "item")){
+
+if($action == "list"){
+	$news_total = $sql -> db_Count("news", "(*)", "WHERE news_category=$sub_action");
+	$query = "news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_render_type!=2 AND news_category=$sub_action ORDER BY ".$order." DESC LIMIT $from,".ITEMVIEW;
+}else if($action == "item"){
+	$news_total = $sql -> db_Count("news");
+	$query = "news_id=$sub_action AND news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")";
+}else if(strstr(e_QUERY, "month")){
 	$tmp = explode(".", e_QUERY);
 	$item = $tmp[1];
-	$query = "news_id=$item AND news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")";
+	$year = substr($item, 0, 4);
+	$month = substr($item, 4);
+	$startdate = mktime(0,0,0,$month,1,$year);
+	$lastday = date("t", $startdate);
+	$enddate = mktime(23,59,59,$month,$lastday,$year);
+	$query = "news_datestamp > $startdate AND news_datestamp < $enddate AND news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY ".$order." DESC";;
+}else if(strstr(e_QUERY, "day")){
+	$tmp = explode(".", e_QUERY);
+	$item = $tmp[1];
+	$year = substr($item, 0, 4);
+	$month = substr($item, 4, 2);
+	$day = substr($item, 6, 2);
+	$startdate = mktime(0,0,0,$month,$day,$year);
+	$lastday = date("t", $startdate);
+	$enddate = mktime(23,59,59,$month,$day,$year);
+	$query = "news_datestamp > $startdate AND news_datestamp < $enddate AND news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY ".$order." DESC";
 }else{
-	$query = "news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY ".$order." DESC LIMIT $from,".ITEMVIEW;
+	$news_total = $sql -> db_Count("news");
+	$query = "news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_render_type!=2 ORDER BY ".$order." DESC LIMIT $from,".ITEMVIEW;
 }
 
-$news_total = $sql -> db_Count("news");
 if($sql -> db_Select("news", "*", "news_class<255 AND news_class!='' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_class!='' ORDER BY ".$order." DESC LIMIT $from,".ITEMVIEW)){
 	$disablecache = TRUE;
 }
@@ -145,13 +165,12 @@ if(!$disablecache && !e_QUERY){
 
 ob_start();
 if(!$sql -> db_Select("news", "*", $query)){
-	echo "<br /><br /><div style='text-align:center'><b>".LAN_83."</b></div><br /><br />";
+	echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_462 : LAN_83)."</b></div><br /><br />";
 }else{
 	$sql2 = new db;
-	while(list($news['news_id'], $news['news_title'], $news['data'], $news['news_extended'], $news['news_datestamp'], $news['admin_id'], $news_category, $news['news_allow_comments'],  $news['news_start'], $news['news_end'], $news['news_class']) = $sql -> db_Fetch()){
+	while(list($news['news_id'], $news['news_title'], $news['data'], $news['news_extended'], $news['news_datestamp'], $news['admin_id'], $news_category, $news['news_allow_comments'],  $news['news_start'], $news['news_end'], $news['news_class'], $news['news_rendertype']) = $sql -> db_Fetch()){
 
 		if(check_class($news['news_class'])){
-
 			if($news['admin_id'] == 1 && $pref['siteadmin']){
 				$news['admin_name'] = $pref['siteadmin'];
 			}else if(!$news['admin_name'] = getcachedvars($news['admin_id'])){
@@ -162,6 +181,7 @@ if(!$sql -> db_Select("news", "*", $query)){
 			$sql2 -> db_Select("news_category", "*",  "category_id='$news_category' ");
 			list($news['category_id'], $news['category_name'], $news['category_icon']) = $sql2-> db_Fetch();
 			$news['comment_total'] = $sql2 -> db_Count("comments", "(*)",  "WHERE comment_item_id='".$news['news_id']."' AND comment_type='0' ");
+			if($action == "item"){ unset($news['news_rendertype']); }
 			$ix -> render_newsitem($news);
 		}
 	}
@@ -169,15 +189,12 @@ if(!$sql -> db_Select("news", "*", $query)){
 
 if(!$disablecache && !e_QUERY){
 	$cache = $aj -> formtpa(ob_get_contents(), "admin");
-
 	set_cache("news.php", $cache);
-	
-	
 }else{
 	$sql -> db_Delete("cache", "cache_url='news.php' ");
 }
 require_once(e_HANDLER."np_class.php");
-$ix = new nextprev("news.php", $from, ITEMVIEW, $news_total, LAN_84);
+if($action != "item"){ $ix = new nextprev("news.php", $from, ITEMVIEW, $news_total, LAN_84, ($action == "list" ? e_QUERY: "")); }
 
 if($pref['nfp_display'] == 2){
 	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");

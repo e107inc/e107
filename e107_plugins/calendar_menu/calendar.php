@@ -220,8 +220,8 @@ for ($c=1; $c<=32; $c++) {
      // Highlight the current day.
     if ($dayarray['mon'] == $calmonth) {
         if ($nowday == $c && $calmonth == $nowmonth && $calyear == $nowyear) {
-            $text .="<td  class='forumheader2' style='z-index: 1;vertical-align:top; width:90px;height:90px;padding-bottom:0px;padding-right:0px; margin-right:0px'>";
-            $text .="<span class='smalltext' style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'><a style='background-color:black' href='".e_PLUGIN."calendar_menu/event.php?".$startt.".one'><strong>".$c."</a> [today]</strong></span>";
+            $text .="<td  class='forumheader2' style='vertical-align:top; width:90px;height:90px;padding-bottom:0px;padding-right:0px; margin-right:0px'>";
+            $text .="<div style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'><b><a href='".e_PLUGIN."calendar_menu/event.php?".$startt.".one'>".$c."</a></b> <span class='smalltext'>[today]</span></div>";
         } else {
             $text .="<td class='forumheader2 ' style='z-index: 1;vertical-align:top;  width:90px;height:90px;padding-bottom:0px;padding-right:0px; margin-right:0px'>";
             $text .="<span style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'><a href='".e_PLUGIN."calendar_menu/event.php?".$startt.".one'><strong>".$c."</strong></a></span>";
@@ -241,8 +241,7 @@ for ($c=1; $c<=32; $c++) {
 	        if ($event_true[($c)]) {
 	            $linkut = mktime(0 ,0 ,0 ,$datearray['mon'], $c, $datearray['year']);
 		    if(($_POST['do'] == NULL || $_POST['event_cat_ids'] == "all") || ($_POST['event_cat_ids'] == $event_cat_id)){
-
-		            $text .="<span class='smalltext' style='background-color:#CBD0DF; border:1px solid #808080; position: relative; z-index: 1; top: -18px; left:-2px; height:96%; width:100% ; padding-top:5px;padding-right:0px;padding-bottom:0px ' ><div style='padding-top:15px; padding-left:3px'><img style='border:0' src='".$ec_dir."images/".$event_cat_icon."' alt='' height='8' width='8'><a href='".e_PLUGIN."calendar_menu/event.php?".$linkut.".one'><span class='smalltext' style='color:black' > ".$oevent_title."</span></a></span></div>";
+		            $text .="<span class='fborder' style='position: relative; z-index: 1; top: -18px; left:-2px; height:96%; width:100% ; padding-top:5px;padding-right:0px;padding-bottom:0px ' ><div style='padding-top:15px; padding-left:3px'><img style='border:0' src='".$ec_dir."images/".$event_cat_icon."' alt='' height='8' width='8'><a href='".e_PLUGIN."calendar_menu/event.php?".$linkut.".one'><span class='smalltext'> ".$oevent_title."</span></a></span></div>";
 		            }
 		}
 

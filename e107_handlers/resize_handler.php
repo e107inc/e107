@@ -13,7 +13,8 @@
 |
 +---------------------------------------------------------------+
 */
-function resize_image($source_file, $destination_file, $type = "upload"){
+function resize_image($source_file, $destination_file, $type = "upload", $model=""){
+
 	global $pref;
 
 	$mode = ($pref['resize_method'] ? $pref['resize_method'] : "gd2");
@@ -43,10 +44,16 @@ function resize_image($source_file, $destination_file, $type = "upload"){
 
 	if($mode == "ImageMagick"){
 		$source_file = $_SERVER['DOCUMENT_ROOT'].e_HTTP.$source_file;
-		$destination_file = $_SERVER['DOCUMENT_ROOT'].e_HTTP.$destination_file;
-		exec ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." ".$source_file." ".$destination_file);
-	
-
+		if ($destination_file == "stdout") {
+			/* if destination is stdout, output directly to the browser */
+			$destination_file = "jpg:-";
+			header("Content-type: image/jpeg");
+			passthru ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." ".$source_file." ".$destination_file);
+		}else{
+			/* otherwise output to file */
+			$destination_file = $_SERVER['DOCUMENT_ROOT'].e_HTTP.$destination_file;
+			exec ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." ".$source_file." ".$destination_file);
+		}
 	}else if($mode == "gd1"){
 		if($image_stats[2] == 2)
 			$src_img = imagecreatefromjpeg($source_file);
@@ -57,9 +64,20 @@ function resize_image($source_file, $destination_file, $type = "upload"){
 		}
 		$dst_img = imagecreate($new_size, $new_imageheight);
 		imagecopyresized($dst_img, $src_img, 0, 0, 0, 0, $new_size, $new_imageheight, $imagewidth, $imageheight);
-		imagejpeg($dst_img, $destination_file, $im_quality);
-		imagedestroy($src_img);
-		imagedestroy($dst_img);
+		if($model == "copy"){
+			$name = substr($destination_file, (strrpos($destination_file, "/")+1));
+			$name2 = "thumb_".$name;
+			$destination_file = str_replace($name, $name2, $destination_file);
+		}
+
+		if($destination_file == "stdout"){
+			header("Content-type: image/jpeg");
+			imagejpeg($dst_img, '', $im_quality);
+		}else{
+			imagejpeg($dst_img, $destination_file, $im_quality);
+			imagedestroy($src_img);
+			imagedestroy($dst_img);
+		}
 
 	}else if($mode == "gd2"){
 
@@ -73,10 +91,20 @@ function resize_image($source_file, $destination_file, $type = "upload"){
 
 		$dst_img = imagecreatetruecolor($new_size, $new_imageheight);
 		imagecopyresampled($dst_img, $src_img, 0, 0, 0, 0, $new_size, $new_imageheight, $imagewidth, $imageheight);
-		imagejpeg($dst_img, $destination_file, $im_quality);
-		imagedestroy($src_img);
-		imagedestroy($dst_img);
-		
+
+		if($model == "copy"){
+			$name = substr($destination_file, (strrpos($destination_file, "/")+1));
+			$name2 = "thumb_".$name;
+			$destination_file = str_replace($name, $name2, $destination_file);
+		}
+		if($destination_file == "stdout"){
+			header("Content-type: image/jpeg");
+			imagejpeg($dst_img, '', $im_quality);
+		}else{
+			imagejpeg($dst_img, $destination_file, $im_quality);
+			imagedestroy($src_img);
+			imagedestroy($dst_img);
+		}		
 	}
 
 	@chmod($destination_file, 0644);

@@ -122,9 +122,6 @@ $text3="";
 if(getperms("PM")){ // Plugin Manager
 	$text3 .= wad2(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "PM", e_PLUGIN.e_IMAGE."generic/plugin.png");
 }
-if(getperms("PL")){   // Theme Layout plugin.
-$text3 .= wad2(e_PLUGIN."theme_layout/theme_layout.php", ADLAN_100, ADLAN_101, "PL", e_PLUGIN."theme_layout/images/icon.png");
-}
 
 	if($sql -> db_Select("plugin", "*", "plugin_installflag=1")){
 		while($row = $sql -> db_Fetch()){

@@ -106,7 +106,6 @@ if(getperms("P")){
 	<tr>";
 
 	$text .= wad(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "P", e_PLUGIN.e_IMAGE."generic/plugin.png");
-	$text .= wad(e_PLUGIN."theme_layout/theme_layout.php", ADLAN_100, ADLAN_101, "P", e_PLUGIN."theme_layout/images/icon.png");
 
 	if($sql -> db_Select("plugin", "*", "plugin_installflag=1")){
 		while($row = $sql -> db_Fetch()){

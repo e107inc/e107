@@ -69,4 +69,8 @@ define("LCLAN_76", "No submitted links");
 
 define("LCLAN_77", "Submitted link deleted");
 
+define("LCLAN_78", "Show Description as Screen-Tip");
+define("LCLAN_79", "Description will be shown when the mouse hovers over the link");
+
+
 ?>

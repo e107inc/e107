@@ -56,7 +56,14 @@ if(IsSet($_POST['prune'])){
 }
 
 if(IsSet($_POST['adduser'])){
+	if(!$_POST['ac'] == md5(ADMINPWCHANGE)){
+		exit;
+	}
 	require_once(e_HANDLER."message_handler.php");
+	if(strstr($_POST['name'], "#") || strstr($_POST['name'], "=")){
+		message_handler("P_ALERT", USRLAN_92);
+		$error = TRUE;
+	}
 	$_POST['name'] = trim(chop(str_replace("&nbsp;", "", $_POST['name'])));
 	if($_POST['name'] == "Anonymous"){
 		message_handler("P_ALERT", USRLAN_65);
@@ -152,7 +159,9 @@ if(IsSet($_POST['add_field'])){
 	$sql -> db_Select("core", " e107_value", " e107_name='user_entended'");
 	$row = $sql -> db_Fetch();
 	$user_entended = unserialize($row[0]);
-	$user_entended[] = $user_field;
+        // changed by Cameron
+        $user_entended[] = $user_field.$user_type.$user_value;
+   //     $user_entended[] = $user_field;
 	$tmp = addslashes(serialize($user_entended));
 	if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
 		$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='user_entended' ");
@@ -446,19 +455,32 @@ class users{
 
 		$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."?".e_QUERY."'>
-		<table style='width:85%' class='fborder'>\n";
+                <table style='width:85%' class='fborder'>
+                <td class='fcaption'>Name</td>
+                <td class='fcaption'>Type</td>
+                <td class='fcaption'>Values</td>
+                <td class='fcaption'>Action</td>
+                \n";
 
 		if(!$row[0]){
 			$text .= "<tr>
-			<td colspan='2' class='forumheader3' style='text-align:center'>".USRLAN_40."</td>
+			<td colspan='4' class='forumheader3' style='text-align:center'>".USRLAN_40."</td>
 			</tr>";
 		}else{
 			$c=0;
 
 			while(list($key, $u_entended) = each($user_entended)){
 				if($u_entended){
+                                // added by cameron..=============================
+                                $ut = explode("|",$u_entended);
+                                $u_name = ($ut[0] != "") ? $ut[0] : $u_entended;
+                                $u_type = $ut[1];
+                                $u_value = $ut[2];
 					$text .= "<tr>
-					<td colspan='2' class='forumheader3' style='text-align:center'>".$u_entended."&nbsp;&nbsp;&nbsp;[ <a href='".e_SELF."?delext.$key'>".USRLAN_29."</a> ]
+                                        <td class='forumheader3' >".$u_name."&nbsp; </td>
+                                        <td class='forumheader3' >".$u_type."&nbsp; </td>
+                                        <td class='forumheader3' >".$u_value."&nbsp; </td>
+                                        <td class='forumheader3' style='text-align:center'><span class='button' style='height:16px; width:90%'><a style='text-decoration:none' href='".e_SELF."?delext.$key'>".USRLAN_29."</a></span>
 					</td>
 					</tr>";
 					$c++;
@@ -466,14 +488,36 @@ class users{
 			}
 		}
 
+                $text .="</table><br><table style='width:85%' class='fborder'>  ";
+                $text .= "<tr>
+                <td style='width:30%' class='forumheader3'>".USRLAN_41.":</td>
+                <td style='width:70%' class='forumheader3' colspan='3'>
+                <input class='tbox' type='text' name='user_field' size='40' value='' maxlength='50' /></td>
+                </tr>";
+
+
+               $text .="<tr>
+                <td style='width:30%' class='forumheader3'>Field Type:</td>
+                <td style='width:70%' class='forumheader3' colspan='3'>
+                <select class='tbox' name='user_type'>
+                <option value='|text|'>Text Box</option>
+                <option value='|radio|'>Radio Buttons</option>
+                <option value='|dropdown|'>Drop-Down Menu</option>
+                <option value='|table|'>DB Table Field</option>
+                </select></tr>";
 
 		$text .= "<tr>
-		<td style='width:30%' class='forumheader3'>".USRLAN_41.":</td>
-		<td style='width:70%' class='forumheader3'><input class='tbox' type='text' name='user_field' size='40' value='' maxlength='50' /></td>
-		</tr>
+                <td style='width:30%' class='forumheader3'>Values:</td>
+                <td style='width:70%' class='forumheader3' colspan='3'>
+                <input class='tbox' type='text' name='user_value' size='40' value='' /><br />
+                <span class='smalltext'>Enter values seperated by commas eg. value1,value2 etc<br>
+                For DB table value1=dbname value2=option value value3=option display-name.</span>
+                </td>
+                </tr>";
 
-		<tr> 
-		<td colspan='2' style='text-align:center' class='forumheader'>
+          // ======= end added by Cam.
+                $text .="<tr>
+                <td colspan='4' style='text-align:center' class='forumheader'>
 		<input class='button' type='submit' name='add_field' value='".USRLAN_42."' />
 		</td>
 		</tr>
@@ -532,6 +576,7 @@ class users{
 		<tr style='vertical-align:top'>
 		<td colspan='2' style='text-align:center' class='forumheader'>
 		<input class='button' type='submit' name='adduser' value='".USRLAN_60."' />
+		<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
 		</td>
 		</tr>
 		</table>

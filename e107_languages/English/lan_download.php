@@ -45,4 +45,7 @@ define("LAN_dl_39", "Sort");
 
 define("LAN_dl_40", "Click here for screenshot");
 define("LAN_dl_41", "Search Downloads");
+
+define("LAN_dl_42", "Sub-categories");
+
 ?>

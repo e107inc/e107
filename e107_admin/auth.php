@@ -13,6 +13,7 @@
 +---------------------------------------------------------------+
 */
 @include(e_LANGUAGEDIR.$language."/admin/lan_admin.php");
+@include(e_LANGUAGEDIR."English/admin/lan_admin.php");
 if(ADMIN){
 	require_once(e_ADMIN."header.php");
 }else{
@@ -102,6 +103,7 @@ $au -> tablerender(ADLAN_92, $text);
 		# - scope					public
 		*/
 		$sql_auth = new db;
+		$authname = ereg_replace("\sOR\s|\=|\#", "", $authname);
 		if($sql_auth -> db_Select("user", "*", "user_name='$authname' AND user_admin='1' ")){
 			if($sql_auth -> db_Select("user", "*", "user_name='$authname' AND user_password='".md5($authpass)."' AND user_admin='1' ")){
 				$row = $sql_auth -> db_Fetch();

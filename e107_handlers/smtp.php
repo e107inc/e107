@@ -150,7 +150,7 @@ function smtpmail($mail_to, $subject, $message, $headers = "")
 
 	// From this point onward most server response codes should be 250
 	// Specify who the mail is from....
-	fputs($socket, "MAIL FROM: <" . SITENAME . ">\r\n");
+	fputs($socket, "MAIL FROM: <" . $pref['siteadminemail'] . ">\r\n");
 	server_parse($socket, "250");
 
 	// Specify each user to send to and build to header.
@@ -167,7 +167,7 @@ function smtpmail($mail_to, $subject, $message, $headers = "")
 			fputs( $socket, "RCPT TO: <$mail_to_address>\r\n" );
 			server_parse( $socket, "250" );
 		}
-		$to_header .= ( ( $mail_to_address != '' ) ? ', ' : '' ) . "<$mail_to_address>";
+		$to_header .= "<$mail_to_address>";
 	}
 	// Ok now do the CC and BCC fields...
 	@reset( $bcc );

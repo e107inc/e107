@@ -79,6 +79,7 @@ if(IsSet($_POST['updateoptions'])){
 	$pref['linkpage_categories'] = $_POST['linkpage_categories'];
 	$pref['link_submit'] = $_POST['link_submit'];
 	$pref['link_submit_class'] = $_POST['link_submit_class'];
+	$pref['linkpage_screentip'] = $_POST['linkpage_screentip'];
 	save_prefs();
 	$linkpost -> show_message(LCLAN_1);
 }
@@ -579,6 +580,16 @@ class links{
 		</td>
 		<td style='width:30%' class='forumheader2' style='text-align:center'>".
 		($pref['linkpage_categories'] ? "<input type='checkbox' name='linkpage_categories' value='1' checked>" : "<input type='checkbox' name='linkpage_categories' value='1'>")."
+		</td>
+		</tr>
+
+		<tr>
+		<td style='width:70%' class='forumheader3'>
+		".LCLAN_78."<br />
+		<span class='smalltext'>".LCLAN_79."</span>
+		</td>
+		<td style='width:30%' class='forumheader2' style='text-align:center'>".
+		($pref['linkpage_screentip'] ? "<input type='checkbox' name='linkpage_screentip' value='1' checked>" : "<input type='checkbox' name='linkpage_screentip' value='1'>")."
 		</td>
 		</tr>
 

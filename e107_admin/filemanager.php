@@ -22,6 +22,7 @@ $path = str_replace("../", "", (e_QUERY ? e_QUERY : e_FILE));
 if(!$path){ $path =  str_replace("../", "", e_FILE); }
 
 if(IsSet($_POST['deletefile'])){
+	if(!$_POST['ac'] == md5(ADMINPWCHANGE)){ exit; }
 	$destination_file = str_replace($ADMIN_DIRECTORY, "", substr($_SERVER['PATH_TRANSLATED'], 0, strrpos($_SERVER['PATH_TRANSLATED'], "/"))."/".$_POST['deleteconfirm']);
 	if(@unlink($destination_file)){
 		$message = "Deleted '".$destination_file."' successfully.";
@@ -31,6 +32,7 @@ if(IsSet($_POST['deletefile'])){
 }
 
 if(IsSet($_POST['upload'])){
+	if(!$_POST['ac'] == md5(ADMINPWCHANGE)){ exit; }
 	$files = $_FILES['userfile'];
 	foreach($files['name'] as $key => $name){
 		if($files['size'][$key]){
@@ -223,6 +225,7 @@ while($files[$c]){
 }
 
 $text .= "
+<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
 </form>
 </table>
 </div>";

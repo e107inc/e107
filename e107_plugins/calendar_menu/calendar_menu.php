@@ -56,10 +56,10 @@ if($events){
 $start = $monthstart;
 
 $text .= "<br /><br />
-<table cellpadding='0' cellspacing='1' style='width:89%' class='fborder'><tr>";
+<table cellpadding='0' cellspacing='1' style='width:95%' class='fborder'><tr>";
 
 foreach($week as $day){
-        $text .= "<td class='day' style='text-align:center'>".$day."</td>";
+        $text .= "<td class='forumheader' style='text-align:center'><span class='smalltext'>".$day."</span></td>";
 }
 $text .= "</tr><tr >";
 
@@ -67,7 +67,7 @@ $thismonth = $datearray['mon'];
 $thisday = $datearray['mday'];
 
 for($c=0; $c<$firstdayarray['wday']; $c++){
-                $text .= "<td class='day' style='text-align:center'><br /></td>";
+                $text .= "<td class='forumheader3' style='text-align:center'><br /></td>";
 }
 $loop = $firstdayarray['wday'];
 for($c=1; $c<=31; $c++){
@@ -76,9 +76,9 @@ for($c=1; $c<=31; $c++){
 
         if($dayarray['mon'] == $thismonth){
                 if($thisday == $c){
-                        $text .=  "<td class='dayentry' style='text-align:center'>";
+                        $text .=  "<td class='indent' style='text-align:center'>";
                 }else{
-                        $text .="<td class='day' style='text-align:center'>";
+                        $text .="<td class='forumheader3' style='text-align:center'>";
                 }
 
                 if($event_true[($c)]){
@@ -108,7 +108,7 @@ for($c=1; $c<=31; $c++){
 }
 
 for($a=($loop+1); $a<=7; $a++){
-	$text .="<td class='day' style='text-align:center'>&nbsp;</td>";
+	$text .="<td>&nbsp;</td>";
 }
 
 $text .= "</tr></table></div>";

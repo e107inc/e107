@@ -151,10 +151,10 @@ function getbrowser(){
 	}else if(eregi("Links", $agent)){ $browser = "Lynx";
 	}else if(eregi("(Firebird/)([0-9]{1,2}.[0-9]{1,3}){0,1}", $agent, $ver)){ $browser = "Firebird $ver[2]";
 	}else if(eregi("Mozilla/5",$agent)){$browser = "Netscape 5";
+	}else if(eregi("Gecko", $agent)){ $browser = "Mozilla";
 	}else if(eregi("Safari",$agent)){ $browser = "OS-X Safari";
 	}else if(eregi("(netscape6)/(6.[0-9]{1,3})", $agent, $ver)){ $browser = "Netscape $ver[2]";
 	}else if(eregi("(Mozilla)/([0-9]{1,2}.[0-9]{1,3})", $agent, $ver)){ $browser = "Netscape $ver[2]";
-	}else if(eregi("Gecko", $agent)){ $browser = "Mozilla";
 	}else if(eregi("Galeon", $agent)){ $browser = "Galeon";
 	}else if(eregi("(lynx)/([0-9]{1,2}.[0-9]{1,2}.[0-9]{1,2})", $agent, $ver) ){$browser = "Lynx $ver[2]";
 	}else if(eregi("Avant Browser", $agent)){ $browser = "Avant";

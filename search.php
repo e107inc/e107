@@ -92,7 +92,7 @@ $text .= "
 </p>
 </form></div>";
 
-$ns -> tablerender("Search ".SITENAME, $text);
+$ns -> tablerender(PAGE_NAME." ".SITENAME, $text);
 
 // only search when a query is filled.
 if($_POST['searchquery'] && $searchtype != 99){

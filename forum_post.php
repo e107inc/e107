@@ -392,6 +392,8 @@ if($action == "edit" || $action == "quote"){
 	$post = ereg_replace("&lt;span class=&#39;smallblacktext&#39;.*\span\>", "", $post);
 	if($action == "quote"){
 		$post_author_name = substr($thread_user, (strpos($thread_user, ".")+1));
+		$tmp = explode(chr(1), $post_author_name);
+		$post_author_name = $tmp[0];
 		$post = "[quote=$post_author_name]".$post."[/quote]\n";
 		$eaction = FALSE;
 		$action = "reply";

@@ -29,12 +29,17 @@ if(e_QUERY){
 }
 
 if(IsSet($_POST['pwsubmit'])){
-
 	require_once(e_HANDLER."mail.php");
-
 	$email = $_POST['email'];
 	if($sql -> db_Select("user", "*", "user_email='".$_POST['email']."' ")){
 		$row = $sql -> db_Fetch(); extract($row);
+
+		if(is_numeric($user_login) && strlen($user_sess) == 32){
+			$ns -> tablerender(LAN_214, "<div style='text-align:center'>".LAN_219."</div>");
+			require_once(FOOTERF);
+			exit;
+		}
+
 		if($user_id == 1 && $user_perms == 0){
 			sendemail($pref['siteadminemail'], "Attempted password reset", "Someone with ip address ".getip()." attempted to reset the main admin password.");
 			echo "<script type='text/javascript'>document.location.href='index.php'</script>\n";

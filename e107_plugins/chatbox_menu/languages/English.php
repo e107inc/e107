@@ -26,4 +26,7 @@ define("CHATBOX_L11", "No messages yet.");
 define("CHATBOX_L12", "View all posts");
 define("CHATBOX_L13", "moderate chatbox");
 define("CHATBOX_L14", "Emotes");
+define("CHATBOX_L15", "Post too long, or empty post submitted");
+define("CHATBOX_L16", "Anonymous");
+
 ?>

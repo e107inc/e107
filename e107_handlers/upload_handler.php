@@ -14,17 +14,17 @@
 */
 
 function file_upload($uploaddir, $avatar = FALSE){
+
 	if(!$uploaddir) $uploaddir=e_FILE."public/";
 	global $pref, $sql;
-	$uploaddir = str_replace("../", "", $uploaddir);
 
 	$allowed_filetypes = ($pref['upload_allowedfiletype'] ? explode("\n", $pref['upload_allowedfiletype']) : array(".zip", ".gz", ".jpg", ".png", ".gif", ".txt"));
 
-	for($a=0; $a<=5; $a++){
-		$allowed_filetypes[$a] = trim(chop($allowed_filetypes[$a]));
+	$a=0;
+	foreach($allowed_filetypes as $v) {
+		$allowed_filetypes[$a] = trim(chop($v));
+		$a++;
 	}
-
-//	echo $pref['upload_storagetype'];
 
 	if($pref['upload_storagetype'] == "2" && $avatar == FALSE){
 		extract($_FILES);

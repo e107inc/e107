@@ -48,7 +48,13 @@ for($i=1;$i<=$num_levels;$i++){
 	$link_prefix.="../";
 }
 
-define("e_QUERY", eregi_replace("(.?)([a-zA-Z]*\(.*\))(.*)", "\\1\\3", eregi_replace("&|/?PHPSESSID.*", "", $_SERVER['QUERY_STRING'])));
+if(preg_match("/\[(.*?)\].*?/i", $_SERVER['QUERY_STRING'], $matches)){
+define("e_MENU", $matches[1]);
+	define("e_QUERY", str_replace($matches[0], "", eregi_replace("(.?)([a-zA-Z]*\(.*\))(.*)", "\\1\\3", eregi_replace("&|/?PHPSESSID.*", "", $_SERVER['QUERY_STRING']))));
+}else{
+	define("e_QUERY", eregi_replace("(.?)([a-zA-Z]*\(.*\))(.*)", "\\1\\3", eregi_replace("&|/?PHPSESSID.*", "", $_SERVER['QUERY_STRING'])));
+}
+
 $_SERVER['QUERY_STRING'] = e_QUERY;
 define('e_BASE',$link_prefix);
 define("e_ADMIN", e_BASE.$ADMIN_DIRECTORY);
@@ -137,9 +143,12 @@ init_session();
 online();
 
 $fp = ($pref['frontpage'] ? $pref['frontpage'].".php" : "news.php index.php");
-$signuplink = (file_exists(e_BASE."customsignup.php"))? "customsignup.php" : "signup.php";
-if($pref['membersonly_enabled'] && !USER && !strstr($fp, e_PAGE) && e_PAGE != "$signuplink" && e_PAGE != "index.php" && e_PAGE != "fpw.php" && !strstr(e_PAGE, "admin")){
-	echo "<br /><br /><div style='text-align:center; font: 12px Verdana, Tahoma'>This is a restricted area, to access it either log in or <a href='".e_BASE.$signuplink."'>register as a member</a>.<br /><br /><a href='".e_BASE."index.php'>Click here to return to front page</a>.</div>";
+define("e_SIGNUP", (file_exists(e_BASE."customsignup.php") ? "customsignup.php" : "signup.php"));
+
+
+
+if($pref['membersonly_enabled'] && !USER && !strstr($fp, e_PAGE) && e_PAGE != e_SIGNUP && e_PAGE != "index.php" && e_PAGE != "fpw.php" && !strstr(e_PAGE, "admin")){
+	echo "<br /><br /><div style='text-align:center; font: 12px Verdana, Tahoma'>This is a restricted area, to access it either log in or <a href='".e_BASE.e_SIGNUP."'>register as a member</a>.<br /><br /><a href='".e_BASE."index.php'>Click here to return to front page</a>.</div>";
 	exit;
 }
 
@@ -181,11 +190,12 @@ if($pref['maintainance_flag'] && ADMIN == FALSE && !eregi("admin", e_SELF)){
 if(defined("CORE_PATH") && ($page == "index.php" || !$page)){ $page = "news.php"; }
 
 if(strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin.php")){
-	(file_exists(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".e_PAGE) ? @include(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".e_PAGE) : @include(e_LANGUAGEDIR."English/admin/lan_".e_PAGE));
+	@include(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".e_PAGE);
+	@include(e_LANGUAGEDIR."English/admin/lan_".e_PAGE);
 }else{
-	(file_exists(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE) ? @include(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE) : @include(e_LANGUAGEDIR."English/lan_".e_PAGE));
+	@include(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE);
+	@include(e_LANGUAGEDIR."English/lan_".e_PAGE);
 }
-
 
 if(IsSet($_POST['userlogin'])){
 	require_once(e_HANDLER."login.php");
@@ -253,7 +263,7 @@ define("e_ADMIN", $e_BASE.$ADMIN_DIRECTORY);
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 class e107table{
-	function tablerender($caption, $text, $mode="default"){
+	function tablerender($caption, $text, $mode="default", $return=FALSE){
 		/*
 		# Render style table
 		# - parameter #1:		string $caption, caption text
@@ -261,7 +271,17 @@ class e107table{
 		# - return				null
 		# - scope					public
 		*/
-		tablestyle($caption, $text, $mode);
+
+		if($return){
+			ob_end_flush();
+			ob_start();
+			tablestyle($caption, $text, $mode);
+			$ret = ob_get_contents();
+			ob_end_clean();
+			return($ret);
+		}else{
+			tablestyle($caption, $text, $mode);
+		}
 	}
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -350,7 +370,7 @@ class textparse{
 		# - scope					public
 		*/
 		global $pref;
-
+		$text = " ".$text;
 		if($pref['profanity_filter'] && $this->profan){
 			$text = eregi_replace($this->profan, $pref['profanity_replace'], $text);
 		}
@@ -366,7 +386,7 @@ class textparse{
 		$search[2] = "#\[link=([a-z]+?://){1}(.*?)\](.*?)\[/link\]#si";
 		$replace[2] = '<a href="\1\2">\3</a>';
 		$search[3] = "#\[link=(.*?)\](.*?)\[/link\]#si";
-		$replace[3] = '<a href="http://\1">\2</a>';
+		$replace[3] = '<a href="\1">\2</a>';
 		$search[4] = "#\[email\](.*?)\[/email\]#si";
 		$replace[4] = '<a href="mailto:\1">\1</a>';
 		$search[5] = "#\[email=(.*?){1}(.*?)\](.*?)\[/email\]#si";
@@ -415,7 +435,7 @@ class textparse{
 		$search[23] = "#\[br\]/si";
 		$replace[23] = '<br />';
 
-		if($pref['forum_attach'] && FILE_UPLOADS){
+		if($pref['forum_attach'] && FILE_UPLOADS || ADMIN){
 			$search[24] = "#\[file=(.*?)\](.*?)\[/file\]#si";
 			$replace[24] = '<a href="\1"><img src="'.e_IMAGE.'generic/attach1.png" alt="" style="border:0; vertical-align:middle" /> \2</a>';
 		}else{
@@ -468,7 +488,7 @@ class textparse{
 			}
 			*/
 		
-		}else{
+		}else if(ADMIN && !strstr(e_PAGE, "newspost.php") && !strstr(e_PAGE, "article.php" && !strstr(e_PAGE, "review.php"))){
 			$text = preg_replace("#\[img\](.*?)\[/img\]#si", '<img src=\'\1\' alt=\'\' style=\'vertical-align:middle; border:0\' />', $text);
 		}
 

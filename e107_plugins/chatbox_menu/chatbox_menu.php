@@ -50,7 +50,7 @@ if(IsSet($_POST['chat_submit'])){
 					}
 				}
 			}else{
-				$emessage = "Post too long.";
+				$emessage = CHATBOX_L15;
 			}
 		}
 	}
@@ -75,7 +75,9 @@ if($pref['user_reg'] && !USER && !$pref['anon_post']){
 	$texta .="</p>\n</form>\n</div>\n<br />\n";
 }
 
-
+if($emessage != ""){
+	$texta .= "<div style='text-align:center'><b>".$emessage."</b></div><br />";
+}
 
 if(!$text = retrieve_cache("chatbox")){
 
@@ -161,10 +163,6 @@ if(!$text = retrieve_cache("chatbox")){
 	$total_chats = $sql -> db_Count("chatbox");
 	if($total_chats > $chatbox_posts){
 		$text .= "<br /><div style='text-align:center'><a href='".e_BASE."chat.php'>".CHATBOX_L12."</a> (".$total_chats.")</div>";
-	}
-
-	if($emessage != ""){
-		$text = "<div style='text-align:center'><b>".$emessage."</b></div><br />".$text;
 	}
 
 	set_cache("chatbox", $text);

@@ -15,6 +15,6 @@ if($results = $sql -> db_Select("content", "*", "content_type=1 AND content_clas
 		$text .= "<br /><img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <b><a href=\"article.php?".$content_id."\">".$content_heading_."</a></b> <br />".$content_subheading_.$content_content_;
 	}
 }else{
-	$text .= "No matches.";
+	$text .= LAN_198;
 }
 ?>

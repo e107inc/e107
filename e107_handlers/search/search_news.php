@@ -18,6 +18,6 @@ if($results = $sql -> db_Select("news", "*", "news_title REGEXP('".$query."') OR
 		}
 	}
 }else{
-	$text .= "No matches.";
+	$text .= LAN_198;
 }
 ?>

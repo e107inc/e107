@@ -138,9 +138,9 @@ if(!$FORUMSTART){	// no style defined in theme.php - use default style ...
 
 $thread_name = $aj -> tpa($thread_name);
 
-$BREADCRUMB = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a> -> <a class='forumlink' href='forum.php'>Forums</a> -> <a class='forumlink' href='forum_viewforum.php?".$forum_id."'>".$forum_name."</a> -> ".$thread_name;
+$BREADCRUMB = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a> -> <a class='forumlink' href='forum.php'>".LAN_01."</a> -> <a class='forumlink' href='forum_viewforum.php?".$forum_id."'>".$forum_name."</a> -> ".$thread_name;
 
-$BACKLINK = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a> -> <a class='forumlink' href='forum.php'>Forums</a> -> <a class='forumlink' href='forum_viewforum.php?".$forum_id."'>".$forum_name."</a>";
+$BACKLINK = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a> -> <a class='forumlink' href='forum.php'>".LAN_01."</a> -> <a class='forumlink' href='forum_viewforum.php?".$forum_id."'>".$forum_name."</a>";
 
 $THREADNAME = $thread_name;
 

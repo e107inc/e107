@@ -20,6 +20,6 @@
 			}
 		}
 	}else{
-		$text .= "No matches.";
+		$text .= LAN_198;
 	}
 ?>

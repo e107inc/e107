@@ -18,9 +18,9 @@ echo "<?xml version='1.0' encoding='iso-8859-1' ?>
 <html xmlns=\"http://www.w3.org/1999/xhtml\">
 <head>
 <title>".SITENAME.(defined("PAGE_NAME") ? ": ".PAGE_NAME : "")."</title>
-<link rel=\"stylesheet\" href=\"".THEME."style.css\" />
-<link rel=\"stylesheet\" href=\"".e_FILE."e107.css\" />";
-if(file_exists(e_FILE."style.css")){ echo "\n<link rel='stylesheet' href='".e_FILE."style.css' />"; }
+<link rel=\"stylesheet\" href=\"".THEME."style.css\" type=\"text/css\" />
+<link rel=\"stylesheet\" href=\"".e_FILE."e107.css\" type=\"text/css\" />";
+if(file_exists(e_FILE."style.css")){ echo "\n<link rel='stylesheet' href='".e_FILE."style.css' type=\"text/css\" />\n"; }
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=".CHARSET."\" />
 <meta http-equiv=\"content-style-type\" content=\"text/css\" />
 ".($pref['meta_tag'] ? $aj -> formtparev($pref['meta_tag'])."\n" : "");
@@ -123,13 +123,9 @@ function checklayout($str){
 				if(strstr($menu_name, "custom_")){
 					require_once(e_PLUGIN."custom/".str_replace("custom_", "", $menu_name).".php");
 				}else{
-					if(@fopen(e_PLUGIN.$menu_name."/languages/".e_LANGUAGE.".php","r")){
-						@include(e_PLUGIN.$menu_name."/languages/".e_LANGUAGE.".php");
-						require_once(e_PLUGIN.$menu_name."/".$menu_name.".php");
-					}else{
-						@include(e_PLUGIN.$menu_name."/languages/English.php");
-						require_once(e_PLUGIN.$menu_name."/".$menu_name.".php");
-					}
+					@include(e_PLUGIN.$menu_name."/languages/".e_LANGUAGE.".php");
+					@include(e_PLUGIN.$menu_name."/languages/English.php");
+					require_once(e_PLUGIN.$menu_name."/".$menu_name.".php");
 				}
 			}
 			
@@ -142,9 +138,8 @@ function checklayout($str){
 	}else if(strstr($str, "CUSTOM")){
 		$custom = trim(chop(preg_replace("/\{CUSTOM=(.*?)\}/si", "\\1", $str)));
 		if($custom == "login"){
-
-			include(e_PLUGIN."login_menu/languages/".e_LANGUAGE.".php");
-
+			@include(e_PLUGIN."login_menu/languages/".e_LANGUAGE.".php");
+			@include(e_PLUGIN."login_menu/languages/English.php");
 			if($pref['user_reg'] == 1){
 				if(USER == TRUE){
 					echo "<table><tr>
@@ -160,8 +155,11 @@ function checklayout($str){
 					".LOGIN_MENU_L1."<input class='tbox' type='text' name='username' size='15' value='$username' maxlength='20' />&nbsp;&nbsp;
 					".LOGIN_MENU_L2."<input class='tbox' type='password' name='userpass' size='15' value='' maxlength='20' />&nbsp;&nbsp;
 					<input type='checkbox' name='autologin' value='1' />".LOGIN_MENU_L6."&nbsp;&nbsp;
-					<input class='button' type='submit' name='userlogin' value='Login' />&nbsp;&nbsp;<a href='signup.php'>".LOGIN_MENU_L3."</a>
-					</p>
+					<input class='button' type='submit' name='userlogin' value='Login' />";
+					if($pref['user_reg']){
+						$text .= "&nbsp;&nbsp;<a href='signup.php'>".LOGIN_MENU_L3."</a>";
+					}
+					$text .= "</p>
 					</form>";
 				}
 			}

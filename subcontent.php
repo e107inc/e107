@@ -51,6 +51,10 @@ if(IsSet($_POST['preview'])){
 }
 
 if(IsSet($_POST['create_article'])){
+	if(USER){
+		$_POST['content_author'] = USERNAME;
+		$_POST['content_author_email'] = USEREMAIL;
+	}
 	if($_POST['data'] && $_POST['content_author'] && $_POST['content_heading']){
 		$content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
 		$content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
@@ -69,6 +73,10 @@ if(IsSet($_POST['create_article'])){
 }
 
 if(IsSet($_POST['create_review'])){
+	if(USER){
+		$_POST['content_author'] = USERNAME;
+		$_POST['content_author_email'] = USEREMAIL;
+	}
 	if($_POST['data'] && $_POST['content_author'] && $_POST['content_heading']){
 		$content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
 		$content_heading = $aj -> formtpa($_POST['content_heading'], "admin");

@@ -26,22 +26,24 @@ if(e_QUERY){
 }
 
 if(IsSet($_POST['add_admin'])){
-	if(!$_POST['ad_name'] || !$_POST['a_password']){
-		$message = ADMSLAN_55;
-	}else{
-		for ($i=0; $i<=29; $i++){
-			if($_POST['perms'][$i]){
-				$perm .= $_POST['perms'][$i].".";
-			}
-		}
-		
-		if(!$sql -> db_Select("user", "*", "user_name='".$_POST['ad_name']."' ")){
-			$sql -> db_Insert("user", "0, '".$_POST['ad_name']."', '".md5($_POST['a_password'])."', '', '".$_POST['ad_email']."', 	'".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$_POST['birthday']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".time()."', '0', '".time()."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '1', '', '', '$perm', '', '' ");
-			$message = ADMSLAN_0." ".$_POST['ad_name']."<br />";
+	if($_POST['ac'] == md5(ADMINPWCHANGE)){
+		if(!$_POST['ad_name'] || !$_POST['a_password']){
+			$message = ADMSLAN_55;
 		}else{
-			$sql -> db_Update("user", "user_admin='1', user_perms='$perm' WHERE user_name='".$_POST['ad_name']."' ");
+			for ($i=0; $i<=29; $i++){
+				if($_POST['perms'][$i]){
+					$perm .= $_POST['perms'][$i].".";
+				}
+			}
+			
+			if(!$sql -> db_Select("user", "*", "user_name='".$_POST['ad_name']."' ")){
+				$sql -> db_Insert("user", "0, '".$_POST['ad_name']."', '".md5($_POST['a_password'])."', '', '".$_POST['ad_email']."', 	'".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$_POST['birthday']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".time()."', '0', '".time()."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '1', '', '', '$perm', '', '' ");
+				$message = ADMSLAN_0." ".$_POST['ad_name']."<br />";
+			}else{
+				$sql -> db_Update("user", "user_admin='1', user_perms='$perm' WHERE user_name='".$_POST['ad_name']."' ");
+			}
+			$message = $_POST['ad_name']." ".ADMSLAN_1."<br />";
 		}
-		$message = $_POST['ad_name']." ".ADMSLAN_1."<br />";
 	}
 }
 
@@ -215,6 +217,7 @@ if($action == "edit"){
 $text .= "</td>
 </tr>
 </table>
+<input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' />
 </form>
 </div>";
 

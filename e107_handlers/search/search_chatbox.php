@@ -16,6 +16,6 @@ if($results = $sql -> db_Select("chatbox", "*", "(cb_nick REGEXP('".$query."') O
 		$text .= "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <a href=\"chat.php?".$cb_id.".fs\">$cb_nick_</a><br />$cb_message_<br /><br />";
 	}
 }else{
-	$text .= "No matches.";
+	$text .= LAN_198;
 }
 ?>

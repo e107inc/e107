@@ -14,11 +14,9 @@ define("DOWLAN_11", "Category");
 define("DOWLAN_12", "Name");
 define("DOWLAN_13", "File");
 define("DOWLAN_14", "enter url if external file");
-
 define("DOWLAN_15", "Author");
 define("DOWLAN_16", "Author Email");
 define("DOWLAN_17", "Author Website");
-
 define("DOWLAN_18", "Description");
 define("DOWLAN_19", "Main image");
 define("DOWLAN_20", "Thumbnail image");
@@ -28,7 +26,6 @@ define("DOWLAN_23", "No");
 define("DOWLAN_24", "Update Download");
 define("DOWLAN_25", "Submit Download");
 define("DOWLAN_26", "Downloads");
-
 define("DOWLAN_27", "Download");
 define("DOWLAN_28", "Options");
 define("DOWLAN_29", "Downloads Front Page");
@@ -45,18 +42,17 @@ define("DOWLAN_39", "Download categories");
 define("DOWLAN_40", "None - main parent");
 define("DOWLAN_41", "Icon");
 define("DOWLAN_42", "View Images");
-
 define("DOWLAN_43", "Visible to");
 define("DOWLAN_44", "Ticking will make the categorry visible to only users in that class");
-
 define("DOWLAN_45", "Create Category");
 define("DOWLAN_46", "Update Category");
-
 define("DOWLAN_47", "Category created");
 define("DOWLAN_48", "Category Updated");
 define("DOWLAN_49", "Download Category");
-
 define("DOWLAN_50", "Go to page: ");
 define("DOWLAN_51", "Search downloads");
+
+define("DOWLAN_52", "Files");
+define("DOWLAN_53", "Subcategory");
 
 ?>

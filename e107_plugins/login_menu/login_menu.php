@@ -1,6 +1,5 @@
 <?php
 $text = "";
-if($pref['user_reg'] == 1 || ADMIN == TRUE){
 
 	if(USER == TRUE || ADMIN == TRUE){
 		$tmp = ($_COOKIE[$pref['cookie_name']] ? explode(".", $_COOKIE[$pref['cookie_name']]) : explode(".", $_SESSION[$pref['cookie_name']]));
@@ -8,8 +7,9 @@ if($pref['user_reg'] == 1 || ADMIN == TRUE){
 		$sql = new db;
 		if($sql -> db_Select("user", "*", "user_id='$uid' AND user_password='$upw' ")){
 			if(ADMIN == TRUE){
+				$adminfpage = (!$pref['adminstyle'] || $pref['adminstyle'] == "default" ? "admin.php" : $pref['adminstyle'].".php");
 				$text = ($pref['maintainance_flag']==1 ? "<div style='text-align:center'><b>".LOGIN_MENU_L10."</div></b><br />" : "" );
-				$text .= "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_ADMIN."admin.php'>".LOGIN_MENU_L11."</a><br />";
+				$text .= "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_ADMIN.$adminfpage."'>".LOGIN_MENU_L11."</a><br />";
 			}
 			$text .= "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_BASE."usersettings.php'>".LOGIN_MENU_L12."</a>
 <br />
@@ -67,10 +67,13 @@ $text .= "'><p>
 <br />
 <input class='button' type='submit' name='userlogin' value='".LOGIN_MENU_L28."' />\n
 <br />
-<input type='checkbox' name='autologin' value='1' /> ".LOGIN_MENU_L6."
-<br /><br />";
-if($pref['auth_method'] != "ldap"){
-	$text .= "[ <a href='".e_BASE."signup.php'>".LOGIN_MENU_L3."</a> ]<br />[ <a href='".e_BASE."fpw.php'> ".LOGIN_MENU_L4."</a> ]";
+<input type='checkbox' name='autologin' value='1' /> ".LOGIN_MENU_L6;
+
+if($pref['user_reg']){
+	$text .= "<br /><br />";
+	if($pref['auth_method'] != "ldap"){
+		$text .= "[ <a href='".e_BASE.e_SIGNUP."'>".LOGIN_MENU_L3."</a> ]<br />[ <a href='".e_BASE."fpw.php'> ".LOGIN_MENU_L4."</a> ]";
+	}
 }
 $text .= "</p>
 </form>
@@ -78,5 +81,5 @@ $text .= "</p>
 		$caption = (file_exists(THEME."images/login_menu.png") ? "<img src='".THEME."images/login_menu.png' alt='' /> ".LOGIN_MENU_L5 : LOGIN_MENU_L5);
 		$ns -> tablerender($caption, $text);
 	}
-}
+
 ?>

@@ -25,7 +25,6 @@ define("LAN_148", "Comments posted");
 define("LAN_149", "Forum posts");
 define("LAN_308", "Real Name");
 define("LAN_400", "That is not a valid user.");
-
 define("LAN_401", "no information");
 define("LAN_402", "Member Profile");
 define("LAN_403", "Site Stats");
@@ -35,18 +34,19 @@ define("LAN_406", "Rating");
 define("LAN_407", "none");
 define("LAN_408", "no photo");
 define("LAN_409", "points");
-
 define("LAN_410", "Miscellaneous");
 define("LAN_411", "Click here to update your information");
 define("LAN_412", "Click here to edit this user's information");
 define("LAN_413", "delete photo");
-
 define("LAN_414", "previous member");
 define("LAN_415", "next member");
-
 define("LAN_416", "You must be logged in to access this page");
-
 define("LAN_417", "Main site administrator");
 define("LAN_418", "Site administrator");
+
+define("LAN_419", "Show");
+define("LAN_420", "DESC");
+define("LAN_421", "ASC");
+define("LAN_422", "Go");
 
 ?>

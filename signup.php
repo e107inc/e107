@@ -38,7 +38,13 @@ if(e_QUERY){
 
 if(IsSet($_POST['register'])){
 	require_once(e_HANDLER."message_handler.php");
-	$_POST['name'] = trim(chop(str_replace("&nbsp;", "", $_POST['name'])));
+
+	if(strstr($_POST['name'], "#") || strstr($_POST['name'], "=")){
+		message_handler("P_ALERT", LAN_409);
+		$error = TRUE;
+	}
+
+	$_POST['name'] = trim(chop(ereg_replace("&nbsp;|\#|\=", "", $_POST['name'])));
 	if($_POST['name'] == "Anonymous"){
 		message_handler("P_ALERT", LAN_103);
 		$error = TRUE;

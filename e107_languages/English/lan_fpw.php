@@ -16,5 +16,6 @@ define("LAN_216", "To validate your new password please go to the following URL 
 define("LAN_217", "Your new password is now validated, you may now login using your new password.");
 
 define("LAN_218", "Your username is:");
+define("LAN_219", "The password associated with that email address has already been reset and cannot be reset again. Please contact the site administrator for more details.");
 
 ?>

@@ -99,5 +99,6 @@ define("USRLAN_89", "Go to page:");
 define("USRLAN_90", "Search Users");
 
 define("USRLAN_91", "Class");
+define("USRLAN_92", "Invalid characters in username");
 
 ?>

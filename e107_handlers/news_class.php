@@ -25,7 +25,7 @@ class news{
 			$news_title = $aj -> formtpa($news_title);
 			$news_body = $aj -> formtpa($data);
 			$news_extended = $aj -> formtpa($news_extended);
-			if($sql -> db_Update("news", "news_title='$news_title', news_body='$news_body', news_extended='$news_extended', news_category='$cat_id', news_allow_comments='$news_allow_comments', news_start='$active_start', news_end='$active_end', news_class='$news_class' WHERE news_id='$news_id' ")){
+			if($sql -> db_Update("news", "news_title='$news_title', news_body='$news_body', news_extended='$news_extended', news_category='$cat_id', news_allow_comments='$news_allow_comments', news_start='$active_start', news_end='$active_end', news_class='$news_class', news_render_type='$news_rendertype' WHERE news_id='$news_id' ")){
 				$message = "News updated in database.";
 				$sql -> db_Delete("cache", "cache_url='news.php' ");
 			}else{
@@ -35,7 +35,7 @@ class news{
 			$news_title = $aj -> formtpa($news_title);
 			$news_body = $aj -> formtpa($data);
 			$news_extended = $aj -> formtpa($news_extended);
-			if($sql -> db_Insert("news", "0, '$news_title', '$news_body', '$news_extended', ".time().", ".USERID.", $cat_id, $news_allow_comments, $active_start, $active_end, '$news_class' ")){
+			if($sql -> db_Insert("news", "0, '$news_title', '$news_body', '$news_extended', ".time().", ".USERID.", $cat_id, $news_allow_comments, $active_start, $active_end, '$news_class', '$news_rendertype' ")){
 				$message = "News entered into database.";
 				$sql -> db_Delete("cache", "cache_url='news.php' ");
 			}else{
@@ -51,9 +51,25 @@ class news{
 		if(!is_object($aj)) $aj = new textparse;
 		extract($news);
 
+		if(!$NEWSLISTSTYLE){
+			$NEWSLISTSTYLE = "
+<img src='".THEME."images/bullet2.gif' alt='bullet' /> 
+<b>
+{NEWSTITLE}
+</b>
+<div class='smalltext'>
+{NEWSAUTHOR}
+on
+{NEWSDATE}
+{NEWSCOMMENTS}
+</div>
+<hr />
+";
+	}
+
 		$news_title = $aj -> tpa($news_title);
 		$news_body = $aj -> tpa($data);
-		$news_extended = $aj -> tpa($news_extended);
+		$news_extended = trim(chop($aj -> tpa($news_extended)));
 
 		if(!$comment_total) $comment_total = "0";
 		$con = new convert;
@@ -74,8 +90,6 @@ class news{
 			}else{
 				$category_icon = e_IMAGE."newsicons/".$category_icon;
 			}
-
-			//$category_icon = (strstr($category_icon, "../") ? str_replace("../", "", $category_icon) : THEME.$category_icon);
 		}
 
 		$active_start = ($active_start ? str_replace(" - 00:00:00", "", $con -> convert_date($active_start, "long")) : "Now");
@@ -98,7 +112,7 @@ class news{
 		}
 
 		$search[0] = "/\{NEWSTITLE\}(.*?)/si";
-		$replace[0] = ($titleonly ? "<a href='".e_BASE."comment.php?$news_id'>".$news_title."</a>" : $news_title);
+		$replace[0] = ($news_rendertype == 1 ? "<a href='".e_BASE."news.php?item.$news_id'>".$news_title."</a>" : $news_title);
 
 		$search[13] = "/\{CAPTIONCLASS\}(.*?)/si";
 		$replace[13] = "<div class='category".$category_id."'>".($titleonly ? "&nbsp;<a href='".e_BASE."comment.php?$news_id'>".$news_title."</a>" : "&nbsp;".$news_title)."</div>";
@@ -145,7 +159,7 @@ class news{
 			$replace[12] = $es1."<a href='".e_BASE."news.php?extend.".$news_id."'>".EXTENDEDSTRING."</a>".$es2;
 		}
 		
-		$text = preg_replace($search, $replace, ($titleonly && strstr(e_SELF, "news.php") ? $NEWSLISTSTYLE : $NEWSSTYLE));
+		$text = preg_replace($search, $replace, ($news_rendertype == 1 && strstr(e_SELF, "news.php") ? $NEWSLISTSTYLE : $NEWSSTYLE));
 		echo $text;
 		if($preview == "Preview"){ echo $info; }
 

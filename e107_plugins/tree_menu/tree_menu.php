@@ -31,6 +31,7 @@ $sql2 = new db;
 $sql -> db_Select("links", "*", "link_category='1' AND link_name NOT REGEXP('submenu') ORDER BY link_order");
 while($row = $sql -> db_Fetch()){
 	extract($row);
+	$link_name=strip_tags($link_name);
 	if($sql2 -> db_Select("links", "*", "link_name REGEXP('submenu.".$link_name."') ORDER BY link_order")){
 		$mlink_name = $link_name;
 		$text .= "

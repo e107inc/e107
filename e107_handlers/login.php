@@ -35,6 +35,7 @@ class userlogin{
 		}
 
 		if($username != "" && $userpass != ""){
+			$username = ereg_replace("\sOR\s|\=|\#", "", $username);
 			$userpass = md5($userpass);
 			if(!$sql -> db_Select("user",  "*", "user_name='$username' ")){
 				define("LOGINMESSAGE", LAN_300."<br /><br />");

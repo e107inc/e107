@@ -51,7 +51,7 @@ if(IsSet($_POST['updateprefs'])){
 	$pref['flood_time'] = $_POST['flood_time'];
 	$pref['user_reg_veri'] = $_POST['user_reg_veri'];
 	$pref['user_tracking'] = $_POST['user_tracking'];
-	$pref['cookie_name'] = $_POST['cookie_name'];
+	$pref['cookie_name'] = ereg_replace("[^[:alpha:]]", "", $_POST['cookie_name']);
 	$pref['auth_method'] = $_POST['auth_method'];
 	$pref['displaythemeinfo'] = $_POST['displaythemeinfo'];
 	$pref['displayrendertime'] = $_POST['displayrendertime'];

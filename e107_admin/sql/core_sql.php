@@ -105,7 +105,7 @@ CREATE TABLE content (
   content_heading tinytext NOT NULL,
   content_subheading tinytext NOT NULL,
   content_content text NOT NULL,
-  content_parent tinyint(3) unsigned NOT NULL default '0',
+  content_parent int(10) unsigned NOT NULL default '0',
   content_datestamp int(10) unsigned NOT NULL default '0',
   content_author varchar(200) NOT NULL default '',
   content_comment tinyint(3) unsigned NOT NULL default '0',
@@ -297,6 +297,7 @@ CREATE TABLE news (
   news_start int(10) unsigned NOT NULL default '0',
   news_end int(10) unsigned NOT NULL default '0',
   news_class tinyint(3) unsigned NOT NULL default '0',
+  news_render_type tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (news_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------

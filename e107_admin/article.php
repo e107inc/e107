@@ -232,7 +232,7 @@ if($action == "cat"){
 if(!$action || $action == "confirm"){
 	$sql2 = new db;
 	$text = "<div style='border : solid 1px #000; padding : 4px; width : auto; height : 200px; overflow : auto; '>";
-	if($article_total = $sql -> db_Select("content", "*", "content_type='0' ")){
+	if($article_total = $sql -> db_Select("content", "*", "content_type='0' ORDER BY content_datestamp DESC")){
 		$text .= "<table class='fborder' style='width:100%'>
 		<tr>
 		<td style='width:5%' class='forumheader2'>&nbsp;</td>
@@ -242,7 +242,7 @@ if(!$action || $action == "confirm"){
 		while($row = $sql -> db_Fetch()){
 			extract($row);
 			unset($cs);
-			if($sql2 -> db_Select("content", "content_summary", "content_id=$content_parent ")){
+			if($sql2 -> db_Select("content", "content_summary", "content_id=$content_parent")){
 				$row = $sql2 -> db_Fetch(); $cs = $row[0];
 			}
 			$text .= "<tr>

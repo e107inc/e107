@@ -2,6 +2,7 @@
 
 @include("e107_handlers/errorhandler_class.php");
 set_error_handler("error_handler");
+error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 if(IsSet($_POST['frontpage'])){ header("location: index.php"); exit;}
 if(IsSet($_POST['adminpage'])){ header("location: admin/admin.php"); exit;}
@@ -112,7 +113,7 @@ function stage2(){
 	$text .= "<tr><td style='width:33%' class='installbox1'><b>".INSLAN8."</b></td>
 	<td style='width:33%' class='installboxgeneric'>".(@mysql_get_server_info() ? @mysql_get_server_info() : "&nbsp;")."</td>";
 
-	if(!@mysql_get_server_info()){
+	if(!mysql_get_server_info()){
 		$error[1] = TRUE;
 		$text .= "<td style='width:33%' class='installboxfail'>* Fail *</td>
 		</tr>
@@ -427,7 +428,7 @@ function create_tables(){
 	$datestamp = time();
 
 	mysql_query("INSERT INTO ".$mySQLprefix."content VALUES (0, '$article_heading', '$article_subheading', '$article', '$datestamp', 0, 0) ");
-	mysql_query("INSERT INTO ".$mySQLprefix."news VALUES (0, 'Welcome to e107', '$welcome_message', '', '$datestamp', '0', '1', 1, 0, 0, 0) ");
+	mysql_query("INSERT INTO ".$mySQLprefix."news VALUES (0, 'Welcome to e107', '$welcome_message', '', '$datestamp', '0', '1', 1, 0, 0, 0, 0) ");
 	mysql_query("INSERT INTO ".$mySQLprefix."news_category VALUES (0, 'Misc', 'icon5.png') ");
 	mysql_query("INSERT INTO ".$mySQLprefix."poll VALUES (0, '$datestamp', 0, 1, 'So what do you think of e107?', 'I&#39;m not impressed', 'It&#39;s not bad but I&#39;ve seen better', 'It&#39;s good', 'I love it!', 'Grah I hate polls', 'What&#39;s e107 anyway?', '', '', '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 1) ");
 	mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Home', 'index.php', '', '', 1, 0, 0, 0, 0) ");
@@ -553,6 +554,9 @@ function create_tables(){
 	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'tree_menu', 0, 0, 0)");
 	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'userlanguage_menu', 0, 0, 0)");
 	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'usertheme_menu', 0, 0, 0)");
+	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'blogcalendar_menu', 0, 0, 0)");
+	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'online_extended_menu', 0, 0, 0)");
+	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'other_news_menu', 0, 0, 0)");
 
 	mysql_query("INSERT INTO ".$mySQLprefix."userclass_classes VALUES (1, 'PRIVATEMENU', 'Grants access to private menu items')");
 	mysql_query("INSERT INTO ".$mySQLprefix."userclass_classes VALUES (2, 'PRIVATEFORUM1', 'Example private forum class')");
