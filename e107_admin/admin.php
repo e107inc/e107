@@ -91,10 +91,10 @@ if(!$tdc){ $text .= "</tr>"; }
 
         unset($tdc);
 
-        $text .= "<tr>
+        $text .= "</tr><tr>
         <td colspan='5'><br />
         </td>
-        <tr>";
+        </tr>";
 
         $text .= wad(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z", "", TRUE);
 
@@ -231,4 +231,3 @@ function tdnorm(object) {
 return $script;
 }
 ?>
-
