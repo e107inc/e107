@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/filemanager.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-02-19 16:33:27 $
+|     $Revision: 1.12 $
+|     $Date: 2005-03-10 10:54:43 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -285,8 +285,10 @@ while ($files[$c]) {
 		<td style=\"width:30%\" class=\"forumheader3\">
 		<a href=\"".e_SELF."?".$path.$files[$c]."\">".$files[$c]."</a>
 		</td>";
+	$gen = new convert;
+	$filedate = $gen -> convert_date(filemtime(e_BASE.$path."/".$files[$c]), "forum");
 	$text .= "<td style=\"width:10%\" class=\"forumheader3\">".$size."</td>
-		<td style=\"width:30%\" class=\"forumheader3\">".date("F j Y, g:i a", filemtime(e_BASE.$path."/".$files[$c]))."</td>
+		<td style=\"width:30%\" class=\"forumheader3\">".$filedate."</td>
 		<td class=\"forumheader3\">";
 
 	$text .= "<input  type=\"checkbox\" name=\"selectedfile[$c]\" value=\"1\" />";
