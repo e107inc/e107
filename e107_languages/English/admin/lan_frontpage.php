@@ -13,5 +13,7 @@ define("FRTLAN_10", "Always front page");
 define("FRTLAN_11", "Splashscreen only");
 define("FRTLAN_12", "Update Front Page Settings");
 define("FRTLAN_13", "Front Page Settings");
+define("FRTLAN_14", "(type full URL)");
+
 
 ?>
