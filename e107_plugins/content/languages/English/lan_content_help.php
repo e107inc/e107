@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content_help.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-03 23:31:40 $
+|     $Revision: 1.2 $
+|     $Date: 2005-02-08 23:47:16 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -28,8 +28,13 @@ define("CONTENT_ADMIN_HELP_LAN_13", "<i>On this page you see a list of all conte
 define("CONTENT_ADMIN_HELP_LAN_14", "Content Management Help Area");
 define("CONTENT_ADMIN_HELP_LAN_15", "<br /><br /><b>personal manager</b><br />you can assign admins to certain categories. In doing so, these admins can manage their personal content items within these categories from outside of the admin page (content_manager.php).");
 define("CONTENT_ADMIN_HELP_LAN_16", "<i>on this page you can assign admins to the selected category you have clicked</i><br /><br />Assign admin from the left colomn by clicking their name. you will see these names move to the right colomn. After clicking the assign button the admins in the right colomn are assigned to this category.");
-define("CONTENT_ADMIN_HELP_LAN_17", "");
-define("CONTENT_ADMIN_HELP_LAN_18", "");
-define("CONTENT_ADMIN_HELP_LAN_19", "");
+
+define("CONTENT_ADMIN_HELP_LAN_17", "<i>if you have not yet added main parent categories, please do so at the Create New Category page.</i><br /><br /><b>main parent buttons</b><br />select a main parent category by clicking the button.");
+
+define("CONTENT_ADMIN_HELP_LAN_18", "<i>this page shows all categories from the main parent category you have selected at the content order main page.</i><br /><br /><b>detailed list</b><br />you see the category id and the category name. also you see several options to manage the order of the categories.<br /><br /><b>set item order</b><br />this image will redirect you to the page where you can manage the order of content items in the associated category.<br /><br /><b>move</b><br />the up and down buttons allow you to move a category one up or down in order.<br /><br /><b>order</b><br />here you can manually set the order of all the categories in this main parent. You need to change the values in the select boxes to the order of your kind and then press the update button below to save the new order.<br />");
+
+define("CONTENT_ADMIN_HELP_LAN_19", "<i>this page shows all content items from the category you have selected.</i><br /><br /><b>detailed list</b><br />you see the content id, the content author and the content heading. also you see several options to manage the order of the content items.<br /><br /><b>move</b><br />the up and down buttons allow you to move a content item one up or down in order.<br /><br /><b>order</b><br />here you can manually set the order of all the content items in this category. You need to change the values in the select boxes to the order of your kind and then press the update button below to save the new order.<br />");
+
+
 
 ?>
