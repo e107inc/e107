@@ -44,27 +44,15 @@ If(IsSet($_POST['update_parent'])){
 }
 
 If(IsSet($_POST['submit_forum'])){
-        $c = 0;
-        while($_POST['mod'][$c]){
-                $mods .= $_POST['mod'][$c].", ";
-                $c++;
-        }
-        $mods = ereg_replace(", $", ".", $mods);
+        $mods=implode(", ",$_POST['mod']);
         $_POST['forum_name'] = $aj -> formtpa($_POST['forum_name'], "admin");
         $_POST['forum_description'] = $aj -> formtpa($_POST['forum_description'], "admin");
-
         $sql -> db_Insert("forum", "0, '".$_POST['forum_name']."', '".$_POST['forum_description']."', '".$_POST['forum_parent']."', '".time()."', '".$mods."', 0, 0, 0, '".$_POST['forum_class']."', 0");
         $forum -> show_message(FORLAN_11);
 }
 
 If(IsSet($_POST['update_forum'])){
-
-        $c = 0;
-        while($_POST['mod'][$c]){
-                $mods .= $_POST['mod'][$c].", ";
-                $c++;
-        }
-        $mods = ereg_replace(", $", ".", $mods);
+        $mods=implode(", ",$_POST['mod']);
         $_POST['forum_name'] = $aj -> formtpa($_POST['forum_name'], "admin");
         $_POST['forum_description'] = $aj -> formtpa($_POST['forum_description'], "admin");
         $forum_parent = $row['forum_id'];
