@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_plugin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-05 10:17:43 $
-|     $Author: pholzmann $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-25 20:03:56 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("EPL_ADLAN_0", "Install");
@@ -57,6 +57,7 @@ define("EPL_DIRECTORY", "directory.");
 define("EPL_NOINSTALL_1", "No install required, to remove delete the ");
 define("EPL_UPGRADE", "Upgrade");
 
+define("EPL_CONFIGURE", "Configure");
 
 
 ?>
