@@ -32,6 +32,7 @@ class ArrayData {
 	 * @return array stored data
 	 */
 	function ReadArray(&$ArrayData){
+		$ArrayData = '$data = '.trim($ArrayData).';';
 		eval('$data = '.$ArrayData.';');
 		if (!is_array($data)){
 			echo 'Input should be stored array data';
@@ -40,17 +41,5 @@ class ArrayData {
 		return $data;
 	}
 }
-
-/*
-$test = array(
-	1 => 'test',
-	2 => 'test2'
-);
-
-
-$stored = ArrayData::WriteArray($test, false);
-
-echo '<pre>'.print_r(ArrayData::ReadArray($stored), true).'</pre>';
-*/
 
 ?>
