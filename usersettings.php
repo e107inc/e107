@@ -178,7 +178,8 @@ if(IsSet($_POST['updatesettings'])){
 									$error = RESIZE_NOT_SUPPORTED;
 									@unlink(e_FILE."public/avatars/".$uploaded[0]['name']);
 								}
-                        }else{
+                        }
+                        if($uploaded[1]['name'] || (!$pref['avatar_upload'] && $uploaded[0]['name'])) {
                                 // photograph uploaded
                                 $user_sess = ($pref['avatar_upload'] ? $uploaded[1]['name'] : $uploaded[0]['name']);
                                 resize_image(e_FILE."public/avatars/".$user_sess, e_FILE."public/avatars/".$user_sess, 180);
