@@ -11,16 +11,23 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-01-15 04:42:20 $
+|     $Revision: 1.10 $
+|     $Date: 2005-01-17 08:14:03 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
 $e_sub_cat = 'main';
 require_once('auth.php');
-//require(e_ADMIN.'ad_links.php');
 require_once(e_HANDLER.'admin_handler.php');
+
+// update users using old layout names to their new names
+if ($pref['adminstyle']=='default') { $pref['adminstyle'] = 'compact'; }
+if ($pref['adminstyle']=='adminb') { $pref['adminstyle'] = 'cascade'; }
+if ($pref['adminstyle']=='admin_etalkers') { $pref['adminstyle'] = 'categories'; }
+if ($pref['adminstyle']=='admin_combo') { $pref['adminstyle'] = 'combo'; }
+if ($pref['adminstyle']=='admin_classis') { $pref['adminstyle'] = 'classis'; }
+save_prefs();
 
 // auto db update
 if ('0' == ADMINPERMS) {
@@ -71,8 +78,7 @@ function render_clean() {
 
 $newarray = asortbyindex($array_functions, 1);
 
-$adminfpage = (!$pref['adminstyle'] || $pref['adminstyle'] == 'default') ? 'admin_default.php' : $pref['adminstyle'].'.php';
-require_once(e_ADMIN.'includes/'.$adminfpage);
+require_once(e_ADMIN.'includes/'.$pref['adminstyle'].'.php';
 
 
 

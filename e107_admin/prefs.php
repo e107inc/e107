@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-01-15 18:14:35 $
-|     $Author: e107coders $
+|     $Revision: 1.14 $
+|     $Date: 2005-01-17 08:14:04 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -186,11 +186,10 @@ closedir($handle);
 
 $handle=opendir(e_ADMIN.'includes/');
 while ($file = readdir($handle)){
-        if(strstr($file, "admin")){
-                $file = str_replace(".php", "", $file);
-                if($file == "admin_default"){ $file = "default"; }
-                $adminlist[] = $file;
-        }
+	if($file != "." && $file != ".."){
+		$file = str_replace(".php", "", $file);
+		$adminlist[] = $file;
+	}
 }
 closedir($handle);
 
@@ -208,9 +207,9 @@ closedir($handle);
     }
     //-->
     </script>
-   <form method='post' action='prefs.php' >
-   <div style='text-align:center;'>
+   <div style='text-align:center'>
    <div style='text-align:center; ".ADMIN_WIDTH."; margin-left: auto; margin-right: auto'>
+   <form method='post' action='".e_SELF."'>
    <div id='main' style='text-align:center'>
    <table style='width:100%' class='fborder'>
    <tr>
@@ -746,7 +745,7 @@ closedir($handle);
 
   $text .= "</table></div>";
 
-  $text .="</div></div></form>";
+  $text .="</form></div></div>";
 
   $ns -> tablerender(PRFLAN_53, $text);
 

@@ -11,6 +11,7 @@ $pref['siteadminemail'] = $_POST['admin_email'];
 $pref['sitetheme'] = "e107v4a";
 $pref['image_preload'] = "0";
 $pref['admintheme'] = "admin_jayya";
+$pref['adminstyle'] = "classis";
 $pref['sitedisclaimer'] = "All trademarks are &copy; their respective owners, all other content is &copy; e107 powered website.<br />e107 is &copy; e107.org 2002/2003 and is released under the <a href=&#39;http://www.gnu.org/&#39;>GNU GPL license</a>.";
 $pref['newsposts'] = "10";
 $pref['flood_protect'] = "1";
