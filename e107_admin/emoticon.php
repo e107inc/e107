@@ -22,6 +22,10 @@ if(IsSet($_POST['updatesettings'])){
         }
         $tmp = addslashes(serialize($emote));
         $sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='emote' ");
+        if($_POST['smiley_activate'] != $pref['smiley_activate'])
+        {
+        	clear_cache();
+        }
         $pref['smiley_activate'] = $_POST['smiley_activate'];
         save_prefs();
         header("location:".e_ADMIN."emoticon.php?u");
