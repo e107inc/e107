@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-03-24 16:21:24 $
+|     $Revision: 1.23 $
+|     $Date: 2005-03-28 18:06:47 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -452,7 +452,7 @@ class users {
 					<td style='width:15%' class='forumheader3'>";
 				 
 				if ($user_class) {
-					$tmp = explode(".", $user_class);
+					$tmp = explode(",", $user_class);
 					while (list($key, $class_id) = each($tmp)) {
 						$text .= ($class[$class_id] ? $class[$class_id]."<br />\n" : "");
 					}
