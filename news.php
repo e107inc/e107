@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.56 $
-|     $Date: 2005-03-10 10:58:08 $
+|     $Revision: 1.57 $
+|     $Date: 2005-03-17 19:41:18 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -323,7 +323,9 @@ if($pref['news_unstemplate'] && file_exists(THEME."news_template.php")) {
 	if (!$sql->db_Select_gen($query)) {
 		echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_462 : LAN_83)."</b></div><br /><br />";
 	} else {
-		while ($news = $sql->db_Fetch()) {
+		$newsAr = $sql -> db_getList();
+		foreach($newsAr as $news)
+		{
 			//        render new date header if pref selected ...
 			$thispostday = strftime("%j", $news['news_datestamp']);
 			if ($newpostday != $thispostday && (isset($pref['news_newdateheader']) && $pref['news_newdateheader'])) {
