@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-03-31 18:54:31 $
-|     $Author: e107coders $
+|     $Revision: 1.14 $
+|     $Date: 2005-03-31 21:27:06 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 @include(e_LANGUAGEDIR.e_LANGUAGE."/lan_ren_help.php");
@@ -37,7 +37,8 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help") {
 	$code[9] = array("bq", "[blockquote][/blockquote]", LANHELP_31);
 	$code[10] = array("code", "[code][/code]", LANHELP_32 );
 	$code[11] = array("list", "[list][/list]", LANHELP_36);
-	$code[12] = array("fontcol", "[color][/color]", LANHELP_36);
+	$code[12] = array("fontcol", "[color][/color]", LANHELP_21);
+	$code[13] = array("fontsize", "[size][/size]", LANHELP_22);
 
 	$img[1] = "link.png";
 	$img[2] = "bold.png";
@@ -51,6 +52,7 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help") {
 	$img[10] = "code.png";
 	$img[11] = "list.png";
 	$img[12] = "fontcol.png";
+	$img[13] = "fontsize.png";
 
 	$colours[0] = array("black", LANHELP_1);
 	$colours[1] = array("blue", LANHELP_2);
@@ -78,26 +80,20 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help") {
 
 
 	foreach($code as $key=>$bbcode){
-		if($key != 12){
-		  $text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"{$addtextfunc}('".$bbcode[1]."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
+		if($key == 12){
+			$text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"expandit('col_selector')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
+		
+		}else if($key == 13){
+			$text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"expandit('size_selector')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
+		
+
+
 		}else{
-          $text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"expandit('col_selector')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
+		  $text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"{$addtextfunc}('".$bbcode[1]."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
 		}
 	}
 
-	if ($mode) {
-	  //	$text .= "\n<br />\n<span><select class=\"tbox\" name=\"fontcol\" onchange=\"{$addtextfunc}('[color=' + this.options[this.selectedIndex].value + '][/color]');this.selectedIndex=0;\"".($mode != 2 ? " onmouseover=\"{$helpfunc}('Font Color: [color]Blue[/color]')\" onmouseout=\"{$helpfunc}('')\"" : "")." >\n<option value=\"\">".LANHELP_21."</option>\n";
-		while (list($key, $bbcode) = each($colours)) {
-	   //		$text .= "<option style=\"color:".strtolower($bbcode[0])."\" value=\"".strtolower($bbcode[0])."\">".$bbcode[1]."</option>\n";
-		}
-		   //		$text .= "</select>\n";
-				$text .= "<select class=\"tbox\" name=\"fontsiz\" onchange=\"{$addtextfunc}('[size=' + this.options[this.selectedIndex].value + '][/size]');this.selectedIndex=0;\"".($mode != 2 ? " onmouseover=\"{$helpfunc}('Font Size: [size]Big[/size]')\" onmouseout=\"{$helpfunc}('')\"" : "" )." >\n<option>".LANHELP_22."</option>\n";
-
-		while (list($key, $bbcode) = each($fontsizes)) {
-			$text .= "<option value=\"".$bbcode[0]."\">".$bbcode[1]."</option>\n";
-		}
-		$text .= "</select>";
-	}
+	$text .= Size_Select();
 	$text .= Color_Select('color_'.$key);
 	return $text;
 }
@@ -179,7 +175,9 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 		while (list($key, $bbcode) = each($colours)) {
 			$string .= "<option style=\"color:".strtolower($bbcode[0])."\" value=\"".strtolower($bbcode[0])."\">".$bbcode[1]."</option>\n";
 		}
-		$string .= "</select>\n<select class=\"tbox\" name=\"fontsiz\" onchange=\"{$addtextfunc}('[size=' + this.options[this.selectedIndex].value + '][/size]');this.selectedIndex=0;\"".($mode != 2 ? " onmouseover=\"{$helpfunc}('Font Size: [size]Big[/size]','{$tagid}')\" onmouseout=\"{$helpfunc}('','{$tagid}')\"" : "" )." >\n<option>".LANHELP_22."</option>\n";
+		$string .= "</select>\n
+		
+		<select class=\"tbox\" name=\"fontsiz\" onchange=\"{$addtextfunc}('[size=' + this.options[this.selectedIndex].value + '][/size]');this.selectedIndex=0;\"".($mode != 2 ? " onmouseover=\"{$helpfunc}('Font Size: [size]Big[/size]','{$tagid}')\" onmouseout=\"{$helpfunc}('','{$tagid}')\"" : "" )." >\n<option>".LANHELP_22."</option>\n";
 
 
 		while (list($key, $bbcode) = each($fontsizes)) {
@@ -187,6 +185,10 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 		}
 		$string .= "</select>";
 	}
+
+	
+
+
 	return $string;
 }
 
@@ -203,87 +205,20 @@ function Color_Select($field){
         "#330099","#3300cc","#3300ff","#660000","#660033",
         "#660066","#660099","#6600cc","#6600ff","#990000",
         "#990033","#990066","#990099","#9900cc","#9900ff",
-        "#cc0000","#cc0033","#cc0066","#cc0099","#cc00cc",
-        "#cc00ff",
-        "#ff0000",
-        "#ff0033",
-        "#ff0066",
-        "#ff0099",
-        "#ff00cc",
-        "#ff00ff",
-        "#003300",
-        "#003333",
-        "#003366",
-        "#003399",
-        "#0033cc",
-        "#0033ff",
-        "#333300",
-        "#333333",
-        "#333366",
-        "#333399",
-        "#3333cc",
-        "#3333ff",
-        "#663300",
-        "#663333",
-        "#663366",
-        "#663399",
-        "#6633cc",
-        "#6633ff",
-        "#993300",
-        "#993333",
-        "#993366",
-        "#993399",
-        "#9933cc",
-        "#9933ff",
-        "#cc3300",
-        "#cc3333",
-        "#cc3366",
-        "#cc3399",
-        "#cc33cc",
-        "#cc33ff",
-        "#ff3300",
-        "#ff3333",
-        "#ff3366",
-        "#ff3399",
-        "#ff33cc",
-        "#ff33ff",
-        "#006600",
-        "#006633",
-        "#006666",
-        "#006699",
-        "#0066cc",
-        "#0066ff",
-        "#336600",
-        "#336633",
-        "#336666",
-        "#336699",
-        "#3366cc",
-        "#3366ff",
-        "#666600",
-        "#666633",
-        "#666666",
-        "#666699",
-        "#6666cc",
-        "#6666ff",
-        "#996600",
-        "#996633",
-        "#996666",
-        "#996699",
-        "#9966cc",
-        "#9966ff",
-        "#cc6600",
-        "#cc6633",
-        "#cc6666",
-        "#cc6699",
-        "#cc66cc",
-        "#cc66ff",
-        "#ff6600",
-        "#ff6633",
-        "#ff6666",
-        "#ff6699",
-        "#ff66cc",
-        "#ff66ff",
-        "#009900",
+        "#cc0000","#cc0033","#cc0066","#cc0099","#cc00cc","#cc00ff",
+        "#ff0000","#ff0033","#ff0066","#ff0099","#ff00cc","#ff00ff",
+        "#003300","#003333","#003366","#003399","#0033cc","#0033ff",
+        "#333300","#333333","#333366","#333399","#3333cc","#3333ff",
+        "#663300","#663333","#663366","#663399","#6633cc","#6633ff",
+		"#993300","#993333","#993366","#993399","#9933cc","#9933ff",
+        "#cc3300","#cc3333","#cc3366","#cc3399","#cc33cc","#cc33ff",
+        "#ff3300","#ff3333","#ff3366","#ff3399","#ff33cc","#ff33ff","#006600",
+        "#006633","#006666","#006699","#0066cc","#0066ff","#336600",
+        "#336633","#336666","#336699","#3366cc","#3366ff","#666600",
+        "#666633","#666666","#666699","#6666cc","#6666ff","#996600",
+        "#996633","#996666","#996699","#9966cc","#9966ff","#cc6600",
+        "#cc6633","#cc6666","#cc6699","#cc66cc","#cc66ff","#ff6600",
+        "#ff6633","#ff6666","#ff6699","#ff66cc","#ff66ff","#009900",
         "#009933",
         "#009966",
         "#009999",
@@ -405,4 +340,36 @@ function Color_Select($field){
 
 return $text;
 }
+
+
+function Size_Select() {
+	$text ="<!-- Start of Size selector -->
+		<div style='margin-left:0px;margin-right:0px;width:60px;position:relative;z-index:1000;float:right;display:none' id='size_selector' onclick=\"this.style.display='none'\">";
+	$text .="<div style='position:absolute;bottom:30px;right:145px;width:60px'>";
+	$text .= "<table cellspacing=\"1px\" cellpadding=\"0px\"  style=\"width:60px;background-color:#fff;border:1px solid #cccccc;cursor: pointer;\">
+    
+	<tr><td onclick=\"addtext('[size=7][/size]')\"  >7px</td></tr>
+	<tr><td onclick=\"addtext('[size=7][/size]')\"  >8px</td></tr>
+	<tr><td onclick=\"addtext('[size=7][/size]')\"  >9px</td></tr>
+	<tr><td onclick=\"addtext('[size=7][/size]')\"  >10px</td></tr>
+	<tr><td onclick=\"addtext('[size=7][/size]')\"  >11px</td></tr>
+	<tr><td onclick=\"addtext('[size=7][/size]')\"  >12px</td></tr>
+	<tr><td onclick=\"addtext('[size=7][/size]')\"  >14px</td></tr>
+	<tr><td onclick=\"addtext('[size=7][/size]')\"  >16px</td></tr>
+	<tr><td onclick=\"addtext('[size=7][/size]')\"  >18px</td></tr>
+	<tr><td onclick=\"addtext('[size=7][/size]')\"  >20px</td></tr>
+	<tr><td onclick=\"addtext('[size=7][/size]')\"  >22px</td></tr>
+	<tr><td onclick=\"addtext('[size=7][/size]')\"  >24px</td></tr>
+	<tr><td onclick=\"addtext('[size=7][/size]')\"  >26px</td></tr>
+	<tr><td onclick=\"addtext('[size=7][/size]')\"  >28px</td></tr>
+	<tr><td onclick=\"addtext('[size=7][/size]')\"  >30px</td></tr>
+	<tr><td onclick=\"addtext('[size=7][/size]')\"  >36px</td></tr>
+	<tr><td onclick=\"addtext('[size=7][/size]')\"  >48px</td></tr>
+	<tr><td onclick=\"addtext('[size=7][/size]')\"  >72px</td></tr>
+	\n </table></div>
+	</div>\n<!-- End of Size selector -->";
+	return $text;
+}
+
+
 ?>

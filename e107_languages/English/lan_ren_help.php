@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_ren_help.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-03-17 22:25:04 $
+|     $Revision: 1.3 $
+|     $Date: 2005-03-31 21:28:35 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -31,8 +31,8 @@ define("LANHELP_18", "Large");
 define("LANHELP_19", "Larger");
 define("LANHELP_20", "Massive");
 
-define("LANHELP_21", "Color ..");
-define("LANHELP_22", "Size ..");
+define("LANHELP_21", "Click to open color dialog ...");
+define("LANHELP_22", "Click to open size dialog ...");
 
 define("LANHELP_23", "Insert link: [link]http://mysite.com[/link] or  [link=http://yoursite.com]Visit My Site[/link]");
 define("LANHELP_24", "Bold text: [b]This text will be bold[/b]", "font-weight:bold; width: 20px");
