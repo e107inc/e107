@@ -24,7 +24,7 @@ if(IsSet($_POST['metasubmit'])){
 }
 
 if($message){
-    $ns -> tablerender(METLAN_4, "<div 
+    $ns -> tablerender(METLAN_4, "<div
 style='text-align:center'>".METLAN_1.".</div>");
 }
 
@@ -35,34 +35,34 @@ $text = "<div style='text-align:center'>
 
 <td style='width:30%' class='forumheader3'>".METLAN_2.": </td>
 <td style='width:70%' class='forumheader3'>
-<textarea class='tbox' name='meta' cols='70' 
+<textarea class='tbox' id='meta' name='meta' cols='70'
 rows='10'>".$pref['meta_tag']."</textarea>
 <br />";
 $text .= <<< EOT
-<input class="button" type="button" value="description" 
+<input class="button" type="button" value="description"
 onclick="addtext2('<meta name=\'description\' content=\'
 EOT;
 $text .= METLAN_5;
 $text .= <<< EOT
-\' />')">
-<input class="button" type="button" value="keywords" 
+\' />')" />
+<input class="button" type="button" value="keywords"
 onclick="addtext2('<meta name=\'keywords\' content=\'
 EOT;
 $text .= METLAN_6;
 $text .= <<< EOT
-\' />')">
-<input class="button" type="button" value="copyright" 
+\' />')" />
+<input class="button" type="button" value="copyright"
 onclick="addtext2('<meta name=\'copyright\' content=\'
 EOT;
 $text .= METLAN_7;
 $text .= <<< EOT
-\' />')">
+\' />')" />
 EOT;
 $text .= "</td>
 </tr>
 
-<td colspan='2' style='text-align:center' class='forumheader'>
-<input class='button' type='submit' name='metasubmit' 
+<tr><td colspan='2' style='text-align:center' class='forumheader'>
+<input class='button' type='submit' name='metasubmit'
 value='".METLAN_3."' />
 </td>
 </tr>
@@ -71,12 +71,18 @@ value='".METLAN_3."' />
 </div>";
 
 $ns -> tablerender(METLAN_8, $text);
-?>
-<script type="text/javascript">
+
+function headerjs(){
+$headerjs = "<script type=\"text/javascript\">
 function addtext2(str){
-    document.dataform.meta.value += str;
+    document.getElementById('meta').value += str;
 }
-</script>
+</script>\n";
+return $headerjs;
+}
+
+?>
+
 <?php
 require_once("footer.php");
 ?>

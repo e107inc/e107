@@ -18,7 +18,7 @@ class form{
         function form_open($form_method, $form_action, $form_name="", $form_target = "", $form_enctype="", $form_js=""){
                 $method = ($form_method ? "method='".$form_method."'" : "");
                 $target = ($form_target ? " target='".$form_target."'" : "");
-                $name = ($form_name ? " id='".$form_name."' name='".$form_name."'" : "");
+                $name = ($form_name ? " id='".$form_name."' " : "id='myform'");
                 return "\n<form action='".$form_action."' ".$method.$target.$name.$form_enctype.$form_js.">";
         }
 
