@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-02-03 14:34:07 $
+|     $Revision: 1.6 $
+|     $Date: 2005-02-08 21:39:50 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -111,10 +111,10 @@ if ($action == "report") {
 			$subject = LAN_421." ".SITENAME;
 			sendemail(SITEADMINEMAIL, $subject, $report);
 		}
-		$sql->db_Insert('generic',"0,'reported_post',".time().",'".USERID."','{$_POST['report_thread_name']}',{$_POST['report_thread_id']},'{$_POST['report_add']}'");
+		$sql->db_Insert('generic',"0,'Reported Forum Post',".time().",'".USERID."','{$_POST['report_thread_name']}',{$_POST['report_thread_id']},'{$_POST['report_add']}'");
 		define("e_PAGETITLE", LAN_01." / ".LAN_428);
 		require_once(HEADERF);
-		$text = LAN_424."<br /><a href='forum_viewtopic.php?".$report_thread_id."#".$thread_id."'>".LAN_429."</a";
+		$text = LAN_424."<br /><br /><a href='forum_viewtopic.php?".$report_thread_id."#".$thread_id."'>".LAN_429."</a";
 		$ns->tablerender(LAN_414, $text);
 	} else {
 		$number = $thread_id;
