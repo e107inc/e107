@@ -118,7 +118,7 @@ define(LINKALIGN, "right");
 // [newsstyle]
 
 $NEWSSTYLE = "<div class='cap_border'><div class='main_caption'>
-{NEWSTITLE}
+{STICKY_ICON}{NEWSTITLE}
 </div></div>
 <div class='menu_content'>
 {NEWSBODY}

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/human_condition/theme.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-01-22 17:56:12 $
-|     $Author: stevedunstan $
+|     $Revision: 1.2 $
+|     $Date: 2005-02-11 03:44:27 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -59,7 +59,7 @@ $FOOTER = "
 define("TP_commenticon", "<img src='".THEME."images/comment.png' alt='' style='vertical-align:middle;' />");
 
 $NEWSSTYLE = "
-<div class='textstyle4'><b>{NEWSTITLE}</b></div>
+<div class='textstyle4'>{STICKY_ICON}<b>{NEWSTITLE}</b></div>
 <div class='postinfo'>{NEWSCATEGORY}: {NEWSAUTHOR} @ {NEWSDATE}</div>
 <div class='textstyle3'>{NEWSBODY}</div>
 <div class='postinfo'>".TP_commenticon." {NEWSCOMMENTS}</div>\n<br />\n";

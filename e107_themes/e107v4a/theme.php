@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/theme.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-10-05 08:53:48 $
-|     $Author: loloirie $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-11 03:44:27 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -125,7 +125,7 @@ $NEWSSTYLE = "
 <tr>
 <td class='captionleft'><img src='".THEME."images/blank.gif' width='24' height='18' alt='' style='display: block;' /></td>
 <td class='captionbar' style='white-space:nowrap'>
-{NEWSTITLE}
+{STICKY_ICON}{NEWSTITLE}
 </td>
 <td class='captionend'><img src='".THEME."images/blank.gif' width='12' height='18' alt='' style='display: block;' /></td>
 <td class='captionmain'><img src='".THEME."images/blank.gif' width='1' height='18' alt='' style='display: block;' /></td>
