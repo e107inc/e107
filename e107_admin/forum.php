@@ -155,8 +155,13 @@ if($action == "main" && $sub_action == "confirm"){
 	}
 }
 
-if($action == "create"){
-	$forum -> create_forums($sub_action, $id);
+if($action == "create"){	
+	if($sql -> db_Select("forum", "*", "forum_parent='0' ")){
+		$forum -> create_forums($sub_action, $id);
+	}else{
+		header("location:".e_ADMIN."forum.php"); 
+		exit; 
+	}
 }
 
 if($action == "cat"){
@@ -241,8 +246,10 @@ class forum{
 		$var['main']['link']=e_SELF;
 		$var['cat']['text']=FORLAN_83;
 		$var['cat']['link']=e_SELF."?cat";
-		$var['create']['text']=FORLAN_77;
-		$var['create']['link']=e_SELF."?create";
+		if($sql -> db_Select("forum", "*", "forum_parent='0' ")){
+			$var['create']['text']=FORLAN_77;
+			$var['create']['link']=e_SELF."?create";
+		}
 		$var['order']['text']=FORLAN_78;
 		$var['order']['link']=e_SELF."?order";
 		$var['opt']['text']=FORLAN_79;
