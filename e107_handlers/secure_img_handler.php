@@ -6,7 +6,11 @@
 */
 
 if(!$mySQLserver){
-	require_once("../class2.php");
+	if(file_exists("../class2.php")){
+		require_once("../class2.php");
+	} elseif(file_exists("class2.php")){
+		require_once("class2.php");
+	}
 }
 
 class secure_image {
@@ -16,8 +20,7 @@ class secure_image {
 	function secure_image(){
 		mt_srand ((double)microtime()*1000000);
 		$maxran = 1000000;
-		$random_num = mt_rand(0, $maxran);
-		$this -> random_number = $random_num;
+		$this -> random_number = mt_rand(0, $maxran);
 	}
 
 	function create_code($rand_num){
@@ -45,11 +48,11 @@ class secure_image {
 
 	function r_image(){
 		global $HANDLERS_DIRECTORY;
-		return "<img src='".e_BASE.$HANDLERS_DIRECTORY."secure_img_handler.php?RANDNUM.".$this -> random_number."' />";
+		return "<img src='".e_BASE.$HANDLERS_DIRECTORY."secure_img_handler.php?RND.".$this -> random_number."' />";
 	}
 }
 
-if(preg_match("#RANDNUM\.#",e_QUERY)){
+if(preg_match("#RND\.#",e_QUERY)){
 	$qs = explode(".",e_QUERY);
 	$si = new secure_image;
 	$si -> render_image($qs[1]);
