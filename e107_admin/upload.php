@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/upload.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:21 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-10-19 15:20:29 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -40,7 +40,7 @@ if($action == "dis")
                 $row = $sql -> db_Fetch(); extract($row);
                 require_once(e_HANDLER."form_handler.php");
                 $rs = new form;
-                include_once("header.php");
+                require_once(e_ADMIN."auth.php");
                 $caption = UPLLAN_17;
                 $txt = UPLLAN_45."<br /><br />";
                 $txt .= UPLLAN_10.": ".(is_numeric($upload_file) ? "Binary file ID ".$upload_file :  $upload_file);
