@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2005-02-17 20:15:17 $
-|     $Author: stevedunstan $
+|     $Revision: 1.47 $
+|     $Date: 2005-02-20 04:59:36 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -109,13 +109,21 @@ if ($action == 'cat' || $action == 'all') {
 	$param['catlink']  = (defined("NEWSLIST_CATLINK")) ? NEWSLIST_CATLINK : "";
 	$param['caticon'] =  (defined("NEWSLIST_CATICON")) ? NEWSLIST_CATICON : ICONSTYLE;
 
-	$count = $sql->db_Select_gen($query);
+	$news_total = $sql->db_Select_gen($query);
 	while ($row = $sql->db_Fetch()) {
 		$text .= $ix->parse_newstemplate($row,$NEWSLISTSTYLE,$param);
 	}
 	$icon = ($category_icon) ? "<img src='".e_IMAGE."icons/".$category_icon."' alt='' />" : "";
 	$text = $text."<div style='text-align:right'>".$icon.LAN_307.$count."&nbsp;<br />&nbsp;</div>";
-
+			
+	$np_parm['template'] = LAN_NEWS_22." [PREV]&nbsp;&nbsp;[DROPDOWN]&nbsp;&nbsp;[NEXT]";
+	$np_parm['currentpage'] = ($from/ITEMVIEW)+1;
+	$np_parm['totalpages'] = ($news_total/ITEMVIEW)+1;
+	$np_parm['action'] = e_SELF.'?'.($action == "list") ? "[FROM].".$action.".".$sub_action : "[FROM]";
+	$np_parm['perpage'] = ITEMVIEW;
+	cachevars('nextprev', $np_parm);
+	$text .= $tp->parseTemplate("{NEXTPREV}");
+	
   // not working ->	$np = new nextprev("news.php", $from, ITEMVIEW, $news_total, LAN_84, ($action == "list" ? $action.".".$sub_action : ""));
 	$ns->tablerender(LAN_82." '".$category_name."'", $text);
 	setNewsCache($cacheString);
@@ -387,9 +395,15 @@ if ($action != "item" && $action != 'list' && $pref['newsposts_archive']) {
 }
 // #### END -----------------------------------------------------------------------------------------------------------
 
-require_once(e_HANDLER."np_class.php");
 if ($action != "item") {
-	$ix = new nextprev("news.php", $from, ITEMVIEW, $news_total, LAN_84, ($action == "list" ? $action.".".$sub_action : ""));
+	$np_parm['template'] = LAN_NEWS_22." [PREV]&nbsp;&nbsp;[DROPDOWN]&nbsp;&nbsp;[NEXT]";
+	$np_parm['currentpage'] = ($from/ITEMVIEW)+1;
+	$np_parm['totalpages'] = ($news_total/ITEMVIEW) + 1;
+	$np_parm['action'] = e_SELF.'?'.($action == "list" ? "[FROM].".$action.".".$sub_action : "[FROM]");
+	$np_parm['perpage'] = ITEMVIEW;
+	cachevars('nextprev', $np_parm);
+	$nextprev = $tp->parseTemplate("{NEXTPREV}");
+	echo "<div class='nextprev' style='text-align:center'>".$nextprev."</div>";
 }
 
 if ($pref['nfp_display'] == 2) {
@@ -420,13 +434,19 @@ function setNewsCache($cacheString) {
 }
 
 function checkNewsCache($cacheString, $np = FALSE, $nfp = FALSE) {
-	global $pref, $aj, $e107cache;
+	global $pref, $e107cache;
 	$cache_data = $e107cache->retrieve($cacheString);
 	if ($cache_data) {
 		echo $cache_data;
 		if ($np) {
-			require_once(e_HANDLER."np_class.php");
-			$ix = new nextprev("news.php", $from, ITEMVIEW, $news_total, LAN_84);
+			$np_parm['template'] = LAN_NEWS_22." [PREV]&nbsp;&nbsp;[DROPDOWN]&nbsp;&nbsp;[NEXT]";
+			$np_parm['currentpage'] = ($from/ITEMVIEW)+1;
+			$np_parm['totalpages'] = ($news_total/ITEMVIEW) + 1;
+			$np_parm['action'] = e_SELF.'?'.($action == "list" ? "[FROM].".$action.".".$sub_action : "[FROM]");
+			$np_parm['perpage'] = ITEMVIEW;
+			cachevars('nextprev', $np_parm);
+			$nextprev = $tp->parseTemplate("{NEXTPREV}");
+			echo "<div class='nextprev' style='text-align:center'>".$nextprev."</div>";
 		}
 		if ($nfp && $pref['nfp_display'] == 2) {
 			require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
