@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-10-06 02:47:22 $
+|     $Revision: 1.3 $
+|     $Date: 2004-10-06 13:04:53 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -93,8 +93,12 @@ class db{
    		$nFields = mysql_num_fields($sQryRes);
 		}
 
+      $aTrace = debug_backtrace();
+      $sCallingFile=$aTrace[1]['file'].' : '.$aTrace[1]['line'];
+
+
 		$sDBdbg .= "\n<table style='width:100%; border:1px solid' cellpadding='2' cellspacing='1'>\n";
-		$sDBdbg .= "<tr><td colspan='$nFields'><b>Query:</b> $query</td></tr>\n";
+		$sDBdbg .= "<tr><td colspan='$nFields'><b>Calling file:</b> $sCallingFile<br /><b>Query: </b>$query</td></tr>\n";
 		if ($sQryRes)
 		{
 			$bRowHeaders = FALSE;
