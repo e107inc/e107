@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/class2.php,v $
-|     $Revision: 1.109 $
-|     $Date: 2004-12-17 13:44:09 $
-|     $Author: streaky $
+|     $Revision: 1.110 $
+|     $Date: 2005-01-11 15:27:37 $
+|     $Author: pholzmann $
 +----------------------------------------------------------------------------+
 */
 
@@ -34,11 +34,11 @@ ob_start ();
 $timing_start = explode(' ', microtime());
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
-if (!$mySQLserver) {
+if(!isset($mySQLserver)){
 	@include("e107_config.php");
 	$a = 0;
 	$p = "";
-	while (!$mySQLserver && $a < 5) {
+        while(!isset($mySQLserver) && $a<5){
 		$a++;
 		$p .= "../";
 		@include($p."e107_config.php");
@@ -311,7 +311,6 @@ if (!class_exists('e107_table')) {
 				extract($result);
 			}
 			if ($return) {
-				ob_end_flush();
 				ob_start();
 				tablestyle($caption, $text, $mode);
 				$ret = ob_get_contents();
@@ -419,6 +418,7 @@ if ((strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin") ) && $pref['adm
 	}
 }
 @require_once(THEME."theme.php");
+define("ABSTHEMEURL",SITEURL.str_replace(e_BASE,"",THEME)); /* Absolute URL for THEME. Needed for correct RSS images, browser browser caching, etc */
 
 if ($pref['anon_post'] ? define("ANON", TRUE) : define("ANON", FALSE));
 if (Empty($pref['newsposts']) ? define("ITEMVIEW", 15) : define("ITEMVIEW", $pref['newsposts']));
