@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2004-12-18 15:46:12 $
-|     $Author: sweetas $
+|     $Revision: 1.41 $
+|     $Date: 2004-12-18 16:39:09 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -31,6 +31,7 @@ unset($global);
 //ob_start ("ob_gzhandler"); // Uncomment to enable gz output compression.
 
 ob_start ();
+$start_ob_level = ob_get_level();
 $eTimingStart = explode(' ', microtime());
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
@@ -322,7 +323,6 @@ if (!class_exists('e107_table')) {
 				extract($result);
 			}
 			if ($return) {
-				ob_end_flush();
 				ob_start();
 				tablestyle($caption, $text, $mode);
 				$ret = ob_get_contents();
