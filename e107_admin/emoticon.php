@@ -87,7 +87,7 @@ $text = "<div style='text-align:center'><div style='border : solid 1px #000; pad
 <tr> 
 <td style='width:30%' class='forumheader3'>".EMOLAN_4.": </td>
 <td colspan='4' class='forumheader3'>";
-$text .= ($pref['smiley_activate'] ? "<input type='checkbox' name='smiley_activate' value='1'  checked='checked' />" : "<input type='checkbox' name='smiley_activate' value='1'>");
+$text .= ($pref['smiley_activate'] ? "<input type='checkbox' name='smiley_activate' value='1'  checked='checked' />" : "<input type='checkbox' name='smiley_activate' value='1' />");
 $text .= "
 </td>
 </tr>

@@ -160,7 +160,7 @@ if($action == "opt"){
           <tr>
           <td style='width:70%' class='forumheader3'>".DOWLAN_100."</td>
         <td style='width:30%' class='forumheader3' style='text-align:center'>".
-          ($agree_flag ? "<input type='checkbox' name='agree_flag' value='1' checked='checked' />" : "<input type='checkbox' name='agree_flag' value='1'>")."</td>
+          ($agree_flag ? "<input type='checkbox' name='agree_flag' value='1' checked='checked' />" : "<input type='checkbox' name='agree_flag' value='1' />")."</td>
           </tr>
 
           <td style='width:70%' class='forumheader3'>
@@ -460,11 +460,11 @@ class download{
 
 
                 if($download_active == "0"){
-                        $text .= DOWLAN_22.": <input type='radio' name='download_active' value='1'>
+                        $text .= DOWLAN_22.": <input type='radio' name='download_active' value='1' />
                         ".DOWLAN_23.": <input type='radio' name='download_active' value='0' checked='checked' />";
                 }else{
                         $text .= DOWLAN_22.": <input type='radio' name='download_active' value='1' checked='checked' />
-                        ".DOWLAN_23.": <input type='radio' name='download_active' value='0'>";
+                        ".DOWLAN_23.": <input type='radio' name='download_active' value='0' />";
                 }
 
                 $text .= "</td>
@@ -477,11 +477,11 @@ class download{
 
 
                 if($download_comment == "0"){
-                        $text .= DOWLAN_22.": <input type='radio' name='download_comment' value='1'>
+                        $text .= DOWLAN_22.": <input type='radio' name='download_comment' value='1' />
                         ".DOWLAN_23.": <input type='radio' name='download_comment' value='0' checked='checked' />";
                 }else{
                         $text .= DOWLAN_22.": <input type='radio' name='download_comment' value='1' checked='checked' />
-                        ".DOWLAN_23.": <input type='radio' name='download_comment' value='0'>";
+                        ".DOWLAN_23.": <input type='radio' name='download_comment' value='0' />";
                 }
 
                 $text .= "</td>

@@ -38,7 +38,7 @@ $text = "<div style='text-align:center'>
 <tr>
 <td style='width:30%' class='forumheader3'>".CACLAN_1."?</td>
 <td style='width:70%' class='forumheader3'>".
-($pref['cachestatus'] ? "<input type='checkbox' name='cachestatus' value='1' checked='checked' />" : "<input type='checkbox' name='cachestatus' value='1'>")."</td>
+($pref['cachestatus'] ? "<input type='checkbox' name='cachestatus' value='1' checked='checked' />" : "<input type='checkbox' name='cachestatus' value='1' />")."</td>
 </tr>
 
 <tr style='vertical-align:top'> 

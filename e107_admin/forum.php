@@ -499,7 +499,7 @@ class forum{
 
 		<tr>
 		<td style='width:75%' class='forumheader3'>".FORLAN_44."<br /><span class='smalltext'>".FORLAN_45."</span></td>
-		<td style='width:25%' class='forumheader2' style='text-align:center'>".($pref['forum_enclose'] ? "<input type='checkbox' name='forum_enclose' value='1' checked='checked' />" : "<input type='checkbox' name='forum_enclose' value='1'>")."</td>
+		<td style='width:25%' class='forumheader2' style='text-align:center'>".($pref['forum_enclose'] ? "<input type='checkbox' name='forum_enclose' value='1' checked='checked' />" : "<input type='checkbox' name='forum_enclose' value='1' />")."</td>
 		</tr>
 
 		<tr>
@@ -509,42 +509,42 @@ class forum{
 
 		<tr>
 		<td style='width:75%' class='forumheader3'>".FORLAN_47."<br /><span class='smalltext'>".FORLAN_48."</span></td>
-		<td style='width:25%' class='forumheader2' style='text-align:center'>".($pref['email_notify'] ? "<input type='checkbox' name='email_notify' value='1' checked='checked' />" : "<input type='checkbox' name='email_notify' value='1'>")."</td>
+		<td style='width:25%' class='forumheader2' style='text-align:center'>".($pref['email_notify'] ? "<input type='checkbox' name='email_notify' value='1' checked='checked' />" : "<input type='checkbox' name='email_notify' value='1' />")."</td>
 		</tr>
 
 		<tr>
 		<td style='width:75%' class='forumheader3'>".FORLAN_68."<br /><span class='smalltext'>".FORLAN_69."</span></td>
-		<td style='width:25%' class='forumheader2' style='text-align:center'>".($pref['html_post'] ? "<input type='checkbox' name='html_post' value='1' checked='checked' />" : "<input type='checkbox' name='html_post' value='1'>")."</td>
+		<td style='width:25%' class='forumheader2' style='text-align:center'>".($pref['html_post'] ? "<input type='checkbox' name='html_post' value='1' checked='checked' />" : "<input type='checkbox' name='html_post' value='1' />")."</td>
 		</tr>
 
 		<tr>
 		<td style='width:75%' class='forumheader3'>".FORLAN_49."<br /><span class='smalltext'>".FORLAN_50."</span></td>
-		<td style='width:25%' class='forumheader2' style='text-align:center'>".($pref['forum_poll'] ? "<input type='checkbox' name='forum_poll' value='1' checked='checked' />" : "<input type='checkbox' name='forum_poll' value='1'>")."</td>
+		<td style='width:25%' class='forumheader2' style='text-align:center'>".($pref['forum_poll'] ? "<input type='checkbox' name='forum_poll' value='1' checked='checked' />" : "<input type='checkbox' name='forum_poll' value='1' />")."</td>
 		</tr>
 
 		<tr>
 		<td style='width:75%' class='forumheader3'>".FORLAN_70."<br /><span class='smalltext'>".FORLAN_71."</span></td>
-		<td style='width:25%' class='forumheader2' style='text-align:center'>".($pref['forum_attach'] ? "<input type='checkbox' name='forum_attach' value='1' checked='checked' />" : "<input type='checkbox' name='forum_attach' value='1'>")."</td>
+		<td style='width:25%' class='forumheader2' style='text-align:center'>".($pref['forum_attach'] ? "<input type='checkbox' name='forum_attach' value='1' checked='checked' />" : "<input type='checkbox' name='forum_attach' value='1' />")."</td>
 		</tr>
 
 		<tr>
 		<td style='width:75%' class='forumheader3'>".FORLAN_51."<br /><span class='smalltext'>".FORLAN_52."</span></td>
-		<td style='width:25%' class='forumheader2' style='text-align:center'>".($pref['forum_track'] ? "<input type='checkbox' name='forum_track' value='1' checked='checked' />" : "<input type='checkbox' name='forum_track' value='1'>")."</td>
+		<td style='width:25%' class='forumheader2' style='text-align:center'>".($pref['forum_track'] ? "<input type='checkbox' name='forum_track' value='1' checked='checked' />" : "<input type='checkbox' name='forum_track' value='1' />")."</td>
 		</tr>
 
 		<tr>
 		<td style='width:75%' class='forumheader3'>".FORLAN_112."<br /><span class='smalltext'>".FORLAN_113."</span></td>
-		<td style='width:25%' class='forumheader2' style='text-align:center'>".($pref['forum_redirect'] ? "<input type='checkbox' name='forum_redirect' value='1' checked='checked' />" : "<input type='checkbox' name='forum_redirect' value='1'>")."</td>
+		<td style='width:25%' class='forumheader2' style='text-align:center'>".($pref['forum_redirect'] ? "<input type='checkbox' name='forum_redirect' value='1' checked='checked' />" : "<input type='checkbox' name='forum_redirect' value='1' />")."</td>
 		</tr>
 
 		<tr>
 		<td style='width:75%' class='forumheader3'>".FORLAN_114."<br /><span class='smalltext'>".FORLAN_115."</span></td>
-		<td style='width:25%' class='forumheader2' style='text-align:center'>".($pref['forum_user_customtitle'] ? "<input type='checkbox' name='forum_user_customtitle' value='1' checked='checked' />" : "<input type='checkbox' name='forum_user_customtitle' value='1'>")."</td>
+		<td style='width:25%' class='forumheader2' style='text-align:center'>".($pref['forum_user_customtitle'] ? "<input type='checkbox' name='forum_user_customtitle' value='1' checked='checked' />" : "<input type='checkbox' name='forum_user_customtitle' value='1' />")."</td>
 		</tr>
 
 		<tr>
 		<td style='width:75%' class='forumheader3'>".FORLAN_116."<br /><span class='smalltext'>".FORLAN_122."</span></td>
-		<td style='width:25%' class='forumheader2' style='text-align:center'>".($pref['reported_post_email'] ? "<input type='checkbox' name='reported_post_email' value='1' checked='checked' />" : "<input type='checkbox' name='reported_post_email' value='1'>")."</td>
+		<td style='width:25%' class='forumheader2' style='text-align:center'>".($pref['reported_post_email'] ? "<input type='checkbox' name='reported_post_email' value='1' checked='checked' />" : "<input type='checkbox' name='reported_post_email' value='1' />")."</td>
 		</tr>
 
 

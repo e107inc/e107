@@ -160,7 +160,7 @@ $text = "<div class=\"border\">
 <table style=\"width:95%\">
 
 <form ENCTYPE=\"multipart/form-data\" action=\"".e_SELF.(e_QUERY ? "?".e_QUERY : "")."\" method=\"post\">
-<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"1000000\">
+<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"1000000\" />
 ";
 
 if($path != e_FILE){
@@ -202,9 +202,9 @@ while($dirs[$c]){
 	if(FILE_UPLOADS){
 		$text .= "<input class=\"button\" type=\"button\" name=\"erquest\" value=\"".FMLAN_21."\" onClick=\"expandit(this)\">
 		<div style=\"display:none; &{head}\">
-		<input class=\"tbox\" type=\"file\" name=\"file_userfile[]\" size=\"50\"> 
+		<input class=\"tbox\" type=\"file\" name=\"file_userfile[]\" size=\"50\" /> 
 		<input class=\"button\" type=\"submit\" name=\"upload\" value=\"".FMLAN_22."\" />
-		<input type=\"hidden\" name=\"upload_dir[]\" value=\"".$path.$dirs[$c]."\">
+		<input type=\"hidden\" name=\"upload_dir[]\" value=\"".$path.$dirs[$c]."\" />
 		</div>";
 	}else{
 		$text .= "&nbsp;";
@@ -233,7 +233,7 @@ while($files[$c]){
 	$text .= "<td style=\"width:10%\" class=\"forumheader3\">".$size."</td>
 	<td style=\"width:30%\" class=\"forumheader3\">".date("F j Y, g:i a", filemtime(e_BASE.$path."/".$files[$c]))."</td>
 	<td class=\"forumheader3\"><input class=\"button\" type=\"submit\" name=\"deletefile\" value=\"".FMLAN_23."\" />
-	<input type=\"checkbox\" name=\"deleteconfirm\" value=\"".$path.$files[$c]."\"><span class=\"smalltext\"> ".FMLAN_24."</span></td>
+	<input type=\"checkbox\" name=\"deleteconfirm\" value=\"".$path.$files[$c]."\"><span class=\"smalltext\" /> ".FMLAN_24."</span></td>
 	</tr>";
 	$c++;
 }

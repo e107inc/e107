@@ -220,7 +220,7 @@ $text .= "<tr style='vertical-align:top'>
 
 if($action == "edit"){
         $text .= "<input class='button' type='submit' name='update_admin' value='".ADMSLAN_52."' />
-        <input type='hidden' name='a_id' value='$a_id'>";
+        <input type='hidden' name='a_id' value='$a_id' />";
 }else{
         $text .= "<input class='button' type='submit' name='add_admin' value='".ADMSLAN_53."' />";
 }
