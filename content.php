@@ -13,8 +13,6 @@
 +---------------------------------------------------------------+
 */
 require_once("class2.php");
-require_once(HEADERF);
-
 if(e_QUERY){
 	$tmp = explode(".", e_QUERY);
 	$action = $tmp[0];
@@ -22,11 +20,49 @@ if(e_QUERY){
 	$id = $tmp[2];
 	unset($tmp);
 }else{	
+	require_once(HEADERF);
 	$text = "<a href='".e_SELF."?article'>".LAN_59." ".LAN_57."</a>\n<br />\n<a href='".e_SELF."?review'>".LAN_59." ".LAN_58."</a>";
 	$ns -> tablerender(LAN_60, $text);
 	require_once(FOOTERF);
 	exit;
 }
+if($action == "content"){
+	$query = "content_id='".$sub_action."' ";
+	$page = LAN_60.":";
+	}
+if($action == "article"){
+	if(is_numeric($sub_action)){
+		$query = "content_id='".$sub_action."' ";
+		$page = LAN_1.":";
+	}elseif($sub_action == "cat" ){
+		$query = "content_id='".$id."' ";
+		$page = LAN_1.": ".LAN_3.":";
+	}else{		
+		$page = LAN_50;
+	}
+}
+if($action == "review"){
+	if(is_numeric($sub_action)){
+		$page = LAN_2.":";
+		$query = "content_id='".$sub_action."' ";
+	}elseif($sub_action == "cat"){
+		$page = LAN_2.": ".LAN_3.":";
+		$query = "content_id='".$id."' ";
+	}else{		
+		$page = LAN_35;
+	}
+}
+if($query){
+if($sql -> db_Select("content", "*", $query)){ 
+	$row = $sql -> db_Fetch(); extract($row);
+	define("e_PAGETITLE", $page." ".$content_heading);
+	}
+}else{
+	define("e_PAGETITLE", $page);
+}
+
+require_once(HEADERF);
+
 
 require_once(e_HANDLER."emailprint_class.php");
 $ep = new emailprint;
@@ -37,6 +73,7 @@ $ep = "<div style='text-align:right'>
 <a href='print.php?content.".$sub_action."'><img src='".e_IMAGE."generic/printer.gif' style='border:0' alt='printer friendly' /></a>
 </div>";
 */
+
 
 require_once(e_HANDLER."comment_class.php");
 $cobj = new comment;
@@ -94,11 +131,17 @@ if($action == "content"){
 		}else{
 			ob_start();
 			unset($text);
-			if($comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='$sub_action' AND comment_type='1' ORDER BY comment_datestamp")){
-				while($row = $sql -> db_Fetch()){
-					$text .= $cobj -> render_comment($row);
+					if($comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='$sub_action' AND comment_type='1' AND comment_pid='0' ORDER BY comment_datestamp")){
+					$width = 96;
+					while($row = $sql -> db_Fetch()){
+					if($pref['nested_comments']){
+						$text = $cobj -> render_comment($row, $table, $action, $id, $width, $subject);		
+						$ns -> tablerender(LAN_5, $text);	
+						}else{
+							$text .= $cobj -> render_comment($row, $table, $action, $id, $width, $subject);
+						}
 				}
-				$ns -> tablerender(LAN_5, $text);
+				 if(!$pref['nested_comments']){$ns -> tablerender(LAN_5, $text);	}
 				if($pref['cachestatus']){
 					$cache = $aj -> formtpa(ob_get_contents(), "admin");
 					set_cache("comment.content.$sub_action", $cache);
@@ -108,7 +151,7 @@ if($action == "content"){
 		if(ADMIN && getperms("B") && $comment_total){
 			echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?content.$sub_action'>".LAN_29."</a></div><br />";
 		}
-		$cobj -> form_comment();
+		$cobj -> form_comment("comment", "content", $sub_action, $content_heading);
 	}
 }
 	
@@ -176,17 +219,23 @@ if($action == "review"){
 			$row = $sql -> db_Fetch(); extract($row);
 		}
 
-		if($content_comment){
+	if($content_comment){
 			if($cache = retrieve_cache("comment.content.$sub_action")){
 				echo $aj -> formtparev($cache);
 			}else{
 				ob_start();
 				unset($text);
-				if($comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='$sub_action' AND comment_type='1' ORDER BY comment_datestamp")){
+					if($comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='$sub_action' AND comment_type='1' AND comment_pid='0' ORDER BY comment_datestamp")){
+					$width = 96;
 					while($row = $sql -> db_Fetch()){
-						$text .= $cobj -> render_comment($row);
-					}
-					$ns -> tablerender(LAN_5, $text);
+					if($pref['nested_comments']){
+						$text = $cobj -> render_comment($row, $table, $action, $id, $width, $subject);		
+						$ns -> tablerender(LAN_5, $text);	
+						}else{
+							$text .= $cobj -> render_comment($row, $table, $action, $id, $width, $subject);
+						}
+				}
+				 if(!$pref['nested_comments']){$ns -> tablerender(LAN_5, $text);	}
 					if($pref['cachestatus']){
 						$cache = $aj -> formtpa(ob_get_contents(), "admin");
 						set_cache("comment.content.$sub_action", $cache);
@@ -196,7 +245,7 @@ if($action == "review"){
 			if(ADMIN && getperms("B")){
 				echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?content.$sub_action'>".LAN_29."</a></div><br />";
 			}
-			$cobj -> form_comment();
+		$cobj -> form_comment("comment", "content", $sub_action, $content_heading);
 		}
 
 		require_once(FOOTERF);
@@ -510,21 +559,27 @@ if($action == "article"){
 			}else{
 				ob_start();
 				unset($text);
-				if($comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='$sub_action' AND comment_type='1' ORDER BY comment_datestamp")){
+				if($comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='$sub_action' AND comment_type='1' AND comment_pid='0' ORDER BY comment_datestamp")){
+					$width = 96;
 					while($row = $sql -> db_Fetch()){
-						$text .= $cobj -> render_comment($row);
-					}
-					$ns -> tablerender(LAN_5, $text);
-					if($pref['cachestatus']){
+					if($pref['nested_comments']){
+						$text = $cobj -> render_comment($row, $table, $action, $id, $width, $subject);		
+						$ns -> tablerender(LAN_5, $text);	
+						}else{
+							$text .= $cobj -> render_comment($row, $table, $action, $id, $width, $subject);
+						}
+				}
+				 if(!$pref['nested_comments']){$ns -> tablerender(LAN_5, $text);	}
+						if($pref['cachestatus']){
 						$cache = $aj -> formtpa(ob_get_contents(), "admin");
 						set_cache("comment.content.$sub_action", $cache);
+							}
+						}
 					}
-				}
-			}
 			if(ADMIN && getperms("B")){
 				echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?content.$sub_action'>".LAN_29."</a></div><br />";
 			}
-			$cobj -> form_comment();
+		$cobj -> form_comment("comment", "content", $sub_action, $content_heading);
 		}
 
 		require_once(FOOTERF);
