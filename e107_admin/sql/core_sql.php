@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-02-08 16:33:59 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.11 $
+|     $Date: 2005-02-08 21:36:58 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -363,40 +363,6 @@ CREATE TABLE session (
   session_data text NOT NULL
 ) TYPE=MyISAM;
 
-# --------------------------------------------------------
-
-#
-# Table structure for table `stat_counter`
-#
-
-CREATE TABLE stat_counter (
-  counter_date date NOT NULL default '0000-00-00',
-  counter_url varchar(100) NOT NULL default '',
-  counter_unique int(10) unsigned NOT NULL default '0',
-  counter_total int(10) unsigned NOT NULL default '0',
-  counter_ip text NOT NULL
-) TYPE=MyISAM;
-# --------------------------------------------------------
-
-#
-# Table structure for table `stat_info`
-#
-
-CREATE TABLE stat_info (
-  info_name text NOT NULL,
-  info_count int(10) unsigned NOT NULL default '0',
-  info_type tinyint(3) unsigned NOT NULL default '0'
-) TYPE=MyISAM;
-# --------------------------------------------------------
-
-#
-# Table structure for table `stat_last`
-#
-
-CREATE TABLE stat_last (
-  stat_last_date int(11) unsigned NOT NULL default '0',
-  stat_last_info text NOT NULL
-) TYPE=MyISAM;
 # --------------------------------------------------------
 
 #
