@@ -23,7 +23,7 @@ class poll{
 		}
 	}
 
-	function submit_poll($poll_id, $poll_name, $poll_option, $activate, $id=0, $ref="menu"){
+	function submit_poll($poll_id, $poll_name, $poll_option, $activate, $poll_comment, $id=0, $ref="menu"){
 		$aj = new textparse;
 		$poll_name = $aj -> formtpa($poll_name, "admin");
 		foreach($poll_option as $key => $value){
@@ -36,19 +36,19 @@ class poll{
 			$cls -> db_Update("poll", "poll_active='0', poll_end_datestamp='$datestamp' WHERE poll_active='1' OR poll_active='2' ");
 		}
 		if($poll_id){
-			$cls -> db_Update("poll", "poll_title='$poll_name', poll_option_1='".$poll_option[0]."', poll_option_2='".$poll_option[1]."', poll_option_3='".$poll_option[2]."', poll_option_4='".$poll_option[3]."', poll_option_5='".$poll_option[4]."', poll_option_6='".$poll_option[5]."', poll_option_7='".$poll_option[6]."', poll_option_8='".$poll_option[7]."', poll_option_9='".$poll_option[8]."', poll_option_10='".$poll_option[9]."', poll_active='$activate' WHERE poll_id='$poll_id' ");
+			$cls -> db_Update("poll", "poll_title='$poll_name', poll_option_1='".$poll_option[0]."', poll_option_2='".$poll_option[1]."', poll_option_3='".$poll_option[2]."', poll_option_4='".$poll_option[3]."', poll_option_5='".$poll_option[4]."', poll_option_6='".$poll_option[5]."', poll_option_7='".$poll_option[6]."', poll_option_8='".$poll_option[7]."', poll_option_9='".$poll_option[8]."', poll_option_10='".$poll_option[9]."', poll_active='$activate', poll_comment='$poll_comment' WHERE poll_id='$poll_id' ");
 			$message = POLL_11;
 		}else{
 			if($id){
 				$datestamp = $id;
 			}
-			$cls -> db_Insert("poll", "'0', '$datestamp', '0', '".ADMINID."', '$poll_name', '".$poll_option[0]."', '".$poll_option[1]."', '".$poll_option[2]."', '".$poll_option[3]."', '".$poll_option[4]."', '".$poll_option[5]."', '".$poll_option[6]."', '".$poll_option[7]."', '".$poll_option[8]."', '".$poll_option[9]."', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '^', '$activate' ");
+			$cls -> db_Insert("poll", "'0', '$datestamp', '0', '".ADMINID."', '$poll_name', '".$poll_option[0]."', '".$poll_option[1]."', '".$poll_option[2]."', '".$poll_option[3]."', '".$poll_option[4]."', '".$poll_option[5]."', '".$poll_option[6]."', '".$poll_option[7]."', '".$poll_option[8]."', '".$poll_option[9]."', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '^', '$activate', '$poll_comment' ");
 		}
 		unset($_POST['poll_id']);
 		return $message;
 	}
 
-	function render_poll($poll_id, $poll_question, $poll_option, $votes, $mode, $type="menu"){
+	function render_poll($poll_id, $poll_question, $poll_option, $votes, $mode, $type="menu", $poll_comment){
 
 		global $POLLSTYLE, $sql;
 		if(!$POLLSTYLE){
@@ -82,7 +82,6 @@ class poll{
 		$sql -> db_Select("user", "user_name", "user_id=".$poll_admin_id);
 		$row = $sql -> db_Fetch(); extract($row);
 
-
 		$sql = new db;
 		$comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='$poll_id' AND comment_type='4'");
 		
@@ -93,7 +92,7 @@ class poll{
 		$replace[1] = POLL_164.$vote_total;
 
 		$search[2] = "/\{COMMENTS\}(.*?)/si";
-		$replace[2] = ($type == "menu" ? " <a href=\"".e_BASE."comment.php?comment.poll.".$poll_id."\">".POLL_500.": ".$comment_total."</a>" : "");
+		$replace[2] = ($type == "menu" && $poll_comment == 1 ? " <a href=\"".e_BASE."comment.php?comment.poll.".$poll_id."\">".POLL_500.": ".$comment_total."</a>" : "");
 
 		$search[3] = "/\{OLDPOLLS\}(.*?)/si";
 		$replace[3] = ($type == "menu" ? "<a href=\"".e_BASE."oldpolls.php\">".POLL_165."</a>" : "");
