@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-02-13 18:45:00 $
+|     $Revision: 1.27 $
+|     $Date: 2005-02-13 18:54:51 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -143,8 +143,10 @@ class e_parse {
 			$text = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r<]*)#is", "\\1<a href=\"http://\\2\" rel=\"external\">\\2</a>", $text);
 			$text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $text);
 		}
-		$text = $this -> textclean($text, $wrap);
-		 
+		if(!strstr($modifiers, 'nobreak')) {
+			$text = $this -> textclean($text, $wrap);
+		}
+
 		$search = array('&#39;', '&#039;', '&#036;', '&quot;', 'onerror', '&lt;', '&gt;');
 		$replace = array("'", "'", '$', '"', 'one<i></i>rror', '<', '>');
 		$text = str_replace($search, $replace, $text);
