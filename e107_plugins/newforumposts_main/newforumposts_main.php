@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newforumposts_main/newforumposts_main.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-28 15:15:51 $
-|     $Author: stevedunstan $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-16 03:11:52 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -69,7 +69,7 @@ if (!is_object($gen)) {
 	$gen = new convert;
 }
 	
-$ICON = "<img src='".e_IMAGE."forum/new_small.png' alt='' />";
+$ICON = "<img src='".e_PLUGIN."forum/images/new_small.png' alt='' />";
 $TOTAL_TOPICS = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent='0' ");
 $TOTAL_REPLIES = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent!='0' ");
 $TOTAL_VIEWS = $sql->db_Count("SELECT sum(thread_views) FROM ".MPREFIX."forum_t", "generic");
@@ -157,7 +157,7 @@ $post_author_name = $tmp[0];
 $replies = $sql2->db_Select("forum_t", "*", "thread_parent=$thread_id");
 	
 $text .= "<tr>
-<td style='width:5%; text-align:center' class='forumheader3'><img src='".e_IMAGE."forum/new_small.png' alt='' /></td>
+<td style='width:5%; text-align:center' class='forumheader3'><img src='".e_PLUGIN."forum/images/new_small.png' alt='' /></td>
 <td style='width:45%' class='forumheader3'><b><a href='".e_BASE."forum_viewtopic.php?$forum_id.$thread_id'>$thread_name</a></b> <span class='smalltext'>(<a href='".e_BASE."forum_viewforum.php?$forum_id'>$forum_name</a>)</span></td>
 <td style='width:15%; text-align:center' class='forumheader3'>".(USER ? "<a href='".e_BASE."user.php?id.$post_author_id'>" : "")."$post_author_name".(USER ? "</a>" :"")."</td>
 <td style='width:5%; text-align:center' class='forumheader3'>$thread_views</td>
