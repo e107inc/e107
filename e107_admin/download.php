@@ -369,7 +369,18 @@ class download{
                         $text .= "<option value='".$file_array[$counter]."' $selected='selected'>".$file_array[$counter]."</option>\n";
                         $counter++;
                 }
-                $text .= (!$found && $download_url)? "<option value='".$download_url."' selected='selected'>".$download_url." - (".DOWLAN_68.")</option>\n":"";
+					$etext="";
+                if($sub_action == 'dlm'){
+                	$found=1;
+                	if(!file_exists(e_FILE."public/".$download_url) ){
+		                $etext .= " - (".DOWLAN_68.")";
+                	}
+                $text .= "<option value='".$download_url."' selected='selected'>".$download_url.$etext."</option>\n";
+               }
+              	if(!$found && $download_url){
+	                $etext .= " - (".DOWLAN_68.")";
+	                $text .= "<option value='".$download_url."' selected='selected'>".$download_url.$etext."</option>\n";
+              	}
 
                 $text .= "</select>
                 <br />
