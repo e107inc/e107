@@ -239,7 +239,7 @@ if(strstr(e_SELF, $ADMIN_DIRECTORY) && $pref['admintheme'] && !$_POST['sitetheme
         }
 } else {
          if(USERTHEME != FALSE && USERTHEME != "USERTHEME"){
-                if(@fopen(e_THEME.USERTHEME."/theme.php", r)){
+                if(file_exists(e_THEME.USERTHEME."/theme.php", r)){
 					define("THEME", e_THEME.USERTHEME."/");
 				}else{
 					@require_once(e_HANDLER."debug_handler.php");
@@ -248,7 +248,7 @@ if(strstr(e_SELF, $ADMIN_DIRECTORY) && $pref['admintheme'] && !$_POST['sitetheme
 					if(ADMIN && !strstr(e_SELF,$ADMIN_DIRECTORY)){echo '<script>alert("'.CORE_LAN1.'")</script>';}
 				}
         } else {
-                if(@fopen(e_THEME.$pref['sitetheme']."/theme.php", r)){
+                if(file_exists(e_THEME.$pref['sitetheme']."/theme.php", r)){
 					define("THEME", e_THEME.$pref['sitetheme']."/");
 				}else{
 					@require_once(e_HANDLER."debug_handler.php");
