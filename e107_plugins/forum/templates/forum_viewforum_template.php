@@ -11,15 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_viewforum_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-27 19:53:04 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-26 10:34:23 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 $FORUM_VIEW_START = "
-	<div class='spacer'>
+
 	<div style='text-align:center'>
-	<table style='width:95%; ' class='fborder'>
+	<div class='spacer'>
+	<table style='width:95%' class='fborder' >
 	<tr>
 	<td  colspan='2' class='fcaption'>{BREADCRUMB}</td>
 	</tr>
@@ -29,7 +30,7 @@ $FORUM_VIEW_START = "
 	{NEWTHREADBUTTON}
 	</td></tr><tr>
 	<td colspan='2'>
-	 
+
 	<table style='width:100%' class='fborder'>
 	<tr>
 	<td style='width:3%' class='fcaption'>&nbsp;</td>
@@ -39,30 +40,30 @@ $FORUM_VIEW_START = "
 	<td style='width:5%; text-align:center' class='fcaption'>{VIEWTITLE}</td>
 	<td style='width:20%; text-align:center' class='fcaption'>{LASTPOSTITLE}</td>
 	</tr>";
-	
-	
+
+
 if (!$FORUM_VIEW_FORUM) {
 	$FORUM_VIEW_FORUM = "
 		<tr>
 		<td style='vertical-align:middle; text-align:center; width:3%' class='forumheader3'>{ICON}</td>
 		<td style='vertical-align:middle; text-align:left; width:47%'  class='forumheader3'>
-		 
+
 		<table style='width:100%'>
 		<tr>
 		<td style='width:90%'><span class='mediumtext'><b>{THREADTYPE}<br />{THREADNAME}</b></span> <span class='smalltext'>{PAGES}</span></td>
 		<td style='width:10%; white-space:nowrap;'>{ADMIN_ICONS}</td>
 		</tr>
 		</table>
-		 
+
 		</td>
-		 
+
 		<td style='vertical-align:top; text-align:center; width:20%' class='forumheader3'>{POSTER}<br />{THREADDATE}</td>
 		<td style='vertical-align:center; text-align:center; width:5%' class='forumheader3'>{REPLIES}</td>
 		<td style='vertical-align:center; text-align:center; width:5%' class='forumheader3'>{VIEWS}</td>
 		<td style='vertical-align:top; text-align:center; width:20%' class='forumheader3'>{LASTPOST}</td>
 		</tr>";
 }
-	
+
 if (!$FORUM_VIEW_END) {
 	$FORUM_VIEW_END = "
 		</table>
@@ -79,6 +80,7 @@ if (!$FORUM_VIEW_END) {
 		</td>
 		</tr>
 		</table>
+        </div>
 		<div class='spacer'>
 		<table class='fborder' style='width:95%'>
 		<tr>
@@ -97,7 +99,7 @@ if (!$FORUM_VIEW_END) {
 		</table>
 		</div>
 		</div>
-		</div>";
+";
 }
-	
+
 ?>
