@@ -3,7 +3,7 @@
  $FORUM_VIEW_START = " 
  <div class='spacer'>   
  <div style='text-align:center'>   
- <table style='width:95%; display: block' class='fborder'>   
+ <table style='width:95%; ' class='fborder'>   
  <tr>   
  <td  colspan='2' class='fcaption'>{BREADCRUMB}</td>   
  </tr>   
