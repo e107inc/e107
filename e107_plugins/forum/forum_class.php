@@ -425,9 +425,11 @@ class e107forum {
 			$tmp = explode(chr(1), $thread_anon);
 			$lastpost = $tmp[0].".".$post_time;
 			$lastuser = '0.'.$tmp[0];
+			$lp_lastuser = "0".chr(1).$tmp[0];
 		} else {
 			$lastpost = $thread_user.".".$post_time;
 			$lastuser = $thread_user.'.'.USERNAME;
+			$lp_lastuser = $thread_user.chr(1).USERNAME;
 		}
 		//Add post to thread
 		if ($thread_parent) {
@@ -444,7 +446,7 @@ class e107forum {
 		//If post is a reply
 		if ($thread_parent) {
 			$gen = new convert;
-			$sql->db_Update('forum', "forum_replies=forum_replies+1, forum_lastpost='{$lastuser}.{$post_time}.{$thread_parent}' WHERE forum_id='$thread_forum_id' ");
+			$sql->db_Update('forum', "forum_replies=forum_replies+1, forum_lastpost='{$lp_lastuser}".chr(1)."{$post_time}".chr(1)."{$thread_parent}' WHERE forum_id='$thread_forum_id' ");
 			$sql->db_Update('forum_t', "thread_lastpost={$post_time},thread_lastuser='{$lastuser}', thread_total_replies=thread_total_replies+1 WHERE thread_id = {$thread_parent}");
 			$parent_thread = $this->thread_get_postinfo($thread_parent);
 			global $PLUGINS_DIRECTORY;
@@ -472,7 +474,7 @@ class e107forum {
 			}
 		} else {
 			//post is a new thread
-			$sql->db_Update('forum', "forum_threads=forum_threads+1, forum_lastpost='{$lastuser}.{$post_time}.{$newthread_id}' WHERE forum_id='$thread_forum_id' ");
+			$sql->db_Update('forum', "forum_threads=forum_threads+1, forum_lastpost='{$lp_lastuser}".chr(1)."{$post_time}".chr(1)."{$newthread_id}' WHERE forum_id='$thread_forum_id' ");
 		}
 		 
 		return $newthread_id;
