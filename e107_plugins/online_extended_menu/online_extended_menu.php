@@ -7,13 +7,14 @@
 	if(MEMBERS_ONLINE){
 		global $listuserson;
 		foreach($listuserson as $uinfo => $pinfo){
+			
 	
 			list($oid,$oname) = explode(".",$uinfo,2);
 			$online_location_page = substr(strrchr($pinfo, "/"), 1);
 			if($pinfo == "log.php" || $pinfo == "error.php"){ $online_location_page = "news.php"; $pinfo = "news.php"; }
 			if($online_location_page == "request.php"){ $pinfo = "download.php"; }
 			if(strstr($online_location_page, "forum")){ $pinfo = "forum.php"; $online_location_page = "forum.php"; }
-			$text .= "<img src='".e_PLUGIN."online_extended_menu/images/user.png' alt='' style='vertical-align:middle' /> <a href='".e_BASE."user.php?id.$oid'>$oname</a> ".ONLINE_EL7." <a href='$online_location'>$online_location_page</a><br />";
+			$text .= "<img src='".e_PLUGIN."online_extended_menu/images/user.png' alt='' style='vertical-align:middle' /> <a href='".e_BASE."user.php?id.$oid'>$oname</a> ".ONLINE_EL7." <a href='{$pinfo}'>$online_location_page</a><br />";
 		}
 	}
 	
