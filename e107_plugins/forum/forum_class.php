@@ -172,7 +172,7 @@ class e107forum {
 		$ftab = MPREFIX.'forum_t';
 		$utab = MPREFIX.'user';
 		$qry = "
-		SELECT * from {$ftab} 
+		SELECT thread_id, thread_name, thread_datestamp, thread_user, thread_views, thread_lastpost, thread_lastuser, thread_total_replies, user_name from {$ftab} 
 		LEFT JOIN {$utab}
 		ON {$ftab}.thread_user = {$utab}.user_id
 		WHERE {$ftab}.thread_forum_id = $forum_id  
@@ -183,7 +183,6 @@ class e107forum {
 		thread_datestamp DESC  
 		LIMIT {$from},{$view}
 		";
-//		echo $qry.'<br />';
 		$ret = array();
 		if($sql->db_Select_gen($qry)) {
 			while($row = $sql->db_Fetch()){
@@ -442,8 +441,9 @@ class e107forum {
 		} else {
 			$lp_info = $lastuser;
 		}
-		$vals = "0,'$thread_name','$thread_thread','$thread_forum_id',$post_time,'$thread_parent','$thread_user',0,$thread_active,$post_time,$thread_s,'{$thread_anon}',0,'{$lp_info}'";
+		$vals = "0,'$thread_name','$thread_thread','$thread_forum_id',$post_time,'$thread_parent','$thread_user',0,$thread_active,$post_time,$thread_s,'{$thread_anon}',0,'{$lp_info}', 0";
 		$newthread_id = $sql->db_Insert('forum_t',$vals);
+
 		if(USER) {
 			$sql -> db_Update('user', "user_forums=user_forums+1, user_viewed='".USERVIEWED.".{$newthread_id}.' WHERE user_id='".USERID."' ");
 		}
@@ -451,7 +451,7 @@ class e107forum {
 		if($thread_parent) {
 			$gen = new convert;
 			$sql -> db_Update('forum', "forum_replies=forum_replies+1, forum_lastpost='{$lastuser}.{$post_time}.{$thread_parent}' WHERE forum_id='$thread_forum_id' ");
-			$sql->db_Update('forum_t',"thread_lastpost={$post_time},thread_lastuser='{$lastuser}' WHERE thread_id = {$thread_parent}");
+			$sql->db_Update('forum_t',"thread_lastpost={$post_time},thread_lastuser='{$lastuser}', thread_total_replies=thread_total_replies+1 WHERE thread_id = {$thread_parent}");
 			$parent_thread = $this->thread_get_postinfo($thread_parent);
 			global $PLUGINS_DIRECTORY;
 			$datestamp = $gen->convert_date($post_time, "long");

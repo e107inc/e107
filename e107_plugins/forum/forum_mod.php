@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_mod.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-01-25 15:14:57 $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-26 16:15:21 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -62,10 +62,12 @@ function forum_delete_thread($thread_id) {
 	$row = $sql -> db_Fetch(); 
 	extract($row);
 
-	if($thread_parent) {
+	if($thread_parent)
+	{
 		// is post a reply?
 		$sql -> db_Delete("forum_t", "thread_id='$thread_id' ");        // delete reply only
 		$sql -> db_Update("forum", "forum_replies=forum_replies-1 WHERE forum_id='$thread_forum_id' ");        // dec reply count by 1
+		$sql -> db_Update("forum_t", "thread_total_replies=thread_total_replies-1 WHERE thread_id='$thread_parent' ");        // dec reply count by 1
 		$sql -> db_Select("forum_t", "*", "thread_id=$thread_id");
 		$row = $sql -> db_Fetch(); 
 		extract($row);
