@@ -38,7 +38,11 @@ if(IsSet($_POST['commentsubmit'])){
 		if(!$row[0] && (ANON===TRUE || USER===TRUE)){
 			if(!$pid){ $pid = 0; }
 			$cobj -> enter_comment($_POST['author_name'], $_POST['comment'], $table, $id, $pid, $_POST['subject']);
-			clear_cache("comment.php?$table.$id");
+			if($table == "news"){
+				clear_cache("news");
+			} else {
+				clear_cache("comment.php?$table.$id");
+			}
 		}
 	}
 }
