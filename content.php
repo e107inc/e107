@@ -28,10 +28,15 @@ if(e_QUERY){
 	exit;
 }
 
+require_once(e_HANDLER."emailprint_class.php");
+$ep = new emailprint;
+$textemailprint = $ep -> render_emailprint("article",$sub_action);
+/*
 $ep = "<div style='text-align:right'>
 <a href='email.php?article.".$sub_action."'><img src='".e_IMAGE."generic/friend.gif' style='border:0' alt='email to someone' /></a>
 <a href='print.php?content.".$sub_action."'><img src='".e_IMAGE."generic/printer.gif' style='border:0' alt='printer friendly' /></a>
 </div>";
+*/
 
 require_once(e_HANDLER."comment_class.php");
 $cobj = new comment;
@@ -428,7 +433,7 @@ if($action == "article"){
 				$articlepages = explode("[newpage]",$content_content);
 				$totalpages = count($articlepages);
 				if(strstr($content_content, "{EMAILPRINT}") || $content_pe_icon){
-					$content_content = str_replace("{EMAILPRINT}", $ep, $content_content);
+					$content_content = str_replace("{EMAILPRINT}", $textemailprint, $content_content);
 					$epflag = TRUE;
 				}
 
@@ -439,13 +444,13 @@ if($action == "article"){
 						$text .= ($c == ($id+1) ? "<span style='text-decoration: underline;'>$c</span>&nbsp;&nbsp;" : "<a href='content.php?article.$sub_action.".($c-1)."'>$c</a>&nbsp;&nbsp;");
 					}
 					if(($id+1) != $totalpages){ $text .= "<a href='content.php?article.$sub_action.".($id+1)."'>>> ".LAN_26."</a> "; }
-					if($epflag){ $text .= $ep; }
+					if($epflag){ $text .= $textemailprint; }
 					$content_heading .= ", ".LAN_63." ".($id+1);
 					$cachestr = ($id ? "article.item.$sub_action.$id" : "article.item.$sub_action");
 
 				}else{
 					$text .= $content_content."\n<br />\n";
-					if($epflag){ $text .= $ep; }
+					if($epflag){ $text .= $textemailprint; }
 					$cachestr = "article.item.$sub_action";
 					$comflag = TRUE;
 				}
