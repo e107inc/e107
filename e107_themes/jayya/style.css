@@ -41,15 +41,18 @@ a:hover {
 	text-decoration: underline;
 }
 
-.tbox, .indent {
+.tbox {
 	border: #5e5d63 1px solid;
 }
 
 .indent {
-	padding: 3px;
+	border: #999 1px dashed;
+}
+
+.indent {
+	padding: 5px;
 	margin: 5px;
-	color: #000060;
-	background-color: #ccd5d9;
+	background-color: #fcf9f9;
 }
 
 .tbox {
