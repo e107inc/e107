@@ -28,9 +28,6 @@ if(e_QUERY){
 	exit;
 }
 
-
-
-
 $ep = "<div style='text-align:right'>
 <a href='email.php?article.".$sub_action."'><img src='".e_IMAGE."generic/friend.gif' style='border:0' alt='email to someone' /></a>
 <a href='print.php?content.".$sub_action."'><img src='".e_IMAGE."generic/printer.gif' style='border:0' alt='printer friendly' /></a>
@@ -43,8 +40,17 @@ $rater = new rater;
 
 if(IsSet($_POST['commentsubmit'])){
 	$tmp = explode(".", e_QUERY);
-	$cobj -> enter_comment($_POST['author_name'], $_POST['comment'], "content", $sub_action);
-	$sql -> db_Delete("cache", "cache_url='comment.content.$sub_action' ");
+
+	if(!$sql -> db_Select("content", "content_comment", "content_id='$sub_action' ")){
+		header("location:".e_BASE."index.php");
+		exit;
+	}else{
+		$row = $sql -> db_Fetch();
+		if($row[0] && (ANON===TRUE || USER===TRUE)){
+			$cobj -> enter_comment($_POST['author_name'], $_POST['comment'], "content", $sub_action);
+			$sql -> db_Delete("cache", "cache_url='comment.content.$sub_action' ");
+		}
+	}
 }
 
 // content page -------------------------------------------------------------------------------------------------------------------------------------------------------------------
