@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.66 $
-|     $Date: 2005-01-29 16:21:44 $
+|     $Revision: 1.67 $
+|     $Date: 2005-01-29 16:25:23 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -50,7 +50,6 @@ $e107 = new e107($Paths, __FILE__, $OutputCompression);
 
 echo '<pre>'.print_r($e107, true).'</pre>';
 
-ob_start();
 $start_ob_level=ob_get_level();
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
