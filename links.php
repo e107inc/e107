@@ -95,14 +95,7 @@ if(isset($id)){
 		$sql -> db_Update("links", "link_refer=link_refer+1 WHERE link_id='$id' ");
 		$sql -> db_Select("links", "*", "link_id='$id AND link_class!=255' ");
 		$row = $sql -> db_Fetch(); extract($row);
-
-		if($link_open == 4){ // miniwindow
-			echo "<script type='text/javascript'>open_window('$link_url')</script>\n";
-		} elseif($link_open == 1){ // _blank
-			echo "<script type='text/javascript'>open_window('$link_url','full')</script>\n";
-		}else{
 			header("location:".$link_url);
-		}
 
 	}
 	$sql -> db_Select("link_category", "*", "link_category_id != '1' ");
@@ -137,7 +130,24 @@ if($category){
 					if(isset($category)){
 						$link_append = "<a href='".e_SELF."?".$link_id.".cat.{$category}'>";
 					} else {
-						$link_append = "<a href='".e_SELF."?".$link_id."'>";
+
+					switch ($link_open) { 
+					case 1:
+						$link_append = "<a href='".e_SELF."?".$link_id."' onclick=\"window.open('".e_SELF."?".$link_id."'); return false;\">";
+					break; 
+					case 2:
+					   $link_append = "<a href='".e_SELF."?".$link_id."'>";
+					break;
+					case 3:
+					   $link_append = "<a href='".e_SELF."?".$link_id."'>";
+					break;
+					case 4:
+						$link_append = "<a href=\"javascript:open_window('".e_SELF."?".$link_id."')\">";
+					break;
+					default:
+					   $link_append = "<a href='".e_SELF."?".$link_id."'>";
+					}
+
 					}
 
 					$text .= "\n<tr><td style='width:10%; vertical-align: top'>";
@@ -159,6 +169,9 @@ if($category){
 					<span class='smalltext'>[ ".LAN_88." $link_refer ]</span></td></tr>
 					</table>";
 				}
+						}
+			if($pref['link_submit'] && check_class($pref['link_submit_class'])){
+				$text .= "<a href='".e_SELF."?submit'>".LAN_101."</a>";
 			}
 			if($link_activ > 0){$ns -> tablerender($caption, $text);}
 			$link_activ = 0;
@@ -166,9 +179,6 @@ if($category){
 	}
 }
 
-if($pref['link_submit'] && check_class($pref['link_submit_class'])){
-	echo "<a href='".e_SELF."?submit'>".LAN_101."</a>";
-}
 
 
 
