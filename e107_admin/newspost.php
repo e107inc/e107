@@ -694,7 +694,7 @@ class newspost{
                 ".$rs -> form_open("post", e_SELF."?pref", "dataform")."
                 <table class='fborder' style='width:94%'>
                 <tr>
-                <td class='forumheader3' style='width:60%'><span class='defaulttext'>Show News-Category Footer Menu</span></td>
+                <td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_86."</span></td>
                 <td class='forumheader3' style='width:40%'>
                 <input type='checkbox' name='news_cats' value='1' ".($pref['news_cats']==1 ? " checked" : "").">
                         </td>
@@ -702,7 +702,7 @@ class newspost{
                 </tr>
 
                 <tr>
-                <td class='forumheader3' style='width:60%'><span class='defaulttext'>News Category Columns?:</span></td>
+                <td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_87."</span></td>
                 <td class='forumheader3' style='width:40%'>
                 <select class='tbox' name='nbr_cols'>
                 <option value='1' ".($pref['nbr_cols']==1 ? "selected" : "").">1</option>
@@ -715,7 +715,7 @@ class newspost{
                 </tr>
 
                 <tr>
-                <td class='forumheader3' style='width:60%'><span class='defaulttext'>News posts to display per page?:</span></td>
+                <td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_88."</span></td>
                 <td class='forumheader3' style='width:40%'>
                 <select class='tbox' name='newsposts'>
                 <option value='1' ".($pref['newsposts']==1 ? "selected" : "").">1</option>
@@ -730,13 +730,13 @@ class newspost{
                 </tr>
 
                 <tr><td colspan='2' style='text-align:center' class='forumheader'>";
-                $text .= "<input class='button' type='submit' name='save_prefs' value='Save News Preferences'></td></tr>";
+                $text .= "<input class='button' type='submit' name='save_prefs' value='".NWSLAN_89."'></td></tr>";
 
                 $text .= "</table>
                 ".$rs -> form_close()."
                 </div>";
 
-                $ns -> tablerender("News Preferences", $text);
+                $ns -> tablerender(NWSLAN_90, $text);
         }
 
 
