@@ -140,18 +140,18 @@ if(is_numeric($tmp[0])){
 
 
 if(IsSet($_POST['commentsubmit'])){
-	$tmp = explode(".", e_QUERY);
+        $tmp = explode(".", e_QUERY);
 
-	if(!$sql -> db_Select("download", "download_comment", "download_id='$id' ")){
-		header("location:".e_BASE."index.php");
-		exit;
-	}else{
-		$row = $sql -> db_Fetch();
-		if($row[0] && (ANON===TRUE || USER===TRUE)){
-			$cobj -> enter_comment($_POST['author_name'], $_POST['comment'], "download", $id, $pid, $_POST['subject']);
-			clear_cache("comment.download.{$sub_action}");
-		}
-	}
+        if(!$sql -> db_Select("download", "download_comment", "download_id='$id' ")){
+                header("location:".e_BASE."index.php");
+                exit;
+        }else{
+                $row = $sql -> db_Fetch();
+                if($row[0] && (ANON===TRUE || USER===TRUE)){
+                        $cobj -> enter_comment($_POST['author_name'], $_POST['comment'], "download", $id, $pid, $_POST['subject']);
+                        clear_cache("comment.download.{$sub_action}");
+                }
+        }
 }
 
 if($action == "list"){
@@ -183,25 +183,25 @@ if($action == "list"){
         <td colspan='7' style='text-align:center' class='forumheader'>
         <span class='defaulttext'>".LAN_dl_37."</span>
         <select name='view' class='tbox'>".
-        ($view == 5 ? "<option selected>5</option>" : "<option>5</option>").
-        ($view == 10 ? "<option selected>10</option>" : "<option>10</option>").
-        ($view == 15 ? "<option selected>15</option>" : "<option>15</option>").
-        ($view == 20 ? "<option selected>20</option>" : "<option>20</option>").
-    ($view == 50 ? "<option selected>50</option>" : "<option>50</option>")."
+        ($view == 5 ? "<option selected='selected'>5</option>" : "<option>5</option>").
+        ($view == 10 ? "<option selected='selected'>10</option>" : "<option>10</option>").
+        ($view == 15 ? "<option selected='selected'>15</option>" : "<option>15</option>").
+        ($view == 20 ? "<option selected='selected'>20</option>" : "<option>20</option>").
+    ($view == 50 ? "<option selected='selected'>50</option>" : "<option>50</option>")."
         </select>
         &nbsp;
         <span class='defaulttext'>".LAN_dl_38."</span>
         <select name='order' class='tbox'>".
-        ($order == "download_datestamp" ? "<option value='download_datestamp' selected>".LAN_dl_22."</option>" : "<option value='download_datestamp'>".LAN_dl_22."</option>").
-        ($order == "download_requested" ? "<option value='download_requested' selected>".LAN_dl_18."</option>" : "<option value='download_requested'>".LAN_dl_18."</option>").
-        ($order == "download_name" ? "<option value='download_name' selected>".LAN_dl_23."</option>" : "<option value='download_name'>".LAN_dl_23."</option>").
-        ($order == "download_author" ? "<option value='download_author' selected>".LAN_dl_24."</option>" : "<option value='download_author'>".LAN_dl_24."</option>")."
+        ($order == "download_datestamp" ? "<option value='download_datestamp' selected='selected'>".LAN_dl_22."</option>" : "<option value='download_datestamp'>".LAN_dl_22."</option>").
+        ($order == "download_requested" ? "<option value='download_requested' selected='selected'>".LAN_dl_18."</option>" : "<option value='download_requested'>".LAN_dl_18."</option>").
+        ($order == "download_name" ? "<option value='download_name' selected='selected'>".LAN_dl_23."</option>" : "<option value='download_name'>".LAN_dl_23."</option>").
+        ($order == "download_author" ? "<option value='download_author' selected='selected'>".LAN_dl_24."</option>" : "<option value='download_author'>".LAN_dl_24."</option>")."
         </select>
         &nbsp;
         <span class='defaulttext'>".LAN_dl_39."</span>
         <select name='sort' class='tbox'>".
-        ($sort == "ASC" ? "<option value='ASC' selected>".LAN_dl_25."</option>" : "<option value='ASC'>".LAN_dl_25."</option>").
-        ($sort == "DESC" ? "<option value='DESC' selected>".LAN_dl_26."</option>" : "<option value='DESC'>".LAN_dl_26."</option>")."
+        ($sort == "ASC" ? "<option value='ASC' selected='selected'>".LAN_dl_25."</option>" : "<option value='ASC'>".LAN_dl_25."</option>").
+        ($sort == "DESC" ? "<option value='DESC' selected='selected'>".LAN_dl_26."</option>" : "<option value='DESC'>".LAN_dl_26."</option>")."
         </select>
         &nbsp;
         <input class='button' type='submit' name='goorder' value='".LAN_dl_27."' />
@@ -238,7 +238,7 @@ if($action == "list"){
                 }
 
                 if($pref['agree_flag'] == 1){
-                        $dnld_link = "<a href='request.php?".$download_id."' onClick= \"return confirm('$agreetext');\">";
+                        $dnld_link = "<a href='request.php?".$download_id."' onclick= \"return confirm('$agreetext');\">";
                 }else{
 
                         $dnld_link = "<a href='request.php?".$download_id."'>";
@@ -262,7 +262,7 @@ if($action == "list"){
         </div>";
         $ns -> tablerender($type, $text);
 
-        echo "<div style='text-align:center'><a href='".e_SELF."'><span style='width:200px; cursor:hand; pointer:hand'><div class='nextprev'>".LAN_dl_9."</div></span></a></div>";
+        echo "<div style='text-align:center;margin-left:auto;margin-right:auto'><div class='nextprev' style='width:200px; cursor:hand; pointer:hand; margin-left:auto; margin-right:auto'><a href='".e_SELF."' style='text-decoration:none'>".LAN_dl_9."</a></div></div>";
 
         require_once(e_HANDLER."np_class.php");
         $ix = new nextprev("download.php", $from, $view, $total_downloads, "Downloads", "list.".$id.".".$view.".".$order.".".$sort);
@@ -280,10 +280,10 @@ if($action == "view"){
         $rater = new rater;
         $aj = new textparse;
         $sql2 = new db;
-		$highlight_search = FALSE;
-		if(IsSet($_POST['highlight_search'])){
-			$highlight_search = TRUE;
-		}
+                $highlight_search = FALSE;
+                if(IsSet($_POST['highlight_search'])){
+                        $highlight_search = TRUE;
+                }
 
 
         if(!$sql -> db_Select("download", "*", "download_id='$id'")){
@@ -292,7 +292,7 @@ if($action == "view"){
         }
 
         $row = $sql -> db_Fetch(); extract($row);
-		$subject = $download_name;
+                $subject = $download_name;
         $sql2 -> db_Select("download_category", "*", "download_category_id='$download_category'");
         $row = $sql2 -> db_Fetch(); extract($row);
         $type = $download_category_name." [ ".$download_category_description." ]";
@@ -347,7 +347,7 @@ if($action == "view"){
         }
 
         if($pref['agree_flag'] == 1){
-                        $dnld_link = "<a href='request.php?".$download_id."' onClick= \"return confirm('$agreetext');\">";
+                        $dnld_link = "<a href='request.php?".$download_id."' onclick= \"return confirm('$agreetext');\">";
                 }else{
                         $dnld_link = "<a href='request.php?".$download_id."'>";
         }
@@ -404,13 +404,13 @@ if($action == "view"){
         $dl_id = $download_id;
         if($sql -> db_Select("download", "*", "download_category='$download_category_id' AND download_id<$dl_id ORDER BY download_datestamp DESC")){
                 $row = $sql -> db_Fetch(); extract($row);
-                $prev = "<div class='nextprev'><a href='".e_SELF."?view.$download_id'><< ".LAN_dl_33." [$download_name]</a></div>";
+                $prev = "<div class='nextprev'><a href='".e_SELF."?view.$download_id'>&lt;&lt; ".LAN_dl_33." [$download_name]</a></div>\n";
         }else{
                 $prev = "&nbsp;";
         }
         if($sql -> db_Select("download", "*", "download_category='$download_category_id' AND download_id>$dl_id ORDER BY download_datestamp ASC")){
                 $row = $sql -> db_Fetch(); extract($row);
-                $next = "<div class='nextprev'><a href='".e_SELF."?view.$download_id'>[$download_name] ".LAN_dl_34." >></a></div>";
+                $next = "<div class='nextprev'><a href='".e_SELF."?view.$download_id'>[$download_name] ".LAN_dl_34." &gt;&gt;</a></div>\n";
         }else{
                 $next = "&nbsp;";
         }
@@ -433,28 +433,28 @@ if($action == "view"){
         </div>";
 
         $ns -> tablerender($type, $text);
-		if($download_comment){
-			$query = ($pref['nested_comments'] ? "comment_item_id='$id' AND comment_type='2' AND comment_pid='0' ORDER BY comment_datestamp" : "comment_item_id='$id' AND comment_type='2' ORDER BY comment_datestamp");
-			$comment_total = $sql -> db_Select("comments", "*",  "".$query."");
-				if($comment_total){
-					$width = 0;
-					while($row = $sql -> db_Fetch()){
-								if($pref['nested_comments']){
-									$text = $cobj -> render_comment($row, "download", "comment", $id, $width, $subject);		
-									$ns -> tablerender(LAN_5, $text);	
-									}else{
-										$text .= $cobj -> render_comment($row, "download", "comment", $id, $width, $subject);
-									}
-							}
-							 if(!$pref['nested_comments']){$ns -> tablerender(LAN_5, $text);	}
-						}
+                if($download_comment){
+                        $query = ($pref['nested_comments'] ? "comment_item_id='$id' AND comment_type='2' AND comment_pid='0' ORDER BY comment_datestamp" : "comment_item_id='$id' AND comment_type='2' ORDER BY comment_datestamp");
+                        $comment_total = $sql -> db_Select("comments", "*",  "".$query."");
+                                if($comment_total){
+                                        $width = 0;
+                                        while($row = $sql -> db_Fetch()){
+                                                                if($pref['nested_comments']){
+                                                                        $text = $cobj -> render_comment($row, "download", "comment", $id, $width, $subject);
+                                                                        $ns -> tablerender(LAN_5, $text);
+                                                                        }else{
+                                                                                $text .= $cobj -> render_comment($row, "download", "comment", $id, $width, $subject);
+                                                                        }
+                                                        }
+                                                         if(!$pref['nested_comments']){$ns -> tablerender(LAN_5, $text);        }
+                                                }
 
-					
-			$cobj -> form_comment("comment", "download", $id, $subject, $content_type);
-		}
 
-				require_once(FOOTERF);
-		}
+                        $cobj -> form_comment("comment", "download", $id, $subject, $content_type);
+                }
+
+                                require_once(FOOTERF);
+                }
 
 //$ns -> tablerender(LAN_dl_18, LAN_dl_2);
 //require_once(FOOTERF);

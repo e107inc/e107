@@ -1,5 +1,5 @@
 <?php
-	require_once("class2.php");
+        require_once("class2.php");
 
 
 echo "<?xml version='1.0' encoding='iso-8859-1' ?>\n";
@@ -24,22 +24,26 @@ echo $pref['meta_tag'][1]."\n";
 if(file_exists(THEME."theme.js")){echo "<script type='text/javascript' src='".THEME."theme.js'></script>";}
 if(file_exists(e_BASE."e107_files/user.js")){echo "<script type='text/javascript' src='".e_BASE."e107_files/user.js'></script>\n";}
 ?>
-</head>
-<body>
-<br />
+
 <?php
 
-	echo "<table align='center'><tr><td>";	
-	$text .= "<table class='fborder'>
-	<tr><td class='forumheader3'><br />".LAN_MEMBERS_1."
-	".LAN_MEMBERS_2." <a href='".e_BASE.e_SIGNUP."'>".
-	LAN_MEMBERS_3."</a><br /><br /></td></tr>
-	<tr><td class='forumheader' style='text-align:center;'><a href='".e_BASE."index.php'>".LAN_MEMBERS_4."</td></tr>
-	</table>";
-	$ns -> tablerender(LAN_MEMBERS_0,$text);
-	echo "</td></tr></table>";
+print "</head>
+<body>
+<div><br /></div>\n";
+
+        $text = "<div style='text-align:center'><table class='fborder' style='width:75%;margin-right:auto;margin-left:auto'>
+        <tr><td class='forumheader3' style='text-align:center'><br />".LAN_MEMBERS_1."
+        ".LAN_MEMBERS_2." <a href='".e_BASE.e_SIGNUP."'>".
+        LAN_MEMBERS_3."</a><br /><br /></td></tr>
+        <tr><td class='forumheader' style='text-align:center;margin-right:auto;margin-left:auto'><a href='".e_BASE."index.php'>".LAN_MEMBERS_4."</a></td></tr>
+        </table></div>";
+
+        echo "<div style='text-align:center'>";
+        echo"<div style='width:65%;margin-left:auto;margin-right:auto;text-align:center'>";
+
+        $ns -> tablerender(LAN_MEMBERS_0,$text);
+       echo "</div></div>";
 
 ?>
 </body>
 </html>
-
