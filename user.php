@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-27 19:51:38 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-06 01:00:38 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -279,7 +279,7 @@ function renderuser($row, $user_entended, $mode = "verbose") {
 			$str .= "
 				<tr>
 				<td style='width:80%' class='forumheader3' colspan='2'>
-				<table style='width:100%'><tr><td style='width:30%'> ".$tp->parseTemplate("{pm_menu.sendpm={$id}}")." ".LAN_425."</td></tr></table>
+				<table style='width:100%'><tr><td style='width:30%'> ".$tp->parseTemplate("{SENDPM={$id}}")." ".LAN_425."</td></tr></table>
 				</td></tr>";
 		}
 		 
