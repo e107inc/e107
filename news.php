@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2005-02-13 23:16:32 $
-|     $Author: sweetas $
+|     $Revision: 1.41 $
+|     $Date: 2005-02-14 13:08:15 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -66,14 +66,45 @@ if ($action == 'cat') {
 	if ($category != 0) {
 		$gen = new convert;
 		$sql2 = new db;
+
 		$sql->db_Select("news_category", "*", "category_id='$category'");
 		list($category_id, $category_name, $category_icon) = $sql->db_Fetch();
-		$category_name = $tp->toHTML($category_name);
-		$category_icon = e_IMAGE."icons/".$category_icon;
 
-		$count = $sql->db_SELECT("news", "*", "news_category='$category' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY news_datestamp DESC");
+		$count = $sql->db_Select("news", "*", "news_category='$category' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY news_datestamp DESC");
 		while ($row = $sql->db_Fetch()) {
-			extract($row);
+
+		if(!$NEWSLISTSTYLE){
+		  	$NEWSLISTSTYLE = "
+			<div style='padding:3px;width:100%'>
+			<table style='border-bottom:1px solid black;width:100%' cellpadding='0' cellspacing='0'>
+			<tr>
+			<td style='vertical-align:top;padding:3px;width:20px'>
+			{NEWSCATICON}
+			</td><td style='text-align:left;padding:3px'>
+			{NEWSTITLELINK}
+			<br />
+			{NEWSSUMMARY}
+			<span class='smalltext'>
+			{NEWSDATE}
+			{NEWSCOMMENTS}
+			</span>
+			</td><td style='width:55px'>
+			{NEWSTHUMBNAIL}
+			</td></tr></table>
+			</div>\n";
+
+		}
+
+		$row['category_id'] = $category_id;
+		$row['category_icon'] = $category_icon;
+		$row['category_name'] = $category_name;
+
+
+		$text .= $ix->parse_newstemplate($row,$NEWSLISTSTYLE,$param);
+	//   echo $NEWSLISTSTYLE;
+
+
+
 			if (check_class($news_class)) {
 				$news_title = $tp->toHTML($news_title);
 				if ($news_title == "") {
@@ -81,21 +112,20 @@ if ($action == 'cat') {
 				}
 				$datestamp = $gen->convert_date($news_datestamp, "short");
 				$comment_total = $sql2->db_Count("comments", "(*)", "WHERE comment_item_id='$news_id' AND comment_type='0' ");
-				$text .= "
-					<img src='".THEME."images/bullet2.gif' alt='bullet' /> <b>
-					<a href='news.php?item.".$news_id."'>".$news_title."</a></b>
-					<br />&nbsp;&nbsp;
-					<span class='smalltext'>
-					".$datestamp.", ".LAN_99.": ". ($news_allow_comments ? COMMENTOFFSTRING : $comment_total)."
-					</span>
-					<br />\n";
+	/* $text .= "
+		hi there<img src='".THEME."images/bullet2.gif' alt='bullet' /> <b>
+			<a href='news.php?item.".$news_id."'>".$news_title."</a></b>
+			<br />&nbsp;&nbsp;
+			<span class='smalltext'>
+			".$datestamp.", ".LAN_99.": ". ($news_allow_comments ? COMMENTOFFSTRING : $comment_total)."
+			</span>
+			<br />\n";*/
 			} else {
 				$count --;
 			}
 
 		}
-		$text = "<img src='$category_icon' alt='' /><br />". LAN_307.$count."
-			<br /><br />".$text;
+		$text = $text."<div style='text-align:right'><img src='".e_IMAGE."icons/".$category_icon."' alt='' />". LAN_307.$count."&nbsp;<br />&nbsp;</div>";
 		$ns->tablerender(LAN_82." '".$category_name."'", $text);
 		setNewsCache($cacheString);
 		require_once(FOOTERF);
@@ -104,6 +134,7 @@ if ($action == 'cat') {
 }
 
 if ($action == "extend") {
+
 	checkNewsCache($cacheString);
 	ob_start();
 	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n

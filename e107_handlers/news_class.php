@@ -13,8 +13,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.30 $
-| $Date: 2005-02-13 06:19:13 $
+| $Revision: 1.31 $
+| $Date: 2005-02-14 13:07:18 $
 | $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -56,7 +56,10 @@ class news {
 	function render_newsitem($news, $mode = "default", $n_restrict = "") {
 
 		//echo "<pre>"; print_r($news); echo "</pre>"; // debug ...
-
+/*
+ Some variables from here probably still need to be moved
+ into the function below.
+*/
 		global $tp, $sql, $override;
 		$active_start = 0;
 		$active_end = 0;
@@ -88,35 +91,74 @@ class news {
 		if ($news['news_extended'] && ($preview == "Preview" || strstr(e_QUERY, "extend"))) {
 			$news['news_extended'] = trim(chop($tp->toHTML($news['news_extended'], TRUE)));
 		}
-		extract($news);
-		$preview = substr($preview,0,7);
-		if(!defined("IMAGE_nonew_small"))
-		{
+	//	extract($news);
+
+		if (!defined("IMAGE_nonew_small")){
 			define("IMAGE_nonew_small", (file_exists(THEME."images/nonew_comments.png") ? "<img src='".THEME."images/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/nonew_comments.png' alt=''  />"));
 		}
-		if(!defined("IMAGE_new_small"))
-		{
+		if (!defined("IMAGE_new_small"))	{
 			define("IMAGE_new_small", (file_exists(THEME."images/new_comments.png") ? "<img src='".THEME."images/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/new_comments.png' alt=''  /> "));
 		}
-		if(!defined("IMAGE_sticky"))
-		{
+		if (!defined("IMAGE_sticky")){
 			define("IMAGE_sticky", (file_exists(THEME."images/sticky.png") ? "<img src='".THEME."images/sticky.png' alt=''  /> " : "<img src='".e_IMAGE."generic/sticky.png' alt=''  /> "));
 		}
-		if (!$NEWSLISTSTYLE) {
-			$NEWSLISTSTYLE = "
-				<img src='".THEME."images/bullet2.gif' alt='bullet' />
-				<b>
-				{NEWSTITLE}
-				</b>
-				<div class='smalltext'>
-				{NEWSAUTHOR}
-				on
-				{NEWSDATE}
-				{NEWSCOMMENTS}
-				</div>
-				<hr />
-				";
+
+// definitions converted to params for use in the parser function.
+// allows for changing of these elements with each template.
+
+		$param['image_nonew_small'] = IMAGE_nonew_small;
+		$param['image_new_small'] = IMAGE_new_small;
+		$param['image_sticky'] = IMAGE_sticky;
+		$param['iconstyle'] = ICONSTYLE;
+		$param['commentoffstring'] = COMMENTOFFSTRING;
+		$param['commentlink'] = COMMENTLINK;
+
+// new parser.
+
+		$text = $this->parse_newstemplate($news,$NEWSSTYLE,$params);
+
+		if($mode == "return") {
+			return $text;
 		}
+		echo $text;
+		if ($preview == "Preview") {
+			echo $info;
+		}
+		return TRUE;
+	}
+
+
+	function make_xml_compatible($original) {
+		global $tp, $ml;
+		if (!is_object($tp)) $tp = new e_parse;
+		$original = $tp->toHTML($original, TRUE);
+		// remove html-only entities
+		$original = str_replace('&pound', '&amp;#163;', $original);
+		$original = str_replace('&copy;', '(c)', $original);
+		// encode rest
+		return htmlspecialchars($original);
+	}
+
+
+	function parse_newstemplate($news,$NEWS_TEMPLATE,$param=""){
+
+	/*
+		News text parser - to allow plugins to parse news items etc.
+		$news = array of news field values.
+		$param = array of style types that will come from definitions..
+			$param['iconstyle'] = ICONSTYLE ( see above);
+			The $param will be used below, instead of the definitions - to allow multiple styles to be used.
+			Definitions will still be used in the theme.php.
+*/
+		global $tp;
+		extract($news);
+
+		$category_name = $tp->toHTML($news['category_name']);
+		$category_icon = $news['category_icon'];
+		$category_id   = $news['category_id'];
+
+	$preview = substr($preview,0,7);
+
 		$highlight_search = FALSE;
 		if (IsSet($_POST['highlight_search'])) {
 			$highlight_search = TRUE;
@@ -153,12 +195,12 @@ class news {
 			list($comments['comment_datestamp']) = $sql->db_Fetch();
 			$latest_comment = $comments['comment_datestamp'];
 			if ($latest_comment > USERLV ) {
-				$NEWIMAGE = IMAGE_new_small;
+				$NEWIMAGE = $param['image_new_small'];
 			} else {
-				$NEWIMAGE = IMAGE_nonew_small;
+				$NEWIMAGE = $param['image_nonew_small'];
 			}
 		} else {
-			$NEWIMAGE = IMAGE_nonew_small;
+			$NEWIMAGE = $param['image_nonew_small'];
 		}
 		$news_category = "<a href='".e_BASE."news.php?cat.".$category_id."'>".$category_name."</a>";
 		$news_author = "<a href='".e_BASE."user.php?id.".$user_id."'>".$user_name."</a>";
@@ -171,17 +213,11 @@ class news {
 		}
 
 		$search[0] = "/\{NEWSTITLE\}(.*?)/si";
-		$replace[0] = ($news_render_type == 1 ? "<a href='".e_BASE."news.php?item.$news_id'>".$news_title."</a>" : $news_title);
-		$search[13] = "/\{CAPTIONCLASS\}(.*?)/si";
-		$replace[13] = "<div class='category".$category_id."'>".($titleonly ? "&nbsp;<a href='".e_BASE."comment.php?comment.news.$news_id'>".$news_title."</a>" : "&nbsp;".$news_title)."</div>";
-		$search[14] = "/\{ADMINCAPTION\}(.*?)/si";
-		$replace[14] = "<div class='$admin_name'>".($titleonly ? "&nbsp;<a href='".e_BASE."comment.php?comment.news.$news_id'>".$news_title."</a>" : "&nbsp;".$news_title)."</div>";
-		$search[15] = "/\{ADMINBODY\}(.*?)/si";
-		$replace[15] = "<div class='$admin_name'>".(strstr(e_QUERY, "extend") ? $news_body."<br /><br />".$news_extended : $news_body)."</div>";
+		$replace[0] = $news_title;
 		$search[1] = "/\{NEWSBODY\}(.*?)/si";
 		$replace[1] = (strstr(e_QUERY, "extend") ? $news_body."<br /><br />".$news_extended : $news_body);
 		$search[2] = "/\{NEWSICON\}(.*?)/si";
-		$replace[2] = "<a href='".e_BASE."news.php?cat.$category_id'><img style='".ICONSTYLE."'  src='$category_icon' alt='' /></a>";
+		$replace[2] = "<a href='".e_BASE."news.php?cat.$category_id'><img style='".$param['iconstyle']."'  src='$category_icon' alt='' /></a>";
 		$search[3] = "/\{NEWSHEADER\}(.*?)/si";
 		$replace[3] = $category_icon;
 		$search[4] = "/\{NEWSCATEGORY\}(.*?)/si";
@@ -191,7 +227,7 @@ class news {
 		$search[6] = "/\{NEWSDATE\}(.*?)/si";
 		$replace[6] = $datestamp;
 		$search[7] = "/\{NEWSCOMMENTS\}(.*?)/si";
-		$replace[7] = ($news_allow_comments ? COMMENTOFFSTRING : "".$NEWIMAGE." <a href='".e_BASE."comment.php?comment.news.$news_id'>".COMMENTLINK.$news_comment_total."</a>");
+		$replace[7] = ($news_allow_comments ? $param['commentoffstring'] : "".$NEWIMAGE." <a href='".e_BASE."comment.php?comment.news.$news_id'>".$param['commentlink'].$news_comment_total."</a>");
 		$search[8] = "/\{EMAILICON\}(.*?)/si";
 		$replace[8] = $textemail;
 		$search[9] = "/\{PRINTICON\}(.*?)/si";
@@ -218,48 +254,39 @@ class news {
 			$replace[12] = "";
 		}
 
-		$search[13] = "/\{NEWSSUMMARY\}(.*?)/si";
-		$replace[13] = ($news_summary) ? $news_summary."<br />" : "";
+		$search[13] = "/\{CAPTIONCLASS\}(.*?)/si";
+		$replace[13] = "<div class='category".$category_id."'>".($titleonly ? "&nbsp;<a href='".e_BASE."comment.php?comment.news.$news_id'>".$news_title."</a>" : "&nbsp;".$news_title)."</div>";
 
-		$search[14] = "/\{NEWSTHUMBNAIL\}(.*?)/si";
-		$replace[14] = ($news_thumb) ? "<img src='".e_IMAGE."newspost_images/".$news_thumb."' alt='' style='border:0px' />" : "";
+		$search[14] = "/\{ADMINCAPTION\}(.*?)/si";
+		$replace[14] = "<div class='$admin_name'>".($titleonly ? "&nbsp;<a href='".e_BASE."comment.php?comment.news.$news_id'>".$news_title."</a>" : "&nbsp;".$news_title)."</div>";
 
-		$search[15] = "/\{STICKY_ICON\}(.*?)/si";
-		if($news['news_sticky'])
-		{
-			$replace[15] = IMAGE_sticky;
-		}
-		else
-		{
-			$replace[15] = '';
-		}
+		$search[15] = "/\{ADMINBODY\}(.*?)/si";
+		$replace[15] = "<div class='$admin_name'>".(strstr(e_QUERY, "extend") ? $news_body."<br /><br />".$news_extended : $news_body)."</div>";
+
+		$search[16] = "/\{NEWSSUMMARY\}(.*?)/si";
+		$replace[16] = ($news_summary) ? $news_summary."<br />" : "";
+
+		$search[17] = "/\{NEWSTHUMBNAIL\}(.*?)/si";
+		$replace[17] = ($news_thumb) ? "<a href='".e_BASE."news.php?item.$news_id'><img src='".e_IMAGE."newspost_images/".$news_thumb."' alt='' style='border:0px' /></a>" : "";
+
+		$search[18] = "/\{STICKY_ICON\}(.*?)/si";
+		$replace[18] = ($news['news_sticky'])? $param['image_sticky'] : "";
+
+		$search[19] = "/\{NEWSTITLELINK\}(.*?)/si";
+		$replace[19] = "<a href='".e_BASE."news.php?item.$news_id'>".$news_title."</a>";
+
+		$search[20] = "/\{NEWSCATICON\}(.*?)/si";
+		$replace[20] = "<a href='".e_BASE."news.php?cat.$category_id'><img style='".ICONSTYLE."'  src='$category_icon' alt='' /></a>";
 
 
 		if (function_exists("news_style")) {
-			$NEWSSTYLE = news_style($news);
+			$NEWS_TEMPLATE = news_style($news);
 		}
-		$text = preg_replace($search, $replace, ($news_render_type == 1 && strstr(e_SELF, "news.php") ? $NEWSLISTSTYLE : $NEWSSTYLE));
-		if($mode == "return") {
-			return $text;
-		}
-		echo $text;
-		if ($preview == "Preview") {
-			echo $info;
-		}
+	 //	$text = preg_replace($search, $replace, ($news_render_type == 1 && strstr(e_SELF, "news.php") ? $NEWSLISTSTYLE : $NEWS_TEMPLATE));
 
-		return TRUE;
+		$text = preg_replace($search, $replace, $NEWS_TEMPLATE);
+		return $text;
 	}
-	function make_xml_compatible($original) {
-		global $tp, $ml;
-		if (!is_object($tp)) $tp = new e_parse;
-		$original = $tp->toHTML($original, TRUE);
-		// remove html-only entities
-		$original = str_replace('&pound', '&amp;#163;', $original);
-		$original = str_replace('&copy;', '(c)', $original);
-		// encode rest
-		return htmlspecialchars($original);
-	}
-
 }
 
 ?>
