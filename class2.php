@@ -12,9 +12,9 @@
 	 |     GNU General Public License (http://gnu.org).
 	 |
 	 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-	 |     $Revision: 1.61 $
-	 |     $Date: 2005-01-29 00:51:12 $
-	 |     $Author: mrpete $
+	 |     $Revision: 1.62 $
+	 |     $Date: 2005-01-29 01:27:06 $
+	 |     $Author: mcfly_e107 $
 	 +----------------------------------------------------------------------------+
 	 */
     
@@ -99,7 +99,12 @@
 	 //
 	 // All debug objects and constants are defined in the debug handler
 	 //
-	 require_once(e_HANDLER.'debug_handler.php');
+	if (preg_match('/debug=(.*)/', e_MENU)) {
+		require_once(e_HANDLER.'debug_handler.php');
+		$db_debug = new e107_db_debug;
+	} else {
+		define('E107_DEBUG_LEVEL',0);
+	}
 
 	//
 	//
