@@ -13,7 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("class2.php");
-
+$tp = new textparse;
 $text = "<font style='font-size: 14px; color: black; font-family: Tahoma, Verdana, Arial, Helvetica; text-decoration: none'>
 <div style='text-align:center'>
 <img src='".e_IMAGE."logo.png' alt='Logo' />
@@ -21,7 +21,7 @@ $text = "<font style='font-size: 14px; color: black; font-family: Tahoma, Verdan
 <hr />
 <br />
 
-<div style='text-align:center'>".($pref['maintainance_text'] ? textparse::tpa($pref['maintainance_text'],"","admin") : LAN_00)."</div>";
+<div style='text-align:center'>".($pref['maintainance_text'] ? $tp -> tpa($pref['maintainance_text'],"","admin") : LAN_00)."</div>";
 echo $text;
 
 ?>
