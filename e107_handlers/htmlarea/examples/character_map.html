@@ -1,0 +1,33 @@
+<html>
+  <head>
+    <title>Test of CharacterMap plugin</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript">
+      _editor_url = "../";
+      _editor_lang = "en";
+    </script>
+
+    <!-- load the main HTMLArea files -->
+    <script type="text/javascript" src="../htmlarea.js"></script>
+
+    <script type="text/javascript">
+      HTMLArea.loadPlugin("CharacterMap");
+
+      function initDocument() {
+        var editor = new HTMLArea("editor");
+        editor.registerPlugin(CharacterMap);
+        editor.generate();
+      }
+      
+      
+      
+    </script>
+
+  </head>
+
+  <body onload="initDocument()">
+    <h1>Test of DynamicCSS plugin</h1>
+
+    <textarea id="editor" style="height: 30em; width: 100%;"></textarea>
+  </body>
+</html>

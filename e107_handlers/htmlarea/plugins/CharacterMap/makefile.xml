@@ -1,0 +1,8 @@
+<files>
+  <file name="*.{js,html,cgi,css}" />
+
+  <dir name="lang" />
+  <dir name="img" />
+  <dir name="popups" />
+</files>
+
