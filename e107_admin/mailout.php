@@ -11,14 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-01-31 06:05:34 $
+|     $Revision: 1.19 $
+|     $Date: 2005-02-05 07:04:10 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 require_once("../class2.php");
 $e_sub_cat = 'mail';
+require_once(e_HANDLER."e_parse_class.php");
+if (!is_object($tp)) $tp = new e_parse;
 require_once(e_ADMIN."auth.php");
 if (!getperms("W")) {
 	header("location:".e_BASE."index.php");
@@ -46,17 +48,17 @@ if (isset($_POST['submit'])) {
 
 	if ($_POST['email_to'] == "all" || $_POST['email_to'] == "unverified" || $_POST['email_to'] == "admin") {
 
-        switch ($_POST['email_to']) {
-          case "admin":
-            $insert = "user_admin='1' ";
-            break;
-          case "unverified":
-            $insert = "user_ban='2' ";
-            break;
-          case "all":
-            $insert = "user_id !='' ";
-            break;
-        }
+		switch ($_POST['email_to']) {
+			case "admin":
+				$insert = "user_admin='1' ";
+			break;
+			case "unverified":
+				$insert = "user_ban='2' ";
+			break;
+			case "all":
+				$insert = "user_id !='' ";
+			break;
+		}
 
 
 		// send to all.
@@ -167,12 +169,12 @@ if (isset($_POST['submit'])) {
 
 		$activator = (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$recipient_id[$i].".".$recipient_key[$i] : SITEURL."/signup.php?activate.".$recipient_id[$i].".".$recipient_key[$i]);
 		if($recipient_key[$i]){
-        	$mes_body = str_replace("{SIGNUP_LINK}", "<a href='$activator'>$activator</a>", $mes_body);
-        }else{
-           $mes_body = str_replace("{SIGNUP_LINK}", "", $mes_body);
-        }
+			$mes_body = str_replace("{SIGNUP_LINK}", "<a href='$activator'>$activator</a>", $mes_body);
+		}else{
+			$mes_body = str_replace("{SIGNUP_LINK}", "", $mes_body);
+		}
 
-        $mes_body = str_replace("\n", "<br>", $mes_body);
+		$mes_body = str_replace("\n", "<br>", $mes_body);
 
 		$mail->Body = $tp->toHTML($mes_body);
 		$mail->AltBody = strip_tags(str_replace("<br>", "\n", $mes_body));
@@ -324,7 +326,7 @@ $text .= "
 	<tr>
 	<td colspan='2' style='width:30%' class='forumheader3'>
 
-	<textarea rows='10' cols='20' id='email_body' name='email_body'  class='tbox' style='border:1px solid black;width:100%;height:200px'>
+	<textarea rows='10' cols='20' id='email_body' name='email_body'  class='tbox' style='border:1px solid black;width:100%;height:200px' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>
 	$email_body
 	</textarea>
 	</td>
@@ -333,9 +335,9 @@ $text .= "
 	<tr>
 	<td style='width:30%' class='forumheader3'>".MAILAN_11.": </td>
 	<td style='width:70%' class='forumheader3'>
-	<input type='button' class='button' name='usrname' value='username' onclick=\"add_text('{USERNAME}')\" />
-	<input type='button' class='button' name='usrlink' value='signup link' onclick=\"add_text('{SIGNUP_LINK}')\" />
-	<input type='button' class='button' name='usrid' value='user id' onclick=\"add_text('{USERID}')\" />
+	<input type='button' class='button' name='usrname' value='username' onclick=\"addtext('{USERNAME}')\" />
+	<input type='button' class='button' name='usrlink' value='signup link' onclick=\"addtext('{SIGNUP_LINK}')\" />
+	<input type='button' class='button' name='usrid' value='user id' onclick=\"addtext('{USERID}')\" />
 	</td>
 	</tr>";
 
@@ -415,33 +417,6 @@ require_once(e_ADMIN."footer.php");
 
 
 
-function headerjs() {
-
-	$jscode = "
-		<script type='text/javascript'>
-		function add_text(text){
-		document.getElementById('email_body').value += text;
-		document.getElementById('email_body').focus();
-		}
-		</script>";
-
-	return $jscode;
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -450,7 +425,7 @@ function userclasses($name) {
 	$text .= "<select style='width:80%' class='tbox' name='$name' >
 		<option value='all'>".MAILAN_12."</option>
 		<option value='unverified'>".MAILAN_13."</option>
-        <option value='admin'>Admins</option>";
+		<option value='admin'>Admins</option>";
 	$sql->db_Select("userclass_classes");
 	while ($row = $sql->db_Fetch()) {
 		extract($row);

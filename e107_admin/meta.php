@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/meta.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-27 19:52:24 $
-|     $Author: streaky $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-05 07:04:10 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -23,54 +23,45 @@ if (!getperms("C")) {
 }
 $e_sub_cat = 'meta';
 require_once("auth.php");
-	
+
 if (isset($_POST['metasubmit'])) {
-	$aj = new textparse;
-	$pref['meta_tag'] = $aj->formtpa($_POST['meta'], "admin");
+
+	$pref['meta_tag'] = $tp->toDB($_POST['meta']);
 	save_prefs();
 	$message = METLAN_1;
 }
-	
+
 if ($message) {
 	$ns->tablerender(METLAN_4, "<div
 		style='text-align:center'>".METLAN_1.".</div>");
 }
-	
+
 $text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."' id='dataform'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
 	<tr>
-	 
+
 	<td style='width:20%' class='forumheader3'>".METLAN_2.": </td>
 	<td style='width:80%' class='forumheader3'>
 	<textarea class='tbox' id='meta' name='meta' cols='70'
-	rows='10' style='width:90%'>".$pref['meta_tag']."</textarea>
+	rows='10' style='width:90%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".$tp->toForm($pref['meta_tag'],TRUE)."</textarea>
 	<br />";
-$text .= <<< EOT
-<input class="button" type="button" value="description"
-onclick="addtext2('<meta name=\'description\' content=\'
-EOT;
-$text .= METLAN_5;
-$text .= <<< EOT
-\' />\\n')" />
-<input class="button" type="button" value="keywords"
-onclick="addtext2('<meta name=\'keywords\' content=\'
-EOT;
-$text .= METLAN_6;
-$text .= <<< EOT
-\' />\\n')" />
-<input class="button" type="button" value="copyright"
-onclick="addtext2('<meta name=\'copyright\' content=\'
-EOT;
-$text .= METLAN_7;
-$text .= <<< EOT
-\' />\\n')" />
-EOT;
-$text .= "</td>
+$text .= "
+	<input class='button' type='button' value='description'
+	onclick=\"addtext('<meta name=\'description\' content=\'".METLAN_5."\' />\\n')\" />
+
+	<input class='button' type='button' value='keywords'
+	onclick=\"addtext('<meta name=\'keywords\' content=\'".METLAN_6."\' />\\n')\" />
+
+	<input class='button' type='button' value='copyright'
+	onclick=\"addtext('<meta name=\'copyright\' content=\'".METLAN_7."\' />\\n')\" />
+</td>
 </tr>
 
 <tr><td colspan='2' style='text-align:center' class='forumheader'>
+
 <input class='button' type='submit' name='metasubmit'
+
 value='".METLAN_3."' />
 </td>
 </tr>
@@ -78,19 +69,10 @@ value='".METLAN_3."' />
 </form>
 </div>";
 
+
+
 $ns -> tablerender(METLAN_8, $text);
 
-function headerjs(){
-$headerjs = "<script type=\"text/javascript\">
-function addtext2(str){
-    document.getElementById('meta').value += str ;
-}
-</script>\n";
-return $headerjs;
-}
-
-?>
-
-<?php
 require_once("footer.php");
+
 ?>
