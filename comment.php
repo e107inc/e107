@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-01-27 19:51:37 $
-|     $Author: streaky $
+|     $Revision: 1.11 $
+|     $Date: 2005-01-28 13:22:11 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -254,6 +254,7 @@ if (!strstr(e_QUERY, "poll")) {
 	$cache = ob_get_contents();
 	$e107cache->set("comment.php?{$table}.{$field}", $cache);
 }
+ob_end_flush(); // dump the buffer we started
 	
 require_once(FOOTERF);
 	
