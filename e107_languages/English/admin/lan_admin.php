@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-02-25 07:43:15 $
-|     $Author: e107coders $
+|     $Revision: 1.19 $
+|     $Date: 2005-03-08 16:31:37 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 define("ADLAN_0", "News");
@@ -178,6 +178,9 @@ define("ADLAN_139", "Add/edit/delete links");
 
 define("ADLAN_140", "Theme Manager");
 define("ADLAN_141", "Install / set themes etc");
+
+define("ADLAN_142", "Search");
+define("ADLAN_143", "Search Configuration");
 
 
 // Common Terms
