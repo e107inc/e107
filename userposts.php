@@ -160,23 +160,9 @@ if($action == "forums" || isset($_POST['fsearch'])){
 					$topic = "Thread: $thread_name";
 				}
 
+
+				$thread_thread = wrap($thread_thread);
 				$thread_thread = $aj -> tpa($thread_thread);
-
-				if($pref['cb_linkreplace']){
-					$thread_thread .= " ";
-					$thread_thread = preg_replace("#\>(.*?)\</a\>[\s]#si", ">".$pref['cb_linkc']."</a> ", $thread_thread);
-					$thread_thread = $aj -> tpa(strip_tags($thread_thread));
-				}
-
-				if(!eregi("<a href|<img|&#", $thread_thread)){
-					$message_array = explode(" ", $thread_thread);
-					for($i=0; $i<=(count($message_array)-1); $i++){
-						if(strlen($message_array[$i]) > 20){
-							$message_array[$i] = preg_replace("/([^\s]{20})/", "$1<br />", $message_array[$i]);
-						}
-					}
-					$thread_thread = implode(" ",$message_array);
-				}
 				
 				$ftext .= "<tr>
 				<td style='width:5%; text-align:center' class='forumheader'><img src='".e_IMAGE."forum/new_small.png' alt='' /></td>
@@ -203,5 +189,23 @@ $ix = new nextprev("userposts.php", $from, 10, $ftotal, "Forum Posts", "forums."
 	
 require_once(FOOTERF);
 
+function wrap($data){
+	$wrapcount = 100;
+	$message_array = explode(" ", $data);
+	for($i=0; $i<=(count($message_array)-1); $i++){
+		if(strlen($message_array[$i]) > $wrapcount){
+			if(substr($message_array[$i], 0, 7) == "http://"){
+				$url = str_replace("http://", "", $message_array[$i]);  
+				$url = explode("/", $url);  
+				$url = $url[0];
+				$message_array[$i] = "<a href='".$message_array[$i]."'>[".$url."]</a>";
+			}else{
+				$message_array[$i] = preg_replace("/([^\s]{".$wrapcount."})/", "$1<br />", $message_array[$i]);
+			}
+		}
+	}
+	$data = implode(" ",$message_array);
+	return $data;
+}
 
 ?>
