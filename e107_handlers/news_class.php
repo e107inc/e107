@@ -228,18 +228,18 @@ function create_rss(){
                 global $sql;
   							global $aj;
 								if(!is_object($aj)) $aj = new textparse;
-                setlocale (LC_TIME, "en");
+                setlocale (LC_TIME, CORE_LC);
                 $pubdate = strftime("%a, %d %b %Y %I:%M:00 GMT", time());
                 $sitebutton = (strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", e_IMAGE).SITEBUTTON);
                 $sitedisclaimer = ereg_replace("<br />|\n", "", SITEDISCLAIMER);
 
-        $rss = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>
+        $rss = "<?xml version=\"1.0\" encoding=\"".CHARSET."\"?>
 <rss version=\"2.0\">
 <channel>
   <title>".$this->make_xml_compatible(SITENAME)."</title>
   <link>http://".$_SERVER['HTTP_HOST'].e_HTTP."index.php</link>
   <description>".$this->make_xml_compatible(SITEDESCRIPTION)."</description>
-  <language>en-gb</language>
+  <language>".CORE_LC."-".CORE_LC2."</language>
   <copyright>".$this->make_xml_compatible($sitedisclaimer)."</copyright>
   <managingEditor>".$this->make_xml_compatible(SITEADMIN)." - ".SITEADMINEMAIL."</managingEditor>
   <webMaster>".SITEADMINEMAIL."</webMaster>
