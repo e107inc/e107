@@ -29,7 +29,7 @@ if(ADMIN){
 				<input type='submit' class='button' name='delete_preset' value='".LAN_DELETE."' onclick=\"return jsconfirm('".$tp->toJS(LAN_PRESET_CONFIRMDEL." [".$pst->id."]")."')\" />";
 			}
 			$pst_text .= "</div></form>";
-			return $ns -> tablerender(LAN_PRESET, $pst_text);
+			return $ns -> tablerender(LAN_PRESET, $pst_text, '', TRUE);
 		}
 	}
 }

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-02-03 09:56:46 $
-|     $Author: e107coders $
+|     $Revision: 1.13 $
+|     $Date: 2005-02-04 06:38:59 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -24,7 +24,7 @@ if (!getperms("R")) {
 }
 $e_sub_cat = 'download';
 
-require_once("auth.php");
+
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."userclass_class.php");
 
@@ -44,7 +44,7 @@ $pst->page = "download.php?create"; // display preset options on which page.
 $pst->save_preset("admin_downloads");  // unique name for the preset
 */
 
-
+require_once("auth.php");
 
 $rs = new form;
 $aj = new textparse;
