@@ -11,20 +11,19 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/article.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-27 19:51:30 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-31 17:05:00 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 // This file is now depracated and remains in core for backward compatibilty reasons.
 	
 require_once("class2.php");
-	
+
 $tmp = explode(".", e_QUERY);
 $action = $tmp[0];
 $sub_action = $tmp[1];
 $id = $tmp[2];
-	
 	
 if ($sub_action == 255) {
 	// content page
