@@ -631,7 +631,7 @@ class users{
                 $text = "<div style='text-align:center'>";
       //    $text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 200px; overflow : auto; '>";
 
-                $text .="<form method='post' action='".e_SELF."?".e_QUERY."'>
+                $text .="
                 <table style='width:97%' class='fborder'><tr>
                 <td class='fcaption'>".USRLAN_96."</td>
                 <td class='fcaption'>".USRLAN_97."</td>
@@ -671,7 +671,7 @@ class users{
                                         <a style='text-decoration:none' href='".e_SELF."?editext.$key'>".USRLAN_81."</a>
                                         </span>
                                         &nbsp;
-                                        <form method='post' action='".e_SELF."?extended'>
+                                        <form method='post' action='".e_SELF."?extended' onsubmit='return confirm(\"".USRLAN_16."\")'>
                                         <input type='hidden' name='eu_action' value='delext' />
                                         <input type='hidden' name='key' value='{$key}' />
                                         <input type='submit' class='button' name='eudel' value='".USRLAN_29."' />
@@ -684,14 +684,16 @@ class users{
                         }
                 }
 
-                $text .="</table>";
+                $text .="
+                </table>
+                <form method='post' action='".e_SELF."?".e_QUERY."'>
+                ";
                 $text .="<div><br /></div><table style='width:97%' class='fborder'>  ";
                 $text .= "<tr>
                 <td style='width:30%' class='forumheader3'>".USRLAN_41.":</td>
                 <td style='width:70%' class='forumheader3' colspan='3'>
                 <input class='tbox' type='text' name='user_field' size='40' value='".$uf_name."' maxlength='50' /></td>
                 </tr>";
-
 
                $text .="<tr>
                 <td style='width:30%' class='forumheader3'>".USRLAN_103."</td>
