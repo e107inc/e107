@@ -619,6 +619,7 @@ if($action == "rp" || $action == "cp"){
         $thread_thread = $aj -> tpa($thread_thread, $mode="off");
 		$thread_thread = wrap($thread_thread);
 		$replies = $sql -> db_Count("forum_t" ,"(*)", "WHERE thread_parent='$id'");
+		$replies_t = ($replies >= 10 ? "10" : $replies);
         $text .= "<div style='text-align:center'>".($action == "rp" ? "<div style='border:0;padding-right:2px;width:auto;height:400px;overflow:auto;'>": "")."
         <table style='width:97%' class='fborder'>
         <tr>
@@ -631,7 +632,7 @@ if($action == "rp" || $action == "cp"){
         </table>
 		<br />
         <table style='width:97%' class='fborder'>
-		<tr><td colspan='2' class='fcaption' style='vertical-align:top'>".LAN_101."</td></tr>" : "");
+		<tr><td colspan='2' class='fcaption' style='vertical-align:top'>".LAN_101.$replies_t.LAN_102."</td></tr>" : "");
 		$query = ($action == "cp" ? "thread_parent=$id ORDER by thread_datestamp" : "thread_parent=$id ORDER by thread_datestamp DESC LIMIT 0,10 ");
 		if($replies){
 			$sql -> db_Select("forum_t", "*", $query);
