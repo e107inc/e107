@@ -150,7 +150,7 @@ class comment{
                 }
 
                 $search[4] = "/\{COMMENT\}(.*?)/si";
-                $replace[4] = ($comment_blocked ? LAN_0 : preg_quote($aj -> tpa($comment_comment, "off", "public", $highlight_search=TRUE)));
+                $replace[4] = ($comment_blocked ? LAN_0 : preg_quote($aj -> tpa($comment_comment, "off", "public", $highlight_search)));
 
                 $search[5] = "/\{SIGNATURE\}(.*?)/si";
                 if($user_signature){
