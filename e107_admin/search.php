@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/search.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-03-21 22:09:25 $
+|     $Revision: 1.11 $
+|     $Date: 2005-03-22 13:42:19 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -27,92 +27,6 @@ require_once("auth.php");
 require_once(e_HANDLER.'userclass_class.php');
 $search_prefs = $sysprefs -> getArray('search_prefs');
 
-
-
-
-
-
-
-$search = array
-(
-    'search_sort' => mysql,
-    'multisearch' => 1,
-    'relevance' => 1,
-    'user_select' => 1,
-    'time_restrict' => 0,
-    'time_secs' => 60,
-    'google' => 0,
-    'core_handlers' => Array
-        (
-            'news' => Array
-                (
-                    'class' => 0,
-                    'pre_title' => 0,
-                    'pre_title_alt' => '',
-                    'chars' => 150,
-                    'results' => 10,
-                ),
-
-            'comments' => Array
-                (
-                    'class' => 0,
-                    'pre_title' => 1,
-                    'pre_title_alt' => '',
-                    'chars' => 150,
-                    'results' => 10,
-                ),
-
-            'users' => Array
-                (
-                    'class' => 0,
-                    'pre_title' => 1,
-                    'pre_title_alt' => '',
-                    'chars' => 150,
-                    'results' => 10,
-                ),
-
-            'downloads' => Array
-                (
-                    'class' => 0,
-                    'pre_title' => 1,
-                    'pre_title_alt' => '',
-                    'chars' => 150,
-                    'results' => 10,
-                )
-
-        ),
-        
-    'comments_handlers' => Array
-        (
-            'news' => Array
-                (
-                    'id' => 0,
-                    'dir' => 'core',
-                    'class' => 0,
-                ),
-
-            'download' => Array
-                (
-                    'id' => 2,
-                    'dir' => 'core',
-                    'class' => 0,
-                )
-        )
-);
-
-
-
-
-
-
-
-
-
-
-
-
-//print_r($sysprefs->prefVals);
-//print_r($search_prefs);
 $search_handlers['news'] = SEALAN_5;
 $search_handlers['comments'] = SEALAN_6;
 $search_handlers['users'] = SEALAN_7;
@@ -125,7 +39,6 @@ if (isset($_POST['updatesettings'])) {
 	$search_prefs['relevance'] = $_POST['relevance'];
 	$search_prefs['user_select'] = $_POST['user_select'];
 	$search_prefs['multisearch'] = $_POST['multisearch'];
-	unset($search_prefs['multisearch']);
 	$search_prefs['time_restrict'] = $_POST['time_restrict'];
 	$search_prefs['time_secs'] = $_POST['time_secs'] > 300 ? 300 : $_POST['time_secs'];
 	$search_prefs['google'] = $_POST['google'];
