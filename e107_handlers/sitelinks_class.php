@@ -137,7 +137,7 @@ if($pref['cachestatus']){
         $cache = $aj -> formtpa(ob_get_contents(), "admin");
         set_cache("sitelinks", $cache);
 }
-
+ob_end_flush(); /* dump collected data */
 
 }
 ?>
