@@ -18,7 +18,7 @@ require_once("class2.php");
 $use_imagecode = ($pref['signcode'] && extension_loaded("gd"));
 
 if($pref['membersonly_enabled']){
-        $HEADER = "<div style='width:70%;margin-left:auto;margin-right:auto'><div style='text-align:center;'><br />";
+        $HEADER = "<div style='text-align:center; width:100%;margin-left:auto;margin-right:auto;text-align:center'><div style='width:70%;text-align:center;margin-left:auto;margin-right:auto'><br />";
         if(file_exists(THEME."images/login_logo.png")){
         $HEADER .= "<img src='".THEME."images/login_logo.png' alt='' />\n";
         } else{
@@ -188,22 +188,22 @@ if(IsSet($_POST['register'])){
                         $sql -> db_Select("user", "*", "user_name='".$_POST['name']."' AND user_join='".$time."' ");
                         $row = $sql -> db_Fetch();
                         $id = $row['user_id'];
-						// ================== save extended fields as serialized data.
+                                                // ================== save extended fields as serialized data.
 
-						if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
-							$aj = new textparse;
-							$row = $sql -> db_Fetch();
-							$user_entended = unserialize($row[0]);
-							$c=0;
-							while(list($key, $u_entended) = each($user_entended)){
-								$val = $aj -> formtpa($_POST[str_replace(" ", "_", $u_entended)], "public");
-								$user_pref[$u_entended] = $val;
-								$c++;
-							}
-							$tmp = addslashes(serialize($user_pref));
-							$sql -> db_Update("user", "user_prefs='$tmp' WHERE user_id='".$nid."' ");
-						}
-				// ==========================================================
+                                                if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
+                                                        $aj = new textparse;
+                                                        $row = $sql -> db_Fetch();
+                                                        $user_entended = unserialize($row[0]);
+                                                        $c=0;
+                                                        while(list($key, $u_entended) = each($user_entended)){
+                                                                $val = $aj -> formtpa($_POST[str_replace(" ", "_", $u_entended)], "public");
+                                                                $user_pref[$u_entended] = $val;
+                                                                $c++;
+                                                        }
+                                                        $tmp = addslashes(serialize($user_pref));
+                                                        $sql -> db_Update("user", "user_prefs='$tmp' WHERE user_id='".$nid."' ");
+                                                }
+                                // ==========================================================
 
 
                         define("RETURNADDRESS", (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$id.".".$key : SITEURL."/signup.php?activate.".$id.".".$key));
@@ -216,7 +216,7 @@ if(IsSet($_POST['register'])){
                             $message = ($SIGNUPEMAIL)? $SIGNUPEMAIL:$message;
                         }
                         sendemail($_POST['email'], LAN_404." ".SITENAME, $message);
-      
+
 
 
                         require_once(HEADERF);
@@ -226,22 +226,22 @@ if(IsSet($_POST['register'])){
                         exit;
                 }else{
                 require_once(HEADERF);
-                $nid = $sql -> db_Insert("user", "0, '".$username."', '', '".md5($_POST['password1'])."', '$key', '".$_POST['email']."',         '".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$birthday."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '' ");  
-				// ================== save extended fields as serialized data.
+                $nid = $sql -> db_Insert("user", "0, '".$username."', '', '".md5($_POST['password1'])."', '$key', '".$_POST['email']."',         '".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$birthday."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '' ");
+                                // ================== save extended fields as serialized data.
 
-				if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
-					$aj = new textparse;
-					$row = $sql -> db_Fetch();
-					$user_entended = unserialize($row[0]);
-					$c=0;
-					while(list($key, $u_entended) = each($user_entended)){
-						$val = $aj -> formtpa($_POST[str_replace(" ", "_", $u_entended)], "public");
-						$user_pref[$u_entended] = $val;
-						$c++;
-					}
-					$tmp = addslashes(serialize($user_pref));
-					$sql -> db_Update("user", "user_prefs='$tmp' WHERE user_id='".$nid."' ");
-				}
+                                if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
+                                        $aj = new textparse;
+                                        $row = $sql -> db_Fetch();
+                                        $user_entended = unserialize($row[0]);
+                                        $c=0;
+                                        while(list($key, $u_entended) = each($user_entended)){
+                                                $val = $aj -> formtpa($_POST[str_replace(" ", "_", $u_entended)], "public");
+                                                $user_pref[$u_entended] = $val;
+                                                $c++;
+                                        }
+                                        $tmp = addslashes(serialize($user_pref));
+                                        $sql -> db_Update("user", "user_prefs='$tmp' WHERE user_id='".$nid."' ");
+                                }
         // ==========================================================
                 $ns -> tablerender("<div style='text-align:center'>".LAN_SIGNUP_8."</div>", LAN_107);
                 require_once(FOOTERF);
