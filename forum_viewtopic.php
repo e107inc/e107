@@ -317,9 +317,12 @@ if(!$post_author_id || !$sql -> db_Select("user", "*", "user_id='".$post_author_
 }
 
 $EDITIMG = ($post_author_id != "0" && $post_author_name == USERNAME && $thread_active ? "<a href='forum_post.php?edit.".$forum_id.".".$thread_id."'>".IMAGE_edit."</a> " : "");
-if($thread_active){
+if($thread_active && (USER == TRUE || 	$pref['anon_post']))
+{
 	$QUOTEIMG = "<a href='forum_post.php?quote.".$forum_id.".".$thread_id."'>".IMAGE_quote."</a>";
-}else{
+}
+else
+{
 	$T_ACTIVE = TRUE;
 }
 $REPORTIMG = (USER ? "<a href='forum_viewtopic.php?".$forum_id.".".$thread_id.".".$from.".report'>".IMAGE_report."</a> " : "");
