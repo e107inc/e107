@@ -13,9 +13,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.32 $
-| $Date: 2005-02-14 16:20:47 $
-| $Author: sweetas $
+| $Revision: 1.33 $
+| $Date: 2005-02-14 18:15:58 $
+| $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 
@@ -115,7 +115,7 @@ class news {
 
 // new parser.
 
-		$text = $this->parse_newstemplate($news,$NEWSSTYLE,$params);
+		$text = $this->parse_newstemplate($news,$NEWSSTYLE,$param);
 
 		if($mode == "return") {
 			return $text;
