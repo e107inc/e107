@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-01-28 02:01:59 $
-|     $Author: sweetas $
+|     $Revision: 1.16 $
+|     $Date: 2005-01-30 20:17:43 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 	
@@ -120,7 +120,7 @@ if (USER == TRUE || ADMIN == TRUE) {
 		}
 	}
 	if (!$menu_pref['login_menu'] || $menu_pref['login_menu']['new_forum'] == true) {
-		$new_forum = $sql->db_Select('forum_t', '*', '`thread_datestamp` > '.$time);
+		$new_forum = $sql->db_Select('forum_t', '*', 'thread_datestamp > '.$time);
 		while ($row = $sql->db_Fetch()) {
 			$sql2->db_Select('forum', '*', '`forum_id` = '.$row['thread_forum_id']);
 			$row2 = $sql2->db_Fetch();
