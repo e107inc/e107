@@ -19,7 +19,7 @@ require_once("auth.php");
 // auto db update ...
 $handle=opendir(e_ADMIN."sql/db_update");
 while ($file = readdir($handle)){
-	if($file != "." && $file != ".." && $file != "index.html"){
+	if($file != "." && $file != ".." && $file != "index.html" && $file != "CVS"){
 		$updatelist[] = $file;
 	}
 }
