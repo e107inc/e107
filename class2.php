@@ -650,55 +650,58 @@ function save_prefs($table = "core", $uid=USERID){
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function online(){
-        $page = (strstr(e_SELF, "forum_") ? e_SELF.".".e_QUERY : e_SELF);
-        global $sql;
-        $ip = getip();
-        $udata = (USER ? USERID.".".USERNAME : 0);
+	$page = (strstr(e_SELF, "forum_") ? e_SELF.".".e_QUERY : e_SELF);
+	global $sql;
+	$ip = getip();
+	$udata = (USER ? USERID.".".USERNAME : 0);
 
-        if(!$sql -> db_Select("online", "*", "online_ip='$ip'")){
-                define("NOSPLASH", TRUE); // first visit to site
-                $sql -> db_Insert("online", " '".time()."', 'null', '".$udata."', '$ip', '".$page."', 1");
-        } else {
-                $row = $sql -> db_Fetch();
-                extract($row);
-                if(!ADMIN){$online_pagecount++;}
-                if($online_pagecount > 100 && $online_ip !="127.0.0.1"){
-                        $sql -> db_Insert("banlist", "'$ip', '0', 'Hit count exceeded ($online_pagecount requests within allotted time)' ");
-                        exit;
-                }
-
-                if($online_pagecount == 90 && $online_ip !="127.0.0.1"){
-                        echo "<div style='text-align:center; font: 11px verdana, tahoma, arial, helvetica, sans-serif;'><b>Warning!</b><br /><br />The flood protection on this site has been activated and you are warned that if you carry on requesting pages you could be banned.<br /></div>";
-                        exit;
-                }
-
-                if($online_timestamp < (time()-300)){
-                        $query = "online_timestamp='".time()."', online_user_id='$udata', online_location='$page', online_pagecount=$online_pagecount WHERE online_ip='$ip'";
-                } else {
-                        $query = "online_user_id='$udata', online_location='$page', online_pagecount=$online_pagecount WHERE online_ip='$ip' ";
-                }
-
-                $sql -> db_Update("online", $query);
-
-        }
-
-        $sql -> db_Delete("online", "online_timestamp<".(time()-300)." ");
-
-        $total_online = $sql -> db_Count("online");
-        if($members_online = $sql -> db_Select("online", "*", "online_user_id!='0' ")){
-                while($row = $sql -> db_Fetch()){
-                        extract($row);
-                        $oid = substr($online_user_id, 0, strpos($online_user_id, "."));
-                        $oname = substr($online_user_id, (strpos($online_user_id, ".")+1));
-                        $member_list .= "<a href='".e_BASE."user.php?id.$oid'>$oname</a> ";
-                }
-        }
-        define("TOTAL_ONLINE", $total_online);
-        define("MEMBERS_ONLINE", $members_online);
-        define("GUESTS_ONLINE", $total_online - $members_online);
-        define("ON_PAGE", $sql -> db_Count("online", "(*)", "WHERE online_location='$page' "));
-        define("ON_PAGE", $sql -> db_Select("online", "*", "online_location='$page' "));
-        define("MEMBER_LIST", $member_list);
+	if(!$sql -> db_Select("online", "*", "online_ip='$ip' OR (online_user_id = '{$udata}' AND online_user_id != '0') ")){
+		define("NOSPLASH", TRUE); // first visit to site
+		$sql -> db_Insert("online", " '".time()."', 'null', '".$udata."', '$ip', '".$page."', 1");
+	} else {
+		$row = $sql -> db_Fetch();
+		extract($row);
+		if(!ADMIN){$online_pagecount++;}
+		if($online_pagecount > 100 && $online_ip !="127.0.0.1"){
+			$sql -> db_Insert("banlist", "'$ip', '0', 'Hit count exceeded ($online_pagecount requests within allotted time)' ");
+			exit;
+		}
+		if($online_pagecount == 90 && $online_ip !="127.0.0.1"){
+			echo "<div style='text-align:center; font: 11px verdana, tahoma, arial, helvetica, sans-serif;'><b>Warning!</b><br /><br />The flood protection on this site has been activated and you are warned that if you carry on requesting pages you could be banned.<br /></div>";
+			exit;
+		}
+		if($online_timestamp < (time()-300)){
+			if($udata == $online_user_id){
+				$query = "online_timestamp='".time()."', online_ip='$ip', online_location='$page', online_pagecount=$online_pagecount WHERE online_user_id='$udata'";
+			} else {
+				$query = "online_timestamp='".time()."', online_user_id='$udata', online_location='$page', online_pagecount=$online_pagecount WHERE online_ip='$ip'";
+			}
+		} else {
+			if($udata == $online_user_id){
+				$query = "online_ip='$ip', online_location='$page', online_pagecount=$online_pagecount WHERE online_user_id='$udata' ";
+			} else {
+				$query = "online_user_id='$udata', online_location='$page', online_pagecount=$online_pagecount WHERE online_ip='$ip' ";
+			}
+			$sql -> db_Update("online", $query);
+		}
+		if(USER){
+			$sql -> db_Delete("online","online_user_id = '0' AND online_ip = '{$ip}' ");
+		}
+	}
+	$sql -> db_Delete("online", "online_timestamp<".(time()-300)." ");
+	$total_online = $sql -> db_Count("online");
+	if($members_online = $sql -> db_Select("online", "*", "online_user_id!='0' ")){
+		while($row = $sql -> db_Fetch()){
+			extract($row);
+			list($oid,$oname) = explode(".",$online_user_id,2);
+			$member_list .= "<a href='".e_BASE."user.php?id.$oid'>$oname</a> ";
+		}
+	}
+	define("TOTAL_ONLINE", $total_online);
+	define("MEMBERS_ONLINE", $members_online);
+	define("GUESTS_ONLINE", $total_online - $members_online);
+	define("ON_PAGE", $sql -> db_Count("online", "(*)", "WHERE online_location='$page' "));
+	define("MEMBER_LIST", $member_list);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
