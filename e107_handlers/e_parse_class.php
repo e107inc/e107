@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-02-03 10:35:33 $
-|     $Author: stevedunstan $
+|     $Revision: 1.16 $
+|     $Date: 2005-02-03 16:50:08 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 	
@@ -144,13 +144,15 @@ class e_parse {
 		if (strpos($modifiers, 'nobreak') == FALSE) {
 			$text = preg_replace("#[\r]*\n[\r]*#", "[E_NL]", $text);
 		}
-		 
-		if ($pref['smiley_activate'] || strpos($modifiers,'emotes') !== FALSE) {
+		
+		if (strpos($modifiers,'emotes_off') === FALSE) {
+		if ($pref['smiley_activate'] || strpos($modifiers,'emotes_on') !== FALSE) {
 			if (!is_object($this->e_emote)) {
 				require_once(e_HANDLER.'emote_filter.php');
 				$this->e_emote = new e_emoteFilter;
 			}
 			$text = $this->e_emote->filterEmotes($text);
+		}
 		}
 		 
 		// Start parse [bb][/bb] codes

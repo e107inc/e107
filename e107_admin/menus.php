@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-02-03 16:27:22 $
+|     $Revision: 1.12 $
+|     $Date: 2005-02-03 16:49:27 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -214,7 +214,7 @@ foreach($fileList as $file) {
 	if (!$sql->db_Count("menus", "(*)", "WHERE menu_name='{$file['fname']}'")) {
 		if (file_exists(e_PLUGIN.$parent_dir."/plugin.php")) {
 			@include(e_PLUGIN.$parent_dir."/plugin.php");
-			if ($sql->db_Select("plugin", "*", "plugin_name='$eplug_name' AND plugin_installflag='1' ")) {
+			if ($sql->db_Select("plugin", "*", "plugin_path='".$eplug_folder."' AND plugin_installflag='1' ")) {
 				$sql->db_Insert("menus", " 0, '{$file['fname']}', 0, 0, 0, '' ,'{$file['path']}'");
 				$message .= "<b>".MENLAN_10." - ".$file['fname']."</b><br />";
 			}
