@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-01-30 18:17:29 $
-|     $Author: sweetas $
+|     $Revision: 1.20 $
+|     $Date: 2005-01-30 23:03:26 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -67,7 +67,7 @@ function update_61x_to_700($type) {
 		changes by jalist 19/01/05:
 		altered structure of news table
 		*/
-		mysql_query("ALTER TABLE ".MPREFIX."e107_news ADD 'news_comment_total' INT UNSIGNED NOT NULL");
+		mysql_query("ALTER TABLE ".MPREFIX."news ADD news_comment_total INT (10) UNSIGNED NOT NULL");
 		$sql->db_Select_gen("SELECT comment_item_id AS id, COUNT(*) AS amount FROM #comments GROUP BY comment_item_id");
 		$commentArray = $sql->db_getList();
 		foreach($commentArray as $comments) {
@@ -204,9 +204,19 @@ function update_61x_to_700($type) {
 	} else {
 		// check if update is needed.
 		// FALSE = needed, TRUE = not needed.
-		//   $fields = mysql_list_fields($mySQLdefaultdb,MPREFIX."wmessage");
-		//    $columns = mysql_num_fields($fields);
-		return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."generic");
+//		return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."generic");
+		if($sql->db_Query("SHOW COLUMNS FROM ".MPREFIX.'news'))
+		{
+			$list = $sql->db_getList();
+			foreach($list as $f)
+			{
+				if($f['Field'] == 'news_comment_total')
+				{
+					return TRUE;
+				}
+			}
+			return FALSE;
+		}
 		 
 	}
 }
