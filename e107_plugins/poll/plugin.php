@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/plugin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-03-04 08:57:03 $
+|     $Revision: 1.3 $
+|     $Date: 2005-03-04 12:41:24 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -50,11 +50,11 @@ $eplug_caption = POLL_ADLAN03;
 $eplug_prefs = array();
 	
 // List of table names -----------------------------------------------------------------------------------------------
-$eplug_table_names = array("poll");
+$eplug_table_names = array("polls");
 	
 // List of sql requests to create tables -----------------------------------------------------------------------------
 $eplug_tables = array(
-"CREATE TABLE ".MPREFIX."poll (
+"CREATE TABLE ".MPREFIX."polls (
   poll_id int(10) unsigned NOT NULL auto_increment,
   poll_datestamp int(10) unsigned NOT NULL default '0',
   poll_start_datestamp int(10) unsigned NOT NULL default '0',

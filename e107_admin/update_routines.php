@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2005-03-01 18:15:34 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.39 $
+|     $Date: 2005-03-04 12:41:24 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -79,6 +79,57 @@ function update_61x_to_700($type) {
 		mysql_query("DROP TABLE ".MPREFIX."stat_info");
 		mysql_query("DROP TABLE ".MPREFIX."stat_last");
 		/* end */
+
+
+		/* start poll update */
+		$query = "CREATE TABLE ".MPREFIX."polls (
+		  poll_id int(10) unsigned NOT NULL auto_increment,
+		  poll_datestamp int(10) unsigned NOT NULL default '0',
+		  poll_start_datestamp int(10) unsigned NOT NULL default '0',
+		  poll_end_datestamp int(10) unsigned NOT NULL default '0',
+		  poll_admin_id int(10) unsigned NOT NULL default '0',
+		  poll_title varchar(250) NOT NULL default '',
+		  poll_options text NOT NULL,
+		  poll_votes text NOT NULL,
+		  poll_ip text NOT NULL,
+		  poll_type tinyint(1) unsigned NOT NULL default '0',
+		  poll_comment tinyint(1) unsigned NOT NULL default '1',
+		  poll_allow_multiple tinyint(1) unsigned NOT NULL default '0',
+		  poll_result_type tinyint(2) unsigned NOT NULL default '0',
+		  poll_vote_userclass tinyint(3) unsigned NOT NULL default '0',
+		  poll_storage_method tinyint(1) unsigned NOT NULL default '0',
+		  PRIMARY KEY  (poll_id)
+		) TYPE=MyISAM;";
+		$sql->db_Select_gen($query);
+		if($sql -> db_Select("poll"))
+		{
+			$polls = $sql -> db_getList();
+			foreach($polls as $row)
+			{
+				extract($row);
+				$poll_options = "";
+				$poll_votes = "";
+				for($count=1; $count <= 10; $count++)
+				{
+					$var = "poll_option_".$count;
+					$var2 = "poll_votes_".$count;
+					if($$var)
+					{
+						$poll_options .= $$var.chr(1);
+						$poll_votes .= $$var2.chr(1);
+					}
+				}
+				$poll_type = (strlen($poll_datestamp) > 9 ? 1 : 2);
+				echo "Inserting field #".$poll_id." into new table ...(type: $poll_type)<br />";
+				$sql->db_Insert("polls", "$poll_id, $poll_datestamp, 0, $poll_end_datestamp, $poll_admin_id, '$poll_title', '$poll_options', '$poll_votes', '$poll_ip', $poll_type, $poll_comment, 0, 0, 255, 1");
+			}
+			$sql -> db_Select("polls", "poll_id", "poll_type=1 ORDER BY poll_datestamp DESC LIMIT 0,1");
+			$row = $sql -> db_Fetch();
+			$sql -> db_Update("polls", "poll_vote_userclass=0 WHERE poll_id=".$row['poll_id']);
+			$sql->db_Select_gen("DROP TABLE ".MPREFIX."poll");
+		}
+		/* end poll update */
+
 
 		// start links update -------------------------------------------------------------------------------------------
 		if ($sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."link_category")) {

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-03-03 18:36:13 $
+|     $Revision: 1.2 $
+|     $Date: 2005-03-04 12:41:24 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -38,7 +38,7 @@ if(!defined("POLL_1"))
 	@include(e_PLUGIN."poll/languages/English.php");
 }
 
-$query = "SELECT p.*, u.user_name FROM #poll AS p 
+$query = "SELECT p.*, u.user_name FROM #polls AS p 
 LEFT JOIN #user AS u ON p.poll_admin_id = u.user_id
 WHERE p.poll_vote_userclass!=255 AND p.poll_type=1
 ORDER BY p.poll_datestamp DESC LIMIT 0,1
@@ -109,7 +109,7 @@ if ($sql->db_Select_gen($query))
 	{
 			if ($_POST['votea'])
 			{
-				$sql -> db_Select("poll", "*", "poll_vote_userclass!=255 AND poll_type=1 ORDER BY poll_datestamp DESC LIMIT 0,1");
+				$sql -> db_Select("polls", "*", "poll_vote_userclass!=255 AND poll_type=1 ORDER BY poll_datestamp DESC LIMIT 0,1");
 				$row = $sql -> db_Fetch();
 				extract($row);
 				$votes = explode(chr(1), $poll_votes);
@@ -129,7 +129,7 @@ if ($sql->db_Select_gen($query))
 				$votep = implode(chr(1), $votes);
 				$pollArray['poll_votes'] = $votep;
 
-				$sql->db_Update("poll", "poll_votes = '$votep', poll_ip='".$poll_ip.$userid."^' WHERE poll_id=".$poll_id);
+				$sql->db_Update("polls", "poll_votes = '$votep', poll_ip='".$poll_ip.$userid."^' WHERE poll_id=".$poll_id);
 				$POLLMODE = "voted";
 
 			
