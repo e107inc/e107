@@ -11,14 +11,17 @@ e107 website system
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/index.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-02-01 00:42:39 $
+|     $Revision: 1.8 $
+|     $Date: 2005-02-02 02:48:47 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-	
+
 require_once("class2.php");
-if ($pref['frontpage'] == 'links') {
+if (!$pref['frontpage']) {
+	$pref['frontpage'] = "news.php";
+	save_prefs();
+} else if ($pref['frontpage'] == 'links') {
 	$pref['frontpage'] = $PLUGINS_DIRECTORY."links_page/links.php";
 	save_prefs();
 } else if ($pref['frontpage'] == 'forum') {
@@ -37,11 +40,6 @@ if ($pref['frontpage'] == 'links') {
 if ($pref['membersonly_enabled'] && !USER)
 {
 	header("location: ".e_LOGIN);
-	exit;
-}
-else if (!$pref['frontpage'])
-{
-	header("location: ".e_BASE."news.php");
 	exit;
 }
 else if(strpos($pref['frontpage'], "http")!==FALSE)
