@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-01-27 19:53:08 $
-|     $Author: streaky $
+|     $Revision: 1.15 $
+|     $Date: 2005-01-28 02:01:59 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 	
@@ -160,14 +160,14 @@ if (USER == TRUE || ADMIN == TRUE) {
 	}
 	$text .= '<div style="text-align: center;"><form method="post" action="'.e_SELF.(e_QUERY ? '?'.e_QUERY : '').'">';
 	$text .= "<p>\n".LOGIN_MENU_L1."<br />\n
-		<input class='tbox' type='text' name='username' size='15' value='' maxlength='30' />\n
+		<input class='tbox login user' type='text' name='username' size='15' value='' maxlength='30' />\n
 		<br />\n".LOGIN_MENU_L2."\n<br />\n
-		<input class='tbox' type='password' name='userpass' size='15' value='' maxlength='20' />\n\n<br />\n
+		<input class='tbox login pass' type='password' name='userpass' size='15' value='' maxlength='20' />\n\n<br />\n
 		";
 	if ($use_imagecode) {
 		$text .= '<input type="hidden" name="rand_num" value="'.$sec_img->random_number.'" />
 			'.$sec_img->r_image().'
-			<br /><input class="tbox" type="text" name="code_verify" size="15" maxlength="20" /><br />';
+			<br /><input class="tbox login verify" type="text" name="code_verify" size="15" maxlength="20" /><br />';
 	}
 	$text .= '<input class="button" type="submit" name="userlogin" value="'.LOGIN_MENU_L28.'" />
 		<br />
