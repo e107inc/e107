@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-03-11 03:11:55 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.15 $
+|     $Date: 2005-03-14 15:53:47 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -76,6 +76,7 @@ if (isset($id)) {
 
 	if (isset($_POST['commentsubmit']) && $pref['profile_comments'])
 	{
+		require_once(e_HANDLER."comment_class.php");
 		$cobj = new comment;
 		$cobj->enter_comment($_POST['author_name'], $_POST['comment'], 'profile', $id, $pid, $_POST['subject']);
 	}
