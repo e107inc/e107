@@ -172,7 +172,7 @@ class e107forum {
 		$ftab = MPREFIX.'forum_t';
 		$utab = MPREFIX.'user';
 		$qry = "
-		SELECT thread_id, thread_name, thread_datestamp, thread_user, thread_views, thread_lastpost, thread_lastuser, thread_total_replies, user_name from {$ftab} 
+		SELECT thread_id, thread_name, thread_datestamp, thread_user, thread_views, thread_lastpost, thread_anon, thread_lastuser, thread_total_replies, user_name from {$ftab} 
 		LEFT JOIN {$utab}
 		ON {$ftab}.thread_user = {$utab}.user_id
 		WHERE {$ftab}.thread_forum_id = $forum_id  
