@@ -1,7 +1,7 @@
 <?php
 
 // HTMLAREA handler for e107.
-// $Id: htmlarea.inc.php,v 1.11 2004-08-12 15:10:31 e107coders Exp $
+// $Id: htmlarea.inc.php,v 1.12 2004-08-12 17:21:36 e107coders Exp $
 
 // Settings ==========================================================
     $width = "520px";  // htmlarea width
@@ -20,13 +20,13 @@ function htmlarea($ta_name,$page=''){
 /*  usage:
     $name should be the name of the <textarea> element you wish to replace with Htmlarea.
     You should also add ID="fieldname" to your <textarea> tag.
-
     eg. <textarea id='post' name='post' >
 
-    And at the beginning of your page you would include:
+    And at the beginning of your page (after require_once("class2.php");)
+    you would include:
 
     require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
-    htmlarea("post");
+    $htmlarea_js = htmlarea("post");
 */
 
   global $charmap,$display_emoticons,$tableops,$spelling,$plgcnt,$height,$width,$context, $tidy,$imagebut, $imgmanager;
@@ -36,9 +36,6 @@ function htmlarea($ta_name,$page=''){
     $charmapon = $charmap ==1 ? "'insertcharacter',":"";
 
 // ==================================================
-
-
-
 
 
 $areajs = "\n\n<script type='text/javascript'>\n _editor_url = '".e_HANDLER."htmlarea/';_editor_lang = 'en'; </script>\n";
@@ -97,9 +94,9 @@ $name = explode(",",$ta_name);
               var check = '".$name[$i]."';
               if(document.getElementById(check)){
 
-        //      setTimeout(function() {
+              setTimeout(function() {
             editor_".$name[$i].".generate();
-        //     }, 500); \n ";
+             }, 500); \n ";
 
 
 
@@ -110,7 +107,7 @@ $areajs .="
  }
 
  HTMLArea.onload = initEditor;
- window.onload= HTMLArea.init();
+ HTMLArea.init();
 
 </script>\n";
 
