@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/online_extended_menu/online_extended_menu.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-27 19:53:11 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-27 21:45:05 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 $text = ONLINE_EL1.GUESTS_ONLINE.", ";
@@ -46,7 +46,7 @@ if (MEMBERS_ONLINE) {
 			$pinfo = "comment.php";
 			$online_location_page = "comment.php";
 		}
-		$text .= "<img src='".e_PLUGIN."online_extended_menu/images/user.png' alt='' style='vertical-align:middle' /> <a href='".e_BASE."user.php?id.$oid'>$oname</a> ".ONLINE_EL7;
+		$text .= "<img src='".e_IMAGE."admin_images/users_16.png' alt='' style='vertical-align:middle' /> <a href='".e_BASE."user.php?id.$oid'>$oname</a> ".ONLINE_EL7;
 		(!strstr($pinfo, $ADMIN_DIRECTORY) ? $text .= " <a href='{$pinfo}'>$online_location_page</a><br />" : $text .= " $online_location_page<br />");
 	}
 }
