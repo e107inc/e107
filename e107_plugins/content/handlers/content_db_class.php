@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.4 $
-|		$Date: 2005-02-08 23:47:15 $
+|		$Revision: 1.5 $
+|		$Date: 2005-02-09 16:18:39 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -452,39 +452,153 @@ class contentdb{
 
 		
 		function dbSetOrder($mode, $id){
-						global $plugintable, $sql, $_POST;
+						global $plugintable, $sql, $_POST, $type_id, $sub_action;
 
 						if($mode == "inc"){
-
 							$qs = explode("-", $id);
-							$cid = $qs[0];
-							$corder = $qs[1];
-							$sql->db_Update($plugintable, "content_order=content_order+1 WHERE content_order='".($corder-1)."' " );
-							$sql->db_Update($plugintable, "content_order=content_order-1 WHERE content_id='".$cid."' " );
-							//echo $plugintable.", content_order=content_order+1 WHERE content_order='".($corder-1)."'<br />";
-							//echo $plugintable.", content_order=content_order-1 WHERE content_order='".$cid."'<br />";
+							$ctype = $qs[0];
+							$cid = $qs[1];
+							$corder = $qs[2];
+							$corderitem = $qs[3];
+
+							if($ctype == "cc"){				//category order
+								$query = ($type_id == $cid ? "content_parent = '0' && content_id = '".$type_id."'" : "LEFT(content_parent, ".(strlen($type_id)+2).") = '0.".$type_id."'" );
+								$sql->db_Update($plugintable, "content_order=content_order+1 WHERE ".$query." AND content_order='".($corder-1)."' " );
+								$sql->db_Update($plugintable, "content_order=content_order-1 WHERE content_id='".$cid."' " );
+								//echo $plugintable.", content_order=content_order+1 WHERE ".$query." AND content_order='".($corder-1)."'<br />";
+								//echo $plugintable.", content_order=content_order-1 WHERE content_order='".$cid."'<br />";
+							
+							}elseif($ctype == "ci"){		//order of items in category
+								//ci - 34 - 2 - 0
+
+								$cat = str_replace("-", ".", $sub_action);
+								$sql->db_Update($plugintable, "content_order='".$corder.".".$corderitem."' WHERE content_parent = '".$cat."' AND content_order='".($corder-1).".".$corderitem."' " );
+								$sql->db_Update($plugintable, "content_order='".($corder-1).".".$corderitem."' WHERE content_parent = '".$cat."' AND content_id='".$cid."' " );
+								//echo $plugintable.", content_order='".$corder.".".$corderitem."' WHERE content_parent = '".$cat."' AND content_order='".($corder-1).".".$corderitem."' <br />";
+								//echo $plugintable.", content_order='".($corder-1).".".$corderitem."' WHERE content_parent = '".$cat."' AND content_id='".$cid."' <br />";
+								//echo $ctype." - ".$cid." - ".$corder." - ".$corderitem."<br />";
+
+							}elseif($ctype == "ai"){		//global order of items
+								$cat = str_replace("-", ".", $sub_action);
+								$sql->db_Update($plugintable, "content_order=content_order+1 WHERE content_order='".($corder-1)."' " );
+								$sql->db_Update($plugintable, "content_order=content_order-1 WHERE content_id='".$cid."' " );
+								//echo $ctype." - ".$cid." - ".$corder." - ".$corderitem."<br />";
+							
+							}
 							$message = "order is increased ";
 							
 						}elseif($mode == "dec"){
-
 							$qs = explode("-", $id);
-							$cid = $qs[0];
-							$corder = $qs[1];
-							$sql->db_Update($plugintable, "content_order=content_order-1 WHERE content_order='".($corder+1)."' " );
-							$sql->db_Update($plugintable, "content_order=content_order+1 WHERE content_id='".$cid."' " );
-							//echo $plugintable.", content_order=content_order-1 WHERE content_order='".($corder+1)."'<br />";
-							//echo $plugintable.", content_order=content_order+1 WHERE content_order='".$cid."'<br />";
+							$ctype = $qs[0];
+							$cid = $qs[1];
+							$corder = $qs[2];
+							$corderitem = $qs[3];
+
+							if($ctype == "cc"){				//category order
+								$query = ($type_id == $cid ? "content_parent = '0' && content_id = '".$type_id."'" : "LEFT(content_parent, ".(strlen($type_id)+2).") = '0.".$type_id."'" );
+								$sql->db_Update($plugintable, "content_order=content_order-1 WHERE ".$query." AND content_order='".($corder+1)."' " );
+								$sql->db_Update($plugintable, "content_order=content_order+1 WHERE content_id='".$cid."' " );
+								//echo $plugintable.", content_order=content_order-1 WHERE ".$query." AND content_order='".($corder+1)."'<br />";
+								//echo $plugintable.", content_order=content_order+1 WHERE content_order='".$cid."'<br />";
+							
+							}elseif($ctype == "ci"){		//order of items in category
+								//ci - 34 - 2 - 0
+								$cat = str_replace("-", ".", $sub_action);
+								$sql->db_Update($plugintable, "content_order='".$corder.".".$corderitem."' WHERE content_parent = '".$cat."' AND content_order='".($corder+1).".".$corderitem."' " );
+								$sql->db_Update($plugintable, "content_order='".($corder+1).".".$corderitem."' WHERE content_parent = '".$cat."' AND content_id='".$cid."' " );
+								//echo $plugintable.", content_order='".$corder.".".$corderitem."' WHERE content_parent = '".$cat."' AND content_order='".($corder+1).".".$corderitem."' <br />";
+								//echo $plugintable.", content_order='".($corder+1).".".$corderitem."' WHERE content_parent = '".$cat."' AND content_id='".$cid."' <br />";
+								//echo $ctype." - ".$cid." - ".$corder." - ".$corderitem."<br />";
+
+							}elseif($ctype == "ai"){		//global order of items
+								$cat = str_replace("-", ".", $sub_action);
+								$sql->db_Update($plugintable, "content_order=content_order+1 WHERE content_order='".($corder-1)."' " );
+								$sql->db_Update($plugintable, "content_order=content_order-1 WHERE content_id='".$cid."' " );
+								//echo $ctype." - ".$cid." - ".$corder." - ".$corderitem."<br />";
+							
+							}
 							$message = "order is decreased ";
 							
 						}elseif($mode == "all"){
 
 							foreach ($_POST['order'] as $cid){
+								
 								$tmp = explode(".", $cid);
-								$sql->db_Update($plugintable, "content_order='".$tmp[1]."' WHERE content_id='".$tmp[0]."' " );
+								$iid = $tmp[0];
+								$neworder = $tmp[1];
+								$style = $tmp[2];
+								$tmp1 = explode("-", $tmp[3]);
+								$oldordercat = $tmp1[0];
+								$oldorderitem = $tmp1[1];
+								
+
+								if($style == "cat"){
+									//$tmp = explode(".", $cid);
+									//$iid = $tmp[0];
+									//$neworder = $tmp[1];
+									$sql->db_Update($plugintable, "content_order='".$tmp[1]."' WHERE content_id='".$tmp[0]."' " );
+									echo "cat : content_order='".$tmp[1]."' WHERE content_id='".$tmp[0]."' <br />";
+
+								}elseif($style == "catitem"){
+									/*$tmp = explode(".", $cid);
+									$iid = $tmp[0];
+									$neworder = $tmp[1];
+									$style = $tmp[2];
+									$tmp1 = explode("-", $tmp[3]);
+									$oldordercat = $tmp1[0];
+									$oldorderitem = $tmp1[1];*/
+									$oldorderitem = ($oldorderitem == "" ? "0" : $oldorderitem);
+									$sql->db_Update($plugintable, "content_order='".$neworder.".".$oldorderitem."' WHERE content_id='".$iid."' " );
+									echo "catitem : ".$plugintable.", content_order='".$neworder.".".$oldorderitem."' WHERE content_id='".$iid."' <br />";
+
+								}elseif($style == "allitem"){
+									/*$tmp = explode(".", $cid);
+									$iid = $tmp[0];
+									$neworder = $tmp[1];
+									$style = $tmp[2];
+									$tmp1 = explode("-", $tmp[3]);
+									$oldordercat = $tmp1[0];
+									$oldorderitem = $tmp1[1];*/
+									$sql->db_Update($plugintable, "content_order='".$oldordercat.".".$neworder."' WHERE content_id='".$iid."' " );
+									echo "allitem : ".$plugintable.", content_order='".$oldordercat.".".$neworder."' WHERE content_id='".$iid."' <br />";
+								}
+
+								//echo $cid."<br />";
+								//$sql->db_Update($plugintable, "content_order='".$tmp[1]."' WHERE content_id='".$tmp[0]."' " );
 								//echo $plugintable.", content_order='".$tmp[1]."' WHERE content_id='".$tmp[0]."'<br />";
 								$message = "new order for content items is saved";
 							}
-							
+
+/*
+//global order
+40.1.all.2-0
+pcontent, content_order='1' WHERE content_id='40'
+67.2.all.2-0
+pcontent, content_order='2' WHERE content_id='67'
+63.3.all.2-0
+pcontent, content_order='3' WHERE content_id='63'
+70.4.all.2-0
+pcontent, content_order='4' WHERE content_id='70'
+82.5.all.2-0
+pcontent, content_order='5' WHERE content_id='82'
+*/
+
+/*
+//items in category
+67.1.cat.2-0
+pcontent, content_order='1' WHERE content_id='67'
+70.2.cat.2-0
+pcontent, content_order='2' WHERE content_id='70'
+62.3.cat.2-0
+pcontent, content_order='3' WHERE content_id='62'
+38.4.cat.2-0
+pcontent, content_order='4' WHERE content_id='38'
+71.5.cat.2-0
+pcontent, content_order='5' WHERE content_id='71'
+*/
+
+
+
 						}
 						return $message;
 

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-08 23:47:16 $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-09 16:18:39 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -151,8 +151,22 @@ define("CONTENT_ADMIN_OPT_LAN_80", "in one menu");
 define("CONTENT_ADMIN_OPT_LAN_81", "error; menu file not created");
 define("CONTENT_ADMIN_OPT_LAN_82", "menu file succesfully created in the /menus folder<br />you will still need to activate the menu in the admin menus area");
 define("CONTENT_ADMIN_OPT_LAN_83", "breadcrumb seperator character ( >> or > or - or ...)");
-define("CONTENT_ADMIN_OPT_LAN_84", "");
-define("CONTENT_ADMIN_OPT_LAN_85", "");
+define("CONTENT_ADMIN_OPT_LAN_84", "show link to recent content items");
+define("CONTENT_ADMIN_OPT_LAN_85", "how many recent items should be shown");
+define("CONTENT_ADMIN_OPT_LAN_86", "show link to submit form");
+define("CONTENT_ADMIN_OPT_LAN_87", "show date in recent list");
+define("CONTENT_ADMIN_OPT_LAN_88", "show author in recent list");
+define("CONTENT_ADMIN_OPT_LAN_89", "show subheading in recent list");
+define("CONTENT_ADMIN_OPT_LAN_90", "choose icon to display");
+define("CONTENT_ADMIN_OPT_LAN_91", "none (), bullet (<img src='".e_THEME.$pref['sitetheme']."/images/bullet2.gif'>), middot (&middot), white bullet (º), arrow (&raquo;)");
+define("CONTENT_ADMIN_OPT_LAN_92", "icon width");
+define("CONTENT_ADMIN_OPT_LAN_93", "if you have chosen to display the 'content icon', specify the width of the content icon to show");
+define("CONTENT_ADMIN_OPT_LAN_94", ", category_icon()");
+define("CONTENT_ADMIN_OPT_LAN_95", ", content_icon()");
+define("CONTENT_ADMIN_OPT_LAN_96", "");
+define("CONTENT_ADMIN_OPT_LAN_97", "");
+define("CONTENT_ADMIN_OPT_LAN_98", "");
+define("CONTENT_ADMIN_OPT_LAN_99", "");
 
 define("CONTENT_ADMIN_ITEM_LAN_0", "required field(s) left blank");
 define("CONTENT_ADMIN_ITEM_LAN_1", "content item created");
@@ -212,7 +226,7 @@ define("CONTENT_ADMIN_ITEM_LAN_54", "additional data");
 define("CONTENT_ADMIN_ITEM_LAN_55", "Go back to the <a href='".e_SELF."'>main contentmanager page</a> to manage more of your personal content<br />or<br />Go to the <a href='".e_PLUGIN."content/content.php'>content main page</a> to view content items.");
 define("CONTENT_ADMIN_ITEM_LAN_56", "personal content manager");
 define("CONTENT_ADMIN_ITEM_LAN_57", "category");
-define("CONTENT_ADMIN_ITEM_LAN_58", "set item order");
+define("CONTENT_ADMIN_ITEM_LAN_58", "items");
 define("CONTENT_ADMIN_ITEM_LAN_59", "move");
 define("CONTENT_ADMIN_ITEM_LAN_60", "order");
 define("CONTENT_ADMIN_ITEM_LAN_61", "update order");
@@ -362,6 +376,12 @@ define("CONTENT_LAN_71", "content item");
 define("CONTENT_LAN_72", "category item");
 define("CONTENT_LAN_73", "order_asc");
 define("CONTENT_LAN_74", "order_desc");
+define("CONTENT_LAN_75", "submit content item");
+define("CONTENT_LAN_76", "");
+define("CONTENT_LAN_77", "");
+define("CONTENT_LAN_78", "");
+define("CONTENT_LAN_79", "");
+define("CONTENT_LAN_80", "");
 
 define("CONTENT_ADMIN_SUBMIT_LAN_0", "no content categories allow user submission at this point");
 define("CONTENT_ADMIN_SUBMIT_LAN_1", "content submit types");
