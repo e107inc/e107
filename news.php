@@ -229,7 +229,7 @@ if($pref['nfp_display'] == 2){
                 $count = $sql -> db_SELECT("news", "*",  "news_category='$category_id' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")  ORDER BY news_datestamp DESC LIMIT $from,$nbr_lst");
                 while($row = $sql-> db_Fetch()){
                         extract($row);
-                        $text3 .="<div style='width:100%'><table style='width:100%' border='0'>\n";
+                        $text3 .="<div style='width:100%'><table style='width:100%' cellpadding='0' cellspacing='0' border='0'>\n";
                                                         if(check_class($news_class)){
                                                         $news_title = $aj -> tpa($news_title);
                                                         if($news_title == ""){ $news_title = "Untitled"; }
