@@ -214,11 +214,11 @@ function checklayout($str){
                         list($wm_member, $membermessage, $wm_active2) = $sql-> db_Fetch();
                         list($wm_admin, $adminmessage, $wm_active3) = $sql-> db_Fetch();
                         if(ADMIN == TRUE && $wm_active3){
-                                echo $aj -> tpa($adminmessage, "on");
+                                echo $aj -> tpa($adminmessage, "on","admin");
                         }else if(USER == TRUE && $wm_active2){
-                                echo $aj -> tpa($membermessage, "on");
+                                echo $aj -> tpa($membermessage, "on","admin");
                         }else if(USER == FALSE && $wm_active1){
-                                echo $aj -> tpa($guestmessage, "on");
+                                echo $aj -> tpa($guestmessage, "on","admin");
                         }
                         define("WMFLAG", TRUE);
                 }
