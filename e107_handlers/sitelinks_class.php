@@ -86,7 +86,7 @@ function sitelinks(){
 				$text .= $_link.LINKEND;
 			}
 
-			if($sql2 -> db_Select("links", "*", "link_name REGEXP('submenu.".$link_name."') ORDER BY link_order ASC")){
+			if($sql2 -> db_Select("links", "*", "link_name REGEXP('submenu.".$link_name."') ORDER BY link_order ASC") && !HIDESUBSECTIONS){
 				$menu_count++;
 				$main_linkname = $link_name;
 				while($row = $sql2 -> db_Fetch()){
