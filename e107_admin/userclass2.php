@@ -21,7 +21,8 @@ $sql2=new db;
 if(strstr(e_QUERY, "clear")){
         $tmp = explode(".", e_QUERY);
         $class_id = $tmp[1];
-        if($sql -> db_Select("user", "*", "user_class REGEXP('.$class_id')")){
+        if($sql -> db_Select("user", "*", "user_class REGEXP('^{$class_id}\.') OR user_class REGEXP('\.{$class_id}\.') OR user_class REGEXP('\.{$class_id}$')")){
+        	echo "here";
                 while($row = $sql -> db_Fetch()){
                         extract($row);
                         $cl=explode(".",$user_class);
@@ -65,25 +66,26 @@ if(strstr(e_QUERY, "clear")){
 }
 
 If(IsSet($_POST['delete'])){
-        $sql2=new db;
-        if($_POST['confirm']){
-                $sql -> db_Delete("userclass_classes", "userclass_id='".$_POST['existing']."' ");
-                $sql -> db_Select("user", "*");
-                while($row = $sql -> db_Fetch()){
-                        extract($row);
-                        $classes=explode(".",$user_class);
-                        $newclass="";
-                        foreach($classes as $c){
-                                if($c !==$_POST['existing'] && $c){
-                                        $newclass.=".".$c;
-                                }
-                        }
-                        $sql2 -> db_Update("user","user_class='$newclass' WHERE user_id='$user_id' ");
-                }
-                $message = UCSLAN_3;
-        }else{
-                $message = UCSLAN_4;
-        }
+	$sql2=new db;
+	$class_id = $_POST['existing'];
+	if($_POST['confirm']){
+		$sql -> db_Delete("userclass_classes", "userclass_id='".$_POST['existing']."' ");
+		$sql -> db_Select("user", "user_id, user_class", "user_class REGEXP('^{$class_id}\.') OR user_class REGEXP('\.{$class_id}\.') OR user_class REGEXP('\.{$class_id}$')");
+		while($row = $sql -> db_Fetch()){
+			extract($row);
+			$classes=explode(".",$user_class);
+			$newclass="";
+			foreach($classes as $c){
+				if($c !==$_POST['existing'] && $c){
+					$newclass.=".".$c;
+				}
+			}
+			$sql2 -> db_Update("user","user_class='$newclass' WHERE user_id='$user_id' ");
+		}
+		$message = UCSLAN_3;
+	} else {
+		$message = UCSLAN_4;
+	}
 }
 
 If(IsSet($_POST['edit'])){
