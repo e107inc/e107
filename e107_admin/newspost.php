@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.58 $
-|   $Date: 2005-03-11 08:50:32 $
+|   $Revision: 1.59 $
+|   $Date: 2005-03-15 21:28:37 $
 |   $Author: stevedunstan $
 +---------------------------------------------------------------+
 
@@ -293,40 +293,44 @@ class newspost {
 			$query = "ORDER BY ".($sub_action ? $sub_action : "news_datestamp")." ".($id ? $id : "DESC")."  LIMIT $from, $amount";
 		}
 
-		if ($sql->db_Select("news", "*", $query, ($_POST['searchquery'] ? 0 : "nowhere"))) {
+		if ($sql->db_Select("news", "*", $query, ($_POST['searchquery'] ? 0 : "nowhere")))
+		{
+
+			$newsarray = $sql -> db_getList();
 			$text .= "<table class='fborder' style='width:99%'>
-				<tr>
-				<td style='width:5%' class='fcaption'><a href='".e_SELF."?main.news_id.".($id == "desc" ? "asc" : "desc").".$from'>ID</a></td>
-				<td style='width:55%' class='fcaption'><a href='".e_SELF."?main.news_title.".($id == "desc" ? "asc" : "desc").".$from'>".NWSLAN_40."</a></td>
-				<td style='width:15%' class='fcaption'>Render-type</td>
-				<td style='width:15%' class='fcaption'>".NWSLAN_41."</td>
-				</tr>";
-			while ($row = $sql->db_Fetch()) {
+			<tr>
+			<td style='width:5%' class='fcaption'><a href='".e_SELF."?main.news_id.".($id == "desc" ? "asc" : "desc").".$from'>ID</a></td>
+			<td style='width:55%' class='fcaption'><a href='".e_SELF."?main.news_title.".($id == "desc" ? "asc" : "desc").".$from'>".NWSLAN_40."</a></td>
+			<td style='width:15%' class='fcaption'>Render-type</td>
+			<td style='width:15%' class='fcaption'>".NWSLAN_41."</td>
+			</tr>";
+			$ren_type = array("default","title","other-news","other-news 2");
+			foreach($newsarray as $row)
+			{
 				extract($row);
 
 				// Note: To fix the alignment bug. Put both buttons inside the Form.
 				// But make EDIT a 'button' and DELETE 'submit'
-				$ren_type = array("default","title","other-news","other-news 2");
+				
 				$text .= "<tr>
-					<td style='width:5%' class='forumheader3'>$news_id</td>
-					<td style='width:55%' class='forumheader3'><a href='".e_BASE."comment.php?comment.news.$news_id'>".($news_title ? $tp->toHTML($news_title) : "[".NWSLAN_42."]")."</a></td>
-					<td style='20%' class='forumheader3'>";
+				<td style='width:5%' class='forumheader3'>$news_id</td>
+				<td style='width:55%' class='forumheader3'><a href='".e_BASE."comment.php?comment.news.$news_id'>".($news_title ? $tp->toHTML($news_title) : "[".NWSLAN_42."]")."</a></td>
+				<td style='20%' class='forumheader3'>";
 				$text .= $ren_type[$news_render_type];
 				if($news_sticky)
 				{
 					$text .= " <img src='".e_IMAGE."generic/sticky.png' alt='' />";
 				}
-			//	$text .= $news_render_type;
 				$text .= "
-					</td>
+				</td>
 
-					<td style='width:15%; text-align:center' class='forumheader3'>
-					".$rs->form_open("post", e_SELF, "myform__{$news_id}", "", "", " onsubmit=\"return jsconfirm('".$tp->toJS(NWSLAN_39." [ID: $news_id ]")."')\"  ")."
-					<div>".$rs->form_button("button", "main_edit_{$news_id}", NWSLAN_7, "onclick=\"document.location='".e_SELF."?create.edit.$news_id'\"")."
-					".$rs->form_button("submit", "main_delete_{$news_id}", NWSLAN_8)."
-					</div>".$rs->form_close()."
-					</td>
-					</tr>";
+				<td style='width:15%; text-align:center' class='forumheader3'>
+				".$rs->form_open("post", e_SELF, "myform__{$news_id}", "", "", " onsubmit=\"return jsconfirm('".$tp->toJS(NWSLAN_39." [ID: $news_id ]")."')\"  ")."
+				<div>".$rs->form_button("button", "main_edit_{$news_id}", NWSLAN_7, "onclick=\"document.location='".e_SELF."?create.edit.$news_id'\"")."
+				".$rs->form_button("submit", "main_delete_{$news_id}", NWSLAN_8)."
+				</div>".$rs->form_close()."
+				</td>
+				</tr>";
 			}
 			$text .= "</table>";
 		} else {
@@ -354,7 +358,7 @@ class newspost {
 
 
 
-		$ns->tablerender(NWSLAN_43, $text);
+		$ns->tablerender(NWSLAN_4, $text);
 	}
 
 	function show_options($action) {
