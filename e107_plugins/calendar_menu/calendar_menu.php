@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar_menu.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-12-11 17:06:25 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2004-12-13 13:20:42 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -118,5 +118,5 @@ for($a=($loop+1); $a<=7; $a++){
 }
 
 $text .= "</tr></table></div>";
-$ns -> tablerender($calendar_title, $text);
+$ns -> tablerender($calendar_title, $text, 'calender_menu');
 ?>

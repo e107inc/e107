@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/backend_menu/backend_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:11:59 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-13 13:20:42 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 global $FILES_DIRECTORY;
@@ -24,5 +24,5 @@ $text = "<div style='text-align:center' class='smalltext'>
 
 $caption = (file_exists(THEME."images/backend_menu.png") ? "<img src='".THEME."images/backend_menu.png' alt='' style='vertical-align:middle' /> ".BACKEND_MENU_L2 : BACKEND_MENU_L2);
 
-$ns -> tablerender($caption, $text);
+$ns -> tablerender($caption, $text, 'backend');
 ?>

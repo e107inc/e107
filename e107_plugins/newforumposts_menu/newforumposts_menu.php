@@ -88,6 +88,6 @@ if ($cache = $e107cache->retrieve("newforumposts")) {
 	$e107cache->set("newforumposts", $cache);
 }
 
-$ns->tablerender($menu_pref['newforumposts_caption'], $text);
+$ns->tablerender($menu_pref['newforumposts_caption'], $text, 'nfp_menu');
 
 ?>

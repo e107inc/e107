@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/fader_menu/fader_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:11 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-13 13:20:43 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 $fader = "
@@ -133,4 +133,4 @@ document.write('<div id="fscroller" style="width:'+fwidth+';height:'+fheight+';p
 
 TEXT;
 
-$ns -> tablerender($menu_pref['fader_caption'], $fader);
+$ns -> tablerender($menu_pref['fader_caption'], $fader, 'fader');

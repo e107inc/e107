@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/headlines_menu/headlines_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:12 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-13 13:20:44 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -100,7 +100,7 @@ if($sql -> db_Select("headlines", "*", "headline_active='1' ")){
 
         $gen = new convert; $datestamp = $gen->convert_date(($headline_timestamp ? $headline_timestamp : time()), "short");
         $text .= "<div class='smalltext' style='text-align:right'>".NFMENU_162.": ".$datestamp."</div><a href='".e_PLUGIN."headlines_menu/headlines_menu.php'>".NFMENU_166."</a>";
-        $ns -> tablerender(NFMENU_161, stripslashes($text));
+        $ns -> tablerender(NFMENU_161, stripslashes($text), 'headlines_menu');
 }
 
 class parse_xml {

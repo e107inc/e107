@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/counter_menu/counter_menu.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-10-29 16:24:01 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2004-12-13 13:20:43 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 $text = "";
@@ -35,14 +35,14 @@ $sql -> db_Select("stat_counter", "*", "counter_url='$self' ORDER BY counter_tot
 $row = $sql -> db_Fetch();
 $text .= "<br />".COUNTER_L4.": ".($row['counter_total'] ? $row['counter_total'] : "0")." (".COUNTER_L7.":".($row['counter_unique'] ? $row['counter_unique'] : "0").")";
 
-$ns -> tablerender(COUNTER_L1, $text);
+$ns -> tablerender(COUNTER_L1, $text, 'counter');
 }
 
 if(!$pref['log_activate'] && ADMIN){
         $text .= "<br /><br /><span class='smalltext'>".COUNTER_L5."</span><br />
         <a href='".e_ADMIN."log.php'>".COUNTER_L6."</a>";
 
-        $ns -> tablerender(COUNTER_L1, $text);
+        $ns -> tablerender(COUNTER_L1, $text, 'counter');
 }
 
 ?>

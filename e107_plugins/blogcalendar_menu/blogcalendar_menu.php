@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/blogcalendar_menu/blogcalendar_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:06 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-13 13:20:42 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 | Based on code by: Thomas Bouve (crahan@gmx.net)
 */
@@ -126,5 +126,5 @@ $menu .= "<tr><td>$month_selector";
 $menu .= "<div style='text-align:center'>".calendar($req_day, $req_month, $req_year, $day_links, $pref['blogcal_ws'])."</div>";
 $menu .= "<div class='forumheader' style='text-align: center; margin-top:2px;'><span class='smalltext'><a href='$prefix/archive.php'>".BLOGCAL_L2."</a></span></div></td></tr>";
 $menu .= "</table></div>";
-$ns -> tablerender(BLOGCAL_L1." ".$req_year, $menu);
+$ns -> tablerender(BLOGCAL_L1." ".$req_year, $menu, 'blog_calender');
 ?>

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/review_menu/review_menu.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2004-12-01 15:05:33 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2004-12-13 13:20:45 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if($cache = $e107cache->retrieve("review_menu")){
@@ -95,7 +95,7 @@ else
 			$text .= "<br /><img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_BASE."subcontent.php?review'> ".LAN_190."</a>";
 		}
 		$caption = (file_exists(THEME."images/review_menu.png") ? "<img src='".THEME."images/review_menu.png' alt='' style='vertical-align:middle' /> ".$menu_pref['reviews_caption'] : $menu_pref['reviews_caption']);
-		$ns -> tablerender($caption, $text);
+		$ns -> tablerender($caption, $text, 'review');
 	}
 	if($pref['cachestatus'])
 	{

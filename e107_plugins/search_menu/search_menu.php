@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/search_menu/search_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:39 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-13 13:20:45 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 @include(e_PLUGIN."search_menu/languages/".e_LANGUAGE.".php");
@@ -37,5 +37,5 @@ $text = "<form method='post' action='".e_BASE."search.php'>
 <input class='button' type='submit' name='searchsubmit' value='".LAN_180."' />
 </p>
 </form>";
-if($searchflat){ echo $text; }else{ $ns -> tablerender(LAN_180." ".SITENAME, "<div style='text-align:center'>".$text."</div>"); }
+if($searchflat){ echo $text; }else{ $ns -> tablerender(LAN_180." ".SITENAME, "<div style='text-align:center'>".$text."</div>", 'search'); }
 ?>

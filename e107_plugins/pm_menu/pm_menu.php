@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm_menu/pm_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:36 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-13 13:20:45 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if((USER && check_class($pref['pm_userclass'])) || ADMINPERMS=="0"){
         require_once(e_PLUGIN."pm_menu/pm_inc.php");
         $caption = ($pref['pm_title'] == "PMLAN_PM") ? PMLAN_PM : $pref['pm_title'];
-        $ns->tablerender($caption,pm_show_stats(1));
+        $ns->tablerender($caption,pm_show_stats(1), 'pm_menu');
 }
 ?>

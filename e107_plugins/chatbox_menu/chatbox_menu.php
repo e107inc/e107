@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2004-12-12 17:57:18 $
+|     $Revision: 1.11 $
+|     $Date: 2004-12-13 13:20:42 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -201,7 +201,7 @@ $caption = (file_exists(THEME."images/chatbox_menu.png") ? "<img src='".THEME."i
 
 $text = ($pref['cb_layer'] ? $texta."<div style='border : 0; padding : 4px; width : auto; height : ".$pref['cb_layer_height']."px; overflow : auto; '>".$text."</div>" : $texta.$text);
 
-$ns -> tablerender($caption, $text);
+$ns -> tablerender($caption, $text, 'chatbox');
 
 function emote(){
 	global $sysprefs;

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/userlanguage_menu/userlanguage_menu.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-12-04 07:14:49 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2004-12-13 13:20:46 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -45,6 +45,6 @@
     </form>
     </div>";
 
-$ns -> tablerender(UTHEME_MENU_L2, $text);
+$ns -> tablerender(UTHEME_MENU_L2, $text, 'user_lan');
 
 ?>
