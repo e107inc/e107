@@ -154,7 +154,7 @@ online();
 $fp = ($pref['frontpage'] ? $pref['frontpage'].".php" : "news.php index.php");
 define("e_SIGNUP", (file_exists(e_BASE."customsignup.php") ? "customsignup.php" : "signup.php"));
 
-if($pref['membersonly_enabled'] && !USER && !strstr($fp, e_PAGE) && e_PAGE != e_SIGNUP && e_PAGE != "index.php" && e_PAGE != "fpw.php" && !strstr(e_PAGE, "admin") && !strstr(e_PAGE, "secure_img_handler")){
+if($pref['membersonly_enabled'] && !USER && e_PAGE != e_SIGNUP && e_PAGE != "index.php" && e_PAGE != "fpw.php" && e_PAGE != "login.php" && !strstr(e_PAGE, "admin") && !strstr(e_PAGE, "secure_img_handler")){
         echo "<br /><br /><div style='text-align:center; font: 12px Verdana, Tahoma'>This is a restricted area, to access it either log in or <a href='".e_BASE.e_SIGNUP."'>register as a member</a>.<br /><br /><a href='".e_BASE."index.php'>Click here to return to front page</a>.</div>";
         exit;
 }
@@ -560,7 +560,7 @@ class convert{
 function check_class($var, $userclass=USERCLASS, $debug=FALSE){
         if(preg_match ("/^([0-9]+)$/", $var)){
                 if($var == e_UC_MEMBER && USER==TRUE){return TRUE;}
-				if($var == e_UC_GUEST && USER==FALSE){return TRUE;}
+                                if($var == e_UC_GUEST && USER==FALSE){return TRUE;}
                 if($var == e_UC_PUBLIC){return TRUE;}
                 if($var == e_UC_NOBODY) {return FALSE;}
                 if($var == e_UC_ADMIN && ADMIN) {return TRUE;}
@@ -642,9 +642,9 @@ function online(){
                 $row = $sql -> db_Fetch();
                 extract($row);
 
-				if(!ADMIN){
-					$online_pagecount++;
-				}
+                                if(!ADMIN){
+                                        $online_pagecount++;
+                                }
 
                 if($online_pagecount > 100){
                         $sql -> db_Insert("banlist", "'$ip', '0', 'Hit count exceeded ($online_pagecount requests within allotted time)' ");
