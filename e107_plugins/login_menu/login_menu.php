@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-03-26 02:46:22 $
+|     $Revision: 1.23 $
+|     $Date: 2005-03-26 21:36:22 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -163,7 +163,7 @@ if (USER == TRUE || ADMIN == TRUE) {
 	if (LOGINMESSAGE != '') {
 		$text = '<div style="text-align: center;">'.LOGINMESSAGE.'</div>';
 	}
-	$text .= '<div style="text-align: center;"><form method="post" action="'.e_SELF.(e_QUERY ? '?'.e_QUERY : '').'">';
+	$text .= '<form method="post" action="'.e_SELF.(e_QUERY ? '?'.e_QUERY : '').'"><div style="text-align: center;">';
 	$text .= "\n".LOGIN_MENU_L1."<br />\n
 	<input class='tbox login user' type='text' name='username' size='15' value='' maxlength='30' />\n
 	<br />\n".LOGIN_MENU_L2."\n<br />\n
@@ -184,7 +184,7 @@ if (USER == TRUE || ADMIN == TRUE) {
 			$text .= '[ <a href="'.e_BASE.e_SIGNUP.'">'.LOGIN_MENU_L3.'</a> ]<br />[ <a href="'.e_BASE.'fpw.php">'.LOGIN_MENU_L4.'</a> ]';
 		}
 	}
-	$text .= '</form></div>';
+	$text .= '</div></form>';
 	if (file_exists(THEME.'images/login_menu.png')) {
 		$caption = '<img src="'.THEME.'images/login_menu.png" alt="" />'.LOGIN_MENU_L5;
 	} else {
