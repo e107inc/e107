@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-01-30 23:03:26 $
+|     $Revision: 1.21 $
+|     $Date: 2005-01-31 22:55:58 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -157,6 +157,9 @@ function update_61x_to_700($type) {
 		 
 		// parse table obsolete
 		mysql_query('DROP TABLE `'.MPREFIX.'parser`');
+		mysql_query("ALTER TABLE ".MPREFIX."menus ADD menu_path VARCHAR( 100 ) NOT NULL");
+		mysql_query("UPDATE ".MPREFIX."menus SET menu_path = 'custom', menu_name = substring(menu_name,8) WHERE substring(menu_name,1,6) = 'custom'");
+		mysql_query("UPDATE ".MPREFIX."menus SET menu_path = menu_name  WHERE menu_path = ''");
 		 
 		// New dblog table for logging db calls (admin log)
 		$sql->db_Select_gen(
@@ -205,12 +208,12 @@ function update_61x_to_700($type) {
 		// check if update is needed.
 		// FALSE = needed, TRUE = not needed.
 //		return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."generic");
-		if($sql->db_Query("SHOW COLUMNS FROM ".MPREFIX.'news'))
+		if($sql->db_Query("SHOW COLUMNS FROM ".MPREFIX.'menus'))
 		{
 			$list = $sql->db_getList();
 			foreach($list as $f)
 			{
-				if($f['Field'] == 'news_comment_total')
+				if($f['Field'] == 'menu_path')
 				{
 					return TRUE;
 				}

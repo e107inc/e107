@@ -29,8 +29,19 @@ foreach($eMenuList[$menu] as $row) {
 			}
 		}
 	}
-	if(check_class($menu_class) && $show_menu) {
+	if($show_menu) {
 		$sql->db_Mark_Time($menu_name);
+		if($menu_path != 'custom')
+		{
+			include(e_PLUGIN.$menu_name."/languages/".e_LANGUAGE.".php");
+			if(e_LANGUAGE != 'English')
+			{
+				include(e_PLUGIN.$menu_name."/languages/English.php");
+			}
+		}
+		include(e_PLUGIN.$menu_path."/".$menu_name.".php");
+			
+/*
 		if(strstr($menu_name, "custom_")) {
 			e107_require_once(e_PLUGIN."custom/".str_replace("custom_", "", $menu_name).".php");
 		} else {
@@ -40,6 +51,7 @@ foreach($eMenuList[$menu] as $row) {
 			}
 			include(e_PLUGIN.$menu_name."/".$menu_name.".php");
 		}
+*/
 		$sql->db_Mark_Time("(After $menu_name)");
 	}
 }
