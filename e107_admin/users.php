@@ -11,12 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-03-06 22:24:08 $
-|     $Author: stevedunstan $
+|     $Revision: 1.16 $
+|     $Date: 2005-03-09 21:06:14 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
+if($_POST)
+{
+	echo "<pre>".print_r($_POST, TRUE)."</pre>";
+}
+
 if (!getperms("4")) {
 	header("location:".e_BASE."index.php");
 	 exit;
@@ -26,8 +31,11 @@ $user = new users;
 require_once("auth.php");
 
 require_once(e_HANDLER."form_handler.php");
+require_once(e_HANDLER."user_extended_class.php");
+
 $rs = new form;
-	
+$ue = new e107_user_extended;
+
 if (e_QUERY) {
 	$tmp = explode(".", e_QUERY);
 	$action = $tmp[0];
@@ -271,67 +279,38 @@ if ($_POST['useraction'] == "unadmin") {
 	}
 }
 	
-if (isset($_POST['add_field'])) {
-	extract($_POST);
-	$sql->db_Select("core", " e107_value", " e107_name='user_entended'");
-	$row = $sql->db_Fetch();
-	$user_entended = unserialize($row[0]);
-	// changed by Cameron
-	$user_field = str_replace(" ", "_", $user_field);
-	$user_entended[] = $user_field."|".$user_type."|".$user_value."|".$user_default."|".$user_visible."|".$user_hide;
-	//     $user_entended[] = $user_field;
-	$tmp = addslashes(serialize($user_entended));
-	if ($sql->db_Select("core", " e107_value", " e107_name='user_entended'")) {
-		$sql->db_Update("core", "e107_value='$tmp' WHERE e107_name='user_entended' ");
-	} else {
-		$sql->db_Insert("core", "'user_entended', '$tmp' ");
+if (isset($_POST['add_field']))
+{
+	if($ue->user_extended_add($_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $_POST['user_parms'], $_POST['user_values'], $_POST['user_default'], $_POST['user_read'], $_POST['user_write']))
+	{
+		$message = USRLAN_2;
 	}
-	$message = USRLAN_2;
 }
 	
 if (isset($_POST['update_field'])) {
-	extract($_POST);
-	$sql->db_Select("core", " e107_value", " e107_name='user_entended'");
-	$row = $sql->db_Fetch();
-	$user_entended = unserialize($row[0]);
-	//        unset($user_entended[$sub_action]);
-	$user_field = str_replace(" ", "_", $user_field);
-	$user_entended[$sub_action] = $user_field."|".$user_type."|".$user_value."|".$user_default."|".$user_visible."|".$user_hide;
-	$tmp = addslashes(serialize($user_entended));
-	if ($sql->db_Select("core", " e107_value", " e107_name='user_entended'")) {
-		$sql->db_Update("core", "e107_value='$tmp' WHERE e107_name='user_entended' ");
-	} else {
-		$sql->db_Insert("core", "'user_entended', '$tmp' ");
+	if($ue->user_extended_modify($sub_action, $_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $_POST['user_parms'], $_POST['user_values'], $_POST['user_default'], $_POST['user_read'], $_POST['user_write']))
+	{
+		$message = USRLAN_2;
 	}
+
 	$message = "Updated";
 }
 	
-	
 if ($_POST['eu_action'] == "delext") {
-	$sub_action = $_POST['key'];
-	$sql->db_Select("core", " e107_value", " e107_name='user_entended'");
-	$row = $sql->db_Fetch();
-	$user_entended = unserialize($row[0]);
-	unset($user_entended[$sub_action]);
-	$tmp = addslashes(serialize($user_entended));
-	$sql->db_Update("core", "e107_value='$tmp' WHERE e107_name='user_entended' ");
-	$user->show_message(USRLAN_83);
-	//        $action = "extended"; // this line prevents adding another field without resetting.
-	//        $user->show_extended();//   this fixes the delete/add problem but causes the showmessage to occur.
+	list($_id, $_name) = explode(",",$_POST['key']);
+	if($ue->user_extended_remove($_id, $_name))
+	{
+		$user->show_message(USRLAN_83);
+	}
 }
 	
-if ($action == "editext") {
-	$sql->db_Select("core", " e107_value", " e107_name='user_entended'");
-	$row = $sql->db_Fetch();
-	$user_entended = unserialize($row[0]);
-	$tmp = explode("|", $user_entended[$sub_action]);
-	$uf_name = $tmp[0];
-	$uf_type = $tmp[1];
-	$uf_value = $tmp[2];
-	$uf_default = $tmp[3];
-	$uf_visible = $tmp[4];
-	$uf_hide = $tmp[5];
-	$user->show_extended();
+if ($action == "editext")
+{
+	if($sql->db_Select('user_extended_struct','*',"user_extended_struct_id = '{$sub_action}'"))
+	{
+		$tmp = $sql->db_Fetch();
+		$user->show_extended($tmp);
+	}
 }
 	
 if ($_POST['useraction'] == "verify") {
@@ -623,126 +602,147 @@ class users {
 		$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 	}
 	 
-	function show_extended() {
-		global $sql, $ns, $uf_name, $uf_type, $uf_value, $uf_default, $uf_visible, $uf_hide;
+	function show_extended($current) {
+		global $sql, $ns, $ue;
 		require_once(e_HANDLER."userclass_class.php");
-		 
-		$sql->db_Select("core", " e107_value", " e107_name='user_entended'");
-		$row = $sql->db_Fetch();
-		$user_entended = unserialize($row[0]);
-		 
+		
 		$text = "<div style='text-align:center'>";
-		//    $text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 200px; overflow : auto; '>";
-		 
 		$text .= "
-			<table style='".ADMIN_WIDTH."' class='fborder'><tr>
-			<td class='fcaption'>".USRLAN_96."</td>
-			<td class='fcaption'>".USRLAN_97."</td>
-			<td class='fcaption'>".USRLAN_98."</td>
-			<td class='fcaption'>".USRLAN_99."</td>
-			<td class='fcaption'>".USRLAN_100."</td>
-			<td class='fcaption'>".USRLAN_101."</td>
-			<td class='fcaption'>".USRLAN_102."</td></tr>
-			\n";
-		 
-		if (!$row[0]) {
-			$text .= "<tr>
-				<td colspan='7' class='forumheader3' style='text-align:center'>".USRLAN_40."</td>
-				</tr>";
-		} else {
-			$c = 0;
-			 
-			while (list($key, $u_entended) = each($user_entended)) {
-				if ($u_entended) {
-					// added by cameron..=============================
-					$ut = explode("|", $u_entended);
-					$u_name = ($ut[0] != "" ? str_replace("_", " ", $ut[0]) : $u_entended);
-					$u_type = $ut[1];
-					$u_value = $ut[2];
-					$u_default = $ut[3];
-					$u_visible = $ut[4];
-					$u_hide = $ut[5];
-					$text .= "<tr>
-						<td class='forumheader3' >".$u_name."&nbsp; </td>
-						<td class='forumheader3' >".$u_type."&nbsp; </td>
-						<td class='forumheader3' >".$u_value."&nbsp; </td>
-						<td class='forumheader3' >".$u_default."&nbsp; </td>
-						<td class='forumheader3' >".r_userclass_name($u_visible)."&nbsp; </td>
-						<td class='forumheader3' >".r_userclass_name($u_hide)."&nbsp; </td>
-						<td class='forumheader3' style='text-align:center;'>
-						<span class='button' style='height:16px; width:50%;'>
-						<a style='text-decoration:none' href='".e_SELF."?editext.$key'>".USRLAN_81."</a>
-						</span>
-						&nbsp;
-						<form method='post' action='".e_SELF."?extended' onsubmit='return confirm(\"".USRLAN_16."\")'>
+			<table style='".ADMIN_WIDTH."' class='fborder'>
+			<tr>
+				<td class='fcaption'>".USRLAN_96."</td>
+				<td class='fcaption'>".USRLAN_97."</td>
+				<td class='fcaption'>".USRLAN_98."</td>
+				<td class='fcaption'>".USRLAN_99."</td>
+				<td class='fcaption'>".USRLAN_100."</td>
+				<td class='fcaption'>".USRLAN_101."</td>
+				<td class='fcaption'>".USRLAN_102."</td>
+			</tr>
+			";
+		if($sql->db_Select('user_extended_struct'))
+		{
+			//Show current extended fields
+			$extendedList = $sql->db_getList();
+			foreach($extendedList as $ext)
+			{
+				$text .= "
+				<td class='forumheader3'>{$ext['user_extended_struct_name']}<br />[{$ext['user_extended_struct_text']}]</td>
+				<td class='forumheader3'>".$ue->user_extended_types[$ext['user_extended_struct_type']]."</td>
+				<td class='forumheader3'>{$ext['user_extended_struct_values']}</td>
+				<td class='forumheader3'>{$ext['user_extended_struct_default']}</td>
+				<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_read'])."</td>
+				<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_write'])."</td>
+				<td class='forumheader3' style='text-align:center;'>
+					<span class='button' style='height:16px; width:50%;'>
+						<a style='text-decoration:none' href='".e_SELF."?editext.{$ext['user_extended_struct_id']}'>".USRLAN_81."</a>
+					</span>
+					&nbsp;
+					<form method='post' action='".e_SELF."?extended' onsubmit='return confirm(\"".USRLAN_16."\")'>
 						<div>
 						<input type='hidden' name='eu_action' value='delext' />
-						<input type='hidden' name='key' value='{$key}' />
+						<input type='hidden' name='key' value='{$ext['user_extended_struct_id']},{$ext['user_extended_struct_name']}' />
 						<input type='submit' class='button' name='eudel' value='".USRLAN_29."' />
 						</div>
-						</form>
-						</td>
-						</tr>";
-					$c++;
-				}
-				//                                        <a style='text-decoration:none' href='".e_SELF."?delext.$key'>".USRLAN_29."</a>
+					</form>
+				</td>
+				</tr>
+				";
 			}
 		}
-		 
+		else
+		{
+			$text .= "
+				<tr>
+					<td colspan='7' class='forumheader3' style='text-align:center'>".USRLAN_40."</td>
+				</tr>
+				";
+		}
+			
+		//Show add/edit form
 		$text .= "
 			</table>
 			<form method='post' action='".e_SELF."?".e_QUERY."'>
 			";
 		$text .= "<div><br /></div><table style='".ADMIN_WIDTH."' class='fborder'>  ";
-		$text .= "<tr>
-			<td style='width:30%' class='forumheader3'>".USRLAN_41.":</td>
-			<td style='width:70%' class='forumheader3' colspan='3'>
-			<input class='tbox' type='text' name='user_field' size='40' value='".$uf_name."' maxlength='50' /></td>
-			</tr>";
+		$text .= "
+
+			<tr>
+				<td style='width:30%' class='forumheader3'>".USRLAN_41.":</td>
+				<td style='width:70%' class='forumheader3' colspan='3'>user_
+				";
+				if(is_array($current))
+				{
+					$text .= $current['user_extended_struct_name']."
+					<input type='hidden' name='user_field' value='".$current['user_extended_struct_name']."' />
+					";
+				}
+				else
+				{
+					$text .= "
+					<input class='tbox' type='text' name='user_field' size='40' value='".$current['user_extended_struct_name']."' maxlength='50' />
+					";
+				}
+				$text .= "
+					<br /><span class='smalltext'>".USRLAN_130."</span>
+				</td>
+			</tr>
+
+			<tr>
+				<td style='width:30%' class='forumheader3'>".USRLAN_129.":</td>
+				<td style='width:70%' class='forumheader3' colspan='3'>
+				<input class='tbox' type='text' name='user_text' size='40' value='".$current['user_extended_struct_text']."' maxlength='50' /><br />
+				<span class='smalltext'>".USRLAN_131."</span>
+				</td>
+			</tr>
+			";
 		 
 		$text .= "<tr>
 			<td style='width:30%' class='forumheader3'>".USRLAN_103."</td>
 			<td style='width:70%' class='forumheader3' colspan='3'>
 			<select class='tbox' name='user_type'>";
-		 
-		$typevalue = array("text", "radio", "dropdown", "table");
-		$typename = array(USRLAN_108, USRLAN_109, USRLAN_110, USRLAN_111);
-		 
-		for ($i = 0; $i < count($typevalue); $i++) {
-			$selected = ($uf_type == $typevalue[$i])? " selected='selected'":
-			 "";
-			$text .= "<option value='".$typevalue[$i]."' $selected>".$typename[$i]."</option>";
+		foreach($ue->user_extended_types as $key => $val)
+		{
+			$selected = ($current['user_extended_struct_type'] == $key) ? " selected='selected'": "";
+			$text .= "<option value='".$key."' $selected>".$val."</option>";
 		};
 		 
 		$text .= "
 			</select></td></tr>";
 		 
-		$text .= "<tr>
-			<td style='width:30%' class='forumheader3'>".USRLAN_98."</td>
-			<td style='width:70%' class='forumheader3' colspan='3'>
-			<input class='tbox' type='text' name='user_value' size='40' value='$uf_value' /><br />
-			<span class='smalltext'>".USRLAN_105."</span>
-			</td>
+		$text .= "
+			<tr>
+				<td style='width:30%' class='forumheader3'>".USRLAN_128."</td>
+				<td style='width:70%' class='forumheader3' colspan='3'>
+				<input class='tbox' type='text' name='user_parms' size='40' value='{$current['user_extended_struct_parms']}' /><br />
+				</td>
+			</tr>
+
+			<tr>
+				<td style='width:30%' class='forumheader3'>".USRLAN_98."</td>
+				<td style='width:70%' class='forumheader3' colspan='3'>
+				<input class='tbox' type='text' name='user_values' size='40' value='{$current['user_extended_struct_values']}' /><br />
+				<span class='smalltext'>".USRLAN_105."</span>
+				</td>
 			</tr>
 			 
 			<tr>
 			<td style='width:30%' class='forumheader3'>".USRLAN_104."</td>
 			<td style='width:70%' class='forumheader3' colspan='3'>
-			<input class='tbox' type='text' name='user_default' size='40' value='$uf_default' />
+			<input class='tbox' type='text' name='user_default' size='40' value='{$current['user_extended_struct_default']}' />
 			</td>
 			</tr>
 			 
 			<tr>
 			<td style='width:30%' class='forumheader3'>".USRLAN_100."</td>
 			<td style='width:70%' class='forumheader3' colspan='3'>
-			".r_userclass("user_visible", $uf_visible)."<br /><span class='smalltext'>".USRLAN_106."</span>
+			".r_userclass("user_read", $current['user_extended_struct_read'])."<br /><span class='smalltext'>".USRLAN_107."</span>
 			</td>
 			</tr>
 			 
 			<tr>
 			<td style='width:30%' class='forumheader3'>".USRLAN_101."</td>
 			<td style='width:70%' class='forumheader3' colspan='3'>
-			".r_userclass("user_hide", $uf_hide)."<br /><span class='smalltext'>".USRLAN_107."</span>
+			".r_userclass("user_write", $current['user_extended_struct_write'])."<br /><span class='smalltext'>".USRLAN_106."</span>
 			</td>
 			</tr>";
 		 
@@ -750,7 +750,7 @@ class users {
 		$text .= "<tr>
 			<td colspan='4' style='text-align:center' class='forumheader'>";
 		 
-		if (!$uf_name) {
+		if (!is_array($current)) {
 			$text .= "
 				<input class='button' type='submit' name='add_field' value='".USRLAN_42."' />
 				";
