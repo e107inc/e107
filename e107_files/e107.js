@@ -11,12 +11,16 @@ var operaaa=(agtbrw.indexOf('opera')!=-1);
 var head="display:''";
 var folder='';
 function expandit(curobj){
+if(document.getElementById(curobj)){
+  folder=document.getElementById(curobj).style;
+  }else{
+
 if(ns6==1||operaaa==true){
 	folder=curobj.nextSibling.nextSibling.style;
 }else{
 	folder=document.all[curobj.sourceIndex+1].style;
 }
-
+   }
 if (folder.display=="none"){folder.display="";}else{folder.display="none";}
 }
 
