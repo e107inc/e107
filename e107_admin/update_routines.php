@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-02-13 00:23:11 $
+|     $Revision: 1.35 $
+|     $Date: 2005-02-13 00:31:24 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -81,12 +81,12 @@ function update_61x_to_700($type) {
 			foreach($wmList as $wm)
 			{
 				if($wm['wm_id'] == '4') {$gen_type = 'forum_rules_guest';}
-				if($wm['wm_id'] == '5') {$gen_type = 'forum_rules_user';}
+				if($wm['wm_id'] == '5') {$gen_type = 'forum_rules_member';}
 				if($wm['wm_id'] == '6') {$gen_type = 'forum_rules_admin';}
 				$exists = $sql->db_Count('generic','(*)',"WHERE gen_type = '{$gen_type}'");
 				if(!$exists)
 				{
-					$sql->db_Insert('generic',"0,'$gen_type','".time()."','".USERID."','',0,'{$wm['wm_text']}'");
+					$sql->db_Insert('generic',"0,'$gen_type','".time()."','".USERID."','',{$wm['wm_active']},'{$wm['wm_text']}'");
 					$sql->db_Delete('wmessage',"WHERE wm_id = '{$wm['wm_id']}'");
 				}
 			}
