@@ -213,7 +213,11 @@ if(!$active_uploads = $sql -> db_Select("upload", "*", "upload_active=0")){
                 <td style='width:20%' class='forumheader3'>".$poster."</td>
                 <td style='width:20%' class='forumheader3'><a href='".e_SELF."?view.".$upload_id."'>".$upload_name ."</a></td>
                 <td style='width:20%' class='forumheader3'>".$upload_file ."</td>
-                <td style='width:18px' class='forumheader3'><a href='".e_SELF."?dlm.$upload_id'><img src=\"".$imgd."filemanager/exe.png\" alt=\"".UPLAN_COPYTODLS."\" style=\"border:0\" /></a><br /><a href='".e_SELF."?news.$upload_id'><img src=\"".$imgd."filemanager/htm.png\" alt=\"".UPLLAN_16."\" style=\"border:0\" /></a><br /><a href='".e_SELF."?dis.$upload_id'><img src=\"".$imgd."filemanager/del.png\" alt=\"".UPLLAN_17."\" style=\"border:0\" /></a></td>
+                <td style='width:18px' class='forumheader3'>
+                		<a href='".e_SELF."?dlm.$upload_id'><img src='".$imgd."filemanager/exe.png' alt='".UPLAN_COPYTODLS."' title='".UPLAN_COPYTODLS."' style='border:0' /></a><br />
+                		<a href='".e_SELF."?news.$upload_id'><img src='".$imgd."filemanager/htm.png' alt='".UPLLAN_16."' title='".UPLLAN_16."' style='border:0' /></a><br />
+                		<a href='".e_SELF."?dis.$upload_id'><img src='".$imgd."filemanager/del.png' alt='".UPLLAN_17."' title='".UPLLAN_17."' style='border:0' /></a>
+                </td>
                 </tr>";
         }
 }
