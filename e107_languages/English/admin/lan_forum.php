@@ -130,4 +130,11 @@ define("FORLAN_119", "Clicking links will open forum in a new window.");
 define("FORLAN_120", "Tick this to allow users to change their Custom Title");
 define("FORLAN_121", "No reported posts");
 define("FORLAN_122", "Click here to email admin when someone reports a forum post");
+define("FORLAN_123", "Forum Rules");
+define("WMGLAN_1", "Rules for Guests");
+define("WMGLAN_2", "Rules for Members");
+define("WMGLAN_3", "Rules for Administrators");
+define("WMGLAN_4", "Submit");
+define("WMGLAN_5", "Set Forum Rules");
+define("WMGLAN_6", "Activate?");
 ?>

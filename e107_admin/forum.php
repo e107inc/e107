@@ -17,6 +17,7 @@ if(!getperms("5")){ header("location:".e_BASE."index.php"); exit; }
 require_once("auth.php");
 require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."form_handler.php");
+require_once(e_HANDLER."ren_help.php");
 $rs = new form;
 $forum = new forum;
 $aj = new textparse;
@@ -149,6 +150,16 @@ if(IsSet($_POST['set_ranks'])){
 	$forum -> show_message(FORLAN_95);
 }
 
+if(IsSet($_POST['frsubmit'])){
+
+	$guestrules = $aj -> formtpa($_POST['guestrules'], "admin");
+	$memberrules = $aj -> formtpa($_POST['memberrules'], "admin");
+	$adminrules = $aj -> formtpa($_POST['adminrules'], "admin");
+	$sql -> db_Update("wmessage", "wm_text ='$guestrules', wm_active='".$_POST['wm_active4']."' WHERE wm_id='4' ");
+	$sql -> db_Update("wmessage", "wm_text ='$memberrules', wm_active='".$_POST['wm_active5']."' WHERE wm_id='5' ");
+	$sql -> db_Update("wmessage", "wm_text ='$adminrules', wm_active='".$_POST['wm_active6']."' WHERE wm_id='6' ");
+}
+
 if($action == "main" && $sub_action == "confirm"){
 	if($sql -> db_Delete("forum", "forum_id='$id' ")){
 		$forum -> show_message(FORLAN_96);
@@ -190,6 +201,10 @@ if($action == "prune"){
 
 if($action == "rank"){
 	$forum -> show_levels();
+}
+
+if($action == "rules"){
+	$forum -> show_rules();
 }
 
 if($action == "sr"){
@@ -258,6 +273,8 @@ class forum{
 		$var['prune']['link']=e_SELF."?prune";
 		$var['rank']['text']=FORLAN_63;
 		$var['rank']['link']=e_SELF."?rank";
+		$var['rules']['text']=FORLAN_123;
+		$var['rules']['link']=e_SELF."?rules";
 		if($sql -> db_Select("tmp", "*", "tmp_ip='reported_post' ")){
 			$var['sr']['text']=FORLAN_116;
 			$var['sr']['link']=e_SELF."?sr";
@@ -685,7 +702,122 @@ class forum{
 		</table>\n</form>\n</div>";
 		$ns -> tablerender("Ranks", $text);
 	}
+
+	function show_rules(){
+		global $sql, $pref, $ns, $aj;
+
+		$sql -> db_Select("wmessage");
+		list($null) = $sql-> db_Fetch();
+		list($null) = $sql-> db_Fetch();	
+		list($null) = $sql-> db_Fetch();
+		list($id, $guestrules, $wm_active4) = $sql-> db_Fetch();
+		list($id, $memberrules, $wm_active5) = $sql-> db_Fetch();	
+		list($id, $adminrules, $wm_active6) = $sql-> db_Fetch();
+
+
+		$guestrules = $aj -> formtparev($aj -> editparse($guestrules));
+		$memberrules = $aj -> formtparev($aj -> editparse($memberrules));
+		$adminrules = $aj -> formtparev($aj -> editparse($adminrules));
+
+		$text = "
+		<div style='text-align:center'>
+		<form method='post' action='".$_SERVER['PHP_SELF']."'  id='wmform'>
+		<table style='width:85%' class='fborder'>
+		<tr>";
+
+		$text .= "
+
+		<td style='width:20%' class='forumheader3'>".WMGLAN_1.": <br />
+		".WMGLAN_6.":";
+		if($wm_active4){
+			$text .= "<input type='checkbox' name='wm_active4' value='1'  checked='checked' />";
+		}else{
+			$text .= "<input type='checkbox' name='wm_active4' value='1' />";
+		}
+		$text .= "</td>
+		<td style='width:60%' class='forumheader3'>
+		<textarea class='tbox' name='guestrules' cols='70' rows='10'>$guestrules</textarea>
+		<br />
+		<input class='helpbox' type='text' name='helpguest' size='100' />
+		<br />
+		".ren_help(1,"addtext1","help1")."
+		</td>
+
+		</tr>
+
+		<tr>
+		<td style='width:20%' class='forumheader3'>".WMGLAN_2.": <br />
+		".WMGLAN_6.":";
+		if($wm_active5){
+			$text .= "<input type='checkbox' name='wm_active5' value='1'  checked='checked' />";
+		}else{
+			$text .= "<input type='checkbox' name='wm_active5' value='1' />";
+		}
+		$text .= "</td>
+		<td style='width:60%' class='forumheader3'>
+		<textarea class='tbox' name='memberrules' cols='70' rows='10'>$memberrules</textarea>
+		<br />
+		<input class='helpbox' type='text' name='helpmember' size='100' />
+		<br />
+		".ren_help(1,"addtext2","help2")."
+		</td>
+
+
+		<tr>
+		<td style='width:20%' class='forumheader3'>".WMGLAN_3.": <br />
+		".WMGLAN_6.": ";
+
+		if($wm_active6){
+			$text .= "<input type='checkbox' name='wm_active6' value='1'  checked='checked' />";
+		}else{
+			$text .= "<input type='checkbox' name='wm_active6' value='1' />";
+		}
+
+		$text .= "</td>
+		<td style='width:60%' class='forumheader3'>
+		<textarea class='tbox' name='adminrules' cols='70' rows='10'>$adminrules</textarea>
+		<br />
+		<input class='helpbox' type='text' name='helpadmin' size='100' />
+		<br />
+		".ren_help(1,"addtext3","help2")."
+		</td>
+		</tr>
+
+		<tr style='vertical-align:top'> 
+		<td class='forumheader3'>&nbsp;</td>
+		<td style='width:60%' class='forumheader3'>
+		<input class='button' type='submit' name='frsubmit' value='".WMGLAN_4."' />
+		</td>
+		</tr>
+		</table>
+		</form>
+		</div>";
+
+		$ns -> tablerender(WMGLAN_5, $text);
+		echo "
+<script type=\"text/javascript\">
+function addtext1(sc){
+	document.getElementById('wmform').guestrules.value += sc;
 }
+function addtext2(sc){
+	document.getElementById('wmform').memberrules.value += sc;
+}
+function addtext3(sc){
+	document.getElementById('wmform').adminrules.value += sc;
+}
+function help1(help){
+	document.getElementById('wmform').helpguest.value = help;
+}
+function help2(help){
+	document.getElementById('wmform').helpmember.value = help;
+}
+function help3(help){
+	document.getElementById('wmform').helpadmin.value = help;
+}
+</script>";
+	}
+}
+
 
 function forum_adminmenu(){
 	global $forum;
