@@ -55,6 +55,18 @@ td {
 	font-style: normal;
 	text-align:left;
 }
+	
+td.alpha {
+	background-color: #253047; 
+	vertical-align: top; 
+	width: 3;
+}
+
+td.beta {
+	vertical-align: top;
+	background-color: #CCCCCC;
+}
+
 .mediumtext {
 	font-family: verdana, tahoma, arial, helvetica, sans-serif;
 	font-size: 14px;
