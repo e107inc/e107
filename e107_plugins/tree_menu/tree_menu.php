@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/tree_menu/tree_menu.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-02-11 22:27:12 $
+|     $Revision: 1.11 $
+|     $Date: 2005-02-12 21:33:27 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -73,7 +73,7 @@ foreach($linkArray as $links) {
 }
 	
 // ok, now all mainlinks and sublinks are held in the array, now we have to loop through and build the text to send to screen ...
-	
+
 $text = "";
 foreach($mainLinkArray as $links) {
 	extract ($links);
@@ -82,13 +82,20 @@ foreach($mainLinkArray as $links) {
 		$url = "javascript: void(0);";
 		$spanName = str_replace(" ", "_", $name);
 		$image = ($image ? "<img src='".e_IMAGE."icons/".$image."' alt='' style='vertical-align:middle;' />" : "&raquo;");
-		$text .= "<div class='spacer'>\n<div class='button' style='width:100%; cursor: pointer;' onclick='expandit(\"span_".$spanName."\");updatecook(\"".$name."\");'>".$image.setLink($name, $url, $openMethod, $description)."</div>\n</div>\n";
+		$plink = "<div class='".$menu_pref['tm_class2']."' style='width:100%; cursor: pointer;' onclick='expandit(\"span_".$spanName."\");updatecook(\"".$name."\");'>".$image.setLink($name, $url, $openMethod, $description)."</div>\n";
+		$text .= ($menu_pref['tm_spacer'] ? "<div class='spacer'>".$plink."</div>\n" : $plink);
 	} else {
 		// no sublinks found ...
 		$linkName = $url;
 		$spanName = "";
 		$image = ($image ? "<img src='".e_IMAGE."icons/".$image."' alt='' style='vertical-align:middle;' />" : "&middot;");
-		$text .= "<div class='spacer'>\n<div class='button' style='width:100%; cursor: pointer;'>".$image.setLink($name, $url, $openMethod, $description)."</div>\n</div>\n";
+		$plink = "<div class='".$menu_pref['tm_class1']."' style='width:100%; cursor: pointer;'>".$image.setLink($name, $url, $openMethod, $description)."</div>";
+		$text .= ($menu_pref['tm_spacer'] ? "<div class='spacer'>".$plink."</div>\n" : $plink);
+
+
+		
+
+
 	}
 	 
 	$c = 0;
@@ -99,7 +106,8 @@ foreach($mainLinkArray as $links) {
 			$image = ($image ? "<img src='".e_IMAGE."icons/".$image."' alt='' style='vertical-align:middle' />  " : "&middot; ");
 			$spanName = str_replace(" ", "_", $parent_name);
 			 
-			$text .= $image.setLink($name, $url, $openMethod, $description)."<br />\n";
+			$plink = $image.setLink($name, $url, $openMethod, $description)."<br />\n";
+			$text .=($menu_pref['tm_class3'] ? "<span class='".$menu_pref['tm_class3']."'>".$plink."</span>" : $plink);
 		}
 		$text .= "</span>\n";
 	}
