@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/languages/English.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-02-28 18:42:13 $
+|     $Revision: 1.3 $
+|     $Date: 2005-03-11 09:17:16 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -58,4 +58,5 @@ define("NFLAN_37", "short description of feed, enter 'default' to use the descri
 define("NFLAN_38", "Headlines");
 define("NFLAN_39", "Details");
 define("NFLAN_40", "Newsfeed deleted");
+define("NFLAN_41", "No newsfeeds defined yet");
 ?>
