@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.50 $
-|   $Date: 2005-02-22 02:28:36 $
+|   $Revision: 1.51 $
+|   $Date: 2005-02-22 04:37:13 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -92,7 +92,7 @@ if (IsSet($_POST['submitupload'])) {
 	$pref['upload_storagetype'] = "1";
 	require_once(e_HANDLER."upload_handler.php");
 
-        $uploaded = file_upload(e_IMAGE."newspost_images/");
+		$uploaded = file_upload(e_IMAGE."newspost_images/");
 
 		foreach($_POST['uploadtype'] as $key=>$uploadtype){
 			if($uploadtype == "thumb"){
@@ -100,7 +100,7 @@ if (IsSet($_POST['submitupload'])) {
 			}
 
 			if($uploadtype == "file"){
-              rename(e_IMAGE."newspost_images/".$uploaded[$key]['name'],e_FILE."downloads/".$uploaded[$key]['name']);
+				rename(e_IMAGE."newspost_images/".$uploaded[$key]['name'],e_FILE."downloads/".$uploaded[$key]['name']);
 			}
 
 			if ($uploadtype == "resize" && $_POST['resize_value'][$key]) {
@@ -113,7 +113,7 @@ if (IsSet($_POST['submitupload'])) {
 // required.
 if (IsSet($_POST['preview'])) {
 	$_POST['news_title'] = $tp->toDB($_POST['news_title']);
-  	$_POST['news_summary'] = $tp->toDB($_POST['news_summary']);
+	$_POST['news_summary'] = $tp->toDB($_POST['news_summary']);
 	$newspost->preview_item($id);
 }
 
@@ -780,7 +780,7 @@ class newspost {
 
 	function preview_item($id) {
 		// ##### Display news preview ---------------------------------------------------------------------------------------------------------
-		global $tp, $sql, $ix;
+		global $tp, $sql, $ix,$IMAGES_DIRECTORY;
 		$_POST['news_id'] = $id;
 		$_POST['active_start'] = (!$_POST['startmonth'] || !$_POST['startday'] || !$_POST['startyear'] ? 0 : mktime (0, 0, 0, $_POST['startmonth'], $_POST['startday'], $_POST['startyear']));
 		$_POST['active_end'] = (!$_POST['endmonth'] || !$_POST['endday'] || !$_POST['endyear'] ? 0 : mktime (0, 0, 0, $_POST['endmonth'], $_POST['endday'], $_POST['endyear']));
@@ -791,6 +791,8 @@ class newspost {
 		$_POST['comment_total'] = $comment_total;
 		$_POST['news_datestamp'] = ($_POST['update_datestamp']) ? time() :  mktime($_POST['ds_hour'],$_POST['ds_min'],$_POST['ds_sec'],$_POST['ds_month'],$_POST['ds_day'],$_POST['ds_year']);
 		$_PR = $_POST;
+		$_PR['data'] = str_replace($IMAGES_DIRECTORY,"../".$IMAGES_DIRECTORY,$_PR['data']);
+		$_PR['news_extended'] = str_replace($IMAGES_DIRECTORY,"../".$IMAGES_DIRECTORY,$_PR['news_extended']);
 		$_PR['news_title'] = $tp->post_toHTML($_PR['news_title']);
 		$_PR['news_summary'] = $tp->post_toHTML($_PR['news_summary']);
 		$_PR['data'] = $tp->post_toHTML($_PR['data']);

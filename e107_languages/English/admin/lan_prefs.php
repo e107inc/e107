@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-02-19 12:12:33 $
+|     $Revision: 1.16 $
+|     $Date: 2005-02-22 04:38:35 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -169,5 +169,5 @@ define("PRFLAN_120", "Default Geshi syntax language");
 define("PRFLAN_121", "if no language is specified in the code bbtag, this language will be used for highlighting");
 
 define("PRFLAN_122", "Enable WYSIWYG textareas");
-define("PRFLAN_123", "Will display a what-you-see-is-what-you-get editor in textareas when available.");
+define("PRFLAN_123", "Will display a what-you-see-is-what-you-get editor in textareas when available. Applies only to Admins and Users that are allowed to post HTML.");
 ?>
