@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_admin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-27 19:52:49 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-29 00:48:32 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("FORLAN_1", "You must enter the number of days you wish to prune.");
@@ -74,9 +74,6 @@ define("FORLAN_62", "Forum Options");
 define("FORLAN_63", "Ranks");
 define("FORLAN_64", "Enter your levels here, if left blank generic stars will be used to denote level. Seperate levels with comma. Maximum of 10 levels, lowest first.");
 define("FORLAN_65", "Forum Title");
-	
-define("FORLAN_68", "Enable HTML post");
-define("FORLAN_69", "Allow public users to post HTML code, this will apply sitewide (comments, chatbox etc)");
 	
 define("FORLAN_70", "Enable file / image attachments");
 define("FORLAN_71", "Allow users to upload file or image with their forum post,");
