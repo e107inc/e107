@@ -46,7 +46,7 @@ $HEADER = "
 <td id='collefttop'></td>
 <td id='infoleft'>
 <div class='padder'>
-{CUSTOM=search+25+".THEME."images/search.png+19+18}
+{CUSTOM=search+".THEME."images/search.png+19+18}
 </div>
 </td>
 <td id='inforight'>

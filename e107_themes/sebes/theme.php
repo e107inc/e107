@@ -48,7 +48,7 @@ $HEADER = "
 <tr>
 <td id='logo2'>&nbsp;</td>
 <td id='searchbox'>
-{CUSTOM=search+25+".THEME."images/search.png+19+18}
+{CUSTOM=search+".THEME."images/search.png+19+18}
 </td>
 </tr>
 </table>
