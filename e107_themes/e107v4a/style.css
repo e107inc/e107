@@ -2,7 +2,9 @@ body {
 	color: #000;
 	font: 12px tahoma, verdana, arial, sans-serif;
 	background-color: #E7E7E7;
-	margin:0px; text-align:left;
+	margin:0px;
+	text-align:left;
+	padding: 0px;
 }
 a {
 	color: #716d6d;

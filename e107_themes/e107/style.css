@@ -3,7 +3,8 @@ body {
 	font: 12px tahoma, verdana, arial, sans-serif;
 	background-color: #fff;
 	margin:0px;
-	text-align:left
+	text-align:left;
+	padding: 0px;
 }
 a {
 	color: #716d6d; 

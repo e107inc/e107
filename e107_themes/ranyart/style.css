@@ -4,7 +4,8 @@ body {
 	font-family: tahoma, verdana, arial, sans-serif;
 	background-color: #fff;
 	margin:0px;
-	text-align:left
+	text-align:left;
+	padding: 0px;
 }
 a {
 	color: #616060; 
