@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/admin_config.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-02-10 18:56:37 $
-|     $Author: stevedunstan $
+|     $Revision: 1.6 $
+|     $Date: 2005-02-16 15:23:26 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -86,7 +86,7 @@ $text = "<div style='text-align:center'>
 
 	<tr>
 	<td style='width:50%' class='forumheader3'>".ADSTAT_L18."</td>
-	<td style='width:50%; text-align: right;' class='forumheader3'>".r_userclass("statUserclass", $pref['statUserclass'])."</td>
+	<td style='width:50%; text-align: right;' class='forumheader3'>".r_userclass("statUserclass", $pref['statUserclass'],'off','public, member, admin, classes')."</td>
 	</tr>
 
 	<tr>
