@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-01-25 04:17:29 $
-|     $Author: e107coders $
+|     $Revision: 1.10 $
+|     $Date: 2005-01-25 22:38:42 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -73,6 +73,7 @@ function update_61x_to_700($type){
                         /* end */
 
                         // start links update -------------------------------------------------------------------------------------------
+                        if (!$sql -> db_Select("links_page", "link_id")){
                         global $IMAGES_DIRECTORY, $PLUGINS_DIRECTORY, $pref;
                         $sql -> db_Select_gen("CREATE TABLE ".MPREFIX."links_page_cat (
                         link_category_id int(10) unsigned NOT NULL auto_increment,
@@ -138,8 +139,9 @@ function update_61x_to_700($type){
                         $sql -> db_Insert("plugin", "0, 'Links Page', '1.0', 'links_page', 1");
                         $sql -> db_Update("links", "link_url = '".$PLUGINS_DIRECTORY."links_page/links.php' WHERE link_url = 'links.php'");
 
-                        $pref['plug_latest'] = ",links_page";
+                        $pref['plug_latest'] = $pref['plug_latest'].",links_page";
                         save_prefs();
+                    	}
 
                         // end links update -------------------------------------------------------------------------------------------
 
