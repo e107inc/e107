@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-01-28 17:53:44 $
+|     $Revision: 1.9 $
+|     $Date: 2005-01-30 20:13:51 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -38,8 +38,7 @@ class e_parse {
 	}
 	 
 	function toForm($text, $single_quotes = FALSE) {
-		$mode = ($single_quotes) ? ENT_QUOTES :
-		 ENT_COMPAT;
+		$mode = ($single_quotes ? ENT_QUOTES :ENT_COMPAT);
 		if (MAGIC_QUOTES_GPC == TRUE) {
 			$text = stripslashes($text);
 		}
@@ -49,19 +48,35 @@ class e_parse {
 		return html_entity_decode($text, $mode, CHARSET);
 	}
 	 
-	function post_toHTML($text) {
+	function post_toHTML($text, $modifier=TRUE) {
+
+		/*
+		changes by jalist 30/01/2005:
+		description had to add modifier to /not/ send formatted text on to this->toHTML at end of method, this was causing problems when MAGIC_QUOTES_GPC == TRUE.
+		*/
+
 		if (ADMIN === TRUE || $no_encode === TRUE) {
-			$search = array('$', '"', "'", '\\');
-				$replace = array('&#036;','&quot;','&#039;','&#092;');
+			$search = array('$', '"', "'", '\\', "'&#092;'");
+			$replace = array('&#036;','&quot;','&#039;','&#092;','&#039;');
 			$text = str_replace($search, $replace, $text);
+			/*
+			changes by jalist 30/01/2005:
+			description dirty fix for servers with magic_quotes_gpc == true
+			*** for some reason apostrophes submitted in forum posts break the string on preview, although it posts to db correctly ... working on it ***
+			*/
+			if (MAGIC_QUOTES_GPC) {
+				$search = array('&#092;&#092;&#092;&#092;', '&#092;&#039;', '&#092;&quot;');
+				$replace = array('&#092;&#092;','&#039;', '&quot;');
+				$text = str_replace($search, $replace, $text);
+			}
 		} else {
 			$text = htmlentities($text, ENT_QUOTES, CHARSET);
 		}
-		return $this->toHTML($text, TRUE);
+		return ($modifier ? $this->toHTML($text, TRUE) : $text);
 	}
 	 
 	function post_toForm($text) {
-		if (MAGIC_QUOTES_GPC == TRUE) {
+		if (MAGIC_QUOTES_GPC) {
 			return stripslashes($text);
 		}
 		return $text;
@@ -77,9 +92,8 @@ class e_parse {
 		// End parse {XXX} codes
 	}
 
-	function textclean ($text, $wrap=75)
+	function textclean ($text, $wrap=100)
 	{
-		
 		$text = trim ($text);
 		$text = str_replace ("nnn", "nn", $text);
 
@@ -107,15 +121,15 @@ class e_parse {
 	}
 
 	 
-	function toHTML($text, $parseBB = FALSE, $modifiers = "", $postID = "", $wrap=75) {
+	function toHTML($text, $parseBB = FALSE, $modifiers = "", $postID = "", $wrap=100) {
 		if ($text == '')
 		{
 			return $text;
 		}
 		global $pref;
-		if (MAGIC_QUOTES_GPC == TRUE) {
-			$text = stripslashes($text);
-		}
+//		if (MAGIC_QUOTES_GPC == TRUE) {
+//			$text = stripslashes($text);
+//		}
 
 		$text = preg_replace("#([\t\r\n ])([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="\2://\3" rel="external">\2://\3</a>', $text);
 		$text = preg_replace("#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="http://\2.\3" rel="external">\2.\3</a>', $text);
