@@ -70,6 +70,8 @@ if(IsSet($_POST['upload'])){
 
 if(IsSet($message)){
 	$ns -> tablerender("", "<div style=\"text-align:center\"><b>".$message."</b></div>");
+	require_once(FOOTERF);
+	exit;
 }
 
 $text = "<div style='text-align:center'>
@@ -140,10 +142,5 @@ $text .= "
 
 $ns -> tablerender(LAN_417, $text);
  
-
-
-
-
-
 require_once(FOOTERF);
 ?>

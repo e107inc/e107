@@ -50,39 +50,39 @@ if($action == "review"){
 			ob_start();
 			if($sql -> db_Select("content", "*", "content_id=$sub_action")){	
 				$row = $sql -> db_Fetch(); extract($row);
-				
-				$sql2 = new db;
-				$gen = new convert; 
-				$sql2 -> db_Select("content", "content_id, content_summary", "content_id=$content_parent");
-				list($content_id_, $content_summary_) = $sql2-> db_Fetch();
-				$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
-				$sql2 -> db_Select("user", "*", "user_id=$content_author");
-				$row = $sql2 -> db_Fetch(); extract($row);
-				if(is_numeric($content_author)){
+				if(check_class($content_class)){
+					$sql2 = new db;
+					$gen = new convert; 
+					$sql2 -> db_Select("content", "content_id, content_summary", "content_id=$content_parent");
+					list($content_id_, $content_summary_) = $sql2-> db_Fetch();
+					$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
 					$sql2 -> db_Select("user", "*", "user_id=$content_author");
 					$row = $sql2 -> db_Fetch(); extract($row);
-				}else{
-					$tmp = explode("^", $content_author);
-					$user_name = $tmp[0];
-					$user_email = $tmp[1];
-				}
-				
+					if(is_numeric($content_author)){
+						$sql2 -> db_Select("user", "*", "user_id=$content_author");
+						$row = $sql2 -> db_Fetch(); extract($row);
+					}else{
+						$tmp = explode("^", $content_author);
+						$user_name = $tmp[0];
+						$user_email = $tmp[1];
+					}
 
-				$text .= ($content_summary_ ? "<a href='".e_SELF."?review.cat.$content_id_'><img src='".e_IMAGE."link_icons/".$content_summary_."' alt='' style='float:left; border:0' /></a>" : "")."
-				<b>$content_heading</b>
-				<br />
-				<span class='smalltext'>by $user_name on $datestamp</span>
-				</br /></br />
-				$content_summary
-				<br /><br />
-				".$aj -> tpa($content_content)."
-				<br /><br />
-				Rating: 
-				<table style='width:".($content_review_score*2)."px'>
-				<tr class='border'>
-				<td class='caption' style='width:100%; text-align:right'>$content_review_score%</td>
-				</tr>
-				</table>\n";
+					$text .= ($content_summary_ ? "<a href='".e_SELF."?review.cat.$content_id_'><img src='".e_IMAGE."link_icons/".$content_summary_."' alt='' style='float:left; border:0' /></a>" : "")."
+					<b>$content_heading</b>
+					<br />
+					<span class='smalltext'>by $user_name on $datestamp</span>
+					</br /></br />
+					$content_summary
+					<br /><br />
+					".$aj -> tpa($content_content)."
+					<br /><br />
+					Rating: 
+					<table style='width:".($content_review_score*2)."px'>
+					<tr class='border'>
+					<td class='caption' style='width:100%; text-align:right'>$content_review_score%</td>
+					</tr>
+					</table>\n";
+				}
 			}
 			$text .= "<div style='text-align:right'><a href='".e_SELF."?review.cat.$content_id_'>>> ".LAN_27."</a><br />
 			<a href='".e_SELF."?review'><< ".LAN_28."</a></div>";
@@ -148,22 +148,24 @@ if($action == "review"){
 					$text .= "<table style='width:95%'>\n";
 					while($row = $sql -> db_Fetch()){
 						extract($row);
-						$sql2 -> db_Select("user", "*", "user_id=$content_author");
-						$row = $sql2 -> db_Fetch(); extract($row);
-						$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
-						$text .= "<tr><td style='width:5%; text-align:center; vertical-align:top'>".($icon ? "<img src='".e_IMAGE."link_icons/".$icon."' alt='' />" : "&nbsp;")."</td>
-						<td style='width:95%'>
-						<b><a href='".e_SELF."?review.$content_id'>$content_heading</a></b>
-						<br />
-						<span class='smalltext'>by $user_name on $datestamp</span>
-						</br />
-						$content_summary
-						<br />
-						<table style='width:".($content_review_score*2)."px'>
-						<tr  class='border'>
-						<td class='caption' style='width:100%; text-align:right'>$content_review_score%</td>
-						</tr>
-						</table>\n<br />\n</td></tr>\n";
+						if(check_class($content_class)){
+							$sql2 -> db_Select("user", "*", "user_id=$content_author");
+							$row = $sql2 -> db_Fetch(); extract($row);
+							$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
+							$text .= "<tr><td style='width:5%; text-align:center; vertical-align:top'>".($icon ? "<img src='".e_IMAGE."link_icons/".$icon."' alt='' />" : "&nbsp;")."</td>
+							<td style='width:95%'>
+							<b><a href='".e_SELF."?review.$content_id'>$content_heading</a></b>
+							<br />
+							<span class='smalltext'>by $user_name on $datestamp</span>
+							</br />
+							$content_summary
+							<br />
+							<table style='width:".($content_review_score*2)."px'>
+							<tr  class='border'>
+							<td class='caption' style='width:100%; text-align:right'>$content_review_score%</td>
+							</tr>
+							</table>\n<br />\n</td></tr>\n";
+						}
 					}
 				}else{
 					$text .= "<table><tr><td>".LAN_45."</td></tr>";
@@ -203,35 +205,37 @@ if($action == "review"){
 			$gen = new convert; 
 			while($row = $sql -> db_Fetch()){
 				extract($row);
-				$summary = $content_summary;
-				$rev_id = $content_id;
-				$category = $content_parent;
+				if(check_class($content_class)){
+					$summary = $content_summary;
+					$rev_id = $content_id;
+					$category = $content_parent;
 
-				if(is_numeric($content_author)){
-					$sql2 -> db_Select("user", "*", "user_id=$content_author");
+					if(is_numeric($content_author)){
+						$sql2 -> db_Select("user", "*", "user_id=$content_author");
+						$row = $sql2 -> db_Fetch(); extract($row);
+					}else{
+						$tmp = explode("^", $content_author);
+						$user_name = $tmp[0];
+						$user_email = $tmp[1];
+					}
+
+					$sql2 -> db_Select("content", "content_id, content_summary", "content_id=$category");
 					$row = $sql2 -> db_Fetch(); extract($row);
-				}else{
-					$tmp = explode("^", $content_author);
-					$user_name = $tmp[0];
-					$user_email = $tmp[1];
+					$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
+
+					$text .= (file_exists(e_IMAGE."link_icons/$content_summary") ? "<a href='".e_SELF."?review.cat.$content_id'><img src='".e_IMAGE."link_icons/".$content_summary."' alt='' style='float:left; border:0' /></a>" : "&nbsp;")."
+					<b><a href='".e_SELF."?review.$rev_id'>$content_heading</a></b>
+					<br />
+					<span class='smalltext'>by <b>$user_name</b> on $datestamp</span>
+					</br />
+					$summary
+					<br />
+					<table style='width:".($content_review_score*2)."px'>
+					<tr  class='border'>
+					<td class='caption' style='width:100%; text-align:right'>$content_review_score%</td>
+					</tr>
+					</table>\n<br />\n";
 				}
-
-				$sql2 -> db_Select("content", "content_id, content_summary", "content_id=$category");
-				$row = $sql2 -> db_Fetch(); extract($row);
-				$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
-
-				$text .= (file_exists(e_IMAGE."link_icons/$content_summary") ? "<a href='".e_SELF."?review.cat.$content_id'><img src='".e_IMAGE."link_icons/".$content_summary."' alt='' style='float:left; border:0' /></a>" : "&nbsp;")."
-				<b><a href='".e_SELF."?review.$rev_id'>$content_heading</a></b>
-				<br />
-				<span class='smalltext'>by <b>$user_name</b> on $datestamp</span>
-				</br />
-				$summary
-				<br />
-				<table style='width:".($content_review_score*2)."px'>
-				<tr  class='border'>
-				<td class='caption' style='width:100%; text-align:right'>$content_review_score%</td>
-				</tr>
-				</table>\n<br />\n";
 			}
 		}else{
 			echo LAN_31;
@@ -292,6 +296,12 @@ if($action == "article"){
 			ob_start();
 			if($sql -> db_Select("content", "*", "content_id=$sub_action")){	
 				$row = $sql -> db_Fetch(); extract($row);
+
+				if(!check_class($content_class)){
+					$ns -> tablerender(LAN_52, "<div style='text-align:center'>".LAN_51."</div>");
+					require_once(FOOTERF);
+					exit;
+				}
 				$category = $content_parent;
 				$sql2 = new db;
 				$gen = new convert; 
@@ -418,10 +428,6 @@ if($action == "article"){
 		exit;
 	}
 
-
-
-
-
 	if($sub_action == "cat"){
 
 		if($id){
@@ -449,17 +455,27 @@ if($action == "article"){
 					
 					while($row = $sql -> db_Fetch()){
 						extract($row);
-						$sql2 -> db_Select("user", "*", "user_id=$content_author");
-						$row = $sql2 -> db_Fetch(); extract($row);
-						$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
-						$text .= "<tr><td style='width:5%; text-align:center; vertical-align:top'>".($icon ? "<img src='".e_IMAGE."link_icons/".$icon."' alt='' />" : "&nbsp;")."</td>
-						<td style='width:95%'>
-						<b><a href='".e_SELF."?article.$content_id'>$content_heading</a></b>
-						<br />
-						<span class='smalltext'>".LAN_43." $user_name ".LAN_44." $datestamp</span>
-						</br />
-						$content_summary
-						<br /><br />\n</td></tr>\n";
+						if(check_class($content_class)){
+							$sql2 -> db_Select("user", "*", "user_id=$content_author");
+							$row = $sql2 -> db_Fetch(); extract($row);
+							if(is_numeric($content_author)){
+								$sql2 -> db_Select("user", "*", "user_id=$content_author");
+								$row = $sql2 -> db_Fetch(); extract($row);
+							}else{
+								$tmp = explode("^", $content_author);
+								$user_name = $tmp[0];
+								$user_email = $tmp[1];
+							}
+							$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
+							$text .= "<tr><td style='width:5%; text-align:center; vertical-align:top'>".($icon ? "<img src='".e_IMAGE."link_icons/".$icon."' alt='' />" : "&nbsp;")."</td>
+							<td style='width:95%'>
+							<b><a href='".e_SELF."?article.$content_id'>$content_heading</a></b>
+							<br />
+							<span class='smalltext'>".LAN_43." $user_name ".LAN_44." $datestamp</span>
+							</br />
+							$content_summary
+							<br /><br />\n</td></tr>\n";
+						}
 					}
 				}else{
 					$text .= "<table><tr><td>".LAN_45."</td></tr>";
@@ -498,31 +514,33 @@ if($action == "article"){
 			$gen = new convert;
 			while($row = $sql -> db_Fetch()){
 				extract($row);
-				$summary = $content_summary;
-				$rev_id = $content_id;
-				$category = $content_parent;
+				if(check_class($content_class)){
+					$summary = $content_summary;
+					$rev_id = $content_id;
+					$category = $content_parent;
 
-				$sql2 -> db_Select("content", "content_id, content_summary", "content_id=$category");
-				$row = $sql2 -> db_Fetch(); extract($row);
-
-				if(is_numeric($content_author)){
-					$sql2 -> db_Select("user", "*", "user_id=$content_author");
+					$sql2 -> db_Select("content", "content_id, content_summary", "content_id=$category");
 					$row = $sql2 -> db_Fetch(); extract($row);
-				}else{
-					$tmp = explode("^", $content_author);
-					$user_name = $tmp[0];
-					$user_email = $tmp[1];
+
+					if(is_numeric($content_author)){
+						$sql2 -> db_Select("user", "*", "user_id=$content_author");
+						$row = $sql2 -> db_Fetch(); extract($row);
+					}else{
+						$tmp = explode("^", $content_author);
+						$user_name = $tmp[0];
+						$user_email = $tmp[1];
+					}
+					$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
+					$text .= "<tr>\n<td style='width:5%; text-align:center; vertical-align:top'>\n";
+					$text .= ($content_summary && $content_parent ? "<a href='".e_SELF."?article.cat.$content_id'><img src='".e_IMAGE."link_icons/".$content_summary."' alt='' style='border:0' /></a>" : "&nbsp;")."
+					</td>\n<td style='width:95%'>
+					<b><a href='".e_SELF."?article.$rev_id'> $content_heading</a></b>
+					<br />
+					<span class='smalltext'>by $user_name on $datestamp</span>
+					</br />
+					$summary
+					</br /></br />\n</td></tr>\n";
 				}
-				$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
-				$text .= "<tr>\n<td style='width:5%; text-align:center; vertical-align:top'>\n";
-				$text .= ($content_summary && $content_parent ? "<a href='".e_SELF."?article.cat.$content_id'><img src='".e_IMAGE."link_icons/".$content_summary."' alt='' style='border:0' /></a>" : "&nbsp;")."
-				</td>\n<td style='width:95%'>
-				<b><a href='".e_SELF."?article.$rev_id'>$content_heading</a></b>
-				<br />
-				<span class='smalltext'>by $user_name on $datestamp</span>
-				</br />
-				$summary
-				</br /></br />\n</td></tr>\n";
 			}
 		}else{
 			$text .= "<tr><td>".LAN_45."</td></tr>";

@@ -78,7 +78,7 @@ define("FORLAN_75", "Parents");
 define("FORLAN_76", "Forums Front Page");
 define("FORLAN_77", "Create Forums");
 define("FORLAN_78", "Forum Order");
-define("FORLAN_79", "Prefereneces");
+define("FORLAN_79", "Preferences");
 define("FORLAN_80", "Options");
 define("FORLAN_81", "Are you sure you want to delete this parent? - forums of this parent will also be deleted");
 define("FORLAN_82", "Are you sure you want to delete this forum?");

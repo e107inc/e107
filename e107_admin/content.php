@@ -30,8 +30,7 @@ If(IsSet($_POST['submit'])){
 		$content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
 		$content_content = $aj -> formtpa($_POST['data'], "admin");
 
-		 $sql -> db_Insert("content", "0, '".$content_heading."', '".$content_subheading."', '$content_content', '".$_POST['content_page']."', '".time()."', '".ADMINID."', '".$_POST['content_comment']."', '0', '1' , {$_POST['c_class']}");
-		
+		 $sql -> db_Insert("content", "0, '".$content_heading."', '".$content_subheading."', '$content_content', '0', '".time()."', '".ADMINID."', '".$_POST['content_comment']."', '', '1', 0, 0,  {$_POST['c_class']}");
 		if($_POST['content_heading'] != ""){
 			$sql -> db_Select("content", "*", "ORDER BY content_datestamp DESC LIMIT 0,1 ", $mode="no_where");
 			list($content_id, $content_heading) = $sql-> db_Fetch();
@@ -49,10 +48,11 @@ If(IsSet($_POST['submit'])){
 }
 
 If(IsSet($_POST['update'])){
+
 	$content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
 	$content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
 	$content_content = $aj -> formtpa($_POST['data'], "admin");
-	$sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_page='".$_POST['content_page']."',  content_comment='".$_POST['content_comment']."', content_class='{$_POST['c_class']}' WHERE content_id='".$_POST['content_id']."' ");
+	$sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_comment='".$_POST['content_comment']."', content_class='{$_POST['c_class']}' WHERE content_id='".$_POST['content_id']."'");
 
 	$sql -> db_Update("links", "link_class='".$_POST['c_class']."' WHERE link_name='$content_heading' ");
 

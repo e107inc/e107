@@ -237,7 +237,8 @@ class users{
 
 		global $sql, $rs, $ns, $aj;
 		$text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 200px; overflow : auto; '>";
-		if($news_total = $sql -> db_Select("user", "*", "ORDER BY ".($sub_action ? $sub_action : "user_id")." ".($id ? $id : "DESC"), "nowhere")){
+		$query = "ORDER BY ".($sub_action ? $sub_action : "user_id")." ".($id ? $id : "DESC");
+		if($sql -> db_Select("user", "*", $query, "nowhere")){
 			$text .= "<table class='fborder' style='width:100%'>
 			<tr>
 			<td style='width:8%' class='forumheader2'><a href='".e_SELF."?main.user_id.".($id == "desc" ? "asc" : "desc")."'>ID</a></td>
@@ -298,7 +299,7 @@ class users{
 			$text .= "</td>\n</tr>";
 			$text .= "</table>";
 		}else{
-			$text .= "<div style='text-align:center'>You shouldn't be seeing this - database is reporting no users yet you're still logged on as admin??? Weird, I'd contact Mulder and Skully if I were you ...</div>";
+			$text .= "<div style='text-align:center'>You shouldn't be seeing this - database is reporting no users yet you're still logged on as admin??? Weird, I'd contact Mulder and Skully if I were you ...<br />( Defective query was <b>$query</b> )</div>";
 		}
 		$text .= "</div>";
 		$ns -> tablerender(USRLAN_77, $text);

@@ -18,4 +18,6 @@ define("LAN_194", "All Categories");
 define("LAN_195", "Searching");
 define("LAN_196", "matches");
 
+define("LAN_197", "Downloads");
+
 ?>

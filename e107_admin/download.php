@@ -44,6 +44,12 @@ if(IsSet($_POST['submit_download'])){
 	unset($id);
 }
 
+if($action == "dlm"){
+	$action = "create";
+	$id = $sub_action;
+	$sub_action = "dlm";
+}
+
 if($action == "create"){
 	$download -> create_download($sub_action, $id);
 }
@@ -162,6 +168,23 @@ class download{
 			if($sql -> db_Select("download", "*", "download_id='$id' ")){
 				$row = $sql-> db_Fetch();
 				extract($row);
+			}
+		}
+
+		if($sub_action == "dlm" && !$_POST['submit']){
+			if($sql -> db_Select("upload", "*", "upload_id='$id' ")){
+				$row = $sql-> db_Fetch();
+				extract($row);
+				$download_name = $upload_name ." - " . $upload_version;
+				$download_url = $upload_file;
+				$download_author_email = $upload_email;
+				$download_author_website = $upload_website;
+				$download_description = $upload_description;
+				$download_image = $upload_ss;
+				$download_filesize = $upload_filesize;
+				$file_array[] = $download_url;
+				$image_array[] = $upload_ss;
+				$download_author = substr($upload_poster, (strpos($upload_poster, ".")+1));
 			}
 		}
 

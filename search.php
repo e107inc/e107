@@ -33,7 +33,7 @@ $search_info[]=array( 'sfile' => e_HANDLER.'search/search_chatbox.php', 'qtype' 
 $search_info[]=array( 'sfile' => e_HANDLER.'search/search_links.php', 'qtype' => LAN_102, 'refpage' => 'links.php');
 $search_info[]=array( 'sfile' => e_HANDLER.'search/search_forum.php', 'qtype' => LAN_103, 'refpage' => 'forum.php');
 $search_info[]=array( 'sfile' => e_HANDLER.'search/search_user.php', 'qtype' => LAN_140, 'refpage' => 'user.php');
-
+$search_info[]=array( 'sfile' => e_HANDLER.'search/search_download.php', 'qtype' => LAN_197, 'refpage' => 'download.php');
 
 //load all plugin search routines
 $handle=opendir(e_PLUGIN);
@@ -60,7 +60,7 @@ if($_POST['searchtype']){
 }else{
 	foreach($search_info as $key=>$si){
 		if($si['refpage']){
-			if(eregi($si['refpage'], $refpage)){ $searchtype = $key; }
+			if(eregi($si['refpage'], $refpage)){ $searchtype = $key;}
 		}
 	}
 	if(eregi("article.php", $refpage)){
@@ -72,7 +72,7 @@ if($_POST['searchtype']){
 		if($content_type == 1){ $searchtype = 5; }
 	}
 	if(!$searchtype){ $searchtype = 1; }
-	if($_POST['searchtype']==0){ $searchtype = 0; }
+	if($_POST['searchtype']==0 && !$searchtype || $refpage == "news.php"){ $searchtype = 0; }
 }
 
 $text = "<div style='text-align:center'><form method='post' action='".e_SELF."'>
