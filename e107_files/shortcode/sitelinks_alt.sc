@@ -52,13 +52,13 @@
 	}
 
 	foreach ($main_links as $links_exp) {
-		$link_icon = $links_exp['link_button'] ? e_IMAGE.'link_icons/'.$links_exp['link_button'] : e_IMAGE.'arrow_16.png';
+		$link_icon = $links_exp['link_button'] ? e_IMAGE.'icons/'.$links_exp['link_button'] : e_IMAGE.'arrow_16.png';
 		if (check_class($links_exp['link_class'])) {
 		if ($sub_comp[$links_exp['link_name']]) {
 			$text .= adnav_cat($links_exp['link_name'], '', $link_icon, $links_exp['link_name']);
 			$text .= "<div id='".$links_exp['link_name']."' class='menu' onmouseover=\"menuMouseover(event)\">";
 			foreach ($sub_comp[$links_exp['link_name']]['link_name'] as $sub_comp_key => $sub_comp_value) {
-				$sub_link_icon = $sub_comp[$links_exp['link_name']]['link_button'][$sub_comp_key] ? e_IMAGE.'link_icons/'.$sub_comp[$links_exp['link_name']]['link_button'][$sub_comp_key] : e_IMAGE.'arrow_16.png';
+				$sub_link_icon = $sub_comp[$links_exp['link_name']]['link_button'][$sub_comp_key] ? e_IMAGE.'icons/'.$sub_comp[$links_exp['link_name']]['link_button'][$sub_comp_key] : e_IMAGE.'arrow_16.png';
 				$text .= adnav_main($sub_comp_value, $sub_comp[$links_exp['link_name']]['link_url'][$sub_comp_key], "<img src='".$sub_link_icon."' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 			}
 			$text .= "</div>";
