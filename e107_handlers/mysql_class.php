@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-03-26 17:04:13 $
-|     $Author: e107coders $
+|     $Revision: 1.36 $
+|     $Date: 2005-04-05 03:45:46 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -25,8 +25,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.35 $
-* @author $Author: e107coders $
+* @version $Revision: 1.36 $
+* @author $Author: streaky $
 */
 class db {
 
@@ -54,10 +54,10 @@ class db {
 		$langid = 'e107language_'.$pref['cookie_name'];
 		if ($pref['user_tracking'] == 'session') {
 			if (!isset($_SESSION[$langid])) { return; }
-            $this->mySQLlanguage = $_SESSION[$langid];
+			$this->mySQLlanguage = $_SESSION[$langid];
 		} else {
 			if (!isset($_COOKIE[$langid])) { return; }
-            $this->mySQLlanguage = $_COOKIE[$langid];
+			$this->mySQLlanguage = $_COOKIE[$langid];
 		}
 	}
 
@@ -86,13 +86,25 @@ class db {
 		$this->mySQLdefaultdb = $mySQLdefaultdb;
 		$temp = $this->mySQLerror;
 		$this->mySQLerror = FALSE;
-		if (!$this->mySQL_access = @mysql_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword)) {
-			return 'e1';
-		} else {
-			if (!@mysql_select_db($this->mySQLdefaultdb)) {
-				return 'e2';
+		if(defined("USE_PERSISTANT_DB") && USE_PERSISTANT_DB == true){
+			if (!$this->mySQL_access = @mysql_pconnect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword)) {
+				return 'e1';
 			} else {
-				$this->dbError('dbConnect/SelectDB');
+				if (!@mysql_select_db($this->mySQLdefaultdb)) {
+					return 'e2';
+				} else {
+					$this->dbError('dbConnect/SelectDB');
+				}
+			}
+		} else {
+			if (!$this->mySQL_access = @mysql_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword)) {
+				return 'e1';
+			} else {
+				if (!@mysql_select_db($this->mySQLdefaultdb)) {
+					return 'e2';
+				} else {
+					$this->dbError('dbConnect/SelectDB');
+				}
 			}
 		}
 	}
@@ -172,10 +184,10 @@ class db {
 			} else {
 				$this->mySQLcurTable = ''; // clear before next query
 			}
-	    if(is_object($db_debug)) {
-			$nFields = $db_debug->Mark_Query($query, $rli, $sQryRes,$aTrace, $mytime, $pTable);
-		} else {
-			echo "what happened to db_debug??!!<br/>";
+			if(is_object($db_debug)) {
+				$nFields = $db_debug->Mark_Query($query, $rli, $sQryRes,$aTrace, $mytime, $pTable);
+			} else {
+				echo "what happened to db_debug??!!<br/>";
 			}
 		}
 		return $sQryRes;
