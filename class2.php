@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/class2.php,v $
-|     $Revision: 1.108 $
-|     $Date: 2004-12-17 13:41:32 $
+|     $Revision: 1.109 $
+|     $Date: 2004-12-17 13:44:09 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -777,7 +777,7 @@ class textparse {
 		if (preg_match("#\.php\?.*#", $matches[1])) {
 			return '';
 		}
-		$matches[1] = preg_replace('#onerror *=#','',$matches[1]);
+		$matches[1] = preg_replace('#onerror *=#i','',$matches[1]);
 		if (!$poster_userid) {
 			return "<img src='{$matches[1]}' alt='' style='vertical-align:  middle; border:0' />";
 		} else {
