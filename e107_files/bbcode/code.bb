@@ -14,6 +14,8 @@ if($pref['useGeshi']) {
 	} else {
 		$geshi = new GeSHi($code_text, ($pref['defaultLanGeshi'] ? $pref['defaultLanGeshi'] : 'php'), e_PLUGIN."geshi/geshi/");
 	}
+	$geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);	
+	$geshi->set_header_type(GESHI_HEADER_DIV);
 	return $geshi->parse_code();
 }
 
