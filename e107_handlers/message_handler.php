@@ -24,7 +24,10 @@ $emessage[7] = "<b>[7]: mySQL is running but database ($mySQLdefaultdb) couldn't
 
 function message_handler($mode, $message, $line=0, $file=""){
 	global $emessage;
-	$ns = new e107table;
+	if(class_exists('e107table'))
+	{
+		$ns = new e107table;
+	}
 	switch($mode){
 		case "CRITICAL_ERROR":
 			$message = is_numeric($message) ? $emessage[$message] : $message;
