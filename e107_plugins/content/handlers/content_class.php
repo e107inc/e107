@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.12 $
-|		$Date: 2005-02-09 22:48:40 $
+|		$Revision: 1.13 $
+|		$Date: 2005-02-10 14:10:05 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -696,6 +696,7 @@ class content{
 					}
 					$orderby2 = ", content_heading ASC";
 				}else{
+					$orderstring = "orderddate";
 					$orderby = "content_datestamp";
 					$orderby2 = ", content_heading ASC";
 				}
