@@ -21,7 +21,7 @@ if(file_exists($lan_file)){
 } else {
 	require_once(e_PLUGIN."newforumposts_main/languages/English.php");
 }
-if($sql -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHERE ".MPREFIX."forum.forum_id=".MPREFIX."forum_t.thread_forum_id AND ".MPREFIX."forum_t.thread_parent=0 ORDER BY ".MPREFIX."forum_t.$query DESC LIMIT 0, ".$pref['nfp_amount'])){
+$results = $sql -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHERE ".MPREFIX."forum.forum_id=".MPREFIX."forum_t.thread_forum_id AND ".MPREFIX."forum_t.thread_parent=0 ORDER BY ".MPREFIX."forum_t.$query DESC LIMIT 0, ".$pref['nfp_amount']);
 	$text = "<div style='text-align:center'>\n<table style='width:auto' class='fborder'>\n";
 	if(!is_object($sql2)){
 		$sql2 = new db;
@@ -66,11 +66,13 @@ if($sql -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHE
 			$text .= "<tr>
 			<td style='width:5%; text-align:center' class='forumheader3'><img src='".e_IMAGE."forum/new_small.png' alt='' /></td>
 			<td style='width:45%' class='forumheader3'><b><a href='".e_BASE."forum_viewtopic.php?$forum_id.$thread_id'>$thread_name</a></b> <span class='smalltext'>(<a href='".e_BASE."forum_viewforum.php?$forum_id'>$forum_name</a>)</span></td>
-			<td style='width:15%; text-align:center' class='forumheader3'><a href='".e_BASE."user.php?id.$post_author_id'>$post_author_name</a></td>
+			<td style='width:15%; text-align:center' class='forumheader3'>".(USER ? "<a href='".e_BASE."user.php?id.$post_author_id'>" : "")."$post_author_name".(USER ? "</a>" :"")."</td>
 			<td style='width:5%; text-align:center' class='forumheader3'>$thread_views</td>
 			<td style='width:5%; text-align:center' class='forumheader3'>$replies</td>
-			<td style='width:25%; text-align:center' class='forumheader3'>".($replies ? "<b><a href='".e_BASE."user.php?id.$r_id'>$r_name</a></b><br /><span class='smalltext'>$r_datestamp</span>" : "-")."</td>
+			<td style='width:25%; text-align:center' class='forumheader3'>".($replies ? "<b>".(USER ? "<a href='".e_BASE."user.php?id.$r_id'>" : "")."$r_name".(USER ? "</a>" : "")."</b><br /><span class='smalltext'>$r_datestamp</span>" : "-")."</td>
 			</tr>\n";
+		}else{
+			$results --;
 		}
 	}
 
@@ -86,22 +88,7 @@ if($sql -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHE
 
 
 	$text = ($pref['nfp_layer'] ? "<div style='border : 0; padding : 4px; width : auto; height : ".$pref['nfp_layer_height']."px; overflow : auto; '>".$text."</div>" : $text);
-
+if($results){
 	$ns -> tablerender($pref['nfp_caption'], $text, "nfp");
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ?>

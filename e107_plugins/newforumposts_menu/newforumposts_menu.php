@@ -18,7 +18,7 @@ if($cache = retrieve_cache("newforumposts")){
 	$gen = new convert;
 	$sql2 = new db;
 	$text = "<span class='smalltext'>";
-	if(!$sql -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHERE ".MPREFIX."forum.forum_id=".MPREFIX."forum_t.thread_forum_id ORDER BY ".MPREFIX."forum_t.thread_datestamp DESC LIMIT 0, ".$menu_pref['newforumposts_display'])){
+	if(!$results = $sql -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHERE ".MPREFIX."forum.forum_id=".MPREFIX."forum_t.thread_forum_id ORDER BY ".MPREFIX."forum_t.thread_datestamp DESC LIMIT 0, ".$menu_pref['newforumposts_display'])){
 		$text = "<span class='mediumtext'>".NFP_2;
 	}else{
 		while($row = $sql-> db_Fetch()){
@@ -73,6 +73,8 @@ if($cache = retrieve_cache("newforumposts")){
 					$text .= $topic."<br />";
 				}
 				$text .= $thread_thread."<br /><br />";
+			}else{
+				$results -- ;
 			}
 		}
 	}
@@ -82,5 +84,7 @@ if($cache = retrieve_cache("newforumposts")){
 		set_cache("newforumposts",$cache);
 	}
 }
-$ns -> tablerender($menu_pref['newforumposts_caption'], $text);
+if($results){
+	$ns -> tablerender($menu_pref['newforumposts_caption'], $text);
+}
 ?>
