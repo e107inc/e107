@@ -87,6 +87,7 @@ define("TRACKBACKBEFORESTRING", " :: ");
 define('PRELINK', "");
 define('POSTLINK', " ::");
 define('LINKSTART', ":: ");
+define('LINKSTART_HILITE', "> ");
 define('LINKEND', "");
 define('LINKDISPLAY', 1);
 define('LINKALIGN', "left");
@@ -96,7 +97,7 @@ define('LINKALIGN', "left");
 
 function tablestyle($caption, $text, $mode)
 {
-	echo "<div class='header'>$caption</div>\n$text\n<br /><br />\n";	
+	echo "<div class='header'>$caption</div>\n$text\n<br /><br />\n";
 }
 
 $COMMENTSTYLE = "

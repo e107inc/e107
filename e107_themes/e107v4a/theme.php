@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/theme.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-11 03:44:27 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-26 09:44:00 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -176,8 +176,9 @@ define("POST_EXTENDEDSTRING", " ]<br />");
 
 define(PRELINK, "");
 define(POSTLINK, "");
-define(LINKSTART, "<img src='".THEME."images/bullet2.gif' alt='bullet' /> ");
-define(LINKEND, "<br />");
+define(LINKSTART, "<span><img src='".THEME."images/bullet2.gif' alt='bullet' /> ");
+define(LINKSTART_HILITE, "<span style='font-weight:bold'><img src='".THEME."images/bullet2.gif' alt='bullet' /> ");
+define(LINKEND, "</span><br />");
 define(LINKDISPLAY, 2);
 define(LINKALIGN, "left");
 

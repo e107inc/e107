@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/human_condition/theme.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-02-17 20:24:38 $
-|     $Author: stevedunstan $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-26 09:44:00 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -83,8 +83,9 @@ define("POST_EXTENDEDSTRING", " ]<br />");
 
 define(PRELINK, "");
 define(POSTLINK, "");
-define(LINKSTART, "<img src='".THEME."images/bullet2.gif' alt='bullet' /> ");
-define(LINKEND, "<br />");
+define(LINKSTART, "<span><img src='".THEME."images/bullet2.gif' alt='bullet' /> ");
+define(LINKSTART_HILITE, "<span style='font-weight:bold'><img src='".THEME."images/bullet2.gif' alt='bullet' /> ");
+define(LINKEND, "</span><br />");
 define(LINKDISPLAY, 2);                        // 1 - along top, 2 - in left or right column
 define(LINKALIGN, "left");
 
@@ -94,7 +95,7 @@ define(LINKALIGN, "left");
 function tablestyle($caption, $text, $mode="")
 {
 	global $style;
-	
+
 	if($style == "post")
 	{
 
