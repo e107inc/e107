@@ -11,17 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-01-30 20:17:43 $
-|     $Author: stevedunstan $
+|     $Revision: 1.17 $
+|     $Date: 2005-01-31 18:03:43 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
-	
-$sql2 = new db;
-	
+
+global $eMenuActive;
+
 if (CORRUPT_COOKIE === TRUE) {
 	$text = '<div style="text-align:center">'.LOGIN_MENU_L7.'<br /><br />
-		<img src="'.THEME.'images/bullet2.gif" alt="bullet" /> <a href="'.e_BASE.'index.php?logout">'.LOGIN_MENU_L8.'</a></div>';
+	<img src="'.THEME.'images/bullet2.gif" alt="bullet" /> <a href="'.e_BASE.'index.php?logout">'.LOGIN_MENU_L8.'</a></div>';
 	$ns->tablerender(LOGIN_MENU_L9, $text, 'login');
 }
 $use_imagecode = ($pref['logcode'] && extension_loaded('gd'));
@@ -36,15 +36,15 @@ if (USER == TRUE || ADMIN == TRUE) {
 		$text .= '<img src="'.THEME.'images/bullet2.gif" alt="bullet" /> <a href="'.e_ADMIN.'admin.php">'.LOGIN_MENU_L11.'</a><br />';
 	}
 	$text .= '<img src="'.THEME.'images/bullet2.gif" alt="bullet" /> <a href="'.e_BASE.'usersettings.php">'.LOGIN_MENU_L12.'</a>
-		<br />
-		<img src="'.THEME.'images/bullet2.gif" alt="bullet" /> <a href="'.e_BASE.'user.php?id.'.USERID.'">'.LOGIN_MENU_L13.'</a>
-		<br />
-		<img src="'.THEME.'images/bullet2.gif" alt="bullet" /> <a href="'.e_BASE.'?logout">'.LOGIN_MENU_L8.'</a>';
-	 
+	<br />
+	<img src="'.THEME.'images/bullet2.gif" alt="bullet" /> <a href="'.e_BASE.'user.php?id.'.USERID.'">'.LOGIN_MENU_L13.'</a>
+	<br />
+	<img src="'.THEME.'images/bullet2.gif" alt="bullet" /> <a href="'.e_BASE.'?logout">'.LOGIN_MENU_L8.'</a>';
+
 	if (!$sql->db_Select('online', '*', '`online_ip` = \''.$ip.'\' AND `online_user_id` = \'0\' ')) {
 		$sql->db_Delete('online', '`online_ip` = \''.$ip.'\' AND `online_user_id` = \'0\' ');
 	}
-	 
+
 	$new_total = 0;
 	$time = USERLV;
 	if (!$menu_pref['login_menu'] || $menu_pref['login_menu']['new_news'] == true) {
@@ -77,7 +77,7 @@ if (USER == TRUE || ADMIN == TRUE) {
 	if (!$menu_pref['login_menu'] || $menu_pref['login_menu']['new_comments'] == true) {
 		$new_comments = 0;
 		$new_comments = $sql->db_Select('comments', '*', '`comment_datestamp` > '.$time);
-		 
+
 		$handle = opendir(e_PLUGIN);
 		while (false !== ($file = readdir($handle))) {
 			if ($file != '.' && $file != '..' && is_dir(e_PLUGIN.$file)) {
@@ -101,15 +101,14 @@ if (USER == TRUE || ADMIN == TRUE) {
 	}
 	if (!$menu_pref['login_menu'] || $menu_pref['login_menu']['new_chatbox'] == true) {
 		$display_chats = TRUE;
-		if ($sql->db_Select('menus', 'menu_class', '`menu_name` = \''.chatbox_menu.'\' AND `menu_location` != \'0\'')) {
-			list($menus['menu_class']) = $sql->db_Fetch();
-			if (check_class($menus['menu_class'])) {
-				$new_chat = $sql->db_Count('chatbox', '(*)', 'WHERE `cb_datestamp` > '.$time);
-				$new_total += $new_chat;
-			} else {
-				$display_chats = FALSE;
-			}
-		} else {
+
+		if(in_array('chatbox_menu',$eMenuActive))
+		{
+			$new_chat = $sql->db_Count('chatbox', '(*)', 'WHERE `cb_datestamp` > '.$time);
+			$new_total += $new_chat;
+		}
+		else
+		{
 			$display_chats = FALSE;
 		}
 		if (!$new_chat) {
@@ -120,15 +119,18 @@ if (USER == TRUE || ADMIN == TRUE) {
 		}
 	}
 	if (!$menu_pref['login_menu'] || $menu_pref['login_menu']['new_forum'] == true) {
-		$new_forum = $sql->db_Select('forum_t', '*', 'thread_datestamp > '.$time);
-		while ($row = $sql->db_Fetch()) {
-			$sql2->db_Select('forum', '*', '`forum_id` = '.$row['thread_forum_id']);
-			$row2 = $sql2->db_Fetch();
-			if (!check_class($row2['forum_class'])) {
-				$new_forum -= 1;
-			}
+		$qry = "
+		SELECT  count(*) as count FROM #forum_t  as t
+		LEFT JOIN #forum as f
+		ON t.thread_forum_id = f.forum_id
+		WHERE t.thread_datestamp > {$time} and f.forum_class IN (".USERCLASS_LIST.")
+		";
+		if($sql->db_Select_gen($qry))
+		{
+			$row = $sql->db_Fetch();
+			$new_forum = $row['count'];
+			$new_total += $new_forum;
 		}
-		$new_total += $new_forum;
 		if (!$new_forum) {
 			$new_forum = LOGIN_MENU_L26;
 		}
@@ -160,19 +162,19 @@ if (USER == TRUE || ADMIN == TRUE) {
 	}
 	$text .= '<div style="text-align: center;"><form method="post" action="'.e_SELF.(e_QUERY ? '?'.e_QUERY : '').'">';
 	$text .= "<p>\n".LOGIN_MENU_L1."<br />\n
-		<input class='tbox login user' type='text' name='username' size='15' value='' maxlength='30' />\n
-		<br />\n".LOGIN_MENU_L2."\n<br />\n
-		<input class='tbox login pass' type='password' name='userpass' size='15' value='' maxlength='20' />\n\n<br />\n
-		";
+	<input class='tbox login user' type='text' name='username' size='15' value='' maxlength='30' />\n
+	<br />\n".LOGIN_MENU_L2."\n<br />\n
+	<input class='tbox login pass' type='password' name='userpass' size='15' value='' maxlength='20' />\n\n<br />\n
+	";
 	if ($use_imagecode) {
 		$text .= '<input type="hidden" name="rand_num" value="'.$sec_img->random_number.'" />
-			'.$sec_img->r_image().'
-			<br /><input class="tbox login verify" type="text" name="code_verify" size="15" maxlength="20" /><br />';
+		'.$sec_img->r_image().'
+		<br /><input class="tbox login verify" type="text" name="code_verify" size="15" maxlength="20" /><br />';
 	}
 	$text .= '<input class="button" type="submit" name="userlogin" value="'.LOGIN_MENU_L28.'" />
-		<br />
-		<input type="checkbox" name="autologin" value="1" />'.LOGIN_MENU_L6;
-	 
+	<br />
+	<input type="checkbox" name="autologin" value="1" />'.LOGIN_MENU_L6;
+
 	if ($pref['user_reg']) {
 		$text .= '<br /><br />';
 		if (!$pref['auth_method'] || $pref['auth_method'] == 'e107') {
@@ -187,5 +189,5 @@ if (USER == TRUE || ADMIN == TRUE) {
 	}
 	$ns->tablerender($caption, $text, 'login');
 }
-	
+
 ?>
