@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/login.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-27 19:51:38 $
-|     $Author: streaky $
+|     $Revision: 1.6 $
+|     $Date: 2005-02-07 10:28:48 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 	
@@ -35,7 +35,7 @@ if (!USER) {
 	$LOGIN_TABLE_USERNAME = $rs->form_text("username", 40, "", 100);
 	$LOGIN_TABLE_PASSWORD = $rs->form_password("userpass", 40, "", 100);
 	if ($use_imagecode) {
-		$LOGIN_TABLE_SECIMG_LAN = LAN_LOGIN2;
+		$LOGIN_TABLE_SECIMG_LAN = LAN_LOGIN_13;
 		$LOGIN_TABLE_SECIMG_HIDDEN = "<input type='hidden' name='rand_num' value='".$sec_img->random_number."'>";
 		$LOGIN_TABLE_SECIMG_SECIMG = $sec_img->r_image();
 		$LOGIN_TABLE_SECIMG_TEXTBOC = "<input class='tbox' type='text' name='code_verify' size='15' maxlength='20'>";
@@ -67,7 +67,7 @@ if (!USER) {
 	header("location:".e_BASE."index.php");
 	exit;
 }
-	
+
 echo "</body></html>";
 	
 $sql->db_Close();

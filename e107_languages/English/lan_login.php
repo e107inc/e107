@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_login.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-14 12:57:27 $
-|     $Author: lisa_ $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-07 10:28:36 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("LAN_27", "You left required field(s) blank");
@@ -26,5 +26,5 @@ define("LAN_LOGIN_9", "Log In");
 define("LAN_LOGIN_10", "Click to login");
 define("LAN_LOGIN_11", "Register as a New User");
 define("LAN_LOGIN_12", "Forgot Password");
-
+define("LAN_LOGIN_13", "Please enter text in image");
 ?>
