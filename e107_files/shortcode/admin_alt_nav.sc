@@ -55,7 +55,7 @@ if (ADMIN) {
 		}
 	}
 	
-	$render_plugins = TRUE;
+	$render_plugins = FALSE;
 	if($sql -> db_Select("plugin", "*", "plugin_installflag=1")){
 		while($row = $sql -> db_Fetch()){
 			if(getperms('P'.$row['plugin_id'])){
