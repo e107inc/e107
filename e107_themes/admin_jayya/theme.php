@@ -22,10 +22,86 @@ $themeinfo = "Admin Theme Jayya";
 
 define("THEME_DISCLAIMER", "<br />Admin Theme Jayya<br /><br />");
 
+// [output js nav css in <head>]
+
+function theme_head() {
+	return "<link rel='stylesheet' href='".e_FILE."admin_nav.css' />\n";
+}
+
 // [layout]
 
 $layout = "_default";
 
+$HEADER = "<table class='top_section'>
+<tr>
+<td style='vertical-align: top; padding: 0px 0px 0px 0px'>
+{LOGO}
+</td>
+<td style='vertical-align: bottom; text-align: right; padding: 3px 5px 3px 0px; background-color: #efefef; border-left: 1px solid #3D4251; width: 100%; background-image: url(".THEME."images/computer.jpg); background-repeat: no-repeat'>
+{BANNER}
+</td>
+
+<td style='width: 68px; padding: 0px 7px 0px 7px; text-align: center; vertical-align: middle; border-left: 1px solid #3D4251; background-color: #f3f3f3; background-image: url(".THEME."images/screen.png); background-repeat: no-repeat; white-space: nowrap'>
+{CUSTOM=search.default.17}
+</td>
+</tr>
+</table>";
+	
+	$HEADER .= "<div style='width: 100%'><table style='width:100%; border-collapse: collapse; border-spacing: 0px;'>
+	<tr><td>
+	<div class='menuBar' style='width:100%;'>
+	{SITELINKS=flat}
+	</div>
+	</td>
+	</tr>
+	</table></div>";
+
+$HEADER .= "<table class='main_section'>
+<tr>
+<td class='left_menu'>
+<table style='width:100%; border-collapse: collapse; border-spacing: 0px;'>
+<tr>
+<td>
+{SETSTYLE=leftmenu}
+{MENU=1}";
+
+$HEADER .= "<br />
+</td></tr></table>
+</td>
+<td class='default_menu'>
+{SETSTYLE=default}
+";
+
+$FOOTER = "<br />
+</td>";
+
+	$FOOTER .= "<td class='right_menu'>
+	<table style='width:100%; border-collapse: collapse; border-spacing: 0px;'>
+	<tr>
+	<td>
+	{SETSTYLE=rightmenu}
+	{MENU=2}
+	<br />
+	</td></tr></table>
+	</td>";
+
+$FOOTER .= "</tr>
+</table>
+<div style='text-align:center'>
+<br />
+{SITEDISCLAIMER}
+</div>
+";
+
+
+
+
+
+
+
+
+
+/*
 $HEADER = "
 <table cellpadding='0' cellspacing='0' border='0' class='top_section'>
 <tr>
@@ -75,6 +151,7 @@ $FOOTER = "<br />
 </tr>
 </table>
 ";
+*/
 
 // [linkstyle]
 
