@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2005-03-11 09:26:22 $
+|     $Revision: 1.39 $
+|     $Date: 2005-03-11 14:07:56 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -237,6 +237,29 @@ $text .= "</table>
 	<input type='radio' name='image_preload' value='0'".(!$pref['image_preload'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
 	</tr>";
+
+	/* see if theme has multiple stylesheets ... */
+
+	require_once(e_HANDLER."file_class.php");
+	$file = new e_file;
+
+	if(count($gfiles = $file -> get_files(e_THEME.$pref['sitetheme'], "css", "nav")) > 1)
+	{
+
+		$text .= "<tr>
+		<td style='width:50%' class='forumheader3'>".PRFLAN_131."</td>
+		<td style='width:50%; text-align:right' class='forumheader3'>
+
+		<select name='themecss' class='tbox'>\n";
+		foreach($gfiles as $stylesheet)
+		{
+			$text .= ($stylesheet['fname'] == $pref['themecss'] || (!$pref['themecss'] && $stylesheet['fname'] == "style.css") ? "<option selected='selected'>" : "<option>").$stylesheet['fname']."</option>\n";
+		}
+		
+		$text .= "</select>
+		</td>
+		</tr>\n";
+	}
 
 $text .= pref_submit();
 

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-03-04 11:34:35 $
+|     $Revision: 1.8 $
+|     $Date: 2005-03-11 14:08:50 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -51,6 +51,7 @@ class themeHandler{
 					$themeArray[$file]['id'] = $tloop;
 				}
 				$tloop++;
+				$STYLESHEET = FALSE;
 				if(!$mode) {
 					$handle2 = opendir(e_THEME.$file."/");
 					while (false !== ($file2 = readdir($handle2))) {
@@ -58,6 +59,17 @@ class themeHandler{
 							$themeArray[$file]['files'][] = $file2;
 							if(strstr($file2, "preview.")) {
 								$themeArray[$file]['preview'] = e_THEME.$file."/".$file2;
+							}
+							if(strstr($file2, "css") && !strstr($file2, "menu.css"))
+							{
+								if($STYLESHEET)
+								{
+									$themeArray[$file]['multipleStylesheets'] = TRUE;
+								}
+								else
+								{
+									$STYLESHEET = TRUE;
+								}
 							}
 						}
 						$fp=fopen(e_THEME.$file."/theme.php", "r");
@@ -197,7 +209,8 @@ class themeHandler{
 			<tr><td style='vertical-align:top'><b>".TPVLAN_6."</b>:</td><td style='vertical-align:top'>".$theme['date']."</td></tr>
 			<tr><td style='vertical-align:top'><b>".TPVLAN_7."</b>:</td><td style='vertical-align:top'>".$theme['info']."</td></tr>
 			<tr><td style='vertical-align:top'><b>".TPVLAN_8."</b>:</td><td style='vertical-align:top'>[ <a href='".e_SELF."?preview.".$theme['id']."'>".TPVLAN_9."</a> ] [ ".
-			($theme['name'] == $pref['sitetheme'] ? TPVLAN_21 : "<a href='".e_SELF."?set.".$theme['id']."'>".TPVLAN_10."</a>\n")." ]
+			($theme['name'] == $pref['sitetheme'] ? TPVLAN_21 : "<a href='".e_SELF."?set.".$theme['id']."'>".TPVLAN_10."</a>\n")." ]".
+			(array_key_exists("multipleStylesheets", $theme) ? "<br /><br /><b>this theme has multiple style sheets, to choose which one to use go to <a href='".e_ADMIN."prefs.php'>admin -> prefs -> theme</a></b>" : "")."
 			</td></tr>
 			</table>
 			</td>
