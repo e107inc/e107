@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_error.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-05 10:17:44 $
-|     $Author: pholzmann $
+|     $Revision: 1.3 $
+|     $Date: 2005-03-10 10:44:54 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Error");
@@ -26,7 +26,10 @@ define("LAN_12", "Please inform the administrator of the referring page if you t
 define("LAN_13", "Error - Unknown");
 define("LAN_14", "The server encountered an error");
 define("LAN_15", "Please inform the administrator of the referring page if you think this error page has been shown by mistake.");
-
+define("LAN_16", "Your unsuccessful attempt to access");
+define("LAN_17", "has been recorded.");
+define("LAN_18", "Apparently, you were referred here by");
+define("LAN_19", "Unfortunately, there's an obsolete or just plain wrong link at that address.");
 define("LAN_20", "Please click here to return to the front page");
 
 ?>

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/error.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-28 20:15:03 $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-10 10:45:15 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -43,8 +43,8 @@ switch(e_QUERY) {
 	case 404:
 	$text = "<div class='installe'>".LAN_7."</div><br /><div class='installh'>".LAN_8."</div><br /><div class='smalltext'>".LAN_9."</div>
 		<br /><div class='installh'>".LAN_2."
-		<br />Your unsuccessful attempt to access <b>{$errTo}</b> has been recorded.";
-	if (strlen($errFrom)) $text .= "<br />Apparently, you were referred here by $errFrom -- Unfortunately, there's an obsolete or just plain wrong link at that address.";
+		<br />".LAN_16." <b>{$errTo}</b> ".LAN_16;
+	if (strlen($errFrom)) $text .= "<br />".LAN_18." $errFrom -- ".LAN_19;
 	$text .= "<br /> <a href='index.php'>".LAN_20."</a></div>";
 	break;
 	case 500:
