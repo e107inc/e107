@@ -4,11 +4,13 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/languages/English.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-03-02 14:43:30 $
+|     $Revision: 1.4 $
+|     $Date: 2005-03-14 15:50:46 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
+define("PAGE_NAME", "Links");
+
 define("LCLAN_1", "Options Saved");
 define("LCLAN_2", "Link saved to database.");
 define("LCLAN_3", "Link updated in database.");
@@ -26,8 +28,6 @@ define("LCLAN_17", "Link Description");
 define("LCLAN_18", "Link Button / Icon");
 define("LCLAN_19", "Link Open Type");
 define("LCLAN_20", "Opens in same window");
-//define("LCLAN_21", "target=_blank");
-//define("LCLAN_22", "target=_parent");
 define("LCLAN_23", "Opens in new window");
 define("LCLAN_24", "Opens in 600x400 miniwindow");
 define("LCLAN_25", "Link Class");
@@ -42,7 +42,6 @@ define("LCLAN_33", "Link Order");
 define("LCLAN_34", "Tick this to allow have the links page show only the link categories. Helpful if you have a lot of links.");
 define("LCLAN_35", "Update Options");
 define("LCLAN_36", "Link Page Options");
-	
 define("LCLAN_39", "View Images");
 define("LCLAN_40", "Show only link categories");
 define("LCLAN_41", "Allow links to be submitted");
@@ -76,25 +75,17 @@ define("LCLAN_73", "Category Icon");
 define("LCLAN_74", "Update Link Category");
 define("LCLAN_75", "Create Link Category");
 define("LCLAN_76", "No submitted links");
-	
 define("LCLAN_77", "Submitted link deleted");
-	
 define("LCLAN_78", "Show Description as Screen-Tip");
 define("LCLAN_79", "Description will be shown when the mouse hovers over the link");
-	
 define("LCLAN_80", "View Images");
 define("LCLAN_81", "Clear Form");
-	
-	
 define("LCLAN_82", "Submitted by");
 define("LCLAN_83", "Submenus Generator");
-	
 define("LCLAN_84", "Please upload your link images to e107_plugins/links_page/link_images/");
 define("LCLAN_85", "Please upload your link category images to e107_plugins/links_page/cat_images/");
-	
 define("LCLAN_86", "Image");
 define("LCLAN_87", "View Links");
-	
 define("LCLAN_88", "Site Links Options");
 define("LCLAN_89", "Image");
 define("LCLAN_90", "Link Name");
@@ -102,20 +93,14 @@ define("LCLAN_91", "Move");
 define("LCLAN_92", "Up");
 define("LCLAN_93", "Down");
 define("LCLAN_94", "Reorder");
-	
 define("LCLAN_95", "Name");
 define("LCLAN_96", "Description");
 define("LCLAN_97", "Order");
-	
 define("LCLAN_98", "Update");
-	
 define("LCLAN_99", "Categories");
-	
 define("LCLAN_100", "Link Category");
-	
 define('LCLAN_101', "Configure Links Page");
 define('LCLAN_102', "Links page has successfully installed, please configure it from the Links Page link on the admin front page.");
 define('LCLAN_103', "Links");
-
 	
 ?>

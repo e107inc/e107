@@ -4,12 +4,11 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_date.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-03-09 12:59:25 $
+|     $Revision: 1.3 $
+|     $Date: 2005-03-14 15:48:57 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Members");
 
 define("LANDT_01", "year");
 define("LANDT_02", "month");
