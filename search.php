@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-03-16 17:38:53 $
+|     $Revision: 1.24 $
+|     $Date: 2005-03-17 10:41:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -74,15 +74,15 @@ if ($search_prefs['time_restrict']) {
 		$time = time() - $search_prefs['time_secs'];
 		$query_check = $tp -> toDB($query);
 		$ip = getip();
-		if ($sql -> db_Select("generic", "gen_datestamp, gen_chardata, gen_ip", "gen_type='search' AND gen_ip='".$ip."'")) {
+		if ($sql -> db_Select("tmp", "tmp_ip, tmp_time, tmp_info", "tmp_info LIKE 'type_search%' AND tmp_ip='".$ip."'")) {
 			$row = $sql -> db_Fetch();
-			if (($row['gen_datestamp'] > $time) && ($row['gen_chardata'] != $query_check)) {
+			if (($row['tmp_time'] > $time) && ($row['tmp_info'] != 'type_search '.$query_check)) {
 				$perform_search = FALSE;
 			} else {
-				$sql -> db_Update("generic", "gen_datestamp='".time()."', gen_chardata='".$query_check."' WHERE gen_type='search' AND gen_ip='".$ip."'");
+				$sql -> db_Update("tmp", "tmp_time='".time()."', tmp_info='type_search ".$query_check."' WHERE tmp_info LIKE 'type_search%' AND tmp_ip='".$ip."'");
 			}
 		} else {
-			$sql -> db_Insert("generic", "0, 'search', '".time()."', '', '".$ip."', '', '".$query_check."'");
+			$sql -> db_Insert("tmp", "'".$ip."', '".time()."', 'type_search ".$query_check."'");
 		}
 	}
 }
