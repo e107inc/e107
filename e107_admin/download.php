@@ -369,7 +369,7 @@ class download{
                         $text .= "<option value='".$file_array[$counter]."' $selected='selected'>".$file_array[$counter]."</option>\n";
                         $counter++;
                 }
-                $text .= (!$found)? "<option value='".$download_url."' selected='selected'>>".$download_url." -(file missing!)</option>\n":"";
+                $text .= (!$found && $download_url)? "<option value='".$download_url."' selected='selected'>".$download_url." - (".DOWLAN_68.")</option>\n":"";
 
                 $text .= "</select>
                 <br />
