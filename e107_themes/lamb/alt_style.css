@@ -1,4 +1,6 @@
 
+/* info: this alternative stylesheet uses pure css for layout, no tables, but cross browser issues mean it isn't as stable as the layout that uses tables */
+
 .intwrapper {
 	width: 100%;
 }
