@@ -4,24 +4,19 @@
 //	if($pref['user_reg'] == 1){
 		$text .= ONLINE_EL2.MEMBERS_ONLINE." ...<br />";
 //	}
-	$listusersonline = array();
 	if(MEMBERS_ONLINE){
-		$sql -> db_Select("online", "*", "online_user_id!='0' ");
-		while($row = $sql -> db_Fetch()){
-			extract($row);
-			if(!in_array($row[3],$listusersonline)){
-				$listusersonline[] .= $row[3];
-				$oid = substr($online_user_id, 0, strpos($online_user_id, "."));
-				$oname = substr($online_user_id, (strpos($online_user_id, ".")+1));
-				$online_location_page = substr(strrchr($online_location, "/"), 1);
-				if($online_location_page == "log.php" || $online_location_page == "error.php"){ $online_location_page = "news.php"; $online_location = "news.php"; }
-				if($online_location_page == "request.php"){ $online_location = "download.php"; }
-				if(strstr($online_location_page, "forum")){ $online_location = "forum.php"; $online_location_page = "forum.php"; }
-				$text .= "<img src='".e_PLUGIN."online_extended_menu/images/user.png' alt='' style='vertical-align:middle' /> <a href='".e_BASE."user.php?id.$oid'>$oname</a> ".ONLINE_EL7." <a href='$online_location'>$online_location_page</a><br />";
-			}
+		global $listuserson;
+		foreach($listuserson as $uinfo => $pinfo){
+	
+			list($oid,$oname) = explode(".",$uinfo,2);
+			$online_location_page = substr(strrchr($pinfo, "/"), 1);
+			if($pinfo == "log.php" || $pinfo == "error.php"){ $online_location_page = "news.php"; $pinfo = "news.php"; }
+			if($online_location_page == "request.php"){ $pinfo = "download.php"; }
+			if(strstr($online_location_page, "forum")){ $pinfo = "forum.php"; $online_location_page = "forum.php"; }
+			$text .= "<img src='".e_PLUGIN."online_extended_menu/images/user.png' alt='' style='vertical-align:middle' /> <a href='".e_BASE."user.php?id.$oid'>$oname</a> ".ONLINE_EL7." <a href='$online_location'>$online_location_page</a><br />";
 		}
 	}
-
+	
 	if((MEMBERS_ONLINE + GUESTS_ONLINE) > ($menu_pref['most_members_online'] + $menu_pref['most_guests_online'])){
 		$menu_pref['most_members_online'] = MEMBERS_ONLINE;
 		$menu_pref['most_guests_online'] = GUESTS_ONLINE;
@@ -29,7 +24,6 @@
 		$tmp = addslashes(serialize($menu_pref));
 		$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='menu_pref' ");
 	}
-		
 
 	if(!is_object($gen)){
 		$gen = new convert;
