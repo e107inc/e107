@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/links.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2004-12-03 22:33:13 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2004-12-13 12:00:55 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -30,6 +30,8 @@ if(IsSet($_POST['add_link']) && check_class($pref['link_submit_class'])){
                 $submitted_link = $_POST['cat_name']."^".$link_name."^".$link_url."^".$link_description."^".$link_button."^".$username;
                 $sql -> db_Insert("tmp", "'submitted_link', '".time()."', '$submitted_link' ");
                 $ns -> tablerender(LAN_99, "<div style='text-align:center'>".LAN_100."</div>");
+		$edata_ls = array("link_name" => $link_name, "link_url" => $link_url, "link_description" => $link_description, "link_button" => $link_button, "username" => $username, "submitted_link" => $submitted_link);
+		$e_event -> trigger("linksub", $edata_ls);
         }else{
                 message_handler("ALERT", 5);
         }
