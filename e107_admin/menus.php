@@ -136,7 +136,7 @@ $handle=opendir(e_PLUGIN);
 $c=0;
 while(false !== ($file = readdir($handle)))
 {
-	if($file != "." && $file != ".." && $file != "index.html" && (strstr($file, "menu") || strstr($file, "custom")))
+	if($file != "." && $file != ".." && $file != "index.html" && (strstr($file, "menu") || (strstr($file, "custom") && !strstr($file, "custompage"))))
 	{
 		if($file == "custom")
 		{
