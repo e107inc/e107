@@ -15,7 +15,7 @@ if($results = $sql -> db_Select("content", "*", "content_type=1 AND content_clas
 		}
 		$content_content_ = parsesearch($content_content, $query);
 		$text .= "<br /><form method='post' action='content.php?content.".$content_id."' id='content_".$c."'>
-				<input type='hidden' name='highlight_search' value='1' /><input type='hidden' name='search_query' value='$query' /><img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <b><a href='javascript:this.form.content_".$c.".submit()'>".$content_heading_."</a></b> <br />".$content_subheading_.$content_content_;
+				<input type='hidden' name='highlight_search' value='1' /><input type='hidden' name='search_query' value='$query' /><img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <b><a href='javascript:this.content_".$c.".submit()'>".$content_heading_."</a></b></form> <br />".$content_subheading_.$content_content_;
 	}
 }else{
 	$text .= LAN_198;
