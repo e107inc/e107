@@ -1,10 +1,10 @@
 <?php
 
 define("LAN_1", "Thread");
-define("LAN_2", "Poster");
+define("LAN_2", "Started by");
 define("LAN_3", "Views");
 define("LAN_4", "Replies");
-define("LAN_5", "Lastpost");
+define("LAN_5", "Latest post");
 define("LAN_6", "Threads");
 
 define("NFPM_L1", "This plugin displays a list of new forum posts on your front page");
