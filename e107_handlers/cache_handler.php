@@ -1,5 +1,5 @@
 <?php
-	
+
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -12,23 +12,23 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-01-27 19:52:27 $
+|     $Revision: 1.17 $
+|     $Date: 2005-02-01 20:54:25 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
-	
+
 /**
 * Class to cache data as files, improving site speed and throughput.
 *
 * @package     e107
-* @version     $Revision: 1.16 $
+* @version     $Revision: 1.17 $
 * @author      $Author: streaky $
 */
 class ecache {
-	 
+
 	var $CachePageMD5;
-	 
+
 	/**
 	* @return string
 	* @param string $query
@@ -46,7 +46,7 @@ class ecache {
 		$fname = './'.e_BASE.$FILES_DIRECTORY.'cache/'.$q.($this->CachePageMD5 ? '-'.$this->CachePageMD5 : '').'.cache.php';
 		return $fname;
 	}
-	 
+
 	/**
 	* @return string
 	* @param string $query
@@ -72,7 +72,7 @@ class ecache {
 			}
 		}
 	}
-	 
+
 	/**
 	* @return void
 	* @param string $query
@@ -89,7 +89,7 @@ class ecache {
 			@touch($cache_file);
 		}
 	}
-	 
+
 	/**
 	* @return bool
 	* @param string $query
@@ -97,15 +97,12 @@ class ecache {
 	*/
 	function clear($CacheTag = '') {
 		global $pref, $FILES_DIRECTORY;
-		if ($pref['cachestatus'] || !$CacheTag) {
-			$file = ($CacheTag) ? preg_replace("#\W#", "_", $query)."*.cache.php" :
-			 "*.cache.php";
-			$dir = "./".e_BASE.$FILES_DIRECTORY."cache/";
-			$ret = ecache::delete($dir, $file);
-		}
+		$file = ($CacheTag) ? preg_replace("#\W#", "_", $query)."*.cache.php" : "*.cache.php";
+		$dir = "./".e_BASE.$FILES_DIRECTORY."cache/";
+		$ret = ecache::delete($dir, $file);
 		return $ret;
 	}
-	 
+
 	/**
 	* @return bool
 	* @param string $dir
@@ -135,5 +132,5 @@ class ecache {
 		}
 	}
 }
-	
+
 ?>
