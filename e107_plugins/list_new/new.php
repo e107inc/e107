@@ -30,7 +30,7 @@ $news_items = $sql -> db_Select("news", "*", "news_datestamp>$lvisit  ORDER BY n
 while($row = $sql -> db_Fetch()){
 	extract($row);
 	if(check_class($news_class)){
-		$str .= "$bullet<a href='".e_BASE."comment.php?comment.news.$news_id'>$news_title<br />";
+		$str .= "$bullet<a href='".e_BASE."comment.php?comment.news.$news_id'>$news_title</a><br />";
 	}else{
 		$news_items = $news_items - 1;
 	}
@@ -43,6 +43,39 @@ $text = "<div style='text-align:center'>
 <table style='width:95%' class='fborder'>
 <tr>
 <td class='fcaption'>".LIST_1." ($news_items)</td>
+</tr>
+<td class='forumheader3'>".$str."</td>
+</tr>\n";
+
+// Articles/content/reviews
+unset($str);
+$content_items = $sql -> db_Select("content", "*", "content_datestamp>$lvisit  ORDER BY content_datestamp DESC LIMIT 0,10");
+while($row = $sql -> db_Fetch()){
+	extract($row);
+	if(check_class($content_class)){
+	//	find out whether article, review or content page ...
+		switch($content_type){
+			case 0:	//	article
+				$str .= $bullet."[ ".LIST_14." ] : <a href='".e_BASE."content.php?article.$content_id'>$content_heading</a><br />";
+			break;
+			case 1:	//	content page
+				$str .= $bullet."[ ".LIST_15." ] : <a href='".e_BASE."content.php?content.$content_id'>$content_heading</a><br />";
+			break;
+			case 3:	//	review
+				$str .= $bullet."[ ".LIST_16." ] : <a href='".e_BASE."content.php?review.$content_id.'>$content_heading</a><br />";
+			break;
+			}
+	}else{
+		$content_items = $content_items - 1;
+	}
+}
+if(!$content_items){
+	$str = LIST_4;
+}
+
+$text .= "
+<tr>
+<td class='fcaption'>".LIST_21." ($content_items)</td>
 </tr>
 <td class='forumheader3'>".$str."</td>
 </tr>\n";
