@@ -205,8 +205,28 @@ function parse_link_cat_table($row){
 
                 // Body
                 if(isset($category)){
-                        $link_append = "<a href='".e_SELF."?".$link_id.".cat.{$category}'>";
-                } else {
+      					   if($qs[0] == "cat"){
+                      $link_append = "<a href='".e_SELF."?".$link_id.".cat.{$category}'>";
+                   }else{
+                      switch ($link_open) { 
+            					case 1:
+            						$link_append = "<a href='".e_SELF."?".$link_id.".cat.{$category}' rel='external'>";
+            					break; 
+            					case 2:
+            					   $link_append = "<a href='".e_SELF."?".$link_id.".cat.{$category}'>";
+            					break;
+            					case 3:
+            					   $link_append = "<a href='".e_SELF."?".$link_id.".cat.{$category}'>";
+            					break;
+            					case 4:
+            						$link_append = "<a href=\"javascript:open_window('".e_SELF."?".$link_id.".cat.{$category}')\">";
+            					break;
+            					default:
+            					   $link_append = "<a href='".e_SELF."?".$link_id.".cat.{$category}'>";
+            					}
+                   }
+      						
+      					} else {
 
                         switch ($link_open) {
                         case 1:
