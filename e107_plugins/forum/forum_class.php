@@ -315,7 +315,7 @@ class e107forum {
 		}
 		 
 		$qry = "
-			SELECT t.* from #forum_t as t
+			SELECT t.*, u.* FROM #forum_t as t
 			LEFT JOIN #user AS u
 			ON t.thread_user = u.user_id
 			WHERE t.thread_parent = $thread_id
@@ -330,7 +330,7 @@ class e107forum {
 			}
 		}
 		$qry = "
-			SELECT t.* from #forum_t AS t
+			SELECT t.*,u.* from #forum_t AS t
 			LEFT JOIN #user AS u
 			ON t.thread_user = u.user_id
 			WHERE t.thread_id = $thread_id
