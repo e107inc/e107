@@ -17,7 +17,12 @@ if(!ADMIN){ header("location:".e_BASE."index.php"); exit; }
 require_once("auth.php");
 
 $c=1;
-$handle=opendir(e_DOCS.e_LANGUAGE."/");
+$lang=e_LANGUAGE; 
+if (!$handle=opendir(e_DOCS.$lang."/")) { 
+	$lang="English"; 
+	$handle=opendir(e_DOCS.$lang."/"); 
+} 
+
 while ($file = readdir($handle)){
 	if($file != "." && $file != ".."){
 		$helplist[$c] = $file;
@@ -29,7 +34,7 @@ closedir($handle);
 
 if(e_QUERY){
 	$aj = new textparse;
-	$filename = e_DOCS.e_LANGUAGE."/".$helplist[e_QUERY];
+	$filename = e_DOCS.$lang."/".$helplist[e_QUERY];
 	$fd = fopen ($filename, "r");
 	$text .= fread ($fd, filesize ($filename));
 	fclose ($fd);
