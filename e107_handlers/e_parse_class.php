@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2005-03-17 19:17:54 $
+|     $Revision: 1.49 $
+|     $Date: 2005-03-17 19:55:08 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -281,8 +281,8 @@ function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $ut
 
 	function toRss($text)
 	{
-		$search = array("&amp;#039;", "&amp;#036;", "&#039;", "&#036;");
-		$replace = array("'", "$", "'", "$");
+		$search = array("&amp;#039;", "&amp;#036;", "&#039;", "&#036;", "&");
+		$replace = array("'", "$", "'", "$", "&amp;");
 		$text = strip_tags($text);
 		$text = preg_replace("#\[.*\]#", "", $text);
 		$text = str_replace($search, $replace, $text);
