@@ -53,6 +53,8 @@ $_uid = e_QUERY;
 require_once(HEADERF);
 
 if(IsSet($_POST['updatesettings'])){
+	
+	print_r($_POST);
         // check prefs for required fields =================================.
     $signupval = explode(".",$pref['signup_options']);
     $signup_title = array(LAN_308,LAN_144,LAN_115,LAN_116,LAN_117,LAN_118,LAN_119,LAN_120,LAN_121,LAN_122);
@@ -171,11 +173,13 @@ if(IsSet($_POST['updatesettings'])){
                 if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
                         $row = $sql -> db_Fetch();
                         $user_entended = unserialize($row[0]);
-                        $c=0;
                         while(list($key, $u_entended) = each($user_entended)){
-                                $val = $aj -> formtpa($_POST[str_replace(" ", "_", $u_entended)], "public");
-                                $user_pref[$u_entended] = $val;
-                                $c++;
+                        	if($_POST["ue_{$key}"]){
+                                $val = $aj -> formtpa($_POST["ue_{$key}"], "public");
+                                $user_pref["ue_{$key}"] = $val;
+                        	} else {
+                        		unset($user_pref["ue_{$key}"]);
+                        	}
                         }
                         save_prefs("user", $inp);
                 }
@@ -365,7 +369,7 @@ if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
         while(list($key, $u_entended) = each($user_entended)){
                 if($u_entended){
                 require_once(e_HANDLER."user_extended.php");
-                $text .= user_extended_edit($u_entended,"forumheader3","left");
+                $text .= user_extended_edit($key,$u_entended,"forumheader3","left");
                 }
         }
 }

@@ -31,6 +31,11 @@ if(e_QUERY){
 $from = ($from ? $from : 0);
 $amount = 50;
 
+//echo "action = {$action}<br />";
+//echo "sub action = {$sub_action}<br />";
+//
+//print_r($_POST);
+//exit;
 
 if(IsSet($_POST['resend_mail'])){
     $id = $_POST['resend_id'];
@@ -238,9 +243,9 @@ if(IsSet($_POST['update_field'])){
         $sql -> db_Select("core", " e107_value", " e107_name='user_entended'");
         $row = $sql -> db_Fetch();
         $user_entended = unserialize($row[0]);
-        unset($user_entended[$sub_action]);
+//        unset($user_entended[$sub_action]);
         $user_field = str_replace(" ","_",$user_field);
-        $user_entended[] = $user_field."|".$user_type."|".$user_value."|".$user_default."|".$user_visible."|".$user_hide;
+        $user_entended[$sub_action] = $user_field."|".$user_type."|".$user_value."|".$user_default."|".$user_visible."|".$user_hide;
         $tmp = addslashes(serialize($user_entended));
         if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
                 $sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='user_entended' ");
@@ -265,17 +270,17 @@ if($action == "delext"){
 }
 
 if($action == "editext"){
-        $sql -> db_Select("core", " e107_value", " e107_name='user_entended'");
-        $row = $sql -> db_Fetch();
-        $user_entended = unserialize($row[0]);
-        $tmp = explode("|",$user_entended[$sub_action]);
-        $uf_name = $tmp[0];
-        $uf_type = $tmp[1];
-        $uf_value = $tmp[2];
-                $uf_default = $tmp[3];
-                $uf_visible = $tmp[4];
-                $uf_hide = $tmp[5];
-        $user -> show_extended();
+	$sql -> db_Select("core", " e107_value", " e107_name='user_entended'");
+	$row = $sql -> db_Fetch();
+	$user_entended = unserialize($row[0]);
+	$tmp = explode("|",$user_entended[$sub_action]);
+	$uf_name = $tmp[0];
+	$uf_type = $tmp[1];
+	$uf_value = $tmp[2];
+	$uf_default = $tmp[3];
+	$uf_visible = $tmp[4];
+	$uf_hide = $tmp[5];
+	$user -> show_extended();
 }
 
 if($action == "verify"){
