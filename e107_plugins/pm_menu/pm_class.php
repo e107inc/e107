@@ -433,7 +433,8 @@ class pm {
 		global $ns;
 		global $pref;
 		$tt = new textparse;
-		
+		$pm_subject = htmlentities($pm_subject);
+		$pm_text = htmlentities($pm_text);
 		$pm_sql=new db;
 		$pm_sql -> db_Select("user", "*", "user_name LIKE '".$pm_touser."' ");
 		if($userdata = $pm_sql-> db_Fetch()) {
