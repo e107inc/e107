@@ -1,4 +1,5 @@
 if (preg_match("#\.php\?.*#",$code_text)){return "";}
+$matches[1] = preg_replace('#onerror *=#','',$matches[1]);
 unset($imgParms);
 $imgParms['alt']='';
 $imgParms['style']="vertical-align:middle; border:0";
