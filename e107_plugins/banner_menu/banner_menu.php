@@ -11,16 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/banner_menu/banner_menu.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-27 19:52:35 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-13 08:55:45 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 	
 require_once(e_HANDLER."banner_class.php");
 $bn = new banner;
 	
-if ($menu_pref['banner_campaign']) {
+if (isset($menu_pref['banner_campaign']) && $menu_pref['banner_campaign']) {
 	//if campaign(s) are present, set query
 	$campaignlist = explode("|", $menu_pref['banner_campaign']);
 	unset($campaignlist_query);
@@ -34,7 +34,7 @@ if ($menu_pref['banner_campaign']) {
 }
 	
 // ##### set limit for amount of banners that need to be shown
-if (!$menu_pref['banner_rendertype'] || $menu_pref['banner_rendertype'] == "1") {
+if (!isset($menu_pref['banner_rendertype']) || !$menu_pref['banner_rendertype'] || $menu_pref['banner_rendertype'] == "1") {
 	//show one banner from one campaign in single menu
 	$limitbanner = "1";
 } elseif($menu_pref['banner_rendertype'] == "2") {
@@ -46,7 +46,7 @@ if (!$menu_pref['banner_rendertype'] || $menu_pref['banner_rendertype'] == "1") 
 }
 	
 // ##### set banner_id query for banner retrieval
-unset($banneridquery);
+$banneridquery = '';
 for($i = 0 ; $i < count($bannerarray) ; $i++) {
 	$banneridquery .= " banner_id = '".$bannerarray[$i]."' OR ";
 }
@@ -75,13 +75,13 @@ $textsep = "<br /><br />";
 	
 	
 //show the banner(s) based on banner_rendertype setting
-if ($menu_pref['banner_rendertype'] == "1") {
+if (isset($menu_pref['banner_rendertype']) && $menu_pref['banner_rendertype'] == "1") {
 	//show one banner from one campaign in single menu
 	$text = $textstart.$banner[0].$textend;
 	$ns->tablerender($menu_pref['banner_caption'], $text);
 	unset($text);
 	 
-} elseif($menu_pref['banner_rendertype'] == "2") {
+} elseif(isset($menu_pref['banner_rendertype']) && $menu_pref['banner_rendertype'] == "2") {
 	//show one banner from all campaigns in single menu
 	for($i = 0 ; $i < count($banner) ; $i++) {
 		$text .= $banner[$i].$textsep;
@@ -91,7 +91,7 @@ if ($menu_pref['banner_rendertype'] == "1") {
 	$ns->tablerender($menu_pref['banner_caption'], $text);
 	unset($text);
 	 
-} elseif($menu_pref['banner_rendertype'] == "3") {
+} elseif(isset($menu_pref['banner_rendertype']) && $menu_pref['banner_rendertype'] == "3") {
 	//show one banner from all campaigns in multiple menus
 	for($a = 0 ; $a < count($banner) ; $a++) {
 		$text = $textstart.$banner[$a].$textend;
