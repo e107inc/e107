@@ -47,6 +47,11 @@ class news{
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 	function render_newsitem($news, $mode="default"){
 
+		if(function_exists("theme_render_newsitem")){
+			call_user_func("theme_render_newsitem",$news);
+			return;
+		}
+
 		global $NEWSSTYLE, $NEWSLISTSTYLE, $aj;
 		if(!is_object($aj)) $aj = new textparse;
 		extract($news);
