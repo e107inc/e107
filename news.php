@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-01-27 19:51:38 $
-|     $Author: streaky $
+|     $Revision: 1.25 $
+|     $Date: 2005-01-28 13:28:06 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -27,9 +27,7 @@ if ($NEWSHEADER) {
 $cacheString = 'news.php_'.e_QUERY;
 $action = '';
 if (Empty($pref['newsposts']) ? define("ITEMVIEW", 15) : define("ITEMVIEW", $pref['newsposts']));
-	if (file_exists("install.php") && ADMIN) {
-	echo "<div class='installe' style='text-align:center'><b>*** ".LAN_NEWS_3." ***</b><br />".LAN_NEWS_4."</div><br /><br />";
-}
+if(ADMIN && file_exists("install.php")){ echo "<div class='installe' style='text-align:center'><b>*** ".LAN_NEWS_3." ***</b><br />".LAN_NEWS_4."</div><br /><br />"; }
 	
 if (!is_object($tp)) {
 	$tp = new e_parse;
@@ -163,7 +161,6 @@ else if(strstr(e_QUERY, "month")) {
 	$lastday = date("t", $startdate);
 	$enddate = mktime(23, 59, 59, $month, $lastday, $year);
 	$query = "news_datestamp > $startdate AND news_datestamp < $enddate AND news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY ".$order." DESC";
-	;
 }
 else if(strstr(e_QUERY, "day")) {
 	$tmp = explode(".", e_QUERY);
