@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-02-03 21:38:01 $
-|     $Author: stevedunstan $
+|     $Revision: 1.10 $
+|     $Date: 2005-02-07 05:20:03 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_1", "Site Information");
@@ -154,4 +154,7 @@ define("PRFLAN_111", "Wrap long words in menu text");
 
 define("PRFLAN_112", "On");
 define("PRFLAN_113", "Off");
+
+define("PRFLAN_114", "Search");
+define("PRFLAN_115", "The number of characters that are displayed in your search result summary:");
 ?>
