@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-01-28 01:06:55 $
+|     $Revision: 1.12 $
+|     $Date: 2005-01-31 00:31:01 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -20,10 +20,27 @@
 class e_bbcode {
 	 
 	var $bbList;
-	var $core_bb;
+	var $bbLocation;
 	 
-	function e_bbcode() {
-		$this->core_bb = array('b', 'i', 'img', 'u', 'center', 'br', 'color', 'size', 'code', 'html', 'flash', 'link', 'email', 'url', 'quote', 'left', 'right', 'blockquote');
+	function e_bbcode()
+	{
+		global $pref;
+		$core_bb = array('b', 'i', 'img', 'u', 'center', 'br', 'color', 'size', 'code', 'html', 'flash', 'link', 'email', 'url', 'quote', 'left', 'right', 'blockquote');
+		foreach($core_bb as $c)
+		{
+			$this->bbLocation[$c] = 'core';
+		}
+		echo $pref['plug_bb'];
+		if($pref['plug_bb'] != '')
+		{
+			$tmp = explode(',',$pref['plug_bb']);
+			foreach($tmp as $val)
+			{
+				list($code, $location) = explode(':',$val);
+				$this->bbLocation[$code] = $location;
+			}
+		}
+		$this->bbLocation = array_diff($this->bbLocation,array(''));
 	}
 	 
 	function parseBBCodes($text, $postID) {
@@ -32,11 +49,16 @@ class e_bbcode {
 		$done = FALSE;
 		while (!$done) {
 			$done = TRUE;
-			foreach($this->core_bb as $code) {
-				if (strpos($text, "[$code") !== FALSE) {
+			$i++;
+			foreach(array_keys($this->bbLocation) as $code) {
+				if ($code && strpos($text, "[$code") !== FALSE) {
 					$text = preg_replace_callback("/\[({$code}([a-zA-Z]*))([\d]*?)([^\]]*)\](.*?)\[\/{$code}\\2\\3\]/s", array($this, 'doCode'), $text);
 					$done = FALSE;
 				}
+			}
+			if($i > 200) {
+				echo "An error has been detected in the bbcode process, it entered an infinite loop!  Exiting...";
+				exit;
 			}
 		}
 		return $text;
@@ -51,17 +73,17 @@ class e_bbcode {
 		if (is_array($this->bbList) && array_key_exists($code, $this->bbList)) {
 			$bbcode = $this->bbList[$code];
 		} else {
-			if (in_array($code, $this->core_bb)) {
+			if ($this->bbLocation[$code] == 'core') {
 				$bbFile = e_FILE.'bbcode/'.strtolower($code).'.bb';
 			} else {
 				// Add code to check for plugin bbcode addition
-				$this->bbList[$code] = '';
-				return FALSE;
+				$bbFile = e_PLUGIN.$this->bbLocation[$code].'/'.strtolower($code).'.bb';
 			}
 			if (file_exists($bbFile)) {
 				$bbcode = file_get_contents($bbFile);
 				$this->bbList[$code] = $bbcode;
 			} else {
+				$this->bbList[$code] = '';
 				return FALSE;
 			}
 		}
