@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-02-02 10:11:40 $
+|     $Revision: 1.12 $
+|     $Date: 2005-02-03 09:56:46 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -31,10 +31,20 @@ require_once(e_HANDLER."userclass_class.php");
 // -------- Presets. ------------
 require_once(e_HANDLER."preset_class.php");
 $pst = new e_preset;
-$pst->form = "myform"; // form id of the form that will have it's values saved.
-$pst->page = "download.php?create"; // display preset options on this page.
-$pst->save_preset("admin_downloads");  // unique name for the presets.
+$pst->form = array("myform","dlform"); // form id of the form that will have it's values saved.
+$pst->page = array("download.php?create","download.php?cat"); // display preset options on which page(s).
+$pst->save_preset("admin_downloads,admin_dl_cat");  // unique name(s) for the presets - comma separated.
 // ------------------------------
+
+
+ /*
+One form example (no arrays needed)
+$pst->form = "myform"; // form id of the form that will have it's values saved.
+$pst->page = "download.php?create"; // display preset options on which page.
+$pst->save_preset("admin_downloads");  // unique name for the preset
+*/
+
+
 
 $rs = new form;
 $aj = new textparse;
@@ -282,8 +292,8 @@ class download {
 					</td>
 					</tr>";
 			}
-			//                                ".$rs->form_button("submit", "main_edit_$download_id", DOWLAN_8, "onclick=\"document.location='".e_SELF."?create.edit.$download_id'\"")."
-			//                                ".$rs->form_button("submit", "main_delete_$download_id", DOWLAN_9, "onclick=\"confirm_('create', $download_id)\"")."
+			//	".$rs->form_button("submit", "main_edit_$download_id", DOWLAN_8, "onclick=\"document.location='".e_SELF."?create.edit.$download_id'\"")."
+			//	".$rs->form_button("submit", "main_delete_$download_id", DOWLAN_9, "onclick=\"confirm_('create', $download_id)\"")."
 			$text .= "</table>";
 		} else {
 			$text .= "<div style='text-align:center'>".DOWLAN_6."</div>";
@@ -337,8 +347,8 @@ class download {
 	function create_download($sub_action, $id) {
 		global $sql, $rs, $ns, $file_array, $image_array, $thumb_array,$pst;
 
-        $preset = $pst->read_preset("admin_downloads");  // read preset values into array
-        extract($preset);
+		$preset = $pst->read_preset("admin_downloads");  // read preset values into array
+		extract($preset);
 
 		if (!$sql->db_Select("download_category")) {
 			$ns->tablerender(DOWLAN_26, "<div style='text-align:center'>".DOWLAN_5."</div>");
@@ -634,7 +644,10 @@ class download {
 	}
 
 	function show_categories($sub_action, $id) {
-		global $sql, $rs, $ns, $sql2, $sql3;
+		global $sql, $rs, $ns, $sql2, $sql3, $pst;
+
+
+
 		if (!is_object($sql2)) {
 			$sql2 = new db;
 		}
@@ -668,12 +681,13 @@ class download {
 
 					</td>
 					</tr>";
-				//                                ".$rs->form_button("submit", "main_edit_$download_category_id", DOWLAN_8, "onclick=\"document.location='".e_SELF."?cat.edit.$download_category_id'\"")."
-				//                                ".$rs->form_button("submit", "main_delete_$download_category_id", DOWLAN_9, "onclick=\"confirm_('cat', $download_category_id)\"")."
+				//	".$rs->form_button("submit", "main_edit_$download_category_id", DOWLAN_8, "onclick=\"document.location='".e_SELF."?cat.edit.$download_category_id'\"")."
+				//	".$rs->form_button("submit", "main_delete_$download_category_id", DOWLAN_9, "onclick=\"confirm_('cat', $download_category_id)\"")."
 				$parent_id = $download_category_id;
 				if ($sql2->db_Select("download_category", "*", "download_category_parent=$parent_id")) {
 					while ($row = $sql2->db_Fetch()) {
 						extract($row);
+
 
 						$files = $sql4->db_Count("download", "(*)", "WHERE download_category='".$download_category_id."'");
 
@@ -692,8 +706,8 @@ class download {
 
 							</td>
 							</tr>";
-						//                                                ".$rs->form_button("submit", "main_edit_$download_category_id", DOWLAN_8, "onclick=\"document.location='".e_SELF."?cat.edit.$download_category_id'\"")."
-						//                                                ".$rs->form_button("submit", "main_delete_$download_category_id", DOWLAN_9, "onclick=\"confirm_('cat', $download_category_id)\"")."
+						//	".$rs->form_button("submit", "main_edit_$download_category_id", DOWLAN_8, "onclick=\"document.location='".e_SELF."?cat.edit.$download_category_id'\"")."
+						//	".$rs->form_button("submit", "main_delete_$download_category_id", DOWLAN_9, "onclick=\"confirm_('cat', $download_category_id)\"")."
 						$sub_parent_id = $download_category_id;
 						if ($sql3->db_Select("download_category", "*", "download_category_parent=$sub_parent_id")) {
 							while ($row = $sql3->db_Fetch()) {
@@ -739,6 +753,9 @@ class download {
 				$main_category_parent = $download_category_parent;
 			}
 		}
+
+		$preset = $pst->read_preset("admin_dl_cat");  // read preset values into array
+		extract($preset);
 
 		$frm_action = (isset($_POST['add_category'])) ? e_SELF."?cat" :
 		 e_SELF."?".e_QUERY;
