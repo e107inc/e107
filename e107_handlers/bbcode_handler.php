@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-01-20 04:07:50 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.8 $
+|     $Date: 2005-01-24 17:22:55 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,24 +27,23 @@ class e_bbcode {
 	}
 
 	function parseBBCodes($text,$postID) {
-		while(preg_match_all("/(\[([\w]+)([^\]]*)\])(.*?)(\[\/\\2\])/s", $text, $matches)) {
-			for ($i=0; $i < count($matches[0]); $i++) {
-				$full_text = $matches[0][$i];
-				$code = preg_replace("#\d#","",$matches[2][$i]);
-				$parm = substr($matches[3][$i],1);
-				$code_text = $matches[4][$i];
-				$replace_text = $this -> doBB($code,$parm,$code_text,$postID,$full_text);
-				if ($replace_text == FALSE) {
-					$replace_text = '&#091'.substr($full_text,1,-1).'&#093';
-				}
-				$text = str_replace($full_text,$replace_text,$text);
+		global $code;
+		global $postID;
+		foreach($this->core_bb as $code) {
+			if(strpos($text,"[$code") !== FALSE) {
+				$text = preg_replace_callback("/\[{$code}([\d]*)([^\]]*)\](.*?)\[\/{$code}\\1\]/s", array($this, 'doCode'), $text);
 			}
 		}
-		return $text;
+			return $text;
 	}
 	
-	function doBB($code,$parm,$code_text,$postID,$full_text) {
+	function doCode($matches) {
 		global $tp;
+		global $code;
+		global $postID;
+		$parm = substr($matches[2],1);
+		$code_text = $matches[3];
+
 		if (is_array($this->bbList) && array_key_exists($code,$this->bbList)) {
 			$bbcode = $this -> bbList[$code];
 		} else {
