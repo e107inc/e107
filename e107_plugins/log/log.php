@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/log.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:29 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-14 21:06:49 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 $colour = strip_tags($_REQUEST['color']);
@@ -135,7 +135,7 @@ if($pref['log_activate']){
 
 // end last visitors -----------------------------------------------------------------------------------------------------------------------------------------------------------
 header("Content-type: text/css");
-echo ".DUMMY {color: green;}";
+echo ".all_your_base_belong_to_us {color: green;}";
 // functions -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 function getbrowser(){
         $agent = $_SERVER['HTTP_USER_AGENT'];
