@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/file_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-02-01 05:57:50 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-09 03:00:41 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -31,7 +31,7 @@ class e_file {
 			return $ret;
 		}
 		if($omit == 'standard') {
-			$rejectArray = array('.','..','/','CVS','thumbs.db','*._$');
+			$rejectArray = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$');
 		} else {
 			if(is_array($omit)) {
 				$rejectArray = $omit;
@@ -39,24 +39,29 @@ class e_file {
 				$rejectArray = array($omit);
 			}
 		}
-		while (false !== ($file = readdir($handle))) {
-//			echo $file."<br />";
-			if(is_dir($path.'/'.$file)) {
-				if($file != '.' && $file != '..' && $file != 'CVS' && $recurse_level > 0 && $current_level < $recurse_level) {
+		while (false !== ($file = readdir($handle)))
+		{
+			if(is_dir($path.'/'.$file))
+			{
+				if($file != '.' && $file != '..' && $file != 'CVS' && $recurse_level > 0 && $current_level < $recurse_level)
+				{
 					$xx = $this->get_files($path.'/'.$file, $fmask, $omit, $recurse_level, $current_level+1);
-//					showvar($xx);
 					$ret = array_merge($ret,$xx);
 				}
-				//				$ret = array_merge($ret, $this->get_files($path.'/'.$file, $fmask, $omit, $recurse_level, $current_level+1));
-			} elseif ($fmask == '' || preg_match($fmask,$file)) {
+			}
+			elseif ($fmask == '' || preg_match("#".$fmask."#", $file))
+			{
 				$rejected = FALSE;
-				foreach($rejectArray as $rmask) {
-					if(preg_match(preg_quote($rmask),$file)) {
+				foreach($rejectArray as $rmask)
+				{
+					if(preg_match("#".$rmask."#", $file))
+					{
 						$rejected = TRUE;
 						break;
 					}
 				}
-				if($rejected == FALSE) {
+				if($rejected == FALSE)
+				{
 					$finfo['path'] = $path;
 					$finfo['fname'] = $file;
 					$ret[] = $finfo;
