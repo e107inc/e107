@@ -143,7 +143,29 @@ You can use this method to upgrade any e107 install that is greater than v.600.<
 <a name='#security'></a><span class="headertext">Security</span><br /><br />
 Security has been a primary concern since the first released versions of e107, and for this reason there are some very easy measures you can take to make your site more secure ...
 <ul>
-	<li>Rename your e107_admin directory: this will make it less obvious to other e107 users where your admin files are. To rename your e107_admin directory (or any of your other directories), first rename the folder in the usual manner using your FTP client. Then open class2.php from the root directory of your e107 installation in a text editor, and find the following line near the top of the file ...<br />
+	<li>Rename your e107_admin directory: this will make it less obvious to other e107 users where your admin files are.</li><br /><br />
+	<li><strong>The procedure to change your directory names has changed. The definitions have been moved to e107_config.php.</strong></li><br /><br />
+	<li>If you are <b><u>UPGRADING</u></b> from an old version of e107 (less than v.615), you will need to open class2.php and find the following lines.</li><br /><br />
+	<div class='indent'>
+	// If you need to change the names of any of your directories, change the value here then rename the respective folder on your server ...<br />
+	$ADMIN_DIRECTORY = "e107_admin/";<br />
+	$FILES_DIRECTORY = "e107_files/";<br />
+	$IMAGES_DIRECTORY = "e107_images/";<br />
+	$THEMES_DIRECTORY = "e107_themes/";<br />
+	$PLUGINS_DIRECTORY = "e107_plugins/";<br />
+	$HANDLERS_DIRECTORY = "e107_handlers/";<br />
+	$LANGUAGES_DIRECTORY = "e107_languages/";<br />
+	$HELP_DIRECTORY = "e107_docs/help/";<br />
+	$DOWNLOADS_DIRECTORY =  "e107_files/downloads/";<br />
+	// $DOWNLOADS_DIRECTORY =  "&lt;fullpath&gt;/downloads/";<br />
+	// eg. $DOWNLOADS_DIRECTORY =  "/home/downloads/";<br />
+	</div><br />
+	<li>Cut these lines from <u>class2.php</u> and paste them into <u>e107_config.php</u> Now you can change the folder names from here.</li><br /><br />
+
+	<li>If this is a <b><u>NEW INSTALL</u></b> the folder names are already in e107_config.php. They have been left in class2.php for backwards compatibility. They will be removed from there in the future.</li><br /><br />
+	
+	<li>This procedure depends on you completing the steps above and making sure the file paths are located in e107_config.php now.</li>
+	<li>To rename your e107_admin directory (or any of your other directories), first rename the folder in the usual manner using your FTP client. Then open e107_config.php  from the root directory of your e107 installation in a text editor, and find the following line near the top of the file ...<br />
 	<i>$ADMIN_DIRECTORY = "e107_admin/";</i><br />
 	... and change <i>e107_admin/</i> to the name you've renamed it on your server
 	</li>
