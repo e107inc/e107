@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/article.php,v $
-|   $Revision: 1.11 $
-|   $Date: 2005-01-27 19:52:24 $
-|   $Author: streaky $
+|   $Revision: 1.12 $
+|   $Date: 2005-01-28 13:57:37 $
+|   $Author: mrpete $
 	
 +---------------------------------------------------------------+
 */
@@ -579,8 +579,9 @@ if ($action == "sa") {
 				<td style='width:5%; text-align:center; vertical-align:top' class='forumheader3'>$content_id</td>
 				<td style='width:75%' class='forumheader3'><b>".$aj->tpa($content_heading)."</b> [".$aj->tpa($content_subheading)."]<br />$content_author ($content_author_email)</td>
 				<td style='width:20%; text-align:center; vertical-align:top' class='forumheader3'>
-				".$rs->form_button("submit", "category_edit", ARLAN_97, "onclick=\"document.location='".e_SELF."?create.sa.$content_id'\"")."
-				".$rs->form_button("submit", "category_delete", ARLAN_62, "onclick=\"confirm_('sa', '$content_heading', $content_id);\"")."
+			".$rs -> form_open('post', e_SELF,"myform_{$content_id}")."
+			".$rs -> form_button('submit', "sa_submit", ARLAN_97, "onclick=\"document.location='".e_SELF."?create.sa.$content_id'\"")."
+			".$rs -> form_button('submit', "sa_delete_{$content_id}", ARLAN_62, "onclick=\"confirm_('sa', '$content_heading', $content_id);\"")."
 				</td>
 				</tr>\n";
 		}
