@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-03-17 19:17:54 $
+|     $Revision: 1.6 $
+|     $Date: 2005-03-17 22:25:03 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -39,6 +39,8 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help") {
 	if (ADMIN) {
 		$code[11] = array("html", "[html][/html]", LANHELP_33);
 	}
+	$code[12] = array("list", "[list][/list]", LANHELP_36);
+
 
 	$colours[0] = array("black", LANHELP_1);
 	$colours[1] = array("blue", LANHELP_2);
@@ -106,6 +108,7 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	if (ADMIN) {
 		$code[11] = array("html", "[html][/html]", LANHELP_33);
 	}
+	$code[12] = array("list", "[list][/list]", LANHELP_36);
 
 	$colours[0] = array("black", LANHELP_1);
 	$colours[1] = array("blue", LANHELP_2);
