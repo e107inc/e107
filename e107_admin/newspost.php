@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.42 $
-|   $Date: 2005-02-13 06:54:25 $
-|   $Author: e107coders $
+|   $Revision: 1.43 $
+|   $Date: 2005-02-14 19:15:12 $
+|   $Author: stevedunstan $
 +---------------------------------------------------------------+
 
 */
@@ -937,15 +937,8 @@ class newspost {
 			<tr>
 			<td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_88."</span></td>
 			<td class='forumheader3' style='width:40%'>
-			<select class='tbox' name='newsposts'>
-			<option value='1' ".($pref['newsposts'] == 1 ? "selected='selected'" : "").">1</option>
-			<option value='2' ".($pref['newsposts'] == 2 ? "selected='selected'" : "").">2</option>
-			<option value='3' ".($pref['newsposts'] == 3 ? "selected='selected'" : "").">3</option>
-			<option value='5' ".($pref['newsposts'] == 5 ? "selected='selected'" : "").">5</option>
-			<option value='10' ".($pref['newsposts'] == 10 ? "selected='selected'" : "").">10</option>
-			<option value='15' ".($pref['newsposts'] == 15 ? "selected='selected'" : "").">15</option>
-			<option value='20' ".($pref['newsposts'] == 20 ? "selected='selected'" : "").">20</option>
-			</select></td>
+			<input class='tbox' type='text' style='width:30px' name='newsposts' value='".$pref['newsposts']."' />
+			</td>
 			</tr>";
 
 //			<tr>
