@@ -63,7 +63,7 @@ if(strstr(e_QUERY, "uninstall")){
 </td>
 </tr>
 </table>
-<input type='hidden' name='id' value='$id'>
+<input type='hidden' name='id' value='$id' />
 </form>
 </div>";
         $ns -> tablerender(EPL_ADLAN_3, $text);

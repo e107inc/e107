@@ -90,9 +90,9 @@ $text = "<div style='text-align:center'>
 for($a=0; $a<= (count($class)-1); $a++){
         $text .= "<tr><td style='width:30%' class='forumheader'>";
         if(check_class($class[$a][0], $user_class)){
-                $text .= "<input type='checkbox' name='userclass[]' value='".$class[$a][0]."' checked>".$class[$a][1]." ";
+                $text .= "<input type='checkbox' name='userclass[]' value='".$class[$a][0]."' checked='checked' />".$class[$a][1]." ";
         }else{
-                $text .= "<input type='checkbox' name='userclass[]' value='".$class[$a][0]."'>".$class[$a][1]." ";
+                $text .= "<input type='checkbox' name='userclass[]' value='".$class[$a][0]."' />".$class[$a][1]." ";
         }
         $text .= "</td><td style='width:70%' class='forumheader3'> ".$class[$a][2]."</td></tr>";
 }

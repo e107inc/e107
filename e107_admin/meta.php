@@ -29,7 +29,7 @@ style='text-align:center'>".METLAN_1.".</div>");
 }
 
 $text = "<div style='text-align:center'>
-<form method='post' action='".e_SELF."' name='dataform'>
+<form method='post' action='".e_SELF."' id='dataform'>
 <table style='width:85%' class='fborder'>
 <tr>
 

@@ -304,7 +304,7 @@ class links{
 
 			while(list($cat_id, $cat_name, $cat_description) = $sql-> db_Fetch()){
 				if($link_category == $cat_id || ($cat_id == $linkid && $action == "add")){
-					$text .= "<option value='$cat_id' selected>".$cat_name."</option>";
+					$text .= "<option value='$cat_id' selected='selected'>".$cat_name."</option>";
 				}else{
 					$text .= "<option value='$cat_id'>".$cat_name."</option>";
 				}
@@ -359,9 +359,9 @@ class links{
 		<td style='width:30%' class='forumheader3'>".LCLAN_19.": </td>
 		<td style='width:70%' class='forumheader3'>
 		<select name='linkopentype' class='tbox'>".
-		($link_open == 0 ? "<option value='0' selected>".LCLAN_20."</option>" : "<option value='0'>".LCLAN_20."</option>").
-		($link_open == 3 ? "<option value='3' selected>".LCLAN_23."</option>" : "<option value='3'>".LCLAN_23."</option>").
-		($link_open == 4 ? "<option value='4' selected>".LCLAN_24."</option>" : "<option value='4'>".LCLAN_24."</option>")."
+		($link_open == 0 ? "<option value='0' selected='selected'>".LCLAN_20."</option>" : "<option value='0'>".LCLAN_20."</option>").
+		($link_open == 3 ? "<option value='3' selected='selected'>".LCLAN_23."</option>" : "<option value='3'>".LCLAN_23."</option>").
+		($link_open == 4 ? "<option value='4' selected='selected'>".LCLAN_24."</option>" : "<option value='4'>".LCLAN_24."</option>")."
 		</select>
 		</td>
 		</tr>
@@ -428,11 +428,11 @@ class links{
 				while(list($link_id, $link_name, $link_url, $link_description, $link_button, $link_category, $link_order, $link_refer) = $sql2-> db_Fetch()){
 					$text .= "<tr>\n<td style='width:30%' class='forumheader3'>".$link_order." - ".$link_name."</td>\n<td style='width:30%; text-align:center' class='forumheader3'>\n<select name='link_order[]' class='tbox'>";
 					for($a=1; $a<= $lamount; $a++){
-						$text .= ($link_order == $a ? "<option value='$link_id.$a' selected>$a</option>\n" : "<option value='$link_id.$a'>$a</option>\n");
+						$text .= ($link_order == $a ? "<option value='$link_id.$a' selected='selected'>$a</option>\n" : "<option value='$link_id.$a'>$a</option>\n");
 					}
 
 					$text .= "</select> <select name='activate' onChange='urljump(this.options[selectedIndex].value)' class='tbox'>
-					<option value='links.php' selected></option>
+					<option value='links.php' selected='selected'></option>
 					<option value='links.php?inc.".$link_id.".".$link_order.".".$link_category."'>".LCLAN_30."</option>
 					<option value='links.php?dec.".$link_id.".".$link_order.".".$link_category."'>".LCLAN_31."</option>
 					</select>
@@ -519,7 +519,7 @@ class links{
 		<td class='forumheader3' style='width:70%'>
 		".$rs -> form_text("link_category_icon", 60, $link_category_icon, 100)."
 		<br />
-		<input class='button' type ='button' style=''width: 35px'; cursor:hand' size='30' value='".LCLAN_80."' onClick='expandit(this)'>
+		<input class='button' type ='button' style=''width: 35px'; cursor:hand' size='30' value='".LCLAN_80."' onClick='expandit(this)' />
 		<div style='display:none'>";
 		while(list($key, $icon) = each($iconlist)){
 			$text .= "<a href='javascript:addtext2(\"$icon\")'><img src='".e_IMAGE."link_icons/".$icon."' style='border:0' alt='' /></a> ";
@@ -586,7 +586,7 @@ class links{
 		<span class='smalltext'>".LCLAN_34."</span>
 		</td>
 		<td style='width:30%' class='forumheader2' style='text-align:center'>".
-		($pref['linkpage_categories'] ? "<input type='checkbox' name='linkpage_categories' value='1' checked>" : "<input type='checkbox' name='linkpage_categories' value='1'>")."
+		($pref['linkpage_categories'] ? "<input type='checkbox' name='linkpage_categories' value='1' checked='checked' />" : "<input type='checkbox' name='linkpage_categories' value='1' />")."
 		</td>
 		</tr>
 
@@ -596,7 +596,7 @@ class links{
 		<span class='smalltext'>".LCLAN_79."</span>
 		</td>
 		<td style='width:30%' class='forumheader2' style='text-align:center'>".
-		($pref['linkpage_screentip'] ? "<input type='checkbox' name='linkpage_screentip' value='1' checked>" : "<input type='checkbox' name='linkpage_screentip' value='1'>")."
+		($pref['linkpage_screentip'] ? "<input type='checkbox' name='linkpage_screentip' value='1' checked='checked' />" : "<input type='checkbox' name='linkpage_screentip' value='1' />")."
 		</td>
 		</tr>
 
@@ -606,7 +606,7 @@ class links{
 		<span class='smalltext'>".LCLAN_42."</span>
 		</td>
 		<td style='width:30%' class='forumheader2' style='text-align:center'>".
-		($pref['link_submit'] ? "<input type='checkbox' name='link_submit' value='1' checked>" : "<input type='checkbox' name='link_submit' value='1'>")."
+		($pref['link_submit'] ? "<input type='checkbox' name='link_submit' value='1' checked='checked' />" : "<input type='checkbox' name='link_submit' value='1' />")."
 		</td>
 		</tr>
 

@@ -124,11 +124,11 @@ if($action == "opt"){
         </td>
         <td style='width:30%' class='forumheader3' style='text-align:center'>
         <select name='download_view' class='tbox'>".
-        ($pref['download_view'] == 5 ? "<option selected>5</option>" : "<option>5</option>").
-        ($pref['download_view'] == 10 ? "<option selected>10</option>" : "<option>10</option>").
-        ($pref['download_view'] == 15 ? "<option selected>15</option>" : "<option>15</option>").
-        ($pref['download_view'] == 20 ? "<option selected>20</option>" : "<option>20</option>").
-    ($pref['download_view'] == 50 ? "<option selected>50</option>" : "<option>50</option>")."
+        ($pref['download_view'] == 5 ? "<option selected='selected'>5</option>" : "<option>5</option>").
+        ($pref['download_view'] == 10 ? "<option selected='selected'>10</option>" : "<option>10</option>").
+        ($pref['download_view'] == 15 ? "<option selected='selected'>15</option>" : "<option>15</option>").
+        ($pref['download_view'] == 20 ? "<option selected='selected'>20</option>" : "<option>20</option>").
+    ($pref['download_view'] == 50 ? "<option selected='selected'>50</option>" : "<option>50</option>")."
         </select>
         </td>
         </tr>
@@ -139,10 +139,10 @@ if($action == "opt"){
         <td style='width:30%' class='forumheader3' style='text-align:center'>
 
         <select name='download_order' class='tbox'>".
-        ($pref['download_order'] == "download_datestamp" ? "<option value='download_datestamp' selected>".DOWLAN_58."</option>" : "<option value='download_datestamp'>".DOWLAN_58."</option>").
-        ($pref['download_order'] == "download_requested" ? "<option value='download_requested' selected>".DOWLAN_57."</option>" : "<option value='download_requested'>".DOWLAN_57."</option>").
-        ($pref['download_order'] == "download_name" ? "<option value='download_name' selected>".DOWLAN_59."</option>" : "<option value='download_name'>".DOWLAN_59."</option>").
-        ($pref['download_order'] == "download_author" ? "<option value='download_author' selected>".DOWLAN_60."</option>" : "<option value='download_author'>".DOWLAN_60."</option>")."
+        ($pref['download_order'] == "download_datestamp" ? "<option value='download_datestamp' selected='selected'>".DOWLAN_58."</option>" : "<option value='download_datestamp'>".DOWLAN_58."</option>").
+        ($pref['download_order'] == "download_requested" ? "<option value='download_requested' selected='selected'>".DOWLAN_57."</option>" : "<option value='download_requested'>".DOWLAN_57."</option>").
+        ($pref['download_order'] == "download_name" ? "<option value='download_name' selected='selected'>".DOWLAN_59."</option>" : "<option value='download_name'>".DOWLAN_59."</option>").
+        ($pref['download_order'] == "download_author" ? "<option value='download_author' selected='selected'>".DOWLAN_60."</option>" : "<option value='download_author'>".DOWLAN_60."</option>")."
         </select>
         </td>
         </tr>
@@ -151,8 +151,8 @@ if($action == "opt"){
         </td>
         <td style='width:30%' class='forumheader3' style='text-align:center'>
         <select name='download_sort' class='tbox'>".
-        ($pref['download_sort'] == "ASC" ? "<option value='ASC' selected>".DOWLAN_62."</option>" : "<option value='ASC'>".DOWLAN_62."</option>").
-        ($pref['download_sort'] == "DESC" ? "<option value='DESC' selected>".DOWLAN_63."</option>" : "<option value='DESC'>".DOWLAN_63."</option>")."
+        ($pref['download_sort'] == "ASC" ? "<option value='ASC' selected='selected'>".DOWLAN_62."</option>" : "<option value='ASC'>".DOWLAN_62."</option>").
+        ($pref['download_sort'] == "DESC" ? "<option value='DESC' selected='selected'>".DOWLAN_63."</option>" : "<option value='DESC'>".DOWLAN_63."</option>")."
         </select>
         </td>
         </tr>
@@ -160,7 +160,7 @@ if($action == "opt"){
           <tr>
           <td style='width:70%' class='forumheader3'>".DOWLAN_100."</td>
         <td style='width:30%' class='forumheader3' style='text-align:center'>".
-          ($agree_flag ? "<input type='checkbox' name='agree_flag' value='1' checked>" : "<input type='checkbox' name='agree_flag' value='1'>")."</td>
+          ($agree_flag ? "<input type='checkbox' name='agree_flag' value='1' checked='checked' />" : "<input type='checkbox' name='agree_flag' value='1'>")."</td>
           </tr>
 
           <td style='width:70%' class='forumheader3'>
@@ -334,7 +334,7 @@ class download{
                 while($row = $sql -> db_Fetch()){
                         extract($row);
                         if($download_category_id == $download_category){
-                                $text .= "<option value='$download_category_id' selected>".$download_category_name."</option>\n";
+                                $text .= "<option value='$download_category_id' selected='selected'>".$download_category_name."</option>\n";
                         }else{
                                 $text .= "<option value='$download_category_id'>".$download_category_name."</option>\n";
                         }
@@ -360,16 +360,16 @@ class download{
                 while(IsSet($file_array[$counter])){
 
                         if(eregi($download_url,$file_array[$counter])){
-                        $selected = " selected='selected'";
+                        $selected = " selected='selected'>";
                         $found = 1;
                         }else{
                         $selected = "";
                         }
 
-                        $text .= "<option value='".$file_array[$counter]."' $selected>".$file_array[$counter]."</option>\n";
+                        $text .= "<option value='".$file_array[$counter]."' $selected='selected'>".$file_array[$counter]."</option>\n";
                         $counter++;
                 }
-                $text .= (!$found)? "<option value='".$download_url."' selected='selected'>".$download_url." -(file missing!)</option>\n":"";
+                $text .= (!$found)? "<option value='".$download_url."' selected='selected'>>".$download_url." -(file missing!)</option>\n":"";
 
                 $text .= "</select>
                 <br />
@@ -425,7 +425,7 @@ class download{
                 $counter = 0;
                 while(IsSet($image_array[$counter])){
                         if($image_array[$counter] == $download_image){
-                                $text .= "<option selected>".$image_array[$counter]."</option>\n";
+                                $text .= "<option selected='selected'>".$image_array[$counter]."</option>\n";
                         }else{
                                 $text .= "<option>".$image_array[$counter]."</option>\n";
                         }
@@ -444,7 +444,7 @@ class download{
                 $counter = 0;
                 while(IsSet($thumb_array[$counter])){
                         if($thumb_array[$counter] == $download_thumb){
-                                $text .= "<option selected>".$thumb_array[$counter]."</option>\n";
+                                $text .= "<option selected='selected'>".$thumb_array[$counter]."</option>\n";
                         }else{
                                 $text .= "<option>".$thumb_array[$counter]."</option>\n";
                         }
@@ -461,9 +461,9 @@ class download{
 
                 if($download_active == "0"){
                         $text .= DOWLAN_22.": <input type='radio' name='download_active' value='1'>
-                        ".DOWLAN_23.": <input type='radio' name='download_active' value='0' checked>";
+                        ".DOWLAN_23.": <input type='radio' name='download_active' value='0' checked='checked' />";
                 }else{
-                        $text .= DOWLAN_22.": <input type='radio' name='download_active' value='1' checked>
+                        $text .= DOWLAN_22.": <input type='radio' name='download_active' value='1' checked='checked' />
                         ".DOWLAN_23.": <input type='radio' name='download_active' value='0'>";
                 }
 
@@ -478,9 +478,9 @@ class download{
 
                 if($download_comment == "0"){
                         $text .= DOWLAN_22.": <input type='radio' name='download_comment' value='1'>
-                        ".DOWLAN_23.": <input type='radio' name='download_comment' value='0' checked>";
+                        ".DOWLAN_23.": <input type='radio' name='download_comment' value='0' checked='checked' />";
                 }else{
-                        $text .= DOWLAN_22.": <input type='radio' name='download_comment' value='1' checked>
+                        $text .= DOWLAN_22.": <input type='radio' name='download_comment' value='1' checked='checked' />
                         ".DOWLAN_23.": <input type='radio' name='download_comment' value='0'>";
                 }
 
@@ -658,7 +658,7 @@ class download{
                                 $sql2 -> db_Select("download_category", "download_category_parent", "download_category_id='$cat_parent'", TRUE);
                                 $row = $sql2 -> db_Fetch(); extract($row);
                                 if(!$download_category_parent || !$cat_parent){
-                                        $text .= ($main_category_parent == $cat_id ? "<option value='$cat_id' selected>".$cat_name."</option>" : "<option value='$cat_id'>".$cat_name."</option>");
+                                        $text .= ($main_category_parent == $cat_id ? "<option value='$cat_id' selected='selected'>".$cat_name."</option>" : "<option value='$cat_id'>".$cat_name."</option>");
                                 }
                         }
                         $text .= "</select>";

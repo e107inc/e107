@@ -134,7 +134,7 @@ if($authlist){
         <td style='width:50%; text-align:right;' class='forumheader3'>";
         $auth_dropdown .= "<select class='tbox' name='auth_method'>\n";
         foreach($authlist as $a){
-                $s = ($pref['auth_method'] == $a) ? " selected='selected'" : "";
+                $s = ($pref['auth_method'] == $a) ? " selected='selected'>" : "";
                 $auth_dropdown .= "<option {$s}>".$a."</option>\n";
         }
         $auth_dropdown .= "</select>\n";

@@ -43,7 +43,7 @@ $adminmessage = $aj -> formtparev($aj -> editparse($adminmessage));
 
 $text = "
 <div style='text-align:center'>
-<form method='post' action='".$_SERVER['PHP_SELF']."'  name='wmform'>
+<form method='post' action='".$_SERVER['PHP_SELF']."'  id='wmform'>
 <table style='width:85%' class='fborder'>
 <tr>";
 
@@ -52,9 +52,9 @@ $text .= "
 <td style='width:20%' class='forumheader3'>".WMGLAN_1.": <br />
 ".WMGLAN_6.":";
 if($wm_active1){
-	$text .= "<input type='checkbox' name='wm_active1' value='1'  checked>";
+	$text .= "<input type='checkbox' name='wm_active1' value='1'  checked='checked' />";
 }else{
-	$text .= "<input type='checkbox' name='wm_active1' value='1'>";
+	$text .= "<input type='checkbox' name='wm_active1' value='1' />";
 }
 $text .= "</td>
 <td style='width:60%' class='forumheader3'>
@@ -71,9 +71,9 @@ $text .= "</td>
 <td style='width:20%' class='forumheader3'>".WMGLAN_2.": <br />
 ".WMGLAN_6.":";
 if($wm_active2){
-	$text .= "<input type='checkbox' name='wm_active2' value='1'  checked>";
+	$text .= "<input type='checkbox' name='wm_active2' value='1'  checked='checked' />";
 }else{
-	$text .= "<input type='checkbox' name='wm_active2' value='1'>";
+	$text .= "<input type='checkbox' name='wm_active2' value='1' />";
 }
 $text .= "</td>
 <td style='width:60%' class='forumheader3'>
@@ -90,9 +90,9 @@ $text .= "</td>
 ".WMGLAN_6.": ";
 
 if($wm_active3){
-	$text .= "<input type='checkbox' name='wm_active3' value='1'  checked>";
+	$text .= "<input type='checkbox' name='wm_active3' value='1'  checked='checked' />";
 }else{
-	$text .= "<input type='checkbox' name='wm_active3' value='1'>";
+	$text .= "<input type='checkbox' name='wm_active3' value='1' />";
 }
 
 $text .= "</td>

@@ -74,14 +74,14 @@ exit;
    <tr>
    <td style='width:30%' class='forumheader3'>From Name: </td>
    <td style='width:70%' class='forumheader3'>
-   <input type='text' id='email_from' name='email_from_name' class='tbox' style='width:80%' value='$email_from_name'>
+   <input type='text' id='email_from' name='email_from_name' class='tbox' style='width:80%' value='$email_from_name' />
    </td>
    </tr>
 
    <tr>
    <td style='width:30%' class='forumheader3'>From Email: </td>
    <td style='width:70%' class='forumheader3'>
-   <input type='text' id='email_from' name='email_from_email' class='tbox' style='width:80%' value='$email_from_email'>
+   <input type='text' id='email_from' name='email_from_email' class='tbox' style='width:80%' value='$email_from_email' />
    </td>
    </tr>
 
@@ -96,7 +96,7 @@ exit;
    <tr>
    <td style='width:30%' class='forumheader3'>Cc: </td>
    <td style='width:70%' class='forumheader3'>
-   <input type='text' name='email_cc' class='tbox' style='width:80%' value=''>
+   <input type='text' name='email_cc' class='tbox' style='width:80%' value='' />
    $email_cc
    </td>
    </tr>
@@ -105,7 +105,7 @@ exit;
    <tr>
    <td style='width:30%' class='forumheader3'>Bcc: </td>
    <td style='width:70%' class='forumheader3'>
-   <input type='text' name='email_bcc' class='tbox' style='width:80%' value=''>
+   <input type='text' name='email_bcc' class='tbox' style='width:80%' value='' />
    $email_bcc
    </td>
    </tr>
@@ -113,7 +113,7 @@ exit;
    <tr>
    <td style='width:30%' class='forumheader3'>Subject: </td>
    <td style='width:70%' class='forumheader3'>
-   <input type='text' name='email_subject' class='tbox' style='width:80%' value=''>
+   <input type='text' name='email_subject' class='tbox' style='width:80%' value='' />
    $email_subject
    </td>
    </tr>

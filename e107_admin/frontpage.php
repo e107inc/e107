@@ -54,45 +54,45 @@ $text = "<div style='text-align:center'>
 
 <input name='frontpage' type='radio' value='news'";
 if($frontpage_re == "news"){
-	$text .= "checked";
+	$text .= "checked='checked'";
 	$flag = TRUE;
 }
-$text .= ">".FRTLAN_3."<br />
+$text .= " />".FRTLAN_3."<br />
 <input name='frontpage' type='radio' value='forum'";
 if($frontpage_re == "forum"){
-	$text .= "checked";
+	$text .= "checked='checked'";
 	$flag = TRUE;
 }
 $text .= ">".FRTLAN_4."<br />
 <input name='frontpage' type='radio' value='download'";
 if($frontpage_re == "download"){
-	$text .= "checked";
+	$text .= "checked='checked'";
 	$flag = TRUE;
 }
-$text .= ">".FRTLAN_5."<br />
+$text .= " />".FRTLAN_5."<br />
 <input name='frontpage' type='radio' value='links'";
 if($frontpage_re == "links"){
-	$text .= "checked";
+	$text .= "checked='checked'";
 	$flag = TRUE;
 }
-$text .= ">".FRTLAN_6."<br />";
+$text .= " />".FRTLAN_6."<br />";
 
 if($sql -> db_Select("content", "*", "content_type='1'")){
 	while($row = $sql -> db_Fetch()){
 		extract($row);
 		$text .= "<input name='frontpage' type='radio' value='".$content_id."'";
 		if($frontpage_re == $content_id){
-			$text .= "checked";
+			$text .= "checked='checked'";
 			$flag = TRUE;
 		}
-		$text .= ">".FRTLAN_7.": ".$content_heading."/".$content_subheading."<br />";
+		$text .= " />".FRTLAN_7.": ".$content_heading."/".$content_subheading."<br />";
 	}
 }
 
 $text .= "
 <input name='frontpage' type='radio' value='other'";
 if($flag != TRUE){
-	$text .= "checked";
+	$text .= "checked='checked'";
 }
 
 $text .= ">".FRTLAN_8."  
@@ -111,14 +111,14 @@ $text .= "' maxlength='100' /> ".FRTLAN_14."
 
 <input name='frontpage_type' type='radio' value='constant'";
 if($frontpage_type == "constant"){
-	$text .= "checked";
+	$text .= "checked='checked'";
 }
-$text .= ">".FRTLAN_10."<br />
+$text .= " />".FRTLAN_10."<br />
 <input name='frontpage_type' type='radio' value='splash'";
 if($frontpage_type == "splash"){
-	$text .= "checked";
+	$text .= "checked='checked'";
 }
-$text .= ">".FRTLAN_11."<br />
+$text .= " />".FRTLAN_11."<br />
 
 
 </td>

@@ -144,9 +144,9 @@ $text .= "</td></tr>";
 $text .= "<tr>
 <td style='width:30%' class='forumheader3'>".POLLAN_10."?:</td>
 <td class='forumheader3'>";
-$text .= (!$_POST['activate'] ? "<input name='activate' type='radio' value='0' checked>".POLLAN_11."<br />" : "<input name='activate' type='radio' value='0'>".POLLAN_11."<br />");
-$text .= ($_POST['activate'] == 1 ? "<input name='activate' type='radio' value='1' checked>".POLLAN_12."<br />" : "<input name='activate' type='radio' value='1'>".POLLAN_12."<br />");
-$text .= ($_POST['activate'] == 2 ? "<input name='activate' type='radio' value='2' checked>".POLLAN_13."<br />" : "<input name='activate' type='radio' value='2'>".POLLAN_13."<br />");
+$text .= (!$_POST['activate'] ? "<input name='activate' type='radio' value='0' checked='checked' />".POLLAN_11."<br />" : "<input name='activate' type='radio' value='0' />".POLLAN_11."<br />");
+$text .= ($_POST['activate'] == 1 ? "<input name='activate' type='radio' value='1' checked='checked' />".POLLAN_12."<br />" : "<input name='activate' type='radio' value='1' />".POLLAN_12."<br />");
+$text .= ($_POST['activate'] == 2 ? "<input name='activate' type='radio' value='2' checked='checked' />".POLLAN_13."<br />" : "<input name='activate' type='radio' value='2' />".POLLAN_13."<br />");
 
 $text .= "</td>
 </tr>

@@ -143,27 +143,27 @@ $text = "<div style='text-align:center'>
 <td class='forumheader3' style='width:60%'>
 <select name='chatbox_posts' class='tbox'>";
 if($chatbox_posts == 5){
-	$text .= "<option selected>5</option>\n";
+	$text .= "<option selected='selected'>5</option>\n";
 }else{
 	$text .= "<option>5</option>\n";
 }
 if($chatbox_posts == 10){
-	$text .= "<option selected>10</option>\n";
+	$text .= "<option selected='selected'>10</option>\n";
 }else{
 	$text .= "<option>10</option>\n";
 }
 if($chatbox_posts == 15){
-	$text .= "<option selected>15</option>\n";
+	$text .= "<option selected='selected'>15</option>\n";
 }else{
 	$text .= "<option>15</option>\n";
 }
 if($chatbox_posts == 20){
-	$text .= "<option selected>20</option>\n";
+	$text .= "<option selected='selected'>20</option>\n";
 }else{
 	$text .= "<option>20</option>\n";
 }
 if($chatbox_posts == 25){
-	$text .= "<option selected>25</option>\n";
+	$text .= "<option selected='selected'>25</option>\n";
 }else{
 	$text .= "<option>25</option>\n";
 }
@@ -174,7 +174,7 @@ $text .= "</select>
 
 <td class='forumheader3' style='width:40%'>".CHBLAN_29."?: </td>
 <td class='forumheader3' style='width:60%'>".
-($pref['cb_layer'] ? "<input type='checkbox' name='cb_layer' value='1' checked>" : "<input type='checkbox' name='cb_layer' value='1'>")."&nbsp;&nbsp;".
+($pref['cb_layer'] ? "<input type='checkbox' name='cb_layer' value='1' checked='checked' />" : "<input type='checkbox' name='cb_layer' value='1'>")."&nbsp;&nbsp;".
 CHBLAN_30.": <input class='tbox' type='text' name='cb_layer_height' size='8' value='".$pref['cb_layer_height']."' maxlength='3' />
 </td>
 </tr>
@@ -182,7 +182,7 @@ CHBLAN_30.": <input class='tbox' type='text' name='cb_layer_height' size='8' val
 <tr>
 <td class='forumheader3' style='width:40%'>".CHBLAN_13."?:  <div class='smalltext'>".CHBLAN_14."</div></td>
 <td class='forumheader3' style='width:60%'>".
-($cb_linkreplace ? "<input type='checkbox' name='cb_linkreplace' value='1' checked>" : "<input type='checkbox' name='cb_linkreplace' value='1'>")."
+($cb_linkreplace ? "<input type='checkbox' name='cb_linkreplace' value='1' checked='checked' />" : "<input type='checkbox' name='cb_linkreplace' value='1'>")."
 </td>
 </tr>
 
@@ -196,7 +196,7 @@ CHBLAN_30.": <input class='tbox' type='text' name='cb_layer_height' size='8' val
 
 <td class='forumheader3' style='width:40%'>".CHBLAN_31."?: </td>
 <td class='forumheader3' style='width:60%'>".
-($pref['cb_emote'] ? "<input type='checkbox' name='cb_emote' value='1' checked>" : "<input type='checkbox' name='cb_emote' value='1'>")."
+($pref['cb_emote'] ? "<input type='checkbox' name='cb_emote' value='1' checked='checked' />" : "<input type='checkbox' name='cb_emote' value='1'>")."
 </td>
 </tr>
 
