@@ -13,8 +13,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.27 $
-| $Date: 2005-02-11 03:44:01 $
+| $Revision: 1.28 $
+| $Date: 2005-02-11 14:14:46 $
 | $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
@@ -101,7 +101,7 @@ class news {
 		}
 		if(!defined("IMAGE_sticky"))
 		{
-			define("IMAGE_sticky", (file_exists(THEME."images/note.png") ? "<img src='".THEME."images/note.png' alt=''  /> " : "<img src='".e_IMAGE."generic/note.png' alt=''  /> "));
+			define("IMAGE_sticky", (file_exists(THEME."images/sticky.png") ? "<img src='".THEME."images/sticky.png' alt=''  /> " : "<img src='".e_IMAGE."generic/sticky.png' alt=''  /> "));
 		}
 		if (!$NEWSLISTSTYLE) {
 			$NEWSLISTSTYLE = "
