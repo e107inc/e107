@@ -2,7 +2,7 @@
 /*
 +---------------------------------------------------------------+
 |        e107 website system
-|        /admin/newspost.php
+|        /admin/download.php
 |
 |        ©Steve Dunstan 2001-2002
 |        http://e107.org
@@ -82,6 +82,7 @@ if($action == "create"){
 if($action == "cat"){
         if($sub_action == "confirm"){
                 if($sql -> db_Delete("download_category", "download_category_id='$id' ")){
+								$sql -> db_Delete("download_category","download_category_parent='{$id}' ");
                         $download -> show_message(DOWLAN_49." #".$id." ".DOWLAN_36);
                         $download -> show_categories($sub_action, $id);
                 }
@@ -164,7 +165,7 @@ if($action == "opt"){
         $ns -> tablerender(DOWLAN_54, $text);
 }
 
-$download -> show_options($action);
+//$download -> show_options($action);
 
 require_once("footer.php");
 
@@ -252,18 +253,18 @@ class download{
 
         function show_options($action){
                 global $sql, $rs, $ns;
-                $text = "<div style='text-align:center'>";
+                $text = "<div style='text-align:left'>";
                 if(e_QUERY && $action != "main"){
-                        $text .= "<a href='".e_SELF."'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".DOWLAN_29."</div></div></a>";
+                        $text .= "<a href='".e_SELF."'><div class='button'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".DOWLAN_29."</div></a>";
                 }
                 if($action != "opt"){
-                        $text .= "<a href='".e_SELF."?opt'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".DOWLAN_28."</div></div></a>";
+                        $text .= "<a href='".e_SELF."?opt'><div class='button'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".DOWLAN_28."</div></a>";
                 }
                 if($action != "create"){
-                        $text .= "<a href='".e_SELF."?create'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".DOWLAN_30."</div></div></a>";
+                        $text .= "<a href='".e_SELF."?create'><div class='button'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".DOWLAN_30."</div></a>";
                 }
                 if($action != "cat" && getperms("Q")){
-                        $text .= "<a href='".e_SELF."?cat'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".DOWLAN_31."</div></div></a>";
+                        $text .= "<a href='".e_SELF."?cat'><div class='button'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".DOWLAN_31."</div></a>";
                 }
                 $text .= "</div>";
                 $ns -> tablerender(DOWLAN_32, $text);
@@ -596,8 +597,9 @@ class download{
                         }
                 }
 
+					$frm_action = (isset($_POST['add_category'])) ? e_SELF."?cat" : e_SELF."?".e_QUERY;
                 $text = "<div style='text-align:center'>
-                <form method='post' action='".e_SELF."?".e_QUERY."' name='dlform'>
+                <form method='post' action='{$frm_action}' name='dlform'>
                 <table style='width:auto' class='fborder'>
                 <tr>
                 <td style='width:30%' class='forumheader3'>".DOWLAN_37.": </td>
@@ -664,7 +666,7 @@ class download{
 
                 <tr style='vertical-align:top'>
                 <td colspan='2' style='text-align:center' class='forumheader'>";
-                if($id && $sub_action == "edit"){
+                if($id && $sub_action == "edit" && !isset($_POST['add_category'])){
                         $text .= "<input class='button' type='submit' name='add_category' value='".DOWLAN_46."' /> ";
                 }else{
                         $text .= "<input class='button' type='submit' name='add_category' value='".DOWLAN_45."' />";
@@ -697,13 +699,6 @@ class download{
                         $sql -> db_Delete("tmp", "tmp_time='$id' ");
                 }
         }
-
-
-
-
-
-
-
 }
 
 function getfiles($dir,$sub=0){
@@ -722,11 +717,20 @@ function getfiles($dir,$sub=0){
                         if(is_file($pathdir.$file)){
                                 $t_array[] = str_replace($search, $replace, $pathdir.$file);
                         }else{
+										if(!preg_match("#^CVS#",$patchdir.$file)){
                                 getfiles(str_replace("../", "", $pathdir.$file)."/");
+                               }
                         }
                 }
         }
         closedir($dh);
         return $t_array;
 }
+
+function download_adminmenu($parms){
+	global $download;
+	global $action;
+	$download -> show_options($action);
+}
+
 ?>
