@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:45 $
+|     $Revision: 1.2 $
+|     $Date: 2004-11-20 01:26:15 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -31,7 +31,7 @@ if(!is_numeric(e_QUERY)){
         }else if(file_exists($DOWNLOADS_DIRECTORY.e_QUERY)){
                 send_file($DOWNLOADS_DIRECTORY.e_QUERY);
                 exit;
-        }else if(strstr(e_QUERY, "http") || strstr(e_QUERY, "ftp")){
+        }else if(strstr(e_QUERY, "http:") || strstr(e_QUERY, "ftp:")){
                 header("location:".e_QUERY);
                 exit;
         }
@@ -80,7 +80,7 @@ if($type == "file"){
                                 echo $binary_data;
                                 exit;
                         }
-                        if(strstr($download_url, "http") || strstr($download_url, "ftp")){
+                        if(strstr($download_url, "http:") || strstr($download_url, "ftp:")){
                                 header("location:".$download_url);
                                 exit;
                         } else {

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:20 $
+|     $Revision: 1.2 $
+|     $Date: 2004-11-20 01:26:14 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -407,14 +407,13 @@ class download{
                         $counter++;
                 }
 
-                if(ereg("http", $download_url) || ereg("ftp", $download_url) ){
+                if(ereg("http:", $download_url) || ereg("ftp:", $download_url) ){
                         $download_url_external = $download_url;
                 }
 
                 $etext = " - (".DOWLAN_68.")";
-                if(file_exists(e_FILE."public/".$download_url) || $download_url_external){
+                if(file_exists(e_FILE."public/".$download_url)){
                 $etext= "";
-                $found=1;
                 }
 
                 if(!$found && $download_url){
@@ -561,7 +560,7 @@ class download{
         function submit_download($sub_action, $id){
                 global $aj, $sql, $DOWNLOADS_DIRECTORY;
 
-                if($_POST['download_url_external']){
+                if($_POST['download_url_external'] && $_POST['download_url']==''){
                         $durl = $_POST['download_url_external'];
                         $filesize = $_POST['download_filesize_external'];
                 }else{
