@@ -6,12 +6,12 @@ parent.location.href = self.location.href;
 }
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Javascript File.
+|	e107 website system - Javascript File.
 |
-|     $Source: /cvs_backup/e107_0.7/e107_files/e107.js,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-05 04:46:06 $
-|     $Author: e107coders $
+|	$Source: /cvs_backup/e107_0.7/e107_files/e107.js,v $
+|	$Revision: 1.7 $
+|	$Date: 2005-02-05 07:05:14 $
+|	$Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -85,10 +85,18 @@ function jsconfirm(thetext){
 }
 
 function insertext(str,tagid,display){
-        document.getElementById(tagid).value = str;
-        if(display){
-        	document.getElementById(display).style.display='none';
-        }
+	document.getElementById(tagid).value = str;
+	if(display){
+		document.getElementById(display).style.display='none';
+	}
+}
+
+function appendtext(str,tagid,display){
+	document.getElementById(tagid).value += str;
+	document.getElementById(tagid).focus();
+	if(display){
+		document.getElementById(display).style.display='none';
+	}
 }
 
 function open_window(url,type) {
@@ -124,14 +132,14 @@ function openwindow() {
 
 function setCheckboxes(the_form, do_check){
 	var elts = (typeof(document.forms[the_form].elements['perms[]']) != 'undefined') ? document.forms[the_form].elements['perms[]'] : document.forms[the_form].elements['perms[]'];
-    var elts_cnt  = (typeof(elts.length) != 'undefined') ? elts.length : 0;
-    if(elts_cnt){
+	var elts_cnt  = (typeof(elts.length) != 'undefined') ? elts.length : 0;
+	if(elts_cnt){
 		for(var i = 0; i < elts_cnt; i++){
 			elts[i].checked = do_check;
-        }
+		}
 	}else{
 		elts.checked        = do_check;
-    }
+		}
 	return true;
 }
 
@@ -205,22 +213,22 @@ function addtext(text){
 	}
 }
 
-function help(help,frmid){
-   	if(frmid){
-     document.getElementById(frmid).helpb.value = help;
-      } else{
+function help(help,tagid){
+	if(tagid){
+		document.getElementById(tagid).value = help;
+	} else {
 	document.getElementById('dataform').helpb.value = help;
-    }
+	}
 }
 function externalLinks() {
- if (!document.getElementsByTagName) return;
- var anchors = document.getElementsByTagName("a");
- for (var i=0; i<anchors.length; i++) {
-   var anchor = anchors[i];
-   if (anchor.getAttribute("href") &&
-       anchor.getAttribute("rel") == "external")
-     anchor.target = "_blank";
- }
+	if (!document.getElementsByTagName) return;
+	var anchors = document.getElementsByTagName("a");
+	for (var i=0; i<anchors.length; i++) {
+	var anchor = anchors[i];
+	if (anchor.getAttribute("href") &&
+		anchor.getAttribute("rel") == "external")
+		anchor.target = "_blank";
+	}
 }
 
 function eover(object, over) {

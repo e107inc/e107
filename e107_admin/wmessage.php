@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/wmessage.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-02-05 04:45:12 $
+|     $Revision: 1.15 $
+|     $Date: 2005-02-05 07:04:11 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -138,9 +138,9 @@ if ($action == "create" || $action == "edit") {
 		<td style='width:60%' class='forumheader3'>
 		<textarea class='tbox' name='wm_text' cols='70' rows='10' style='width:90%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this)'>".$wm_text."</textarea>
 		<br />
-		<input id='helpb' class='helpbox' type='text' name='helpguest' size='100' />
+		<input id='helpguest' class='helpbox' type='text' name='helpguest' size='100' />
 		<br />
-		".ren_help(1, "addtext", "help", "wmform")."
+		".display_help("helpguest",FALSE)."
 		</td>
 
 		</tr>";

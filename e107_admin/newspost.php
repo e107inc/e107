@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.25 $
-|   $Date: 2005-02-04 08:22:58 $
+|   $Revision: 1.26 $
+|   $Date: 2005-02-05 07:04:11 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -168,7 +168,7 @@ if (IsSet($_POST['save_prefs'])) {
 	*/
 	$pref['news_newdateheader'] = $_POST['news_newdateheader'];
 	$pref['news_unstemplate'] = $_POST['news_unstemplate'];
-	
+
 
 
 	save_prefs();
@@ -237,12 +237,7 @@ if ($action == "pref") {
 print "<script type=\"text/javascript\">
 
 
-	function addtext3(str){
-	document.getElementById('dataform').category_button.value = str;
-	}
-	function help2(help){
-	document.getElementById('dataform').help_ext.value = help;
-	}
+
 	function fclear(){
 	document.getElementById('dataform').data.value = \"\";
 	document.getElementById('dataform').news_extended.value = \"\";
@@ -471,8 +466,8 @@ class newspost {
 		//Main news body textarea
 		if (!$pref['htmlarea']) {
 			$text .= "
-				<input class='helpbox' type='text' name='helpb' size='100' />
-				<br />". ren_help()."
+				<input id='helpb' class='helpbox' type='text' name='helpb' size='100' />
+				<br />". display_help("helpb")."
 				<select class='tbox' name='thumbps' onChange=\"addtext('[link=".e_IMAGE."newspost_images/' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '][img]".e_IMAGE."newspost_images/thumb_' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '[/img][/link]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_50."')\" onMouseOut=\"help('')\">
 				<option>".NWSLAN_80." ...</option>\n";
 			while (list($key, $image) = each($thumblist)) {
@@ -509,10 +504,10 @@ class newspost {
 			";
 		if ($pref['htmlarea'] && ($pref['htmlarea'] && !eregi("MSIE", $_SERVER['HTTP_USER_AGENT']))) {
 			$text .= "<br />
-				<input class='helpbox' type='text' name='help_ext' size='100' />
+				<input id='help_ext' class='helpbox' type='text' name='help_ext' size='100' />
 				<br />
-				".ren_help("", "addtext", "help2")."
-				<select class='tbox' name='imageps2' onChange=\"addtext('[img]' + this.form.imageps2.options[this.form.imageps2.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onMouseOver=\"help2('".NWSLAN_110."')\" onMouseOut=\"help2('')\">
+				".display_help("help_ext")."
+				<select class='tbox' name='imageps2' onchange=\"addtext('[img]' + this.form.imageps2.options[this.form.imageps2.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onmouseover=\"help('".NWSLAN_110."')\" onmouseout=\"help('')\">
 				<option>".NWSLAN_81." ...</option>\n";
 			reset($imagelist);
 			while (list($key, $image) = each($imagelist)) {
@@ -775,9 +770,9 @@ class newspost {
 			".$rs->form_text("category_button", 60, $category_icon, 100)."
 			<br />
 			<input class='button' type ='button' style='cursor:hand' size='30' value='".NWSLAN_54."' onclick='expandit(this)' />
-			<div style='display:none'>";
+			<div id='caticn' style='display:none'>";
 		while (list($key, $icon) = each($iconlist)) {
-			$text .= "<a href='javascript:addtext3(\"$icon\")'><img src='".e_IMAGE."newsicons/".$icon."' style='border:0' alt='' /></a>\n ";
+			$text .= "<a href=\"javascript:insertext('$icon','category_button','caticn')\"><img src='".e_IMAGE."newsicons/".$icon."' style='border:0' alt='' /></a>\n ";
 		}
 		$text .= "</div></td>
 			</tr>
