@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-07 10:41:00 $
-|     $Author: pholzmann $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-15 18:15:35 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -47,7 +47,7 @@ if(e_QUERY){
                 if($sql -> db_Select("user", "*", "user_sess='".$qs[2]."' ")){
                         if($row = $sql -> db_Fetch()){
                                 $sql -> db_Update("user", "user_ban='0', user_sess='' WHERE user_sess='".$qs[2]."' ");
-				$e_event -> trigger("userveri", $qs[2]);
+                                $e_event -> trigger("userveri", $qs[2]);
                                 require_once(HEADERF);
                                 $text = LAN_401." <a href='index.php'>".LAN_SIGNUP_22."</a> ".LAN_SIGNUP_23."<br />".LAN_SIGNUP_24." ".SITENAME;
                                 $ns -> tablerender(LAN_402, $text);
@@ -62,8 +62,8 @@ if(e_QUERY){
 }
 
 $signupval = explode(".",$pref['signup_options']);
-$signup_title = array(LAN_308,LAN_144,LAN_115,LAN_116,LAN_117,LAN_118,LAN_119,LAN_120,LAN_121,LAN_122);
-$signup_name = array("realname","website","icq","aim","msn","birth_year","location","signature","image","timezone");
+$signup_title = array(LAN_308,LAN_144,LAN_115,LAN_116,LAN_117,LAN_118,LAN_119,LAN_120,LAN_121,LAN_122,LAN_SIGNUP_28);
+$signup_name = array("realname","website","icq","aim","msn","birth_year","location","signature","image","timezone","usrclass");
 
 
 if(IsSet($_POST['register'])){
@@ -188,27 +188,33 @@ if(IsSet($_POST['register'])){
                 $birthday = $_POST['birth_year']."/".$_POST['birth_month']."/".$_POST['birth_day'];
 
                 if($pref['user_reg_veri']){
-			$u_key = md5(uniqid(rand(),1));
+                        $u_key = md5(uniqid(rand(),1));
                         $nid = $sql -> db_Insert("user", "0, \"".$username."\", '', \"".md5($_POST['password1'])."\", '$u_key', \"".$_POST['email']."\", \"".$_POST['website']."\", \"".$_POST['icq']."\", \"".$_POST['aim']."\", \"".$_POST['msn']."\", \"".$_POST['location']."\", \"".$birthday."\", \"".$_POST['signature']."\", \"".$_POST['image']."\", \"".$_POST['timezone']."\", \"".$_POST['hideemail']."\", \"".$time."\", '0', \"".$time."\", '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '', '0', \"".$_POST['realname']."\", '', '', '', '' ");
-			$sql -> db_Select("user", "*", "user_name='".$_POST['name']."' AND user_join='".$time."' ");
-                        $row = $sql -> db_Fetch();
-                        $id = $row['user_id'];
 
-                                                                // ================== save extended fields as serialized data.
+                // ==== Update Userclass =======
+                         if($_POST['usrclass']){
+                             unset($insert_class);
+                             sort($_POST['usrclass']);
+                             foreach($_POST['usrclass'] as $value){
+                                $insert_class .= $value.".";
+                             }
+                             $sql -> db_Update("user", "user_class='$insert_class' WHERE user_id='".$nid."' ");
+                         }
 
-                                                                if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
-                                                                        $aj = new textparse;
-                                                                        $row = $sql -> db_Fetch();
-                                                                        $user_entended = unserialize($row[0]);
-                                                                        while(list($key, $u_entended) = each($user_entended)){
-                                                                                $val = $aj -> formtpa($_POST["ue_{$key}"], "public");
-                                                                                $user_pref["ue_{$key}"] = $val;
-                                                                        }
-                                                                        $tmp = addslashes(serialize($user_pref));
-                                                                        $sql -> db_Update("user", "user_prefs='$tmp' WHERE user_id='".$nid."' ");
-                                                                }
-                                                                // ==========================================================
-                        define("RETURNADDRESS", (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$id.".".$u_key : SITEURL."/signup.php?activate.".$id.".".$u_key));
+                // ========= save extended fields as serialized data. =====
+                         if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
+                             $aj = new textparse;
+                             $row = $sql -> db_Fetch();
+                             $user_entended = unserialize($row[0]);
+                             while(list($key, $u_entended) = each($user_entended)){
+                                 $val = $aj -> formtpa($_POST["ue_{$key}"], "public");
+                                 $user_pref["ue_{$key}"] = $val;
+                             }
+                             $tmp = addslashes(serialize($user_pref));
+                             $sql -> db_Update("user", "user_prefs='$tmp' WHERE user_id='".$nid."' ");
+                         }
+                // ========== Send Email =====.                                                       // ==========================================================
+                        define("RETURNADDRESS", (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$nid.".".$u_key : SITEURL."/signup.php?activate.".$nid.".".$u_key));
                         $pass_show = ($pref['user_reg_secureveri'])? "*******" : $_POST['password1'];
                         $message = LAN_403." ".SITENAME."\n".LAN_SIGNUP_18."\n\n".LAN_SIGNUP_19." ".$_POST['name']."\n".LAN_SIGNUP_20." ".$pass_show."\n\n".LAN_SIGNUP_21."\n\n";
                         $message .= RETURNADDRESS.LAN_407." ".SITENAME."\n".SITEURL;
@@ -220,8 +226,8 @@ if(IsSet($_POST['register'])){
                         }
                         sendemail($_POST['email'], LAN_404." ".SITENAME, $message);
 
-			$edata_su = array("username" => $username, "email" => $_POST['email'], "website" => $_POST['website'], "icq" => $_POST['icq'], "aim" => $_POST['aim'], "msn" => $_POST['msn'], "location" => $_POST['location'], "birthday" => $birthday, "signature" => $_POST['signature'], "image" => $_POST['image'], "timezone" => $_POST['timezone'], "hideemail" => $_POST['hideemail'], "ip" => $ip, "realname" => $_POST['realname']);
-			$e_event -> trigger("usersup", $edata_su);
+                        $edata_su = array("username" => $username, "email" => $_POST['email'], "website" => $_POST['website'], "icq" => $_POST['icq'], "aim" => $_POST['aim'], "msn" => $_POST['msn'], "location" => $_POST['location'], "birthday" => $birthday, "signature" => $_POST['signature'], "image" => $_POST['image'], "timezone" => $_POST['timezone'], "hideemail" => $_POST['hideemail'], "ip" => $ip, "realname" => $_POST['realname']);
+                        $e_event -> trigger("usersup", $edata_su);
 
                         require_once(HEADERF);
                         $text = LAN_405;
@@ -229,30 +235,39 @@ if(IsSet($_POST['register'])){
                         require_once(FOOTERF);
                         exit;
                 }else{
-                require_once(HEADERF);
-                $nid = $sql -> db_Insert("user", "0, '".$username."', '', '".md5($_POST['password1'])."', '$u_key', '".$_POST['email']."', '".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$birthday."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '' ");
-                                        // ================== save extended fields as serialized data.
+                    require_once(HEADERF);
+                    $nid = $sql -> db_Insert("user", "0, '".$username."', '', '".md5($_POST['password1'])."', '$u_key', '".$_POST['email']."', '".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$birthday."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '' ");
+                    // ==== Update Userclass =======
+                    if($_POST['usrclass']){
+                             unset($insert_class);
+                             sort($_POST['usrclass']);
+                             foreach($_POST['usrclass'] as $value){
+                                $insert_class .= $value.".";
+                             }
+                             $sql -> db_Update("user", "user_class='$insert_class' WHERE user_id='".$nid."' ");
+                    }
+                    // ======== save extended fields as serialized data.
 
-                                        if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
-                                                $aj = new textparse;
-                                                $row = $sql -> db_Fetch();
-                                                $user_entended = unserialize($row[0]);
-                                                while(list($key, $u_entended) = each($user_entended)){
-                                                        $val = $aj -> formtpa($_POST["ue_{$key}"], "public");
-                                                        $user_pref["ue_{$key}"] = $val;
-                                                }
-                                                $tmp = addslashes(serialize($user_pref));
-                                                $sql -> db_Update("user", "user_prefs='$tmp' WHERE user_id='".$nid."' ");
-                                        }
-                                        // ==========================================================
+                    if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
+                        $aj = new textparse;
+                        $row = $sql -> db_Fetch();
+                        $user_entended = unserialize($row[0]);
+                        while(list($key, $u_entended) = each($user_entended)){
+                            $val = $aj -> formtpa($_POST["ue_{$key}"], "public");
+                            $user_pref["ue_{$key}"] = $val;
+                        }
+                        $tmp = addslashes(serialize($user_pref));
+                        $sql -> db_Update("user", "user_prefs='$tmp' WHERE user_id='".$nid."' ");
+                    }
+                   // ==========================================================
 
-		$edata_su = array("username" => $username, "email" => $_POST['email'], "website" => $_POST['website'], "icq" => $_POST['icq'], "aim" => $_POST['aim'], "msn" => $_POST['msn'], "location" => $_POST['location'], "birthday" => $birthday, "signature" => $_POST['signature'], "image" => $_POST['image'], "timezone" => $_POST['timezone'], "hideemail" => $_POST['hideemail'], "ip" => $ip, "realname" => $_POST['realname']);
-		$e_event -> trigger("usersup", $edata_su);
+                   $edata_su = array("username" => $username, "email" => $_POST['email'], "website" => $_POST['website'], "icq" => $_POST['icq'], "aim" => $_POST['aim'], "msn" => $_POST['msn'], "location" => $_POST['location'], "birthday" => $birthday, "signature" => $_POST['signature'], "image" => $_POST['image'], "timezone" => $_POST['timezone'], "hideemail" => $_POST['hideemail'], "ip" => $ip, "realname" => $_POST['realname']);
+                   $e_event -> trigger("usersup", $edata_su);
 
-                $ns -> tablerender("<div style='text-align:center'>".LAN_SIGNUP_8."</div>", LAN_107."&nbsp;".SITENAME.", ".LAN_SIGNUP_12."<br /><br />".LAN_SIGNUP_13);
-                require_once(FOOTERF);
-                exit;
-        }
+                   $ns -> tablerender("<div style='text-align:center'>".LAN_SIGNUP_8."</div>", LAN_107."&nbsp;".SITENAME.", ".LAN_SIGNUP_12."<br /><br />".LAN_SIGNUP_13);
+                   require_once(FOOTERF);
+                   exit;
+                }
 }
 
 }
@@ -302,7 +317,7 @@ $text .= LAN_400;
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 $text .= $rs -> form_open("post", e_SELF, "signupform")."
-<table class='fborder' style='width:70%'>
+<table class='fborder' style='width:90%'>
 <tr>
 <td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_7."<span style='font-size:15px; color:red'> *</span></td>
 <td class='forumheader3' style='width:70%'>
@@ -350,6 +365,30 @@ $text .="
 $rs ->form_radio("hideemail", 1)." ".LAN_SIGNUP_10."&nbsp;&nbsp;".$rs ->form_radio("hideemail", 0, 1)." ".LAN_200."
 </td>
 </tr>";
+
+
+// ----------------------  User subscription to userclasses.
+if($signupval[10]){
+$text .="<tr>
+<td class='forumheader3' style='width:30%'>".LAN_USET_5." ".req($signupval[10])."
+<br /><span class='smalltext'>".LAN_USET_6."</span></td>
+<td class='forumheader3' style='width:70%'>";
+ $text .= "<table style='width:100%'>";
+    $sql -> db_Select("userclass_classes","*","userclass_editclass =0 order by userclass_name");
+    while($row3 = $sql-> db_Fetch()){
+        //  $frm_checked = check_class($userclass_id,$user_class) ? "checked='checked'" : "";
+          $text .= "<tr><td class='defaulttext'>";
+          $text .= "<input type='checkbox' name='usrclass[]' value='".$row3['userclass_id']."'  />\n";
+          $text .= $row3['userclass_name']."</td>";
+          $text .= "<td class='smalltext'>".$row3['userclass_description']."</td>";
+          $text .= "</tr>\n";
+    }
+    $text .= "</table>\n";
+
+$text .=" </td>
+</tr>";
+}
+// --------------------------
 
 
 

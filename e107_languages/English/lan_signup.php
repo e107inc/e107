@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_signup.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-05 10:17:44 $
-|     $Author: pholzmann $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-15 18:15:34 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Register");
@@ -72,5 +72,7 @@ define("LAN_SIGNUP_24", "Thankyou for registering at");
 define("LAN_SIGNUP_25", "Upload your avatar");
 define("LAN_SIGNUP_26", "Upload your photograph");
 define("LAN_SIGNUP_27", "Show");
+
+define("LAN_SIGNUP_28", "choice of Content/Mail-lists");
 
 ?>
