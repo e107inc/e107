@@ -12,12 +12,13 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/article.php,v $
-|   $Revision: 1.1 $
-|   $Date: 2004-09-21 19:10:20 $
-|   $Author: e107coders $
+|   $Revision: 1.2 $
+|   $Date: 2004-10-10 21:13:18 $
+|   $Author: loloirie $
 
 +---------------------------------------------------------------+
 */
+
 require_once("../class2.php");
 if($pref['htmlarea']){
     require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
@@ -30,6 +31,9 @@ require_once(e_HANDLER."textparse/basic.php");
 $etp = new e107_basicparse;
 
 require_once("auth.php");
+// ML
+require_once(e_HANDLER."multilang/ml_adpanel.php");
+// END ML
 $aj = new textparse;
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."userclass_class.php");
@@ -55,7 +59,12 @@ if(preg_match("#(.*?)_delete_(\d+)#",$deltest[$etp->unentity(ARLAN_62)],$matches
 if(IsSet($_POST['create_category'])){
         $_POST['category_name'] = $aj -> formtpa($_POST['category_name'], "admin");
         $_POST['category_description'] = $aj -> formtpa($_POST['category_description'], "admin");
-        $sql -> db_Insert("content", " '0', '".$_POST['category_name']."', '".$_POST['category_description']."', '', 0, ".time().", '".ADMINID."', 0, '".$_POST['category_button']."', 6, 0, 0, 0");
+        // ML
+        if(e_MLANG==1){
+          $ml -> e107_ml_MultiInsert("content", " '0', '".$_POST['category_name']."', '".$_POST['category_description']."', '', 0, ".time().", '".ADMINID."', 0, '".$_POST['category_button']."', 6, 0, 0, 0");
+        }else{ // END ML
+          $sql -> db_Insert("content", " '0', '".$_POST['category_name']."', '".$_POST['category_description']."', '', 0, ".time().", '".ADMINID."', 0, '".$_POST['category_button']."', 6, 0, 0, 0");
+        }
         $message = ARLAN_56;
         clear_cache("article");
         $action = "cat";
@@ -64,7 +73,13 @@ if(IsSet($_POST['create_category'])){
 if(IsSet($_POST['update_category'])){
         $_POST['category_name'] = $aj -> formtpa($_POST['category_name'], "admin");
         $_POST['category_description'] = $aj -> formtpa($_POST['category_description'], "admin");
-        $sql -> db_Update("content", "content_heading='".$_POST['category_name']."', content_subheading='".$_POST['category_description']."', content_summary='".$_POST['category_button']."' WHERE content_id='".$_POST['category_id']."' ");
+        // ML
+        if(e_MLANG==1){
+          $ml -> e107_ml_Update("content", "content_heading='".$_POST['category_name']."', content_subheading='".$_POST['category_description']."', content_summary='".$_POST['category_button']."' WHERE content_id='".$_POST['category_id']."' ", false, $_POST['list_lang']);
+        }else{
+          $sql -> db_Update("content", "content_heading='".$_POST['category_name']."', content_subheading='".$_POST['category_description']."', content_summary='".$_POST['category_button']."' WHERE content_id='".$_POST['category_id']."' ");
+        }
+        // END ML
         $message = ARLAN_57;
         clear_cache("article");
         $action = "cat";
@@ -76,7 +91,13 @@ if(IsSet($_POST['create_article'])){
                 $content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
                 $content_content = $aj -> formtpa($_POST['data'], "admin");
                 $content_author = (!$_POST['content_author'] || $_POST['content_author'] == ARLAN_84 ? ADMINID : $_POST['content_author']."^".$_POST['content_author_email']);
-                $sql -> db_Insert("content", "0, '$content_heading', '$content_subheading', '$content_content', '".$_POST['category']."', '".time()."', '$content_author', '".$_POST['content_comment']."', '".$_POST['content_summary']."', '0' ,'0' ,".$_POST['add_icons'].", ".$_POST['a_class']);
+                // ML
+                if(e_MLANG==1){
+                  $ml -> e107_ml_MultiInsert("content", "0, '$content_heading', '$content_subheading', '$content_content', '".$_POST['category']."', '".time()."', '$content_author', '".$_POST['content_comment']."', '".$_POST['content_summary']."', '0' ,'0' ,".$_POST['add_icons'].", ".$_POST['a_class']);
+                }else{
+                  $sql -> db_Insert("content", "0, '$content_heading', '$content_subheading', '$content_content', '".$_POST['category']."', '".time()."', '$content_author', '".$_POST['content_comment']."', '".$_POST['content_summary']."', '0' ,'0' ,".$_POST['add_icons'].", ".$_POST['a_class']);
+                }
+                // END ML
                 unset($content_heading, $content_subheading, $data, $content_summary, $content_author);
                 $message = ARLAN_0;
                 clear_cache("article");
@@ -95,7 +116,14 @@ If(IsSet($_POST['sa_article'])){
                 $content_content = $aj -> formtpa($_POST['data'], "admin");
                 $content_summary = $aj -> formtpa($_POST['content_summary'], "admin");
                 $content_author = ($_POST['content_author'] && $_POST['content_author'] != ARLAN_84 ? $_POST['content_author']."^".$_POST['content_author_email'] : ADMINID);
-                $sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_parent='".$_POST['category']."', content_datestamp='".time()."', content_author='$content_author', content_comment='".$_POST['content_comment']."', content_summary='$content_summary', content_type='0',  content_pe_icon=".$_POST['add_icons'].", content_class='{$_POST['a_class']}' WHERE content_id=$id");
+                
+                // ML
+                if(e_MLANG==1){
+                  $ml -> e107_ml_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_parent='".$_POST['category']."', content_datestamp='".time()."', content_author='$content_author', content_comment='".$_POST['content_comment']."', content_summary='$content_summary', content_type='0',  content_pe_icon=".$_POST['add_icons'].", content_class='{$_POST['a_class']}' WHERE content_id=$id", false, $_POST['list_lang']);
+                }else{
+                  $sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_parent='".$_POST['category']."', content_datestamp='".time()."', content_author='$content_author', content_comment='".$_POST['content_comment']."', content_summary='$content_summary', content_type='0',  content_pe_icon=".$_POST['add_icons'].", content_class='{$_POST['a_class']}' WHERE content_id=$id");
+                }
+                // END ML
                 unset($content_heading, $content_subheading, $data, $content_summary);
                 $message = ARLAN_99;
                 unset($action);
@@ -113,7 +141,13 @@ If(IsSet($_POST['update_article'])){
                 $content_content = $aj -> formtpa($_POST['data'], "admin");
                 $content_summary = $aj -> formtpa($_POST['content_summary'], "admin");
                 $content_author = ($_POST['content_author'] && $_POST['content_author'] != ARLAN_84 ? $_POST['content_author']."^".$_POST['content_author_email'] : ADMINID);
-                $sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_parent='".$_POST['category']."', content_datestamp='".time()."', content_author='$content_author', content_comment='".$_POST['content_comment']."', content_summary='$content_summary', content_type='0', content_pe_icon=".$_POST['add_icons'].", content_class='{$_POST['a_class']}' WHERE content_id='".$_POST['content_id']."'");
+                // ML
+                if(e_MLANG==1){
+                  $ml -> e107_ml_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_parent='".$_POST['category']."', content_datestamp='".time()."', content_author='$content_author', content_comment='".$_POST['content_comment']."', content_summary='$content_summary', content_type='0', content_pe_icon=".$_POST['add_icons'].", content_class='{$_POST['a_class']}' WHERE content_id='".$_POST['content_id']."'", false, $_POST['list_lang']);
+                }else{
+                  $sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_parent='".$_POST['category']."', content_datestamp='".time()."', content_author='$content_author', content_comment='".$_POST['content_comment']."', content_summary='$content_summary', content_type='0', content_pe_icon=".$_POST['add_icons'].", content_class='{$_POST['a_class']}' WHERE content_id='".$_POST['content_id']."'");
+                }
+                // END ML
                 unset($content_heading, $content_subheading, $data, $content_summary);
                 $message = ARLAN_2;
                                  unset($action, $sub_action);
@@ -137,7 +171,8 @@ if(IsSet($_POST['updateoptions'])){
 
 if($delete == 'category')
 {
-        if($sql -> db_Delete("content", "content_id='$del_id' "))
+        // ML
+        if((e_MLANG ==1 && $ml -> e107_ml_Delete("content", "content_id='$del_id' ")) || (e_MLANG != 1 && $sql -> db_Delete("content", "content_id='$del_id' ")))
         {
                 $message = ARLAN_58;
                 unset($sub_action, $id);
@@ -147,7 +182,8 @@ if($delete == 'category')
 
 if($delete == "main")
 {
-        if($sql -> db_Delete("content", "content_id='$del_id' "))
+        // ML
+        if((e_MLANG ==1 && $ml -> e107_ml_Delete("content", "content_id='$del_id' ")) || (e_MLANG != 1 && $sql -> db_Delete("content", "content_id='$del_id' ")))
         {
                 $message = ARLAN_30;
                 clear_cache("article");
@@ -204,7 +240,8 @@ if(IsSet($message)){
 
 if($action == "cat"){
         $text = "<div style='border : solid 1px #000; padding : 4px; width : auto; height : 100px; overflow : auto; '>\n";
-        if($category_total = $sql -> db_Select("content", "*", "content_type='6' ")){
+        // ML
+        if((e_MLANG == 1 && $category_total = $ml -> e107_ml_Select("content", "*", "content_type='6' ")) || (e_MLANG != 1 && $category_total = $sql -> db_Select("content", "*", "content_type='6' "))){
                 $text .= "<table class='fborder' style='width:100%'>
                 <tr>
                 <td style='width:5%' class='forumheader2'>&nbsp;</td>
@@ -245,7 +282,8 @@ if($action == "cat"){
         unset($content_heading, $content_summary, $content_subheading);
 
         if($sub_action == "edit"){
-                if($sql -> db_Select("content", "*", "content_id='$id' ")){
+                // ML
+                if((e_MLANG == 1 && $ml -> e107_ml_Select("content", "*", "content_id='$id' ")) || (e_MLANG != 1 && $sql -> db_Select("content", "*", "content_id='$id' "))){
                         $row = $sql -> db_Fetch(); extract($row);
                 }
         }
@@ -274,15 +312,29 @@ if($action == "cat"){
         <td class='forumheader3' style='width:70%'>".$rs->form_textarea("category_description", 59, 3, $content_subheading)."</td>
         </tr>
         <tr><td colspan='2' style='text-align:center' class='forumheader'>";
-        if($id){
+        // ML
+				if(e_MLANG == 1){
+				  // Display panel for Update category
+          if($id){
+				    $idpanel = 1;
+				    $text .= $rs -> form_hidden("category_id", $id);
+				  }else{
+				    // Display panel for Create category
+            $idpanel = 2;
+          }
+          require_once(e_HANDLER."multilang/admin/article.php");
+          
+				}else{ // END ML
+            if($id){
                 $text .= "<input class='button' type='submit' name='update_category' value='".ARLAN_69."' />
                 ".$rs -> form_button("submit", "category_clear", "".ARLAN_70."").
                 $rs -> form_hidden("category_id", $id)."
-                </td></tr>";
-        }else{
-                $text .= "<input class='button' type='submit' name='create_category' value='".ARLAN_71."' /></td></tr>";
+                ";
+            }else{
+                $text .= "<input class='button' type='submit' name='create_category' value='".ARLAN_71."' />";
+            }
         }
-        $text .= "</table>
+        $text .= "</td></tr></table>
         ".$rs -> form_close()."
         </div>";
 
@@ -298,8 +350,16 @@ if(!$action || $action == "confirm" || $action == 'c'){
         $text = "";
         // -------- SHOW FIRST LETTERS FIRSTNAMES ------------------------------------
         $sql = new db;
-        $distinctfirstletter = $sql -> db_Select("content", "DISTINCT(LEFT(content_heading,1)) as letter", "content_type='0' ORDER BY content_heading ASC ");
-
+        // ML
+        if(e_MLANG == 1)
+        {
+          $distinctfirstletter = $ml -> e107_ml_Select("content", "DISTINCT(LEFT(content_heading,1)) as letter", "content_type='0' ORDER BY content_heading ASC ");
+        }
+        else
+        {
+          $distinctfirstletter = $sql -> db_Select("content", "DISTINCT(LEFT(content_heading,1)) as letter", "content_type='0' ORDER BY content_heading ASC ");
+        }
+        
         if ($distinctfirstletter != 1){
 
                 $text .= "<form method='post' action='".e_SELF."'>
@@ -339,7 +399,8 @@ if(!$action || $action == "confirm" || $action == 'c'){
 
         $sql2 = new db;
         $text .= "<div style='border : solid 1px #000; padding : 4px; width : auto; height : 400px; overflow : auto; '>";
-        if($article_total = $sql -> db_Select("content", "*", $query)){
+        // ML
+        if((e_MLANG ==1 && $article_total = $ml -> e107_ml_Select("content", "*", $query)) || (e_MLANG != 1 && $article_total = $sql -> db_Select("content", "*", $query))){
                 if($article_total < 50 || $letter || $cat){
                         $text .= "<table class='fborder' style='width:100%'>
                         <tr>
@@ -351,7 +412,8 @@ if(!$action || $action == "confirm" || $action == 'c'){
                                 extract($row);
                                 unset($cs);
                                 $delete_heading = str_replace("&#39;", "\'", $content_heading);
-                                if($sql2 -> db_Select("content", "content_summary", "content_id=$content_parent")){
+                                // ML
+                                if((e_MLANG ==1 && $ml -> e107_ml_Select("content", "content_summary", "content_id=$content_parent", "default", false, "sql2")) || (e_MLANG != 1 && $sql2 -> db_Select("content", "content_summary", "content_id=$content_parent"))){
                                         $row = $sql2 -> db_Fetch(); $cs = $row[0];
                                 }
                                 $text .= "<tr>
@@ -386,7 +448,8 @@ if(!$action || $action == "confirm" || $action == 'c'){
 
 if($action == "create"){
         if($sub_action == "edit" && !$_POST['preview']){
-                if($sql -> db_Select("content", "*", "content_id='$id' ")){
+                // ML
+                if((e_MLANG ==1 && $ml -> e107_ml_Select("content", "*", "content_id='$id' ")) || (e_MLANG != 1 && $sql -> db_Select("content", "*", "content_id='$id' "))){
                         $row = $sql -> db_Fetch(); extract($row);
                         $data = str_replace("<br />", "", $aj -> formtparev($content_content));
                         if(is_numeric($content_author)){
@@ -401,7 +464,8 @@ if($action == "create"){
         }
 
         if($sub_action == "sa" && !$_POST['preview']){
-                if($sql -> db_Select("content", "*", "content_id=$id")){
+                // ML
+                if((e_MLANG ==1 && $ml -> e107_ml_Select("content", "*", "content_id='$id' ")) || (e_MLANG != 1 && $sql -> db_Select("content", "*", "content_id=$id"))){
                         $row = $sql -> db_Fetch(); extract($row);
                         $data = $content_content;
                         $tmp = explode("^", $content_author);
@@ -421,7 +485,12 @@ if($action == "create"){
         <td style='width:20%; vertical-align:top' class='forumheader3'>".ARLAN_74.":</td>
         <td style='width:80%' class='forumheader3'>";
 
-        $sql -> db_Select("content", "*", "content_type=6 ");
+        // ML
+        if(e_MLANG == 1){
+          $ml -> e107_ml_Select("content", "*", "content_type=6 ");
+        }else{ // END ML
+          $sql -> db_Select("content", "*", "content_type=6 ");
+        }
         $text .= $rs->form_select_open("category");
         $text .= (!$content_parent ? $rs -> form_option("- ".ARLAN_75." -", 1, -1) : $rs -> form_option("- ".ARLAN_75." -", 0, -1));
         while(list($category_id, $category_name) = $sql-> db_Fetch()){
@@ -477,7 +546,7 @@ if($action == "create"){
             require_once(e_HANDLER."ren_help.php");
             $text .= ren_help();
             }
-        $text .="
+        $text .= "
         </td>
         </tr>
 
@@ -502,10 +571,41 @@ if($action == "create"){
         </tr>
 
         <tr style='vertical-align:top'>
-        <td colspan='2'  style='text-align:center' class='forumheader'>".
-        (!$_POST['preview'] ? "<input class='button' type='submit' name='preview' value='".ARLAN_28."' />" : "<input class='button' type='submit' name='preview' value='".ARLAN_27."' />")." ".
-        ($sub_action == "edit" || $_POST['editp']? "<input class='button' type='submit' name='update_article' value='".ADLAN_81." ".ARLAN_20."' />\n<input type='hidden' name='content_id' value='$id' />" : ($sub_action == "sa" ? "<input class='button' type='submit' name='sa_article' value='".ARLAN_98."' />" : "<input class='button' type='submit' name='create_article' value='".ADLAN_85." ".ARLAN_20."' />"))."
-        </td>
+        <td colspan='2'  style='text-align:center' class='forumheader'>";
+        // ML
+				if(e_MLANG == 1){
+          if((!$_POST['preview'])){
+				    if($sub_action == "edit" || $_POST['editp']){
+				      // Display panel for
+              $idpanel = 1;
+              $text .= "<input type='hidden' name='content_id' value='$id' />";
+            }else{
+                if($sub_action == "sa"){
+                  $idpanel = 2;
+                }else{
+                  $idpanel = 3;
+                }
+            }
+				  }else{
+				    if($sub_action == "edit" || $_POST['editp']){
+              $idpanel = 4;
+              $text .= "<input type='hidden' name='content_id' value='$id' />";
+            }else{
+                if($sub_action == "sa"){
+                  
+                  $idpanel = 5;
+                }else{
+                  $idpanel = 6;
+                }
+            }
+          }
+          require_once(e_HANDLER."multilang/admin/article2.php");
+          
+				}else{ // END ML
+          $text .= (!$_POST['preview'] ? "<input class='button' type='submit' name='preview' value='".ARLAN_28."' />" : "<input class='button' type='submit' name='preview' value='".ARLAN_27."' />")." ";
+          $text .= ($sub_action == "edit" || $_POST['editp']? "<input class='button' type='submit' name='update_article' value='".ADLAN_81." ".ARLAN_20."' />\n<input type='hidden' name='content_id' value='$id' />" : ($sub_action == "sa" ? "<input class='button' type='submit' name='sa_article' value='".ARLAN_98."' />" : "<input class='button' type='submit' name='create_article' value='".ADLAN_85." ".ARLAN_20."' />"));
+        }
+        $text .= "</td>
         </tr>
         </table>
         </form>
@@ -555,7 +655,8 @@ if($action == "opt"){
 if($action == "sa"){
         global $sql, $rs, $ns, $aj;
         $text = "<div style='border : solid 1px #000; padding : 4px; width :auto; height : 200px; overflow : auto; '>\n";
-        if($article_total = $sql -> db_Select("content", "*", "content_type=15")){
+        // ML
+        if((e_MLANG == 1 && $article_total = $ml -> e107_ml_Select("content", "*", "content_type=15")) || (e_MLANG != 1 && $article_total = $sql -> db_Select("content", "*", "content_type=15"))){
                 $text .= "<table class='fborder' style='width:100%'>
                 <tr>
                 <td style='width:5%' class='forumheader2'>ID</td>
@@ -588,7 +689,7 @@ if($action == "sa"){
 
 function article_adminmenu(){
 
-                global $action,$sql,$sub_action;
+                global $action,$sql,$sub_action,$ml;
                 $act=$action;
                 if($act==""){$act="main";}
                 $var['main']['text']=ARLAN_76;
@@ -611,7 +712,8 @@ function article_adminmenu(){
 
                                         unset($var);
                                         $var=array();
-                                        if($sql -> db_Select("content","content_id,content_heading","content_type='6'")){
+                                        // ML
+                                        if((e_MLANG == 1 && $ml -> e107_ml_Select("content","content_id,content_heading","content_type='6'")) || (e_MLANG != 1 && $sql -> db_Select("content","content_id,content_heading","content_type='6'"))){
                                                  $var['cnone']['text']=ARLAN_75;
                                                  $var['cnone']['link']=e_SELF."?c.none";
                                                  while($row = $sql -> db_Fetch()){

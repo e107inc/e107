@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin_combo.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:20 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-10-10 21:13:18 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -62,7 +62,7 @@ function wad2($link, $title, $description, $perms, $icon = FALSE){
 $text = "<div style='text-align:center'>
 <table style='width:95%'>";
 
-require_once("ad_links.php");
+require_once(e_ADMIN."ad_links.php");
 
 $newarray = asortbyindex ($array_functions, 1);
 

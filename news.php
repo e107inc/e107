@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-10-06 17:56:49 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.4 $
+|     $Date: 2004-10-10 21:12:04 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -24,6 +24,13 @@ if($NEWSHEADER){
 	require_once(FOOTERF);
 	exit;
 }
+
+// ML
+if(e_MLANG == 1){
+	require_once(e_HANDLER."multilang/ml_panel.php");
+	e107ml_panel("news");
+}
+// END ML
 
 if(Empty($pref['newsposts']) ? define("ITEMVIEW", 15) : define("ITEMVIEW", $pref['newsposts']));
 if(file_exists("install.php") && ADMIN){ echo "<div class='installe' style='text-align:center'><b>*** ".LAN_NEWS_3." ***</b><br />".LAN_NEWS_4."</div><br /><br />"; }
@@ -51,12 +58,23 @@ if($action == "cat"){
 	if($category != 0){
 		$gen = new convert;
 		$sql2 = new db;
-		$sql -> db_Select("news_category", "*", "category_id='$category'");
+		// ML
+    if(e_MLANG == 1){
+      $ml -> e107_ml_Select("news_category", "*", "category_id='$category'");
+    }else{
+      $sql -> db_Select("news_category", "*", "category_id='$category'");
+    }
+    // END ML
 		list($category_id, $category_name, $category_icon) = $sql-> db_Fetch();
 		$category_name = $tp -> toHTML($category_name);
 		$category_icon = e_IMAGE."newsicons/".$category_icon;
 
-		$count = $sql -> db_SELECT("news", "*",  "news_category='$category' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY news_datestamp DESC");
+		// ML
+		if(e_MLANG == 1){
+			$count = $ml -> e107_ml_Select("news", "*",  "news_category='$category' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY news_datestamp DESC");
+		}else{// END ML
+			$count = $sql -> db_SELECT("news", "*",  "news_category='$category' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY news_datestamp DESC");
+    }
 		while($row = $sql-> db_Fetch()){
 			extract($row);
 			if(check_class($news_class)){
@@ -89,11 +107,29 @@ if($action == "cat"){
 
 if($action == "extend"){
 	$extend_id = substr(e_QUERY, (strpos(e_QUERY, ".")+1));
-	$sql -> db_Select("news", "*", "news_id='$extend_id' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")");
+	// ML
+  if(e_MLANG == 1)
+  {
+    $ml -> e107_ml_Select("news", "*", "news_id='$extend_id' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")");
+  }
+  else
+  {
+    $sql -> db_Select("news", "*", "news_id='$extend_id' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")");
+  }
+  // END ML
 	list($news['news_id'], $news['news_title'], $news['data'], $news['news_extended'], $news['news_datestamp'], $news['admin_id'], $news_category, $news['news_allow_comments'],  $news['news_start'], $news['news_end'], $news['news_class']) = $sql -> db_Fetch();
 	if(!check_class($news['news_class'])){ header("location:".e_BASE."news.php"); }
-	$sql -> db_Select("news_category", "*",  "category_id='$news_category' ");
-	list($news['category_id'], $news['category_name'], $news['category_icon']) = $sql-> db_Fetch();
+	// ML
+  if(e_MLANG == 1)
+  {
+    $ml -> e107_ml_Select("news_category", "*",  "category_id='$news_category' ");
+  }
+  else
+  {
+    $sql -> db_Select("news_category", "*",  "category_id='$news_category' ");
+  }
+  // END ML
+  list($news['category_id'], $news['category_name'], $news['category_icon']) = $sql-> db_Fetch();
 	$news['comment_total'] = $sql -> db_Count("comments", "(*)",  "WHERE comment_item_id='".$news['news_id']."' AND comment_type='0' ");
 	$sql -> db_Select("user", "user_name", "user_id='".$news['admin_id']."' ");
 	list($news['admin_name']) = $sql -> db_Fetch();
@@ -192,7 +228,13 @@ $query2 = "news_class != '255' AND (news_start=0 || news_start < ".time().") AND
 
 // #### normal newsitems, rendered via render_newsitem(), the $query is changed above (no other changes made) ---------
 ob_start();
-if(!$sql -> db_Select("news", "*", $query))
+// ML
+if(e_MLANG == 1)
+{
+	require_once(e_HANDLER."multilang/news1.php");
+	
+}// END ML
+else if(!$sql -> db_Select("news", "*", $query))
 {
 	echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_462 : LAN_83)."</b></div><br /><br />";
 }
@@ -222,7 +264,13 @@ else
 			}
 			else
 			{
-				$sql2 -> db_Select("news_category", "*",  "category_id='$news_category' ");
+				// ML
+        if(e_MLANG == 1){
+          $ml -> e107_ml_Select("news_category", "*",  "category_id='$news_category' ", "default", FALSE, "sql2");
+        }else{
+          $sql2 -> db_Select("news_category", "*",  "category_id='$news_category' ");
+        }
+        // END ML
 				list($news['category_id'], $news['category_name'], $news['category_icon']) = $sql2-> db_Fetch();
 				cachevars("news_cat_$news_category",$news_category);
 				cachevars("news_cat_name_$news_category",$news['category_name']);
@@ -247,7 +295,13 @@ else
 					list($news['admin_name']) = $sql2 -> db_Fetch();
 					cachevars($news['admin_id'], $news['admin_name']);
 				}
-				$sql2 -> db_Select("news_category", "*",  "category_id='$news_category' ");
+				// ML
+        if(e_MLANG == 1){
+          $ml -> e107_ml_Select("news_category", "*",  "category_id='$news_category' ", "default", FALSE, "sql2");
+        }else{
+          $sql2 -> db_Select("news_category", "*",  "category_id='$news_category' ");
+        }
+        // END ML
 				list($news['category_id'], $news['category_name'], $news['category_icon']) = $sql2-> db_Fetch();
 				$ix -> render_newsitem($news,"","userclass");
 			}
@@ -259,9 +313,16 @@ else
 // #### new: news archive ---------------------------------------------------------------------------------------------
 if($action != "item" && $action != 'list'){ // do not show the newsarchive on the news.php?item.X page (but only on the news mainpage)
 	$sql2b = new db;
-	if(!$sql2b -> db_Select("news", "*", $query2)){
-
-	}else{
+	require_once(e_HANDLER."multilang/mysql_queries.php");
+  if(!is_object($ml)){$ml = new e107_ml;}
+  $tmp_ok = 0;
+  if(e_ML && !$ml -> e107_ml_Select("news", "*", $query2, "", FALSE, "sql2b")){
+    $tmp_ok = 1;
+  }else if(!$sql2b -> db_Select("news", "*", $query2)){
+    $tmp_ok = 1;
+  }
+  
+  if($tmp_ok == 1){
 	while(list($news2['news_id'], $news2['news_title'], $news2['data'], $news2['news_extended'], $news2['news_datestamp'], $news2['admin_id'], $news2_category, $news2['news_allow_comments'],  $news2['news_start'], $news2['news_end'], $news2['news_class'], $news2['news_rendertype']) = $sql2b -> db_Fetch()){
 
 		if(check_class($news2['news_class'])){
@@ -295,7 +356,16 @@ if($action != "item" && $action != 'list'){ // do not show the newsarchive on th
 			}
 			else
 			{
-				$sql2 -> db_Select("news_category", "*",  "category_id='$news2_category' ");
+			  // ML
+				if(e_MLANG)
+				{
+          $ml -> e107_ml_Select("news_category", "*",  "category_id='$news2_category' ", "default", false, "sql2");
+        }
+        else 
+        { // END ML
+          $sql2 -> db_Select("news_category", "*",  "category_id='$news2_category' ");
+        }
+        
 				list($news['category_id'], $news['category_name'], $news['category_icon']) = $sql2-> db_Fetch();
 				cachevars("news_cat_$news_category",$news_category);
 				cachevars("news_cat_name_$news_category",$news['category_name']);
@@ -339,7 +409,16 @@ $line_clr = "black";
 
 if($pref['news_cats']=='1'){
 	$sql2 = new db;
-	$sql2 -> db_Select("news_category","*",  "category_id!='' ORDER BY category_name ASC");
+  // ML
+	if(e_MLANG)
+	{
+    $ml -> e107_ml_Select("news_category","*",  "category_id!='' ORDER BY category_name ASC", "default", false, "sql2");
+  }
+  else 
+  { // END ML
+    $sql2 -> db_Select("news_category","*",  "category_id!='' ORDER BY category_name ASC");
+  }
+ 
 	$text3 .="<table border='0' style='width:96%' align='center' cellpadding='3' cellspacing='3'><tr>\n";
 	$t = 0;
 	while($row3 = $sql2-> db_Fetch()){
@@ -351,7 +430,16 @@ if($pref['news_cats']=='1'){
 		$text3 .= "<div style='border-bottom:1px inset $line_clr; font-weight:bold;padding-bottom:1px;margin-bottom:5px'><img src='$category_icon' alt='' />&nbsp;<a href='news.php?cat.".$category_id."' style='text-decoration:none' >$category_name</a></div>";
 		//  $text3 .= "</td>";
 
-		$count = $sql -> db_SELECT("news", "*",  "news_category='$category_id' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")  ORDER BY news_datestamp DESC LIMIT 0,$nbr_lst");
+    // ML
+  	if(e_MLANG)
+  	{
+      $ml -> e107_ml_Select("news", "*",  "news_category='$category_id' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")  ORDER BY news_datestamp DESC LIMIT 0,$nbr_lst");
+    }
+    else 
+    { // END ML
+      $count = $sql -> db_SELECT("news", "*",  "news_category='$category_id' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")  ORDER BY news_datestamp DESC LIMIT 0,$nbr_lst");
+    }
+
 		while($row = $sql-> db_Fetch()){
 			extract($row);
 			$text3 .="<div style='width:100%'><table style='width:100%' cellpadding='0' cellspacing='0' border='0'>\n";

@@ -23,8 +23,9 @@ function sitelinks()
 	# - return        	parsed text
 	# - scope          	null
 	*/
-	global $pref,$ns, $tp;
-
+	global $pref,$ns, $tp, $sql, $sql2, $ml;
+	if(!is_object($sql)){$sql = new db;}
+  if(!is_object($sql2)){$sql2 = new db;}
 	if($cache = retrieve_cache("sitelinks"))
 	{
 		echo $tp -> toHTML($cache,TRUE,'nobreak');
@@ -56,9 +57,19 @@ function sitelinks()
 	}
 	}
 	*/
-	$sql = new db; $sql2 = new db;
-	$sql -> db_Select("links", "*", "link_category='1' && link_name NOT REGEXP('submenu') ORDER BY link_order ASC");
-	if($sql2 -> db_Select("links", 'link_name', "link_name LIKE 'submenu.%' "))
+
+	if(e_MLANG == 1){
+    $ml -> e107_ml_Select("links", "*", "link_category='1' && link_name NOT REGEXP('submenu') ORDER BY link_order ASC");
+  }else{
+    $sql -> db_Select("links", "*", "link_category='1' && link_name NOT REGEXP('submenu') ORDER BY link_order ASC");
+	}
+	$tmp_ok = 0;
+	if(e_MLANG && $ml -> e107_ml_Select("links", 'link_name', "link_name LIKE 'submenu.%' ", "default", FALSE, "sql2") ){
+    $tmp_ok = 1;
+  }else if($sql2 -> db_Select("links", 'link_name', "link_name LIKE 'submenu.%' ")){
+    $tmp_ok = 1;
+  }
+	if($tmp_ok == 1)
 	{
 		while($row = $sql2 -> db_Fetch())
 		{
@@ -108,7 +119,14 @@ function sitelinks()
 
 			if(strpos($submenu_list,"submenu.$link_name") !== FALSE)
 			{
-				if($sql2 -> db_Select("links", "*", "link_name REGEXP('submenu.".$link_name."') ORDER BY link_order ASC") && HIDESUBSECTIONS !== TRUE)
+				$tmp_ok = 0;
+        if($ml -> e107_ml_Select("links", "*", "link_name REGEXP('submenu.".$link_name."') ORDER BY link_order ASC", "default", FALSE, "sql2") && HIDESUBSECTIONS !== TRUE){
+          $tmp_ok = 1;
+        }else if($sql2 -> db_Select("links", "*", "link_name REGEXP('submenu.".$link_name."') ORDER BY link_order ASC") && HIDESUBSECTIONS !== TRUE){
+          $tmp_ok = 1;
+        }
+        
+        if($tmp_ok == 1)
 				{
 					$menu_count++;
 					$main_linkname = $link_name;
