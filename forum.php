@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/forum.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-01-11 15:29:39 $
+|     $Revision: 1.14 $
+|     $Date: 2005-01-15 17:36:22 $
 |     $Author: pholzmann $
 +----------------------------------------------------------------------------+
 */
@@ -151,6 +151,8 @@ foreach($listuserson as $uinfo => $pinfo)
 	$USERLIST .= "<a href='".e_BASE."user.php?id.$oid'>$oname</a>".($c == MEMBERS_ONLINE ? "." :", ");
 }
 $USERLIST .= "<br /><a rel='external' href='online.php'>".LAN_427."</a> ".LAN_436."";
+// Until ICONKEY is templated, it needs a bit of styling to make it work, since it
+// is a fixed layout table and core css has no class for this kind of table
 $ICONKEY = "
 <table style='width:100%' cellpadding='2' cellspacing='0'>\n<tr>
 <td style='width:2%'>".IMAGE_new_small."</td>
