@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-03-13 10:59:53 $
-|     $Author: stevedunstan $
+|     $Revision: 1.22 $
+|     $Date: 2005-03-17 15:32:18 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -51,19 +51,40 @@ class e_bbcode {
 	function parseBBCodes($text, $p_ID) {
 		global $code;
 		global $postID;
+		global $single_bb;
 		$postID = $p_ID;
 		$done = FALSE;
+		$single_bb = FALSE;
 		$i=0;
 		while (!$done) {
 			$done = TRUE;
 			$i++;
-			foreach(array_keys($this->bbLocation) as $code) {
-				if ($code && ($pos = strpos($text, "[$code")) !== FALSE) {
-					$text = preg_replace_callback("/\[({$code}([a-zA-Z]*))([\d]*?)([^\]]*)\](.*?)\[\/{$code}\\2\\3\]/s", array($this, 'doCode'), $text);
-					$done = FALSE;
-					if($text{$pos} == "[")
+			foreach(array_keys($this->bbLocation) as $code)
+			{
+				if($code{0} == '*')
+				{
+					$single_bb = TRUE;
+					$code = substr($code, 1);
+					if ($code && ($pos = strpos($text, "[$code")) !== FALSE)
 					{
-						$text = str_replace("[".$code, "&#091;".$code, $text);
+						$text = preg_replace_callback("#\[({$code}([a-zA-Z]*))(\d*?)(.*?)\]#s", array($this, 'doCode'), $text);
+						$done = FALSE;
+						if($text{$pos} == "[")
+						{
+							$text = str_replace("[".$code, "&#091;".$code, $text);
+						}
+					}
+				}
+				else
+				{
+					if ($code && ($pos = strpos($text, "[$code")) !== FALSE)
+					{
+						$text = preg_replace_callback("/\[({$code}([a-zA-Z]*))([\d]*?)([^\]]*)\](.*?)\[\/{$code}\\2\\3\]/s", array($this, 'doCode'), $text);
+						$done = FALSE;
+						if($text{$pos} == "[")
+						{
+							$text = str_replace("[".$code, "&#091;".$code, $text);
+						}
 					}
 				}
 			}
@@ -78,13 +99,17 @@ class e_bbcode {
 	function doCode($matches) {
 		global $tp;
 		global $postID;
+		global $single_bb;
 		global $full_text;
 		global $code_text;
 		global $code;
 		global $parm;
 		
 		$code = $matches[1];
-
+		if($single_bb == TRUE)
+		{
+			$code = '*'.$code;
+		}
 		if (E107_DEBUG_LEVEL)
 		{
 			global $db_debug;
@@ -99,10 +124,10 @@ class e_bbcode {
 			$bbcode = $this->bbList[$code];
 		} else {
 			if ($this->bbLocation[$code] == 'core') {
-				$bbFile = e_FILE.'bbcode/'.strtolower($code).'.bb';
+				$bbFile = e_FILE.'bbcode/'.strtolower(str_replace('*','',$code)).'.bb';
 			} else {
 				// Add code to check for plugin bbcode addition
-				$bbFile = e_PLUGIN.$this->bbLocation[$code].'/'.strtolower($code).'.bb';
+				$bbFile = e_PLUGIN.$this->bbLocation[$code].'/'.strtolower(str_replace('*','',$code)).'.bb';
 			}
 			if (file_exists($bbFile)) {
 				$bbcode = file_get_contents($bbFile);
