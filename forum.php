@@ -251,6 +251,10 @@ function parse_forum($row, $restricted_string=""){
 		extract($row);
 		$lastpost_author_id = substr($forum_lastpost, 0, strpos($forum_lastpost, "."));
 		$lastpost_author_name = substr($forum_lastpost, (strpos($forum_lastpost, ".")+1));
+		if(strstr($lastpost_author_name, chr(1))){ 
+			$tmp = explode(chr(1), $lastpost_author_name); 
+			$lastpost_author_name = $tmp[0];
+		}
 		$lastpost_datestamp = substr($lastpost_author_name, (strrpos($lastpost_author_name, ".")+1));
 		$lastpost_author_name = str_replace(".".$lastpost_datestamp, "", $lastpost_author_name);
 		$lastpost_datestamp = $gen->convert_date($lastpost_datestamp, "forum");
@@ -307,6 +311,10 @@ if(e_QUERY == "new"){
 					$np = TRUE;
 					$author_id = substr($thread_user , 0, strpos($thread_user , "."));
 					$author_name = substr($thread_user , (strpos($thread_user , ".")+1));
+					if(strstr($author_name, chr(1))){ 
+						$tmp = explode(chr(1), $author_name); 
+						$author_name = $tmp[0];
+					}
 					$datestamp = $gen->convert_date($thread_datestamp, "forum");
 					$STARTERTITLE = "<a href='".e_BASE."user.php?id.$author_id'>$author_name</a><br />".$datestamp;
 					$iid = $thread_id;

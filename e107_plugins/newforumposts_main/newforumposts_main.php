@@ -56,6 +56,10 @@ if($sql -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHE
 
 			$post_author_id = substr($thread_user, 0, strpos($thread_user, "."));
 			$post_author_name = substr($thread_user, (strpos($thread_user, ".")+1));
+			if(strstr($post_author_name, chr(1))){ 
+				$tmp = explode(chr(1), $post_author_name); 
+				$post_author_name = $tmp[0];
+			}
 
 			$replies = $sql2 -> db_Select("forum_t", "*", "thread_parent=$thread_id");
 

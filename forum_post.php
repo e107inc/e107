@@ -437,8 +437,10 @@ if($action == "edit" || $action == "quote"){
         $post = ereg_replace("&lt;span class=&#39;smallblacktext&#39;.*\span\>", "", $post);
         if($action == "quote"){
                 $post_author_name = substr($thread_user, (strpos($thread_user, ".")+1));
-                $tmp = explode(chr(1), $post_author_name);
-                $post_author_name = $tmp[0];
+                if(strstr($post_author_name, chr(1))){ 
+						$tmp = explode(chr(1), $post_author_name); 
+						$post_author_name = $tmp[0];
+					}
                 $post = "[quote=$post_author_name]".$post."[/quote]\n";
                 $eaction = FALSE;
                 $action = "reply";
@@ -619,6 +621,8 @@ if($action == "rp" || $action == "cp"){
         $sql -> db_Select("forum_t", "*", "thread_id = '$thread_id' ");
         $row = $sql-> db_Fetch("no_strip"); extract($row);
         $post_author_name = substr($thread_user, (strpos($thread_user, ".")+1));
+        $tmp = explode(chr(1), $post_author_name);
+        $post_author_name = $tmp[0];
         $thread_datestamp  = $gen->convert_date($thread_datestamp , "forum");
         $thread_name = $aj -> tpa($thread_name, $mode="off");
         $thread_thread = $aj -> tpa($thread_thread, $mode="off");
@@ -642,6 +646,10 @@ if($action == "rp" || $action == "cp"){
 			$sql -> db_Select("forum_t", "*", $query);
 			while($row = $sql-> db_Fetch("no_strip")){ extract($row);
 			$post_author_name = substr($thread_user, (strpos($thread_user, ".")+1));
+			if(strstr($post_author_name, chr(1))){ 
+				$tmp = explode(chr(1), $post_author_name); 
+				$post_author_name = $tmp[0];
+			}
 			$thread_datestamp  = $gen->convert_date($thread_datestamp , "forum");
 			$thread_name = $aj -> tpa($thread_name, $mode="off");
 			$thread_thread = $aj -> tpa($thread_thread, $mode="off");
