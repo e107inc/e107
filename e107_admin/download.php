@@ -289,6 +289,7 @@ class download{
                         if($sql -> db_Select("upload", "*", "upload_id='$id' ")){
                                 $row = $sql-> db_Fetch();
                                 extract($row);
+								$download_category = $upload_category;
                                 $download_name = $upload_name.($upload_version ? " - " . $upload_version : "");
                                 $download_url = $upload_file;
                                 $download_author_email = $upload_email;

@@ -57,7 +57,7 @@ if(IsSet($_POST['upload'])){
 				$poster = (USER ? USERID.".".USERNAME : "0".$_POST['file_poster']);
 				$_POST['file_email'] = ($_POST['file_email'] ? $_POST['file_email'] : USEREMAIL);
 				$_POST['file_description'] = $aj -> formtpa($_POST['file_description'], "public");
-				$sql -> db_Insert("upload", "0, '$poster', '".$_POST['file_email']."', '".$_POST['file_website']."', '".time()."', '".$_POST['file_name']."', '".$_POST['file_version']."', '".$file."', '".$image."', '".$_POST['file_description']."', '".$_POST['file_demo']."', '".$filesize."', 0");
+				$sql -> db_Insert("upload", "0, '$poster', '".$_POST['file_email']."', '".$_POST['file_website']."', '".time()."', '".$_POST['file_name']."', '".$_POST['file_version']."', '".$file."', '".$image."', '".$_POST['file_description']."', '".$_POST['file_demo']."', '".$filesize."', 0, '".$_POST['download_category']."'");
 				$message .= "<br />".LAN_404;
 			}
 		}
@@ -77,6 +77,23 @@ if(IsSet($message)){
 $text = "<div style='text-align:center'>
 <form enctype='multipart/form-data' method='post' action='".e_SELF."'> 
 <table style='width:70%' class='fborder'>
+<tr>
+<td style='width:20%' class='forumheader3'>".DOWLAN_11.":</td>
+<td style='width:80%' class='forumheader3'>";
+
+	$sql -> db_Select("download_category", "*", "download_category_parent !=0");
+	$text .= "<select name='download_category' class='tbox'>\n";
+	while($row = $sql -> db_Fetch()){
+		extract($row);
+		if($download_category_id == $download_category){
+			$text .= "<option value='$download_category_id' selected>".$download_category_name."</option>\n";
+				}else{
+            $text .= "<option value='$download_category_id'>".$download_category_name."</option>\n";
+        }
+	}
+$text .= "</select>
+</td>
+</tr>
 
 <tr>
 <td style='text-align:center' colspan='2'' class='forumheader3'>".LAN_406." ".str_replace("\n", " | ", $pref['upload_allowedfiletype'])."<br />".LAN_407."<br />

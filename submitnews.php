@@ -34,7 +34,7 @@ if(IsSet($_POST['submit'])){
 			$itemtitle = $aj -> formtpa($_POST['itemtitle'], "public");
 			$item = $aj -> formtpa($_POST['item'], "public");
 					 
-			$sql -> db_Insert("submitnews", "0, '$user', '$email', '$itemtitle', '$item', '".time()."', '$ip', '0' ");
+			$sql -> db_Insert("submitnews", "0, '$user', '$email', '$itemtitle', '".$_POST['cat_id']."','$item', '".time()."', '$ip', '0' ");
 			$ns -> tablerender(LAN_133, "<div style='text-align:center'>".LAN_134."</div>");
 			require_once(FOOTERF);
 			exit;
@@ -50,7 +50,24 @@ if(!USER){
 	$text .= "<tr>\n<td style='width:20%' class='forumheader3'>".LAN_7."</td>\n<td style='width:80%' class='forumheader3'>\n<input class='tbox' type='text' name='author_name' size='60' value='$author_name' maxlength='100' />\n</td>\n</tr>\n<tr>\n<td style='width:20%' class='forumheader3'>".LAN_112."</td>\n<td style='width:80%' class='forumheader3'>\n<input class='tbox' type='text' name='author_email' size='60' value='$author_email' maxlength='100' />\n</td>\n</tr>";
 }
 
-$text .= "<tr>
+$text .= " <tr>
+                <td style='width:20%' class='forumheader3'>".NWSLAN_6.": </td>
+                <td style='width:80%' class='forumheader3'>";
+
+                if(!$sql -> db_Select("news_category")){
+                        $text .= NWSLAN_10;
+                }else{
+
+                        $text .= "
+                        <select name='cat_id' class='tbox'>";
+
+                        while(list($cat_id, $cat_name, $cat_icon) = $sql-> db_Fetch()){
+                                $text .= ($_POST['cat_id'] == $cat_id ? "<option value='$cat_id' selected>".$cat_name."</option>" : "<option value='$cat_id'>".$cat_name."</option>");
+                        }
+                        $text .= "</select>";
+                }
+                $text .= "</td>
+                </tr><tr>
 <td style='width:20%' class='forumheader3'>".LAN_62."</td>
 <td style='width:80%' class='forumheader3'>
 <input class='tbox' type='text' name='itemtitle' size='60' value='$itemtitle' maxlength='200' />
