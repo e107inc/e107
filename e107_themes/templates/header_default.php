@@ -11,7 +11,7 @@
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
 |
-|   $Id: header_default.php,v 1.33 2004-08-20 03:59:23 mcfly_e107 Exp $
+|   $Id: header_default.php,v 1.34 2004-08-27 02:27:50 mcfly_e107 Exp $
 +---------------------------------------------------------------+
 */
 if(!function_exists("parseheader")){
@@ -121,7 +121,7 @@ if(!function_exists("checklayout")){
                           }else{
                                   echo  "<form method='post' action='".e_SELF."'>\n<p>\n".LOGIN_MENU_L1."<input class='tbox' type='text' name='username' size='15' value='$username' maxlength='20' />&nbsp;&nbsp;\n".LOGIN_MENU_L2."<input class='tbox' type='password' name='userpass' size='15' value='' maxlength='20' />&nbsp;&nbsp;\n<input type='checkbox' name='autologin' value='1' />".LOGIN_MENU_L6."&nbsp;&nbsp;\n<input class='button' type='submit' name='userlogin' value='Login' />";
                                   if($pref['user_reg']){
-                                          echo "&nbsp;&nbsp;<a href='signup.php'>".LOGIN_MENU_L3."</a>";
+                                          echo "&nbsp;&nbsp;<a href='".e_BASE."signup.php'>".LOGIN_MENU_L3."</a>";
                                   }
                                   echo "</p>\n</form>";
                           }
