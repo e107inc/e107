@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3.2//EN">
 <html> <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>HTMLArea-3.0 Reference</title>
 
 <style type="text/css">
@@ -67,6 +68,10 @@ padding: 5px; text-align: center; }
 
 </style>
 
+<script type="text/javascript">
+  _editor_url = './';
+  _editor_lang = 'en';
+</script>
 <script type="text/javascript" src="htmlarea.js"></script>
 <script type="text/javascript" src="dialog.js"></script>
 <script tyle="text/javascript" src="lang/en.js"></script>
@@ -116,7 +121,7 @@ other web based WYSIWYG editors are as follows:</p>
   <li>It's lightweight, fast loading and can transform a regular textarea
   into a rich-text editor with a single line of JavaScript.</li>
   <li>Generates clean, valid HTML.</li>
-  <li>It's 100% backwards compatible with older or non-supported browsers
+  <li>It degrades gracefully to older or non-supported browsers
   (they get the original textarea field).</li>
   <li>It's free and can be incorporated into any free or commercial
   program.</li>
@@ -145,8 +150,8 @@ href="http://mozilla.org">Mozilla</a> &gt;= 1.3-Beta</span> on any platform.
 Any browser based on <a href="http://mozilla.org/newlayout">Gecko</a> will
 also work, provided that Gecko version is at least the one included in
 Mozilla-1.3-Beta (for example, <a
-href="http://galeon.sf.net">Galeon-1.2.8</a>).  However, it is backwards
-compatible with other browsers. They will get a regular textarea field
+href="http://galeon.sf.net">Galeon-1.2.8</a>).  However, it degrades
+gracefully to other browsers. They will get a regular textarea field
 instead of a WYSIWYG editor.</p>
 
 <h3>Can I see an example of what it looks like?</h3>
@@ -171,7 +176,7 @@ today!</u></b></font><br /></p>
 other HTMLArea users?</h3>
 
 <p>You can find out more about HTMLArea and download the latest version on
-the <a href="http://www.interactivetools.com/products/htmlarea/">HTMLArea
+the <a href="http://dynarch.com/htmlarea/">HTMLArea
 homepage</a> and you can talk to other HTMLArea users and post any comments
 or suggestions you have in the <a
 href="http://www.interactivetools.com/iforum/Open_Source_C3/htmlArea_v3.0_-_Alpha_Release_F14/"
@@ -192,6 +197,7 @@ href="http://www.interactivetools.com/iforum/Open_Source_C3/htmlArea_v3.0_-_Alph
   <li>CTRL-R -- justify right</li>
   <li>CTRL-J -- justify full</li>
   <li>CTRL-1 .. CTRL-6 -- headings (&lt;h1&gt; .. &lt;h6&gt;)</li>
+  <li>CTRL-0 (zero) -- clean content pasted from Word</li>
 </ul>
 
 <h2>Installation</h2>
@@ -211,7 +217,7 @@ Just follow these steps.</p>
   NOT inside the cgi-bin).</li>
   <li>Transfer all the HTMLArea files from your local computer into the
   /htmlarea/ folder on your website.</li>
-  <li>Open the example page /htmlarea/example.html with your browser to make
+  <li>Open the example page /htmlarea/examples/core.html with your browser to make
   sure everything works.</li>
 </ol>
 
@@ -221,30 +227,21 @@ to do that.</p>
 
 <ol>
 
+  <li>Define some global variables.  "_editor_url" has to be the absolute
+  URL where HTMLArea resides within your
+  website; as we discussed, this would be “/htmlarea/”.  "_editor_lang" must
+  be the language code in which you want HTMLArea to appear.  This defaults
+  to "en" (English); for a list of supported languages, please look into
+  the "lang" subdirectory in the distribution.
+  <pre class="code"
+  ><span class="function-name">&lt;</span><span class="html-tag">script</span> <span class="variable-name">type=</span><span class="string">&quot;text/javascript&quot;</span><span class="function-name">&gt;</span>
+   _editor_url = <span class="string">&quot;/htmlarea/&quot;</span>;
+   _editor_lang = <span class="string">&quot;en&quot;</span>;
+<span class="function-name">&lt;</span><span class="html-tag">/script</span><span class="function-name">&gt;</span></pre>
+
   <li>Include the "htmlarea.js" script:
   <pre class="code"
   ><span class="function-name">&lt;</span><span class="html-tag">script</span> <span class="variable-name">type=</span><span class="string">&quot;text/javascript&quot;</span> <span class="variable-name">src=</span><span class="string">&quot;/htmlarea/htmlarea.js&quot;</span><span class="function-name">&gt;</span><span class="paren-face-match">&lt;</span><span class="html-tag">/script</span><span class="paren-face-match">&gt;</span></pre>
-  </li>
-
-  <li>If you are using popup dialogs, i.e. for insert table, insert image,
-  select color, then you need to include the "dialog.js" file.  This is
-  recommended anyway.
-  <pre class="code"
-  ><span class="function-name">&lt;</span><span class="html-tag">script</span> <span class="variable-name">type=</span><span class="string">&quot;text/javascript&quot;</span> <span class="variable-name">src=</span><span class="string">&quot;/htmlarea/dialog.js&quot;</span><span class="paren-face-match">&gt;</span><span class="function-name">&lt;</span><span class="html-tag">/script</span><span class="function-name">&gt;</span></pre>
-  </li>
-
-  <li>Include the corresponding language definition file.  <span
-  class="note">Note</span>:
-  internationalization is available only since version 3.0.  Check the files
-  containing "lang" in the distribution ZIP.  If your preferred language is
-  not there yet and you decide to write it, please consider sending it to
-  us so that it gets included in the next release.
-  <pre class="code"
-  ><span class="function-name">&lt;</span><span class="html-tag">script</span> <span class="variable-name">type=</span><span class="string">&quot;text/javascript&quot;</span> <span class="variable-name">src=</span><span class="string">&quot;/htmlarea/lang/en.js&quot;</span><span class="function-name">&gt;</span><span class="paren-face-match">&lt;</span><span class="html-tag">/script</span><span class="paren-face-match">&gt;</span></pre>
-
-  <li>Include the stylesheet (be sure to put this inside the HEAD tag):
-  <pre class="code"
-  ><span class="function-name">&lt;</span><span class="html-tag">style</span> <span class="variable-name">type=</span><span class="string">&quot;text/css&quot;</span><span class="function-name">&gt;</span>@import url<span class="function-name">(</span>/htmlarea/htmlarea.css<span class="function-name">)</span><span class="paren-face-match">&lt;</span><span class="html-tag">/style</span><span class="paren-face-match">&gt;</span></pre>
   </li>
 
   <li><p>If you want to change all your &lt;textarea&gt;-s into
@@ -263,6 +260,12 @@ to do that.</p>
   <code>name</code> attribute anymore, it's not a standard solution!</p>
 
 </ol>
+
+<p>This section applies to HTMLArea-3.0 release candidate 1 or later; prior
+to this version, one needed to include more files; however, now HTMLArea is
+able to include other files too (such as stylesheet, language definition
+file, etc.) so you only need to define the editor path and load
+"htmlarea.js".  Nice, eh? ;-)</p>
 
 <h3>I want to change the editor settings, how do I do that?</h3>
 
@@ -289,7 +292,7 @@ config.height = '<span class="string">200px</span>';
 
 <p><span class="warning">Important:</span> It's recommended that you add
 custom features and configuration to a separate file.  This will ensure you
-that when we release a new official version of HTMLArea you'll have no
+that when we release a new official version of HTMLArea you'll have less
 trouble upgrading it.</p>
 
 <h3>How do I customize the toolbar?</h3>
@@ -345,7 +348,7 @@ These three have the following meaning, and need not be present in
 
 <p><span class="warning">Important:</span> It's recommended that you add
 custom features and configuration to a separate file.  This will ensure you
-that when we release a new official version of HTMLArea you'll have no
+that when we release a new official version of HTMLArea you'll have less
 trouble upgrading it.</p>
 
 <h3>How do I create custom buttons?</h3>
@@ -454,7 +457,7 @@ button.</p>
 
 <p><span class="warning">Important:</span> It's recommended that you add
 custom features and configuration to a separate file.  This will ensure you
-that when we release a new official version of HTMLArea you'll have no
+that when we release a new official version of HTMLArea you'll have less
 trouble upgrading it.</p>
 
 <h4 id="btnex">A complete example</h4>
@@ -507,16 +510,14 @@ config.registerButton(&quot;<span class="string">my-hilite</span>&quot;, &quot;<
 
 <hr />
 <address>&copy; <a href="http://interactivetools.com" title="Visit our website"
->InteractiveTools.com</a> 2002, 2003.
+>InteractiveTools.com</a> 2002-2004.
 <br />
+© <a href="http://dynarch.com">dynarch.com</a> 2003-2004<br />
 HTMLArea v3.0 developed by <a
-href="http://students.infoiasi.ro/~mishoo">Mihai Bazon</a> for
-InteractiveTools.com.
+href="http://dynarch.com/mishoo/">Mihai Bazon</a>.
 <br />
 Documentation written by Mihai Bazon.
 </address>
-<!-- hhmts start -->
-Last modified on Sun Aug  3 16:11:23 2003
-<!-- hhmts end -->
+<!-- hhmts start --> Last modified: Wed Jan 28 12:18:23 EET 2004 <!-- hhmts end -->
 <!-- doc-lang: English -->
 </body> </html>

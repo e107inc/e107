@@ -1,4 +1,16 @@
-// I18N constants
+п»ї// I18N constants
+
+// LANG: "ru", ENCODING: UTF-8 | ISO-8859-1
+// Author: Yulya Shtyryakova, <yulya@vdcom.ru>
+
+// FOR TRANSLATORS:
+//
+//   1. PLEASE PUT YOUR CONTACT INFO IN THE ABOVE LINE
+//      (at least a valid email address)
+//
+//   2. PLEASE TRY TO USE UTF-8 FOR ENCODING;
+//      (if this is not possible, please include a comment
+//       that states what encoding is necessary.)
 
 HTMLArea.I18N = {
 
@@ -7,30 +19,45 @@ HTMLArea.I18N = {
 	lang: "ru",
 
 	tooltips: {
-		bold:           "Жирный",
-		italic:         "Наклонный",
-		underline:      "Подчеркнутый",
-		strikethrough:  "Перечеркнутый",
-		subscript:      "Нижний индекс",
-		superscript:    "Верхний индекс",
-		justifyleft:    "Выравнивание по левому краю",
-		justifycenter:  "Выравнивание по центру",
-		justifyright:   "Выравнивание по правому краю",
-		justifyfull:    "Растянутый текст",
-		orderedlist:    "Нумерованный список",
-		unorderedlist:  "Маркированный список",
-		outdent:        "Сдвиг в лево",
-		indent:         "Сдвиг в право",
-		forecolor:      "Цвет шрифта",
-		backcolor:      "Цвет фона",
-		horizontalrule: "Горизонтальная линия",
-		createlink:     "Вставить ссылку",
-		insertimage:    "Вставить картинку",
-		inserttable:    "Вставить таблицу",
-		htmlmode:       "Видеть HTML код",
-		popupeditor:    "Увеличить редактор",
-		about:          "О редакторе",
-		help:           "Помощь в использовании",
-		textindicator:  "Данный стиль"
+		bold:           "РџРѕР»СѓР¶РёСЂРЅС‹Р№",
+		italic:         "РќР°РєР»РѕРЅРЅС‹Р№",
+		underline:      "РџРѕРґС‡РµСЂРєРЅСѓС‚С‹Р№",
+		strikethrough:  "РџРµСЂРµС‡РµСЂРєРЅСѓС‚С‹Р№",
+		subscript:      "РќРёР¶РЅРёР№ РёРЅРґРµРєСЃ",
+		superscript:    "Р’РµСЂС…РЅРёР№ РёРЅРґРµРєСЃ",
+		justifyleft:    "РџРѕ Р»РµРІРѕРјСѓ РєСЂР°СЋ",
+		justifycenter:  "РџРѕ С†РµРЅС‚СЂСѓ",
+		justifyright:   "РџРѕ РїСЂР°РІРѕРјСѓ РєСЂР°СЋ",
+		justifyfull:    "РџРѕ С€РёСЂРёРЅРµ",
+		insertorderedlist:    "РќСѓРјРµСЂРѕРІР°РЅРЅС‹Р№ Р»РёСЃС‚",
+		insertunorderedlist:  "РњР°СЂРєРёСЂРѕРІР°РЅРЅС‹Р№ Р»РёСЃС‚",
+		outdent:        "РЈРјРµРЅСЊС€РёС‚СЊ РѕС‚СЃС‚СѓРї",
+		indent:         "РЈРІРµР»РёС‡РёС‚СЊ РѕС‚СЃС‚СѓРї",
+		forecolor:      "Р¦РІРµС‚ С€СЂРёС„С‚Р°",
+		hilitecolor:    "Р¦РІРµС‚ С„РѕРЅР°",
+		horizontalrule: "Р“РѕСЂРёР·РѕРЅС‚Р°Р»СЊРЅС‹Р№ СЂР°Р·РґРµР»РёС‚РµР»СЊ",
+		createlink:     "Р’СЃС‚Р°РІРёС‚СЊ РіРёРїРµСЂСЃСЃС‹Р»РєСѓ",
+		insertimage:    "Р’СЃС‚Р°РІРёС‚СЊ РёР·РѕР±СЂР°Р¶РµРЅРёРµ",
+		inserttable:    "Р’СЃС‚Р°РІРёС‚СЊ С‚Р°Р±Р»РёС†Сѓ",
+		htmlmode:       "РџРѕРєР°Р·Р°С‚СЊ Html-РєРѕРґ",
+		popupeditor:    "РЈРІРµР»РёС‡РёС‚СЊ СЂРµРґР°РєС‚РѕСЂ",
+		about:          "Рћ СЂРµРґР°РєС‚РѕСЂРµ",
+		showhelp:       "РџРѕРјРѕС‰СЊ",
+		textindicator:  "РўРµРєСѓС‰РёР№ СЃС‚РёР»СЊ",
+		undo:           "РћС‚РјРµРЅРёС‚СЊ",
+		redo:           "РџРѕРІС‚РѕСЂРёС‚СЊ",
+		cut:            "Р’С‹СЂРµР·Р°С‚СЊ",
+		copy:           "РљРѕРїРёСЂРѕРІР°С‚СЊ",
+		paste:          "Р’СЃС‚Р°РІРёС‚СЊ"
+	},
+
+	buttons: {
+		"ok":           "OK",
+		"cancel":       "РћС‚РјРµРЅР°"
+	},
+
+	msg: {
+		"Path":         "РџСѓС‚СЊ",
+		"TEXT_MODE":    "Р’С‹ РІ СЂРµР¶РёРјРµ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ Html-РєРѕРґР°. РЅР°Р¶РјРёС‚Рµ РєРЅРѕРїРєСѓ [<>], С‡С‚РѕР±С‹ РїРµСЂРµРєР»СЋС‡РёС‚СЊСЃСЏ РІ РІРёР·СѓР°Р»СЊРЅС‹Р№ СЂРµР¶РёРј."
 	}
 };

@@ -1,8 +1,8 @@
-.HA-spellcheck-error { border-bottom: 2px dotted #f00; cursor: default; }
-.HA-spellcheck-same { background-color: #ff8; color: #000; }
+.HA-spellcheck-error { border-bottom: 1px dashed #f00; cursor: default; }
+.HA-spellcheck-same { background-color: #cef; color: #000; }
 .HA-spellcheck-hover { background-color: #433; color: white; }
-.HA-spellcheck-fixed { border-bottom: 1px dotted #0b8; }
-.HA-spellcheck-current { background-color: #7be; color: #000; }
+.HA-spellcheck-fixed { border-bottom: 1px dashed #0b8; }
+.HA-spellcheck-current { background-color: #9be; color: #000; }
 .HA-spellcheck-suggestions { display: none; }
 
 #HA-spellcheck-dictionaries { display: none; }

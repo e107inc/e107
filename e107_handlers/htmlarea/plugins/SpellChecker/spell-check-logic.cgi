@@ -1,109 +1,87 @@
 #! /usr/bin/perl -w
 
 # Spell Checker Plugin for HTMLArea-3.0
-# Implementation by Mihai Bazon.  Sponsored by www.americanbible.org
+# Sponsored by www.americanbible.org
+# Implementation by Mihai Bazon, http://dynarch.com/mishoo/
 #
-# htmlArea v3.0 - Copyright (c) 2002 interactivetools.com, inc.
+# (c) dynarch.com 2003.
+# Distributed under the same terms as HTMLArea itself.
 # This notice MUST stay intact for use (see license.txt).
 #
-# A free WYSIWYG editor replacement for <textarea> fields.
-# For full source code and docs, visit http://www.interactivetools.com/
-#
-# Version 3.0 developed by Mihai Bazon for InteractiveTools.
-#	     http://students.infoiasi.ro/~mishoo
-#
-# $Id: spell-check-logic.cgi,v 1.2 2004-03-15 21:36:02 e107coders Exp $
+# $Id: spell-check-logic.cgi,v 1.3 2004-03-16 07:23:00 e107coders Exp $
 
 use strict;
 use utf8;
 use Encode;
 use Text::Aspell;
-use HTML::Parser;
-use HTML::Entities;
+use XML::DOM;
 use CGI;
 
+my $TIMER_start = undef;
+eval {
+    use Time::HiRes qw( gettimeofday tv_interval );
+    $TIMER_start = [gettimeofday()];
+};
+# use POSIX qw( locale_h );
+
+binmode STDIN, ':utf8';
+binmode STDOUT, ':utf8';
+
 my $debug = 0;
-
-open (DEBUG, '>:encoding(UTF-8)', '> /tmp/spell-check-debug.log') if $debug;
-
-# use Data::Dumper; # for debug only
 
 my $speller = new Text::Aspell;
 my $cgi = new CGI;
 
+my $total_words = 0;
+my $total_mispelled = 0;
+my $total_suggestions = 0;
+my $total_words_suggested = 0;
+
 # FIXME: report a nice error...
 die "Can't create speller!" unless $speller;
 
+my $dict = $cgi->param('dictionary') || $cgi->cookie('dictionary') || 'en';
+
 # add configurable option for this
-my $dict = $cgi->param('dictionary') || 'en_US';
 $speller->set_option('lang', $dict);
+$speller->set_option('encoding', 'UTF-8');
+#setlocale(LC_CTYPE, $dict);
 
 # ultra, fast, normal, bad-spellers
 # bad-spellers seems to cause segmentation fault
-$speller->set_option('sug-mode', 'ultra');
+$speller->set_option('sug-mode', 'normal');
 
-my @replacements = ();
+my %suggested_words = ();
+keys %suggested_words = 128;
 
-sub text_handler {
-    my ($offset, $length, $text, $is_cdata) = @_;
-    if ($is_cdata or $text =~ /^\s*$/) {
-        return 0;
-    }
-    # print STDERR "*** OFFSET: $offset, LENGTH: $length, $text\n";
-    $text = decode_entities($text);
-    $text =~ s/&#([0-9]+);/chr($1)/eg;
-    $text =~ s/&#x([0-9a-fA-F]+);/chr(hex $1)/eg;
-    my $repl = spellcheck($text);
-    if ($repl) {
-        push(@replacements, [ $offset, $length, $repl ]);
-    }
-}
+my $file_content = decode('UTF-8', $cgi->param('content'));
+$file_content = parse_with_dom($file_content);
 
-my $p = HTML::Parser->new
-  (api_version => 3,
-   handlers => { start => [ sub {
-                                my ($self, $tagname, $attrs) = @_;
-                                # print STDERR "\033[1;31m parsing tag: $tagname\033[0m\n";
-                                # following we skip words that have already been marked as "fixed".
-                                if ($tagname eq "span" and $attrs->{class} =~ /HA-spellcheck-fixed/) {
-                                    $self->handler(text => undef);
-                                }
-                            }, "self, tagname, attr"
-                          ],
-                 end => [ sub {
-                              my ($self, $tagname) = @_;
-                              # print STDERR "\033[1;32m END tag: $tagname\033[0m\n";
-                              $self->handler(text => \&text_handler, 'offset, length, dtext, is_cdata');
-                          }, "self, tagname"
-                        ]
-               }
-  );
-$p->handler(text => \&text_handler, 'offset, length, dtext, is_cdata');
-$p->case_sensitive(1);
-my $file_content = $cgi->param('content');
+my $ck_dictionary = $cgi->cookie(-name     => 'dictionary',
+                                 -value    => $dict,
+                                 -expires  => '+30d');
 
-if ($debug) {
-    open (FOO, '>:encoding(UTF-8)', '/tmp/spell-check-before');
-    print FOO $file_content, "\n";
-    close(FOO);
-}
+print $cgi->header(-type    => 'text/html; charset: utf-8',
+                   -cookie  => $ck_dictionary);
 
-$p->parse($file_content);
-$p->eof();
+my $js_suggested_words = make_js_hash(\%suggested_words);
+my $js_spellcheck_info = make_js_hash_from_array
+  ([
+    [ 'Total words'           , $total_words ],
+    [ 'Mispelled words'       , $total_mispelled . ' in dictionary \"'.$dict.'\"' ],
+    [ 'Total suggestions'     , $total_suggestions ],
+    [ 'Total words suggested' , $total_words_suggested ],
+    [ 'Spell-checked in'      , defined $TIMER_start ? (tv_interval($TIMER_start) . ' seconds') : 'n/a' ]
+   ]);
 
-foreach (reverse @replacements) {
-    substr($file_content, $_->[0], $_->[1], $_->[2]);
-}
-
-# we output UTF-8
-binmode(STDOUT, ':encoding(UTF-8)'); # apparently, this sucks.
-print "Content-type: text/html; charset: utf-8\n\n";
-print qq^
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+print qq^<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" media="all" href="spell-check-style.css" />
+<script type="text/javascript">
+  var suggested_words = { $js_suggested_words };
+  var spellcheck_info = { $js_spellcheck_info }; </script>
 </head>
 <body onload="window.parent.finishedSpellChecking();">^;
 
@@ -112,44 +90,121 @@ if ($cgi->param('init') eq '1') {
     my @dicts = $speller->dictionary_info();
     my $dictionaries = '';
     foreach my $i (@dicts) {
-        $dictionaries .= ',' . $i->{name} unless $i->{jargon};
+        next if $i->{jargon};
+        my $name = $i->{name};
+        if ($name eq $dict) {
+            $name = '@'.$name;
+        }
+        $dictionaries .= ',' . $name;
     }
     $dictionaries =~ s/^,//;
-    print qq^
-<div id="HA-spellcheck-dictionaries"
->$dictionaries</div>
-^;
-}
-
-if ($debug) {
-    open (FOO, '>:encoding(UTF-8)', '/tmp/spell-check-after');
-    print FOO $file_content, "\n";
-    close(FOO);
+    print qq^<div id="HA-spellcheck-dictionaries">$dictionaries</div>^;
 }
 
 print '</body></html>';
 
 # Perl is beautiful.
 sub spellcheck {
-    my $text = shift;
-    sub check {                 # called for each word in the text
+    my $node = shift;
+    my $doc = $node->getOwnerDocument;
+    my $check = sub {                 # called for each word in the text
         # input is in UTF-8
-        my $U_word = shift;
-        my $word = encode($speller->get_option('encoding'), $U_word);
-        print DEBUG "*$U_word* ----> |$word|\n" if $debug;
-        if ($speller->check($word)) {
-            return $U_word;      # we return the word in UTF-8
+        my $word = shift;
+        my $already_suggested = defined $suggested_words{$word};
+        ++$total_words;
+        if (!$already_suggested && $speller->check($word)) {
+            return undef;
         } else {
             # we should have suggestions; give them back to browser in UTF-8
-            my $suggestions = decode($speller->get_option('encoding'), join(',', $speller->suggest($word)));
-            my $ret = '<span class="HA-spellcheck-error">'.$U_word.'</span><span class="HA-spellcheck-suggestions">'.$suggestions.'</span>';
-            return $ret;
+            ++$total_mispelled;
+            if (!$already_suggested) {
+                # compute suggestions for this word
+                my @suggestions = $speller->suggest($word);
+                my $suggestions = decode($speller->get_option('encoding'), join(',', @suggestions));
+                $suggested_words{$word} = $suggestions;
+                ++$total_suggestions;
+                $total_words_suggested += scalar @suggestions;
+            }
+            # HA-spellcheck-error
+            my $err = $doc->createElement('span');
+            $err->setAttribute('class', 'HA-spellcheck-error');
+            my $tmp = $doc->createTextNode;
+            $tmp->setNodeValue($word);
+            $err->appendChild($tmp);
+            return $err;
+        }
+    };
+    while ($node->getNodeValue =~ /([\p{IsWord}']+)/) {
+        my $word = $1;
+        my $before = $`;
+        my $after = $';
+        my $df = &$check($word);
+        if (!$df) {
+            $before .= $word;
+        }
+        {
+            my $parent = $node->getParentNode;
+            my $n1 = $doc->createTextNode;
+            $n1->setNodeValue($before);
+            $parent->insertBefore($n1, $node);
+            $parent->insertBefore($df, $node) if $df;
+            $node->setNodeValue($after);
         }
     }
-    $text =~ s/([[:word:]']+)/check($1)/egs;
-    # $text =~ s/(\w+)/check($1)/egs;
+};
 
-    # the following is definitely what we want to use; too bad it sucks most.
-    # $text =~ s/(\p{IsWord}+)/check($1)/egs;
-    return $text;
-}
+sub check_inner_text {
+    my $node = shift;
+    my $text = '';
+    for (my $i = $node->getFirstChild; defined $i; $i = $i->getNextSibling) {
+        if ($i->getNodeType == TEXT_NODE) {
+            spellcheck($i);
+        }
+    }
+};
+
+sub parse_with_dom {
+    my ($text) = @_;
+    $text = '<spellchecker>'.$text.'</spellchecker>';
+
+    my $parser = new XML::DOM::Parser;
+    if ($debug) {
+        open(FOO, '>:utf8', '/tmp/foo');
+        print FOO $text;
+        close FOO;
+    }
+    my $doc = $parser->parse($text);
+    my $nodes = $doc->getElementsByTagName('*');
+    my $n = $nodes->getLength;
+
+    for (my $i = 0; $i < $n; ++$i) {
+        my $node = $nodes->item($i);
+        if ($node->getNodeType == ELEMENT_NODE) {
+            check_inner_text($node);
+        }
+    }
+
+    my $ret = $doc->toString;
+    $ret =~ s{<spellchecker>(.*)</spellchecker>}{$1}sg;
+    return $ret;
+};
+
+sub make_js_hash {
+    my ($hash) = @_;
+    my $js_hash = '';
+    while (my ($key, $val) = each %$hash) {
+        $js_hash .= ',' if $js_hash;
+        $js_hash .= '"'.$key.'":"'.$val.'"';
+    }
+    return $js_hash;
+};
+
+sub make_js_hash_from_array {
+    my ($array) = @_;
+    my $js_hash = '';
+    foreach my $i (@$array) {
+        $js_hash .= ',' if $js_hash;
+        $js_hash .= '"'.$i->[0].'":"'.$i->[1].'"';
+    }
+    return $js_hash;
+};

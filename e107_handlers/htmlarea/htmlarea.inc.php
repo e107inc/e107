@@ -1,10 +1,15 @@
 <?php
 
-    $width = "500px";  // textarea width
+    $width = "580px";  // htmlarea width
+    $fullscreen = 0;   // Show Full-Screen Editor button. 0=no 1=yes
+    $display_emoticons = 1; // Show Emoticons when enabled in e107 ?
+
+
     $imagebut = (ADMIN) ? "insertimage" : "space"; // image button for USERS
+    $popupeditor = $fullscreen == 1 ? "popupeditor":"space";
 
 // ==========================
-
+    echo "<script> _editor_url = '".e_HANDLER."htmlarea/'; </script>";
     echo "<style type='text/css'>@import url(".e_HANDLER."htmlarea/htmlarea.css)</style>";
     echo "<script type=\"text/javascript\" src=\"".e_HANDLER."htmlarea/htmlarea.js\"></script>";
     echo "<script type=\"text/javascript\" src=\"".e_HANDLER."htmlarea/dialog.js\"></script>
@@ -14,11 +19,8 @@ echo "<script>
     var config = new HTMLArea.Config(); // create a new configuration object
     //  default values for HTMLarea Box.
 
-
-
     ".htmlarea_emote(1)."
-
-
+ //   config.loadPlugin('SpellChecker');
     config.width = '".$width."';
     config.height = '300px';
     config.statusBar = false;
@@ -33,14 +35,15 @@ echo "<script>
     config.toolbar = [
     ['fontname',
     'fontsize', 'space',
-    'formatblock', 'space'
+    'formatblock', 'space',
     ],
 
-  ['bold', 'italic', 'underline','space','copy', 'cut', 'paste', 'justifyleft', 'justifycenter', 'justifyright', 'justifyfull', 'separator',
+
+   [ 'bold', 'italic', 'underline', 'separator','copy', 'cut', 'paste','separator', 'justifyleft', 'justifycenter', 'justifyright', 'justifyfull', 'separator',
 
   'insertorderedlist', 'insertunorderedlist', 'outdent', 'indent', 'separator',
   'forecolor', 'hilitecolor', 'separator',
-  'inserthorizontalrule', 'createlink', '".$imagebut."', 'inserttable', 'htmlmode', 'separator',
+  'inserthorizontalrule', 'createlink', '".$imagebut."', 'inserttable', 'separator','htmlmode', '".$popupeditor."'
   ],
   [".htmlarea_emote(2)."]
 
@@ -72,8 +75,8 @@ echo "<script type=\"text/javascript\" defer=\"1\">
 // Build Custom Emoticon Buttons=================
 
 function htmlarea_emote($mode){
-global $IMAGES_DIRECTORY, $pref;
-if($pref['smiley_activate']){
+global $IMAGES_DIRECTORY, $pref,$display_emoticons;
+if($pref['smiley_activate'] && $display_emoticons==1){
 
         $sql = new db;
         $sql -> db_Select("core", "*", "e107_name='emote'");
@@ -85,7 +88,10 @@ if($pref['smiley_activate']){
                 if(!$orig[$name]){
                 $orig[$name] = TRUE;
         if($mode == "1"){
-            $str .= "config.registerButton(\"$name\", \"$name\", \"../../".$IMAGES_DIRECTORY."emoticons/".$name."\", false,
+         //   $str .= "config.registerButton(\"$name\", \"$name\", \"../../".$IMAGES_DIRECTORY."emoticons/".$name."\", false,
+            $str .= "config.registerButton(\"$name\", \"$name\", \"".e_IMAGE."emoticons/".$name."\", false,
+
+
             // function that gets called when the button is clicked
             function(editor, id) {
             editor.focusEditor();

@@ -59,20 +59,22 @@
       Unicode safe.  HTML entities are expanded into their corresponding
       Unicode characters.  These characters will be matched as part of the
       word passed to Aspell.  All texts passed to Aspell are in Unicode
-      (when appropriate).  However, Aspell seems to not support Unicode
+      (when appropriate).  <strike>However, Aspell seems to not support Unicode
       yet (<a
         href="http://mail.gnu.org/archive/html/aspell-user/2000-11/msg00007.html">thread concerning Aspell and Unicode</a>).
       This mean that words containing Unicode
-      characters that are not in 0..255 are likely to be reported as "mispelled" by Aspell.
+      characters that are not in 0..255 are likely to be reported as "mispelled" by Aspell.</strike>
     </p>
 
     <p>
-      I digged the Net for a couple of hours today and I can't seem to find
-      any open-source spell checker that has Unicode support.  For this
-      reason we keep using Aspell, because it also seems to have the
-      best suggestions engine.  Unicode support will eventually be
-      implemented in Aspell.  <a href="mailto:kevin@atkinson.dhs.org">Email
-        Kevin Atkinson</a> (Aspell author and maintainer) about this ;-)
+      <strong style="font-variant: small-caps; color:
+      red;">Update:</strong> though I've never seen it mentioned
+      anywhere, it looks that Aspell <em>does</em>, in fact, speak
+      Unicode.  Or else, maybe <code>Text::Aspell</code> does
+      transparent conversion; anyway, this new version of our
+      SpellChecker plugin is, as tests show so far, fully
+      Unicode-safe... well, probably the <em>only</em> freeware
+      Web-based spell-checker which happens to have Unicode support.
     </p>
 
     <p>
@@ -96,8 +98,7 @@
 
     <ul>
       <li><a href="http://search.cpan.org/search?query=Text%3A%3AAspell&mode=all" target="_blank">Text::Aspell</a></li>
-      <li><a href="http://search.cpan.org/search?query=HTML%3A%3AParser&mode=all" target="_blank">HTML::Parser</a></li>
-      <li><a href="http://search.cpan.org/search?query=HTML%3A%3AEntities&mode=all" target="_blank">HTML::Entities</a></li>
+      <li><a href="http://search.cpan.org/search?query=XML%3A%3ADOM&mode=all" target="_blank">XML::DOM</a></li>
       <li><a href="http://search.cpan.org/search?query=CGI&mode=all" target="_blank">CGI</a></li>
     </ul>
 
@@ -105,11 +106,9 @@
       others are likely to be available by default in most Perl distributions.</p>
 
     <hr />
-    <address><a href="http://students.infoiasi.ro/~mishoo/">Mihai Bazon</a></address>
+    <address><a href="http://dynarch.com/mishoo/">Mihai Bazon</a></address>
 <!-- Created: Thu Jul 17 13:22:27 EEST 2003 -->
-<!-- hhmts start -->
-Last modified on Sun Aug 10 12:28:24 2003
-<!-- hhmts end -->
+<!-- hhmts start --> Last modified: Fri Jan 30 19:14:11 EET 2004 <!-- hhmts end -->
 <!-- doc-lang: English -->
   </body>
 </html>

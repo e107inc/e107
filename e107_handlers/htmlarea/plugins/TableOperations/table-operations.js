@@ -8,9 +8,9 @@
 // For full source code and docs, visit http://www.interactivetools.com/
 //
 // Version 3.0 developed by Mihai Bazon for InteractiveTools.
-//	     http://students.infoiasi.ro/~mishoo
+//   http://dynarch.com/mishoo
 //
-// $Id: table-operations.js,v 1.2 2004-03-15 21:36:04 e107coders Exp $
+// $Id: table-operations.js,v 1.3 2004-03-16 07:23:00 e107coders Exp $
 
 // Object that will encapsulate all the table operations provided by
 // HTMLArea-3.0 (except "insert table" which is included in the main file)
@@ -30,7 +30,7 @@ function TableOperations(editor) {
 			toolbar.push("separator");
 		} else {
 			var id = "TO-" + btn[0];
-			cfg.registerButton(id, tt[id], "plugins/TableOperations/img/" + btn[0] + ".gif", false,
+			cfg.registerButton(id, tt[id], editor.imgURL(btn[0] + ".gif", "TableOperations"), false,
 					   function(editor, id) {
 						   // dispatch button press event
 						   self.buttonPress(editor, id);
@@ -41,6 +41,17 @@ function TableOperations(editor) {
 
 	// add a new line in the toolbar
 	cfg.toolbar.push(toolbar);
+};
+
+TableOperations._pluginInfo = {
+	name          : "TableOperations",
+	version       : "1.0",
+	developer     : "Mihai Bazon",
+	developer_url : "http://dynarch.com/mishoo/",
+	c_owner       : "Mihai Bazon",
+	sponsor       : "Zapatec Inc.",
+	sponsor_url   : "http://www.bloki.com",
+	license       : "htmlArea"
 };
 
 /************************

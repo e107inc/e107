@@ -17,6 +17,8 @@
   border: 1px solid ButtonFace;
   padding: 1px;
   margin: 0px;
+  width: 18px;
+  height: 18px;
 }
 .htmlarea .toolbar .buttonHover {
   border: 1px solid;
@@ -39,11 +41,9 @@
   border: 1px solid ButtonShadow;
 }
 
-.htmlarea .toolbar .buttonDisabled { background-color: #aaa; }
-
 .htmlarea .toolbar .buttonDisabled img {
   filter: alpha(opacity = 25);
-  -moz-opacity: 25%;
+  -moz-opacity: 0.25;
 }
 
 .htmlarea .toolbar .separator {

@@ -1,7 +1,7 @@
 // I18N constants
 
 // LANG: "ro", ENCODING: UTF-8
-// Author: Mihai Bazon, <mishoo@infoiasi.ro>
+// Author: Mihai Bazon, http://dynarch.com/mishoo
 
 // FOR TRANSLATORS:
 //
