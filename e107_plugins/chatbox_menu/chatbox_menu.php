@@ -103,22 +103,14 @@ if(!$text = retrieve_cache("chatbox")){
 		$sql2 = new db;
 		while(list($cb_id, $cb_nick, $cb_message, $cb_datestamp, $cb_blocked, $cb_ip) = $sql-> db_Fetch()){
 
-			// get available vars
-			$cb_nick = eregi_replace("[0-9]+\.", "", $cb_nick);
-			if($cb_nick == "Anonymous"){
-				$cuser_id = 0;
-			}else{
-				if($nickstore[$cb_nick]){
-					$cb_nick = "<a href='".e_BASE."user.php?id.".$nickstore[$cb_nick]."'>".$cb_nick."</a>";
-				}else{
-					if($sql2 -> db_Select("user", "*", "user_name='$cb_nick'")){
-						list($cuser_id, $cuser_name) = $sql2-> db_Fetch();
-						$nickstore[$cb_nick] = $cuser_id;
-						$cb_nick = "<a href='".e_BASE."user.php?id.".$cuser_id."'>".$cb_nick."</a>";
-					}else{
-						$cb_nick = $aj -> tpa($cb_nick);
-					}
-				}
+			list($cb_uid,$cb_nick) = explode(".",$cb_nick,2);
+			if($cb_uid == 0)
+			{
+				$cb_nick = $aj -> tpa($cb_nick);
+			}
+			else
+			{
+				$cb_nick = "<a href='".e_BASE."user.php?id.{$cb_uid}'>{$cb_nick}</a>";
 			}
 			$datestamp = $obj2->convert_date($cb_datestamp, "short");
 
