@@ -1,8 +1,17 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107/e107_languages/English/lan_sitemap.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2004-09-09 09:31:42 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
+define("PAGE_NAME", "Sitemap");
 
-define("PAGE_NAME", "Sitemap"); 
-
-define("LANSM_1", "Sitemap of ".SITENAME." <b>".SITEURL."</b>");
+define("LANSM_1", "Sitemap of");
 define("LANSM_2", "Home");
 define("LANSM_3", "(Index Page)");
 define("LANSM_4", "Content");
@@ -32,7 +41,7 @@ define("LANSM_27", "Headines");
 define("LANSM_28", "Old Polls");
 define("LANSM_29", "Content");
 define("LANSM_30", "(List of content pages)");
-define("LANSM_31", " or click on <img src='".e_IMAGE."generic/extand_ico.png' style='border: 0px; width: 11px; height: 11px;' /> to extand/hide a subcategory.");
+define("LANSM_31", "or click on");
 define("LANSM_32", "List of registred users");
 define("LANSM_33", "(Statistics of this site)");
 define("LANSM_34", "(Info about a member)");
@@ -42,7 +51,7 @@ define("LANSM_37", "Subcategories:");
 define("LANSM_38", "Pages");
 define("LANSM_39", "(threads/replies");
 define("LANSM_40", "Uncategorized");
-define("LANSM_41", "(Pages related to members of ".SITENAME.")");
+define("LANSM_41", "to expand/hide a subcategory");
 define("LANSM_42", "Chat");
 define("LANSM_43", "(All messages posted in the chatbox menu)");
 define("LANSM_44", "Other pages");
@@ -55,16 +64,5 @@ define("LANSM_50", "Top posters");
 define("LANSM_51", "Submit links");
 define("LANSM_52", "User Posts");
 define("LANSM_53", "(Check comments from a specific users on the site)");
-define("LANSM_54", "");
-define("LANSM_55", "");
-define("LANSM_56", "");
-define("LANSM_57", "");
-define("LANSM_58", "");
 
-// Use following variables for custom translated content for your sitemap
-define("LANSM_Custom_1", "A static test page");
-define("LANSM_Custom_2", "");
-define("LANSM_Custom_3", "");
-define("LANSM_Custom_4", "");
-define("LANSM_Custom_5", "");
 ?>

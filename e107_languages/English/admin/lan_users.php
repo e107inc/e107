@@ -1,5 +1,14 @@
 <?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107/e107_languages/English/admin/lan_users.php,v $
+|     $Revision: 1.10 $
+|     $Date: 2004-09-09 09:31:42 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
 define("USRLAN_1", "Options Saved.");
 define("USRLAN_2", "Extended user fields saved.");
 define("USRLAN_3", "now listed an Administrator - to set permissions please go to the");
@@ -118,14 +127,18 @@ define("USRLAN_111", "DB Table Field");
 
 define("USRLAN_112", "Resend Email");
 define("USRLAN_113", "Registration details for");
-define("USRLAN_114", "Dear ".$_POST['resend_name']."\n\nWelcome to ".SITENAME."\nYour registration has been received and created.\n\nYour account is currently marked as being inactive, to activate your account please go to the following link ...\n\n");
-define("USRLAN_115", "\n\nThanks for your registration.\n\nFrom");
+define("USRLAN_114", "Dear");
+define("USRLAN_115", "Thanks for your registration.");
 define("USRLAN_116", "Please confirm that you wish to resend a confirmation email to:");
 define("USRLAN_117", "Click the button below to test the following email:");
 define("USRLAN_118", "Test Email");
 
 define("USRLAN_119", "Update Extended Field");
-
 define("USRLAN_120", "Set Classes");
-define("USRLAN_121", "Mailing");  
+define("USRLAN_121", "Mailing");
+define("USRLAN_122", "Welcome to");
+define("USRLAN_123", "Your registration has been received and created.");
+define("USRLAN_124", "Your account is currently marked as being inactive, to activate your account please go to the following link");
+define("USRLAN_125", "From");
+
 ?>
