@@ -898,14 +898,14 @@ function parse_content_recent_table($row){
 			$user_email = $tmp[1];
 		}
 
-		$summary = $content_summary;
-		
+		$cat_icon = $content_summary;
+	
 		$CONTENT_RECENT_SUBHEADING = ($content_subheading != "" ? $content_subheading."<br />" : "");
-		$CONTENT_RECENT_SUMMARY = ($content_summary != "" ? $content_summary."<br />" : "");
+		$CONTENT_RECENT_SUMMARY = ($summary != "" ? $summary."<br />" : "");
 		$CONTENT_RECENT_AUTHOR = ($user_name != "" ? $user_name : "");
 		$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
 		$CONTENT_RECENT_DATE = ($datestamp != "" ? $datestamp : "");
-		$CONTENT_RECENT_ICON = ($content_summary && $content_parent ? "<a href='".e_SELF."?article.cat.$content_id'><img src='".e_IMAGE."link_icons/".$content_summary."' alt='' style='border:0' /></a>" : "&nbsp;");
+		$CONTENT_RECENT_ICON = ($cat_icon && $content_parent ? "<a href='".e_SELF."?article.cat.$content_id'><img src='".e_IMAGE."link_icons/".$cat_icon."' alt='' style='border:0' /></a>" : "&nbsp;");
 		
 		$CONTENT_RECENT_HEADING = "<a href='".e_BASE."content.php?article.$rev_id'>".$content_heading."</a>";
 
