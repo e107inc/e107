@@ -654,9 +654,9 @@ function online(){
 	global $sql;
 	$ip = getip();
 	$udata = (USER ? USERID.".".USERNAME : 0);
-	if(!$sql -> db_Select("online", "*", "online_ip='$ip' OR (online_user_id = '{$udata}' AND online_user_id != '0') ")){
+	if(!$sql -> db_Select("online", "*", "online_ip='".$ip."' OR (online_user_id = '".$udata."' AND online_user_id != '0') ")){
 		define("NOSPLASH", TRUE); // first visit to site
-		$sql -> db_Insert("online", " '".time()."', 'null', '".$udata."', '$ip', '".$page."', 1");
+		$sql -> db_Insert("online", " '".time()."', 'null', '".$udata."', '".$ip."', '".$page."', 1");
 	} else {
 		$row = $sql -> db_Fetch();
 		extract($row);
@@ -690,10 +690,14 @@ function online(){
 	if($online_pagecount == 90){exit;}
 	$total_online = $sql -> db_Count("online");
 	if($members_online = $sql -> db_Select("online", "*", "online_user_id!='0' ")){
+		$listuserson = array();
 		while($row = $sql -> db_Fetch()){
 			extract($row);
 			list($oid,$oname) = explode(".",$online_user_id,2);
-			$member_list .= "<a href='".e_BASE."user.php?id.$oid'>$oname</a> ";
+			if(!in_array($oname,$listuserson)){
+				$member_list .= "<a href='".e_BASE."user.php?id.$oid'>$oname</a> ";
+				$listuserson[] .= $oname;
+			}
 		}
 	}
 	define("TOTAL_ONLINE", $total_online);
