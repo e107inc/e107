@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2004-12-04 07:14:23 $
+|     $Revision: 1.29 $
+|     $Date: 2004-12-06 15:14:15 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -187,7 +187,6 @@ $menu_pref = $sysprefs->getArray('menu_pref');
 
 // Cameron's Mult-lang switch. ==================
 
-
 if (IsSet($_POST['setlanguage'])) {
         $sql->mySQLlanguage = $_POST['sitelanguage'];
 
@@ -198,17 +197,16 @@ if (IsSet($_POST['setlanguage'])) {
             $_COOKIE['e107language_'.$pref['cookie_name']] = $_POST['sitelanguage'];
            if(!eregi(e_ADMIN,e_SELF)){ Header("Location:".e_SELF);  }
         }
-
 }
-
+if($pref['multilanguage']){
     if ($pref['user_tracking'] == "session"){
         $user_language = $_SESSION['e107language_'.$pref['cookie_name']];
-        $sql->mySQLlanguage = (table_exists($user_language)) ? $_SESSION['e107language_'.$pref['cookie_name']] : "";
+        $sql->mySQLlanguage = ($user_language) ? $user_language : "";
     } else {
         $user_language = $_COOKIE['e107language_'.$pref['cookie_name']];
-        $sql->mySQLlanguage = (table_exists($user_language)) ? $_COOKIE['e107language_'.$pref['cookie_name']] : "";
+        $sql->mySQLlanguage = ($user_language) ? $user_language : "";
     }
-
+}
 // =====================
 
 $page = substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
