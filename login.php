@@ -13,9 +13,11 @@
 +---------------------------------------------------------------+
 */
 
-$membership_open = 1;
 
 require_once("class2.php");
+if(isset($_POST['fpw'])){header("Location:fpw.php"); exit; }
+if(isset($_POST['signup'])){header("Location:signup.php"); exit; }
+
 $use_imagecode = ($pref['logcode'] && extension_loaded("gd"));
 if($use_imagecode){
 	require_once(e_HANDLER."secure_img_handler.php");
@@ -64,7 +66,7 @@ if(file_exists(e_BASE."e107_files/user.js")){echo "<script type='text/javascript
 
 if(!USER){
 
-	echo "<div style='text-align:center'>";
+	echo "<div style='text-align:center' align='center'>";
 	if(file_exists(THEME."images/login_logo.png")){
 		echo "<DIV STYLE=\"width:100%; filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(
 		src='".THEME."images/login_logo.png', sizingMethod='image');\" ></DIV>\n";
@@ -109,8 +111,17 @@ $text .= "<tr>
 <td class='forumheader' colspan='2' style='text-align:center'>".
 $rs -> form_button("submit", "userlogin", "Log In", "", "Click to login")."
 </td>
-</tr>
-</table>".
+</tr><tr><td class='forumheader3' colspan='2'>
+	<div style='text-align:center'>";
+
+if($pref['user_reg']){
+	$text .= 
+	$rs -> form_button("submit", "signup", "Signup", "", "Click to signup")."
+	";
+}
+$text .= $rs -> form_button("submit", "fpw", "Forgot Password", "", "Click to signup")."
+</div>
+	</td></tr></table>".
 $rs -> form_close()."
 </div>";
 
@@ -121,11 +132,6 @@ echo "<div style='text-align:center'><div align='center' style='text-align:cente
 $ns -> tablerender($login_message, $text);
 echo "</div></div>";
 
-if($membership_open == 1){
-	echo "<div style='text-align:center'><a href='".e_SIGNUP."'>".LAN_LOGIN_5."</a></div>";
-}else{
-echo "<div style='text-align:center'>".LAN_LOGIN_6."</div>";
-}
 
 }else{
 header("location:".e_BASE."index.php");
