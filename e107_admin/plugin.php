@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2005-03-24 22:54:58 $
+|     $Revision: 1.40 $
+|     $Date: 2005-03-24 23:26:11 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -113,34 +113,9 @@ if (isset($_POST['upload'])) {
 	}
 }
 
+
 if ($action == 'uninstall') {
-	$plug = $plugin->getinfo($id);
-	$text = "
-		<div style='text-align:center'>
-		<form method='post' action='".e_SELF."'>
-		<table style='".ADMIN_WIDTH."' class='fborder'>
-		<tr>
-		<td class='forumheader3' style='text-align:center'>".EPL_ADLAN_2."<br /><br />
-		<input class='button' type='submit' name='cancel' value='".EPL_CANCEL."' />
-		<input class='button' type='submit' name='confirm' value='".EPL_ADLAN_1." {$plug['plugin_name']}' />
-		<input type='hidden' name='id' value='{$id}' />
-		</td>
-		</tr>
-		</table>
-		</form>
-		</div>
-		";
-	$ns->tablerender(EPL_ADLAN_3.": <b>".$plug['plugin_name']." v".$plug['plugin_version']."</b>", $text);
-	require_once("footer.php");
-	exit;
-}
-
-if (isset($_POST['cancel'])) {
-	$ns->tablerender("", "<div style='text-align:center'>".EPL_ADLAN_4."</div>");
-}
-
-if (isset($_POST['confirm'])) {
-	$id = intval($_POST['id']);
+	$id = intval($id);
 	$plug = $plugin->getinfo($id);
 	//Uninstall Plugin
 	if ($plug['plugin_installflag'] == TRUE ) {
@@ -433,7 +408,7 @@ foreach($pluginList as $plug) {
 	$text .= "</table></td>";
 	$text .= "<td class='forumheader3' style='width:70px;text-align:center'>";
     if ($eplug_conffile || $eplug_module || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_user_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_status || $eplug_latest) {
-		$text .= ($plug['plugin_installflag'] ? "<input type='button' class='button' onclick=\"location.href='".e_SELF."?uninstall.{$plug['plugin_id']}'\" title='".EPL_ADLAN_1."' value='".EPL_ADLAN_1."' />" : "<input type='button' class='button' onclick=\"location.href='".e_SELF."?install.{$plug['plugin_id']}'\" title='".EPL_ADLAN_0."' value='".EPL_ADLAN_0."' />");
+		$text .= ($plug['plugin_installflag'] ? "<input type='button' class='button' onclick=\"uninstall_confirm('".$tp->toJS(EPL_ADLAN_2." [ {$plug['plugin_name']} ]")."','".e_SELF."?uninstall.{$plug['plugin_id']}')\" title='".EPL_ADLAN_1."' value='".EPL_ADLAN_1."' />" : "<input type='button' class='button' onclick=\"location.href='".e_SELF."?install.{$plug['plugin_id']}'\" title='".EPL_ADLAN_0."' value='".EPL_ADLAN_0."' />");
 	} else {
 		if ($eplug_menu_name) {
 			$text .= EPL_NOINSTALL.str_replace("..", "", e_PLUGIN.$plug['plugin_path'])."/ ".EPL_DIRECTORY;
@@ -461,4 +436,22 @@ $ns->tablerender(EPL_ADLAN_16, $text);
 // ----------------------------------------------------------
 
 require_once("footer.php");
+
+function headerjs(){
+
+$text = "<script type='text/javascript'>
+function uninstall_confirm(thetext,loc){
+
+		if(confirm(thetext)){
+        	location.href = loc;
+		}else{
+        	return false;
+		}
+}
+</script>";
+
+return $text;
+
+
+}
 ?>
