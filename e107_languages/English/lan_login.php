@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_login.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-07 10:28:36 $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-06 10:04:24 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -14,6 +14,7 @@ define("LAN_300", "That username was not found in the database.");
 define("LAN_301", "Incorrect password.");
 define("LAN_302", "You have not activated your account. You should have received an email with instructions on how to confirm your account. If not, please contact a site administrator.");
 define("LAN_303", "Incorrect code entered.");
+define("LAN_304", "That username/password combination is already in use.");
 define("LAN_LOGIN_1", "User name");
 define("LAN_LOGIN_2", "User password");
 define("LAN_LOGIN_3", "Protected server");
