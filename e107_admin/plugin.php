@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-01-30 23:34:40 $
+|     $Revision: 1.18 $
+|     $Date: 2005-01-31 00:30:06 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -357,7 +357,7 @@ foreach($pluginList as $plug) {
 	}
 	include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
 	 
-	if ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_user_prefs) || is_array($eplug_sc) || $eplug_module || $eplug_userclass) {
+	if ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_user_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest) {
 		$img = (!$plug['plugin_installflag'] ? "<img src='".e_IMAGE."generic/uninstalled.png' alt='' />" : "<img src='".e_IMAGE."generic/installed.png' alt='' />");
 	} else {
 		$img = "<img src='".e_IMAGE."generic/noinstall.png' alt='' />";
@@ -392,7 +392,7 @@ foreach($pluginList as $plug) {
 		$text .= "<tr><td><b>&nbsp;</b></td><td>[ <a href='".e_PLUGIN.$eplug_folder."/".$eplug_readme."'>".$eplug_readme."</a> ]</td></tr>";
 	}
 	 
-	if ($eplug_conffile || $eplug_module || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_user_prefs) || is_array($eplug_sc)) {
+	if ($eplug_conffile || $eplug_module || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_user_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_status || $eplug_latest) {
 		$text .= "<tr><td><b>".EPL_OPTIONS."</b>:</td><td> [ ".($plug['plugin_installflag'] ? "<a href='".e_SELF."?uninstall.{$plug['plugin_id']}' title='".EPL_ADLAN_1."'> ".EPL_ADLAN_1."</a>" : "<a href='".e_SELF."?install.{$plug['plugin_id']}' title='".EPL_ADLAN_0."'>".EPL_ADLAN_0."</a>")." ]";
 	} else {
 		if ($eplug_menu_name) {
