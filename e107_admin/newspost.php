@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.45 $
-|   $Date: 2005-02-16 18:42:02 $
-|   $Author: stevedunstan $
+|   $Revision: 1.46 $
+|   $Date: 2005-02-18 03:59:23 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 
 */
@@ -97,11 +97,15 @@ if (IsSet($_POST['submitupload'])) {
 	$pref['upload_storagetype'] = "1";
 	require_once(e_HANDLER."upload_handler.php");
 
-		$uploaded = file_upload(($_POST['uploadtype'] == "file"  ? e_FILE."downloads/" : e_IMAGE."newspost_images/"));
+        $uploaded = file_upload(e_IMAGE."newspost_images/");
 
 		foreach($_POST['uploadtype'] as $key=>$uploadtype){
 			if($uploadtype == "thumb"){
 				rename(e_IMAGE."newspost_images/".$uploaded[$key]['name'],e_IMAGE."newspost_images/thumb_".$uploaded[$key]['name']);
+			}
+
+			if($uploadtype == "file"){
+              rename(e_IMAGE."newspost_images/".$uploaded[$key]['name'],e_FILE."downloads/".$uploaded[$key]['name']);
 			}
 
 			if ($uploadtype == "resize" && $_POST['resize_value'][$key]) {
