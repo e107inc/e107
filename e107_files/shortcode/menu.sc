@@ -2,6 +2,9 @@ global $sql;
 global $ns;
 $menu = $parm;
 global $eMenuList;
+if (!array_key_exists($menu,$eMenuList)) {
+	return;
+}
 foreach($eMenuList[$menu] as $row)
 {
 	extract($row);

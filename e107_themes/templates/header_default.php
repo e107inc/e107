@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2004-11-07 20:39:19 $
+|     $Revision: 1.5 $
+|     $Date: 2004-12-11 01:35:14 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -124,7 +124,7 @@ if($e107_popup != 1)
 	{
 		while(list($key, $kpage) = each($custompage))
 		{
-			if(strstr(e_SELF, $kpage))
+			if($kpage && strstr(e_SELF, $kpage))
 			{
 				$ph = TRUE;
 				break;

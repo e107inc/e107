@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-11-28 02:50:46 $
+|     $Revision: 1.4 $
+|     $Date: 2004-12-11 01:35:14 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -45,7 +45,7 @@ class e_bbcode {
 	
 	function doBB($code,$parm,$code_text,$postID,$full_text) {
 		global $tp;
-		if (array_key_exists($code,$this -> bbList)) {
+		if (is_array($this->bbList) && array_key_exists($code,$this->bbList)) {
 			$bbcode = $this -> bbList[$code];
 		} else {
 			if (in_array($code,$this -> core_bb))
