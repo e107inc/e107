@@ -113,7 +113,7 @@ $text .= "
 			<td style='width:20%; text-align:center' class='forumheader3'><input class='tbox' type='text' name='emote_code[]' size='15' value='".$tp->toForm($short)."' maxlength='20' /></td>
 			<td style='width:20%; text-align:center' class='forumheader3'><input class='tbox' type='text' name='emote_text[]' size='15' value='".$tp->toForm($name)."' maxlength='20' /></td>
 			<td style='width:10%; text-align:center' class='forumheader3'><img src='".e_IMAGE."emoticons/$name' alt='' style='vertical-align:absmiddle' /></td>
-			<td style='width:30%' class='forumheader3'>[ <a href='".e_SELF."?del.$c'>".EMOLAN_6."</a> ]</td>
+			<td style='width:30%' class='forumheader3'>[ <a href='".e_SELF."?del.$c'>".LAN_DELETE."</a> ]</td>
 			</tr>
 		";
 		$c++;
@@ -130,7 +130,7 @@ $text .= "
 </td></tr>
 <tr>
 	<td colspan='5' style='text-align:center' class='forumheader'>
-	<input class='button' type='submit' name='updatesettings' value='".EMOLAN_7."' />
+	<input class='button' type='submit' name='updatesettings' value='".LAN_UPDATE."' />
 	</td>
 	</tr>
 	</table>

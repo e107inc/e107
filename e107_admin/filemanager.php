@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/filemanager.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-03-10 10:54:43 $
-|     $Author: stevedunstan $
+|     $Revision: 1.13 $
+|     $Date: 2005-04-02 19:13:38 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -224,7 +224,7 @@ $text .= "<tr>
 	<td style=\"width:30%\" class=\"fcaption\"><b>".FMLAN_17."</b></td>
 	<td class=\"fcaption\"><b>".FMLAN_18."</b></td>
 	<td style=\"width:30%\" class=\"fcaption\"><b>".FMLAN_19."</b></td>
-	<td class=\"fcaption\"><b>".FMLAN_20."</b></td>
+	<td class=\"fcaption\"><b>".LAN_OPTIONS."</b></td>
 	</tr>";
 
 if ($path != e_FILE) {

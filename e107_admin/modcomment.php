@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/modcomment.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-03-23 23:31:24 $
-|     $Author: stevedunstan $
+|     $Revision: 1.10 $
+|     $Date: 2005-04-02 19:13:38 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -22,11 +22,11 @@ if (!getperms("B")) {
 	exit;
 }
 require_once("auth.php");
-	
+
 $tmp = explode(".", e_QUERY);
 $table = $tmp[0];
 $id = $tmp[1];
-	
+
 switch($table) {
 	case "news":
 	$type = 0;
@@ -55,13 +55,13 @@ switch($table) {
 	default :
 	$tid = "";
 	 $type = $table;
-	 
+
 	/****************************************
 	Add your comment type here in same format as above, ie ...
 	case "your_comment_type"; $type = your_type_id; break;
 	****************************************/
 }
-	
+
 if (IsSet($_POST['moderate'])) {
 	extract($_POST);
 	if (is_array($comment_blocked)) {
@@ -86,11 +86,11 @@ if (IsSet($_POST['moderate'])) {
 	$e107cache->clear("news");
 	$message = MDCLAN_1;
 }
-	
+
 if (IsSet($message)) {
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
-	
+
 $text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."?".e_QUERY."'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>";
@@ -119,25 +119,25 @@ $text = "<div style='text-align:center'>
 			$comment_nick = eregi_replace("[0-9]+\.", "", $comment_author);
 		}
 		$comment_comment = $aj->tpa($comment_comment);
-		$text .= "<tr><td class='forumheader3' style='width:5%; text-align: center;'>".($comment_blocked ? "<img src='".e_PLUGIN."chatbox/images/blocked.png' />" : "&nbsp;")."</td><td class='forumheader3' style='width:15%'>$datestamp</td><td class='forumheader3' style='width:15%'><b>".$comment_nick."</b><br />".$comment_str."</td><td class='forumheader3' style='width:40%'>".$comment_comment."</td><td class='forumheader3' style='width:25%' style='text-align:center'>".($comment_blocked ? "<input type='checkbox' name='comment_unblocked[]' value='$comment_id' /> ".MDCLAN_5."" : "<input type='checkbox' name='comment_blocked[]' value='$comment_id' /> ".MDCLAN_6."")."&nbsp;<input type='checkbox' name='comment_delete[]' value='$comment_id' /> ".MDCLAN_7."</td></tr>";
-		 
+		$text .= "<tr><td class='forumheader3' style='width:5%; text-align: center;'>".($comment_blocked ? "<img src='".e_PLUGIN."chatbox/images/blocked.png' />" : "&nbsp;")."</td><td class='forumheader3' style='width:15%'>$datestamp</td><td class='forumheader3' style='width:15%'><b>".$comment_nick."</b><br />".$comment_str."</td><td class='forumheader3' style='width:40%'>".$comment_comment."</td><td class='forumheader3' style='width:25%' style='text-align:center'>".($comment_blocked ? "<input type='checkbox' name='comment_unblocked[]' value='$comment_id' /> ".MDCLAN_5."" : "<input type='checkbox' name='comment_blocked[]' value='$comment_id' /> ".MDCLAN_6."")."&nbsp;<input type='checkbox' name='comment_delete[]' value='$comment_id' /> ".LAN_DELETE."</td></tr>";
+
 	}
-	 
+
 	$text .= "<tr><td colspan='5' class='forumheader' style='text-align:center'>".MDCLAN_9."</td></tr>
 		<tr><td colspan='5' class='forumheader' style='text-align:center'><input class='button' type='submit' name='moderate' value='".MDCLAN_8."' /></td></tr></table></form></div>";
-	 
+
 }
-	
+
 $ns->tablerender(MDCLAN_8, $text);
-	
+
 require_once("footer.php");
-	
-	
+
+
 function delete_children($row, $cid) {
-	 
-	 
+
+
 	// echo "<pre>"; print_r($row); echo "</pre>$cid"; exit;
-	 
+
 	global $sql;
 	extract($row);
 	$tmp = explode(".", $row['comment_author']);
@@ -154,7 +154,7 @@ function delete_children($row, $cid) {
 	}
 	$c_del[] = $cid;
 	while (list ($key, $cid) = each ($c_del)) {
-		 
+
 		$sql->db_Delete("comments", "comment_id='$cid'");
 	}
 }
