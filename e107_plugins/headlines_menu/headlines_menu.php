@@ -168,9 +168,9 @@ class parse_xml {
 
 		for($a=0; $a<=9; $a++){
 			if($this->rssdata['link'][$a]){
-				$text2 .= "<tr><td><img src='".THEME."images/bullet2.gif' alt='' style='vertical-align:middle' /> <b><a href='".$this->rssdata['link'][$a]."' rel='external'>".$this->rssdata['title'][$a]."</a></b><br />".($this->rssdata['description'][$a] && !strstr($this->rssdata['description'][$a], "Search") ? "<span class='smalltext'>" .wordwrap(substr($this->rssdata['description'][$a], 0, 300), 30, "\n", 1)." ...</span>" : "")."</td></tr>";
+				$text2 .= "<tr><td><img src='".ABSTHEMEURL."images/bullet2.gif' alt='' style='vertical-align:middle' /> <b><a href='".$this->rssdata['link'][$a]."' rel='external'>".$this->rssdata['title'][$a]."</a></b><br />".($this->rssdata['description'][$a] && !strstr($this->rssdata['description'][$a], "Search") ? "<span class='smalltext'>" .wordwrap(substr($this->rssdata['description'][$a], 0, 300), 30, "\n", 1)." ...</span>" : "")."</td></tr>";
 				
-				$text .= "<tr><td  class='smalltext'><img src='".THEME."images/bullet2.gif' alt='' style='vertical-align:middle' /> <a href='".$this->rssdata['link'][$a]."' rel='external'>".$this->rssdata['title'][$a]."</a></td></tr>";
+				$text .= "<tr><td  class='smalltext'><img src='".ABSTHEMEURL."images/bullet2.gif' alt='' style='vertical-align:middle' /> <a href='".$this->rssdata['link'][$a]."' rel='external'>".$this->rssdata['title'][$a]."</a></td></tr>";
 			}
 		}
 		$text .= "</table></div><br />\n";
