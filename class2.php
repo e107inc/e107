@@ -206,7 +206,7 @@ $language = ($pref['sitelanguage'] ? $pref['sitelanguage'] : "English");
 define("e_LAN", $language);
 define("e_LANGUAGE", (!USERLAN || !defined("USERLAN") ? $language : USERLAN));
 
-@include(e_LANGUAGEDIR.$language."/".$language.".php");
+@include(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.".php");
 
 if($pref['maintainance_flag'] && ADMIN == FALSE && !eregi("admin", e_SELF)){
         @include(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitedown.php");
