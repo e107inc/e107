@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-02-17 20:26:33 $
+|     $Revision: 1.27 $
+|     $Date: 2005-03-22 09:50:25 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -40,6 +40,9 @@ require_once(e_HANDLER.'form_handler.php');
 
 $rs = new form;
 $linkpost = new links;
+
+
+echo "<pre>"; print_r($_POST); echo "</pre>";
 
 
 $deltest = array_flip($_POST);
