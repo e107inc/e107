@@ -1,9 +1,9 @@
-$np_parms['prev'] = " << ";
-$np_parms['next'] = " >> ";
-$np_parms['template'] = "[PREV] [DROPDOWN] [NEXT]";
-$np_parms['action'] = e_SELF.'?'.e_QUERY;
-$np_parms['np_class'] = 'button';
+$np_parms['prev'] = "&nbsp;&nbsp;<<&nbsp;&nbsp;";
+$np_parms['next'] = "&nbsp;&nbsp;>>&nbsp;&nbsp;";
+$np_parms['template'] = "[PREV]&nbsp;&nbsp;[DROPDOWN]&nbsp;&nbsp;[NEXT]";
+$np_parms['np_class'] = 'tbox';
 $np_parms['dropdown_class'] = 'tbox';
+$np_parms['perpage'] = 1;
 if($cached_parms = getcachedvars('nextprev'))
 {
 	$tmp = $cached_parms;
@@ -14,67 +14,34 @@ if($cached_parms = getcachedvars('nextprev'))
 }
 $prev="";
 $next="";
+if($np_parms['currentpage'] > 1)
+{
+	$pp = ($np_parms['currentpage']-2)*$np_parms['perpage'];
+	$link = str_replace("[FROM]", $pp, $np_parms['action']);
+	$prev = "<a class='{$np_parms['np_class']}' style='text-decoration:none' href='{$link}'>{$np_parms['prev']}</a>";
+}
+if($np_parms['currentpage'] < $np_parms['totalpages'])
+{
+	$np = ($np_parms['currentpage'])*$np_parms['perpage'];
+	$link = str_replace("[FROM]", $np, $np_parms['action']);
+	$next = "<a class='{$np_parms['np_class']}' style='text-decoration:none' href='{$link}'>{$np_parms['next']}</a>";
+}
+$form_start = "<span><form method='post' id='frmNextPrev' action='{$np_parms['action']}'>";
+$form_end = "</form></span>";
 
-if($parm == 'link')
+$dropdown = "<select class='{$np_parms['dropdown_class']}' name='pageSelect' OnChange='location.href=this.options[selectedIndex].value'>";
+for($i = 1; $i <= $np_parms['totalpages']; $i++)
 {
-	if($np_parms['currentpage'] > 1)
+	$sel = "";
+	if($np_parms['currentpage'] == $i)
 	{
-		$link = str_replace("?", "?[".($np_parms['currentpage']-1)."]", $np_parms['action']);
-		$prev = "<a class='{$np_parms['np_class']}' style='text-decoration:none' href='{$link}'>{$np_parms['prev']}</a>";
+		$sel = " selected='selected' ";
 	}
-	if($np_parms['currentpage'] < $np_parms['totalpages'])
-	{
-		$link = str_replace("?", "?[".($np_parms['currentpage']+1)."]", $np_parms['action']);
-		$next = "<a class='{$np_parms['np_class']}' style='text-decoration:none' href='{$link}'>{$np_parms['next']}</a>";
-	}
-	$formid = 'pg_'.time();
-	$form_start = "<span><form method='post' id='{$formid}' action='{$np_parms['action']}'>";
-	$form_end = "</form></span>";
-	
-	$dropdown = "<select class='{$np_parms['dropdown_class']}' name='pageSelect' OnChange='location.href=this.options[selectedIndex].value'>";
-	for($i = 1; $i <= $np_parms['totalpages']; $i++)
-	{
-		$sel = "";
-		if($np_parms['currentpage'] == $i)
-		{
-			$sel = " selected='selected' ";
-		}
-		$link = str_replace("?", "?[{$i}]", $np_parms['action']);
-		$dropdown .= "<option value='{$link}' {$sel}>{$i}</option>\n";
-	}
-	$dropdown .= "</select>";
+	$np = ($i-1)*$np_parms['perpage'];
+	$link = str_replace("[FROM]", $np, $np_parms['action']);
+	$dropdown .= "<option value='{$link}' {$sel}>{$i}</option>\n";
 }
-else
-{
-	$form_start = "<span><form method='post' action='{$np_parms['action']}'>";
-	$form_end = "</form></span>";
-	
-	$dropdown = "<select class='{$np_parms['dropdown_class']}' name='pageSelect' onchange='this.form.submit()'>";
-	for($i = 1; $i <= $np_parms['totalpages']; $i++)
-	{
-		$sel = "";
-		if($np_parms['currentpage'] == $i)
-		{
-			$sel = " selected='selected' ";
-		}
-		$dropdown .= "<option value='{$i}' {$sel}>{$i}</option>\n";
-	}
-	$dropdown .= "</select>";
-	if($np_parms['currentpage'] >1)
-	{
-		$prev = "
-		<input type='hidden' name='pagePrev' value='".($np_parms['currentpage']-1)."' />
-		<input type='submit' class='{$np_parms['np_class']}' name='submitPrev' value='".$np_parms['prev']."' />
-		";
-	}
-	if($np_parms['currentpage'] < $np_parms['totalpages'])
-	{
-		$next = "
-		<input type='hidden' name='pageNext' value='".($np_parms['currentpage']+1)."' />
-		<input type='submit' class='{$np_parms['np_class']}' name='submitNext' value='".$np_parms['next']."' />
-		";
-	}
-}
+$dropdown .= "</select>";
 $ret = $np_parms['template'];
 $ret = str_replace('[DROPDOWN]', $dropdown, $ret);
 $ret = str_replace('[PREV]', $prev, $ret);

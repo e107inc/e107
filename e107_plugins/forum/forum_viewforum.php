@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-02-20 03:22:43 $
+|     $Revision: 1.11 $
+|     $Date: 2005-02-20 04:59:36 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -106,10 +106,10 @@ if ($pages)
 		$np_parm['template'] = LAN_316." [PREV]&nbsp;&nbsp;[DROPDOWN]&nbsp;&nbsp;[NEXT]";
 		$np_parm['currentpage'] = ($from/$view)+1;
 		$np_parm['totalpages'] = $pages;
-		$np_parm['prev'] = "&nbsp;&nbsp;<<&nbsp;&nbsp;";
-		$np_parm['next'] = "&nbsp;&nbsp;>>&nbsp;&nbsp;";
+		$np_parm['action'] = e_SELF.'?'.$forum_id.'.[FROM]';
+		$np_parm['perpage'] = $view;
 		cachevars('nextprev', $np_parm);
-		$THREADPAGES = $tp->parseTemplate("{NEXTPREV=link}");
+		$THREADPAGES = $tp->parseTemplate("{NEXTPREV}");
 	}
 }
 	
