@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/index.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-11-07 19:03:26 $
-|     $Author: loloirie $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-05 10:37:54 $
+|     $Author: pholzmann $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,7 +27,7 @@ if(!$pref['frontpage'] || $pref['frontpage_type'] == "splash"){
         header("location: ".e_BASE."news.php");
         exit;
 }else if(is_numeric($pref['frontpage'])){
-        header("location: ".e_BASE."content.php?article.".$pref['frontpage'].".255");
+        header("location: ".e_BASE."content.php?content.".$pref['frontpage']."");
         exit;
 }else if(eregi("http", $pref['frontpage'])){
         header("location: ".e_BASE.$pref['frontpage']);
