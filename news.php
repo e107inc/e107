@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-01-22 16:48:39 $
+|     $Revision: 1.20 $
+|     $Date: 2005-01-22 18:45:36 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -237,16 +237,14 @@ if(!$sql -> db_Select_gen($query)) {
 // ##### --------------------------------------------------------------------------------------------------------------
 
 // #### new: news archive ---------------------------------------------------------------------------------------------
-if ($action != "item" && $action != 'list') { // do not show the newsarchive on the news.php?item.X page (but only on the news mainpage)
-	if($sql -> db_Select_gen($query))
+if ($action != "item" && $action != 'list' && $pref['newsposts_archive'])
+{ // do not show the newsarchive on the news.php?item.X page (but only on the news mainpage)
+	if($sql -> db_Select_gen($query2))
 	{
-	
-	}
-	else
-	{
-			while($news2 = $sql -> db_Fetch())
+		while($news2 = $sql -> db_Fetch())
 		{
-			if (check_class($news2['news_class'])) {
+			if (check_class($news2['news_class']))
+			{
 				if($action == "item"){ unset($news2['news_rendertype']); }
 
 				// Code from Lisa
@@ -275,7 +273,7 @@ if ($action != "item" && $action != 'list') { // do not show the newsarchive on 
 				<table style='width:98%;'>
 				<tr>
 				<td>
-				<div><img src='".THEME."images/bullet2.gif' style='border:0px' alt='' /> <b><a href='news.php?item.".$news2['news_id']."'>".$news2['news_title']."</a></b> <span class='smalltext' ><i>(".$news2['news_datestamp'].") (".$news2['category_name'].")</i></span></div>
+				<div><img src='".THEME."images/bullet2.gif' style='border:0px' alt='' /> <b><a href='news.php?item.".$news2['news_id']."'>".$news2['news_title']."</a></b> <span class='smalltext'><i><a href='".e_BASE."user.php?id.".$news2['user_id']."'>".$news2['user_name']."</a> @ (".$news2['news_datestamp'].") (".$news2['category_name'].")</i></span></div>
 				</td>
 				</tr>
 				</table>

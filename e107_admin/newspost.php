@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.15 $
-|   $Date: 2005-01-22 18:21:18 $
+|   $Revision: 1.16 $
+|   $Date: 2005-01-22 18:45:19 $
 |   $Author: stevedunstan $
 +---------------------------------------------------------------+
 
@@ -841,11 +841,11 @@ class newspost{
                                 $text .= "
                                 <tr>
                 <td class='forumheader3' style='width:60%'><span class='defaulttext'>News posts to display in archive ?</span><br />
-                                        <span class='defaulttext'><i>First update the preferences with the changed display per page setting, then update again after setting the newsarchive preference.</i></span>
+                                        <span class='defaulttext'><i>First update the preferences with the changed display per page setting, then update again after setting the newsarchive preference. (0 is un-activated)</i></span>
                                 </td>
                 <td class='forumheader3' style='width:40%'>
                 <select class='tbox' name='newsposts_archive'>";
-                                for($i=1;$i<$pref['newsposts'];$i++){
+                                for($i=0;$i<$pref['newsposts'];$i++){
                                         $text .= ($i == $pref['newsposts_archive'] ?  "<option value='".$i."' selected='selected'>".$i."</option>" : " <option value='".$i."'>".$i."</option>");
                                 }
                 $text .= "</select></td>
