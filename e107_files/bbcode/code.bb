@@ -1,4 +1,8 @@
-$code_text = $tp -> e_emote -> filterEmotesRev($code_text);
+global $pref;
+if($pref['smiley_activate'])
+{
+	$code_text = $tp -> e_emote -> filterEmotesRev($code_text);
+}
 $code_text = str_replace("&#036;","$",$code_text);
 $code_text = str_replace("&#092;","\\",$code_text);
 $code_text = str_replace("[E_NL]","\n",$code_text);
