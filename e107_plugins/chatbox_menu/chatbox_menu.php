@@ -19,7 +19,7 @@ if(IsSet($_POST['chat_submit'])){
 		// disallow post
 	}else{
 		$cmessage = $_POST['cmessage'];
-		$nick = trim(chop($_POST['nick']));
+		$nick = trim(chop(preg_replace("/\[.*\]/si", "", $_POST['nick'])));
 		$fp = new floodprotect;
 		if(!$fp -> flood("chatbox", "cb_datestamp")){
 			header("location:index.php");

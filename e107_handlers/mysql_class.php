@@ -223,8 +223,8 @@ class db{
 		# - return				result array, or error if (error reporting = on, error occured, boolean)
 		# - scope					public
 		*/
-		if($table == "cache"){
-//			echo "DELETE FROM ".MPREFIX.$table." WHERE ".$arg."<br />";			// debug
+		if($table == "user"){
+	//		echo "DELETE FROM ".MPREFIX.$table." WHERE ".$arg."<br />";			// debug
 		}
 		if(!$arg){
 			if($result = $this->mySQLresult = @mysql_query("DELETE FROM ".MPREFIX.$table)){

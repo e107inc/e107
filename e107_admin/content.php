@@ -82,7 +82,7 @@ if(IsSet($message)){
 }
 
 $text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 100px; overflow : auto; '>\n";
-if(!$content_total = $sql -> db_Select("content", "*", "content_type='254' OR content_type='255' OR content_type='1' ")){
+if(!$content_total = $sql -> db_Select("content", "*", "content_type='254' OR content_type='255' OR content_type='1' ORDER BY content_datestamp DESC")){
 	$text .= "<div style='text-align:center'>".CNTLAN_4."</div>";
 }else{
 	$text .= "<table class='fborder' style='width:100%'>

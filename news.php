@@ -103,13 +103,13 @@ if(!defined("WMFLAG")){
 	list($wm_admin, $adminmessage, $wm_active3) = $sql-> db_Fetch();
 	if(ADMIN == TRUE && $wm_active3){
 		$adminmessage = $aj -> tpa($adminmessage, "on");
-		$ns -> tablerender("", "<div style='text-align:center'><b>Administrators</b><br />".$adminmessage."</div>");
+		$ns -> tablerender("", "<div style='text-align:center'><b>Administrators</b><br />".$adminmessage."</div>", "wm");
 	}else if(USER == TRUE && $wm_active2){
 		$membermessage = $aj -> tpa($membermessage, "on");
-		$ns -> tablerender("", "<div style='text-align:center'>".$membermessage."</div>");
+		$ns -> tablerender("", "<div style='text-align:center'>".$membermessage."</div>", "wm");
 	}else if(USER == FALSE && $wm_active1){
 		$guestmessage = $aj -> tpa($guestmessage, "on");
-		$ns -> tablerender("", "<div style='text-align:center'>".$guestmessage."</div>");
+		$ns -> tablerender("", "<div style='text-align:center'>".$guestmessage."</div>", "wm");
 	}
 }
 // ---> wmessage end

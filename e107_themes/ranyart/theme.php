@@ -170,7 +170,8 @@ $FOOTER = "
 <tr>
 <td style='background-color:#000'></td>
 </tr>
-</table>";
+</table>
+";
 
 $NEWSSTYLE = "
 <div class='border2'>

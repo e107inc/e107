@@ -440,7 +440,7 @@ function timezone(){
 ?>
 <script type="text/javascript">
 function addtext2(sc){
-        document.settings.image.value = sc;
+        document.dataform.image.value = sc;
 }
 
 </script>

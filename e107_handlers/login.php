@@ -63,7 +63,7 @@ class userlogin{
 				}
 
 				$redir = (e_QUERY ? e_SELF."?".e_QUERY : e_SELF);
-				if(!strstr($_SERVER['SERVER_SOFTWARE'], "Apache")){
+				if(strstr($_SERVER['SERVER_SOFTWARE'], "Apache")){
 					header("Location: ".$redir);
 					exit;
 				}else{

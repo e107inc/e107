@@ -67,8 +67,8 @@ if($action == "content"){
 		echo $aj -> formtparev($cache);
 	}else{
 		ob_start();
-		$text = ($content_parent ? $aj -> tpa($content_content, "nobreak") : $aj -> tpa($content_content));
-		$caption = $aj -> tpa($content_subheading);
+		$text = ($content_parent ? $aj -> tpa($content_content, "nobreak", "admin") : $aj -> tpa($content_content, "off", "admin"));
+		$caption = $aj -> tpa($content_subheading, "off", "admin");
 		$ns -> tablerender($caption, $text);
 		
 		if($pref['cachestatus']){
@@ -143,7 +143,7 @@ if($action == "review"){
 				<br /><br />
 				$content_summary
 				<br /><br />
-				".$aj -> tpa($content_content)."
+				".$aj -> tpa($content_content, "off", "admin")."
 				<br /><br />
 				Rating: 
 				<table style='width:".($content_review_score*2)."px'>
@@ -437,7 +437,7 @@ if($action == "article"){
 					$cachestr = ($id ? "article.item.$sub_action.$id" : "article.item.$sub_action");
 
 				}else{
-					$content_content = $aj -> tpa($content_content);
+					$content_content = $aj -> tpa($content_content, "off", "admin");
 					$text .= $content_content."\n<br />\n";
 					if($epflag){ $text .= $ep; }
 					$cachestr = "article.item.$sub_action";

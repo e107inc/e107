@@ -209,7 +209,7 @@ if($action == "cat"){
 if(!$action || $action == "confirm"){
 	$sql2 = new db;
 	$text = "<div style='border : solid 1px #000; padding : 4px; width : auto; height : 200px; overflow : auto; '>";
-	if($article_total = $sql -> db_Select("content", "*", "content_type='3' ")){
+	if($article_total = $sql -> db_Select("content", "*", "content_type='3' ORDER BY content_datestamp DESC")){
 		$text .= "<table class='fborder' style='width:100%'>
 		<tr>
 		<td style='width:5%' class='forumheader2'>&nbsp;</td>

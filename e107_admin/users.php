@@ -34,9 +34,8 @@ $amount = 50;
 if(IsSet($_POST['update_options'])){
         $pref['avatar_upload'] = (FILE_UPLOADS ? $_POST['avatar_upload'] : 0);
         $pref['im_width'] = $_POST['im_width'];
-        $pref['resize_method'] = $_POST['resize_method'];
-        $pref['im_path'] = $_POST['im_path'];
         $pref['photo_upload'] = (FILE_UPLOADS ? $_POST['photo_upload'] : 0);
+		$pref['del_unv'] = $_POST['del_unv'];
         save_prefs();
         $user -> show_message(USRLAN_1);
 }
@@ -459,6 +458,12 @@ class users{
                 <td style='width:50%' class='forumheader3'>".USRLAN_47.":</td>
                 <td style='width:50%' class='forumheader3'>
                 <input class='tbox' type='text' name='im_width' size='10' value='".$pref['im_width']."' maxlength='5' /> (".USRLAN_48.")
+                </tr>
+
+				<tr>
+                <td style='width:50%' class='forumheader3'>".USRLAN_93."<br /><span class='smalltext'>".USRLAN_94."</span></td>
+                <td style='width:50%' class='forumheader3'>
+                <input class='tbox' type='text' name='del_unv' size='10' value='".$pref['del_unv']."' maxlength='5' /> ".USRLAN_95."
                 </tr>
 
                 <tr>

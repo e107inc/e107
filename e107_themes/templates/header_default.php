@@ -20,14 +20,17 @@ echo "<?xml version='1.0' encoding='iso-8859-1' ?>
 <title>".SITENAME.(defined("PAGE_NAME") ? ": ".PAGE_NAME : "")."</title>
 <link rel=\"stylesheet\" href=\"".THEME."style.css\" type=\"text/css\" />
 <link rel=\"stylesheet\" href=\"".e_FILE."e107.css\" type=\"text/css\" />";
+if(file_exists(e_BASE."favicon.ico")){echo "\n<link rel=\"shortcut icon\" href=\"favicon.ico\" />"; }
 if(file_exists(e_FILE."style.css")){ echo "\n<link rel='stylesheet' href='".e_FILE."style.css' type=\"text/css\" />\n"; }
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=".CHARSET."\" />
 <meta http-equiv=\"content-style-type\" content=\"text/css\" />
 ".($pref['meta_tag'] ? $aj -> formtparev($pref['meta_tag'])."\n" : "");
+/*
 if(eregi("forum_post.php", e_SELF) && ($_POST['reply'] || $_POST['newthread'])){
 	$tmp = explode(".", e_QUERY);
 	echo "<meta http-equiv=\"refresh\" content=\"5;url='".e_BASE."forum_viewforum.php?".$tmp[1]."'>\n";
 }
+*/
 echo "<script type='text/javascript' src='".e_FILE."e107.js'></script>";
 if(file_exists(THEME."theme.js")){echo "<script type='text/javascript' src='".THEME."theme.js'></script>";}
 if(file_exists(e_FILE."user.js")){echo "<script type='text/javascript' src='".e_FILE."user.js'></script>\n";}
@@ -87,7 +90,7 @@ function parseheader($LAYOUT){
 }
 function checklayout($str){
 	$sql = new db;
-	global $pref, $style, $userthemes, $udirs, $userclass, $dbq, $menu_pref;
+	global $pref, $style, $userthemes, $udirs, $userclass, $dbq, $menu_pref, $dbq;
 	if(strstr($str, "LOGO")){
 		echo "<img src='".e_IMAGE."logo.png' alt='Logo' />\n";
 	}else if(strstr($str, "SITENAME")){
