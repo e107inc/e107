@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-01-18 02:54:36 $
-|     $Author: sweetas $
+|     $Revision: 1.13 $
+|     $Date: 2005-01-18 16:49:17 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -22,12 +22,29 @@ require_once('auth.php');
 require_once(e_HANDLER.'admin_handler.php');
 
 // update users using old layout names to their new names
-if ($pref['adminstyle']=='default') { $pref['adminstyle'] = 'compact'; }
-if ($pref['adminstyle']=='adminb') { $pref['adminstyle'] = 'cascade'; }
-if ($pref['adminstyle']=='admin_etalkers') { $pref['adminstyle'] = 'categories'; }
-if ($pref['adminstyle']=='admin_combo') { $pref['adminstyle'] = 'combo'; }
-if ($pref['adminstyle']=='admin_classis') { $pref['adminstyle'] = 'classis'; }
-save_prefs();
+if ($pref['adminstyle'] == 'default') {
+	$pref['adminstyle'] = 'compact';
+	$update_prefs = true;
+}
+if ($pref['adminstyle'] == 'adminb') {
+	$pref['adminstyle'] = 'cascade';
+	$update_prefs = true;
+}
+if ($pref['adminstyle'] == 'admin_etalkers') {
+	$pref['adminstyle'] = 'categories';
+	$update_prefs = true;
+}
+if ($pref['adminstyle'] == 'admin_combo') {
+	$pref['adminstyle'] = 'combo';
+	$update_prefs = true;
+}
+if ($pref['adminstyle'] == 'admin_classis') {
+	$pref['adminstyle'] = 'classis';
+	$update_prefs = true;
+}
+if ($update_prefs == true){
+	save_prefs();
+}
 
 // auto db update
 if ('0' == ADMINPERMS) {
