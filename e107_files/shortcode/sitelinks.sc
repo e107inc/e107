@@ -3,7 +3,9 @@ global $eMenuActive;
 
 if(!in_array('edynamic_menu',$eMenuActive) && !in_array('tree_menu',$eMenuActive)) {
 	$linktype = $parm;
-	define("LINKDISPLAY", ($linktype == "menu" ? 2 : 1));
+	if(!defined('LINKDISPLAY')) {
+		define("LINKDISPLAY", ($linktype == "menu" ? 2 : 1));
+	}
 	if($override_function = $override -> override_check('sitelinks')){
 		call_user_func($override_function);
 	} else {	
