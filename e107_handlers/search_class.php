@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search_class.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-03-13 10:44:40 $
+|     $Revision: 1.20 $
+|     $Date: 2005-03-16 10:06:08 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -131,7 +131,8 @@ class e_search {
 					} else {
 						$relevance = $row['relevance'];
 					}
-					$output_array['text'][] = $output."<br /><span class='smalltext'>".$res['detail']." | Relevance: ".$relevance."</span><br /><br />";
+					$display_rel = $search_prefs['relevance'] ? " | Relevance: ".$relevance : "";
+					$output_array['text'][] = $output."<br /><span class='smalltext'>".$res['detail'].$display_rel."</span><br /><br />";
 				} else {
 					$ps['results']--;
 					$res['omit_result'] = FALSE;
