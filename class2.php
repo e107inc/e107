@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2004-12-12 15:17:22 $
+|     $Revision: 1.37 $
+|     $Date: 2004-12-12 18:12:51 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -396,6 +396,7 @@ if (e_QUERY == 'logout') {
 		$_SESSION[$pref['cookie_name']] = "";
 	}
 	cookie($pref['cookie_name'], "", (time()-2592000));
+	$e_event -> trigger("logout");
 	echo "<script type='text/javascript'>document.location.href='".e_BASE."index.php'</script>\n";
 	exit;
 }
