@@ -53,7 +53,7 @@ function ren_help($mode=1,$addtextfunc="addtext",$helpfunc="help"){
                 while(list($key, $bbcode) = each($colours)){
                         $string .= "<option style=\"color:".strtolower($bbcode[0])."\" value=\"".strtolower($bbcode[0])."\">".$bbcode[1]."</option>\n";
                 }
-                $string .= "</select>\n<select class=\"tbox\" name=\"fontsiz\" onchange=\"{$addtextfunc}('[size=' + this.options[this.selectedIndex].value + '][/size]');this.selectedIndex=0;\"".($mode != 2 ? " onmouseover=\"{$helpfunc}('Font Size: [size]Big[/size]')\" onmouseout=\"{$helpfunc}('')\">" : "" )." >\n<option>".LANHELP_22."</option>\n";
+                $string .= "</select>\n<select class=\"tbox\" name=\"fontsiz\" onchange=\"{$addtextfunc}('[size=' + this.options[this.selectedIndex].value + '][/size]');this.selectedIndex=0;\"".($mode != 2 ? " onmouseover=\"{$helpfunc}('Font Size: [size]Big[/size]')\" onmouseout=\"{$helpfunc}('')\"" : "" )." >\n<option>".LANHELP_22."</option>\n";
 
                 while(list($key, $bbcode) = each($fontsizes)){
                         $string .= "<option value=\"".$bbcode[0]."\">".$bbcode[1]."</option>\n";
