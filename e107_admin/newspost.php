@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.30 $
-|   $Date: 2005-02-09 22:18:37 $
-|   $Author: stevedunstan $
+|   $Revision: 1.31 $
+|   $Date: 2005-02-09 22:24:23 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 
 */
@@ -258,17 +258,6 @@ print "<script type=\"text/javascript\">
 
 	</script>\n";
 
-echo "<script type=\"text/javascript\">
-	function confirm_(mode, news_id){
-	if (mode == 'cat'){
-	return confirm(\"".$tp->toJS(NWSLAN_37)." [ID: \" + news_id + \"]\");
-	}else if(mode == 'sn'){
-	return confirm(\"".$tp->toJS(NWSLAN_38)." [ID: \" + news_id + \"]\");
-	}else{
-	return confirm(\"".$tp->toJS(NWSLAN_39)." [ID: \" + news_id + \"]\");
-	}
-	}
-	</script>";
 require_once("footer.php");
 exit;
 
@@ -303,7 +292,7 @@ class newspost {
 					<td style='width:5%' class='forumheader3'>$news_id</td>
 					<td style='width:75%' class='forumheader3'><a href='".e_BASE."comment.php?comment.news.$news_id'>".($news_title ? $tp->toHTML($news_title) : "[".NWSLAN_42."]")."</a></td>
 					<td style='width:20%; text-align:center' class='forumheader3'>
-					".$rs->form_open("post", e_SELF, "myform__{$news_id}", "", "", " onsubmit=\"return confirm_('create',$news_id)\"")."
+					".$rs->form_open("post", e_SELF, "myform__{$news_id}", "", "", " onsubmit=\"return jsconfirm('".$tp->toJS(NWSLAN_39." [ID: $news_id ]")."')\"  ")."
 					<div>".$rs->form_button("button", "main_edit_{$news_id}", NWSLAN_7, "onclick=\"document.location='".e_SELF."?create.edit.$news_id'\"")."
 					".$rs->form_button("submit", "main_delete_{$news_id}", NWSLAN_8)."
 					</div>".$rs->form_close()."
@@ -479,28 +468,18 @@ class newspost {
 
 		//Main news body textarea
 		if (!$pref['htmlarea']) {
-
-
 			$text .= "<input id='helpb' class='helpbox' type='text' name='helpb' size='100' style='width:95%'/>
 			<br />". display_help("helpb");
 
-
-				$text .="
-				<select class='tbox' name='thumbps' onchange=\"addtext('[img]' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onmouseover=\"help('".NWSLAN_50."')\" onmouseout=\"help('')\">
-				<option>".NWSLAN_80." ...</option>\n";
-				foreach ($thumblist as $thmb){
-					$text .= "<option value='".$e107->HTTPPath.$IMAGES_DIRECTORY."newspost_images/".$thmb['fname']."'>".$thmb['fname']."</option>\n";
-				}
-				$text .= "</select>
-
-				<select class='tbox' name='imageps' onchange=\"addtext('[img]' + this.form.imageps.options[this.form.imageps.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onmouseover=\"help('".NWSLAN_110."')\" onmouseout=\"help('')\">
+				$text .="<select class='tbox' name='imageps' onchange=\"addtext('[img]' + this.form.imageps.options[this.form.imageps.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onmouseover=\"help('".NWSLAN_110."')\" onmouseout=\"help('')\">
 				<option>".NWSLAN_81." ...</option>\n";
 				foreach ($imagelist as $image) {
 					$text .= "<option value='".$e107->HTTPPath.$IMAGES_DIRECTORY."newspost_images/".$image['fname']."'>".$image['fname']."</option>\n";
 				}
+				foreach ($thumblist as $thmb){
+					$text .= "<option value='".$e107->HTTPPath.$IMAGES_DIRECTORY."newspost_images/".$thmb['fname']."'>".$thmb['fname']."</option>\n";
+				}
 				$text .= "</select>";
-
-
 		} // end of htmlarea check.
 		//Extended news form textarea
 		$text .= "
@@ -523,6 +502,10 @@ class newspost {
 			reset($imagelist);
 			foreach ($imagelist as $image){
 				$text .= "<option value='".$e107->HTTPPath.$IMAGES_DIRECTORY."newspost_images/".$image['fname']."'>".$image['fname']."</option>\n";
+			}
+
+			foreach ($thumblist as $thmb){
+					$text .= "<option value='".$e107->HTTPPath.$IMAGES_DIRECTORY."newspost_images/".$thmb['fname']."'>".$thmb['fname']."</option>\n";
 			}
 			$text .= "</select>";
 		}
@@ -768,7 +751,7 @@ class newspost {
 					<td style='width:5%; text-align:center' class='forumheader3'><img src='$icon' alt='' style='vertical-align:middle' /></td>
 					<td style='width:75%' class='forumheader3'>$category_name</td>
 					<td style='width:20%; text-align:center' class='forumheader3'>
-					".$rs->form_open("post", e_SELF."?cat", "myform__{$category_id}", "", "", " onsubmit=\"return confirm_('cat',$category_id)\"")."
+					".$rs->form_open("post", e_SELF."?cat", "myform__{$category_id}", "", "", " onsubmit=\"return jsconfirm('".$tp->toJS(NWSLAN_37." [ID: $category_id ]")."')\"  ")."
 					<div>".$rs->form_button("button", "category_edit_{$category_id}", NWSLAN_7, "onclick=\"document.location='".e_SELF."?cat.edit.$category_id'\"")."
 					".$rs->form_button("submit", "category_delete_{$category_id}", NWSLAN_8)."
 					</div>".$rs->form_close()."
@@ -995,7 +978,7 @@ class newspost {
 					<td style='width:25%; text-align:right; vertical-align:top' class='forumheader3'>";
 				$buttext = ($submitnews_auth == 0)? NWSLAN_58 :
 				 NWSLAN_103;
-				$text .= $rs->form_open("post", e_SELF."?sn", "myform__{$submitnews_id}", "", "", " onsubmit=\"return confirm_('sn',$submitnews_id)\"")
+				$text .= $rs->form_open("post", e_SELF."?sn", "myform__{$submitnews_id}", "", "", " onsubmit=\"return jsconfirm('".$tp->toJS(NWSLAN_38." [ID: $submitnews_id ]")."')\"   ")
 				."<div>".$rs->form_button("button", "category_edit_{$submitnews_id}", $buttext, "onclick=\"document.location='".e_SELF."?create.sn.$submitnews_id'\"")."
 					".$rs->form_button("submit", "sn_delete_{$submitnews_id}", NWSLAN_8)."
 					</div>".$rs->form_close()."
