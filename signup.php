@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-15 18:15:35 $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-15 19:04:48 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -367,20 +367,20 @@ $rs ->form_radio("hideemail", 1)." ".LAN_SIGNUP_10."&nbsp;&nbsp;".$rs ->form_rad
 </tr>";
 
 
-// ----------------------  User subscription to userclasses.
+// ----------  User subscription to userclasses.
 if($signupval[10]){
 $text .="<tr>
-<td class='forumheader3' style='width:30%'>".LAN_USET_5." ".req($signupval[10])."
+<td class='forumheader3' style='width:30%;vertical-align:top'>".LAN_USET_5." ".req($signupval[10])."
 <br /><span class='smalltext'>".LAN_USET_6."</span></td>
 <td class='forumheader3' style='width:70%'>";
  $text .= "<table style='width:100%'>";
     $sql -> db_Select("userclass_classes","*","userclass_editclass =0 order by userclass_name");
     while($row3 = $sql-> db_Fetch()){
         //  $frm_checked = check_class($userclass_id,$user_class) ? "checked='checked'" : "";
-          $text .= "<tr><td class='defaulttext'>";
+          $text .= "<tr><td class='defaulttext' style='width:10%;vertical-align:top'>";
           $text .= "<input type='checkbox' name='usrclass[]' value='".$row3['userclass_id']."'  />\n";
-          $text .= $row3['userclass_name']."</td>";
-          $text .= "<td class='smalltext'>".$row3['userclass_description']."</td>";
+          $text .= "</td><td class='defaulttext' style='text-align:left;margin-left:0px;width:90%padding-top:3px;vertical-align:top'>".$row3['userclass_name']."<br />";
+          $text .= "<span class='smalltext'>".$row3['userclass_description']."</span></td>";
           $text .= "</tr>\n";
     }
     $text .= "</table>\n";
