@@ -245,33 +245,19 @@ define("FLOODHITS", $pref['flood_hits']);
 
 if(strstr(e_SELF, $ADMIN_DIRECTORY) && $pref['admintheme'] && !$_POST['sitetheme']){
         if(strstr(e_SELF, "menus.php")){
-                define("THEME", e_THEME.$pref['sitetheme']."/");
+			checkvalidtheme($pref['sitetheme']);
         } else if(strstr(e_SELF, "newspost.php")){
-                define("MAINTHEME", e_THEME.$pref['sitetheme']."/");
-                define("THEME", e_THEME.$pref['admintheme']."/");
+			define("MAINTHEME", e_THEME.$pref['sitetheme']."/");
+			checkvalidtheme($pref['admintheme']);
         } else {
-                define("THEME", e_THEME.$pref['admintheme']."/");
+			checkvalidtheme($pref['admintheme']);
         }
 } else {
          if(USERTHEME != FALSE && USERTHEME != "USERTHEME"){
-                if(@fopen(e_THEME.USERTHEME."/theme.php", r)){
-					define("THEME", e_THEME.USERTHEME."/");
-				}else{
-					@require_once(e_HANDLER."debug_handler.php");
-					$e107tmp_theme = search_validtheme();
-					define("THEME", e_THEME.$e107tmp_theme."/");
-					if(ADMIN && !strstr(e_SELF,$ADMIN_DIRECTORY)){echo '<script>alert("'.CORE_LAN1.'")</script>';}
-				}
-        } else {
-                if(@fopen(e_THEME.$pref['sitetheme']."/theme.php", r)){
-					define("THEME", e_THEME.$pref['sitetheme']."/");
-				}else{
-					@require_once(e_HANDLER."debug_handler.php");
-					$e107tmp_theme = search_validtheme();
-					define("THEME", e_THEME.$e107tmp_theme."/");
-					if(ADMIN && !strstr(e_SELF,$ADMIN_DIRECTORY)){echo '<script>alert("'.CORE_LAN1.'")</script>';}
-				}
-        }
+			checkvalidtheme(USERTHEME);
+		} else {
+			checkvalidtheme($pref['sitetheme']);
+		}
 }
 @require_once(THEME."theme.php");
 
@@ -1020,5 +1006,17 @@ function code($string, $mode="default"){
 
         return $string;
 }
-
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+function checkvalidtheme($theme_check){
+	// arg1 = theme to check
+	global $ADMIN_DIRECTORY;
+    if(@fopen(e_THEME.$theme_check."/theme.php", r)){
+		define("THEME", e_THEME.$theme_check."/");
+	}else{
+		@require_once(e_HANDLER."debug_handler.php");
+		$e107tmp_theme = search_validtheme();
+		define("THEME", e_THEME.$e107tmp_theme."/");
+		if(ADMIN && !strstr(e_SELF, $ADMIN_DIRECTORY)){echo '<script>alert("'.CORE_LAN1.'")</script>';}
+	}
+}
 ?>
