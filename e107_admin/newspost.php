@@ -11,19 +11,20 @@
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
+$Id: newspost.php,v 1.38 2004-08-11 09:26:23 e107coders Exp $ 
 */
 require_once("../class2.php");
+if($pref['htmlarea']){
+    require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
+    $htmlarea_js = (eregi("MSIE",$_SERVER['HTTP_USER_AGENT']))? htmlarea("data,news_extended"): htmlarea("data");
+}
 if(!getperms("H")){ header("location:".e_BASE."index.php"); exit;}
 require_once("auth.php");
 require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."news_class.php");
 require_once(e_HANDLER."ren_help.php");
 require_once(e_HANDLER."form_handler.php");
-    if($pref['htmlarea']){
-    require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
-    htmlarea("data");
-    htmlarea("news_extended");
-    }
+
 $rs = new form;
 $aj = new textparse;
 $ix = new news;
@@ -31,8 +32,8 @@ $newspost = new newspost;
 
 $deltest = array_flip($_POST);
 if(e_QUERY){
-	list($action, $sub_action, $id, $from) = explode(".", e_QUERY);
-	unset($tmp);
+        list($action, $sub_action, $id, $from) = explode(".", e_QUERY);
+        unset($tmp);
 }
 
 $from = ($from ? $from : 0);
@@ -42,36 +43,36 @@ $amount = 50;
 
 if(preg_match("#(.*?)_delete_(\d+)#",$deltest['Delete'],$matches))
 {
-	$delete = $matches[1];
-	$del_id = $matches[2];
+        $delete = $matches[1];
+        $del_id = $matches[2];
 }
 
 if($delete == "main" && $del_id)
 {
-	if($sql -> db_Delete("news", "news_id='$del_id' "))
-	{
-		$newspost -> show_message(NWSLAN_31." #".$del_id." ".NWSLAN_32);
-		clear_cache("news.php");
-	}
-	unset($delete, $del);
+        if($sql -> db_Delete("news", "news_id='$del_id' "))
+        {
+                $newspost -> show_message(NWSLAN_31." #".$del_id." ".NWSLAN_32);
+                clear_cache("news.php");
+        }
+        unset($delete, $del);
 }
 
 if($delete == "category" && $del_id)
 {
-	if($sql -> db_Delete("news_category", "category_id='$del_id' "))
-	{
-		$newspost -> show_message(NWSLAN_33." #".$del_id." ".NWSLAN_32);
-		unset($delete,$del_id);
-	}
+        if($sql -> db_Delete("news_category", "category_id='$del_id' "))
+        {
+                $newspost -> show_message(NWSLAN_33." #".$del_id." ".NWSLAN_32);
+                unset($delete,$del_id);
+        }
 }
 
 if($delete == "sn" && $del_id){
-	if($sql -> db_Delete("submitnews", "submitnews_id='$del_id' "))
-	{
-		$newspost -> show_message(NWSLAN_34." #".$del_id." ".NWSLAN_32);
-		clear_cache("news.php");
-		unset($delete,$del_id);
-	}
+        if($sql -> db_Delete("submitnews", "submitnews_id='$del_id' "))
+        {
+                $newspost -> show_message(NWSLAN_34." #".$del_id." ".NWSLAN_32);
+                clear_cache("news.php");
+                unset($delete,$del_id);
+        }
 }
 
 if(IsSet($_POST['submitupload'])){
@@ -114,21 +115,21 @@ if(IsSet($_POST['create_category'])){
 }
 
 if(IsSet($_POST['update_category'])){
-	if($_POST['category_name']){
-		$category_button = ($_POST['category_button'] ? $_POST['category_button'] : "");
-		$_POST['category_name'] = $aj -> formtpa($_POST['category_name'], "admin");
-		$sql -> db_Update("news_category", "category_name='".$_POST['category_name']."', category_icon='".$category_button."' WHERE category_id='".$_POST['category_id']."'");
-		$newspost -> show_message(NWSLAN_36);
-	}
+        if($_POST['category_name']){
+                $category_button = ($_POST['category_button'] ? $_POST['category_button'] : "");
+                $_POST['category_name'] = $aj -> formtpa($_POST['category_name'], "admin");
+                $sql -> db_Update("news_category", "category_name='".$_POST['category_name']."', category_icon='".$category_button."' WHERE category_id='".$_POST['category_id']."'");
+                $newspost -> show_message(NWSLAN_36);
+        }
 }
 
 if(IsSet($_POST['save_prefs'])){
         $pref['newsposts'] = $_POST['newsposts'];
 
-		// ##### ADDED FOR NEWSARCHIVE --------------------------------------------------------------------
-		$pref['newsposts_archive'] = $_POST['newsposts_archive'];
-		$pref['newsposts_archive_title'] = $_POST['newsposts_archive_title'];
-		// ##### END --------------------------------------------------------------------------------------
+                // ##### ADDED FOR NEWSARCHIVE --------------------------------------------------------------------
+                $pref['newsposts_archive'] = $_POST['newsposts_archive'];
+                $pref['newsposts_archive_title'] = $_POST['newsposts_archive_title'];
+                // ##### END --------------------------------------------------------------------------------------
 
         $pref['news_cats'] = $_POST['news_cats'];
         $pref['nbr_cols'] = $_POST['nbr_cols'];
@@ -137,7 +138,7 @@ if(IsSet($_POST['save_prefs'])){
         $pref['subnews_class'] = $_POST['subnews_class'];
         $pref['subnews_htmlarea'] = $_POST['subnews_htmlarea'];
         $pref['subnews_hide_news'] = $_POST['subnews_hide_news'];
-        
+
         save_prefs();
         clear_cache("news.php");
         $newspost -> show_message("Settings Saved");
@@ -250,7 +251,7 @@ class newspost{
                                 <td style='width:5%' class='forumheader3'>$news_id</td>
                                 <td style='width:75%' class='forumheader3'><a href='".e_BASE."comment.php?comment.news.$news_id'>".($news_title ? $aj -> tpa($news_title) : "[".NWSLAN_42."]")."</a></td>
                                 <td style='width:20%; text-align:center' class='forumheader3'>
-										  ".$rs -> form_button("submit", "main_edit_{$news_id}", NWSLAN_7, "onclick=\"document.location='".e_SELF."?create.edit.$news_id'\"")."
+                                                                                  ".$rs -> form_button("submit", "main_edit_{$news_id}", NWSLAN_7, "onclick=\"document.location='".e_SELF."?create.edit.$news_id'\"")."
                                 ".$rs -> form_open("post", e_SELF,"","",""," onsubmit=\"return confirm_('create',$news_id)\"")."
                                 ".$rs -> form_button("submit", "main_delete_{$news_id}", NWSLAN_8)."
                                 ".$rs -> form_close()."
@@ -316,8 +317,8 @@ class newspost{
 
         function create_item($sub_action, $id){
                 // ##### Display creation form ---------------------------------------------------------------------------------------------------------
-					/* 08-08-2004 - unknown - fixed `Insert Image' display to use $IMAGES_DIRECTORY */
-					global $sql, $rs, $ns, $pref, $IMAGES_DIRECTORY;
+                                        /* 08-08-2004 - unknown - fixed `Insert Image' display to use $IMAGES_DIRECTORY */
+                                        global $sql, $rs, $ns, $pref, $IMAGES_DIRECTORY;
 
                 $handle=opendir(e_IMAGE."newspost_images");
                 while ($file = readdir($handle)){
@@ -411,11 +412,12 @@ class newspost{
                 <td style='width:20%' class='forumheader3'>".NWSLAN_13.":<br /></td>
                 <td style='width:80%' class='forumheader3'>";
 
-                $insertjs = (!$pref['htmlarea'])?"onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'":"";
-                $text .="<textarea class='tbox' id='data' name='data' cols='80' rows='15'  $insertjs>".(strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]../", "[img]", $_POST['data']))."</textarea>
+                $insertjs = (!$pref['htmlarea'])?"rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'":"rows='25' style='width:100%' ";
+                $text .="<textarea class='tbox' id='data' name='data'  cols='80'   $insertjs>".(strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]../", "[img]", $_POST['data']))."</textarea>
                 ";
 //Main news body textarea
-        if(!$pref['htmlarea']){$text .= "
+        if(!$pref['htmlarea']){
+        $text .= "
                 <input class='helpbox' type='text' name='helpb' size='100' />
                 <br />".
                                 ren_help()."
@@ -427,10 +429,10 @@ class newspost{
                 }
                 $text .= "</select>
 
-					<select class='tbox' name='imageps' onChange=\"addtext('[img]' + this.form.imageps.options[this.form.imageps.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_110."')\" onMouseOut=\"help('')\">
+                                        <select class='tbox' name='imageps' onChange=\"addtext('[img]' + this.form.imageps.options[this.form.imageps.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_110."')\" onMouseOut=\"help('')\">
                 <option>".NWSLAN_81." ...</option>\n";
                 while(list($key, $image) = each($imagelist)){
-								$text .= "<option value='".SITEURL.$IMAGES_DIRECTORY."newspost_images/".$image."'>".$image."</option>\n";
+                                                                $text .= "<option value='".SITEURL.$IMAGES_DIRECTORY."newspost_images/".$image."'>".$image."</option>\n";
                 }
                 $text .= "</select>
 
@@ -451,9 +453,9 @@ class newspost{
                 <td style='width:80%' class='forumheader3'>
                 <a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_83."</a>
                 <div style='display: none;'>
-                <textarea class='tbox' id='news_extended' name='news_extended' cols='80' rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".(strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]../", "[img]", $_POST['news_extended']))."</textarea>
+                <textarea class='tbox' id='news_extended' name='news_extended' cols='80' rows='15' style='width:100%;height:50px' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".(strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]../", "[img]", $_POST['news_extended']))."</textarea>
                 ";
-        if(!$pref['htmlarea']){ $text .="<br />
+        if($pref['htmlarea'] && ($pref['htmlarea'] && !eregi("MSIE",$_SERVER['HTTP_USER_AGENT']))){ $text .="<br />
                 <input class='helpbox' type='text' name='help_ext' size='100' />
                 <br />
                                 ".ren_help("","addtext","help2")."
@@ -461,7 +463,7 @@ class newspost{
                 <option>".NWSLAN_81." ...</option>\n";
                 reset($imagelist);
                 while(list($key, $image) = each($imagelist)){
-						$text .= "<option value='".SITEURL.$IMAGES_DIRECTORY."newspost_images/".$image."'>".$image."</option>\n";
+                                                $text .= "<option value='".SITEURL.$IMAGES_DIRECTORY."newspost_images/".$image."'>".$image."</option>\n";
                 }
                 $text .= "</select>";
                 }
@@ -784,41 +786,41 @@ class newspost{
                 <option value='20' ".($pref['newsposts']==20 ? "selected='selected'" : "").">20</option>
                 </select></td>
                 </tr>
-                
+
                 <tr>
                 <td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_108."</span><br /><i>".NWSLAN_109."</i></td>
                 <td class='forumheader3' style='width:40%'>
                 <input type='checkbox' name='subnews_hide_news' value='1' ".($pref['subnews_hide_news']==1 ? " checked='checked'" : "")." />
                 </td>
                 </tr>";
-                
-                
-                
+
+
+
 
 
 // ##### ADDED FOR NEWSARCHIVE --------------------------------------------------------------------
-				// the possible archive values are from "1" to "< $pref['newsposts']"
-				// this should really be made as an onchange event on the selectbox for $pref['newsposts'] ...				
-				$text .= "					
-				<tr>
+                                // the possible archive values are from "1" to "< $pref['newsposts']"
+                                // this should really be made as an onchange event on the selectbox for $pref['newsposts'] ...
+                                $text .= "
+                                <tr>
                 <td class='forumheader3' style='width:60%'><span class='defaulttext'>News posts to display in archive ?</span><br />
-					<span class='defaulttext'><i>First update the preferences with the changed display per page setting, then update again after setting the newsarchive preference.</i></span>
-				</td>
+                                        <span class='defaulttext'><i>First update the preferences with the changed display per page setting, then update again after setting the newsarchive preference.</i></span>
+                                </td>
                 <td class='forumheader3' style='width:40%'>
                 <select class='tbox' name='newsposts_archive'>";
-				for($i=1;$i<$pref['newsposts'];$i++){
-					$text .= ($i == $pref['newsposts_archive'] ?  "<option value='".$i."' selected='selected'>".$i."</option>" : " <option value='".$i."'>".$i."</option>");
-				}
+                                for($i=1;$i<$pref['newsposts'];$i++){
+                                        $text .= ($i == $pref['newsposts_archive'] ?  "<option value='".$i."' selected='selected'>".$i."</option>" : " <option value='".$i."'>".$i."</option>");
+                                }
                 $text .= "</select></td>
                 </tr>
 
-				<tr>
+                                <tr>
                 <td class='forumheader3' style='width:60%'><span class='defaulttext'>set the title for the newsarchive</span></td>
                 <td class='forumheader3' style='width:40%'>
                 <input class='tbox' type='text' style='width:150px' name='newsposts_archive_title' value='".$pref['newsposts_archive_title']."' />
                 </td>
                 </tr>
-				";
+                                ";
 // ##### END --------------------------------------------------------------------------------------
 
 

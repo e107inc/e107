@@ -16,7 +16,7 @@ function HtmlTidy(editor) {
 
 	// register the toolbar buttons provided by this plugin
 	var toolbar = [];
-	for (var i in bl) {
+	for (var i = 0; i < bl.length; ++i) {
 		var btn = bl[i];
 		if (btn == "html-tidy") {
 			var id = "HT-html-tidy";

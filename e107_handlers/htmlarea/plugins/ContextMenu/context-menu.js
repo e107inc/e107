@@ -6,7 +6,7 @@
 // Distributed under the same terms as HTMLArea itself.
 // This notice MUST stay intact for use (see license.txt).
 //
-// $Id: context-menu.js,v 1.3 2004-06-26 13:48:24 e107coders Exp $
+// $Id: context-menu.js,v 1.4 2004-08-11 09:26:37 e107coders Exp $
 
 HTMLArea.loadStyle("menu.css", "ContextMenu");
 
@@ -189,32 +189,34 @@ ContextMenu.prototype.getContextMenu = function(target) {
 				  i18n["Create a link"],
 				  config.btnList["createlink"][1] ]);
 
-	for (var i in elmenus)
+	for (var i = 0; i < elmenus.length; ++i)
 		menu.push(elmenus[i]);
 
-	menu.push(null,
-		  [ i18n["Remove the"] + " &lt;" + currentTarget.tagName + "&gt; " + i18n["Element"],
-		    function() {
-			    if (confirm(i18n["Please confirm that you want to remove this element:"] + " " + currentTarget.tagName)) {
-				    var el = currentTarget;
-				    var p = el.parentNode;
-				    p.removeChild(el);
-				    if (HTMLArea.is_gecko) {
-					    if (p.tagName.toLowerCase() == "td" && !p.hasChildNodes())
-						    p.appendChild(editor._doc.createElement("br"));
-					    editor.forceRedraw();
-					    editor.focusEditor();
-					    editor.updateToolbar();
-					    if (table) {
-						    var save_collapse = table.style.borderCollapse;
-						    table.style.borderCollapse = "collapse";
-						    table.style.borderCollapse = "separate";
-						    table.style.borderCollapse = save_collapse;
+	if (!/html|body/i.test(currentTarget.tagName))
+		menu.push(null,
+			  [ i18n["Remove the"] + " &lt;" + currentTarget.tagName + "&gt; " + i18n["Element"],
+			    function() {
+				    if (confirm(i18n["Please confirm that you want to remove this element:"] + " " +
+						currentTarget.tagName)) {
+					    var el = currentTarget;
+					    var p = el.parentNode;
+					    p.removeChild(el);
+					    if (HTMLArea.is_gecko) {
+						    if (p.tagName.toLowerCase() == "td" && !p.hasChildNodes())
+							    p.appendChild(editor._doc.createElement("br"));
+						    editor.forceRedraw();
+						    editor.focusEditor();
+						    editor.updateToolbar();
+						    if (table) {
+							    var save_collapse = table.style.borderCollapse;
+							    table.style.borderCollapse = "collapse";
+							    table.style.borderCollapse = "separate";
+							    table.style.borderCollapse = save_collapse;
+						    }
 					    }
 				    }
-			    }
-		    },
-		    i18n["Remove this node from the document"] ]);
+			    },
+			    i18n["Remove this node from the document"] ]);
 	return menu;
 };
 

@@ -10,7 +10,7 @@
 // Version 3.0 developed by Mihai Bazon for InteractiveTools.
 //   http://dynarch.com/mishoo
 //
-// $Id: table-operations.js,v 1.4 2004-06-26 13:48:36 e107coders Exp $
+// $Id: table-operations.js,v 1.5 2004-08-11 09:26:38 e107coders Exp $
 
 // Object that will encapsulate all the table operations provided by
 // HTMLArea-3.0 (except "insert table" which is included in the main file)
@@ -24,7 +24,7 @@ function TableOperations(editor) {
 
 	// register the toolbar buttons provided by this plugin
 	var toolbar = ["linebreak"];
-	for (var i in bl) {
+	for (var i = 0; i < bl.length; ++i) {
 		var btn = bl[i];
 		if (!btn) {
 			toolbar.push("separator");
@@ -65,7 +65,7 @@ TableOperations.prototype.getClosest = function(tagName) {
 	var ancestors = editor.getAllAncestors();
 	var ret = null;
 	tagName = ("" + tagName).toLowerCase();
-	for (var i in ancestors) {
+	for (var i = 0; i < ancestors.length; ++i) {
 		var el = ancestors[i];
 		if (el.tagName.toLowerCase() == tagName) {
 			ret = el;
@@ -868,7 +868,7 @@ TableOperations.createStyleLayoutFieldset = function(doc, editor, el) {
 		td.appendChild(select);
 		select.name = "f_st_float";
 		options = ["None", "Left", "Right"];
-		for (i in options) {
+		for (var i = 0; i < options.length; ++i) {
 			var Val = options[i];
 			var val = options[i].toLowerCase();
 			option = doc.createElement("option");
@@ -923,7 +923,7 @@ TableOperations.createStyleLayoutFieldset = function(doc, editor, el) {
 	input.size = "1";
 	input.style.fontFamily = "monospace";
 	td.appendChild(input);
-	for (i in options) {
+	for (var i = 0; i < options.length; ++i) {
 		var Val = options[i];
 		var val = Val.toLowerCase();
 		option = doc.createElement("option");
@@ -978,7 +978,7 @@ TableOperations.createStyleLayoutFieldset = function(doc, editor, el) {
 	select.style.marginLeft = "0.5em";
 	td.appendChild(select);
 	options = ["Top", "Middle", "Bottom", "Baseline"];
-	for (i in options) {
+	for (var i = 0; i < options.length; ++i) {
 		var Val = options[i];
 		var val = Val.toLowerCase();
 		option = doc.createElement("option");
@@ -1070,7 +1070,7 @@ TableOperations.createStyleFieldset = function(doc, editor, el) {
 	// That is, "top right bottom left" -- we only consider the first
 	// value.
 	(currentBorderStyle.match(/([^\s]*)\s/)) && (currentBorderStyle = RegExp.$1);
-	for (i in options) {
+	for (var i in options) {
 		var val = options[i];
 		option = doc.createElement("option");
 		option.value = val;
@@ -1080,7 +1080,7 @@ TableOperations.createStyleFieldset = function(doc, editor, el) {
 	}
 	select.style.marginRight = "0.5em";
 	function setBorderFieldsStatus(value) {
-		for (i in borderFields) {
+		for (var i = 0; i < borderFields.length; ++i) {
 			var el = borderFields[i];
 			el.style.visibility = value ? "hidden" : "visible";
 			if (!value && (el.tagName.toLowerCase() == "input")) {
