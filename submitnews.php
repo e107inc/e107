@@ -18,15 +18,18 @@ require_once("class2.php");
 require_once(HEADERF);
 
 if(IsSet($_POST['submit'])){
-        if($_POST['item'] == ""){
-        $message .= "You must include some text in the News Item";
+
+        if($_POST['itemtitle'] == ""){
+        $message .= "You must include a title.\\n";
         $error = TRUE;
         }
 
-        if($_POST['itemtitle'] == ""){
-        $message .= "You must include a title";
+        if($_POST['item'] == ""){
+        $message .= "You must include some text in the news item.\\n";
         $error = TRUE;
         }
+
+
 
                 $user = (USER ? USERNAME : $_POST['author_name']);
                 $email = (USER ? USEREMAIL : $_POST['author_email']);
@@ -94,7 +97,7 @@ if($_FILES['file_userfile']){
                 exit;
                 }else{
                 require_once(e_HANDLER."message_handler.php");
-                message_handler("ALERT", "",$message);
+                message_handler("P_ALERT",$message);
                 }
         }
 }
