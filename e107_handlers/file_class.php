@@ -1,4 +1,21 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_handlers/file_class.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-02-01 05:57:50 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
 
 class e_file {
 	function get_files($path, $fmask = '', $omit='standard', $recurse_level = 0, $current_level = 0) {
