@@ -300,7 +300,7 @@ function show_admin_menu($title,$page,$e107_vars){
 			$post = " &raquo; </b>";
 		}
 		if(!$e107_vars[$act]['perm'] || getperms($e107_vars[$act]['perm'])){
-			$text .= "<tr><td class='button' style='text-align:center;'>{$pre}<a style='text-decoration:none;' href='{$e107_vars[$act]['link']}'>{$e107_vars[$act]['text']}</a>{$post}</td></tr>";
+			$text .= "<tr><td class='button'><a style='cursor:hand; cursor:pointer; text-decoration:none;' href='{$e107_vars[$act]['link']}'><div style='width:100%; text-align:center;'>{$pre}{$e107_vars[$act]['text']}{$post}</div></a></td></tr>";
 		}
 	}
 	$text .= "</table>";
@@ -312,9 +312,10 @@ function show_admin_menu($title,$page,$e107_vars){
 
 function show_admin_treemenu($title,$page,$e107_vars){
 	global $ns;
+	$idtitle="yop_".str_replace(" ","",$title);
 	$text = "<table class='fborder' style='width:100%;'>";
-	$text .= "<tr><td class='button' style='text-align:center;' onclick=\"expandit('yop_{$title}');\" >{$title}</td></tr>";
-	$text .= "<tr id=\"yop_{$title}\" style=\"display: none;\" ><td class='forumheader3' style='text-align:center;'>";
+	$text .= "<tr><td class='button' style='text-align:center; cursor:hand; cursor:pointer;' onclick=\"expandit('{$idtitle}');\" >{$title}</td></tr>";
+	$text .= "<tr id=\"{$idtitle}\" style=\"display: none;\" ><td class='forumheader3' style='text-align:center;'>";
 	foreach(array_keys($e107_vars) as $act){
 		$pre = "";
 		$post = "";
