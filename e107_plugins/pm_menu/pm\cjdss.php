@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm_menu/pm\cjdss.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-27 19:53:13 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-11 14:02:24 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 class pm {
@@ -225,8 +225,7 @@ class pm {
 		*/
 		$ret = "";
 		$obj = new convert;
-		$aj = new textparse;
-		global $pref;
+		global $pref, $tp;
 		$delete_on_read = $pref['pm_delete_read'];
 		$pm_sql = new db;
 		$pm_sql->db_Select("pm_messages", "*", "pm_id = '{$msgnum}' ");
@@ -247,7 +246,7 @@ class pm {
 		$ret .= "<table style='width:97%; text-align:center' class='fborder'><tr><td>\n";
 		$ret .= "<table style='width:100%' class='fborder'>\n";
 		$ret .= "<tr>\n";
-		$ret .= "<td colspan='2' style='width:100%; text-align:center;' class='fcaption'>".$aj->tpa($pm_subject)."</td>\n";
+		$ret .= "<td colspan='2' style='width:100%; text-align:center;' class='fcaption'>".$tp->toHTML($pm_subject, TRUE)."</td>\n";
 		$ret .= "</tr><tr>\n";
 		$ret .= "<td style='width:20%; vertical-align:top;' class='forumheader3'>";
 		if ($pm_to_user == USERNAME) {
@@ -258,16 +257,13 @@ class pm {
 		 
 		$ret .= "<br /><br /></div><div class='smallblacktext'>".PMLAN_43."<br />".$obj->convert_date($pm_send_datestamp, "long")."<br /><br /></div>\n";
 		$ret .= "<div class='smallblacktext'>".PMLAN_44."<br />";
-		$ret .= ($pm_rcv_datestamp) ? $obj->convert_date($pm_rcv_datestamp, "long") :
-		 PMLAN_49;
+		$ret .= ($pm_rcv_datestamp) ? $obj->convert_date($pm_rcv_datestamp, "long") : PMLAN_49;
 		$ret .= "<br />";
 		if (!$delete_on_read && $pm_to_user == USERNAME) {
 			$ret .= "<br />[<a href='".$PHP_SELF."?del.".$pm_msg_id."'>".PMLAN_40."</a>]";
 		}
 		$ret .= "<br /></div></td>\n";
-		$view_message = $pm_message;
-		$view_message = $aj->tpa($view_message);
-		$view_message = str_replace("\\r\\n", "<br />", $view_message);
+		$view_message = $tp->toHTML($pm_message, TRUE);
 		$ret .= "<td style='width:80%; vertical-align:top' class='forumtable2'>".$view_message."</td>\n";
 		$ret .= "</tr></table>\n";
 		if ($pm_to_user == USERNAME) {
@@ -292,10 +288,10 @@ class pm {
 		# Paremeters          - NONE
 		# Return -        String, entire summary table
 		*/
+		global $sql;
 		$ret = "";
 		$obj = new convert;
-		$pm_sql = new db;
-		$pm_sql->db_Select("pm_messages", "*", "pm_from_user = '".USERNAME."' ORDER BY pm_sent_datestamp DESC");
+		$sql->db_Select("pm_messages", "*", "pm_from_user = '".USERNAME."' ORDER BY pm_sent_datestamp DESC");
 		 
 		$ret .= "<table style='width:97%; text-align:center' class='fborder'>";
 		$ret .= "<tr>";
@@ -335,9 +331,9 @@ class pm {
 		*/
 		require_once(e_HANDLER."emote.php");
 		require_once(e_HANDLER."ren_help.php");
-		$pm_sql = new db;
+//		$pm_sql = new db;
 		$ret = "";
-		global $pref;
+		global $pref, $tp;
 		 
 		$ret .= "
 			<table style'width:100%' class='fborder'>
@@ -345,19 +341,20 @@ class pm {
 			";
 		global $user_dropdown;
 		if ($reply_msg) {
-			$pm_from_user = $_POST['uname'];
-			$pm_subject = $_POST['sub'];
-			$pm_message = $_POST['quoted'];
-			if (MAGIC_QUOTES_GPC) {
-				$pm_message = stripslashes($pm_message);
-			}
+			$pm_from_user = $tp->post_toForm($_POST['uname']);
+			$pm_subject = $tp->post_toForm($_POST['sub']);
+			$pm_message = $tp->post_toForm($_POST['quoted']);
+//			if (MAGIC_QUOTES_GPC) {
+//				$pm_message = stripslashes($pm_message);
+//			}
 			if (substr($pm_subject, 0, 3) != "RE:") {
 				$pm_subject = "RE:".$pm_subject;
 			}
 			if (!$_POST['quote']) {
 				$pm_message = "";
 			} else {
-				$pm_message = "[quote=".$pm_from_user."]".$pm_message."[/quote]\n\n";
+				$t = time();
+				$pm_message = "[quote{$t}=".$pm_from_user."]\n".$pm_message."\n[/quote{$t}]\n\n";
 			}
 		}
 		$ret .= "<form method='post' id='pm' action='".e_SELF."'>\n";
@@ -455,33 +452,26 @@ class pm {
 		# Paremeter #4         - String $pm_fromuser, username of PM sender
 		# Return -        int, 0 if success, 1 if PM blocked, 2 if user not found.
 		*/
-		global $ns;
-		global $pref;
-		$tt = new textparse;
-		$pm_subject = htmlentities($pm_subject);
-		$pm_text = htmlentities($pm_text);
-		$pm_sql = new db;
-		$pm_sql->db_Select("user", "*", "user_name LIKE '".$pm_touser."' ");
-		if ($userdata = $pm_sql->db_Fetch()) {
-			extract($userdata);
-			$real_userid = $user_name;
-			$row = $this->is_blocked($pm_fromuser, $real_userid);
-			if (is_array($row)) {
-				extract($row);
+		global $ns, $pref, $tp, $sql;
+		if($sql->db_Select("user", "user_name", "user_name LIKE '".$pm_touser."' "))
+		{
+			$userdata = $sql->db_Fetch();
+			$real_userid = $userdata['user_name'];
+			if($bid = $this->is_blocked($pm_fromuser, $real_userid))
+			{
 				$block_count++;
-				$pm_sql->db_Update("pm_blocks", "block_count='".$block_count."' WHERE block_id='".$block_id."' ");
+				$sql->db_Update("pm_blocks", "block_count=block_count+1 WHERE block_id='".$bid."' ");
 				return 1;
 			}
 			ini_set("max_execution_time", 30);
-			$aj = new textparse;
 			if ($pm_subject == "") {
 				$pm_subject = PMLAN_57;
 			}
-			$pm_text = $tt->formtpa($pm_text);
-			$pm_subject = $tt->formtpa($pm_subject);
+			$pm_text = $tp->toDB($pm_text);
+			$pm_subject = $tp->toDB($pm_subject);
 			 
 			$vars = "0,'{$pm_fromuser}','{$real_userid}','".time()."',0,'{$pm_subject}','{$pm_text}'";
-			$pm_sql->db_Insert("pm_messages", $vars);
+			$sql->db_Insert("pm_messages", $vars);
 			if ($pref['pm_sendemail']) {
 				$this->pm_send_email($pm_fromuser, $real_userid, $user_email, $pm_subject);
 			}
@@ -653,12 +643,15 @@ class pm {
 		# Parameter #2                - String $to, username
 		# Return -        array if exists, NULL if not exists
 		*/
-		$pm_sql = new db;
-		$pm_sql->db_Select("pm_blocks", "*", "block_to = '".$to."' AND block_from = '".$from."' ");
-		if ($row = $pm_sql->db_Fetch()) {
-			return $row;
-		} else {
-			return "";
+		global $sql;
+		if($sql->db_Select("pm_blocks", "block_id", "block_to = '".$to."' AND block_from = '".$from."' "))
+		{
+			$row = $sql->db_Fetch();
+			return $row['block_id'];
+		}
+		else
+		{
+			return FALSE;
 		}
 	}
 	 
@@ -671,9 +664,8 @@ class pm {
 		# Return -        1 on success, 0 on failure
 		*/
 		global $sql;
-		if ($row = $this->is_blocked($from, $to)) {
-			extract($row);
-			$sql->db_Delete("pm_blocks", "block_id='".$block_id."' ");
+		if ($bid= $this->is_blocked($from, $to)) {
+			$sql->db_Delete("pm_blocks", "block_id='".$bid."' ");
 			return 1;
 		} else {
 			return 0;
