@@ -143,10 +143,17 @@ if(IsSet($_POST['preview'])){
         $ns -> tablerender($content_heading, $text);
         echo "<br /><br />";
         // make form friendly ...
-        $content_heading = $aj -> formtparev($_POST['content_heading']);
+        /* Before bug fixing for apostroph
+		$content_heading = $aj -> formtparev($_POST['content_heading']);
         $content_subheading = $aj -> formtparev($_POST['content_subheading']);
         $data = $aj -> formtparev(str_replace("../", "", $_POST['data']));
         $content_summary = $aj -> formtparev($_POST['content_summary']);
+		*/
+		$content_heading = $aj -> formtpa($_POST['content_heading']);
+        $content_subheading = $aj -> formtpa($_POST['content_subheading']);
+        $data = $aj -> formtpa(str_replace("../", "", $_POST['data']));
+        $content_summary = $aj -> formtpa($_POST['content_summary']);
+		
         $content_parent = $_POST['category'];
 		$content_class = $_POST['a_class'];
 }
