@@ -202,19 +202,16 @@ if(USERREALM && USER && e_QUERY != "track"){
 	$INFO .= "<br /><a href='".e_SELF."?track'>".LAN_393."</a>";
 }
 
-$FORUMINFO .= LAN_192.($total_topics+$total_replies)." ".LAN_404." ($total_topics ".($total_topics == 1 ? LAN_411 : LAN_413).", $total_replies ".($total_replies == 1 ? LAN_412 : LAN_414).").<br />".$users." ".($users == 1 ? LAN_415 : LAN_416)." (".$member_users." ".($member_users==1 ? LAN_417 : LAN_419).", ".$guest_users." ".($guest_users == 1 ? LAN_418 : LAN_420).")<br />
+$FORUMINFO .= LAN_192.($total_topics+$total_replies)." ".LAN_404." ($total_topics ".($total_topics == 1 ? LAN_411 : LAN_413).", $total_replies ".($total_replies == 1 ? LAN_412 : LAN_414).").<br />".$users." ".($users == 1 ? LAN_415 : LAN_416)." (".$member_users." ".($member_users==1 ? LAN_417 : LAN_419).", ".$guest_users." ".($guest_users == 1 ? LAN_418 : LAN_420).")<br />".LAN_42.$total_members."<br />".LAN_41."<a href='".e_BASE."user.php?id.".$nuser_id."'>".$nuser_name."</a>.\n";
 
-
-".LAN_42.$total_members."<br />".LAN_41."<a href='".e_BASE."user.php?id.".$nuser_id."'>".$nuser_name."</a>.\n";
-
-if(!$FORUM_MAIN_START){
-	if(file_exists(THEME."forum_template.php")){
-    require_once(THEME."forum_template.php");
-  }
-	else{
-    require_once(e_BASE.$THEMES_DIRECTORY."templates/forum_template.php");
-  }
+if(!$FORUM_MAIN_START)
+{
+	if(file_exists(THEME."forum_template.php"))
+	{
+		include_once(THEME."forum_template.php");
+	}
 }
+include(e_BASE.$THEMES_DIRECTORY."templates/forum_template.php");
 
 require_once(HEADERF);
 $sql2 = new db;
