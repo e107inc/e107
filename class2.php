@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.83 $
-|     $Date: 2005-02-20 20:48:28 $
+|     $Revision: 1.84 $
+|     $Date: 2005-02-20 21:49:16 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -202,13 +202,13 @@ if(!$PrefCache){
 	$sql->db_Select('core', '*', '`e107_name` = \'SitePrefs\'');
 	$row = $sql->db_Fetch();
 	$pref = $eArrayStorage->ReadArray($row['e107_value']);
-	if(!is_array($pref)){
+	if(!$pref){
 		message_handler("CRITICAL_ERROR", 3, __LINE__, __FILE__);
 		$sql->db_Select('core', '*', '`e107_name` = \'SitePrefs_Backup\'');
 		$row = $sql->db_Fetch();
 		$PrefStored = $row['e107_value'];
 		$pref = $eArrayStorage->ReadArray($row['e107_value']);
-		if(!is_array($pref)){
+		if(!$pref){
 			$sql->db_Select("core", '*', '`e107_name` = \'pref\'');
 			$row = $sql->db_Fetch();
 			$pref = unserialize($row['e107_value']);
@@ -758,13 +758,18 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '') {
 			if(!$sql->db_Update('core', "e107_value='".addslashes($PrefCache)."' WHERE e107_name='SitePrefs_Backup'")){
 				$sql->db_Insert('core', "'SitePrefs', '".addslashes($PrefCache)."'");
 			}
+			echo $PrefCache;
+
 			foreach ($pref as $key => $prefvalue) {
-				$pref[$key] = $tp->toDB($prefvalue);
+				$pref[$key] = $tp->toDB($prefvalue, true);
+				$pref[$key] = str_replace('©', '&copy;', $pref[$key]);
 			}
+			
 			// Create the data to be stored
-			$PrefCache = $eArrayStorage->WriteArray($pref, true);
-			if(!$sql->db_Update('core', "e107_value='{$PrefCache}' WHERE e107_name='SitePrefs'")){
-				$sql->db_Insert('core', "'SitePrefs', '{$PrefCache}'");
+			$PrefCache1 = $eArrayStorage->WriteArray($pref);
+			echo $PrefCache1;
+			if(!$sql->db_Update('core', "e107_value='{$PrefCache1}' WHERE e107_name = 'SitePrefs'", true)){
+				$sql->db_Insert('core', "'SitePrefs', '{$PrefCache1}'");
 			}
 			ecache::clear('SitePrefs');
 		}
