@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-02-23 18:57:18 $
+|     $Revision: 1.12 $
+|     $Date: 2005-02-24 04:27:59 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -137,6 +137,7 @@ if (IsSet($_POST['submitpoll'])) {
 }
 
 if (IsSet($_POST['fpreview'])) {
+	process_upload();	
 	if (USER) {
 		$poster = USERNAME;
 	} else {
@@ -144,7 +145,7 @@ if (IsSet($_POST['fpreview'])) {
 		 LAN_311;
 	}
 	$postdate = $gen->convert_date(time(), "forum");
-	$tsubject = $tp->post_toHTML($_POST['subject']." TEST", FALSE);
+	$tsubject = $tp->post_toHTML($_POST['subject'], FALSE);
 	$tpost = $tp->post_toHTML($_POST['post']);
 
 	if ($_POST['poll_title'] != "" && $pref['forum_poll']) {
@@ -221,52 +222,8 @@ if (isset($_POST['newthread']) || isset($_POST['reply'])) {
 				list($user, $anon_info) = explode('.', $user, 2);
 			}
 		}
+		process_upload();
 
-		if ($file_userfile['error'] != 4) {
-			require_once(e_HANDLER."upload_handler.php");
-			if ($uploaded = file_upload('/'.e_FILE."public/", "attachment")) {
-				if(strstr($uploaded[0]['type'], "image"))
-				{
-					if(isset($pref['forum_maxwidth']) && $pref['forum_maxwidth'] > 0)
-					{
-						require_once(e_HANDLER."resize_handler.php");
-						$orig_file = $uploaded[0]['name'];
-						$p = strrpos($orig_file,'.');
-						$new_file = substr($orig_file, 0 , $p)."_".substr($orig_file, $p);
-						$fpath = e_FILE."public/";
-						if(resize_image($fpath.$orig_file, $fpath.$new_file, $pref['forum_maxwidth']))
-						{
-							if($pref['forum_linkimg'])
-							{
-								$_POST['post'] .= "[link=".$fpath.$orig_file."][img]".$fpath.$new_file."[/img][/link]";
-								//show resized, link to fullsize
-							}
-							else
-							{
-								@unlink($fpath.$orig_file);
-								//show resized
-								$_POST['post'] .= "[img]".$fpath.$new_file."[/img] \n";
-							}
-						}
-						else
-						{
-							//resize failed, show original 
-							$_POST['post'] .= "[img]".e_FILE."public/".$uploaded[0]['name']."[/img] \n";
-						}
-					}
-					else
-					{
-						//resizing disabled, show original
-						$_POST['post'] .= "[img]".e_FILE."public/".$uploaded[0]['name']."[/img] \n<span class='smalltext'>[ ".$uploaded[0]['name']." ]</span>";
-					}
-				}
-				else
-				{
-					//upload was not an image, link to file
-					$_POST['post'] .= "[file=".e_FILE."public/".$uploaded[0]['name']."]".$uploaded[0]['name']."[/file]";
-				}
-			}
-		}
 		$post = $tp->toDB($_POST['post']);
 		$subject = $tp->toDB($_POST['subject']);
 		$email_notify = ($_POST['email_notify'] ? 99 : 1);
@@ -562,6 +519,74 @@ function redirect($url) {
 	header('Location: ' . $url);
 	exit;
 }
+
+function process_upload()
+{
+	global $pref;
+	if (isset($_FILES['file_userfile']['error']) && $_FILES['file_userfile']['error'] != 4) {
+		require_once(e_HANDLER."upload_handler.php");
+		if ($uploaded = file_upload('/'.e_FILE."public/", "attachment")) {
+			if(strstr($uploaded[0]['type'], "image"))
+			{
+				if(isset($pref['forum_maxwidth']) && $pref['forum_maxwidth'] > 0)
+				{
+					require_once(e_HANDLER."resize_handler.php");
+					$orig_file = $uploaded[0]['name'];
+					$p = strrpos($orig_file,'.');
+					$new_file = substr($orig_file, 0 , $p)."_".substr($orig_file, $p);
+					$fpath = e_FILE."public/";
+					if(resize_image($fpath.$orig_file, $fpath.$new_file, $pref['forum_maxwidth']))
+					{
+						if($pref['forum_linkimg'])
+						{
+							$parms = image_getsize($fpath.$new_file);
+							$_POST['post'] .= "[link=".$fpath.$orig_file."][img{$parms}]".$fpath.$new_file."[/img][/link]";
+							//show resized, link to fullsize
+						}
+						else
+						{
+							@unlink($fpath.$orig_file);
+							//show resized
+							$parms = image_getsize($fpath.$new_file);
+							$_POST['post'] .= "[img{$parms}]".$fpath.$new_file."[/img] \n";
+						}
+					}
+					else
+					{
+						//resize failed, show original 
+						$parms = image_getsize(e_FILE."public/".$uploaded[0]['name']);
+						$_POST['post'] .= "[img{$parms}]".e_FILE."public/".$uploaded[0]['name']."[/img] \n";
+					}
+				}
+				else
+				{
+					$parms = image_getsize(e_FILE."public/".$uploaded[0]['name']);
+					//resizing disabled, show original
+					$_POST['post'] .= "[img{$parms}]".e_FILE."public/".$uploaded[0]['name']."[/img]";
+				}
+			}
+			else
+			{
+				//upload was not an image, link to file
+				$_POST['post'] .= "[file=".e_FILE."public/".$uploaded[0]['name']."]".$uploaded[0]['name']."[/file]";
+			}
+		}
+	}
+}
+
+function image_getsize($fname)
+{
+	if($imginfo = getimagesize($fname))
+	{
+		return ":height={$imginfo[0]}&width={$imginfo[1]}";
+	}
+	else
+	{
+		return "";
+	}
+}
+
+
 require_once(FOOTERF);
 
 ?>
