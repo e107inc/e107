@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/wmessage.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-02-24 11:36:14 $
-|     $Author: e107coders $
+|     $Revision: 1.19 $
+|     $Date: 2005-03-12 08:59:35 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -107,7 +107,7 @@ if ($action == "main" || $action == "") {
 		$text .= "</table></div>";
 		$text .= $rs->form_close();
 	} else {
-		$text .= "<div style='text-align:center'>".LCLAN_61."</div>";
+		$text .= "<div style='text-align:center'>".WMLAN_09."</div>";
 	}
 	$ns->tablerender(WMLAN_00, $text);
 }

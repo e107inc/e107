@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_wmessage.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-02-01 03:07:08 $
-|     $Author: sweetas $
+|     $Revision: 1.8 $
+|     $Date: 2005-03-12 08:59:35 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("WMGLAN_1", "Message for Guests");
@@ -27,5 +27,7 @@ define("WMLAN_05","Enclose");
 define("WMLAN_06","If ticked, the message will be rendered inside box");
 define("WMLAN_07","Override standard system to use {WMESSAGE} shortcode:");
 define("WMLAN_08","Preferences");
+
+define("WMLAN_09","No welcome messages set yet");
 
 ?>
