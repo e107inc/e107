@@ -118,6 +118,9 @@ $row = $sql -> db_Fetch();
 
 $tmp = stripslashes($row['e107_value']);
 $pref=unserialize($tmp);
+foreach($pref as $key => $prefvalue){
+	$pref[$key] = textparse::formtparev($prefvalue);
+}
 if(!is_array($pref)){
         $pref=unserialize($row['e107_value']);
         if(!is_array($pref)){
@@ -779,16 +782,22 @@ function getperms($arg, $ap = ADMINPERMS){
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 function save_prefs($table = "core", $uid=USERID){
-        global $pref, $user_pref;
-        $sql = new db;
-        if($table == "core"){
-                $tmp = addslashes(serialize($pref));
-                $sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='pref'");
-        } else {
-                $tmp = addslashes(serialize($user_pref));
-                $sql -> db_Update("user", "user_prefs='$tmp' WHERE user_id=$uid");
-                return $tmp;
-        }
+	global $pref, $user_pref;
+	$sql = new db;
+	if($table == "core"){
+		foreach($pref as $key => $prefvalue){
+			$pref[$key] = textparse::formtpa($prefvalue);
+		}
+		$tmp = addslashes(serialize($pref));
+		$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='pref'");
+	} else {
+		foreach($user_pref as $key => $prefvalue){
+			$user_pref[$key] = $tp -> formtpa($prefvalue);
+		}
+		$tmp = addslashes(serialize($user_pref));
+		$sql -> db_Update("user", "user_prefs='$tmp' WHERE user_id=$uid");
+		return $tmp;
+	}
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -973,6 +982,9 @@ function init_session(){
 								define("USERLV", $user_lastvisit); 
                         if($user_ban == 1){ exit; }
                         $user_pref = unserialize($user_prefs);
+                    		foreach($pref as $key => $prefvalue){
+									$pref[$key] = textparse::formtparev($prefvalue);
+								}
                         if(IsSet($_POST['settheme'])){
                                 $user_pref['sitetheme'] = ($pref['sitetheme'] == $_POST['sitetheme'] ? "" : $_POST['sitetheme']);
                                 save_prefs($user);
