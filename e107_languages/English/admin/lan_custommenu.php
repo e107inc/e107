@@ -1,7 +1,7 @@
 <?php
 
 define("CUSLAN_1", "Fields left blank.");
-define("CUSLAN_2", "Unable to create custom menu - pleas ensure your ");
+define("CUSLAN_2", "Unable to create custom menu - please ensure your ");
 define("CUSLAN_3", "custom directory is CHMODDed to 777.");
 define("CUSLAN_4", "Custom menu updated.");
 define("CUSLAN_5", "Custom menu successfully created. To activate go to your menus screen.");
@@ -18,5 +18,4 @@ define("CUSLAN_15", "Preview");
 define("CUSLAN_16", "Update Custom Menu");
 define("CUSLAN_17", "Create Custom Menu");
 define("CUSLAN_18", "Custom Menus");
-
 ?>
