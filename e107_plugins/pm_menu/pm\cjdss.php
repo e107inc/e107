@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm_menu/pm\cjdss.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-13 18:36:19 $
-|     $Author: stevedunstan $
+|     $Revision: 1.7 $
+|     $Date: 2005-03-14 18:44:07 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 class pm {
-	 
+
 	function pm_check($pmid, $type) {
 		/*
 		# Check to see if user is sender,receiver,or either
@@ -44,7 +44,7 @@ class pm {
 		}
 		return FALSE;
 	}
-	 
+
 	function delete_pm($pmid) {
 		/*
 		# Delete PM
@@ -57,7 +57,7 @@ class pm {
 		}
 		return ($sql->db_Delete("pm_messages", "pm_id='".$pmid."' "));
 	}
-	 
+
 	function Delete_Expired() {
 		/*
 		# Delete expired messages
@@ -79,7 +79,7 @@ class pm {
 				}
 			}
 		}
-		 
+
 		if ($pref['pm_unread_timeout'] > 0) {
 			$msg_unread_timeout = $time-($oneday * $pref['pm_unread_timeout']);
 			$pm_sql->db_Select("pm_messages", "pm_id", "pm_rcv_datestamp = 0 AND pm_sent_datestamp < '".$msg_unread_timeout."' ");
@@ -91,7 +91,7 @@ class pm {
 		}
 		return $read_deleted.",".$unread_deleted;
 	}
-	 
+
 	function UserclassDropdownList() {
 		/*
 		# Create dropdown list of userclasses
@@ -120,7 +120,7 @@ class pm {
 		}
 		return $ret;
 	}
-	 
+
 	function UserDropdownList() {
 		/*
 		# Create dropdown list of users
@@ -139,7 +139,7 @@ class pm {
 		}
 		return $ret;
 	}
-	 
+
 	function MarkMsgRead($msgid) {
 		/*
 		# Mark PM as read
@@ -151,7 +151,7 @@ class pm {
 		$pm_sql->db_Update("pm_messages", "pm_rcv_datestamp='".$readtime."' WHERE pm_id='".$msgid."' AND pm_rcv_datestamp='0'");
 		return $readtime;
 	}
-	 
+
 	function read_summary($start = 0, $np_query) {
 		/*
 		# Show summary of received messages
@@ -159,7 +159,7 @@ class pm {
 		# Return -        String, entire summary table
 		*/
 		define("FTHEME", (file_exists(THEME."forum/newthread.png") ? THEME."forum/" : e_IMAGE."forum/"));
-		 
+
 		global $ns;
 		$max_per_page = 10;
 		$ret = "";
@@ -182,10 +182,10 @@ class pm {
 		$ret .= "<td style='width:10%; text-align:center' class='fcaption'>".PMLAN_35."</td>";
 		$ret .= "<td style='width:25%; text-align:center' class='fcaption'>&nbsp;</td>";
 		$ret .= "</tr>";
-		 
+
 		while (list($pm_msg_id, $pm_from_user, $pm_to_user, $pm_send_datestamp, $pm_rcv_datestamp, $pm_subject, $pm_message) = $pm_sql->db_Fetch()) {
 			$ret .= "<tr>";
-			$ret .= "<td style='width:1%;' class='forumheader3'><input style='tbox' type='checkbox' name='delid[{$pm_msg_id}]'></td>";
+			$ret .= "<td style='width:1%;' class='forumheader3'><input type='checkbox' name='delid[{$pm_msg_id}]'></td>";
 			$ret .= "<td style='width:9%; text-align:left' class='forumheader3'>";
 			$ret .= $this->avatarget($pm_from_user);
 			$ret .= "</td>";
@@ -216,7 +216,7 @@ class pm {
 		}
 		return $ret;
 	}
-	 
+
 	function view_pm($msgnum) {
 		/*
 		# Display PM contents
@@ -254,7 +254,7 @@ class pm {
 		} else {
 			$ret .= "<div class='mediumtext'>".PMLAN_31.":<br /><b>".$this->UserLink($pm_to_user)."</b>";
 		}
-		 
+
 		$ret .= "<br /><br /></div><div class='smallblacktext'>".PMLAN_43."<br />".$obj->convert_date($pm_send_datestamp, "long")."<br /><br /></div>\n";
 		$ret .= "<div class='smallblacktext'>".PMLAN_44."<br />";
 		$ret .= ($pm_rcv_datestamp) ? $obj->convert_date($pm_rcv_datestamp, "long") : PMLAN_49;
@@ -275,13 +275,13 @@ class pm {
 				<input type='hidden' name='uname' value='".$pm_from_user."'>
 				<input type='hidden' name='sub' value='".stripslashes($pm_subject)."'>
 				<input type='hidden' name='quoted' value='".stripslashes($pm_message)."'>
-				<input class='tbox' type='checkbox' name='quote'><span class='smallblacktext'> ".PMLAN_42."</span>
+				<input type='checkbox' name='quote'><span class='smallblacktext'> ".PMLAN_42."</span>
 				</form></td></tr></table>";
 		}
 		$ret .= "</td></tr></table>\n";
 		return $ret;
 	}
-	 
+
 	function sent_summary() {
 		/*
 		# Show summary of sent messages
@@ -292,7 +292,7 @@ class pm {
 		$ret = "";
 		$obj = new convert;
 		$sql->db_Select("pm_messages", "*", "pm_from_user = '".USERNAME."' ORDER BY pm_sent_datestamp DESC");
-		 
+
 		$ret .= "<table style='width:97%; text-align:center' class='fborder'>";
 		$ret .= "<tr>";
 		$ret .= "<td colspan='2' style='text-align:center' class='fcaption'>".PMLAN_PM."</td>";
@@ -319,7 +319,7 @@ class pm {
 		$ret .= "</table>\n";
 		return $ret;
 	}
-	 
+
 	function send_message($uid = "", $reply_msg = "", $pm_subject = "", $pm_message = "") {
 		/*
 		# Show send message form
@@ -334,7 +334,7 @@ class pm {
 //		$pm_sql = new db;
 		$ret = "";
 		global $pref, $tp;
-		 
+
 		$ret .= "
 			<table style'width:100%' class='fborder'>
 			<tr><td colspan='2' style='width:60%' class='fcaption'>".PMLAN_28."</td></tr>
@@ -394,11 +394,11 @@ class pm {
 		$ret .= "<tr><td class='forumheader3'>".PMLAN_29."</td><td class='forumheader3'><input class='tbox' type='text' name='subject' value='".$pm_subject."'></td></tr>\n";
 		$ret .= "<tr><td class='forumheader3'>".PMLAN_30."</td><td class='forumheader3'><textarea id='pm_text' name='pm_text' rows='10' cols='50' class='tbox' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".$pm_message."</textarea>
 			<br />
-			<input class='helpbox' type='text' id='helpb' name='helpb' size='100' />
+			<input class='helpbox' type='text' id='helpb' name='helpb' size='100' style='width:95%' />
 			<br />
 			".ren_help(1, "addtextpm", "helppm")."
 			</td></tr>";
-		 
+
 		if ($pref['smiley_activate'] == 1) {
 			$ret .= "
 				<tr><td class='forumheader3'>
@@ -414,7 +414,7 @@ class pm {
 		$ret .= "</table>";
 		return $ret;
 	}
-	 
+
 	function pm_send_email($user_from, $user_to, $to_email, $subject) {
 		global $PLUGINS_DIRECTORY;
 		/*
@@ -430,7 +430,7 @@ class pm {
 			$read_link .= "/";
 		}
 		$read_link .= $PLUGINS_DIRECTORY."pm_menu/pm.php?read\n\n";
-		 
+
 		if ($to_email) {
 			require_once(e_HANDLER."mail.php");
 			$msg = $user_to.",\n\n".PMLAN_50." ".PMLAN_35.": ".$user_from."\n\n";
@@ -442,7 +442,7 @@ class pm {
 		}
 		return 0;
 	}
-	 
+
 	function pm_post_message_user($pm_touser, $pm_text, $pm_subject, $pm_fromuser = USERNAME) {
 		/*
 		# Post PM message to database
@@ -469,7 +469,7 @@ class pm {
 			}
 			$pm_text = $tp->toDB($pm_text);
 			$pm_subject = $tp->toDB($pm_subject);
-			 
+
 			$vars = "0,'{$pm_fromuser}','{$real_userid}','".time()."',0,'{$pm_subject}','{$pm_text}'";
 			$sql->db_Insert("pm_messages", $vars);
 			if ($pref['pm_sendemail']) {
@@ -480,7 +480,7 @@ class pm {
 			return 2;
 		}
 	}
-	 
+
 	function users_in_userclass($userclass) {
 		/*
 		# Get all users in a userclass
@@ -497,15 +497,15 @@ class pm {
 		}
 		return $ret;
 	}
-	 
-	 
+
+
 	function post_pm() {
 		/*
 		# Post PM to individual user or userclass
 		# Paremeters        - NONE
 		# Return -        String success,blocked,notfound
 		*/
-		 
+
 		if ($_POST['sendtype'] == "userclass") {
 			list($ucnum, $ucname) = explode(":", $_POST['class']);
 			if ($ucnum == "ALL") {
@@ -558,7 +558,7 @@ class pm {
 		}
 		return $success.",".$blocked.",".$notfound;
 	}
-	 
+
 	function view_block() {
 		/*
 		# Show current PM blocking info
@@ -586,7 +586,7 @@ class pm {
 		$ret .= "</table>\n";
 		return $ret;
 	}
-	 
+
 	function UserLink($username) {
 		/*
 		# Get link to user info
@@ -602,7 +602,7 @@ class pm {
 			return $username;
 		}
 	}
-	 
+
 	function real_name($_id) {
 		/*
 		# Get name as stored in database
@@ -615,7 +615,7 @@ class pm {
 			return $uname;
 		}
 	}
-	 
+
 	function avatarget($username) {
 		/*
 		# Get path to user avatar image
@@ -635,7 +635,7 @@ class pm {
 			return "&nbsp;";
 		}
 	}
-	 
+
 	function is_blocked($from, $to) {
 		/*
 		# Test for existing PM blocking
@@ -654,8 +654,8 @@ class pm {
 			return FALSE;
 		}
 	}
-	 
-	 
+
+
 	function unblock_user($from, $to) {
 		/*
 		# Remove PM blocking
@@ -671,7 +671,7 @@ class pm {
 			return 0;
 		}
 	}
-	 
+
 	function block_user($from, $to) {
 		/*
 		# Add PM blocking
