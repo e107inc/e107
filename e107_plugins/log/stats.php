@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-02-07 14:29:49 $
+|     $Revision: 1.6 $
+|     $Date: 2005-02-07 15:29:10 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -553,7 +553,7 @@ class siteStats {
 
 		$recentArray = array_reverse($this -> fileRecent, TRUE); 
 		
-		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>Recent Visitors</td>\n<td class='fcaption' style='width: 70%;'>Total</td>\n</tr>\n";
+		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>Recent Visitors</td>\n<td class='fcaption' style='width: 70%;'>Information</td>\n</tr>\n";
 
 		foreach($recentArray as $key => $info) {
 			list($host, $datestamp, $os, $browser, $screen, $referer) = explode(chr(1), $info);
@@ -561,7 +561,7 @@ class siteStats {
 
 			$text .= "<tr class='forumheader'>
 			<td style='width: 30%;'>$datestamp</td>
-			<td style='width: 70%;'>$host, using $browser under $os (screen res $screen)".($referer ? "<br />referred from <a href='$referer' rel='external'>$referer</a>" : "")."</td>
+			<td style='width: 70%;'>$host, using $browser under $os (screen res $screen)".($referer ? "<br />referred from <a href='$referer' rel='external'>$referer</a>" : "<br />(no referrer)")."</td>
 			</tr>\n";
 		}
 
