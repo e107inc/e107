@@ -1,0 +1,42 @@
+<?php
+
+define(PMLAN_PM,"Privata Meddelande");
+define(PM_ADLAN_PM,"Private Messaging");
+define(PM_ADLAN_1,"PM Konfiguration");
+define(PM_ADLAN_2,"PM Admin Funktioner");
+define(PM_ADLAN_3,"Uppdatera PM-konfigurationen");
+define(PM_ADLAN_4,"Välj användare");
+define(PM_ADLAN_5,"Samtliga meddelande raderade");
+define(PM_ADLAN_6,"Meddelande till/från");
+define(PM_ADLAN_7,"raderat");
+define(PM_ADLAN_8,"Meddelande äldre än ");
+define(PM_ADLAN_9,"dagar gamla");
+define(PM_ADLAN_10,"Detta kommer att redera samtliga meddelanden mer än ");
+define(PM_ADLAN_11,"Bekräfta borttagning");
+define(PM_ADLAN_12,"Avbryt");
+define(PM_ADLAN_13,"Du måste fylla i ett värde.");
+define(PM_ADLAN_14,"radera meddeland");
+define(PM_ADLAN_15,"Detta kommer att redera samtliga meddelanden antingen till eller från användaren: ");
+define(PM_ADLAN_16,"Du måste välja en användare först.");
+define(PM_ADLAN_17,"Radera meddelandet till/från användare");
+define(PM_ADLAN_18,"Detta kommer att redera samtliga meddelanden från hela PM-systemet, oavsett om de är olästa eller inte.");
+define(PM_ADLAN_19,"Radera samtliga meddelanden");
+define(PM_ADLAN_20,"PM-inställningar uppdaterade");
+define(PM_ADLAN_21,"Plugin-namn");
+define(PM_ADLAN_22,"Visa animation för \"Nytt PM\"");
+define(PM_ADLAN_23,"Visa dropdown-menyn för användarlistan");
+define(PM_ADLAN_24,"Radera lästa meddelande automatiskt");
+define(PM_ADLAN_25,"Timeout på LÄS meddelande");
+define(PM_ADLAN_26,"Timeout på OLÄSTA meddelande");
+define(PM_ADLAN_27,"Notifiering via en popup vid nytt meddelande");
+define(PM_ADLAN_28,"Fördrjöjning på popup");
+define(PM_ADLAN_29,"Begränsa PM till");
+define(PM_ADLAN_30,"Alla registrerade användare");
+define(PM_ADLAN_31,"Användarklass");
+define(PM_ADLAN_32,"Radera meddelande mer än");
+define(PM_ADLAN_33,"Ja");
+define(PM_ADLAN_34,"Nej");
+define(PM_ADLAN_35,"Skicka notifikation via epost");
+define(PM_ADLAN_36,"Klicka i kryssrutan för att bekräfta åtgärden");
+define(PM_ADLAN_37,"meddelande i systemet");
+?>
