@@ -144,20 +144,13 @@ $nav_text .= "</td></select><td align='center'>
 <input class='button' type='submit' style='width:140px;' name='viewcat' value='View Category'>
 </td><td align=center><input type='hidden' name='enter_new_val' value='".$prop."'> ";
 
-  if($pref['eventpost_admin'][1] == 1 ){    // start admin preference activated.
- if(ADMIN == TRUE){
+  if(check_class($pref['eventpost_admin']) || getperms('0')){  // start no admin preference
+
   $nav_text .= "
 
   <input class='button' type='submit' style='width:140px;' name='doit' value='Enter New Event'>
-   ";   }
+   ";   
    }     // end admin preference activated.
-
-     if(!$pref['eventpost_admin'][1] == 1 ){  // start no admin preference
-   if(USER == TRUE){ $nav_text .= "
-   <input type='hidden' name='enter_new_val' value='".$prop."'>
-   <input class='button' type='submit' style='width:140px;' name='doit' value='Enter New Event'>
-   ";}
-     }    // end no admin preference
 
 
 $nav_text .= "</form></tr></table><br />";

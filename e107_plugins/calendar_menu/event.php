@@ -13,7 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../../class2.php");
-define("PAGE_NAME", "Show Event List");
+define("PAGE_NAME", "Event List");
 if(IsSet($_POST['viewallevents'])){
 Header("Location: ".e_PLUGIN."calendar_menu/calendar.php?".$_POST['enter_new_val']);
 }
@@ -177,7 +177,7 @@ if(IsSet($message)){
 
 // enter new event form---------------------------------------------------------------------------------
 if($action == "ne" || $action == "ed"){
-
+		if(check_class($pref['eventpost_admin']) || getperms('0')){ 
         if($action == "ed"){
                 $sql -> db_Select("event", "*", "event_id='".$qs[1]."' ");
                 list($null, $ne_start, $ne_end, $allday, $recurring, $ne_datestamp, $ne_title, $ne_location, $ne_event, $ne_author, $ne_email, $ne_category, $ne_thread) = $sql-> db_Fetch();
@@ -490,6 +490,10 @@ closedir($handle);
         $ns -> tablerender($caption, $text);
         require_once(FOOTERF);
         exit;
+		}else{
+			header("location:".e_PLUGIN."calendar_menu/event.php");
+			exit;
+		}
 }
 
 
@@ -593,7 +597,7 @@ $text2 .= "</td></select><td align='center'>
 <input class='button' type='submit' style='width:140px;' name='viewcat' value='View Category'>
 </td><td align=center><input type='hidden' name='enter_new_val' value='".$prop."'> ";
 
-    if(check_class($pref['eventpost_admin'])){  // start no admin preference
+    if(check_class($pref['eventpost_admin']) || getperms('0')){  // start no admin preference
     $text2 .= "<input class='button' type='submit' style='width:140px;' name='doit' value='Enter New Event'>";
     }
 
