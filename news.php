@@ -105,10 +105,10 @@ if(!defined("WMFLAG")){
         if(ADMIN == TRUE && $wm_active3){
                 $adminmessage = $aj -> tpa($adminmessage, "on","admin");
                 $ns -> tablerender("", "<div style='text-align:center'><b>Administrators</b><br />".$adminmessage."</div>", "wm");
-        }else if(USER == TRUE && $wm_active2){
+        }else if(USER == TRUE && $wm_active2 && !ADMIN){
                 $membermessage = $aj -> tpa($membermessage, "on","admin");
                 $ns -> tablerender("", "<div style='text-align:center'>".$membermessage."</div>", "wm");
-        }else if(USER == FALSE && $wm_active1){
+        }else if(USER == FALSE && $wm_active1 && !ADMIN){
                 $guestmessage = $aj -> tpa($guestmessage, "on","admin");
                 $ns -> tablerender("", "<div style='text-align:center'>".$guestmessage."</div>", "wm");
         }
