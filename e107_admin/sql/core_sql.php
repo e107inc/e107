@@ -323,7 +323,7 @@ CREATE TABLE online (
   online_flag tinyint(3) unsigned NOT NULL default '0',
   online_user_id varchar(100) NOT NULL default '',
   online_ip varchar(15) NOT NULL default '',
-  online_location varchar(100) NOT NULL default ''. 
+  online_location varchar(100) NOT NULL default '',
   online_pagecount tinyint(3) unsigned NOT NULL default '0'
 ) TYPE=MyISAM;
 # --------------------------------------------------------
