@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-02-08 15:45:03 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.4 $
+|     $Date: 2005-03-02 14:43:52 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once('../../class2.php');
@@ -164,7 +164,7 @@ if (e_QUERY == "" && $pref['linkpage_categories'] == 1) {
 		}
 	}
 	if (!$display_links) {
-		$ns->tablerender("Links", "<div style='text-align: center'>There are currently no links</div>");
+		$ns->tablerender("Links", "<div style='text-align: center'>".LAN_107."</div>");
 	}
 }
 	
