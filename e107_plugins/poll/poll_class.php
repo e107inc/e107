@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-04-03 20:33:54 $
+|     $Revision: 1.17 $
+|     $Date: 2005-04-03 20:51:52 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -192,7 +192,6 @@ class poll
 					$count = 0;
 					foreach($optionArray as $option)
 					{
-						$MODE = $mode;		/* debug */
 						$OPTION = $option;
 
 						$BAR = ($percentage[$count] ? "<div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div><div style='background-image: url($bar); width: ".(floor($percentage[$count]) != 100 ? floor($percentage[$count]) : 90)."%; height: 14px; float: left;'></div><div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div>" : "");
@@ -232,7 +231,7 @@ class poll
 			break;
 		}
 
-		define("POLLRENDERED", TRUE);
+		if(!defined("POLLRENDERED")) define("POLLRENDERED", TRUE);
 		$caption = (file_exists(THEME."images/poll_menu.png") ? "<img src='".THEME."images/poll_menu.png' alt='' /> ".POLLAN_MENU_CAPTION : POLLAN_MENU_CAPTION);
 		if($type == "preview")
 		{
