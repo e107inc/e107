@@ -32,6 +32,14 @@ ob_start ();
 $timing_start = explode(' ', microtime());
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
+//unset any globals created by register_globals being turned ON
+while (list($global) = each($GLOBALS)){
+ if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS)$/', $global)){
+  unset($$global);
+ }
+}
+unset($global);
+
 if(!$mySQLserver){
         @include("e107_config.php");
         $a=0; $p="";
@@ -160,7 +168,14 @@ if($pref['del_unv']){
         $threshold = (time() - ($pref['del_unv']*60));
         $sql -> db_Delete("user", "user_ban = 2 AND user_join<'$threshold' ");
 }
-
+if($pref['modules']){
+	$mods = explode(",",$pref['modules']);
+	foreach($mods as $mod){
+		if(file_exists(e_PLUGIN."{$mod}/module.php")){
+			@require_once(e_PLUGIN."{$mod}/module.php");
+		}
+	}
+}
 init_session();
 online();
 
@@ -287,25 +302,29 @@ define("e_ADMIN", $e_BASE.$ADMIN_DIRECTORY);
 
 
 class e107table{
-        function tablerender($caption, $text, $mode="default", $return=FALSE){
-                /*
-                # Render style table
-                # - parameter #1:                string $caption, caption text
-                # - parameter #2:                string $text, body text
-                # - return                                null
-                # - scope                                        public
-                */
-                        if($return){
-                                ob_end_flush();
-                                ob_start();
-                                tablestyle($caption, $text, $mode);
-                                $ret = ob_get_contents();
-                                ob_end_clean();
-                                return($ret);
-                        }else{
-                                tablestyle($caption, $text, $mode);
-                        }
-        }
+	function tablerender($caption, $text, $mode="default", $return=FALSE){
+		/*
+		# Render style table
+		# - parameter #1:                string $caption, caption text
+		# - parameter #2:                string $text, body text
+		# - return                                null
+		# - scope                                        public
+		*/
+		if(function_exists("theme_tablerender")){
+			$result = call_user_func("theme_tablerender",&$caption,&$text,&$mode);
+			if($result == "return"){return;}
+		}
+		if($return){
+			ob_end_flush();
+			ob_start();
+			tablestyle($caption, $text, $mode);
+			$ret = ob_get_contents();
+			ob_end_clean();
+			return($ret);
+		}else{
+		tablestyle($caption, $text, $mode);
+	}
+}
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function e107_parse($text){
