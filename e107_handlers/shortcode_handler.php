@@ -12,8 +12,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.9 $
-| $Date: 2005-02-02 13:02:32 $
+| $Revision: 1.10 $
+| $Date: 2005-02-02 15:58:19 $
 | $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -123,6 +123,7 @@ class e_shortcode {
 			}
 			if (preg_match("#^SC_BEGIN (\w*).*#", $line, $matches)) {
 				$cur_sc = $matches[1];
+				$ret[$cur_sc]='';
 			}
 		}
 		return $ret;

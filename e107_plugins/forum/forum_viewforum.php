@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-29 00:12:17 $
+|     $Revision: 1.6 $
+|     $Date: 2005-02-02 15:53:47 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -79,6 +79,7 @@ $guest_users = $sql->db_Select("online", "*", "online_location REGEXP('forum_vie
 $users = $member_users+$guest_users;
 	
 require_once(HEADERF);
+$text='';
 if ($message) {
 	$ns->tablerender("", $message);
 }
@@ -124,7 +125,7 @@ if ($pages) {
 	$THREADPAGES .= "<br />";
 }
 	
-if ((ANON || USER) && ($forum_class != e_UC_READONLY || MODERATOR)) {
+if ((ANON || USER) && ($forum_info['forum_class'] != e_UC_READONLY || MODERATOR)) {
 	$NEWTHREADBUTTON = "<a href='".e_PLUGIN."forum/forum_post.php?nt.".$forum_id."'>".IMAGE_newthread."</a>";
 }
 	
@@ -230,6 +231,7 @@ require_once(FOOTERF);
 	
 function parse_thread($thread_info) {
 	global $forum, $tp, $FORUM_VIEW_FORUM, $gen, $aj, $pref, $forum_id, $menu_pref;
+	$text = "";
 	 
 	$VIEWS = $thread_info['thread_views'];
 	$REPLIES = $thread_info['thread_total_replies'];
@@ -276,6 +278,7 @@ function parse_thread($thread_info) {
 		$ICON = ($newflag ? IMAGE_new_popular : IMAGE_nonew_popular);
 	}
 	 
+	$THREADTYPE = '';
 	if ($thread_info['thread_s'] == 1) {
 		$ICON = ($thread_info['thread_active'] ? IMAGE_sticky : IMAGE_stickyclosed);
 		$THREADTYPE = '['.LAN_202.']';
@@ -284,7 +287,6 @@ function parse_thread($thread_info) {
 		$THREADTYPE = '['.LAN_396.']';
 	} elseif(!$thread_info['thread_active']) {
 		$ICON = IMAGE_closed_small;
-		$THREADTYPE = '';
 	}
 
 //	echo $thread_info['thread_id'].' = ['.$thread_info['thread_active'].']';
@@ -313,6 +315,8 @@ function parse_thread($thread_info) {
 			$PAGES .= "-<a href='".e_PLUGIN."forum/forum_viewtopic.php?".$thread_info['thread_id'].".".($a * $pref['forum_postspage'])."'>".($a+1)."</a>";
 		}
 		$PAGES .= " ]";
+	} else {
+		$PAGES = "";
 	}
 	 
 	if (MODERATOR) {
@@ -333,7 +337,7 @@ function parse_thread($thread_info) {
 	$text .= "</td>
 		<td style='vertical-align:top; text-align:center; width:20%' class='forumheader3'>".$THREADDATE."<br />
 		";
-	$POSTER = (!$post_author_id ? $post_author_name : "<a href='".e_BASE."user.php?id.".$post_author_id."'>".$post_author_name."</a>");
+//	$POSTER = (!isset($post_author_id) ? $post_author_name : "<a href='".e_BASE."user.php?id.".$post_author_id."'>".$post_author_name."</a>");
 	 
 	if (!$thread_info['thread_user']) {
 		$tmp = explode(chr(1), $thread_info['thread_anon']);
