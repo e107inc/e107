@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-03-04 04:01:21 $
+|     $Revision: 1.25 $
+|     $Date: 2005-03-04 05:11:11 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -115,50 +115,34 @@ if (isset($_POST['updateoptions']))
 	$message = DOWLAN_65;
 }
 
-if(isset($_POST['addlimit']))
-{
-	if($sql->db_Select('generic','gen_id',"gen_type = 'download_limit' AND gen_datestamp = {$_POST['newlimit_class']}"))
-	{
+if(isset($_POST['addlimit'])){
+	if ($sql->db_Select('generic','gen_id',"gen_type = 'download_limit' AND gen_datestamp = {$_POST['newlimit_class']}")){
 		$message = DOWLAN_116;
-	}
-	else
-	{
-		if($sql->db_Insert('generic',"0, 'download_limit', '{$_POST['newlimit_class']}', '{$_POST['new_bw_num']}', '{$_POST['new_bw_days']}', '{$_POST['new_count_num']}', '{$_POST['new_count_days']}'"))
-		{
+	} else {
+		if($sql->db_Insert('generic',"0, 'download_limit', '{$_POST['newlimit_class']}', '{$_POST['new_bw_num']}', '{$_POST['new_bw_days']}', '{$_POST['new_count_num']}', '{$_POST['new_count_days']}'")){
 			$message = DOWLAN_117;
-		}
-		else
-		{
+		} else {
 			$message = DOWLAN_118;
 		}
 	}
 }
 
-if(isset($_POST['updatelimits']))
-{
+if(isset($_POST['updatelimits'])){
 
-	if($pref['download_limits'] != $_POST['download_limits'])
-	{
+	if($pref['download_limits'] != $_POST['download_limits']){
 		$pref['download_limits'] = ($_POST['download_limits'] == 'on') ? 1 : 0;
 		save_prefs();
 		$message .= DOWLAN_126."<br />";
 	}
-	foreach(array_keys($_POST['count_num']) as $id)
-	{
-		if($_POST['count_num'][$id] == "" && $_POST['count_days'][$id] == "" && $_POST['bw_num'][$id] == "" && $_POST['bw_days'][$id] == "")
-		{
+	foreach (array_keys($_POST['count_num']) as $id){
+		if($_POST['count_num'][$id] == "" && $_POST['count_days'][$id] == "" && $_POST['bw_num'][$id] == "" && $_POST['bw_days'][$id] == ""){
 			//All entries empty - Remove record
-			if($sql->db_Delete('generic',"gen_id = {$id}"))
-			{
+			if ($sql->db_Delete('generic',"gen_id = {$id}")){
 				$message .= $id." - ".DOWLAN_119."<br />";
-			}
-			else
-			{
+			} else {
 				$message .= $id." - ".DOWLAN_120."<br />";
 			}
-		}
-		else
-		{
+		} else {
 			$sql->db_Update('generic',"gen_user_id = '{$_POST['bw_num'][$id]}', gen_ip = '{$_POST['bw_days'][$id]}', gen_intdata = '{$_POST['count_num'][$id]}', gen_chardata = '{$_POST['count_days'][$id]}' WHERE gen_id = {$id}");
 			$message .= $id." - ".DOWLAN_121."<br />";
 		}
@@ -166,8 +150,7 @@ if(isset($_POST['updatelimits']))
 }
 
 
-if ($action == "dlm")
-{
+if ($action == "dlm"){
 	$action = "create";
 	$id = $sub_action;
 	$sub_action = "dlm";
@@ -272,36 +255,25 @@ if ($action == "opt") {
 	$ns->tablerender(DOWLAN_54, $text);
 }
 
-if($action == 'limits')
-{
-	if($sql->db_Select('userclass_classes','userclass_id, userclass_name'))
-	{
+if ($action == 'limits'){
+	if ($sql->db_Select('userclass_classes','userclass_id, userclass_name')){
 		$classList = $sql->db_getList();
 	}
-	if($sql->db_Select("generic", "gen_id as limit_id, gen_datestamp as limit_classnum, gen_user_id as limit_bw_num, gen_ip as limit_bw_days, gen_intdata as limit_count_num, gen_chardata as limit_count_days", "gen_type = 'download_limit'"))
-	{
-		while($row = $sql->db_Fetch())
-		{
+	if ($sql->db_Select("generic", "gen_id as limit_id, gen_datestamp as limit_classnum, gen_user_id as limit_bw_num, gen_ip as limit_bw_days, gen_intdata as limit_count_num, gen_chardata as limit_count_days", "gen_type = 'download_limit'")){
+		while ($row = $sql->db_Fetch()){
 			$limitList[$row['limit_classnum']] = $row;
 		}
 	}
 	$txt = "
-		<form method='post'>
+		<form method='post' action='".e_SELF."?".e_QUERY."' id='dllimits'>
 		<table style='width:100%'>
 		<tr>
 			<td colspan='4' class='forumheader3' style='text-align:left'>
 		";
-		if($pref['download_limits'] == 1)
-		{
-			$chk = "checked = 'checked'";
-		}
-		else
-		{
-			$chk = "";
-		}
+		$chk = ($pref['download_limits'] == 1) ? "checked = 'checked'" : "";
 
 		$txt .= "
-			<input type='checkbox' name='download_limits' {$chk}> ".DOWLAN_125."
+			<input type='checkbox' name='download_limits' {$chk} /> ".DOWLAN_125."
 			</td>
 		</tr>
 		<tr>
@@ -312,8 +284,7 @@ if($action == 'limits')
 		</tr>
 	";
 
-	foreach($limitList as $row)
-	{
+	foreach ($limitList as $row){
 		$txt .= "
 		<tr>
 		<td class='forumheader3'>".$row['limit_id']."</td>
@@ -356,9 +327,6 @@ if($action == 'limits')
 	</td>
 	</tr>
 	";
-
-
-
 
 	$txt .= "</table>";
 
