@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/wmessage.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-02-24 08:10:03 $
+|     $Revision: 1.18 $
+|     $Date: 2005-02-24 11:36:14 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -94,7 +94,7 @@ if ($action == "main" || $action == "") {
 			$text .= "<tr><td class='forumheader3' style='width:5%; text-align: center; vertical-align: middle'>";
 			//   $text .= $wm_id ? "<img src='".e_IMAGE."link_icons/".$link_button."' alt='' /> ":"";
 			$text .= $row['gen_id'];
-			$text .= "</td><td style='width:70%' class='forumheader3'>".$row['gen_chardata']."</td>";
+			$text .= "</td><td style='width:70%' class='forumheader3'>".$tp->toHTML($row['gen_chardata'])."</td>";
 			$text .= "</td><td style='width:70%' class='forumheader3'>".r_userclass_name($row['gen_intdata'])."</td>";
 
 			$text .= "</td><td style='width:15%; text-align:center; white-space: nowrap' class='forumheader3'>";
