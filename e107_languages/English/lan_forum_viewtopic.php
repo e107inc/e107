@@ -64,4 +64,7 @@ define("LAN_427", "Error sending mail");
 define("LAN_428", "Post has been reported");
 define("LAN_429", "Click here to return to forum");
 
+
+define("LAN_430", "poll");
+
 ?>
