@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-03-16 03:38:07 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.35 $
+|     $Date: 2005-03-20 15:46:34 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -230,6 +230,14 @@ if (isset($_POST['confirm'])) {
 			global $sysprefs;
 			$search_prefs = $sysprefs -> getArray('search_prefs');
 			unset($search_prefs['plug_handlers'][$eplug_folder]);
+			$tmp = addslashes(serialize($search_prefs));
+			$sql->db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs' ");
+		}
+
+		if (file_exists(e_PLUGIN.$eplug_folder.'/comments_search.php')) {
+			global $sysprefs;
+			$search_prefs = $sysprefs -> getArray('search_prefs');
+			unset($search_prefs['comments_handlers'][$eplug_folder]);
 			$tmp = addslashes(serialize($search_prefs));
 			$sql->db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs' ");
 		}

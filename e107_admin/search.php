@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/search.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-03-20 15:00:28 $
+|     $Revision: 1.9 $
+|     $Date: 2005-03-20 15:46:34 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -54,7 +54,7 @@ if (isset($_POST['updatesettings'])) {
 	foreach ($search_prefs['comments_handlers'] as $key => $value) {
 		$search_prefs['comments_handlers'][$key]['active'] = $_POST['comments_handlers'][$key];
 	}
-
+	//unset($search_prefs['comments_handlers']);
 	$tmp = addslashes(serialize($search_prefs));
 	$sql->db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs' ");
 	$message = TRUE;

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2005-03-20 04:06:26 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.55 $
+|     $Date: 2005-03-20 15:46:34 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -523,29 +523,52 @@ function update_61x_to_700($type) {
 			$sql->db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs' ");
 		}
 		
+		// Search Update 6
+		if (!isset($search_prefs['comments_handlers'])) {
+			$search_prefs['comments_handlers']['news'] = array('id' => 0, 'active' => 'on', 'dir' => 'core', 'handler' => 'comments_news.php');
+			$search_prefs['comments_handlers']['download'] = array('id' => 2, 'active' => 'on', 'dir' => 'core', 'handler' => 'comments_downloads.php');
+			$handle = opendir(e_PLUGIN);
+			while (false !== ($file = readdir($handle))) {
+				if ($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)) {
+					$plugin_handle = opendir(e_PLUGIN.$file."/");
+					while (false !== ($file2 = readdir($plugin_handle))) {
+						if ($file2 == "comments_search.php") {
+							if ($sql->db_Select("plugin", "plugin_path", "plugin_path='".$file."' AND plugin_installflag='1'")) {
+								require_once(e_PLUGIN.$file.'/comments_search.php');
+								$search_prefs['comments_handlers'][$file] = array('id' => $comments_type_id, 'active' => 'on', 'dir' => $file);
+								unset($comments_type_id);
+							}
+						}
+					}
+				}
+			}
+			$tmp = addslashes(serialize($search_prefs));
+			$sql->db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs' ");
+		}
+		
 } else {
 		// check if update is needed.
 		// FALSE = needed, TRUE = not needed.
 		
 //		return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."user_extended_struct");
 
-		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."user_extended_struct");
-		$fieldname = mysql_field_name($fields,13);
-	 	return ($fieldname == "user_extended_struct_icon") ? TRUE : FALSE;
+//		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."user_extended_struct");
+//		$fieldname = mysql_field_name($fields,13);
+//	 	return ($fieldname == "user_extended_struct_icon") ? TRUE : FALSE;
 
 		//return !$sql->db_Select("core","*","e107_name = 'user_entended'");
 
 //		$sql->db_Select_gen("DELETE FROM #core WHERE e107_name='user_entended'");
 
-/*
+
         global $sysprefs;
         $search_prefs = $sysprefs -> getArray('search_prefs');
-		if (!isset($search_prefs['time_secs'])) {
+		if (!isset($search_prefs['comments_handlers'])) {
 			return FALSE;
 		} else {
 			return TRUE;
 		}
-*/
+
 	}
 }
 
