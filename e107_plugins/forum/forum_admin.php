@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-02-23 17:28:03 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.15 $
+|     $Date: 2005-03-07 12:37:20 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -122,16 +122,29 @@ if (isset($_POST['updateoptions'])) {
 	$forum->show_message(FORLAN_10);
 }
 
-if (isset($_POST['do_prune'])) {
+if (isset($_POST['do_prune']))
+{
+	
+	$forums = "";
+	$loop = FALSE;
+	foreach($_POST['pruneForum'] as $foruml)
+	{
+		$forums .= ($loop ? " OR forum_id=$foruml" : " AND forum_id=$foruml");
+		$loop = TRUE;
+	}
+	
 	$sql2 = new db;
 	if ($_POST['prune_type'] == "delete") {
 		$prunedate = time() - ($_POST['prune_days'] * 86400);
 		if ($sql->db_Select("forum_t", "*", "thread_lastpost<$prunedate AND thread_parent=0 AND thread_s!=1")) {
 			while ($row = $sql->db_Fetch()) {
 				extract($row);
-				$sql2->db_Delete("forum_t", "thread_parent='$thread_id' ");
+				
+				echo "thread_parent='$thread_id' $forums<br />";
+				
+				$sql2->db_Delete("forum_t", "thread_parent='$thread_id' $forums");
 				// delete replies
-				$sql2->db_Delete("forum_t", "thread_id='$thread_id' ");
+				$sql2->db_Delete("forum_t", "thread_id='$thread_id' $forums");
 				// delete thread
 			}
 
@@ -148,7 +161,7 @@ if (isset($_POST['do_prune'])) {
 		}
 	} else {
 		$prunedate = time() - ($_POST['prune_days'] * 86400);
-		$pruned = $sql->db_Update("forum_t", "thread_active=0 WHERE thread_lastpost<$prunedate AND thread_parent=0 ");
+		$pruned = $sql->db_Update("forum_t", "thread_active=0 WHERE thread_lastpost<$prunedate AND thread_parent=0 $forums");
 		$forum->show_message(FORLAN_8." ".$pruned." ".FORLAN_91);
 	}
 	$action = "main";
@@ -692,7 +705,13 @@ class forum {
 	}
 
 	function show_prune() {
-		global $ns;
+		global $ns, $sql;
+		
+		$sql -> db_Select("forum", "*", "forum_parent!=0");
+		$forums = $sql -> db_getList();
+		
+		
+		
 		$text = "<div style='text-align:center'>
 			<form method='post' action='".e_SELF."?".e_QUERY."'>\n
 			<table style='".ADMIN_WIDTH."' class='fborder'>
@@ -712,8 +731,17 @@ class forum {
 			".FORLAN_90." <input type='radio' name='prune_type' value='".FORLAN_111."' checked='checked' />
 			</td>
 			</tr>
-
+			
 			<tr>
+			<td class='forumheader3'>Prune these forums: <br />";
+
+			foreach($forums as $forum)
+			{
+				$text .= "<input type='checkbox' name='pruneForum[]' value='".$forum['forum_id']."' /> ".$forum['forum_name']."<br />";
+			}
+			
+			
+			$text .= "<tr>
 			<td colspan='2'  style='text-align:center' class='forumheader'>
 			<input class='button' type='submit' name='do_prune' value='".FORLAN_5."' />
 			</td>
