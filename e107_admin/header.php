@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.2 $
-|   $Date: 2004-09-23 15:50:39 $
-|   $Author: loloirie $
+|   $Revision: 1.3 $
+|   $Date: 2004-09-28 11:37:59 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='iso-8859-1' ?>");
@@ -46,142 +46,32 @@ if($eplug_css){ echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/cs
 $ns = new e107table;
 $e107_var = array();
 
-echo "<div style='text-align:center'>
-<img src='".e_IMAGE."adminlogo.png' alt='Logo' />
-<br />";
-
-if(ADMIN == TRUE)
-{
-	$str = str_replace(".", "", ADMINPERMS);
-	if(ADMINPERMS == "0"){
-		echo ADLAN_48.": ".ADMINNAME." (".ADLAN_49.")";
-	}
-	else
-	{
-		echo ADLAN_48.": ".ADMINNAME." (".ADLAN_50.":  ".$str.")";
-	}
-}
-else
-{
-	echo ADLAN_51." ...";
+if(file_exists(THEME."admin_template.php")){
+	require_once(THEME."admin_template.php");
+}else{
+	require_once(e_BASE.$THEMES_DIRECTORY."templates/admin_template.php");
 }
 
-$adminfpage = (!$pref['adminstyle'] || $pref['adminstyle'] == "default" ? "admin.php" : $pref['adminstyle'].".php");
-
-echo "
-<div>
-<table style='width:100%' cellspacing='10' cellpadding='10'>
-<tr>
-<td style='width:15%; vertical-align: top;'>";
-
-if(ADMIN == TRUE){
-
-	if(!strstr(e_SELF, "/".$adminfpage) || strstr(e_SELF, "/".$adminfpage."?")){
-		$e107_var['x']['text']=ADLAN_52;
-		$e107_var['x']['link']=e_ADMIN.$adminfpage;
-
-		$e107_var['y']['text']=ADLAN_53;
-		$e107_var['y']['link']=e_BASE."index.php";
-
-		$text .= show_admin_menu("",time(),$e107_var)."<br />";
-
-		require_once(e_ADMIN."header_links.php");
-		$text .= get_admin_treemenu(ADLAN_93,time(),$e107_var,TRUE);
-		unset($e107_var);
-
-		// Plugin links menu
-
-		$sql2 = new db;
-		if($sql2 -> db_Select("plugin", "*", "plugin_installflag=1"))
+if(!function_exists("parse_admin"))
+{
+	function parse_admin($ADMINLAYOUT){
+		global $tp;
+		$adtmp = explode("\n", $ADMINLAYOUT);
+		for($a=0; $a < count($adtmp); $a++)
 		{
-			while($row = $sql2 -> db_Fetch())
+			if(preg_match("/{.+?}/", $adtmp[$a]))
 			{
-				extract($row);
-				include(e_PLUGIN.$plugin_path."/plugin.php");
-
-				//Link Plugin Manager
-				$e107_var['x']['text'] = "<b>".ADLAN_98."</b>";
-				$e107_var['x']['link'] = e_ADMIN."plugin.php";
-				$e107_var['x']['perm'] = "P";
-
-				// Links Plugins
-				if($eplug_conffile)
-				{
-					$e107_var['x'.$plugin_id]['text'] = $eplug_caption;
-					$e107_var['x'.$plugin_id]['link'] = e_PLUGIN.$plugin_path."/".$eplug_conffile;
-					$e107_var['x'.$plugin_id]['perm'] = "P".$plugin_id;
-				}
-				unset($eplug_conffile, $eplug_name, $eplug_caption);
+				echo $tp -> parseTemplate($adtmp[$a]);
 			}
-			$text .= get_admin_treemenu(ADLAN_95,time(),$e107_var,TRUE);
-			unset($e107_var);
-		}
-		unset($e107_var);
-		$e107_var['x']['text']=ADLAN_46;
-		$e107_var['x']['link']=e_ADMIN."admin.php?logout";
-		$text .= "<br />".show_admin_menu("",$act,$e107_var);
-		$ns -> tablerender(LAN_head_1, $text);
-
-	}
-	else
-	{
-		$text = "<div style='text-align:center'>";
-		unset($e107_var);
-		$e107_var['x']['text']=ADLAN_53;
-		$e107_var['x']['link']=e_ADMIN."../index.php";
-		$text .= show_admin_menu("",$act,$e107_var);
-		$text  .="</div>";
-		$ns -> tablerender(LAN_head_1, $text);
-		unset($text);
-	}
-
-if(ADMINPERMS == "0")
-{
-	if((ADMINPWCHANGE+2592000) < time())
-	{
-		$text = "<div style='mediumtext; text-align:center'>".ADLAN_102." <a href='".e_ADMIN."updateadmin.php'>".ADLAN_103."</a></div>";
-		$ns -> tablerender(ADLAN_104, $text);
-	}
-}
-
-if(!($handle=opendir(e_LANGUAGEDIR.e_LANGUAGE."/admin/help/"))){
-  $handle=opendir(e_LANGUAGEDIR."English/admin/help/");
-}
-
-$text = "";
-while(false !== ($file = readdir($handle)))
-{
-	if($file != "." && $file != ".." && $file != "CVS")
-	{
-		if(eregi($file, e_SELF))
-		{
-			if(file_exists(e_LANGUAGEDIR.e_LANGUAGE."/admin/help/".$file)){@require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/help/".$file);}
-			else{@require_once(e_LANGUAGEDIR."English/admin/help/".$file);}
+			else
+			{
+				echo $adtmp[$a];
+			}
 		}
 	}
 }
-closedir($handle);
-}
 
-$plugpath = e_PLUGIN.substr(strrchr(substr(e_SELF, 0, strrpos(e_SELF, "/")), "/"), 1)."/help.php";
-if(file_exists($plugpath)){
-	@require_once($plugpath);
-}
-
-echo "<br />";
-
-
-if(!FILE_UPLOADS){
-        message_handler("ADMIN_MESSAGE", LAN_head_2, __LINE__, __FILE__);
-}
-/*
-if(OPEN_BASEDIR){
-        message_handler("ADMIN_MESSAGE", LAN_head_3, __LINE__, __FILE__);
-}
-*/
-
-echo "</td>
-<td style='width:60%; vertical-align: top;'>";
+parse_admin($ADMIN_HEADER);
 
 function show_admin_menu($title,$page,$e107_vars){
 	global $ns;
