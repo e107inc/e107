@@ -4,7 +4,8 @@ body {
 	font-style: normal;
 	font-weight: normal;
 	color: #000000;
-	margin:0px;
+	margin: 0px;
+	padding: 0px;
 	text-align:left;
 	background-color: #fff;
 }
