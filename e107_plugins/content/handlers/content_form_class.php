@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.8 $
-|		$Date: 2005-02-10 21:51:51 $
+|		$Revision: 1.9 $
+|		$Date: 2005-02-11 16:17:28 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1298,6 +1298,7 @@ class contentform{
 						<div id='creation' style='text-align:center'>
 						<table style='".ADMIN_WIDTH."' class='fborder'>
 						<tr><td colspan='6' class='fcaption'>".CONTENT_ADMIN_OPT_LAN_1."</td></tr>
+						<tr><td colspan='6' class='forumheader'>".CONTENT_ADMIN_OPT_LAN_96."</td></tr>
 						<tr>
 							<td class='forumheader3' style='text-align:right'>".CONTENT_ADMIN_OPT_LAN_60."</td>
 							<td class='forumheader3' style='text-align:center; width:5%;'>".$rs -> form_checkbox("content_admin_icon_{$id}", 1, ($content_pref["content_admin_icon_{$id}"] ? "1" : "0"))."</td>
@@ -1323,7 +1324,7 @@ class contentform{
 							<td class='forumheader3' style='text-align:center; width:5%;'>".$rs -> form_checkbox("content_admin_meta_{$id}", 1, ($content_pref["content_admin_meta_{$id}"] ? "1" : "0"))."</td>
 						</tr>
 						<tr>
-							<td colspan='4' class='forumheader3'>".CONTENT_ADMIN_OPT_LAN_65."</td>
+							<td colspan='4' class='forumheader3'>".CONTENT_ADMIN_OPT_LAN_65."<br />".CONTENT_ADMIN_OPT_LAN_97."</td>
 							<td colspan='2' class='forumheader3' style='text-align:center'>
 								".$rs -> form_select_open("content_admin_custom_number_{$id}");
 								for($i=0;$i<11;$i++){
@@ -1371,10 +1372,10 @@ class contentform{
 							<td colspan='2' class='forumheader3' style='width:30%; text-align:center'>".r_userclass("content_submit_class_{$id}", $content_pref["content_submit_class_{$id}"], "CLASSES")."</td>
 						</tr>
 						<tr>
-							<td colspan='4' class='forumheader3' style='width:70%'>".CONTENT_ADMIN_OPT_LAN_63."</td>
+							<td colspan='4' class='forumheader3' style='width:70%'>".CONTENT_ADMIN_OPT_LAN_63."<br />".CONTENT_ADMIN_OPT_LAN_98."</td>
 							<td colspan='2' class='forumheader3' style='width:30%; text-align:center'>".$rs -> form_checkbox("content_submit_directpost_{$id}", 1, ($content_pref["content_submit_directpost_{$id}"] ? "1" : "0"))."</td>
 						</tr>
-						<tr><td colspan='6' class='forumheader3'>choose which sections should be available for a user to submit</td></tr>
+						<tr><td colspan='6' class='forumheader'>".CONTENT_ADMIN_OPT_LAN_99."</td></tr>
 						<tr>
 							<td class='forumheader3' style='text-align:right'>".CONTENT_ADMIN_OPT_LAN_60."</td>
 							<td class='forumheader3' style='text-align:center; width:5%;'>".$rs -> form_checkbox("content_submit_icon_{$id}", 1, ($content_pref["content_submit_icon_{$id}"] ? "1" : "0"))."</td>
@@ -1400,7 +1401,7 @@ class contentform{
 							<td class='forumheader3' style='text-align:center; width:5%;'>".$rs -> form_checkbox("content_submit_meta_{$id}", 1, ($content_pref["content_submit_meta_{$id}"] ? "1" : "0"))."</td>
 						</tr>
 						<tr>
-							<td colspan='4' class='forumheader3'>".CONTENT_ADMIN_OPT_LAN_65."</td>
+							<td colspan='4' class='forumheader3'>".CONTENT_ADMIN_OPT_LAN_65."<br />".CONTENT_ADMIN_OPT_LAN_97."</td>
 							<td colspan='2' class='forumheader3' style='text-align:center'>
 								".$rs -> form_select_open("content_submit_custom_number_{$id}");
 								for($i=0;$i<11;$i++){
@@ -1438,6 +1439,8 @@ class contentform{
 						<div id='paththeme' style='display:none; text-align:center'>
 						<table style='".ADMIN_WIDTH."' class='fborder'>
 						<tr><td colspan='6' class='fcaption'>".CONTENT_ADMIN_OPT_LAN_10."</td></tr>
+						<tr><td colspan='6' class='forumheader'>".CONTENT_ADMIN_OPT_LAN_102."</td></tr>
+							
 						<tr>
 							<td colspan='2' class='forumheader3' style='width:70%'>".CONTENT_ADMIN_OPT_LAN_11." (".CONTENT_ADMIN_OPT_LAN_55.")</td>
 							<td colspan='4' class='forumheader3' style='width:30%; text-align:center'>".$rs -> form_text("content_cat_icon_path_large_{$id}", 60, $content_pref["content_cat_icon_path_large_{$id}"], 100)."</td>
@@ -1468,8 +1471,9 @@ class contentform{
 						closedir($handle);
 
 						$text .= "
+						<tr><td colspan='6' class='fcaption'>".CONTENT_ADMIN_OPT_LAN_100."</td></tr>
 						<tr>
-							<td colspan='2' class='forumheader3' style='width:70%'>".CONTENT_ADMIN_OPT_LAN_66."</td>
+							<td colspan='2' class='forumheader3' style='width:70%'>".CONTENT_ADMIN_OPT_LAN_66."<br />".CONTENT_ADMIN_OPT_LAN_101."</td>
 							<td colspan='4' class='forumheader3' style='width:30%; text-align:center'>
 								".$rs -> form_select_open("content_theme_{$id}");
 								$counter = 0;
@@ -1487,7 +1491,7 @@ class contentform{
 						<table style='".ADMIN_WIDTH."' class='fborder'>
 						<tr><td colspan='6' class='fcaption'>".CONTENT_ADMIN_OPT_LAN_15."</td></tr>
 						<tr>
-							<td colspan='4' class='forumheader3' style='width:70%'>".CONTENT_ADMIN_OPT_LAN_16."</td>
+							<td colspan='4' class='forumheader3' style='width:70%'>".CONTENT_ADMIN_OPT_LAN_16."<br />".CONTENT_ADMIN_OPT_LAN_105."</td>
 							<td colspan='2' class='forumheader3' style='width:30%; text-align:center'>".$rs -> form_checkbox("content_log_{$id}", 1, ($content_pref["content_log_{$id}"] ? "1" : "0"))."</td>
 						</tr>
 						<tr>
@@ -1503,11 +1507,11 @@ class contentform{
 							<td colspan='2' class='forumheader3' style='width:30%; text-align:center'>".$rs -> form_checkbox("content_breadcrumb_{$id}", 1, ($content_pref["content_breadcrumb_{$id}"] ? "1" : "0"))."</td>
 						</tr>
 						<tr>
-							<td colspan='4' class='forumheader3' style='width:70%'>".CONTENT_ADMIN_OPT_LAN_83."</td>
+							<td colspan='4' class='forumheader3' style='width:70%'>".CONTENT_ADMIN_OPT_LAN_83."<br />".CONTENT_ADMIN_OPT_LAN_107."</td>
 							<td colspan='2' class='forumheader3' style='width:30%; text-align:center'>".$rs -> form_text("content_breadcrumb_seperator{$id}", 1, $content_pref["content_breadcrumb_seperator{$id}"], 3)."</td>
 						</tr>
 						<tr>
-							<td colspan='4' class='forumheader3'>".CONTENT_ADMIN_OPT_LAN_19."</td>
+							<td colspan='4' class='forumheader3'>".CONTENT_ADMIN_OPT_LAN_19."<br />".CONTENT_ADMIN_OPT_LAN_108."</td>
 							<td colspan='2' class='forumheader3' style='text-align:center'>
 								".$rs -> form_select_open("content_breadcrumb_rendertype_{$id}")."
 								".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_20, ($content_pref["content_breadcrumb_rendertype_{$id}"] == "1" ? "1" : "0"), "1")."
@@ -1517,7 +1521,7 @@ class contentform{
 							</td>
 						</tr>
 						<tr>
-							<td colspan='4' class='forumheader3' style='width:70%'>".CONTENT_ADMIN_OPT_LAN_23."</td>
+							<td colspan='4' class='forumheader3' style='width:70%'>".CONTENT_ADMIN_OPT_LAN_23."<br />".CONTENT_ADMIN_OPT_LAN_109."</td>
 							<td colspan='2' class='forumheader3' style='width:30%; text-align:center'>".$rs -> form_checkbox("content_searchmenu_{$id}", 1, ($content_pref["content_searchmenu_{$id}"] ? "1" : "0"))."</td>
 						</tr>
 						</table>
@@ -1526,6 +1530,7 @@ class contentform{
 						<div id='listpages' style='display:none; text-align:center'>
 						<table style='".ADMIN_WIDTH."' class='fborder'>
 						<tr><td colspan='6' class='fcaption'>".CONTENT_ADMIN_OPT_LAN_24."</td></tr>
+						<tr><td colspan='6' class='forumheader'>".CONTENT_ADMIN_OPT_LAN_103."</td></tr>
 						<tr>
 							<td class='forumheader3' style='text-align:right'>".CONTENT_ADMIN_OPT_LAN_25."</td>
 							<td class='forumheader3' style='text-align:center; width:5%;'>".$rs -> form_checkbox("content_list_subheading_{$id}", 1, ($content_pref["content_list_subheading_{$id}"] ? "1" : "0"))."</td>
@@ -1593,7 +1598,7 @@ class contentform{
 							<td colspan='2' class='forumheader3' style='width:30%; text-align:center'>".$rs -> form_checkbox("content_list_rating_all_{$id}", 1, ($content_pref["content_list_rating_all_{$id}"] ? "1" : "0"))."</td>
 						</tr>
 						<tr>
-							<td colspan='4' class='forumheader3'>default order</td>
+							<td colspan='4' class='forumheader3'>".CONTENT_ADMIN_OPT_LAN_110."</td>
 							<td colspan='2' class='forumheader3' style='text-align:center'>
 								".$rs -> form_select_open("content_defaultorder_{$id}")."
 								".$rs -> form_option("heading_ASC", ($content_pref["content_defaultorder_{$id}"] == "orderaheading" ? "1" : "0"), "orderaheading")."
@@ -1652,6 +1657,7 @@ class contentform{
 						<div id='contentpages' style='display:none; text-align:center'>
 						<table style='".ADMIN_WIDTH."' class='fborder'>
 						<tr><td colspan='6' class='fcaption'>".CONTENT_ADMIN_OPT_LAN_50."</td></tr>
+						<tr><td colspan='6' class='forumheader'>".CONTENT_ADMIN_OPT_LAN_104."</td></tr>
 						<tr>
 							<td class='forumheader3' style='text-align:right'>".CONTENT_ADMIN_OPT_LAN_25."</td>
 							<td class='forumheader3' style='text-align:center; width:5%;'>".$rs -> form_checkbox("content_content_subheading_{$id}", 1, ($content_pref["content_content_subheading_{$id}"] ? "1" : "0"))."</td>

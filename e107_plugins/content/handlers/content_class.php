@@ -12,12 +12,13 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.13 $
-|		$Date: 2005-02-10 14:10:05 $
+|		$Revision: 1.14 $
+|		$Date: 2005-02-11 16:17:28 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
+/*
 if (!defined('CONTENT_ICON_EDIT')) { define("CONTENT_ICON_EDIT", "<img src='".e_PLUGIN."content/images/maintain_16.png' alt='edit' style='border:0; cursor:pointer;' />"); }
 if (!defined('CONTENT_ICON_DELETE')) { define("CONTENT_ICON_DELETE", "<img src='".e_PLUGIN."content/images/banlist_16.png' alt='delete' style='border:0; cursor:pointer;' />"); }
 if (!defined('CONTENT_ICON_OPTIONS')) { define("CONTENT_ICON_OPTIONS", "<img src='".e_PLUGIN."content/images/cat_settings_16.png' alt='options' style='border:0; cursor:pointer;' />"); }
@@ -34,7 +35,7 @@ if (!defined('CONTENT_ICON_OK')) { define("CONTENT_ICON_OK", "<img src='".e_PLUG
 if (!defined('CONTENT_ICON_ERROR')) { define("CONTENT_ICON_ERROR", "<img src='".e_PLUGIN."content/images/error_16.png' alt='error' style='border:0; cursor:pointer;' />"); }
 if (!defined('CONTENT_ICON_ORDERCAT')) { define("CONTENT_ICON_ORDERCAT", "<img src='".e_PLUGIN."content/images/view_remove.png' alt='order items in category' style='border:0; cursor:pointer;' />"); }
 if (!defined('CONTENT_ICON_ORDERALL')) { define("CONTENT_ICON_ORDERALL", "<img src='".e_PLUGIN."content/images/window_new.png' alt='order items in main parent' style='border:0; cursor:pointer;' />"); }
-
+*/
 
 
 
