@@ -90,7 +90,7 @@ if($comments = $sql -> db_Select("comments", "*", "comment_datestamp>$lvisit ORD
 				extract($row);
 				if(check_class($download_category_class)){
 					$str .= $bullet."[ ".LIST_17." ] Re: <a href='".e_BASE."download.php?view.$comment_item_id'>".$aj -> tpa($download_name,"admin")."</a><br />";
-					$comment_class++;
+					$comment_count++;
 				}
 			break;
 
@@ -98,19 +98,21 @@ if($comments = $sql -> db_Select("comments", "*", "comment_datestamp>$lvisit ORD
 				$sql2 -> db_Select("faq", "faq_question", "faq_id=$comment_item_id ");
 				$row = $sql2 -> db_Fetch(); extract($row);
 				$str .= $bullet."[ ".LIST_18." ] Re: <a href='".e_BASE."faq.php?view.$comment_item_id'>".$aj -> tpa($faq_question,"admin")."</a><br />";
-				$comment_class++;
+					$comment_count++;
 			break;
 
 			case 4:	//	poll comment
 				$sql2 -> db_Select("poll", "*", "poll_id=$comment_item_id ");
 				$row = $sql2 -> db_Fetch(); extract($row);
 				$str .= $bullet."[ ".LIST_19." ] Re: <a href='".e_BASE."comment.php?comment.poll..$comment_item_id'>".$aj -> tpa($poll_title,"admin")."</a><br />";
+					$comment_count++;
 			break;
 
 			case 6:	//	bugtracker
 				$sql2 -> db_Select("bugtrack", "bugtrack_summary", "bugtrack_id=$comment_item_id ");
 				$row = $sql2 -> db_Fetch(); extract($row);
 				$str .= $bullet."[ ".LIST_20." ] Re: <a href='".e_PLUGIN."bugtracker/bugtracker.php?show.$comment_item_id'>".$aj -> tpa($bugtrack_summary)."</a><br />";
+					$comment_count++;
 			break;
 
 		}
@@ -148,23 +150,25 @@ $text .= "
 </tr>\n";
 
 unset($str);
-if($forum_posts = $sql -> db_Select("forum_t", "*", "thread_datestamp>$lvisit ORDER BY thread_datestamp DESC LIMIT 0,50")){
-	while($row = $sql -> db_Fetch()){
-		extract($row);
-		$sql2 -> db_Select("forum", "*", "forum_id=$thread_forum_id");
-		$row = $sql2 -> db_Fetch(); extract($row);
-		if(check_class($forum_class)){
-			if($thread_parent){
-				$ttemp = $thread_id;
-				$sql2 -> db_Select("forum_t", "*", "thread_id=$thread_parent ");
-				$row = $sql2 -> db_Fetch(); extract($row);
-				$str .= $bullet."[ <a href='".e_BASE."forum_viewforum.php?$forum_id'>$forum_name</a> ] Re: <a href='".e_BASE."forum_viewtopic.php?$thread_forum_id.$thread_id#$ttemp'>".$aj -> tpa($thread_name)."</a><br />";
-			}else{
-				$str .= $bullet."[ <a href='".e_BASE."forum_viewforum.php?$forum_id'>$forum_name</a> ] <a href='".e_BASE."forum_viewtopic.php?$thread_forum_id.$thread_id'>".$aj -> tpa($thread_name)."</a><br />";
-			}
+$forum_posts = $sql -> db_Select("forum_t", "*", "thread_datestamp>$lvisit ORDER BY thread_datestamp DESC LIMIT 0,50");
+while($row = $sql -> db_Fetch()){
+	extract($row);
+	$sql2 -> db_Select("forum", "*", "forum_id=$thread_forum_id");
+	$row = $sql2 -> db_Fetch(); extract($row);
+	if(check_class($forum_class)){
+		if($thread_parent){
+			$ttemp = $thread_id;
+			$sql2 -> db_Select("forum_t", "*", "thread_id=$thread_parent ");
+			$row = $sql2 -> db_Fetch(); extract($row);
+			$str .= $bullet."[ <a href='".e_BASE."forum_viewforum.php?$forum_id'>$forum_name</a> ] Re: <a href='".e_BASE."forum_viewtopic.php?$thread_forum_id.$thread_id#$ttemp'>".$aj -> tpa($thread_name)."</a><br />";
+		}else{
+			$str .= $bullet."[ <a href='".e_BASE."forum_viewforum.php?$forum_id'>$forum_name</a> ] <a href='".e_BASE."forum_viewtopic.php?$thread_forum_id.$thread_id'>".$aj -> tpa($thread_name)."</a><br/>";
 		}
+	}else{
+		$forum_posts = $forum_posts -1;
 	}
-}else{
+}
+if(!$forum_posts){
 	$str = LIST_4;
 }
 
