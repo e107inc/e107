@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-02-23 12:24:52 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.34 $
+|     $Date: 2005-02-23 21:53:32 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -587,6 +587,14 @@ $text .= "<div id='textpost' style='display:none; text-align:center'>
 	<td class='forumheader3' style='width:50%; text-align: right;'>
 	<input type='radio' name='old_np' value='1'".($pref['old_np'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
 	<input type='radio' name='old_np' value='0'".(!$pref['old_np'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
+	</td>
+	</tr>
+
+	<tr>
+	<td class='forumheader3' style='width:50%;'>".PRFLAN_127.":  <div class='smalltext'>".PRFLAN_128."</div></td>
+	<td class='forumheader3' style='width:50%; text-align: right;'>
+	<input type='radio' name='make_clickable' value='1'".($pref['make_clickable'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
+	<input type='radio' name='make_clickable' value='0'".(!$pref['make_clickable'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
 	</tr>\n
 

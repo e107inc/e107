@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-02-23 12:25:17 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.19 $
+|     $Date: 2005-02-23 21:54:16 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_1", "Site Information");
@@ -175,4 +175,6 @@ define("PRFLAN_124", "Use 'classic' nextprev look");
 define("PRFLAN_125", "Turning this on will show the nextprev pages as 1 2 3 ... 21 22 23, instead of the new look with the dropdown.");
 define("PRFLAN_126", "Text to display on signup page");
 
+define("PRFLAN_127", "Make posted links clickable");
+define("PRFLAN_128", "Turning this on will convert posted links to hyperlinks");
 ?>
