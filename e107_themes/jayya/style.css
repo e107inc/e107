@@ -6,7 +6,7 @@ body, td {
 }
 
 body {
-	background-color: #fdf9f9;
+	background-color: #fdfdfd;
 }
 
 body, td, .indent, .defaulttext, .caption, .bodytable, .infobar, 
@@ -200,7 +200,7 @@ ul{
 .left_menu, .right_menu {
 	width: 170px;
 	vertical-align:top;
-	background-color: #F3EDED;
+	background-color: #f7f7f7;
 }
 
 .left_menu {
@@ -218,11 +218,11 @@ ul{
 }
 
 .main_caption {
-	background-color: #0E7CAB;
+	background-color: #365CCF;
 }
 
 .left_caption, .right_caption {
-	background-color: #225778;
+	background-color: #2A469C;
 	
 }
 
