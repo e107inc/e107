@@ -56,12 +56,6 @@ if (ADMIN) {
 	}
 	
 	$render_plugins = TRUE;
-	$plugin_text .= adnav_cat('Plugins', '', E_16_CAT_PLUG, 'plugMenu');
-	$plugin_text .= "<div id='plugMenu' class='menu' onmouseover=\"menuMouseover(event)\">";
-	if (getperms('Z')) {
-		$plugin_text .= adnav_main(ADLAN_98, e_ADMIN.'plugin.php', E_16_PLUGMANAGER, FALSE, 'header');
-		$render_plugins = TRUE;
-	}
 	if($sql -> db_Select("plugin", "*", "plugin_installflag=1")){
 		while($row = $sql -> db_Fetch()){
 			if(getperms('P'.$row['plugin_id'])){
@@ -72,17 +66,26 @@ if (ADMIN) {
 				}
 				unset($eplug_conffile, $eplug_name, $eplug_caption, $eplug_icon_small);
 				$render_plugins = TRUE;
+				$active_plugs = TRUE;
 			}
 		}
 		ksort($plugin_array, SORT_STRING);
 		foreach ($plugin_array as $plugin_compile) {
-			$plugin_text .= $plugin_compile;
+			$plugs_text .= $plugin_compile;
 		}
-		$plugin_text .= "</div>";
+	}
+	
+	if (getperms('Z')) {
+		$pclass_extended = $active_plugs ? 'header' : '';
+		$plugin_text .= adnav_main(ADLAN_98, e_ADMIN.'plugin.php', E_16_PLUGMANAGER, FALSE, $pclass_extended);
+		$render_plugins = TRUE;
 	}
 	
 	if ($render_plugins) {
-		$text .= $plugin_text;
+		$text .= adnav_cat('Plugins', '', E_16_CAT_PLUG, 'plugMenu');
+		$text .= "<div id='plugMenu' class='menu' onmouseover=\"menuMouseover(event)\">";
+		$text .= $plugin_text.$plugs_text;
+		$text .= "</div>";
 	}
 	
 	$text .= adnav_cat('Docs', '', E_16_NAV_DOCS, 'docsMenu');
