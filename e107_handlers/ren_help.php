@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-03-17 22:25:03 $
-|     $Author: stevedunstan $
+|     $Revision: 1.7 $
+|     $Date: 2005-03-30 15:15:08 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 @include(e_LANGUAGEDIR.e_LANGUAGE."/lan_ren_help.php");
@@ -41,6 +41,18 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help") {
 	}
 	$code[12] = array("list", "[list][/list]", LANHELP_36);
 
+	$img[1] = "link.gif";
+	$img[2] = "bold.gif";
+	$img[3] = "italic.gif";
+	$img[4] = "underline.gif";
+	$img[5] = "image.gif";
+	$img[6] = "center.gif";
+	$img[7] = "left.gif";
+	$img[8] = "right.gif";
+	$img[9] = "quote.gif";
+	$img[10] = "ecode.gif";
+	$img[11] = "code.gif";
+	$img[12] = "bullist.gif";
 
 	$colours[0] = array("black", LANHELP_1);
 	$colours[1] = array("blue", LANHELP_2);
@@ -64,12 +76,15 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help") {
 	$fontsizes[4] = array("20", LANHELP_19);
 	$fontsizes[5] = array("28", LANHELP_20);
 
+	$imgpath = e_HANDLER."tiny_mce/themes/advanced/images/";
+
+
 	while (list($key, $bbcode) = each($code)) {
-		$string .= "<input class=\"button\" type=\"button\" value=\"".$bbcode[0]."\" onclick=\"{$addtextfunc}('".$bbcode[1]."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" ).($bbcode[3] ? " style='".$bbcode[3]."'" :
-		"")." />\n";
+	  //	$string .= "<input class=\"button\" type=\"button\" value=\"ya".$bbcode[0]."\" onclick=\"{$addtextfunc}('".$bbcode[1]."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" ).($bbcode[3] ? " style='".$bbcode[3]."'" :	"")." />\n";
+        $string .= "<img class='button bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"{$addtextfunc}('".$bbcode[1]."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />";
 	}
 	if ($mode) {
-		$string .= "<br />\n<select class=\"tbox\" name=\"fontcol\" onchange=\"{$addtextfunc}('[color=' + this.options[this.selectedIndex].value + '][/color]');this.selectedIndex=0;\"".($mode != 2 ? " onmouseover=\"{$helpfunc}('Font Color: [color]Blue[/color]')\" onmouseout=\"{$helpfunc}('')\"" : "")." >\n<option value=\"\">".LANHELP_21."</option>\n";
+		$string .= "\n<span><select class=\"tbox\" name=\"fontcol\" onchange=\"{$addtextfunc}('[color=' + this.options[this.selectedIndex].value + '][/color]');this.selectedIndex=0;\"".($mode != 2 ? " onmouseover=\"{$helpfunc}('Font Color: [color]Blue[/color]')\" onmouseout=\"{$helpfunc}('')\"" : "")." >\n<option value=\"\">".LANHELP_21."</option>\n";
 		while (list($key, $bbcode) = each($colours)) {
 			$string .= "<option style=\"color:".strtolower($bbcode[0])."\" value=\"".strtolower($bbcode[0])."\">".$bbcode[1]."</option>\n";
 		}
@@ -79,7 +94,7 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help") {
 		while (list($key, $bbcode) = each($fontsizes)) {
 			$string .= "<option value=\"".$bbcode[0]."\">".$bbcode[1]."</option>\n";
 		}
-		$string .= "</select>";
+		$string .= "</select></span>";
 	}
 	return $string;
 }
@@ -141,7 +156,7 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	if(file_exists(e_PLUGIN."sphpell/spellcheckpageinc.php"))
 	{
 		require_once(e_PLUGIN."sphpell/spellcheckpageinc.php");
-		$string .= "<input type='button' value='Check Spelling' onclick=\"DoSpellCheck('top.opener.parent.document.dataform.data')\">";	
+		$string .= "<input type='button' value='Check Spelling' onclick=\"DoSpellCheck('top.opener.parent.document.dataform.data')\">";
 	}
 */
 
