@@ -525,15 +525,17 @@ if($action == "article"){
 					$user_email = $tmp[1];
 				}
 
+
+
 				$text .= ($content_summary_ ? "<a href='".e_SELF."?article.cat.$content_id_'><img src='".e_IMAGE."link_icons/".$content_summary_."' alt='' style='float:left; border:0' /></a>" : "")."
 				<span class='mediumtext'><b>$content_heading</b></span>
 				<br />
 				<span class='smalltext'>".LAN_43."<b>$user_name</b>".LAN_44."$datestamp</span>
-				<br /><br />
-				$content_summary
+				<br /><br />".
+				$aj -> tpa($content_summary,"nobreak","admin",$highlight_search)."
 				<br /><br />";
 			
-				$content_content = $aj -> tpa($content_content, "off", "admin", $highlight_search);
+				$content_content = $aj -> tpa($content_content, "nobreak", "admin", $highlight_search);
 				$articlepages = explode("[newpage]",$content_content);
 				$totalpages = count($articlepages);
 				if(strstr($content_content, "{EMAILPRINT}") || $content_pe_icon){
