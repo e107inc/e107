@@ -18,7 +18,7 @@ echo "
 function SelectUser()
 {
    var d = window.document.results.usersel.value;
-   parent.opener.document.pm.to.value = d;
+   parent.opener.document.getElementById('pm').to.value = d;
 	this.close();
 }
 //-->
