@@ -65,7 +65,7 @@ $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."?".e_QUERY."'>
 <table style='width:95%' class='fborder'>";
 
-if(!$sql -> db_Select("comments", "*", "(comment_type='".$type." OR comment_type=".$nid."') AND comment_item_id=$id")){
+if(!$sql -> db_Select("comments", "*", "(comment_type='".$type."' OR comment_type='".$tid."') AND comment_item_id=$id")){
 	$text .= "<tr><td class='forumheader3' style='text-align:center'>".MDCLAN_2.".</td></tr></table></form></div>";
 }else{
 	$con = new convert;
