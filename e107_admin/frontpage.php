@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/frontpage.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-27 19:52:24 $
-|     $Author: streaky $
+|     $Revision: 1.6 $
+|     $Date: 2005-02-01 00:42:02 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -22,32 +22,54 @@ if (!getperms("G")) {
 	exit;
 }
 $e_sub_cat = 'frontpage';
-$aj = new textparse;
-if (isset($_POST['updatesettings'])) {
-	if ($_POST['frontpage'] == "other") {
-		$_POST['frontpage'] = ($_POST['frontpage_url'] ? $_POST['frontpage_url'] : "news");
-	}
-	$_POST['frontpage_url'] = $aj->formtpa($_POST['frontpage_url'], "admin");
-	$pref['frontpage'] = $_POST['frontpage'];
-	$pref['frontpage_type'] = $_POST['frontpage_type'];
+
+// update from old 6xx system
+
+if ($pref['frontpage'] == 'links') {
+	$pref['frontpage'] = $PLUGINS_DIRECTORY."links_page/links.php";
 	save_prefs();
-	 
-	if ($pref['frontpage'] != "news") {
-		if (!$sql->db_Select("links", "*", "link_url='news.php' ")) {
-			$sql->db_Insert("links", "0, 'News', 'news.php', '', '', 1, 0, 0, 0, 0");
-		}
-	} else {
-		$sql->db_Delete("links", "link_url='news.php'");
+} else if ($pref['frontpage'] == 'forum') {
+	$pref['frontpage'] = $PLUGINS_DIRECTORY."forum/forum.php";
+	save_prefs();
+} else if (is_numeric($pref['frontpage'])) {
+	$pref['frontpage'] = "content.php?content.".$pref['frontpage'];
+	save_prefs();
+} else if (strpos($pref['frontpage'], ".")===FALSE) {
+	if (!preg_match("#/$#",$pref['frontpage'])) {
+		$pref['frontpage'] = $pref['frontpage'].'.php';
+		save_prefs();
 	}
 }
-	
+
+// end update
+
+global $tp;
+if (isset($_POST['updatesettings'])) {
+	if ($_POST['frontpage'] == 'news') {
+		$frontpage_value = 'news.php';
+	} else if ($_POST['frontpage'] == 'forum') {
+		$frontpage_value = $PLUGINS_DIRECTORY.'forum/forum.php';
+	} else if ($_POST['frontpage'] == 'download') {
+		$frontpage_value = 'download.php';
+	} else if ($_POST['frontpage'] == 'links') {
+		$frontpage_value = $PLUGINS_DIRECTORY.'links_page/links.php';
+	} else if (is_numeric($_POST['frontpage'])) {
+		$frontpage_value = 'content.php?content.'.$_POST['frontpage'];
+	} else if ($_POST['frontpage'] == 'other') {
+		$_POST['frontpage_url'] = $tp->toForm($_POST['frontpage_url']);
+		$frontpage_value = $_POST['frontpage_url'] ? $_POST['frontpage_url'] : 'news.php';
+	}
+	$pref['frontpage'] = $frontpage_value;
+	save_prefs();
+	$message = TRUE;
+}
+
+
 require_once("auth.php");
 	
-$frontpage_re = ($pref['frontpage'] ? $pref['frontpage'] : "news");
-$frontpage_type = ($pref['frontpage_type'] ? $pref['frontpage_type'] : "constant");
+$frontpage_re = ($pref['frontpage'] ? $pref['frontpage'] : "news.php");	
 	
-	
-if (e_QUERY == "u") {
+if ($message) {
 	$ns->tablerender("", "<div style='text-align:center'><b>".FRTLAN_1."</b></div>");
 }
 	
@@ -61,25 +83,25 @@ $text = "<div style='text-align:center'>
 	 
 	 
 	<input name='frontpage' type='radio' value='news'";
-if ($frontpage_re == "news") {
+if ($frontpage_re == "news.php") {
 	$text .= "checked='checked'";
 	$flag = TRUE;
 }
 $text .= " />".FRTLAN_3."<br />
 	<input name='frontpage' type='radio' value='forum'";
-if ($frontpage_re == "forum") {
+if ($frontpage_re == $PLUGINS_DIRECTORY."forum/forum.php") {
 	$text .= "checked='checked'";
 	$flag = TRUE;
 }
 $text .= " />".FRTLAN_4."<br />
 	<input name='frontpage' type='radio' value='download'";
-if ($frontpage_re == "download") {
+if ($frontpage_re == "download.php") {
 	$text .= "checked='checked'";
 	$flag = TRUE;
 }
 $text .= " />".FRTLAN_5."<br />
 	<input name='frontpage' type='radio' value='links'";
-if ($frontpage_re == "links") {
+if ($frontpage_re == $PLUGINS_DIRECTORY."links_page/links.php") {
 	$text .= "checked='checked'";
 	$flag = TRUE;
 }
@@ -89,7 +111,7 @@ if ($sql->db_Select("content", "*", "content_type='1'")) {
 	while ($row = $sql->db_Fetch()) {
 		extract($row);
 		$text .= "<input name='frontpage' type='radio' value='".$content_id."'";
-		if ($frontpage_re == $content_id) {
+		if ($frontpage_re == "content.php?content.".$content_id) {
 			$text .= "checked='checked'";
 			$flag = TRUE;
 		}
@@ -113,24 +135,7 @@ $text .= "' maxlength='100' /> ".FRTLAN_14."
 	</td>
 	</tr>
 	 
-	<tr>
-	<td style='width:30%' class='forumheader3'>".FRTLAN_9.": </td>
-	<td style='width:70%' class='forumheader3'>
-	 
-	<input name='frontpage_type' type='radio' value='constant'";
-if ($frontpage_type == "constant") {
-	$text .= "checked='checked'";
-}
-$text .= " />".FRTLAN_10."<br />
-	<input name='frontpage_type' type='radio' value='splash'";
-if ($frontpage_type == "splash") {
-	$text .= "checked='checked'";
-}
-$text .= " />".FRTLAN_11."<br />
-	 
-	 
-	</td>
-	</tr>
+
 	 
 	<tr style='vertical-align:top'>
 	<td colspan='2'  style='text-align:center'  class='forumheader'>
