@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/usersession_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-01-15 19:24:28 $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-15 19:39:46 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -117,11 +117,11 @@ class eUserSession {
 					$this->_LoginResult = LOGINRESULT_OK;
 					$this->ExtractDetails($row);
 					if($AutoLogin == true){
-						header('P3P: CP="NOI ADM DEV PSAi COM NAV OUR OTRo STP IND DEM"');
+						header('P3P: CP="IDC DSP COR CURa ADMa OUR IND PHY ONL COM STA"');
 						setcookie($this->_CookieName, $row['user_id'].'.'.md5($UserPassword), (time() + 3600 * 24 * 30));
 						$_COOKIE[$this->_CookieName] = $row['user_id'].'.'.md5($UserPassword);
 					} else {
-						header('P3P: CP="NOI ADM DEV PSAi COM NAV OUR OTRo STP IND DEM"');
+						header('P3P: CP="IDC DSP COR CURa ADMa OUR IND PHY ONL COM STA"');
 						setcookie($this->_CookieName, $row['user_id'].'.'.$UserPassword);
 						$_COOKIE[$this->_CookieName] = $row['user_id'].'.'.md5($UserPassword);
 					}
@@ -131,7 +131,9 @@ class eUserSession {
 				}
 			break;
 			if ($this->_LoginResult == LOGINRESULT_INVALIDCOOKIE) {
+				header('P3P: CP="IDC DSP COR CURa ADMa OUR IND PHY ONL COM STA"');
 				setcookie($pref['cookie_name'], '', (time()-2592000));
+				$_COOKIE[$this->_CookieName];
 			}
 		}
 	}
