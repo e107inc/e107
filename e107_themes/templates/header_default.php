@@ -11,7 +11,7 @@
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
 |
-|   $Id: header_default.php,v 1.42 2004-12-14 23:15:45 streaky Exp $
+|   $Id: header_default.php,v 1.43 2004-12-20 20:26:58 sweetas Exp $
 +---------------------------------------------------------------+
 */
 if(!function_exists("parseheader"))
@@ -317,7 +317,7 @@ $body_onload =($fader_onload != "" || $links_onload != "" ? " onload='".$links_o
 $ejs_listpics = "";
 $handle=opendir(THEME."images");
 while ($file = readdir($handle)){
-if($file != "." && $file != ".." && $file != "Thumbs.db"){
+if(!strstr($file, "._") && strstr($file,".") && $file != "." && $file != ".." && $file != "Thumbs.db" && $file != ".DS_Store"){
 $ejs_listpics .= $file.",";
 }
 }

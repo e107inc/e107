@@ -24,7 +24,7 @@ $delete = ($action == "delete" ? TRUE : FALSE);
 
 $handle=opendir(e_IMAGE."banners/");
 while ($file = readdir($handle)){
-        if($file != "." && $file != ".."){
+        if(!strstr($file, "._") && $file != "." && $file != ".." && $file != "Thumbs.db" && $file != ".DS_Store"){
                 $images[] = $file;
         }
 }
