@@ -185,10 +185,12 @@ $NEWSSTYLE = "
 on
 {NEWSDATE}
 <br />
-{NEWSCOMMENTS}
+{NEWSCOMMENTS}{TRACKBACK}
 </div>
 </div>
 <br />";
+define("TRACKBACKSTRING", "Trackbacks: ");
+define("TRACKBACKBEFORESTRING", " | ");
 define("ICONSTYLE", "float: left; border:0");
 define("COMMENTLINK", "Read/Post Comment: ");
 define("COMMENTOFFSTRING", "Comments are turned off for this item");

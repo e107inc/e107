@@ -84,9 +84,7 @@ on
 {NEWSDATE}
 <br />
 <img src='".e_IMAGE."admin_images/userclass_16.png' alt='' style='vertical-align: middle;' />
-{NEWSCOMMENTS}
- |
-{TRACKBACK}
+{NEWSCOMMENTS}{TRACKBACK}
 <br />
  | <a href='".e_BASE."submitnews.php'>Submit a news item</a>
 </div>
@@ -98,6 +96,7 @@ define("PRE_EXTENDEDSTRING", "<br /><br />[ ");
 define("EXTENDEDSTRING", "Read the rest ...");
 define("POST_EXTENDEDSTRING", " ]<br />");
 define("TRACKBACKSTRING", "Trackbacks: ");
+define("TRACKBACKBEFORESTRING", " | ");
 
 
 // [linkstyle]
