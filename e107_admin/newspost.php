@@ -774,20 +774,23 @@ class newspost{
 
                 global $sql, $rs, $ns, $aj;
                 $text = "<div style='border : solid 1px #000; padding : 4px; width :auto; height : 200px; overflow : auto; '>\n";
-                if($category_total = $sql -> db_Select("submitnews","*","submitnews_auth='0'")){
+                if($category_total = $sql -> db_Select("submitnews")){
                         $text .= "<table class='fborder' style='width:100%'>
                         <tr>
                         <td style='width:5%' class='forumheader2'>ID</td>
-                        <td style='width:75%' class='forumheader2'>".NWSLAN_57."</td>
-                        <td style='width:20%; text-align:center' class='forumheader2'>".NWSLAN_41."</td>
+                        <td style='width:70%' class='forumheader2'>".NWSLAN_57."</td>
+                        <td style='width:25%; text-align:center' class='forumheader2'>".NWSLAN_41."</td>
                         </tr>";
                         while($row = $sql -> db_Fetch()){
                                 extract($row);
                                 $text .= "<tr>
                                 <td style='width:5%; text-align:center; vertical-align:top' class='forumheader3'>$submitnews_id</td>
-                                <td style='width:75%' class='forumheader3'><b>".$aj -> tpa($submitnews_title)."</b> [ ".NWSLAN_85." $submitnews_name ]<br />".$aj -> tpa($submitnews_item)."</td>
-                                <td style='width:20%; text-align:center; vertical-align:top' class='forumheader3'>
-                                ".$rs -> form_button("submit", "category_edit", NWSLAN_58, "onClick=\"document.location='".e_SELF."?create.sn.$submitnews_id'\"")."
+                                <td style='width:70%' class='forumheader3'>";
+                                $text .=($submitnews_auth == 0)? "<b>".$aj -> tpa($submitnews_title)."</b>":$aj -> tpa($submitnews_title);
+                                $text .=" [ ".NWSLAN_104." $submitnews_name on ".date("D dS M y, g:ia",$submitnews_datestamp)."]<br />".$aj -> tpa($submitnews_item)."</td>
+                                <td style='width:25%; text-align:right; vertical-align:top' class='forumheader3'>";
+                                $buttext = ($submitnews_auth == 0)? NWSLAN_58 : NWSLAN_103;
+                                $text .= $rs -> form_button("submit", "category_edit", $buttext, "onClick=\"document.location='".e_SELF."?create.sn.$submitnews_id'\"")."
                                 ".$rs -> form_button("submit", "category_delete", NWSLAN_8, "onClick=\"confirm_('sn', $submitnews_id);\"")."
                                 </td>
                                 </tr>\n";
