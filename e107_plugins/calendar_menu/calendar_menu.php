@@ -72,7 +72,7 @@ for($c=0; $c<$firstdayarray['wday']; $c++){
 $loop = $firstdayarray['wday'];
 for($c=1; $c<=31; $c++){
 
-        $dayarray = getdate($start+($c*84460));
+        $dayarray = getdate($start+($c*86400));
 
         if($dayarray['mon'] == $thismonth){
                 if($thisday == $c){
