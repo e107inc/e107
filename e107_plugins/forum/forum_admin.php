@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-03-07 12:37:20 $
+|     $Revision: 1.16 $
+|     $Date: 2005-03-07 12:38:52 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -733,7 +733,7 @@ class forum {
 			</tr>
 			
 			<tr>
-			<td class='forumheader3'>Prune these forums: <br />";
+			<td class='forumheader3'>".FORLAN_138.": <br />";
 
 			foreach($forums as $forum)
 			{
