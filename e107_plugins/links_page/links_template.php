@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-27 19:53:05 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2005-04-05 07:31:01 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 // MAIN TABLE -------------------------------------------------------------------------------
-	
+
 if (!$LINK_MAIN_TABLE_START) {
 	$LINK_MAIN_TABLE_START = "
 		<div style='text-align:center'>
@@ -52,13 +52,13 @@ if (!$LINK_MAIN_TABLE_END) {
 		</table>
 		</div>";
 }
-	
+
 // CATEGORY LIST ----------------------------------------------------------------------------
-	
+
 if (!$LINK_CAT_TABLE_START) {
 	$LINK_CAT_TABLE_START = "
 		<div style='text-align:center'>
-		<table class='fborder' style='width:95%'><tr><td>";
+		<table class='fborder' style='width:95%'>";
 }
 if (!$LINK_CAT_TABLE) {
 	$LINK_CAT_TABLE .= "
@@ -94,9 +94,9 @@ if (!$LINK_CAT_TABLE_END) {
 		</table>
 		</div>";
 }
-	
+
 // SUBMIT -----------------------------------------------------------------------------------
-	
+
 if (!$LINK_SUBMIT_TABLE_START) {
 	$LINK_SUBMIT_TABLE_START = "
 		<div style='text-align:center'>
@@ -151,5 +151,5 @@ if (!$LINK_SUBMIT_TABLE_END) {
 	$LINK_SUBMIT_TABLE_END = "
 		</table></form></div>";
 }
-	
+
 ?>
