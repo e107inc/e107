@@ -21,6 +21,8 @@ define("POLL_5", "Poll");
 define("POLL_6", "No votes");
 define("POLL_7", "1 vote");
 define("POLL_8", " votes");
+define("POLL_9", "moderator");
+define("POLL_10", "delete poll only");
 
 define("LAN_163", "Submit Vote");
 define("LAN_164", "Votes: ");
