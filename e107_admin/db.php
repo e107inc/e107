@@ -83,13 +83,12 @@ $text = "<div style='text-align:center'>
 $ns -> tablerender(DBLAN_10, $text);
 
 function backup_core(){
-	global $pref, $sql;
-	if($sql -> db_Select("core", "*", "e107_name='pref_backup' ")){
-		save_prefs();
-	}else{
+        global $pref, $sql;
 	$tmp = addslashes(serialize($pref));
-	$sql -> db_Insert("core", "'pref_backup', '$tmp' ");
-}
+	if(!$sql -> db_Insert("core", "'pref_backup', '$tmp' "))
+	{ 
+		$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='pref_backup'"); 
+	}
 }
 
 function optimizesql($mySQLdefaultdb){
