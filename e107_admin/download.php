@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-03-01 17:33:30 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.24 $
+|     $Date: 2005-03-04 04:01:21 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -133,10 +133,10 @@ if(isset($_POST['addlimit']))
 		}
 	}
 }
-	
+
 if(isset($_POST['updatelimits']))
 {
-	
+
 	if($pref['download_limits'] != $_POST['download_limits'])
 	{
 		$pref['download_limits'] = ($_POST['download_limits'] == 'on') ? 1 : 0;
@@ -217,7 +217,7 @@ if ($action == "opt") {
 		<td style='width:70%' class='forumheader3'>".DOWLAN_69."</td>
 		<td class='forumheader3' style='width:30%;text-align:left'>";
 	$c = $pref['download_php'] ? " checked = 'checked' " : "";
-	$text .= "<input type='checkbox' class='tbox' name='download_php' value='1' {$c} /> <span class='smalltext'>".DOWLAN_70."</span></td>
+	$text .= "<input type='checkbox' name='download_php' value='1' {$c} /> <span class='smalltext'>".DOWLAN_70."</span></td>
 		</tr>
 		<tr>
 		<td style='width:70%' class='forumheader3'>
@@ -299,9 +299,9 @@ if($action == 'limits')
 		{
 			$chk = "";
 		}
-		
+
 		$txt .= "
-			<input class='tbox' type='checkbox' name='download_limits' {$chk}> ".DOWLAN_125."
+			<input type='checkbox' name='download_limits' {$chk}> ".DOWLAN_125."
 			</td>
 		</tr>
 		<tr>
@@ -311,7 +311,7 @@ if($action == 'limits')
 			<td class='fcaption'>".DOWLAN_108."</td>
 		</tr>
 	";
-	
+
 	foreach($limitList as $row)
 	{
 		$txt .= "
@@ -359,9 +359,9 @@ if($action == 'limits')
 
 
 
-	
+
 	$txt .= "</table>";
-	
+
 	$ns->tablerender(DOWLAN_112, $txt);
 	require_once(e_ADMIN.'footer.php');
 	exit;
