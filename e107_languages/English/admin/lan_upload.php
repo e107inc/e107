@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_upload.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:11:55 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-10-19 15:24:23 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 define("UPLLAN_1", "Upload removed from list.");
@@ -56,6 +56,10 @@ define("UPLLAN_41", "Please note - file uploads are disabled from your php.ini, 
 define("UPLLAN_42", "Actions");
 define("UPLLAN_43", "Uploads");
 define("UPLLAN_44", "Upload");
+
+define("UPLLAN_45", "Are you sure you want to delete the following file...");
+define("UPLLAN_46", "Delete");
+define("UPLLAN_47", "Cancel");
 
 define("UPLAN_COPYTODLM", "copy to download manager");
 define("UPLAN_IS", "is ");
