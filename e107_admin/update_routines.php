@@ -1,0 +1,82 @@
+<?php
+
+$dbupdate=array(	
+						"613b_to_614" => LAN_UPDATE_8." .613b ".LAN_UPDATE_9." .614",
+						"611_to_612" => LAN_UPDATE_8." .611 ".LAN_UPDATE_9." .612",
+						"603_to_604" => LAN_UPDATE_8." .603 ".LAN_UPDATE_9." .604",
+					);
+
+
+function update_check(){
+	global $ns, $dbupdate;
+	foreach($dbupdate as $func => $rmks){
+		if(function_exists("update_".$func)){
+			if(!call_user_func("update_".$func)){
+				$update_needed=TRUE;
+				continue;
+			}
+		}
+	}
+	if($update_needed === TRUE){
+		$txt = "<div style='text-align:center;'>".ADLAN_120;
+		$txt .= "<br /><form method='POST' action='".e_ADMIN."e107_update.php'>
+		<input class='button' type='submit' value='".ADLAN_122."' />
+		</form></div>";
+		$ns -> tablerender(ADLAN_122,$txt);
+	}
+}
+
+function update_613b_to_614($type){
+	global $sql;
+	if($type=="do"){
+		$qry = "CREATE TABLE ".MPREFIX."parser (
+		parser_id int(10) unsigned NOT NULL auto_increment,
+		parser_pluginname varchar(100) NOT NULL default '',
+	  	parser_regexp varchar(100) NOT NULL default '',
+	  	PRIMARY KEY  (parser_id)) TYPE=MyISAM;";
+		$sql -> db_Select_gen($qry);
+	} else {
+		if($sql -> db_Select("parser") === FALSE){
+			return FALSE;
+		} else {
+			return TRUE;
+		}
+	}
+}
+
+function update_611_to_612($type){
+	global $sql;
+	if($type=="do"){
+		mysql_query("ALTER TABLE ".MPREFIX."news ADD news_render_type TINYINT UNSIGNED NOT NULL ");
+		mysql_query("ALTER TABLE ".MPREFIX."content CHANGE content_parent content_parent INT UNSIGNED DEFAULT '0' NOT NULL ");
+	} else {
+		global $mySQLdefaultdb;
+		$fields = mysql_list_fields($mySQLdefaultdb,MPREFIX."news");
+		$columns = mysql_num_fields($fields);
+		for ($i = 0; $i < $columns; $i++) {
+	   	if("news_render_type" == mysql_field_name($fields, $i)){return TRUE;}
+		}
+		return FALSE;
+	}
+}
+function update_603_to_604($type){
+	global $sql;
+	if($type=="do"){
+		mysql_query("ALTER TABLE ".MPREFIX."link_category ADD link_category_icon VARCHAR( 100 ) NOT NULL");
+		mysql_query("ALTER TABLE ".MPREFIX."headlines ADD headline_image VARCHAR( 100 ) NOT NULL AFTER headline_description");
+		mysql_query("ALTER TABLE ".MPREFIX."content CHANGE content_page content_parent TINYINT( 3 ) UNSIGNED DEFAULT '0' NOT NULL");
+		mysql_query("ALTER TABLE ".MPREFIX."content ADD content_review_score TINYINT UNSIGNED NOT NULL AFTER content_type");
+		mysql_query("ALTER TABLE ".MPREFIX."content CHANGE content_author content_author VARCHAR( 200 ) NOT NULL");
+		mysql_query("ALTER TABLE ".MPREFIX."content ADD content_pe_icon TINYINT( 1 ) UNSIGNED NOT NULL AFTER content_review_score");
+	} else {
+		global $mySQLdefaultdb;
+		$fields = mysql_list_fields($mySQLdefaultdb,MPREFIX."link_category");
+		$columns = mysql_num_fields($fields);
+		for ($i = 0; $i < $columns; $i++) {
+	   	if("link_category_icon" == mysql_field_name($fields, $i)){return TRUE;}
+		}
+		return FALSE;
+	}
+}
+
+?>
