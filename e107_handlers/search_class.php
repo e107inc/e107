@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search_class.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-02-13 20:17:02 $
+|     $Revision: 1.14 $
+|     $Date: 2005-02-13 20:24:20 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -26,11 +26,10 @@ class e_search {
 	function e_search() {
 		global $pref;
 		$pref['search_sort'] = 'php';
-		save_prefs();
-		if (!isset($pref['search_chars'])) {
+		if (!$pref['search_chars']) {
 			$pref['search_chars'] = 150;
-			save_prefs();
 		}
+		save_prefs();
 	}
 	
 	function parsesearch($table, $return_fields, $search_fields, $weights, $handler, $no_results, $where, $order, $php_order) {
