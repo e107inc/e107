@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-02-26 06:34:03 $
-|     $Author: e107coders $
+|     $Revision: 1.22 $
+|     $Date: 2005-02-28 20:47:32 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -59,8 +59,6 @@ if (e_QUERY) {
 	unset($tmp);
 }
 
-
-
 if (preg_match("#(.*?)_delete_(\d+)#", $deltest[$tp->toJS(DOWLAN_9)], $matches)) {
 	$delete = $matches[1];
 	$del_id = $matches[2];
@@ -71,20 +69,20 @@ $amount = 50;
 
 $e_file = str_replace("../", "", e_FILE);
 
-
 // if($file_array = getfiles($e_file."downloads/")){ sort($file_array); } unset($t_array);
-if ($file_array = getfiles($DOWNLOADS_DIRECTORY)) {
+if ($file_array = getfiles($DOWNLOADS_DIRECTORY))
+{
 	sort($file_array);
 }
- unset($t_array);
-if ($sql->db_Select("rbinary")) {
-	while ($row = $sql->db_Fetch()) {
+unset($t_array);
+if ($sql->db_Select("rbinary"))
+{
+	while ($row = $sql->db_Fetch())
+	{
 		extract($row);
 		$file_array[] = "Binary ".$binary_id."/".$binary_name;
 	}
 }
-
-
 
 if ($image_array = getfiles($e_file."downloadimages/", 1)) {
 	sort($image_array);
@@ -105,19 +103,24 @@ if (isset($_POST['submit_download'])) {
 	unset($sub_action, $id);
 }
 
-
-if (isset($_POST['updateoptions'])) {
+if (isset($_POST['updateoptions']))
+{
 	$pref['download_php'] = $_POST['download_php'];
 	$pref['download_view'] = $_POST['download_view'];
 	$pref['download_sort'] = $_POST['download_sort'];
 	$pref['download_order'] = $_POST['download_order'];
 	$pref['agree_flag'] = $_POST['agree_flag'];
 	$pref['agree_text'] = $tp->toDB($_POST['agree_text']);
+	$pref['download_count'] = intval($_POST['download_count']);
+	$pref['download_count_days'] = intval($_POST['download_count_days']);
+	$pref['download_bw'] = intval($_POST['download_bw']);
+	$pref['download_bw_days'] = intval($_POST['download_bw_days']);
 	save_prefs();
 	$message = DOWLAN_65;
 }
 
-if ($action == "dlm") {
+if ($action == "dlm")
+{
 	$action = "create";
 	$id = $sub_action;
 	$sub_action = "dlm";
@@ -126,7 +129,6 @@ if ($action == "dlm") {
 if ($action == "create") {
 	$download->create_download($sub_action, $id);
 }
-
 
 if ($delete == 'category') {
 	if ($sql->db_Delete("download_category", "download_category_id='$del_id' ")) {
@@ -167,8 +169,7 @@ if ($action == "opt") {
 		<tr>
 		<td style='width:70%' class='forumheader3'>".DOWLAN_69."</td>
 		<td class='forumheader3' style='width:30%;text-align:left'>";
-	$c = $pref['download_php'] ? " checked = 'checked' " :
-	 "";
+	$c = $pref['download_php'] ? " checked = 'checked' " : "";
 	$text .= "<input type='checkbox' class='tbox' name='download_php' value='1' {$c} /> <span class='smalltext'>".DOWLAN_70."</span></td>
 		</tr>
 		<tr>
@@ -209,6 +210,29 @@ if ($action == "opt") {
 		</td>
 		<td class='forumheader3' style='width:30%;text-align:left'>
 		<textarea class='tbox' name='agree_text' cols='59' rows='10'>$agree_text</textarea>
+		</td>
+		</tr>
+
+
+		<tr><td style='width:70%' class='forumheader3'>
+		".DOWLAN_107."
+		</td>
+		<td class='forumheader3' style='width:30%;text-align:left'>
+		<input name='download_count' class='tbox' size='4' value='{$pref['download_count']}' />&nbsp;".
+		DOWLAN_26." ".DOWLAN_109."
+		<input name='download_count_days' class='tbox' size='4' value='{$pref['download_count_days']}' />&nbsp;".
+		DOWLAN_110."
+		</td>
+		</tr>
+
+		<tr><td style='width:70%' class='forumheader3'>
+		".DOWLAN_108."
+		</td>
+		<td class='forumheader3' style='width:30%;text-align:left'>
+		<input name='download_bw' class='tbox' size='4' value='{$pref['download_bw']}' />&nbsp;".
+		DOWLAN_111." ".DOWLAN_109."
+		<input name='download_bw_days' class='tbox' size='4' value='{$pref['download_bw_days']}' />&nbsp;".
+		DOWLAN_110."
 		</td>
 		</tr>
 
@@ -528,6 +552,13 @@ class download {
 			</tr>";
 
 
+		$text .= "
+			<tr>
+			<td style='width:20%' class='forumheader3'>".DOWLAN_106.":</td>
+			<td style='width:80%' class='forumheader3'>".r_userclass('download_class', $download_class, 'off', 'public, nobody, member, admin, classes')."</td>
+			</tr>
+			";
+
 		if ($sub_action == "dlm") {
 			$text .= "<tr>
 				<td style='width:30%' class='forumheader3'>".DOWLAN_103.":<br /></td>
@@ -554,10 +585,7 @@ class download {
 			</table>
 			</form>
 			</div>";
-
-
 		$ns->tablerender(DOWLAN_26, $text);
-
 	}
 
 	function show_message($message) {
@@ -592,11 +620,11 @@ class download {
 		$_POST['download_author'] = $tp->toDB($_POST['download_author']);
 
 		if ($id) {
-			$sql->db_Update("download", "download_name='".$_POST['download_name']."', download_url='".$durl."', download_author='".$_POST['download_author']."', download_author_email='".$_POST['download_author_email']."', download_author_website='".$_POST['download_author_website']."', download_description='".$_POST['download_description']."', download_filesize='".$filesize."', download_category='".$_POST['download_category']."', download_active='".$_POST['download_active']."', download_datestamp='".time()."', download_thumb='".$_POST['download_thumb']."', download_image='".$_POST['download_image']."', download_comment='".$_POST['download_comment']."' WHERE download_id=$id");
+			$sql->db_Update("download", "download_name='".$_POST['download_name']."', download_url='".$durl."', download_author='".$_POST['download_author']."', download_author_email='".$_POST['download_author_email']."', download_author_website='".$_POST['download_author_website']."', download_description='".$_POST['download_description']."', download_filesize='".$filesize."', download_category='".$_POST['download_category']."', download_active='".$_POST['download_active']."', download_datestamp='".time()."', download_thumb='".$_POST['download_thumb']."', download_image='".$_POST['download_image']."', download_comment='".$_POST['download_comment']."', download_class = '{$_POST['download_class']}' WHERE download_id=$id");
 			$this->show_message(DOWLAN_2);
 		} else {
 			$time = time();
-			if ($download_id = $sql->db_Insert("download", "0, '".$_POST['download_name']."', '".$durl."', '".$_POST['download_author']."', '".$_POST['download_author_email']."', '".$_POST['download_author_website']."', '".$_POST['download_description']."', '".$filesize."', '0', '".$_POST['download_category']."', '".$_POST['download_active']."', '".$time."', '".$_POST['download_thumb']."', '".$_POST['download_image']."', '".$_POST['download_comment']."' ")) {
+			if ($download_id = $sql->db_Insert("download", "0, '".$_POST['download_name']."', '".$durl."', '".$_POST['download_author']."', '".$_POST['download_author_email']."', '".$_POST['download_author_website']."', '".$_POST['download_description']."', '".$filesize."', '0', '".$_POST['download_category']."', '".$_POST['download_active']."', '".$time."', '".$_POST['download_thumb']."', '".$_POST['download_image']."', '".$_POST['download_comment']."', '{$_POST['download_class']}'")) {
 
 				$dlinfo = array("download_id" => $download_id, "download_name" => $_POST['download_name'], "download_url" => $durl, "download_author" => $_POST['download_author'], "download_author_email" => $_POST['download_author_email'], "download_author_website" => $_POST['download_author_website'], "download_description" => $_POST['download_description'], "download_filesize" => $filesize, "download_category" => $_POST['download_category'], "download_active" => $_POST['download_active'], "download_datestamp" => $time, "download_thumb" => $_POST['download_thumb'], "download_image" => $_POST['download_image'], "download_comment" => $_POST['download_comment'] );
 				$e_event->trigger("dlpost", $dlinfo);
@@ -648,16 +676,11 @@ class download {
 					</td>
 					</tr>";
 
-
 				$parent_id = $download_category_id;
 				if ($sql2->db_Select("download_category", "*", "download_category_parent=$parent_id")) {
 					while ($row = $sql2->db_Fetch()) {
 						extract($row);
-
-
 						$files = $sql4->db_Count("download", "(*)", "WHERE download_category='".$download_category_id."'");
-
-
 						$text .= "<tr>
 							<td style='width:5%; text-align:center' class='forumheader3'>".($download_category_icon ? "<img src='".e_IMAGE."icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")."</td>
 							<td style='width:70%' class='forumheader3'>$download_category_name<br /><span class='smalltext'>$download_category_description</span></td>

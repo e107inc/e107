@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_download.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-02-08 21:35:08 $
-|     $Author: stevedunstan $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-28 20:47:33 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Downloads");
@@ -55,7 +55,7 @@ define("LAN_dl_39", "Sort");
 define("LAN_dl_40", "Click here for screenshot");
 define("LAN_dl_41", "Search Downloads");
 
-define("LAN_dl_42", "Sub-categories");
+define("LAN_dl_42", "Sub-category");
 define("LAN_dl_43", "vote");
 define("LAN_dl_44", "votes");
 define("LAN_dl_45", "Report broken download");

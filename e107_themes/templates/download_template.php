@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/download_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:45 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-02-28 20:47:33 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 // ##### CAT TABLE --------------------------------------------------------------------------------
@@ -50,17 +50,7 @@ if(!$DOWNLOAD_CAT_CHILD_TABLE){
                         {DOWNLOAD_CAT_SUB_NEW_ICON} {DOWNLOAD_CAT_SUB_NAME}<br />
                         <span class='smalltext'>
                         {DOWNLOAD_CAT_SUB_DESCRIPTION}
-                        </span>";
-
-                        if($DOWNLOAD_CAT_SUBSUB_NAME){
-                                $DOWNLOAD_CAT_CHILD_TABLE .= "
-                                <br /><span class='defaulttext'>
-                                {DOWNLOAD_CAT_SUBSUB_LAN}
-                                {DOWNLOAD_CAT_SUBSUB_NAME}
-                                </span>";
-                        }
-
-                $DOWNLOAD_CAT_CHILD_TABLE .= "
+                        </span>
                 </td>
                 <td class='forumheader3' style='text-align:center;'>
                         {DOWNLOAD_CAT_SUB_COUNT}
@@ -71,9 +61,51 @@ if(!$DOWNLOAD_CAT_CHILD_TABLE){
                 <td class='forumheader3' style='text-align:center;'>
                         {DOWNLOAD_CAT_SUB_DOWNLOADED}
                 </td>
-                </tr>";
+                </tr>
+                {DOWNLOAD_CAT_SUBSUB}
+                ";
 
 }
+
+if(!$DOWNLOAD_CAT_SUBSUB_TABLE)
+{
+
+	$DOWNLOAD_CAT_SUBSUB_TABLE .= "
+	<tr>
+	<td class='forumheader3'>
+		&nbsp;
+		</td>
+		<td class='forumheader3' style='width'100%'>
+			<table>
+			<tr>
+				<td class='forumheader3' style='border:0'>".
+				LAN_dl_42."
+				</td>
+				<td class='forumheader3' style='border:0'>
+				{DOWNLOAD_CAT_SUBSUB_ICON}
+				</td>
+				<td class='forumheader3' style='border:0; width: 100%'>
+					{DOWNLOAD_CAT_SUBSUB_NEW_ICON} {DOWNLOAD_CAT_SUBSUB_NAME}<br />
+					<span class='smalltext'>
+					{DOWNLOAD_CAT_SUBSUB_DESCRIPTION}
+					</span>
+				</td>
+			</tr>
+			</table>
+		</td>
+	</td>
+	<td class='forumheader3' style='text-align:center;'>
+		{DOWNLOAD_CAT_SUBSUB_COUNT}
+	</td>
+	<td class='forumheader3' style='text-align:center;'>
+		{DOWNLOAD_CAT_SUBSUB_SIZE}
+	</td>
+	<td class='forumheader3' style='text-align:center;'>
+		{DOWNLOAD_CAT_SUBSUB_DOWNLOADED}
+	</td>
+	</tr>";
+}
+
 if(!$DOWNLOAD_CAT_TABLE_END){
                 $DOWNLOAD_CAT_TABLE_END = "
                 <tr><td class='forumheader3' colspan='5' style='text-align:right;'>{DOWNLOAD_CAT_NEWDOWNLOAD_TEXT}</td></tr>
