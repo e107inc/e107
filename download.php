@@ -317,6 +317,12 @@ if($action == "view"){
 				}
 				if(!$pref['nested_comments']){ $ns -> tablerender(LAN_5, $text); }
 			}
+				if(ADMIN == TRUE && $comment_total)
+				{
+					echo "<a href='".e_BASE.e_ADMIN."modcomment.php?download.$dl_id'>".LAN_314."</a>";
+				}
+			
+			
 			$cobj -> form_comment("comment", "download", $id, $subject, $content_type);
 		}
 
