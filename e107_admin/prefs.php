@@ -58,12 +58,46 @@ if(IsSet($_POST['updateprefs'])){
         $pref['membersonly_enabled'] = $_POST['membersonly_enabled'];
         $pref['ssl_enabled'] = $_POST['ssl_enabled'];
 
+        // Signup.
+          $pref['signup_real'] = $_POST['signup_real'];
+        $pref['signup_url'] = $_POST['signup_url'];
+        $pref['signup_icq'] = $_POST['signup_icq'];
+        $pref['signup_aim'] = $_POST['signup_aim'];
+        $pref['signup_msn'] = $_POST['signup_msn'];
+        $pref['signup_dob'] = $_POST['signup_dob'];
+        $pref['signup_loc'] = $_POST['signup_loc'];
+        $pref['signup_sig'] = $_POST['signup_sig'];
+        $pref['signup_avt'] = $_POST['signup_avt'];
+        $pref['signup_zone'] = $_POST['signup_zone'];
+
+        $pref['signup_pass_len'] = $_POST['signup_pass_len'];
+
+        $pref['signup_real_req'] = $_POST['signup_real_req'];
+        $pref['signup_url_req'] = $_POST['signup_url_req'];
+        $pref['signup_icq_req'] = $_POST['signup_icq_req'];
+        $pref['signup_aim_req'] = $_POST['signup_aim_req'];
+        $pref['signup_msn_req'] = $_POST['signup_msn_req'];
+        $pref['signup_dob_req'] = $_POST['signup_dob_req'];
+        $pref['signup_loc_req'] = $_POST['signup_loc_req'];
+        $pref['signup_sig_req'] = $_POST['signup_sig_req'];
+        $pref['signup_avt_req'] = $_POST['signup_avt_req'];
+        $pref['signup_zone_req'] = $_POST['signup_zone_req'];
+
+
+
+
+
+
         $pref['htmlarea'] = $_POST['htmlarea'];
 
         $pref['smtp_enable'] = $_POST['smtp_enable'];
         $pref['smtp_server'] = $aj -> formtpa($_POST['smtp_server']);
         $pref['smtp_username'] = $aj -> formtpa($_POST['smtp_username']);
         $pref['smtp_password'] = $aj -> formtpa($_POST['smtp_password']);
+
+
+
+
 
         $sql -> db_Delete("cache");
         save_prefs();
@@ -155,8 +189,21 @@ while ($file = readdir($handle)){
         }
 }
 closedir($handle);
+// new
 
-$text = "<div style='text-align:center'>
+$text .= "<div style='text-align:center'><div class='fborder' style='text-align:center; width:98%'>";
+$text .="<input type='button' class='button' style='width:280px' value='".PRFLAN_1."' onClick=\"expandit('main')\"><br/>";
+$text .="<input type='button' class='button' style='width:280px' value='".PRFLAN_21."' onClick=\"expandit('date')\"><br/>";
+$text .="<input type='button' class='button' style='width:280px' value='Admin Display Options' onClick=\"expandit('admindisp')\"><br/>";
+$text .="<input type='button' class='button' style='width:280px' value='Registration' onClick=\"expandit('registration')\"><br/>";
+$text .="<input type='button' class='button' style='width:280px' value='Security & Protection' onClick=\"expandit('security')\"><br/>";
+$text .="<input type='button' class='button' style='width:280px' value='Mail Settings' onClick=\"expandit('mail')\"><br/>";
+$text .="</div>";
+
+// end new.
+
+
+$text .= "<div id='main' style='text-align:center'>
 <form method='post' action='prefs.php'>
 <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 <tr>
@@ -240,38 +287,6 @@ $text .= "</select>
 </td>
 </tr>
 
-<tr>
-<td style='width:50%' class='forumheader3'>".PRFLAN_54.": </td>
-<td style='width:50%; text-align:right' class='forumheader3'>
-<select name='admintheme' class='tbox'>\n";
-$counter = 0;
-while(IsSet($dirlist[$counter])){
-        $text .= ($dirlist[$counter] == $pref['admintheme'] ? "<option selected>".$dirlist[$counter]."</option>\n" : "<option>".$dirlist[$counter]."</option>\n");
-        $counter++;
-}
-$text .= "</select>
-</td>
-</tr>
-
-
-
-
-<tr>
-<td style='width:50%' class='forumheader3'>".PRFLAN_57.": </td>
-<td style='width:50%; text-align:right' class='forumheader3'>
-<select name='adminstyle' class='tbox'>\n";
-$counter = 0;
-while(IsSet($adminlist[$counter])){
-        $text .= ($adminlist[$counter] == $pref['adminstyle'] ? "<option selected>".$adminlist[$counter]."</option>\n" : "<option>".$adminlist[$counter]."</option>\n");
-        $counter++;
-}
-$text .= "</select>
-</td>
-</tr>
-
-
-
-
 
 
 <tr>
@@ -322,19 +337,60 @@ while(IsSet($lanlist[$counter])){
 }
 $text .= "</select>
 </td>
-</tr>
+</tr>";
+$text .="</table></div>";
+
+// Admin Display. .
+
+$text .="<div id='admindisp' class='border' style='display:none'>
+<table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 
 <tr>
 <td colspan='2'>
-<div class='border'><div class='caption'>Admin Display Options</div></div>
+<div class='caption'>Admin Display Options</div></div>
 </td>
-</tr><tr>
+</tr>
+
+<tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_54.": </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<select name='admintheme' class='tbox'>\n";
+$counter = 0;
+while(IsSet($dirlist[$counter])){
+        $text .= ($dirlist[$counter] == $pref['admintheme'] ? "<option selected>".$dirlist[$counter]."</option>\n" : "<option>".$dirlist[$counter]."</option>\n");
+        $counter++;
+}
+$text .= "</select>
+</td>
+</tr>
+
+
+
+
+<tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_57.": </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<select name='adminstyle' class='tbox'>\n";
+$counter = 0;
+while(IsSet($adminlist[$counter])){
+        $text .= ($adminlist[$counter] == $pref['adminstyle'] ? "<option selected>".$adminlist[$counter]."</option>\n" : "<option>".$adminlist[$counter]."</option>\n");
+        $counter++;
+}
+$text .= "</select>
+</td>
+</tr>
+
+
+<tr>
 <td style='width:50%' class='forumheader3'>Use HtmlArea for admin text-areas: </td>
 <td style='width:50%; text-align:right' class='forumheader3'>".
 ($pref['htmlarea'] ? "<input type='checkbox' name='htmlarea' value='1'  checked>" : "<input type='checkbox' name='htmlarea' value='1'>")."
 </td>
-</tr>
+</tr></table></div>";
 
+// Date options.
+$text .="<div id='date' style='text-align:center; display:none'>
+<table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 
 <tr>
 <td colspan='2'>
@@ -406,7 +462,10 @@ $text .= "</select>
 <td style='width:50%; text-align:right' class='forumheader3'>
 <input class='tbox' type='text' name='timezone' size='20' value='".$pref['timezone']."' maxlength='50' />
 </td>
-</tr>
+</tr></table></div>";
+
+$text .="<div id='registration' style='text-align:center; display:none'>
+<table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 
 <tr>
 <td colspan='2'>
@@ -443,7 +502,10 @@ $text .= "</select>
 ($pref['membersonly_enabled'] ? "<input type='checkbox' name='membersonly_enabled' value='1'  checked>" : "<input type='checkbox' name='membersonly_enabled' value='1'>")."
 (".PRFLAN_59.")
 </td>
-</tr>
+</tr></table></div>";
+
+$text .="<div id='security' style='text-align:center; display:none'>
+<table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 
 <tr>
 <td colspan='2'>
@@ -455,6 +517,21 @@ $text .= "</select>
 <td style='width:50%' class='forumheader3'>".PRFLAN_60."<br /><span class='smalltext'>".PRFLAN_61."</span> </td>
 <td style='width:50%; text-align:right' class='forumheader3'>".
 ($pref['ssl_enabled'] ? "<input type='checkbox' name='ssl_enabled' value='1'  checked>" : "<input type='checkbox' name='ssl_enabled' value='1'>")."
+</td>
+</tr>
+
+<tr>
+<td colspan='2'>
+<div class='border'><div class='caption'>".PRFLAN_47."</div></div>
+</td>
+</tr><tr>
+
+<td style='width:50%' class='forumheader3'>".PRFLAN_48.": </td>
+<td style='width:50%; text-align:right' class='forumheader3'>".
+($user_tracking == "cookie" ? "<input type='radio' name='user_tracking' value='cookie' checked> ".PRFLAN_49 : "<input type='radio' name='user_tracking' value='cookie'> ".PRFLAN_49).
+($user_tracking == "session" ? "<input type='radio' name='user_tracking' value='session' checked> ".PRFLAN_50 : "<input type='radio' name='user_tracking' value='session'> ".PRFLAN_50)."
+<br />
+".PRFLAN_55.": <input class='tbox' type='text' name='cookie_name' size='20' value='".$pref['cookie_name']."' maxlength='20' />
 </td>
 </tr>
 
@@ -503,7 +580,10 @@ if($use_coppa == 1){
 
 $text .= "(".PRFLAN_46.")
 </td>
-</tr>
+</tr></table></div>";
+
+$text .="<div id='mail' style='text-align:center; display:none'>
+<table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 
 
 <tr>
@@ -544,37 +624,33 @@ $text .= "(".PRFLAN_46.")
 <td style='width:50%; text-align:right' class='forumheader3'>
 <input class='tbox' type='password' name='smtp_password' size='30' value='".$pref['smtp_password']."' maxlength='50' />
 </td>
-</tr>
+</tr></table></div>";
+
+$text .="<div id='cookie' style='text-align:center; display:none'>
+<table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 
 
 
 
+</table></div>";
+
+
+$text .="<div id='update' style='text-align:center; display:none'>
+<table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>".$auth_dropdown."
 <tr>
 <td colspan='2'>
-<div class='border'><div class='caption'>".PRFLAN_47."</div></div>
-</td>
-</tr><tr>
-
-<td style='width:50%' class='forumheader3'>".PRFLAN_48.": </td>
-<td style='width:50%; text-align:right' class='forumheader3'>".
-($user_tracking == "cookie" ? "<input type='radio' name='user_tracking' value='cookie' checked> ".PRFLAN_49 : "<input type='radio' name='user_tracking' value='cookie'> ".PRFLAN_49).
-($user_tracking == "session" ? "<input type='radio' name='user_tracking' value='session' checked> ".PRFLAN_50 : "<input type='radio' name='user_tracking' value='session'> ".PRFLAN_50)."
-<br />
-".PRFLAN_55.": <input class='tbox' type='text' name='cookie_name' size='20' value='".$pref['cookie_name']."' maxlength='20' />
-</td>
-</tr>".$auth_dropdown."
-<tr>
-<td colspan='2'>
-<div class='border'><div class='caption'>e107</div></div>
+<div class='border'><div class='caption'>e107</div>
 </td>
 </tr>
+
 <tr>
 <td colspan='2' class='forumheader3'>
 <div style='text-align:center'><input class='button' type='submit' name='newver' value='".PRFLAN_51."' /></div>
 </td>
-</tr>
+</tr></table></div>";
 
-<tr style='vertical-align:top'>
+$text .="<div style='text-align:center;'>
+<table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>  <tr style='vertical-align:top'>
 <td colspan='2'  style='text-align:center' class='forumheader3'>
 <br />
 <input class='caption' type='submit' name='updateprefs' value='".PRFLAN_52."' />
@@ -582,7 +658,7 @@ $text .= "(".PRFLAN_46.")
 </tr>
 </table>
 </form>
-</div>";
+</div></div>";
 
 
 
