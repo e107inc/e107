@@ -159,7 +159,7 @@ if(IsSet($_POST['add_field'])){
         $row = $sql -> db_Fetch();
         $user_entended = unserialize($row[0]);
         // changed by Cameron
-        $user_entended[] = $user_field."|".$user_type."|".$user_value;
+        $user_entended[] = $user_field."|".$user_type."|".$user_value."|".$user_default."|".$user_visible."|".$user_hide;
    //     $user_entended[] = $user_field;
         $tmp = addslashes(serialize($user_entended));
         if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
@@ -176,7 +176,7 @@ if(IsSet($_POST['update_field'])){
         $row = $sql -> db_Fetch();
         $user_entended = unserialize($row[0]);
         unset($user_entended[$sub_action]);
-        $user_entended[] = $user_field."|".$user_type."|".$user_value;
+        $user_entended[] = $user_field."|".$user_type."|".$user_value."|".$user_default."|".$user_visible."|".$user_hide;
         $tmp = addslashes(serialize($user_entended));
         if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
                 $sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='user_entended' ");
@@ -208,6 +208,9 @@ if($action == "editext"){
         $uf_name = $tmp[0];
         $uf_type = $tmp[1];
         $uf_value = $tmp[2];
+		$uf_default = $tmp[3];
+		$uf_visible = $tmp[4];
+		$uf_hide = $tmp[5];
         $user -> show_extended();
 }
 
@@ -482,7 +485,8 @@ class users{
         }
 
         function show_extended(){
-                global $sql, $ns, $uf_name, $uf_type, $uf_value;
+                global $sql, $ns, $uf_name, $uf_type, $uf_value, $uf_default, $uf_visible, $uf_hide;
+				require_once(e_HANDLER."userclass_class.php");
 
                 $sql -> db_Select("core", " e107_value", " e107_name='user_entended'");
                 $row = $sql -> db_Fetch();
@@ -496,6 +500,9 @@ class users{
                 <td class='fcaption'>Name</td>
                 <td class='fcaption'>Type</td>
                 <td class='fcaption'>Values</td>
+				<td class='fcaption'>Default</td>
+				<td class='fcaption'>Applicable to</td>
+				<td class='fcaption'>Visible to</td>
                 <td class='fcaption'>Action</td>
                 \n";
 
@@ -513,11 +520,17 @@ class users{
                                 $u_name = ($ut[0] != "") ? $ut[0] : $u_entended;
                                 $u_type = $ut[1];
                                 $u_value = $ut[2];
-                                        $text .= "<tr>
+								$u_default = $ut[3];
+								$u_visible = $ut[4];
+								$u_hide = $ut[5];
+										$text .= "<tr>
                                         <td class='forumheader3' >".$u_name."&nbsp; </td>
                                         <td class='forumheader3' >".$u_type."&nbsp; </td>
                                         <td class='forumheader3' >".$u_value."&nbsp; </td>
-                                        <td class='forumheader3' nowrap style='text-align:center'><span class='button' style='height:16px; width:50%'><a style='text-decoration:none' href='".e_SELF."?editext.$key'>Edit</a></span>&nbsp;<span class='button' style='height:16px; width:50%'><a style='text-decoration:none' href='".e_SELF."?delext.$key'>".USRLAN_29."</a></span>
+										<td class='forumheader3' >".$u_default."&nbsp; </td>
+										<td class='forumheader3' >".r_userclass_name($u_visible)."&nbsp; </td>
+										<td class='forumheader3' >".r_userclass_name($u_hide)."&nbsp; </td>
+                                        <td class='forumheader3' style='text-align:center;'><span class='button' style='height:16px; width:50%;'><a style='text-decoration:none' href='".e_SELF."?editext.$key'>Edit</a></span>&nbsp;<span class='button' style='height:16px; width:50%'><a style='text-decoration:none' href='".e_SELF."?delext.$key'>".USRLAN_29."</a></span>
                                         </td>
                                         </tr>";
                                         $c++;
@@ -557,6 +570,27 @@ class users{
                 <span class='smalltext'>Enter values seperated by commas eg. value1,value2 etc<br>
                 For DB table use the format: dbtable,field-value,field-name.</span>
                 </td>
+                </tr>
+					
+				<tr>
+				<td style='width:30%' class='forumheader3'>Default Value:</td>
+                <td style='width:70%' class='forumheader3' colspan='3'>
+				<input class='tbox' type='text' name='user_default' size='40' value='$uf_default' />
+				</td>
+                </tr>
+
+				<tr>
+				<td style='width:30%' class='forumheader3'>Applicable to:</td>
+                <td style='width:70%' class='forumheader3' colspan='3'>
+				".r_userclass("user_visible", $uf_visible)."<br /><span class='smalltext'>This will determine who will see this field in their usersettings.</span>
+				</td>
+                </tr>
+
+				<tr>
+				<td style='width:30%' class='forumheader3'>Visible to:</td>
+                <td style='width:70%' class='forumheader3' colspan='3'>
+				".r_userclass("user_hide", $uf_hide)."<br /><span class='smalltext'>This will determine who can see the value in the user page.</span>
+				</td>
                 </tr>";
 
 

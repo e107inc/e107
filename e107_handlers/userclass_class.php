@@ -51,4 +51,27 @@ function r_userclass_radio($fieldname,$curval=0){
 	return $text;
 }
 
+function r_userclass_name($id){
+	$sql = new db;
+	if($sql -> db_Select("userclass_classes", "userclass_name", "userclass_id=$id")){
+		extract($row = $sql -> db_Fetch());
+		return $userclass_name;
+	}else{
+		switch ($id){
+			case e_UC_PUBLIC:
+				return UC_LAN_0;
+			case e_UC_GUEST:
+				return UC_LAN_1;
+			case e_UC_NOBODY:
+				return UC_LAN_2;
+			case e_UC_MEMBER:
+				return UC_LAN_3;
+			case e_UC_READONLY:
+				return UC_LAN_4;
+			case e_UC_ADMIN:
+				return UC_LAN_5;
+		}
+	}
+
+}
 ?>
