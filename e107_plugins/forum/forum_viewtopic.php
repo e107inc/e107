@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-03-04 13:21:42 $
+|     $Revision: 1.18 $
+|     $Date: 2005-03-14 16:28:42 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -277,9 +277,9 @@ $forum_info['forum_name'] = $tp -> toHTML($forum_info['forum_name'], TRUE);
 
 // get info for main thread -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-$BREADCRUMB = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a>-><a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_01."</a>-><a class='forumlink' href='forum_viewforum.php?".$forum_info['forum_id']."'>".$forum_info['forum_name']."</a>->".$thread_info['head']['thread_name']."XXX";
+$BREADCRUMB = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a> -> <a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_01."</a> -> <a class='forumlink' href='forum_viewforum.php?".$forum_info['forum_id']."'>".$forum_info['forum_name']."</a> -> ".$thread_info['head']['thread_name']."XXX";
 
-$BACKLINK = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a>-><a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_01."</a>-><a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_info['forum_id']."'>".$forum_info['forum_name']."</a>";
+$BACKLINK = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a> -> <a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_01."</a> -> <a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_info['forum_id']."'>".$forum_info['forum_name']."</a>";
 $THREADNAME = $thread_info['head']['thread_name'];
 $NEXTPREV = "&lt;&lt; <a href='".e_SELF."?{$thread_id}.{$forum_info['forum_id']}.prev'>".LAN_389."</a>";
 $NEXTPREV .= " | ";
