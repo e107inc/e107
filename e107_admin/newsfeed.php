@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/newsfeed.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-27 19:52:24 $
-|     $Author: streaky $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-24 17:38:29 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -99,7 +99,7 @@ $text .= "
 	</tr>
 	 
 	<tr>
-	<td style='width:30%' class='forumheader3'>".NWFLAN_11."<br /><span class='smalltext'>".NWFLAN_12."</span></td>
+	<td style='width:30%' class='forumheader3'>".NWFLAN_11."</td>
 	<td style='width:70%' class='forumheader3'>
 	<input class='tbox' type='text' name='headline_image' size='60' value='$headline_image' maxlength='200' />
 	</td>
