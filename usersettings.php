@@ -173,7 +173,11 @@ if(IsSet($_POST['updatesettings'])){
                         if($uploaded[0]['name'] && $pref['avatar_upload']){
                                 // avatar uploaded
                                 $_POST['image'] = "-upload-".$uploaded[0]['name'];
-                                resize_image(e_FILE."public/avatars/".$uploaded[0]['name'], e_FILE."public/avatars/".$uploaded[0]['name'], "avatar");
+                                if(!resize_image(e_FILE."public/avatars/".$uploaded[0]['name'], e_FILE."public/avatars/".$uploaded[0]['name'], "avatar")){
+									unset($message);
+									$error = RESIZE_NOT_SUPPORTED;
+									@unlink(e_FILE."public/avatars/".$uploaded[0]['name']);
+								}
                         }else{
                                 // photograph uploaded
                                 $user_sess = ($pref['avatar_upload'] ? $uploaded[1]['name'] : $uploaded[0]['name']);
@@ -431,7 +435,7 @@ $text .= "</select>
 </tr>
 
 <tr>
-<td colspan='2' class='forumheader3' style='text-align:center'>".LAN_404."</td>
+<td colspan='2' class='forumheader3' style='text-align:center'>".LAN_404.($pref['im_width'] || $pref['im_height'] ? "<br />".($pref['im_width'] ? MAX_AVWIDTH.$pref['im_width']." pixels. " : "").($pref['im_height'] ? MAX_AVHEIGHT.$pref['im_height']." pixels." : "") : "")."</td>
 </tr>
 
 
@@ -448,7 +452,7 @@ $text .= "</select>
 <td style='width:20%; vertical-align:top' class='forumheader3'>".LAN_421."<br /><span class='smalltext'>".LAN_424."</span></td>
 <td style='width:80%' class='forumheader2'>
 <input class='button' type ='button' style=' cursor:hand' size='30' value='".LAN_403."' onclick='expandit(this)' />
-<div style='{head}; display:none' >";
+<div style='display:none' >";
 $avatarlist[0] = "";
 $handle=opendir(e_IMAGE."avatars/");
 while ($file = readdir($handle)){
