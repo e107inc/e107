@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2005-03-10 18:39:23 $
+|     $Revision: 1.45 $
+|     $Date: 2005-03-10 19:57:36 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -383,7 +383,6 @@ function update_61x_to_700($type) {
 		) TYPE=MyISAM;
 		");
 		// News Updates
-		mysql_query("ALTER TABLE `".MPREFIX."news` ADD `news_image` TEXT NOT NULL ,ADD `news_thumb` VARCHAR( 60 ) DEFAULT NULL ;");
 		mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_image` `news_summary` TEXT DEFAULT NULL;");
 		mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_thumb` `news_attach` TEXT DEFAULT NULL;");
 		mysql_query("ALTER TABLE ".MPREFIX."news ADD news_sticky TINYINT ( 3 ) UNSIGNED NOT NULL");
