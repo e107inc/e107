@@ -41,8 +41,7 @@ if(IsSet($_POST['reset'])){
         unset($poll_id, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate']);
 }
 
-
-if($action == "delete"){
+if($action == "delete" && $_POST['del_poll_confirm']==1){
         $message = $poll -> delete_poll($sub_action);
         unset($poll_id, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate']);
 }
@@ -53,6 +52,7 @@ if(IsSet($_POST['submit'])){
 }
 
 if($action == "edit" && !$_POST['preview']  && !$_POST['addoption'] && !$_POST['submit']){
+        
         if($sql -> db_Select("poll", "*", "poll_id=$sub_action")){
                 $row = $sql-> db_Fetch(); extract($row);
                 for($a=1; $a<=10; $a++){
@@ -92,7 +92,9 @@ if(IsSet($message)){
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
-$text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 200px; overflow : auto; '>";
+$text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 200px; overflow : auto; '>
+<form action=\"".e_SELF."\" method=\"post\" id=\"del_poll\" >
+<input type=\"hidden\" name=\"del_poll_confirm\" id=\"del_poll_confirm\" value=\"1\" />";
 if($poll_total = $sql -> db_Select("poll")){
         $text .= "<table class='fborder' style='width:100%'>
         <tr>
@@ -106,7 +108,7 @@ if($poll_total = $sql -> db_Select("poll")){
                 <td style='width:5%' class='forumheader3'>$poll_id</td>
                 <td style='width:75%' class='forumheader3'>$poll_title</td>
                 <td style='width:20%; text-align:center' class='forumheader3'>".
-                $rs -> form_button("submit", "main_edit_{$poll_id}", POLLAN_4, "onclick=\"document.location='".e_SELF."?edit.$poll_id'\"").
+                $rs -> form_button("button", "main_edit_{$poll_id}", POLLAN_4, "onclick=\"document.location='".e_SELF."?edit.$poll_id'\"").
                 $rs -> form_button("submit", "main_delete_{$poll_id}", POLLAN_5, "onclick=\"confirm_($poll_id)\"")."
                 </td>
                 </tr>";
@@ -115,7 +117,7 @@ if($poll_total = $sql -> db_Select("poll")){
 }else{
         $text .= "<div style='text-align:center'>".POLLAN_22."</div>";
 }
-$text .= "</div></div>";
+$text .= "</form></div></div>";
 $ns -> tablerender(POLLAN_3, $text);
 
 $poll_total = $sql -> db_Select("poll");
@@ -185,7 +187,8 @@ $headerjs = "<script type=\"text/javascript\">
 function confirm_(poll_id){
         var x=confirm(\"".POLLAN_21." [ID: \" + poll_id + \"]\");
         if(x){
-                window.location='".e_SELF."?delete.' + poll_id;
+                document.getElementById('del_poll').action='".e_SELF."?delete.' + poll_id;
+                document.getElementById('del_poll').submit();
         }
 }
 </script>";
