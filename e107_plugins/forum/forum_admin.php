@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-02-07 15:15:21 $
+|     $Revision: 1.6 $
+|     $Date: 2005-02-13 00:58:59 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -34,7 +34,6 @@ require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."ren_help.php");
 $rs = new form;
-$aj = new textparse;
 	
 $deltest = array_flip($_POST);
 if (e_QUERY) {
@@ -50,13 +49,13 @@ if (preg_match("#(.*?)_delete_(\d+)#", $deltest[$etp->unentity(FORLAN_20)], $mat
 }
 	
 If(IsSet($_POST['submit_parent'])) {
-	$_POST['forum_name'] = $aj->formtpa($_POST['forum_name'], "admin");
+	$_POST['forum_name'] = $tp->toDB($_POST['forum_name']);
 	$sql->db_Insert("forum", "0, '".$_POST['forum_name']."', '', '', '".time()."', '0', '0', '0', '', '".$_POST['forum_class']."', 0");
 	$forum->show_message(FORLAN_13);
 }
 	
 If(IsSet($_POST['update_parent'])) {
-	$_POST['forum_name'] = $aj->formtpa($_POST['forum_name'], "admin");
+	$_POST['forum_name'] = $tp->toDB($_POST['forum_name']);
 	$sql->db_Update("forum", "forum_name='".$_POST['forum_name']."', forum_class='".$_POST['forum_class']."' WHERE forum_id=$id");
 	$forum->show_message(FORLAN_14);
 	$action = "main";
@@ -64,15 +63,15 @@ If(IsSet($_POST['update_parent'])) {
 	
 If(IsSet($_POST['submit_forum'])) {
 	$mods = implode(", ", $_POST['mod']);
-	$_POST['forum_name'] = $aj->formtpa($_POST['forum_name'], "admin");
-	$_POST['forum_description'] = $aj->formtpa($_POST['forum_description'], "admin");
+	$_POST['forum_name'] = $tp->toDB($_POST['forum_name']);
+	$_POST['forum_description'] = $tp->toDB($_POST['forum_description'], "admin");
 	$sql->db_Insert("forum", "0, '".$_POST['forum_name']."', '".$_POST['forum_description']."', '".$_POST['forum_parent']."', '".time()."', '".$mods."', 0, 0, 0, '".$_POST['forum_class']."', 0");
 	$forum->show_message(FORLAN_11);
 }
 	
 If(IsSet($_POST['update_forum'])) {
 	$mods = implode(", ", $_POST['mod']);
-	$_POST['forum_name'] = $aj->formtpa($_POST['forum_name'], "admin");
+	$_POST['forum_name'] = $tp->toDB($_POST['forum_name']);
 	$_POST['forum_description'] = $aj->formtpa($_POST['forum_description'], "admin");
 	$forum_parent = $row['forum_id'];
 	$sql->db_Update("forum", "forum_name='".$_POST['forum_name']."', forum_description='".$_POST['forum_description']."', forum_parent='".$_POST['forum_parent']."', forum_moderators='".$mods."', forum_class='".$_POST['forum_class']."' WHERE forum_id=$id");
@@ -146,9 +145,9 @@ if (IsSet($_POST['do_prune'])) {
 if (IsSet($_POST['set_ranks'])) {
 	extract($_POST);
 	for($a = 0; $a <= 9; $a++) {
-		$r_names .= $aj->formtpa($rank_names[$a], "admin").",";
-		$r_thresholds .= $aj->formtpa($rank_thresholds[$a], "admin").",";
-		$r_images .= $aj->formtpa($rank_images[$a], "admin").",";
+		$r_names .= $tp->toDB($rank_names[$a]).",";
+		$r_thresholds .= $tp->toDB($rank_thresholds[$a]).",";
+		$r_images .= $tp->toDB($rank_images[$a]).",";
 	}
 	$pref['rank_main_admin'] = $_POST['rank_main_admin'];
 	$pref['rank_main_admin_image'] = $_POST['rank_main_admin_image'];
@@ -165,12 +164,12 @@ if (IsSet($_POST['set_ranks'])) {
 	
 if (IsSet($_POST['frsubmit'])) {
 	 
-	$guestrules = $aj->formtpa($_POST['guestrules'], "admin");
-	$memberrules = $aj->formtpa($_POST['memberrules'], "admin");
-	$adminrules = $aj->formtpa($_POST['adminrules'], "admin");
-	$sql->db_Update("wmessage", "wm_text ='$guestrules', wm_active='".$_POST['wm_active4']."' WHERE wm_id='4' ");
-	$sql->db_Update("wmessage", "wm_text ='$memberrules', wm_active='".$_POST['wm_active5']."' WHERE wm_id='5' ");
-	$sql->db_Update("wmessage", "wm_text ='$adminrules', wm_active='".$_POST['wm_active6']."' WHERE wm_id='6' ");
+	$guestrules = $tp->toDB($_POST['guestrules']);
+	$memberrules = $tp->toDB($_POST['memberrules']);
+	$adminrules = $tp->toDB($_POST['adminrules']);
+	$sql->db_Update("generic", "gen_chardata ='$guestrules', gen_intdata='".$_POST['guest_active']."' WHERE gen_type='forum_rules_guest' ");
+	$sql->db_Update("generic", "gen_chardata ='$memberrules', gen_intdata='".$_POST['member_active']."' WHERE gen_type='forum_rules_member' ");
+	$sql->db_Update("generic", "gen_chardata ='$adminrules', gen_intdata='".$_POST['admin_active']."' WHERE gen_type='forum_rules_admin' ");
 }
 	
 if ($delete == 'main') {
@@ -752,7 +751,7 @@ class forum {
 	}
 	 
 	function show_rules() {
-		global $sql, $pref, $ns, $aj;
+		global $sql, $pref, $ns, $tp;
 		 
 		$sql->db_Select("wmessage");
 		list($null) = $sql->db_Fetch();
@@ -761,15 +760,27 @@ class forum {
 		list($id, $guestrules, $wm_active4) = $sql->db_Fetch();
 		list($id, $memberrules, $wm_active5) = $sql->db_Fetch();
 		list($id, $adminrules, $wm_active6) = $sql->db_Fetch();
-		 
-		 
-		$guestrules = $aj->formtparev($aj->editparse($guestrules));
-		$memberrules = $aj->formtparev($aj->editparse($memberrules));
-		$adminrules = $aj->formtparev($aj->editparse($adminrules));
+
+		if($sql->db_Select('generic','*',"gen_type='forum_rules_guest'"))
+		{
+			$guest_rules = $sql->db_Fetch();
+		}
+		if($sql->db_Select('generic','*',"gen_type='forum_rules_member'"))
+		{
+			$member_rules = $sql->db_Fetch();
+		}
+		if($sql->db_Select('generic','*',"gen_type='forum_rules_admin'"))
+		{
+			$admin_rules = $sql->db_Fetch();
+		}
+		
+		$guesttext = $tp->toFORM($guest_rules['gen_chardata']);
+		$membertext = $tp->toFORM($member_rules['gen_chardata']);
+		$admintext = $tp->toFORM($admin_rules['gen_chardata']);
 		 
 		$text = "
 			<div style='text-align:center'>
-			<form method='post' action='".$_SERVER['PHP_SELF']."'  id='wmform'>
+			<form method='post' action='".e_SELF."?rules'  id='wmform'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>";
 		 
@@ -777,14 +788,14 @@ class forum {
 			 
 			<td style='width:20%' class='forumheader3'>".WMGLAN_1.": <br />
 			".WMGLAN_6.":";
-		if ($wm_active4) {
-			$text .= "<input type='checkbox' name='wm_active4' value='1'  checked='checked' />";
+		if ($guest_rules['gen_intdata']) {
+			$text .= "<input type='checkbox' name='guest_active' value='1'  checked='checked' />";
 		} else {
-			$text .= "<input type='checkbox' name='wm_active4' value='1' />";
+			$text .= "<input type='checkbox' name='guest_active' value='1' />";
 		}
 		$text .= "</td>
 			<td style='width:60%' class='forumheader3'>
-			<textarea class='tbox' name='guestrules' cols='70' rows='10'>$guestrules</textarea>
+			<textarea class='tbox' name='guestrules' cols='70' rows='10'>$guesttext</textarea>
 			<br />
 			<input class='helpbox' type='text' name='helpguest' size='100' />
 			<br />
@@ -795,14 +806,14 @@ class forum {
 			<tr>
 			<td style='width:20%' class='forumheader3'>".WMGLAN_2.": <br />
 			".WMGLAN_6.":";
-		if ($wm_active5) {
-			$text .= "<input type='checkbox' name='wm_active5' value='1'  checked='checked' />";
+		if ($member_rules['gen_intdata']) {
+			$text .= "<input type='checkbox' name='member_active' value='1'  checked='checked' />";
 		} else {
-			$text .= "<input type='checkbox' name='wm_active5' value='1' />";
+			$text .= "<input type='checkbox' name='member_active' value='1' />";
 		}
 		$text .= "</td>
 			<td style='width:60%' class='forumheader3'>
-			<textarea class='tbox' name='memberrules' cols='70' rows='10'>$memberrules</textarea>
+			<textarea class='tbox' name='memberrules' cols='70' rows='10'>$membertext</textarea>
 			<br />
 			<input class='helpbox' type='text' name='helpmember' size='100' />
 			<br />
@@ -814,15 +825,15 @@ class forum {
 			<td style='width:20%' class='forumheader3'>".WMGLAN_3.": <br />
 			".WMGLAN_6.": ";
 		 
-		if ($wm_active6) {
-			$text .= "<input type='checkbox' name='wm_active6' value='1'  checked='checked' />";
+		if ($admin_rules['gen_intdata']) {
+			$text .= "<input type='checkbox' name='admin_active' value='1'  checked='checked' />";
 		} else {
-			$text .= "<input type='checkbox' name='wm_active6' value='1' />";
+			$text .= "<input type='checkbox' name='admin_active' value='1' />";
 		}
 		 
 		$text .= "</td>
 			<td style='width:60%' class='forumheader3'>
-			<textarea class='tbox' name='adminrules' cols='70' rows='10'>$adminrules</textarea>
+			<textarea class='tbox' name='adminrules' cols='70' rows='10'>$admintext</textarea>
 			<br />
 			<input class='helpbox' type='text' name='helpadmin' size='100' />
 			<br />
