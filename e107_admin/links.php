@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-01-10 09:49:03 $
-|     $Author: sweetas $
+|     $Revision: 1.12 $
+|     $Date: 2005-01-12 23:43:19 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -48,9 +48,9 @@ if(preg_match("#(.*?)_delete_(\d+)#",$deltest[$etp->unentity(LCLAN_10)],$matches
 
 if(preg_match("#create_sn_(\d+)#",$deltest[$etp->unentity(LCLAN_14)],$matches))
 {
-	$action='create';
-	$sub_action='sn';
-	$id=$matches[1];
+        $action='create';
+        $sub_action='sn';
+        $id=$matches[1];
 }
 
 // ##### Main loop -----------------------------------------------------------------------------------------------------------------------
@@ -65,8 +65,9 @@ if($action == "dec" && strpos(e_SELF,"links"))
         $sql -> db_Update("links", "link_order=link_order-1 WHERE link_order='".($link_order+1)."' AND link_category='$location' ");
         $sql -> db_Update("links", "link_order=link_order+1 WHERE link_id='$linkid' AND link_category='$location' ");
         $e107cache->clear("sitelinks");
-        header("location: ".e_ADMIN."links.php?order");
-        exit;
+        $linkpost -> show_existing_items();
+      //  header("location: ".e_ADMIN."links.php?order");
+     //   exit;
 }
 
 if($action == "inc" && strpos(e_SELF,"links"))
@@ -79,8 +80,9 @@ if($action == "inc" && strpos(e_SELF,"links"))
         $sql -> db_Update("links", "link_order=link_order+1 WHERE link_order='".($link_order-1)."' AND link_category='$location' ");
         $sql -> db_Update("links", "link_order=link_order-1 WHERE link_id='$linkid' AND link_category='$location' ");
         $e107cache->clear("sitelinks");
-        header("location: ".e_ADMIN."links.php?order");
-        exit;
+        $linkpost -> show_existing_items();
+   //     header("location: ".e_ADMIN."links.php?order");
+     //   exit;
 }
 
 if(IsSet($_POST['create_category'])){
@@ -138,15 +140,15 @@ if($delete == 'category')
 
 if($delete == "sn")
 {
-	if($sql -> db_Delete("tmp", "tmp_time='$del_id' "))
-	{
-		$linkpost -> show_message(LCLAN_77);
-	}
+        if($sql -> db_Delete("tmp", "tmp_time='$del_id' "))
+        {
+                $linkpost -> show_message(LCLAN_77);
+        }
 }
 
 if($action == "sn")
 {
-	$linkpost -> show_submitted($sub_action, $id);
+        $linkpost -> show_submitted($sub_action, $id);
 }
 
 
@@ -223,8 +225,8 @@ class links{
 
                 // ##### Display scrolling list of existing links ---------------------------------------------------------------------------------------------------------
                 global $sql, $rs, $ns, $aj;
-                $text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; height : 400px; overflow : auto; margin-left: auto; margin-right: auto;'>";
-                if($link_total = $sql -> db_Select("links", "*", "ORDER BY link_category, link_id ASC", "nowhere")){
+                $text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; margin-left: auto; margin-right: auto;'>";
+                if($link_total = $sql -> db_Select("links", "*", "ORDER BY link_order, link_id ASC", "nowhere")){
                         $text .= "<table class='fborder' style='width:99%'>
                         <tr>
                         <td style='width:5%' class='fcaption'>ID</td>
@@ -237,12 +239,39 @@ class links{
                                 $text .= "<tr>
                                 <td style='width:5%' class='forumheader3'>$link_id</td>
                                 <td style='width:10%' class='forumheader3'>".$cat[$link_category]."</td>
-                                <td style='width:50%' class='forumheader3'><a href='".e_BASE."comment.php?comment.news.$link_id'></a>$link_name</td>
-                                <td style='width:25%; text-align:center' class='forumheader3'>".
+                                <td style='width:50%' class='forumheader3'>";
+                                $text .= ($link_button) ? "<img src='".e_BASE."$link_button' alt='' /> ":"";
+                                $text .="<a href='".e_BASE."comment.php?comment.news.$link_id'></a>$link_name</td>
+                                <td style='width:25%; text-align:center' class='forumheader3'>";
+
+                                // New Code.
+
+                                $text .= "<table style='padding:3px'><tr>";
+
+                                /*$text .= "<td><select name='link_order[]' class='tbox'>";
+                                        for($a=1; $a<= $link_total; $a++){
+                                        $text .= ($link_order == $a ? "<option value='$link_id.$a' selected='selected'>$a</option>\n" : "<option value='$link_id.$a'>$a</option>\n");
+                                }
+                                 $text .= "</select>&nbsp;</td>";
+                                 */
+
+                                        $text .= "<td><a href='links.php?inc.".$link_id.".".$link_order.".".$link_category."' ><img src='".e_IMAGE."generic/up.png' style='border:0px' alt='".LCLAN_30."' title='".LCLAN_30."' /></a>";
+                                        $text .= "<br />";
+                                        $text .= "<a href='links.php?dec.".$link_id.".".$link_order.".".$link_category."' ><img src='".e_IMAGE."generic/down.png' style='border:0px' alt='".LCLAN_31."' title='".LCLAN_31."' /></a>";
+                                        $text .= "&nbsp;</td><td>";
+
+
+
+                                // ===========
+
+
+                                $text .=
                                 $rs -> form_open("post", e_SELF,"myform_{$link_id}","",""," onsubmit=\"return confirm_('create',$link_id)\"")."<div>".
                                 $rs -> form_button("button", "main_edit_{$link_id}", LCLAN_9, "onclick=\"document.location='".e_SELF."?create.edit.$link_id'\"")."
 
                                 ".$rs -> form_button("submit", "main_delete_{$link_id}", LCLAN_10)."
+
+                                </td></tr></table>
                                 </div>".$rs -> form_close()."
 
                                 </td>
@@ -473,9 +502,9 @@ class links{
 
                                         $text .= "</select>&nbsp;</td><td>";
 
-                                        $text .= "<a href='links.php?inc.".$link_id.".".$link_order.".".$link_category."' ><img src='".e_IMAGE."generic/up.png' style='border:0px' alt='".LCLAN_30."' title='".LCLAN_30."' /></a>";
-                                        $text .= "<br />";
-                                        $text .= "<a href='links.php?dec.".$link_id.".".$link_order.".".$link_category."' ><img src='".e_IMAGE."generic/down.png' style='border:0px' alt='".LCLAN_31."' title='".LCLAN_31."' /></a>";
+                                  //      $text .= "<a href='links.php?inc.".$link_id.".".$link_order.".".$link_category."' ><img src='".e_IMAGE."generic/up.png' style='border:0px' alt='".LCLAN_30."' title='".LCLAN_30."' /></a>";
+                                  //      $text .= "<br />";
+                                  //      $text .= "<a href='links.php?dec.".$link_id.".".$link_order.".".$link_category."' ><img src='".e_IMAGE."generic/down.png' style='border:0px' alt='".LCLAN_31."' title='".LCLAN_31."' /></a>";
                                         $text .= "</td></tr></table>";
 
                                         $text .="
