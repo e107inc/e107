@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-03-26 22:35:44 $
-|     $Author: sweetas $
+|     $Revision: 1.35 $
+|     $Date: 2005-03-27 11:00:57 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
@@ -94,7 +94,7 @@ if(!USER && !$pref['anon_post']){
 }
 else
 {
-	$texta =  "<div style='text-align:center'>".(e_QUERY ? "\n<form id='chatbox' method='post' action='".e_SELF."?".e_QUERY."'><p>" : "\n<form id='chatbox' method='post' action='".e_SELF."'><div>");
+	$texta =  "<div style='text-align:center'>".(e_QUERY ? "\n<form id='chatbox' method='post' action='".e_SELF."?".e_QUERY."'>" : "\n<form id='chatbox' method='post' action='".e_SELF."'>")."<p>";
 	if(($pref['anon_post'] == "1" && USER == FALSE)){
 		$texta .= "\n<input class='tbox' type='text' name='nick' value='' maxlength='50' style='width: 100%;' /><br />";
 	}
@@ -107,7 +107,7 @@ else
 		$texta .= " \n<input class='button' type ='button' style='cursor:hand; cursor:pointer' size='30' value='".CHATBOX_L14."' onclick=\"expandit('emote')\" />\n<div style='display:none' id='emote'>".r_emote()."\n</div>\n";
 	}
 
-	$texta .="</div>\n</form>\n</div>\n";
+	$texta .="</p>\n</form>\n</div>\n";
 }
 
 if($emessage != ""){
