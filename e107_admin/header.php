@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107/e107_admin/header.php,v $
-|   $Revision: 1.27 $
-|   $Date: 2005-01-04 18:12:00 $
-|   $Author: e107coders $
+|   $Revision: 1.28 $
+|   $Date: 2005-01-05 09:43:53 $
+|   $Author: pholzmann $
 +---------------------------------------------------------------+
 */
 echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET."' ?>");
@@ -69,7 +69,7 @@ else
 $adminfpage = (!$pref['adminstyle'] || $pref['adminstyle'] == "default" ? "admin.php" : $pref['adminstyle'].".php");
 
 echo "
-<div>
+</div>
 <table style='width:100%' cellspacing='10' cellpadding='10'>
 <tr>
 <td style='width:15%; vertical-align: top;'>";
