@@ -9,8 +9,8 @@ $preleft .= $tp -> parseTemplate('{ADMIN_MSG}');
 $preleft .= $tp -> parseTemplate('{ADMIN_PLUGINS}');
 
 $style = "rightmenu";
-$preright = $tp -> parseTemplate('{ADMIN_MENU}');
-$preright .= $tp -> parseTemplate('{ADMIN_STATUS=request}');
+$pre_admin_menu = $tp -> parseTemplate('{ADMIN_MENU=pre}');
+$preright = $tp -> parseTemplate('{ADMIN_STATUS=request}');
 $preright .= $tp -> parseTemplate('{ADMIN_LATEST=request}');
 $preright .= $tp -> parseTemplate('{ADMIN_PRESET}');
 $preright .= $tp -> parseTemplate('{ADMIN_LOG=request}');
@@ -18,7 +18,8 @@ $style = "default";
 
 // [admin button style]
 
-function show_admin_menu($title, $page, $e107_vars, $js = FALSE, $js_include = FALSE){
+//function show_admin_menu($title, $page, $e107_vars, $js = FALSE, $js_include = FALSE){
+function show_admin_menu($title, $page, $e107_vars, $js = FALSE){
 	global $ns;
 	$text = "<table class='fborder' style='width: 100%'>";
 	foreach (array_keys($e107_vars) as $act) {
@@ -120,12 +121,13 @@ $ADMIN_HEADER .= "<br />
 $ADMIN_FOOTER = "<br />
 </td>";
 
-if ($preright) {
+if ($pre_admin_menu || $preright) {
 	$ADMIN_FOOTER .= "<td class='right_menu'>
 	<table style='width:100%; border-collapse: collapse; border-spacing: 0px;'>
 	<tr>
 	<td>
 	{SETSTYLE=rightmenu}
+	{ADMIN_MENU}
 	".$preright."
 	<br />
 	</td></tr></table>
