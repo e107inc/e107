@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/blogcalendar_menu/blogcalendar_menu.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-28 20:03:47 $
-|     $Author: stevedunstan $
+|     $Revision: 1.7 $
+|     $Date: 2005-03-26 22:56:27 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 | Based on code by: Thomas Bouve (crahan@gmx.net)
 */
@@ -72,7 +72,7 @@ else if(strstr(e_QUERY, "month")) {
 // create the month selection item
 // -------------------------------
 $month_selector = "<div class='forumheader' style='text-align: center; margin-bottom: 2px;'>";
-$month_selector .= "<select name='activate' onChange='urljump(this.options[selectedIndex].value)' class='tbox'>";
+$month_selector .= "<select name='activate' onchange='urljump(this.options[selectedIndex].value)' class='tbox'>";
 
 // get all newsposts since the beginning of the year till now
 // -------------------------------------------
@@ -109,7 +109,7 @@ if ($req_year == $cur_year) {
 // go over the link array and create the option fields
 foreach($month_links as $index => $val) {
 	$month_selector .= "<option value='".$val."'";
-	$month_selector .= ($index == $req_month)?" selected":
+	$month_selector .= ($index == $req_month)?" selected='selected'":
 	"";
 	$month_selector .= ">".$marray[$index-1]."</option>";
 }

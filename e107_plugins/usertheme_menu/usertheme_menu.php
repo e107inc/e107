@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/usertheme_menu/usertheme_menu.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-02-28 20:04:11 $
-|     $Author: stevedunstan $
+|     $Revision: 1.6 $
+|     $Date: 2005-03-26 22:57:21 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
@@ -44,16 +44,15 @@ if (USER == TRUE) {
 	$defaultusers = $sql->db_Count("user") - $totalct;
 	$themecount[$defaulttheme] += $defaultusers;
 	 
-	$text = "
+	$text = "<form method='post' action='".e_SELF."'>
 		<div style='text-align:center'>
-		<form method='post' action='".e_SELF."'>
 		<select name='sitetheme' class='tbox'>";
 	$counter = 0;
 	 
 	while (isset($themelist[$counter]) && $themelist[$counter]) {
 		$text .= "<option value='".$themelist[$counter]."' ";
 		if (($themelist[$counter] == USERTHEME) || (USERTHEME == FALSE && $themelist[$counter] == $defaulttheme)) {
-			$text .= "selected";
+			$text .= "selected='selected'";
 		}
 		$text .= ">".($themelist[$counter] == $defaulttheme ? "[ ".$themelist[$counter]." ]" : $themelist[$counter])." (users: ".$themecount[$themelist[$counter]].")</option>\n";
 		$counter++;
@@ -61,8 +60,7 @@ if (USER == TRUE) {
 	$text .= "</select>
 		<br /><br />
 		<input class='button' type='submit' name='settheme' value='".LAN_350."' />
-		</form>
-		</div>";
+		</div></form>";
 	 
 	$ns->tablerender(LAN_351, $text, 'usertheme');
 }
