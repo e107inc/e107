@@ -36,6 +36,8 @@ function sendemail($send_to, $subject, $message,$to_name,$send_from,$from_name,$
 
         $send_from = ($send_from)?$send_from:$pref['siteadminemail'];
         $from_name = ($from_name)?$from_name:$pref['siteadmin'];
+        $to_name = ($to_name)?$to_name:$send_to;
+        
         $headers = "MIME-Version: 1.0\n";
         $headers.= "From: ".$from_name." <".$send_from.">\n";
         $headers.= "To: ".$to_name." <".$send_to.">\n";
