@@ -4,6 +4,10 @@
 // unccommented on release or use on production sites.
 
 function retrieve_cache($query) {
+	if (defined('E107_DEBUG_LEVEL') && E107_DEBUG_LEVEL >= 32766) {
+		global $db_debug;
+		$db_debug->aDeprecatiated();
+	}
 	global $e107cache, $e107_debug;
 	if (!is_object($e107cache)) {
 		return FALSE;
@@ -16,6 +20,10 @@ function retrieve_cache($query) {
 }
 
 function set_cache($query, $text) {
+	if (defined('E107_DEBUG_LEVEL') && E107_DEBUG_LEVEL >= 32766) {
+		global $db_debug;
+		$db_debug->aDeprecatiated();
+	}
 	global $e107cache;
 	if (!is_object($e107cache)) {
 		return FALSE;
@@ -27,6 +35,10 @@ function set_cache($query, $text) {
 }
 
 function clear_cache($query) {
+	if (defined('E107_DEBUG_LEVEL') && E107_DEBUG_LEVEL >= 32766) {
+		global $db_debug;
+		$db_debug->aDeprecatiated();
+	}
 	global $e107cache;
 	if (!is_object($e107cache)) {
 		return FALSE;
@@ -38,20 +50,36 @@ function clear_cache($query) {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 class textparse {
 	function editparse($text, $mode = "off") {
+		if (defined('E107_DEBUG_LEVEL') && E107_DEBUG_LEVEL >= 32766) {
+			global $db_debug;
+			$db_debug->aDeprecatiated();
+		}
 		global $tp;
 		return $tp->toForm($text);
 	}
 
 	function tpa($text, $mode = '', $referrer = '', $highlight_search = FALSE, $poster_id = '') {
+		if (defined('E107_DEBUG_LEVEL') && E107_DEBUG_LEVEL >= 32766) {
+			global $db_debug;
+			$db_debug->aDeprecatiated();
+		}
 		global $tp;
 		return $tp->toHTML($text, TRUE, $mode, $poster_id);
 	}
 
 	function tpj($text) {
+		if (defined('E107_DEBUG_LEVEL') && E107_DEBUG_LEVEL >= 32766) {
+			global $db_debug;
+			$db_debug->aDeprecatiated();
+		}
 		return $text;
 	}
 
 	function formtpa($text, $mode = '') {
+		if (defined('E107_DEBUG_LEVEL') && E107_DEBUG_LEVEL >= 32766) {
+			global $db_debug;
+			$db_debug->aDeprecatiated();
+		}
 		global $tp;
 		$no_encode = ($mode == 'admin') ? TRUE :
 		FALSE;
@@ -59,6 +87,10 @@ class textparse {
 	}
 
 	function formtparev($text) {
+		if (defined('E107_DEBUG_LEVEL') && E107_DEBUG_LEVEL >= 32766) {
+			global $db_debug;
+			$db_debug->aDeprecatiated();
+		}
 		global $tp;
 		return $tp->toFORM($text);
 	}
