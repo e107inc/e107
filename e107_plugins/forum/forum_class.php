@@ -7,6 +7,27 @@ class e107forum {
 		echo "</pre>";
 	}
 	 
+	function thread_postnum($thread_id)
+	{
+		global $sql;
+		$ret = array();
+		$ret['parent'] = $thread_id;
+		$query = "
+			SELECT ft.thread_id, fp.thread_id as parent
+			FROM #forum_t AS t
+			LEFT JOIN #forum_t AS ft ON ft.thread_parent = t.thread_parent AND ft.thread_id <= {$thread_id}
+			LEFT JOIN #forum_t as fp ON fp.thread_id = t.thread_parent
+			WHERE t.thread_id = {$thread_id} AND t.thread_parent != 0
+			ORDER  BY ft.thread_datestamp ASC 
+			";
+		if($ret['post_num'] = $sql->db_Select_gen($query))
+		{
+			$row = $sql->db_Fetch();
+			$ret['parent'] = $row['parent'];
+		}
+		return $ret;
+	}
+	
 	function update_lastpost($type, $id) {
 		global $sql;
 		if ($type == 'thread') {

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-08 21:39:50 $
-|     $Author: stevedunstan $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-15 16:53:24 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -54,7 +54,27 @@ if (!e_QUERY) {
 		exit;
 	}
 }
-	
+
+if($from === 'post')
+{
+	if($thread_id)
+	{
+		$post_num = $forum->thread_postnum($thread_id);
+		$pages = ceil(($post_num['post_num']+1)/$pref['forum_postspage']);
+		$from = ($pages-1) * $pref['forum_postspage'];
+		if($post_num['parent'] != $thread_id)
+		{
+			header("location: ".e_SELF."?{$post_num['parent']}.{$from}#{$thread_id}");
+			exit;
+		}
+	}
+	else
+	{
+		header("Location:".e_PLUGIN."/forum/forum.php");
+		exit;
+	}
+}
+
 require_once(e_HANDLER.'textparse/basic.php');
 require_once(e_PLUGIN.'forum/forum_shortcodes.php');
 $etp = new e107_basicparse;
@@ -297,7 +317,7 @@ for($i = 0; $i < count($thread_info)-1; $i++) {
 	//   $u_new .= ".".$thread_id.".";
 	//  }
 	// }
-	$forrep .= $tp->parseTemplate($FORUMREPLYSTYLE, FALSE, $forum_shortcodes);
+	$forrep .= "\n<a name='{$post_info['thread_id']}'></a>\n".$tp->parseTemplate($FORUMREPLYSTYLE, FALSE, $forum_shortcodes)."\n";
 }
 	
 	
