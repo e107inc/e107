@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/forum_viewtopic_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-30 15:59:25 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-31 21:49:23 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
         $FORUMSTART = "
@@ -93,6 +93,13 @@
 <td style='text-align:center' class='nforumthread2'>{QUICKREPLY}</td>
 </tr>
 </table>
+
+<div style='text-align:center;'>
+<a href='".e_PLUGIN."rss_menu/rss.php?8.1.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss1.png' alt='".LAN_431."' style='vertical-align: middle; border: 0;'></a> 
+<a href='".e_PLUGIN."rss_menu/rss.php?8.2.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss2.png' alt='".LAN_432."' style='vertical-align: middle; border: 0;'></a> 
+<a href='".e_PLUGIN."rss_menu/rss.php?8.3.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss3.png' alt='".LAN_433."' style='vertical-align: middle; border: 0;'></a>
+</div>
+
 <div class='nforumdisclaimer' style='text-align:center'>Powered by <b>e107 Forum System</b></div>
 </div>";
        $FORUMREPLYSTYLE = "

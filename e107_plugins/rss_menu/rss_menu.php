@@ -11,28 +11,36 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-01-31 08:06:37 $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-31 21:49:22 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 global $FILES_DIRECTORY;
 $path = e_PLUGIN."rss_menu/";
 
+$des = "";
+
 if(strstr(e_SELF, "comment.php")) {
 	$type = 5;
 	$des = BACKEND_MENU_L4;
-} else {
+}
+if(strstr(e_SELF, "forum")) {
+	$type = 6;
+	$des = BACKEND_MENU_L5;
+}
+if(strstr(e_SELF, "forum_viewtopic")) {
+	$type = 7;
+	$des = BACKEND_MENU_L6;
+}
+if(!$des) {
 	$type = 1;
 	$des = BACKEND_MENU_L3;
 }
 
 
 
-if(strstr(e_SELF, "forum")) {
-	$type = 6;
-	$des = BACKEND_MENU_L5;
-}
+
 
 $text = "<div style='text-align:center' class='smalltext'>
 ".$des.BACKEND_MENU_L1."<br />
