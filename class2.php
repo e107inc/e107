@@ -627,8 +627,10 @@ class textparse{
 				$replace[15] = '<div style=\'text-align:left\'>\1</div>';
 				$search[16] = "#\[right\](.*?)\[/right\]#si";
 				$replace[16] = '<div style=\'text-align:right\'>\1</div>';
-				$search[17] = "#\[blockquote\](.*?)\[/blockquote\]#si";
-				$replace[17] = '<div class=\'indent\'>\1</div>';
+				$search[17] = "#\[blockquote\]#si";
+				$replace[17] = '<div class=\'indent\'>';
+				$search[18] = "#\[/blockquote\]#si";
+				$replace[18] = '</div>';
 				$search[19] = "/\[color=(.*?)\](.*?)\[\/color\]/si";
 				$replace[19] = '<span style=\'color:\1\'>\2</span>';
 				$search[20] = "/\[size=([1-2]?[0-9])\](.*?)\[\/size\]/si";
