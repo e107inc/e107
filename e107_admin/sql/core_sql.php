@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-02-01 07:01:53 $
-|     $Author: sweetas $
+|     $Revision: 1.10 $
+|     $Date: 2005-02-08 16:33:59 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -520,17 +520,5 @@ CREATE TABLE wmessage (
   wm_text text NOT NULL,
   wm_active tinyint(3) unsigned NOT NULL default '0'
 ) TYPE=MyISAM;
-# --------------------------------------------------------
 
-#
-# Table structure for table `parser`
-#
-
-CREATE TABLE parser (
-  parser_id int(10) unsigned NOT NULL auto_increment,
-  parser_pluginname varchar(100) NOT NULL default '',
-  parser_regexp varchar(100) NOT NULL default '',
-  PRIMARY KEY  (parser_id),
-  UNIQUE KEY parser_regexp (parser_regexp)
-) TYPE=MyISAM;
 # --------------------------------------------------------

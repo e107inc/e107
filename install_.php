@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-02-03 19:09:04 $
-|     $Author: lisa_ $
+|     $Revision: 1.13 $
+|     $Date: 2005-02-08 16:32:38 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 @include("e107_handlers/errorhandler_class.php");
@@ -523,18 +523,13 @@ function create_tables() {
 	mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES ('1', 'This text (if activated) will appear at the top of your front page all the time.', '0')");
 	mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES ('2', 'Member message ----- This text (if activated) will appear at the top of your front page all the time - only logged in members will see this.', '0')");
 	mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES ('3', 'Administrator message ----- This text (if activated) will appear at the top of your front page all the time - only logged in administrators will see this.', '0')");
-	mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES (4, 'This text (if activated) will appear on a page when \"Forum Rules\" link is clicked on.', '0')");
-	mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES (5, 'Member rules ----- This text (if activated) will appear on a page when \"Forum Rules\" link is clicked on - only logged in members will see this.', '0')");
-	mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES (6, 'Administrator rules ----- This text (if activated) will appear on a page when \"Forum Rules\" link is clicked on - only logged in administrators will see this.', '0')");
 	 
 	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'login_menu', 1, 1, 0, '')");
 	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'search_menu', 0, 0, 0, '')");
-	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'chatbox_menu', 1, 3, 0, '')");
 	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'sitebutton_menu', 1, 4, 0, '')");
 	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'online_menu', 1, 5, 0, '')");
 	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'compliance_menu', 1, 6, 0, '')");
 	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'clock_menu', 2, 1, 0, '')");
-	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'articles_menu', 2, 2, 0, '')");
 	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'poll_menu', 2, 4, 0, '')");
 	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'headlines_menu', 2, 5, 0, '')");
 	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'counter_menu', 2, 6, 0, '')");
@@ -544,7 +539,6 @@ function create_tables() {
 	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'banner_menu', 0, 0, 0, '')");
 	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'comment_menu', 0, 0, 0, '')");
 	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'newforumposts_menu', 0, 0, 0, '')");
-	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'review_menu', 2, 3, 0, '')");
 	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'tree_menu', 0, 0, 0, '')");
 	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'userlanguage_menu', 0, 0, 0, '')");
 	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'usertheme_menu', 0, 0, 0, '')");
@@ -554,11 +548,6 @@ function create_tables() {
 	 
 	mysql_query("INSERT INTO ".$mySQLprefix."userclass_classes VALUES (1, 'PRIVATEMENU', 'Grants access to private menu items')");
 	mysql_query("INSERT INTO ".$mySQLprefix."userclass_classes VALUES (2, 'PRIVATEFORUM1', 'Example private forum class')");
-	mysql_query("INSERT INTO ".$mySQLprefix."parser VALUES (0,'e107core','/{(PROFILE)=([0-9]+)}/') ");
-	mysql_query("INSERT INTO ".$mySQLprefix."parser VALUES (0,'e107core','/{(EMAILTO)=(.+?)}/') ");
-	mysql_query("INSERT INTO ".$mySQLprefix."parser VALUES (0,'e107core','/{(AVATAR)(=(.+?))*}/') ");
-	mysql_query("INSERT INTO ".$mySQLprefix."parser VALUES (0,'e107core','/{(PICTURE)(=(.+?))*}/') ");
-	mysql_query("INSERT INTO ".$mySQLprefix."parser VALUES (0,'e107core','/{(USERNAME)}/') ");
 	mysql_query("INSERT INTO ".$mySQLprefix."plugin VALUES (0, 'Integrity Check', '0.03', 'integrity_check', 1) ");
 	 
 	 
