@@ -53,7 +53,7 @@ if(IsSet($_POST['moderate'])){
 			}
 		}
 	}
-	clear_cache();
+	clear_cache("comment");
 	$message = MDCLAN_1;
 }
 
