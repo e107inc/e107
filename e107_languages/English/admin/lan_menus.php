@@ -21,4 +21,6 @@ define("MENLAN_18", "Move Down");
 define("MENLAN_19", "Move to Area");
 define("MENLAN_20", "Visibility");
 
+define("MENLAN_21", "Visible to Guests only");
+
 ?>

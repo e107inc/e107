@@ -68,6 +68,7 @@ define("e_DOCS", e_BASE.$HELP_DIRECTORY);
 define("e_DOCROOT",$_SERVER['DOCUMENT_ROOT']."/");
 define("e_UC_PUBLIC", 0);
 define("e_UC_READONLY", 251);
+define("e_UC_GUEST", 252);
 define("e_UC_MEMBER", 253);
 define("e_UC_ADMIN", 254);
 define("e_UC_NOBODY", 255);
@@ -559,6 +560,7 @@ class convert{
 function check_class($var, $userclass=USERCLASS, $debug=FALSE){
         if(preg_match ("/^([0-9]+)$/", $var)){
                 if($var == e_UC_MEMBER && USER==TRUE){return TRUE;}
+				if($var == e_UC_GUEST && USER==FALSE){return TRUE;}
                 if($var == e_UC_PUBLIC){return TRUE;}
                 if($var == e_UC_NOBODY) {return FALSE;}
                 if($var == e_UC_ADMIN && ADMIN) {return TRUE;}
@@ -766,7 +768,7 @@ function init_session(){
         global $sql, $pref, $user_pref, $sql;
 
         if(!$_COOKIE[$pref['cookie_name']] && !$_SESSION[$pref['cookie_name']]){
-                define("USER", FALSE); define("USERTHEME", FALSE); define("ADMIN", FALSE);
+                define("USER", FALSE); define("USERTHEME", FALSE); define("ADMIN", FALSE);define("GUEST", TRUE);
         }else{
                 list($uid, $upw) = ($_COOKIE[$pref['cookie_name']] ? explode(".", $_COOKIE[$pref['cookie_name']]) : explode(".", $_SESSION[$pref['cookie_name']]));
                 if(empty($uid) || empty($upw)){         // corrupt cookie?

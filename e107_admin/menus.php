@@ -49,13 +49,19 @@ if($action == "adv"){
 <table style=\"width:50%\">
 <tr>
 <td>
-<input name=\"menu_class\" type=\"radio\" value=\"0\" ";
+	
+	<input name=\"menu_class\" type=\"radio\" value=\"0\" ";
 	if(!$menu_class){ $text .= "checked"; }
 	$text .= ">".MENLAN_1."<br />
+	
+	<input name=\"menu_class\" type=\"radio\" value=\"252\" ";
+	if($menu_class == 252){ $text .= "checked"; }
+	$text .= ">".MENLAN_21."<br />
+	
 	<input name=\"menu_class\" type=\"radio\" value=\"253\" ";
-
 	if($menu_class == 253){ $text .= "checked"; }
 	$text .= ">".MENLAN_2."<br />
+
 	<input name=\"menu_class\" type=\"radio\" value=\"254\" ";
 	if($menu_class == 254){ $text .= "checked"; }
 	$text .= ">".MENLAN_3."<br />";

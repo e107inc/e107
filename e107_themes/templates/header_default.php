@@ -98,7 +98,7 @@ function checklayout($str){
 	}else if(strstr($str, "SITETAG")){
 		echo SITETAG."\n";
 	}else if(strstr($str, "SITELINKS")){
-		if(!$sql -> db_Select("menus", "*", "(menu_name='edynamic_menu' OR menu_name='tree_menu') AND menu_location!=0")){
+		if(!$sql -> db_Select("menus", "*", "(menu_name='edynamic_menu' OR menu_name REGEXP('tree_menu')) AND menu_location!=0")){
 			$linktype = substr($str,(strpos($str, "=")+1), 4);
 			define("LINKDISPLAY", ($linktype == "menu" ? 2 : 1));
 			require_once(e_HANDLER."sitelinks_class.php");
@@ -114,6 +114,8 @@ function checklayout($str){
 			extract($row);
 			$sm = FALSE;
 			if(!$menu_class){
+				$sm = TRUE;
+			}else if($menu_class == 252 && !USER){
 				$sm = TRUE;
 			}else if($menu_class == 253 && USER){
 				$sm = TRUE;
