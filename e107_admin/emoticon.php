@@ -148,7 +148,7 @@ $text .= "
 	<tr>
 	<td style='width:30%' class='forumheader3'>".EMOLAN_9.": </td>
 	<td class='forumheader3'><input class='tbox' type='text' id='emote_new_image' name='emote_new_image' size='30' value='$name' maxlength='100' />
-	<input class='button' type ='button' style='cursor:hand' size='30' value='".LCLAN_39."' onclick='expandit(this)' />
+	<input class='button' type ='button' style='cursor:hand' size='30' value='".EMOLAN_5."' onclick='expandit(this)' />
 	<div id='emoicn' style='padding:3px;display:none'>";
 	foreach ($emotelist as $key => $icon){
 		$text .= "<a href=\"javascript:insertext('".$icon['fname']."','emote_new_image','emoicn')\"><img src='".e_IMAGE."emoticons/".$icon['fname']."' style='border:0' alt='' /></a> ";
