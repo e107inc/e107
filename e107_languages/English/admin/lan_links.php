@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_links.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-25 22:01:16 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-27 17:42:49 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("LCLAN_1", "Options Saved");
@@ -17,7 +17,7 @@ define("LCLAN_6", "Order updated.");
 define("LCLAN_8", "Existing Links");
 define("LCLAN_9", "Edit");
 define("LCLAN_10", "Delete");
-define("LCLAN_12", "Link Category");
+define("LCLAN_12", "Link Rendertype");
 define("LCLAN_13", "Cannot edit the main category.");
 define("LCLAN_14", "Post");
 define("LCLAN_15", "Link Name");
