@@ -105,7 +105,7 @@ $FOOTER =
 <td class='captionbottommiddle'><img src='".THEME."images/blank.gif' width='1' height='26' alt='' style='display: block;' /></td>
 <td class='captionbottomright'><img src='".THEME."images/blank.gif' width='15' height='26' alt='' style='display: block;' /></td>
 </tr>
-</table>
+</table></div>
 
 
 
@@ -145,7 +145,7 @@ $NEWSSTYLE = "
 
 </tr>
 <tr>
-<td class='newsspacer'><img src='".THEME."images/blank.gif' /></td>
+<td class='newsspacer'><img src='".THEME."images/blank.gif' alt='' /></td>
 </tr>
 <tr>
 <td class='caption'>
