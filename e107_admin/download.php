@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-11-20 01:26:14 $
+|     $Revision: 1.3 $
+|     $Date: 2004-11-26 07:20:36 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -458,7 +458,7 @@ class download{
                 <tr>
                 <td style='width:20%' class='forumheader3'><span style='text-decoration:underline'>".DOWLAN_18."</span>: </td>
                 <td style='width:80%' class='forumheader3'>
-                <textarea class='tbox' name='download_description' cols='70' rows='5'>$download_description</textarea>
+                <textarea class='tbox' name='download_description' cols='50' rows='5' style='width:90%'>$download_description</textarea>
                 </td>
                 </tr>
 
@@ -531,7 +531,24 @@ class download{
                 }
 
                 $text .= "</td>
-                </tr>
+                </tr>";
+
+
+                if($sub_action == "dlm"){
+                $text .= "<tr>
+                <td style='width:30%' class='forumheader3'>".DOWLAN_103.":<br /></td>
+                <td style='width:70%' class='forumheader3'>
+                <input type='checkbox' name='remove_upload' value='1' />
+                <input type='hidden' name='remove_id' value='$id' />
+                </td></tr>
+                ";
+                }
+
+
+
+
+
+                $text .="
                 <tr style='vertical-align:top'>
                 <td colspan='2' style='text-align:center' class='forumheader'>";
 
@@ -585,8 +602,15 @@ class download{
                         $this->show_message(DOWLAN_2);
                 }else{
 
-                        $sql -> db_Insert("download", "0, '".$_POST['download_name']."', '".$durl."', '".$_POST['download_author']."', '".$_POST['download_author_email']."', '".$_POST['download_author_website']."', '".$_POST['download_description']."', '".$filesize."', '0', '".$_POST['download_category']."', '".$_POST['download_active']."', '".time()."', '".$_POST['download_thumb']."', '".$_POST['download_image']."', '".$_POST['download_comment']."' ");
-                        $this->show_message(DOWLAN_1);
+                        if($sql -> db_Insert("download", "0, '".$_POST['download_name']."', '".$durl."', '".$_POST['download_author']."', '".$_POST['download_author_email']."', '".$_POST['download_author_website']."', '".$_POST['download_description']."', '".$filesize."', '0', '".$_POST['download_category']."', '".$_POST['download_active']."', '".time()."', '".$_POST['download_thumb']."', '".$_POST['download_image']."', '".$_POST['download_comment']."' ")){
+
+                            if($_POST['remove_upload']){
+                            $sql -> db_Delete("upload", "upload_id='".$_POST['remove_id']."' ");
+                            $mes = "<br />".$_POST['download_name']." ".DOWLAN_104;
+                            $mes .= "<br /><br /><a href='".e_ADMIN."upload.php'>".DOWLAN_105."</a>";
+                            }
+                            $this->show_message(DOWLAN_1.$mes);
+                        }
                 }
         }
 
@@ -759,9 +783,10 @@ class download{
                 <td style='width:30%' class='forumheader3'>".DOWLAN_43.":<br /><span class='smalltext'>(".DOWLAN_44.")</span></td>
                 <td style='width:70%' class='forumheader3'>".r_userclass("download_category_class",$download_category_class)."
 
-                </td></tr>
+                </td></tr>";
 
 
+                $text .="
                 <tr style='vertical-align:top'>
                 <td colspan='2' style='text-align:center' class='forumheader'>";
                 if($id && $sub_action == "edit" && !isset($_POST['add_category'])){
