@@ -1164,7 +1164,8 @@ class PHPMailer {
 					// Replace every high ascii, control and = characters
 					$encoded = preg_replace('/([\000-\010\013\014\016-\037\075\177-\377])/e',
 					"' = '.sprintf('%02X', ord('\\1'))", $encoded);
-					// Replace every spaces and tabs when it's the last character on a line $encoded = preg_replace("/([\011\040])".$this->LE."/e",
+					// Replace every spaces and tabs when it's the last character on a line 
+					$encoded = preg_replace("/([\011\040])".$this->LE."/e",
 					"'='.sprintf('%02X', ord('\\1')).'".$this->LE."'", $encoded);
 				 
 				// Maximum line length of 76 characters before CRLF (74 + space + '=')
