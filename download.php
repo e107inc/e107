@@ -390,7 +390,7 @@ function parse_download_cat_child_table($row){
 
 
 function parse_download_list_table($row){
-		global $DOWNLOAD_LIST_TABLE, $rater, $pref, $gen;
+		global $DOWNLOAD_LIST_TABLE, $rater, $pref, $gen, $agreetext;
 		extract($row);
 
 		$gen = new convert;
