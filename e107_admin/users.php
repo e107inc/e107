@@ -290,6 +290,7 @@ if($action == "main" && is_numeric($sub_action)){
 if($action == "cu" && is_numeric($sub_action)){
         $user -> show_message(USRLAN_88);
         $action = "main";
+        $sub_action = "user_id";
 }
 
 if(!e_QUERY || $action == "main"){
@@ -357,7 +358,6 @@ class users{
                 }else{
                         $query = "ORDER BY ".($sub_action ? $sub_action : "user_id")." ".($id ? $id : "DESC")."  LIMIT $from, $amount";
                 }
-
                 if($sql -> db_Select("user", "*", $query, ($_POST['searchquery'] ? 0 : "nowhere"))){
                         $text .= "<table class='fborder' style='width:100%'>
                         <tr>
