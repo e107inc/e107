@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-02-13 13:42:52 $
-|     $Author: sweetas $
+|     $Revision: 1.26 $
+|     $Date: 2005-02-13 18:45:00 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 	
@@ -145,8 +145,8 @@ class e_parse {
 		}
 		$text = $this -> textclean($text, $wrap);
 		 
-		$search = array('&#39;', '&#039;', '&#036;', '&quot;', 'onerror');
-		$replace = array("'", "'", '$', '"', 'one<i></i>rror');
+		$search = array('&#39;', '&#039;', '&#036;', '&quot;', 'onerror', '&lt;', '&gt;');
+		$replace = array("'", "'", '$', '"', 'one<i></i>rror', '<', '>');
 		$text = str_replace($search, $replace, $text);
 		if (strpos($modifiers, 'nobreak') == FALSE) {
 			$text = preg_replace("#[\r]*\n[\r]*#", "[E_NL]", $text);
