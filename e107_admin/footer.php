@@ -1,15 +1,15 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system
-|	/admin/footer.php
+|        e107 website system
+|        /admin/footer.php
 |
-|	©Steve Dunstan 2001-2002
-|	http://e107.org
-|	jalist@e107.org
+|        ©Steve Dunstan 2001-2002
+|        http://e107.org
+|        jalist@e107.org
 |
-|	Released under the terms and conditions of the
-|	GNU General Public License (http://gnu.org).
+|        Released under the terms and conditions of the
+|        GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 @include(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_footer.php");
@@ -32,18 +32,18 @@ $install_date = $obj->convert_date($e107info['e107_datestamp'], "long");
 $tmp = explode(".",e_PAGE);
 $adminmenu_func = $tmp[0]."_adminmenu";
 if(function_exists($adminmenu_func)){
-	call_user_func($adminmenu_func,$adminmenu_parms);
+        call_user_func($adminmenu_func,$adminmenu_parms);
 }
 
 $plugindir = (str_replace("/","",str_replace("..","",e_PLUGIN))."/");
 $plugpath = e_PLUGIN.str_replace(basename(e_SELF),"",str_replace($plugindir,"",strstr(e_SELF,$plugindir)))."admin_menu.php";
 if(file_exists($plugpath)){
-	@require_once($plugpath);
+        @require_once($plugpath);
 }
 
 $text = "<b>".FOOTLAN_1."</b>
 <br />".
-SITENAME." 
+SITENAME."
 <br /><br />
 <b>".FOOTLAN_2."</b>
 <br />
@@ -82,31 +82,31 @@ $ns -> tablerender(FOOTLAN_13, $text);
 $c=1;
 $handle=opendir(e_DOCS);
 while ($file = readdir($handle)){
-	if($file != "." && $file != ".."){
-		$helplist[$c] = $file;
-		$c++;
-	}
+        if($file != "." && $file != ".."){
+                $helplist[$c] = $file;
+                $c++;
+        }
 }
 closedir($handle);
 
 if($pref['cachestatus']){
-	if(!$sql -> db_Select("tmp", "*", " tmp_ip='var_store' && tmp_time='1' ")){		// var_store 1 == cache empty time
-		$sql -> db_Insert("tmp", "'var_store', 1, '".$e107info['e107_datestamp']."' ");
-	}else{
-		$row = $sql -> db_Fetch(); extract($row);
-		if(($tmp_info+604800) < time()){
-			$sql -> db_Delete("cache");
-			$sql -> db_Update("tmp", "tmp_info='".time()."' WHERE tmp_ip='var_store' AND tmp_time=1 ");
-		}
-	}
+        if(!$sql -> db_Select("tmp", "*", " tmp_ip='var_store' && tmp_time='1' ")){                // var_store 1 == cache empty time
+                $sql -> db_Insert("tmp", "'var_store', 1, '".$e107info['e107_datestamp']."' ");
+        }else{
+                $row = $sql -> db_Fetch(); extract($row);
+                if(($tmp_info+604800) < time()){
+                        $sql -> db_Delete("cache");
+                        $sql -> db_Update("tmp", "tmp_info='".time()."' WHERE tmp_ip='var_store' AND tmp_time=1 ");
+                }
+        }
 }
 
 
 // Docs menu
 
 while(list($key, $value) = each($helplist)){
-	$e107_var['x'.$key]['text'] = $value;
-	$e107_var['x'.$key]['link'] = e_ADMIN."docs.php?".$key;
+        $e107_var['x'.$key]['text'] = $value;
+        $e107_var['x'.$key]['link'] = e_ADMIN."docs.php?".$key;
 }
 
 $text = get_admin_treemenu(FOOTLAN_14,$act,$e107_var);
@@ -118,8 +118,7 @@ $ns -> tablerender(FOOTLAN_14,$text);
 </table>
 </div>
 </div>
-<br />
-<br />
+<div><br /><br /></div>
 </body>
 </html>
 
