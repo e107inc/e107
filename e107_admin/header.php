@@ -235,10 +235,10 @@ if(ADMIN == TRUE){
                         $text .= get_admin_treemenu(ADLAN_95,$act,$e107_var);
                         unset($e107_var);
                 }
-//                unset($e107_var);
-//                $e107_var['x']['text']=ADLAN_46;
-//                $e107_var['x']['link']=e_ADMIN."admin.php?logout";
-//                $text .= "<br />".show_admin_menu("",$act,$e107_var);
+                unset($e107_var);
+               $e107_var['x']['text']=ADLAN_46;
+               $e107_var['x']['link']=e_ADMIN."admin.php?logout";
+               $text .= "<br />".show_admin_menu("",$act,$e107_var);
       $ns -> tablerender(LAN_head_1, $text);
 
  }else{
