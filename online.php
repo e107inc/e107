@@ -183,7 +183,7 @@ if(!is_object($gen)){$gen = new convert;}
 
         $datestamp = $gen->convert_date($menu_pref['most_online_datestamp'], "short");
 
-        $text .= "<br />".ONLINE_EL8.": ".($menu_pref['most_members_online'] + $menu_pref['most_guests_online'])."<br />(".strtolower(ONLINE_EL2).$menu_pref['most_members_online'].", ".strtolower(ONLINE_EL1).$menu_pref['most_guests_online'].") ".ONLINE_EL9." ".$datestamp."<br />";
+        $text .= "<br />".ONLINE_EL8.($menu_pref['most_members_online'] + $menu_pref['most_guests_online'])."<br />(".strtolower(ONLINE_EL2).$menu_pref['most_members_online'].", ".strtolower(ONLINE_EL1).$menu_pref['most_guests_online'].") ".ONLINE_EL9." ".$datestamp."<br />";
 
         $total_members = $sql -> db_Count("user");
 
