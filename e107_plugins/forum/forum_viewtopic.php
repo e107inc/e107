@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-03-03 18:35:56 $
+|     $Revision: 1.15 $
+|     $Date: 2005-03-04 12:58:13 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -213,7 +213,7 @@ If (IsSet($_POST['pollvote']))
 {
 	if ($_POST['votea'])
 	{
-		if($sql -> db_Select("poll", "*", "poll_datestamp=$thread_id"))
+		if($sql -> db_Select("polls", "*", "poll_datestamp=$thread_id"))
 		{
 			$row = $sql -> db_Fetch();
 			extract($row);
@@ -242,7 +242,7 @@ If (IsSet($_POST['pollvote']))
 
 if (eregi("\[".LAN_430."\]", $thread_info['head']['thread_name']))
 {
-	if ($sql->db_Select("poll", "*", "poll_datestamp='{$thread_info['head']['thread_id']}'"))
+	if ($sql->db_Select("polls", "*", "poll_datestamp='{$thread_info['head']['thread_id']}'"))
 	{
 		$pollArray = $sql -> db_Fetch();
 
