@@ -18,7 +18,7 @@
 */
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = "Integrity Check";
-$eplug_version = "0.02";
+$eplug_version = "0.03";
 $eplug_author = "HeX0R";
 $eplug_logo = "/images/integ.gif";
 $eplug_url = "http://h3x0r.ath.cx";

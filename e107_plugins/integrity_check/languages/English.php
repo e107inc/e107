@@ -26,8 +26,17 @@ define("Integ_23", "Check only themes actually existant on your host");
 define("Integ_24", "Admin Front Page");
 define("Integ_25", "Leave Admin Area");
 define("Integ_26", "Load Site with normal header");
-define("Integ_27", "Load Site with normal footer");
-define("Integ_28", "Load Site with normal footer & header");
+
 define("Integ_29", "<br /><br /><b>*<u>CRC-ERRORS:</u></b><br />These are checksum errors and there are two possible reasons for this:<br />-You changed something within the mentioned file, so it isn't longer the same as the original.<br />-The mentioned file is corrupt, you should reupload it!");
+define("Integ_30", "For less cpu-usage , you can do the checking in 1 - 10 steps.");
+define("Integ_31", "Steps: ");
+define("Integ_32", "There is a file named <b>log_crc.txt</b> in your crc-folder. Please delete! (Or try refreshing)");
+define("Integ_33", "There is a file named <b>log_miss.txt</b> in your crc-folder. Please delete! (Or try refreshing)");
+define("Integ_34", "Your Crc-folder is not writable!");
+define("Integ_35", "Because of the following reason(s) you are only allowed to select <b>one</b> step:");
+define("Integ_36", "Click here, if you don't want to wait 5 Seconds till the next step:");
+define("Integ_37", "Click me");
+define("Integ_38", "Another <u><i>{counts}</i></u> lines to do...");
+define("Integ_39", "Please delete the file:<br />".e_PLUGIN."integrity_check/<u><i>do_core_file.php</i></u>!<br />It is outdated and never meant for public release...");
 
 ?>
