@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.51 $
-| $Date: 2005-03-28 15:55:34 $
-| $Author: e107coders $
+| $Revision: 1.52 $
+| $Date: 2005-03-30 15:55:49 $
+| $Author: stevedunstan $
 +---------------------------------------------------------------+
 */
 
@@ -160,10 +160,10 @@ class news {
 	//	extract($news);
 
 		if (!defined("IMAGE_nonew_small")){
-			define("IMAGE_nonew_small", (file_exists(THEME."images/nonew_comments.png") ? "<img src='".THEME."images/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/nonew_comments.png' alt=''  />"));
+			define("IMAGE_nonew_small", (file_exists(THEME."generic/nonew_comments.png") ? "<img src='".THEME."generic/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/".IMODE."/nonew_comments.png' alt=''  />"));
 		}
 		if (!defined("IMAGE_new_small"))	{
-			define("IMAGE_new_small", (file_exists(THEME."images/new_comments.png") ? "<img src='".THEME."images/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/new_comments.png' alt=''  /> "));
+			define("IMAGE_new_small", (file_exists(THEME."generic/new_comments.png") ? "<img src='".THEME."generic/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/".IMODE."/new_comments.png' alt=''  /> "));
 		}
 		if (!defined("IMAGE_sticky")){
 			define("IMAGE_sticky", (file_exists(THEME."images/sticky.png") ? "<img src='".THEME."images/sticky.png' alt=''  /> " : "<img src='".e_IMAGE."generic/sticky.png' alt='' style='width: 14px; height: 14px; vertical-align: bottom' /> "));
