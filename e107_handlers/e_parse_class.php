@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-02-04 03:40:28 $
+|     $Revision: 1.20 $
+|     $Date: 2005-02-05 01:02:15 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -127,7 +127,7 @@ class e_parse {
 		}
 		global $pref;
 		$text = " ".$text;
-		if($pref['link_replace']) {
+		if($pref['link_replace'] && strpos($modifiers, 'no_replace') === FALSE) {
 			$text = preg_replace("#(^|[\n ])([\w]+?://[^ \"\n\r\t<]*)#is", "\\1<a href=\"\\2\" rel=\"external\">".$pref['link_text']."</a>", $text);
 			$text = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r<]*)#is", "\\1<a href=\"http://\\2\" rel=\"external\">".$pref['link_text']."</a>", $text);
 			$text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">".$pref['email_text']."</a>", $text);
