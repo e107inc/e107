@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-02-13 08:35:03 $
-|     $Author: sweetas $
+|     $Revision: 1.21 $
+|     $Date: 2005-03-11 20:11:25 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -22,8 +22,8 @@
 * Class to cache data as files, improving site speed and throughput.
 *
 * @package     e107
-* @version     $Revision: 1.20 $
-* @author      $Author: sweetas $
+* @version     $Revision: 1.21 $
+* @author      $Author: streaky $
 */
 class ecache {
 
@@ -37,15 +37,16 @@ class ecache {
 	*/
 	function cache_fname($CacheTag) {
 		global $FILES_DIRECTORY;
-		$x='';
 		if (isset($this)) {
 			if (!$this->CachePageMD5) {
 				$this->CachePageMD5 = md5(e_BASE.e_LANGUAGE.THEME.USERCLASS.e_QUERY.filemtime(THEME.'theme.php'));
 			}
-			$x = '-';
+			$CheckTag = $this->CachePageMD5;
+		} else {
+			$CheckTag = '';
 		}
 		$q = preg_replace("#\W#", "_", $CacheTag);
-		$fname = './'.e_BASE.$FILES_DIRECTORY.'cache/'.$q.$x.'.cache.php';
+		$fname = './'.e_BASE.$FILES_DIRECTORY.'cache/'.$q.'_'.$CheckTag.'.cache.php';
 		return $fname;
 	}
 
@@ -59,7 +60,7 @@ class ecache {
 	function retrieve($CacheTag, $MaximumAge = false, $ForcedCheck = false) {
 		global $pref, $FILES_DIRECTORY;
 		if ($pref['cachestatus'] || $ForcedCheck == true) {
-			$cache_file = ecache::cache_fname($CacheTag);
+			$cache_file = (isset($this) ? $this->cache_fname($CacheTag) : ecache::cache_fname($CacheTag));
 			if (file_exists($cache_file)) {
 				if ($MaximumAge != false && (filemtime($cache_file) + ($MaximumAge * 60)) < time()) {
 					unlink($cache_file);
@@ -85,7 +86,7 @@ class ecache {
 	function set($CacheTag, $Data, $ForceCache = false) {
 		global $pref, $FILES_DIRECTORY;
 		if ($pref['cachestatus'] || $ForceCache == true) {
-			$cache_file = ecache::cache_fname($CacheTag);
+			$cache_file = (isset($this) ? $this->cache_fname($CacheTag) : ecache::cache_fname($CacheTag));
 			file_put_contents($cache_file, '<?php'.$Data);
 			@chmod($cache_file, 0777);
 			@touch($cache_file);
@@ -94,15 +95,12 @@ class ecache {
 
 	/**
 	* @return bool
-	* @param string $query
-	* @desc Deletes cache files. If $query is set, deletes files named {$query}*.cache.php, if not it deletes all cache files - (*.cache.php)
+	* @param string $CacheTag
+	* @desc Deletes cache files. If $query is set, deletes files named {$CacheTag}*.cache.php, if not it deletes all cache files - (*.cache.php)
 	*/
 	function clear($CacheTag = '') {
 		global $pref, $FILES_DIRECTORY;
-		if (!isset($query)) {
-			$query = '';
-		}
-		$file = ($CacheTag) ? preg_replace("#\W#", "_", $query)."*.cache.php" : "*.cache.php";
+		$file = ($CacheTag) ? preg_replace("#\W#", "_", $CacheTag)."*.cache.php" : "*.cache.php";
 		$dir = "./".e_BASE.$FILES_DIRECTORY."cache/";
 		$ret = ecache::delete($dir, $file);
 		return $ret;
