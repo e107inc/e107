@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-03-23 12:52:53 $
+|     $Revision: 1.16 $
+|     $Date: 2005-03-24 16:30:16 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -38,7 +38,8 @@ if (!e_QUERY) {
 	$qry = "
 	SELECT dc.*, SUM(d.download_filesize) AS d_size, 
 	COUNT(d.download_id) AS d_count,
-	MAX(d.download_datestamp) as d_last 
+	MAX(d.download_datestamp) as d_last, 
+	SUM(d.download_requested) as d_requests 
 	FROM #download_category AS dc 
 	LEFT JOIN #download AS d ON dc.download_category_id = d.download_category AND d.download_active > 0 AND d.download_class IN (".USERCLASS_LIST.") 
 	WHERE dc.download_category_class IN (".USERCLASS_LIST.") 
@@ -620,6 +621,7 @@ function parse_download_cat_parent_table($row) {
 
 function parse_download_cat_child_table($row, $subList)
 {
+
 	global $DOWNLOAD_CAT_CHILD_TABLE, $DOWNLOAD_CAT_SUBSUB_TABLE;
 
 	if(USER && $row['d_last'] > USERLV)

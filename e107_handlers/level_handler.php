@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/level_handler.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-14 16:03:41 $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-24 16:30:43 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -102,8 +102,20 @@ function get_level($user_id, $user_forums, $user_comments, $user_chats, $user_vi
 	else if($level >= ($level_thresholds[8]+1)) {
 		$rank = 9;
 	}
-	if ($rank_type == "image") {
-		(file_exists(THEME."forum/".$level_images[$rank]) ? $pic_lev = THEME."forum/".$level_images[$rank] : $pic_lev = e_IMAGE."rate/".$level_images[$rank]);
+	if ($rank_type == "image")
+	{
+		if(file_exists(THEME."forum/".$level_images[$rank]))
+		{
+			$pic_lev = THEME."forum/".$level_images[$rank];
+		}
+		else
+		{
+			if(defined("IMODE"))
+			{
+				$pic_lev = e_IMAGE."rate/".IMODE."/".$level_images[$rank];
+			}
+		
+		}
 	}
 	$data[1] = "<div class='spacer'>
 		".($rank_type == "image" ? "<img src='".$pic_lev."' alt='' />" : "[ ".trim(chop($level_images[$rank]))." ]")."

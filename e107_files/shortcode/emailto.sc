@@ -1,5 +1,5 @@
 global $pref;
-$image = (file_exists(THEME."forum/email.png")) ? "<img src='".THEME."forum/email.png' alt='' style='border:0' />" : "<img src='".e_IMAGE."forum/email.png' alt='' style='border:0' />";
+$image = IMAGE_email;
 if(is_numeric($parm))
 {
 	if(!$pref['emailusers']){return "";}
