@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-01-24 17:22:55 $
-|     $Author: sweetas $
+|     $Revision: 1.9 $
+|     $Date: 2005-01-26 23:08:30 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -29,20 +29,26 @@ class e_bbcode {
 	function parseBBCodes($text,$postID) {
 		global $code;
 		global $postID;
-		foreach($this->core_bb as $code) {
-			if(strpos($text,"[$code") !== FALSE) {
-				$text = preg_replace_callback("/\[{$code}([\d]*)([^\]]*)\](.*?)\[\/{$code}\\1\]/s", array($this, 'doCode'), $text);
+		$done = FALSE;
+		$x = 0;
+		while(!$done) {
+			$done = TRUE;
+			foreach($this->core_bb as $code) {
+				if(strpos($text,"[$code") !== FALSE) {
+					$text = preg_replace_callback("/\[({$code}([a-zA-Z]*))([\d]*?)([^\]]*)\](.*)\[\/{$code}\\2\\3\]/s", array($this, 'doCode'), $text);
+					$done = FALSE;
+				}
 			}
 		}
-			return $text;
+		return $text;
 	}
 	
 	function doCode($matches) {
 		global $tp;
-		global $code;
 		global $postID;
-		$parm = substr($matches[2],1);
-		$code_text = $matches[3];
+		$code = $matches[1];
+		$parm = substr($matches[4],1);
+		$code_text = $matches[5];
 
 		if (is_array($this->bbList) && array_key_exists($code,$this->bbList)) {
 			$bbcode = $this -> bbList[$code];
