@@ -48,7 +48,32 @@ if(strstr(e_QUERY, "mfar")){
 	exit;
 }
 
-
+if(e_QUERY == "rules"){
+	$aj = new textparse;
+	require_once(HEADERF);
+        $sql -> db_Select("wmessage");
+		list($null) = $sql-> db_Fetch();
+		list($null) = $sql-> db_Fetch();	
+		list($null) = $sql-> db_Fetch();
+        list($wm_guest, $guestrules, $wm_active1) = $sql-> db_Fetch();
+        list($wm_member, $memberrules, $wm_active2) = $sql-> db_Fetch();
+        list($wm_admin, $adminrules, $wm_active3) = $sql-> db_Fetch();
+        if(ADMIN == TRUE && $wm_active3){
+                $adminrules = $aj -> tpa($adminrules, "on","admin");
+				$adminrules .= "<br /><br /><a href='forum.php'>".LAN_434."</a>";
+                $ns -> tablerender(LAN_433, "<div style='text-align:center'><b>Administrators</b><br />".$adminrules."</div>", "wm");
+        }else if(USER == TRUE && $wm_active2 && !ADMIN){
+                $memberrules = $aj -> tpa($memberrules, "on","admin");
+				$memberrules .= "<br /><br /><a href='forum.php'>".LAN_434."</a>";
+                $ns -> tablerender(LAN_433, "<div style='text-align:center'>".$memberrules."</div>", "wm");
+        }else if(USER == FALSE && $wm_active1 && !ADMIN){
+                $guestrules = $aj -> tpa($guestrules, "on","admin");
+				$guestrules .= "<br /><br /><a href='forum.php'>".LAN_434."</a>";
+                $ns -> tablerender(LAN_433, "<div style='text-align:center'>".$guestrules."</div>", "wm");
+        }
+		require_once(FOOTERF);
+		exit;
+}
 
 define("IMAGE_e", (file_exists(THEME."forum/e.png") ? "<img src='".THEME."forum/e.png' alt='' />" : "<img src='".e_IMAGE."forum/e.png' alt='' />"));
 define("IMAGE_nonew_small", (file_exists(THEME."forum/nonew_small.png") ? "<img src='".THEME."forum/nonew_small.png' alt='' />" : "<img src='".e_IMAGE."forum/nonew_small.png' alt='' />"));
@@ -70,6 +95,22 @@ $NEWTHREADTITLE = LAN_424;
 $POSTEDTITLE = LAN_423;
 $NEWIMAGE = IMAGE_new_small;
 $TRACKTITLE = LAN_397;
+$sql -> db_Select("wmessage");
+list($null) = $sql-> db_Fetch();
+list($null) = $sql-> db_Fetch();	
+list($null) = $sql-> db_Fetch();
+list($wm_guest, $guestrules, $wm_active1) = $sql-> db_Fetch();
+list($wm_member, $memberrules, $wm_active2) = $sql-> db_Fetch();
+list($wm_admin, $adminrules, $wm_active3) = $sql-> db_Fetch();
+$show_rules = FALSE;
+if(ADMIN == TRUE && $wm_active3){
+	$show_rules = TRUE;
+}else if(USER == TRUE && $wm_active2 && !ADMIN){
+	$show_rules = TRUE;
+}else if(USER == FALSE && $wm_active1 && !ADMIN){
+	$show_rules = TRUE;
+}
+$USERINFO = "<a href='top.php?0.top.forum.10'>".LAN_429."</a> | <a href='top.php?0.active'>".LAN_430."</a>".(USER ? " | <a href='userposts.php?0.forums.".USERID."'>".LAN_431."</a> | <a href='usersettings.php'>".LAN_432."</a> | <a href='user.php?id.".USERID."'>".LAN_435."</a>" : "").($show_rules == TRUE ? " | <a href='forum.php?rules'>".LAN_433."</a>" : "");
 
 $total_topics = $sql -> db_Count("forum_t", "(*)", " WHERE thread_parent='0' ");
 $total_replies = $sql -> db_Count("forum_t", "(*)", " WHERE thread_parent!='0' ");
