@@ -526,7 +526,7 @@ function img_path($filename, $eMLANG_folder = FALSE, $eMLANG_pref = FALSE) {
 		return eMLANG_path($filename, $eMLANG_folder);
 	} else {
 		return file_exists(THEME.'forum/'.$filename) ? THEME.'forum/'.$filename :
-		 e_IMAGE.'forum/'.$filename;
+		 e_PLUGIN.'forum/images/'.$filename;
 	}
 }
 	
