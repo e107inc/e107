@@ -1,4 +1,4 @@
-if ($pref['wmessage_sc'] && strstr(e_PAGE, $pref['frontpage'])) {
+if ($pref['wmessage_sc'] && e_PAGE == $pref['frontpage'].'php') {
 	global $sql, $pref, $tp, $ns;
 	if (!defined("WMFLAG")) {
 		$sql->db_Select("wmessage", "*", "ORDER BY wm_active ASC", "nowhere");
