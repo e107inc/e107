@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-03-24 16:30:16 $
+|     $Revision: 1.17 $
+|     $Date: 2005-03-24 23:14:18 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -320,10 +320,10 @@ if ($action == "view") {
 
 	if ($ratearray = $rater->getrating("download", $download_id)) {
 		for($c = 1; $c <= $ratearray[1]; $c++) {
-			$DOWNLOAD_VIEW_RATING .= "<img src='".e_IMAGE."rate/star.png' alt=''>";
+			$DOWNLOAD_VIEW_RATING .= "<img src='".e_IMAGE."rate/".IMODE."/star.png' alt=''>";
 		}
 		if ($ratearray[2]) {
-			$DOWNLOAD_VIEW_RATING .= "<img src='".e_IMAGE."rate/".$ratearray[2].".png'  alt=''>";
+			$DOWNLOAD_VIEW_RATING .= "<img src='".e_IMAGE."rate/".IMODE."/".$ratearray[2].".png'  alt=''>";
 		}
 		if ($ratearray[2] == "") {
 			$ratearray[2] = 0;
