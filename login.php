@@ -15,7 +15,7 @@
 
 
 require_once("class2.php");
-$HEADER = "<br>";
+$HEADER = "<div>&nbsp;</div>";
 require_once(HEADERF);
 $use_imagecode = ($pref['logcode'] && extension_loaded("gd"));
 if($use_imagecode){
@@ -26,11 +26,11 @@ if($use_imagecode){
 
 if(!USER){
 
-        echo "<div style='width:70%;margin-left: auto;margin-right: auto'><div style='text-align:center'>";
+        echo "<div style='width:100%;text-align:center; margin-left: auto;margin-right: auto'><div style='text-align:center;width:70%;margin-left: auto;margin-right: auto'>";
         if(file_exists(THEME."images/login_logo.png")){
-                echo "<img src='".THEME."images/login_logo.png',>\n";
+                echo "<img src='".THEME."images/login_logo.png' alt='' />\n";
         } else{
-        echo "<img src='".e_IMAGE."logo.png'>\n";
+        echo "<img src='".e_IMAGE."logo.png' alt='' />\n";
 }
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
@@ -46,7 +46,7 @@ $rs -> form_open("post", e_SELF)."
 <td class='forumheader' colspan='2' style='text-align:center;width:30%'>
  <strong>".LAN_LOGIN_4."</strong>
 </td>
-	</tr>
+        </tr>
 <tr>
 <td class='forumheader3' style='width:30%'>
 ".LAN_LOGIN_1."
@@ -54,7 +54,7 @@ $rs -> form_open("post", e_SELF)."
 <td class='forumheader3' style='width:70%; text-align:right'>".
 $rs -> form_text("username", 40, "", 100)."
 </td>
-</tr>
+</tr><tr>
 <td class='forumheader3' style='width:30%'>
 ".LAN_LOGIN_2."
 </td>
@@ -80,7 +80,7 @@ $rs -> form_close()."
 
 $login_message = "".LAN_LOGIN_3." | ".SITENAME."";
 $ns -> tablerender($login_message, $text);
-echo "<div style='width:70%;margin-right:auto;margin-left:auto'><div style='text-align:center'><br>";
+echo "<div style='width:70%;margin-right:auto;margin-left:auto'><div style='text-align:center'><br />";
 
 if($pref['user_reg']){
         echo "<a href='".e_SIGNUP."'>Signup</a>";
