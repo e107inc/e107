@@ -483,9 +483,9 @@ if(is_writable($o_path)){
 	<td style='width:60%' class='forumheader3'>
 	
 	<select name='plug_activate' class='tbox' onChange=\"document.integrity_check.save_plug_name.value=hex_strReplace(this.options[selectedIndex].value, '".e_PLUGIN."','')+'.crc' \" ><option></option>";
+	unset($t_array);
 	$file_array = hex_getdirs(e_PLUGIN, $exclude, "3");
 	sort($file_array);
-	unset($t_array);
 	reset($file_array);
 	foreach($file_array as $v){
 		if (!in_array($v, $_arr)) {
