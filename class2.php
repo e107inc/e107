@@ -11,17 +11,19 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2004-09-26 16:19:59 $
+|     $Revision: 1.6 $
+|     $Date: 2004-09-27 02:17:49 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 //unset any globals created by register_globals being turned ON
-while (list($global) = each($GLOBALS)){
-        if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST)$/', $global)){
-                unset($$global);
-        }
+while (list($global) = each($GLOBALS))
+{
+	if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST)$/', $global))
+	{
+		unset($$global);
+	}
 }
 unset($global);
 
@@ -31,55 +33,56 @@ ob_start ();
 $timing_start = explode(' ', microtime());
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
-if(!$mySQLserver){
-        @include("e107_config.php");
-        $a=0; $p="";
-        while(!$mySQLserver && $a<5){
-                $a++;
-                $p.="../";
-                @include($p."e107_config.php");
-        }
-        if(!defined("e_HTTP")){ header("Location:install.php"); exit; }
+if(!$mySQLserver)
+{
+	@include("e107_config.php");
+	$a=0; 
+	$p="";
+	while(!$mySQLserver && $a<5)
+	{
+		$a++;
+		$p.="../";
+		@include($p."e107_config.php");
+	}
+	if(!defined("e_HTTP"))
+	{
+		header("Location:install.php");
+		exit;
+	}
 }
-// e107_config.php upgrade - paths should have been in there from the beginning !
-if(!$ADMIN_DIRECTORY && !$DOWNLOADS_DIRECTORY){
-echo "<div style='text-align:center; font: 12px Verdana, Tahoma'><b>To complete the upgrade, copy the following text into your e107_config.php file: </b><br /><br />";
-echo chr(36)."ADMIN_DIRECTORY = \"e107_admin/\";<br />
-".chr(36)."FILES_DIRECTORY = \"e107_files/\";<br />
-".chr(36)."IMAGES_DIRECTORY = \"e107_images/\"; <br />
-".chr(36)."THEMES_DIRECTORY = \"e107_themes/\"; <br />
-".chr(36)."PLUGINS_DIRECTORY = \"e107_plugins/\"; <br />
-".chr(36)."HANDLERS_DIRECTORY = \"e107_handlers/\"; <br />
-".chr(36)."LANGUAGES_DIRECTORY = \"e107_languages/\"; <br />
-".chr(36)."HELP_DIRECTORY = \"e107_docs/help/\";  <br />
-".chr(36)."DOWNLOADS_DIRECTORY =  \"e107_files/downloads/\";\n";
-echo "</div>";
-exit;
-}
-// =====================
 
 $link_prefix="";
 $url_prefix=substr($_SERVER['PHP_SELF'],strlen(e_HTTP),strrpos($_SERVER['PHP_SELF'],"/")+1-strlen(e_HTTP));
 $tmp=explode("?",$url_prefix);
 $num_levels=substr_count($tmp[0],"/");
-for($i=1;$i<=$num_levels;$i++){
-        $link_prefix.="../";
+for($i=1;$i<=$num_levels;$i++)
+{
+	$link_prefix.="../";
 }
-if(strstr($_SERVER['QUERY_STRING'], "'") || strstr($_SERVER['QUERY_STRING'], ";") ){ die("Access denied."); }
-// if( strstr($_SERVER['QUERY_STRING'], "&")){ die("Access denied."); }
-if(preg_match("/\[(.*?)\].*?/i", $_SERVER['QUERY_STRING'], $matches)){
-define("e_MENU", $matches[1]);
-        define("e_QUERY", str_replace($matches[0], "", eregi_replace("&|/?PHPSESSID.*", "", $_SERVER['QUERY_STRING'])));
-}else{
-        define("e_QUERY", eregi_replace("&|/?PHPSESSID.*", "", $_SERVER['QUERY_STRING']));
+if(strstr($_SERVER['QUERY_STRING'], "'") || strstr($_SERVER['QUERY_STRING'], ";") )
+{
+	die("Access denied.");
 }
-if(strstr(e_MENU, "debug")){ error_reporting(E_ALL); }
+
+if(preg_match("/\[(.*?)\].*?/i", $_SERVER['QUERY_STRING'], $matches))
+{
+	define("e_MENU", $matches[1]);
+	define("e_QUERY", str_replace($matches[0], "", eregi_replace("&|/?".session_name().".*", "", $_SERVER['QUERY_STRING'])));
+}
+else
+{
+	define("e_QUERY", eregi_replace("&|/?".session_name().".*", "", $_SERVER['QUERY_STRING']));
+}
+if(strstr(e_MENU, "debug"))
+{
+	error_reporting(E_ALL);
+}
 $_SERVER['QUERY_STRING'] = e_QUERY;
 define('e_BASE',$link_prefix);
 define("e_ADMIN", e_BASE.$ADMIN_DIRECTORY);
 define("e_IMAGE", e_BASE.$IMAGES_DIRECTORY);
 define("e_THEME", e_BASE.$THEMES_DIRECTORY);
-define("e_PLUGIN", (defined("CORE_PATH") ? e_BASE.SUBDIR_SITE."/".$PLUGINS_DIRECTORY : e_BASE.$PLUGINS_DIRECTORY));
+define("e_PLUGIN", e_BASE.$PLUGINS_DIRECTORY);
 define("e_FILE", e_BASE.$FILES_DIRECTORY);
 define("e_HANDLER", e_BASE.$HANDLERS_DIRECTORY);
 define("e_LANGUAGEDIR", e_BASE.$LANGUAGES_DIRECTORY);
@@ -93,15 +96,23 @@ define("e_UC_ADMIN", 254);
 define("e_UC_NOBODY", 255);
 define("ADMINDIR", $ADMIN_DIRECTORY);
 
-if(!@include(e_HANDLER."errorhandler_class.php")){
-        echo "<div style='text-align:center; font: 12px Verdana, Tahoma'>Path error</div>";
-        exit;
+// e107_config.php upgrade check
+// =====================
+if(!$ADMIN_DIRECTORY && !$DOWNLOADS_DIRECTORY)
+{
+	message_handler("CRITICAL_ERROR", 8,  ": generic, ", "e107_config.php");
+	exit;
+}
+
+if(!@include(e_HANDLER."errorhandler_class.php"))
+{
+	echo "<div style='text-align:center; font: 12px Verdana, Tahoma'>Path error</div>";
+	exit;
 }
 set_error_handler("error_handler");
 if(!$mySQLuser){ header("location:install.php"); exit; }
 define("MPREFIX", $mySQLprefix);
 
-@require_once(e_HANDLER."message_handler.php");
 @require_once(e_HANDLER."mysql_class.php");
 
 $tp = new e_parse;
@@ -109,8 +120,16 @@ $sql = new db;
 $sql -> db_SetErrorReporting(FALSE);
 $merror = $sql -> db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
 
-if($merror == "e1"){ message_handler("CRITICAL_ERROR", 6,  ": generic, ", "class2.php"); exit;
-}else if($merror == "e2"){ message_handler("CRITICAL_ERROR", 7,  ": generic, ", "class2.php"); exit;}
+if($merror == "e1")
+{
+	message_handler("CRITICAL_ERROR", 6,  ": generic, ", "class2.php");
+	exit;
+}
+else if($merror == "e2")
+{
+	message_handler("CRITICAL_ERROR", 7,  ": generic, ", "class2.php");
+	exit;
+}
 
 // New parser code #########
 $parsethis=array();
@@ -126,23 +145,29 @@ $row = $sql -> db_Fetch();
 
 $tmp = stripslashes($row['e107_value']);
 $pref=unserialize($tmp);
-foreach($pref as $key => $prefvalue){
-        $pref[$key] = textparse::formtparev($prefvalue);
+foreach($pref as $key => $prefvalue)
+{
+	$pref[$key] = textparse::formtparev($prefvalue);
 }
-if(!is_array($pref)){
-        $pref=unserialize($row['e107_value']);
-        if(!is_array($pref)){
-                ($sql -> db_Select("core", "*", "e107_name='pref' ") ? message_handler("CRITICAL_ERROR", 1,  __LINE__, __FILE__) : message_handler("CRITICAL_ERROR", 2,  __LINE__, __FILE__));
-                if($sql -> db_Select("core", "*", "e107_name='pref_backup' ")){
-                        $row = $sql -> db_Fetch(); extract($row);
-                        $tmp = addslashes(serialize($e107_value ));
-                        $sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='pref' ");
-                        message_handler("CRITICAL_ERROR", 3,  __LINE__, __FILE__);
-                }else{
-                message_handler("CRITICAL_ERROR", 4,  __LINE__, __FILE__);
-                exit;
-        }
-}
+if(!is_array($pref))
+{
+	$pref=unserialize($row['e107_value']);
+	if(!is_array($pref))
+	{
+		($sql -> db_Select("core", "*", "e107_name='pref' ") ? message_handler("CRITICAL_ERROR", 1,  __LINE__, __FILE__) : message_handler("CRITICAL_ERROR", 2,  __LINE__, __FILE__));
+		if($sql -> db_Select("core", "*", "e107_name='pref_backup' "))
+		{
+			$row = $sql -> db_Fetch(); extract($row);
+			$tmp = addslashes(serialize($e107_value ));
+			$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='pref' ");
+			message_handler("CRITICAL_ERROR", 3,  __LINE__, __FILE__);
+		}
+		else
+		{
+			message_handler("CRITICAL_ERROR", 4,  __LINE__, __FILE__);
+			exit;
+		}
+	}
 }
 
 if(!$pref['cookie_name']){ $pref['cookie_name'] = "e107cookie"; }
@@ -159,128 +184,166 @@ $menu_pref=unserialize($tmp);
 $page = substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
 define("e_PAGE", $page);
 
-if($pref['frontpage'] && $pref['frontpage_type'] == "splash"){
-        $ip = getip();
-        if(!$sql -> db_Count("online", "(*)", "WHERE online_ip='{$ip}' ")){
-                online();
-                if(is_numeric($pref['frontpage'])){
-                        header("location:".e_BASE."article.php?".$pref['frontpage'].".255");
-                        exit;
-                } else if(eregi("http", $pref['frontpage'])) {
-                        header("location: ".$pref['frontpage']);
-                        exit;
-                } else {
-                        header("location: ".e_BASE.$pref['frontpage'].".php");
-                        exit;
-                }
-        }
+if($pref['frontpage'] && $pref['frontpage_type'] == "splash")
+{
+	$ip = getip();
+	if(!$sql -> db_Count("online", "(*)", "WHERE online_ip='{$ip}' "))
+	{
+		online();
+		if(is_numeric($pref['frontpage']))
+		{
+			header("location:".e_BASE."article.php?".$pref['frontpage'].".255");
+			exit;
+		}
+		else if(eregi("http", $pref['frontpage']))
+		{
+			header("location: ".$pref['frontpage']);
+			exit;
+		}
+		else
+		{
+			header("location: ".e_BASE.$pref['frontpage'].".php");
+			exit;
+		}
+	}
 }
 
-if($pref['cachestatus']){
-        require_once(e_HANDLER."cache_handler.php");
-        $e107cache = new ecache;
+if($pref['cachestatus'])
+{
+	require_once(e_HANDLER."cache_handler.php");
+	$e107cache = new ecache;
 }
 
-function retrieve_cache($query){
-        global $e107cache;
-        if(!is_object($e107cache)){return FALSE;}
-   return $e107cache -> retrieve($query);
+function retrieve_cache($query)
+{
+	global $e107cache;
+	if(!is_object($e107cache)){return FALSE;}
+	return $e107cache -> retrieve($query);
 }
 
-function set_cache($query, $text){
-        global $e107cache;
-        if(!is_object($e107cache)){return FALSE;}
-        $e107cache -> set($query,$text);
+function set_cache($query, $text)
+{
+	global $e107cache;
+	if(!is_object($e107cache)){return FALSE;}
+	$e107cache -> set($query,$text);
 }
 
-function clear_cache($query){
-        global $e107cache;
-        if(!is_object($e107cache)){return FALSE;}
-        return $e107cache -> clear($query);
+function clear_cache($query)
+{
+	global $e107cache;
+	if(!is_object($e107cache)){return FALSE;}
+	return $e107cache -> clear($query);
 }
 
-if($pref['del_unv']){
-        $threshold = (time() - ($pref['del_unv']*60));
-        $sql -> db_Delete("user", "user_ban = 2 AND user_join<'$threshold' ");
+if($pref['del_unv'])
+{
+	$threshold = (time() - ($pref['del_unv']*60));
+	$sql -> db_Delete("user", "user_ban = 2 AND user_join<'$threshold' ");
 }
-if($pref['modules']){
-        $mods = explode(",",$pref['modules']);
-        foreach($mods as $mod){
-                if(file_exists(e_PLUGIN."{$mod}/module.php")){
-                        @require_once(e_PLUGIN."{$mod}/module.php");
-                }
-        }
+if($pref['modules'])
+{
+	$mods = explode(",",$pref['modules']);
+	foreach($mods as $mod)
+	{
+		if(file_exists(e_PLUGIN."{$mod}/module.php"))
+		{
+			@require_once(e_PLUGIN."{$mod}/module.php");
+		}
+	}
 }
 
 //###########  Module redifinable functions ###############
-if(!function_exists('checkvalidtheme')){
-        function checkvalidtheme($theme_check){
-                // arg1 = theme to check
-                global $ADMIN_DIRECTORY;
-                if(@fopen(e_THEME.$theme_check."/theme.php", r)){
-                        define("THEME", e_THEME.$theme_check."/");
-                }else {
-                        @require_once(e_HANDLER."debug_handler.php");
-                        @require_once(e_HANDLER."textparse/basic.php");
-                        $etp = new e107_basicparse;
-                        $e107tmp_theme = search_validtheme();
-                        define("THEME", e_THEME.$e107tmp_theme."/");
-                        if(ADMIN && !strstr(e_SELF, $ADMIN_DIRECTORY)){echo '<script>alert("'.$etp->unentity(CORE_LAN1).'")</script>';}
-                }
-        }
+if(!function_exists('checkvalidtheme'))
+{
+	function checkvalidtheme($theme_check)
+	{
+		// arg1 = theme to check
+		global $ADMIN_DIRECTORY;
+		if(@fopen(e_THEME.$theme_check."/theme.php", r))
+		{
+			define("THEME", e_THEME.$theme_check."/");
+		}
+		else
+		{
+			@require_once(e_HANDLER."debug_handler.php");
+			@require_once(e_HANDLER."textparse/basic.php");
+			$etp = new e107_basicparse;
+			$e107tmp_theme = search_validtheme();
+			define("THEME", e_THEME.$e107tmp_theme."/");
+			if(ADMIN && !strstr(e_SELF, $ADMIN_DIRECTORY))
+			{
+				echo '<script>alert("'.$etp->unentity(CORE_LAN1).'")</script>';
+			}
+		}
+	}
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-if(!class_exists('convert')){
-        class convert{
-                function convert_date($datestamp, $mode="long"){
-                        /*
-                        # Date convert
-                        # - parameter #1:                string $datestamp, unix stamp
-                        # - parameter #2:                string $mode, date format, default long
-                        # - return                                parsed text
-                        # - scope                                        public
-                        */
-                        global $pref;
+if(!class_exists('convert'))
+{
+	class convert
+	{
+		function convert_date($datestamp, $mode="long")
+		{
+			/*
+			# Date convert
+			# - parameter #1:  string $datestamp, unix stamp
+			# - parameter #2:  string $mode, date format, default long
+			# - return         parsed text
+			# - scope          public
+			*/
+			global $pref;
 
-                        $datestamp += (TIMEOFFSET*3600);
-                        if($mode == "long"){
-                                return strftime($pref['longdate'], $datestamp);
-                        }else if($mode == "short"){
-                                return strftime($pref['shortdate'], $datestamp);
-                        }else {
-                                return strftime($pref['forumdate'], $datestamp);
-                        }
-                }
-        }
+			$datestamp += (TIMEOFFSET*3600);
+			if($mode == "long")
+			{
+				return strftime($pref['longdate'], $datestamp);
+			}
+			else if($mode == "short")
+			{
+				return strftime($pref['shortdate'], $datestamp);
+			}
+			else
+			{
+				return strftime($pref['forumdate'], $datestamp);
+			}
+		}
+	}
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-if(!class_exists('e107_table')){
-        class e107table{
-                function tablerender($caption, $text, $mode="default", $return=FALSE){
-                        /*
-                        # Render style table
-                        # - parameter #1:                string $caption, caption text
-                        # - parameter #2:                string $text, body text
-                        # - return                                null
-                        # - scope                                        public
-                        */
-                        if(function_exists("theme_tablerender")){
-                                $result = call_user_func("theme_tablerender",$caption,$text,$mode,$return);
-                                if($result == "return"){return;}
-                                extract($result);
-                        }
-                        if($return){
-                                ob_end_flush();
-                                ob_start();
-                                tablestyle($caption, $text, $mode);
-                                $ret = ob_get_contents();
-                                ob_end_clean();
-                                return($ret);
-                        }else {
-                                tablestyle($caption, $text, $mode);
-                        }
-                }
-        }
+if(!class_exists('e107_table'))
+{
+	class e107table
+	{
+		function tablerender($caption, $text, $mode="default", $return=FALSE)
+		{
+			/*
+			# Render style table
+			# - parameter #1:                string $caption, caption text
+			# - parameter #2:                string $text, body text
+			# - return                                null
+			# - scope                                        public
+			*/
+			if(function_exists("theme_tablerender"))
+			{
+				$result = call_user_func("theme_tablerender",$caption,$text,$mode,$return);
+				if($result == "return"){return;}
+				extract($result);
+			}
+			if($return)
+			{
+				ob_end_flush();
+				ob_start();
+				tablestyle($caption, $text, $mode);
+				$ret = ob_get_contents();
+				ob_end_clean();
+				return($ret);
+			}
+			else
+			{
+				tablestyle($caption, $text, $mode);
+			}
+		}
+	}
 }
 //#############################################################
 
@@ -291,9 +354,10 @@ $fp = ($pref['frontpage'] ? $pref['frontpage'].".php" : "news.php index.php");
 define("e_SIGNUP", (file_exists(e_BASE."customsignup.php") ? e_BASE."customsignup.php" : e_BASE."signup.php"));
 define("e_LOGIN", (file_exists(e_BASE."customlogin.php") ? e_BASE."customlogin.php" : e_BASE."login.php"));
 
-if($pref['membersonly_enabled'] && !USER && e_PAGE != e_SIGNUP && e_PAGE != "index.php" && e_PAGE != "fpw.php" && e_PAGE != e_LOGIN && !strstr(e_PAGE, "admin") && e_PAGE != 'membersonly.php'){
-        header("location: ".e_BASE."membersonly.php");
-        exit;
+if($pref['membersonly_enabled'] && !USER && e_PAGE != e_SIGNUP && e_PAGE != "index.php" && e_PAGE != "fpw.php" && e_PAGE != e_LOGIN && !strstr(e_PAGE, "admin") && e_PAGE != 'membersonly.php')
+{
+	header("location: ".e_BASE."membersonly.php");
+	exit;
 }
 
 $sql -> db_Delete("tmp", "tmp_time < '".(time()-300)."' AND tmp_ip!='data' AND tmp_ip!='adminlog' AND tmp_ip!='submitted_link' AND tmp_ip!='reported_post' AND tmp_ip!='var_store' ");
@@ -323,51 +387,67 @@ if($pref['maintainance_flag'] && ADMIN == FALSE && !eregi("admin", e_SELF)){
         @require_once(e_BASE."sitedown.php"); exit;
 }
 
-if(defined("CORE_PATH") && ($page == "index.php" || !$page)){ $page = "news.php"; }
-
-if(strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin.php")){
-        @include(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".e_PAGE);
-        @include(e_LANGUAGEDIR."English/admin/lan_".e_PAGE);
-}else{
-        @include(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE);
-        @include(e_LANGUAGEDIR."English/lan_".e_PAGE);
+if(strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin.php"))
+{
+	@include(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".e_PAGE);
+	@include(e_LANGUAGEDIR."English/admin/lan_".e_PAGE);
+}
+else
+{
+	@include(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE);
+	@include(e_LANGUAGEDIR."English/lan_".e_PAGE);
 }
 
-if(IsSet($_POST['userlogin'])){
-        @require_once(e_HANDLER."login.php");
-        $usr = new userlogin($_POST['username'], $_POST['userpass'], $_POST['autologin']);
+if(IsSet($_POST['userlogin']))
+{
+	@require_once(e_HANDLER."login.php");
+	$usr = new userlogin($_POST['username'], $_POST['userpass'], $_POST['autologin']);
 }
 
-if(e_QUERY == "logout"){
-        $ip = getip();
-        $udata = (USER === TRUE) ? USERID.".".USERNAME : "0";
-        $sql -> db_Update("online", "online_user_id = '0', online_pagecount=online_pagecount+1 WHERE online_user_id = '{$udata}' LIMIT 1");
-        if($pref['user_tracking'] == "session"){ session_destroy(); $_SESSION[$pref['cookie_name']] = ""; }
-        cookie($pref['cookie_name'], "", (time()-2592000));
-        echo "<script type='text/javascript'>document.location.href='".e_BASE."index.php'</script>\n";
-        exit;
+if(e_QUERY == 'logout')
+{
+	$ip = getip();
+	$udata = (USER === TRUE) ? USERID.".".USERNAME : "0";
+	$sql -> db_Update("online", "online_user_id = '0', online_pagecount=online_pagecount+1 WHERE online_user_id = '{$udata}' LIMIT 1");
+	if($pref['user_tracking'] == "session")
+	{
+		session_destroy(); 
+		$_SESSION[$pref['cookie_name']] = "";
+	}
+	cookie($pref['cookie_name'], "", (time()-2592000));
+	echo "<script type='text/javascript'>document.location.href='".e_BASE."index.php'</script>\n";
+	exit;
 }
 ban();
 
 define("TIMEOFFSET", $pref['time_offset']);
-//define("FLOODTIME", $pref['flood_time']);
-//define("FLOODHITS", $pref['flood_hits']);
 
-if((strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin") ) && $pref['admintheme'] && !$_POST['sitetheme']){
-        if(strstr(e_SELF, "menus.php")){
-                        checkvalidtheme($pref['sitetheme']);
-        } else if(strstr(e_SELF, "newspost.php")){
-                        define("MAINTHEME", e_THEME.$pref['sitetheme']."/");
-                        checkvalidtheme($pref['admintheme']);
-        } else {
-                        checkvalidtheme($pref['admintheme']);
-        }
-} else {
-         if(USERTHEME != FALSE && USERTHEME != "USERTHEME"){
-                        checkvalidtheme(USERTHEME);
-                } else {
-                        checkvalidtheme($pref['sitetheme']);
-                }
+if((strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin") ) && $pref['admintheme'] && !$_POST['sitetheme'])
+{
+	if(strstr(e_SELF, "menus.php"))
+	{
+		checkvalidtheme($pref['sitetheme']);
+	}
+	else if(strstr(e_SELF, "newspost.php"))
+	{
+		define("MAINTHEME", e_THEME.$pref['sitetheme']."/");
+		checkvalidtheme($pref['admintheme']);
+	}
+	else
+	{
+		checkvalidtheme($pref['admintheme']);
+	}
+}
+else
+{
+	if(USERTHEME != FALSE && USERTHEME != "USERTHEME")
+	{
+		checkvalidtheme(USERTHEME);
+	}
+	else
+	{
+		checkvalidtheme($pref['sitetheme']);
+	}
 }
 @require_once(THEME."theme.php");
 
@@ -393,60 +473,38 @@ define("INIT", TRUE);
 define("e_ADMIN", $e_BASE.$ADMIN_DIRECTORY);
 define("e_REFERER_SELF",($_SERVER["HTTP_REFERER"] == e_SELF));
 
-
 //@require_once(e_HANDLER."IPB_int.php");
 //@require_once(e_HANDLER."debug_handler.php");
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-function e107_parse($text,$referrer){
-	preg_match_all("#{CODE=(.*?)}#",$text,$matches,PREG_SET_ORDER);
-	for ($i=0; $i< count($matches); $i++)
+if(!function_exists('file_get_contents'))
+{
+	function file_get_contents($filename)
 	{
-		$p = explode(".",$matches[$i][1]);
-		$parse_func = "parse_".$p[1];
-		if(!function_exists($parse_func))
-		{
-			$parse_file = ('CORE' == $p[0]) ?  e_HANDLER."parse/" : e_PLUGIN.$p[0]."/parse/";
-			$parse_file .= "parse_{$p[1]}.php";
-			if(file_exists($parse_file))
-			{
-				@require_once($parse_file);
-			}
-		}
-		if(function_exists($parse_func))
-		{
-			$newtext = call_user_func($parse_func,$matches[$i],$referrer);
-		} else {
-			$newtext = "";
-		}
-		$text = str_replace($matches[$i][0],$newtext,$text);
+		$fd = fopen("$filename", "rb");
+		$content = fread($fd, filesize($filename));
+		fclose($fd);
+		return $content;
 	}
-
-	global $parsethis;
-	if($parsethis)
-	{
-		@require_once(e_HANDLER.'parser_functions.php');
-		foreach($parsethis as $parser_regexp => $parser_name)
-		{
-			preg_match_all($parser_regexp,$text,$matches,PREG_SET_ORDER);
-			for ($i=0; $i< count($matches); $i++)
-			{
-				if($parser_name != "e107_core" && file_exists(e_PLUGIN.$parser_name.'/parser.php'))
-				{
-					@require_once(e_PLUGIN.$parser_name.'/parser.php');
-				}
-				if(function_exists($parser_name.'_parse'))
-				{
-					$newtext=call_user_func($parser_name.'_parse',$matches[$i],$referrer);
-					$text = str_replace($matches[$i][0],$newtext,$text);
-				}
-			}
-		}
-		$text = preg_replace("#{{.*?}}#","",$text);
-	}
-	return $text;
 }
+
+if(!function_exists('file_put_contents'))
+{
+   function file_put_contents($filename, $data)
+   {
+       if (($h = @fopen($filename, 'w+')) === false)
+       {
+           return false;
+       }
+       if (($bytes = @fwrite($h, $data)) === false)
+       {
+           return false;
+       }
+       fclose($h);
+       return $bytes;
+   }
+}
+
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 class textparse
@@ -552,23 +610,29 @@ function getperms($arg, $ap = ADMINPERMS)
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-function save_prefs($table = "core", $uid=USERID){
-        global $pref, $user_pref;
-        $sql = new db;
-        if($table == "core"){
-                foreach($pref as $key => $prefvalue){
-                        $pref[$key] = textparse::formtpa($prefvalue);
-                }
-                $tmp = addslashes(serialize($pref));
-                $sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='pref'");
-        } else {
-                foreach($user_pref as $key => $prefvalue){
-                        $user_pref[$key] = textparse::formtpa($prefvalue);
-                }
-                $tmp = addslashes(serialize($user_pref));
-                $sql -> db_Update("user", "user_prefs='$tmp' WHERE user_id=$uid");
-                return $tmp;
-        }
+function save_prefs($table = "core", $uid=USERID)
+{
+	global $pref, $user_pref, $tp;
+	$sql = new db;
+	if($table == "core")
+	{
+		foreach($pref as $key => $prefvalue)
+		{
+			$pref[$key] = $tp -> toDB($prefvalue);
+		}
+		$tmp = addslashes(serialize($pref));
+		$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='pref'");
+	}
+	else
+	{
+		foreach($user_pref as $key => $prefvalue)
+		{
+			$user_pref[$key] = $tp -> toDB($prefvalue);
+		}
+		$tmp = addslashes(serialize($user_pref));
+		$sql -> db_Update("user", "user_prefs='$tmp' WHERE user_id=$uid");
+		return $tmp;
+	}
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -830,17 +894,25 @@ function init_session(){
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function ban(){
-        $sql = new db;
-        $ip = getip();
-        $wildcard = substr($ip, 0, strrpos($ip, ".")).".*";
-        if($sql -> db_Select("banlist", "*", "banlist_ip='".$_SERVER['REMOTE_ADDR']."' OR banlist_ip='".USEREMAIL."' OR banlist_ip='$ip' OR banlist_ip='$wildcard'")){
-                // enter a message here if you want some text displayed to banned users ...
-                exit;
-        }
+	$sql = new db;
+	$ip = getip();
+	$wildcard = substr($ip, 0, strrpos($ip, ".")).".*";
+	if($sql -> db_Select("banlist", "*", "banlist_ip='".$_SERVER['REMOTE_ADDR']."' OR banlist_ip='".USEREMAIL."' OR banlist_ip='$ip' OR banlist_ip='$wildcard'"))
+	{
+		// enter a message here if you want some text displayed to banned users ...
+		exit;
+	}
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-function cookie($name, $value, $expire, $path="/", $domain="", $secure=0){
-        setcookie($name, $value, $expire, $path, $domain, $secure);
+function cookie($name, $value, $expire, $path="/", $domain="", $secure=0)
+{
+	setcookie($name, $value, $expire, $path, $domain, $secure);
+}
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+function message_handler($mode, $message, $line=0, $file="")
+{
+	@require_once(e_HANDLER."message_handler.php");
+	show_emessage($mode, $message, $line, $file);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 class e_parse
