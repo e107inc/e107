@@ -21,14 +21,18 @@ $style = "default";
 
 // [admin button style]
 
-function show_admin_menu($title, $page, $e107_vars, $js = FALSE){
+function show_admin_menu($title, $page, $e107_vars, $js = FALSE, $js_include = FALSE){
 	global $ns;
 	$text = "<table class='fborder' style='width: 100%'>";
 	foreach (array_keys($e107_vars) as $act) {
 		$t=str_replace(" ","&nbsp;",$e107_vars[$act]['text']);
 		if (!$e107_vars[$act]['perm'] || getperms($e107_vars[$act]['perm'])) {
 			$arrow_icon = ($page == $act) ? E_16_NAV_ARROW_OVER : E_16_NAV_ARROW;
-			$on_click = $js ? "showhideit('".$act."');" : "document.location='".$e107_vars[$act]['link']."'; disabled=true;";
+			if ($js_include) {
+				$on_click = $js_include;
+			} else {
+				$on_click = $js ? "showhideit('".$act."');" : "document.location='".$e107_vars[$act]['link']."'; disabled=true;";
+			}
 			$text .= "<tr><td style='border-bottom: 1px solid #000'><div class='emenuBar'>
 			<div class='menuButton' onmouseover=\"eover(this, 'menuButton_over')\" onmouseout=\"eover(this, 'menuButton')\" onclick=\"".$on_click."\"
 			style='width: 98% !important; width: 100%; padding: 0px 0px 0px 2px; border-right: 0px'>
