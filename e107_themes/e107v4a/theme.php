@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/theme.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-03-20 22:45:59 $
+|     $Revision: 1.8 $
+|     $Date: 2005-03-20 22:57:17 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -173,7 +173,7 @@ define("POST_EXTENDEDSTRING", " ]<br />");
 define(PRELINK, "");
 define(POSTLINK, "");
 define(LINKSTART, "<span><img src='".THEME."images/bullet2.gif' alt='bullet' /> ");
-define(LINKSTART_HILITE, "<span style='font-weight:bold'><img src='".THEME."images/bullet2.gif' alt='bullet' /> ");
+define(LINKSTART_HILITE, "<span style='font-weight:bold'><img src='".THEME."images/bullet3.png' alt='bullet' /> ");
 define(LINKEND, "</span><br />");
 define(LINKDISPLAY, 2);
 define(LINKALIGN, "left");
@@ -232,8 +232,6 @@ $POLLSTYLE = <<< EOF
 {OLDPOLLS}
 </div>
 EOF;
-
-define(CB_STYLE, $CHATBOXSTYLE);
 
 
 $COMMENTSTYLE = "
