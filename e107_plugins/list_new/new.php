@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/list_new/new.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-13 18:01:03 $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-16 22:19:00 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -95,6 +95,14 @@ if ($comments = $sql->db_Select("comments", "*", "comment_datestamp>$lvisit ORDE
 	while ($row = $sql->db_Fetch()) {
 		extract($row);
 		switch($comment_type) {
+
+			case "ideas":
+				$sql2->db_Select("ideas", "ideas_summary", "ideas_id=$comment_item_id ");
+				$row = $sql2->db_Fetch();
+				extract($row);
+				$str .= $bullet."[ ".LIST_22." ] Re: <a href='".e_PLUGIN."ideas/ideas.php?show.$comment_item_id'>".$tp -> toHTML($ideas_summary)."</a><br />";
+			break;
+
 			case 0:
 			// news
 			$sql2->db_Select("news", "*", "news_id=$comment_item_id ");
@@ -168,8 +176,7 @@ if ($comments = $sql->db_Select("comments", "*", "comment_datestamp>$lvisit ORDE
 			 extract($row);
 			$str .= $bullet."[ ".LIST_20." ] Re: <a href='".e_PLUGIN."bugtracker/bugtracker.php?show.$comment_item_id'>".$tp -> toHTML($bugtrack_summary)."</a><br />";
 			$comment_count++;
-			break;
-			 
+			break;	 
 		}
 		$handle = opendir(e_PLUGIN);
 		while (false !== ($file = readdir($handle))) {
@@ -211,7 +218,7 @@ if ($chatbox_posts = $sql->db_Select("chatbox", "*", "cb_datestamp>$lvisit ORDER
 		extract($row);
 		$cb_id = substr($cb_nick , 0, strpos($cb_nick , "."));
 		$cb_nick = substr($cb_nick , (strpos($cb_nick , ".")+1));
-		$cb_message = str_replace("<br />", "", $tp -> toHTML($cb_message));
+		$cb_message = ($cb_blocked ? CHATBOX_L6 : str_replace("<br />", "", $tp -> toHTML($cb_message)));
 		$str .= $bullet."[ <a href='".e_BASE."user.php?id.$cb_id'>$cb_nick</a> ] {$cb_message}<br />";
 	}
 } else {
@@ -226,24 +233,30 @@ $text .= "
 	</tr>\n";
 	
 unset($str);
-$forum_posts = $sql->db_Select("forum_t", "*", "thread_datestamp>$lvisit ORDER BY thread_datestamp DESC LIMIT 0,50");
-while ($row = $sql->db_Fetch()) {
-	extract($row);
-	$sql2->db_Select("forum", "*", "forum_id=$thread_forum_id");
-	$row = $sql2->db_Fetch();
-	 extract($row);
-	if (check_class($forum_class)) {
+
+
+$query = "SELECT tp.thread_name AS parent_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_parent, f.forum_id, f.forum_name FROM #forum_t AS t 
+LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id 
+LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id 
+WHERE f.forum_class  IN (".USERCLASS_LIST.") 
+AND t.thread_datestamp > $lvisit
+ORDER BY t.thread_datestamp DESC LIMIT 0, 50";
+
+
+
+
+
+if($forum_posts = $sql->db_Select_gen($query))
+{
+	while ($row = $sql->db_Fetch()) {
+		extract($row);
 		if ($thread_parent) {
-			$ttemp = $thread_id;
-			$sql2->db_Select("forum_t", "*", "thread_id=$thread_parent ");
-			$row = $sql2->db_Fetch();
-			 extract($row);
-			$str .= $bullet."[ <a href='".e_PLUGIN."forum/forum_viewforum.php?$forum_id'>$forum_name</a> ] Re: <a href='".e_PLUGIN."forum/forum_viewtopic.php?$thread_forum_id.$thread_id#$ttemp'>".$tp -> toHTML($thread_name)."</a><br />";
-		} else {
-			$str .= $bullet."[ <a href='".e_PLUGIN."forum/forum_viewforum.php?$forum_id'>$forum_name</a> ] <a href='".e_PLUGIN."forum/forum_viewtopic.php?$thread_forum_id.$thread_id'>".$tp -> toHTML($thread_name)."</a><br/>";
+			$str .= $bullet."[ <a href='".e_PLUGIN."forum/forum_viewforum.php?$forum_id'>$forum_name</a> ] Re: <a href='".e_PLUGIN."forum/forum_viewtopic.php?$thread_parent#$thread_id'>".$tp -> toHTML($parent_name)."</a><br />";
 		}
-	} else {
-		$forum_posts = $forum_posts - 1;
+		else
+		{
+			$str .= $bullet."[ <a href='".e_PLUGIN."forum/forum_viewforum.php?$forum_id'>$forum_name</a> ] <a href='".e_PLUGIN."forum/forum_viewtopic.php?$thread_id'>".$tp -> toHTML($thread_name)."</a><br/>";
+		}
 	}
 }
 if (!$forum_posts) {
