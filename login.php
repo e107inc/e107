@@ -26,13 +26,12 @@ if($use_imagecode){
 
 if(!USER){
 
-        echo "<div style='margin-right:0 auto;margin-left:0 auto'>";
+        echo "<div style='width:70%;margin-left: auto;margin-right: auto'><div style='text-align:center'>";
         if(file_exists(THEME."images/login_logo.png")){
                 echo "<img src='".THEME."images/login_logo.png',>\n";
         } else{
         echo "<img src='".e_IMAGE."logo.png'>\n";
 }
-echo "</div><div style='width:70%;margin-left: auto;margin-right: auto'>";
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 $text = "";
@@ -93,7 +92,7 @@ header("location:".e_BASE."index.php");
 exit;
 }
 
-echo "</div></body>
+echo "</div></div></body>
 </html>";
 
 $sql -> db_Close();
