@@ -16,7 +16,7 @@
 	Have fun, and don't be afraid to contact me if you have questions.
 */
 
-.sitelinks { text-align: center; }
+.sitelinks { text-align: center; font: 10px 'Lucida Grande', Verdana, Arial, Sans-Serif; padding: 2px 0 2px 20px; margin: 5px 0 0 5px; width: 700px; }
 .sitetag { text-align: center; font: 12px 'Lucida Grande', Verdana, Arial, Sans-Serif; }
 
 /* Begin Typography & Colors */
@@ -236,9 +236,9 @@ body {
 	}
 
 .widecolumn {
-	padding: 10px 0 20px 0;
-	margin: 5px 0 0 150px;
-	width: 450px;
+	padding: 10px 0 10px 0;
+	margin: 5px 0 0 5px;
+	width: 700px;
 	}
 	
 .post {
@@ -572,6 +572,7 @@ a img {
 
 body	 	{ background: url("images/kubrickbgcolor.jpg"); }
 #page		{ background: url("images/kubrickbg.jpg") repeat-y top; border: none; }
+#page2		{ background: url("images/kubrickbgwide.jpg") repeat-y top; border: none; }
 #header 	{ background: url("images/kubrickheader.jpg") no-repeat bottom center; }
 #footer 	{ background: url("images/kubrickfooter.jpg") no-repeat bottom; border: none;}
 

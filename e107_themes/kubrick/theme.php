@@ -27,36 +27,55 @@ $layout = "_default";
 $HEADER = "<div id='page'>
 <div id='header'>
 <div id='headerimg'>
-		<h1><a href='{SITEURL}' title='{SITENAME}'>{SITENAME}</a></h1>
-		<br /><br /><br /><br /><br />
-		<div class='sitetag'>{SITETAG}</div>
-	</div>
+<h1><a href='{SITEURL}' title='{SITENAME}'>{SITENAME}</a></h1>
+<br /><br /><br /><br /><br />
+<div class='sitetag'>{SITETAG}</div>
 </div>
-
+</div>
 <div class='sitelinks'>{SITELINKS}</div>
-
-
-  <hr />
-  <div id='content' class='narrowcolumn'> 
+<hr />
+<div id='content' class='narrowcolumn'> 
 ";
 
 $FOOTER = "
-  </div> 
-  <div id='sidebar'> 
-  {MENU=1}
-  
-  </div> 
-  <hr /> 
-  <div id='footer'>
-
-    <p>
-	{SITEDISCLAIMER}
-	Based on 'kubrick' by <a href='http://binarybonsai.com/kubrick/'>Michael Heilemann</a>.</p> 
-  </div> 
 </div> 
-
-
+<div id='sidebar'> 
+{MENU=1}
+</div> 
+<hr /> 
+<div id='footer'>
+<p>
+{SITEDISCLAIMER}
+Based on 'kubrick' by <a href='http://binarybonsai.com/kubrick/'>Michael Heilemann</a>.</p> 
+</div> 
+</div> 
 ";
+
+$CUSTOMHEADER = "<div id='page2'>
+<div id='header'>
+<div id='headerimg'>
+<h1><a href='{SITEURL}' title='{SITENAME}'>{SITENAME}</a></h1>
+<br /><br /><br /><br /><br />
+<div class='sitetag'>{SITETAG}</div>
+</div>
+</div>
+<div class='sitelinks'>{SITELINKS}</div>
+<hr />
+<div id='content' class='widecolumn'> 
+";
+
+$CUSTOMFOOTER = "
+</div> 
+<hr /> 
+<div id='footer'>
+<p>
+{SITEDISCLAIMER}
+Based on 'kubrick' by <a href='http://binarybonsai.com/kubrick/'>Michael Heilemann</a>.</p> 
+</div> 
+</div> 
+";
+
+$CUSTOMPAGES = "forum.php forum_post.php forum_viewforum.php forum_viewtopic.php user.php submitnews.php download.php links.php stats.php usersettings.php";
 
 $NEWSSTYLE = "
 <h2>{NEWSTITLE}</h2>
