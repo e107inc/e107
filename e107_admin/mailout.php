@@ -11,14 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-12-23 16:44:29 $
-|     $Author: pholzmann $
+|     $Revision: 1.4 $
+|     $Date: 2004-12-26 21:11:40 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
     require_once("../class2.php");
     require_once(e_ADMIN."auth.php");
+    if(!getperms("4")){ header("location:".e_BASE."index.php"); exit;}
     require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php");
 
     require_once(e_HANDLER."userclass_class.php");
@@ -65,13 +66,15 @@ if(IsSet($_POST['submit'])){
   //  $mail->Host     = "smtp1.site.com;smtp2.site.com";
     $mail->Mailer   = "mail";
     $mail->AddCC = ($_POST['email_cc']);
-
+    $mail->WordWrap = 50;
+    $mail->Charset  = CHARSET;
     $mail->Subject = $_POST['email_subject'];
+    $mail->IsHTML(true);
     $attach = chop($_POST['email_attachment']);
 
     $root = (preg_match("#^/#",$DOWNLOADS_DIRECTORY) || preg_match("#.:#",$DOWNLOADS_DIRECTORY))? "" : e_BASE;
 
-    if(!$mail->AddAttachment($root.$DOWNLOADS_DIRECTORY."/".$_POST['email_attachment'],$attach)){
+    if(!$mail->AddAttachment($root.$DOWNLOADS_DIRECTORY."/".$_POST['email_attachment'],$attach) && $attach !=""){
     $mss = "There is a problem with the attachment";
     $ns -> tablerender("Error", $mss);
     require_once(e_ADMIN."footer.php");
@@ -86,6 +89,7 @@ if(IsSet($_POST['submit'])){
     $message_body = stripslashes($_POST['email_body']);
     $message_body = eregi_replace('src="','src="'.SITEURL,$message_body);
 
+
     $sent_no = 0;
 
     for ($i=0; $i<count($recipient); $i++) {
@@ -96,8 +100,10 @@ if(IsSet($_POST['submit'])){
     $text .="<td class='forumheader3' style='width:40%'>".$recipient_name[$i]."</td>";
     $text .="<td class='forumheader3' style='width:40%'>".$recipient[$i]."</td>";
 
-    $mail->Body    = $message_body;
-    $mail->AltBody = $message_body;
+    $mes_body = str_replace("{USERNAME}",$recipient_name[$i],$message_body);
+
+    $mail->Body    = str_replace("\n","<br>",$mes_body);
+    $mail->AltBody = strip_tags(str_replace("<br>","\n",$mes_body));
     $mail->AddAddress($recipient[$i], $recipient_name[$i]);
 
 
@@ -256,63 +262,6 @@ function userclasses($name){
 }
 
 
-//=============================
-/*
-function bulk_email($from,$group, $cc, $bcc, $subject, $message, $format="plain", $amount=2){
-
- global $pref,$sql;
-
-
-
-
-       return "To: ".$send_to."<br>Subject: ".$subject."<br>Message: ".$message."<br>Headers:<br>".str_replace("\n","<br>",$headers);
-
-
-       // ==========================================================
-
-            $bcc_bulk = substr($bcc_bulk,0,-1);
-           /*
-            $headers = "From: \"$from\" <$from> \n";
-            $headers .= ($cc)? "cc: ".$cc."\n":"";
-            $headers .= "bcc: ".$bcc_bulk."\n";
-            $headers .= "Reply-To: ".$from." <".$from.">\n";
-            $headers .= "X-Sender: ".$from."\n";
-            $headers .= "X-Mailer: Microsoft Outlook Express 6.00.2720.3000\n";
-            $headers .= "X-MimeOLE: Produced By e107 website system\n";
-            $headers .= "X-Priority: 3\n";
-            $headers .= "Content-transfer-encoding: 8bit\nDate: " . date('r', time()) . "\n";
-            $headers .= "MIME-Version: 1.0\n";
-            if($format == "html"){
-            $headers .= "Content-Type: text/html; charset=".CHARSET."\n";
-            }else{
-            $headers .= "Content-Type: text/plain; charset=".CHARSET."\n";
-            }
-            $send_to = $from; // send to self.
-
-
-            if($pref['smtp_enable']){
-                    require_once(e_HANDLER."smtp.php");
-                    if(smtpmail($send_to, $subject, $message, $headers)){
-                            return TRUE;
-                    }else{
-                            return FALSE;
-                    }
-            }else{
-                    $headers .= "Return-Path: <".$from.">\n";
-                    if(@mail($send_to, $subject, $message, $headers)){
-                      //      return TRUE;
-                            $batch[] = "Batch# $j - Successful";
-                    }else{
-                     //       return FALSE;
-                            $batch[] = "Batch# $j - Failed";
-                    }
-            }
-          sleep(2);
-     }
- return $bcc_bulk ;
-
-}
-*/
   function show_options($action){
                 // ##### Display options ---------------------------------------------------------------------------------------------------------
                                 if($action==""){$action="main";}
