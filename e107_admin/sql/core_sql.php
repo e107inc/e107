@@ -280,6 +280,7 @@ CREATE TABLE menus (
   menu_location tinyint(3) unsigned NOT NULL default '0',
   menu_order tinyint(3) unsigned NOT NULL default '0',
   menu_class tinyint(3) unsigned NOT NULL default '0',
+  menu_pages text NOT NULL,
   PRIMARY KEY  (menu_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
