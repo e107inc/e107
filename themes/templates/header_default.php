@@ -30,7 +30,7 @@ if(file_exists(e_BASE."files/style.css")){ echo "\n<link rel='stylesheet' href='
 echo $pref['meta_tag'][1]."\n";
 if(eregi("forum_post.php", e_SELF) && ($_POST['reply'] || $_POST['newthread'])){
 	$tmp = explode(".", e_QUERY);
-	echo "<meta http-equiv=\"refresh\" content=\"5;url='".e_HTTP."forum_viewtopic.php?".$tmp[1].".".$tmp[2]."'>\n";
+	echo "<meta http-equiv=\"refresh\" content=\"5;url='".e_HTTP."forum_viewforum.php?".$tmp[1]."'>\n";
 }
 ?>
 
@@ -86,6 +86,7 @@ function checklayout($str){
 	}else if(strstr($str, "SITELINKS")){
 		$linktype = substr($str,(strpos($str, "=")+1), 4);
 		define("LINKDISPLAY", ($linktype == "menu" ? 2 : 1));
+		require_once(e_BASE."classes/sitelinks_class.php");
 		sitelinks();
 	}else if(strstr($str, "MENU")){
 		$sql = new db;

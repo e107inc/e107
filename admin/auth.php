@@ -14,7 +14,11 @@
 */
 if(ADMIN == TRUE){
 	$language =  $pref['sitelanguage'][1]; if(!$language){ $language = "English"; }
-	require_once("languages/admin_lan_".$language.".php");
+	if(file_exists("languages/admin_lan_".$language.".php")){
+		require_once("languages/admin_lan_".$language.".php");
+	}else{
+		require_once("languages/admin_lan_English.php");
+	}
 	require_once("header.php");
 }else{
 	if($_POST['authsubmit']){
@@ -71,4 +75,67 @@ if(ADMIN == TRUE){
 		exit;
 	}
 }
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+class auth{
+	
+	function authform(){
+		/*
+		# Admin auth login
+		#
+		# - parameters		none
+		# - return				null
+		# - scope					public
+		*/
+		echo "<div style=\"align:center\">";
+		$text =  "<form method=\"post\" action=\"".e_SELF."\">\n
+<table style=\"width:40%\" align=\"center\">
+<tr>
+<td style=\"width:15%\" class=\"defaulttext\">".LAN_16."</td>
+<td><input class=\"tbox\" type=\"text\" name=\"authname\" size=\"30\" value=\"$authname\" maxlength=\"20\" />\n</td>
+</tr>
+<tr>
+<td style=\"width:15%\" class=\"defaulttext\">".LAN_17."</td>
+<td><input class=\"tbox\" type=\"password\" name=\"authpass\" size=\"30\" value=\"\" maxlength=\"20\" />\n</td>
+</tr>
+<tr>
+<td style=\"width:15%\"></td>
+<td>
+<input class=\"button\" type=\"submit\" name=\"authsubmit\" value=\"Log In\" /> 
+</td>
+</tr>
+</table>";
+
+$au = new table;
+$au -> tablerender(LAN_18, $text);
+echo "</div>";
+	}
+
+	function authcheck($authname, $authpass){
+		/*
+		# Admin auth check
+		# - parameter #1:		string $authname, entered name
+		# - parameter #2:		string $authpass, entered pass
+		# - return				boolean if fail, else result array
+		# - scope					public
+		*/
+		$sql_auth = new db;
+		if($sql_auth -> db_Select("user", "*", "user_name='$authname' AND user_admin='1' ")){
+			if($sql_auth -> db_Select("user", "*", "user_name='$authname' AND user_password='".md5($authpass)."' AND user_admin='1' ")){
+				$row = $sql_auth -> db_Fetch();
+				return $row;
+			}else{
+				$row = array("fop");
+				return $row;
+			}
+		}else{
+			$row = array("fon");
+			return $row;
+		}
+	}
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+
+
 ?>

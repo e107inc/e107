@@ -208,7 +208,7 @@ class news{
 
 		if($NEWSSTYLE != ""){
 
-			$news_category = "<a href='".e_SELF."?cat.".$category_id."'>".$category_name."</a>";
+			$news_category = "<a href='news.php?cat.".$category_id."'>".$category_name."</a>";
 			$news_author = "<a href='user.php?id.".$a_id."'>".$a_name."</a>";
 			$etext = " <a href=\"email.php?news.".$news_id."\"><img src=\"".e_BASE."themes/shared/generic/friend.gif\" style=\"border:0\" alt=\"email to someone\" /></a>";
 			$ptext = " <a href=\"print.php?news.".$news_id."\"><img src=\"".e_BASE."themes/shared/generic/printer.gif\" style=\"border:0\" alt=\"printer friendly\" /></a>";
@@ -229,11 +229,11 @@ class news{
 			}
 
 			$search[2] = "/\{NEWSICON\}(.*?)/si";
-			$replace[2] = "<a href='".e_SELF."?cat.$category_id'><img style='".ICONSTYLE."'  src='$category_icon' alt='' /></a>";
+			$replace[2] = "<a href='news.php?cat.$category_id'><img style='".ICONSTYLE."'  src='$category_icon' alt='' /></a>";
 			$search[3] = "/\{NEWSHEADER\}(.*?)/si";
 			$replace[3] = $category_icon;
 			$search[4] = "/\{NEWSCATEGORY\}(.*?)/si";
-			$replace[4] = "<a href='".e_SELF."?cat.$category_id'>".$category_name."</a>";
+			$replace[4] = "<a href='news.php?cat.$category_id'>".$category_name."</a>";
 			$search[5] = "/\{NEWSAUTHOR\}(.*?)/si";
 			$replace[5] = $news_author;
 			$search[6] = "/\{NEWSDATE\}(.*?)/si";
@@ -286,9 +286,9 @@ class news{
 // ---------------- old newsstyle code, depracated but left for -5.3 themes
 		$search = array("[administrator]", "[date and time]", "[count]", "[l]", "[/l]", "[nc]");
 		if($allow_comments == 1){
-			$replace = array("<a href=\"mailto:$a_email\">$a_name</a>", $datestamp, COMMENT_OFF_TEXT, "", "", "<a href=\"".e_SELF."?cat.".$category_id."\">".$category_name."</a>");
+			$replace = array("<a href=\"mailto:$a_email\">$a_name</a>", $datestamp, COMMENT_OFF_TEXT, "", "", "<a href=\"news.php?cat.".$category_id."\">".$category_name."</a>");
 		}else{
-			$replace = array("<a href=\"mailto:$a_email\">$a_name</a>", $datestamp, $comment_total, "<a href=\"comment.php?".$news_id."\">", "</a>", "<a href=\"".e_SELF."?cat.".$category_id."\">".$category_name."</a>");
+			$replace = array("<a href=\"mailto:$a_email\">$a_name</a>", $datestamp, $comment_total, "<a href=\"comment.php?".$news_id."\">", "</a>", "<a href=\"news.php?cat.".$category_id."\">".$category_name."</a>");
 		}
 		$info_text = str_replace($search,$replace, INFO_TEXT);
 
@@ -311,10 +311,10 @@ class news{
 		if(ICON_SHOW == TRUE && ICON_POSITION == "caption" && $category_icon != ""){
 			$tmp = "<table style=\"width:95%\"><tr><td style=\"width:50%\">";
 			if(ICON_ALIGN == "left"){
-				$tmp = "<a href=\"".e_SELF."?cat.".$category_id."\"><img style=\"float: ".ICON_ALIGN."; border:0\"  src=\"".$category_icon."\" alt=\"\" /></a>";
+				$tmp = "<a href=\"news.php?cat.".$category_id."\"><img style=\"float: ".ICON_ALIGN."; border:0\"  src=\"".$category_icon."\" alt=\"\" /></a>";
 				$caption = $tmp.$caption."</td></tr></table>";
 			}else{
-				$caption .= "</td><td style=\"text-align:right; width:50%\"><a href=\"".e_SELF."?cat.".$category_id."\"><img style=\"float: ".ICON_ALIGN."; border:0\"  src=\"".$category_icon."\" alt=\"\" /></a></td></tr></table>";
+				$caption .= "</td><td style=\"text-align:right; width:50%\"><a href=\"news.php?cat.".$category_id."\"><img style=\"float: ".ICON_ALIGN."; border:0\"  src=\"".$category_icon."\" alt=\"\" /></a></td></tr></table>";
 			}
 		}
 		if(INFO_POSITION == "belowcaption"){
@@ -323,7 +323,7 @@ class news{
 			unset($text);
 		}
 		if(ICON_SHOW == TRUE && ICON_POSITION == "body" && $category_icon != ""){
-			$text .= "<a href=\"".e_SELF."?cat.".$category_id."\"><img style=\"float: ".ICON_ALIGN."; border:0\"  src=\"".$category_icon."\" alt=\"\" /></a>";
+			$text .= "<a href=\"news.php?cat.".$category_id."\"><img style=\"float: ".ICON_ALIGN."; border:0\"  src=\"".$category_icon."\" alt=\"\" /></a>";
 		}
 		if(TITLE_POSITION == "body"){
 			$text .= "<div style=\"text-align:".TITLE_ALIGN."\">".TITLE_STYLE_START.$news_title.TITLE_STYLE_END."</div><br />";
@@ -334,7 +334,7 @@ class news{
 		if($modex == "preview" && $news_extended != ""){
 			$text .= "<br />[Extended text]: ".$news_extended;
 		}else if($news_extended != "" && $modex != "extend"){
-			$text .= "<br /><a href=\"".e_SELF."?extend.".$news_id."\">".EXTENDED_STRING."</a>";
+			$text .= "<br /><a href=\"news.php?extend.".$news_id."\">".EXTENDED_STRING."</a>";
 		}		
 		if($modex == "extend"){
 			$text .= "<br />".$news_extended;

@@ -188,7 +188,7 @@ $ns -> tablerender("<div style=\"text-align:center\">Content Pages</div>", $text
 ?>
 <script type="text/javascript">
 function addtext(sc){
-	document.articlepostform.content_content.value += sc;
+	document.dataform.data.value += sc;
 }
 </script>
 <?php

@@ -112,7 +112,7 @@ if(!$sql -> db_Select("user", "*",  "ORDER BY user_id $order LIMIT $from,$record
 		renderuser($row);
 	}
 }
-
+require_once(e_BASE."classes/np_class.php");
 $ix = new nextprev("user.php", $from, $records, $users_total, LAN_138, $records.".".$order);
 
 function renderuser($row){

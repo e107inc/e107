@@ -189,7 +189,8 @@ while ($file = readdir($handle)){
 closedir($handle);
 
 for($c=1; $c<=(count($avatarlist)-1); $c++){
-	$text .= "<a href='javascript:addtext2('avatar_$c')'><img src='themes/shared/avatars/".$avatarlist[$c]."' style='border:0' alt='' />\n";
+	$text .= "<a href='javascript:addtext2(\"$avatarlist[$c]\")'><img src='themes/shared/avatars/".$avatarlist[$c]."' style='border:0' alt='' />n";
+//	$text .= "<a href='javascript:addtext2('avatar_$c')'><img src='themes/shared/avatars/".$avatarlist[$c]."' style='border:0' alt='' />\n";
 }
 
 $text .= "<br />
@@ -227,11 +228,6 @@ $text .= "</select>
 <input type='hidden' name='_uid' value='$_uid'>
 <input type='hidden' name='_pw' value='$user_password'>
 </form>
-<br />
-<br />
-<span class='smalltext'>
-".LAN_10."
-</span>
 ";
 
 $ns -> tablerender(LAN_155, $text);

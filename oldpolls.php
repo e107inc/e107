@@ -82,7 +82,7 @@ while($poll[$c]){
 	$text .= "</table>";
 	$ns -> tablerender("", $text);
 }
-
+require_once(e_BASE."classes/np_class.php");
 $ix = new nextprev("oldpolls.php", $from, 10, $poll_total, LAN_96);
 
 

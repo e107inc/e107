@@ -120,17 +120,10 @@ echo "<table style=\"width:100%\" cellspacing=\"10\" cellpadding=\"10\">
 
 // security update added by que
 if(ADMIN == TRUE){
- if(!eregi("/admin.php", $_SERVER['PHP_SELF'])){
+ if(!eregi("admin.php", e_SELF)){
 	 $text = "<a href=\"".e_ADMIN."admin.php\">Admin Front Page</a>
 <br />
-
-
-
-
 ".(eregi("menu_config", e_SELF) ? "<a href=\"../../index.php\">Leave Admin Area</a>" : "<a href=\"../index.php\">Leave Admin Area</a>")."
-
-
-
 <br />
 <br />";
 
@@ -211,14 +204,6 @@ if(getperms("0")){
 }
 
 
-
-
-
-
-
-
-
-
 	$text .= "<a href=\"".e_ADMIN."admin.php?logout\">Logout</a>";
 	$ns -> tablerender("Admin Navigation", $text);
 
@@ -257,7 +242,19 @@ if(!eregi("menu_config", e_SELF)){
 		closedir($handle);
 	}
 }
+
+echo "<br />";
+if(!MAGIC_QUOTES_GPC){
+	message_handler("ADMIN_MESSAGE", "The PHP setting 'MAGIC_QUOTES_GPC' is set to 0 (off), this could cause problems with text containing apostrophes or quotation marks not being entered into the database. To resolve, either edit your php.ini file and set the magic_quotes_gpc entry to 'On', or if your site is on a remote server use a .htaccess file to set the value (see http://e107.org/faq.php for an explanatiion on how to do this). If you cannot do either of these things try opening your config.php file in a text editor and uncommenting the define(\"MQ\", TRUE); line (remove the //).", __LINE__, __FILE__);
+}
+
+if(SAFE_MODE){
+	message_handler("ADMIN_MESSAGE", "Your server is running in safe mode, this could affect certain scripts such as the filemanager filemanager.", __LINE__, __FILE__);
+}
+
+if(OPEN_BASEDIR){
+	message_handler("ADMIN_MESSAGE", "Your server is running with a basedir restriction in effect. This disallows usage of any file outside of your home directory and as such could affect certain scripts such as the filemanager.", __LINE__, __FILE__);
+}
+echo "</td>
+<td style='width:60%; vertical-align: top;'>";
 ?>
-<br />
-</td>
-<td style="width:60%; vertical-align: top;">

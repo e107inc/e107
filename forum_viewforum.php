@@ -33,7 +33,10 @@ $row = $sql-> db_Fetch(); extract($row);
 
 if(!$forum_active || $forum_class && !check_class($forum_class)){ header("Location:".e_HTTP."forum.php"); }
 
-if(preg_match("/^".preg_quote(ADMINNAME)."/", $forum_moderators)){
+//if(preg_match("/^".preg_quote(ADMINNAME)."/", $forum_moderators)){
+
+if(preg_match("/".preg_quote(ADMINNAME)."/", $forum_moderators) && getperms("A")){
+
 	define("MODERATOR", TRUE);
 }else{
 	define("MODERATOR", FALSE);
@@ -63,7 +66,7 @@ $text = "<table style='width:100%' class='fborder'>
 if($pages){
 	$text .= "<br />".LAN_316;
 	for($c=0; $c < $pages; $c++){
-		if($view*$c == $from ? $text .= "<u>".($c+1)."</u> " : $text .= "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
+		if($view*$c == $from ? $text .= "<b>".($c+1)."</b> " : $text .= "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
 	}
 }
 	

@@ -103,8 +103,15 @@ if($sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, ".$cha
 		}
 
 		$cb_message = preg_replace("#src='#si" ,"src='".e_BASE, $cb_message);
-		if(!$pref['cb_linkreplace'][1]){
-			$cb_message = preg_replace("/([^\s]{".$cb_wordwrap."})/", "$1\n", $cb_message);
+		if(!eregi("<a href|<img", $cb_message)){
+			$message_array = explode(" ", $cb_message);
+			for($i=0; $i<=(count($message_array)-1); $i++){
+				if(strlen($message_array[$i]) > $cb_wordwrap){
+					$message_array[$i] = preg_replace("/([^\s]{".$cb_wordwrap."})/", "$1<br />", $message_array[$i]);
+				}
+			}
+			$cb_message = implode(" ",$message_array);
+
 		}
 		if(CB_STYLE != "CB_STYLE"){
 			$CHATBOXSTYLE = CB_STYLE;

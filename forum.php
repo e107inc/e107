@@ -61,7 +61,12 @@ echo "
 </tr>";
 
 if(!$sql -> db_Select("forum", "*", "forum_parent='0' ORDER BY forum_order ASC")){
-	$text .= "<tr><td>".LAN_51."</td></tr>";
+	$text .= "<tr><td colspan='5' style='text-align:center'><br />".LAN_51."<br /><br /></td></tr><table></td></tr></table>";
+	echo $text;
+	require_once(FOOTERF);
+	exit;
+
+
 }else{
 	$sql2 = new db; $sql3 = new db;
 
@@ -205,7 +210,7 @@ if(USER){
 	$text .= "<br /><a href='".e_SELF."?mark.all.as.read'>".LAN_199."</a>";
 }
 
-if(USERREALM){
+if(USERREALM && USER){
 	$text .= "<br /><a href='".e_SELF."?track'>".LAN_393."</a>";
 }
 $text .= "</td></tr><tr><td style='width:95%' class='forumheader3'>
@@ -258,7 +263,7 @@ $text .= "</td></tr><tr><td style='width:95%' class='forumheader3'>
 			$text .= "<tr>
 			<td style='text-align:center; vertical-align:middle; width:6%'  class='forumheader3'>".$icon."</td>
 			<td style='vertical-align:middle; text-align:left; width:80%'  class='forumheader3'><span class='mediumtext'>".$thread_name."</span></td>
-			<td style='vertical-align:middle; text-align:center; width:14%'  class='forumheader3'><span class='mediumtext'><a href='".e_SELF."?untrack.".$thread_id."'>".LAN_392."</a></td>
+			<td stqle='vertical-align:middle; text-align:center; width:14%'  class='forumheader3'><span class='mediumtext'><a href='".e_SELF."?untrack.".$thread_id."'>".LAN_392."</a></td>
 			</tr>";
 		}
 	}
@@ -333,17 +338,6 @@ $text .= "</span></td></tr>
 </table>
 </div>";
 echo $text;
-
-
-
-
-
-
-
-
-
-
-
 
 
 

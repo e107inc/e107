@@ -63,7 +63,7 @@ if(IsSet($_POST['edit']) || $action == "edit"){
         }else{
                 $sql -> db_Select("links", "*", "link_id='".$_POST['existing']."' ");
         }
-        list($link_id, $link_name, $link_url, $link_description, $link_button, $link_category, $link_refer) = $sql-> db_Fetch();
+		$row = $sql -> db_Fetch(); extract($row);
 }
 
 if(IsSet($_POST['confirm'])){
@@ -195,12 +195,16 @@ $text .= "<span class='twelvept'> [ <a href='link_category.php'>Add/Edit Categor
 <tr>
 <td style='width:30%' class='forumheader3'>Link Open Type: </td>
 <td style='width:70%' class='forumheader3'>
+
 <select name='linkopentype' class='tbox'>
-<option value='0' selected>opens in same window</option>
-<option value='1'>_target=blank</option>
-<option value='2'>_target=parent</option>
-<option value='3'>_target=top</option>
-<option value='4'>open in 600x400 miniwindow</option>
+
+".
+(!$link_open ? "<option value='0' selected>opens in same window</option>" : "<option value='0'>opens in same window</option>").
+($link_open == 1 ? "<option value='1' selected>_target=blank</option>" : "<option value='1'>_target=blank</option>").
+($link_open == 2 ? "<option value='2' selected>_target=parent</option>" : "<option value='2'>_target=parent</option>").
+($link_open == 3 ? "<option value='3' selected>_target=top</option>" : "<option value='3'>_target=top</option>").
+($link_open == 4 ? "<option value='4' selected>open in 600x400 miniwindow</option>" : "<option value='4'>open in 600x400 miniwindow</option>")."
+
 </select>
 
 </td>

@@ -15,7 +15,7 @@
 require_once("../class2.php");
 
 if(IsSet($_POST['update_settings'])){
-	if($_POST['a_name'] != "" && $_POST['a_password'] != "" && $_POST['a_password2'] != "" && ($_POST['a_password'] == $_POST['a_password2'])){
+	if($_POST['a_password'] != "" && $_POST['a_password2'] != "" && ($_POST['a_password'] == $_POST['a_password2'])){
 		$sql -> db_Update("user", "user_password='".md5($_POST['a_password'])."', user_pwchange='".time()."' WHERE user_name='".ADMINNAME."' ");
 		$se = TRUE;
 	}else{

@@ -64,6 +64,7 @@ $comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='$field' A
 if($comment_total){
 	while($row = $sql -> db_Fetch()){
 		$text .= $cobj -> render_comment($row);
+		$text = preg_replace("/([^s]{80})/", "$1\n", $text);
 	}
 	if(!defined("emessage")){
 		$ns -> tablerender(LAN_5, $text);

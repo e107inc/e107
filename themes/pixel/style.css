@@ -277,7 +277,7 @@ p {
 	background-image : url(../shared/forum/finfobar.png);
 }
 
-.forumlink{
+a.forumlink{
 	color: #fff;
 	text-decoration: underline;
 }

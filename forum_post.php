@@ -16,7 +16,6 @@ require_once("class2.php");
 require_once(HEADERF);
 require_once(e_BASE."classes/ren_help.php");
 require_once(e_BASE."classes/mail.php");
-$captionlinkcolour = "#504F40";
 $gen = new convert;
 $aj = new textparse();
 $fp = new floodprotect;
@@ -62,8 +61,8 @@ if(IsSet($_POST['submitpoll'])){
 	<td style='vertical-align:center; width:80%' class='forumheader2'>
 	<br />".LAN_384."<br />
 
-	<span class='defaulttext'><a href='".e_HTTP."forum_viewtopic.php?".$thread_forum_id.".".$thread_id."'>".LAN_325."</a><br />
-	<a href='".e_HTTP."forum_viewforum.php?".$forum_id."'>".LAN_326."</a></span><br /><br />
+	<span class='defaulttext'><a class='forumlink' href='".e_HTTP."forum_viewtopic.php?".$thread_forum_id.".".$thread_id."'>".LAN_325."</a><br />
+	<a class='forumlink' href='".e_HTTP."forum_viewforum.php?".$forum_id."'>".LAN_326."</a></span><br /><br />
 	</td></tr></table>";
 	require_once(FOOTERF);
 	exit;
@@ -161,7 +160,7 @@ if(IsSet($_POST['newthread'])){
 		$sql -> db_Select("forum_t", "*", "thread_thread='$post' ");
 		$row = $sql-> db_Fetch(); extract($row);
 		
-		if(IsSet($_POST['poll_title'])){
+		if($_POST['poll_title'] != "" && $_POST['poll_option'][0] != "" && $_POST['poll_option'][1] != ""){
 			require_once(e_BASE."classes/poll_class.php");
 			$poll = new poll;
 			$poll -> submit_poll(0, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], $thread_id, "forum");
@@ -366,8 +365,9 @@ $text .= r_emote();
 
 if($pref['email_notify'][1] && $action == "nt"){
 	$text .= "
-	<span class='defaulttext'>".LAN_380."</span>
-	<input type='checkbox' name='email_notify' value='1'>";
+	<span class='defaulttext'>".LAN_380."</span>".
+	($_POST['email_notify'] ? "<input type='checkbox' name='email_notify' value='1' checked>" : "<input type='checkbox' name='email_notify' value='1'>");
+
 }
 
 if(ADMIN && getperms("5")){
@@ -467,6 +467,7 @@ if($action == "rp"){
 	$thread_datestamp  = $gen->convert_date($thread_datestamp , "forum");
 	$thread_name = $aj -> tpa($thread_name, $mode="off");
 	$thread_thread = $aj -> tpa($thread_thread, $mode="off");
+	$thread_thread = preg_replace("/([^s]{80})/", "$1\n", $thread_thread);
 	echo "<table style='width:100%' class='fborder'>
 	<tr>
 	<td colspan='2' class='fcaption' style='vertical-align:top'>".LAN_327;

@@ -113,7 +113,7 @@ if(!$sql -> db_Select("news", "*", "news_active=0 AND (news_start=0 || news_star
 		}
 	}
 }
-
+require_once(e_BASE."classes/np_class.php");
 $ix = new nextprev("news.php", $from, ITEMVIEW, $news_total, LAN_84);
 
 require_once(FOOTERF);

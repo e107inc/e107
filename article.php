@@ -50,7 +50,7 @@ if($id == "list"){
 		$sql2 = new db;
 		while($row = $sql-> db_Fetch()){
 			extract($row);
-			if($content_summary == "0"){ $content_summary = "No summary."; }
+			if($content_summary == "0"){ $content_summary = LAN_398; }
 			$datestamp = $gen->convert_date($content_datestamp, "short");
 			$text .= "<a href='".e_HTTP."article.php?".$content_id.".0'><b>".$content_heading."</b></a> <span class='smalltext'>".$datestamp."</span>
 			<br />".$content_summary."<br />";
@@ -62,7 +62,7 @@ if($id == "list"){
 			
 		$ns -> tablerender("<div style='text-align:center'>".LAN_100."</div>", $text);
 
-
+		require_once(e_BASE."classes/np_class.php");
 		if(!$page ? $ix = new nextprev("article.php", $from, $itemview, $total, LAN_100, "list.".$page) : $ix = new nextprev("article.php", $from, $itemview, $total, LAN_190, "list.".$page));
 
 		require_once(FOOTERF);

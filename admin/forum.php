@@ -377,15 +377,14 @@ $text .= "
 
 <td style='width:20%' class='forumheader3'>Moderators:<br /><span class='smalltext'>(tick to make active on this forum)</span></td>
 <td style='width:80%' class='forumheader3'>";
-
 $admin_no = $sql -> db_Select("user", "*", "user_admin='1' AND user_perms REGEXP('A.') OR user_perms='0' "); 
 while($row = $sql-> db_Fetch()){	
 	extract($row);
 	$text .= "<input type='checkbox' name='mod[]' value='".$user_name ."'";
-		if(eregi($user_name, $forum_moderators)){
-			$text .= " checked";
-		}
-		$text .= "> ".$user_name ."<br />";
+	if(preg_match('/'.preg_quote($user_name).'/', $forum_moderators)){
+		$text .= " checked";
+	}
+	$text .= "> ".$user_name ."<br />";
 }
 
 $text .= "</td>

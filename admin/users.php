@@ -169,6 +169,7 @@ $ns -> tablerender("Members", $text);
 if(IsSet($_POST['searchsubmit'])){
 	echo "<div style='text-align:center'>Search returned ".$results." result(s).</div>";
 }else{
+	require_once(e_BASE."classes/np_class.php");
 	$ix = new nextprev("users.php", $from, $view, $total, LAN_315, $order.".".$ordert.".".$view);
 }
 

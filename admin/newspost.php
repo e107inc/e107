@@ -176,7 +176,7 @@ $text .= " [ <a href=\"news_category.php\">Add/Edit Categories</a> ]
 <tr> 
 <td style=\"width:20%\" class=\"forumheader3\">Title:</td>
 <td style=\"width:80%\" class=\"forumheader3\">
-<input class=\"tbox\" type=\"text\" name=\"news_title\" size=\"80\" value=\"$news_title\" maxlength=\"200\" />
+<input class=\"tbox\" type=\"text\" name=\"news_title\" size=\"80\" value=`$news_title` maxlength=\"200\" />
 </td>
 </tr>
 <tr> 

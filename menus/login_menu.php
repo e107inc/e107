@@ -11,7 +11,7 @@ if($pref['user_reg'][1] == 1 || ADMIN == TRUE){
 				$text = ($pref['maintainance_flag'][1]==1 ? "<div style='text-align:center'><b>The maintenance flag is true - this means normal visitors are being redirected to sitedown.php. To reset the flag go to admin/maintenance.</div></b><br />" : "" );
 				$text .= "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_ADMIN."admin.php'>Admin</a><br />";
 			}
-			$text .= "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='usersettings.php'>Settings</a>
+			$text .= "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_BASE."usersettings.php'>Settings</a>
 <br />
 <img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".$_SERVER['PHP_SELF']."?logout'>".LAN_172."</a>";
 		
@@ -44,7 +44,7 @@ if($pref['user_reg'][1] == 1 || ADMIN == TRUE){
 
 		}else{
 			$text = "<div style='text-align:center'>".LAN_171."<br /><br />
-			<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='index.php?logout'>".LAN_172."</a></div>";
+			<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_BASE."index.php?logout'>".LAN_172."</a></div>";
 			$ns -> tablerender(LAN_173, $text);
 		}
 	}else{
@@ -69,7 +69,7 @@ $text .= "'><p>
 <br />
 <input type='checkbox' name='autologin' value='1' /> Auto Login
 <br /><br />
-[ <a href='signup.php'>".LAN_174."</a> ]<br />[ <a href='fpw.php'>".LAN_212."</a> ]
+[ <a href='".e_BASE."signup.php'>".LAN_174."</a> ]<br />[ <a href='".e_BASE."fpw.php'>".LAN_212."</a> ]
 </p>
 </form>
 </div>";

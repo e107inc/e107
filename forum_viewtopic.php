@@ -55,7 +55,7 @@ require_once(HEADERF);
 $sql -> db_Select("forum_t", "*", "thread_id='".$thread_id."' ORDER BY thread_datestamp DESC ");
 $row = $sql-> db_Fetch(); extract($row);
 
-if(preg_match('/^'.preg_quote(ADMINNAME).'/', $forum_moderators)){
+if(preg_match("/".preg_quote(ADMINNAME)."/", $forum_moderators) && getperms("A")){
 	define("MODERATOR", TRUE);
 }else{
 	define("MODERATOR", FALSE);
@@ -191,9 +191,9 @@ if(!$post_author_id){
 			}
 			$user_image = e_HTTP."themes/shared/avatars/".$avatarlist[substr(strrchr($user_image, "_"), 1)];
 		}else{
-			if(!$fp = @fopen($user_image,"r")){
-				$user_image = e_BASE."themes/shared/generic/broken.png";
-			}
+//			if(!$fp = @fopen($user_image,"r")){
+//				$user_image = e_BASE."themes/shared/generic/broken.png";
+//			}
 		}
 		$starter_info .= "<div class='spacer'><img src='".$user_image."' alt='' /></div>";
 	}
@@ -213,6 +213,7 @@ if($post_author_id){ $starter_info .= LAN_67.": $starter_count"; }
 
 $date_info = "<div class='smallblacktext'><img src='".FTHEME."post.png' alt='' /> ".$thread_datestamp."</div>";
 $post_info .= $aj -> tpa($thread_thread, $mode="off");
+$post_info = preg_replace("/([^s]{80})/", "$1\n", $post_info);
 
 if($user_signature){
 	$user_signature = $aj -> tpa($user_signature);
@@ -337,9 +338,9 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 					}
 					$user_image = e_HTTP."themes/shared/avatars/".$avatarlist[substr(strrchr($user_image, "_"), 1)];
 				}else{
-					if(!$fp = @fopen($user_image,"r")){
-						$user_image = e_BASE."themes/shared/generic/broken.png";
-					}
+//					if(!$fp = @fopen($user_image,"r")){
+//						$user_image = e_BASE."themes/shared/generic/broken.png";
+//					}
 				}
 				$starter_info .= "<div class='spacer'><img src='".$user_image."' alt='' /></div>";
 			}
@@ -356,6 +357,7 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 
 		$date_info = "<div class='smallblacktext'><img src='".FTHEME."post.png' alt='' /> ".$gen->convert_date($thread_datestamp, "forum")."</div>";
 		$post_info .= $aj -> tpa($thread_thread, $mode="off");
+		$post_info = preg_replace("/([^s]{80})/", "$1\n", $post_info);
 
 		if($user_signature){
 			$user_signature = $aj -> tpa($user_signature);

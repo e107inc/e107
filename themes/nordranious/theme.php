@@ -21,6 +21,9 @@ $themeauthor = "jalist";
 $themedate = "26/08/02";
 $themeinfo = "compatible with e107 v5+<br />Made as an example of using different styles for left/right/center columns";
 
+define("THEME_DISCLAIMER", "<br />nordranious theme by jalist (e107 default)");
+
+
 // [layout]
 
 $layout = "_default";

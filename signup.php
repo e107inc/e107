@@ -15,6 +15,8 @@
 require_once("class2.php");
 if($pref['user_reg'][1] == 0){header("location:".e_HTTP."index.php");}
 
+if(USER){header("location:".e_HTTP."index.php");}
+
 if(e_QUERY != ""){
 	$qs = explode(".", e_QUERY);
 	if($qs[0] == "activate"){
@@ -35,6 +37,9 @@ if(e_QUERY != ""){
 
 if(IsSet($_POST['register'])){
 	$_POST['name'] = trim(chop($_POST['name']));
+	if($_POST['name'] == "Anonymous"){
+		$error = LAN_104."<br />";
+	}
 	if($sql -> db_Select("user", "*", "user_name='".$_POST['name']."' ")){
 		$error = LAN_104."<br />";
 	}	

@@ -80,6 +80,8 @@ if($_POST['searchtype']){
 		if($content_type == 3){ $searchtype = 4; }
 		if($content_type == 1){ $searchtype = 5; }
 	}
+
+	if(!$searchtype){ $searchtype = 1; }
 	
 }
 

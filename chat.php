@@ -26,6 +26,7 @@ while($row = $sql-> db_Fetch()){
 	$cb_nick = eregi_replace("[0-9]+\.", "", $row['cb_nick']);
 	$cb_message = $aj -> tpa($row['cb_message']);
 	$cb_message = stripslashes($cb_message);
+	$cb_message = preg_replace("/([^s]{100})/", "$1\n", $cb_message);
 	$text .= "\n<div class='spacer'>
 <img src='".THEME."images/bullet2.gif' alt='bullet' />
 <b>".$cb_nick."</b> on ".$datestamp."<br /><i>".$cb_message."</i>
@@ -33,6 +34,7 @@ while($row = $sql-> db_Fetch()){
 <br />\n";
 	}
 $ns -> tablerender(LAN_11, $text);
+require_once(e_BASE."classes/np_class.php");
 $ix = new nextprev("chat.php", $from, 30, $chat_total, LAN_12);
 require_once(FOOTERF);
 ?>

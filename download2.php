@@ -211,7 +211,7 @@ if(e_QUERY){
 	<div style='text-align:center'>$tdownloads ".LAN_361." $records ".LAN_362."</div>";
 
 	$ns -> tablerender("Downloads: ".$type, $text);
-
+	require_once(e_BASE."classes/np_class.php");
 	$nx = new nextprev("download2.php", $from, $records, $core_total, LAN_363, $dtype.".".$records.".".$order.".".$sort.".!");
 	require_once(FOOTERF);
 	exit;

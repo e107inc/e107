@@ -82,9 +82,11 @@ if(strpos(e_QUERY, ".")){
 
 $files=array();
 $dirs=array();
+$path=explode("?",$path); // remove ?arguments 
+$path=$path[0];
 
 if($handle = opendir(e_BASE.$path)){
-	while (false !== ($file = readdir($handle))) { 
+	while (false !== ($file = readdir($handle))){ 
 		if($file != "." && $file != ".."){
 
 			if(getenv('windir') && is_file(e_BASE.$path."\\".$file)){

@@ -20,8 +20,7 @@ $text = "<font style='FONT-SIZE: 11px; COLOR: black; FONT-FAMILY: Tahoma, Verdan
 <hr />
 <br />
 
-<div style='text-align:center'><b>- Temporarily Closed -</b><br /><br />We have temporarily closed the site for some essential maintainance. This shouldn't take too long - please check back soon, apologies for the inconvinience.
-</font>";
+<div style='text-align:center'><b>- Temporarily Closed -</b><br /><br />We have temporarily closed the site for some essential maintainance. This shouldn't take too long - please check back soon, apologies for the inconvinience.";
 
 echo $text;
 
