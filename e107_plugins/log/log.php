@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/log.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-12-14 21:06:49 $
+|     $Revision: 1.3 $
+|     $Date: 2004-12-14 21:13:03 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -135,7 +135,7 @@ if($pref['log_activate']){
 
 // end last visitors -----------------------------------------------------------------------------------------------------------------------------------------------------------
 header("Content-type: text/css");
-echo ".all_your_base_belong_to_us {color: green;}";
+echo ".SweetAs_Is_A_DUMMY {color: green;}";
 // functions -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 function getbrowser(){
         $agent = $_SERVER['HTTP_USER_AGENT'];
