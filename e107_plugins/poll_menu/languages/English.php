@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll_menu/languages/English.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-03 19:47:06 $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-03 19:58:55 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -38,17 +38,13 @@ define("POLL_507", "yes");
 define("POLL_508", "no");
 
 define("PAGE_NAME", "Old Polls");
+define("POLL_509", "No old polls yet.");
+define("POLL_510", "Posted by");
+define("POLL_511", "Total votes:");
 
-define("LAN_92", "Old Polls");
-define("LAN_93", "No old polls yet.");
-define("LAN_94", "Posted by");
-define("LAN_95", "Total votes:");
-define("LAN_96", "Polls");
-define("LAN_97", "Show Comments");
 
-define("LAN_98", "Poll");
-define("LAN_99", "Active from ");
-define("LAN_100", " to ");
+define("POLL_515", "Active from ");
+define("POLL_516", " to ");
 
 
 ?>

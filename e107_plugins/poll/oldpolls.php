@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/oldpolls.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-03-03 19:47:49 $
+|     $Revision: 1.3 $
+|     $Date: 2005-03-03 19:59:01 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -52,11 +52,14 @@ if(e_QUERY)
 			$percentage[] = round(($votes/$voteTotal) * 100, 2);
 		}
 
+		$start_datestamp = $gen->convert_date($poll_datestamp, "long");
+		$end_datestamp = $gen->convert_date($poll_end_datestamp, "long");
+
 		$text = "<table style='width:100%'>
 		<tr>
 		<td colspan='2' class='mediumtext' style='text-align:center'>
 		<b>".$tp -> toHTML($poll_title)."</b>
-		<div class='smalltext'>".LAN_94." <a href='".e_BASE."user.php?id.$user_id'>".$user_name."</a>. ".LAN_99.$datestamp.LAN_100.$end_datestamp.". ".LAN_95." $voteTotal</div>
+		<div class='smalltext'>".POLL_510." <a href='".e_BASE."user.php?id.$user_id'>".$user_name."</a>.<br /> ".POLL_515.$start_datestamp.POLL_516.$end_datestamp.".<br />".POLL_511." $voteTotal</div>
 		<br />
 		 
 		</td>
@@ -93,7 +96,7 @@ if(e_QUERY)
 		}
 	 
 		$text .= "</table>";
-		$ns->tablerender(LAN_98." #".$poll_id, $text);
+		$ns->tablerender(POLL_184." #".$poll_id, $text);
 	}
 }
 
@@ -118,7 +121,7 @@ ORDER BY p.poll_datestamp DESC";
 
 if(!$sql->db_Select_gen($query))
 {
-	$ns->tablerender(LAN_92, "<div style='text-align:center'>".LAN_93."</div>");
+	$ns->tablerender(POLL_165, "<div style='text-align:center'>".POLL_509."</div>");
 	require_once(FOOTERF);
 	exit;
 }
@@ -147,10 +150,38 @@ foreach($oldpollArray as $oldpoll)
 }
 	
 $text .= "</table>";
-$ns->tablerender(LAN_98." #".$poll_id, $text);
+$ns->tablerender(POLL_165, $text);
 require_once(FOOTERF);
 exit;
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 $sql->db_Select("poll", "*", "poll_active='0' ORDER BY poll_datestamp DESC LIMIT $from, 10");
 	
 $sql2 = new db;
