@@ -21,6 +21,15 @@ if (ADMIN) {
 				}
 			}
 
+			require_once(e_HANDLER.'file_class.php');
+			$fl = new e_file;
+			$pluginList = $fl->get_files(e_PLUGIN, "^adminlist\.php$", "standard", 1);
+
+			foreach($pluginList as $p)
+			{
+				$text .= include($p['path']."/".$p['fname']);
+			}
+
 			return $ns -> tablerender(ADLAN_134, $text, '', TRUE);	
 		}
 	}
