@@ -37,15 +37,14 @@ if(IsSet($_POST['commentsubmit'])){
 		$row = $sql -> db_Fetch();
 		if(!$row[0] && (ANON===TRUE || USER===TRUE)){
 			$cobj -> enter_comment($_POST['author_name'], $_POST['comment'], $table, $id);
-			$sql -> db_Delete("cache", "cache_url='comment.php?$table.$id'");
+			clear_cache("comment.php?$table.$id");
 		}
 	}
 }
 
-if($sql -> db_Select("cache", "*", "cache_url='comment.php?$table.$id' ")){
-	$row = $sql -> db_Fetch(); extract($row);
+if($cache = retrieve_cache("comment.php?$table.$id"){
 	require_once(HEADERF);
-	echo stripslashes($cache_data);
+	echo $cache;
 }else{
 	if($table == "news"){
 		if(!$sql -> db_Select("news", "*", "news_id='$id' ")){
@@ -85,7 +84,6 @@ if($sql -> db_Select("cache", "*", "cache_url='comment.php?$table.$id' ")){
 			$row = $sql -> db_Fetch();
 			extract($row);
 			require_once(HEADERF);
-//			ob_start();
 			require_once(e_PLUGIN."poll_menu/poll_menu.php");
 			$field = $poll_id;
 			$comtype = 4;
@@ -103,11 +101,10 @@ if($sql -> db_Select("cache", "*", "cache_url='comment.php?$table.$id' ")){
 			$ns -> tablerender(LAN_5, "<div style='text-align:center'><b>".emessage."</b></div><br /><br />".$text);
 		}
 	}
-
 	
 	if($pref['cachestatus'] && !strstr(e_QUERY, "poll")){
-		$cache = mysql_escape_string(ob_get_contents());
-		$sql -> db_Insert("cache", "'comment.php?$table.$field', '".time()."', '$cache' ");
+		$cache = ob_get_contents();
+		set_cache("comment.php?{$table}.{$field}",$cache);
 	}
 }
 

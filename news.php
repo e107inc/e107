@@ -192,7 +192,7 @@ if(!$disablecache && !e_QUERY){
         $cache = $aj -> formtpa(ob_get_contents(), "admin");
         set_cache("news.php", $cache);
 }else{
-        $sql -> db_Delete("cache", "cache_url='news.php' ");
+		clear_cache("news.php");
 }
 require_once(e_HANDLER."np_class.php");
 if($action != "item"){ $ix = new nextprev("news.php", $from, ITEMVIEW, $news_total, LAN_84, ($action == "list" ? e_QUERY: "")); }

@@ -27,7 +27,7 @@ class news{
 			$news_extended = $aj -> formtpa($news_extended);
 			if($sql -> db_Update("news", "news_title='$news_title', news_body='$news_body', news_extended='$news_extended', news_category='$cat_id', news_allow_comments='$news_allow_comments', news_start='$active_start', news_end='$active_end', news_class='$news_class', news_render_type='$news_rendertype' WHERE news_id='$news_id' ")){
 				$message = "News updated in database.";
-				$sql -> db_Delete("cache", "cache_url='news.php' ");
+             clear_cache("news.php");
 			}else{
 				$message = "<b>Error!</b> Was unable to update news item into database!</b>";
 			}
@@ -37,7 +37,7 @@ class news{
 			$news_extended = $aj -> formtpa($news_extended);
 			if($sql -> db_Insert("news", "0, '$news_title', '$news_body', '$news_extended', ".time().", ".USERID.", $cat_id, $news_allow_comments, $active_start, $active_end, '$news_class', '$news_rendertype' ")){
 				$message = "News entered into database.";
-				$sql -> db_Delete("cache", "cache_url='news.php' ");
+             clear_cache("news.php");
 			}else{
 				$message = "<b>Error!</b> Was unable to enter news item into database!</b>";
 			}

@@ -22,9 +22,8 @@ $poll_total = $sql -> db_Count("poll", "(*)", "WHERE poll_active=0 AND poll_end_
 
 $p_query = e_PAGE.(e_QUERY ? "?".e_QUERY : "");
 
-if($sql -> db_Select("cache", "*", "cache_url='$p_query' ")){
-	$row = $sql -> db_Fetch(); extract($row);
-	echo stripslashes($cache_data); 
+if($cache = retrieve_cache($p_query)){
+	echo $cache;
 	require_once(e_HANDLER."np_class.php");
 	$ix = new nextprev("oldpolls.php", $from, 10, $poll_total, LAN_96);
 	require_once(FOOTERF);
@@ -109,8 +108,7 @@ while(list($poll_id, $poll_datestamp, $poll_end_datestamp, $poll_admin_id, $poll
 }
 
 if($pref['cachestatus']){
-	$cache = addslashes(ob_get_contents());
-	$sql -> db_Insert("cache", "'$p_query', '".time()."', '$cache' ");
+	set_cache($p_query,ob_get_contents());
 }
 
 
