@@ -22,6 +22,10 @@ $text = "<font style='font-size: 14px; color: black; font-family: Tahoma, Verdan
 <br />
 
 <div style='text-align:center'>".($pref['maintainance_text'] ? $tp -> tpa($pref['maintainance_text'],"","admin") : LAN_00)."</div>";
+echo "<html><head><title>".PAGE_NAME."</title></head><body>";
+
 echo $text;
+
+echo "</body></html>";
 
 ?>
