@@ -166,7 +166,7 @@ return $user['user_id'];
 SC_END
 
 SC_BEGIN USER_BIRTHDAY_ICON
-return defined("USER_BIRTHDAY_ICON") ? USER_BIRTHDAY_ICON : "<img src='".e_IMAGE."generic/bday.png' alt='' style='vertical-align:middle; height:16px; width:16px' /> ";
+return defined("USER_BIRTHDAY_ICON") ? USER_BIRTHDAY_ICON : "<img src='".e_IMAGE."user_icons/user_birthday_".IMODE.".png' alt='' style='vertical-align:middle; height:16px; width:16px' /> ";
 SC_END
 
 SC_BEGIN USER_BIRTHDAY
