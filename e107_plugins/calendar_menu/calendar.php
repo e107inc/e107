@@ -11,16 +11,20 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-03-18 02:13:57 $
+|     $Revision: 1.7 $
+|     $Date: 2005-03-30 17:47:33 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */ 
 // *BK* Comments or notes added by Barry are prefixed by  *BK*
 // get current date information ---------------------------------------------------------------------
-define("PAGE_NAME", "Show Calendar");
 require_once("../../class2.php");
 require_once(HEADERF);
+
+$ec_dir = e_PLUGIN . "calendar_menu/";
+$lan_file = $ec_dir . "languages/" . e_LANGUAGE . ".php";
+include(file_exists($lan_file) ? $lan_file : e_PLUGIN . "calendar_menu/languages/English.php");
+define("PAGE_NAME", EC_LAN_121);
 // *
 // *  *BK* Set up userclass list that the person belongs to. 0 for everyone, if logged in then also in 254
 // *  *BK* Members only 253
@@ -51,10 +55,11 @@ if (isset($_POST['doit']))
 {
     Header("Location: " . e_PLUGIN . "calendar_menu/event.php?ne." . $_POST['enter_new_val']);
 } 
-
+/* moved to top of file
 $ec_dir = e_PLUGIN . "calendar_menu/";
 $lan_file = $ec_dir . "languages/" . e_LANGUAGE . ".php";
 include(file_exists($lan_file) ? $lan_file : e_PLUGIN . "calendar_menu/languages/English.php");
+*/
 // new part by cam.
 $qs = explode(".", e_QUERY);
 $action = $qs[0];
@@ -72,10 +77,20 @@ else
     $year = $datearray['year'];
 } 
 // set up arrays for calender display ------------------------------------------------------------------
-$week = Array('S', 'M', 'T', 'W', 'T', 'F', 'S');
+// changed by rezso
+//$week = Array('S', 'M', 'T', 'W', 'T', 'F', 'S');
+if($pref['eventpost_weekstart'] == 'sun') {
+$week = Array(EC_LAN_25, EC_LAN_19, EC_LAN_20, EC_LAN_21, EC_LAN_22, EC_LAN_23, EC_LAN_24);
+	} else {
+$week = Array(EC_LAN_19, EC_LAN_20, EC_LAN_21, EC_LAN_22, EC_LAN_23, EC_LAN_24, EC_LAN_25);
+}	
 $months = Array(EC_LAN_0, EC_LAN_1, EC_LAN_2, EC_LAN_3, EC_LAN_4, EC_LAN_5, EC_LAN_6, EC_LAN_7, EC_LAN_8, EC_LAN_9, EC_LAN_10, EC_LAN_11);
 $monthabb = Array(EC_LAN_JAN, EC_LAN_FEB, EC_LAN_MAR, EC_LAN_APR, EC_LAN_MAY, EC_LAN_JUN, EC_LAN_JUL, EC_LAN_AUG, EC_LAN_SEP, EC_LAN_OCT, EC_LAN_NOV, EC_LAN_DEC);
+if($pref['eventpost_dateformat'] == 'my') {
 $calendar_title = "<a href='" . e_PLUGIN . "calendar_menu/event.php' class='mmenu'>" . $months[$datearray[mon]-1] . " " . $current_year . "</a>"; 
+	} else {
+$calendar_title = "<a href='" . e_PLUGIN . "calendar_menu/event.php' class='mmenu'>" . $current_year . " " . $months[$datearray[mon]-1] . "</a>";
+}	
 // show events-------------------------------------------------------------------------------------------
 // get first and last days of month in unix format---------------------------------------------------
 $monthstart = mktime(0, 0, 0, $month, 1, $year);
@@ -108,9 +123,13 @@ $ny = $year + 1;
 $nextlink = mktime(0, 0, 0, $month, 1, $ny);
 $cal_text = "<table style='width:98%' class='fborder'>
 	<tr>
-	<td class='forumheader' style='width:18%; text-align:left'><span class='defaulttext'><a href='" . e_SELF . "?" . $previous . "'>&lt;&lt; " . $months[($prevmonth-1)] . "</a></span></td>
-	<td class='fcaption' style='width:64%; text-align:center'><b>" . $months[($month-1)] . " " . $year . "</b></td>
-	<td class='forumheader' style='width:185%; text-align:right'><span class='defaulttext'><a href='" . e_SELF . "?" . $next . "'> " . $months[($nextmonth-1)] . " &gt;&gt;</a></span> </td>
+	<td class='forumheader' style='width:18%; text-align:left'><span class='defaulttext'><a href='" . e_SELF . "?" . $previous . "'>&lt;&lt; " . $months[($prevmonth-1)] . "</a></span></td>";
+if($pref['eventpost_dateformat'] == 'my') {	
+$cal_text .= "<td class='fcaption' style='width:64%; text-align:center'><b>" . $months[($month-1)] . " " . $year . "</b></td>";
+	} else {
+$cal_text .= "<td class='fcaption' style='width:64%; text-align:center'><b>" . $year . " " . $months[($month-1)] . "</b></td>";
+}
+$cal_text .= "<td class='forumheader' style='width:185%; text-align:right'><span class='defaulttext'><a href='" . e_SELF . "?" . $next . "'> " . $months[($nextmonth-1)] . " &gt;&gt;</a></span> </td>
 	</tr>
 	<tr>
 	<td class='forumheader3' style='text-align:left'><a href='calendar.php?" . $prevlink . "'>&lt;&lt; " . $py . "</a></td>
@@ -256,7 +275,7 @@ $text .= "<div style='text-align:center'>
 foreach($week as $day)
 {
     $text .= "<td class='fcaption' style='z-index: -1;background-color:black; width:90px;height:20px;text-align:center'>
-		<strong>" . $day . "</strong>
+		<strong>".substr($day,0,$pref['eventpost_lenday'])."</strong>
 		<img src='" . THEME . "images/blank.gif' alt='' height='12%' width='14%' />
 		</td>";
 } 
@@ -265,12 +284,23 @@ $calmonth = $datearray['mon'];
 $calday = $datearray['mday'];
 $calyear = $datearray['year'];
 
+// changed by rezso
+if ($pref['eventpost_weekstart'] == 'mon') {
+	$firstdayoffset = ($firstdayarray['wday'] == 0 ? $firstdayarray['wday']+6 : $firstdayarray['wday']-1);
+	} else {
+	$firstdayoffset = $firstdayarray['wday'] ;
+}
+for ($c=0; $c<$firstdayoffset; $c++) {
+    $text .= "<td style='width:12%;height:60px;'></td>";
+}
+$loop = $firstdayoffset;
+/*
 for ($c = 0; $c < $firstdayarray['wday']; $c++)
 {
     $text .= "<td style=' width:90px;height:60px;'></td>";
-} 
-
+}
 $loop = $firstdayarray['wday'];
+*/
 for ($c = 1; $c <= 31; $c++)
 {
     $dayarray = getdate($start + (($c-1) * 86400));

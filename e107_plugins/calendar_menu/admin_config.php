@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/admin_config.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-03-18 02:13:57 $
+|     $Revision: 1.7 $
+|     $Date: 2005-03-30 17:47:33 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -33,7 +33,10 @@ if (isset($_POST['updatesettings'])) {
 	$pref['eventpost_todaycss'] = $_POST['eventpost_todaycss'];
 	$pref['eventpost_addcat'] = $_POST['eventpost_addcat'];
 	$pref['eventpost_forum'] = $_POST['eventpost_forum'];	
-	$pref['eventpost_super'] = $_POST['eventpost_super'];		
+	$pref['eventpost_super'] = $_POST['eventpost_super'];
+	$pref['eventpost_dateformat'] = $_POST['eventpost_dateformat'];	
+	$pref['eventpost_weekstart'] = $_POST['eventpost_weekstart'];
+	$pref['eventpost_lenday'] = $_POST['eventpost_lenday'];			
 	save_prefs();
 	$message = EC_LAN_75; // "Calendar settings updated.";
 }
@@ -89,7 +92,42 @@ $text = "<div style='text-align:center'>
 	<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='checkbox' name='eventpost_forum' value='1' ".
 	($pref['eventpost_forum']==1?" checked='checked' ":"")." />
 	</td>
-	</tr> 
+	</tr>
+	<tr>
+	<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_114."</td>
+	<td style='width:60%;vertical-align:top;' class='forumheader3'>
+	<select name='eventpost_weekstart' class='tbox'>
+	<option value='sun' ".
+	($pref['eventpost_weekstart']=='sun'?" selected='selected' ":"")." />".EC_LAN_115."</option>
+	<option value='mon' ".
+	($pref['eventpost_weekstart']=='mon'?" selected='selected' ":"")." />".EC_LAN_116."</option>
+	</select>
+	</td>
+	</tr>
+	<tr>
+	<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_117."<br /></td>
+	<td style='width:60%;vertical-align:top;' class='forumheader3'>
+	<select name='eventpost_lenday' class='tbox'>
+	<option value='1' ".
+	($pref['eventpost_lenday']=='1'?" selected='selected' ":"")." /> 1 </option>
+	<option value='2' ".
+	($pref['eventpost_lenday']=='2'?" selected='selected' ":"")." /> 2 </option>
+	<option value='3' ".
+	($pref['eventpost_lenday']=='3'?" selected='selected' ":"")." /> 3 </option>
+	</select>
+	</td>
+	</tr>
+	<tr>
+	<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_118."<br /></td>
+	<td style='width:60%;vertical-align:top;' class='forumheader3'>
+	<select name='eventpost_dateformat' class='tbox'>
+	<option value='my' ".
+	($pref['eventpost_dateformat']=='my'?" selected='selected' ":"")." />".EC_LAN_119."</option>
+	<option value='ym' ".
+	($pref['eventpost_dateformat']=='ym'?" selected='selected' ":"")." />".EC_LAN_120."</option>
+	</select>
+	</td>
+	</tr>   
 	<tr style='vertical-align:top'>
 	<td colspan='2'  style='text-align:left' class='fcaption'>
 	<input class='button' type='submit' name='updatesettings' value='".EC_LAN_77."' />

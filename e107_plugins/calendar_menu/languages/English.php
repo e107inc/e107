@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: English.php,v 1.5 2005-03-18 02:14:47 mcfly_e107 Exp $
+// $Id: English.php,v 1.6 2005-03-30 17:49:39 mcfly_e107 Exp $
 	
 	
 define('EC_ADLAN_1', "Event Calendar");
@@ -38,13 +38,13 @@ define('EC_LAN_15', "Thursday");
 define('EC_LAN_16', "Friday");
 define('EC_LAN_17', "Saturday");
 define('EC_LAN_18', "Sunday");
-define('EC_LAN_19', "Mo");
-define('EC_LAN_20', "Tu");
-define('EC_LAN_21', "We");
-define('EC_LAN_22', "Th");
-define('EC_LAN_23', "Fr");
-define('EC_LAN_24', "Sa");
-define('EC_LAN_25', "Su");
+define('EC_LAN_19', "Mon");
+define('EC_LAN_20', "Tue");
+define('EC_LAN_21', "Wed");
+define('EC_LAN_22', "Thu");
+define('EC_LAN_23', "Fri");
+define('EC_LAN_24', "Sat");
+define('EC_LAN_25', "Sun");
 define('EC_LAN_26', "Events this Month");
 define('EC_LAN_27', "No events for this month.");
 define('EC_LAN_28', "Enter new event");
@@ -151,7 +151,15 @@ define('EC_LAN_109', "Unable to delete this event.");
 define('EC_LAN_110', "Event Number ");	
 define('EC_LAN_111', "All the events on ");	
 define('EC_LAN_112', "All the Events in ");	
-define('EC_LAN_113', "Event form already submitted.");	
+define('EC_LAN_113', "Event form already submitted.");
+define('EC_LAN_114', "Week starts with:");
+define('EC_LAN_115', "Sunday");
+define('EC_LAN_116', "Monday");
+define('EC_LAN_117', "Length of daynames (characters)");
+define('EC_LAN_118', "Date format in calendar header.");
+define('EC_LAN_119', "month/year");
+define('EC_LAN_120', "year/month");
+define('EC_LAN_121', "Show Calendar");	
 
 define('EC_ADLAN_A10', "Configuration");
 define('EC_ADLAN_A11', "Categories");
@@ -165,9 +173,9 @@ define('EC_ADLAN_A18', "Action");
 define('EC_ADLAN_A19', "Administer Categories");
 define('EC_ADLAN_A20', "Calendar Categories");
 define('EC_ADLAN_A21', "Category name");
-define('EC_ADLAN_A22', "Edit category");
-define('EC_ADLAN_A23', "Edit category");
-define('EC_ADLAN_A24', "Create category");
+
+define('EC_ADLAN_A23', "Create category");
+define('EC_ADLAN_A24', "Edit category");
 define('EC_ADLAN_A25', "Save");
 define('EC_ADLAN_A26', "Category created");
 define('EC_ADLAN_A27', "Unable to create category");
