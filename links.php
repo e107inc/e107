@@ -117,17 +117,23 @@ if($category){
 
 		$sql2 = new db;
 		while(list($link_category_id, $link_category_name, $link_category_description) = $sql-> db_Fetch()){
-		if($sql2 -> db_Select("links", "*", "link_category ='$link_category_id' ORDER BY link_order ")){
+		if($link_total = $sql2 -> db_Select("links", "*", "link_category ='$link_category_id' ORDER BY link_order ")){
 			unset($text);
+			$link_activ = 0;
 			while($row = $sql2-> db_Fetch()){
 				extract($row);
 				if(!$link_class || check_class($link_class)){
+					$link_activ++;
 					$text .= "<table class='defaulttable' cellspacing='5'>";
+					// Caption
 					$caption = LAN_86." $link_category_name";
 					if($link_category_description != ""){
 						$caption .= " <i>[$link_category_description]</i>";
 					}
-
+					// Number of links displayed
+					$caption .= " (<b title=\"".(ADMIN ? LAN_Links_2 : LAN_Links_1)."\" >".$link_activ."</b>".(ADMIN ? "/<b title=\"".(ADMIN ? LAN_Links_1 : "" )."\" >".$link_total."</b>" : "").") ";
+					
+					// Body
 					if(isset($category)){
 						$link_append = "<a href='".e_SELF."?".$link_id.".cat.{$category}'>";
 					} else {
@@ -154,7 +160,8 @@ if($category){
 					</table>";
 				}
 			}
-			$ns -> tablerender($caption, $text);
+			if($link_activ > 0){$ns -> tablerender($caption, $text);}
+			$link_activ = 0;
 		}
 	}
 }
