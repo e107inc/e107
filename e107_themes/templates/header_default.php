@@ -62,14 +62,17 @@ echo "\nfor(i=0;i<(".$nbrpic."-1);i++){ preloadimages(i,listpics[i]); }
 
 
 $custompage = explode(" ", $CUSTOMPAGES);
-$page = substr(strrchr(e_SELF, "/"), 1);
 
-if(in_array($page, $custompage)){
-	parseheader($CUSTOMHEADER);
-}else if($page == "news.php" && $NEWSHEADER){
+if(e_PAGE == "news.php" && $NEWSHEADER){
 	parseheader($NEWSHEADER);
 }else{
-	parseheader($HEADER);
+	while(list($key, $kpage) = each($custompage)){
+		if(strstr(e_SELF, $kpage)){
+			$ph = TRUE;
+			break;
+		}
+	}
+	parseheader(($ph ? $CUSTOMHEADER : $HEADER));
 }
 
 unset($text);
@@ -95,7 +98,7 @@ function checklayout($str){
 	}else if(strstr($str, "SITETAG")){
 		echo SITETAG."\n";
 	}else if(strstr($str, "SITELINKS")){
-		if(!$sql -> db_Select("menus", "*", "menu_name='tree_menu' AND menu_location!=0")){
+		if(!$sql -> db_Select("menus", "*", "(menu_name='edynamic_menu' OR menu_name='tree_menu') AND menu_location!=0")){
 			$linktype = substr($str,(strpos($str, "=")+1), 4);
 			define("LINKDISPLAY", ($linktype == "menu" ? 2 : 1));
 			require_once(e_HANDLER."sitelinks_class.php");
@@ -214,5 +217,4 @@ function checklayout($str){
 	}
 
 }
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 ?>

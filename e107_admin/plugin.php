@@ -97,7 +97,7 @@ if(IsSet($_POST['confirm'])){
 				unset($pref[$key]);
 			}
 			save_prefs();
-			$text .= EPL_ADLAN_20."<br />";
+			$text .= EPL_ADLAN_29."<br />";
 		}
 		if($eplug_menu_name){
 			$sql -> db_Delete("menus", "menu_name='$eplug_menu_name' ");

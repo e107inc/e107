@@ -55,10 +55,11 @@ define("PRFLAN_52", "Save Changes");
 define("PRFLAN_53", "Site Preferences");
 define("PRFLAN_54", "Admin Area Theme");
 define("PRFLAN_55", "Cookie name (if cookies selected)");
-
 define("PRFLAN_56", "Timezone");
-
 define("PRFLAN_57", "Admin Front Page Style");
 
+define("PRFLAN_58", "Restrict website to member's only");
+define("PRFLAN_59", "Ticking will restrict all areas apart from the front page and signup page to members only");
+define("PRFLAN_60", "Enable SSL");
 
 ?>

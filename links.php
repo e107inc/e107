@@ -46,7 +46,7 @@ if(e_QUERY == "submit" && check_class($pref['link_submit_class'])){
 
         while(list($cat_id, $cat_name, $cat_description) = $sql-> db_Fetch()){
 			if($cat_name != "Main"){
-				$text .= "<option>".$cat_name."</option>\n";
+				$text .= "<option value='$cat_id'>".$cat_name."</option>\n";
 			}
         }
         $text .= "</select>
@@ -98,7 +98,7 @@ if(e_QUERY == "" &&  $pref['linkpage_categories'] == 1){
 	while($row = $sql-> db_Fetch()){		
 		extract($row);
 		$total_links_cat = $sql2 -> db_Count("links", "(*)", " WHERE link_category=$link_category_id ");
-		$text .="<img src='".THEME."images/bullet2.gif' alt='' style='vertical-align:middle' /> \n<b><span class='captiontext'>".
+		$text .= ($link_category_icon ? "<img src='".e_IMAGE."link_icons/$link_category_icon' alt='' style='vertical-align:middle' />" : "<img src='".THEME."images/bullet2.gif' alt='' style='vertical-align:middle' />")." \n<b><span class='captiontext'>".
 		(!$total_links_cat ? $link_category_name : "<a href='links.php?cat.".$link_category_id."'>".$link_category_name."</a>")."</span></b><br />
 		$link_category_description ($total_links_cat ".($total_links_cat == 1 ? LAN_65 : LAN_66)." ".LAN_64.")<br />";
 	}
@@ -167,14 +167,11 @@ if(eregi("cat", e_QUERY)){
 
 					$text .= "<i>[$link_url]</i>
 					<br />
-					$link_description
+					".$aj -> tpa($link_description)."
 					</td>
 					<td style='text-align: right; vertical-align:top; white-space:nowrap'>
-					<span class='smalltext'>[ ".LAN_88." $link_refer ]</span></td></tr>";
-					if(ADMIN == TRUE && getperms("I")){
-						$text .= "<tr><td colspan='3' class='smalltext'>".LAN_89."[ <a href='".e_ADMIN."links.php?edit.".$link_id."'>".LAN_68."</a> ] [ <a href='".e_ADMIN."links.php?delete.".$link_id."'>".LAN_69."</a> ][ <a href='".e_ADMIN."links.php?add.".$link_category."'>".LAN_90."</a> ][ <a href='".e_ADMIN."link_category.php'>".LAN_91."</a> ]</td></tr>";
-					}
-					$text .= "</table>";
+					<span class='smalltext'>[ ".LAN_88." $link_refer ]</span></td></tr>
+					</table>";
 				}
 			}
 			$ns -> tablerender($caption, $text);

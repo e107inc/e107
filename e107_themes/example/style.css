@@ -74,16 +74,14 @@ blockquote {
 	color:#7e96ac;
 }
 .mediumtext {
-    background: none;
 	font-family: verdana, tahoma, arial, helvetica, sans-serif;
 	font-size: 11px;
 	font-style: normal;
 	color:#000;
 }
 .captiontext {
-    background: none;
 	font-family: verdana, tahoma, arial, helvetica, sans-serif;
-	font-size: 14px;
+	font-size: 18px;
 	color:#000080;
 }
 .tbox{

@@ -72,6 +72,7 @@ if($_POST['searchtype']){
 		if($content_type == 1){ $searchtype = 5; }
 	}
 	if(!$searchtype){ $searchtype = 1; }
+	if($_POST['searchtype']==0){ $searchtype = 0; }
 }
 
 $text = "<div style='text-align:center'><form method='post' action='".e_SELF."'>

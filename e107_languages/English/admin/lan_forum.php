@@ -10,10 +10,10 @@ define("FORLAN_7", "Forum Options");
 define("FORLAN_8", "Forums pruned.");
 define("FORLAN_9", "Prune not required.");
 define("FORLAN_10", "Options Saved");
-define("FORLAN_11", "Forum added to database.");
-define("FORLAN_12", "Forum parent updated in database.");
-define("FORLAN_13", "Parent added to database.");
-define("FORLAN_14", "Forum parent updated in database.");
+define("FORLAN_11", "Forum created");
+define("FORLAN_12", "Forum updated");
+define("FORLAN_13", "Parent created");
+define("FORLAN_14", "Forum parent updated");
 define("FORLAN_15", "Please tick the confirm box to delete the forum");
 define("FORLAN_16", "Forums");
 define("FORLAN_17", "No parents yet");
@@ -59,19 +59,47 @@ define("FORLAN_56", "Number of posts made to a thread before it is marked as pop
 define("FORLAN_57", "Posts per page");
 define("FORLAN_58", "Number of posts displayed per page");
 define("FORLAN_59", "Prune");
-define("FORLAN_60", "This will delete all threads that have not received a reply in the number of days you enter. <b>Please be careful using this function!</b>");
+define("FORLAN_60", "This will delete all threads that have not received a reply in the number of days you enter. <br /><b>Please be careful using this function!</b>");
 define("FORLAN_61", "Update Options");
 define("FORLAN_62", "Forum Options");
-define("FORLAN_63", "Levels");
+define("FORLAN_63", "Ranks");
 define("FORLAN_64", "Enter your levels here, if left blank generic stars will be used to denote level. Seperate levels with comma. Maximum of 10 levels, lowest first.");
 define("FORLAN_65", "Forum Title");
-
-
 
 define("FORLAN_68", "Enable HTML post");
 define("FORLAN_69", "Allow public users to post HTML code, this will apply sitewide (comments, chatbox etc)");
 
 define("FORLAN_70", "Enable file / image attachments");
 define("FORLAN_71", "Allow users to upload file or image with their forum post, <a href='upload.php'>click here</a> to set max file size, allowed types etc");
+define("FORLAN_72", "Update Order");
+define("FORLAN_73", "Order Updated");
+
+define("FORLAN_75", "Parents");
+define("FORLAN_76", "Forums Front Page");
+define("FORLAN_77", "Create Forums");
+define("FORLAN_78", "Forum Order");
+define("FORLAN_79", "Prefereneces");
+define("FORLAN_80", "Options");
+define("FORLAN_81", "Are you sure you want to delete this parent? - forums of this parent will also be deleted");
+define("FORLAN_82", "Are you sure you want to delete this forum?");
+define("FORLAN_83", "Create Parents");
+define("FORLAN_84", "Members Only");
+define("FORLAN_85", "Read Only");
+define("FORLAN_86", "Admin Only");
+define("FORLAN_87", "Prune topics with no replies in this many days:");
+
+define("FORLAN_88", "Prune topics with no replies in this many days:");
+
+define("FORLAN_89", "Delete posts completely");
+define("FORLAN_90", "Make posts inactive");
+
+define("FORLAN_91", "post(s) made inactive");
+define("FORLAN_92", "thread(s) deleted");
+define("FORLAN_93", "reply (replies) deleted");
+
+define("FORLAN_94", "Set Ranks");
+define("FORLAN_95", "Ranks saved");
+define("FORLAN_96", "Forum deleted");
+define("FORLAN_97", "Parent deleted");
 
 ?>

@@ -29,14 +29,16 @@ $HELP_DIRECTORY = "e107_docs/help/";
 ob_start ();
 $timing_start = explode(' ', microtime());
 
-@include("e107_config.php");
-$a=0;
-while(!$mySQLserver && $a<5){
-	$a++;
-	$p.="../";
-	@include($p."e107_config.php");
+if(!$mySQLserver){
+	@include("e107_config.php");
+	$a=0;
+	while(!$mySQLserver && $a<5){
+		$a++;
+		$p.="../";
+		@include($p."e107_config.php");
+	}
+	if(!defined("e_HTTP")){ header("Location:install.php"); exit; }
 }
-if(!defined("e_HTTP")){ header("Location:install.php"); exit; }
 
 $url_prefix=substr($_SERVER['PHP_SELF'],strlen(e_HTTP),strrpos($_SERVER['PHP_SELF'],"/")+1-strlen(e_HTTP));
 $tmp=explode("?",$url_prefix);
@@ -44,19 +46,16 @@ $num_levels=substr_count($tmp[0],"/");
 for($i=1;$i<=$num_levels;$i++){ 
 	$link_prefix.="../";
 }
-
-define("e_SELF", "http://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']));
+$e_BASE = $link_prefix;
 define("e_QUERY", eregi_replace("(.?)([a-zA-Z]*\(.*\))(.*)", "\\1\\3", eregi_replace("&|/?PHPSESSID.*", "", $_SERVER['QUERY_STRING'])));
 $_SERVER['QUERY_STRING'] = e_QUERY;
-define('e_BASE',$link_prefix);
-define("e_ADMIN", e_BASE.$ADMIN_DIRECTORY);
-define("e_IMAGE", e_BASE.$IMAGES_DIRECTORY);
-define("e_THEME", e_BASE.$THEMES_DIRECTORY);
-define("e_PLUGIN", e_BASE.$PLUGINS_DIRECTORY);
-define("e_FILE", e_BASE.$FILES_DIRECTORY);
-define("e_HANDLER", e_BASE.$HANDLERS_DIRECTORY);
-define("e_LANGUAGEDIR", e_BASE.$LANGUAGES_DIRECTORY);
-define("e_DOCS", e_BASE.$HELP_DIRECTORY);
+define("e_IMAGE", $e_BASE.$IMAGES_DIRECTORY);
+define("e_THEME", $e_BASE.$THEMES_DIRECTORY);
+define("e_PLUGIN", (defined("CORE_PATH") ? $e_BASE.SUBDIR_SITE."/".$PLUGINS_DIRECTORY : $e_BASE.$PLUGINS_DIRECTORY));
+define("e_FILE", $e_BASE.$FILES_DIRECTORY);
+define("e_HANDLER", $e_BASE.$HANDLERS_DIRECTORY);
+define("e_LANGUAGEDIR", $e_BASE.$LANGUAGES_DIRECTORY);
+define("e_DOCS", $e_BASE.$HELP_DIRECTORY);
 define("e_DOCROOT",$_SERVER['DOCUMENT_ROOT']."/");
 define("e_UC_PUBLIC", 0);
 define("e_UC_READONLY", 251);
@@ -104,6 +103,8 @@ if(!is_array($pref)){
 if(!$pref['cookie_name']){ $pref['cookie_name'] = "e107cookie"; }
 if($pref['user_tracking'] == "session"){ session_start(); }
 
+define("e_SELF", ($pref['ssl_enabled'] ? "https://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']) : "http://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'])));
+
 $sql -> db_Select("core", "*", "e107_name='menu_pref' ");
 $row = $sql -> db_Fetch();
 $tmp = stripslashes($row['e107_value']);
@@ -114,7 +115,6 @@ define("e_PAGE", $page);
 if($pref['frontpage'] && $pref['frontpage_type'] == "splash"){
 	$ip = getip();
 	if(!$sql -> db_Select("online", "*", "online_ip='$ip' ")){
-
 		online();
 		if(is_numeric($pref['frontpage'])){
 			header("location: article.php?".$pref['frontpage'].".255");
@@ -123,7 +123,7 @@ if($pref['frontpage'] && $pref['frontpage_type'] == "splash"){
 			header("location: ".$pref['frontpage']);
 			exit;
 		}else{
-			header("location: ".e_BASE.$pref['frontpage'].".php");
+			header("location: ".$e_BASE.$pref['frontpage'].".php");
 			exit;
 		}
 	}
@@ -131,6 +131,12 @@ if($pref['frontpage'] && $pref['frontpage_type'] == "splash"){
 
 init_session();
 online();
+
+$fp = ($pref['frontpage'] ? $pref['frontpage'].".php" : "news.php index.php");
+if($pref['membersonly_enabled'] && !USER && !strstr($fp, e_PAGE) && e_PAGE != "signup.php" && e_PAGE != "customsignup.php"){
+	echo "<br /><br /><div style='text-align:center; font: 12px Verdana, Tahoma'>This is a restricted area, to access it either log in or <a href='signup.php'>signup for an account</a>.<br /><a href='index.php'>Click here to return to front page</a>.</div>";
+	exit;
+}
 
 $sql -> db_Delete("tmp", "tmp_time < '".(time()-300)."' AND tmp_ip!='data' AND tmp_ip!='adminlog' AND tmp_ip!='submitted_link' AND tmp_ip!='var_store' ");
 
@@ -164,14 +170,17 @@ define(e_LANGUAGE, (!USERLAN || !defined("USERLAN") ? $language : USERLAN));
 
 if($pref['maintainance_flag'] && ADMIN == FALSE && !eregi("admin", e_SELF)){
 	@include(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitedown.php");
-	require_once(e_BASE."sitedown.php"); exit;
+	require_once($e_BASE."sitedown.php"); exit;
 }
 
-if(strstr(e_SELF, $ADMIN_DIRECTORY)){
-	(file_exists(e_LANGUAGEDIR.$language."/admin/lan_".$page) ? @include(e_LANGUAGEDIR.$language."/admin/lan_".$page) : @include(e_LANGUAGEDIR."English/admin/lan_".$page));
+if(defined("CORE_PATH") && ($page == "index.php" || !$page)){ $page = "news.php"; }
+
+if(strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin.php")){
+	(file_exists(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".e_PAGE) ? @include(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".e_PAGE) : @include(e_LANGUAGEDIR."English/admin/lan_".e_PAGE));
 }else{
-	(file_exists(e_LANGUAGEDIR.e_LANGUAGE."/lan_".$page) ? @include(e_LANGUAGEDIR.e_LANGUAGE."/lan_".$page) : @include(e_LANGUAGEDIR."English/lan_".$page));
+	(file_exists(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE) ? @include(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE) : @include(e_LANGUAGEDIR."English/lan_".e_PAGE));
 }
+
 
 if(IsSet($_POST['userlogin'])){
 	require_once(e_HANDLER."login.php");
@@ -181,7 +190,7 @@ if(IsSet($_POST['userlogin'])){
 if(e_QUERY == "logout"){
 	if($pref['user_tracking'] == "session"){ session_destroy(); $_SESSION[$pref['cookie_name']] = ""; }
 	cookie($pref['cookie_name'], "", (time()-2592000));
-	echo "<script type='text/javascript'>document.location.href='".e_BASE."index.php'</script>\n";
+	echo "<script type='text/javascript'>document.location.href='".$e_BASE."index.php'</script>\n";
 	exit;
 }
 ban();
@@ -229,6 +238,13 @@ define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
 define("FILE_UPLOADS", (ini_get('file_uploads') ? TRUE : FALSE));
 define("INIT", TRUE);
 
+define("e_BASE", (defined("CORE_PATH") ? e_HTTP."/index.php?" : $e_BASE));
+
+define("e_ADMIN", $e_BASE.$ADMIN_DIRECTORY);
+define("e_ADMIN_L", (defined("CORE_PATH") ? e_HTTP."/admin.php?" : $e_BASE.$ADMIN_DIRECTORY));
+
+
+
 //require_once(e_HANDLER."IPB_int.php");
 
 //require_once(e_HANDLER."debug_handler.php");
@@ -275,7 +291,7 @@ class textparse{
 			while(list($code, $name) = each($this->emotes[$c])){
 				$this->searcha[$c] = " ".$code;
 				$this->searchb[$c] = "\n".$code;
-				$this->replace[$c] = " <img src='".e_IMAGE."emoticons/$name' alt='' style='vertical-align:middle' /> ";
+				$this->replace[$c] = " <img src='".e_IMAGE."emoticons/$name' alt='' style='vertical-align:middle; border:0' /> ";
 				$c++;
 			}
 		}
@@ -391,7 +407,7 @@ class textparse{
 		$replace[20] = '<span style=\'font-size:\1px\'>\2</span>';
 		$search[21] = "#\[edited\](.*?)\[/edited\]#si";
 		$replace[21] = '<span class=\'smallblacktext\'>[ \1 ]</span>';
-		$search[22] = "#onmouseover|onclick|onmousedown|onmouseup|ondblclick|onmouseout|onmousemove|onload/#si";
+		$search[22] = "#onmouseover|onclick|onmousedown|onmouseup|ondblclick|onmouseout|onmousemove|onload|iframe|expression#si";
 		$replace[22] = '';
 		$search[23] = "#\[br\]/si";
 		$replace[23] = '<br />';
@@ -407,9 +423,6 @@ class textparse{
 		$search[25] = "#\[quote\](.*?)\[/quote\]#si";
 		$replace[25] = '<i>"\1"</i>';
 
-//		$search[26] = "#\<script#si";
-//		$replace[26] = '&lt;script';
-
 		$text = preg_replace($search, $replace, $text);
 		if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
 		$search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;span", "&lt;/span");
@@ -420,7 +433,7 @@ class textparse{
 		$text = " " . $text;
 		$text = preg_replace("#([\t\r\n ])([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="\2://\3" onclick="window.open(\'\2://\3\'); return false;">\2://\3</a>', $text);
 		$text = preg_replace("#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="http://\2.\3" onclick="window.open(\'http://\2.\3\'); return false;">\2.\3</a>', $text);
-		$text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\<script type=\"text/javascript\">document.write('<a href=\"mailto:'+'\\2'+'@'+'\\3\">'+'\\2'+'@'+'\\3'+'</a>')</script>", $text);
+		$text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "<script type=\"text/javascript\">document.write('<a href=\"mailto:'+'\\2'+'@'+'\\3\">'+'\\2'+'@'+'\\3'+'</a>')</script>", $text);
 		$text = substr($text, 1);
 		$text = code($text, "notdef");
 		$text = html($text);
@@ -430,19 +443,19 @@ class textparse{
 	function formtpa($text, $mode="admin"){
 		global $sql, $pref;
 
-		for($r=0; $r<=strlen($text); $r++){
-			$chars[$text[$r]] = 1;
-		}
-		$ch = array_count_values($chars);
-		if((strlen($text) > 50 && $ch[1] < 10) || (strlen($text) > 10 && $ch[1] < 3) || (strlen($text) > 100 && $ch[1] < 20)){
-			echo "<script type='text/javascript'>document.location.href='index.php'</script>\n";
-			exit;
-		}
-
 		if($mode != "admin"){
+			for($r=0; $r<=strlen($text); $r++){
+				$chars[$text[$r]] = 1;
+			}
+			$ch = array_count_values($chars);
+			if((strlen($text) > 50 && $ch[1] < 10) || (strlen($text) > 10 && $ch[1] < 3) || (strlen($text) > 100 && $ch[1] < 20)){
+				echo "<script type='text/javascript'>document.location.href='index.php'</script>\n";
+				exit;
+			}
 			$text = code($text);
 			if(!$pref['html_post']){ $text = str_replace("<", "&lt;", $text); str_replace(">", "&gt;", $text); }
 			$text = str_replace("<script", "&lt;script", $text);
+			$text = str_replace("<iframe", "&lt;iframe", $text);
 			if(($pref['image_post_class'] == 253 && !USER) || ($pref['image_post_class'] == 254 && !ADMIN)){
 				$text = preg_replace("#\[img\](.*?)\[/img\]#si", '', $text);
 			}else if(!check_class($pref['image_post_class'])){
@@ -490,9 +503,7 @@ class convert{
 	}
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-function check_class($var, $userclass=USERCLASS){
-	//$debug = (ADMIN == TRUE ? TRUE : FALSE);
+function check_class($var, $userclass=USERCLASS, $debug=FALSE){
 	if(preg_match ("/^([0-9]+)$/", $var)){
 		if($var == e_UC_MEMBER && USER==TRUE){return TRUE;}
 		if($var == e_UC_PUBLIC){return TRUE;}
@@ -527,26 +538,32 @@ function check_class($var, $userclass=USERCLASS){
 	if($debug){  echo "NOTNUM! FALSE<br />"; }
 	return FALSE;
 }
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function getperms($arg, $ap = ADMINPERMS){
-	if(ereg($arg.".", $ap) || $ap == "0"){
-		return TRUE;
-	}else{
-		return FALSE;
-	}
+	global $PLUGINS_DIRECTORY;
+	if($ap == "0"){return TRUE;}
+	if($ap == ""){return FALSE;}
+	$ap = ".".$ap;
+	if($arg == "P" && preg_match("#(.*?)/".$PLUGINS_DIRECTORY."(.*?)/(.*?)#",e_SELF,$matches)){
+		$psql = new db;
+		if($psql -> db_Select("plugin","plugin_id","plugin_path = '".$matches[2]."' ")){
+			$row = $psql -> db_Fetch();
+			$arg = "P".$row[0];
+		}
+    }
+	return (preg_match("#\.".$arg."\.#", $ap) ? TRUE : FALSE);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-
-function save_prefs($table = "core"){
+function save_prefs($table = "core", $uid=USERID){
 	global $pref, $user_pref;
 	$sql = new db;
 	if($table == "core"){
 		$tmp = addslashes(serialize($pref));
-		$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='pref' ");
+		$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='pref'");
 	}else{
 		$tmp = addslashes(serialize($user_pref));
-		$sql -> db_Update("user", "user_prefs='$tmp' WHERE user_id='".USERID."' ");
+		$sql -> db_Update("user", "user_prefs='$tmp' WHERE user_id=$uid");
 		return $tmp;
 	}
 }
@@ -728,9 +745,6 @@ function retrieve_cache($query){
 	}
 	if($sql -> db_Select("cache", "*", "cache_url='$query' ")){
 		$row = $sql -> db_Fetch(); extract($row);
-
-	//	if($query == "news.php"){ echo htmlentities(stripslashes($cache_data)); exit; }
-
 		return stripslashes($cache_data);
 	}else{
 		return FALSE;
@@ -743,6 +757,14 @@ function set_cache($query, $text){
 		$sql -> db_Insert("cache", "'$query', '".time()."', '".mysql_escape_string($text)."' ");
 	}
 }
+
+function clear_cache($query){
+	global $pref, $sql;
+	if($pref['cachestatus']){
+		$sql -> db_Delete("cache", "cache_url LIKE '%".$query."%' ");
+	}
+}
+
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function cookie($name, $value, $expire, $path="/", $domain="", $secure=0){
 	setcookie($name, $value, $expire, $path, $domain, $secure);
@@ -787,9 +809,11 @@ function html($string){
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function code($string, $mode="default"){
+
+	$search = array("<", ">", "[", "]", " ");
+	$replace = array("&lt;", "&gt;", "&#091;", "&#093;", "&nbsp;");
+
 	if($mode == "default"){
-		$search = array("<", ">", "[", "]");
-		$replace = array("&lt;", "&gt;", "&#091;", "&#093;");
 		$match_count = preg_match_all("#\[code\](.*?)\[/code\]#si", $string, $result);
 		for ($a = 0; $a < $match_count; $a++){
 			$after_replace = str_replace($search, $replace, $result[1][$a]);
@@ -797,24 +821,15 @@ function code($string, $mode="default"){
 		}
 		return $string;
 	}
-	$search = array("<br />", "[", "]", "&lt;", "&gt;", "&#036;", "&amp;");
-	$replace = array("", "&#091;", "&#093;", "<", ">", "$", "&");
-	$search2 = array("&lt;?", "?&gt;", "&amp;#091;", "&amp;#093;", "&amp;", '<font color="#0000BB">&nbsp;&nbsp;</font>');
-	$replace2 = array("", "", "[", "]", "&", "");
+
 	$match_count = preg_match_all("#\[code\](.*?)\[/code\]#si", $string, $result);
 	for ($a = 0; $a < $match_count; $a++){
-		$after_replace = "<? ".str_replace($search, $replace, $result[1][$a])." ?>";
-		ob_start();
-		highlight_string($after_replace);
-		$colourtext = ob_get_contents();
-		ob_end_clean();
-
-		$colourtext = preg_replace('/&amp;\<\/font\>\<font color="(.*?)"\>/si', '</font><font color="\1">&amp;', $colourtext);
-		//$colourtext = preg_replace('/\<font color="(.*?)"\>&\<\/font\>\<font color="(.*?)"\>(.*?);/si', '<font color="\1">&amp;\2;</font><font color="\3">', $colourtext);
-
-		$colourtext = str_replace($search2, $replace2, $colourtext);
+		$colourtext = str_replace($search, $replace, $result[1][$a]);
 		$string = str_replace("[code]".$result[1][$a]."[/code]", "<div class='indent'>".$colourtext."</div>", $string);
 	}
+
+	$string = str_replace("&lt;br&nbsp;/&gt;", "<br />", $string);
+
 	return $string;
 }
 

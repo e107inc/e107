@@ -1,11 +1,11 @@
 <?php
-function ren_help($func, $rencolsize = FALSE){
+function ren_help($func, $rencolsize=FALSE){
 	unset($str);
 	if(strstr(e_SELF, "article")){
-		$str = "<input class=\"button\" type=\"button\" value=\"newpage\" onclick=\"addtext('[newpage]')\" onMouseOver=\"help('Insert newpage tag, splits article into more than one page')\" onMouseOut=\"help('')\"> ";
+		$str = "<input class=\"button\" type=\"button\" value=\"newpage\" onclick=\"addtext2('[newpage]')\" onMouseOver=\"help('Insert newpage tag, splits article into more than one page')\" onMouseOut=\"help('')\"> ";
 	}
 	
-	$str .= <<< EOT
+	$str .= <<< HELPSTR
 <input class="button" type="button" value="link" onclick="$func('[link=hyperlink url]hyperlink text[/link]')" onMouseOver="help('Insert link: [link]http://mysite.com[/link] or  [link=http://yoursite.com]Visit My Site[/link]')" onMouseOut="help('')">
 <input class="button" type="button" style="font-weight:bold; width: 20px" value="b" onclick="$func('[b][/b]')" onMouseOver="help('Bold text: [b]This text will be bold[/b]')" onMouseOut="help('')">
 <input class="button" type="button" style="font-style:italic; width: 20px" value="i" onclick="$func('[i][/i]')" onMouseOver="help('Italic text: [i]This text will be italicised[/i]')" onMouseOut="help('')">
@@ -16,17 +16,17 @@ function ren_help($func, $rencolsize = FALSE){
 <input class="button" type="button" value="right" onclick="$func('[right][/right]')" onMouseOver="help('Right align: [right]This text will be right aligned[/right]')" onMouseOut="help('')">
 <input class="button" type="button" value="bq" onclick="$func('[blockquote][/blockquote]')" onMouseOver="help('Blockquote text: [blockquote]This text will be indented[/blockquote]')" onMouseOut="help('')"> 
 <input class="button" type="button" value="code" onclick="$func('[code][/code]')" onMouseOver="help('Code - preformatted text: [code]\$var = foobah;[/code]')" onMouseOut="help('')"> 
-EOT;
+HELPSTR;
 
 if(ADMIN){
-	$str .= <<< EOT
+	$str .= <<< HELPSTR
 <input class="button" type="button" value="html" onclick="$func('[html][/html]')" onMouseOver="help('HTML - removes linebreaks from text: [html]<table><tr><td> etc[/html]')" onMouseOut="help('')">
-EOT;
+HELPSTR;
 }
 
 if($rencolsize){
 
-	$str .= <<< EOT
+	$str .= <<< HELPSTR
 <br />
 <select class="tbox" name="fontcol" onChange="$func('[color=' + this.form.fontcol.options[this.form.fontcol.selectedIndex].value + '] [/color]');this.selectedIndex=0;" onMouseOver="help('Font Color: [color]Black[/color]')" onMouseOut="help('')">
 <option value="">Color ..</option>
@@ -55,7 +55,7 @@ if($rencolsize){
 <option  value="28">Massive</option>
 </select>
 
-EOT;
+HELPSTR;
 }
 	return $str;
 }

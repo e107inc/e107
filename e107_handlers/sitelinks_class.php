@@ -21,7 +21,10 @@ function sitelinks(){
 	# - return				parsed text
 	# - scope					null
 	*/
-	global $pref;
+	global $pref,$ns;
+	define(PRELINKTITLE, "");
+	define(POSTLINKTITLE, "");
+	$menu_count=0;
 	$text = PRELINK;
 	if(defined("LINKCLASS")){
 		$linkadd = " class='".LINKCLASS."' ";
@@ -36,7 +39,7 @@ function sitelinks(){
 		extract($row);
 		if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
 
-			$linkstart = ($link_button ? preg_replace("/\<img.*\>/si", "", LINKSTART)." " : LINKSTART);
+			$linkstart = ($link_button ? preg_replace("/\<img.*\>/si", "", LINKSTART) : LINKSTART);
 			switch ($link_open) { 
 				case 1:
 					$link_append = " onclick=\"window.open('$link_url'); return false;\"";
@@ -53,12 +56,22 @@ function sitelinks(){
 			}
 			if(!strstr($link_url, "http:")){ $link_url = e_BASE.$link_url; }
 			if($link_open == 4){
-				$text .=  $linkstart.($link_button ? "<img src='".e_IMAGE."link_icons/$link_button' alt='' style='vertical-align:middle' />" : "").($link_url ? "<a".$linkadd." href=\"javascript:open_window('".$link_url."')\">".$link_name."</a>" : $link_name).LINKEND."\n";
+				$_link =  $linkstart.($link_button ? "<img src='".e_IMAGE."link_icons/$link_button' alt='' style='vertical-align:middle' /> " : "").($link_url ? "<a".$linkadd." href=\"javascript:open_window('".$link_url."')\">".$link_name."</a>" : $link_name)."\n";
 			}else{
-				$text .=  $linkstart.($link_button ? "<img src='".e_IMAGE."link_icons/$link_button' alt='' style='vertical-align:middle' />" : "").($link_url ? "<a".$linkadd." href=\"".$link_url."\"".$link_append.">".$link_name."</a>" : $link_name).LINKEND."\n";
+				$_link =  $linkstart.($link_button ? "<img src='".e_IMAGE."link_icons/$link_button' alt='' style='vertical-align:middle' /> " : "").($link_url ? "<a".$linkadd." href=\"".$link_url."\"".$link_append.">".$link_name."</a>" : $link_name)."\n";
+			}
+			if(LINKDISPLAY == 3){
+				$menu_title=$_link;
+			} else {
+				$text .= $_link.LINKEND;
 			}
 
 			if($sql2 -> db_Select("links", "*", "link_name REGEXP('submenu.".$link_name."') ORDER BY link_order ASC")){
+				$menu_count++;
+				if($menu_count == 1 && LINKDISPLAY == 3 && ADMIN == TRUE){
+					$linkstart = (file_exists(e_IMAGE."link_icons/admin.png") ? preg_replace("/\<img.*\>/si", "", LINKSTART)." " : LINKSTART);
+					$menu_text .= $linkstart.(file_exists(e_IMAGE."link_icons/admin.png") ? "<img src='".e_IMAGE."link_icons/admin.png' alt='' style='vertical-align:middle' /> " : "")."<a".$linkadd." href=\"".e_ADMIN.(!$pref['adminstyle'] || $pref['adminstyle'] == "default" ? "admin.php" : $pref['adminstyle'].".php")."\">Admin Area</a>".LINKEND."\n";
+				}
 				$main_linkname = $link_name;
 				while($row = $sql2 -> db_Fetch()){
 					extract($row);
@@ -81,15 +94,24 @@ function sitelinks(){
 						}
 
 						if(!strstr($link_url, "http:")){ $link_url = e_BASE.$link_url; }
+						$indent=(LINKDISPLAY == 3) ? "" : "&nbsp;&nbsp;";
 						if($link_open == 4){
-							$text .=  $linkstart."&nbsp;&nbsp;".($link_button ? "<img src='".e_IMAGE."link_icons/$link_button' alt='' style='vertical-align:middle' />" : "")."<a".$linkadd." href=\"javascript:open_window('".$link_url."')\">".$link_name."</a>".LINKEND."\n";
-						}else{
-							$text .=  $linkstart."&nbsp;&nbsp;".($link_button ? "<img src='".e_IMAGE."link_icons/$link_button' alt='' style='vertical-align:middle' />" : "")."<a".$linkadd." href=\"".$link_url."\"".$link_append.">".$link_name."</a>".LINKEND."\n";
+							$_link =  $linkstart.$indent.($link_button ? "<img src='".e_IMAGE."link_icons/$link_button' alt='' style='vertical-align:middle' /> " : "")."<a".$linkadd." href=\"javascript:open_window('".$link_url."')\">".$link_name."</a>".LINKEND."\n";
+						} else { 
+							$_link =  $linkstart.$indent.($link_button ? "<img src='".e_IMAGE."link_icons/$link_button' alt='' style='vertical-align:middle' /> " : "")."<a".$linkadd." href=\"".$link_url."\"".$link_append.">".$link_name."</a>".LINKEND."\n";
+						}
+						if(LINKDISPLAY == 3){
+							$menu_text .= $_link;
+						} else {
+							$text .= $_link;
 						}
 					}
-
 				}
-
+				if(LINKDISPLAY == 3 && $menu_title){
+					$ns -> tablerender(PRELINKTITLE.$menu_title.POSTLINKTITLE,$menu_text);
+					$menu_title="";
+					$menu_text="";
+				}
 			}
 
 		}
@@ -99,9 +121,10 @@ function sitelinks(){
 	if(LINKDISPLAY == 2){
 		$ns = new e107table;
 		$ns -> tablerender(LAN_183, $text);
-	}else{
-		echo $text;
+	} else {
+		if(LINKDISPLAY != 3) {
+			echo $text;
+		}
 	}
 }
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 ?>

@@ -135,12 +135,13 @@ if(IsSet($_POST['reset_core_sub']) && $_POST['reset_core']){
 	define("e_PATH", $e_path);
 	$pref['sitename'] = "e107 powered website";
 	$pref['siteurl'] = e_HTTP;
-	$pref['sitebutton'] = e_HTTP."button.png";
-	$pref['sitetag'] = "Website System 0.554beta";
+	$pref['sitebutton'] = "button.png";
+	$pref['sitetag'] = "Website System RC";
 	$pref['sitedescription'] = "";
 	$pref['siteadmin'] = "SiteAdmin";
 	$pref['siteadminemail'] = "SiteAdmin@".e_HTTP;
-	$pref['sitetheme'] = "e107";
+	$pref['sitetheme'] = "e107v4a";
+	$pref['admintheme'] = "e107v4a";
 	$pref['sitedisclaimer'] = "All trademarks are &copy; their respective owners, all other content is &copy; e107 powered website.<br />e107 is &copy; e107.org 2002/2003 and is released under the <a href='http://www.gnu.org/'>GNU GPL license</a>.";
 	$pref['newsposts'] = "10";
 	$pref['flood_protect'] = "";
@@ -163,19 +164,23 @@ if(IsSet($_POST['reset_core_sub']) && $_POST['reset_core']){
 	$pref['maintainance_flag'] = "0";
 	$pref['time_offset'] = "0";
 	$pref['cb_linkc'] = " -link- ";
-	$pref['cb_wordwrap'] = "30";
+	$pref['cb_wordwrap'] = "20";
 	$pref['cb_linkreplace'] = "1";
 	$pref['log_lvcount'] = "10";
 	$pref['meta_tag'] = "";
 	$pref['user_reg_veri'] = "1";
-	$pref['user_tracking'] = "cookie";
 	$pref['email_notify'] = "0";
 	$pref['forum_poll'] = "0";
 	$pref['forum_popular'] = "10";
 	$pref['forum_track'] = "0";
 	$pref['forum_eprefix'] = "[forum]";
+	$pref['forum_enclose'] = "1";
+	$pref['forum_title'] = "Forums";
+	$pref['forum_postspage'] = "10";
+	$pref['user_tracking'] = "cookie";
+	$pref['cookie_name'] = "e107cookie";
 	$pref['resize_method'] = "gd2";
-	$pref['im_path'] = "/usr/local/bin/";
+	$pref['im_path'] = "/usr/X11R6/bin/convert";
 	$pref['im_quality'] = "80";
 	$pref['im_width'] = "120";
 	$pref['upload_enabled'] = "0";
@@ -183,6 +188,12 @@ if(IsSet($_POST['reset_core_sub']) && $_POST['reset_core']){
 	$pref['upload_storagetype'] = "2";
 	$pref['upload_maxfilesize'] = "";
 	$pref['upload_class'] = "999";
+	$pref['cachestatus'] = "";
+	$pref['displayrendertime'] = "1";
+	$pref['displaysql'] = "";
+	$pref['displaythemeinfo'] = "1";
+	$pref['link_submit'] = "1";
+	$pref['link_submit_class'] = "0";
 
 	$tmp = addslashes(serialize($pref));
 
@@ -194,7 +205,6 @@ if(IsSet($_POST['reset_core_sub']) && $_POST['reset_core']){
 		$message = "Core reset. <br /><br /><a href='../index.php'>Click here to continue</a>";
 		$END = TRUE;
 	}
-	
 }
 
 if(IsSet($_POST['restore_core_sub']) && $_POST['restore_core']){

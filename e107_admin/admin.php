@@ -17,9 +17,6 @@ require_once("auth.php");
 
 
 // auto db update ...
-
-
-
 $handle=opendir(e_ADMIN."sql/db_update");
 while ($file = readdir($handle)){
 	if($file != "." && $file != ".." && $file != "index.html"){
@@ -27,7 +24,6 @@ while ($file = readdir($handle)){
 	}
 }
 closedir($handle);
-
 if(IsSet($_POST['inst_update'])){
 	require_once(e_ADMIN."sql/db_update/".$updatelist[0]);
 }else if(is_array($updatelist)){
@@ -36,19 +32,7 @@ if(IsSet($_POST['inst_update'])){
 	</div>";
 	$ns -> tablerender(ADLAN_122, $text);
 }
-
-
-
-
-
-
-
-
-
-
 //	end auto db update
-
-
 
 if(e_QUERY == "purge"){
 	$sql -> db_Delete("tmp", "tmp_ip='adminlog' ");
@@ -68,67 +52,50 @@ function wad($link, $title, $description, $perms, $icon = FALSE, $mode = FALSE){
 	return $tmp;
 }
 
-
-
-
 $text = "<div style='text-align:center'>
-<table style='width:95%'>";
-
-$text .= wad("newspost.php", ADLAN_0, ADLAN_1, "H");
-$text .= wad("news_category.php", ADLAN_2, ADLAN_3, "7");
-$text .= wad("prefs.php", ADLAN_4, ADLAN_5, "1");
-$text .= wad("menus.php", ADLAN_6, ADLAN_7, "2");
-$text .= wad("administrator.php", ADLAN_8, ADLAN_9, "3");
-
-$text .= wad("updateadmin.php", ADLAN_10, ADLAN_11, "");
-$text .= wad("forum.php", ADLAN_12, ADLAN_13, "5");
-$text .= wad("article.php", ADLAN_14, ADLAN_15, "J");
-$text .= wad("content.php", ADLAN_16, ADLAN_17, "L");
-$text .= wad("review.php", ADLAN_18, ADLAN_19, "K");
-
-$text .= wad("links.php", ADLAN_20, ADLAN_21, "I");
-$text .= wad("link_category.php", ADLAN_22, ADLAN_23, "8");
-$text .= wad("download.php", ADLAN_24, ADLAN_25, "R");
-$text .= wad("download_category.php", ADLAN_26, ADLAN_27, "Q");
-$text .= wad("wmessage.php", ADLAN_28, ADLAN_29, "M");
-
-$text .= wad("filemanager.php", ADLAN_30, ADLAN_31, "6");
-$text .= wad("submitnews.php", ADLAN_32, ADLAN_33, "N");
-$text .= wad("banlist.php", ADLAN_34, ADLAN_35, "4");
-$text .= wad("users.php", ADLAN_36, ADLAN_37, "4");
-$text .= wad("userclass2.php", ADLAN_38, ADLAN_39, "4");
-
-$text .= wad("banner.php", ADLAN_54, ADLAN_55, "D");
-$text .= wad("chatbox.php", ADLAN_56, ADLAN_57, "C");
-$text .= wad("newsfeed.php", ADLAN_62, ADLAN_63, "E");
-$text .= wad("emoticon.php", ADLAN_58, ADLAN_59, "F");
-$text .= wad("frontpage.php", ADLAN_60, ADLAN_61, "G");
-
-$text .= wad("log.php", ADLAN_64, ADLAN_65, "S");
-$text .= wad("meta.php", ADLAN_66, ADLAN_67, "T");
-$text .= wad("phpinfo.php", ADLAN_68, ADLAN_69, "0");
-$text .= wad("poll.php", ADLAN_70, ADLAN_71, "U");
-$text .= wad("image.php", ADLAN_105, ADLAN_106, "5");
-
-$text .= wad("upload.php", ADLAN_72, ADLAN_73, "V");
-$text .= wad("cache.php", ADLAN_74, ADLAN_75, "0");
-$text .= wad("ugflag.php", ADLAN_40, ADLAN_41, "9");
-$text .= wad("custommenu.php", ADLAN_42, ADLAN_43, "2");
-$text .= wad("db.php",ADLAN_44, ADLAN_45,"0");
-
-$text .= wad("admin.php?logout", ADLAN_46, "", "");
+<table style='width:95%'>".
+wad(e_ADMIN."administrator.php", ADLAN_8, ADLAN_9, "3").
+wad(e_ADMIN."updateadmin.php", ADLAN_10, ADLAN_11, "").
+wad(e_ADMIN."article.php", ADLAN_14, ADLAN_15, "J").
+wad(e_ADMIN."banlist.php", ADLAN_34, ADLAN_35, "4").
+wad(e_ADMIN."banner.php", ADLAN_54, ADLAN_55, "D").
+wad(e_ADMIN."cache.php", ADLAN_74, ADLAN_75, "0").
+wad(e_ADMIN."chatbox.php", ADLAN_56, ADLAN_57, "C").
+wad(e_ADMIN."content.php", ADLAN_16, ADLAN_17, "L").
+wad(e_ADMIN."custommenu.php", ADLAN_42, ADLAN_43, "2").
+wad(e_ADMIN."db.php",ADLAN_44, ADLAN_45,"0").
+wad(e_ADMIN."download.php", ADLAN_24, ADLAN_25, "R").
+wad(e_ADMIN."emoticon.php", ADLAN_58, ADLAN_59, "F").
+wad(e_ADMIN."filemanager.php", ADLAN_30, ADLAN_31, "6").
+wad(e_ADMIN."forum.php", ADLAN_12, ADLAN_13, "5").
+wad(e_ADMIN."frontpage.php", ADLAN_60, ADLAN_61, "G").
+wad(e_ADMIN."image.php", ADLAN_105, ADLAN_106, "5").
+wad(e_ADMIN."links.php", ADLAN_20, ADLAN_21, "I").
+wad(e_ADMIN."log.php", ADLAN_64, ADLAN_65, "S").
+wad(e_ADMIN."ugflag.php", ADLAN_40, ADLAN_41, "9").
+wad(e_ADMIN."menus.php", ADLAN_6, ADLAN_7, "2").
+wad(e_ADMIN."meta.php", ADLAN_66, ADLAN_67, "T").
+wad(e_ADMIN."newspost.php", ADLAN_0, ADLAN_1, "H").
+wad(e_ADMIN."newsfeed.php", ADLAN_62, ADLAN_63, "E").
+wad(e_ADMIN."phpinfo.php", ADLAN_68, ADLAN_69, "0").
+wad(e_ADMIN."poll.php", ADLAN_70, ADLAN_71, "U").
+wad(e_ADMIN."prefs.php", ADLAN_4, ADLAN_5, "1").
+wad(e_ADMIN."upload.php", ADLAN_72, ADLAN_73, "V").
+wad(e_ADMIN."review.php", ADLAN_18, ADLAN_19, "K").
+wad(e_ADMIN."users.php", ADLAN_36, ADLAN_37, "4").
+wad(e_ADMIN."userclass2.php", ADLAN_38, ADLAN_39, "4").
+wad(e_ADMIN."wmessage.php", ADLAN_28, ADLAN_29, "M").
+wad(e_ADMIN."admin.php?logout", ADLAN_46, "", "");
 
 if(!$tdc){ $text .= "</tr>"; }
 
 if(getperms("P")){
-
 	$text .= "<tr>
 	<td colspan='5'><br />
 	</td>
 	<tr>";
 
-	$text .= wad(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "P", "", TRUE);
-	$text .= wad(e_PLUGIN."theme_layout/theme_layout.php", ADLAN_100, ADLAN_101, "P", "", TRUE);
+	$text .= wad(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "P", "", TRUE).wad(e_PLUGIN."theme_layout/theme_layout.php", ADLAN_100, ADLAN_101, "P", "", TRUE);
 
 	if($sql -> db_Select("plugin", "*", "plugin_installflag=1")){
 		while($row = $sql -> db_Fetch()){
@@ -137,6 +104,7 @@ if(getperms("P")){
 			if($eplug_conffile){
 				$text .= wad(e_PLUGIN.$plugin_path."/".$eplug_conffile, $eplug_name, $eplug_caption, "P", "", TRUE);
 			}
+			unset($eplug_conffile, $eplug_name, $eplug_caption);
 		}
 	}
 }
@@ -170,10 +138,10 @@ $text .= $permicon.ADLAN_110.": ".$members."<br />";
 $text .= $permicon.ADLAN_111.": ".$unverified."<br />";
 $text .= $permicon.ADLAN_112.": ".$banned."<br />";
 
-$text .= ($submitted_news ? $permicon2."<a href='".e_ADMIN."submitnews.php'>".ADLAN_107.": $submitted_news</a>" : $permicon.ADLAN_107.": 0")."<br />";
+$text .= ($submitted_news ? $permicon2."<a href='".e_ADMIN."newspost.php?sn'>".ADLAN_107.": $submitted_news</a>" : $permicon.ADLAN_107.": 0")."<br />";
 $text .= ($active_uploads ? $permicon2."<a href='".e_ADMIN."upload.php'>".ADLAN_108.": $active_uploads</a>" : $permicon.ADLAN_108.": ".$active_uploads)."<br />";
 
-$text .= ($submitted_links ? $permicon2."<a href='".e_ADMIN."links.php'>".ADLAN_119.": $submitted_links</a>" : $permicon.ADLAN_119.": ".$submitted_links)."<br /><br />";
+$text .= ($submitted_links ? $permicon2."<a href='".e_ADMIN."links.php?sn'>".ADLAN_119.": $submitted_links</a>" : $permicon.ADLAN_119.": ".$submitted_links)."<br /><br />";
 $text .= $permicon.ADLAN_113.": ".$forum_posts."<br />";
 $text .= $permicon.ADLAN_114.": ".$comments."<br />";
 $text .= $permicon.ADLAN_115.": ".$chatbox_posts;

@@ -1,14 +1,22 @@
 <?php
-echo "<br />
-<div style=\"text-align:center\">".
-SITEDISCLAIMER.
-"</div>";
-?>
-</td>
-<td style="width:20%; vertical-align:top">
-<?php
+/*
++---------------------------------------------------------------+
+|	e107 website system
+|	/admin/footer.php
+|
+|	©Steve Dunstan 2001-2002
+|	http://e107.org
+|	jalist@e107.org
+|
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
++---------------------------------------------------------------+
+*/
 
-if(ADMIN == TRUE){
+echo "\n</td>
+<td style='width:20%; vertical-align:top'>";
+
+if(ADMIN){
 
 $sql -> db_Select("core", "*", "e107_name='e107' ");
 $row = $sql -> db_Fetch();
@@ -19,7 +27,8 @@ if(file_exists(e_ADMIN."ver.php")){ require_once(e_ADMIN."ver.php"); }
 $obj = new convert;
 $install_date = $obj->convert_date($e107info['e107_datestamp'], "long");
 
-$plugpath = e_PLUGIN.substr(strrchr(substr(e_SELF, 0, strrpos(e_SELF, "/")), "/"), 1)."/admin_menu.php"; 
+$plugindir = (str_replace("/","",str_replace("..","",e_PLUGIN))."/");
+$plugpath = e_PLUGIN.str_replace(basename(e_SELF),"",str_replace($plugindir,"",strstr(e_SELF,$plugindir)))."admin_menu.php";
 if(file_exists($plugpath)){
 	require_once($plugpath);
 }
@@ -57,7 +66,9 @@ Info: ".$themeinfo."
 <br /><br />
 <b>mySQL Version</b>
 <br />
-".mysql_get_server_info();
+".mysql_get_server_info().
+"<br />
+Database: ".$mySQLdefaultdb;
 $ns -> tablerender("Site Info", $text);
 
 $c=1;

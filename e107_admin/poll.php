@@ -16,8 +16,16 @@ require_once("../class2.php");
 if(!getperms("U")){ header("location:".e_BASE."index.php"); exit;}
 require_once("auth.php");
 require_once(e_HANDLER."poll_class.php");
-
+require_once(e_HANDLER."form_handler.php");
+$rs = new form;
 $poll = new poll; $aj = new textparse;
+
+if(e_QUERY){
+	$tmp = explode(".", e_QUERY);
+	$action = $tmp[0];
+	$sub_action = $tmp[1];
+	unset($tmp);
+}
 
 if(IsSet($_POST['addoption']) && $_POST['option_count'] < 10){
 	$_POST['option_count']++;
@@ -34,19 +42,18 @@ if(IsSet($_POST['reset'])){
 }
 
 
-if(IsSet($_POST['deletecancel'])){
-	$message = POLLAN_1."<br />";
+if($action == "delete"){
+	$message = $poll -> delete_poll($sub_action);
+	unset($poll_id, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate']);
 }
 
-if(IsSet($_POST['delete'])){
-	if($_POST['confirm']){
-		$message = $poll -> delete_poll($_POST['existing']);
-		unset($poll_id, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate']);
-	}
+if(IsSet($_POST['submit'])){
+	$message = $poll -> submit_poll($sub_action, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate']);
+	unset($_POST['poll_title'], $_POST['poll_option'], $_POST['activate']);
 }
 
-if(IsSet($_POST['edit'])){
-	if($sql -> db_Select("poll", "*", "poll_id='".$_POST['existing']."' ")){
+if($action == "edit" && !$_POST['preview']  && !$_POST['addoption'] && !$_POST['submit']){
+	if($sql -> db_Select("poll", "*", "poll_id=$sub_action")){
 		$row = $sql-> db_Fetch(); extract($row);
 		for($a=1; $a<=10; $a++){
 			$var = "poll_option_".$a;
@@ -58,11 +65,6 @@ if(IsSet($_POST['edit'])){
 		$_POST['option_count'] = count($_POST['poll_option']);
 		$_POST['poll_title'] = $poll_title;
 	}
-}
-
-if(IsSet($_POST['submit'])){
-	$message = $poll -> submit_poll($_POST['poll_id'], $_POST['poll_title'], $_POST['poll_option'], $_POST['activate']);
-	unset($_POST['poll_title'], $_POST['poll_option'], $_POST['activate']);
 }
 
 if(IsSet($_POST['preview'])){
@@ -89,33 +91,50 @@ if(IsSet($message)){
 	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
+
+
+
+$text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 200px; overflow : auto; '>";
+if($poll_total = $sql -> db_Select("poll")){
+	$text .= "<table class='fborder' style='width:100%'>
+	<tr>
+	<td style='width:5%' class='forumheader2'>ID</td>
+	<td style='width:75%' class='forumheader2'>".POLLAN_7."</td>
+	<td style='width:20%' class='forumheader2'>".POLLAN_20."</td>
+	</tr>";
+	while($row = $sql -> db_Fetch()){
+		extract($row);
+		$text .= "<tr>
+		<td style='width:5%' class='forumheader3'>$poll_id</td>
+		<td style='width:75%' class='forumheader3'>$poll_title</td>
+		<td style='width:20%; text-align:center' class='forumheader3'>".
+		$rs -> form_button("submit", "main_edit", POLLAN_4, "onClick=\"document.location='".e_SELF."?edit.$poll_id'\"").
+		$rs -> form_button("submit", "main_delete", POLLAN_5, "onClick=\"confirm_($poll_id)\"")."
+		</td>
+		</tr>";
+	}
+	$text .= "</table>";
+}else{
+	$text .= "<div style='text-align:center'>".LCLAN_61."</div>";
+}
+$text .= "</div>";
+$ns -> tablerender(POLLAN_3, $text);
+
+
+
+
+
+
+
+
+
+
 $poll_total = $sql -> db_Select("poll");
 
 $text = "<div style='text-align:center'>
-<form method='post' action='".e_SELF."'>
+<form method='post' action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."'>
 <table style='width:85%' class='fborder'>
 <tr>
-<td colspan='2' class='forumheader' style='text-align:center'>";
-
-if(!$poll_total){
-	$text .= "<span class='defaulttext'>".POLLAN_2.".</span>";
-}else{
-	$text .= "<span class='defaulttext'>".POLLAN_3.":</span> 
-	<select name='existing' class='tbox'>";
-	while($row = $sql-> db_Fetch()){
-		$text .= "<option value='".$row['poll_id']."'>".$row['poll_title']."</option>";
-	}
-	$text .= "</select> 
-	<input class='button' type='submit' name='edit' value='".POLLAN_4."' /> 
-	<input class='button' type='submit' name='delete' value='".POLLAN_5."' />
-	<input type=\"checkbox\" name=\"confirm\" value=\"1\"><span class=\"smalltext\"> ".POLLAN_6."</span>
-	";
-}
-
-$text .= "
-</td>
-</tr>
-<tr> 
 <td style='width:30%' class='forumheader3'><div class='normaltext'>".POLLAN_7.":</div></td>
 <td style='width:70%'class='forumheader3'>
 <input class='tbox' type='text' name='poll_title' size='70' value='".$_POST['poll_title']."' maxlength='200' />";
@@ -149,9 +168,8 @@ $text .= "</td>
 
 if(IsSet($_POST['preview'])){
 	$text .= "<input class='button' type='submit' name='preview' value='".POLLAN_14."' /> ";
-	if($_POST['poll_id']){
+	if($action == "edit"){
 		$text .= "<input class='button' type='submit' name='submit' value='".POLLAN_15."' /> ";
-
 	}else{
 		$text .= "<input class='button' type='submit' name='submit' value='".POLLAN_16."' /> ";
 	}
@@ -162,15 +180,20 @@ if(IsSet($poll_id)){
 	$text .= "<input class='button' type='submit' name='reset' value='".POLLAN_18."' /> ";
 }
 
-$text .= "</td></tr></table>";
-if($_POST['poll_id']){
-	$text .= "<input type='hidden' name='poll_id' value='".$_POST['poll_id']."'>";
-}else{
-	$text .= "<input type='hidden' name='poll_id' value='".$poll_id."'>";
-}
-$text .= "</form>
+$text .= "</td></tr></table>
+</form>
 </div>";
 
 $ns -> tablerender("<div style='text-align:center'>".POLLAN_19."</div>", $text);
 require_once("footer.php");
+
+echo "<script type=\"text/javascript\">
+function confirm_(poll_id){
+	var x=confirm(\"".POLLAN_21." [ID: \" + poll_id + \"]\");
+	if(x){
+		window.location='".e_SELF."?delete.' + poll_id;
+	}
+}
+</script>";
+
 ?>

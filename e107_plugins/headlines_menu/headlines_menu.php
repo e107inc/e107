@@ -2,11 +2,6 @@
 
 $headline_update = 7200;	// (2 hours)
 
-if(!ini_get("allow_url_fopen")){
-	$ns -> tablerender(NFMENU_161, "[".NFMENU_164."]");
-	return;
-}
-
 // is script being called as menu item, or standalone page ...
 if(strstr($_SERVER['PHP_SELF'], "headlines_menu.php")){
 	require_once("../../class2.php");
@@ -48,26 +43,38 @@ if($sql -> db_Select("headlines", "*", "headline_active='1' ")){
 	while($row = $sql -> db_Fetch()){
 		extract($row);
 		if(!$headline_url){ break; }
-		if($headline_timestamp+$headline_update < time()){
-			if(!$remote = @fopen ($headline_url, "r")){
-				$tmp = parse_url($headline_url);
-				$text .= "<div style='text-align:center'>\n<table style='width:95%' class='forumheader3'>\n<tr>\n<td style='text-align:center' class='forumheader2'>\n<div class='smalltext'><a href='".$headline_url."' onclick=\"window.open('".$headline_url."'); return false;\">[".NFMENU_163." ".$tmp['host']."]</a></div></td></tr></table></div><br />";
-			}else{
-				unset($data);
-				while (!feof($remote)){
-					$data .= fgets ($remote, 4096);
-				}
-				fclose ($remote);
-				if(strstr($data, "Your Headline Reader Has Been Banned")){
-					$tmp = parse_url($headline_url);
+		if($headline_timestamp+$headline_update < time() && !strstr(THEME, "../")){
+			$tmp = parse_url($headline_url);
+			if(ini_get("allow_url_fopen")){
+				if(!$remote = @fopen ($headline_url, "r")){
 					$text .= "<div style='text-align:center'>\n<table style='width:95%' class='forumheader3'>\n<tr>\n<td style='text-align:center' class='forumheader2'>\n<div class='smalltext'><a href='".$headline_url."' onclick=\"window.open('".$headline_url."'); return false;\">[".NFMENU_163." ".$tmp['host']."]</a></div></td></tr></table></div><br />";
 				}
-				$rss = new parse_xml;
-				$rss -> parse_xml_($data);
-				$text .= $rss -> cache_results($headline_id);
+			}else{
+				if(!$remote = fsockopen ($tmp['host'], 80 ,$errno, $errstr, 10)){
+					$text .= "<div style='text-align:center'>\n<table style='width:95%' class='forumheader3'>\n<tr>\n<td style='text-align:center' class='forumheader2'>\n<div class='smalltext'><a href='".$headline_url."' onclick=\"window.open('".$headline_url."'); return false;\">[".NFMENU_163." ".$tmp['host']."]</a></div></td></tr></table></div><br />";
+				}else{
+					stream_set_timeout($remote, 10);
+					fputs($remote, "GET ".$headline_url." HTTP/1.0\r\n\r\n");
+				}
 			}
+
+			unset($data);
+			while (!feof($remote)){
+				$data .= fgets ($remote, 4096);
+			}
+			fclose ($remote);
+
+			$data = eregi_replace("^.*\<\?xml", "<?xml", $data);
+
+			if(strstr($data, "Your Headline Reader Has Been Banned")){
+				$tmp = parse_url($headline_url);
+				$text .= "<div style='text-align:center'>\n<table style='width:95%' class='forumheader3'>\n<tr>\n<td style='text-align:center' class='forumheader2'>\n<div class='smalltext'><a href='".$headline_url."' onclick=\"window.open('".$headline_url."'); return false;\">[".NFMENU_163." ".$tmp['host']."]</a></div></td></tr></table></div><br />";
+			}
+			$rss = new parse_xml;
+			$rss -> parse_xml_($data);
+			$text .= $rss -> cache_results($headline_id);
 		}else{
-			$text .= $headline_data;
+			$text .= str_replace(ereg_replace("\.\.\/", "", THEME), THEME, $headline_data);
 		}
 	}
 
@@ -146,8 +153,13 @@ class parse_xml {
 	function cache_results($headline_id, $description = FALSE){
 		$sql = new db;
 
+		$sql -> db_Select("headlines", "headline_image ", "headline_id=$headline_id");
+		$row = $sql -> db_Fetch(); extract($row);
+
+		$logoimage = ($headline_image ? $headline_image : $this->channel['url']);
+
 		$text = "<div style='text-align:center'>\n<table style='width:95%' class='forumheader3'>\n<tr>\n<td style='text-align:center' class='forumheader2'>\n<a href='".$this->channel['link']."' onclick=\"window.open('".$this->channel['link']."'); return false;\">
-		".($this->channel['url'] ? "<img src='".$this->channel['url']."' alt='' style='border:0; vertical-align:center'>" : $this->channel['title'])."</a></td></tr>";
+		".($this->channel['url'] || $logoimage ? "<img src='$logoimage' alt='' style='border:0; vertical-align:center'>" : $this->channel['title'])."</a></td></tr>";
 
 		$text2 = $text;
 

@@ -23,7 +23,14 @@ if(ereg("untrack", e_QUERY)){
 	exit;
 }
 
-define("FTHEME", (file_exists(THEME."forum/newthread.png") ? THEME."forum/" : e_IMAGE."forum/"));
+define("IMAGE_e", (file_exists(THEME."forum/e.png") ? "<img src='".THEME."forum/e.png' alt='' />" : "<img src='".e_IMAGE."forum/e.png' alt='' />"));
+define("IMAGE_nonew_small", (file_exists(THEME."forum/nonew_small.png") ? "<img src='".THEME."forum/nonew_small.png' alt='' />" : "<img src='".e_IMAGE."forum/nonew_small.png' alt='' />"));
+define("IMAGE_new_small", (file_exists(THEME."forum/new_small.png") ? "<img src='".THEME."forum/new_small.png' alt='' />" : "<img src='".e_IMAGE."forum/new_small.png' alt='' />"));
+define("IMAGE_closed_small", (file_exists(THEME."forum/closed_small.png") ? "<img src='".THEME."forum/closed_small.png' alt='' />" : "<img src='".e_IMAGE."forum/closed_small.png' alt='' />"));
+define("IMAGE_new", (file_exists(THEME."forum/new.png") ? "<img src='".THEME."forum/new.png' alt='".LAN_199."' style='border:0' />" : "<img src='".e_IMAGE."forum/new.png' alt='".LAN_199."' style='border:0' />"));
+define("IMAGE_nonew", (file_exists(THEME."forum/nonew.png") ? "<img src='".THEME."forum/nonew.png' alt='' />" : "<img src='".e_IMAGE."forum/nonew.png' alt='' />"));
+define("IMAGE_post", (file_exists(THEME."forum/post.png") ? "<img src='".THEME."forum/post.png' alt='' style='border:0' />" : "<img src='".e_IMAGE."forum/post.png' alt='' style='border:0' />"));
+
 
 if(e_QUERY && e_QUERY != "track"){
 	$forum_id = e_QUERY;
@@ -123,7 +130,7 @@ $text .= "<br /><table style='width:95%' class='fborder'>
 <td colspan='2' style='width:60%' class='fcaption'>".LAN_191."</td>
 </tr>
 <tr>
-<td rowspan='2' style='width:5%; text-align:center' class='forumheader3'><img src='".FTHEME."e.png' alt='' /></td>
+<td rowspan='2' style='width:5%; text-align:center' class='forumheader3'>".IMAGE_e."</td>
 ";
 
 
@@ -208,13 +215,13 @@ $text .= "</td></tr><tr><td style='width:95%' class='forumheader3'>
 
 			$sql -> db_Select("forum_t", "*", "thread_id='".$value."' ");
 			$row = $sql -> db_Fetch(); extract($row);
-			$icon = "<img src='".FTHEME."nonew_small.png' alt='' />";
+			$icon = IMAGE_nonew_small;
 			if($thread_datestamp > USERLV && (!ereg("\.".$thread_id."\.", USERVIEWED))){
-				$icon = "<img src='".FTHEME."new_small.png' alt='' />";
+				$icon = IMAGE_new_small;
 			}else if($sql3 -> db_SELECT("forum_t", "*", "thread_parent='$thread_id' AND thread_datestamp > '".USERLV."' ")){
 				while(list($nthread_id) = $sql3 -> db_Fetch()){
 					if(!ereg("\.".$nthread_id."\.", USERVIEWED)){
-						$icon = "<img src='".FTHEME."new_small.png' alt='' />";
+						$icon = IMAGE_new_small;
 					}
 				}
 			}
@@ -254,21 +261,21 @@ $text .= "<div class='spacer'>
 	<tr>
 
 	<td style='width:2%'>
-		<img src='".FTHEME."new_small.png' alt='' />
+		".IMAGE_new_small."
 	</td>
 	<td style='width:10%'>
 		<span class='smallblacktext'>".LAN_79."</span>
 	</td>
 
 	<td style='width:2%'>
-		<img src='".FTHEME."nonew_small.png' alt='' />
+		".IMAGE_nonew_small."
 	</td>
 	<td style='width:10%'>
 		<span class='smallblacktext'>".LAN_80."</span>
 	</td>
 
 	<td style='width:2%'>
-		<img src='".FTHEME."closed_small.png' alt='' />
+		".IMAGE_closed_small."
 	</td>
 	<td style='width:10%'>
 		<span class='smallblacktext'>".LAN_394."</span>
@@ -330,7 +337,7 @@ function render_forum($row, $newflag, $forum_id){
 		}
 	}
 
-	$text = "<tr><td style='width:5%; text-align:center' class='forumheader2'>".($newflag ? "<a href='".e_SELF."?".$forum_id."'><img src='".FTHEME."new.png' alt='".LAN_199."' style='border:0' /></a></td>" : "<img src='".FTHEME."nonew.png' alt='' /></td>")."
+	$text = "<tr><td style='width:5%; text-align:center' class='forumheader2'>".($newflag ? "<a href='".e_SELF."?".$forum_id."'>".IMAGE_new."</a></td>" : IMAGE_nonew."</td>")."
 	<td style='width:55%' class='forumheader2'><a href='".e_BASE."forum_viewforum.php?".$forum_id."'>".$forum_name."</a><br /><span class='smallblacktext'>".$forum_description."</span></td>
 	<td style='width:10%; text-align:center' class='forumheader3'>".$forum_threads."</td>
 	<td style='width:10%; text-align:center' class='forumheader3'>".$forum_replies."</td>
@@ -354,9 +361,9 @@ function render_forum($row, $newflag, $forum_id){
 		($lastpost_author_id ? "<a href='".e_BASE."user.php?id.".$lastpost_author_id."'>".$lastpost_author_name."</a> " : $lastpost_author_name);
 
 		if($thread_parent){
-			$text .= "&nbsp;&nbsp;<a href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_parent."'><img src='".FTHEME."post.png' alt='' style='border:0' /></a></span></td>";
+			$text .= "&nbsp;&nbsp;<a href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_parent."'>".IMAGE_post."</a></span></td>";
 		}else{
-			$text .= "&nbsp;&nbsp;<a href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id."'><img src='".FTHEME."post.png' alt='' style='border:0' /></a></span></td>";
+			$text .= "&nbsp;&nbsp;<a href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id."'>".IMAGE_post."</a></span></td>";
 		}
 	}
 	return $text;

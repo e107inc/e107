@@ -15,6 +15,15 @@
 require_once("../class2.php");
 if(!getperms("3")){ header("location:".e_BASE."index.php"); exit; }
 require_once("auth.php");
+require_once(e_HANDLER."form_handler.php");
+$rs = new form;
+
+if(e_QUERY){
+	$tmp = explode(".", e_QUERY);
+	$action = $tmp[0];
+	$sub_action = $tmp[1];
+	unset($tmp);
+}
 
 if(IsSet($_POST['add_admin'])){
 	if(!$_POST['ad_name'] || !$_POST['a_password']){
@@ -56,8 +65,8 @@ if(IsSet($_POST['update_admin'])){
 	$message = "Administrator ".$_POST['ad_name']." ".ADMSLAN_2."<br />";
 }
 
-if(IsSet($_POST['edit'])){
-	$sql -> db_Select("user", "*", "user_id='".$_POST['existing']."' ");
+if($action == "edit"){
+	$sql -> db_Select("user", "*", "user_id=$sub_action");
 	$row = $sql-> db_Fetch();
 	extract($row);
 	$a_id = $user_id; $ad_name = $user_name; $a_perms = $user_perms;
@@ -71,45 +80,20 @@ if(IsSet($_POST['edit'])){
 	}
 }
 
-if(IsSet($_POST['delete'])){
-	$sql -> db_Select("user", "*", "user_id='".$_POST['existing']."' ");
+if($action == "delete"){
+	$sql -> db_Select("user", "*", "user_id=$sub_action");
 	$row = $sql-> db_Fetch();
 	extract($row);
-
-	$text = "<div style='text-align:center'>";
-
 	if($user_perms == "0"){
-		$text .= "$user_name ".ADMSLAN_6."
+		$text = "<div style='text-align:center'>$user_name ".ADMSLAN_6."
 		<br /><br />
 		<a href='administrator.php'>".ADMSLAN_4."</a>";
 		$ns -> tablerender("<div style='text-align:center'>".ADMSLAN_5."</div>", $text);
 		require_once("footer.php");
 		exit;
 	}
-
-
-	$text .= "<b>".ADMSLAN_7." '$user_name' ".ADMSLAN_8."</b>
-<br /><br />
-<form method='post' action='".e_SELF."'>
-<input class='button' type='submit' name='cancel' value='".ADMSLAN_9."' /> 
-<input class='button' type='submit' name='confirm' value='".ADMSLAN_10."' /> 
-<input type='hidden' name='existing' value='$user_name'>
-</form>
-</div>";
-$ns -> tablerender(ADMSLAN_11, $text);
-	
-			require_once("footer.php");
-	exit;
-}
-
-
-if(IsSet($_POST['cancel'])){
-	$message = ADMSLAN_12;
-}
-
-if(IsSet($_POST['confirm'])){
-	$sql -> db_Update("user", "user_admin=0, user_perms='' WHERE user_name='".$_POST['existing']."' ");
-	$message = "Administrator deleted.";
+	$sql -> db_Update("user", "user_admin=0, user_perms='' WHERE user_id=$sub_action");
+	$message = ADMSLAN_61;
 }
 
 if(IsSet($message)){
@@ -118,21 +102,37 @@ if(IsSet($message)){
 
 $sql -> db_Select("user", "*", "user_admin='1'");
 
+
+$text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 100px; overflow : auto; '>
+<table class='fborder' style='width:100%'>
+<tr>
+<td style='width:5%' class='forumheader2'>ID</td>
+<td style='width:30%' class='forumheader2'>".ADMSLAN_56."</td>
+<td style='width:35%' class='forumheader2'>".ADMSLAN_18."</td>
+<td style='width:30%' class='forumheader2'>".ADMSLAN_57."</td>
+</tr>";
+
+while($row = $sql -> db_Fetch()){
+	extract($row);
+	$text .= "<tr>
+<td style='width:5%' class='forumheader3'>$user_id</td>
+<td style='width:30%' class='forumheader3'>$user_name</td>
+<td style='width:35%' class='forumheader3'>".($user_perms == "0" ? ADMSLAN_58 : ($user_perms ? str_replace(".", "", $user_perms) : "&nbsp;"))."</td>
+<td style='width:30%; text-align:center' class='forumheader3'>".
+($user_perms == "0" ? "&nbsp;" : 
+$rs -> form_button("submit", "main_edit", ADMSLAN_15, "onClick=\"document.location='".e_SELF."?edit.$user_id'\"").
+$rs -> form_button("submit", "main_delete", ADMSLAN_59, "onClick=\"confirm_($user_id, '$user_name')\""))."</td>
+</tr>";
+}
+
+$text .= "</table>\n</div>";
+
+$ns -> tablerender(ADMSLAN_13, $text);
+
+
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."' name='myform'>
 <table style='width:95%' class='fborder'>
-<tr>
-<td colspan='2' class='forumheader' style='text-align:center'>
-<span class='defaulttext'>".ADMSLAN_13.":</span> 
-<select name='existing' class='tbox'>";
-while(list($admin_id_, $admin_name_) = $sql-> db_Fetch()){
-	$text .= "<option value='$admin_id_'>".$admin_name_."</option>";
-}
-$text .= "</select>
-<input class='button' type='submit' name='delete' value='".ADMSLAN_14."' /> \n
-<input class='button' type='submit' name='edit' value='".ADMSLAN_15."' />\n
-</td></tr>
-
 <tr>
 <td style='width:30%' class='forumheader3'>".ADMSLAN_16.": </td>
 <td style='width:70%' class='forumheader3'>
@@ -206,7 +206,7 @@ $text .= "
 $text .= "<tr style='vertical-align:top'> 
 <td colspan='2' style='text-align:center' class='forumheader'>";
 
-if(IsSet($_POST['edit'])){
+if($action == "edit"){
 	$text .= "<input class='button' type='submit' name='update_admin' value='".ADMSLAN_52."' />
 	<input type='hidden' name='a_id' value='$a_id'>";
 }else{
@@ -219,6 +219,13 @@ $text .= "</td>
 </div>";
 
 $ns -> tablerender("<div style='text-align:center'>".ADMSLAN_54."</div>", $text);
-
+echo "<script type=\"text/javascript\">
+function confirm_(user_id, user_name){
+	var x=confirm(\"".ADMSLAN_60." \" + user_name + \"\");
+	if(x){
+		window.location='".e_SELF."?delete.' + user_id;
+	}
+}
+</script>";
 require_once("footer.php");
 ?>

@@ -53,7 +53,7 @@ if(IsSet($_POST['records'])){
 		$order = $qs[2];
 	}
 }
-
+if($records >30){ $records = 30; }
 
 
 if(IsSet($id)){

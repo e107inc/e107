@@ -31,5 +31,5 @@ define("LAN_404", "Registration details for");
 define("LAN_405", "This stage of registation is complete, you will be receiving a confirmation email containing your login details, please follow the link in the email to complete the signup process and activate your account.");
 define("LAN_406", "Thankyou!");
 define("LAN_407", "\n\nPlease keep this email for your own information as your password has been encrypted and cannot be retrieved if you misplace or forget it. You can however request a new password if this happens.\n\nThanks for your registration.\n\nFrom");
-
+define("LAN_408", "A user with that email address already exists. Please use the <a href='fpw.php'>forgot password screen</a> to retrieve your password.");
 ?>

@@ -29,13 +29,16 @@ if(e_QUERY){
 }
 
 if(IsSet($_POST['pwsubmit'])){
+
+	require_once(e_HANDLER."mail.php");
+
 	$email = $_POST['email'];
 	if($sql -> db_Select("user", "*", "user_email='".$_POST['email']."' ")){
 		$row = $sql -> db_Fetch(); extract($row);
-
 		if($user_id == 1 && $user_perms == 0){
-			// is someone trying to reset the main admin password?
-			exit;
+			sendemail($pref['siteadminemail'], "Attempted password reset", "Someone with ip address ".getip()." attempted to reset the main admin password.");
+			echo "<script type='text/javascript'>document.location.href='index.php'</script>\n";
+			die();
 		}
 
 		$pwlen = rand(6, 12);
@@ -54,12 +57,14 @@ if(IsSet($_POST['pwsubmit'])){
 		$returnaddress = (substr(SITEURL, -1) == "/" ? SITEURL."fpw.php" : SITEURL."/fpw.php");
 		$message = LAN_215.$newpw."\n\n".LAN_218." $user_name\n\n".LAN_216."\n\n".$returnaddress."?".$validate;
 
-		require_once(e_HANDLER."mail.php");
+		
 		if(sendemail($_POST['email'], "Password reset from ".SITENAME, $message)){
 			$text = "<div style='text-align:center'>".LAN_01."</div>";
 		}else{
 			$text = "<div style='text-align:center'>".LAN_02."</div>";
 		}
+
+		echo $message;
 
 		$ns -> tablerender(LAN_03, $text);
 		require_once(FOOTERF);

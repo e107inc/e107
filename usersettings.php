@@ -32,7 +32,7 @@ if(IsSet($_POST['updatesettings'])){
 		$error .= LAN_105."<br />";
 	}
 
-	if($_POST['password1'] =="" || $_POST['password2'] = ""){
+	if($_POST['password1'] =="" || $_POST['password2'] == ""){
 		$password = $_POST['_pw'];
 	}else{
 		$password = md5($_POST['password1']);
@@ -68,7 +68,7 @@ if(IsSet($_POST['updatesettings'])){
 	}
 	if(!$user_sess){ $user_sess = $_POST['_user_sess']; }
 	if(!$error){
-		if($_uid && ADMIN){ $inp = $_uid; }else{ $inp = USERID; }
+		if($_uid && ADMIN){ $inp = $_uid; $remflag = TRUE; }else{ $inp = USERID; }
 		$_POST['signature'] = $aj -> formtpa($_POST['signature'], "public");
 		$_POST['location'] = $aj -> formtpa($_POST['location'], "public");
 		$sql -> db_Update("user", "user_password='$password', user_sess='$user_sess', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$birthday."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."' WHERE user_id='".$inp."' ");
@@ -82,7 +82,12 @@ if(IsSet($_POST['updatesettings'])){
 				$user_pref[$u_entended] = $val;
 				$c++;
 			}
-			save_prefs("user");
+			save_prefs("user", $inp);
+		}
+
+		if($remflag){
+			header("location:".e_ADMIN."users.php?main.$inp");
+			exit;
 		}
 
 		$text = "<div style='text-align:center'>".LAN_150."</div>";
@@ -113,7 +118,7 @@ $rs = new form;
 $text = (e_QUERY ? $rs -> form_open("post", e_SELF."?".$user_id, "settings", "", "enctype='multipart/form-data'") : $rs -> form_open("post", e_SELF, "settings", "", "enctype='multipart/form-data'"));
 
 $text .= "<div style='text-align:center'>
-<table style='width:95%' class='fborder'>
+<table style='width:auto' class='fborder'>
 <tr>
 <td style='width:20%' class='forumheader3'>".LAN_7."</td>
 <td style='width:80%; text-align:right' class='forumheader3'>".

@@ -2,7 +2,7 @@ body {
 	font-size: 12px;
 	color: #000;
 	font-family: tahoma, verdana, arial, sans-serif;
-	background-color: #F1EAE1;
+	background-color: #E9EAF5;
 	margin:50px; text-align:left;
 }
 a {
@@ -325,11 +325,11 @@ p {
 
 
 
-.captionleft{ width: 21px; background-image: url(images/capleft.png); }
+.captionleft{ width: 24px; background-image: url(images/capleft.png); }
 .captionbar{ background-repeat: repeat-x; padding-left: 4px; padding-right:6px; font-size: 10px; color: #fff; font-family: verdana, tahoma, arial, sans-serif; background-image: url(images/capdark.png);}
-.captionend{ width: 21px; background-image: url(images/captransition.png); }
+.captionend{ width: 12px; background-image: url(images/captransition.png); }
 .captionmain{ width: 100%; background-repeat: repeat-x; background-image: url(images/caplight.png); }
-.captionright{ width: 9px; background-image: url(images/capright.png); }
+.captionright{ width: 11px; background-image: url(images/capright.png); }
 
 .bodyleft{ width: 3px; background-repeat: repeat-y; background-image: url(images/left.png); }
 .bodymain{ width: 100%; background: #F6F8F3; padding: 0px 0px 0px 0px; font-size: 12px; color: #000; font-family: verdana, tahoma, arial, sans-serif; vertical-align:top; }

@@ -43,7 +43,7 @@ while($row = $sql -> db_Fetch()){
 // set up arrays for calender display ------------------------------------------------------------------
 $week = Array(EC_LAN_25,EC_LAN_19,EC_LAN_20,EC_LAN_21,EC_LAN_22,EC_LAN_23,EC_LAN_24);
 $months = Array(EC_LAN_0,EC_LAN_1,EC_LAN_2,EC_LAN_3,EC_LAN_4,EC_LAN_5,EC_LAN_6,EC_LAN_7,EC_LAN_8,EC_LAN_9,EC_LAN_10,EC_LAN_11);
-$calendar_title = $months[$datearray[mon]-1]." ".$current_year;
+$calendar_title = "<a class='forumlink' href='".$ec_dir."calendar.php'>".$months[$datearray[mon]-1]." ".$current_year."</a>";
 // -----------------------------------------------------------------------------------------------------------
 
 $text = "<div style='text-align:center'>";
@@ -56,7 +56,7 @@ if($events){
 $start = $monthstart;
 
 $text .= "<br /><br />
-<table cellpadding='0' cellspacing='1' class='fborder'><tr>";
+<table cellpadding='0' cellspacing='1' style='width:89%' class='fborder'><tr>";
 
 foreach($week as $day){
         $text .= "<td class='day' style='text-align:center'>".$day."</td>";
@@ -85,14 +85,14 @@ for($c=1; $c<=31; $c++){
                         $sql -> db_Select("event_cat", "*", "event_cat_id='".$event_true[($c)]."' ");
                         $icon = $sql -> db_Fetch();
                         extract($icon);
-                        $img = "<img style='border:0' src='".$ec_dir."images/".$event_cat_icon."' alt='' />";
+                        $img = "<img style='border:0' src='".$ec_dir."images/".$event_cat_icon."' alt='' height='10' width='10'/>";
                 }else{
-                        $img = "<img style='border:0' src='".$ec_dir."images/cal1.png' alt='' />";
-                }
+					$img = $c;
+				}
 
                 $linkut = mktime(0 ,0 ,0 ,$dayarray['mon'], $c, $datearray['year']);
 
-                $text .="<a href='".$ec_dir."event.php?".$linkut."'>$img<br />$c</a>";
+                $text .="<a href='".$ec_dir."event.php?".$linkut.".one'>$img</a>";
 
                 if($thisday == $c){
                 }

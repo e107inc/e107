@@ -54,7 +54,7 @@ class db{
 		}
 	}
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-	function db_Select($table, $fields="*", $arg="", $mode="default"){
+	function db_Select($table, $fields="*", $arg="", $mode="default", $debug=FALSE){
 		/*
 		# Select with args
 		#
@@ -68,10 +68,8 @@ class db{
 		global $dbq;
 		$dbq++;
 
-		$debug = 0;
-		$debugtable = "plugin";
 		if($arg != "" && $mode=="default"){
-			if($debug == TRUE && $debugtable == $table){ echo "SELECT ".$fields." FROM ".MPREFIX.$table." WHERE ".$arg."<br />"; }
+			if($debug){ echo "SELECT ".$fields." FROM ".MPREFIX.$table." WHERE ".$arg."<br />"; }
 			if($this->mySQLresult = @mysql_query("SELECT ".$fields." FROM ".MPREFIX.$table." WHERE ".$arg)){
 				$this->dbError("dbQuery");
 				return $this->db_Rows();
@@ -80,7 +78,7 @@ class db{
 				return FALSE;
 			}
 		}else if($arg != "" && $mode != "default"){
-			if($debug == TRUE && $debugtable == $table){ echo "@@SELECT ".$fields." FROM ".MPREFIX.$table." ".$arg."<br />"; }
+			if($debug){ echo "@@SELECT ".$fields." FROM ".MPREFIX.$table." ".$arg."<br />"; }
 			if($this->mySQLresult = @mysql_query("SELECT ".$fields." FROM ".MPREFIX.$table." ".$arg)){
 				$this->dbError("dbQuery");
 				return $this->db_Rows();
@@ -89,7 +87,7 @@ class db{
 				return FALSE;
 			}
 		}else{
-			if($debug == TRUE && $debugtable == $table){ echo "SELECT ".$fields." FROM ".MPREFIX.$table."<br />"; }
+			if($debug){ echo "SELECT ".$fields." FROM ".MPREFIX.$table."<br />"; }
 			if($this->mySQLresult = @mysql_query("SELECT ".$fields." FROM ".MPREFIX.$table)){
 				$this->dbError("dbQuery");
 				return $this->db_Rows();
@@ -100,7 +98,7 @@ class db{
 		}
 	}
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-	function db_Insert($table, $arg){
+	function db_Insert($table, $arg, $debug=FALSE){
 		/*
 		# Insert with args
 		#
@@ -110,9 +108,9 @@ class db{
 		# - scope					public
 		*/
 
-	//	if($table == "user"){
-	//		echo "INSERT INTO ".MPREFIX.$table." VALUES (".htmlentities($arg).")";
-	//	}
+		if($debug){
+			echo "INSERT INTO ".MPREFIX.$table." VALUES (".htmlentities($arg).")";
+		}
 
 //		if(!ANON && !USER && $table != "user"){ return FALSE; }
 
@@ -129,7 +127,7 @@ class db{
 		}
 	}
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-	function db_Update($table, $arg){
+	function db_Update($table, $arg, $debug=FALSE){
 		/*
 		# Update with args
 		#
@@ -138,11 +136,8 @@ class db{
 		# - return				sql identifier, or error if (error reporting = on, error occured, boolean)
 		# - scope					public
 		*/
-		$debug = 0;
-		$debugtable = "plugin";
-		if($debug == TRUE && $table == $debugtable){ echo "UPDATE ".MPREFIX.$table." SET ".$arg."<br />"; }	
+		if($debug){ echo "UPDATE ".MPREFIX.$table." SET ".$arg."<br />"; }	
 		if($result = $this->mySQLresult = @mysql_query("UPDATE ".MPREFIX.$table." SET ".$arg)){
-
 			if(strstr(e_SELF, ADMINDIR) && $table != "online"){
 				if(!strstr($arg, "link_order")){
 					$str = addslashes(str_replace("WHERE", "", substr($arg, strpos($arg, "WHERE"))));

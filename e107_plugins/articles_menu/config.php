@@ -31,10 +31,6 @@ if(IsSet($_POST['update_menu'])){
 	$ns -> tablerender("", "<div style='text-align:center'><b>Articles menu configuration saved</b></div>");
 }
 
-if($menu_pref['articles_parents']){
-	$menu_parents="CHECKED";
-}
-
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."?".e_QUERY."' name='menu_conf_form'>
 <table style='width:85%' class='fborder' >
@@ -55,9 +51,9 @@ $text = "<div style='text-align:center'>
 </tr>
 
 <tr>
-<td style='width:40%' class='forumheader3'>Show parents in menu?</td>
+<td style='width:40%' class='forumheader3'>Show article categories in menu?</td>
 <td style='width:60%' class='forumheader3'>
-<input class='tbox' type='checkbox' name='articles_parents' value='".$menu_parents."' />
+<input type='checkbox' name='articles_parents' value='".$menu_pref['articles_parents']."' ".($menu_pref['articles_parents'] ? "checked" : "")." />
 </td>
 </tr>
 

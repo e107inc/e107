@@ -18,9 +18,10 @@ require_once("auth.php");
 
 
 if(IsSet($_POST['add_headline'])){
+
 	$datestamp = time();
 	if($_POST['headline_url']){
-		$sql -> db_Insert("headlines", "0, '".$_POST['headline_url']."', '', '0', '', '".$_POST['activate']."' ");
+		$sql -> db_Insert("headlines", "0, '".$_POST['headline_url']."', '', '0', '', '".$_POST['headline_image']."', '".$_POST['activate']."' ", TRUE);
 		$message = NWFLAN_1;
 		unset($headline_url, $headline_image);
 	}else{
@@ -29,7 +30,7 @@ if(IsSet($_POST['add_headline'])){
 }
 
 if(IsSet($_POST['update_headline'])){
-	$sql -> db_Update("headlines", "headline_url='".$_POST['headline_url']."', headline_timestamp='0', headline_active='".$_POST['activate']."' WHERE headline_id='".$_POST['headline_id']."' ");
+	$sql -> db_Update("headlines", "headline_url='".$_POST['headline_url']."', headline_timestamp='0', headline_image='".$_POST['headline_image']."', headline_active='".$_POST['activate']."' WHERE headline_id='".$_POST['headline_id']."'");
 	$message = NWFLAN_2;
 	unset($headline_url, $headline_image);
 }
@@ -82,14 +83,21 @@ $text .= "
 </td>
 </tr>
 <tr>
-<td style='width:30%' class='forumheader3'>".NWFLAN_10.": </td>
+<td style='width:30%' class='forumheader3'>".NWFLAN_10."</td>
 <td style='width:70%' class='forumheader3'>
 <input class='tbox' type='text' name='headline_url' size='60' value='$headline_url' maxlength='200' />
 </td>
 </tr>
 
 <tr>
-<td style='width:20%' class='forumheader3'>".NWFLAN_16.":</td>
+<td style='width:30%' class='forumheader3'>".NWFLAN_11."<br /><span class='smalltext'>".NWFLAN_12."</span></td>
+<td style='width:70%' class='forumheader3'>
+<input class='tbox' type='text' name='headline_image' size='60' value='$headline_image' maxlength='200' />
+</td>
+</tr>
+
+<tr>
+<td style='width:20%' class='forumheader3'>".NWFLAN_16."</td>
 <td style='width:80%' class='forumheader3'>";
 if($headline_active == 1){
 	$text .= "<input type='checkbox' name='activate' value='1' checked>";

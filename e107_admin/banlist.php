@@ -15,8 +15,16 @@
 require_once("../class2.php");
 if(!getperms("4")){ header("location:".e_BASE."index.php"); exit; }
 require_once("auth.php");
+require_once(e_HANDLER."form_handler.php");
+$rs = new form;
 
-if(e_QUERY){ $ban_ip = e_QUERY; }
+if(e_QUERY){
+	$tmp = explode("-", e_QUERY);
+	$action = $tmp[0];
+	$sub_action = $tmp[1];
+	$id = $tmp[2];
+	unset($tmp);
+}
 
 if(IsSet($_POST['add_ban'])){
 	$aj = new textparse;
@@ -26,8 +34,8 @@ if(IsSet($_POST['add_ban'])){
 	unset($ban_ip);
 }
 
-if(IsSet($_POST['delete'])){
-	$sql -> db_Delete("banlist", "banlist_ip='".$_POST['existing']."' ");
+if($action == "remove"){
+	$sql -> db_Delete("banlist", "banlist_ip='$sub_action'");
 	$message = BANLAN_1;
 }
 
@@ -35,33 +43,34 @@ if(IsSet($message)){
 	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
-$ban_total = $sql -> db_Select("banlist");
+$text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 100px; overflow : auto; '>\n";
+if(!$ban_total = $sql -> db_Select("banlist")){
+	$text .= "<div style='text-align:center'>".BANLAN_2."</div>";
+}else{
+	$text .= "<table class='fborder' style='width:100%'>
+	<tr>
+	<td style='width:70%' class='forumheader2'>".BANLAN_10."</td>
+<td style='width:30%' class='forumheader2'>".BANLAN_11."</td>
+</tr>";
+
+	while($row = $sql -> db_Fetch()){
+		extract($row);
+		$text .= "<td style='width:70%' class='forumheader3'>$banlist_ip</td>
+		<td style='width:30%; text-align:center' class='forumheader3'>".$rs -> form_button("submit", "main_edit", BANLAN_4, "onClick=\"document.location='".e_SELF."?remove-$banlist_ip'\"")."</td>\n</tr>";
+	}
+	$text .= "</table>\n";
+}
+$text .= "</div>";
+$ns -> tablerender(BANLAN_3, $text);
 
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>
 <table style='width:85%' class='fborder'>
-<tr>
-<td colspan='2' style='text-align:center' class='forumheader'>";
 
-if(!$ban_total){
-	$text .= "<span style='defaulttext'>".BANLAN_2."</span>";
-}else{
-	$text .= "<span style='defaulttext'>".BANLAN_3.":</span> 
-	<select name='existing' class='tbox'>";
-	while(list($ban_ip_) = $sql-> db_Fetch()){
-		$text .= "<option>".$ban_ip_."</option>";
-	}
-	$text .= "</select> 
-	<input class='button' type='submit' name='delete' value='".BANLAN_4."' />";
-}
-
-$text .= "
-</td>
-</tr>
 <tr>
 <td style='width:30%' class='forumheader3'>".BANLAN_5.": </td>
 <td style='width:70%' class='forumheader3'>
-<input class='tbox' type='text' name='ban_ip' size='40' value='$ban_ip' maxlength='200' />
+<input class='tbox' type='text' name='ban_ip' size='40' value='$action' maxlength='200' />
 </td>
 </tr>
 

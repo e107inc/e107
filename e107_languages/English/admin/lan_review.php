@@ -25,4 +25,43 @@ define("REVLAN_22", "Update Review");
 define("REVLAN_23", "Submit Review");
 define("REVLAN_24", "Reviews");
 
+
+
+
+define("REVLAN_25", "Review Category Saved");
+define("REVLAN_26", "Review Category Updated");
+define("REVLAN_27", "Category deleted");
+define("REVLAN_28", "Category");
+define("REVLAN_29", "Options");
+define("REVLAN_30", "Edit");
+define("REVLAN_31", "Delete");
+define("REVLAN_32", "No review categories");
+define("REVLAN_33", "Existing Review Categories");
+define("REVLAN_34", "Category Name");
+define("REVLAN_35", "Category Icon");
+define("REVLAN_36", "View Images");
+define("REVLAN_37", "Category Summary");
+define("REVLAN_38", "Update Review Category");
+define("REVLAN_39", "Create Review Category");
+define("REVLAN_40", "No reviews");
+define("REVLAN_41", "Existing Reviews");
+define("REVLAN_42", "Open HTML Editor");
+define("REVLAN_43", "Category");
+define("REVLAN_44", "None");
+define("REVLAN_45", "Review Front Page");
+define("REVLAN_46", "Create new Review");
+define("REVLAN_47", "Categories");
+define("REVLAN_48", "Review Options");
+define("REVLAN_49", "Are you sure you want to delete this category?");
+define("REVLAN_50", "Are you sure you want to delete this review?");
+define("REVLAN_51", "Author Details");
+define("REVLAN_52", "leave if review written by you");
+define("REVLAN_53", "author name");
+define("REVLAN_54", "author email address");
+
+
+
+
+
+
 ?>

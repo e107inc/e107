@@ -16,8 +16,9 @@ require_once("../class2.php");
 if(!getperms("F")){ header("location:".e_BASE."index.php"); exit; }
 
 if(IsSet($_POST['updatesettings'])){
+	$aj = new textparse;
 	while(list($id, $name) = each($_POST['emote_code'])){
-		$emote[] = array($name => $_POST['emote_text'][$id]);
+		$emote[] = array($aj -> formtpa($name) => $_POST['emote_text'][$id]);
 	}
 	$tmp = addslashes(serialize($emote));
 	$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='emote' ");
@@ -34,9 +35,9 @@ if(!$sql -> db_Select("core", "*", "e107_name='emote'")){
 }
 $emote = unserialize($e107_value);
 
-
 if(IsSet($_POST['addemote'])){
-	$emote[count($emote)] = array($_POST['emote_new_code'] => $_POST['emote_new_image']);
+	$aj = new textparse;
+	$emote[count($emote)] = array($aj -> formtpa($_POST['emote_new_code']) => $_POST['emote_new_image']);
 	$tmp = addslashes(serialize($emote));
 	$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='emote' ");
 	header("location:emoticon.php?v");

@@ -68,7 +68,14 @@ class news{
 			$category_id = 0;
 			$category_icon = (strstr(SITEBUTTON, "http") ? SITEBUTTON : e_IMAGE.SITEBUTTON);
 		}else{
-			$category_icon = (strstr($category_icon, "../") ? str_replace("../", "", $category_icon) : THEME.$category_icon);
+			$category_icon = str_replace("../", "", $category_icon);
+			if(strstr("images", $category_icon)){
+				$category_icon = THEME.$category_icon;
+			}else{
+				$category_icon = e_IMAGE."newsicons/".$category_icon;
+			}
+
+			//$category_icon = (strstr($category_icon, "../") ? str_replace("../", "", $category_icon) : THEME.$category_icon);
 		}
 
 		$active_start = ($active_start ? str_replace(" - 00:00:00", "", $con -> convert_date($active_start, "long")) : "Now");
@@ -87,12 +94,20 @@ class news{
 		$ptext = " <a href='".e_BASE."print.php?news.".$news_id."'><img src='".e_IMAGE."generic/printer.gif' style='border:0' alt='printer friendly' /></a>";
 
 		if(ADMIN && getperms("H")){
-			$adminoptions .= "<a href='".e_BASE.e_ADMIN."newspost.php?ne.".$news_id."'><img src='".e_IMAGE."generic/newsedit.png' alt='' style='border:0' /></a>
-			<a href='".e_BASE.e_ADMIN."newspost.php?nd.".$news_id."'><img src='".e_IMAGE."generic/newsdelete.png' alt='' style='border:0' /></a>";
+			$adminoptions .= "<a href='".e_BASE.e_ADMIN."newspost.php?create.edit.".$news_id."'><img src='".e_IMAGE."generic/newsedit.png' alt='' style='border:0' /></a>\n";
 		}
 
 		$search[0] = "/\{NEWSTITLE\}(.*?)/si";
 		$replace[0] = ($titleonly ? "<a href='".e_BASE."comment.php?$news_id'>".$news_title."</a>" : $news_title);
+
+		$search[13] = "/\{CAPTIONCLASS\}(.*?)/si";
+		$replace[13] = "<div class='category".$category_id."'>".($titleonly ? "&nbsp;<a href='".e_BASE."comment.php?$news_id'>".$news_title."</a>" : "&nbsp;".$news_title)."</div>";
+
+		$search[14] = "/\{ADMINCAPTION\}(.*?)/si";
+		$replace[14] = "<div class='$admin_name'>".($titleonly ? "&nbsp;<a href='".e_BASE."comment.php?$news_id'>".$news_title."</a>" : "&nbsp;".$news_title)."</div>";
+
+		$search[15] = "/\{ADMINBODY\}(.*?)/si";
+		$replace[15] = "<div class='$admin_name'>".(strstr(e_QUERY, "extend") ? $news_body."<br /><br />".$news_extended : $news_body)."</div>";
 
 		$search[1] = "/\{NEWSBODY\}(.*?)/si";
 		$replace[1] = (strstr(e_QUERY, "extend") ? $news_body."<br /><br />".$news_extended : $news_body);

@@ -57,4 +57,10 @@ define("ADMSLAN_54", "Site Administrators");
 
 define("ADMSLAN_55", "Field(s) left blank");
 
+define("ADMSLAN_56", "Site Administrator");
+define("ADMSLAN_57", "Options");
+define("ADMSLAN_58", "Main Site Administrator");
+define("ADMSLAN_59", "Remove Admin Status");
+define("ADMSLAN_60", "Are you sure you want to remove admin status from");
+define("ADMSLAN_61", "Administrator deleted");
 ?>

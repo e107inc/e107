@@ -20,4 +20,7 @@ define("POLLAN_17", "Preview");
 define("POLLAN_18", "Clear Form");
 define("POLLAN_19", "Polls");
 
+define("POLLAN_20", "Options");
+define("POLLAN_21", "Are you sure you want to delete this poll?");
+
 ?>

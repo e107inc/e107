@@ -122,7 +122,7 @@ $CUSTOMFOOTER = "
 
 
 
-$CUSTOMPAGES = "forum.php forum_post.php forum_viewforum.php forum_viewtopic.php";
+$CUSTOMPAGES = "forum.php forum_post.php forum_viewforum.php forum_viewtopic.php e107_test/test.php";
 
 //	[newsstyle]
 

@@ -67,4 +67,6 @@ define("LAN_397", "This thread is locked.");
 
 define("LAN_398", "This forum is read only");
 
+define("LAN_399", "You are not authorized to post to this forum.");
+
 ?>

@@ -26,6 +26,13 @@ class userlogin{
 		global $pref;
 		$sql = new db;
 
+		if($pref['auth_method'] && $pref['auth_method'] != "e107"){
+			$auth_file=e_PLUGIN."alt_auth/".$pref['auth_method']."_auth.php";
+			if(file_exists($auth_file)){
+				require_once(e_PLUGIN."alt_auth/alt_auth_login_class.php");
+				$result = new alt_login($pref['auth_method'],$username, $userpass);
+			}
+		}
 
 		if($username != "" && $userpass != ""){
 			$userpass = md5($userpass);

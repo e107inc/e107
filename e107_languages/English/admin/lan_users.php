@@ -72,6 +72,27 @@ define("USRLAN_66", "That user name already exists in the database, please choos
 define("USRLAN_67", "The two passwords do not match");
 define("USRLAN_68", "You left required field(s) blank");
 define("USRLAN_69", "That doesn't appear to be a valid email address");
-define("USRLAN_70", "User succesfully added");
+define("USRLAN_70", "User created");
+
+
+define("USRLAN_71", "Users Front Page");
+define("USRLAN_72", "Quick Add User");
+define("USRLAN_73", "Prune Users");
+define("USRLAN_74", "Extended User Fields");
+define("USRLAN_75", "Options");
+define("USRLAN_76", "User Options");
+define("USRLAN_77", "Existing Users");
+define("USRLAN_78", "User Name");
+define("USRLAN_79", "Status");
+define("USRLAN_80", "Info");
+define("USRLAN_81", "Edit");
+
+define("USRLAN_82", "Are you sure you want to delete this user?");
+define("USRLAN_83", "Extended field deleted");
+define("USRLAN_84", "There are");
+define("USRLAN_85", "users who haven't activated their account - click below to delete.");
+define("USRLAN_86", "User verified");
+define("USRLAN_87", "User settings updated");
+define("USRLAN_88", "User classes updated");
 
 ?>

@@ -75,9 +75,9 @@ if(!$sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, 50", 
 	$con = new convert;
 	$aj = new textparse();
 
-	$text = "<div style='text-align:center'>
+	$text = "<div style='border : solid 1px #000; padding : 4px; width : auto; height : 200px; overflow : auto; '>
 <form method='post' action='".e_SELF."'>
-<table style='width:85%' class='fborder'>";
+<table style='width:100%' class='fborder'>";
 
 	$sql2 = new db;
 	while($row = $sql -> db_Fetch()){
@@ -100,9 +100,10 @@ if(!$sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, 50", 
 		$cb_message = $aj -> tpa($cb_message, "on");
 
 		$text .= "<tr>
+<td class='forumheader3' style='width:5%; text-align: center'>".($cb_blocked ? "<img src='".e_IMAGE."generic/blocked.png' />" : "&nbsp;")."</td>
 <td class='forumheader3' style='width:15%'>".$datestamp."</td>
 <td class='forumheader3' style='width:20%'><b>".$cb_nick."</b><br />".$cb_str."<br />IP: ".$cb_ip."</td>
-<td class='forumheader3' style='width:30%'>".$cb_message."</td>
+<td class='forumheader3' style='width:40%'>".$cb_message."</td>
 <td class='forumheader3' style='width:20%' style='text-align:center'>".
 
 
@@ -113,7 +114,7 @@ if(!$sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, 50", 
 
 	}
 
-	$text .= "<tr><td colspan='4' class='forumheader' style='text-align:center'><input class='button' type='submit' name='moderate' value='".CHBLAN_9."' />
+	$text .= "<tr><td colspan='5' class='forumheader' style='text-align:center'><input class='button' type='submit' name='moderate' value='".CHBLAN_9."' />
 	</td>
 	</tr>
 	</table></form></div>";

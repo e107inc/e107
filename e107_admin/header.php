@@ -60,59 +60,56 @@ echo "
 if(ADMIN == TRUE){
 	
 	if(!strstr(e_SELF, "/".$adminfpage) || strstr(e_SELF, "/".$adminfpage."?")){
-	$text = "<a href='".e_ADMIN.$adminfpage."'>".ADLAN_52."</a><br /><a href='".e_BASE."index.php'>".ADLAN_53."</a><br /><br />";
+	$text = "<a href='".e_ADMIN_L.$adminfpage."'>".ADLAN_52."</a><br /><a href='".e_BASE."index.php'>".ADLAN_53."</a><br /><br />";
 	$text .= "º <a style='cursor: pointer; cursor: hand' onclick=\"expandit(this);\">".ADLAN_93."</a>
 	<div style='display: none;'>
 	<br />";
-	if(getperms("H")){$text .= "<a href='".e_ADMIN."newspost.php'>".ADLAN_0."</a><br />";}
-	if(getperms("7")){$text .= "<a href='".e_ADMIN."news_category.php'>".ADLAN_2."</a><br />";}
-	if(getperms("1")){$text .= "<a href='".e_ADMIN."prefs.php'>".ADLAN_4."</a><br />";}
-	if(getperms("2")){$text .= "<a href='".e_ADMIN."menus.php'>".ADLAN_6."</a><br />";}
-	if(getperms("3")){$text .= "<a href='".e_ADMIN."administrator.php'>".ADLAN_8."</a><br />";}
-	$text .= "<a href='".e_ADMIN."updateadmin.php'>".ADLAN_10."</a><br />";
-	if(getperms("5")){$text .= "<a href='".e_ADMIN."forum.php'>".ADLAN_12."</a><br />";}
-	if(getperms("J")){$text .= "<a href='".e_ADMIN."article.php'>".ADLAN_14."</a><br />";}
-	if(getperms("L")){$text .= "<a href='".e_ADMIN."content.php'>".ADLAN_16."</a><br />";}
-	if(getperms("K")){$text .= "<a href='".e_ADMIN."review.php'>".ADLAN_18."</a><br />";}
-	if(getperms("I")){$text .= "<a href='".e_ADMIN."links.php'>".ADLAN_20."</a><br />";}
-	if(getperms("8")){$text .= "<a href='".e_ADMIN."link_category.php'>".ADLAN_22."</a><br />";}
-	if(getperms("R")){$text .= "<a href='".e_ADMIN."download.php'>".ADLAN_24."</a><br />";}
-	if(getperms("Q")){$text .= "<a href='".e_ADMIN."download_category.php'>".ADLAN_26."</a><br />";}
-	if(getperms("M")){$text .= "<a href='".e_ADMIN."wmessage.php'>".ADLAN_28."</a><br />";}
-	if(getperms("6")){$text .= "<a href='".e_ADMIN."filemanager.php'>".ADLAN_30."</a><br />";}
-	if(getperms("N")){$text .= "<a href='".e_ADMIN."submitnews.php'>".ADLAN_32."</a><br />";}
-	if(getperms("4")){$text .= "<a href='".e_ADMIN."banlist.php'>".ADLAN_34."</a><br />";}
-	if(getperms("4")){$text .= "<a href='".e_ADMIN."users.php'>".ADLAN_36."</a><br />";}
-	if(getperms("4")){$text .= "<a href='".e_ADMIN."userclass2.php'>".ADLAN_38."</a><br />";}
-	if(getperms("D")){$text .= "<a href='".e_ADMIN."banner.php'>".ADLAN_54."</a><br />";}
-	if(getperms("C")){$text .= "<a href='".e_ADMIN."chatbox.php'>".ADLAN_56."</a><br />";}
-	if(getperms("E")){$text .= "<a href='".e_ADMIN."newsfeed.php'>".ADLAN_62."</a><br />";}
-	if(getperms("F")){$text .= "<a href='".e_ADMIN."emoticon.php'>".ADLAN_58."</a><br />";}
-	if(getperms("G")){$text .= "<a href='".e_ADMIN."frontpage.php'>".ADLAN_60."</a><br />";}
-	if(getperms("S")){$text .= "<a href='".e_ADMIN."log.php'>".ADLAN_64."</a><br />";}
-	if(getperms("T")){$text .= "<a href='".e_ADMIN."meta.php'>".ADLAN_66."</a><br />";}
-	if(getperms("0")){$text .= "<a href='".e_ADMIN."phpinfo.php'>".ADLAN_68."</a><br />";}
-	if(getperms("U")){$text .= "<a href='".e_ADMIN."poll.php'>".ADLAN_70."</a><br />";}
-	if(getperms("4")){$text .= "<a href='".e_ADMIN."image.php'>".ADLAN_105."</a><br />";}
-	if(getperms("V")){$text .= "<a href='".e_ADMIN."upload.php'>".ADLAN_72."</a><br />";}
-	if(getperms("9")){$text .= "<a href='".e_ADMIN."ugflag.php'>".ADLAN_40."</a><br />";}
-	if(getperms("0")){$text .= "<a href='".e_ADMIN."cache.php'>".ADLAN_74."</a><br />";}
-	if(getperms("2")){$text .= "<a href='".e_ADMIN."custommenu.php'>".ADLAN_42."</a><br />";}
-	if(getperms("0")){$text .= "<a href='".e_ADMIN."db.php'>".ADLAN_44."</a><br />";}
+
+	if(getperms("3")){$text .= "<a href='".e_ADMIN_L."administrator.php'>".ADLAN_8."</a><br />";}
+	$text .= "<a href='".e_ADMIN_L."updateadmin.php'>".ADLAN_10."</a><br />";
+	if(getperms("J")){$text .= "<a href='".e_ADMIN_L."article.php'>".ADLAN_14."</a><br />";}
+	if(getperms("4")){$text .= "<a href='".e_ADMIN_L."banlist.php'>".ADLAN_34."</a><br />";}
+	if(getperms("D")){$text .= "<a href='".e_ADMIN_L."banner.php'>".ADLAN_54."</a><br />";}
+	if(getperms("0")){$text .= "<a href='".e_ADMIN_L."cache.php'>".ADLAN_74."</a><br />";}
+	if(getperms("C")){$text .= "<a href='".e_ADMIN_L."chatbox.php'>".ADLAN_56."</a><br />";}
+	if(getperms("L")){$text .= "<a href='".e_ADMIN_L."content.php'>".ADLAN_16."</a><br />";}
+	if(getperms("2")){$text .= "<a href='".e_ADMIN_L."custommenu.php'>".ADLAN_42."</a><br />";}
+	if(getperms("0")){$text .= "<a href='".e_ADMIN_L."db.php'>".ADLAN_44."</a><br />";}
+	if(getperms("R")){$text .= "<a href='".e_ADMIN_L."download.php'>".ADLAN_24."</a><br />";}
+	if(getperms("F")){$text .= "<a href='".e_ADMIN_L."emoticon.php'>".ADLAN_58."</a><br />";}
+	if(getperms("6")){$text .= "<a href='".e_ADMIN_L."filemanager.php'>".ADLAN_30."</a><br />";}
+	if(getperms("5")){$text .= "<a href='".e_ADMIN_L."forum.php'>".ADLAN_12."</a><br />";}
+	if(getperms("G")){$text .= "<a href='".e_ADMIN_L."frontpage.php'>".ADLAN_60."</a><br />";}
+	if(getperms("4")){$text .= "<a href='".e_ADMIN_L."image.php'>".ADLAN_105."</a><br />";}
+	if(getperms("I")){$text .= "<a href='".e_ADMIN_L."links.php'>".ADLAN_20."</a><br />";}
+	if(getperms("S")){$text .= "<a href='".e_ADMIN_L."log.php'>".ADLAN_64."</a><br />";}
+	if(getperms("9")){$text .= "<a href='".e_ADMIN_L."ugflag.php'>".ADLAN_40."</a><br />";}
+	if(getperms("2")){$text .= "<a href='".e_ADMIN_L."menus.php'>".ADLAN_6."</a><br />";}
+	if(getperms("T")){$text .= "<a href='".e_ADMIN_L."meta.php'>".ADLAN_66."</a><br />";}
+	if(getperms("H")){$text .= "<a href='".e_ADMIN_L."newspost.php'>".ADLAN_0."</a><br />";}
+	if(getperms("E")){$text .= "<a href='".e_ADMIN_L."newsfeed.php'>".ADLAN_62."</a><br />";}
+	if(getperms("0")){$text .= "<a href='".e_ADMIN_L."phpinfo.php'>".ADLAN_68."</a><br />";}
+	if(getperms("U")){$text .= "<a href='".e_ADMIN_L."poll.php'>".ADLAN_70."</a><br />";}
+	if(getperms("1")){$text .= "<a href='".e_ADMIN_L."prefs.php'>".ADLAN_4."</a><br />";}
+	if(getperms("V")){$text .= "<a href='".e_ADMIN_L."upload.php'>".ADLAN_72."</a><br />";}
+	if(getperms("K")){$text .= "<a href='".e_ADMIN_L."review.php'>".ADLAN_18."</a><br />";}
+	if(getperms("4")){$text .= "<a href='".e_ADMIN_L."users.php'>".ADLAN_36."</a><br />";}
+	if(getperms("4")){$text .= "<a href='".e_ADMIN_L."userclass2.php'>".ADLAN_38."</a><br />";}
+	if(getperms("M")){$text .= "<a href='".e_ADMIN_L."wmessage.php'>".ADLAN_28."</a><br />";}
 	$text .= "</div><br />";
 	
-	$text .= "<br /><a href='".e_ADMIN."admin.php?logout'>".ADLAN_46."</a>";
+	$text .= "<br /><a href='".e_ADMIN_L."admin.php?logout'>".ADLAN_46."</a>";
 	$ns -> tablerender("Admin Navigation", $text);
 
  }else{
-	$text = "<a href='".e_ADMIN."../index.php'>".ADLAN_53."</a>";
+	$text = "<a href='".e_ADMIN_L."../index.php'>".ADLAN_53."</a>";
 	$ns -> tablerender("Admin Navigation", $text);
 	unset($text);
  }
 
 if(ADMINPERMS == "0"){
 	if((ADMINPWCHANGE+2592000) < time()){
-		$text = "<div style='mediumtext; text-align:center'>".ADLAN_102." <a href='".e_ADMIN."updateadmin.php'>".ADLAN_103."</a></div>";
+		$text = "<div style='mediumtext; text-align:center'>".ADLAN_102." <a href='".e_ADMIN_L."updateadmin.php'>".ADLAN_103."</a></div>";
 		$ns -> tablerender(ADLAN_104, $text);
 	}
  }

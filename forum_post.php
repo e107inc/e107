@@ -32,6 +32,19 @@ if(!e_QUERY){
 	$action = $tmp[0]; $forum_id = $tmp[1]; $thread_id = $tmp[2];
 }
 
+// check if user can post to this forum ...
+
+if($sql -> db_Select("forum", "*", "forum_id=$forum_id")){
+	$row = $sql -> db_Fetch(); extract($row);
+	if(!check_class($forum_class)){
+		$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
+		require_once(FOOTERF);
+		exit;
+	}
+}
+
+//	end
+
 $ip = getip();
 if($sql -> db_Select("tmp", "*",  "tmp_ip='$ip' ")){
 	$row = $sql -> db_Fetch();
@@ -136,6 +149,7 @@ if(IsSet($_POST['newthread'])){
 			require_once(FOOTERF);
 			exit;
 		}
+
 		if(USER){
 			$user = USERID.".".USERNAME;
 		}else{
@@ -225,6 +239,7 @@ if(IsSet($_POST['reply'])){
 			require_once(FOOTERF);
 			exit;
 		}
+
 		if(USER){
 			$user = USERID.".".USERNAME;
 		}else{

@@ -19,8 +19,17 @@ if(!is_object($sql)){
 	$sql -> db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
 }
 
+
 $custompage = explode(" ", $CUSTOMPAGES);
-if(in_array (e_PAGE, $custompage) && $CUSTOMFOOTER ? parseheader($CUSTOMFOOTER) : parseheader($FOOTER)) ; 
+if($CUSTOMFOOTER){
+	while(list($key, $kpage) = each($custompage)){
+		if(strstr(e_SELF, $kpage)){
+			$fh = TRUE;
+			break;
+		}
+	}
+}
+parseheader(($fh ? $CUSTOMFOOTER : $FOOTER));
 
 $timing_stop = explode(' ', microtime());
 $rendertime = number_format((($timing_stop[0]+$timing_stop[1])-($timing_start[0]+$timing_start[1])), 4);

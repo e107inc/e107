@@ -428,7 +428,7 @@ function create_tables(){
 
 	mysql_query("INSERT INTO ".$mySQLprefix."content VALUES (0, '$article_heading', '$article_subheading', '$article', '$datestamp', 0, 0) ");
 	mysql_query("INSERT INTO ".$mySQLprefix."news VALUES (0, 'Welcome to e107', '$welcome_message', '', '$datestamp', '0', '1', 1, 0, 0, 0) ");
-	mysql_query("INSERT INTO ".$mySQLprefix."news_category VALUES (0, 'Misc', 'images/bullet1.gif') ");
+	mysql_query("INSERT INTO ".$mySQLprefix."news_category VALUES (0, 'Misc', 'icon5.png') ");
 	mysql_query("INSERT INTO ".$mySQLprefix."poll VALUES (0, '$datestamp', 0, 1, 'So what do you think of e107?', 'I&#39;m not impressed', 'It&#39;s not bad but I&#39;ve seen better', 'It&#39;s good', 'I love it!', 'Grah I hate polls', 'What&#39;s e107 anyway?', '', '', '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 1) ");
 	mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Home', 'index.php', '', '', 1, 0, 0, 0, 0) ");
 	mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Links', 'links.php', '', '', 1, 0, 0, 0, 0) ");
@@ -576,11 +576,11 @@ function tablestyle($caption, $text){
 </table>
 <table cellpadding='0' cellspacing='0'>
 <tr>
-<td class='captionleft'><img src='e107_install/images/blank.gif' width='21' height='17' alt='' style='display: block;' /></td>
+<td class='captionleft'><img src='e107_install/images/blank.gif' width='21' height='18' alt='' style='display: block;' /></td>
 <td class='captionbar' style='white-space:nowrap'>".$caption."</td>
-<td class='captionend'><img src='e107_install/images/blank.gif' width='21' height='17' alt='' style='display: block;' /></td>
-<td class='captionmain'><img src='e107_install/images/blank.gif' width='1' height='17' alt='' style='display: block;' /></td>
-<td class='captionright'><img src='e107_install/images/blank.gif' width='9' height='17' alt='' style='display: block;' /></td>
+<td class='captionend'><img src='e107_install/images/blank.gif' width='12' height='18' alt='' style='display: block;' /></td>
+<td class='captionmain'><img src='e107_install/images/blank.gif' width='1' height='18' alt='' style='display: block;' /></td>
+<td class='captionright'><img src='e107_install/images/blank.gif' width='11' height='18' alt='' style='display: block;' /></td>
 </tr>
 </table>
 <table cellpadding='0' cellspacing='0'>

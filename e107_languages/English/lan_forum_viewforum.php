@@ -32,4 +32,9 @@ define("LAN_396", "Announcement");
 
 define("LAN_397", "This forum is read only");
 
+define("LAN_398", "Unstick thread");
+define("LAN_399", "Lock thread");
+define("LAN_400", "Unlock thread");
+define("LAN_401", "Stick thread");
+define("LAN_402", "Move thread");
 ?>

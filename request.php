@@ -50,7 +50,6 @@ if($type == "file"){
 		header("location:".$row['download_url']);
 		exit;
 	}else{
-
 		if(file_exists(e_FILE."downloads/".$row['download_url'])){
 			header("location:".e_FILE."downloads/".$row['download_url']);
 			exit;

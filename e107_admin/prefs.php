@@ -58,9 +58,12 @@ if(IsSet($_POST['updateprefs'])){
 	$pref['displaysql'] = $_POST['displaysql'];
 	$pref['timezone'] = $_POST['timezone'];
 	$pref['adminstyle'] = $_POST['adminstyle'];
+	$pref['membersonly_enabled'] = $_POST['membersonly_enabled'];
+	$pref['ssl_enabled'] = $_POST['ssl_enabled'];
 	$sql -> db_Delete("cache");
 	save_prefs();
-	header("location:".e_SELF);
+	header("location:prefs.php");
+	echo "<script type='text/javascript'>document.location.href='prefs.php'</script>\n";
 	exit;
 }
 
@@ -68,14 +71,12 @@ $sql -> db_Select("plugin","*","plugin_installflag='1' ");
 while($row = $sql -> db_Fetch()){
 	extract($row);
 	if(preg_match("/^auth_(.*)/",$plugin_path,$match)){
-//	echo $plugin_path."  [".$match[1]."]";
 		$authlist[]=$match[1];
 	}
 }
 if($authlist){
 	$authlist[] = "e107";
-	$auth_dropdown = "
-	<tr>
+	$auth_dropdown = "\n<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_56.": </td>
 	<td style='width:50%; text-align:right;' class='forumheader3'>";
 	$auth_dropdown .= "<select class='tbox' name='auth_method'>\n";
@@ -142,7 +143,7 @@ while ($file = readdir($handle)){
 closedir($handle);
 
 $text = "<div style='text-align:center'>
-<form method='post' action='".e_SELF."'>
+<form method='post' action='prefs.php'>
 <table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 <tr>
 
@@ -420,70 +421,56 @@ $text .= "</select>
 </td>
 </tr>
 
-
-
-
 <tr>
 <td colspan='2'>
 <div class='border'><div class='caption'>".PRFLAN_28."</div></div>
 </td>
-</tr><tr>
+</tr>
 
+<tr>
 <td style='width:50%' class='forumheader3'>".PRFLAN_29.": </td>
-<td style='width:50%; text-align:right' class='forumheader3'>";
-if($user_reg == 1){
-	$text .= "<input type='checkbox' name='user_reg' value='1'  checked>";
-}else{
-	$text .= "<input type='checkbox' name='user_reg' value='1'>";
-}
-
-$text .= " (".PRFLAN_30.")
-
-
-
-</tr><tr>
-
-<td style='width:50%' class='forumheader3'>".PRFLAN_31.": </td>
-<td style='width:50%; text-align:right' class='forumheader3'>";
-if($user_reg_veri == 1){
-	$text .= "<input type='checkbox' name='user_reg_veri' value='1'  checked>";
-}else{
-	$text .= "<input type='checkbox' name='user_reg_veri' value='1'>";
-}
-
-$text .= "
+<td style='width:50%; text-align:right' class='forumheader3'>".
+($user_reg ? "<input type='checkbox' name='user_reg' value='1'  checked>" : "<input type='checkbox' name='user_reg' value='1'>")."
+ (".PRFLAN_30.")
 </td>
 </tr>
+
+<tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_31.": </td>
+<td style='width:50%; text-align:right' class='forumheader3'>".
+($user_reg_veri ? "<input type='checkbox' name='user_reg_veri' value='1'  checked>" : "<input type='checkbox' name='user_reg_veri' value='1'>")."
+</td>
+</tr>
+
 <tr>
 <td style='width:50%' class='forumheader3'>".PRFLAN_32.": </td>
-<td style='width:50%; text-align:right' class='forumheader3'>";
-if($anon_post == 1){
-	$text .= "<input type='checkbox' name='anon_post' value='1'  checked>";
-}else{
-	$text .= "<input type='checkbox' name='anon_post' value='1'>";
-}
-
-$text .= "(".PRFLAN_33.")
+<td style='width:50%; text-align:right' class='forumheader3'>".
+($anon_post ? "<input type='checkbox' name='anon_post' value='1'  checked>" : "<input type='checkbox' name='anon_post' value='1'>")."
+(".PRFLAN_33.")
 </td>
 </tr>
-<tr>
 
+<tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_58.": </td>
+<td style='width:50%; text-align:right' class='forumheader3'>".
+($pref['membersonly_enabled'] ? "<input type='checkbox' name='membersonly_enabled' value='1'  checked>" : "<input type='checkbox' name='membersonly_enabled' value='1'>")."
+(".PRFLAN_59.")
+</td>
+</tr>
+
+<tr>
 <td colspan='2'>
 <div class='border'><div class='caption'>".PRFLAN_34."</div></div>
 </td>
-</tr><tr>
+</tr>
 
+<tr>
 <td style='width:50%' class='forumheader3'>".PRFLAN_35.": </td>
-<td style='width:50%; text-align:right' class='forumheader3'>";
-if($flood_protect == 1){
-	$text .= "<input type='checkbox' name='flood_protect' value='1'  checked>";
-}else{
-	$text .= "<input type='checkbox' name='flood_protect' value='1'>";
-}
-
-$text .= "
+<td style='width:50%; text-align:right' class='forumheader3'>".
+($flood_protect ? "<input type='checkbox' name='flood_protect' value='1'  checked>" : "<input type='checkbox' name='flood_protect' value='1'>")."
 </td>
 </tr>
+
 <tr>
 <td style='width:50%' class='forumheader3'>".PRFLAN_36.": </td>
 <td style='width:50%; text-align:right' class='forumheader3'>
@@ -503,7 +490,13 @@ $text .= "
 </tr>
 
 <tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_60.": </td>
+<td style='width:50%; text-align:right' class='forumheader3'>".
+($pref['ssl_enabled'] ? "<input type='checkbox' name='ssl_enabled' value='1'  checked>" : "<input type='checkbox' name='ssl_enabled' value='1'>")."
+</td>
+</tr>
 
+<tr>
 <td colspan='2'>
 <div class='border'><div class='caption'>".PRFLAN_39."</div></div>
 </td>
@@ -550,7 +543,6 @@ $text .= "(".PRFLAN_46.")
 </td>
 </tr>
 
-
 <td colspan='2'>
 <div class='border'><div class='caption'>".PRFLAN_47."</div></div>
 </td>
@@ -570,8 +562,9 @@ $text .= "(".PRFLAN_46.")
 <br />
 <div style='text-align:center'><input class='button' type='submit' name='newver' value='".PRFLAN_51."' /></div>
 </td>
-</tr><tr>
+</tr>
 
+<tr>
 <tr><td colspan='2'  class='forumheader3'><br /></td></tr>
 
 <tr style='vertical-align:top'> 

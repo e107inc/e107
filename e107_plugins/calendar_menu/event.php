@@ -13,6 +13,16 @@
 +---------------------------------------------------------------+
 */
 require_once("../../class2.php");
+define("PAGE_NAME", "Show Event List");
+if(IsSet($_POST['viewallevents'])){
+Header("Location: ".e_PLUGIN."calendar_menu/calendar.php?".$_POST['enter_new_val']);
+}
+
+if(IsSet($_POST['doit'])){
+Header("Location: ".e_PLUGIN."calendar_menu/event.php?ne.".$_POST['enter_new_val']);
+}
+
+
 
 $ec_dir = e_PLUGIN."calendar_menu/";
 $lan_file = $ec_dir."languages/".e_LANGUAGE.".php";
@@ -93,7 +103,7 @@ if(IsSet($_POST['ne_update']) && USER == TRUE){
 
                 $qs = eregi_replace("ed.", "", $_POST['qs']);
 
-                header("location:event.php?".$qs.".m5");
+               header("location:event.php?".$ev_start.".".$qs.".m5");
         }else{
                 header("location:event.php?".$ev_start."..m3");
         }
@@ -132,7 +142,7 @@ if($action == "de"){
         $text = "<div style='text-align:center'>
         <b>".EC_LAN_48."</b>
 <br /><br />
-<form method='post' action='".$_SERVER['PHP_SELF']."'>
+<form method='post' action='".e_SELF."'>
 <input class='button' type='submit' name='cancel' value='".EC_LAN_49."' />
 <input class='button' type='submit' name='confirm' value='".EC_LAN_50."' />
 <input type='hidden' name='existing' value='".$qs[1]."'>
@@ -151,6 +161,7 @@ if(IsSet($_POST['cancel'])){
 // set up data arrays ----------------------------------------------------------------------------------
 $days = array(EC_LAN_18,EC_LAN_12,EC_LAN_13,EC_LAN_14,EC_LAN_15,EC_LAN_16,EC_LAN_17);
 $dayslo = array('1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th', '13th', '14th', '15th', '16th', '17th', '18th', '19th', '20th', '21st', '22nd', '23rd', '24th', '25th', '26th', '27th', '28th', '29th', '30th', '31st');
+$monthabb = Array(EC_LAN_JAN,EC_LAN_FEB,EC_LAN_MAR,EC_LAN_APR,EC_LAN_MAY,EC_LAN_JUN,EC_LAN_JUL,EC_LAN_AUG,EC_LAN_SEP,EC_LAN_OCT,EC_LAN_NOV,EC_LAN_DEC);
 $months = array(EC_LAN_0,EC_LAN_1,EC_LAN_2,EC_LAN_3,EC_LAN_4,EC_LAN_5,EC_LAN_6,EC_LAN_7,EC_LAN_8,EC_LAN_9,EC_LAN_10,EC_LAN_11);
 // ----------------------------------------------------------------------------------------------------------
 
@@ -214,7 +225,7 @@ if($action == "ne" || $action == "ed"){
         }
 
         $text = "<form method='post' action='".$_SERVER['PHP_SELF']."'>
-        <table style='width:100%' class='fborder'>
+        <table style='width:580px' class='fborder' align='center'>
 
         <tr>
         <td colspan='2' class='fcaption'>";
@@ -231,7 +242,7 @@ if($action == "ne" || $action == "ed"){
 
         <td class='forumheader3' style='width:20%'>".EC_LAN_72." </td>
         <td class='forumheader3' style='width:80%'>
-    <div class='forumheader3'>
+
         ".EC_LAN_67." <select name='ne_day' class='tbox'>";
         for($count=1; $count<=31; $count++){
                 if($count == $ne_day){
@@ -258,7 +269,7 @@ if($action == "ne" || $action == "ed"){
                         $text .= "<option>".$count."</option>";
                 }
         }
-        $text .= "</select></div>&nbsp;&nbsp;".EC_LAN_73."
+        $text .= "</select></br>&nbsp;&nbsp;".EC_LAN_73."
         <select name='end_day' class='tbox'>";
         for($count=1; $count<=31; $count++){
                 if($count == $end_day){
@@ -390,15 +401,15 @@ if($action == "ne" || $action == "ed"){
         if(ADMIN == TRUE && $action != "ed"){
                 $text .= "<tr>
         <td class='forumheader3' style='width:20%'>".EC_LAN_53." </td>
-        <td class='forumheader3' style='width:80%'>".EC_LAN_54." <input class='tbox' type='text' name='ne_new_category' size='30' value='$ne_new_category' maxlength='100' /> ".EC_LAN_55." 
+        <td class='forumheader3' style='width:80%'>".EC_LAN_54." <input class='tbox' type='text' name='ne_new_category' size='30' value='$ne_new_category' maxlength='100' /> ".EC_LAN_55."
 		<select class='tbox' name='ne_new_category_icon'>";
 		$c=0;
 		while($imagelist[$c]){
 			$text .= "<option>".$imagelist[$c]."</option>";
 			$c++;
 		}
-		
-		
+
+
         $text .= "</select> <input class='button' type='submit' name='ne_cat_create' value='".EC_LAN_56."' />";
         }
 
@@ -440,7 +451,7 @@ if($action == "ne" || $action == "ed"){
         <td class='forumheader' colspan='2' style='text-align:center'>";
         if($action == "ed"){
                 $text .= "<input class='button' type='submit' name='ne_update' value='".EC_LAN_60."' />
-                                                <input type='hidden' name='id' value='".$qs[1]."'>";
+                         <input type='hidden' name='id' value='".$qs[1]."'>";
         }else{
 
 
@@ -491,6 +502,10 @@ if($nextmonth == 13){
 }
 $next = mktime(0,0,0,$nextmonth,1, $nextyear);
 
+
+
+
+/*
 echo "<table style='width:100%' class='fborder'>
 <tr>
 <td class='forumheader' style='width:15%; text-align:left'><span class='defaulttext'><a href='event.php?".$previous."'><< ".$months[($prevmonth-1)]."</a></span></td>
@@ -498,8 +513,92 @@ echo "<table style='width:100%' class='fborder'>
 <td class='forumheader' style='width:15%; text-align:right'><span class='defaulttext'><a href='event.php?".$next."'> ".$months[($nextmonth-1)]." >></a></span> </td>
 </tr>
 </table>";
+*/
+// added by Cameron
 
-echo "<div style='text-align:center'>
+$todayarray = getdate();
+$current_month = $todayarray['mon'];
+$current_year = $todayarray['year'];
+$current = mktime(0,0,0,$current_month, 1, $current_year);
+
+$prop = mktime(0,0,0,$month, 1, $year);
+
+$next = mktime(0,0,0,$nextmonth,1, $nextyear);
+$py = $year-1;
+$prevlink = mktime(0,0,0,$month,1, $py);
+$ny = $year+1;
+$nextlink = mktime(0,0,0,$month,1, $ny);
+
+   echo "<table style='width:100%' class='fborder'>
+<tr>
+<td class='forumheader' style='width:18%; text-align:left'><span class='defaulttext'><a href='".e_SELF."?".$previous."'><< ".$months[($prevmonth-1)]."</a></span></td>
+<td class='fcaption' style='width:64%; text-align:center' class='mediumtext'><b>".$months[($month-1)]." ".$year."</b></td>
+<td class='forumheader' style='width:185%; text-align:right'><span class='defaulttext'><a href='".e_SELF."?".$next."'> ".$months[($nextmonth-1)]." >></a></span> </td>
+</tr><tr><td colspan='3'></td></tr><tr>
+<td class='forumheader' style='text-align:left'><a href='event.php?".$prevlink."'><< ".$py."</a></td>
+<td class='fcaption' style='text-align:center'>";
+for ($ii = 0; $ii < 13; $ii++)
+	{  $m = $ii+1;
+		$monthjump= mktime(0,0,0,$m,1,$year);
+		echo  "<a class='forumlink' href=\"event.php?".$monthjump."\">".$monthabb[$ii]."</a> &nbsp"; }
+echo "<td class='forumheader' style='text-align:right'><a href='event.php?".$nextlink."'>".$ny." >></a></td></td></tr></table>";
+
+// ================
+
+
+ //------------my test stuff------------------------------------------------------
+
+echo "<div style='text-align:center'>";
+
+echo "<br /><table border='0' cellpadding='2' cellspacing='3' class='forumheader3'>
+<tr><td align=right><form method=post action=".e_SELF."?".e_QUERY.">
+<select name='event_cat_ids' class='tbox' style='width:140px; '>
+<option class='tbox' value='all'>All</option>";
+
+$event_cat_id = !isset($_POST['event_cat_ids'])? NULL : $_POST['event_cat_ids'];
+        $sql -> db_Select("event_cat");
+
+        while($row = $sql -> db_Fetch()){
+                extract($row);
+                if($event_cat_id == $_POST['event_cat_ids']){
+                        echo "<option class='tbox' value='$event_cat_id' selected>".$event_cat_name."</option>";
+                }else{
+                        echo "<option value='$event_cat_id'>".$event_cat_name."</option>";
+                }
+        }
+echo "</td></select><td align='center'>
+<input class='button' type='submit' style='width:140px;' name='viewallevents' value='View Calendar'>
+</td></tr>
+<tr><td align='right'><input type='hidden' name='do' value='vc'>
+<input class='button' type='submit' style='width:140px;' name='viewcat' value='View Category'>
+</td><td align=center><input type='hidden' name='enter_new_val' value='".$prop."'> ";
+
+  if($pref['eventpost_admin'][1] == 1 ){    // start admin preference activated.
+ if(ADMIN == TRUE){
+  echo "
+
+  <input class='button' type='submit' style='width:140px;' name='doit' value='Enter New Event'>
+   ";   }
+   }     // end admin preference activated.
+
+     if(!$pref['eventpost_admin'][1] == 1 ){  // start no admin preference
+   if(USER == TRUE){ echo "
+   <input type='hidden' name='enter_new_val' value='".$prop."'>
+   <input class='button' type='submit' style='width:140px;' name='doit' value='Enter New Event'>
+   ";}
+     }    // end no admin preference
+
+
+echo "</form></tr></table><br />";
+
+//--------------------------------------------------------------------------------
+
+
+
+
+
+/*
+echo "
 <form method='post' action='".$_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING']."'>
 ".EC_LAN_34."
 <select name='jumpmonth' class='tbox'>";
@@ -517,12 +616,7 @@ echo "</select>
 <input class='button' type='submit' name='jump' value='".EC_LAN_61."' />
 </form>";
 
-$todayarray = getdate();
-$current_month = $todayarray['mon'];
-$current_year = $todayarray['year'];
-$current = mktime(0,0,0,$current_month, 1, $current_year);
 
-$prop = mktime(0,0,0,$month, 1, $year);
 
 
          ##### Check for access.
@@ -542,14 +636,30 @@ if($month != $current_month || $year != $current_year){
 }
 
 echo "</div><br />";
+*/
+// extra stuff for Category.
+
+$sql2 = new db;
+	$sql2 -> db_Select("event_cat", "*", "event_cat_id='".$event_true[($c)]."' ");
+	$event_cat = $sql2 -> db_Fetch();
+	extract($event_cat);
+
+
 
 
 // get events from current month----------------------------------------------------------------------
-$sql -> db_Select("event", "*", "(event_start>='$monthstart' AND event_start<= '$monthend') OR (event_rec_y='$month') ORDER BY event_start ASC");
+if($_POST['event_cat_ids'] && $_POST['event_cat_ids'] !="all"){
+$evcat_id = $_POST['event_cat_ids'];
+$sql -> db_Select("event", "*", "(event_start>='$monthstart' AND event_start<= '$monthend' AND event_category='$evcat_id') OR (event_rec_y='$month' AND event_category='$evcat_id')  ORDER BY event_start ASC");
+}else{
+$sql -> db_Select("event", "*", "(event_start>='$monthstart' AND event_start<= '$monthend' ) OR (event_rec_y='$month' )  ORDER BY event_start ASC");
+}
+
+
 $events = $sql -> db_Rows();
 //echo "There are $events event(s) this month<br />";
 $sql2 = new db;
-echo "<table style='width:100%' class='fborder'>";
+echo "<table style='width:620px' class='fborder'>";
 while($row = $sql -> db_Fetch()){
         extract($row);
 //        echo $event_id.". ".$event_details;
@@ -678,7 +788,7 @@ echo "</table>";
 $nextmonth = mktime(0,0,0,$month+1,1,$year);
 $sql -> db_Select("event", "*", "event_start>='$nextmonth' ORDER BY event_start ASC LIMIT 0,10");
 $num = $sql -> db_Rows();
-echo "<br /><table style='width:100%' class='fborder'>
+echo "<br /><table style='width:620px' class='fborder'>
 <tr>
 <td colspan='2' class='forumheader'><span class='defaulttext'>".EC_LAN_62."</span></td>";
 if($num != 0){

@@ -58,33 +58,24 @@ if(IsSet($_POST['deletepollconfirm'])){
 
 
 // delete thread/replies ------------------------------------------------------------------------------------------------------------------------------------
-if(IsSet($_POST['deleteconfirm'])){
+if($action == "confirm"){
 	$sql -> db_Select("forum_t", "*", "thread_id='".$thread_id."' ");
 	$row = $sql -> db_Fetch(); extract($row);
 	if($thread_parent){ // is post a reply?
 		$sql -> db_Delete("forum_t", "thread_id='$thread_id' ");	// delete reply only
 		$sql -> db_Update("forum", "forum_replies=forum_replies-1 WHERE forum_id='$thread_forum_id' ");	// dec reply count by 1
 		$url = e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_parent;	// set return url
+		$message = FORLAN_26;
 	}else{	// post is thread
 		$sql -> db_Delete("poll", "poll_datestamp='$thread_id' ");	 // delete poll if there is one
 		$count = $sql -> db_Delete("forum_t", "thread_parent='$thread_id' ");	// delete replies and grab how many there were
 		$sql -> db_Delete("forum_t", "thread_id='$thread_id' ");	// delete the post itself
 		$sql -> db_Update("forum", "forum_threads=forum_threads-1, forum_replies=forum_replies-$count WHERE forum_id='$thread_forum_id' ");	// update thread/reply counts
 		$url = e_BASE."forum_viewforum.php?".$forum_id;	// set return url
+		$message = FORLAN_6.($count ? ", ".$count." ".FORLAN_7."." : ".");
 	}
-	$message = FORLAN_6.($count ? ", ".$count." ".FORLAN_7."." : ".");
 }
 // end delete ----------------------------------------------------------------------------------------------------------------------------------------------
-
-
-if(IsSet($_POST['deletecancel'])){
-	$message = FORLAN_8;
-	if($thread_parent != 0){
-		$url =  e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_parent;
-	}else{
-		$url = e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id;
-	}
-}
 
 if(IsSet($_POST['move'])){
 

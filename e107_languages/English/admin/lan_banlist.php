@@ -10,4 +10,7 @@ define("BANLAN_7", "Reason");
 define("BANLAN_8", "Ban User");
 define("BANLAN_9", "Ban users from site");
 
+define("BANLAN_10", "IP / Email");
+define("BANLAN_11", "Options");
+
 ?>

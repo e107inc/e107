@@ -87,7 +87,7 @@ if($table == "news"){
 	<br /><br /><hr />
 	".LAN_306.SITENAME."
 	<br />
-	( http://".$_SERVER['HTTP_HOST'].e_HTTP."article.php?".$content_id.".0 )
+	( http://".$_SERVER['HTTP_HOST'].e_HTTP."article.php?article.".$content_id." )
 	</font>";
 }
 echo $text;

@@ -19,6 +19,8 @@ function r_userclass($fieldname, $curval=0, $mode="off"){
 	if($mode != "off"){
 		($curval==e_UC_READONLY) ? $s=" selected" : $s="";
 		$text.="<option  value='".e_UC_READONLY."' ".$s.">Read only\n";
+		($curval==e_UC_ADMIN) ? $s=" selected" : $s="";
+		$text.="<option  value='".e_UC_ADMIN."' ".$s.">Admin only\n";
 	}
 	$text.="</select>\n";
 	return $text;

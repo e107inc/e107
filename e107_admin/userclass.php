@@ -23,6 +23,7 @@ if(!e_QUERY){
 	$id = e_QUERY;
 }
 if(IsSet($_POST['updateclass'])){
+	$remuser = TRUE;
 	extract($_POST);
 	for($a=0; $a<=(count($_POST['userclass'])-1); $a++){
 		$svar .= $userclass[$a].".";
@@ -61,6 +62,11 @@ if($_POST['notifyuser']){
 	$subject = UCSLAN_2;
 	$message = UCSLAN_3." " . $user_name. ",\n\n".UCSLAN_4." ".SITENAME."\n( ".SITEURL . " )\n\n".UCSLAN_5.": \n\n".$messaccess."\nRegards\n".SITEADMIN."\n( ".SITENAME." )";
 	sendemail($send_to, $subject, $message);
+}
+
+if($remuser){
+	header("location:".e_ADMIN."users.php?cu.$id");
+	exit;
 }
 
 $caption = UCSLAN_6." <b>".$user_name."</b> (".$user_class.")";

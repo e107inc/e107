@@ -38,16 +38,16 @@ class rater{
 
 	function rateradio($table, $id){
 		$str = "
-		<input type=\"radio\" class=\"tbox\" value=\"1\">1
-		<input type=\"radio\" class=\"tbox\" value=\"2\">2&nbsp;
-		<input type=\"radio\" class=\"tbox\" value=\"3\">3&nbsp;
-		<input type=\"radio\" class=\"tbox\" value=\"4\">4&nbsp;
-		<input type=\"radio\" class=\"tbox\" value=\"5\">5&nbsp;
-		<input type=\"radio\" class=\"tbox\" value=\"6\">6&nbsp;
-		<input type=\"radio\" class=\"tbox\" value=\"7\">7&nbsp;
-		<input type=\"radio\" class=\"tbox\" value=\"8\">8&nbsp;
-		<input type=\"radio\" class=\"tbox\" value=\"9\">9&nbsp;
-		<input type=\"radio\" class=\"tbox\" value=\"10\">10";
+		<input type=\"radio\" value=\"1\">1
+		<input type=\"radio\" value=\"2\">2&nbsp;
+		<input type=\"radio\" value=\"3\">3&nbsp;
+		<input type=\"radio\" value=\"4\">4&nbsp;
+		<input type=\"radio\" value=\"5\">5&nbsp;
+		<input type=\"radio\" value=\"6\">6&nbsp;
+		<input type=\"radio\" value=\"7\">7&nbsp;
+		<input type=\"radio\" value=\"8\">8&nbsp;
+		<input type=\"radio\" value=\"9\">9&nbsp;
+		<input type=\"radio\" value=\"10\">10";
 		return $str;
 	}
 

@@ -85,7 +85,7 @@ if(IsSet($_POST['clientsubmit'])){
 				".LAN_35.": ".(count($tmp)-1)."</td>
 				<td colspan='6' class='forumheader3'>";
 				for($a=0; $a<=(count($tmp)-2); $a++){
-					$text .= $tmp[$a]." (".gethostbyaddr($tmp[$a]).")<br />";
+					$text .= $tmp[$a]."<br />";
 				}
 			}
 			

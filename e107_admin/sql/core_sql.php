@@ -105,12 +105,14 @@ CREATE TABLE content (
   content_heading tinytext NOT NULL,
   content_subheading tinytext NOT NULL,
   content_content text NOT NULL,
-  content_page tinyint(3) unsigned NOT NULL default '0',
+  content_parent tinyint(3) unsigned NOT NULL default '0',
   content_datestamp int(10) unsigned NOT NULL default '0',
-  content_author smallint(5) unsigned NOT NULL default '0',
+  content_author varchar(200) NOT NULL default '',
   content_comment tinyint(3) unsigned NOT NULL default '0',
   content_summary text NOT NULL,
   content_type tinyint(3) unsigned NOT NULL default '0',
+  content_review_score tinyint(3) unsigned NOT NULL default '0',
+  content_pe_icon tinyint(1) unsigned NOT NULL default '0',
   content_class tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (content_id)
 ) TYPE=MyISAM;
@@ -226,6 +228,7 @@ CREATE TABLE headlines (
   headline_data text NOT NULL,
   headline_timestamp int(10) unsigned NOT NULL default '0',
   headline_description text NOT NULL,
+  headline_image varchar(100) NOT NULL default '',
   headline_active tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (headline_id)
 ) TYPE=MyISAM;
@@ -240,6 +243,7 @@ CREATE TABLE link_category (
   link_category_id int(10) unsigned NOT NULL auto_increment,
   link_category_name varchar(100) NOT NULL default '',
   link_category_description varchar(250) NOT NULL default '',
+  link_category_icon varchar(100) NOT NULL default '',
   PRIMARY KEY  (link_category_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------

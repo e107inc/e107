@@ -1,27 +1,27 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 website system
-|	code adapted from original by Lolo Irie (lolo@touchatou.com)
+|        e107 website system
+|        code adapted from original by Lolo Irie (lolo@touchatou.com)
 |
-|	©Steve Dunstan 2001-2002
-|	http://e107.org
-|	jalist@e107.org
+|        ©Steve Dunstan 2001-2002
+|        http://e107.org
+|        jalist@e107.org
 |
-|	Released under the terms and conditions of the
-|	GNU General Public License (http://gnu.org).
+|        Released under the terms and conditions of the
+|        GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = "Event Calendar";
-$eplug_version = "3.0";
-$eplug_author = "jalist";
+$eplug_version = "3.2";
+$eplug_author = "jalist & cameron";
 $eplug_logo = "button.png";
 $eplug_url = "http://e107.org";
 $eplug_email = "jalist@e107.org";
 $eplug_description = "This plugin is a fully featured event calendar with calendar menu.";
 $eplug_compatible = "e107v6";
-$eplug_readme = "";	// leave blank if no readme file
+$eplug_readme = "";        // leave blank if no readme file
 
 // Name of the plugin's folder -------------------------------------------------------------------------------------
 $eplug_folder = "calendar_menu";
@@ -38,18 +38,18 @@ $eplug_caption =  "Configure Event Calendar";
 
 // List of preferences -----------------------------------------------------------------------------------------------
 $eplug_prefs = array(
-	"eventpost_admin" => 0
+        "eventpost_admin" => 0
 );
 
 // List of table names -----------------------------------------------------------------------------------------------
 $eplug_table_names = array(
-	"event", 
-	"event_cat"
+        "event",
+        "event_cat"
 );
 
 // List of sql requests to create tables -----------------------------------------------------------------------------
 $eplug_tables = array(
-	"CREATE TABLE ".MPREFIX."event (
+        "CREATE TABLE ".MPREFIX."event (
   event_id int(11) unsigned NOT NULL auto_increment,
   event_start int(10) NOT NULL default '0',
   event_end int(10) NOT NULL default '0',
@@ -66,8 +66,8 @@ $eplug_tables = array(
   event_rec_m tinyint(2) unsigned NOT NULL default '0',
   event_rec_y tinyint(2) unsigned NOT NULL default '0',
   PRIMARY KEY  (event_id)
-) TYPE=MyISAM;", 
-	"CREATE TABLE ".MPREFIX."event_cat (
+) TYPE=MyISAM;",
+        "CREATE TABLE ".MPREFIX."event_cat (
   event_cat_id smallint(5) unsigned NOT NULL auto_increment,
   event_cat_name varchar(100) NOT NULL default '',
   event_cat_icon varchar(100) NOT NULL default '',
@@ -76,9 +76,10 @@ $eplug_tables = array(
 
 
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
-$eplug_link = FALSE;
-$eplug_link_name = "";
-$eplug_link_url = "";
+$eplug_link = TRUE;
+$eplug_link_name = "Calendar";
+$ec_dir = e_PLUGIN."calendar_menu/";
+$eplug_link_url = "".$ec_dir."calendar.php";
 
 
 // Text to display after plugin successfully installed ------------------------------------------------------------------
@@ -99,4 +100,4 @@ $eplug_upgrade_done = "";
 
 
 
-?>	
+?>
