@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.39 $
-|   $Date: 2005-02-11 17:23:03 $
-|   $Author: mcfly_e107 $
+|   $Revision: 1.40 $
+|   $Date: 2005-02-12 06:13:48 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 
 */
@@ -98,15 +98,16 @@ if (IsSet($_POST['submitupload'])) {
 	require_once(e_HANDLER."upload_handler.php");
 
 		$uploaded = file_upload(($_POST['uploadtype'] == "file"  ? e_FILE."downloads/" : e_IMAGE."newspost_images/"));
-		print_r($uploaded);
 
-		if($_POST['uploadtype'] == "thumb"){
-			rename(e_IMAGE."newspost_images/".$uploaded[0]['name'],e_IMAGE."newspost_images/thumb_".$uploaded[0]['name']);
-		}
+		foreach($_POST['uploadtype'] as $key=>$uploadtype){
+			if($uploadtype == "thumb"){
+				rename(e_IMAGE."newspost_images/".$uploaded[$key]['name'],e_IMAGE."newspost_images/thumb_".$uploaded[$key]['name']);
+			}
 
-		if ($_POST['uploadtype'] == "resize" && $_POST['resize_value']) {
-			require_once(e_HANDLER."resize_handler.php");
-			resize_image(e_IMAGE."newspost_images/".$uploaded[0]['name'], e_IMAGE."newspost_images/".$uploaded[0]['name'], $_POST['resize_value'], "copy");
+			if ($uploadtype == "resize" && $_POST['resize_value'][$key]) {
+				require_once(e_HANDLER."resize_handler.php");
+				resize_image(e_IMAGE."newspost_images/".$uploaded[$key]['name'], e_IMAGE."newspost_images/".$uploaded[$key]['name'], $_POST['resize_value'], "copy");
+			}
 		}
 }
 
@@ -477,7 +478,7 @@ class newspost {
 					$text .= "<option value='".$e107->HTTPPath.$IMAGES_DIRECTORY."newspost_images/".$thmb['fname']."'>".$thmb['fname']."</option>\n";
 				}
 				$text .= "</select>
-					 
+
 					<select class='tbox' name='fileps' onChange=\"addtext('[file=request.php?' + this.form.fileps.options[this.form.fileps.selectedIndex].value + ']' + this.form.fileps.options[this.form.fileps.selectedIndex].value + '[/file]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_64."')\" onMouseOut=\"help('')\">
 					<option>".NWSLAN_82." ...</option>\n";
 			while (list($key, $file) = each($filelist)) {
@@ -541,7 +542,7 @@ class newspost {
 			$text .= "<div id='up_container' >
 				<span id='upline' style='white-space:nowrap'>
 				<input class='tbox' type='file' name='file_userfile[]' size='40' />
-				<select class='tbox' name='uploadtype'>";
+				<select class='tbox' name='uploadtype[]'>";
 				for ($i=0; $i<count($up_value); $i++) {
 					$selected = ($_POST['uploadtype'] == $up_value[$i]) ? "selected='selected'" : "";
 					$text .= "<option value='".$up_value[$i]."' $selected>".$up_name[$i]."</option>\n";
