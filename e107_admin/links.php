@@ -221,41 +221,27 @@ class links{
 
 	function show_options($action){
 		// ##### Display options ---------------------------------------------------------------------------------------------------------
-		global $sql, $rs, $ns;
-		$text = "<div style='text-align:center'>";
-		if(e_QUERY && $action != "main"){
-//			$text .= "<a href='".e_SELF."'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".LCLAN_62."</div></div></a>";
-			$text .= "<input onclick='window.location.href=\"".e_SELF."\"' class='button' type='button' style='width:100%' value='".LCLAN_62."' />";
-		}
-		if($action != "create"){
-//			$text .= "<a href='".e_SELF."?create'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".LCLAN_63."</div></div></a>";
-			$text .= "<input onclick='window.location.href=\"".e_SELF."?create\"' class='button' type='button' style='width:100%' value='".LCLAN_63."' />";
-		}
+		if($action==""){$action="main";}
+		$var['main']['text']=LCLAN_62;
+		$var['main']['link']=e_SELF;
+	
+		$var['create']['text']=LCLAN_63;
+		$var['create']['link']=e_SELF."?create";
+	
+		$var['order']['text']=LCLAN_64;
+		$var['order']['link']=e_SELF."?order";
+	
+		$var['cat']['text']=LCLAN_65;
+		$var['cat']['link']=e_SELF."?cat";
+		$var['cat']['perm']="8";
 
-		if($action != "order"){
-//			$text .= "<a href='".e_SELF."?order'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".LCLAN_64."</div></div></a>";
-			$text .= "<input onclick='window.location.href=\"".e_SELF."?order\"' class='button' type='button' style='width:100%' value='".LCLAN_64."' />";
-		}
+		$var['sn']['text']=LCLAN_66;
+		$var['sn']['link']=e_SELF."?sn";
 
-		if($action != "cat" && getperms("8")){
-//			$text .= "<a href='".e_SELF."?cat'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".LCLAN_65."</div></div></a>";
-			$text .= "<input onclick='window.location.href=\"".e_SELF."?cat\"' class='button' type='button' style='width:100%' value='".LCLAN_65."' />";
-		}
-		if($action != "sn"){
-//			$text .= "<a href='".e_SELF."?sn'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".LCLAN_66."</div></div></a>";
-			$text .= "<input onclick='window.location.href=\"".e_SELF."?sn\"' class='button' type='button' style='width:100%' value='".LCLAN_66."' />";
-		}
+		$var['opt']['text']=LCLAN_67;
+		$var['opt']['link']=e_SELF."?opt";
 
-		if($action != "opt"){
-//			$text .= "<a href='".e_SELF."?opt'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".LCLAN_67."</div></div></a>";
-			$text .= "<input onclick='window.location.href=\"".e_SELF."?opt\"' class='button' type='button' style='width:100%' value='".LCLAN_67."' />";
-		}
-		
-//		$text .= "<a href='submenusgen.php'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".LCLAN_83."</div></div></a>";
-		$text .= "<input onclick='window.location.href=\"submenusgen.php\"' class='button' type='button' style='width:100%' value='".LCLAN_83."' />";
-
-		$text .= "</div>";
-		$ns -> tablerender(LCLAN_68, $text);
+		show_admin_menu(LCLAN_68,$action,$var);
 	}
 
 	function show_message($message){

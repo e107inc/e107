@@ -126,4 +126,5 @@ $ns -> tablerender(FOOTLAN_15, $text);
 
 <?php
 $sql -> db_Close();
+
 ?>

@@ -498,30 +498,27 @@ if($action == "sa"){
 // ##### Display options --------------------------------------------------------------------------------------------------------------------------------------------------------
 
 function article_adminmenu(){
-	global $action, $ns;
-$text = "<div style='text-align:center'>";
-if(e_QUERY && $action != "confirm"){
-//        $text .= "<a href='".e_SELF."'><div class='border'><div class='forumheader'>".ARLAN_76."</div></div></a>";
-	$text .= "<input onclick='window.location.href=\"".e_SELF."\"' class='button' type='button' style='width:100%' value='".ARLAN_76."' />";
-}
-if($action != "create"){
-//        $text .= "<a href='".e_SELF."?create'><div class='border'><div class='forumheader'>".ARLAN_77."</div></div></a>";
-	$text .= "<input onclick='window.location.href=\"".e_SELF."?create\"' class='button' type='button' style='width:100%' value='".ARLAN_77."' />";
-}
-if($action != "cat"){
-//        $text .= "<a href='".e_SELF."?cat'><div class='border'><div class='forumheader'>".ARLAN_78."</div></div></a>";
-	$text .= "<input onclick='window.location.href=\"".e_SELF."?cat\"' class='button' type='button' style='width:100%' value='".ARLAN_78."' />";
-}
-if($action != "opt"){
-//        $text .= "<a href='".e_SELF."?opt'><div class='border'><div class='forumheader'>".ARLAN_60."</div></div></a>";
-	$text .= "<input onclick='window.location.href=\"".e_SELF."?opt\"' class='button' type='button' style='width:100%' value='".ARLAN_60."' />";
-}
-if($action != "sa"){
-//        $text .= "<a href='".e_SELF."?sa'><div class='border'><div class='forumheader'>".ARLAN_93."</div></div></a>";
-	$text .= "<input onclick='window.location.href=\"".e_SELF."?sa\"' class='button' type='button' style='width:100%' value='".ARLAN_93."' />";
-}
-$text .= "</div>";
-$ns -> tablerender(ARLAN_79, $text);
+	
+		global $action;
+		$act=$action;	
+		if($act==""){$act="main";}
+		$var['main']['text']=ARLAN_76;
+		$var['main']['link']=e_SELF;
+	
+		$var['create']['text']=ARLAN_77;
+		$var['create']['link']=e_SELF."?create";
+	
+		$var['cat']['text']=ARLAN_78;
+		$var['cat']['link']=e_SELF."?cat";
+
+		$var['opt']['text']=ARLAN_60;
+		$var['opt']['link']=e_SELF."?opt";
+
+		$var['sa']['text']=ARLAN_93;
+		$var['sa']['link']=e_SELF."?sa";
+
+		show_admin_menu(ARLAN_79,$act,$var);
+
 }
 // ##### End ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
