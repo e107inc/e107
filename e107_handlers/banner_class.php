@@ -14,7 +14,7 @@
 */
 	
 class banner {
-	function getBanner($bannerquery) {
+	function getBanner($bannerquery = '') {
 		global $sql, $menu_pref;
 		 
 		$query = " (banner_startdate=0 OR banner_startdate<=".time().") AND (banner_enddate=0 OR banner_enddate>".time().") AND (banner_impurchased=0 OR banner_impressions<=banner_impurchased) ".$bannerquery." ";
