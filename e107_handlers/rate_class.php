@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/rate_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:27 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-25 23:32:20 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 class rater{
@@ -26,16 +26,16 @@ class rater{
                 $str = $text."
                 <select name=\"rateindex\" onchange=\"urljump(this.options[selectedIndex].value)\" class=\"tbox\">
                 <option selected='selected'  value=\"0\">Rate</option>
-                <option value=\"rate.php?$table^$id^$self^1\">1</option>
-                <option value=\"rate.php?$table^$id^$self^2\">2</option>
-                <option value=\"rate.php?$table^$id^$self^3\">3</option>
-                <option value=\"rate.php?$table^$id^$self^4\">4</option>
-                <option value=\"rate.php?$table^$id^$self^5\">5</option>
-                <option value=\"rate.php?$table^$id^$self^6\">6</option>
-                <option value=\"rate.php?$table^$id^$self^7\">7</option>
-                <option value=\"rate.php?$table^$id^$self^8\">8</option>
-                <option value=\"rate.php?$table^$id^$self^9\">9</option>
-                <option value=\"rate.php?$table^$id^$self^10\">10</option>
+                <option value=\"".e_BASE."rate.php?$table^$id^$self^1\">1</option>
+                <option value=\"".e_BASE."rate.php?$table^$id^$self^2\">2</option>
+                <option value=\"".e_BASE."rate.php?$table^$id^$self^3\">3</option>
+                <option value=\"".e_BASE."rate.php?$table^$id^$self^4\">4</option>
+                <option value=\"".e_BASE."rate.php?$table^$id^$self^5\">5</option>
+                <option value=\"".e_BASE."rate.php?$table^$id^$self^6\">6</option>
+                <option value=\"".e_BASE."rate.php?$table^$id^$self^7\">7</option>
+                <option value=\"".e_BASE."rate.php?$table^$id^$self^8\">8</option>
+                <option value=\"".e_BASE."rate.php?$table^$id^$self^9\">9</option>
+                <option value=\"".e_BASE."rate.php?$table^$id^$self^10\">10</option>
                 </select>";
                 return $str;
         }
