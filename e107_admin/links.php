@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/e107_admin/links.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2004-11-10 06:49:12 $
+|     $Revision: 1.27 $
+|     $Date: 2004-11-10 07:22:02 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -70,7 +70,6 @@ if($action == "dec" && strpos(e_SELF,"links"))
 
 if($action == "inc" && strpos(e_SELF,"links"))
 {
-       echo "action=".$action;
         $qs = explode(".", e_QUERY);
         $action = $qs[0];
         $linkid = $qs[1];
