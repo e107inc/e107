@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/class2.php,v $
-|     $Revision: 1.95 $
-|     $Date: 2004-09-19 15:25:51 $
-|     $Author: loloirie $
+|     $Revision: 1.96 $
+|     $Date: 2004-10-05 19:57:08 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -516,7 +516,7 @@ class textparse{
 
 
         function tpj($text, $strip=FALSE){
-                                                        $text = preg_replace_callback("/&#([0-9]{1,3});/",create_function('$matches','return chr($matches[1]);'),$text);
+//                      $text = preg_replace_callback("/&#([0-9]{1,3});/",create_function('$matches','return chr($matches[1]);'),$text);
                         $search[0] = "#script#si";
                         $replace[0] = 'scri<i></i>pt';
                         $search[1] = "#document#si";
