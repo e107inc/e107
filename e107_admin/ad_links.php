@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/ad_links.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-03-09 10:39:58 $
+|     $Revision: 1.26 $
+|     $Date: 2005-03-25 03:18:27 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -116,6 +116,9 @@ if (!defined('E_16_BANNER')) {
 }
 if (!defined('E_16_CACHE')) {
 	define('E_16_CACHE', "<img src='".e_IMAGE."admin_images/cache_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+}
+if (!defined('E_16_CREDITS')) {
+	define('E_16_CREDITS', "<img src='".e_IMAGE."admin_images/credits_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
 if (!defined('E_16_CUST')) {
 	define('E_16_CUST', "<img src='".e_IMAGE."admin_images/custom_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
@@ -228,6 +231,9 @@ if (!defined('E_32_BANNER')) {
 if (!defined('E_32_CACHE')) {
 	define('E_32_CACHE', "<img src='".e_IMAGE."admin_images/cache_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
+if (!defined('E_32_CREDITS')) {
+	define('E_32_CREDITS', "<img src='".e_IMAGE."admin_images/credits_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+}
 if (!defined('E_32_CUST')) {
 	define('E_32_CUST', "<img src='".e_IMAGE."admin_images/custom_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
@@ -337,6 +343,7 @@ $e_icon_array = array(
 	'banlist' => E_32_BANLIST,
 	'banner' => E_32_BANNER,
 	'cache' => E_32_CACHE,
+	'credits' => E_32_CREDITS,
 	'custom' => E_32_CUST,
 	'database' => E_32_DATAB,
 	'docs' => E_32_DOCS,
