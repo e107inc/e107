@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-04-03 14:19:18 $
+|     $Revision: 1.19 $
+|     $Date: 2005-04-06 21:25:10 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -140,25 +140,22 @@ define("LAN_NEWS_24", "Image + Auto-Thumbnail");
 define("LAN_NEWS_25", "Auto-Thumbnail size");
 define("LAN_NEWS_26", "add new upload");
 define("LAN_NEWS_27", "Summary");
-
 define("LAN_NEWS_28", "Sticky");
 define("LAN_NEWS_29", "Select if news item will be sticky");
 define("LAN_NEWS_30", "If selected, news item will appear above all others");
 // define("LAN_NEWS_31", "This news post is <b>STICKY</b> (it will be shown above all other items). ");
 define("LAN_NEWS_32", "Datestamp");
 define("LAN_NEWS_33", "Set the datestamp for the current news item.");
-
 define("LAN_NEWS_34", "Trackback");
 define("LAN_NEWS_35", "Add trackback url's");
 define("LAN_NEWS_36", "<b>Pingback</b> (send a pingback to all url's in this post)");
 define("LAN_NEWS_37", "<b>Trackback url's:</b> (one url per line)");
 define("LAN_NEWS_38", "Insert images");
-
 define("LAN_NEWS_39", "click on file to insert at cursor position");
 define("LAN_NEWS_40", "Insert download links");
-
-// define("LAN_NEWS_41", "click on image to insert at cursor position");
-// define("LAN_NEWS_42", "Insert images");
+define("LAN_NEWS_41", "Thumbnail / Icon");
+define("LAN_NEWS_42", "Files");
 define("LAN_NEWS_43", "(no images in /e107_images/newspost_images)");
+define("LAN_NEWS_44", "Trackback not enabled.");
 
 ?>
