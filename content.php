@@ -131,17 +131,11 @@ if($action == "content"){
 		}else{
 			ob_start();
 			unset($text);
-					if($comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='$sub_action' AND comment_type='1' AND comment_pid='0' ORDER BY comment_datestamp")){
-					$width = 96;
-					while($row = $sql -> db_Fetch()){
-					if($pref['nested_comments']){
-						$text = $cobj -> render_comment($row, $table, $action, $id, $width, $subject);		
-						$ns -> tablerender(LAN_5, $text);	
-						}else{
-							$text .= $cobj -> render_comment($row, $table, $action, $id, $width, $subject);
-						}
+			if($comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='$sub_action' AND comment_type='1' ORDER BY comment_datestamp")){
+				while($row = $sql -> db_Fetch()){
+					$text .= $cobj -> render_comment($row);
 				}
-				 if(!$pref['nested_comments']){$ns -> tablerender(LAN_5, $text);	}
+				$ns -> tablerender(LAN_5, $text);
 				if($pref['cachestatus']){
 					$cache = $aj -> formtpa(ob_get_contents(), "admin");
 					set_cache("comment.content.$sub_action", $cache);
@@ -151,7 +145,7 @@ if($action == "content"){
 		if(ADMIN && getperms("B") && $comment_total){
 			echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?content.$sub_action'>".LAN_29."</a></div><br />";
 		}
-		$cobj -> form_comment("comment", "content", $sub_action, $content_heading);
+		$cobj -> form_comment();
 	}
 }
 	
@@ -219,23 +213,17 @@ if($action == "review"){
 			$row = $sql -> db_Fetch(); extract($row);
 		}
 
-	if($content_comment){
+		if($content_comment){
 			if($cache = retrieve_cache("comment.content.$sub_action")){
 				echo $aj -> formtparev($cache);
 			}else{
 				ob_start();
 				unset($text);
-					if($comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='$sub_action' AND comment_type='1' AND comment_pid='0' ORDER BY comment_datestamp")){
-					$width = 96;
+				if($comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='$sub_action' AND comment_type='1' ORDER BY comment_datestamp")){
 					while($row = $sql -> db_Fetch()){
-					if($pref['nested_comments']){
-						$text = $cobj -> render_comment($row, $table, $action, $id, $width, $subject);		
-						$ns -> tablerender(LAN_5, $text);	
-						}else{
-							$text .= $cobj -> render_comment($row, $table, $action, $id, $width, $subject);
-						}
-				}
-				 if(!$pref['nested_comments']){$ns -> tablerender(LAN_5, $text);	}
+						$text .= $cobj -> render_comment($row);
+					}
+					$ns -> tablerender(LAN_5, $text);
 					if($pref['cachestatus']){
 						$cache = $aj -> formtpa(ob_get_contents(), "admin");
 						set_cache("comment.content.$sub_action", $cache);
@@ -245,9 +233,8 @@ if($action == "review"){
 			if(ADMIN && getperms("B")){
 				echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?content.$sub_action'>".LAN_29."</a></div><br />";
 			}
-		$cobj -> form_comment("comment", "content", $sub_action, $content_heading);
+			$cobj -> form_comment();
 		}
-
 		require_once(FOOTERF);
 		exit;
 	}
@@ -552,34 +539,28 @@ if($action == "article"){
 			}
 			$ns -> tablerender(LAN_42, $text);
 		}
-		
+	
 		if($content_comment && $comflag){
 			if($cache = retrieve_cache("comment.content.$sub_action")){
 				echo $aj -> formtparev($cache);
 			}else{
 				ob_start();
 				unset($text);
-				if($comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='$sub_action' AND comment_type='1' AND comment_pid='0' ORDER BY comment_datestamp")){
-					$width = 96;
+				if($comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='$sub_action' AND comment_type='1' ORDER BY comment_datestamp")){
 					while($row = $sql -> db_Fetch()){
-					if($pref['nested_comments']){
-						$text = $cobj -> render_comment($row, $table, $action, $id, $width, $subject);		
-						$ns -> tablerender(LAN_5, $text);	
-						}else{
-							$text .= $cobj -> render_comment($row, $table, $action, $id, $width, $subject);
-						}
-				}
-				 if(!$pref['nested_comments']){$ns -> tablerender(LAN_5, $text);	}
-						if($pref['cachestatus']){
+						$text .= $cobj -> render_comment($row);
+					}
+					$ns -> tablerender(LAN_5, $text);
+					if($pref['cachestatus']){
 						$cache = $aj -> formtpa(ob_get_contents(), "admin");
 						set_cache("comment.content.$sub_action", $cache);
-							}
-						}
 					}
+				}
+			}
 			if(ADMIN && getperms("B")){
 				echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?content.$sub_action'>".LAN_29."</a></div><br />";
 			}
-		$cobj -> form_comment("comment", "content", $sub_action, $content_heading);
+			$cobj -> form_comment();
 		}
 
 		require_once(FOOTERF);
