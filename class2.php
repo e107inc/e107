@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2004-09-27 19:52:48 $
+|     $Revision: 1.8 $
+|     $Date: 2004-10-04 18:25:54 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -140,26 +140,22 @@ if($sql -> db_Select("parser", "parser_pluginname,parser_regexp", "")){
 }
 // End parser code #########
 
-$sql -> db_Select("core", "*", "e107_name='pref' ");
-$row = $sql -> db_Fetch();
+global $sysprefs;
+require_once(e_HANDLER."pref_class.php");
+$sysprefs = new prefs;
+$tmp = $sysprefs -> get('pref');
+$pref = unserialize($tmp);
+//foreach($pref as $key => $prefvalue){
+//        $pref[$key] = $ tp -> toHTML($prefvalue);
+//}
 
-$tmp = stripslashes($row['e107_value']);
-$pref=unserialize($tmp);
-foreach($pref as $key => $prefvalue)
-{
-	$pref[$key] = textparse::formtparev($prefvalue);
-}
-if(!is_array($pref))
-{
-	$pref=unserialize($row['e107_value']);
-	if(!is_array($pref))
-	{
+if(!is_array($pref)){
+	$pref= $sysprefs -> getArray('pref');
+	if(!is_array($pref)){
 		($sql -> db_Select("core", "*", "e107_name='pref' ") ? message_handler("CRITICAL_ERROR", 1,  __LINE__, __FILE__) : message_handler("CRITICAL_ERROR", 2,  __LINE__, __FILE__));
-		if($sql -> db_Select("core", "*", "e107_name='pref_backup' "))
-		{
+		if($sql -> db_Select("core", "*", "e107_name='pref_backup' ")){
 			$row = $sql -> db_Fetch(); extract($row);
-			$tmp = addslashes(serialize($e107_value ));
-			$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='pref' ");
+			$sysprefs -> set($e107_value,'pref','core');
 			message_handler("CRITICAL_ERROR", 3,  __LINE__, __FILE__);
 		}
 		else
@@ -176,10 +172,7 @@ if($pref['user_tracking'] == "session"){ session_start(); }
 
 define("e_SELF", ($pref['ssl_enabled'] ? "https://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']) : "http://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'])));
 
-$sql -> db_Select("core", "*", "e107_name='menu_pref' ");
-$row = $sql -> db_Fetch();
-$tmp = stripslashes($row['e107_value']);
-$menu_pref=unserialize($tmp);
+$menu_pref = $sysprefs -> getArray('menu_pref');
 
 $page = substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
 define("e_PAGE", $page);
