@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_mailout.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-09 01:50:36 $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-31 06:06:21 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -36,6 +36,12 @@ define("MAILAN_08","Send Email");
 define("MAILAN_09","Use Theme Style");
 
 define("MAILAN_10","User Subscribed");
+define("MAILAN_11","Insert Variables");
+define("MAILAN_12","All Members");
+define("MAILAN_13","All Unverified Members ");
+
+
+
 
 
 

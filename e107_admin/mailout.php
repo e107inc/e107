@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-01-31 05:52:35 $
+|     $Revision: 1.18 $
+|     $Date: 2005-01-31 06:05:34 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -25,15 +25,13 @@ if (!getperms("W")) {
 	 exit;
 }
 require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php");
-
 require_once(e_HANDLER."userclass_class.php");
+
 if ($pref['htmlarea']) {
 	require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
 	htmlarea('email_body');
 }
 
-
-$aj = new textparse;
 
 if (isset($_POST['testemail'])) {
 	require_once(e_HANDLER."mail.php");
@@ -98,10 +96,8 @@ if (isset($_POST['submit'])) {
 
 	$mail = new PHPMailer();
 
-	$mail->From = ($_POST['email_from_email'])? $_POST['email_from_email']:
-	$pref['siteadminemail'];
-	$mail->FromName = ($_POST['email_from_name'])? $_POST['email_from_name']:
-	$pref['siteadmin'];
+	$mail->From = ($_POST['email_from_email'])? $_POST['email_from_email']:	$pref['siteadminemail'];
+	$mail->FromName = ($_POST['email_from_name'])? $_POST['email_from_name']: $pref['siteadmin'];
 	//  $mail->Host     = "smtp1.site.com;smtp2.site.com";
 	if ($pref['smtp_enable']) {
 		$mail->Mailer = "smtp";
@@ -335,7 +331,7 @@ $text .= "
 	</tr>
 
 	<tr>
-	<td style='width:30%' class='forumheader3'>Insert Variables: </td>
+	<td style='width:30%' class='forumheader3'>".MAILAN_11.": </td>
 	<td style='width:70%' class='forumheader3'>
 	<input type='button' class='button' name='usrname' value='username' onclick=\"add_text('{USERNAME}')\" />
 	<input type='button' class='button' name='usrlink' value='signup link' onclick=\"add_text('{SIGNUP_LINK}')\" />
@@ -410,15 +406,8 @@ $text = "
 	</table></div></form>";
 
 $text .= "";
-$caption = "Preferences";
+$caption = LAN_PREFS;
 $ns->tablerender($caption, $text);
-
-
-
-
-
-
-
 
 
 
@@ -459,9 +448,9 @@ function headerjs() {
 function userclasses($name) {
 	global $sql;
 	$text .= "<select style='width:80%' class='tbox' name='$name' >
-		<option value='all'>All Members</option>
-        <option value='admin'>Admins</option>
-		<option value='unverified'>All Unverified Members</option>";
+		<option value='all'>".MAILAN_12."</option>
+		<option value='unverified'>".MAILAN_13."</option>
+        <option value='admin'>Admins</option>";
 	$sql->db_Select("userclass_classes");
 	while ($row = $sql->db_Fetch()) {
 		extract($row);
