@@ -190,22 +190,7 @@ if(IsSet($_POST['register'])){
                         $row = $sql -> db_Fetch();
                         $id = $row['user_id'];
 
-    // ================== save extended fields as serialized data.
 
-    if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
-        $aj = new textparse;
-        $row = $sql -> db_Fetch();
-        $user_entended = unserialize($row[0]);
-        $c=0;
-        while(list($key, $u_entended) = each($user_entended)){
-            $val = $aj -> formtpa($_POST[str_replace(" ", "_", $u_entended)], "public");
-            $user_pref[$u_entended] = $val;
-            $c++;
-        }
-        $tmp = addslashes(serialize($user_pref));
-        $sql -> db_Update("user", "user_prefs='$tmp' WHERE user_id='".$id."' ");
-    }
-    // ==========================================================
 
 
                         define("RETURNADDRESS", (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$id.".".$key : SITEURL."/signup.php?activate.".$id.".".$key));
@@ -213,6 +198,24 @@ if(IsSet($_POST['register'])){
                         $message = LAN_403.RETURNADDRESS.LAN_407." ".SITENAME."\n".SITEURL;
                         require_once(e_HANDLER."mail.php");
                         sendemail($_POST['email'], LAN_404." ".SITENAME, $message);
+        // ================== save extended fields as serialized data.
+
+        if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
+            $aj = new textparse;
+            $row = $sql -> db_Fetch();
+            $user_entended = unserialize($row[0]);
+            $c=0;
+            while(list($key, $u_entended) = each($user_entended)){
+                $val = $aj -> formtpa($_POST[str_replace(" ", "_", $u_entended)], "public");
+                $user_pref[$u_entended] = $val;
+                $c++;
+            }
+            $tmp = addslashes(serialize($user_pref));
+            $sql -> db_Update("user", "user_prefs='$tmp' WHERE user_id='".$id."' ");
+        }
+        // ==========================================================
+
+
                         require_once(HEADERF);
                         $text = LAN_405;
                         $ns -> tablerender("<div style='text-align:center'>".LAN_406."</div>", $text);
