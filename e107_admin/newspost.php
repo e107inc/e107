@@ -155,7 +155,7 @@ if($action == "pref"){
 
 // ##### Display options --------------------------------------------------------------------------------------------------------------------------------------------------------
 
-$newspost -> show_options($action);
+//$newspost -> show_options($action);
 
 // ##### End ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -266,20 +266,20 @@ class newspost{
                 global $sql, $rs, $ns;
                 $text = "<div style='text-align:center'>";
                 if(e_QUERY && $action != "main"){
-                        $text .= "<a href='".e_SELF."'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".NWSLAN_44."</div></div></a>";
+								$text .= "<input onclick='window.location.href=\"".e_SELF."\"' class='button' type='button' style='width:100%' value='".NWSLAN_44."' />";
                 }
                 if($action != "create"){
-                        $text .= "<a href='".e_SELF."?create'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".NWSLAN_45."</div></div></a>";
+								$text .= "<input onclick='window.location.href=\"".e_SELF."?create\"' class='button' type='button' style='width:100%' value='".NWSLAN_45."' />";
                 }
                 if($action != "cat" && getperms("7")){
-                        $text .= "<a href='".e_SELF."?cat'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".NWSLAN_46."</div></div></a>";
+								$text .= "<input onclick='window.location.href=\"".e_SELF."?cat\"' class='button' type='button' style='width:100%' value='".NWSLAN_46."' />";
                 }
 
                 if($action != "pref" && getperms("N")){
-                        $text .= "<a href='".e_SELF."?pref'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> Preferences</div></div></a>";
+								$text .= "<input onclick='window.location.href=\"".e_SELF."?pref\"' class='button' type='button' style='width:100%' value='".NWSLAN_90."' />";
                 }
                 if($action != "sn" && getperms("N")){
-                        $text .= "<a href='".e_SELF."?sn'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".NWSLAN_47."</div></div></a>";
+								$text .= "<input onclick='window.location.href=\"".e_SELF."?sn\"' class='button' type='button' style='width:100%' value='".NWSLAN_47."' />";
                 }
                 $text .= "</div>";
                 $ns -> tablerender(NWSLAN_48, $text);
@@ -813,5 +813,10 @@ class newspost{
 
 }
 
+function newspost_adminmenu(){
+	global $newspost;
+	global $action;
+	$newspost -> show_options($action);
+}
 
 ?>
