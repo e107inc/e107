@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/top.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-27 19:51:38 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-16 21:34:03 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -40,11 +40,18 @@ require_once(HEADERF);
 if ($action == "active") {
 	require_once(e_HANDLER."userclass_class.php");
 	 
-	if ($sql->db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHERE ".MPREFIX."forum.forum_id=".MPREFIX."forum_t.thread_forum_id AND ".MPREFIX."forum_t.thread_parent=0 ORDER BY ".MPREFIX."forum_t.thread_views DESC LIMIT ".$from.", ".$view."")) {
+	$query = "SELECT t.*, f.forum_name, u.user_name from #forum_t as t
+			LEFT JOIN #forum AS f ON t.thread_forum_id = f.forum_id 
+			LEFT JOIN #user AS u ON t.thread_user = u.user_id
+			WHERE  t.thread_parent = 0
+			ORDER BY t.thread_views DESC 
+			LIMIT $from, $view";
+
+		
+
+
+	if ($sql->db_Select_gen($query)) {
 		$text = "<div style='text-align:center'>\n<table style='width:auto' class='fborder'>\n";
-		if (!is_object($sql2)) {
-			$sql2 = new db;
-		}
 		if (!is_object($gen)) {
 			$gen = new convert;
 		}
@@ -61,8 +68,33 @@ if ($action == "active") {
 		while ($row = $sql->db_Fetch()) {
 			extract($row);
 			if (check_class($forum_class)) {
-				$sql2->db_Select("forum_t", "*", "thread_parent='$thread_id' ORDER BY thread_views DESC");
-				list($null, $null, $null, $null, $r_datestamp, $null, $r_user) = $sql2->db_Fetch();
+
+				if($user_name)
+				{
+					$POSTER = "<a href='".e_BASE."user.php?id.$thread_user'>$user_name</a>";
+				} else {
+					list($anonposter, $ipaddress) = explode(chr(1), $thread_anon);
+					$POSTER = $anonposter;
+				}
+
+				$LINKTOTHREAD = e_PLUGIN."forum/forum_viewtopic.php?".$thread_id;
+				$LINKTOFORUM = e_PLUGIN."forum/forum_viewforum.php?".$thread_forum_id;
+				$lastpost_datestamp = $gen->convert_date($thread_lastpost, "forum");
+				list($lastpost_id, $lastpost_name) = explode('.', $thread_lastuser, 2);
+				if (!$lastpost_id) {
+					$LASTPOST = $lastpost_name.'<br />'.$lastpost_datestamp;
+				} else {
+					$LASTPOST = "<a href='".e_BASE."user.php?id.".$lastpost_id."'>".$lastpost_name."</a><br />".$lastpost_datestamp;
+				}
+				
+/*
+				$sql2->db_Select("forum_t", "thread_lastpost, thread_lastuser", "thread_parent='$thread_id' ORDER BY thread_views DESC");
+				list($r_datestamp, $r_user) = $sql2->db_Fetch();
+				$lastpost_datestamp = $gen->convert_date($r_datestamp, "forum");
+
+				
+
+
 				$r_id = substr($r_user, 0, strpos($r_user, "."));
 				$r_name = substr($r_user, (strpos($r_user, ".")+1));
 				 
@@ -82,13 +114,17 @@ if ($action == "active") {
 				$post_author_name = ($post_author_id != 0 ? "<a href='".e_BASE."user.php?id.$post_author_id'>$post_author_name</a>" : $post_author_name);
 				$replies = $sql2->db_Select("forum_t", "*", "thread_parent=$thread_id");
 				 
+
+*/
+
+
 				$text .= "<tr>
 					<td style='width:5%; text-align:center' class='forumheader3'><img src='".e_IMAGE."forum/new_small.png' alt='' /></td>
-					<td style='width:45%' class='forumheader3'><b><a href='".e_BASE."forum_viewtopic.php?$forum_id.$thread_id'>$thread_name</a></b> <span class='smalltext'>(<a href='".e_BASE."forum_viewforum.php?$forum_id'>$forum_name</a>)</span></td>
-					<td style='width:15%; text-align:center' class='forumheader3'>$post_author_name</td>
+					<td style='width:45%' class='forumheader3'><b><a href='$LINKTOTHREAD'>$thread_name</a></b> <span class='smalltext'>(<a href='$LINKTOFORUM'>$forum_name</a>)</span></td>
+					<td style='width:15%; text-align:center' class='forumheader3'>$POSTER</td>
 					<td style='width:5%; text-align:center' class='forumheader3'>$thread_views</td>
-					<td style='width:5%; text-align:center' class='forumheader3'>$replies</td>
-					<td style='width:25%; text-align:center' class='forumheader3'>".($replies ? "<b><a href='".e_BASE."user.php?id.$r_id'>$r_name</a></b><br /><span class='smalltext'>$r_datestamp</span>" : "-")."</td>
+					<td style='width:5%; text-align:center' class='forumheader3'>$thread_total_replies</td>
+					<td style='width:25%; text-align:center' class='forumheader3'>$LASTPOST</td>
 					</tr>\n";
 			}
 		}
