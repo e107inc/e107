@@ -833,7 +833,7 @@ function online(){
         $online_timeout = 300;
         $online_warncount = 90;
         $online_bancount = 100;
-        global $sql;
+        global $sql, $pref;
         global $listuserson;
         $ip = getip();
         $udata = (USER === TRUE) ? USERID.".".USERNAME : "0";
