@@ -99,17 +99,9 @@ function adbutnorm(object) {
 {ADMIN_USERLAN}
 </div>
 {SITELINKS=flat}
-</td>";
+</td>
 
-if (ADMIN) {
-	$ADMIN_HEADER .= "<td style='vertical-align: middle; text-align: center; padding: 0px; background-color: #f3f3f3; border-left: 1px solid #3D4251; white-space: nowrap; padding: 0px 5px 0px 6px'>
-	<div style='height: 17px'>
-	{CUSTOM=search.default.15}
-	</div>
-	</td>";
-}
-
-$ADMIN_HEADER .= "<td style='width: 68px; padding: 0px 18px 0px 18px; text-align: center; vertical-align: middle; border-left: 1px solid #3D4251; background-color: #f3f3f3; background-image: url(".THEME."images/screen.png); background-repeat: no-repeat'>
+<td style='width: 68px; padding: 0px 18px 0px 18px; text-align: center; vertical-align: middle; border-left: 1px solid #3D4251; background-color: #f3f3f3; background-image: url(".THEME."images/screen.png); background-repeat: no-repeat'>
 <div style='height: 32px;'>
 {ADMIN_ICON}
 </div>
