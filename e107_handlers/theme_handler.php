@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-02-20 14:57:22 $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-20 18:17:51 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -60,32 +60,23 @@ class themeHandler{
 								$themeArray[$file]['preview'] = e_THEME.$file."/".$file2;
 							}
 						}
-
 						$fp=fopen(e_THEME.$file."/theme.php", "r");
 						$themeContents = fread ($fp, filesize(e_THEME.$file."/theme.php"));
 						fclose($fp);
-
 						preg_match('/themename(\s=\s|=|\s=|=\s)"(.*?)";/', $themeContents, $match);
 						$themeArray[$file]['name'] = $match[2];
-
 						preg_match('/themeversion(\s=\s|=|\s=|=\s)"(.*?)";/', $themeContents, $match);
 						$themeArray[$file]['version'] = $match[2];
-				
 						preg_match('/themeauthor(\s=\s|=|\s=|=\s)"(.*?)";/', $themeContents, $match);
 						$themeArray[$file]['author'] = $match[2];
-
 						preg_match('/themeemail(\s=\s|=|\s=|=\s)"(.*?)";/', $themeContents, $match);
 						$themeArray[$file]['email'] = $match[2];
-
 						preg_match('/themewebsite(\s=\s|=|\s=|=\s)"(.*?)";/', $themeContents, $match);
 						$themeArray[$file]['website'] = $match[2];
-
 						preg_match('/themedate(\s=\s|=|\s=|=\s)"(.*?)";/', $themeContents, $match);
 						$themeArray[$file]['date'] = $match[2];
-
 						preg_match('/themeinfo(\s=\s|=|\s=|=\s)"(.*?)";/', $themeContents, $match);
 						$themeArray[$file]['info'] = $match[2];
-						
 					}
 					closedir($handle2);
 				}
@@ -165,6 +156,7 @@ class themeHandler{
 		global $ns;
 		if(!is_writable(e_THEME)) {
 			$ns->tablerender(TPVLAN_16, EPL_ADLAN_44);
+			$text = "";
 		} else {
 			$text = "<div style='text-align:center'>
 			<form enctype='multipart/form-data' method='post' action='".e_SELF."'>
