@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/frontpage.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-02-01 00:49:37 $
+|     $Revision: 1.9 $
+|     $Date: 2005-02-01 03:01:04 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -62,6 +62,14 @@ if (isset($_POST['updatesettings'])) {
 	$pref['frontpage'] = $frontpage_value;
 	save_prefs();
 	$message = TRUE;
+	
+	if ($pref['frontpage'] != "news") {
+		if (!$sql->db_Select("links", "*", "link_url='news.php' ")) {
+			$sql->db_Insert("links", "0, 'News', 'news.php', '', '', 1, 0, 0, 0, 0");
+		}
+	} else {
+		$sql->db_Delete("links", "link_url='news.php'");
+	}
 }
 
 
