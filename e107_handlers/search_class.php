@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-02-08 18:00:34 $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-09 12:27:45 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -32,17 +32,25 @@ class e_search {
 	var $exact;
 	var $match = array();
 	
+	function e_search() {
+		global $pref;
+		if (!isset($pref['search_chars'])) {
+			$pref['search_chars'] = 150;
+			save_prefs();
+		}
+	}
+	
 	function search_query($query, $table, $fields, $pre_query, $post_query) {
 		global $sql;
 		$this -> query = $query;
 		$this -> orig_query = $query;
 		$this -> keywords = explode(' ', $this -> query);
-		foreach ($this -> keywords as $keyword) {
+		foreach ($this -> keywords as $this -> query) {
 			foreach ($fields as $field) {
 				if (isset($search_query)) {
 					$search_query .= " OR ";
 				}
-				$search_query .= " ".$field." REGEXP '[[:<:]]".$keyword."[[:>:]]' ";
+				$search_query .= " ".$field." REGEXP '[[:<:]]".$this -> query."[[:>:]]' ";
 			}
 		}
 		return $results = $sql->db_Select($table, '*', $pre_query." (".$search_query.") ".$post_query);
@@ -58,8 +66,8 @@ class e_search {
 		return $text;
 	}
 	
-	function search_link($text, $link) {
-		return "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <b><a href='".$link."'>".$text."</a></b><br />";
+	function search_link($link) {
+		return "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <b><a href='".$link."'>".$this -> ret['text']."</a></b><br />";
 	}
 	
 	function search_detail($item_text) {
@@ -93,7 +101,6 @@ class e_search {
 			}
 		}
 		$this -> parsesearch_crop();
-		return $this -> ret['text'];
 	}
 	
 	function parsesearch_match() {
@@ -111,10 +118,6 @@ class e_search {
 	
 	function parsesearch_crop() {
 		global $pref;
-		if (!isset($pref['search_chars'])) {
-			$pref['search_chars'] = 150;
-			save_prefs();
-		}
 		if (!$this -> endcrop && (strlen($this -> ret['text']) > $pref['search_chars'])) {
 			if ($this -> match['pos'] < ($pref['search_chars'] - strlen($this -> query))) {
 				$this -> ret['text'] = substr($this -> ret['text'], 0, $pref['search_chars'])."...";
