@@ -127,7 +127,7 @@ $NEWSSTYLE = "
 {NEWSBODY}
 {EXTENDED}
 <div class='alttd' style='text-align:right'>
-Posted by {NEWSAUTHOR}on{NEWSDATE}
+Posted by {NEWSAUTHOR} on {NEWSDATE}
  | 
 {NEWSCOMMENTS}
  | 
