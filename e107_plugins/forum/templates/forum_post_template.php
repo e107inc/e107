@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_post_template.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-03-03 18:36:11 $
+|     $Revision: 1.6 $
+|     $Date: 2005-03-03 22:55:26 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -38,40 +38,6 @@ $subjectbox = "<tr>
 require_once(e_PLUGIN."poll/poll_class.php");
 $pollo = new poll;
 $poll = $pollo -> renderPollForm("forum");
-
-/*
-$poll = "<tr>
-<td colspan='2' class='nforumcaption2'>".LAN_4."</td>
-</tr>
-<tr>
-<td colspan='2' class='forumheader3'>
-<span class='smalltext'>".LAN_386."
-</td>
-</tr>
-<tr><td style='width:20%' class='forumheader3'><div class='normaltext'>".LAN_5."</div></td><td style='width:80%'class='forumheader3'><input class='tbox' type='text' name='poll_title' size='70' value=\"".$tp->toDB($_POST['poll_title'])."\" maxlength='200' />";
-
-$option_count = ($_POST['option_count'] ? $_POST['option_count'] : 1);
-$poll .= "<input type='hidden' name='option_count' value='$option_count'>";
-
-for($count = 1; $count <= $option_count; $count++) {
-	$var = "poll_option_".$count;
-	$option = stripslashes($$var);
-	$poll .= "<tr><td style='width:20%' class='forumheader3'>".LAN_391." ".$count.":</td><td style='width:80%' class='forumheader3'><input class='tbox' type='text' name='poll_option[]' size='60' value=\"".$tp->toDB($_POST['poll_option'][($count-1)])."\" maxlength='200' />";
-	if ($option_count == $count) {
-		$poll .= " <input class='button' type='submit' name='addoption' value='".LAN_6."' /> ";
-	}
-	$poll .= "</td></tr>";
-}
-$poll .= "<tr><td style='width:20%' class='forumheader3'>".LAN_7."</td><td class='forumheader3'>";
-$poll .= ($_POST['activate'] == 9 ? "<input name='activate' type='radio' value='9' checked>".LAN_8."<br />" : "<input name='activate' type='radio' value='9'>".LAN_8."<br />");
-$poll .= ($_POST['activate'] == 10 ? "<input name='activate' type='radio' value='10' checked>".LAN_9."<br />" : "<input name='activate' type='radio' value='10'>".LAN_9."<br />");
-$poll .= "</td>\n</tr>";
-*/
-
-
-
-
-
 
 
 // finally, file attach is optional, again only change this if you know what you're doing ...

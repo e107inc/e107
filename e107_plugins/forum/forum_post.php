@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-03-03 18:35:56 $
+|     $Revision: 1.16 $
+|     $Date: 2005-03-03 22:55:25 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -106,14 +106,7 @@ $forum_info['forum_name'] = $tp -> toHTML($forum_info['forum_name'], TRUE);
 define("e_PAGETITLE", LAN_01." / ".$forum_info['forum_name']." / ".($action == "rp" ? LAN_02.$forum_info['thread_name'] : LAN_03));
 require_once(HEADERF);
 
-// -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-if (IsSet($_POST['addoption']) && $_POST['option_count'] < 10) {
-	$_POST['option_count']++;
-	$anonname = $tp->post_toForm($_POST['anonname']);
-	$subject = $tp->post_toForm($_POST['subject']);
-	$post = $tp->post_toForm($_POST['post']);
-}
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 if (IsSet($_POST['submitpoll'])) {
 	require_once(e_PLUGIN."poll/poll_class.php");
