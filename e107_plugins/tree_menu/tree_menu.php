@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/tree_menu/tree_menu.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2004-12-13 13:20:46 $
-|     $Author: sweetas $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-26 12:04:53 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,51 +27,127 @@
 - Add a PHP function to read cookie (if existing) when page is loaded and restore menu status (writing or not window.onload js function)
 */
 
+/* changes by jalist
+	26/01/2005
+	+ complete rewrite
+	+ now uses single db query, links and sublinks are built into array
+*/
+
 include(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitelinks.php");
 
 // Many thanks to Lolo Irie for fixing the javascript that drives this menu item
 unset($text);
-($_COOKIE["treemenustatus"]?$treemenustatus = $_COOKIE["treemenustatus"]:$treemenustatus="0");
-$sql2 = new db;
-$sql -> db_Select("links", "*", "link_category='1' AND link_name NOT REGEXP('submenu') ORDER BY link_order");
-while($row = $sql -> db_Fetch()){
-        extract($row);
-        $link_name=strip_tags($link_name);
-        $textadd1 = ""; $textadd2 = "";
-        if($sql2 -> db_Select("links", "*", "link_name REGEXP('submenu.".$link_name."') ORDER BY link_order")){
-        // if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
-        if(check_class($link_class)){
-            $mlink_name = $link_name;
-            $span_link_name = str_replace(" ","_",$link_name);
-            $textadd1 .= "
-            <div class='spacer'>
-            <div class='button' style='width:100%; cursor: pointer;' onclick='expandit(\"span_".$span_link_name."\");updatecook(\"".$link_name."\");' >";
-            ($link_button!="" ? $textadd1b = "<img src='".e_IMAGE."link_icons/".$link_button."' alt='' style='vertical-align:middle;' />" : $textadd1b = "&raquo;" );
-            $textadd2 .= " <a href='javascript: void(0);' title='".$link_description."' style='text-decoration:none'>".$link_name."</a></div>
-            <span style=\"display:none\" id=\"span_".$span_link_name."\">";
-            $sublink_exist = 0;
-            while($row = $sql2 -> db_Fetch()){
-                extract($row);
-                // if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
-                if(check_class($link_class)){
-                    $link_name2 = str_replace("submenu.".$mlink_name.".", "", $link_name);
-                    $textadd2 .= ($link_button!="" ? "<img src='".e_IMAGE."link_icons/".$link_button."' alt='' style='vertical-align:middle' />  " : "&middot; " ).setlink($link_name2, $link_url, $link_open, $link_description)."\n<br />";
-                    $sublink_exist = 1;
-                }
-                unset($link_button);
-            }
-            if($sublink_exist==0){$textadd1b = "&middot;";}
-            $text .= $textadd1.$textadd1b.$textadd2."</span></div>\n";
-            }
-        }else{
-            // if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
-            if(check_class($link_class)){
-                    $text .= "<div class='spacer'><div class='button' style='width:100%; cursor: pointer;' onclick=\"clearcook();\">".($link_button!="" ? "<img src='".e_IMAGE."link_icons/".$link_button."' alt='' style='vertical-align:middle' />  " : "&middot; " ).
-                    setlink($link_name, $link_url, $link_open,$link_description)."
-                    </div></div>";
-            }
-        }
+
+$sql -> db_Select("links", "*", "link_category='1' ORDER BY link_order");	// get main category links
+$linkArray = $sql -> db_getList();
+
+// all main links now held in array, we now need to loop through them and assign the sublinks to the correct parent links ...
+
+$mainLinkArray = array();
+foreach($linkArray as $links)
+{
+	extract ($links);
+	if(check_class($link_class))
+	{
+		if(!strstr($link_name, "submenu"))
+		{
+			// main link - add to main array ...
+			$mainLinkArray[$link_name]['id'] = $link_id;
+			$mainLinkArray[$link_name]['name'] = strip_tags($link_name);
+			$mainLinkArray[$link_name]['url'] = $link_url;
+			$mainLinkArray[$link_name]['description'] = $link_description;
+			$mainLinkArray[$link_name]['image'] = $link_button;
+			$mainLinkArray[$link_name]['openMethod'] = $link_open;
+			$mainLinkArray[$link_name]['class'] = $link_class;
+		}
+		else
+		{
+			// submenu - add to parent's array entry ...
+			list($null, $parent_name, $submenu_name) = explode(".", $link_name);	 // get parent name ...
+			$mainLinkArray[$parent_name]['sublink'][$link_id]['parent_name'] = $parent_name;
+			$mainLinkArray[$parent_name]['sublink'][$link_id]['id'] = $link_id;
+			$mainLinkArray[$parent_name]['sublink'][$link_id]['name'] = strip_tags($submenu_name);
+			$mainLinkArray[$parent_name]['sublink'][$link_id]['url'] = $link_url;
+			$mainLinkArray[$parent_name]['sublink'][$link_id]['description'] = $link_description;
+			$mainLinkArray[$parent_name]['sublink'][$link_id]['image'] = $link_button;
+			$mainLinkArray[$parent_name]['sublink'][$link_id]['openMethod'] = $link_open;
+			$mainLinkArray[$parent_name]['sublink'][$link_id]['class'] = $link_class;
+		}
+	}
 }
+
+// ok, now all mainlinks and sublinks are held in the array, now we have to loop through and build the text to send to screen ...
+
+$text = "";
+foreach($mainLinkArray as $links)
+{
+	extract ($links);
+	if(array_key_exists("sublink", $links))
+	{
+		// sublinks found ...
+		$url = "javascript: void(0);";
+		$spanName = str_replace(" ","_",$name);
+		$image = ($image ? "<img src='".e_IMAGE."link_icons/".$image."' alt='' style='vertical-align:middle;' />" : "&raquo;");
+		$text .= "<div class='spacer'>\n<div class='button' style='width:100%; cursor: pointer;' onclick='expandit(\"span_".$spanName."\");updatecook(\"".$name."\");'>".$image.setLink($name, $url, $openMethod, $description)."</div>\n</div>\n";
+	}
+	else
+	{
+		// no sublinks found ...
+		$linkName = $url;
+		$spanName = "";
+		$image = ($image ? "<img src='".e_IMAGE."link_icons/".$image."' alt='' style='vertical-align:middle;' />" : "&middot;");
+		$text .= "<div class='spacer'>\n<div class='button' style='width:100%; cursor: pointer;'>".$image.setLink($name, $url, $openMethod, $description)."</div>\n</div>\n";
+	}
+
+	$c=0;
+	if(array_key_exists("sublink", $links))
+	{
+		$text .= "<span style=\"display:none\" id=\"span_".$spanName."\">\n";
+		foreach($sublink as $link)
+		{
+			extract($link);
+			$image = ($image ? "<img src='".e_IMAGE."link_icons/".$image."' alt='' style='vertical-align:middle' />  " : "&middot; ");
+			$spanName = str_replace(" ","_",$parent_name);
+
+			$text .= $image.setLink($name, $url, $openMethod, $description)."<br />\n";
+		}
+		$text .= "</span>\n";
+	}
+
+}
+
+function setlink($link_name, $link_url, $link_open, $link_description)
+{
+	switch ($link_open)
+	{
+		case 1:
+			$link_append = "rel='external'";
+		break;
+		case 2:
+			$link_append = "";
+		break;
+		case 3:
+			$link_append = "";
+		break;
+		default:
+			unset($link_append);
+		}
+		if(!strstr($link_url, "http:"))
+		{
+			$link_url = e_BASE.$link_url;
+		}
+		if($link_open == 4)
+		{
+			$link =  "<a style='text-decoration:none' title='".$link_description."' href=\"javascript:open_window('".$link_url."')\">".$link_name."</a>\n";
+		}
+		else
+		{
+			$link =  "<a style='text-decoration:none' title='".$link_description."' href=\"".$link_url."\" ".$link_append.">".$link_name."</a>\n";
+		}
+        return $link;
+}
+
+($_COOKIE["treemenustatus"] ? $treemenustatus = $_COOKIE["treemenustatus"] : $treemenustatus="0");
 
 $text .= "
 <script type='text/javascript'>
@@ -101,33 +177,5 @@ function clearcook(){
 $text .= "</script>
 ";
 $ns -> tablerender(LAN_183, $text, 'tree_menu');
-
-
-function setlink($link_name, $link_url, $link_open, $link_description){
-                switch ($link_open){
-                        case 1:
-                                $link_append = "rel='external'";
-                        break;
-                        case 2:
-                                $link_append = "";
-                        break;
-                        case 3:
-                                $link_append = "";
-                        break;
-                        default:
-                                unset($link_append);
-                }
-                if(!strstr($link_url, "http:")){ $link_url = e_BASE.$link_url; }
-                if($link_open == 4){
-                        $link =  "<a style='text-decoration:none' title='".$link_description."' href=\"javascript:open_window('".$link_url."')\">".$link_name."</a>\n";
-                }else{
-                        $link =  "<a style='text-decoration:none' title='".$link_description."' href=\"".$link_url."\" ".$link_append.">".$link_name."</a>\n";
-                }
-        return $link;
-}
-
-
-
-
 
 ?>
