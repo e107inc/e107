@@ -9,7 +9,7 @@ if(check_class($pref['pm_userclass']))
 	}
 	else
 	{
-		$img = "<img src='".e_IMAGE."forum/pm.png' alt='".PMLAN_PM."' title='".PMLAN_PM."' style='border:0' />";
+		$img = "<img src='".e_PLUGIN."pm_menu/images/pm.png' alt='".PMLAN_PM."' title='".PMLAN_PM."' style='border:0' />";
 	}
 	return  "<a href='".e_PLUGIN."pm_menu/pm.php?send.{$parm}'>{$img}</a>";
 }
