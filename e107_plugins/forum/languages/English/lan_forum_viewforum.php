@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_viewforum.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-27 19:52:49 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-19 16:27:15 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Forum");
@@ -33,7 +33,7 @@ define("LAN_206", "You <b>can</b> post replies");
 define("LAN_207", "You <b>cannot</b> post replies");
 define("LAN_208", "You <b>can</b> edit your posts");
 define("LAN_209", "You <b>cannot</b> edit your posts");
-define("LAN_316", "Goto page");
+define("LAN_316", "Goto page: ");
 define("LAN_317", "None");
 define("LAN_321", "Moderators: ");
 define("LAN_395", "[popular]");
@@ -79,6 +79,6 @@ define("FORLAN_15", "Sticky Thread");
 define("FORLAN_16", "Closed Sticky Thread");
 define("FORLAN_17", "Announcement Thread");
 define("FORLAN_18", "Closed Thread");
-	
+
 	
 ?>
