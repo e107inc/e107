@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-03-27 11:00:57 $
-|     $Author: stevedunstan $
+|     $Revision: 1.36 $
+|     $Date: 2005-03-31 07:45:44 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
@@ -98,10 +98,10 @@ else
 	if(($pref['anon_post'] == "1" && USER == FALSE)){
 		$texta .= "\n<input class='tbox' type='text' name='nick' value='' maxlength='50' style='width: 100%;' /><br />";
 	}
-	
-	$cb_width = (defined("CBWIDTH") ? CBWIDTH : "100%");
-	
-	$texta .= "\n<textarea class='tbox chatbox' name='cmessage' cols='20' rows='5' style='overflow:hidden;' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>\n<br />\n<input class='button' type='submit' name='chat_submit' value='".CHATBOX_L4."' />\n<input class='button' type='reset' name='reset' value='".CHATBOX_L5."' />";
+
+	$cb_width = (defined("CBWIDTH") ? CBWIDTH : "97%");
+
+	$texta .= "\n<textarea class='tbox chatbox' name='cmessage' cols='20' rows='5' style='width:".$cb_width.";overflow:hidden' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>\n<br />\n<input class='button' type='submit' name='chat_submit' value='".CHATBOX_L4."' />\n<input class='button' type='reset' name='reset' value='".CHATBOX_L5."' />";
 
 	if($pref['cb_emote']){
 		$texta .= " \n<input class='button' type ='button' style='cursor:hand; cursor:pointer' size='30' value='".CHATBOX_L14."' onclick=\"expandit('emote')\" />\n<div style='display:none' id='emote'>".r_emote()."\n</div>\n";
