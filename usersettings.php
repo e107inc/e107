@@ -45,13 +45,13 @@ if(IsSet($_POST['updatesettings'])){
 		if($_uid != ""){ $inp = $_uid; }else{ $inp = USERID; }
 		$sql -> db_Update("user", "user_password='$password', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$_POST['birthday']."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."' WHERE user_id='".$inp."' ");
 
-		$text = "<div style=\"text-align:center\">".LAN_150."</div>";
+		$text = "<div style='text-align:center'>".LAN_150."</div>";
 		$ns -> tablerender(LAN_151, $text);
 	}
 }
 
 if($error != ""){
-	$ns -> tablerender("<div style=\"text-align:center\">".LAN_20."</div>", $error);
+	$ns -> tablerender("<div style='text-align:center'>".LAN_20."</div>", $error);
 }
 
 if($_uid != ""){
@@ -62,118 +62,118 @@ if($_uid != ""){
 list($user_id, $name, $user_password, $user_sess, $email, $website, $icq, $aim, $msn, $location, $birthday, $signature, $image, $user_timezone, $hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_prefs, $user_new, $user_viewed, $user_visits, $user_admin, $user_login) = $sql -> db_Fetch();
 
 $text = "
-<form  name=\"settings\" method=\"post\" action=\"".e_SELF."?stage2\">\n
-<table style=\"width:95%\">
+<form  name='settings' method='post' action='".e_SELF."?stage2'>\n
+<table style='width:95%'>
 <tr>
-<td style=\"width:20%\">".LAN_7."</td>
-<td style=\"width:80%\">
+<td style='width:20%'>".LAN_7."</td>
+<td style='width:80%'>
 $name
 </td>
 </tr>
 
 <tr>
-<td style=\"width:20%\">".LAN_308."</td>
-<td style=\"width:80%\">
-<input class=\"tbox\" type=\"text\" name=\"realname\" size=\"60\" value=\"$user_login\" maxlength=\"100\" />
+<td style='width:20%'>".LAN_308."</td>
+<td style='width:80%'>
+<input class='tbox' type='text' name='realname' size='60' value='$user_login' maxlength='100' />
 </td>
 </tr>
 
 <tr>
-<td style=\"width:20%\">".LAN_152."</td>
-<td style=\"width:80%\">
-<input class=\"tbox\" type=\"password\" name=\"password1\" size=\"40\" value=\"\" maxlength=\"20\" /> (case sensitive)
+<td style='width:20%'>".LAN_152."</td>
+<td style='width:80%'>
+<input class='tbox' type='password' name='password1' size='40' value='' maxlength='20' /> (case sensitive)
 </td>
 </tr>
 
 <tr>
-<td style=\"width:20%\">".LAN_153."</td>
-<td style=\"width:80%\">
-<input class=\"tbox\" type=\"password\" name=\"password2\" size=\"40\" value=\"\" maxlength=\"20\" /> (case sensitive)
+<td style='width:20%'>".LAN_153."</td>
+<td style='width:80%'>
+<input class='tbox' type='password' name='password2' size='40' value='' maxlength='20' /> (case sensitive)
 </td>
 </tr>
 
 <tr>
-<td style=\"width:20%\">".LAN_112."</td>
-<td style=\"width:80%\">
-<input class=\"tbox\" type=\"text\" name=\"email\" size=\"60\" value=\"$email\" maxlength=\"100\" />
+<td style='width:20%'>".LAN_112."</td>
+<td style='width:80%'>
+<input class='tbox' type='text' name='email' size='60' value='$email' maxlength='100' />
 </td>
 </tr>
 
 <tr>
-<td style=\"width:20%\">".LAN_113."</td>
-<td style=\"width:80%\">";
+<td style='width:20%'>".LAN_113."</td>
+<td style='width:80%'>";
 if($hideemail == 1){
-	$text .= "<input type=\"checkbox\" name=\"hideemail\" value=\"1\"  checked>";
+	$text .= "<input type='checkbox' name='hideemail' value='1'  checked>";
 }else{
-	$text .= "<input type=\"checkbox\" name=\"hideemail\" value=\"1\">";
+	$text .= "<input type='checkbox' name='hideemail' value='1'>";
 }
 
 $text .= LAN_114."</td></tr><tr>
-<td style=\"width:20%\">".LAN_144."</td>
-<td style=\"width:80%\">
-<input class=\"tbox\" type=\"text\" name=\"website\" size=\"60\" value=\"$website\" maxlength=\"150\" />
+<td style='width:20%'>".LAN_144."</td>
+<td style='width:80%'>
+<input class='tbox' type='text' name='website' size='60' value='$website' maxlength='150' />
 </td>
 </tr>
 
 <tr>
-<td style=\"width:20%\">".LAN_115."</td>
-<td style=\"width:80%\">
-<input class=\"tbox\" type=\"text\" name=\"icq\" size=\"20\" value=\"$icq\" maxlength=\"10\" />
+<td style='width:20%'>".LAN_115."</td>
+<td style='width:80%'>
+<input class='tbox' type='text' name='icq' size='20' value='$icq' maxlength='10' />
 </td>
 </tr>
 
 <tr>
-<td style=\"width:20%\">".LAN_116."</td>
-<td style=\"width:80%\">
-<input class=\"tbox\" type=\"text\" name=\"aim\" size=\"30\" value=\"$aim\" maxlength=\"100\" />
+<td style='width:20%'>".LAN_116."</td>
+<td style='width:80%'>
+<input class='tbox' type='text' name='aim' size='30' value='$aim' maxlength='100' />
 </td>
 </tr>
 
 <tr>
-<td style=\"width:20%\">".LAN_117."</td>
-<td style=\"width:80%\">
-<input class=\"tbox\" type=\"text\" name=\"msn\" size=\"30\" value=\"$msn\" maxlength=\"100\" />
+<td style='width:20%'>".LAN_117."</td>
+<td style='width:80%'>
+<input class='tbox' type='text' name='msn' size='30' value='$msn' maxlength='100' />
 </td>
 </tr>
 
 <tr>
-<td style=\"width:20%\">".LAN_118."</td>
-<td style=\"width:80%\">
-<input class=\"tbox\" type=\"text\" name=\"birthday\" size=\"12\" value=\"$birthday\" maxlength=\"20\" /> (yyyy/mm/dd)
+<td style='width:20%'>".LAN_118."</td>
+<td style='width:80%'>
+<input class='tbox' type='text' name='birthday' size='12' value='$birthday' maxlength='20' /> (yyyy/mm/dd)
 </td>
 </tr>
 
 <tr>
-<td style=\"width:20%\">".LAN_119."</td>
-<td style=\"width:80%\">
-<input class=\"tbox\" type=\"text\" name=\"location\" size=\"60\" value=\"$location\" maxlength=\"200\" />
+<td style='width:20%'>".LAN_119."</td>
+<td style='width:80%'>
+<input class='tbox' type='text' name='location' size='60' value='$location' maxlength='200' />
 </td>
 </tr>
 
 <tr>
-<td style=\"width:20%\" style=\"vertical-align:top\">".LAN_120."</td>
-<td style=\"width:80%\">
-<textarea class=\"tbox\" name=\"signature\" cols=\"70\" rows=\"4\">$signature</textarea>
+<td style='width:20%' style='vertical-align:top'>".LAN_120."</td>
+<td style='width:80%'>
+<textarea class='tbox' name='signature' cols='70' rows='4'>$signature</textarea>
 <br />
-<input class=\"helpbox\" type=\"text\" name=\"helpb\" size=\"90\" />
+<input class='helpbox' type='text' name='helpb' size='90' />
 <br />
-<input class=\"button\" type=\"button\" style=\"font-weight:bold; width: 35px\" value=\"b\" onclick=\"addtext('[b][/b]')\" onMouseOver=\"help('Bold text: [b]This text will be bold[/b]')\" onMouseOut=\"help('')\">
-<input class=\"button\" type=\"button\" style=\"font-style:italic; width: 35px\" value=\"i\" onclick=\"addtext('[i][/i]')\" onMouseOver=\"help('Italic text: [i]This text will be italicised[/i]')\" onMouseOut=\"help('')\">
-<input class=\"button\" type=\"button\" style=\"text-decoration: underline; width: 35px\" value=\"u\" onclick=\"addtext('[u][/u]')\" onMouseOver=\"help('Underline text: [u]This text will be underlined[/u]')\" onMouseOut=\"help('')\">
-<input class=\"button\" type=\"button\" style=\"width: 35px\" value=\"img\" onclick=\"addtext('[img][/img]')\" onMouseOver=\"help('Insert image: [img]mypicture.jpg[/img]')\" onMouseOut=\"help('')\">
-<input class=\"button\" type=\"button\" style=\"width: 35px\" value=\"cen\" onclick=\"addtext('[center][/center]')\" onMouseOver=\"help('Center align: [center]This text will be centered[/center]')\" onMouseOut=\"help('')\">
-<input class=\"button\" type=\"button\" value=\"link\" onclick=\"addtext('[link=hyperlink url]hyperlink text[/link]')\" onMouseOver=\"help('Insert link: [link]http://mysite.com[/link] or [link=http://yoursite.com]Visit My Site[/link]')\" onMouseOut=\"help('')\">
-<input class=\"button\" type=\"button\" style=\"width: 35px\" value=\"code\" onclick=\"addtext('[code][/code]')\" onMouseOver=\"help('Code - preformatted text: [code]\$var = foobah;[/code]')\" onMouseOut=\"help('')\">
+<input class='button' type='button' style='font-weight:bold; width: 35px' value='b' onclick='addtext('[b][/b]')' onMouseOver='help('Bold text: [b]This text will be bold[/b]')' onMouseOut='help('')'>
+<input class='button' type='button' style='font-style:italic; width: 35px' value='i' onclick='addtext('[i][/i]')' onMouseOver='help('Italic text: [i]This text will be italicised[/i]')' onMouseOut='help('')'>
+<input class='button' type='button' style='text-decoration: underline; width: 35px' value='u' onclick='addtext('[u][/u]')' onMouseOver='help('Underline text: [u]This text will be underlined[/u]')' onMouseOut='help('')'>
+<input class='button' type='button' style='width: 35px' value='img' onclick='addtext('[img][/img]')' onMouseOver='help('Insert image: [img]mypicture.jpg[/img]')' onMouseOut='help('')'>
+<input class='button' type='button' style='width: 35px' value='cen' onclick='addtext('[center][/center]')' onMouseOver='help('Center align: [center]This text will be centered[/center]')' onMouseOut='help('')'>
+<input class='button' type='button' value='link' onclick='addtext('[link=hyperlink url]hyperlink text[/link]')' onMouseOver='help('Insert link: [link]http://mysite.com[/link] or [link=http://yoursite.com]Visit My Site[/link]')' onMouseOut='help('')'>
+<input class='button' type='button' style='width: 35px' value='code' onclick='addtext('[code][/code]')' onMouseOver='help('Code - preformatted text: [code]\$var = foobah;[/code]')' onMouseOut='help('')'>
 </td>
 </tr>
 
 <tr>
-<td style=\"width:20%; vertical-align:top\">".LAN_121."<br /><span class=\"smalltext\">(Type path or choose avatar)</span></td>
-<td style=\"width:80%\">
-<input class=\"tbox\" type=\"text\" name=\"image\" size=\"60\" value=\"$image\" maxlength=\"100\" />
+<td style='width:20%; vertical-align:top'>".LAN_121."<br /><span class='smalltext'>(Type path or choose avatar)</span></td>
+<td style='width:80%'>
+<input class='tbox' type='text' name='image' size='60' value='$image' maxlength='100' />
 
-<input class=\"button\" type =\"button\" style=\"\"width: 35px\"; cursor:hand\" size=\"30\" value=\"Choose avatar\" onClick=\"expandit(this)\">
-<div style=\"display:none\" style=&{head};>";
+<input class='button' type ='button' style=''width: 35px'; cursor:hand' size='30' value='Choose avatar' onClick='expandit(this)'>
+<div style='display:none' style=&{head};>";
 $avatarlist[0] = "";
 $handle=opendir("themes/shared/avatars/");
 while ($file = readdir($handle)){
@@ -184,7 +184,7 @@ while ($file = readdir($handle)){
 closedir($handle);
 
 for($c=1; $c<=(count($avatarlist)-1); $c++){
-	$text .= "<a href=\"javascript:addtext2('avatar_$c')\"><img src=\"themes/shared/avatars/".$avatarlist[$c]."\" style=\"border:0\" alt=\"\" />\n";
+	$text .= "<a href='javascript:addtext2('avatar_$c')'><img src='themes/shared/avatars/".$avatarlist[$c]."' style='border:0' alt='' />\n";
 }
 
 $text .= "<br />
@@ -193,17 +193,17 @@ $text .= "<br />
 </tr>
 
 <tr>
-<td style=\"width:20%\">".LAN_122."</td>
-<td style=\"width:80%\">
-<select name=\"user_timezone\" class=\"tbox\">\n";
+<td style='width:20%'>".LAN_122."</td>
+<td style='width:80%'>
+<select name='user_timezone' class='tbox'>\n";
 
 timezone();
 $count = 0;
 while($timezone[$count]){
 	if($timezone[$count] == $user_timezone){
-		$text .= "<option value=\"".$timezone[$count]."\" selected>(GMT".$timezone[$count].") ".$timearea[$count]."</option>\n";
+		$text .= "<option value='".$timezone[$count]."' selected>(GMT".$timezone[$count].") ".$timearea[$count]."</option>\n";
 	}else{
-		$text .= "<option value=\"".$timezone[$count]."\">(GMT".$timezone[$count].") ".$timearea[$count]."</option>\n";
+		$text .= "<option value='".$timezone[$count]."'>(GMT".$timezone[$count].") ".$timearea[$count]."</option>\n";
 	}
 	$count++;
 }
@@ -212,19 +212,19 @@ $text .= "</select>
 </td>
 </tr>
 
-<tr style=\"vertical-align:top\"> 
-<td colspan=\"2\"  style=\"text-align:center\">
+<tr style='vertical-align:top'> 
+<td colspan='2'  style='text-align:center'>
 <br />
-<input class=\"button\" type=\"submit\" name=\"updatesettings\" value=\"".LAN_154."\" />
+<input class='button' type='submit' name='updatesettings' value='".LAN_154."' />
 </td>
 </tr>
 </table>
-<input type=\"hidden\" name=\"_uid\" value=\"$_uid\">
-<input type=\"hidden\" name=\"_pw\" value=\"$user_password\">
+<input type='hidden' name='_uid' value='$_uid'>
+<input type='hidden' name='_pw' value='$user_password'>
 </form>
 <br />
 <br />
-<span class=\"smalltext\">
+<span class='smalltext'>
 ".LAN_10."
 </span>
 ";

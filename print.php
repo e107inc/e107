@@ -36,9 +36,9 @@ if($table == "news"){
 	}
 	$news_datestamp = $con -> convert_date($news_datestamp, "long");
 
-	$text = "<font style=\"font-size: 11px; color: black; font-family: tahoma, verdana, arial, helvetica; text-decoration: none\">
-	<div style=\"text-align:center\">
-	<img src=\"themes/shared/logo.png\" alt=\"Logo\" />
+	$text = "<font style='font-size: 11px; color: black; font-family: tahoma, verdana, arial, helvetica; text-decoration: none'>
+	<div style='text-align:center'>
+	<img src='themes/shared/logo.png' alt='Logo' />
 	</div>
 	<hr />
 	<br />
@@ -68,9 +68,9 @@ if($table == "news"){
 	$sql -> db_Select("admin", "*", "admin_id='$content_author' ");
 	list($a_id, $a_name) = $sql-> db_Fetch();
 	$content_datestamp = $con -> convert_date($content_datestamp, "long");
-	$text = "<font style=\"FONT-SIZE: 11px; COLOR: black; FONT-FAMILY: Tahoma, Verdana, Arial, Helvetica; TEXT-DECORATION: none\">
-	<div style=\"text-align:center\">
-	<img src=\"themes/shared/logo.png\" alt=\"Logo\" />
+	$text = "<font style='FONT-SIZE: 11px; COLOR: black; FONT-FAMILY: Tahoma, Verdana, Arial, Helvetica; TEXT-DECORATION: none'>
+	<div style='text-align:center'>
+	<img src='themes/shared/logo.png' alt='Logo' />
 	</div>
 	<hr />
 	<br />

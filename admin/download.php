@@ -44,16 +44,30 @@ if($action == "from"){
 
 
 If(IsSet($_POST['submit'])){
-	$filesize = filesize($_SERVER["DOCUMENT_ROOT"].e_HTTP."files/downloads/".$_POST['download_url']);
+
+	if($_POST['download_url_external']){
+		$durl = $_POST['download_url_external'];
+		$filesize = $_POST['download_filesize_external'];
+	}else{
+		$durl = $_POST['download_url'];
+		$filesize = filesize($_SERVER["DOCUMENT_ROOT"].e_HTTP."files/downloads/".$_POST['download_url']);
+	}
+
 	$download_description = $aj -> tp($_POST['download_description']);
-	$sql -> db_Insert("download", "0, '".$_POST['download_name']."', '".$_POST['download_url']."', '".$_POST['download_author']."', '".$_POST['download_author_email']."', '".$_POST['download_author_website']."', '".$_POST['download_description']."', '".$filesize."', '0', '".$_POST['download_category']."', '".$_POST['download_active']."', '".time()."', '".$_POST['download_thumb']."', '".$_POST['download_image']."' ");
+	$sql -> db_Insert("download", "0, '".$_POST['download_name']."', '".$durl."', '".$_POST['download_author']."', '".$_POST['download_author_email']."', '".$_POST['download_author_website']."', '".$_POST['download_description']."', '".$filesize."', '0', '".$_POST['download_category']."', '".$_POST['download_active']."', '".time()."', '".$_POST['download_thumb']."', '".$_POST['download_image']."' ");
 	unset($download_name, $download_url, $download_author, $download_author_email, $download_author_website, $download_description, $download_filesize, $download_type, $download_thumb, $download_image);
 	$message = "Download added to database.";
 }
 
 If(IsSet($_POST['update'])){
-	$filesize = filesize($_SERVER["DOCUMENT_ROOT"].e_HTTP."files/downloads/".$_POST['download_url']);
-	$sql -> db_Update("download", "download_name='".$_POST['download_name']."', download_url='".$_POST['download_url']."', download_author='".$_POST['download_author']."', download_author_email='".$_POST['download_author_email']."', download_author_website='".$_POST['download_author_website']."', download_description='".$_POST['download_description']."', download_filesize='".$filesize."', download_category='".$_POST['download_category']."', download_active='".$_POST['download_active']."', download_datestamp='".time()."', download_thumb='".$_POST['download_thumb']."', download_image='".$_POST['download_image']."' WHERE download_id='".$_POST['download_id']."' ");
+	if($_POST['download_url_external']){
+		$durl = $_POST['download_url_external'];
+		$filesize = $_POST['download_filesize_external'];
+	}else{
+		$durl = $_POST['download_url'];
+		$filesize = filesize($_SERVER["DOCUMENT_ROOT"].e_HTTP."files/downloads/".$_POST['download_url']);
+	}
+	$sql -> db_Update("download", "download_name='".$_POST['download_name']."', download_url='".$durl."', download_author='".$_POST['download_author']."', download_author_email='".$_POST['download_author_email']."', download_author_website='".$_POST['download_author_website']."', download_description='".$_POST['download_description']."', download_filesize='".$filesize."', download_category='".$_POST['download_category']."', download_active='".$_POST['download_active']."', download_datestamp='".time()."', download_thumb='".$_POST['download_thumb']."', download_image='".$_POST['download_image']."' WHERE download_id='".$_POST['download_id']."' ");
 	unset($download_name, $download_url, $download_author, $download_author_email, $download_author_website, $download_description, $download_category, $download_thumb, $download_image);
 	$message = "Download updated in database.";
 }
@@ -163,6 +177,19 @@ while(IsSet($file_array[$counter])){
 	$counter++;
 }
 $text .= "</select>
+<br />
+<span class='smalltext'> enter url if external file: ";
+
+
+if(ereg("http", $download_url)){
+	$download_url_external = $download_url;
+}
+
+$text .= "<input class=\"tbox\" type=\"text\" name=\"download_url_external\" size=\"40\" value=\"$download_url_external\" maxlength=\"100\" />
+&nbsp;&nbsp;filesize: 
+<input class=\"tbox\" type=\"text\" name=\"download_filesize_external\" size=\"8\" value=\"$download_filesize\" maxlength=\"10\" />
+</span>
+
 </td>
 </tr>
 

@@ -208,24 +208,10 @@ class news{
 		$info .= "Body length: ".strlen($news_body)."b. Extended length: ".strlen($news_entended)."b.<br /><br /></div>";
 
 		if($NEWSSTYLE != ""){
-			// get values ...
-			//	{NEWSTITLE} = $news_title
-			//	{NEWSBODY} = $news_body
-			//	{NEWSICON} = $category_icon
-			//	{NEWSHEADER} = $category_icon
-			//	{NEWSCATEGORY} = $category_name
-			//	{NEWSAUTHOR} = $a_name
-			//	{NEWSDATE} = $datestamp
-			//	{NEWSCOMMENTS} = $comment_total
-			//	{EMAILICON}
-			//	{PRINTICON}
-			//	{ENTENDEDSTRING}
-
-//http://e107.org/user.php?id.1233
 
 			$news_category = "<a href='".e_SELF."?cat.".$category_id."'>".$category_name."</a>";
 			$news_author = "<a href='user.php?id.".$a_id."'>".$a_name."</a>";
-			$etext = " <a href=\"email.php?".$news_id."\"><img src=\"".e_BASE."themes/shared/generic/friend.gif\" style=\"border:0\" alt=\"email to someone\" /></a>";
+			$etext = " <a href=\"email.php?news.".$news_id."\"><img src=\"".e_BASE."themes/shared/generic/friend.gif\" style=\"border:0\" alt=\"email to someone\" /></a>";
 			$ptext = " <a href=\"print.php?news.".$news_id."\"><img src=\"".e_BASE."themes/shared/generic/printer.gif\" style=\"border:0\" alt=\"printer friendly\" /></a>";
 
 			if(ADMIN && getperms("H")){

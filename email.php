@@ -15,8 +15,11 @@
 require_once("class2.php");
 require_once(HEADERF);
 
-$id = e_QUERY;
-if($id == ""){ header("location:".e_HTTP."index.php"); }
+$qs = explode(".", e_QUERY);
+if($qs[0] == ""){ header("location:".e_HTTP."index.php"); }
+$table = $qs[0];
+$id = $qs[1];
+$type = ($table == "news" ? "news item" : "article");
 
 if(IsSet($_POST['emailsubmit'])){
 	if(!preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]+@([-0-9A-Z]+\.)+([0-9A-Z]){2,4}$/i', $_POST['email_send'])){
@@ -32,10 +35,16 @@ if(IsSet($_POST['emailsubmit'])){
 	 }
 	$ip = getip();
 	$message .= "\n\nIP address of sender: ".$ip."\n\n";
-	$sql -> db_Select("news", "*", "news_id='$id' ");
-	list($news_id, $news_title, $news_body, $news_extended, $news_datestamp, $news_author, $news_source, $news_url, $news_category, $news_allow_comments) = $sql-> db_Fetch();
-	$message .= $_POST['comment']."\n\n".$news_title."\n".$news_body."\n".$news_extended."\n\n";
 
+	if($table == "news"){
+		$sql -> db_Select("news", "*", "news_id='$id' ");
+		list($news_id, $news_title, $news_body, $news_extended, $news_datestamp, $news_author, $news_source, $news_url, $news_category, $news_allow_comments) = $sql-> db_Fetch();
+		$message .= $_POST['comment']."\n\n".$news_title."\n".$news_body."\n".$news_extended."\n\n";
+	}else{
+		$sql -> db_Select("content", "*", "content_id='$id' ");
+		$row = $sql -> db_Fetch(); extract($row);
+		$message .= $_POST['comment']."\n\n".$content_heading."\n".$content_subheading."\n".$content_content."\n\n";
+	}
 	if($error == ""){
 		if(file_exists(e_BASE."plugins/smtp.php")){
 			require_once(e_BASE."plugins/smtp.php");
@@ -92,7 +101,7 @@ $text .= "</textarea>
 </table>
 </form>";
 
-$ns -> tablerender("Email news item to someone", $text);
+$ns -> tablerender("Email $type to a friend", $text);
 
 
 

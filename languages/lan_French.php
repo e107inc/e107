@@ -12,10 +12,6 @@
 |        GNU General Public License (http://gnu.org).                                |
 +---------------------------------------------------------------+
 */
-
-//articles.php/comment.php
-//define(LAN_0, "[blocked by admin]");
-
  define(LAN_0, "[bloqué par l'admin]");
 
 //define(LAN_1, "Unblock");
@@ -772,5 +768,25 @@ define(LAN_326, "Click here to return to the forum");
 define(LAN_327, "Review");
 define(LAN_328, "Arrangements");   // "Settings" as used in default-header.
 define(LAN_329, "Auto Login"); // Auto Login
+
+define("LAN_354", "(Réservé)");
+define("LAN_355", "Encore aucun téléchargement dans cette catégorie");
+define("LAN_356", "Taille totale des fichiers: ");
+define("LAN_357", "Fichiers téléchargés: ");
+define("LAN_358", "Fichiers disponibles: ");
+define("LAN_359", "Evaluer ce fichier");
+define("LAN_360", "Merci d'avoir donné une note !");
+define("LAN_361", "téléchargements de");
+define("LAN_362", "fichiers");
+define("LAN_363", "Téléchargements");
+define("LAN_364", "Trier par");
+define("LAN_365", "Date");
+define("LAN_366", "Taille de fichier");
+define("LAN_367", "Télécharger");
+define("LAN_368", "Aucun téléchargement possible pour le moment, veuillez réessayer plus tard");
+define("LAN_369", "Non classé actuellement");
+define("LAN_370", "Classement: ");
+
+
 
 ?>

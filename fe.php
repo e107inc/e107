@@ -1,5 +1,5 @@
 <?php
-echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
+echo "<?xml version='1.0' encoding='iso-8859-1' ?>\n";
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -14,7 +14,7 @@ echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
 <div style="text-align:center">
 <table style="width:100%" cellspacing="0" cellpadding="0">
 <tr>
-<td style="width:66%; background-color:#E2E2E2; text-align:left\">
+<td style="width:66%; background-color:#E2E2E2; text-align:left'>
 <img src="themes/shared/logo.png" alt="Logo" />
 </td>
 <td style="background-color:#E2E2E2; text-align:right; vertical-align:bottom" class="smalltext">

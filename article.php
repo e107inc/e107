@@ -178,6 +178,15 @@ if($totalpages > 1){
 	}else{
 		$text .= $aj ->tpa($content_content);
 	}
+
+	if($text= str_replace("{EMAILPRINT}", "", $text)){ 
+		
+		$text .= "<div style='text-align:right'>
+		<a href='email.php?".$id."'><img src='".e_BASE."themes/shared/generic/friend.gif' style='border:0' alt='email to someone' /></a>
+		<a href='print.php?content.".$id."'><img src='".e_BASE."themes/shared/generic/printer.gif' style='border:0' alt='printer friendly' /></a>
+		</div>";
+	}
+
 	$ns -> tablerender($main_content_heading, $text);
 }
 

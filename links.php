@@ -73,7 +73,7 @@ while(list($link_category_id, $link_category_name, $link_category_description) =
 			<td style='text-align: right; vertical-align:top; width:10%'>
 			<span class='smalltext'>[ ".LAN_88." $link_refer ]</span></td></tr>";
 			if(ADMIN == TRUE && getperms("I")){
-				$text .= "<tr><td colspan='3' class='smalltext'>".LAN_89."[ <a href='admin/links.php?edit.".$link_id."'>".LAN_68."</a> ] [ <a href='admin/links.php?delete.".$link_id."'>".LAN_69."</a> ][ <a href='admin/links.php?add.".$link_category."'>".LAN_90."</a> ][ <a href='admin/link_category.php'>".LAN_91."</a> ]</td></tr>";
+				$text .= "<tr><td colspan='3' class='smalltext'>".LAN_89."[ <a href='".e_ADMIN."links.php?edit.".$link_id."'>".LAN_68."</a> ] [ <a href='".e_ADMIN."links.php?delete.".$link_id."'>".LAN_69."</a> ][ <a href='".e_ADMIN."links.php?add.".$link_category."'>".LAN_90."</a> ][ <a href='".e_ADMIN."link_category.php'>".LAN_91."</a> ]</td></tr>";
 			}
 			$text .= "</table>";
 		}

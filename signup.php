@@ -86,13 +86,13 @@ if(IsSet($_POST['register'])){
 			}
 			require_once(HEADERF);
 			$text = "This stage of registation is complete, you will be receiving a confirmation email containing your login details, please follow the link in the email to complete the signup process and activate your account.";
-			$ns -> tablerender("<div style=\"text-align:center\">Thankyou!</div>", $text);
+			$ns -> tablerender("<div style='text-align:center'>Thankyou!</div>", $text);
 			require_once(FOOTERF);
 			exit;
 		}else{
 			require_once(HEADERF);
 			$sql -> db_Insert("user", "0, '".$username."', '".md5($_POST['password1'])."', '$key', '".$_POST['email']."', 	'".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$_POST['birthday']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '' ");
-			$ns -> tablerender("<div style=\"text-align:center\">Thankyou!</div>", LAN_107);
+			$ns -> tablerender("<div style='text-align:center'>Thankyou!</div>", LAN_107);
 			require_once(FOOTERF);
 			exit;
 		}
@@ -102,7 +102,7 @@ if(IsSet($_POST['register'])){
 require_once(HEADERF);
 
 if($error != ""){
-	$ns -> tablerender("<div style=\"text-align:center\">".LAN_20."</div>", $error);
+	$ns -> tablerender("<div style='text-align:center'>".LAN_20."</div>", $error);
 	require_once(FOOTERF);
 	exit;
 }
@@ -113,15 +113,15 @@ if($pref['use_coppa'][1] == 1 && !ereg("stage", $qs)){
 	if(eregi("stage", LAN_109)){
 		$text .= LAN_109."</b></div>";
 	}else{
-		$text .= LAN_109."<form method=\"post\" action=\"signup.php?stage1\">
-	<input type=\"radio\" name=\"coppa\" value=\"0\" checked> No
-	<input type=\"radio\" name=\"coppa\" value=\"1\"> Yes<br>
-	<input class=\"button\" type=\"submit\" name=\"newver\" value=\"".LAN_156."\" />
+		$text .= LAN_109."<form method='post' action='signup.php?stage1'>
+	<input type='radio' name='coppa' value='0' checked> No
+	<input type='radio' name='coppa' value='1'> Yes<br>
+	<input class='button' type='submit' name='newver' value='".LAN_156."' />
 	</form>
 	</div>";
 	}
 
-	$ns -> tablerender("<div style=\"text-align:center\">".LAN_110."</div>", $text);
+	$ns -> tablerender("<div style='text-align:center'>".LAN_110."</div>", $text);
 	require_once(FOOTERF);
 	exit;
 }
@@ -134,7 +134,7 @@ if(!eregi("stage", LAN_109)){
 	if(IsSet($_POST['newver'])){
 		if(!$_POST['coppa']){
 			$text = "Unable to proceed.";
-			$ns -> tablerender("<div style=\"text-align:center\">Registration failed</div>", "<div style=\"text-align:center\">".$text."</div>");
+			$ns -> tablerender("<div style='text-align:center'>Registration failed</div>", "<div style='text-align:center'>".$text."</div>");
 			require_once(FOOTERF);
 			exit;
 		}
@@ -144,57 +144,57 @@ $text .= "<div style='text-align:center'>";
 if($pref['user_reg_veri'][1]){
 	$text .=	LAN_309."<br /><br />";
 }
-$text .= "<form method=\"post\" action=\"".e_SELF."\"  name=\"signupform\">\n
-<table style=\"width:60%\">
+$text .= "<form method='post' action='".e_SELF."'  name='signupform'>\n
+<table style='width:60%'>
 <tr>
-<td style=\"width:30%\">".LAN_7."</td>
-<td style=\"width:70%\">
-<input class=\"tbox\" type=\"text\" name=\"name\" size=\"40\" value=\"$name\" maxlength=\"100\" />
+<td style='width:30%'>".LAN_7."</td>
+<td style='width:70%'>
+<input class='tbox' type='text' name='name' size='40' value='$name' maxlength='100' />
 </td>
 </tr>
 
 <tr>
-<td style=\"width:30%\">".LAN_308."</td>
-<td style=\"width:70%\">
-<input class=\"tbox\" type=\"text\" name=\"realname\" size=\"40\" value=\"$realname\" maxlength=\"100\" />
+<td style='width:30%'>".LAN_308."</td>
+<td style='width:70%'>
+<input class='tbox' type='text' name='realname' size='40' value='$realname' maxlength='100' />
 </td>
 </tr>
 
 <tr>
-<td style=\"width:30%\">".LAN_17."</td>
-<td style=\"width:70%\">
-<input class=\"tbox\" type=\"password\" name=\"password1\" size=\"40\" value=\"\" maxlength=\"20\" /> (case sensitive)
+<td style='width:30%'>".LAN_17."</td>
+<td style='width:70%'>
+<input class='tbox' type='password' name='password1' size='40' value='' maxlength='20' /> (case sensitive)
 </td>
 </tr>
 
 <tr>
-<td style=\"width:30%\">".LAN_111."</td>
-<td style=\"width:70%\">
-<input class=\"tbox\" type=\"password\" name=\"password2\" size=\"40\" value=\"\" maxlength=\"20\" /> (case sensitive)
+<td style='width:30%'>".LAN_111."</td>
+<td style='width:70%'>
+<input class='tbox' type='password' name='password2' size='40' value='' maxlength='20' /> (case sensitive)
 </td>
 </tr>
 
 <tr>
-<td style=\"width:30%\">".LAN_112."</td>
-<td style=\"width:70%\">
-<input class=\"tbox\" type=\"text\" name=\"email\" size=\"60\" value=\"$email\" maxlength=\"100\" />
+<td style='width:30%'>".LAN_112."</td>
+<td style='width:70%'>
+<input class='tbox' type='text' name='email' size='60' value='$email' maxlength='100' />
 </td>
 </tr>
 
 <tr>
-<td style=\"width:30%\">".LAN_113."</td>
-<td style=\"width:70%\">";
+<td style='width:30%'>".LAN_113."</td>
+<td style='width:70%'>";
 if($hide_email == 1){
-	$text .= "<input type=\"checkbox\" name=\"hideemail\" value=\"1\"  checked>";
+	$text .= "<input type='checkbox' name='hideemail' value='1'  checked>";
 }else{
-	$text .= "<input type=\"checkbox\" name=\"hideemail\" value=\"1\">";
+	$text .= "<input type='checkbox' name='hideemail' value='1'>";
 }
 
 $text .= "</tr>
-<tr style=\"vertical-align:top\"> 
-<td colspan=\"2\"  style=\"text-align:center\">
+<tr style='vertical-align:top'> 
+<td colspan='2'  style='text-align:center'>
 <br />
-<input class=\"button\" type=\"submit\" name=\"register\" value=\"".LAN_123."\" />
+<input class='button' type='submit' name='register' value='".LAN_123."' />
 <br />
 </td>
 </tr>

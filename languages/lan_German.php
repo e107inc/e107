@@ -305,4 +305,31 @@ define(LAN_328, "Nur für Mitglieder");   // "Settings" as used in default-header
 define(LAN_328, "Zeit");
 define(LAN_329, "Zitat des Tages");
 
+
+define("LAN_354", "(Restricted)");
+define("LAN_355", "Noch keine Downloads in dieser Kategorie");
+define("LAN_356", "Größe aller Dateien: ");
+define("LAN_357", "Heruntergeladene Dateien: ");
+define("LAN_358", "Verfügbare Dateien: ");
+define("LAN_359", "Download bewerten");
+define("LAN_360", "Vielen Dank für ihre Bewertung");
+define("LAN_361", "Dateien von"); (as in "5 downloads from 8 files")
+define("LAN_362", "Dateien");
+define("LAN_363", "Downloads");
+define("LAN_364", "Ordnen nach");
+define("LAN_365", "Datum");
+define("LAN_366", "Größe");
+define("LAN_367", "Download");
+define("LAN_368", "Noch keine Downloads.");
+define("LAN_369", "Noch nicht bewertet");
+define("LAN_370", "Wertung: ");
+
+
+
+
+
+
+
+
+
 ?>

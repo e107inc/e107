@@ -305,4 +305,32 @@ define(LAN_324, "Sinu s&otilde;num on edukalt postitatud.");
 define(LAN_325, "Oma s&otilde;numi vaatamiseks kliki siia");
 define(LAN_326, "Foorumisse tagasiminekuks kliki siia");
 define(LAN_327, "&Uuml;levaade");
+
+define("LAN_328", "Settings");   // "Settings" as used in default-header.
+define("LAN_329", "Auto Login"); // Auto Login
+
+define("LAN_350", "Set Theme");
+define("LAN_351", "Select Theme");
+define("LAN_352", "Set Language");
+define("LAN_353", "Select Interface Language");
+define("LAN_354", "(Restricted)");
+define("LAN_355", "No downloads in this category yet");
+define("LAN_356", "Total size of files: ");
+define("LAN_357", "Files downloaded: ");
+define("LAN_358", "Files available: ");
+define("LAN_359", "Rate this download");
+define("LAN_360", "thanks for rating");
+define("LAN_361", "downloads from");
+define("LAN_362", "files");
+define("LAN_363", "Downloads");
+define("LAN_364", "Sort by");
+define("LAN_365", "Date");
+define("LAN_366", "Filesize");
+define("LAN_367", "Download");
+define("LAN_368", "No downloads yet, please check back soon");
+
+define("LAN_369", "Ei ole hinnatud");
+define("LAN_370", "Hinne: ");
+
+
 ?>

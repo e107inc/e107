@@ -567,6 +567,12 @@ $banner_table = "CREATE TABLE ".$mySQLprefix."banner (
 ) TYPE=MyISAM;";
 if(!mysql_query($banner_table)){	$error .= "There was a problem creating the <b>banner</b> mySQL table ...<br />"; }
 
+$cache_table = "CREATE TABLE ".$mySQLprefix."cache (
+  cache_url varchar(200) NOT NULL default '',
+  cache_datestamp int(10) unsigned NOT NULL default '0',
+  cache_data longtext NOT NULL
+) TYPE=MyISAM;";
+if(!mysql_query($cache_table)){	$error .= "There was a problem creating the <b>cache</b> mySQL table ...<br />"; }
 
 $chatbox_table = "CREATE TABLE ".$mySQLprefix."chatbox (
   cb_id int(10) unsigned NOT NULL auto_increment,
@@ -956,8 +962,8 @@ mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Stats', 'stats.php', 
 
 $e107['e107_author'] = "Steve Dunstan (jalist)";
 $e107['e107_url'] = "http://e107.org";
-$e107['e107_version'] = "v5.4";
-$e107['e107_build'] = "beta6";
+$e107['e107_version'] = "v0.547beta";
+$e107['e107_build'] = "";
 $e107['e107_datestamp'] = time();
 $tmp = serialize($e107);
 mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('e107', '$tmp') ");

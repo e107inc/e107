@@ -115,16 +115,26 @@ $text .= "</td>
 </tr>
 
 <tr>
-<td style=\"width:20%\" class=\"forumheader3\">Allow comments?:</td>
-<td style=\"width:80%\" class=\"forumheader3\">";
-
-
+<td colspan=\"2\" class=\"forumheader3\">Allow comments?:&nbsp;&nbsp;";
 if(!$_POST['content_comment']){
 	$text .= "On: <input type=\"radio\" name=\"content_comment\" value=\"1\">
 	Off: <input type=\"radio\" name=\"content_comment\" value=\"0\" checked>";
 }else{
 	$text .= "On: <input type=\"radio\" name=\"content_comment\" value=\"1\" checked>
 	Off: <input type=\"radio\" name=\"content_comment\" value=\"0\">";
+}
+
+$text .= "</td>
+</tr>
+<tr>
+<td colspan=\"2\" class=\"forumheader3\">Add email/print icons?:&nbsp;&nbsp;
+";
+if(!eregi("EMAILPRINT", $_POST['data']) || !$_POST['add_icons']){
+	$text .= "Yes: <input type=\"radio\" name=\"add_icons\" value=\"1\">
+	No: <input type=\"radio\" name=\"add_icons\" value=\"0\" checked>";
+}else{
+	$text .= "Yes: <input type=\"radio\" name=\"add_icons\" value=\"1\" checked>
+	No: <input type=\"radio\" name=\"add_icons\" value=\"0\">";
 }
 
 $text .= "</td></tr>
@@ -176,6 +186,12 @@ function submit_article(){
 	if($_POST['data']){
 		$sql = new db;
 		article_pre_cleanup();
+		if($_POST['add_icons']){
+			if(!eregi("EMAILPRINT", $_POST['data'])){
+				echo "<b>DEBUG</b> 766<br />";
+				$_POST['data'] .= "{EMAILPRINT}";
+			}
+		}
 		$sql -> db_Insert("content", "0, '".$_POST['content_heading']."', '".$_POST['content_subheading']."', '".$_POST['data']."', '0', '".time()."', '".ADMINID."', '".$_POST['content_comment']."', '".$_POST['content_summary']."', '0' ");
 		unset($_POST['content_heading'], $_POST['content_subheading'], $_POST['data'], $_POST['content_comment'], $_POST['content_summary']);
 		return "Article entered into database.";		
@@ -196,6 +212,11 @@ function update_article(){
 	if($_POST['content_heading'] && $_POST['data']){
 		$sql = new db;
 		article_pre_cleanup();
+		if($_POST['add_icons']){
+			if(!eregi("EMAILPRINT", $_POST['data'])){
+				$_POST['data'] .= "{EMAILPRINT}";
+			}
+		}
 		if(!$content_id){ $content_id = $_POST['content_id']; }
 		$sql -> db_Update("content", " content_heading='".$_POST['content_heading']."', content_subheading='".$_POST['content_subheading']."', content_content='".$_POST['data']."', content_comment='".$_POST['content_comment']."', content_type='".$_POST['content_type']."', content_summary='".$_POST['content_summary']."' WHERE content_id='".$_POST['content_id']."' ");
 		unset($_POST['content_heading'], $_POST['content_subheading'], $_POST['data'], $_POST['content_comment'], $_POST['content_summary'], $_POST['edit']);
@@ -241,6 +262,8 @@ function article_edit(){
 	$_POST['content_subheading'] = $aj -> editparse($_POST['content_subheading']);
 	$_POST['data'] = $aj -> editparse($_POST['data']);
 	$_POST['content_summary'] = $aj -> editparse($_POST['content_summary']);
+	if($_POST['data'] = str_replace("{EMAILPRINT}", "", $_POST['data'])){ $_POST['add_icons'] = 1; }
+
 }
 function article_preserve_html($string){
 	$search = array("#<#", "#>#"); 

@@ -22,12 +22,12 @@ $poll_total = $sql -> db_Count("poll");
 $sql -> db_Select("poll", "*", "poll_active='0' ORDER BY poll_datestamp DESC LIMIT $from, 10");
 //$poll_total = $sql -> db_Rows();
 
-$ns -> tablerender("<div style=\"text-align:center\">".LAN_92."</div>", "");
+$ns -> tablerender("<div style='text-align:center'>".LAN_92."</div>", "");
 
 echo "<br />";
 
 if($poll_total == 0){
-	$text = "<div style=\"text-align:center\">".LAN_93."</div>";
+	$text = "<div style='text-align:center'>".LAN_93."</div>";
 	$ns -> tablerender("", $text);
 	require_once(FOOTERF);
 	exit;
@@ -50,11 +50,11 @@ $sql2 -> db_Select("user", "*",  "user_id='$poll_admin_id' ");
 $row = $sql2 -> db_Fetch();
 extract($row);
 
-$text = "<table style=\"width:95%\">
+$text = "<table style='width:95%'>
 <tr>
-<td colspan=\"2\" class=\"mediumtext\" style=\"text-align:center\">
+<td colspan='2' class='mediumtext' style='text-align:center'>
 <b>".stripslashes($poll_title)."</b>
-<div class=\"smalltext\">".LAN_94." <a href=\"mailto:$user_email\">".$user_name."</a>. Active from ".$datestamp." to ".$end_datestamp.". ".LAN_95." $p_total</div>
+<div class='smalltext'>".LAN_94." <a href='mailto:$user_email'>".$user_name."</a>. Active from ".$datestamp." to ".$end_datestamp.". ".LAN_95." $p_total</div>
 <br />
 
 </td>
@@ -62,11 +62,11 @@ $text = "<table style=\"width:95%\">
 $c = 1;
 while($poll[$c]){
 	$text .= "<tr> 
-	<td style=\"width:40% \"class=\"mediumtext\">
+	<td style='width:40% 'class='mediumtext'>
 	<b>".stripslashes($poll[$c])."</b>
 	</td>
-	<td class=\"smalltext\">
-	<img src=\"".THEME."/images/bar.jpg\" height=\"12\" width=\"";
+	<td class='smalltext'>
+	<img src='".THEME."/images/bar.jpg' height='12' width='";
 				
 	if(($percen[$c]*3) > 180){
 		$perc = 180;
@@ -74,7 +74,7 @@ while($poll[$c]){
 		$perc = ($percen[$c]*3);
 	}			
 	
-	$text .= $perc."\" border=\"1\"> ".$percen[$c]."% [Votes: ".$votes[$c]."]</div>
+	$text .= $perc."' border='1'> ".$percen[$c]."% [Votes: ".$votes[$c]."]</div>
 	</td>
 	</tr>";
 	$c++;

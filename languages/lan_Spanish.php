@@ -571,8 +571,23 @@ define(LAN_327, "Review");
 define(LAN_328, "Settings");   // "Settings" as used in default-header.
 define(LAN_329, "Auto Login"); // Auto Login
 
-
-
+define("LAN_354", "(Restringida)");
+define("LAN_355", "Sin descargas en esta categoría");
+define("LAN_356", "Tamaño total de ficheros: ");
+define("LAN_357", "Ficheros descargados: ");
+define("LAN_358", "Ficheros disponibles: ");
+define("LAN_359", "Puntua esta descarga");
+define("LAN_360", "gracias por puntuar");
+define("LAN_361", "descargas de"); (como en "5 descargas de 8 ficheros")
+define("LAN_362", "ficheros");
+define("LAN_363", "Descargas");
+define("LAN_364", "Ordenar por");
+define("LAN_365", "Fecha");
+define("LAN_366", "Tamaño");
+define("LAN_367", "Descarga");
+define("LAN_368", "Sin descargas aún, por favor, prueba mas tarde");
+define("LAN_369", "Sin puntuar todavía");
+define("LAN_370", "Puntuación: ");
 
 
 ?>

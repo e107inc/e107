@@ -2,7 +2,7 @@
 /*
 +---------------------------------------------------------------+
 |	e107 website system
-|	/admin/prefs.php
+|	//prefs.php
 |
 |	©Steve Dunstan 2001-2002
 |	http://e107.org
@@ -67,7 +67,7 @@ $user_reg_veri = $pref['user_reg_veri'][1];
 require_once("auth.php");
 
 if(IsSet($message)){
-	$ns -> tablerender("", "<div style=\"text-align:center\"><b>".$message."</b></div>");
+	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
 $handle=opendir(e_BASE."themes/");
@@ -87,81 +87,81 @@ while ($file = readdir($handle)){
 closedir($handle);
 
 
-$text = "<div style=\"text-align:center\">
-<form method=\"post\" action=\"".e_SELF."\">
-<table style=\"width:95%\" class=\"fborder\" cellspacing=\"1\" cellpadding=\"0\">
+$text = "<div style='text-align:center'>
+<form method='post' action='".e_SELF."'>
+<table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
 <tr>
 
-<td colspan=\"2\">
-<div class=\"caption\">Site Information</div>
+<td colspan='2'>
+<div class='caption'>Site Information</div>
 </td>
 </tr><tr>
 
-<td style=\"width:50%\" class=\"forumheader3\">Site Name: </td>
-<td style=\"width:50%; text-align:right\" class=\"forumheader3\">
-<input class=\"tbox\" type=\"text\" name=\"sitename\" size=\"50\" value=\"".SITENAME."\" maxlength=\"100\" />
+<td style='width:50%' class='forumheader3'>Site Name: </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<input class='tbox' type='text' name='sitename' size='50' value='".SITENAME."' maxlength='100' />
 </td>
 </tr>
 
 <tr>
-<td style=\"width:50%\" class=\"forumheader3\">Site URL: </td>
-<td style=\"width:50%; text-align:right\" class=\"forumheader3\">
-<input class=\"tbox\" type=\"text\" name=\"siteurl\" size=\"50\" value=\"".SITEURL."\" maxlength=\"150\" />
+<td style='width:50%' class='forumheader3'>Site URL: </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<input class='tbox' type='text' name='siteurl' size='50' value='".SITEURL."' maxlength='150' />
 </td>
 </tr>
 
 
 <tr>
-<td style=\"width:50%\" class=\"forumheader3\">Site Link Button: </td>
-<td style=\"width:50%; text-align:right\" class=\"forumheader3\">
-<input class=\"tbox\" type=\"text\" name=\"sitebutton\" size=\"50\" value=\"".SITEBUTTON."\" maxlength=\"150\" />
+<td style='width:50%' class='forumheader3'>Site Link Button: </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<input class='tbox' type='text' name='sitebutton' size='50' value='".SITEBUTTON."' maxlength='150' />
 </td>
 </tr>
 <tr>
 
-<td style=\"width:50%\" class=\"forumheader3\">Site Tagline: </td>
-<td style=\"width:50%; text-align:right\" class=\"forumheader3\">
-<textarea class=\"tbox\" name=\"sitetag\" cols=\"59\" rows=\"3\">".SITETAG."</textarea>
+<td style='width:50%' class='forumheader3'>Site Tagline: </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<textarea class='tbox' name='sitetag' cols='59' rows='3'>".SITETAG."</textarea>
 </td>
 </tr>
 <tr>
 
-<td style=\"width:50%\" class=\"forumheader3\">Site Description: </td>
-<td style=\"width:50%; text-align:right\" class=\"forumheader3\">
-<textarea class=\"tbox\" name=\"sitedescription\" cols=\"59\" rows=\"3\">".SITEDESCRIPTION."</textarea>
+<td style='width:50%' class='forumheader3'>Site Description: </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<textarea class='tbox' name='sitedescription' cols='59' rows='3'>".SITEDESCRIPTION."</textarea>
 </td>
 </tr>
 <tr>
 
-<td style=\"width:50%\" class=\"forumheader3\">Main site admin: </td>
-<td style=\"width:50%; text-align:right\" class=\"forumheader3\">
-<input class=\"tbox\" type=\"text\" name=\"siteadmin\" size=\"50\" value=\"".SITEADMIN."\" maxlength=\"100\" />
+<td style='width:50%' class='forumheader3'>Main site admin: </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<input class='tbox' type='text' name='siteadmin' size='50' value='".SITEADMIN."' maxlength='100' />
 </td>
 </tr>
 <tr>
 
-<td style=\"width:50%\" class=\"forumheader3\">Main site admin email: </td>
-<td style=\"width:50%; text-align:right\" class=\"forumheader3\">
-<input class=\"tbox\" type=\"text\" name=\"siteadminemail\" size=\"50\" value=\"".SITEADMINEMAIL."\" maxlength=\"100\" />
+<td style='width:50%' class='forumheader3'>Main site admin email: </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<input class='tbox' type='text' name='siteadminemail' size='50' value='".SITEADMINEMAIL."' maxlength='100' />
 </td>
 </tr>
 <tr>
 
-<td style=\"width:50%\" class=\"forumheader3\">Site Disclaimer: </td>
-<td style=\"width:50%; text-align:right\" class=\"forumheader3\">
-<textarea class=\"tbox\" name=\"sitedisclaimer\" cols=\"59\" rows=\"3\">".SITEDISCLAIMER."</textarea>
+<td style='width:50%' class='forumheader3'>Site Disclaimer: </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<textarea class='tbox' name='sitedisclaimer' cols='59' rows='3'>".SITEDISCLAIMER."</textarea>
 </td>
 </tr>
 
 <tr>
-<td colspan=\"2\">
-<div class=\"border\"><div class=\"caption\">Theme</div></div>
+<td colspan='2'>
+<div class='border'><div class='caption'>Theme</div></div>
 </td>
 </tr><tr>
 
-<td style=\"width:50%\" class=\"forumheader3\">Site Theme: </td>
-<td style=\"width:50%; text-align:right\" class=\"forumheader3\">
-<select name=\"sitetheme\" class=\"tbox\">\n";
+<td style='width:50%' class='forumheader3'>Site Theme: </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<select name='sitetheme' class='tbox'>\n";
 $counter = 0;
 while(IsSet($dirlist[$counter])){
 	if($dirlist[$counter] == $pref['sitetheme'][1]){
@@ -175,15 +175,15 @@ $text .= "</select>
 </td>
 </tr>
 
-<td colspan=\"2\">
-<div class=\"border\"><div class=\"caption\">Language</div></div>
+<td colspan='2'>
+<div class='border'><div class='caption'>Language</div></div>
 </td>
 </tr>
 <tr>
 
-<td style=\"width:50%\" class=\"forumheader3\">Site Language: </td>
-<td style=\"width:50%; text-align:right\" class=\"forumheader3\">
-<select name=\"sitelanguage\" class=\"tbox\">\n";
+<td style='width:50%' class='forumheader3'>Site Language: </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<select name='sitelanguage' class='tbox'>\n";
 $counter = 0;
 $sellan = eregi_replace("lan_*.php", "", $pref['sitelanguage'][1]);
 while(IsSet($lanlist[$counter])){
@@ -199,14 +199,14 @@ $text .= "</select>
 </tr>
 
 <tr>
-<td colspan=\"2\">
-<div class=\"border\"><div class=\"caption\">News options</div></div>
+<td colspan='2'>
+<div class='border'><div class='caption'>News options</div></div>
 </td>
 </tr><tr>
 
-<td style=\"width:50%\" class=\"forumheader3\">News posts to display per page?: </td>
-<td style=\"width:50%; text-align:right\" class=\"forumheader3\">
-<select name=\"newsposts\" class=\"tbox\">";
+<td style='width:50%' class='forumheader3'>News posts to display per page?: </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<select name='newsposts' class='tbox'>";
 if(ITEMVIEW == 5){
 	$text .= "<option selected>5</option>\n";
 }else{
@@ -238,8 +238,8 @@ $text .= "</select>
 </tr>
 
 <tr>
-<td colspan=\"2\">
-<div class=\"border\"><div class=\"caption\">Date display options</div></div>
+<td colspan='2'>
+<div class='border'><div class='caption'>Date display options</div></div>
 </td>
 </tr>
 <tr>";
@@ -250,39 +250,39 @@ $date2 = $ga -> convert_date(time(), "long");
 $date3 = $ga -> convert_date(time(), "forum");
 
 
-$text .= "<td style=\"width:50%\" class=\"forumheader3\">Short date format: </td>
-<td style=\"width:50%; text-align:right\" class=\"forumheader3\">
-<input class=\"tbox\" type=\"text\" name=\"shortdate\" size=\"40\" value=\"$shortdate\" maxlength=\"50\" /> 
+$text .= "<td style='width:50%' class='forumheader3'>Short date format: </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<input class='tbox' type='text' name='shortdate' size='40' value='$shortdate' maxlength='50' /> 
 <br />example: $date1
 </td>
 </tr>
 
 <tr>
-<td style=\"width:50%\" class=\"forumheader3\">Long date format: </td>
-<td style=\"width:50%; text-align:right\" class=\"forumheader3\">
-<input class=\"tbox\" type=\"text\" name=\"longdate\" size=\"40\" value=\"$longdate\" maxlength=\"50\" /> 
+<td style='width:50%' class='forumheader3'>Long date format: </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<input class='tbox' type='text' name='longdate' size='40' value='$longdate' maxlength='50' /> 
 <br />example: $date2
 </td>
 </tr>
 
 <tr>
-<td style=\"width:50%\" class=\"forumheader3\">Forum date format: </td>
-<td style=\"width:50%; text-align:right\" class=\"forumheader3\">
-<input class=\"tbox\" type=\"text\" name=\"forumdate\" size=\"40\" value=\"$forumdate\" maxlength=\"50\" /> 
+<td style='width:50%' class='forumheader3'>Forum date format: </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<input class='tbox' type='text' name='forumdate' size='40' value='$forumdate' maxlength='50' /> 
 <br />example: $date3
 </td>
 </tr>
 
 <tr>
-<td colspan=\"2\" style=\"text-align:center\" class=\"forumheader3\">
-(For more information on date formats see the <a href=\"http://www.php.net/manual/en/function.date.php\" target=\"_blank\">date function page at php.net</a>)
+<td colspan='2' style='text-align:center' class='forumheader3'>
+(For more information on date formats see the <a href='http://www.php.net/manual/en/function.date.php' target='_blank'>date function page at php.net</a>)
 </td>
 </tr>
 
 <tr>
-<td style=\"width:50%\" class=\"forumheader3\">Time offset: </td>
-<td style=\"width:50%; text-align:right\" class=\"forumheader3\">
-<select name=\"time_offset\" class=\"tbox\">\n";
+<td style='width:50%' class='forumheader3'>Time offset: </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<select name='time_offset' class='tbox'>\n";
 $toffset = array("-12", "-11", "-10", "-9", "-8", "-7", "-6", "-5", "-4", "-3", "-2", "-1", "0", "+1", "+2", "+3", "+4", "+5", "+6", "+7", "+8", "+9", "+10", "+11", "+12", "+13");
 $counter = 0;
 while(IsSet($toffset[$counter])){
@@ -297,23 +297,23 @@ $text .= "</select>
 </td></tr>
 
 <tr>
-<td colspan=\"2\" style=\"text-align:center\" class=\"forumheader3\">
+<td colspan='2' style='text-align:center' class='forumheader3'>
 (Example, if you set this to +2, all times on your site will have two hours added to them)
 </td>
 </tr>
 
 <tr>
-<td colspan=\"2\">
-<div class=\"border\"><div class=\"caption\">User registration/posting</div></div>
+<td colspan='2'>
+<div class='border'><div class='caption'>User registration/posting</div></div>
 </td>
 </tr><tr>
 
-<td style=\"width:50%\" class=\"forumheader3\">Activate user registration system?: </td>
-<td style=\"width:50%; text-align:right\" class=\"forumheader3\">";
+<td style='width:50%' class='forumheader3'>Activate user registration system?: </td>
+<td style='width:50%; text-align:right' class='forumheader3'>";
 if($user_reg == 1){
-	$text .= "<input type=\"checkbox\" name=\"user_reg\" value=\"1\"  checked>";
+	$text .= "<input type='checkbox' name='user_reg' value='1'  checked>";
 }else{
-	$text .= "<input type=\"checkbox\" name=\"user_reg\" value=\"1\">";
+	$text .= "<input type='checkbox' name='user_reg' value='1'>";
 }
 
 $text .= " (allow users to register as members on your site)
@@ -322,24 +322,24 @@ $text .= " (allow users to register as members on your site)
 
 </tr><tr>
 
-<td style=\"width:50%\" class=\"forumheader3\">Use email verification for signups?: </td>
-<td style=\"width:50%; text-align:right\" class=\"forumheader3\">";
+<td style='width:50%' class='forumheader3'>Use email verification for signups?: </td>
+<td style='width:50%; text-align:right' class='forumheader3'>";
 if($user_reg_veri == 1){
-	$text .= "<input type=\"checkbox\" name=\"user_reg_veri\" value=\"1\"  checked>";
+	$text .= "<input type='checkbox' name='user_reg_veri' value='1'  checked>";
 }else{
-	$text .= "<input type=\"checkbox\" name=\"user_reg_veri\" value=\"1\">";
+	$text .= "<input type='checkbox' name='user_reg_veri' value='1'>";
 }
 
 $text .= "
 </td>
 </tr>
 <tr>
-<td style=\"width:50%\" class=\"forumheader3\">Allow anonymous posting?: </td>
-<td style=\"width:50%; text-align:right\" class=\"forumheader3\">";
+<td style='width:50%' class='forumheader3'>Allow anonymous posting?: </td>
+<td style='width:50%; text-align:right' class='forumheader3'>";
 if($anon_post == 1){
-	$text .= "<input type=\"checkbox\" name=\"anon_post\" value=\"1\"  checked>";
+	$text .= "<input type='checkbox' name='anon_post' value='1'  checked>";
 }else{
-	$text .= "<input type=\"checkbox\" name=\"anon_post\" value=\"1\">";
+	$text .= "<input type='checkbox' name='anon_post' value='1'>";
 }
 
 $text .= "(if left unchecked only registered members can post comments etc)
@@ -347,35 +347,35 @@ $text .= "(if left unchecked only registered members can post comments etc)
 </tr>
 <tr>
 
-<td colspan=\"2\">
-<div class=\"border\"><div class=\"caption\">Security</div></div>
+<td colspan='2'>
+<div class='border'><div class='caption'>Security</div></div>
 </td>
 </tr><tr>
 
-<td style=\"width:50%\" class=\"forumheader3\">Enable flood protection?: </td>
-<td style=\"width:50%; text-align:right\" class=\"forumheader3\">";
+<td style='width:50%' class='forumheader3'>Enable flood protection?: </td>
+<td style='width:50%; text-align:right' class='forumheader3'>";
 if($flood_protect == 1){
-	$text .= "<input type=\"checkbox\" name=\"flood_protect\" value=\"1\"  checked>";
+	$text .= "<input type='checkbox' name='flood_protect' value='1'  checked>";
 }else{
-	$text .= "<input type=\"checkbox\" name=\"flood_protect\" value=\"1\">";
+	$text .= "<input type='checkbox' name='flood_protect' value='1'>";
 }
 
 $text .= "
 </td>
 </tr>
 <tr>
-<td style=\"width:50%\" class=\"forumheader3\">Flood hits: </td>
-<td style=\"width:50%; text-align:right\" class=\"forumheader3\">
-<input class=\"tbox\" type=\"text\" name=\"flood_hits\" size=\"10\" value=\"$flood_hits\" maxlength=\"4\" />
+<td style='width:50%' class='forumheader3'>Flood hits: </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<input class='tbox' type='text' name='flood_hits' size='10' value='$flood_hits' maxlength='4' />
 </td>
 </tr>
 
 </td>
 </tr>
 <tr>
-<td style=\"width:50%; vertical-align:top\" class=\"forumheader3\">Flood time: </td>
-<td style=\"width:50%; text-align:right\" class=\"forumheader3\">
-<input class=\"tbox\" type=\"text\" name=\"flood_time\" size=\"10\" value=\"$flood_time\" maxlength=\"20\" />
+<td style='width:50%; vertical-align:top' class='forumheader3'>Flood time: </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<input class='tbox' type='text' name='flood_time' size='10' value='$flood_time' maxlength='20' />
 <br />
 example, flood hits set to 100 and flood time set to 50: if any single page on your site gets 100 hits in 50 seconds the page will be inaccessable for a further 50 seconds. 
 </td>
@@ -383,17 +383,17 @@ example, flood hits set to 100 and flood time set to 50: if any single page on y
 
 <tr>
 
-<td colspan=\"2\">
-<div class=\"border\"><div class=\"caption\">Protection of minors options</div></div>
+<td colspan='2'>
+<div class='border'><div class='caption'>Protection of minors options</div></div>
 </td>
 </tr><tr>
 
-<td style=\"width:50%\" class=\"forumheader3\">Filter profanities?: </td>
-<td style=\"width:50%; text-align:right\" class=\"forumheader3\">";
+<td style='width:50%' class='forumheader3'>Filter profanities?: </td>
+<td style='width:50%; text-align:right' class='forumheader3'>";
 if($profanity_filter == 1){
-	$text .= "<input type=\"checkbox\" name=\"profanity_filter\" value=\"1\"  checked>";
+	$text .= "<input type='checkbox' name='profanity_filter' value='1'  checked>";
 }else{
-	$text .= "<input type=\"checkbox\" name=\"profanity_filter\" value=\"1\">";
+	$text .= "<input type='checkbox' name='profanity_filter' value='1'>";
 }
 
 $text .= "(if checked swearing will be replaced with string below)
@@ -401,41 +401,41 @@ $text .= "(if checked swearing will be replaced with string below)
 </tr>
 
 <tr>
-<td style=\"width:50%\" class=\"forumheader3\">Replace string: </td>
-<td style=\"width:50%; text-align:right\" class=\"forumheader3\">
-<input class=\"tbox\" type=\"text\" name=\"profanity_replace\" size=\"30\" value=\"$profanity_replace\" maxlength=\"20\" />
+<td style='width:50%' class='forumheader3'>Replace string: </td>
+<td style='width:50%; text-align:right' class='forumheader3'>
+<input class='tbox' type='text' name='profanity_replace' size='30' value='$profanity_replace' maxlength='20' />
 </td>
 </tr>
 
 <tr>
 
-<td style=\"width:50%\" class=\"forumheader3\">Use COPPA on signup page?: </td>
-<td style=\"width:50%; text-align:right\" class=\"forumheader3\">";
+<td style='width:50%' class='forumheader3'>Use COPPA on signup page?: </td>
+<td style='width:50%; text-align:right' class='forumheader3'>";
 if($use_coppa == 1){
-	$text .= "<input type=\"checkbox\" name=\"use_coppa\" value=\"1\"  checked>";
+	$text .= "<input type='checkbox' name='use_coppa' value='1'  checked>";
 }else{
-	$text .= "<input type=\"checkbox\" name=\"use_coppa\" value=\"1\">";
+	$text .= "<input type='checkbox' name='use_coppa' value='1'>";
 }
 
 
-$text .= "(for more info on COPPA see <a href=\"http://www.cdt.org/legislation/105th/privacy/coppa.html\">here</a>)
+$text .= "(for more info on COPPA see <a href='http://www.cdt.org/legislation/105th/privacy/coppa.html'>here</a>)
 </td>
 </tr>
 
 <tr>
-<td colspan=\"2\" class=\"forumheader3\">
-<div class=\"border\"><div class=\"caption\">e107</div></div>
+<td colspan='2' class='forumheader3'>
+<div class='border'><div class='caption'>e107</div></div>
 <br />
-<div style=\"text-align:center\"><input class=\"button\" type=\"submit\" name=\"newver\" value=\"Click here to check latest version of e107\" /></div>
+<div style='text-align:center'><input class='button' type='submit' name='newver' value='Click here to check latest version of e107' /></div>
 </td>
 </tr><tr>
 
-<tr><td colspan=\"2\"  class=\"forumheader3\"><br /></td></tr>
+<tr><td colspan='2'  class='forumheader3'><br /></td></tr>
 
-<tr style=\"vertical-align:top\"> 
-<td colspan=\"2\"  style=\"text-align:center\" class=\"forumheader3\">
+<tr style='vertical-align:top'> 
+<td colspan='2'  style='text-align:center' class='forumheader3'>
 <br />
-<input class=\"caption\" type=\"submit\" name=\"updateprefs\" value=\"Save Changes\" />
+<input class='caption' type='submit' name='updateprefs' value='Save Changes' />
 </td>
 </tr>
 </table>
@@ -445,7 +445,7 @@ $text .= "(for more info on COPPA see <a href=\"http://www.cdt.org/legislation/1
 
 
 
-$ns -> tablerender("<div style=\"text-align:center\">Site Preferences</div>", $text);
+$ns -> tablerender("<div style='text-align:center'>Site Preferences</div>", $text);
 
 require_once("footer.php");
 ?>	

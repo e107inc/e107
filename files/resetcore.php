@@ -49,7 +49,7 @@ if(IsSet($_POST['usubmit'])){
 				$pref['siteadmin'][1] = "SiteAdmin";
 				$pref['siteadminemail'][1] = "SiteAdmin@".e_HTTP;
 				$pref['sitetheme'][1] = "e107";
-				$pref['sitedisclaimer'][1] = "All trademarks are &copy; their respective owners, all other content is &copy; e107 powered website.<br />e107 is &copy; e107.org 2002/2003 and is released under the <a href=\"http://www.gnu.org/\">GNU GPL license</a>.";
+				$pref['sitedisclaimer'][1] = "All trademarks are &copy; their respective owners, all other content is &copy; e107 powered website.<br />e107 is &copy; e107.org 2002/2003 and is released under the <a href='http://www.gnu.org/'>GNU GPL license</a>.";
 				$pref['newsposts'][1] = "10";
 				$pref['flood_protect'][1] = "";
 				$pref['flood_timeout'][1] = "5";
@@ -78,7 +78,7 @@ if(IsSet($_POST['usubmit'])){
 				$pref['user_reg_veri'][1] = "1";
 				$tmp = serialize($pref);
 				mysql_query("UPDATE ".$mySQLprefix."core SET e107_value='$tmp' WHERE e107_name='pref' ");
-				$message = "Core reset. <a href=\"../index.php\">Click here to continue</a>";
+				$message = "Core reset. <a href='../index.php'>Click here to continue</a>";
 			}
 		}else{
 			$message = "<b>Administrator not found in database/incorrect password - aborting.</b><br />";
@@ -92,7 +92,7 @@ if(IsSet($_POST['usubmit'])){
 ?>
 
 <?php
-echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
+echo "<?xml version='1.0' encoding='iso-8859-1' ?>\n";
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -107,7 +107,7 @@ echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
 <div style="text-align:center">
 <table style="width:100%" cellspacing="0" cellpadding="0">
 <tr>
-<td style="width:66%; background-color:#E2E2E2; text-align:left\">
+<td style="width:66%; background-color:#E2E2E2; text-align:left'>
 <img src="../themes/shared/logo.png" alt="Logo" />
 </td>
 <td style="background-color:#E2E2E2; text-align:right; vertical-align:bottom" class="smalltext">
@@ -139,7 +139,7 @@ This script will reset your preferences to their default value
 <?php
 
 if($message){
-	echo "<span class=\"installh\">".$message."</span>
+	echo "<span class='installh'>".$message."</span>
 	</td></tr></table><br /></body></html>";
 	exit;
 }
@@ -150,24 +150,24 @@ if($abort == TRUE){
 
 echo "
 Please enter your main administrator name and password ...<br /><br />
-<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
-<table style=\"width:95%\">
+<form method='post' action='".$_SERVER['PHP_SELF']."'>
+<table style='width:95%'>
 <tr>
-<td style=\"width:30%\" class=\"mediumtext\">Main administrator name:</td>
-<td style=\"width:70%\">
-<input class=\"tbox\" type=\"text\" name=\"a_name\" size=\"60\" value=\"\" maxlength=\"100\" />
+<td style='width:30%' class='mediumtext'>Main administrator name:</td>
+<td style='width:70%'>
+<input class='tbox' type='text' name='a_name' size='60' value='' maxlength='100' />
 </td>
 </tr>
 <tr>
-<td style=\"width:30%\" class=\"mediumtext\">Main administrator Password:</td>
-<td style=\"width:70%\">
-<input class=\"tbox\" type=\"password\" name=\"a_password\" size=\"60\" value=\"\" maxlength=\"100\" />
+<td style='width:30%' class='mediumtext'>Main administrator Password:</td>
+<td style='width:70%'>
+<input class='tbox' type='password' name='a_password' size='60' value='' maxlength='100' />
 </td>
 </tr>
 <tr>
-<td colspan=\"2\" style=\"text-align:center\">
+<td colspan='2' style='text-align:center'>
 <br />
-<input class=\"button\" type=\"submit\" name=\"usubmit\" value=\"RESET CORE TO DEFAULT\" />
+<input class='button' type='submit' name='usubmit' value='RESET CORE TO DEFAULT' />
 </td>
 </tr>
 </table>

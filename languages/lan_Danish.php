@@ -290,4 +290,21 @@ define(LAN_325, "Klik her for at vise din besked");
 define(LAN_326, "Klik her for at retuner til forum");
 define(LAN_327, "Overblik");
 
+define("LAN_354", "(Begrænset)");
+define("LAN_355", "Ingen downloads i denne kategori");
+define("LAN_356", "Totale størrelse på filer: ");
+define("LAN_357", "Filer downloaded: ");
+define("LAN_358", "Filer tilgængelige: ");
+define("LAN_359", "Bedøm dette download");
+define("LAN_360", "tak for din bedømmelse");
+define("LAN_361", "downloads fra"); (as in "5 downloads from 8 files")
+define("LAN_362", "filer");
+define("LAN_363", "Downloads");
+define("LAN_364", "Sorteret");
+define("LAN_365", "Dato");
+define("LAN_366", "Filstørrelse");
+define("LAN_367", "Download");
+define("LAN_368", "Ingen downloads endnu, kom venligst tilbage senere");
+define("LAN_369", "Endnu ikke bedømt");
+define("LAN_370", "Bedømmelse: ");
 ?>

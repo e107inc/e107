@@ -8,12 +8,12 @@ if($pref['user_reg'][1] == 1 || ADMIN == TRUE){
 		$sql = new db;
 		if($sql -> db_Select("user", "*", "user_id='$uid' AND user_password='$upw' ")){
 			if(ADMIN == TRUE){
-				$text = ($pref['maintainance_flag'][1]==1 ? "<div style=\"text-align:center\"><b>The maintenance flag is true - this means normal visitors are being redirected to sitedown.php. To reset the flag go to admin/maintenance.</div></b><br />" : "" );
-				$text .= "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <a href=\"".e_BASE."admin/admin.php\">Admin</a><br />";
+				$text = ($pref['maintainance_flag'][1]==1 ? "<div style='text-align:center'><b>The maintenance flag is true - this means normal visitors are being redirected to sitedown.php. To reset the flag go to admin/maintenance.</div></b><br />" : "" );
+				$text .= "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_ADMIN."admin.php'>Admin</a><br />";
 			}
-			$text .= "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <a href=\"usersettings.php\">Settings</a>
+			$text .= "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='usersettings.php'>Settings</a>
 <br />
-<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <a href=\"".$_SERVER['PHP_SELF']."?logout\">".LAN_172."</a>";
+<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".$_SERVER['PHP_SELF']."?logout'>".LAN_172."</a>";
 		
 
 			if(!$sql -> db_Select("online", "*", "online_ip='$ip' AND online_user_id='0' ")){
@@ -30,7 +30,7 @@ if($pref['user_reg'][1] == 1 || ADMIN == TRUE){
 
 
 			$text .= "<br /><br />
-			<span class=\"smalltext\">
+			<span class='smalltext'>
 			Since your last visit ...
 			<br />
 			$new_news news item(s)<br />
@@ -43,33 +43,33 @@ if($pref['user_reg'][1] == 1 || ADMIN == TRUE){
 
 
 		}else{
-			$text = "<div style=\"text-align:center\">".LAN_171."<br /><br />
-			<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <a href=\"index.php?logout\">".LAN_172."</a></div>";
+			$text = "<div style='text-align:center'>".LAN_171."<br /><br />
+			<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='index.php?logout'>".LAN_172."</a></div>";
 			$ns -> tablerender(LAN_173, $text);
 		}
 	}else{
 		if(LOGINMESSAGE != ""){
-			$text = "<div style=\"text-align:center\">".LOGINMESSAGE."</div>";
+			$text = "<div style='text-align:center'>".LOGINMESSAGE."</div>";
 		}
-		$text .=  "<div style=\"text-align:center\">
-<form method=\"post\" action=\"".e_SELF;
+		$text .=  "<div style='text-align:center'>
+<form method='post' action='".e_SELF;
 if(e_QUERY){
 	$text .= "?".e_QUERY;
 }
 
-$text .= "\"><p>
+$text .= "'><p>
 ".LAN_16."<br />
-<input class=\"tbox\" type=\"text\" name=\"username\" size=\"15\" value=\"\" maxlength=\"20\" />\n
+<input class='tbox' type='text' name='username' size='15' value='' maxlength='20' />\n
 <br />
 ".LAN_17."
 <br />
-<input class=\"tbox\" type=\"password\" name=\"userpass\" size=\"15\" value=\"\" maxlength=\"20\" />\n
+<input class='tbox' type='password' name='userpass' size='15' value='' maxlength='20' />\n
 <br />
-<input class=\"button\" type=\"submit\" name=\"userlogin\" value=\"Login\" />\n
+<input class='button' type='submit' name='userlogin' value='Login' />\n
 <br />
-<input type=\"checkbox\" name=\"autologin\" value=\"1\" /> Auto Login
+<input type='checkbox' name='autologin' value='1' /> Auto Login
 <br /><br />
-[ <a href=\"signup.php\">".LAN_174."</a> ]<br />[ <a href=\"fpw.php\">".LAN_212."</a> ]
+[ <a href='signup.php'>".LAN_174."</a> ]<br />[ <a href='fpw.php'>".LAN_212."</a> ]
 </p>
 </form>
 </div>";

@@ -306,33 +306,24 @@ define(LAN_327, "Controleer");
 define(LAN_328, "Settings");   // "Settings" as used in default-header.
 define(LAN_328, "Tijd");
 define(LAN_329, "Uitspraak van het moment");
-define(LAN_400, "Januarie");
-define(LAN_401, "Februarie");
-define(LAN_402, "Maart");
-define(LAN_403, "April");
-define(LAN_404, "Mei");
-define(LAN_405, "Juni");
-define(LAN_406, "Juli");
-define(LAN_407, "Augustus");
-define(LAN_408, "September");
-define(LAN_409, "Oktober");
-define(LAN_410, "November");
-define(LAN_411, "December");
-define(LAN_412, "Maandag");
-define(LAN_413, "Dinsdag");
-define(LAN_414, "Woensdag");
-define(LAN_415, "Donderdag");
-define(LAN_416, "Vrijdag");
-define(LAN_417, "Zaterdag");
-define(LAN_418, "Zondag");
-define(LAN_419, "Maan");
-define(LAN_420, "Din");
-define(LAN_421, "Woe");
-define(LAN_422, "Don");
-define(LAN_423, "Vrij");
-define(LAN_424, "Zat");
-define(LAN_425, "Zon");
-define(LAN_426, "Evenementen deze Maand");
-define(LAN_427, "Geen evenementen voor deze maand.");
+
+define("LAN_354", "(Afgeschermd)");
+define("LAN_355", "Nog geen downloads in deze categorie");
+define("LAN_356", "Totale grootte bestanden: ");
+define("LAN_357", "Bestanden gedownload: ");
+define("LAN_358", "Bestanden beschikbaar: ");
+define("LAN_359", "Waardeer deze download");
+define("LAN_360", "Bedankt voor de waardering");
+define("LAN_361", "downloads van"); (as in "5 downloads from 8 files")
+define("LAN_362", "bestanden");
+define("LAN_363", "Downloads");
+define("LAN_364", "Sorteer op");
+define("LAN_365", "Datum");
+define("LAN_366", "Bestandsgrootte");
+define("LAN_367", "Download");
+define("LAN_368", "Nog geen downloads,kom hier later terug");
+define("LAN_369", "Nog geen waardering");
+define("LAN_370", "Waardering: ");
+
 
 ?>

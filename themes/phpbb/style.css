@@ -1,17 +1,11 @@
 body {
-	font-size: 12px;
-	color: #000;
-	font-family: tahoma, verdana, arial, sans-serif;
+	font: #000 12px tahoma, verdana, arial, sans-serif;
 	background-color: #E5E5E5;
 	margin:10px;
-	text-align:left
-	scrollbar-face-color: #DEE3E7;
-	scrollbar-highlight-color: #FFFFFF;
-	scrollbar-shadow-color: #DEE3E7;
-	scrollbar-3dlight-color: #D1D7DC;
-	scrollbar-arrow-color:  #006699;
-	scrollbar-track-color: #EFEFEF;
-	scrollbar-darkshadow-color: #98AAB1;
+	text-align:left;
+
+font: bold 10px Verrdana, Arial, Helvectica;
+
 }
 a {
 	font-size: 11px;
@@ -24,121 +18,63 @@ a:hover {
 	text-decoration: underline;
 }
 .indent{
-	padding-bottom: 3px;
-	padding-left: 3px;
-	padding-right: 3px;
-	padding-top: 3px;
+	padding: 3px 3px 3px 3px;
 	margin: 5px;
-	font-family: verdana, tahoma, arial, sans-serif;
+	font: 11px verdana, tahoma, arial, sans-serif;
 	color: #000060;
-	font-size: 11px;
-	background-color: #EAEEF2;
 	border: 1px dotted;
 }
 .smalltext {
-    background: none;
-	font-family: verdana, tahoma, arial, helvetica, sans-serif;
-	font-size: 10px;
-	font-style: normal;
-	color:#444444;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#444;
 	letter-spacing: -1px;
 }
 .smallblacktext {
-    background: none;
-	font-family: tahoma, verdana, arial, helvetica, sans-serif;
-	font-size: 10px;
-	font-style: normal;
+	font: normal 10px tahoma, verdana, arial, helvetica, sans-serif;
 	color:#000;
 }
 .defaulttext {
-    background: none;
-	font-family: verdana, tahoma, arial, helvetica, sans-serif;
-	font-size: 11px;
-	font-style: normal;
+	font: normal 11px verdana, tahoma, arial, helvetica, sans-serif;
 	color:#000;
 }
 
 td {
-    background: none;
-	font-family: verdana, tahoma, arial, helvetica, sans-serif;
-	font-size: 11px;
-	font-style: normal;
+	font: normal 11px verdana, tahoma, arial, helvetica, sans-serif;
 	color:#000;
-	padding-bottom: 0px;
-	padding-left: 0px;
-	padding-right: 0px;
-	padding-top: 0px;
+	padding: 0px, 0px, 0px, 0px;
 	text-align:left;
 }
 
-blockquote {
-	font-family: verdana, tahoma, arial, helvetica, sans-serif;
-	font-style: italic;
-	color:#7e96ac;
-}
-
-.defaultwhitetext {
-    background: none;
-	font-family: verdana, tahoma, arial, helvetica, sans-serif;
-	font-size: 12px;
-	font-style: normal;
-	color:#ffffff;
-}
-.defaultblacktext {
-    background: none;
-	font-family: verdana, tahoma, arial, helvetica, sans-serif;
-	font-size: 12px;
-	font-style: normal;
-	color:#000;
-}
 .mediumtext {
-    background: none;
-	font-family: verdana, tahoma, arial, helvetica, sans-serif;
-	font-size: 11px;
-	font-style: normal;
+	font: normal 11px verdana, tahoma, arial, helvetica, sans-serif;
 	color:#000;
 }
 .captiontext {
-    background: none;
-	font-family: "Trebuchet MS",Verdana, Arial, Helvetica, sans-serif;
-	font-size: 22px;
-	font-weight:bold;
+	font: bold 22px "Trebuchet MS",Verdana, Arial, Helvetica, sans-serif;
 	color:#000;
 	line-height : 120%;
 }
 .tbox{
 	background-color: #fff;
-	border-bottom: #5e5d63 1px solid;
-	border-left: #5e5d63 1px solid;
-	border-right: #5e5d63 1px solid;
-	border-top: #5e5d63 1px solid;
-	color: #000000;
-	font-family: verdana, tahoma, arial, helvetica, sans-serif;
-	font-size: 10px;
+	border: #5e5d63 1px solid;
+	color: #000;
+	font: normal 10px verdana, tahoma, arial, helvetica, sans-serif;
 }
 .button{
 	border: 1px solid #5E5D63;
-	color: #000000;
-	font-family: verdana, tahoma, arial, helvetica, sans-serif;
-	font-size: 9px;
+	color: #000;
+	font: normal 9px verdana, tahoma, arial, helvetica, sans-serif;
 	text-align:center;
 	background-image : url(images/button.png);
 }
 
 .nextprev{
 	background-color: #eaeef2;
-	border-bottom: #000 1px solid;
-	border-left: #000 1px solid;
-	border-right: #000 1px solid;
-	border-top: #000 1px solid;
-	color: #000000;
-	font-family: verdana, tahoma, arial, helvetica, sans-serif;
-	font-size: 9px;
+	border: 1px solid #069;
+	color: #000;
+	font: normal 9px verdana, tahoma, arial, helvetica, sans-serif;
 	text-align:center;
-	padding-bottom : 2px;
-	padding-left : 2px;
-	padding-right : 2px;
-	padding-top : 2px;
+	padding : 2px, 2px, 2px, 2px;
 	background-image : url(images/button.png);
 }
 
@@ -159,10 +95,7 @@ hr {
 	text-align:center;
 }
 .border {
-	border-bottom: #006699 2px solid;
-	border-left: #006699 2px solid;
-	border-right: #006699 2px solid;
-	border-top: #006699 2px solid;
+	border: #006699 2px solid;
 	background-color: transparent;
 }
 .caption {
@@ -176,10 +109,8 @@ hr {
 	border-top: #fff 1px solid;
 	background-color: #e2e2e2;
 	color: #000;
-	font-family: tahoma, arial, verdana, helvetica, sans-serif;
-	font-size: 11px;
+	font: 11px tahoma, arial, verdana, helvetica, sans-serif;
 	background-image : url(images/cap1.gif);
-	
 }
 
 .bodytable {
@@ -188,9 +119,7 @@ hr {
 	padding-left: 8px;
 	padding-right: 8px;
 	padding-top: 8px;
-	font-family: verdana, tahoma, arial, helvetica, sans-serif;
-	font-size: 11px;
-	font-style: normal;
+	font: normal 11px verdana, tahoma, arial, helvetica, sans-serif;
 	color: #000;
 }
 
@@ -205,25 +134,19 @@ hr {
 	border-top: #fff 1px solid;
 	background-color: #e2e2e2;
 	color: #000;
-	font-family: tahoma, arial, verdana, helvetica, sans-serif;
-	font-size: 10px;
+	font: 10px tahoma, arial, verdana, helvetica, sans-serif;
 	background-image : url(images/cap1.gif);
 }
 
 
 .maintable {
 	background-color: #fff;
-	border-bottom: #98AAB1 2px solid;
-	border-left: #98AAB1 2px solid;
-	border-right: #98AAB1 2px solid;
-	border-top: #98AAB1 2px solid;
+	border: #98AAB1 2px solid;
 	padding-bottom: 8px;
 	padding-left: 8px;
 	padding-right: 8px;
 	padding-top: 8px;
-	font-family: verdana, tahoma, arial, helvetica, sans-serif;
-	font-size: 11px;
-	font-style: normal;
+	font: normal 11px verdana, tahoma, arial, helvetica, sans-serif;
 	color: #404040;
 }
 
@@ -232,16 +155,12 @@ p {
 }
 
 .fborder, .fbdefault{
-	border-bottom: #000000 1px solid;
-	border-left: #000000 1px solid;
-	border-right: #000000 1px solid;
-	border-top: #000000 1px solid;
+	border: #000000 1px solid;
 	background-color: #fff;
 }
 .forumheader, .fdefault{
 	background-color: #EBEFF2;
-	font-family: verdana, tahoma, arial, helvetica, sans-serif;
-	font-size: 14px;
+	font: 14px verdana, tahoma, arial, helvetica, sans-serif;
 	color:#000;
 	padding: 4px;
 	background-image : url(../shared/forum/fcap2.png);
@@ -250,8 +169,7 @@ p {
 
 .forumheader2, .f2default{
 	background-color: #EFEFEF;
-	font-family: verdana, tahoma, arial, helvetica, sans-serif;
-	font-size: 14px;
+	font: 14px verdana, tahoma, arial, helvetica, sans-serif;
 	color:#000;
 	padding: 4px;
 	border: #C3BDBD 1px solid;
@@ -259,26 +177,21 @@ p {
 
 .forumheader3, .f3default{
 	background-color: #E3E1E1;
-	font-family: verdana, tahoma, arial, helvetica, sans-serif;
-	font-size: 11px;
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
 	color:#000;
 	padding: 4px;
 	border: #C3BDBD 1px solid;
 }
 
 .fcaption, .fcdefault {
-	border-bottom: #000 1px solid;
-	border-left: #000 1px solid;
-	border-right: #000 1px solid;
-	border-top: #000 1px solid;
+	border: #000 1px solid;
 	padding-bottom: 2px;
 	padding-left: 8px;
 	padding-right: 0px;
 	padding-top: 2px;
 	background-color: #C9C7C7;
-	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
 	background-image : url(../shared/forum/fcap.png);
-	font-size: 12px;
 	color:#fff;
 }
 
@@ -286,27 +199,5 @@ p {
 	border: transparent;
 	background-color: transparent;
 	color:#000;
-	font-family: tahoma, verdana, arial, helvetica, sans-serif;
-	font-size: 9px;
-}
-
-.installb{
-	background-color: #ececec;
-	padding-bottom: 2px;
-	padding-left: 8px;
-	padding-right: 0px;
-	padding-top: 2px;
-	text-align:center;
-}
-
-.installh{
-	font-family: verdana, tahoma, arial, helvetica, sans-serif;
-	font-size: 14px;
-	color: #363C3E;
-}
-
-.installe{
-	font-family: verdana, tahoma, arial, helvetica, sans-serif;
-	font-size: 14px;
-	color: #C00000;
+	font: 9px tahoma, verdana, arial, helvetica, sans-serif;
 }

@@ -19,9 +19,9 @@ require_once(HEADERF);
 
 if(!$pref['log_activate'][1]){
 	if(ADMIN){
-		$text = "<div style=\"text-align:center\">Logging is not activated, to activate go to your admin section, click on Logger and tick the Activate Logging/Counter checkbox.</div>";
+		$text = "<div style='text-align:center'>Logging is not activated, to activate go to your admin section, click on Logger and tick the Activate Logging/Counter checkbox.</div>";
 	}else{
-		$text = "<div style=\"text-align:center\">The features on this page have been disabled.</div>";
+		$text = "<div style='text-align:center'>The features on this page have been disabled.</div>";
 	}
 	$ns -> tablerender("Stats", $text);
 	require_once(FOOTERF);
@@ -78,18 +78,18 @@ $c=0;
 if($action == 1){
 	while($data1[$c][0]){
 		$width = $data1[$c][0]/$w;
-		$text .= "<img src=\"".THEME."images/bar2edge.gif\" width=\"1\" height=\"8\" alt=\"\" /><img src=\"".THEME."images/bar2.gif\" width=\"".$width."\" height=\"8\" alt=\"\" /><img src=\"".THEME."images/bar2edge.gif\" width=\"1\" height=\"8\" alt=\"\" /> ".
+		$text .= "<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' width='".$width."' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /> ".
 		$data1[$c][0]." - ".$data1[$c][1]."<br />";
 		$c++;
 	}
 }else{
 	for($r=0; $r<=9; $r++){
 		$width = $data1[$c][0]/$w;
-		$text .= "<img src=\"".THEME."images/bar2edge.gif\" width=\"1\" height=\"8\" alt=\"\" /><img src=\"".THEME."images/bar2.gif\" width=\"".$width."\" height=\"8\" alt=\"\" /><img src=\"".THEME."images/bar2edge.gif\" width=\"1\" height=\"8\" alt=\"\" /> ".
+		$text .= "<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' width='".$width."' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /> ".
 		$data1[$c][0]." - ".$data1[$c][1]."<br />";
 		$c++;
 	}
-	$text .= "<a href=\"".e_SELF."?1\">View all</a><br />";
+	$text .= "<a href='".e_SELF."?1'>View all</a><br />";
 }
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 $c=0;
@@ -120,18 +120,18 @@ $c=0;
 if($action == 2){
 	while($data2[$c][0]){
 		$width = $data2[$c][0]/$w;
-		$text .= "<img src=\"".THEME."images/bar2edge.gif\" width=\"1\" height=\"8\" alt=\"\" /><img src=\"".THEME."images/bar2.gif\" width=\"".$width."\" height=\"8\" alt=\"\" /><img src=\"".THEME."images/bar2edge.gif\" width=\"1\" height=\"8\" alt=\"\" /> ".
+		$text .= "<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' width='".$width."' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /> ".
 		$data2[$c][0]." - ".$data2[$c][1]."<br />";
 		$c++;
 	}
 }else{
 	for($r=0; $r<=9; $r++){
 		$width = $data2[$c][0]/$w;
-		$text .= "<img src=\"".THEME."images/bar2edge.gif\" width=\"1\" height=\"8\" alt=\"\" /><img src=\"".THEME."images/bar2.gif\" width=\"".$width."\" height=\"8\" alt=\"\" /><img src=\"".THEME."images/bar2edge.gif\" width=\"1\" height=\"8\" alt=\"\" /> ".
+		$text .= "<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' width='".$width."' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /> ".
 		$data2[$c][0]." - ".$data2[$c][1]."<br />";
 		$c++;
 	}
-	$text .= "<a href=\"".e_SELF."?2\">View all</a><br />";
+	$text .= "<a href='".e_SELF."?2'>View all</a><br />";
 }
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // last 10 visitors
@@ -147,11 +147,11 @@ if($action == 8 && ADMIN == TRUE){
 	
 while(list($stat_last_date, $stat_last_info) = $sql-> db_Fetch()){
 	$datestamp = $con -> convert_date($stat_last_date, "long");
-	$text .= "<span class=\"smalltext\">".$datestamp.":</span><br /> ".$stat_last_info."<br /><br />";
+	$text .= "<span class='smalltext'>".$datestamp.":</span><br /> ".$stat_last_info."<br /><br />";
 }
 
 if(ADMIN == TRUE && $pref['log_lvcount'][1] >10){
-	$text .= "<a href=\"".e_SELF."?8\">View all</a><br />";
+	$text .= "<a href='".e_SELF."?8'>View all</a><br />";
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -185,7 +185,7 @@ if($action == 3){
 		if($data3[$c][1] == "Internet Explorer"){
 			$data3[$c][1] = "IE";
 		}
-		$text .= "<img src=\"".THEME."images/bar2edge.gif\" width=\"1\" height=\"8\" alt=\"\" /><img src=\"".THEME."images/bar2.gif\" width=\"".$width."\" height=\"8\" alt=\"\" /><img src=\"".THEME."images/bar2edge.gif\" width=\"1\" height=\"8\" alt=\"\" /> ".
+		$text .= "<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' width='".$width."' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /> ".
 		$data3[$c][0]." - ".$data3[$c][1]."
 		<br />";
 		$c++;
@@ -196,12 +196,12 @@ if($action == 3){
 		if($data3[$c][1] == "Internet Explorer"){
 			$data3[$c][1] = "IE";
 		}
-		$text .= "<img src=\"".THEME."images/bar2edge.gif\" width=\"1\" height=\"8\" alt=\"\" /><img src=\"".THEME."images/bar2.gif\" width=\"".$width."\" height=\"8\" alt=\"\" /><img src=\"".THEME."images/bar2edge.gif\" width=\"1\" height=\"8\" alt=\"\" /> ".
+		$text .= "<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' width='".$width."' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /> ".
 		$data3[$c][0]." - ".$data3[$c][1]."
 		<br />";
 		$c++;
 	}
-	$text .= "<a href=\"".e_SELF."?3\">View all</a><br />";
+	$text .= "<a href='".e_SELF."?3'>View all</a><br />";
 }
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 $c=0;
@@ -230,7 +230,7 @@ $c=0;
 if($action == 4){
 	while($data4[$c][0]){
 		$width = $data4[$c][0]/$w;
-		$text .= "<img src=\"".THEME."images/bar2edge.gif\" width=\"1\" height=\"8\" alt=\"\" /><img src=\"".THEME."images/bar2.gif\" width=\"".$width."\" height=\"8\" alt=\"\" /><img src=\"".THEME."images/bar2edge.gif\" width=\"1\" height=\"8\" alt=\"\" /> ".
+		$text .= "<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' width='".$width."' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /> ".
 		$data4[$c][0]." - ".$data4[$c][1]."
 		<br />";
 		$c++;
@@ -238,12 +238,12 @@ if($action == 4){
 }else{
 	for($r=0; $r<=9; $r++){
 		$width = $data4[$c][0]/$w;
-		$text .= "<img src=\"".THEME."images/bar2edge.gif\" width=\"1\" height=\"8\" alt=\"\" /><img src=\"".THEME."images/bar2.gif\" width=\"".$width."\" height=\"8\" alt=\"\" /><img src=\"".THEME."images/bar2edge.gif\" width=\"1\" height=\"8\" alt=\"\" /> ".
+		$text .= "<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' width='".$width."' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /> ".
 		$data4[$c][0]." - ".$data4[$c][1]."
 		<br />";
 		$c++;
 	}
-	$text .= "<a href=\"".e_SELF."?4\">View all</a><br />";
+	$text .= "<a href='".e_SELF."?4'>View all</a><br />";
 }
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 $c=0;
@@ -272,7 +272,7 @@ $c=0;
 if($action == 5){
 	while($data6[$c][0]){
 		$width = $data6[$c][0]/$w;
-		$text .= "<img src=\"".THEME."images/bar2edge.gif\" width=\"1\" height=\"8\" alt=\"\" /><img src=\"".THEME."images/bar2.gif\" width=\"".$width."\" height=\"8\" alt=\"\" /><img src=\"".THEME."images/bar2edge.gif\" width=\"1\" height=\"8\" alt=\"\" /> ".
+		$text .= "<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' width='".$width."' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /> ".
 		$data6[$c][0]." - ".$data6[$c][1]."
 		<br />";
 		$c++;
@@ -280,12 +280,12 @@ if($action == 5){
 }else{
 	for($r=0; $r<=9; $r++){
 		$width = $data6[$c][0]/$w;
-		$text .= "<img src=\"".THEME."images/bar2edge.gif\" width=\"1\" height=\"8\" alt=\"\" /><img src=\"".THEME."images/bar2.gif\" width=\"".$width."\" height=\"8\" alt=\"\" /><img src=\"".THEME."images/bar2edge.gif\" width=\"1\" height=\"8\" alt=\"\" /> ".
+		$text .= "<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' width='".$width."' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /> ".
 		$data6[$c][0]." - ".$data6[$c][1]."
 		<br />";
 		$c++;
 	}
-	$text .= "<a href=\"".e_SELF."?5\">View all</a><br />";
+	$text .= "<a href='".e_SELF."?5'>View all</a><br />";
 }
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 $c=0;
@@ -313,7 +313,7 @@ $c=0;
 if($action == 6){
 	while($data7[$c][0]){
 		$width = $data7[$c][0]/$w;
-		$text .= "<img src=\"".THEME."images/bar2edge.gif\" width=\"1\" height=\"8\" alt=\"\" /><img src=\"".THEME."images/bar2.gif\" width=\"".$width."\" height=\"8\" alt=\"\" /><img src=\"".THEME."images/bar2edge.gif\" width=\"1\" height=\"8\" alt=\"\" /> ".
+		$text .= "<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' width='".$width."' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /> ".
 		$data7[$c][0]." - ".$data7[$c][1]."
 		<br />";
 		$c++;
@@ -321,12 +321,12 @@ if($action == 6){
 }else{
 	for($r=0; $r<=9; $r++){
 		$width = $data7[$c][0]/$w;
-		$text .= "<img src=\"".THEME."images/bar2edge.gif\" width=\"1\" height=\"8\" alt=\"\" /><img src=\"".THEME."images/bar2.gif\" width=\"".$width."\" height=\"8\" alt=\"\" /><img src=\"".THEME."images/bar2edge.gif\" width=\"1\" height=\"8\" alt=\"\" /> ".
+		$text .= "<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' width='".$width."' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /> ".
 		$data7[$c][0]." - ".$data7[$c][1]."
 		<br />";
 		$c++;
 	}
-	$text .= "<a href=\"".e_SELF."?6\">View all</a><br />";
+	$text .= "<a href='".e_SELF."?6'>View all</a><br />";
 }
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -355,7 +355,7 @@ $c=0;
 if($action == 7){
 	while($data8[$c][0]){
 		$width = $data8[$c][0]/$w;
-		$text .= "<img src=\"".THEME."images/bar2edge.gif\" width=\"1\" height=\"8\" alt=\"\" /><img src=\"".THEME."images/bar2.gif\" width=\"".$width."\" height=\"8\" alt=\"\" /><img src=\"".THEME."images/bar2edge.gif\" width=\"1\" height=\"8\" alt=\"\" /> ".
+		$text .= "<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' width='".$width."' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /> ".
 		$data8[$c][0]." - ".$data8[$c][1]."
 		<br />";
 		$c++;
@@ -363,16 +363,16 @@ if($action == 7){
 }else{
 	for($r=0; $r<=9; $r++){
 		$width = $data8[$c][0]/$w;
-		$text .= "<img src=\"".THEME."images/bar2edge.gif\" width=\"1\" height=\"8\" alt=\"\" /><img src=\"".THEME."images/bar2.gif\" width=\"".$width."\" height=\"8\" alt=\"\" /><img src=\"".THEME."images/bar2edge.gif\" width=\"1\" height=\"8\" alt=\"\" /> ".
+		$text .= "<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' width='".$width."' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /> ".
 		$data8[$c][0]." - ".$data8[$c][1]."
 		<br />";
 		$c++;
 	}
-	$text .= "<a href=\"".e_SELF."?7\">View all</a><br />";
+	$text .= "<a href='".e_SELF."?7'>View all</a><br />";
 }
 
 
-$ns -> tablerender("<div style=\"text-align:center\">".LAN_132."</div>", $text);
+$ns -> tablerender("<div style='text-align:center'>".LAN_132."</div>", $text);
 
 require_once(FOOTERF);
 

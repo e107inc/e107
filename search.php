@@ -83,32 +83,32 @@ if($_POST['searchtype']){
 	
 }
 
-$text = "<div style=\"text-align:center\"><form method=\"post\" action=\"search.php\">
+$text = "<div style='text-align:center'><form method='post' action='search.php'>
 <p>
-Search for <input class=\"tbox\" type=\"text\" name=\"searchquery\" size=\"20\" value=\"$query\" maxlength=\"50\" />
-&nbsp;in <select name=\"searchtype\" class=\"tbox\">";
+Search for <input class='tbox' type='text' name='searchquery' size='20' value='$query' maxlength='50' />
+&nbsp;in <select name='searchtype' class='tbox'>";
 
 // add you own types here
 
-$text .= ($searchtype == 1 ? "<option value=\"1\" selected>News</option>" : "<option value=\"1\">News</option>");
-$text .= ($searchtype == 2 ? "<option value=\"2\" selected>Comments</option>" : "<option value=\"2\">Comments</option>");
-$text .= ($searchtype == 3 ? "<option value=\"3\" selected>Articles</option>" : "<option value=\"3\">Articles</option>");
-$text .= ($searchtype == 4 ? "<option value=\"4\" selected>Reviews</option>" : "<option value=\"4\">Reviews</option>");
-$text .= ($searchtype == 5 ? "<option value=\"5\" selected>Content</option>" : "<option value=\"5\">Reviews</option>");
-$text .= ($searchtype == 6 ? "<option value=\"6\" selected>Chatbox</option>" : "<option value=\"6\">Chatbox</option>");
-$text .= ($searchtype == 7 ? "<option value=\"7\" selected>Links</option>" : "<option value=\"7\">Links</option>");
-$text .= ($searchtype == 8 ? "<option value=\"8\" selected>Forum</option>" : "<option value=\"8\">Forum</option>");
-$text .= ($searchtype == 9 ? "<option value=\"9\" selected>Members</option>" : "<option value=\"9\">Users</option>");
+$text .= ($searchtype == 1 ? "<option value='1' selected>News</option>" : "<option value='1'>News</option>");
+$text .= ($searchtype == 2 ? "<option value='2' selected>Comments</option>" : "<option value='2'>Comments</option>");
+$text .= ($searchtype == 3 ? "<option value='3' selected>Articles</option>" : "<option value='3'>Articles</option>");
+$text .= ($searchtype == 4 ? "<option value='4' selected>Reviews</option>" : "<option value='4'>Reviews</option>");
+$text .= ($searchtype == 5 ? "<option value='5' selected>Content</option>" : "<option value='5'>Reviews</option>");
+$text .= ($searchtype == 6 ? "<option value='6' selected>Chatbox</option>" : "<option value='6'>Chatbox</option>");
+$text .= ($searchtype == 7 ? "<option value='7' selected>Links</option>" : "<option value='7'>Links</option>");
+$text .= ($searchtype == 8 ? "<option value='8' selected>Forum</option>" : "<option value='8'>Forum</option>");
+$text .= ($searchtype == 9 ? "<option value='9' selected>Members</option>" : "<option value='9'>Users</option>");
 
 //	uncomment if you use the event calendar ...
-//	$text .= ($searchtype == 9 ? "<option value=\"9\" selected>Event Calendar</option>" : "<option value=\"9\">Event Calendar</option>");
+//	$text .= ($searchtype == 9 ? "<option value='9' selected>Event Calendar</option>" : "<option value='9'>Event Calendar</option>");
 
-$text .= ($searchtype == 99 ? "<option value=\"99\" selected>All Categories</option>" : "<option value=\"99\">All Categories</option>");
+$text .= ($searchtype == 99 ? "<option value='99' selected>All Categories</option>" : "<option value='99'>All Categories</option>");
 
 $text .= "
-<option value=\"0\">Google</option>
+<option value='0'>Google</option>
 </select>
-<input class=\"button\" type=\"submit\" name=\"searchsubmit\" value=\"".LAN_180."\" />
+<input class='button' type='submit' name='searchsubmit' value='".LAN_180."' />
 </p>
 </form></div>";
 

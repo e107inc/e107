@@ -36,42 +36,42 @@ if(IsSet($_POST['submit'])){
 
 
 $text = "
-<form method=\"post\" action=\"".e_SELF."\">\n
-<table style=\"width:95%\">
+<form method='post' action='".e_SELF."'>\n
+<table style='width:95%'>
 <tr>
-<td style=\"width:20%\">".LAN_7."</td>
-<td style=\"width:80%\">
-<input class=\"tbox\" type=\"text\" name=\"author_name\" size=\"60\" value=\"$author_name\" maxlength=\"100\" />
+<td style='width:20%'>".LAN_7."</td>
+<td style='width:80%'>
+<input class='tbox' type='text' name='author_name' size='60' value='$author_name' maxlength='100' />
 </td>
 </tr>
 
 <tr>
-<td style=\"width:20%\">".LAN_112."</td>
-<td style=\"width:80%\">
-<input class=\"tbox\" type=\"text\" name=\"author_email\" size=\"60\" value=\"$author_email\" maxlength=\"100\" />
+<td style='width:20%'>".LAN_112."</td>
+<td style='width:80%'>
+<input class='tbox' type='text' name='author_email' size='60' value='$author_email' maxlength='100' />
 </td>
 </tr>
 
 <tr>
-<td style=\"width:20%\">".LAN_62."</td>
-<td style=\"width:80%\">
-<input class=\"tbox\" type=\"text\" name=\"itemtitle\" size=\"60\" value=\"$itemtitle\" maxlength=\"200\" />
+<td style='width:20%'>".LAN_62."</td>
+<td style='width:80%'>
+<input class='tbox' type='text' name='itemtitle' size='60' value='$itemtitle' maxlength='200' />
 </td>
 </tr>
 
 <tr> 
-<td style=\"width:20%\">".LAN_135."</td>
-<td style=\"width:80%\">
-<textarea class=\"tbox\" name=\"item\" cols=\"70\" rows=\"10\"></textarea>
+<td style='width:20%'>".LAN_135."</td>
+<td style='width:80%'>
+<textarea class='tbox' name='item' cols='70' rows='10'></textarea>
 </td>
 </tr>\n
-<tr style=\"vertical-align:top\"> 
-<td style=\"width:20%\"></td>
-<td style=\"width:80%\">
-<input class=\"button\" type=\"submit\" name=\"submit\" value=\"".LAN_136."\" />
+<tr style='vertical-align:top'> 
+<td style='width:20%'></td>
+<td style='width:80%'>
+<input class='button' type='submit' name='submit' value='".LAN_136."' />
 <br />
 <br />
-<span class=\"smalltext\">
+<span class='smalltext'>
 ".LAN_10."
 </span>
 </td>

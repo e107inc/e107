@@ -32,7 +32,7 @@ require_once(HEADERF);
 if(IsSet($_POST['clientsubmit'])){
 	
 	if(!$sql -> db_Select("banner", "*", "banner_clientlogin='".$_POST['clientlogin']."' AND banner_clientpassword='".$_POST['clientpassword']."' ")){
-		$ns -> tablerender("Error", "<br /><div style=\"text-align:center\">Sorry, unable to find those details in the database. Please contact the site administrator for details.</div><br />");
+		$ns -> tablerender("Error", "<br /><div style='text-align:center'>Sorry, unable to find those details in the database. Please contact the site administrator for details.</div><br />");
 		require_once(FOOTERF);
 		exit;
 	}
@@ -41,21 +41,21 @@ if(IsSet($_POST['clientsubmit'])){
 
 	$banner_total = $sql -> db_Select("banner", "*", "banner_clientname='$banner_clientname' ");
 
-	$text = "<table class=\"fborder\" style=\"width:98%\">
-	<tr><td colspan=\"7\" style=\"text-align:center\" class=\"fcaption\">Banners Statistics</td></tr>
+	$text = "<table class='fborder' style='width:98%'>
+	<tr><td colspan='7' style='text-align:center' class='fcaption'>Banners Statistics</td></tr>
 	<tr>
-	<td class=\"forumheader\" style=\"text-align:center\"><span class=\"smallblacktext\">Client</span></td>
-	<td class=\"forumheader\" style=\"text-align:center\"><span class=\"smallblacktext\">Banner ID</span></td>
-	<td class=\"forumheader\" style=\"text-align:center\"><span class=\"smallblacktext\">Clickthroughs</span></td>
-	<td class=\"forumheader\" style=\"text-align:center\"><span class=\"smallblacktext\">Click %</span></td>
-	<td class=\"forumheader\" style=\"text-align:center\"><span class=\"smallblacktext\">Impressions</span></td>
-	<td class=\"forumheader\" style=\"text-align:center\"><span class=\"smallblacktext\">Impressions Purchased</span></td>
-	<td class=\"forumheader\" style=\"text-align:center\"><span class=\"smallblacktext\">Impressions Left</span></td>
+	<td class='forumheader' style='text-align:center'><span class='smallblacktext'>Client</span></td>
+	<td class='forumheader' style='text-align:center'><span class='smallblacktext'>Banner ID</span></td>
+	<td class='forumheader' style='text-align:center'><span class='smallblacktext'>Clickthroughs</span></td>
+	<td class='forumheader' style='text-align:center'><span class='smallblacktext'>Click %</span></td>
+	<td class='forumheader' style='text-align:center'><span class='smallblacktext'>Impressions</span></td>
+	<td class='forumheader' style='text-align:center'><span class='smallblacktext'>Impressions Purchased</span></td>
+	<td class='forumheader' style='text-align:center'><span class='smallblacktext'>Impressions Left</span></td>
 	</tr>";
 
 	if(!$banner_total){
 		$text .= "<tr>
-		<td colspan=\"7\" class=\"forumheader2\" style=\"text-align:center\">No banners</td>";
+		<td colspan='7' class='forumheader2' style='text-align:center'>No banners</td>";
 	}else{
 		while($row = $sql-> db_Fetch()){
 			extract($row);
@@ -68,15 +68,15 @@ if(IsSet($_POST['clientsubmit'])){
 			$end_date = ($banner_enddate ? strftime("%d %B %Y", $banner_enddate) : "Not applicable");
 
 			$text.="<tr>
-			<td class=\"forumheader3\" style=\"text-align:center\">".$banner_clientname."</td>
-			<td class=\"forumheader3\" style=\"text-align:center\">".$banner_id."</td>
-			<td class=\"forumheader3\" style=\"text-align:center\">".$banner_clicks."</td>
-			<td class=\"forumheader3\" style=\"text-align:center\">".$clickpercentage."</td>
-			<td class=\"forumheader3\" style=\"text-align:center\">".$banner_impressions."</td>
-			<td class=\"forumheader3\" style=\"text-align:center\">".$impressions_purchased."</td>
-			<td class=\"forumheader3\" style=\"text-align:center\">".$impressions_left."</td>
+			<td class='forumheader3' style='text-align:center'>".$banner_clientname."</td>
+			<td class='forumheader3' style='text-align:center'>".$banner_id."</td>
+			<td class='forumheader3' style='text-align:center'>".$banner_clicks."</td>
+			<td class='forumheader3' style='text-align:center'>".$clickpercentage."</td>
+			<td class='forumheader3' style='text-align:center'>".$banner_impressions."</td>
+			<td class='forumheader3' style='text-align:center'>".$impressions_purchased."</td>
+			<td class='forumheader3' style='text-align:center'>".$impressions_left."</td>
 			</tr>
-			<td colspan=\"7\" class=\"forumheader3\" style=\"text-align:center\">
+			<td colspan='7' class='forumheader3' style='text-align:center'>
 
 			Active: ". ($banner_active ? "Yes" : "<b>No</b>")." | 
 
@@ -84,9 +84,9 @@ if(IsSet($_POST['clientsubmit'])){
 			
 			if($banner_ip){
 				$tmp = explode("^", $banner_ip);
-				$text .= "<tr><td class=\"forumheader3\">
+				$text .= "<tr><td class='forumheader3'>
 				Clickthrough IP addresses: ".(count($tmp)-1)."</td>
-				<td colspan=\"6\" class=\"forumheader3\">";
+				<td colspan='6' class='forumheader3'>";
 				for($a=0; $a<=(count($tmp)-2); $a++){
 					$text .= $tmp[$a]."<br />";
 				}
@@ -94,7 +94,7 @@ if(IsSet($_POST['clientsubmit'])){
 			
 			
 			$text .= "</td>
-			<tr><td colspan=\"8\">&nbsp;</td></tr>";
+			<tr><td colspan='8'>&nbsp;</td></tr>";
 		}
 	}
 
@@ -106,21 +106,21 @@ if(IsSet($_POST['clientsubmit'])){
 	exit;
 }
 
-echo "<div style=\"align:center\">";
-$text =  "<form method=\"post\" action=\"".e_SELF."\">\n
-<table style=\"width:40%\" align=\"center\">
+echo "<div style='align:center'>";
+$text =  "<form method='post' action='".e_SELF."'>\n
+<table style='width:40%' align='center'>
 <tr>
-<td style=\"width:15%\" class=\"defaulttext\">".LAN_16."</td>
-<td><input class=\"tbox\" type=\"text\" name=\"clientlogin\" size=\"30\" value=\"$id\" maxlength=\"20\" />\n</td>
+<td style='width:15%' class='defaulttext'>".LAN_16."</td>
+<td><input class='tbox' type='text' name='clientlogin' size='30' value='$id' maxlength='20' />\n</td>
 </tr>
 <tr>
-<td style=\"width:15%\" class=\"defaulttext\">".LAN_17."</td>
-<td><input class=\"tbox\" type=\"password\" name=\"clientpassword\" size=\"30\" value=\"\" maxlength=\"20\" />\n</td>
+<td style='width:15%' class='defaulttext'>".LAN_17."</td>
+<td><input class='tbox' type='password' name='clientpassword' size='30' value='' maxlength='20' />\n</td>
 </tr>
 <tr>
-<td style=\"width:15%\"></td>
+<td style='width:15%'></td>
 <td>
-<input class=\"button\" type=\"submit\" name=\"clientsubmit\" value=\"Continue\" />
+<input class='button' type='submit' name='clientsubmit' value='Continue' />
 </td>
 </tr>
 </table>";
