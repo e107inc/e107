@@ -15,7 +15,7 @@
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = "Event Calendar";
 $eplug_version = "3.2";
-$eplug_author = "jalist & cameron";
+$eplug_author = "jalist / cameron";
 $eplug_logo = "button.png";
 $eplug_url = "http://e107.org";
 $eplug_email = "jalist@e107.org";
