@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2004-11-27 15:57:53 $
+|     $Revision: 1.26 $
+|     $Date: 2004-11-27 16:14:44 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -220,10 +220,9 @@ if ($pref['frontpage'] && $pref['frontpage_type'] == "splash") {
 	}
 }
 
-if ($pref['status']) {
-	require_once(e_HANDLER."cache_handler.php");
-	$e107cache = new ecache;
-}
+require_once(e_HANDLER."cache_handler.php");
+$e107cache = new ecache;
+
 
 if ($pref['del_unv']) {
 	$threshold = (time() - ($pref['del_unv'] * 60));
