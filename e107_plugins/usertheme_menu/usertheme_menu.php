@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/usertheme_menu/usertheme_menu.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-03-26 22:57:21 $
-|     $Author: sweetas $
+|     $Revision: 1.7 $
+|     $Date: 2005-04-06 21:48:16 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
@@ -46,7 +46,7 @@ if (USER == TRUE) {
 	 
 	$text = "<form method='post' action='".e_SELF."'>
 		<div style='text-align:center'>
-		<select name='sitetheme' class='tbox'>";
+		<select name='sitetheme' class='tbox' style='width: 95%;'>";
 	$counter = 0;
 	 
 	while (isset($themelist[$counter]) && $themelist[$counter]) {
