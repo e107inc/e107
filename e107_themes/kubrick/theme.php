@@ -75,7 +75,7 @@ Based on 'kubrick' by <a href='http://binarybonsai.com/kubrick/'>Michael Heilema
 </div> 
 ";
 
-$CUSTOMPAGES = "forum.php forum_post.php forum_viewforum.php forum_viewtopic.php user.php submitnews.php download.php links.php stats.php usersettings.php";
+$CUSTOMPAGES = "forum.php forum_post.php forum_viewforum.php forum_viewtopic.php user.php submitnews.php download.php links.php stats.php usersettings.php signup.php";
 
 $NEWSSTYLE = "
 <h2>{NEWSTITLE}</h2>
