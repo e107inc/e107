@@ -18,7 +18,7 @@ function updatecheck_613b_to_614(){
 
 function updatedo_613b_to_614(){
 	global $sql;
-	$qry = "CREATE TABLE ".MPREFIX."xparser (
+	$qry = "CREATE TABLE ".MPREFIX."parser (
   parser_id int(10) unsigned NOT NULL auto_increment,
   parser_pluginname varchar(100) NOT NULL default '',
   parser_regexp varchar(100) NOT NULL default '',
