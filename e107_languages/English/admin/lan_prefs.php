@@ -88,6 +88,7 @@ define("PRFLAN_81", "Enable Image-code verification during login.");
 define("PRFLAN_82", "Restrict Search page to members");
 
 define("PRFLAN_83", "example");
+define("PRFLAN_84", "Disable Right Mouse-Click");   
 
 define("CUSTSIG_1", "Settings Saved!");
 define("CUSTSIG_2", "Real Name:");
