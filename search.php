@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:45 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-11-25 21:09:18 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -94,51 +94,25 @@ if($_POST['searchtype'] == "99"){
                 $_POST['searchtype'][] = $key;
         }
 }
-$text = "<div ><form name='searchform' method='post' action='".e_SELF."'>
-<table style='width:95%' class='fborder'>
-<tr>
-<td colspan='2' class='forumheader'>
-".LAN_180."
-</td>
-</tr>
-<tr>
-<td class='forumheader2' style='width:20%'>
-".LAN_199." </td>
-<td class='forumheader3' style='width:80%'>
-<input class='tbox' type='text' name='searchquery' size='40' value='$query' maxlength='50' />
-<span class='smalltext'>".LAN_417."</span>
-</td>
-</tr>
-<tr>
-<td style='width:20%' class='forumheader2'>
-&nbsp;".LAN_200."
-</td>
-<td style='width:80%' class='forumheader3'>";
 
 foreach($search_info as $key => $si){
         //($_POST['searchtype'][$key]==$key ) ? $sel=" checked" : $sel="";
-        $text.="<span style='white-space:nowrap; padding-bottom:7px;padding-top:7px'><input onclick=\"getElementById('google').checked = false\"   type='checkbox' name='searchtype[]' value='{$key}' />{$si['qtype']}</span>\n";
+		$SEARCH_MAIN_CHECKBOXES .= "<span style='white-space:nowrap; padding-bottom:7px;padding-top:7px'><input onclick=\"getElementById('google').checked = false\"   type='checkbox' name='searchtype[]' value='{$key}' />{$si['qtype']}</span>\n";
 }
+$SEARCH_MAIN_CHECKBOXES .= "<input id='google' type='checkbox' name='searchtype[]'  onclick='uncheckAll(this)' value='98' />Google";
+$SEARCH_MAIN_SEARCHFIELD = "<input class='tbox' type='text' name='searchquery' size='40' value='$query' maxlength='50' />";
+$SEARCH_MAIN_CHECKALL = "<input class='button' type='button' name='CheckAll' value='".LAN_SEARCH_1."' onclick='checkAll(this);' />";
+$SEARCH_MAIN_UNCHECKALL = "<input class='button' type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this);' />";
+$SEARCH_MAIN_SUBMIT = "<input class='button' type='submit' name='searchsubmit' value='".LAN_180."' />";
 
-$text .= "
-<input id='google' type='checkbox' name='searchtype[]'  onclick='uncheckAll(this)' value='98' />Google
-<br /><br />
-<input class='button' type='button' name='CheckAll' value='".LAN_SEARCH_1."'
-onclick='checkAll(this);' />
-<input class='button' type='button' name='UnCheckAll' value='".LAN_SEARCH_2."'
-onclick='uncheckAll(this);' />
-<br />
-</td>
-</tr>
-<tr>
-<td colspan='2' class='forumheader' style='text-align:center'>
-
-<input class='button' type='submit' name='searchsubmit' value='".LAN_180."' />
-</td>
-</tr>
-</table>
-</form></div>";
-
+if(!$SEARCH_MAIN_TABLE){
+	if(file_exists(THEME."search_template.php")){
+		require_once(THEME."search_template.php");
+	}else{
+		require_once(e_BASE.$THEMES_DIRECTORY."templates/search_template.php");
+	}
+}
+$text = preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_MAIN_TABLE);
 
 $ns -> tablerender(PAGE_NAME." ".SITENAME, $text);
 
