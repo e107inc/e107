@@ -165,12 +165,11 @@ require_once("footer.php");
 ?>
 <script type="text/javascript">
 
-function addtext2(str){
-        document.dataform.news_extended.value += str;
-        document.forms.dataform.news_extended.focus();
-}
 function addtext3(str){
         document.dataform.category_button.value = str;
+}
+function help2(help){
+	document.dataform.help_ext.value = help;
 }
 function fclear(){
         document.dataform.data.value = "";
@@ -386,10 +385,11 @@ class newspost{
                 <td style='width:80%' class='forumheader3'>
                 <textarea class='tbox' id='data' name='data' cols='80' rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".(strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]../", "[img]", $_POST['data']))."</textarea>
                 ";
-
-        if(!$pref['htmlarea']){$text .= ren_help()."
+//Main news body textarea
+        if(!$pref['htmlarea']){$text .= "
                 <input class='helpbox' type='text' name='helpb' size='100' />
-                <br />
+                <br />".
+        			ren_help()."
                 <select class='tbox' name='thumbps' onChange=\"addtext('[link=".e_IMAGE."/newspost_images/' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '][img]".e_IMAGE."/newspost_images/thumb_' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '[/img][/link]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_50."')\" onMouseOut=\"help('')\">
                 <option>".NWSLAN_80." ...</option>\n";
                 while(list($key, $image) = each($thumblist)){
@@ -413,23 +413,23 @@ class newspost{
                 $text .= "</select>";
 
         } // end of htmlarea check.
+//Extended news form textarea
                 $text .="
-
                 </td>
                 </tr>
                 <tr>
                 <td style='width:20%' class='forumheader3'>".NWSLAN_14.":</td>
                 <td style='width:80%' class='forumheader3'>
-
                 <a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_83."</a>
                 <div style='display: none;'>
-
-                <textarea class='tbox' id='news_extended' name='news_extended' cols='80' rows='10'>".$_POST['news_extended']."</textarea>
+                <textarea class='tbox' id='news_extended' name='news_extended' cols='80' rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".(strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]../", "[img]", $_POST['news_extended']))."</textarea>
                 ";
-        if(!$pref['htmlarea']){ $text .="<br />".ren_help("addtext2", TRUE)."
-
-                <select class='tbox' name='imageps2' onChange=\"addtext2('[img]' + this.form.imageps2.options[this.form.imageps2.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_50."')\" onMouseOut=\"help('')\">
-                <option>Insert image ...</option>\n";
+        if(!$pref['htmlarea']){ $text .="<br />
+                <input class='helpbox' type='text' name='help_ext' size='100' />
+                <br />
+        			".ren_help("","addtext","help2")."
+                <select class='tbox' name='imageps2' onChange=\"addtext('[img]' + this.form.imageps2.options[this.form.imageps2.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onMouseOver=\"help2('".NWSLAN_50."')\" onMouseOut=\"help2('')\">
+                <option>".NWSLAN_81." ...</option>\n";
                 reset($imagelist);
                 while(list($key, $image) = each($imagelist)){
                         $text .= "<option value='".e_IMAGE."/newspost_images/".$image."'>".$image."</option>\n";
