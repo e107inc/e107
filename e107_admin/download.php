@@ -47,8 +47,8 @@ if($sql -> db_Select("rbinary")){
 
 
 
-if($image_array = getfiles($e_file."downloadimages/")){ sort($image_array); } unset($t_array);
-if($thumb_array = getfiles($e_file."downloadthumbs/")){ sort($thumb_array); } unset($t_array);
+if($image_array = getfiles($e_file."downloadimages/",1)){ sort($image_array); } unset($t_array);
+if($thumb_array = getfiles($e_file."downloadthumbs/",1)){ sort($thumb_array); } unset($t_array);
 
 if(IsSet($_POST['add_category'])){
         $download -> create_category($sub_action, $id);
@@ -339,7 +339,7 @@ class download{
 
                 $counter = 0;
                 while(IsSet($file_array[$counter])){
-                        if($file_array[$counter] == $download_url){
+                        if(eregi($file_array[$counter],$download_url)){
                                 $text .= "<option selected>".$file_array[$counter]."</option>\n";
                         }else{
                                 $text .= "<option>".$file_array[$counter]."</option>\n";
@@ -700,9 +700,9 @@ class download{
 
 }
 
-function getfiles($dir){
+function getfiles($dir,$sub=0){
         global $t_array, $DOWNLOADS_DIRECTORY, $FILES_DIRECTORY;
-        if($DOWNLOADS_DIRECTORY{0}=="/" && $dir == $DOWNLOADS_DIRECTORY){
+        if($DOWNLOADS_DIRECTORY{0}=="/" && $sub!=1 ){
         $pathdir = $dir;
         }else{
         $pathdir = e_BASE.$dir;
