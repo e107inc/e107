@@ -467,24 +467,22 @@ select {
 	width: 130px;
 	}
 
-#commentform input {
-	width: 170px;
-	padding: 2px;
-	margin: 5px 5px 1px 0;
-	}
-
-#commentform textarea {
-	width: 100%;
-	padding: 2px;
-	}
-
-#commentform #submit {
-	margin: 0;
-	float: right;
-	}
+.button{
+	font-family: tahoma, verdana, arial, helvetica, sans-serif;
+	font-size: 10px;
+	text-align:center;
+}
 /* End Form Elements */
 
+.tbox.chatbox {
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+}
 
+.spacer {
+	padding: 2px 0 2px 0;
+}
 
 /* Begin Comments*/
 .graybox {
@@ -664,6 +662,7 @@ td {
 	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
 	color:#616060;
 }
+
 
 
 /* "Daisy, Daisy, give me your answer do. I'm half crazy all for the love of you.

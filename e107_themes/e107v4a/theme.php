@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/theme.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-03-21 10:50:44 $
+|     $Revision: 1.10 $
+|     $Date: 2005-03-21 11:49:33 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_THEME")){ exit; }
-// [multilanguage]
 
+// [multilanguage]
 @include_once(e_THEME."e107v4a/languages/".e_LANGUAGE.".php");
 @include_once(e_THEME."e107v4a/languages/English.php");
 
@@ -79,6 +79,8 @@ $FOOTER =
 <td colspan='3' style='text-align:center' class='smalltext'>
 
 {SITEDISCLAIMER}
+<br />
+{THEMEDISCLAIMER}
 </td>
 </tr>
 </table>

@@ -68,8 +68,8 @@ $FOOTER = "
 <br />
 <img src='".e_IMAGE."generic/php-small-trans-light.gif' alt='' /> <img src='".e_IMAGE."button.png' alt='' /> 
 <img src='".e_IMAGE."generic/poweredbymysql-88.png' alt=''  /> &nbsp;&nbsp;&nbsp;&nbsp;
-<a href='http://validator.w3.org/check?uri=referer' rel='external'><img src='".THEME."images/valid-xhtml11.png' alt='' style='border: 0;' /></a> 
-<a href='http://jigsaw.w3.org/css-validator/check/referer' rel='external'><img src='".THEME."images/vcss.png' alt='' style='border: 0;' /></a>
+<a href='http://validator.w3.org/check?uri=referer' rel='external'><img src='".e_IMAGE."generic/valid-xhtml11.png' alt='' style='border: 0;' /></a> 
+<a href='http://jigsaw.w3.org/css-validator/check/referer' rel='external'><img src='".e_IMAGE."generic/vcss.png' alt='' style='border: 0;' /></a>
 </div>		
 </div>
 </div>

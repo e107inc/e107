@@ -11,14 +11,23 @@
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
+// [multilanguage]
+@include_once(e_THEME."kubrick/languages/".e_LANGUAGE.".php");
+@include_once(e_THEME."kubrick/languages/English.php");
 
 // [theme]
 $themename = "kubrick";
 $themeversion = "1.0";
 $themeauthor = "Steve Dunstan [jalist]";
+$themeemail = "jalist@e107.org";
+$themewebsite = "http://e107.org";
 $themedate = "29/01/2005";
 $themeinfo = "Based on 'kubrick' by Michael Heilemann (http://binarybonsai.com/kubrick/).<br />This theme is intended for minimilist blog sites, as such the forum etc isn't skinned.";
 define("STANDARDS_MODE", TRUE);
+$xhtmlcompliant = TRUE;
+$csscompliant = TRUE;
+
+define("THEME_DISCLAIMER", "<br /><i>".LAN_THEME_1."</i>");
 
 // [layout]
 
@@ -45,8 +54,8 @@ $FOOTER = "
 <hr /> 
 <div id='footer'>
 <p>
-{SITEDISCLAIMER}
-Based on 'kubrick' by <a href='http://binarybonsai.com/kubrick/'>Michael Heilemann</a>.</p> 
+{SITEDISCLAIMER}<br />{THEMEDISCLAIMER}
+</p> 
 </div> 
 </div> 
 ";
@@ -69,8 +78,8 @@ $CUSTOMFOOTER = "
 <hr /> 
 <div id='footer'>
 <p>
-{SITEDISCLAIMER}
-Based on 'kubrick' by <a href='http://binarybonsai.com/kubrick/'>Michael Heilemann</a>.</p> 
+{SITEDISCLAIMER}<br />{THEMEDISCLAIMER}
+</p> 
 </div> 
 </div> 
 ";
@@ -89,12 +98,12 @@ $NEWSSTYLE = "
 </div>
 <br />";
 define("ICONSTYLE", "float: left; border:0");
-define("COMMENTLINK", "comment: ");
-define("COMMENTOFFSTRING", "Comments are turned off for this item");
+define("COMMENTLINK", LAN_THEME_3);
+define("COMMENTOFFSTRING", LAN_THEME_2);
 define("PRE_EXTENDEDSTRING", "<br /><br />[ ");
-define("EXTENDEDSTRING", "Read the rest ...");
+define("EXTENDEDSTRING", LAN_THEME_4);
 define("POST_EXTENDEDSTRING", " ]<br />");
-define("TRACKBACKSTRING", "Trackbacks: ");
+define("TRACKBACKSTRING", LAN_THEME_5);
 define("TRACKBACKBEFORESTRING", " | ");
 
 
@@ -123,24 +132,9 @@ $COMMENTSTYLE = "
 </tr>
 </table>
 <br /><br />
-
-
-
 <br /><br />
 ";
 
-
-
-
-$POLLSTYLE = <<< EOF
-<b>Poll:</b> {QUESTION}
-<br /><br />
-{OPTIONS=OPTION<br />BAR<br /><span class='smalltext'>PERCENTAGE VOTES</span><br />\n}
-<br /><div style='text-align:center' class='smalltext'>{AUTHOR}<br />{VOTE_TOTAL} {COMMENTS}
-<br />
-{OLDPOLLS}
-</div>
-EOF;
 
 $CHATBOXSTYLE = "
 <img src='".e_IMAGE."admin_images/chatbox_16.png' alt='' style='vertical-align: middle;' />
