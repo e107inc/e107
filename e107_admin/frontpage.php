@@ -101,7 +101,7 @@ if($flag != TRUE){
 	$text .= $pref['frontpage'];
 }
 
-$text .= "' maxlength='100' /> (type full URL)
+$text .= "' maxlength='100' /> ".FRTLAN_14."
 </td>
 </tr>
 
