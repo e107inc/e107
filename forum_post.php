@@ -323,7 +323,7 @@ if(IsSet($_POST['reply'])){
                 $iid = $sql -> db_Insert("forum_t", "0, '', '".$post."', '$forum_id', '".time()."', '".$thread_id."', '$user', 0, 1, '".time()."', 0 ");
                 $sql -> db_Update("forum_t",  "thread_lastpost='".time()."' WHERE thread_id='$thread_id' ");
                 $sql -> db_Update("forum", "forum_replies=forum_replies+1, forum_lastpost='$lastpost' WHERE forum_id='$forum_id' ");
-                $sql -> db_Update("user", "user_forums=user_forums+1 WHERE user_id='".USERID."' ");
+                $sql -> db_Update("user", "user_forums=user_forums+1,user_viewed='".USERVIEWED.$iid.".' WHERE user_id='".USERID."' ");
 
                 if($thread_active == 99){
                         $datestamp = $gen->convert_date(time(), "long");
