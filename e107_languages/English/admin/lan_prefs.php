@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-02-03 10:35:33 $
+|     $Revision: 1.9 $
+|     $Date: 2005-02-03 21:38:01 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -67,7 +67,7 @@ define("PRFLAN_56", "Timezone");
 define("PRFLAN_57", "Admin Front Page Style");
 
 define("PRFLAN_58", "Restrict website to member's only");
-define("PRFLAN_59", "Ticking will restrict all areas apart from the front page and signup page to members only");
+define("PRFLAN_59", "ticking will restrict all areas apart from the front page and signup page to members only");
 define("PRFLAN_60", "Enable SSL");
 
 define("PRFLAN_61", "Only enable SSL if <b>you are sure you know what you are doing!</b>");
@@ -101,7 +101,7 @@ define("PRFLAN_86", "Click here to verify language files");
 
 
 define("PRFLAN_87", "Comments");
-define("PRFLAN_88", "Click here to view nested comments");
+define("PRFLAN_88", "Turn on nested comments");
 
 define("CUSTSIG_1", "Settings Saved!");
 define("CUSTSIG_2", "Real Name:");
@@ -152,5 +152,6 @@ define("PRFLAN_109", "Wrap long words in main text");
 define("PRFLAN_110", "words longer than the length entered will be wrapped onto a new line");
 define("PRFLAN_111", "Wrap long words in menu text");
 
-
+define("PRFLAN_112", "On");
+define("PRFLAN_113", "Off");
 ?>
