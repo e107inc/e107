@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-07 16:11:16 $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-08 02:32:12 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -31,6 +31,7 @@ $rs = new form;
 if(isset($_POST['submit_prefs']) ){
 
     $pref['multilanguage'] = $_POST['multilanguage'];
+    $pref['sitelanguage'] = $_POST['sitelanguage'];
 
     save_prefs();
     $ns -> tablerender("Saved", "<div style='text-align:center'>Saved</div>");
@@ -194,14 +195,55 @@ require_once(e_ADMIN."footer.php");
 // ---------------------------------------------------------------------------
 function multilang_prefs(){
     global $ns,$pref;
+
+    $handle=opendir(e_LANGUAGEDIR);
+    while ($file = readdir($handle)){
+        if($file != "." && $file != ".." && $file != "/"){
+                $lanlist[] = $file;
+        }
+    }
+    closedir($handle);
+
+
   $text = "<div style='text-align:center'>
    <form method='post' action='".e_SELF."' name='linkform'>
-   <table style='".ADMIN_WIDTH."' class='fborder'>
+   <table style='".ADMIN_WIDTH."' class='fborder'>";
+
+
+   $text .= "<tr>
+
+<td style='width:40%' class='forumheader3'>".LANG_LAN_14.": </td>
+<td style='width:60%; text-align:center' class='forumheader3'>";
+
+// $text .= "<a href='".e_ADMIN."lancheck.php'>".PRFLAN_86."</a>";
+
+$text .= "
+<select name='sitelanguage' class='tbox'>\n";
+$counter = 0;
+$sellan = eregi_replace("lan_*.php", "", $pref['sitelanguage']);
+while(IsSet($lanlist[$counter])){
+        if($lanlist[$counter] == $sellan){
+                $text .= "<option selected='selected'>".$lanlist[$counter]."</option>\n";
+        }else{
+                $text .= "<option>".$lanlist[$counter]."</option>\n";
+        }
+        $counter++;
+}
+$text .= "</select>
+</td>
+</tr>";
+
+
+
+
+
+
+   $text .= "
    <tr>
    <td style='width:40%' class='forumheader3'>".LANG_LAN_12.": </td>
-   <td style='width:60%' class='forumheader3'>";
+   <td style='width:60%;text-align:center' class='forumheader3'>";
    $checked = ($pref['multilanguage'] == 1) ? "checked='checked'" : "";
-   $text .= "<input type='checkbox' name='multilanguage'  style='width:80%' value='1' $checked>
+   $text .= "<input type='checkbox' name='multilanguage'   value='1' $checked>
    </td>
    </tr>
    ";
