@@ -11,15 +11,18 @@
 +---------------------------------------------------------------+
 */
 
-class secure_image {
+class secure_image 
+{
 	var $random_number;
 
-	function secure_image() {
+	function secure_image() 
+  {
 		list($usec, $sec) = explode(" ", microtime());
 		$this -> random_number = str_replace(".","",$sec.$usec);
 	}
 	
-	function create_code(){
+	function create_code()
+  {
 		global $pref, $sql, $IMAGES_DIRECTORY;
 		$imgp = SITEURL.$IMAGES_DIRECTORY;
 		mt_srand ((double)microtime()*1000000);
@@ -34,9 +37,11 @@ class secure_image {
 		return $recnum;
 	}
 
-	function verify_code($rec_num,$checkstr){
+	function verify_code($rec_num,$checkstr)
+  {
 		global $sql;
-		if($sql -> db_Select("tmp","tmp_info","tmp_ip = '{$rec_num}'")){
+		if($sql -> db_Select("tmp","tmp_info","tmp_ip = '{$rec_num}'"))
+    {
 			$row = $sql -> db_Fetch();
 			$sql -> db_Delete("tmp","tmp_ip = '{$rec_num}'");
 			list($code,$path) = explode(",",$row[0]);
@@ -45,10 +50,11 @@ class secure_image {
 		return FALSE;
 	}
 
-	function r_image(){
+	function r_image()
+  {
 		global $HANDLERS_DIRECTORY;
 		$code = $this -> create_code();
-		return "<img src='".e_BASE.$HANDLERS_DIRECTORY."secure_img_render.php?{$code}' />";
+		return "<img src='".e_BASE.$HANDLERS_DIRECTORY."secure_img_render.php?{$code}' alt='' />";
 	}
 }
 ?>
