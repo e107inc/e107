@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-02-23 03:22:13 $
+|     $Revision: 1.14 $
+|     $Date: 2005-03-06 01:52:27 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -72,6 +72,8 @@ if (isset($_POST['update_options'])) {
 	$pref['im_height'] = $_POST['im_height'];
 	$pref['photo_upload'] = (FILE_UPLOADS ? $_POST['photo_upload'] : 0);
 	$pref['del_unv'] = $_POST['del_unv'];
+	$pref['profile_rate'] = $_POST['profile_rate'];
+	$pref['profile_comments'] = $_POST['profile_comments'];
 	save_prefs();
 	$user->show_message(USRLAN_1);
 }
@@ -588,6 +590,19 @@ class users {
 			<input class='tbox' type='text' name='im_height' size='10' value='".$pref['im_height']."' maxlength='5' /> (".USRLAN_50.")
 			</td></tr>
 			 
+			<tr>
+			<td style='width:50%' class='forumheader3'>".USRLAN_126.":</td>
+			<td style='width:50%' class='forumheader3'>". ($pref['profile_rate'] ? "<input name='profile_rate' type='radio' value='1' checked='checked' />".USRLAN_45."&nbsp;&nbsp;<input name='profile_rate' type='radio' value='0' />".USRLAN_46 : "<input name='profile_rate' type='radio' value='1' />".USRLAN_45."&nbsp;&nbsp;<input name='profile_rate' type='radio' value='0' checked='checked' />".USRLAN_46)."
+			</td>
+			</tr>
+			 
+			<tr>
+			<td style='width:50%' class='forumheader3'>".USRLAN_127.":</td>
+			<td style='width:50%' class='forumheader3'>". ($pref['profile_comments'] ? "<input name='profile_comments' type='radio' value='1' checked='checked' />".USRLAN_45."&nbsp;&nbsp;<input name='profile_comments' type='radio' value='0' />".USRLAN_46 : "<input name='profile_comments' type='radio' value='1' />".USRLAN_45."&nbsp;&nbsp;<input name='profile_comments' type='radio' value='0' checked='checked' />".USRLAN_46)."
+			</td>
+			</tr>
+
+
 			<tr>
 			<td style='width:50%' class='forumheader3'>".USRLAN_93."<br /><span class='smalltext'>".USRLAN_94."</span></td>
 			<td style='width:50%' class='forumheader3'>

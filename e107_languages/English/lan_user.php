@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_user.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:11:56 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-03-06 01:53:05 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Members");
@@ -62,6 +62,6 @@ define("LAN_424", "Click here to View Forum Posts");
 
 
 define("LAN_425", "Send Private Message");
-
+define("USERLAN_1", "Peer Rating");
 
 ?>
