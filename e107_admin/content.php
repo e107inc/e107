@@ -11,30 +11,27 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/content.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-01-27 19:52:24 $
-|     $Author: streaky $
+|     $Revision: 1.9 $
+|     $Date: 2005-02-24 10:48:26 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
-if (!is_object($tp)) $tp = new e_parse;
-if ($pref['htmlarea']) {
-	require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
-	$htmlarea_js = htmlarea("data");
-}
+
 if (!getperms("J") && !getperms("K") && !getperms("L")) {
 	header("location:".e_HTTP."index.php");
 	exit;
 }
 $e_sub_cat = 'content';
-	
+$e_wysiwyg = "data";
+
 require_once("auth.php");
 require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."form_handler.php");
-	
-	
+
+
 $rs = new form;
-	
+
 if (e_QUERY) {
 	$tmp = explode(".", e_QUERY);
 	$action = $tmp[0];
@@ -42,15 +39,15 @@ if (e_QUERY) {
 	$id = $tmp[2];
 	unset($tmp);
 }
-	
+
 foreach($_POST as $k => $v) {
 	if (preg_match("#^main_delete_(\d*)$#", $k, $matches) && $_POST[$k] == $tp->toJS(CNTLAN_7)) {
 		$delete_content = $matches[1];
 	}
 }
-	
+
 $aj = new textparse;
-	
+
 If(isset($_POST['submit'])) {
 	if ($_POST['data'] != "") {
 		$content_subheading = $aj->formtpa($_POST['content_subheading'], "admin");
@@ -74,7 +71,7 @@ If(isset($_POST['submit'])) {
 		$message = CNTLAN_1;
 	}
 }
-	
+
 if (isset($_POST['update'])) {
 	$content_subheading = $aj->formtpa($_POST['content_subheading'], "admin");
 	$content_heading = $aj->formtpa($_POST['content_heading'], "admin");
@@ -86,7 +83,7 @@ if (isset($_POST['update'])) {
 	$e107cache->clear("content");
 	$e107cache->clear("sitelinks");
 }
-	
+
 if ($delete_content) {
 	$sql = new db;
 	$sql->db_Select("content", "*", "content_id=$delete_content");
@@ -99,17 +96,17 @@ if ($delete_content) {
 	$e107cache->clear("content");
 	$e107cache->clear("sitelinks");
 }
-	
+
 if (isset($message)) {
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
-	
+
 $text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; height : 100px; overflow : auto; margin-left: auto; margin-right: auto;'>\n";
 if (!$content_total = $sql->db_Select("content", "*", "content_type='254' OR content_type='255' OR content_type='1' ORDER BY content_datestamp DESC")) {
 	$text .= "<div style='text-align:center'>".CNTLAN_4."</div>";
 } else {
 	$text .= "
-		<form method='post' action='".e_SELF."' onsubmit=\"return confirm_()\">
+		<form method='post' action='".e_SELF."' >
 		<table class='fborder' style='width:99%'>
 		<tr>
 		<td style='width:5%' class='fcaption'>&nbsp;</td>
@@ -124,18 +121,18 @@ if (!$content_total = $sql->db_Select("content", "*", "content_type='254' OR con
 			<td style='width:65%' class='forumheader3'>$content_title</td>
 			<td style='width:30%; text-align:center' class='forumheader3'>
 			".$rs->form_button("button", "main_edit_{$content_id}", CNTLAN_6, "onclick=\"document.location='".e_SELF."?edit.$content_id'\"")."
-			".$rs->form_button("submit", "main_delete_{$content_id}", CNTLAN_7)."
-			 
+			".$rs->form_button("submit", "main_delete_{$content_id}", CNTLAN_7," onclick=\"return jsconfirm('".$tp->toJS(CNTLAN_27)." [ID: $content_id ]')\"")."
+
 			</td>\n</tr>";
 	}
 	$text .= "</table>\n</form>";
 }
 $text .= "<br /></div></div>";
-	
+
 $ns->tablerender(CNTLAN_5, $text);
-	
+
 unset($content_heading, $content_subheading, $content_content, $content_parent, $content_comment);
-	
+
 if ($action == "edit") {
 	if ($sql->db_Select("content", "*", "content_id=$sub_action")) {
 		$row = $sql->db_Fetch();
@@ -144,18 +141,18 @@ if ($action == "edit") {
 } else {
 	$content_comment = TRUE;
 }
-	
+
 $article_total = $sql->db_Select("content", "*", "content_type='254' OR content_type='255' OR content_type='1' ");
-	
+
 $text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."' id='dataform'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
-	 
+
 	<tr>
 	<td style='width:20%; vertical-align:top' class='forumheader3'>".CNTLAN_10.":</td>
 	<td style='width:80%' class='forumheader3'>
 	<input class='tbox' type='text' name='content_heading' size='60' value='$content_heading' maxlength='100' />
-	 
+
 	</td>
 	</tr>
 	<tr>
@@ -165,13 +162,13 @@ $text = "<div style='text-align:center'>
 	</td>
 	</tr>
 	<tr>
-	<td style='width:20%' class='forumheader3'><span style='text-decoration: underline'>".CNTLAN_12.": </span></td>
-	<td style='width:80%' class='forumheader3'>";
-$insertjs = (!$pref['htmlarea'])? "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'":
-"";
-$text .= "<textarea class='tbox' id='data' name='data' style='width:100%' rows='30' cols='60' $insertjs >$content_content</textarea>";
-	
-if (!$pref['htmlarea']) {
+	<td colspan='2' class='forumheader3'><span style='text-decoration: underline'>".CNTLAN_12.": </span></td></tr>
+	<tr><td colspan='2' class='forumheader3'>";
+
+	$insertjs = (!$pref['wysiwyg'])? "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'": "";
+	$text .= "<textarea class='tbox' id='data' name='data' style='width:100%' rows='30' cols='60' $insertjs >$content_content</textarea>";
+
+if (!$pref['wysiwyg']) {
 	$text .= "
 		<br />
 		<input class='helpbox' type='text' name='helpb' size='100' />
@@ -182,11 +179,11 @@ if (!$pref['htmlarea']) {
 $text .= "
 	</td>
 	</tr>
-	 
+
 	<tr>
 	<td style='width:20%' class='forumheader3'>".CNTLAN_21."?:</td>
 	<td style='width:80%' class='forumheader3'>";
-	
+
 if ($content_parent) {
 	$text .= CNTLAN_14.": <input type='radio' name='auto_line_breaks' value='0' />
 		".CNTLAN_15.": <input type='radio' name='auto_line_breaks' value='1' checked='checked' />";
@@ -199,8 +196,8 @@ $text .= "<span class='smalltext'>".CNTLAN_22."</span>
 	<tr>
 	<td style='width:20%' class='forumheader3'>".CNTLAN_13."?:</td>
 	<td style='width:80%' class='forumheader3'>";
-	
-	
+
+
 if (!$content_comment) {
 	$text .= CNTLAN_14.": <input type='radio' name='content_comment' value='1' />
 		".CNTLAN_15.": <input type='radio' name='content_comment' value='0' checked='checked' />";
@@ -208,19 +205,19 @@ if (!$content_comment) {
 	$text .= CNTLAN_14.": <input type='radio' name='content_comment' value='1' checked='checked' />
 		".CNTLAN_15.": <input type='radio' name='content_comment' value='0' />";
 }
-	
-	
+
+
 $text .= "
 	</td></tr>
-	 
-	 
+
+
 	<tr>
 	<td class='forumheader3'>".CNTLAN_28.":&nbsp;&nbsp;</td><td class='forumheader3'>". ($content_pe_icon ? CNTLAN_29.": <input type='radio' name='add_icons' value='1' checked='checked' />".CNTLAN_30.": <input type='radio' name='add_icons' value='0' />" : CNTLAN_29.": <input type='radio' name='add_icons' value='1' />".CNTLAN_30.": <input type='radio' name='add_icons' value='0' checked='checked' />")."
 	</td>
 	</tr>
-	 
+
 	";
-	
+
 $text .= "
 	<tr>
 	<td style='width:20%' class='forumheader3'>".CNTLAN_19.":</td>
@@ -229,29 +226,29 @@ $text .= "
 	</tr>
 	<tr style='vertical-align:top'>
 	<td colspan='2'  style='text-align:center' class='forumheader'>";
-	
-	
+
+
 if ($action == "edit") {
 	$text .= "<input class='button' type='submit' name='update' value='".CNTLAN_16."' />
 		<input type='hidden' name='content_id' value='$content_id' />";
 } else {
 	$text .= "<input class='button' type='submit' name='submit' value='".CNTLAN_17."' />";
 }
-	
+
 $text .= "</td>
 	</tr>
 	</table>
 	</form>
 	</div>";
-	
-	
+
+
 $ns->tablerender(CNTLAN_18, $text);
-	
+
 echo "<script type=\"text/javascript\">
 	function confirm_(content_id){
 	return  confirm(\"".$tp->toJS(CNTLAN_27)."\");
 	}
 	</script>";
-	
+
 require_once("footer.php");
 ?>
