@@ -133,7 +133,7 @@ $ns -> tablerender(ADMSLAN_13, $text);
 
 
 $text = "<div style='text-align:center'>
-<form method='post' action='".e_SELF."' id='myform' name='myform'>
+<form method='post' action='".e_SELF."' id='myform' >
 <table style='width:95%' class='fborder'>
 <tr>
 <td style='width:30%' class='forumheader3'>".ADMSLAN_16.": </td>
