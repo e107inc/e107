@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search_class.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-02-13 20:24:20 $
+|     $Revision: 1.15 $
+|     $Date: 2005-02-14 13:25:50 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -24,12 +24,14 @@ class e_search {
 	var $pos;
 	
 	function e_search() {
+		/*
 		global $pref;
 		$pref['search_sort'] = 'php';
 		if (!$pref['search_chars']) {
 			$pref['search_chars'] = 150;
 		}
 		save_prefs();
+		*/
 	}
 	
 	function parsesearch($table, $return_fields, $search_fields, $weights, $handler, $no_results, $where, $order, $php_order) {
@@ -54,7 +56,7 @@ class e_search {
 		}
 		if($pref['search_sort'] == 'php') {
 			if (count($keywords) > 1) {
-				$php_keywords[0] = $query;
+				$php_keywords[] = $query;
 				foreach ($keywords as $php_key) {
 					$php_keywords[] = $php_key;
 				}
@@ -79,7 +81,7 @@ class e_search {
 					if($pref['search_sort'] == 'php') {
 						$exact = TRUE;
 					}
-					$this -> text = strip_tags($tp -> toHTML(str_replace(array('[', ']'), array('<', '>'), $this -> text), FALSE));
+					$this -> text = strip_tags($tp -> toHTML(str_replace(array('<br />', '[', ']'), array(' ', '<', '>'), nl2br($this -> text)), FALSE));
 					foreach ($keywords as $this -> query) {
 						if (strpos($this -> query, '-') == FALSE) {
 							if (strpos($this -> query, '*') !== FALSE) {
@@ -93,7 +95,7 @@ class e_search {
 								$this -> pos = strlen($this -> text) - strlen($match_start);
 								if($pref['search_sort'] == 'php') {
 									if ($exact) {
-										$weight = (($weights[$x] * 2) * ($keycount));
+										$weight += (($weights[$x] * 2) * ($keycount));
 										$endweight = TRUE;
 									} else if (!$endweight) {
 										$weight += $weights[$x];
