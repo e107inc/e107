@@ -42,7 +42,7 @@ if(IsSet($_POST['commentsubmit'])){
 	}
 }
 
-if($cache = retrieve_cache("comment.php?$table.$id"){
+if($cache = retrieve_cache("comment.php?$table.$id")){
 	require_once(HEADERF);
 	echo $cache;
 }else{
