@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/online.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-09-28 09:25:06 $
-|     $Author: loloirie $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-05 10:34:26 $
+|     $Author: pholzmann $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -172,11 +172,11 @@ $text .= "</table></div><br />";
 $text .= ONLINE_EL1.GUESTS_ONLINE.", ";
 $text .= ONLINE_EL2.MEMBERS_ONLINE." ...<br />";
 if((MEMBERS_ONLINE + GUESTS_ONLINE) > ($menu_pref['most_members_online'] + $menu_pref['most_guests_online'])){
+	global $sysprefs;
         $menu_pref['most_members_online'] = MEMBERS_ONLINE;
         $menu_pref['most_guests_online'] = GUESTS_ONLINE;
         $menu_pref['most_online_datestamp'] = time();
-        $tmp = addslashes(serialize($menu_pref));
-        $sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='menu_pref' ");
+	$sysprefs->setArray('menu_pref');
 }
 
 if(!is_object($gen)){$gen = new convert;}
