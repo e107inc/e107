@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2004-11-27 15:12:25 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.23 $
+|     $Date: 2004-11-27 15:25:01 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -129,12 +129,12 @@ else if($merror == "e2") {
 	exit;
 }
 
-/* New compatabilty class.
-   Set true to enable e107 comapatabilty mode,
-   defaults to *PHP ONLY* mode */
+/* New compatabilty mode.
+   At a later date add a check to load e107 compat mode by $pref
+   PHP Compatabilty should *always* be on. */
 
-require_once(e_HANDLER."compatability_class.php");
-$e107_Compatability = new e107Compat(true);
+require_once(e_HANDLER."PHP_Compat_handler.php");
+require_once(e_HANDLER."e107_Compat_handler.php");
 
 // New parser code #########
 $parsethis = array();
