@@ -45,7 +45,7 @@ chr(36)."text = ".chr(34).$_POST['menu_text'].chr(34).";\n".
 
 chr(36)."aj = new textparse;\n".
 chr(36)."caption = ".chr(36)."aj -> tpa(".chr(36)."caption, \"on\");\n".
-chr(36)."text = ".chr(36)."aj -> tpa(".chr(36)."text, \"on\");\n".
+chr(36)."text = ".chr(36)."aj -> tpa(".chr(36)."text, \"on\",\"admin\");\n".
 chr(36)."ns -> tablerender(".chr(36)."caption, ".chr(36)."text);\n?".chr(62);
 
                 $fp = @fopen(e_PLUGIN."custom/".$_POST['menu_name'].".php","w");
@@ -61,7 +61,7 @@ chr(36)."ns -> tablerender(".chr(36)."caption, ".chr(36)."text);\n?".chr(62);
 
 if(IsSet($_POST['preview'])){
         $menu_caption = $aj -> tpa($_POST['menu_caption']);
-        $menu_text = $aj -> tpa($_POST['menu_text']);
+        $menu_text = $aj -> tpa($_POST['menu_text'],"on","admin");
         echo "<div style='text-align:center'>
         <table style='width:200px'>
         <tr>
