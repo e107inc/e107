@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-02-14 03:56:12 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.25 $
+|     $Date: 2005-02-15 06:47:53 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -276,7 +276,7 @@ class links {
 	}
 
 	function submit_link($sub_action, $id) {
-		global $sql, $e107cache;
+		global $sql, $e107cache,$tp;
 		$link_name = $tp->toDB($_POST['link_name']);
 		$link_url = $tp->toDB($_POST['link_url']);
 		$link_description = $tp->toDB($_POST['link_description']);

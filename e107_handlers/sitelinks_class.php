@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-02-14 08:27:50 $
+|     $Revision: 1.29 $
+|     $Date: 2005-02-15 06:48:15 $
 |     $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -164,7 +164,7 @@ function hilite($link){
 		}
 	}
 
-	if(!eregi("cat",e_QUERY)&& defined("LINKSTART_HILITE") && (strpos(e_SELF, str_replace("../","","/".$link)) !== FALSE)){
+	if(!eregi("all",e_QUERY) && !eregi("disp",e_QUERY) && !eregi("cat",e_QUERY) && !eregi("list",e_QUERY) && defined("LINKSTART_HILITE") && (strpos(e_SELF, str_replace("../","","/".$link)) !== FALSE)){
 		return TRUE;
 	}
 
