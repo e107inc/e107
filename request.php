@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-03-31 17:47:44 $
+|     $Revision: 1.13 $
+|     $Date: 2005-03-31 17:49:48 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ if (!e_QUERY) {
 
 $id = FALSE;
 if (!is_numeric(e_QUERY)) {
-	if ($sql->db_Select("download", "download_id", "download_url='".e_QUERY."'", TRUE)) {
+	if ($sql->db_Select("download", "download_id", "download_url='".e_QUERY."'")) {
 		$row = $sql->db_Fetch();
 		$type = "file";
 		$id = $row['download_id'];
