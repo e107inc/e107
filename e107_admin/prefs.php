@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2005-03-08 09:10:26 $
-|     $Author: stevedunstan $
+|     $Revision: 1.37 $
+|     $Date: 2005-03-08 16:46:07 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -748,24 +748,6 @@ $text .= "<div id='security' style='display:none; text-align:center'>
 
 $text .= pref_submit();
 
-$text .= "</table>
-	</div>
-
-	<div id='search' style='display:none; text-align:center'>
-	<table style='width:100%' class='fborder'>
-	<tr>
-	<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' colspan='2'>".PRFLAN_114."</td>
-	</tr>
-
-	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_115."</td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input class='tbox' type='text' name='search_chars' size='3' value='".$pref['search_chars']."' maxlength='4' />
-	</td>
-	</tr>";
-
-$text .= pref_submit();
-
 $text .= "</table></div>";
 
 $text .= "<div id='comments' style='display:none; text-align:center'>
@@ -833,7 +815,6 @@ function prefs_adminmenu() {
 	$var['signup']['text'] = PRFLAN_19;
 	$var['textpost']['text'] = PRFLAN_101;
 	$var['security']['text'] = PRFLAN_47;
-	$var['search']['text'] = PRFLAN_114;
 	$var['comments']['text'] = PRFLAN_87;
 	show_admin_menu(PRFLAN_99, $action, $var, TRUE);
 }
