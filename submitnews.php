@@ -91,6 +91,7 @@ if($_FILES['file_userfile']){
 
   // ==========================================================
                if($error == FALSE){
+                if(!file_exists(e_IMAGE."newspost_images/". $newname)){$newname = ""; }
                 $sql -> db_Insert("submitnews", "0, '$user', '$email', '$itemtitle', '".$_POST['cat_id']."','$item', '".time()."', '$ip', '0', '$newname' ");
                 $ns -> tablerender(LAN_133, "<div style='text-align:center'>".LAN_134."</div>");
                 require_once(FOOTERF);
