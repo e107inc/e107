@@ -93,6 +93,7 @@ if(IsSet($_POST['updateoptions'])){
 	$pref['forum_levels'] = $_POST['forum_levels'];
 	$pref['html_post'] = $_POST['html_post'];
 	$pref['forum_attach'] = $_POST['forum_attach'];
+	$pref['forum_redirect'] = $_POST['forum_redirect'];
 	save_prefs();
 	$forum -> show_message(FORLAN_10);
 }
@@ -518,6 +519,11 @@ class forum{
 		<tr>
 		<td style='width:75%' class='forumheader3'>".FORLAN_51."<br /><span class='smalltext'>".FORLAN_52."</span></td>
 		<td style='width:25%' class='forumheader2' style='text-align:center'>".($pref['forum_track'] ? "<input type='checkbox' name='forum_track' value='1' checked>" : "<input type='checkbox' name='forum_track' value='1'>")."</td>
+		</tr>
+
+		<tr>
+		<td style='width:75%' class='forumheader3'>".FORLAN_112."<br /><span class='smalltext'>".FORLAN_113."</span></td>
+		<td style='width:25%' class='forumheader2' style='text-align:center'>".($pref['forum_redirect'] ? "<input type='checkbox' name='forum_redirect' value='1' checked>" : "<input type='checkbox' name='forum_redirect' value='1'>")."</td>
 		</tr>
 
 		<tr>

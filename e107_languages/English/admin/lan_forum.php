@@ -118,6 +118,6 @@ define("FORLAN_108", " deleted");
 define("FORLAN_109", "days:");
 define("FORLAN_110", "Prune");
 define("FORLAN_111", "deactivate");
-define("FORLAN_110", "Prune");
-define("FORLAN_110", "Prune");
+define("FORLAN_112", "Enable Redirect");
+define("FORLAN_113", "Tick this to make browser redirect to forum page after replying");
 ?>
