@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-03-10 05:21:43 $
+|     $Revision: 1.16 $
+|     $Date: 2005-03-13 11:42:32 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -143,10 +143,11 @@ $ICONKEY = "
 	</table>";
 	
 $SEARCH = "
-	<form method='post' action='".e_BASE."search.php'>
+	<form method='get' action='".e_BASE."search.php'>
 	<p>
-	<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />
-	<input class='button' type='submit' name='searchsubmit' value='".LAN_180."' />
+	<input class='tbox' type='text' name='q' size='20' value='' maxlength='50' />
+	<input type='hidden' name='r' value='0' />
+	<input class='button' type='submit' name='s' value='".LAN_180."' />
 	</p>
 	</form>";
 	
