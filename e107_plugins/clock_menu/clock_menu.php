@@ -18,9 +18,9 @@
 +---------------------------------------------------------------+
 */
 global $menu_pref;
-$ec_dir = e_PLUGIN."clock_menu/";
-$lan_file = $ec_dir."languages/".e_LANGUAGE.".php";
-include(file_exists($lan_file) ? $lan_file : e_PLUGIN."clock_menu/languages/English.php");
+//$ec_dir = e_PLUGIN."clock_menu/";
+//$lan_file = $ec_dir."languages/".e_LANGUAGE.".php";
+//include(file_exists($lan_file) ? $lan_file : e_PLUGIN."clock_menu/languages/English.php");
 if(!defined("e_HTTP")){exit;}
 $text = "\n\n<!-- ### clock ### //-->\n<div id='Clock'>&nbsp;</div>\n";
 if(!$clock_flat){

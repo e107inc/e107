@@ -35,7 +35,9 @@ foreach($eMenuList[$menu] as $row) {
 			e107_require_once(e_PLUGIN."custom/".str_replace("custom_", "", $menu_name).".php");
 		} else {
 			include(e_PLUGIN.$menu_name."/languages/".e_LANGUAGE.".php");
-			include(e_PLUGIN.$menu_name."/languages/English.php");
+			if(e_LANGUAGE != 'English') {
+				include(e_PLUGIN.$menu_name."/languages/English.php");
+			}
 			include(e_PLUGIN.$menu_name."/".$menu_name.".php");
 		}
 		$sql->db_Mark_Time("(After $menu_name)");
