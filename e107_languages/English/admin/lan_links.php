@@ -4,15 +4,15 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_links.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-04-02 19:14:19 $
+|     $Revision: 1.7 $
+|     $Date: 2005-04-02 21:08:06 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("LCLAN_1", "Options Saved");
 define("LCLAN_2", "Link saved to database.");
 define("LCLAN_3", "Link updated in database.");
-define("LCLAN_4", "Link deleted.");
+// define("LCLAN_4", "Link deleted.");
 define("LCLAN_6", "Order updated.");
 define("LCLAN_8", "Existing Links");
 

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_filemanager.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-04-02 19:14:19 $
+|     $Revision: 1.5 $
+|     $Date: 2005-04-02 21:08:06 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -13,13 +13,13 @@ define("FMLAN_1", "Uploaded");
 define("FMLAN_2", "to");
 define("FMLAN_3", "directory");
 define("FMLAN_4", "The uploaded file exceeds the upload_max_filesize directive in php.ini.");
-define("FMLAN_5", "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the html form.");
-define("FMLAN_6", "The uploaded file was only partially uploaded.");
-define("FMLAN_7", "No file was uploaded.");
-define("FMLAN_8", "Uploaded file size 0 bytes");
-define("FMLAN_9", "The file did not upload. Filename");
-define("FMLAN_10", "Error");
-define("FMLAN_11", "Probably incorrect permissions on upload directory.");
+// define("FMLAN_5", "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the html form.");
+// define("FMLAN_6", "The uploaded file was only partially uploaded.");
+// define("FMLAN_7", "No file was uploaded.");
+// define("FMLAN_8", "Uploaded file size 0 bytes");
+// define("FMLAN_9", "The file did not upload. Filename");
+// define("FMLAN_10", "Error");
+// define("FMLAN_11", "Probably incorrect permissions on upload directory.");
 define("FMLAN_12", "file");
 define("FMLAN_13", "files");
 define("FMLAN_14", "directory");

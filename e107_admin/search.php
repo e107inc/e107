@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/search.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-03-27 08:01:51 $
-|     $Author: sweetas $
+|     $Revision: 1.14 $
+|     $Date: 2005-04-02 21:06:52 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,10 +27,10 @@ require_once("auth.php");
 require_once(e_HANDLER.'userclass_class.php');
 $search_prefs = $sysprefs -> getArray('search_prefs');
 
-$search_handlers['news'] = SEALAN_5;
+$search_handlers['news'] = ADLAN_0;
 $search_handlers['comments'] = SEALAN_6;
 $search_handlers['users'] = SEALAN_7;
-$search_handlers['downloads'] = SEALAN_8;
+$search_handlers['downloads'] = ADLAN_24;
 
 if (isset($_POST['updatesettings'])) {
 	$pref['search_restrict'] = $_POST['search_restrict'];
@@ -43,7 +43,7 @@ if (isset($_POST['updatesettings'])) {
 	$search_prefs['time_restrict'] = $_POST['time_restrict'];
 	$search_prefs['time_secs'] = $_POST['time_secs'] > 300 ? 300 : $_POST['time_secs'];
 	$search_prefs['google'] = $_POST['google'];
-	
+
 	foreach($search_handlers as $s_key => $s_value) {
 		$search_prefs['core_handlers'][$s_key]['class'] = $_POST['core_handlers'][$s_key]['class'];
 		$search_prefs['core_handlers'][$s_key]['chars'] = $_POST['core_handlers'][$s_key]['chars'];
@@ -61,7 +61,7 @@ if (isset($_POST['updatesettings'])) {
 		$search_prefs['plug_handlers'][$plug_dir]['pre_title_alt'] = $tp -> toDB($_POST['plug_handlers'][$plug_dir]['pre_title_alt']);
 		$search_prefs['plug_handlers'][$plug_dir]['order'] = $_POST['plug_handlers'][$plug_dir]['order'];
 	}
-	
+
 	foreach ($search_prefs['comments_handlers'] as $key => $value) {
 		$search_prefs['comments_handlers'][$key]['class'] = $_POST['comments_handlers'][$key]['class'];
 	}
@@ -135,7 +135,7 @@ $text .= "<tr>
 <td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_12."</td>
 <td style='width:50%;' colspan='2' class='forumheader3'>
 <input type='radio' name='time_restrict' value='0'".(!$search_prefs['time_restrict'] ? " checked='checked'" : "")." /> ".SEALAN_17."&nbsp;&nbsp;
-<input type='radio' name='time_restrict' value='1'".($search_prefs['time_restrict'] ? " checked='checked'" : "")." /> 
+<input type='radio' name='time_restrict' value='1'".($search_prefs['time_restrict'] ? " checked='checked'" : "")." />
 ".SEALAN_13." ".$rs -> form_text("time_secs", 3, $search_prefs['time_secs'], 3)." ".SEALAN_14."</td>
 </tr>";
 
@@ -159,7 +159,7 @@ $text .= "<tr>
 <td class='forumheader'>".SEALAN_27."</td>
 <td class='forumheader'>".SEALAN_28."</td>
 <td class='forumheader'>".SEALAN_26."</td>
-<td class='forumheader'>".SEALAN_29."</td>
+<td class='forumheader'>".LAN_ORDER."</td>
 </tr>";
 
 foreach($search_handlers as $key => $value) {

@@ -4,13 +4,13 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_mailout.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-31 06:06:21 $
+|     $Revision: 1.4 $
+|     $Date: 2005-04-02 21:08:06 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_52", "Save Changes");
-define("PRFLAN_62", "Email Settings");
+// define("PRFLAN_62", "Email Settings");
 define("PRFLAN_63", "Send test email");
 define("PRFLAN_64", "Clicking button will send test email to main admin email address");
 define("PRFLAN_65", "Click to send email to");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-04-02 08:43:41 $
+|     $Revision: 1.8 $
+|     $Date: 2005-04-02 21:08:06 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -21,33 +21,35 @@ define("USRLAN_10", "User deleted.");
 define("USRLAN_11", "Delete cancelled.");
 define("USRLAN_12", "You cannot delete the main site administrator.");
 define("USRLAN_13", "Please confirm you wish to delete this member");
-define("USRLAN_14", "once deleted the record cannot be retrieved");
-define("USRLAN_15", "Cancel");
+// define("USRLAN_14", "once deleted the record cannot be retrieved");
+// define("USRLAN_15", "Cancel");
 define("USRLAN_16", "Confirm Delete");
 define("USRLAN_17", "Confirm Delete User");
-define("USRLAN_18", "User activated.");
-define("USRLAN_19", "Search");
-define("USRLAN_20", "Order by");
-define("USRLAN_21", "User ID");
-define("USRLAN_22", "User name");
-define("USRLAN_23", "Visits to site");
-define("USRLAN_24", "Admin status");
-define("USRLAN_25", "Status");
-define("USRLAN_26", "Descending");
-define("USRLAN_27", "Ascending");
-define("USRLAN_28", "Sort");
+// define("USRLAN_18", "User activated.");
+// define("USRLAN_19", "Search");
+// define("USRLAN_20", "Order by");
+// define("USRLAN_21", "User ID");
+// define("USRLAN_22", "User name");
+// define("USRLAN_23", "Visits to site");
+// define("USRLAN_24", "Admin status");
+// define("USRLAN_25", "Status");
+// define("USRLAN_26", "Descending");
+// define("USRLAN_27", "Ascending");
+// define("USRLAN_28", "Sort");
 
 define("USRLAN_30", "Ban");
-define("USRLAN_31", "Ban -unactivated-");
+// define("USRLAN_31", "Ban -unactivated-");
 define("USRLAN_32", "Activate");
 define("USRLAN_33", "Unban");
 define("USRLAN_34", "Remove admin status");
 define("USRLAN_35", "Make admin");
 define("USRLAN_36", "Set Class");
-define("USRLAN_37", "Members");
-define("USRLAN_38", "Search returned");
-define("USRLAN_39", "result(s)");
-define("USRLAN_40", "None defined");
+
+// define("USRLAN_37", "Members");
+// define("USRLAN_38", "Search returned");
+// define("USRLAN_39", "result(s)");
+// define("USRLAN_40", "None defined");
+
 define("USRLAN_44", "Allow members to upload an avatar?");
 
 define("USRLAN_47", "Maximum avatar width (in pixels)");
@@ -77,14 +79,14 @@ define("USRLAN_70", "User created");
 define("USRLAN_71", "Users Front Page");
 define("USRLAN_72", "Quick Add User");
 define("USRLAN_73", "Prune Users");
-define("USRLAN_75", "Options");
+// define("USRLAN_75", "Options");
 define("USRLAN_76", "User Options");
 define("USRLAN_77", "Existing Users");
 define("USRLAN_78", "User Name");
 define("USRLAN_79", "Status");
 define("USRLAN_80", "Info");
 
-define("USRLAN_82", "Are you sure you want to delete this user?");
+// define("USRLAN_82", "Are you sure you want to delete this user?");
 define("USRLAN_84", "There are");
 define("USRLAN_85", "users who haven't activated their account - click below to delete.");
 define("USRLAN_86", "User verified");

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2005-03-16 18:14:43 $
-|     $Author: sweetas $
+|     $Revision: 1.42 $
+|     $Date: 2005-04-02 21:06:52 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -257,7 +257,7 @@ $text .= "<div id='admindisp' style='display:none; text-align:center'>
 	<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' colspan='2'>".PRFLAN_77."</td>
 	</tr>
 
-	
+
 
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_95."<br /><span class='smalltext'>".PRFLAN_96."</td>
@@ -400,19 +400,19 @@ $text .= "<div id='registration' style='display:none; text-align:center'><table 
 	<input type='text' class='tbox' size='3' name='signup_pass_len' value='".$pref['signup_pass_len']."' />
 	</td>
 	</tr>
-	
+
 	<tr>
 	<td style='width:50%' class='forumheader3'>".CUSTSIG_18."<br /><span class='smalltext'>".CUSTSIG_19."</span></td>
 	<td class='forumheader3' style='width:50%;text-align:right' >
 	<textarea class='tbox' name='signup_disallow_text' cols='1' rows='3' style='width: 80%;'>".$pref['signup_disallow_text']."</textarea>
 	</td>
 	</tr>
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
 	";
 
 $text .= pref_submit();
@@ -634,7 +634,7 @@ $text .= "<div id='security' style='display:none; text-align:center'>
 	<input type='radio' name='user_reg_secureveri' value='0'".(!$pref['user_reg_secureveri'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
 	</tr>
-	
+
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_129.":<br /><span class='smalltext'>".PRFLAN_130."</span> </td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
@@ -769,6 +769,6 @@ function prefs_adminmenu() {
 	$var['textpost']['text'] = PRFLAN_101;
 	$var['security']['text'] = PRFLAN_47;
 	$var['comments']['text'] = PRFLAN_87;
-	show_admin_menu(PRFLAN_99, $action, $var, TRUE);
+	show_admin_menu(LAN_OPTIONS, $action, $var, TRUE);
 }
 ?>

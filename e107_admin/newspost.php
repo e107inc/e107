@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.66 $
-|   $Date: 2005-04-02 19:15:20 $
+|   $Revision: 1.67 $
+|   $Date: 2005-04-02 21:06:52 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -66,7 +66,7 @@ $amount = 50;
 
 // ##### Main loop -----------------------------------------------------------------------------------------------------------------------
 
-if (preg_match("#(.*?)_delete_(\d+)#", $deltest[$tp->toJS(NWSLAN_8)], $matches)) {
+if (preg_match("#(.*?)_delete_(\d+)#", $deltest[$tp->toJS(LAN_DELETE)], $matches)) {
 	$delete = $matches[1];
 	$del_id = $matches[2];
 }
@@ -299,7 +299,7 @@ class newspost {
 			<td style='width:5%' class='fcaption'><a href='".e_SELF."?main.news_id.".($id == "desc" ? "asc" : "desc").".$from'>ID</a></td>
 			<td style='width:55%' class='fcaption'><a href='".e_SELF."?main.news_title.".($id == "desc" ? "asc" : "desc").".$from'>".NWSLAN_40."</a></td>
 			<td style='width:15%' class='fcaption'>Render-type</td>
-			<td style='width:15%' class='fcaption'>".NWSLAN_41."</td>
+			<td style='width:15%' class='fcaption'>".LAN_OPTIONS."</td>
 			</tr>";
 			$ren_type = array("default","title","other-news","other-news 2");
 			foreach($newsarray as $row)
@@ -324,8 +324,8 @@ class newspost {
 
 				<td style='width:15%; text-align:center' class='forumheader3'>
 				".$rs->form_open("post", e_SELF, "myform__{$news_id}", "", "", " onsubmit=\"return jsconfirm('".$tp->toJS(NWSLAN_39." [ID: $news_id ]")."')\"  ")."
-				<div>".$rs->form_button("button", "main_edit_{$news_id}", NWSLAN_7, "onclick=\"document.location='".e_SELF."?create.edit.$news_id'\"")."
-				".$rs->form_button("submit", "main_delete_{$news_id}", NWSLAN_8)."
+				<div>".$rs->form_button("button", "main_edit_{$news_id}", LAN_EDIT, "onclick=\"document.location='".e_SELF."?create.edit.$news_id'\"")."
+				".$rs->form_button("submit", "main_delete_{$news_id}", LAN_DELETE)."
 				</div>".$rs->form_close()."
 				</td>
 				</tr>";
@@ -420,7 +420,7 @@ class newspost {
 			if ($sql->db_Select("submitnews", "*", "submitnews_id=$id", TRUE)) {
 				list($id, $submitnews_name, $submitnews_email, $_POST['news_title'], $submitnews_category, $_POST['data'], $submitnews_datestamp, $submitnews_ip, $submitnews_auth, $submitnews_file) = $sql->db_Fetch();
 
-				if ($pref['htmlarea']) {
+				if ($pref['wysiwyg']) {
 					$_POST['data'] .= "<br /><b>".NWSLAN_49." ".$submitnews_name."</b>";
 					$_POST['data'] .= ($submitnews_file)? "<br /><br /><img src='".e_IMAGE."newspost_images/$submitnews_file' style='float:right; margin-left:5px;margin-right:5px;margin-top:5px;margin-bottom:5px; border:1px solid' />":
 					"";
@@ -507,8 +507,11 @@ class newspost {
 			<td style='width:80%' class='forumheader3'>
 			<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_83."</a>
 			<div style='display: none;'>
-			<textarea class='tbox' id='news_extended' name='news_extended' cols='80' rows='15' style='width:95%;height:100px' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".(strstr($_POST['news_extended'], "[img]http") ? $_POST['news_extended'] : str_replace("[img]../", "[img]", $tp->toForm($_POST['news_extended'])))."</textarea>
-			<br />". display_help("helpb")."
+			<textarea class='tbox' id='news_extended' name='news_extended' cols='80' rows='15' style='width:95%;height:100px' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".(strstr($_POST['news_extended'], "[img]http") ? $_POST['news_extended'] : str_replace("[img]../", "[img]", $tp->toForm($_POST['news_extended'])))."</textarea>";
+         if (!$pref['wysiwyg']) {
+			$text .="<br />". display_help("helpb");
+		}
+		$text .= "
 			</div>
 			</td>
 			</tr>
@@ -591,7 +594,7 @@ class newspost {
 				$text .= LAN_NEWS_39."<br /><br />";
 				foreach($filelist as $file)
 				{
-					$text .= "<a href='javascript:addtext(\"[file=request.php?".$file['url']."]".$file['name']."[/file]\");'><img src='".e_IMAGE."generic/".IMODE."/file.png' alt='' style='vertical-align:middle;' /> ".$file['name']."</a><br />
+					$text .= "<a href='javascript:addtext(\"[file=request.php?".$file['url']."]".$file['name']."[/file]\");'><img src='".e_IMAGE."generic/".IMODE."/file.png' alt='' style='border:0px;vertical-align:middle;' /> ".$file['name']."</a><br />
 					";
 				}
 			}
@@ -625,18 +628,18 @@ class newspost {
 							if(file_exists(e_IMAGE."newspost_images/".$fi))
 							{
 								// thumb and main image found
-								$text .= "<a href='javascript:addtext(\"[link=e107_images/newspost_images/".$fi."][img]".$image['fname']."[/img][/link]\");'><img src='".e_IMAGE."generic/".IMODE."/image.png' alt='' style='vertical-align:middle;' /> ".$image['fname']."</a> (link to full image will be generated)<br />
+								$text .= "<a href='javascript:addtext(\"[link=e107_images/newspost_images/".$fi."][img]".$image['fname']."[/img][/link]\");'><img src='".e_IMAGE."generic/".IMODE."/image.png' alt='' style='border:0px;vertical-align:middle;' /> ".$image['fname']."</a> (link to full image will be generated)<br />
 								";
 							}
 							else
 							{
-								$text .= "<a href='javascript:addtext(\"[image]".$image['fname']."[/image]\");'><img src='".e_IMAGE."generic/".IMODE."/image.png' alt='' style='vertical-align:middle;' /> ".$image['fname']."</a><br />
+								$text .= "<a href='javascript:addtext(\"[image]".$image['fname']."[/image]\");'><img src='".e_IMAGE."generic/".IMODE."/image.png' alt='' style='border:0px;vertical-align:middle;' /> ".$image['fname']."</a><br />
 								";
 							}
 						}
 						else
 						{
-							$text .= "<a href='javascript:addtext(\"[image]".$image['fname']."[/image]\");'><img src='".e_IMAGE."generic/".IMODE."/image.png' alt='' style='vertical-align:middle;' /> ".$image['fname']."</a><br />
+							$text .= "<a href='javascript:addtext(\"[image]".$image['fname']."[/image]\");'><img src='".e_IMAGE."generic/".IMODE."/image.png' alt='' style='border:0px;vertical-align:middle;' /> ".$image['fname']."</a><br />
 							";
 						}
 					}
@@ -1014,7 +1017,7 @@ class newspost {
 				<tr>
 				<td style='width:5%' class='fcaption'>&nbsp;</td>
 				<td style='width:75%' class='fcaption'>".NWSLAN_6."</td>
-				<td style='width:20%; text-align:center' class='fcaption'>".NWSLAN_41."</td>
+				<td style='width:20%; text-align:center' class='fcaption'>".LAN_OPTIONS."</td>
 				</tr>";
 			while ($row = $sql->db_Fetch()) {
 				extract($row);
@@ -1028,8 +1031,8 @@ class newspost {
 					<td style='width:75%' class='forumheader3'>$category_name</td>
 					<td style='width:20%; text-align:center' class='forumheader3'>
 					".$rs->form_open("post", e_SELF."?cat", "myform__{$category_id}", "", "", " onsubmit=\"return jsconfirm('".$tp->toJS(NWSLAN_37." [ID: $category_id ]")."')\"  ")."
-					<div>".$rs->form_button("button", "category_edit_{$category_id}", NWSLAN_7, "onclick=\"document.location='".e_SELF."?cat.edit.$category_id'\"")."
-					".$rs->form_button("submit", "category_delete_{$category_id}", NWSLAN_8)."
+					<div>".$rs->form_button("button", "category_edit_{$category_id}", LAN_EDIT, "onclick=\"document.location='".e_SELF."?cat.edit.$category_id'\"")."
+					".$rs->form_button("submit", "category_delete_{$category_id}", LAN_DELETE)."
 					</div>".$rs->form_close()."
 
 
@@ -1234,7 +1237,7 @@ class newspost {
 				<tr>
 				<td style='width:5%' class='fcaption'>ID</td>
 				<td style='width:70%' class='fcaption'>".NWSLAN_57."</td>
-				<td style='width:25%; text-align:center' class='fcaption'>".NWSLAN_41."</td>
+				<td style='width:25%; text-align:center' class='fcaption'>".LAN_OPTIONS."</td>
 				</tr>";
 			while ($row = $sql->db_Fetch()) {
 				extract($row);
@@ -1249,7 +1252,7 @@ class newspost {
 				 NWSLAN_103;
 				$text .= $rs->form_open("post", e_SELF."?sn", "myform__{$submitnews_id}", "", "", " onsubmit=\"return jsconfirm('".$tp->toJS(NWSLAN_38." [ID: $submitnews_id ]")."')\"   ")
 				."<div>".$rs->form_button("button", "category_edit_{$submitnews_id}", $buttext, "onclick=\"document.location='".e_SELF."?create.sn.$submitnews_id'\"")."
-					".$rs->form_button("submit", "sn_delete_{$submitnews_id}", NWSLAN_8)."
+					".$rs->form_button("submit", "sn_delete_{$submitnews_id}", LAN_DELETE)."
 					</div>".$rs->form_close()."
 					</td>
 					</tr>\n";
