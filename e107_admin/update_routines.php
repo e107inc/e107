@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-02-03 11:06:20 $
-|     $Author: stevedunstan $
+|     $Revision: 1.27 $
+|     $Date: 2005-02-03 11:49:24 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -208,10 +208,13 @@ function update_61x_to_700($type) {
 		// ############# END McFly's Updates  ##############
 
 		// start chatbox update -------------------------------------------------------------------------------------------
-		global $pref;
-		$sql->db_Insert("plugin", "0, 'Chatbox', '1.0', 'chatbox_menu', 1");
-		$pref['plug_status'] = $pref['plug_status'].",chatbox_menu";
-		save_prefs();
+		if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='chatbox_menu'")) {
+			global $pref;
+			$sql->db_Insert("plugin", "0, 'Chatbox', '1.0', 'chatbox_menu', 1");
+			$pref['plug_status'] = $pref['plug_status'].",chatbox_menu";
+			save_prefs();
+		}
+		// end chatbox update -------------------------------------------------------------------------------------------
 
 		// Cam's new PRESET Table. -------------------------------------------------------------------------------------------
 		$sql->db_Select_gen(
