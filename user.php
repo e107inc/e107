@@ -79,7 +79,6 @@ if(IsSet($id)){
 }
 
 $users_total = $sql -> db_Count("user");
-
 $text = "<div style='text-align:center'>
 ".LAN_138." ".$users_total."<br /><br />
 <form method='post' action='".e_SELF."'>
@@ -163,6 +162,7 @@ function renderuser($row, $user_entended, $mode="verbose"){
         extract($row);
         $aj = new textparse;
         $gen = new convert;
+		$pm_installed = ($pref['pm_title'] ? TRUE : FALSE);
         if($mode != "verbose"){
                 $datestamp = $gen->convert_date($user_join, "short");
                 return "
@@ -202,7 +202,7 @@ function renderuser($row, $user_entended, $mode="verbose"){
                 <div style='text-align:center'>
                 <table style='width:95%' class='fborder'>
                 <tr><td colspan='2' class='fcaption' style='text-align:center'>".LAN_142." ".$user_id.": ".$user_name."</td></tr>
-                <tr><td rowspan='8' class='forumheader3' style='width:20%; vertical-align:middle; text-align:center'>";
+                <tr><td rowspan='".($pm_installed && $id != USERID ? 9 : 8)."' class='forumheader3' style='width:20%; vertical-align:middle; text-align:center'>";
 
                 if($user_sess && file_exists(e_FILE."public/avatars/".$user_sess)){
                         $str .= "<img src='".e_FILE."public/avatars/".$user_sess."' alt='' />";
@@ -250,7 +250,6 @@ function renderuser($row, $user_entended, $mode="verbose"){
                         <table style='width:100%'><tr><td style='width:30%'> <img src='".e_IMAGE."generic/location.png' alt=''  style='vertical-align:middle' /> ".LAN_119."</td><td style='width:70%; text-align:right'>".($user_location ? $aj -> tpa($user_location) : "<i>".LAN_401."</i>")."</td></tr></table>
                 </td></tr>";
 
-
                 if($user_birthday != "" && $user_birthday != "0000-00-00" && ereg ("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})", $user_birthday, $regs)){
                                 $user_birthday = "$regs[3].$regs[2].$regs[1]";
                 }else{
@@ -259,9 +258,16 @@ function renderuser($row, $user_entended, $mode="verbose"){
 
                 $str .= "<td style='width:80%'class='forumheader3'>
                         <table style='width:100%'><tr><td style='width:30%'> <img src='".e_IMAGE."generic/bday.png' alt=''  style='vertical-align:middle' /> ".LAN_118."</td><td style='width:70%; text-align:right'>$user_birthday</td></tr></table>
-                </td></tr>
+                </td></tr>";
+						
+				if($pm_installed && $id != USERID){
+					$str .= "
+				<td style='width:80%'class='forumheader3'>
+                        <table style='width:100%'><tr><td style='width:30%'> ".e107_parse("{CODE=pm_menu.sendpm.{$id}}")." ".LAN_425."</td><td style='width:70%; text-align:right'>".e107_parse("{CODE=pm_menu.sendpmtext.{$id}}")."</td></tr></table>
+                </td></tr>";
+				}
 
-                ".($user_signature ? "<tr><td colspan='2' class='forumheader3' style='text-align:center'><i>".$aj -> tpa($user_signature)."</i></td></tr>" : "");
+                $str .= ($user_signature ? "<tr><td colspan='2' class='forumheader3' style='text-align:center'><i>".$aj -> tpa($user_signature)."</i></td></tr>" : "");
 
 
 

@@ -161,8 +161,10 @@ foreach($listuserson as $uinfo => $pinfo){
 			$class_check = FALSE;
 			$online_location_page = ADMINAREA;
 		}
-		$text .= "<tr><td class='forumheader3' style='width:3%;text-align:center'>
-		<img src='".e_PLUGIN."online_extended_menu/images/user.png' alt='' style='vertical-align:middle' /></td>
+		$pm_installed = ($pref['pm_title'] ? TRUE : FALSE);
+		$icon = ($pm_installed && $oid != USERID ? e107_parse("{CODE=pm_menu.sendpm.{$oid}}") : "<img src='".e_PLUGIN."online_extended_menu/images/user.png' alt='' style='vertical-align:middle' />");
+		$text .= "<tr><td class='forumheader3' style='width:3%;text-align:center'>".$icon."
+		</td>
 		<td class='forumheader3' style='width:45%'><a href='".e_BASE."user.php?id.$oid'>$oname</a></td>
 		<td class='forumheader3' style='width:50%'>".($class_check ? "<a href='$online_location'>$online_location_page</a>" : $online_location_page)."<br /></td></tr>";
 }
