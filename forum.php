@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/forum.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:45 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-21 06:57:27 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -79,13 +79,7 @@ if(e_QUERY == "rules"){
                 exit;
 }
 
-define("IMAGE_e", (file_exists(THEME."forum/e.png") ? "<img src='".THEME."forum/e.png' alt='' />" : "<img src='".e_IMAGE."forum/e.png' alt='' />"));
-define("IMAGE_nonew_small", (file_exists(THEME."forum/nonew_small.png") ? "<img src='".THEME."forum/nonew_small.png' alt='' />" : "<img src='".e_IMAGE."forum/nonew_small.png' alt='' />"));
-define("IMAGE_new_small", (file_exists(THEME."forum/new_small.png") ? "<img src='".THEME."forum/new_small.png' alt='' />" : "<img src='".e_IMAGE."forum/new_small.png' alt='' />"));
-define("IMAGE_closed_small", (file_exists(THEME."forum/closed_small.png") ? "<img src='".THEME."forum/closed_small.png' alt='' />" : "<img src='".e_IMAGE."forum/closed_small.png' alt='' />"));
-define("IMAGE_new", (file_exists(THEME."forum/new.png") ? "<img src='".THEME."forum/new.png' alt='".LAN_199."' style='border:0' />" : "<img src='".e_IMAGE."forum/new.png' alt='".LAN_199."' style='border:0' />"));
-define("IMAGE_nonew", (file_exists(THEME."forum/nonew.png") ? "<img src='".THEME."forum/nonew.png' alt='' />" : "<img src='".e_IMAGE."forum/nonew.png' alt='' />"));
-define("IMAGE_post", (file_exists(THEME."forum/post2.png") ? "<img src='".THEME."forum/post2.png' alt='' style='border:0; vertical-align:bottom' />" : "<img src='".e_IMAGE."forum/post2.png' alt='' style='border:0; vertical-align:bottom' />"));
+require_once(e_HANDLER.'forum_include.php');
 
 $gen = new convert;
 
@@ -315,7 +309,7 @@ function parse_forum($row, $restricted_string=""){
                 $lastpost_author_name = str_replace(".".$lastpost_datestamp, "", $lastpost_author_name);
                 $lastpost_datestamp = $gen->convert_date($lastpost_datestamp, "forum");
                 $LASTPOST = $lastpost_datestamp."<br />".($lastpost_author_id ? "<a href='".e_BASE."user.php?id.$lastpost_author_id'>$lastpost_author_name</a> " : $lastpost_author_name).
-                ($thread_parent ?  " <a href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_parent."'>".IMAGE_post."</a>" : " <a href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id."'>".IMAGE_post."</a>");
+                ($thread_parent ?  " <a href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_parent."'>".IMAGE_post2."</a>" : " <a href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id."'>".IMAGE_post2."</a>");
         }else{
                 $LASTPOST = "-";
         }

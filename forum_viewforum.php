@@ -11,13 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/forum_viewforum.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-09-28 03:10:42 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.4 $
+|     $Date: 2004-12-21 06:57:32 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
 require_once("class2.php");
+
 if(IsSet($_POST['fjsubmit'])){
         header("location:".e_BASE."forum_viewforum.php?".$_POST['forumjump']);
         exit;
@@ -31,32 +32,7 @@ if(!e_QUERY){
         if(!$from){ $from = 0; }
 }
 
-require_once(e_HANDLER."multilang/pictures.php");
-define("IMAGE_newthread", "<img src='".eMLANG_path("newthread.png","forum")."' alt='".FORLAN_10."' title='".FORLAN_10."' style='border:0' />");
-$image = (file_exists(THEME."forum/new_small.png")) ? THEME."forum/new_small.png" : e_IMAGE."forum/new_small.png";
-define("IMAGE_new_small", "<img src='{$image}' alt='".FORLAN_11."' title='".FORLAN_11."' style='border:0' />");
-$image = (file_exists(THEME."forum/nonew_small.png")) ? THEME."forum/nonew_small.png" : e_IMAGE."forum/nonew_small.png";
-define("IMAGE_nonew_small", "<img src='{$image}' alt='".FORLAN_12."' title='".FORLAN_12."' style='border:0' />");
-$image = (file_exists(THEME."forum/new_popular.pgif")) ? THEME."forum/new_popular.gif" : e_IMAGE."forum/new_popular.gif";
-define("IMAGE_new_popular", "<img src='{$image}' alt='".FORLAN_13."' title='".FORLAN_13."' style='border:0' />");
-$image = (file_exists(THEME."forum/nonew_popular.gif")) ? THEME."forum/nonew_popular.gif" : e_IMAGE."forum/nonew_popular.gif";
-define("IMAGE_nonew_popular", "<img src='{$image}' alt='".FORLAN_14."' title='".FORLAN_14."' style='border:0' />");
-$image = (file_exists(THEME."forum/sticky.png")) ? THEME."forum/sticky.png" : e_IMAGE."forum/sticky.png";
-define("IMAGE_sticky", "<img src='{$image}' alt='".FORLAN_15."' title='".FORLAN_15."' style='border:0' />");
-$image = (file_exists(THEME."forum/stickyclosed.png")) ? THEME."forum/stickyclosed.png" : e_IMAGE."forum/stickyclosed.png";
-define("IMAGE_stickyclosed", "<img src='{$image}' alt='".FORLAN_16."' title='".FORLAN_16."' style='border:0' />");
-$image = (file_exists(THEME."forum/announce.png")) ? THEME."forum/announce.png" : e_IMAGE."forum/announce.png";
-define("IMAGE_announce", "<img src='{$image}' alt='".FORLAN_17."' title='".FORLAN_17."' style='border:0' />");
-$image = (file_exists(THEME."forum/closed_small.png")) ? THEME."forum/closed_small.png" : e_IMAGE."forum/closed_small.png";
-define("IMAGE_closed_small", "<img src='{$image}' alt='".FORLAN_18."' title='".FORLAN_18."' style='border:0' />");
-$image = (file_exists(THEME."forum/admin_move.png")) ? THEME."forum/admin_move.png" : e_IMAGE."forum/admin_move.png";
-define("IMAGE_admin_move", "<img src='{$image}' alt='".LAN_402."' title='".LAN_402."' style='border:0' />");
-
-define("IMAGE_admin_unstick", ((file_exists(THEME."forum/admin_unstick.png") ? "src='".THEME."forum/admin_unstick.png' " : "src='".e_IMAGE."forum/admin_unstick.png' ")."alt='".LAN_398."' title='".LAN_398."' style='border:0' "));
-define("IMAGE_admin_stick", ((file_exists(THEME."forum/admin_stick.png")     ? "src='".THEME."forum/admin_stick.png' "   : "src='".e_IMAGE."forum/admin_stick.png' ")."alt='".LAN_401."' title='".LAN_401."' style='border:0' "));
-define("IMAGE_admin_lock", ((file_exists(THEME."forum/admin_lock.png")     ? "src='".THEME."forum/admin_lock.png' "      : "src='".e_IMAGE."forum/admin_lock.png' ")."alt='".LAN_399."' title='".LAN_399."' style='border:0' "));
-define("IMAGE_admin_unlock", ((file_exists(THEME."forum/admin_unlock.png") ? "src='".THEME."forum/admin_unlock.png' "    : "src='".e_IMAGE."forum/admin_unlock.png' ")."alt='".LAN_400."' title='".LAN_400."' style='border:0' "));
-
+require_once(e_HANDLER.'forum_include.php');
 
 $STARTERTITLE = LAN_54;
 $THREADTITLE = LAN_53;
