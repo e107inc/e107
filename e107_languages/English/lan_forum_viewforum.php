@@ -56,5 +56,8 @@ define("FORLAN_CLOSE", "Thread closed.");
 define("FORLAN_OPEN", "Thread reopened.");
 define("FORLAN_STICK", "Thread made sticky.");
 define("FORLAN_UNSTICK", "Thread unstuck.");
+define("FORLAN_6", "Thread deleted");
+define("FORLAN_7", "replies deleted");
+
 
 ?>

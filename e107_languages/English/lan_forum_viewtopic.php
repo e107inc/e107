@@ -67,4 +67,6 @@ define("LAN_429", "Click here to return to forum");
 
 define("LAN_430", "poll");
 
+define("FORLAN_26", "Reply deleted");
+
 ?>
