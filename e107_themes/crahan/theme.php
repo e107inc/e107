@@ -27,6 +27,10 @@ $themewebsite = "http://e107.org";
 $themedate = "29/01/2005";
 $themeinfo = "Based on the theme by CraHan at his homepage <a href='http://n00.be' rel='external'>n00.be</a>, design used with permission.";
 define("STANDARDS_MODE", TRUE);
+$xhtmlcompliant = TRUE;
+$csscompliant = TRUE;
+
+define("THEME_DISCLAIMER", "<br /><i>".LAN_THEME_1."</i>");
 
 $logo = "logo".rand(1, 4);
 

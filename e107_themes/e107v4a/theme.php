@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/theme.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-03-20 22:57:17 $
+|     $Revision: 1.9 $
+|     $Date: 2005-03-21 10:50:44 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -26,22 +26,21 @@ if(!defined("e_THEME")){ exit; }
 // [theme]
 
 $themename = "e107.v4";
-$themeversion = "1.0";
-$themeauthor = "jalist";
+$themeversion = "2.0";
+$themeauthor = "Steve Dunstan [jalist]";
+$themeemail = "jalist@e107.org";
+$themewebsite = "http://e107.org";
 $themedate = "11/06/2003";
 $themeinfo = "";
+$xhtmlcompliant = TRUE;
+$csscompliant = TRUE;
 
 define("THEME_DISCLAIMER", "<br /><i>".LAN_THEME_6."</i>");
-
 
 // [layout]
 
 $layout = "_default";
 $logo = THEME."images/bullet3.gif";
-
-
-
-
 
 $HEADER .=
 "
@@ -51,14 +50,14 @@ $HEADER .=
 {CUSTOM=clock}
 </td>
 <td style='text-align:right'>
-{CUSTOM=search}
+{CUSTOM=search+25+".THEME."images/search.png+18+19}
 </td>
 </tr>
 </table>
-<table style='width:100%; background-color:white' cellspacing='3' class='topborder'>
+<table style='width:100%;' cellspacing='3' id='header'>
 <tr>
-<td colspan='2' style='text-align:left'>
-{LOGO}
+<td colspan='2' style='text-align:left; vertical-align: middle;'>
+<img src='".THEME."images/logo.png' alt='' /> [ {SITENAME} ]
 </td>
 <td style='text-align:right'>
 {BANNER}
