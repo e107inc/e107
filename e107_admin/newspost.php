@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.23 $
-|   $Date: 2005-02-03 13:11:45 $
-|   $Author: stevedunstan $
+|   $Revision: 1.24 $
+|   $Date: 2005-02-04 08:16:21 $
+|   $Author: sweetas $
 +---------------------------------------------------------------+
 
 */
@@ -30,7 +30,7 @@ if (!getperms("H")) {
 	 exit;
 }
 $e_sub_cat = 'news';
-
+$newspost = new newspost;
 require_once("auth.php");
 require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."news_class.php");
@@ -48,7 +48,7 @@ $pst->save_preset("admin_newspost");  // unique name(s) for the presets - comma 
 
 $rs = new form;
 $ix = new news;
-$newspost = new newspost;
+
 
 $deltest = array_flip($_POST);
 if (e_QUERY) {
