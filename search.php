@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-02-11 02:03:00 $
+|     $Revision: 1.10 $
+|     $Date: 2005-02-11 10:48:10 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -20,7 +20,6 @@ require_once("class2.php");
 e107_require(e_HANDLER."search_class.php");
 $sch = new e_search;
 
-// Restrict access to members
 if (!USER && $pref['search_restrict'] == 1) {
 	require_once(HEADERF);
 	$ns->tablerender(LAN_20, "<div style='text-align:center'>".LAN_416."</div>");
@@ -28,8 +27,7 @@ if (!USER && $pref['search_restrict'] == 1) {
 	exit;
 }
 
-$_POST['searchquery'] = trim(chop($_POST['searchquery']));
-
+$_POST['searchquery'] = trim($_POST['searchquery']);
 $search_info = array();
 	
 //load all core search routines
@@ -59,6 +57,7 @@ while (false !== ($file = readdir($handle))) {
 
 $search_count = count($search_info);
 $google_id = $search_count + 1;
+
 if (isset($_POST['searchquery']) && $_POST['searchtype'][$google_id]) {
 	header("location:http://www.google.com/search?q=".stripslashes(str_replace(" ", "+", $_POST['searchquery'])));
 	exit;
