@@ -11,11 +11,19 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/theme.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:42 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-10-04 21:29:39 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
+
+// [multilanguage]
+
+if(file_exists(e_THEME."e107v4a/languages/".e_LANGUAGE.".php")){
+  require_once(e_THEME."e107v4a/languages/".e_LANGUAGE.".php");
+}else{
+  require_once(e_THEME."e107v4a/languages/English.php");
+}
 
 // [theme]
 
@@ -154,10 +162,10 @@ Posted by {NEWSAUTHOR} on {NEWSDATE}
 
 
 define("ICONSTYLE", "float: left; border:0");
-define("COMMENTLINK", "Read/Post Comment: ");
-define("COMMENTOFFSTRING", "Comments are turned off for this item");
+define("COMMENTLINK", LAN_THEME_1);
+define("COMMENTOFFSTRING", LAN_THEME_2);
 define("PRE_EXTENDEDSTRING", "<br /><br />[ ");
-define("EXTENDEDSTRING", "Read the rest ...");
+define("EXTENDEDSTRING", LAN_THEME_3);
 define("POST_EXTENDEDSTRING", " ]<br />");
 //define("ICONMAIL", "iconmail.png"); // Usable since e107v615
 //define("ICONPRINT", "iconprint.png"); // Usable since e107v615
