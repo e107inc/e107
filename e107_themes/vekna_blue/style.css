@@ -165,7 +165,7 @@ a.forumlink:hover {
 .borderx#line {
 	background: url(images/line_bg.gif) repeat-x left top
 }
-#line2 {
+.line2 {
 	border-right: #ccc 1px solid; padding-right: 3px; border-top: #ccc 1px solid; padding-left: 3px; font-weight: bolder; background: url(images/line_bg.gif) repeat-x; padding-bottom: 3px; border-left: #ccc 1px solid; color: #559; padding-top: 3px; border-bottom: #ccc 1px solid
 }
 .incontent {
@@ -275,4 +275,9 @@ li#admin {
 }
 .jsmenu a:hover {
 	background: #afafaf
+}
+
+ul, ol {
+	margin-top: 0;
+	margin-bottom: 0;
 }

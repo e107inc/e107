@@ -25,6 +25,8 @@ $themewebsite = "http://e107.org";
 $themedate = "29/01/2005";
 $themeinfo = "";
 define("STANDARDS_MODE", TRUE);
+$xhtmlcompliant = TRUE;
+$csscompliant = TRUE;
 
 define("THEME_DISCLAIMER", "<br /><i>".LAN_THEME_1."</i>");
 
