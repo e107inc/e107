@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |		e107 website system
@@ -11,9 +11,9 @@
 |		GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_handlers/preset_class.php,v $
-|		$Revision: 1.4 $
-|		$Date: 2005-02-04 08:23:00 $
-|		$Author: e107coders $
+|		$Revision: 1.5 $
+|		$Date: 2005-03-03 22:05:12 $
+|		$Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
