@@ -235,3 +235,10 @@ ul{
 	border-bottom: 0px;
 	text-align: left
 }
+
+.news_info {
+	width: 100%;
+	background-color: #F3F0F0;
+	border-collapse:collapse;
+	border-spacing:0px;
+}
