@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-01-31 00:30:06 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.19 $
+|     $Date: 2005-01-31 05:26:52 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -25,11 +25,11 @@ $e_sub_cat = 'plug_manage';
 require_once("auth.php");
 require_once(e_HANDLER.'plugin_class.php');
 $plugin = new e107plugin;
-	
+
 $tmp = explode('.', e_QUERY);
 $action = $tmp[0];
 $id = intval($tmp[1]);
-	
+
 // Check for new plugins, create entry in plugin table ...
 $handle = opendir(e_PLUGIN);
 while (false !== ($file = readdir($handle))) {
@@ -53,14 +53,14 @@ while (false !== ($file = readdir($handle))) {
 	}
 }
 closedir($handle);
-	
+
 $sql->db_Select("plugin");
 while ($row = $sql->db_fetch()) {
 	if (!is_dir(e_PLUGIN.$row['plugin_path'])) {
 		$sql->db_Delete('plugin', "plugin_path='{$row['plugin_path']}'");
 	}
 }
-	
+
 if ($action == 'uninstall') {
 	$plug = $plugin->getinfo($id);
 	$text = "
@@ -82,23 +82,23 @@ if ($action == 'uninstall') {
 	require_once("footer.php");
 	exit;
 }
-	
+
 if (isset($_POST['cancel'])) {
 	$ns->tablerender("", "<div style='text-align:center'>".EPL_ADLAN_4."</div>");
 }
-	
+
 if (isset($_POST['confirm'])) {
 	$id = intval($_POST['id']);
 	$plug = $plugin->getinfo($id);
 	//Uninstall Plugin
 	if ($plug['plugin_installflag'] == TRUE ) {
 		include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
-		 
+
 		$func = $eplug_folder.'_uninstall';
 		if (function_exists($func)) {
 			$text .= call_user_func($func);
 		}
-		 
+
 		if (is_array($eplug_table_names)) {
 			$result = $plugin->manage_tables('remove', $eplug_table_names);
 			if ($result !== TRUE) {
@@ -107,24 +107,24 @@ if (isset($_POST['confirm'])) {
 				$text .= EPL_ADLAN_28."<br />";
 			}
 		}
-		 
+
 		if (is_array($eplug_prefs)) {
 			$plugin->manage_prefs('remove', $eplug_prefs);
 			$text .= EPL_ADLAN_29."<br />";
 		}
-		 
+
 		if ($eplug_module) {
 			$plugin->manage_plugin_prefs('remove', 'modules', $eplug_folder);
 		}
-		 
+
 		if ($eplug_status) {
 			$plugin->manage_plugin_prefs('remove', 'plug_status', $eplug_folder);
 		}
-		 
+
 		if ($eplug_latest) {
 			$plugin->manage_plugin_prefs('remove', 'plug_latest', $eplug_folder);
 		}
-		 
+
 		if (is_array($eplug_sc))
 		{
 			$plugin->manage_plugin_prefs('remove', 'plug_sc', $eplug_folder, $eplug_sc);
@@ -152,37 +152,37 @@ if (isset($_POST['confirm'])) {
 			}
 			save_prefs("user");
 		}
-		 
+
 		if ($eplug_menu_name) {
 			$sql->db_Delete('menus', "menu_name='$eplug_menu_name' ");
 		}
-		 
+
 		if ($eplug_link) {
 			$plugin->manage_link('remove', '', $eplug_link_name);
 		}
-		 
+
 		if ($eplug_userclass) {
 			$plugin->manage_userclass('remove', $eplug_userclass);
 		}
-		 
+
 		$sql->db_Update('plugin', "plugin_installflag=0, plugin_version='{$eplug_version}' WHERE plugin_id='{$id}' ");
 		$text .= '<br />'.EPL_ADLAN_31.' <b>'.e_PLUGIN.$eplug_folder.'</b> '.EPL_ADLAN_32;
 		$ns->tablerender(EPL_ADLAN_1.' '.$eplug_name, $text);
 	}
 }
-	
+
 if ($action == 'install') {
 	// install plugin ...
 	$plug = $plugin->getinfo($id);
-	 
+
 	if ($plug['plugin_installflag'] == FALSE) {
 		include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
-		 
+
 		$func = $eplug_folder.'_install';
 		if (function_exists($func)) {
 			$text .= call_user_func($func);
 		}
-		 
+
 		if (is_array($eplug_tables)) {
 			$result = $plugin->manage_tables('add', $eplug_tables);
 			if ($result === TRUE) {
@@ -193,28 +193,28 @@ if ($action == 'install') {
 				//fail
 			}
 		}
-		 
+
 		if (is_array($eplug_prefs)) {
 			$plugin->manage_prefs('add', $eplug_prefs);
 			$text .= EPL_ADLAN_20.'<br />';
 		}
-		 
+
 		if ($eplug_module === TRUE) {
 			$plugin->manage_plugin_prefs('add', 'modules', $eplug_folder);
 		}
-		 
+
 		if ($eplug_status === TRUE) {
 			$plugin->manage_plugin_prefs('add', 'plug_status', $eplug_folder);
 		}
-		 
+
 		if ($eplug_latest === TRUE) {
 			$plugin->manage_plugin_prefs('add', 'plug_latest', $eplug_folder);
 		}
-		 
+
 		if (is_array($eplug_sc)) {
 			$plugin->manage_plugin_prefs('add', 'plug_sc', $eplug_folder, $eplug_sc);
 		}
-		 
+
 		if (is_array($eplug_bb)) {
 			$plugin->manage_plugin_prefs('add', 'plug_bb', $eplug_folder, $eplug_bb);
 		}
@@ -237,15 +237,15 @@ if ($action == 'install') {
 			}
 			$text .= EPL_ADLAN_20."<br />";
 		}
-		 
+
 		if ($eplug_link === TRUE && $eplug_link_url != '' && $eplug_link_name != '') {
 			$plugin->manage_link('add', $eplug_link_url, $eplug_link_name);
 		}
-		 
+
 		if ($eplug_userclass) {
 			$plugin->manage_userclass('add', $eplug_userclass, $eplug_userclass_description);
 		}
-		 
+
 		$sql->db_Update('plugin', "plugin_installflag=1 WHERE plugin_id='$id' ");
 		$text .= ($eplug_done ? "<br />".$eplug_done : "");
 	} else {
@@ -253,16 +253,16 @@ if ($action == 'install') {
 	}
 	$ns->tablerender(EPL_ADLAN_33, $text);
 }
-	
+
 if ($action == 'upgrade') {
 	$plug = $plugin->getinfo($id);
 	include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
-	 
+
 	$func = $eplug_folder.'_upgrade';
 	if (function_exists($func)) {
 		$text .= call_user_func($func);
 	}
-	 
+
 	if (is_array($upgrade_alter_tables)) {
 		$result = $plugin->manage_tables('add', $upgrade_alter_tables);
 		if (!$result) {
@@ -271,7 +271,7 @@ if ($action == 'upgrade') {
 			$text .= EPL_ADLAN_7."<br />";
 		}
 	}
-	 
+
 
 	if (is_array($upgrade_add_eplug_sc))
 	{
@@ -297,11 +297,11 @@ if ($action == 'upgrade') {
 		$plugin->manage_prefs('add', $upgrade_add_prefs);
 		$text .= EPL_ADLAN_8.'<br />';
 	}
-	 
+
 	if (is_array($upgrade_remove_prefs)) {
 		$plugin->manage_prefs('remove', $upgrade_add_prefs);
 	}
-	 
+
 	if (is_array($upgrade_add_user_prefs)) {
 		$sql = new db;
 		$sql->db_Select("core", " e107_value", " e107_name='user_entended'");
@@ -318,7 +318,7 @@ if ($action == 'upgrade') {
 		}
 		$text .= EPL_ADLAN_8."<br />";
 	}
-	 
+
 	if (is_array($upgrade_remove_user_prefs)) {
 		$sql = new db;
 		$sql->db_Select("core", " e107_value", " e107_name='user_entended'");
@@ -332,21 +332,21 @@ if ($action == 'upgrade') {
 			$sql->db_Update("core", "e107_value='$tmp' WHERE e107_name='user_entended' ");
 		}
 	}
-	 
+
 	$text .= '<br />'.$eplug_upgrade_done;
 	$sql->db_Update('plugin', "plugin_version ='{$plug['eplug_version']}' WHERE plugin_id='$id' ");
 	$ns->tablerender(EPL_ADLAN_34, $text);
 }
-	
+
 // ----------------------------------------------------------
 //        render plugin information ...
-	
+
 $text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>";
-	
+
 $pluginList = $plugin->getall();
-	
+
 foreach($pluginList as $plug) {
 	//Unset any possible eplug_ variables set by last plugin.php
 	$defined_vars = array_keys(get_defined_vars());
@@ -356,24 +356,24 @@ foreach($pluginList as $plug) {
 		}
 	}
 	include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
-	 
+
 	if ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_user_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest) {
 		$img = (!$plug['plugin_installflag'] ? "<img src='".e_IMAGE."generic/uninstalled.png' alt='' />" : "<img src='".e_IMAGE."generic/installed.png' alt='' />");
 	} else {
 		$img = "<img src='".e_IMAGE."generic/noinstall.png' alt='' />";
 	}
-	 
+
 	if ($plug['plugin_version'] != $eplug_version && $plug['plugin_installflag']) {
 		$img = "<img src='".e_IMAGE."generic/upgrade.png' alt='' />";
 	}
-	 
-	$plugin_icon = $eplug_icon ? "<img src='".e_PLUGIN.$eplug_icon."' alt='' style='vertical-align: bottom; width: 32px; height: 32px' />" :
+
+	$plugin_icon = $eplug_icon ? "<img src='".e_PLUGIN.$eplug_icon."' alt='' style='border:0px;vertical-align: bottom; width: 32px; height: 32px' />" :
 	 E_32_CAT_PLUG;
 	if ($eplug_conffile && $plug['plugin_installflag'] == TRUE) {
 		$conf_title = EPL_CONFIGURE.' '.$eplug_name;
-		$plugin_icon = "<a title='{$conf_title}' href='".e_PLUGIN.$eplug_folder.'/'.$eplug_conffile."'>".$plugin_icon.'</a>';
+		$plugin_icon = "<a title='{$conf_title}' href='".e_PLUGIN.$eplug_folder.'/'.$eplug_conffile."' >".$plugin_icon.'</a>';
 	}
-	 
+
 	$text .= "
 		<tr>
 		<td class='forumheader3' style='width:30%; text-align:center; vertical-align:top'>".$plugin_icon."
@@ -391,7 +391,7 @@ foreach($pluginList as $plug) {
 	if ($eplug_readme) {
 		$text .= "<tr><td><b>&nbsp;</b></td><td>[ <a href='".e_PLUGIN.$eplug_folder."/".$eplug_readme."'>".$eplug_readme."</a> ]</td></tr>";
 	}
-	 
+
 	if ($eplug_conffile || $eplug_module || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_user_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_status || $eplug_latest) {
 		$text .= "<tr><td><b>".EPL_OPTIONS."</b>:</td><td> [ ".($plug['plugin_installflag'] ? "<a href='".e_SELF."?uninstall.{$plug['plugin_id']}' title='".EPL_ADLAN_1."'> ".EPL_ADLAN_1."</a>" : "<a href='".e_SELF."?install.{$plug['plugin_id']}' title='".EPL_ADLAN_0."'>".EPL_ADLAN_0."</a>")." ]";
 	} else {
@@ -401,28 +401,28 @@ foreach($pluginList as $plug) {
 			$text .= EPL_NOINSTALL_1.str_replace("..", "", e_PLUGIN.$plug['plugin_path'])."/ ".EPL_DIRECTORY;
 		}
 	}
-	 
+
 	if ($plug['plugin_version'] != $eplug_version && $plug['plugin_installflag']) {
 		$text .= " [ <a href='".e_SELF."?upgrade.{$plug['plugin_id']}' title='".EPL_UPGRADE." to v".$eplug_version."'>".EPL_UPGRADE."</a> ]";
 	}
 	$text .= "</td></tr>";
-	 
+
 	if ($eplug_compliant) {
 		$text .= "<tr><td colspan='2' style='text-align:right'><img src='".e_IMAGE."generic/compliant.gif' alt='' /></td></tr>";
 	}
-	 
+
 	$text .= "</table></td></tr>";
 }
-	
+
 $text .= "</table>
 	<div><br />
 	<img src='".e_IMAGE."generic/uninstalled.png' alt='' /> ".EPL_ADLAN_23."&nbsp;&nbsp;
 	<img src='".e_IMAGE."generic/installed.png' alt='' /> ".EPL_ADLAN_22."&nbsp;&nbsp;
 	<img src='".e_IMAGE."generic/upgrade.png' alt='' /> ".EPL_ADLAN_24."&nbsp;&nbsp;
 	<img src='".e_IMAGE."generic/noinstall.png' alt='' /> ".EPL_ADLAN_25."</div></form></div>";
-	
+
 $ns->tablerender(EPL_ADLAN_16, $text);
 // ----------------------------------------------------------
-	
+
 require_once("footer.php");
 ?>
