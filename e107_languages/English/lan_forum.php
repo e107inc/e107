@@ -77,6 +77,7 @@ define("LAN_423", "Posted by");
 define("LAN_424", "New threads");
 define("LAN_425", "Re:");
 
+//v.616
 define("LAN_426", "Who's Online: ");
 define("LAN_427", "View detailed list.");
 define("LAN_428", "Re:");
