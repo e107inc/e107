@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.28 $
-|   $Date: 2005-02-08 09:01:31 $
-|   $Author: e107coders $
+|   $Revision: 1.29 $
+|   $Date: 2005-02-09 08:49:51 $
+|   $Author: stevedunstan $
 +---------------------------------------------------------------+
 
 */
@@ -373,9 +373,10 @@ class newspost {
 	function create_item($sub_action, $id) {
 		// ##### Display creation form ---------------------------------------------------------------------------------------------------------
 		/* 08-08-2004 - unknown - fixed `Insert Image' display to use $IMAGES_DIRECTORY */
-		global $sql, $rs, $ns, $pref, $fl, $IMAGES_DIRECTORY, $tp, $pst;
-		$thumblist = $fl->get_files(e_IMAGE."newspost_images/", '#thumb_#');
-		$rejecthumb = array('.','..','/','CVS','thumbs.db','*._$',"thumb_");
+		global $sql, $rs, $ns, $pref, $fl, $IMAGES_DIRECTORY, $tp, $pst, $e107;
+		$thumblist = $fl->get_files(e_IMAGE."newspost_images/", 'thumb_');
+
+		$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$',"thumb_", 'index');
 		$imagelist = $fl->get_files(e_IMAGE."newspost_images/","",$rejecthumb);
 
 		$sql->db_Select("download");
@@ -486,17 +487,17 @@ class newspost {
 
 
 				$text .="
-				<select class='tbox' name='thumbps' onchange=\"addtext('[img]".e_IMAGE."newspost_images/' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onmouseover=\"help('".NWSLAN_50."')\" onmouseout=\"help('')\">
+				<select class='tbox' name='thumbps' onchange=\"addtext('[img]' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onmouseover=\"help('".NWSLAN_50."')\" onmouseout=\"help('')\">
 				<option>".NWSLAN_80." ...</option>\n";
 				foreach ($thumblist as $thmb){
-					$text .= "<option value='".$thmb['fname']."'>".$thmb['fname']."</option>\n";
+					$text .= "<option value='".$e107->HTTPPath.$IMAGES_DIRECTORY."newspost_images/".$thmb['fname']."'>".$thmb['fname']."</option>\n";
 				}
 				$text .= "</select>
 
 				<select class='tbox' name='imageps' onchange=\"addtext('[img]' + this.form.imageps.options[this.form.imageps.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onmouseover=\"help('".NWSLAN_110."')\" onmouseout=\"help('')\">
 				<option>".NWSLAN_81." ...</option>\n";
 				foreach ($imagelist as $image) {
-					$text .= "<option value='".SITEURL.$IMAGES_DIRECTORY."newspost_images/".$image['fname']."'>".$image['fname']."</option>\n";
+					$text .= "<option value='".$e107->HTTPPath.$IMAGES_DIRECTORY."newspost_images/".$image['fname']."'>".$image['fname']."</option>\n";
 				}
 				$text .= "</select>";
 
@@ -522,7 +523,7 @@ class newspost {
 				<option>".NWSLAN_81." ...</option>\n";
 			reset($imagelist);
 			foreach ($imagelist as $image){
-				$text .= "<option value='".SITEURL.$IMAGES_DIRECTORY."newspost_images/".$image['fname']."'>".$image['fname']."</option>\n";
+				$text .= "<option value='".$e107->HTTPPath.$IMAGES_DIRECTORY."newspost_images/".$image['fname']."'>".$image['fname']."</option>\n";
 			}
 			$text .= "</select>";
 		}

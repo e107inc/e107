@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/file_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-02-09 03:00:41 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-09 08:50:27 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -52,6 +52,7 @@ class e_file {
 			elseif ($fmask == '' || preg_match("#".$fmask."#", $file))
 			{
 				$rejected = FALSE;
+
 				foreach($rejectArray as $rmask)
 				{
 					if(preg_match("#".$rmask."#", $file))
