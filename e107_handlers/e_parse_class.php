@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-02-10 17:18:13 $
+|     $Revision: 1.24 $
+|     $Date: 2005-02-11 18:56:48 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -145,7 +145,7 @@ class e_parse {
 		}
 		$text = $this -> textclean($text, $wrap);
 		 
-		$search = array('&#39', '&#039;', '&#036;', '&quot;', 'onerror');
+		$search = array('&#39;', '&#039;', '&#036;', '&quot;', 'onerror');
 		$replace = array("'", "'", '$', '"', 'one<i></i>rror');
 		$text = str_replace($search, $replace, $text);
 		if (strpos($modifiers, 'nobreak') == FALSE) {
