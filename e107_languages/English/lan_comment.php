@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_comment.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-29 14:17:31 $
-|     $Author: mrpete $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-16 20:18:34 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Comments");
@@ -45,4 +45,6 @@ define("COMLAN_4", 'Subject');
 define("COMLAN_5", 'Re:');
 define("COMLAN_6", 'Reply to this');
 
+define("LAN_315", "Trackbacks");
+define("LAN_316", "No trackbacks for this newspost.");
 ?>

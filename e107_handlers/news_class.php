@@ -13,8 +13,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.37 $
-| $Date: 2005-02-16 18:42:17 $
+| $Revision: 1.38 $
+| $Date: 2005-02-16 20:18:32 $
 | $Author: stevedunstan $
 +---------------------------------------------------------------+
 */
@@ -163,6 +163,7 @@ class news {
 		$param['caticon'] = ICONSTYLE;
 		$param['commentoffstring'] = COMMENTOFFSTRING;
 		$param['commentlink'] = COMMENTLINK;
+		$param['trackbackstring'] = TRACKBACKSTRING;
 
 // new parser.
 
@@ -328,6 +329,9 @@ class news {
 
 		$search[20] = "/\{NEWSCATICON\}(.*?)/si";
 		$replace[20] = "<a href='".e_BASE."news.php?cat.$category_id'><img style='".$param['caticon']."'  src='$category_icon' alt='' /></a>";
+
+		$search[21] = "/\{TRACKBACK\}(.*?)/si";
+		$replace[21] = "<a href='".e_BASE."comment.php?comment.news.$news_id#track'>".$param['trackbackstring'].$tb_count."</a>";
 
 
 		if (function_exists("news_style")) {
