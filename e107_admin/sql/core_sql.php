@@ -84,7 +84,9 @@ CREATE TABLE chatbox (
 
 CREATE TABLE comments (
   comment_id int(10) unsigned NOT NULL auto_increment,
+  comment_pid int(10) unsigned NOT NULL default '0',
   comment_item_id int(10) unsigned NOT NULL default '0',
+  comment_subject varchar(100) NOT NULL default '',
   comment_author varchar(100) NOT NULL default '',
   comment_author_email varchar(200) NOT NULL default '',
   comment_datestamp int(10) unsigned NOT NULL default '0',
