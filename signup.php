@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-09-23 09:11:51 $
-|     $Author: loloirie $
+|     $Revision: 1.3 $
+|     $Date: 2004-12-12 17:38:45 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -47,6 +47,7 @@ if(e_QUERY){
                 if($sql -> db_Select("user", "*", "user_sess='".$qs[2]."' ")){
                         if($row = $sql -> db_Fetch()){
                                 $sql -> db_Update("user", "user_ban='0', user_sess='' WHERE user_sess='".$qs[2]."' ");
+				$e_event -> trigger("userveri", $qs[2]);
                                 require_once(HEADERF);
                                 $text = LAN_401." <a href='index.php'>".LAN_SIGNUP_22."</a> ".LAN_SIGNUP_23."<br />".LAN_SIGNUP_24." ".SITENAME;
                                 $ns -> tablerender(LAN_402, $text);
@@ -187,9 +188,9 @@ if(IsSet($_POST['register'])){
                 $birthday = $_POST['birth_year']."/".$_POST['birth_month']."/".$_POST['birth_day'];
 
                 if($pref['user_reg_veri']){
-                              $u_key = md5(uniqid(rand(),1));
-                        $nid = $sql -> db_Insert("user", "0, \"".$username."\", '', \"".md5($_POST['password1'])."\", '$u_key', \"".$_POST['email']."\",         \"".$_POST['website']."\", \"".$_POST['icq']."\", \"".$_POST['aim']."\", \"".$_POST['msn']."\", \"".$_POST['location']."\", \"".$birthday."\", \"".$_POST['signature']."\", \"".$_POST['image']."\", \"".$_POST['timezone']."\", \"".$_POST['hideemail']."\", \"".$time."\", '0', \"".$time."\", '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '', '0', \"".$_POST['realname']."\", '', '', '', '' ");
-                        $sql -> db_Select("user", "*", "user_name='".$_POST['name']."' AND user_join='".$time."' ");
+			$u_key = md5(uniqid(rand(),1));
+                        $nid = $sql -> db_Insert("user", "0, \"".$username."\", '', \"".md5($_POST['password1'])."\", '$u_key', \"".$_POST['email']."\", \"".$_POST['website']."\", \"".$_POST['icq']."\", \"".$_POST['aim']."\", \"".$_POST['msn']."\", \"".$_POST['location']."\", \"".$birthday."\", \"".$_POST['signature']."\", \"".$_POST['image']."\", \"".$_POST['timezone']."\", \"".$_POST['hideemail']."\", \"".$time."\", '0', \"".$time."\", '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '', '0', \"".$_POST['realname']."\", '', '', '', '' ");
+			$sql -> db_Select("user", "*", "user_name='".$_POST['name']."' AND user_join='".$time."' ");
                         $row = $sql -> db_Fetch();
                         $id = $row['user_id'];
 
@@ -219,7 +220,8 @@ if(IsSet($_POST['register'])){
                         }
                         sendemail($_POST['email'], LAN_404." ".SITENAME, $message);
 
-
+			$edata_su = array("username" => $username, "email" => $_POST['email'], "website" => $_POST['website'], "icq" => $_POST['icq'], "aim" => $_POST['aim'], "msn" => $_POST['msn'], "location" => $_POST['location'], "birthday" => $birthday, "signature" => $_POST['signature'], "image" => $_POST['image'], "timezone" => $_POST['timezone'], "hideemail" => $_POST['hideemail'], "ip" => $ip, "realname" => $_POST['realname']);
+			$e_event -> trigger("usersup", $edata_su);
 
                         require_once(HEADERF);
                         $text = LAN_405;
@@ -228,7 +230,7 @@ if(IsSet($_POST['register'])){
                         exit;
                 }else{
                 require_once(HEADERF);
-                $nid = $sql -> db_Insert("user", "0, '".$username."', '', '".md5($_POST['password1'])."', '$u_key', '".$_POST['email']."',         '".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$birthday."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '' ");
+                $nid = $sql -> db_Insert("user", "0, '".$username."', '', '".md5($_POST['password1'])."', '$u_key', '".$_POST['email']."', '".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$birthday."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '' ");
                                         // ================== save extended fields as serialized data.
 
                                         if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
@@ -243,6 +245,10 @@ if(IsSet($_POST['register'])){
                                                 $sql -> db_Update("user", "user_prefs='$tmp' WHERE user_id='".$nid."' ");
                                         }
                                         // ==========================================================
+
+		$edata_su = array("username" => $username, "email" => $_POST['email'], "website" => $_POST['website'], "icq" => $_POST['icq'], "aim" => $_POST['aim'], "msn" => $_POST['msn'], "location" => $_POST['location'], "birthday" => $birthday, "signature" => $_POST['signature'], "image" => $_POST['image'], "timezone" => $_POST['timezone'], "hideemail" => $_POST['hideemail'], "ip" => $ip, "realname" => $_POST['realname']);
+		$e_event -> trigger("usersup", $edata_su);
+
                 $ns -> tablerender("<div style='text-align:center'>".LAN_SIGNUP_8."</div>", LAN_107."&nbsp;".SITENAME.", ".LAN_SIGNUP_12."<br /><br />".LAN_SIGNUP_13);
                 require_once(FOOTERF);
                 exit;
