@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/download_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-02-17 20:31:54 $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-20 18:29:08 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -20,11 +20,7 @@
 $DOWNLOAD_CAT_TABLE_RENDERPLAIN = TRUE;
 if(!$DOWNLOAD_CAT_TABLE_START){
 	$DOWNLOAD_CAT_TABLE_START = "
-	<img src='http://localhost/e107_0.7/e107_themes/lamb/images/download.png' alt='' style='vertical-align: middle;' /> <span class='dlmain'>Downloads</span>
-
-
-                
-                ";
+	<img src='".e_THEME."lamb/images/download.png' alt='' style='vertical-align: middle;' /> <span class='dlmain'>Downloads</span>\n";
 }
 if(!$DOWNLOAD_CAT_PARENT_TABLE){
 
@@ -68,7 +64,7 @@ $DOWNLOAD_LIST_TABLE_RENDERPLAIN = TRUE;
 if(!$DOWNLOAD_LIST_TABLE_START){
 
                 $DOWNLOAD_LIST_TABLE_START = "
-<img src='http://localhost/e107_0.7/e107_themes/lamb/images/download.png' alt='' style='vertical-align: middle;' /> <span class='dlmain'>Downloads: {DOWNLOAD_CATEGORY}</span><br /><br />{DOWNLOAD_CATEGORY_DESCRIPTION}<br /><br />
+<img src='".e_THEME."lamb/images/download.png' alt='' style='vertical-align: middle;' /> <span class='dlmain'>Downloads: {DOWNLOAD_CATEGORY}</span><br /><br />{DOWNLOAD_CATEGORY_DESCRIPTION}<br /><br />
 
 <form method='post' action='".e_SELF."?".e_QUERY."'>
 <span class='defaulttext'>".LAN_dl_38."</span>
@@ -135,7 +131,7 @@ $DOWNLOAD_VIEW_TABLE_RENDERPLAIN = TRUE;
 if(!$DOWNLOAD_VIEW_TABLE_START){
                 $DOWNLOAD_VIEW_TABLE_START = "
 
-<img src='http://localhost/e107_0.7/e107_themes/lamb/images/download.png' alt='' style='vertical-align: middle;' /> <span class='dlmain'>Downloads: {DOWNLOAD_CATEGORY}</span><br /><br /><br />\n";
+<img src='".e_THEME."lamb/images/download.png' alt='' style='vertical-align: middle;' /> <span class='dlmain'>Downloads: {DOWNLOAD_CATEGORY}</span><br /><br /><br />\n";
 }
 
 if(!$DOWNLOAD_VIEW_TABLE){
