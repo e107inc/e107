@@ -17,34 +17,45 @@ if(!getperms("Z")){ header("location:".e_BASE."index.php"); exit; }
 require_once("auth.php");
 require_once(e_HANDLER."parser_handler.php");
 
-
 //        check for new plugins, create entry in plugin table ...
 $handle=opendir(e_PLUGIN);
-while(false !== ($file = readdir($handle))){
-        if($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)){
-                $plugin_handle=opendir(e_PLUGIN.$file."/");
-                while(false !== ($file2 = readdir($plugin_handle))){
-                        if($file2 == "plugin.php"){
-                                include(e_PLUGIN.$file."/".$file2);
-                                if(!$sql -> db_Select("plugin", "*", "plugin_name='$eplug_name'")){
-                                        if($eplug_conffile && !$eplug_prefs && !$eplug_table_names){
-                                                $sql -> db_Insert("plugin", "0, '$eplug_name', '$eplug_version', '$eplug_folder', 1");        // new plugin, assign entry in plugin table
-                                        }else{
-                                                $sql -> db_Insert("plugin", "0, '$eplug_name', '$eplug_version', '$eplug_folder', 0");        // new plugin, assign entry in plugin table
-                                        }
-                                }
-                        }
-                }
-                closedir($plugin_handle);
-        }
+while(false !== ($file = readdir($handle)))
+{
+	if($file != "." && $file != ".." && is_dir(e_PLUGIN.$file))
+	{
+		$plugin_handle=opendir(e_PLUGIN.$file."/");
+		while(false !== ($file2 = readdir($plugin_handle)))
+		{
+			if($file2 == "plugin.php")
+			{
+				include(e_PLUGIN.$file."/".$file2);
+				if(!$sql -> db_Select("plugin", "*", "plugin_name='$eplug_name'"))
+				{
+					if($eplug_conffile && !$eplug_prefs && !$eplug_table_names && !$eplug_user_prefs && !$eplug_parse && !$eplug_userclass)
+					{
+						// new plugin, assign entry in plugin table, install is not necessary so mark it as intalled
+						$sql -> db_Insert("plugin", "0, '$eplug_name', '$eplug_version', '$eplug_folder', 1");        
+					}
+					else
+					{
+						// new plugin, assign entry in plugin table, install is necessary
+						$sql -> db_Insert("plugin", "0, '$eplug_name', '$eplug_version', '$eplug_folder', 0");        
+					}
+				}
+			}
+		}
+		closedir($plugin_handle);
+	}
 }
 closedir($handle);
 
 $sql -> db_Select("plugin");
-while($row = $sql -> db_fetch()){
-        if(!is_dir(e_PLUGIN.$row[plugin_path])){
-                $sql -> db_Delete("plugin", "plugin_path='{$row['plugin_path']}'");
-        }
+while($row = $sql -> db_fetch())
+{
+	if(!is_dir(e_PLUGIN.$row[plugin_path]))
+	{
+		$sql -> db_Delete("plugin", "plugin_path='{$row['plugin_path']}'");
+	}
 }
 
 if(strstr(e_QUERY, "uninstall")){
@@ -346,10 +357,10 @@ $text = "<div style='text-align:center'>
 $sql -> db_Select("plugin");
 while($row = $sql -> db_Fetch()){
         extract($row);
-        unset($eplug_module, $eplug_parse, $eplug_name, $eplug_version, $eplug_author, $eplug_logo, $eplug_url, $eplug_email, $eplug_description, $eplug_compatible, $eplug_readme, $eplug_folder, $eplug_table_names);
+        unset($eplug_module, $eplug_parse, $eplug_name, $eplug_version, $eplug_author, $eplug_logo, $eplug_url, $eplug_email, $eplug_description, $eplug_compatible, $eplug_readme, $eplug_folder, $eplug_table_names, $eplug_userclass);
         include(e_PLUGIN.$plugin_path."/plugin.php");
 
-        if(is_array($eplug_table_names) || is_array($eplug_prefs)  || is_array($eplug_user_prefs) || is_array($eplug_parse)){
+        if(is_array($eplug_table_names) || is_array($eplug_prefs)  || is_array($eplug_user_prefs) || is_array($eplug_parse) || $eplug_module || $eplug_userclass){
                 $img = (!$plugin_installflag ? "<img src='".e_IMAGE."generic/uninstalled.png' alt='' />" : "<img src='".e_IMAGE."generic/installed.png' alt='' />");
         }else{
                 $img = "<img src='".e_IMAGE."generic/noinstall.png' alt='' />";
@@ -394,11 +405,6 @@ $text .= "</table>
 
 $ns -> tablerender(Plugins, $text);
 // ----------------------------------------------------------
-
-
-
-//echo "pref-modules = [{$pref['modules']}]";
-
 
 require_once("footer.php");
 ?>
