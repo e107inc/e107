@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/resize_handler.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-15 22:38:40 $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-15 22:43:21 $
 |     $Author: pholzmann $
 +----------------------------------------------------------------------------+
 */
@@ -69,7 +69,7 @@ if($image_stats == null){ echo "<b>DEBUG</b> image_stats are null<br />"; return
                                 $name2 = "thumb_".$name;
                                 $destination_file = str_replace($name, $name2, $destination_file);
                         }
-                        exec ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." '".$source_file."' '".$destination_file."'");
+			exec ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." ".escapeshellarg($source_file)." '".$destination_file."'");
 
                 }
         }else if($mode == "gd1"){
