@@ -63,4 +63,7 @@ define("ADMSLAN_58", "Main Site Administrator");
 define("ADMSLAN_59", "Remove Admin Status");
 define("ADMSLAN_60", "Are you sure you want to remove admin status from");
 define("ADMSLAN_61", "Administrator deleted");
+
+define("ADMSLAN_62", "Plugin Manager");
+define("ADMSLAN_63", "Plugin");
 ?>

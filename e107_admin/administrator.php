@@ -64,7 +64,7 @@ if(IsSet($_POST['update_admin'])){
         }
         $sql -> db_Update("user", "user_password='$admin_password', user_perms='$perm' WHERE user_name='$a_name' ");
         unset($ad_name, $a_password, $a_perms);
-        $message = "Administrator ".$_POST['ad_name']." ".ADMSLAN_2."<br />";
+        $message = ADMSLAN_56." ".$_POST['ad_name']." ".ADMSLAN_2."<br />";
 }
 
 if($action == "edit"){
@@ -196,12 +196,12 @@ $text .= checkb("M", $a_perms).ADMSLAN_46."<br />";
 $text .= checkb("N", $a_perms).ADMSLAN_47."<br /><br />";
 
 
-$text .= checkb("Z", $a_perms)."Plugin Manager<br /><br />";
+$text .= checkb("Z", $a_perms).ADMSLAN_62."<br /><br />";
 
 $sql -> db_Select("plugin", "*", "plugin_installflag='1'");
 while($row = $sql-> db_Fetch()){
 extract($row);
-$text .= checkb("P".$plugin_id, $a_perms)."Plugin - ".$plugin_name."<br />";
+$text .= checkb("P".$plugin_id, $a_perms).ADMSLAN_63." - ".$plugin_name."<br />";
 }
 
 
