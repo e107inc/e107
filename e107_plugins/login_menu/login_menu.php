@@ -186,7 +186,7 @@ $text = "";
 		if($pref['user_reg']){
 			$text .= "<br /><br />";
 			if(!$pref['auth_method'] || $pref['auth_method'] == "e107"){
-				$text .= "[ <a href='".e_BASE.e_SIGNUP."'>".LOGIN_MENU_L3."</a> ]<br />[ <a href='".e_BASE."fpw.php'> ".LOGIN_MENU_L4."</a> ]";
+				$text .= "[ <a href='".e_SIGNUP."'>".LOGIN_MENU_L3."</a> ]<br />[ <a href='".e_BASE."fpw.php'> ".LOGIN_MENU_L4."</a> ]";
 			}
 		}
 		$text .= "</p>
