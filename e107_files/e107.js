@@ -9,9 +9,9 @@ parent.location.href = self.location.href;
 |	e107 website system - Javascript File.
 |
 |	$Source: /cvs_backup/e107_0.7/e107_files/e107.js,v $
-|	$Revision: 1.9 $
-|	$Date: 2005-02-08 08:22:34 $
-|	$Author: e107coders $
+|	$Revision: 1.10 $
+|	$Date: 2005-02-25 03:05:46 $
+|	$Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -179,22 +179,33 @@ function storeCaret (textAr){
 	}
 }
 
-function addtext(text){
+function addtext(text, emote){
 	if (window.e107_selectedInputArea){
 		var ta = e107_selectedInputArea;
-		val = text.split('][');
+		if (emote != true){
+			val = text.split('][');
+			}
+		else { val = text; }
 
 		if ((clientVer >= 4) && is_ie && is_win){
 			theSelection = document.selection.createRange().text; /* wrap selected text */
 			if (theSelection) {
-				document.selection.createRange().text = val[0] +']' +  theSelection + '[' + val[1];
+				if (emote != true){
+					document.selection.createRange().text = val[0] +']' +  theSelection + '[' + val[1];
+				} else {
+					document.selection.createRange().text = val + theSelection;
+				}
 				ta.focus();
 				theSelection = '';
 				return;
 			}
 
 		}else if (ta.selectionEnd && (ta.selectionEnd - ta.selectionStart > 0)){
-			mozWrap(ta, val[0] +']', '[' + val[1]); /* wrap selected text */
+			if (emote != true){
+				mozWrap(ta, val[0] +']', '[' + val[1]); /* wrap selected text */
+			} else {
+				mozWrap(ta, val, ''); /* wrap selected text */
+			}
 			return;
 		}
 		text = ' ' + text + ' ';

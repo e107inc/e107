@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-02-23 21:54:16 $
-|     $Author: stevedunstan $
+|     $Revision: 1.32 $
+|     $Date: 2005-02-25 03:06:19 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -124,6 +124,17 @@ class e_parse {
 				$text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $text);
 			}
 		}
+
+		if (strpos($modifiers,'emotes_off') === FALSE) {
+			if ($pref['smiley_activate'] || strpos($modifiers,'emotes_on') !== FALSE) {
+				if (!is_object($this->e_emote)) {
+					require_once(e_HANDLER.'emote_filter.php');
+					$this->e_emote = new e_emoteFilter;
+				}
+				$text = $this->e_emote->filterEmotes($text);
+			}
+		}
+
 		if(!strstr($modifiers, 'nobreak')) {
 			$text = $this -> textclean($text, $wrap);
 		}
@@ -135,15 +146,6 @@ class e_parse {
 			$text = preg_replace("#[\r]*\n[\r]*#", "[E_NL]", $text);
 		}
 		
-		if (strpos($modifiers,'emotes_off') === FALSE) {
-			if ($pref['smiley_activate'] || strpos($modifiers,'emotes_on') !== FALSE) {
-				if (!is_object($this->e_emote)) {
-					require_once(e_HANDLER.'emote_filter.php');
-					$this->e_emote = new e_emoteFilter;
-				}
-				$text = $this->e_emote->filterEmotes($text);
-			}
-		}
 		 
 		if (strpos($modifiers,'parse_sc') !== FALSE)
 		{
