@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-02-03 22:11:39 $
-|     $Author: stevedunstan $
+|     $Revision: 1.19 $
+|     $Date: 2005-02-04 03:40:28 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -146,15 +146,20 @@ class e_parse {
 		}
 		
 		if (strpos($modifiers,'emotes_off') === FALSE) {
-		if ($pref['smiley_activate'] || strpos($modifiers,'emotes_on') !== FALSE) {
-			if (!is_object($this->e_emote)) {
-				require_once(e_HANDLER.'emote_filter.php');
-				$this->e_emote = new e_emoteFilter;
+			if ($pref['smiley_activate'] || strpos($modifiers,'emotes_on') !== FALSE) {
+				if (!is_object($this->e_emote)) {
+					require_once(e_HANDLER.'emote_filter.php');
+					$this->e_emote = new e_emoteFilter;
+				}
+				$text = $this->e_emote->filterEmotes($text);
 			}
-			$text = $this->e_emote->filterEmotes($text);
-		}
 		}
 		 
+		if (strpos($modifiers,'parse_sc') !== FALSE)
+		{
+			$text = $this->parseTemplate($text, TRUE);
+		}
+
 		// Start parse [bb][/bb] codes
 		if ($parseBB === TRUE) {
 			if (!is_object($this->e_bb)) {
@@ -173,8 +178,7 @@ class e_parse {
 			$text = $this->e_pf->filterProfanities($text);
 		}
 		 
-		$nl_replace = (strpos($modifiers, 'nobreak') === FALSE) ? "<br />" :
-		 "";
+		$nl_replace = (strpos($modifiers, 'nobreak') === FALSE) ? "<br />" : "";
 		$text = str_replace('[E_NL]', $nl_replace, $text);
 		return $text;
 	}
