@@ -101,6 +101,8 @@ if(IsSet($_POST['save_prefs'])){
         $pref['newsposts'] = $_POST['newsposts'];
         $pref['news_cats'] = $_POST['news_cats'];
         $pref['nbr_cols'] = $_POST['nbr_cols'];
+        $pref['subnews_attach'] = $_POST['subnews_attach'];
+        $pref['subnews_resize'] = $_POST['subnews_resize'];
 
         save_prefs();
         $newspost -> show_message("Settings Saved");
@@ -320,9 +322,16 @@ class newspost{
 
                 if($sub_action == "sn" && !$_POST['preview']){
                         if($sql -> db_Select("submitnews", "*", "submitnews_id=$id", TRUE)){
-                                list($id, $submitnews_name, $submitnews_email, $_POST['news_title'], $submitnews_category, $_POST['data']) = $sql-> db_Fetch();
+                                list($id, $submitnews_name, $submitnews_email, $_POST['news_title'], $submitnews_category, $_POST['data'], $submitnews_datestamp, $submitnews_ip, $submitnews_auth, $submitnews_file) = $sql-> db_Fetch();
+
+                                if($pref['htmlarea']){
+                                $_POST['data'] .= "<br><b>".NWSLAN_49." ".$submitnews_name."</b>";
+                                $_POST['data'] .= ($submitnews_file)? "<br><br><img src='".e_IMAGE."newspost_images/$submitnews_file' style='float:right; margin-left:5px;margin-right:5px;margin-top:5px;margin-bottom:5px; border:1px solid' />":"";
+                                }else {
                                 $_POST['data'] .= "\n[[b]".NWSLAN_49." ".$submitnews_name."[/b]]";
-								$_POST['cat_id'] = $submitnews_category;
+                                $_POST['data'] .= ($submitnews_file)?"\n\n[img]".e_IMAGE."newspost_images/".$submitnews_file." [/img]":"";
+                                }
+                                                                $_POST['cat_id'] = $submitnews_category;
                         }
                 }
 
@@ -341,7 +350,7 @@ class newspost{
                 $text = "<div style='text-align:center'>
                 <form ".(FILE_UPLOADS ? "enctype='multipart/form-data'" : "")." method='post' action='".e_SELF."?".e_QUERY."' name='dataform'>
                 <table style='width:95%' class='fborder'>
-                
+
                 <tr>
                 <td style='width:20%' class='forumheader3'>".NWSLAN_6.": </td>
                 <td style='width:80%' class='forumheader3'>";
@@ -583,13 +592,16 @@ class newspost{
 
         function submit_item($sub_action, $id){
                 // ##### Format and submit item ---------------------------------------------------------------------------------------------------------
-                global $aj, $ix;
+                global $aj, $ix,$sql;
                 $_POST['active_start'] = (!$_POST['startmonth'] || !$_POST['startday'] || !$_POST['startyear'] ? 0 : mktime (0, 0, 0, $_POST['startmonth'], $_POST['startday'], $_POST['startyear']));
                 $_POST['active_end'] = (!$_POST['endmonth'] || !$_POST['endday'] || !$_POST['endyear'] ? 0 : mktime (0, 0, 0, $_POST['endmonth'], $_POST['endday'], $_POST['endyear']));
                 $_POST['admin_id'] = USERID;
                 $_POST['admin_name'] = USERNAME;
                 $_POST['news_datestamp'] = time();
                 if($id && $sub_action != "sn" && $sub_action != "upload"){ $_POST['news_id'] = $id; }
+                else{
+                $sql -> db_Update("submitnews", "submitnews_auth='1' WHERE submitnews_id ='".$id."' ");
+                }
                 if(!$_POST['cat_id']){ $_POST['cat_id'] = 1; }
                 $this->show_message($ix -> submit_item($_POST));
                 unset($_POST['news_title'], $_POST['cat_id'], $_POST['data'], $_POST['news_extended'], $_POST['news_allow_comments'], $_POST['startday'], $_POST['startmonth'], $_POST['startyear'], $_POST['endday'], $_POST['endmonth'], $_POST['endyear'], $_POST['news_id'], $_POST['news_class']);
@@ -730,6 +742,20 @@ class newspost{
                 </select></td>
                 </tr>
 
+                <tr>
+                <td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_100."</span></td>
+                <td class='forumheader3' style='width:40%'>
+                <input type='checkbox' name='subnews_attach' value='1' ".($pref['subnews_attach']==1 ? " checked" : "").">
+                </td>
+                </tr>
+
+                <tr>
+                <td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_101."</span></td>
+                <td class='forumheader3' style='width:40%'>
+                <input class='tbox' type='text' style='width:50px' name='subnews_resize' value='".$pref['subnews_resize']."' >
+                <span class='smalltext'>".NWSLAN_102."</span></td>
+                </tr>
+
                 <tr><td colspan='2' style='text-align:center' class='forumheader'>";
                 $text .= "<input class='button' type='submit' name='save_prefs' value='".NWSLAN_89."'></td></tr>";
 
@@ -748,7 +774,7 @@ class newspost{
 
                 global $sql, $rs, $ns, $aj;
                 $text = "<div style='border : solid 1px #000; padding : 4px; width :auto; height : 200px; overflow : auto; '>\n";
-                if($category_total = $sql -> db_Select("submitnews")){
+                if($category_total = $sql -> db_Select("submitnews","*","submitnews_auth='0'")){
                         $text .= "<table class='fborder' style='width:100%'>
                         <tr>
                         <td style='width:5%' class='forumheader2'>ID</td>
