@@ -305,12 +305,28 @@ function renderuser($row, $user_entended, $mode="verbose"){
                 <tr>
                 <td style='width:30%'class='forumheader3'>".LAN_148."</td>
                 <td style='width:70%'class='forumheader3'>$user_comments ( ".$commentper."% )</td>
-                </tr>
+                </tr>";
+
+				if($user_comments){
+					$str .= "
+					<tr>
+					<td colspan='2' class='forumheader3'><a href='".e_BASE."userposts.php?0.comments.".$user_id."'>".LAN_423."</a></td>
+					</tr>";
+				}
+				$str .= "
 
                 <tr>
                 <td style='width:30%'class='forumheader3'>".LAN_149."</td>
                 <td style='width:70%'class='forumheader3'>$user_forums ( ".$forumper."% )</td>
-                </tr>
+                </tr>";
+
+				if($user_forums){
+					$str .= "
+					<tr>
+					<td colspan='2' class='forumheader3'><a href='".e_BASE."userposts.php?0.forums.".$user_id."'>".LAN_424."</a></td>
+					</tr>";
+				}
+				$str .= "
 
                 <tr>
                 <td style='width:30%'class='forumheader3'>".LAN_146."</td>
