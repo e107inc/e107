@@ -31,7 +31,7 @@ $eplug_status = TRUE; //Show post count in admin (use status.php)
 $eplug_folder = "content";
 
 // Mane of menu item for plugin ----------------------------------------------------------------------------------
-$eplug_menu_name = "content_menu.php";
+$eplug_menu_name = "";
 
 // Name of the admin configuration file --------------------------------------------------------------------------
 $eplug_conffile = "admin_content_config.php";

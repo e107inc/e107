@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.15 $
-|		$Date: 2005-02-12 09:52:10 $
+|		$Revision: 1.16 $
+|		$Date: 2005-02-20 22:35:06 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -433,7 +433,10 @@ function show_content(){
 
 							// check userclasses for contents, and do not use those content_ids in the query
 							// if no valid content is found within a main parent, then don't show a link, else show a link
+
 							$unvalidparent = $aa -> checkSubCat("0.".$content_id);
+							//$unvalidparent = $aa -> checkMainCat($content_id);
+							//echo $unvalidparent."<br />";
 							$unvalidparent = ($unvalidparent == "" ? "" : "AND ".substr($unvalidparent, 0, -3) );
 
 							$contenttotal = $sql2 -> db_Count($plugintable, "(*)", "WHERE LEFT(content_parent,".(strlen($content_id)).") = '".$content_id."' AND content_refer != 'sa' ".$unvalidparent." ".$datequery." AND content_class IN (".USERCLASS_LIST.")" );
@@ -1227,9 +1230,10 @@ function parse_content_recent_table($row, $prefetchbreadcrumb=""){
 
 				if($content_pref["content_list_authorname_{$type_id}"] || $content_pref["content_list_authoremail_{$type_id}"]){
 					$authordetails = $aa -> getAuthor($content_author);
+					//$authordetails[1] = ($authordetails[1] ? $authordetails[1] : "unknown");
 					if($content_pref["content_list_authorname_{$type_id}"]){
 						if($content_pref["content_list_authoremail_{$type_id}"] && $authordetails[2]){
-							if($authordetails[0] == "0"){
+							if($authordetails[0] == "0"){								
 								if($content_pref["content_list_authoremail_nonmember_{$type_id}"]){
 									$CONTENT_RECENT_TABLE_AUTHORDETAILS = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
 								}else{
@@ -1324,6 +1328,7 @@ function parse_content_cat_table($row, $prefetchbreadcrumb){
 					$CONTENT_CAT_TABLE_AUTHORDETAILS = $authordetails[1]." ".CONTENT_ICON_USER." <a href='".e_SELF."?".$type.".".$type_id.".author' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
 				}
 
+				$sqlc = "";
 				if(!is_object($sqlc)){ $sqlc = new db; }
 				$CONTENT_CAT_TABLE_COMMENT = "";
 				if($content_comment){
