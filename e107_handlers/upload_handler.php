@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.3 $
-|   $Date: 2005-02-23 18:58:58 $
+|   $Revision: 1.4 $
+|   $Date: 2005-02-23 19:25:19 $
 |   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
