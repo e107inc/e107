@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-03-01 19:08:18 $
+|     $Revision: 1.8 $
+|     $Date: 2005-03-01 19:24:35 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -164,8 +164,6 @@ if (eregi("http", $image)) {
 	}
 }
 	
-	
-	
 // File retrieval function. by Cam.
 	
 function send_file($file) {
@@ -212,7 +210,7 @@ function send_file($file) {
 
 function check_download_limits()
 {
-	global $pref, $sql, $ns;
+	global $pref, $sql, $ns, $HEADER;
 
 	// Check download count limits
 	$qry = "
@@ -224,7 +222,6 @@ function check_download_limits()
 	if($sql->db_Select_gen($qry))
 	{
 		$limits = $sql->db_Fetch();
-//		echo "<br />Allowed {$limits['gen_intdata']} downloads every {$limits['gen_chardata']} days <br />";
 		$cutoff = time() - (86400*$limits['gen_chardata']);
 		if(USER)
 		{
@@ -251,17 +248,15 @@ function check_download_limits()
 				// Exceeded download count limit
 				@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_download.php");
 				@include_once(e_LANGUAGEDIR."English/lan_download.php");
-				require(HEADERF);
+				require_once(HEADERF);
 				$ns->tablerender(LAN_dl_61, LAN_dl_62);
 				require(FOOTERF);
 				exit;
 			}
 		}
 	}
-		
 
 	// Check download bandwidth limits
-
 	$qry = "
 	SELECT gen_user_id, gen_ip, (gen_user_id/gen_ip) as bw_perday 
 	FROM #generic 
