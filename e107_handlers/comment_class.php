@@ -87,7 +87,7 @@ class comment{
 		}
 
 		$aj = new textparse;
-
+		$comment_comment = wrap_comment($comment_comment);
 		$search[0] = "/\{USERNAME\}(.*?)/si";
 		$replace[0] = ($user_id ? "<a href='".e_BASE."user.php?id.".$user_id."'>".$user_name."</a>\n" : $user_name."\n");
 
@@ -192,3 +192,24 @@ class comment{
 		}
 	}
 }
+
+
+function wrap_comment($data){
+	$wrapcount = 70;
+	$message_array = explode(" ", $data);
+	for($i=0; $i<=(count($message_array)-1); $i++){
+		if(strlen($message_array[$i]) > $wrapcount){
+			if(substr($message_array[$i], 0, 7) == "http://"){
+				$url = str_replace("http://", "", $message_array[$i]);  
+				$url = explode("/", $url);  
+				$url = $url[0];
+				$message_array[$i] = "<a href='".$message_array[$i]."'>[".$url."]</a>";
+			}else{
+				$message_array[$i] = preg_replace("/([^\s]{".$wrapcount."})/", "$1<br />", $message_array[$i]);
+			}
+		}
+	}
+	$data = implode(" ",$message_array);
+	return $data;
+}
+?>

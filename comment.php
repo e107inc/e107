@@ -96,13 +96,6 @@ if($sql -> db_Select("cache", "*", "cache_url='comment.php?$table.$id' ")){
 	if($comment_total){
 		while($row = $sql -> db_Fetch()){
 			$text .= $cobj -> render_comment($row);
-			$message_array = explode(" ", $text);
-			for($i=0; $i<=(count($message_array)-1); $i++){
-				if(strlen($message_array[$i]) > $cb_wordwrap){
-					$message_array[$i] = preg_replace("/([^\s]{70})/", "$1<br />", $message_array[$i]);
-				}
-			}
-			$text = implode(" ",$message_array);
 		}
 		if(!defined("emessage")){
 			$ns -> tablerender(LAN_5, $text);
