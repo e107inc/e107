@@ -441,7 +441,7 @@ class textparse{
          return $text;
         }
 
-        function tpa($text, $mode="off", $referrer=""){
+        function tpa($text, $mode="off", $referrer="", $highlight_search){
                 /*
                 # Post parse
                 # - parameter #1:                string $text, text to parse
@@ -532,7 +532,7 @@ class textparse{
         if($mode != "nobreak"){ $text = nl2br($text); }
 		$text = preg_replace("/\n/i", " ", $text);
 		$text = str_replace("<br />", " <br />" , $text);
-		$text = $this -> wrap($text);
+		$text = $this -> wrap($text, $highlight_search);
         $text = preg_replace($search, $replace, $text);
         if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
         $search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;span", "&lt;/span");
@@ -548,8 +548,8 @@ class textparse{
         return $text;
         }
 
-		function wrap($text, $wrapcount){
-			$wrapcount = ($wrapcount ? $wrapcount : 100);
+		function wrap($text, $highlight_search=FALSE){
+			$wrapcount = 100;
 			$message_array = explode(" ", $text);
 			for($i=0; $i<=(count($message_array)-1); $i++){
 				if(strlen($message_array[$i]) > $wrapcount){
@@ -570,6 +570,14 @@ class textparse{
 					if(!strstr($message_array[$i], "[link=") && !strstr($message_array[$i], "[url=") && !strstr($message_array[$i], "href=") && !strstr($message_array[$i], "src=") && !strstr($message_array[$i], "action=") && !strstr($message_array[$i], "onclick=") && !strstr($message_array[$i], "url(")){
 						$message_array[$i] = preg_replace("#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="http://\2.\3" onclick="window.open(\'http://\2.\3\'); return false;">\2.\3</a>', $message_array[$i]);
 						$message_array[$i] = preg_replace("#([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?([^.]))#i", '<a href="\1://\2" onclick="window.open(\'\1://\2\'); return false;">\1://\2</a>', $message_array[$i]);
+							if($highlight_search){
+								$tmp = explode(" ", $_POST['search_query']);
+								foreach($tmp as $key){
+									if(eregi($key, $message_array[$i])){
+										$message_array[$i] = eregi_replace($key, "<span class='searchhighlight'>$key</span>", $message_array[$i]);	
+									}
+								}
+							}
 					}
 						}
 			}

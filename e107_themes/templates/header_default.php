@@ -17,8 +17,8 @@ echo ($pref['standards_mode'] ? "" : "<?xml version='1.0' encoding='iso-8859-1' 
 <html xmlns=\"http://www.w3.org/1999/xhtml\">
 <head>
 <title>".SITENAME.(defined("e_PAGETITLE") ? ": ".e_PAGETITLE : (defined("PAGE_NAME") ? ": ".PAGE_NAME : ""))."</title>
-<link rel=\"stylesheet\" href=\"".THEME."style.css\" type=\"text/css\" />
-<link rel=\"stylesheet\" href=\"".e_FILE."e107.css\" type=\"text/css\" />";
+<link rel=\"stylesheet\" href=\"".e_FILE."e107.css\" type=\"text/css\" />
+<link rel=\"stylesheet\" href=\"".THEME."style.css\" type=\"text/css\" />";
 if(file_exists(e_BASE."favicon.ico")){echo "\n<link rel=\"shortcut icon\" href=\"favicon.ico\" />"; }
 if(file_exists(e_FILE."style.css")){ echo "\n<link rel='stylesheet' href='".e_FILE."style.css' type=\"text/css\" />\n"; }
 if($eplug_css){ echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n"; }

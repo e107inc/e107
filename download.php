@@ -263,6 +263,10 @@ if($action == "view"){
         $rater = new rater;
         $aj = new textparse;
         $sql2 = new db;
+		$highlight_search = FALSE;
+		if(IsSet($_POST['highlight_search'])){
+			$highlight_search = TRUE;
+		}
 
 
         if(!$sql -> db_Select("download", "*", "download_id='$id'")){
@@ -306,7 +310,7 @@ if($action == "view"){
 
         $text .= "<tr>
         <td style='width:20%' class='forumheader3'>".LAN_dl_7.": </td>
-        <td style='width:80%' class='forumheader3'>".$aj -> tpa(($download_description ? $download_description : "&nbsp;"))."</td>
+        <td style='width:80%' class='forumheader3'>".$aj -> tpa(($download_description ? $download_description : "&nbsp;"), "public", "off", $highlight_search)."</td>
         </tr>";
 
         if($download_thumb){

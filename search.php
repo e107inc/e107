@@ -140,6 +140,7 @@ $ns -> tablerender(PAGE_NAME." ".SITENAME, $text);
 
 // only search when a query is filled.
 if($_POST['searchquery']){
+	echo "<div style='border:0;padding-right:2px;width:auto;height:400px;overflow:auto;'>";
 	unset($text);
 	extract($_POST);
 	$key = $_POST['searchtype'];
@@ -147,9 +148,10 @@ if($_POST['searchquery']){
 		unset($text);
 			if(file_exists($search_info[$key[$a]]['sfile'])){
 				@require_once($search_info[$key[$a]]['sfile']);
-				$ns -> tablerender(LAN_195." ".$search_info[$key[$a]]['qtype']." :: ".LAN_196.": ".$results, $text);
+				$ns -> tablerender(LAN_195." ".$search_info[$key[$a]]['qtype']." : ".LAN_196.": ".$results, $text);
 			}
 	}
+	echo "</div>";
 }
 
 function parsesearch($text, $match){

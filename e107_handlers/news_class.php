@@ -81,7 +81,11 @@ on
 	}
 
 		$news_title = $aj -> tpa($news_title, "off", "admin");
-		$news_body = $aj -> tpa($data, "off", "admin");
+		$highlight_search = FALSE;
+		if(IsSet($_POST['highlight_search'])){
+			$highlight_search = TRUE;
+		}
+		$news_body = $aj -> tpa($data, "off", "admin", $highlight_search=TRUE);
 		$news_extended = trim(chop($aj -> tpa($news_extended, "off", "admin")));
 
 		if(!$comment_total) $comment_total = "0";
