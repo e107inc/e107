@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-03-04 12:41:24 $
+|     $Revision: 1.6 $
+|     $Date: 2005-03-04 13:19:45 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -63,19 +63,17 @@ class poll
 				$votes .= "0".chr(1);
 			}
 
-			/* deactivate other polls */
-			if($sql -> db_Select("polls", "*", "poll_type=1 AND poll_vote_userclass!=255"))
-			{
-				$deacArray = $sql -> db_getList();
-				foreach($deacArray as $deacpoll)
-				{
-					$sql -> db_Update("polls", "poll_end_datestamp=".time().", poll_vote_userclass=255 WHERE poll_id=".$deacpoll['poll_id']);
-				}
-			}
-
-
 			if($mode == 1)
 			{
+				/* deactivate other polls */
+				if($sql -> db_Select("polls", "*", "poll_type=1 AND poll_vote_userclass!=255"))
+				{
+					$deacArray = $sql -> db_getList();
+					foreach($deacArray as $deacpoll)
+					{
+						$sql -> db_Update("polls", "poll_end_datestamp=".time().", poll_vote_userclass=255 WHERE poll_id=".$deacpoll['poll_id']);
+					}
+				}
 				$sql -> db_Insert("polls", "'0', ".time().", $active_start, $active_end, ".ADMINID.", '$poll_title', '$poll_options', '$votes', '', 1, $poll_comment, $multipleChoice, $showResults, $pollUserclass, $storageMethod");
 			}
 			else
@@ -89,8 +87,6 @@ class poll
 	function render_poll($pollArray, $type = "menu", $POLLMODE, $returnMethod=FALSE)
 	{
 		global $POLLSTYLE, $sql, $tp, $ns;
-
-
 
 		if($type == "preview")
 		{
@@ -130,13 +126,12 @@ class poll
 		/* get template */
 		if (file_exists(THEME."poll_template.php"))
 		{
-			require_once(THEME."poll_template.php");
+			require(THEME."poll_template.php");
 		}
 		else if(!$POLL_NOTVOTED_START)
 		{
-			require_once(e_PLUGIN."poll/templates/poll_template.php");
+			require(e_PLUGIN."poll/templates/poll_template.php");
 		}
-
 		 
 		if ($type == "preview")
 		{
@@ -212,6 +207,7 @@ class poll
 				$text .= preg_replace("/\{(.*?)\}/e", '$\1', $POLL_DISALLOWED_END);
 			break;
 		}
+
 		define("POLLRENDERED", TRUE);
 		$caption = (file_exists(THEME."images/poll_menu.png") ? "<img src='".THEME."images/poll_menu.png' alt='' /> ".POLLAN_MENU_CAPTION : POLLAN_MENU_CAPTION);
 		if($type == "preview")
@@ -223,6 +219,9 @@ class poll
 		{
 			$caption = POLL_505;
 		}
+
+		
+
 		if($returnMethod)
 		{
 			return $text;
