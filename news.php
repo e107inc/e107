@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-01-26 13:39:19 $
+|     $Revision: 1.23 $
+|     $Date: 2005-01-26 14:42:28 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -109,14 +109,6 @@ if ($action == "extend") {
         exit;
 }
 
-if ($pref['nfp_display'] == 1)
-{
-	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
-}
-
-if (Empty($order)){ $order = "news_datestamp"; }
-
-
 
 // ---> wmessage
 if (!defined("WMFLAG")) {
@@ -142,6 +134,12 @@ if (!defined("WMFLAG")) {
 // ---> wmessage end
 
 
+if ($pref['nfp_display'] == 1)
+{
+	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
+}
+
+if (Empty($order)){ $order = "news_datestamp"; }
 
 
 if($action == "list") {

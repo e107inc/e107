@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-01-25 22:38:42 $
-|     $Author: sweetas $
+|     $Revision: 1.11 $
+|     $Date: 2005-01-26 14:41:58 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -67,9 +67,15 @@ function update_61x_to_700($type){
                         /*
                         changes by jalist 19/01/05:
                         altered structure of news table
-                        *** PLEASE NOTE *** A script will have to be written to propagate the new table field with amount of comments for each news item ...
                         */
                         mysql_query("ALTER TABLE ".MPREFIX."e107_news ADD 'news_comment_total' INT UNSIGNED NOT NULL");
+						$sql -> db_Select_gen("SELECT comment_item_id AS id, COUNT(*) AS amount FROM #comments GROUP BY comment_item_id");
+						$commentArray = $sql -> db_getList();
+						foreach($commentArray as $comments)
+						{
+							extract($comments);
+							$sql -> db_Update("news", "news_comment_total=$amount WHERE news_id=$id");
+						}
                         /* end */
 
                         // start links update -------------------------------------------------------------------------------------------
