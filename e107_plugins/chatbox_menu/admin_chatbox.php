@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/admin_chatbox.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-02-02 17:43:07 $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-03 10:59:04 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -194,14 +194,6 @@ $text .= "</select>
 	 
 	<tr><td class='forumheader3' style='width:40%'>".CHBLAN_31."?: </td>
 	<td class='forumheader3' style='width:60%'>". ($pref['cb_emote'] ? "<input type='checkbox' name='cb_emote' value='1' checked='checked' />" : "<input type='checkbox' name='cb_emote' value='1' />")."
-	</td>
-	</tr>
-	 
-	 
-	<tr>
-	<td class='forumheader3' style='width:40%'>".CHBLAN_17.":  <div class='smalltext'>".CHBLAN_18."</div></td>
-	<td class='forumheader3' style='width:60%'>
-	<input class='tbox' type='text' name='cb_wordwrap' size='5' value='$cb_wordwrap' maxlength='3' />
 	</td>
 	</tr>
 	 
