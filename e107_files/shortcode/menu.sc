@@ -1,9 +1,8 @@
 global $sql;
 global $ns;
 $menu = $parm;
-$sql9 = new db;
-$sql9 -> db_Select("menus", "menu_name,menu_class,menu_pages","menu_location='$menu' ORDER BY menu_order");
-while($row = $sql9-> db_Fetch())
+global $eMenuList;
+foreach($eMenuList[$menu] as $row)
 {
 	extract($row);
 	$show_menu = TRUE;
