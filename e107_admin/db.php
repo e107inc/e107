@@ -85,9 +85,9 @@ $ns->tablerender(DBLAN_10, $text);
 	
 function backup_core() {
 	global $pref, $sql;
-	$tmp = addslashes(serialize($pref));
-	if (!$sql->db_Insert("core", "'pref_backup', '$tmp' ")) {
-		$sql->db_Update("core", "e107_value='$tmp' WHERE e107_name='pref_backup'");
+	$tmp = base64_encode((serialize($pref)));
+	if (!$sql->db_Insert("core", "'pref_backup', '{$tmp}' ")) {
+		$sql->db_Update("core", "e107_value='{$tmp}' WHERE e107_name='pref_backup'");
 	}
 }
 	
@@ -138,8 +138,8 @@ function getsql($mySQLdefaultdb) {
 	$result = mysql_query("SHOW TABLES LIKE '{$sTblWild}'"); // avoid normal sql class (instead of $sql2 which would also work)
 	//       $result = mysql_list_tables($mySQLdefaultdb);
 	$es = " \r\n";
-	$sqltext = "#".$es."# e107 sql-dump".$es."# Database: $mySQLdefaultdb".$es."#".$es."# Date: " . gmdate("d-m-Y H:i:s", time()) . " GMT".$es."#".$es;
-	while ($row = mysql_fetch_row($result)) {
+	$sqltext = "#{$es}# e107 sql-dump{$es}# Database: {$mySQLdefaultdb}{$es}#{$es}# Date: ".gmdate("d-m-Y H:i:s", time())." GMT{$es}#{$es}";
+		while ($row = mysql_fetch_row($result)) {
 		$sqltext .= $es.$es."## (re)create table structure for ".$row[0]." ##".$es;
 		$sqltext .= $es.'DROP TABLE IF EXISTS `'.$row[0]."`;".$es;
 		//
@@ -165,7 +165,7 @@ function getsql($mySQLdefaultdb) {
 		$search = array("\x00", "\x0a", "\x0d", "\x1a"); //\x08\\x09, not required
 		$replace = array('\0', '\n', '\r', '\Z');
 		 
-		$maintable = ereg_replace(MPREFIX, "", $row[0]);
+		$maintable = ereg_replace(MPREFIX, '', $row[0]);
 		$sql->db_Select($maintable);
 		 
 		$metainfo = array();
@@ -185,7 +185,7 @@ function getsql($mySQLdefaultdb) {
 				$table_list .= (($j > 0) ? ', ' : '') . $field_names[$j];
 			}
 			$table_list .= ')';
-			$sqltext .= "INSERT INTO ".$row[0]." $table_list VALUES ";
+			$sqltext .= "INSERT INTO ".$row[0]." {$table_list} VALUES ";
 			$rowcount = 0;
 			do {
 				$sqltext .= ($rowcount++ ? ',':'').$es."(";
@@ -213,4 +213,5 @@ function getsql($mySQLdefaultdb) {
 }
 	
 require_once("footer.php");
+
 ?>
