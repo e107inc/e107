@@ -13,7 +13,10 @@
 +---------------------------------------------------------------+
 */
 require_once("class2.php");
-
+if($pref['subnews_htmlarea']){
+   require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
+   $htmlarea_js =  htmlarea("data");
+}
 $aj = new textparse;
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."userclass_class.php");
@@ -184,15 +187,18 @@ if($action == "article"){
 
         <tr>
         <td style='width:20%' class='forumheader3'>".ARLAN_20.": </td>
-        <td style='width:80%' class='forumheader3'>
-        <textarea class='tbox' name='data' cols='90' rows='30'>$data</textarea>
-        <br />
-        <input class='helpbox' type='text' name='helpb' size='100' />
-        <br />";
-
-        require_once(e_HANDLER."ren_help.php");
-        $text .= ren_help(1, "addtext2", "help")."
-        </td>
+        <td style='width:80%' class='forumheader3'>";
+        $insertjs = (!$pref['subnews_htmlarea'])? "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'":"";
+        $text .="<textarea class='tbox' id='data' name='data' style='width:100%' rows='30' cols='90' $insertjs >$data</textarea>";
+        $text .="<br />
+        <input class='helpbox' type='text' name='helpb' size='100' />";
+        if(!$pref['subnews_htmlarea']){$text .="<br />
+          <input class='helpbox' type='text' name='helpb' size='100' />
+          <br />";
+          require_once(e_HANDLER."ren_help.php");
+          $text .= ren_help(1, "addtext2", "help");
+        }
+        $text .= "</td>
         </tr>
 
         <tr style='vertical-align:top'>
@@ -277,14 +283,16 @@ if($action == "review"){
 
         <tr>
         <td style='width:20%' class='forumheader3'><span style='text-decoration: underline;'>".ARLAN_86."</span>: </td>
-        <td style='width:80%' class='forumheader3'>
-        <textarea class='tbox' name='data' cols='70' rows='30'>$data</textarea>
-        <br />
-        <input class='helpbox' type='text' name='helpb' size='100' />
-        <br />";
-        require_once(e_HANDLER."ren_help.php");
-        $text .= ren_help(1, "addtext2", "help")."
-        </td>
+        <td style='width:80%' class='forumheader3'>";
+        $insertjs = (!$pref['subnews_htmlarea'])? "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'":"";
+        $text .="<textarea class='tbox' id='data' name='data' style='width:100%' rows='30' cols='90' $insertjs >$data</textarea>";
+        if(!$pref['subnews_htmlarea']){$text .="<br />
+          <input class='helpbox' type='text' name='helpb' size='100' />
+          <br />";
+          require_once(e_HANDLER."ren_help.php");
+          $text .= ren_help(1, "addtext2", "help");
+        }
+        $text .= "</td>
         </tr>
 
         <tr>
