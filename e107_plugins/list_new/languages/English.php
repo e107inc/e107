@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/list_new/languages/English.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:29 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-27 19:53:07 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
-
-
+	
+	
 define("LIST_1", "News Items");
 define("LIST_2", "Comments");
 define("LIST_3", "New since your last visit ...");
@@ -39,8 +39,8 @@ define("LIST_18", "FAQ");
 define("LIST_18", "Poll");
 define("LIST_19", "Docs");
 define("LIST_20", "Bugtracker");
-
+	
 define("LIST_21", "Articles");
-
-
+	
+	
 ?>

@@ -11,74 +11,78 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cache.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-18 16:11:32 $
+|     $Revision: 1.7 $
+|     $Date: 2005-01-27 19:52:24 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("0")){ header("location:".e_BASE."index.php"); exit; }
+if (!getperms("0")) {
+	header("location:".e_BASE."index.php");
+	exit;
+}
 $e_sub_cat = 'cache';
 require_once("auth.php");
 require_once(e_HANDLER."cache_handler.php");
 $ec = new ecache;
-if($pref['cachestatus'] == '2')
-{
+if ($pref['cachestatus'] == '2') {
 	$pref['cachestatus'] = '1';
-}	
-if(isset($_POST['submit_cache'])){
-        $pref['cachestatus'] = $_POST['cachestatus'];
-        save_prefs();
-        $ec -> clear();
-        $message = CACLAN_4;
 }
-
-if(isset($_POST['empty_cache'])){
-        $ec -> clear();
-        $message = CACLAN_6;
+if (isset($_POST['submit_cache'])) {
+	$pref['cachestatus'] = $_POST['cachestatus'];
+	save_prefs();
+	$ec->clear();
+	$message = CACLAN_4;
 }
-
-if(isset($message)){
-        $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+	
+if (isset($_POST['empty_cache'])) {
+	$ec->clear();
+	$message = CACLAN_6;
 }
-
+	
+if (isset($message)) {
+	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+}
+	
 $text = "<div style='text-align:center'>
-<form method='post' action='".e_SELF."'>
-<table style='".ADMIN_WIDTH."' class='fborder'>
-<tr>
-<td class='fcaption'>".CACLAN_1."</td>
-</tr>
-<tr>
-<td class='forumheader3'>";
-$text .= (!$pref['cachestatus']) ? "<input type='radio' name='cachestatus' value='0' checked='checked' />" : "<input type='radio' name='cachestatus' value='0' />";
-$text .=CACLAN_7."
-</td>
-</tr>
-
-<tr>
-<td class='forumheader3'>";
-if(is_writable(e_FILE."cache")){
-        $text .= ('1' == $pref['cachestatus']) ? "<input type='radio' name='cachestatus' value='1' checked='checked' />" : "<input type='radio' name='cachestatus' value='1' />";
-        $text .= CACLAN_9;
+	<form method='post' action='".e_SELF."'>
+	<table style='".ADMIN_WIDTH."' class='fborder'>
+	<tr>
+	<td class='fcaption'>".CACLAN_1."</td>
+	</tr>
+	<tr>
+	<td class='forumheader3'>";
+$text .= (!$pref['cachestatus']) ? "<input type='radio' name='cachestatus' value='0' checked='checked' />" :
+ "<input type='radio' name='cachestatus' value='0' />";
+$text .= CACLAN_7."
+	</td>
+	</tr>
+	 
+	<tr>
+	<td class='forumheader3'>";
+if (is_writable(e_FILE."cache")) {
+	$text .= ('1' == $pref['cachestatus']) ? "<input type='radio' name='cachestatus' value='1' checked='checked' />" :
+	 "<input type='radio' name='cachestatus' value='1' />";
+	$text .= CACLAN_9;
 } else {
-        $text .= CACLAN_9."<br /><br /><b>".CACLAN_10."</b>";
+	$text .= CACLAN_9."<br /><br /><b>".CACLAN_10."</b>";
 }
 $text .= "</td>
-</tr>
-
-<tr style='vertical-align:top'>
-<td style='text-align:center' class='forumheader'>
-
-<input class='button' type='submit' name='submit_cache' value='".CACLAN_2."' />
-<input class='button' type='submit' name='empty_cache' value='".CACLAN_5."' />
-
-</td>
-</tr>
-</table>
-</form>
-</div>";
-
-$ns -> tablerender(CACLAN_3, $text);
-
+	</tr>
+	 
+	<tr style='vertical-align:top'>
+	<td style='text-align:center' class='forumheader'>
+	 
+	<input class='button' type='submit' name='submit_cache' value='".CACLAN_2."' />
+	<input class='button' type='submit' name='empty_cache' value='".CACLAN_5."' />
+	 
+	</td>
+	</tr>
+	</table>
+	</form>
+	</div>";
+	
+$ns->tablerender(CACLAN_3, $text);
+	
 require_once("footer.php");
 ?>

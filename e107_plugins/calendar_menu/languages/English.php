@@ -1,12 +1,12 @@
 <?php
 // e107 Language File.
-// $Id: English.php,v 1.2 2004-12-11 17:06:26 mcfly_e107 Exp $
-
-
-define('EC_ADLAN_1',"Event Calendar");
-define('EC_ADLAN_2',"Configure Event Calendar");
-define('EC_INSTALL',"Install Event Calendar");
-define('EC_UNINSTALL',"Uninstall Event Calendar");
+// $Id: English.php,v 1.3 2005-01-27 19:52:37 streaky Exp $
+	
+	
+define('EC_ADLAN_1', "Event Calendar");
+define('EC_ADLAN_2', "Configure Event Calendar");
+define('EC_INSTALL', "Install Event Calendar");
+define('EC_UNINSTALL', "Uninstall Event Calendar");
 define('EC_LAN_0', "January");
 define('EC_LAN_1', "February");
 define('EC_LAN_2', "March");
@@ -118,21 +118,21 @@ define('EC_LAN_80', "Event List");
 define('EC_LAN_81', "Configure Event Calendar");
 define('EC_LAN_82', "To activate please go to your menus screen and select the calendar_menu into one of your menu areas.");
 define('EC_LAN_83', "Calendar");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 ?>

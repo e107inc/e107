@@ -1,31 +1,33 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|	e107 Clock Menu
-|	/clock_menu.php
+| e107 Clock Menu
+| /clock_menu.php
 |
-|	Compatible with the e107 content management system
-|		http://e107.org
-|	
-|	Originally written by jalist, modified for greater 
-|	detail and cross browser compatiblity by Caveman
-|	Last modified 19:11 08/04/2003
-|	
-|	Works with Mozilla 1.x, NS6, NS7, IE5, IE5.5, Opera 7
-|	
-|	Released under the terms and conditions of the
-|	GNU General Public License (http://gnu.org).
+| Compatible with the e107 content management system
+|  http://e107.org
+|
+| Originally written by jalist, modified for greater
+| detail and cross browser compatiblity by Caveman
+| Last modified 19:11 08/04/2003
+|
+| Works with Mozilla 1.x, NS6, NS7, IE5, IE5.5, Opera 7
+|
+| Released under the terms and conditions of the
+| GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
 global $menu_pref;
 $ec_dir = e_PLUGIN."clock_menu/";
 $lan_file = $ec_dir."languages/".e_LANGUAGE.".php";
 e107_include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."clock_menu/languages/English.php");
-if(!defined("e_HTTP")){exit;}
+if (!defined("e_HTTP")) {
+	exit;
+}
 $text = "\n\n<!-- ### clock ### //-->\n<div id='Clock'>&nbsp;</div>\n";
-if(!$clock_flat){
-	$ns -> tablerender($menu_pref['clock_caption'], "<div style='text-align:center'>".$text."</div>", 'clock');
-}else{
+if (!$clock_flat) {
+	$ns->tablerender($menu_pref['clock_caption'], "<div style='text-align:center'>".$text."</div>", 'clock');
+} else {
 	echo $text;
 }
 ?>

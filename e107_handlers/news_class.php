@@ -1,5 +1,5 @@
 <?php
-
+	
 /*
 +---------------------------------------------------------------+
 | e107 website system
@@ -13,12 +13,12 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.19 $
-| $Date: 2005-01-26 22:29:07 $
-| $Author: stevedunstan $
+| $Revision: 1.20 $
+| $Date: 2005-01-27 19:52:28 $
+| $Author: streaky $
 +---------------------------------------------------------------+
 */
-
+	
 class news {
 	function submit_item($news) {
 		global $e107cache, $e_event;
@@ -29,7 +29,8 @@ class news {
 		$news_body = $tp->toDB($data, TRUE);
 		$news_extended = $tp->toDB($news_extended, TRUE);
 		if ($news_id) {
-			$vals = $update_datestamp ? "news_datestamp = ".time().", " : "";
+			$vals = $update_datestamp ? "news_datestamp = ".time().", " :
+			 "";
 			$vals .= " news_title='$news_title', news_body='$news_body', news_extended='$news_extended', news_category='$cat_id', news_allow_comments='$news_allow_comments', news_start='$active_start', news_end='$active_end', news_class='$news_class', news_render_type='$news_rendertype' WHERE news_id='$news_id' ";
 			if ($sql->db_Update("news", $vals)) {
 				$e_event->trigger("newsupd", $news);
@@ -49,12 +50,11 @@ class news {
 		}
 		return $message;
 	}
-
-	function render_newsitem($news, $mode = "default", $n_restrict = "")
-	{
-
-		//echo "<pre>"; print_r($news); echo "</pre>";	// debug ...
-
+	 
+	function render_newsitem($news, $mode = "default", $n_restrict = "") {
+		 
+		//echo "<pre>"; print_r($news); echo "</pre>"; // debug ...
+		 
 		global $tp, $sql, $override;
 		if (!is_object($tp)) $tp = new e_parse;
 		if ($n_restrict == "userclass") {
@@ -68,17 +68,17 @@ class news {
 			$news['news_rendertype'] = 0;
 			$news['comment_total'] = 0;
 		}
-		
-		if ($override_newsitem = $override -> override_check('render_newsitem')) {
+		 
+		if ($override_newsitem = $override->override_check('render_newsitem')) {
 			$result = call_user_func($override_newsitem, $news);
 			if ($result == "return") {
 				return;
 			}
 		}
-		
+		 
 		global $NEWSSTYLE, $NEWSLISTSTYLE;
-		$news['news_title'] = $tp -> toHTML($news['news_title'],TRUE);
-		$news['news_body'] = $tp->toHTML($news['news_body'],TRUE);
+		$news['news_title'] = $tp->toHTML($news['news_title'], TRUE);
+		$news['news_body'] = $tp->toHTML($news['news_body'], TRUE);
 		if ($news['news_extended'] && ($preview == "Preview" || strstr(e_QUERY, "extend"))) {
 			$news['news_extended'] = trim(chop($tp->toHTML($news['news_extended'], TRUE)));
 		}
@@ -87,18 +87,18 @@ class news {
 		define("IMAGE_new_small", (file_exists(THEME."generic/new_comments.png") ? "<img src='".THEME."generic/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/new_comments.png' alt=''  /> "));
 		if (!$NEWSLISTSTYLE) {
 			$NEWSLISTSTYLE = "
-					<img src='".THEME."images/bullet2.gif' alt='bullet' />
-					<b>
-					{NEWSTITLE}
-					</b>
-					<div class='smalltext'>
-					{NEWSAUTHOR}
-					on
-					{NEWSDATE}
-					{NEWSCOMMENTS}
-					</div>
-					<hr />
-					";
+				<img src='".THEME."images/bullet2.gif' alt='bullet' />
+				<b>
+				{NEWSTITLE}
+				</b>
+				<div class='smalltext'>
+				{NEWSAUTHOR}
+				on
+				{NEWSDATE}
+				{NEWSCOMMENTS}
+				</div>
+				<hr />
+				";
 		}
 		$highlight_search = FALSE;
 		if (IsSet($_POST['highlight_search'])) {
@@ -151,7 +151,7 @@ class news {
 		if (ADMIN && getperms("H")) {
 			$adminoptions .= "<a href='".e_BASE.e_ADMIN."newspost.php?create.edit.".$news_id."'><img src='".e_IMAGE."generic/newsedit.png' alt='' style='border:0' /></a>\n";
 		}
-
+		 
 		$search[0] = "/\{NEWSTITLE\}(.*?)/si";
 		$replace[0] = ($news_rendertype == 1 ? "<a href='".e_BASE."news.php?item.$news_id'>".$news_title."</a>" : $news_title);
 		$search[13] = "/\{CAPTIONCLASS\}(.*?)/si";
@@ -183,7 +183,7 @@ class news {
 		$search[11] = "/\{ADMINOPTIONS\}(.*?)/si";
 		$replace[11] = $adminoptions;
 		$search[12] = "/\{EXTENDED\}(.*?)/si";
-
+		 
 		if ($news_extended && !strstr(e_QUERY, "extend")) {
 			if (defined("PRE_EXTENDEDSTRING")) {
 				$es1 = PRE_EXTENDEDSTRING;
@@ -199,13 +199,15 @@ class news {
 		} else {
 			$replace[12] = "";
 		}
-		if (function_exists("news_style")) { $NEWSSTYLE = news_style($news); }
+		if (function_exists("news_style")) {
+			$NEWSSTYLE = news_style($news);
+		}
 		$text = preg_replace($search, $replace, ($news_rendertype == 1 && strstr(e_SELF, "news.php") ? $NEWSLISTSTYLE : $NEWSSTYLE));
 		echo $text;
 		if ($preview == "Preview") {
 			echo $info;
 		}
-
+		 
 		return TRUE;
 	}
 	function make_xml_compatible($original) {
@@ -218,7 +220,7 @@ class news {
 		// encode rest
 		return htmlspecialchars($original);
 	}
-	
+	 
 }
-
+	
 ?>

@@ -1,5 +1,5 @@
 <?php
-
+	
 /*
 +---------------------------------------------------------------+
 | e107 website system
@@ -12,11 +12,11 @@
 | GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
-
+	
 if (!is_object($aj)) {
 	$aj = new textparse;
 }
-
+	
 if ($cache = $e107cache->retrieve("newforumposts")) {
 	$text = $aj->formtparev($cache);
 } else {
@@ -35,9 +35,9 @@ if ($cache = $e107cache->retrieve("newforumposts")) {
 					$poster = $tmp[0];
 				}
 				$datestamp = $gen->convert_date($thread_datestamp, "short");
-
+				 
 				if ($thread_parent) {
-
+					 
 					if ($cachevar[$thread_parent]) {
 						$thread_name = $cachevar[$thread_parent];
 					} else {
@@ -51,15 +51,15 @@ if ($cache = $e107cache->retrieve("newforumposts")) {
 					$tmp = $thread_id;
 					$topic = "[thread: <i>$thread_name</i>]";
 				}
-
+				 
 				$thread_thread = $aj->tpa($thread_thread);
-
+				 
 				if ($pref['cb_linkreplace']) {
 					$thread_thread .= " ";
 					$thread_thread = preg_replace("#\>(.*?)\</a\>[\s]#si", ">".$pref['cb_linkc']."</a> ", $thread_thread);
 					$thread_thread = $aj->tpa(strip_tags($thread_thread));
 				}
-
+				 
 				if (!eregi("<a href|<img|&#", $thread_thread)) {
 					$message_array = explode(" ", $thread_thread);
 					for($i = 0; $i <= (count($message_array)-1); $i++) {
@@ -72,7 +72,7 @@ if ($cache = $e107cache->retrieve("newforumposts")) {
 				if (strlen($thread_thread) > $menu_pref['newforumposts_characters']) {
 					$thread_thread = substr($thread_thread, 0, $menu_pref['newforumposts_characters']).$menu_pref['newforumposts_postfix'];
 				}
-
+				 
 				$text .= "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".e_BASE."forum_viewtopic.php?$thread_forum_id.$tmp'><b>".$poster."</b> on ".$datestamp."</a><br/>";
 				if ($menu_pref['newforumposts_title']) {
 					$text .= $topic."<br />";
@@ -87,7 +87,7 @@ if ($cache = $e107cache->retrieve("newforumposts")) {
 	$cache = $aj->formtpa($text, "admin");
 	$e107cache->set("newforumposts", $cache);
 }
-
+	
 $ns->tablerender($menu_pref['newforumposts_caption'], $text, 'nfp_menu');
-
+	
 ?>

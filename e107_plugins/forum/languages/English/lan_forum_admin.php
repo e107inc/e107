@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_admin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-01-25 15:14:57 $
-|     $Author: stevedunstan $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-27 19:52:49 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 define("FORLAN_1", "You must enter the number of days you wish to prune.");
@@ -74,15 +74,15 @@ define("FORLAN_62", "Forum Options");
 define("FORLAN_63", "Ranks");
 define("FORLAN_64", "Enter your levels here, if left blank generic stars will be used to denote level. Seperate levels with comma. Maximum of 10 levels, lowest first.");
 define("FORLAN_65", "Forum Title");
-
+	
 define("FORLAN_68", "Enable HTML post");
 define("FORLAN_69", "Allow public users to post HTML code, this will apply sitewide (comments, chatbox etc)");
-
+	
 define("FORLAN_70", "Enable file / image attachments");
 define("FORLAN_71", "Allow users to upload file or image with their forum post,");
 define("FORLAN_72", "Update Order");
 define("FORLAN_73", "Order Updated");
-
+	
 define("FORLAN_75", "Parents");
 define("FORLAN_76", "Forums Front Page");
 define("FORLAN_77", "Create Forums");
@@ -96,21 +96,21 @@ define("FORLAN_84", "Members Only");
 define("FORLAN_85", "Read Only");
 define("FORLAN_86", "Admin Only");
 define("FORLAN_87", "Prune topics with no replies in this many days:");
-
+	
 define("FORLAN_88", "Prune topics with no replies in this many days:");
-
+	
 define("FORLAN_89", "Delete posts completely");
 define("FORLAN_90", "Make posts inactive");
-
+	
 define("FORLAN_91", "post(s) made inactive");
 define("FORLAN_92", "thread(s) deleted");
 define("FORLAN_93", "reply (replies) deleted");
-
+	
 define("FORLAN_94", "Set Ranks");
 define("FORLAN_95", "Ranks saved");
 define("FORLAN_96", "Forum deleted");
 define("FORLAN_97", "Parent deleted");
-
+	
 define("FORLAN_98", "Rank Name");
 define("FORLAN_99", "number of points before level change");
 define("FORLAN_100", "upload images to e107_themes/Your_Theme/forum/");
@@ -119,15 +119,15 @@ define("FORLAN_102", "Threshold");
 define("FORLAN_103", "Site Admin");
 define("FORLAN_104", "Rank Image");
 define("FORLAN_105", "Forum Moderator");
-
-
+	
+	
 define("FORLAN_106", "Prune Type:");
 define("FORLAN_107", "Forum");
 define("FORLAN_108", " deleted");
 define("FORLAN_109", "days:");
 define("FORLAN_110", "Prune");
 define("FORLAN_111", "deactivate");
-
+	
 define("FORLAN_112", "Enable Redirect");
 define("FORLAN_113", "Tick this to make browser redirect to forum page after replying");
 define("FORLAN_114", "User Custom Title");
@@ -148,7 +148,7 @@ define("WMGLAN_5", "Set Forum Rules");
 define("WMGLAN_6", "Activate?");
 define("FORLAN_124", "Links in new window");
 define("FORLAN_125", "Tick here to make all links open in a new window (<i>this will apply sitewide</i>). ");
-
+	
 //v.617
 define("FORLAN_126", "Show Tooltips");
 define("FORLAN_127", "Tick here to show a tooltip containing the first post of the thread when mouse hovers over thread name. ");
@@ -158,7 +158,7 @@ define("FORLAN_130", "click here");
 define("FORLAN_131", "to set max file size, allowed types etc");
 define("FORLAN_132", "Emphasize Sticky Threads");
 define("FORLAN_133", "Give extra emphasis to sticky threads (separate thread sections and headers)");
-
-
-
+	
+	
+	
 ?>

@@ -11,42 +11,44 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/userlanguage_menu/userlanguage_menu.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-04 15:34:49 $
-|     $Author: e107coders $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-27 19:53:19 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
-
-    $handle=opendir(e_LANGUAGEDIR);
-    while ($file = readdir($handle)){
-        if($file != "." && $file != ".." && $file != "/" && $file != "CVS" ){
-            $lanlist[] = $file;
-        }
-    }
-
-    closedir($handle);
-
-    $text = "
-
-    <form method='post' action='".e_SELF."'>
-    <div style='text-align:center'>
-    <select name='sitelanguage' class='tbox'>";
-    sort($lanlist);
-
-    foreach($lanlist as $langval){
-        $langname = $langval;
-        $langval = ($langval == $pref['sitelanguage']) ? "" : $langval;
-        $selected = ($langval == USERLAN) ? "selected='selected'" : "";
-        $text .= "<option value='".$langval."' $selected>$langname</option>\n ";
-    }
-
-    $text .= "</select>
-    <br /><br />
-    <input class='button' type='submit' name='setlanguage' value='".UTHEME_MENU_L1."' />
-    </div>
-    </form>
-    ";
-
-$ns -> tablerender(UTHEME_MENU_L2, $text, 'user_lan');
-
+	
+$handle = opendir(e_LANGUAGEDIR);
+while ($file = readdir($handle)) {
+	if ($file != "." && $file != ".." && $file != "/" && $file != "CVS" ) {
+		$lanlist[] = $file;
+	}
+}
+	
+closedir($handle);
+	
+$text = "
+	 
+	<form method='post' action='".e_SELF."'>
+	<div style='text-align:center'>
+	<select name='sitelanguage' class='tbox'>";
+sort($lanlist);
+	
+foreach($lanlist as $langval) {
+	$langname = $langval;
+	$langval = ($langval == $pref['sitelanguage']) ? "" :
+	 $langval;
+	$selected = ($langval == USERLAN) ? "selected='selected'" :
+	 "";
+	$text .= "<option value='".$langval."' $selected>$langname</option>\n ";
+}
+	
+$text .= "</select>
+	<br /><br />
+	<input class='button' type='submit' name='setlanguage' value='".UTHEME_MENU_L1."' />
+	</div>
+	</form>
+	";
+	
+$ns->tablerender(UTHEME_MENU_L2, $text, 'user_lan');
+	
 ?>

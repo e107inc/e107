@@ -4,13 +4,13 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-01-25 15:14:57 $
-|     $Author: stevedunstan $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-27 19:52:49 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Forum");
-
+	
 define("LAN_30", "Welcome");
 define("LAN_31", "There are no new posts ");
 define("LAN_32", "There is 1 new post ");
@@ -55,37 +55,37 @@ define("LAN_398", "Closed");
 define("LAN_399", "Restricted");
 define("LAN_400", "This forum can only be browsed by registered members");
 define("LAN_401", "Members only");
-
+	
 define("LAN_402", "This forum is read only");
-
+	
 define("LAN_403", "No posts yet");
 define("LAN_404", "posts");
 define("LAN_405", "Read Only");
-
+	
 define("LAN_406", "This forum is restricted to administrators only");
 define("LAN_407", "This forum is restricted to members only");
 define("LAN_408", "This is a read-only forum");
 define("LAN_409", "This is a class restricted forum");
 define("LAN_410", "Welcome guest");
-
+	
 define("LAN_411", "thread");
 define("LAN_412", "reply");
 define("LAN_413", "threads");
 define("LAN_414", "replies");
 define("LAN_415", "user is browsing the forums at the moment");
 define("LAN_416", "users are browsing the forums at the moment");
-
+	
 define("LAN_417", "member");
 define("LAN_418", "guest");
 define("LAN_419", "members");
 define("LAN_420", "guests");
-
+	
 define("LAN_421", "Show new posts");
 define("LAN_422", "New posts since your last visit");
 define("LAN_423", "Posted by");
 define("LAN_424", "New threads");
 define("LAN_425", "Re:");
-
+	
 //v.616
 define("LAN_426", "Who's Online: ");
 define("LAN_427", "View detailed list.");
@@ -98,12 +98,12 @@ define("LAN_433", "Forum Rules");
 define("LAN_434", "Return to forums");
 define("LAN_435", "My Profile");
 define("LAN_436", " (Will open a new window.)");
-
+	
 define("LAN_437", "register");
 define("LAN_438", "and login.");
 define("LAN_439", "here");
 define("LAN_440", "to go to the registration page.");
-
+	
 define('FORLAN_441', 'No rules defined.');
-
+	
 ?>

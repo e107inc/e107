@@ -1,5 +1,5 @@
 <?php
-
+	
 /*
 +---------------------------------------------------------------+
 |     e107 website system
@@ -12,24 +12,26 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-01-27 18:38:28 $
-|     $Author: mrpete $
+|     $Revision: 1.26 $
+|     $Date: 2005-01-27 19:52:28 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
-
-$db_time = 0.0;             // Global total time spent in all db object queries
-$db_mySQLQueryCount = 0;    // Global total number of db object queries (all db's)
-
+	
+$db_time = 0.0;
+// Global total time spent in all db object queries
+$db_mySQLQueryCount = 0;
+// Global total number of db object queries (all db's)
+	
 /**
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.25 $
-* @author $Author: mrpete $
+* @version $Revision: 1.26 $
+* @author $Author: streaky $
 */
 class db {
-
+	 
 	var $mySQLserver;
 	var $mySQLuser;
 	var $mySQLpassword;
@@ -41,7 +43,7 @@ class db {
 	var $mySQLcurTable;
 	var $mySQLlanguage;
 	var $mySQLinfo;
-
+	 
 	/**
 	* @return db
 	* @desc db constructor gets language options from the cookie or session
@@ -49,15 +51,17 @@ class db {
 	*/
 	function db() {
 		global $pref, $eTraffic;
-		$eTraffic->BumpWho('Create db object',1);
+		$eTraffic->BumpWho('Create db object', 1);
 		$langid = 'e107language_'.$pref['cookie_name'];
 		if ($pref['user_tracking'] == 'session') {
-			$this->mySQLlanguage = ($this->db_IsLang($_SESSION[$langid])) ? $_SESSION[$langid] : '';
+			$this->mySQLlanguage = ($this->db_IsLang($_SESSION[$langid])) ? $_SESSION[$langid] :
+			 '';
 		} else {
-			$this->mySQLlanguage = ($this->db_IsLang($_COOKIE[$langid])) ? $_COOKIE[$langid] : '';
+			$this->mySQLlanguage = ($this->db_IsLang($_COOKIE[$langid])) ? $_COOKIE[$langid] :
+			 '';
 		}
 	}
-
+	 
 	/**
 	* @return null or string error code
 	* @param string $mySQLserver IP Or hostname of the MySQL server
@@ -68,12 +72,12 @@ class db {
 	* <br />
 	* Example using e107 database with variables defined in config.php:<br />
 	* <code>$sql = new db;
-	* $sql -> db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);</code>
+	* $sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);</code>
 	* <br />
 	* OR to connect an other database:<br />
 	* <code>$sql = new db;
-	* $sql -> db_Connect('url_server_database', 'user_database', 'password_database', 'name_of_database');</code>
-	* 
+	* $sql->db_Connect('url_server_database', 'user_database', 'password_database', 'name_of_database');</code>
+	*
 	* @access public
 	*/
 	function db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb) {
@@ -93,7 +97,7 @@ class db {
 			}
 		}
 	}
-
+	 
 	/**
 	* @return void
 	* @param unknown $sMarker
@@ -106,7 +110,7 @@ class db {
 			$db_debug->Mark_Time($sMarker);
 		}
 	}
-
+	 
 	/**
 	* @return void
 	* @desc Enter description here...
@@ -115,21 +119,22 @@ class db {
 	function db_Show_Performance() {
 		return $db_debug->Show_Performance();
 	}
-
+	 
 	/**
 	* @return void
 	* @desc add query to dblog table
 	* @access private
 	*/
-	function db_Write_log($log_type='',$log_remark='',$log_query='') {
+	function db_Write_log($log_type = '', $log_remark = '', $log_query = '') {
 		global $tp;
 		$d = time();
-		$uid = (USER === FALSE) ? USERID : '0';
+		$uid = (USER === FALSE) ? USERID :
+		 '0';
 		$ip = getip();
 		$qry = $tp->toDB($log_query);
-		$this->db_Insert('dblog',"0,'{$log_type}',{$d},{$uid},'{$ip}','{$qry}','{$log_remark}'",2);
+		$this->db_Insert('dblog', "0,'{$log_type}',{$d},{$uid},'{$ip}','{$qry}','{$log_remark}'", 2);
 	}
-
+	 
 	/**
 	* @return unknown
 	* @param unknown $query
@@ -138,7 +143,7 @@ class db {
 	* @access private
 	*/
 	function db_Query($query, $rli = NULL, $qry_from = '', $debug = FALSE, $log_type = '', $log_remark = '') {
-		global $db_time,$db_mySQLQueryCount,$queryinfo;
+		global $db_time, $db_mySQLQueryCount, $queryinfo;
 		$db_mySQLQueryCount++;
 		if (E107_DEBUG_LEVEL) {
 			global $db_debug;
@@ -148,15 +153,15 @@ class db {
 		if ($debug == 'now') {
 			echo "** $query";
 		}
-		if ($debug !== FALSE || strstr(e_QUERY, 'showsql'))
-		{
+		if ($debug !== FALSE || strstr(e_QUERY, 'showsql')) {
 			$queryinfo[] = "<b>{$qry_from}</b>: $query";
 		}
 		if ($log_type != '') {
 			$this->db_Write_log($log_type, $log_remark, $query);
 		}
 		$_dbTimeStart = explode(' ', microtime());
-		$sQryRes = is_null($rli) ? @mysql_query($query) : @mysql_query($query, $rli);
+		$sQryRes = is_null($rli) ? @mysql_query($query) :
+		 @mysql_query($query, $rli);
 		$_dbTimeEnd = explode(' ', microtime());
 		$mytime = ((float)$_dbTimeEnd[0] + (float)$_dbTimeEnd[1]) - ((float)$_dbTimeStart[0] + (float)$_dbTimeStart[1]);
 		$db_time += $mytime;
@@ -167,17 +172,17 @@ class db {
 		}
 		return $sQryRes;
 	}
-
+	 
 	/**
 	* @return int Number of rows or false on error
-	* 
+	*
 	* @param string $table Table name to select data from
-	* @param string $fields	Table fields to be retrieved, default * (all in table)
-	* @param string $arg Query arguments, default null 
+	* @param string $fields Table fields to be retrieved, default * (all in table)
+	* @param string $arg Query arguments, default null
 	* @param string $mode Argument has WHERE or not, default=default (WHERE)
-	* 
+	*
 	* @param bool $debug Debug mode on or off
-	* 
+	*
 	* @desc Perform a mysql_query() using the arguments suplied by calling db::db_Query()<br />
 	* <br />
 	* If you need more requests think to call the class.<br />
@@ -188,15 +193,14 @@ class db {
 	* OR as second connection:<br />
 	* <code>$sql2 = new db;
 	* $sql2->db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT $from, ".$view, 'no_where');</code>
-	* 
+	*
 	* @access public
 	*/
 	function db_Select($table, $fields = '*', $arg = '', $mode = 'default', $debug = FALSE, $log_type = '', $log_remark = '') {
-	    global $db_mySQLQueryCount;
+		global $db_mySQLQueryCount;
 		$table = $this->db_IsLang($table);
 		$this->mySQLcurTable = $table;
-		if ($arg != '' && $mode == 'default')
-		{
+		if ($arg != '' && $mode == 'default') {
 			if ($this->mySQLresult = $this->db_Query('SELECT '.$fields.' FROM '.MPREFIX.$table.' WHERE '.$arg, NULL, 'db_Select', $debug, $log_type, $log_remark)) {
 				$this->dbError('dbQuery');
 				return $this->db_Rows();
@@ -222,7 +226,7 @@ class db {
 			}
 		}
 	}
-
+	 
 	/**
 	* @return int Last insert ID or false on error
 	* @param string $table
@@ -231,8 +235,8 @@ class db {
 	* @desc Insert a row into the table<br />
 	* <br />
 	* Example:<br />
-	* <code>$sql -> db_Insert("links", "0, 'News', 'news.php', '', '', 1, 0, 0, 0");</code>
-	* 
+	* <code>$sql->db_Insert("links", "0, 'News', 'news.php', '', '', 1, 0, 0, 0");</code>
+	*
 	* @access public
 	*/
 	function db_Insert($table, $arg, $debug = FALSE, $log_type = '', $log_remark = '') {
@@ -246,7 +250,7 @@ class db {
 			return FALSE;
 		}
 	}
-
+	 
 	/**
 	* @return int number of affected rows, or false on error
 	* @param string $table
@@ -257,12 +261,12 @@ class db {
 	* Think to call it if you need to do an update while retrieving data.<br />
 	* <br />
 	* Example using a unique connection to database:<br />
-	* <code>$sql -> db_Update("user", "user_viewed='$u_new' WHERE user_id='".USERID."' ");</code>
+	* <code>$sql->db_Update("user", "user_viewed='$u_new' WHERE user_id='".USERID."' ");</code>
 	* <br />
 	* OR as second connection<br />
 	* <code>$sql2 = new db;
-	* $sql2 -> db_Update("user", "user_viewed = '$u_new' WHERE user_id = '".USERID."' ");</code><br />
-	* 
+	* $sql2->db_Update("user", "user_viewed = '$u_new' WHERE user_id = '".USERID."' ");</code><br />
+	*
 	* @access public
 	*/
 	function db_Update($table, $arg, $debug = FALSE, $log_type = '', $log_remark = '') {
@@ -276,24 +280,24 @@ class db {
 			return FALSE;
 		}
 	}
-
+	 
 	/**
 	* @return array MySQL row
 	* @param string $mode
 	* @desc Fetch an array containing row data (see PHP's mysql_fetch_array() docs)<br />
 	* <br />
 	* Example :<br />
-	* <code>while($row = $sql -> db_Fetch()){
-	* 	$text .= $row['username'];
+	* <code>while($row = $sql->db_Fetch()){
+	*  $text .= $row['username'];
 	* }</code>
-	* 
+	*
 	* @access public
 	*/
 	function db_Fetch($mode = 'strip') {
 		global $eTraffic;
-       		$b = microtime();
-                $row = @mysql_fetch_array($this->mySQLresult);
-       		$eTraffic->Bump('db_Fetch',$b);
+		$b = microtime();
+		$row = @mysql_fetch_array($this->mySQLresult);
+		$eTraffic->Bump('db_Fetch', $b);
 		if ($row) {
 			if ($mode == 'strip') {
 				while (list($key, $val) = each($row)) {
@@ -305,10 +309,10 @@ class db {
 		} else {
 			$this->dbError('db_Fetch');
 			return FALSE;
-
+			 
 		}
 	}
-
+	 
 	/**
 	* @return int number of affected rows or false on error
 	* @param string $table
@@ -317,8 +321,8 @@ class db {
 	* @desc Count the number of rows in a select<br />
 	* <br />
 	* Example:<br />
-	* <code>$topics = $sql -> db_Count("forum_t", "(*)", " WHERE thread_forum_id='".$forum_id."' AND thread_parent='0' ");</code>
-	* 
+	* <code>$topics = $sql->db_Count("forum_t", "(*)", " WHERE thread_forum_id='".$forum_id."' AND thread_parent='0' ");</code>
+	*
 	* @access public
 	*/
 	function db_Count($table, $fields = '(*)', $arg = '', $debug = FALSE, $log_type = '', $log_remark = '') {
@@ -339,7 +343,7 @@ class db {
 			$this->dbError("dbCount ($query)");
 		}
 	}
-
+	 
 	/**
 	* @return void
 	* @desc Closes the mySQL server connection.<br />
@@ -348,15 +352,15 @@ class db {
 	* Native e107 connection is closed in the footer.php file<br />
 	* <br />
 	* Example :<br />
-	* <code>$sql -> db_Close();</code>
-	* 
+	* <code>$sql->db_Close();</code>
+	*
 	* @access public
 	*/
 	function db_Close() {
 		mysql_close();
 		$this->dbError('dbClose');
 	}
-
+	 
 	/**
 	* @return int number of affected rows, or false on error
 	* @param string $table
@@ -364,7 +368,7 @@ class db {
 	* @desc Delete rows from a table<br />
 	* <br />
 	* Example:
-	* <code>$sql -> db_Delete("tmp", "tmp_ip='$ip'");</code><br />
+	* <code>$sql->db_Delete("tmp", "tmp_ip='$ip'");</code><br />
 	* <br />
 	* @access public
 	*/
@@ -388,7 +392,7 @@ class db {
 			}
 		}
 	}
-
+	 
 	/**
 	* @return unknown
 	* @desc Enter description here...
@@ -399,7 +403,7 @@ class db {
 		return $rows;
 		$this->dbError('db_Rows');
 	}
-
+	 
 	/**
 	* @return unknown
 	* @param unknown $from
@@ -414,7 +418,7 @@ class db {
 			}
 		}
 	}
-
+	 
 	/**
 	* @return void
 	* @param unknown $mode
@@ -424,8 +428,8 @@ class db {
 	function db_SetErrorReporting($mode) {
 		$this->mySQLerror = $mode;
 	}
-
-
+	 
+	 
 	/**
 	* @return unknown
 	* @param unknown $arg
@@ -433,13 +437,13 @@ class db {
 	* @access private
 	*/
 	function db_Select_gen($arg, $debug = FALSE, $log_type = '', $log_remark = '') {
-
+		 
 		/*
 		changes by jalist 19/01/05:
 		added string replace on table prefix to tidy up long database queries
-		usage: instead of sending "SELECT * FROM ".MPREFIX."table", do "SELECT * FROM #table" 
+		usage: instead of sending "SELECT * FROM ".MPREFIX."table", do "SELECT * FROM #table"
 		*/
-
+		 
 		$arg = str_replace("#", MPREFIX, $arg);
 		if ($this->mySQLresult = $this->db_Query($arg, NULL, 'db_Select_gen', $debug, $log_type, $log_remark)) {
 			$this->dbError('db_Select_gen');
@@ -449,7 +453,7 @@ class db {
 			return FALSE;
 		}
 	}
-
+	 
 	/**
 	* @return unknown
 	* @param unknown $offset
@@ -460,7 +464,7 @@ class db {
 		$result = @mysql_field_name($this->mySQLresult, $offset);
 		return $result;
 	}
-
+	 
 	/**
 	* @return unknown
 	* @desc Enter description here...
@@ -470,7 +474,7 @@ class db {
 		$result = @mysql_fetch_field($this->mySQLresult);
 		return $result;
 	}
-
+	 
 	/**
 	* @return unknown
 	* @desc Enter description here...
@@ -480,7 +484,7 @@ class db {
 		$result = @mysql_num_fields($this->mySQLresult);
 		return $result;
 	}
-
+	 
 	/**
 	* @return unknown
 	* @param unknown $table
@@ -504,7 +508,7 @@ class db {
 		}
 		return $table;
 	}
-
+	 
 	/**
 	* @return array
 	* @param string fields to retrieve
@@ -514,31 +518,31 @@ class db {
 	function db_getList($fields = 'ALL', $amount = FALSE, $maximum = 200) {
 		$list = array();
 		$counter = 1;
-		while($row = $this->db_Fetch()) {
+		while ($row = $this->db_Fetch()) {
 			foreach($row as $key => $value) {
-				if(is_string($key)) {
-					if(strtoupper($fields) == 'ALL' || in_array ($key, $fields)) {
+				if (is_string($key)) {
+					if (strtoupper($fields) == 'ALL' || in_array ($key, $fields)) {
 						$list[$counter][$key] = $value;
 					}
 				}
 			}
-			if($amount && $amount == $counter || $counter > $maximum) {
+			if ($amount && $amount == $counter || $counter > $maximum) {
 				break;
 			}
 			$counter++;
 		}
 		return $list;
 	}
-	
+	 
 	/**
 	* @return integer
 	* @desc returns total number of queries made so far
 	* @access public
 	*/
 	function db_QueryCount() {
-	        global $db_mySQLQueryCount;
-	        return $db_mySQLQueryCount;
+		global $db_mySQLQueryCount;
+		return $db_mySQLQueryCount;
 	}
 }
-
+	
 ?>

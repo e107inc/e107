@@ -1,5 +1,5 @@
 <?php
-
+	
 define("Integ_01", "Speichern war erfolgreich");
 define("Integ_02", "Speichern fehlgeschlagen");
 define("Integ_03", "Fehlende Dateien:");
@@ -26,7 +26,7 @@ define("Integ_23", "Überprüfe nur Themes-Ordner, die auf deinem Host auch existi
 define("Integ_24", "Administrator Haupt-Seite");
 define("Integ_25", "Verlasse Admin-Breich");
 define("Integ_26", "Lade Seite mit normalem Kopf");
-
+	
 define("Integ_29", "<br /><br /><b>*<u>CRC-FEHLER:</u></b><br />Dies sind Pr&uuml;fsummen-Fehler. Es gibt folgende Erkl&auml;rungen:<br />-Du hast an einer Datei rumgebastelt, so dass sie nicht mehr in der Originalform ist.<br />-Die genannte Datei ist besch&auml;digt, du solltest sie neu hochladen!");
 define("Integ_30", "Du kannst, um die CPU-Intensit&auml;t zu verringern, das Checken des CRC-Files in bis zu 10 Schritten durchf&uuml;hren lassen.");
 define("Integ_31", "Schritte: ");

@@ -1,5 +1,5 @@
 <?php
-define(PMLAN_PM,"Persónuleg Skilaboð");
+define(PMLAN_PM, "Persónuleg Skilaboð");
 define(PMLAN_0, "Skilaboð síðan síðast");
 define(PMLAN_1, "fengin skilaboð");
 define(PMLAN_2, "send skilaboð");

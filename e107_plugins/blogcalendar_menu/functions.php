@@ -11,17 +11,19 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/blogcalendar_menu/functions.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:06 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-27 19:52:36 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
-
+	
 // format a date as yyyymmdd
-function formatDate($year,$month,$day=""){
-    $date = $year;
-    $date .= (strlen($month)<2)?"0".$month:$month;
-    $date .= (strlen($day)<2 && $day != "")?"0".$day:$day;
-    return $date;
+function formatDate($year, $month, $day = "") {
+	$date = $year;
+	$date .= (strlen($month) < 2)?"0".$month:
+	$month;
+	$date .= (strlen($day) < 2 && $day != "")?"0".$day:
+	$day;
+	return $date;
 }
 ?>

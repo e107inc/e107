@@ -1,5 +1,5 @@
 <?php
-define(PMLAN_PM,"Privata meddelanden");
+define(PMLAN_PM, "Privata meddelanden");
 define(PMLAN_0, "Nya meddelanden");
 define(PMLAN_1, "mottagna meddelanden");
 define(PMLAN_2, "skickade meddelanden");
@@ -52,6 +52,6 @@ define(PMLAN_48, "Alla användare");
 define(PMLAN_49, "Oläst");
 define(PMLAN_50, "Du har fått ett nytt PM!");
 define(PMLAN_51, "Site");
-define(PMLAN_52,"Klicka i kryssrutan för att bekräfta");
-
+define(PMLAN_52, "Klicka i kryssrutan för att bekräfta");
+	
 ?>

@@ -1,8 +1,8 @@
 <?php
-
+	
 // translation by Lolo Irie, http://www.touchatou.com
-
-define(PMLAN_PM,"Messagerie");
+	
+define(PMLAN_PM, "Messagerie");
 define(PMLAN_0, "Nouveau(x) Message(s)");
 define(PMLAN_1, "message(s) reçus(s)");
 define(PMLAN_2, "message(s) envoyé(s)");
@@ -55,6 +55,6 @@ define(PMLAN_48, "Tous les Utilisateurs");
 define(PMLAN_49, "Non lu");
 define(PMLAN_50, "Vous avez reçu un nouveau PM");
 define(PMLAN_51, "Site");
-define(PMLAN_52,"SVP cochez  la case pour confirmer l'operation");
-
+define(PMLAN_52, "SVP cochez  la case pour confirmer l'operation");
+	
 ?>

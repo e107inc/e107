@@ -1,5 +1,5 @@
 <?php
-define(PMLAN_PM,"הודעות פרטיות");
+define(PMLAN_PM, "הודעות פרטיות");
 define(PMLAN_0, "(הודעה(ות) חדש(ות");
 define(PMLAN_1, "(הודעה(ות) שהתקבלו(ה");
 define(PMLAN_2, "(שליחת הודעה(אות");
@@ -52,6 +52,6 @@ define(PMLAN_48, "כל המשתמשים");
 define(PMLAN_49, "לא נקרא");
 define(PMLAN_50, "יש לך הודעה פרטית שהתקבלה");
 define(PMLAN_51, "אתר");
-define(PMLAN_52,"בבשה בדוק שסימנת את השדה");
-
+define(PMLAN_52, "בבשה בדוק שסימנת את השדה");
+	
 ?>

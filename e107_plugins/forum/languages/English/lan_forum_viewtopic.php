@@ -4,13 +4,13 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_viewtopic.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-01-25 15:14:57 $
-|     $Author: stevedunstan $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-27 19:52:49 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Forum");
-
+	
 define("LAN_01", "Forums");
 define("LAN_02", "Go to page");
 define("LAN_03", "Go");
@@ -40,19 +40,19 @@ define("LAN_398", "Profile");
 define("LAN_399", "Private Message");
 define("LAN_400", "Edit");
 define("LAN_401", "Quote");
-
+	
 define("LAN_402", "Author");
 define("LAN_403", "Post");
 define("LAN_404", "No previous thread");
 define("LAN_405", "No next thread");
-
+	
 define("LAN_406", "Moderator: Edit");
 define("LAN_407", "Moderator: Delete");
 define("LAN_408", "Moderator: Move");
 define("LAN_409", "Are you sure you want to delete this thread and any replies?");
 define("LAN_410", "Are you sure you want to delete this reply?");
 define("LAN_411", "posted by ");
-
+	
 //v.616
 define("LAN_412", "Title");
 define("LAN_413", "Report");
@@ -72,14 +72,14 @@ define("LAN_426", "Reporting post in topic: ");
 define("LAN_427", "Error sending mail");
 define("LAN_428", "Post has been reported");
 define("LAN_429", "Click here to return to forum");
-
-
+	
+	
 define("LAN_430", "poll");
-
+	
 define("FORLAN_26", "Reply deleted");
-define("FORLAN_10","Begin New Thread");
-
-
+define("FORLAN_10", "Begin New Thread");
+	
+	
 define("LAN_29", "Edited");
-
+	
 ?>

@@ -1,5 +1,5 @@
 <?php
-define('PMLAN_PM',"Private Message");
+define('PMLAN_PM', "Private Message");
 define('PMLAN_0', "New Message(s)");
 define('PMLAN_1', "received message(s)");
 define('PMLAN_2', "sent message(s)");
@@ -52,16 +52,16 @@ define('PMLAN_48', "All Users");
 define('PMLAN_49', "Not read");
 define('PMLAN_50', "You have received a new Private Message");
 define('PMLAN_51', "Site");
-define('PMLAN_52',"Please check tick to confirm operation");
-define('PMLAN_53',"Find username");
-define('PMLAN_54',"Select User");
-define('PMLAN_55',"User(s) found");
-define('PMLAN_56',"Close window");
-define('PMLAN_57',"No subject");
-define('PMLAN_58',"Delete Selected");
-define('PMLAN_59',"Blocked User");
-define('PMLAN_60',"Date Blocked");
-define('PMLAN_61',"messages blocked");
-define('PMLAN_62',"Blocked");
-
+define('PMLAN_52', "Please check tick to confirm operation");
+define('PMLAN_53', "Find username");
+define('PMLAN_54', "Select User");
+define('PMLAN_55', "User(s) found");
+define('PMLAN_56', "Close window");
+define('PMLAN_57', "No subject");
+define('PMLAN_58', "Delete Selected");
+define('PMLAN_59', "Blocked User");
+define('PMLAN_60', "Date Blocked");
+define('PMLAN_61', "messages blocked");
+define('PMLAN_62', "Blocked");
+	
 ?>

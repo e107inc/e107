@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/blogcalendar_menu/styles.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:06 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-27 19:52:36 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 // -----------------------
@@ -23,19 +23,18 @@ $bc_menu_wrapper = ;
 $menu_header = ;
 $menu_body = ;
 $menu_footer = ;
-
-
+	
+	
 // --------------------------
 // calendar object style vars
 // --------------------------
 $cal_header_cell = ;
-$cal_blank_cell
-$cal_cell = ;
+$cal_blank_cell $cal_cell = ;
 $cal_linked_cell = ;
 $cal_hl_cell = ;
 $cal_hl_linked_cell = ;
-
-
+	
+	
 // --------------------------
 // archive section style vars
 // --------------------------
@@ -44,5 +43,5 @@ $arch_header = ;
 $arch_cell = ;
 $arch_cell_header = ;
 $arch_cell_body = ;
-
+	
 ?>

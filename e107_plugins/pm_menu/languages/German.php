@@ -1,5 +1,5 @@
 <?php
-define(PMLAN_PM,"Private Nachrichten");
+define(PMLAN_PM, "Private Nachrichten");
 define(PMLAN_0, "neue nachricht(en)");
 define(PMLAN_1, "empfangene nachricht(en)");
 define(PMLAN_2, "gesendete nachrich(en)");
@@ -53,5 +53,5 @@ define(PMLAN_49, "ungelesen");
 define(PMLAN_50, "Du hast eine neue Nachricht");
 define(PMLAN_51, "Site");
 define(PMLAN_52, "Zum bestätigen bitte markieren");
-
+	
 ?>

@@ -1,5 +1,5 @@
 <?php
-
+	
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -12,12 +12,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-01-19 19:09:15 $
-|     $Author: stevedunstan $
+|     $Revision: 1.8 $
+|     $Date: 2005-01-27 19:52:27 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
-
+	
 @include(e_LANGUAGEDIR.e_LANGUAGE."/lan_comment.php");
 @include(e_LANGUAGEDIR."English/lan_comment.php");
 class comment {
@@ -39,19 +39,18 @@ class comment {
 				$text .= "<tr>\n<td style='width:20%'>".LAN_16."</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='author_name' size='60' value='$author_name' maxlength='100' />\n</td>\n</tr>";
 			}
 			$text .= "<tr> \n<td style='width:20%'>".LAN_8.":</td>\n<td style='width:80%'>\n<textarea class='tbox' name='comment' cols='70' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>\n<br />
-					<input class='helpbox' type='text' name='helpb' size='100' /><br />".ren_help(1, 'addtext', 'help')."</td></tr>\n<tr style='vertical-align:top'> \n<td style='width:20%'>".$text2."</td>\n<td style='width:80%'>\n". ($action == "reply" ? "<input type='hidden' name='pid' value='$id' />" : '').($content_type ? "<input type='hidden' name='content_type' value='$content_type' />" : ''). "<input class='button' type='submit' name='".$action."submit' value='".LAN_9."' />\n</td>\n</tr>\n</table>\n</form></div>";
+				<input class='helpbox' type='text' name='helpb' size='100' /><br />".ren_help(1, 'addtext', 'help')."</td></tr>\n<tr style='vertical-align:top'> \n<td style='width:20%'>".$text2."</td>\n<td style='width:80%'>\n". ($action == "reply" ? "<input type='hidden' name='pid' value='$id' />" : '').($content_type ? "<input type='hidden' name='content_type' value='$content_type' />" : ''). "<input class='button' type='submit' name='".$action."submit' value='".LAN_9."' />\n</td>\n</tr>\n</table>\n</form></div>";
 			$ns->tablerender('', $text);
 		} else {
 			echo "<br /><div style='text-align:center'><b>".LAN_6." <a href='".e_SIGNUP."'>".COMLAN_1."</a> ".COMLAN_2."</b></div>";
 		}
 	}
-	function render_comment($row, $table, $action, $id, $width, $subject)
-	{
-
-
+	function render_comment($row, $table, $action, $id, $width, $subject) {
+		 
+		 
 		//echo "<pre>"; print_r($row); echo "</pre>";
-
-
+		 
+		 
 		global $COMMENTSTYLE, $pref, $aj;
 		require_once(e_HANDLER."level_handler.php");
 		if (!$width) {
@@ -66,8 +65,7 @@ class comment {
 		$comment_subject = (empty($comment_subject) ? $subject : $aj->tpa($comment_subject));
 		$gen = new convert;
 		$datestamp = $gen->convert_date($comment_datestamp, "short");
-		if ($user_id)
-		{
+		if ($user_id) {
 			$user_join = $gen->convert_date($user_join, "short");
 			if ($user_image) {
 				require_once(e_HANDLER."avatar_handler.php");
@@ -77,7 +75,7 @@ class comment {
 			$user_id = 0;
 			$user_name = $comment_author;
 		}
-		
+		 
 		$url = e_PAGE."?".e_QUERY;
 		$unblock = "[<a href='".e_BASE.e_ADMIN."comment.php?unblock-$comment_id-$url-$comment_item_id'>".LAN_1."</a>] ";
 		$block = "[<a href='".e_BASE.e_ADMIN."comment.php?block-$comment_id-$url-$comment_item_id'>".LAN_2."</a>] ";
@@ -85,48 +83,48 @@ class comment {
 		$userinfo = "[<a href='".e_BASE.e_ADMIN."userinfo.php?$comment_ip'>".LAN_4."</a>]";
 		if (!$COMMENTSTYLE) {
 			$COMMENTSTYLE = "
-					<table style='width:100%'>
-					<tr>
-					<td colspan='2' class='forumheader3'>
-					{SUBJECT}
-					<b>
-					{USERNAME}
-					</b>
-					|
-					{TIMEDATE}
-					</td>
-					</tr>
-					<tr>
-					<td style='width:30%; vertical-align:top'>
-					<div class='spacer'>
-					{AVATAR}
-					</div>
-					<span class='smalltext'>
-					{COMMENTS}
-					<br />
-					{JOINED}
-					</span>
-					<br/>
-					{REPLY}
-					</td>
-					<td style='width:70%; vertical-align:top'>
-					{COMMENT}
-					</td>
-					</tr>
-					</table>
-					<br />";
+				<table style='width:100%'>
+				<tr>
+				<td colspan='2' class='forumheader3'>
+				{SUBJECT}
+				<b>
+				{USERNAME}
+				</b>
+				|
+				{TIMEDATE}
+				</td>
+				</tr>
+				<tr>
+				<td style='width:30%; vertical-align:top'>
+				<div class='spacer'>
+				{AVATAR}
+				</div>
+				<span class='smalltext'>
+				{COMMENTS}
+				<br />
+				{JOINED}
+				</span>
+				<br/>
+				{REPLY}
+				</td>
+				<td style='width:70%; vertical-align:top'>
+				{COMMENT}
+				</td>
+				</tr>
+				</table>
+				<br />";
 		}
 		if ($pref['nested_comments']) {
 			$width2 = 100 - $width;
 			$total_width = ($pref['standards_mode'] ? "98%" : "95%");
 			$renderstyle = "
-					<table style='width:".$total_width."'>
-					<tr>
-					<td style='width:".$width."%' ></td>
-					<td style='width:".$width2."%'>" .$COMMENTSTYLE. "
-					</td>
-					</tr>
-					</table>";
+				<table style='width:".$total_width."'>
+				<tr>
+				<td style='width:".$width."%' ></td>
+				<td style='width:".$width2."%'>" .$COMMENTSTYLE. "
+				</td>
+				</tr>
+				</table>";
 			if ($comment_datestamp > USERLV ) {
 				$NEWIMAGE = IMAGE_new_comments;
 			} else {
@@ -138,24 +136,24 @@ class comment {
 		$aj = new textparse;
 		$search[0] = "/\{USERNAME\}(.*?)/si";
 		$replace[0] = ($user_id ? "<a href='".e_BASE."user.php?id.".$user_id."'>".$user_name."</a>\n" : $user_name."\n");
-
+		 
 		$search[1] = "/\{TIMEDATE\}(.*?)/si";
 		$replace[1] = $datestamp;
-
+		 
 		$search[2] = "/\{AVATAR\}(.*?)/si";
 		$replace[2] = ($user_image ? "<div class='spacer'><img src='".$user_image."' alt='' /></div><br />" : '');
-
+		 
 		$search[3] = "/\{COMMENTS\}(.*?)/si";
 		$replace[3] = ($user_id ? LAN_99.": ".$user_comments : LAN_194)."<br />";
-
+		 
 		$highlight_search = FALSE;
 		if (IsSet($_POST['highlight_search'])) {
 			$highlight_search = TRUE;
 		}
-
+		 
 		$search[4] = "/\{COMMENT\}(.*?)/si";
 		$replace[4] = ($comment_blocked ? LAN_0 : preg_quote($aj->tpa($comment_comment, "off", "public", $highlight_search)));
-
+		 
 		$search[5] = "/\{SIGNATURE\}(.*?)/si";
 		if ($user_signature) {
 			$user_signature = $aj->tpa($user_signature);
@@ -167,32 +165,32 @@ class comment {
 		} else {
 			$replace[6] = ($user_join ? LAN_145.$user_join."<br />" : '');
 		}
-
+		 
 		$search[7] = "/\{LOCATION\}(.*?)/si";
 		$replace[7] = ($user_location ? LAN_313.": ".$aj->tpa($user_location) : '');
-
+		 
 		$search[8] = "/\{LEVEL\}(.*?)/si";
 		define("IMAGE_rank_main_admin_image", ($pref['rank_main_admin_image'] && file_exists(THEME."forum/".$pref['rank_main_admin_image']) ? "<img src='".THEME."forum/".$pref['rank_main_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/main_admin.png' alt='' />"));
 		define("IMAGE_rank_moderator_image", ($pref['rank_moderator_image'] && file_exists(THEME."forum/".$pref['rank_moderator_image']) ? "<img src='".THEME."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/admin.png' alt='' />"));
 		define("IMAGE_rank_admin_image", ($pref['rank_admin_image'] && file_exists(THEME."forum/".$pref['rank_admin_image']) ? "<img src='".THEME."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/admin.png' alt='' />"));
 		$ldata = get_level($user_id, $user_forums, $user_comments, $user_chats, $user_visits, $user_join, $user_admin, $user_perms, $pref);
 		$replace[8] = ($user_admin ? $ldata[0] : $ldata[1]);
-
+		 
 		$search[9] = "/\{REPLY\}(.*?)/si";
 		if ($action == "comment" && $pref['nested_comments']) {
 			$replace[9] = "<a href='".e_BASE."comment.php?reply.".$table.".".$comment_id.".".$id."'>".COMLAN_6."</a>";
 		} else {
 			$replace[9] = '';
 		}
-
+		 
 		$search[10] = "/\{SUBJECT\}(.*?)/si";
 		if ($pref['nested_comments']) {
 			$replace[10] = $NEWIMAGE." <b>".$comment_subject."</b>";
 		} else {
 			$replace[10] = '';
 		}
-
-
+		 
+		 
 		$text .= preg_replace($search, $replace, $renderstyle);
 		if ($action == "comment" && $pref['nested_comments']) {
 			$sub_query = "comment_pid='".$comment_id."' ORDER BY comment_datestamp" ;
@@ -276,10 +274,10 @@ class comment {
 						echo "<b>".COMLAN_3."</b> ".LAN_11;
 					} else {
 						$e107cache->clear("comment");
-
+						 
 						$sql->db_Update("news", "news_comment_total=news_comment_total+1 WHERE news_id=$id");
-
-
+						 
+						 
 					}
 				}
 			}
@@ -288,6 +286,6 @@ class comment {
 		}
 	}
 }
-
+	
 ?>
-
+
