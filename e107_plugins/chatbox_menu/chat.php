@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chat.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-01 05:15:01 $
-|     $Author: sweetas $
+|     $Revision: 1.2 $
+|     $Date: 2005-02-10 18:11:36 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -53,12 +53,11 @@ if ($fs) {
 	$sql->db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT $from, ".$view, $mode = "no_where");
 }
 $obj2 = new convert;
-$aj = new textparse;
 	
 while ($row = $sql->db_Fetch()) {
 	$CHAT_TABLE_DATESTAMP = $obj2->convert_date($row['cb_datestamp'], "long");
 	$CHAT_TABLE_NICK = eregi_replace("[0-9]+\.", "", $row['cb_nick']);
-	$cb_message = ($row['cb_blocked'] ? LAN_16 : $aj->tpa($row['cb_message']));
+	$cb_message = ($row['cb_blocked'] ? LAN_16 : $tp->toHTML($row['cb_message']));
 	if (!eregi("<a href|<img|&#", $cb_message)) {
 		$cb_message = preg_replace("/([^\s]{100})/", "$1\n", $cb_message);
 	}
