@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.51 $
-|     $Date: 2005-03-21 13:40:43 $
-|     $Author: stevedunstan $
+|     $Revision: 1.52 $
+|     $Date: 2005-03-27 08:01:52 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 	
@@ -26,7 +26,7 @@ class e_parse {
 	var $e_hook;
 	var $search = array('&#39;', '&#039;', '&quot;', 'onerror', '&gt;', '&amp;#039;', '&amp;quot;');
 	var $replace = array("'", "'", '"', 'one<i></i>rror', '>', "'", '"');
-
+	var $e_query;
 	 
 	function toDB($text, $no_encode = FALSE) {
 		if (MAGIC_QUOTES_GPC == TRUE) {
@@ -259,6 +259,20 @@ function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $ut
 				}
 			}
 		}
+		
+		// Search Highlight
+		if ($pref['search_highlight'] && (strpos(e_SELF, 'search.php') === FALSE) && ((strpos($_SERVER['HTTP_REFERER'], 'q=') !== FALSE) || (strpos($_SERVER['HTTP_REFERER'], 'p=') !== FALSE))) {
+			if (!isset($this -> e_query)) {
+				$query = preg_match('#(q|p)=(.*?)(&|$)#', $_SERVER['HTTP_REFERER'], $matches);		
+				$this -> e_query = str_replace(' ', '.*?\b|\b', trim(urldecode($matches[2])));
+			}
+			preg_match_all("#<[^>]+>#", $text, $tags);
+			$text = preg_replace("#<[^>]+>#", "<|>", $text);
+			$text = preg_replace("#(\b".$this -> e_query.".*?\b)#i", "<span class='searchhighlight'>\\1</span>", $text);
+			foreach ($tags[0] as $tag) {
+				$text = preg_replace("#<\|>#", $tag, $text, 1);	
+			}
+		}
 
 		$nl_replace = "<br />";
 		if (strpos($modifiers, 'nobreak') !== FALSE)
@@ -272,7 +286,7 @@ function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $ut
 		$text = str_replace('[E_NL]', $nl_replace, $text);
 		return $text;
 	}
-	 
+
 	function toJS($stringarray) {
 		$trans_tbl = get_html_translation_table (HTML_ENTITIES);
 		$trans_tbl = array_flip ($trans_tbl);

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2005-03-23 12:54:22 $
-|     $Author: stevedunstan $
+|     $Revision: 1.59 $
+|     $Date: 2005-03-27 08:01:51 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -495,7 +495,7 @@ function update_61x_to_700($type) {
 		// Search Update
 		global $pref, $sysprefs;
         $search_prefs = $sysprefs -> getArray('search_prefs');
-        if (!isset($search_prefs['multisearch'])) {
+        if (!isset($pref['search_highlight'])) {
         	$serial_prefs = "a:10:{s:11:\"search_sort\";s:3:\"php\";s:11:\"multisearch\";s:1:\"1\";s:9:\"relevance\";s:1:\"1\";s:11:\"user_select\";s:1:\"1\";s:13:\"time_restrict\";s:1:\"0\";s:9:\"time_secs\";s:2:\"60\";s:6:\"google\";s:1:\"0\";s:13:\"core_handlers\";a:4:{s:4:\"news\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"0\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:8:\"comments\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:5:\"users\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:9:\"downloads\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}}s:17:\"comments_handlers\";a:2:{s:4:\"news\";a:3:{s:2:\"id\";i:0;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}s:8:\"download\";a:3:{s:2:\"id\";i:2;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}}s:13:\"plug_handlers\";N;}";
         	$search_prefs = unserialize(stripslashes($serial_prefs));
    			$handle = opendir(e_PLUGIN);
@@ -529,7 +529,8 @@ function update_61x_to_700($type) {
 			} else {
 				$pref['search_restrict'] = 0;
 			}
-			save_prefs;
+			$pref['search_highlight'] = TRUE;
+			save_prefs();
 		}
 		
 } else {
@@ -547,9 +548,8 @@ function update_61x_to_700($type) {
 //		$sql->db_Select_gen("DELETE FROM #core WHERE e107_name='user_entended'");
 
 
-        global $sysprefs;
-        $search_prefs = $sysprefs -> getArray('search_prefs');
-		if (!isset($search_prefs['multisearch'])) {
+        global $pref;
+		if (!isset($pref['search_highlight'])) {
 			return FALSE;
 		} else {
 			return TRUE;

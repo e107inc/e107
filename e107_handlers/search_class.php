@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search_class.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-03-23 23:33:11 $
-|     $Author: stevedunstan $
+|     $Revision: 1.24 $
+|     $Date: 2005-03-27 08:01:52 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -88,10 +88,12 @@ class e_search {
 						foreach ($keywords as $this -> query) {
 							if (strpos($this -> query, '-') == FALSE) {
 								if (strpos($this -> query, '*') !== FALSE) {
-									$regex_append = "";
+									$regex_prepend = "[[:<:]](";
+									$regex_append = ".?)[[:>:]]";
 									$this -> query = str_replace('*', '', $this -> query);
 								} else {
-									$regex_append = "[[:>:]]";	
+									$regex_prepend = "[[:<:]](";
+									$regex_append = ")[[:>:]]";	
 								}
 								$this -> query = str_replace(array('"', '+'), array('', ''), $this -> query);
 								if (($match_start = stristr($this -> text, $this -> query)) !== FALSE) {
@@ -109,7 +111,7 @@ class e_search {
 										$endcrop = TRUE;
 									}
 									$key = substr($this -> text, $this -> pos, strlen($this -> query));
-									$this -> text = eregi_replace("[[:<:]]".$this -> query.$regex_append, "<span class='searchhighlight'>".$key."</span>", $this -> text);
+									$this -> text = eregi_replace($regex_prepend.$this -> query.$regex_append, "<span class='searchhighlight'>\\1</span>", $this -> text);
 								}
 							}
 							if($search_prefs['search_sort'] == 'php') {
