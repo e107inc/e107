@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2005-02-23 03:22:42 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.51 $
+|     $Date: 2005-02-23 21:05:21 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -48,29 +48,25 @@ if (isset($tmp[1]) && $tmp[1] == 'list') {
 	$from = intval($tmp[0]);
 	$sub_action = intval($tmp[2]);
 }
-if (isset($tmp[1]) && ($tmp[1] == 'all' || $tmp[1] == 'cat')) {
-	$action = $tmp[1];
-	$from = intval($tmp[0]);
-	$sub_action = intval($tmp[2]);
+if ($action == 'all' || $action == 'cat') {
+	$from = intval($tmp[2]);
+	$sub_action = intval($tmp[1]);
 }
 
 $ix = new news;
-if ($action == 'cat' || $action == 'all')
-{
+if ($action == 'cat' || $action == 'all'){
 	checkNewsCache($cacheString);
 	ob_start();
 	$qs = explode(".", e_QUERY);
 
 	$category = $qs[1];
-	if ($action == 'cat' && $category != 0)
-	{
+	if ($action == 'cat' && $category != 0)	{
 		$gen = new convert;
 		$sql->db_Select("news_category", "*", "category_id='$category'");
 		$row = $sql->db_Fetch();
 		extract($row);  // still required for the table-render.  :(
 	}
-	if($action == 'all')
-	{
+	if ($action == 'all'){
 		if(!defined("ALLITEMS")){ define("ALLITEMS",10); }
 		// show archive of all news items using list-style template.
 		$news_total = $sql->db_Count("news", "(*)", "WHERE news_class IN (".USERCLASS_LIST.")");
@@ -80,14 +76,14 @@ if ($action == 'cat' || $action == 'all')
 		WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")  ORDER BY n.news_datestamp DESC LIMIT $from,".ALLITEMS;
 		$category_name = "All";
 	}
-	elseif($action == 'cat')
-	{
+	elseif ($action == 'cat'){
 		// show archive of all news items in a particular category using list-style template.   .
 		$news_total = $sql->db_Count("news", "(*)", "WHERE news_class IN (".USERCLASS_LIST.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().") AND news_category={$sub_action} ");
+		if(!defined("NEWSLIST_LIMIT")){ define("NEWSLIST_LIMIT",10); }
 		$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_category={$sub_action} ORDER BY n.news_datestamp DESC LIMIT $from,".ITEMVIEW;
+		WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_category={$sub_action} ORDER BY n.news_datestamp DESC LIMIT $from,".NEWSLIST_LIMIT;
 	}
 
 	if(!$NEWSLISTSTYLE){
@@ -120,9 +116,12 @@ if ($action == 'cat' || $action == 'all')
 	while ($row = $sql->db_Fetch()) {
 		$text .= $ix->parse_newstemplate($row,$NEWSLISTSTYLE,$param);
 	}
+
+	$amount = ($action == "all") ? ALLITEMS : NEWSLIST_LIMIT;
+
 	$icon = ($row['category_icon']) ? "<img src='".e_IMAGE."icons/".$row['category_icon']."' alt='' />" : "";
-	$parms = $news_total.",".ITEMVIEW.",".$from.",".e_SELF.'?'."[FROM].".$action.".".$sub_action;
-	$text .= LAN_NEWS_22."&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}");
+	$parms = $news_total.",".$amount.",".$from.",".e_SELF.'?'.$action.".".$sub_action.".[FROM]";
+	$text .= ($news_total > $amount) ? LAN_NEWS_22."&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}") : "";
 	$ns->tablerender(LAN_82." '".$category_name."'", $text);
 	setNewsCache($cacheString);
 	require_once(FOOTERF);
@@ -399,7 +398,7 @@ if ($action != "item") {
 		$action = "";
 	}
 	$parms = $news_total.",".ITEMVIEW.",".$from.",".e_SELF.'?'."[FROM].".$action.".".$sub_action;
-	$nextprev = LAN_NEWS_22."&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}");
+	$nextprev = ($news_total > ITEMVIEW) ? LAN_NEWS_22."&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}") : "";
 	echo "<div class='nextprev' style='text-align:center'>".$nextprev."</div>";
 }
 
