@@ -140,7 +140,9 @@ if(!$text = retrieve_cache("chatbox")){
 				$message_array = explode(" ", $cb_message);
 				for($i=0; $i<=(count($message_array)-1); $i++){
 					if(strlen($message_array[$i]) > $cb_wordwrap){
-						$message_array[$i] = wordwrap( $message_array[$i], $cb_wordwrap, "<br />", 1);
+						require_once(e_HANDLER."textparse/basic.php");
+            $etp = new e107_basicparse;
+            $message_array[$i] = wordwrap( $etp->unentity($message_array[$i]), $cb_wordwrap, "<br />", 1);
 					}
 				}
 				$cb_message = implode(" ",$message_array);
