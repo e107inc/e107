@@ -26,14 +26,16 @@ $bullet = "<img src='".THEME."images/bullet2.gif' alt='bullet' /> ";
 
 $sql2 = new db;
 $lvisit = USERLV;
-if($news_items = $sql -> db_Select("news", "*", "news_datestamp>$lvisit  ORDER BY news_datestamp DESC LIMIT 0,10")){
-	while($row = $sql -> db_Fetch()){
-		extract($row);
-		if(check_class($news_class)){
-			$str .= "$bullet<a href='".e_BASE."comment.php?comment.news.$news_id'>$news_title<br />";
-		}
+$news_items = $sql -> db_Select("news", "*", "news_datestamp>$lvisit  ORDER BY news_datestamp DESC LIMIT 0,10");
+while($row = $sql -> db_Fetch()){
+	extract($row);
+	if(check_class($news_class)){
+		$str .= "$bullet<a href='".e_BASE."comment.php?comment.news.$news_id'>$news_title<br />";
+	}else{
+		$news_items = $news_items - 1;
 	}
-}else{
+}
+if(!$news_items){
 	$str = LIST_4;
 }
 
@@ -165,7 +167,7 @@ while($row = $sql -> db_Fetch()){
 			$str .= $bullet."[ <a href='".e_BASE."forum_viewforum.php?$forum_id'>$forum_name</a> ] <a href='".e_BASE."forum_viewtopic.php?$thread_forum_id.$thread_id'>".$aj -> tpa($thread_name)."</a><br/>";
 		}
 	}else{
-		$forum_posts = $forum_posts -1;
+		$forum_posts = $forum_posts - 1;
 	}
 }
 if(!$forum_posts){
