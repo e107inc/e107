@@ -3,7 +3,8 @@
 $headline_update = 7200;	// (2 hours)
 
 // is script being called as menu item, or standalone page ...
-if(strstr($_SERVER['PHP_SELF'], "headlines_menu.php")){
+
+if(strstr(($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']), "headlines_menu.php")){
 	require_once("../../class2.php");
 	require_once(HEADERF);
 
