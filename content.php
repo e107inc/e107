@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/content.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-10-10 21:12:04 $
+|     $Revision: 1.3 $
+|     $Date: 2004-10-12 13:50:06 $
 |     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
@@ -1008,7 +1008,7 @@ if($action == "article"){
 // ##### End ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 function parse_content_article_table($row){
-                global $CONTENT_ARTICLE_TABLE, $rater, $aj, $ep, $id;
+                global $CONTENT_ARTICLE_TABLE, $rater, $aj, $ep, $id, $ml;
                 extract($row);
 
                 $search = array("{e_BASE}", "{e_ADMIN}", "{e_IMAGE}", "{e_THEME}", "{e_PLUGIN}", "{e_FILE}", "{e_HANDLER}", "{e_LANGUAGEDIR}", "{e_DOCS}", "{e_DOCROOT}");
