@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/newsfeed.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-05 16:57:37 $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-09 18:12:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -65,7 +65,7 @@ $text = "<div style='text-align:center'>
 
 <table style='".ADMIN_WIDTH."' class='fborder'>
 <tr>
-<td colspan='2' style='text-align:center' class='forumheader'>";
+<td colspan='2' style='text-align:center' class='forumheader3'>";
 
 
 if($headline_total == "0"){

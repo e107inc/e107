@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/administrator.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-05 16:57:36 $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-09 18:12:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -39,7 +39,7 @@ if(IsSet($_POST['add_admin'])){
                         $message = ADMSLAN_55;
                 }else{
                         for ($i=0; $i<=count($_POST['perms']); $i++){
-                                if($_POST['perms'][$i]){
+                                if(strlen($_POST['perms'][$i])){
                                         $perm .= $_POST['perms'][$i].".";
                                 }
                         }
@@ -115,13 +115,14 @@ $sql -> db_Select("user", "*", "user_admin='1'");
 
 $text = "<div style='text-align:center'><div style='padding: 1px; ".ADMIN_WIDTH."; height : 100px; overflow : auto; margin-left: auto; margin-right: auto;'>
 <form action=\"".e_SELF."\" method=\"post\" id=\"del_administrator\" >
+<div>
 <input type=\"hidden\" name=\"del_administrator_confirm\" id=\"del_administrator_confirm\" value=\"1\" />
 <table class='fborder' style='width:99%'>
 <tr>
-<td style='width:5%' class='forumheader2'>ID</td>
-<td style='width:30%' class='forumheader2'>".ADMSLAN_56."</td>
-<td style='width:30%' class='forumheader2'>".ADMSLAN_57."</td>
-<td style='width:35%' class='forumheader2'>".ADMSLAN_18."</td>
+<td style='width:5%' class='fcaption'>ID</td>
+<td style='width:30%' class='fcaption'>".ADMSLAN_56."</td>
+<td style='width:30%' class='fcaption'>".ADMSLAN_57."</td>
+<td style='width:35%' class='fcaption'>".ADMSLAN_18."</td>
 </tr>";
 
 while($row = $sql -> db_Fetch()){
@@ -131,13 +132,13 @@ while($row = $sql -> db_Fetch()){
 <td style='width:30%' class='forumheader3'>$user_name</td>
 <td style='width:30%; text-align:center' class='forumheader3'>".
 ($user_perms == "0" ? "&nbsp;" :
-$rs -> form_button("button", "main_edit", ADMSLAN_15, "onclick=\"document.location='".e_SELF."?edit.$user_id'\"").
-$rs -> form_button("button", "main_delete", ADMSLAN_59, "onclick=\"confirm_($user_id, '$user_name')\""))."</td>
+$rs -> form_button("button", "", ADMSLAN_15, "onclick=\"document.location='".e_SELF."?edit.$user_id'\"").
+$rs -> form_button("button", "", ADMSLAN_59, "onclick=\"confirm_($user_id, '$user_name')\""))."</td>
 <td style='width:35%' class='forumheader3'>".($user_perms == "0" ? ADMSLAN_58 : ($user_perms ? str_replace(".", "", $user_perms) : "&nbsp;"))."</td>
 </tr>";
 }
 
-$text .= "</table>\n</form></div>\n</div>";
+$text .= "</table></div>\n</form></div>\n</div>";
 
 $ns -> tablerender(ADMSLAN_13, $text);
 
@@ -182,7 +183,8 @@ $text .= checkb("6", $a_perms).ADMSLAN_25."<br />";
 $text .= checkb("7", $a_perms).ADMSLAN_26."<br />";
 $text .= checkb("8", $a_perms).ADMSLAN_27."<br />";
 $text .= checkb("0", $a_perms).ADMSLAN_64."<br />";
-$text .= checkb("9", $a_perms).ADMSLAN_28."<br /><br />";
+$text .= checkb("9", $a_perms).ADMSLAN_28."<br />";
+$text .= checkb("W", $a_perms).ADMSLAN_65."<br /><br />";
 
 $text .= checkb("D", $a_perms).ADMSLAN_29."<br />";
 $text .= checkb("E", $a_perms).ADMSLAN_30."<br />";

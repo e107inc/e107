@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-05 16:57:36 $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-09 18:12:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -255,9 +255,9 @@ class download{
                 if($sql -> db_Select("download", "*", $query, ($_POST['searchquery'] ? 0 : "nowhere"))){
                         $text .= "<table class='fborder' style='width:99%'>
                         <tr>
-                        <td style='width:5%' class='forumheader2'>ID</td>
-                        <td style='width:50%' class='forumheader2'>".DOWLAN_27."</td>
-                        <td style='width:45%' class='forumheader2'>".DOWLAN_28."</td>
+                        <td style='width:5%' class='fcaption'>ID</td>
+                        <td style='width:50%' class='fcaption'>".DOWLAN_27."</td>
+                        <td style='width:45%' class='fcaption'>".DOWLAN_28."</td>
                         </tr>";
                         while($row = $sql -> db_Fetch()){
                                 extract($row);

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/lancheck.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-05 16:57:37 $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-09 18:12:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -112,7 +112,7 @@ function check_core_lanfiles($checklan){
                                 }
                         }
                         if($er){
-                                $text .= "<td class='forumheader2'><div class='smalltext'>{$er}</div></td></tr>";
+                                $text .= "<td class='forumheader3'><div class='smalltext'>{$er}</div></td></tr>";
                         } else {
                                 $text .= "<td class='forumheader3'><div class='smalltext'>".LAN_CHECK_6."</div></td></tr>";
                         }
@@ -138,13 +138,13 @@ function show_languages(){
                 <form name='lancheck' method='POST'>
                 <table class='fborder' style='".ADMIN_WIDTH."'>
                 <tr>
-                <td class='forumheader'>".LAN_CHECK_1."</td></tr>
+                <td class='fcaption'>".LAN_CHECK_1."</td></tr>
                 <tr><td class='forumheader3'>";
                 foreach($languages as $lang){
                         $text .= "<input type='radio' name='language' value='{$lang}' /> {$lang}<br />";
                 }
                 $text .= "</td></tr>
-                <tr><td class='forumheader2' style='text-align:center;'><input type='submit' name='check_lang' value='".LAN_CHECK_2."' class='button' />
+                <tr><td class='forumheader' style='text-align:center;'><input type='submit' name='check_lang' value='".LAN_CHECK_2."' class='button' />
                 </td></tr>
                 </table></form>";
                 return $text;

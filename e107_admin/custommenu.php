@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/custommenu.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-05 16:57:36 $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-09 18:12:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -187,7 +187,9 @@ $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."' id='dataform'>
 <table style='".ADMIN_WIDTH."' class='fborder'>
 <tr>
+<td colspan='2' class='fcaption'>".CUSLAN_18."</td></tr>
 
+<tr>
 <td style='text-align:center' colspan='2' class='forumheader'><span class='defaulttext'>".CUSLAN_8.":</span> ";
 
 $handle=opendir(e_PLUGIN."custom/");
@@ -212,12 +214,9 @@ if($found){
 }
 
 $text .= "
-</td>
-</tr>";
+</td></tr>";
 
-$text .= "<tr>
-
-<td style='text-align:center' colspan='2' class='forumheader'><span class='defaulttext'>".CUSLAN_19.":</span> ";
+$text .= "<tr><td style='text-align:center' colspan='2' class='forumheader'><span class='defaulttext'>".CUSLAN_19.":</span> ";
 
 $handle=opendir(e_PLUGIN."custompages/");
 while(false !== ($file = readdir($handle))){

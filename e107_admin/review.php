@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/review.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-05 16:57:37 $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-09 18:12:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -175,9 +175,9 @@ if($action == "cat"){
         if($category_total = $sql -> db_Select("content", "*", "content_type='10' ")){
                 $text .= "<table class='fborder' style='width:99%'>
                 <tr>
-                <td style='width:5%' class='forumheader2'>ID</td>
-                <td style='width:75%' class='forumheader2'>".REVLAN_28."</td>
-                <td style='width:20%; text-align:center' class='forumheader2'>".REVLAN_29."</td>
+                <td style='width:5%' class='fcaption'>ID</td>
+                <td style='width:75%' class='fcaption'>".REVLAN_28."</td>
+                <td style='width:20%; text-align:center' class='fcaption'>".REVLAN_29."</td>
                 </tr>";
                 while($row = $sql -> db_Fetch()){
                         extract($row);
@@ -266,9 +266,9 @@ if(!$action || $action == "confirm"){
         if($article_total = $sql -> db_Select("content", "*", "content_type='3' ORDER BY content_datestamp DESC")){
                 $text .= "<table class='fborder' style='width:99%'>
                 <tr>
-                <td style='width:5%' class='forumheader2'>&nbsp;</td>
-                <td style='width:50%' class='forumheader2'>".REVLAN_15."</td>
-                <td style='width:45%' class='forumheader2'>".REVLAN_29."</td>
+                <td style='width:5%' class='fcaption'>&nbsp;</td>
+                <td style='width:50%' class='fcaption'>".REVLAN_15."</td>
+                <td style='width:45%' class='fcaption'>".REVLAN_29."</td>
                 </tr>";
                 while($row = $sql -> db_Fetch()){
                         extract($row);
@@ -484,7 +484,7 @@ if($action == "opt"){
         ".REVLAN_55."<br />
         <span class='smalltext'>".REVLAN_56."</span>
         </td>
-        <td class='forumheader2' style='width:30%;text-align:center'>".
+        <td class='forumheader3' style='width:30%;text-align:center'>".
         ($pref['review_submit'] ? "<input type='checkbox' name='review_submit' value='1' checked='checked' />" : "<input type='checkbox' name='review_submit' value='1' />")."
         </td>
         </tr>
@@ -494,7 +494,7 @@ if($action == "opt"){
         ".REVLAN_57."<br />
         <span class='smalltext'>".REVLAN_58."</span>
         </td>
-        <td class='forumheader2' style='width:30%;text-align:center'>".r_userclass("review_submit_class", $pref['review_submit_class'])."</td>
+        <td class='forumheader3' style='width:30%;text-align:center'>".r_userclass("review_submit_class", $pref['review_submit_class'])."</td>
         </tr>
 
         <tr style='vertical-align:top'>
@@ -516,9 +516,9 @@ if($action == "sa"){
         if($article_total = $sql -> db_Select("content", "*", "content_type=16")){
                 $text .= "<table class='fborder' style='width:99%'>
                 <tr>
-                <td style='width:5%' class='forumheader2'>ID</td>
-                <td style='width:75%' class='forumheader2'>".REVLAN_65."</td>
-                <td style='width:20%; text-align:center' class='forumheader2'>".REVLAN_29."</td>
+                <td style='width:5%' class='fcaption'>ID</td>
+                <td style='width:75%' class='fcaption'>".REVLAN_65."</td>
+                <td style='width:20%; text-align:center' class='fcaption'>".REVLAN_29."</td>
                 </tr>";
                 while($row = $sql -> db_Fetch()){
                         extract($row);

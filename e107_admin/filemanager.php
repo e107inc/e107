@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/filemanager.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-05 16:57:37 $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-09 18:12:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -158,8 +158,8 @@ $text .= "</select>\n
 $ns -> tablerender(FMLAN_34, $text);
 
 
-$text = "<div class=\"border\">
-<div class=\"caption\">
+$text = "<div class=\"fborder\">
+<div class=\"fcaption\">
 ".FMLAN_29.": <b>root/".$pathd."</b>&nbsp;&nbsp;[ ".count($dirs)." ".$dstr.", ".count($files)." ".$cstr." ]
 </div>
 </div>

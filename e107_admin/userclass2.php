@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass2.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-07 04:08:23 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-09 18:12:38 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -151,9 +151,9 @@ $class_total = $sql -> db_Select("userclass_classes");
 
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."' id='classForm'>
-<table class='fborder' style='width:95%'>
+<table class='fborder' style='".ADMIN_WIDTH."'>
 <tr>
-<td class='forumheader' style='text-align:center' colspan='2'>";
+<td class='fcaption' style='text-align:center' colspan='2'>";
 
 if($class_total == "0"){
         $text .= UCSLAN_7;
@@ -224,7 +224,7 @@ If(IsSet($_POST['edit'])){
 
         }
 
-        $text .= "<br /><table class='fborder' style='width:95%'>
+        $text .= "<br /><table class='fborder' style='".ADMIN_WIDTH."'>
         <tr>
         <td class='fcaption' style='text-align:center;width:30%'>".UCSLAN_16."</td></tr>
         <tr>

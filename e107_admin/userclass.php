@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-05 16:57:37 $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-09 18:12:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -97,7 +97,7 @@ $text = "<div style='text-align:center'>
 <table style='".ADMIN_WIDTH."' class='fborder'>";
 
 for($a=0; $a<= (count($class)-1); $a++){
-        $text .= "<tr><td style='width:30%' class='forumheader'>";
+        $text .= "<tr><td style='width:30%' class='forumheader3'>";
         if(check_class($class[$a][0], $user_class)){
                 $text .= "<input type='checkbox' name='userclass[]' value='".$class[$a][0]."' checked='checked' />".$class[$a][1]." ";
         }else{

@@ -11,45 +11,31 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/includes/admin_etalkers.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-01-05 16:57:40 $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-09 18:13:14 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-
-$td = 1;
-function wad($link, $title, $description, $perms, $icon = FALSE, $mode = FALSE){
-	global $td;
-	$permicon = $mode ? SML_IMG_PLUGIN : $icon;
-	if (getperms($perms)){
-		if ($td==1) { $text .= "<tr>"; }
-		$text = "<td class='td' style='text-align:left; vertical-align:top; width:20%; white-space:nowrap' 
-		onmouseover='tdover(this)' onmouseout='tdnorm(this)' onclick=\"document.location.href='$link'\">$permicon $title</td>";
-		if ($td==5) { $text .= '</tr>'; }
-		if ($td<5) { $td++; } else { $td = 1; }
-	} 
-	return $text;
-}
 
 $text = "<div style='text-align:center'>
 <table class='fborder' style='".ADMIN_WIDTH."'>";
 
 foreach ($admin_cat['id'] as $cat_key => $cat_id) {
 	$text_check = FALSE;
-	$text_cat = "<tr><td class='forumheader3' rowspan='2' style='text-align: center; vertical-align: middle;'>".$admin_cat['lrg_img'][$cat_key]."</td><td class='forumheader'>".$admin_cat['title'][$cat_key]."</td></tr>
+	$text_cat = "<tr><td class='forumheader3' rowspan='2' style='text-align: center; vertical-align: middle;'>".$admin_cat['lrg_img'][$cat_key]."</td>
+	<td class='fcaption'>".$admin_cat['title'][$cat_key]."</td></tr>
 	<tr><td class='forumheader3'>
-	<table style='width:100%'><tr>";
+	<table style='width:100%'>";
 	if ($cat_key!=7) {
-		$newarray = asortbyindex($array_functions, 1);
 		foreach ($newarray as $key => $funcinfo) {
 			if ($funcinfo[4]==$cat_key) {
-				$text_rend = wad($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3], $funcinfo[5]);
+				$text_rend = render_links($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3], $funcinfo[5], 'default');
 				if ($text_rend) { $text_check = TRUE; }
 				$text_cat .= $text_rend;
 			}
 		}
 	} else {
-		$text_rend = wad(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z", "", TRUE);
+		$text_rend = render_links(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z", E_16_PLUGMANAGER, 'default');
 		if ($text_rend) { $text_check = TRUE; }
 		$text_cat .= $text_rend;
 		if ($sql -> db_Select("plugin", "*", "plugin_installflag=1")) {
@@ -57,7 +43,7 @@ foreach ($admin_cat['id'] as $cat_key => $cat_id) {
 				extract($row);
 				include(e_PLUGIN.$plugin_path."/plugin.php");
 				if ($eplug_conffile) {
-					$text_rend = wad(e_PLUGIN.$plugin_path."/".$eplug_conffile, $eplug_name, $eplug_caption, "P".$plugin_id, "", TRUE);
+					$text_rend = render_links(e_PLUGIN.$plugin_path."/".$eplug_conffile, $eplug_name, $eplug_caption, "P".$plugin_id, E_16_PLUGIN, 'default');
 					if ($text_rend) { $text_check = TRUE; }
 					$text_cat .= $text_rend;
 				}
@@ -65,23 +51,16 @@ foreach ($admin_cat['id'] as $cat_key => $cat_id) {
 			}
 		}
 	}
-	while ($td<=5) {
-		$text_cat .= "<td class='td' style='width:20%;' ></td>";
-		$td++;
-	}
-	$td = 1;
-	$text_cat .= "</tr></table>
+	$text_cat .= render_clean();
+	$text_cat .= "</table>
 	</td></tr>";
 	if ($text_check) { $text .= $text_cat; }
 }
 
-$text .= "
-</table>
-</div>";
+$text .= "</table></div>";
 
 $ns -> tablerender(ADLAN_47." ".ADMINNAME, $text);
 
-$admin_info = TRUE;
-$admin_info_style = TRUE;
+admin_info(TRUE);
 
 ?>

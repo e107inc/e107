@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-01-05 16:57:37 $
+|     $Revision: 1.10 $
+|     $Date: 2005-01-09 18:12:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -226,10 +226,10 @@ class links{
                 if($link_total = $sql -> db_Select("links", "*", "ORDER BY link_category, link_id ASC", "nowhere")){
                         $text .= "<table class='fborder' style='width:99%'>
                         <tr>
-                        <td style='width:5%' class='forumheader'>ID</td>
-                        <td style='width:10%' class='forumheader'>".LCLAN_59."</td>
-                        <td style='width:50%' class='forumheader'>".LCLAN_53."</td>
-                        <td style='width:18%' class='forumheader'>".LCLAN_60."</td>
+                        <td style='width:5%' class='fcaption'>ID</td>
+                        <td style='width:10%' class='fcaption'>".LCLAN_59."</td>
+                        <td style='width:50%' class='fcaption'>".LCLAN_53."</td>
+                        <td style='width:18%' class='fcaption'>".LCLAN_60."</td>
                         </tr>";
                         while($row = $sql -> db_Fetch()){
                                 extract($row);
@@ -462,7 +462,7 @@ class links{
                 $sql2 = new db;
                 while(list($link_category_id, $link_category_name, $link_category_description) = $sql-> db_Fetch()){
                         if($lamount = $sql2 -> db_Select("links", "*", "link_category ='$link_category_id' ORDER BY link_order ASC ")){
-                                $text .= "<tr><td colspan='3' class='forumheader'>$link_category_name ".LCLAN_59."</td></tr>";
+                                $text .= "<tr><td colspan='3' class='fcaption'>$link_category_name ".LCLAN_59."</td></tr>";
                                 while(list($link_id, $link_name, $link_url, $link_description, $link_button, $link_category, $link_order, $link_refer) = $sql2-> db_Fetch()){
                                         $text .= "<tr>\n<td style='width:30%' class='forumheader3'>".$link_order." - ".$link_name."</td>\n<td style='width:30%; text-align:center' class='forumheader3'>\n";
                                         $text .= "<table><tr><td><select name='link_order[]' class='tbox'>";
@@ -506,9 +506,9 @@ class links{
                 if($category_total = $sql -> db_Select("link_category")){
                         $text .= "<table class='fborder' style='width:99%'>
                         <tr>
-                        <td style='width:5%' class='forumheader2'>&nbsp;</td>
-                        <td style='width:75%' class='forumheader2'>".LCLAN_59."</td>
-                        <td style='width:20%; text-align:center' class='forumheader2'>".LCLAN_60."</td>
+                        <td style='width:5%' class='fcaption'>&nbsp;</td>
+                        <td style='width:75%' class='fcaption'>".LCLAN_59."</td>
+                        <td style='width:20%; text-align:center' class='fcaption'>".LCLAN_60."</td>
                         </tr>";
                         while($row = $sql -> db_Fetch()){
                                 extract($row);
@@ -597,9 +597,9 @@ class links{
                 if($submitted_total = $sql -> db_Select("tmp", "*", "tmp_ip='submitted_link' ")){
                         $text .= "<table class='fborder' style='width:99%'>
                         <tr>
-                        <td style='width:50%' class='forumheader2'>".LCLAN_53."</td>
-                        <td style='width:30%' class='forumheader2'>".LCLAN_45."</td>
-                        <td style='width:20%; text-align:center' class='forumheader2'>".LCLAN_60."</td>
+                        <td style='width:50%' class='fcaption'>".LCLAN_53."</td>
+                        <td style='width:30%' class='fcaption'>".LCLAN_45."</td>
+                        <td style='width:20%; text-align:center' class='fcaption'>".LCLAN_60."</td>
                         </tr>";
                         while($row = $sql -> db_Fetch()){
                                 extract($row);
@@ -634,7 +634,7 @@ class links{
                 ".LCLAN_40."<br />
                 <span class='smalltext'>".LCLAN_34."</span>
                 </td>
-                <td class='forumheader2' style='width:30%;text-align:center'>".
+                <td class='forumheader3' style='width:30%;text-align:center'>".
                 ($pref['linkpage_categories'] ? "<input type='checkbox' name='linkpage_categories' value='1' checked='checked' />" : "<input type='checkbox' name='linkpage_categories' value='1' />")."
                 </td>
                 </tr>
@@ -644,7 +644,7 @@ class links{
                 ".LCLAN_78."<br />
                 <span class='smalltext'>".LCLAN_79."</span>
                 </td>
-                <td class='forumheader2' style='width:30%;text-align:center'>".
+                <td class='forumheader3' style='width:30%;text-align:center'>".
                 ($pref['linkpage_screentip'] ? "<input type='checkbox' name='linkpage_screentip' value='1' checked='checked' />" : "<input type='checkbox' name='linkpage_screentip' value='1' />")."
                 </td>
                 </tr>
@@ -654,7 +654,7 @@ class links{
                 ".LCLAN_41."<br />
                 <span class='smalltext'>".LCLAN_42."</span>
                 </td>
-                <td class='forumheader2' style='width:30%;text-align:center'>".
+                <td class='forumheader3' style='width:30%;text-align:center'>".
                 ($pref['link_submit'] ? "<input type='checkbox' name='link_submit' value='1' checked='checked' />" : "<input type='checkbox' name='link_submit' value='1' />")."
                 </td>
                 </tr>
@@ -664,7 +664,7 @@ class links{
                 ".LCLAN_43."<br />
                 <span class='smalltext'>".LCLAN_44."</span>
                 </td>
-                <td class='forumheader2' style='width:30%;text-align:center'>".r_userclass("link_submit_class", $pref['link_submit_class'])."</td>
+                <td class='forumheader3' style='width:30%;text-align:center'>".r_userclass("link_submit_class", $pref['link_submit_class'])."</td>
                 </tr>
 
                 <tr style='vertical-align:top'>

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/article.php,v $
-|   $Revision: 1.5 $
-|   $Date: 2005-01-05 16:57:36 $
+|   $Revision: 1.6 $
+|   $Date: 2005-01-09 18:12:38 $
 |   $Author: sweetas $
 
 +---------------------------------------------------------------+
@@ -203,13 +203,13 @@ if(IsSet($message)){
 // ##### Categories ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 if($action == "cat"){
-        $text = "<div style='padding : 4px; ".ADMIN_WIDTH."; height : 100px; overflow : auto; margin-left: auto; margin-right: auto; '>\n";
+        $text = "<div style='text-align:center'><div style='padding : 4px; ".ADMIN_WIDTH."; height : 100px; overflow : auto; margin-left: auto; margin-right: auto; '>\n";
         if($category_total = $sql -> db_Select("content", "*", "content_type='6' ")){
                 $text .= "<table class='fborder' style='width:99%'>
                 <tr>
-                <td style='width:5%' class='forumheader2'>&nbsp;</td>
-                <td style='width:75%' class='forumheader2'>".ARLAN_59."</td>
-                <td style='width:20%; text-align:center' class='forumheader2'>".ARLAN_60."</td>
+                <td style='width:5%' class='fcaption'>&nbsp;</td>
+                <td style='width:75%' class='fcaption'>".ARLAN_59."</td>
+                <td style='width:20%; text-align:center' class='fcaption'>".ARLAN_60."</td>
                 </tr>";
                 while($row = $sql -> db_Fetch()){
                         extract($row);
@@ -231,7 +231,7 @@ if($action == "cat"){
         }else{
                 $text .= "<div style='text-align:center'>".ARLAN_63."</div>";
         }
-        $text .= "</div>";
+        $text .= "</div></div>";
         $ns -> tablerender(ARLAN_64, $text);
 
         $handle=opendir(e_IMAGE."link_icons");
@@ -302,10 +302,10 @@ if(!$action || $action == "confirm" || $action == 'c'){
 
         if ($distinctfirstletter != 1){
 
-                $text .= "<form method='post' action='".e_SELF."'>
+                $text .= "<div style='text-align:center'><form method='post' action='".e_SELF."'>
                 <table class='fborder' style='".ADMIN_WIDTH."'>
 
-                <tr><td colspan='2' class='forumheader'>".ARLAN_31."</td></tr>
+                <tr><td colspan='2' class='fcaption'>".ARLAN_31."</td></tr>
                 <tr><td colspan='2' class='forumheader3'>";
 
                 while($row = $sql-> db_Fetch()){
@@ -316,7 +316,7 @@ if(!$action || $action == "confirm" || $action == 'c'){
                 $text .= "
                 <input class='button' style='width:20' type='submit' name='letter' value='all' />
                 </td></tr>
-                </table></form> ";
+                </table></form></div>";
         }
         // ---------------------------------------------------------------------------
 
@@ -338,14 +338,14 @@ if(!$action || $action == "confirm" || $action == 'c'){
         // ---------------------------------------------------------------------------
 
         $sql2 = new db;
-        $text .= "<div style='padding : 1px; ".ADMIN_WIDTH."; height : 400px; overflow : auto;  margin-left: auto; margin-right: auto;'>";
+        $text .= "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; height : 400px; overflow : auto;  margin-left: auto; margin-right: auto;'>";
         if($article_total = $sql -> db_Select("content", "*", $query)){
                 if($article_total < 50 || $letter || $cat){
                         $text .= "<table class='fborder' style='width:99%'>
                         <tr>
-                        <td style='width:5%' class='forumheader2'>&nbsp;</td>
-                        <td style='width:50%' class='forumheader2'>".ARLAN_20."</td>
-                        <td style='width:45%' class='forumheader2'>".ARLAN_60."</td>
+                        <td style='width:5%' class='fcaption'>&nbsp;</td>
+                        <td style='width:50%' class='fcaption'>".ARLAN_20."</td>
+                        <td style='width:45%' class='fcaption'>".ARLAN_60."</td>
                         </tr>";
                         while($row = $sql -> db_Fetch()){
                                 extract($row);
@@ -374,7 +374,7 @@ if(!$action || $action == "confirm" || $action == 'c'){
         } else {
                 $text .= "<div style='text-align:center'>".ARLAN_14."</div>";
         }
-        $text .= "</div>";
+        $text .= "</div></div>";
         $ns -> tablerender(ARLAN_72, $text);
         }
 
@@ -527,7 +527,7 @@ if($action == "opt"){
         ".ARLAN_86."<br />
         <span class='smalltext'>".ARLAN_87."</span>
         </td>
-        <td class='forumheader2' style='width:30%;text-align:center'>".
+        <td class='forumheader3' style='width:30%;text-align:center'>".
         ($pref['article_submit'] ? "<input type='checkbox' name='article_submit' value='1' checked='checked' />" : "<input type='checkbox' name='article_submit' value='1' />")."
         </td>
         </tr>
@@ -537,7 +537,7 @@ if($action == "opt"){
         ".ARLAN_88."<br />
         <span class='smalltext'>".ARLAN_89."</span>
         </td>
-        <td class='forumheader2' style='width:30%; text-align:center'>".r_userclass("article_submit_class", $pref['article_submit_class'])."</td>
+        <td class='forumheader3' style='width:30%; text-align:center'>".r_userclass("article_submit_class", $pref['article_submit_class'])."</td>
         </tr>
 
         <tr style='vertical-align:top'>
@@ -554,13 +554,13 @@ if($action == "opt"){
 
 if($action == "sa"){
         global $sql, $rs, $ns, $aj;
-        $text = "<div style='padding : 1px; width :auto; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>\n";
+        $text = "<div style='text-align:center'><div style='padding : 1px; width :auto; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>\n";
         if($article_total = $sql -> db_Select("content", "*", "content_type=15")){
                 $text .= "<table class='fborder' style='width:99%'>
                 <tr>
-                <td style='width:5%' class='forumheader2'>ID</td>
-                <td style='width:75%' class='forumheader2'>".ARLAN_96."</td>
-                <td style='width:20%; text-align:center' class='forumheader2'>".ARLAN_60."</td>
+                <td style='width:5%' class='fcaption'>ID</td>
+                <td style='width:75%' class='fcaption'>".ARLAN_96."</td>
+                <td style='width:20%; text-align:center' class='fcaption'>".ARLAN_60."</td>
                 </tr>";
                 while($row = $sql -> db_Fetch()){
                         extract($row);
@@ -580,7 +580,7 @@ if($action == "sa"){
         }else{
                 $text .= "<div style='text-align:center'>".ARLAN_94."</div>";
         }
-        $text .= "</div>";
+        $text .= "</div></div>";
         $ns -> tablerender(ARLAN_93, $text);
 }
 

@@ -12,6 +12,14 @@ a:hover {
 	color: #2a3236;
 	text-decoration: underline;
 }
+.fcaption a {
+	color: #ffffcc;
+	text-decoration: underline;
+}
+.fcaption a:hover {
+	color: #cccc99;
+	text-decoration: underline;
+}
 .smalltext {
 	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
 	color:#5d6e75;

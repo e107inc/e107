@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db_verify.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-05 16:57:36 $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-09 18:12:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -103,10 +103,10 @@ function check_tables($what){
         $text="<div style='text-align:center'>
         <table style='".ADMIN_WIDTH."' class='fborder'>
         <tr>
-        <td class='forumheader' style='text-align:center'>".DBLAN_4."</td>
-        <td class='forumheader' style='text-align:center'>".DBLAN_5."</td>
-        <td class='forumheader' style='text-align:center'>".DBLAN_6."</td>
-        <td class='forumheader' style='text-align:center'>".DBLAN_7."</td>
+        <td class='fcaption' style='text-align:center'>".DBLAN_4."</td>
+        <td class='fcaption' style='text-align:center'>".DBLAN_5."</td>
+        <td class='fcaption' style='text-align:center'>".DBLAN_6."</td>
+        <td class='fcaption' style='text-align:center'>".DBLAN_7."</td>
         </tr>";
         foreach(array_keys($table_list) as $k){
                 $text.="<tr>";

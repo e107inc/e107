@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/poll.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-05 16:57:37 $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-09 18:12:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -106,9 +106,9 @@ $text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH
 if($poll_total = $sql -> db_Select("poll")){
         $text .= "<table class='fborder' style='width:99%'>
         <tr>
-        <td style='width:5%' class='forumheader2'>ID</td>
-        <td style='width:75%' class='forumheader2'>".POLLAN_7."</td>
-        <td style='width:20%' class='forumheader2'>".POLLAN_20."</td>
+        <td style='width:5%' class='fcaption'>ID</td>
+        <td style='width:75%' class='fcaption'>".POLLAN_7."</td>
+        <td style='width:20%' class='fcaption'>".POLLAN_20."</td>
         </tr>";
         while($row = $sql -> db_Fetch()){
                 extract($row);

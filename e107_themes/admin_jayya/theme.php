@@ -41,10 +41,11 @@ define(LINKALIGN, "right");
 function tablestyle($caption, $text, $mode){
 	global $style;
 	if ($caption == '') { $caption = '&nbsp;'; }
+	if ($caption == 'Select Language') { $image = 'language.png'; } else { $image = 'gears.png'; }
 	if ($style == "leftmenu") {
 		echo "<table cellpadding='0' cellspacing='0' border='0' style='width:100%;'><tr><td class='left_caption_border'><div class='left_caption'>".$caption."</div></td></tr>";
 		if ($text != "") {
-			echo "<tr><td class='bodytable'>".$text."<br /></td></tr>";
+			echo "<tr><td class='bodytable' style='background-image: url(".THEME."images/".$image."); background-repeat: no-repeat'>".$text."<br /></td></tr>";
 		}
 		echo "</table>";
 	}  else if ($style == "rightmenu") {
