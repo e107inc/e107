@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-01-31 00:31:01 $
+|     $Revision: 1.13 $
+|     $Date: 2005-02-02 13:02:32 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -47,6 +47,7 @@ class e_bbcode {
 		global $code;
 		global $postID;
 		$done = FALSE;
+		$i=0;
 		while (!$done) {
 			$done = TRUE;
 			$i++;
