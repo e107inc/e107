@@ -11,25 +11,20 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.46 $
-|   $Date: 2005-02-18 03:59:23 $
+|   $Revision: 1.47 $
+|   $Date: 2005-02-19 12:12:32 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
 */
 require_once("../class2.php");
-if (!is_object($tp)) $tp = new e_parse;
 
-if ($pref['htmlarea']) {
-	require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
-	$htmlarea_js = (eregi("MSIE", $_SERVER['HTTP_USER_AGENT']))? htmlarea("data,news_extended"):
-	htmlarea("data");
-}
 if (!getperms("H")) {
 	header("location:".e_BASE."index.php");
 	 exit;
 }
 $e_sub_cat = 'news';
+$WYSIWYG = TRUE;
 
 // -------- Presets. ------------  // always load before auth.php
 require_once(e_HANDLER."preset_class.php");
@@ -462,14 +457,14 @@ class newspost {
 			<td style='width:20%' class='forumheader3'>".NWSLAN_13.":<br /></td>
 			<td style='width:80%' class='forumheader3'>";
 
-		$insertjs = (!$pref['htmlarea'])?"rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'":
+		$insertjs = (!check_class($pref['wysiwyg']))?"rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'":
 		"rows='25' style='width:100%' ";
 		$_POST['data'] = $tp->toForm($_POST['data']);
 		$text .= "<textarea class='tbox' id='data' name='data'  cols='80'  style='width:95%' $insertjs>".(strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]../", "[img]", $_POST['data']))."</textarea>
 			";
 
 //Main news body textarea
-		if (!$pref['htmlarea']) {
+		if (!check_class($pref['wysiwyg'])) {
 			$text .= "<input id='helpb' class='helpbox' type='text' name='helpb' size='100' style='width:95%'/>
 			<br />". display_help("helpb");
 
@@ -503,7 +498,7 @@ class newspost {
 			<div style='display: none;'>
 			<textarea class='tbox' id='news_extended' name='news_extended' cols='80' rows='15' style='width:95%;height:100px' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".(strstr($_POST['news_extended'], "[img]http") ? $_POST['news_extended'] : str_replace("[img]../", "[img]", $tp->toForm($_POST['news_extended'])))."</textarea>
 			";
-		if (!$pref['htmlarea'] || ($pref['htmlarea'] && !eregi("MSIE", $_SERVER['HTTP_USER_AGENT']))) {
+		if (!check_class($pref['wysiwyg'])) {
 			$text .= "<br />
 				<input id='help_ext' class='helpbox' type='text' name='help_ext' size='100' style='width:95%'/>
 				<br />

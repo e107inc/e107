@@ -11,16 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-02-16 14:12:52 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.10 $
+|     $Date: 2005-02-19 12:12:45 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-	
+
 require_once("../../class2.php");
+$WYSIWYG = TRUE;
 $lan_file = e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_post.php';
 include(file_exists($lan_file) ? $lan_file : e_PLUGIN.'forum/languages/English/lan_forum_post.php');
-	
+
 if (IsSet($_POST['fjsubmit'])) {
 	header("location:".e_BASE.$PLUGINS_DIRECTORY."forum/forum_viewforum.php?".$_POST['forumjump']);
 	exit;
@@ -39,7 +40,7 @@ if (!e_QUERY) {
 	$id = intval($tmp[1]);
 	$from = intval($tmp[2]);
 }
-	
+
 // check if user can post to this forum ...
 if ($action == 'rp') {
 	// reply to thread
@@ -52,21 +53,21 @@ if ($action == 'rp') {
 	$thread_info = $forum->thread_get_postinfo($id, TRUE);
 	$forum_info = $forum->forum_get($thread_info['head']['thread_forum_id']);
 }
-	
+
 if (!check_class($forum_info['forum_class'])) {
 	require_once(HEADERF);
 	$ns->tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
 	require_once(FOOTERF);
 	exit;
 }
-	
+
 //require_once(e_HANDLER.'forum_include.php');
 require_once(e_PLUGIN."forum/forum_post_shortcodes.php");
 require_once(e_HANDLER."ren_help.php");
 $gen = new convert;
 $fp = new floodprotect;
 global $tp;
-	
+
 if ($sql->db_Select("tmp", "*", "tmp_ip='$ip' ")) {
 	$row = $sql->db_Fetch();
 	$tmp = explode("^", $row['tmp_info']);
@@ -76,7 +77,7 @@ if ($sql->db_Select("tmp", "*", "tmp_ip='$ip' ")) {
 	$post = $tmp[3];
 	$sql->db_Delete("tmp", "tmp_ip='$ip' ");
 }
-	
+
 //If anonymous posting is off and not logged it, show warning
 if (ANON == FALSE && USER == FALSE) {
 	require_once(HEADERF);
@@ -85,7 +86,7 @@ if (ANON == FALSE && USER == FALSE) {
 	require_once(FOOTERF);
 	exit;
 }
-	
+
 //if readonly forum and not admin, show warning
 if ($forum_info['forum_class'] == e_UC_READONLY && !ADMIN) {
 	$text .= "<div style='text-align:center'>".LAN_398."</div>";
@@ -93,7 +94,7 @@ if ($forum_info['forum_class'] == e_UC_READONLY && !ADMIN) {
 	require_once(FOOTERF);
 	exit;
 }
-	
+
 //if thread is not active and not new thread, show warning
 if ($action != "nt" && !$thread_info['head']['thread_active']) {
 	require_once(HEADERF);
@@ -106,21 +107,21 @@ $forum_info['forum_name'] = $tp -> toHTML($forum_info['forum_name'], TRUE);
 
 define("e_PAGETITLE", LAN_01." / ".$forum_info['forum_name']." / ".($action == "rp" ? LAN_02.$forum_info['thread_name'] : LAN_03));
 require_once(HEADERF);
-	
+
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	
+
 if (IsSet($_POST['addoption']) && $_POST['option_count'] < 10) {
 	$_POST['option_count']++;
 	$anonname = $tp->post_toForm($_POST['anonname']);
 	$subject = $tp->post_toForm($_POST['subject']);
 	$post = $tp->post_toForm($_POST['post']);
 }
-	
+
 if (IsSet($_POST['submitpoll'])) {
 	require_once(e_HANDLER."poll_class.php");
 	$poll = new poll;
 	$poll->submit_poll(0, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], 0, $forum_id, "forum");
-	 
+
 	require_once(HEADERF);
 	if (!$FORUMPOST) {
 		if (file_exists(THEME."forum_posted_template.php")) {
@@ -134,7 +135,7 @@ if (IsSet($_POST['submitpoll'])) {
 	require_once(FOOTERF);
 	exit;
 }
-	
+
 if (IsSet($_POST['fpreview'])) {
 	if (USER) {
 		$poster = USERNAME;
@@ -145,7 +146,7 @@ if (IsSet($_POST['fpreview'])) {
 	$postdate = $gen->convert_date(time(), "forum");
 	$tsubject = $tp->post_toHTML($_POST['subject']." TEST", FALSE);
 	$tpost = $tp->post_toHTML($_POST['post']);
-	 
+
 	if ($_POST['poll_title'] != "" && $pref['forum_poll']) {
 		require_once(e_HANDLER."poll_class.php");
 		$poll = new poll;
@@ -157,7 +158,7 @@ if (IsSet($_POST['fpreview'])) {
 		}
 		$_POST['poll_title'] = $tp->post_toForm($_POST['poll_title']);
 	}
-	 
+
 
 	if (!$FORUM_PREVIEW) {
 		if (file_exists(THEME."forum_preview_template.php")) {
@@ -168,7 +169,7 @@ if (IsSet($_POST['fpreview'])) {
 	}
 
 	$text = $FORUM_PREVIEW;
-	 
+
 	if ($poll_text) {
 		$ns->tablerender($_POST['poll_title'], $poll_text);
 	}
@@ -190,8 +191,8 @@ if (IsSet($_POST['fpreview'])) {
 		$eaction = FALSE;
 	}
 }
-	
-	
+
+
 if (isset($_POST['newthread']) || isset($_POST['reply'])) {
 	if ((isset($_POST['newthread']) && trim(chop($_POST['subject'])) == "") || trim(chop($_POST['post'])) == "") {
 		message_handler("ALERT", 5);
@@ -220,7 +221,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply'])) {
 				list($user, $anon_info) = explode('.', $user, 2);
 			}
 		}
-		 
+
 		if ($file_userfile['error'] != 4) {
 			require_once(e_HANDLER."upload_handler.php");
 			if ($uploaded = file_upload('/'.e_FILE."public/", "attachment")) {
@@ -233,13 +234,13 @@ if (isset($_POST['newthread']) || isset($_POST['reply'])) {
 		if ($_POST['poll_title'] != "" && $_POST['poll_option'][0] != "" && $_POST['poll_option'][1] != "") {
 			$subject = "[".LAN_402."] ".$subject;
 		}
-		 
+
 		if ($_POST['threadtype'] == 2) {
 			$subject = "[".LAN_403."] ".$subject;
 		} elseif($_POST['threadtype'] == 1) {
 			$subject = "[".LAN_404."] ".$subject;
 		}
-		 
+
 		$threadtype = intval($_POST['threadtype']);
 		if (isset($_POST['reply'])) {
 			$parent = $thread_info['head']['thread_id'];
@@ -252,13 +253,13 @@ if (isset($_POST['newthread']) || isset($_POST['reply'])) {
 		if (isset($_POST['reply'])) {
 			$iid = $parent;
 		}
-		 
+
 		if ($_POST['poll_title'] != "" && $_POST['poll_option'][0] != "" && $_POST['poll_option'][1] != "" && isset($_POST['newthread'])) {
 			require_once(e_HANDLER."poll_class.php");
 			$poll = new poll;
 			$poll->submit_poll(0, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], 0, $iid, "forum");
 		}
-		 
+
 		if ($pref['forum_redirect']) {
 			redirect(e_PLUGIN."forum/forum_viewtopic.php?{$iid}.last");
 		} else {
@@ -270,7 +271,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply'])) {
 					require_once(e_PLUGIN."forum/templates/forum_posted_template.php");
 				}
 			}
-			
+
 			echo (isset($_POST['newthread']) ? $FORUMTHREADPOSTED : $FORUMREPLYPOSTED);
 			$e107cache->clear("newforumposts");
 			require_once(FOOTERF);
@@ -278,8 +279,8 @@ if (isset($_POST['newthread']) || isset($_POST['reply'])) {
 		}
 	}
 }
-	
-	
+
+
 if (isset($_POST['update_thread'])) {
 	if (!$_POST['subject'] || !$_POST['post']) {
 		$error = "<div style='text-align:center'>".LAN_27."</div>";
@@ -303,7 +304,7 @@ if (isset($_POST['update_thread'])) {
 		exit;
 	}
 }
-	
+
 if (IsSet($_POST['update_reply'])) {
 	if (!$_POST['post']) {
 		$error = "<div style='text-align:center'>".LAN_27."</div>";
@@ -321,11 +322,11 @@ if (IsSet($_POST['update_reply'])) {
 		exit;
 	}
 }
-	
+
 if ($error) {
 	$ns->tablerender(LAN_20, $error);
 }
-	
+
 if ($action == 'edit' || $action == 'quote') {
 	if ($action == "edit") {
 		if ((!$thread_info[0]['thread_user'] || $thread_info[0]['thread_user'] != USERID) && !ADMIN) {
@@ -334,7 +335,7 @@ if ($action == 'edit' || $action == 'quote') {
 			exit;
 		}
 	}
-	 
+
 	$thread_info[0]['user_name'] = $forum->thread_user($thread_info[0]);
 	$subject = $thread_info['0']['thread_name'];
 	$post = $tp->toForm($thread_info[0]['thread_thread']);
@@ -353,7 +354,7 @@ if ($action == 'edit' || $action == 'quote') {
 		}
 	}
 }
-	
+
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //Load forumpost template
 
@@ -374,10 +375,15 @@ $BACKLINK = "<a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_405."
 $USERBOX = (ANON == TRUE && USER == FALSE ? $userbox : "");
 $SUBJECTBOX = ($action == "nt" ? $subjectbox : "");
 $POSTTYPE = ($action == "nt" ? LAN_63 : LAN_73);
-$POSTBOX = "<textarea class='tbox' name='post' cols='70' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$post</textarea>\n<br />\n".ren_help(2);
+$POSTBOX = "<textarea class='tbox' name='post' cols='70' rows='10' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$post</textarea>\n<br />\n";
+if(!check_class($pref['wysiwyg'])){
+	$POSTBOX .= ren_help(2);
+	require_once(e_HANDLER."emote.php");
+	$EMOTES = r_emote();
+}
 
-require_once(e_HANDLER."emote.php");
-$EMOTES = r_emote();
+
+
 
 $emailnotify = "";
 if ($pref['email_notify'] && $action == "nt")
@@ -399,7 +405,7 @@ if ($action == "nt" && $pref['forum_poll'] && !eregi("edit", e_QUERY))
 	$POLL = $poll;
 }
 
-if ($pref['forum_attach'] && !eregi("edit", e_QUERY) && (check_class($pref['upload_class']) || getperms('0'))) 
+if ($pref['forum_attach'] && !eregi("edit", e_QUERY) && (check_class($pref['upload_class']) || getperms('0')))
 {
 	$FILEATTACH = $fileattach;
 }
@@ -422,7 +428,7 @@ $text = preg_replace("/\{(.*?)\}/e", '$\1', $FORUMPOST);
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-	
+
 if ($action == 'rp') {
 	$tmp_template = "
 		<div style='text-align:center'>
@@ -432,20 +438,20 @@ if ($action == 'rp') {
 		";
 	$text .= $tp->parseTemplate($tmp_template, FALSE, $forum_post_shortcodes);
 }
-	
+
 if ($pref['forum_enclose']) {
 	$ns->tablerender($pref['forum_title'], $text);
 } else {
 	echo $text;
 }
-	
+
 function isAuthor($thread) {
 	global $sql;
 	$sql->db_Select("forum_t", "thread_user", "thread_id='".$thread."' ");
 	$row = $sql->db_Fetch();
 	return ($row['thread_user'] == USERID || ADMIN === TRUE);
 }
-	
+
 function getuser($name) {
 	global $tp;
 	global $sql;
@@ -468,7 +474,7 @@ function getuser($name) {
 	}
 	return $name;
 }
-	
+
 function loginf() {
 	$text .= "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."?".e_QUERY."'><p>
@@ -513,10 +519,10 @@ function redirect($url) {
 		require_once(FOOTERF);
 		exit;
 	}
-	 
+
 	header('Location: ' . $url);
 	exit;
 }
 require_once(FOOTERF);
-	
+
 ?>
