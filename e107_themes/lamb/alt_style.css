@@ -1,4 +1,8 @@
 
+.intwrapper {
+	width: 100%;
+}
+
 #mainleft {
 	margin:0; padding:0;
 	background: #fff url("images/left.png") top left repeat-y;
