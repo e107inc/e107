@@ -34,8 +34,12 @@ function update_614_to_615($type){
 		mysql_query("ALTER TABLE ".MPREFIX."upload ADD upload_category TINYINT(3) UNSIGNED NOT NULL DEFAULT '0'");
 		mysql_query("ALTER TABLE ".MPREFIX."online ADD online_pagecount tinyint(3) unsigned NOT NULL default '0'");
 		global $DOWNLOADS_DIRECTORY;
-		mysql_query("UPDATE ".MPREFIX."download SET download_filesize=".filesize($DOWNLOADS_DIRECTORY."download_url")." WHERE download_filesize=0");
-		//mysql_query("SELECT * FROM ".MPREFIX."download WHERE download_filesize = 0");
+		$sql2 = new db;
+		$sql -> db_Select("download", "download_id, download_url", "download_filesize=0");
+		while($row = $sql -> db_Fetch()){
+			extract($row);
+			$sql2 -> db_Update("download", "download_filesize='".filesize(e_BASE.$DOWNLOADS_DIRECTORY.$download_url)."' WHERE download_id='".$download_id."'");
+		}
 	} else {
 		global $mySQLdefaultdb;
 		$fields = mysql_list_fields($mySQLdefaultdb,MPREFIX."submitnews");
