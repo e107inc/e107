@@ -384,7 +384,7 @@ chr(62);
                 ".stagehd(7)."
                 </td></tr></table></div>";
                 tablestyle(INSLAN14." ...", $text);
-                echo "\n\n</body>\n</html>";
+                echo "\n\n</form></body>\n</html>";
                 exit;
         }
 
@@ -395,7 +395,7 @@ chr(62);
                 ".stagehd(7)."
                 </td></tr></table></div>";
                 tablestyle(INSLAN14." ...", $text);
-                echo "\n\n</body>\n</html>";
+                echo "\n\n</form></body>\n</html>";
                 exit;
         }else{
                 $text = ren_header("<div class='installcaplarge'>".INSLAN50."&nbsp;&nbsp;</div>\n<div class='installcapsmall'>".INSLAN51."&nbsp;&nbsp;&nbsp;&nbsp;</div>")."\n<tr>\n<td colspan='2' style='text-align:center'>\n<br /><br />\n
@@ -643,5 +643,5 @@ function ren_header($text){
 
 
 
-echo "\n\n</body>\n</html>";
+echo "\n\n</form></body>\n</html>";
 ?>
