@@ -45,7 +45,7 @@ class prefs {
 			$i++;
 		}
 		$Args = trim($Args);
-		$sql->db_Select('core', '*', $Args, 'default', true);
+		$sql->db_Select('core', '*', $Args, 'default');
 		while ($row = $sql->db_Fetch()) {
 			extract($row);
 			$this->prefVals['core'][$e107_name] = $e107_value;
