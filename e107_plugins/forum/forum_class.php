@@ -328,6 +328,7 @@ class e107forum {
 			$tcount = $this->thread_count($thread_id);
 			$start = max(0, $tcount-$limit);
 		}
+		$start = max(0, $start);
 		if ($start != 0) {
 			$limit--;
 			$array_start = 0;
