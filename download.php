@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-03-30 14:54:22 $
+|     $Revision: 1.21 $
+|     $Date: 2005-04-06 21:37:37 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -103,7 +103,7 @@ if (is_numeric($tmp[0])) {
 	$action = preg_replace("#\W#", "", $tmp[1]);
 	$id = intval($tmp[2]);
 	$view = intval($tmp[3]);
-	$order = intval($tmp[4]);
+	$order = preg_replace("#\W#","",$tmp[4]);
 	$sort = preg_replace("#\W#", "", $tmp[5]);
 } else {
 	$action = preg_replace("#\W#", "", $tmp[0]);
