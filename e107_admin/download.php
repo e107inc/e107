@@ -218,11 +218,12 @@ $headerjs = "<script type=\"text/javascript\">
     }
 
 
-    function confirm_(mode, download_id){
+    function confirm_(mode, tit_content, download_id){
+            if(download_id=='undefined'){download_id==tit_content;}
             if(mode == 'cat'){
-                    return confirm(\"".DOWLAN_34." [ID: \" + download_id + \"]\");
+                    return confirm(\"".DOWLAN_34." [ID: \" + download_id + \"] \"+tit_content);
             }else{
-                    return confirm(\"".DOWLAN_33." [ID: \" + download_id + \"]\");
+                    return confirm(\"".DOWLAN_33." [ID: \" + download_id + \"] \"+tit_content);
             }
     }
     </script>";
@@ -609,7 +610,7 @@ class download{
                                 <td style='width:20%; text-align:center' class='forumheader'>
 
 											".$rs -> form_open("post", e_SELF,"myform_{$download_category_id}","",""," onsubmit=\"return confirm_('create','$delete_heading','$download_category_id')\"")."
-											<div>".$rs -> form_button("button", "category_edit_{$download_category_id}", DOWLAN_8, "onclick=\"document.location='".e_SELF."?create.edit.$download_category_id'\"")."
+											<div>".$rs -> form_button("button", "category_edit_{$download_category_id}", DOWLAN_8, "onclick=\"document.location='".e_SELF."?cat.edit.$download_category_id'\"")."
 											".$rs -> form_button("submit", "category_delete_{$download_category_id}", DOWLAN_9)."</div>
 											".$rs -> form_close()."
 
@@ -632,7 +633,7 @@ class download{
                                                 <td style='width:20%; text-align:center' class='forumheader3'>
 
 																".$rs -> form_open("post", e_SELF,"myform_{$download_category_id}","",""," onsubmit=\"return confirm_('create','$delete_heading','$download_category_id')\"")."
-																<div>".$rs -> form_button("button", "category_edit_{$download_category_id}", DOWLAN_8, "onclick=\"document.location='".e_SELF."?create.edit.$download_category_id'\"")."
+																<div>".$rs -> form_button("button", "category_edit_{$download_category_id}", DOWLAN_8, "onclick=\"document.location='".e_SELF."?cat.edit.$download_category_id'\"")."
 																".$rs -> form_button("submit", "category_delete_{$download_category_id}", DOWLAN_9)."</div>
 																".$rs -> form_close()."
 
