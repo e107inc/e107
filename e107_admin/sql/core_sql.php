@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-03-04 12:40:25 $
+|     $Revision: 1.15 $
+|     $Date: 2005-03-17 07:50:25 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -261,10 +261,15 @@ CREATE TABLE news (
   news_render_type tinyint(3) unsigned NOT NULL default '0',
   news_comment_total int(11) NOT NULL default '0',
   news_summary text,
-  news_thumb varchar(60) default NULL,
-  news_sticky tinyint(3) unsigned NOT NULL default '0',  
+  news_attach text,
+  news_sticky tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (news_id)
 ) TYPE=MyISAM;
+
+
+
+
+
 # --------------------------------------------------------
 
 #
