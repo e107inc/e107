@@ -1,18 +1,21 @@
-if(ADMIN){
+if (ADMIN) {
 	global $ns, $pref;
-	if(!($handle=opendir(e_LANGUAGEDIR.e_LANGUAGE."/admin/help/"))){
-	  $handle=opendir(e_LANGUAGEDIR."English/admin/help/");
+	ob_start();
+	if (!($handle=opendir(e_LANGUAGEDIR.e_LANGUAGE."/admin/help/"))) {
+		$handle=opendir(e_LANGUAGEDIR."English/admin/help/");
 	}
 
 	$text = "";
-	while(false !== ($file = readdir($handle)))
-	{
-		if($file != "." && $file != ".." && $file != "CVS")
-		{
-			if(eregi($file, e_SELF))
-			{
-				if(file_exists(e_LANGUAGEDIR.e_LANGUAGE."/admin/help/".$file)){@require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/help/".$file);}
-				else{@require_once(e_LANGUAGEDIR."English/admin/help/".$file);}
+	while(false !== ($file = readdir($handle))) {
+		if ($file != "." && $file != ".." && $file != "CVS") {
+			if (eregi($file, e_SELF)) {
+				if (file_exists(e_LANGUAGEDIR.e_LANGUAGE."/admin/help/".$file)) {
+					@require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/help/".$file);
+					$admin_help = TRUE;
+				} else if (file_exists(e_LANGUAGEDIR."English/admin/help/".$file)) {
+					@require_once(e_LANGUAGEDIR."English/admin/help/".$file);
+					$admin_help = TRUE;
+				}
 			}
 		}
 	}
@@ -21,7 +24,19 @@ if(ADMIN){
 	$plugpath = e_PLUGIN.substr(strrchr(substr(e_SELF, 0, strrpos(e_SELF, "/")), "/"), 1)."/help.php";
 	if(file_exists($plugpath)){
 		@require_once($plugpath);
+		$admin_help = TRUE;
 	}
+/*	
+	if($parm == 'alt') {
+		if (!$admin_help) {
+			global $tp;
+			return $tp -> parseTemplate('{ADMIN_SITEINFO}');
+		}		
+	}
+*/
+	$ret = ob_get_contents();
+	ob_end_clean();
+	return $ret;
 }
 
 

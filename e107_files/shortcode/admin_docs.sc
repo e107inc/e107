@@ -1,24 +1,24 @@
 if(ADMIN){
 	global $ns;
-	$c=1;
+	$i=1;
 	if (!$handle=opendir(e_DOCS.e_LANGUAGE."/")) {
 	 $handle=opendir(e_DOCS."English/");
 	}
 	while ($file = readdir($handle)){
 	        if($file != "." && $file != ".."){
-	                $helplist[$c] = $file;
- 	               $c++;
+	                $helplist[$i] = $file;
+	                $i++;
 	        }
 	}
 	closedir($handle);
 
 	unset($e107_var);
-	while(list($key, $value) = each($helplist)){
+	foreach ($helplist as $key => $value) {
 	        $e107_var['x'.$key]['text'] = $value;
 	        $e107_var['x'.$key]['link'] = e_ADMIN."docs.php?".$key;
 	}
 
 	$text = get_admin_treemenu(FOOTLAN_14,$act,$e107_var);
-	$ns -> tablerender(FOOTLAN_14,$text);
+	return $ns -> tablerender(FOOTLAN_14,$text);
 }
 

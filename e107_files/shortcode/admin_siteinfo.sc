@@ -1,4 +1,4 @@
-if(ADMIN){
+if (ADMIN) {
 	global $ns, $themename, $themeversion, $themeauthor, $themedate, $themeinfo, $mySQLdefaultdb;
 	$sql = new db;
 	$sql -> db_Select("core", "*", "e107_name='e107' ");
@@ -46,5 +46,5 @@ if(ADMIN){
 	".mysql_get_server_info().
 	"<br />
 	".FOOTLAN_16.": ".$mySQLdefaultdb;
-	$ns -> tablerender(FOOTLAN_13, $text);
+	return $ns -> tablerender(FOOTLAN_13, $text);
 }
