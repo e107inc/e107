@@ -51,14 +51,17 @@ if(IsSet($_POST['replysubmit'])){
 			$pid = $_POST[pid];
 			$cobj -> enter_comment($_POST['author_name'], $_POST['comment'], $table, $nid, $pid, $_POST['subject']);
 			clear_cache("comment.php?$table.$id");
-			if($table == "news" || $table == "poll"){
-				header("location:".e_BASE."comment.php?comment.".$table.".".$nid."");
-				exit;
-			}elseif($table == "content"){
-				header("location:".e_BASE."content.php?".$_POST['content_type'].".".$nid."");
-				exit;
-			}				
 		}
+		if($table == "news" || $table == "poll"){
+			header("location:".e_BASE."comment.php?comment.".$table.".".$nid."");
+			exit;
+		}elseif($table == "content"){
+			header("location:".e_BASE."content.php?".$_POST['content_type'].".".$nid."");
+			exit;
+		}elseif($table == "bugtrack"){
+			header("location:".e_PLUGIN."bugtrack/bugtracker.php");
+			exit;
+		}								
 	}
 }
 if($action == "reply"){
@@ -92,6 +95,9 @@ if($action == "reply"){
 			}
 		}elseif($table == "content"){
 				$sql -> db_Select("content", "content_heading", "content_id='$nid'");
+				$subject = $content['content_heading'];
+		}elseif($table == "bugtracker"){
+				$sql -> db_Select("bugtrack", "bugtrack_summary", "bugtrack_id='$nid'");
 				$subject = $content['content_heading'];
 			}
 	}
