@@ -29,24 +29,24 @@ $themeinfo = "based on 'wanker' by deadbeat, compatible with e107 v5+";
 $layout = "_default";
 
 $HEADER = "
-<br />
-<center>
-<table cellspacing='0' cellpadding='2' border='0' bgcolor='#ffffff' width='98%'><tr><td>
-<table cellspacing='0' cellpadding='1' border='0' bgcolor='#5A6F5A' width='100%'><tr><td>
-<table cellspacing='0' cellpadding='1' border='0' bgcolor='#7F907F' width='100%'><tr><td>
-<table cellspacing='1' cellpadding='0' border='0' width='100%'>
+
+<div>
+<table cellspacing='0' cellpadding='2' class='bclr1'><tr><td>
+<table cellspacing='0' cellpadding='1' class='bclr2a'><tr><td>
+<table cellspacing='0' cellpadding='1' class='bclr3'><tr><td>
+<table cellspacing='1' cellpadding='0' class='mw1'>
 <tr>
-<td align='center'>
-<table cellspacing='0' cellpadding='1' border='0' bgcolor='#7C8AA4' width='100%'>
+<td style='text-align: center'>
+<table cellspacing='0' cellpadding='1' class='bclr4'>
 		
-<tr><td bgcolor='#5A6F5A' align='left'><h3>".SITENAME." // ".SITETAG."</h3></td></tr>
-<tr><td bgcolor='#5A6F5A' align='right' class='small'><b>:.·.: :'': :·.: :·: :::. ::''&nbsp;&nbsp;</b></td></tr>
+<tr><td class='tclr1'><h3>".SITENAME." // ".SITETAG."</h3></td></tr>
+<tr><td class='tclr2'><b>:.·.: :'': :·.: :·: :::. ::''&nbsp;&nbsp;</b></td></tr>
 </table>
 </td>
 </tr>
 <tr>
-<td align='right'>
-<table cellspacing='1' cellpadding='4' border='0' bgcolor='#5A6F5A'>
+<td style='text-align: right'>
+<table cellspacing='1' cellpadding='4' class='bclr2'>
 <tr>
 {SITELINKS=flat}
 </tr>
@@ -55,16 +55,17 @@ $HEADER = "
 </tr>
 <tr>
 <td>
-<table cellspacing='1' cellpadding='2' border='0' bgcolor='#5A6F5A' WIDTH='100%'>
+<table cellspacing='1' cellpadding='2' class='bclr2a'>
+<tr><td>
+<table cellspacing='0' cellpadding='0' class='bclr5'>
 <tr>
-<table bgcolor='#CCCCCC' cellspacing='0' cellpadding='0' width='100%' border='0'>
 <td style='width:20%; vertical-align: top;'>
 {MENU=1}
 </td>
 <td style='width:60%; vertical-align: top;'>";
 
 $FOOTER = "
-<br />
+
 <div style='text-align:center'>
 {SITEDISCLAIMER}
 </div>
@@ -73,8 +74,9 @@ $FOOTER = "
 {MENU=2}
 </td>		
 </tr></table>
+</td></tr>
 <tr>
-<td align='right' class='small' bgcolor='#5A6F5A' width='100%'>.:· 
+<td class='bclr2a'>.:· 
 {CUSTOM=quote}
 </td>
 </tr>	
@@ -82,47 +84,47 @@ $FOOTER = "
 </td>
 </tr>
 <tr>
-<td align='right' class='smalltext'>design: <a href='http://www.oswd.org/userinfo.phtml?user=deadbeat' rel='external'>wanker</a> by <a href='mailto:jeff@hype52.com' rel='external'>deadbeat</a> // based on <a href='http://www.oswd.org/userinfo.phtml?user=whompy' rel='external'>libra</a> by <a href='http://www.oswd.org/userinfo.phtml?user=whompy' rel='external'>whompy</a> // <a href='http://www.oswd.org' rel='external'>open source web design</a></td>
+<td class='smalltext'>design: <a href='http://www.oswd.org/userinfo.phtml?user=deadbeat' rel='external'>wanker</a> by <a href='mailto:jeff@hype52.com' rel='external'>deadbeat</a> // based on <a href='http://www.oswd.org/userinfo.phtml?user=whompy' rel='external'>libra</a> by <a href='http://www.oswd.org/userinfo.phtml?user=whompy' rel='external'>whompy</a> // <a href='http://www.oswd.org' rel='external'>open source web design</a></td>
 </tr>
 </table>
 </td></tr>
 </table>
 </td></tr></table>							
 </td></tr></table>
-</center>
-<br />";
+</div>
+";
 
 //	[tablestyle]
 
 function tablestyle($caption, $text){
 	if($caption != ""){
 		echo"
-<table cellpadding='0' cellspacing='2' border='0' width='100%'>
+<table cellpadding='0' cellspacing='2' class='base'>
 	<tr>
-		<td valign='top' class='basic' width='100%'>
-		<table cellspacing='0' cellpadding='1' border='0' bgcolor='#5A6F5A' width='100%'><tr><td>
-		<table cellspacing='0' cellpadding='2' border='0' bgcolor='#ffffff' width='100%'><tr><td>
-			<table cellspacing='2' cellpadding='2' border='0' bgcolor='#7F907F' width='100%'>
-				<tr><td class='small' bgcolor='#7F907F'><b>".$caption." .:·</b></td></tr>
-				<tr><td class='basic' bgcolor='#9FAC9F'>".$text."</td></tr>
+		<td class='basic'>
+		<table cellspacing='0' cellpadding='1' class='bclr2a'><tr><td>
+		<table cellspacing='0' cellpadding='2' class='bclr1a'><tr><td>
+			<table cellspacing='2' cellpadding='2' class='bclr3'>
+				<tr><td class='tclr3a'><b>".$caption." .:·</b></td></tr>
+				<tr><td class='tclr4'>".$text."</td></tr>
 			</table>
 		</td></tr></table>							
 		</td></tr></table>
-	</tr>
+	</td></tr>
 </table>";
 	}else{
 		echo "
-<table cellpadding='2' cellspacing='5' border='0'>
+<table cellpadding='2' cellspacing='5' style='border: 0px'>
 	<tr>
-		<td valign='top' class='basic' width='100%'>
-		<table cellspacing='0' cellpadding='1' border='0' bgcolor='#5A6F5A' width='100%'><tr><td>
-		<table cellspacing='0' cellpadding='2' border='0' bgcolor='#ffffff' width='100%'><tr><td>
-			<table cellspacing='2' cellpadding='2' border='0' bgcolor='#7F907F' width='100%'>
-				<tr><td class='basic' bgcolor='#9FAC9F'>".$text."</td></tr>
+		<td class='basic'>
+		<table cellspacing='0' cellpadding='1' class='bclr2a'><tr><td>
+		<table cellspacing='0' cellpadding='2' class='bclr1a'><tr><td>
+			<table cellspacing='2' cellpadding='2' class='bclr3'>
+				<tr><td class='tclr4'>".$text."</td></tr>
 			</table>
 		</td></tr></table>							
 		</td></tr></table>
-	</tr>
+	</td></tr>
 </table>";
 	}
 }
@@ -130,16 +132,16 @@ function tablestyle($caption, $text){
 //	[newsstyle]
 
 $NEWSSTYLE = "
-<table cellpadding='0' cellspacing='2' border='0' width='100%'>
+<table cellpadding='0' cellspacing='2' class='base'>
 <tr>
-<td valign='top' class='basic' width='100%'>
-<table cellspacing='0' cellpadding='1' border='0' bgcolor='#5A6F5A' width='100%'><tr><td>
-<table cellspacing='0' cellpadding='2' border='0' bgcolor='#ffffff' width='100%'><tr><td>
-<table cellspacing='2' cellpadding='2' border='0' bgcolor='#7F907F' width='100%'>
-<tr><td class='small' bgcolor='#7F907F'><b>
+<td class='basic'>
+<table cellspacing='0' cellpadding='1' class='bclr2a'><tr><td>
+<table cellspacing='0' cellpadding='2' class='bclr1a'><tr><td>
+<table cellspacing='2' cellpadding='2' class='bclr3'>
+<tr><td class='tclr3'><b>
 {NEWSTITLE}
  .:·</b></td></tr>
-<tr><td class='basic' bgcolor='#9FAC9F'>
+<tr><td class='tclr4'>
 {NEWSICON}
 {NEWSBODY}
 <br />
@@ -153,11 +155,12 @@ $NEWSSTYLE = "
 {PRINTICON}
 {ADMINOPTIONS}
 {EXTENDED}
+</div>
 </td></tr>
 </table>
 </td></tr></table>							
 </td></tr></table>
-</tr>
+</td></tr>
 </table>";
 
 
@@ -174,7 +177,7 @@ define("ICONPRINT", "iconprint.png");
 
 define(PRELINK, "");
 define(POSTLINK, "");
-define(LINKSTART, "<td bgcolor='#7F907F' class='small' align='center'>/");
+define(LINKSTART, "<td class='bclr3'>/");
 define(LINKEND, "</td>");
 define(LINKALIGN, "right");
 
