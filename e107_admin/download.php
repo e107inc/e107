@@ -255,16 +255,21 @@ class download{
                 global $sql, $rs, $ns;
                 $text = "<div style='text-align:left'>";
                 if(e_QUERY && $action != "main"){
-                        $text .= "<a href='".e_SELF."'><div class='button'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".DOWLAN_29."</div></a>";
+//                        $text .= "<a href='".e_SELF."'><div class='fcaption'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".DOWLAN_29."</div></a>";
+								$text .= "<input onclick='window.location.href=\"".e_SELF."\"' class='button' type='button' style='width:100%' value='".DOWLAN_29."' />";
+
                 }
                 if($action != "opt"){
-                        $text .= "<a href='".e_SELF."?opt'><div class='button'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".DOWLAN_28."</div></a>";
+//                        $text .= "<a href='".e_SELF."?opt'><div class='fcaption'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".DOWLAN_28."</div></a>";
+								$text .= "<input onclick='window.location.href=\"".e_SELF."?opt\"' class='button' type='button' style='width:100%' value='".DOWLAN_28."' />";
                 }
                 if($action != "create"){
-                        $text .= "<a href='".e_SELF."?create'><div class='button'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".DOWLAN_30."</div></a>";
+//                        $text .= "<a href='".e_SELF."?create'><div class='button'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".DOWLAN_30."</div></a>";
+								$text .= "<input onclick='window.location.href=\"".e_SELF."?create\"' class='button' type='button' style='width:100%' value='".DOWLAN_30."' />";
                 }
                 if($action != "cat" && getperms("Q")){
-                        $text .= "<a href='".e_SELF."?cat'><div class='button'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".DOWLAN_31."</div></a>";
+//                        $text .= "<a href='".e_SELF."?cat'><div class='button'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".DOWLAN_31."</div></a>";
+								$text .= "<input onclick='window.location.href=\"".e_SELF."?cat\"' class='button' type='button' style='width:100%' value='".DOWLAN_31."' />";
                 }
                 $text .= "</div>";
                 $ns -> tablerender(DOWLAN_32, $text);

@@ -497,25 +497,32 @@ if($action == "sa"){
 
 // ##### Display options --------------------------------------------------------------------------------------------------------------------------------------------------------
 
+function article_adminmenu(){
+	global $action, $ns;
 $text = "<div style='text-align:center'>";
 if(e_QUERY && $action != "confirm"){
-        $text .= "<a href='".e_SELF."'><div class='border'><div class='forumheader'>".ARLAN_76."</div></div></a>";
+//        $text .= "<a href='".e_SELF."'><div class='border'><div class='forumheader'>".ARLAN_76."</div></div></a>";
+	$text .= "<input onclick='window.location.href=\"".e_SELF."\"' class='button' type='button' style='width:100%' value='".ARLAN_76."' />";
 }
 if($action != "create"){
-        $text .= "<a href='".e_SELF."?create'><div class='border'><div class='forumheader'>".ARLAN_77."</div></div></a>";
+//        $text .= "<a href='".e_SELF."?create'><div class='border'><div class='forumheader'>".ARLAN_77."</div></div></a>";
+	$text .= "<input onclick='window.location.href=\"".e_SELF."?create\"' class='button' type='button' style='width:100%' value='".ARLAN_77."' />";
 }
 if($action != "cat"){
-        $text .= "<a href='".e_SELF."?cat'><div class='border'><div class='forumheader'>".ARLAN_78."</div></div></a>";
+//        $text .= "<a href='".e_SELF."?cat'><div class='border'><div class='forumheader'>".ARLAN_78."</div></div></a>";
+	$text .= "<input onclick='window.location.href=\"".e_SELF."?cat\"' class='button' type='button' style='width:100%' value='".ARLAN_78."' />";
 }
 if($action != "opt"){
-        $text .= "<a href='".e_SELF."?opt'><div class='border'><div class='forumheader'>".ARLAN_60."</div></div></a>";
+//        $text .= "<a href='".e_SELF."?opt'><div class='border'><div class='forumheader'>".ARLAN_60."</div></div></a>";
+	$text .= "<input onclick='window.location.href=\"".e_SELF."?opt\"' class='button' type='button' style='width:100%' value='".ARLAN_60."' />";
 }
 if($action != "sa"){
-        $text .= "<a href='".e_SELF."?sa'><div class='border'><div class='forumheader'>".ARLAN_93."</div></div></a>";
+//        $text .= "<a href='".e_SELF."?sa'><div class='border'><div class='forumheader'>".ARLAN_93."</div></div></a>";
+	$text .= "<input onclick='window.location.href=\"".e_SELF."?sa\"' class='button' type='button' style='width:100%' value='".ARLAN_93."' />";
 }
 $text .= "</div>";
 $ns -> tablerender(ARLAN_79, $text);
-
+}
 // ##### End ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 

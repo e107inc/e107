@@ -197,7 +197,7 @@ if(!e_QUERY || $action == "main"){
 
 
 
-$forum -> show_options($action);
+//$forum -> show_options($action);
 require_once("footer.php");
 
 echo "<script type=\"text/javascript\">
@@ -223,33 +223,29 @@ class forum{
 	function show_options($action){
 		// ##### Display options ---------------------------------------------------------------------------------------------------------
 		global $sql, $rs, $ns;
-		$text = "<div style='text-align:center'>";
+		$text = "<div style='text-align:center'><form action='".e_SELF."'>";
 		if(e_QUERY && $action != "main"){
-			$text .= "<a href='".e_SELF."'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".FORLAN_76."</div></div></a>";
+			$text .= "<input onclick='window.location.href=\"".e_SELF."\"' class='button' type='button' style='width:100%' value='".FORLAN_76."' />";
 		}
-
 		if($action != "cat"){
-			$text .= "<a href='".e_SELF."?cat'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".FORLAN_83."</div></div></a>";
+			$text .= "<input onclick='window.location.href=\"".e_SELF."?cat\"' class='button' type='button' style='width:100%' value='".FORLAN_83."' />";
 		}
-
 		if($action != "create"){
-			$text .= "<a href='".e_SELF."?create'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".FORLAN_77."</div></div></a>";
+			$text .= "<input onclick='window.location.href=\"".e_SELF."?create\"' class='button' type='button' style='width:100%' value='".FORLAN_77."' />";
 		}
-
 		if($action != "order"){
-			$text .= "<a href='".e_SELF."?order'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".FORLAN_78."</div></div></a>";
+			$text .= "<input onclick='window.location.href=\"".e_SELF."?order\"' class='button' type='button' style='width:100%' value='".FORLAN_78."' />";
 		}
 		if($action != "opt"){
-			$text .= "<a href='".e_SELF."?opt'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".FORLAN_79."</div></div></a>";
+			$text .= "<input onclick='window.location.href=\"".e_SELF."?opt\"' class='button' type='button' style='width:100%' value='".FORLAN_79."' />";
 		}
 		if($action != "prune"){
-			$text .= "<a href='".e_SELF."?prune'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".FORLAN_59."</div></div></a>";
+			$text .= "<input onclick='window.location.href=\"".e_SELF."?prune\"' class='button' type='button' style='width:100%' value='".FORLAN_59."' />";
 		}
 		if($action != "rank"){
-			$text .= "<a href='".e_SELF."?rank'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".FORLAN_63."</div></div></a>";
+			$text .= "<input onclick='window.location.href=\"".e_SELF."?rank\"' class='button' type='button' style='width:100%' value='".FORLAN_63."' />";
 		}
-
-		$text .= "</div>";
+		$text .= "</form></div>";
 		$ns -> tablerender(FORLAN_7, $text);
 	}
 
@@ -633,11 +629,16 @@ class forum{
 		<input class='button' type='submit' name='set_ranks' value='".FORLAN_94."' />
 		</td>
 		</tr>
-
-
 		</table>\n</form>\n</div>";
-
 		$ns -> tablerender("Ranks", $text);
 	}
-		
 }
+
+function forum_adminmenu(){
+	global $forum;
+	global $action;
+	$forum -> show_options($action);
+}
+
+
+?>
