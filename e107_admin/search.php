@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/search.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-03-17 10:47:07 $
+|     $Revision: 1.8 $
+|     $Date: 2005-03-20 15:00:28 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -50,6 +50,10 @@ if (isset($_POST['updatesettings'])) {
 	}
 
 	$search_prefs['google'] = $_POST['google'];
+	
+	foreach ($search_prefs['comments_handlers'] as $key => $value) {
+		$search_prefs['comments_handlers'][$key]['active'] = $_POST['comments_handlers'][$key];
+	}
 
 	$tmp = addslashes(serialize($search_prefs));
 	$sql->db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs' ");
@@ -123,6 +127,21 @@ foreach ($search_prefs['plug_handlers'] as $plug_dir => $active) {
 
 $sel = (isset($search_prefs['google']) && $search_prefs['google']) ? " checked='checked'" : "";
 $text .= "<input id='google' type='checkbox' name='google' ".$sel." />Google";
+
+$text .= "</td>
+</tr>";
+
+$text .= "<tr>
+<td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_18."</td>
+<td style='width:50%;' colspan='2' class='forumheader3'>";
+
+foreach ($search_prefs['comments_handlers'] as $key => $value) {
+	$path = ($value['dir'] == 'core') ? e_HANDLER.'search/'.$value['handler'] : e_PLUGIN.$value['dir'].'/comments_search.php';
+	require_once($path);
+	$sel = $value['active'] ? " checked='checked'" : "";
+	$text .= "<span style='white-space:nowrap'><input type='checkbox' name='comments_handlers[".$key."]' ".$sel." />".$comments_title."</span>\n";
+	unset($comments_title);
+}
 
 $text .= "</td>
 </tr>";
