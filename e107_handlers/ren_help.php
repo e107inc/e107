@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-04-01 04:38:30 $
-|     $Author: sweetas $
+|     $Revision: 1.21 $
+|     $Date: 2005-04-01 12:24:37 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 @include(e_LANGUAGEDIR.e_LANGUAGE."/lan_ren_help.php");
@@ -251,7 +251,7 @@ function Size_Select() {
 	$text .="<div style='position:absolute;bottom:30px;right:200px;'>";
 	$text .= "<table class='fborder' style='background-color: #fff; cursor: pointer; cursor: hand; width: 100px;'>";
 
-	$sizes = array(7,8,9,10,11,12,14,15,18,20,22,24,26,28,30,36,48,72);
+	$sizes = array(7,8,9,10,11,12,14,15,18,20,22,24,26,28,30,36);
 	foreach($sizes as $s){
 		$text .= "<tr><td class='button' onclick=\"addtext('[size=".$s."][/size]')\">".$s."px</td></tr>\n";
 	}
