@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-03-14 12:54:25 $
+|     $Revision: 1.12 $
+|     $Date: 2005-03-14 14:47:56 $
 |     $Author: asperon $
 +----------------------------------------------------------------------------+
 */
@@ -197,14 +197,10 @@ if (isset($_POST['updatesettings']))
 		$_POST['realname'] = $tp->toDB($_POST['realname']);
 		$_POST['customtitle'] = $tp->toDB($_POST['customtitle']);
 
-		$event_data=array();
-		foreach($_POST as $key => $value) {
-			if (($key!='password1') || ($key!='password2')) {
-				$event_data[$key] = $value;
-			}
-		}
+		unset($_POST['password1']);
+		unset($_POST['password2']);
 
-		$ret = $e_event->trigger("preuserset", $event_data);
+		$ret = $e_event->trigger("preuserset", $_POST);
 
 		if ($ret=='') {
 			$sql->db_Update("user", "user_password='$password', user_sess='$user_sess', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$birthday."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."', user_customtitle='".$_POST['customtitle']."' WHERE user_id='".$inp."' ");
@@ -228,7 +224,7 @@ if (isset($_POST['updatesettings']))
 				 
 			}
 			
-			$e_event->trigger("postuserset", $event_data);
+			$e_event->trigger("postuserset", $_POST);
 	
 			// =======================
 			 
