@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-02-26 09:18:04 $
-|     $Author: e107coders $
+|     $Revision: 1.33 $
+|     $Date: 2005-03-12 09:42:59 $
+|     $Author: sweetas $
 +---------------------------------------------------------------+
 */
 
@@ -80,12 +80,14 @@ class sitelinks {
 		if (LINKDISPLAY != 3) {
 			foreach ($this->eLinkList['head_menu'] as $link) {
 				$text .= $this->makeLink($link);
+				/*
 				$main_linkname = $link['link_name'];
 				if (isset($this->eLinkList[$main_linkname]) && is_array($this->eLinkList[$main_linkname])) {
 					foreach ($this->eLinkList[$main_linkname] as $sub) {
 						$text .= $this->makeLink($sub, TRUE);
 					}
 				}
+				*/
 			}
 			$text .= POSTLINK;
 			if (LINKDISPLAY == 2) {
