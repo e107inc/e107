@@ -185,15 +185,18 @@ ul{
 	text-align: right;
 	padding: 3px 5px 3px 0px;
 	border-left: 1px solid #878787;
-	background-image: url(images/topbackblue.png);
-	background-color: #BECDE0;
+	background-image: url(images/computer.jpg);
+	background-repeat: no-repeat;
+	background-color: #E1E8F0;
 }
 
 .top_section_right {
 	vertical-align: middle;
 	text-align: center;
 	border-left: 1px solid #878787;
-	background-image: url(images/topbackgrey.png);
+	background-image: url(images/on.png);
+	background-repeat: no-repeat;
+	background-position: center;
 	background-color: #E7EAEE;
 }
  
