@@ -1,6 +1,6 @@
 <?php
-// default preferences for e107
 
+// default preferences for e107
 $pref['sitename'] = "e107 powered website";
 $pref['siteurl'] = $e_HTTP;
 $pref['sitebutton'] = "button.png";
