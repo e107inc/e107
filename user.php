@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-03-09 21:34:52 $
+|     $Revision: 1.14 $
+|     $Date: 2005-03-11 03:11:55 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -365,7 +365,7 @@ function renderuser($row, $user_entended, $mode = "verbose") {
 //			$user_prefs = unserialize($user_prefs);
 			foreach($ueList as $ext)
 			{
-				if (check_class($ext['user_extended_struct_read']))
+				if (check_class($ext['user_extended_struct_applicable']) && check_class($ext['user_extended_struct_read']))
 				{
 					$ex_name = "user_".$ext['user_extended_struct_name'];
 					$ex_val = $$ex_name;

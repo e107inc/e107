@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-03-10 13:30:23 $
+|     $Revision: 1.18 $
+|     $Date: 2005-03-11 03:10:44 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -615,6 +615,7 @@ class users {
 				<td class='fcaption'>".USRLAN_98."</td>
 				<td class='fcaption'>".USRLAN_99."</td>
 				<td class='fcaption'>".USRLAN_100."</td>
+				<td class='fcaption'>".USRLAN_134."</td>
 				<td class='fcaption'>".USRLAN_101."</td>
 				<td class='fcaption'>".USRLAN_102."</td>
 			</tr>
@@ -636,6 +637,7 @@ class users {
 				$text .= "
 				</td>
 				<td class='forumheader3'>".($ext['user_extended_struct_required'] ? LAN_YES : LAN_NO)."</td>
+				<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_applicable'])."</td>
 				<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_read'])."</td>
 				<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_write'])."</td>
 				<td class='forumheader3' style='text-align:center;'>
@@ -659,7 +661,7 @@ class users {
 		{
 			$text .= "
 				<tr>
-					<td colspan='7' class='forumheader3' style='text-align:center'>".USRLAN_40."</td>
+					<td colspan='8' class='forumheader3' style='text-align:center'>".USRLAN_40."</td>
 				</tr>
 				";
 		}
@@ -759,6 +761,13 @@ class users {
 			</select>
 			<br />
 			<span class='smalltext'>".USRLAN_133."</span>
+			</td>
+			</tr>
+
+			<tr>
+			<td style='width:30%' class='forumheader3'>".USRLAN_134."</td>
+			<td style='width:70%' class='forumheader3' colspan='3'>
+			".r_userclass("user_read", $current['user_extended_struct_applicable'], 'off', 'member, admin, classes')."<br /><span class='smalltext'>".USRLAN_135."</span>
 			</td>
 			</tr>
 
