@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2005-03-30 06:40:11 $
+|     $Revision: 1.55 $
+|     $Date: 2005-03-31 03:45:41 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -190,7 +190,7 @@ function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $ut
 		global $pref;
 		if(!$wrap) $wrap = $pref['main_wordwrap'];
 		$text = " ".$text;
-		if($pref['make_clickable']) {
+		if($pref['make_clickable'] && strpos($modifiers, 'no_make_clickable') === FALSE) {
 			if($pref['link_replace'] && strpos($modifiers, 'no_replace') === FALSE) {
 				$text = preg_replace("#(^|[\n ])([\w]+?://[^ \"\n\r\t<]*)#is", "\\1<a href=\"\\2\" rel=\"external\">".$pref['link_text']."</a>", $text);
 				$text = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r<]*)#is", "\\1<a href=\"http://\\2\" rel=\"external\">".$pref['link_text']."</a>", $text);
