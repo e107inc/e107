@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-03-14 15:53:47 $
-|     $Author: stevedunstan $
+|     $Revision: 1.16 $
+|     $Date: 2005-03-19 03:03:00 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -86,7 +86,8 @@ if (isset($id)) {
 	LEFT JOIN #user_extended AS ue ON u.user_id = ue.user_extended_id
 	WHERE u.user_id = {$id}
 	";
-	if (!$sql->db_Select_gen($qry)) {
+	if (!$sql->db_Select_gen($qry))
+	{
 		$text = "<div style='text-align:center'>".LAN_400."</div>";
 		$ns->tablerender(LAN_20, $text);
 		require_once(FOOTERF);
@@ -101,8 +102,9 @@ if (isset($id)) {
 	{
 		include_once(e_HANDLER."rate_class.php");
 	}
-
-	$text = renderuser($sql->db_Fetch());
+	$user_data = $sql->db_Fetch();
+	cachevars('userinfo_{$id}',$user_data);
+	$text = renderuser($user_data);
 	$ns->tablerender(LAN_402, $text);
 	unset($text);
 	if($pref['profile_comments'])
@@ -124,24 +126,24 @@ if (isset($id)) {
 			{
 				if ($pref['nested_comments'])
 				{
-					$text = $cobj->render_comment($row, "profile", "comment", $user_id, $width, $subject);
+					$text = $cobj->render_comment($row, "profile", "comment", $id, $width, $subject);
 					$ns->tablerender(LAN_5, $text, TRUE);
 				}
 				else
 				{
-					$text .= $cobj->render_comment($row, "profile", "comment", $user_id, $width, $subject);
+					$text .= $cobj->render_comment($row, "profile", "comment", $id, $width, $subject);
 				}
 			}
 			if (!$pref['nested_comments'])
 			{
 				$ns->tablerender(LAN_5, $text, TRUE);
 			}
-			//		if(ADMIN == TRUE && $comment_total)
-			//		{
-			//			echo "<a href='".e_BASE.e_ADMIN."modcomment.php?download.$dl_id'>".LAN_314."</a>";
-			//		}
+			if(ADMIN == TRUE && $comment_total)
+			{
+				echo "<a href='".e_BASE.e_ADMIN."modcomment.php?profile.{$id}'>".LAN_314."</a>";
+			}
 		}
-		$cobj->form_comment("comment", "profile", $user_id, $subject, $content_type, TRUE);
+		$cobj->form_comment("comment", "profile", $id, $subject, $content_type, TRUE);
 	}
 	require_once(FOOTERF);
 	exit;
@@ -228,11 +230,12 @@ require_once(e_HANDLER."np_class.php");
 $ix = new nextprev("user.php", $from, $records, $users_total, LAN_138, $records.".".$order);
 
 function renderuser($row, $user_entended, $mode = "verbose") {
-	global $sql, $id, $pref, $tp;
+	global $sql, $id, $pref, $tp, $sc_style;
 	extract($row);
 	$gen = new convert;
 	$pm_installed = ($pref['pm_title'] ? TRUE : FALSE);
-	if ($mode != "verbose") {
+	if ($mode != "verbose")
+	{
 		$datestamp = $gen->convert_date($user_join, "forum");
 		return "
 		<tr>
@@ -241,7 +244,9 @@ function renderuser($row, $user_entended, $mode = "verbose") {
 		<td class='forumheader3' style='width:20%'>".($user_hideemail && !ADMIN ? "<i>".LAN_143."</i>" : "<a href='mailto:".$user_email."'>".$user_email."</a>")."</td>
 		<td class='forumheader3' style='width:20%'>$datestamp</td>
 		</tr>";
-	} else {
+	}
+	else
+	{
 		$user_data = $user_id.".".$user_name;
 		$chatposts = $sql->db_Count("chatbox");
 		$commentposts = $sql->db_Count("comments");
@@ -249,6 +254,7 @@ function renderuser($row, $user_entended, $mode = "verbose") {
 		$actual_forums = $sql->db_Count("forum_t", "(*)", "WHERE thread_user='$user_data'");
 		$actual_chats = $sql->db_Count("chatbox", "(*)", "WHERE cb_nick='$user_data'");
 		$actual_comments = $sql->db_Count("comments", "(*)", "WHERE comment_author='$user_data'");
+
 		$chatper = round(($actual_chats/$chatposts) * 100, 2);
 		$commentper = round(($actual_comments/$commentposts) * 100, 2);
 		$forumper = round(($actual_forums/$forumposts) * 100, 2);
@@ -269,7 +275,6 @@ function renderuser($row, $user_entended, $mode = "verbose") {
 		$lastvisit = ($user_currentvisit ? $gen->convert_date($user_currentvisit, "long")."<br />( ".$gen -> computeLapse($user_currentvisit)." ".LAN_426." )" : "<i>".LAN_401."</i>");
 
 		$daysregged = $gen -> computeLapse($user_join)." ".LAN_426;
-
 		
 		$str = "
 		<div style='text-align:center'>
@@ -277,14 +282,17 @@ function renderuser($row, $user_entended, $mode = "verbose") {
 		<tr><td colspan='2' class='fcaption' style='text-align:center'>".LAN_142." ".$user_id.": ".$user_name."</td></tr>
 		<tr><td rowspan='".($pm_installed && $id != USERID ? 10 : 9)."' class='forumheader3' style='width:20%; vertical-align:middle; text-align:center'>";
 
-		if ($user_sess && file_exists(e_FILE."public/avatars/".$user_sess)) {
+		if ($user_sess && file_exists(e_FILE."public/avatars/".$user_sess))
+		{
 			$str .= "<img src='".e_FILE."public/avatars/".$user_sess."' alt='' />";
 
-			if (ADMIN && getperms("4")) {
+			if (ADMIN && getperms("4"))
+			{
 				$str .= "<br /><span class='smalltext'>".$user_sess."</span>";
 			}
 
-			if (USERID == $user_id || (ADMIN && getperms("4"))) {
+			if (USERID == $user_id || (ADMIN && getperms("4")))
+			{
 
 				$str .= "<br /><br />
 				<form method='post' action='".e_SELF."?".e_QUERY."'>
@@ -292,13 +300,14 @@ function renderuser($row, $user_entended, $mode = "verbose") {
 				</form>
 				";
 			}
-		} else {
+		}
+		else
+		{
 			$str .= LAN_408;
 		}
 
-
-		$str .= "</td></tr>
-
+		$str .= "
+		</td></tr>
 		<tr>
 		<td style='width:80%' class='forumheader3'>
 		<table style='width:100%'><tr><td style='width:30%'><img src='".e_IMAGE."generic/rname.png' alt='' style='vertical-align:middle' /> ".LAN_308."</td><td style='width:70%; text-align:right'>".($user_login ? $user_login : "<i>".LAN_401."</i>")."</td></tr></table>
@@ -334,9 +343,12 @@ function renderuser($row, $user_entended, $mode = "verbose") {
 		<table style='width:100%'><tr><td style='width:30%'> <img src='".e_IMAGE."generic/location.png' alt=''  style='vertical-align:middle' /> ".LAN_119."</td><td style='width:70%; text-align:right'>".($user_location ? $tp->toHTML($user_location) : "<i>".LAN_401."</i>")."</td></tr></table>
 		</td></tr>";
 
-		if ($user_birthday != "" && $user_birthday != "0000-00-00" && ereg ("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})", $user_birthday, $regs)) {
+		if ($user_birthday != "" && $user_birthday != "0000-00-00" && ereg ("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})", $user_birthday, $regs))
+		{
 			$user_birthday = "$regs[3].$regs[2].$regs[1]";
-		} else {
+		}
+		else
+		{
 			$user_birthday = "<i>".LAN_401."</i>";
 		}
 
@@ -344,7 +356,8 @@ function renderuser($row, $user_entended, $mode = "verbose") {
 		<table style='width:100%'><tr><td style='width:30%'> <img src='".e_IMAGE."generic/bday.png' alt=''  style='vertical-align:middle' /> ".LAN_118."</td><td style='width:70%; text-align:right'>$user_birthday</td></tr></table>
 		</td></tr>";
 
-		if ($pm_installed && $id != USERID) {
+		if ($pm_installed && $id != USERID)
+		{
 			$str .= "
 			<tr>
 			<td style='width:80%' class='forumheader3' colspan='2'>
@@ -355,31 +368,22 @@ function renderuser($row, $user_entended, $mode = "verbose") {
 		$str .= ($user_signature ? "<tr><td colspan='2' class='forumheader3' style='text-align:center'><i>".$tp->toHTML($user_signature, TRUE)."</i></td></tr>" : "");
 
 		//        extended fields ...
-
-		if ($sql->db_Select("user_extended_struct"))
+		require_once(e_HANDLER."user_extended_class.php");
+		$ue = new e107_user_extended;
+		$ueList = $ue->user_extended_getStruct();
+		if ($ueList)
 		{
-			require_once(e_HANDLER."user_extended_class.php");
-			$ue = new e107_user_extended;
-			$ueList = $sql->db_getList();
-
+			$sc_style['EXTENDED_NAME']['pre'] = "<tr><td style='width:40%' class='forumheader3'>";
+			$sc_style['EXTENDED_NAME']['post'] = "</td>";
+			$sc_style['EXTENDED_VALUE']['pre'] = "<td style='width:60%' class='forumheader3'>";
+			$sc_style['EXTENDED_VALUE']['post'] = "</td></tr>";
 			$str .= "<tr><td colspan='2' class='forumheader'>".LAN_410."</td></tr>";
-//			$user_prefs = unserialize($user_prefs);
-			foreach($ueList as $ext)
+			foreach($ueList as $key => $ext)
 			{
-				if (check_class($ext['user_extended_struct_applicable']) && check_class($ext['user_extended_struct_read']))
-				{
-					$ex_name = "user_".$ext['user_extended_struct_name'];
-					$ex_val = $$ex_name;
-					$str .= "
-						<tr>
-							<td style='width:40%' class='forumheader3'>".$ext['user_extended_struct_text']."</td>
-							<td style='width:60%' class='forumheader3'>".($ex_val ? $tp->toHTML($ex_val, TRUE, '', "class:".$user_class) : LAN_401)."</td>
-						</tr>
-						";
-				}
+				$str .= $tp->parseTemplate("{EXTENDED_NAME={$key}.{$user_id}}", TRUE);
+				$str .= $tp->parseTemplate("{EXTENDED_VALUE={$key}.{$user_id}}", TRUE);
 			}
 		}
-
 		//        end extended fields
 
 		$str .= "<tr><td colspan='2' class='forumheader'>".LAN_403."</td></tr>
