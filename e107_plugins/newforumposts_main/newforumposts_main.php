@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newforumposts_main/newforumposts_main.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-28 00:52:23 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-28 15:15:51 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 	
@@ -55,13 +55,14 @@ else if(!$NEWFORUMPOSTSTYLE_HEADER) {
 		<span class='smalltext'>".LAN_6.": <b>{TOTAL_TOPICS}</b> | ".LAN_4.": <b>{TOTAL_REPLIES}</b> | ".LAN_3.": <b>{TOTAL_VIEWS}</b></span>\n</td>\n</tr>\n</table>\n</div>";
 	 
 }
-	
+
 $results = $sql->db_Select_gen("
-	SELECT thread_id, thread_name, thread_datestamp, thread_user, thread_views, thread_lastpost, thread_anon, thread_lastuser, thread_total_replies, forum_id, forum_name, forum_class, user_name FROM #forum_t, #forum
-	LEFT JOIN #user ON #forum_t.thread_user = #user.user_id
-	WHERE #forum.forum_id=#forum_t.thread_forum_id AND #forum_t.thread_parent=0 AND forum_class IN (".USERCLASS_LIST.") 
-	ORDER BY #forum_t.$query DESC LIMIT 0, ".$pref['nfp_amount']);
-	
+SELECT t.thread_id, t.thread_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_anon, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name
+FROM e107_forum_t AS t, e107_forum AS f
+LEFT JOIN e107_user AS u ON t.thread_user = u.user_id
+WHERE f.forum_id = t.thread_forum_id AND t.thread_parent =0 AND f.forum_class IN (".USERCLASS_LIST.") 
+ORDER BY t.$query DESC LIMIT 0, ".$pref['nfp_amount']);
+
 $forumArray = $sql->db_getList();
 	
 if (!is_object($gen)) {
