@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/articles_menu/config.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-12-01 14:41:39 $
+|     $Revision: 1.3 $
+|     $Date: 2004-12-11 14:21:03 $
 |     $Author: streaky $
 |
 |     Based on code by Edwin van der Wal (evdwal@xs4all.nl), Multilanguage by Juan     
@@ -21,8 +21,9 @@
 require_once("../../class2.php");
 require_once(e_HANDLER."userclass_class.php");
 
-@require_once(e_PLUGIN."articles_menu/languages/".e_LANGUAGE.".php");
-@require_once(e_PLUGIN."articles_menu/languages/English.php");
+if(!@require_once(e_PLUGIN."articles_menu/languages/".e_LANGUAGE.".php")){
+	require_once(e_PLUGIN."articles_menu/languages/English.php");
+}
 
 if(!getperms("1")){ header("location:".e_BASE."index.php"); exit ;}
 require_once(e_ADMIN."auth.php");
