@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-02-17 18:30:43 $
+|     $Revision: 1.13 $
+|     $Date: 2005-03-27 11:03:03 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -247,7 +247,7 @@ class siteStats {
 		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>Page</td>\n<td class='fcaption' style='width: 70%;'>Visits Today</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
 		foreach($totalArray as $key => $info) {
 			$percentage = round(($info['ttl']/$totalv) * 100, 2);
-			$text .= "<tr class='forumheader'>\n<td style='width: 20%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;'> <a href='".$info['url']."'>".$key."</a></td>\n<td style='width: 70%;'><img src='".$this -> barImage."' style='width: ".($percentage > 90 ? 90 : $percentage)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info['ttl']." [".$info['unq']."]</td>\n<td style='width: 10%; text-align: center;'>".$percentage."%</td>\n</tr>\n";
+			$text .= "<tr class='forumheader'>\n<td style='width: 20%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a></td>\n<td style='width: 70%;'><img src='".$this -> barImage."' style='width: ".($percentage > 90 ? 90 : $percentage)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info['ttl']." [".$info['unq']."]</td>\n<td style='width: 10%; text-align: center;'>".$percentage."%</td>\n</tr>\n";
 		}
 		$text .= "<tr class='forumheader'><td colspan='2'>Total</td><td style='text-align: center;'>$totalv</td></tr>\n<tr class='forumheader'><td colspan='2'>Unique</td><td style='text-align: center;'>$totalu</td></tr>\n</table>";
 		return $text;
@@ -264,7 +264,7 @@ class siteStats {
 		foreach($totalArray as $key => $info) {
 			$percentage = round(($info['ttlv']/$total) * 100, 2);
 			$text .= "<tr class='forumheader'>
-			<td style='width: 20%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;'> <a href='".$info['url']."'>".$key."</a></td>
+			<td style='width: 20%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a></td>
 			<td style='width: 70%;'><img src='".$this -> barImage."' style='width: $percentage%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info['ttlv']."</td>
 			<td style='width: 10%; text-align: center;'>".$percentage."%</td>
 			</tr>\n";
@@ -279,7 +279,7 @@ class siteStats {
 		foreach($uniqueArray as $key => $info) {
 			$percentage = round(($info['unqv']/$total) * 100, 2);
 			$text .= "<tr class='forumheader'>
-			<td style='width: 20%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;'> <a href='".$info['url']."'>".$key."</a></td>
+			<td style='width: 20%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a></td>
 			<td style='width: 70%;'><img src='".$this -> barImage."' style='width: $percentage%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info['unqv']."</td>
 			<td style='width: 10%; text-align: center;'>".$percentage."%</td>
 			</tr>\n";
@@ -331,7 +331,7 @@ class siteStats {
 
 				$percentage = round(($info/$total) * 100, 2);
 				$text .= "<tr class='forumheader'>
-				<td style='width: 20%;'>".($image ? "<img src='".e_PLUGIN."log/images/$image' alt='' style='vertical-align: middle;'> " : "").$key."</td>
+				<td style='width: 20%;'>".($image ? "<img src='".e_PLUGIN."log/images/$image' alt='' style='vertical-align: middle;' /> " : "").$key."</td>
 				<td style='width: 70%;'><img src='".$this -> barImage."' style='width: ".($percentage > 97 ? 97 : $percentage)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info."</td>
 				<td style='width: 10%; text-align: center;'>".$percentage."%</td>
 				</tr>\n";
@@ -381,7 +381,7 @@ class siteStats {
 
 			$percentage = round(($info/$total) * 100, 2);
 			$text .= "<tr class='forumheader'>
-			<td style='width: 20%;'>".($image ? "<img src='".e_PLUGIN."log/images/$image' alt='' style='vertical-align: middle;'> " : "").$key."</td>
+			<td style='width: 20%;'>".($image ? "<img src='".e_PLUGIN."log/images/$image' alt='' style='vertical-align: middle;' /> " : "").$key."</td>
 			<td style='width: 70%;'><img src='".$this -> barImage."' style='width: ".($percentage > 97 ? 97 : $percentage)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info."</td>
 			<td style='width: 10%; text-align: center;'>".$percentage."%</td>
 			</tr>\n";
@@ -474,7 +474,7 @@ class siteStats {
 			if(strstr($key, "@") && !strstr($key, "undefined") && preg_match("/(\d+)x(\d+)@(\d+)/", $key)) {
 				$percentage = round(($info/$total) * 100, 2);
 				$text .= "<tr class='forumheader'>
-				<td style='width: 20%;'><img src='".e_PLUGIN."log/images/screen.png' alt='' style='vertical-align: middle;'> ".$key."</td>
+				<td style='width: 20%;'><img src='".e_PLUGIN."log/images/screen.png' alt='' style='vertical-align: middle;' /> ".$key."</td>
 				<td style='width: 70%;'><img src='".$this -> barImage."' style='width: ".($percentage > 97 ? 97 : $percentage)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info."</td>
 				<td style='width: 10%; text-align: center;'>".$percentage."%</td>
 				</tr>\n";
@@ -515,7 +515,7 @@ class siteStats {
 		foreach($statArray as $key => $info) {
 			$percentage = round(($info['ttl']/$total) * 100, 2);
 			$text .= "<tr class='forumheader'>
-			<td style='width: 40%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;'> <a href='".$info['url']."' rel='external'>".$key."</a></td>
+			<td style='width: 40%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."' rel='external'>".$key."</a></td>
 			<td style='width: 50%;'><img src='".$this -> barImage."' style='width: ".($percentage > 97 ? 97 : $percentage)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info['ttl']."</td>
 			<td style='width: 10%; text-align: center;'>".$percentage."%</td>
 			</tr>\n";
@@ -554,7 +554,7 @@ class siteStats {
 			$percentage = round(($info/$total) * 100, 2);
 			$key = str_replace("%20", " ", $key);
 			$text .= "<tr class='forumheader'>
-			<td style='width: 60%;'><img src='".e_PLUGIN."log/images/screen.png' alt='' style='vertical-align: middle;'> ".$key."</td>
+			<td style='width: 60%;'><img src='".e_PLUGIN."log/images/screen.png' alt='' style='vertical-align: middle;' /> ".$key."</td>
 			<td style='width: 30%;'><img src='".$this -> barImage."' style='width: ".($percentage > 97 ? 97 : $percentage)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$info."</td>
 			<td style='width: 10%; text-align: center;'>".$percentage."%</td>
 			</tr>\n";
@@ -649,7 +649,7 @@ class siteStats {
 		foreach($newArray as $key => $total) {
 			$barWidth = ($total['totalv'] / $ratio);
 			$text .= "<tr class='forumheader'>
-			<td style='width: 30%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;'> $key</td>
+			<td style='width: 30%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> $key</td>
 			<td style='width: 30%;'><img src='".$this -> barImage."' style='width: ".($barWidth > 90 ? 90 : $barWidth)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$total['totalv']."</td>
 			</tr>\n";
 		}
@@ -662,7 +662,7 @@ class siteStats {
 		foreach($newArray as $key => $total) {
 			$barWidth = ($total['uniquev'] / $ratio);
 			$text .= "<tr class='forumheader'>
-			<td style='width: 30%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;'> $key</td>
+			<td style='width: 30%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> $key</td>
 			<td style='width: 30%;'><img src='".$this -> barImage."' style='width: ".($barWidth > 90 ? 90 : $barWidth)."%; height: 10px; vertical-align: middle; border: 1px solid #000;' alt='' /> ".$total['uniquev']."</td>
 			</tr>\n";
 		}
