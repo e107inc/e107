@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-02-10 17:26:14 $
+|     $Revision: 1.9 $
+|     $Date: 2005-02-11 02:03:00 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -146,7 +146,6 @@ $ns->tablerender(PAGE_NAME." ".SITENAME, $text);
 	
 // only search when a query is filled.
 if ($_POST['searchquery']) {
-	//echo "<div style='border:0;padding-right:2px;width:auto;height:400px;overflow:auto;'>";
 	unset($text);
 	extract($_POST);
 	//$key = $_POST['searchtype'];
@@ -160,7 +159,6 @@ if ($_POST['searchquery']) {
 		}
 		}
 	}
-	//echo "</div>";
 }
 
 function parsesearch($text, $match) {
