@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/languages/English.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-03-03 23:00:33 $
+|     $Revision: 1.3 $
+|     $Date: 2005-03-04 08:14:05 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -43,7 +43,6 @@ define("POLLAN_16", "Vote storage method");
 define("POLLAN_17", "cookie");
 define("POLLAN_18", "IP address");
 define("POLLAN_19", "UserID (only members can vote)");
-
 define("POLLAN_20", "Allow comments to be posted to this poll?");
 define("POLLAN_21", "Preview again");
 define("POLLAN_22", "Update Poll");
@@ -57,6 +56,5 @@ define("POLLAN_29", "posted by");
 define("POLLAN_30", "Submit");
 define("POLLAN_31", "votes");
 define("POLLAN_32", "Click here to see results");
-
 
 ?>

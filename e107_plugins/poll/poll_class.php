@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-03-03 22:52:33 $
+|     $Revision: 1.4 $
+|     $Date: 2005-03-04 08:14:35 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -90,6 +90,8 @@ class poll
 	{
 		global $POLLSTYLE, $sql, $tp, $ns;
 
+
+
 		if($type == "preview")
 		{
 			/* load lan file */
@@ -98,6 +100,7 @@ class poll
 			$optionArray = $pollArray['poll_option'];
 			$voteArray = array();
 			$voteArray = array_pad($voteArray, count($optionArray), 0);
+			$pollArray['poll_allow_multiple'] = $pollArray['multipleChoice'];
 		}
 		else if($type == "forum")
 		{
