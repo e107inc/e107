@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-20 13:06:29 $
+|     $Revision: 1.2 $
+|     $Date: 2005-02-20 14:57:22 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -162,6 +162,7 @@ class themeHandler{
 	}
 
 	function showThemes() {
+		global $ns;
 		if(!is_writable(e_THEME)) {
 			$ns->tablerender(TPVLAN_16, EPL_ADLAN_44);
 		} else {
@@ -211,7 +212,6 @@ class themeHandler{
 			</tr>\n";
 		}
 		$text .= "</table>";
-		global $ns;
 		$ns->tablerender("Themes", $text);
 	}
 
