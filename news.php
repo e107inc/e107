@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.60 $
-|     $Date: 2005-04-01 11:03:58 $
+|     $Revision: 1.61 $
+|     $Date: 2005-04-03 20:30:54 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -406,7 +406,7 @@ if ($action != "item") {
 	echo ($nextprev ? "<div class='nextprev' style='text-align:center'>".$nextprev."</div>" : "");
 }
 
-if ($pref['nfp_display'] == 2) {
+if (isset($pref['nfp_display']) && $pref['nfp_display'] == 2) {
 	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 }
 

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-03-29 12:00:55 $
+|     $Revision: 1.16 $
+|     $Date: 2005-04-03 20:33:54 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -132,7 +132,7 @@ class poll
 		{
 			require(THEME."poll_template.php");
 		}
-		else if(!$POLL_NOTVOTED_START)
+		else if(!isset($POLL_NOTVOTED_START))
 		{
 		   	require(e_PLUGIN."poll/templates/poll_template.php");
 		}

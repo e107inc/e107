@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.56 $
-| $Date: 2005-04-01 20:15:57 $
-| $Author: e107coders $
+| $Revision: 1.57 $
+| $Date: 2005-04-03 20:31:54 $
+| $Author: stevedunstan $
 +---------------------------------------------------------------+
 */
 
@@ -335,7 +335,7 @@ class news {
 		$search[0] = "/\{NEWSTITLE\}(.*?)/si";
 		$replace[0] = $news_title;
 		$search[1] = "/\{NEWSBODY\}(.*?)/si";
-		$replace[1] = ($abovepost ? "<br />".$abovepost."<br />" : "").(strstr(e_QUERY, "extend") ? $news_body."<br /><br />".$news_extended : $news_body).($belowpost ? "<br />".$belowpost : "");
+		$replace[1] = (strstr(e_QUERY, "extend") ? $news_body."<br /><br />".$news_extended : $news_body);
 		$search[2] = "/\{NEWSICON\}(.*?)/si";
 		$replace[2] = "<a href='".e_BASE."news.php?cat.$category_id'><img style='".$param['caticon']."'  src='$category_icon' alt='' /></a>";
 		$search[3] = "/\{NEWSHEADER\}(.*?)/si";
@@ -387,7 +387,7 @@ class news {
 		$replace[16] = ($news_summary) ? $news_summary."<br />" : "";
 
 		$search[17] = "/\{NEWSTHUMBNAIL\}(.*?)/si";
-		$replace[17] = ($news_thumb) ? "<a href='".e_BASE."news.php?item.$news_id.$category_id'><img src='".e_IMAGE."newspost_images/".$news_thumb."' alt='' style='".$param['thumbnail']."' /></a>" : "";
+		$replace[17] = (isset($news_thumb)) ? "<a href='".e_BASE."news.php?item.$news_id.$category_id'><img src='".e_IMAGE."newspost_images/".$news_thumb."' alt='' style='".$param['thumbnail']."' /></a>" : "";
 
 		$search[18] = "/\{STICKY_ICON\}(.*?)/si";
 		$replace[18] = ($news['news_sticky'])? $param['image_sticky'] : "";
