@@ -128,7 +128,7 @@ echo "<div style='text-align:center'>".LAN_LOGIN_6."</div>";
 }
 
 }else{
-header("location:".e_BASE."news.php");
+header("location:".e_BASE."index.php");
 exit;
 }
 
