@@ -28,9 +28,19 @@ if(e_QUERY){
 
 if(IsSet($_POST['add_ban'])){
         $aj = new textparse;
-        $bd = ($_POST['ban_ip'] ? $_POST['ban_ip'] : $_POST['ban_email']);
+        $bd = $_POST['ban_ip'];
         $_POST['ban_reason'] = $aj -> formtpa($_POST['ban_reason'], "admin");
         $sql -> db_Insert("banlist", "'$bd', '".ADMINID."', '".$_POST['ban_reason']."' ");
+        unset($ban_ip);
+}
+
+if(IsSet($_POST['update_ban'])){
+        $aj = new textparse;
+        $bd = $_POST['ban_ip'];
+        $_POST['ban_reason'] = $aj -> formtpa($_POST['ban_reason'], "admin");
+        $sql -> db_Insert("banlist", "'$bd', '".ADMINID."', '".$_POST['ban_reason']."' ");
+		$sql -> db_Delete("banlist", "banlist_ip='".$_POST['old_ip']."'");
+        $message = BANLAN_14;
         unset($ban_ip);
 }
 
@@ -42,28 +52,36 @@ if($action == "remove"){
 if(IsSet($message)){
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
-
-$text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 100px; overflow : auto; '>\n";
-if(!$ban_total = $sql -> db_Select("banlist")){
-        $text .= "<div style='text-align:center'>".BANLAN_2."</div>";
-}else{
-        $text .= "<table class='fborder' style='width:100%'>
-        <tr>
-        <td style='width:70%' class='forumheader2'>".BANLAN_10."</td>
-<td style='width:30%' class='forumheader2'>".BANLAN_11."</td>
-</tr>";
-        $count =0;
-        while($row = $sql -> db_Fetch()){
-                extract($row);
-                $text .= "<tr><td style='width:70%' class='forumheader3'>$banlist_ip</td>
-                <td style='width:30%; text-align:center' class='forumheader3'>".$rs -> form_button("submit", "main_edit_$count", BANLAN_4, "onclick=\"document.location='".e_SELF."?remove-$banlist_ip'\"")."</td>\n</tr>";
-        $count++;
-        }
-        $text .= "</table>\n";
+if($action != "edit"){
+	$text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 400px; overflow : auto; '>\n";
+	if(!$ban_total = $sql -> db_Select("banlist")){
+			$text .= "<div style='text-align:center'>".BANLAN_2."</div>";
+	}else{
+			$text .= "<table class='fborder' style='width:100%'>
+			<tr>
+			<td style='width:70%' class='forumheader2'>".BANLAN_10."</td>
+	<td style='width:30%' class='forumheader2'>".BANLAN_11."</td>
+	</tr>";
+			$count =0;
+			while($row = $sql -> db_Fetch()){
+					extract($row);
+					$text .= "<tr><td style='width:70%' class='forumheader3'>$banlist_ip<br />".BANLAN_7.": $banlist_reason</td>
+					<td style='width:30%; text-align:center' class='forumheader3'>".$rs -> form_button("submit", "main_edit_$count", BANLAN_12, "onclick=\"document.location='".e_SELF."?edit-$banlist_ip'\"").$rs -> form_button("submit", "main_delete_$count", BANLAN_4, "onclick=\"document.location='".e_SELF."?remove-$banlist_ip'\"")."</td>\n</tr>";
+			$count++;
+			}
+			$text .= "</table>\n";
+	}
+	$text .= "</div></div>";
+	$ns -> tablerender(BANLAN_3, $text);
 }
-$text .= "</div></div>";
-$ns -> tablerender(BANLAN_3, $text);
 
+if($action == "edit"){
+    $sql2 -> db_Select("banlist", "*", "banlist_ip='$sub_action'");
+	$row = $sql2 ->db_Fetch();
+	extract($row);
+}else{
+	unset($banlist_ip, $banlist_reason);
+}
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>
 <table style='width:85%' class='fborder'>
@@ -71,28 +89,21 @@ $text = "<div style='text-align:center'>
 <tr>
 <td style='width:30%' class='forumheader3'>".BANLAN_5.": </td>
 <td style='width:70%' class='forumheader3'>
-<input class='tbox' type='text' name='ban_ip' size='40' value='$action' maxlength='200' />
-</td>
-</tr>
-
-<tr>
-<td style='width:30%' class='forumheader3'>".BANLAN_6.": </td>
-<td style='width:70%' class='forumheader3'>
-<input class='tbox' type='text' name='ban_email' size='40' value='' maxlength='200' />
+<input class='tbox' type='text' name='ban_ip' size='40' value='".$banlist_ip."' maxlength='200' />
 </td>
 </tr>
 
 <tr>
 <td style='width:20%' class='forumheader3'>".BANLAN_7.": </td>
 <td style='width:80%' class='forumheader3'>
-<textarea class='tbox' name='ban_reason' cols='50' rows='4'></textarea>
+<textarea class='tbox' name='ban_reason' cols='50' rows='4'>$banlist_reason</textarea>
 </td>
 </tr>
 
 <tr style='vertical-align:top'>
-<td colspan='2' style='text-align:center' class='forumheader'>
+<td colspan='2' style='text-align:center' class='forumheader'>".
 
-<input class='button' type='submit' name='add_ban' value='".BANLAN_8."' />
+($action == "edit" ? "<input type='hidden' name='old_ip' value='$banlist_ip' /><input class='button' type='submit' name='update_ban' value='".BANLAN_13."' />" : "<input class='button' type='submit' name='add_ban' value='".BANLAN_8."' />")."
 
 </td>
 </tr>
