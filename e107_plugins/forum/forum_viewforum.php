@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-03-25 03:32:11 $
+|     $Revision: 1.22 $
+|     $Date: 2005-03-29 13:04:49 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -181,7 +181,7 @@ if ($thread_list) {
 		if ($thread_info['thread_s']) {
 			$sticky_threads ++;
 		}
-		if ($sticky_threads == "1" && !$stuck) {
+		if ($sticky_threads > 0 && !$stuck && $pref['forum_hilightsticky']) {
 			$forum_view_forum .= "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>".LAN_411."</b></span></td></tr>";
 			$stuck = TRUE;
 		}
