@@ -43,7 +43,7 @@ define("DOWLAN_40", "None - main parent");
 define("DOWLAN_41", "Icon");
 define("DOWLAN_42", "View Images");
 define("DOWLAN_43", "Visible to");
-define("DOWLAN_44", "Ticking will make the categorry visible to only users in that class");
+define("DOWLAN_44", "Ticking will make the category visible to only users in that class");
 define("DOWLAN_45", "Create Category");
 define("DOWLAN_46", "Update Category");
 define("DOWLAN_47", "Category created");
@@ -54,5 +54,17 @@ define("DOWLAN_51", "Search downloads");
 
 define("DOWLAN_52", "Files");
 define("DOWLAN_53", "Subcategory");
+define("DOWLAN_54", "Download Options");
+define("DOWLAN_55", "Number of Downloads to display per page");
+define("DOWLAN_56", "Default sort order ");
+define("DOWLAN_57", "Downloads");
+define("DOWLAN_58", "Date");
+define("DOWLAN_59", "Filename");
+define("DOWLAN_60", "Author");
+define("DOWLAN_61", "Default sort order ");
+define("DOWLAN_62", "Ascending");
+define("DOWLAN_63", "Descending");
+define("DOWLAN_64", "Update Options");
+define("DOWLAN_65", "Options Updated");
 
 ?>

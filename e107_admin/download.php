@@ -58,6 +58,15 @@ if(IsSet($_POST['submit_download'])){
 	unset($sub_action, $id);
 }
 
+
+if(IsSet($_POST['updateoptions'])){
+	$pref['download_view'] = $_POST['download_view'];
+	$pref['download_sort'] = $_POST['download_sort'];
+	$pref['download_order'] = $_POST['download_order'];
+	save_prefs();
+	$message = DOWLAN_65;
+}
+
 if($action == "dlm"){
 	$action = "create";
 	$id = $sub_action;
@@ -86,11 +95,72 @@ if($action == "main" && $sub_action == "confirm"){
 	unset($sub_action, $id);
 }
 
+
+if(IsSet($message)){
+        $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+}
+
 if(!e_QUERY || $action == "main"){
 	$download -> show_existing_items($action, $sub_action, $id, $from, $amount);
 }
 
 
+if($action == "opt"){
+	global $pref, $ns;
+	$text = "<div style='text-align:center'>
+	<form method='post' action='".e_SELF."?".e_QUERY."'>\n
+	<table style='width:auto' class='fborder'>
+	<tr>
+	
+	<td style='width:70%' class='forumheader3'>
+	".DOWLAN_55."
+	</td>
+	<td style='width:30%' class='forumheader3' style='text-align:center'>
+	<select name='download_view' class='tbox'>".
+	($pref['download_view'] == 5 ? "<option selected>5</option>" : "<option>5</option>").
+	($pref['download_view'] == 10 ? "<option selected>10</option>" : "<option>10</option>").
+	($pref['download_view'] == 15 ? "<option selected>15</option>" : "<option>15</option>").
+	($pref['download_view'] == 20 ? "<option selected>20</option>" : "<option>20</option>").
+    ($pref['download_view'] == 50 ? "<option selected>50</option>" : "<option>50</option>")."
+	</select>
+	</td>
+	</tr>
+
+	<td style='width:70%' class='forumheader3'>
+	".DOWLAN_56."
+	</td>
+	<td style='width:30%' class='forumheader3' style='text-align:center'>
+	
+	<select name='download_order' class='tbox'>".
+	($pref['download_order'] == "download_datestamp" ? "<option value='download_datestamp' selected>".DOWLAN_58."</option>" : "<option value='download_datestamp'>".DOWLAN_58."</option>").
+	($pref['download_order'] == "download_requested" ? "<option value='download_requested' selected>".DOWLAN_57."</option>" : "<option value='download_requested'>".DOWLAN_57."</option>").
+	($pref['download_order'] == "download_name" ? "<option value='download_name' selected>".DOWLAN_59."</option>" : "<option value='download_name'>".DOWLAN_59."</option>").
+	($pref['download_order'] == "download_author" ? "<option value='download_author' selected>".DOWLAN_60."</option>" : "<option value='download_author'>".DOWLAN_60."</option>")."
+	</select>
+	</td>
+	</tr>
+	<td style='width:70%' class='forumheader3'>
+	".DOWLAN_61."
+	</td>
+	<td style='width:30%' class='forumheader3' style='text-align:center'>
+	<select name='download_sort' class='tbox'>".
+	($pref['download_sort'] == "ASC" ? "<option value='ASC' selected>".DOWLAN_62."</option>" : "<option value='ASC'>".DOWLAN_62."</option>").
+	($pref['download_sort'] == "DESC" ? "<option value='DESC' selected>".DOWLAN_63."</option>" : "<option value='DESC'>".DOWLAN_63."</option>")."
+	</select>
+	</td>
+	</tr>
+
+	<tr style='vertical-align:top'> 
+	<td colspan='2'  style='text-align:center' class='forumheader'>
+	<input class='button' type='submit' name='updateoptions' value='".DOWLAN_64."' />
+	</td>
+	</tr>
+
+	</table>
+	</form>
+	</div>";
+	$ns -> tablerender(DOWLAN_54, $text);
+}
 
 $download -> show_options($action);
 
@@ -184,6 +254,9 @@ class download{
 		if(e_QUERY && $action != "main"){
 			$text .= "<a href='".e_SELF."'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".DOWLAN_29."</div></div></a>";
 		}
+		if($action != "opt"){
+			$text .= "<a href='".e_SELF."?opt'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".DOWLAN_28."</div></div></a>";
+		}
 		if($action != "create"){
 			$text .= "<a href='".e_SELF."?create'><div class='border'><div class='forumheader'><img src='".e_IMAGE."generic/location.png' style='vertical-align:middle; border:0' alt='' /> ".DOWLAN_30."</div></div></a>";
 		}
@@ -276,7 +349,7 @@ class download{
 		<span class='smalltext'> ".DOWLAN_14.": ";
 
 
-		if(ereg("http", $download_url)){
+		if(ereg("http", $download_url) || ereg("ftp", $download_url) ){
 			$download_url_external = $download_url;
 		}
 

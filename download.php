@@ -141,9 +141,9 @@ if($action == "list"){
 	}
 
 	if(!$from) $from=0;
-	if(!$order) $order = "download_datestamp";
-	if(!$sort) $sort = "DESC";
-	if(!$view) $view = 10;
+	if(!$order) $order = ($pref['download_order'] ? $pref['download_order'] : "download_datestamp");
+	if(!$sort) $sort = ($pref['download_sort'] ? $pref['download_sort'] : "DESC");
+	if(!$view) $view = ($pref['download_view'] ? $pref['download_view'] : "10");
 
 	$total_downloads = $sql -> db_Select("download", "*", "download_category='$id' AND download_active='1'");
 	if(!$total_downloads){ require_once(FOOTERF); exit; }
