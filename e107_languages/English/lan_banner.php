@@ -25,6 +25,4 @@ define("LAN_35", "Clickthrough IP addresses");
 define("LAN_36", "Active:");
 define("LAN_37", "Starts:");
 
-define("LAN_banner_1", "Choose banner image");
-
 ?>
