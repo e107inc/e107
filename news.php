@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-02-08 00:41:24 $
-|     $Author: sweetas $
+|     $Revision: 1.32 $
+|     $Date: 2005-02-08 03:40:56 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -106,17 +106,12 @@ if ($action == 'cat') {
 if ($action == "extend") {
 	checkNewsCache($cacheString);
 	ob_start();
-	$extend_id = (int)substr(e_QUERY, (strpos(e_QUERY, ".")+1));
-	$sql->db_Select("news", "*", "news_id='".$extend_id."' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")");
-	list($news['news_id'], $news['news_title'], $news['data'], $news['news_extended'], $news['news_datestamp'], $news['admin_id'], $news_category, $news['news_allow_comments'], $news['news_start'], $news['news_end'], $news['news_class']) = $sql->db_Fetch();
-	if (!check_class($news['news_class'])) {
-		header("location:".e_BASE."news.php");
-	}
-	$sql->db_Select("news_category", "*", "category_id='$news_category' ");
-	list($news['category_id'], $news['category_name'], $news['category_icon']) = $sql->db_Fetch();
-	$news['comment_total'] = $sql->db_Count("comments", "(*)", "WHERE comment_item_id='".$news['news_id']."' AND comment_type='0' ");
-	$sql->db_Select("user", "user_name", "user_id='".$news['admin_id']."' ");
-	list($news['admin_name']) = $sql->db_Fetch();
+	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
+		LEFT JOIN #user AS u ON n.news_author = u.user_id
+		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
+		WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_id={$sub_action}";
+	$sql->db_Select_gen($query);
+	$news = $sql->db_Fetch();
 	$ix->render_newsitem($news);
 	setNewsCache($cacheString);
 	require_once(FOOTERF);
@@ -133,7 +128,6 @@ if (!defined("WMFLAG")) {
 			$wmessage .= $tp->toHTML($row['wm_text'], TRUE, 'parse_sc')."<br />";
 		}
 	}
-	 
 	if ($wmessage) {
 		if ($pref['wm_enclose']) {
 			$ns->tablerender("", $wmessage, "wm");
@@ -145,26 +139,35 @@ if (!defined("WMFLAG")) {
 }
 // --->wmessage end
 	
-	
-if ($pref['nfp_display'] == 1) {
+if ($pref['nfp_display'] == 1)
+{
 	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 }
 	
-if (Empty($order)) {
+if (Empty($order))
+{
 	$order = "news_datestamp";
 }
 	
-	
-if ($action == "list") {
+if ($action == "list")
+{
 	$sub_action = intval($sub_action);
 	$news_total = $sql->db_Count("news", "(*)", "WHERE news_category=$sub_action");
-	$query = "SELECT * FROM ".MPREFIX."news WHERE news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_render_type!=2 AND news_category=$sub_action ORDER BY ".$order." DESC LIMIT $from,".ITEMVIEW;
-} elseif($action == "item") {
-	$sub_action = intval($sub_action);
-	$news_total = $sql->db_Count("news", "(*)", "WHERE news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_render_type!=2" );		
-	$query = "SELECT * FROM ".MPREFIX."news WHERE news_id=".$sub_action." AND news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")";
+	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
+		LEFT JOIN #user AS u ON n.news_author = u.user_id
+		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
+		WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type!=2 AND n.news_category={$sub_action} ORDER BY ".$order." DESC LIMIT $from,".ITEMVIEW;
 }
-else if(strstr(e_QUERY, "month")) {
+elseif($action == "item")
+{
+	$sub_action = intval($sub_action);
+	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
+		LEFT JOIN #user AS u ON n.news_author = u.user_id
+		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
+		WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_id={$sub_action}";
+}
+elseif(strstr(e_QUERY, "month"))
+{
 	$tmp = explode(".", e_QUERY);
 	$item = $tmp[1];
 	$year = substr($item, 0, 4);
@@ -172,9 +175,13 @@ else if(strstr(e_QUERY, "month")) {
 	$startdate = mktime(0, 0, 0, $month, 1, $year);
 	$lastday = date("t", $startdate);
 	$enddate = mktime(23, 59, 59, $month, $lastday, $year);
-	$query = "news_datestamp > $startdate AND news_datestamp < $enddate AND news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY ".$order." DESC";
+	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
+		LEFT JOIN #user AS u ON n.news_author = u.user_id
+		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
+		WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type!=2 AND n.news_datestamp > $startdate AND n.news_datestamp < $enddate ORDER BY ".$order." DESC LIMIT $from,".ITEMVIEW;
 }
-else if(strstr(e_QUERY, "day")) {
+elseif(strstr(e_QUERY, "day"))
+{
 	$tmp = explode(".", e_QUERY);
 	$item = $tmp[1];
 	$year = substr($item, 0, 4);
@@ -183,8 +190,13 @@ else if(strstr(e_QUERY, "day")) {
 	$startdate = mktime(0, 0, 0, $month, $day, $year);
 	$lastday = date("t", $startdate);
 	$enddate = mktime(23, 59, 59, $month, $day, $year);
-	$query = "news_datestamp > $startdate AND news_datestamp < $enddate AND news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY ".$order." DESC";
-} else {
+	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
+		LEFT JOIN #user AS u ON n.news_author = u.user_id
+		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
+		WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type!=2 AND n.news_datestamp > $startdate AND n.news_datestamp < $enddate ORDER BY ".$order." DESC LIMIT $from,".ITEMVIEW;
+}
+else
+{
 	$news_total = $sql->db_Count("news", "(*)", "WHERE news_class IN (".USERCLASS_LIST.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().") AND news_render_type!=2" );
 	 
 	// #### changed for news archive ------------------------------------------------------------------------------
@@ -218,7 +230,6 @@ else if(strstr(e_QUERY, "day")) {
 	
 checkNewsCache($cacheString, TRUE, TRUE);
 
-
 /*
 changes by jalist 03/02/2005:
 news page templating
@@ -245,19 +256,6 @@ if($pref['news_unstemplate']) {
 			}
 		}
 
-/*
-			for($a=1; $a<= $newscolumns; $a++) {
-				for($b=1; $b<= $newspercolumn; $b++) {
-					if($news = $sql->db_Fetch()) {
-						$newsdata[$a] .= $ix->render_newsitem($news, "return");
-					}
-				}
-			}
-		}
-*/
-
-
-
 		$loop = 1;
 		foreach($newsdata as $data) {
 			$var = "ITEMS$loop";
@@ -271,9 +269,6 @@ if($pref['news_unstemplate']) {
 
 	}
 } else {
-
-
-
 	/*
 	changes by jalist 22/01/2005:
 	added ability to add a new date header to news posts, turn on and off from news->prefs
@@ -300,9 +295,7 @@ if($pref['news_unstemplate']) {
 			if ($newpostday != $thispostday && (isset($pref['news_newdateheader']) && $pref['news_newdateheader'])) {
 				echo "<div class='".DATEHEADERCLASS."'>".strftime("%A %d %B %Y", $news['news_datestamp'])."</div>";
 			}
-			 
 			$newpostday = $thispostday;
-			 
 			$news['category_id'] = $news['news_category'];
 			if ($action == "item") {
 				unset($news['news_render_type']);
@@ -322,7 +315,6 @@ if ($action != "item" && $action != 'list' && $pref['newsposts_archive']) {
 				if ($action == "item") {
 					unset($news2['news_render_type']);
 				}
-				 
 				// Code from Lisa
 				// copied from the rss creation, but added here to make sure the url for the newsitem is to the news.php?item.X
 				// instead of the actual hyperlink that may have been added to a newstitle on creation
@@ -361,7 +353,6 @@ if ($action != "item" && $action != 'list' && $pref['newsposts_archive']) {
 }
 // #### END -----------------------------------------------------------------------------------------------------------
 	
-	
 require_once(e_HANDLER."np_class.php");
 if ($action != "item") {
 	$ix = new nextprev("news.php", $from, ITEMVIEW, $news_total, LAN_84, ($action == "list" ? $action.".".$sub_action : ""));
@@ -370,7 +361,6 @@ if ($action != "item") {
 if ($pref['nfp_display'] == 2) {
 	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 }
-	
 	
 // ==CNN Style Categories. ============================================================
 $nbr_cols = 1;
