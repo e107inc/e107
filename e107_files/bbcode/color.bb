@@ -14,4 +14,16 @@ $aColors = array(
 "white" => "#FFFFFF",
 "yellow" => "#FFFF00"
 );
-return "<span style='color:{$aColors[$parm]}'>$code_text</span>";
+
+if(array_key_exists($parm, $aColors))
+{
+	return "<span style='color:{$aColors[$parm]}'>$code_text</span>";
+}
+else
+{
+	if(preg_match("/(#[a-fA-F0-9]{3,6})/", $parm, $matches))
+	{
+		return "<span style='color:{$matches[1]}'>$code_text</span>";
+		
+	}
+}
