@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-02-28 20:03:50 $
+|     $Revision: 1.21 $
+|     $Date: 2005-03-20 08:05:44 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -20,9 +20,11 @@ if(!defined("e_HANDLER")){ exit; }
 global $eMenuActive;
 $ip = getip();
 
+$bullet = (defined("BULLET") ? "<img src='".THEME."images/".BULLET."' alt='' style='vertical-align: middle;' />" : "<img src='".THEME."images/bullet2.gif' alt='bullet' style='vertical-align: middle;' />");
+
 if (defined('CORRUPT_COOKIE') && CORRUPT_COOKIE == TRUE) {
 	$text = '<div style="text-align:center">'.LOGIN_MENU_L7.'<br /><br />
-	<img src="'.THEME.'images/bullet2.gif" alt="bullet" /> <a href="'.e_BASE.'index.php?logout">'.LOGIN_MENU_L8.'</a></div>';
+	$bullet <a href="'.e_BASE.'index.php?logout">'.LOGIN_MENU_L8.'</a></div>';
 	$ns->tablerender(LOGIN_MENU_L9, $text, 'login');
 }
 $use_imagecode = ($pref['logcode'] && extension_loaded('gd'));
@@ -34,13 +36,13 @@ $text = '';
 if (USER == TRUE || ADMIN == TRUE) {
 	if (ADMIN == TRUE) {
 		$text = ($pref['maintainance_flag'] == 1 ? '<div style="text-align:center"><strong>'.LOGIN_MENU_L10.'</strong></div><br />' : '' );
-		$text .= '<img src="'.THEME.'images/bullet2.gif" alt="bullet" /> <a href="'.e_ADMIN.'admin.php">'.LOGIN_MENU_L11.'</a><br />';
+		$text .= $bullet.' <a href="'.e_ADMIN.'admin.php">'.LOGIN_MENU_L11.'</a><br />';
 	}
-	$text .= '<img src="'.THEME.'images/bullet2.gif" alt="bullet" /> <a href="'.e_BASE.'usersettings.php">'.LOGIN_MENU_L12.'</a>
+	$text .= $bullet.' <a href="'.e_BASE.'usersettings.php">'.LOGIN_MENU_L12.'</a>
 	<br />
-	<img src="'.THEME.'images/bullet2.gif" alt="bullet" /> <a href="'.e_BASE.'user.php?id.'.USERID.'">'.LOGIN_MENU_L13.'</a>
+	'.$bullet.' <a href="'.e_BASE.'user.php?id.'.USERID.'">'.LOGIN_MENU_L13.'</a>
 	<br />
-	<img src="'.THEME.'images/bullet2.gif" alt="bullet" /> <a href="'.e_BASE.'?logout">'.LOGIN_MENU_L8.'</a>';
+	'.$bullet.' <a href="'.e_BASE.'?logout">'.LOGIN_MENU_L8.'</a>';
 
 	if (!$sql->db_Select('online', '*', '`online_ip` = \''.$ip.'\' AND `online_user_id` = \'0\' ')) {
 		$sql->db_Delete('online', '`online_ip` = \''.$ip.'\' AND `online_user_id` = \'0\' ');
