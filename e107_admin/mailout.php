@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/e107_admin/mailout.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2004-11-12 04:18:32 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2004-12-23 16:47:27 $
+|     $Author: pholzmann $
 +----------------------------------------------------------------------------+
 */
 
@@ -98,16 +98,17 @@ if(IsSet($_POST['submit'])){
     $text = "<div style='overflow:auto;height:300px'>";
     $text .= "<table class='fborder' style='width:100%'>";
     $text .= "<tr><td class='fcaption'>Username</td><td class='fcaption'>Email</td><td class='fcaption'>Status</td></tr>";
-    $message_body = eregi_replace('src="','src="'.SITEURL,$_POST['email_body']);
-    $message_body .="<br />";
-    $
+    $message_subject = stripslashes($_POST['email_subject']);
+    $message_body = stripslashes($_POST['email_body']);
+    $message_body = eregi_replace('src="','src="'.SITEURL,$message_body);
+
   //  echo $message_body;
      $sent_no = 0;
     for ($i=0; $i<count($recipient); $i++) {
     $text .="<tr>";
     $text .="<td class='forumheader3' style='width:40%'>".$recipient_name[$i]."</td>";
     $text .="<td class='forumheader3' style='width:40%'>".$recipient[$i]."</td>";
-        if(sendemail($recipient[$i],$_POST['email_subject'],$message_body,$recipient_name[$i],$_POST['email_from_email'],$_POST['email_from_name'],$attach,$_POST['email_cc'],$_POST['email_bcc'],"","")){
+        if(sendemail($recipient[$i],$message_subject,$message_body,$recipient_name[$i],$_POST['email_from_email'],$_POST['email_from_name'],$attach,$_POST['email_cc'],$_POST['email_bcc'],"","")){
         $stat = "<span style='color:green'>Sent</span>";
         $sent_no ++;
         }else{
