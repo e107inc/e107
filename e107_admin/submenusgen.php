@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/submenusgen.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-10 09:49:03 $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-18 05:57:15 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -276,4 +276,38 @@ $text .= $rs -> form_close();
 $ns -> tablerender($caption, $text);
 
 require_once("footer.php");
+
+function show_options(){
+
+}
+        
+function submenusgen_adminmenu(){
+	global $sql;
+	if($action==""){$action="main";}
+	$var['main']['text']=LCLAN_62;
+	$var['main']['link']="links.php";
+
+	$var['create']['text']=LCLAN_63;
+	$var['create']['link']="links.php?create";
+
+	$var['order']['text']=LCLAN_64;
+	$var['order']['link']="links.php?order";
+
+	$var['cat']['text']=LCLAN_65;
+	$var['cat']['link']="links.php?cat";
+	$var['cat']['perm']="8";
+
+	if($sql -> db_Select("tmp", "*", "tmp_ip='submitted_link' ")){
+		$var['sn']['text']=LCLAN_66;
+		$var['sn']['link']="links.php?sn";
+	}
+
+	$var['opt']['text']=LCLAN_67;
+	$var['opt']['link']="links.php?opt";
+
+	$var['sub']['text']=LCLAN_83;
+	$var['sub']['link']=e_SELF;
+
+	show_admin_menu(LCLAN_68,'sub',$var);
+}
 ?>
