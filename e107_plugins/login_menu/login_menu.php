@@ -23,16 +23,85 @@ $text = "";
 		if(!$sql -> db_Select("online", "*", "online_ip='$ip' AND online_user_id='0' ")){
 			$sql -> db_Delete("online", "online_ip='$ip' AND online_user_id='0' ");
 		}
+
 		$new_total = 0;
 		$time = USERLV;
-		$new_news = $sql -> db_Count("news", "(*)", "WHERE news_datestamp>'".$time."' ");$new_total = $new_total + $new_news;
-		if(!$new_news){ $new_news = LOGIN_MENU_L26; }			
-		$new_comments = $sql -> db_Count("comments", "(*)", "WHERE comment_datestamp>'".$time."' "); $new_total = $new_total + $new_comments;
+		$new_news = $sql -> db_Select("news", "*", "news_datestamp>$time  ORDER BY news_datestamp DESC");
+		while($row = $sql -> db_Fetch()){
+			extract($row);
+				if(!check_class($news_class)){
+					$new_news = $new_news - 1;
+				}
+		}
+		$new_total = $new_total + $new_news;
+		if(!$new_news){ $new_news = LOGIN_MENU_L26; }	
+
+		$new_comments=0;
+		if($comments = $sql -> db_Select("comments", "*", "comment_datestamp>$time ORDER BY comment_datestamp DESC ")){
+			$sql2 = new db;;
+			while($row = $sql -> db_Fetch()){
+				extract($row);
+				switch($comment_type){
+					case 0:	// news
+						$sql2 -> db_Select("news", "*", "news_id=$comment_item_id ");
+						$row = $sql2 -> db_Fetch(); extract($row);
+						if(check_class($news_class)){
+							$new_comments++;
+						}
+					break;
+					case 1:	//	article, review or content page
+						$sql2 -> db_Select("content", "content_heading, content_type, content_class", "content_id=$comment_item_id ");
+						$row = $sql2 -> db_Fetch(); 
+						extract($row);
+						if(check_class($content_class)){
+							$new_comments++;
+						}
+					break;
+					case 2: //	downloads
+						$mp = MPREFIX;
+						$qry = "SELECT download_name, {$mp}download_category.download_category_class FROM {$mp}download LEFT JOIN {$mp}download_category ON {$mp}download.download_category={$mp}download_category.download_category_id WHERE {$mp}download.download_id={$comment_item_id}";
+						$sql2 -> db_Select_gen($qry);
+						$row = $sql2 -> db_Fetch(); 
+						extract($row);
+						if(check_class($download_category_class)){
+							$new_comments++;
+						}
+					break;
+					case 3: //	faq
+						$sql2 -> db_Select("faq", "faq_question", "faq_id=$comment_item_id ");
+						$row = $sql2 -> db_Fetch(); extract($row);
+						$new_comments++;
+					break;
+					case 4:	//	poll comment
+						$sql2 -> db_Select("poll", "*", "poll_id=$comment_item_id ");
+						$row = $sql2 -> db_Fetch(); extract($row);
+						$new_comments++;
+					break;
+					case 6:	//	bugtracker
+						$sql2 -> db_Select("bugtrack", "bugtrack_summary", "bugtrack_id=$comment_item_id ");
+						$row = $sql2 -> db_Fetch(); extract($row);
+						$new_comments++;
+					break;
+				}
+			}
+		}
+		$new_total = $new_total + $new_comments;
 		if(!$new_comments){ $new_comments = LOGIN_MENU_L26; }
 		$new_chat = $sql -> db_Count("chatbox", "(*)", "WHERE cb_datestamp>'".$time."' "); $new_total = $new_total + $new_chat;
 		if(!$new_chat){ $new_chat = LOGIN_MENU_L26; }
-		$new_forum = $sql -> db_Count("forum_t", "(*)", "WHERE thread_datestamp>'".$time."' "); $new_total = $new_total + $new_forum;
+
+		$new_forum = $sql -> db_Select("forum_t", "*", "thread_datestamp>$time ORDER BY thread_datestamp DESC");
+		while($row = $sql -> db_Fetch()){
+			extract($row);
+			$sql2 -> db_Select("forum", "*", "forum_id=$thread_forum_id");
+			$row = $sql2 -> db_Fetch(); extract($row);
+			if(!check_class($forum_class)){
+				$new_forum = $new_forum - 1;
+			}
+		}
+		$new_total = $new_total + $new_forum;
 		if(!$new_forum){ $new_forum = LOGIN_MENU_L26; }
+
 		$new_users = $sql -> db_Count("user", "(*)", "WHERE user_join>'".$time."' "); $new_total = $new_total + $new_users;
 		if(!$new_users){ $new_users = LOGIN_MENU_L26; }
 
