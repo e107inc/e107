@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-04-03 08:26:47 $
+|     $Revision: 1.21 $
+|     $Date: 2005-04-05 06:42:25 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -148,7 +148,7 @@ function admin_info() {
 	$text .= $tp->parseTemplate('{ADMIN_LOG}');
 
 	$text .= "</td>
-		</tr></table>";
+		</tr></table></div>";
 
 	return $text;
 }
