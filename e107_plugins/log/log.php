@@ -29,6 +29,10 @@ $browser = getBrowser($agent);
 $os = getOs($agent);
 
 $pageName = preg_replace("/(\?.*)|(\_.*)|(\.php)|(\s)|(\')(\")/", "", basename ($self));
+if(!trim(chop($pageName)))
+{
+	$pageName = "index";
+}
 
 $logfile = "logs/log_".date("z.Y", time()).".php";
 require_once($logfile);
@@ -97,11 +101,13 @@ if(!strstr($ipAddresses, $ip)) {
 	$ipAddresses .= $ip.chr(1);
 
 	if ($tmp = gethostbyaddr(getenv(REMOTE_ADDR))) {
-		$host = strtolower(substr($tmp, strrpos($tmp, ".")+1));
-		if(array_key_exists($host, $domainInfo)) {
-			$domainInfo[$host] ++;
-		} else {
-			$domainInfo[$host] =1;
+		$host = trim(chop(strtolower(substr($tmp, strrpos($tmp, ".")+1))));
+		if(!is_numeric($host) && !strstr($host, "calhost")) {
+			if(array_key_exists($host, $domainInfo)) {
+				$domainInfo[$host] ++;
+			} else {
+				$domainInfo[$host] =1;
+			}
 		}
 	}
 

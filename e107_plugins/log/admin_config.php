@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/admin_config.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-16 15:23:26 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-17 18:30:41 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -47,6 +47,8 @@ if (isset($_POST['updatesettings'])) {
 	$pref['statRefer'] = $_POST['statRefer'];
 	$pref['statQuery'] = $_POST['statQuery'];
 	$pref['statRecent'] = $_POST['statRecent'];
+	$pref['statDisplayNumber'] = $_POST['statDisplayNumber'];
+	
 	save_prefs();
 	header("location:".e_SELF."?u");
 	exit;
@@ -97,6 +99,14 @@ $text = "<div style='text-align:center'>
 	</td>
 	</tr>
 	 
+	<tr>
+	<td style='width:50%' class='forumheader3'>".ADSTAT_L21."</td>
+	<td style='width:50%; text-align: right;' class='forumheader3'>
+	<input class='tbox' type='text' name='statDisplayNumber' size='8' value='".$pref['statDisplayNumber']."' maxlength='3' />
+	</td>
+	</tr>
+
+
 	<tr>
 	<td style='width:50%' class='forumheader3'>".ADSTAT_L5."</td>
 	<td style='width:50%; text-align: right;' class='forumheader3'>
