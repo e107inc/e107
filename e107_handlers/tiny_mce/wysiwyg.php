@@ -4,8 +4,8 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/wysiwyg.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-24 10:49:52 $
+|     $Revision: 1.7 $
+|     $Date: 2005-03-21 13:46:19 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -14,8 +14,8 @@ function wysiwyg($formids){
 define("ADMIN","");
 global $pref;
 $text = "
-	<script language='javascript' type='text/javascript' src='".e_HANDLER."tiny_mce/tiny_mce.js'></script>
-	<script language='javascript' type='text/javascript'>
+	<script type='text/javascript' src='".e_HANDLER."tiny_mce/tiny_mce.js'></script>
+	<script type='text/javascript'>
 	tinyMCE.init({
 		mode : 'exact',
 		elements : '".$formids."',
@@ -42,6 +42,7 @@ $text .= "',
 		trim_span_elements: true,
 		inline_styles: true,
 		debug: false,
+		force_br_newlines: true,
 		relative_urls: true,
 		document_base_url: '".SITEURL."',
 		theme_advanced_styles: 'border=border;fborder=fborder;tbox=tbox;caption=caption;fcaption=fcaption;forumheader=forumheader;forumheader3=forumheader3',
