@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass2.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-01-27 04:52:43 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.8 $
+|     $Date: 2005-01-27 08:39:40 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -104,8 +104,8 @@ if(isset($_POST['updateclass'])) {
 }
 
 if(isset($_POST['createclass'])) {
-	$_POST['userclass_name'] = $aj -> formtpa($_POST['userclass_name'], "admin");
-	$_POST['userclass_description'] = $aj -> formtpa($_POST['userclass_description'], "admin");
+	$_POST['userclass_name'] = $tp -> toDB($_POST['userclass_name'], "admin");
+	$_POST['userclass_description'] = $tp -> toDB($_POST['userclass_description'], "admin");
 
 	if(getperms("0") || check_class($_POST['userclass_editclass']) && $_POST['userclass_editclass']){
 		$editclass = $_POST['userclass_editclass'];
