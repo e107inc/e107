@@ -104,9 +104,16 @@ on
 
 		$news_category = "<a href='".e_BASE."news.php?cat.".$category_id."'>".$category_name."</a>";
 		$news_author = "<a href='".e_BASE."user.php?id.".$admin_id."'>".$admin_name."</a>";
+		
+		require_once(e_HANDLER."emailprint_class.php");
+		$ep = new emailprint;
+		$textemail = $ep -> render_emailprint("news",$news_id, 1);
+		$textprint = $ep -> render_emailprint("news",$news_id, 2);
+		
+		/*
 		$etext = " <a href='".e_BASE."email.php?news.".$news_id."'><img src='".e_IMAGE."generic/friend.gif' style='border:0' alt='email to someone' title='email to someone'/></a>";
 		$ptext = " <a href='".e_BASE."print.php?news.".$news_id."'><img src='".e_IMAGE."generic/printer.gif' style='border:0' alt='printer friendly' title='printer friendly'/></a>";
-
+		*/
 		if(ADMIN && getperms("H")){
 			$adminoptions .= "<a href='".e_BASE.e_ADMIN."newspost.php?create.edit.".$news_id."'><img src='".e_IMAGE."generic/newsedit.png' alt='' style='border:0' /></a>\n";
 		}
@@ -138,9 +145,9 @@ on
 		$search[7] = "/\{NEWSCOMMENTS\}(.*?)/si";
 		$replace[7] = ($news_allow_comments ? COMMENTOFFSTRING : "<a href='".e_BASE."comment.php?$news_id'>".COMMENTLINK.$comment_total."</a>");
 		$search[8] = "/\{EMAILICON\}(.*?)/si";
-		$replace[8] = $etext;
+		$replace[8] = $textemail;
 		$search[9] = "/\{PRINTICON\}(.*?)/si";
-		$replace[9] = $ptext;
+		$replace[9] = $textprint;
 		$search[10] = "/\{NEWSID\}(.*?)/si";
 		$replace[10] = $news_id;
 
