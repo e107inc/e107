@@ -2,8 +2,9 @@
 
 define("PAGE_NAME", "Article/Review");
 
-define("LAN_25", "Previous page");
-define("LAN_26", "Next page");
+define("LAN_1", "Article");
+define("LAN_2", "Review");
+define("LAN_3", "Category");
 
 
 define("LAN_27", "List reviews in this category");

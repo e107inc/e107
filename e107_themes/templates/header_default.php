@@ -17,7 +17,7 @@ echo "<?xml version='1.0' encoding='iso-8859-1' ?>
 <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
 <html xmlns=\"http://www.w3.org/1999/xhtml\">
 <head>
-<title>".SITENAME.(defined("PAGE_NAME") ? ": ".PAGE_NAME : "")."</title>
+<title>".SITENAME.(defined("e_PAGETITLE") ? ": ".e_PAGETITLE : (defined("PAGE_NAME") ? ": ".PAGE_NAME : ""))."</title>
 <link rel=\"stylesheet\" href=\"".THEME."style.css\" type=\"text/css\" />
 <link rel=\"stylesheet\" href=\"".e_FILE."e107.css\" type=\"text/css\" />";
 if(file_exists(e_BASE."favicon.ico")){echo "\n<link rel=\"shortcut icon\" href=\"favicon.ico\" />"; }
