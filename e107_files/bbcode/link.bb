@@ -6,10 +6,10 @@ $search = array(
 );
 
 $replace = array(
-'<a href="\1\2">\1\2</a>',
-'<a href="http://\1">\1</a>',
-'<a href="\1\2">\3</a>',
-'<a href="\1">\2</a>'
+'<a href="\1\2" rel="nofollow">\1\2</a>',
+'<a href="http://\1" rel="nofollow">\1</a>',
+'<a href="\1\2" rel="nofollow">\3</a>',
+'<a href="\1" rel="nofollow">\2</a>'
 );
 
 return preg_replace($search,$replace,$full_text);

@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-19 17:11:40 $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-19 18:58:09 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -45,7 +45,13 @@ class comment {
 			echo "<br /><div style='text-align:center'><b>".LAN_6." <a href='".e_SIGNUP."'>".COMLAN_1."</a> ".COMLAN_2."</b></div>";
 		}
 	}
-	function render_comment($row, $table, $action, $id, $width, $subject) {
+	function render_comment($row, $table, $action, $id, $width, $subject)
+	{
+
+
+	//	echo "<pre>"; print_r($row); echo "</pre>";
+
+
 		global $COMMENTSTYLE, $pref, $aj;
 		require_once(e_HANDLER."level_handler.php");
 		if (!$width) {
@@ -60,18 +66,17 @@ class comment {
 		$comment_subject = (empty($comment_subject) ? $subject : $aj->tpa($comment_subject));
 		$gen = new convert;
 		$datestamp = $gen->convert_date($comment_datestamp, "short");
-		if ($sql->db_Select("user", "*", "user_name='$comment_author'")) {
-			$row = $sql->db_Fetch();
-			extract($row);
+		if ($user_id) {
 			if ($user_image) {
 				require_once(e_HANDLER."avatar_handler.php");
 				$user_image = avatar($user_image);
+				$user_join = $gen->convert_date($user_join, "short");
 			}
 		} else {
 			$user_id = 0;
 			$user_name = $comment_author;
 		}
-		$user_join = $gen->convert_date($user_join, "short");
+		
 		$url = e_PAGE."?".e_QUERY;
 		$unblock = "[<a href='".e_BASE.e_ADMIN."comment.php?unblock-$comment_id-$url-$comment_item_id'>".LAN_1."</a>] ";
 		$block = "[<a href='".e_BASE.e_ADMIN."comment.php?block-$comment_id-$url-$comment_item_id'>".LAN_2."</a>] ";
