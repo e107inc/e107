@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-03-23 12:52:53 $
-|     $Author: stevedunstan $
+|     $Revision: 1.11 $
+|     $Date: 2005-03-29 06:04:58 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -188,7 +188,7 @@ if ($type == "file")
 			$ip = getip();
 			$request_data = "'0', '{$user_id}', '{$ip}', '$id', '".time()."'";
 			//add request info to db
-			$sql->db_Insert("download_requests", $request_data, TRUE);
+			$sql->db_Insert("download_requests", $request_data, FALSE);
 			if (preg_match("/Binary\s(.*?)\/.*/", $download_url, $result)) {
 				$bid = $result[1];
 				$result = @mysql_query("SELECT * FROM ".MPREFIX."rbinary WHERE binary_id='$bid' ");
