@@ -11,15 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-02-24 02:43:28 $
-|     $Author: e107coders $
+|     $Revision: 1.21 $
+|     $Date: 2005-04-05 17:18:27 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
 require_once("../class2.php");
 $e_sub_cat = 'mail';
 $e_wysiwyg = "email_body";
+set_time_limit(180);
 
 require_once(e_ADMIN."auth.php");
 if (!getperms("W")) {
