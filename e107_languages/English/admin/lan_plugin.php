@@ -38,5 +38,15 @@ define("EPL_ADLAN_33", "Plugin successfully installed.");
 define("EPL_ADLAN_34", "Plugin successfully updated.");
 define("EPL_ADLAN_35", "Parser settings successfully added.");
 
+define("EPL_CANCEL", "Cancel");
+define("EPL_EMAIL", "email");
+define("EPL_WEBSITE", "website");
+define("EPL_OPTIONS", "Options");
+define("EPL_NOINSTALL", "No install required, just activate from your menus screen. To uninstall, delete the ");
+define("EPL_DIRECTORY", "directory.");
+define("EPL_NOINSTALL_1", "No install required, to remove delete the ");
+define("EPL_UPGRADE", "Upgrade");
+
+
 
 ?>

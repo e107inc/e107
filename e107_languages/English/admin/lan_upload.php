@@ -48,4 +48,9 @@ define("UPLLAN_42", "Actions");
 define("UPLLAN_43", "Uploads");
 define("UPLLAN_44", "Upload");
 
+define("UPLAN_COPYTODLM", "copy to download manager");
+define("UPLAN_IS", "is ");
+define("UPLAN_ARE", "are ");
+define("UPLAN_COPYTODLS", "Copy to Downloads");
+
 ?>
