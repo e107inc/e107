@@ -11,31 +11,25 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search/search_news.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-09 12:27:22 $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-10 00:51:07 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
-$fields = array('news_title', 'news_body', 'news_extended');
+$return_fields = 'news_id, news_title, news_body, news_extended, news_allow_comments, news_datestamp';
+$search_fields = array('news_title', 'news_body', 'news_extended');
+$weights = array('1.2', '0.6', '0.6');
 $time = time();
-$pre_sql = " (news_start < ".$time.") AND (news_end=0 OR news_end > ".$time.") AND ";
-$post_sql = " AND news_class IN (".USERCLASS_LIST.")";
-if ($results = $sch -> search_query($query, 'news', $fields, $pre_sql, $post_sql)) {
-	$x = 0;
+$where = "(news_start < ".$time.") AND (news_end=0 OR news_end > ".$time.") AND news_class IN (".USERCLASS_LIST.") AND";
+$order = ", news_datestamp DESC";
+if ($results = $sch -> search_query('news', $return_fields, $search_fields, $weights, $where, $order)) {
 	while ($match = $sql->db_Fetch()) {
 		$link = ($match['news_allow_comments'] ? "news.php?item.".$match['news_id'] : "comment.php?comment.news.".$match['news_id']);
 		$datestamp = $con->convert_date($match['news_datestamp'], "long");
-		$sch -> parsesearch($match['news_title'], 2, TRUE, TRUE);
-		$output['text'][$x] = $sch -> search_link($link);
-		$sch -> parsesearch($match['news_body'].' '.$match['news_extended'], 1);
-		$detail = $sch -> search_detail(LAN_SEARCH_3.$datestamp);
-		$output['text'][$x] .= $detail['text'];
-		$output['weight'][$x] = $detail['weight'];
-		$output['date'][$x] = $match['news_datestamp'];
-		$x++;
+		$parse = array($match['news_title'], $match['news_body'].$match['news_extended']);
+		$text .= $sch -> parsesearch($parse, $link, LAN_SEARCH_3.$datestamp, $match['relevance']);
 	}
-	$text .= $sch -> search_sort($output['weight'], SORT_DESC, $output['date'], SORT_DESC, $output['text'], SORT_ASC);
 } else {
 	$text .= LAN_198;
 }
