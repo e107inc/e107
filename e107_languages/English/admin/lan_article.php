@@ -82,4 +82,6 @@ define("ARLAN_97", "Post");
 define("ARLAN_98", "Post User Submitted Article");
 define("ARLAN_99", "User submitted article saved in database");
 define("ARLAN_100", "Click here to fill author fields");
+
+define("ARLAN_101", "by");
 ?>
