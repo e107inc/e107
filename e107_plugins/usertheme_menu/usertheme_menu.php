@@ -6,7 +6,7 @@ if(USER == TRUE){
 
 $handle=opendir(e_THEME);
 while ($file = readdir($handle)){
-        if($file != "." && $file != ".." && $file != "templates" && $file != ""){
+        if($file != "." && $file != ".." && $file != "templates" && $file != "" && $file != "CVS"){
                 $themelist[] = $file;
                 $themecount[$file] = 0;
         }
