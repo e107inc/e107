@@ -16,37 +16,13 @@ if(!$LOGIN_TABLE){
 		}
 		$LOGIN_TABLE .= "
 		<div style='text-align:center'>
-		".$rs -> form_open("post", e_SELF)."
-		<table class='fborder' style='width:30%'>
-		<tr><td class='forumheader' colspan='2' style='text-align:center;width:30%'><strong>".LAN_LOGIN_4."</strong></td></tr>
-		<tr>
-			<td class='forumheader3' style='width:30%'>".LAN_LOGIN_1."</td>
-			<td class='forumheader3' style='width:70%; text-align:right'>{LOGIN_TABLE_USERNAME}</td>
-		</tr>
-		<tr>
-			<td class='forumheader3' style='width:30%'>".LAN_LOGIN_2."</td>
-			<td class='forumheader3' style='width:70%; text-align:right'>{LOGIN_TABLE_PASSWORD}</td>
-		</tr>";
+		".$rs -> form_open("post", e_SELF)."<table class='fborder' style='width:60%' >\n<tr>\n<td class='forumheader' style='text-align:center;' colspan='3'>".LAN_LOGIN_4."</td>\n</tr>\n<tr>\n<td class='forumheader3' width='40%'>".LAN_LOGIN_1."</td>\n<td class='forumheader3' width='40%'>{LOGIN_TABLE_USERNAME}</td>\n<td class='forumheader3' width='20%' rowspan='".($LOGIN_TABLE_SECIMG_SECIMG ? 3 : 2)."' style='vertical-align: middle; margin-left: auto; margin-right: auto; text-align: center;'><img src='".e_IMAGE."generic/password.png' alt='' /></td>\n</tr>\n<tr>\n<td class='forumheader3'>".LAN_LOGIN_2."</td>\n<td class='forumheader3'>{LOGIN_TABLE_PASSWORD}</td>\n</tr>\n";
+	if($LOGIN_TABLE_SECIMG_SECIMG){
+		$LOGIN_TABLE .= "<tr><td class='forumheader3'>{LOGIN_TABLE_SECIMG_LAN}</td>\n<td class='forumheader3'>{LOGIN_TABLE_SECIMG_HIDDEN} {LOGIN_TABLE_SECIMG_SECIMG} {LOGIN_TABLE_SECIMG_TEXTBOC}</td>\n</tr>\n";
+	}
 
-		if($LOGIN_TABLE_SECIMG_SECIMG){
-			$LOGIN_TABLE .= "
-			<tr>
-				<td class='forumheader3'>{LOGIN_TABLE_SECIMG_LAN}</td>
-				<td class='forumheader3'>{LOGIN_TABLE_SECIMG_HIDDEN} {LOGIN_TABLE_SECIMG_SECIMG}<br />
-				{LOGIN_TABLE_SECIMG_TEXTBOC}<br />
-				</td>
-			</tr>";
-		}
-
-		$LOGIN_TABLE .= "
-		<tr>
-		<td class='forumheader2' colspan='2' style='text-align:center'>
-			{LOGIN_TABLE_AUTOLOGIN}<span class='smalltext'>{LOGIN_TABLE_AUTOLOGIN_LAN}</span><br />
-			{LOGIN_TABLE_SUBMIT}
-		</td>
-		</tr></table>".
-		$rs -> form_close()."
-		</div>";
+	$LOGIN_TABLE .= "<tr>\n<td class='forumheader2' style='text-align:center;' colspan='3'>{LOGIN_TABLE_AUTOLOGIN}<span class='smalltext'>{LOGIN_TABLE_AUTOLOGIN_LAN}</span><br />{LOGIN_TABLE_SUBMIT}</td>\n</tr>\n</table>".
+	$rs -> form_close()."\n</div>";
 }
 // ##### ------------------------------------------------------------------------------------------
 
