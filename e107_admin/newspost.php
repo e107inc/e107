@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.68 $
-|   $Date: 2005-04-03 14:19:18 $
+|   $Revision: 1.69 $
+|   $Date: 2005-04-06 21:25:00 $
 |   $Author: stevedunstan $
 +---------------------------------------------------------------+
 
@@ -560,7 +560,7 @@ class newspost {
 			</tr>
 
 			<tr>
-			<td class='forumheader3'>Thumbnail / Icon</td>
+			<td class='forumheader3'>".LAN_NEWS_41."</td>
 			<td class='forumheader3'>
 			<a style='cursor: pointer' onclick='expandit(this);'>".LAN_NEWS_23."</a>
 			<div style='display: none;'>
@@ -579,7 +579,7 @@ class newspost {
 			</tr>
 
 			<tr>
-			<td class='forumheader3'>Files</td>
+			<td class='forumheader3'>".LAN_NEWS_42."</td>
 			<td class='forumheader3'>
 			<a style='cursor: pointer' onclick='expandit(this);'>".LAN_NEWS_40."</a>
 			<div style='display: none;'>
@@ -863,7 +863,7 @@ class newspost {
 			}
 			else
 		{
-				echo "<b>Trackback not enabled.</b> ".$variable." <br />";
+				echo "<b>".LAN_NEWS_44.".</b> ".$variable." <br />";
 		}
 
 			$text .= "<tr style='vertical-align: top;'>
