@@ -45,11 +45,11 @@ function show_admin_menu($title, $page, $e107_vars, $js = FALSE){
 
 
 // [layout]
-
+// <img src='".THEME."images/logo.png' style='width: 170px; height: 71px; display: block;' alt='' />
 $ADMIN_HEADER = "<table class='top_section'>
 <tr>
-<td class='top_section_left' style='width: 170px'>
-<img src='".THEME."images/logo.png' style='width: 170px; height: 71px; display: block;' alt='' />
+<td class='top_section_left' style='padding-left: 5px; padding-right: 5px'>
+{ADMIN_LOGO}
 </td>
 <td class='top_section_mid' style='width: 100%'>
 <div style='margin-bottom: 3px;'>
