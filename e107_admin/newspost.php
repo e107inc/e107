@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.5 $
-|   $Date: 2004-11-28 23:40:43 $
-|   $Author: e107coders $
+|   $Revision: 1.6 $
+|   $Date: 2004-12-01 14:41:39 $
+|   $Author: streaky $
 +---------------------------------------------------------------+
 
 */
@@ -61,7 +61,7 @@ if($delete == "main" && $del_id)
         if($sql -> db_Delete("news", "news_id='$del_id' "))
         {
                 $newspost -> show_message(NWSLAN_31." #".$del_id." ".NWSLAN_32);
-                clear_cache("news.php");
+                $e107cache->clear("news.php");
                 $ix -> create_rss();
         }
         unset($delete, $del);
@@ -81,7 +81,7 @@ if($delete == "sn" && $del_id){
         if($sql -> db_Delete("submitnews", "submitnews_id='$del_id' "))
         {
                 $newspost -> show_message(NWSLAN_34." #".$del_id." ".NWSLAN_32);
-                clear_cache("news.php");
+                $e107cache->clear("news.php");
                 unset($delete,$del_id);
         }
 }
@@ -161,7 +161,7 @@ if(IsSet($_POST['save_prefs']))
 	$pref['subnews_hide_news'] = $_POST['subnews_hide_news'];
 
 	save_prefs();
-	clear_cache("news.php");
+	$e107cache->clear("news.php");
 	$newspost -> show_message("Settings Saved");
 }
 

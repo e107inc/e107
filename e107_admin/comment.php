@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/comment.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:20 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-01 14:41:39 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -34,10 +34,10 @@ if(e_QUERY){
         if($action == "delete"){
                 $sql -> db_Delete("comments", "comment_id='$id' ");
         }
-        if(!clear_cache($item)){
+        if(!$e107cache->clear($item)){
                 $tmp = explode("?", $item);
                 $item = $tmp[0]."?news.".$c_item;
-                clear_cache($item);
+                $e107cache->clear($item);
         }
 }
 echo "<script type='text/javascript'>window.history.go(-1);</script>\n";

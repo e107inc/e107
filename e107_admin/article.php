@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/article.php,v $
-|   $Revision: 1.3 $
-|   $Date: 2004-11-28 23:40:43 $
-|   $Author: e107coders $
+|   $Revision: 1.4 $
+|   $Date: 2004-12-01 14:41:39 $
+|   $Author: streaky $
 
 +---------------------------------------------------------------+
 */
@@ -57,7 +57,7 @@ if(IsSet($_POST['create_category'])){
         $_POST['category_description'] = $aj -> formtpa($_POST['category_description'], "admin");
         $sql -> db_Insert("content", " '0', '".$_POST['category_name']."', '".$_POST['category_description']."', '', 0, ".time().", '".ADMINID."', 0, '".$_POST['category_button']."', 6, 0, 0, 0");
         $message = ARLAN_56;
-        clear_cache("article");
+        $e107cache->clear("article");
         $action = "cat";
 }
 
@@ -66,7 +66,7 @@ if(IsSet($_POST['update_category'])){
         $_POST['category_description'] = $aj -> formtpa($_POST['category_description'], "admin");
         $sql -> db_Update("content", "content_heading='".$_POST['category_name']."', content_subheading='".$_POST['category_description']."', content_summary='".$_POST['category_button']."' WHERE content_id='".$_POST['category_id']."' ");
         $message = ARLAN_57;
-        clear_cache("article");
+        $e107cache->clear("article");
         $action = "cat";
 }
 
@@ -79,7 +79,7 @@ if(IsSet($_POST['create_article'])){
                 $sql -> db_Insert("content", "0, '$content_heading', '$content_subheading', '$content_content', '".$_POST['category']."', '".time()."', '$content_author', '".$_POST['content_comment']."', '".$_POST['content_summary']."', '0' ,'0' ,".$_POST['add_icons'].", ".$_POST['a_class']);
                 unset($content_heading, $content_subheading, $data, $content_summary, $content_author);
                 $message = ARLAN_0;
-                clear_cache("article");
+                $e107cache->clear("article");
         }else{
                 $message = ARLAN_1;
         }
@@ -117,7 +117,7 @@ If(IsSet($_POST['update_article'])){
                 unset($content_heading, $content_subheading, $data, $content_summary);
                 $message = ARLAN_2;
                                  unset($action, $sub_action);
-                clear_cache("article");
+                $e107cache->clear("article");
         }else{
                 $message = ARLAN_1;
         }
@@ -150,7 +150,7 @@ if($delete == "main")
         if($sql -> db_Delete("content", "content_id='$del_id' "))
         {
                 $message = ARLAN_30;
-                clear_cache("article");
+                $e107cache->clear("article");
                 unset($action, $sub_action, $id);
         }
 }

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/content.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2004-12-01 14:09:52 $
+|     $Revision: 1.8 $
+|     $Date: 2004-12-01 14:41:15 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -149,7 +149,7 @@ if(IsSet($_POST['commentsubmit']))
 		if($row[0] && (ANON===TRUE || USER===TRUE))
 		{
 			$cobj -> enter_comment($_POST['author_name'], $_POST['comment'], "content", $sub_action, $pid, $_POST['subject']);
-			clear_cache("comment.content.{$sub_action}");
+			$e107cache->clear("comment.content.{$sub_action}");
 		}
 	}
 }

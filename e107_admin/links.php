@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2004-11-28 23:40:43 $
-|     $Author: e107coders $
+|     $Revision: 1.7 $
+|     $Date: 2004-12-01 14:41:39 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -63,7 +63,7 @@ if($action == "dec" && strpos(e_SELF,"links"))
         $location = $qs[3];
         $sql -> db_Update("links", "link_order=link_order-1 WHERE link_order='".($link_order+1)."' AND link_category='$location' ");
         $sql -> db_Update("links", "link_order=link_order+1 WHERE link_id='$linkid' AND link_category='$location' ");
-        clear_cache("sitelinks");
+        $e107cache->clear("sitelinks");
         header("location: ".e_ADMIN."links.php?order");
         exit;
 }
@@ -77,7 +77,7 @@ if($action == "inc" && strpos(e_SELF,"links"))
         $location = $qs[3];
         $sql -> db_Update("links", "link_order=link_order+1 WHERE link_order='".($link_order-1)."' AND link_category='$location' ");
         $sql -> db_Update("links", "link_order=link_order-1 WHERE link_id='$linkid' AND link_category='$location' ");
-        clear_cache("sitelinks");
+        $e107cache->clear("sitelinks");
         header("location: ".e_ADMIN."links.php?order");
         exit;
 }
@@ -100,7 +100,7 @@ if(IsSet($_POST['update_order'])){
                 $tmp = explode(".", $id);
                 $sql -> db_Update("links", "link_order=".$tmp[1]." WHERE link_id=".$tmp[0]);
         }
-        clear_cache("sitelinks");
+        $e107cache->clear("sitelinks");
         $linkpost -> show_message(LCLAN_6);
 }
 
@@ -121,7 +121,7 @@ if($delete == 'main')
 {
         if($sql -> db_Delete("links", "link_id='$del_id' "))
         {
-                clear_cache("sitelinks");
+                $e107cache->clear("sitelinks");
                 $linkpost -> show_message(LCLAN_53." #".$del_id." ".LCLAN_54);
         }
 }
@@ -439,11 +439,11 @@ class links{
 
                 if($id && $sub_action != "sn"){
                         $sql -> db_Update("links", "link_name='$link_name', link_url='$link_url', link_description='$link_description', link_button= '$link_button', link_category='".$_POST['cat_id']."', link_open='".$_POST['linkopentype']."', link_class='".$_POST['link_class']."' WHERE link_id='$id'");
-                        clear_cache("sitelinks");
+                        $e107cache->clear("sitelinks");
                         $this->show_message(LCLAN_3);
                 }else{
                         $sql -> db_Insert("links", "0, '$link_name', '$link_url', '$link_description', '$link_button', '".$_POST['cat_id']."', '".($link_t+1)."', '0', '".$_POST['linkopentype']."', '".$_POST['link_class']."'");
-                        clear_cache("sitelinks");
+                        $e107cache->clear("sitelinks");
                         $this->show_message(LCLAN_2);
                 }
                 if($sub_action == "sn"){

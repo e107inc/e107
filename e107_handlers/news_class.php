@@ -12,9 +12,9 @@
 |	GNU General Public License (http://gnu.org).	
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.5 $
-| $Date: 2004-10-30 00:13:59 $
-| $Author: mcfly_e107 $ 
+| $Revision: 1.6 $
+| $Date: 2004-12-01 14:41:39 $
+| $Author: streaky $ 
 +---------------------------------------------------------------+
 */
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -37,11 +37,11 @@ class news{
 			if(isset($_POST['list_lang'])){$tmp_lg = $_POST['list_lang'];}else{$tmp_lg = e_DBLANGUAGE;}
       if(e_MLANG == 1 && $ml -> e107_ml_Update("news",$vals,FALSE,$tmp_lg)){
 				$message = LAN_NEWS_20.$tmp_lg;
-        clear_cache("news.php");
+        $e107cache->clear("news.php");
 			} // END ML
 			else if($sql -> db_Update("news",$vals)){
 				$message = LAN_NEWS_21;
-        clear_cache("news.php");
+        $e107cache->clear("news.php");
 			}else{
 				$message = LAN_NEWS_5;
 			}
@@ -57,7 +57,7 @@ class news{
 			else if($sql -> db_Insert("news", "0, '$news_title', '$news_body', '$news_extended', ".time().", ".USERID.", $cat_id, $news_allow_comments, $active_start, $active_end, '$news_class', '$news_rendertype' ")){
 			// END ML
 			 $message = LAN_NEWS_6;
-             clear_cache("news.php");
+             $e107cache->clear("news.php");
 			}else{
 				$message = LAN_NEWS_7;
 			}

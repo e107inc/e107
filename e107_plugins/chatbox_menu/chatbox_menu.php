@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2004-12-01 14:10:50 $
+|     $Revision: 1.7 $
+|     $Date: 2004-12-01 14:41:39 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -68,7 +68,7 @@ if(IsSet($_POST['chat_submit']))
 					if(!$emessage)
 					{
 						$sql -> db_Insert("chatbox", "0, '$nick', '$cmessage', '".time()."', '0' , '$ip' ");
-						clear_cache("chatbox");
+						$e107cache->clear("chatbox");
 					}
 				}
 			}

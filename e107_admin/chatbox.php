@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/chatbox.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:20 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-01 14:41:39 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -43,7 +43,7 @@ if(IsSet($_POST['moderate'])){
                         $sql -> db_Delete("chatbox", "cb_id='$id' ");
                 }
         }
-        clear_cache("chatbox");
+        $e107cache->clear("chatbox");
         $message = CHBLAN_2;
 }
 
