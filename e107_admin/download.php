@@ -289,7 +289,7 @@ class download{
                         if($sql -> db_Select("upload", "*", "upload_id='$id' ")){
                                 $row = $sql-> db_Fetch();
                                 extract($row);
-								$download_category = $upload_category;
+                                                                $download_category = $upload_category;
                                 $download_name = $upload_name.($upload_version ? " - " . $upload_version : "");
                                 $download_url = $upload_file;
                                 $download_author_email = $upload_email;
@@ -471,7 +471,7 @@ class download{
         }
 
         function submit_download($sub_action, $id){
-                global $aj, $sql;
+                global $aj, $sql, $DOWNLOADS_DIRECTORY;
 
                 if($_POST['download_url_external']){
                         $durl = $_POST['download_url_external'];
