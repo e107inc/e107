@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:20 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-09-30 12:16:13 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 
@@ -463,20 +463,22 @@ class links{
                 while(list($link_category_id, $link_category_name, $link_category_description) = $sql-> db_Fetch()){
                         if($lamount = $sql2 -> db_Select("links", "*", "link_category ='$link_category_id' ORDER BY link_order ASC ")){
                                 $text .= "<tr><td colspan='3' class='forumheader'>$link_category_name ".LCLAN_59."</td></tr>";
+                                $local_link_sequence = 1;
                                 while(list($link_id, $link_name, $link_url, $link_description, $link_button, $link_category, $link_order, $link_refer) = $sql2-> db_Fetch()){
-                                        $text .= "<tr>\n<td style='width:30%' class='forumheader3'>".$link_order." - ".$link_name."</td>\n<td style='width:30%; text-align:center' class='forumheader3'>\n<select name='link_order[]' class='tbox'>";
+                                        $text .= "<tr>\n<td style='width:30%' class='forumheader3'>".$local_link_sequence." - ".$link_name."</td>\n<td style='width:30%; text-align:center' class='forumheader3'>\n<select name='link_order[]' class='tbox'>";
                                         for($a=1; $a<= $lamount; $a++){
-                                                $text .= ($link_order == $a ? "<option value='$link_id.$a' selected='selected'>$a</option>\n" : "<option value='$link_id.$a'>$a</option>\n");
+                                                $text .= ($local_link_sequence == $a ? "<option value='$link_id.$a' selected='selected'>$a</option>\n" : "<option value='$link_id.$a'>$a</option>\n");
                                         }
 
                                         $text .= "</select> <select name='activate' onchange='urljump(this.options[selectedIndex].value)' class='tbox'>
                                         <option value='links.php' selected='selected'></option>
-                                        <option value='links.php?inc.".$link_id.".".$link_order.".".$link_category."'>".LCLAN_30."</option>
-                                        <option value='links.php?dec.".$link_id.".".$link_order.".".$link_category."'>".LCLAN_31."</option>
+                                        <option value='links.php?inc.".$link_id.".".$local_link_sequence.".".$link_category."'>".LCLAN_30."</option>
+                                        <option value='links.php?dec.".$link_id.".".$local_link_sequence.".".$link_category."'>".LCLAN_31."</option>
                                         </select>
                                         </td>
                                         <td style='width:40%' class='forumheader3'>&nbsp;".$aj->tpa($link_description)."</td>
                                         </tr>";
+                                        $local_link_sequence++;
                                 }
                         }
                 }
