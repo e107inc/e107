@@ -18,7 +18,7 @@ define("LOGIN_MENU_L3", "Signup");
 define("LOGIN_MENU_L4", "Forgot password?");
 define("LOGIN_MENU_L5", "Welcome");
 define("LOGIN_MENU_L6", "Remember me");
-define("LOGIN_MENU_L7", "Unique user id not recognised (possible corrupted cookie).<br />Please <a href=\"index.php?logout\">click here</a> to destroy cookie.");
+define("LOGIN_MENU_L7", "Unique user id not recognised (possible corrupted cookie).<br />Please <a href=\"".e_BASE."index.php?logout\">click here</a> to destroy cookie.");
 define("LOGIN_MENU_L8", "Logout");
 define("LOGIN_MENU_L9", "Login Error");
 define("LOGIN_MENU_L10", "The maintenance flag is true - this means normal visitors are being redirected to sitedown.php. To reset the flag go to admin/maintenance.");
