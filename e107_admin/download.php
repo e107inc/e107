@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-03-23 12:54:22 $
+|     $Revision: 1.32 $
+|     $Date: 2005-03-23 13:01:21 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -1194,7 +1194,7 @@ class download {
 		$text .= DOWLAN_140."<br /><br />";
 
 		foreach($imagelist as $file){
-			$text .= "<a href=\"javascript:insertext('".$file['fname']."','mirror_image','null')\"><img src='".e_FILE."downloadimages/".$file['fname']."' alt='' /></a><br />";
+			$text .= "<a href=\"javascript:insertext('".$file['fname']."','mirror_image','null')\"><img src='".e_FILE."downloadimages/".$file['fname']."' alt='' /></a> ";
 		}
 
 		$text .= "</div>
