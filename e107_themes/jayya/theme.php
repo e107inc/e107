@@ -145,28 +145,23 @@ define("POST_EXTENDEDSTRING", " ]<br />");
 function tablestyle($caption, $text, $mode){
 	global $style;
 	if ($caption == '') { $caption = '&nbsp;'; }
-	$bodytable = (isset($mode['style']) && $mode['style'] == 'button_menu') ? 'menu_content_buttons' : 'menu_content';
-	$bodybreak = (isset($mode['style']) && $mode['style'] == 'button_menu') ? '' : '<br />';
+	$bodytable = ((isset($mode['style']) && $mode['style'] == 'button_menu') || (isset($mode) && ($mode == 'menus_config'))) ? 'menu_content_buttons' : 'menu_content';
+	$bodybreak = ((isset($mode['style']) && $mode['style'] == 'button_menu') || (isset($mode) && ($mode == 'menus_config'))) ? '' : '<br />';
 	$r_caption_bord_but = (isset($mode['style']) && $mode['style'] == 'button_menu') ? ' button_menu' : '';
 	if ($style == "leftmenu") {
 		echo "<div class='cap_border'><div class='left_caption'>".$caption."</div></div>";
 		if ($text != "") {
-			echo "<div class='menu_content'>
-			".$text."<br /></div>";
+			echo "<div class='".$bodytable."'>".$text.$bodybreak."</div>";
 		}
 	}  else if ($style == "rightmenu") {
-		echo "<div class='cap_border".$r_caption_bord_but."'>
-		<div class='right_caption'>".$caption."</div>
-		</div>";
+		echo "<div class='cap_border".$r_caption_bord_but."'><div class='right_caption'>".$caption."</div></div>";
 		if ($text != "") {
 			echo "<div class='".$bodytable."'>".$text.$bodybreak."</div>";
 		}
 	} else {
-		echo "<div class='cap_border'>
-		<div class='main_caption'>".$caption."</div>
-		</div>";
+		echo "<div class='cap_border'><div class='main_caption'>".$caption."</div></div>";
 		if ($text != "") {
-			echo "<div class='menu_content'>".$text."<br /></div>";
+			echo "<div class='".$bodytable."'>".$text.$bodybreak."</div>";
 		}
 	}
 }
