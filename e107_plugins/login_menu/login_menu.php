@@ -39,7 +39,7 @@ $text = "";
 
 
 		$new_articles = 0;
-		$new_articles = $sql -> db_Select("content", "*", "content_type=6 AND content_datestamp > $time ORDER BY content_datestamp DESC");
+		$new_articles = $sql -> db_Select("content", "*", "content_type!=6 AND content_datestamp > $time ORDER BY content_datestamp DESC");
 		while($row = $sql -> db_Fetch()){
 			extract($row);
 				if(!check_class($content_class)){
