@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-04-01 18:56:34 $
+|     $Revision: 1.13 $
+|     $Date: 2005-04-06 03:52:59 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -194,6 +194,13 @@ class e107_user_extended
 			$sql->db_Select_gen("ALTER TABLE #user_extended DROP user_".$name);
 			$sql->db_Delete("user_extended_struct", "user_extended_struct_id = '$id' ");
 		}
+	}
+
+	function user_extended_hide($struct, $curval)
+	{
+		$chk = ($curval) ? " checked='checked' " : "";
+		$name = "hide_user_".$struct['user_extended_struct_name'];
+		return "<input type='checkbox' {$chk} value='1' name='{$name}' />&nbsp;".UE_LAN_HIDE;
 	}
 
 	function user_extended_edit($struct, $curval)

@@ -31,11 +31,11 @@ else
 		}
 	}
 }
-
-//echo $parms[0]."<br />";
-//echo "<pre>".print_r($ueStruct, true)."</pre>";
-//echo "{$parms[0]} {$parms[1]} = read_class = ".$ueStruct['user_'.$parms[0]]['user_extended_struct_read']."<br />";
-if(!check_class($ueStruct[$parms[0]]['user_extended_struct_applicable'], $udata['user_class']) || !check_class($ueStruct["user_".$parms[0]]['user_extended_struct_read']))
+if (
+!check_class($ueStruct[$parms[0]]['user_extended_struct_applicable'], $udata['user_class'])
+|| !check_class($ueStruct["user_".$parms[0]]['user_extended_struct_read'])
+|| (!ADMIN && strpos($ueStruct["user_".$parms[0]]['user_extended_struct_parms'], "allow_hide") !== FALSE && strpos($udata['user_'.$parms[0]], chr(1)) !== FALSE)
+)
 {
 	return FALSE;
 }
@@ -60,10 +60,11 @@ if ($parms[1] == 'icon')
 
 if ($parms[1] == 'value')
 {
+	$uVal = str_replace(chr(1), "", $udata['user_'.$parms[0]]);
 	if($ueStruct["user_".$parms[0]]['user_extended_struct_type'] == '4')
 	{
 		$tmp = explode(",",$ueStruct["user_".$parms[0]]['user_extended_struct_values']);
-		if($sql->db_Select($tmp[0],"{$tmp[1]}, {$tmp[2]}","{$tmp[1]} = {$udata["user_".$parms[0]]}"))
+		if($sql->db_Select($tmp[0],"{$tmp[1]}, {$tmp[2]}","{$tmp[1]} = {$uVal}"))
 		{
 			$row = $sql->db_Fetch();
 			$ret_data = $row[$tmp[2]];
@@ -75,12 +76,12 @@ if ($parms[1] == 'value')
 	}
 	else
 	{
-		$ret_data = $udata['user_'.$parms[0]];
+		$ret_data = $uVal;
 	}
 	if($ret_data)
 	{
 		return $tp->toHTML($ret_data, TRUE, "", "class:{$udata['user_class']}");
 	}
-	return "nothing found";
+	return FALSE;
 }
 return TRUE;

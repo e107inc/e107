@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_user.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-03-09 10:57:30 $
-|     $Author: stevedunstan $
+|     $Revision: 1.4 $
+|     $Date: 2005-04-06 03:53:00 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Members");
@@ -37,7 +37,7 @@ define("LAN_400", "That is not a valid user.");
 define("LAN_401", "no information");
 define("LAN_402", "Member Profile");
 define("LAN_403", "Site Stats");
-define("LAN_404", "Last visited site");
+define("LAN_404", "Last visit");
 define("LAN_405", "days ago");
 define("LAN_406", "Rating");
 define("LAN_407", "none");

@@ -6,4 +6,6 @@ define("UE_LAN_4", "DB Table Field");
 define("UE_LAN_5", "Textarea");
 define("UE_LAN_6", "Integer");
 define("UE_LAN_7", "Date");
+
+define("UE_LAN_HIDE", "Hide from users");
 ?>

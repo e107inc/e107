@@ -97,7 +97,13 @@ SC_END
 SC_BEGIN USER_LASTVISIT
 global $user;
 $gen = new convert;
-return $user['user_currentvisit'] ? $gen->convert_date($user['user_currentvisit'], "long")."<br />( ".$gen -> computeLapse($user['user_currentvisit'])." ".LAN_426." )" : "<i>".LAN_401."</i>";
+return $user['user_currentvisit'] ? $gen->convert_date($user['user_currentvisit'], "long") : "<i>".LAN_401."</i>";
+SC_END
+
+SC_BEGIN USER_LASTVISIT_LAPSE
+global $user;
+$gen = new convert;
+return $user['user_currentvisit'] ? "( ".$gen -> computeLapse($user['user_currentvisit'])." ".LAN_426." )" : "<i>".LAN_401."</i>";
 SC_END
 
 SC_BEGIN USER_VISITS
@@ -241,6 +247,7 @@ SC_END
 
 SC_BEGIN USER_SENDPM
 global $tp, $user;
+print_r($user);
 return $tp->parseTemplate("{SENDPM={$user['user_id']}}");
 SC_END
 
@@ -361,13 +368,13 @@ foreach($ueCatList as $catnum => $cat)
 {
 	$key = $cat[0]['user_extended_struct_name'];
 	$cat_name = $tp->parseTemplate("{EXTENDED={$key}.text.{$user_id}}", TRUE);
-	if($cat_name !== FALSE)
+	if($cat_name != FALSE)
 	{
 		$ret .= str_replace("{EXTENDED_NAME}", $key, $EXTENDED_CATEGORY_START);
 		foreach($ueFieldList[$catnum] as $f)
 		{
 			$key = $f['user_extended_struct_name'];
-			if($ue_name = $tp->parseTemplate("{EXTENDED={$key}.text.{$user_id}}", TRUE))
+			if($ue_name = $tp->parseTemplate("{EXTENDED={$key}.text.{$user['user_id']}}", TRUE))
 			{
 				$extended_record = str_replace("EXTENDED_ICON","EXTENDED={$key}.icon", $EXTENDED_CATEGORY_TABLE);
 				$extended_record = str_replace("{EXTENDED_NAME}", $ue_name, $extended_record);
