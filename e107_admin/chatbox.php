@@ -59,7 +59,9 @@ if(IsSet($_POST['updatesettings'])){
 }
 
 if(IsSet($_POST['prune'])){
-	$prunetime = time() - $_POST['chatbox_prune'];
+	$chatbox_prune = $_POST['chatbox_prune'];
+	$prunetime = time() - $chatbox_prune;
+
 	$sql -> db_Delete("chatbox", "cb_datestamp < '$prunetime' ");
 	$message = CHBLAN_28;
 }
