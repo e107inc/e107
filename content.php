@@ -77,7 +77,6 @@ require_once(HEADERF);
 
 require_once(e_HANDLER."emailprint_class.php");
 $ep = new emailprint;
-$textemailprint = $ep -> render_emailprint("article",$sub_action);
 /*
 $ep = "<div style='text-align:right'>
 <a href='email.php?article.".$sub_action."'><img src='".e_IMAGE."generic/friend.gif' style='border:0' alt='email to someone' /></a>
@@ -123,7 +122,14 @@ if($action == "content"){
 	if($cache = retrieve_cache("content.$sub_action")){
 		echo $aj -> formtparev($cache);
 	}else{
-		ob_start();
+		ob_start();		
+		$textemailprint = $ep -> render_emailprint("content",$sub_action);
+		if(strstr($content_content, "{EMAILPRINT}")){
+			$content_content = str_replace("{EMAILPRINT}", $textemailprint, $content_content);
+			$epflag = TRUE;
+		}elseif($content_pe_icon){
+			$content_content = $content_content."<br /><br />".$textemailprint;
+		}
 		$text = ($content_parent ? $aj -> tpa($content_content, "nobreak", "admin", $highlight_search) : $aj -> tpa($content_content, "off", "admin", $highlight_search));
 		$caption = $aj -> tpa($content_subheading, "off", "admin");
 		$ns -> tablerender($caption, $text);
@@ -502,7 +508,8 @@ if($action == "article"){
 					$ns -> tablerender(LAN_52, "<div style='text-align:center'>".LAN_51."</div>");
 					require_once(FOOTERF);
 					exit;
-				}
+				}				
+				$textemailprint = $ep -> render_emailprint("article",$sub_action);
 				$category = $content_parent;
 				$sql2 = new db;
 				$gen = new convert; 

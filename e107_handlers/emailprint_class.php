@@ -22,11 +22,15 @@ class emailprint{
 		switch($mode){
 			case "article":
 				$email = "article";
-				$print = "content";
+				$print = "article";
 			break;
 			case "news":
 				$email = "news";
 				$print = "news";				
+			break;
+			case "content":
+				$email = "content";
+				$print = "content";				
 			break;
 		}
 		if($look==0 || $look==1){
