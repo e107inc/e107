@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-02-10 18:16:53 $
-|     $Author: sweetas $
+|     $Revision: 1.25 $
+|     $Date: 2005-02-12 16:56:24 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -595,9 +595,27 @@ $text .= "<div id='textpost' style='display:none; text-align:center'>
 	<td class='forumheader3' style='width:50%; text-align: right;'>
 	".r_userclass('post_html',$pref['post_html'],'off','public, member, admin, classes')."
 	</td>
+	</tr>\n";
+
+	if(file_exists(e_PLUGIN."geshi/geshi.php")) {
+		$text .= "<tr>
+	<td class='forumheader3' style='width:50%;'>".PRFLAN_118."?:  <div class='smalltext'>".PRFLAN_119."</div></td>
+	<td class='forumheader3' style='width:50%; text-align: right;'>
+	<input type='radio' name='useGeshi' value='1'".($pref['useGeshi'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
+	<input type='radio' name='useGeshi' value='0'".(!$pref['useGeshi'] ? " checked='checked'" : "")." /> ".PRFLAN_113."<br />
+	</td>
 	</tr>
-	
+		
+	<tr>
+	<td class='forumheader3' style='width:50%;'>".PRFLAN_120."?:  <div class='smalltext'>".PRFLAN_121."</div></td>
+	<td class='forumheader3' style='width:50%; text-align: right;'>
+	<input class='tbox' type='text' name='defaultLanGeshi' size='5' value='".($pref['defaultLanGeshi'] ? $pref['defaultLanGeshi'] : "php")."' maxlength='3' />
+	</td>
+	</tr>
 	";
+	}
+	
+
 	
 $text .= pref_submit();
 

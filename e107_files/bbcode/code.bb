@@ -7,11 +7,13 @@ $search = array('[E_NL]','&#092;','&#036;');
 $replace = array("\r\n","\\",'$');
 $code_text = str_replace($search,$replace,$code_text);
 
-$pref['useGeshi'] = TRUE;
-
 if($pref['useGeshi']) {
 	require_once(e_PLUGIN."geshi/geshi.php");
-	$geshi = new GeSHi($code_text, 'php', e_PLUGIN."geshi/geshi/");
+	if($parm) {
+		$geshi = new GeSHi($code_text, $parm, e_PLUGIN."geshi/geshi/");
+	} else {
+		$geshi = new GeSHi($code_text, ($pref['defaultLanGeshi'] ? $pref['defaultLanGeshi'] : 'php'), e_PLUGIN."geshi/geshi/");
+	}
 	return $geshi->parse_code();
 }
 
