@@ -11,8 +11,8 @@ if (ADMIN) {
 		return $text;
 	}
 
-	function adnav_main($cat_title, $cat_link, $cat_img, $cat_id=FALSE) {
-		$text = "<a class='menuItem' href='".$cat_link."' ";
+	function adnav_main($cat_title, $cat_link, $cat_img, $cat_id=FALSE, $cat_highlight='') {
+		$text = "<a class='menuItem ".$cat_highlight."' href='".$cat_link."' ";
 		if ($cat_id) { 
 			$text .= "onclick=\"return false;\" onmouseover=\"menuItemMouseover(event, '".$cat_id."');\"";
 		}
@@ -59,7 +59,7 @@ if (ADMIN) {
 	$plugin_text .= adnav_cat('Plugins', '', E_16_CAT_PLUG, 'plugMenu');
 	$plugin_text .= "<div id='plugMenu' class='menu' onmouseover=\"menuMouseover(event)\">";
 	if (getperms('Z')) {
-		$plugin_text .= adnav_main(ADLAN_98, e_ADMIN.'plugin.php', E_16_PLUGMANAGER);
+		$plugin_text .= adnav_main(ADLAN_98, e_ADMIN.'plugin.php', E_16_PLUGMANAGER, FALSE, 'highlight');
 		$render_plugins = TRUE;
 	}
 	if($sql -> db_Select("plugin", "*", "plugin_installflag=1")){

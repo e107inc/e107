@@ -44,6 +44,11 @@ div.menuBar a.menuButton:hover, div.menuButton:hover, div.menuButton_over {
   color: #000000;
 }
 
+a.menuItem.highlight {
+  background-color: #FFF9EF;
+}
+
+
 div.menuBar a.menuButtonActive, div.menuButtonActive, div.menuButtonActive:hover, 
 div.menuBar a.menuButtonActive:hover {
   background-color: #ffffef;
