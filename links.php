@@ -30,36 +30,23 @@ if(IsSet($_POST['add_link']) && check_class($pref['link_submit_class'])){
 	}
 }
 
-
 if(e_QUERY == "submit" && check_class($pref['link_submit_class'])){
-	$text = "<div style='text-align:center'>
-	<form method='post' action='".e_SELF."'>
-	<table style='width:85%' class='fborder'>
-	<tr>
-	<td colspan='2' style='text-align:center' class='forumheader2'>".LAN_93."</td></tr>";
 
-	if($link_cats = $sql -> db_Select("link_category")){
-		$text .= "<tr>
-		<td class='forumheader3' style='width:30%'>".LAN_86."</td>
-		<td class='forumheader3' style='width:70%'>
-        <select name='cat_name' class='tbox'>";
-
-        while(list($cat_id, $cat_name, $cat_description) = $sql-> db_Fetch()){
-			if($cat_name != "Main"){
-				$text .= "<option value='$cat_id'>".$cat_name."</option>\n";
-			}
-        }
-        $text .= "</select>
-		</td>
-		</tr>";
+	if(!$LINK_SUBMIT_TABLE){
+		require_once(e_BASE.$THEMES_DIRECTORY."templates/links_template.php");
 	}
 
-	$text .= "<tr><td class='forumheader3' style='width:30%'><u>".LAN_94."</u></td><td class='forumheader3' style='width:30%'><input class='tbox' type='text' name='link_name' size='60' value='' maxlength='100' /></td></tr><tr><td class='forumheader3' style='width:30%'><u>".LAN_95."</u></td><td class='forumheader3' style='width:30%'><input class='tbox' type='text' name='link_url' size='60' value='' maxlength='200' /></td></tr><tr><td class='forumheader3' style='width:30%'><u>".LAN_96."</u></td><td class='forumheader3' style='width:30%'><textarea class='tbox' name='link_description' cols='59' rows='3'></textarea></td></tr><tr><td class='forumheader3' style='width:30%'>".LAN_97."</td><td class='forumheader3' style='width:30%'><input class='tbox' type='text' name='link_button' size='60' value='' maxlength='200' /></td></tr><tr><td colspan='2' style='text-align:center' class='forumheader3'><span class='smalltext'>".LAN_106."</span></td></tr><tr><td colspan='2' style='text-align:center' class='forumheader'><input class='button' type='submit' name='add_link' value='".LAN_98."' /></td></tr></table></form></div>";
+	$link_submit_table_string .= parse_link_submit_table();
+
+	$link_submit_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $LINK_SUBMIT_TABLE_START);
+	$link_submit_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $LINK_SUBMIT_TABLE_END);
+	$text .= $link_submit_table_start.$link_submit_table_string.$link_submit_table_end;
 
 	$ns -> tablerender(LAN_92, $text);
 	require_once(FOOTERF);
 	exit;
 }
+
 
 if(e_QUERY == "" && $pref['linkpage_categories'] == 1){
 	
@@ -170,7 +157,6 @@ function parse_link_main_table($row){
 		extract($row);
 		
 		$sql2 = new db;
-
 		$total_links_cat = $sql2 -> db_Count("links", "(*)", " WHERE link_category=$link_category_id ");
 		$LINK_MAIN_ICON = ($link_category_icon ? "<img src='".e_IMAGE."link_icons/$link_category_icon' alt='' style='vertical-align:middle;' />" : "<img src='".THEME."images/bullet2.gif' alt='' style='vertical-align:middle;' />");
 		$LINK_MAIN_HEADING = (!$total_links_cat ? $link_category_name : "<a href='links.php?cat.".$link_category_id."'>".$link_category_name."</a>");
@@ -180,6 +166,22 @@ function parse_link_main_table($row){
 		return(preg_replace("/\{(.*?)\}/e", '$\1', $LINK_MAIN_TABLE));
 }
 
+function parse_link_submit_table(){
+		global $LINK_SUBMIT_TABLE;
+
+		$sql = new db;
+		if($link_cats = $sql -> db_Select("link_category")){
+			$LINK_SUBMIT_CAT = "<select name='cat_name' class='tbox'>";
+				while(list($cat_id, $cat_name, $cat_description) = $sql-> db_Fetch()){
+					if($cat_name != "Main"){
+						$LINK_SUBMIT_CAT .= "<option value='$cat_id'>".$cat_name."</option>\n";
+					}
+				}
+			$LINK_SUBMIT_CAT .= "</select>";
+		}
+
+		return(preg_replace("/\{(.*?)\}/e", '$\1', $LINK_SUBMIT_TABLE));
+}
 
 function parse_link_cat_table($row){
 		global $LINK_CAT_TABLE, $sql, $pref, $aj, $category;
