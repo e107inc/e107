@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-12-04 07:14:49 $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-26 21:26:26 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -201,7 +201,7 @@ function multilang_prefs(){
    <form method='post' action='".e_SELF."' name='linkform'>
    <table style='width:97%' class='fborder'>
    <tr>
-   <td style='width:40%' class='forumheader3'>Enable Multi-Language: </td>
+   <td style='width:40%' class='forumheader3'>".LANG_LAN_12.": </td>
    <td style='width:60%' class='forumheader3'>";
    $checked = ($pref['multilanguage'] == 1) ? "checked='checked'" : "";
    $text .= "<input type='checkbox' name='multilanguage'  style='width:80%' value='1' $checked>
@@ -219,7 +219,7 @@ function multilang_prefs(){
    </form>
    </div>";
 
-   $caption = "Multi-Language Preferences";
+   $caption = LANG_LAN_13; // "Multi-Language Preferences";
    $ns -> tablerender($caption, $text);
 
 }

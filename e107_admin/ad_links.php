@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/ad_links.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-10-10 21:13:18 $
-|     $Author: loloirie $
+|     $Revision: 1.3 $
+|     $Date: 2004-12-26 21:26:25 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 // Info about attributes
@@ -57,6 +57,6 @@ $array_functions = array(
         28 => array(e_ADMIN."review.php", ADLAN_18, ADLAN_19, "K", 3),
         29 => array(e_ADMIN."users.php", ADLAN_36, ADLAN_37, "4", 2),
         30 => array(e_ADMIN."userclass2.php", ADLAN_38, ADLAN_39, "4", 2),
-        31 => array(e_ADMIN."multilang.php", ADLAN_132, ADLAN_133, "0")
+        31 => array(e_ADMIN."language.php", ADLAN_132, ADLAN_133, "0")
 );
 ?>
