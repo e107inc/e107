@@ -172,7 +172,7 @@ $text = "";
 		$text .= "'><p>\n".LOGIN_MENU_L1."<br />\n
 		<input class='tbox' type='text' name='username' size='15' value='' maxlength='30' />\n
 		<br />\n".LOGIN_MENU_L2."\n<br />\n
-		<input class='tbox' type='password' name='userpass' size='15' value='' maxlength='20' />\n\n<br />\n
+		<input class='tbox' type='password' name='userpass' size='15' value='' maxlength='40' />\n\n<br />\n
 		";
 		if($use_imagecode){
 			$text .= "<input type='hidden' name='rand_num' value='".$sec_img -> random_number."'>";

@@ -11,7 +11,7 @@
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
 |
-|   $Id: header_default.php,v 1.38 2004-11-17 00:25:12 mcfly_e107 Exp $
+|   $Id: header_default.php,v 1.39 2004-12-05 21:55:47 mcfly_e107 Exp $
 +---------------------------------------------------------------+
 */
 if(!function_exists("parseheader"))
@@ -159,7 +159,7 @@ if(!function_exists("checklayout"))
 				}
 				else
 				{
-					echo  "<form method='post' action='".e_SELF."'>\n<p>\n".LOGIN_MENU_L1."<input class='tbox' type='text' name='username' size='15' value='$username' maxlength='20' />&nbsp;&nbsp;\n".LOGIN_MENU_L2."<input class='tbox' type='password' name='userpass' size='15' value='' maxlength='20' />&nbsp;&nbsp;\n<input type='checkbox' name='autologin' value='1' />".LOGIN_MENU_L6."&nbsp;&nbsp;\n<input class='button' type='submit' name='userlogin' value='Login' />";
+					echo  "<form method='post' action='".e_SELF."'>\n<p>\n".LOGIN_MENU_L1."<input class='tbox' type='text' name='username' size='15' value='$username' maxlength='20' />&nbsp;&nbsp;\n".LOGIN_MENU_L2."<input class='tbox' type='password' name='userpass' size='15' value='' maxlength='40' />&nbsp;&nbsp;\n<input type='checkbox' name='autologin' value='1' />".LOGIN_MENU_L6."&nbsp;&nbsp;\n<input class='button' type='submit' name='userlogin' value='Login' />";
 					if($pref['user_reg'])
 					{
 						echo "&nbsp;&nbsp;<a href='".e_SIGNUP."'>".LOGIN_MENU_L3."</a>";
