@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/custommenu.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-02-09 02:59:50 $
+|     $Revision: 1.12 $
+|     $Date: 2005-02-14 13:48:03 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ if ($pref['htmlarea'])
 	$htmlarea_js = htmlarea("menu_text");
 }
 
-if (!getperms("I"))
+if (!getperms("2"))
 {
 	header("location:".e_BASE."index.php");
 	exit;
