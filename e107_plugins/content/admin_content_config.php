@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.4 $
-|		$Date: 2005-02-04 14:28:19 $
+|		$Revision: 1.5 $
+|		$Date: 2005-02-04 15:30:35 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -353,10 +353,22 @@ if(!e_QUERY){																//show main categories
 // ##### Display options --------------------------------------------------------------------------
 function admin_content_config_adminmenu(){
 
-                global $action, $sql, $sub_action, $type, $type_id, $plugintable;
+                global $sql, $plugintable;
+				global $action, $sub_action, $type, $type_id;
 
 				require_once(e_PLUGIN."content/handlers/content_class.php");
 				$aa = new content;
+
+				if(e_QUERY){
+						$tmp		=	explode(".", e_QUERY);
+						$type		=	$tmp[0];
+						$type_id	=	$tmp[1];
+						$action		=	$tmp[2];
+						$sub_action	=	$tmp[3];
+						$id			=	$tmp[4];
+						$id2		=	$tmp[5];
+						unset($tmp);
+				}
 
 				if($action == "cat"){
 					if($sub_action == "create"){
@@ -401,6 +413,7 @@ function admin_content_config_adminmenu(){
 
 				show_admin_menu(CONTENT_ADMIN_MENU_LAN_6, $act,$var);
 
+				echo $plugintable.", content_heading, content_id='".$type_id."' ";
 				if($sub_action == "options"){
 					unset($var);
 					$var=array();
@@ -412,6 +425,7 @@ function admin_content_config_adminmenu(){
 					$var['catpages']['text'] = CONTENT_ADMIN_MENU_LAN_12;
 					$var['contentpages']['text'] = CONTENT_ADMIN_MENU_LAN_13;
 					$var['menu']['text'] = CONTENT_ADMIN_MENU_LAN_14;
+					
 
 					$sql = new db;
 					$category_total = $sql -> db_Select($plugintable, "content_heading", "content_id='".$type_id."' ");

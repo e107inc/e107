@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.1 $
-|		$Date: 2005-02-03 23:31:37 $
+|		$Revision: 1.2 $
+|		$Date: 2005-02-04 15:31:53 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -365,7 +365,7 @@ class content{
 		function countItemsInCat($id, $parent, $nolan=""){
 				global $plugintable, $datequery;
 
-				$itemswithparent = ($parent == "0" ? "1.".$id : "1.".substr($parent,2).".".$id );
+				$itemswithparent = ($parent == "0" ? $id.".".$id : substr($parent,2).".".substr($parent,2).".".$id );
 
 				if(!is_object($sqlcountitemsincat)){ $sqlcountitemsincat = new db; }
 				$n = $sqlcountitemsincat -> db_Select($plugintable, "content_class", "content_parent='".$itemswithparent."' AND content_refer != 'sa' ".$datequery." ");
