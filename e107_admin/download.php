@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-03-23 13:01:21 $
+|     $Revision: 1.33 $
+|     $Date: 2005-03-23 13:16:14 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -622,10 +622,18 @@ class download {
 
 			<tr>
 			<td style='width:20%' class='forumheader3'>".DOWLAN_128.":<div class='smalltext'>".DOWLAN_129."</div></td>
-			<td style='width:80%' class='forumheader3'>".DOWLAN_132."<br />
+			<td style='width:80%' class='forumheader3'>";
+
+		if(!$sql -> db_Select("download_mirror"))
+		{
+			$text .= DOWLAN_144."</tr></tr>";
+		}
+		else
+		{
+
+			$text .= DOWLAN_132."<br />
 			<div id='mirrorsection'>";
 
-			$sql -> db_Select("download_mirror");
 			$mirrorList = $sql -> db_getList();
 	
 			$m_count = (count($mirrorArray) ? count($mirrorArray) : 1);
@@ -650,10 +658,6 @@ class download {
 			}
 
 			$text .="</div><input class='button' type='button' name='addoption' value='".DOWLAN_130."' onclick=\"duplicateHTML('mirror','mirrorsection')\" /><br />
-
-
-
-			
 			
 			</td>
 			</tr>
@@ -665,11 +669,12 @@ class download {
 			<input type='radio' name='download_mirror_type' value='1'".($download_mirror_type ? " checked='checked'" : "")." /> show mirror list, allow user to choose mirror<br />
 			<input type='radio' name='download_mirror_type' value='0'".(!$download_mirror_type ? " checked='checked'" : "")." /> use random mirror - no user choice
 			</td>
-			</tr>
+			</tr>";
+		}
 
 			
 
-			<tr>
+			$text .= "<tr>
 			<td style='width:20%' class='forumheader3'>".DOWLAN_15.":</td>
 			<td style='width:80%' class='forumheader3'>
 			<input class='tbox' type='text' name='download_author' size='60' value='$download_author' maxlength='100' />
