@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107/theme.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-10-05 08:52:38 $
-|     $Author: loloirie $
+|     $Revision: 1.4 $
+|     $Date: 2004-12-13 22:27:32 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -203,7 +203,7 @@ define(LINKALIGN, "left");
 //        [tablestyle]
 function tablestyle($caption, $text, $mode=""){
 //        echo "Style: ".$style.", Mode: ".$mode;
-        if($mode == "mode2"){
+        if($mode == "sitelinks"){
                 if($caption != ""){
                         echo "<div class='border'><div class='caption'>".$caption."</div></div>\n";
                         if($text != ""){
