@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-13 02:00:57 $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-13 07:17:37 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -130,7 +130,7 @@ define("PRFLAN_93", "strftime function page at php.net");
 define("PRFLAN_94", "here");
 
 define("PRFLAN_95", "Display plugins info:");
-define("PRFLAN_96", "Will display info on all admin pages for each plugin supporting this type fo feature");
+define("PRFLAN_96", "Will display info on all admin pages for each plugin supporting this type of feature");
 define("PRFLAN_97", "Unique 'Plugins info' menu:");
 define("PRFLAN_98", "If unchecked, each plugin will display its own info in an individual menu. If checked all info will be displayed in one menu.");
 
