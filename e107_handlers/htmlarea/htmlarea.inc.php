@@ -1,7 +1,7 @@
 <?php
 
 // HTMLAREA handler for e107.
-// $Id: htmlarea.inc.php,v 1.1 2004-09-21 19:10:27 e107coders Exp $
+// $Id: htmlarea.inc.php,v 1.2 2004-11-21 07:20:24 e107coders Exp $
 
 // Settings ==========================================================
     $width = "520px";  // htmlarea width
@@ -53,10 +53,15 @@ $areajs .= "</script>\n\n";
 
 
 $areajs .= "\n<script type='text/javascript' >\n";
-$areajs .= "function initEditor() { \n";
-$name = explode(",",$ta_name);
+    $name = explode(",",$ta_name);
+
     for ($i=0; $i<count($name); $i++) {
-        $areajs .= "var editor_".$name[$i]." = new HTMLArea('".$name[$i]."');\n";
+        $areajs .= "var editor_".$name[$i]."\n";
+    }
+
+$areajs .= "function initEditor() { \n";
+    for ($i=0; $i<count($name); $i++) {
+        $areajs .= "editor_".$name[$i]." = new HTMLArea('".$name[$i]."');\n";
         $areajs .= ($context==1) ? " editor_".$name[$i].".registerPlugin('ContextMenu');\n ":"";
         $areajs .=  ($tableops==1) ? " editor_".$name[$i].".registerPlugin(TableOperations);\n ":"";
         $areajs .= ($spelling==1) ? " editor_".$name[$i].".registerPlugin(SpellChecker);\n ":"";
