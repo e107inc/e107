@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-01-22 16:13:07 $
+|     $Revision: 1.15 $
+|     $Date: 2005-01-23 16:54:35 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -25,6 +25,7 @@ require_once(e_HANDLER.'textparse/basic.php');
 $etp = new e107_basicparse;
 
 require_once('auth.php');
+
 require_once(e_HANDLER.'userclass_class.php');
 require_once(e_HANDLER.'form_handler.php');
 $rs = new form;
@@ -62,12 +63,20 @@ if (($action == 'dec' || $action == 'inc') && strpos(e_SELF,'links')) {
 }
 
 if (isset($_POST['update_order'])) {
-	foreach ($_POST['link_order'] as $id) {
-		$tmp = explode(".", $id);
+	foreach ($_POST['link_order'] as $loid) {
+		$tmp = explode(".", $loid);
 		$sql -> db_Update("links", "link_order=".$tmp[1]." WHERE link_id=".$tmp[0]);
 	}
 	$e107cache -> clear("sitelinks");
 	$linkpost -> show_message(LCLAN_6);
+}
+
+if (isset($_POST['update_class'])) {
+	foreach ($_POST['link_class'] as $lckey => $lcid) {
+		$sql -> db_Update("links", "link_class=".$lcid." WHERE link_id=".$lckey);
+	}
+	$e107cache -> clear("sitelinks");
+	$linkpost -> show_message(LCLAN_97);
 }
 
 if (isset($_POST['updateoptions'])) {
@@ -139,24 +148,25 @@ class links {
 			<table class='fborder' style='".ADMIN_WIDTH."'>
 			<tr>
 			<td class='fcaption' style='width:5%'>".LCLAN_89."</td>
-			<td class='fcaption' style='width:70%'>".LCLAN_90."</td>
-			<td class='fcaption' style='width:5%'>".LCLAN_91."</td>
+			<td class='fcaption' style='width:60%'>".LCLAN_90."</td>
 			<td class='fcaption' style='width:15%'>".LCLAN_60."</td>
+			<td class='fcaption' style='width:10%'>".LCLAN_95."</td>
+			<td class='fcaption' style='width:5%'>".LCLAN_91."</td>
 			<td class='fcaption' style='width:5%'>".LCLAN_86."</td>
 			</tr>";
 			while ($row = $sql -> db_Fetch()) {
 				extract($row);
-				$text .= "<tr><td class='forumheader3' style='width:5%; text-align: center; vertical-align: middle'>";
+				$text .= "<tr><td class='forumheader3' style='width:5%; text-align: center; vertical-align: middle' title='".$link_description."'>";
 				$text .= $link_button ? "<img src='".e_IMAGE."link_icons/".$link_button."' alt='' /> ":"";
-				$text .= "</td><td style='width:70%' class='forumheader3'>".$link_name."</td>";
-				$text .= "</td>";
-				$text .="<td style='width:5%; text-align:center; white-space: nowrap' class='forumheader3'>";
-				$text .= "<a href='links.php?inc.".$link_id.".".$link_order."' ><img src='".e_IMAGE."generic/up.png' style='border:0px' alt='".LCLAN_30."' title='".LCLAN_30."' /></a>";
-				$text .= "<a href='links.php?dec.".$link_id.".".$link_order."' ><img src='".e_IMAGE."generic/down.png' style='border:0px' alt='".LCLAN_31."' title='".LCLAN_31."' /></a>";
-				$text .= "</td>";
+				$text .= "</td><td style='width:60%' class='forumheader3' title='".$link_description."'>".$link_name."</td>";
 				$text .= "<td style='width:15%; text-align:center; white-space: nowrap' class='forumheader3'>";
 				$text .= $rs -> form_button("button", "main_edit_{$link_id}", LCLAN_9, "onclick=\"document.location='".e_SELF."?create.edit.$link_id'\"");
 				$text .= $rs -> form_button("submit", "main_delete_".$link_id, LCLAN_10, "onclick=\"return confirm_('create','".$link_name."')\"");
+				$text .= "</td>";
+				$text .= "<td style='width:10%; text-align:center' class='forumheader3'>".r_userclass("link_class[".$link_id."]",$link_class,"off","public,guest,nobody,member,admin,classes")."</td>";
+				$text .="<td style='width:5%; text-align:center; white-space: nowrap' class='forumheader3'>";
+				$text .= "<a href='links.php?inc.".$link_id.".".$link_order."' ><img src='".e_IMAGE."generic/up.png' style='border:0px' alt='".LCLAN_30."' title='".LCLAN_30."' /></a>";
+				$text .= "<a href='links.php?dec.".$link_id.".".$link_order."' ><img src='".e_IMAGE."generic/down.png' style='border:0px' alt='".LCLAN_31."' title='".LCLAN_31."' /></a>";
 				$text .= "</td>";
 				$text .="<td style='width:5%; text-align:center' class='forumheader3'>";
 				$text .= "<select name='link_order[]' class='tbox'>";
@@ -168,8 +178,10 @@ class links {
 				$text .= "</tr>";
 			}
 			$text .= "<tr>
-			<td class='forumheader' colspan='4'></td>
-			<td class='forumheader' style='width:5%; text-align:center'><input class='button' type='submit' name='update_order' value='".LCLAN_94."' /></td>
+			<td class='forumheader' colspan='3'></td>
+			<td class='forumheader' style='text-align:center'><input class='button' style='width: 100%' type='submit' name='update_class' value='".LCLAN_96."' /></td>
+			<td class='forumheader'></td>
+			<td class='forumheader' style='text-align:center'><input class='button' style='width: 100%' type='submit' name='update_order' value='".LCLAN_94."' /></td>
 			</tr>";
 			$text .= "</table></div>";
 			$text .= $rs -> form_close();
