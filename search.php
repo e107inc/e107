@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-02-11 10:48:10 $
+|     $Revision: 1.11 $
+|     $Date: 2005-02-13 09:02:44 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -27,15 +27,17 @@ if (!USER && $pref['search_restrict'] == 1) {
 	exit;
 }
 
-$_POST['searchquery'] = trim($_POST['searchquery']);
+if (!isset($_POST['searchquery'])) {
+	$_POST['searchquery'] = '';
+} else {
+	$_POST['searchquery'] = trim($_POST['searchquery']);
+}
+
 $search_info = array();
 	
 //load all core search routines
 $search_info[] = array('sfile' => e_HANDLER.'search/search_news.php', 'qtype' => LAN_98, 'refpage' => 'news.php');
 $search_info[] = array('sfile' => e_HANDLER.'search/search_comment.php', 'qtype' => LAN_99, 'refpage' => 'comment.php');
-$search_info[] = array('sfile' => e_HANDLER.'search/search_article.php', 'qtype' => LAN_100);
-$search_info[] = array('sfile' => e_HANDLER.'search/search_review.php', 'qtype' => LAN_190);
-$search_info[] = array('sfile' => e_HANDLER.'search/search_content.php', 'qtype' => LAN_191);
 $search_info[] = array('sfile' => e_HANDLER.'search/search_chatbox.php', 'qtype' => LAN_101, 'refpage' => 'chatbox.php');
 $search_info[] = array('sfile' => e_HANDLER.'search/search_links.php', 'qtype' => LAN_102, 'refpage' => 'links.php');
 $search_info[] = array('sfile' => e_HANDLER.'search/search_forum.php', 'qtype' => LAN_103, 'refpage' => 'forum.php');
@@ -58,7 +60,7 @@ while (false !== ($file = readdir($handle))) {
 $search_count = count($search_info);
 $google_id = $search_count + 1;
 
-if (isset($_POST['searchquery']) && $_POST['searchtype'][$google_id]) {
+if (isset($_POST['searchquery'][$google_id]) && $_POST['searchtype'][$google_id]) {
 	header("location:http://www.google.com/search?q=".stripslashes(str_replace(" ", "+", $_POST['searchquery'])));
 	exit;
 }
@@ -75,15 +77,21 @@ if ($_POST['searchquery'] && strlen($_POST['searchquery']) < 3) {
 //$search_info[99]=array( 'sfile' => '','qtype' => LAN_192);
 	
 $con = new convert;
+if (isset($_SERVER['HTTP_REFERER'])) {
 if (!$refpage = substr($_SERVER['HTTP_REFERER'], (strrpos($_SERVER['HTTP_REFERER'], "/")+1))) {
 	$refpage = "index.php";
+}
+} else {
+	$refpage = "";
 }
 	
 if (isset($_POST['searchquery']) && $_POST['searchquery'] != "") {
 	$query = $_POST['searchquery'];
+} else {
+	$query = '';	
 }
 	
-if ($_POST['searchtype']) {
+if (isset($_POST['searchtype']) && $_POST['searchtype']) {
 	$searchtype = $_POST['searchtype'];
 } else {
 	foreach($search_info as $key => $si) {
@@ -109,30 +117,30 @@ if ($_POST['searchtype']) {
 		}
 	}
 	//        if(!$searchtype){ $searchtype = 1; }
-	if ($_POST['searchtype'] == 0 && !$searchtype || $refpage == "news.php") {
+	if (isset($_POST['searchtype']) && $_POST['searchtype'] == 0 && !$searchtype || $refpage == "news.php") {
 		$searchtype = 0;
 	}
 }
-if ($_POST['searchtype'] == "99") {
+if (isset($_POST['searchtype']) && $_POST['searchtype'] == "99") {
 	unset($_POST['searchtype']);
 	foreach($search_info as $key => $si) {
 		$_POST['searchtype'][] = $key;
 	}
 }
 
-
+$SEARCH_MAIN_CHECKBOXES = '';
 foreach($search_info as $key => $si) {
 	(isset($_POST['searchtype'][$key]) && $_POST['searchtype'][$key]==$key) ? $sel=" checked" : $sel="";
-	$SEARCH_MAIN_CHECKBOXES .= "<span style='white-space:nowrap; padding-bottom:7px;padding-top:7px'><input onclick='uncheckG();' type='checkbox' name='searchtype[$key]' ".$sel." />".$si['qtype']."</span>\n";
+	$SEARCH_MAIN_CHECKBOXES .= "<span style='white-space:nowrap; padding-bottom:7px;padding-top:7px'><input onclick='uncheckG();' type='checkbox' name='searchtype[".$key."]' ".$sel." />".$si['qtype']."</span>\n";
 }
 	
 $SEARCH_MAIN_CHECKBOXES .= "<input id='google' type='checkbox' name='searchtype[".$google_id."]'  onclick='uncheckAll(this)' />Google";
-$SEARCH_MAIN_SEARCHFIELD = "<input class='tbox' type='text' name='searchquery' size='40' value='$query' maxlength='50' />";
+$SEARCH_MAIN_SEARCHFIELD = "<input class='tbox' type='text' name='searchquery' size='40' value='".$query."' maxlength='50' />";
 $SEARCH_MAIN_CHECKALL = "<input class='button' type='button' name='CheckAll' value='".LAN_SEARCH_1."' onclick='checkAll(this);' />";
 $SEARCH_MAIN_UNCHECKALL = "<input class='button' type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this); uncheckG();' />";
 $SEARCH_MAIN_SUBMIT = "<input class='button' type='submit' name='searchsubmit' value='".LAN_180."' />";
 	
-if (!$SEARCH_MAIN_TABLE) {
+if (!isset($SEARCH_MAIN_TABLE)) {
 	if (file_exists(THEME."search_template.php")) {
 		require_once(THEME."search_template.php");
 	} else {

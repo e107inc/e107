@@ -1,7 +1,7 @@
 <?php
 
 // ##### MAIN TABLE -------------------------------------------------------------------------------
-if(!$SEARCH_MAIN_TABLE){
+if(!isset($SEARCH_MAIN_TABLE)){
 		$SEARCH_MAIN_TABLE = "
 		<div style='text-align:center'>
 		<form name='searchform' method='post' action='".e_SELF."'>
