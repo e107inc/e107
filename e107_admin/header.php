@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107/e107_admin/header.php,v $
-|   $Revision: 1.23 $
-|   $Date: 2004-09-06 11:36:42 $
+|   $Revision: 1.24 $
+|   $Date: 2004-09-20 16:06:32 $
 |   $Author: loloirie $
 +---------------------------------------------------------------+
 */
@@ -220,7 +220,7 @@ function get_admin_treemenu($title,$page,$e107_vars,$sortlist=FALSE)
 		{
 			$func_list[]=$temp[$key]['text'];
 		}
-    setlocale("LC_ALL","deu");
+
     usort($func_list, 'strcoll');
 
 		foreach($func_list as $func_text)
