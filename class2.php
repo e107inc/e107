@@ -354,6 +354,7 @@ function e107_parse($text,$referrer){
 			}
 		}
 	}
+	$text = preg_replace("#{{.*?}}#","",$text);
 	return $text;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -557,7 +558,6 @@ class textparse{
 		$text = preg_replace("/\n/i", " ", $text);
 		$text = str_replace("<br />", " <br />" , $text);
         $text = e107_parse($text,$referrer);
-        $text = preg_replace("#\{\{.*?\}\}#","",$text);
 		$text = $this -> wrap($text, $highlight_search);
         $text = preg_replace($search, $replace, $text);
         if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
