@@ -35,7 +35,8 @@ function sendemail($send_to, $subject, $message,$to_name,$send_from,$from_name,$
         $Html = eregi_replace('([_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,3})',    '<a href="mailto:\\1">\\1</a>', $Html);
         }
 
-        $text = strip_tags(preg_replace("<br>","/\n/",$message));
+        $text = preg_replace("#<br />#","\n",$message);
+        $text = strip_tags(preg_replace("#<br>#","\n",$message));
         $OB="----=_OuterBoundary_000". md5(uniqid(mt_rand(), 1));
         $IB="----=_InnerBoundery_001" . md5(uniqid(mt_rand(), 1));
 
