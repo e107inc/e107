@@ -93,7 +93,7 @@ class DHTML_Calendar
 		$id = $this->_gen_id();
 		$attrstr = $this->_make_html_attr(array_merge($field_attributes, array('id'   => $this->_field_id($id), 'type' => 'text')));
 		$ret .= '<input ' . $attrstr .'/> ';
-		$ret .= "<a href='#' id='{$this->_trigger_id($id)}'>{$this->calendar_img}</a>";
+		$ret .= "<a href='#' id='".$this->_trigger_id($id)."'>".$this->calendar_img."</a>";
 		$options = array_merge($cal_options, array('inputField' => $this->_field_id($id), 'button' => $this->_trigger_id($id)));
 		$ret .= $this->_make_calendar($options);
 		return $ret;
