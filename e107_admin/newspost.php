@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.60 $
-|   $Date: 2005-03-31 04:27:27 $
-|   $Author: mcfly_e107 $
+|   $Revision: 1.61 $
+|   $Date: 2005-03-31 05:49:15 $
+|   $Author: stevedunstan $
 +---------------------------------------------------------------+
 
 */
@@ -328,7 +328,8 @@ class newspost {
 				$text .= $ren_type[$news_render_type];
 				if($news_sticky)
 				{
-					$text .= " <img src='".e_IMAGE."generic/sticky.png' alt='' />";
+					$sicon = (file_exists(THEME."generic/sticky.png") ? THEME."generic/sticky.png" : e_IMAGE."generic/".IMODE."/sticky.png");
+					$text .= " <img src='".$sicon."' alt='' />";
 				}
 				$text .= "
 				</td>
