@@ -283,10 +283,10 @@ if(!$post_author_id || !$sql -> db_Select("user", "*", "user_id='".$post_author_
 
 	$SIGNATURE = ($user_signature ? "<br /><hr style='width:15%; text-align:left'><span class='smalltext'>".$aj -> tpa($user_signature) : "");
 	
-	$PROFILEIMG = (USER ? e107_parse("{PROFILE={$user_id}}","admin") : "");
-	$EMAILIMG = (!$user_hideemail ? e107_parse("{EMAILTO={$user_email}}","admin") : "");
+	$PROFILEIMG = (USER ? e107_parse("{CODE=CORE.profile.{$user_id}}","admin") : "");
+	$EMAILIMG = (!$user_hideemail ? e107_parse("{CODE=CORE.emailto.{$user_email}}","admin") : "");
 
-	$PRIVMESSAGE = e107_parse("{{SENDPM={$post_author_id}}}");
+	$PRIVMESSAGE = e107_parse("{CODE=pm_menu.sendpm.{$post_author_id}}");
 
 	$WEBSITEIMG = ($user_homepage && $user_homepage != "http://" ? "<a href='$user_homepage'>".IMAGE_website."</a>" : "");
 	$RPG = rpg($user_join, $user_forums);
@@ -370,10 +370,10 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 			$LEVEL = $ldata[1];
 
 			$SIGNATURE = ($user_signature ? "<br /><hr style='width:15%; text-align:left'><span class='smalltext'>".$aj -> tpa($user_signature) : "");
-			$PROFILEIMG = (USER ? e107_parse("{PROFILE={$user_id}}","admin") : "");
-			$EMAILIMG = (!$user_hideemail ? e107_parse("{EMAILTO={$user_email}}","admin") : "");
+			$PROFILEIMG = (USER ? e107_parse("{CODE=CORE.profile.{$user_id}}","admin") : "");
+			$EMAILIMG = (!$user_hideemail ? e107_parse("{CODE=CORE.emailto.{$user_email}}","admin") : "");
 
-			$PRIVMESSAGE = e107_parse("{{SENDPM={$post_author_id}}}");
+			$PRIVMESSAGE = e107_parse("{CODE=pm_menu.sendpm.{$post_author_id}}");
 
 			$WEBSITEIMG = ($user_homepage && $user_homepage != "http://" ? "<a href='$user_homepage'>".IMAGE_website."</a>" : "");
 			$RPG = rpg($user_join, $user_forums);
