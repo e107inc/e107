@@ -149,7 +149,7 @@ while(false !== ($file = readdir($handle)))
 					$file2 = "custom_".str_replace(".php", "", $file2);
 					if(!$sql -> db_Select("menus", "*", "menu_name='$file2'"))
 					{
-						$sql -> db_Insert("menus", " 0, '$file2', 0, 0, 0 ");
+						$sql -> db_Insert("menus", " 0, '$file2', 0, 0, 0, '' ");
 						$message .= "<b>".MENLAN_9." - ".$file2."</b><br />";
 					}
 					$menustr .= "&".$file2;
@@ -164,13 +164,13 @@ while(false !== ($file = readdir($handle)))
 				@include(e_PLUGIN.$file."/plugin.php");
 				if($sql -> db_Select("plugin", "*", "plugin_name='$eplug_name' AND plugin_installflag='1' "))
 				{
-					$sql -> db_Insert("menus", " 0, '$file', 0, 0, 0 ");
+					$sql -> db_Insert("menus", " 0, '$file', 0, 0, 0, '' ");
 					$message .= "<b>".MENLAN_10." - ".$file."</b><br />";
 				}
 			}
 			else
 			{
-			$sql -> db_Insert("menus", " 0, '$file', 0, 0, 0 ");
+			$sql -> db_Insert("menus", " 0, '$file', 0, 0, 0, '' ");
 			$message .= "<b>".MENLAN_10." - ".$file."</b><br />";
 		}
 	}
