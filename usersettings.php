@@ -54,7 +54,6 @@ require_once(HEADERF);
 
 if(IsSet($_POST['updatesettings'])){
 	
-	print_r($_POST);
         // check prefs for required fields =================================.
     $signupval = explode(".",$pref['signup_options']);
     $signup_title = array(LAN_308,LAN_144,LAN_115,LAN_116,LAN_117,LAN_118,LAN_119,LAN_120,LAN_121,LAN_122);
@@ -141,7 +140,6 @@ if(IsSet($_POST['updatesettings'])){
 	}
 
         $birthday = $_POST['birth_year']."/".$_POST['birth_month']."/".$_POST['birth_day'];
-
         if($file_userfile['error'] != 4){
                 require_once(e_HANDLER."upload_handler.php");
                 require_once(e_HANDLER."resize_handler.php");
@@ -191,8 +189,6 @@ if(IsSet($_POST['updatesettings'])){
 
                 $text = "<div style='text-align:center'>".LAN_150."</div>";
                 $ns -> tablerender(LAN_151, $text);
-                require_once(FOOTERF);
-                exit;
         }
 }
 
@@ -416,7 +412,7 @@ $text .= "</select>
 <tr>
 <td style='width:20%; vertical-align:top' class='forumheader3'>".LAN_422."<br /><span class='smalltext'>".LAN_423."</span></td>
 <td style='width:80%' class='forumheader2'>
-<input class='tbox' type='text' id='image' size='60' value='$image' maxlength='100' />
+<input class='tbox' type='text' name='image' size='60' value='$image' maxlength='100' />
 </td>
 </tr>
 
