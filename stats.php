@@ -10,6 +10,11 @@
 |
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
+|
+| $Source: /cvs_backup/e107/stats.php,v $
+| $Revision: 1.4 $
+| $Date: 2004-08-15 02:44:34 $
+| $Author: mcfly_e107 $ 
 +---------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -96,9 +101,9 @@ $sql -> db_Select("stat_last", "*", "ORDER BY stat_last_date DESC LIMIT 0,".$pre
 while($row = $sql-> db_Fetch()){
 	extract($row);
 	$datestamp = $con -> convert_date($stat_last_date, "short");
-	$text .= "<tr>\n<td class='forumheader3'><span class='smalltext'>".$datestamp.": ".$stat_last_info."</b></span></td>\n</tr>";
+	$text .= "<tr>\n<td class='forumheader3'><span class='smalltext'>".$datestamp.": ".$stat_last_info."</span></td>\n</tr>";
 }
-$text .= "</tr>\n</table>\n<br />";
+$text .= "\n</table>\n<br />";
 
 $total_browsers = $sql -> db_Count("SELECT sum(info_count) FROM ".MPREFIX."stat_info WHERE info_type='1'", "generic");
 $sql -> db_Select_gen("SELECT info_name, SUM(info_count) FROM ".MPREFIX."stat_info WHERE info_type='1' GROUP BY info_name");
@@ -198,7 +203,7 @@ function parse_data($row, $amount, $total, $action_n, $lan){
 					$str .= "<img src='$image' alt='' /> ";
 				}
 				
-				$str .= $data[$c][1]."</td>\n<td nowrap style='width:55%' class='forumheader3'>\n<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' style='width:".$width."%' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' />\n</td>\n<td style='width:10%; text-align:center' class='forumheader3'>".$data[$c][0]."</td>\n<td style='width:10%; text-align:center' class='forumheader3'>".$data[$c][2]."%</td>\n</tr>\n";
+				$str .= $data[$c][1]."</td>\n<td style='width:55%; white-space:nowrap;' class='forumheader3'>\n<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' style='width:".$width."%' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' />\n</td>\n<td style='width:10%; text-align:center' class='forumheader3'>".$data[$c][0]."</td>\n<td style='width:10%; text-align:center' class='forumheader3'>".$data[$c][2]."%</td>\n</tr>\n";
 				$c++;
 			}
 		}
@@ -206,7 +211,7 @@ function parse_data($row, $amount, $total, $action_n, $lan){
 
 	
 
-	$str .= "</tr></table><br />";
+	$str .= "</table><br />";
 	return $str;
 }
 ?>
