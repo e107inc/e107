@@ -220,9 +220,16 @@ if(ADMIN == TRUE){
 			while($row = $sql2 -> db_Fetch()){
 				extract($row);
 				include(e_PLUGIN.$plugin_path."/plugin.php");
+				
+				//Link Plugin Manager
+				$e107_var['x']['text'] = "<b>".ADLAN_98."</b>";
+				$e107_var['x']['link'] = e_ADMIN."plugin.php";
+				$e107_var['x']['perm'] = "P";
+				
+				// Links Plugins
 				if($eplug_conffile){
 	                $e107_var['x'.$plugin_id]['text'] = $eplug_caption;
-					$e107_var['x'.$plugin_id]['link'] = e_ADMIN."wmessage.php";
+					$e107_var['x'.$plugin_id]['link'] = e_PLUGIN.$plugin_path."/".$eplug_conffile;
 					$e107_var['x'.$plugin_id]['perm'] = "P".$plugin_id;
 				}
 				unset($eplug_conffile, $eplug_name, $eplug_caption);
