@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-02-14 19:40:27 $
+|     $Revision: 1.8 $
+|     $Date: 2005-02-14 19:50:35 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -27,7 +27,7 @@ if (IsSet($_POST['fjsubmit'])) {
 }
 require_once(e_PLUGIN.'forum/forum_class.php');
 $forum = new e107forum;
-	
+
 if (!e_QUERY) {
 	echo "no query!";
 	 exit;
@@ -442,9 +442,8 @@ if ($pref['forum_enclose']) {
 function isAuthor($thread) {
 	global $sql;
 	$sql->db_Select("forum_t", "thread_user", "thread_id='".$thread."' ");
-	$row = $sql->db_Fetch("no_strip");
-	$post_author_id = substr($row[0], 0, strpos($row[0], "."));
-	return ($post_author_id == USERID || ADMIN === TRUE);
+	$row = $sql->db_Fetch();
+	return ($row['thread_user'] == USERID || ADMIN === TRUE);
 }
 	
 function getuser($name) {
