@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.59 $
-|     $Date: 2005-03-27 08:01:51 $
-|     $Author: sweetas $
+|     $Revision: 1.60 $
+|     $Date: 2005-03-28 13:42:26 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -45,9 +45,9 @@ function update_check() {
 	if ($update_needed === TRUE) {
 		$txt = "<div style='text-align:center;'>".ADLAN_120;
 		$txt .= "<br /><form method='POST' action='".e_ADMIN."e107_update.php'>
-			<input class='button' type='submit' value='".ADLAN_122."' />
+			<input class='button' type='submit' value='".LAN_UPDATE."' />
 			</form></div>";
-		$ns->tablerender(ADLAN_122, $txt);
+		$ns->tablerender(LAN_UPDATE, $txt);
 	}
 }
 
@@ -309,13 +309,13 @@ function update_61x_to_700($type) {
 		//Begin Extended user field conversion
 		require_once(e_HANDLER."user_extended_class.php");
 		$ue = new e107_user_extended;
-		
+
 		$sql->db_Select("core", " e107_value", " e107_name='user_entended'", 'default');
 		$row = $sql->db_Fetch();
-		
+
 		$user_extended = unserialize($row['e107_value']);
 		$new_types = array('text' => 1, 'radio' => 2, 'dropdown' => 3, 'table' => 4);
-		
+
 		foreach($user_extended as $key => $val)
 		{
 			unset($new_field);
@@ -477,7 +477,7 @@ function update_61x_to_700($type) {
 		mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_image` `news_summary` TEXT DEFAULT NULL;");
 		mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_thumb` `news_attach` TEXT DEFAULT NULL;");
 		mysql_query("ALTER TABLE ".MPREFIX."news ADD news_sticky TINYINT ( 3 ) UNSIGNED NOT NULL");
-		
+
 		// Downloads updates - Added March 1, 2005 by McFly
 		mysql_query("ALTER TABLE ".MPREFIX."download ADD download_class TINYINT ( 3 ) UNSIGNED NOT NULL");
 		mysql_query("ALTER TABLE ".MPREFIX."download_category ADD download_category_order INT ( 10 ) UNSIGNED NOT NULL");
@@ -491,7 +491,7 @@ function update_61x_to_700($type) {
   			PRIMARY KEY  (download_request_id)
 			) TYPE=MyISAM;
 		");
-		
+
 		// Search Update
 		global $pref, $sysprefs;
         $search_prefs = $sysprefs -> getArray('search_prefs');
@@ -532,11 +532,11 @@ function update_61x_to_700($type) {
 			$pref['search_highlight'] = TRUE;
 			save_prefs();
 		}
-		
+
 } else {
 		// check if update is needed.
 		// FALSE = needed, TRUE = not needed.
-		
+
 //		return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."user_extended_struct");
 
 //		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."user_extended_struct");
