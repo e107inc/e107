@@ -109,7 +109,6 @@ hex=(fadescheme==0)? 255 : 0
 if (ie4||DOM2)
 document.write('<div id="fscroller" style="width:'+fwidth+';height:'+fheight+';padding:2px"></div>')
 
-window.onload=changecontent
 </script>
 
 

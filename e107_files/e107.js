@@ -139,7 +139,6 @@ function externalLinks() {
      anchor.target = "_blank"; 
  } 
 } 
-window.onload = externalLinks;
 
 
 
