@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/userposts.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-14 15:27:32 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.7 $
+|     $Date: 2005-03-10 11:15:38 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -73,7 +73,7 @@ if ($action == "comments") {
 	$ns->tablerender($ccaption, $ctext);
 	 
 	require_once(e_HANDLER."np_class.php");
-	$ix = new nextprev("userposts.php", $from, 10, $ctotal, "Comments", "comments.".$id."");
+	$ix = new nextprev("userposts.php", $from, 10, $ctotal, UP_LAN_13, "comments.".$id."");
 }
 	
 	
@@ -136,7 +136,7 @@ if ($action == "forums" || isset($_POST['fsearch'])) {
 	$ns->tablerender($fcaption, $ftext);
 	 
 	require_once(e_HANDLER."np_class.php");
-	$ix = new nextprev("userposts.php", $from, 10, $ftotal, "Forum Posts", "forums.".$id."");
+	$ix = new nextprev("userposts.php", $from, 10, $ftotal, UP_LAN_14, "forums.".$id."");
 }
 	
 require_once(FOOTERF);
@@ -301,10 +301,10 @@ function parse_userposts_forum_table($row) {
 			list($thread_name) = $sql2->db_Fetch();
 			$cachevar[$thread_parent] = $thread_name;
 		}
-		$USERPOSTS_FORUM_TOPIC_PRE = "Re: ";
+		$USERPOSTS_FORUM_TOPIC_PRE = UP_LAN_15.": ";
 	} else {
 		$tmp = $thread_id;
-		$USERPOSTS_FORUM_TOPIC_PRE = "Thread: ";
+		$USERPOSTS_FORUM_TOPIC_PRE = UP_LAN_2.": ";
 	}
 	 
 	$thread_thread = $tp->toHTML($thread_thread);
