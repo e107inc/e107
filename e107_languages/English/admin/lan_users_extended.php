@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users_extended.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-04-01 04:33:13 $
+|     $Revision: 1.3 $
+|     $Date: 2005-04-01 18:56:32 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -49,5 +49,10 @@ define("EXTLAN_36", "No assigned Category");
 define("EXTLAN_37", "No categories defined");
 define("EXTLAN_38", "Category name");
 define("EXTLAN_39", "Add category");
+define("EXTLAN_40", "Category created");
+define("EXTLAN_41", "Category deleted");
+define("EXTLAN_42", "Update Category");
+define("EXTLAN_43", "Category Updated");
+define("EXTLAN_44", "Category");
 
 ?>
