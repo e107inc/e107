@@ -15,6 +15,7 @@
 require_once("../class2.php");
 if(!getperms("2")){ header("location:".e_BASE."index.php"); exit;}
 require_once("auth.php");
+
 function headerjs(){
 $headerjs =  "<script type=\"text/javascript\">
 <!--
@@ -31,13 +32,17 @@ $row = $sql -> db_Fetch();
 $tmp = stripslashes($row['e107_value']);
 $menu_pref=unserialize($tmp);
 
-
 $tmp = explode(".", e_QUERY);
 $action = $tmp[0];
 $id = $tmp[1];
 $position = $tmp[2];
 $location = $tmp[3];
 
+$check_actions=array('sv','move','activate','deac','dec','inc');
+if(in_array($action,$check_actions))
+{
+	if(!e_REFERER_SELF){exit;}
+}
 
 if($action == "adv"){
         $sql -> db_Select("menus", "*", "menu_id='$id' ");
@@ -86,6 +91,7 @@ if($action == "adv"){
         $caption = MENLAN_7." ".$menu_name;
         $ns -> tablerender($caption, $text);
 }
+
 
 if($action == "sv"){
         $sql -> db_Update("menus", "menu_class='".$_POST['menu_class']."' WHERE menu_id='$id' ");

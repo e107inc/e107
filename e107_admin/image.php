@@ -20,17 +20,17 @@ require_once(e_HANDLER."userclass_class.php");
 $rs = new form;
 
 if(strstr(e_QUERY, "delp")){
-        $tmp = explode("-", e_QUERY);
-        $image = $tmp[1];
-        @unlink(e_FILE."public/avatars/".$image);
-        $sql -> db_Update("user", "user_image='' WHERE user_image='-upload-$image'");
-        $sql -> db_Update("user", "user_sess='' WHERE user_sess='$image'");
-        $message = $image." ".IMALAN_28;
+	if(!e_REFERER_SELF){exit;}
+	$tmp = explode("-", e_QUERY);
+	$image = $tmp[1];
+	@unlink(e_FILE."public/avatars/".$image);
+	$sql -> db_Update("user", "user_image='' WHERE user_image='-upload-$image'");
+	$sql -> db_Update("user", "user_sess='' WHERE user_sess='$image'");
+	$message = $image." ".IMALAN_28;
 }
 
-
-
 if(e_QUERY == "del"){
+	if(!e_REFERER_SELF){exit;}
         $handle=opendir(e_FILE."public/avatars/");
         while ($file = readdir($handle)){
                 if($file != "." && $file != ".." && $file != "index.html" && $file != "/"){
@@ -120,9 +120,6 @@ if(IsSet($_POST['show_avatars'])){
         $text .= "</div>";
 
         $ns -> tablerender(IMALAN_18, $text);
-
-
-
 }
 
 
@@ -154,7 +151,7 @@ $text = "<div style='text-align:center'>
 <span class='smalltext'>".IMALAN_2."</span>
 </td>
 <td style='width:25%;text-align:center' class='forumheader3' >".
-($pref['image_post'] ? "<input type='checkbox' name='image_post' value='1' checked='checked' />" : "<input type='checkbox' name='image_post' value='1'>")."
+($pref['image_post'] ? "<input type='checkbox' name='image_post' value='1' checked='checked' />" : "<input type='checkbox' name='image_post' value='1' />")."
 </td>
 </tr>
 
