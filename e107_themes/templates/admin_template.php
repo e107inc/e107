@@ -5,6 +5,7 @@ $ADMIN_HEADER = "<div style='text-align:center'>
 {ADMIN_LOGGED}
 
 <div>
+".(e_MLANG == 1 ? "{ADMIN_MULTILANG}" : "" )."
 <table style='width:100%' cellspacing='10' cellpadding='10'>
 <tr>
 <td style='width:15%; vertical-align: top;'>

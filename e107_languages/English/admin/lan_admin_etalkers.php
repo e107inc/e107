@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin_etalkers.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-28 11:53:33 $
+|     $Revision: 1.2 $
+|     $Date: 2004-10-10 21:31:57 $
 |     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
@@ -148,4 +148,6 @@ define("ADLAN_129", "Communication");
 define("ADLAN_130", "Files Management");
 define("ADLAN_131", "Other tools");
 
+define("ADLAN_132", "Language");
+define("ADLAN_133", "Choose default language or/and activate multilanguage");
 ?>
