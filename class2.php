@@ -836,22 +836,36 @@ function ban(){
         }
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+
+
+function cache_page_md5(){
+	return md5(e_BASE.e_LANGUAGE.e_THEME);	
+}
+
 function retrieve_cache($query){
-        global $sql;
-        if(!is_object($sql)){
-                $sql = new db;
-        }
-        if($sql -> db_Select("cache", "*", "cache_url='$query' ")){
-                $row = $sql -> db_Fetch(); extract($row);
-                return stripslashes($cache_data);
-        }else{
-                return FALSE;
-        }
+	global $sql, $pref;
+	if(!$pref['cachestatus']){return FALSE;}
+	$query = $query . "-".cache_page_md5();
+	if(!is_object($sql)){
+		$sql = new db;
+	}
+	if($sql -> db_Select("cache", "cache_data", "cache_url='$query' ")){
+		$row = $sql -> db_Fetch();
+		$ret = stripslashes($row['cache_data']);
+		if($ret == ""){
+			return "<!-- null -->";
+		} else {
+			return stripslashes($row['cache_data']);
+		}
+	} else {
+		return FALSE;
+	}
 }
 
 function set_cache($query, $text){
 	global $pref, $sql;
-	if($pref['cachestatus'] && !strstr(e_BASE, "../")){
+	$query = $query . "-".cache_page_md5();
+	if($pref['cachestatus']){
 		$sql -> db_Insert("cache", "'$query', '".time()."', '".mysql_escape_string($text)."' ");
 	}
 }
