@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass2.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-03-20 02:07:15 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.11 $
+|     $Date: 2005-04-02 21:06:52 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -26,7 +26,7 @@ require_once("auth.php");
 require_once(e_HANDLER."userclass_class.php");
 $uclass = new e_userclass;
 $sql2 = new db;
-	
+
 function check_allowed($class_id) {
 	global $sql;
 	if (!$sql->db_Select('userclass_classes', '*', "userclass_id = {$class_id}")) {
@@ -40,7 +40,7 @@ function check_allowed($class_id) {
 		exit;
 	}
 }
-	
+
 if (strstr(e_QUERY, 'clear')) {
 	$tmp = explode('.', e_QUERY);
 	$class_id = $tmp[1];
@@ -57,7 +57,7 @@ if (strstr(e_QUERY, 'clear')) {
 	$class_id = $tmp2[0];
 	check_allowed($class_id);
 	$message = UCSLAN_2;
-	 
+
 	if ($sql->db_Select('user', 'user_id, user_class', "user_class = '{$class_id}' OR user_class REGEXP('^{$class_id},') OR user_class REGEXP(',{$class_id},') OR user_class REGEXP(',{$class_id}$')")) {
 		while ($row = $sql->db_Fetch()) {
 			$uidList[$row['user_id']] = $row['user_class'];
@@ -72,7 +72,7 @@ if (strstr(e_QUERY, 'clear')) {
 		$uclass->class_add($class_id, $uidList);
 	}
 }
-	
+
 if (isset($_POST['delete'])) {
 	$sql2 = new db;
 	$class_id = $_POST['existing'];
@@ -90,14 +90,14 @@ if (isset($_POST['delete'])) {
 		$message = UCSLAN_4;
 	}
 }
-	
+
 If(isset($_POST['edit'])) {
 	check_allowed($_POST['existing']);
 	$sql->db_Select('userclass_classes', '*', "userclass_id='".$_POST['existing']."' ");
 	$row = $sql->db_Fetch();
 	extract($row);
 }
-	
+
 if (isset($_POST['updateclass'])) {
 	check_allowed($_POST['userclass_id']);
 	$_POST['userclass_name'] = $tp->toDB($_POST['userclass_name']);
@@ -105,11 +105,11 @@ if (isset($_POST['updateclass'])) {
 	$sql->db_Update('userclass_classes', "userclass_editclass={$_POST['userclass_editclass']}, userclass_name='".$_POST['userclass_name']."', userclass_description='".$_POST['userclass_description']."' WHERE userclass_id='".$_POST['userclass_id']."' ");
 	$message = UCSLAN_5;
 }
-	
+
 if (isset($_POST['createclass'])) {
 	$_POST['userclass_name'] = $tp->toDB($_POST['userclass_name'], "admin");
 	$_POST['userclass_description'] = $tp->toDB($_POST['userclass_description'], "admin");
-	 
+
 	if (getperms("0") || check_class($_POST['userclass_editclass']) && $_POST['userclass_editclass']) {
 		$editclass = $_POST['userclass_editclass'];
 		$i = 1;
@@ -125,19 +125,19 @@ if (isset($_POST['createclass'])) {
 		exit;
 	}
 }
-	
+
 if (isset($message)) {
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
-	
+
 $class_total = $sql->db_Select("userclass_classes");
-	
+
 $text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."' id='classForm'>
 	<table class='fborder' style='".ADMIN_WIDTH."'>
 	<tr>
 	<td class='fcaption' style='text-align:center' colspan='2'>";
-	
+
 if ($class_total == "0") {
 	$text .= UCSLAN_7;
 } else {
@@ -149,13 +149,13 @@ if ($class_total == "0") {
 		}
 	}
 	$text .= "</select>
-		<input class='button' type='submit' name='edit' value='".UCSLAN_9."' />
-		<input class='button' type='submit' name='delete' value='".UCSLAN_10."' />
+		<input class='button' type='submit' name='edit' value='".LAN_EDIT."' />
+		<input class='button' type='submit' name='delete' value='".LAN_DELETE."' />
 		<input type='checkbox' name='confirm' value='1' /><span class='smalltext'> ".UCSLAN_11."</span>
 		</td>
 		</tr>";
 }
-	
+
 $text .= "
 	<tr>
 	<td class='forumheader3' style='width:30%'>".UCSLAN_12."</td>
@@ -167,28 +167,28 @@ $text .= "
 	<td class='forumheader3' style='width:70%'><input class='tbox' type='text' size='60' maxlength='85' name='userclass_description' value='$userclass_description' /></td>
 	</tr>
 	";
-	
+
 $text .= "
 	<tr>
 	<td class='forumheader3'>".UCSLAN_24."</td>
 	<td class='forumheader3'>".r_userclass("userclass_editclass", $userclass_editclass, "off", "admin,classes,matchclass,public")."</td>
 	</tr>
 	";
-	
+
 $text .= "
 	<tr><td colspan='2' style='text-align:center' class='forumheader'>";
-	
+
 If(isset($_POST['edit'])) {
 	$text .= "<input class='button' type='submit' name='updateclass' value='".UCSLAN_14."' />
 		<input type='hidden' name='userclass_id' value='$userclass_id' />";
 } else {
 	$text .= "<input class='button' type='submit' name='createclass' value='".UCSLAN_15."' />";
 }
-	
+
 $text .= "</td></tr></table>";
-	
+
 If(isset($_POST['edit'])) {
-	 
+
 	$sql->db_Select("user", "user_id, user_name, user_class, user_login", "ORDER BY user_name", "no-where");
 	$c = 0;
 	$d = 0;
@@ -207,25 +207,25 @@ If(isset($_POST['edit'])) {
 			 "";
 			$d++;
 		}
-		 
+
 	}
-	 
+
 	$text .= "<br /><table class='fborder' style='".ADMIN_WIDTH."'>
 		<tr>
 		<td class='fcaption' style='text-align:center;width:30%'>".UCSLAN_16."</td></tr>
 		<tr>
 		<td class='forumheader3' style='width:70%; text-align:center'>
-		 
+
 		<table style='width:90%'>
 		<tr>
 		<td style='width:45%; vertical-align:top'>
 		".UCSLAN_22."<br />
 		<select class='tbox' id='assignclass1' name='assignclass1' size='10' style='width:220px' multiple='multiple' onchange='moveOver();'>";
-	 
+
 	for ($a = 0; $a <= ($d-1); $a++) {
 		$text .= "<option value=".$out_userid[$a].">".$out_username[$a]." ".$out_userlogin[$a]."</option>";
 	}
-	 
+
 	$text .= "</select>
 		</td>
 		<td style='width:45%; vertical-align:top'>
@@ -238,7 +238,7 @@ If(isset($_POST['edit'])) {
 		<input class='button' type='button' value='".UCSLAN_17."' onclick='removeMe();' />
 		<input class='button' type='button' value='".UCSLAN_18."' onclick='clearMe($userclass_id);' />
 		<input type='hidden' name='class_id' value='$userclass_id'>
-		 
+
 		</td></tr></table>
 		</td></tr>
 		<tr><td colspan='2' style='text-align:center' class='forumheader'>
@@ -246,18 +246,18 @@ If(isset($_POST['edit'])) {
 		</tr>
 		</td>
 		</table>";
-	 
+
 }
-	
-	
+
+
 $text .= "</form>
 	</div>";
-	
+
 $ns->tablerender(UCSLAN_21, $text);
-	
+
 require_once("footer.php");
 function headerjs() {
-	 
+
 	$script_js = "<script type=\"text/javascript\">
 		//<![CDATA[
 		// Adapted from original:  Kathi O'Shea (Kathi.O'Shea@internet.com)
@@ -284,8 +284,8 @@ function headerjs() {
 		}
 		document.getElementById('assignclass1').selectedIndex=-1;
 		}
-		 
-		 
+
+
 		function removeMe() {
 		var boxLength = document.getElementById('assignclass2').length;
 		var boxLength2 = document.getElementById('assignclass1').length;
@@ -300,7 +300,7 @@ function headerjs() {
 		document.getElementById('assignclass1').options[j].text = valname;
 		}
 		}
-		 
+
 		// document.getElementById('assignclass1').options[i].text = valname;
 		}
 		count++;
@@ -315,11 +315,11 @@ function headerjs() {
 		boxLength = document.getElementById('assignclass2').length;
 		}
 		}
-		 
+
 		function clearMe(clid) {
 		location.href = document.location + \"?clear.\" + clid;
 		}
-		 
+
 		function saveMe(clid) {
 		var strValues = \"\";
 		var boxLength = document.getElementById('assignclass2').length;
@@ -345,6 +345,6 @@ function headerjs() {
 		</script>\n";
 	return $script_js;
 }
-	
-	
+
+
 ?>

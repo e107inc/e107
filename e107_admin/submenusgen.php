@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/submenusgen.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-02-14 20:34:59 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.9 $
+|     $Date: 2005-04-02 21:06:52 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -27,27 +27,27 @@ if (file_exists($lan_file)) {
 } else {
 	@include_once(e_LANGUAGEDIR."english/admin/lan_links.php");
 }
-	
+
 require_once("auth.php");
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."submenus_handler.php");
 $rs = new form;
 //$aj = new textparse;
-	
-	
-	
+
+
+
 unset($message);
 // Add links
 if ($_POST['subNews'] == 1) {
 	$sub_url = "news.php";
-	$sub_name = LAN_MENGEN_4; // News
+	$sub_name = ADLAN_0; // News
 	$sub_getcat = "news_category";
 	$sub_getcatfield = "category_id, category_name";
 	$sub_getcatsql = "category_id !='-2' ORDER BY category_name ASC";
 	$sub_suburl = "news.php?cat.";
 	$message .= create_submenu();
 }
-	
+
 if ($_POST['subLinks'] == 1) {
 	$sub_url = "links.php";
 	$sub_name = LAN_MENGEN_41; // Links
@@ -57,7 +57,7 @@ if ($_POST['subLinks'] == 1) {
 	$sub_suburl = "links.php?cat.";
 	$message .= create_submenu();
 }
-	
+
 if ($_POST['subForums'] == 1) {
 	$sub_url = $PLUGINS_DIRECTORY."forum/forum.php";
 	$sub_name = LAN_MENGEN_5; // Forum
@@ -67,7 +67,7 @@ if ($_POST['subForums'] == 1) {
 	$sub_suburl = $PLUGINS_DIRECTORY."forum/forum_viewforum.php?";
 	$message .= create_submenu();
 }
-	
+
 if ($_POST['subArticles'] == 1) {
 	$sub_url = "content.php?article";
 	$sub_name = LAN_MENGEN_6; // Articles
@@ -77,17 +77,17 @@ if ($_POST['subArticles'] == 1) {
 	$sub_suburl = "content.php?article.cat.";
 	$message .= create_submenu();
 }
-	
+
 if ($_POST['subDownloads'] == 1) {
 	$sub_url = "download.php";
-	$sub_name = LAN_MENGEN_7; // Download
+	$sub_name = ADLAN_24; // Download
 	$sub_getcat = "download_category";
 	$sub_getcatfield = "download_category_id, download_category_name";
 	$sub_getcatsql = "download_category_parent ='0' ORDER BY download_category_name ASC";
 	$sub_suburl = "download.php#cat";
 	$message .= create_submenu();
 }
-	
+
 // Add specific links
 if (isset($_POST['sublinkname'])) {
 	for($i = 0; $i < count($_POST['sublinkname']); $i++) {
@@ -103,7 +103,7 @@ if (isset($_POST['sublinkname'])) {
 		}
 	}
 }
-	
+
 // Delete links
 if ($_POST['delNews'] == 1) {
 	$sub_suburl = "news.php?cat.";
@@ -129,12 +129,12 @@ if ($_POST['delAll'] == 1) {
 	$sub_delall = 1;
 	$message .= delete_submenu();
 }
-	
+
 // Display messages
 if (isset($message)) {
 	$ns->tablerender(LAN_MENGEN_15, $message);
 }
-	
+
 // Function to display HTML to add links
 function display_addlink($hsub_label, $hsub_element, $hsub_help) {
 	$rs = new form;
@@ -158,38 +158,38 @@ function display_dellink($hsub_label, $hsub_element, $hsub_help) {
 	return $textform;
 }
 // Automatic Menu Generator HTML
-	
+
 $caption = LAN_MENGEN_1;
 $text = "";
 $text .= $rs->form_open("post", e_SELF, "submenus_config");
-	
+
 $text .= "<table style=\"".ADMIN_WIDTH."\" class=\"fborder\" >\n";
-	
+
 $text .= "<tr>
 	<td style=\"vertical-align:top\" colspan=\"2\" class='fcaption'>".LAN_MENGEN_2."</td>
 	</tr>";
-	
+
 $text .= "<tr>
 	<td style=\"vertical-align:top\" colspan=\"2\" class='forumheader'>".LAN_MENGEN_3."</td>
 	</tr>";
-	
-	
+
+
 // Add news links
-$text .= display_addlink(LAN_MENGEN_4, "subNews", LAN_MENGEN_8);
-	
+$text .= display_addlink(ADLAN_0, "subNews", LAN_MENGEN_8);
+
 // Add news links
 $text .= display_addlink(LAN_MENGEN_41, "subLinks", LAN_MENGEN_42);
-	
+
 // Add forums links
 $text .= display_addlink(LAN_MENGEN_5, "subForums", LAN_MENGEN_9);
-	
+
 // Add articles links
 $text .= display_addlink(LAN_MENGEN_6, "subArticles", LAN_MENGEN_11);
-	
+
 // Add downloads links
-$text .= display_addlink(LAN_MENGEN_7, "subDownloads", LAN_MENGEN_12);
-	
-	
+$text .= display_addlink(ADLAN_24, "subDownloads", LAN_MENGEN_12);
+
+
 // Add other sublinks
 if ($sql->db_Select("links", "link_id,link_name,link_url", "link_category='1' AND link_name NOT REGEXP('submenu') AND (link_url NOT LIKE '%news.php%' AND link_url NOT LIKE '%forum.php%' AND link_url NOT LIKE '%content.php%' AND link_url NOT LIKE '%download.php%' AND link_url NOT LIKE '%links.php%')")) {
 	$text .= "<tr>
@@ -224,68 +224,68 @@ if ($sql->db_Select("links", "link_id,link_name,link_url", "link_category='1' AN
 			</tr>\n";
 	}
 }
-	
+
 // Button Submit
 $text .= "<tr>\n
 	<td style=\"vertical-align:top; text-align: center;\" class=\"forumheader3\" colspan=\"2\" >\n";
-$text .= $rs->form_button("submit", "submenus_submit", LAN_MENGEN_13." / ".LAN_MENGEN_18);
+$text .= $rs->form_button("submit", "submenus_submit", LAN_CREATE." / ".LAN_DELETE);
 $text .= "</td>\n
 	</tr>\n";
-	
-	
-	
+
+
+
 // Delete submenus
-	
+
 $text .= "<tr>
 	<td style=\"vertical-align:top\" colspan=\"2\" class='fcaption'>".LAN_MENGEN_19."</td>
 	</tr>";
-	
+
 $text .= "<tr>
 	<td style=\"vertical-align:top\" colspan=\"2\" class='forumheader'>".LAN_MENGEN_20."</td>
 	</tr>";
-	
+
 // Delete news links
-$text .= display_dellink(LAN_MENGEN_4, "delNews", LAN_MENGEN_21." ".LAN_MENGEN_4.LAN_MENGEN_22);
-	
+$text .= display_dellink(ADLAN_0, "delNews", LAN_MENGEN_21." ".LAN_MENGEN_4.LAN_MENGEN_22);
+
 // Delete Links sublinks
 $text .= display_dellink(LAN_MENGEN_41, "delLinks", LAN_MENGEN_43);
-	
+
 // Delete forums links
 $text .= display_dellink(LAN_MENGEN_5, "delForums", LAN_MENGEN_21." ".LAN_MENGEN_5.LAN_MENGEN_22);
-	
+
 // Delete articles links
 $text .= display_dellink(LAN_MENGEN_6, "delArticles", LAN_MENGEN_21." ".LAN_MENGEN_6.LAN_MENGEN_22);
-	
+
 // Delete downloads links
-$text .= display_dellink(LAN_MENGEN_7, "delDownloads", LAN_MENGEN_21." ".LAN_MENGEN_7.LAN_MENGEN_22);
-	
+$text .= display_dellink(ADLAN_24, "delDownloads", LAN_MENGEN_21." ".ADLAN_24.LAN_MENGEN_22);
+
 // Delete ALL submenu links
 $text .= "<tr>\n
 	<td style=\"width:30%; vertical-align:top\" class=\"forumheader3\">".LAN_MENGEN_14."</td>\n
 	<td style=\"width:70%\" class=\"forumheader3\">";
 $text .= $rs->form_checkbox("delAll", 1, 0);
-$text .= "<br /><b class=\"smalltext\" >".LAN_MENGEN_17." ".LAN_MENGEN_4.", ".LAN_MENGEN_5.", ".LAN_MENGEN_6.", ".LAN_MENGEN_7.")<br />".LAN_MENGEN_23. " <a href=\"".e_ADMIN."links.php\" >".LAN_MENGEN_24."</a></b></td>\n
+$text .= "<br /><b class=\"smalltext\" >".LAN_MENGEN_17." ".ADLAN_0.", ".LAN_MENGEN_5.", ".LAN_MENGEN_6.", ".ADLAN_24.")<br />".LAN_MENGEN_23. " <a href=\"".e_ADMIN."links.php\" >".LAN_MENGEN_24."</a></b></td>\n
 	</tr>\n";
-	
+
 // Button Submit
 $text .= "<tr>\n
 	<td style=\"vertical-align:top; text-align: center;\" class=\"forumheader3\" colspan=\"2\" >\n";
-$text .= $rs->form_button("submit", "delete_submit", LAN_MENGEN_13." / ".LAN_MENGEN_18);
+$text .= $rs->form_button("submit", "delete_submit", LAN_CREATE." / ".LAN_DELETE);
 $text .= "</td>\n
 	</tr>\n";
-	
+
 $text .= "</table>\n";
-	
+
 $text .= $rs->form_close();
-	
+
 $ns->tablerender($caption, $text);
-	
+
 require_once("footer.php");
-	
+
 function show_options() {
-	 
+
 }
-	
+
 function submenusgen_adminmenu() {
 	global $sql;
 	if ($action == "") {
@@ -293,16 +293,16 @@ function submenusgen_adminmenu() {
 	}
 	$var['main']['text'] = LCLAN_62;
 	$var['main']['link'] = "links.php";
-	 
+
 	$var['create']['text'] = LCLAN_63;
 	$var['create']['link'] = "links.php?create";
-	 
+
 	$var['opt']['text'] = LCLAN_67;
 	$var['opt']['link'] = "links.php?opt";
-	 
+
 	$var['sub']['text'] = LCLAN_83;
 	$var['sub']['link'] = e_SELF;
-	 
+
 	show_admin_menu(LCLAN_68, 'sub', $var);
 }
 ?>

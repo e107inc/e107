@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_banner.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-04-02 18:29:48 $
+|     $Revision: 1.7 $
+|     $Date: 2005-04-02 21:08:06 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -60,39 +60,39 @@ define("BNRLAN_46", "Code");
 
 
 
-define("BNRLAN_47", "visibility updated for banner");
-define("BNRLAN_48", "options updated");
-define("BNRLAN_49", "set campaign visibility");
-define("BNRLAN_50", "choose campaign ...");
-define("BNRLAN_51", "Campaign Visibility Configuration");
-define("BNRLAN_52", "visibility for banner");
-define("BNRLAN_53", "set visibility style");
-define("BNRLAN_54", "use individual banner visibility");
-define("BNRLAN_55", "use campaign visibility");
-define("BNRLAN_56", "update options");
+// define("BNRLAN_47", "visibility updated for banner");
+// define("BNRLAN_48", "options updated");
+// define("BNRLAN_49", "set campaign visibility");
+// define("BNRLAN_50", "choose campaign ...");
+// define("BNRLAN_51", "Campaign Visibility Configuration");
+// define("BNRLAN_52", "visibility for banner");
+// define("BNRLAN_53", "set visibility style");
+// define("BNRLAN_54", "use individual banner visibility");
+// define("BNRLAN_55", "use campaign visibility");
+// define("BNRLAN_56", "update options");
 
 define("BNRLAN_58", "banner front page");
 define("BNRLAN_59", "create new banner");
-define("BNRLAN_60", "campaign visibility");
+// define("BNRLAN_60", "campaign visibility");
 
 define("BNRLAN_62", "banner options");
-define("BNRLAN_63", "visibility pages");
-define("BNRLAN_64", "individual visibility will overwrite all campaign visibility settings.");
-define("BNRLAN_65", "campaign visibility will overwrite all individual visibility settings.");
+// define("BNRLAN_63", "visibility pages");
+// define("BNRLAN_64", "individual visibility will overwrite all campaign visibility settings.");
+// define("BNRLAN_65", "campaign visibility will overwrite all individual visibility settings.");
 
 define("BANNER_MENU_L1", "Advertisement");
 define("BANNER_MENU_L2", "Banner menu configuration saved");
 
 //v.617
 define("BANNER_MENU_L3", "Caption");
-define("BANNER_MENU_L4", "Campaign");
-define("BANNER_MENU_L5", "Banner Menu Configuration");
+// define("BANNER_MENU_L4", "Campaign");
+// define("BANNER_MENU_L5", "Banner Menu Configuration");
 define("BANNER_MENU_L6", "choose campaigns to show in menu");
 define("BANNER_MENU_L7", "available campaigns");
 define("BANNER_MENU_L8", "selected campaigns");
 define("BANNER_MENU_L9", "remove selection");
 define("BANNER_MENU_L10", "Render type");
-define("BANNER_MENU_L11", "choose render type ...");
+// define("BANNER_MENU_L11", "choose render type ...");
 define("BANNER_MENU_L12", "plain");
 define("BANNER_MENU_L13", "in captioned box");
 define("BANNER_MENU_L18", "Update Menu Settings");

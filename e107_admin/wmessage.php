@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/wmessage.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-03-12 08:59:35 $
-|     $Author: stevedunstan $
+|     $Revision: 1.20 $
+|     $Date: 2005-04-02 21:06:52 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -215,7 +215,7 @@ function wmessage_adminmenu() {
 	$var['main']['link'] = e_SELF;
 	$var['create']['text'] = WMLAN_01;
 	$var['create']['link'] = e_SELF."?create";
-	$var['opt']['text'] = WMLAN_08;
+	$var['opt']['text'] = LAN_PREFS;
 	$var['opt']['link'] = e_SELF."?opt";
 
 	show_admin_menu(LAN_OPTIONS, $action, $var);

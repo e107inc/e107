@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users_extended.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-04-01 18:56:32 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.4 $
+|     $Date: 2005-04-02 21:08:06 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("EXTLAN_1", "Name");
@@ -40,8 +40,8 @@ define("EXTLAN_27", "Confirm Delete");
 define("EXTLAN_28", "No extended fields defined");
 define("EXTLAN_29", "Extended user fields saved.");
 define("EXTLAN_30", "Extended field deleted");
-define("EXTLAN_31", "Extended Field Menu");
-define("EXTLAN_32", "Extended front page");
+// define("EXTLAN_31", "Extended Field Menu");
+// define("EXTLAN_32", "Extended front page");
 define("EXTLAN_33", "Cancel Edit");
 define("EXTLAN_34", "Extended Fields");
 define("EXTLAN_35", "Categories");

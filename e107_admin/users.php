@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-04-01 16:14:42 $
+|     $Revision: 1.27 $
+|     $Date: 2005-04-02 21:06:52 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -234,7 +234,7 @@ if ($_POST['useraction'] == 'deluser') {
 				<br /><br />
 				<input type='submit' class='button' name='confirm' value='".USRLAN_17."' />
 				&nbsp;&nbsp;
-				<input type='submit' class='button' name='cancel' value='".USRLAN_15."' />
+				<input type='submit' class='button' name='cancel' value='".LAN_CANCEL."' />
 				</div>
 				</form>
 				";
@@ -345,7 +345,7 @@ class users
 				<td style='width:10%' class='fcaption'><a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_79."</a></td>
 				<td style='width:30%' class='fcaption'><a href='".e_SELF."?main.user_name.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_78."</a></td>
 				<td style='width:15%' class='fcaption'><a href='".e_SELF."?main.user_class.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_91."</a></td>
-				<td style='width:30%' class='fcaption'>".USRLAN_75."</td>
+				<td style='width:30%' class='fcaption'>".LAN_OPTIONS."</td>
 				</tr>";
 
 			while ($row = $sql->db_Fetch()) {
@@ -457,7 +457,7 @@ class users
 		$var['prune']['text'] = USRLAN_73;
 		$var['prune']['link'] = e_SELF."?prune";
 
-		$var['options']['text'] = USRLAN_75;
+		$var['options']['text'] = LAN_OPTIONS;
 		$var['options']['link'] = e_SELF."?options";
 
 		//  $var['mailing']['text']= USRLAN_121;
@@ -473,13 +473,13 @@ class users
 
 			<tr>
 			<td style='width:50%' class='forumheader3'>".USRLAN_44.":</td>
-			<td style='width:50%' class='forumheader3'>". ($pref['avatar_upload'] ? "<input name='avatar_upload' type='radio' value='1' checked='checked' />".LAN_YES."&nbsp;&nbsp;<input name='avatar_upload' type='radio' value='0' />".LAN_NO : "<input name='avatar_upload' type='radio' value='1' />".USRLAN_45."&nbsp;&nbsp;<input name='avatar_upload' type='radio' value='0' checked='checked' />".USRLAN_46). (!FILE_UPLOADS ? " <span class='smalltext'>(".USRLAN_58.")</span>" : "")."
+			<td style='width:50%' class='forumheader3'>". ($pref['avatar_upload'] ? "<input name='avatar_upload' type='radio' value='1' checked='checked' />".LAN_YES."&nbsp;&nbsp;<input name='avatar_upload' type='radio' value='0' />".LAN_NO : "<input name='avatar_upload' type='radio' value='1' />".LAN_YES."&nbsp;&nbsp;<input name='avatar_upload' type='radio' value='0' checked='checked' />".LAN_NO). (!FILE_UPLOADS ? " <span class='smalltext'>(".USRLAN_58.")</span>" : "")."
 			</td>
 			</tr>
 
 			<tr>
 			<td style='width:50%' class='forumheader3'>".USRLAN_53.":</td>
-			<td style='width:50%' class='forumheader3'>". ($pref['photo_upload'] ? "<input name='photo_upload' type='radio' value='1' checked='checked' />".USRLAN_45."&nbsp;&nbsp;<input name='photo_upload' type='radio' value='0' />".USRLAN_46 : "<input name='photo_upload' type='radio' value='1' />".USRLAN_45."&nbsp;&nbsp;<input name='photo_upload' type='radio' value='0' checked='checked' />".USRLAN_46). (!FILE_UPLOADS ? " <span class='smalltext'>(".USRLAN_58.")</span>" : "")."
+			<td style='width:50%' class='forumheader3'>". ($pref['photo_upload'] ? "<input name='photo_upload' type='radio' value='1' checked='checked' />".LAN_YES."&nbsp;&nbsp;<input name='photo_upload' type='radio' value='0' />".LAN_NO : "<input name='photo_upload' type='radio' value='1' />".LAN_YES."&nbsp;&nbsp;<input name='photo_upload' type='radio' value='0' checked='checked' />".LAN_NO). (!FILE_UPLOADS ? " <span class='smalltext'>(".USRLAN_58.")</span>" : "")."
 			</td>
 			</tr>
 
@@ -497,13 +497,13 @@ class users
 
 			<tr>
 			<td style='width:50%' class='forumheader3'>".USRLAN_126.":</td>
-			<td style='width:50%' class='forumheader3'>". ($pref['profile_rate'] ? "<input name='profile_rate' type='radio' value='1' checked='checked' />".USRLAN_45."&nbsp;&nbsp;<input name='profile_rate' type='radio' value='0' />".USRLAN_46 : "<input name='profile_rate' type='radio' value='1' />".USRLAN_45."&nbsp;&nbsp;<input name='profile_rate' type='radio' value='0' checked='checked' />".USRLAN_46)."
+			<td style='width:50%' class='forumheader3'>". ($pref['profile_rate'] ? "<input name='profile_rate' type='radio' value='1' checked='checked' />".LAN_YES."&nbsp;&nbsp;<input name='profile_rate' type='radio' value='0' />".LAN_NO : "<input name='profile_rate' type='radio' value='1' />".LAN_YES."&nbsp;&nbsp;<input name='profile_rate' type='radio' value='0' checked='checked' />".LAN_NO)."
 			</td>
 			</tr>
 
 			<tr>
 			<td style='width:50%' class='forumheader3'>".USRLAN_127.":</td>
-			<td style='width:50%' class='forumheader3'>". ($pref['profile_comments'] ? "<input name='profile_comments' type='radio' value='1' checked='checked' />".USRLAN_45."&nbsp;&nbsp;<input name='profile_comments' type='radio' value='0' />".USRLAN_46 : "<input name='profile_comments' type='radio' value='1' />".USRLAN_45."&nbsp;&nbsp;<input name='profile_comments' type='radio' value='0' checked='checked' />".USRLAN_46)."
+			<td style='width:50%' class='forumheader3'>". ($pref['profile_comments'] ? "<input name='profile_comments' type='radio' value='1' checked='checked' />".LAN_YES."&nbsp;&nbsp;<input name='profile_comments' type='radio' value='0' />".LAN_NO : "<input name='profile_comments' type='radio' value='1' />".LAN_YES."&nbsp;&nbsp;<input name='profile_comments' type='radio' value='0' checked='checked' />".LAN_NO)."
 			</td>
 			</tr>
 

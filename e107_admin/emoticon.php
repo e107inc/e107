@@ -100,7 +100,7 @@ $text .= "
 	</td>
 	</tr>
 	<tr>
-	<td class='forumheader3' style='vertical-align:top'>".EMOLAN_5."</td>
+	<td class='forumheader3' style='vertical-align:top'>".ADLAN_58."</td>
 	<td style='width:100%'>
 
 	<div style='padding:1px; width:100%; height:300px; overflow:auto; margin-left:auto; margin-right:auto'>
@@ -148,7 +148,7 @@ $text .= "
 	<tr>
 	<td style='width:30%' class='forumheader3'>".EMOLAN_9.": </td>
 	<td class='forumheader3'><input class='tbox' type='text' id='emote_new_image' name='emote_new_image' size='30' value='$name' maxlength='100' />
-	<input class='button' type ='button' style='cursor:hand' size='30' value='".EMOLAN_5."' onclick='expandit(this)' />
+	<input class='button' type ='button' style='cursor:hand' size='30' value='".ADLAN_58."' onclick='expandit(this)' />
 	<div id='emoicn' style='padding:3px;display:none'>";
 	foreach ($emotelist as $key => $icon){
 		$text .= "<a href=\"javascript:insertext('".$icon['fname']."','emote_new_image','emoicn')\"><img src='".e_IMAGE."emoticons/".$icon['fname']."' style='border:0' alt='' /></a> ";

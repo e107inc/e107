@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_userclass2.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:11:55 $
+|     $Revision: 1.2 $
+|     $Date: 2005-04-02 21:08:06 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -18,8 +18,8 @@ define("UCSLAN_6", "Class saved to database.");
 define("UCSLAN_7", "No user classes yet.");
 define("UCSLAN_8", "Existing Classes");
 
-define("UCSLAN_9", "Edit");
-define("UCSLAN_10", "Delete");
+// define("UCSLAN_9", "Edit");
+// define("UCSLAN_10", "Delete");
 define("UCSLAN_11", "tick to confirm");
 define("UCSLAN_12", "Class Name");
 define("UCSLAN_13", "Class Description");

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/includes/beginner.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-04-02 08:40:54 $
+|     $Revision: 1.4 $
+|     $Date: 2005-04-02 21:08:05 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -35,9 +35,10 @@ $text = "<div style='text-align:center;vertical-align:middle'><br /><br />
 	}
 
 $text .= "</table><br /></div>";
+
 $text .= "<div class='smalltext' style='text-align:center'>".ADLAN_144." <a href='".e_SELF."?mode=e_advanced' >".ADLAN_145."</a>&nbsp;&nbsp;</div>";
 
 $ns->tablerender(ADLAN_47." ".ADMINNAME, $text);
-echo admin_info();
-
+//$text = $tp -> parseTemplate('{ADMIN_PLUGINS}');
+//echo $text;
 ?>
