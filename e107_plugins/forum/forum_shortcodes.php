@@ -219,7 +219,7 @@ SC_END
 
 SC_BEGIN POLL
 global $pollstr;
-return "<br />".$pollstr."<br />";
+return $pollstr;
 SC_END
 
 */
