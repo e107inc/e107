@@ -517,6 +517,7 @@ CREATE TABLE upload (
 CREATE TABLE user (
   user_id int(10) unsigned NOT NULL auto_increment,
   user_name varchar(100) NOT NULL default '',
+  user_customtitle varchar(100) NOT NULL default '',
   user_password varchar(32) NOT NULL default '',
   user_sess varchar(32) NOT NULL default '',
   user_email varchar(100) NOT NULL default '',
