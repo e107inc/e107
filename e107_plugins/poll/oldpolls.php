@@ -11,37 +11,145 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/oldpolls.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-03-03 18:36:13 $
+|     $Revision: 1.2 $
+|     $Date: 2005-03-03 19:47:49 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
 require_once(HEADERF);
 require_once(e_HANDLER."comment_class.php");
-$sql2 = new db;
- $cobj = new comment;
-$from = (!e_QUERY ? $from = 0 : $from = e_QUERY);
+$cobj = new comment;
+$gen = new convert;
+
+@include(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
+@include(e_PLUGIN."poll/languages/English.php");
+
+
+if(e_QUERY)
+{
+	$query = "SELECT p.*, u.user_name FROM #poll AS p 
+	LEFT JOIN #user AS u ON p.poll_admin_id = u.user_id
+	WHERE p.poll_type=1 AND p.poll_id=".e_QUERY;
+
+
+
+	if($sql->db_Select_gen($query))
+	{
+
+		$row = $sql -> db_Fetch();
+		extract($row);
+
+		$optionArray = explode(chr(1), $poll_options);
+		$optionArray = array_slice($optionArray, 0, -1);      
+		$voteArray = explode(chr(1), $poll_votes);
+		$voteArray = array_slice($voteArray, 0, -1);
+
+		$voteTotal = array_sum($voteArray);
+		$percentage = array();
+		foreach($voteArray as $votes)
+		{
+			$percentage[] = round(($votes/$voteTotal) * 100, 2);
+		}
+
+		$text = "<table style='width:100%'>
+		<tr>
+		<td colspan='2' class='mediumtext' style='text-align:center'>
+		<b>".$tp -> toHTML($poll_title)."</b>
+		<div class='smalltext'>".LAN_94." <a href='".e_BASE."user.php?id.$user_id'>".$user_name."</a>. ".LAN_99.$datestamp.LAN_100.$end_datestamp.". ".LAN_95." $voteTotal</div>
+		<br />
+		 
+		</td>
+		</tr>";
+
+		$count = 0;
+		foreach($optionArray as $option)
+		{
+			$text .= "<tr>
+			<td style='width:40% 'class='mediumtext'><b>".$tp -> toHTML($option)."</b></td>
+			<td class='smalltext'>
+			<img src='".THEME."/images/bar.jpg' height='12' width='";
+		 
+			if (($percentage[$count] * 3) > 180) {
+				$perc = 180;
+			} else {
+				$perc = ($percentage[$count] * 3);
+			}
+		 
+			$text .= $perc."' style='border:1px solid #000;'> ".$percentage[$count]."% [Votes: ".$voteArray[$count]."]</div>
+			</td>
+			</tr>\n";
+			$count++;
+
+		}
 	
-$poll_total = $sql->db_Count("poll", "(*)", "WHERE poll_active=0 AND poll_end_datestamp !=0");
-	
-$p_query = e_PAGE.(e_QUERY ? "?".e_QUERY : "");
-	
-if ($cache = $e107cache->retrieve($p_query)) {
-	echo $cache;
-	require_once(e_HANDLER."np_class.php");
-	$ix = new nextprev("oldpolls.php", $from, 10, $poll_total, LAN_96);
-	require_once(FOOTERF);
-	exit;
+		if($comment_total = $sql -> db_Select("comments", "*", "comment_item_id=$poll_id AND comment_type=4 ORDER BY comment_datestamp"))
+		{
+			$text .= "<tr><td colspan='2'><br /><br />";
+			while ($row = $sql->db_Fetch()) {
+				$text .= $cobj->render_comment($row);
+			}
+			$text .= "</td></tr>";
+		}
+	 
+		$text .= "</table>";
+		$ns->tablerender(LAN_98." #".$poll_id, $text);
+	}
 }
-	
-ob_start();
-	
-if (!$poll_total) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$query = "SELECT p.*, u.user_name FROM #poll AS p 
+LEFT JOIN #user AS u ON p.poll_admin_id = u.user_id
+WHERE p.poll_type=1 
+ORDER BY p.poll_datestamp DESC";
+
+if(!$sql->db_Select_gen($query))
+{
 	$ns->tablerender(LAN_92, "<div style='text-align:center'>".LAN_93."</div>");
 	require_once(FOOTERF);
 	exit;
 }
+
+$array = $sql -> db_getList();
+$oldpollArray = array_slice($array, 1);
+
+$text = "<table style='width: 100%;'>
+<tr>
+<td class='forumheader3' style='width: 50%;'>Title</td>
+<td class='forumheader3' style='width: 20%;'>Posted by</td>
+<td class='forumheader3' style='width: 30%;'>Active</td>
+</tr>\n";
+
+foreach($oldpollArray as $oldpoll)
+{
+	extract($oldpoll);
+	$from = $gen->convert_date($poll_datestamp, "short");
+	$to = $gen->convert_date($poll_end_datestamp, "short");
+
+	$text .= "<tr>
+	<td class='forumheader3' style='width: 50%;'><a href='".e_SELF."?$poll_id'>$poll_title</a></td>
+	<td class='forumheader3' style='width: 20%;'><a href='".e_BASE."user.php?id.$poll_admin_id'>$user_name</a></td>
+	<td class='forumheader3' style='width: 30%;'>$from to $to</td>
+	</tr>\n";
+}
+	
+$text .= "</table>";
+$ns->tablerender(LAN_98." #".$poll_id, $text);
+require_once(FOOTERF);
+exit;
 	
 $sql->db_Select("poll", "*", "poll_active='0' ORDER BY poll_datestamp DESC LIMIT $from, 10");
 	
