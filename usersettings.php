@@ -400,7 +400,7 @@ $text .= "</select>
 <tr>
 <td style='width:20%; vertical-align:top' class='forumheader3'>".LAN_422."<br /><span class='smalltext'>".LAN_423."</span></td>
 <td style='width:80%' class='forumheader2'>
-<input class='tbox' type='text' name='image' size='60' value='$image' maxlength='100' />
+<input class='tbox' type='text' id='image' size='60' value='$image' maxlength='100' />
 </td>
 </tr>
 
@@ -409,7 +409,7 @@ $text .= "</select>
 <tr>
 <td style='width:20%; vertical-align:top' class='forumheader3'>".LAN_421."<br /><span class='smalltext'>".LAN_424."</span></td>
 <td style='width:80%' class='forumheader2'>
-<input class='button' type ='button' style='width: 35px; cursor:hand' size='30' value='".LAN_403."' onclick='expandit(this)' />
+<input class='button' type ='button' style=' cursor:hand' size='30' value='".LAN_403."' onclick='expandit(this)' />
 <div style='{head}; display:none' >";
 $avatarlist[0] = "";
 $handle=opendir(e_IMAGE."avatars/");
@@ -421,7 +421,7 @@ while ($file = readdir($handle)){
 closedir($handle);
 
 for($c=1; $c<=(count($avatarlist)-1); $c++){
-        $text .= "<a href='javascript:addtext2(\"$avatarlist[$c]\")'><img src='".e_IMAGE."avatars/".$avatarlist[$c]."' style='border:0' alt='' /></a> ";
+        $text .= "<a href='javascript:addtext_us(\"$avatarlist[$c]\")'><img src='".e_IMAGE."avatars/".$avatarlist[$c]."' style='border:0' alt='' /></a> ";
 }
 
 $text .= "<br />
@@ -526,13 +526,13 @@ function req($field){
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 function headerjs(){
-$script_txt ="
-<script type=\"text/javascript\">
-function addtext2(sc){
-        document.dataform.image.value = sc;
+$script = "<script type=\"text/javascript\">
+function addtext_us(sc){
+        document.getElementById('dataform').image.value = sc;
 }
 
 </script>\n";
+return $script;
 
 }
 
