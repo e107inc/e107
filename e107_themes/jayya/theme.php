@@ -70,7 +70,11 @@ $HEADER = "<table class='top_section'>
 
 <tr>
 <td class='left_menu'>
-<table style='width:100%; border-collapse: collapse; border-spacing: 0px;'>
+<table style='width: 170px; border-collapse: collapse; border-spacing: 0px;'>
+<tr>
+<td style='width: 170px'>
+</td>
+</tr>
 <tr>
 <td>
 {SETSTYLE=leftmenu}
@@ -87,7 +91,11 @@ $FOOTER = "<br />
 </td>
 
 <td class='right_menu'>
-<table style='width:100%; border-collapse: collapse; border-spacing: 0px;'>
+<table style='width: 170px; border-collapse: collapse; border-spacing: 0px;'>
+<tr>
+<td style='width: 170px'>
+</td>
+</tr>
 <tr>
 <td>
 {SETSTYLE=rightmenu}
