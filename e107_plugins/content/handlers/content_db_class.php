@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.3 $
-|		$Date: 2005-02-07 12:21:48 $
+|		$Revision: 1.4 $
+|		$Date: 2005-02-08 23:47:15 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -450,6 +450,45 @@ class contentdb{
 
 		}
 
+		
+		function dbSetOrder($mode, $id){
+						global $plugintable, $sql, $_POST;
+
+						if($mode == "inc"){
+
+							$qs = explode("-", $id);
+							$cid = $qs[0];
+							$corder = $qs[1];
+							$sql->db_Update($plugintable, "content_order=content_order+1 WHERE content_order='".($corder-1)."' " );
+							$sql->db_Update($plugintable, "content_order=content_order-1 WHERE content_id='".$cid."' " );
+							//echo $plugintable.", content_order=content_order+1 WHERE content_order='".($corder-1)."'<br />";
+							//echo $plugintable.", content_order=content_order-1 WHERE content_order='".$cid."'<br />";
+							$message = "order is increased ";
+							
+						}elseif($mode == "dec"){
+
+							$qs = explode("-", $id);
+							$cid = $qs[0];
+							$corder = $qs[1];
+							$sql->db_Update($plugintable, "content_order=content_order-1 WHERE content_order='".($corder+1)."' " );
+							$sql->db_Update($plugintable, "content_order=content_order+1 WHERE content_id='".$cid."' " );
+							//echo $plugintable.", content_order=content_order-1 WHERE content_order='".($corder+1)."'<br />";
+							//echo $plugintable.", content_order=content_order+1 WHERE content_order='".$cid."'<br />";
+							$message = "order is decreased ";
+							
+						}elseif($mode == "all"){
+
+							foreach ($_POST['order'] as $cid){
+								$tmp = explode(".", $cid);
+								$sql->db_Update($plugintable, "content_order='".$tmp[1]."' WHERE content_id='".$tmp[0]."' " );
+								//echo $plugintable.", content_order='".$tmp[1]."' WHERE content_id='".$tmp[0]."'<br />";
+								$message = "new order for content items is saved";
+							}
+							
+						}
+						return $message;
+
+		}
 }
 
 ?>

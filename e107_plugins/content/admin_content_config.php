@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.8 $
-|		$Date: 2005-02-08 14:36:02 $
+|		$Revision: 1.9 $
+|		$Date: 2005-02-08 23:45:56 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -184,8 +184,8 @@ if($delete == 'cat'){
 		//if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
 			$message = CONTENT_ADMIN_CAT_LAN_23."<br />";
 		//}
-		$sql -> db_Select($plugintable, "content_parent", "content_id = '$del_id' ");
-		list($content_parent) = $sql -> db_Fetch();
+		//$sql -> db_Select($plugintable, "content_parent", "content_id = '$del_id' ");
+		//list($content_parent) = $sql -> db_Fetch();
 		//echo "-".$content_parent."<br />";
 		if($content_parent == "0"){								//is main parent
 			$subcatarray = $aa -> getParent("", "", $del_id);
@@ -226,6 +226,10 @@ if($delete == 'content'){
 			$e107cache->clear("content");
 			$message = CONTENT_ADMIN_ITEM_LAN_3;
 		}
+}
+
+if(isset($_POST['update_order'])){
+		$message = $adb -> dbSetOrder("all", $_POST['order']);
 }
 
 if(isset($_POST['preview'])){
@@ -298,6 +302,7 @@ if(!e_QUERY){																//show main categories
 					$aform -> show_content_manage("admin");
 			}
 		}
+
 		if($action == "create"){											//item
 			if($sub_action == "cc"){										//item; create redirect
 						$message = CONTENT_ADMIN_ITEM_LAN_1;
@@ -330,9 +335,37 @@ if(!e_QUERY){																//show main categories
 					header("location:".e_SELF."?type.".$type_id); exit;
 			}
 		}
+
 		if($action == "sa"){												//submit; overview content items
 			$aform -> show_content_submitted("admin");
 		}
+
+		if($action == "order"){
+			if(!$sub_action || $type_id == "0"){
+						$aform -> show_main_parent("order");							//show main parents for order selection
+						require_once(e_ADMIN."footer.php");
+						exit;
+			}elseif($sub_action == "cat" && $type_id != "0" && (!$id || substr($id,0,3) == "inc" || substr($id,0,3) == "dec") ){
+						if($sub_action == "cat" && substr($id,0,3) == "inc"){			//increase order
+							$adb -> dbSetOrder("inc", substr($id,4));
+						}elseif($sub_action == "cat" && substr($id,0,3) == "dec"){		//decrease order
+							$adb -> dbSetOrder("dec", substr($id,4));
+						}
+						$aform -> show_main_parent("order");							//show main parents for order selection
+						$aform -> show_cat_order("admin");								//show categories from selected main parent
+			}elseif($sub_action && $sub_action != "cat" && $type_id != "0" && (!$id || substr($id,0,3) == "inc" || substr($id,0,3) == "dec") ){
+						if(substr($id,0,3) == "inc"){									//increase order
+							$adb -> dbSetOrder("inc", substr($id,4));
+						}elseif(substr($id,0,3) == "dec"){								//decrease order
+							$adb -> dbSetOrder("dec", substr($id,4));
+						}
+						$aform -> show_main_parent("order");							//show main parents for order selection
+						$aform -> show_content_order("admin");							//show content items from selected category
+			}else{
+						header("location:".e_SELF."?type.".$type_id.".order"); exit;
+			}
+		}
+
 		if($action == "cat"){												//category
 			if(!$sub_action || $sub_action == "manage"){					//category; main parents
 					$aform -> show_main_parent("editcat");
@@ -385,7 +418,6 @@ if(!e_QUERY){																//show main categories
 	}
 }
 // ##### End --------------------------------------------------------------------------------------
-
 
 // ##### Display options --------------------------------------------------------------------------
 function admin_content_config_adminmenu(){
@@ -442,6 +474,9 @@ function admin_content_config_adminmenu(){
 
 				$var['cat.create']['text']=CONTENT_ADMIN_MENU_LAN_3;
                 $var['cat.create']['link']=e_SELF."?type.0.cat.create";
+
+				$var['order']['text']=CONTENT_ADMIN_MENU_LAN_15;
+                $var['order']['link']=e_SELF."?type.0.order";
 
                 if($submittedcontents = $sql -> db_Count($plugintable, "(*)", "WHERE content_refer ='sa' ")){
                         $var['sa']['text']=CONTENT_ADMIN_MENU_LAN_4." (".$submittedcontents.")";

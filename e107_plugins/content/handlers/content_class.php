@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.7 $
-|		$Date: 2005-02-08 16:02:02 $
+|		$Revision: 1.8 $
+|		$Date: 2005-02-08 23:47:15 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -32,6 +32,8 @@ if (!defined('CONTENT_ICON_AUTHORLIST')) { define("CONTENT_ICON_AUTHORLIST", "<i
 if (!defined('CONTENT_ICON_WARNING')) { define("CONTENT_ICON_WARNING", "<img src='".e_PLUGIN."content/images/warning_16.png' alt='warning' style='border:0; cursor:pointer;' />"); }
 if (!defined('CONTENT_ICON_OK')) { define("CONTENT_ICON_OK", "<img src='".e_PLUGIN."content/images/ok_16.png' alt='ok' style='border:0; cursor:pointer;' />"); }
 if (!defined('CONTENT_ICON_ERROR')) { define("CONTENT_ICON_ERROR", "<img src='".e_PLUGIN."content/images/error_16.png' alt='error' style='border:0; cursor:pointer;' />"); }
+if (!defined('CONTENT_ICON_ORDER')) { define("CONTENT_ICON_ORDER", "<img src='".e_PLUGIN."content/images/kpager.png' alt='order' style='border:0; cursor:pointer;' />"); }
+
 
 
 $plugintable = "pcontent";		//name of the table used in this plugin (never remove this, as it's being used throughout the plugin !!)
@@ -495,7 +497,7 @@ class content{
 					while($row = $sqlgetparent -> db_Fetch()){
 					extract($row);
 
-						$parent[] = array($content_id, $content_heading, $content_subheading, $content_summary, $content_text, $content_author, $content_icon, $content_file, $content_image, $content_parent, $content_comment, $content_rate, $content_pe, $content_refer, $content_datestamp, $content_class, $level);
+						$parent[] = array($content_id, $content_heading, $content_subheading, $content_summary, $content_text, $content_author, $content_icon, $content_file, $content_image, $content_parent, $content_comment, $content_rate, $content_pe, $content_refer, $content_datestamp, $content_class, $content_order, $level);
 
 						$level2 = $level+1;
 						$nid = ($content_parent == "0" ? $content_id : $content_parent.".".$content_id);
@@ -526,7 +528,7 @@ class content{
 				if(empty($array)){ return FALSE; }
 
 				for($a=0;$a<count($array);$a++){
-						if(!$array[$a][16] || $array[$a][16] == "0"){
+						if(!$array[$a][17] || $array[$a][17] == "0"){
 							$pre = "";
 							$class = "forumheader";
 							$style = " font-weight:bold; ";
@@ -534,7 +536,7 @@ class content{
 							$pre = "";
 							$class = "forumheader3";
 							$style = " font-weight:normal; ";
-							for($b=0;$b<$array[$a][16];$b++){
+							for($b=0;$b<$array[$a][17];$b++){
 								$pre .= "_";
 								//$pre .= "&nbsp;";
 							}
@@ -603,15 +605,14 @@ class content{
 								<td class='".$class."' style='".$style." width:5%; text-align:left'>".$array[$a][9].".".$array[$a][0]."</td>
 								<td class='".$class."' style='".$style." width:5%; text-align:center'>".($array[$a][6] ? "<img src='".$caticon."' alt='' style='vertical-align:middle' />" : "&nbsp;")."</td>
 								<td class='".$class."' style='".$style." width:15%'>[".$authordetails[0]."] ".$authordetails[1]."</td>
-								<td class='".$class."' style='".$style." width:70%; white-space:nowrap;'>".$pre.$array[$a][1]." [".$array[$a][2]."]</td>
-								<td class='".$class."' style='".$style." width:5%; text-align:left; white-space:nowrap;'>
-								".$rs -> form_open("post", e_SELF."?".$type.".".$type_id.".cat.manage", "myform_{$array[$a][0]}","","", "")."
-								<a href='".e_SELF."?".$type.".".$type_id.".cat.edit.".$array[$a][0]."'>".CONTENT_ICON_EDIT."</a> 
-								<a onclick=\"if(jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_0."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$array[$a][0]." : ".$delete_heading."]\\n\\n".CONTENT_ADMIN_JS_LAN_9."")."')){document.forms['myform_{$array[$a][0]}'].submit();}\" >".CONTENT_ICON_DELETE."</a>
-								".($array[$a][9] == "0" ? "<a href='".e_SELF."?".$type.".".$type_id.".cat.options.".$array[$a][0]."'>".CONTENT_ICON_OPTIONS."</a>" : "")."
-								".($array[$a][9] != "0" && getperms("0") ? "<a href='".e_SELF."?".$type.".".$type_id.".cat.contentmanager.".$array[$a][0]."'>".CONTENT_ICON_PERSONALMANAGER."</a>" : "")."
-								".$rs -> form_hidden("cat_delete_{$array[$a][0]}", "delete")."
-								".$rs -> form_close()."
+								<td class='".$class."' style='".$style." width:65%; white-space:nowrap;'>".$pre.$array[$a][1]." [".$array[$a][2]."]</td>
+								<td class='".$class."' style='".$style." width:10%; text-align:left; white-space:nowrap;'>
+									".$rs -> form_open("post", e_SELF."?".$type.".".$type_id.".cat.manage", "myform_{$array[$a][0]}","","", "")."
+									<a href='".e_SELF."?".$type.".".$type_id.".cat.edit.".$array[$a][0]."'>".CONTENT_ICON_EDIT."</a>
+									<a onclick=\"if(jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_0."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$array[$a][0]." : ".$delete_heading."]\\n\\n".CONTENT_ADMIN_JS_LAN_9."")."')){document.forms['myform_{$array[$a][0]}'].submit();}\" >".CONTENT_ICON_DELETE."</a>
+									".($array[$a][9] == "0" ? "<a href='".e_SELF."?".$type.".".$type_id.".cat.options.".$array[$a][0]."'>".CONTENT_ICON_OPTIONS."</a>" : "")."
+									".($array[$a][9] != "0" && getperms("0") ? "<a href='".e_SELF."?".$type.".".$type_id.".cat.contentmanager.".$array[$a][0]."'>".CONTENT_ICON_PERSONALMANAGER."</a>" : "")."
+									".$rs -> form_hidden("cat_delete_{$array[$a][0]}", "delete")."".$rs -> form_close()."
 								</td>
 							</tr>";
 						}
@@ -638,17 +639,17 @@ class content{
 						$query = " content_parent='".$id."' ";
 					}
 					if(!is_object($sqlprefetchbreadcrumb)){ $sqlprefetchbreadcrumb = new db; }
-					if(!$sqlprefetchbreadcrumb -> db_Select($plugintable, "content_id, content_heading, content_parent", " ".$query."  ")){
+					if(!$sqlprefetchbreadcrumb -> db_Select($plugintable, "content_id, content_heading, content_parent, content_order", " ".$query."  ")){
 						$parent = FALSE;
 					}else{
-						while(list($parent_id, $parent_heading, $parent_parent) = $sqlprefetchbreadcrumb -> db_Fetch()){
+						while(list($parent_id, $parent_heading, $parent_parent, $parent_order) = $sqlprefetchbreadcrumb -> db_Fetch()){
 							
 							if($parent_parent == "0"){
 								$cat = $type_id.".".$type_id;
 							}else{
 								$cat = $type_id.".".substr($parent_parent,2).".".$parent_id;
 							}
-							$parent[] = array($parent_id, $parent_heading, $parent_parent, $cat);
+							$parent[] = array($parent_id, $parent_heading, $parent_parent, $cat, $parent_order);
 							if($mode == ""){
 								if($parent_parent == "0"){	//maincat
 									$parentchild = $this -> prefetchBreadCrumb("0.".$parent_id);
@@ -744,6 +745,9 @@ class content{
 					$orderby2 = ", content_heading ASC";
 				}elseif(substr($orderstring,6) == "refer"){
 					$orderby = "content_refer";
+					$orderby2 = ", content_heading ASC";
+				}elseif(substr($orderstring,6) == "order"){
+					$orderby = "content_order";
 					$orderby2 = ", content_heading ASC";
 				}else{
 					$orderby = "content_datestamp";
@@ -911,6 +915,8 @@ class content{
 				$data .= "         ".chr(36)."text .= ".chr(36)."rs -> form_option(CONTENT_LAN_15, 0, e_PLUGIN.\"content/content.php?type.$parentid\".".chr(36)."querystring.\".orderdrefer\" );\n";
 				$data .= "         ".chr(36)."text .= ".chr(36)."rs -> form_option(CONTENT_LAN_16, 0, e_PLUGIN.\"content/content.php?type.$parentid\".".chr(36)."querystring.\".orderaparent\" );\n";
 				$data .= "         ".chr(36)."text .= ".chr(36)."rs -> form_option(CONTENT_LAN_17, 0, e_PLUGIN.\"content/content.php?type.$parentid\".".chr(36)."querystring.\".orderdparent\" );\n";
+				$data .= "         ".chr(36)."text .= ".chr(36)."rs -> form_option(CONTENT_LAN_73, 0, e_PLUGIN.\"content/content.php?type.$parentid\".".chr(36)."querystring.\".orderaorder\" );\n";
+				$data .= "         ".chr(36)."text .= ".chr(36)."rs -> form_option(CONTENT_LAN_74, 0, e_PLUGIN.\"content/content.php?type.$parentid\".".chr(36)."querystring.\".orderdorder\" );\n";
 				$data .= "         ".chr(36)."text .= ".chr(36)."rs -> form_select_close();\n";
 				$data .= "         ".chr(36)."text .= ".chr(36)."rs -> form_close().".chr(34)."<br />".chr(34).";\n";
 				$data .= "      }\n";

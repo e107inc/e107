@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-02-08 14:36:55 $
+|     $Revision: 1.6 $
+|     $Date: 2005-02-08 23:47:16 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -211,7 +211,20 @@ define("CONTENT_ADMIN_ITEM_LAN_53", "meta keywords for this content item (sepera
 define("CONTENT_ADMIN_ITEM_LAN_54", "additional data");
 define("CONTENT_ADMIN_ITEM_LAN_55", "Go back to the <a href='".e_SELF."'>main contentmanager page</a> to manage more of your personal content<br />or<br />Go to the <a href='".e_PLUGIN."content/content.php'>content main page</a> to view content items.");
 define("CONTENT_ADMIN_ITEM_LAN_56", "personal content manager");
-define("CONTENT_ADMIN_ITEM_LAN_57", "your categories");
+define("CONTENT_ADMIN_ITEM_LAN_57", "category");
+define("CONTENT_ADMIN_ITEM_LAN_58", "set item order");
+define("CONTENT_ADMIN_ITEM_LAN_59", "move");
+define("CONTENT_ADMIN_ITEM_LAN_60", "order");
+define("CONTENT_ADMIN_ITEM_LAN_61", "update order");
+define("CONTENT_ADMIN_ITEM_LAN_62", "order categories");
+define("CONTENT_ADMIN_ITEM_LAN_63", "inc");
+define("CONTENT_ADMIN_ITEM_LAN_64", "dec");
+define("CONTENT_ADMIN_ITEM_LAN_65", "order content items");
+define("CONTENT_ADMIN_ITEM_LAN_66", "");
+define("CONTENT_ADMIN_ITEM_LAN_67", "");
+define("CONTENT_ADMIN_ITEM_LAN_68", "");
+define("CONTENT_ADMIN_ITEM_LAN_69", "");
+define("CONTENT_ADMIN_ITEM_LAN_70", "");
 
 
 define("CONTENT_ADMIN_MAIN_LAN_0", "existing content categories");
@@ -236,6 +249,7 @@ define("CONTENT_ADMIN_MENU_LAN_11", "List pages");
 define("CONTENT_ADMIN_MENU_LAN_12", "Category pages");
 define("CONTENT_ADMIN_MENU_LAN_13", "Content pages");
 define("CONTENT_ADMIN_MENU_LAN_14", "Menu");
+define("CONTENT_ADMIN_MENU_LAN_15", "Manage Order");
 
 define("CONTENT_ADMIN_JS_LAN_0", "Are you sure you want to delete this category?");
 define("CONTENT_ADMIN_JS_LAN_1", "Are you sure you want to delete this content?");
@@ -346,6 +360,8 @@ define("CONTENT_LAN_69", "email the");
 define("CONTENT_LAN_70", "print the");
 define("CONTENT_LAN_71", "content item");
 define("CONTENT_LAN_72", "category item");
+define("CONTENT_LAN_73", "order_asc");
+define("CONTENT_LAN_74", "order_desc");
 
 define("CONTENT_ADMIN_SUBMIT_LAN_0", "no content categories allow user submission at this point");
 define("CONTENT_ADMIN_SUBMIT_LAN_1", "content submit types");

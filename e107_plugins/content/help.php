@@ -78,6 +78,16 @@ if($type == "type" && is_numeric($type_id)){
 			$text = CONTENT_ADMIN_HELP_LAN_13;
 	}
 
+	if($action == "order"){
+			if($type_id == "0" || !$sub_action){
+				$text = CONTENT_ADMIN_HELP_LAN_0;
+			}elseif($type_id != "0" && $sub_action == "cat"){
+				$text = CONTENT_ADMIN_HELP_LAN_18;
+			}elseif($type_id != "0" && $sub_action && $sub_action != "cat"){
+				$text = CONTENT_ADMIN_HELP_LAN_19;
+			}
+	}
+
 }
 
 $ns -> tablerender(CONTENT_ADMIN_HELP_LAN_14, $text);

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.9 $
-|		$Date: 2005-02-08 16:01:50 $
+|		$Revision: 1.10 $
+|		$Date: 2005-02-08 23:45:57 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -312,6 +312,8 @@ function show_content_search_menu(){
 					".$rs -> form_option(CONTENT_LAN_15, 0, e_PLUGIN."content/content.php?type.1".$querystring.".orderdrefer" )."
 					".$rs -> form_option(CONTENT_LAN_16, 0, e_PLUGIN."content/content.php?type.1".$querystring.".orderaparent" )."
 					".$rs -> form_option(CONTENT_LAN_17, 0, e_PLUGIN."content/content.php?type.1".$querystring.".orderdparent" )."
+					".$rs -> form_option(CONTENT_LAN_73, 0, e_PLUGIN."content/content.php?type.1".$querystring.".orderaorder" )."
+					".$rs -> form_option(CONTENT_LAN_74, 0, e_PLUGIN."content/content.php?type.1".$querystring.".orderdorder" )."
 					".$rs -> form_select_close()."
 					".$rs -> form_close();
 				}
@@ -528,13 +530,13 @@ function show_content_recent(){
 					if(!is_object($sql)){ $sql = new db; }
 					// check userclasses for contents, and do not use those content_ids in the query
 					$UnValidArticleIds2 = $aa -> checkMainCat($type_id);
-					$UnValidArticleIds2 = ($UnValidArticleIds2 == "" ? "" : substr($UnValidArticleIds2, 0, -3) );
+					$UnValidArticleIds2 = ($UnValidArticleIds2 == "" ? "" : "AND ".substr($UnValidArticleIds2, 0, -3) );
 
-					$contenttotal = $sql -> db_Count($plugintable, "(*)", "WHERE content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' AND ".$UnValidArticleIds2." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ");
+					$contenttotal = $sql -> db_Count($plugintable, "(*)", "WHERE content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ".$UnValidArticleIds2." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ");
 
 					if($from > $contenttotal-1){ header("location:".e_SELF); exit; }
 
-					if($resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' AND ".$UnValidArticleIds2." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ".$order." ".$nextprevquery )){
+					if($resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ".$UnValidArticleIds2." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ".$order." ".$nextprevquery )){
 
 						$content_recent_table_string = "";
 						while($row = $sql -> db_Fetch()){
