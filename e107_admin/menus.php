@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-04-05 05:59:36 $
+|     $Revision: 1.20 $
+|     $Date: 2005-04-05 07:13:39 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -349,18 +349,17 @@ if ($CUSTOMPAGES) {
 	$text = "<table  style='width:95%;margin-left:auto;margin-right:auto' >";
 
 	$sql->db_Select("menus", "*", "menu_location='0' ORDER BY menu_name ");
-	$text .= "<tr><td style='text-align:center;padding-bottom:4px'>Choose the menu(s) to activate...</td><td style='padding-bottom:4px;text-align:center'>...then choose where to active them.</td></tr>";
+	$text .= "<tr><td style='text-align:center;padding-bottom:4px'>".MENLAN_36."...</td><td style='padding-bottom:4px;text-align:center'>...".MENLAN_37."</td></tr>";
   	$text .= "<tr><td style='width:50%;vertical-align:top;text-align:center'>";
 
 	$text .= "<select name='menuselect[]' class='tbox' multiple='multiple' style='height:200px;width:95%'>";
 	while (list($menu_id, $menu_name, $menu_location, $menu_order) = $sql->db_Fetch()) {
-	  //	$text = "";
 		$menu_name = eregi_replace("_menu", "", $menu_name);
-    $text .= "<option value='$menu_id'>$menu_name</option>";
+    $text .= "<option value='$menu_id'>$menu_name</option>\n";
 
 		}
 	$text .= "</select>";
-    $text .= "<br /><br /><span class='smalltext'>Hold down CTRL to select multiple menus.</span>";
+    $text .= "<br /><br /><span class='smalltext'>".MENLAN_38."</span>";
 	$text .= "</td><td style='width:50%;vertical-align:top;text-align:center'><br />";
     	foreach ($menu_areas as $menu_act) {
 	 	  	$text .= "<input type='submit' class='button' id='menuAct_".trim($menu_act)."' name='menuActivate[".trim($menu_act)."]' value='".MENLAN_13." ".trim($menu_act)."' /><br /><br />\n";
