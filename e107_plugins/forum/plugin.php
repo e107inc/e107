@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/plugin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-27 19:52:49 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-30 19:33:33 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 	
@@ -21,7 +21,7 @@
 @include_once(e_PLUGIN.'forum/languages/English/lan_forum_conf.php');
 	
 // Plugin info -------------------------------------------------------------------------------------------------------
-$eplug_name = 'forum';
+$eplug_name = 'Forum';
 $eplug_version = '1.0';
 $eplug_author = 'e107dev';
 $eplug_url = 'http://e107.org';
@@ -30,6 +30,7 @@ $eplug_description = 'This plugin is a fully featured Forum system.';
 $eplug_compatible = 'e107v0.7+';
 $eplug_readme = '';
 $eplug_latest = TRUE; //Show reported threads in admin (use latest.php)
+$eplug_status = TRUE; //Show post count in admin (use status.php)
 	
 // Name of the plugin's folder -------------------------------------------------------------------------------------
 $eplug_folder = "forum";
@@ -96,7 +97,7 @@ $eplug_tables = array(
 	
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
 $eplug_link = TRUE;
-$eplug_link_name = "forum";
+$eplug_link_name = "Forum";
 $eplug_link_url = $PLUGINS_DIRECTORY.'forum/forum.php';
 	
 // Text to display after plugin successfully installed ------------------------------------------------------------------
