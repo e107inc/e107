@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/admin_config.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-04 13:19:38 $
-|     $Author: stevedunstan $
+|     $Revision: 1.5 $
+|     $Date: 2005-04-05 11:52:27 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -28,9 +28,6 @@ require_once(e_ADMIN."auth.php");
 require_once(e_PLUGIN."poll/poll_class.php");
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."userclass_class.php");
-
-@include_once(e_PLUGIN."poll/languages/admin/".e_LANGUAGE.".php");
-@include_once(e_PLUGIN."poll/languages/admin/English.php");
 
 $rs = new form;
 $poll = new poll;
