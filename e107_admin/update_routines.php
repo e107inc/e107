@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2005-03-11 03:10:44 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.47 $
+|     $Date: 2005-03-13 10:43:43 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -404,9 +404,8 @@ function update_61x_to_700($type) {
 		// Search Update
 		if (!$sql->db_Select("core", "e107_name", "e107_name='search_prefs'")) {
 			$sql->db_Insert('core', "'search_prefs', 'a:4:{s:12:\"search_chars\";s:3:\"150\";s:11:\"search_sort\";s:3:\"php\";s:6:\"google\";s:2:\"on\";s:13:\"core_handlers\";a:4:{s:4:\"news\";s:2:\"on\";s:8:\"comments\";s:2:\"on\";s:9:\"downloads\";s:2:\"on\";s:5:\"users\";s:2:\"on\";}}'");
-			//INSERT INTO e107_core VALUES ('search_prefs', 'a:4:{s:12:"search_chars";s:3:"150";s:11:"search_sort";s:3:"php";s:6:"google";s:2:"on";s:13:"core_handlers";a:4:{s:4:"news";s:2:"on";s:8:"comments";s:2:"on";s:9:"downloads";s:2:"on";s:5:"users";s:2:"on";}}');
    		}
-        // Search Update 2
+
         global $sysprefs;
         $search_prefs = $sysprefs -> getArray('search_prefs');
         if (!isset($search_prefs['plug_handlers'])) {
@@ -416,7 +415,9 @@ function update_61x_to_700($type) {
 					$plugin_handle = opendir(e_PLUGIN.$file."/");
 					while (false !== ($file2 = readdir($plugin_handle))) {
 						if ($file2 == "e_search.php") {
-							$plugin_handlers[$file] = TRUE;
+							if ($sql->db_Select("plugin", "plugin_path", "plugin_path='".$file."' AND plugin_installflag='1'")) {
+								$plugin_handlers[$file] = TRUE;
+							}
 						}
 					}
 				}
@@ -425,30 +426,30 @@ function update_61x_to_700($type) {
 			$tmp = addslashes(serialize($search_prefs));
 			$sql->db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs' ");
 		}
-        
+		
+		if (!isset($search_prefs['search_res'])) {
+			$search_prefs['search_res'] = '10';
+			$tmp = addslashes(serialize($search_prefs));
+			$sql->db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs' ");
+		}
 } else {
 		// check if update is needed.
 		// FALSE = needed, TRUE = not needed.
-//		global $sysprefs;
-//		$search_prefs = $sysprefs -> getArray('search_prefs');
-//		if (isset($search_prefs['plug_handlers'])) {
-//			return TRUE;
-//		} else {
-//			return FALSE;
-//		}
 		
 //		return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."user_extended_struct");
-
+/*
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."user_extended_struct");
 		$fieldname = mysql_field_name($fields,12);
 	 	return ($fieldname == "user_extended_struct_applicable") ? TRUE : FALSE;
-
-//		return $sql->db_Count('generic','(*)',"WHERE gen_type = 'forum_rules_guest'");
-		/*if ($sql->db_Select("plugin", "plugin_path", "plugin_path='chatbox_menu'")) {
-			return TRUE;
-		} else {
+*/
+        global $sysprefs;
+        $search_prefs = $sysprefs -> getArray('search_prefs');
+		if (!isset($search_prefs['search_res'])) {
 			return FALSE;
-		}*/
+		} else {
+			return TRUE;
+		}
+//		return $sql->db_Count('generic','(*)',"WHERE gen_type = 'forum_rules_guest'");
 	}
 }
 

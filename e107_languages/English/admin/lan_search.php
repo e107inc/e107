@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_search.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-03-08 16:25:04 $
+|     $Revision: 1.2 $
+|     $Date: 2005-03-13 10:44:40 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -17,5 +17,6 @@ define("SEALAN_5", "News");
 define("SEALAN_6", "Comments");
 define("SEALAN_7", "Registered Members");
 define("SEALAN_8", "Downloads");
+define("SEALAN_9", "Number of results to display per page:");
 
 ?>

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-03-10 07:16:19 $
+|     $Revision: 1.19 $
+|     $Date: 2005-03-13 10:44:42 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -28,8 +28,13 @@ if (!USER && $pref['search_restrict'] == 1) {
 	exit;
 }
 
-if (isset($_POST['searchquery']) && strlen($_POST['searchquery']) > 2) {
-	$query = trim($_POST['searchquery']);
+if (isset($_GET)) {
+	$url_query = explode('.', e_QUERY);
+	if (isset($_GET['q']) && strlen($_GET['q']) > 2) {
+		$query = trim($_GET['q']);
+	}
+} else if (isset($_POST['q']) && strlen($_POST['q']) > 2) {
+	$query = trim($_POST['q']);
 }
 
 $search_info = array();
@@ -58,14 +63,14 @@ foreach ($search_prefs['plug_handlers'] as $plug_dir => $active) {
 $search_count = count($search_info);
 $google_id = $search_count + 1;
 
-if (isset($query) && isset($_POST['searchtype'][$google_id]) && $_POST['searchtype'][$google_id]) {
+if (isset($query) && isset($_GET['t'][$google_id]) && $_GET['t'][$google_id]) {
 	header("location:http://www.google.com/search?q=".stripslashes(str_replace(" ", "+", $query)));
 	exit;
 }
 
 require_once(HEADERF);
 	
-if (!isset($query) && isset($_POST['searchquery'])) {
+if (!isset($query) && isset($_GET['q'])) {
 	$ns->tablerender(LAN_180, LAN_201);
 }
 
@@ -79,8 +84,8 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 	$refpage = "";
 }
 
-if (isset($_POST['searchtype']) && $_POST['searchtype']) {
-	$searchtype = $_POST['searchtype'];
+if (isset($_GET['t']) && $_GET['t']) {
+	$searchtype = $_GET['t'];
 } else {
 	foreach($search_info as $key => $si) {
 		if ($si['refpage']) {
@@ -106,17 +111,17 @@ if (!isset($SEARCH_MAIN_TABLE)) {
 $SEARCH_MAIN_CHECKBOXES = '';
 foreach($search_info as $key => $si) {
 	(isset($searchtype[$key]) && $searchtype[$key]) ? $sel=" checked" : $sel="";
-	$SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input onclick='uncheckG();' type='checkbox' name='searchtype[".$key."]' ".$sel." />".$si['qtype'].$POST_CHECKBOXES;
+	$SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input onclick='uncheckG();' type='checkbox' name='t[".$key."]' ".$sel." />".$si['qtype'].$POST_CHECKBOXES;
 }
 
 if ($search_prefs['google']) {
-	$SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input id='google' type='checkbox' name='searchtype[".$google_id."]' onclick='uncheckAll(this)' />Google".$POST_CHECKBOXES;
+	$SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input id='google' type='checkbox' name='t[".$google_id."]' onclick='uncheckAll(this)' />Google".$POST_CHECKBOXES;
 }
 $value = isset($query) ? $query : "";
-$SEARCH_MAIN_SEARCHFIELD = "<input class='tbox' type='text' name='searchquery' size='60' value='".$value."' maxlength='50' />";
+$SEARCH_MAIN_SEARCHFIELD = "<input class='tbox' type='text' name='q' size='60' value='".$value."' maxlength='50' />";
 $SEARCH_MAIN_CHECKALL = "<input class='button' type='button' name='CheckAll' value='".LAN_SEARCH_1."' onclick='checkAll(this);' />";
 $SEARCH_MAIN_UNCHECKALL = "<input class='button' type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this); uncheckG();' />";
-$SEARCH_MAIN_SUBMIT = "<input class='button' type='submit' name='searchsubmit' value='".LAN_180."' />";
+$SEARCH_MAIN_SUBMIT = "<input type='hidden' name='r' value='0' /><input class='button' type='submit' name='s' value='".LAN_180."' />";
 	
 $text = preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_MAIN_TABLE);
 	
@@ -128,7 +133,19 @@ if (isset($query)) {
 			unset($text);
 			if (file_exists($search_info[$key]['sfile'])) {
 				@require_once($search_info[$key]['sfile']);
-				$ns->tablerender(LAN_195." ".$search_info[$key]['qtype']." : ".LAN_196.": ".$results, $text);
+				$parms = $results.",".$search_prefs['search_res'].",".$_GET['r'].",".e_SELF."?q=".$_GET['q']."&t%5B".$key."%5D=on&r=[FROM]";
+				if ($results > $search_prefs['search_res']) {
+					$nextprev = ($results > $search_prefs['search_res']) ? LAN_SEARCH_10."&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}") : "";
+					$text .= "<div class='nextprev' style='text-align:center'>".$nextprev."</div>";
+				}
+				if ($results > 0) {
+					$res_from = $_GET['r'] + 1;
+					$res_to = ($_GET['r'] + $search_prefs['search_res']) > $results ? $results : ($_GET['r'] + $search_prefs['search_res']);
+					$res_display = $res_from." - ".$res_to." ".LAN_SEARCH_12." ".$results;
+				} else {
+					$res_display = "";
+				}
+				$ns->tablerender(LAN_SEARCH_11." ".$res_display." ".LAN_SEARCH_13." ".$search_info[$key]['qtype'], $text);
 			}
 		}
 	}
@@ -153,17 +170,17 @@ function headerjs() {
 	$script = "<script type='text/javascript'>
 	function checkAll(allbox) {
 		for (var i = 0; i < ".$search_count."; i++)
-		document.searchform[\"searchtype[\" + i + \"]\"].checked = true ;
+		document.searchform[\"t[\" + i + \"]\"].checked = true ;
 		uncheckG();
 	}
 		 
 	function uncheckAll(allbox) {
 		for (var i = 0; i < ".$search_count."; i++)
-		document.searchform[\"searchtype[\" + i + \"]\"].checked = false ;
+		document.searchform[\"t[\" + i + \"]\"].checked = false ;
 	}
 		
 	function uncheckG() {
-		document.searchform[\"searchtype[".$google_id."]\"].checked = false ;
+		document.searchform[\"t[".$google_id."]\"].checked = false ;
 	}
 	</script>\n";
 	return $script;

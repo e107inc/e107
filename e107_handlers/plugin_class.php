@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-03-12 16:14:44 $
-|     $Author: streaky $
+|     $Revision: 1.11 $
+|     $Date: 2005-03-13 10:44:40 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -240,7 +240,7 @@ class e107plugin {
 	 * @param int $id
 	 */
 	function install_plugin($id) {
-		global $sql, $ns;
+		global $sql, $ns, $sysprefs;
 		
 		// install plugin ...
 		$plug = $this->getinfo($id);
@@ -314,6 +314,13 @@ class e107plugin {
 
 			if ($eplug_userclass) {
 				$this->manage_userclass('add', $eplug_userclass, $eplug_userclass_description);
+			}
+			
+			if (file_exists(e_PLUGIN.$eplug_folder.'/e_search.php')) {
+				$search_prefs = $sysprefs -> getArray('search_prefs');
+				$search_prefs['plug_handlers'][$eplug_folder] = TRUE;
+				$tmp = addslashes(serialize($search_prefs));
+				$sql->db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs' ");
 			}
 
 			$sql->db_Update('plugin', "plugin_installflag=1 WHERE plugin_id='$id' ");

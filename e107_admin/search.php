@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/search.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-03-10 07:16:19 $
+|     $Revision: 1.3 $
+|     $Date: 2005-03-13 10:43:42 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -34,6 +34,7 @@ $search_handlers['downloads'] = SEALAN_8;
 if (isset($_POST['updatesettings'])) {
 	$search_prefs['search_chars'] = $_POST['search_chars'];
 	$search_prefs['search_sort'] = $_POST['search_sort'];
+	$search_prefs['search_res'] = $_POST['search_res'];
 	foreach($search_handlers as $s_key => $s_value) {
 		$search_prefs['core_handlers'][$s_key] = $_POST['core_handlers'][$s_key];
 	}
@@ -77,6 +78,11 @@ $text = "<div style='text-align:center'>
 $text .= "<tr>
 <td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_2."</td>
 <td style='width:50%;' colspan='2' class='forumheader3'>".$rs -> form_text("search_chars", 3, $search_prefs['search_chars'], 4)."</td>
+</tr>";
+
+$text .= "<tr>
+<td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_9."</td>
+<td style='width:50%;' colspan='2' class='forumheader3'>".$rs -> form_text("search_res", 3, $search_prefs['search_res'], 4)."</td>
 </tr>";
 
 $text .= "<tr>

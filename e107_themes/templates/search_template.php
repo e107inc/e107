@@ -3,7 +3,7 @@
 if (!isset($SEARCH_MAIN_TABLE)) {
 	$SEARCH_MAIN_TABLE = "
 	<div style='text-align:center'>
-	<form name='searchform' method='post' action='".e_SELF."'>
+	<form name='searchform' method='get' action='".e_SELF."'>
 	<table style='width:95%' class='fborder'>\n
 	<tr>
 	<td class='forumheader3' style='width:30%'>".LAN_199."<br /><span class='smalltext'>".LAN_417."</span></td>
