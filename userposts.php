@@ -98,7 +98,7 @@ $ccaption = UP_LAN_1.$user_name;
 			if($comment_type == "4"){
 				$sql2 -> db_Select("poll", "*", "poll_id=$comment_item_id");
 				$row = $sql2 -> db_Fetch(); extract($row);
-				$ctext .= "<img src='".THEME."images/bullet2.gif' alt='' /><a href='".e_BASE."comment.php?comment.poll..".$comment_item_id."'> Poll - <strong>".$poll_title."</strong>".UP_LAN_9."".$datestamp." </a><br />&nbsp;&nbsp;&nbsp;&nbsp;".$comment_comment."<br /><br />";
+				$ctext .= "<img src='".THEME."images/bullet2.gif' alt='' /><a href='".e_BASE."comment.php?comment.poll.".$comment_item_id."'> Poll - <strong>".$poll_title."</strong>".UP_LAN_9."".$datestamp." </a><br />&nbsp;&nbsp;&nbsp;&nbsp;".$comment_comment."<br /><br />";
 			}
 		}
 	}else{

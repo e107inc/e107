@@ -106,7 +106,7 @@ if($comments = $sql -> db_Select("comments", "*", "comment_datestamp>$lvisit ORD
 			case 4:	//	poll comment
 				$sql2 -> db_Select("poll", "*", "poll_id=$comment_item_id ");
 				$row = $sql2 -> db_Fetch(); extract($row);
-				$str .= $bullet."[ ".LIST_19." ] Re: <a href='".e_BASE."comment.php?comment.poll..$comment_item_id'>".$aj -> tpa($poll_title,"admin")."</a><br />";
+				$str .= $bullet."[ ".LIST_19." ] Re: <a href='".e_BASE."comment.php?comment.poll.$comment_item_id'>".$aj -> tpa($poll_title,"admin")."</a><br />";
 					$comment_count++;
 			break;
 
