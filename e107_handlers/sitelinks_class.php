@@ -143,8 +143,10 @@ function sitelinks() {
 				echo $m;
 			}
 		}
+		
 		$data = ob_get_contents();
-		ob_end_flush();
+		ob_end_clean();
+		
 		$e107cache->set('sitelinks', $data);
 	}
 	echo $data;
