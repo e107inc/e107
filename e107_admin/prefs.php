@@ -50,6 +50,7 @@ if(IsSet($_POST['updateprefs'])){
         $pref['sitelanguage'] = $_POST['sitelanguage'];
         $pref['time_offset'] = $_POST['time_offset'];
         $pref['user_reg_veri'] = $_POST['user_reg_veri'];
+        $pref['user_reg_secureveri'] = $_POST['user_reg_secureveri'];
         $pref['user_tracking'] = $_POST['user_tracking'];
         $pref['cookie_name'] = ereg_replace("[^[:alpha:]]", "", $_POST['cookie_name']);
         $pref['auth_method'] = $_POST['auth_method'];
@@ -153,6 +154,7 @@ $forumdate = $pref['forumdate'];
 $sitelocale = $pref['sitelocale'];
 $time_offset = $pref['time_offset'];
 $user_reg_veri = $pref['user_reg_veri'];
+$user_reg_secureveri = $pref['user_reg_secureveri'];
 $user_tracking = $pref['user_tracking'];
 $antiflood1 = $pref['antiflood1'];
 $antiflood_timeout = $pref['antiflood_timeout'];
@@ -616,6 +618,13 @@ $text .="
 <td style='width:50%' class='forumheader3'>".PRFLAN_81.": </td>
 <td style='width:50%; text-align:right' class='forumheader3'>".
 ($pref['logcode'] ? "<input type='checkbox' name='logcode' value='1'  checked='checked' />" : "<input type='checkbox' name='logcode' value='1' />")."
+</td>
+</tr>
+
+<tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_92.": </td>
+<td style='width:50%; text-align:right' class='forumheader3'>".
+($user_reg_secureveri ? "<input type='checkbox' name='user_reg_secureveri' value='1'  checked='checked' />" : "<input type='checkbox' name='user_reg_secureveri' value='1' />")."
 </td>
 </tr>
 

@@ -116,4 +116,5 @@ define("CUSTSIG_16", "Minimum Length for Passwords");
 define("PRFLAN_89", "Site Header:");
 define("PRFLAN_90", "Click here to force Internet Explorer to use standards mode. Default is quirks mode.");
 define("PRFLAN_91", "If someone is attacking your site by multiple requests to your server, his IP will be automatically banned ! Don't replace a correct server config !!!");
+define("PRFLAN_92", "Secure signup verification -- hide password in email?");
 ?>

@@ -26,7 +26,14 @@ define("LAN_399", "Continue");
 define("LAN_400", "Usernames and passwords are <b>case-sensitive</b>");
 define("LAN_401", "Your account has now been activated, please <a href='index.php'>click here</a> to login.<br />Thankyou for registering at");
 define("LAN_402", "Registration activated");
+if($pref['user_reg_secureveri']){
+	$__sTmp = $_POST['password1'];
+	$_POST['password1'] = "*******";	// Conditional for LAN_403. Don't show actual password in email!
+}
 define("LAN_403", "Welcome to ".SITENAME."\nYour registration has been received and created with the following login information ...\n\nUsername: ".$_POST['name']."\nPassword: ".$_POST['password1']."\n\nYour account is currently marked as being inactive, to activate your account please go to the following link ...\n\n");
+if($pref['user_reg_secureveri']){
+	$_POST['password1'] = $__sTmp;
+}
 define("LAN_404", "Registration details for");
 define("LAN_405", "This stage of registation is complete, you will be receiving a confirmation email containing your login details, please follow the link in the email to complete the signup process and activate your account.");
 define("LAN_406", "Thankyou!");
