@@ -1,0 +1,237 @@
+/* Core Classes */
+body, td {
+	margin: 0px;
+	padding: 0px;
+	text-align:left;
+}
+
+body {
+	background-color: #f9f9f9;
+}
+
+body, td, .indent, .defaulttext, .caption, .bodytable, .infobar, 
+.forumheader, .forumheader2, .f2default, .forumheader3, .f3default, .fcaption, .fcdefault, .fcaption2, .finfobar {
+	font: normal 11px arial, sans-serif;
+}
+
+.smalltext, .smallblacktext, .mediumtext, .tbox, .captiontext, .button, .button:hover, .nextprev, .helpbox {
+	font: 10px arial, sans-serif;
+}
+
+body, td, .smalltext, .smallblacktext, .defaulttext, .mediumtext, .tbox, .button, .button:hover, .nextprev, .bodytable, .infobar, 
+.forumheader, .forumheader2, .f2default, .forumheader3, .f3default, .fcaption, .fcdefault, .fcaption2 {
+	color: #000;
+}
+
+.captiontext, .main_caption {
+	color: #fff;
+}
+
+img {	
+	border: 0px;
+}
+
+a {
+	color: #cc3300;
+	text-decoration: underline;
+}
+
+a:hover {
+	color: #003300;
+	text-decoration: underline;
+}
+
+.tbox, .indent {
+	border: #5e5d63 1px solid;
+}
+
+.indent {
+	padding: 3px;
+	margin: 5px;
+	color: #000060;
+	background-color: #ccd5d9;
+}
+
+.tbox {
+	background-color: #fff;
+}
+
+.button, .button:hover, .nextprev, .nextprev:hover {
+	border: 1px solid #000;
+	text-align:center;
+}
+
+.button, .nextprev {
+	background-image : url(images/button.png);
+}
+
+.button:hover, .nextprev:hover {
+	background-image : url(images/buttonover.png);
+}
+
+.nextprev {
+	padding : 2px;
+}
+
+.spacer{
+	padding: 2px 0px 2px 0px;
+}
+
+.fborder, .fbdefault, .border{
+	border-collapse:collapse;
+	border-spacing:0px;
+}
+
+.forumheader, .forumheader2, .f2default, .forumheader3, .f3default, .fcaption, .fcdefault, .fcaption2, .finfobar {
+	padding: 4px;
+	border: #3D4251 1px solid;
+}
+
+.forumheader {
+	background-color: #f9f9f9;
+}
+
+.forumheader2, .f2default, .fcaption, .fcdefault, .fcaption2 {
+	background-color: #efefef;
+}
+
+.forumheader3, .f3default{
+	background-color: #fff;
+}
+
+.finfobar{
+	background-color: #ccc8c8;
+}
+
+/* Core Classes From Core Stylesheet */
+
+.defaulttable, .fbdefault, .fdefault, .f2default, .f3default, .fcdefault{ display: block; width: auto; }
+table { margin-left:auto; margin-right:auto; }
+.searchhighlight{text-decoration: underline;color:#FF0000;font-weight:bold;}
+.day {
+  text-align: center;
+  background: #F1EAE1;
+  font: 10px tahoma, verdana, arial, helvetica, sans-serif;
+  padding: 2px 1px 2px 1px;
+}
+.dayentry {
+  text-align: center;
+  background: #F1C7B7;
+  font: 10px tahoma, verdana, arial, helvetica, sans-serif;
+  padding: 2px 1px 2px 1px;
+}
+.forumheader4{
+	background-color: #EBEFF2;
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	font-size: 11px;
+	color:#000;
+	padding: 4px;
+	border: #C3BDBD 1px solid;
+	cursor: pointer;
+}
+.forumheader5{
+	background-color: #BCD5EA;
+	color:#000;
+	cursor: pointer;
+}
+ul{
+	margin-top:0px;
+	margin-bottom:0px;
+}
+
+/* Theme Specific Classes */
+
+.main_caption, .left_caption, .right_caption, .menu_content, .menu_content_buttons {
+	font: normal 11px arial, sans-serif;
+}
+
+.menu_content, .menu_content_buttons {
+	color: #000;
+}
+
+.menu_content {
+	padding: 5px;
+}
+
+.menu_content_buttons {
+	padding: 0px;
+}
+
+.main_caption, .left_caption, .right_caption {
+	color: #fff;
+}
+
+.top_section, .main_section {
+	width: 100%;
+	background-color: #fff;
+	border-bottom: 1px solid #3D4251;
+	border-collapse:collapse;
+	border-spacing:0px;
+}
+
+.top_section_left {
+	vertical-align: middle;
+	padding: 0px 0px 0px 0px;
+}
+
+.top_section_mid {
+	vertical-align: bottom;
+	text-align: right;
+	padding: 3px 5px 3px 0px;
+	border-left: 1px solid #3D4251;
+	background-color: #efefef;
+	background-image: url(images/computer.jpg);
+	background-repeat: no-repeat;
+}
+
+.top_section_right {
+	vertical-align: middle;
+	text-align: center;
+	border-left: 1px solid #3D4251;
+	background-color: #f3f3f3;
+	background-image: url(images/screen.png);
+	background-repeat: no-repeat;
+}
+ 
+.default_menu {
+	vertical-align:top;
+}
+
+.left_menu, .right_menu {
+	width: 170px;
+	vertical-align:top;
+	background-color: #efefef;
+}
+
+.left_menu {
+	border-right: #3D4251 1px solid;
+}
+
+.right_menu {
+	border-left: #3D4251 1px solid;
+}
+
+.main_caption, .left_caption, .right_caption {
+	padding: 3px;
+	border-top: #e9efff 1px solid;
+	border-bottom: 1px solid #3D4251;
+}
+
+.main_caption {
+	background-color: #61687C;
+}
+
+.left_caption, .right_caption {
+	background-color: #3D4251;
+	
+}
+
+.cap_border {
+	border-top: #3D4251 1px solid;
+	border-bottom: #fff 1px solid;
+}
+
+.cap_border.button_menu {
+	border-bottom: 0px;
+	text-align: left
+}
