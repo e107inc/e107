@@ -1,0 +1,7 @@
+<files>
+  <file name="*.{html,js,cgi,php,css,cfg}" />
+  <file name="README" />
+
+  <dir name="lang" />
+  <dir name="img" />
+</files>
