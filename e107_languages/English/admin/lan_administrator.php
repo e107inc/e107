@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_administrator.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-08 16:25:04 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2005-04-02 18:29:48 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("ADMSLAN_0", "New user/admin entry created for");
@@ -14,17 +14,11 @@ define("ADMSLAN_1", "now has admin status.");
 define("ADMSLAN_2", "updated in database.");
 define("ADMSLAN_3", "is the main site administrator and cannot be edited.");
 define("ADMSLAN_4", "Continue");
-define("ADMSLAN_5", "Error!");
 define("ADMSLAN_6", "is the main site administrator and cannot be deleted.");
-define("ADMSLAN_7", "Please confirm you wish to delete");
-define("ADMSLAN_8", "from the admin database");
-define("ADMSLAN_9", "Cancel");
-define("ADMSLAN_10", "Confirm Delete");
-define("ADMSLAN_11", "Confirm Delete Administrator");
-define("ADMSLAN_12", "Delete cancelled.");
+
 define("ADMSLAN_13", "Existing Administrators");
-define("ADMSLAN_14", "Delete");
-define("ADMSLAN_15", "Edit");
+
+
 define("ADMSLAN_16", "Admin Name");
 define("ADMSLAN_17", "Admin Password");
 define("ADMSLAN_18", "Permissions");
@@ -57,7 +51,7 @@ define("ADMSLAN_44", "Post downloads");
 define("ADMSLAN_45", "Post polls");
 define("ADMSLAN_46", "Welcome message");
 define("ADMSLAN_47", "Moderate submitted news");
-define("ADMSLAN_48", "Configure plugins");
+
 define("ADMSLAN_49", "Check All");
 define("ADMSLAN_51", "Uncheck All");
 define("ADMSLAN_52", "Update administrator");
@@ -67,14 +61,14 @@ define("ADMSLAN_54", "Site Administrators");
 define("ADMSLAN_55", "Field(s) left blank");
 
 define("ADMSLAN_56", "Site Administrator");
-define("ADMSLAN_57", "Options");
+
 define("ADMSLAN_58", "Main Site Administrator");
 define("ADMSLAN_59", "Remove Admin Status");
 define("ADMSLAN_60", "Are you sure you want to remove admin status from");
 define("ADMSLAN_61", "Administrator deleted");
 
 define("ADMSLAN_62", "Plugin Manager");
-define("ADMSLAN_63", "Plugin");
+
 define("ADMSLAN_64", "Clear the system cache");
 define("ADMSLAN_65", "Configure mail settings and mailout");
 define("ADMSLAN_66", "Configure Search");

@@ -4,14 +4,14 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_db_verify.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-03-29 16:05:13 $
+|     $Revision: 1.3 $
+|     $Date: 2005-04-02 18:29:48 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("DBLAN_1", "Unable to read the sql datafile<br /><br />Please ensure the file <b>core_sql.php</b> exists in the <b>/admin/sql</b> directory.");
 define("DBLAN_2", "Verifying all");
-//define("DBLAN_3", "for version");
+
 define("DBLAN_4", "Table");
 define("DBLAN_5", "Field");
 define("DBLAN_6", "Status");
@@ -29,5 +29,5 @@ define("DBLAN_17", "Back");
 define("DBLAN_18", "tables");
 define("DBLAN_19", "Attempt to Fix");
 define("DBLAN_20", "Attempting to fix tables");
-define("DBLAN_21", "Fix Selected Items"); 
+define("DBLAN_21", "Fix Selected Items");
 ?>

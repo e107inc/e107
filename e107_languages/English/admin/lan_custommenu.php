@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_custommenu.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-02-24 10:49:52 $
+|     $Revision: 1.4 $
+|     $Date: 2005-04-02 18:29:48 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -18,7 +18,7 @@ define("CUSLAN_5", "Custom menu successfully created. To activate go to your men
 define("CUSLAN_6", "Unable to open menu/page");
 define("CUSLAN_7", "for reading");
 define("CUSLAN_8", "Existing Menus");
-define("CUSLAN_9", "Edit");
+
 define("CUSLAN_10", "None");
 define("CUSLAN_11", "Menu/Page Filename");
 define("CUSLAN_12", "Menu/Page Caption Title");
@@ -36,7 +36,7 @@ define("CUSLAN_22", "Menu");
 define("CUSLAN_23", "Page");
 define("CUSLAN_24", "Custom Page successfully created.<br />The URL will be:");
 define("CUSLAN_25", "Create a link in the main menu ?");
-define("CUSLAN_26", "Link displayed for everybody and opened in the same window !");
+
 define("CUSLAN_27", "You already have a link in your main menu for this page or with the same name...");
 define("CUSLAN_28", "Link to this page now created !!! Go to your links section to update link properties.");
 

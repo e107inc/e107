@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_images/thumb.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:41 $
+|     $Revision: 1.2 $
+|     $Date: 2005-04-02 18:29:48 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -29,17 +29,35 @@
 require_once("../class2.php");
 require_once(e_HANDLER."resize_handler.php");
 
-    if (e_QUERY){
-        $tmp = explode("+",rawurldecode(e_QUERY));
-        if(preg_match("#^/#",$tmp[0]) || preg_match("#.:#",$tmp[0])){
-            $source = $tmp[0];
-        }else{
-            $source = "../".str_replace("../","",$tmp[0]);
-        }
+// var 3.
+// 1= newspost images/preview
+// 2= 
 
-        $newsize = $tmp[1];
-        if(!resize_image($source, "stdout", $newsize)){
-            echo "Couldn't find: ".$source;
-        }
-    }
+	if (e_QUERY){
+		$tmp = explode("+",rawurldecode(e_QUERY));
+		if(preg_match("#^/#",$tmp[0]) || preg_match("#.:#",$tmp[0])){
+			$source = $tmp[0];
+		}else{
+			$source = "../".str_replace("../","",$tmp[0]);
+		}
+
+
+
+
+		$newsize = $tmp[1];
+		if(!file_exists(e_IMAGE."newspost_images/preview/preview_".basename($source))){
+
+		  	if(!resize_image($source, e_IMAGE."newspost_images/preview/preview_".basename($source), $newsize)){
+		  		echo "Couldn't find: ".$source;
+		  	}
+		}
+
+
+		header("Content-type: image/jpg");
+		$imagedata = file_get_contents(e_IMAGE."newspost_images/preview/preview_".basename($source));
+		echo $imagedata;
+		exit;
+
+
+	}
 ?>

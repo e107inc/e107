@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2005-04-01 08:13:32 $
-|     $Author: sweetas $
+|     $Revision: 1.42 $
+|     $Date: 2005-04-02 18:29:13 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -130,10 +130,10 @@ if(isset($_POST['addlimit']))
 		}
 	}
 }
-	
+
 if(isset($_POST['updatelimits']))
 {
-	
+
 	if($pref['download_limits'] != $_POST['download_limits'])
 	{
 		$pref['download_limits'] = ($_POST['download_limits'] == 'on') ? 1 : 0;
@@ -240,7 +240,7 @@ if ($action == "opt") {
 		</td>
 		<td class='forumheader3' style='width:30%;text-align:left'>
 
-		<select name='download_order' class='tbox'>". ($pref['download_order'] == "download_datestamp" ? "<option value='download_datestamp' selected='selected'>".DOWLAN_58."</option>" : "<option value='download_datestamp'>".DOWLAN_58."</option>"). ($pref['download_order'] == "download_requested" ? "<option value='download_requested' selected='selected'>".DOWLAN_57."</option>" : "<option value='download_requested'>".DOWLAN_57."</option>"). ($pref['download_order'] == "download_name" ? "<option value='download_name' selected='selected'>".DOWLAN_59."</option>" : "<option value='download_name'>".DOWLAN_59."</option>"). ($pref['download_order'] == "download_author" ? "<option value='download_author' selected='selected'>".DOWLAN_60."</option>" : "<option value='download_author'>".DOWLAN_60."</option>")."
+		<select name='download_order' class='tbox'>". ($pref['download_order'] == "download_datestamp" ? "<option value='download_datestamp' selected='selected'>".LAN_DATE."</option>" : "<option value='download_datestamp'>".LAN_DATE."</option>"). ($pref['download_order'] == "download_requested" ? "<option value='download_requested' selected='selected'>".DOWLAN_57."</option>" : "<option value='download_requested'>".DOWLAN_57."</option>"). ($pref['download_order'] == "download_name" ? "<option value='download_name' selected='selected'>".DOWLAN_59."</option>" : "<option value='download_name'>".DOWLAN_59."</option>"). ($pref['download_order'] == "download_author" ? "<option value='download_author' selected='selected'>".DOWLAN_60."</option>" : "<option value='download_author'>".DOWLAN_60."</option>")."
 		</select>
 		</td>
 		</tr>
@@ -305,7 +305,7 @@ if($action == 'limits')
 		{
 			$chk = "";
 		}
-		
+
 		$txt .= "
 			<input type='checkbox' name='download_limits' {$chk} /> ".DOWLAN_125."
 			</td>
@@ -317,7 +317,7 @@ if($action == 'limits')
 			<td class='fcaption'>".DOWLAN_108."</td>
 		</tr>
 	";
-	
+
 	foreach($limitList as $row)
 	{
 		$txt .= "
@@ -362,9 +362,9 @@ if($action == 'limits')
 	</td>
 	</tr>
 	";
-	
+
 	$txt .= "</table></form>";
-	
+
 	$ns->tablerender(DOWLAN_112, $txt);
 	require_once(e_ADMIN.'footer.php');
 	exit;
@@ -393,7 +393,7 @@ class download {
 				<tr>
 				<td style='width:5%' class='fcaption'>ID</td>
 				<td style='width:50%' class='fcaption'>".DOWLAN_27."</td>
-				<td style='width:45%' class='fcaption'>".DOWLAN_28."</td>
+				<td style='width:45%' class='fcaption'>".LAN_OPTIONS."</td>
 				</tr>";
 			while ($row = $sql->db_Fetch()) {
 				extract($row);
@@ -449,7 +449,7 @@ class download {
 		$var['cat']['link'] = e_SELF."?cat";
 		$var['cat']['perm'] = "Q";
 
-		$var['opt']['text'] = DOWLAN_28;
+		$var['opt']['text'] = LAN_OPTIONS;
 		$var['opt']['link'] = e_SELF."?opt";
 
 		$var['limits']['text'] = DOWLAN_112;
@@ -592,7 +592,7 @@ class download {
 
 			<tr>
 			<td style='width: 40%;'>".DOWLAN_14."</td>
-			
+
 
 
 			<td style='width: 30%;'>
@@ -623,12 +623,12 @@ class download {
 			<div id='mirrorsection'>";
 
 			$mirrorList = $sql -> db_getList();
-	
+
 			$m_count = (count($mirrorArray) ? count($mirrorArray) : 1);
 
 			for($count = 1; $count <= $m_count; $count++)
 			{
-				
+
 				$opt = ($count==1) ? "id='mirror'" : "";
 				$text .="<span $opt>
 				<select name='download_mirror_name[]' class='tbox'>
@@ -646,10 +646,10 @@ class download {
 			}
 
 			$text .="</div><input class='button' type='button' name='addoption' value='".DOWLAN_130."' onclick=\"duplicateHTML('mirror','mirrorsection')\" /><br />
-			
+
 			</td>
 			</tr>
-				
+
 			<tr>
 			<td style='width:20%' class='forumheader3'>Mirror display type:<div class='smalltext'>if using mirrors, select how they will be displayed</div></td>
 			<td style='width:80%' class='forumheader3'>
@@ -660,7 +660,7 @@ class download {
 			</tr>";
 		}
 
-			
+
 
 			$text .= "<tr>
 			<td style='width:20%' class='forumheader3'>".DOWLAN_15.":</td>
@@ -758,11 +758,11 @@ class download {
 
 
 		if ($download_comment == "0") {
-			$text .= DOWLAN_22.": <input type='radio' name='download_comment' value='1' />
-				".DOWLAN_23.": <input type='radio' name='download_comment' value='0' checked='checked' />";
+			$text .= LAN_YES.": <input type='radio' name='download_comment' value='1' />
+				".LAN_NO.": <input type='radio' name='download_comment' value='0' checked='checked' />";
 		} else {
-			$text .= DOWLAN_22.": <input type='radio' name='download_comment' value='1' checked='checked' />
-				".DOWLAN_23.": <input type='radio' name='download_comment' value='0' />";
+			$text .= LAN_YES.": <input type='radio' name='download_comment' value='1' checked='checked' />
+				".LAN_NO.": <input type='radio' name='download_comment' value='0' />";
 		}
 
 		$text .= "</td>
@@ -846,7 +846,7 @@ class download {
 
 		$mirrorStr = "";
 		$mirrorReq = "";
-		
+
 		if($mirrors = count($_POST['download_mirror_name']))
 		{
 			for($a=0; $a<$mirrors; $a++)
@@ -856,7 +856,7 @@ class download {
 				$mirrorStr .= $mirror_id.",".$mirror_url.",0".chr(1);
 			}
 		}
-		
+
 		if ($id)
 		{
 
@@ -899,7 +899,7 @@ class download {
 				<td style='width:5%; text-align:center' class='fcaption'>&nbsp;</td>
 				<td style='width:70%; text-align:center' class='fcaption'>".DOWLAN_11."</td>
 				<td style='width:5%; text-align:center' class='fcaption'>".DOWLAN_52."</td>
-				<td style='width:25%; text-align:center' class='fcaption'>".DOWLAN_28."</td>
+				<td style='width:25%; text-align:center' class='fcaption'>".LAN_OPTIONS."</td>
 				</tr>";
 
 			while ($row = $sql->db_Fetch()) {
@@ -912,7 +912,7 @@ class download {
 					<input type='image' title='".LAN_DELETE."' name='delete[category_{$download_category_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(DOWLAN_34." [ID: $download_category_id ]")."') \"/>
 					</td>
 					</tr>";
-					
+
 				$parent_id = $download_category_id;
 				if ($sql2->db_Select("download_category", "*", "download_category_parent=$parent_id")) {
 					while ($row = $sql2->db_Fetch()) {
@@ -1103,17 +1103,17 @@ class download {
 			<td style='width: 10%; text-align: center;' class='forumheader'>ID</td>
 			<td style='width: 30%;' class='forumheader'>".DOWLAN_12."</td>
 			<td style='width: 30%;' class='forumheader'>".DOWLAN_136."</td>
-			<td style='width: 30%; text-align: center;' class='forumheader'>".DOWLAN_28."</td>
+			<td style='width: 30%; text-align: center;' class='forumheader'>".LAN_OPTIONS."</td>
 			</tr>
 			";
-		
+
 			$mirrorList = $sql -> db_getList();
-			
+
 			foreach($mirrorList as $mirror)
 			{
 				extract($mirror);
 				$text .= "
-				
+
 				<tr>
 				<td style='width: 10%; text-align: center;' class='forumheader3'>$mirror_id</td>
 				<td style='width: 30%;' class='forumheader3'>".$tp -> toHTML($mirror_name)."</td>
@@ -1138,7 +1138,7 @@ class download {
 
 		if($sub_action == "edit" && !defined("SUBMITTED"))
 		{
-			$sql -> db_Select("download_mirror", "*", "mirror_id=".$id);	
+			$sql -> db_Select("download_mirror", "*", "mirror_id=".$id);
 			$row = $sql -> db_Fetch();
 			extract($mirror);
 			$edit = TRUE;
@@ -1226,7 +1226,7 @@ class download {
 			$name = $tp -> toDB($_POST['mirror_name']);
 			$url = $tp -> toDB($_POST['mirror_url']);
 			$location = $tp -> toDB($_POST['mirror_location']);
-			
+
 			$description = $tp -> toDB($_POST['mirror_description']);
 
 			if (isset($_POST['id'])){

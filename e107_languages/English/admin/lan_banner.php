@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_banner.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-04-02 10:04:48 $
+|     $Revision: 1.6 $
+|     $Date: 2005-04-02 18:29:48 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -28,7 +28,6 @@ define("BNRLAN_16", "Unlimited");
 define("BNRLAN_17", "None");
 
 
-define("BNRLAN_20", "No");
 define("BNRLAN_21", "Ends");
 define("BNRLAN_22", "Update Banner");
 define("BNRLAN_23", "Add New Banner");
@@ -83,7 +82,7 @@ define("BNRLAN_65", "campaign visibility will overwrite all individual visibilit
 
 define("BANNER_MENU_L1", "Advertisement");
 define("BANNER_MENU_L2", "Banner menu configuration saved");
-	
+
 //v.617
 define("BANNER_MENU_L3", "Caption");
 define("BANNER_MENU_L4", "Campaign");
