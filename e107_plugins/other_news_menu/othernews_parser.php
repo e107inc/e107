@@ -19,7 +19,7 @@ if (check_class($news_class)) {
 			$replace[3] = "<a class='othernews_category' style='$catlinkstyle' href='news.php?cat.".$news_category."'>".$category_array['name'][$news_category]."</a>" ;
 
 			$search[4] = "/\{OTHERNEWS_CATICON\}(.*?)/si";
-			$replace[4] = "<a href='news.php?cat.".$news_category."'>".$category_array['name'][$news_category]."</a>" ;
+			$replace[4] = "<a href='news.php?cat.".$news_category."'><img src='".e_IMAGE."icons/".$category_array['icon'][$news_category]."' alt='' style='border:0px' /></a>";
 
 			return preg_replace($search, $replace,$template);
 		}
