@@ -70,7 +70,11 @@ td {
 	text-align:center;
 	background-image : url(images/button.png);
 }
-
+.button.menu{
+	border-top: 0px;
+	border-right: 0px;
+	border-left: 0px;
+}
 .button:hover{
 	border: 1px solid #000;
 	color: #000;
@@ -78,7 +82,11 @@ td {
 	text-align:center;
 	background-image : url(images/buttonover.png);
 }
-
+.button.menu:hover{
+	border-top: 0px;
+	border-right: 0px;
+	border-left: 0px;
+}
 .nextprev{
 	background-color: #D4DCEF;
 	color: #000;
@@ -172,7 +180,6 @@ hr {
 	color: #fff;
 	background-color: #3D4251;
 	font: 11px  arial, sans-serif;
-	
 	border-top:  1px solid #e9efff;
 	border-bottom: 1px solid #3D4251;
 }
@@ -180,6 +187,10 @@ hr {
 .right_caption_border {
 	border-top: #3D4251 1px solid;
 	border-bottom: 1px solid #ffffff;
+}
+.right_caption_border.button_menu {
+	border-bottom: 0px;
+	text-align: left
 }
 
 .bodytable {

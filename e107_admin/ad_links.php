@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/ad_links.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-01-10 09:49:02 $
+|     $Revision: 1.9 $
+|     $Date: 2005-01-12 04:10:21 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -42,6 +42,8 @@ if (!defined('E_16_NAV_MAIN')) { define('E_16_NAV_MAIN', e_IMAGE.'admin_images/m
 if (!defined('E_16_NAV_DOCS')) { define('E_16_NAV_DOCS', e_IMAGE.'admin_images/docs.png'); }
 if (!defined('E_16_NAV_LEAV')) { define('E_16_NAV_LEAV', e_IMAGE.'admin_images/leave.png'); }
 if (!defined('E_16_NAV_LGOT')) { define('E_16_NAV_LGOT', e_IMAGE.'admin_images/logout.png'); }
+if (!defined('E_16_NAV_ARROW')) { define('E_16_NAV_ARROW', e_IMAGE.'admin_images/arrow.png'); }
+if (!defined('E_16_NAV_ARROW_OVER')) { define('E_16_NAV_ARROW_OVER', e_IMAGE.'admin_images/arrow_over.png'); }
 
 // Small Admin Main Link Images
 if (!defined('E_16_ADMIN')) { define('E_16_ADMIN', "<img src='".e_IMAGE."admin_images/admins.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />"); }

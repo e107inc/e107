@@ -25,6 +25,31 @@ ob_end_clean();
 
 // [admin button style]
 
+if (!function_exists('show_admin_menu')) {
+	function show_admin_menu($title,$page,$e107_vars){
+		global $ns;
+		$text = "<div style='text-align:center; width:100%'><table class='fborder' style='width: 100%'>";
+		foreach (array_keys($e107_vars) as $act) {
+			$t=str_replace(" ","&nbsp;",$e107_vars[$act]['text']);
+			if (!$e107_vars[$act]['perm'] || getperms($e107_vars[$act]['perm'])) {
+				$arrow_icon = $page == $act ? E_16_NAV_ARROW_OVER : E_16_NAV_ARROW;
+				$menu_link = $page == $act ? "" : "onclick=\"document.location='".$e107_vars[$act]['link']."'; disabled=true;\"";
+				$text .= "<tr><td style='border-bottom: 1px solid #000'><div class='emenuBar' style='width:100%;'>
+				<div class='menuButton' onmouseover='adbutover(this)' onmouseout='adbutnorm(this)' ".$menu_link." 
+				style='background-image: url(".$arrow_icon."); background-repeat: no-repeat; background-position: 3px 1px; width: 100%; display: block;'>
+				".$t."</div>
+				</div>
+				</td></tr>";
+			}
+		}
+		$text .= "</table></div>";
+		if ($title=="") {
+			return $text;
+		}
+		$ns -> tablerender($title,$text, array('id' => $title, 'style' => 'button_menu'));
+	}
+}
+/*
 function show_admin_menu($title,$page,$e107_vars){
 	global $ns;
 	$text = "<div style='text-align:center; width:100%'><table class='fborder' style='width:98%;'>";
@@ -46,11 +71,22 @@ function show_admin_menu($title,$page,$e107_vars){
 	}
 	$ns -> tablerender($title, $text, array('id' => 'unique_id', 'style' => 'button_menu'));
 }
-
+*/
 
 // [layout]
 
-$ADMIN_HEADER = "
+$ADMIN_HEADER = "<script type=\"text/javascript\">
+<!--
+function adbutover(object) {
+	if (object.className == 'menuButton') object.className = 'menuButton_over';
+}
+
+function adbutnorm(object) {
+	if (object.className == 'menuButton_over') object.className = 'menuButton';
+}
+// -->
+</script>
+
 <table cellpadding='0' cellspacing='0' border='0' class='top_section'>
 <tr>
 <td style='vertical-align: top; padding: 0px 0px 0px 0px'>
@@ -116,8 +152,8 @@ if ($preright=='pre') {
 
 $ADMIN_FOOTER .= "</tr>
 </table>
-<br />
 <div style='text-align:center'>
+<br />
 {SITEDISCLAIMER}
 </div>
 ";

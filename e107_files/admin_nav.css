@@ -1,5 +1,5 @@
 div.menuBar,
-div.menuBar a.menuButton,
+div.menuBar a.menuButton, div.menuButton, div.menuButton_over, 
 div.menu,
 div.menu a.menuItem {
   font-family: "MS Sans Serif2", arial, sans-serif;
@@ -17,7 +17,14 @@ div.menuBar {
   text-align: left;
 }
 
-div.menuBar a.menuButton {
+div.emenuBar {
+  background-color: #F5EED0;
+  border-top: 1px solid #ffffff;
+  border-bottom: 0px solid #3D4251;
+  text-align: left;
+}
+
+div.menuBar a.menuButton, div.menuButton, div.menuButton_over {
   background-color: transparent;
   border: 1px solid #F5EED0;
   color: #000000;
@@ -31,13 +38,13 @@ div.menuBar a.menuButton {
   z-index: 100;
 }
 
-div.menuBar a.menuButton:hover {
+div.menuBar a.menuButton:hover, div.menuButton:hover, div.menuButton_over {
   background-color: transparent;
   border-color: #ffffff #a5a5a5 #a5a5a5 #ffffff;
   color: #000000;
 }
 
-div.menuBar a.menuButtonActive,
+div.menuBar a.menuButtonActive, div.menuButtonActive, div.menuButtonActive:hover, 
 div.menuBar a.menuButtonActive:hover {
   background-color: #ffffef;
   border-color: #a5a5a5 #ffffff #ffffff #a5a5a5;
