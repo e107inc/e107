@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm_menu/pm_inc.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-29 17:19:51 $
-|     $Author: mrpete $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-08 15:57:01 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("e_PM", e_PLUGIN."pm_menu/");
@@ -22,7 +22,7 @@ define("e_PM", e_PLUGIN."pm_menu/");
 $pm_stat_store = array();
 $pm_stored_stat_user = -1; // cache at least for this page!
 $pm_stored_stat_time = -1;
-	
+
 function pm_show_icon($to_id, $pm_icon = "") {
 	global $pref;
 	if (!$pref['pm_title']) {
@@ -42,7 +42,7 @@ function pm_show_icon($to_id, $pm_icon = "") {
 	}
 	return "";
 }
-	
+
 function pm_get_stats($user = USERNAME, $time = USERLV) {
 	global $pm_stat_store, $pm_stored_stat_user, $pm_stored_stat_time;
 	if ($user == $pm_stored_stat_user && $time == $pm_stored_stat_time) {
@@ -60,7 +60,7 @@ function pm_get_stats($user = USERNAME, $time = USERLV) {
 	$pm_stored_stat_time = $time;
 	return $ret;
 }
-	
+
 function pm_show_stats($no_show_br = 0) {
 	global $ns;
 	global $pref;
@@ -79,24 +79,24 @@ function pm_show_stats($no_show_br = 0) {
 				setcookie("pm-alert", "ON", time()+$alertdelay);
 				$popuptext = "<html><head ><title>".$pmstats['new']." ".PMLAN_0."</title><link rel=stylesheet href=" . THEME . "style.css></head><body style=padding-left:2px;padding-right:2px;padding:2px;padding-bottom:2px;margin:0px;align;center marginheight=0 marginleft=0 topmargin=0 leftmargin=0><table width=100% align=center style=width:100%;height:99%padding-bottom:2px class=bodytable height=99% ><tr><td width=100% ><center><b>--- ".PMLAN_PM." ---</b><br />".$pmstats['new']." ".PMLAN_0."<br />".$pmstats['unread_rcv_pm']." ".PMLAN_45."<br><br /><form><input class=button type=submit onclick=\\\\\"self.close()\\\\\" value = \\\\\"ok\\\\\" >< /form >< /center >< /td >< /tr >< /table >< /body >< /html > ";
 				$text.="
-<script type='text/javascript'>
-winl=(screen.width-200)/2;
+				<script type='text/javascript'>
+				winl=(screen.width-200)/2;
 				wint = (screen.height-100)/2;
 				winProp = 'width=200,height=100,left='+winl+',top='+wint+',scrollbars=no';
 				window.open('javascript:document.write(\"".$popuptext."\");', \"pm_popup\", winProp);
 				< /script > ";
-					}
-					}
-					if ($pmstats['new']){$text.=$pmstats['new']." ".PMLAN_0." < br /> \n";}
-					$text .= ($pmstats['received'] > 0) ? "<a class='smalltext' href='".e_PM."pm.php?read'>{$pmstats['received']} ".PMLAN_1."</a> ({$pmstats['unread_rcv_pm']})<br />" : $pmstats['received']." ".PMLAN_1."<br />";
-					$blocks = $pmstats['blocks'];
-					$text .= ($pmstats['sent_pm']>0) ? "<a class='smalltext' href='".e_PM."pm.php?sent'>{$pmstats['sent_pm']} ".PMLAN_2."</a> ({$pmstats['unread_send_pm']})<br />" : $pmstats['sent_pm']." ".PMLAN_2."<br />";
-					$text .= ($pmstats['blocks'] == 1) ? $pmstats['blocks']." ".PMLAN_3 : $pmstats['blocks']." ".PMLAN_4;
-					if ($pmstats['blocks']>0){$text.=" - < a class = 'smalltext' href = '".e_PM."pm.php?vb' > ".PMLAN_6." < /a > ";}
-					$text.=" < br /> \n";
-					$text.="[ < a href = '".e_PM."pm.php?send' > ".PMLAN_5." < /a > ]";
-					$text.=" < br /> \n";
-					return " < span class = 'smalltext' > ".$text." < /span > ";
-					}
-					}
-					?>
+			}
+		}
+		if ($pmstats['new']){$text.=$pmstats['new']." ".PMLAN_0." < br /> \n";}
+		$text .= ($pmstats['received'] > 0) ? "<a class='smalltext' href='".e_PM."pm.php?read'>{$pmstats['received']} ".PMLAN_1."</a> ({$pmstats['unread_rcv_pm']})<br />" : $pmstats['received']." ".PMLAN_1."<br />";
+		$blocks = $pmstats['blocks'];
+		$text .= ($pmstats['sent_pm']>0) ? "<a class='smalltext' href='".e_PM."pm.php?sent'>{$pmstats['sent_pm']} ".PMLAN_2."</a> ({$pmstats['unread_send_pm']})<br />" : $pmstats['sent_pm']." ".PMLAN_2."<br />";
+		$text .= ($pmstats['blocks'] == 1) ? $pmstats['blocks']." ".PMLAN_3 : $pmstats['blocks']." ".PMLAN_4;
+		if ($pmstats['blocks']>0){$text.=" - < a class = 'smalltext' href = '".e_PM."pm.php?vb' > ".PMLAN_6." < /a > ";}
+		$text.=" <br /> \n";
+		$text.="[ <a href = '".e_PM."pm.php?send'> ".PMLAN_5." </a> ]";
+		$text.=" <br /> \n";
+		return " <span class = 'smalltext' > ".$text." </span> ";
+	}
+}
+?>
