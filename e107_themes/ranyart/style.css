@@ -30,6 +30,18 @@ a:hover {
 	font-style: normal;
 	color:#000;
 }
+.indent{
+	padding: 10px 10px 10px 10px;
+	margin: 5px;
+	font: 11px verdana, tahoma, arial, sans-serif;
+	color: #000060;
+	border: 1px solid;
+	background-color: #CCC8C8;
+	border-bottom: #FFFFFF 1px solid;
+	border-left: #000 1px solid;
+	border-right: #FFFFFF 1px solid;
+	border-top: #000 1px solid;
+}
 .defaulttext {
     background: none;
 	font-family: verdana, tahoma, arial, helvetica, sans-serif;
