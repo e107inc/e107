@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-27 19:52:49 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-24 18:57:07 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Forum");
@@ -105,5 +105,6 @@ define("LAN_439", "here");
 define("LAN_440", "to go to the registration page.");
 	
 define('FORLAN_441', 'No rules defined.');
+define('FORLAN_442', 'My Uploads');
 	
 ?>

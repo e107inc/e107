@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-02-13 00:58:59 $
+|     $Revision: 1.9 $
+|     $Date: 2005-02-24 18:55:57 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -69,7 +69,19 @@ $TRACKTITLE = LAN_397;
 	
 	
 $rules_text = forum_rules('check');
-$USERINFO = "<a href='".e_BASE."top.php?0.top.forum.10'>".LAN_429."</a> | <a href='".e_BASE."top.php?0.active'>".LAN_430."</a>".(USER ? " | <a href='".e_BASE."userposts.php?0.forums.".USERID."'>".LAN_431."</a> | <a href='".e_BASE."usersettings.php'>".LAN_432."</a> | <a href='".e_BASE."user.php?id.".USERID."'>".LAN_435."</a>" : "").($rules_text != '' ? " | <a href='".e_PLUGIN."forum/forum.php?rules'>".LAN_433."</a>" : "");
+$USERINFO = "<a href='".e_BASE."top.php?0.top.forum.10'>".LAN_429."</a> | <a href='".e_BASE."top.php?0.active'>".LAN_430."</a>";
+if(USER)
+{
+	$USERINFO .= " | <a href='".e_BASE."userposts.php?0.forums.".USERID."'>".LAN_431."</a> | <a href='".e_BASE."usersettings.php'>".LAN_432."</a> | <a href='".e_BASE."user.php?id.".USERID."'>".LAN_435."</a>";
+	if($pref['forum_attach'] && (check_class($pref['upload_class']) || getperms('0')))
+	{
+		$USERINFO .= " | <a href='".e_PLUGIN."forum/forum_uploads.php'>".FORLAN_442."</a>";
+	}
+}
+if($rules_text != '')
+{
+	$USERINFO .= " | <a href='".e_PLUGIN."forum/forum.php?rules'>".LAN_433."</a>";
+}
 $total_topics = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent='0' ");
 $total_replies = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent!='0' ");
 $total_members = $sql->db_Count("user");
@@ -396,4 +408,3 @@ function forum_rules($action = 'check') {
 
 
 
-
