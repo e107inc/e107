@@ -13,31 +13,40 @@
 +---------------------------------------------------------------+
 */
 if(!is_object($aj)){ $aj = new textparse; }
-if(IsSet($_POST['chat_submit'])){
-
-	if($pref['user_reg'] && !USER && !$pref['anon_post']){
+if(IsSet($_POST['chat_submit']))
+{
+	if(!USER && !$pref['anon_post'])
+	{
 		// disallow post
-	}else{
+	} else
+	{
 		$cmessage = $_POST['cmessage'];
 		$nick = trim(chop(preg_replace("/\[.*\]/si", "", $_POST['nick'])));
 		$fp = new floodprotect;
-		if(!$fp -> flood("chatbox", "cb_datestamp")){
+		if(!$fp -> flood("chatbox", "cb_datestamp"))
+		{
 			header("location:".e_BASE."index.php");
 			exit;
-		}else{
-			if((strlen(trim(chop($cmessage))) < 1000) && trim(chop($cmessage)) != ""){
+		} else
+		{
+			if((strlen(trim(chop($cmessage))) < 1000) && trim(chop($cmessage)) != "")
+			{
 				$cmessage = $aj -> formtpa($cmessage, "public");
-				if($sql -> db_Select("chatbox", "*", "cb_message='$cmessage' AND cb_datestamp+84600>".time())){
+				if($sql -> db_Select("chatbox", "*", "cb_message='$cmessage' AND cb_datestamp+84600>".time()))
+				{
 					$emessage = CHATBOX_L17;
-				}else{
+				} else 
+				{
 					$datestamp = time();
 					$ip = getip();
-					if(USER){
+					if(USER)
+					{
 						$nick = USERID.".".USERNAME;
 						$sql -> db_Update("user", "user_chats=user_chats+1, user_lastpost='".time()."' WHERE user_id='".USERID."' ");
-					}else if(!$nick){
+					} else if(!$nick)
+					{
 						$nick = "0.Anonymous";
-					}else{
+					} else {
 						if($sql -> db_Select("user", "*", "user_name='$nick' ")){
 							$emessage = CHATBOX_L1;
 						}else{
@@ -58,9 +67,13 @@ if(IsSet($_POST['chat_submit'])){
 }
 
 $pref['cb_linkc'] = str_replace("e107_images/", e_IMAGE, $pref['cb_linkc']);
-if($pref['user_reg'] && !USER && !$pref['anon_post']){
-	$texta = "<div style='text-align:center'>".CHATBOX_L3."</div><br /><br />";
-}else{
+if(!USER && !$pref['anon_post']){
+	if($pref['user_reg'])
+	{
+		$texta = "<div style='text-align:center'>".CHATBOX_L3."</div><br /><br />";
+	}
+} else 
+{
 	$texta =  "<div style='text-align:center'>".(e_QUERY ? "\n<form id='chatbox' method='post' action='".e_SELF."?".e_QUERY."'><p>" : "\n<form id='chatbox' method='post' action='".e_SELF."'><p>");
 	if(($pref['anon_post'] == "1" && USER == FALSE)){
 		$texta .= "\n<input class='tbox' type='text' name='nick' size='27' value='' maxlength='50' /><br />";
