@@ -110,6 +110,7 @@ require_once(HEADERF);
 <p>
 <input class='tbox' type='text' name='searchquery' size='30' value='' maxlength='50' />
 <input class='button' type='submit' name='searchsubmit' value='".LAN_dl_41."' />
+<input type='hidden' name='searchtype' value='9' />
 </p>
 </form>
 </div>
