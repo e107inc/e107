@@ -188,7 +188,7 @@ if($cache = retrieve_cache("comment.php?$table.$id")){
 			}
 		}
 	} else if($table == "poll") {
-		if(!$sql -> db_Select("poll", "*", "poll_id='$id' ")){
+		if(!$sql -> db_Select("poll", "*", "poll_id='$id' AND poll_active > 0")){
 			header("location:".e_BASE."index.php");
 			exit;
 		} else {
