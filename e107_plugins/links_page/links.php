@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-27 19:53:05 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-08 15:45:03 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once('../../class2.php');
@@ -26,12 +26,11 @@ if (file_exists(e_PLUGIN."links_page/languages/".e_LANGUAGE."_links.php")) {
 	
 if (IsSet($_POST['add_link']) && check_class($pref['link_submit_class'])) {
 	if ($_POST['link_name'] && $_POST['link_url'] && $_POST['link_description']) {
-		$link_name = $aj->formtpa($_POST['link_name'], "public");
-		$link_url = $aj->formtpa($_POST['link_url'], "public");
-		$link_description = $aj->formtpa($_POST['link_description'], "public");
-		$link_button = $aj->formtpa($_POST['link_button'], "public");
-		$username = (defined('USERNAME')) ? USERNAME :
-		 LAN_LINKS_3;
+		$link_name = $tp->toDB($_POST['link_name']);
+		$link_url = $tp->toDB($_POST['link_url']);
+		$link_description = $tp->toDB($_POST['link_description']);
+		$link_button = $tp->toDB($_POST['link_button']);
+		$username = (defined('USERNAME')) ? USERNAME : LAN_LINKS_3;
 		$submitted_link = $_POST['cat_name']."^".$link_name."^".$link_url."^".$link_description."^".$link_button."^".$username;
 		$sql->db_Insert("tmp", "'submitted_link', '".time()."', '$submitted_link' ");
 		$ns->tablerender(LAN_99, "<div style='text-align:center'>".LAN_100."</div>");
@@ -72,10 +71,8 @@ if (e_QUERY == "" && $pref['linkpage_categories'] == 1) {
 	}
 	 
 	$caption = LAN_61;
-	$sql = new db;
-	 $sql2 = new db;
 	$category_total = $sql->db_Select("links_page_cat", "*");
-	$total_links = $sql2->db_Count("links_page", "(*)");
+	$total_links = $sql->db_Count("links_page", "(*)");
 	 
 	while ($row = $sql->db_Fetch()) {
 		extract($row);
@@ -207,7 +204,7 @@ function parse_link_submit_table() {
 }
 	
 function parse_link_cat_table($row) {
-	global $LINK_CAT_TABLE, $sql, $pref, $aj, $category;
+	global $LINK_CAT_TABLE, $sql, $pref, $tp, $category;
 	extract($row);
 	 
 	// Body
@@ -259,7 +256,7 @@ function parse_link_cat_table($row) {
 	$LINK_CAT_APPEND = $link_append;
 	$LINK_CAT_NAME = $link_name;
 	$LINK_CAT_URL = $link_url;
-	$LINK_CAT_DESC = $aj->tpa($link_description);
+	$LINK_CAT_DESC = $tp->toHTML($link_description);
 	$LINK_CAT_REFER = LAN_88." ".$link_refer;
 	 
 	return(preg_replace("/\{(.*?)\}/e", '$\1', $LINK_CAT_TABLE));
