@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.74 $
-|     $Date: 2005-02-01 05:45:50 $
-|     $Author: sweetas $
+|     $Revision: 1.75 $
+|     $Date: 2005-02-01 21:54:23 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -39,7 +39,7 @@ if($register_globals){
 if(!isset($ADMIN_DIRECTORY)){
 	header("Location: install.php");
 }
-	
+
 include_once(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY.'e107_class.php');
 $Paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY');
 if(defined("COMPRESS_OUTPUT") && COMPRESS_OUTPUT === true) {
@@ -196,27 +196,48 @@ e107_require_once(e_HANDLER."e107_Compat_handler.php");
 //}
 // End parser code #########
 
-global $sysprefs;
-e107_require_once(e_HANDLER."pref_class.php");
-$sysprefs=new prefs;
-$tmp=$sysprefs->get('pref');
-$pref=unserialize($tmp);
-
-if (!is_array($pref)) {
-	$pref=$sysprefs->getArray('pref');
-	if (!is_array($pref)) {
-		($sql->db_Select("core", "*", "e107_name='pref' ") ? message_handler("CRITICAL_ERROR", 1, __LINE__, __FILE__) : message_handler("CRITICAL_ERROR", 2, __LINE__, __FILE__));
-		if ($sql->db_Select("core", "*", "e107_name='pref_backup' ")) {
-			$row=$sql->db_Fetch();
-			extract($row);
-			$sysprefs->set($e107_value, 'pref', 'core');
-			message_handler("CRITICAL_ERROR", 3, __LINE__, __FILE__);
+e107_require_once(e_HANDLER.'cache_handler.php');
+e107_require_once(e_HANDLER.'arraystorage_class.php');
+$eArrayStorage = new ArrayData();
+$PrefCache = ecache::retrieve('SitePrefs', 24 * 60, true);
+if(!$PrefCache){
+	// No cache of the prefs array, going for the db copy..
+	$sql->db_Select('core', '*', '`e107_name` = \'SitePrefs\'');
+	$row = $sql->db_Fetch();
+	$pref = $eArrayStorage->ReadArray($row['e107_value']);
+	if(!is_array($pref)){
+		message_handler("CRITICAL_ERROR", 3, __LINE__, __FILE__);
+		$sql->db_Select('core', '*', '`e107_name` = \'SitePrefs_Backup\'');
+		$row = $sql->db_Fetch();
+		$PrefStored = $row['e107_value'];
+		$pref = $eArrayStorage->ReadArray($row['e107_value']);
+		if(!is_array($pref)){
+			$sql->db_Select("core", '*', '`e107_name` = \'pref\'');
+			$row = $sql->db_Fetch();
+			$pref = unserialize($row['e107_value']);
+			if(!is_array($pref)){
+				message_handler("CRITICAL_ERROR", 4, __LINE__, __FILE__);
+				exit;
+			} else {
+				$PrefOutput = $eArrayStorage->WriteArray($pref);
+				if(!$sql->db_Update('core', "e107_value='{$PrefOutput}' WHERE e107_name='SitePrefs'")){
+					$sql->db_Insert('core', "'SitePrefs', '{$PrefOutput}'");
+				}
+				if(!$sql->db_Update('core', "e107_value='{$PrefOutput}' WHERE e107_name='SitePrefs_Backup'")){
+					$sql->db_Insert('core', "'SitePrefs_Backup', '{$PrefOutput}'");
+				}
+				$sql->db_Delete('core', "`e107_name` = 'pref'");
+			}
 		} else {
-			message_handler("CRITICAL_ERROR", 4, __LINE__, __FILE__);
-			exit;
+			if(!$sql->db_Update('core', "`e107_value` = '".addslashes($PrefStored)."' WHERE `e107_name` = 'SitePrefs'")){
+				$sql->db_Insert('core', "'SitePrefs', '".addslashes($PrefStored)."'");
+			}
 		}
 	}
+	$PrefCache = $eArrayStorage->WriteArray($pref, false);
+	ecache::set('SitePrefs', $PrefCache);
 }
+$pref = $eArrayStorage->ReadArray($PrefCache);
 
 if (!$pref['cookie_name']) {
 	$pref['cookie_name'] = "e107cookie";
@@ -230,6 +251,9 @@ if ($pref['user_tracking'] == "session") {
 $pref['htmlarea']=false;
 
 define("e_SELF", ($pref['ssl_enabled'] ? "https://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']) : "http://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'])));
+
+e107_require_once(e_HANDLER."pref_class.php");
+$sysprefs=new prefs;
 
 $menu_pref=$sysprefs->getArray('menu_pref');
 
@@ -286,7 +310,6 @@ if (isset($pref['frontpage']) && $pref['frontpage_type'] == "splash") {
 	}
 }
 
-e107_require_once(e_HANDLER."cache_handler.php");
 $e107cache=new ecache;
 
 if ($pref['del_unv']) {
@@ -715,24 +738,23 @@ function getperms($arg, $ap = ADMINPERMS) {
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-function save_prefs($table = "core", $uid = USERID, $row_val = "") {
-	global $pref, $user_pref, $tp;
-	$sql=new db;
-
-	if ($table == "core") {
-		foreach ($pref as $key => $prefvalue) {
-			$pref[$key] = $tp->toDB($prefvalue);
-		}
-
-		$tmp=addslashes(serialize($pref));
-		if ($row_val == "") {
-			$sql->db_Update("core", "e107_value='$tmp' WHERE e107_name='pref'");
-		} else {
-			if ($sql->db_Select("core", "e107_name", "e107_name='".$row_val."'")) {
-				$sql->db_Update("core", "e107_value='$tmp' WHERE e107_name='".$row_val."'");
-			} else {
-				$sql->db_Insert("core", "'".$row_val."', '$tmp'");
+function save_prefs($table = 'core', $uid = USERID, $row_val = '') {
+	global $pref, $user_pref, $tp, $PrefCache, $sql, $eArrayStorage;
+	if ($table == 'core') {
+		if ($row_val == '') {
+			// Save old version as a backup
+			if(!$sql->db_Update('core', "e107_value='".addslashes($PrefCache)."' WHERE e107_name='SitePrefs_Backup'")){
+				$sql->db_Insert('core', "'SitePrefs', '".addslashes($PrefCache)."'");
 			}
+			foreach ($pref as $key => $prefvalue) {
+				$pref[$key] = $tp->toDB($prefvalue);
+			}
+			// Create the data to be stored
+			$PrefCache = $eArrayStorage->WriteArray($pref, true);
+			if(!$sql->db_Update('core', "e107_value='{$PrefCache}' WHERE e107_name='SitePrefs'")){
+				$sql->db_Insert('core', "'SitePrefs', '{$PrefCache}'");
+			}
+			ecache::clear('SitePrefs');
 		}
 	} else {
 		foreach ($user_pref as $key => $prefvalue) {
