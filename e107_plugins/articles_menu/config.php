@@ -17,20 +17,21 @@
 require_once("../../class2.php");
 require_once(e_HANDLER."userclass_class.php");
 
-$lan_file=e_PLUGIN."articles_menu/languages/".e_LANGUAGE.".php";
-if(file_exists($lan_file)){
-	require_once($lan_file);
-} else {
-	require_once(e_PLUGIN."articles_menu/languages/English.php");
-}
+@require_once(e_PLUGIN."articles_menu/languages/".e_LANGUAGE.".php");
+@require_once(e_PLUGIN."articles_menu/languages/English.php");
+
 if(!getperms("1")){ header("location:".e_BASE."index.php"); exit ;}
 require_once(e_ADMIN."auth.php");
 
-if(IsSet($_POST['update_menu'])){
-	while(list($key, $value) = each($_POST)){
+if(IsSet($_POST['update_menu']))
+{
+  clear_cache("article_menu");
+	while(list($key, $value) = each($_POST))
+  {
 		if($key=="articles_parents"){$value="1"; $found=1;}
 		if($key=="articles_submitlink"){$value="1"; $found1=1;}
-		if($value != ARTICLE_MENU_L8){ 
+		if($value != ARTICLE_MENU_L8)
+    { 
 			$menu_pref[$key] = $value; 
 		}
 	}
