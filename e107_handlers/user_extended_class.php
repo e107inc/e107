@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-03-24 03:27:47 $
+|     $Revision: 1.9 $
+|     $Date: 2005-03-30 17:27:43 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -42,6 +42,7 @@ class e107_user_extended
 		//		4 = db field
 		//		5 = textarea
 		//		6 = integer
+		//		7 = date
 
 		$this->user_extended_types = array(
 		1 => UE_LAN_1,
@@ -50,6 +51,7 @@ class e107_user_extended
 		4 => UE_LAN_4,
 		5 => UE_LAN_5,
 		6 => UE_LAN_6,
+		7 => UE_LAN_7,
 		);
 	}
 
@@ -66,7 +68,8 @@ class e107_user_extended
 			case 1:
 			case 2:
 			case 3:
-				//text, dropdown, radio
+			case 7:
+				//text, dropdown, radio, date
 				$db_type = 'VARCHAR(255)';
 				break;
 
@@ -159,7 +162,7 @@ class e107_user_extended
 
 	function user_extended_edit($struct, $curval)
 	{
-		
+		global $cal;
 		$p = explode(",",$struct['user_extended_struct_parms']);
 		$choices = explode(",",$struct['user_extended_struct_values']);
 		$fname = "ue[user_".$struct['user_extended_struct_name']."]";
@@ -246,6 +249,9 @@ class e107_user_extended
 				return "<textarea class='tbox' name='{$fname}' {$extra}>{$curval}</textarea>";
 				break;
 				
+			case 7: //date
+				return $cal->make_input_field(array(), array('class' => 'tbox', 'name' => $fname, 'value' => $curval));
+				break;
 		}
 		return $ret;
 	}
