@@ -202,44 +202,47 @@ $text .= "</td></tr></table>";
 
 If(IsSet($_POST['edit'])){
 
-        $sql -> db_Select("user", "user_id, user_name, user_class", "ORDER BY user_name", "no-where");
+        $sql -> db_Select("user", "user_id, user_name, user_class, user_login", "ORDER BY user_name", "no-where");
         $c=0; $d=0;
         while($row = $sql -> db_Fetch()){
                 extract($row);
                 if(check_class($userclass_id, $user_class)){
                         $in_userid[$c] = $user_id;
                         $in_username[$c] = $user_name;
+                        $in_userlogin[$c] = $user_login ? "(".$user_login.")" : "";
                         $c++;
-                }
+                }else{
                 $out_userid[$d] = $user_id;
                 $out_username[$d] = $user_name;
+                $out_userlogin[$d] = $user_login ? "(".$user_login.")" : "";
                 $d++;
-
+                }
 
         }
 
         $text .= "<br /><table class='fborder' style='width:95%'>
         <tr>
-        <td class='forumheader3' style='width:30%'>".UCSLAN_16."</td>
+        <td class='fcaption' style='text-align:center;width:30%'>".UCSLAN_16."</td></tr>
+        <tr>
         <td class='forumheader3' style='width:70%; text-align:center'>
 
         <table style='width:90%'>
         <tr>
         <td style='width:45%; vertical-align:top'>
         ".UCSLAN_22."<br />
-        <select class='tbox' id='assignclass1' name='assignclass1' size='10' style='width:150px' multiple='multiple' onchange='moveOver();'>";
+        <select class='tbox' id='assignclass1' name='assignclass1' size='10' style='width:220px' multiple='multiple' onchange='moveOver();'>";
 
         for($a=0; $a<=($d-1); $a++){
-                $text .= "<option value=".$out_userid[$a].">".$out_username[$a]."</option>";
+                $text .= "<option value=".$out_userid[$a].">".$out_username[$a]." ".$out_userlogin[$a]."</option>";
         }
 
         $text .= "</select>
         </td>
         <td style='width:45%; vertical-align:top'>
         ".UCSLAN_23."<br />
-        <select class='tbox' id='assignclass2' name='assignclass2' size='10' style='width:150px' multiple='multiple'>";
+        <select class='tbox' id='assignclass2' name='assignclass2' size='10' style='width:220px' multiple='multiple'>";
         for($a=0; $a<=($c-1); $a++){
-                $text .= "<option value=".$in_userid[$a].">".$in_username[$a]."</option>";
+                $text .= "<option value=".$in_userid[$a].">".$in_username[$a]." ".$in_userlogin[$a]."</option>";
         }
         $text .= "</select><br /><br />
         <input class='button' type='button' value='".UCSLAN_17."' onclick='removeMe();' />
@@ -288,16 +291,28 @@ break;
 if (isNew) {
 newoption = new Option(selectedText, selectedValue, false, false);
 document.getElementById('assignclass2').options[boxLength] = newoption;
+document.getElementById('assignclass1').options[selectedItem].text = '';
 }
 document.getElementById('assignclass1').selectedIndex=-1;
 }
+
+
 function removeMe() {
 var boxLength = document.getElementById('assignclass2').length;
+var boxLength2 = document.getElementById('assignclass1').length;
 arrSelected = new Array();
 var count = 0;
 for (i = 0; i < boxLength; i++) {
 if (document.getElementById('assignclass2').options[i].selected) {
 arrSelected[count] = document.getElementById('assignclass2').options[i].value;
+var valname = document.getElementById('assignclass2').options[i].text;
+   for (j = 0; j < boxLength2; j++) {
+        if(document.getElementById('assignclass1').options[j].value == arrSelected[count]){
+        document.getElementById('assignclass1').options[j].text = valname;
+        }
+   }
+
+// document.getElementById('assignclass1').options[i].text = valname;
 }
 count++;
 }
