@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-01-13 02:00:00 $
+|     $Revision: 1.12 $
+|     $Date: 2005-01-15 04:32:19 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -65,6 +65,7 @@ if(IsSet($_POST['updateprefs'])){
         $pref['displaythemeinfo'] = $_POST['displaythemeinfo'];
         $pref['displayrendertime'] = $_POST['displayrendertime'];
         $pref['displaysql'] = $_POST['displaysql'];
+        $pref['image_preload'] = $_POST['image_preload'];
         $pref['timezone'] = $_POST['timezone'];
         $pref['adminstyle'] = $_POST['adminstyle'];
         $pref['membersonly_enabled'] = $_POST['membersonly_enabled'];
@@ -309,6 +310,13 @@ while(IsSet($dirlist[$counter])){
 	$counter++;
 }
 $text .= "</select>
+</td>
+</tr>
+
+<tr>
+<td style='width:50%' class='forumheader3'>".PRFLAN_100."</td>
+<td style='width:50%; text-align:right' class='forumheader3'>".
+($pref['image_preload'] ? "<input type='checkbox' name='image_preload' value='1' checked='checked' />" : "<input type='checkbox' name='image_preload' value='1' />")."
 </td>
 </tr>";
 

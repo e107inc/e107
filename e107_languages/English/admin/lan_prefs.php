@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-13 07:17:37 $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-15 04:32:20 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -135,6 +135,7 @@ define("PRFLAN_97", "Unique 'Plugins info' menu:");
 define("PRFLAN_98", "If unchecked, each plugin will display its own info in an individual menu. If checked all info will be displayed in one menu.");
 
 define("PRFLAN_99", "Options");
+define("PRFLAN_100", "Preload Theme Images:");
 
 
 ?>

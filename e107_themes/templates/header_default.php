@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-01-15 01:26:39 $
+|     $Revision: 1.13 $
+|     $Date: 2005-01-15 04:32:21 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -39,9 +39,7 @@ echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' /
 <meta http-equiv='content-style-type' content='text/css' />\n";
 echo "<link rel='alternate' type='application/rss+xml' title='".SITENAME." RSS' href='".e_FILE."backend/news.xml' />\n";
 echo "<link rel='stylesheet' href='".THEME."style.css' type='text/css' />\n";
-if (file_exists(THEME.'e107.css')) {
-	echo "<link rel='stylesheet' href='".THEME."e107.css' type='text/css' />\n";
-} else if (file_exists(e_FILE.'e107.css')) {
+if (!$no_core_css) {
 	echo "<link rel='stylesheet' href='".e_FILE."e107.css' type='text/css' />\n";
 }
 if(function_exists('theme_head')){
@@ -58,30 +56,38 @@ if ($eplug_js) { echo "<script type='text/javascript' src='".$eplug_js."'></scri
 if ($htmlarea_js) { echo $htmlarea_js; }
 if (function_exists('headerjs')){echo headerjs();  }
 
-echo "<script type='text/javascript'>\n";
-echo "<!--\n";
 if ($pref['log_activate']) {
-	echo "document.write( '<link rel=\"stylesheet\" type=\"text/css\" href=\"".e_PLUGIN."log/log.php?referer=' + ref + '&color=' + colord + '&eself=' + eself + '&res=' + res + '\">' );\n";
+	$script_text = "document.write( '<link rel=\"stylesheet\" type=\"text/css\" href=\"".e_PLUGIN."log/log.php?referer=' + ref + '&color=' + colord + '&eself=' + eself + '&res=' + res + '\">' );\n";
 }
-//echo "var ejs_listpics = new Array();";
 
-$fader_onload = ($sql -> db_Select("menus", "*", "menu_name='fader_menu' AND menu_location!='0' ")) ? 'changecontent();' : '';
-$links_onload = 'externalLinks();';
-$body_onload = ($fader_onload != '' || $links_onload != '') ? " onload='".$links_onload." ".$fader_onload."'" : "";
-$ejs_listpics = '';
-
-$handle=opendir(THEME.'images');
-while ($file = readdir($handle)) {
-	if (!strstr($file, "._") && strstr($file,".") && $file != "." && $file != ".." && $file != "Thumbs.db" && $file != ".DS_Store") {
-		$ejs_listpics .= $file.",";
+if ($pref['image_preload']) {
+	$ejs_listpics = '';
+	$handle=opendir(THEME.'images');
+	while ($file = readdir($handle)) {
+		if (!strstr($file, "._") && strstr($file,".") && $file != "." && $file != ".." && $file != "Thumbs.db" && $file != ".DS_Store") {
+			$ejs_listpics .= $file.",";
+		}
 	}
-}
-$ejs_listpics = substr($ejs_listpics, 0, -1);
-closedir($handle);
 
-echo "ejs_preload('".THEME."images/','".$ejs_listpics."');\n// -->\n</script>
-</head>
-<body".$body_onload.">";
+	$ejs_listpics = substr($ejs_listpics, 0, -1);
+	closedir($handle);
+
+	$script_text .= "ejs_preload('".THEME."images/','".$ejs_listpics."');\n";
+}
+if ($script_text) {
+	echo "<script type='text/javascript'>\n";
+	echo "<!--\n";
+	echo $script_text;
+	echo "// -->\n";
+	echo "</script>\n";
+}
+
+$fader_onload = ($sql -> db_Select("menus", "*", "menu_name='fader_menu' AND menu_location!='0' ")) ? 'changecontent(); ' : '';
+$links_onload = 'externalLinks();';
+$body_onload = ($fader_onload != '' || $links_onload != '') ? " onload='".$fader_onload.$links_onload."'" : "";
+
+echo "</head>
+<body".$body_onload.">\n";
 //echo "XX - ".$e107_popup;
 // require $e107_popup =1; to use it as header for popup without menus
 if ($e107_popup != 1) {
