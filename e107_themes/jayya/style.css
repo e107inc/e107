@@ -5,17 +5,17 @@ body, td {
 	text-align:left;
 }
 
-body {
+body, .finfobar {
 	background-color: #fdfdfd;
 }
 
-body, td, .indent, .defaulttext, .caption, .bodytable, .infobar, 
+body, td, .indent, .defaulttext, .caption, .bodytable, .infobar, .mediumtext, 
 .forumheader, .forumheader2, .f2default, .forumheader3, .f3default, .fcaption, .fcdefault, .fcaption2, .finfobar {
 	font: normal 11px arial, sans-serif;
 }
 
-.smalltext, .smallblacktext, .mediumtext, .tbox, .captiontext, .button, .button:hover, .nextprev, .helpbox {
-	font: 10px arial, sans-serif;
+.smalltext, .smallblacktext, .tbox, .captiontext, .button, .button:hover, .nextprev, .helpbox {
+	font: normal 10px arial, sans-serif;
 }
 
 body, td, .smalltext, .smallblacktext, .defaulttext, .mediumtext, .tbox, .button, .button:hover, .nextprev, .bodytable, .infobar, 
@@ -80,7 +80,7 @@ a:hover {
 }
 
 .spacer{
-	padding: 2px 0px 2px 0px;
+	padding: 5px 0px 5px 0px;
 }
 
 .fborder, .fbdefault, .border{
@@ -103,10 +103,6 @@ a:hover {
 
 .forumheader2, .forumheader3, .f3default{
 	background-color: #fff;
-}
-
-.finfobar{
-	background-color: #ccc8c8;
 }
 
 /* Core Classes From Core Stylesheet */
