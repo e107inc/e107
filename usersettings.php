@@ -63,6 +63,8 @@ if(IsSet($_POST['updatesettings'])){
 		$avheight = $size[1];
 		$avmsg="";
 
+		$pref['im_width'] = ($pref['im_width']) ? $pref['im_width'] : 120;
+		$pref['im_height'] = ($pref['im_height']) ? $pref['im_height'] : 100;
 		if($avwidth > $pref['im_width']){
 			$avmsg .= LAN_USET_1."<br />".LAN_USET_2.": {$pref['im_width']}<br /><br />";
 		}
