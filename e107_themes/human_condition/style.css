@@ -37,7 +37,7 @@ a:hover, a:active {
 	
 #header a {
 	text-decoration: none;
-	font-size: .8em;
+	font-size: 18pt;
 	position: relative;
 	top: 45px;
 	left: 10px;
@@ -69,7 +69,6 @@ a:hover, a:active {
 #menu a {
 	text-decoration: none;
 	font-family: verdana, arial, helvetica, geneva, sans-serif;
-	font-size: .8em;
 }
 	
 #menu a:visited {
@@ -86,10 +85,21 @@ a:hover, a:active {
 	font-weight: normal;
 }
 
-#menubox {
+ul, ol {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+.tbox.chatbox {
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.menubox {
 	color: #242424;
 	font-family: Lucida Grande, Lucida Sans Unicode, Lucida, Helvetica, Verdana, Arial, Sans-serif;
-	font-size: .7em;
+	font-size: 8pt;
 	margin-top: 15px;
 	padding: 5px;
 	border: 1px solid #D7D7D7; 
@@ -203,14 +213,10 @@ a:hover, a:active {
 .indent{
 	padding: 10px 10px 10px 10px;
 	margin: 5px;
-	font: 11px verdana, tahoma, arial, sans-serif;
+	font: 9px verdana, tahoma, arial, sans-serif;
 	color: #000060;
-	border: 1px solid;
-	background-color: #CCC8C8;
-	border-bottom: #FFFFFF 1px solid;
-	border-left: #000 1px solid;
-	border-right: #FFFFFF 1px solid;
-	border-top: #000 1px solid;
+	border: 1px solid #cfcdcd;
+	background-color: #efefef;
 }
 .defaulttext {
     background: none;
