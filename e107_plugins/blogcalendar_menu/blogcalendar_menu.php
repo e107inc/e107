@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/blogcalendar_menu/blogcalendar_menu.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-27 19:52:36 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-08 13:33:45 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 | Based on code by: Thomas Bouve (crahan@gmx.net)
 */
@@ -23,7 +23,6 @@ require_once(e_PLUGIN."blogcalendar_menu/functions.php");
 // ------------------------------
 // initialization + fetch options
 // ------------------------------
-$sql = new db;
 $prefix = e_PLUGIN."blogcalendar_menu";
 $marray = array(BLOGCAL_M1, BLOGCAL_M2, BLOGCAL_M3, BLOGCAL_M4,
 	BLOGCAL_M5, BLOGCAL_M6, BLOGCAL_M7, BLOGCAL_M8,
@@ -68,41 +67,39 @@ else if(strstr(e_QUERY, "month")) {
 	$req_day = $cur_day;
 }
 	
-	
-// -------------------------------------------
-// get links to all newsitems in current month
-// -------------------------------------------
-$start = mktime(0, 0, 0, $req_month, 1, $req_year);
-$lastday = date("t", $start);
-$end = mktime(23, 59, 59, $req_month, $lastday, $req_year);
-$sql->db_Select("news", "news_id, news_datestamp, news_class", "news_datestamp > $start AND news_datestamp < $end");
-while ($news = $sql->db_Fetch()) {
-	if (check_class($news['news_class'])) {
-		$xday = date("j", $news['news_datestamp']);
-		if (!$day_links[$xday]) {
-			$day_links[$xday] = e_BASE."news.php?day.".formatDate($req_year, $req_month, $xday);
-		}
-	}
-}
-	
-	
 // -------------------------------
 // create the month selection item
 // -------------------------------
 $month_selector = "<div class='forumheader' style='text-align: center; margin-bottom: 2px;'>";
 $month_selector .= "<select name='activate' onChange='urljump(this.options[selectedIndex].value)' class='tbox'>";
-	
+
 // get all newsposts since the beginning of the year till now
+// -------------------------------------------
+// get links to all newsitems in current month
+// -------------------------------------------
+$month_start = mktime(0, 0, 0, $req_month, 1, $req_year);
+$lastday = date("t", $month_start);
+$month_end = mktime(23, 59, 59, $req_month, $lastday, $req_year);
 $start = mktime(0, 0, 0, 1, 1, $req_year);
 $end = time();
-$sql->db_Select("news", "news_id, news_datestamp", "news_datestamp > $start AND news_datestamp < $end");
-while ($news = $sql->db_Fetch()) {
+$sql->db_Select("news", "news_id, news_datestamp", "news_class IN (".USERCLASS_LIST.") AND news_datestamp > $start AND news_datestamp < $end");
+while ($news = $sql->db_Fetch())
+{
 	$xmonth = date("n", $news['news_datestamp']);
-	if (!$month_links[$xmonth]) {
+	if (!$month_links[$xmonth])
+	{
 		$month_links[$xmonth] = e_BASE."news.php?month.".formatDate($req_year, $xmonth);
 	}
+	if($news['news_datestamp'] >= $month_start AND $news['news_datestamp'] <= $month_end)
+	{
+		$xday = date("j", $news['news_datestamp']);
+		if (!$day_links[$xday])
+		{
+			$day_links[$xday] = e_BASE."news.php?day.".formatDate($req_year, $req_month, $xday);
+		}
+	}
 }
-	
+
 // if we're listing the current year, add the current month to the list regardless of posts
 if ($req_year == $cur_year) {
 	$month_links[$cur_month] = e_BASE."news.php?month.".formatDate($cur_year, $cur_month);
