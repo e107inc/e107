@@ -72,6 +72,7 @@ $FOOTER = "
 
 $NEWSSTYLE = "
 <h3>
+{STICKY_ICON}
 {NEWSTITLE}
 </h3>
 <div class='bodytable' style='text-align:left'>

@@ -13,8 +13,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.26 $
-| $Date: 2005-02-11 02:29:33 $
+| $Revision: 1.27 $
+| $Date: 2005-02-11 03:44:01 $
 | $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
@@ -93,11 +93,15 @@ class news {
 		$preview = substr($preview,0,7);
 		if(!defined("IMAGE_nonew_small"))
 		{
-			define("IMAGE_nonew_small", (file_exists(THEME."generic/nonew_comments.png") ? "<img src='".THEME."generic/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/nonew_comments.png' alt=''  />"));
+			define("IMAGE_nonew_small", (file_exists(THEME."images/nonew_comments.png") ? "<img src='".THEME."images/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/nonew_comments.png' alt=''  />"));
 		}
 		if(!defined("IMAGE_new_small"))
 		{
-			define("IMAGE_new_small", (file_exists(THEME."generic/new_comments.png") ? "<img src='".THEME."generic/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/new_comments.png' alt=''  /> "));
+			define("IMAGE_new_small", (file_exists(THEME."images/new_comments.png") ? "<img src='".THEME."images/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/new_comments.png' alt=''  /> "));
+		}
+		if(!defined("IMAGE_sticky"))
+		{
+			define("IMAGE_sticky", (file_exists(THEME."images/note.png") ? "<img src='".THEME."images/note.png' alt=''  /> " : "<img src='".e_IMAGE."generic/note.png' alt=''  /> "));
 		}
 		if (!$NEWSLISTSTYLE) {
 			$NEWSLISTSTYLE = "
@@ -220,6 +224,17 @@ class news {
 
 		$search[14] = "/\{NEWSTHUMBNAIL\}(.*?)/si";
 		$replace[14] = ($news_thumb) ? "<img src='".e_IMAGE."newspost_images/".$news_thumb."' alt='' style='border:0px' />" : "";
+
+		$search[15] = "/\{STICKY_ICON\}(.*?)/si";
+		if($news['news_sticky'])
+		{
+			$replace[15] = IMAGE_sticky;
+		}
+		else
+		{
+			$replace[15] = '';
+		}
+			
 
 		if (function_exists("news_style")) {
 			$NEWSSTYLE = news_style($news);
