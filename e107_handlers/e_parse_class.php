@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-02-02 17:43:06 $
+|     $Revision: 1.14 $
+|     $Date: 2005-02-03 00:10:43 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -62,7 +62,6 @@ class e_parse {
 			/*
 			changes by jalist 30/01/2005:
 			description dirty fix for servers with magic_quotes_gpc == true
-			*** for some reason apostrophes submitted in forum posts break the string on preview, although it posts to db correctly ... working on it ***
 			*/
 			if (MAGIC_QUOTES_GPC) {
 				$search = array('&#092;&#092;&#092;&#092;', '&#092;&#039;', '&#092;&quot;');
@@ -76,9 +75,8 @@ class e_parse {
 	}
 	 
 	function post_toForm($text) {
-		if (MAGIC_QUOTES_GPC) {
-			return stripslashes($text);
-		}
+		// ensure apostrophes are properly converted, or else the form item could break
+		return str_replace("'", "&#039;", $text);
 		return $text;
 	}
 	 

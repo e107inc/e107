@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-02-02 17:42:09 $
+|     $Revision: 1.19 $
+|     $Date: 2005-02-03 00:10:41 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -41,7 +41,7 @@ $signup_name = array("real", "url", "icq", "aim", "msn", "dob", "loc", "sig", "a
 
 
 
-$aj = new textparse;
+
 if (isset($_POST['updateprefs'])) {
 	unset($_POST['updateprefs']);
 	foreach($_POST as $key => $value) {
@@ -51,11 +51,6 @@ if (isset($_POST['updateprefs'])) {
 			$pref[$key] = $value;
 		}
 	}
-
-
-//echo "<pre>"; print_r($pref); echo "</pre>"; exit;
-
-
 
 	if ($sql->db_Select("core", " e107_value", " e107_name='user_entended'")) {
 		$row = $sql->db_Fetch();
@@ -546,6 +541,9 @@ $text .= "</table></div>";
 
 /* text render options */
 
+
+//$pref['link_text'] = str_replace("'", "#", $pref['link_text']);
+
 $text .= "<div id='textpost' style='display:none; text-align:center'>
 	<table style='width:100%' class='fborder'>
 	<tr>
@@ -558,14 +556,14 @@ $text .= "<div id='textpost' style='display:none; text-align:center'>
 	<tr>
 	<td class='forumheader3' style='width:40%'>".PRFLAN_104.": <div class='smalltext'>".PRFLAN_105."</div></td>
 	<td class='forumheader3' style='width:60%'>
-	<input class='tbox' type='text' name='link_text' size='50' value='".$tp -> toForm($pref['link_text'])."' maxlength='200' />
+	<input class='tbox' type='text' name='link_text' size='50' value='".$tp -> post_toForm($pref['link_text'])."' maxlength='200' />
 	</td>
 	</tr>
 
 	<tr>
 	<td class='forumheader3' style='width:40%'>".PRFLAN_107.": <div class='smalltext'>".PRFLAN_108."</div></td>
 	<td class='forumheader3' style='width:60%'>
-	<input class='tbox' type='text' name='email_text' size='50' value='".$tp -> toForm($pref['email_text'])."' maxlength='200' />
+	<input class='tbox' type='text' name='email_text' size='50' value='".$tp -> post_toForm($pref['email_text'])."' maxlength='200' />
 	</td>
 	</tr>";
 	

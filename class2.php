@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.77 $
-|     $Date: 2005-02-02 16:09:46 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.78 $
+|     $Date: 2005-02-03 00:09:15 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -48,8 +48,6 @@ if(defined("COMPRESS_OUTPUT") && COMPRESS_OUTPUT === true) {
 	$OutputCompression = false;
 }
 $e107 = new e107($Paths, __FILE__, $OutputCompression);
-
-//echo '<pre>'.print_r($e107, true).'</pre>';
 
 $start_ob_level=ob_get_level();
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
