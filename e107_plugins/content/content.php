@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.6 $
-|		$Date: 2005-02-07 15:48:14 $
+|		$Revision: 1.7 $
+|		$Date: 2005-02-08 00:15:25 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -526,16 +526,22 @@ function show_content_recent(){
 
 					if(!is_object($sql)){ $sql = new db; }
 					// check userclasses for contents, and do not use those content_ids in the query
-					$query = " LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ";
-					$UnValidArticleIds = $aa -> checkUnValidContent($query);
-					$contenttotal = $sql -> db_Count($plugintable, "(*)", "WHERE ".$query." ".$UnValidArticleIds." ".$datequery." ");
+					//$query = " LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ";
+					//$UnValidArticleIds = $aa -> checkUnValidContent($query);
+					//$contenttotal = $sql -> db_Count($plugintable, "(*)", "WHERE ".$query." ".$UnValidArticleIds." ".$datequery." ");
+
+					$UnValidArticleIds2 = $aa -> checkMainCat($type_id);
+					$UnValidArticleIds2 = ($UnValidArticleIds2 == "" ? "" : substr($UnValidArticleIds2, 0, -3) );
+
+					$contenttotal = $sql -> db_Count($plugintable, "(*)", "WHERE content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' AND ".$UnValidArticleIds2." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ");
 
 					if($from > $contenttotal-1){
 						header("location:".e_SELF);
 						exit;
 					}
 
-					if($sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class", "content_refer !='sa' AND ".$query." ".$UnValidArticleIds." ".$datequery." ".$order." ".$nextprevquery)){
+					if($resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' AND ".$UnValidArticleIds2." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ".$order." ".$nextprevquery )){
+
 						$content_recent_table_string = "";
 						while($row = $sql -> db_Fetch()){
 						extract($row);
@@ -545,6 +551,21 @@ function show_content_recent(){
 					$content_recent_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_RECENT_TABLE_START);
 					$content_recent_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_RECENT_TABLE_END);
 					$text = $content_recent_table_start.$content_recent_table_string.$content_recent_table_end;
+
+
+//echo "content_refer !='sa' AND ".$query." ".$UnValidArticleIds."";
+//echo "contenttotal: ".$contenttotal."<br />";
+
+//new style
+//content_refer !='sa' AND LEFT(content_parent,1) = '2' AND content_id != '38' AND content_id != '50' AND content_id != '52' AND content_id != '53' AND content_id != '54' AND content_id != '61' AND content_id != '62' AND content_id != '65' AND content_id != '66' AND content_id != '67' AND content_id != '70' AND content_id != '71' AND content_id != '52' AND content_id != '50'
+//contenttotal: 45
+//Render time: 0.3950 second(s); 0.1408 of that for queries. DB queries: 63. 
+
+//old style
+//content_refer !='sa' AND LEFT(content_parent,1) = '2' AND content_id != '38' AND content_id != '50' AND content_id != '52' AND content_id != '53' AND content_id != '54' AND content_id != '61' AND content_id != '62' AND content_id != '65' AND content_id != '66' AND content_id != '67' AND content_id != '70' AND content_id != '71'
+//contenttotal: 45
+//Render time: 0.6956 second(s); 0.3513 of that for queries. DB queries: 236. 
+
 
 					if($content_pref["content_breadcrumb_{$type_id}"]){
 						$breadcrumb = $aa -> getBreadCrumb($type_id);
@@ -557,6 +578,7 @@ function show_content_recent(){
 								$text = $breadcrumbstring.$text;
 						}
 					}
+
 
 					$caption = CONTENT_LAN_23;
 					$ns -> tablerender($caption, $text);
@@ -742,12 +764,20 @@ function show_content_cat($mode=""){
 						}else{
 							$query = " LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' AND (content_parent REGEXP('.".$sub_action."')) AND NOT (content_parent REGEXP('.".$sub_action.".') ) ";
 						}
-						$UnValidArticleIds = $aa -> checkUnValidContent($query);
-						$contenttotal = $sql -> db_Count($plugintable, "(*)", "WHERE ".$query." ".$UnValidArticleIds." ");
+						//$UnValidArticleIds = $aa -> checkUnValidContent($query);
+						//$contenttotal = $sql -> db_Count($plugintable, "(*)", "WHERE ".$query." ".$UnValidArticleIds." ");
 						$order = $aa -> getOrder();
 
+						$UnValidArticleIds2 = $aa -> checkMainCat($type_id);
+						$UnValidArticleIds2 = ($UnValidArticleIds2 == "" ? "" : substr($UnValidArticleIds2, 0, -3) );
+
+						$contenttotal = $sql -> db_Count($plugintable, "(*)", "WHERE content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' AND ".$UnValidArticleIds2." AND ".$query." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ");
+
 						if(!is_object($sql)){ $sql = new db; }
-						if($sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class", " content_refer != 'sa' AND ".$query." ".$UnValidArticleIds." ".$datequery." ".$order." ".$nextprevquery)){
+						if($resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' AND ".$query." AND ".$UnValidArticleIds2." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ".$order." ".$nextprevquery )){
+
+						//if(!is_object($sql)){ $sql = new db; }
+						//if($sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class", " content_refer != 'sa' AND ".$query." ".$UnValidArticleIds." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ".$order." ".$nextprevquery)){
 							$content_recent_table_string = "";
 							while($row = $sql -> db_Fetch()){
 							extract($row);
@@ -877,16 +907,21 @@ function show_content_author_all(){
 					ob_start();
 					if(!is_object($sql)){ $sql = new db; }
 					// check userclasses for contents, and do not use those content_ids in the query
-					$query = " LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ";
-					$UnValidArticleIds = $aa -> checkUnValidContent($query);
+					//$query = " LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ";
+					//$UnValidArticleIds = $aa -> checkUnValidContent($query);
 
-					if(!$result = $sql -> db_Select($plugintable, "DISTINCT(content_author)", " content_refer != 'sa' AND ".$query." ".$UnValidArticleIds." ".$datequery." ORDER BY content_author ")){
+					$UnValidArticleIds2 = $aa -> checkMainCat($type_id);
+					$UnValidArticleIds2 = ($UnValidArticleIds2 == "" ? "" : substr($UnValidArticleIds2, 0, -3) );
+					$order = $aa -> getOrder();
+
+					if(!is_object($sql)){ $sql = new db; }
+					if(!$result = $sql -> db_Select($plugintable, "DISTINCT(content_author)", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' AND ".$UnValidArticleIds2." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ORDER BY content_author" )){
 						$text = "<div style='text-align:center;'>".CONTENT_LAN_52."</div>";
 					}else{
 						while($row = $sql -> db_Fetch()){
 						extract($row);
 							$authordetails[] = $aa -> getAuthor($content_author);
-						}					
+						}
 
 						function cmp($a, $b){ return strcasecmp ($a[1], $b[1]); }
 						usort($authordetails, "cmp");
@@ -907,7 +942,7 @@ function show_content_author_all(){
 						for($i=0;$i<count($authordetails);$i++){
 							if(!is_object($sql2)){ $sql2 = new db; }
 							$gen = new convert;
-							$totalcontent = $sql2 -> db_Select($plugintable, "content_id, content_heading, content_datestamp", "content_refer != 'sa' AND ".$query." AND content_author = '".$authordetails[$i][3]."' ".$UnValidArticleIds." ".$datequery." ORDER BY content_datestamp DESC");
+							$totalcontent = $sql2 -> db_Select($plugintable, "content_id, content_heading, content_datestamp", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' AND ".$UnValidArticleIds2." ".$datequery." AND content_class IN (".USERCLASS_LIST.") AND content_author = '".$authordetails[$i][3]."' ORDER BY content_datestamp DESC");
 							list($content_id, $content_heading, $content_datestamp) = $sql2 -> db_Fetch();
 
 							$name = ($authordetails[$i][1] == "" ? "... ".CONTENT_LAN_29." ..." : $authordetails[$i][1]);
@@ -958,13 +993,12 @@ function show_content_author(){
 				}else{
 					ob_start();
 
-					$sqla = "";
 					if(!is_object($sqla)){ $sqla = new db; }
 
-					$query = " LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ";
-					$UnValidArticleIds = $aa -> checkUnValidContent($query);
-
-					if(!$author = $sqla -> db_Select($plugintable, "content_author",  "".$query." ".$UnValidArticleIds." ".$datequery." AND content_id = '".$sub_action."' ")){
+					$UnValidArticleIds2 = $aa -> checkMainCat($type_id);
+					$UnValidArticleIds2 = ($UnValidArticleIds2 == "" ? "" : substr($UnValidArticleIds2, 0, -3) );
+					if(!is_object($sql)){ $sql = new db; }
+					if(!$author = $sqla -> db_Select($plugintable, "content_author", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' AND ".$UnValidArticleIds2." ".$datequery." AND content_id = '".$sub_action."' AND content_class IN (".USERCLASS_LIST.") ")){
 						header("location:".e_SELF."?".$type.".".$type_id.".author");
 						exit;
 					}else{
@@ -989,14 +1023,17 @@ function show_content_author(){
 								}
 							}
 						}
-						if(!is_object($sql)){ $sql = new db; }
-						// check userclasses for contents, and do not use those content_ids in the query
-						$query = " LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' AND (".$query.") ";
-						$UnValidArticleIds = $aa -> checkUnValidContent($query);
-						$contenttotal = $sql -> db_Count($plugintable, "(*)", "WHERE ".$query." ".$UnValidArticleIds." ".$datequery." ");
-						$order = $aa -> getOrder();
 
-						if($result = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class, content_pref as contentprefvalue", "content_refer != 'sa' AND ".$query." ".$UnValidArticleIds." ".$datequery." ".$order." ".$nextprevquery)){
+						$UnValidArticleIds2 = $aa -> checkMainCat($type_id);
+						$UnValidArticleIds2 = ($UnValidArticleIds2 == "" ? "" : substr($UnValidArticleIds2, 0, -3) );
+						$order = $aa -> getOrder();
+						$contenttotal = $sql -> db_Count($plugintable, "(*)", "WHERE content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' AND (".$query.") AND ".$UnValidArticleIds2." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ");
+
+						if(!is_object($sql)){ $sql = new db; }
+						//echo "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' AND (".$query.") AND ".$UnValidArticleIds2." ".$datequery." AND content_class IN (".USERCLASS_LIST.")";
+
+						if($result = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class, content_pref as contentprefvalue", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' AND (".$query.") AND ".$UnValidArticleIds2." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ".$order." ".$nextprevquery )){
+							
 							$content_recent_table_string = "";
 							while($row = $sql -> db_Fetch()){
 							extract($row);
@@ -1300,7 +1337,10 @@ function parse_content_recent_table($row){
 					$CONTENT_RECENT_TABLE_AUTHORDETAILS .= " <a href='".e_SELF."?".$type.".".$type_id.".author.".$content_id."' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
 				}
 
-				$CONTENT_RECENT_TABLE_EPICONS = ((($content_pref["content_list_peicon_{$type_id}"] && $content_pe) || $content_pref["content_list_peicon_all_{$type_id}"]) ? $ep -> render_emailprint($plugintable, $content_id) : "");
+				if(($content_pref["content_list_peicon_{$type_id}"] && $content_pe) || $content_pref["content_list_peicon_all_{$type_id}"]){
+					$CONTENT_RECENT_TABLE_EPICONS = $tp -> parseTemplate("{EMAIL_ITEM=".CONTENT_LAN_69." ".CONTENT_LAN_71."^plugin:content.$content_id}");
+					$CONTENT_RECENT_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_71."^plugin:content.$content_id}");
+				}
 
 				if($content_pref["content_log_{$type_id}"] && $content_pref["content_list_refer_{$type_id}"]){
 					$refercounttmp = explode("^", $content_refer);
@@ -1374,8 +1414,10 @@ function parse_content_cat_table($row){
 					$CONTENT_CAT_TABLE_AUTHORDETAILS = $authordetails[1]." ".CONTENT_ICON_USER." <a href='".e_SELF."?".$type.".".$type_id.".author' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
 				}
 
-				$CONTENT_CAT_TABLE_EPICONS = ($row[12] ? $ep -> render_emailprint($plugintable, $row[0]) : "");
-
+				if($row[12]){
+					$CONTENT_CAT_TABLE_EPICONS = $tp -> parseTemplate("{EMAIL_ITEM=".CONTENT_LAN_69." ".CONTENT_LAN_72."^plugin:content.$row[0]}");
+					$CONTENT_CAT_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_72."^plugin:content.$row[0]}");
+				}
 				$CONTENT_CAT_TABLE_RATING = "";
 				if($row[11]){
 					if($ratearray = $rater -> getrating("content_cat", $row[0])){
@@ -1462,7 +1504,10 @@ function parse_content_cat_list_table($row){
 						$CONTENT_CAT_LIST_TABLE_RATING .= " - ".LAN_41;
 					}
 				}
-				$CONTENT_CAT_LIST_TABLE_EPICONS = ($content_pe ? $ep -> render_emailprint($plugintable, $sub_action) : "");
+				if($content_pe){
+					$CONTENT_CAT_LIST_TABLE_EPICONS = $tp -> parseTemplate("{EMAIL_ITEM=".CONTENT_LAN_69." ".CONTENT_LAN_72."^plugin:content.$sub_action}");
+					$CONTENT_CAT_LIST_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_72."^plugin:content.$sub_action}");
+				}
 				return(preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CAT_LIST_TABLE));
 }
 
@@ -1597,7 +1642,10 @@ function parse_content_content_table($row){
 					}
 				}
 
-				$CONTENT_CONTENT_TABLE_EPICONS = (($content_pref["content_content_peicon_{$type_id}"] && $content_pe) || $content_pref["content_content_peicon_all_{$type_id}"] ? $ep -> render_emailprint($plugintable, $content_id) : "");
+				if(($content_pref["content_content_peicon_{$type_id}"] && $content_pe) || $content_pref["content_content_peicon_all_{$type_id}"]){
+					$CONTENT_CONTENT_TABLE_EPICONS = $tp -> parseTemplate("{EMAIL_ITEM=".CONTENT_LAN_69." ".CONTENT_LAN_71."^plugin:content.$content_id}");
+					$CONTENT_CONTENT_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_71."^plugin:content.$content_id}");
+				}
 
 				$content_text = ($content_text ? $content_text : "");
 				if(preg_match_all("/\[newpage=(.*?)]/si", $content_text, $matches)) {

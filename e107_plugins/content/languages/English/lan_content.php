@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-02-07 12:21:49 $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-08 00:16:01 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -342,7 +342,10 @@ define("CONTENT_LAN_65", "submit content");
 define("CONTENT_LAN_66", "click here to submit content, you can choose the category on the submit page.");
 define("CONTENT_LAN_67", "personal content manager");
 define("CONTENT_LAN_68", "click here to manage your personal content.");
-
+define("CONTENT_LAN_69", "email the");
+define("CONTENT_LAN_70", "print the");
+define("CONTENT_LAN_71", "content item");
+define("CONTENT_LAN_72", "category item");
 
 define("CONTENT_ADMIN_SUBMIT_LAN_0", "no content categories allow user submission at this point");
 define("CONTENT_ADMIN_SUBMIT_LAN_1", "content submit types");

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.4 $
-|		$Date: 2005-02-07 12:21:48 $
+|		$Revision: 1.5 $
+|		$Date: 2005-02-08 00:15:59 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -284,26 +284,159 @@ class content{
 		function checkUnValidContent($query){
 				global $plugintable, $datequery;
 				$UnValidArticleIds = "";
+				$checkid2 = FALSE;
 
 				if(!is_object($sqlcheckunvalidcontent)){ $sqlcheckunvalidcontent = new db; }
-				if($sqlcheckunvalidcontent -> db_Select($plugintable, "content_id, content_parent, content_class", $query." ".$datequery)){
+				if($sqlcheckunvalidcontent -> db_Select($plugintable, "content_id, content_parent, content_class", $query." ".$datequery." ")){
+					$count = 0;
 					while(list($content_id, $content_parent, $content_class) = $sqlcheckunvalidcontent -> db_Fetch()){
 						if(!check_class($content_class)){
 							$UnValidArticleIds .= " content_id != '".$content_id."' AND";
 						}else{
+							/*
 							if($content_parent != "0"){
 								$checkparent = $this -> checkParentValidity($content_parent);
 								if($checkparent == FALSE){
 									$UnValidArticleIds .= " content_id != '".$content_id."' AND";
 								}
 							}
+							*/
+							if($content_parent != "0"){
+								$parentidarray[$count] = $content_parent;
+							}
 						}
+						$count = $count + 1;
 					}
+					
+					$result = array_unique($parentidarray);
+					for($i=0;$i<count($result);$i++){
+						$checkparent = $this -> checkParentValidity2($result[$i]);
+						$UnValidArticleIds .= $checkparent;
+					}
+
 					$UnValidArticleIds = ($UnValidArticleIds == "" ? "" : " AND ".substr($UnValidArticleIds, 0, -3) );
 				}
 				return $UnValidArticleIds;
 		}
 
+		function checkParentValidity2($parent){
+				global $plugintable, $datequery, $type_id;
+
+				if(strpos($parent, ".")){
+					$tmp = explode(".", $parent);
+					for($i=1;$i<count($tmp);$i++){
+					}
+				}
+				if(!is_object($sqlcheckparentvalidity)){ $sqlcheckparentvalidity = new db; }
+				if($sqlcheckparentvalidity -> db_Select($plugintable, "content_id, content_class", "content_id = '".$parent."' ".$datequery." " )){
+					while(list($content_id, $content_class) = $sqlcheckparentvalidity -> db_Fetch()){
+						if(!check_class($content_class)){
+							$UnValidArticleIds .= " content_id != '".$content_id."' AND";
+							$UnValidArticleIds .= " content_parent != '".$type_id.".".$type_id.".".$content_id."' AND";
+							
+						}
+					}
+				}
+				if($sqlcheckparentvalidity -> db_Select($plugintable, "content_id, content_class", "content_parent = '".$parent."' ".$datequery." " )){
+					while(list($content_id, $content_class) = $sqlcheckparentvalidity -> db_Fetch()){
+						if(!check_class($content_class)){
+							$UnValidArticleIds .= " content_id != '".$content_id."' AND";
+							$UnValidArticleIds .= " content_parent != '".$type_id.".".$type_id.".".$content_id."' AND";
+							
+						}
+					}
+				}
+				return $UnValidArticleIds;
+		
+		}
+
+		function checkMainCat($type_id){
+				global $plugintable, $datequery;
+
+				if(!is_object($sqlcheckparentvalidity)){ $sqlcheckparentvalidity = new db; }
+				if($sqlcheckparentvalidity -> db_Select($plugintable, "content_id, content_parent, content_class", "content_id = '".$type_id."' ".$datequery." " )){
+					while(list($content_id, $content_parent, $content_class) = $sqlcheckparentvalidity -> db_Fetch()){
+						if(!check_class($content_class)){
+							$UnValidArticleIds = " content_parent != '".$type_id.".".$type_id."' AND";
+						}
+					}
+				}
+				$UnValidArticleIds .= $this -> checkSubCat("0.".$type_id);
+				return $UnValidArticleIds;
+		}
+
+		function checkSubCat($id){
+				global $plugintable, $datequery, $type_id;
+
+				if(!is_object($sqlcheckparentvalidity)){ $sqlcheckparentvalidity = new db; }
+				if($sqlcheckparentvalidity -> db_Select($plugintable, "content_id, content_parent, content_class", "content_parent = '".$id."' ".$datequery." " )){
+					while(list($content_id, $content_parent, $content_class) = $sqlcheckparentvalidity -> db_Fetch()){
+						if(!check_class($content_class)){
+							$UnValidArticleIds .= " content_parent != '".$type_id.".".$type_id.".".$content_id."' AND";
+						}
+						$UnValidArticleIds .= $this -> checkSubCat($id.".".$content_id);
+					}
+				}
+				return $UnValidArticleIds;
+				
+		}
+
+		function checkItem($query){
+				global $plugintable, $datequery, $type_id;
+
+				if(!is_object($sqlcheckparentvalidity)){ $sqlcheckparentvalidity = new db; }
+				if($sqlcheckparentvalidity -> db_Select($plugintable, "content_id, content_parent, content_class", " ".$query." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ORDER BY content_datestamp" )){
+					while(list($content_id, $content_parent, $content_class) = $sqlcheckparentvalidity -> db_Fetch()){
+						if(!check_class($content_class)){
+							$UnValidArticleIds .= " content_parent != '".$type_id.".".$type_id.".".$content_id."' AND";
+						}
+						$UnValidArticleIds .= $this -> checkSubCat($id.".".$content_id);
+					}
+				}
+				return $UnValidArticleIds;
+				
+		}
+		
+		function checkValidCat($id){
+				global $plugintable, $datequery, $type_id;
+				//$id holds the main parents' content_parent value (0 for main cat, 0.x for subcat, 0.x.y for subsubcat, ...)
+//articles = 2
+//interviews = 25
+//1) check main cat
+//2) check all subcats
+//3) check all subsubcats
+
+				if($id == "0"){
+					$checkid = $type_id;
+				}elseif(strpos($id, ".")){
+					$tmp = explode(".", $id);
+					for($i=1;$i<count($tmp);$i++){
+					}
+				}else{
+				}
+				if(!is_object($sqlcheckparentvalidity)){ $sqlcheckparentvalidity = new db; }
+				if($sqlcheckparentvalidity -> db_Select($plugintable, "content_id, content_parent, content_class", "content_id = '".$checkid."' ".$datequery." " )){
+					while(list($content_id, $content_parent, $content_class) = $sqlcheckparentvalidity -> db_Fetch()){
+						if(!check_class($content_class)){
+							//$UnValidArticleIds .= " content_id != '".$content_id."' AND";
+							$UnValidArticleIds .= " content_parent != '".$type_id.".".$type_id.".".$content_id."' AND";
+						}
+					}
+				}
+				if($sqlcheckparentvalidity -> db_Select($plugintable, "content_id, content_class", "content_parent = '".$parent."' ".$datequery." " )){
+					while(list($content_id, $content_class) = $sqlcheckparentvalidity -> db_Fetch()){
+						if(!check_class($content_class)){
+							$UnValidArticleIds .= " content_id != '".$content_id."' AND";
+							$UnValidArticleIds .= " content_parent != '".$type_id.".".$type_id.".".$content_id."' AND";
+							
+						}
+					}
+				}
+				return $UnValidArticleIds;
+		
+		}
+		
+		/*
 		function checkParentValidity($parent){
 				global $plugintable, $datequery;
 
@@ -330,6 +463,7 @@ class content{
 				}
 				return TRUE;
 		}
+		*/
 
 		function getAuthor($content_author) {
 				global $plugintable, $datequery;
@@ -552,9 +686,10 @@ class content{
 					$tmp = array_reverse( explode(".", $id) );
 					$id = $tmp[0];
 				}
+				//".$datequery."
 				if($id != ""){					
 					if(!is_object($sqlgetbreadcrumb)){ $sqlgetbreadcrumb = new db; }
-					if(!$sqlgetbreadcrumb -> db_Select($plugintable, "content_id, content_heading, content_parent", "content_id='".$id."' ".$datequery." ")){
+					if(!$sqlgetbreadcrumb -> db_Select($plugintable, "content_id, content_heading, content_parent", "content_id='".$id."'  ")){
 						$parent = FALSE;
 					}else{
 						while(list($parent_id, $parent_heading, $parent_parent) = $sqlgetbreadcrumb -> db_Fetch()){
@@ -854,9 +989,13 @@ class content{
 				$data .= "if(".chr(36)."content_pref[\"content_menu_recent_{$parentid}\"]){\n";
 				$data .= "   ".chr(36)."text .= ".chr(34)."<br />".chr(34).";\n\n";
 				$data .= "   if(!is_object(".chr(36)."sql)){ ".chr(36)."sql = new db; }\n";
-				$data .= "   ".chr(36)."query = \" LEFT(content_parent,\".(strlen($parentid)).\") = '$parentid' \";\n";
-				$data .= "   ".chr(36)."UnValidArticleIds = ".chr(36)."aa -> checkUnValidContent(".chr(36)."query);\n";
-				$data .= "   if(".chr(36)."sql -> db_Select(".chr(36)."plugintable, \"content_id, content_heading, content_subheading, content_author, content_parent, content_datestamp, content_class\", \"content_refer != 'sa' AND \".".chr(36)."query.\" \".".chr(36)."UnValidArticleIds.\" AND (content_datestamp=0 || content_datestamp < \".time().\") AND (content_enddate=0 || content_enddate>\".time().\") ORDER BY content_datestamp DESC LIMIT 0,5\")){\n\n";
+
+				$data .= "   ".chr(36)."UnValidArticleIds2 = ".chr(36)."aa -> checkMainCat($parentid);\n";
+				$data .= "   ".chr(36)."UnValidArticleIds2 = (".chr(36)."UnValidArticleIds2 == \"\" ? \"\" : substr(".chr(36)."UnValidArticleIds2, 0, -3) );\n";
+				$data .= "   ".chr(36)."order = ".chr(36)."aa -> getOrder();\n";
+
+				$data .= "   if(".chr(36)."sql -> db_Select(".chr(36)."plugintable, \"content_id, content_heading, content_subheading, content_author, content_parent, content_datestamp, content_class\", \"content_refer !='sa' AND LEFT(content_parent,\".(strlen($parentid)).\") = '\".".chr(36)."type_id.\"' AND \".".chr(36)."UnValidArticleIds2.\" AND (content_datestamp=0 || content_datestamp < \".time().\") AND (content_enddate=0 || content_enddate>\".time().\") AND content_class IN (".USERCLASS_LIST.") ORDER BY content_datestamp DESC LIMIT 0,5 \")){\n\n";
+		
 				$data .= "      ".chr(36)."text .= (".chr(36)."content_pref[\"content_menu_recent_caption_{$parentid}\"] != \"\" ? ".chr(36)."content_pref[\"content_menu_recent_caption_{$parentid}\"] : \"recent items: ".$row['content_heading']."\").".chr(34)."<br />".chr(34).";\n";
 				$data .= "      while(".chr(36)."row = ".chr(36)."sql -> db_Fetch()){\n";
 				$data .= "      extract(".chr(36)."row);\n";
