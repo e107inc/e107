@@ -11,14 +11,19 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-03-15 21:07:17 $
-|     $Author: stevedunstan $
+|     $Revision: 1.17 $
+|     $Date: 2005-04-06 19:03:11 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 @include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_usersettings.php");
 @include_once(e_LANGUAGEDIR."English/lan_usersettings.php");
+include_once(e_HANDLER."user_extended_class.php");
+$usere = new e107_user_extended;
+require_once(e_HANDLER."calendar/calendar_class.php");
+$cal = new DHTML_Calendar(true);
+
 $use_imagecode = ($pref['signcode'] && extension_loaded("gd"));
 	
 if ($pref['membersonly_enabled']) {
@@ -141,40 +146,36 @@ if (isset($_POST['register'])) {
 	 
 	// ========== Verify Custom Signup options if selected ========================
 	 
-	for ($i = 0; $i < count($signup_title); $i++) {
+	for ($i = 0; $i < count($signup_title); $i++)
+	{
 		$postvalue = $signup_name[$i];
 		if ($signupval[$i] == 2 && $_POST[$postvalue] == "") {
 			message_handler("P_ALERT", LAN_SIGNUP_6.$signup_title[$i].LAN_SIGNUP_7);
 			$error = TRUE;
 		}
-	};
+	}
 	 
 	if ($sql->db_Select("user", "user_email", "user_email='".$_POST['email']."' ")) {
 		message_handler("P_ALERT", LAN_408);
 		$error = TRUE;
 	}
 	 
-	if ($sql->db_Select("core", " e107_value", " e107_name='user_entended'")) {
-		$row = $sql->db_Fetch();
-		$user_entended = unserialize($row[0]);
-		$c = 0;
-		$user_pref = unserialize($user_prefs);
-		while (list($key, $u_entended) = each($user_entended)) {
-			if ($u_entended) {
-				if ($pref['signup_ext'.$key] == 2 && $_POST["ue_{$key}"] == "") {
-					$ut = explode("|", $u_entended);
-					$u_name = ($ut[0] != "") ? trim($ut[0]) :
-					 trim($u_entended);
-					$error_ext = LAN_SIGNUP_6.$u_name.LAN_SIGNUP_7;
-					message_handler("P_ALERT", $error_ext);
-					$error = TRUE;
-				}
-				 
-			}
+	$extList = $usere->user_extended_get_fieldList();
+	foreach($extList as $ext)
+	{
+		$ueRef["user_".$ext['user_extended_struct_name']] = $ext['user_extended_struct_id'];
+	}
+	foreach($_POST['ue'] as $key => $val)
+	{
+		if($extList[$ueRef[$key]]['user_extended_struct_signup'] == 2 && trim($val) == "")
+		{
+			echo "error on [$key] <br />";
+			$error_ext = LAN_SIGNUP_6."[".$extList[$ueRef[$key]]['user_extended_struct_text']."]".LAN_SIGNUP_7;
+			message_handler("P_ALERT", $error_ext);
+			$error = TRUE;
 		}
 	}
-	 
-	 
+	
 	// ========== End of verification.. ====================================================
 	 
 	if (!preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]{1,50}@([-0-9A-Z]+\.){1,50}([0-9A-Z]){2,4}$/i', $_POST['email'])) {
@@ -187,7 +188,8 @@ if (isset($_POST['register'])) {
 	else if (!preg_match('#^[a-z0-9]+://#si', $_POST['website'])) {
 		$_POST['website'] = "";
 	}
-	if (!$error) {
+	if (!$error)
+	{
 		$fp = new floodprotect;
 		if ($fp->flood("user", "user_join") == FALSE) {
 			header("location:".e_BASE."index.php");
@@ -203,13 +205,21 @@ if (isset($_POST['register'])) {
 			exit;
 		}
 		 
-		 
 		$username = strip_tags($_POST['name']);
 		$time = time();
 		$ip = getip();
 		$birthday = $_POST['birth_year']."/".$_POST['birth_month']."/".$_POST['birth_day'];
 		 
-		if ($pref['user_reg_veri']) {
+		$ue_fields = "";
+		foreach($_POST['ue'] as $key => $val)
+		{
+			$val = $tp->toDB($val);
+			$ue_fields .= ($ue_fields) ? ", " : "";
+			$ue_fields .= $key."='".$val."'";
+		}
+
+		if ($pref['user_reg_veri'])
+		{
 			$u_key = md5(uniqid(rand(), 1));
 			$nid = $sql->db_Insert("user", "0, \"".$username."\", '', \"".md5($_POST['password1'])."\", '$u_key', \"".$_POST['email']."\", \"".$_POST['website']."\", \"".$_POST['icq']."\", \"".$_POST['aim']."\", \"".$_POST['msn']."\", \"".$_POST['location']."\", \"".$birthday."\", \"".$_POST['signature']."\", \"".$_POST['image']."\", \"".$_POST['timezone']."\", \"".$_POST['hideemail']."\", \"".$time."\", '0', \"".$time."\", '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '', '0', \"".$_POST['realname']."\", '', '', '', '' ");
 			 
@@ -228,16 +238,13 @@ if (isset($_POST['register'])) {
 			}
 			 
 			// ========= save extended fields as serialized data. =====
-			if ($sql->db_Select("core", " e107_value", " e107_name='user_entended'")) {
-				$row = $sql->db_Fetch();
-				$user_entended = unserialize($row[0]);
-				while (list($key, $u_entended) = each($user_entended)) {
-					$val = $tp->toDB($_POST["ue_{$key}"]);
-					$user_pref["ue_{$key}"] = $val;
-				}
-				$tmp = addslashes(serialize($user_pref));
-				$sql->db_Update("user", "user_prefs='$tmp' WHERE user_id='".$nid."' ");
+
+			if($ue_fields)
+			{
+				$sql->db_Select_gen("INSERT INTO #user_extended (user_extended_id) values ('{$nid}')");
+				$sql->db_Update("user_extended", $ue_fields." WHERE user_extended_id = '{$nid}'");
 			}
+
 			// ========== Send Email =====.                                                       // ==========================================================
 			define("RETURNADDRESS", (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$nid.".".$u_key : SITEURL."/signup.php?activate.".$nid.".".$u_key));
 			$pass_show = ($pref['user_reg_secureveri'])? "*******" : $_POST['password1'];
@@ -245,7 +252,8 @@ if (isset($_POST['register'])) {
 			$message .= RETURNADDRESS.LAN_407." ".SITENAME."\n".SITEURL;
 			 
 			require_once(e_HANDLER."mail.php");
-			if (file_exists(THEME."emails.php")) {
+			if (file_exists(THEME."emails.php"))
+			{
 				require_once(THEME."emails.php");
 				$message = ($SIGNUPEMAIL)? $SIGNUPEMAIL:
 				$message;
@@ -260,9 +268,12 @@ if (isset($_POST['register'])) {
 			$ns->tablerender("<div style='text-align:center'>".LAN_406."</div>", $text);
 			require_once(FOOTERF);
 			exit;
-		} else {
+		}
+		else
+		{
 			require_once(HEADERF);
 			$nid = $sql->db_Insert("user", "0, '".$username."', '', '".md5($_POST['password1'])."', '$u_key', '".$_POST['email']."', '".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$birthday."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '' ");
+
 			// ==== Update Userclass =======
 			if ($_POST['usrclass']) {
 				unset($insert_class);
@@ -273,17 +284,13 @@ if (isset($_POST['register'])) {
 				$sql->db_Update("user", "user_class='$insert_class' WHERE user_id='".$nid."' ");
 			}
 			// ======== save extended fields as serialized data.
-			 
-			if ($sql->db_Select("core", " e107_value", " e107_name='user_entended'")) {
-				$row = $sql->db_Fetch();
-				$user_entended = unserialize($row[0]);
-				while (list($key, $u_entended) = each($user_entended)) {
-					$val = $tp->toDB($_POST["ue_{$key}"]);
-					$user_pref["ue_{$key}"] = $val;
-				}
-				$tmp = addslashes(serialize($user_pref));
-				$sql->db_Update("user", "user_prefs='$tmp' WHERE user_id='".$nid."' ");
+			
+			if($ue_fields)
+			{
+				$sql->db_Select_gen("INSERT INTO #user_extended (user_extended_id) values ('{$nid}')");
+				$sql->db_Update("user_extended", $ue_fields." WHERE user_extended_id = '{$nid}'");
 			}
+ 
 			// ==========================================================
 			 
 			$edata_su = array("username" => $username, "email" => $_POST['email'], "website" => $_POST['website'], "icq" => $_POST['icq'], "aim" => $_POST['aim'], "msn" => $_POST['msn'], "location" => $_POST['location'], "birthday" => $birthday, "signature" => $_POST['signature'], "image" => $_POST['image'], "timezone" => $_POST['timezone'], "hideemail" => $_POST['hideemail'], "ip" => $ip, "realname" => $_POST['realname']);
@@ -500,24 +507,21 @@ if ($signupval[6]) {
 }
 	
 	
-	
-if ($sql->db_Select("core", " e107_value", " e107_name='user_entended'")) {
-	$row = $sql->db_Fetch();
-	$user_entended = unserialize($row[0]);
-	$c = 0;
-	$user_pref = unserialize($user_prefs);
-	require_once(e_HANDLER."user_extended.php");
-	while (list($key, $u_entended) = each($user_entended)) {
-		if ($u_entended) {
-			$signup_ext = "signup_ext".$key;
-			if ($pref[$signup_ext]) {
-				$text .= user_extended_edit($key, $u_entended, "forumheader3", "left");
-				$c++;
-			}
-		}
+$extList = $usere->user_extended_get_fieldList();
+
+foreach($extList as $ext)
+{
+	if($ext['user_extended_struct_signup'] > 0)
+	{
+		$text .= "
+		<tr>
+			<td style='width:40%' class='forumheader3'>".$ext['user_extended_struct_text']." ".req($ext['user_extended_struct_signup'])."</td>
+			<td style='width:60%' class='forumheader3'>".$usere->user_extended_edit($ext, $_POST['ue']['user_'.$ext['user_extended_struct_name']])."
+		</tr>
+		";
 	}
 }
-	
+		
 if ($signupval[7]) {
 	require_once(e_HANDLER."ren_help.php");
 	$text .= "<tr>
@@ -527,8 +531,6 @@ if ($signupval[7]) {
 		<input class='helpbox' type='text' name='helpb' size='90' />
 		".ren_help("addtext");
 }
-	
-	
 	
 if ($signupval[8]) {
 	$text .= "
@@ -644,23 +646,23 @@ function req($field) {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 	
 function headerjs() {
-	$script_txt = "<script type=\"text/javascript\">
-		function addtext3(sc){
-		document.getElementById('signupform').image.value = sc;
-		}
-		 
-		function addsig(sc){
-		document.getElementById('signupform').signature.value += sc;
-		 
-		}
-		function help(help){
-		document.getElementById('signupform').helpb.value = help;
-		 
-		 
-		}
-		</script>\n";
-	return $script_txt;
+	$script_txt = "
+	<script type=\"text/javascript\">
+	function addtext3(sc){
+	document.getElementById('signupform').image.value = sc;
+	}
+	 
+	function addsig(sc){
+	document.getElementById('signupform').signature.value += sc;
+	}
+	function help(help){
+	document.getElementById('signupform').helpb.value = help;
+	}
+	</script>\n";
+
+	global $cal;
+	$script_text .= $cal->load_files();
+	return $script_text;
 }
-	
 	
 ?>
