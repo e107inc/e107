@@ -22,7 +22,7 @@ if($NEWSHEADER){
 }
 
 if(Empty($pref['newsposts']) ? define("ITEMVIEW", 15) : define("ITEMVIEW", $pref['newsposts']));
-if(file_exists("install.php")){ echo "<div class='installe' style='text-align:center'><b>*** ".LAN_00."</div><br /><br />"; }
+if(file_exists("install.php") && ADMIN){ echo "<div class='installe' style='text-align:center'><b>*** ".LAN_00."</div><br /><br />"; }
 
 if(!is_object($aj)){ $aj = new textparse; }
 
