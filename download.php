@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-03-24 23:14:18 $
+|     $Revision: 1.18 $
+|     $Date: 2005-03-26 09:14:40 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -695,7 +695,7 @@ function parse_download_list_table($row) {
 	$DOWNLOAD_LIST_NAME = "<a href='".e_SELF."?view.".$download_id."'>".$download_name."</a>";
 	$DOWNLOAD_LIST_AUTHOR = $download_author;
 	$DOWNLOAD_LIST_REQUESTED = $download_requested;
-	$DOWNLOAD_LIST_ICON = "<img src='".e_IMAGE."generic/download.png' alt='' style='border:0' />";
+	$DOWNLOAD_LIST_ICON = "<img src='".e_IMAGE."generic/download.png' alt='' style='border:0' /></a>";
 
 	return(preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_LIST_TABLE));
 }
