@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-27 19:51:38 $
-|     $Author: streaky $
+|     $Revision: 1.7 $
+|     $Date: 2005-01-28 13:23:06 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -355,6 +355,9 @@ if ($action == "view") {
 			if (!$pref['nested_comments']) {
 				$ns->tablerender(LAN_5, $text);
 			}
+				if(ADMIN == TRUE && $comment_total)
+				{
+					echo "<a href='".e_BASE.e_ADMIN."modcomment.php?download.$dl_id'>".LAN_314."</a>";
 		}
 		$cobj->form_comment("comment", "download", $id, $subject, $content_type);
 	}
