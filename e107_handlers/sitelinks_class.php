@@ -144,7 +144,7 @@ function sitelinks() {
 			}
 		}
 		$data = ob_get_contents();
-		ob_clean();
+		ob_end_flush();
 		$e107cache->set('sitelinks', $data);
 	}
 	echo $data;

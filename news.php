@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2004-12-03 22:33:13 $
-|     $Author: e107coders $
+|     $Revision: 1.15 $
+|     $Date: 2004-12-10 03:15:30 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -357,6 +357,7 @@ function setNewsCache($cacheString) {
 		$cache = ob_get_contents();
 		$e107cache->set($cacheString, $cache);
 	}
+	ob_end_flush();
 }
 
 function checkNewsCache($cacheString, $np = FALSE, $nfp = FALSE) {
