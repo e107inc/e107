@@ -38,9 +38,9 @@ function forum_stage4() {
 		changes by jalist 26/01/2005:
 		altered structure of forum_t table
 		*/
-		 
 		$sql->db_Select_gen("SELECT thread_parent AS id, COUNT(*) AS amount FROM #forum_t WHERE thread_parent!=0 GROUP BY thread_parent");
 		$threadArray = $sql->db_getList('ALL',FALSE,0);
+		echo "Updating ".count($threadArray). " threads.<br />";
 		foreach($threadArray as $threads) {
 			extract($threads);
 			$sql->db_Update("forum_t", "thread_total_replies=$amount WHERE thread_id=$id");

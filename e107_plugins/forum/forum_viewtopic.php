@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-27 19:52:49 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-29 14:55:13 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -157,12 +157,11 @@ if ($action == "report") {
 $pm_installed = ($pref['pm_title'] ? TRUE : FALSE);
 	
 $replies = $forum->thread_count($thread_id)-1;
-if ($from == 'last') {
+if ($from === 'last') {
 	$pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
 	$pages = ceil($replies/$pref['forum_postspage']);
 	$from = ($pages-1) * $pref['forum_postspage'];
 }
-	
 $gen = new convert;
 $thread_info = $forum->thread_get($thread_id, $from, $pref['forum_postspage']);
 $forum_info = $forum->forum_get($thread_info['head']['thread_forum_id']);
