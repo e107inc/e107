@@ -127,4 +127,5 @@ define("USRLAN_118", "Test Email");
 define("USRLAN_119", "Update Extended Field");
 
 define("USRLAN_120", "Set Classes");
+define("USRLAN_121", "Mailing");  
 ?>

@@ -5,11 +5,14 @@
   - pulldown menu with a list of files in the download area.
   - the {USERNAME} stuff.
   - bulk mailing with BCC option.. ?
+  - confirm number of recipients, before sending.
 
 */
 
 require_once("../class2.php");
 require_once(e_ADMIN."auth.php");
+require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php");
+
 require_once(e_HANDLER."userclass_class.php");
     if($pref['htmlarea']){
     require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
@@ -19,19 +22,49 @@ require_once(e_HANDLER."userclass_class.php");
 $send_amount = 5; // amount of people in BCC per email.
 
 
+
+
+
+
+
+
 if(IsSet($_POST['submit'])){
 
-     if($_POST['email_to'] != "all"){
-        $_POST['email_to'] .= ".";
-        $query = "user_class REGEXP('".$_POST['email_to']."')";
-        }else{$query = "";}
 
-        $sql -> db_Select("user", "*", "$query");
-        while($row = $sql-> db_Fetch()){
-        $recipient[]  = $row['user_email'];
-        $recipient_name[] = $row['user_name'];
-        // put into an array so sorting by provider can be achieved if needed later.
-        }
+    if($_POST['email_to'] == "all"){   // send to all.
+
+       $sql -> db_Select("user", "user_name, user_email, user_class", "ORDER BY user_name", "no-where");
+       $c=0;
+           while($row = $sql -> db_Fetch()){
+               extract($row);
+               $recipient_name[$c] = $user_name;
+               $recipient[$c]= $user_email;
+               $c++;
+           }
+    }else{       // send to a user-class.
+
+        $sql -> db_Select("user", "user_name, user_email, user_class", "ORDER BY user_name", "no-where");
+        $c=0;
+        while($row = $sql -> db_Fetch()){
+            extract($row);
+                if(check_class($_POST['email_to'], $user_class)){
+                    $recipient_name[$c] = $user_name;
+                    $recipient[$c]= $user_email;
+                    $c++;
+                }
+
+        }  // end while
+
+    }
+// ===================
+
+   /* $text = "<div style='text-align:center'>
+   <form method='post' action='".e_SELF."' id='confirmform'>
+   You have chosen to send an email to <b>$c</b> users<br />
+   Are you sure you want to continue ?<br />
+   <input type='submit' class='button' value='submit' name='Yes'>
+   <input type='hidden' name='";*/
+
 
       /*
             $chunk=0;
@@ -45,43 +78,52 @@ if(IsSet($_POST['submit'])){
       */
     require_once(e_HANDLER."mail.php");
     $text = "<div style='overflow:auto;height:300px'>";
-
+    $text .= "<table class='fborder' style='width:100%'>";
+    $text .= "<tr><td class='fcaption'>Username</td><td class='fcaption'>Email</td><td class='fcaption'>Status</td></tr>";
     $message_body = eregi_replace('src="','src="'.SITEURL,$_POST['email_body']);
-    $message_body .="<br>";
-    echo $message_body;
+    $message_body .="<br />";
+    $
+  //  echo $message_body;
+     $sent_no = 0;
     for ($i=0; $i<count($recipient); $i++) {
-
-        $text .= $recipient[$i];
+    $text .="<tr>";
+    $text .="<td class='forumheader3' style='width:40%'>".$recipient_name[$i]."</td>";
+    $text .="<td class='forumheader3' style='width:40%'>".$recipient[$i]."</td>";
         if(sendemail($recipient[$i],$_POST['email_subject'],$message_body,$recipient_name[$i],$_POST['email_from_email'],$_POST['email_from_name'],$attach,$_POST['email_cc'],$_POST['email_bcc'],"","")){
         $stat = "<span style='color:green'>Sent</span>";
+        $sent_no ++;
         }else{
         $stat = "<span style='color:red'>Error</span>";
         }
-        $text .=" - $stat<br />";
+        $text .="<td class='forumheader3'>&nbsp;&nbsp; $stat </td></tr>";
     };
-        $text .="</div>";
+        $text .="</table></div>";
 
-$ns -> tablerender("Email Sent", $text);
-require_once(e_ADMIN."footer.php");
+    $rec_text = $c > 1 ? "recipients":"recipient";
+
+    if($c == 0 ){ $text = "<div style='text-align:center'>No Recipients Found</div>"; }
+
+    $ns -> tablerender("Emailing $c $rec_text", $text);
+    require_once(e_ADMIN."footer.php");
 exit;
 }
 
-
-
-   $text = "<div style='text-align:center'>
-   <form method='post' action='".e_SELF."' name='linkform'>
+   $text = "";
+   $text .= ($pref['smtp_enable']==0)? "<div style='text-align:center'>It is recommended that you enable <a href='prefs.php'>SMTP</a> for sending large numbers of emails.<br /><br /></div>":"";
+   $text .= "<div style='text-align:center'>
+   <form method='post' action='".e_SELF."' id='linkform'>
    <table style='width:96%' class='fborder'>
    <tr>
    <td style='width:30%' class='forumheader3'>From Name: </td>
    <td style='width:70%' class='forumheader3'>
-   <input type='text' id='email_from' name='email_from_name' class='tbox' style='width:80%' value='$email_from_name' />
+   <input type='text' name='email_from_name' class='tbox' style='width:80%' value='$email_from_name' />
    </td>
    </tr>
 
    <tr>
    <td style='width:30%' class='forumheader3'>From Email: </td>
    <td style='width:70%' class='forumheader3'>
-   <input type='text' id='email_from' name='email_from_email' class='tbox' style='width:80%' value='$email_from_email' />
+   <input type='text' name='email_from_email' class='tbox' style='width:80%' value='$email_from_email' />
    </td>
    </tr>
 
@@ -121,7 +163,7 @@ exit;
    <tr>
    <td colspan='2' style='width:30%' class='forumheader3'>
 
-   <textarea id='email_body' name='email_body'  class='tbox' style='border:1px solid black;width:100%;height:200px'>
+   <textarea rows='10' cols='20' id='email_body' name='email_body'  class='tbox' style='border:1px solid black;width:100%;height:200px'>
    $email_body
    </textarea>
    </td>
@@ -153,6 +195,7 @@ function userclasses($name){
        $sql -> db_Select("userclass_classes");
        while($row = $sql-> db_Fetch()){
            extract($row);
+
        $text .="<option value=\"$userclass_id\" $selected>Userclass - $userclass_name</option>";
        }
    $text .= " </select>";
@@ -218,7 +261,36 @@ function bulk_email($from,$group, $cc, $bcc, $subject, $message, $format="plain"
 
 }
 */
+  function show_options($action){
+                // ##### Display options ---------------------------------------------------------------------------------------------------------
+                                if($action==""){$action="main";}
+                                // ##### Display options ---------------------------------------------------------------------------------------------------------
+                                $var['main']['text']=USRLAN_71;
+                                $var['main']['link']= "users.php";
 
+                                $var['create']['text']=USRLAN_72;
+                                $var['create']['link']="users.php?create";
+
+                                $var['prune']['text']=USRLAN_73;
+                                $var['prune']['link']="users.php?prune";
+
+                                $var['extended']['text']=USRLAN_74;
+                                $var['extended']['link']="users.php?extended";
+
+                                $var['options']['text']=USRLAN_75;
+                                $var['options']['link']="users.php?options";
+
+                                $var['mailing']['text']= USRLAN_121;
+                                $var['mailing']['link']="mailout.php";
+                                show_admin_menu(USRLAN_76,$action,$var);
+                   }
+
+function mailout_adminmenu(){
+        global $user;
+        global $action;
+        $action = "mailing";
+        show_options($action);
+}
 
 
 ?>

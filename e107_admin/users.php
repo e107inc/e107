@@ -134,146 +134,146 @@ if(IsSet($_POST['adduser'])){
 
 if($_POST['useraction'] == 'userinfo')
 {
-	header('location:'.SITEURL.$ADMIN_DIRECTORY."userinfo.php?{$_POST['userip']}");
-	exit;
+        header('location:'.SITEURL.$ADMIN_DIRECTORY."userinfo.php?{$_POST['userip']}");
+        exit;
 }
 
 if($_POST['useraction'] == 'usersettings')
 {
-	header('location:'.SITEURL."usersettings.php?{$_POST['userid']}");
-	exit;
+        header('location:'.SITEURL."usersettings.php?{$_POST['userid']}");
+        exit;
 }
 
 if($_POST['useraction'] == 'userclass')
 {
-	header('location:'.SITEURL.$ADMIN_DIRECTORY."userclass.php?{$_POST['userid']}");
-	exit;
+        header('location:'.SITEURL.$ADMIN_DIRECTORY."userclass.php?{$_POST['userid']}");
+        exit;
 }
 
 
 if($_POST['useraction'] == "ban")
 {
-	$sub_action = $_POST['userid'];	
-	$sql -> db_Select("user", "*", "user_id='$sub_action'");
-	$row = $sql -> db_Fetch(); extract($row);
-	if($user_perms == "0")
-	{
-		$user -> show_message(USRLAN_7);
-	} else
-	{
-		$sql -> db_Update("user", "user_ban='1' WHERE user_id=$sub_action");
-		$user -> show_message(USRLAN_8);
-	}
-	$action = "main";
-	$sub_action = "user_id";
+        $sub_action = $_POST['userid'];
+        $sql -> db_Select("user", "*", "user_id='$sub_action'");
+        $row = $sql -> db_Fetch(); extract($row);
+        if($user_perms == "0")
+        {
+                $user -> show_message(USRLAN_7);
+        } else
+        {
+                $sql -> db_Update("user", "user_ban='1' WHERE user_id=$sub_action");
+                $user -> show_message(USRLAN_8);
+        }
+        $action = "main";
+        $sub_action = "user_id";
 }
 
 if($_POST['useraction'] == "unban")
 {
-	$sub_action=$_POST['userid'];
-	$sql -> db_Update("user", "user_ban='0' WHERE user_id='$sub_action' ");
-	$user -> show_message(USRLAN_9);
-	$action = "main";
-	$sub_action = "user_id";
+        $sub_action=$_POST['userid'];
+        $sql -> db_Update("user", "user_ban='0' WHERE user_id='$sub_action' ");
+        $user -> show_message(USRLAN_9);
+        $action = "main";
+        $sub_action = "user_id";
 }
 
 
 if($_POST['useraction'] == 'resend')
 {
-	$sub_action=$_POST['userid'];
-	if($sql -> db_Select("user", "*", "user_id='$sub_action' "))
-	{
-		$resend = $sql -> db_Fetch();
-		$text .= "<form method='post' action='".e_SELF."'><div style='text-align:center'>\n";
-		$text .= USRLAN_116." <b>".$resend['user_name']."</b><br /><br />
-		
-		<input type='hidden' name='resend_id' value='$sub_action' />\n
-		<input type='hidden' name='resend_name' value='".$resend['user_name']."' />\n
-		<input type='hidden' name='resend_key' value='".$resend['user_sess']."' />\n
-		<input type='hidden' name='resend_email' value='".$resend['user_email']."' />\n
-		<input class='button' type='submit' name='resend_mail' value='".USRLAN_112."' />\n</div></form>\n";
-		$caption = USRLAN_112;
-		$ns -> tablerender($caption, $text);
-	}
+        $sub_action=$_POST['userid'];
+        if($sql -> db_Select("user", "*", "user_id='$sub_action' "))
+        {
+                $resend = $sql -> db_Fetch();
+                $text .= "<form method='post' action='".e_SELF."'><div style='text-align:center'>\n";
+                $text .= USRLAN_116." <b>".$resend['user_name']."</b><br /><br />
+
+                <input type='hidden' name='resend_id' value='$sub_action' />\n
+                <input type='hidden' name='resend_name' value='".$resend['user_name']."' />\n
+                <input type='hidden' name='resend_key' value='".$resend['user_sess']."' />\n
+                <input type='hidden' name='resend_email' value='".$resend['user_email']."' />\n
+                <input class='button' type='submit' name='resend_mail' value='".USRLAN_112."' />\n</div></form>\n";
+                $caption = USRLAN_112;
+                $ns -> tablerender($caption, $text);
+        }
 }
 
 if($_POST['useraction'] == 'test')
 {
-	$sub_action=$_POST['userid'];
-	if($sql -> db_Select("user", "*", "user_id='$sub_action' ")){
-		$test = $sql -> db_Fetch();
-		$text .= "<form method='post' action='".e_SELF."'><div style='text-align:center'>\n";
-		$text .= USRLAN_117." <br /><b>".$test['user_email']."</b><br /><br />
-		<input type='hidden' name='test_email' value='".$test['user_email']."' />\n
-		<input class='button' type='submit' name='test_mail' value='".USRLAN_118."' />\n</div></form>\n";
-		$caption = USRLAN_118;
-		$ns -> tablerender($caption, $text);
-	}
+        $sub_action=$_POST['userid'];
+        if($sql -> db_Select("user", "*", "user_id='$sub_action' ")){
+                $test = $sql -> db_Fetch();
+                $text .= "<form method='post' action='".e_SELF."'><div style='text-align:center'>\n";
+                $text .= USRLAN_117." <br /><b>".$test['user_email']."</b><br /><br />
+                <input type='hidden' name='test_email' value='".$test['user_email']."' />\n
+                <input class='button' type='submit' name='test_mail' value='".USRLAN_118."' />\n</div></form>\n";
+                $caption = USRLAN_118;
+                $ns -> tablerender($caption, $text);
+        }
 }
 
 if($_POST['useraction'] == 'deluser')
 {
-	$sub_action=$_POST['userid'];
-	if($_POST['confirm'])
-	{
-		if($sql -> db_Delete("user", "user_id=$sub_action AND user_perms != '0'"))
-		{
-			$user -> show_message(USRLAN_10);
-		}
-		$sub_action = "user_id";
-		$id = "DESC";
-	} else 
-	{
-		if($sql -> db_Select("user", "*", "user_id='$sub_action' "))
-		{
-			$row = $sql -> db_Fetch();
-			$text .= "<form method='post' action='".e_SELF."'><div style='text-align:center'>\n";
-			$text .= "
-			<input type='hidden' name='useraction' value='deluser' />
-			<input type='hidden' name='userid' value='{$row['user_id']}' />".
-			USRLAN_13."
-			<br /><br /><span class='indent'>#{$row['user_id']} : {$row['user_name']}</span>
-			<br /><br />
-			<input type='submit' class='button' name='confirm' value='".USRLAN_17."' />
-			&nbsp;&nbsp;
-			<input type='submit' class='button' name='cancel' value='".USRLAN_15."' />
-			</div>
-			</form>
-			";
-			$ns -> tablerender(USRLAN_16,$text);
-			require_once("footer.php");
-			exit;
-		}
-	}
+        $sub_action=$_POST['userid'];
+        if($_POST['confirm'])
+        {
+                if($sql -> db_Delete("user", "user_id=$sub_action AND user_perms != '0'"))
+                {
+                        $user -> show_message(USRLAN_10);
+                }
+                $sub_action = "user_id";
+                $id = "DESC";
+        } else
+        {
+                if($sql -> db_Select("user", "*", "user_id='$sub_action' "))
+                {
+                        $row = $sql -> db_Fetch();
+                        $text .= "<form method='post' action='".e_SELF."'><div style='text-align:center'>\n";
+                        $text .= "
+                        <input type='hidden' name='useraction' value='deluser' />
+                        <input type='hidden' name='userid' value='{$row['user_id']}' />".
+                        USRLAN_13."
+                        <br /><br /><span class='indent'>#{$row['user_id']} : {$row['user_name']}</span>
+                        <br /><br />
+                        <input type='submit' class='button' name='confirm' value='".USRLAN_17."' />
+                        &nbsp;&nbsp;
+                        <input type='submit' class='button' name='cancel' value='".USRLAN_15."' />
+                        </div>
+                        </form>
+                        ";
+                        $ns -> tablerender(USRLAN_16,$text);
+                        require_once("footer.php");
+                        exit;
+                }
+        }
 }
-	
+
 if($_POST['useraction'] == "admin")
 {
-	$sub_action = $_POST['userid'];
-	$sql -> db_Select("user", "*", "user_id='$sub_action'");
-	$row = $sql -> db_Fetch(); extract($row);
-	$sql -> db_Update("user", "user_admin='1' WHERE user_id=$sub_action");
-	$user -> show_message($user_name." ".USRLAN_3." <a href='".e_ADMIN."administrator.php?edit.$sub_action'>".USRLAN_4."</a>");
-	$action = "main";
-	$sub_action = "user_id";
-	$id = "DESC";
+        $sub_action = $_POST['userid'];
+        $sql -> db_Select("user", "*", "user_id='$sub_action'");
+        $row = $sql -> db_Fetch(); extract($row);
+        $sql -> db_Update("user", "user_admin='1' WHERE user_id=$sub_action");
+        $user -> show_message($user_name." ".USRLAN_3." <a href='".e_ADMIN."administrator.php?edit.$sub_action'>".USRLAN_4."</a>");
+        $action = "main";
+        $sub_action = "user_id";
+        $id = "DESC";
 }
 
 if($_POST['useraction'] == "unadmin")
 {
-	$sub_action = $_POST['userid'];
-	$sql -> db_Select("user", "*", "user_id='$sub_action'");
-	$row = $sql -> db_Fetch(); extract($row);
-	if($user_perms == "0"){
-		$user -> show_message(USRLAN_5);
-	} else
-	{
-		$sql -> db_Update("user", "user_admin='0' WHERE user_id=$sub_action");
-		$user -> show_message($user_name." ".USRLAN_6);
-		$action = "main";
-		$sub_action = "user_id";
-		$id = "DESC";
-	}
+        $sub_action = $_POST['userid'];
+        $sql -> db_Select("user", "*", "user_id='$sub_action'");
+        $row = $sql -> db_Fetch(); extract($row);
+        if($user_perms == "0"){
+                $user -> show_message(USRLAN_5);
+        } else
+        {
+                $sql -> db_Update("user", "user_admin='0' WHERE user_id=$sub_action");
+                $user -> show_message($user_name." ".USRLAN_6);
+                $action = "main";
+                $sub_action = "user_id";
+                $id = "DESC";
+        }
 }
 
 if(IsSet($_POST['add_field'])){
@@ -313,16 +313,16 @@ if(IsSet($_POST['update_field'])){
 
 
 if($_POST['eu_action'] == "delext"){
-	$sub_action = $_POST['key'];
-	$sql -> db_Select("core", " e107_value", " e107_name='user_entended'");
-	$row = $sql -> db_Fetch();
-	$user_entended = unserialize($row[0]);
-	unset($user_entended[$sub_action]);
-	$tmp = addslashes(serialize($user_entended));
-	$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='user_entended' ");
-	$user -> show_message(USRLAN_83);
-//	$action = "extended"; // this line prevents adding another field without resetting.
-//	$user -> show_extended();//   this fixes the delete/add problem but causes the showmessage to occur.
+        $sub_action = $_POST['key'];
+        $sql -> db_Select("core", " e107_value", " e107_name='user_entended'");
+        $row = $sql -> db_Fetch();
+        $user_entended = unserialize($row[0]);
+        unset($user_entended[$sub_action]);
+        $tmp = addslashes(serialize($user_entended));
+        $sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='user_entended' ");
+        $user -> show_message(USRLAN_83);
+//        $action = "extended"; // this line prevents adding another field without resetting.
+//        $user -> show_extended();//   this fixes the delete/add problem but causes the showmessage to occur.
 }
 
 if($action == "editext"){
@@ -341,14 +341,14 @@ if($action == "editext"){
 
 if($_POST['useraction'] == "verify")
 {
-	$sub_action = $_POST['userid'];
-	if($sql -> db_Update("user", "user_ban='0' WHERE user_id=$sub_action"))
-	{
-		$user -> show_message(USRLAN_86);
-		$action = "main";
-		$sub_action = "user_id";
-		$id = "DESC";
-	}
+        $sub_action = $_POST['userid'];
+        if($sql -> db_Update("user", "user_ban='0' WHERE user_id=$sub_action"))
+        {
+                $user -> show_message(USRLAN_86);
+                $action = "main";
+                $sub_action = "user_id";
+                $id = "DESC";
+        }
 }
 
 if($action == "main" && is_numeric($sub_action)){
@@ -511,7 +511,7 @@ class users{
 
                                 if($user_perms != "0")
                                 {
-                                		$text .= "<option value='deluser'>".USRLAN_29."</option>";
+                                                $text .= "<option value='deluser'>".USRLAN_29."</option>";
 //                                        $text .= $rs -> form_button("submit", "main_$user_id", USRLAN_29, "onclick=\"confirm_('main', '$user_id', '$user_name');\"");
                                 }
                                 $text .= "</select>";
@@ -560,6 +560,9 @@ class users{
 
                                 $var['options']['text']=USRLAN_75;
                                 $var['options']['link']=e_SELF."?options";
+
+                                $var['mailing']['text']= USRLAN_121;
+                                $var['mailing']['link']="mailout.php";
                                 show_admin_menu(USRLAN_76,$action,$var);
                    }
 
@@ -803,7 +806,7 @@ class users{
                 ".$rs -> form_text("email", 60, "", 100)."
                 </td>
                 </tr>";
-                
+
 
                                 if(!is_object($sql)) $sql = new db;
                                 if($sql -> db_Select("userclass_classes")){
