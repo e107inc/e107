@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/signup.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2004-09-06 11:09:43 $
-|     $Author: e107coders $
+|     $Revision: 1.30 $
+|     $Date: 2004-09-23 09:33:17 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -469,7 +469,7 @@ if($signupval[8]){
         <td class='forumheader3' style='width:70%' >
         <input class='tbox' type='text' name='image' size='60' value='$image' maxlength='100' />
 
-        <input class='button' type ='button' style=''width: 35px'; cursor:hand' size='30' value='Show' onClick='expandit(this)'>
+        <input class='button' type ='button' style=''width: 35px'; cursor:hand' size='30' value='".LAN_SIGNUP_27."' onClick='expandit(this)'>
         <div style='display:none' style=&{head};>";
         $avatarlist[0] = "";
         $handle=opendir(e_IMAGE."avatars/");
@@ -488,12 +488,12 @@ $text .= "<br />
 </div>";
 
 if($pref['avatar_upload'] && FILE_UPLOADS){
-        $text .= "<br /><span class='smalltext'>Upload your avatar</span> <input class='tbox' name='file_userfile[]' type='file' size='47'>
+        $text .= "<br /><span class='smalltext'>".LAN_SIGNUP_25."</span> <input class='tbox' name='file_userfile[]' type='file' size='47'>
         <br /><div class='smalltext'>".LAN_404."</div>";
 }
 
 if($pref['photo_upload'] && FILE_UPLOADS){
-        $text .= "<br /><span class='smalltext'>Upload your photograph</span> <input class='tbox' name='file_userfile[]' type='file' size='47'>
+        $text .= "<br /><span class='smalltext'>".LAN_SIGNUP_26."</span> <input class='tbox' name='file_userfile[]' type='file' size='47'>
         <br /><div class='smalltext'>".LAN_404."</div>";
 }
 
