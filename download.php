@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-01-29 02:08:27 $
-|     $Author: sweetas $
+|     $Revision: 1.9 $
+|     $Date: 2005-02-08 21:34:53 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -21,6 +21,7 @@ require_once(e_HANDLER."comment_class.php");
 unset($text);
 $agreetext = $pref['agree_text'];
 $cobj = new comment;
+global $tp;
 	
 if (!e_QUERY) {
 	require_once(HEADERF);
@@ -73,7 +74,12 @@ if (!e_QUERY) {
 	$download_cat_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_TABLE_END);
 	$text .= $download_cat_table_start.$download_cat_table_string.$download_cat_table_end;
 	 
-	$ns->tablerender(LAN_dl_18.$type, $text);
+	
+	if($DOWNLOAD_CAT_TABLE_RENDERPLAIN) {
+		echo $text;
+	} else {
+		$ns->tablerender(LAN_dl_18.$type, $text);
+	}
 	require_once(FOOTERF);
 	exit;
 }
@@ -104,7 +110,9 @@ if (isset($_POST['commentsubmit'])) {
 		}
 	}
 }
-	
+
+//  -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 if ($action == "list") {
 	 
 	if (isset($_POST['view'])) {
@@ -134,9 +142,10 @@ if ($action == "list") {
 	$sql = new db;
 	$sql->db_Select("download_category", "*", "download_category_id='".$id."'");
 	$row = $sql->db_Fetch();
-	 extract($row);
+	extract($row);
 	$core_total = $sql->db_Count("download WHERE download_category='".$id."' AND download_active=1");
 	$type = $download_category_name;
+	
 	$type .= ($download_category_description) ? " [ ".$download_category_description." ]" :
 	 "";
 	define("e_PAGETITLE", PAGE_NAME." / ".$download_category_name);
@@ -147,6 +156,9 @@ if ($action == "list") {
 		require_once(FOOTERF);
 		exit;
 	}
+
+	$DOWNLOAD_CATEGORY = $download_category_name;
+	$DOWNLOAD_CATEGORY_DESCRIPTION = $tp -> toHTML($download_category_description, TRUE);
 	 
 	if (!$DOWNLOAD_LIST_TABLE) {
 		if (file_exists(THEME."download_template.php")) {
@@ -176,9 +188,16 @@ if ($action == "list") {
 	$download_list_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_LIST_TABLE_START);
 	$download_list_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_LIST_TABLE_END);
 	$text .= $download_list_table_start.$download_list_table_string.$download_list_table_end;
-	$ns->tablerender($type, $text);
+
+
+	if($DOWNLOAD_LIST_TABLE_RENDERPLAIN) {
+		echo $text;
+	} else {
+		$ns->tablerender($type, $text);
+	}
+	
 	 
-	echo "<div style='text-align:center;margin-left:auto;margin-right:auto'><div class='nextprev' style='width:200px; cursor:hand; pointer:hand; margin-left:auto; margin-right:auto'><a href='".e_SELF."' style='text-decoration:none'>".LAN_dl_9."</a></div></div>";
+	echo "<div style='text-align:center;margin-left:auto;margin-right:auto'><a href='".e_SELF."'>".LAN_dl_9."</a></div>";
 	 
 	require_once(e_HANDLER."np_class.php");
 	$ix = new nextprev("download.php", $from, $view, $total_downloads, "Downloads", "list.".$id.".".$view.".".$order.".".$sort);
@@ -187,14 +206,13 @@ if ($action == "list") {
 }
 	
 	
-// options -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//  -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 if ($action == "view") {
 	 
 	require_once(e_HANDLER."rate_class.php");
 	$gen = new convert;
 	$rater = new rater;
-	$aj = new textparse;
 	$sql2 = new db;
 	$highlight_search = FALSE;
 	if (isset($_POST['highlight_search'])) {
@@ -214,7 +232,7 @@ if ($action == "view") {
 	$subject = $download_name;
 	$sql2->db_Select("download_category", "*", "download_category_id='".$download_category."' ");
 	$row = $sql2->db_Fetch();
-	 extract($row);
+	extract($row);
 	$type = $download_category_name." [ ".$download_category_description." ]";
 	define("e_PAGETITLE", PAGE_NAME." / ".$download_category_name." / ".$download_name);
 	 
@@ -224,8 +242,15 @@ if ($action == "view") {
 		require_once(FOOTERF);
 		exit;
 	}
+
+	$DOWNLOAD_REPORT_LINK = "<a href='".e_SELF."?report.$download_id'>".LAN_dl_45."</a>";
+	$DOWNLOAD_CATEGORY = $download_category_name;
+	$DOWNLOAD_CATEGORY_DESCRIPTION = $tp -> toHTML($download_category_description, TRUE);
 	 
 	$DOWNLOAD_VIEW_NAME = $download_name;
+
+	$DOWNLOAD_VIEW_NAME_LINKED = "<a href='".e_BASE."request.php?download.".$download_id."' title='".LAN_dl_46."'>$download_name</a>";
+
 	$DOWNLOAD_VIEW_AUTHOR_LAN = LAN_dl_24;
 	$DOWNLOAD_VIEW_AUTHOR = ($download_author ? $download_author : "&nbsp;");
 	 
@@ -240,7 +265,7 @@ if ($action == "view") {
 	}
 	 
 	$DOWNLOAD_VIEW_DESCRIPTION_LAN = LAN_dl_7;
-	$DOWNLOAD_VIEW_DESCRIPTION = $aj->tpa(($download_description ? $download_description : "&nbsp;"), "public", "off", $highlight_search);
+	$DOWNLOAD_VIEW_DESCRIPTION = $tp->toHTML(($download_description ? $download_description : "&nbsp;"), TRUE);
 	 
 	if ($download_thumb) {
 		$DOWNLOAD_VIEW_IMAGE_LAN = LAN_dl_11;
@@ -312,14 +337,14 @@ if ($action == "view") {
 	if ($sql->db_Select("download", "*", "download_category='$download_category_id' AND download_id < $dl_id AND download_active = 1 ORDER BY download_datestamp DESC")) {
 		$row = $sql->db_Fetch();
 		 extract($row);
-		$prev = "<div class='nextprev'><a href='".e_SELF."?view.$download_id'>&lt;&lt; ".LAN_dl_33." [$download_name]</a></div>\n";
+		$prev = "<a href='".e_SELF."?view.$download_id'>&lt;&lt; ".LAN_dl_33." [$download_name]</a>\n";
 	} else {
 		$prev = "&nbsp;";
 	}
 	if ($sql->db_Select("download", "*", "download_category='$download_category_id' AND download_id > $dl_id AND download_active = 1 ORDER BY download_datestamp ASC")) {
 		$row = $sql->db_Fetch();
 		 extract($row);
-		$next = "<div class='nextprev'><a href='".e_SELF."?view.$download_id'>[$download_name] ".LAN_dl_34." &gt;&gt;</a></div>\n";
+		$next = "<a href='".e_SELF."?view.$download_id'>[$download_name] ".LAN_dl_34." &gt;&gt;</a>\n";
 	} else {
 		$next = "&nbsp;";
 	}
@@ -328,16 +353,19 @@ if ($action == "view") {
 		$text .= "
 			<table style='width:100%'>
 			<tr>
-			<td style='width:40%'>$prev</td>
-			<td style='width:20%'><div class='nextprev'><a href='".e_SELF."?list.$download_category'>".LAN_dl_35."</a></div></td>
-			<td style='width:40%'>$next</td>
+			<td style='width:40%;'>$prev</td>
+			<td style='width:20%; text-align: center;'><a href='".e_SELF."?list.$download_category'>".LAN_dl_35."</a></td>
+			<td style='width:40%; text-align: right;'>$next</td>
 			</tr>
 			</table>
 			";
 	}
-	$ns->tablerender($type, $text);
-	 
-	 
+
+	if($DOWNLOAD_VIEW_TABLE_RENDERPLAIN) {
+		echo $text;
+	} else {
+		$ns->tablerender($type, $text);
+	}
 	unset($text);
 	if ($download_comment) {
 		$query = ($pref['nested_comments'] ? "comment_item_id='$id' AND comment_type='2' AND comment_pid='0' ORDER BY comment_datestamp" : "comment_item_id='$id' AND comment_type='2' ORDER BY comment_datestamp");
@@ -366,8 +394,80 @@ if ($action == "view") {
 	require_once(FOOTERF);
 }
 	
-//$ns->tablerender(LAN_dl_18, LAN_dl_2);
-//require_once(FOOTERF);
+if ($action == "report") {
+
+	if (!$sql->db_Select("download", "*", "download_id = $id AND download_active = 1")) {
+		require_once(HEADERF);
+		require_once(FOOTERF);
+		exit;
+	}
+
+	$row = $sql->db_Fetch();
+		extract($row);
+
+	if (IsSet($_POST['report_thread'])) {
+
+		
+
+		if ($pref['reported_post_email']) {
+			require_once(e_HANDLER."mail.php");
+			$report_add = $tp->toDB($_POST['report_add']);
+			$report = LAN_dl_58.SITENAME." : ".(substr(SITEURL, -1) == "/" ? SITEURL : SITEURL."/")."download.php?".$download_id."\n".LAN_dl_59.$user."\n".$report_add;
+			$subject = LAN_dl_60." ".SITENAME;
+			sendemail(SITEADMINEMAIL, $subject, $report);
+		}
+	
+
+		$report_add = $tp -> toDB($_POST['report_add']);
+		$download_name = $tp -> toDB($_POST['report_download_name']);
+		$user = $tp -> toDB($_POST['user']);
+
+		$sql->db_Insert('generic', "0, 'Broken Download', ".time().",'".USERID."', '$download_name', ".$_POST['report_download_id'].", '$report_add'");
+
+		define("e_PAGETITLE", PAGE_NAME." / ".LAN_dl_47);
+		require_once(HEADERF);
+
+		$text = LAN_dl_48."<br /><br /><a href='".e_BASE."download.php?view.".$download_id."'>".LAN_dl_49."</a";
+		$ns->tablerender(LAN_dl_50, $text);
+
+	} else {
+		$number = $download_id;
+		$thread_name = $thread_info['head']['thread_name'];
+		define("e_PAGETITLE", PAGE_NAME." / ".LAN_dl_51." ".$download_name);
+		require_once(HEADERF);
+		
+		
+		$text = "<form action='".e_SELF."?report.$download_id' method='post'>
+		<table style='width:100%'>
+			<tr>
+			<td  style='width:50%' >
+			".LAN_dl_32.": ".$download_name." <a href='".e_SELF."?view.$download_id'><span class='smalltext'>".LAN_dl_53." </span>
+			</a>
+			</td>
+			<td style='text-align:center;width:50%'>
+			</td>
+			</tr>
+			<tr>
+			<td>".LAN_dl_54."<br />".LAN_dl_55."
+			</td>
+			<td style='text-align:center;'>
+			<textarea cols='40' rows='10' class='tbox' name='report_add'></textarea>
+			</td>
+			</tr>
+			<tr>
+			<td colspan='2' style='text-align:center;'><br />
+			<input type ='hidden' name='user' value='".(USER ? USERNAME : LAN_dl_52)."' />
+			<input type ='hidden' name='report_download_id' value='$download_id' />
+			<input type ='hidden' name='report_download_name' value='$download_name' />
+			<input class='button' type='submit' name='report_thread' value='".LAN_dl_56."' />
+			</td>
+			</tr>
+			</table>";
+		$ns->tablerender(LAN_dl_50, $text);
+	}
+	require_once(FOOTERF);
+	exit;
+}
 	
 function parsesize($size) {
 	$kb = 1024;
