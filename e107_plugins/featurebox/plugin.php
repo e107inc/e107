@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/featurebox/plugin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-04-01 11:03:58 $
+|     $Revision: 1.2 $
+|     $Date: 2005-04-02 17:05:18 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -60,6 +60,8 @@ $eplug_tables = array(
   fb_text text NOT NULL,
   fb_mode tinyint(3) unsigned NOT NULL default '0',
   fb_class tinyint(3) unsigned NOT NULL default '0',
+  fb_rendertype tinyint(1) unsigned NOT NULL default '0',
+  fb_template varchar(50) NOT NULL default '',
   PRIMARY KEY  (fb_id)
 ) TYPE=MyISAM AUTO_INCREMENT=1 ;");
 	
