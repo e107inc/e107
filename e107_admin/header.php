@@ -13,6 +13,8 @@
 +---------------------------------------------------------------+
 */
 echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
+if(file_exists(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_header.php")){@include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_header.php");}else{@include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_header.php");}
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -100,11 +102,11 @@ if(ADMIN == TRUE){
 	$text .= "</div><br />";
 	
 	$text .= "<br /><a href='".e_ADMIN."admin.php?logout'>".ADLAN_46."</a>";
-	$ns -> tablerender("Admin Navigation", $text);
+	$ns -> tablerender(LAN_head_1, $text);
 
  }else{
 	$text = "<a href='".e_ADMIN."../index.php'>".ADLAN_53."</a>";
-	$ns -> tablerender("Admin Navigation", $text);
+	$ns -> tablerender(LAN_head_1, $text);
 	unset($text);
  }
 
@@ -136,11 +138,11 @@ echo "<br />";
 
 
 if(!FILE_UPLOADS){
-	message_handler("ADMIN_MESSAGE", "Your server does not allow HTTP file uploads so it will not be possible for your users to uploads avatars/files etc. To rectify this set file_uploads to On in your php.ini and restart your server. If you dont have access to your php.ini contact your hosts.", __LINE__, __FILE__);
+	message_handler("ADMIN_MESSAGE", LAN_head_2, __LINE__, __FILE__);
 }
 /*
 if(OPEN_BASEDIR){
-	message_handler("ADMIN_MESSAGE", "Your server is running with a basedir restriction in effect. This disallows usage of any file outside of your home directory and as such could affect certain scripts such as the filemanager.", __LINE__, __FILE__);
+	message_handler("ADMIN_MESSAGE", LAN_head_3, __LINE__, __FILE__);
 }
 */
 
