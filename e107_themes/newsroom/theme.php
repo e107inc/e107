@@ -114,20 +114,20 @@ $FOOTERBASE = "
 <table style='width:100%;' border=\"0\" cellpadding=\"3\" cellspacing=\"0\">
 	<tr>
 	<td>&nbsp;
-	<a href='".e_BASE."' style='color:#000;'>".SITENAME."</a>
+	<a href='".e_BASE."' style='color:silver;'>".SITENAME."</a>
 	</td>
 	<td style='text-align:center'>
 	{CUSTOM=language}
 	</td>
 	<td>
-	<a href='http://www.e107.org' rel='external' style='color:#000;'>e107.org</a>
+	<a href='http://www.e107.org' rel='external' style='color:silver;'>e107.org</a>
 	</td>
 	<td>
-	<a href='http://www.e107coders.org' rel='external' style=\"color:#000;\">e107coders.org</a></td>
+	<a href='http://www.e107coders.org' rel='external' style=\"color:silver;\">e107coders.org</a></td>
 	<td>
-	<a href='http://www.e107themes.org' rel='external' style=\"color:#000;\">e107themes.org</a></td>
+	<a href='http://www.e107themes.org' rel='external' style=\"color:silver;\">e107themes.org</a></td>
 	<td>
-	<a href='http://www.e107styles.org'  style=\"color:#000;\">e107styles.org</a>
+	<a href='http://www.e107styles.org'  style=\"color:silver;\">e107styles.org</a>
 	</td>
 
 	</tr>
