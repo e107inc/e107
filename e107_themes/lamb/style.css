@@ -325,15 +325,15 @@ p {
 }
 
 .fborder {
-	border: #a1a1a1 1px solid;
+	border: #c1c1c1 1px solid;
 }
 .forumheader{
-	background-color: #ededf1;
+	background-color: #f3f3f7;
 	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
 	color:#000;
 	padding: 4px;
 	background-image : url('../e107_images/forum/fcap2.png');
-	border: 1px solid #d5d8db;
+	border: 1px solid #ececf2;
 }
 
 .forumheader2{
@@ -349,7 +349,7 @@ p {
 	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
 	color:#000;
 	padding: 4px;
-	border: #d4d4dc 1px solid;
+	border: #ececf2 1px solid;
 }
 
 .forumborder{
@@ -357,9 +357,9 @@ p {
 }
 
 .fcaption {
-	border: #d6dae0 1px solid;
+	border: #f0f2f4 1px solid;
 	padding: 2px 0 2px 0;
-	background-color: #e7eaed;
+	background-color: #f9fafb;
 	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
 	color:#616060;
 }
