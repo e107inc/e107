@@ -1,29 +1,16 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
++---------------------------------------------------------------+
+|	e107 website system
 |
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
+|	©Steve Dunstan 2001-2002
+|	http://e107.org
+|	jalist@e107.org
 |
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.7/e107_themes/ranyart/theme.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-10-05 08:54:34 $
-|     $Author: loloirie $
-+----------------------------------------------------------------------------+
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
++---------------------------------------------------------------+
 */
-
-// [multilanguage]
-
-if(file_exists(e_THEME."ranyart/languages/".e_LANGUAGE.".php")){
-  require_once(e_THEME."ranyart/languages/".e_LANGUAGE.".php");
-}else{
-  require_once(e_THEME."ranyart/languages/English.php");
-}
 
 // [theme]
 $themename = "ranyart";
@@ -70,7 +57,7 @@ $HEADER = "
 </tr>
 </table>
 <table >
-<tr>
+<tr> 
 <td style='padding:10px;width:15%; vertical-align: top;'>
 {SETSTYLE=menu1}
 {SITELINKS=menu}
@@ -119,7 +106,7 @@ $NEWSHEADER = "
 </tr>
 </table>
 <table style='width:100%' cellspacing='10' cellpadding='10'>
-<tr>
+<tr> 
 <td style='width:15%; vertical-align: top;'>
 {SETSTYLE=menu1}
 {SITELINKS=menu}
@@ -195,7 +182,7 @@ $NEWSSTYLE = "
 </div>
 <div style='text-align:right' class='alttd9'>
 {NEWSAUTHOR}
-".LAN_THEME_5."
+on
 {NEWSDATE}
 <br />
 {NEWSCOMMENTS}
@@ -203,11 +190,11 @@ $NEWSSTYLE = "
 </div>
 <br />";
 define("ICONSTYLE", "float: left; border:0");
-define("COMMENTLINK", LAN_THEME_1);
-define("COMMENTOFFSTRING", LAN_THEME_2);
+define("COMMENTLINK", "Read/Post Comment: ");
+define("COMMENTOFFSTRING", "Comments are turned off for this item");
 
 define("PRE_EXTENDEDSTRING", "<br /><br />[ ");
-define("EXTENDEDSTRING", LAN_THEME_3);
+define("EXTENDEDSTRING", "Read the rest ...");
 define("POST_EXTENDEDSTRING", " ]<br />");
 
 
@@ -217,36 +204,36 @@ define(PRELINK, "");
 define(POSTLINK, "");
 define(LINKSTART, "<img src='".THEME."images/bullet2.gif' alt='bullet' /> ");
 define(LINKEND, "<br />");
-define(LINKDISPLAY, 2);                        // 1 - along top, 2 - in left or right column
+define(LINKDISPLAY, 2);			// 1 - along top, 2 - in left or right column
 define(LINKALIGN, "left");
 
 
-//        [tablestyle]
+//	[tablestyle]
 
 function tablestyle($caption, $text){
-        global $style;
-        if($style == "menu1" || !$style){
-                if($caption != ""){
-                        echo "<div class='border'><div class='caption'>".$caption."</div>";
-                        if($text != ""){
-                                echo "\n<div class='bodytable'>".$text."</div></div><br />";
-                        }
-                }else{
-                        echo "<div class='border2'><div class='bodytable2'>".$text."</div></div><br />";
-                }
-        }else if($style == "default"){
-                if($caption != ""){
-                        echo "<div class='border2'><div class='caption2'>".$caption."</div><div class='bodytable2'>".$text."</div></div><br />";
-                }else{
-                        echo "<div class='bodytable'>".$text."</div><br />";
-                }
-        }else{
-                if($caption != ""){
-                        echo "<div class='border3'><div class='caption3'>".$caption."</div></div><div class='bodytable3'>".$text."</div><br />";
-                }else{
-                        echo "<div class='bodytable3'>".$text."</div><br />";
-                }
-        }
+	global $style;
+	if($style == "menu1" || !$style){
+		if($caption != ""){
+			echo "<div class='border'><div class='caption'>".$caption."</div>";
+			if($text != ""){
+				echo "\n<div class='bodytable'>".$text."</div></div><br />";
+			}
+		}else{
+			echo "<div class='border2'><div class='bodytable2'>".$text."</div></div><br />";
+		}
+	}else if($style == "default"){
+		if($caption != ""){
+			echo "<div class='border2'><div class='caption2'>".$caption."</div><div class='bodytable2'>".$text."</div></div><br />";
+		}else{
+			echo "<div class='bodytable'>".$text."</div><br />";
+		}
+	}else{
+		if($caption != ""){
+			echo "<div class='border3'><div class='caption3'>".$caption."</div></div><div class='bodytable3'>".$text."</div><br />";
+		}else{
+			echo "<div class='bodytable3'>".$text."</div><br />";
+		}
+	}
 }
 
 $COMMENTSTYLE = "

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-01-19 18:58:51 $
+|     $Revision: 1.13 $
+|     $Date: 2005-01-26 14:42:27 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -44,6 +44,7 @@ if(USER == TRUE || ADMIN == TRUE){
 	if(!$sql -> db_Select('online', '*', '`online_ip` = \''.$ip.'\' AND `online_user_id` = \'0\' ')){
 		$sql -> db_Delete('online', '`online_ip` = \''.$ip.'\' AND `online_user_id` = \'0\' ');
 	}
+
 	$new_total = 0;
 	$time = USERLV;
 	if(!$menu_pref['login_menu'] || $menu_pref['login_menu']['new_news'] == true){
