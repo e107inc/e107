@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-03-04 13:19:45 $
+|     $Revision: 1.7 $
+|     $Date: 2005-03-20 19:16:43 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -87,6 +87,10 @@ class poll
 	function render_poll($pollArray, $type = "menu", $POLLMODE, $returnMethod=FALSE)
 	{
 		global $POLLSTYLE, $sql, $tp, $ns;
+
+		$barl = (file_exists(THEME."images/barl.png") ? THEME."images/barl.png" : e_IMAGE."generic/barl.png");
+		$barr = (file_exists(THEME."images/barr.png") ? THEME."images/barr.png" : e_IMAGE."generic/barr.png");
+		$bar = (file_exists(THEME."images/bar.png") ? THEME."images/bar.png" : e_IMAGE."generic/bar.png");
 
 		if($type == "preview")
 		{
@@ -174,7 +178,9 @@ class poll
 				{
 					$MODE = $mode;		/* debug */
 					$OPTION = $option;
-					$BAR = "<img src='".THEME."images/bar.jpg' height='12' width='".($percentage[$count])."%' style='border : 1px solid Black' alt='' />";
+
+					$BAR = ($percentage[$count] ? "<div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div><div style='background-image: url($bar); width: ".$percentage[$count]."%; height: 14px; float: left;'></div><div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div>" : "");
+
 					$PERCENTAGE = $percentage[$count]."%";
 					$VOTES = POLLAN_31.": ".$voteArray[$count];
 					$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_VOTED_LOOP : $POLL_VOTED_LOOP));
