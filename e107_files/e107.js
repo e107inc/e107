@@ -157,6 +157,8 @@ function externalLinks() {
  } 
 } 
 
-
+function eover(object, over) {
+	object.className = over;
+}
 
 //-->

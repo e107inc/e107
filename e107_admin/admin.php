@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-01-10 09:49:02 $
+|     $Revision: 1.8 $
+|     $Date: 2005-01-15 04:36:19 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -39,21 +39,17 @@ function render_links($link, $title, $description, $perms, $icon = FALSE, $mode 
 	if (getperms($perms)){
 		if ($mode=='adminb') {
 			$text = "<tr><td class='forumheader3' style='text-align:left; vertical-align:top; width:100%'
-			onmouseover='tdover(this)' onmouseout='tdnorm(this)' onclick=\"document.location.href='".$link."'\">".$icon."
+			onmouseover=\"eover(this, 'forumheader5')\" onmouseout=\"eover(this, 'forumheader3')\" onclick=\"document.location.href='".$link."'\">".$icon."
 			<b>".$title."</b> ".($description ? "[ <span class='smalltext'>".$description."</span> ]" : "")."</td></tr>";
 		} else {
 			if ($td==6) { $text .= '</tr>'; $td = 1; }
 			if ($td==1) { $text .= '<tr>'; }
 			if ($mode=='default') {
 				$text .= "<td class='td' style='text-align:left; vertical-align:top; width:20%; white-space:nowrap' 
-				onmouseover='tdover(this)' onmouseout='tdnorm(this)' onclick=\"document.location.href='".$link."'\">".$icon." ".$title."</td>";
+				onmouseover=\"eover(this, 'forumheader5')\" onmouseout=\"eover(this, 'td')\" onclick=\"document.location.href='".$link."'\">".$icon." ".$title."</td>";
 			} else if ($mode=='classis') {
 				$text .= "<td style='text-align:center; vertical-align:top; width:20%'><a href='".$link."'>".$icon."</a><br />
 				<a href='".$link."'><b>".$title."</b></a><br />".$description."<br /><br /></td>";
-			} else if ($mode=='adminb') {
-				$text = "<tr>\n<td class='forumheader3' style='text-align:left; vertical-align:top; width:100%'
-				onmouseover='tdover(this)' onmouseout='tdnorm(this)' onclick=\"document.location.href='".$link."'\">".$icon."
-				<b>".$title."</b> ".($description ? "[ <span class='smalltext'>".$description."</span> ]" : "")."</td></tr>";
 			}
 			$td++;
 		}
@@ -159,29 +155,5 @@ function admin_info($admin_style=FALSE) {
 }
 
 require_once("footer.php");
-
-function headerjs(){
-	global $pref;
-	if ($pref['adminstyle']=='adminb') {
-		$norm_class = 'forumheader3';
-		$over_class = 'forumheader4';
-	} else {
-		$norm_class = 'td';
-		$over_class = 'forumheader5';
-	}
-	$script = "<script type=\"text/javascript\">\n";
-	$script .= "<!--\n";
-	$script .= "function tdover(object) {\n";
-	$script .= "	if (object.className == '".$norm_class."') object.className = '".$over_class."';\n";
-	$script .= "}\n";
-
-	$script .= "function tdnorm(object) {\n";
-	$script .= "	if (object.className == '".$over_class."') object.className = '".$norm_class."';\n";
-	$script .= "}\n";
-	$script .= "// -->\n";
-	$script .= "</script>\n";
-
-	return $script;
-}
 
 ?>
