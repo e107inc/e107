@@ -79,4 +79,11 @@ define("LAN_403", "announcement");
 define("LAN_404", "sticky");
 define("LAN_405", "Forums");
 define("LAN_406", "Re:");
+
+//v.616
+define("LAN_407", "Redirect");
+define("LAN_408", "If your browser does not support meta redirection please click");
+define("LAN_409", "HERE");
+define("LAN_410", "to be redirected");
+
 ?>
