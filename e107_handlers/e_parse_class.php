@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2005-03-10 19:45:29 $
+|     $Revision: 1.43 $
+|     $Date: 2005-03-12 20:18:22 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -200,7 +200,7 @@ function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $ut
 			$text = $this -> textclean($text, $wrap);
 		}
 
-		if (strpos($modifiers,'emotes_off') === FALSE) {
+		if (!strpos($modifiers,'emotes_off') === FALSE) {
 			if ($pref['smiley_activate'] || strpos($modifiers,'emotes_on') !== FALSE) {
 				if (!is_object($this->e_emote)) {
 					require_once(e_HANDLER.'emote_filter.php');

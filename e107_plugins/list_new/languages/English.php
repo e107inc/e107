@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/list_new/languages/English.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-02-16 22:18:00 $
+|     $Revision: 1.4 $
+|     $Date: 2005-03-12 20:18:23 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
-	
+
+define("PAGE_NAME", "List New Items");
 	
 define("LIST_1", "News Items");
 define("LIST_2", "Comments");
