@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/email.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-07 19:04:35 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-08 05:45:11 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -77,7 +77,7 @@ if (isset($_POST['emailsubmit']))
 		if (sendemail($email_send, LAN_email_3.SITENAME, $message)) {
 			$text = "<div style='text-align:center'>".LAN_10." ".$email_send."</div>";
 		} else {
-			$text = "<div class='center'>".LAN_9."</div>";
+			$text = "<div style='text-align:center'>".LAN_9."</div>";
 		}
 		$ns->tablerender(LAN_11, $text);
 	} else {
@@ -86,7 +86,7 @@ if (isset($_POST['emailsubmit']))
 }
 	
 $text = "<form method='post' action='".e_SELF."?".e_QUERY."'>\n
-	<table class='defaulttable'>";
+	<table>";
 	
 if (USER != TRUE) {
 	$text .= "<tr>
