@@ -115,13 +115,30 @@ $NEWSSTYLE = "<div class='cap_border'><div class='main_caption'>
 {EXTENDED}
 <br /></div>
 <div class='menu_content'>
+<table class='news_info'>
+<tr>
+<td style='text-align: center; padding: 3px; padding-bottom: 0px; white-space: nowrap'>
+<img src='".THEME."images/postedby_16.png' style='width: 16px; height: 16px' />
+</td>
+<td style='width: 100%; padding: 0px; padding-bottom: 0px; padding-left: 2px'>
+Posted by 
 {NEWSAUTHOR}
+ on 
 {NEWSDATE}
+
+</td><td style='text-align: center; padding: 3px; padding-bottom: 0px; white-space: nowrap'>
+<img src='".THEME."images/comments_16.png' style='width: 16px; height: 16px' />
+</td>
+<td style='padding: 0px; padding-bottom: 0px; padding-left: 2px; white-space: nowrap'>
 {NEWSCOMMENTS}
+</td><td style='text-align: center; padding: 3px; padding-bottom: 0px; padding-left: 7px; white-space: nowrap'>
 {EMAILICON}
 {PRINTICON}
+</td></tr></table>
 <br /></div>";
-	
+
+define("ICONMAIL", "email_16.png");
+define("ICONPRINT", "print_16.png");
 define("ICONSTYLE", "float: left; border:0");
 define("COMMENTLINK", "Read/Post Comment: ");
 define("COMMENTOFFSTRING", "Comments are turned off for this item");
@@ -164,5 +181,25 @@ function tablestyle($caption, $text, $mode){
 $CHATBOXSTYLE = "
 <img src='".e_IMAGE."admin_images/chatbox_16.png' alt='' style='width: 16px; height: 16px; vertical-align: bottom' />
 <b>{USERNAME}</b><br />{TIMEDATE}<br />{MESSAGE}<br /><br />";
+
+$COMMENTSTYLE = "
+<table style='width: 100%;'>
+<tr>
+<td style='width: 10%;'>{USERNAME}<br />{TIMEDATE}<br />{AVATAR}<br /></td>
+<td style='width: 90%; background-color: #fdf9f9; vertical-align: top; padding: 4px'>
+{COMMENT}
+</td>
+</tr>
+</table>
+<br />
+";
+
+$POLLSTYLE = "<img src='".THEME."images/polls.png' style='width: 10px; height: 14px; vertical-align: bottom' /> {QUESTION}
+<br /><br />
+{OPTIONS=<img src='".THEME."images/bullet2.gif' style='width: 10px; height: 10px' /> OPTION<br />BAR<br /><span class='smalltext'>PERCENTAGE VOTES</span><br /><br />}
+<div style='text-align:center' class='smalltext'>{AUTHOR}<br />{VOTE_TOTAL} {COMMENTS}
+<br />
+{OLDPOLLS}
+</div>";
 
 ?>
