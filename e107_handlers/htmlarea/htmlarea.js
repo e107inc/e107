@@ -9,7 +9,7 @@
 // Version 3.0 developed by Mihai Bazon.
 //   http://dynarch.com/mishoo
 //
-// $Id: htmlarea.js,v 1.4 2004-03-16 20:12:58 e107coders Exp $
+// $Id: htmlarea.js,v 1.5 2004-04-16 01:04:15 chavo Exp $
 
 if (typeof _editor_url == "string") {
         // Leave exactly one backslash at the end of _editor_url
@@ -1615,12 +1615,12 @@ HTMLArea.prototype.execCommand = function(cmdID, UI, param) {
                 if (HTMLArea.is_ie) {
                         //if (confirm(HTMLArea.I18N.msg["IE-sucks-full-screen"]))
                         {
-                                window.open(this.popupURL("fullscreen.php"), "ha_fullscreen",
+                                window.open(this.popupURL("fullscreen.html"), "ha_fullscreen",
                                             "toolbar=no,location=no,directories=no,status=no,menubar=no," +
                                             "scrollbars=no,resizable=yes,width=800,height=600");
                         }
                 } else {
-                        window.open(this.popupURL("fullscreen.php"), "ha_fullscreen",
+                        window.open(this.popupURL("fullscreen.html"), "ha_fullscreen",
                                     "toolbar=no,menubar=no,personalbar=no,width=640,height=480," +
                                     "scrollbars=no,resizable=yes");
                 }
