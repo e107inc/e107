@@ -583,6 +583,8 @@ function create_tables(){
 		mysql_query("INSERT INTO ".$mySQLprefix."parser VALUES (0,'e107core','/{(AVATAR)(=(.+?))*}/') ");
 		mysql_query("INSERT INTO ".$mySQLprefix."parser VALUES (0,'e107core','/{(PICTURE)(=(.+?))*}/') ");
 		mysql_query("INSERT INTO ".$mySQLprefix."parser VALUES (0,'e107core','/{(USERNAME)}/') ");
+		mysql_query("INSERT INTO ".$mySQLprefix."plugin VALUES (0, 'Integrity Check', '0.02', 'integrity_check', 1) ");
+
 
 
         $userp = "1, '".$_POST['admin_name']."', '', '".md5($_POST['admin_password1'])."', '', '".$_POST['admin_email']."', '', '', '', '', '', '', '', '', '', 0, ".time().", 0, 0, 0, 0, 0, 0, '$ip', 0, '', '', '', 0, 1, '', '', '0', '', ".time();
