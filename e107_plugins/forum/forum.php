@@ -11,16 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-02-24 18:55:57 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.10 $
+|     $Date: 2005-02-26 10:00:24 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
-	
+
 @include_once e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum.php';
 @include_once e_PLUGIN.'forum/languages/English/lan_forum.php';
-	
+
 require_once(e_PLUGIN.'forum/forum_class.php');
 $forum = new e107forum;
 if (strstr(e_QUERY, "untrack")) {
@@ -30,14 +30,14 @@ if (strstr(e_QUERY, "untrack")) {
 	header("location:".e_SELF."?track");
 	exit;
 }
-	
+
 //Mark all threads as read
 if (e_QUERY == "mark.all.as.read") {
 	$forum->forum_markasread('all');
 	header("location:".e_SELF);
 	exit;
 }
-	
+
 //Mark all threads in specific forum as read
 if (strstr(e_QUERY, 'mfar')) {
 	$tmp = explode(".", e_QUERY);
@@ -46,16 +46,16 @@ if (strstr(e_QUERY, 'mfar')) {
 	header("location:".e_SELF);
 	exit;
 }
-	
+
 if (e_QUERY == 'rules') {
 	include_once(HEADERF);
 	forum_rules('show');
 	include_once(FOOTERF);
 	exit;
 }
-	
+
 $gen = new convert;
-	
+
 $FORUMTITLE = LAN_46;
 $THREADTITLE = LAN_47;
 $REPLYTITLE = LAN_48;
@@ -66,8 +66,8 @@ $NEWTHREADTITLE = LAN_424;
 $POSTEDTITLE = LAN_423;
 $NEWIMAGE = IMAGE_new_small;
 $TRACKTITLE = LAN_397;
-	
-	
+
+
 $rules_text = forum_rules('check');
 $USERINFO = "<a href='".e_BASE."top.php?0.top.forum.10'>".LAN_429."</a> | <a href='".e_BASE."top.php?0.active'>".LAN_430."</a>";
 if(USER)
@@ -108,7 +108,7 @@ $ICONKEY = "
 	<td style='width:2%'>".IMAGE_closed_small."</td>
 	<td style='width:10%'><span class='smallblacktext'>".LAN_394."</span></td>
 	</tr>\n</table>\n";
-	
+
 $SEARCH = "
 	<form method='post' action='".e_BASE."search.php'>
 	<p>
@@ -117,9 +117,9 @@ $SEARCH = "
 	<input type='hidden' name='searchtype' value='7' />
 	</p>
 	</form>\n";
-	
+
 $PERMS = (USER == TRUE || ANON == TRUE ? LAN_204." - ".LAN_206." - ".LAN_208 : LAN_205." - ".LAN_207." - ".LAN_209);
-	
+
 if (USER == TRUE) {
 	$total_new_threads = $sql->db_Count('forum_t', '(*)', "WHERE thread_datestamp>'".USERLV."' ");
 	if (USERVIEWED != "") {
@@ -128,7 +128,7 @@ if (USER == TRUE) {
 	} else {
 		$total_read_threads = 0;
 	}
-	 
+
 	$INFO = LAN_30." ".USERNAME."<br />";
 	// $sql->db_Select("user", "*",  "user_name='".USERNAME."' ");
 	// $row = $sql->db_Fetch();
@@ -149,7 +149,7 @@ if (USER == TRUE) {
 	} elseif($total_read_threads != 0) {
 		$INFO .= " (".LAN_196.$total_read_threads.LAN_197.")";
 	}
-	 
+
 	$INFO .= "<br />
 		".LAN_36." ".$lastvisit_datestamp."<br />
 		".LAN_37." ".$datestamp.LAN_38.$pref['timezone'];
@@ -161,34 +161,34 @@ if (USER == TRUE) {
 		$INFO .= LAN_410."<br />".LAN_45." <a href='".e_SIGNUP."'>".LAN_439."</a> ".LAN_440;
 	}
 }
-	
+
 if (USER && $allread != TRUE && $total_new_threads && $total_new_threads >= $total_read_threads) {
 	$INFO .= "<br /><a href='".e_SELF."?mark.all.as.read'>".LAN_199."</a>".(e_QUERY != "new" ? ", <a href='".e_SELF."?new'>".LAN_421."</a>" : "");
 }
-	
+
 if (USERREALM && USER && e_QUERY != "track") {
 	$INFO .= "<br /><a href='".e_SELF."?track'>".LAN_393."</a>";
 }
-	
+
 $FORUMINFO .= LAN_192.($total_topics+$total_replies)." ".LAN_404." ($total_topics ".($total_topics == 1 ? LAN_411 : LAN_413).", $total_replies ".($total_replies == 1 ? LAN_412 : LAN_414).").<br />".$users." ".($users == 1 ? LAN_415 : LAN_416)." (".$member_users." ".($member_users == 1 ? LAN_417 : LAN_419).", ".$guest_users." ".($guest_users == 1 ? LAN_418 : LAN_420).")<br />".LAN_42.$total_members."<br />".LAN_41."<a href='".e_BASE."user.php?id.".$nuser_id."'>".$nuser_name."</a>.\n";
-	
+
 if (!$FORUM_MAIN_START) {
 	if (file_exists(THEME."forum_template.php")) {
 		include_once(THEME."forum_template.php");
 	}
 }
-include(e_BASE.$THEMES_DIRECTORY."templates/forum_template.php");
+include(e_PLUGIN."forum/templates/forum_template.php");
 require_once(HEADERF);
 $sql2 = new db;
-	
+
 $parent_list = $forum->forum_getparents();
-	
+
 if (!$parent_list) {
 	$ns->tablerender(PAGE_NAME, "<div style='text-align:center'>".LAN_51."</div>");
 	require_once(FOOTERF);
 	exit;
 }
-	
+
 foreach ($parent_list as $parent) {
 	$status = parse_parent($parent);
 	$PARENTSTATUS = $status[0];
@@ -218,7 +218,7 @@ foreach ($parent_list as $parent) {
 		}
 	}
 }
-	
+
 function parse_parent($parent) {
 	if ($parent['forum_class'] == e_UC_NOBODY) {
 		$status[0] = "{ ".LAN_398." )";
@@ -244,7 +244,7 @@ function parse_parent($parent) {
 	}
 	return ($status);
 }
-	
+
 function parse_forum($f, $restricted_string = "") {
 	global $FORUM_MAIN_FORUM, $gen, $forum, $tp;
 	if (USER && $forum->forum_newflag($f['forum_id'])) {
@@ -261,8 +261,8 @@ function parse_forum($f, $restricted_string = "") {
 	;
 	$THREADS = $f['forum_threads'];
 	$REPLIES = $f['forum_replies'];
-	 
-	 
+
+
 	if ($f['forum_lastpost']) {
 		list($lastpost_id, $lastpost_name, $lastpost_datestamp, $lastpost_thread) = explode(chr(1), $f['forum_lastpost']);
 		if ($lastpost_id) {
@@ -275,7 +275,7 @@ function parse_forum($f, $restricted_string = "") {
 	}
 	return(preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_MAIN_FORUM));
 }
-	
+
 if (e_QUERY == "track") {
 	$tmp = explode("-", USERREALM);
 	foreach($tmp as $key => $value) {
@@ -302,17 +302,17 @@ if (e_QUERY == "track") {
 			$forum_trackstring .= preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_TRACK_MAIN);
 		}
 	}
-	 
+
 	$forum_track_start = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_TRACK_START);
 	$forum_track_end = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_TRACK_END);
-	 
+
 	if ($pref['forum_enclose']) {
 		$ns->tablerender($pref['forum_title'], $forum_track_start.$forum_trackstring.$forum_track_end);
 	} else {
 		echo $forum_track_start.$forum_trackstring.$forum_track_end;
 	}
 }
-	
+
 if (e_QUERY == "new") {
 	$sql3 = new db;
 	if ($forum_posts = $sql->db_Select("forum_t", "*", "thread_datestamp>".USERLV." ORDER BY thread_datestamp DESC LIMIT 0,50")) {
@@ -321,7 +321,7 @@ if (e_QUERY == "new") {
 			$sql2->db_Select("forum", "*", "forum_id=$thread_forum_id");
 			$row = $sql2->db_Fetch();
 			 extract($row);
-			 
+
 			if (check_class($forum_class)) {
 				if (!ereg("\.".$thread_id."\.", USERVIEWED)) {
 					$np = TRUE;
@@ -334,7 +334,7 @@ if (e_QUERY == "new") {
 					$datestamp = $gen->convert_date($thread_datestamp, "forum");
 					$STARTERTITLE = "<a href='".e_BASE."user.php?id.$author_id'>$author_name</a><br />".$datestamp;
 					$iid = $thread_id;
-					 
+
 					if ($thread_parent) {
 						$ttemp = $thread_id;
 						$sql2->db_Select("forum_t", "*", "thread_id=$thread_parent ");
@@ -355,10 +355,10 @@ if (e_QUERY == "new") {
 			$NEWSPOSTNAME = LAN_198;
 			$forum_newstring = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_NEWPOSTS_MAIN);
 		}
-		 
+
 		$forum_new_start = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_NEWPOSTS_START);
 		$forum_new_end = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_NEWPOSTS_END);
-		 
+
 		if ($pref['forum_enclose']) {
 			$ns->tablerender($pref['forum_title'], $forum_new_start.$forum_newstring.$forum_new_end);
 		} else {
@@ -366,7 +366,7 @@ if (e_QUERY == "new") {
 		}
 	}
 }
-	
+
 $forum_main_start = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_MAIN_START);
 $forum_main_end = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_MAIN_END);
 if ($pref['forum_enclose']) {
@@ -375,7 +375,7 @@ if ($pref['forum_enclose']) {
 	echo $forum_main_start.$forum_string.$forum_main_end;
 }
 require_once(FOOTERF);
-	
+
 function forum_rules($action = 'check') {
 	global $tp, $sql, $ns;
 	if (ADMIN == TRUE) {
@@ -401,10 +401,9 @@ function forum_rules($action = 'check') {
 	}
 	$ns->tablerender(LAN_433, "<div style='text-align:center'>{$rules_text}</div>", 'forum_rules');
 }
-	
-	
-?>
 
+
+?>
 
 
 
