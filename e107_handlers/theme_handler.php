@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-22 22:14:41 $
-|     $Author: stevedunstan $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-24 17:42:33 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -155,7 +155,7 @@ class themeHandler{
 	function showThemes() {
 		global $ns;
 		if(!is_writable(e_THEME)) {
-			$ns->tablerender(TPVLAN_16, EPL_ADLAN_44);
+			$ns->tablerender(TPVLAN_16, TPVLAN_15);
 			$text = "";
 		} else {
 			$text = "<div style='text-align:center'>
