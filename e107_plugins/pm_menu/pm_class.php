@@ -186,7 +186,7 @@ class pm {
 		if($count){
 			$ret .= "<tr><td colspan='7' style='text-align:left;'><input class='tbox' type='submit' name='delsel' value='".PMLAN_58."'></td></tr>";
 		}
-		$ret.="</table>\n";
+		$ret.="</table></form>\n";
 		if($rcv_total > $max_per_page){
 			ob_end_flush();
 			ob_start();
