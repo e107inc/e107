@@ -9,6 +9,7 @@ define("TOP_LAN_4", "Comments");
 define("TOP_LAN_5", "Top Chatbox Posters");
 define("TOP_LAN_6", "Site Rating");
 
+//v.616
 define("LAN_1", "Thread");
 define("LAN_2", "Poster");
 define("LAN_3", "Views");
