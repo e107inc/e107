@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.7 $
-|		$Date: 2005-02-09 22:48:40 $
+|		$Revision: 1.8 $
+|		$Date: 2005-02-10 21:51:51 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -847,9 +847,9 @@ class contentform{
 							<td class='forumheader3' style='width:30%'>".CONTENT_ADMIN_CAT_LAN_5."</td>
 							<td class='forumheader3' style='width:70%'>".$rs -> form_text("cat_icon", 60, $content_icon, 100)."
 								".$rs -> form_button("button", '', CONTENT_ADMIN_CAT_LAN_8, "onclick='expandit(this)'")."
-								<div style='{head}; display:none'>";
+								<div id='divcaticon' style='{head}; display:none'>";
 								while(list($key, $icon) = each($iconlist)){
-									$text .= "<a href='javascript:addtext2(\"$icon\")'><img src='".$content_cat_icon_path_large.$icon."' style='border:0' alt='' /></a> ";
+									$text .= "<a href=\"javascript:insertext('".$icon."','cat_icon','divcaticon')\"><img src='".$content_cat_icon_path_large.$icon."' style='border:0' alt='' /></a> ";
 								}
 								$text .= "</div>
 							</td>
