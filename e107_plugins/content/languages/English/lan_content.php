@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-03 23:31:40 $
+|     $Revision: 1.2 $
+|     $Date: 2005-02-06 21:34:22 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -363,5 +363,59 @@ define("CONTENT_ADMIN_SUBMIT_LAN_16", "");
 define("CONTENT_ADMIN_SUBMIT_LAN_17", "");
 define("CONTENT_ADMIN_SUBMIT_LAN_18", "");
 define("CONTENT_ADMIN_SUBMIT_LAN_19", "");
+
+
+define("CONTENT_ADMIN_CONVERSION_LAN_0", "content");
+define("CONTENT_ADMIN_CONVERSION_LAN_1", "review");
+define("CONTENT_ADMIN_CONVERSION_LAN_2", "article");
+define("CONTENT_ADMIN_CONVERSION_LAN_3", "category");
+define("CONTENT_ADMIN_CONVERSION_LAN_4", "categories");
+define("CONTENT_ADMIN_CONVERSION_LAN_5", "page");
+define("CONTENT_ADMIN_CONVERSION_LAN_6", "pages");
+define("CONTENT_ADMIN_CONVERSION_LAN_7", "main parent inserted");
+define("CONTENT_ADMIN_CONVERSION_LAN_8", "main parent prefs inserted");
+define("CONTENT_ADMIN_CONVERSION_LAN_9", "no");
+define("CONTENT_ADMIN_CONVERSION_LAN_10", "main parent needed");
+define("CONTENT_ADMIN_CONVERSION_LAN_11", "CONVERSION ANALYSIS");
+define("CONTENT_ADMIN_CONVERSION_LAN_12", "total rows to convert");
+define("CONTENT_ADMIN_CONVERSION_LAN_13", "total converted rows");
+define("CONTENT_ADMIN_CONVERSION_LAN_14", "total warnings");
+define("CONTENT_ADMIN_CONVERSION_LAN_15", "total failures");
+define("CONTENT_ADMIN_CONVERSION_LAN_16", "OLD CONTENT TABLE : ANALYSIS");
+define("CONTENT_ADMIN_CONVERSION_LAN_17", "total rows");
+define("CONTENT_ADMIN_CONVERSION_LAN_18", "unknown rows");
+define("CONTENT_ADMIN_CONVERSION_LAN_19", "all rows are familiar");
+define("CONTENT_ADMIN_CONVERSION_LAN_20", "CONTENT MAIN PARENT");
+define("CONTENT_ADMIN_CONVERSION_LAN_21", "REVIEW MAIN PARENT");
+define("CONTENT_ADMIN_CONVERSION_LAN_22", "ARTICLE MAIN PARENT");
+define("CONTENT_ADMIN_CONVERSION_LAN_23", "insertion failed");
+define("CONTENT_ADMIN_CONVERSION_LAN_24", "NO CONTENT PAGES PRESENT");
+define("CONTENT_ADMIN_CONVERSION_LAN_25", "CONTENT PAGES PRESENT");
+define("CONTENT_ADMIN_CONVERSION_LAN_26", "inserted");
+define("CONTENT_ADMIN_CONVERSION_LAN_27", "conversion analysis");
+define("CONTENT_ADMIN_CONVERSION_LAN_28", "total old rows");
+define("CONTENT_ADMIN_CONVERSION_LAN_29", "total new rows");
+define("CONTENT_ADMIN_CONVERSION_LAN_30", "failed");
+define("CONTENT_ADMIN_CONVERSION_LAN_31", "warning");
+define("CONTENT_ADMIN_CONVERSION_LAN_32", "old category does not exist: items added to higher category");
+define("CONTENT_ADMIN_CONVERSION_LAN_33", "new category does not exist: items added to higher category");
+define("CONTENT_ADMIN_CONVERSION_LAN_34", "NO REVIEW CATEGORY PAGES PRESENT");
+define("CONTENT_ADMIN_CONVERSION_LAN_35", "REVIEW CATEGORY PAGES PRESENT");
+define("CONTENT_ADMIN_CONVERSION_LAN_36", "NO REVIEW PAGES AND/OR SUBMITTED REVIEW PAGES PRESENT");
+define("CONTENT_ADMIN_CONVERSION_LAN_37", "REVIEW PAGES AND/OR SUBMITTED REVIEW PAGES PRESENT");
+define("CONTENT_ADMIN_CONVERSION_LAN_38", "NO ARTICLE CATEGORY PAGES PRESENT");
+define("CONTENT_ADMIN_CONVERSION_LAN_39", "ARTICLE CATEGORY PAGES PRESENT");
+
+define("CONTENT_ADMIN_CONVERSION_LAN_40", "NO ARTICLE PAGES AND/OR SUBMITTED ARTICLE PAGES PRESENT");
+define("CONTENT_ADMIN_CONVERSION_LAN_41", "ARTICLE PAGES AND/OR SUBMITTED ARTICLE PAGES PRESENT");
+define("CONTENT_ADMIN_CONVERSION_LAN_42", "conversion results of the old content table to the new content plugin table");
+define("CONTENT_ADMIN_CONVERSION_LAN_43", "press the button to convert the old content table");
+define("CONTENT_ADMIN_CONVERSION_LAN_44", "the new content table already contains data !<br />are you sure you want to convert the old content table to the new content table ?<br /><br />if you still would like to convert the table, the old content data will be added to the already existing new content table, but no garantee can be made to assure that all items will be added to already existing new categories in a correct manner !");
+
+define("CONTENT_ADMIN_CONVERSION_LAN_45", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_46", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_47", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_48", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_49", "");
 
 ?>
