@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/stats.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-27 19:51:38 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-28 13:32:41 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -259,7 +259,7 @@ function parse_data($row, $amount, $total, $action_n, $lan) {
 					$str .= "<img src='$image' alt='' /> ";
 				}
 				 
-				$str .= $data[$c][1]."</td>\n<td style='width:55%; white-space:nowrap;' class='forumheader3'>\n<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' style='width:".$width."%' height='8' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' />\n</td>\n<td style='width:10%; text-align:center' class='forumheader3'>".$data[$c][0]."</td>\n<td style='width:10%; text-align:center' class='forumheader3'>".$data[$c][2]."%</td>\n</tr>\n";
+                                $str .= $data[$c][1]."</td>\n<td style='width:55%; white-space:nowrap;' class='forumheader3'>\n<img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' /><img src='".THEME."images/bar2.gif' style='width:".$width."%' height='8' title='".$width."%' alt='' /><img src='".THEME."images/bar2edge.gif' width='1' height='8' alt='' />\n</td>\n<td style='width:10%; text-align:center' class='forumheader3'>".$data[$c][0]."</td>\n<td style='width:10%; text-align:center' class='forumheader3'>".$data[$c][2]."%</td>\n</tr>\n";
 				$c++;
 			}
 		}
