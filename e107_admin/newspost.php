@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.37 $
-|   $Date: 2005-02-11 02:57:47 $
-|   $Author: mcfly_e107 $
+|   $Revision: 1.38 $
+|   $Date: 2005-02-11 06:58:54 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 
 */
@@ -468,10 +468,18 @@ class newspost {
 				foreach ($imagelist as $image) {
 					$text .= "<option value='".$e107->HTTPPath.$IMAGES_DIRECTORY."newspost_images/".$image['fname']."'>".$image['fname']."</option>\n";
 				}
+
 				foreach ($thumblist as $thmb){
 					$text .= "<option value='".$e107->HTTPPath.$IMAGES_DIRECTORY."newspost_images/".$thmb['fname']."'>".$thmb['fname']."</option>\n";
 				}
-				$text .= "</select>";
+				$text .= "</select>
+					 
+					<select class='tbox' name='fileps' onChange=\"addtext('[file=request.php?' + this.form.fileps.options[this.form.fileps.selectedIndex].value + ']' + this.form.fileps.options[this.form.fileps.selectedIndex].value + '[/file]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_64."')\" onMouseOut=\"help('')\">
+					<option>".NWSLAN_82." ...</option>\n";
+			while (list($key, $file) = each($filelist)) {
+				$text .= "<option value='".$file[1]."'>".$file[1]."</option>\n";
+			}
+			$text .= "</select>";
 		} // end of htmlarea check.
 		//Extended news form textarea
 		$text .= "

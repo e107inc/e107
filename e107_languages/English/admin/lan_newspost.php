@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-02-11 02:29:42 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.8 $
+|     $Date: 2005-02-11 06:59:45 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("NWSLAN_1", "News story deleted.");
@@ -138,11 +138,11 @@ define("LAN_NEWS_18", "Info:");
 define("LAN_NEWS_19",  "Now");
 define("LAN_NEWS_21", "News updated in database.");
 define("LAN_NEWS_22", "Thumbnail");
-define("LAN_NEWS_23", "Add a unique thumbnail image to this news item.");
+define("LAN_NEWS_23", "Choose a thumbnail image for this news item.");
 define("LAN_NEWS_24", "Image + Auto-Thumbnail");
 define("LAN_NEWS_25", "Auto-Thumbnail size");
-define("LAN_NEWS_26", "add");
-define("LAN_NEWS_27", "Summary");   
+define("LAN_NEWS_26", "add new upload");
+define("LAN_NEWS_27", "Summary");
 
 define("LAN_NEWS_28", "Sticky");   
 define("LAN_NEWS_29", "Select if news item will be sticky");   

@@ -11,40 +11,43 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/other_news_menu/other_news_menu.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-10 08:27:59 $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-11 06:59:45 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
+require_once("othernews_parser.php");
 unset($text);
-global $OTHERNEWS_STYLE,$tp;
-
-$numb = ($OTHERNEWS_LIMIT) ? $OTHERNEWS_LIMIT : 10;
+global $OTHERNEWS_STYLE;
 
 if(!$OTHERNEWS_STYLE){
-   	$OTHERNEWS_STYLE = "<img src='".THEME."images/bullet2.gif' alt='bullet' />&nbsp;{OTHERNEWS_LINK}<br />";
+	$OTHERNEWS_STYLE = "<img src='".THEME."images/bullet2.gif' alt='bullet' />&nbsp;{OTHERNEWS_LINK}<br />";
 }
 
-if ($sql->db_Select("news", "*", "news_render_type=2 ORDER BY news_datestamp DESC LIMIT 0,$numb")) {
-	unset($text);
+if(!defined("OTHERNEWS_LIMIT")){
+	define("OTHERNEWS_LIMIT",10);
+}
+
+if(!defined("OTHERNEWS_ITEMLINKSTYLE")){
+	define("OTHERNEWS_ITEMLINKSTYLE","");
+}
+
+if(!defined("OTHERNEWS_CATLINKSTYLE")){
+	define("OTHERNEWS_CATLINKSTYLE","");
+}
+
+	$categories = array();
+	$sql->db_Select("news_category");
 	while ($row = $sql->db_Fetch()) {
-		extract($row);
-		if (check_class($news_class)) {
+		$categories['name'][$row['category_id']] = $row['category_name'];
+		$categories['icon'][$row['category_id']] = $row['category_icon'];
+	}
 
-            $search[0] = "/\{OTHERNEWS_LINK\}(.*?)/si";
-			$replace[0] = ($news_id) ? "<a href='".e_BASE."news.php?item.$news_id'>$news_title</a>" : "";
+	$numb = OTHERNEWS_LIMIT;
 
-            $search[1] = "/\{OTHERNEWS_SUMMARY\}(.*?)/si";
-			$replace[1] =  ($news_summary) ? $tp->toHTML($news_summary) : "" ;
-
-			$search[2] = "/\{OTHERNEWS_THUMBNAIL\}(.*?)/si";
-			$replace[2] = ($news_thumb) ? "<a href='news.php?extend.".$news_id."'><img src='".e_IMAGE."newspost_images/".$news_thumb."' alt='' style='border:0px' /></a>" : "";
-
-
-
-            $text .= preg_replace($search, $replace,$OTHERNEWS_STYLE);
-		  //	$text .= "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_BASE."news.php?item.$news_id'>$news_title</a><br />\n";
-		}
+if ($sql->db_Select("news", "*", "news_render_type=2 ORDER BY news_datestamp DESC LIMIT 0,$numb")) {
+	while ($row = $sql->db_Fetch()) {
+		$text .= othernews_parser($row,$OTHERNEWS_STYLE,$categories,OTHERNEWS_ITEMLINKSTYLE,OTHERNEWS_CATLINKSTYLE);
 	}
 	$ns->tablerender(TD_MENU_L1, $text, 'other_news2');
 }

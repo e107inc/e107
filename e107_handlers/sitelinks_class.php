@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-02-10 06:14:51 $
+|     $Revision: 1.26 $
+|     $Date: 2005-02-11 06:59:45 $
 |     $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -124,7 +124,7 @@ class sitelinks {
 			$linkInfo['link_name'] = $tmp[2];
 		}
 
-		if(defined("LINKSTART_HILITE") && eregi(str_replace("../","",$linkInfo['link_url']), e_SELF)){
+		if(defined("LINKSTART_HILITE") && strpos(e_SELF, str_replace("../","","/".$linkInfo['link_url'])) !== FALSE ){
 			$_link = $linkInfo['link_button'] ? preg_replace('/\<img.*\>/si', '', LINKSTART_HILITE) :  LINKSTART_HILITE;
 		}else{
 			$_link = $linkInfo['link_button'] ? preg_replace('/\<img.*\>/si', '', LINKSTART) :  LINKSTART;
