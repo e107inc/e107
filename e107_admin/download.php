@@ -122,7 +122,7 @@ if($action == "opt"){
         <td style='width:70%' class='forumheader3'>
         ".DOWLAN_55."
         </td>
-        <td style='width:30%' class='forumheader3' style='text-align:center'>
+        <td class='forumheader3' style='width:30%;text-align:left'>
         <select name='download_view' class='tbox'>".
         ($pref['download_view'] == 5 ? "<option selected='selected'>5</option>" : "<option>5</option>").
         ($pref['download_view'] == 10 ? "<option selected='selected'>10</option>" : "<option>10</option>").
@@ -133,10 +133,10 @@ if($action == "opt"){
         </td>
         </tr>
 
-        <td style='width:70%' class='forumheader3'>
+        <tr><td style='width:70%' class='forumheader3'>
         ".DOWLAN_56."
         </td>
-        <td style='width:30%' class='forumheader3' style='text-align:center'>
+        <td class='forumheader3' style='width:30%;text-align:left'>
 
         <select name='download_order' class='tbox'>".
         ($pref['download_order'] == "download_datestamp" ? "<option value='download_datestamp' selected='selected'>".DOWLAN_58."</option>" : "<option value='download_datestamp'>".DOWLAN_58."</option>").
@@ -146,10 +146,10 @@ if($action == "opt"){
         </select>
         </td>
         </tr>
-        <td style='width:70%' class='forumheader3'>
+        <tr><td style='width:70%' class='forumheader3'>
         ".DOWLAN_61."
         </td>
-        <td style='width:30%' class='forumheader3' style='text-align:center'>
+        <td class='forumheader3' style='width:30%;text-align:left'>
         <select name='download_sort' class='tbox'>".
         ($pref['download_sort'] == "ASC" ? "<option value='ASC' selected='selected'>".DOWLAN_62."</option>" : "<option value='ASC'>".DOWLAN_62."</option>").
         ($pref['download_sort'] == "DESC" ? "<option value='DESC' selected='selected'>".DOWLAN_63."</option>" : "<option value='DESC'>".DOWLAN_63."</option>")."
@@ -159,14 +159,14 @@ if($action == "opt"){
 
           <tr>
           <td style='width:70%' class='forumheader3'>".DOWLAN_100."</td>
-        <td style='width:30%' class='forumheader3' style='text-align:center'>".
+        <td class='forumheader3' style='width:30%;text-align:left'>".
           ($agree_flag ? "<input type='checkbox' name='agree_flag' value='1' checked='checked' />" : "<input type='checkbox' name='agree_flag' value='1' />")."</td>
           </tr>
 
-          <td style='width:70%' class='forumheader3'>
+          <tr><td style='width:70%' class='forumheader3'>
         ".DOWLAN_101."
         </td>
-        <td style='width:30%' class='forumheader3' style='text-align:center'>
+        <td class='forumheader3' style='width:30%;text-align:left'>
           <textarea class='tbox' name='agree_text' cols='59' rows='10'>$agree_text</textarea>
         </td>
         </tr>
@@ -186,29 +186,30 @@ if($action == "opt"){
 //$download -> show_options($action);
 
 require_once("footer.php");
+function headerjs(){
+$headerjs = "<script type=\"text/javascript\">
 
-echo "<script type=\"text/javascript\">
+    function addtext2(str){
+            document.getElementById('download_category_icon').value = str;
+    }
 
-function addtext2(str){
-        document.dlform.download_category_icon.value = str;
+
+    function confirm_(mode, download_id){
+            if(mode == 'cat'){
+                    var x=confirm(\"".DOWLAN_34." [ID: \" + download_id + \"]\");
+            }else{
+                    var x=confirm(\"".DOWLAN_33." [ID: \" + download_id + \"]\");
+            }
+    if(x)
+            if(mode == 'cat'){
+                    window.location='".e_SELF."?cat.confirm.' + download_id;
+            }else{
+                    window.location='".e_SELF."?main.confirm.' + download_id;
+            }
+    }
+    </script>";
+return $headerjs;
 }
-
-
-function confirm_(mode, download_id){
-        if(mode == 'cat'){
-                var x=confirm(\"".DOWLAN_34." [ID: \" + download_id + \"]\");
-        }else{
-                var x=confirm(\"".DOWLAN_33." [ID: \" + download_id + \"]\");
-        }
-if(x)
-        if(mode == 'cat'){
-                window.location='".e_SELF."?cat.confirm.' + download_id;
-        }else{
-                window.location='".e_SELF."?main.confirm.' + download_id;
-        }
-}
-</script>";
-
 exit;
 
 class download{
@@ -234,10 +235,10 @@ class download{
                                 extract($row);
                                 $text .= "<tr>
                                 <td style='width:5%' class='forumheader3'>$download_id</td>
-                                <td style='width:75%' class='forumheader3'>$download_name</a></td>
+                                <td style='width:75%' class='forumheader3'>$download_name</td>
                                 <td style='width:20%; text-align:center' class='forumheader3'>
-                                ".$rs -> form_button("submit", "main_edit", DOWLAN_8, "onClick=\"document.location='".e_SELF."?create.edit.$download_id'\"")."
-                                ".$rs -> form_button("submit", "main_delete", DOWLAN_9, "onClick=\"confirm_('create', $download_id)\"")."
+                                ".$rs -> form_button("submit", "main_edit_$download_id", DOWLAN_8, "onclick=\"document.location='".e_SELF."?create.edit.$download_id'\"")."
+                                ".$rs -> form_button("submit", "main_delete_$download_id", DOWLAN_9, "onclick=\"confirm_('create', $download_id)\"")."
                                 </td>
                                 </tr>";
                         }
@@ -323,7 +324,7 @@ class download{
 
                 $text = "
                 <div style='text-align:center'>
-                <form method='post' action='".e_SELF."?".e_QUERY."' name='myform'>
+                <form method='post' action='".e_SELF."?".e_QUERY."' id='myform'>
                 <table style='width:85%' class='fborder'>
                 <tr>
                 <td style='width:20%' class='forumheader3'>".DOWLAN_11.":</td>
@@ -344,13 +345,14 @@ class download{
                 </tr>
 
                 <tr>
-                <td style='width:20%; vertical-align:top' class='forumheader3'><u>".DOWLAN_12."</u>:</td>
+                <td style='width:20%; vertical-align:top' class='forumheader3'><span style='text-decoration:underline'>".DOWLAN_12."</span>:</td>
                 <td style='width:80%' class='forumheader3'>
                 <input class='tbox' type='text' name='download_name' size='60' value='$download_name' maxlength='200' />
                 </td>
                 </tr>
 
-                <td style='width:20%; vertical-align:top' class='forumheader3'><u>".DOWLAN_13."</u>:</td>
+                <tr>
+                <td style='width:20%; vertical-align:top' class='forumheader3'><span style='text-decoration:underline'>".DOWLAN_13."</span>:</td>
                 <td style='width:80%' class='forumheader3'>
                 <select name='download_url' class='tbox'>
                 <option></option>
@@ -418,7 +420,7 @@ class download{
                 </tr>
 
                 <tr>
-                <td style='width:20%' class='forumheader3'><u>".DOWLAN_18."</u>: </td>
+                <td style='width:20%' class='forumheader3'><span style='text-decoration:underline'>".DOWLAN_18."</span>: </td>
                 <td style='width:80%' class='forumheader3'>
                 <textarea class='tbox' name='download_description' cols='70' rows='5'>$download_description</textarea>
                 </td>
@@ -575,11 +577,11 @@ class download{
                                 extract($row);
                                 $text .= "<tr>
                                 <td style='width:5%; text-align:center' class='forumheader'>".($download_category_icon ? "<img src='".e_IMAGE."download_icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")."</td>
-                                <td colspan='2' style='width:70%' class='forumheader'><b>$download_category_name</b></a></td>
+                                <td colspan='2' style='width:70%' class='forumheader'><b>$download_category_name</b></td>
 
                                 <td style='width:20%; text-align:center' class='forumheader'>
-                                ".$rs -> form_button("submit", "main_edit", DOWLAN_8, "onClick=\"document.location='".e_SELF."?cat.edit.$download_category_id'\"")."
-                                ".$rs -> form_button("submit", "main_delete", DOWLAN_9, "onClick=\"confirm_('cat', $download_category_id)\"")."
+                                ".$rs -> form_button("submit", "main_edit_$download_category_id", DOWLAN_8, "onclick=\"document.location='".e_SELF."?cat.edit.$download_category_id'\"")."
+                                ".$rs -> form_button("submit", "main_delete_$download_category_id", DOWLAN_9, "onclick=\"confirm_('cat', $download_category_id)\"")."
                                 </td>
                                 </tr>";
                                 $parent_id = $download_category_id;
@@ -595,8 +597,8 @@ class download{
                                                 <td style='width:70%' class='forumheader3'>$download_category_name<br /><span class='smalltext'>$download_category_description</span></td>
                                                 <td style='width:5%; text-align:center' class='forumheader3'>$files</td>
                                                 <td style='width:20%; text-align:center' class='forumheader3'>
-                                                ".$rs -> form_button("submit", "main_edit", DOWLAN_8, "onClick=\"document.location='".e_SELF."?cat.edit.$download_category_id'\"")."
-                                                ".$rs -> form_button("submit", "main_delete", DOWLAN_9, "onClick=\"confirm_('cat', $download_category_id)\"")."
+                                                ".$rs -> form_button("submit", "main_edit_$download_category_id", DOWLAN_8, "onclick=\"document.location='".e_SELF."?cat.edit.$download_category_id'\"")."
+                                                ".$rs -> form_button("submit", "main_delete_$download_category_id", DOWLAN_9, "onclick=\"confirm_('cat', $download_category_id)\"")."
                                                 </td>
                                                 </tr>";
                                                 $sub_parent_id = $download_category_id;
@@ -609,8 +611,8 @@ class download{
                                                                 <td style='width:70%' class='forumheader3'>&nbsp;&nbsp;&nbsp;&nbsp;".DOWLAN_53.": $download_category_name<br />&nbsp;&nbsp;&nbsp;&nbsp;<span class='smalltext'>$download_category_description</span></td>
                                                                 <td style='width:5%; text-align:center' class='forumheader3'>$files</td>
                                                                 <td style='width:20%; text-align:center' class='forumheader3'>
-                                                                ".$rs -> form_button("submit", "main_edit", DOWLAN_8, "onClick=\"document.location='".e_SELF."?cat.edit.$download_category_id'\"")."
-                                                                ".$rs -> form_button("submit", "main_delete", DOWLAN_9, "onClick=\"confirm_('cat', $download_category_id)\"")."
+                                                                ".$rs -> form_button("submit", "main_edit_$download_category_id", DOWLAN_8, "onclick=\"document.location='".e_SELF."?cat.edit.$download_category_id'\"")."
+                                                                ".$rs -> form_button("submit", "main_delete_$download_category_id", DOWLAN_9, "onclick=\"confirm_('cat', $download_category_id)\"")."
                                                                 </td>
                                                                 </tr>";
                                                         }
@@ -646,7 +648,7 @@ class download{
 
                                         $frm_action = (isset($_POST['add_category'])) ? e_SELF."?cat" : e_SELF."?".e_QUERY;
                 $text = "<div style='text-align:center'>
-                <form method='post' action='{$frm_action}' name='dlform'>
+                <form method='post' action='{$frm_action}' id='dlform'>
                 <table style='width:auto' class='fborder'>
                 <tr>
                 <td style='width:30%' class='forumheader3'>".DOWLAN_37.": </td>
@@ -671,7 +673,7 @@ class download{
                         }
                         $text .= "</select>";
                 }
-                $text .= "<tr>
+                $text .= "</td></tr><tr>
                 <td style='width:30%' class='forumheader3'>".DOWLAN_12.": </td>
                 <td style='width:70%' class='forumheader3'>
                 <input class='tbox' type='text' name='download_category_name' size='40' value='$download_category_name' maxlength='100' />
@@ -688,11 +690,11 @@ class download{
                 <tr>
                 <td style='width:30%' class='forumheader3'>".DOWLAN_41.": </td>
                 <td style='width:70%' class='forumheader3'>
-                <input class='tbox' type='text' name='download_category_icon' size='60' value='$download_category_icon' maxlength='100' />
+                <input class='tbox' type='text' id='download_category_icon' name='download_category_icon' size='60' value='$download_category_icon' maxlength='100' />
 
                 <br />
-                <input class='button' type ='button' style=''width: 35px'; cursor:hand' size='30' value='".DOWLAN_42."' onClick='expandit(this)'>
-                <div style='display:none' style=&{head};>";
+                <input class='button' type ='button' style='cursor:hand' size='30' value='".DOWLAN_42."' onclick='expandit(this)' />
+                <div style='display:none;{head}' >";
 
 
 
@@ -701,7 +703,7 @@ class download{
                 }
 
                 $text .= "
-                </td>
+                </div></td>
                 </tr>
 
                 <tr>
