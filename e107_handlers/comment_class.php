@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-18 16:11:34 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-19 17:11:40 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -143,7 +143,7 @@ class comment {
 		$replace[3] = ($user_id ? LAN_99.": ".$user_comments : LAN_194)."<br />";
 
 		$highlight_search = FALSE;
-		if (isset($_POST['highlight_search'])) {
+		if (IsSet($_POST['highlight_search'])) {
 			$highlight_search = TRUE;
 		}
 
@@ -270,6 +270,10 @@ class comment {
 						echo "<b>".COMLAN_3."</b> ".LAN_11;
 					} else {
 						$e107cache->clear("comment");
+
+						$sql->db_Update("news", "news_comment_total=news_comment_total+1 WHERE news_id=$id");
+
+
 					}
 				}
 			}

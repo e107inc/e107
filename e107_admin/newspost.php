@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.12 $
-|   $Date: 2005-01-18 16:11:32 $
-|   $Author: streaky $
+|   $Revision: 1.13 $
+|   $Date: 2005-01-19 17:11:37 $
+|   $Author: stevedunstan $
 +---------------------------------------------------------------+
 
 */
@@ -88,7 +88,7 @@ if($delete == "sn" && $del_id){
         }
 }
 
-if(isset($_POST['submitupload']))
+if(IsSet($_POST['submitupload']))
 {
 	$pref['upload_storagetype'] = "1";
 	require_once(e_HANDLER."upload_handler.php");
@@ -101,17 +101,17 @@ if(isset($_POST['submitupload']))
 }
 
 //$_POST['news_title'] = $tp -> toDB($_POST['news_title']);
-if(isset($_POST['preview'])){
+if(IsSet($_POST['preview'])){
         $newspost -> preview_item($id);
 }
 
-if(isset($_POST['submit'])){
+if(IsSet($_POST['submit'])){
         $newspost -> submit_item($sub_action, $id);
         $action = "main";
         unset($sub_action, $id);
 }
 
-if(isset($_POST['create_category']))
+if(IsSet($_POST['create_category']))
 {
 	if($_POST['category_name'])
 	{
@@ -134,7 +134,7 @@ if(isset($_POST['create_category']))
 	}
 }
 
-if(isset($_POST['update_category']))
+if(IsSet($_POST['update_category']))
 {
 	if($_POST['category_name'])
 	{
@@ -145,7 +145,7 @@ if(isset($_POST['update_category']))
 	}
 }
 
-if(isset($_POST['save_prefs']))
+if(IsSet($_POST['save_prefs']))
 {
 	$pref['newsposts'] = $_POST['newsposts'];
 
@@ -255,7 +255,7 @@ class newspost{
                 global $sql, $rs, $ns, $tp;
                 $text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; height : 300px; overflow : auto; margin-left: auto; margin-right: auto;'>";
 
-                if(isset($_POST['searchquery'])){
+                if(IsSet($_POST['searchquery'])){
                         $query = "news_title REGEXP('".$_POST['searchquery']."') OR news_body REGEXP('".$_POST['searchquery']."') OR news_extended REGEXP('".$_POST['searchquery']."') ORDER BY news_datestamp DESC";
                 }else{
                         $query = "ORDER BY ".($sub_action ? $sub_action : "news_datestamp")." ".($id ? $id : "DESC")."  LIMIT $from, $amount";
@@ -615,7 +615,7 @@ class newspost{
                 <tr style='vertical-align: top;'>
                 <td colspan='2'  style='text-align:center' class='forumheader'>";
 
-                if(isset($_POST['preview'])){
+                if(IsSet($_POST['preview'])){
                         $text .= "<input class='button' type='submit' name='preview' value='".NWSLAN_24."' /> ";
                         if($id && $sub_action != "sn" && $sub_action != "upload"){
                                 $text .= "<input class='button' type='submit' name='submit' value='".NWSLAN_25."' /> ";

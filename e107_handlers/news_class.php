@@ -13,9 +13,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.15 $
-| $Date: 2005-01-18 16:11:36 $
-| $Author: streaky $
+| $Revision: 1.16 $
+| $Date: 2005-01-19 17:11:51 $
+| $Author: stevedunstan $
 +---------------------------------------------------------------+
 */
 
@@ -39,7 +39,7 @@ class news {
 				$message = "<strong>".LAN_NEWS_5."</strong>";
 			}
 		} else {
-			if ($sql->db_Insert("news", "0, '$news_title', '$news_body', '$news_extended', ".time().", ".USERID.", $cat_id, $news_allow_comments, $active_start, $active_end, '$news_class', '$news_rendertype' ")) {
+			if ($sql->db_Insert("news", "0, '$news_title', '$news_body', '$news_extended', ".time().", ".USERID.", $cat_id, $news_allow_comments, $active_start, $active_end, '$news_class', '$news_rendertype', 0 ")) {
 				$e_event->trigger("newspost", $news);
 				$message = LAN_NEWS_6;
 				$e107cache->clear("news.php");
@@ -100,7 +100,7 @@ class news {
 					";
 		}
 		$highlight_search = FALSE;
-		if (isset($_POST['highlight_search'])) {
+		if (IsSet($_POST['highlight_search'])) {
 			$highlight_search = TRUE;
 		}
 		if (!$comment_total) $comment_total = "0";
@@ -142,7 +142,7 @@ class news {
 			$NEWIMAGE = IMAGE_nonew_small;
 		}
 		$news_category = "<a href='".e_BASE."news.php?cat.".$category_id."'>".$category_name."</a>";
-		$news_author = "<a href='".e_BASE."user.php?id.".$admin_id."'>".$admin_name."</a>";
+		$news_author = "<a href='".e_BASE."user.php?id.".$user_id."'>".$user_name."</a>";
 		require_once(e_HANDLER."emailprint_class.php");
 		$ep = new emailprint;
 		$textemail = $ep->render_emailprint("news", $news_id, 1);
@@ -172,7 +172,7 @@ class news {
 		$search[6] = "/\{NEWSDATE\}(.*?)/si";
 		$replace[6] = $datestamp;
 		$search[7] = "/\{NEWSCOMMENTS\}(.*?)/si";
-		$replace[7] = ($news_allow_comments ? COMMENTOFFSTRING : "".$NEWIMAGE." <a href='".e_BASE."comment.php?comment.news.$news_id'>".COMMENTLINK.$comment_total."</a>");
+		$replace[7] = ($news_allow_comments ? COMMENTOFFSTRING : "".$NEWIMAGE." <a href='".e_BASE."comment.php?comment.news.$news_id'>".COMMENTLINK.$news_comment_total."</a>");
 		$search[8] = "/\{EMAILICON\}(.*?)/si";
 		$replace[8] = $textemail;
 		$search[9] = "/\{PRINTICON\}(.*?)/si";

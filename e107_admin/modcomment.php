@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/modcomment.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-18 16:11:32 $
-|     $Author: streaky $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-19 17:11:37 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -40,7 +40,7 @@ switch($table){
         ****************************************/
 }
 
-if(isset($_POST['moderate'])){
+if(IsSet($_POST['moderate'])){
         extract($_POST);
         if(is_array($comment_blocked)){
                 while (list ($key, $cid) = each ($comment_blocked)){
@@ -65,7 +65,7 @@ if(isset($_POST['moderate'])){
         $message = MDCLAN_1;
 }
 
-if(isset($message)){
+if(IsSet($message)){
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
@@ -108,6 +108,10 @@ require_once("footer.php");
 
 
         function delete_children($row, $cid){
+
+
+	//	echo "<pre>"; print_r($row); echo "</pre>$cid"; exit;
+
                 global $sql;
                 extract($row);
                 $tmp = explode(".", $row['comment_author']);
@@ -115,6 +119,7 @@ require_once("footer.php");
                 if($u_id >= 1){
                         $sql -> db_Update("user", "user_comments=user_comments-1 WHERE user_id='$u_id'");
                 }
+				$sql -> db_Update("news", "news_comment_total=news_comment_total-1 WHERE news_id='".$row['comment_item_id']."'");
                 $sql2 = new db;
                 if($sql2 -> db_Select("comments", "*", "comment_pid='$comment_id'")){
                                 while($row = $sql2 -> db_Fetch()){

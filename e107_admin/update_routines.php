@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-19 11:52:33 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-19 17:11:38 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -57,6 +57,16 @@ function update_61x_to_700($type){
 			 mysql_query('DROP TABLE `'.MPREFIX.'cache`'); // db cache is no longer an available option..
 			 $sql -> db_Update("banner", "banner_active='255' WHERE banner_active = '0' ");
 			 $sql -> db_Update("banner", "banner_active='0' WHERE banner_active = '1' ");
+
+
+			/*
+			changes by jalist 19/01/05:
+			altered structure of news table
+			*** PLEASE NOTE *** A script will have to be written to propagate the new table field with amount of comments for each news item ...
+			*/
+			mysql_query("ALTER TABLE ".MPREFIX."e107_news ADD 'news_comment_total' INT UNSIGNED NOT NULL");
+			/* end */
+
 
         }else{
            if(!$sql -> db_Select("userclass_classes", "*", "userclass_editclass='254'") && $sql -> db_Count("userclass_classes") > 0 ){

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2004-12-11 04:25:06 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.17 $
+|     $Date: 2005-01-19 17:10:10 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -170,11 +170,22 @@ if($action == "list") {
 	$ITEMVIEW2 = ITEMVIEW-$interval;
 	$ITEMVIEW1 = $interval;
 
+	/*
+	changes by jalist 19/01/05:
+	altered database query to reduce calls to db
+	*/
+
 	// normal newsitems
-	$query = "news_class != '255' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_render_type!=2 ORDER BY ".$order." DESC LIMIT $from,".$ITEMVIEW1;
+	$query = "SELECT #news.*, user_id, user_name, user_customtitle, category_name, category_icon FROM #news 
+LEFT JOIN #user ON #news.news_author = #user.user_id 
+LEFT JOIN #news_category ON #news.news_category = #news_category.category_id 
+WHERE news_class != '255' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_render_type!=2 ORDER BY ".$order." DESC LIMIT $from,".$ITEMVIEW1;
 
 	// news archive
-	$query2 = "news_class != '255' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_render_type!=2 ORDER BY ".$order." DESC LIMIT $from2,".$ITEMVIEW2;
+	$query2 = "SELECT #news.*, user_id, user_name, user_customtitle, category_name, category_icon FROM #news 
+LEFT JOIN #user ON #news.news_author = #user.user_id 
+LEFT JOIN #news_category ON #news.news_category = #news_category.category_id 
+WHERE news_class != '255' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_render_type!=2 ORDER BY ".$order." DESC LIMIT $from2,".$ITEMVIEW2;
 	// #### END ---------------------------------------------------------------------------------------------------
 }
 
@@ -182,46 +193,20 @@ checkNewsCache($cacheString,TRUE,TRUE);
 
 // #### normal newsitems, rendered via render_newsitem(), the $query is changed above (no other changes made) ---------
 ob_start();
-if(!$sql -> db_Select("news", "*", $query)){
+
+if(!$sql -> db_Select_gen($query))
+{
 	echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_462 : LAN_83)."</b></div><br /><br />";
 } else {
-	$sql2 = new db;
-	while (list($news['news_id'], $news['news_title'], $news['data'], $news['news_extended'], $news['news_datestamp'], $news['admin_id'], $news_category, $news['news_allow_comments'],  $news['news_start'], $news['news_end'], $news['news_class'], $news['news_rendertype']) = $sql -> db_Fetch()) {
+	while($news = $sql -> db_Fetch())
+	{
+		$news['category_id'] = $news['news_category'];
 		if (check_class($news['news_class'])) {
-			if ($news['admin_id'] == 1 && $pref['siteadmin']) {
-				$news['admin_name'] = $pref['siteadmin'];
-			} elseif(!$news['admin_name'] = getcachedvars($news['admin_id'])) {
-				$sql2 -> db_Select("user", "user_name", "user_id='".$news['admin_id']."' ");
-				list($news['admin_name']) = $sql2 -> db_Fetch();
-				cachevars($news['admin_id'], $news['admin_name']);
-			}
-			$news['category_id']=$news_category;
-
-			if (getcachedvars("news_cat_{$news_category}")) {
-				$news['category_name'] = getcachedvars("news_cat_name_{$news_category}");
-				$news['category_icon'] = getcachedvars("news_cat_icon_{$news_category}");
-			} else {
-				$sql2 -> db_Select("news_category", "*",  "category_id='$news_category' ");
-				list($news['category_id'], $news['category_name'], $news['category_icon']) = $sql2-> db_Fetch();
-				cachevars("news_cat_$news_category",$news_category);
-				cachevars("news_cat_name_$news_category",$news['category_name']);
-				cachevars("news_cat_icon_$news_category",$news['category_icon']);
-			}
-			$news['comment_total'] = $sql2 -> db_Count("comments", "(*)",  "WHERE comment_item_id='".$news['news_id']."' AND comment_type='0' ");
 			if($action == "item"){ unset($news['news_rendertype']); }
 			$ix -> render_newsitem($news);
 			// To hide messages for restricted news and only display valid news, comment the following else statement
 		} else {
 			if ($pref['subnews_hide_news']==1) {
-				if ($news['admin_id'] == 1 && $pref['siteadmin']) {
-					$news['admin_name'] = $pref['siteadmin'];
-				} elseif (!$news['admin_name'] = getcachedvars($news['admin_id'])) {
-					$sql2 -> db_Select("user", "user_name", "user_id='".$news['admin_id']."' ");
-					list($news['admin_name']) = $sql2 -> db_Fetch();
-					cachevars($news['admin_id'], $news['admin_name']);
-				}
-				$sql2 -> db_Select("news_category", "*",  "category_id='$news_category' ");
-				list($news['category_id'], $news['category_name'], $news['category_icon']) = $sql2-> db_Fetch();
 				$ix -> render_newsitem($news,"","userclass");
 			}
 		}
@@ -231,12 +216,14 @@ if(!$sql -> db_Select("news", "*", $query)){
 
 // #### new: news archive ---------------------------------------------------------------------------------------------
 if ($action != "item" && $action != 'list') { // do not show the newsarchive on the news.php?item.X page (but only on the news mainpage)
-	$sql2b = new db;
-	if (!$sql2b -> db_Select("news", "*", $query2)) {
-
-        }else{
-		while(list($news2['news_id'], $news2['news_title'], $news2['data'], $news2['news_extended'], $news2['news_datestamp'], $news2['admin_id'], $news2_category, $news2['news_allow_comments'],  $news2['news_start'], $news2['news_end'], $news2['news_class'], $news2['news_rendertype']) = $sql2b -> db_Fetch()) {
-
+	if($sql -> db_Select_gen($query))
+	{
+	
+	}
+	else
+	{
+			while($news2 = $sql -> db_Fetch())
+		{
 			if (check_class($news2['news_class'])) {
 				if($action == "item"){ unset($news2['news_rendertype']); }
 
@@ -260,22 +247,6 @@ if ($action != "item" && $action != 'list') { // do not show the newsarchive on 
 
 				$gen = new convert;
 				$news2['news_datestamp'] = $gen->convert_date($news2['news_datestamp'], "short");
-
-				if(getcachedvars("news_cat_{$news2_category}")) {
-					$news2['category_name'] = getcachedvars("news_cat_name_{$news_category}");
-					$news2['category_icon'] = getcachedvars("news_cat_icon_{$news_category}");
-				} else {
-					$sql2 -> db_Select("news_category", "*",  "category_id='$news2_category' ");
-
-					list($news['category_id'], $news['category_name'], $news['category_icon']) = $sql2-> db_Fetch();
-					cachevars("news_cat_$news_category",$news_category);
-					cachevars("news_cat_name_$news_category",$news['category_name']);
-					cachevars("news_cat_icon_$news_category",$news['category_icon']);
-				}
-				$news2['comment_total'] = $sql2 -> db_Count("comments", "(*)",  "WHERE comment_item_id='".$news['news_id']."' AND comment_type='0' ");
-				//                        if(!is_object($sql2)){$sql2 = new db;}
-				//                        $sql2 -> db_Select("news_category", "*",  "category_id='$news2_category' ");
-				//                        list($news2['category_id'], $news2['category_name'], $news2['category_icon']) = $sql2-> db_Fetch();
 
 				$textnewsarchive .= "
 				<div>
