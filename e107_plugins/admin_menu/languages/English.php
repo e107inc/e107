@@ -1,6 +1,6 @@
 <?php
 /*
-+---------------------------------------------------------------+
++ ----------------------------------------------------------------------------+
 |	e107 website system
 |
 |	©Steve Dunstan 2001-2002
@@ -9,14 +9,19 @@
 |
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|
+|     $Source: /cvs_backup/e107/e107_plugins/admin_menu/languages/English.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-05 10:15:59 $
+|     $Author: pholzmann $
++----------------------------------------------------------------------------+
 */
 
 define("ADMIN_MENU_L1", "Select ...");
 define("ADMIN_MENU_L2", "Admin");
 
 define("ADMIN_MENU_L3", "News");
-define("ADMIN_MENU_L4", "Catégories News");
+define("ADMIN_MENU_L4", "News Categories");
 define("ADMIN_MENU_L5", "Preferences");
 define("ADMIN_MENU_L6", "Menus");
 define("ADMIN_MENU_L7", "Administrators");
@@ -35,7 +40,8 @@ define("ADMIN_MENU_L17", "Submitted News");
 
 define("ADMIN_MENU_L18", "Banlist");
 define("ADMIN_MENU_L19", "Users");
-define("ADMIN_MENU_L20", "Maintainance");
+define("ADMIN_MENU_L20", "Maintenance");
 define("ADMIN_MENU_L21", "Logout");
+define("ADMIN_MENU_L22", "Cache");
 
 ?>

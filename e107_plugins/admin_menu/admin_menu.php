@@ -1,5 +1,21 @@
 <?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107/e107_plugins/admin_menu/admin_menu.php,v $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-05 10:15:34 $
+|     $Author: pholzmann $
++----------------------------------------------------------------------------+
+*/
 require_once(e_HANDLER."userclass_class.php");
 
 $lan_file=e_PLUGIN."admin_menu/languages/".e_LANGUAGE.".php";
@@ -10,13 +26,14 @@ if(file_exists($lan_file)){
 }
 if(ADMIN == TRUE){
 	$amtext = "<div style='text-align:center'>
-	<select name='activate' onChange='urljump(this.options[selectedIndex].value)' class='tbox'>
+	<select name='activate' onchange='urljump(this.options[selectedIndex].value)' class='tbox'>
 	<option>".ADMIN_MENU_L1."</option>\n";
 	$amtext .= wad(e_ADMIN."newspost.php", ADMIN_MENU_L3, "H");
 	$amtext .= wad(e_ADMIN."newspost.php?cat", ADMIN_MENU_L4, "7");
 	$amtext .= wad(e_ADMIN."prefs.php", ADMIN_MENU_L5, "Site Prefs", "1");
 	$amtext .= wad(e_ADMIN."menus.php", ADMIN_MENU_L6, "2");
 	$amtext .= wad(e_ADMIN."administrator.php", ADMIN_MENU_L7, "3");
+	$amtext .= wad(e_ADMIN."cache.php", ADMIN_MENU_L22, "0");
 
 	$amtext .= wad(e_ADMIN."updateadmin.php", ADMIN_MENU_L8, "");
 	$amtext .= wad(e_ADMIN."forum.php", ADMIN_MENU_L9, "5");
