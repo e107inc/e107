@@ -4,9 +4,6 @@
 
 $style = "leftmenu";
 $prehelp = $tp -> parseTemplate('{ADMIN_HELP}');
-$preleft = $tp -> parseTemplate('{ADMIN_PWORD}');
-$preleft .= $tp -> parseTemplate('{ADMIN_MSG}');
-$preleft .= $tp -> parseTemplate('{ADMIN_PLUGINS}');
 
 $style = "rightmenu";
 $pre_admin_menu = $tp -> parseTemplate('{ADMIN_MENU=pre}');
@@ -111,7 +108,10 @@ if ($prehelp!='') {
 	$ADMIN_HEADER .= "{ADMIN_SITEINFO}";
 }
 
-$ADMIN_HEADER .= $preleft."<br />
+$ADMIN_HEADER .= "{ADMIN_PWORD}
+{ADMIN_MSG}
+{ADMIN_PLUGINS}
+<br />
 </td></tr></table>
 </td>
 <td class='default_menu'>
