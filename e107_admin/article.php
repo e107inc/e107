@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107/e107_admin/article.php,v $
-|   $Revision: 1.26 $
-|   $Date: 2004-08-31 16:02:51 $
+|   $Revision: 1.27 $
+|   $Date: 2004-09-03 08:21:28 $
 |   $Author: loloirie $
 
 +---------------------------------------------------------------+
@@ -165,7 +165,7 @@ if(IsSet($_POST['preview']))
 	$dt = (strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]", "[img]../", $_POST['data']));
 	$dt = $aj -> formtpa($dt,"admin"); $dt = $aj -> tpa($dt,"off","admin");
 	$content_summary = $aj -> formtpa($_POST['content_summary'],"admin"); $cu= $aj -> tpa($content_summary,"nobreak","admin");
-	$ca = ($_POST['content_author'] && $_POST['content_author'] != ARLAN_84 ? $_POST['content_author'] : ADMINNAME);
+	$ca = $aj -> formtpa($_POST['content_author'] && $_POST['content_author'] != ARLAN_84 ? $_POST['content_author'] : ADMINNAME);
 	$text = "<i>".ARLAN_101." $ca</i><br /><span class='smalltext'>".$datestamp."</span><br />";
 	if( $cs != '' ){$text .= '<br />'.ARLAN_18.": $cs";}
 	if( $cu != '' ){$text .= '<br />'.ARLAN_19.": $cu";}
@@ -185,6 +185,9 @@ if(IsSet($_POST['preview']))
 	$data = $aj -> formtpa(str_replace("../", "", $_POST['data']),"admin");
 	$content_parent = $_POST['category'];
 	$content_class = $_POST['a_class'];
+	$content_author = $aj -> formtpa($_POST['content_author']);
+	$content_author_email = $aj -> formtpa($_POST['content_author_email']);
+		  
 	$ns -> tablerender($content_heading, $text);
 }
 
