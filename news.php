@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-02-08 03:40:56 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.33 $
+|     $Date: 2005-02-08 08:22:36 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 require_once(e_HANDLER."news_class.php");
 require_once(HEADERF);
-	
+
 if (isset($NEWSHEADER)) {
 	require_once(FOOTERF);
 	exit;
@@ -31,32 +31,32 @@ if (!defined("ITEMVIEW"))
 	if (empty($pref['newsposts']))
 	{
 		define("ITEMVIEW", 15);
-	} 
+	}
 	else
 	{
 		define("ITEMVIEW", $pref['newsposts']);
 	}
 }
 if(ADMIN && file_exists("install.php")){ echo "<div class='installe' style='text-align:center'><b>*** ".LAN_NEWS_3." ***</b><br />".LAN_NEWS_4."</div><br /><br />"; }
-	
+
 if (!is_object($tp)) {
 	$tp = new e_parse;
 }
-	
+
 if (e_QUERY) {
 	$tmp = explode(".", e_QUERY);
 	$action = $tmp[0];
 	$sub_action = $tmp[1];
 	$id = $tmp[2];
 }
-	
+
 $from = (!is_numeric($action) || !e_QUERY ? 0 : ($action ? $action : e_QUERY));
 if (isset($tmp[1]) && $tmp[1] == 'list') {
 	$action = 'list';
 	$from = intval($tmp[0]);
 	$sub_action = intval($tmp[2]);
 }
-	
+
 $ix = new news;
 if ($action == 'cat') {
 	checkNewsCache($cacheString);
@@ -70,7 +70,7 @@ if ($action == 'cat') {
 		list($category_id, $category_name, $category_icon) = $sql->db_Fetch();
 		$category_name = $tp->toHTML($category_name);
 		$category_icon = e_IMAGE."newsicons/".$category_icon;
-		 
+
 		$count = $sql->db_SELECT("news", "*", "news_category='$category' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY news_datestamp DESC");
 		while ($row = $sql->db_Fetch()) {
 			extract($row);
@@ -92,7 +92,7 @@ if ($action == 'cat') {
 			} else {
 				$count --;
 			}
-			 
+
 		}
 		$text = "<img src='$category_icon' alt='' /><br />". LAN_307.$count."
 			<br /><br />".$text;
@@ -102,7 +102,7 @@ if ($action == 'cat') {
 		exit;
 	}
 }
-	
+
 if ($action == "extend") {
 	checkNewsCache($cacheString);
 	ob_start();
@@ -117,8 +117,8 @@ if ($action == "extend") {
 	require_once(FOOTERF);
 	exit;
 }
-	
-	
+
+
 // --->wmessage
 if (!$pref['wmessage_sc']) {
 if (!defined("WMFLAG")) {
@@ -138,17 +138,17 @@ if (!defined("WMFLAG")) {
 }
 }
 // --->wmessage end
-	
+
 if ($pref['nfp_display'] == 1)
 {
 	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 }
-	
+
 if (Empty($order))
 {
 	$order = "news_datestamp";
 }
-	
+
 if ($action == "list")
 {
 	$sub_action = intval($sub_action);
@@ -198,7 +198,7 @@ elseif(strstr(e_QUERY, "day"))
 else
 {
 	$news_total = $sql->db_Count("news", "(*)", "WHERE news_class IN (".USERCLASS_LIST.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().") AND news_render_type!=2" );
-	 
+
 	// #### changed for news archive ------------------------------------------------------------------------------
 	if(!isset($pref['newsposts_archive']))
 	{
@@ -208,18 +208,18 @@ else
 	$from2 = $interval+$from;
 	$ITEMVIEW2 = ITEMVIEW-$interval;
 	$ITEMVIEW1 = $interval;
-	 
+
 	/*
 	changes by jalist 19/01/05:
 	altered database query to reduce calls to db
 	*/
-	 
+
 	// normal newsitems
 	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 		WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type!=2 ORDER BY ".$order." DESC LIMIT $from,".$ITEMVIEW1;
-	 
+
 	// news archive
 	$query2 = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -227,7 +227,7 @@ else
 		WHERE news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type!=2 ORDER BY ".$order." DESC LIMIT $from2,".$ITEMVIEW2;
 	// #### END ---------------------------------------------------------------------------------------------------
 }
-	
+
 checkNewsCache($cacheString, TRUE, TRUE);
 
 /*
@@ -277,15 +277,15 @@ if($pref['news_unstemplate']) {
 	$thispostday = 0;
 	$pref['newsHeaderDate'] = 1;
 	$gen = new convert();
-		
+
 	if (!defined("DATEHEADERCLASS")) {
 		define("DATEHEADERCLASS", "nextprev");
 		// if not defined in the theme, default class nextprev will be used for new date header
 	}
-		
+
 	// #### normal newsitems, rendered via render_newsitem(), the $query is changed above (no other changes made) ---------
 	ob_start();
-		
+
 	if (!$sql->db_Select_gen($query)) {
 		echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_462 : LAN_83)."</b></div><br /><br />";
 	} else {
@@ -305,7 +305,7 @@ if($pref['news_unstemplate']) {
 	}
 }
 // ##### --------------------------------------------------------------------------------------------------------------
-	
+
 // #### new: news archive ---------------------------------------------------------------------------------------------
 if ($action != "item" && $action != 'list' && $pref['newsposts_archive']) {
 	// do not show the newsarchive on the news.php?item.X page (but only on the news mainpage)
@@ -332,10 +332,10 @@ if ($action != "item" && $action != 'list' && $pref['newsposts_archive']) {
 				$replace[4] = '\\2';
 				$news2['news_title'] = preg_replace($search, $replace, $news2['news_title']);
 				// End of code from Lisa
-				 
+
 				$gen = new convert;
 				$news2['news_datestamp'] = $gen->convert_date($news2['news_datestamp'], "short");
-				 
+
 				$textnewsarchive .= "
 					<div>
 					<table style='width:98%;'>
@@ -352,66 +352,122 @@ if ($action != "item" && $action != 'list' && $pref['newsposts_archive']) {
 	}
 }
 // #### END -----------------------------------------------------------------------------------------------------------
-	
+
 require_once(e_HANDLER."np_class.php");
 if ($action != "item") {
 	$ix = new nextprev("news.php", $from, ITEMVIEW, $news_total, LAN_84, ($action == "list" ? $action.".".$sub_action : ""));
 }
-	
+
 if ($pref['nfp_display'] == 2) {
 	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 }
-	
+
 // ==CNN Style Categories. ============================================================
-$nbr_cols = 1;
-if(isset($pref['nbr_cols']))
-{
-	$nbr_cols = $pref['nbr_cols'];
-}
-$nbr_lst = 5;
-$line_clr = "black";
-	
+
+	$nbr_cols = (isset($pref['nbr_cols'])) ? $pref['nbr_cols'] : 1;
+
+	if(!$NEWSITEM_AMOUNT){
+		$NEWSITEM_AMOUNT =  3;
+	}
+
+	if(!$NEWSCAT){
+		$NEWSCAT = "
+		<div style='padding:5px'><div style='border-bottom:1px inset black; font-weight:bold;padding-bottom:1px;margin-bottom:5px'>
+		{NEWSCAT_CATICON}&nbsp;
+		{NEWSCAT_CATNAME}
+		</div>
+		{NEWSCAT_ITEM}
+		</div>
+	";
+	}
+
+	if(!$NEWSCAT_ITEM){
+		$NEWSCAT_ITEM = "
+		<div style='width:100%;padding-bottom:2px'>
+		<table style='width:100%' cellpadding='0' cellspacing='0' border='0'>
+		<tr>
+		<td style='width:2px;vertical-align:top'>&#8226;</td>
+		<td style='text-align:left;vertical-align:top;padding-left:3px'>
+		{NEWSCAT_TITLE}
+		<br />
+		</td></tr>
+		</table>
+		</div>
+	";
+	}
+
+	if(!$NEWSCAT_CATLINKSTYLE){
+		$NEWSCAT_CATLINKSTYLE = "text-decoration:none;";
+	}
+	if(!$NEWSCAT_ITEMLINKSTYLE){
+	$NEWSCAT_ITEMLINKSTYLE = "text-decoration:none;";
+	}
+    if(!$NEWSCAT_STYLE){
+	$NEWSCAT_STYLE = "width:96%";
+	}
+
+
+
 if (isset($pref['news_cats']) && $pref['news_cats'] == '1') {
 	$sql2 = new db;
 	$sql2->db_Select("news_category", "*", "category_id!='' ORDER BY category_name ASC");
-	 
-	$text3 .= "<table border='0' style='width:96%' align='center' cellpadding='3' cellspacing='3'><tr>\n";
+
+	$text3 = "\n\n\n
+	<div style='width:100%;text-align:center;margin-left:auto;margin-right:auto'>
+	<table  style='$NEWSCAT_STYLE'  cellpadding='0' cellspacing='0'>
+	<tr>\n";
 	$t = 0;
 	while ($row3 = $sql2->db_Fetch()) {
 		extract($row3);
-		$category_name = $tp->toHTML($category_name);
-		$category_icon = e_IMAGE."newsicons/".$category_icon;
+
+		$search[0] = "/\{NEWSCAT_CATICON\}(.*?)/si";
+		$replace[0] = ($category_icon) ? "<a href='news.php?cat.".$category_id."'><img src='".e_IMAGE."newsicons/".$category_icon."' alt='' style='border:0px' /></a>" : "";
+
+		$search[1] = "/\{NEWSCAT_CATNAME\}(.*?)/si";
+		$replace[1] = ($category_icon) ? "<a href='news.php?cat.".$category_id."' style='$NEWSCAT_CATLINKSTYLE' >".$tp->toHTML($category_name)."</a>" : "";
+
 		$wid = floor(100/$nbr_cols);
-		$text3 .= "<td style='vertical-align:top; width:$wid%;'>\n";
-		$text3 .= "<div style='border-bottom:1px inset $line_clr; font-weight:bold;padding-bottom:1px;margin-bottom:5px'><img src='$category_icon' alt='' />&nbsp;<a href='news.php?cat.".$category_id."' style='text-decoration:none' >$category_name</a></div>";
-		//  $text3 .= "</td>";
-		 
-		$count = $sql->db_SELECT("news", "*", "news_category='$category_id' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")  ORDER BY news_datestamp DESC LIMIT 0,$nbr_lst");
-		 
+		$text3 .= "\n<td style='vertical-align:top; width:$wid%;'>\n";
+
+
+// Grab each news item. ==============
+		$count = $sql->db_SELECT("news", "*", "news_category='$category_id' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")  ORDER BY news_datestamp DESC LIMIT 0,$NEWSITEM_AMOUNT");
 		while ($row = $sql->db_Fetch()) {
 			extract($row);
-			$text3 .= "<div style='width:100%'><table style='width:100%' cellpadding='0' cellspacing='0' border='0'>\n";
 			if (check_class($news_class)) {
-				$news_title = $tp->toHTML($news_title);
-				if ($news_title == "") {
-					$news_title = "Untitled";
-				}
-				//      $datestamp = $gen->convert_date($news_datestamp, "short");
-				$text3 .= "<tr><td style='width:2px;vertical-align:top'>•</td>\n";
-				$text3 .= "<td style='text-align:left;vertical-align:top;padding-left:2px'><a href='news.php?extend.".$news_id."'>".$news_title."</a></td></tr>\n";
+
+			$search[3] = "/\{NEWSCAT_TITLE\}(.*?)/si";
+				$replace[3] = ($news_title) ? "<a href='news.php?extend.".$news_id."' style='$NEWSCAT_ITEMLINKSTYLE'>".$tp->toHTML($news_title)."</a>":"<a href='news.php?extend.".$news_id."'>Untitled</a>";
+
+				$search[4] = "/\{NEWSCAT_SUMMARY\}(.*?)/si";
+				$replace[4] =  ($news_summary) ? $tp->toHTML($news_summary) : "" ;
+
+				$search[5] = "/\{NEWSCAT_THUMBNAIL\}(.*?)/si";
+				$replace[5] = ($news_thumb) ? "<a href='news.php?extend.".$news_id."'><img src='".e_IMAGE."newspost_images/".$news_thumb."' alt='' style='border:0px' /></a>" : "";
+
+				$textbody .= preg_replace($search, $replace,$NEWSCAT_ITEM);
 			}
-			$text3 .= "</table></div>\n";
+
 		}
-		 
-		$text3 .= "</td>";
+			$search[6] = "/\{NEWSCAT_ITEM\}(.*?)/si";
+			$replace[6] = $textbody;
+
+		$text3 .= preg_replace($search, $replace,$NEWSCAT);
+		unset($textbody);
+
+		$text3 .= "\n</td>\n";
 		if ($t == ($nbr_cols-1)) {
-			$text3 .= "</tr><tr><td colspan='$nbr_cols' style='height:15px'></td></tr><tr>";
+		 	$text3 .= "</tr>
+
+			<tr>";
 			$t = 0;
 		} else {
 			$t++;
 		}
 	}
-	$text3 .= "</tr></table>";
+	$text3 .= "</tr></table></div>";
+
+
 	$ns->tablerender("News Categories", $text3);
 }
 setNewsCache($cacheString);
@@ -425,7 +481,7 @@ function setNewsCache($cacheString) {
 	}
 	ob_end_flush();
 }
-	
+
 function checkNewsCache($cacheString, $np = FALSE, $nfp = FALSE) {
 	global $pref, $aj, $e107cache;
 	$cache_data = $e107cache->retrieve($cacheString);
@@ -442,5 +498,5 @@ function checkNewsCache($cacheString, $np = FALSE, $nfp = FALSE) {
 		exit;
 	}
 }
-	
+
 ?>

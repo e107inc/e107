@@ -13,8 +13,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.23 $
-| $Date: 2005-02-07 10:31:35 $
+| $Revision: 1.24 $
+| $Date: 2005-02-08 08:22:36 $
 | $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -32,7 +32,7 @@ class news {
 		if ($news_id) {
 			$vals = $update_datestamp ? "news_datestamp = ".time().", " :
 			 "";
-			$vals .= " news_title='$news_title', news_body='$news_body', news_extended='$news_extended', news_category='$cat_id', news_allow_comments='$news_allow_comments', news_start='$active_start', news_end='$active_end', news_class='$news_class', news_render_type='$news_rendertype' , news_image='$news_image', news_thumb='$news_thumb' WHERE news_id='$news_id' ";
+			$vals .= " news_title='$news_title', news_body='$news_body', news_extended='$news_extended', news_category='$cat_id', news_allow_comments='$news_allow_comments', news_start='$active_start', news_end='$active_end', news_class='$news_class', news_render_type='$news_rendertype' , news_summary='$news_summary', news_thumb='$news_thumb' WHERE news_id='$news_id' ";
 			if ($sql->db_Update("news", $vals)) {
 				$e_event->trigger("newsupd", $news);
 				$message = LAN_NEWS_21;
@@ -41,7 +41,7 @@ class news {
 				$message = "<strong>".LAN_NEWS_5."</strong>";
 			}
 		} else {
-			if ($sql->db_Insert("news", "0, '$news_title', '$news_body', '$news_extended', ".time().", ".USERID.", $cat_id, $news_allow_comments, $active_start, $active_end, '$news_class', '$news_rendertype', 0 , '$news_image', '$news_thumb' ")) {
+			if ($sql->db_Insert("news", "0, '$news_title', '$news_body', '$news_extended', ".time().", ".USERID.", $cat_id, $news_allow_comments, $active_start, $active_end, '$news_class', '$news_rendertype', 0 , '$news_summary', '$news_thumb' ")) {
 				$e_event->trigger("newspost", $news);
 				$message = LAN_NEWS_6;
 				$e107cache->clear("news.php");
@@ -210,6 +210,13 @@ class news {
 		} else {
 			$replace[12] = "";
 		}
+
+		$search[13] = "/\{NEWSSUMMARY\}(.*?)/si";
+		$replace[13] = ($news_summary) ? $news_summary."<br />" : "";
+
+		$search[14] = "/\{NEWSTHUMBNAIL\}(.*?)/si";
+		$replace[14] = ($news_thumb) ? "<img src='".e_IMAGE."newspost_images/".$news_thumb."' alt='' style='border:0px' />" : "";
+
 		if (function_exists("news_style")) {
 			$NEWSSTYLE = news_style($news);
 		}

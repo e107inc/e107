@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-02-07 12:52:38 $
-|     $Author: stevedunstan $
+|     $Revision: 1.31 $
+|     $Date: 2005-02-08 08:21:07 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -80,7 +80,7 @@ function update_61x_to_700($type) {
 
 		mysql_query("ALTER TABLE `".MPREFIX.".content` CHANGE `content_content` `content_content` LONGTEXT NOT NULL");
 		/* end */
-		
+
 		/*
 		changes by jalist 07/02/2005:
 		description stat tables no longer required
@@ -238,15 +238,17 @@ function update_61x_to_700($type) {
 		) TYPE=MyISAM;
 		");
 		// News Updates
-		mysql_query("ALTER TABLE `".MPREFIX."news` ADD `news_image` TEXT NOT NULL ,ADD `news_thumb` TEXT NOT NULL ;");
-
-	} else {
+		mysql_query("ALTER TABLE `".MPREFIX."news` ADD `news_image` TEXT NOT NULL ,ADD `news_thumb` VARCHAR( 60 ) DEFAULT NULL ;");
+		mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_image` `news_summary` TEXT DEFAULT NULL;");
+		mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_thumb` `news_thumb` VARCHAR( 60 ) DEFAULT NULL;");
+} else {
 		// check if update is needed.
 		// FALSE = needed, TRUE = not needed.
 		// return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."generic");
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."news");
-		$columns = mysql_num_fields($fields);
-		return ($columns == 15) ? TRUE : FALSE;
+		$fieldname = mysql_field_name($fields,13);
+	   //	print_r($columns);
+	 	return ($fieldname == "news_summary") ? TRUE : FALSE;
 		/*if ($sql->db_Select("plugin", "plugin_path", "plugin_path='chatbox_menu'")) {
 			return TRUE;
 		} else {
