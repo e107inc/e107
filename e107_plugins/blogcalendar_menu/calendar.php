@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/blogcalendar_menu/calendar.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-27 19:52:36 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-08 13:33:45 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 | Based on code by: Thomas Bouve (crahan@gmx.net) and
 | and Based on: PHP Calendar by Keith Devens http://www.keithdevens.com/software/php_calendar/
@@ -75,14 +75,14 @@ function calendar($req_day, $req_month, $req_year, $links = NULL, $ws = "sunday"
 			$tablerow++;
 		}
 		if ($day_of_month == $req_day) {
-			$day_style = ($links[$day_of_month] ? "indent" : "forumheader3");
+			$day_style = isset($links[$day_of_month]) ? "indent" : "forumheader3";
 		} else {
-			$day_style = ($links[$day_of_month] ? "indent" : "forumheader3");
+			$day_style = isset($links[$day_of_month]) ? "indent" : "forumheader3";
 		}
 		$calendar .= "<td class='$day_style' style='padding: ".$padding."px;'><span class='smalltext'>";
-		$calendar .= ($links[$day_of_month]? "<a href='".$links[$day_of_month]."'>":"");
+		$calendar .= isset($links[$day_of_month]) ? "<a href='".$links[$day_of_month]."'>":"";
 		$calendar .= $day_of_month;
-		$calendar .= ($links[$day_of_month]? "</a>":"");
+		$calendar .= isset($links[$day_of_month]) ? "</a>" : "";
 		$calendar .= "</span></td>";
 		$day_of_month++;
 		$day_of_week++;
