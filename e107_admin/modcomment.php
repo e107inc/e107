@@ -53,13 +53,7 @@ if(IsSet($_POST['moderate'])){
 			}
 		}
 	}
-
-	if($table == "news" || $table == "poll"){
-		clear_cache("comment.php?".e_QUERY);
-	}else if($table == "content"){
-		$eq = str_replace("content.", "", e_QUERY);
-		clear_cache("article.php?".$eq);
-	}
+	clear_cache();
 	$message = MDCLAN_1;
 }
 
