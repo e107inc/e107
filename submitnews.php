@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/submitnews.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-12-13 11:52:31 $
-|     $Author: sweetas $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-08 23:23:15 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -112,8 +112,8 @@ if($_FILES['file_userfile']){
                if($error == FALSE){
                 if(!file_exists(e_IMAGE."newspost_images/". $newname)){$newname = ""; }
                 $sql -> db_Insert("submitnews", "0, '$user', '$email', '$itemtitle', '".intval($_POST['cat_id'])."','$item', '".time()."', '$ip', '0', '$newname' ");
-		$edata_sn = array("user" => $user, "email" => $email, "itemtitle" => $itemtitle, "catid" => intval($_POST['cat_id']), "item" => $item, "ip" => $ip, "newname" => $newname);
-		$e_event -> trigger("subnews", $edata_sn);
+                $edata_sn = array("user" => $user, "email" => $email, "itemtitle" => $itemtitle, "catid" => intval($_POST['cat_id']), "item" => $item, "ip" => $ip, "newname" => $newname);
+                $e_event -> trigger("subnews", $edata_sn);
                 $ns -> tablerender(LAN_133, "<div style='text-align:center'>".LAN_134."</div>");
                 require_once(FOOTERF);
                 exit;
@@ -166,7 +166,7 @@ $text .= " <tr>
 <tr>
 <td style='width:20%' class='forumheader3'>".LAN_135."</td>
 <td style='width:80%' class='forumheader3'>
-<textarea class='tbox' id='item' name='item' cols='70' rows='10'></textarea>
+<textarea class='tbox' id='item' name='item' cols='70' rows='10' style='width:90%'></textarea>
 </td>
 </tr>\n";
 
