@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.94 $
-|     $Date: 2005-03-09 21:04:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.95 $
+|     $Date: 2005-03-10 05:40:44 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -960,7 +960,8 @@ function init_session() {
 		LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id
 		WHERE u.user_id='{$uid}' AND md5(u.user_password)='{$upw}'
 		";
-		if ($sql->db_Select_gen($qry))
+		// if ($sql->db_Select_gen($qry))
+		if ($sql->db_Select("user", "*", "user_id='$uid' AND md5(user_password)='$upw'"))
 		{
 			$result=$sql->db_Fetch();
 			extract($result);
