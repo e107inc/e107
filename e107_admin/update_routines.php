@@ -37,14 +37,15 @@ function update_616_to_617($type){
 	global $sql;
 	if($type=="do"){
 		mysql_query("ALTER TABLE  ".MPREFIX."poll ADD poll_comment TINYINT( 3 ) UNSIGNED DEFAULT '1' NOT NULL ");
+		mysql_query("ALTER TABLE  ".MPREFIX."menus ADD menu_pages TEXT NOT NULL ");
 		$sql2 = new db;
 		$sql2 -> db_Update("poll", "poll_comment='1' WHERE poll_id!='0'");
 	} else {
 		global $mySQLdefaultdb;
-		$fields = mysql_list_fields($mySQLdefaultdb,MPREFIX."poll");
+		$fields = mysql_list_fields($mySQLdefaultdb,MPREFIX."menus");
 		$columns = mysql_num_fields($fields);
 		for ($i = 0; $i < $columns; $i++) {
-	   	if("poll_comment" == mysql_field_name($fields, $i)){return TRUE;}
+	   	if("menu_pages" == mysql_field_name($fields, $i)){return TRUE;}
 		}
 		return FALSE;
 	}
