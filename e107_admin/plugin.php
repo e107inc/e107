@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2005-03-24 09:21:11 $
-|     $Author: stevedunstan $
+|     $Revision: 1.39 $
+|     $Date: 2005-03-24 22:54:58 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -32,7 +32,7 @@ $plugin = new e107plugin;
 $tmp = explode('.', e_QUERY);
 $action = $tmp[0];
 $id = intval($tmp[1]);
-			
+
 if (isset($_POST['upload'])) {
 	if (!$_POST['ac'] == md5(ADMINPWCHANGE)) {
 		exit;
@@ -225,7 +225,7 @@ if (isset($_POST['confirm'])) {
 		if ($eplug_userclass) {
 			$plugin->manage_userclass('remove', $eplug_userclass);
 		}
-		
+
 		$plugin -> manage_search('remove', $eplug_folder);
 
 		$sql->db_Update('plugin', "plugin_installflag=0, plugin_version='{$eplug_version}' WHERE plugin_id='{$id}' ");
@@ -316,7 +316,7 @@ if ($action == 'upgrade') {
 			$sql->db_Update("core", "e107_value='$tmp' WHERE e107_name='user_entended' ");
 		}
 	}
-	
+
 	$plugin -> manage_search('upgrade', $eplug_folder);
 
 	$text .= '<br />'.$eplug_upgrade_done;
@@ -390,6 +390,13 @@ foreach($pluginList as $plug) {
 		$plugin_icon = "<a title='{$conf_title}' href='".e_PLUGIN.$eplug_folder.'/'.$eplug_conffile."' >".$plugin_icon.'</a>';
 	}
 
+    if($plug['plugin_installflag'] != $installed_stat_cur){
+		$installed_status = ($plug['plugin_installflag']==1)? EPL_ADLAN_22 : EPL_ADLAN_23;
+		$text .= ($plug['plugin_installflag'] == 0) ? "</table><br /><br /><table style='".ADMIN_WIDTH."' class='fborder'>" : "";
+		$text .= "<tr><td class='fcaption' colspan='3'>".$installed_status."</td></tr>";
+	}
+    $installed_stat_cur = $plug['plugin_installflag'];
+
 	$text .= "
 		<tr>
 		<td class='forumheader3' style='width:160px; text-align:center; vertical-align:top'>
@@ -400,10 +407,10 @@ foreach($pluginList as $plug) {
 		<br />";
 
 
-	$text .="
+	$text .="</td>
 		</tr></table>
 		</td>
-		<td class='forumheader3' style='width:70%;vertical-align:top'>
+		<td class='forumheader3' style='vertical-align:top'>
 		<table cellspacing='3' style='width:98%'>
 		<tr><td style='vertical-align:top;width:15%'><b>".EPL_ADLAN_12."</b>:</td><td style='vertical-align:top'><a href='mailto:$eplug_email' title='$eplug_email'>$eplug_author</a>&nbsp;";
         if($eplug_url){
@@ -416,15 +423,15 @@ foreach($pluginList as $plug) {
 		}
 
 		$text .="</td></tr>
-		<tr><td style='vertical-align:top'><b>".EPL_ADLAN_13."</b>:</td><td style='vertical-align:top'><span style='vertical-align:top'> $eplug_compatible&nbsp</span>";
+		<tr><td style='vertical-align:top'><b>".EPL_ADLAN_13."</b>:</td><td style='vertical-align:top'><span style='vertical-align:top'> $eplug_compatible&nbsp;</span>";
     	if ($eplug_compliant) {
 			$text .= "&nbsp;&nbsp;<img src='".e_IMAGE."generic/valid-xhtml11_small.png' alt='' style='margin-top:0px' />";
 		}
 		$text .="</td></tr>\n";
- 
+
 
 	$text .= "</table></td>";
-	$text .= "<td class='forumheader3' style='width:15p%;text-align:center'>";
+	$text .= "<td class='forumheader3' style='width:70px;text-align:center'>";
     if ($eplug_conffile || $eplug_module || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_user_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_status || $eplug_latest) {
 		$text .= ($plug['plugin_installflag'] ? "<input type='button' class='button' onclick=\"location.href='".e_SELF."?uninstall.{$plug['plugin_id']}'\" title='".EPL_ADLAN_1."' value='".EPL_ADLAN_1."' />" : "<input type='button' class='button' onclick=\"location.href='".e_SELF."?install.{$plug['plugin_id']}'\" title='".EPL_ADLAN_0."' value='".EPL_ADLAN_0."' />");
 	} else {
@@ -436,7 +443,7 @@ foreach($pluginList as $plug) {
 	}
 
 	if ($plug['plugin_version'] != $eplug_version && $plug['plugin_installflag']) {
-		$text .= "<input type='button' class='button' onclick=\"location.href='".e_SELF."?upgrade.{$plug['plugin_id']}'\" title='".EPL_UPGRADE." to v".$eplug_version."' value='".EPL_UPGRADE."' />";
+		$text .= "<br /><input type='button' class='button' onclick=\"location.href='".e_SELF."?upgrade.{$plug['plugin_id']}'\" title='".EPL_UPGRADE." to v".$eplug_version."' value='".EPL_UPGRADE."' />";
 	}
 
 	$text .="</td>";
