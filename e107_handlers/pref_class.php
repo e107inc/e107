@@ -87,11 +87,8 @@ class prefs {
 	* - @access     public
 	*/
 	// retrieve prefs as an array of values
-	function getArray($name, $table = "core") {
-		if (!isset($this->prefArrays[$table][$name]) || !is_array($this->prefArrays[$table][$name])) {
-			$this->prefArrays[$table][$name] = unserialize($this->get($name, $table));
-		}
-		return $this->prefArrays[$table][$name];
+	function getArray($name) {
+		return unserialize($this->get($name));
 	}
 
 
