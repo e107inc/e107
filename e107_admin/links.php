@@ -255,6 +255,7 @@ class links{
                 // ##### Display comfort ---------------------------------------------------------------------------------------------------------
                 global $ns;
                 $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+                if($message==LCLAN_3){echo "<script>\nfunction zou(){\nwindow.location='links.php';\n}\nsetTimeout(\"zou()\",10);\n</script>";}
         }
 
 
