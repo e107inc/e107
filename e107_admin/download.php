@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-02-05 04:45:11 $
-|     $Author: e107coders $
+|     $Revision: 1.16 $
+|     $Date: 2005-02-10 22:03:01 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -721,7 +721,7 @@ class download {
 
 
 
-		$handle = opendir(e_IMAGE."download_icons");
+		$handle = opendir(e_IMAGE."icons");
 		while ($file = readdir($handle)) {
 			if ($file != "." && $file != ".." && $file != "/") {
 				$iconlist[] = $file;
