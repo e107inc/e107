@@ -22,7 +22,9 @@ function show_admin_menu($title, $page, $e107_vars, $js = FALSE){
 	foreach (array_keys($e107_vars) as $act) {
 		$t=str_replace(" ","&nbsp;",$e107_vars[$act]['text']);
 		if (!$e107_vars[$act]['perm'] || getperms($e107_vars[$act]['perm'])) {
-			$active = ($page == $act) ? "mainlevel-hilite" : "mainlevel";
+		  //	$active = ($page == $act || e_PAGE == $act) ? "mainlevel-hilite" : "mainlevel";
+			$active = ($page == $act || (str_replace("?","",e_PAGE.e_QUERY) == str_replace("?","",$act))) ? "mainlevel-hilite" : "mainlevel";
+
 			if ($js_include) {
 				$on_click = $js_include;
 			} else {

@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.28 $
-|   $Date: 2005-03-24 16:21:24 $
-|   $Author: mcfly_e107 $
+|   $Revision: 1.29 $
+|   $Date: 2005-03-28 23:09:19 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 */
 if (!defined('e_HTTP')) {
@@ -65,6 +65,7 @@ if ($pref['admincss'] && file_exists(THEME.$pref['admincss'])) {
 } else {
 	echo "<link rel='stylesheet' href='".THEME."style.css' />\n";
 }
+
 if (!$no_core_css) {
 	echo "<link rel='stylesheet' href='".e_FILE."e107.css' type='text/css' />\n";
 }
@@ -114,10 +115,10 @@ if (!function_exists('show_admin_menu')) {
 			$pre = "";
 			$post = "";
 
-			if ($page == $act) {
+		  	if ($page == $act || (str_replace("?","",e_PAGE.e_QUERY) == str_replace("?","",$act))) {
 				$pre = "<b>&laquo;&nbsp;";
 				$post = "&nbsp;&raquo;</b>";
-			}
+		 	}
 			$t = str_replace(" ", "&nbsp;", $e107_vars[$act]['text']);
 			if (!$e107_vars[$act]['perm'] || getperms($e107_vars[$act]['perm'])) {
 				$on_click = $js ? "onclick=\"showhideit('".$act."');\"" : "onclick=\"location.href='{$e107_vars[$act]['link']}'\" ";
