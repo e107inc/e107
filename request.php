@@ -114,7 +114,7 @@ if(preg_match("/Binary\s(.*?)\/.*/", $image, $result)){
 
 
 $image = ($table == "upload" ? $upload_ss : $download_image);
-        
+
 if(eregi("http", $image)){
 
         header("location:".$image);
@@ -156,12 +156,12 @@ function send_file($file){
        $file = preg_replace('/\./', '%2e', $file,substr_count($file, '.') - 1);
         }
 
-   //   @set_time_limit(600);
+  //    @set_time_limit(600);
       if(file_exists($fullpath)){
        header("Cache-control: private");
        header('Pragma: no-cache');
        header("Content-Type: application/force-download");
-       header("Content-Disposition:$disposition; filename=\"".trim(htmlentities($file))."\"");
+       header("Content-Disposition:attachment; filename=\"".trim(htmlentities($file))."\"");
        header("Content-Description: ".trim(htmlentities($file)));
        header("Content-length:".(string)(filesize($fullpath)));
 
