@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/forum_post_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-01-28 10:50:13 $
-|     $Author: stevedunstan $
+|     $Revision: 1.2 $
+|     $Date: 2005-02-09 16:03:54 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -43,7 +43,7 @@ $poll = "<tr>
 <span class='smalltext'>".LAN_386."
 </td>
 </tr>
-<tr><td style='width:20%' class='forumheader3'><div class='normaltext'>".LAN_5."</div></td><td style='width:80%'class='forumheader3'><input class='tbox' type='text' name='poll_title' size='70' value=\"".$aj->tpa($_POST['poll_title'])."\" maxlength='200' />";
+<tr><td style='width:20%' class='forumheader3'><div class='normaltext'>".LAN_5."</div></td><td style='width:80%'class='forumheader3'><input class='tbox' type='text' name='poll_title' size='70' value=\"".$tp->toHTML($_POST['poll_title'])."\" maxlength='200' />";
 	 
 $option_count = ($_POST['option_count'] ? $_POST['option_count'] : 1);
 $poll .= "<input type='hidden' name='option_count' value='$option_count'>";
@@ -51,7 +51,7 @@ $poll .= "<input type='hidden' name='option_count' value='$option_count'>";
 for($count = 1; $count <= $option_count; $count++) {
 	$var = "poll_option_".$count;
 	$option = stripslashes($$var);
-	$poll .= "<tr><td style='width:20%' class='forumheader3'>".LAN_391." ".$count.":</td><td style='width:80%' class='forumheader3'><input class='tbox' type='text' name='poll_option[]' size='60' value=\"".$aj->tpa($_POST['poll_option'][($count-1)])."\" maxlength='200' />";
+	$poll .= "<tr><td style='width:20%' class='forumheader3'>".LAN_391." ".$count.":</td><td style='width:80%' class='forumheader3'><input class='tbox' type='text' name='poll_option[]' size='60' value=\"".$tp->toHTML($_POST['poll_option'][($count-1)])."\" maxlength='200' />";
 	if ($option_count == $count) {
 		$poll .= " <input class='button' type='submit' name='addoption' value='".LAN_6."' /> ";
 	}
