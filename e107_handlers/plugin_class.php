@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-03-24 22:56:36 $
+|     $Revision: 1.17 $
+|     $Date: 2005-03-28 01:00:57 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -42,7 +42,7 @@ class e107plugin {
 	 *
 	 */
 	function update_plugins_table() {
-		global $sql;
+		global $sql,$mySQLprefix;
 
 		require_once(e_HANDLER.'file_class.php');
 
@@ -280,7 +280,7 @@ class e107plugin {
 	 * @param int $id
 	 */
 	function install_plugin($id) {
-		global $sql, $ns, $sysprefs;
+		global $sql, $ns, $sysprefs,$mySQLprefix;
 
 		// install plugin ...
 		$plug = $this->getinfo($id);
