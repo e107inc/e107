@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search/search_news.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-02-10 00:51:07 $
+|     $Revision: 1.8 $
+|     $Date: 2005-02-12 11:42:23 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -23,15 +23,18 @@ $weights = array('1.2', '0.6', '0.6');
 $time = time();
 $where = "(news_start < ".$time.") AND (news_end=0 OR news_end > ".$time.") AND news_class IN (".USERCLASS_LIST.") AND";
 $order = ", news_datestamp DESC";
-if ($results = $sch -> search_query('news', $return_fields, $search_fields, $weights, $where, $order)) {
-	while ($match = $sql->db_Fetch()) {
-		$link = ($match['news_allow_comments'] ? "news.php?item.".$match['news_id'] : "comment.php?comment.news.".$match['news_id']);
-		$datestamp = $con->convert_date($match['news_datestamp'], "long");
-		$parse = array($match['news_title'], $match['news_body'].$match['news_extended']);
-		$text .= $sch -> parsesearch($parse, $link, LAN_SEARCH_3.$datestamp, $match['relevance']);
-	}
-} else {
-	$text .= LAN_198;
+$no_results = LAN_198;
+$ps = $sch -> parsesearch('news', $return_fields, $search_fields, $weights, 'search_news', $no_results, $where, $order);
+$text .= $ps['text'];
+$results = $ps['results'];
+
+function search_news($row) {
+	global $con;
+	$res['link'] = ($row['news_allow_comments'] ? "news.php?item.".$row['news_id'] : "comment.php?comment.news.".$row['news_id']);
+	$res['title'] = $row['news_title'];
+	$res['summary'] = $row['news_body'].$row['news_extended'];
+	$res['detail'] = LAN_SEARCH_3.$con -> convert_date($row['news_datestamp'], "long");
+	return $res;
 }
 
 ?>
