@@ -21,7 +21,8 @@ if(IsSet($_POST['chat_submit']))
 	} else
 	{
 		$cmessage = $_POST['cmessage'];
-		$cmessage = htmlentities($cmessage);
+		$cmessage = str_replace('<','&lt;',$cmessage);
+		$cmessage = str_replace('>','&gt;',$cmessage);
 		$nick = trim(chop(preg_replace("/\[.*\]/si", "", $_POST['nick'])));
 		$fp = new floodprotect;
 		if(!$fp -> flood("chatbox", "cb_datestamp"))
@@ -55,7 +56,7 @@ if(IsSet($_POST['chat_submit']))
 						}
 					}
 					if(!$emessage){
-						$cmessage = str_replace("<iframe", "&lt;iframe", $cmessage);
+//						$cmessage = str_replace("<iframe", "&lt;iframe", $cmessage);
 						$sql -> db_Insert("chatbox", "0, '$nick', '$cmessage', '".time()."', '0' , '$ip' ");
 						clear_cache("chatbox");
 					}
