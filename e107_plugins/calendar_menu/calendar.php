@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-27 19:52:36 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-17 04:47:42 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -103,7 +103,7 @@ $cal_text = "<table style='width:100%' class='fborder'>
 for ($ii = 0; $ii < 13; $ii++) {
 	$m = $ii+1;
 	$monthjump = mktime(0, 0, 0, $m, 1, $year);
-	$cal_text .= "<a class='forumlink' href=\"calendar.php?".$monthjump."\">".$monthabb[$ii]."</a> ";
+	$cal_text .= "<a class='forumlink' href='calendar.php?".$monthjump."'>".$monthabb[$ii]."</a> ";
 }
 $cal_text .= "</td>
 	<td class='forumheader3' style='text-align:right'>
@@ -112,10 +112,8 @@ $cal_text .= "</td>
 	</tr>
 	</table>";
 	
-	
-$cal_text .= "<div style='text-align:center'>
-	";
-	
+
+$cal_text .= "<div style='text-align:center'>";
 	
 $prop = mktime(0, 0, 0, $month, 1, $year);
 	
@@ -138,15 +136,13 @@ $nav_text = "<br />
 	<select name='event_cat_ids' class='tbox' style='width:140px;'>
 	<option value='all'>All</option>";
 	
-$event_cat_id = !isset($_POST['event_cat_ids'])? NULL :
- $_POST['event_cat_ids'];
+$event_cat_id = !isset($_POST['event_cat_ids'])? NULL :  $_POST['event_cat_ids'];
 $sql->db_Select("event_cat");
 	
 while ($row = $sql->db_Fetch()) {
 	extract($row);
 	if ($event_cat_id == $_POST['event_cat_ids']) {
-		//if($event_cat_id == $qs[1]){
-		$nav_text .= "<option value='$event_cat_id' selected>".$event_cat_name."</option>";
+		$nav_text .= "<option value='$event_cat_id' selected='selected'>".$event_cat_name."</option>";
 	} else {
 		$nav_text .= "<option value='$event_cat_id'>".$event_cat_name."</option>";
 	}
@@ -188,28 +184,56 @@ $nav_text .= "</div><br />";
 	
 	
 // get events from current month----------------------------------------------------------------------
-$sql->db_Select("event", "*", "(event_start>='$monthstart' AND event_start<= '$monthend')   ORDER BY event_start ASC");
-	
-while ($row = $sql->db_Fetch()) {
-	extract($row);
-	$evf = getdate($event_start);
-	$tmp = $evf['mday'];
-	$eve = getdate($event_end);
-	$tmp2 = $eve['mday'];
-	$cevent_title[$tmp] = $event_title;
-	$event_true[$tmp] = $event_start;
-	for ($i = ($tmp+1); $i < ($tmp2+1); $i++) {
-		$event_true_end[$i] = $i != $tmp2 ? 1:
-		2;
-		$cevent_title[$i] = $event_title;
+
+$qry = "
+SELECT e.*, ec.*
+FROM #event as e
+LEFT JOIN #event_cat as ec ON e.event_category = ec.event_cat_id
+WHERE (e.event_start >= {$monthstart} AND e.event_start <= {$monthend}) OR (e.event_end >= {$monthstart} AND e.event_end <= {$monthend}) OR e.event_rec_y = {$month}
+";
+
+if($sql->db_Select_gen($qry))
+{
+	while($row = $sql->db_Fetch())
+	{
+		if($row['event_rec_y'] == $month)
+		{
+			$events[$row['event_rec_m']][] = $row;
+		}
+		else
+		{
+			$tmp = getdate($row['event_start']);
+			if($tmp['year'] == $year)
+			{
+				$start_day = $tmp['mday'];
+			}
+			else
+			{
+				$start_day = 1;
+			}
+			$tmp = getdate($row['event_end']);
+			if($tmp['year'] == $year)
+			{
+				$end_day = $tmp['mday'];
+			}
+			else
+			{
+				$end_day = 31;
+			}
+			for ($i = $start_day; $i <= $end_day; $i++)
+			{
+				$events[$i][] = $row;
+			}
+		}
 	}
-	 
 }
+
 // -----------------------------------------------------------------------------------------------------------
 	
 $start = $monthstart;
 $text .= "<div style='text-align:center'>
-	<table cellpadding='0' cellspacing='1' class='fborder' style='background-color:#DDDDDD; width:580px'><tr>";
+	<table cellpadding='0' cellspacing='1' class='fborder' style='background-color:#DDDDDD; width:580px'>
+	<tr>";
 	
 	
 foreach($week as $day) {
@@ -226,31 +250,20 @@ $calyear = $datearray['year'];
 for ($c = 0; $c < $firstdayarray['wday']; $c++) {
 	$text .= "<td style=' width:90px;height:60px;'></td>";
 }
+
 $loop = $firstdayarray['wday'];
-for ($c = 1; $c <= 31; $c++) {
+for ($c = 1; $c <= 31; $c++)
+{
 	$dayarray = getdate($start+(($c-1) * 86400));
-	 
-	 
 	$stopp = mktime(24, 0, 0, $calmonth, $c, $calyear);
 	$startt = mktime(0, 0, 0, $calmonth, $c, $calyear);
 	 
-	$sql2 = new db;
-	$sql2->db_Select("event_cat", "*", "event_cat_id!='' ");
-	 
-	while ($event_cat = $sql2->db_Fetch()) {
-		extract($event_cat);
-		$category_icon[$event_cat_id] = $event_cat_icon;
-		$category_title[$event_cat_id] = $event_cat_name;
-		 
-	}
-	 
-	 
-	$sql->db_Select("event", "*", "event_start>='$startt' AND event_start<='$stopp' ORDER BY event_start");
-	$events = $sql->db_Rows();
-	 
+
 	// Highlight the current day.
-	if ($dayarray['mon'] == $calmonth) {
-		if ($nowday == $c && $calmonth == $nowmonth && $calyear == $nowyear && !$event_true[($c)]&& !$event_true_end[($c)]) {
+	if ($dayarray['mon'] == $calmonth)
+	{
+		if ($nowday == $c && $calmonth == $nowmonth && $calyear == $nowyear)
+		{
 			$text .= "<td  class='forumheader3' style='vertical-align:top; width:90px;height:90px;padding-bottom:0px;padding-right:0px; margin-right:0px'>";
 			$text .= "<div style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'>
 				<b>
@@ -258,14 +271,18 @@ for ($c = 1; $c <= 31; $c++) {
 				</b>
 				<span class='smalltext'>[today]</span>
 				</div>";
-		} elseif($event_true[($c)] || $event_true_end[($c)]) {
+		}
+		elseif(array_key_exists($c, $events))
+		{
 			$text .= "<td class='forumheader3' style='z-index: 1;vertical-align:top;  width:90px;height:90px;padding-bottom:0px;padding-right:0px; margin-right:0px'>";
 			$text .= "<span style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'>
 				<a href='".e_PLUGIN."calendar_menu/event.php?".$startt.".one'>
 				<strong>".$c."</strong>
 				</a>
 				</span>";
-		} else {
+		}
+		else
+		{
 			$text .= "<td class='forumheader2 ' style='z-index: 1;vertical-align:top;  width:90px;height:90px;padding-bottom:0px;padding-right:0px; margin-right:0px'>";
 			$text .= "<span style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'>
 				<a href='".e_PLUGIN."calendar_menu/event.php?".$startt.".one'>
@@ -274,45 +291,15 @@ for ($c = 1; $c <= 31; $c++) {
 				</span>";
 		}
 		 
-		if ($event_true_end[($c)]) {
-			$indicat = $event_true_end[($c)] == 1? "->":
-			"|";
-			$text .= "<br /><img style='border:0' src='".$ec_dir."images/".$category_icon[$event_category]."' alt='' height='8' width='8' />&nbsp;<a href='".e_PLUGIN."calendar_menu/event.php?".$linkut.".one'><span class='smalltext' style='color:black' >".$cevent_title[$c]."</span></a>".$indicat;
-		}
-		 
-		while ($row = $sql->db_Fetch()) {
-			extract($row);
-			 
-			$event_title = $cevent_title[$c];
-			if (strlen($event_title) > 9) {
-				$oevent_title = substr($event_title, 0, 10)."<br />".substr($event_title, 10, 9);
-				if (strlen($event_title) > 15) {
-					$oevent_title .= "..";
-				}
-			} else {
-				$oevent_title = $event_title;
+		if (array_key_exists($c, $events)) {
+			foreach($events[$c] as $ev)
+			{
+				$text .= show_event($ev, $c);
 			}
-			 
-			if ($event_true[($c)]) {
-				$linkut = mktime(0 , 0 , 0 , $datearray['mon'], $c, $datearray['year']);
-				if (($_POST['do'] == NULL || $_POST['event_cat_ids'] == "all") || ($_POST['event_cat_ids'] == $event_cat_id)) {
-					 
-					$text .= "<br />
-						<img style='border:0' src='".$ec_dir."images/".$category_icon[$event_category]."' alt='' height='8' width='8' />
-						&nbsp;
-						<a href='".e_PLUGIN."calendar_menu/event.php?".$linkut.".one'>
-						<span class='smalltext' style='color:black' >".$oevent_title."</span>
-						</a>";
-				}
-				 
-				 
-			}
-			 
 		}
 		 
 		$text .= '</td>';
 	}
-	 
 	$loop++;
 	if ($loop == 7) {
 		$loop = 0;
@@ -320,11 +307,36 @@ for ($c = 1; $c <= 31; $c++) {
 	}
 }
 	
-	
 $text .= "</tr></table></div>";
 $caption = EC_LAN_79; // "Calendar View";
 $nav = $cal_text .$nav_text. $text;
 $ns->tablerender($caption, $nav);
-// echo $text;
 require_once(FOOTERF);
+
+function show_event($event, $dom)
+{
+	global $datearray, $ec_dir;
+	$ret = "";
+	$linkut = mktime(0 , 0 , 0 , $datearray['mon'], $dom, $datearray['year']);
+	if (($_POST['do'] == NULL || $_POST['event_cat_ids'] == "all") || ($_POST['event_cat_ids'] == $event['event_cat_id']))
+	{
+		if(strlen($event['event_title']) > 10)
+		{
+			$show_title = substr($event['event_title'],0,10). "...";
+		}
+		else
+		{
+			$show_title = $event['event_title'];
+		}
+			
+		$ret = "<br />
+			<img style='border:0' src='".e_PLUGIN."calendar_menu/images/".$event['event_cat_icon']."' alt='' height='8' width='8' />
+			&nbsp;
+			<a title='{$event['event_title']}' href='".e_PLUGIN."calendar_menu/event.php?".$linkut.".one'>
+			<span class='smalltext' style='color:black' >".$show_title."</span>
+			</a>";
+	}
+	return $ret;
+}
+
 ?>
