@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.47 $
-|   $Date: 2005-02-19 12:12:32 $
-|   $Author: e107coders $
+|   $Revision: 1.48 $
+|   $Date: 2005-02-21 18:11:12 $
+|   $Author: stevedunstan $
 +---------------------------------------------------------------+
 
 */
@@ -969,8 +969,8 @@ class newspost {
 		// this should really be made as an onchange event on the selectbox for $pref['newsposts'] ...
 		$text .= "
 			<tr>
-			<td class='forumheader3' style='width:60%'><span class='defaulttext'>News posts to display in archive ?</span><br />
-			<span class='defaulttext'><i>First update the preferences with the changed display per page setting, then update again after setting the newsarchive preference. (0 is un-activated)</i></span>
+			<td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_115."</span><br />
+			<span class='defaulttext'><i>".NWSLAN_116."</i></span>
 			</td>
 			<td class='forumheader3' style='width:40%'>
 			<select class='tbox' name='newsposts_archive'>";
@@ -981,7 +981,7 @@ class newspost {
 			</tr>
 
 			<tr>
-			<td class='forumheader3' style='width:60%'><span class='defaulttext'>set the title for the newsarchive</span></td>
+			<td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_117."</span></td>
 			<td class='forumheader3' style='width:40%'>
 			<input class='tbox' type='text' style='width:150px' name='newsposts_archive_title' value='".$pref['newsposts_archive_title']."' />
 			</td>
