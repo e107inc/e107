@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-02-17 21:02:23 $
+|     $Revision: 1.12 $
+|     $Date: 2005-02-18 00:56:05 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -33,6 +33,7 @@ require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."ren_help.php");
 $rs = new form;
 
+
 $deltest = array_flip($_POST);
 if (e_QUERY) {
 	$tmp = explode(".", e_QUERY);
@@ -46,20 +47,31 @@ if (preg_match("#(.*?)_delete_(\d+)#", $deltest[$tp->toJS(FORLAN_20)], $matches)
 	$del_id = $matches[2];
 }
 
-If(IsSet($_POST['submit_parent'])) {
+if(isset($_POST['setMods']))
+{
+	foreach(array_keys($_POST['mod']) as $fid)
+	{
+		$modlist = implode(", ", array_keys($_POST['mod'][$fid]));
+		$sql->db_Update('forum',"forum_moderators = '{$modlist}' WHERE forum_id = {$fid}");
+	}
+	$forum->show_message(FORLAN_134);
+}
+
+
+if(isset($_POST['submit_parent'])) {
 	$_POST['forum_name'] = $tp->toDB($_POST['forum_name']);
 	$sql->db_Insert("forum", "0, '".$_POST['forum_name']."', '', '', '".time()."', '0', '0', '0', '', '".$_POST['forum_class']."', 0");
 	$forum->show_message(FORLAN_13);
 }
 
-If(IsSet($_POST['update_parent'])) {
+if(isset($_POST['update_parent'])) {
 	$_POST['forum_name'] = $tp->toDB($_POST['forum_name']);
 	$sql->db_Update("forum", "forum_name='".$_POST['forum_name']."', forum_class='".$_POST['forum_class']."' WHERE forum_id=$id");
 	$forum->show_message(FORLAN_14);
 	$action = "main";
 }
 
-If(IsSet($_POST['submit_forum'])) {
+if(isset($_POST['submit_forum'])) {
 	$mods = implode(", ", $_POST['mod']);
 	$_POST['forum_name'] = $tp->toDB($_POST['forum_name']);
 	$_POST['forum_description'] = $tp->toDB($_POST['forum_description'], "admin");
@@ -67,7 +79,7 @@ If(IsSet($_POST['submit_forum'])) {
 	$forum->show_message(FORLAN_11);
 }
 
-If(IsSet($_POST['update_forum'])) {
+if(isset($_POST['update_forum'])) {
 	$mods = implode(", ", $_POST['mod']);
 	$_POST['forum_name'] = $tp->toDB($_POST['forum_name']);
 	$_POST['forum_description'] = $tp->toDB($_POST['forum_description']);
@@ -77,7 +89,7 @@ If(IsSet($_POST['update_forum'])) {
 	$action = "main";
 }
 
-if (IsSet($_POST['update_order'])) {
+if (isset($_POST['update_order'])) {
 	extract($_POST);
 	while (list($key, $id) = each($forum_order)) {
 		$tmp = explode(".", $id);
@@ -86,7 +98,7 @@ if (IsSet($_POST['update_order'])) {
 	$forum->show_message(FORLAN_73);
 }
 
-if (IsSet($_POST['updateoptions'])) {
+if (isset($_POST['updateoptions'])) {
 	$pref['email_notify'] = $_POST['email_notify'];
 	$pref['forum_poll'] = $_POST['forum_poll'];
 	$pref['forum_popular'] = $_POST['forum_popular'];
@@ -108,7 +120,7 @@ if (IsSet($_POST['updateoptions'])) {
 	$forum->show_message(FORLAN_10);
 }
 
-if (IsSet($_POST['do_prune'])) {
+if (isset($_POST['do_prune'])) {
 	$sql2 = new db;
 	if ($_POST['prune_type'] == "delete") {
 		$prunedate = time() - ($_POST['prune_days'] * 86400);
@@ -140,7 +152,7 @@ if (IsSet($_POST['do_prune'])) {
 	$action = "main";
 }
 
-if (IsSet($_POST['set_ranks'])) {
+if (isset($_POST['set_ranks'])) {
 	extract($_POST);
 	for($a = 0; $a <= 9; $a++) {
 		$r_names .= $tp->toDB($rank_names[$a]).",";
@@ -160,7 +172,7 @@ if (IsSet($_POST['set_ranks'])) {
 	$forum->show_message(FORLAN_95);
 }
 
-if (IsSet($_POST['frsubmit'])) {
+if (isset($_POST['frsubmit'])) {
 
 	$guestrules = $tp->toDB($_POST['guestrules']);
 	$memberrules = $tp->toDB($_POST['memberrules']);
@@ -901,10 +913,10 @@ class forum {
 				$adminList[] = $row;
 			}
 		}
-		$txt = "<form><table><tr><td> &nbsp; </td>";
+		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'><table class='fborder'><tr><td> &nbsp; </td>";
 		foreach($adminList as $name)
 		{
-			$txt .= "<td>";
+			$txt .= "<td class='forumheader' style='font-weight:bold; text-align:center; vertical-align:bottom'>";
 			for($i=0; $i<strlen($name['user_name']); $i++)
 			{
 				$txt .= $name['user_name']{$i}."<br />";
@@ -919,7 +931,7 @@ class forum {
 			{
 				$mods[$k] = trim($v);
 			}
-			$txt .= "<tr><td>{$f['forum_name']}</td>";
+			$txt .= "<tr><td class='forumheader'>{$f['forum_name']}</td>";
 			foreach($adminList as $name)
 			{
 
@@ -931,12 +943,23 @@ class forum {
 				{
 					$chk = "";
 				}
-				$txt .= "<td><input type='checkbox' {$chk} /></td>";
+				$txt .= "
+					<td class='forumheader3'>
+					<input name='mod[{$f['forum_id']}][{$name['user_name']}]' class='tbox' type='checkbox' {$chk} />
+					</td>";
 			}
 			$txt .= "</tr>";
 		}
-		$txt .= "</table>";		
-		$ns->tablerender("WORK IN PROGRESS !!!", $txt);
+		
+		$txt .= "
+		<tr>
+		<td colspan='".(count($adminList)+1)."' class='fcaption' style='text-align:center'>
+			<input class='button' type='submit' name='setMods' value='".WMGLAN_4." ".FORLAN_33."' />
+		</td>
+		</tr>
+		
+		</table>";		
+		$ns->tablerender(FORLAN_33, $txt);
 	}
 }
 
