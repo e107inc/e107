@@ -20,11 +20,10 @@ require_once("class2.php");
 
 define("IMAGE_reply", (file_exists(THEME."forum/reply.png") ? "<img src='".THEME."forum/reply.png' alt='' style='border:0' />" : "<img src='".e_IMAGE."forum/reply.png' alt='' style='border:0' />"));
 define("IMAGE_newthread", (file_exists(THEME."forum/newthread.png") ? "<img src='".THEME."forum/newthread.png' alt='' style='border:0' />" : "<img src='".e_IMAGE."forum/newthread.png' alt='' style='border:0' />"));
+//define("IMAGE_profile", (file_exists(THEME."forum/profile.png") ? "<img src='".THEME."forum/profile.png' alt='".LAN_398."' style='border:0' />" : "<img src='".e_IMAGE."forum/profile.png' alt='".LAN_398."' style='border:0' />"));
 define("IMAGE_rank_moderator_image", ($pref['rank_moderator_image'] && file_exists(e_IMAGE."forum/".$pref['rank_moderator_image']) ? "<img src='".e_IMAGE."forum/".$pref['rank_moderator_image']."' alt='' />" : "<img src='".e_IMAGE."forum/moderator.png' alt='' />"));
 define("IMAGE_rank_main_admin_image", ($pref['rank_main_admin_image'] && file_exists(e_IMAGE."forum/".$pref['rank_main_admin_image']) ? "<img src='".e_IMAGE."forum/".$pref['rank_main_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/main_admin.png' alt='' />"));
 define("IMAGE_rank_admin_image", ($pref['rank_admin_image'] && file_exists(e_IMAGE."forum/".$pref['rank_admin_image']) ? "<img src='".e_IMAGE."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/admin.png' alt='' />"));
-define("IMAGE_profile", (file_exists(THEME."forum/profile.png") ? "<img src='".THEME."forum/profile.png' alt='".LAN_398."' style='border:0' />" : "<img src='".e_IMAGE."forum/profile.png' alt='".LAN_398."' style='border:0' />"));
-define("IMAGE_email", (file_exists(THEME."forum/email.png") ? "<img src='".THEME."forum/email.png' alt='".LAN_397."' style='border:0' />" : "<img src='".e_IMAGE."forum/email.png' alt='".LAN_397."' style='border:0' />"));
 define("IMAGE_pm", (file_exists(THEME."forum/pm.png") ? "<img src='".THEME."forum/pm.png' alt='".LAN_399."' style='border:0' />" : "<img src='".e_IMAGE."forum/pm.png' alt='".LAN_399."' style='border:0' />"));
 define("IMAGE_website", (file_exists(THEME."forum/website.png") ? "<img src='".THEME."forum/website.png' alt='".LAN_396."' style='border:0' />" : "<img src='".e_IMAGE."forum/website.png' alt='".LAN_396."' style='border:0' />"));
 define("IMAGE_edit", (file_exists(THEME."forum/edit.png") ? "<img src='".THEME."forum/edit.png' alt='".LAN_400."' style='border:0' />" : "<img src='".e_IMAGE."forum/edit.png' alt='".LAN_400."' style='border:0' />"));
@@ -279,8 +278,9 @@ if(!$post_author_id || !$sql -> db_Select("user", "*", "user_id='".$post_author_
 	$LEVEL = $ldata[1];
 
 	$SIGNATURE = ($user_signature ? "<br /><hr style='width:15%; text-align:left'><span class='smalltext'>".$aj -> tpa($user_signature) : "");
-	$PROFILEIMG = "<a href='user.php?id.".$user_id."'>".IMAGE_profile."</a>";
-	$EMAILIMG = (!$user_hideemail ? "<a href='mailto:$user_email'>".IMAGE_email."</a>" : "");
+	
+	$PROFILEIMG = e107_parse("{PROFILE={$user_id}}","admin");
+	$EMAILIMG = (!$user_hideemail ? e107_parse("{EMAILTO={$user_email}}","admin") : "");
 
 	$PRIVMESSAGE = ($pm_installed && $post_author_id && (!USERCLASS || check_class($pref['pm_userclass'])) ? "<a href='".e_PLUGIN."pm_menu/pm.php?send.$post_author_id'>".IMAGE_pm."</a>" : "");
 
@@ -366,8 +366,8 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 			$LEVEL = $ldata[1];
 
 			$SIGNATURE = ($user_signature ? "<br /><hr style='width:15%; text-align:left'><span class='smalltext'>".$aj -> tpa($user_signature) : "");
-			$PROFILEIMG = "<a href='user.php?id.".$user_id."'>".IMAGE_profile."</a>";
-			$EMAILIMG = (!$user_hideemail ? "<a href='mailto:$user_email'>".IMAGE_email."</a>" : "");
+			$PROFILEIMG = e107_parse("{PROFILE={$user_id}}","admin");
+			$EMAILIMG = (!$user_hideemail ? e107_parse("{EMAILTO={$user_email}}","admin") : "");
 
 			$PRIVMESSAGE = ($pm_installed && $post_author_id && (!USERCLASS || check_class($pref['pm_userclass'])) ? "<a href='".e_PLUGIN."pm_menu/pm.php?send.$post_author_id'>".IMAGE_pm."</a>" : "");
 
