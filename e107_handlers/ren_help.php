@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-03-31 21:31:53 $
+|     $Revision: 1.17 $
+|     $Date: 2005-03-31 22:00:22 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -345,27 +345,27 @@ return $text;
 function Size_Select() {
 	$text ="<!-- Start of Size selector -->
 		<div style='margin-left:0px;margin-right:0px;width:60px;position:relative;z-index:1000;float:right;display:none' id='size_selector' onclick=\"this.style.display='none'\">";
-	$text .="<div style='position:absolute;bottom:30px;right:145px;width:60px'>";
-	$text .= "<table cellspacing=\"1px\" cellpadding=\"0px\"  style=\"width:60px;background-color:#fff;border:1px solid #cccccc;cursor: pointer;\">
+	$text .="<div style='position:absolute;bottom:30px;right:200px;'>";
+	$text .= "<table class='fborder' style='background-color: #fff; cursor: pointer; cursor: hand'>
     
-	<tr><td onclick=\"addtext('[size=7][/size]')\"><span style='font-size: 7px;'>7px</span></td></tr>
-	<tr><td onclick=\"addtext('[size=8][/size]')\"><span style='font-size: 8px;'>8px</td></tr>
-	<tr><td onclick=\"addtext('[size=9][/size]')\"><span style='font-size: 9px;'>9px</td></tr>
-	<tr><td onclick=\"addtext('[size=10][/size]')\"><span style='font-size: 10px;'>10px</td></tr>
-	<tr><td onclick=\"addtext('[size=11][/size]')\"><span style='font-size: 11px;'>11px</td></tr>
-	<tr><td onclick=\"addtext('[size=12][/size]')\"><span style='font-size: 12px;'>12px</td></tr>
-	<tr><td onclick=\"addtext('[size=14][/size]')\"><span style='font-size: 14px;'>14px</td></tr>
-	<tr><td onclick=\"addtext('[size=16][/size]')\"><span style='font-size: 16px;'>16px</td></tr>
-	<tr><td onclick=\"addtext('[size=18][/size]')\"><span style='font-size: 18px;'>18px</td></tr>
-	<tr><td onclick=\"addtext('[size=20][/size]')\"><span style='font-size: 20px;'>20px</td></tr>
-	<tr><td onclick=\"addtext('[size=22][/size]')\"><span style='font-size: 22px;'>22px</td></tr>
-	<tr><td onclick=\"addtext('[size=24][/size]')\"><span style='font-size: 24px;'>24px</td></tr>
-	<tr><td onclick=\"addtext('[size=26][/size]')\"><span style='font-size: 26px;'>26px</td></tr>
-	<tr><td onclick=\"addtext('[size=28][/size]')\"><span style='font-size: 28px;'>28px</td></tr>
-	<tr><td onclick=\"addtext('[size=30][/size]')\"><span style='font-size: 30px;'>30px</td></tr>
-	<tr><td onclick=\"addtext('[size=36][/size]')\"><span style='font-size: 36px;'>36px</td></tr>
-	<tr><td onclick=\"addtext('[size=48][/size]')\"><span style='font-size: 48px;'>48px</td></tr>
-	<tr><td onclick=\"addtext('[size=72][/size]')\"><span style='font-size: 72px;'>72px</td></tr>
+	<tr><td class='button' onclick=\"addtext('[size=7][/size]')\">7px</td></tr>
+	<tr><td class='button' onclick=\"addtext('[size=8][/size]')\">8px</td></tr>
+	<tr><td class='button' onclick=\"addtext('[size=9][/size]')\">9px</td></tr>
+	<tr><td class='button' onclick=\"addtext('[size=10][/size]')\">10px</td></tr>
+	<tr><td class='button' onclick=\"addtext('[size=11][/size]')\">11px</td></tr>
+	<tr><td class='button' onclick=\"addtext('[size=12][/size]')\">12px</td></tr>
+	<tr><td class='button' onclick=\"addtext('[size=14][/size]')\">14px</td></tr>
+	<tr><td class='button' onclick=\"addtext('[size=16][/size]')\">16px</td></tr>
+	<tr><td class='button' onclick=\"addtext('[size=18][/size]')\">18px</td></tr>
+	<tr><td class='button' onclick=\"addtext('[size=20][/size]')\">20px</td></tr>
+	<tr><td class='button' onclick=\"addtext('[size=22][/size]')\">22px</td></tr>
+	<tr><td class='button' onclick=\"addtext('[size=24][/size]')\">24px</td></tr>
+	<tr><td class='button' onclick=\"addtext('[size=26][/size]')\">26px</td></tr>
+	<tr><td class='button' onclick=\"addtext('[size=28][/size]')\">28px</td></tr>
+	<tr><td class='button' onclick=\"addtext('[size=30][/size]')\">30px</td></tr>
+	<tr><td class='button' onclick=\"addtext('[size=36][/size]')\">36px</td></tr>
+	<tr><td class='button' onclick=\"addtext('[size=48][/size]')\">48px</td></tr>
+	<tr><td class='button' onclick=\"addtext('[size=72][/size]')\">72px</td></tr>
 	\n </table></div>
 	</div>\n<!-- End of Size selector -->";
 	return $text;
