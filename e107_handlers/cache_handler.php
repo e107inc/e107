@@ -68,7 +68,7 @@ class ecache {
                         $ret = $sql -> db_Delete("cache", "cache_url LIKE '%".$query."%' ");
                 }
                 if('2' == $pref['cachestatus'] || !$query){
-                        $file = ($query) ? md5($query)."-*.cache" : "*.cache.php";
+                        $file = ($query) ? md5($query)."-*.cache.php" : "*.cache.php";
                         $dir = "./".e_BASE.$FILES_DIRECTORY."cache/";
                         $ret = $this -> delete($dir, $file);
                 }
