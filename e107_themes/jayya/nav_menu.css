@@ -2,8 +2,8 @@ div.menuBar,
 div.menuBar a.menuButton, div.menuButton, div.menuButton_over, 
 div.menu,
 div.menu a.menuItem {
-  font-family: "MS Sans Serif2", arial, sans-serif;
-  font-size: 11px;
+  font-family: verdana, arial, sans-serif;
+  font-size: 9px;
   font-style: normal;
   font-weight: normal;
   color: #000000;
