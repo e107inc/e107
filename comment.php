@@ -142,9 +142,7 @@ if($cache = retrieve_cache("comment.php?$table.$id")){
 					list($news['category_id'], $news['category_name'], $news['category_icon']) = $sql-> db_Fetch();
 					$news['comment_total'] = $sql -> db_Count("comments", "(*)",  "WHERE comment_item_id='".$news['news_id']."' AND comment_type='0' ");
 					$ix = new news;
-					$sql -> db_Select("comments", "comment_datestamp", "comment_item_id='".$news['news_id']."' AND comment_type='0' ORDER BY comment_datestamp DESC LIMIT 0,1");
-					list($comments['comment_datestamp']) = $sql -> db_Fetch();$latest_comment = $comments['comment_datestamp'];
-					$ix -> render_newsitem($news, "default", $latest_comment);
+					$ix -> render_newsitem($news, "default");
 					$field = $news['news_id'];
 					$comtype = 0;		
 				}
