@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-28 10:38:48 $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-30 20:16:00 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -142,8 +142,7 @@ if (IsSet($_POST['fpreview'])) {
 		 LAN_311;
 	}
 	$postdate = $gen->convert_date(time(), "forum");
-	 
-	$tsubject = $tp->post_toHTML($_POST['subject']);
+	$tsubject = $tp->post_toHTML($_POST['subject']." TEST", FALSE);
 	$tpost = $tp->post_toHTML($_POST['post']);
 	 
 	if ($_POST['poll_title'] != "" && $pref['forum_poll']) {
@@ -158,27 +157,25 @@ if (IsSet($_POST['fpreview'])) {
 		$_POST['poll_title'] = $tp->post_toForm($_POST['poll_title']);
 	}
 	 
-	$text = "<div style='text-align:center'>
-		<table style='width:95%' class='fborder'>
-		<tr>
-		<td colspan='2' class='fcaption' style='vertical-align:top'>".LAN_323;
-	$text .= ($action != "nt" ? "</td>" : " ( ".LAN_62.$tsubject." )</td>");
-	$text .= "<tr>
-		<td class='forumheader3' style='width:20%' style='vertical-align:top'><b>".$poster."</b></td>
-		<td class='forumheader3' style='width:80%'>
-		<div class='smallblacktext' style='text-align:right'>".IMAGE_post2." ".LAN_322.$postdate."</div>".$tpost."</td>
-		</tr>
-		</table>
-		</div>";
+
+	if (!$FORUM_PREVIEW) {
+		if (file_exists(THEME."forum_preview_template.php")) {
+			require_once(THEME."forum_preview_template.php");
+		} else {
+			require_once(e_PLUGIN."forum/templates/forum_preview_template.php");
+		}
+	}
+
+	$text = $FORUM_PREVIEW;
 	 
 	if ($poll_text) {
 		$ns->tablerender($_POST['poll_title'], $poll_text);
 	}
 	$ns->tablerender(LAN_323, $text);
-	$anonname = $tp->post_toForm($_POST['anonname']);
-	$post = $tp->post_toForm($_POST['post']);
-	$subject = $tp->post_toForm($_POST['subject']);
-	 
+	$anonname = $tp->post_toHTML($_POST['anonname'], FALSE);
+	$post = $tp->post_toHTML($_POST['post'], FALSE);
+	$subject = $tp->post_toHTML($_POST['subject'], FALSE);
+
 	if ($action == "edit") {
 		if ($_POST['subject']) {
 			$action = "nt";
@@ -374,16 +371,10 @@ $FORMSTART = "<form enctype='multipart/form-data' method='post' action='".e_SELF
 
 $BACKLINK = "<a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_405."</a>-><a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_info['forum_id']."'>".$forum_info['forum_name']."</a>->".
 ($action == "nt" ? ($eaction ? LAN_77 : LAN_60) : ($eaction ? LAN_78 : LAN_406." ".$thread_info['head']['thread_name']));
-
-
-
 $USERBOX = (ANON == TRUE && USER == FALSE ? $userbox : "");
-
 $SUBJECTBOX = ($action == "nt" ? $subjectbox : "");
-
 $POSTTYPE = ($action == "nt" ? LAN_63 : LAN_73);
-
-$POSTBOX = "<textarea class='tbox' name='post' cols='70' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".$aj->formtparev($post)."</textarea>\n<br />\n".ren_help(2);
+$POSTBOX = "<textarea class='tbox' name='post' cols='70' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$post</textarea>\n<br />\n".ren_help(2);
 
 require_once(e_HANDLER."emote.php");
 $EMOTES = r_emote();

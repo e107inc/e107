@@ -9,7 +9,7 @@ global $action;
 global $gen;
 global $tp;
 $txt = "
-<table style='width:97%' class='fborder'>
+<table style='width:100%' class='fborder'>
 <tr>
 <td colspan='2' class='fcaption' style='vertical-align:top'>".
 LAN_101.(count($thread_info)-2).LAN_102."
@@ -39,7 +39,7 @@ global $action;
 global $gen;
 global $tp;
 $txt = "
-<table style='width:97%' class='fborder'>
+<table style='width:100%' class='fborder'>
 <tr>
 <td colspan='2' class='fcaption' style='vertical-align:top'>".LAN_100."</td></tr>";
 if (!$thread_info['head']['thread_forum_id']) {
