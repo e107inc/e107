@@ -8,7 +8,7 @@ define("LAN_112", "Email Address: ");
 define("LAN_144", "Website URL: ");
 define("LAN_402", "You must be a registered member to upload files to this server.");
 define("LAN_403", "You do not have the correct permissions to upload files to this server.");
-define("LAN_404", "Thankyou. Your upload will be reviewed by an administrator and posted to the site if appropriate.");
+define("LAN_404", "Thank you. Your upload will be reviewed by an administrator and posted to the site if appropriate.");
 define("LAN_405", "File exceeds specified maximum size limit - deleted.");
 define("LAN_406", "<b>Please note</b><br />Allowed filetypes:");
 define("LAN_407", "Any other filetypes uploaded will be instantly deleted.");

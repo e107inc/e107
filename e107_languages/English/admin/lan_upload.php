@@ -31,7 +31,7 @@ define("UPLLAN_27", "Yes");
 define("UPLLAN_28", "No");
 
 define("UPLLAN_29", "Storage type");
-define("UPLLAN_30", "Choose how to store uploaded files, either as normal files on server or as binary info in database<br /><b>Note</b> bianry is only suitable for smaller files under approximately 500kb");
+define("UPLLAN_30", "Choose how to store uploaded files, either as normal files on server or as binary info in database<br /><b>Note</b> binary is only suitable for smaller files under approximately 500kb");
 define("UPLLAN_31", "Flatfile");
 define("UPLLAN_32", "Binary");
 define("UPLLAN_33", "Maximum file size");
