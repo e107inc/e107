@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-02-09 21:19:25 $
+|     $Revision: 1.9 $
+|     $Date: 2005-02-09 22:48:52 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -53,10 +53,10 @@ define("CONTENT_ADMIN_CAT_LAN_32", "clear class");
 define("CONTENT_ADMIN_CAT_LAN_33", "assign admins to category");
 define("CONTENT_ADMIN_CAT_LAN_34", "admins succesfully assigned to the category");
 define("CONTENT_ADMIN_CAT_LAN_35", "content sub category deleted");
-define("CONTENT_ADMIN_CAT_LAN_36", "");
-define("CONTENT_ADMIN_CAT_LAN_37", "");
-define("CONTENT_ADMIN_CAT_LAN_38", "");
-define("CONTENT_ADMIN_CAT_LAN_39", "");
+define("CONTENT_ADMIN_CAT_LAN_36", "category check: there are still subcategories present, the category will NOT be deleted. first remove all subcategories and then try again.");
+define("CONTENT_ADMIN_CAT_LAN_37", "content items check: there are still content items present, the category will NOT be deleted. first remove all content items and then try again.");
+define("CONTENT_ADMIN_CAT_LAN_38", "content items check: no items found");
+define("CONTENT_ADMIN_CAT_LAN_39", "category check: no subcategories found");
 define("CONTENT_ADMIN_CAT_LAN_40", "");
 define("CONTENT_ADMIN_CAT_LAN_41", "");
 define("CONTENT_ADMIN_CAT_LAN_42", "");

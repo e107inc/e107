@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.11 $
-|		$Date: 2005-02-09 21:17:51 $
+|		$Revision: 1.12 $
+|		$Date: 2005-02-09 22:47:55 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -181,44 +181,44 @@ If(isset($_POST['update_content'])){
 }
 
 if($delete == 'cat'){
-		//if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
-			$message = CONTENT_ADMIN_CAT_LAN_23."<br />";
-		//}
-		//$sql -> db_Select($plugintable, "content_parent", "content_id = '$del_id' ");
-		//list($content_parent) = $sql -> db_Fetch();
-		//echo "-".$content_parent."<br />";
-		if($content_parent == "0"){								//is main parent
-			$subcatarray = $aa -> getParent("", "", $del_id);
-		}else{													//is subcategory
-			$subcatarray = $aa -> getParent($content_parent.".".$del_id, "", "");
+
+		$sql -> db_Select($plugintable, "content_parent", "content_id = '$del_id' ");
+		list($content_parent) = $sql -> db_Fetch();
+
+		if($content_parent == "0"){
+			$check = $del_id.".".$del_id;
+		}else{
+			$tmp = explode(".", $content_parent);
+			$check = $tmp[1].".".substr($content_parent,strlen($tmp[1])+1).".".$del_id;
 		}
 
-		//$subcatarray = $aa -> getParent("", "", $del_id);
-		//echo "-".count($subcatarray[0])."-<br />";
-		if(count($subcatarray[0]) != "0"){		//subcats present
-			for($i=1;$i<count($subcatarray);$i++){
-				//if($sql -> db_Delete($plugintable, "content_id='$subcatarray[$i][0]' ")){
-					$message .= $subcatarray[$i][0]." ".CONTENT_ADMIN_CAT_LAN_35."<br />";
-				//}
+		//check if subcats present
+		if($sql -> db_Select($plugintable, "content_parent", "content_id != '".$del_id."' AND LEFT(content_parent,".(strlen($content_parent)).") = '".$content_parent."' ")){
+			//subcategories found don't delete
+			$checkermsg .= CONTENT_ADMIN_CAT_LAN_36."<br />";
+			$checksubcat = TRUE;
+		}else{
+			$checkermsg .= CONTENT_ADMIN_CAT_LAN_39."<br />";
+			$checksubcat = FALSE;
+		}
+
+		//check if items present
+		if($sql -> db_Select($plugintable, "content_parent", "LEFT(content_parent,".(strlen($content_parent)).") = '".$check."' OR content_parent = '".$check."' ")){
+			//items found, don't delete
+			$checkermsg .= CONTENT_ADMIN_CAT_LAN_37."<br />";
+			$checkitems = TRUE;
+		}else{
+			$checkermsg .= CONTENT_ADMIN_CAT_LAN_38."<br />";
+			$checkitems = FALSE;
+		}
+	
+		if($checksubcat == FALSE && $checkitems == FALSE){
+			if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
+				$message = CONTENT_ADMIN_CAT_LAN_23."<br />";
 			}
+		}else{
+			$message = $checkermsg;
 		}
-		//print_r($subcatarray);
-		/*
-		if($subcatarray[0][16] == "0"){		//is main parent
-		}else{								//is subcategory
-		}
-
-Array(
-	[0] => Array (
-		[0] => 2 [1] => article [2] => [3] => [4] => [5] => 1 [6] => [7] => [8] => [9] => 0 [10] => 0 [11] => 0 [12] => 0 [13] => [14] => 1107727712 [15] => 0 [16] => 0 )
-	[1] => Array (
-		[0] => 24 [1] => recensies [2] => [3] => r.gif [4] => [5] => 40 [6] => [7] => [8] => [9] => 0.2 [10] => 0 [11] => 0 [12] => 0 [13] => 0 [14] => 1044105695 [15] => 0 [16] => 1 )
-	[2] => Array (
-		[0] => 25 [1] => interviews [2] => [3] => i2.gif [4] => [5] => 40 [6] => [7] => [8] => [9] => 0.2 [10] => 0 [11] => 0 [12] => 0 [13] => 0 [14] => 1044105854 [15] => 0 [16] => 1 )
-	[3] => Array (
-		[0] => 26 [1] => essays [2] => [3] => e2.gif [4] => [5] => 40 [6] => [7] => [8] => [9] => 0.2 [10] => 0 [11] => 0 [12] => 0 [13] => 0 [14] => 1044105923 [15] => 0 [16] => 1 )
-)
-*/
 }
 
 if($delete == 'content'){

@@ -75,6 +75,7 @@ $eplug_tables = array(
 	content_enddate int(10) unsigned NOT NULL default '0',
 	content_class varchar(100) NOT NULL default '', 
 	content_pref text NOT NULL, 
+	content_order varchar(10) NOT NULL default '0',
 	PRIMARY KEY  (content_id)
 	) TYPE=MyISAM;"
 );
