@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/e107_update.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-04-02 19:13:38 $
+|     $Revision: 1.7 $
+|     $Date: 2005-04-02 21:43:29 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -60,7 +60,7 @@ foreach($dbupdate as $func => $rmks) {
 			$text .= "<td class='forumheader3' style='text-align:center'>".LAN_UPDATE_3."</td>";
 		} else {
 			$updates++;
-			$text .= "<td class='forumheader3' style='text-align:center'><input class='button' type='submit' name='{$func}' value='".LAN_UPDATE_4."' /></td>";
+			$text .= "<td class='forumheader3' style='text-align:center'><input class='button' type='submit' name='{$func}' value='".LAN_UPDATE."' /></td>";
 		}
 		$text .= "</tr>";
 	}
