@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-02-10 18:42:50 $
+|     $Revision: 1.6 $
+|     $Date: 2005-02-22 22:15:37 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -38,8 +38,10 @@ if (intval($content_type) == false || intval($rss_type) == false) {
 	exit;
 }
 	
-$rss = new rssCreate($content_type, $rss_type, $topic_id);
-$rss->buildRss ();
+if($rss = new rssCreate($content_type, $rss_type, $topic_id))
+{
+	$rss->buildRss ();
+}
 
 class rssCreate {
 
@@ -56,6 +58,7 @@ class rssCreate {
 		$this -> path = e_PLUGIN."rss_menu/";
 		$this -> rssType = $rss_type;
 		$this -> topicid = $topic_id;
+
 		switch ($content_type) {
 			case 1:
 				$this -> contentType = "news";
@@ -190,6 +193,9 @@ class rssCreate {
 				break;
 
 			case 8:
+				if(!$this -> topicid) {
+					return FALSE;
+				}
 				$this -> contentType = "forum topic / replies";
 
 				/* get thread ...  */
