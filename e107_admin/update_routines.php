@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.63 $
-|     $Date: 2005-03-29 16:19:54 $
+|     $Revision: 1.64 $
+|     $Date: 2005-03-29 16:34:17 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -548,9 +548,11 @@ function update_61x_to_700($type) {
 			$sql -> db_Update("links", "link_url='".$PLUGINS_DIRECTORY."forum/forum.php' WHERE link_url='forum.php' ");
 		}
 
-        if($pref['cb_linkreplace']){
-        	$pref['link_text'] = $pref['cb_linkreplace'];
-			$pref['link_replace '] =1;
+        if($pref['cb_linkreplace'] && !$pref['link_replace']){
+        	$pref['link_text'] = "[link]";
+			$pref['link_replace'] = 1;
+			$pref['make_clickable'] = 1;
+            $pref['cb_linkreplace'] = "";
 			save_prefs();
 		}
 
@@ -568,8 +570,8 @@ function update_61x_to_700($type) {
 		//return !$sql->db_Select("core","*","e107_name = 'user_entended'");
 
 //		$sql->db_Select_gen("DELETE FROM #core WHERE e107_name='user_entended'");
-
-
+        
+ return false;
 		global $pref;
 		if (!isset($pref['search_highlight'])) {
 			return FALSE;
