@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_plugin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-19 16:53:45 $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-19 17:00:40 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -55,6 +55,7 @@ define("EPL_ADLAN_40", "Admin Message");
 define("EPL_ADLAN_41", "That file does not appear to be a valid .zip or .tar archive.");
 define("EPL_ADLAN_42", "An error has occurred, unable to un-archive the file");
 define("EPL_ADLAN_43", "Your plugin has been uploaded and unzipped, please scroll down to see your plugin in the list of available plugins.");
+define("EPL_ADLAN_44", "Auto module upload and extraction is disabled as your plugins folder does not have the correct permissions - please CHMOD your e107_plugins folder to 777.");
 
 define("EPL_CANCEL", "Cancel");
 define("EPL_EMAIL", "email");

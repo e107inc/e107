@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-02-19 17:00:24 $
+|     $Revision: 1.25 $
+|     $Date: 2005-02-19 17:05:28 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -34,6 +34,9 @@ if (isset($_POST['upload'])) {
 	if (!$_POST['ac'] == md5(ADMINPWCHANGE)) {
 		exit;
 	}
+
+	echo "<pre>"; print_r($_FILES); echo "</pre>"; exit;
+
 	extract($_FILES);
 	/* check if e_PLUGIN dir is writable ... */
 	if(!is_writable(e_PLUGIN)) {
@@ -47,7 +50,7 @@ if (isset($_POST['upload'])) {
 		$fileSize = $file_userfile['size'][0];
 		$fileType = $file_userfile['type'][0];
 		
-		if($fileType != "application/x-zip-compressed" && $fileType != "application/x-gzip-compressed") {
+		if($fileType != "application/x-zip-compressed" && $fileType != "application/x-gzip-compressed" && $fileType != "application/x-zip") {
 			/* not zip or tar - spawn error message */
 			$ns->tablerender(EPL_ADLAN_40, EPL_ADLAN_41);
 			require_once("footer.php");
@@ -65,7 +68,7 @@ if (isset($_POST['upload'])) {
 
 			/* attempt to unarchive ... */
 
-			if($fileType == "application/x-zip-compressed") {
+			if($fileType == "application/x-zip-compressed" || $fileType == "application/x-zip") {
 				require_once(e_HANDLER."pclzip.lib.php");
 				$archive = new PclZip(e_PLUGIN.$archiveName);
 				if($archive->extract(PCLZIP_OPT_PATH, e_PLUGIN)) {
