@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.98 $
-|     $Date: 2005-03-24 09:48:17 $
-|     $Author: stevedunstan $
+|     $Revision: 1.99 $
+|     $Date: 2005-04-02 22:08:19 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -440,7 +440,6 @@ foreach ($pref as $key => $prefvalue) {
 	$pref[$key] = $tp->toFORM($prefvalue);
 }
 
-define("e_LANIMAGE", e_BASE.$IMAGES_DIRECTORY."lan_images/".e_LANGUAGE."/");
 define("SITENAME", $pref['sitename']);
 define("SITEURL", (substr($pref['siteurl'], -1) == "/" ? $pref['siteurl'] : $pref['siteurl']."/"));
 define("SITEBUTTON", $pref['sitebutton']);

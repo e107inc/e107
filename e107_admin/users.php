@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-04-02 21:06:52 $
+|     $Revision: 1.28 $
+|     $Date: 2005-04-02 22:09:55 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -355,16 +355,16 @@ class users
 					<td style='width:10%' class='forumheader3'>";
 
 				if ($user_perms == "0") {
-					$text .= "<img src='".e_LANIMAGE."/mainadmin.gif' alt='' style='vertical-align:middle' />";
+					$text .= "<div class='fcaption' style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap'>".LAN_MAINADMIN."</div>";
 				}
 				else if($user_admin) {
-					$text .= "<a href='".e_SELF."?main.user_admin.".($id == "desc" ? "asc" : "desc")."'><img src='".e_LANIMAGE."admin.gif' alt='' style='vertical-align:middle; border:0' /></a>";
+					$text .= "<a href='".e_SELF."?main.user_admin.".($id == "desc" ? "asc" : "desc")."'><div class='fcaption' style='padding-left:3px;padding-right:3px;;text-align:center'>".LAN_ADMIN."</div></a>";
 				}
 				else if($user_ban == 1) {
-					$text .= "<a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc")."'><img src='".e_LANIMAGE."banned.gif' alt='' style='vertical-align:middle; border:0' /></a>";
+					$text .= "<a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc")."'><div class='fcaption' style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap'>".LAN_BANNED."</div></a>";
 				}
 				else if($user_ban == 2) {
-					$text .= "<img src='".e_LANIMAGE."not_verified.gif' alt='' style='vertical-align:middle' />";
+					$text .= "<div class='fcaption' style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap'>".LAN_NOTVERIFIED."</div>";
 				} else {
 					$text .= "&nbsp;";
 				}
