@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.56 $
-|     $Date: 2005-04-03 08:28:59 $
+|     $Revision: 1.57 $
+|     $Date: 2005-04-03 20:31:54 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -263,9 +263,10 @@ function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $ut
 		}
 		
 		// Search Highlight
-		if ($pref['search_highlight'] && (strpos(e_SELF, 'search.php') === FALSE) && ((strpos($_SERVER['HTTP_REFERER'], 'q=') !== FALSE) || (strpos($_SERVER['HTTP_REFERER'], 'p=') !== FALSE))) {
+		$shr = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "");
+		if ($pref['search_highlight'] && (strpos(e_SELF, 'search.php') === FALSE) && ((strpos($shr, 'q=') !== FALSE) || (strpos($shr, 'p=') !== FALSE))) {
 			if (!isset($this -> e_query)) {
-				$query = preg_match('#(q|p)=(.*?)(&|$)#', $_SERVER['HTTP_REFERER'], $matches);		
+				$query = preg_match('#(q|p)=(.*?)(&|$)#', $shr, $matches);		
 				$this -> e_query = str_replace(' ', '.*?\b|\b', trim(urldecode($matches[2])));
 			}
 			preg_match_all("#<[^>]+>#", $text, $tags);

@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.101 $
-|     $Date: 2005-04-03 14:18:30 $
+|     $Revision: 1.102 $
+|     $Date: 2005-04-03 20:30:53 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -539,7 +539,7 @@ if ($sql->db_Select('menus', '*', "menu_location > 0 AND menu_class IN (".USERCL
 
 $sql->db_Mark_Time('(Start: Find/Load Theme)');
 
-if ((strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin") || $eplug_admin == TRUE) && $pref['admintheme']) {
+if ((strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin") || (isset($eplug_admin) && $eplug_admin == TRUE)) && $pref['admintheme']) {
 	if (strstr(e_SELF, "menus.php")) {
 		checkvalidtheme($pref['sitetheme']);
 	} else if (strstr(e_SELF, "newspost.php")) {
@@ -558,7 +558,7 @@ if ((strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin") || $eplug_admin
 }
 
 
-if (strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin") || $eplug_admin == TRUE) {
+if (strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin") || (isset($eplug_admin) && $eplug_admin == TRUE)) {
 	if (file_exists(THEME.'admin_theme.php')) {
 		require_once(THEME.'admin_theme.php');
 	} else {
