@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-03-09 21:04:43 $
+|     $Revision: 1.10 $
+|     $Date: 2005-03-11 03:11:55 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -438,7 +438,7 @@ if ($sql->db_Select("user_extended_struct"))
 
 	foreach($ueList as $ext)
 	{
-		if (check_class($ext['user_extended_struct_write']))
+		if (check_class($ext['user_extended_struct_applicable']) && check_class($ext['user_extended_struct_write']))
 		{
 			$text .= "
 				<tr>

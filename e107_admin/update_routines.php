@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2005-03-10 19:57:36 $
-|     $Author: stevedunstan $
+|     $Revision: 1.46 $
+|     $Date: 2005-03-11 03:10:44 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -261,9 +261,6 @@ function update_61x_to_700($type) {
 		$sql->db_Select_gen(
 		"CREATE TABLE ".MPREFIX."user_extended (
   			user_extended_id int(10) unsigned NOT NULL default '0',
-  			user_gender varchar(255) default 'Male',
-  			user_yahoo varchar(255) default NULL,
-  			user_interests text,
   			PRIMARY KEY  (user_extended_id)
 			) TYPE=MyISAM;
     	");
@@ -285,6 +282,9 @@ function update_61x_to_700($type) {
   			PRIMARY KEY  (user_extended_struct_id)
 			) TYPE=MyISAM;
 		");
+
+		$sql->db_Select_gen("ALTER TABLE #user_extended_struct ADD user_extended_struct_applicable TINYINT( 3 ) UNSIGNED NOT NULL");
+
 		if(!array_key_exists('ue_upgrade', $pref))
 		{
 			$pref['ue_upgrade'] = 1;
@@ -437,12 +437,12 @@ function update_61x_to_700($type) {
 //			return FALSE;
 //		}
 		
-		return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."user_extended_struct");
-		/*
-		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."download");
-		$fieldname = mysql_field_name($fields,15);
-	 	return ($fieldname == "download_class") ? TRUE : FALSE;
-	 	*/
+//		return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."user_extended_struct");
+
+		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."user_extended_struct");
+		$fieldname = mysql_field_name($fields,12);
+	 	return ($fieldname == "user_extended_struct_applicable") ? TRUE : FALSE;
+
 //		return $sql->db_Count('generic','(*)',"WHERE gen_type = 'forum_rules_guest'");
 		/*if ($sql->db_Select("plugin", "plugin_path", "plugin_path='chatbox_menu'")) {
 			return TRUE;
