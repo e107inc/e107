@@ -61,6 +61,11 @@ if($image_stats == null){ echo "<b>DEBUG</b> image_stats are null<br />"; return
 			passthru ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." '".$source_file."' '".$destination_file."'");
 		}else{
 			/* otherwise output to file */
+			if($model == "copy"){
+				$name = substr($destination_file, (strrpos($destination_file, "/")+1));
+				$name2 = "thumb_".$name;
+				$destination_file = str_replace($name, $name2, $destination_file);
+			}
 			exec ($pref['im_path']."convert -quality ".$im_quality." -antialias -geometry ".$new_size."x".$new_imageheight." '".$source_file."' '".$destination_file."'");
 
 		}
