@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_stats.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-03-20 18:43:30 $
+|     $Revision: 1.2 $
+|     $Date: 2005-03-25 11:38:50 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -34,5 +34,6 @@ define("FSLAN_20", "Posts");
 define("FSLAN_21", "Top topic starters");
 define("FSLAN_22", "Top repliers");
 define("FSLAN_23", "Forum Statistics");
+define("FSLAN_24", "Average posts per day");
 
 ?>

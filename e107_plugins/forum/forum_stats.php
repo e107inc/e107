@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_stats.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-24 09:12:43 $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-25 11:38:19 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -42,6 +42,7 @@ $fp = $sql -> db_Fetch();
 $open_ds = $fp['thread_datestamp'];
 $open_date = $gen->convert_date($open_ds, "long");
 $open_since = $gen -> computeLapse($open_ds);
+$postsperday = round($total_posts / ((time()-$open_ds) / 86400));
 
 $query = "SHOW TABLE STATUS FROM $mySQLdefaultdb";
 $sql -> db_Select_gen($query);
@@ -127,15 +128,16 @@ $text = "
 <tr>
 <td class='forumheader3'>
 	<table style='width: 100%;'>
-	<tr><td style='width: 50%;'><b>".FSLAN_2.":</b></td><td style='width: 50%;'>$open_date</td></tr>
-	<tr><td style='width: 50%;'><b>".FSLAN_3.":</b></td><td style='width: 50%;'>$open_since</td></tr>
-	<tr><td style='width: 50%;'><b>".FSLAN_4.":</b></td><td style='width: 50%;'>$total_posts</td></tr>
-	<tr><td style='width: 50%;'><b>".FSLAN_5.":</b></td><td style='width: 50%;'>$total_topics</td></tr>
-	<tr><td style='width: 50%;'><b>".FSLAN_6.":</b></td><td style='width: 50%;'>$total_replies</td></tr>
-	<tr><td style='width: 50%;'><b>".FSLAN_7.":</b></td><td style='width: 50%;'>$total_views</td></tr>
+	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_2.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>$open_date</td></tr>
+	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_3.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>$open_since</td></tr>
+	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_4.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>$total_posts</td></tr>
+	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_5.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>$total_topics</td></tr>
+	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_6.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>$total_replies</td></tr>
+	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_7.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>$total_views</td></tr>
+	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_24.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>$postsperday</td></tr>
+	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_8.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>$db_size</td></tr>
+	<tr><td style='width: 50%; text-align: right;'><b>".FSLAN_9.":</b>&nbsp;&nbsp;</td><td style='width: 50%;'>$avg_row_len</td></tr>
 
-	<tr><td style='width: 50%;'><b>".FSLAN_8.":</b></td><td style='width: 50%;'>$db_size</td></tr>
-	<tr><td style='width: 50%;'><b>".FSLAN_9.":</b></td><td style='width: 50%;'>$avg_row_len</td></tr>
 	</tr>
 	</table>
 </td>
