@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-03-12 20:17:10 $
+|     $Revision: 1.10 $
+|     $Date: 2005-03-13 12:27:49 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -62,6 +62,12 @@ class themeHandler{
 							}
 							if(strstr($file2, "css") && !strstr($file2, "menu.css"))
 							{
+								/* get information string */
+								$fp=fopen(e_THEME.$file."/".$file2, "r");
+								$cssContents = fread ($fp, filesize(e_THEME.$file."/".$file2));
+								fclose($fp);
+								preg_match('/\* info:(.*?)\*\//', $cssContents, $match);
+								$themeArray[$file]['css'][] = array("name" => $file2, "info" => $match[1]);
 								if($STYLESHEET)
 								{
 									$themeArray[$file]['multipleStylesheets'] = TRUE;
@@ -209,9 +215,23 @@ class themeHandler{
 			<tr><td style='vertical-align:top'><b>".TPVLAN_6."</b>:</td><td style='vertical-align:top'>".$theme['date']."</td></tr>
 			<tr><td style='vertical-align:top'><b>".TPVLAN_7."</b>:</td><td style='vertical-align:top'>".$theme['info']."</td></tr>
 			<tr><td style='vertical-align:top'><b>".TPVLAN_8."</b>:</td><td style='vertical-align:top'>[ <a href='".e_SELF."?preview.".$theme['id']."'>".TPVLAN_9."</a> ] [ ".
-			($theme['name'] == $pref['sitetheme'] ? TPVLAN_21 : "<a href='".e_SELF."?set.".$theme['id']."'>".TPVLAN_10."</a>\n")." ]".
-			(array_key_exists("multipleStylesheets", $theme) ? "<br /><br /><b>this theme has multiple style sheets, to choose which one to use go to <a href='".e_ADMIN."prefs.php'>admin -> prefs -> theme</a></b>" : "")."
-			</td></tr>
+			($theme['name'] == $pref['sitetheme'] ? TPVLAN_21 : "<a href='".e_SELF."?set.".$theme['id']."'>".TPVLAN_10."</a>\n")." ]";
+	
+			if(array_key_exists("multipleStylesheets", $theme))
+			{
+				$text .= "<br /><br /><b>this theme has multiple style sheets: </b><br />";
+				foreach($theme['css'] as $css)
+				{
+					$text .= "<b>".$css['name'].":</b> ".($css['info'] ? $css['info'] : ($css['name'] == "style.css" ? "Default stylesheet" : "No information"))."<br />";
+				}
+				$text .= "<br />To select which stylesheet to use, please go to <a href='".e_ADMIN."prefs.php'>preferences</a> and click on 'Theme'.";
+			}
+
+
+			
+
+
+			$text .= "</td></tr>
 			</table>
 			</td>
 			</tr>\n";
