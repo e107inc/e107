@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_uploads.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-24 20:43:00 $
+|     $Revision: 1.2 $
+|     $Date: 2005-02-25 03:35:30 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -61,6 +61,7 @@ if($sql->db_Select('forum_t','thread_id, thread_thread, thread_parent', "thread_
 	$threadList = $sql->db_getList();
 }
 
+$filecount = 0;
 if(is_array($fileList))
 {
 	$txt = "
@@ -74,6 +75,7 @@ if(is_array($fileList))
 	{
 		if($finfo['fname'])
 		{
+			$filecount++;
 			$txt .= "<tr><td class='forumheader3'><a href='".e_FILE."public/{$finfo['fname']}'>{$finfo['fname']}</a></td>";
 			$found = FALSE;
 			if(is_array($threadList))
@@ -108,8 +110,7 @@ if(is_array($fileList))
 	}
 	$txt .= "</table>";
 }
-else
-{
+if(!$filecount) {
 	$ns->tablerender(FRMUP_1,FRMUP_9);
 	include_once(FOOTERF);
 	exit;
