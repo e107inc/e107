@@ -54,7 +54,7 @@ $FORUMTHREADSTYLE = "
 <table cellspacing='0' cellpadding='0' style='width:100%'>
 <tr>
 <td class='smallblacktext'>\n{THREADDATESTAMP}\n</td>
-<td style='text-align:right'>\n{EDITIMG}{QUOTEIMG}\n</td>
+<td style='text-align:right'>\n{REPORTIMG}{EDITIMG}{QUOTEIMG}\n</td>
 </tr>
 </table>
 </td>

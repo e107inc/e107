@@ -95,6 +95,7 @@ if(IsSet($_POST['updateoptions'])){
 	$pref['forum_attach'] = $_POST['forum_attach'];
 	$pref['forum_redirect'] = $_POST['forum_redirect'];
 	$pref['forum_user_customtitle'] = $_POST['forum_user_customtitle'];
+	$pref['reported_post_email'] = $_POST['reported_post_email'];
 	save_prefs();
 	$forum -> show_message(FORLAN_10);
 }
@@ -186,6 +187,13 @@ if($action == "rank"){
 	$forum -> show_levels();
 }
 
+if($action == "sr"){
+	if($sub_action == "confirm"){
+		$sql -> db_Delete("tmp", "tmp_time='$id' ");
+			$forum -> show_message(FORLAN_118);
+	}
+	$forum -> show_reported();
+}
 
 
 if(!e_QUERY || $action == "main"){
@@ -203,13 +211,17 @@ require_once("footer.php");
 
 echo "<script type=\"text/javascript\">
 function confirm_(mode, forum_id, forum_name){
-	if(mode == 'parent'){
+	if(mode == 'sr'){
+		var x=confirm(\"".FORLAN_117."\");
+	}else if(mode == 'parent'){
 		var x=confirm(\"".FORLAN_81." [ID: \" + forum_name + \"]\");
 	}else{
 		var x=confirm(\"".FORLAN_82." [ID: \" + forum_name + \"]\");
 	}
 if(x)
-	if(mode == 'parent'){
+	if(mode == 'sr'){
+		window.location='".e_SELF."?sr.confirm.' + forum_id;
+	}else if(mode == 'parent'){
 		window.location='".e_SELF."?cat.confirm.' + forum_id;
 	}else{
 		window.location='".e_SELF."?main.confirm.' + forum_id;
@@ -222,6 +234,7 @@ exit;
 class forum{
 
 	function show_options($action){
+		global $sql;
 		if($action==""){$action="main";}
 		// ##### Display options ---------------------------------------------------------------------------------------------------------
 		$var['main']['text']=FORLAN_76;
@@ -238,6 +251,10 @@ class forum{
 		$var['prune']['link']=e_SELF."?prune";
 		$var['rank']['text']=FORLAN_63;
 		$var['rank']['link']=e_SELF."?rank";
+		if($sql -> db_Select("tmp", "*", "tmp_ip='reported_post' ")){
+			$var['sr']['text']=FORLAN_116;
+			$var['sr']['link']=e_SELF."?sr";
+		}
 		show_admin_menu(FORLAN_7,$action,$var);
 	}
 	function show_existing_forums($sub_action, $id, $mode=FALSE){
@@ -519,6 +536,12 @@ class forum{
 		</tr>
 
 		<tr>
+		<td style='width:75%' class='forumheader3'>".FORLAN_116."<br /><span class='smalltext'>".FORLAN_122."</span></td>
+		<td style='width:25%' class='forumheader2' style='text-align:center'>".($pref['reported_post_email'] ? "<input type='checkbox' name='reported_post_email' value='1' checked>" : "<input type='checkbox' name='reported_post_email' value='1'>")."</td>
+		</tr>
+
+
+		<tr>
 		<td style='width:75%' class='forumheader3'>".FORLAN_53."<br /><span class='smalltext'>".FORLAN_54."</span></td>
 		<td style='width:25%' class='forumheader2' style='text-align:center'><input class='tbox' type='text' name='forum_eprefix' size='15' value='".$pref['forum_eprefix']."' maxlength='20' /></td>
 		</tr>
@@ -543,6 +566,33 @@ class forum{
 		</div>";
 		$ns -> tablerender(FORLAN_62, $text);
 	}
+
+	function show_reported ($sub_action, $id){
+			global $sql, $rs, $ns, $aj;
+			$text = "<div style='border : solid 1px #000; padding : 4px; width :auto; height : 200px; overflow : auto; '>\n";
+			if($reported_total = $sql -> db_Select("tmp", "*", "tmp_ip='reported_post' ")){
+				$text .= "<table class='fborder' style='width:100%'>
+				<tr>
+				<td style='width:80%' class='forumheader2'>".FORLAN_119."</td>
+				<td style='width:20%; text-align:center' class='forumheader2'>".FORLAN_80."</td>
+				</tr>";
+				while($row = $sql -> db_Fetch()){
+					extract($row);
+					$reported = explode("^", $tmp_info);
+					$text .= "<tr>
+					<td style='width:80%' class='forumheader3'><a href='".e_BASE."forum_viewtopic.php?".$reported[0].".".$reported[1]."#".$reported[2]."' onclick=\"window.open('".e_BASE."forum_viewtopic.php?".$reported[0].".".$reported[1]."#".$reported[2]."'); return false;\">".$reported[3]."</a></td>
+					<td style='width:20%; text-align:center; vertical-align:top' class='forumheader3'>
+					".$rs -> form_button("submit", "reported_delete", FORLAN_20, "onClick=\"confirm_('sr', $tmp_time);\"")."
+					</td>
+					</tr>\n";
+				}
+				$text .= "</table>";
+			}else{
+				$text .= "<div style='text-align:center'>".FORLAN_121."</div>";
+			}
+			$text .= "</div>";
+			$ns -> tablerender(FORLAN_116, $text);
+		}
 
 	function show_prune(){
 		global $ns;
@@ -635,6 +685,5 @@ function forum_adminmenu(){
 	global $action;
 	$forum -> show_options($action);
 }
-
 
 ?>

@@ -291,7 +291,7 @@ echo "</td>
 
 function show_admin_menu($title,$page,$e107_vars){
 	global $ns;
-	$text = "<table class='fborder' style='width:100%;'>";
+	$text = "<table class='fborder' style='width:98%;'>";
 	foreach(array_keys($e107_vars) as $act){
 		$pre = "";
 		$post = "";

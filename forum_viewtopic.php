@@ -34,6 +34,8 @@ define("IMAGE_admin_delete", (file_exists(THEME."forum/admin_delete.png") ? "<im
 define("IMAGE_admin_move", (file_exists(THEME."forum/admin_move.png") ? "<img src='".THEME."forum/admin_move.png' alt='".LAN_408."' style='border:0' />" : "<img src='".e_IMAGE."forum/admin_move.png' alt='".LAN_408."' style='border:0' />"));
 define("IMAGE_new", (file_exists(THEME."forum/new.png") ? "<img src='".THEME."forum/new.png' alt='' style='float:left' />" : "<img src='".e_IMAGE."forum/new.png' alt='' style='float:left' />"));
 define("IMAGE_post", (file_exists(THEME."forum/post.png") ? "<img src='".THEME."forum/post.png' alt='' style='border:0' />" : "<img src='".e_IMAGE."forum/post.png' alt='' style='border:0' />"));
+define("IMAGE_report", (file_exists(THEME."forum/report.png") ? "<img src='".THEME."forum/report.png' alt='".LAN_413."' style='border:0' />" : "<img src='".e_IMAGE."forum/report.png' alt='".LAN_413."' style='border:0' />"));
+
 
 if(!e_QUERY){
 	header("Location:".e_BASE."forum.php");
@@ -66,7 +68,69 @@ if($action == "untrack" && USER){
 	header("location:".e_SELF."?".$forum_id.".".$thread_id);
 	exit;
 }
+if($action == "report"){
+	$aj = new textparse();
+	if(IsSet($_POST['report_thread'])){	
+		$user = $_POST['user'];$report_thread_id = $_POST['report_thread_id'];$report_thread_name = $_POST['report_thread_name'];
+		if($pref['reported_post_email']){
+			require_once(e_HANDLER."mail.php");
+			$report_add = $aj -> tpa($_POST['report_add']);
+			$report = LAN_422.SITENAME." : ".(substr(SITEURL, -1) == "/" ? SITEURL : SITEURL."/")."forum_viewtopic.php?".$forum_id.".".$report_thread_id."#".$thread_id."\n".LAN_425.$user."\n".$report_add;
+			$subject = LAN_421." ".SITENAME;
+			sendemail(SITEADMINEMAIL, $subject, $report);
+		}
+		$reported_post = $forum_id."^".$report_thread_id."^".$thread_id."^".$report_thread_name."^".$user;
+		$sql -> db_Insert("tmp", "'reported_post', '".time()."', '$reported_post' ");
+        define("e_PAGETITLE", LAN_01." / ".LAN_428);
+		require_once(HEADERF);	
+		$text = LAN_424."<br /><a href='forum_viewtopic.php?".$forum_id.".".$report_thread_id."#".$thread_id."'>".LAN_429."</a";
+		$ns -> tablerender(LAN_414, $text);
+	}else{
+		$number = $thread_id;
+		$sql -> db_Select("forum_t", "*", "thread_id='".$thread_id."' ");
+		$row = $sql -> db_Fetch();
+		if($row['thread_parent']){
+			$sql2 = new db;
+			$sql2 -> db_Select("forum_t", "*", "thread_id = $thread_parent");
+			list($thread_id, $thread_name) = $sql2 -> db_Fetch();
+		}else{
+			$thread_name = $row['thread_name'];
+		}
+		$report_thread_id = $thread_id;
+		define("e_PAGETITLE", LAN_01." / ".LAN_426." ".$thread_name);
+		require_once(HEADERF);	
+		$user = (USER ? USERNAME : LAN_194);
+		$text = "<form action='".e_BASE."forum_viewtopic.php?".e_QUERY."' method='post'> <table style='width:100%'>
+		<tr>
+		<td  style='width:50%' >
+		".LAN_415.": ".$thread_name." <a href='forum_viewtopic.php?".$forum_id.".".$thread_id."#".$number."'><span class='smalltext'>".LAN_420." </span>
+		</a>
+		</td>
+		<td style='text-align:center;width:50%'>
+		</td>
+		</tr>
+		<tr>
+		<td>".LAN_417."<br />".LAN_418."
+		</td>
+		<td style='text-align:center;'>
+		<textarea cols='40' rows='10' class='tbox' name='report_add'></textarea>
+		</td>
+		</tr>
+		<tr>
+		<td colspan='2' style='text-align:center;'><br />
+		<input type ='hidden' name='user' value='$user' />
+		<input type ='hidden' name='report_thread_id' value='$report_thread_id' />
+		<input type ='hidden' name='report_thread_name' value='$thread_name' />
+		<input class='button' type='submit' name='report_thread' value='".LAN_419."' />
+		</td>
+		</tr>
+		</table>";
+		$ns -> tablerender(LAN_414, $text);
+	}
 
+	require_once(FOOTERF);
+	exit;
+}
 $pm_installed = ($pref['pm_title'] ? TRUE : FALSE);
 
 $gen = new convert;
@@ -231,6 +295,7 @@ if($thread_active){
 }else{
 	$T_ACTIVE = TRUE;
 }
+$REPORTIMG = "<a href='forum_viewtopic.php?".$forum_id.".".$thread_id.".".$from.".report'>".IMAGE_report."</a> ";
 if(MODERATOR){
 	$MODOPTIONS = "<a href='forum_post.php?edit.".$forum_id.".".$thread_id."'>".IMAGE_admin_edit."</a>\n<a style='cursor:pointer; cursor:hand' onClick=\"confirm_('thread', $forum_id, $thread_id, '')\"'>".IMAGE_admin_delete."</a>\n<a href='".e_ADMIN."forum_conf.php?move.".$forum_id.".".$thread_id."'>".IMAGE_admin_move."</a>";
 }
@@ -314,6 +379,7 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 		if(!$T_ACTIVE){
 			$QUOTEIMG = "<a href='forum_post.php?quote.".$forum_id.".".$thread_id."'>".IMAGE_quote."</a>";
 		}
+		$REPORTIMG = "<a href='forum_viewtopic.php?".$forum_id.".".$thread_id.".".$from.".report'>".IMAGE_report."</a> ";
 		if(MODERATOR){
 			$MODOPTIONS = "<a href='forum_post.php?edit.".$forum_id.".".$thread_id."'>".IMAGE_admin_edit."</a>\n<a style='cursor:pointer; cursor:hand' onClick=\"confirm_('reply', $forum_id, $thread_id, '$post_author_name')\"'>".IMAGE_admin_delete."</a>\n<a href='".e_ADMIN."forum_conf.php?move.".$forum_id.".".$thread_id."'>".IMAGE_admin_move."</a>";
 		}
