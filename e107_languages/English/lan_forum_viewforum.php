@@ -47,6 +47,6 @@ define("LAN_408", "guest");
 define("LAN_409", "members");
 define("LAN_410", "guests");
 
-define("LAN_411", "Sticky Threads");
+define("LAN_411", "Important Threads");
 define("LAN_412", "Forum Threads");
 ?>
