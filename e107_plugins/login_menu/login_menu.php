@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2004-12-17 21:37:43 $
-|     $Author: loloirie $
+|     $Revision: 1.20 $
+|     $Date: 2004-12-24 21:33:23 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
+
+$sql2 = new db;
 
 if(CORRUPT_COOKIE === TRUE){
 	$text = '<div style="text-align:center">'.LOGIN_MENU_L7.'<br /><br />
@@ -60,7 +62,7 @@ if(USER == TRUE || ADMIN == TRUE){
 	}
 	if(!$menu_pref['login_menu'] || $menu_pref['login_menu']['new_articles'] == true){
 		$new_articles = 0;
-		$new_articles = $sql -> db_Select('content', '*', '`content_type` < 4 OR `content_type` = 0 AND `content_datestamp` > '.$time);
+		$new_articles = $sql -> db_Select('content', '(content_class)', 'content_type = 0 AND `content_datestamp` > '.$time);
 		while($row = $sql -> db_Fetch()){
 			if(!check_class($row['content_class'])){
 				$new_articles--;
@@ -174,7 +176,7 @@ if(USER == TRUE || ADMIN == TRUE){
 		$NewItems[] = $new_forum.' '.($new_forum == 1 ? LOGIN_MENU_L20 : LOGIN_MENU_L21);
 	}
 	if(!$menu_pref['login_menu'] || $menu_pref['login_menu']['new_members'] == true){
-		$new_users = $sql -> db_Count('user', '(*)', 'WHERE `user_join` > '.$time.'\'');
+		$new_users = $sql -> db_Count('user', '(user_join)', 'WHERE user_join > '.$time);
 		$new_total += $new_users;
 		if(!$new_users){
 			$new_users = LOGIN_MENU_L26;
