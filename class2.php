@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.88 $
-|     $Date: 2005-02-23 21:06:38 $
+|     $Revision: 1.89 $
+|     $Date: 2005-02-23 21:15:22 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -22,6 +22,7 @@
 $eTimingStart = microtime();
 
 // Find out if register globals is enabled and destroy them if so
+
 $register_globals = true;
 if(function_exists('ini_get')) {
 	if(ini_get('register_globals')){
@@ -108,12 +109,7 @@ define("e_UC_ADMIN", 254);
 define("e_UC_NOBODY", 255);
 define("ADMINDIR", $ADMIN_DIRECTORY);
 
-// **T= 4ms**
-//
 // All debug objects and constants are defined in the debug handler
-//
-//print_r($_COOKIE);
-//exit;
 if (preg_match('/debug=(.*)/', e_MENU) || isset($_COOKIE['e107_debug_level'])) {
 	require_once(e_HANDLER.'debug_handler.php');
 	$db_debug = new e107_db_debug;
@@ -121,14 +117,9 @@ if (preg_match('/debug=(.*)/', e_MENU) || isset($_COOKIE['e107_debug_level'])) {
 	define('E107_DEBUG_LEVEL',0);
 }
 
-//
-//
 if(is_object($db_debug)) { $db_debug->Mark_Time('Start: Init ErrHandler');  }
-//
-//
 
 // e107_config.php upgrade check
-// =====================
 if (!$ADMIN_DIRECTORY && !$DOWNLOADS_DIRECTORY) {
 	message_handler("CRITICAL_ERROR", 8, ": generic, ", "e107_config.php");
 	exit;
@@ -160,17 +151,9 @@ $tp=new e_parse;
 $sql=new db;
 $sql->db_SetErrorReporting(FALSE);
 
-//
-//
 $sql->db_Mark_Time('Start: SQL Connect');
-//
-//
 $merror=$sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
-//
-//
 $sql->db_Mark_Time('Start: Prefs, misc tables');
-//
-//
 
 if ($merror == "e1") {
 	message_handler("CRITICAL_ERROR", 6, ": generic, ", "class2.php");
@@ -187,11 +170,11 @@ PHP Compatabilty should *always* be on. */
 e107_require_once(e_HANDLER."PHP_Compat_handler.php");
 e107_require_once(e_HANDLER."e107_Compat_handler.php");
 
-
 // Extract core prefs from the database
 e107_require_once(e_HANDLER.'cache_handler.php');
 e107_require_once(e_HANDLER.'arraystorage_class.php');
 
+$sql->db_Mark_Time('Start: Extracting Core Prefs');
 $eArrayStorage = new ArrayData();
 $PrefCache = ecache::retrieve('SitePrefs', 24 * 60, true);
 
@@ -233,9 +216,7 @@ if(!$PrefCache){
 	ecache::set('SitePrefs', $PrefCache);
 }
 $pref = $eArrayStorage->ReadArray($PrefCache);
-
-
-
+$sql->db_Mark_Time('(Extracting Core Prefs Done)');
 
 if (!$pref['cookie_name']) {
 	$pref['cookie_name'] = "e107cookie";
