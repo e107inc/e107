@@ -520,7 +520,9 @@ class textparse{
                         $text = preg_replace("/\n/i", " ", $text);
                         $text = str_replace("<br />", " <br />" , $text);
                         $text = e107_parse($text,$referrer);
-                        $text = $this -> wrap($text, $highlight_search);
+						if($mode != "on"){
+							$text = $this -> wrap($text, $highlight_search);
+						}
                         $text = $this -> bbcode($text);
                         if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
                         $search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;span", "&lt;/span");
@@ -549,28 +551,28 @@ class textparse{
                                                 $url = $url[0];
                                                 $message_array[$i] = "<a href='".$message_array[$i]."' rel='external'>[".$url."]</a>";
                                         }else{
-                                                if(!strstr($message_array[$i], "[link=") && !strstr($message_array[$i], "[url=") && !strstr($message_array[$i], "href=") && !strstr($message_array[$i], "src=") && !strstr($message_array[$i], "action=") && !strstr($message_array[$i], "onclick=") && !strstr($message_array[$i], "url(") && !strstr($message_array[$i], "[img")){
+                                        if(!strstr($message_array[$i], "[link=") && !strstr($message_array[$i], "[url=") && !strstr($message_array[$i], "href=") && !strstr($message_array[$i], "src=") && !strstr($message_array[$i], "action=") && !strstr($message_array[$i], "onclick=") && !strstr($message_array[$i], "url(") && !strstr($message_array[$i], "[img")){
                                                         $message_array[$i] = preg_replace("/([^\s]{".$wrapcount."})/", "$1<br />", $message_array[$i]);
                                                 }
-                                                }
-                                }else{
-                                        if(!strstr($message_array[$i], "[link=") && !strstr($message_array[$i], "[url=") && !strstr($message_array[$i], "href=") && !strstr($message_array[$i], "src=") && !strstr($message_array[$i], "action=") && !strstr($message_array[$i], "onclick=") && !strstr($message_array[$i], "url(") && !strstr($message_array[$i], "[img")){
-                                                $search = "#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i";
-                                                $replace = ($pref['links_new_window'] ? '\1<a href="http://\2.\3" rel="external";">\2.\3</a>' : '\1<a href="http://\2.\3" >\2.\3</a>');
-                                                $message_array[$i] = preg_replace($search, $replace, $message_array[$i]);
-                                                $search = "#([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?([^.,]))#i";
-                                                $replace = ($pref['links_new_window'] ? '<a href="\1://\2" rel="external";">\1://\2</a>' : '<a href="\1://\2">\1://\2</a>');
-                                                $message_array[$i] = preg_replace($search, $replace, $message_array[$i]);
-                                                        if($highlight_search && !strstr($message_array[$i], "http://")){
-                                                                $tmp = explode(" ", $_POST['search_query']);
-                                                                foreach($tmp as $key){
-                                                                        if(eregi($key, $message_array[$i])){
-                                                                                $message_array[$i] = eregi_replace($key, "<span class='searchhighlight'>$key</span>", $message_array[$i]);
-                                                                        }
-                                                                }
-                                                        }
                                         }
-                                                }
+                                }else{
+									if(!strstr($message_array[$i], "[link=") && !strstr($message_array[$i], "[url=") && !strstr($message_array[$i], "href=") && !strstr($message_array[$i], "src=") && !strstr($message_array[$i], "action=") && !strstr($message_array[$i], "onclick=") && !strstr($message_array[$i], "url(") && !strstr($message_array[$i], "[img")){
+										$search = "#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i";
+                                        $replace = ($pref['links_new_window'] ? '\1<a href="http://\2.\3" rel="external";">\2.\3</a>' : '\1<a href="http://\2.\3" >\2.\3</a>');
+                                        $message_array[$i] = preg_replace($search, $replace, $message_array[$i]);
+                                        $search = "#([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?([^.,]))#i";
+                                        $replace = ($pref['links_new_window'] ? '<a href="\1://\2" rel="external";">\1://\2</a>' : '<a href="\1://\2">\1://\2</a>');
+                                        $message_array[$i] = preg_replace($search, $replace, $message_array[$i]);
+                                        if($highlight_search && !strstr($message_array[$i], "http://")){
+											$tmp = explode(" ", $_POST['search_query']);
+                                             foreach($tmp as $key){
+												 if(eregi($key, $message_array[$i])){
+													$message_array[$i] = eregi_replace($key, "<span class='searchhighlight'>$key</span>", $message_array[$i]);
+                                                 }
+                                             }
+                                          }
+                                      }
+                                  }
                         }
                         $text = implode(" ",$message_array);
                         return $text;
