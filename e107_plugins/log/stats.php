@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-02-07 12:52:40 $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-07 13:13:25 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -236,6 +236,7 @@ class siteStats {
 	function renderAlltimeVisits() {
 		/* renders information for alltime, total and unique */
 		$totalArray = $this -> arraySort($this -> dbPageInfo, "ttlv");
+		
 		foreach($totalArray as $key => $info) {
 			$total += $info['ttlv'];
 		}
@@ -252,7 +253,7 @@ class siteStats {
 
 		$uniqueArray = $this -> arraySort($this -> dbPageInfo, "unqv");
 		foreach($uniqueArray as $key => $info) {
-			$total += $info['unqv'];
+			$totalv += $info['unqv'];
 		}
 		$text .= "<br /><table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>Page</td>\n<td class='fcaption' style='width: 70%;'>Total Unique Visits</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
 		foreach($uniqueArray as $key => $info) {
@@ -263,7 +264,7 @@ class siteStats {
 			<td style='width: 10%; text-align: center;'>".$percentage."%</td>
 			</tr>\n";
 		}
-		$text .= "<tr class='forumheader'><td colspan='2'>Total</td><td style='text-align: center;'>$total</td></tr>\n</table>";
+		$text .= "<tr class='forumheader'><td colspan='2'>Total</td><td style='text-align: center;'>$totalv</td></tr>\n</table>";
 		return $text;
 	}
 
