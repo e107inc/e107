@@ -1,10 +1,13 @@
 <?php
+if(!defined('e_HTTP')){ die("Unauthorised Access");}
+if (!getperms("2")) {
+	header("location:".e_BASE."index.php");
+	 exit;
+}
+global $sql;
 if(isset($_POST['reset'])){
-	if(!check_class("FAKE","",TRUE)){
-		$text = "<b>Operation Not allowed</b><br /><br />";
-	} else {
 		for($mc=1;$mc<=5;$mc++){
-			$sql -> db_Select("menus","*", "menu_location='$mc' ORDER BY menu_order");
+			$sql -> db_Select("menus","*", "menu_location='".$mc."' ORDER BY menu_order");
 			$count = 1;
 			$sql2 = new db;
 			while(list($menu_id, $menu_name, $menu_location, $menu_order) = $sql-> db_Fetch()){
@@ -13,7 +16,6 @@ if(isset($_POST['reset'])){
 			}
 			$text = "<b>Menus reset in database</b><br /><br />";
 		}
-	}
 }else{
 	unset($text);
 }
