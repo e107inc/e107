@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-02-16 20:57:49 $
+|     $Revision: 1.27 $
+|     $Date: 2005-02-18 20:21:53 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -752,6 +752,13 @@ $text .= "<div id='comments' style='display:none; text-align:center'>
 	<tr>
 	<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' colspan='2'>".PRFLAN_87."</td>
 	</tr>
+
+	<tr>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_89.": </td>
+	<td style='width:50%; text-align:right' class='forumheader3'>
+	<input type='radio' name='comments_icon' value='1'".($pref['comments_icon'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
+	<input type='radio' name='comments_icon' value='0'".(!$pref['comments_icon'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
+	</td>
 	 
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_88.": </td>
