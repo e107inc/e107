@@ -1,0 +1,110 @@
+div.menuBar,
+div.menuBar a.menuButton, div.menuButton, div.menuButton_over, 
+div.menu,
+div.menu a.menuItem {
+  font: 8pt Tahoma, Verdana, Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  color: #000000;
+}
+
+div.menuBar {
+  background: url(images/menu1.gif) #fff;
+  padding: 4px 0px 4px 0px;
+  text-align: left;
+  border: 1px solid #a2a2a2;
+}
+
+div.emenuBar {
+  background-color: #d8d8d8;
+  border-top: 1px solid #ffffff;
+  border-bottom: 0px solid #000;
+  text-align: left;
+}
+
+div.menuBar a.menuButton, div.menuButton, div.menuButton_over {
+  background-color: transparent;
+  border: 1px solid #eeedee;
+  color: #000000;
+  cursor: default;
+  left: 0px;
+  margin: 0px;
+  padding: 2px 4px 2px 4px;
+  /* 
+  if using a link icon replace line above with this one
+  padding: 2px 4px 2px 22px;
+  */
+  position: relative;
+  text-decoration: none;
+  top: 0px;
+  z-index: 100;
+}
+
+div.menuBar a.menuButton:hover, div.menuButton:hover, div.menuButton_over {
+  background-color: transparent;
+  border-color: #ffffff #a5a5a5 #a5a5a5 #ffffff;
+  color: #000000;
+}
+
+div.menuBar a.menuButtonActive, div.menuButtonActive, div.menuButtonActive:hover, 
+div.menuBar a.menuButtonActive:hover {
+  background-color: #d5d5d5;
+  border-color: #a5a5a5 #ffffff #ffffff #a5a5a5;
+  color: #000;
+  left: 1px;
+  top: 1px;
+}
+
+div.menu {
+  background-color: #eee;
+  border: 1px solid;
+  border-color: #ffffff #a5a5a5 #a5a5a5 #ffffff;
+  left: 0px;
+  padding: 1px 1px 1px 1px;
+  position: absolute;
+  top: 0px;
+  visibility: hidden;
+  z-index: 101;
+}
+
+div.menu a.menuItem {
+  color: #000000;
+  cursor: default;
+  display: block;
+  padding: 2px 11px 2px 0px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+div.menu a.menuItem:hover, div.menu a.menuItemHighlight {
+  background-color: #d5d5d5;
+  color: #000000;
+}
+
+div.menu a.menuItem span.menuItemBuffer {
+  padding: 0px 2px 0px 2px;
+  color: #ffffff;
+}
+
+div.menu a.menuItem:hover span.menuItemBuffer {
+  padding: 0px 2px 0px 2px;
+  color: #000000;
+}
+
+div.menu a.menuItem span.menuItemText {
+	padding: 0px 0px 0px 3px;
+}
+
+div.menu a.menuItem span.menuItemArrow {
+  margin-right: -.75em;
+}
+
+div.menu div.menuItemSep {
+  border-top: 1px solid #a5a5a5;
+  border-bottom: 1px solid #ffffff;
+  margin: 4px 2px;
+}
+
+a.menuItem.header {
+  border-bottom: 1px solid #b3b3b3;
+}
