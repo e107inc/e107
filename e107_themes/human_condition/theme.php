@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/human_condition/theme.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-02-11 03:44:27 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-17 20:24:38 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -62,8 +62,9 @@ $NEWSSTYLE = "
 <div class='textstyle4'>{STICKY_ICON}<b>{NEWSTITLE}</b></div>
 <div class='postinfo'>{NEWSCATEGORY}: {NEWSAUTHOR} @ {NEWSDATE}</div>
 <div class='textstyle3'>{NEWSBODY}</div>
-<div class='postinfo'>".TP_commenticon." {NEWSCOMMENTS}</div>\n<br />\n";
-
+<div class='postinfo'>".TP_commenticon." {NEWSCOMMENTS}{TRACKBACK}</div>\n<br />\n";
+define("TRACKBACKSTRING", "Trackbacks: ");
+define("TRACKBACKBEFORESTRING", " | ");
 
 
 define("DATEHEADERCLASS", "button");
