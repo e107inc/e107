@@ -163,12 +163,9 @@ if($action == "test"){
      $test = $sql -> db_Fetch();
      $text .= "<form method='post' action='".e_SELF."'><div style='text-align:center'>\n";
      $text .= USRLAN_117." <br><b>".$test['user_email']."</b><br><br>
-
-     <input type='hidden' name='resend_id' value='$sub_action'>\n
-     <input type='hidden' name='test_name' value='".$test['user_name']."'>\n
      <input type='hidden' name='test_email' value='".$test['user_email']."'>\n
      <input class='button' type='submit' name='test_mail' value='".USRLAN_118."' />\n</div></form>\n";
-     $caption = USRLAN_112;
+     $caption = USRLAN_118;
      $ns -> tablerender($caption, $text);
      }
 }
