@@ -1,0 +1,89 @@
+<html style="width: 280; height: 150;">
+<head>
+<title>New Folder</title>
+<style type="text/css">
+<!--
+html, body {
+  background: ButtonFace;
+  color: ButtonText;
+  font: 11px Tahoma,Verdana,sans-serif;
+  margin: 0px;
+  padding: 0px;
+}
+body { padding: 5px; }
+table {
+  font: 11px Tahoma,Verdana,sans-serif;
+}
+form p {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+fieldset { padding: 0px 10px 5px 5px; }
+select, input, button { font: 11px Tahoma,Verdana,sans-serif; }
+button { width: 70px; }
+.space { padding: 2px; }
+
+.title { background: #ddf; color: #000; font-weight: bold; font-size: 120%; padding: 3px 10px; margin-bottom: 10px;
+border-bottom: 1px solid black; letter-spacing: 2px;
+}
+//-->
+</style>
+<script type="text/javascript" src="../popup.js"></script>
+<script type="text/javascript" src="../../dialog.js"></script>
+<script type="text/javascript">
+function onCancel() {
+  __dlg_close(null);
+  return false;
+};
+
+function onOK() 
+{
+	 // pass data back to the calling window
+  var fields = ["f_foldername"];
+  var param = new Object();
+  for (var i in fields) {
+    var id = fields[i];
+    var el = MM_findObj(id);
+    param[id] = el.value;
+  }
+  __dlg_close(param);
+  return false;
+}
+function Init() {
+  __dlg_init();
+ MM_findObj("f_foldername").focus();
+}
+
+function MM_findObj(n, d) { //v4.01
+  var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
+    d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
+  if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
+  for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
+  if(!x && d.getElementById) x=d.getElementById(n); return x;
+}
+
+</script>
+</head>
+<body onload="Init()">
+<div class="title">New Folder</div>
+<form action="" method="get">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td> <table border="0" cellspacing="2" cellpadding="2">
+          <tr>
+            <td>Folder Name:</td>
+            <td><input name="foldername" type="text" id="f_foldername"></td>
+          </tr>
+        </table></td>
+    <tr>
+      <td><div style="text-align: right;"> 
+          <hr />
+          <button type="button" name="ok" onclick="return onOK();">OK</button>
+          <button type="button" name="cancel" onclick="return onCancel();">Cancel</button>
+        </div></td>
+    </tr>
+  </table>
+</form>
+<p>&nbsp;</p><br />
+</body>
+</html>

@@ -1,0 +1,79 @@
+
+body{
+	background-color: #CCCCFF;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: x-small;
+	color: #333366;
+	text-decoration: none;
+		line-height: 150%;
+}
+
+.greenTab {
+	background-color: #99CC00;
+}
+
+.orangeTab {
+	background-color: #FFB039;
+}
+
+.blueTab {
+	background-color: #3399CC;
+}
+
+.centerBox {
+	background-color: #CCCCFF;
+	width: 700px;
+	border-left-width: 2px;
+	border-right-style: solid;
+	border-left-style: solid;
+	border-right-color: #666699;
+	border-left-color: #666699;
+	border-right-width: 2px;
+}
+
+
+.topNav {
+	width: 90%;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #FFFFFF;
+	font-size: medium;
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+
+.boxContents {
+	font-size: xx-small;
+	padding-top: 5px;
+	line-height: 125%;
+	font-weight: normal;
+	text-decoration: none;
+}
+
+.quoteFloat {
+	width: 200px;
+	font-size: xx-small;
+	font-weight: bold;
+	line-height: 175%;
+	background-color: #FFFFCC;
+	padding: 10px;
+	margin: 10px;
+	border: 1px solid #9999CC;
+	float: right;
+}
+.quoteSource {
+	font-size: 10px;
+	font-weight: normal;
+	text-decoration: none;
+	clear: left;
+	text-align: right;
+	margin-top: 10px;
+}
+
+.mainHeading {
+	font-size: medium;
+	font-weight: bold;
+	color: #333366;
+	margin-top: 10px;
+	margin-bottom: 20px;
+}
