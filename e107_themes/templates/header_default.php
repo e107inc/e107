@@ -117,7 +117,7 @@ if($e107_popup != 1){
 function parseheader($LAYOUT){
         $tmp = explode("\n", $LAYOUT);
         for($c=0; $c < count($tmp); $c++){
-                if(preg_match("/[\{|\}]/", $tmp[$c])){
+                if(preg_match("/{.+?}/", $tmp[$c])){
                         $str = checklayout($tmp[$c]);
                 }else{
                         echo $tmp[$c];
