@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2004-12-26 19:30:58 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.44 $
+|     $Date: 2004-12-31 11:14:45 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -334,6 +334,7 @@ if (!class_exists('e107_table')) {
 }
 //#############################################################
 
+$ns = new e107table;
 init_session();
 online();
 
@@ -449,8 +450,6 @@ if (!file_exists(FOOTERF)) {
 }
 
 define("LOGINMESSAGE", "");
-$ns = new e107table;
-
 define("OPEN_BASEDIR", (ini_get('open_basedir') ? TRUE : FALSE));
 define("SAFE_MODE", (ini_get('safe_mode') ? TRUE : FALSE));
 define("FILE_UPLOADS", (ini_get('file_uploads') ? TRUE : FALSE));
