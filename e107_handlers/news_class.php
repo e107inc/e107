@@ -198,6 +198,17 @@ on
 		return TRUE;
 	}
 	
+function make_xml_compatible($original){
+	global $aj;
+  if(!is_object($aj)) $aj = new textparse;
+  $original = $aj -> tpa($original);
+  // remove html-only entities
+  $original = str_replace('&pound', '&amp;#163;', $original);
+  $original = str_replace('&copy;', '(c)', $original);
+	// encode rest
+  return htmlspecialchars($original);
+}
+
 function create_rss(){
                 /*
                 # rss create
@@ -206,21 +217,22 @@ function create_rss(){
                 # - scope                                        public
                 */
                 global $sql;
+  							global $aj;
+								if(!is_object($aj)) $aj = new textparse;
                 setlocale (LC_TIME, "en");
                 $pubdate = strftime("%a, %d %b %Y %I:%M:00 GMT", time());
-
                 $sitebutton = (strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", e_IMAGE).SITEBUTTON);
                 $sitedisclaimer = ereg_replace("<br />|\n", "", SITEDISCLAIMER);
 
-        $rss = "<?xml version=\"1.0\"?>
+        $rss = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>
 <rss version=\"2.0\">
 <channel>
-  <title>".SITENAME."</title>
+  <title>".$this->make_xml_compatible(SITENAME)."</title>
   <link>http://".$_SERVER['HTTP_HOST'].e_HTTP."index.php</link>
-  <description>".SITEDESCRIPTION."</description>
+  <description>".$this->make_xml_compatible(SITEDESCRIPTION)."</description>
   <language>en-gb</language>
-  <copyright>".$sitedisclaimer."</copyright>
-  <managingEditor>".SITEADMIN." - ".SITEADMINEMAIL."</managingEditor>
+  <copyright>".$this->make_xml_compatible($sitedisclaimer)."</copyright>
+  <managingEditor>".$this->make_xml_compatible(SITEADMIN)." - ".SITEADMINEMAIL."</managingEditor>
   <webMaster>".SITEADMINEMAIL."</webMaster>
   <pubDate>$pubdate</pubDate>
   <lastBuildDate>$pubdate</lastBuildDate>
@@ -229,17 +241,17 @@ function create_rss(){
   <ttl>60</ttl>
 
   <image>
-    <title>".SITENAME."</title>
+    <title>".$this->make_xml_compatible(SITENAME)."</title>
     <url>".$sitebutton."</url>
     <link>http://".$_SERVER['HTTP_HOST'].e_HTTP."index.php</link>
     <width>88</width>
     <height>31</height>
-    <description>".SITETAG."</description>
+    <description>".$this->make_xml_compatible(SITETAG)."</description>
   </image>
 
   <textInput>
     <title>Search</title>
-    <description>Search ".SITENAME."</description>
+    <description>Search ".$this->make_xml_compatible(SITENAME)."</description>
     <name>query</name>
     <link>".SITEURL.(substr(SITEURL, -1) == "/" ? "" : "/")."search.php</link>
   </textInput>
@@ -260,32 +272,30 @@ function create_rss(){
                         $nb .= $tmp[$a]." ";
                 }
                 if($tmp[($a-2)]){ $nb .= " [more ...]"; }
-                  $nb = htmlentities($nb);
-                $nb = str_replace('&pound', '&amp;#163;', $nb);
-                $nb = str_replace('&copy;', 'c.', $nb);
+                //$nb = $this->make_xml_compatible($nb);
                 // Code from Lisa
-                $search = array();
-                $replace = array();
-                $search[0] = "/\<a href=\"(.*?)\">(.*?)<\/a>/si";
-                $replace[0] = '\\2';
-                $search[1] = "/\<a href='(.*?)'>(.*?)<\/a>/si";
-                $replace[1] = '\\2';
-                $search[2] = "/\<a href='(.*?)'>(.*?)<\/a>/si";
-                $replace[2] = '\\2';
-                $search[3] = "/\<a href=&quot;(.*?)&quot;>(.*?)<\/a>/si";
-                $replace[3] = '\\2';
-                $news_title = preg_replace($search, $replace, $news_title);
+                //$search = array();
+                //$replace = array();
+                //$search[0] = "/\<a href=\"(.*?)\">(.*?)<\/a>/si";
+                //$replace[0] = '\\2';
+                //$search[1] = "/\<a href='(.*?)'>(.*?)<\/a>/si";
+                //$replace[1] = '\\2';
+                //$search[2] = "/\<a href='(.*?)'>(.*?)<\/a>/si";
+                //$replace[2] = '\\2';
+                //$search[3] = "/\<a href=&quot;(.*?)&quot;>(.*?)<\/a>/si";
+                //$replace[3] = '\\2';
+                //$news_title = preg_replace($search, $replace, $news_title);
                 // End of code from Lisa
-                $wlog .= $news_title."\n".SITEURL."comment.php?comment.news.".$news_id."\n\n";
+                $wlog .= strip_tags($aj -> tpa($news_title))."\n".SITEURL."comment.php?comment.news.".$news_id."\n\n";
                 $itemdate = strftime("%a, %d %b %Y %I:%M:00 GMT", $news_datestamp);
 
   $rss .= "<item>
-    <title>$news_title</title>
+    <title>".$this->make_xml_compatible(strip_tags($aj -> tpa($news_title)))."</title>
     <link>http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$news_id."</link>
-    <description>$nb</description>
+    <description>".$this->make_xml_compatible($nb)."</description>
     <category domain=\"".SITEURL."\">$category_name</category>
     <comments>http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$news_id."</comments>
-    <author>$user_name - $user_email</author>
+    <author>".$this->make_xml_compatible($user_name)." - $user_email</author>
     <pubDate>$itemdate</pubDate>
     <guid isPermaLink=\"true\">http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$news_id."</guid>
   </item>
