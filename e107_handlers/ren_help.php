@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-05 07:05:14 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-17 19:17:54 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 @include(e_LANGUAGEDIR.e_LANGUAGE."/lan_ren_help.php");
@@ -86,7 +86,7 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help") {
 
 function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $helpfunc = "help") {
 
-
+	global $pref;
 	//        $mode == TRUE : fontsize and colour dialogs are rendered
 	//        $mode == 2 : no helpbox
 
@@ -133,6 +133,15 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 		$string .= "<input class=\"button\" type=\"button\" value=\"".$bbcode[0]."\" onclick=\"{$addtextfunc}('".$bbcode[1]."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('','{$tagid}')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."','{$tagid}')\"" : "" ).($bbcode[3] ? " style='".$bbcode[3]."'" :
 		"")." />\n";
 	}
+
+/*
+	if(file_exists(e_PLUGIN."sphpell/spellcheckpageinc.php"))
+	{
+		require_once(e_PLUGIN."sphpell/spellcheckpageinc.php");
+		$string .= "<input type='button' value='Check Spelling' onclick=\"DoSpellCheck('top.opener.parent.document.dataform.data')\">";	
+	}
+*/
+
 	if ($mode) {
 		$string .= "<br />\n<select class=\"tbox\" name=\"fontcol\" onchange=\"{$addtextfunc}('[color=' + this.options[this.selectedIndex].value + '][/color]');this.selectedIndex=0;\"".($mode != 2 ? " onmouseover=\"{$helpfunc}('Font Color: [color]Blue[/color]','{$tagid}')\" onmouseout=\"{$helpfunc}('','{$tagid}')\"" : "")." >\n<option value=\"\">".LANHELP_21."</option>\n";
 		while (list($key, $bbcode) = each($colours)) {
