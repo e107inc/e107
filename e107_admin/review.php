@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/review.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-18 16:11:32 $
-|     $Author: streaky $
+|     $Revision: 1.7 $
+|     $Date: 2005-01-25 20:59:16 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
+if(!is_object($tp)) $tp = new e_parse;
     if($pref['htmlarea']){
         require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
        $htmlarea_js = htmlarea("data");
@@ -26,9 +27,6 @@ if(!getperms("J") && !getperms("K") && !getperms("L")){
         exit;
 }
 $e_sub_cat = 'review';
-
-require_once(e_HANDLER."textparse/basic.php");
-$etp = new e107_basicparse;
 
 require_once("auth.php");
 $aj = new textparse;
@@ -45,7 +43,7 @@ if(e_QUERY){
         $id = $tmp[2];
         unset($tmp);
 }
-if(preg_match("#(.*?)_delete_(\d+)#",$deltest[$etp->unentity(REVLAN_9)],$matches))
+if(preg_match("#(.*?)_delete_(\d+)#",$deltest[$tp->toJS(REVLAN_9)],$matches))
 {
         $delete = $matches[1];
         $del_id = $matches[2];
@@ -572,25 +570,25 @@ function review_adminmenu(){
 require_once("footer.php");
 
 function headerjs(){
-global $etp;
-$script = "<script type=\"text/javascript\">
-function addtext2(sc){
-        document.getElementById('dataform').category_button.value = sc;
-}
-</script>\n";
+    global $tp;
+    $script = "<script type=\"text/javascript\">
+    function addtext2(sc){
+            document.getElementById('dataform').category_button.value = sc;
+    }
+    </script>\n";
 
 
 
 
-$script .= "<script type=\"text/javascript\">
-function confirm_(mode, content_heading, content_id){
-        if(mode == 'cat'){
-                return confirm(\"".$etp->unentity(REVLAN_49)." [ID \" + content_id + \": \" + content_heading + \"]\");
-        }else{
-                return confirm(\"".$etp->unentity(REVLAN_50)." [ID \" + content_id + \": \" + content_heading + \"]\");
-        }
-}
-</script>";
-return $script;
+    $script .= "<script type=\"text/javascript\">
+    function confirm_(mode, content_heading, content_id){
+            if(mode == 'cat'){
+                    return confirm(\"".$tp->toJS(REVLAN_49)." [ID \" + content_id + \": \" + content_heading + \"]\");
+            }else{
+                    return confirm(\"".$tp->toJS(REVLAN_50)." [ID \" + content_id + \": \" + content_heading + \"]\");
+            }
+    }
+    </script>";
+    return $script;
 }
 ?>

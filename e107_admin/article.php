@@ -12,13 +12,14 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/article.php,v $
-|   $Revision: 1.9 $
-|   $Date: 2005-01-18 16:11:32 $
-|   $Author: streaky $
+|   $Revision: 1.10 $
+|   $Date: 2005-01-25 20:59:14 $
+|   $Author: e107coders $
 
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
+if(!is_object($tp)) $tp = new e_parse;
 if($pref['htmlarea']){
     require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
    $htmlarea_js =  htmlarea("data");
@@ -26,8 +27,6 @@ if($pref['htmlarea']){
 }
 if(!getperms("J") && !getperms("K") && !getperms("L")){header("location:".e_BASE."index.php"); exit; }
 $e_sub_cat = 'article';
-require_once(e_HANDLER."textparse/basic.php");
-$etp = new e107_basicparse;
 
 require_once("auth.php");
 $aj = new textparse;
@@ -44,7 +43,7 @@ if(e_QUERY){
         $id = $tmp[2];
         unset($tmp);
 }
-if(preg_match("#(.*?)_delete_(\d+)#",$deltest[$etp->unentity(ARLAN_62)],$matches))
+if(preg_match("#(.*?)_delete_(\d+)#",$deltest[$tp->toJS(ARLAN_62)],$matches))
 {
         $delete = $matches[1];
         $del_id = $matches[2];
@@ -158,37 +157,37 @@ if($delete == "main")
 
 if(isset($_POST['preview']))
 {
-	$obj = new convert;
-	$datestamp = $obj->convert_date(time(), "long");
-	$content_heading = $aj -> formtpa($_POST['content_heading'],"admin"); $ch = $aj -> tpa($content_heading,"nobreak","admin");
-	$content_subheading = $aj -> formtpa($_POST['content_subheading'],"admin"); $cs = $aj -> tpa($content_subheading,"nobreak","admin");
-	$dt = (strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]", "[img]../", $_POST['data']));
-	$dt = $aj -> formtpa($dt,"admin"); $dt = $aj -> tpa($dt,"off","admin");
-	$content_summary = $aj -> formtpa($_POST['content_summary'],"admin"); $cu= $aj -> tpa($content_summary,"nobreak","admin");
-	$ca = $aj -> formtpa($_POST['content_author'] && $_POST['content_author'] != ARLAN_84 ? $_POST['content_author'] : ADMINNAME);
-	$text = "<i>".ARLAN_101." $ca</i><br /><span class='smalltext'>".$datestamp."</span><br />";
-	if( $cs != '' ){$text .= '<br />'.ARLAN_18.": $cs";}
-	if( $cu != '' ){$text .= '<br />'.ARLAN_19.": $cu";}
-	$text .= "<br /><br />$dt";
-	$content_comment = $_POST['content_comment'];
-	$content_pe_icon = $_POST['add_icons'];
-	/* 9 Aug 2004 - unknown - the article preview looks more like the actual article */
-	$text = '<div style="text-align: center"><table class="fborder" style="'.ADMIN_WIDTH.'" border="0"><tr><td>'.$text.'</td></tr></table></div>';
-	echo "<br /><br />";
-	// make form friendly ...
-	/* Before bug fixing for apostroph
-	$content_heading = $aj -> formtparev($_POST['content_heading']);
-	$content_subheading = $aj -> formtparev($_POST['content_subheading']);
-	$data = $aj -> formtparev(str_replace("../", "", $_POST['data']));
-	$content_summary = $aj -> formtparev($_POST['content_summary']);
-	*/
-	$data = $aj -> formtpa(str_replace("../", "", $_POST['data']),"admin");
-	$content_parent = $_POST['category'];
-	$content_class = $_POST['a_class'];
-	$content_author = $aj -> formtpa($_POST['content_author']);
-	$content_author_email = $aj -> formtpa($_POST['content_author_email']);
-		  
-	$ns -> tablerender($content_heading, $text);
+        $obj = new convert;
+        $datestamp = $obj->convert_date(time(), "long");
+        $content_heading = $aj -> formtpa($_POST['content_heading'],"admin"); $ch = $aj -> tpa($content_heading,"nobreak","admin");
+        $content_subheading = $aj -> formtpa($_POST['content_subheading'],"admin"); $cs = $aj -> tpa($content_subheading,"nobreak","admin");
+        $dt = (strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]", "[img]../", $_POST['data']));
+        $dt = $aj -> formtpa($dt,"admin"); $dt = $aj -> tpa($dt,"off","admin");
+        $content_summary = $aj -> formtpa($_POST['content_summary'],"admin"); $cu= $aj -> tpa($content_summary,"nobreak","admin");
+        $ca = $aj -> formtpa($_POST['content_author'] && $_POST['content_author'] != ARLAN_84 ? $_POST['content_author'] : ADMINNAME);
+        $text = "<i>".ARLAN_101." $ca</i><br /><span class='smalltext'>".$datestamp."</span><br />";
+        if( $cs != '' ){$text .= '<br />'.ARLAN_18.": $cs";}
+        if( $cu != '' ){$text .= '<br />'.ARLAN_19.": $cu";}
+        $text .= "<br /><br />$dt";
+        $content_comment = $_POST['content_comment'];
+        $content_pe_icon = $_POST['add_icons'];
+        /* 9 Aug 2004 - unknown - the article preview looks more like the actual article */
+        $text = '<div style="text-align: center"><table class="fborder" style="'.ADMIN_WIDTH.'" border="0"><tr><td>'.$text.'</td></tr></table></div>';
+        echo "<br /><br />";
+        // make form friendly ...
+        /* Before bug fixing for apostroph
+        $content_heading = $aj -> formtparev($_POST['content_heading']);
+        $content_subheading = $aj -> formtparev($_POST['content_subheading']);
+        $data = $aj -> formtparev(str_replace("../", "", $_POST['data']));
+        $content_summary = $aj -> formtparev($_POST['content_summary']);
+        */
+        $data = $aj -> formtpa(str_replace("../", "", $_POST['data']),"admin");
+        $content_parent = $_POST['category'];
+        $content_class = $_POST['a_class'];
+        $content_author = $aj -> formtpa($_POST['content_author']);
+        $content_author_email = $aj -> formtpa($_POST['content_author_email']);
+
+        $ns -> tablerender($content_heading, $text);
 }
 
 
@@ -635,7 +634,7 @@ function article_adminmenu(){
 require_once("footer.php");
 
 function headerjs(){
-global $etp;
+global $tp;
 $script = "<script type=\"text/javascript\">
 function addtext2(sc){
         document.getElementById('dataform').category_button.value = sc;
@@ -646,9 +645,9 @@ function addtext2(sc){
 $script .= "<script type=\"text/javascript\">
 function confirm_(mode, content_heading, content_id){
         if(mode == 'cat'){
-                return confirm(\"".$etp->unentity(ARLAN_80)." [ID \" + content_id + \": \" + content_heading + \"]\");
+                return confirm(\"".$tp->toJS(ARLAN_80)." [ID \" + content_id + \": \" + content_heading + \"]\");
         }else{
-                return confirm(\"".$etp->unentity(ARLAN_81)." [ID \" + content_id + \": \" + content_heading + \"]\");
+                return confirm(\"".$tp->toJS(ARLAN_81)." [ID \" + content_id + \": \" + content_heading + \"]\");
         }
 }
 </script>";

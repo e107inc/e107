@@ -11,15 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/custommenu.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-18 16:11:32 $
-|     $Author: streaky $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-25 20:59:15 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 
 
 require_once("../class2.php");
+if(!is_object($tp)) $tp = new e_parse;
 if($pref['htmlarea']){
    require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
    $htmlarea_js =  htmlarea("menu_text");
@@ -29,11 +30,6 @@ if(!getperms("I")){ header("location:".e_BASE."index.php"); exit; }
 $e_sub_cat = 'custom';
 require_once("auth.php");
 require_once(e_HANDLER."ren_help.php");
-
-// New texteparse used
-require_once(e_HANDLER."textparse/basic.php");
-$etp = new e107_basicparse;
-// End of new textparse
 
 $aj = new textparse;
 $cm = array();
@@ -59,8 +55,8 @@ if((isset($_POST['add_menu']) || isset($_POST['update_menu'])) && $_POST['type_c
 
 
 
-                $_POST['menu_caption'] = $etp -> e107in_basic($_POST['menu_caption']);
-                $_POST['menu_text'] = $etp -> e107in_basic($_POST['menu_text']);
+                $_POST['menu_caption'] = $tp -> toDB($_POST['menu_caption']);
+                $_POST['menu_text'] = $tp -> toDB($_POST['menu_text']);
                 /*
                 $search = array("\"", "'", "\\");
                 $replace = array("&quot;", "&#39;", "&#92;");
@@ -79,8 +75,8 @@ chr(36)."caption = ".chr(36)."aj -> tpa(".chr(36)."caption, \"on\");\n".
 chr(36)."text = ".chr(36)."aj -> tpa(".chr(36)."text, \"on\",\"admin\");\n".
 chr(36)."ns -> tablerender(".chr(36)."caption, ".chr(36)."text);\n?".chr(62);
 
-$_POST['menu_caption'] = $etp -> e107out_basic($_POST['menu_caption']);
-$_POST['menu_text'] = $etp -> e107out_basic($_POST['menu_text']);
+$_POST['menu_caption'] = $tp -> toHTML($_POST['menu_caption']);
+$_POST['menu_text'] = $tp -> toHTML($_POST['menu_text']);
 
                 $fp = @fopen(e_PLUGIN."custom/".$_POST['menu_name'].".php","w");
                 if(!@fwrite($fp, $data)){
@@ -100,8 +96,8 @@ if((isset($_POST['add_menu']) || isset($_POST['update_menu'])) && $_POST['type_c
         }else{
 
 
-                $_POST['menu_caption'] = $etp -> e107in_basic($_POST['menu_caption']);
-                $_POST['menu_text'] = $etp -> e107in_basic($_POST['menu_text']);
+                $_POST['menu_caption'] = $tp -> toDB($_POST['menu_caption']);
+                $_POST['menu_text'] = $tp -> toDB($_POST['menu_text']);
                 /*
                 $search = array("\"", "'", "\\");
                 $replace = array("&quot;", "&#39;", "&#92;");
@@ -124,8 +120,8 @@ chr(36)."ns -> tablerender(".chr(36)."caption, ".chr(36)."text);\n\n
 require_once(FOOTERF);\n
 ?".chr(62);
 
-$_POST['menu_caption'] = $etp -> e107out_basic($_POST['menu_caption']);
-$_POST['menu_text'] = $etp -> e107out_basic($_POST['menu_text']);
+$_POST['menu_caption'] = $tp -> toHTML($_POST['menu_caption']);
+$_POST['menu_text'] = $tp -> toHTML($_POST['menu_text']);
 
                 $fp = @fopen(e_PLUGIN."custompages/".$_POST['menu_name'].".php","w");
                 if(!@fwrite($fp, $data)){
@@ -156,8 +152,8 @@ if(isset($_POST['preview'])){
                 $buffer = str_replace("\n", "", fread($fp, filesize($menu)));
                 fclose($fp);
                 preg_match_all("/\"(.*?)\"/", $buffer, $result);
-                $_POST['menu_caption'] = $etp -> e107out_basic($result[1][0]);
-                $_POST['menu_text'] = $etp -> e107out_basic($result[1][1]);
+                $_POST['menu_caption'] = $tp -> toHTML($result[1][0]);
+                $_POST['menu_text'] = $tp -> toHTML($result[1][1]);
                 $_POST['menu_text'] = str_replace("<br />", "", $_POST['menu_text']);
                 $_POST['menu_name'] = eregi_replace(e_PLUGIN."custom/|.php", "", $menu);
                                 $_POST['type_content'] = 1;
@@ -170,8 +166,8 @@ if(isset($_POST['preview'])){
                 $buffer = str_replace("\n", "", fread($fp, filesize($menu)));
                 fclose($fp);
                 preg_match_all("/\"(.*?)\"/", $buffer, $result);
-                $_POST['menu_caption'] = $etp -> e107out_basic($result[1][1]);
-                $_POST['menu_text'] = $etp -> e107out_basic($result[1][2]);
+                $_POST['menu_caption'] = $tp -> toHTML($result[1][1]);
+                $_POST['menu_text'] = $tp -> toHTML($result[1][2]);
                 $_POST['menu_text'] = str_replace("<br />", "", $_POST['menu_text']);
                 $_POST['menu_name'] = eregi_replace(e_PLUGIN."custompages/|.php", "", $menu);
                                 $_POST['type_content'] = 2;

@@ -11,17 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-01-18 16:11:32 $
-|     $Author: streaky $
+|     $Revision: 1.9 $
+|     $Date: 2005-01-25 20:59:15 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
+if(!is_object($tp)) $tp = new e_parse;
 if(!getperms("R")){ header("location:".e_BASE."index.php"); exit; }
 $e_sub_cat = 'download';
-
-require_once(e_HANDLER."textparse/basic.php");
-$etp = new e107_basicparse;
 
 require_once("auth.php");
 require_once(e_HANDLER."form_handler.php");
@@ -39,7 +37,7 @@ if(e_QUERY){
         unset($tmp);
 }
 
-if(preg_match("#(.*?)_delete_(\d+)#",$deltest[$etp->unentity(DOWLAN_9)],$matches))
+if(preg_match("#(.*?)_delete_(\d+)#",$deltest[$tp->toJS(DOWLAN_9)],$matches))
 {
         $delete = $matches[1];
         $del_id = $matches[2];
@@ -220,7 +218,7 @@ if($action == "opt"){
 
 require_once("footer.php");
 function headerjs(){
-global $etp;
+global $tp;
 $headerjs = "<script type=\"text/javascript\">
 
     function addtext2(str){
@@ -231,9 +229,9 @@ $headerjs = "<script type=\"text/javascript\">
     function confirm_(mode, tit_content, download_id){
             if(download_id=='undefined'){download_id==tit_content;}
             if(mode == 'cat'){
-                    return confirm(\"".$etp->unentity(DOWLAN_34)." [ID: \" + download_id + \"] \"+tit_content);
+                    return confirm(\"".$tp->toJS(DOWLAN_34)." [ID: \" + download_id + \"] \"+tit_content);
             }else{
-                    return confirm(\"".$etp->unentity(DOWLAN_33)." [ID: \" + download_id + \"] \"+tit_content);
+                    return confirm(\"".$tp->toJS(DOWLAN_33)." [ID: \" + download_id + \"] \"+tit_content);
             }
     }
     </script>";

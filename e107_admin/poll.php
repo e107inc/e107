@@ -11,17 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/poll.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-18 16:11:32 $
-|     $Author: streaky $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-25 20:59:16 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
+if(!is_object($tp)) $tp = new e_parse;
 if(!getperms("U")){ header("location:".e_BASE."index.php"); exit;}
 $e_sub_cat = 'poll';
-
-require_once(e_HANDLER."textparse/basic.php");
-$etp = new e107_basicparse;
 
 require_once("auth.php");
 require_once(e_HANDLER."poll_class.php");
@@ -193,16 +191,16 @@ $text .= "</td></tr></table>
 $ns -> tablerender(POLLAN_19, $text);
 require_once("footer.php");
 function headerjs(){
-global $etp;
-$headerjs = "<script type=\"text/javascript\">
-function confirm_(poll_id){
-        var x=confirm(\"".$etp->unentity(POLLAN_21)." [ID: \" + poll_id + \"]\");
-        if(x){
-                document.getElementById('del_poll').action='".e_SELF."?delete.' + poll_id;
-                document.getElementById('del_poll').submit();
-        }
-}
-</script>";
-return $headerjs;
+    global $tp;
+    $headerjs = "<script type=\"text/javascript\">
+    function confirm_(poll_id){
+            var x=confirm(\"".$tp->toJS(POLLAN_21)." [ID: \" + poll_id + \"]\");
+            if(x){
+                    document.getElementById('del_poll').action='".e_SELF."?delete.' + poll_id;
+                    document.getElementById('del_poll').submit();
+            }
+    }
+    </script>";
+    return $headerjs;
 }
 ?>
