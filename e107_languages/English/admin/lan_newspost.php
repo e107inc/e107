@@ -106,4 +106,6 @@ define("NWSLAN_105", "Check box to update datestamp of news item to current time
 define("NWSLAN_106", "Submit-News maybe accessed by:");
 define("NWSLAN_107", "Enable HtmlArea on Submit-News page.");
 
+define("NWSLAN_108","Display messages instead not allowed news");
+define("NWSLAN_109","Check the box if you want to display a standard message for visitors not allowed to see a news (userclass restriction) instead the news itself.");
 ?>

@@ -124,7 +124,8 @@ if(IsSet($_POST['save_prefs'])){
         $pref['subnews_resize'] = $_POST['subnews_resize'];
         $pref['subnews_class'] = $_POST['subnews_class'];
         $pref['subnews_htmlarea'] = $_POST['subnews_htmlarea'];
-
+        $pref['subnews_hide_news'] = $_POST['subnews_hide_news'];
+        
         save_prefs();
         clear_cache("news.php");
         $newspost -> show_message("Settings Saved");
@@ -763,15 +764,25 @@ class newspost{
                 <td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_88."</span></td>
                 <td class='forumheader3' style='width:40%'>
                 <select class='tbox' name='newsposts'>
-                <option value='1' ".($pref['newsposts']==1 ? "selected='selected'>" : "").">1</option>
-                <option value='2' ".($pref['newsposts']==2 ? "selected='selected'>" : "").">2</option>
-                <option value='3' ".($pref['newsposts']==3 ? "selected='selected'>" : "").">3</option>
-                <option value='5' ".($pref['newsposts']==5 ? "selected='selected'>" : "").">5</option>
-                <option value='10' ".($pref['newsposts']==10 ? "selected='selected'>" : "").">10</option>
-                <option value='15' ".($pref['newsposts']==15 ? "selected='selected'>" : "").">15</option>
-                <option value='20' ".($pref['newsposts']==20 ? "selected='selected'>" : "").">20</option>
+                <option value='1' ".($pref['newsposts']==1 ? "selected='selected'" : "").">1</option>
+                <option value='2' ".($pref['newsposts']==2 ? "selected='selected'" : "").">2</option>
+                <option value='3' ".($pref['newsposts']==3 ? "selected='selected'" : "").">3</option>
+                <option value='5' ".($pref['newsposts']==5 ? "selected='selected'" : "").">5</option>
+                <option value='10' ".($pref['newsposts']==10 ? "selected='selected'" : "").">10</option>
+                <option value='15' ".($pref['newsposts']==15 ? "selected='selected'" : "").">15</option>
+                <option value='20' ".($pref['newsposts']==20 ? "selected='selected'" : "").">20</option>
                 </select></td>
+                </tr>
+                
+                <tr>
+                <td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_108."</span><br /><i>".NWSLAN_109."</i></td>
+                <td class='forumheader3' style='width:40%'>
+                <input type='checkbox' name='subnews_hide_news' value='1' ".($pref['subnews_hide_news']==1 ? " checked='checked'" : "")." />
+                </td>
                 </tr>";
+                
+                
+                
 
 
 // ##### ADDED FOR NEWSARCHIVE --------------------------------------------------------------------

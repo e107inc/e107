@@ -85,6 +85,20 @@ function alt_news($news_category){
 				$news['comment_total'] = $sql2 -> db_Count("comments", "(*)",  "WHERE comment_item_id='".$news['news_id']."' AND comment_type='0' ");
 				$ix -> render_newsitem($news);
 			}
+      else{
+        if($pref['subnews_hide_news']==1){
+          if($news['admin_id'] == 1 && $pref['siteadmin']){
+                  $news['admin_name'] = $pref['siteadmin'];
+          }else if(!$news['admin_name'] = getcachedvars($news['admin_id'])){
+                  $sql2 -> db_Select("user", "user_name", "user_id='".$news['admin_id']."' ");
+                  list($news['admin_name']) = $sql2 -> db_Fetch();
+                  cachevars($news['admin_id'], $news['admin_name']);
+          }
+          $sql2 -> db_Select("news_category", "*",  "category_id='$news_category' ");
+  				list($news['category_id'], $news['category_name'], $news['category_icon']) = $sql2-> db_Fetch();
+          $ix -> render_newsitem($news,"","userclass");
+        }
+      }
 		}
 	}
 }
