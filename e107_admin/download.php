@@ -702,7 +702,11 @@ class download{
 
 function getfiles($dir){
         global $t_array, $DOWNLOADS_DIRECTORY, $FILES_DIRECTORY;
+        if($DOWNLOADS_DIRECTORY{0}=="/" && $dir == $DOWNLOADS_DIRECTORY){
+        $pathdir = $dir;
+        }else{
         $pathdir = e_BASE.$dir;
+        }
         $dh = opendir($pathdir);
         $size = 0;
         $search = array("../", str_replace("../","",$DOWNLOADS_DIRECTORY), $FILES_DIRECTORY, "downloads/", "downloadimages/", "downloadthumbs/");
