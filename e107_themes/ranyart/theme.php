@@ -57,7 +57,7 @@ $HEADER = "
 <td class='thinblackline'></td>
 </tr>
 </table>
-<table style='width:100%' >
+<table >
 <tr> 
 <td style='padding:10px;width:15%; vertical-align: top;'>
 {SETSTYLE=menu1}
@@ -239,7 +239,7 @@ function tablestyle($caption, $text){
 }
 
 $COMMENTSTYLE = "
-<table style='width:95%'>
+<table style='width:100%'>
 <tr>
 <td colspan='2' class='forumheader3'>
 {SUBJECT}
