@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/top.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-16 21:43:53 $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-20 11:02:05 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -108,9 +108,9 @@ if ($action == "active") {
 }
 if ($action == "top") {
 	require_once(e_HANDLER."level_handler.php");
-	define("IMAGE_rank_main_admin_image", ($pref['rank_main_admin_image'] && file_exists(THEME."forum/".$pref['rank_main_admin_image']) ? "<img src='".THEME."forum/".$pref['rank_main_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/main_admin.png' alt='' />"));
-	define("IMAGE_rank_admin_image", ($pref['rank_admin_image'] && file_exists(THEME."forum/".$pref['rank_admin_image']) ? "<img src='".THEME."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/admin.png' alt='' />"));
-	define("IMAGE_rank_moderator_image", ($pref['rank_moderator_image'] && file_exists(THEME."forum/".$pref['rank_moderator_image']) ? "<img src='".THEME."forum/".$pref['rank_moderator_image']."' alt='' />" : "<img src='".e_IMAGE."forum/moderator.png' alt='' />"));
+	define("IMAGE_rank_main_admin_image", ($pref['rank_main_admin_image'] && file_exists(THEME."forum/".$pref['rank_main_admin_image']) ? "<img src='".THEME."forum/".$pref['rank_main_admin_image']."' alt='' />" : "<img src='".e_PLUGIN."forum/images/main_admin.png' alt='' />"));
+	define("IMAGE_rank_admin_image", ($pref['rank_admin_image'] && file_exists(THEME."forum/".$pref['rank_admin_image']) ? "<img src='".THEME."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_PLUGIN."forum/images/admin.png' alt='' />"));
+	define("IMAGE_rank_moderator_image", ($pref['rank_moderator_image'] && file_exists(THEME."forum/".$pref['rank_moderator_image']) ? "<img src='".THEME."forum/".$pref['rank_moderator_image']."' alt='' />" : "<img src='".e_PLUGIN."forum/images/moderator.png' alt='' />"));
 	 
 	if ($subaction == "forum" || $subaction == "all") {
 		$top_forum_posters = $sql->db_Select("user", "*", "ORDER BY user_forums DESC LIMIT ".$from.", ".$view."", "no_where");
