@@ -241,7 +241,7 @@ function parse_thread($row){
 
 	$THREADDATE = $gen->convert_date($thread_datestamp, "forum");
 	$ICON = ($newflag ? IMAGE_new_small : IMAGE_nonew_small);
-	if($replies >= $pref['forum_popular'] && $replies != "None"){
+	if($REPLIES >= $pref['forum_popular'] && $REPLIES != "None"){
 		$ICON = ($newflag ? IMAGE_new_popular : IMAGE_nonew_popular);
 	}
 
