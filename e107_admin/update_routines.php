@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.65 $
-|     $Date: 2005-03-29 16:50:38 $
-|     $Author: e107coders $
+|     $Revision: 1.66 $
+|     $Date: 2005-03-30 03:32:16 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -55,6 +55,7 @@ function update_61x_to_700($type) {
 	global $sql, $ns, $mySQLdefaultdb, $pref, $tp;
 	if ($type == "do") {
 		set_time_limit(180);
+		$s_prefs = FALSE;
 
 		$sql->db_Update("userclass_classes", "userclass_editclass='254' WHERE userclass_editclass ='0' ");
 
@@ -226,7 +227,7 @@ function update_61x_to_700($type) {
 			$sql->db_Update("links", "link_url = '".$PLUGINS_DIRECTORY."links_page/links.php' WHERE link_url = 'links.php'");
 
 			$pref['plug_latest'] = $pref['plug_latest'].",links_page";
-			save_prefs();
+			$s_prefs = TRUE;
 		}
 		// end links update -------------------------------------------------------------------------------------------
 
@@ -337,7 +338,7 @@ function update_61x_to_700($type) {
 			unset($pref['signup_ext_req'.$key]);
 			$ue->user_extended_add($new_field);
 		}
-		save_prefs('core');
+		$s_prefs = TRUE;
 		if($sql->db_Select('user','user_id, user_prefs',"1 ORDER BY user_id"))
 		{
 			$sql2 = new db;
@@ -378,7 +379,7 @@ function update_61x_to_700($type) {
 		if(!array_key_exists('ue_upgrade', $pref))
 		{
 			$pref['ue_upgrade'] = 1;
-			save_prefs();
+			$s_prefs = TRUE;
 		}
 		//End Extended user field conversion
 
@@ -411,7 +412,7 @@ function update_61x_to_700($type) {
 		mysql_query("ALTER IGNORE TABLE `".MPREFIX."wmessage` ADD UNIQUE INDEX(wm_id)");
 		mysql_query("ALTER TABLE `".MPREFIX."wmessage` CHANGE `wm_id` `wm_id` TINYINT( 3 ) UNSIGNED NOT NULL AUTO_INCREMENT");
 		$pref['wm_enclose'] = 1;
-		save_prefs();
+		$s_prefs = TRUE;
 		/*
 		Changes by McFly 2/12/2005
 		Moving forum rules from wmessage table to generic table
@@ -461,7 +462,7 @@ function update_61x_to_700($type) {
 			global $pref;
 			$sql->db_Insert("plugin", "0, 'Chatbox', '1.0', 'chatbox_menu', 1");
 			$pref['plug_status'] = $pref['plug_status'].",chatbox_menu";
-			save_prefs();
+			$s_prefs = TRUE;
 		}
 		// end chatbox update -------------------------------------------------------------------------------------------
 
@@ -538,7 +539,7 @@ function update_61x_to_700($type) {
 				$pref['search_restrict'] = 0;
 			}
 			$pref['search_highlight'] = TRUE;
-			save_prefs();
+			$s_prefs = TRUE;
 		}
 
 // Missing Forum upgrade stuff by Cam.
@@ -557,9 +558,15 @@ function update_61x_to_700($type) {
 			$pref['link_replace'] = 1;
 			$pref['make_clickable'] = 1;
             $pref['cb_linkreplace'] = "";
-			save_prefs();
+			$s_prefs = TRUE;
 		}
 
+		
+		// Save all prefs that were set in above update routines
+			if ($s_prefs == TRUE) {
+				save_prefs();
+			}		
+		// -----------------------------------------------------
 
 } else {
 		// check if update is needed.
