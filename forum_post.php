@@ -622,7 +622,6 @@ if($action == "rp" || $action == "cp"){
         $thread_datestamp  = $gen->convert_date($thread_datestamp , "forum");
         $thread_name = $aj -> tpa($thread_name, $mode="off");
         $thread_thread = $aj -> tpa($thread_thread, $mode="off");
-		$thread_thread = wrap($thread_thread);
 		$replies = $sql -> db_Count("forum_t" ,"(*)", "WHERE thread_parent='$id'");
 		$replies_t = ($replies >= 10 ? "10" : $replies);
         $text .= "<div style='text-align:center'>".($action == "rp" ? "<div style='border:0;padding-right:2px;width:auto;height:400px;overflow:auto;'>": "")."
@@ -646,7 +645,6 @@ if($action == "rp" || $action == "cp"){
 			$thread_datestamp  = $gen->convert_date($thread_datestamp , "forum");
 			$thread_name = $aj -> tpa($thread_name, $mode="off");
 			$thread_thread = $aj -> tpa($thread_thread, $mode="off");
-			$thread_thread = wrap($thread_thread);
 			$text .= "<tr>
 			<td class='forumheader3' style='width:20%' style='vertical-align:top'><b>".$post_author_name."</b></td>
 			<td class='forumheader3' style='width:80%'>
@@ -731,23 +729,5 @@ function forumjump(){
         return $text;
 }
 
-function wrap($data){
-	$wrapcount = 100;
-	$message_array = explode(" ", $data);
-	for($i=0; $i<=(count($message_array)-1); $i++){
-		if(strlen($message_array[$i]) > $wrapcount){
-			if(substr($message_array[$i], 0, 7) == "http://"){
-				$url = str_replace("http://", "", $message_array[$i]);  
-				$url = explode("/", $url);  
-				$url = $url[0];
-				$message_array[$i] = "<a href='".$message_array[$i]."'>[".$url."]</a>";
-			}else{
-				$message_array[$i] = preg_replace("/([^\s]{".$wrapcount."})/", "$1<br />", $message_array[$i]);
-			}
-		}
-	}
-	$data = implode(" ",$message_array);
-	return $data;
-}
 require_once(FOOTERF);
 ?>
