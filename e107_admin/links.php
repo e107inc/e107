@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2004-11-02 14:40:40 $
-|     $Author: loloirie $
+|     $Revision: 1.6 $
+|     $Date: 2004-11-28 23:40:43 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,11 +24,6 @@ require_once(e_HANDLER."textparse/basic.php");
 $etp = new e107_basicparse;
 
 require_once("auth.php");
-
-// ML original by Lolo Irie
-require_once(e_HANDLER."multilang/ml_adpanel.php");
-// END ML
-
 require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
@@ -59,41 +54,29 @@ if(preg_match("#create_sn_(\d+)#",$deltest[$etp->unentity(LCLAN_14)],$matches))
 
 // ##### Main loop -----------------------------------------------------------------------------------------------------------------------
 
-if($action == "dec" && strpos($_SERVER['HTTP_REFERER'],"links"))
+if($action == "dec" && strpos(e_SELF,"links"))
 {
         $qs = explode(".", e_QUERY);
         $action = $qs[0];
         $linkid = $qs[1];
         $link_order = $qs[2];
         $location = $qs[3];
-        // ML
-        if(e_MLANG==1){
-          $ml -> e107_ml_MultiUpdate("links", "link_order=link_order-1 WHERE link_order='".($link_order+1)."' AND link_category='$location' ");
-          $ml -> e107_ml_MultiUpdate("links", "link_order=link_order+1 WHERE link_id='$linkid' AND link_category='$location' ");
-        }else{ // END ML
-          $sql -> db_Update("links", "link_order=link_order-1 WHERE link_order='".($link_order+1)."' AND link_category='$location' ");
-          $sql -> db_Update("links", "link_order=link_order+1 WHERE link_id='$linkid' AND link_category='$location' ");
-        }
+        $sql -> db_Update("links", "link_order=link_order-1 WHERE link_order='".($link_order+1)."' AND link_category='$location' ");
+        $sql -> db_Update("links", "link_order=link_order+1 WHERE link_id='$linkid' AND link_category='$location' ");
         clear_cache("sitelinks");
         header("location: ".e_ADMIN."links.php?order");
         exit;
 }
 
-if($action == "inc" && strpos($_SERVER['HTTP_REFERER'],"links"))
+if($action == "inc" && strpos(e_SELF,"links"))
 {
         $qs = explode(".", e_QUERY);
         $action = $qs[0];
         $linkid = $qs[1];
         $link_order = $qs[2];
         $location = $qs[3];
-        // ML
-        if(e_MLANG==1){
-          $ml -> e107_ml_MultiUpdate("links", "link_order=link_order+1 WHERE link_order='".($link_order-1)."' AND link_category='$location' ");
-          $ml -> e107_ml_MultiUpdate("links", "link_order=link_order-1 WHERE link_id='$linkid' AND link_category='$location' ");
-        }else{ // END ML
-          $sql -> db_Update("links", "link_order=link_order+1 WHERE link_order='".($link_order-1)."' AND link_category='$location' ");
-          $sql -> db_Update("links", "link_order=link_order-1 WHERE link_id='$linkid' AND link_category='$location' ");
-        }
+        $sql -> db_Update("links", "link_order=link_order+1 WHERE link_order='".($link_order-1)."' AND link_category='$location' ");
+        $sql -> db_Update("links", "link_order=link_order-1 WHERE link_id='$linkid' AND link_category='$location' ");
         clear_cache("sitelinks");
         header("location: ".e_ADMIN."links.php?order");
         exit;
@@ -101,24 +84,13 @@ if($action == "inc" && strpos($_SERVER['HTTP_REFERER'],"links"))
 
 if(IsSet($_POST['create_category'])){
         $_POST['link_category_name'] = $aj -> formtpa($_POST['link_category_name'], "admin");
-        
-        // ML
-        if(e_MLANG==1){
-          $ml -> e107_ml_MultiInsert("link_category", " '0', '".$_POST['link_category_name']."', '".$_POST['link_category_description']."', '".$_POST['link_category_icon']."'");
-        }else{ // END ML
-          $sql -> db_Insert("link_category", " '0', '".$_POST['link_category_name']."', '".$_POST['link_category_description']."', '".$_POST['link_category_icon']."'");
-        }
+        $sql -> db_Insert("link_category", " '0', '".$_POST['link_category_name']."', '".$_POST['link_category_description']."', '".$_POST['link_category_icon']."'");
         $linkpost -> show_message(LCLAN_51);
 }
 
 if(IsSet($_POST['update_category'])){
         $_POST['category_name'] = $aj -> formtpa($_POST['category_name'], "admin");
-        // ML
-        if(e_MLANG==1){
-          $ml -> e107_ml_Update("link_category", "link_category_name ='".$_POST['link_category_name']."', link_category_description='".$_POST['link_category_description']."',  link_category_icon='".$_POST['link_category_icon']."' WHERE link_category_id='".$_POST['link_category_id']."'", false, $_POST['list_lang']);
-        }else{ // END ML
-          $sql -> db_Update("link_category", "link_category_name ='".$_POST['link_category_name']."', link_category_description='".$_POST['link_category_description']."',  link_category_icon='".$_POST['link_category_icon']."' WHERE link_category_id='".$_POST['link_category_id']."'");
-        }
+        $sql -> db_Update("link_category", "link_category_name ='".$_POST['link_category_name']."', link_category_description='".$_POST['link_category_description']."',  link_category_icon='".$_POST['link_category_icon']."' WHERE link_category_id='".$_POST['link_category_id']."'");
         $linkpost -> show_message(LCLAN_52);
 }
 
@@ -126,12 +98,7 @@ if(IsSet($_POST['update_order'])){
         extract($_POST);
         while(list($key, $id) = each($link_order)){
                 $tmp = explode(".", $id);
-                // ML
-                if(e_MLANG==1){
-                  $ml -> e107_ml_MultiUpdate("links", "link_order=".$tmp[1]." WHERE link_id=".$tmp[0]);
-                }else{ // END ML
-                  $sql -> db_Update("links", "link_order=".$tmp[1]." WHERE link_id=".$tmp[0]);
-                }
+                $sql -> db_Update("links", "link_order=".$tmp[1]." WHERE link_id=".$tmp[0]);
         }
         clear_cache("sitelinks");
         $linkpost -> show_message(LCLAN_6);
@@ -152,8 +119,7 @@ if($action == "order"){
 
 if($delete == 'main')
 {
-        // ML
-        if((e_MLANG == 1 && $ml -> e107_ml_MultiDelete("links", "link_id='$del_id' ")) || (e_MLANG != 1 && $sql -> db_Delete("links", "link_id='$del_id' ")))
+        if($sql -> db_Delete("links", "link_id='$del_id' "))
         {
                 clear_cache("sitelinks");
                 $linkpost -> show_message(LCLAN_53." #".$del_id." ".LCLAN_54);
@@ -162,8 +128,7 @@ if($delete == 'main')
 
 if($delete == 'category')
 {
-        // ML
-        if((e_MLANG == 1 && $ml -> e107_ml_MultiDelete("link_category", "link_category_id='$del_id' ")) || (e_MLANG != 1 && $sql -> db_Delete("link_category", "link_category_id='$del_id' ")))
+        if($sql -> db_Delete("link_category", "link_category_id='$del_id' "))
         {
                 $linkpost -> show_message(LCLAN_55." #".$del_id." ".LCLAN_54);
                 unset($id);
@@ -244,29 +209,21 @@ exit;
 class links{
 
         function show_existing_items(){
-                global $sql, $ml;
-                // ML
-                if((e_MLANG == 1 && $ml -> e107_ml_Select("link_category")) || (e_MLANG != 1 && $sql -> db_Select("link_category"))){
-                    while($row = $sql -> db_Fetch()){
-                            extract($row);
-                            $cat[$link_category_id] = $link_category_name;
-                    }
+                global $sql;
+                if($sql -> db_Select("link_category")){
+                        while($row = $sql -> db_Fetch()){
+                                extract($row);
+                                $cat[$link_category_id] = $link_category_name;
+                        }
                 }else{
-                    // ML
-                    if(e_MLANG == 1){
-                      $ml -> e107_ml_MultiInsert("link_category", "0, 'Main', 'Any links with this category will be displayed in main navigation bar.', '' ");
-                      $ml -> e107_ml_MultiInsert("link_category", "0, 'Misc', 'Miscellaneous links.', '' ");
-                    }else{ // END ML
-                      $sql -> db_Insert("link_category", "0, 'Main', 'Any links with this category will be displayed in main navigation bar.', '' ");
-                      $sql -> db_Insert("link_category", "0, 'Misc', 'Miscellaneous links.', '' ");
-                    }
+                        $sql -> db_Insert("link_category", "0, 'Main', 'Any links with this category will be displayed in main navigation bar.', '' ");
+                        $sql -> db_Insert("link_category", "0, 'Misc', 'Miscellaneous links.', '' ");
                 }
 
                 // ##### Display scrolling list of existing links ---------------------------------------------------------------------------------------------------------
-                global $sql, $rs, $ns, $aj, $ml;
+                global $sql, $rs, $ns, $aj;
                 $text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 400px; overflow : auto; '>";
-                // ML
-                if((e_MLANG == 1 && $link_total = $ml -> e107_ml_Select("links", "*", "ORDER BY link_category, link_id ASC", "nowhere")) || (e_MLANG != 1 && $link_total = $sql -> db_Select("links", "*", "ORDER BY link_category, link_id ASC", "nowhere"))){
+                if($link_total = $sql -> db_Select("links", "*", "ORDER BY link_category, link_id ASC", "nowhere")){
                         $text .= "<table class='fborder' style='width:100%'>
                         <tr>
                         <td style='width:5%' class='forumheader2'>ID</td>
@@ -279,7 +236,7 @@ class links{
                                 $text .= "<tr>
                                 <td style='width:5%' class='forumheader3'>$link_id</td>
                                 <td style='width:10%' class='forumheader3'>".$cat[$link_category]."</td>
-                                <td style='width:50%' class='forumheader3'>".$link_name."<br />({$link_url})</td>
+                                <td style='width:50%' class='forumheader3'><a href='".e_BASE."comment.php?comment.news.$link_id'></a>$link_name</td>
                                 <td style='width:25%; text-align:center' class='forumheader3'>".
                                 $rs -> form_open("post", e_SELF,"myform_{$link_id}","",""," onsubmit=\"return confirm_('create',$link_id)\"")."<div>".
                                 $rs -> form_button("button", "main_edit_{$link_id}", LCLAN_9, "onclick=\"document.location='".e_SELF."?create.edit.$link_id'\"")."
@@ -338,11 +295,10 @@ class links{
 
 
         function create_link($sub_action, $id){
-                global $sql, $rs, $ns, $ml;
+                global $sql, $rs, $ns;
 
                 if($sub_action == "edit" && !$_POST['submit']){
-                        // ML
-                        if((e_MLANG == 1 && $ml -> e107_ml_Select("links", "*", "link_id='$id' ")) || (e_MLANG != 1 && $sql -> db_Select("links", "*", "link_id='$id' "))){
+                        if($sql -> db_Select("links", "*", "link_id='$id' ")){
                                 $row = $sql-> db_Fetch();
                                 extract($row);
                         }
@@ -378,8 +334,7 @@ class links{
                 <td style='width:30%' class='forumheader3'>".LCLAN_12.": </td>
                 <td style='width:70%' class='forumheader3'>";
 
-                // ML
-                if((e_MLANG == 1 && !$ml -> e107_ml_Select("link_category")) || (e_MLANG != 1 && !$link_cats = $sql -> db_Select("link_category"))){
+                if(!$link_cats = $sql -> db_Select("link_category")){
                         $text .= LCLAN_13."<br />";
                 }else{
                         $text .= "
@@ -457,22 +412,10 @@ class links{
 
                 <tr style='vertical-align:top'>
                 <td colspan='2' style='text-align:center' class='forumheader'>";
-                 // ML
-				        if(e_MLANG == 1){
-				          if($id && $sub_action == "edit"){
-                    $idpanel = 1;
-                    $text .= $rs -> form_hidden("link_id", $link_id);
-                  }else{
-                    $idpanel = 2;
-                  }
-                  require_once(e_HANDLER."multilang/admin/links.php");
-                }
-				        else{
-                  if($id && $sub_action == "edit"){
-                    $text .= "<input class='button' type='submit' name='add_link' value='".LCLAN_27."' />\n<input type='hidden' name='link_id' value='$link_id'>";
-                  }else{
-                    $text .= "<input class='button' type='submit' name='add_link' value='".LCLAN_28."' />";
-                  }
+                if($id && $sub_action == "edit"){
+                        $text .= "<input class='button' type='submit' name='add_link' value='".LCLAN_27."' />\n<input type='hidden' name='link_id' value='$link_id'>";
+                }else{
+                        $text .= "<input class='button' type='submit' name='add_link' value='".LCLAN_28."' />";
                 }
                 $text .= "</td>
                 </tr>
@@ -486,7 +429,7 @@ class links{
 
         function submit_link($sub_action, $id){
                 // ##### Format and submit link ---------------------------------------------------------------------------------------------------------
-                global $aj, $sql, $ml;
+                global $aj, $sql;
                 $link_name = $aj -> formtpa($_POST['link_name'], "admin");
                 $link_url = $aj -> formtpa($_POST['link_url'], "admin");
                 $link_description = $aj -> formtpa($_POST['link_description'], "admin");
@@ -495,21 +438,11 @@ class links{
                 $link_t = $sql -> db_Count("links", "(*)", "WHERE link_category='".$_POST['cat_id']."'");
 
                 if($id && $sub_action != "sn"){
-                        // ML)
-                        if(e_MLANG == 1){
-                          $ml -> e107_ml_Update("links", "link_name='$link_name', link_url='$link_url', link_description='$link_description', link_button= '$link_button', link_category='".$_POST['cat_id']."', link_open='".$_POST['linkopentype']."', link_class='".$_POST['link_class']."' WHERE link_id='$id'", false, $_POST['list_lang']);
-                        }else{ // END ML
-                          $sql -> db_Update("links", "link_name='$link_name', link_url='$link_url', link_description='$link_description', link_button= '$link_button', link_category='".$_POST['cat_id']."', link_open='".$_POST['linkopentype']."', link_class='".$_POST['link_class']."' WHERE link_id='$id'");
-                        }
+                        $sql -> db_Update("links", "link_name='$link_name', link_url='$link_url', link_description='$link_description', link_button= '$link_button', link_category='".$_POST['cat_id']."', link_open='".$_POST['linkopentype']."', link_class='".$_POST['link_class']."' WHERE link_id='$id'");
                         clear_cache("sitelinks");
                         $this->show_message(LCLAN_3);
                 }else{
-                        // ML
-                        if(e_MLANG==1){
-                          $ml -> e107_ml_MultiInsert("links", "0, '$link_name', '$link_url', '$link_description', '$link_button', '".$_POST['cat_id']."', '".($link_t+1)."', '0', '".$_POST['linkopentype']."', '".$_POST['link_class']."'");
-                        }else{ // END ML
-                          $sql -> db_Insert("links", "0, '$link_name', '$link_url', '$link_description', '$link_button', '".$_POST['cat_id']."', '".($link_t+1)."', '0', '".$_POST['linkopentype']."', '".$_POST['link_class']."'");
-                        }
+                        $sql -> db_Insert("links", "0, '$link_name', '$link_url', '$link_description', '$link_button', '".$_POST['cat_id']."', '".($link_t+1)."', '0', '".$_POST['linkopentype']."', '".$_POST['link_class']."'");
                         clear_cache("sitelinks");
                         $this->show_message(LCLAN_2);
                 }
@@ -520,60 +453,34 @@ class links{
 
 
         function set_order(){
-                global $sql, $ns, $aj, $ml, $rs, $pref, $sql2;
-                if(!is_object($sql2)){$sql2 = new db;}
+                global $sql, $ns, $aj;
                 $text = "<div style='text-align:center'>
                 <form method='post' action='".e_SELF."?order'>
                 <table style='width:85%' class='fborder'>";
-                // ML
-                if(e_MLANG == 1){
-                  $ml -> e107_ml_Select("link_category");
-                }else{ // END ML
-                  $sql -> db_Select("link_category");
-                }
-                
+
+                $sql -> db_Select("link_category");
+                $sql2 = new db;
                 while(list($link_category_id, $link_category_name, $link_category_description) = $sql-> db_Fetch()){
-
-                        // ML
-                        if((e_MLANG == 1 && $lamount = $ml -> e107_ml_Select("links", "*", "link_category ='$link_category_id' ORDER BY link_order ASC ", "default", FALSE, "sql2"))){
-                        if(!is_object($sql2)){$sql2 = new db;}
+                        if($lamount = $sql2 -> db_Select("links", "*", "link_category ='$link_category_id' ORDER BY link_order ASC ")){
                                 $text .= "<tr><td colspan='3' class='forumheader'>$link_category_name ".LCLAN_59."</td></tr>";
-                                $local_link_sequence = 1;
-                                while(list($link_id, $link_name, $link_url, $link_description, $link_button, $link_category, $link_order, $link_refer) = $sql2 -> db_Fetch()){
-                                        $text .= "<tr>\n<td style='width:30%' class='forumheader3'>".$local_link_sequence." - ".$link_name."</td>\n<td style='width:30%; text-align:center' class='forumheader3'>\n<select name='link_order[]' class='tbox'>";
+                                while(list($link_id, $link_name, $link_url, $link_description, $link_button, $link_category, $link_order, $link_refer) = $sql2-> db_Fetch()){
+                                        $text .= "<tr>\n<td style='width:30%' class='forumheader3'>".$link_order." - ".$link_name."</td>\n<td style='width:30%; text-align:center' class='forumheader3'>\n";
+                                        $text .= "<table><tr><td><select name='link_order[]' class='tbox'>";
                                         for($a=1; $a<= $lamount; $a++){
-                                                $text .= ($local_link_sequence == $a ? "<option value='$link_id.$a' selected='selected'>$a</option>\n" : "<option value='$link_id.$a'>$a</option>\n");
+                                                $text .= ($link_order == $a ? "<option value='$link_id.$a' selected='selected'>$a</option>\n" : "<option value='$link_id.$a'>$a</option>\n");
                                         }
 
-                                        $text .= "</select> <select name='activate' onchange='urljump(this.options[selectedIndex].value)' class='tbox'>
-                                        <option value='links.php' selected='selected'></option>
-                                        <option value='links.php?inc.".$link_id.".".$local_link_sequence.".".$link_category."'>".LCLAN_30."</option>
-                                        <option value='links.php?dec.".$link_id.".".$local_link_sequence.".".$link_category."'>".LCLAN_31."</option>
-                                        </select>
+                                        $text .= "</select>&nbsp;</td><td>";
+
+                                        $text .= "<a href='links.php?inc.".$link_id.".".$link_order.".".$link_category."' ><img src='".e_IMAGE."generic/up.png' style='border:0px' alt='".LCLAN_30."' title='".LCLAN_30."' /></a>";
+                                        $text .= "<br />";
+                                        $text .= "<a href='links.php?dec.".$link_id.".".$link_order.".".$link_category."' ><img src='".e_IMAGE."generic/down.png' style='border:0px' alt='".LCLAN_31."' title='".LCLAN_31."' /></a>";
+                                        $text .= "</td></tr></table>";
+
+                                        $text .="
                                         </td>
                                         <td style='width:40%' class='forumheader3'>&nbsp;".$aj->tpa($link_description)."</td>
                                         </tr>";
-                                        $local_link_sequence++;
-                                }
-                                // ML
-                        }else if((e_MLANG != 1 && $lamount = $sql2 -> db_Select("links", "*", "link_category ='$link_category_id' ORDER BY link_order ASC "))){
-                                $text .= "<tr><td colspan='3' class='forumheader'>$link_category_name ".LCLAN_59."</td></tr>";
-                                $local_link_sequence = 1;
-                                while(list($link_id, $link_name, $link_url, $link_description, $link_button, $link_category, $link_order, $link_refer) = $sql2 -> db_Fetch()){
-                                        $text .= "<tr>\n<td style='width:30%' class='forumheader3'>".$local_link_sequence." - ".$link_name."</td>\n<td style='width:30%; text-align:center' class='forumheader3'>\n<select name='link_order[]' class='tbox'>";
-                                        for($a=1; $a<= $lamount; $a++){
-                                                $text .= ($local_link_sequence == $a ? "<option value='$link_id.$a' selected='selected'>$a</option>\n" : "<option value='$link_id.$a'>$a</option>\n");
-                                        }
-
-                                        $text .= "</select> <select name='activate' onchange='urljump(this.options[selectedIndex].value)' class='tbox'>
-                                        <option value='links.php' selected='selected'></option>
-                                        <option value='links.php?inc.".$link_id.".".$local_link_sequence.".".$link_category."'>".LCLAN_30."</option>
-                                        <option value='links.php?dec.".$link_id.".".$local_link_sequence.".".$link_category."'>".LCLAN_31."</option>
-                                        </select>
-                                        </td>
-                                        <td style='width:40%' class='forumheader3'>&nbsp;".$aj->tpa($link_description)."</td>
-                                        </tr>";
-                                        $local_link_sequence++;
                                 }
                         }
                 }
@@ -594,10 +501,9 @@ class links{
 
         function show_categories($sub_action, $id){
                 // ##### Display scrolling list of existing categories ---------------------------------------------------------------------------------------------------------
-                global $sql, $rs, $ns, $aj, $ml;
+                global $sql, $rs, $ns, $aj;
                 $text = "<div style='border : solid 1px #000; padding : 4px; width :auto; height : 200px; overflow : auto; '>\n";
-                // ML
-                if((e_MLANG == 1 && $category_total = $ml -> e107_ml_Select("link_category")) || (e_MLANG != 1 && $category_total = $sql -> db_Select("link_category"))){
+                if($category_total = $sql -> db_Select("link_category")){
                         $text .= "<table class='fborder' style='width:100%'>
                         <tr>
                         <td style='width:5%' class='forumheader2'>&nbsp;</td>
@@ -639,8 +545,7 @@ class links{
                 closedir($handle);
 
                 if($sub_action == "edit"){
-                        // ML
-                        if((e_MLANG == 1 && $ml -> e107_ml_Select("link_category", "*", "link_category_id ='$id' ")) || (e_MLANG != 1 && $sql -> db_Select("link_category", "*", "link_category_id ='$id' "))){
+                        if($sql -> db_Select("link_category", "*", "link_category_id ='$id' ")){
                                 $row = $sql -> db_Fetch(); extract($row);
                         }
                 }
@@ -670,25 +575,15 @@ class links{
                 </tr>
 
                 <tr><td colspan='2' style='text-align:center' class='forumheader'>";
-                // ML
-                if(e_MLANG == 1){
-				          if($id){
-                    $idpanel = 1;
-                    $text .= $rs -> form_hidden("link_category_id", $id);
-                  }else{
-                    $idpanel = 2;
-                  }
-                  require_once(e_HANDLER."multilang/admin/links_cat.php");
-                }else{ // END ML
-                  if($id){
-                          $text .= "<input class='button' type='submit' name='update_category' value='".LCLAN_74."'>
-                          ".$rs -> form_button("submit", "category_clear", LCLAN_81).
-                          $rs -> form_hidden("link_category_id", $id);
-                  }else{
-                          $text .= "<input class='button' type='submit' name='create_category' value='".LCLAN_75."' />";
-                  }
+                if($id){
+                        $text .= "<input class='button' type='submit' name='update_category' value='".LCLAN_74."'>
+                        ".$rs -> form_button("submit", "category_clear", LCLAN_81).
+                        $rs -> form_hidden("link_category_id", $id)."
+                        </td></tr>";
+                }else{
+                        $text .= "<input class='button' type='submit' name='create_category' value='".LCLAN_75."' /></td></tr>";
                 }
-                $text .= "</td></tr></table>
+                $text .= "</table>
                 ".$rs -> form_close()."
                 </div>";
 

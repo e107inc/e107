@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.4 $
-|   $Date: 2004-10-10 21:13:18 $
-|   $Author: loloirie $
+|   $Revision: 1.5 $
+|   $Date: 2004-11-28 23:40:43 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 
 */
@@ -30,10 +30,6 @@ require_once(e_HANDLER."textparse/basic.php");
 $etp = new e107_basicparse;
 
 require_once("auth.php");
-// ML
-require_once(e_HANDLER."multilang/ml_adpanel.php");
-@include(e_LANGUAGEDIR.e_LANGUAGE."/lan_news.php");
-// END ML
 require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."news_class.php");
 require_once(e_HANDLER."ren_help.php");
@@ -62,8 +58,7 @@ if(preg_match("#(.*?)_delete_(\d+)#",$deltest[$etp->unentity(NWSLAN_8)],$matches
 
 if($delete == "main" && $del_id)
 {
-        // ML
-        if((!e_MLANG && $sql -> db_Delete("news", "news_id='$del_id' ")) || (e_MLANG && $ml -> e107_ml_MultiDelete("news", "news_id='$del_id' ")))
+        if($sql -> db_Delete("news", "news_id='$del_id' "))
         {
                 $newspost -> show_message(NWSLAN_31." #".$del_id." ".NWSLAN_32);
                 clear_cache("news.php");
@@ -75,8 +70,7 @@ if($delete == "main" && $del_id)
 
 if($delete == "category" && $del_id)
 {
-        // ML
-        if((!e_MLANG && $sql -> db_Delete("news_category", "category_id='$del_id' ")) || (e_MLANG && $ml -> e107_ml_MultiDelete("news_category", "category_id='$del_id' ")))
+        if($sql -> db_Delete("news_category", "category_id='$del_id' "))
         {
                 $newspost -> show_message(NWSLAN_33." #".$del_id." ".NWSLAN_32);
                 unset($delete,$del_id);
@@ -84,8 +78,7 @@ if($delete == "category" && $del_id)
 }
 
 if($delete == "sn" && $del_id){
-        // ML
-        if((!e_MLANG && $sql -> db_Delete("submitnews", "submitnews_id='$del_id' ")) || (e_MLANG && $ml -> e107_ml_MultiDelete("submitnews", "submitnews_id='$del_id' ")))
+        if($sql -> db_Delete("submitnews", "submitnews_id='$del_id' "))
         {
                 $newspost -> show_message(NWSLAN_34." #".$del_id." ".NWSLAN_32);
                 clear_cache("news.php");
@@ -134,13 +127,8 @@ if(IsSet($_POST['create_category']))
 			$_POST['category_button'] = $iconlist[0];
 		}
 		$_POST['category_name'] = $tp -> toDB($_POST['category_name'], TRUE);
-		// ML
-    if(e_MLANG == 1){
-			$ml -> e107_ml_MultiInsert("news_category", " '0', '".$_POST['category_name']."', '".$_POST['category_button']."'");
-		}else{ // END ML
-			$sql -> db_Insert("news_category", " '0', '".$_POST['category_name']."', '".$_POST['category_button']."'");
-    }
-    $newspost -> show_message(NWSLAN_35);
+		$sql -> db_Insert("news_category", " '0', '".$_POST['category_name']."', '".$_POST['category_button']."'");
+		$newspost -> show_message(NWSLAN_35);
 	}
 }
 
@@ -150,13 +138,8 @@ if(IsSet($_POST['update_category']))
 	{
 		$category_button = ($_POST['category_button'] ? $_POST['category_button'] : "");
 		$_POST['category_name'] = $tp -> toDB($_POST['category_name'], TRUE);
-		// ML
-    if(e_MLANG == 1){
-			$ml -> e107_ml_Update("news_category", "category_name='".$_POST['category_name']."', category_icon='".$category_button."' WHERE category_id='".$_POST['category_id']."'", false, $_POST['list_lang']);
-    }else{ // END ML
-			$sql -> db_Update("news_category", "category_name='".$_POST['category_name']."', category_icon='".$category_button."' WHERE category_id='".$_POST['category_id']."'");
-    }
-    $newspost -> show_message(NWSLAN_36);
+		$sql -> db_Update("news_category", "category_name='".$_POST['category_name']."', category_icon='".$category_button."' WHERE category_id='".$_POST['category_id']."'");
+		$newspost -> show_message(NWSLAN_36);
 	}
 }
 
@@ -194,14 +177,7 @@ if($action == "create")
 {
 	if($sub_action == "edit" && !$_POST['preview']  && !$_POST['submit'])
 	{
-		$tmp_ok = 0;
-    if(e_MLANG == 1 && $ml -> e107_ml_Select("news", "*", "news_id='$id' ")){
-      $tmp_ok = 1;
-    }else if($sql -> db_Select("news", "*", "news_id='$id' ")){
-      $tmp_ok = 1;
-    }
-    
-    if($tmp_ok == 1)
+		if($sql -> db_Select("news", "*", "news_id='$id' "))
 		{
 			$row = $sql-> db_Fetch();
 			extract($row);
@@ -274,7 +250,7 @@ class newspost{
 
         function show_existing_items($action, $sub_action, $id, $from, $amount){
                 // ##### Display scrolling list of existing news items ---------------------------------------------------------------------------------------------------------
-                global $sql, $rs, $ns, $tp, $ml;
+                global $sql, $rs, $ns, $tp;
                 $text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 300px; overflow : auto; '>";
 
                 if(IsSet($_POST['searchquery'])){
@@ -282,13 +258,8 @@ class newspost{
                 }else{
                         $query = "ORDER BY ".($sub_action ? $sub_action : "news_datestamp")." ".($id ? $id : "DESC")."  LIMIT $from, $amount";
                 }
-                $tmp_ok = 0;
-                if(e_MLANG == 1 && $ml -> e107_ml_Select("news", "*", $query, ($_POST['searchquery'] ? 0 : "nowhere"))){
-                  $tmp_ok = 1;
-                }else if($sql -> db_Select("news", "*", $query, ($_POST['searchquery'] ? 0 : "nowhere"))){
-                  $tmp_ok = 1;
-                }
-                if($tmp_ok == 1){
+
+                if($sql -> db_Select("news", "*", $query, ($_POST['searchquery'] ? 0 : "nowhere"))){
                         $text .= "<table class='fborder' style='width:100%'>
                         <tr>
 
@@ -372,8 +343,8 @@ class newspost{
 
         function create_item($sub_action, $id){
                 // ##### Display creation form ---------------------------------------------------------------------------------------------------------
-                /* 08-08-2004 - unknown - fixed `Insert Image' display to use $IMAGES_DIRECTORY */
-                global $sql, $rs, $ns, $pref, $IMAGES_DIRECTORY, $tp, $ml;
+                                        /* 08-08-2004 - unknown - fixed `Insert Image' display to use $IMAGES_DIRECTORY */
+                                        global $sql, $rs, $ns, $pref, $IMAGES_DIRECTORY, $tp;
 
                 $handle=opendir(e_IMAGE."newspost_images");
                 while ($file = readdir($handle)){
@@ -442,8 +413,7 @@ class newspost{
                 <td style='width:20%' class='forumheader3'>".NWSLAN_6.": </td>
                 <td style='width:80%' class='forumheader3'>";
 
-                // ML
-                if((!e_MLANG && !$sql -> db_Select("news_category"))|| (e_MLANG && !$ml -> e107_ml_Select("news_category"))){
+                if(!$sql -> db_Select("news_category")){
                         $text .= NWSLAN_10;
                 }else{
 
@@ -644,11 +614,7 @@ class newspost{
                 <tr style='vertical-align: top;'>
                 <td colspan='2'  style='text-align:center' class='forumheader'>";
 
-                // ML
-        				if(e_MLANG == 1){
-        				  require_once(e_HANDLER."multilang/admin/newspost.php");
-        				}else{ // END ML
-                  if(IsSet($_POST['preview'])){
+                if(IsSet($_POST['preview'])){
                         $text .= "<input class='button' type='submit' name='preview' value='".NWSLAN_24."' /> ";
                         if($id && $sub_action != "sn" && $sub_action != "upload"){
                                 $text .= "<input class='button' type='submit' name='submit' value='".NWSLAN_25."' /> ";
@@ -656,9 +622,8 @@ class newspost{
                         } else {
                          $text .= "<input class='button' type='submit' name='submit' value='".NWSLAN_26."' /> ";
                         }
-                  } else {
-                          $text .= "<input class='button' type='submit' name='preview' value='".NWSLAN_27."' />";
-                  }
+                } else {
+                        $text .= "<input class='button' type='submit' name='preview' value='".NWSLAN_27."' />";
                 }
                 $text .= "<input type='hidden' name='news_id' value='$news_id' />  \n</td>
                 </tr>
@@ -672,16 +637,11 @@ class newspost{
 
         function preview_item($id){
                 // ##### Display news preview ---------------------------------------------------------------------------------------------------------
-                global $tp, $sql, $ix, $ml;
+                global $tp, $sql, $ix;
                 $_POST['news_id'] = $id;
                 $_POST['active_start'] = (!$_POST['startmonth'] || !$_POST['startday'] || !$_POST['startyear'] ? 0 : mktime (0, 0, 0, $_POST['startmonth'], $_POST['startday'], $_POST['startyear']));
                 $_POST['active_end'] = (!$_POST['endmonth'] || !$_POST['endday'] || !$_POST['endyear'] ? 0 : mktime (0, 0, 0, $_POST['endmonth'], $_POST['endday'], $_POST['endyear']));
-                // ML
-                if(e_MLANG == 1){
-                  $ml -> e107_ml_Select("news_category", "*",  "category_id='".$_POST['cat_id']."' ");
-                }else{ // END ML
-                  $sql -> db_Select("news_category", "*",  "category_id='".$_POST['cat_id']."' ");
-                }
+                $sql -> db_Select("news_category", "*",  "category_id='".$_POST['cat_id']."' ");
                 list($_POST['category_id'], $_POST['category_name'], $_POST['category_icon']) = $sql-> db_Fetch();
                 $_POST['admin_id'] = USERID;
                 $_POST['admin_name'] = USERNAME;
@@ -735,7 +695,7 @@ class newspost{
 
         function show_categories($sub_action, $id){
                 // ##### Display scrolling list of existing news items ---------------------------------------------------------------------------------------------------------
-                global $sql, $rs, $ns, $tp, $ml;
+                global $sql, $rs, $ns, $tp;
                 $text = "<div style='border : solid 1px #000; padding : 4px; width :auto; height : 200px; overflow : auto; '>\n";
                 if($category_total = $sql -> db_Select("news_category")){
                         $text .= "<table class='fborder' style='width:100%'>
@@ -808,9 +768,7 @@ class newspost{
                 </tr>
 
                 <tr><td colspan='2' style='text-align:center' class='forumheader'>";
-                if(e_MLANG && $id){
-                        require_once(e_HANDLER."multilang/admin/newspostcat.php");
-                }else if($id){
+                if($id){
                         $text .= "<input class='button' type='submit' name='update_category' value='".NWSLAN_55."' />
                         ".$rs -> form_button("submit", "category_clear", NWSLAN_79).
                         $rs -> form_hidden("category_id", $id)."
@@ -933,15 +891,9 @@ class newspost{
                 <td class='forumheader3' style='width:40%'>
                 <input class='tbox' type='text' style='width:50px' name='subnews_resize' value='".$pref['subnews_resize']."' />
                 <span class='smalltext'>".NWSLAN_102."</span></td>
-                </tr>";
-                
-                // ML original by Lolo Irie
-                if(e_MLANG == 1){$text .= "<tr>
-                <td class='forumheader3' colspan='2'>Be careful, you will now change these preferences AND all other e107 preferences for the following language: <b>".e_DBLANGUAGE."</b><br />
-                </td></tr>";}
-                // END ML
-                
-                $text .= "<tr><td colspan='2' style='text-align:center' class='forumheader'>";
+                </tr>
+
+                <tr><td colspan='2' style='text-align:center' class='forumheader'>";
                 $text .= "<input class='button' type='submit' name='save_prefs' value='".NWSLAN_89."' /></td></tr>";
 
                 $text .= "</table>
