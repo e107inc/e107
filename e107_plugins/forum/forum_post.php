@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-02-24 04:27:59 $
+|     $Revision: 1.13 $
+|     $Date: 2005-02-24 12:27:51 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -578,7 +578,7 @@ function image_getsize($fname)
 {
 	if($imginfo = getimagesize($fname))
 	{
-		return ":height={$imginfo[0]}&width={$imginfo[1]}";
+		return ":width={$imginfo[0]}&height={$imginfo[1]}";
 	}
 	else
 	{
