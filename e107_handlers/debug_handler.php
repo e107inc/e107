@@ -11,19 +11,42 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/debug_handler.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-01-29 17:16:33 $
+|     $Revision: 1.8 $
+|     $Date: 2005-01-29 18:31:22 $
 |     $Author: mrpete $
 +----------------------------------------------------------------------------+
-*/
+*/  
+
 
 class e107_debug {
 	
 	var $debug_level = 1;
+	//
+	// DEBUG SHORTCUTS
+	//
+	var $aDebugShortcuts = array(
+	'all' 	=>   255,	// all basics
+	'basic'	=>	  255,	// all basics
+	'b'		=>	  255,	// all basics
+	'showsql'=>     2,	// sql basics
+	'counts' =>     4,	// traffic counters
+	'detail' => 32767,	// all details
+	'd' 		=> 32767,	// all details
+	'time' 	=>   256,	// time details
+	'sql' 	=>   512,	// sql details
+	'warn'	=>     1,   // just warnings, parse errrors, etc
+	'notice'	=> 32768,	// you REALLY don't want all this, do you?
+	'everything' => 65535,
+	);
 	
 	function e107_debug() {
 		if (preg_match('/debug=(.*)/', e_MENU, $debug_param)) {
-			$this->debug_level = $debug_param[1];
+			$dVal = $debug_param[1];
+			if (isset($this->aDebugShortcuts[$dVal])) {
+				$this->debug_level = $this->aDebugShortcuts[$dVal];
+			} else {
+				$this->debug_level = $dVal;
+			}
 		}
 	}
 		
@@ -50,7 +73,7 @@ if (strstr(e_MENU, "debug")) {
 } else {
 	define('E107_DEBUG_LEVEL',0);
 }
-
+ 
 //
 // DEBUG LEVEL BREAKDOWN
 // Some bits for different debug levels (all intended for ADMIN only)
@@ -78,5 +101,6 @@ define('E107_DBG_FILLIN1024',(E107_DEBUG_LEVEL & 1024));         // fill in what
 define('E107_DBG_FILLIN2048',(E107_DEBUG_LEVEL & 2048));         // fill in what it is
 //...
 define('E107_DBG_ALLERRORS',(E107_DEBUG_LEVEL & 32768));     // show ALL errors//...
+
 
 ?>
