@@ -16,6 +16,8 @@ define("LAN_THEME_2", "Comments are turned off for this item");
 define("LAN_THEME_3", "Read the rest...");
 define("LAN_THEME_4", "Posted by");
 define("LAN_THEME_5", "on");
+define("LAN_THEME_6", "e107.v4 theme by jalist");
+
 
 
 ?>

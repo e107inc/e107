@@ -11,19 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/theme.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-28 20:15:02 $
+|     $Revision: 1.7 $
+|     $Date: 2005-03-20 22:45:59 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_THEME")){ exit; }
 // [multilanguage]
 
-if(file_exists(e_THEME."e107v4a/languages/".e_LANGUAGE.".php")){
-  require_once(e_THEME."e107v4a/languages/".e_LANGUAGE.".php");
-}else{
-  require_once(e_THEME."e107v4a/languages/English.php");
-}
+@include_once(e_THEME."e107v4a/languages/".e_LANGUAGE.".php");
+@include_once(e_THEME."e107v4a/languages/English.php");
+
 
 // [theme]
 
@@ -33,7 +31,7 @@ $themeauthor = "jalist";
 $themedate = "11/06/2003";
 $themeinfo = "";
 
-define("THEME_DISCLAIMER", "<br /><i>e107.v4 theme by jalist</i>");
+define("THEME_DISCLAIMER", "<br /><i>".LAN_THEME_6."</i>");
 
 
 // [layout]
@@ -167,8 +165,6 @@ define("COMMENTOFFSTRING", LAN_THEME_2);
 define("PRE_EXTENDEDSTRING", "<br /><br />[ ");
 define("EXTENDEDSTRING", LAN_THEME_3);
 define("POST_EXTENDEDSTRING", " ]<br />");
-//define("ICONMAIL", "iconmail.png"); // Usable since e107v615
-//define("ICONPRINT", "iconprint.png"); // Usable since e107v615
 
 
 
@@ -187,10 +183,10 @@ define(LINKALIGN, "left");
 
 function tablestyle($caption, $text){
         global $style;
-//        echo "Mode: ".$style;
 
-        echo "<div class='spacer'>
 
+        echo "
+<div class='spacer'>
 <table cellpadding='0' cellspacing='0'>
 <tr>
 <td class='captiontopleft'><img src='".THEME."images/blank.gif' width='24' height='3' alt='' style='display: block;' /></td>
@@ -198,9 +194,6 @@ function tablestyle($caption, $text){
 <td class='captiontopright'><img src='".THEME."images/blank.gif' width='11' height='3' alt='' style='display: block;' /></td>
 </tr>
 </table>
-
-
-
 <table cellpadding='0' cellspacing='0'>
 <tr>
 <td class='captionleft'><img src='".THEME."images/blank.gif' width='24' height='18' alt='' style='display: block;' /></td>
@@ -210,7 +203,6 @@ function tablestyle($caption, $text){
 <td class='captionright'><img src='".THEME."images/blank.gif' width='11' height='18' alt='' style='display: block;' /></td>
 </tr>
 </table>
-
 <table cellpadding='0' cellspacing='0'>
 <tr>
 <td class='bodyleft'><img src='".THEME."images/blank.gif' width='3' height='1' alt='' style='display: block;' /></td>
@@ -225,8 +217,8 @@ function tablestyle($caption, $text){
 <td class='bottomright'><img src='".THEME."images/blank.gif' width='10' height='9' alt='' style='display: block;' /></td>
 </tr>
 </table>
-
-</div>";
+</div>
+";
 
 }
 
@@ -279,9 +271,6 @@ $COMMENTSTYLE = "
 </div>
 <br />";
 
-// Forum design
-if(strstr(e_SELF,"forum.php")||strstr(e_SELF,"forum_post.php")||strstr(e_SELF,"forum_viewforum.php")||strstr(e_SELF,"forum_viewtopic.php")){
-        @require_once("forum_design.php");
-}
+
 
 ?>
