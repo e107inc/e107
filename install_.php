@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-02-08 16:32:38 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.14 $
+|     $Date: 2005-02-08 22:25:28 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 @include("e107_handlers/errorhandler_class.php");
@@ -534,7 +534,7 @@ function create_tables() {
 	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'headlines_menu', 2, 5, 0, '')");
 	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'counter_menu', 2, 6, 0, '')");
 	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'powered_by_menu', 2, 7, 0, '')");
-	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'backend_menu', 2, 8, 0, '')");
+	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'rss_menu', 2, 8, 0, '')");
 	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'admin_menu', 0, 0, 0, '')");
 	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'banner_menu', 0, 0, 0, '')");
 	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'comment_menu', 0, 0, 0, '')");
