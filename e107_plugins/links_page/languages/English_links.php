@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/languages/English_links.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-27 19:53:06 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2005-03-02 14:43:31 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Links");
@@ -47,4 +47,7 @@ define("LAN_106", "Underlined fields are required.");
 define("LAN_Links_1", "Total links");
 define("LAN_Links_2", "Total links activated");
 define("LAN_LINKS_3", "Anonymous");
+
+define('LAN_107', "There are currently no links");
+
 ?>
