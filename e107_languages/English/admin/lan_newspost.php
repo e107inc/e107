@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-03-10 18:35:06 $
+|     $Revision: 1.16 $
+|     $Date: 2005-03-31 17:14:47 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -144,7 +144,7 @@ define("LAN_NEWS_18", "Info:");
 define("LAN_NEWS_19",  "Now");
 define("LAN_NEWS_21", "News updated in database.");
 define("LAN_NEWS_22", "Thumbnail");
-define("LAN_NEWS_23", "Choose a thumbnail image / icon for this news item.");
+define("LAN_NEWS_23", "Choose a thumbnail image / icon for this news item");
 define("LAN_NEWS_24", "Image + Auto-Thumbnail");
 define("LAN_NEWS_25", "Auto-Thumbnail size");
 define("LAN_NEWS_26", "add new upload");
@@ -161,5 +161,13 @@ define("LAN_NEWS_34", "Trackback");
 define("LAN_NEWS_35", "Add trackback url's");
 define("LAN_NEWS_36", "<b>Pingback</b> (send a pingback to all url's in this post)");
 define("LAN_NEWS_37", "<b>Trackback url's:</b> (one url per line)");
+define("LAN_NEWS_38", "Insert images");
+
+define("LAN_NEWS_39", "click on file to insert at cursor position");
+define("LAN_NEWS_40", "Insert download links");
+
+define("LAN_NEWS_41", "click on image to insert at cursor position");
+define("LAN_NEWS_42", "Insert images");
+define("LAN_NEWS_43", "(no images in /e107_images/newspost_images)");
 
 ?>
