@@ -102,12 +102,12 @@ if(IsSet($_POST['create_category'])){
 }
 
 if(IsSet($_POST['update_category'])){
-        if($_POST['category_name']){
-                                $category_button = ($_POST['category_button'] ? $_POST['category_button'] : 1);
-                $_POST['category_name'] = $aj -> formtpa($_POST['category_name'], "admin");
-                $sql -> db_Update("news_category", "category_name='".$_POST['category_name']."', category_icon='".$category_button."' WHERE category_id='".$_POST['category_id']."'");
-                $newspost -> show_message(NWSLAN_36);
-        }
+	if($_POST['category_name']){
+		$category_button = ($_POST['category_button'] ? $_POST['category_button'] : "");
+		$_POST['category_name'] = $aj -> formtpa($_POST['category_name'], "admin");
+		$sql -> db_Update("news_category", "category_name='".$_POST['category_name']."', category_icon='".$category_button."' WHERE category_id='".$_POST['category_id']."'");
+		$newspost -> show_message(NWSLAN_36);
+	}
 }
 
 if(IsSet($_POST['save_prefs'])){
