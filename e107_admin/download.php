@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-02-10 22:22:59 $
+|     $Revision: 1.18 $
+|     $Date: 2005-02-10 22:29:29 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -719,8 +719,6 @@ class download {
 
 		unset($download_category_id, $download_category_name, $download_category_description, $download_category_parent, $download_category_icon, $download_category_class);
 
-
-
 		$handle = opendir(e_IMAGE."icons");
 		while ($file = readdir($handle)) {
 			if ($file != "." && $file != ".." && $file != "/" && $file != "CVS") {
@@ -795,7 +793,7 @@ class download {
 
 
 		while (list($key, $icon) = each($iconlist)) {
-			$text .= "<a href=\"javascript:insertext('$icon','download_category_icon','cat_icn')\"><img src='".e_IMAGE."download_icons/".$icon."' style='border:0' alt='' /></a> ";
+			$text .= "<a href=\"javascript:insertext('$icon','download_category_icon','cat_icn')\"><img src='".e_IMAGE."icons/".$icon."' style='border:0' alt='' /></a> ";
 		}
 
 		$text .= "
