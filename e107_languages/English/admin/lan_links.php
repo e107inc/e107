@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_links.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-23 16:54:55 $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-25 22:01:16 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -90,5 +90,5 @@ define("LCLAN_93", "Down");
 define("LCLAN_94", "Reorder");
 define("LCLAN_95", "Class");
 define("LCLAN_96", "Update");
-define("LCLAN_97", "Class Updated");
+define("LCLAN_97", "Successfully Updated");
 ?>

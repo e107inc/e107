@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-01-25 20:59:16 $
-|     $Author: e107coders $
+|     $Revision: 1.17 $
+|     $Date: 2005-01-25 21:59:45 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -44,32 +44,27 @@ if (preg_match("#(.*?)_delete_(\d+)#",$deltest[$tp->toJS(LCLAN_10)],$matches)) {
         $del_id = $matches[2];
 }
 
-if (($action == 'dec' || $action == 'inc') && strpos(e_SELF,'links')) {
-        $qs = explode(".", e_QUERY);
-        $linkid = $qs[1];
-        $link_order = $qs[2];
-        if ($action == 'dec') {
-                $sql -> db_Update("links", "link_order=link_order-1 WHERE link_order='".($link_order+1)."'");
-                $sql -> db_Update("links", "link_order=link_order+1 WHERE link_id='".$linkid."'");
-        }
-        if ($action == 'inc') {
-                $sql -> db_Update("links", "link_order=link_order+1 WHERE link_order='".($link_order-1)."'");
-                $sql -> db_Update("links", "link_order=link_order-1 WHERE link_id='".$linkid."'");
-        }
-        $e107cache -> clear("sitelinks");
-        $linkpost -> show_existing_items();
+if (IsSet($_POST['inc'])) {
+	$qs = explode(".", $_POST['inc']);
+	$linkid = $qs[0];
+	$link_order = $qs[1];
+	$sql -> db_Update("links", "link_order=link_order+1 WHERE link_order='".($link_order-1)."'");
+	$sql -> db_Update("links", "link_order=link_order-1 WHERE link_id='".$linkid."'");
 }
 
-if (isset($_POST['update_order'])) {
-        foreach ($_POST['link_order'] as $loid) {
+if (IsSet($_POST['dec'])) {
+	$qs = explode(".", $_POST['dec']);
+	$linkid = $qs[0];
+	$link_order = $qs[1];
+	$sql -> db_Update("links", "link_order=link_order-1 WHERE link_order='".($link_order+1)."'");
+	$sql -> db_Update("links", "link_order=link_order+1 WHERE link_id='".$linkid."'");
+}
+
+if (isset($_POST['update'])) {
+		foreach ($_POST['link_order'] as $loid) {
                 $tmp = explode(".", $loid);
                 $sql -> db_Update("links", "link_order=".$tmp[1]." WHERE link_id=".$tmp[0]);
         }
-        $e107cache -> clear("sitelinks");
-        $linkpost -> show_message(LCLAN_6);
-}
-
-if (isset($_POST['update_class'])) {
         foreach ($_POST['link_class'] as $lckey => $lcid) {
                 $sql -> db_Update("links", "link_class=".$lcid." WHERE link_id=".$lckey);
         }
@@ -162,9 +157,9 @@ class links {
                                 $text .= $rs -> form_button("submit", "main_delete_".$link_id, LCLAN_10, "onclick=\"return confirm_('create','".$link_name."')\"");
                                 $text .= "</td>";
                                 $text .= "<td style='width:10%; text-align:center' class='forumheader3'>".r_userclass("link_class[".$link_id."]",$link_class,"off","public,guest,nobody,member,admin,classes")."</td>";
-                                $text .="<td style='width:5%; text-align:center; white-space: nowrap' class='forumheader3'>";
-                                $text .= "<a href='links.php?inc.".$link_id.".".$link_order."' ><img src='".e_IMAGE."generic/up.png' style='border:0px' alt='".LCLAN_30."' title='".LCLAN_30."' /></a>";
-                                $text .= "<a href='links.php?dec.".$link_id.".".$link_order."' ><img src='".e_IMAGE."generic/down.png' style='border:0px' alt='".LCLAN_31."' title='".LCLAN_31."' /></a>";
+                                $text .= "<td style='width:5%; text-align:center; white-space: nowrap' class='forumheader3'>";
+                                $text .= "<input type='image' src='".e_IMAGE."generic/up.png' value='".$link_id.".".$link_order."' name='inc' />";
+                                $text .= "<input type='image' src='".e_IMAGE."generic/down.png' value='".$link_id.".".$link_order."' name='dec' />";
                                 $text .= "</td>";
                                 $text .="<td style='width:5%; text-align:center' class='forumheader3'>";
                                 $text .= "<select name='link_order[]' class='tbox'>";
@@ -176,10 +171,7 @@ class links {
                                 $text .= "</tr>";
                         }
                         $text .= "<tr>
-                        <td class='forumheader' colspan='3'></td>
-                        <td class='forumheader' style='text-align:center'><input class='button' style='width: 100%' type='submit' name='update_class' value='".LCLAN_96."' /></td>
-                        <td class='forumheader'></td>
-                        <td class='forumheader' style='text-align:center'><input class='button' style='width: 100%' type='submit' name='update_order' value='".LCLAN_94."' /></td>
+                        <td class='forumheader' colspan='6' style='text-align:center'><input class='button' type='submit' name='update' value='".LCLAN_96."' /></td>
                         </tr>";
                         $text .= "</table></div>";
                         $text .= $rs -> form_close();
