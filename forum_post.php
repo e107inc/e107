@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/forum_post.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2004-10-29 18:02:45 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2004-11-04 13:48:16 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 
@@ -762,7 +762,8 @@ function forumjump(){
         $text .= "<form method='post' action='".e_SELF."'><p>".LAN_401.": <select name='forumjump' class='tbox'>";
         while($row = $sql -> db_Fetch()){
                 extract($row);
-                if(($forum_class && check_class($forum_class)) || ($forum_class == 254 && USER) || !$forum_class){
+                // if(($forum_class && check_class($forum_class)) || ($forum_class == 254 && USER) || !$forum_class){
+                if(check_class($forum_class)){
                         $text .= "\n<option value='".$forum_id."'>".$forum_name."</option>";
                 }
         }
