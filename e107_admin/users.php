@@ -86,6 +86,7 @@ if(IsSet($_POST['adduser'])){
         if(!$_POST['ac'] == md5(ADMINPWCHANGE)){
                 exit;
         }
+       
         require_once(e_HANDLER."message_handler.php");
         if(strstr($_POST['name'], "#") || strstr($_POST['name'], "=")){
                 message_handler("P_ALERT", USRLAN_92);
@@ -109,7 +110,7 @@ if(IsSet($_POST['adduser'])){
                 message_handler("P_ALERT", USRLAN_68);
                 $error = TRUE;
         }
-    if(!preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]+@([-0-9A-Z]+\.)+([0-9A-Z]){2,4}$/i', $_POST['email'])){
+		if(!preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]+@([-0-9A-Z]+\.)+([0-9A-Z]){2,4}$/i', $_POST['email'])){
            message_handler("P_ALERT", USRLAN_69);
            $error = TRUE;
         }
@@ -123,8 +124,11 @@ if(IsSet($_POST['adduser'])){
 
                 $username = strip_tags($_POST['name']);
                 $ip = getip();
-
-                $sql -> db_Insert("user", "0, '".$username."', '', '".md5($_POST['password1'])."', '$key', '".$_POST['email']."',         '".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$_POST['birthday']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '1', '".time()."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '' ");
+				extract($_POST);
+			    for($a=0; $a<=(count($_POST['userclass'])-1); $a++){
+					   		$svar .= $userclass[$a].".";
+				}
+                $sql -> db_Insert("user", "0, '".$username."', '', '".md5($_POST['password1'])."', '$key', '".$_POST['email']."',         '".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$_POST['birthday']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '1', '".time()."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '".$svar."', '', '', '' ");
                 $user -> show_message(USRLAN_70);
         }
 }
@@ -717,6 +721,27 @@ class users{
                 ".$rs -> form_text("email", 60, "", 100)."
                 </td>
                 </tr>
+                <tr style='vertical-align:top'>
+                <td colspan='2' style='text-align:center' class='forumheader'>
+				".USRLAN_120."           
+                </td>
+                </tr>";
+
+				if(!is_object($sql)) $sql = new db;
+				$sql -> db_Select("userclass_classes");
+				$c=0;
+				while($row = $sql -> db_Fetch()){
+					$class[$c][0] = $row['userclass_id'];
+					$class[$c][1] = $row['userclass_name'];
+					$class[$c][2] = $row['userclass_description'];
+					$c++;
+				}
+				for($a=0; $a<= (count($class)-1); $a++){
+					$text .= "<tr><td style='width:30%' class='forumheader'>
+					<input type='checkbox' name='userclass[]' value='".$class[$a][0]."'>".$class[$a][1]."
+					</td><td style='width:70%' class='forumheader3'> ".$class[$a][2]."</td></tr>";
+				}
+				$text .= "
                 <tr style='vertical-align:top'>
                 <td colspan='2' style='text-align:center' class='forumheader'>
                 <input class='button' type='submit' name='adduser' value='".USRLAN_60."' />
