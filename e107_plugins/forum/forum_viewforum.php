@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-26 16:15:21 $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-27 09:44:32 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -183,8 +183,6 @@ if($thread_list) {
 		$idArray[] = $thread_info['thread_id'];
 	}
 	$inList = '('.implode(',',$idArray).')';
-//	$thread_replies = $forum->thread_count_list($inList);
-
 	foreach($thread_list as $thread_info) {
 		if($thread_info['thread_s']){
 			$sticky_threads ++;
@@ -205,9 +203,6 @@ if($thread_list) {
 } else {
 	$forum_view_forum = "<tr><td colspan='6' style='text-align:center' class='forumheader2'><br /><span class='mediumtext'><b>".LAN_58."</b></span><br /><br /></td></tr>";
 }
-
-
-
 
 $sql -> db_Select("forum", "*", "forum_parent !=0 AND forum_class!='255' ");
 $FORUMJUMP = "<form method='post' action='".e_SELF."'><p>".LAN_403.": <select name='forumjump' class='tbox'>";
@@ -235,11 +230,29 @@ function parse_thread($thread_info)
 
 	if($REPLIES) {
 		$lastpost_datestamp = $gen->convert_date($thread_info['thread_lastpost'],'forum');
-		$tmp = explode('.',$thread_info['thread_lastuser']);
-		if(!$tmp[0]) {
-			$LASTPOST = $tmp[1].'<br />'.$lastpost_datestamp;
+		/*
+		changes by jalist 27/01/2005:
+		if lastpost name has period(s) in it list/explode would fail
+		*/
+		$lastpost = explode(".", $thread_info['thread_lastuser']);
+		$count = count($lastpost);
+		$lastpost_id = $lastpost[0];
+		$lastpost_name = "";
+		if(count($lastpost) > 2)
+		{
+			for($a=1; $a <= ($count-1); $a++)
+			{
+				$lastpost_name .= $lastpost[$a];
+			}
+		}
+		else
+		{
+			$lastpost_name = $lastpost[($count-1)];
+		}
+		if(!$lastpost_id) {
+			$LASTPOST = $lastpost_name.'<br />'.$lastpost_datestamp;
 		} else {
-			$LASTPOST = "<a href='".e_BASE."user.php?id.".$tmp[0]."'>".$tmp[1]."</a><br />".$lastpost_datestamp;			
+			$LASTPOST = "<a href='".e_BASE."user.php?id.".$lastpost_id."'>".$lastpost_name."</a><br />".$lastpost_datestamp;			
 		}
 	} else {
 		$REPLIES = LAN_317;
@@ -316,14 +329,13 @@ function parse_thread($thread_info)
 	";
 	$POSTER = (!$post_author_id ? $post_author_name :  "<a href='".e_BASE."user.php?id.".$post_author_id."'>".$post_author_name."</a>");
 
-
-	if(!$thread_info['thread_user']) {
+	if(!$thread_info['thread_user'])
+	{
 		$tmp = explode(chr(1), $thread_info['thread_anon']);
 		$POSTER = $tmp[0];
 	} else {
 		$POSTER = "<a href='".e_BASE."user.php?id.".$thread_info['thread_user']."'>".$thread_info['user_name']."</a>";
 	}
-
 
 	return(preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_FORUM));
 }
