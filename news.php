@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-02-03 13:12:28 $
-|     $Author: stevedunstan $
+|     $Revision: 1.30 $
+|     $Date: 2005-02-04 13:05:29 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -130,7 +130,7 @@ if (!defined("WMFLAG")) {
 	$sql->db_Select("wmessage", "*", "ORDER BY wm_active ASC", "nowhere");
 	while ($row = $sql->db_Fetch()) {
 		if (check_class($row['wm_active'])) {
-			$wmessage .= $tp->toHTML($row['wm_text'], TRUE)."<br />";
+			$wmessage .= $tp->toHTML($row['wm_text'], TRUE, 'parse_sc')."<br />";
 		}
 	}
 	 
