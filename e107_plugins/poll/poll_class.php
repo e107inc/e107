@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-03-21 12:28:42 $
+|     $Revision: 1.10 $
+|     $Date: 2005-03-23 14:54:56 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -397,10 +397,12 @@ class poll
 echo '<script type="text/javascript">
 <!--
 function setcook(pollid){
-	cookitem="poll_"+pollid;
-	var expireDate = new Date;
-	expireDate.setMinutes(expireDate.getMinutes()+100000);
-	document.cookie = "" + cookitem + "=" + pollid + "; expires=" + expireDate.toGMTString();
+	var name = "poll_"+pollid;
+	var date = new Date();
+	var value = pollid;
+	date.setTime(date.getTime()+(365*24*60*60*1000));
+	var expires = "; expires="+date.toGMTString();
+	document.cookie = name+"="+value+expires+"; path=/";
 }
 //-->
 </script>
