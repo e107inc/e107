@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/search.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-03-08 16:24:10 $
+|     $Revision: 1.2 $
+|     $Date: 2005-03-10 07:16:19 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -37,6 +37,11 @@ if (isset($_POST['updatesettings'])) {
 	foreach($search_handlers as $s_key => $s_value) {
 		$search_prefs['core_handlers'][$s_key] = $_POST['core_handlers'][$s_key];
 	}
+
+	foreach ($search_prefs['plug_handlers'] as $plug_dir => $active) {
+		$search_prefs['plug_handlers'][$plug_dir] = $_POST['plug_handlers'][$plug_dir];
+	}
+
 	$search_prefs['google'] = $_POST['google'];
 
 	$tmp = addslashes(serialize($search_prefs));
@@ -86,6 +91,14 @@ $text .= "<tr>
 foreach($search_handlers as $key => $value) {
 	$sel = (isset($search_prefs['core_handlers'][$key]) && $search_prefs['core_handlers'][$key]) ? " checked='checked'" : "";
 	$text .= "<span style='white-space:nowrap'><input type='checkbox' name='core_handlers[".$key."]' ".$sel." />".$value."</span>\n";
+}
+
+$i = 0;
+foreach ($search_prefs['plug_handlers'] as $plug_dir => $active) {
+	require_once(e_PLUGIN.$plug_dir."/e_search.php");
+	$sel = $active ? " checked='checked'" : "";
+	$text .= "<span style='white-space:nowrap'><input type='checkbox' name='plug_handlers[".$plug_dir."]' ".$sel." />".$search_info[$i]['qtype']."</span>\n";
+	$i++;
 }
 
 $sel = (isset($search_prefs['google']) && $search_prefs['google']) ? " checked='checked'" : "";
