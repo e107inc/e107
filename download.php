@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-03-30 14:50:54 $
+|     $Revision: 1.20 $
+|     $Date: 2005-03-30 14:54:22 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -24,8 +24,8 @@ $cobj = new comment;
 global $tp;
 
 /* define images */
-define("IMAGE_DOWNLOAD", (file_exists(THEME."generic/download.png") ? THEME."generic/download.png" : (defined("IMODE") ? e_IMAGE."generic/".IMODE."/download.png" : e_IMAGE."generic/lite/download.png")));
-define("IMAGE_NEW", (file_exists(THEME."generic/new.png") ? THEME."generic/new.png" : (defined("IMODE") ? e_IMAGE."generic/".IMODE."/new.png" : e_IMAGE."generic/lite/new.png")));
+define("IMAGE_DOWNLOAD", (file_exists(THEME."generic/download.png") ? THEME."generic/download.png" : e_IMAGE."generic/".IMODE."/download.png"));
+define("IMAGE_NEW", (file_exists(THEME."generic/new.png") ? THEME."generic/new.png" : e_IMAGE."generic/".IMODE."/new.png"));
 
 if (!e_QUERY) {
 	require_once(HEADERF);
