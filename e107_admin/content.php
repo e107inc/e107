@@ -25,15 +25,21 @@ require_once(e_HANDLER."form_handler.php");
         htmlarea("data");
     }
 
-
 $rs = new form;
 
 if(e_QUERY){
-        $tmp = explode(".", e_QUERY);
-        $action = $tmp[0];
-        $sub_action = $tmp[1];
-        $id = $tmp[2];
-        unset($tmp);
+	$tmp = explode(".", e_QUERY);
+	$action = $tmp[0];
+	$sub_action = $tmp[1];
+	$id = $tmp[2];
+	unset($tmp);
+}
+
+foreach($_POST as $k => $v){
+	if(preg_match("#^main_delete_(\d*)$#",$k,$matches) && $_POST[$k] == 'Delete')
+	{
+		$delete_content=$matches[1];
+	}
 }
 
 $aj = new textparse;
@@ -74,46 +80,51 @@ if(IsSet($_POST['update'])){
         clear_cache("sitelinks");
 }
 
-if($action == "delete"){
-        $sql = new db;
-        $sql -> db_Select("content", "*", "content_id=$sub_action");
-        $row = $sql -> db_Fetch(); extract($row);
-        $sql -> db_Delete("links", "link_name='".$content_heading."' ");
-        $sql -> db_Delete("content", "content_id=$sub_action");
-        $message = CNTLAN_20;
-        unset($content_heading, $content_subheading, $content_content);
-        clear_cache("content");
-        clear_cache("sitelinks");
+if($delete_content)
+{
+	$sql = new db;
+	$sql -> db_Select("content", "*", "content_id=$delete_content");
+	$row = $sql -> db_Fetch(); extract($row);
+	$sql -> db_Delete("links", "link_name='".$content_heading."' ");
+	$sql -> db_Delete("content", "content_id=$delete_content");
+	$message = CNTLAN_20;
+	unset($content_heading, $content_subheading, $content_content);
+	clear_cache("content");
+	clear_cache("sitelinks");
 }
 
-if(IsSet($message)){
-        $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+if(IsSet($message))
+{
+	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
 $text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 100px; overflow : auto; '>\n";
-if(!$content_total = $sql -> db_Select("content", "*", "content_type='254' OR content_type='255' OR content_type='1' ORDER BY content_datestamp DESC")){
-        $text .= "<div style='text-align:center'>".CNTLAN_4."</div>";
-}else{
-        $text .= "<table class='fborder' style='width:100%'>
-        <tr>
-        <td style='width:5%' class='forumheader2'>&nbsp;</td>
-<td style='width:65%' class='forumheader2'>".CNTLAN_25."</td>
-<td style='width:30%' class='forumheader2'>".CNTLAN_26."</td>
-
-</tr>";
-
-        while($row = $sql -> db_Fetch()){
-                extract($row);
-                $content_title = ($content_heading) ? $content_heading : $content_subheading;
-                $text .= "<tr><td style='width:5%; text-align:center' class='forumheader3'>$content_id</td>
-                <td style='width:65%' class='forumheader3'>$content_title</td>
-                <td style='width:30%; text-align:center' class='forumheader3'>
-                ".$rs -> form_button("submit", "main_edit_{$content_id}", CNTLAN_6, "onclick=\"document.location='".e_SELF."?edit.$content_id'\"")."
-                ".$rs -> form_button("submit", "main_delete_{$content_id}", CNTLAN_7, "onclick=\"confirm_($content_id)\"")."
-
-                </td>\n</tr>";
-        }
-        $text .= "</table>\n";
+if(!$content_total = $sql -> db_Select("content", "*", "content_type='254' OR content_type='255' OR content_type='1' ORDER BY content_datestamp DESC"))
+{
+	$text .= "<div style='text-align:center'>".CNTLAN_4."</div>";
+} else
+{
+	$text .= "
+	<form method='post' action='".e_SELF."' onsubmit=\"return confirm_()\">
+	<table class='fborder' style='width:100%'>
+	<tr>
+	<td style='width:5%' class='forumheader2'>&nbsp;</td>
+	<td style='width:65%' class='forumheader2'>".CNTLAN_25."</td>
+	<td style='width:30%' class='forumheader2'>".CNTLAN_26."</td>
+	</tr>";
+	while($row = $sql -> db_Fetch())
+	{
+		extract($row);
+		$content_title = ($content_heading) ? $content_heading : $content_subheading;
+		$text .= "<tr><td style='width:5%; text-align:center' class='forumheader3'>$content_id</td>
+		<td style='width:65%' class='forumheader3'>$content_title</td>
+		<td style='width:30%; text-align:center' class='forumheader3'>
+		".$rs -> form_button("submit", "main_edit_{$content_id}", CNTLAN_6, "onclick=\"document.location='".e_SELF."?edit.$content_id'\"")."
+		".$rs -> form_button("submit", "main_delete_{$content_id}", CNTLAN_7)."
+		
+		</td>\n</tr>";
+	}
+	$text .= "</table>\n</form>";
 }
 $text .= "</div></div>";
 
@@ -233,9 +244,7 @@ $ns -> tablerender("<div style='text-align:center'>".CNTLAN_18."</div>", $text);
 
 echo "<script type=\"text/javascript\">
 function confirm_(content_id){
-        var x=confirm(\"".CNTLAN_27." [ID: \" + content_id + \"]\");
-if(x)
-        window.location='".e_SELF."?delete.' + content_id;
+	return  confirm(\"".CNTLAN_27."\");
 }
 </script>";
 
