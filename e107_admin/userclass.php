@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:21 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-05 16:57:37 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -94,7 +94,7 @@ $caption = UCSLAN_6." <b>".$user_name."</b> (".$user_class.")";
 
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."?".e_QUERY."'>
-<table style='width:90%' class='fborder'>";
+<table style='".ADMIN_WIDTH."' class='fborder'>";
 
 for($a=0; $a<= (count($class)-1); $a++){
         $text .= "<tr><td style='width:30%' class='forumheader'>";

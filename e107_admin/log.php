@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/log.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:20 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-05 16:57:37 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -57,7 +57,7 @@ $lvcount = $pref['log_lvcount'];
 
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>
-<table style='width:85%' class='fborder'>
+<table style='".ADMIN_WIDTH."' class='fborder'>
 
 <tr>
 <td style='width:30%' class='forumheader3'>".LOGLAN_3.": </td>
@@ -110,7 +110,7 @@ $text .= "</td></tr>
 </form>
 </div>";
 
-$ns -> tablerender("<div style='text-align:center'>".LOGLAN_13."</div>", $text);
+$ns -> tablerender(LOGLAN_13, $text);
 require_once("footer.php");
 
 ?>

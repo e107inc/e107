@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/article.php,v $
-|   $Revision: 1.4 $
-|   $Date: 2004-12-01 14:41:39 $
-|   $Author: streaky $
+|   $Revision: 1.5 $
+|   $Date: 2005-01-05 16:57:36 $
+|   $Author: sweetas $
 
 +---------------------------------------------------------------+
 */
@@ -173,7 +173,7 @@ if(IsSet($_POST['preview']))
 	$content_comment = $_POST['content_comment'];
 	$content_pe_icon = $_POST['add_icons'];
 	/* 9 Aug 2004 - unknown - the article preview looks more like the actual article */
-	$text = '<div style="text-align: center"><table class="fborder" style="width:95%" border="0"><tr><td>'.$text.'</td></tr></table></div>';
+	$text = '<div style="text-align: center"><table class="fborder" style="'.ADMIN_WIDTH.'" border="0"><tr><td>'.$text.'</td></tr></table></div>';
 	echo "<br /><br />";
 	// make form friendly ...
 	/* Before bug fixing for apostroph
@@ -203,9 +203,9 @@ if(IsSet($message)){
 // ##### Categories ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 if($action == "cat"){
-        $text = "<div style='border : solid 1px #000; padding : 4px; width : auto; height : 100px; overflow : auto; '>\n";
+        $text = "<div style='padding : 4px; ".ADMIN_WIDTH."; height : 100px; overflow : auto; margin-left: auto; margin-right: auto; '>\n";
         if($category_total = $sql -> db_Select("content", "*", "content_type='6' ")){
-                $text .= "<table class='fborder' style='width:100%'>
+                $text .= "<table class='fborder' style='width:99%'>
                 <tr>
                 <td style='width:5%' class='forumheader2'>&nbsp;</td>
                 <td style='width:75%' class='forumheader2'>".ARLAN_59."</td>
@@ -252,7 +252,7 @@ if($action == "cat"){
 
         $text = "<div style='text-align:center'>
         ".$rs -> form_open("post", e_SELF."?cat", "dataform")."
-        <table class='fborder' style='width:auto'>
+        <table class='fborder' style='".ADMIN_WIDTH."'>
         <tr>
         <td class='forumheader3' style='width:30%'><span class='defaulttext'>".ARLAN_65."</span></td>
         <td class='forumheader3' style='width:70%'>".$rs -> form_text("category_name", 30, $content_heading, 25)."</td>
@@ -303,7 +303,7 @@ if(!$action || $action == "confirm" || $action == 'c'){
         if ($distinctfirstletter != 1){
 
                 $text .= "<form method='post' action='".e_SELF."'>
-                <table class='fborder' style='width:100%'>
+                <table class='fborder' style='".ADMIN_WIDTH."'>
 
                 <tr><td colspan='2' class='forumheader'>".ARLAN_31."</td></tr>
                 <tr><td colspan='2' class='forumheader3'>";
@@ -338,10 +338,10 @@ if(!$action || $action == "confirm" || $action == 'c'){
         // ---------------------------------------------------------------------------
 
         $sql2 = new db;
-        $text .= "<div style='border : solid 1px #000; padding : 4px; width : auto; height : 400px; overflow : auto; '>";
+        $text .= "<div style='padding : 1px; ".ADMIN_WIDTH."; height : 400px; overflow : auto;  margin-left: auto; margin-right: auto;'>";
         if($article_total = $sql -> db_Select("content", "*", $query)){
                 if($article_total < 50 || $letter || $cat){
-                        $text .= "<table class='fborder' style='width:100%'>
+                        $text .= "<table class='fborder' style='width:99%'>
                         <tr>
                         <td style='width:5%' class='forumheader2'>&nbsp;</td>
                         <td style='width:50%' class='forumheader2'>".ARLAN_20."</td>
@@ -415,7 +415,7 @@ if($action == "create"){
         $text = "<div style='text-align:center'>
         ".$rs -> form_open("post", e_SELF."?".e_QUERY."", "dataform")."
 
-        <table style='width:95%' class='fborder'>
+        <table style='".ADMIN_WIDTH."' class='fborder'>
 
         <tr>
         <td style='width:20%; vertical-align:top' class='forumheader3'>".ARLAN_74.":</td>
@@ -511,7 +511,7 @@ if($action == "create"){
         </form>
         </div>";
 
-        $ns -> tablerender("<div style='text-align:center'>".ARLAN_15."</div>", $text);
+        $ns -> tablerender(ARLAN_15, $text);
 
 }
 // ##### End ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -520,7 +520,7 @@ if($action == "opt"){
         global $pref, $ns;
         $text = "<div style='text-align:center'>
         <form method='post' action='".e_SELF."?".e_QUERY."'>\n
-        <table style='width:auto' class='fborder'>
+        <table style='".ADMIN_WIDTH."' class='fborder'>
         <tr>
 
         <td style='width:70%' class='forumheader3'>
@@ -554,9 +554,9 @@ if($action == "opt"){
 
 if($action == "sa"){
         global $sql, $rs, $ns, $aj;
-        $text = "<div style='border : solid 1px #000; padding : 4px; width :auto; height : 200px; overflow : auto; '>\n";
+        $text = "<div style='padding : 1px; width :auto; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>\n";
         if($article_total = $sql -> db_Select("content", "*", "content_type=15")){
-                $text .= "<table class='fborder' style='width:100%'>
+                $text .= "<table class='fborder' style='width:99%'>
                 <tr>
                 <td style='width:5%' class='forumheader2'>ID</td>
                 <td style='width:75%' class='forumheader2'>".ARLAN_96."</td>

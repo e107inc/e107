@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-12-04 07:14:48 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-05 16:57:38 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 define("ADLAN_0", "News");
@@ -62,7 +62,7 @@ define("ADLAN_49", "main site administrator");
 define("ADLAN_50", "permissions");
 define("ADLAN_51", "Please log in to gain access to administration area");
 define("ADLAN_52", "Admin Front Page");
-define("ADLAN_53", "Leave Admin Area");
+define("ADLAN_53", "Leave Admin");
 define("ADLAN_54", "Banners");
 define("ADLAN_55", "Configure banners");
 define("ADLAN_56", "Chatbox");
@@ -150,4 +150,15 @@ define("ADLAN_131", "Other tools");
 
 define("ADLAN_132", "Language");
 define("ADLAN_133", "default");
+
+define("ADLAN_134", "Status");
+define("ADLAN_135", "Admin Log");
+
+define('ADLAN_CL_1', 'Settings');
+define('ADLAN_CL_2', 'Users');
+define('ADLAN_CL_3', 'Content');
+define('ADLAN_CL_4', 'Coms');
+define('ADLAN_CL_5', 'Files');
+define('ADLAN_CL_6', 'Tools');
+define('ADLAN_CL_7', 'Plugins');
 ?>

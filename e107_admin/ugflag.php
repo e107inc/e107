@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/ugflag.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:21 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-05 16:57:37 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -39,7 +39,7 @@ $maintainance_flag = $pref['maintainance_flag'];
 
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."' id='dataform'>
-<table style='width:85%' class='fborder'>
+<table style='".ADMIN_WIDTH."' class='fborder'>
 <tr>
 <td style='width:30%' class='forumheader3'>".UGFLAN_2.": </td>
 <td style='width:70%' class='forumheader3'>";
@@ -77,7 +77,7 @@ $text .= "</td>
 </form>
 </div>";
 
-$ns -> tablerender("<div style='text-align:center'>".UGFLAN_4."</div>", $text);
+$ns -> tablerender(UGFLAN_4, $text);
 require_once("footer.php");
 
 ?>

@@ -11,32 +11,32 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/docs.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:20 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-05 16:57:36 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 if(!ADMIN){ header("location:".e_BASE."index.php"); exit; }
 require_once("auth.php");
 
-$c=1;
+$i=1;
 $lang=e_LANGUAGE;
-if (!$handle=opendir(e_DOCS.$lang."/")) {
-        $lang="English";
-        $handle=opendir(e_DOCS.$lang."/");
+if (!$handle=opendir(e_DOCS.e_LANGUAGE."/")) {
+	$lang="English";
+	$handle=opendir(e_DOCS."English/");
 }
 
 while ($file = readdir($handle)){
         if($file != "." && $file != ".."){
-                $helplist[$c] = $file;
-                $c++;
+                $helplist[$i] = $file;
+                $i++;
         }
 }
 closedir($handle);
 
 
-if(e_QUERY){
+if (e_QUERY) {
         $aj = new textparse;
         $filename = e_DOCS.$lang."/".$helplist[e_QUERY];
         $fd = fopen ($filename, "r");

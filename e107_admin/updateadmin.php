@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/updateadmin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-12-12 15:12:24 $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-05 16:57:37 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -44,7 +44,7 @@ if(IsSet($message)){
 
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>\n
-<table style='width:85%' class='fborder'>
+<table style='".ADMIN_WIDTH."' class='fborder'>
 <tr>
 <td style='width:30%' class='forumheader3'>".UDALAN_4.": </td>
 <td style='width:70%' class='forumheader3'>
@@ -76,7 +76,7 @@ $text = "<div style='text-align:center'>
 </form>
 </div>";
 
-$ns -> tablerender("<div style='text-align:center'>".UDALAN_8." ".ADMINNAME."</div>", $text);
+$ns -> tablerender(UDALAN_8." ".ADMINNAME, $text);
 
 require_once("footer.php");
 ?>

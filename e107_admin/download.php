@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-11-26 07:20:36 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-05 16:57:36 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -137,7 +137,7 @@ if($action == "opt"){
           $agree_text = $pref['agree_text'];
         $text = "<div style='text-align:center'>
         <form method='post' action='".e_SELF."?".e_QUERY."'>\n
-        <table style='width:auto' class='fborder'>
+        <table style='".ADMIN_WIDTH."' class='fborder'>
 
 
           <tr>
@@ -244,7 +244,7 @@ class download{
 
         function show_existing_items($action, $sub_action, $id, $from, $amount){
                 global $sql, $rs, $ns, $aj;
-                $text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 200px; overflow : auto; '>";
+                $text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>";
 
                 if(IsSet($_POST['searchquery'])){
                         $query = "download_name REGEXP('".$_POST['searchquery']."') OR download_url REGEXP('".$_POST['searchquery']."') OR download_author REGEXP('".$_POST['searchquery']."') OR download_description  REGEXP('".$_POST['searchquery']."') ORDER BY download_datestamp DESC";
@@ -253,7 +253,7 @@ class download{
                 }
 
                 if($sql -> db_Select("download", "*", $query, ($_POST['searchquery'] ? 0 : "nowhere"))){
-                        $text .= "<table class='fborder' style='width:100%'>
+                        $text .= "<table class='fborder' style='width:99%'>
                         <tr>
                         <td style='width:5%' class='forumheader2'>ID</td>
                         <td style='width:50%' class='forumheader2'>".DOWLAN_27."</td>
@@ -360,7 +360,7 @@ class download{
                 $text = "
                 <div style='text-align:center'>
                 <form method='post' action='".e_SELF."?".e_QUERY."' id='myform'>
-                <table style='width:85%' class='fborder'>
+                <table style='".ADMIN_WIDTH."' class='fborder'>
                 <tr>
                 <td style='width:20%' class='forumheader3'>".DOWLAN_11.":</td>
                 <td style='width:80%' class='forumheader3'>";
@@ -566,7 +566,7 @@ class download{
                 </div>";
 
 
-                $ns -> tablerender("<div style='text-align:center'>".DOWLAN_26."</div>", $text);
+                $ns -> tablerender(DOWLAN_26, $text);
         }
 
         function show_message($message){
@@ -622,9 +622,9 @@ class download{
                 if(!is_object($sql3)){
                         $sql3 = new db; $sql4 = new db;
                 }
-                $text = "<div style='border : solid 1px #000; padding : 4px; width : auto; height : 200px; overflow : auto; '>";
+                $text = "<div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>";
                 if($download_total = $sql -> db_Select("download_category", "*", "download_category_parent=0")){
-                        $text .= "<table class='fborder' style='width:100%'>
+                        $text .= "<table class='fborder' style='width:99%'>
 
                         <tr>
                         <td style='width:5%; text-align:center' class='fcaption'>&nbsp;</td>
@@ -722,7 +722,7 @@ class download{
                                         $frm_action = (isset($_POST['add_category'])) ? e_SELF."?cat" : e_SELF."?".e_QUERY;
                 $text = "<div style='text-align:center'>
                 <form method='post' action='{$frm_action}' id='dlform'>
-                <table style='width:auto' class='fborder'>
+                <table style='".ADMIN_WIDTH."' class='fborder'>
                 <tr>
                 <td style='width:30%' class='forumheader3'>".DOWLAN_37.": </td>
                 <td style='width:70%' class='forumheader3'>";

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/poll.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:21 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-05 16:57:37 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -100,11 +100,11 @@ if(IsSet($message)){
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
-$text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 200px; overflow : auto; '>
+$text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>
 <form action=\"".e_SELF."\" method=\"post\" id=\"del_poll\" >
 <input type=\"hidden\" name=\"del_poll_confirm\" id=\"del_poll_confirm\" value=\"1\" />";
 if($poll_total = $sql -> db_Select("poll")){
-        $text .= "<table class='fborder' style='width:100%'>
+        $text .= "<table class='fborder' style='width:99%'>
         <tr>
         <td style='width:5%' class='forumheader2'>ID</td>
         <td style='width:75%' class='forumheader2'>".POLLAN_7."</td>
@@ -133,7 +133,7 @@ $poll_total = $sql -> db_Select("poll");
 $act_add = (e_QUERY && !strpos(e_QUERY,"elete")) ? "?".e_QUERY : "";
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF.$act_add."'>
-<table style='width:85%' class='fborder'>
+<table style='".ADMIN_WIDTH."' class='fborder'>
 <tr>
 <td style='width:30%' class='forumheader3'><div class='normaltext'>".POLLAN_7.":</div></td>
 <td style='width:70%'class='forumheader3'>
@@ -189,7 +189,7 @@ $text .= "</td></tr></table>
 </form>
 </div>";
 
-$ns -> tablerender("<div style='text-align:center'>".POLLAN_19."</div>", $text);
+$ns -> tablerender(POLLAN_19, $text);
 require_once("footer.php");
 function headerjs(){
 global $etp;

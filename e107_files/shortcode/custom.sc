@@ -11,7 +11,7 @@ switch($parm)
 			$ret .= "<span class='mediumtext'>".LOGIN_MENU_L5." ".USERNAME."&nbsp;&nbsp;&nbsp;.:. ";
 			if(ADMIN == TRUE)
 			{
-				$ret .= "<a href='".e_ADMIN.(!$pref['adminstyle'] || $pref['adminstyle'] == "default" ? "admin.php" : $pref['adminstyle'].".php")."'>".LOGIN_MENU_L11."</a> .:. ";
+				$ret .= "<a href='".e_ADMIN."admin.php'>".LOGIN_MENU_L11."</a> .:. ";
 			}
 			$ret .= ($custom != "login noprofile") ? "<a href='".e_BASE."user.php?id.".USERID."'>".LOGIN_MENU_L13."</a>\n.:. ":"";
 			$ret .= "<a href='" . e_BASE . "usersettings.php'>".LOGIN_MENU_L12."</a> .:. <a href='".e_BASE."?logout'>".LOGIN_MENU_L8."</a> .:.</span>";

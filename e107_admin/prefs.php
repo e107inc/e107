@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2004-12-01 14:41:39 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-05 16:57:37 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -240,7 +240,7 @@ $text .="</div>";
 
 $text = "<form method='post' action='prefs.php' >
 <div style='text-align:center;margin-left: auto;margin-right: auto'>
-<div style='text-align:center;width:95%;margin-left: auto;margin-right: auto'>
+<div style='text-align:center; ".ADMIN_WIDTH."; margin-left: auto; margin-right: auto'>
 <div class='caption' title='".PRFLAN_80."' style='cursor:pointer;cursor:hand;text-align:left;border:1px solid black' onclick=\"expandit(this)\">".PRFLAN_1."</div>
 
 <div id='main' style='display:none;text-align:center'>
@@ -313,8 +313,10 @@ $text = "<form method='post' action='prefs.php' >
 <select name='sitetheme' class='tbox'>\n";
 $counter = 0;
 while(IsSet($dirlist[$counter])){
+	if (!strstr($dirlist[$counter], 'admin_')) {
         $text .= ($dirlist[$counter] == $pref['sitetheme'] ? "<option selected='selected'>".$dirlist[$counter]."</option>\n" : "<option>".$dirlist[$counter]."</option>\n");
-        $counter++;
+	}
+	$counter++;
 }
 $text .= "</select>
 </td>
@@ -852,7 +854,7 @@ $text .="</td>
 
 
 
-$ns -> tablerender("<div style='text-align:center'>".PRFLAN_53."</div>", $text);
+$ns -> tablerender(PRFLAN_53, $text);
 
 require_once("footer.php");
 ?>

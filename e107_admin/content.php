@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/content.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-12-01 14:41:39 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-05 16:57:36 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -107,7 +107,7 @@ if(IsSet($message))
         $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
-$text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 100px; overflow : auto; '>\n";
+$text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; height : 100px; overflow : auto; margin-left: auto; margin-right: auto;'>\n";
 if(!$content_total = $sql -> db_Select("content", "*", "content_type='254' OR content_type='255' OR content_type='1' ORDER BY content_datestamp DESC"))
 {
         $text .= "<div style='text-align:center'>".CNTLAN_4."</div>";
@@ -115,7 +115,7 @@ if(!$content_total = $sql -> db_Select("content", "*", "content_type='254' OR co
 {
         $text .= "
         <form method='post' action='".e_SELF."' onsubmit=\"return confirm_()\">
-        <table class='fborder' style='width:100%'>
+        <table class='fborder' style='width:99%'>
         <tr>
         <td style='width:5%' class='forumheader2'>&nbsp;</td>
         <td style='width:65%' class='forumheader2'>".CNTLAN_25."</td>
@@ -153,7 +153,7 @@ $article_total = $sql -> db_Select("content", "*", "content_type='254' OR conten
 
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."' id='dataform'>
-<table style='width:80%' class='fborder'>
+<table style='".ADMIN_WIDTH."' class='fborder'>
 
 <tr>
 <td style='width:20%; vertical-align:top' class='forumheader3'>".CNTLAN_10.":</td>
@@ -249,7 +249,7 @@ $text .= "</td>
 </div>";
 
 
-$ns -> tablerender("<div style='text-align:center'>".CNTLAN_18."</div>", $text);
+$ns -> tablerender(CNTLAN_18, $text);
 
 echo "<script type=\"text/javascript\">
 function confirm_(content_id){

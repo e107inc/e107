@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/administrator.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-05 06:51:34 $
-|     $Author: pholzmann $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-05 16:57:36 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -84,7 +84,7 @@ if($action == "edit"){
                 $text = "<div style='text-align:center'>$ad_name ".ADMSLAN_3."
                 <br /><br />
                 <a href='administrator.php'>".ADMSLAN_4."</a></div>";
-                $ns -> tablerender("<div style='text-align:center'>".ADMSLAN_5."</div>", $text);
+                $ns -> tablerender(ADMSLAN_5, $text);
                 require_once("footer.php");
                 exit;
         }
@@ -98,7 +98,7 @@ if($action == "delete" && $_POST['del_administrator_confirm']==1){
                 $text = "<div style='text-align:center'>$user_name ".ADMSLAN_6."
                 <br /><br />
                 <a href='administrator.php'>".ADMSLAN_4."</a>";
-                $ns -> tablerender("<div style='text-align:center'>".ADMSLAN_5."</div>", $text);
+                $ns -> tablerender(ADMSLAN_5, $text);
                 require_once("footer.php");
                 exit;
         }
@@ -113,10 +113,10 @@ if(IsSet($message)){
 $sql -> db_Select("user", "*", "user_admin='1'");
 
 
-$text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 100px; overflow : auto; '>
+$text = "<div style='text-align:center'><div style='padding: 1px; ".ADMIN_WIDTH."; height : 100px; overflow : auto; margin-left: auto; margin-right: auto;'>
 <form action=\"".e_SELF."\" method=\"post\" id=\"del_administrator\" >
 <input type=\"hidden\" name=\"del_administrator_confirm\" id=\"del_administrator_confirm\" value=\"1\" />
-<table class='fborder' style='width:100%'>
+<table class='fborder' style='width:99%'>
 <tr>
 <td style='width:5%' class='forumheader2'>ID</td>
 <td style='width:30%' class='forumheader2'>".ADMSLAN_56."</td>
@@ -144,7 +144,7 @@ $ns -> tablerender(ADMSLAN_13, $text);
 
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."' id='myform' >
-<table style='width:95%' class='fborder'>
+<table style='".ADMIN_WIDTH."' class='fborder'>
 <tr>
 <td style='width:30%' class='forumheader3'>".ADMSLAN_16.": </td>
 <td style='width:70%' class='forumheader3'>
@@ -242,7 +242,7 @@ $text .= "</td>
 </form>
 </div>";
 
-$ns -> tablerender("<div style='text-align:center'>".ADMSLAN_54."</div>", $text);
+$ns -> tablerender(ADMSLAN_54, $text);
 
 require_once("footer.php");
 

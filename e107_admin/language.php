@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-12-26 21:26:26 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-05 16:57:37 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -92,9 +92,10 @@ if(isset($_POST['create_tables']) && $_POST['language']){
 
 
     // Choose Language to Edit:
-    $text = "<div class='fborder' style='width:100%;text-align:center;height:150px;overflow:auto'>";
+    $text = "<div style='text-align:center'>
+    <div style='".ADMIN_WIDTH."; height:150px; overflow:auto; margin-left: auto; margin-right: auto;'>";
 
-    $text .= "<table style='width:100%;text-align:center'>\n";
+    $text .= "<table class='fborder' style='width:99%; margin-top: 1px;'>\n";
     $text .= "<tr><td class='fcaption'>".ADLAN_132."</td>";
     $text .= "<td class='fcaption'>".LANG_LAN_03."</td><td class='fcaption'>".LANG_LAN_04."</td>";
     $text .= "</tr>\n\n";
@@ -114,7 +115,7 @@ if(isset($_POST['create_tables']) && $_POST['language']){
         $text .= (!$installed)? "<div style='text-align:center'><i>".LANG_LAN_05."</i></div>" : "";
         $text .= "</td><td class='forumheader3' style='width:10%;white-space:nowrap;text-align:right'>\n";
         $text .= $rs -> form_open("post", e_SELF."?modify","lang_form_".str_replace(" ","_",$lanlist[$i]));
-        $text .= "<div>\n";
+        $text .= "<div style='text-align: center'>\n";
 
         if($installed){
             $text .= " <input type='submit' class='button' name='edit_existing' value='".ADLAN_78."' />\n";
@@ -129,7 +130,7 @@ if(isset($_POST['create_tables']) && $_POST['language']){
 
     }
 
-    $text .= "</table></div>";
+    $text .= "</table></div></div>";
 
     $ns -> tablerender($caption, $text);
 
@@ -148,7 +149,7 @@ if(!$_POST['language'] && !$_POST['edit_existing']){
 
         $text = $rs -> form_open("post", e_SELF);
         $text .= "<div style='text-align:center'>";
-        $text .= "<table class='fborder' style='width:96%'>\n";
+        $text .= "<table class='fborder' style='".ADMIN_WIDTH."'>\n";
 
         foreach ($tabs as $table_name) {
             $installed = strtolower($_POST['lang_choices'])."_".$table_name;
@@ -199,7 +200,7 @@ function multilang_prefs(){
     global $ns,$pref;
   $text = "<div style='text-align:center'>
    <form method='post' action='".e_SELF."' name='linkform'>
-   <table style='width:97%' class='fborder'>
+   <table style='".ADMIN_WIDTH."' class='fborder'>
    <tr>
    <td style='width:40%' class='forumheader3'>".LANG_LAN_12.": </td>
    <td style='width:60%' class='forumheader3'>";

@@ -83,9 +83,9 @@ if(e_QUERY == "w"){
 
 $smiley_activate = $pref['smiley_activate'];
 
-$text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 400px; overflow : auto; '>
+$text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; height : 400px; overflow : auto; margin-left: auto; margin-right: auto;'>
 <form method='post' action='".e_SELF."'>
-<table width='85%'>
+<table class='fborder' style='width:99%'>
 <tr>
 <td style='width:30%' class='forumheader3'>".EMOLAN_4.": </td>
 <td colspan='4' class='forumheader3'>";
@@ -117,7 +117,7 @@ $text .= "<tr>
 
 <div style='text-align:center'>
 <form method='post' action='".e_SELF."'>
-<table width='85%'>
+<table class='fborder' style='".ADMIN_WIDTH."'>
 <tr>
 <td style='width:30%' class='forumheader3'>".EMOLAN_8.": </td>
 <td class='forumheader3'><input class='tbox' type='text' name='emote_new_code' size='15' value='$name' maxlength='20' /></td>
@@ -140,7 +140,7 @@ $text .= "<tr>
 </form>
 </div></div>";
 
-$ns -> tablerender("<div style='text-align:center'>".EMOLAN_11."</div>", $text);
+$ns -> tablerender(EMOLAN_11, $text);
 require_once("footer.php");
 
 function setdefault(){

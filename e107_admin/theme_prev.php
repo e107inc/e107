@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/theme_prev.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:21 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-05 16:57:37 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -32,7 +32,7 @@ if(isSet($_POST['sitetheme'])) {
     require_once("../class2.php");
     require_once(HEADERF);
     $text = "<form method='post' action='".e_SELF."'>
-        <table style='width:95%' >
+        <table style='".ADMIN_WIDTH."' >
         <tr>
                 <td >".TPVLAN_2."</td>
         </tr>
@@ -96,7 +96,7 @@ $text = (IsSet($message) ? $message : "");
 
 $text .= "<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>
-<table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
+<table style='".ADMIN_WIDTH."' class='fborder' cellspacing='0' cellpadding='0'>
 <tr>
 <td style='width:50%' class='forumheader3'>".TPVLAN_5.":<br /><span class='smalltext'>".TPVLAN_14."</span></td>
 <td style='width:50%; text-align:right' class='forumheader3'>".
@@ -109,7 +109,7 @@ theme_dropdown()."
 </form>
 </div>";
 
-$ns -> tablerender("<div style='text-align:center'>".TPVLAN_7."</div>", $text);
+$ns -> tablerender(TPVLAN_7, $text);
 
 require_once("footer.php");
 function theme_dropdown(){

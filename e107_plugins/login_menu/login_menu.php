@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2004-12-20 18:47:22 $
-|     $Author: streaky $
+|     $Revision: 1.11 $
+|     $Date: 2005-01-05 16:57:39 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -32,9 +32,8 @@ if($use_imagecode){
 $text = '';
 if(USER == TRUE || ADMIN == TRUE){
 	if(ADMIN == TRUE){
-		$adminfpage = (!$pref['adminstyle'] || $pref['adminstyle'] == 'default' ? 'admin.php' : $pref['adminstyle'].'.php');
 		$text = ($pref['maintainance_flag']==1 ? '<div style="text-align:center"><strong>'.LOGIN_MENU_L10.'</strong></div><br />' : '' );
-		$text .= '<img src="'.THEME.'images/bullet2.gif" alt="bullet" /> <a href="'.e_ADMIN.$adminfpage.'">'.LOGIN_MENU_L11.'</a><br />';
+		$text .= '<img src="'.THEME.'images/bullet2.gif" alt="bullet" /> <a href="'.e_ADMIN.'admin.php">'.LOGIN_MENU_L11.'</a><br />';
 	}
 	$text .= '<img src="'.THEME.'images/bullet2.gif" alt="bullet" /> <a href="'.e_BASE.'usersettings.php">'.LOGIN_MENU_L12.'</a>
 	<br />

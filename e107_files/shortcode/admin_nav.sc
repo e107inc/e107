@@ -1,9 +1,8 @@
 if (ADMIN) {
 	global $ns, $pref, $e107_plug;
-	$adminfpage = (!$pref['adminstyle'] || $pref['adminstyle'] == "default" ? "admin.php" : $pref['adminstyle'].".php");
-	if (!strstr(e_SELF, "/".$adminfpage) || strstr(e_SELF, "/".$adminfpage."?")) {
+	if (!strstr(e_SELF, "/admin.php") || strstr(e_SELF, "/admin.php?")) {
 		$e107_var['x']['text']=ADLAN_52;
-		$e107_var['x']['link']=e_ADMIN.$adminfpage;
+		$e107_var['x']['link']=e_ADMIN.'admin.php';
 
 		$e107_var['y']['text']=ADLAN_53;
 		$e107_var['y']['link']=e_BASE."index.php";

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-11-29 00:42:23 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-05 16:57:37 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -70,7 +70,7 @@ if(strstr(e_QUERY, "uninstall")){
         $row = $sql -> db_Fetch(); extract($row);
         $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>
-<table style='width:95%' class='fborder' cellspacing='1' cellpadding='0'>
+<table style='".ADMIN_WIDTH."' class='fborder' cellspacing='0' cellpadding='0'>
 <tr>
 <td class='forumheader3' style='text-align:center'>".EPL_ADLAN_2."<br /><br />
 <input class='button' type='submit' name='cancel' value='".EPL_CANCEL."' />
@@ -358,7 +358,7 @@ if(strstr(e_QUERY, "upgrade")){
 //        render plugin information ...
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>
-<table style='width:95%' class='fborder'>";
+<table style='".ADMIN_WIDTH."' class='fborder'>";
 
 $sql -> db_Select("plugin");
 while($row = $sql -> db_Fetch()){

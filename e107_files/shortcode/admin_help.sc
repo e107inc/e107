@@ -1,6 +1,5 @@
 if (ADMIN) {
 	global $ns, $pref;
-	ob_start();
 	if (!($handle=opendir(e_LANGUAGEDIR.e_LANGUAGE."/admin/help/"))) {
 		$handle=opendir(e_LANGUAGEDIR."English/admin/help/");
 	}
@@ -26,17 +25,6 @@ if (ADMIN) {
 		@require_once($plugpath);
 		$admin_help = TRUE;
 	}
-/*	
-	if($parm == 'alt') {
-		if (!$admin_help) {
-			global $tp;
-			return $tp -> parseTemplate('{ADMIN_SITEINFO}');
-		}		
-	}
-*/
-	$ret = ob_get_contents();
-	ob_end_clean();
-	return $ret;
 }
 
 

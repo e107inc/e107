@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/custommenu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:20 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-05 16:57:36 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -185,7 +185,7 @@ if(IsSet($message)){
 
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."' id='dataform'>
-<table style='width:85%' class='fborder'>
+<table style='".ADMIN_WIDTH."' class='fborder'>
 <tr>
 
 <td style='text-align:center' colspan='2' class='forumheader'><span class='defaulttext'>".CUSLAN_8.":</span> ";
@@ -321,7 +321,7 @@ $text .= "</td>
 </form>
 </div>";
 
-$ns -> tablerender("<div style='text-align:center'>".CUSLAN_18."</div>", $text);
+$ns -> tablerender(CUSLAN_18, $text);
 
 require_once("footer.php");
 ?>
