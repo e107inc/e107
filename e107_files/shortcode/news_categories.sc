@@ -1,9 +1,9 @@
 global $sql,$pref,$tp,$NEWSCAT_COLS,$NEWSCAT,$NEWSCAT_ITEM,$NEWSCAT_CATLINKSTYLE,$NEWSCAT_ITEMLINKSTYLE,$NEWSCAT_STYLE;
 $nbr_cols = (isset($pref['nbr_cols'])) ? $pref['nbr_cols'] : 1;
-$nbr_cols = ($NEWSCAT_COLS) ? $NEWSCAT_COLS : $nbr_cols;
+$nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
 
-	if(!$NEWSITEM_AMOUNT){
-		$NEWSITEM_AMOUNT =  3;
+	if(!defined("NEWSCAT_AMOUNT")){
+		define("NEWSCAT_AMOUNT",3);
 	}
 
 	if(!$NEWSCAT){
@@ -32,14 +32,14 @@ $nbr_cols = ($NEWSCAT_COLS) ? $NEWSCAT_COLS : $nbr_cols;
 			";
 	}
 
-	if(!$NEWSCAT_CATLINKSTYLE){
-			$NEWSCAT_CATLINKSTYLE = "text-decoration:none;";
+	if(!defined("NEWSCAT_CATLINKSTYLE")){
+			define("NEWSCAT_CATLINKSTYLE","");
 	}
-	if(!$NEWSCAT_ITEMLINKSTYLE){
-			$NEWSCAT_ITEMLINKSTYLE = "text-decoration:none;";
+	if(!defined("NEWSCAT_ITEMLINKSTYLE")){
+			define("NEWSCAT_ITEMLINKSTYLE","");
 	}
-	if(!$NEWSCAT_STYLE){
-			$NEWSCAT_STYLE = "width:96%";
+	if(!defined("NEWSCAT_STYLE")){
+			define("NEWSCAT_STYLE","width:96%");
 	}
 
 
@@ -50,7 +50,7 @@ $nbr_cols = ($NEWSCAT_COLS) ? $NEWSCAT_COLS : $nbr_cols;
 
 	$text3 = "\n\n\n
 	<div style='width:100%;text-align:center;margin-left:auto;margin-right:auto'>
-	<table  style='$NEWSCAT_STYLE'  cellpadding='0' cellspacing='0'>
+	<table  style='".NEWSCAT_STYLE."'  cellpadding='0' cellspacing='0'>
 	\n";
 	$t = 0;
 			$wid = floor(100/$nbr_cols);
@@ -61,26 +61,27 @@ $nbr_cols = ($NEWSCAT_COLS) ? $NEWSCAT_COLS : $nbr_cols;
 		$replace[0] = ($category_icon) ? "<a href='news.php?cat.".$category_id."'><img src='".e_IMAGE."newsicons/".$category_icon."' alt='' style='border:0px' /></a>" : "";
 
 		$search[1] = "/\{NEWSCAT_CATNAME\}(.*?)/si";
-		$replace[1] = ($category_icon) ? "<a href='news.php?cat.".$category_id."' style='$NEWSCAT_CATLINKSTYLE' >".$tp->toHTML($category_name)."</a>" : "";
+		$replace[1] = ($category_name) ? "<a href='news.php?cat.".$category_id."' style='".NEWSCAT_CATLINKSTYLE."' >".$tp->toHTML($category_name)."</a>" : "";
 
 		$text3 .= ($t % $nbr_cols == 0) ? "<tr>" : "";
 		$text3 .= "\n<td style='vertical-align:top; width:$wid%;'>\n";
 
 
 // Grab each news item. ==============
-		$count = $sql->db_SELECT("news", "*", "news_category='$category_id' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")  ORDER BY news_datestamp DESC LIMIT 0,$NEWSITEM_AMOUNT");
+		$amt = NEWSCAT_AMOUNT;
+		$count = $sql->db_SELECT("news", "*", "news_category='$category_id' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")  ORDER BY news_datestamp DESC LIMIT 0,$amt");
 		while ($row = $sql->db_Fetch()) {
 			extract($row);
 			if (check_class($news_class)) {
 
 				$search[3] = "/\{NEWSCAT_TITLE\}(.*?)/si";
-				$replace[3] = ($news_title) ? "<a href='news.php?extend.".$news_id."' style='$NEWSCAT_ITEMLINKSTYLE'>".$tp->toHTML($news_title)."</a>":"<a href='news.php?extend.".$news_id."'>Untitled</a>";
+				$replace[3] = ($news_title) ? "<a href='news.php?item.".$news_id."' style='".NEWSCAT_ITEMLINKSTYLE."'>".$tp->toHTML($news_title)."</a>":"<a style='".NEWSCAT_ITEMLINKSTYLE."' href='news.php?item.".$news_id."'>Untitled</a>";
 
 				$search[4] = "/\{NEWSCAT_SUMMARY\}(.*?)/si";
 				$replace[4] =  ($news_summary) ? $tp->toHTML($news_summary) : "" ;
 
 				$search[5] = "/\{NEWSCAT_THUMBNAIL\}(.*?)/si";
-				$replace[5] = ($news_thumb) ? "<a href='news.php?extend.".$news_id."'><img src='".e_IMAGE."newspost_images/".$news_thumb."' alt='' style='border:0px' /></a>" : "";
+				$replace[5] = ($news_thumb) ? "<a href='news.php?item.".$news_id."'><img src='".e_IMAGE."newspost_images/".$news_thumb."' alt='' style='border:0px' /></a>" : "";
 
 				$textbody .= preg_replace($search, $replace,$NEWSCAT_ITEM);
 			}
