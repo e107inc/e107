@@ -1,5 +1,14 @@
 <?php
-// Updated for .617
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107/e107_languages/English/admin/lan_custommenu.php,v $
+|     $Revision: 1.4 $
+|     $Date: 2004-09-06 09:55:17 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
 define("CUSLAN_1", "Fields left blank.");
 define("CUSLAN_2", "Unable to create custom menu - please ensure your ");
 define("CUSLAN_3", "custom directory is CHMODDed to 777.");
@@ -24,9 +33,13 @@ define("CUSLAN_20", "Unable to create custom page - please ensure your ");
 define("CUSLAN_21", "custompages directory is CHMODDed to 777.");
 define("CUSLAN_22", "Menu");
 define("CUSLAN_23", "Page");
-define("CUSLAN_24", "Custom Page successfully created. The URL will be: ".SITEURL."e107_plugins/custompages/");
+define("CUSLAN_24", "Custom Page successfully created. The URL will be:");
 define("CUSLAN_25", "Create a link in the main menu ?");
-define("CUSLAN_26", "Link displayed for everybody and opened in the same window !<br /><a href=\"".e_ADMIN."links.php\" >If required edit link properties here</a>");
+define("CUSLAN_26", "Link displayed for everybody and opened in the same window !");
 define("CUSLAN_27", "You already have a link in your main menu for this page or with the same name...");
 define("CUSLAN_28", "Link to this page now created !!! Go to your links section to update link properties.");
+
+define("CUSLAN_29", "e107_plugins/custompages/");
+define("CUSLAN_30", "If required edit link properties here ");
+
 ?>
