@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/admin_config.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-02-07 13:34:39 $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-07 14:29:49 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -45,6 +45,8 @@ if (isset($_POST['updatesettings'])) {
 	$pref['statDomain'] = $_POST['statDomain'];
 	$pref['statRefer'] = $_POST['statRefer'];
 	$pref['statQuery'] = $_POST['statQuery'];
+	$pref['statRecent'] = $_POST['statRecent'];
+	
 	save_prefs();
 	header("location:".e_SELF."?u");
 	exit;
@@ -113,6 +115,10 @@ $text = "<div style='text-align:center'>
 	".ADSTAT_L11."&nbsp;&nbsp;
 	<input type='radio' name='statQuery' value='1'".($pref['statQuery'] ? " checked='checked'" : "")." /> ".ADSTAT_ON."&nbsp;&nbsp;
 	<input type='radio' name='statQuery' value='0'".(!$pref['statQuery'] ? " checked='checked'" : "")." /> ".ADSTAT_OFF."<br />
+
+	".ADSTAT_L19."&nbsp;&nbsp;
+	<input type='radio' name='statRecent' value='1'".($pref['statRecent'] ? " checked='checked'" : "")." /> ".ADSTAT_ON."&nbsp;&nbsp;
+	<input type='radio' name='statRecent' value='0'".(!$pref['statRecent'] ? " checked='checked'" : "")." /> ".ADSTAT_OFF."<br />
 
 	</td>
 	</tr>

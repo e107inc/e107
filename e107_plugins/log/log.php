@@ -72,7 +72,6 @@ if(!strstr($ipAddresses, $ip)) {
 
 	/* referer data ... */
 	if($ref && !strstr($ref, $_SERVER['HTTP_HOST'])) {
-		$refererData .= $ref.$exp;
 		if(preg_match("#http://(.*?)($|/)#is", $ref, $match)) {
 			$refdom = $match[0];
 			if(array_key_exists($refdom, $refInfo)) {
@@ -105,6 +104,15 @@ if(!strstr($ipAddresses, $ip)) {
 			$domainInfo[$host] =1;
 		}
 	}
+
+	/* last 20 visitors */
+	if(count($visitInfo) == 20) {
+		$visitInfo = array_shift($visitInfo);
+	}
+	$visitInfo[$ip] = $tmp.chr(1).time().chr(1).$os.chr(1).$browser.chr(1).$screenstats.chr(1).$ref;
+
+
+
 }
 
 $siteTotal ++;
@@ -113,7 +121,6 @@ $varStart = chr(36);
 $quote = chr(34);
 
 $data = chr(60)."?php\n". chr(47)."* e107 website system: Log file: ".date("z:Y", time())." *". chr(47)."\n\n".
-$varStart."refererData = ".$quote.$refererData.$quote.";\n".
 $varStart."ipAddresses = ".$quote.$ipAddresses.$quote.";\n".
 $varStart."siteTotal = ".$quote.$siteTotal.$quote.";\n".
 $varStart."siteUnique = ".$quote.$siteUnique.$quote.";\n";
@@ -174,6 +181,14 @@ foreach($searchInfo as $key => $info) {
 }
 $data .= "\n);\n".
 
+$loop = FALSE;
+$data .= $varStart."visitInfo = array(\n";
+foreach($visitInfo as $key => $info) {
+	if($loop){ $data .= ",\n"; }
+	$data .= $quote.$key.$quote." => ".$quote.$info.$quote;
+	$loop = 1;
+}
+$data .= "\n);\n".
 
 $loop = FALSE;
 $data .= $varStart."pageInfo = array(\n";
