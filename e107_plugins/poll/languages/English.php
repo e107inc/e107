@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/languages/English.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-03-04 08:14:05 $
+|     $Revision: 1.4 $
+|     $Date: 2005-03-04 08:28:46 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -56,5 +56,11 @@ define("POLLAN_29", "posted by");
 define("POLLAN_30", "Submit");
 define("POLLAN_31", "votes");
 define("POLLAN_32", "Click here to see results");
+define("POLLAN_33", "No previous polls yet.");
 
+define("POLLAN_34", "Title");
+define("POLLAN_35", "Posted by");
+define("POLLAN_36", "Active");
+define("POLLAN_37", "active from");
+define("POLLAN_38", "to");
 ?>
