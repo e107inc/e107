@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.6 $
-|		$Date: 2005-02-04 15:39:16 $
+|		$Revision: 1.7 $
+|		$Date: 2005-02-07 12:21:46 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -181,10 +181,46 @@ If(isset($_POST['update_content'])){
 }
 
 if($delete == 'cat'){
-		if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
-			$message = CONTENT_ADMIN_CAT_LAN_23;
+		//if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
+			$message = CONTENT_ADMIN_CAT_LAN_23."<br />";
+		//}
+		$sql -> db_Select($plugintable, "content_parent", "content_id = '$del_id' ");
+		list($content_parent) = $sql -> db_Fetch();
+		//echo "-".$content_parent."<br />";
+		if($content_parent == "0"){								//is main parent
+			$subcatarray = $aa -> getParent("", "", $del_id);
+		}else{													//is subcategory
+			$subcatarray = $aa -> getParent($content_parent.".".$del_id, "", "");
 		}
+
+		//$subcatarray = $aa -> getParent("", "", $del_id);
+		//echo "-".count($subcatarray[0])."-<br />";
+		if(count($subcatarray[0]) != "0"){		//subcats present
+			for($i=1;$i<count($subcatarray);$i++){
+				//if($sql -> db_Delete($plugintable, "content_id='$subcatarray[$i][0]' ")){
+					$message .= $subcatarray[$i][0]." ".CONTENT_ADMIN_CAT_LAN_35."<br />";
+				//}
+			}
+		}
+		//print_r($subcatarray);
+		/*
+		if($subcatarray[0][16] == "0"){		//is main parent
+		}else{								//is subcategory
+		}
+
+Array(
+	[0] => Array (
+		[0] => 2 [1] => article [2] => [3] => [4] => [5] => 1 [6] => [7] => [8] => [9] => 0 [10] => 0 [11] => 0 [12] => 0 [13] => [14] => 1107727712 [15] => 0 [16] => 0 )
+	[1] => Array (
+		[0] => 24 [1] => recensies [2] => [3] => r.gif [4] => [5] => 40 [6] => [7] => [8] => [9] => 0.2 [10] => 0 [11] => 0 [12] => 0 [13] => 0 [14] => 1044105695 [15] => 0 [16] => 1 )
+	[2] => Array (
+		[0] => 25 [1] => interviews [2] => [3] => i2.gif [4] => [5] => 40 [6] => [7] => [8] => [9] => 0.2 [10] => 0 [11] => 0 [12] => 0 [13] => 0 [14] => 1044105854 [15] => 0 [16] => 1 )
+	[3] => Array (
+		[0] => 26 [1] => essays [2] => [3] => e2.gif [4] => [5] => 40 [6] => [7] => [8] => [9] => 0.2 [10] => 0 [11] => 0 [12] => 0 [13] => 0 [14] => 1044105923 [15] => 0 [16] => 1 )
+)
+*/
 }
+
 if($delete == 'content'){
 		if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
 			$e107cache->clear("content");
@@ -323,6 +359,7 @@ if(!e_QUERY){																//show main categories
 				}else{														//category; create form
 						if($id == "pc"){									//category; create redirect
 								$message = CONTENT_ADMIN_CAT_LAN_11;
+								if($type_id == "0"){ $message .= "<br /><br />".CONTENT_ADMIN_OPT_LAN_82; }
 								$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 								require_once(e_ADMIN."footer.php");
 								exit;
@@ -450,8 +487,6 @@ function admin_content_config_adminmenu(){
 						}
 				}
 
-
-
 }
 // ##### End --------------------------------------------------------------------------------------
 
@@ -464,7 +499,7 @@ function headerjs(){
 	function addtext2(sc){
 		document.getElementById('dataform').cat_icon.value = sc;
 	}
-
+/*
 	function confirm_(mode, content_heading, content_id){
 			if(mode == 'cat'){
 					return confirm(\"".$tp->toJS(CONTENT_ADMIN_JS_LAN_0)." [".CONTENT_ADMIN_JS_LAN_6." \" + content_id + \": \" + content_heading + \"]\");
@@ -476,7 +511,7 @@ function headerjs(){
 					return confirm(\"".$tp->toJS(CONTENT_ADMIN_JS_LAN_1)." [".CONTENT_ADMIN_JS_LAN_6." \" + content_id + \": \" + content_heading + \"]\");
 			}
 	}
-
+*/
 	function confirm2_(mode, number, name){
 		if(mode == 'image'){
 			var x=confirm(\"".CONTENT_ADMIN_JS_LAN_2." [".CONTENT_ADMIN_JS_LAN_4.": \" + name + \"] \");

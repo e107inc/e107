@@ -12,13 +12,13 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.2 $
-|		$Date: 2005-02-04 10:37:09 $
+|		$Revision: 1.3 $
+|		$Date: 2005-02-07 12:21:48 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
-$plugintable = "pcontent";		//name of the table used in this plugin
+//$plugintable = "pcontent";		//name of the table used in this plugin
 
 if (!defined('ADMIN_WIDTH')) { define("ADMIN_WIDTH", "width:98%;"); }
 
@@ -508,7 +508,7 @@ class contentform{
 
 
 		function show_content_submitted($mode){
-						global $rs, $ns, $aa, $plugintable;
+						global $rs, $ns, $aa, $plugintable, $tp;
 						global $type, $type_id;
 						if(!is_object($sql)){ $sql = new db; }
 						$text = "<div style='text-align:center'>\n";
@@ -517,36 +517,35 @@ class contentform{
 								<tr>
 								<td style='width:5%; text-align:center' class='fcaption'>".CONTENT_ADMIN_ITEM_LAN_8."</td>
 								<td style='width:5%; text-align:center' class='fcaption'>".CONTENT_ADMIN_ITEM_LAN_9."</td>
-								<td style='width:15%; text-align:center' class='fcaption'>".CONTENT_ADMIN_ITEM_LAN_48."</td>
-								<td style='width:70%; text-align:center' class='fcaption'>".CONTENT_ADMIN_ITEM_LAN_11."</td>
+								<td style='width:15%; text-align:left' class='fcaption'>".CONTENT_ADMIN_ITEM_LAN_48."</td>
+								<td style='width:70%; text-align:left' class='fcaption'>".CONTENT_ADMIN_ITEM_LAN_11."</td>
 								<td style='width:10%; text-align:center' class='fcaption'>".CONTENT_ADMIN_ITEM_LAN_12."</td>
 								</tr>";
 								while($row = $sql -> db_Fetch()){
 								extract($row);
 										unset($content_pref);
-										$type_id = substr($content_parent,0,1);
+										$type_id_parent = substr($content_parent,0,1);
 										if(!is_object($sql2)){ $sql2 = new db; }
-										$parent = $sql2 -> db_Select("content", "content_id, content_heading", "content_id = '".$type_id."' ");
+										$sql2 -> db_Select($plugintable, "content_id, content_heading", "content_id = '".$type_id_parent."' ");
 										list($parent_id, $parent_heading) = $sql2 -> db_Fetch();
 										$delete_heading = str_replace("&#39;", "\'", $content_heading);
 										$authordetails = $aa -> getAuthor($content_author);
 										$content_pref = $aa -> getContentPref($content_id);
-										$content_pref["content_icon_path_{$type_id}"] = ($content_pref["content_icon_path_{$type_id}"] ? $content_pref["content_icon_path_{$type_id}"] : "{e_PLUGIN}content/images/icon/" );
-										$content_icon_path = $aa -> parseContentPathVars($content_pref["content_icon_path_{$type_id}"]);
+										$content_pref["content_icon_path_{$type_id_parent}"] = ($content_pref["content_icon_path_{$type_id_parent}"] ? $content_pref["content_icon_path_{$type_id_parent}"] : "{e_PLUGIN}content/images/icon/" );
+										$content_icon_path = $aa -> parseContentPathVars($content_pref["content_icon_path_{$type_id_parent}"]);
 										$caticon = $content_icon_path.$content_icon;
-										
 										$text .= "
 										<tr>
 											<td class='forumheader3' style='width:5%; text-align:center'>".$content_id."</td>
 											<td class='forumheader3' style='width:5%; text-align:center'>".($content_icon ? "<img src='".$caticon."' alt='' style='width:50px; vertical-align:middle' />" : "&nbsp;")."</td>
-											<td class='forumheader3' style='width:15%; text-align:center'>".$parent_heading."</td>
-											<td class='forumheader3' style='width:75%; white-space:nowrap;'><b>".$content_heading."</b> [".$content_subheading."]<br />
+											<td class='forumheader3' style='width:15%; text-align:left'>".$parent_heading."</td>
+											<td class='forumheader3' style='width:75%; text-align:left; white-space:nowrap;'><b>".$content_heading."</b> [".$content_subheading."]<br />
 											".($authordetails[0] == "0" ? $authordetails[1] : "<a href='".e_BASE."user.php?id.".$authordetails[0]."'>".$authordetails[1]."</a>")."	
 											(".$authordetails[2].")</td>
-											<td class='forumheader3' style='width:5%; text-align:left; white-space:nowrap;'>
-											".$rs -> form_open("post", e_SELF."?".$type.".".$type_id, "myform_{$content_id}","","", "")."
-											<a href='".e_SELF."?".$type.".".$type_id.".create.sa.".$content_id."'>".CONTENT_ICON_EDIT."</a> 
-											<a onclick=\"if(confirm_('sa','$delete_heading','$content_id')){document.forms['myform_{$content_id}'].submit();}\" >".CONTENT_ICON_DELETE."</a>
+											<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>
+											".$rs -> form_open("post", e_SELF."?".$type.".".$type_id_parent, "myform_{$content_id}","","", "")."
+											<a href='".e_SELF."?".$type.".".$type_id_parent.".create.sa.".$content_id."'>".CONTENT_ICON_EDIT."</a> 
+											<a onclick=\"if(jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_10."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$content_id." : ".$delete_heading."]")."')){document.forms['myform_{$content_id}'].submit();}\" >".CONTENT_ICON_DELETE."</a>
 											".$rs -> form_hidden("content_delete_{$content_id}", "delete")."
 											".$rs -> form_close()."
 											</td>
@@ -562,7 +561,7 @@ class contentform{
 
 
 		function show_content_manage($mode, $userid="", $username=""){
-						global $sql, $ns, $rs, $aa, $plugintable;
+						global $sql, $ns, $rs, $aa, $plugintable, $tp;
 						global $type, $type_id, $action, $sub_action, $id;
 
 						$content_pref = $aa -> getContentPref($type_id);
@@ -603,7 +602,7 @@ class contentform{
 									$query = " content_parent = '".$cat."' ";
 									$formtarget = e_SELF."?".$type.".".$type_id.".c.".$sub_action;
 							} else {
-									$query = "LEFT(content_parent,1) = '".$type_id."' ";
+									$query = "LEFT(content_parent,".strlen($type_id).") = '".$type_id."' ";
 									$formtarget = e_SELF."?".$type.".".$type_id;
 							}
 							$userquery = "";
@@ -613,7 +612,6 @@ class contentform{
 						// -------- SHOW FIRST LETTERS FIRSTNAMES ------------------------------------
 						if(!is_object($sql)){ $sql = new db; }
 						$distinctfirstletter = $sql -> db_Select($plugintable, "DISTINCT(LEFT(content_heading,1)) as letter", "content_refer != 'sa' AND ".$query." ".$userquery." ORDER BY content_heading ASC ");
-
 						if ($distinctfirstletter == 0){
 								$text .= "<div style='text-align:center'>".CONTENT_ADMIN_ITEM_LAN_4."</div>";
 								$ns -> tablerender(CONTENT_ADMIN_ITEM_LAN_5, $text);
@@ -628,7 +626,9 @@ class contentform{
 								<tr><td colspan='2' class='forumheader3'>";
 								while($row = $sql-> db_Fetch()){
 								extract($row);
+									if($letter != ""){
 										$text .= "<input class='button' style='width:20' type='submit' name='letter' value='".strtoupper($letter)."' />";
+									}
 								}
 								$text .= "
 								<input class='button' style='width:20' type='submit' name='letter' value='all' />
@@ -653,7 +653,7 @@ class contentform{
 									$query = "content_refer != 'sa' AND content_parent = '".$cat."' ".$letterquery." ORDER BY content_datestamp DESC";
 							} else {
 									if ($letter != "" && $letter != "all" ) { $letterquery = " AND content_heading LIKE '".$letter."%' "; }else{ $letterquery = ""; }
-									$query = "content_refer != 'sa' AND LEFT(content_parent,1) = '".$type_id."' ".$letterquery." ORDER BY content_datestamp DESC";
+									$query = "content_refer != 'sa' AND LEFT(content_parent,".strlen($type_id).") = '".$type_id."' ".$letterquery." ORDER BY content_datestamp DESC";
 							}
 						}
 						// ---------------------------------------------------------------------------
@@ -666,11 +666,11 @@ class contentform{
 							if($content_total < 50 || $letter || $cat){
 									$text .= "<table style='".ADMIN_WIDTH."' class='fborder'>
 									<tr>
-									<td class='fcaption' style='width:5%'>".CONTENT_ADMIN_ITEM_LAN_8."</td>
-									<td class='fcaption' style='width:5%'>".CONTENT_ADMIN_ITEM_LAN_9."</td>
-									<td class='fcaption' style='width:10%'>".CONTENT_ADMIN_ITEM_LAN_10."</td>
-									<td class='fcaption' style='width:70%'>".CONTENT_ADMIN_ITEM_LAN_11."</td>
-									<td class='fcaption' style='width:10%'>".CONTENT_ADMIN_ITEM_LAN_12."</td>
+									<td class='fcaption' style='width:5%; text-align:center;'>".CONTENT_ADMIN_ITEM_LAN_8."</td>
+									<td class='fcaption' style='width:5%; text-align:center;'>".CONTENT_ADMIN_ITEM_LAN_9."</td>
+									<td class='fcaption' style='width:10%; text-align:left;'>".CONTENT_ADMIN_ITEM_LAN_10."</td>
+									<td class='fcaption' style='width:70%; text-align:left;'>".CONTENT_ADMIN_ITEM_LAN_11."</td>
+									<td class='fcaption' style='width:10%; text-align:center;'>".CONTENT_ADMIN_ITEM_LAN_12."</td>
 									</tr>";
 									while($row = $sql2 -> db_Fetch()){
 									extract($row);
@@ -680,14 +680,14 @@ class contentform{
 											$deleteicon = CONTENT_ICON_DELETE;
 											$text .= "
 											<tr>
-												<td class='forumheader3' style='width:5%; text-align:left'>".$content_id."</td>
+												<td class='forumheader3' style='width:5%; text-align:center'>".$content_id."</td>
 												<td class='forumheader3' style='width:5%; text-align:center'>".($content_icon ? "<img src='".$caticon."' alt='' style='width:50px; vertical-align:middle' />" : "&nbsp;")."</td>
-												<td class='forumheader3' style='width:10%'>[".$authordetails[0]."] ".$authordetails[1]."</td>
-												<td class='forumheader3' style='width:70%; white-space:nowrap;'>".$content_heading." [".content_subheading."]</td>
+												<td class='forumheader3' style='width:10%; text-align:left'>[".$authordetails[0]."] ".$authordetails[1]."</td>
+												<td class='forumheader3' style='width:70%; text-align:left; white-space:nowrap;'>".$content_heading." [".content_subheading."]</td>
 												<td class='forumheader3' style='width:10%; text-align:center; white-space:nowrap;'>
 												".$rs -> form_open("post", e_SELF."?".$type.".".$type_id, "myform_{$content_id}","","", "")."
 												<a href='".e_SELF."?".$type.".".$type_id.".create.edit.".$content_id."'>".CONTENT_ICON_EDIT."</a> 
-												<a onclick=\"if(confirm_('content','$delete_heading','$content_id')){document.forms['myform_{$content_id}'].submit();}\" >".CONTENT_ICON_DELETE."</a>
+												<a onclick=\"if(jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_1."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$content_id." : ".$delete_heading."]")."')){document.forms['myform_{$content_id}'].submit();}\" >".CONTENT_ICON_DELETE."</a>
 												".$rs -> form_hidden("content_delete_{$content_id}", "delete")."
 												".$rs -> form_close()."
 												</td>

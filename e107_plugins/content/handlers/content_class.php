@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.3 $
-|		$Date: 2005-02-06 21:34:02 $
+|		$Revision: 1.4 $
+|		$Date: 2005-02-07 12:21:48 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -440,7 +440,7 @@ class content{
 
 
 		function printParent($array, $level, $currentparent, $mode="option"){
-				global $rs, $type, $type_id, $plugintable, $aa;
+				global $rs, $type, $type_id, $plugintable, $aa, $tp;
 				$string = "";
 
 				$content_pref = $this -> getContentPref($type_id);
@@ -531,7 +531,7 @@ class content{
 								<td class='".$class."' style='".$style." width:5%; text-align:left; white-space:nowrap;'>
 								".$rs -> form_open("post", e_SELF."?".$type.".".$type_id.".cat.manage", "myform_{$array[$a][0]}","","", "")."
 								<a href='".e_SELF."?".$type.".".$type_id.".cat.edit.".$array[$a][0]."'>".CONTENT_ICON_EDIT."</a> 
-								<a onclick=\"if(confirm_('cat','$delete_heading','".$array[$a][0]."')){document.forms['myform_{$array[$a][0]}'].submit();}\" >".CONTENT_ICON_DELETE."</a>
+								<a onclick=\"if(jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_0."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$array[$a][0]." : ".$delete_heading."]\\n\\n".CONTENT_ADMIN_JS_LAN_9."")."')){document.forms['myform_{$array[$a][0]}'].submit();}\" >".CONTENT_ICON_DELETE."</a>
 								".($array[$a][9] == "0" ? "<a href='".e_SELF."?".$type.".".$type_id.".cat.options.".$array[$a][0]."'>".CONTENT_ICON_OPTIONS."</a>" : "")."
 								".($array[$a][9] != "0" && getperms("0") ? "<a href='".e_SELF."?".$type.".".$type_id.".cat.contentmanager.".$array[$a][0]."'>".CONTENT_ICON_PERSONALMANAGER."</a>" : "")."
 								".$rs -> form_hidden("cat_delete_{$array[$a][0]}", "delete")."
@@ -767,7 +767,7 @@ class content{
 
 				$data .= chr(36)."content_pref = ".chr(36)."aa -> getContentPref(\"$parentid\");\n";
 				$data .= chr(36)."content_pref[\"content_cat_icon_path_small_{$parentid}\"] = (".chr(36)."content_pref[\"content_cat_icon_path_small_{$parentid}\"] ? ".chr(36)."content_pref[\"content_cat_icon_path_small_{$parentid}\"] : \"{e_PLUGIN}content/images/cat/16/\" );\n";
-				$data .= chr(36)."content_icon_path = ".chr(36)."aa -> parseContentPathVars(".chr(36)."content_pref[\"content_icon_path_{$parentid}\"]);\n\n";
+				$data .= chr(36)."content_cat_icon_path_small = ".chr(36)."aa -> parseContentPathVars(".chr(36)."content_pref[\"content_cat_icon_path_small_{$parentid}\"]);\n\n";
 
 				$data .= "if(".chr(36)."content_pref[\"content_menu_search_{$parentid}\"]){\n";
 				$data .= "   ".chr(36)."text .= ".chr(36)."rs -> form_open(\"post\", e_PLUGIN.\"content/content.php?type.$parentid\", \"contentsearchmenu_{$parentid}\", \"\", \"enctype='multipart/form-data'\");\n";

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.3 $
-|		$Date: 2005-02-04 15:30:35 $
+|		$Revision: 1.4 $
+|		$Date: 2005-02-07 12:21:46 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1351,7 +1351,7 @@ function parse_content_cat_table($row){
 				$CONTENT_CAT_TABLE_AMOUNT = $aa -> countItemsInCat($row[0], $row[9]);
 				$CONTENT_CAT_TABLE_ICON = $aa -> getIcon("catlarge", $row[6], $content_cat_icon_path_large, $type.".".$type_id.".cat.".$row[0], "", $content_pref["content_blank_caticon_{$type_id}"]);
 				$CONTENT_CAT_TABLE_SUBHEADING = ($row[2] ? $row[2] : "");
-				$CONTENT_CAT_TABLE_TEXT = ($row[4] ? $tp -> toHTML($row[4], TRUE, "nobreak") : "");
+				$CONTENT_CAT_TABLE_TEXT = ($row[4] ? $tp -> toHTML($row[4], TRUE, "") : "");
 
 				$breadcrumb = $aa -> getBreadCrumb($row[0]);
 				$breadcrumbstring = $aa -> printBreadCrumb($breadcrumb, "nobase");
@@ -1430,8 +1430,8 @@ function parse_content_cat_list_table($row){
 				$CONTENT_CAT_LIST_TABLE_ICON = $aa -> getIcon("catlarge", $content_icon, $content_cat_icon_path_large, "", "", $content_pref["content_blank_caticon_{$type_id}"]);
 				$CONTENT_CAT_LIST_TABLE_HEADING = ($content_heading ? $content_heading : "");
 				$CONTENT_CAT_LIST_TABLE_SUBHEADING = ($content_subheading ? $content_subheading : "");
-				$CONTENT_CAT_LIST_TABLE_SUMMARY = ($content_summary ? $tp -> toHTML($content_summary, TRUE, "nobreak") : "");
-				$CONTENT_CAT_LIST_TABLE_TEXT = ($content_text ? $tp -> toHTML($content_text, TRUE, "nobreak") : "");
+				$CONTENT_CAT_LIST_TABLE_SUMMARY = ($content_summary ? $tp -> toHTML($content_summary, TRUE, "") : "");
+				$CONTENT_CAT_LIST_TABLE_TEXT = ($content_text ? $tp -> toHTML($content_text, TRUE, "") : "");
 
 				if($content_comment){
 					$comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='".$sub_action."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
@@ -1599,7 +1599,7 @@ function parse_content_content_table($row){
 
 				$CONTENT_CONTENT_TABLE_EPICONS = (($content_pref["content_content_peicon_{$type_id}"] && $content_pe) || $content_pref["content_content_peicon_all_{$type_id}"] ? $ep -> render_emailprint($plugintable, $type_id.".".$content_id) : "");
 
-				$content_text = ($content_text ? $tp -> toHTML($content_text, TRUE, "nobreak") : "");
+				$content_text = ($content_text ? $tp -> toHTML($content_text, TRUE, "") : "");
 				if(preg_match_all("/\[newpage=(.*?)]/si", $content_text, $matches)) {
 
 					$textpages = explode("[newpage=", $content_text);
@@ -1616,8 +1616,8 @@ function parse_content_content_table($row){
 				$CONTENT_CONTENT_TABLE_TEXT = $aa -> parseContentPathVars($CONTENT_CONTENT_TABLE_TEXT);
 				$CONTENT_CONTENT_TABLE_ICON = $aa -> getIcon("item", $content_icon, $content_icon_path, "", "100", $content_pref["content_blank_icon_{$type_id}"]);
 				$CONTENT_CONTENT_TABLE_HEADING = ($content_heading ? $content_heading : "");
-				$CONTENT_CONTENT_TABLE_SUBHEADING = ($content_pref["content_content_subheading_{$type_id}"] && $content_subheading ? $content_subheading : "");
-				$CONTENT_CONTENT_TABLE_SUMMARY = ($content_pref["content_content_summary_{$type_id}"] && $content_summary ? $tp -> toHTML($content_summary, TRUE, "nobreak") : "");
+				$CONTENT_CONTENT_TABLE_SUBHEADING = ($content_pref["content_content_subheading_{$type_id}"] && $content_subheading ? $tp -> toHTML($content_subheading, TRUE, "") : "");
+				$CONTENT_CONTENT_TABLE_SUMMARY = ($content_pref["content_content_summary_{$type_id}"] && $content_summary ? $tp -> toHTML($content_summary, TRUE, "") : "");
 				$CONTENT_CONTENT_TABLE_SUMMARY = $aa -> parseContentPathVars($CONTENT_CONTENT_TABLE_SUMMARY);
 
 				$custom = unserialize(stripslashes($contentprefvalue));
