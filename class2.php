@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2004-10-29 14:50:39 $
+|     $Revision: 1.15 $
+|     $Date: 2004-10-30 00:12:11 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -485,6 +485,13 @@ define("INIT", TRUE);
 
 define("e_ADMIN", $e_BASE.$ADMIN_DIRECTORY);
 define("e_REFERER_SELF",($_SERVER["HTTP_REFERER"] == e_SELF));
+
+if($sql -> db_Select('menus','*','menu_location > 0 ORDER BY menu_order'))
+{
+	while($row = $sql -> db_Fetch()){
+		$eMenuList[$row['menu_location']][] = $row;
+	}
+}
 
 //@require_once(e_HANDLER."IPB_int.php");
 //@require_once(e_HANDLER."debug_handler.php");
