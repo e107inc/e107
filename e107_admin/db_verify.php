@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db_verify.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-03-29 17:23:39 $
+|     $Revision: 1.8 $
+|     $Date: 2005-03-30 01:51:50 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -257,6 +257,10 @@ if(isset($_POST['do_fix'])){
 	   		$query = "ALTER TABLE `".MPREFIX.$table."` DROP `$field` ";
 		}
 
+		if($mode == "index"){
+            $query = "ALTER TABLE `".MPREFIX.$table."` ADD INDEX (`$field`) ";
+		}
+
         $text .= "<div>";
 		$text .= $query;
 		$text .= (mysql_query($query)) ? " - <b>".LAN_UPDATED."</b>" : " - <b>".LAN_UPDATED_FAILED."</b>";
@@ -277,6 +281,14 @@ if(isset($_POST['do_fix'])){
 
 
 function fix_form($table,$field, $newvalue,$mode,$after =''){
+
+     if(eregi("KEY ",$field)){
+		$field = chop(str_replace("KEY ","",$field));
+		$mode = "index";
+		$search = array("(",")");
+		$newvalue = str_replace($search,"",$newvalue);
+	}
+
 	$text .= "<input type='checkbox'  name=\"fix_active[$field][]\" value='1' /> ".DBLAN_19."\n"; // 'attempt to fix'
 	$text .= "<input type='hidden' name=\"fix_newval[$field][]\" value=\"$newvalue\" />\n";
     $text .= "<input type='hidden'  name=\"fix_table[$field][]\" value=\"$table\" / >\n";
