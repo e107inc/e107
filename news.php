@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-01-28 13:28:06 $
-|     $Author: mrpete $
+|     $Revision: 1.26 $
+|     $Date: 2005-01-29 03:46:32 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -173,7 +173,7 @@ else if(strstr(e_QUERY, "day")) {
 	$enddate = mktime(23, 59, 59, $month, $day, $year);
 	$query = "news_datestamp > $startdate AND news_datestamp < $enddate AND news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY ".$order." DESC";
 } else {
-	$news_total = $sql->db_Count("news", "(*)", "WHERE news_class != '255' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_render_type!=2" );
+	$news_total = $sql->db_Count("news", "(*)", "WHERE news_class IN (".USERCLASS_LIST.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().") AND news_render_type!=2" );
 	 
 	// #### changed for news archive ------------------------------------------------------------------------------
 	$interval = $pref['newsposts']-$pref['newsposts_archive'];
@@ -187,16 +187,16 @@ else if(strstr(e_QUERY, "day")) {
 	*/
 	 
 	// normal newsitems
-	$query = "SELECT #news.*, user_id, user_name, user_customtitle, category_name, category_icon FROM #news
-		LEFT JOIN #user ON #news.news_author = #user.user_id
-		LEFT JOIN #news_category ON #news.news_category = #news_category.category_id
-		WHERE news_class != '255' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_render_type!=2 ORDER BY ".$order." DESC LIMIT $from,".$ITEMVIEW1;
+	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
+		LEFT JOIN #user AS u ON n.news_author = u.user_id
+		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
+		WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type!=2 ORDER BY ".$order." DESC LIMIT $from,".$ITEMVIEW1;
 	 
 	// news archive
-	$query2 = "SELECT #news.*, user_id, user_name, user_customtitle, category_name, category_icon FROM #news
-		LEFT JOIN #user ON #news.news_author = #user.user_id
-		LEFT JOIN #news_category ON #news.news_category = #news_category.category_id
-		WHERE news_class != '255' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_render_type!=2 ORDER BY ".$order." DESC LIMIT $from2,".$ITEMVIEW2;
+	$query2 = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
+		LEFT JOIN #user AS u ON n.news_author = u.user_id
+		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
+		WHERE news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type!=2 ORDER BY ".$order." DESC LIMIT $from2,".$ITEMVIEW2;
 	// #### END ---------------------------------------------------------------------------------------------------
 }
 	
@@ -232,17 +232,17 @@ if (!$sql->db_Select_gen($query)) {
 		$newpostday = $thispostday;
 		 
 		$news['category_id'] = $news['news_category'];
-		if (check_class($news['news_class'])) {
+//		if (check_class($news['news_class'])) {
 			if ($action == "item") {
 				unset($news['news_rendertype']);
 			}
 			$ix->render_newsitem($news);
 			// To hide messages for restricted news and only display valid news, comment the following else statement
-		} else {
-			if ($pref['subnews_hide_news'] == 1) {
-				$ix->render_newsitem($news, "", "userclass");
-			}
-		}
+//		} else {
+//			if ($pref['subnews_hide_news'] == 1) {
+//				$ix->render_newsitem($news, "", "userclass");
+//			}
+//		}
 	}
 }
 // ##### --------------------------------------------------------------------------------------------------------------
