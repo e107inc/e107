@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm_menu/pm\cjdss.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:36 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-10-29 16:09:00 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 class pm {
@@ -380,7 +380,7 @@ class pm {
                 }
                 $ret.="</td></tr>\n";
                 $ret.="<tr><td class='forumheader3'>".PMLAN_29."</td><td class='forumheader3'><input class='tbox' type='text' name='subject' value='".$pm_subject."'></td></tr>\n";
-                $ret.="<tr><td class='forumheader3'>".PMLAN_30."</td><td class='forumheader3'><textarea id='pm_text' name='pm_text' rows='10' cols='50' class='tbox'>".$pm_message."</textarea>
+                $ret.="<tr><td class='forumheader3'>".PMLAN_30."</td><td class='forumheader3'><textarea id='pm_text' name='pm_text' rows='10' cols='50' class='tbox' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".$pm_message."</textarea>
                 <br />
         <input class='helpbox' type='text' id='helpb' name='helpb' size='100' />
                         <br />
