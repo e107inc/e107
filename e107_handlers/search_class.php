@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-02-11 18:52:50 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.10 $
+|     $Date: 2005-02-12 10:06:44 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -61,7 +61,7 @@ class e_search {
 		foreach ($results as $this -> text) {
 			$this -> text = strip_tags($tp -> toHTML(str_replace(array('[', ']'), array('<', '>'), $this -> text), FALSE));
 			foreach ($this -> keywords as $this -> query) {
-				if (strpos($this -> query, '-') === FALSE) {
+				if (strpos($this -> query, '-') == FALSE) {
 					if (strpos($this -> query, '*') !== FALSE) {
 						$regex_append = "";
 						$this -> query = str_replace('*', '', $this -> query);
@@ -69,7 +69,8 @@ class e_search {
 						$regex_append = "[[:>:]]";	
 					}
 					$this -> query = str_replace(array('"', '+'), array('', ''), $this -> query);
-					if (($this -> pos = strpos(strtolower($this -> text), strtolower($this -> query))) !== FALSE) {
+					if (($match_start = stristr($this -> text, $this -> query)) !== FALSE) {
+						$this -> pos = strlen($this -> text) - strlen($match_start);
 						if (!$endcrop || !$title) {
 							$this -> parsesearch_crop();
 							$endcrop = TRUE;
@@ -100,7 +101,8 @@ class e_search {
 			} else {
 				$this -> text = "...".substr($this -> text, ($this -> pos - round(($pref['search_chars'] / 3))), $pref['search_chars'])."...";
 			}
-			$this -> pos = strpos(strtolower($this -> text), strtolower($this -> query));
+			$match_start = stristr($this -> text, $this -> query);
+			$this -> pos = strlen($this -> text) - strlen($match_start);
 		}
 	}
 }
