@@ -109,7 +109,11 @@ if(IsSet($_POST['updateoptions'])){
         $pref['article_submit'] = $_POST['article_submit'];
         $pref['article_submit_class'] = $_POST['article_submit_class'];
         save_prefs();
-        $sql -> db_Update("links", "link_class=".($pref['article_submit'] ? "0" : "255")." WHERE link_url='subcontent.php?article' ");
+		if($pref['article_submit'] ){
+			$sql -> db_Update("links", "link_class=".$pref['article_submit_class']." WHERE link_url='subcontent.php?article' ");
+		}else{
+			$sql -> db_Update("links", "link_class='255' WHERE link_url='subcontent.php?article' ");
+		}
         $message = ARLAN_92;
 }
 

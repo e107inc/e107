@@ -96,7 +96,11 @@ if(IsSet($_POST['updateoptions'])){
         $pref['review_submit'] = $_POST['review_submit'];
         $pref['review_submit_class'] = $_POST['review_submit_class'];
         save_prefs();
-        $sql -> db_Update("links", "link_class=".($pref['review_submit'] ? "0" : "255")." WHERE link_url='subcontent.php?review' ");
+		if($pref['review_submit'] ){
+			$sql -> db_Update("links", "link_class=".$pref['review_submit_class']." WHERE link_url='subcontent.php?review' ");
+		}else{
+			$sql -> db_Update("links", "link_class='255' WHERE link_url='subcontent.php?review' ");
+		}
         $message = REVLAN_61;
 }
 
