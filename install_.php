@@ -575,6 +575,12 @@ function create_tables(){
 
         mysql_query("INSERT INTO ".$mySQLprefix."userclass_classes VALUES (1, 'PRIVATEMENU', 'Grants access to private menu items')");
         mysql_query("INSERT INTO ".$mySQLprefix."userclass_classes VALUES (2, 'PRIVATEFORUM1', 'Example private forum class')");
+		mysql_query("INSERT INTO ".$mySQLprefix."parser VALUES (0,'e107core','/{(PROFILE)=([0-9]+)}/') ");
+		mysql_query("INSERT INTO ".$mySQLprefix."parser VALUES (0,'e107core','/{(EMAILTO)=(.+?)}/') ");
+		mysql_query("INSERT INTO ".$mySQLprefix."parser VALUES (0,'e107core','/{(AVATAR)(=(.+?))*}/') ");
+		mysql_query("INSERT INTO ".$mySQLprefix."parser VALUES (0,'e107core','/{(PICTURE)(=(.+?))*}/') ");
+		mysql_query("INSERT INTO ".$mySQLprefix."parser VALUES (0,'e107core','/{(USERNAME)}/') ");
+
 
         $userp = "1, '".$_POST['admin_name']."', '', '".md5($_POST['admin_password1'])."', '', '".$_POST['admin_email']."', '', '', '', '', '', '', '', '', '', 0, ".time().", 0, 0, 0, 0, 0, 0, '$ip', 0, '', '', '', 0, 1, '', '', '0', '', ".time();
         mysql_query("INSERT INTO ".$mySQLprefix."user VALUES ($userp)" );
