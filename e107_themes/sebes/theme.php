@@ -12,30 +12,39 @@
 +---------------------------------------------------------------+
 */
 if(!defined("e_THEME")){ exit; }
+
+// [multilanguage]
+@include_once(e_THEME."sebes/languages/".e_LANGUAGE.".php");
+@include_once(e_THEME."sebes/languages/English.php");
+
 // [theme]
 $themename = "sebes";
-$themeversion = "1";
-$themeauthor = "jalist";
+$themeversion = "1.1";
+$themeauthor = "Steve Dunstan [jalist]";
+$themeemail = "jalist@e107.org";
+$themewebsite = "http://e107.org";
 $themedate = "18/03/2005";
-$themeinfo = "Designed specifically for the e107 Doc Project";
+$themeinfo = "";
 define("STANDARDS_MODE", TRUE);
+$xhtmlcompliant = TRUE;
+$csscompliant = TRUE;
+
+define("THEME_DISCLAIMER", "<br /><i>".LAN_THEME_1."</i>");
+
 // [layout]
 
 $layout = "_default";
 
 $HEADER = "
 <div class='mainbox'>
-
 <div id='banner'>
 {BANNER}
 </div>
-
 <table style='width: 100%;' cellpadding='0' cellspacing='0'>
 <tr>
 <td><div id='logo1'></div></td>
 <td id='heading'></td>
 </tr>
-
 <tr>
 <td id='logo2'>&nbsp;</td>
 <td id='searchbox'>
@@ -43,9 +52,6 @@ $HEADER = "
 </td>
 </tr>
 </table>
-
-
-
 <table style='width: 100%;' cellpadding='0' cellspacing='0'>
 <tr>
 <td id='doclinkcolumn'>
@@ -68,6 +74,9 @@ $FOOTER = "
 </tr>
 </table>
 </div>
+
+<div class='smalltext' style='text-align: center;'>{SITEDISCLAIMER}<br />{THEMEDISCLAIMER}</div>
+
 ";
 
 
@@ -93,12 +102,12 @@ $NEWSSTYLE = "
 <br /><br />";
 
 define("ICONSTYLE", "");
-define("COMMENTLINK", "Read/Post Comment: ");
-define("COMMENTOFFSTRING", "Comments are turned off for this item");
+define("COMMENTLINK", LAN_THEME_2);
+define("COMMENTOFFSTRING", LAN_THEME_3);
 define("PRE_EXTENDEDSTRING", "<br /><br />[ ");
-define("EXTENDEDSTRING", "Read the rest ...");
+define("EXTENDEDSTRING", LAN_THEME_4);
 define("POST_EXTENDEDSTRING", " ]<br />");
-define("TRACKBACKSTRING", "Trackbacks: ");
+define("TRACKBACKSTRING", LAN_THEME_5);
 define("TRACKBACKBEFORESTRING", " | ");
 
 
