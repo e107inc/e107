@@ -71,6 +71,7 @@ $HEADER = "<table class='top_section'>
 </td>
 <td class='default_menu'>
 {SETSTYLE=default}
+{WMESSAGE}
 ";
 
 $FOOTER = "<br />
