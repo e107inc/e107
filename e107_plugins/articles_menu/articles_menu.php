@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/articles_menu/articles_menu.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2004-11-07 21:03:23 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.5 $
+|     $Date: 2004-12-01 14:10:50 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 global $ml;
@@ -148,7 +148,7 @@ else
 	{
 		$aj = new textparse;
 		$cache = ob_get_contents();
-		set_cache("article_menu", $cache);
+		$e107cache->set("article_menu", $cache);
 	}
 	ob_end_clean();
 }

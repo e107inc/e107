@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/oldpolls.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:45 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-01 14:09:53 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -112,7 +112,7 @@ while(list($poll_id, $poll_datestamp, $poll_end_datestamp, $poll_admin_id, $poll
 }
 
 if($pref['cachestatus']){
-        set_cache($p_query,ob_get_contents());
+        $e107cache->set($p_query,ob_get_contents());
 }
 
 
