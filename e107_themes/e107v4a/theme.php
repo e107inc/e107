@@ -11,12 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/theme.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-02-26 09:44:00 $
-|     $Author: e107coders $
+|     $Revision: 1.6 $
+|     $Date: 2005-02-28 20:15:02 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
-
+if(!defined("e_THEME")){ exit; }
 // [multilanguage]
 
 if(file_exists(e_THEME."e107v4a/languages/".e_LANGUAGE.".php")){
