@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-27 19:52:24 $
-|     $Author: streaky $
+|     $Revision: 1.7 $
+|     $Date: 2005-01-28 14:02:44 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -412,7 +412,8 @@ function checklayout($str) {
 				$menu_info = "{$menu_location}.{$menu_order}";
 				 
 				$text = "";
-				$config_path = e_PLUGIN.$menu_name."_menu/config.php";
+				@include(e_PLUGIN.$menu_name.'_menu/plugin.php');
+				$config_path = e_PLUGIN.$menu_name.'_menu/'.$eplug_conffile;
 				$conf = FALSE;
 				if (file_exists($config_path)) {
 					$conf = TRUE;
