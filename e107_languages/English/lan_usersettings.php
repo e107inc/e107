@@ -69,6 +69,8 @@ define("LAN_USET_2", "Maximum allowable width is");
 define("LAN_USET_3", "Your avatar height is too large");
 define("LAN_USET_4", "Maximum allowable height is");
 
+// v.616
 define("LAN_CUSTOMTITLE", "Custom Title");
+define("LAN_ICQNUMBER", "ICQ number must contain only numbers");
 
 ?>
