@@ -17,6 +17,7 @@
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
+global $menu_pref;
 $ec_dir = e_PLUGIN."clock_menu/";
 $lan_file = $ec_dir."languages/".e_LANGUAGE.".php";
 include(file_exists($lan_file) ? $lan_file : e_PLUGIN."clock_menu/languages/English.php");
@@ -27,7 +28,6 @@ if(!$clock_flat){
 }else{
 	echo $text;
 }
-
 ?>
 <script type="text/javascript">
 <!--
@@ -38,5 +38,5 @@ var MnthNam = new Array(
 //-->
 </script>
 <?php
-echo "<script type='text/javascript' src='".e_PLUGIN."clock_menu/clock.js'></script>\n\n<script>\nwindow.setTimeout(\"tick('".CLOCK_MENU_L24."')\",150);\n</script>\n<!-- ### end clock ### //-->\n\n";
+echo "<script type='text/javascript' src='".e_PLUGIN."clock_menu/clock.js'></script>\n\n<script>\nwindow.setTimeout(\"tick('".$menu_pref['clock_dateprefix']."', '".$menu_pref['clock_format']."', '".$menu_pref['clock_datesuffix1']."', '".$menu_pref['clock_datesuffix2']."', '".$menu_pref['clock_datesuffix3']."', '".$menu_pref['clock_datesuffix4']."')\",150);\n</script>\n<!-- ### end clock ### //-->\n\n";
 ?>
