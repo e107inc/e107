@@ -13,6 +13,10 @@ function update_forum_07($type)
 	else
 	{
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."forum_t");
+		if(!$fields)
+		{
+			return TRUE;
+		}
 		$columns = mysql_num_fields($fields);
 		for ($i = 0; $i < $columns; $i++) {
 			if ("thread_total_replies" == mysql_field_name($fields, $i)) {
