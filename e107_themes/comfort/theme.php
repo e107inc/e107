@@ -47,7 +47,7 @@ strftime("%A, %d %B, %Y .:. %H:%M:%S %Z", time())."
 <table width='100%' border='0' cellspacing='2' cellpadding='3'>
 <tr>
 </td><td style='width:30%; vertical-align:top'>
-(SITELINKS=menu}
+{SITELINKS=menu}
 {SETSTYLE=menu}
 {MENU=1}
 </td>

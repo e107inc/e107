@@ -61,7 +61,7 @@ $HEADER = "
 <tr> 
 <td style='padding:10px;width:15%; vertical-align: top;'>
 {SETSTYLE=menu1}
-(SITELINKS=menu}
+{SITELINKS=menu}
 {MENU=1}
 <br />
 </td>
@@ -110,7 +110,7 @@ $NEWSHEADER = "
 <tr> 
 <td style='width:15%; vertical-align: top;'>
 {SETSTYLE=menu1}
-(SITELINKS=menu}
+{SITELINKS=menu}
 {MENU=1}
 <br />
 </td>
