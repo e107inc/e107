@@ -19,6 +19,11 @@ require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."news_class.php");
 require_once(e_HANDLER."ren_help.php");
 require_once(e_HANDLER."form_handler.php");
+    if($pref['htmlarea']){
+    require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
+    htmlarea("data");
+    htmlarea("news_extended");
+    }
 $rs = new form;
 $aj = new textparse;
 $ix = new news;
@@ -368,12 +373,12 @@ class newspost{
 		<tr> 
 		<td style='width:20%' class='forumheader3'>".NWSLAN_13.":<br /></td>
 		<td style='width:80%' class='forumheader3'>
-		<textarea class='tbox' name='data' cols='80' rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".(strstr($_POST['data'], "[img]http") ? "" : str_replace("[img]../", "[img]", $_POST['data']))."</textarea>
-		<br />
+                <textarea class='tbox' id='data' name='data' cols='80' rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".(strstr($_POST['data'], "[img]http") ? "" : str_replace("[img]../", "[img]", $_POST['data']))."</textarea>
+                ";
+
+        if(!$pref['htmlarea']){$text .= ren_help()."
 		<input class='helpbox' type='text' name='helpb' size='100' />
 		<br />
-		".ren_help()."<br />
-
 		<select class='tbox' name='thumbps' onChange=\"addtext('[link=e107_images/newspost_images/' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '][img]e107_images/newspost_images/thumb_' + this.form.thumbps.options[this.form.thumbps.selectedIndex].value + '[/img][/link]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_50."')\" onMouseOut=\"help('')\">
 		<option>Insert thumbnail ...</option>\n";
 		while(list($key, $image) = each($thumblist)){
@@ -394,7 +399,10 @@ class newspost{
 		while(list($key, $file) = each($filelist)){
 			$text .= "<option value='".$file[1]."'>".$file[1]."</option>\n";
 		}
-		$text .= "</select>
+                $text .= "</select>";
+
+        } // end of htmlarea check.
+                $text .="
 
 		</td>
 		</tr>
@@ -405,17 +413,19 @@ class newspost{
 		<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>Extended news post</a>
 		<div style='display: none;'>
 
-		<textarea class='tbox' name='news_extended' cols='80' rows='10'>".$_POST['news_extended']."</textarea>
-		<br />
-		".ren_help("addtext2", TRUE)."
+                <textarea class='tbox' id='news_extended' name='news_extended' cols='80' rows='10'>".$_POST['news_extended']."</textarea>
+                ";
+        if(!$pref['htmlarea']){ $text .="<br />".ren_help("addtext2", TRUE)."
 
 		<select class='tbox' name='imageps2' onChange=\"addtext2('[img]' + this.form.imageps2.options[this.form.imageps2.selectedIndex].value + '[/img]');this.selectedIndex=0;\" onMouseOver=\"help('".NWSLAN_50."')\" onMouseOut=\"help('')\">
 		<option>Insert image ...</option>\n";
 		reset($imagelist);
 		while(list($key, $image) = each($imagelist)){
 			$text .= "<option value='e107_images/newspost_images/".$image."'>".$image."</option>\n";
+                }
+                $text .= "</select>";
 		}
-		$text .= "</select>
+                $text .="
 		</div>
 		</td>
 		</tr>
