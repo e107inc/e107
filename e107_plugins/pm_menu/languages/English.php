@@ -62,4 +62,6 @@ define(PMLAN_58,"Delete Selected");
 define(PMLAN_59,"Blocked User");
 define(PMLAN_60,"Date Blocked");
 define(PMLAN_61,"messages blocked");
+define(PMLAN_62,"Blocked");
+
 ?>

@@ -1,4 +1,8 @@
 <?php
+// e107 Language File.
+// $Id: English.php,v 1.2 2004-09-03 18:32:11 e107coders Exp $
+
+
 define(EC_ADLAN_1,"Event Calendar");
 define(EC_ADLAN_2,"Configure Event Calendar");
 define(EC_INSTALL,"Install Event Calendar");
@@ -104,15 +108,16 @@ define(EC_LAN_VIEWCALENDAR, "View Calendar");
 define(EC_LAN_VIEWALLEVENTS, "View all events");
 define(EC_LAN_ALLEVENTS, "All events");
 define(EC_LAN_74, "View Category");
-
-
-
-
-
-
-
-
-
+// ADMIN
+define(EC_LAN_75, "Calendar settings updated.");
+define(EC_LAN_76, "Events can be added by:");
+define(EC_LAN_77, "Update Settings");
+define(EC_LAN_78, "Calendar Settings");
+define(EC_LAN_79, "Calendar View");
+define(EC_LAN_80, "Event List");
+define(EC_LAN_81, "Configure Event Calendar");
+define(EC_LAN_82, "To activate please go to your menus screen and select the calendar_menu into one of your menu areas.");
+define(EC_LAN_83, "Calendar");
 
 
 

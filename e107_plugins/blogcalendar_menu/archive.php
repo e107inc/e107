@@ -1,7 +1,7 @@
 <?php
 /******************************************************************\
  *                                                                *
- *  :: e107 blogcal addon ::                                      *                            
+ *  :: e107 blogcal addon ::                                      *
  *                                                                *
  *  file:   archive.php                                           *
  *  author: Thomas Bouve                                          *
@@ -14,22 +14,22 @@ require_once(e_HANDLER."userclass_class.php");
 
 $lan_file=e_PLUGIN."blogcalendar_menu/languages/".e_LANGUAGE.".php";
 if(file_exists($lan_file)){
-	require_once($lan_file);
+        require_once($lan_file);
 } else {
-	require_once(e_PLUGIN."blogcalendar_menu/languages/English.php");
+        require_once(e_PLUGIN."blogcalendar_menu/languages/English.php");
 };
 require_once("calendar.php");
 require_once("functions.php");
-require_once(HEADERF); 
+require_once(HEADERF);
 
 // ---------------------
 // initialize some cruft
 // ---------------------
 $sql = new db;
-$prefix = e_PLUGIN."blogcalendar_menu"; 
+$prefix = e_PLUGIN."blogcalendar_menu";
 $marray = array(BLOGCAL_M1,BLOGCAL_M2,BLOGCAL_M3,BLOGCAL_M4,
-	        BLOGCAL_M5,BLOGCAL_M6,BLOGCAL_M7,BLOGCAL_M8,
-		BLOGCAL_M9,BLOGCAL_M10,BLOGCAL_M11,BLOGCAL_M12);
+                BLOGCAL_M5,BLOGCAL_M6,BLOGCAL_M7,BLOGCAL_M8,
+                BLOGCAL_M9,BLOGCAL_M10,BLOGCAL_M11,BLOGCAL_M12);
 // if nr of rows per month is not set, default to 3
 $months_per_row = $pref['blogcal_mpr']?$pref['blogcal_mpr']:"3";
 $pref['blogcal_ws'] = "monday";
@@ -59,8 +59,8 @@ $end_year = $cur_year;
 
 // ----------------------
 // build the yearselector
-// ----------------------   
-$year_selector = "<div class='forumheader' style='text-align: center; margin-bottom: 2px;'>";   
+// ----------------------
+$year_selector = "<div class='forumheader' style='text-align: center; margin-bottom: 2px;'>";
 $year_selector .= "".BLOGCAL_ARCHIV1.": <select name='activate' onChange='urljump(this.options[selectedIndex].value)' class='tbox'>";
 
 for($i=$start_year; $i<=$end_year; $i++){
@@ -74,19 +74,19 @@ for($i=$start_year; $i<=$end_year; $i++){
         if($i == $req_year){
             $year_selector .= " selected";
             while($news = $sql -> db_Fetch()){
-				if(check_class($news['news_class'])){
-					list($xmonth, $xday) = explode(" ",date("n j",$news['news_datestamp']));
-					if(!$day_links[$xmonth][$xday]){
-						$day_links[$xmonth][$xday]=e_BASE."news.php?day.".formatdate($req_year,$xmonth,$xday);
-					}
-				}
+                                if(check_class($news['news_class'])){
+                                        list($xmonth, $xday) = explode(" ",date("n j",$news['news_datestamp']));
+                                        if(!$day_links[$xmonth][$xday]){
+                                                $day_links[$xmonth][$xday]=e_BASE."news.php?day.".formatdate($req_year,$xmonth,$xday);
+                                        }
+                                }
             }
         }
         $year_selector .= ">".$i."</option>";
     }
 }
 
-$year_selector .= "</select>";        
+$year_selector .= "</select>";
 
 
 // --------------------------
@@ -97,15 +97,15 @@ $archive = "<div style='text-align:center'><table border='0' cellspacing='7'><tr
 $archive .= "<td colspan='$months_per_row'><div>$year_selector</div></td></tr><tr>";
 for($i=1; $i<=12; $i++){
     if(++$newline == $months_per_row+1){
-	$archive .= "</tr><tr>";
-	$newline = 1; 
+        $archive .= "</tr><tr>";
+        $newline = 1;
     }
     $archive .= "<td style='vertical-align:top'>";
     $archive .= "<div class='fcaption' style='text-align:center; margin-bottom:2px;'>";
 
     // href the current month regardless of newsposts or any month with news
     if(($req_year == $cur_year && $i == $cur_month) || $day_links[$i]){
-        $archive .= "<a class='forumlink' href='".e_BASE."news.php?month.".formatDate($req_year,$i)."'>".$marray[$i-1]."</a>";            
+        $archive .= "<a class='forumlink' href='".e_BASE."news.php?month.".formatDate($req_year,$i)."'>".$marray[$i-1]."</a>";
     }else{
         $archive .= $marray[$i-1];
     }
@@ -118,8 +118,8 @@ for($i=1; $i<=12; $i++){
     }
     $archive .= "<div>".calendar($req_day, $i, $req_year, $day_links[$i], $pref['blogcal_ws'])."</div></td>\n";
 }
-$archive .= "</tr></table></div>";    
-$ns -> tablerender("Archive $req_year", $archive);
+$archive .= "</tr></table></div>";
+$ns -> tablerender(BLOGCAL_L2 ."&nbsp;$req_year", $archive);
 
-require_once(FOOTERF); 
+require_once(FOOTERF);
 ?>

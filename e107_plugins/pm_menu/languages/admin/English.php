@@ -43,5 +43,10 @@ define(PM_ADLAN_38,"Find username");
 define(PM_ADLAN_39,"days");
 define(PM_ADLAN_40,"disable");
 define(PM_ADLAN_41,"seconds");
+define(PM_ADLAN_42,"This plugin is a fully featured Private Messaging system.");
+define(PM_ADLAN_43,"Configure Private Messenger");
+define(PM_ADLAN_44,"To activate please go to your menus screen and select the pm_menu into one of your menu areas.");
+define(PM_ADLAN_45,"PM has been successfully upgraded to version");
+
 
 ?>
