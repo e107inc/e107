@@ -47,6 +47,12 @@ if(!e_QUERY){
 		exit;
 	}
 }
+$sql -> db_Select("forum_t", "*", "thread_id='".$thread_id."'  LIMIT 1 ");
+	$row = $sql-> db_Fetch(); extract($row);
+	if($thread_forum_id != $forum_id){
+		header("Location:".e_BASE."forum.php");
+		exit;
+	}
 
 if($action == "track" && USER){
 	$sql -> db_Update("user", "user_realm='".USERREALM."-".$thread_id."-' WHERE user_id='".USERID."' ");
