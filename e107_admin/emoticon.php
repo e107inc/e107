@@ -25,7 +25,7 @@ if(IsSet($_POST['updatesettings']))
 	$sysprefs -> setArray('emote');
 	if($_POST['smiley_activate'] != $pref['smiley_activate'])
 	{
-		clear_cache();
+		$e107cache->clear();
 	}
 	$pref['smiley_activate'] = $_POST['smiley_activate'];
 	save_prefs();

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/content.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:20 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-01 14:41:39 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -63,14 +63,14 @@ If(IsSet($_POST['submit'])){
                         $sql -> db_Select("content", "*", "ORDER BY content_datestamp DESC LIMIT 0,1 ", $mode="no_where");
                         list($content_id, $content_heading) = $sql-> db_Fetch();
                         $sql -> db_Insert("links", "0, '".$content_heading."', 'content.php?content.$content_id', '', '', '1', '0', '0', '0', {$_POST['c_class']} ");
-                        clear_cache("sitelinks");
+                        $e107cache->clear("sitelinks");
                         $message = CNTLAN_24;
                 } else {
                         $sql -> db_Select("content", "*", "ORDER BY content_datestamp DESC LIMIT 0,1 ", $mode="no_where");
                         list($content_id, $content_heading) = $sql-> db_Fetch();
                         $message = CNTLAN_23." - 'article.php?".$content_id.".255'.";
                 }
-                clear_cache("content");
+                $e107cache->clear("content");
                 unset($content_heading, $content_subheading, $content_content, $content_parent);
         } else {
                 $message = CNTLAN_1;
@@ -85,8 +85,8 @@ if(IsSet($_POST['update'])){
         $sql -> db_Update("links", "link_class='".$_POST['c_class']."' WHERE link_name='$content_heading' ");
         unset($content_heading, $content_subheading, $content_content, $content_parent);
         $message = CNTLAN_2;
-        clear_cache("content");
-        clear_cache("sitelinks");
+        $e107cache->clear("content");
+        $e107cache->clear("sitelinks");
 }
 
 if($delete_content)
@@ -98,8 +98,8 @@ if($delete_content)
         $sql -> db_Delete("content", "content_id=$delete_content");
         $message = CNTLAN_20;
         unset($content_heading, $content_subheading, $content_content);
-        clear_cache("content");
-        clear_cache("sitelinks");
+        $e107cache->clear("content");
+        $e107cache->clear("sitelinks");
 }
 
 if(IsSet($message))

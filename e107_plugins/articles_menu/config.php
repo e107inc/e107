@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/articles_menu/config.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:11:58 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-01 14:41:39 $
+|     $Author: streaky $
 |
 |     Based on code by Edwin van der Wal (evdwal@xs4all.nl), Multilanguage by Juan     
 +----------------------------------------------------------------------------+
@@ -29,7 +29,7 @@ require_once(e_ADMIN."auth.php");
 
 if(IsSet($_POST['update_menu']))
 {
-  clear_cache("article_menu");
+  $e107cache->clear("article_menu");
         while(list($key, $value) = each($_POST))
   {
                 if($key=="articles_parents"){$value="1"; $found=1;}

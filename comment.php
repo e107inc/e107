@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-12-01 14:09:52 $
+|     $Revision: 1.3 $
+|     $Date: 2004-12-01 14:41:15 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -43,9 +43,9 @@ if(IsSet($_POST['commentsubmit'])){
                         if(!$pid){ $pid = 0; }
                         $cobj -> enter_comment($_POST['author_name'], $_POST['comment'], $table, $id, $pid, $_POST['subject']);
                         if($table == "news"){
-                                clear_cache("news");
+                                $e107cache->clear("news");
                         } else {
-                                clear_cache("comment.php?$table.$id");
+                                $e107cache->clear("comment.php?$table.$id");
                         }
                 }
         }
@@ -59,7 +59,7 @@ if(IsSet($_POST['replysubmit'])){
                 if(!$row[0] && (ANON===TRUE || USER===TRUE)){
                         $pid = $_POST[pid];
                         $cobj -> enter_comment($_POST['author_name'], $_POST['comment'], $table, $nid, $pid, $_POST['subject']);
-                        clear_cache("comment.php?$table.$id");
+                        $e107cache->clear("comment.php?$table.$id");
                 }
                 $plugin_redir = FALSE;
                 $handle=opendir(e_PLUGIN);

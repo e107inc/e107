@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:09:30 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-01 14:41:15 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -100,7 +100,7 @@ if(IsSet($_POST['commentsubmit'])){
                 $row = $sql -> db_Fetch();
                 if($row[0] && (ANON===TRUE || USER===TRUE)){
                         $cobj -> enter_comment($_POST['author_name'], $_POST['comment'], "download", $id, $pid, $_POST['subject']);
-                        clear_cache("comment.download.{$sub_action}");
+                        $e107cache->clear("comment.download.{$sub_action}");
                 }
         }
 }

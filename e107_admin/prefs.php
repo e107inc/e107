@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-10-25 15:59:26 $
-|     $Author: loloirie $
+|     $Revision: 1.4 $
+|     $Date: 2004-12-01 14:41:39 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -118,7 +118,7 @@ if(IsSet($_POST['updateprefs'])){
         $pref['smtp_username'] = $aj -> formtpa($_POST['smtp_username']);
         $pref['smtp_password'] = $aj -> formtpa($_POST['smtp_password']);
 
-        clear_cache();
+        $e107cache->clear();
         // ML
         if(e_MLANG && isset($_POST['list_lang']) && $_POST['list_lang']!=e_LAN){
     			$tmp_mainlang = $pref['sitelanguage'];

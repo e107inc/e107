@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/forum_post.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2004-11-27 14:34:50 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.8 $
+|     $Date: 2004-12-01 14:41:15 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -278,7 +278,7 @@ if(IsSet($_POST['newthread'])){
                                         <span class='defaulttext'><a href='".e_BASE."forum_viewtopic.php?".$thread_forum_id.".".$thread_id."#$iid'>".LAN_325."</a><br />
                                         <a href='".e_BASE."forum_viewforum.php?".$forum_id."'>".LAN_326."</a></span><br /><br />
                                         </td></tr></table>";
-                                        clear_cache("newforumposts");
+                                        $e107cache->clear("newforumposts");
                                         require_once(FOOTERF);
                                         exit;
                                 }
@@ -382,7 +382,7 @@ if(IsSet($_POST['reply'])){
                                         <a href='".e_BASE."forum_viewforum.php?".$forum_id."'>".LAN_326."</a></span><br /><br />
                                         </td></tr></table>";
                                         if($pref['forum_enclose']){ $ns -> tablerender($pref['forum_title'], $text); }else{ echo $text; }
-                                        clear_cache("newforumposts");
+                                        $e107cache->clear("newforumposts");
                                         require_once(FOOTERF);
                                         exit;
                                 }
@@ -404,7 +404,7 @@ if(IsSet($_POST['update_thread'])){
 
                 $datestamp = $gen->convert_date(time(), "forum");
                 $sql -> db_Update("forum_t", "thread_name='".$subject."', thread_thread='".$post."', thread_s='".$_POST['threadtype']."' WHERE thread_id='$thread_id' ");
-                clear_cache("newforumposts");
+                $e107cache->clear("newforumposts");
                 header("location:".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id);
                 exit;
         }
@@ -424,7 +424,7 @@ if(IsSet($_POST['update_reply'])){
                 $post = $aj -> formtpa($_POST['post']."\n<span class='smallblacktext'>[ ".LAN_29." ".$datestamp." ]</span>", "public");
 
                 $sql -> db_Update("forum_t", "thread_thread='".$post."' WHERE thread_id=".$thread_id);
-                clear_cache("newforumposts");
+                $e107cache->clear("newforumposts");
 
                 $sql -> db_Select("forum_t", "*", "thread_id=$thread_id");
                 $row = $sql -> db_Fetch(); extract($row);

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:26 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-01 14:41:39 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 @include(e_LANGUAGEDIR.e_LANGUAGE."/lan_comment.php");
@@ -262,7 +262,7 @@ class comment{
                                         if(!$sql -> db_Insert("comments", "0, '$pid', '$id', '$subject', '$nick', '', '".time()."', '$comment', '0', '$ip', '$type' ")){
                                                 echo "<b>".COMLAN_3."</b> ".LAN_11;
                                         }else{
-                                                clear_cache("comment");
+                                                $e107cache->clear("comment");
                                         }
                                 }
                         }

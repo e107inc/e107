@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/review.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:21 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-01 14:41:39 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -57,7 +57,7 @@ if(IsSet($_POST['create_category'])){
         $_POST['category_description'] = $aj -> formtpa($_POST['category_description'], "admin");
         $sql -> db_Insert("content", " '0', '".$_POST['category_name']."', '".$_POST['category_description']."', 0, 0, ".time().", '".ADMINID."', 0, '".$_POST['category_button']."', 10, 0, 0, 0");
         $message = REVLAN_25;
-        clear_cache("review");
+        $e107cache->clear("review");
         $action = "cat";
 }
 
@@ -66,7 +66,7 @@ if(IsSet($_POST['update_category'])){
         $_POST['category_description'] = $aj -> formtpa($_POST['category_description'], "admin");
         $sql -> db_Update("content", "content_heading='".$_POST['category_name']."', content_subheading='".$_POST['category_description']."', content_summary='".$_POST['category_button']."' WHERE content_id='".$_POST['category_id']."' ");
         $message = REVLAN_26;
-        clear_cache("review");
+        $e107cache->clear("review");
         $action = "cat";
 }
 
@@ -79,7 +79,7 @@ if(IsSet($_POST['create_review'])){
                  $sql -> db_Insert("content", "0, '".$content_heading."', '".$content_subheading."', '$content_content', '".$_POST['category']."', '".time()."', '".$content_author."', '".$_POST['content_comment']."', '".$_POST['content_summary']."', '3', ".$_POST['content_rating'].",".$_POST['add_icons']." ,".$_POST['r_class']);
                 unset($content_heading, $content_subheading, $data, $content_summary);
                 $message = REVLAN_1;
-                clear_cache("review");
+                $e107cache->clear("review");
         }else{
                 $message = REVLAN_2;
         }
@@ -95,7 +95,7 @@ If(IsSet($_POST['update_review'])){
         $sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_parent='".$_POST['category']."', content_datestamp='".time()."', content_author='$content_author', content_comment='".$_POST['content_comment']."', content_summary='".$_POST['content_summary']."', content_type='3', content_review_score=".$_POST['content_rating'].", content_pe_icon=".$_POST['add_icons'].", content_class='{$_POST['r_class']}' WHERE content_id='".$_POST['content_id']."'");
         unset($action);
         $message = REVLAN_3;
-        clear_cache("review");
+        $e107cache->clear("review");
 }
 
 If(IsSet($_POST['sa_article'])){
@@ -136,7 +136,7 @@ if($delete == "main")
         if($sql -> db_Delete("content", "content_id='$del_id' "))
         {
                 $message = REVLAN_4;
-                clear_cache("article");
+                $e107cache->clear("article");
                 unset($action, $sub_action, $id);
         }
 }
@@ -154,7 +154,7 @@ if($action == "cat" && $sub_action == "confirm"){
 if($action == "confirm"){
         if($sql -> db_Delete("content", "content_id='$sub_action' ")){
                 $message = REVLAN_4;
-                clear_cache("review");
+                $e107cache->clear("review");
                                 unset($action, $sub_action,        $id);
         }
 }
