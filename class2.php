@@ -140,20 +140,20 @@ $menu_pref=unserialize($tmp);
 $page = substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
 define("e_PAGE", $page);
 if($pref['frontpage'] && $pref['frontpage_type'] == "splash"){
-        $ip = getip();
-        if(!$sql -> db_Select("online", "*", "online_ip='$ip' ")){
-                online();
-                if(is_numeric($pref['frontpage'])){
-                        header("location: article.php?".$pref['frontpage'].".255");
-                        exit;
-                }else if(eregi("http", $pref['frontpage'])){
-                        header("location: ".$pref['frontpage']);
-                        exit;
-                }else{
-                header("location: ".e_BASE.$pref['frontpage'].".php");
-                exit;
-        }
-}
+	$ip = getip();
+	if(!$sql -> db_Count("online", "(*)", "WHERE online_ip='{$ip}' ")){
+		online();
+		if(is_numeric($pref['frontpage'])){
+			header("location: article.php?".$pref['frontpage'].".255");
+			exit;
+		} else if(eregi("http", $pref['frontpage'])) {
+			header("location: ".$pref['frontpage']);
+			exit;
+		} else {
+			header("location: ".e_BASE.$pref['frontpage'].".php");
+			exit;
+		}
+	}
 }
 
 if($pref['del_unv']){
@@ -650,10 +650,11 @@ function save_prefs($table = "core", $uid=USERID){
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function online(){
-	$page = (strstr(e_SELF, "forum_") ? e_SELF.".".e_QUERY : e_SELF);
+	$page = (strstr(e_SELF, "forum_")) ? e_SELF.".".e_QUERY : e_SELF;
 	global $sql;
+	global $listuserson;
 	$ip = getip();
-	$udata = (USER ? USERID.".".USERNAME : 0);
+	$udata = (USER === TRUE) ? USERID.".".USERNAME : "0";
 	if(!$sql -> db_Select("online", "*", "online_ip='".$ip."' OR (online_user_id = '".$udata."' AND online_user_id != '0') ")){
 		define("NOSPLASH", TRUE); // first visit to site
 		$sql -> db_Insert("online", " '".time()."', 'null', '".$udata."', '".$ip."', '".$page."', 1");
@@ -682,22 +683,20 @@ function online(){
 			}
 		}
 		$sql -> db_Update("online", $query);
-		if(USER){
+		if(USER === TRUE){
 			$sql -> db_Delete("online","online_user_id = '0' AND online_ip = '{$ip}' ");
 		}
 	}
-	$sql -> db_Delete("online", "online_timestamp<".(time()-300)." ");
+	$sql -> db_Delete("online", "online_timestamp<".(time()-300));
 	if($online_pagecount == 90){exit;}
 	$total_online = $sql -> db_Count("online");
-	if($members_online = $sql -> db_Select("online", "*", "online_user_id!='0' ")){
+	if($members_online = $sql -> db_Select("online", "*", "online_user_id != '0' ")){
 		$listuserson = array();
 		while($row = $sql -> db_Fetch()){
 			extract($row);
 			list($oid,$oname) = explode(".",$online_user_id,2);
-			if(!in_array($oname,$listuserson)){
-				$member_list .= "<a href='".e_BASE."user.php?id.$oid'>$oname</a> ";
-				$listuserson[] .= $oname;
-			}
+			$member_list .= "<a href='".e_BASE."user.php?id.$oid'>$oname</a> ";
+			$listuserson[$online_user_id] = $online_location;
 		}
 	}
 	define("TOTAL_ONLINE", $total_online);
@@ -784,14 +783,17 @@ function init_session(){
                 }
                 if($sql -> db_Select("user", "*", "user_id='$uid' AND md5(user_password)='$upw'")){
                         $result = $sql -> db_Fetch(); extract($result);
+                        if($user_currentvisit + 3600 < time()){
+                                $user_lastvisit = $user_currentvisit;
+                                $user_currentvisit = time();
+                                $sql -> db_Update("user", "user_visits=user_visits+1, user_lastvisit='$user_lastvisit', user_currentvisit='$user_currentvisit', user_viewed='$r' WHERE user_name='".USERNAME."' ");
+                        }
                         define("USERID", $user_id); define("USERNAME", $user_name); define("USERURL", $user_website); define("USEREMAIL", $user_email); define("USER", TRUE); define("USERLV", $user_lastvisit); define("USERVIEWED", $user_viewed); define("USERCLASS", $user_class); define("USERREALM", $user_realm);
                         if($user_ban == 1){ exit; }
                         $user_pref = unserialize($user_prefs);
                         if(IsSet($_POST['settheme'])){
                                 $user_pref['sitetheme'] = ($pref['sitetheme'] == $_POST['sitetheme'] ? "" : $_POST['sitetheme']);
                                 save_prefs($user);
-                                $pref['cachestatus'] = 0;
-                                save_prefs();
                         }
                         if(IsSet($_POST['setlanguage'])){
                                 $user_pref['sitelanguage'] = ($pref['sitelanguage'] == $_POST['sitelanguage'] ? "" : $_POST['sitelanguage']);
@@ -802,10 +804,6 @@ function init_session(){
                         global $ADMIN_DIRECTORY,$PLUGINS_DIRECTORY;
                         define("USERLAN", ($user_pref['sitelanguage'] && (strpos(e_SELF,$PLUGINS_DIRECTORY)!==FALSE||(strpos(e_SELF,$ADMIN_DIRECTORY)===FALSE && file_exists(e_LANGUAGEDIR.$user_pref['sitelanguage']."/lan_".e_PAGE))||(strpos(e_SELF,$ADMIN_DIRECTORY)!==FALSE && file_exists(e_LANGUAGEDIR.$user_pref['sitelanguage']."/admin/lan_".e_PAGE))) ? $user_pref['sitelanguage'] : FALSE));
 
-                        if($user_currentvisit + 3600 < time()){
-                                $sql -> db_Update("user", "user_visits=user_visits+1 WHERE user_name='".USERNAME."' ");
-                                $sql -> db_Update("user", "user_lastvisit='$user_currentvisit', user_currentvisit='".time()."', user_viewed='$r' WHERE user_name='".USERNAME."' ");
-                        }
                         if($user_admin){
                                 define("ADMIN", TRUE); define("ADMINID", $user_id); define("ADMINNAME", $user_name); define("ADMINPERMS", $user_perms); define("ADMINEMAIL", $user_email); define("ADMINPWCHANGE", $user_pwchange);
                         } else {
