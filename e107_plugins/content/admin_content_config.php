@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.14 $
-|		$Date: 2005-02-11 16:15:54 $
+|		$Revision: 1.15 $
+|		$Date: 2005-02-20 22:35:06 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -528,6 +528,7 @@ function admin_content_config_adminmenu(){
 								$var=array();
 								$parentdetails2 = $aa -> getParent("", "", $content_id);
 								$parentarray = $aa -> printParent($parentdetails2, "0", $content_id, "optionadminmenu");
+								//$parentarray = $aa -> adminCatMenu($parentdetails2);
 
 								for($i=0;$i<count($parentarray);$i++){
 									$var['c'.$parentarray[$i][3]]['text']=$parentarray[$i][1];

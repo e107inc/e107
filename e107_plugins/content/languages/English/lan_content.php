@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-02-12 09:52:54 $
+|     $Revision: 1.15 $
+|     $Date: 2005-02-20 22:35:39 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -130,7 +130,7 @@ define("CONTENT_ADMIN_OPT_LAN_27", "date");
 define("CONTENT_ADMIN_OPT_LAN_28", "authordetails");
 define("CONTENT_ADMIN_OPT_LAN_29", "authoremail");
 define("CONTENT_ADMIN_OPT_LAN_30", "rating");
-define("CONTENT_ADMIN_OPT_LAN_31", "print/email icons");
+define("CONTENT_ADMIN_OPT_LAN_31", "email/print/pdf icon");
 define("CONTENT_ADMIN_OPT_LAN_32", "parent breadcrumb");
 define("CONTENT_ADMIN_OPT_LAN_33", "refer<br />only if logging enabled");
 define("CONTENT_ADMIN_OPT_LAN_34", "how many characters of the subheading should be shown?<br />leave blank to show the full subheading");
@@ -210,9 +210,9 @@ define("CONTENT_ADMIN_OPT_LAN_107", "choose a character to use as the seperator 
 define("CONTENT_ADMIN_OPT_LAN_108", "define how to render the breadcrumb information. you have three options: one to just echo it out at the top of the page, one to render it in a seperate menu and one to incorporate it into the menus that will come below it.");
 define("CONTENT_ADMIN_OPT_LAN_109", "if checked a navigation and search menu will be shown to search in content or navigate to other overview pages in content as well as an option to order the content items in the list pages");
 define("CONTENT_ADMIN_OPT_LAN_110", "choose a default ordering method<br />order by order will use the ordering number you have provided in the Manage Order area");
-define("CONTENT_ADMIN_OPT_LAN_111", "");
-define("CONTENT_ADMIN_OPT_LAN_112", "");
-define("CONTENT_ADMIN_OPT_LAN_113", "");
+define("CONTENT_ADMIN_OPT_LAN_111", "email");
+define("CONTENT_ADMIN_OPT_LAN_112", "print");
+define("CONTENT_ADMIN_OPT_LAN_113", "pdf");
 define("CONTENT_ADMIN_OPT_LAN_114", "");
 define("CONTENT_ADMIN_OPT_LAN_115", "");
 define("CONTENT_ADMIN_OPT_LAN_116", "");
