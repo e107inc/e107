@@ -447,7 +447,7 @@ if($action != "nt" && !$thread_active){
         require_once(FOOTERF);
         exit;
 }
-
+if($action != "cp"){
 $text = "<div style='text-align:center'>
 <form enctype='multipart/form-data' method='post' action='".e_SELF."?".e_QUERY."' name='dataform'>
 <table style='width:95%' class='fborder'>
@@ -600,40 +600,55 @@ $text .= "</td>
 </form>
 </div>";
 
-//echo $text;
-
 
 $text .= "<table style='width:95%'>
 <tr>
 <td style='width:50%'>";
 $text .= forumjump();
-$text .= "</td></tr></table>";
+$text .= "</td></tr></table><br />";
 
+}
 
-
-//echo $text;
-
-if($action == "rp"){
-        // review
+if($action == "rp" || $action == "cp"){
+		$id = $thread_id;
         $sql -> db_Select("forum_t", "*", "thread_id = '$thread_id' ");
         $row = $sql-> db_Fetch("no_strip"); extract($row);
         $post_author_name = substr($thread_user, (strpos($thread_user, ".")+1));
-
         $thread_datestamp  = $gen->convert_date($thread_datestamp , "forum");
         $thread_name = $aj -> tpa($thread_name, $mode="off");
         $thread_thread = $aj -> tpa($thread_thread, $mode="off");
-        $text .= "<div style='text-align:center'>
-        <table style='width:95%' class='fborder'>
+        $text .= "<div style='text-align:center'>".($action == "rp" ? "<div style='border:0;padding-right:2px;width:auto;height:400px;overflow:auto;text-align:right'>": "")."
+        <table style='width:97%' class='fborder'>
         <tr>
-        <td colspan='2' class='fcaption' style='vertical-align:top'>".LAN_327;
-        $text .= ($action != "nt" ? "</td>" : " ( ".LAN_62.$thread_name." )</td>");
+        <td colspan='2' class='fcaption' style='vertical-align:top'>".($action == "rp" ? LAN_100."</td></tr>" : $thread_name."</td></tr>");
         $text .= "<tr>
         <td class='forumheader3' style='width:20%' style='vertical-align:top'><b>".$post_author_name."</b></td>
         <td class='forumheader3' style='width:80%'>
         <div class='smallblacktext' style='text-align:right'><img src='".e_IMAGE."forum/post.png' alt='' /> ".LAN_322.$thread_datestamp."</div>".$thread_thread."</td>
-        </tr>
+        </tr>".($action == "rp" ? "
         </table>
-        </div>";
+		<br />
+        <table style='width:97%' class='fborder'>
+		<tr><td colspan='2' class='fcaption' style='vertical-align:top'>".LAN_101."</td></tr>" : "");
+		$query = ($action == "cp" ? "thread_parent=$id ORDER by thread_datestamp" : "thread_parent=$id ORDER by thread_datestamp DESC LIMIT 0,10 ");
+        $sql -> db_Select("forum_t", "*", $query);
+        while($row = $sql-> db_Fetch("no_strip")){ extract($row);
+        $post_author_name = substr($thread_user, (strpos($thread_user, ".")+1));
+        $thread_datestamp  = $gen->convert_date($thread_datestamp , "forum");
+        $thread_name = $aj -> tpa($thread_name, $mode="off");
+        $thread_thread = $aj -> tpa($thread_thread, $mode="off");
+		$thread_thread = wrap($thread_thread);
+        $text .= "<tr>
+        <td class='forumheader3' style='width:20%' style='vertical-align:top'><b>".$post_author_name."</b></td>
+        <td class='forumheader3' style='width:80%'>
+        <div class='smallblacktext' style='text-align:right'><img src='".e_IMAGE."forum/post.png' alt='' /> ".LAN_322.$thread_datestamp."</div>".$thread_thread."</td>
+        </tr>";
+		}
+        $text .= ($action == "rp" ? "<tr>
+		<td class='forumheader3'  colspan='2'><a href='javascript:open_window(\"forum_post.php?cp.".$forum_id.".".$id."\",\"full\")'>".LAN_103."</a></td>
+			</tr>" : "")."
+		</table>
+        </div>".($action == "rp" ? "</div>" : "");
 }
 
 if($pref['forum_enclose']){ $ns -> tablerender($pref['forum_title'], $text); }else{ echo $text; }
@@ -704,6 +719,25 @@ function forumjump(){
         }
         $text .= "</select> <input class='button' type='submit' name='fjsubmit' value='".LAN_387."' /></p></form>";
         return $text;
+}
+
+function wrap($data){
+	$wrapcount = 100;
+	$message_array = explode(" ", $data);
+	for($i=0; $i<=(count($message_array)-1); $i++){
+		if(strlen($message_array[$i]) > $wrapcount){
+			if(substr($message_array[$i], 0, 7) == "http://"){
+				$url = str_replace("http://", "", $message_array[$i]);  
+				$url = explode("/", $url);  
+				$url = $url[0];
+				$message_array[$i] = "<a href='".$message_array[$i]."'>[".$url."]</a>";
+			}else{
+				$message_array[$i] = preg_replace("/([^\s]{".$wrapcount."})/", "$1<br />", $message_array[$i]);
+			}
+		}
+	}
+	$data = implode(" ",$message_array);
+	return $data;
 }
 require_once(FOOTERF);
 ?>
