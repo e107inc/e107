@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-10 00:33:47 $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-10 05:09:34 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -168,15 +168,17 @@ function headerjs(){
 		$norm_class = 'td';
 		$over_class = 'forumheader5';
 	}
-	$script =  "<script type=\"text/javascript\">
-	function tdover(object) {
-		if (object.className == '".$norm_class."') object.className = '".$over_class."';
-	}
+	$script = "<script type=\"text/javascript\">\n";
+	$script .= "<!--\n";
+	$script .= "function tdover(object) {\n";
+	$script .= "	if (object.className == '".$norm_class."') object.className = '".$over_class."';\n";
+	$script .= "}\n";
 
-	function tdnorm(object) {
-		if (object.className == '".$over_class."') object.className = '".$norm_class."';
-	}
-	</script>\n";
+	$script .= "function tdnorm(object) {\n";
+	$script .= "	if (object.className == '".$over_class."') object.className = '".$norm_class."';\n";
+	$script .= "}\n";
+	$script .= "// -->\n";
+	$script .= "</script>\n";
 
 	return $script;
 }
