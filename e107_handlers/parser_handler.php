@@ -13,7 +13,6 @@
 
 function register_parser($plugin_name,$regexp) {
 	if($plugin_name != '' OR $regexp != '') {
-		if(!preg_match("#\{\{(.*?)\}\}#",$regexp)){return 2;}			
 		if(file_exists(e_PLUGIN."{$plugin_name}/parser.php")) {
 			require_once(e_PLUGIN."{$plugin_name}/parser.php");
 			if(function_exists($plugin_name.'_parse')) {
