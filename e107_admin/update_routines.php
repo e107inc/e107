@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-02-07 03:45:52 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.29 $
+|     $Date: 2005-02-07 10:31:22 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -229,14 +229,16 @@ function update_61x_to_700($type) {
 		PRIMARY KEY  (preset_id)
 		) TYPE=MyISAM;
 		");
-
+		// News Updates
+		mysql_query("ALTER TABLE `".MPREFIX."news` ADD `news_image` TEXT NOT NULL ,ADD `news_thumb` TEXT NOT NULL ;");
 
 	} else {
 		// check if update is needed.
 		// FALSE = needed, TRUE = not needed.
 		// return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."generic");
-		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."preset");
-		return ($fields) ? TRUE : FALSE;
+		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."news");
+		$columns = mysql_num_fields($fields);
+		return ($columns == 15) ? TRUE : FALSE;
 		/*if ($sql->db_Select("plugin", "plugin_path", "plugin_path='chatbox_menu'")) {
 			return TRUE;
 		} else {
