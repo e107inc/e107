@@ -11,15 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-01-31 18:03:43 $
+|     $Revision: 1.18 $
+|     $Date: 2005-02-02 14:43:15 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 global $eMenuActive;
+$ip = getip();
 
-if (CORRUPT_COOKIE === TRUE) {
+if (defined('CORRUPT_COOKIE') && CORRUPT_COOKIE == TRUE) {
 	$text = '<div style="text-align:center">'.LOGIN_MENU_L7.'<br /><br />
 	<img src="'.THEME.'images/bullet2.gif" alt="bullet" /> <a href="'.e_BASE.'index.php?logout">'.LOGIN_MENU_L8.'</a></div>';
 	$ns->tablerender(LOGIN_MENU_L9, $text, 'login');
@@ -47,7 +48,7 @@ if (USER == TRUE || ADMIN == TRUE) {
 
 	$new_total = 0;
 	$time = USERLV;
-	if (!$menu_pref['login_menu'] || $menu_pref['login_menu']['new_news'] == true) {
+	if (!isset($menu_pref['login_menu']) || $menu_pref['login_menu']['new_news'] == true) {
 		$new_news = $sql->db_Select('news', '*', '`news_datestamp` > '.$time);
 		while ($row = $sql->db_Fetch()) {
 			if (!check_class($row['news_class'])) {
@@ -60,7 +61,7 @@ if (USER == TRUE || ADMIN == TRUE) {
 		}
 		$NewItems[] = $new_news.' '.($new_news == 1 ? LOGIN_MENU_L14 : LOGIN_MENU_L15);
 	}
-	if (!$menu_pref['login_menu'] || $menu_pref['login_menu']['new_articles'] == true) {
+	if (!isset($menu_pref['login_menu']) || $menu_pref['login_menu']['new_articles'] == true) {
 		$new_articles = 0;
 		$new_articles = $sql->db_Select('content', '(content_class)', 'content_type = 0 AND `content_datestamp` > '.$time);
 		while ($row = $sql->db_Fetch()) {
@@ -74,7 +75,7 @@ if (USER == TRUE || ADMIN == TRUE) {
 		}
 		$NewItems[] = $new_articles.' '.($new_articles == 1 ? LOGIN_MENU_L29 : LOGIN_MENU_L30);
 	}
-	if (!$menu_pref['login_menu'] || $menu_pref['login_menu']['new_comments'] == true) {
+	if (!isset($menu_pref['login_menu']) || $menu_pref['login_menu']['new_comments'] == true) {
 		$new_comments = 0;
 		$new_comments = $sql->db_Select('comments', '*', '`comment_datestamp` > '.$time);
 
@@ -99,7 +100,7 @@ if (USER == TRUE || ADMIN == TRUE) {
 		}
 		$NewItems[] = $new_comments.' '.($new_comments == 1 ? LOGIN_MENU_L18 : LOGIN_MENU_L19);
 	}
-	if (!$menu_pref['login_menu'] || $menu_pref['login_menu']['new_chatbox'] == true) {
+	if (!isset($menu_pref['login_menu']) || $menu_pref['login_menu']['new_chatbox'] == true) {
 		$display_chats = TRUE;
 
 		if(in_array('chatbox_menu',$eMenuActive))
@@ -118,7 +119,7 @@ if (USER == TRUE || ADMIN == TRUE) {
 			$NewItems[] = $new_chat.' '.($new_chat == 1 ? LOGIN_MENU_L16 : LOGIN_MENU_L17);
 		}
 	}
-	if (!$menu_pref['login_menu'] || $menu_pref['login_menu']['new_forum'] == true) {
+	if (!isset($menu_pref['login_menu']) || $menu_pref['login_menu']['new_forum'] == true) {
 		$qry = "
 		SELECT  count(*) as count FROM #forum_t  as t
 		LEFT JOIN #forum as f
@@ -136,7 +137,7 @@ if (USER == TRUE || ADMIN == TRUE) {
 		}
 		$NewItems[] = $new_forum.' '.($new_forum == 1 ? LOGIN_MENU_L20 : LOGIN_MENU_L21);
 	}
-	if (!$menu_pref['login_menu'] || $menu_pref['login_menu']['new_members'] == true) {
+	if (!isset($menu_pref['login_menu']) || $menu_pref['login_menu']['new_members'] == true) {
 		$new_users = $sql->db_Count('user', '(user_join)', 'WHERE user_join > '.$time);
 		$new_total += $new_users;
 		if (!$new_users) {
