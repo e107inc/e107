@@ -531,7 +531,7 @@ if($action == "nt" && $pref['forum_poll'] && !eregi("edit", e_QUERY)){
         <tr>
         <td style='width:20%' class='forumheader3'><div class='normaltext'>".LAN_5."</div></td>
         <td style='width:80%'class='forumheader3'>
-        <input class='tbox' type='text' name='poll_title' size='70' value=`".$_POST['poll_title']."` maxlength='200' />";
+        <input class='tbox' type='text' name='poll_title' size='70' value=\"".$_POST['poll_title']."\" maxlength='200' />";
 
         $option_count = ($_POST['option_count'] ? $_POST['option_count'] : 1);
         $text .= "<input type='hidden' name='option_count' value='$option_count'>";
@@ -542,7 +542,7 @@ if($action == "nt" && $pref['forum_poll'] && !eregi("edit", e_QUERY)){
                 $text .= "<tr>
         <td style='width:20%' class='forumheader3'>".LAN_391." ".$count.":</td>
         <td style='width:80%' class='forumheader3'>
-        <input class='tbox' type='text' name='poll_option[]' size='60' value=`".$_POST['poll_option'][($count-1)]."` maxlength='200' />";
+        <input class='tbox' type='text' name='poll_option[]' size='60' value=\"".$_POST['poll_option'][($count-1)]."\" maxlength='200' />";
                 if($option_count == $count){
                         $text .= " <input class='button' type='submit' name='addoption' value='".LAN_6."' /> ";
                 }
