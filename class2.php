@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2004-11-27 15:35:36 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.25 $
+|     $Date: 2004-11-27 15:57:53 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -458,37 +458,6 @@ if ($sql->db_Select('menus', '*', 'menu_location > 0 ORDER BY menu_order')) {
 //@require_once(e_HANDLER."IPB_int.php");
 //@require_once(e_HANDLER."debug_handler.php");
 
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-
-class textparse {
-	function editparse($text, $mode = "off") {
-		global $tp;
-		return $tp->toForm($text);
-	}
-
-	function tpa($text, $mode, $referrer = '', $highlight_search = FALSE, $poster_id) {
-		global $tp;
-		return $tp->toHTML($text, TRUE, $mode, $poster_id);
-	}
-
-	function tpj($text) {
-		return $text;
-	}
-
-	function formtpa($text, $mode) {
-		global $tp;
-		$no_encode = ($mode == 'admin') ? TRUE :
-		FALSE;
-		return $tp->toDB($text, $no_encode);
-	}
-
-	function formtparev($text) {
-		global $tp;
-		return $tp->toFORM($text);
-	}
-
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function check_email($var) {
 	return (preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]+@([-0-9A-Z]+\.)+([0-9A-Z]){2,4}$/i', $var)) ? $var :
