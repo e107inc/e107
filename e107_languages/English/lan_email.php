@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_email.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:11:56 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-02-07 19:06:54 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Email");
@@ -28,7 +28,10 @@ define("LAN_189", "I thought you might be interested in this article from");
 
 define("LAN_email_1", "From:");
 define("LAN_email_2", "IP address of sender:");
-define("LAN_email_3", "News item from ");
+define("LAN_email_3", "Emailed item from ");
+define("LAN_email_4", "Send Email");
+define("LAN_email_5", "Email item to a friend");
+define("LAN_email_6", "I thought you might be interested in this item from");
 
 
 ?>

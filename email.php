@@ -11,63 +11,66 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/email.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-02-07 15:48:15 $
-|     $Author: lisa_ $
+|     $Revision: 1.6 $
+|     $Date: 2005-02-07 19:04:35 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 require_once(HEADERF);
 	
-$qs = explode(".", e_QUERY);
+$qs = explode(".", e_QUERY, 2);
 if ($qs[0] == "") {
 	header("location:".e_BASE."index.php");
 	 exit;
 }
-$table = $qs[0];
-$id = $qs[1];
-$type = ($table == "news" ? "news item" : "article");
+$source = $qs[0];
+$parms = $qs[1];
 	
-$comments = textparse::tpj($_POST['comment'], TRUE);
-$author = textparse::tpj($_POST['author_name'], TRUE);
+$comments = $tp->post_toHTML($_POST['comment'], TRUE);
+$author = $tp->post_toHTML($_POST['author_name']);
 $email_send = check_email($_POST['email_send']);
-if (isset($_POST['emailsubmit'])) {
-	if (!$email_send) {
+
+if (isset($_POST['emailsubmit']))
+{
+	if (!$email_send)
+	{
 		$error .= LAN_106;
 	}
-	if ($comments == "") {
+	if ($comments == "")
+	{
 		$message = LAN_188." ".SITENAME." (".SITEURL.")";
-		if (USER == TRUE) {
+		if (USER == TRUE)
+		{
 			$message .= "\n\n".LAN_email_1." ".USERNAME;
-		} else {
+		}
+		else
+		{
 			$message .= "\n\n".LAN_email_1." ".$author;
 		}
+	}
+	else
+	{
+		$message .= $comments;
 	}
 	$ip = getip();
 	$message .= "\n\n".LAN_email_2." ".$ip."\n\n";
 	 
-	if ($table == "news") {
-		$sql->db_Select("news", "*", "news_id='$id' ");
-		list($news_id, $news_title, $news_body, $news_extended, $news_datestamp, $news_author, $news_source, $news_url, $news_category, $news_allow_comments) = $sql->db_Fetch();
-		$message .= $comments."\n\n".$news_title."\n".$news_body."\n".$news_extended."\n\n".SITEURL.e_BASE."comment.php?comment.news.".$id;
-	} else {
-		//$row = $sql->db_Fetch();
-		//extract($row);
-		//$message .= $comments."\n\n".SITEURL.e_BASE."content.php?article.".$id."\n\n".$content_heading."\n".$content_subheading."\n".$content_content."\n\n";
-		$message .= $comments."\n\n";
-
-		//load the others from plugins
-		$handle = opendir(e_PLUGIN);
-		while (false !== ($file = readdir($handle))) {
-			if ($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)) {
-				$plugin_handle = opendir(e_PLUGIN.$file."/");
-				while (false !== ($file2 = readdir($plugin_handle))) {
-					if ($file2 == "e_emailprint.php") {
-						require_once(e_PLUGIN.$file."/".$file2);
-					}
-				}
-			}
+	if(strpos($source,'plugin:') !== FALSE)
+	{
+		$plugin = substr($source,7);
+		if(file_exists(e_PLUGIN.$plugin."/e_emailprint.php"))
+		{
+			include_once(e_PLUGIN.$plugin."/e_emailprint.php");
+			$text = email_item($parms);
 		}
+		$message .= $text;
+	}
+	else
+	{
+		$sql->db_Select("news", "*", "news_id='$parms'");
+		list($news_id, $news_title, $news_body, $news_extended, $news_datestamp, $news_author, $news_source, $news_url, $news_category, $news_allow_comments) = $sql->db_Fetch();
+		$message .= $tp->toHTML($news_title, TRUE)."\n".$tp->toHTML($news_body, TRUE)."\n".$tp->toHTML($news_extended, TRUE)."\n\n".SITEURL.e_BASE."comment.php?comment.news.".$parms;
 	}
 	if ($error == "") {
 		require_once(e_HANDLER."mail.php");
@@ -82,7 +85,7 @@ if (isset($_POST['emailsubmit'])) {
 	}
 }
 	
-$text = "<form method='post' action='".e_SELF."?$table.$id'>\n
+$text = "<form method='post' action='".e_SELF."?".e_QUERY."'>\n
 	<table class='defaulttable'>";
 	
 if (USER != TRUE) {
@@ -96,7 +99,7 @@ if (USER != TRUE) {
 $text .= "<tr>
 	<td style='width:20%'>".LAN_8."</td>
 	<td style='width:80%'>
-	<textarea class='tbox' name='comment' cols='70' rows='4'>".($type == "news" ? LAN_188 : LAN_189)." ".SITENAME." (".SITEURL.")";
+	<textarea class='tbox' name='comment' cols='70' rows='4'>".LAN_email_6." ".SITENAME." (".SITEURL.")";
 if (USER == TRUE) {
 	$text .= "\n\n".LAN_email_1." ".USERNAME;
 }
@@ -115,13 +118,13 @@ $text .= "</textarea>
 	<tr style='vertical-align:top'>
 	<td style='width:20%'></td>
 	<td style='width:80%'>
-	<input class='button' type='submit' name='emailsubmit' value='".($type == "news" ? LAN_186 : LAN_185)."' />
+	<input class='button' type='submit' name='emailsubmit' value='".LAN_email_4."' />
 	</td>
 	</tr>
 	</table>
 	</form>";
 	
-$ns->tablerender(($type == "news" ? LAN_6 : LAN_5), $text);
+$ns->tablerender(LAN_email_5, $text);
 	
 	
 	
