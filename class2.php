@@ -92,6 +92,15 @@ $merror = $sql -> db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdef
 if($merror == "e1"){ message_handler("CRITICAL_ERROR", 6,  ": generic, ", "class2.php"); exit;
 }else if($merror == "e2"){ message_handler("CRITICAL_ERROR", 7,  ": generic, ", "class2.php"); exit;}
 
+// New parser code #########
+$parsethis=array();
+if($sql -> db_Select("parser", "parser_pluginname,parser_regexp", "")){
+	while($row = $sql -> db_Fetch('nostrip')){
+		$parsethis[$row['parser_regexp']]=$row['parser_pluginname'];
+	}
+}
+// End parser code #########
+
 $sql -> db_Select("core", "*", "e107_name='pref' ");
 $row = $sql -> db_Fetch();
 
@@ -370,7 +379,7 @@ class textparse{
                 # - return                                        parsed text
                 # - scope                                        public
                 */
-                global $pref;
+                global $pref, $parsethis;
                 $text = " ".$text;
                 if($pref['profanity_filter'] && $this->profan){
                         $text = eregi_replace($this->profan, $pref['profanity_replace'], $text);
@@ -485,6 +494,17 @@ class textparse{
                 $text = substr($text, 1);
                 $text = code($text, "notdef");
                 $text = html($text);
+               //######################################
+					//##  parser code integration ##########
+					while(list($parser_regexp,$parser_name) = each($parsethis)) { 
+						preg_match_all($parser_regexp,$text,$matches,PREG_SET_ORDER); 
+						for ($i=0; $i< count($matches); $i++) {
+							require_once(e_PLUGIN.$parser_name.'/parser.php');
+							$newtext=call_user_func($parser_name.'_parse',$matches[$i]);
+							$text = str_replace($matches[$i][0],$newtext,$text);
+						}
+					}
+					//#######################################		
                 return $text;
         }
 

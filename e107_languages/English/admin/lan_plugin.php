@@ -36,6 +36,7 @@ define("EPL_ADLAN_31", "Please now delete the folder ");
 define("EPL_ADLAN_32", "and all files inside it to complete the uninstall process.");
 define("EPL_ADLAN_33", "Plugin successfully installed.");
 define("EPL_ADLAN_34", "Plugin successfully updated.");
+define("EPL_ADLAN_35", "Parser settings successfully added.");
 
 
 ?>
