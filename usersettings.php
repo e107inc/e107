@@ -340,7 +340,7 @@ $text .= "</select>
 $avatarlist[0] = "";
 $handle=opendir(e_IMAGE."avatars/");
 while ($file = readdir($handle)){
-        if($file != "." && $file != ".." && $file != "index.html"){
+        if($file != "." && $file != ".." && $file != "index.html" && $file != "CVS"){
                 $avatarlist[] = $file;
         }
 }
