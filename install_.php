@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-01-23 14:31:12 $
+|     $Revision: 1.9 $
+|     $Date: 2005-01-23 14:33:07 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -480,15 +480,15 @@ function create_tables(){
         mysql_query("INSERT INTO ".$mySQLprefix."news VALUES (0, 'Welcome to e107', '$welcome_message', '', '$datestamp', '0', '1', 1, 0, 0, 0, 0) ");
         mysql_query("INSERT INTO ".$mySQLprefix."news_category VALUES (0, 'Misc', 'icon5.png') ");
         mysql_query("INSERT INTO ".$mySQLprefix."poll VALUES (0, '$datestamp', 0, 1, 'So what do you think of e107?', 'I&#39;m not impressed', 'It&#39;s not bad but I&#39;ve seen better', 'It&#39;s good', 'I love it!', 'Grah I hate polls', 'What&#39;s e107 anyway?', '', '', '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 1) ");
-        mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Home', 'index.php', '', 'main_16.png', 1, 1, 0, 0, 0) ");
-        mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Forum', 'forum.php', '', 'forums_16.png', 1, 2, 0, 0, 0) ");
-        mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Downloads', 'download.php', '', 'downloads_16.png', 1, 3, 0, 0, 0) ");
-        mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Members', 'user.php', '', 'users_16.png', 1, 4, 0, 0, 0) ");
-        mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Submit News', 'submitnews.php', '', 'submitnews_16.png', 1, 5, 0, 0, 0) ");
-        mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Submit Article', 'subcontent.php?article', '', 'articles_16.png', 1, 6, 0, 0, 255) ");
-        mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Submit Review', 'subcontent.php?review', '', 'reviews_16.png', 1, 7, 0, 0, 255) ");
-        mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Stats', 'stats.php', '', 'stats_16.png', 1, 8, 0, 0, 0) ");
-        mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Site Map', 'sitemap.php', '', 'sitemap_16.png', 1, 9, 0, 0, 0) ");
+        mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Home', 'index.php', '', '', 1, 1, 0, 0, 0) ");
+        mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Forum', 'forum.php', '', '', 1, 2, 0, 0, 0) ");
+        mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Downloads', 'download.php', '', '', 1, 3, 0, 0, 0) ");
+        mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Members', 'user.php', '', '', 1, 4, 0, 0, 0) ");
+        mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Submit News', 'submitnews.php', '', '', 1, 5, 0, 0, 0) ");
+        mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Submit Article', 'subcontent.php?article', '', '', 1, 6, 0, 0, 255) ");
+        mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Submit Review', 'subcontent.php?review', '', '', 1, 7, 0, 0, 255) ");
+        mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Stats', 'stats.php', '', '', 1, 8, 0, 0, 0) ");
+        mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Site Map', 'sitemap.php', '', '', 1, 9, 0, 0, 0) ");
 
 
         $e107['e107_author'] = "Steve Dunstan (jalist)";
