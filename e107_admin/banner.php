@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banner.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-01-13 21:49:07 $
+|     $Revision: 1.8 $
+|     $Date: 2005-01-13 21:56:35 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -537,10 +537,7 @@ if($action == "opt"){
 			<form method='post' action='".e_SELF."?".e_QUERY."'>\n
 			<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
-			<td style='width:40%' class='forumheader3'>".BNRLAN_53."<br /><span class='smalltext' style='font-style:italic;'>
-			individual visibility will overwrite all campaign visibility settings.<br /><br />
-			campaign visibility will overwrite all individual visibility settings.
-			</span></td>
+			<td style='width:40%' class='forumheader3'>".BNRLAN_53."<br />".BNRLAN_64."<br /><br />".BNRLAN_65."</td>
 			<td style='width:60%' class='forumheader3'>
 			<input type='radio' {$checked1} name='banner_visibilitytype' value='1' /> ".BNRLAN_54."<br />
 			<input type='radio' {$checked2} name='banner_visibilitytype' value='2' /> ".BNRLAN_55."<br />
