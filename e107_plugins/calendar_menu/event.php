@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-17 15:28:46 $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-17 18:07:24 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -604,21 +604,19 @@ extract($event_cat);
 	
 if($ds == 'one')
 {
-	$start_time = $action;
-	$end_time = $action + 86400;
-	$tmp = getdate($start_time);
-	$event_month = $tmp['mon'];
-	$event_day = $tmp['mday'];
-	$extra = " OR (e.event_rec_y = {$event_month} AND e.event_rec_m = {$event_day})";
-	$cap_title = " - ".$months[$event_month-1]." ".$event_day;
+	$tmp = getdate($action);
+	$selected_day = $tmp['mday'];
+	$selected_mon = $tmp['mon'];
+	$cap_title = " - ".$months[$selected_mon-1]." ".$selected_day;
 }
 else
 {
-	$start_time = $monthstart;
-	$end_time = $monthend;
-	$extra = " OR e.event_rec_y = {$month} ";
 	$cap_title = '';
 }
+
+$start_time = $monthstart;
+$end_time = $monthend;
+$extra = " OR e.event_rec_y = {$month} ";
 
 $qry = "
 SELECT e.*, ec.*
@@ -631,14 +629,54 @@ if($sql->db_Select_gen($qry))
 {
 	while($row = $sql->db_Fetch())
 	{
-		$events[] = $row;
+		if($row['event_rec_y'] == $month)
+		{
+			$events[$row['event_rec_m']][] = $row;
+		}
+		else
+		{
+			$tmp = getdate($row['event_start']);
+			if($tmp['year'] == $year)
+			{
+				$start_day = $tmp['mday'];
+			}
+			else
+			{
+				$start_day = 1;
+			}
+			$tmp = getdate($row['event_end']);
+			if($tmp['year'] == $year)
+			{
+				$end_day = $tmp['mday'];
+			}
+			else
+			{
+				$end_day = 31;
+			}
+			for ($i = $start_day; $i <= $end_day; $i++)
+			{
+				$events[$i][] = $row;
+			}
+		}
 	}
 }
 
 $text2 .= "<table style='width:98%' class='fborder'>";
 
-foreach ($events as $event) {
-	$text2 .= show_event($event);
+//echo "<pre>".print_r($events, TRUE)."</pre>";
+foreach ($events as $dom => $event) {
+//echo "selected day = $selected_day, dom = $dom <br />";
+	if($ds == 'one')
+	{
+		if($dom == $selected_day)
+		{
+			$text2 .= show_event($event);
+		}
+	}
+	else
+	{
+		$text2 .= show_event($event);
+	}
 }
 $text2 .= "</table>";
 // -----------------------------------------------------------------------------------------------------------
@@ -666,8 +704,11 @@ $caption = EC_LAN_80; // "Event List";
 $ns->tablerender($caption.$cap_title, $text2);
 require_once(FOOTERF);
 
-function show_event($event)
+function show_event($day_events)
 {
+
+	foreach($day_events as $event)
+	{
 	global $tp;
 	if (($_POST['do'] == NULL || $_POST['event_cat_ids'] == "all") || ($_POST['event_cat_ids'] == $event['event_cat_id']))
 	{
@@ -777,7 +818,8 @@ function show_event($event)
 		$text2 .= "</td>
 			</tr>";
 			
-		return $text2;
 	}
+		return $text2;
+}
 }
 ?>
