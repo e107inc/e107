@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/submitnews.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-27 19:51:38 $
-|     $Author: streaky $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-09 16:51:50 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -34,7 +34,7 @@ if (!check_class($pref['subnews_class'])) {
 	exit;
 }
 	
-$author_name = textparse::tpj($_POST['author_name'], TRUE);
+$author_name = $tp->toDB($_POST['author_name']);
 $author_email = check_email($_POST['author_email']);
 	
 if (isset($_POST['submit'])) {
@@ -60,10 +60,8 @@ if (isset($_POST['submit'])) {
 			header("location:".e_BASE."index.php");
 			exit;
 		}
-		$aj = new textparse;
-		 
-		$itemtitle = $aj->formtpa($_POST['itemtitle'], "public");
-		$item = $aj->formtpa($_POST['item'], "public");
+		$itemtitle = $tp->toDB($_POST['itemtitle']);
+		$item = $tp->toDB($_POST['item']);
 		$item = str_replace("src=&quot;e107_images", "src=&quot;".SITEURL."e107_images", $item);
 		 
 		 
