@@ -12,23 +12,21 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-01-28 03:04:06 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.28 $
+|     $Date: 2005-01-29 00:38:51 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 	
-$db_time = 0.0;
-// Global total time spent in all db object queries
-$db_mySQLQueryCount = 0;
-// Global total number of db object queries (all db's)
+$db_time = 0.0;				// Global total time spent in all db object queries
+$db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 	
 /**
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.27 $
-* @author $Author: mcfly_e107 $
+* @version $Revision: 1.28 $
+* @author $Author: mrpete $
 */
 class db {
 	 
@@ -55,11 +53,9 @@ class db {
 		$eTraffic->BumpWho('Create db object', 1);
 		$langid = 'e107language_'.$pref['cookie_name'];
 		if ($pref['user_tracking'] == 'session') {
-			$this->mySQLlanguage = ($this->db_IsLang($_SESSION[$langid])) ? $_SESSION[$langid] :
-			 '';
+			$this->mySQLlanguage = ($this->db_IsLang($_SESSION[$langid])) ? $_SESSION[$langid] : '';
 		} else {
-			$this->mySQLlanguage = ($this->db_IsLang($_COOKIE[$langid])) ? $_COOKIE[$langid] :
-			 '';
+			$this->mySQLlanguage = ($this->db_IsLang($_COOKIE[$langid])) ? $_COOKIE[$langid] : '';
 		}
 	}
 	 
@@ -129,8 +125,7 @@ class db {
 	function db_Write_log($log_type = '', $log_remark = '', $log_query = '') {
 		global $tp;
 		$d = time();
-		$uid = (USER === FALSE) ? USERID :
-		 '0';
+		$uid = (USER === FALSE) ? USERID : '0';
 		$ip = getip();
 		$qry = $tp->toDB($log_query);
 		$this->db_Insert('dblog', "0,'{$log_type}',{$d},{$uid},'{$ip}','{$qry}','{$log_remark}'", 2);
@@ -144,32 +139,38 @@ class db {
 	* @access private
 	*/
 	function db_Query($query, $rli = NULL, $qry_from = '', $debug = FALSE, $log_type = '', $log_remark = '') {
-		global $db_time, $db_mySQLQueryCount, $queryinfo;
+		global $db_time,$db_mySQLQueryCount,$queryinfo, $eTraffic;
 		$db_mySQLQueryCount++;
-		if (E107_DEBUG_LEVEL) {
-			global $db_debug;
-			$aTrace = debug_backtrace();
-			$nFields = $db_debug->Mark_Query($query, $rli, $aTrace);
-		}
+
 		if ($debug == 'now') {
 			echo "** $query";
 		}
-		if ($debug !== FALSE || strstr(e_QUERY, 'showsql')) {
+		if ($debug !== FALSE || strstr(e_QUERY, 'showsql'))
+		{
 			$queryinfo[] = "<b>{$qry_from}</b>: $query";
 		}
 		if ($log_type != '') {
 			$this->db_Write_log($log_type, $log_remark, $query);
 		}
-		$_dbTimeStart = explode(' ', microtime());
-		$sQryRes = is_null($rli) ? @mysql_query($query) :
-		 @mysql_query($query, $rli);
-		$_dbTimeEnd = explode(' ', microtime());
-		$mytime = ((float)$_dbTimeEnd[0] + (float)$_dbTimeEnd[1]) - ((float)$_dbTimeStart[0] + (float)$_dbTimeStart[1]);
+		
+		$b = microtime();
+		$sQryRes = is_null($rli) ? @mysql_query($query) : @mysql_query($query, $rli);
+		$e = microtime();
+
+		$eTraffic->Bump('db_Query',$b,$e);
+		$mytime = $eTraffic->TimeDelta($b,$e);
 		$db_time += $mytime;
 		$this->mySQLresult = $sQryRes;
 		if (E107_DEBUG_LEVEL) {
 			global $db_debug;
-			$db_debug->Mark_Query_Results($mytime, $this->mySQLcurTable, $nFields);
+			$aTrace = debug_backtrace();
+			$pTable = $this->mySQLcurTable;
+			if (!strlen($pTable)) {
+				$pTable = '(complex query)';
+			} else {
+				$this->mySQLcurTable = ''; // clear before next query
+			}
+			$nFields = $db_debug->Mark_Query($query, $rli, $sQryRes,$aTrace, $mytime, $pTable);
 		}
 		return $sQryRes;
 	}
@@ -201,7 +202,8 @@ class db {
 		global $db_mySQLQueryCount;
 		$table = $this->db_IsLang($table);
 		$this->mySQLcurTable = $table;
-		if ($arg != '' && $mode == 'default') {
+		if ($arg != '' && $mode == 'default')
+		{
 			if ($this->mySQLresult = $this->db_Query('SELECT '.$fields.' FROM '.MPREFIX.$table.' WHERE '.$arg, NULL, 'db_Select', $debug, $log_type, $log_remark)) {
 				$this->dbError('dbQuery');
 				return $this->db_Rows();
@@ -328,20 +330,24 @@ class db {
 	*/
 	function db_Count($table, $fields = '(*)', $arg = '', $debug = FALSE, $log_type = '', $log_remark = '') {
 		$table = $this->db_IsLang($table);
-		$this->mySQLcurTable = $table;
+
 		if ($fields == 'generic') {
 			if ($this->mySQLresult = $this->db_Query($table, NULL, 'db_Count', $debug, $log_type, $log_remark)) {
 				$rows = $this->mySQLrows = @mysql_fetch_array($this->mySQLresult);
 				return $rows[0];
 			} else {
 				$this->dbError("dbCount ($query)");
+				return FALSE;
 			}
 		}
+		
+		$this->mySQLcurTable = $table;
 		if ($this->mySQLresult = $this->db_Query('SELECT COUNT'.$fields.' FROM '.MPREFIX.$table.' '.$arg, NULL, 'db_Count', $debug, $log_type, $log_remark)) {
 			$rows = $this->mySQLrows = @mysql_fetch_array($this->mySQLresult);
 			return $rows[0];
 		} else {
 			$this->dbError("dbCount ($query)");
+			return FALSE;
 		}
 	}
 	 
