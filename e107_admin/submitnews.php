@@ -90,7 +90,7 @@ if(!$sql -> db_Select("submitnews", "*", "submitnews_auth ='0' ORDER BY submitne
 		<br />";
 		$text .= "<form method='post' action='".e_SELF."'>
 		<input type='hidden' name='news_body' value='$submitnews_item'>
-		<input type='hidden' name='news_source' value='Submitted by $submitnews_name [$submitnews_email]'>
+		<input type='hidden' name='news_source' value='".SUBLAN_19." $submitnews_name [$submitnews_email]'>
 		<input type='hidden' name='id' value='$submitnews_id'>
 		<input class='button' type='submit' name='transfer' value='".SUBLAN_15."' />
 		<input class='button' type='submit' name='unauth_sn' value='".SUBLAN_16."' />
@@ -116,7 +116,7 @@ if($sub_total == "0"){
 		$obj = new convert;
 		$datestamp = $obj->convert_date($submitnews_datestamp, "short");
 		$item = substr($submitnews_item, 0, 75)." ...";
-		if($submitnews_ip == ""){ $submitnews_ip = "Unknown"; }
+		if($submitnews_ip == ""){ $submitnews_ip = SUBLAN_18; }
 		$text .= "<form method='post' action='".e_SELF."?id=$submitnews_id'>
 		".SUBLAN_19." <b>".$submitnews_name. "</b>
 		<br />
@@ -132,7 +132,7 @@ if($sub_total == "0"){
 		<br />
 		<form method='post' action='submitnews.php'>
 		<input type='hidden' name='news_body' value='$submitnews_item'>
-		<input type='hidden' name='news_source' value='Submitted by $submitnews_name [$submitnews_email]'>
+		<input type='hidden' name='news_source' value='".SUBLAN_19." $submitnews_name [$submitnews_email]'>
 		<input type='hidden' name='id' value='$submitnews_id'>
 		<input class='button' type='submit' name='reeval' value='".SUBLAN_21."' />
 		<input class='button' type='submit' name='delete' value='".SUBLAN_22."' />

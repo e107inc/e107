@@ -271,7 +271,7 @@ class links{
 				$link_category = $submitted[0];
 				$link_name = $submitted[1];
 				$link_url = $submitted[2];
-				$link_description = $submitted[3]."\n[i]Submitted by ".$submitted[5]."[/i]";
+				$link_description = $submitted[3]."\n[i]".LCLAN_82." ".$submitted[5]."[/i]";
 				$link_button = $submitted[4];
 			}
 		}
@@ -417,7 +417,7 @@ class links{
 		$sql2 = new db;
 		while(list($link_category_id, $link_category_name, $link_category_description) = $sql-> db_Fetch()){
 			if($lamount = $sql2 -> db_Select("links", "*", "link_category ='$link_category_id' ORDER BY link_order ASC ")){
-				$text .= "<tr><td colspan='3' class='forumheader'>$link_category_name Category</td></tr>";
+				$text .= "<tr><td colspan='3' class='forumheader'>$link_category_name ".LCLAN_59."</td></tr>";
 				while(list($link_id, $link_name, $link_url, $link_description, $link_button, $link_category, $link_order, $link_refer) = $sql2-> db_Fetch()){
 					$text .= "<tr>\n<td style='width:30%' class='forumheader3'>".$link_order." - ".$link_name."</td>\n<td style='width:30%; text-align:center' class='forumheader3'>\n<select name='link_order[]' class='tbox'>";
 					for($a=1; $a<= $lamount; $a++){

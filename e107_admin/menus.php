@@ -203,7 +203,7 @@ if($message != ""){
 parseheader(($NEWSHEADER ? $NEWSHEADER : $HEADER), $menus_used);
 
 echo "<div style=\"text-align:center\">
-<div style=\"font-size:14px\" class=\"fborder\"><div class=\"forumheader\"><b>Inactive Menus</b></div></div><br />
+<div style=\"font-size:14px\" class=\"fborder\"><div class=\"forumheader\"><b>".MENLAN_22."</b></div></div><br />
 <table style=\"width:96%\" class=\"fborder\">";
 
 $sql -> db_Select("menus", "*", "menu_location='0' ");

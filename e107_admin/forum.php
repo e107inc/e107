@@ -563,8 +563,8 @@ class forum{
 
 		<tr>
 		<td style='text-align:center' class='forumheader3'>".FORLAN_2."<br />
-		".FORLAN_89." <input type='radio' name='prune_type' value='delete'>&nbsp;&nbsp;&nbsp;
-		".FORLAN_90." <input type='radio' name='prune_type' value='deactivate' checked>
+		".FORLAN_89." <input type='radio' name='prune_type' value='".FORLAN_3."'>&nbsp;&nbsp;&nbsp;
+		".FORLAN_90." <input type='radio' name='prune_type' value='".FORLAN_111."' checked>
 		</td>
 		</tr>
 

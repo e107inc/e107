@@ -193,7 +193,7 @@ if($action == "cat"){
         <tr><td colspan='2' style='text-align:center' class='forumheader'>";
         if($id){
                 $text .= "<input class='button' type='submit' name='update_category' value='".REVLAN_38."'>
-                ".$rs -> form_button("submit", "category_clear", "Clear Form").
+                ".$rs -> form_button("submit", "category_clear", REVLAN_69).
                 $rs -> form_hidden("category_id", $id)."
                 </td></tr>";
         }else{

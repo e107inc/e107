@@ -192,7 +192,7 @@ If(IsSet($_POST['edit'])){
 	<table style='width:90%'>
 	<tr>
 	<td style='width:45%; vertical-align:top'>
-	Users - click to move ...<br />
+	".UCSLAN_22."<br />
 	<select class='tbox' name='assignclass1' size='10' style='width:150px' multiple='multiple' onchange='moveOver();'>";
 
 	for($a=0; $a<=($d-1); $a++){
@@ -202,7 +202,7 @@ If(IsSet($_POST['edit'])){
 	$text .= "</select>
 	</td>
 	<td style='width:45%; vertical-align:top'>
-	Users in this class ...<br />
+	".UCSLAN_23."<br />
 	<select class='tbox' name='assignclass2' size='10' style='width:150px' multiple='multiple'>";
 	for($a=0; $a<=($c-1); $a++){
 		$text .= "<option value=".$in_userid[$a].">".$in_username[$a]."</option>";

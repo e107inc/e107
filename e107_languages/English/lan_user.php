@@ -48,5 +48,7 @@ define("LAN_419", "Show");
 define("LAN_420", "DESC");
 define("LAN_421", "ASC");
 define("LAN_422", "Go");
+define("LAN_423", "Click here to View User Comments");
+define("LAN_424", "Click here to View Forum Posts");
 
 ?>

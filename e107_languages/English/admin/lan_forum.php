@@ -2,7 +2,7 @@
 
 define("FORLAN_1", "You must enter the number of days you wish to prune.");
 define("FORLAN_2", "Please select to either delete pruned posts completely, or make them inactive (not deleted but not visible in forums)");
-define("FORLAN_3", "Delete");
+define("FORLAN_3", "delete");
 define("FORLAN_4", "Make inactive");
 define("FORLAN_5", "Carry Out Prune");
 define("FORLAN_6", "Cancel");
@@ -116,5 +116,8 @@ define("FORLAN_106", "Prune Type:");
 define("FORLAN_107", "Forum");
 define("FORLAN_108", " deleted");
 define("FORLAN_109", "days:");
+define("FORLAN_110", "Prune");
+define("FORLAN_111", "deactivate");
+define("FORLAN_110", "Prune");
 define("FORLAN_110", "Prune");
 ?>
