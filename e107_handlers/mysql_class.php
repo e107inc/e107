@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-01-19 18:58:18 $
+|     $Revision: 1.18 $
+|     $Date: 2005-01-23 10:06:06 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ $db_time = 0.0;
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.17 $
+* @version $Revision: 1.18 $
 * @author $Author: stevedunstan $
 */
 class db {
@@ -446,7 +446,7 @@ class db {
 
 		$arg = str_replace("#", MPREFIX, $arg);
 
-		//echo $arg;
+		//echo $arg;	// debug ...
 
 		if ($this->mySQLresult = $this->db_Query($arg)) {
 			$this->dbError('db_Select_gen');
@@ -511,6 +511,42 @@ class db {
 		}
 		return $table;
 	}
+
+	/*
+	changes by jalist 23/01/2005:
+	new method, returns fields as structured array
+	*/
+	/**
+	* @return array
+	* @param
+	* @desc
+	* @access public
+	*/
+	function db_getList($fields="ALL", $amount=FALSE, $maximum=200)
+	{
+		$list = array();
+		$counter = 1;
+		while($row = $this -> db_Fetch())
+		{
+			foreach($row as $key => $value)
+			{
+				if(is_string($key))
+				{
+					if(strtoupper($fields) == "ALL" || in_array ($key, $fields))
+					{
+						$list[$counter][$key] = $value;
+					}
+				}
+			}
+			if($amount && $amount == $counter || $counter > $maximum)
+			{
+				break;
+			}
+			$counter++;
+		}
+		return $list;
+	}
+
 }
 
 ?>
