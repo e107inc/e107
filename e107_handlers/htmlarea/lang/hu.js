@@ -48,7 +48,9 @@ HTMLArea.I18N = {
 		redo:           "Újra végrehajtás",
 		cut:            "Kivágás",
 		copy:           "Másolás",
-		paste:          "Beillesztés"
+		paste:          "Beillesztés",
+		lefttoright:    "Irány balról jobbra",
+		righttoleft:    "Irány jobbról balra"
 	},
 
 	buttons: {
@@ -58,6 +60,31 @@ HTMLArea.I18N = {
 
 	msg: {
 		"Path":         "Hierarchia",
-		"TEXT_MODE":    "Forrás mód. Visszaváltás [<>] gomb"
+		"TEXT_MODE":    "Forrás mód. Visszaváltás [<>] gomb",
+
+		"IE-sucks-full-screen" :
+		// translate here
+		"A teljesképrenyős szerkesztés hibát okozhat Internet Explorer használata esetén, " +
+		"ez a böngésző a hibája, amit nem tudunk kikerülni. Szemetet észlelhet a képrenyőn, " +
+		"illetve néhány funkció hiányozhat és/vagy véletlenszerűen lefagyhat a böngésző. " +
+		"Windows 9x operaciós futtatása esetén elég valószínű, hogy 'General Protection Fault' " +
+		"hibát okoz és újra kell indítania a számítógépet.\n\n" +
+		"Figyelmeztettük.  Kérjük nyomja meg a Rendben gombot, ha mégis szeretné megnyitni a " +
+		"szerkesztőt külön ablakban."
+	},
+
+	dialogs: {
+		"Cancel"                                            : "Mégsem",
+		"Insert/Modify Link"                                : "Hivatkozás Beszúrása/Módosítása",
+		"New window (_blank)"                               : "Új ablak (_blank)",
+		"None (use implicit)"                               : "Nincs (use implicit)",
+		"OK"                                                : "OK",
+		"Other"                                             : "Más",
+		"Same frame (_self)"                                : "Ugyanabba a keretbe (_self)",
+		"Target:"                                           : "Cél:",
+		"Title (tooltip):"                                  : "Cím (tooltip):",
+		"Top frame (_top)"                                  : "Felső keret (_top)",
+		"URL:"                                              : "URL:",
+		"You must enter the URL where this link points to"  : "Be kell írnia az URL-t, ahova a hivatkozás mutasson"
 	}
 };

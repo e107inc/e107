@@ -1,7 +1,6 @@
-// german version for htmlArea v3.0 - Alpha Release
-// - translated by AtK<atk@chello.at>
-// term´s and licenses are equal to htmlarea!
-// translation improved by broxx<broxx@broxx.com>
+// I18N constants
+
+// LANG: "de", ENCODING: ISO-8859-1 for the german umlaut!
 
 HTMLArea.I18N = {
 
@@ -16,30 +15,35 @@ HTMLArea.I18N = {
 		strikethrough:  "Durchgestrichen",
 		subscript:      "Hochgestellt",
 		superscript:    "Tiefgestellt",
-		justifyleft:    "Links ausrichten",
-		justifycenter:  "Zentrieren",
-		justifyright:   "Rechts ausrichten",
+        justifyleft:            "Linksbündig",
+        justifycenter:          "Zentriert",
+        justifyright:           "Rechtsbündig",
 		justifyfull:    "Blocksatz",
-		orderedlist:    "Nummerierung",
-		unorderedlist:  "Aufzaehlungszeichen",
+        orderedlist:      "Nummerierung",
+        unorderedlist:    "Aufzählungszeichen",
 		outdent:        "Einzug verkleinern",
-		indent:         "Einzug vergrössern",
-		forecolor:      "Text Farbe",
-		hilitecolor:    "Hintergrund Farbe",
+        indent:                 "Einzug vergrößern",
+        forecolor:              "Schriftfarbe",
+        backcolor:              "Hindergrundfarbe",
+        hilitecolor:            "Hintergrundfarbe",
 		horizontalrule: "Horizontale Linie",
-		createlink:     "Hyperlink einfuegen",
-		insertimage:    "Bild einfuegen",
-		inserttable:    "Tabelle einfuegen",
+        inserthorizontalrule:   "Horizontale Linie",
+        createlink:             "Hyperlink einfügen",
+        insertimage:            "Bild einfügen",
+        inserttable:            "Tabelle einfügen",
 		htmlmode:       "HTML Modus",
 		popupeditor:    "Editor im Popup öffnen",
-		about:          "Ueber HtmlArea",
+        about:                  "Über htmlarea",
+        help:                   "Hilfe",
 		showhelp:       "Hilfe",
-		textindicator:  "derzeitiger Stil",
-		undo:           "Rueckgaengig",
+        textindicator:          "Derzeitiger Stil",
+        undo:                   "Rückgängig",
 		redo:           "Wiederholen",
 		cut:            "Ausschneiden",
 		copy:           "Kopieren",
-		paste:          "Einfuegen"
+        paste:                  "Einfügen aus der Zwischenablage",
+        lefttoright:            "Textrichtung von Links nach Rechts",
+        righttoleft:            "Textrichtung von Rechts nach Links"
 	},
   
  buttons: {
@@ -49,6 +53,27 @@ HTMLArea.I18N = {
 
 	msg: {
 		"Path":         "Pfad",
-		"TEXT_MODE":    "Du befindest dich im HTML Modus.  Benuetze die [<>] Schaltflaeche um in den WYSIWIG-Modus zu wechseln."
+        "TEXT_MODE":            "Sie sind im Text-Modus. Benutzen Sie den [<>] Knopf um in den visuellen Modus (WYSIWIG) zu gelangen.",
+
+        "Moz-Clipboard" :
+        "Aus Sicherheitsgründen dürfen Skripte normalerweise nicht programmtechnisch auf " +
+        "Ausschneiden/Kopieren/Einfügen zugreifen. Bitte klicken Sie OK um die technische " +
+        "Erläuterung auf mozilla.org zu öffnen, in der erklärt wird, wie einem Skript Zugriff " +
+        "gewährt werden kann."
+    },
+    
+    dialogs: {
+        "OK":                   "OK",
+        "Cancel":               "Abbrechen",
+        "Insert/Modify Link":   "Verknüpfung hinzufügen/ändern",
+        "None (use implicit)":  "k.A. (implizit)",
+        "New window (_blank)":  "Neues Fenster (_blank)",
+        "Same frame (_self)":   "Selber Rahmen (_self)",
+        "Top frame (_top)":     "Oberster Rahmen (_top)",
+        "Other":                "Anderes",
+        "Target:":              "Ziel:",
+        "Title (tooltip):":     "Titel (Tooltip):",
+        "URL:":                 "URL:",
+        "You must enter the URL where this link points to": "Sie müssen eine Ziel-URL angeben für die Verknüpfung angeben"
 	}
 };

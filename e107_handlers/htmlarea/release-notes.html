@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3.2//EN">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>HTMLArea-3.0-rc1 release notes</title>
+    <title><% $basename %> release notes</title>
     <style>
       .fixme { color: red; }
     </style>
@@ -9,9 +9,9 @@
 
   <body>
 
-    <h1>HTMLArea-3.0-rc1 release notes</h1>
+    <h1><% $basename %> release notes</h1>
 
-    <p>This release was compiled on Mar  1, 2004 [19:37] GMT.</p>
+    <p>This release was compiled on <% $time %>.</p>
 
     <h2>3.0-rc1</h2>
 
@@ -154,6 +154,39 @@ system</a> at SourceForge
       <li>Cut, copy, paste, undo, redo buttons.</li>
 
     </ul>
+<%doc>
+    <h2>Rationale for Beta</h2>
+
+    <p>Why was this released as "Beta"?  The code is quite stable and it
+    didn't deserve a "Beta" qualification.  However, there are some things
+    left to do for the real 3.0 version.  These things will not affect the
+    API to work with HTMLArea, in other words, you can install the Beta
+    right now and then install the final release without modifying your
+    code.  That's if you don't modify HTMLArea itself.  ;-)</p>
+
+    <h2>To-Do before 3.0 final</h2>
+
+    <ol>
+
+      <li>We should use a single popup interface.  Currently there are two:
+      dialog.js and popupwin.js; dialog.js emulates modal dialogs, which
+      sucks when you want to open "select-color" from another popup and not
+      from the editor itself.  Very buggy in IE.  We should probably use only
+      modeless dialogs (that is, popupwin.js).</li>
+
+      <li>Internationalization for the SpellChecker plugin.</li>
+
+      <li>Internationalization for the TableOperations plugin.</li>
+
+      <li>People who sent translations are invited to re-iterate through
+        their work and make it up-to-date with lang/en.js which is the main
+        lang file for HTMLArea-3.0.  Some things have changed but not all
+        translations are updated.</li>
+
+      <li><strong>Documentation</strong>.</li>
+
+    </ol>
+</%doc>
     <hr />
     <address><a href="http://dynarch.com/mishoo/">Mihai Bazon</a></address>
 <!-- Created: Sun Aug  3 16:55:08 EEST 2003 -->
@@ -162,4 +195,14 @@ system</a> at SourceForge
   </body>
 </html>
 
+<%ARGS>
+  $project => 'HTMLArea'
+  $version => '3.0'
+  $release => 'rc1'
+  $basename => 'HTMLArea-3.0-rc1'
+</%ARGS>
 
+<%INIT>;
+use POSIX qw(strftime);
+my $time = strftime '%b %e, %Y [%H:%M] GMT', gmtime;
+</%INIT>

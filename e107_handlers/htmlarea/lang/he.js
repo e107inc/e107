@@ -1,7 +1,7 @@
 // I18N constants
 
 // LANG: "he", ENCODING: UTF-8
-// Author: Liron Newman, <plastish@ultinet.org>
+// Author: Liron Newman, http://www.eesh.net, <plastish at ultinet dot org>
 
 // FOR TRANSLATORS:
 //
@@ -28,7 +28,7 @@ HTMLArea.I18N = {
 		justifyleft:    " ישור לשמאל",
 		justifycenter:  "ישור למרכז",
 		justifyright:   "ישור לימין",
-		justifyfull:    "יישור לשורה מלאה",
+		justifyfull:    "ישור לשורה מלאה",
 		orderedlist:    "רשימה ממוספרת",
 		unorderedlist:  "רשימה לא ממוספרת",
 		outdent:        "הקטן כניסה",
@@ -37,7 +37,7 @@ HTMLArea.I18N = {
 		hilitecolor:    "צבע רקע",
 		horizontalrule: "קו אנכי",
 		createlink:     "הכנס היפר-קישור",
-		insertimage:    "הכנס תמונה",
+		insertimage:    "הכנס/שנה תמונה",
 		inserttable:    "הכנס טבלה",
 		htmlmode:       "שנה מצב קוד HTML",
 		popupeditor:    "הגדל את העורך",
@@ -48,16 +48,42 @@ HTMLArea.I18N = {
 		redo:           "מבצע מחדש את הפעולה האחרונה שביטלת",
 		cut:            "גזור בחירה",
 		copy:           "העתק בחירה",
-		paste:          "הדבק מהלוח"
+		paste:          "הדבק מהלוח",
+		lefttoright:    "כיוון משמאל לימין",
+		righttoleft:    "כיוון מימין לשמאל"
 	},
 
 	buttons: {
-		"ok":           "OK",
+		"ok":           "אישור",
 		"cancel":       "ביטול"
 	},
 
 	msg: {
 		"Path":         "נתיב עיצוב",
-		"TEXT_MODE":    "אתה במצב טקסט נקי (קוד). השתמש בכפתור [<>] כדי לחזור למצב WYSIWYG (תצוגת עיצוב)."
+		"TEXT_MODE":    "אתה במצב טקסט נקי (קוד). השתמש בכפתור [<>] כדי לחזור למצב WYSIWYG (תצוגת עיצוב).",
+
+		"IE-sucks-full-screen" :
+		// translate here
+		"מצב מסך מלא יוצר בעיות בדפדפן Internet Explorer, " +
+		"עקב באגים בדפדפן לא יכולנו לפתור את זה.  את/ה עלול/ה לחוות תצוגת זבל,  " +
+		"בעיות בתפקוד העורך ו/או קריסה של הדפדפן.  אם המערכת שלך היא Windows 9x " +
+		"סביר להניח שתקבל/י 'General Protection Fault' ותאלצ/י לאתחל את המחשב.\n\n" +
+		"ראה/י הוזהרת.  אנא לחץ/י אישור אם את/ה עדיין רוצה לנסות את העורך במסך מלא."
+	},
+
+	dialogs: {
+		"Cancel"                                            : "ביטול",
+		"Insert/Modify Link"                                : "הוסף/שנה קישור",
+		"New window (_blank)"                               : "חלון חדש (_blank)",
+		"None (use implicit)"                               : "ללא (השתמש ב-frame הקיים)",
+		"OK"                                                : "OK",
+		"Other"                                             : "אחר",
+		"Same frame (_self)"                                : "אותו frame (_self)",
+		"Target:"                                           : "יעד:",
+		"Title (tooltip):"                                  : "כותרת (tooltip):",
+		"Top frame (_top)"                                  : "Frame עליון (_top)",
+		"URL:"                                              : "URL:",
+		"You must enter the URL where this link points to"  : "חובה לכתוב URL שאליו קישור זה מצביע"
+
 	}
 };

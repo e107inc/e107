@@ -9,7 +9,7 @@
 // Version 3.0 developed by Mihai Bazon.
 //   http://dynarch.com/mishoo
 //
-// $Id: dialog.js,v 1.3 2004-03-16 07:22:51 e107coders Exp $
+// $Id: dialog.js,v 1.4 2004-06-26 13:48:19 e107coders Exp $
 
 // Though "Dialog" looks like an object, it isn't really an object.  Instead
 // it's just namespace for protecting global symbols.
@@ -22,11 +22,12 @@ function Dialog(url, action, init) {
 };
 
 Dialog._parentEvent = function(ev) {
+	setTimeout( function() { if (Dialog._modal && !Dialog._modal.closed) { Dialog._modal.focus() } }, 50);
 	if (Dialog._modal && !Dialog._modal.closed) {
-		Dialog._modal.focus();
 		HTMLArea._stopEvent(ev);
 	}
 };
+
 
 // should be a function, the return handler of the currently opened dialog.
 Dialog._return = null;
@@ -40,7 +41,7 @@ Dialog._arguments = null;
 Dialog._geckoOpenModal = function(url, action, init) {
 	var dlg = window.open(url, "hadialog",
 			      "toolbar=no,menubar=no,personalbar=no,width=10,height=10," +
-			      "scrollbars=no,resizable=yes");
+			      "scrollbars=no,resizable=yes,modal=yes,dependable=yes");
 	Dialog._modal = dlg;
 	Dialog._arguments = init;
 

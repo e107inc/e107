@@ -68,7 +68,12 @@ HTMLArea.I18N = {
 		"due to browser bugs that we weren't able to workaround.  You might experience garbage " +
 		"display, lack of editor functions and/or random browser crashes.  If your system is Windows 9x " +
 		"it's very likely that you'll get a 'General Protection Fault' and need to reboot.\n\n" +
-		"You have been warned.  Please press OK if you still want to try the full screen editor."
+		"You have been warned.  Please press OK if you still want to try the full screen editor.",
+
+		"Moz-Clipboard" :
+		"Unprivileged scripts cannot access Cut/Copy/Paste programatically " +
+		"for security reasons.  Click OK to see a technical note at mozilla.org " +
+		"which shows you how to allow a script to access the clipboard."
 	},
 
 	dialogs: {

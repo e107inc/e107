@@ -12,12 +12,12 @@
       head.appendChild(base);
     </script>
 
-    <script type="text/javascript" src="http://localhost/e107/e107_handlers/htmlarea/htmlarea.js"></script>
+    <script type="text/javascript" src="../htmlarea.js"></script>
 
     <script type="text/javascript">
-        // load HTMLArea scripts that are present in the opener frame
-        var scripts = window.opener.HTMLArea._scripts;
-        for (var i = 4; i < scripts.length; ++i) {
+	// load HTMLArea scripts that are present in the opener frame
+	var scripts = window.opener.HTMLArea._scripts;
+	for (var i = 4; i < scripts.length; ++i) {
            document.write("<scr" + "ipt type='text/javascript' src='" + scripts[i] + "'></scr" + "ipt>");
         }
     </script>
@@ -25,20 +25,20 @@
     <!-- browser takes a coffee break here -->
     <script type="text/javascript">
 var parent_object  = null;
-var editor           = null;        // to be initialized later [ function init() ]
+var editor	   = null;	// to be initialized later [ function init() ]
 
 /* ---------------------------------------------------------------------- *\
-   Function    :
-   Description :
+   Function    : 
+   Description : 
 \* ---------------------------------------------------------------------- */
 
 function _CloseOnEsc(ev) {
-        ev || (ev = window.event);
-        if (ev.keyCode == 27) {
-                // update_parent();
-                window.close();
-                return;
-        }
+	ev || (ev = window.event);
+	if (ev.keyCode == 27) {
+		// update_parent();
+		window.close();
+		return;
+	}
 }
 
 /* ---------------------------------------------------------------------- *\
@@ -47,19 +47,19 @@ function _CloseOnEsc(ev) {
 \* ---------------------------------------------------------------------- */
 
 function resize_editor() {  // resize editor to fix window
-        var newHeight;
-        if (document.all) {
-                // IE
-                newHeight = document.body.offsetHeight - editor._toolbar.offsetHeight;
-                if (newHeight < 0) { newHeight = 0; }
-        } else {
-                // Gecko
-                newHeight = window.innerHeight - editor._toolbar.offsetHeight;
-        }
-        if (editor.config.statusBar) {
-                newHeight -= editor._statusBar.offsetHeight;
-        }
-        editor._textArea.style.height = editor._iframe.style.height = newHeight + "px";
+	var newHeight;
+	if (document.all) {
+		// IE
+		newHeight = document.body.offsetHeight - editor._toolbar.offsetHeight;
+		if (newHeight < 0) { newHeight = 0; }
+	} else {
+		// Gecko
+		newHeight = window.innerHeight - editor._toolbar.offsetHeight;
+	}
+	if (editor.config.statusBar) {
+		newHeight -= editor._statusBar.offsetHeight;
+	}
+	editor._textArea.style.height = editor._iframe.style.height = newHeight + "px";
 }
 
 /* ---------------------------------------------------------------------- *\
@@ -68,48 +68,48 @@ function resize_editor() {  // resize editor to fix window
 \* ---------------------------------------------------------------------- */
 
 function init() {
-        parent_object           = opener.HTMLArea._object;
-        var config           = HTMLArea.cloneObject( parent_object.config );
-        config.width           = "100%";
-        config.height           = "auto";
+	parent_object	   = opener.HTMLArea._object;
+	var config	   = HTMLArea.cloneObject( parent_object.config );
+	config.width	   = "100%";
+	config.height	   = "auto";
 
-        // change maximize button to minimize button
-        config.btnList["popupeditor"] = [ 'Minimize Editor', _editor_url + 'images/fullscreen_minimize.gif', true,
-                                          function() { window.close(); } ];
+	// change maximize button to minimize button
+	config.btnList["popupeditor"] = [ 'Minimize Editor', _editor_url + 'images/fullscreen_minimize.gif', true,
+					  function() { window.close(); } ];
 
-        // generate editor and resize it
-        editor = new HTMLArea("editor", config);
+	// generate editor and resize it
+	editor = new HTMLArea("editor", config);
 
-        // register the plugins, if any
-        for (var i in parent_object.plugins) {
-                var plugin = parent_object.plugins[i];
-                editor.registerPlugin2(plugin.name, plugin.args);
-        }
-        // and restore the original toolbar
+	// register the plugins, if any
+	for (var i in parent_object.plugins) {
+		var plugin = parent_object.plugins[i];
+		editor.registerPlugin2(plugin.name, plugin.args);
+	}
+	// and restore the original toolbar
         config.toolbar = parent_object.config.toolbar;
-        editor.generate();
-        editor._iframe.style.width = "100%";
-        editor._textArea.style.width = "100%";
-        resize_editor();
+	editor.generate();
+	editor._iframe.style.width = "100%";
+	editor._textArea.style.width = "100%";
+	resize_editor();
 
-        editor.doctype = parent_object.doctype;
+	editor.doctype = parent_object.doctype;
 
-        // set child window contents and event handlers, after a small delay
-        setTimeout(function() {
-                           editor.setHTML(parent_object.getInnerHTML());
+	// set child window contents and event handlers, after a small delay
+	setTimeout(function() {
+			   editor.setHTML(parent_object.getInnerHTML());
 
-                           // switch mode if needed
-                           if (parent_object._mode == "textmode") { editor.setMode("textmode"); }
+			   // switch mode if needed
+			   if (parent_object._mode == "textmode") { editor.setMode("textmode"); }
 
-                           // continuously update parent editor window
-                           setInterval(update_parent, 500);
+			   // continuously update parent editor window
+			   setInterval(update_parent, 500);
 
-                           // setup event handlers
-                           document.body.onkeypress = _CloseOnEsc;
-                           editor._doc.body.onkeypress = _CloseOnEsc;
-                           editor._textArea.onkeypress = _CloseOnEsc;
-                           window.onresize = resize_editor;
-                   }, 333);                         // give it some time to meet the new frame
+			   // setup event handlers
+			   document.body.onkeypress = _CloseOnEsc;
+			   editor._doc.body.onkeypress = _CloseOnEsc;
+			   editor._textArea.onkeypress = _CloseOnEsc;
+			   window.onresize = resize_editor;
+		   }, 333);			 // give it some time to meet the new frame
 }
 
 /* ---------------------------------------------------------------------- *\
@@ -118,8 +118,8 @@ function init() {
    \* ---------------------------------------------------------------------- */
 
 function update_parent() {
-        // use the fast version
-        parent_object.setHTML(editor.getInnerHTML());
+	// use the fast version
+	parent_object.setHTML(editor.getInnerHTML());
 }
 
     </script>

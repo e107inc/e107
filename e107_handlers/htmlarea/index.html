@@ -14,13 +14,13 @@
     <div style="float: right; border: 1px solid #aaa; background-color: #eee; padding: 3px; margin-left: 10px; margin-bottom: 10px;">
       <table cellspacing="0" cellpadding="0" border="0">
         <tr>
-          <td class="label">Version:</td><td>3.0</td>
+          <td class="label">Version:</td><td><% $version %></td>
         </tr>
         <tr>
-          <td class="label">Release:</td><td>rc1 (<a href="release-notes.html">release notes</a>)</td>
+          <td class="label">Release:</td><td><% $release %> (<a href="release-notes.html">release notes</a>)</td>
         </tr>
         <tr>
-          <td class="label bline">Compiled at:</td><td class="bline">Mar  1, 2004 [19:37] GMT</td>
+          <td class="label bline">Compiled at:</td><td class="bline"><% $time %></td>
         </tr>
         <tr>
           <td class="label">SourceForge page:</td><td><a href="http://sf.net/projects/itools-htmlarea/">http://sf.net/projects/itools-htmlarea/</a></td>
@@ -89,14 +89,15 @@
     <pre style="margin-left: 2em"
 >
 cd /var/www/html
-unzip /path/to/archive/HTMLArea-3.0-rc1.zip
-mv HTMLArea-3.0-rc1 htmlarea
+unzip /path/to/archive/<% $basename %>.zip
+mv <% $basename %> htmlarea
 find htmlarea/ -type f -exec chmod 644 {} \;
 find htmlarea/ -type d -exec chmod 755 {} \;
 find htmlarea/ -name "*.cgi" -exec chmod 755 {} \;</pre>
 
     <p>
-      <strong>Notes.</strong> You may chose to symlink "htmlarea" to "HTMLArea-3.0-rc1", in which case your server needs to be configured to
+      <strong>Notes.</strong> You may chose to symlink "htmlarea" to "<%
+      $basename %>", in which case your server needs to be configured to
       "<tt>FollowSymLinks</tt>".  You need to make sure that *.cgi files are
       interpreted as CGI scripts.  If you want to use the SpellChecker
       plugin you need to have a recent version of Perl installed (I
@@ -196,4 +197,14 @@ find htmlarea/ -name "*.cgi" -exec chmod 755 {} \;</pre>
   </body>
 </html>
 
+<%ARGS>
+  $project => 'HTMLArea'
+  $version => '3.0'
+  $release => 'rc1'
+  $basename => 'HTMLArea-3.0-rc1'
+</%ARGS>
 
+<%INIT>;
+use POSIX qw(strftime);
+my $time = strftime '%b %e, %Y [%H:%M] GMT', gmtime;
+</%INIT>
