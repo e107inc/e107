@@ -387,7 +387,7 @@ define("e_ADMIN", $e_BASE.$ADMIN_DIRECTORY);
 
 // Security Add on for queries in URLs
 
-if(ADMIN && e_QUERY && !count($_POST) && !defined("e_NOCHECK")){
+if(strpos(e_SELF,$ADMIN_DIRECTORY) && ADMIN && e_QUERY && !count($_POST) && !defined("e_NOCHECK")){
 	list($tmp_s_ref,)=explode("?",$_SERVER["HTTP_REFERER"],2);
 	if($tmp_s_ref != e_SELF){require_once(e_HANDLER."equery_secure.php");}
 }
