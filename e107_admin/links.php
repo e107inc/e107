@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/e107_admin/links.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2004-08-14 01:52:09 $
-|     $Author: e107coders $
+|     $Revision: 1.24 $
+|     $Date: 2004-08-27 21:19:44 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -40,6 +40,13 @@ if(preg_match("#(.*?)_delete_(\d+)#",$deltest[LCLAN_10],$matches))
 {
         $delete = $matches[1];
         $del_id = $matches[2];
+}
+
+if(preg_match("#create_sn_(\d+)#",$deltest[LCLAN_14],$matches))
+{
+	$action='create';
+	$sub_action='sn';
+	$id=$matches[1];
 }
 
 // ##### Main loop -----------------------------------------------------------------------------------------------------------------------
@@ -125,6 +132,20 @@ if($delete == 'category')
         }
 }
 
+if($delete == "sn")
+{
+	if($sql -> db_Delete("tmp", "tmp_time='$del_id' "))
+	{
+		$linkpost -> show_message(LCLAN_77);
+	}
+}
+
+if($action == "sn")
+{
+	$linkpost -> show_submitted($sub_action, $id);
+}
+
+
 if(IsSet($_POST['add_link'])){
         $linkpost -> submit_link($sub_action, $id);
         unset($id);
@@ -142,13 +163,6 @@ if($action == "cat"){
         $linkpost -> show_categories($sub_action, $id);
 }
 
-if($action == "sn"){
-        if($sub_action == "confirm"){
-                $sql -> db_Delete("tmp", "tmp_time='$id' ");
-                $linkpost -> show_message(LCLAN_77);
-        }
-        $linkpost -> show_submitted($sub_action, $id);
-}
 
 if($action == "opt"){
         $linkpost -> show_pref_options();
@@ -586,9 +600,11 @@ class links{
                                 $text .= "<tr>
                                 <td style='width:50%' class='forumheader3'><a href='".$submitted[2]."' rel='external'>".$submitted[2]."</a></td>
                                 <td style='width:30%' class='forumheader3'>".$submitted[5]."</td>
-                                <td style='width:20%; text-align:center; vertical-align:top' class='forumheader3'>
-                                ".$rs -> form_button("submit", "category_edit_{$tmp_time}", LCLAN_14, "onclick=\"document.location='".e_SELF."?create.sn.$tmp_time'\"")."
-                                ".$rs -> form_button("submit", "category_delete_{$tmp_time}", LCLAN_10, "onclick=\"confirm_('sn', $tmp_time);\"")."
+                                <td style='width:20%; text-align:center; vertical-align:top' class='forumheader3'><div>
+                                ".$rs -> form_open("post", e_SELF."?sn","submitted_links")."
+                                ".$rs -> form_button("submit", "create_sn_{$tmp_time}", LCLAN_14, "onclick=\"document.location='".e_SELF."?create.sn.$tmp_time'\"")."
+                                ".$rs -> form_button("submit", "sn_delete_{$tmp_time}", LCLAN_10, "onclick=\"confirm_('sn', $tmp_time);\"")."
+                                </div>".$rs -> form_close()."
                                 </td>
                                 </tr>\n";
                         }
