@@ -12,8 +12,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.8 $
-| $Date: 2005-01-30 01:36:51 $
+| $Revision: 1.9 $
+| $Date: 2005-02-02 13:02:32 $
 | $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -37,7 +37,7 @@ class e_shortcode {
 				$this->registered_codes[$code]['path'] = $path;
 			}
 		}
-		if(is_array($register_sc))
+		if(isset($register_sc) && is_array($register_sc))
 		{
 			foreach($register_sc as $code)
 			{
