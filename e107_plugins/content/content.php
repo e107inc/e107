@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.14 $
-|		$Date: 2005-02-11 16:15:55 $
+|		$Revision: 1.15 $
+|		$Date: 2005-02-12 09:52:10 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -482,7 +482,7 @@ function show_content(){
 									if($SUBMIT_LINE != TRUE && $MANAGER_LINE == TRUE){
 										$content_type_table_string .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_TYPE_TABLE_LINE);
 									}
-									$CONTENT_TYPE_TABLE_MANAGER_ICON = "<a href='".e_PLUGIN."content/content_manager.php'>".CONTENT_ICON_CONTENTMANAGER_SMALL."</a>";
+									$CONTENT_TYPE_TABLE_MANAGER_ICON = "<a href='".e_PLUGIN."content/content_manager.php'>".CONTENT_ICON_CONTENTMANAGER."</a>";
 									$CONTENT_TYPE_TABLE_MANAGER_HEADING = "<a href='".e_PLUGIN."content/content_manager.php'>".CONTENT_LAN_67."</a>";
 									$CONTENT_TYPE_TABLE_MANAGER_SUBHEADING = CONTENT_LAN_68;
 									$content_type_table_string .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_TYPE_TABLE_MANAGER);
@@ -668,7 +668,7 @@ function show_content_cat($mode=""){
 							}
 						}
 						
-						if(!$resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_comment, content_rate, content_pe, content_datestamp", "content_refer !='sa' AND content_id = '".$sub_action."' ".$unvalidcontent." ".$datequery." AND content_class IN (".USERCLASS_LIST.") " )){
+						if(!$resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_parent, content_comment, content_rate, content_pe, content_datestamp", "content_refer !='sa' AND content_id = '".$sub_action."' ".$unvalidcontent." ".$datequery." AND content_class IN (".USERCLASS_LIST.") " )){
 							header("location:".e_SELF."?".$type.".".$type_id.".cat"); exit;
 						}else{
 							$row = $sql -> db_Fetch();
@@ -692,13 +692,14 @@ function show_content_cat($mode=""){
 										$CONTENT_CAT_LISTSUB_TABLE_SUBHEADING = ($content_subheading ? "[".$content_subheading."]" : "");
 										$content_cat_listsub_table_string .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CAT_LISTSUB_TABLE);
 									}
+									$content_cat_listsub_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CAT_LISTSUB_TABLE_START);
+									$content_cat_listsub_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CAT_LISTSUB_TABLE_END);
+									$textsubparent = $content_cat_listsub_table_start.$content_cat_listsub_table_string.$content_cat_listsub_table_end;
+									$captionsubparent = CONTENT_LAN_28;
 								}
 							}
 						}
-						$content_cat_listsub_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CAT_LISTSUB_TABLE_START);
-						$content_cat_listsub_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CAT_LISTSUB_TABLE_END);
-						$textsubparent = $content_cat_listsub_table_start.$content_cat_listsub_table_string.$content_cat_listsub_table_end;
-						$captionsubparent = CONTENT_LAN_28;
+
 						
 						//list all contents within this category
 						unset($text);				
@@ -1373,10 +1374,11 @@ function parse_content_cat_list_table($row){
 				$datestamp = ereg_replace(" -.*", "", $gen -> convert_date($content_datestamp, "long"));
 				$CONTENT_CAT_LIST_TABLE_DATE = ($datestamp != "" ? $datestamp : "");
 
+				$CONTENT_CAT_LIST_TABLE_AMOUNT = $aa -> countItemsInCat($content_id, $content_parent);
+
 				$authordetails = $aa -> getAuthor($content_author);
 				$CONTENT_CAT_LIST_TABLE_AUTHORNAME = (USER ? "<a href='".e_BASE."user.php?id.".$authordetails[0]."'>".$authordetails[1]."</a>" : $authordetails[1]);
 				$CONTENT_CAT_LIST_TABLE_AUTHOREMAIL = ($authordetails[2] ? $authordetails[2] : "");
-
 				if(USER){
 					$CONTENT_CAT_LIST_TABLE_AUTHORDETAILS = $authordetails[1]." ";
 					if(is_numeric($authordetails[3])){
@@ -1570,7 +1572,7 @@ function parse_content_content_table($row){
 				if(($content_pref["content_content_peicon_{$type_id}"] && $content_pe) || $content_pref["content_content_peicon_all_{$type_id}"]){
 					$CONTENT_CONTENT_TABLE_EPICONS = $tp -> parseTemplate("{EMAIL_ITEM=".CONTENT_LAN_69." ".CONTENT_LAN_71."^plugin:content.$content_id}");
 					$CONTENT_CONTENT_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_71."^plugin:content.$content_id}");
-					$CONTENT_CAT_LIST_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_71."^plugin:content.$content_id}");
+					$CONTENT_CONTENT_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_71."^plugin:content.$content_id}");
 				}
 				
 

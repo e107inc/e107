@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_cat_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-02-09 21:19:25 $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-12 09:52:54 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -75,7 +75,7 @@ if(!$CONTENT_CAT_LIST_TABLE){
 						<table style='width:100%; vertical-align:top;'>
 						<tr>
 							<td style='padding:2px; vertical-align:top; border:0;'>
-								{CONTENT_CAT_LIST_TABLE_HEADING}
+								{CONTENT_CAT_LIST_TABLE_HEADING} ({CONTENT_CAT_LIST_TABLE_AMOUNT})
 							</td>
 						</tr>
 						<tr>
