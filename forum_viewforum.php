@@ -36,11 +36,13 @@ define("IMAGE_sticky", (file_exists(THEME."forum/sticky.png") ? "<img src='".THE
 define("IMAGE_stickyclosed", (file_exists(THEME."forum/stickyclosed.png") ? "<img src='".THEME."forum/stickyclosed.png' alt='' />" : "<img src='".e_IMAGE."forum/stickyclosed.png' alt='' />"));
 define("IMAGE_announce", (file_exists(THEME."forum/announce.png") ? "<img src='".THEME."forum/announce.png' alt='' />" : "<img src='".e_IMAGE."forum/announce.png' alt='' />"));
 define("IMAGE_closed_small", (file_exists(THEME."forum/closed_small.png") ? "<img src='".THEME."forum/closed_small.png' alt='' />" : "<img src='".e_IMAGE."forum/closed_small.png' alt='' />"));
-define("IMAGE_admin_unstick", (file_exists(THEME."forum/admin_unstick.png") ? "<img src='".THEME."forum/admin_unstick.png' alt='".LAN_398."' style='border:0' />" : "<img src='".e_IMAGE."forum/admin_unstick.png' alt='".LAN_398."' style='border:0' />"));
-define("IMAGE_admin_lock", (file_exists(THEME."forum/admin_lock.png") ? "<img src='".THEME."forum/admin_lock.png' alt='".LAN_399."' style='border:0' />" : "<img src='".e_IMAGE."forum/admin_lock.png' alt='".LAN_399."' style='border:0' />"));
-define("IMAGE_admin_unlock", (file_exists(THEME."forum/admin_unlock.png") ? "<img src='".THEME."forum/admin_unlock.png' alt='".LAN_400."' style='border:0' />" : "<img src='".e_IMAGE."forum/admin_unlock.png' alt='".LAN_400."' style='border:0' />"));
-define("IMAGE_admin_stick", (file_exists(THEME."forum/admin_stick.png") ? "<img src='".THEME."forum/admin_stick.png' alt='".LAN_401."' style='border:0' />" : "<img src='".e_IMAGE."forum/admin_stick.png' alt='".LAN_401."' style='border:0' />"));
 define("IMAGE_admin_move", (file_exists(THEME."forum/admin_move.png") ? "<img src='".THEME."forum/admin_move.png' alt='".LAN_402."' style='border:0' />" : "<img src='".e_IMAGE."forum/admin_move.png' alt='".LAN_402."' style='border:0' />"));
+
+define("IMAGE_admin_unstick", ((file_exists(THEME."forum/admin_unstick.png") ? "src='".THEME."forum/admin_unstick.png' " : "src='".e_IMAGE."forum/admin_unstick.png' ")."alt='".LAN_398."' title='".LAN_398."' style='border:0' "));
+define("IMAGE_admin_stick", ((file_exists(THEME."forum/admin_stick.png")     ? "src='".THEME."forum/admin_stick.png' "   : "src='".e_IMAGE."forum/admin_stick.png' ")."alt='".LAN_401."' title='".LAN_401."' style='border:0' "));
+define("IMAGE_admin_lock", ((file_exists(THEME."forum/admin_lock.png")     ? "src='".THEME."forum/admin_lock.png' "      : "src='".e_IMAGE."forum/admin_lock.png' ")."alt='".LAN_399."' title='".LAN_399."' style='border:0' "));
+define("IMAGE_admin_unlock", ((file_exists(THEME."forum/admin_unlock.png") ? "src='".THEME."forum/admin_unlock.png' "    : "src='".e_IMAGE."forum/admin_unlock.png' ")."alt='".LAN_400."' title='".LAN_400."' style='border:0' "));
+
 
 $STARTERTITLE = LAN_54;
 	$THREADTITLE = LAN_53;
@@ -60,12 +62,25 @@ if($forum_class && !check_class($forum_class) || !$forum_parent){ header("Locati
 
 define("MODERATOR", (preg_match("/".preg_quote(ADMINNAME)."/", $forum_moderators) && getperms("A") ? TRUE : FALSE));
 
+$message="";
+if(MODERATOR)
+{
+	if($_POST)
+	{
+		require_once(e_HANDLER."forum_mod.php");
+		$message = forum_thread_moderate($_POST);
+	}
+}
+
 $member_users = $sql -> db_Select("online", "*", "online_location REGEXP('forum_viewforum.php.$forum_id') AND online_user_id!='0' ");
 $guest_users = $sql -> db_Select("online", "*", "online_location REGEXP('forum_viewforum.php.$forum_id') AND online_user_id='0' ");
 $users = $member_users+$guest_users;
 
-
 require_once(HEADERF);
+if($message)
+{
+	$ns -> tablerender("",$message);
+}
 
 $view=25;
 $topics = $sql -> db_Count("forum_t", "(*)", " WHERE thread_forum_id='".$forum_id."' AND thread_parent='0' ");
@@ -266,9 +281,7 @@ function parse_thread($row){
 	}else{
 		$title = "";
 	}
-	$THREADNAME = ($result[1] ? $result[0]."] <a  ".$title." href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id."'>".ereg_replace("\[.*\]", "", $thread_name)."</a>" : "<a ".$title."' href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id."'>".$thread_name."</a>");
-
-	
+	$THREADNAME = ($result[1] ? $result[0]."] <a  ".$title." href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id."'>".ereg_replace("\[.*\]", "", $thread_name)."</a>" : "<a ".$title." href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id."'>".$thread_name."</a>");
 
 	$pages = ceil($REPLIES/$pref['forum_postspage']);
 	if($pages>1){
@@ -279,24 +292,17 @@ function parse_thread($row){
 		$PAGES .= " ]";
 	}
 
-	if(MODERATOR){
-		
-		if($thread_s == 1){
-			$ADMIN_ICONS = "<a href='".e_ADMIN."forum_conf.php?unstick.".$forum_id.".".$thread_id."'>".IMAGE_admin_unstick."</a> ";
-			if($thread_active){
-				$ADMIN_ICONS .= "<a href='".e_ADMIN."forum_conf.php?close.".$forum_id.".".$thread_id."'>".IMAGE_admin_lock."</a> ";
-			}else{
-				$ADMIN_ICONS .= "<a href='".e_ADMIN."forum_conf.php?open.".$forum_id.".".$thread_id."'>".IMAGE_admin_unlock."</a> ";
-			}
-		}else{
-			$ADMIN_ICONS = "<a href='".e_ADMIN."forum_conf.php?stick.".$forum_id.".".$thread_id."'>".IMAGE_admin_stick."</a> ";
-			if($thread_active){
-				$ADMIN_ICONS .= "<a href='".e_ADMIN."forum_conf.php?close.".$forum_id.".".$thread_id."'>".IMAGE_admin_lock."</a> ";
-			}else{
-				$ADMIN_ICONS .= "<a href='".e_ADMIN."forum_conf.php?open.".$forum_id.".".$thread_id."'>".IMAGE_admin_unlock."</a> ";
-			}
-		}
-		$ADMIN_ICONS .= "<a href='".e_ADMIN."forum_conf.php?move.".$forum_id.".".$thread_id."'>".IMAGE_admin_move."</a></div>";
+	if(MODERATOR)
+	{
+		$ADMIN_ICONS = "
+		<form method='post' action='".e_SELF."?{$forum_id}' id='frmMod_{$forum_id}_{$thread_id}'><div>
+		";
+		$ADMIN_ICONS .= ($thread_s == 1) ? "<input type='image' ".IMAGE_admin_unstick." name='unstick_{$thread_id}' value='thread_action' /> " : "<input type='image' ".IMAGE_admin_stick." name='stick_{$thread_id}' value='thread_action' /> ";
+		$ADMIN_ICONS .= ($thread_active) ? "<input type='image' ".IMAGE_admin_lock." name='lock_{$thread_id}' value='thread_action' /> " : "<input type='image' ".IMAGE_admin_unlock." name='unlock_{$thread_id}' value='thread_action' /> ";
+		$ADMIN_ICONS .= "<a href='".e_ADMIN."forum_conf.php?move.".$forum_id.".".$thread_id."'>".IMAGE_admin_move."</a>";
+		$ADMIN_ICONS .= "
+		</div></form>
+		";
 	}
 			
 	$text .= "</td>
