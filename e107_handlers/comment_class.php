@@ -110,7 +110,7 @@ class comment{
 		}
 		if($pref['nested_comments']){	
 			$width2 = 100 - $width;
-			$total_width = ($pref['standards_mode'] ? "100%" : "96%");
+			$total_width = ($pref['standards_mode'] ? "98%" : "95%");
 			$renderstyle = "
 <table style='width:".$total_width."'>
 <tr>
@@ -144,8 +144,13 @@ class comment{
 		$search[3] = "/\{COMMENTS\}(.*?)/si";
 		$replace[3] = ($user_id ? LAN_99.": ".$user_comments : LAN_194)."<br />";
 
+		$highlight_search = FALSE;
+		if(IsSet($_POST['highlight_search'])){
+			$highlight_search = TRUE;
+		}
+
 		$search[4] = "/\{COMMENT\}(.*?)/si";
-		$replace[4] = ($comment_blocked ? LAN_0 : preg_quote($aj -> tpa($comment_comment)));
+		$replace[4] = ($comment_blocked ? LAN_0 : preg_quote($aj -> tpa($comment_comment, "off", "public", $highlight_search=TRUE)));
 
 		$search[5] = "/\{SIGNATURE\}(.*?)/si";
 		if($user_signature){

@@ -18,6 +18,10 @@ if(IsSet($_POST['fjsubmit'])){
 */
 require_once("class2.php");
 
+$highlight_search = FALSE;
+if(IsSet($_POST['highlight_search'])){
+	$highlight_search = TRUE;
+}
 define("IMAGE_reply", (file_exists(THEME."forum/reply.png") ? "<img src='".THEME."forum/reply.png' alt='' style='border:0' />" : "<img src='".e_IMAGE."forum/reply.png' alt='' style='border:0' />"));
 define("IMAGE_newthread", (file_exists(THEME."forum/newthread.png") ? "<img src='".THEME."forum/newthread.png' alt='' style='border:0' />" : "<img src='".e_IMAGE."forum/newthread.png' alt='' style='border:0' />"));
 //define("IMAGE_profile", (file_exists(THEME."forum/profile.png") ? "<img src='".THEME."forum/profile.png' alt='".LAN_398."' style='border:0' />" : "<img src='".e_IMAGE."forum/profile.png' alt='".LAN_398."' style='border:0' />"));
@@ -309,7 +313,7 @@ if(USER){
 }
 
 $THREADDATESTAMP = "<a id='$thread_id'>".IMAGE_post."</a> ".$gen->convert_date($thread_datestamp, "forum");
-$POST = $aj -> tpa($thread_thread, "forum");
+$POST = $aj -> tpa($thread_thread, "forum", "off", $highlight_search);
 if(ADMIN && $iphost){ $POST .= "<br />".$iphost; }
 $TOP = "<a href='".e_SELF."?".e_QUERY."#top'>".LAN_10."</a>";
 $FORUMJUMP = forumjump();
@@ -393,7 +397,7 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 		}
 
 		$THREADDATESTAMP = "<a id='$thread_id'>".IMAGE_post."</a> ".$gen->convert_date($thread_datestamp, "forum");
-		$POST = $aj -> tpa($thread_thread, "forum");
+		$POST = $aj -> tpa($thread_thread, "forum", "off", $highlight_search);
 		if(ADMIN && $iphost){ $POST .= "<br />".$iphost; }
 
 		$forrep .= preg_replace("/\{(.*?)\}/e", '$\1', $FORUMREPLYSTYLE);

@@ -18,3 +18,4 @@ This file is here for a possible future project of making themes more css compat
 .right { text-align:right; }
 .left { text-align:left; }
 table { margin-left:auto; margin-right:auto; }
+.searchhighlight{text-decoration: underline;color:#FF0000;font-weight:bold;}

@@ -68,6 +68,10 @@ if($sql -> db_Select("content", "*", $query)){
 	define("e_PAGETITLE", $page);
 }
 
+$highlight_search = FALSE;
+if(IsSet($_POST['highlight_search'])){
+	$highlight_search = TRUE;
+}
 require_once(HEADERF);
 
 
@@ -120,7 +124,7 @@ if($action == "content"){
 		echo $aj -> formtparev($cache);
 	}else{
 		ob_start();
-		$text = ($content_parent ? $aj -> tpa($content_content, "nobreak", "admin") : $aj -> tpa($content_content, "off", "admin"));
+		$text = ($content_parent ? $aj -> tpa($content_content, "nobreak", "admin", $highlight_search) : $aj -> tpa($content_content, "off", "admin", $highlight_search));
 		$caption = $aj -> tpa($content_subheading, "off", "admin");
 		$ns -> tablerender($caption, $text);
 		
@@ -204,7 +208,7 @@ if($action == "review"){
 				$content_summary
 				<br /><br />";
 			
-				$content_content = $aj -> tpa($content_content, "off", "admin");
+				$content_content = $aj -> tpa($content_content, "off", "admin", $highlight_search);
 				$reviewpages = explode("[newpage]",$content_content);
 				$totalpages = count($reviewpages);
 				if(strstr($content_content, "{EMAILPRINT}") || $content_pe_icon){
@@ -507,7 +511,7 @@ if($action == "article"){
 				$content_summary
 				<br /><br />";
 			
-				$content_content = $aj -> tpa($content_content, "off", "admin");
+				$content_content = $aj -> tpa($content_content, "off", "admin", $highlight_search);
 				$articlepages = explode("[newpage]",$content_content);
 				$totalpages = count($articlepages);
 				if(strstr($content_content, "{EMAILPRINT}") || $content_pe_icon){
