@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-27 19:52:27 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-03-06 10:04:23 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 @include(e_LANGUAGEDIR.e_LANGUAGE."/lan_login.php");
@@ -62,8 +62,18 @@ class userlogin {
 				define("LOGINMESSAGE", LAN_302."<br /><br />");
 				return FALSE;
 			} else {
-				list($user_id) = $sql->db_Fetch();
-				 
+				list($user_id, $user_name) = $sql->db_Fetch();
+
+				/* restrict more than one person logging in using same us/pw */
+				if($pref['disallowMultiLogin'])
+				{
+					if($sql -> db_Select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'"))
+					{
+						define("LOGINMESSAGE", LAN_304."<br /><br />");
+						return FALSE;
+					}
+				}
+				
 				$cookieval = $user_id.".".md5($userpass);
 				 
 				if ($pref['user_tracking'] == "session") {

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-02-23 21:54:16 $
+|     $Revision: 1.20 $
+|     $Date: 2005-03-06 10:04:23 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -177,4 +177,8 @@ define("PRFLAN_126", "Text to display on signup page");
 
 define("PRFLAN_127", "Make posted links clickable");
 define("PRFLAN_128", "Turning this on will convert posted links to hyperlinks");
+
+define("PRFLAN_129", "Disallow multiple logins");
+define("PRFLAN_130", "Activating this will prevent more than one person logging in with the same username/password (login detail sharing)");
+
 ?>

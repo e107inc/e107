@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-02-23 21:53:32 $
+|     $Revision: 1.35 $
+|     $Date: 2005-03-06 10:04:22 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -669,6 +669,14 @@ $text .= "<div id='security' style='display:none; text-align:center'>
 	<td style='width:50%; text-align:right' class='forumheader3'>
 	<input type='radio' name='user_reg_secureveri' value='1'".($pref['user_reg_secureveri'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
 	<input type='radio' name='user_reg_secureveri' value='0'".(!$pref['user_reg_secureveri'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
+	</td>
+	</tr>
+	
+	<tr>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_129.":<br /><span class='smalltext'>".PRFLAN_130."</span> </td>
+	<td style='width:50%; text-align:right' class='forumheader3'>
+	<input type='radio' name='disallowMultiLogin' value='1'".($pref['disallowMultiLogin'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
+	<input type='radio' name='disallowMultiLogin' value='0'".(!$pref['disallowMultiLogin'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
 	</tr>
 
