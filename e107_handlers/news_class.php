@@ -12,9 +12,9 @@
 |	GNU General Public License (http://gnu.org).	
 |
 | $Source: /cvs_backup/e107/e107_handlers/news_class.php,v $
-| $Revision: 1.16 $
-| $Date: 2004-08-15 02:31:14 $
-| $Author: mcfly_e107 $ 
+| $Revision: 1.17 $
+| $Date: 2004-11-08 08:29:42 $
+| $Author: loloirie $ 
 +---------------------------------------------------------------+
 */
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -34,20 +34,20 @@ class news{
 			$vals = $update_datestamp ? "news_datestamp = ".time().", " : "";
 			$vals .= " news_title='$news_title', news_body='$news_body', news_extended='$news_extended', news_category='$cat_id', news_allow_comments='$news_allow_comments', news_start='$active_start', news_end='$active_end', news_class='$news_class', news_render_type='$news_rendertype' WHERE news_id='$news_id' ";
 			if($sql -> db_Update("news",$vals)){
-				$message = "News updated in database.";
+				$message = LAN_NEWS_21;
              clear_cache("news.php");
 			}else{
-				$message = "<strong>Error! - Was unable to update news item into database!</strong>";
+				$message = LAN_NEWS_5;
 			}
 		}else{
 			$news_title = $aj -> formtpa($news_title);
 			$news_body = $aj -> formtpa($data);
 			$news_extended = $aj -> formtpa($news_extended);
 			if($sql -> db_Insert("news", "0, '$news_title', '$news_body', '$news_extended', ".time().", ".USERID.", $cat_id, $news_allow_comments, $active_start, $active_end, '$news_class', '$news_rendertype' ")){
-				$message = "News entered into database.";
+				$message = LAN_NEWS_6;
              clear_cache("news.php");
 			}else{
-				$message = "<strong>Error! - Was unable to enter news item into database!</strong>";
+				$message = LAN_NEWS_7;
 			}
 		}
 		$this -> create_rss();
@@ -123,14 +123,14 @@ on
 			}
 		}
 
-		$active_start = ($active_start ? str_replace(" - 00:00:00", "", $con -> convert_date($active_start, "long")) : "Now");
+		$active_start = ($active_start ? str_replace(" - 00:00:00", "", $con -> convert_date($active_start, "long")) : LAN_NEWS_19);
 		$active_end = ($active_end ?  " to ".str_replace(" - 00:00:00", "", $con -> convert_date($active_end, "long")) : "");
-		$info = "<div class='smalltext'><br /><br /><b>Info:</b><br />";
-		$info .= ($titleonly ? "Title only is set - <b>only the news title will be shown</b><br />" : "");
-		$info .= ($news_class==255 ? "This news post is <b>inactive</b> (It will be not shown on front page). " : "This news post is <b>active</b> (it will be shown on front page). ");
-		$info .= ($news_allow_comments ? "Comments are turned <b>off</b>. " : "Comments are turned <b>on</b>. ");
-		$info .= "<br />Activation period: ".$active_start.$active_end."<br />";
-		$info .= "Body length: ".strlen($news_body)."b. Extended length: ".strlen($news_extended)."b.<br /><br /></div>";
+		$info = "<div class='smalltext'><br /><br /><b>".LAN_NEWS_18."</b><br />";
+		$info .= ($titleonly ? LAN_NEWS_9 : "");
+		$info .= ($news_class==255 ? LAN_NEWS_10 : LAN_NEWS_11);
+		$info .= ($news_allow_comments ? LAN_NEWS_13 : LAN_NEWS_12);
+		$info .= LAN_NEWS_14.$active_start.$active_end."<br />";
+		$info .= LAN_NEWS_15.strlen($news_body).LAN_NEWS_16.strlen($news_extended).LAN_NEWS_17."<br /><br /></div>";
 
 		$sql -> db_Select("comments", "comment_datestamp", "comment_item_id='".$news['news_id']."' AND comment_type='0' ORDER BY comment_datestamp DESC LIMIT 0,1");
 		list($comments['comment_datestamp']) = $sql -> db_Fetch();
