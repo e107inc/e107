@@ -133,18 +133,22 @@ function stage2(){
                 $errorstr .= "<b>e107_config.php</b> ".INSLAN11.".</b> ";
         }
 
+        if(!is_writable("e107_files/cache/")){
+                $error[3] = TRUE;
+                $errorstr .= "<b>e107_files/cache/</b> ".INSLAN11.".</b> ";
+        }
 
         if(!is_writable("e107_files/backend/news.txt") || !is_writable("e107_files/backend/news.xml")){
-                $error[3] = TRUE;
+                $error[4] = TRUE;
                 $errorstr .= "<b>e107_files/backend/news.txt</b> ".INSLAN62." <b>e107_files/backend/news.xml</b> ".INSLAN11.".</b> ";
         }
 
         if(!is_writable("e107_files/public/") || !is_writable("e107_files/public/avatars/")){
-                $error[4] = TRUE;
+                $error[5] = TRUE;
                 $errorstr .= "<b>e107_files/public/</b> ".INSLAN61." ".INSLAN62." <b>e107_files/public/avatars/</b> ".INSLAN12.".</b> ";
         }
 
-        if($error[2] || $error[3] || $error[4]){
+        if($error[2] || $error[3] || $error[4] || $error[5]){
                 $text .= "<td style='width:33%' class='installboxfail'>* ".INSLAN4." *</td>
                 </tr>
                 <tr>
@@ -164,7 +168,7 @@ function stage2(){
                 echo "\n\n</body>\n</html>";
                 exit;
 
-        }else if($error[2] || $error[3] || $error[4]){
+        }else if($error[2] || $error[3] || $error[4] || $error[5]){
                 $text .= "
                 <input class='button' type='submit' name='retest' value='".INSLAN18."' />
                 <input type='hidden' name='stage' value='2'><input type='hidden' name='installlanguage' value='".$_POST['installlanguage']."'><br /><br />";
