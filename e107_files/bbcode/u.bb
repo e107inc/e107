@@ -1,1 +1,1 @@
-return "<span style='text-decoration: underline;'>$code_text</span>";
+return "<span style='text-decoration: underline'>$code_text</span>";
