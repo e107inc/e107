@@ -35,9 +35,9 @@ define("PRFLAN_32", "Allow anonymous posting?");
 define("PRFLAN_33", "if left unchecked only registered members can post comments etc");
 define("PRFLAN_34", "Security");
 define("PRFLAN_35", "Enable flood protection?");
-define("PRFLAN_36", "Flood hits");
-define("PRFLAN_37", "Flood time");
-define("PRFLAN_38", "example, flood hits set to 100 and flood time set to 50: if any single page on your site gets 100 hits in 50 seconds the page will be inaccessable for a further 50 seconds");
+define("PRFLAN_36", "Flood timeout");
+define("PRFLAN_37", "Auto Ban");
+define("PRFLAN_38", "Time required in seconds between 2 posts for areas where users can post (chatbox, forums...). if a user post too fast, he will be redirected to the homepage");
 define("PRFLAN_39", "Protection of minors options");
 define("PRFLAN_40", "Filter profanities?");
 define("PRFLAN_41", "if checked swearing will be replaced with string below");
@@ -115,4 +115,5 @@ define("CUSTSIG_16", "Minimum Length for Passwords");
 
 define("PRFLAN_89", "Site Header:");
 define("PRFLAN_90", "Click here to force Internet Explorer to use standards mode. Default is quirks mode.");
+define("PRFLAN_91", "If someone is attacking your site by multiple requests to your server, his IP will be automatically banned ! Don't replace a correct server config !!!");
 ?>
