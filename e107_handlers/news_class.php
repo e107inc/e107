@@ -10,6 +10,11 @@
 |
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).	
+|
+| $Source: /cvs_backup/e107/e107_handlers/news_class.php,v $
+| $Revision: 1.16 $
+| $Date: 2004-08-15 02:31:14 $
+| $Author: mcfly_e107 $ 
 +---------------------------------------------------------------+
 */
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -32,7 +37,7 @@ class news{
 				$message = "News updated in database.";
              clear_cache("news.php");
 			}else{
-				$message = "<b>Error!</b> Was unable to update news item into database!</b>";
+				$message = "<strong>Error! - Was unable to update news item into database!</strong>";
 			}
 		}else{
 			$news_title = $aj -> formtpa($news_title);
@@ -42,7 +47,7 @@ class news{
 				$message = "News entered into database.";
              clear_cache("news.php");
 			}else{
-				$message = "<b>Error!</b> Was unable to enter news item into database!</b>";
+				$message = "<strong>Error! - Was unable to enter news item into database!</strong>";
 			}
 		}
 		$this -> create_rss();
