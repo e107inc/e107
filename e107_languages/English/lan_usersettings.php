@@ -75,8 +75,8 @@ define("LAN_ICQNUMBER", "ICQ number must contain only numbers");
 
 //v.617
 define("LAN_408", "A user with that email address already exists. ");
-define("MAX_AVWIDTH", "Maximum avatar width is ");
-define("MAX_AVHEIGHT", "Maximum avatar height is ");
+define("MAX_AVWIDTH", "Maximum avatar size (wxh) is ");
+define("MAX_AVHEIGHT", " x ");
 define("GIF_RESIZE", "Please resize gif image or convert to different format");
 define("RESIZE_NOT_SUPPORTED", "Resize method not supported by this server. Please resize image or choose another. File has been deleted.");
 
