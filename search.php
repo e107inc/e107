@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-03-21 22:11:51 $
+|     $Revision: 1.26 $
+|     $Date: 2005-03-22 14:10:20 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -33,55 +33,42 @@ if (isset($_GET)) {
 	if (isset($_GET['q']) && strlen($_GET['q']) > 2) {
 		$query = trim($_GET['q']);
 	}
-} else if (isset($_POST['q']) && strlen($_POST['q']) > 2) {
-	$query = trim($_POST['q']);
 }
 
 $search_info = array();
-	
+
+function search_info($id, $type, $info) {
+	global $tp, $search_prefs;
+	if (check_class($search_prefs[$type.'_handlers'][$id]['class'])) {
+		$ret = $info;
+		$ret['chars'] = $search_prefs[$type.'_handlers'][$id]['chars'];
+		$ret['results'] = $search_prefs[$type.'_handlers'][$id]['results'];
+		$ret['pre_title'] = $search_prefs[$type.'_handlers'][$id]['pre_title'];
+		$ret['pre_title_alt'] = $tp -> toHtml($search_prefs[$type.'_handlers'][$id]['pre_title_alt']);
+		return $ret;
+	} else {
+		return FALSE;
+	}
+}
 //load all core search routines
 $search_id = 0;
-if (check_class($search_prefs['core_handlers']['news']['class'])) {
-	$search_info[$search_id] = array('sfile' => e_HANDLER.'search/search_news.php', 'qtype' => LAN_98, 'refpage' => 'news.php');
-	$search_info[$search_id]['chars'] = $search_prefs['core_handlers']['news']['chars'];
-	$search_info[$search_id]['results'] = $search_prefs['core_handlers']['news']['results'];
-	$search_info[$search_id]['pre_title'] = $search_prefs['core_handlers']['news']['pre_title'];
-	$search_info[$search_id]['pre_title_alt'] = $search_prefs['core_handlers']['news']['pre_title_alt'];
+if ($search_info[$search_id] = search_info('news', 'core', array('sfile' => e_HANDLER.'search/search_news.php', 'qtype' => LAN_98, 'refpage' => 'news.php'))) {
 	$search_id++;
 }
-if (check_class($search_prefs['core_handlers']['comments']['class'])) {
-	$search_info[$search_id] = array('sfile' => e_HANDLER.'search/search_comment.php', 'qtype' => LAN_99, 'refpage' => 'comment.php');
-	$search_info[$search_id]['chars'] = $search_prefs['core_handlers']['comments']['chars'];
-	$search_info[$search_id]['results'] = $search_prefs['core_handlers']['comments']['results'];
-	$search_info[$search_id]['pre_title'] = $search_prefs['core_handlers']['comments']['pre_title'];
-	$search_info[$search_id]['pre_title_alt'] = $search_prefs['core_handlers']['comments']['pre_title_alt'];
+if ($search_info[$search_id] = search_info('comments', 'core', array('sfile' => e_HANDLER.'search/search_comment.php', 'qtype' => LAN_99, 'refpage' => 'comment.php'))) {
 	$search_id++;
 }
-if (check_class($search_prefs['core_handlers']['users']['class'])) {
-	$search_info[$search_id] = array('sfile' => e_HANDLER.'search/search_user.php', 'qtype' => LAN_140, 'refpage' => 'user.php');
-	$search_info[$search_id]['chars'] = $search_prefs['core_handlers']['users']['chars'];
-	$search_info[$search_id]['results'] = $search_prefs['core_handlers']['users']['results'];
-	$search_info[$search_id]['pre_title'] = $search_prefs['core_handlers']['users']['pre_title'];
-	$search_info[$search_id]['pre_title_alt'] = $search_prefs['core_handlers']['users']['pre_title_alt'];
+if ($search_info[$search_id] = search_info('users', 'core', array('sfile' => e_HANDLER.'search/search_user.php', 'qtype' => LAN_140, 'refpage' => 'user.php'))) {
 	$search_id++;
 }
-if (check_class($search_prefs['core_handlers']['downloads']['class'])) {
-	$search_info[$search_id] = array('sfile' => e_HANDLER.'search/search_download.php', 'qtype' => LAN_197, 'refpage' => 'download.php');
-	$search_info[$search_id]['chars'] = $search_prefs['core_handlers']['downloads']['chars'];
-	$search_info[$search_id]['results'] = $search_prefs['core_handlers']['downloads']['results'];
-	$search_info[$search_id]['pre_title'] = $search_prefs['core_handlers']['downloads']['pre_title'];
-	$search_info[$search_id]['pre_title_alt'] = $search_prefs['core_handlers']['downloads']['pre_title_alt'];
+if ($search_info[$search_id] = search_info('downloads', 'core', array('sfile' => e_HANDLER.'search/search_download.php', 'qtype' => LAN_197, 'refpage' => 'download.php'))) {
 	$search_id++;
 }
 
 //load plugin search routines
 foreach ($search_prefs['plug_handlers'] as $plug_dir => $active) {
-	if (check_class($active['class'])) {
-		require_once(e_PLUGIN.$plug_dir."/e_search.php");
-		$search_info[$search_id]['chars'] = $search_prefs['plug_handlers'][$plug_dir]['chars'];
-		$search_info[$search_id]['results'] = $search_prefs['plug_handlers'][$plug_dir]['results'];
-		$search_info[$search_id]['pre_title'] = $search_prefs['plug_handlers'][$plug_dir]['pre_title'];
-		$search_info[$search_id]['pre_title_alt'] = $search_prefs['plug_handlers'][$plug_dir]['pre_title_alt'];
+	require_once(e_PLUGIN.$plug_dir."/e_search.php");
+	if ($search_info[$search_id] = search_info($plug_dir, 'plug', $search_info[$search_id])) {
 		$search_id++;
 	}
 }
