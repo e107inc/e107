@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.18 $
-|   $Date: 2005-02-01 23:16:42 $
-|   $Author: sweetas $
+|   $Revision: 1.19 $
+|   $Date: 2005-02-02 10:11:41 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 */
 if (!defined('e_HTTP')) {
@@ -41,7 +41,7 @@ if (file_exists(THEME.'admin_template.php')) {
 } else {
 	require_once(e_BASE.$THEMES_DIRECTORY.'templates/admin_template.php');
 }
-	
+
 echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
 	<html xmlns='http://www.w3.org/1999/xhtml'>
 	<head>
@@ -72,19 +72,25 @@ if (function_exists("headerjs")) {
 if ($htmlarea_js) {
 	echo $htmlarea_js;
 }
+echo "<script type='text/javascript'>
+		function savepreset(ps){
+        document.getElementById(ps).action='".e_SELF."?savepreset';
+        document.getElementById(ps).submit();
+		}
+     </script> ";
 if ($eplug_js) {
 	echo "<script type='text/javascript' src='{$eplug_js}'></script>\n";
 }
 if ($eplug_css) {
 	echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n";
 }
-	
+
 echo "</head>
 	<body>";
-	
+
 $ns = new e107table;
 $e107_var = array();
-	
+
 if (!function_exists('show_admin_menu')) {
 	function show_admin_menu($title, $page, $e107_vars, $js = FALSE, $js_include = FALSE) {
 		global $ns;
@@ -109,7 +115,7 @@ if (!function_exists('show_admin_menu')) {
 		$ns->tablerender($title, $text);
 	}
 }
-	
+
 if (!function_exists("parse_admin")) {
 	function parse_admin($ADMINLAYOUT) {
 		global $tp;
@@ -123,9 +129,9 @@ if (!function_exists("parse_admin")) {
 		}
 	}
 }
-	
+
 parse_admin($ADMIN_HEADER);
-	
+
 function get_admin_treemenu($title, $page, $e107_vars, $sortlist = FALSE) {
 	global $ns;
 	if ($sortlist == TRUE) {
@@ -134,9 +140,9 @@ function get_admin_treemenu($title, $page, $e107_vars, $sortlist = FALSE) {
 		foreach (array_keys($temp) as $key) {
 			$func_list[] = $temp[$key]['text'];
 		}
-		 
+
 		usort($func_list, 'strcoll');
-		 
+
 		foreach ($func_list as $func_text) {
 			foreach (array_keys($temp) as $key) {
 				if ($temp[$key]['text'] == $func_text) {
@@ -145,7 +151,7 @@ function get_admin_treemenu($title, $page, $e107_vars, $sortlist = FALSE) {
 			}
 		}
 	}
-	 
+
 	$idtitle = "yop_".str_replace(" ", "", $title);
 	$text = "<div style='text-align:center; width:100%'><table class='fborder' style='width:100%;'>";
 	$text .= "<tr><td class='button'><a style='text-align:center; cursor:hand; cursor:pointer; text-decoration:none;' onclick=\"expandit('{$idtitle}');\" >{$title}</a></td></tr>";
@@ -161,7 +167,7 @@ function get_admin_treemenu($title, $page, $e107_vars, $sortlist = FALSE) {
 			$text .= "{$pre}<a style='text-decoration:none;' href='{$e107_vars[$act]['link']}'>{$e107_vars[$act]['text']}</a>{$post}<br />";
 		}
 	}
-	 
+
 	$text .= "</td></tr>";
 	$text .= "</table></div>";
 	return $text;
