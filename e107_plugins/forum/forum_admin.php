@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-04 08:17:24 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-07 15:15:21 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -244,7 +244,7 @@ function headerjs() {
 		function confirm_(mode, forum_id, forum_name) {
 		if (mode == 'sr') {
 		return confirm(\"".$etp->unentity(FORLAN_117)."\");
-		} elseif(mode == 'parent') {
+		} else if(mode == 'parent') {
 		return confirm(\"".$etp->unentity(FORLAN_81)." [ID: \" + forum_name + \"]\");
 		} else {
 		return confirm(\"".$etp->unentity(FORLAN_82)." [ID: \" + forum_name + \"]\");
