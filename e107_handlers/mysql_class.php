@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-03-13 10:59:53 $
+|     $Revision: 1.34 $
+|     $Date: 2005-03-23 12:54:36 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.33 $
+* @version $Revision: 1.34 $
 * @author $Author: stevedunstan $
 */
 class db {
@@ -543,14 +543,22 @@ class db {
 	* @desc returns fields as structured array
 	* @access public
 	*/
-	function db_getList($fields = 'ALL', $amount = FALSE, $maximum = 200) {
+	function db_getList($fields = 'ALL', $amount = FALSE, $maximum = 200, $ordermode=FALSE) {
 		$list = array();
 		$counter = 1;
 		while ($row = $this->db_Fetch()) {
 			foreach($row as $key => $value) {
 				if (is_string($key)) {
 					if (strtoupper($fields) == 'ALL' || in_array ($key, $fields)) {
-						$list[$counter][$key] = $value;
+			
+						if(!$ordermode)
+						{
+							$list[$counter][$key] = $value;
+						}
+						else
+						{
+							$list[$row[$ordermode]][$key] = $value;
+						}
 					}
 				}
 			}

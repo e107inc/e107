@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2005-03-21 22:09:26 $
-|     $Author: sweetas $
+|     $Revision: 1.58 $
+|     $Date: 2005-03-23 12:54:22 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -133,8 +133,25 @@ function update_61x_to_700($type) {
 		}
 		/* end poll update */
 
-		mysql_query("ALTER TABLE `".MPREFIX.".user` CHANGE `user_sess` `user_sess` VARCHAR( 100 ) NOT NULL ");
+		/* general table structure changes */
+		mysql_query("ALTER TABLE `".MPREFIX."user` CHANGE `user_sess` `user_sess` VARCHAR( 100 ) NOT NULL");
+		/*	end	*/
 
+		/* start download updates */
+		$query = "CREATE TABLE ".MPREFIX."download_mirror (
+		  mirror_id int(10) unsigned NOT NULL auto_increment,
+		  mirror_name varchar(200) NOT NULL default '',
+		  mirror_url varchar(200) NOT NULL default '',
+		  mirror_image varchar(200) NOT NULL default '',
+		  mirror_location varchar(100) NOT NULL default '',
+		  mirror_description text NOT NULL,
+		  mirror_count int(10) unsigned NOT NULL default '0',
+		  PRIMARY KEY  (mirror_id)
+		) TYPE=MyISAM;";
+		$sql->db_Select_gen($query);
+
+		mysql_query("ALTER TABLE `".MPREFIX."download` ADD `download_mirror` TEXT NOT NULL , ADD `download_mirror_type` TINYINT( 1 ) UNSIGNED NOT NULL");
+		/*	end	*/
 
 		// start links update -------------------------------------------------------------------------------------------
 		if ($sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."link_category")) {

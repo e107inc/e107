@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-03-14 17:01:58 $
+|     $Revision: 1.15 $
+|     $Date: 2005-03-23 12:52:53 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -226,7 +226,6 @@ if ($action == "view") {
 		$highlight_search = TRUE;
 	}
 
-
 	$sql = new db;
 	if (!$sql->db_Select("download", "*", "download_id = {$id} AND download_active > 0")) {
 		require_once(HEADERF);
@@ -294,7 +293,24 @@ if ($action == "view") {
 	$DOWNLOAD_VIEW_REQUESTED_LAN = LAN_dl_18;
 	$DOWNLOAD_VIEW_REQUESTED = $download_requested;
 	$DOWNLOAD_VIEW_LINK_LAN = LAN_dl_32;
-	$DOWNLOAD_VIEW_LINK = $dnld_link." <img src='".e_IMAGE."generic/download.png' alt='' style='border:0' /></a>";
+
+	if($download_mirror)
+	{
+		if($download_mirror_type)
+		{
+			$DOWNLOAD_VIEW_LINK = "<a href='".e_SELF."?mirror.$download_id'>".LAN_dl_66."</a>";
+		}
+		else
+		{
+			$DOWNLOAD_VIEW_LINK = $dnld_link." <img src='".e_IMAGE."generic/download.png' alt='' style='border:0' /></a>";
+		}
+	}
+	else
+	{
+		$DOWNLOAD_VIEW_LINK = $dnld_link." <img src='".e_IMAGE."generic/download.png' alt='' style='border:0' /></a>";
+	}
+
+
 	$DOWNLOAD_VIEW_RATING_LAN = LAN_dl_12;
 	$DOWNLOAD_VIEW_RATING = "
 		<table style='width:100%'>
@@ -476,6 +492,93 @@ if ($action == "report") {
 	exit;
 }
 
+if($action == "mirror")
+{
+	require_once(HEADERF);
+
+	if (!$DOWNLOAD_MIRROR_START) {
+		if (file_exists(THEME."download_template.php")) {
+			require_once(THEME."download_template.php");
+		} else {
+			require_once(e_BASE.$THEMES_DIRECTORY."templates/download_template.php");
+		}
+	}
+	
+	$sql -> db_Select("download_mirror");
+	$mirrorList = $sql -> db_getList("ALL", 0, 200, "mirror_id");
+
+	if($sql -> db_Select("download", "*", "download_id=$id"))
+	{
+		$row = $sql->db_Fetch();
+		
+		extract($row);
+		$array = explode(chr(1), $download_mirror);
+
+		$c = (count($array)-1); 
+		for ($i=1; $i<$c; $i++) { 
+			$d = mt_rand(0, $i); 
+			$tmp = $array[$i]; 
+			$array[$i] = $array[$d]; 
+			$array[$d] = $tmp; 
+		}
+
+		$download_mirror = "";
+		foreach($array as $mirrorstring)
+		{
+			if($mirrorstring)
+			{
+				$download_mirror .= parse_download_mirror_table($row, $mirrorstring, $mirrorList);
+			}
+		}
+
+		$DOWNLOAD_MIRROR_HOST_LAN = LAN_dl_68;
+		$DOWNLOAD_MIRROR_GET_LAN = LAN_dl_69;
+		$DOWNLOAD_MIRROR_LOCATION_LAN = LAN_dl_70;
+		$DOWNLOAD_MIRROR_DESCRIPTION_LAN = LAN_dl_71;
+		$DOWNLOAD_MIRROR_REQUEST = LAN_dl_72."'".$download_name."'";
+
+		
+
+		$download_mirror_start = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_MIRROR_START);
+		$download_mirror_end = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_MIRROR_END);
+
+		$text = $download_mirror_start.$download_mirror.$download_mirror_end;
+
+		if($DOWNLOAD_MIRROR_RENDERPLAIN) {
+			echo $text;
+		} else {
+			$ns->tablerender(LAN_dl_67, $text);
+		}
+
+		require_once(FOOTERF);
+	}
+}
+
+function parse_download_mirror_table($row, $mirrorstring, $mirrorList)
+{
+
+	global $DOWNLOAD_MIRROR;
+	list($mirrorHost_id, $mirrorHost_url, $mirrorRequests) = explode(",", $mirrorstring);
+
+	extract($mirrorList[$mirrorHost_id]);
+
+	$DOWNLOAD_MIRROR_NAME = "<a href='$mirror_url' rel='external'>$mirror_name</a>";
+	$DOWNLOAD_MIRROR_IMAGE = ($mirror_image ? "<a href='$mirror_url' rel='external'><img src='".e_FILE."downloadimages/".$mirror_image."' alt='' style='border:0' /></a>" : "");
+	$DOWNLOAD_MIRROR_LOCATION = ($mirror_location ? $mirror_location : "");
+	$DOWNLOAD_MIRROR_DESCRIPTION = ($mirror_description ? $mirror_description : "");
+
+	$DOWNLOAD_MIRROR_FILESIZE = parsesize($row['download_filesize']);
+	$DOWNLOAD_MIRROR_LINK = "<a href='".e_BASE."request.php?mirror.".$row['download_id'].".$mirrorHost_id'><img src='".e_IMAGE."generic/download.png' alt='' style='border:0' /></a>";
+
+	$DOWNLOAD_MIRROR_REQUESTS = (ADMIN ? LAN_dl_73.$mirrorRequests : "");
+	$DOWNLOAD_TOTAL_MIRROR_REQUESTS = (ADMIN ? LAN_dl_74.$mirror_count : "");
+
+	return(preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_MIRROR));
+}
+
+
+
+
 function parsesize($size) {
 	$kb = 1024;
 	$mb = 1024 * $kb;
@@ -577,10 +680,14 @@ function parse_download_list_table($row) {
 		$DOWNLOAD_LIST_RATING = ($ratearray[2] ? $ratearray[1].".".$ratearray[2]."/".$ratearray[0] : $ratearray[1]."/".$ratearray[0]);
 	}
 
-	if ($pref['agree_flag'] == 1) {
-		$DOWNLOAD_LIST_LINK = "<a href='".e_BASE."request.php?".$download_id."' onclick= \"return confirm('".$agreetext."');\">";
-	} else {
-		$DOWNLOAD_LIST_LINK = "<a href='".e_BASE."request.php?".$download_id."'>";
+
+	if($download_mirror_type)
+	{
+		$DOWNLOAD_LIST_LINK = ($pref['agree_flag'] ? "<a href='".e_SELF."?mirror.".$download_id."' onclick= \"return confirm('".$agreetext."');\">" : "<a href='".e_SELF."?mirror.".$download_id."'>");
+	}
+	else
+	{
+		$DOWNLOAD_LIST_LINK = ($pref['agree_flag'] ? "<a href='".e_BASE."request.php?".$download_id."' onclick= \"return confirm('".$agreetext."');\">" : "<a href='".e_BASE."request.php?".$download_id."'>");
 	}
 
 	$DOWNLOAD_LIST_NAME = "<a href='".e_SELF."?view.".$download_id."'>".$download_name."</a>";

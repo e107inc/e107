@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_download.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-03-10 11:12:34 $
+|     $Revision: 1.6 $
+|     $Date: 2005-03-23 12:54:37 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -82,4 +82,15 @@ define("LAN_dl_63", "You do not have the correct permissions to download this fi
 define("LAN_dl_64", "Back");
 define("LAN_dl_65", "Not Found");
 
+define("LAN_dl_66", "Select download mirror");
+
+define("LAN_dl_67", "Please select mirror to use ...");
+define("LAN_dl_68", "Mirror Host");
+define("LAN_dl_69", "Download");
+define("LAN_dl_70", "Location");
+define("LAN_dl_71", "About");
+
+define("LAN_dl_72", "Requesting file: ");
+define("LAN_dl_73", "Downloads from this mirror: ");
+define("LAN_dl_74", "Total downloads from this mirror: ");
 ?>

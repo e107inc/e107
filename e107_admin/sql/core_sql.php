@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-03-20 04:05:42 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.19 $
+|     $Date: 2005-03-23 12:54:23 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -164,6 +164,21 @@ CREATE TABLE download_category (
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
+#
+# Table structure for table `download_mirror`
+#
+
+CREATE TABLE download_mirror (
+  mirror_id int(10) unsigned NOT NULL auto_increment,
+  mirror_name varchar(200) NOT NULL default '',
+  mirror_url varchar(200) NOT NULL default '',
+  mirror_image varchar(200) NOT NULL default '',
+  mirror_location varchar(100) NOT NULL default '',
+  mirror_description text NOT NULL,
+  mirror_count int(10) unsigned NOT NULL default '0',
+  PRIMARY KEY  (mirror_id)
+) TYPE=MyISAM;
+# --------------------------------------------------------
 
 #
 # Table structure for table `download_requests`
