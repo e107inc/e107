@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_download.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-11-26 07:20:40 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2005-03-01 17:38:02 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("DOWLAN_1", "Download added to database.");
@@ -29,7 +29,7 @@ define("DOWLAN_17", "Author Website");
 define("DOWLAN_18", "Description");
 define("DOWLAN_19", "Main image");
 define("DOWLAN_20", "Thumbnail image");
-define("DOWLAN_21", "Active?");
+define("DOWLAN_21", "Status");
 define("DOWLAN_22", "Yes");
 define("DOWLAN_23", "No");
 define("DOWLAN_24", "Update Download");
@@ -89,5 +89,29 @@ define("DOWLAN_102", "Allow Comments?");
 define("DOWLAN_103", "Remove from Uploads");
 define("DOWLAN_104", "was removed from public uploads");
 define("DOWLAN_105", "Back to Public Uploads");
+
+define("DOWLAN_106", "Download available to");
+define("DOWLAN_107", "Limit download count");
+define("DOWLAN_108", "Limit download bandwidth");
+define("DOWLAN_109", "every");
+define("DOWLAN_110", "days");
+define("DOWLAN_111", "kb");
+define("DOWLAN_112", "Limits");
+define("DOWLAN_113", "Userclass");
+define("DOWLAN_114", "Add New Limit");
+define("DOWLAN_115", "Update limits");
+define("DOWLAN_116", "Limit for that userclass already exists");
+define("DOWLAN_117", "Limit successfully added");
+define("DOWLAN_118", "Limit not added - unknown error");
+define("DOWLAN_119", "Limit successfully removed");
+define("DOWLAN_120", "Limit not removed - unknown error");
+define("DOWLAN_121", "Limit successfully updated");
+
+define("DOWLAN_122", "Inactive");
+define("DOWLAN_123", "Active - File is subject to download limits");
+define("DOWLAN_124", "Active - File is NOT subject to download limits");
+define("DOWLAN_125", "Download limits active");
+define("DOWLAN_126", "Activation status updated");
+
 
 ?>
