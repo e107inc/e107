@@ -433,6 +433,7 @@ if($action == "view"){
         </div>";
 
         $ns -> tablerender($type, $text);
+		unset($text);
                 if($download_comment){
                         $query = ($pref['nested_comments'] ? "comment_item_id='$id' AND comment_type='2' AND comment_pid='0' ORDER BY comment_datestamp" : "comment_item_id='$id' AND comment_type='2' ORDER BY comment_datestamp");
                         $comment_total = $sql -> db_Select("comments", "*",  "".$query."");
