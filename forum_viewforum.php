@@ -12,7 +12,6 @@
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
-
 require_once("class2.php");
 if(IsSet($_POST['fjsubmit'])){
 	header("location:".e_BASE."forum_viewforum.php?".$_POST['forumjump']);
@@ -33,7 +32,7 @@ $image = (file_exists(THEME."forum/new_small.png")) ? THEME."forum/new_small.png
 define("IMAGE_new_small", "<img src='{$image}' alt='".FORLAN_11."' title='".FORLAN_11."' style='border:0' />");
 $image = (file_exists(THEME."forum/nonew_small.png")) ? THEME."forum/nonew_small.png" : e_IMAGE."forum/nonew_small.png";
 define("IMAGE_nonew_small", "<img src='{$image}' alt='".FORLAN_12."' title='".FORLAN_12."' style='border:0' />");
-$image = (file_exists(THEME."forum/new_popular.pgif")) ? THEME."forum/new_popular.gif" : e_IMAGE."forum/new_popular.gif";
+$image = (file_exists(THEME."forum/new_popular.gif")) ? THEME."forum/new_popular.gif" : e_IMAGE."forum/new_popular.gif";
 define("IMAGE_new_popular", "<img src='{$image}' alt='".FORLAN_13."' title='".FORLAN_13."' style='border:0' />");
 $image = (file_exists(THEME."forum/nonew_popular.gif")) ? THEME."forum/nonew_popular.gif" : e_IMAGE."forum/nonew_popular.gif";
 define("IMAGE_nonew_popular", "<img src='{$image}' alt='".FORLAN_14."' title='".FORLAN_14."' style='border:0' />");
