@@ -11,7 +11,7 @@
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
 |
-|   $Id: header_default.php,v 1.40 2004-12-11 14:22:11 mcfly_e107 Exp $
+|   $Id: header_default.php,v 1.41 2004-12-11 16:37:42 mcfly_e107 Exp $
 +---------------------------------------------------------------+
 */
 if(!function_exists("parseheader"))
@@ -233,7 +233,7 @@ if(!function_exists("checklayout"))
 
 				$fileext1 = substr(strrchr($banner_image, "."), 1);
 				$fileext2 = substr(strrchr($banner_image, "."), 0);
-				if($fileext1 == swf)
+				if($fileext1 == 'swf')
 				{
 					echo "<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" codebase=\"http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0\" width=\"468\" height=\"60\">\n<param name=\"movie\" value=\"".e_IMAGE."banners/".$banner_image."\">\n<param name=\"quality\" value=\"high\"><param name=\"SCALE\" value=\"noborder\">\n<embed src=\"".e_IMAGE."banners/".$banner_image."\" width=\"468\" height=\"60\" scale=\"noborder\" quality=\"high\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\"></embed></object>";
 				}

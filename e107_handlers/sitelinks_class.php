@@ -41,6 +41,7 @@ function sitelinks(){
         define(POSTLINKTITLE, "");
         $menu_count=0;
         $text = PRELINK;
+        $linkadd='';
         if(defined("LINKCLASS")){
                 $linkadd = " class='".LINKCLASS."' ";
         }
@@ -61,24 +62,15 @@ function sitelinks(){
                 if(!$link_class || check_class($link_class)){
                         if(!preg_match("#(http:|mailto:|ftp:)#",$link_url)){ $link_url = e_BASE.$link_url; }
                         $linkstart = ($link_button ? preg_replace("/\<img.*\>/si", "", LINKSTART) : LINKSTART);
-                        switch ($link_open) {
-                                case 1:
-                                $link_append = " rel='external'";
-                                break;
-                                case 2:
-                                $link_append = "";
-                                break;
-                                case 3:
-                                $link_append = "";
-                                break;
-                                default:
-                                unset($link_append);
+                        if ($link_open == 1) {
+                        	$link_append = " rel='external' ";
+                        } else {
+                        	$link_append = '';
                         }
-
                         if($link_open == 4){
-                                $_link =  $linkstart.($link_button ? "<img src='".e_IMAGE."link_icons/$link_button' alt='' style='vertical-align:middle' /> " : "").($link_url ? "<a".$linkadd.($pref['linkpage_screentip'] ? " title = '$link_description' " : "")." href=\"javascript:open_window('".$link_url."')\">".$link_name."</a>" : $link_name)."\n";
+                                $_link =  $linkstart.($link_button ? "<img src='".e_IMAGE."link_icons/$link_button' alt='' style='vertical-align:middle' /> " : "").($link_url ? "<a".$linkadd.((in_array('linkpage_screentip',$pref) && $pref['linkpage_screentip']) ? " title = '$link_description' " : "")." href=\"javascript:open_window('".$link_url."')\">".$link_name."</a>" : $link_name)."\n";
                         }else{
-                        $_link =  $linkstart.($link_button ? "<img src='".e_IMAGE."link_icons/$link_button' alt='' style='vertical-align:middle' /> " : "").($link_url ? "<a".$linkadd.($pref['linkpage_screentip'] ? " title = '$link_description' " : "")." href=\"".$link_url."\"".$link_append.">".$link_name."</a>" : $link_name)."\n";
+                        $_link =  $linkstart.($link_button ? "<img src='".e_IMAGE."link_icons/$link_button' alt='' style='vertical-align:middle' /> " : "").($link_url ? "<a".$linkadd.((in_array('linkpage_screentip',$pref) && $pref['linkpage_screentip']) ? " title = '$link_description' " : "")." href=\"".$link_url."\"".$link_append.">".$link_name."</a>" : $link_name)."\n";
                 }
                 if(LINKDISPLAY == 3){
                         $menu_title=$link_name;
@@ -95,21 +87,11 @@ function sitelinks(){
                                 // if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
                                 if(check_class($link_class)){
                                         $linkstart = ($link_button ? preg_replace("/\<img.*\>/si", "", LINKSTART)." " : LINKSTART);
-                                        switch ($link_open) {
-                                                case 1:
-                                                $link_append = "rel='external'";
-
-                                                break;
-                                                case 2:
-                                                $link_append = "";
-                                                break;
-                                                case 3:
-                                                $link_append = "";
-                                                break;
-                                                default:
-                                                unset($link_append);
+                                        if ($link_open == 1) {
+                                        	$link_append = " rel='external' ";
+                                        } else {
+                                        	$link_append = '';
                                         }
-
                                         if(!preg_match("#(http:|mailto:|ftp:)#",$link_url)){ $link_url = e_BASE.$link_url; }
                                         $indent=(LINKDISPLAY == 3) ? "" : "&nbsp;&nbsp;";
                                         if($link_open == 4){
