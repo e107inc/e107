@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-03-25 03:32:11 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.22 $
+|     $Date: 2005-04-03 08:15:47 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -233,7 +233,7 @@ If (IsSet($_POST['pollvote']))
 
 			$votep = implode(chr(1), $votes);
 
-			$sql->db_Update("polls", "poll_votes = '$votep' WHERE poll_id=".$poll_id, TRUE);
+			$sql->db_Update("polls", "poll_votes = '$votep' WHERE poll_id=".$poll_id);
 			$POLLMODE = "voted";
 
 		}
