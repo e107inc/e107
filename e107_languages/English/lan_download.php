@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_download.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:11:56 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-02-08 21:35:08 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Downloads");
@@ -58,5 +58,21 @@ define("LAN_dl_41", "Search Downloads");
 define("LAN_dl_42", "Sub-categories");
 define("LAN_dl_43", "vote");
 define("LAN_dl_44", "votes");
+define("LAN_dl_45", "Report broken download");
+define("LAN_dl_46", "click here to download");
 
+define("LAN_dl_47", "Post has been reported");
+define("LAN_dl_48", "Download has been reported to administrator.<br />Thank You.");
+define("LAN_dl_49", "Click here to return to download");
+define("LAN_dl_50", "Report broken download to an administrator");
+define("LAN_dl_51", "Reporting download: ");
+define("LAN_dl_52", "Guest");
+define("LAN_dl_53", "Click to view download");
+define("LAN_dl_54", "An administrator will be made aware of this download, please leave a message if you feel it necessary.");
+define("LAN_dl_55", "<b>Do not</b> use this form to contact the admin for any other reason.");
+define("LAN_dl_56", "Report broken download");
+define("LAN_dl_57", "reported by");
+define("LAN_dl_58", "This post has been reported from site ");
+define("LAN_dl_59", "Message from: ");
+define("LAN_dl_60", "Broken download report from");
 ?>
