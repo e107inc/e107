@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-01-27 19:51:38 $
-|     $Author: streaky $
+|     $Revision: 1.11 $
+|     $Date: 2005-01-28 13:24:15 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 @include("e107_handlers/errorhandler_class.php");
@@ -340,10 +340,10 @@ function stage5() {
 		<td style='width:60%' class='installbox1'><input class='tbox' type='text' name='admin_name' size='60' value='".$_POST['admin_name']."' maxlength='100' /></td></tr>
 		 
 		<tr><td style='width:40%' class='installbox1'><b>".INSLAN41.":</b></td>
-		<td style='width:60%' class='installbox1'><input class='tbox' type='password' name='admin_password1' size='60' value='' maxlength='100' /></td></tr>
+        <td style='width:60%' class='installbox1'><input class='tbox' type='password' name='admin_password1' size='40' value='' maxlength='40' /></td></tr>
 		 
 		<tr><td style='width:40%' class='installbox1'><b>".INSLAN42.":</b></td>
-		<td style='width:60%' class='installbox1'><input class='tbox' type='password' name='admin_password2' size='60' value='' maxlength='100' /></td></tr>
+        <td style='width:60%' class='installbox1'><input class='tbox' type='password' name='admin_password2' size='40' value='' maxlength='40' /></td></tr>
 		 
 		<tr><td style='width:40%' class='installbox1'><b>".INSLAN43.":</b></td>
 		<td style='width:60%' class='installbox1'><input class='tbox' type='text' name='admin_email' size='60' value='".$_POST['admin_email']."' maxlength='100' />
