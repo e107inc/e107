@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitemap/sitemap_custom.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:40 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-10-07 14:46:28 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 
@@ -25,7 +25,7 @@
 function sm_custom(){
         $sql = new db;
         $texto = "<p class='caption2' style='text-align: left;' >\n
-        <a href=\"javascript:void(0);\" onfocus=\"this.blur;\" onclick=\"expandit('custom_cats');ejs_func_todo='view'\" >".SM_ICO_EXP."</a> <img src='".THEME."images/bullet2.gif' alt='bullet' /> <a class=\"sitemap2\"  href=\"javascript:void(0);\" onfocus=\"this.blur;\" onclick=\"expandit('custom_cats');ejs_func_todo='view'\" >".LANSM_44."</a>\n
+        <a href=\"#\" onfocus=\"this.blur;\" onclick=\"if(document.getElementById('custom_cats')){expandit('custom_cats');}ejs_func_todo='view'\" >".SM_ICO_EXP."</a> <img src='".THEME."images/bullet2.gif' alt='bullet' /> <a class=\"sitemap2\"  href=\"#\" onfocus=\"this.blur;\" onclick=\"expandit('custom_cats');ejs_func_todo='view'\" >".LANSM_44."</a>\n
         </p><br />\n";
 
         $texto .= "<p class='cats' id='custom_cats' style='display:none; margin: 0px 0px 0px 10px;' >\n

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitemap/sitemap_downloads.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:40 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-10-07 14:46:28 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 function sm_downloads(){
@@ -21,7 +21,7 @@ function sm_downloads(){
         $sql2 = new db;
         $aj = new textparse;
         $texto .= "<p class='caption2' style='text-align: left;' >\n
-        <a href=\"javascript:void(0);\" onfocus=\"this.blur;\" onclick=\"expandit('downloads_cats');ejs_func_todo='view'\" >".SM_ICO_EXP."</a> <img src='".THEME."images/bullet2.gif' alt='bullet' /> <a class=\"sitemap2\"  href=\"download.php\" >".LANSM_12."</a> <b class='smalltext' >".LANSM_13."</b>\n
+        <a href=\"#\" onfocus=\"this.blur;\" onclick=\"if(document.getElementById('downloads_cats')){expandit('downloads_cats');}ejs_func_todo='view'\" >".SM_ICO_EXP."</a> <img src='".THEME."images/bullet2.gif' alt='bullet' /> <a class=\"sitemap2\"  href=\"download.php\" >".LANSM_12."</a> <b class='smalltext' >".LANSM_13."</b>\n
         </p><br />\n";
 
         if($sql -> db_Select("download_category","*","download_category_parent='0' ORDER BY download_category_name ASC")){
@@ -33,10 +33,10 @@ function sm_downloads(){
                         $row[1] = $aj -> tpa($row[1]);
                         $row[2] = $aj -> tpa($row[2]);
                         if(check_class($row[5])){
-                                $texto .= "<a href=\"javascript:void(0);\" onfocus=\"this.blur;\" onclick=\"expandit('downloads_subcats_".$row[0]."');ejs_func_todo='view'\" class='smalltext' >".SM_ICO_EXP."</a> ".( $row[3]!="" ? "<img src='".e_IMAGE."download_icons/".$row[3]."' alt='bullet' /> " : "" )."<a  href='download.php?' >".$row[1]."</a>\n";
+                                $texto .= "<a href=\"#\" onfocus=\"this.blur;\" onclick=\"if(document.getElementById('downloads_subcats_".$row[0]."')){expandit('downloads_subcats_".$row[0]."');}ejs_func_todo='view'\" class='smalltext' >".SM_ICO_EXP."</a> ".( $row[3]!="" ? "<img src='".e_IMAGE."download_icons/".$row[3]."' alt='bullet' /> " : "" )."<a  href='download.php?' >".$row[1]."</a>\n";
                                 $nbr_downloads_cat++;
                                 if($sql2 -> db_Select("download_category","*","download_category_parent='".$row[0]."' ORDER BY download_category_name ASC")){
-                                                $texto .= "<br /><br /><span class='subcats' id='downloads_subcats_".$row[0]."' style='display:none;' ><div style='margin: 0px 0px 0px 30px;' >\n
+                                                $texto .= "<br /><br /><span class='subcats' id='downloads_subcats_".$row[0]."' style='display:none;' ><span style='margin: 0px 0px 0px 30px;' >\n
                                                 <b>".LANSM_37."</b><br />";
                                                 while($row2 = $sql2 -> db_Fetch()){
                                                         extract($row2);
@@ -46,7 +46,7 @@ function sm_downloads(){
                                                                 $texto .= ( $row2[3]!="" ? "<img src='".e_IMAGE."download_icons/".$row2[3]."' alt='bullet' /> " : "" )."<a href=\"download.php?list.".$row2[0]."\" >".$row2[1]."</a><br />\n";
                                                         }
                                                 }
-                                                $texto .= "<br /><br /></div></span>\n";
+                                                $texto .= "<br /><br /></span></span>\n";
                                 }else{
                                         $texto .= "<br /><br />";
                                 }

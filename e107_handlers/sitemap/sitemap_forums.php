@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitemap/sitemap_forums.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:40 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-10-07 14:46:28 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 function sm_forums(){
@@ -21,7 +21,7 @@ function sm_forums(){
         $sql2 = new db;
         $aj = new textparse;
         $texto .= "<p class='caption2' style='text-align: left;' >
-        <a href=\"javascript:void(0);\" onfocus=\"this.blur;\" onclick=\"expandit('forum_cats');ejs_func_todo='view'\" >".SM_ICO_EXP."</a> <img src='".THEME."images/bullet2.gif' alt='bullet' /> <a class=\"sitemap2\"  href=\"forum.php\" >".LANSM_10."</a> <b class='smalltext' >".LANSM_11."</b>\n
+        <a href=\"#\" onfocus=\"this.blur;\" onclick=\"if(document.getElementById('forum_cats')){expandit('forum_cats');}ejs_func_todo='view'\" >".SM_ICO_EXP."</a> <img src='".THEME."images/bullet2.gif' alt='bullet' /> <a class=\"sitemap2\"  href=\"forum.php\" >".LANSM_10."</a> <b class='smalltext' >".LANSM_11."</b>\n
         </p><br />\n";
 
         if($sql -> db_Select("forum","forum_id, forum_name, forum_class","forum_parent='0' ORDER BY forum_order")){
@@ -32,10 +32,10 @@ function sm_forums(){
                         extract($row);
                         $row[1] = $aj -> tpa($row[1]);
                         if(check_class($row[2])){
-                                $texto .= "<a href=\"javascript:void(0);\" onfocus=\"this.blur;\" onclick=\"expandit('forum_subcats_".$row[0]."');ejs_func_todo='view'\" class='smalltext' >".SM_ICO_EXP."</a> <a href=\"forum.php\" class='smalltext' >".$row[1]."</a>\n";
+                                $texto .= "<a href=\"#\" onfocus=\"this.blur;\" onclick=\"if(document.getElementById('forum_subcats_".$row[0]."')){expandit('forum_subcats_".$row[0]."');}ejs_func_todo='view'\" class='smalltext' >".SM_ICO_EXP."</a> <a href=\"forum.php\" class='smalltext' >".$row[1]."</a>\n";
                                 $nbr_forum_cat++;
                                 if($sql2 -> db_Select("forum","forum_id, forum_name, forum_threads, forum_replies, forum_class","forum_parent='".$row[0]."' ORDER BY forum_order ASC")){
-                                                $texto .= "<br /><br /><span class='subcats' id='forum_subcats_".$row[0]."' style='display:none;' ><div style='margin: 0px 0px 0px 30px;' >\n
+                                                $texto .= "<br /><br /><span class='subcats' id='forum_subcats_".$row[0]."' style='display:none;' ><span style='margin: 0px 0px 0px 30px;' >\n
                                                 <b>".LANSM_10."</b><br />";
                                                 while($row2 = $sql2 -> db_Fetch()){
                                                         extract($row2);
@@ -44,7 +44,7 @@ function sm_forums(){
                                                                 $texto .= "<a href=\"forum_viewforum.php?".$row2[0]."\" >".$row2[1]."</a> ".LANSM_39.": ".$row2[2]."/".$row2[3].")<br />\n";
                                                         }
                                                 }
-                                                $texto .= "<br /><br /></div></span>\n";
+                                                $texto .= "<br /><br /></span></span>\n";
                                 }else{
                                         $texto .= "<br /><br />";
                                 }
