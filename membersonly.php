@@ -33,7 +33,7 @@ print "</head>
 
         $text = "<div style='text-align:center'><table class='fborder' style='width:75%;margin-right:auto;margin-left:auto'>
         <tr><td class='forumheader3' style='text-align:center'><br />".LAN_MEMBERS_1."
-        ".LAN_MEMBERS_2." <a href='".e_BASE.e_SIGNUP."'>".
+        ".LAN_MEMBERS_2." <a href='".e_SIGNUP."'>".
         LAN_MEMBERS_3."</a><br /><br /></td></tr>
         <tr><td class='forumheader' style='text-align:center;margin-right:auto;margin-left:auto'><a href='".e_BASE."index.php'>".LAN_MEMBERS_4."</a></td></tr>
         </table></div>";

@@ -11,7 +11,7 @@
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
 |
-|   $Id: header_default.php,v 1.34 2004-08-27 02:27:50 mcfly_e107 Exp $
+|   $Id: header_default.php,v 1.35 2004-08-27 17:31:50 e107coders Exp $
 +---------------------------------------------------------------+
 */
 if(!function_exists("parseheader")){
@@ -60,35 +60,35 @@ if(!function_exists("checklayout")){
                   while($row = $sql9-> db_Fetch()){
                           extract($row);
                           $show_menu = TRUE;
-									if($menu_pages)
-									{
-										list($listtype,$listpages) = explode("-",$menu_pages);
-										$pagelist = explode("|",$listpages);
-										$check_url = e_SELF."?".e_QUERY;
-										if($listtype == '1') //show menu
-										{
-											$show_menu = FALSE;
-											foreach($pagelist as $p)
-											{
-												if(strpos($check_url,$p))
-												{
-													$show_menu = TRUE;
-												}
-											}
-										}
-										if($listtype == '2') //hide menu
-										{
-											$show_menu = TRUE;
-											foreach($pagelist as $p)
-											{
-												if(strpos($check_url,$p))
-												{
-													$show_menu = FALSE;
-												}
-											}
-										}
-									}
-											
+                                                                        if($menu_pages)
+                                                                        {
+                                                                                list($listtype,$listpages) = explode("-",$menu_pages);
+                                                                                $pagelist = explode("|",$listpages);
+                                                                                $check_url = e_SELF."?".e_QUERY;
+                                                                                if($listtype == '1') //show menu
+                                                                                {
+                                                                                        $show_menu = FALSE;
+                                                                                        foreach($pagelist as $p)
+                                                                                        {
+                                                                                                if(strpos($check_url,$p))
+                                                                                                {
+                                                                                                        $show_menu = TRUE;
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                                if($listtype == '2') //hide menu
+                                                                                {
+                                                                                        $show_menu = TRUE;
+                                                                                        foreach($pagelist as $p)
+                                                                                        {
+                                                                                                if(strpos($check_url,$p))
+                                                                                                {
+                                                                                                        $show_menu = FALSE;
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                        }
+
                           if(check_class($menu_class) && $show_menu){
                                   if(strstr($menu_name, "custom_")){
                                           require_once(e_PLUGIN."custom/".str_replace("custom_", "", $menu_name).".php");
@@ -121,7 +121,7 @@ if(!function_exists("checklayout")){
                           }else{
                                   echo  "<form method='post' action='".e_SELF."'>\n<p>\n".LOGIN_MENU_L1."<input class='tbox' type='text' name='username' size='15' value='$username' maxlength='20' />&nbsp;&nbsp;\n".LOGIN_MENU_L2."<input class='tbox' type='password' name='userpass' size='15' value='' maxlength='20' />&nbsp;&nbsp;\n<input type='checkbox' name='autologin' value='1' />".LOGIN_MENU_L6."&nbsp;&nbsp;\n<input class='button' type='submit' name='userlogin' value='Login' />";
                                   if($pref['user_reg']){
-                                          echo "&nbsp;&nbsp;<a href='".e_BASE."signup.php'>".LOGIN_MENU_L3."</a>";
+                                          echo "&nbsp;&nbsp;<a href='".e_SIGNUP."'>".LOGIN_MENU_L3."</a>";
                                   }
                                   echo "</p>\n</form>";
                           }
