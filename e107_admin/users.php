@@ -497,13 +497,13 @@ class users{
 
                 $text .="<form method='post' action='".e_SELF."?".e_QUERY."'>
                 <table style='width:97%' class='fborder'>
-                <td class='fcaption'>Name</td>
-                <td class='fcaption'>Type</td>
-                <td class='fcaption'>Values</td>
-				<td class='fcaption'>Default</td>
-				<td class='fcaption'>Applicable to</td>
-				<td class='fcaption'>Visible to</td>
-                <td class='fcaption'>Action</td>
+                <td class='fcaption'>".USRLAN_96."</td>
+                <td class='fcaption'>".USRLAN_97."</td>
+                <td class='fcaption'>".USRLAN_98."</td>
+				<td class='fcaption'>".USRLAN_99."</td>
+				<td class='fcaption'>".USRLAN_100."</td>
+				<td class='fcaption'>".USRLAN_101."</td>
+                <td class='fcaption'>".USRLAN_102."</td>
                 \n";
 
                 if(!$row[0]){
@@ -517,7 +517,7 @@ class users{
                                 if($u_entended){
                                 // added by cameron..=============================
                                 $ut = explode("|",$u_entended);
-                                $u_name = ($ut[0] != "") ? $ut[0] : $u_entended;
+                                $u_name = ($ut[0] != "" ? $ut[0] : $u_entended);
                                 $u_type = $ut[1];
                                 $u_value = $ut[2];
 								$u_default = $ut[3];
@@ -530,7 +530,7 @@ class users{
 										<td class='forumheader3' >".$u_default."&nbsp; </td>
 										<td class='forumheader3' >".r_userclass_name($u_visible)."&nbsp; </td>
 										<td class='forumheader3' >".r_userclass_name($u_hide)."&nbsp; </td>
-                                        <td class='forumheader3' style='text-align:center;'><span class='button' style='height:16px; width:50%;'><a style='text-decoration:none' href='".e_SELF."?editext.$key'>Edit</a></span>&nbsp;<span class='button' style='height:16px; width:50%'><a style='text-decoration:none' href='".e_SELF."?delext.$key'>".USRLAN_29."</a></span>
+                                        <td class='forumheader3' style='text-align:center;'><span class='button' style='height:16px; width:50%;'><a style='text-decoration:none' href='".e_SELF."?editext.$key'>".USRLAN_81."</a></span>&nbsp;<span class='button' style='height:16px; width:50%'><a style='text-decoration:none' href='".e_SELF."?delext.$key'>".USRLAN_29."</a></span>
                                         </td>
                                         </tr>";
                                         $c++;
@@ -548,12 +548,12 @@ class users{
 
 
                $text .="<tr>
-                <td style='width:30%' class='forumheader3'>Field Type:</td>
+                <td style='width:30%' class='forumheader3'>".USRLAN_103."</td>
                 <td style='width:70%' class='forumheader3' colspan='3'>
                 <select class='tbox' name='user_type'>";
 
      $typevalue = array("text","radio","dropdown","table");
-     $typename = array("Text Box","Radio Buttons","Drop-Down Menu","DB Table Field");
+     $typename = array(USRLAN_108,USRLAN_109,USRLAN_110,USRLAN_111);
 
      for ($i=0; $i<count($typevalue); $i++) {
      $selected = ($uf_type == $typevalue[$i])? " selected": "";
@@ -564,32 +564,31 @@ class users{
                 </select></tr>";
 
                 $text .= "<tr>
-                <td style='width:30%' class='forumheader3'>Values:</td>
+                <td style='width:30%' class='forumheader3'>".USRLAN_98."</td>
                 <td style='width:70%' class='forumheader3' colspan='3'>
                 <input class='tbox' type='text' name='user_value' size='40' value='$uf_value' /><br />
-                <span class='smalltext'>Enter values seperated by commas eg. value1,value2 etc<br>
-                For DB table use the format: dbtable,field-value,field-name.</span>
+                <span class='smalltext'>".USRLAN_105."</span>
                 </td>
                 </tr>
 					
 				<tr>
-				<td style='width:30%' class='forumheader3'>Default Value:</td>
+				<td style='width:30%' class='forumheader3'>".USRLAN_104."</td>
                 <td style='width:70%' class='forumheader3' colspan='3'>
 				<input class='tbox' type='text' name='user_default' size='40' value='$uf_default' />
 				</td>
                 </tr>
 
 				<tr>
-				<td style='width:30%' class='forumheader3'>Applicable to:</td>
+				<td style='width:30%' class='forumheader3'>".USRLAN_100."</td>
                 <td style='width:70%' class='forumheader3' colspan='3'>
-				".r_userclass("user_visible", $uf_visible)."<br /><span class='smalltext'>This will determine who will see this field in their usersettings.</span>
+				".r_userclass("user_visible", $uf_visible)."<br /><span class='smalltext'>".USRLAN_106."</span>
 				</td>
                 </tr>
 
 				<tr>
-				<td style='width:30%' class='forumheader3'>Visible to:</td>
+				<td style='width:30%' class='forumheader3'>".USRLAN_101."</td>
                 <td style='width:70%' class='forumheader3' colspan='3'>
-				".r_userclass("user_hide", $uf_hide)."<br /><span class='smalltext'>This will determine who can see the value in the user page.</span>
+				".r_userclass("user_hide", $uf_hide)."<br /><span class='smalltext'>".USRLAN_107."</span>
 				</td>
                 </tr>";
 
@@ -603,7 +602,7 @@ class users{
                 ";
                 }else{
                 $text .="
-                <input class='button' type='submit' name='update_field' value='Update Extended Field' />
+                <input class='button' type='submit' name='update_field' value='".USRLAN_112."' />
                 ";
                 }
             // ======= end added by Cam.
