@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-02-20 13:06:29 $
+|     $Revision: 1.31 $
+|     $Date: 2005-03-08 11:53:23 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -38,7 +38,7 @@ echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET.
 echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
 <meta http-equiv='content-style-type' content='text/css' />\n";
 echo "<link rel='alternate' type='application/rss+xml' title='".SITENAME." RSS' href='".e_PLUGIN."rss_menu/rss.php?1.2' />\n";
-if($pref['trackbackEnabled'])
+if(isset($pref['trackbackEnabled']))
 {
 echo '<link rel="pingback" href="'.$e107->HTTPPath.PLUGINS_DIRECTORY.'trackback/xmlrpc.php" />
 ';
@@ -72,7 +72,7 @@ if (isset($theme_js_php) && $theme_js_php) {
 	if (filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE."user.js'></script>\n"; }
 	if (isset($eplug_js) && $eplug_js) { echo "<script type='text/javascript' src='".$eplug_js."'></script>\n"; }
 }
-if ($WYSIWYG == TRUE && check_class($pref['wysiwyg'])) { require_once(e_HANDLER."tiny_mce/wysiwyg.php"); }
+if (isset($WYSIWYG) && $WYSIWYG == TRUE && check_class($pref['wysiwyg'])) { require_once(e_HANDLER."tiny_mce/wysiwyg.php"); }
 if (function_exists('headerjs')){echo headerjs();  }
 
 if ($pref['statActivate']) {

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2005-02-24 17:25:13 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.54 $
+|     $Date: 2005-03-08 11:53:07 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -154,7 +154,7 @@ if (!$pref['wmessage_sc']) {
 			$wmessage .= $tp->toHTML($row['gen_chardata'], TRUE, 'parse_sc')."<br />";
 		}
 	}
-	if ($wmessage) {
+	if (isset($wmessage)) {
 		if ($pref['wm_enclose']) {
 			$ns->tablerender("", $wmessage, "wm");
 		} else {
@@ -238,7 +238,7 @@ else
 
 	// normal newsitems
 
-	if($pref['trackbackEnabled']) {
+	if(isset($pref['trackbackEnabled'])) {
 		$query = "SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon, COUNT(*) AS tbcount FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
@@ -278,8 +278,8 @@ news page templating
 if($pref['news_unstemplate'] && file_exists(THEME."news_template.php")) {
 	// theme specific template required ...
 	require_once(THEME."news_template.php");
-	$newscolumns = ($NEWSCOLUMNS ? $NEWSCOLUMNS : 1);
-	$newspercolumn = ($NEWSITEMSPERCOLUMN ? $NEWSITEMSPERCOLUMN : 10);
+	$newscolumns = (isset($NEWSCOLUMNS) ? $NEWSCOLUMNS : 1);
+	$newspercolumn = (isset($NEWSITEMSPERCOLUMN) ? $NEWSITEMSPERCOLUMN : 10);
 	$newsdata = array();
 	if (!$sql->db_Select_gen($query)) {
 		echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_462 : LAN_83)."</b></div><br /><br />";

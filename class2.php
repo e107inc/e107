@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.90 $
-|     $Date: 2005-02-23 22:08:03 $
-|     $Author: streaky $
+|     $Revision: 1.91 $
+|     $Date: 2005-03-08 11:53:07 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -275,7 +275,7 @@ $sql->db_Mark_Time('(Start: Pref/multilang done)');
 //
 //
 
-if (isset($pref['frontpage']) && $pref['frontpage_type'] == "splash") {
+if (isset($pref['frontpage']) && isset($pref['frontpage_type']) && $pref['frontpage_type'] == "splash") {
 	$ip=getip();
 	if (!$sql->db_Count("online", "(*)", "WHERE online_ip='{$ip}' ")) {
 		online();

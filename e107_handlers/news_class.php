@@ -13,8 +13,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.42 $
-| $Date: 2005-02-18 20:22:33 $
+| $Revision: 1.43 $
+| $Date: 2005-03-08 11:53:22 $
 | $Author: stevedunstan $
 +---------------------------------------------------------------+
 */
@@ -211,7 +211,7 @@ class news {
 		$category_icon = $news['category_icon'];
 		$category_id   = $news['news_category'];
 
-	$preview = substr($preview,0,7);
+		$preview = (isset($preview) ? substr($preview,0,7) : "");
 
 		$highlight_search = FALSE;
 		if (IsSet($_POST['highlight_search'])) {
@@ -235,8 +235,8 @@ class news {
 				$category_icon = e_IMAGE."icons/".$category_icon;
 			}
 		}
-		$active_start = ($active_start ? str_replace(" - 00:00:00", "", $con->convert_date($active_start, "long")) : LAN_NEWS_19);
-		$active_end = ($active_end ? " to ".str_replace(" - 00:00:00", "", $con->convert_date($active_end, "long")) : "");
+		$active_start = (isset($active_start) ? str_replace(" - 00:00:00", "", $con->convert_date($active_start, "long")) : LAN_NEWS_19);
+		$active_end = (isset($active_end) ? " to ".str_replace(" - 00:00:00", "", $con->convert_date($active_end, "long")) : "");
 		$info = "<div class='smalltext'><br /><br /><b>".LAN_NEWS_18."</b><br />";
 		$info .= ($titleonly ? LAN_NEWS_9 : "");
 		$info .= ($news_class == 255 ? LAN_NEWS_10 : LAN_NEWS_11);
