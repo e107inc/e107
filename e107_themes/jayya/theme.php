@@ -18,7 +18,7 @@ $themename = "Jayya";
 $themeversion = "1.0";
 $themeauthor = "e107";
 $themedate = "22/12/04";
-$themeinfo = "Jayya";
+$themeinfo = "";
 
 define("THEME_DISCLAIMER", "");
 

@@ -25,10 +25,11 @@ if (ADMIN) {
 	<br /><br />
 	<b>".FOOTLAN_5."</b>
 	<br />
-	".$themename." v".$themeversion." ".FOOTLAN_6." ".$themeauthor." (".$themedate.")
-	<br />
-	".FOOTLAN_7.": ".$themeinfo."
-	<br /><br />
+	".$themename." v".$themeversion." ".FOOTLAN_6." ".$themeauthor." (".$themedate.")";
+	
+	$text .= $themeinfo ? "<br />".FOOTLAN_7.": ".$themeinfo : "";
+	
+	$text .= "<br /><br />
 	<b>".FOOTLAN_8."</b>
 	<br />
 	".$install_date."
