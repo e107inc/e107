@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/admin_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2004-12-26 21:26:30 $
+|     $Revision: 1.7 $
+|     $Date: 2004-12-26 21:43:11 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -30,7 +30,6 @@ if($pref['multilanguage']){
 
 
 $ADMIN_HEADER .= "
-=======
 {ADMIN_USERLAN}
 <div>
 {ADMIN_MULTILANG}
