@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2004-10-10 21:13:18 $
+|     $Revision: 1.5 $
+|     $Date: 2004-11-02 14:40:40 $
 |     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
@@ -521,6 +521,7 @@ class links{
 
         function set_order(){
                 global $sql, $ns, $aj, $ml, $rs, $pref, $sql2;
+                if(!is_object($sql2)){$sql2 = new db;}
                 $text = "<div style='text-align:center'>
                 <form method='post' action='".e_SELF."?order'>
                 <table style='width:85%' class='fborder'>";
