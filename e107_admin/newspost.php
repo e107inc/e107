@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.2 $
-|   $Date: 2004-09-25 02:19:43 $
+|   $Revision: 1.3 $
+|   $Date: 2004-10-05 19:21:20 $
 |   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 
@@ -62,8 +62,10 @@ if($delete == "main" && $del_id)
         {
                 $newspost -> show_message(NWSLAN_31." #".$del_id." ".NWSLAN_32);
                 clear_cache("news.php");
+                $ix -> create_rss();
         }
         unset($delete, $del);
+        
 }
 
 if($delete == "category" && $del_id)
