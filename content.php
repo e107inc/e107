@@ -527,7 +527,12 @@ if($action == "article"){
 		}else{
 			ob_start();
 			if(!$CONTENT_ARTICLE_TABLE){
-				require_once(e_BASE.$THEMES_DIRECTORY."templates/content_template.php");
+				if(file_exists(THEME."content_template.php")){
+          require_once(THEME."content_template.php");
+        }
+  			else{
+          require_once(e_BASE.$THEMES_DIRECTORY."templates/content_template.php");
+        }
 			}
 			if($sql -> db_Select("content", "*", "content_id=$sub_action")){	
 				$row = $sql -> db_Fetch(); extract($row);
@@ -615,7 +620,12 @@ if($action == "article"){
 		}else{
 			ob_start();
 			if(!$CONTENT_RECENT_TABLE){
-				require_once(e_BASE.$THEMES_DIRECTORY."templates/content_template.php");
+				if(file_exists(THEME."content_template.php")){
+          require_once(THEME."content_template.php");
+        }
+  			else{
+          require_once(e_BASE.$THEMES_DIRECTORY."templates/content_template.php");
+        }
 			}
 			$sql = new db; $sql2 = new db;
 			if($sql -> db_Select("content", "*", "content_id=$id") || !$id){
@@ -656,7 +666,12 @@ if($action == "article"){
 		// ##### archive --------------------------------------------------------------------------
 		unset($text);
 		if(!$CONTENT_ARCHIVE_TABLE){
-			require_once(e_BASE.$THEMES_DIRECTORY."templates/content_template.php");
+			if(file_exists(THEME."content_template.php")){
+        require_once(THEME."content_template.php");
+      }
+			else{
+        require_once(e_BASE.$THEMES_DIRECTORY."templates/content_template.php");
+      }
 		}
 		if($sql -> db_Select("content", "content_id, content_heading, content_datestamp ", "content_parent=$id AND content_type=0 ORDER BY content_datestamp DESC LIMIT 10,200")){
 			while($row = $sql -> db_Fetch()){
@@ -689,7 +704,12 @@ if($action == "article"){
 
 		// ##### recent articles ------------------------------------------------------------------
 		if(!$CONTENT_RECENT_TABLE){
-			require_once(e_BASE.$THEMES_DIRECTORY."templates/content_template.php");
+			if(file_exists(THEME."content_template.php")){
+        require_once(THEME."content_template.php");
+      }
+			else{
+        require_once(e_BASE.$THEMES_DIRECTORY."templates/content_template.php");
+      }
 		}
 		$sql = new db; $sql2 = new db;
 		if($sql -> db_Select("content", "*", "content_type=0 ORDER BY content_datestamp DESC LIMIT 0,10")){
@@ -712,7 +732,12 @@ if($action == "article"){
 
 		// ##### category table -------------------------------------------------------------------
 		if(!$CONTENT_CATEGORY_TABLE){
-			require_once(e_BASE.$THEMES_DIRECTORY."templates/content_template.php");
+			if(file_exists(THEME."content_template.php")){
+        require_once(THEME."content_template.php");
+      }
+			else{
+        require_once(e_BASE.$THEMES_DIRECTORY."templates/content_template.php");
+      }
 		}
 
 		if($sql -> db_Select("content", "*", "content_type=6")){

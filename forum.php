@@ -208,7 +208,12 @@ $FORUMINFO .= LAN_192.($total_topics+$total_replies)." ".LAN_404." ($total_topic
 ".LAN_42.$total_members."<br />".LAN_41."<a href='".e_BASE."user.php?id.".$nuser_id."'>".$nuser_name."</a>.\n";
 
 if(!$FORUM_MAIN_START){
-	require_once(e_BASE.$THEMES_DIRECTORY."templates/forum_template.php");
+	if(file_exists(THEME."forum_template.php")){
+    require_once(THEME."forum_template.php");
+  }
+	else{
+    require_once(e_BASE.$THEMES_DIRECTORY."templates/forum_template.php");
+  }
 }
 
 require_once(HEADERF);

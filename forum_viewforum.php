@@ -51,7 +51,12 @@ $STARTERTITLE = LAN_54;
 	$VIEWTITLE = LAN_56;
 
 if(!$FORUM_VIEW_START){
-	require_once(e_BASE.$THEMES_DIRECTORY."templates/forum_viewforum_template.php");
+	if(file_exists(THEME."forum_viewforum_template.php")){
+    require_once(THEME."forum_viewforum_template.php");
+  }
+	else{
+    require_once(e_BASE.$THEMES_DIRECTORY."templates/forum_viewforum_template.php");
+  }
 }
 
 $sql -> db_Select("forum", "*", "forum_id='".$forum_id."' ");

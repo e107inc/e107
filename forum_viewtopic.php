@@ -217,7 +217,12 @@ while($row = $sql -> db_Fetch()){
 }
 
 if(!$FORUMSTART){
-	require_once(e_BASE.$THEMES_DIRECTORY."templates/forum_viewtopic_template.php");
+	if(file_exists(THEME."forum_viewtopic_template.php")){
+    require_once(THEME."forum_viewtopic_template.php");
+  }
+	else{
+    require_once(e_BASE.$THEMES_DIRECTORY."templates/forum_viewtopic_template.php");
+  }
 }
 
 // get info for main thread -------------------------------------------------------------------------------------------------------------------------------------------------------------------
