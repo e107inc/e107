@@ -10,6 +10,12 @@
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
+while (list($global) = each($GLOBALS)){
+	if (!preg_match('/^(_SERVER|GLOBALS)$/', $global)){
+		unset($$global);
+	}
+}
+unset($global);
 $imgtypes=array("jpeg", "png", "gif");
 
 define("e_QUERY", eregi_replace("&|/?PHPSESSID.*", "", $_SERVER['QUERY_STRING']));
@@ -18,6 +24,7 @@ ob_clean();
 @include("e107_config.php");
 $a=0;
 $p="";
+
 while(!$mySQLserver && $a<5){
 	$a++;
 	$p.="../";
