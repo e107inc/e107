@@ -1,0 +1,467 @@
+body {
+	background: #ccc;
+	color: #000;
+	font-family: verdana, arial, "lucida grande", sans-serif;
+	text-align: center;
+}
+
+#wrapper {
+	margin: 10px auto;
+	width: 700px;
+}
+
+#menu {
+	float: right;
+	width: 181px;
+	text-align: right;
+}
+
+.content {
+	border: #444 2px solid;
+	padding: 15px;
+	font-size: 11px;
+	background: #fff;
+	color: #000;
+	text-align: left;
+}
+
+.fixfuckedie {
+	width: 100%
+}
+
+#main {
+	width: 504px;
+	text-align: left;
+}
+
+#sitebanner {
+	border: #444 2px solid;
+	padding: 0px;
+	font-size: 11px;
+	background: #fff;
+	margin-bottom: 6px;
+	color: #000;
+	text-align: left;
+}
+#sitebanner img {
+	display: block;
+	border-bottom: #444 1px solid;
+}
+
+#navbar {
+	padding-right: 15px;
+	padding-left: 15px;
+	font-size: 11px;
+	padding-bottom: 7px;
+	padding-top: 7px;
+}
+
+#navbar a {
+	color: #000;
+	text-decoration: none;
+}
+#navbar a:active {
+	text-decoration: none;
+}
+#navbar a:visited {
+	text-decoration: none;
+}
+#navbar a:hover {
+	color: #000; text-decoration:
+	underline;
+}
+
+#logo1 {
+	position: relative;
+	height: 90px;
+	width: 500px;
+	background-image: url('images/logo1.png');
+	background-repeat: no-repeat;
+}
+
+#logo2 {
+	position: relative;
+	height: 90px;
+	width: 500px;
+	background-image: url('images/logo2.png');
+	background-repeat: no-repeat;
+}
+
+#logo3 {
+	position: relative;
+	height: 90px;
+	width: 500px;
+	background-image: url('images/logo3.png');
+	background-repeat: no-repeat;
+}
+
+#logo4 {
+	position: relative;
+	height: 90px;
+	width: 500px;
+	background-image: url('images/logo4.png');
+	background-repeat: no-repeat;
+}
+
+.header {
+	padding-right: 0px;
+	padding-left: 0px;
+	font-weight: bold;
+	font-size: 11px;
+	padding-bottom: 3px;
+	margin: 0px 0px 10px;
+	color: #444;
+	padding-top: 0px;
+	border-bottom: #444 1px dashed;
+}
+
+
+h3 {
+	color: #444;
+	font-weight: bold;
+	margin-bottom: 2px;
+}
+
+.left {
+	float: left;
+	text-align: left;
+}
+.right {
+	text-align: right;
+	font-weight: normal;
+}
+
+.newssmalltext {
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#5d6e75;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+img {
+	vertical-align: middle;
+}
+
+
+
+
+
+hr {
+	border: 1px dotted #bbb;
+	height: 1px;
+	width: 92%;
+	text-align:center;
+}
+
+.smalltext {
+	font: 9px tahoma, verdana, arial, helvetica, sans-serif;
+	color:#5d6e75;
+}
+
+.bodytable {
+	padding: 2px;
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #444;
+}
+
+.button {	
+	border: #000 1px solid;
+	color: #000;
+	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
+	text-align:center;
+	background-image : url(images/button.png);
+}
+
+.button a {
+	color: #000;
+}
+.button a:hover {
+	color: #0085b0;
+}
+
+
+a {
+	color: #416eab;
+	text-decoration: none;
+}
+a:active {
+	text-decoration: none;
+}
+a:visited {
+	text-decoration: none;
+}
+a:hover {
+	color: #416eab;
+	text-decoration: underline;
+}
+
+.smallblacktext {
+    background: none;
+	font: 10px tahoma, verdana, arial, helvetica, sans-serif;
+	color:#000;
+}
+.indent{
+	padding: 10px 10px 10px 10px;
+	margin: 5px;
+	font: 9px verdana, tahoma, arial, sans-serif;
+	color: #838387;
+	border: 1px solid #d6d6d6;
+}
+.defaulttext {
+    background: none;
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+}
+
+td {
+	font: 11px tahoma, verdana, arial, helvetica, sans-serif;
+	color:#5d6e75;
+	padding: 0px;
+	text-align:left;
+}
+
+blockquote {
+	font-family: verdana, tahoma, arial, helvetica, sans-serif;
+	color:#7e96ac;
+	border: 1px solid #d6d6d6;
+}
+.mediumtext {
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+}
+
+.tbox{
+	background-color: #F4F7FA;
+	border: #5e5d63 1px solid;
+	color: #000000;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nextprev{
+	background-color: #eaeef2;
+	border: #000 1px solid;
+	color: #000000;
+	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
+	text-align:center;
+	padding : 2px;
+	text-align: right;
+}
+
+form {
+	margin: 2px 0px 0px 0px;
+}
+.spacer {
+	padding: 2px 0 2px 0;
+}
+
+.cspacer {
+	padding: 6px 0 6px 0;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+
+.border {
+	border: #999 1px solid;
+	background-color: #F0F1F1;
+	padding: 2px;
+}
+
+
+p {
+	margin-top: 0px
+}
+
+.fborder {
+	border: #c1c1c1 1px solid;
+}
+.forumheader{
+	background-color: #f3f3f7;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+	padding: 4px;
+	background-image : url('../e107_images/forum/fcap2.png');
+	border: 1px solid #ececf2;
+}
+
+.forumheader2{
+	background-color: #EFEFEF;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+	padding: 4px;
+	border: #C3BDBD 1px solid;
+}
+
+.forumheader3{
+	background-color: #f3f3f7;
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+	padding: 4px;
+	border: #ececf2 1px solid;
+}
+
+.forumborder{
+	border: #000080 1px solid;
+}
+
+.fcaption {
+	border: #f0f2f4 1px solid;
+	padding: 2px 0 2px 0;
+	background-color: #f9fafb;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#616060;
+}
+
+.finfobar{
+	background-color: #CCC8C8;
+	color:#000;
+	padding: 4px;
+	border: 1px solid #C3BDBD;
+	background-image : url('../e107_images/forum/finfobar.png');font-style:normal; font-variant:normal; font-weight:normal; font-size:11px; font-family:verdana, tahoma, arial, helvetica, sans-serif
+}
+
+.helpbox {
+	color:#000;
+	font: 9px tahoma, verdana, arial, helvetica, sans-serif;
+	border: 0px none red;
+	background-color: transparent;
+}
+
+.nforumholder {
+	border: 1px solid #345487;
+	padding: 0px;
+	background-color: #fff;
+}
+
+.nforumcaption {
+	background-image: url(images/nforumcaption.png);
+	padding: 8px 4px 8px 4px;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #fff;
+}
+
+.nforumcaption2 {
+	background-image: url(images/nforumcaption2.png);
+	padding: 8px 0px 8px 4px;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #000;
+	font-weight: bold;
+}
+
+.nforumcaption3 {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-color: #E4EAF2;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumthread {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-color: #EEF2F7;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumthread2 {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-color: #D1DCEB;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumreplycaption {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-color: #E2EDF2;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumreply {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-color: #EDF4F7;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumreply2 {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-color: #CFE0EB;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+.nforumdisclaimer {
+	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#5d6e75;
+}
+
+.nforumview1 {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-color: #E4EAF2;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumview2 {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-color: #DFE6EF;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumview3 {
+	padding: 4px;
+	background-color: #BCD0ED;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #263448;
+}
+
+.nforumview4 {
+	padding: 4px;
+	background-color: #E4EAF2;
+	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #3A4F6C;
+}
+
+a.forumlink{
+	color: #fff;
+	text-decoration: none;
+}
+
+a.forumlink:hover {
+	color: #bbb;
+	text-decoration: underline;
+}
+
+.treeclass1 {
+	background-color: #F4F7FA;
+	border: #5e5d63 1px solid;
+	color: #000000;
+	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
+	padding: 2px -2px 2px 2px;
+}
+
+.treeclass2 {
+	background-color: #F4F7FA;
+	border: #000 1px solid;
+	color: #000000;
+	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
+	padding: 2px -2px 2px 2px;
+}
+
+.treeclass3 {
+	background-color: #F4F7FA;
+	color: #000000;
+	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
+	padding: 1px;
+	width: 100%;
+}
