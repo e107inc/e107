@@ -113,6 +113,10 @@ if($action == "cat" && $sub_action == "confirm"){
 if($action == "confirm"){
         if($sql -> db_Delete("content", "content_id='$sub_action' ")){
                 $message = REVLAN_4;
+                clear_cache("review");
+				$action = "";
+				$sub_action = "";
+				$id = "";
         }
 }
 
