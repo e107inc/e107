@@ -24,7 +24,7 @@ define("PRFLAN_21", "Date display options");
 define("PRFLAN_22", "Short date format");
 define("PRFLAN_23", "Long date format");
 define("PRFLAN_24", "Forum date format");
-define("PRFLAN_25", "For more information on date formats see the <a href='http://www.php.net/manual/en/function.strftime.php' target='_blank'>strftime function page at php.net</a>");
+define("PRFLAN_25", "For more information on date formats see the <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>strftime function page at php.net</a>");
 define("PRFLAN_26", "Time offset");
 define("PRFLAN_27", "Example, if you set this to +2, all times on your site will have two hours added to them");
 define("PRFLAN_28", "User registration/posting");

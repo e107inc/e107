@@ -189,7 +189,7 @@ function parse_data($row, $amount, $total, $action_n, $lan){
 
 				$tmp = explode(".", $data[$c][2]); $width = $tmp[0];
 				if(eregi("http://", $data[$c][1])){
-					$data[$c][1] = "<a href='".$data[$c][1]."' onclick='window.open(this.href);return false;'>".$data[$c][1]."</a>";
+					$data[$c][1] = "<a href='".$data[$c][1]."' rel='external'>".$data[$c][1]."</a>";
 				}
 				$str .= "<tr>\n<td style='width:25%' class='forumheader3'>";
 				

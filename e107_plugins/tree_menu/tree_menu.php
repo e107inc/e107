@@ -91,13 +91,13 @@ $ns -> tablerender(LAN_183, $text);
 function setlink($link_name, $link_url, $link_open){
 		switch ($link_open){ 
 			case 1:
-				$link_append = " onclick=\"window.open('$link_url'); return false;\"";
+				$link_append = "rel='external'";
 			break; 
 			case 2:
-				$link_append = " target=\"_parent\"";
+				$link_append = "";
 			break;
 			case 3:
-				$link_append = " target=\"_top\"";
+				$link_append = "";
 			break;
 			default:
 				unset($link_append);

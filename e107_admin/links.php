@@ -559,7 +559,7 @@ class links{
 				$submitted = explode("^", $tmp_info);
 				if(!strstr($submitted[2], "http")){ $submitted[2] = "http://".$submitted[2]; }
 				$text .= "<tr>
-				<td style='width:50%' class='forumheader3'><a href='".$submitted[2]."' onclick=\"window.open('".$submitted[2]."'); return false;\">".$submitted[2]."</a></td>
+				<td style='width:50%' class='forumheader3'><a href='".$submitted[2]."' rel='external'>".$submitted[2]."</a></td>
 				<td style='width:30%' class='forumheader3'>".$submitted[5]."</td>
 				<td style='width:20%; text-align:center; vertical-align:top' class='forumheader3'>
 				".$rs -> form_button("submit", "category_edit", LCLAN_14, "onClick=\"document.location='".e_SELF."?create.sn.$tmp_time'\"")."

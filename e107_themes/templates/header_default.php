@@ -244,7 +244,7 @@ function checklayout($str){
                         }else if($fileext1 == "php" || $fileext1 == "html" || $fileext1 == "js"){
                                 include(e_IMAGE."banners/".$banner_image);
                         }else{
-                                echo "<a href='".e_BASE."banner.php?".$banner_id."' onclick=\"window.open('".e_BASE."banner.php?$banner_id'); return false;\"><img src='".e_IMAGE."banners/".$banner_image."' alt='".$banner_clickurl."' style='border:0' /></a>";
+                                echo "<a href='".e_BASE."banner.php?".$banner_id."' rel='external'><img src='".e_IMAGE."banners/".$banner_image."' alt='".$banner_clickurl."' style='border:0' /></a>";
                         }
                         $sql -> db_Update("banner", "banner_impressions=banner_impressions+1 WHERE banner_id='$banner_id' ");
                 }
