@@ -270,17 +270,17 @@ if($action == "delext"){
 }
 
 if($action == "editext"){
-	$sql -> db_Select("core", " e107_value", " e107_name='user_entended'");
-	$row = $sql -> db_Fetch();
-	$user_entended = unserialize($row[0]);
-	$tmp = explode("|",$user_entended[$sub_action]);
-	$uf_name = $tmp[0];
-	$uf_type = $tmp[1];
-	$uf_value = $tmp[2];
-	$uf_default = $tmp[3];
-	$uf_visible = $tmp[4];
-	$uf_hide = $tmp[5];
-	$user -> show_extended();
+        $sql -> db_Select("core", " e107_value", " e107_name='user_entended'");
+        $row = $sql -> db_Fetch();
+        $user_entended = unserialize($row[0]);
+        $tmp = explode("|",$user_entended[$sub_action]);
+        $uf_name = $tmp[0];
+        $uf_type = $tmp[1];
+        $uf_value = $tmp[2];
+        $uf_default = $tmp[3];
+        $uf_visible = $tmp[4];
+        $uf_hide = $tmp[5];
+        $user -> show_extended();
 }
 
 if($action == "verify"){
@@ -366,6 +366,8 @@ class users{
                 if(IsSet($_POST['searchquery'])){
 
                         $query = (eregi("@",$_POST['searchquery']))?"user_email REGEXP('".$_POST['searchquery']."') OR ":"";
+                        $query .= (eregi(".",$_POST['searchquery']))?"user_ip REGEXP('".$_POST['searchquery']."') OR ":"";
+                        $query .= "user_login REGEXP('".$_POST['searchquery']."') OR ";
                         $query .= "user_name REGEXP('".$_POST['searchquery']."') ORDER BY user_id";
                 }else{
                         $query = "ORDER BY ".($sub_action ? $sub_action : "user_id")." ".($id ? $id : "DESC")."  LIMIT $from, $amount";
