@@ -124,8 +124,8 @@ if($action == "content"){
 	}else{
 		ob_start();		
 
-		$search = array("{e_BASE}", "{e_ADMIN}", "{e_IMAGE}", "{e_THEME}", "{e_PLUGIN}", "{e_FILE}", "{e_HANDLER}", "{e_LANGUAGEDIR}", "{e_DOCS}", "{e_DOCROOT}");
-		$replace = array(e_BASE, e_ADMIN, e_IMAGE, e_THEME, e_PLUGIN, e_FILE, e_HANDLER, e_LANGUAGEDIR, e_DOCS, e_DOCROOT);
+		$search = array("{e_BASE}", "{e_ADMIN}", "{e_IMAGE}", "{e_THEME}", "{THEME}", "{e_PLUGIN}", "{e_FILE}", "{e_HANDLER}", "{e_LANGUAGEDIR}", "{e_DOCS}", "{e_DOCROOT}");
+		$replace = array(e_BASE, e_ADMIN, e_IMAGE, e_THEME, THEME, e_PLUGIN, e_FILE, e_HANDLER, e_LANGUAGEDIR, e_DOCS, e_DOCROOT);
 		$content_content = str_replace($search, $replace, $content_content);
 
 		$textemailprint = $ep -> render_emailprint("content",$sub_action);
