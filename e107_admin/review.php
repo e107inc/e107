@@ -511,7 +511,7 @@ function review_adminmenu(){
 		$var['sa']['text']=REVLAN_62;
 		$var['sa']['link']=e_SELF."?sa";
 
-		show_admin_menu(ARLAN_79,$act,$var);
+		show_admin_menu(REVLAN_48,$act,$var);
 }
 
 
