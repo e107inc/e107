@@ -27,20 +27,21 @@ echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=".CHARSET."
 ".($pref['meta_tag'] ? $aj -> formtparev($pref['meta_tag'])."\n" : "");
 if(eregi("forum_post.php", e_SELF) && ($_POST['reply'] || $_POST['newthread']) && $pref['forum_redirect']){
         $tmp = explode(".", e_QUERY);
-		$sql -> db_Select("forum_t", "thread_id", "thread_id ORDER BY thread_id DESC LIMIT 0,1");
-		list($forum_t['thread_id']) = $sql -> db_Fetch();
-		$tid = $forum_t['thread_id'];$tid = $tid + 1;
-		$treplies = $sql -> db_Count("forum_t", "(*)", "WHERE thread_parent='".$tmp[2]."'");
-		$treplies = $treplies +1;
-		$pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
-		$tpages = ((ceil($treplies/$pref['forum_postspage']) -1) * $pref['forum_postspage']);
+                $sql -> db_Select("forum_t", "thread_id", "thread_id ORDER BY thread_id DESC LIMIT 0,1");
+                list($forum_t['thread_id']) = $sql -> db_Fetch();
+                $tid = $forum_t['thread_id'];$tid = $tid + 1;
+                $treplies = $sql -> db_Count("forum_t", "(*)", "WHERE thread_parent='".$tmp[2]."'");
+                $treplies = $treplies +1;
+                $pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
+                $tpages = ((ceil($treplies/$pref['forum_postspage']) -1) * $pref['forum_postspage']);
         echo "<meta http-equiv=\"refresh\" content=\"5;url='".e_BASE."forum_viewtopic.php?".$tmp[1].".".$tmp[2].".".$tpages."#".$tid."'>\n";
 }
 echo "<script type='text/javascript' src='".e_FILE."e107.js'></script>";
 if(file_exists(THEME."theme.js")){echo "<script type='text/javascript' src='".THEME."theme.js'></script>";}
 if(file_exists(e_FILE."user.js")){echo "<script type='text/javascript' src='".e_FILE."user.js'></script>\n";}
-if($eplug_js){echo "<script type='text/javascript' src='{$eplug_js}'></script>\n";}
-
+if($eplug_js){
+    echo (eregi("<script",$eplug_js))? $eplug_js : "<script type='text/javascript' src='{$eplug_js}'></script>\n";
+}
 echo "<script type=\"text/javascript\">
 <!--\n";
 if($pref['log_activate']){
@@ -69,50 +70,50 @@ echo "\nfor(i=0;i<(".$nbrpic."-1);i++){ preloadimages(i,listpics[i]); }
 // require $e107_popup =1; to use it as header for popup without menus
 if($e107_popup != 1){
 
-	if($pref['no_rightclick']){
-	echo "<script language=\"javascript\">
-	           <!--
-	           var message=\"Not Allowed\";
-	           function click(e) {
-	           if (document.all) {
-	           if (event.button==2||event.button==3) {
-	           alert(message);
-	           return false;
-	           }
-	           }
-	           if (document.layers) {
-	           if (e.which == 3) {
-	           alert(message);
-	           return false;
-	           }
-	           }
-	           }
-	           if (document.layers) {
-	           document.captureevents(event.mousedown);
-	           }
-	           document.onmousedown=click;
-	           // -->
-	           </script>\n";
-	}
-	
-	
-	$custompage = explode(" ", $CUSTOMPAGES);
-	
-	if(e_PAGE == "news.php" && $NEWSHEADER){
-	        parseheader($NEWSHEADER);
-	}else{
-	        while(list($key, $kpage) = each($custompage)){
-	                if(strstr(e_SELF, $kpage)){
-	                        $ph = TRUE;
-	                        break;
-	                }
-	        }
-	        parseheader(($ph ? $CUSTOMHEADER : $HEADER));
-	}
-	
-	unset($text);
-	
-	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+        if($pref['no_rightclick']){
+        echo "<script language=\"javascript\">
+                   <!--
+                   var message=\"Not Allowed\";
+                   function click(e) {
+                   if (document.all) {
+                   if (event.button==2||event.button==3) {
+                   alert(message);
+                   return false;
+                   }
+                   }
+                   if (document.layers) {
+                   if (e.which == 3) {
+                   alert(message);
+                   return false;
+                   }
+                   }
+                   }
+                   if (document.layers) {
+                   document.captureevents(event.mousedown);
+                   }
+                   document.onmousedown=click;
+                   // -->
+                   </script>\n";
+        }
+
+
+        $custompage = explode(" ", $CUSTOMPAGES);
+
+        if(e_PAGE == "news.php" && $NEWSHEADER){
+                parseheader($NEWSHEADER);
+        }else{
+                while(list($key, $kpage) = each($custompage)){
+                        if(strstr(e_SELF, $kpage)){
+                                $ph = TRUE;
+                                break;
+                        }
+                }
+                parseheader(($ph ? $CUSTOMHEADER : $HEADER));
+        }
+
+        unset($text);
+
+        //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 }
 function parseheader($LAYOUT){
         $tmp = explode("\n", $LAYOUT);
@@ -128,9 +129,9 @@ function checklayout($str){
         $sql = new db;
         global $pref, $style, $userthemes, $udirs, $userclass, $dbq, $menu_pref, $dbq;
         if(strstr($str, "LOGO")){
-        		if(function_exists("theme_logo")){
-        			call_user_func("theme_logo");
-        		} else {
+                        if(function_exists("theme_logo")){
+                                call_user_func("theme_logo");
+                        } else {
                 echo "<img src='".e_IMAGE."logo.png' alt='Logo' />\n";
             }
         }else if(strstr($str, "SITENAME")){
@@ -142,10 +143,10 @@ function checklayout($str){
                         $linktype = substr($str,(strpos($str, "=")+1), 4);
                         define("LINKDISPLAY", ($linktype == "menu" ? 2 : 1));
                         if(function_exists("theme_sitelinks")){
-                        	call_user_func("theme_sitelinks");
+                                call_user_func("theme_sitelinks");
                         } else {
-                        	require_once(e_HANDLER."sitelinks_class.php");
-                        	sitelinks();
+                                require_once(e_HANDLER."sitelinks_class.php");
+                                sitelinks();
                         }
                 }
         }else if(strstr($str, "MENU")){
