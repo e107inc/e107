@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/poll_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-12-13 22:42:50 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2004-12-14 19:26:27 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 @include(e_PLUGIN."poll_menu/languages/".e_LANGUAGE.".php");
@@ -157,7 +157,7 @@ class poll{
 
                 $caption = (file_exists(THEME."images/poll_menu.png") ? "<img src='".THEME."images/poll_menu.png' alt='' /> ".POLL_184 : POLL_184);
                 if(!$preview && $type != "forum"){
-                        $ns -> tablerender($caption, $text);
+                        $ns -> tablerender($caption, $text, 'poll');
                 }else{
                         return $text."</td></tr></table></div>";
                 }
