@@ -68,7 +68,7 @@ if (ADMIN) {
 				include(e_PLUGIN.$row['plugin_path']."/plugin.php");
 				if($eplug_conffile){
 					$plugin_icon = $eplug_icon_small ? "<img src='".e_PLUGIN.$eplug_icon_small."' alt='".$eplug_caption."' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />" : E_16_PLUGIN;
-					$plugin_array[strtolower($eplug_name)] = adnav_main($eplug_name, e_PLUGIN.$row['plugin_path']."/".$eplug_conffile, $plugin_icon);
+					$plugin_array[ucfirst($eplug_name)] = adnav_main($eplug_name, e_PLUGIN.$row['plugin_path']."/".$eplug_conffile, $plugin_icon);
 				}
 				unset($eplug_conffile, $eplug_name, $eplug_caption, $eplug_icon_small);
 				$render_plugins = TRUE;
