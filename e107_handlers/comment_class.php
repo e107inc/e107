@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-19 18:58:09 $
+|     $Revision: 1.7 $
+|     $Date: 2005-01-19 19:09:15 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -49,7 +49,7 @@ class comment {
 	{
 
 
-	//	echo "<pre>"; print_r($row); echo "</pre>";
+		//echo "<pre>"; print_r($row); echo "</pre>";
 
 
 		global $COMMENTSTYLE, $pref, $aj;
@@ -66,11 +66,12 @@ class comment {
 		$comment_subject = (empty($comment_subject) ? $subject : $aj->tpa($comment_subject));
 		$gen = new convert;
 		$datestamp = $gen->convert_date($comment_datestamp, "short");
-		if ($user_id) {
+		if ($user_id)
+		{
+			$user_join = $gen->convert_date($user_join, "short");
 			if ($user_image) {
 				require_once(e_HANDLER."avatar_handler.php");
 				$user_image = avatar($user_image);
-				$user_join = $gen->convert_date($user_join, "short");
 			}
 		} else {
 			$user_id = 0;
@@ -164,7 +165,7 @@ class comment {
 		if ($user_admin) {
 			$replace[6] = '';
 		} else {
-			$replace[6] = ($user_join != "01 Jan : 00:00" && $user_join != "31 Dec : 19:00" ? LAN_145.$user_join."<br />" : '');
+			$replace[6] = ($user_join ? LAN_145.$user_join."<br />" : '');
 		}
 
 		$search[7] = "/\{LOCATION\}(.*?)/si";

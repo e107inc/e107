@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-01-19 18:56:21 $
+|     $Revision: 1.9 $
+|     $Date: 2005-01-19 19:08:56 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -227,7 +227,7 @@ WHERE news_id=$id";
         $query = ($pref['nested_comments'] ? 
 			"comment_item_id='$field' AND comment_type='$comtype' AND comment_pid='0' ORDER BY comment_datestamp" 
 			: 
-			"SELECT #comments.*, user_id, user_name, user_image, user_signature, user_join, user_location FROM #comments 
+			"SELECT #comments.*, user_id, user_name, user_image, user_signature, user_join, user_comments, user_location FROM #comments 
 			LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='$field' AND comment_type='$comtype'  ORDER BY comment_datestamp");
 }
 }
