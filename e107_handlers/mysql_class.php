@@ -1,5 +1,5 @@
 <?php
-	
+
 /*
 +---------------------------------------------------------------+
 |     e107 website system
@@ -12,24 +12,24 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-01-29 17:19:02 $
-|     $Author: mrpete $
+|     $Revision: 1.32 $
+|     $Date: 2005-01-30 05:16:25 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-	
+
 $db_time = 0.0;				// Global total time spent in all db object queries
 $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
-	
+
 /**
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.31 $
-* @author $Author: mrpete $
+* @version $Revision: 1.32 $
+* @author $Author: e107coders $
 */
 class db {
-	 
+
 	var $mySQLserver;
 	var $mySQLuser;
 	var $mySQLpassword;
@@ -42,7 +42,7 @@ class db {
 	var $mySQLlanguage;
 	var $mySQLinfo;
 	var $tabset;
-	 
+
 	/**
 	* @return db
 	* @desc db constructor gets language options from the cookie or session
@@ -52,15 +52,15 @@ class db {
 		global $pref, $eTraffic;
 		$eTraffic->BumpWho('Create db object', 1);
 		$langid = 'e107language_'.$pref['cookie_name'];
-		if ($pref['user_tracking'] == 'session') { 
+		if ($pref['user_tracking'] == 'session') {
 			if (!isset($_SESSION[$langid])) { return; }
-			$this->mySQLlanguage = ($this->db_IsLang($_SESSION[$langid])) ? $_SESSION[$langid] : '';
-		} else {                                  
+            $this->mySQLlanguage = $_SESSION[$langid];
+		} else {
 			if (!isset($_COOKIE[$langid])) { return; }
-			$this->mySQLlanguage = ($this->db_IsLang($_COOKIE[$langid])) ? $_COOKIE[$langid] : '';
+            $this->mySQLlanguage = $_COOKIE[$langid];
 		}
 	}
-	 
+
 	/**
 	* @return null or string error code
 	* @param string $mySQLserver IP Or hostname of the MySQL server
@@ -96,7 +96,7 @@ class db {
 			}
 		}
 	}
-	 
+
 	/**
 	* @return void
 	* @param unknown $sMarker
@@ -109,7 +109,7 @@ class db {
 			$db_debug->Mark_Time($sMarker);
 		}
 	}
-	 
+
 	/**
 	* @return void
 	* @desc Enter description here...
@@ -118,7 +118,7 @@ class db {
 	function db_Show_Performance() {
 		return $db_debug->Show_Performance();
 	}
-	 
+
 	/**
 	* @return void
 	* @desc add query to dblog table
@@ -132,7 +132,7 @@ class db {
 		$qry = $tp->toDB($log_query);
 		$this->db_Insert('dblog', "0,'{$log_type}',{$d},{$uid},'{$ip}','{$qry}','{$log_remark}'", 2);
 	}
-	 
+
 	/**
 	* @return unknown
 	* @param unknown $query
@@ -154,7 +154,7 @@ class db {
 		if ($log_type != '') {
 			$this->db_Write_log($log_type, $log_remark, $query);
 		}
-		
+
 		$b = microtime();
 		$sQryRes = is_null($rli) ? @mysql_query($query) : @mysql_query($query, $rli);
 		$e = microtime();
@@ -180,7 +180,7 @@ echo "what happened to db_debug??!!<br/>";
 		}
 		return $sQryRes;
 	}
-	 
+
 	/**
 	* @return int Number of rows or false on error
 	*
@@ -235,7 +235,7 @@ echo "what happened to db_debug??!!<br/>";
 			}
 		}
 	}
-	 
+
 	/**
 	* @return int Last insert ID or false on error
 	* @param string $table
@@ -250,7 +250,7 @@ echo "what happened to db_debug??!!<br/>";
 	*/
 	function db_Insert($table, $arg, $debug = FALSE, $log_type = '', $log_remark = '') {
 		$table = $this->db_IsLang($table);
-		$this->mySQLcurTable = $table;                           
+		$this->mySQLcurTable = $table;
 		$query='INSERT INTO '.MPREFIX.$table.' VALUES ('.$arg.')';
 		if ($result = $this->mySQLresult = $this->db_Query($query, NULL, 'db_Insert', $debug, $log_type, $log_remark )) {
 			$tmp = mysql_insert_id();
@@ -260,7 +260,7 @@ echo "what happened to db_debug??!!<br/>";
 			return FALSE;
 		}
 	}
-	 
+
 	/**
 	* @return int number of affected rows, or false on error
 	* @param string $table
@@ -290,7 +290,7 @@ echo "what happened to db_debug??!!<br/>";
 			return FALSE;
 		}
 	}
-	 
+
 	/**
 	* @return array MySQL row
 	* @param string $mode
@@ -319,10 +319,10 @@ echo "what happened to db_debug??!!<br/>";
 		} else {
 			$this->dbError('db_Fetch');
 			return FALSE;
-			 
+
 		}
 	}
-	 
+
 	/**
 	* @return int number of affected rows or false on error
 	* @param string $table
@@ -338,7 +338,7 @@ echo "what happened to db_debug??!!<br/>";
 	function db_Count($table, $fields = '(*)', $arg = '', $debug = FALSE, $log_type = '', $log_remark = '') {
 		$table = $this->db_IsLang($table);
 
-		if ($fields == 'generic') {                 
+		if ($fields == 'generic') {
 			$query=$table;
 			if ($this->mySQLresult = $this->db_Query($query, NULL, 'db_Count', $debug, $log_type, $log_remark)) {
 				$rows = $this->mySQLrows = @mysql_fetch_array($this->mySQLresult);
@@ -348,7 +348,7 @@ echo "what happened to db_debug??!!<br/>";
 				return FALSE;
 			}
 		}
-		
+
 		$this->mySQLcurTable = $table;
 		$query='SELECT COUNT'.$fields.' FROM '.MPREFIX.$table.' '.$arg;
 		if ($this->mySQLresult = $this->db_Query($query, NULL, 'db_Count', $debug, $log_type, $log_remark)) {
@@ -359,7 +359,7 @@ echo "what happened to db_debug??!!<br/>";
 			return FALSE;
 		}
 	}
-	 
+
 	/**
 	* @return void
 	* @desc Closes the mySQL server connection.<br />
@@ -376,7 +376,7 @@ echo "what happened to db_debug??!!<br/>";
 		mysql_close();
 		$this->dbError('dbClose');
 	}
-	 
+
 	/**
 	* @return int number of affected rows, or false on error
 	* @param string $table
@@ -408,7 +408,7 @@ echo "what happened to db_debug??!!<br/>";
 			}
 		}
 	}
-	 
+
 	/**
 	* @return unknown
 	* @desc Enter description here...
@@ -419,7 +419,7 @@ echo "what happened to db_debug??!!<br/>";
 		return $rows;
 		$this->dbError('db_Rows');
 	}
-	 
+
 	/**
 	* @return unknown
 	* @param unknown $from
@@ -434,7 +434,7 @@ echo "what happened to db_debug??!!<br/>";
 			}
 		}
 	}
-	 
+
 	/**
 	* @return void
 	* @param unknown $mode
@@ -444,8 +444,8 @@ echo "what happened to db_debug??!!<br/>";
 	function db_SetErrorReporting($mode) {
 		$this->mySQLerror = $mode;
 	}
-	 
-	 
+
+
 	/**
 	* @return unknown
 	* @param unknown $arg
@@ -453,13 +453,13 @@ echo "what happened to db_debug??!!<br/>";
 	* @access private
 	*/
 	function db_Select_gen($query, $debug = FALSE, $log_type = '', $log_remark = '') {
-		 
+
 		/*
 		changes by jalist 19/01/05:
 		added string replace on table prefix to tidy up long database queries
 		usage: instead of sending "SELECT * FROM ".MPREFIX."table", do "SELECT * FROM #table"
 		*/
-		 
+
 		$this->tabset = FALSE;
 		if(strpos($query,'#') !== FALSE) {
 			$query = preg_replace_callback("/#([\w]*?)\W/", array($this, 'ml_check'), $query);
@@ -492,7 +492,7 @@ echo "what happened to db_debug??!!<br/>";
 		$result = @mysql_field_name($this->mySQLresult, $offset);
 		return $result;
 	}
-	 
+
 	/**
 	* @return unknown
 	* @desc Enter description here...
@@ -502,7 +502,7 @@ echo "what happened to db_debug??!!<br/>";
 		$result = @mysql_fetch_field($this->mySQLresult);
 		return $result;
 	}
-	 
+
 	/**
 	* @return unknown
 	* @desc Enter description here...
@@ -512,7 +512,7 @@ echo "what happened to db_debug??!!<br/>";
 		$result = @mysql_num_fields($this->mySQLresult);
 		return $result;
 	}
-	 
+
 	/**
 	* @return unknown
 	* @param unknown $table
@@ -536,7 +536,7 @@ echo "what happened to db_debug??!!<br/>";
 		}
 		return $table;
 	}
-	 
+
 	/**
 	* @return array
 	* @param string fields to retrieve
@@ -561,7 +561,7 @@ echo "what happened to db_debug??!!<br/>";
 		}
 		return $list;
 	}
-	 
+
 	/**
 	* @return integer
 	* @desc returns total number of queries made so far
@@ -572,5 +572,5 @@ echo "what happened to db_debug??!!<br/>";
 		return $db_mySQLQueryCount;
 	}
 }
-	
+
 ?>
