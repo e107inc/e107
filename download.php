@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-02-15 21:35:50 $
-|     $Author: e107coders $
+|     $Revision: 1.12 $
+|     $Date: 2005-02-28 20:46:53 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -35,30 +35,38 @@ if (!e_QUERY) {
 		}
 	}
 
-	$sql = new db;
-	 $sql2 = new db;
-	if (!$sql->db_Select("download_category", "*", "download_category_parent='0' ")) {
+	$qry = "
+	SELECT dc.*, SUM(d.download_filesize) AS d_size, 
+	COUNT(d.download_id) AS d_count,
+	MAX(d.download_datestamp) as d_last 
+	FROM #download_category AS dc 
+	LEFT JOIN #download AS d ON dc.download_category_id = d.download_category AND d.download_active = 1 AND d.download_class IN (".USERCLASS_LIST.") 
+	WHERE dc.download_category_class IN (".USERCLASS_LIST.") 
+	GROUP by dc.download_category_id ORDER by dc.download_category_order
+	";
+	if (!$sql->db_Select_gen($qry))
+	{
 		$ns->tablerender(LAN_dl_18, "<div style='text-align:center'>".LAN_dl_2."</div>");
 		require_once(FOOTERF);
 		exit;
-	} else {
-		while ($row = $sql->db_Fetch()) {
-			extract($row);
-
+	}
+	else
+	{
+		while($row = $sql->db_Fetch())
+		{
+			$catList[$row['download_category_parent']][] = $row;
+		}
+		foreach($catList[0] as $row)
+		{
+			
 			$download_cat_table_string .= parse_download_cat_parent_table($row);
-
-			if (!$categories = $sql2->db_Select("download_category", "*", "download_category_parent='".$download_category_id."' ")) {
-				$text .= "<div class='forumheader3' style='text-align:center'>".LAN_dl_3."</div>";
-			} else {
-				while ($row = $sql2->db_Fetch()) {
-					extract($row);
-					$download_cat_table_string .= parse_download_cat_child_table($row);
-				}
+			foreach($catList[$row['download_category_id']] as $crow)
+			{
+				$download_cat_table_string .= parse_download_cat_child_table($crow, $catList[$crow['download_category_id']]);
 			}
-
 		}
 	}
-
+	
 	$download_cat_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_TABLE_START);
 
 	$DOWNLOAD_CAT_NEWDOWNLOAD_TEXT = "<img src='".e_IMAGE."generic/new.png' alt='' style='vertical-align:middle' /> ".LAN_dl_36;
@@ -73,7 +81,6 @@ if (!e_QUERY) {
 
 	$download_cat_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_TABLE_END);
 	$text .= $download_cat_table_start.$download_cat_table_string.$download_cat_table_end;
-
 
 	if($DOWNLOAD_CAT_TABLE_RENDERPLAIN) {
 		echo $text;
@@ -132,7 +139,7 @@ if ($action == "list") {
 		$view = ($pref['download_view'] ? $pref['download_view'] : "10");
 	}
 
-	$total_downloads = $sql->db_Select("download", "*", "download_category='".$id."' AND download_active='1'");
+	$total_downloads = $sql->db_Select("download", "*", "download_category='".$id."' AND download_active='1' AND download_class IN (".USERCLASS_LIST.")");
 	if (!$total_downloads) {
 		require_once(HEADERF);
 		require_once(FOOTERF);
@@ -143,7 +150,7 @@ if ($action == "list") {
 	$sql->db_Select("download_category", "*", "download_category_id='".$id."'");
 	$row = $sql->db_Fetch();
 	extract($row);
-	$core_total = $sql->db_Count("download WHERE download_category='".$id."' AND download_active=1");
+	$core_total = $sql->db_Count("download WHERE download_category='".$id."' AND download_active=1 AND download_class IN (".USERCLASS_LIST.")");
 	$type = $download_category_name;
 
 	$type .= ($download_category_description) ? " [ ".$download_category_description." ]" :
@@ -174,7 +181,7 @@ if ($action == "list") {
 	$sql = new db;
 	 $sql2 = new db;
 
-	$filetotal = $sql->db_Select("download", "*", "download_category='".$id."' AND download_active='1' ORDER BY $order $sort LIMIT $from, $view");
+	$filetotal = $sql->db_Select("download", "*", "download_category='".$id."' AND download_active='1' AND download_class IN (".USERCLASS_LIST.") ORDER BY $order $sort LIMIT $from, $view");
 	$ft = ($filetotal < $view ? $filetotal : $view);
 	while ($row = $sql->db_Fetch()) {
 		extract($row);
@@ -474,6 +481,10 @@ function parsesize($size) {
 	$mb = 1024 * $kb;
 	$gb = 1024 * $mb;
 	$tb = 1024 * $gb;
+	if(!$size)
+	{
+		return '0';
+	}
 	if ($size < $kb) {
 		return $size." b";
 	}
@@ -504,55 +515,49 @@ function parse_download_cat_parent_table($row) {
 	return(preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_PARENT_TABLE));
 }
 
-function parse_download_cat_child_table($row) {
-	global $DOWNLOAD_CAT_CHILD_TABLE, $sql;
-	extract($row);
+function parse_download_cat_child_table($row, $subList)
+{
+	global $DOWNLOAD_CAT_CHILD_TABLE, $DOWNLOAD_CAT_SUBSUB_TABLE;
 
-	$sql2 = new db;
-	$sql3 = new db;
-	$sql4 = new db;
-	 $sql5 = new db;
-
-	$total_filesize = 0;
-	 $total_downloadcount = 0;
-	if ($filecount = $sql3->db_Select("download", "*", "download_category='".$download_category_id."' AND download_active='1'")) {
-		while ($row = $sql3->db_Fetch()) {
-			extract($row);
-			$total_filesize += $download_filesize;
-			$total_downloadcount += $download_requested;
-		}
-		$total_filesize = parsesize($total_filesize);
+	if(USER && $row['d_last'] > USERLV)
+	{
+		$new = "<img src='".e_IMAGE."generic/new.png' alt='' style='vertical-align:middle' />";
 	}
-	$new = (USER && $sql3->db_Count("download", "(*)", "WHERE download_category='".$download_category_id."' AND download_datestamp>".USERLV) ? "<img src='".e_IMAGE."generic/new.png' alt='' style='vertical-align:middle' />" : "");
+	else
+	{
+		$new = "";
+	}
+	$DOWNLOAD_CAT_SUB_ICON = ($row['download_category_icon'] ? "<img src='".e_IMAGE."icons/".$row['download_category_icon']."' alt='' style='float-left' />" : "&nbsp;");
+	$DOWNLOAD_CAT_SUB_NEW_ICON = $new;
+	$DOWNLOAD_CAT_SUB_NAME = ($row['d_count'] ? "<a href='".e_SELF."?list.".$row['download_category_id']."'>".$row['download_category_name']."</a>" : $row['download_category_name']);
+	$DOWNLOAD_CAT_SUB_DESCRIPTION = $row['download_category_description'];
+	$DOWNLOAD_CAT_SUB_COUNT = $row['d_count'];
+	$DOWNLOAD_CAT_SUB_SIZE = parsesize($row['d_size']);
+	$DOWNLOAD_CAT_SUB_DOWNLOADED = intval($row['d_requests']);
+	$DOWNLOAD_CAT_SUBSUB = "";
+	// check for subsub cats ...
+	foreach($subList as $subrow)
+	{
+		$DOWNLOAD_CAT_SUBSUB_ICON = ($subrow['download_category_icon'] ? "<img src='".e_IMAGE."icons/".$subrow['download_category_icon']."' alt='' style='float-left' />" : "&nbsp;");
+		$DOWNLOAD_CAT_SUBSUB_DESCRIPTION = $subrow['download_category_description'];
+		$DOWNLOAD_CAT_SUBSUB_COUNT = intval($subrow['d_count']);
+		$DOWNLOAD_CAT_SUBSUB_SIZE = parsesize($subrow['d_size']);
+		$DOWNLOAD_CAT_SUBSUB_DOWNLOADED = intval($subrow['d_requests']);
 
-	if (check_class($download_category_class)) {
-		$DOWNLOAD_CAT_SUB_ICON = ($download_category_icon ? "<img src='".e_IMAGE."icons/".$download_category_icon."' alt='' style='float-left' />" : "&nbsp;");
-		$DOWNLOAD_CAT_SUB_NEW_ICON = $new;
-		$DOWNLOAD_CAT_SUB_NAME = ($filecount ? "<a href='".e_SELF."?list.".$download_category_id."'>".$download_category_name."</a>" : $download_category_name);
-		$DOWNLOAD_CAT_SUB_DESCRIPTION = $download_category_description;
-		$DOWNLOAD_CAT_SUB_COUNT = $filecount;
-		$DOWNLOAD_CAT_SUB_SIZE = $total_filesize;
-		$DOWNLOAD_CAT_SUB_DOWNLOADED = $total_downloadcount;
-
-		// check for subsub cats ...
-		if ($sql5->db_Select("download_category", "*", "download_category_parent='".$download_category_id."'")) {
-			$DOWNLOAD_CAT_SUBSUB_LAN = LAN_dl_42;
-			while ($row = $sql5->db_Fetch()) {
-				extract($row);
-				$new = (USER && $sql4->db_Count("download", "(*)", "WHERE download_category='".$download_category_id."' AND download_datestamp>".USERLV) ? "<img src='".e_IMAGE."generic/new.png' alt='' style='vertical-align:middle' />" : "");
-				if ($sql4->db_Select("download", "*", "download_category='".$download_category_id."' ")) {
-					$DOWNLOAD_CAT_SUBSUB_NAME .= "<a href='".e_SELF."?list.".$download_category_id."'>".$download_category_name."</a> ";
-				} else {
-					$DOWNLOAD_CAT_SUBSUB_NAME .= " ".$new.$download_category_name." ";
-				}
-			}
+		if(USER && $subrow['d_last'] > USERLV)
+		{
+			$new = "<img src='".e_IMAGE."generic/new.png' alt='' style='vertical-align:middle' />";
 		}
+		else
+		{
+			$new = "";
+		}
+		$DOWNLOAD_CAT_SUBSUB_NEW_ICON = $new;
+		$DOWNLOAD_CAT_SUBSUB_NAME = $new.($subrow['d_count'] ? "<a href='".e_SELF."?list.".$subrow['download_category_id']."'>".$subrow['download_category_name']."</a>" : $subrow['download_category_name']);
+		$DOWNLOAD_CAT_SUBSUB .= preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_SUBSUB_TABLE);
 	}
 	return(preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_CHILD_TABLE));
 }
-
-
-
 
 function parse_download_list_table($row) {
 	global $DOWNLOAD_LIST_TABLE, $rater, $pref, $gen, $agreetext;
@@ -573,9 +578,9 @@ function parse_download_list_table($row) {
 	}
 
 	if ($pref['agree_flag'] == 1) {
-		$DOWNLOAD_LIST_LINK = "<a href='request.php?".$download_id."' onclick= \"return confirm('".$agreetext."');\">";
+		$DOWNLOAD_LIST_LINK = "<a href='".e_BASE."request.php?".$download_id."' onclick= \"return confirm('".$agreetext."');\">";
 	} else {
-		$DOWNLOAD_LIST_LINK = "<a href='request.php?".$download_id."'>";
+		$DOWNLOAD_LIST_LINK = "<a href='".e_BASE."request.php?".$download_id."'>";
 	}
 
 	$DOWNLOAD_LIST_NAME = "<a href='".e_SELF."?view.".$download_id."'>".$download_name."</a>";
