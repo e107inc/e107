@@ -1,6 +1,5 @@
 <?php
-class e_parse
-{
+class e_parse {
 	var $e_sc;
 	var $e_bb;
 	var $e_pf;
@@ -21,15 +20,6 @@ class e_parse
 	}
 	
 	function toForm($text,$single_quotes = FALSE) {
-		
-//		$x =  debug_backtrace();
-//		echo "<pre>".var_export($x)."</pre>";
-//		echo "$f - $l <br /<";
-		
-//		$sCallingFile=$aTrace[1]['file'];
-//		$sCallingLine=$aTrace[1]['line'];
-
-		
 		$mode = ($single_quotes) ? ENT_QUOTES : ENT_COMPAT;
 		if(MAGIC_QUOTES_GPC == TRUE) {
 			$text = stripslashes($text);
@@ -41,14 +31,14 @@ class e_parse
 	}
 
 	function post_toHTML($text) {
-		if (ADMIN || $no_encode) {
+		if (ADMIN === TRUE || $no_encode === TRUE) {
 			$search = array('$','"',"'",'\\');
 			$replace = array('&#036;','&quot;','&#039;','&#092;');
 			$text = str_replace($search,$replace,$text);
 		} else {
 			$text = htmlentities($text,ENT_QUOTES,CHARSET);
 		}
-		return $this -> toHTML($text,TRUE);
+		return $this->toHTML($text,TRUE);
 	}
 
 	function post_toForm($text) {
@@ -60,9 +50,9 @@ class e_parse
 
 	function parseTemplate($text, $parseSCFiles=TRUE, $extraCodes="") {
 		// Start parse {XXX} codes
-		if(!class_exists('e_shortcode')) {
+		if(!is_object($this->e_sc)) {
 			require_once(e_HANDLER."shortcode_handler.php");
-			$this -> e_sc = new e_shortcode;
+			$this->e_sc = new e_shortcode;
 		}
 		return $this -> e_sc -> parseCodes($text,$parseSCFiles,$extraCodes);
 		// End parse {XXX} codes
@@ -84,28 +74,28 @@ class e_parse
 
 		if($pref['smiley_activate']) {
 			if(!is_object($this -> e_emote)) {
-				require_once(e_HANDLER."emote_filter.php");
-				$this -> e_emote = new e_emoteFilter;
+				require_once(e_HANDLER.'emote_filter.php');
+				$this->e_emote = new e_emoteFilter;
 			}
-			$text = $this -> e_emote -> filterEmotes($text);
+			$text = $this->e_emote -> filterEmotes($text);
 		}
 
 		// Start parse [bb][/bb] codes
 		if($parseBB === TRUE) {
 			if(!is_object($this -> e_bb)) {
-				require_once(e_HANDLER."bbcode_handler.php");
-				$this -> e_bb = new e_bbcode;
+				require_once(e_HANDLER.'bbcode_handler.php');
+				$this->e_bb = new e_bbcode;
 			}
-			$text = $this -> e_bb -> parseBBCodes($text,$postID);
+			$text = $this->e_bb -> parseBBCodes($text,$postID);
 		}
 		// End parse [bb][/bb] codes
 
 		if($pref['profanity_filter']) {
 			if(!is_object($this -> e_pf)) {
 				require_once(e_HANDLER."profanity_filter.php");
-				$this -> e_pf = new e_profanityFilter;
+				$this->e_pf = new e_profanityFilter;
 			}
-			$text = $this -> e_pf -> filterProfanities($text);
+			$text = $this->e_pf -> filterProfanities($text);
 		}
 	
 		$nl_replace = (strpos($modifiers,'nobreak') === FALSE) ? "<br />" : "";
