@@ -36,9 +36,9 @@ function r_userclass_radio($fieldname,$curval=0){
 	($curval==e_UC_PUBLIC) ? $c=" checked" : $c="";
 	$text="<input type='radio' name='{$fieldname}' value='".e_UC_PUBLIC."' ".$c.">".UC_LAN_0."<br />";
 	($curval==e_UC_NOBODY) ? $c=" checked" : $c="";
-	$text.="<input type='radio' name='{$fieldname}' value='".e_UC_NOBODY."' ".$c.">".UC_LAN_1."<br />";	
+	$text.="<input type='radio' name='{$fieldname}' value='".e_UC_NOBODY."' ".$c.">".UC_LAN_2."<br />";	
 	($curval==e_UC_GUEST) ? $c=" checked" : $c="";
-	$text.="<input type='radio' name='{$fieldname}' value='".e_UC_GUEST."' ".$c.">".UC_LAN_2."<br />";
+	$text.="<input type='radio' name='{$fieldname}' value='".e_UC_GUEST."' ".$c.">".UC_LAN_1."<br />";
 	($curval==e_UC_MEMBER) ? $c=" checked" : $c="";
 	$text.="<input type='radio' name='{$fieldname}' value='".e_UC_MEMBER."' ".$c.">".UC_LAN_3."<br />";
 	if($sql -> db_Select("userclass_classes")){
