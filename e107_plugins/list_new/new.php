@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/list_new/new.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:29 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-10-10 21:35:52 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -31,7 +31,12 @@ $bullet = "<img src='".THEME."images/bullet2.gif' alt='bullet' /> ";
 
 $sql2 = new db;
 $lvisit = USERLV;
-$news_items = $sql -> db_Select("news", "*", "news_datestamp>$lvisit  ORDER BY news_datestamp DESC LIMIT 0,10");
+// ML
+if(e_MLANG==1){
+  $news_items = $ml -> e107_ml_Select("news", "*", "news_datestamp>$lvisit  ORDER BY news_datestamp DESC LIMIT 0,10");
+}else{ // END ML
+  $news_items = $sql -> db_Select("news", "*", "news_datestamp>$lvisit  ORDER BY news_datestamp DESC LIMIT 0,10");
+}
 while($row = $sql -> db_Fetch()){
         extract($row);
         if(check_class($news_class)){
@@ -54,7 +59,12 @@ $text = "<div style='text-align:center'>
 
 // Articles/content/reviews
 unset($str);
-$content_items = $sql -> db_Select("content", "*", "content_datestamp>$lvisit  ORDER BY content_datestamp DESC LIMIT 0,10");
+// ML
+if(e_MLANG==1){
+  $content_items = $ml -> e107_ml_Select("content", "*", "content_datestamp>$lvisit  ORDER BY content_datestamp DESC LIMIT 0,10");
+}else{ // END ML
+  $content_items = $sql -> db_Select("content", "*", "content_datestamp>$lvisit  ORDER BY content_datestamp DESC LIMIT 0,10");
+}
 while($row = $sql -> db_Fetch()){
         extract($row);
         if(check_class($content_class)){
