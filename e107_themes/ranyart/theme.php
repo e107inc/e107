@@ -125,11 +125,12 @@ $NEWSHEADER = "
 </td>
 </tr>
 </table>";
+*/
 
 $NEWSLISTSTYLE = "
 {NEWSICON}
 <b>
-{NEWSTITLE}
+{NEWSTITLELINK}
 </b>
 <div class='smalltext'>
 {NEWSAUTHOR}
@@ -139,7 +140,7 @@ on
 </div>
 <hr />
 ";
-*/
+
 
 $FOOTER = "
 <br />
