@@ -9,6 +9,7 @@ forum_stage1();
 forum_stage2();
 forum_stage3();
 forum_stage4();
+forum_stage5();
 	
 function forum_stage1() {
 	global $ttab, $sql;
@@ -31,8 +32,22 @@ function forum_stage3() {
 	$sql->db_Select_gen("ALTER TABLE {$ttab} CHANGE thread_user thread_user INT( 10 ) UNSIGNED NOT NULL");
 }
 	
-	
-function forum_stage4() {
+function forum_stage4() {	
+	global $sql;
+		/*
+		changes by jalist 26/01/2005:
+		altered structure of forum_t table
+		*/
+		 
+		$sql->db_Select_gen("SELECT thread_parent AS id, COUNT(*) AS amount FROM #forum_t WHERE thread_parent!=0 GROUP BY thread_parent");
+		$threadArray = $sql->db_getList('ALL',FALSE,0);
+		foreach($threadArray as $threads) {
+			extract($threads);
+			$sql->db_Update("forum_t", "thread_total_replies=$amount WHERE thread_id=$id");
+		}
+}
+
+function forum_stage5() {
 	global $forum;
 	echo date('r', time()). " Updating for lastpost info <br />";
 	set_time_limit(180);
