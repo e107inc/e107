@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.9 $
-|		$Date: 2005-02-11 16:17:28 $
+|		$Revision: 1.10 $
+|		$Date: 2005-02-12 09:52:53 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -930,8 +930,6 @@ class contentform{
 											$catidstring = str_replace(".","-",$catidstring);
 											$CONTENT_CONTENTMANAGER_ICONEDIT = "<a href='".e_SELF."?".$type.".".$type_id.".c.".$catidstring."'>".CONTENT_ICON_EDIT."</a>";
 											$CONTENT_CONTENTMANAGER_ICONNEW = "<a href='".e_SELF."?".$type.".".$type_id.".create.".$catidstring."'>".CONTENT_ICON_NEW."</a>";
-
-
 											$CONTENT_CONTENTMANAGER_CATEGORY = $parentheading;
 											$content_contentmanager_table_string .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CONTENTMANAGER_TABLE);
 									}

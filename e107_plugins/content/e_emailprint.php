@@ -230,6 +230,9 @@ function print_item_pdf($id){
 	$text[0] = str_replace($search, $replace, $text[0]);		//replace some in the text
 	$text[3] = str_replace($search, $replace, $text[3]);		//replace some in the title
 
+	//$text[0] = strip_tags($text[0], '<b></b><i></i><u></u>[b][/b][i][/i][u][/u]');
+
+
 	$search[0] = "#\[b\](.*?)\[/b\]#si";
 	$replace[0] = '<b>\1</b>';
 	$search[1] = "#\[i\](.*?)\[/i\]#si";
@@ -240,7 +243,7 @@ function print_item_pdf($id){
 
 	$pdf->AliasNbPages();						//calculate current page + number of pages
 	$pdf->AddPage();							//start page
-	$pdf->SetFont('Arial','',11);				//set font
+	$pdf->SetFont('Arial','',10);				//set font
 
 	$pdf->WriteHTML($text[0]);					//write text
 	//$pdf->Write('5', $text[0]);					//write text

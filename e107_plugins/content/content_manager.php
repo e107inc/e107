@@ -12,13 +12,17 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_manager.php,v $
-|		$Revision: 1.3 $
-|		$Date: 2005-02-09 21:17:52 $
+|		$Revision: 1.4 $
+|		$Date: 2005-02-12 09:52:10 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
 require_once("../../class2.php");
+
+$lan_file = e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content.php';
+include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN.'content/languages/English/lan_content.php');
+
 require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
@@ -30,8 +34,6 @@ require_once(e_PLUGIN."content/handlers/content_form_class.php");
 $aform = new contentform;
 global $tp;
 
-$lan_file = e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content.php';
-include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN.'content/languages/English/lan_content.php');
 
 $deltest = array_flip($_POST);
 

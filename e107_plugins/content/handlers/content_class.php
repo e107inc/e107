@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.14 $
-|		$Date: 2005-02-11 16:17:28 $
+|		$Revision: 1.15 $
+|		$Date: 2005-02-12 09:52:53 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -537,7 +537,7 @@ class content{
 									<a href='".e_SELF."?".$type.".".$type_id.".cat.edit.".$array[$a][0]."'>".CONTENT_ICON_EDIT."</a>
 									<a onclick=\"if(jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_0."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$array[$a][0]." : ".$delete_heading."]\\n\\n".CONTENT_ADMIN_JS_LAN_9."")."')){document.forms['myform_{$array[$a][0]}'].submit();}\" >".CONTENT_ICON_DELETE."</a>
 									".($array[$a][9] == "0" ? "<a href='".e_SELF."?".$type.".".$type_id.".cat.options.".$array[$a][0]."'>".CONTENT_ICON_OPTIONS."</a>" : "")."
-									".($array[$a][9] != "0" && getperms("0") ? "<a href='".e_SELF."?".$type.".".$type_id.".cat.contentmanager.".$array[$a][0]."'>".CONTENT_ICON_PERSONALMANAGER."</a>" : "")."
+									".($array[$a][9] != "0" && getperms("0") ? "<a href='".e_SELF."?".$type.".".$type_id.".cat.contentmanager.".$array[$a][0]."'>".CONTENT_ICON_CONTENTMANAGER_SMALL."</a>" : "")."
 									".$rs -> form_hidden("cat_delete_{$array[$a][0]}", "delete")."".$rs -> form_close()."
 								</td>
 							</tr>";
@@ -982,7 +982,7 @@ class content{
 				$data .= "         ".chr(36)."text .= \"<table style='border:0;'>\";\n";
 				$data .= "         ".chr(36)."text .= \"<tr>\";\n";
 				$data .= "         ".chr(36)."text .= \"<td style='width:1%; white-space:nowrap; vertical-align:top;'>\".".chr(36)."recenticon.\"</td>\";\n";
-				$data .= "         ".chr(36)."text .= \"<td style='width:90%; vertical-align:top;'><a href='\".e_PLUGIN.\"content/content.php?type.$parentid.content.\".".chr(36)."content_id.\"'>\".".chr(36)."content_heading.\"</a><br />\".(".chr(36)."datestamp ? ".chr(36)."datestamp.\"<br />\" : \"\" ).(".chr(36)."authordetails[1] ? ".chr(36)."authordetails[1].\"<br />\" : \"\" ).(".chr(36)."subheading ? ".chr(36)."subheading.\"<br />\" : \"\" ).\"</td>\";\n";
+				$data .= "         ".chr(36)."text .= \"<td style='width:99%; vertical-align:top;'><a href='\".e_PLUGIN.\"content/content.php?type.$parentid.content.\".".chr(36)."content_id.\"'>\".".chr(36)."content_heading.\"</a><br />\".(".chr(36)."datestamp ? ".chr(36)."datestamp.\"<br />\" : \"\" ).(".chr(36)."authordetails[1] ? ".chr(36)."authordetails[1].\"<br />\" : \"\" ).(".chr(36)."subheading ? ".chr(36)."subheading.\"<br />\" : \"\" ).\"</td>\";\n";
 				$data .= "         ".chr(36)."text .= \"</tr>\";\n";
 				$data .= "         ".chr(36)."text .= \"</table><br />\";\n";
 
