@@ -41,7 +41,7 @@ if (ADMIN) {
 		$e107_var['x']['text']=ADLAN_46;
 		$e107_var['x']['link']=e_ADMIN."admin.php?logout";
 		$text .= "<br />".show_admin_menu("",$act,$e107_var);
-		return $ns -> tablerender(LAN_head_1, $text);
+		return $ns -> tablerender(LAN_head_1, $text, '', TRUE);
 	} else {
 		$text = "<div style='text-align:center'>";
 		unset($e107_var);
@@ -49,7 +49,7 @@ if (ADMIN) {
 		$e107_var['x']['link']=e_ADMIN."../index.php";
 		$text .= show_admin_menu("",$act,$e107_var);
 		$text  .="</div>";
-		return $ns -> tablerender(LAN_head_1, $text);
+		return $ns -> tablerender(LAN_head_1, $text, '', TRUE);
 		unset($text);
 	}
 }

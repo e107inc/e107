@@ -34,6 +34,6 @@ if (ADMIN) {
 		</form>
 		</div>";
 
-		return $ns -> tablerender(UTHEME_MENU_L2, $text);
+		return $ns -> tablerender(UTHEME_MENU_L2, $text, '', TRUE);
 	}
 }

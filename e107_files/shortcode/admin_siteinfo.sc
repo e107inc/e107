@@ -47,5 +47,5 @@ if (ADMIN) {
 	".mysql_get_server_info().
 	"<br />
 	".FOOTLAN_16.": ".$mySQLdefaultdb;
-	return $ns -> tablerender(FOOTLAN_13, $text);
+	return $ns -> tablerender(FOOTLAN_13, $text, '', TRUE);
 }
