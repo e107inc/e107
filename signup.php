@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-03-12 08:53:30 $
+|     $Revision: 1.16 $
+|     $Date: 2005-03-15 21:07:17 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -83,7 +83,7 @@ if (isset($_POST['register'])) {
 		}
 	}
 	 
-	if (strstr($_POST['name'], "#") || strstr($_POST['name'], "=")) {
+	if (strstr($_POST['name'], "#") || strstr($_POST['name'], "=") || strstr($_POST['name'], "\\")) {
 		message_handler("P_ALERT", LAN_409);
 		$error = TRUE;
 	}
