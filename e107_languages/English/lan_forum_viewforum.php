@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_forum_viewforum.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:11:56 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-05 10:17:44 $
+|     $Author: pholzmann $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Forum");
@@ -18,7 +18,7 @@ define("LAN_53", "Thread");
 define("LAN_54", "Starter");
 define("LAN_55", "Replies");
 define("LAN_56", "Views");
-define("LAN_57", "Lastpost");
+define("LAN_57", "Latest Post");
 define("LAN_58", "There are no topics in this forum yet.");
 define("LAN_59", "You must be a registered member and logged in to post on this forum. Click on signup or login from the login menu.");
 define("LAN_79", "New posts");
