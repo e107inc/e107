@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/news.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2004-09-09 10:03:10 $
+|     $Revision: 1.18 $
+|     $Date: 2004-09-19 04:36:06 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -301,7 +301,7 @@ if($pref['nfp_display'] == 2){
   if($pref['news_cats']=='1'){
         $sql2 = new db;
         $sql2 -> db_Select("news_category","*",  "category_id!='' ORDER BY category_name ASC");
-        $text3 .="<table border='0' style='width:96%' align='center' cellpadding='3' cellspacing='3'><tr>\n";
+        $text3 .="<div style='text-align:center'><table style='border:0px;width:96%' cellpadding='3' cellspacing='3'><tr>\n";
                 $t = 0;
                 while($row3 = $sql2-> db_Fetch()){
                 extract($row3);
@@ -310,9 +310,9 @@ if($pref['nfp_display'] == 2){
                 $wid = floor(100/$nbr_cols);
                 $text3 .= "<td style='vertical-align:top; width:$wid%;'>\n";
                 $text3 .= "<div style='border-bottom:1px inset $line_clr; font-weight:bold;padding-bottom:1px;margin-bottom:5px'><img src='$category_icon' alt='' />&nbsp;<a href='news.php?cat.".$category_id."' style='text-decoration:none' >$category_name</a></div>";
-              //  $text3 .= "</td>";
 
-                                $count = $sql -> db_SELECT("news", "*",  "news_category='$category_id' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")  ORDER BY news_datestamp DESC LIMIT 0,$nbr_lst");
+
+                $count = $sql -> db_SELECT("news", "*",  "news_category='$category_id' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")  ORDER BY news_datestamp DESC LIMIT 0,$nbr_lst");
                 while($row = $sql-> db_Fetch()){
                         extract($row);
                         $text3 .="<div style='width:100%'><table style='width:100%' cellpadding='0' cellspacing='0' border='0'>\n";
@@ -332,7 +332,7 @@ if($pref['nfp_display'] == 2){
                        $t++;
                        }
             }
-            $text3 .="</tr></table>";
+            $text3 .="</tr></table></div>";
             $ns -> tablerender("News Categories", $text3);
   }
 
