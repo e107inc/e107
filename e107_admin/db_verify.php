@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db_verify.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-03-30 01:51:50 $
+|     $Revision: 1.9 $
+|     $Date: 2005-04-01 16:10:26 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -70,14 +70,17 @@ function read_tables($tab) {
 		if (preg_match("/CREATE TABLE (.*) /", $line, $match)) {
 			$table_list[$match[1]] = 1;
 			$current_table = $match[1];
+
 			$x = 0;
 			$cnt = 0;
 		}
 		if (preg_match("/TYPE=/", $line, $match)) {
 			$current_table = "";
 		}
+
 		if ($current_table && $x) {
 			$tablines[$current_table][$cnt++] = $line;
+
 		}
 		$x = 1;
 	}
@@ -94,6 +97,7 @@ function get_current($tab, $prefix = "") {
 		$row = mysql_fetch_row($z);
 		return str_replace("`", "", stripslashes($row[1]));
 	} else {
+
 		return FALSE;
 	}
 }
@@ -166,7 +170,7 @@ function check_tables($what) {
 						if (strcasecmp($fparams, $xfparams) != 0) {
 							$text .= "<td class='forumheader' style='text-align:center'>".DBLAN_8."</td>";
 							$text .= "<td class='forumheader3' style='text-align:center'>".DBLAN_9."<div class='indent'>".$xfparams."</div><b>".DBLAN_10."</b><div class='indent'>".$fparams." <br />".fix_form($k,$fname,$fparams,"alter")."</div></td>";
-                        	$fix_active = TRUE;
+							$fix_active = TRUE;
 						} elseif($fieldnum != $xfieldnum) {
 							$text .= "<td class='fcaption' style='text-align:center'>".DBLAN_5." ".DBLAN_8."</td>
 								<td class='forumheader3' style='text-align:center'>".DBLAN_9." #{$xfieldnum}<br />".DBLAN_10." #{$fieldnum}</td>";
@@ -180,7 +184,7 @@ function check_tables($what) {
 				if ($ffound == 0) {
 					$text .= "<td class='forumheader' style='text-align:center'><strong><em>".DBLAN_11."</em></strong></td>
 						<td class='forumheader3' style='text-align:center'><b>".DBLAN_10." [$fparams]</b><br />".fix_form($k,$fname,$fparams,"insert",$prev_fname)."<br /></td>";
-                    $fix_active = TRUE;
+					$fix_active = TRUE;
 				}
 				$prev_fname = $fname;
 				$text .= "</tr>\n";
@@ -191,9 +195,10 @@ function check_tables($what) {
 					$text .= "<tr><td class='forumheader3' style='text-align:center'>$k</td><td class='forumheader3' style='text-align:center'>$tf</td><td class='forumheader3' style='text-align:center'><strong><em>".DBLAN_12."</em></strong></td><td class='forumheader3' style='text-align:center'>&nbsp;".fix_form($k,$tf,$fparams,"drop")."</td></tr>";
 				}
 			}
-		} else {
-			$text .= "<tr><td class='forumheader3' style='text-align:center'>$k</td><td class='forumheader3' style='text-align:center'>&nbsp;</td><td class='forumheader' style='text-align:center'>".DBLAN_13."<br /><td class='forumheader3' style='text-align:center'>&nbsp;</td></tr>";
-		}
+		} else {    // Table Missing.
+			$text .= "<tr><td class='forumheader3' style='text-align:center'>$k</td><td class='forumheader3' style='text-align:center'>&nbsp;</td><td class='forumheader' style='text-align:center'>".DBLAN_13."<br /><td class='forumheader3' style='text-align:center'>&nbsp;".fix_form($k,$tf,$tablines[$k],"create")."</td></tr>";
+
+}
 	}
 	$text .= "</table></div>";
 
@@ -235,6 +240,7 @@ if (!$_POST && !$_POST['do_fix']) {
 	}
 }
 
+// --------------------------------------------------------------
 
 if(isset($_POST['do_fix'])){
 
@@ -243,32 +249,36 @@ if(isset($_POST['do_fix'])){
 		$field= $key;
 		$newval= $_POST['fix_newval'][$key][0];
 		$mode = $_POST['fix_mode'][$key][0];
-        $after = $_POST['fix_after'][$key][0];
+		$after = $_POST['fix_after'][$key][0];
 
 		if($mode == "alter"){
 			$query = "ALTER TABLE `".MPREFIX.$table."` CHANGE `$field` `$field` $newval";
 		}
 
 		if($mode == "insert"){
-	   		$query = "ALTER TABLE `".MPREFIX.$table."` ADD `$field` $newval AFTER $after";
+			$query = "ALTER TABLE `".MPREFIX.$table."` ADD `$field` $newval AFTER $after";
 		}
 
-        if($mode == "drop"){
-	   		$query = "ALTER TABLE `".MPREFIX.$table."` DROP `$field` ";
+		if($mode == "drop"){
+			$query = "ALTER TABLE `".MPREFIX.$table."` DROP `$field` ";
 		}
 
 		if($mode == "index"){
-            $query = "ALTER TABLE `".MPREFIX.$table."` ADD INDEX (`$field`) ";
+			$query = "ALTER TABLE `".MPREFIX.$table."` ADD INDEX (`$field`) ";
 		}
 
-        $text .= "<div>";
+		if($mode == "create"){
+			$query = "CREATE TABLE ".MPREFIX.$table." (".$newval.") TYPE=MyISAM;";
+		}
+
+		$text .= "<div>";
 		$text .= $query;
 		$text .= (mysql_query($query)) ? " - <b>".LAN_UPDATED."</b>" : " - <b>".LAN_UPDATED_FAILED."</b>";
 		$text .= "</div>";
 
 
 	}
-     $text .="<div style='text-align:center'><br />
+		$text .="<div style='text-align:center'><br />
 				<form method='POST' action='db.php'>
 				<input class='button' type='submit' name='back' value='".DBLAN_17."' />
 				</form>
@@ -277,21 +287,23 @@ if(isset($_POST['do_fix'])){
 	$ns -> tablerender(DBLAN_20, $text);
 }
 
-
-
-
+// --------------------------------------------------------------
 function fix_form($table,$field, $newvalue,$mode,$after =''){
 
-     if(eregi("KEY ",$field)){
+	if(eregi("KEY ",$field)){
 		$field = chop(str_replace("KEY ","",$field));
 		$mode = "index";
 		$search = array("(",")");
 		$newvalue = str_replace($search,"",$newvalue);
 	}
 
+	if($mode == "create"){
+		$newvalue = implode("\n",$newvalue);
+	}
+
 	$text .= "<input type='checkbox'  name=\"fix_active[$field][]\" value='1' /> ".DBLAN_19."\n"; // 'attempt to fix'
 	$text .= "<input type='hidden' name=\"fix_newval[$field][]\" value=\"$newvalue\" />\n";
-    $text .= "<input type='hidden'  name=\"fix_table[$field][]\" value=\"$table\" / >\n";
+	$text .= "<input type='hidden'  name=\"fix_table[$field][]\" value=\"$table\" / >\n";
 	$text .= "<input type='hidden'  name=\"fix_mode[$field][]\" value=\"$mode\" / >\n";
 	$text .= ($after) ? "<input type='hidden'  name=\"fix_after[$field][]\" value=\"$after\" / >\n" : "";
 
