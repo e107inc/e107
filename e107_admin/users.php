@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-03-06 01:52:27 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.15 $
+|     $Date: 2005-03-06 22:24:08 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -144,17 +144,17 @@ if (isset($_POST['adduser'])) {
 }
 	
 if ($_POST['useraction'] == 'userinfo') {
-	header('location:'.SITEURL.$ADMIN_DIRECTORY."userinfo.php?{$_POST['userip']}");
+	header('location:'.e_ADMIN."userinfo.php?{$_POST['userip']}");
 	exit;
 }
 	
 if ($_POST['useraction'] == 'usersettings') {
-	header('location:'.SITEURL."usersettings.php?{$_POST['userid']}");
+	header('location:'.e_BASE."usersettings.php?{$_POST['userid']}");
 	exit;
 }
 	
 if ($_POST['useraction'] == 'userclass') {
-	header('location:'.SITEURL.$ADMIN_DIRECTORY."userclass.php?{$_POST['userid']}");
+	header('location:'.e_ADMIN."userclass.php?{$_POST['userid']}");
 	exit;
 }
 	
