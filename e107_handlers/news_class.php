@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.50 $
-| $Date: 2005-03-15 14:03:13 $
-| $Author: stevedunstan $
+| $Revision: 1.51 $
+| $Date: 2005-03-28 15:55:34 $
+| $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -72,13 +72,13 @@ class news {
 			$excerpt = substr($news_body, 0, 100)."...";
 			$id=mysql_insert_id();
 			$permLink = $e107->HTTPPath."comment.php?comment.news.$id";
-			
+
 			require_once(e_PLUGIN."trackback/trackbackClass.php");
 			$trackback = new trackbackClass();
 
 			if($_POST['trackback_urls'])
 			{
-				$urlArray = explode("\n", $_POST['trackback_urls']);				
+				$urlArray = explode("\n", $_POST['trackback_urls']);
 				foreach($urlArray as $pingurl) {
 					if(!$error = $trackback -> sendTrackback($permLink, $pingurl, $news_title, $excerpt))
 					{
@@ -112,7 +112,7 @@ class news {
 				}
 			}
 		}
-		
+
 		/* end trackback */
 
 
@@ -299,7 +299,7 @@ class news {
 			$adminoptions = "<a href='".e_BASE.e_ADMIN."newspost.php?create.edit.".$news_id."'><img src='".e_IMAGE."generic/newsedit.png' alt='' style='border:0' /></a>\n";
 		}
 
-		
+
 
 		/* new attach code, added by jalist 10/03/2005 */
 		if($news_attach)
@@ -396,6 +396,7 @@ class news {
 		$replace[19] = "<a style='".(isset($param['itemlink']) ? $param['itemlink'] : "null")."' href='".e_BASE."news.php?item.$news_id.$category_id'>".$news_title."</a>";
 
 		$search[20] = "/\{NEWSCATICON\}(.*?)/si";
+		if($param['caticon'] == ""){$param['caticon'] = "border:0px";}
 		$replace[20] = "<a href='".e_BASE."news.php?cat.$category_id'><img style='".$param['caticon']."'  src='$category_icon' alt='' /></a>";
 
 		$search[21] = "/\{TRACKBACK\}(.*?)/si";
