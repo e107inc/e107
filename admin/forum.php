@@ -66,14 +66,10 @@ If(IsSet($_POST['update'])){
 			$count++;
 		}
 
-//		echo $forum_class_s."<br />".substr($forum_class_s, -1)."<br />".substr($forum_class_s, 0, -1)."<br />";
-
 		if(substr($forum_class_s, -1) == "|"){
 			$forum_class_s = substr($forum_class_s, 0, -1);
 		}
 	}
-
-//	echo "<b>".$forum_class_s."</b><br />";
 
 	if($_POST['forum_active'] == "0" ? $forum_active = 0 : $forum_active = 1);
 
@@ -158,13 +154,13 @@ If(IsSet($_POST['delete'])){
 		$tt = "";
 	}
 
-	$text = "<div style=\"text-align:center\">
+	$text = "<div style='text-align:center'>
 	<b>Please confirm you wish to delete the '".$_POST['existing']."' forum $tt - once deleted it cannot be retrieved</b>
 <br /><br />
-<form method=\"post\" action=\"".e_SELF."\">
-<input class=\"button\" type=\"submit\" name=\"cancel\" value=\"Cancel\" /> 
-<input class=\"button\" type=\"submit\" name=\"confirm\" value=\"Confirm Delete\" /> 
-<input type=\"hidden\" name=\"existing\" value=\"".$_POST['existing']."\">
+<form method='post' action='".e_SELF."'>
+<input class='button' type='submit' name='cancel' value='Cancel' /> 
+<input class='button' type='submit' name='confirm' value='Confirm Delete' /> 
+<input type='hidden' name='existing' value='".$_POST['existing']."'>
 </form>
 </div>";
 $ns -> tablerender("Confirm Delete Forum", $text);
@@ -177,18 +173,23 @@ If(IsSet($_POST['cancel'])){
 }
 
 if(IsSet($message)){
-	$ns -> tablerender("", "<div style=\"text-align:center\"><b>".$message."</b></div>");
+	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
-$ns -> tablerender("<div style=\"text-align:center\">Forums</div>", $text);
+$ns -> tablerender("<div style='text-align:center'>Forums</div>", $text);
+
+$text = "<div style='text-align:center'>
+<form method='post' action='".e_SELF."'>\n
+<table style='width:85%' class='fborder'>
+<tr>
+<td colspan='2' class='forumheader' style='text-align:center'>";
 
 $forum_parent_total = $sql -> db_Select("forum", "*", "forum_parent='0' ");
 if($forum_parent_total == 0){
-	$text .= "<div style=\"text-align:center\">No parents yet</div><br />";
+	$text .= "<span class='defaulttext'>No parents yet</span>";
 }else{
-	$text .= "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
-	Existing Parents: 
-<select name=\"existing\" class=\"tbox\">";
+	$text .= "<span class='defaulttext'>Existing Parents: </span>
+<select name='existing' class='tbox'>";
 	$c = 0;
 	while(list($forum_id_, $forum_parent_) = $sql-> db_Fetch()){
 		$parents[$c] = $forum_parent_;
@@ -197,66 +198,67 @@ if($forum_parent_total == 0){
 		$c++;
 	}
 	$text .= "</select>
-<input class=\"button\" type=\"submit\" name=\"pedit\" value=\"Edit\" /> 
-<input class=\"button\" type=\"submit\" name=\"delete\" value=\"Delete\" />
-</form>
-<br />";
+<input class='button' type='submit' name='pedit' value='Edit' /> 
+<input class='button' type='submit' name='delete' value='Delete' />
+";
 }
-$text .= "<form method=\"post\" action=\"".e_SELF."\">
-<table style=\"width:95%\">
+$text .= "
+</td>
+</tr>
 <tr>
-<td style=\"width:20%\"><u>Parent</u>:</td>
-<td style=\"width:80%\">
-<input class=\"tbox\" type=\"text\" name=\"parent\" size=\"60\" value=\"$parent\" maxlength=\"250\" />
+<td style='width:20%' class='forumheader3'><u>Parent</u>:</td>
+<td style='width:80%' class='forumheader3'>
+<input class='tbox' type='text' name='parent' size='60' value='$parent' maxlength='250' />
 <br /><br />
 </td>
 </tr>
 
 <tr> 
-<td style=\"width:20%\">Accessable to?:<br /><span class=\"smalltext\">(tick to make accessable to users in the ticked class)</span></td>
-<td style=\"width:80%\">";
+<td style='width:20%' class='forumheader3'>Accessable to?:<br /><span class='smalltext'>(tick to make accessable to users in the ticked class)</span></td>
+<td style='width:80%' class='forumheader3'>";
 
 if($forum_active == 0 && $_POST['pedit']){
-	$text .= "<input type=\"checkbox\" name=\"parent_active\" value=\"0\" checked>No-one (inactive)<br />";
+	$text .= "<input type='checkbox' name='parent_active' value='0' checked>No-one (inactive)<br />";
 }else{
-	$text .= "<input type=\"checkbox\" name=\"parent_active\" value=\"0\">No-one (inactive)<br />";
+	$text .= "<input type='checkbox' name='parent_active' value='0'>No-one (inactive)<br />";
 }
 
 if(!$forum_class && $_POST['pedit']){
-	$text .= "<input type=\"checkbox\" name=\"parent_all\" value=\"1\" checked>Everyone (public)<br /><span class=\"smalltext\">(ticking this box will override the classes below)</span><br />";
+	$text .= "<input type='checkbox' name='parent_all' value='1' checked>Everyone (public)<br /><span class='smalltext'>(ticking this box will override the classes below)</span><br />";
 }else{
-	$text .= "<input type=\"checkbox\" name=\"parent_all\" value=\"1\">Everyone (public) <span class=\"smalltext\">(ticking this box will override the classes below)</span><br />";
+	$text .= "<input type='checkbox' name='parent_all' value='1'>Everyone (public) <span class='smalltext'>(ticking this box will override the classes below)</span><br />";
 }
 if($sql -> db_Select("userclass_classes")){
 	while($row = $sql -> db_Fetch()){
 		extract($row);
 		if($forum_class && eregi($forum_class, $userclass_id)){
-			$text .= "<input type=\"checkbox\" name=\"parent_class[]\" value=\"$userclass_id\" checked>".$userclass_name ."<br />";
+			$text .= "<input type='checkbox' name='parent_class[]' value='$userclass_id' checked>".$userclass_name ."<br />";
 		}else{
-			$text .= "<input type=\"checkbox\" name=\"parent_class[]\" value=\"$userclass_id\">".$userclass_name ."<br />";
+			$text .= "<input type='checkbox' name='parent_class[]' value='$userclass_id'>".$userclass_name ."<br />";
 		}
 	}
 }
 
-$text .= "<tr style=\"vertical-align:top\"> 
-<td colspan=\"2\"  style=\"text-align:center\">";
+$text .= "<tr style='vertical-align:top'> 
+<td colspan='2'  style='text-align:center' class='forumheader'>";
 
 if(IsSet($_POST['pedit'])){
-	$text .= "<input class=\"button\" type=\"submit\" name=\"pupdate\" value=\"Update Parent\" />
-<input type=\"hidden\" name=\"existing\" value=\"".$_POST['existing']."\">";
+	$text .= "<input class='button' type='submit' name='pupdate' value='Update Parent' />
+<input type='hidden' name='existing' value='".$_POST['existing']."'>";
 }else{
-	$text .= "<input class=\"button\" type=\"submit\" name=\"psubmit\" value=\"Create Parent\" />";
+	$text .= "<input class='button' type='submit' name='psubmit' value='Create Parent' />";
 }
 
 $text .= "</td>
 </tr>
 </table>
-</form>";
+</form>
+</div>";
 
 $ns -> tablerender("Parents", $text);
 
 if($forum_parent_total == 0){
-	$text = "<div style=\"text-align:center\">You need to define at least one forum parent before creating a forum.</div>";
+	$text = "<div style='text-align:center'>You need to define at least one forum parent before creating a forum.</div>";
 	$ns -> tablerender("Forums", $text);
 	require_once("footer.php");
 	exit;
@@ -265,31 +267,33 @@ if($forum_parent_total == 0){
 
 $forum_total = $sql -> db_Select("forum", "*", "forum_parent!='0' ");
 
+$text = "<div style='text-align:center'>
+<form method='post' action='".e_SELF."'>\n
+<table style='width:85%' class='fborder'>
+<tr>
+<td colspan='2' class='forumheader' style='text-align:center'>";
+
 if($forum_total == "0"){
-	$text = "<div style=\"text-align:center\">No forums yet.</div><br />";
+	$text .= "<span class='defaulttext'>No forums yet.</span>";
 }else{
-	$text = "<form method=\"post\" action=\"".e_SELF."\">
-	Existing Forums: 
-	<select name=\"existing\" class=\"tbox\">";
+	$text .= "<span class='defaulttext'>Existing Forums: </span>
+	<select name='existing' class='tbox'>";
 	while(list($forum_id_, $forum_name_) = $sql-> db_Fetch()){
 		$text .= "<option>".$forum_name_."</option>";
 	}
 	$text .= "</select> 
-	<input class=\"button\" type=\"submit\" name=\"edit\" value=\"Edit\" /> 
-	<input class=\"button\" type=\"submit\" name=\"delete\" value=\"Delete\" />
-	</form>
-	
-	<br />";
+	<input class='button' type='submit' name='edit' value='Edit' /> 
+	<input class='button' type='submit' name='delete' value='Delete' />
+	";
 }
 
 $text .= "
-<form method=\"post\" action=\"".e_SELF."\">
-<table style=\"width:95%\">
-
+</td>
+</tr>
 <tr>
-<td style=\"width:20%\"><u>Parent</u>:</td>
-<td style=\"width:80%\">
-<select name=\"parentforum\" class=\"tbox\">";
+<td style='width:20%' class='forumheader3'><u>Parent</u>:</td>
+<td style='width:80%' class='forumheader3'>
+<select name='parentforum' class='tbox'>";
 $c = 0;
 	while($parents[$c]){
 		if($parents_id[$c] == $forum_parent){
@@ -306,80 +310,57 @@ $text .= "</select>
 
 
 <tr>
-<td style=\"width:20%\"><u>Name</u>:</td>
-<td style=\"width:80%\">
-<input class=\"tbox\" type=\"text\" name=\"forum_name\" size=\"60\" value=\"$forum_name\" maxlength=\"100\" />
+<td style='width:20%' class='forumheader3'><u>Name</u>:</td>
+<td style='width:80%' class='forumheader3'>
+<input class='tbox' type='text' name='forum_name' size='60' value='$forum_name' maxlength='100' />
 </td>
 </tr>
 <tr>
 
-<td style=\"width:20%\"><u>Description</u>: </td>
-<td style=\"width:80%\">
-<textarea class=\"tbox\" name=\"forum_description\" cols=\"50\" rows=\"5\">$forum_description</textarea>
+<td style='width:20%' class='forumheader3'><u>Description</u>: </td>
+<td style='width:80%' class='forumheader3'>
+<textarea class='tbox' name='forum_description' cols='50' rows='5'>$forum_description</textarea>
 </td>
 </tr>
 
 <tr> 
-<td style=\"width:20%\">Accessable to?:<br /><span class=\"smalltext\">(tick to make accessable to users in the ticked class)</span></td>
-<td style=\"width:80%\">";
+<td style='width:20%' class='forumheader3'>Accessable to?:<br /><span class='smalltext'>(tick to make accessable to users in the ticked class)</span></td>
+<td style='width:80%' class='forumheader3'>";
 
 if($forum_active == 0 && $_POST['edit']){
-	$text .= "<input type=\"checkbox\" name=\"forum_active\" value=\"0\" checked>No-one (inactive)<br />";
+	$text .= "<input type='checkbox' name='forum_active' value='0' checked>No-one (inactive)<br />";
 }else{
-	$text .= "<input type=\"checkbox\" name=\"forum_active\" value=\"0\">No-one (inactive)<br />";
+	$text .= "<input type='checkbox' name='forum_active' value='0'>No-one (inactive)<br />";
 }
 
 if(!$forum_class && $_POST['edit']){
-	$text .= "<input type=\"checkbox\" name=\"forum_all\" value=\"1\" checked>Everyone (public)<br /><span class=\"smalltext\">(ticking this box will override the classes below)</span><br />";
+	$text .= "<input type='checkbox' name='forum_all' value='1' checked>Everyone (public) <span class='smalltext'>(ticking this box will override the classes below)</span><br />";
 }else{
-	$text .= "<input type=\"checkbox\" name=\"forum_all\" value=\"1\">Everyone (public) <span class=\"smalltext\">(ticking this box will override the classes below)</span><br />";
+	$text .= "<input type='checkbox' name='forum_all' value='1'>Everyone (public) <span class='smalltext'>(ticking this box will override the classes below)</span><br />";
 }
 
 if($sql -> db_Select("userclass_classes")){
 	while($row = $sql -> db_Fetch()){
 		extract($row);
 		if($forum_class && eregi($forum_class, $userclass_id)){
-			$text .= "<input type=\"checkbox\" name=\"forum_class[]\" value=\"$userclass_id\" checked>".$userclass_name ."<br />";
+			$text .= "<input type='checkbox' name='forum_class[]' value='$userclass_id' checked>".$userclass_name ."<br />";
 		}else{
-			$text .= "<input type=\"checkbox\" name=\"forum_class[]\" value=\"$userclass_id\">".$userclass_name ."<br />";
+			$text .= "<input type='checkbox' name='forum_class[]' value='$userclass_id'>".$userclass_name ."<br />";
 		}
 	}
 }
 	
 
-$text .= "</td><tr><td colspan=\"2\"><br />";
+$text .= "
+</td></tr><tr>
 
-
-/*
-<select name=\"forum_active\" class=\"tbox\">
-";
-
-if($forum_active == "1"){
-	$text .= "<option value=\"0\" selected>De-activated</option>
-	<option value=\"1\" selected>Active</option>
-	<option value=\"2\">Private</option>
-	";
-}else if($forum_active == "2"){
-	$text .= "<option value=\"0\" selected>De-activated</option>
-	<option value=\"1\">Active</option>
-	<option value=\"2\" selected>Private</option>
-	";
-}else{
-	$text .= "<option value=\"0\" selected>De-activated</option>
-	<option value=\"1\">Active</option>
-	<option value=\"2\">Private</option>
-	";
-}
-*/
-$text .= "</td></tr><tr>
-
-<td style=\"width:20%\">Moderators:<br /><span class=\"smalltext\">(tick to make active on this forum)</span></td>
-<td style=\"width:80%\">";
+<td style='width:20%' class='forumheader3'>Moderators:<br /><span class='smalltext'>(tick to make active on this forum)</span></td>
+<td style='width:80%' class='forumheader3'>";
 
 $admin_no = $sql -> db_Select("user", "*", "user_admin='1' AND user_perms REGEXP('A.') OR user_perms='0' "); 
 while($row = $sql-> db_Fetch()){	
 	extract($row);
-	$text .= "<input type=\"checkbox\" name=\"mod[]\" value=\"".$user_name ."\"";
+	$text .= "<input type='checkbox' name='mod[]' value='".$user_name ."'";
 		if(eregi($user_name, $forum_moderators)){
 			$text .= " checked";
 		}
@@ -388,27 +369,22 @@ while($row = $sql-> db_Fetch()){
 
 $text .= "</td>
 </tr>
-<tr style=\"vertical-align:top\"> 
-<td colspan=\"2\"  style=\"text-align:center\">";
+<tr style='vertical-align:top'> 
+<td colspan='2'  style='text-align:center' class='forumheader'>";
 
 
 If(IsSet($_POST['edit'])){
-	$text .= "<input class=\"button\" type=\"submit\" name=\"update\" value=\"Update Forum\" />
-	<input type=\"hidden\" name=\"forum_id\" value=\"".$forum_id."\">";
+	$text .= "<input class='button' type='submit' name='update' value='Update Forum' />
+	<input type='hidden' name='forum_id' value='".$forum_id."'>";
 }else{
-	$text .= "<input class=\"button\" type=\"submit\" name=\"submit\" value=\"Create Forum\" />";
+	$text .= "<input class='button' type='submit' name='submit' value='Create Forum' />";
 }
 
 $text .= "</td>
 </tr>
-<tr>
-<td colspan=\"2\"  class=\"smalltext\">
-<br />
-Tags allowed: all. <u>Underlined</u> fields are required.
-</td>
-</tr>
 </table>
-</form>";
+</form>
+</div>";
 
 
 $ns -> tablerender("Forums", $text);

@@ -39,11 +39,12 @@ if(IsSet($_POST['emailsubmit'])){
 	if($table == "news"){
 		$sql -> db_Select("news", "*", "news_id='$id' ");
 		list($news_id, $news_title, $news_body, $news_extended, $news_datestamp, $news_author, $news_source, $news_url, $news_category, $news_allow_comments) = $sql-> db_Fetch();
-		$message .= $_POST['comment']."\n\n".$news_title."\n".$news_body."\n".$news_extended."\n\n";
+		$message .= $_POST['comment']."\n\n".$news_title."\n".$news_body."\n".$news_extended."\n\n".SITEURL.e_BASE."comment.php?".$id;
 	}else{
-		$sql -> db_Select("content", "*", "content_id='$id' ");
-		$row = $sql -> db_Fetch(); extract($row);
-		$message .= $_POST['comment']."\n\n".$content_heading."\n".$content_subheading."\n".$content_content."\n\n";
+		$sql -> db_Select("content","*","content_id='$id' ");
+		$row = $sql -> db_Fetch(); 
+		extract($row);
+		$message .= $_POST['comment']."\n\n".SITEURL.e_BASE."article.php?".$id."\n\n".$content_heading."\n".$content_subheading."\n".$content_content."\n\n";
 	}
 	if($error == ""){
 		if(file_exists(e_BASE."plugins/smtp.php")){
@@ -62,7 +63,7 @@ if(IsSet($_POST['emailsubmit'])){
 	}
 }
 
-$text = "<form method='post' action='".e_SELF."?$id'>\n
+$text = "<form method='post' action='".e_SELF."?$table.$id'>\n
 <table class='defaulttable'>";
 
 if(USER != TRUE){

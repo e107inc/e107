@@ -309,7 +309,7 @@ define("LAN_357", "Files scaricati: ");
 define("LAN_358", "Files disponibili: ");
 define("LAN_359", "Vota questo download");
 define("LAN_360", "Grazie per aver votato");
-define("LAN_361", "downloads da"); (come "5 downloads per 8 files")
+define("LAN_361", "downloads da");
 define("LAN_362", "files");
 define("LAN_363", "Downloads");
 define("LAN_364", "Ordina per");

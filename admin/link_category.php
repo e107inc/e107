@@ -38,18 +38,18 @@ if(IsSet($_POST['delete'])){
 	list($category_id, $category_name, $category_icon) = $sql-> db_Fetch();
 
 	if($category_name == "Main"){
-		$ns -> tablerender("Unable to delete", "<div style=\"text-align:center\">Cannot delete the main category.</div>");
+		$ns -> tablerender("Unable to delete", "<div style='text-align:center'>Cannot delete the main category.</div>");
 		require_once("footer.php");
 		exit;
 	}
 
-	$text = "<div style=\"text-align:center\">
+	$text = "<div style='text-align:center'>
 	<b>Please confirm you wish to delete the '".$category_name."' link category - once deleted it cannot be retrieved</b>
 <br /><br />
-<form method=\"post\" action=\"$PHP_SELF\">
-<input class=\"button\" type=\"submit\" name=\"cancel\" value=\"Cancel\" /> 
-<input class=\"button\" type=\"submit\" name=\"confirm\" value=\"Confirm Delete\" /> 
-<input type=\"hidden\" name=\"existing\" value=\"".$_POST['existing']."\">
+<form method='post' action='$PHP_SELF'>
+<input class='button' type='submit' name='cancel' value='Cancel' /> 
+<input class='button' type='submit' name='confirm' value='Confirm Delete' /> 
+<input type='hidden' name='existing' value='".$_POST['existing']."'>
 </form>
 </div>";
 $ns -> tablerender("Confirm Delete Category", $text);
@@ -66,72 +66,70 @@ if(IsSet($_POST['edit'])){
 	$sql -> db_Select("link_category", "*", "link_category_id='".$_POST['existing']."' ");
 	list($category_id, $category_name, $category_description) = $sql-> db_Fetch();
 	if($category_name == "Main"){
-		$ns -> tablerender("Unable to edit", "<div style=\"text-align:center\">Cannot edit the main category.</div>");
+		$ns -> tablerender("Unable to edit", "<div style='text-align:center'>Cannot edit the main category.</div>");
 		require_once("footer.php");
 		exit;
 	}
 }
 
 if(IsSet($message)){
-	$ns -> tablerender("", "<div style=\"text-align:center\"><b>".$message."</b></div>");
+	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
-$sql -> db_Select("link_category");
-$category_total = $sql -> db_Rows();
+$category_total = $sql -> db_Select("link_category");
 
-if($category_total == "0"){
-	$text = "No link categories set yet.
-	<br />
-	<div style=\"text-align:center\">";
+$text = "<div style='text-align:center'>
+<form method='post' action='".e_SELF."'>
+<table style='width:85%' class='fborder'>
+<tr>
+<td colspan='2' class='forumheader' style='text-align:center'>";
+
+if(!$category_total){
+	$text .= "<span class='defaulttext'>No link categories set yet.</span>";
 }else{
-	$text = "<div style=\"text-align:center\">
-	<form method=\"post\" action=\"".e_SELF."\">
-	
-	Existing categories: 
-	<select name=\"existing\" class=\"tbox\">";
+	$text .= "<span class='defaulttext'>Existing categories: </span>
+	<select name='existing' class='tbox'>";
 	while(list($cat_id, $cat_name, $cat_description) = $sql-> db_Fetch()){
-		$text .= "<option value=\"$cat_id\">".$cat_name."</option>";
+		$text .= "<option value='$cat_id'>".$cat_name."</option>";
 	}
 	$text .= "</select> 
-	<input class=\"button\" type=\"submit\" name=\"edit\" value=\"Edit\" /> 
-	<input class=\"button\" type=\"submit\" name=\"delete\" value=\"Delete\" />
-	</form>
-	</div>
-	<br />";
+	<input class='button' type='submit' name='edit' value='Edit' /> 
+	<input class='button' type='submit' name='delete' value='Delete' />";
 }
 
 
 $text .= "
-<form method=\"post\" action=\"".e_SELF."\">
-<table style=\"width:95%\">
-<tr>
-<td style=\"width:30%\">Link Category Name: </td>
-<td style=\"width:70%\">
-<input class=\"tbox\" type=\"text\" name=\"category_name\" size=\"60\" value=\"$category_name\" maxlength=\"100\" />
 </td>
 </tr>
 <tr>
-<td style=\"width:30%\">Link Category Description: </td>
-<td style=\"width:70%\">
-<input class=\"tbox\" type=\"text\" name=\"category_description\" size=\"60\" value=\"$category_description\" maxlength=\"250\" />
+<td style='width:30%' class='forumheader3'>Link Category Name: </td>
+<td style='width:70%' class='forumheader3'>
+<input class='tbox' type='text' name='category_name' size='60' value='$category_name' maxlength='100' />
 </td>
 </tr>
-<tr style=\"vertical-align:top\"> 
-<td colspan=\"2\"  style=\"text-align:center\">";
+<tr>
+<td style='width:30%' class='forumheader3'>Link Category Description: </td>
+<td style='width:70%' class='forumheader3'>
+<input class='tbox' type='text' name='category_description' size='60' value='$category_description' maxlength='250' />
+</td>
+</tr>
+<tr style='vertical-align:top'> 
+<td colspan='2'  style='text-align:center' class='forumheader'>";
 
 if(IsSet($_POST['edit'])){
 
-	$text .= "<input class=\"button\" type=\"submit\" name=\"update_category\" value=\"Update link category\" />
-<input type=\"hidden\" name=\"category_id\" value=\"$category_id\">";
+	$text .= "<input class='button' type='submit' name='update_category' value='Update link category' />
+<input type='hidden' name='category_id' value='$category_id'>";
 }else{
-	$text .= "<input class=\"button\" type=\"submit\" name=\"add_category\" value=\"Add link category\" />";
+	$text .= "<input class='button' type='submit' name='add_category' value='Add link category' />";
 }
 $text .= "</td>
 </tr>
 </table>
-</form>";
+</form>
+</div>";
 
-$ns -> tablerender("<div style=\"text-align:center\">Link Categories</div>", $text);
+$ns -> tablerender("<div style='text-align:center'>Link Categories</div>", $text);
 
 require_once("footer.php");
 ?>	

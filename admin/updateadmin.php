@@ -25,50 +25,49 @@ if(IsSet($_POST['update_settings'])){
 
 require_once("auth.php");
 if($se == TRUE){
-	$text = "<div style=\"text-align:center\">Settings updated.</div>";
-	$ns -> tablerender("<div style=\"text-align:center\">Settings Updated for $a_name</div>", $text);
+	$text = "<div style='text-align:center'>Settings updated.</div>";
+	$ns -> tablerender("<div style='text-align:center'>Settings Updated for $a_name</div>", $text);
 	require_once("footer.php");
 	exit;
 }
 
 if(IsSet($message)){
-	$ns -> tablerender("", "<div style=\"text-align:center\"><b>".$message."</b></div>");
+	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
-$text = "<div style=\"text-align:center\">
-<form method=\"post\" action=\"".e_SELF."\">\n
-
-<table style=\"width:95%\" class=\"fborder\">
+$text = "<div style='text-align:center'>
+<form method='post' action='".e_SELF."'>\n
+<table style='width:85%' class='fborder'>
 <tr>
-<td style=\"width:30%\" class=\"forumheader3\">Name: </td>
-<td style=\"width:70%\" class=\"forumheader3\">
+<td style='width:30%' class='forumheader3'>Name: </td>
+<td style='width:70%' class='forumheader3'>
 ".ADMINNAME."
 </td>
 </tr>
 <tr>
-<td style=\"width:30%\" class=\"forumheader3\">Password: </td>
-<td style=\"width:70%\" class=\"forumheader3\">
-<input class=\"tbox\" type=\"password\" name=\"a_password\" size=\"60\" value=\"\" maxlength=\"100\" />
+<td style='width:30%' class='forumheader3'>Password: </td>
+<td style='width:70%' class='forumheader3'>
+<input class='tbox' type='password' name='a_password' size='60' value='' maxlength='100' />
 </td>
 </tr>
 
 <tr>
-<td style=\"width:30%\" class=\"forumheader3\">Re-type Password: </td>
-<td style=\"width:70%\" class=\"forumheader3\">
-<input class=\"tbox\" type=\"password\" name=\"a_password2\" size=\"60\" value=\"\" maxlength=\"100\" />
+<td style='width:30%' class='forumheader3'>Re-type Password: </td>
+<td style='width:70%' class='forumheader3'>
+<input class='tbox' type='password' name='a_password2' size='60' value='' maxlength='100' />
 </td>
 </tr>
 
 <tr> 
-<td colspan=\"2\" style =\"text-align:center\"  class=\"forumheader\">
-<input class=\"button\" type=\"submit\" name=\"update_settings\" value=\"Change Password\" />
+<td colspan='2' style ='text-align:center'  class='forumheader'>
+<input class='button' type='submit' name='update_settings' value='Change Password' />
 </td>
 </tr>
 </table>
 </form>
 </div>";
 
-$ns -> tablerender("<div style=\"text-align:center\">Password Update for ".ADMINNAME."</div>", $text);
+$ns -> tablerender("<div style='text-align:center'>Password Update for ".ADMINNAME."</div>", $text);
 
 require_once("footer.php");
 ?>

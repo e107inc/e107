@@ -48,13 +48,13 @@ if(IsSet($_POST['delete'])){
 	$sql -> db_Select("poll", "*", "poll_id='".$_POST['existing']."' ");
 	list($null, $null, $null, $null, $poll_title_) = $sql-> db_Fetch();
 	
-	$text = "<div style=\"text-align:center\">
+	$text = "<div style='text-align:center'>
 	<b>Please confirm you wish to delete the poll '$poll_title_' - once deleted it cannot be retrieved</b>
 <br /><br />
-<form method=\"post\" action=\"".e_SELF."\">
-<input class=\"button\" type=\"submit\" name=\"deletecancel\" value=\"Cancel\" /> 
-<input class=\"button\" type=\"submit\" name=\"deleteconfirm\" value=\"Confirm Delete\" /> 
-<input type=\"hidden\" name=\"existing\" value=\"".$_POST['existing']."\">
+<form method='post' action='".e_SELF."'>
+<input class='button' type='submit' name='deletecancel' value='Cancel' /> 
+<input class='button' type='submit' name='deleteconfirm' value='Confirm Delete' /> 
+<input type='hidden' name='existing' value='".$_POST['existing']."'>
 </form>
 </div>";
 $ns -> tablerender("Confirm Delete Catagory", $text);
@@ -79,38 +79,37 @@ if(IsSet($_POST['preview'])){
 }
 
 if(IsSet($message)){
-	$ns -> tablerender("", "<div style=\"text-align:center\"><b>".$message."</b></div>");
+	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
-$text = "<div style=\"text-align:center\">";
-$sql -> db_Select("poll");
-$poll_total = $sql -> db_Rows();
-if($poll_total == "0"){
-	$text .= "No polls set yet.
-	</div>
-	<br />";
+$poll_total = $sql -> db_Select("poll");
+
+$text = "<div style='text-align:center'>
+<form method='post' action='".e_SELF."'>
+<table style='width:85%' class='fborder'>
+<tr>
+<td colspan='2' class='forumheader' style='text-align:center'>";
+
+if(!$poll_total){
+	$text .= "<span class='defaulttext'>No polls set yet.</span>";
 }else{
-	$text .= "<form method=\"post\" action=\"".e_SELF."\">
-	Existing Polls: 
-	<select name=\"existing\" class=\"tbox\">";
+	$text .= "<span class='defaulttext'>Existing Polls:</span> 
+	<select name='existing' class='tbox'>";
 	while($row = $sql-> db_Fetch()){
-		$text .= "<option value=\"".$row['poll_id']."\">".$row['poll_title']."</option>";
+		$text .= "<option value='".$row['poll_id']."'>".$row['poll_title']."</option>";
 	}
 	$text .= "</select> 
-	<input class=\"button\" type=\"submit\" name=\"edit\" value=\"Edit\" /> 
-	<input class=\"button\" type=\"submit\" name=\"delete\" value=\"Delete\" />
-	</form>
-	</div>
-	<br />";
+	<input class='button' type='submit' name='edit' value='Edit' /> 
+	<input class='button' type='submit' name='delete' value='Delete' />";
 }
 
 $text .= "
-<form name='form1' method='post' action='".e_SELF."'>
-<table style=\"width:95%\">
+</td>
+</tr>
 <tr> 
-<td style=\"width:20%\"><div class=\"normaltext\">Poll Question:</div></td>
-<td>
-<input class=\"tbox\" type=\"text\" name=\"poll_title\" size=\"70\" value=\"$poll_title\" maxlength=\"200\" />";
+<td style='width:30%' class='forumheader3'><div class='normaltext'>Poll Question:</div></td>
+<td style='width:70%'class='forumheader3'>
+<input class='tbox' type='text' name='poll_title' size='70' value='$poll_title' maxlength='200' />";
 
 $counter = 1;
 
@@ -118,51 +117,51 @@ for($count=1; $count<=10; $count++){
 	$var = "poll_option_".$count;
 	$option = stripslashes($$var);
 	$text .= "<tr>
-<td style=\"width:30%\">Option ".$count.":</td>
-<td>
-<input class=\"tbox\" type=\"text\" name=\"poll_option_$count\" size=\"60\" value=\"$option\" maxlength=\"200\" />
+<td style='width:30%' class='forumheader3'>Option ".$count.":</td>
+<td style='width:70%' class='forumheader3'>
+<input class='tbox' type='text' name='poll_option_$count' size='60' value='$option' maxlength='200' />
 </td></tr>";
 }
 
 
 $text .= "<tr>
-<td style=\"width:20%\">Poll status?:</td>
-<td>";
-$text .= (!$_POST['activate'] ? "<input name=\"activate\" type=\"radio\" value=\"0\" checked>Inactive<br />" : "<input name=\"activate\" type=\"radio\" value=\"0\">Inactive<br />");
-$text .= ($_POST['activate'] == 1 ? "<input name=\"activate\" type=\"radio\" value=\"1\" checked>Active - allow votes from all<br />" : "<input name=\"activate\" type=\"radio\" value=\"1\">Active - allow votes from all<br />");
-$text .= ($_POST['activate'] == 2 ? "<input name=\"activate\" type=\"radio\" value=\"2\" checked>Active - allow votes from members only<br />" : "<input name=\"activate\" type=\"radio\" value=\"2\">Active - allow votes from members only<br />");
+<td style='width:30%' class='forumheader3'>Poll status?:</td>
+<td class='forumheader3'>";
+$text .= (!$_POST['activate'] ? "<input name='activate' type='radio' value='0' checked>Inactive<br />" : "<input name='activate' type='radio' value='0'>Inactive<br />");
+$text .= ($_POST['activate'] == 1 ? "<input name='activate' type='radio' value='1' checked>Active - allow votes from all<br />" : "<input name='activate' type='radio' value='1'>Active - allow votes from all<br />");
+$text .= ($_POST['activate'] == 2 ? "<input name='activate' type='radio' value='2' checked>Active - allow votes from members only<br />" : "<input name='activate' type='radio' value='2'>Active - allow votes from members only<br />");
 
 $text .= "</td>
 </tr>
 
-<tr style=\"vertical-align:top\"> 
-<td colspan=\"2\"  style=\"text-align:center\">
-<br />";
+<tr style='vertical-align:top'> 
+<td colspan='2'  style='text-align:center' class='forumheader'>";
 
 if(IsSet($_POST['preview'])){
-	$text .= "<input class=\"button\" type=\"submit\" name=\"preview\" value=\"Preview again\" /> ";
+	$text .= "<input class='button' type='submit' name='preview' value='Preview again' /> ";
 	if($_POST['poll_id']){
-		$text .= "<input class=\"button\" type=\"submit\" name=\"submit\" value=\"Update poll in database\" /> ";
+		$text .= "<input class='button' type='submit' name='submit' value='Update poll in database' /> ";
 
 	}else{
-		$text .= "<input class=\"button\" type=\"submit\" name=\"submit\" value=\"Post poll to database\" /> ";
+		$text .= "<input class='button' type='submit' name='submit' value='Post poll to database' /> ";
 	}
 }else{
-	$text .= "<input class=\"button\" type=\"submit\" name=\"preview\" value=\"Preview\" /> ";
+	$text .= "<input class='button' type='submit' name='preview' value='Preview' /> ";
 }
 if(IsSet($poll_id)){
-	$text .= "<input class=\"button\" type=\"submit\" name=\"reset\" value=\"New poll\" /> ";
+	$text .= "<input class='button' type='submit' name='reset' value='New poll' /> ";
 }
 
 $text .= "</td></tr></table>";
 if($_POST['poll_id']){
-	$text .= "<input type=\"hidden\" name=\"poll_id\" value=\"".$_POST['poll_id']."\">";
+	$text .= "<input type='hidden' name='poll_id' value='".$_POST['poll_id']."'>";
 }else{
-	$text .= "<input type=\"hidden\" name=\"poll_id\" value=\"".$poll_id."\">";
+	$text .= "<input type='hidden' name='poll_id' value='".$poll_id."'>";
 }
-$text .= "</form>";
+$text .= "</form>
+</div>";
 
-$ns -> tablerender("<div style=\"text-align:center\">Polls</div>", $text);
+$ns -> tablerender("<div style='text-align:center'>Polls</div>", $text);
 require_once("footer.php");
 
 class poll{
@@ -214,38 +213,38 @@ class poll{
 		}
 	}
 
-	$text = "<table style=\"width:35%\" class=\"border\" cellspacing=\"3\" align=\"center\">
+	$text = "<table style='width:35%' class='border' cellspacing='3' align='center'>
 	<tr>
 	<td>
 	<br />
-	<div style=\"text-align:center\"><b>".$poll_name."</b></div>
+	<div style='text-align:center'><b>".$poll_name."</b></div>
 	<hr />
 	</div>
 	<br />
-	<form method=\"post\" action=\"$PHP_SELF\">
+	<form method='post' action='$PHP_SELF'>
 	<p>";
 	for($counter=1; $counter<=$options; $counter++){
 	
-		$text .= "<input type=\"radio\" name=\"votea\" value=\"$counter\" />
-		<span class=\"mediumtext\"><b>".stripslashes($poll[$counter])."</b></span>
+		$text .= "<input type='radio' name='votea' value='$counter' />
+		<span class='mediumtext'><b>".stripslashes($poll[$counter])."</b></span>
 		<br />
-		<span class=\"smalltext\">
-		<img src=\"".THEME."/images/bar.jpg\" height=\"12\" width=\"".($percen[$counter]*2)."\" style=\"border : 1px solid Black\" alt=\"\" />
+		<span class='smalltext'>
+		<img src='".THEME."/images/bar.jpg' height='12' width='".($percen[$counter]*2)."' style='border : 1px solid Black' alt='' />
 		0% [No votes]<br />";
 
 	}
 
 	$text .= "<br />
-	<div style=\"text-align:center\">
+	<div style='text-align:center'>
 	Votes: 0
 	<br />
-	[ <a href=\"oldpolls.php\">Old Surveys</a> ]
+	[ <a href='oldpolls.php'>Old Surveys</a> ]
 	</td>
 	</tr>
 	</table>";
 
 	$ps = new table;
-	$ps -> tablerender("<div style=\"text-align:center\">Poll Preview</div>", $text);
+	$ps -> tablerender("<div style='text-align:center'>Poll Preview</div>", $text);
 	}
 }
 ?>

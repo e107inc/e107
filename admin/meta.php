@@ -17,7 +17,7 @@ require_once("../class2.php");
 if(IsSet($_POST['metasubmit'])){
 
 	
-	$meta = str_replace("\"", "'", $_POST['meta']);
+	$meta = str_replace("'", "'", $_POST['meta']);
 	$meta = stripslashes($meta);
 	$pref['meta_tag'][1] = $meta;
 	save_prefs();
@@ -28,22 +28,22 @@ if(!getperms("C")){ header("location:".e_HTTP."index.php"); }
 require_once("auth.php");
 
 if(e_QUERY != ""){
-	$ns -> tablerender("Updated", "<div style=\"text-align:center\">Meta tags updated in database.</div>");
+	$ns -> tablerender("Updated", "<div style='text-align:center'>Meta tags updated in database.</div>");
 }
 
-$text = "
-<form method=\"post\" action=\"".e_SELF."\">
-<table style=\"width:95%\">
+$text = "<div style='text-align:center'>
+<form method='post' action='".e_SELF."'>
+<table style='width:85%' class='fborder'>
 <tr>
-<td style=\"width:20%\">Enter meta-tags: </td>
-<td style=\"width:50%\">
-<textarea class=\"tbox\" name=\"meta\" cols=\"70\" rows=\"10\">".$pref['meta_tag'][1]."</textarea>
+
+<td style='width:30%' class='forumheader3'>Enter meta-tags: </td>
+<td style='width:70%' class='forumheader3'>
+<textarea class='tbox' name='meta' cols='70' rows='10'>".$pref['meta_tag'][1]."</textarea>
 </td>
 </tr>
 
-<td style=\"width:20%\">&nbsp;</td>
-<td style=\"width:50%\">
-<input class=\"button\" type=\"submit\" name=\"metasubmit\" value=\"Enter new meta tag settings\" />
+<td colspan='2' style='text-align:center' class='forumheader'>
+<input class='button' type='submit' name='metasubmit' value='Enter new meta tag settings' />
 </td>
 </tr>
 </table>

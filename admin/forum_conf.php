@@ -74,6 +74,41 @@ if(IsSet($_POST['movecancel'])){
 	$url = "../forum.php?view.".$forum_id.".".$thread_id;
 }
 
+
+// forum tidy, added by Edwin (evdwal@xs4all.nl) -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+$sql2 = new db;
+$sql -> db_Select("forum_t", "thread_id,thread_parent", "thread_parent!=0");
+while(list($id,$parent) = $sql -> db_Fetch()) {
+	if($sql2 -> db_Count("forum_t","(*)","where thread_id = $parent") == 0) {
+		$sql2 -> db_Delete("forum_t","thread_id=$id");
+	}
+}
+$sql -> db_Select("forum_t", "*", "thread_parent!=0");
+while ($row = $sql -> db_Fetch()) {
+	extract($row);
+	$sql2 -> db_Select("forum_t", "thread_forum_id", "thread_id = $thread_parent");
+	list($new_thread_forum_id) = $sql2 -> db_Fetch();
+	if($thread_forum_id != $new_thread_forum_id) {
+		$sql2 -> db_Update("forum_t", "thread_forum_id = $new_thread_forum_id where thread_id = $thread_id");
+	} 
+}	
+$sql -> db_Select("forum", "*", "forum_parent = 0");
+$forums = $sql -> db_Select("forum", "*", "forum_parent != 0");
+while($row = $sql-> db_Fetch()){
+	extract($row);
+	$no_topics = $sql2 -> db_Count("forum_t", "(*)", "WHERE thread_forum_id=$forum_id and thread_parent=0");
+	$no_replies = $sql2 -> db_Count("forum_t", "(*)", "WHERE thread_forum_id=$forum_id and thread_parent!=0");
+	$sql2 -> db_Select("forum_t", "thread_user,thread_datestamp", "thread_forum_id = $forum_id order by thread_datestamp DESC LIMIT 0,1");
+	list($thread_user,$thread_lastpost) = $sql2 -> db_Fetch();
+	$new_lastpost = $thread_user.".".$thread_lastpost;
+	if (($forum_threads != $no_topics) || ($forum_replies != $no_replies) ||( $forum_lastpost != $new_lastpost)) {
+		$sql2 -> db_Update("forum", "forum_threads = $no_topics, forum_replies = $no_replies, forum_lastpost = '$new_lastpost' where forum_id = $forum_id");
+	} 
+}
+
+// end forum tidy  -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
 if($message){
 	$text = "<div style=\"text-align:center\">".$message."
 	<br />

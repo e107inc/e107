@@ -294,9 +294,9 @@ class news{
 
 		if(SHOW_EMAIL_PRINT == TRUE){
 			if(eregi("admin", $_SERVER['PHP_SELF'])){
-				$ptext = " <a href=\"email.php?".$news_id."\"><img src=\"../themes/shared/generic/friend.gif\" style=\"border:0\" alt=\"email to someone\" /></a> <a href=\"print.php?".$news_id."\"><img src=\"../themes/shared/generic/printer.gif\" style=\"border:0\" alt=\"printer friendly\" /></a>";
+				$ptext = " <a href=\"email.php?news.".$news_id."\"><img src=\"../themes/shared/generic/friend.gif\" style=\"border:0\" alt=\"email to someone\" /></a> <a href=\"print.php?".$news_id."\"><img src=\"../themes/shared/generic/printer.gif\" style=\"border:0\" alt=\"printer friendly\" /></a>";
 			}else{
-				$ptext = " <a href=\"email.php?".$news_id."\"><img src=\"themes/shared/generic/friend.gif\" style=\"border:0\" alt=\"email to someone\" /></a> <a href=\"print.php?news.".$news_id."\"><img src=\"themes/shared/generic/printer.gif\" style=\"border:0\" alt=\"printer friendly\" /></a>";
+				$ptext = " <a href=\"email.php?news.".$news_id."\"><img src=\"themes/shared/generic/friend.gif\" style=\"border:0\" alt=\"email to someone\" /></a> <a href=\"print.php?news.".$news_id."\"><img src=\"themes/shared/generic/printer.gif\" style=\"border:0\" alt=\"printer friendly\" /></a>";
 			}
 		}
 		if(ICON_SHOW == TRUE && ICON_POSITION == "caption" && $category_icon != ""){

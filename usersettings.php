@@ -15,6 +15,13 @@
 require_once("class2.php");
 if(USER == FALSE && ADMIN == FALSE){ header("location:".e_HTTP."index.php"); }
 require_once(e_BASE."classes/ren_help.php");
+
+
+if(e_QUERY && !ADMIN){
+	header("location:usersettings.php");
+	exit;
+}
+
 $_uid = e_QUERY;
 
 if(IsSet($_POST['_uid'])){ $_uid = $_POST['_uid']; }
@@ -62,7 +69,11 @@ if($_uid != ""){
 list($user_id, $name, $user_password, $user_sess, $email, $website, $icq, $aim, $msn, $location, $birthday, $signature, $image, $user_timezone, $hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_prefs, $user_new, $user_viewed, $user_visits, $user_admin, $user_login) = $sql -> db_Fetch();
 
 $text = "
-<form  name='settings' method='post' action='".e_SELF."?stage2'>\n
+<form  name='settings' method='post' action='".e_SELF;
+if(e_QUERY){
+	$text .= "?".$user_id;
+}
+$text .= "'>\n
 <table style='width:95%'>
 <tr>
 <td style='width:20%'>".LAN_7."</td>

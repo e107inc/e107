@@ -81,7 +81,7 @@ echo phpversion();
 </td>
 <td class="installb" style="width:33%">
 <?php
-$verreq = str_replace(".","", "4.1.0");
+$verreq = str_replace(".","", "4.0.9");
 $server = str_replace(".","", phpversion());
 if($server <= $verreq){
 	echo "<span class=\"installe\">* Fail *</span>";
@@ -962,7 +962,7 @@ mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Stats', 'stats.php', 
 
 $e107['e107_author'] = "Steve Dunstan (jalist)";
 $e107['e107_url'] = "http://e107.org";
-$e107['e107_version'] = "v0.548beta";
+$e107['e107_version'] = "v0.549beta";
 $e107['e107_build'] = "";
 $e107['e107_datestamp'] = time();
 $tmp = serialize($e107);

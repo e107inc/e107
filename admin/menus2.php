@@ -94,22 +94,9 @@ if($action == "dec"){
 }
 
 if($action == "inc"){
-	echo "INC";
 	$sql -> db_Update("menus", "menu_order=menu_order+1 WHERE menu_order='".($position-1)."' AND menu_location='$location' ");
 	$sql -> db_Update("menus", "menu_order=menu_order-1 WHERE menu_id='$id' AND menu_location='$location' ");
 	header("location: ".e_SELF);
-}
-
-$sql2 = new db;
-for($a=1; $a<=20; $a++){
-	if($sql -> db_Select("menus", "*",  "menu_location='$a' ORDER BY menu_order ASC")){
-		$c=1;
-		while($row = $sql -> db_Fetch()){
-			extract($row);
-			$sql2 -> db_Update("menus", "menu_order='$c' WHERE menu_id='$menu_id' ");
-			$c++;
-		}
-	}
 }
 
 $handle=opendir(e_BASE."menus/");
@@ -126,6 +113,21 @@ $handle=opendir(e_BASE."menus/");
 		}
 	}
 closedir($handle);
+
+$areas = substr_count($HEADER.$FOOTER, "MENU");
+
+$sql2 = new db;
+for($a=1; $a<=$areas; $a++){
+	if($sql -> db_Select("menus", "*",  "menu_location='$a' ORDER BY menu_order ASC")){
+		$c=1;
+		while($row = $sql -> db_Fetch()){
+			extract($row);
+			$sql2 -> db_Update("menus", "menu_order='$c' WHERE menu_id='$menu_id' ");
+			$c++;
+		}
+	}
+}
+
 
 $sql -> db_Select("menus");
 while(list($menu_id, $menu_name, $menu_location, $menu_order) = $sql-> db_Fetch()){

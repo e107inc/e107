@@ -303,7 +303,7 @@ define(LAN_324, "Je bericht is succesvol geplaatst.");
 define(LAN_325, "Klik hier om je bericht te bekijken");
 define(LAN_326, "Klik hier om terug te keren naar het forum");
 define(LAN_327, "Controleer");
-define(LAN_328, "Settings");   // "Settings" as used in default-header.
+define(LAN_328, "Settings");
 define(LAN_328, "Tijd");
 define(LAN_329, "Uitspraak van het moment");
 
@@ -314,7 +314,7 @@ define("LAN_357", "Bestanden gedownload: ");
 define("LAN_358", "Bestanden beschikbaar: ");
 define("LAN_359", "Waardeer deze download");
 define("LAN_360", "Bedankt voor de waardering");
-define("LAN_361", "downloads van"); (as in "5 downloads from 8 files")
+define("LAN_361", "downloads van");
 define("LAN_362", "bestanden");
 define("LAN_363", "Downloads");
 define("LAN_364", "Sorteer op");

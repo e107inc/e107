@@ -286,4 +286,47 @@ define("LAN_367", "Download" );
 define("LAN_368", "Inga filer tillgängliga, kom tillbaka senare!" );
 define("LAN_369", "Inte graderat än");
 define("LAN_370", "Gradering: ");
+
+define(LAN_314, "Klasser: ");
+define(LAN_315, "Användare: ");
+define(LAN_316, "Gå till sidan ");
+define(LAN_317, "Inga");
+define(LAN_318, "moderator optioner: ");
+define(LAN_319, "Ta bort kladdig");
+define(LAN_320, "Kladdig");
+define(LAN_321, "Moderatorer: ");
+define(LAN_322, "Postad: ");
+define(LAN_323, "Förhandsvisa");
+define(LAN_324, "Ditt meddelande har blivit postat.");
+define(LAN_325, "Klicka här för att visa ditt meddelande");
+define(LAN_326, "Klicka här för att återgå till forumet");
+define(LAN_327, "Recension");
+define(LAN_328, "Inställningar");   // "Settings" as used in default-header.
+define(LAN_329, "Auto Login"); // Auto Login
+
+define("LAN_350", "OK");
+define("LAN_351", "Välj tema");
+
+define("LAN_352", "OK");
+define("LAN_353", "Välj språk");
+
+
+
+define("LAN_354", "(Åtkomst nekad)" );
+define("LAN_355", "Inga filer i denna kategori finns tillgängliga" );
+define("LAN_356", "Total nerladdningsstorlek: " );
+define("LAN_357", "Filer nerladdade: " );
+define("LAN_358", "Tillgängliga filer: " );
+define("LAN_359", "Ranka denna download" );
+define("LAN_360", "Tack för att du röstade!" );
+define("LAN_361", "downloads från" );
+define("LAN_362", "filer" );
+define("LAN_363", "Downloads" );
+define("LAN_364", "Sortera efter" );
+define("LAN_365", "Datum" );
+define("LAN_366", "Filstorlek" );
+define("LAN_367", "Download" );
+define("LAN_368", "Inga filer tillgängliga, kom tillbaka senare!" );
+define("LAN_369", "Inte graderat än");
+define("LAN_370", "Gradering: ");
 ?>

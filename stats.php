@@ -19,11 +19,11 @@ require_once(HEADERF);
 
 if(!$pref['log_activate'][1]){
 	if(ADMIN){
-		$text = "<div style='text-align:center'>Logging is not activated, to activate go to your admin section, click on Logger and tick the Activate Logging/Counter checkbox.</div>";
+		$text = "<div style='text-align:center'>".LAN_371."</div>";
 	}else{
-		$text = "<div style='text-align:center'>The features on this page have been disabled.</div>";
+		$text = "<div style='text-align:center'>".LAN_372."</div>";
 	}
-	$ns -> tablerender("Stats", $text);
+	$ns -> tablerender(LAN_132, $text);
 	require_once(FOOTERF);
 	exit;
 }
@@ -33,30 +33,32 @@ $maxwidth = 400;
 
 $dep = new dbFunc;
 
-$dep -> dbQuery("SELECT * FROM ".MPREFIX."stat_counter ORDER BY counter_date");
-$row = $dep -> dbFetch();
-$tmp = explode("-", $row['counter_date']);
-$tmp2 = getdate(mktime(0, 0, 0, $tmp[1], $tmp[2], $tmp[0]));
-
-$logstart = $tmp[2]." ".$tmp2['month']." ".$tmp[0];
-$text = "<b>Logging began:</b> ".$logstart."<br />";
+if($dep -> dbQuery("SELECT * FROM ".MPREFIX."stat_counter ORDER BY counter_date")){
+	$row = $dep -> dbFetch();
+	$tmp = explode("-", $row['counter_date']);
+	$tmp2 = getdate(mktime(0, 0, 0, $tmp[1], $tmp[2], $tmp[0]));
+	$logstart = $tmp[2]." ".$tmp2['month']." ".$tmp[0];
+}else{
+	$logstart = LAN_373;
+}
+$text = "<b>".LAN_374."</b> ".$logstart."<br />";
 $action = e_QUERY;
 
 $total_page_views = $dep -> dbCount("SELECT sum(counter_unique) FROM ".MPREFIX."stat_counter");
 $row = $dep -> dbFetch();
-$text .= "<b>Unique views by page:</b> ".$total_page_views."<br />";
+$text .= "<b>".LAN_126."</b> ".$total_page_views."<br />";
 
 $total_page_views = $dep -> dbCount("SELECT sum(counter_total) FROM ".MPREFIX."stat_counter");
 $row = $dep -> dbFetch();
-$text .= "<b>Total site views:</b> ".$total_page_views."<br />";
+$text .= "<b>".LAN_125."</b> ".$total_page_views."<br />";
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 $c=0;
 $dep -> dbQuery("SELECT counter_url, sum(counter_unique) FROM ".MPREFIX."stat_counter GROUP BY counter_url");
-$text .= "<br /><b>Unique views by page</b>";
+$text .= "<br /><b>".LAN_126."</b>";
 if($action == 1){
-	$text .= " (all)";
+	$text .= " (".LAN_377.")";
 }else{
-	$text .= " (top 10)";
+	$text .= " (".LAN_378.")";
 }
 $text .= "<br />";
 
@@ -89,16 +91,16 @@ if($action == 1){
 		$data1[$c][0]." - ".$data1[$c][1]."<br />";
 		$c++;
 	}
-	$text .= "<a href='".e_SELF."?1'>View all</a><br />";
+	$text .= "<a href='".e_SELF."?1'>".LAN_375."</a><br />";
 }
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 $c=0;
 $dep -> dbQuery("SELECT counter_url, sum(counter_total) FROM ".MPREFIX."stat_counter GROUP BY counter_url");
-$text .= "<br /><b>Total views by page</b>";
+$text .= "<br /><b>".LAN_127."</b>";
 if($action == 2){
-	$text .= " (all)";
+	$text .= " (".LAN_377.")";
 }else{
-	$text .= " (top 10)";
+	$text .= " (".LAN_378.")";
 }
 $text .= "<br />";
 
@@ -131,17 +133,17 @@ if($action == 2){
 		$data2[$c][0]." - ".$data2[$c][1]."<br />";
 		$c++;
 	}
-	$text .= "<a href='".e_SELF."?2'>View all</a><br />";
+	$text .= "<a href='".e_SELF."?2'>".LAN_375."</a><br />";
 }
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // last 10 visitors
 
 $con = new convert;
 if($action == 8 && ADMIN == TRUE){
-	$text .= "<br /><b>Last ".$pref['log_lvcount'][1]." unique visitors (all)</b><br />";
+	$text .= "<br /><b>Last ".$pref['log_lvcount'][1]." unique visitors (".LAN_377.")</b><br />";
 	$sql -> db_Select("stat_last", "*", "ORDER BY stat_last_date DESC", "no_where");
 }else{
-	$text .= "<br /><b>Last 10 unique visitors</b><br />";
+	$text .= "<br /><b>".LAN_376."</b><br />";
 	$sql -> db_Select("stat_last", "*", "ORDER BY stat_last_date DESC LIMIT 0,10", "no_where");
 }
 	
@@ -151,7 +153,7 @@ while(list($stat_last_date, $stat_last_info) = $sql-> db_Fetch()){
 }
 
 if(ADMIN == TRUE && $pref['log_lvcount'][1] >10){
-	$text .= "<a href='".e_SELF."?8'>View all</a><br />";
+	$text .= "<a href='".e_SELF."?8'>".LAN_375."</a><br />";
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -159,9 +161,9 @@ $c=0;
 $dep -> dbQuery("SELECT info_name, SUM(info_count) FROM ".MPREFIX."stat_info WHERE info_type='1' GROUP BY info_name");
 $text .= "<br /><b>".LAN_128."</b>";
 if($action == 3){
-	$text .= " (all)";
+	$text .= " (".LAN_377.")";
 }else{
-	$text .= " (top 10)";
+	$text .= " (".LAN_378.")";
 }
 $text .= "<br />";
 while($row= $dep -> dbFetch()){
@@ -201,16 +203,16 @@ if($action == 3){
 		<br />";
 		$c++;
 	}
-	$text .= "<a href='".e_SELF."?3'>View all</a><br />";
+	$text .= "<a href='".e_SELF."?3'>".LAN_375."</a><br />";
 }
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 $c=0;
 $dep -> dbQuery("SELECT info_name, SUM(info_count) AS Total FROM ".MPREFIX."stat_info WHERE info_type='2' GROUP BY info_name");
 $text .= "<br /><b>".LAN_129."</b>";
 if($action == 4){
-	$text .= " (all)";
+	$text .= " (".LAN_377.")";
 }else{
-	$text .= " (top 10)";
+	$text .= " (".LAN_378.")";
 }
 $text .= "<br />";
 while($row= $dep -> dbFetch()){
@@ -243,16 +245,16 @@ if($action == 4){
 		<br />";
 		$c++;
 	}
-	$text .= "<a href='".e_SELF."?4'>View all</a><br />";
+	$text .= "<a href='".e_SELF."?4'>".LAN_375."</a><br />";
 }
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 $c=0;
-$dep -> dbQuery("SELECT info_name, SUM(info_count) AS Total FROM ".MPREFIX."stat_info WHERE info_type='4' AND info_name!= 'Network' AND info_name!='Commercial Users' AND info_name!='Education' AND info_name!='Government' GROUP BY info_name");
+$dep -> dbQuery("SELECT info_name, SUM(info_count) AS Total FROM ".MPREFIX."stat_info WHERE info_type='4' GROUP BY info_name");
 $text .= "<br /><b>".LAN_130."</b>";
 if($action == 5){
-	$text .= " (all)";
+	$text .= " (".LAN_377.")";
 }else{
-	$text .= " (top 10)";
+	$text .= " (".LAN_378.")";
 }
 $text .= "<br />";
 while($row= $dep -> dbFetch()){
@@ -285,16 +287,16 @@ if($action == 5){
 		<br />";
 		$c++;
 	}
-	$text .= "<a href='".e_SELF."?5'>View all</a><br />";
+	$text .= "<a href='".e_SELF."?5'>".LAN_375."</a><br />";
 }
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 $c=0;
 $dep -> dbQuery("SELECT info_name, SUM(info_count) AS Total FROM ".MPREFIX."stat_info WHERE info_type='6' GROUP BY info_name");
 $text .= "<br /><b>".LAN_131."</b>";
 if($action == 6){
-	$text .= " (all)";
+	$text .= " (".LAN_377.")";
 }else{
-	$text .= " (top 10)";
+	$text .= " (".LAN_378.")";
 }
 $text .= "<br />";
 while($row= $dep -> dbFetch()){
@@ -326,17 +328,17 @@ if($action == 6){
 		<br />";
 		$c++;
 	}
-	$text .= "<a href='".e_SELF."?6'>View all</a><br />";
+	$text .= "<a href='".e_SELF."?6'>".LAN_375."</a><br />";
 }
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 $c=0;
 $dep -> dbQuery("SELECT info_name, SUM(info_count) AS Total FROM ".MPREFIX."stat_info WHERE info_type='5' GROUP BY info_name");
-$text .= "<br /><b>Screen resolutions</b>";
+$text .= "<br /><b>".LAN_379."</b>";
 if($action == 7){
-	$text .= " (all)";
+	$text .= " (".LAN_377.")";
 }else{
-	$text .= " (top 10)";
+	$text .= " (".LAN_378.")";
 }
 $text .= "<br />";
 while($row= $dep -> dbFetch()){
@@ -368,18 +370,12 @@ if($action == 7){
 		<br />";
 		$c++;
 	}
-	$text .= "<a href='".e_SELF."?7'>View all</a><br />";
+	$text .= "<a href='".e_SELF."?7'>".LAN_375."</a><br />";
 }
-
-
 $ns -> tablerender("<div style='text-align:center'>".LAN_132."</div>", $text);
-
 require_once(FOOTERF);
 
 class dbfunc{
-
-	// NOTE: This class is now depracated, kept in for third-party plugin compatibilty.
-
 	var $mySQLserver;
 	var $mySQLuser;
 	var $mySQLpassword;

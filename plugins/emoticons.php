@@ -1,107 +1,28 @@
 <?
 /*
-+---------------------------------------------------------------------------------------+
-
-usage example:
-include("emoticons.php");
-$msg = "Emoticons are cool (h)";												
-$msg = emoticons($msg);														
-echo $msg;
-full list of how to use @
-http://help.microsoft.com/EN_US/HelpWindow_msg.asp?INI=msgr_xpv46.ini&H_VER=1.7&Topic=emoticons.htm&H_APP=Windows%20Messenger&Filter=xp
-
-alphabetised by image name added help link (9.8.02)
-
-+---------------------------------------------------------------------------------------+
++---------------------------------------------------------------+
+|	e107 website system
+|	/plugins/emoticons.php
+|
+|	©Steve Dunstan 2001-2002
+|	http://e107.org
+|	jalist@e107.org
+|
+|	Released under the terms and conditions of the
+|	GNU General Public License (http://gnu.org).
++---------------------------------------------------------------+
 */
 
-function emoticons($msg) {
-
-$emoticons = array(
-"&\|" => "cry", 
-"&-\|" => "cry", 
-"&o\|" => "cry", 
-":\(\(" => "cry", 
-
-"~:\(" => "mad", 
-"~:o\(" => "mad",
-"~:-\(" => "mad",
-
-":\)" => "smile", 
-":o\)" => "smile",
-":-\)" => "smile",
-
-":\(" => "frown", 
-":o\(" => "frown", 
-":-\(" => "frown", 
-
-":D" => "grin", 
-":oD" => "grin", 
-":-D" => "grin", 
-
-":\?" => "confused", 
-":o\?" => "confused", 
-":-\?" => "confused", 
-
-"\%-6" => "special", 
-
-"x\)" => "dead", 
-"xo\)" => "dead", 
-"x-\)" => "dead", 
-"x\(" => "dead", 
-"xo\(" => "dead", 
-"x-\(" => "dead", 
-
-":@" => "gah", 
-":o@" => "gah", 
-":-@" => "gah", 
-
-":!" => "idea", 
-":o!" => "idea", 
-":-!" => "idea", 
-
-":\|" => "neutral", 
-":o\|" => "neutral", 
-":-\|" => "neutral", 
-
-"\?!" => "question", 
-
-"B\)" => "rolleyes", 
-"Bo\)" => "rolleyes", 
-"B-\)" => "rolleyes", 
-
-"8\)" => "shades", 
-"8o\)" => "shades", 
-"8-\)" => "shades", 
-
-":O" => "suprised", 
-":oO" => "suprised", 
-":-O" => "suprised", 
-
-":p" => "tongue", 
-":op" => "tongue", 
-":-p" => "tongue", 
-":P" => "tongue", 
-":oP" => "tongue", 
-":-P" => "tongue", 
-
-";\)" => "wink", 
-";o\)" => "wink", 
-";-\)" => "wink",
-
-"\!ill" => "ill",
-"\!amazed" => "amazed",
-"\!cry" => "cry",
-"\!dodge" => "dodge",
-"\!alien" => "alien",
-"!heart" => "heart"
-
-);
-
-while (list($short, $name) = each ($emoticons)){
-	$msg = ereg_replace(strtoupper($short), "<img src=\"".e_BASE."themes/shared/emoticons/$name.png\" alt=\"\" style=\"vertical-align:absmiddle\" />", $msg);
-	$msg = ereg_replace($short, "<img src=\"".e_BASE."themes/shared/emoticons/$name.png\" alt=\"\" style=\"vertical-align:absmiddle\" />", $msg);
-}
-return $msg;
+function emoticons($str){
+	$sql = new db;
+	$sql -> db_Select("core", "*", "e107_name='emote'");
+	$row = $sql -> db_Fetch(); extract($row);
+	$emote = unserialize($e107_value);
+	$c=0;
+	while(list($code, $name) = @each($emote[$c])){
+		$str = str_replace($code, "<img src=\"".e_BASE."themes/shared/emoticons/$name\" alt=\"\" style=\"vertical-align:absmiddle\" />", $str);
+		$c++;
+	}
+	return $str;
 }
 ?>

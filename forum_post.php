@@ -183,7 +183,7 @@ if(IsSet($_POST['update_thread'])){
 		$subject = $aj -> tp($_POST['subject']);
 		$post = $aj -> tp($_POST['post']);
 		$datestamp = $gen->convert_date(time(), "forum");
-		$post .= "\n<span class='smallblacktext'>[ ".LAN_29." ".$datestamp." ]</span>";
+		$post .= "\n<span class=\'smallblacktext\'>[ ".LAN_29." ".$datestamp." ]</span>";
 		$sql -> db_Update("forum_t", "thread_name='".$subject."', thread_thread='".$post."' WHERE thread_id='$thread_id' ");
 		header("location: forum_viewtopic.php?".$forum_id.".".$thread_id);
 	}
@@ -193,10 +193,9 @@ if(IsSet($_POST['update_reply'])){
 	if($_POST['post'] == ""){
 		$error = "<div style='text-align:center'>".LAN_28."</div>";
 	}else{
-		$post = $aj -> tp($_POST['post']);
 		$datestamp = $gen->convert_date(time(), "forum");
-		$post .= "\n<span class='smallblacktext'>[ ".LAN_29." ".$datestamp." ]</span>";
-		$sql -> db_Update("forum_t", "thread_thread='".$post."' WHERE thread_id='$thread_id' ");
+		$post = $aj -> tp($_POST['post'])."\n<span class=\'smallblacktext\'>[ ".LAN_29." ".$datestamp." ]</span>";
+		$sql -> db_Update("forum_t", "thread_thread='".$post."' WHERE thread_id=".$thread_id);
 		header("location: forum_viewtopic.php?".$forum_id.".".$_POST['thread_id']);
 	}
 }

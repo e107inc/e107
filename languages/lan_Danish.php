@@ -289,8 +289,8 @@ define(LAN_324, "Din besked er postet.");
 define(LAN_325, "Klik her for at vise din besked");
 define(LAN_326, "Klik her for at retuner til forum");
 define(LAN_327, "Overblik");
-define("LAN_328", "Indstillinger");   // "Settings" as used in default-header.
-define("LAN_329", "Auto Logind"); // Auto Login
+define("LAN_328", "Indstillinger");
+define("LAN_329", "Auto Logind");
 define("LAN_350", "Tema");
 define("LAN_351", "Vælg Tema");
 define("LAN_352", "Sprog");
@@ -302,7 +302,7 @@ define("LAN_357", "Filer downloaded: ");
 define("LAN_358", "Filer tilgængelige: ");
 define("LAN_359", "Bedøm dette download");
 define("LAN_360", "tak for din bedømmelse");
-define("LAN_361", "downloads fra"); // (as in "5 downloads from 8 files")
+define("LAN_361", "downloads fra");
 define("LAN_362", "filer");
 define("LAN_363", "Downloads");
 define("LAN_364", "Sorteret");
