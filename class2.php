@@ -14,24 +14,11 @@
 */
 //unset any globals created by register_globals being turned ON
 while (list($global) = each($GLOBALS)){
-	if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST)$/', $global)){
-		unset($$global);
-	}
+        if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST)$/', $global)){
+                unset($$global);
+        }
 }
 unset($global);
-
-// If you need to change the names of any of your directories, change the value here then rename the respective folder on your server ...
-$ADMIN_DIRECTORY = "e107_admin/";
-$FILES_DIRECTORY = "e107_files/";
-$IMAGES_DIRECTORY = "e107_images/";
-$THEMES_DIRECTORY = "e107_themes/";
-$PLUGINS_DIRECTORY = "e107_plugins/";
-$HANDLERS_DIRECTORY = "e107_handlers/";
-$LANGUAGES_DIRECTORY = "e107_languages/";
-$HELP_DIRECTORY = "e107_docs/help/";
-$DOWNLOADS_DIRECTORY =  "e107_files/downloads/";
-// $DOWNLOADS_DIRECTORY =  "<fullpath>/downloads/";
-// eg. $DOWNLOADS_DIRECTORY =  "/home/downloads/";
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //ob_start ("ob_gzhandler")
@@ -50,6 +37,22 @@ if(!$mySQLserver){
         }
         if(!defined("e_HTTP")){ header("Location:install.php"); exit; }
 }
+// e107_config.php upgrade - paths should have been in there from the beginning !
+if(!$ADMIN_DIRECTORY && !$DOWNLOADS_DIRECTORY){
+echo "<div style='text-align:center; font: 12px Verdana, Tahoma'><b>To complete the upgrade, copy the following text into your e107_config.php file: </b><br /><br />";
+echo chr(36)."ADMIN_DIRECTORY = \"e107_admin/\";<br />
+".chr(36)."FILES_DIRECTORY = \"e107_files/\";<br />
+".chr(36)."IMAGES_DIRECTORY = \"e107_images/\"; <br />
+".chr(36)."THEMES_DIRECTORY = \"e107_themes/\"; <br />
+".chr(36)."PLUGINS_DIRECTORY = \"e107_plugins/\"; <br />
+".chr(36)."HANDLERS_DIRECTORY = \"e107_handlers/\"; <br />
+".chr(36)."LANGUAGES_DIRECTORY = \"e107_languages/\"; <br />
+".chr(36)."HELP_DIRECTORY = \"e107_docs/help/\";  <br />
+".chr(36)."DOWNLOADS_DIRECTORY =  \"e107_files/downloads/\";\n";
+echo "</div>";
+exit;
+}
+// =====================
 
 $link_prefix="";
 $url_prefix=substr($_SERVER['PHP_SELF'],strlen(e_HTTP),strrpos($_SERVER['PHP_SELF'],"/")+1-strlen(e_HTTP));
@@ -119,7 +122,7 @@ $row = $sql -> db_Fetch();
 $tmp = stripslashes($row['e107_value']);
 $pref=unserialize($tmp);
 foreach($pref as $key => $prefvalue){
-	$pref[$key] = textparse::formtparev($prefvalue);
+        $pref[$key] = textparse::formtparev($prefvalue);
 }
 if(!is_array($pref)){
         $pref=unserialize($row['e107_value']);
@@ -152,43 +155,43 @@ $page = substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
 define("e_PAGE", $page);
 
 if($pref['frontpage'] && $pref['frontpage_type'] == "splash"){
-	$ip = getip();
-	if(!$sql -> db_Count("online", "(*)", "WHERE online_ip='{$ip}' ")){
-		online();
-		if(is_numeric($pref['frontpage'])){
-			header("location:".e_BASE."article.php?".$pref['frontpage'].".255");
-			exit;
-		} else if(eregi("http", $pref['frontpage'])) {
-			header("location: ".$pref['frontpage']);
-			exit;
-		} else {
-			header("location: ".e_BASE.$pref['frontpage'].".php");
-			exit;
-		}
-	}
+        $ip = getip();
+        if(!$sql -> db_Count("online", "(*)", "WHERE online_ip='{$ip}' ")){
+                online();
+                if(is_numeric($pref['frontpage'])){
+                        header("location:".e_BASE."article.php?".$pref['frontpage'].".255");
+                        exit;
+                } else if(eregi("http", $pref['frontpage'])) {
+                        header("location: ".$pref['frontpage']);
+                        exit;
+                } else {
+                        header("location: ".e_BASE.$pref['frontpage'].".php");
+                        exit;
+                }
+        }
 }
 
 if($pref['cachestatus']){
-	require_once(e_HANDLER."cache_handler.php");
-	$e107cache = new ecache;
+        require_once(e_HANDLER."cache_handler.php");
+        $e107cache = new ecache;
 }
 
 function retrieve_cache($query){
-	global $e107cache;
-	if(!is_object($e107cache)){return FALSE;}
+        global $e107cache;
+        if(!is_object($e107cache)){return FALSE;}
    return $e107cache -> retrieve($query);
 }
 
 function set_cache($query, $text){
-	global $e107cache;
-	if(!is_object($e107cache)){return FALSE;}
-	$e107cache -> set($query,$text);
+        global $e107cache;
+        if(!is_object($e107cache)){return FALSE;}
+        $e107cache -> set($query,$text);
 }
 
 function clear_cache($query){
-	global $e107cache;
-	if(!is_object($e107cache)){return FALSE;}
-	return $e107cache -> clear($query);
+        global $e107cache;
+        if(!is_object($e107cache)){return FALSE;}
+        return $e107cache -> clear($query);
 }
 
 if($pref['del_unv']){
@@ -196,12 +199,12 @@ if($pref['del_unv']){
         $sql -> db_Delete("user", "user_ban = 2 AND user_join<'$threshold' ");
 }
 if($pref['modules']){
-	$mods = explode(",",$pref['modules']);
-	foreach($mods as $mod){
-		if(file_exists(e_PLUGIN."{$mod}/module.php")){
-			@require_once(e_PLUGIN."{$mod}/module.php");
-		}
-	}
+        $mods = explode(",",$pref['modules']);
+        foreach($mods as $mod){
+                if(file_exists(e_PLUGIN."{$mod}/module.php")){
+                        @require_once(e_PLUGIN."{$mod}/module.php");
+                }
+        }
 }
 init_session();
 online();
@@ -273,19 +276,19 @@ define("FLOODHITS", $pref['flood_hits']);
 
 if(strstr(e_SELF, $ADMIN_DIRECTORY) && $pref['admintheme'] && !$_POST['sitetheme']){
         if(strstr(e_SELF, "menus.php")){
-			checkvalidtheme($pref['sitetheme']);
+                        checkvalidtheme($pref['sitetheme']);
         } else if(strstr(e_SELF, "newspost.php")){
-			define("MAINTHEME", e_THEME.$pref['sitetheme']."/");
-			checkvalidtheme($pref['admintheme']);
+                        define("MAINTHEME", e_THEME.$pref['sitetheme']."/");
+                        checkvalidtheme($pref['admintheme']);
         } else {
-			checkvalidtheme($pref['admintheme']);
+                        checkvalidtheme($pref['admintheme']);
         }
 } else {
          if(USERTHEME != FALSE && USERTHEME != "USERTHEME"){
-			checkvalidtheme(USERTHEME);
-		} else {
-			checkvalidtheme($pref['sitetheme']);
-		}
+                        checkvalidtheme(USERTHEME);
+                } else {
+                        checkvalidtheme($pref['sitetheme']);
+                }
 }
 @require_once(THEME."theme.php");
 
@@ -318,70 +321,70 @@ define("e_ADMIN", $e_BASE.$ADMIN_DIRECTORY);
 
 
 class e107table{
-	function tablerender($caption, $text, $mode="default", $return=FALSE){
-		/*
-		# Render style table
-		# - parameter #1:                string $caption, caption text
-		# - parameter #2:                string $text, body text
-		# - return                                null
-		# - scope                                        public
-		*/
-		if(function_exists("theme_tablerender")){
-			$result = call_user_func("theme_tablerender",$caption,$text,$mode,$return);
-			if($result == "return"){return;}
-			extract($result);
-		}
-		if($return){
-			ob_end_flush();
-			ob_start();
-			tablestyle($caption, $text, $mode);
-			$ret = ob_get_contents();
-			ob_end_clean();
-			return($ret);
-		}else{
-		tablestyle($caption, $text, $mode);
-	}
+        function tablerender($caption, $text, $mode="default", $return=FALSE){
+                /*
+                # Render style table
+                # - parameter #1:                string $caption, caption text
+                # - parameter #2:                string $text, body text
+                # - return                                null
+                # - scope                                        public
+                */
+                if(function_exists("theme_tablerender")){
+                        $result = call_user_func("theme_tablerender",$caption,$text,$mode,$return);
+                        if($result == "return"){return;}
+                        extract($result);
+                }
+                if($return){
+                        ob_end_flush();
+                        ob_start();
+                        tablestyle($caption, $text, $mode);
+                        $ret = ob_get_contents();
+                        ob_end_clean();
+                        return($ret);
+                }else{
+                tablestyle($caption, $text, $mode);
+        }
 }
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function e107_parse($text,$referrer){
-	preg_match_all("#{CODE=(.*?)}#",$text,$matches,PREG_SET_ORDER);
-	for ($i=0; $i< count($matches); $i++) {
-		$p = explode(".",$matches[$i][1]);
-		$parse_func = "parse_".$p[1];
-		if(!function_exists($parse_func)){
-			$parse_file = ('CORE' == $p[0]) ?  e_HANDLER."parse/" : e_PLUGIN.$p[0]."/parse/";
-			$parse_file .= "parse_{$p[1]}.php";
-			if(file_exists($parse_file)){
-				@require_once($parse_file);
-			}
-		}
-		if(function_exists($parse_func)){
-			$newtext = call_user_func($parse_func,$matches[$i],$referrer);
-		} else {
-			$newtext = "";
-		}
-		$text = str_replace($matches[$i][0],$newtext,$text);
-	}
+        preg_match_all("#{CODE=(.*?)}#",$text,$matches,PREG_SET_ORDER);
+        for ($i=0; $i< count($matches); $i++) {
+                $p = explode(".",$matches[$i][1]);
+                $parse_func = "parse_".$p[1];
+                if(!function_exists($parse_func)){
+                        $parse_file = ('CORE' == $p[0]) ?  e_HANDLER."parse/" : e_PLUGIN.$p[0]."/parse/";
+                        $parse_file .= "parse_{$p[1]}.php";
+                        if(file_exists($parse_file)){
+                                @require_once($parse_file);
+                        }
+                }
+                if(function_exists($parse_func)){
+                        $newtext = call_user_func($parse_func,$matches[$i],$referrer);
+                } else {
+                        $newtext = "";
+                }
+                $text = str_replace($matches[$i][0],$newtext,$text);
+        }
 
-	global $parsethis;
-	if($parsethis){
-		@require_once(e_HANDLER.'parser_functions.php');
-		foreach($parsethis as $parser_regexp => $parser_name){
-			preg_match_all($parser_regexp,$text,$matches,PREG_SET_ORDER);
-			for ($i=0; $i< count($matches); $i++) {
-				if($parser_name != "e107_core" && file_exists(e_PLUGIN.$parser_name.'/parser.php')){
-					@require_once(e_PLUGIN.$parser_name.'/parser.php');
-				}
-				if(function_exists($parser_name.'_parse')) {
-					$newtext=call_user_func($parser_name.'_parse',$matches[$i],$referrer);
-					$text = str_replace($matches[$i][0],$newtext,$text);
-				}
-			}
-		}
-		$text = preg_replace("#{{.*?}}#","",$text);
-	}
-	return $text;
+        global $parsethis;
+        if($parsethis){
+                @require_once(e_HANDLER.'parser_functions.php');
+                foreach($parsethis as $parser_regexp => $parser_name){
+                        preg_match_all($parser_regexp,$text,$matches,PREG_SET_ORDER);
+                        for ($i=0; $i< count($matches); $i++) {
+                                if($parser_name != "e107_core" && file_exists(e_PLUGIN.$parser_name.'/parser.php')){
+                                        @require_once(e_PLUGIN.$parser_name.'/parser.php');
+                                }
+                                if(function_exists($parser_name.'_parse')) {
+                                        $newtext=call_user_func($parser_name.'_parse',$matches[$i],$referrer);
+                                        $text = str_replace($matches[$i][0],$newtext,$text);
+                                }
+                        }
+                }
+                $text = preg_replace("#{{.*?}}#","",$text);
+        }
+        return $text;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 class textparse{
@@ -458,36 +461,36 @@ class textparse{
                 $text = preg_replace($search, $replace, $text);
                 return $text;
         }
-        
+
 
         function tpj($text, $strip=FALSE){
-			$search[0] = "#script#si";
-			$replace[0] = 'scri<i></i>pt';
-			$search[1] = "#document#si";
-			$replace[1] = 'docu<i></i>ment';
-			$search[2] = "#expression#si";
-			$replace[2] = 'expres<i></i>sion';
-			$search[3] = "#onmouseover#si";
-			$replace[3] = 'onmouse<i></i>over';
-			$search[4] = "#onclick#si";
-			$replace[4] = 'on<i></i>click';
-			$search[5] = "#onmousedown#si";
-			$replace[5] = 'onmouse<i></i>down';
-			$search[6] = "#onmouseup#si";
-			$replace[6] = 'onmouse<i></i>up';
-			$search[7] = "#ondblclick#si";
-			$replace[7] = 'on<i></i>dblclick';
-			$search[8] = "#onmouseout#si";
-			$replace[8] = 'onmouse<i></i>out';
-			$search[9] = "#onmousemove#si";
-			$replace[9] = 'onmouse<i></i>move';
-			$search[10] = "#onload#si";
-			$replace[10] = 'on<i></i>load';
-			$search[11] = "#background:url#si";
-			$replace[11] = 'background<i></i>:url';
-			if($strip){
-				$text = strip_tags($text);
-			}
+                        $search[0] = "#script#si";
+                        $replace[0] = 'scri<i></i>pt';
+                        $search[1] = "#document#si";
+                        $replace[1] = 'docu<i></i>ment';
+                        $search[2] = "#expression#si";
+                        $replace[2] = 'expres<i></i>sion';
+                        $search[3] = "#onmouseover#si";
+                        $replace[3] = 'onmouse<i></i>over';
+                        $search[4] = "#onclick#si";
+                        $replace[4] = 'on<i></i>click';
+                        $search[5] = "#onmousedown#si";
+                        $replace[5] = 'onmouse<i></i>down';
+                        $search[6] = "#onmouseup#si";
+                        $replace[6] = 'onmouse<i></i>up';
+                        $search[7] = "#ondblclick#si";
+                        $replace[7] = 'on<i></i>dblclick';
+                        $search[8] = "#onmouseout#si";
+                        $replace[8] = 'onmouse<i></i>out';
+                        $search[9] = "#onmousemove#si";
+                        $replace[9] = 'onmouse<i></i>move';
+                        $search[10] = "#onload#si";
+                        $replace[10] = 'on<i></i>load';
+                        $search[11] = "#background:url#si";
+                        $replace[11] = 'background<i></i>:url';
+                        if($strip){
+                                $text = strip_tags($text);
+                        }
          $text = preg_replace($search, $replace, $text);
          return $text;
         }
@@ -510,77 +513,77 @@ class textparse{
                         $text = str_replace($this->searchb, $this->replace, $text);
                 }
                 $text = str_replace("$", "&#36;", $text);
-			if($referrer != "admin"){
-					$text = $this -> tpj($text);
-				}
-			if($mode != "nobreak"){ $text = nl2br($text); }
-			$text = preg_replace("/\n/i", " ", $text);
-			$text = str_replace("<br />", " <br />" , $text);
-			$text = e107_parse($text,$referrer);
-			$text = $this -> wrap($text, $highlight_search);
-			$text = $this -> bbcode($text);
-			if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
-			$search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;span", "&lt;/span");
-			$replace =  array("\"", "'", "\\", '\"', "\'", "<span", "</span");
-			$text = str_replace($search, $replace, $text);
-			$text = str_replace("<br /><br />", "<br />", $text);
-			$text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $text);
-			$text = substr($text, 1);
-			$text = code($text, "notdef");
-			$text = html($text);
-			return $text;
-		}
+                        if($referrer != "admin"){
+                                        $text = $this -> tpj($text);
+                                }
+                        if($mode != "nobreak"){ $text = nl2br($text); }
+                        $text = preg_replace("/\n/i", " ", $text);
+                        $text = str_replace("<br />", " <br />" , $text);
+                        $text = e107_parse($text,$referrer);
+                        $text = $this -> wrap($text, $highlight_search);
+                        $text = $this -> bbcode($text);
+                        if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
+                        $search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;span", "&lt;/span");
+                        $replace =  array("\"", "'", "\\", '\"', "\'", "<span", "</span");
+                        $text = str_replace($search, $replace, $text);
+                        $text = str_replace("<br /><br />", "<br />", $text);
+                        $text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $text);
+                        $text = substr($text, 1);
+                        $text = code($text, "notdef");
+                        $text = html($text);
+                        return $text;
+                }
 
-		function wrap($text, $highlight_search=FALSE){
-			global $pref;
-			$wrapcount = 100;
-			$message_array = explode(" ", $text);
-			for($i=0; $i<=(count($message_array)-1); $i++){
-				if(strlen($message_array[$i]) > $wrapcount){
-					if(substr($message_array[$i], 0, 7) == "http://"){
-						if(substr($message_array[$i], -1) == "."){
-							$message_array[$i] = substr_replace($message_array[$i], "", -1);
-					}
-						$url = str_replace("http://", "", $message_array[$i]);  
-						$url = explode("/", $url);  
-						$url = $url[0];
-						$message_array[$i] = "<a href='".$message_array[$i]."' rel='external'>[".$url."]</a>";
-					}else{
-						if(!strstr($message_array[$i], "[link=") && !strstr($message_array[$i], "[url=") && !strstr($message_array[$i], "href=") && !strstr($message_array[$i], "src=") && !strstr($message_array[$i], "action=") && !strstr($message_array[$i], "onclick=") && !strstr($message_array[$i], "url(") && !strstr($message_array[$i], "[img")){
-							$message_array[$i] = preg_replace("/([^\s]{".$wrapcount."})/", "$1<br />", $message_array[$i]);
-						}
-						}
-				}else{
-					if(!strstr($message_array[$i], "[link=") && !strstr($message_array[$i], "[url=") && !strstr($message_array[$i], "href=") && !strstr($message_array[$i], "src=") && !strstr($message_array[$i], "action=") && !strstr($message_array[$i], "onclick=") && !strstr($message_array[$i], "url(") && !strstr($message_array[$i], "[img")){
-						$search = "#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i";
-						$replace = ($pref['links_new_window'] ? '\1<a href="http://\2.\3" rel="external";">\2.\3</a>' : '\1<a href="http://\2.\3" >\2.\3</a>');
-						$message_array[$i] = preg_replace($search, $replace, $message_array[$i]);
-						$search = "#([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?([^.,]))#i";
-						$replace = ($pref['links_new_window'] ? '<a href="\1://\2" rel="external";">\1://\2</a>' : '<a href="\1://\2">\1://\2</a>');
-						$message_array[$i] = preg_replace($search, $replace, $message_array[$i]);
-							if($highlight_search && !strstr($message_array[$i], "http://")){
-								$tmp = explode(" ", $_POST['search_query']);
-								foreach($tmp as $key){
-									if(eregi($key, $message_array[$i])){
-										$message_array[$i] = eregi_replace($key, "<span class='searchhighlight'>$key</span>", $message_array[$i]);	
-									}
-								}
-							}
-					}
-						}
-			}
-			$text = implode(" ",$message_array);
-			return $text;
-		}
-		function bbcode($text, $mode="off", $referrer="") {
-				global $pref;			
-				$text = " " . $text;
-				if (! (strpos($text, "[") && strpos($text, "]")) )
-				{
-						$text = substr($text, 1);
-						return $text;
-				}
-			
+                function wrap($text, $highlight_search=FALSE){
+                        global $pref;
+                        $wrapcount = 100;
+                        $message_array = explode(" ", $text);
+                        for($i=0; $i<=(count($message_array)-1); $i++){
+                                if(strlen($message_array[$i]) > $wrapcount){
+                                        if(substr($message_array[$i], 0, 7) == "http://"){
+                                                if(substr($message_array[$i], -1) == "."){
+                                                        $message_array[$i] = substr_replace($message_array[$i], "", -1);
+                                        }
+                                                $url = str_replace("http://", "", $message_array[$i]);
+                                                $url = explode("/", $url);
+                                                $url = $url[0];
+                                                $message_array[$i] = "<a href='".$message_array[$i]."' rel='external'>[".$url."]</a>";
+                                        }else{
+                                                if(!strstr($message_array[$i], "[link=") && !strstr($message_array[$i], "[url=") && !strstr($message_array[$i], "href=") && !strstr($message_array[$i], "src=") && !strstr($message_array[$i], "action=") && !strstr($message_array[$i], "onclick=") && !strstr($message_array[$i], "url(") && !strstr($message_array[$i], "[img")){
+                                                        $message_array[$i] = preg_replace("/([^\s]{".$wrapcount."})/", "$1<br />", $message_array[$i]);
+                                                }
+                                                }
+                                }else{
+                                        if(!strstr($message_array[$i], "[link=") && !strstr($message_array[$i], "[url=") && !strstr($message_array[$i], "href=") && !strstr($message_array[$i], "src=") && !strstr($message_array[$i], "action=") && !strstr($message_array[$i], "onclick=") && !strstr($message_array[$i], "url(") && !strstr($message_array[$i], "[img")){
+                                                $search = "#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i";
+                                                $replace = ($pref['links_new_window'] ? '\1<a href="http://\2.\3" rel="external";">\2.\3</a>' : '\1<a href="http://\2.\3" >\2.\3</a>');
+                                                $message_array[$i] = preg_replace($search, $replace, $message_array[$i]);
+                                                $search = "#([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?([^.,]))#i";
+                                                $replace = ($pref['links_new_window'] ? '<a href="\1://\2" rel="external";">\1://\2</a>' : '<a href="\1://\2">\1://\2</a>');
+                                                $message_array[$i] = preg_replace($search, $replace, $message_array[$i]);
+                                                        if($highlight_search && !strstr($message_array[$i], "http://")){
+                                                                $tmp = explode(" ", $_POST['search_query']);
+                                                                foreach($tmp as $key){
+                                                                        if(eregi($key, $message_array[$i])){
+                                                                                $message_array[$i] = eregi_replace($key, "<span class='searchhighlight'>$key</span>", $message_array[$i]);
+                                                                        }
+                                                                }
+                                                        }
+                                        }
+                                                }
+                        }
+                        $text = implode(" ",$message_array);
+                        return $text;
+                }
+                function bbcode($text, $mode="off", $referrer="") {
+                                global $pref;
+                                $text = " " . $text;
+                                if (! (strpos($text, "[") && strpos($text, "]")) )
+                                {
+                                                $text = substr($text, 1);
+                                                return $text;
+                                }
+
                 $search[0] = "#\[link\]([a-z]+?://){1}(.*?)\[/link\]#si";
                 $replace[0] = ($pref['links_new_window'] ? '<a href="\1\2" rel="external">\1\2</a>' : '<a href="\1\2">\1\2</a>');
                 $search[1] = "#\[link\](.*?)\[/link\]#si";
@@ -618,39 +621,39 @@ class textparse{
                         $replace[13] = '[ image disabled ]';
                 }else{
                 $replace[13] = '<img src=\'\1\' alt=\'\' style=\'vertical-align:middle; border:0\' />';
-				}
+                                }
 
-				$search[14] = "#\[center\](.*?)\[/center\]#si";
-				$replace[14] = '<div style=\'text-align:center\'>\1</div>';
-				$search[15] = "#\[left\](.*?)\[/left\]#si";
-				$replace[15] = '<div style=\'text-align:left\'>\1</div>';
-				$search[16] = "#\[right\](.*?)\[/right\]#si";
-				$replace[16] = '<div style=\'text-align:right\'>\1</div>';
-				$search[17] = "#\[blockquote\](.*?)\[/blockquote\]#si";
-				$replace[17] = '<div class=\'indent\'>\1</div>';
-				$search[19] = "/\[color=(.*?)\](.*?)\[\/color\]/si";
-				$replace[19] = '<span style=\'color:\1\'>\2</span>';
-				$search[20] = "/\[size=([1-2]?[0-9])\](.*?)\[\/size\]/si";
-				$replace[20] = '<span style=\'font-size:\1px\'>\2</span>';
-				$search[21] = "#\[edited\](.*?)\[/edited\]#si";
-				$replace[21] = '<span class=\'smallblacktext\'>[ \1 ]</span>';
-				$search[22] = "#\[br\]#si";
-				$replace[22] = '<br />';
+                                $search[14] = "#\[center\](.*?)\[/center\]#si";
+                                $replace[14] = '<div style=\'text-align:center\'>\1</div>';
+                                $search[15] = "#\[left\](.*?)\[/left\]#si";
+                                $replace[15] = '<div style=\'text-align:left\'>\1</div>';
+                                $search[16] = "#\[right\](.*?)\[/right\]#si";
+                                $replace[16] = '<div style=\'text-align:right\'>\1</div>';
+                                $search[17] = "#\[blockquote\](.*?)\[/blockquote\]#si";
+                                $replace[17] = '<div class=\'indent\'>\1</div>';
+                                $search[19] = "/\[color=(.*?)\](.*?)\[\/color\]/si";
+                                $replace[19] = '<span style=\'color:\1\'>\2</span>';
+                                $search[20] = "/\[size=([1-2]?[0-9])\](.*?)\[\/size\]/si";
+                                $replace[20] = '<span style=\'font-size:\1px\'>\2</span>';
+                                $search[21] = "#\[edited\](.*?)\[/edited\]#si";
+                                $replace[21] = '<span class=\'smallblacktext\'>[ \1 ]</span>';
+                                $search[22] = "#\[br\]#si";
+                                $replace[22] = '<br />';
 
-				if($pref['forum_attach'] && FILE_UPLOADS || $referrer == "admin"){
-						$search[23] = "#\[file=(.*?)\](.*?)\[/file\]#si";
-						$replace[23] = '<a href="\1"><img src="'.e_IMAGE.'generic/attach1.png" alt="" style="border:0; vertical-align:middle" /> \2</a>';
-				}else{
-				$search[23] = "#\[file=(.*?)\](.*?)\[/file\]#si";
-				$replace[23] = '[ file attachment disabled ]';
-				}
+                                if($pref['forum_attach'] && FILE_UPLOADS || $referrer == "admin"){
+                                                $search[23] = "#\[file=(.*?)\](.*?)\[/file\]#si";
+                                                $replace[23] = '<a href="\1"><img src="'.e_IMAGE.'generic/attach1.png" alt="" style="border:0; vertical-align:middle" /> \2</a>';
+                                }else{
+                                $search[23] = "#\[file=(.*?)\](.*?)\[/file\]#si";
+                                $replace[23] = '[ file attachment disabled ]';
+                                }
 
-				$search[24] = "#\[quote\](.*?)\[/quote\]#si";
-				$replace[24] = '<i>"\1"</i>';
-				$text = preg_replace($search, $replace, $text);
-				return $text;
-		}
-		
+                                $search[24] = "#\[quote\](.*?)\[/quote\]#si";
+                                $replace[24] = '<i>"\1"</i>';
+                                $text = preg_replace($search, $replace, $text);
+                                return $text;
+                }
+
         function formtpa($text, $mode="admin"){
                 global $sql, $pref;
 
@@ -721,7 +724,7 @@ class convert{
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function check_email($var){
-	return (preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]+@([-0-9A-Z]+\.)+([0-9A-Z]){2,4}$/i', $var)) ? $var : FALSE;
+        return (preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]+@([-0-9A-Z]+\.)+([0-9A-Z]){2,4}$/i', $var)) ? $var : FALSE;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function check_class($var, $userclass=USERCLASS, $debug=FALSE){
@@ -782,22 +785,22 @@ function getperms($arg, $ap = ADMINPERMS){
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 function save_prefs($table = "core", $uid=USERID){
-	global $pref, $user_pref;
-	$sql = new db;
-	if($table == "core"){
-		foreach($pref as $key => $prefvalue){
-			$pref[$key] = textparse::formtpa($prefvalue);
-		}
-		$tmp = addslashes(serialize($pref));
-		$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='pref'");
-	} else {
-		foreach($user_pref as $key => $prefvalue){
-			$user_pref[$key] = $tp -> formtpa($prefvalue);
-		}
-		$tmp = addslashes(serialize($user_pref));
-		$sql -> db_Update("user", "user_prefs='$tmp' WHERE user_id=$uid");
-		return $tmp;
-	}
+        global $pref, $user_pref;
+        $sql = new db;
+        if($table == "core"){
+                foreach($pref as $key => $prefvalue){
+                        $pref[$key] = textparse::formtpa($prefvalue);
+                }
+                $tmp = addslashes(serialize($pref));
+                $sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='pref'");
+        } else {
+                foreach($user_pref as $key => $prefvalue){
+                        $user_pref[$key] = $tp -> formtpa($prefvalue);
+                }
+                $tmp = addslashes(serialize($user_pref));
+                $sql -> db_Update("user", "user_prefs='$tmp' WHERE user_id=$uid");
+                return $tmp;
+        }
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -964,27 +967,27 @@ function init_session(){
                 }
                 if($sql -> db_Select("user", "*", "user_id='$uid' AND md5(user_password)='$upw'")){
                         $result = $sql -> db_Fetch(); extract($result);
-                        define("USERID", $user_id); 
-                        define("USERNAME", $user_name); 
-                        define("USERURL", $user_website); 
-                        define("USEREMAIL", $user_email); 
-                        define("USER", TRUE); 
+                        define("USERID", $user_id);
+                        define("USERNAME", $user_name);
+                        define("USERURL", $user_website);
+                        define("USEREMAIL", $user_email);
+                        define("USER", TRUE);
                         define("USERCLASS", $user_class);
                         define("USERREALM", $user_realm);
-								define("USERVIEWED", $user_viewed);
-								define("USERIMAGE", $user_image);
-								define("USERSESS", $user_sess);
+                                                                define("USERVIEWED", $user_viewed);
+                                                                define("USERIMAGE", $user_image);
+                                                                define("USERSESS", $user_sess);
                         if($user_currentvisit + 3600 < time()){
                                 $user_lastvisit = $user_currentvisit;
                                 $user_currentvisit = time();
                                 $sql -> db_Update("user", "user_visits=user_visits+1, user_lastvisit='$user_lastvisit', user_currentvisit='$user_currentvisit', user_viewed='' WHERE user_name='".USERNAME."' ");
                         }
-								define("USERLV", $user_lastvisit); 
+                                                                define("USERLV", $user_lastvisit);
                         if($user_ban == 1){ exit; }
                         $user_pref = unserialize($user_prefs);
-                    		foreach($pref as $key => $prefvalue){
-									$pref[$key] = textparse::formtparev($prefvalue);
-								}
+                                    foreach($pref as $key => $prefvalue){
+                                                                        $pref[$key] = textparse::formtparev($prefvalue);
+                                                                }
                         if(IsSet($_POST['settheme'])){
                                 $user_pref['sitetheme'] = ($pref['sitetheme'] == $_POST['sitetheme'] ? "" : $_POST['sitetheme']);
                                 save_prefs($user);
@@ -1058,15 +1061,15 @@ function code($string, $mode="default"){
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function checkvalidtheme($theme_check){
-	// arg1 = theme to check
-	global $ADMIN_DIRECTORY;
+        // arg1 = theme to check
+        global $ADMIN_DIRECTORY;
     if(@fopen(e_THEME.$theme_check."/theme.php", r)){
-		define("THEME", e_THEME.$theme_check."/");
-	}else{
-		@require_once(e_HANDLER."debug_handler.php");
-		$e107tmp_theme = search_validtheme();
-		define("THEME", e_THEME.$e107tmp_theme."/");
-		if(ADMIN && !strstr(e_SELF, $ADMIN_DIRECTORY)){echo '<script>alert("'.CORE_LAN1.'")</script>';}
-	}
+                define("THEME", e_THEME.$theme_check."/");
+        }else{
+                @require_once(e_HANDLER."debug_handler.php");
+                $e107tmp_theme = search_validtheme();
+                define("THEME", e_THEME.$e107tmp_theme."/");
+                if(ADMIN && !strstr(e_SELF, $ADMIN_DIRECTORY)){echo '<script>alert("'.CORE_LAN1.'")</script>';}
+        }
 }
 ?>
