@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-02-09 12:50:13 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.15 $
+|     $Date: 2005-04-03 18:27:07 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -26,12 +26,12 @@ require_once("auth.php");
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."file_class.php");
 $frm = new form;
-	
+
 if (isset($_POST['custom_select'])) {
 	header("location:".e_SELF."?".$_POST['custom_select']);
 	exit;
 }
-	
+
 if (e_QUERY == '' || e_QUERY == 'default_layout') {
 	$menus_header = $HEADER;
 	$menus_footer = $FOOTER;
@@ -52,12 +52,12 @@ else if (e_QUERY == 'newsheader_layout') {
 	$menus_footer = $CUSTOMFOOTER[e_QUERY] ? $CUSTOMFOOTER[e_QUERY] :
 	 $FOOTER;
 }
-	
+
 $layouts_str = $HEADER.$FOOTER;
 if ($NEWSHEADER) {
 	$layouts_str .= $NEWSHEADER;
 }
-	
+
 if ($CUSTOMPAGES) {
 	if (is_array($CUSTOMPAGES)) {
 		foreach ($CUSTOMPAGES as $custom_extract_key => $custom_extract_value) {
@@ -77,10 +77,10 @@ if ($CUSTOMPAGES) {
 		}
 	}
 }
-	
+
 $menu_array = parseheader($layouts_str, 'check');
 sort($menu_array, SORT_NUMERIC);
-	
+
 $menu_check = 'set';
 foreach ($menu_array as $menu_value) {
 	if ($menu_value != $menu_check) {
@@ -88,14 +88,14 @@ foreach ($menu_array as $menu_value) {
 	}
 	$menu_check = $menu_value;
 }
-	
+
 foreach ($_POST['menuAct'] as $k => $v) {
 	if (trim($v)) {
 		$id = $k;
 		list($menu_act, $location, $position, $newloc) = explode(".", $_POST['menuAct'][$k]);
 	}
 }
-	
+
 if ($menu_act == 'config') {
 	if($newloc)
 	{
@@ -104,7 +104,7 @@ if ($menu_act == 'config') {
 	header("location:".SITEURL.$PLUGINS_DIRECTORY.$location."/{$position}{$newloc}.php");
 	exit;
 }
-	
+
 if ($menu_act == "adv") {
 	require_once(e_HANDLER."userclass_class.php");
 	$sql->db_Select("menus", "*", "menu_id='$id' ");
@@ -143,9 +143,9 @@ if ($menu_act == "adv") {
 	$caption = MENLAN_7." ".$menu_name;
 	$ns->tablerender($caption, $text);
 }
-	
+
 unset($message);
-	
+
 if ($menu_act == "sv") {
 	$pagelist = explode("\r\n", $_POST['pagelist']);
 	for ($i = 0 ; $i < count($pagelist) ; $i++) {
@@ -159,42 +159,42 @@ if ($menu_act == "sv") {
 	$sql->db_Update("menus", "menu_class='".$_POST['menu_class']."', menu_pages='{$pageparms}' WHERE menu_id='$id' ");
 	$message = "<br />".MENLAN_8."<br />";
 }
-	
+
 if ($menu_act == "move") {
 	$menu_count = $sql->db_Count("menus", "(*)", " WHERE menu_location='$position' ");
 	$sql->db_Update("menus", "menu_location='$newloc', menu_order='".($menu_count+1)."' WHERE menu_id='$id' ");
 }
-	
+
 if ($menu_act == 'activate') {
 	$menu_count = $sql->db_Count("menus", "(*)", " WHERE menu_location='$position' ");
 	$sql->db_Update("menus", "menu_location='$location', menu_order='".($menu_count+1)."' WHERE menu_id='$id' ");
 }
-	
+
 if ($menu_act == "deac") {
 	$sql->db_Update("menus", "menu_location='0', menu_order='0' WHERE menu_id='$id' ");
 }
-	
+
 if ($menu_act == "bot") {
 	$menu_count = $sql->db_Count("menus", "(*)", " WHERE menu_location='$location' ");
 	$sql->db_Update("menus", "menu_order=".($menu_count+1)." WHERE menu_order='$position' AND menu_location='$location' ");
 	$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_location='$location' AND menu_order > $position");
 }
-	
+
 if ($menu_act == "top") {
 	$sql->db_Update("menus", "menu_order=menu_order+1 WHERE menu_location='$location' AND menu_order < $position");
 	$sql->db_Update("menus", "menu_order=0 WHERE menu_id='$id' ");
 }
-	
+
 if ($menu_act == "dec") {
 	$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_order='".($position+1)."' AND menu_location='$location' ");
 	$sql->db_Update("menus", "menu_order=menu_order+1 WHERE menu_id='$id' AND menu_location='$location' ");
 }
-	
+
 if ($menu_act == "inc") {
 	$sql->db_Update("menus", "menu_order=menu_order+1 WHERE menu_order='".($position-1)."' AND menu_location='$location' ");
 	$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_id='$id' AND menu_location='$location' ");
 }
-	
+
 $efile = new e_file;
 $fileList = $efile->get_files(e_PLUGIN,"_menu\.php$",'standard',2);
 $customList = $efile->get_files(e_PLUGIN.'custom',"\.php$",'standard',1);
@@ -228,7 +228,7 @@ foreach($fileList as $file) {
 		}
 	}
 	$menustr .= "&".str_replace(".php", "", $file['fname']);
-}	
+}
 
 $sql2 = new db;
 foreach ($menu_areas as $menu_act) {
@@ -241,7 +241,7 @@ foreach ($menu_areas as $menu_act) {
 		}
 	}
 }
-	
+
 $sql->db_Select("menus");
 while (list($menu_id, $menu_name, $menu_location, $menu_order) = $sql->db_Fetch()) {
 	if (!eregi($menu_name, $menustr)) {
@@ -249,18 +249,18 @@ while (list($menu_id, $menu_name, $menu_location, $menu_order) = $sql->db_Fetch(
 		$message .= "<b>".MENLAN_11." - ".$menu_name."</b><br />";
 	}
 }
-	
+
 foreach ($menu_areas as $menu_act) {
 	$menus_sql[] = "menu_location!='".$menu_act."'";
 }
-	
+
 $menus_query = implode(' && ', $menus_sql);
 $sql->db_Update("menus", "menu_location='0', menu_order='0' WHERE ".$menus_query);
-	
+
 if ($message != "") {
 	echo "<div style='text-align:center'><b>".$message."</b></div><br /><br />";
 }
-	
+
 if ($CUSTOMPAGES) {
 	if ($menu_act != 'adv') {
 		$text = "<form  method='post' action='".e_SELF."'><div style='width: 100%'>
@@ -270,15 +270,15 @@ if ($CUSTOMPAGES) {
 			".MENLAN_30."
 			</td>
 			<td class='forumheader3' style='width: 10%; text-align: center;'>";
-		 
+
 		$text .= $frm->form_select_open('custom_select', 'onchange="this.form.submit()"');
-		 
+
 		if (e_QUERY == '' || e_QUERY == 'default_layout') {
 			$text .= $frm->form_option(MENLAN_31, 'selected', 'default_layout');
 		} else {
 			$text .= $frm->form_option(MENLAN_31, FALSE, 'default_layout');
 		}
-		 
+
 		if ($NEWSHEADER) {
 			if (e_QUERY == 'newsheader_layout') {
 				$text .= $frm->form_option(MENLAN_32, 'selected', 'newsheader_layout');
@@ -286,7 +286,7 @@ if ($CUSTOMPAGES) {
 				$text .= $frm->form_option(MENLAN_32, FALSE, 'newsheader_layout');
 			}
 		}
-		 
+
 		if ($CUSTOMPAGES) {
 			if (is_array($CUSTOMPAGES)) {
 				foreach ($CUSTOMPAGES as $custom_pages_key => $custom_pages_value) {
@@ -304,30 +304,30 @@ if ($CUSTOMPAGES) {
 				}
 			}
 		}
-		 
+
 		$text .= $frm->form_select_close();
-		 
+
 		$text .= "</td>
 			</tr>
 			</table></div>
 			</form>";
-		 
+
 		$ns->tablerender(MENLAN_29, $text);
 	}
 }
-	
+
 parseheader($menus_header);
-	
+
 echo "<div style='text-align:center'>";
 echo "<div style='font-size:14px' class='fborder'><div class='forumheader'><b>".MENLAN_22."</b></div></div><br />";
 echo $frm->form_open("post", e_SELF."?".e_QUERY, "menuActivation");
 echo "<table style='width:96%' class='fborder'>";
-	
+
 $sql->db_Select("menus", "*", "menu_location='0' ORDER BY menu_name ");
 while (list($menu_id, $menu_name, $menu_location, $menu_order) = $sql->db_Fetch()) {
 	$text = "";
 	$menu_name = eregi_replace("_menu", "", $menu_name);
-	 
+
 	echo "<tr>
 		<td class=\"fcaption\" style=\"text-align:center\">
 		<b>".$menu_name."</b>
@@ -335,11 +335,11 @@ while (list($menu_id, $menu_name, $menu_location, $menu_order) = $sql->db_Fetch(
 		</tr>
 		<tr>
 		<td class=\"forumheader3\" style=\"text-align:center\">";
-	 
+
 	$text .= "<div>
 		<select id='menuAct_$menu_id' name='menuAct[$menu_id]' class='tbox' onchange='this.form.submit()' >";
 	$text .= $frm->form_option(MENLAN_12." ...", TRUE, " ");
-	 
+
 	foreach ($menu_areas as $menu_act) {
 		$text .= $frm->form_option(MENLAN_13." ".$menu_act, "", "activate.".$menu_act);
 	}
@@ -352,9 +352,9 @@ while (list($menu_id, $menu_name, $menu_location, $menu_order) = $sql->db_Fetch(
 echo "</table>";
 echo $frm->form_close();
 echo "</div>";
-	
+
 parseheader($menus_footer);
-	
+
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function parseheader($LAYOUT, $check = FALSE) {
 	$tmp = explode("\n", $LAYOUT);
@@ -377,11 +377,11 @@ function parseheader($LAYOUT, $check = FALSE) {
 		return $str;
 	}
 }
-	
+
 function checklayout($str) {
-	global $pref, $menu_areas;
+	global $pref, $menu_areas,$ns,$PLUGINS_DIRECTORY;
 	global $frm;
-	 
+
 	if (strstr($str, "LOGO")) {
 		echo "[Logo]";
 	}
@@ -394,6 +394,26 @@ function checklayout($str) {
 	else if (strstr($str, "SITELINKS")) {
 		echo "[SiteLinks]";
 	}
+    else if (strstr($str, "CUSTOM")) {
+		$cust = preg_replace("/\{CUSTOM=(.*?)\}/si", "\\1", $str);
+		echo "[$cust]";
+	}
+// Display embedded Plugin information.
+    else if (strstr($str, "PLUGIN")){
+		$plug = preg_replace("/\{PLUGIN=(.*?)\}/si", "\\1", $str);
+		$plug = trim($plug);
+	  	if (file_exists((e_PLUGIN."{$plug}/{$plug}.config.php"))){
+	  		$link = e_PLUGIN."{$plug}/{$plug}.config.php";
+	  	}
+
+		if(file_exists((e_PLUGIN.$plug."/config.php"))){
+			$link = e_PLUGIN.$plug."/config.php";
+		}
+
+        $plugtext = ($link) ? "(".MENLAN_34.":<a href=\"$link\" title='".MENLAN_16."'>".MENLAN_16."</a>)" : "(".MENLAN_34.")" ;
+		echo "<br />";
+        $ns -> tablerender($plug, $plugtext);
+	}
 	else if (strstr($str, "MENU")) {
 		$ns = new e107table;
 		$menu = preg_replace("/\{MENU=(.*?)\}/si", "\\1", $str);
@@ -403,7 +423,7 @@ function checklayout($str) {
 		if ($sql9->db_Count("menus", "(*)", " WHERE menu_location='$menu' ")) {
 			unset($text);
 			echo $frm->form_open("post", e_SELF."?".e_QUERY, "frm_menu_".intval($menu));
-			 
+
 			$sql9->db_Select("menus", "*", "menu_location='$menu' ORDER BY menu_order");
 			$menu_count = $sql9->db_Rows();
 			while (list($menu_id, $menu_name, $menu_location, $menu_order, $menu_class, $menu_pages, $menu_path) = $sql9->db_Fetch()) {
@@ -412,14 +432,14 @@ function checklayout($str) {
 				 "";
 				$caption = "<div style=\"text-align:center\">{$menu_name}{$vis}</div>";
 				$menu_info = "{$menu_location}.{$menu_order}";
-				 
+
 				$text = "";
 				$conf = '';
 				if (file_exists(e_PLUGIN."{$menu_path}/{$menu_name}_menu.config.php"))
 				{
 					$conf = "config.{$menu_path}.{$menu_name}_menu.config";
 				}
-		
+
 				if($conf == '' && file_exists(e_PLUGIN."{$menu_path}/config.php"))
 				{
 					$conf = "config.{$menu_path}.config";
@@ -428,11 +448,11 @@ function checklayout($str) {
 				$text .= "<select id='menuAct_$menu_id' name='menuAct[$menu_id]' class='tbox' onchange='this.form.submit()' >";
 				$text .= $frm->form_option(MENLAN_25, TRUE, " ");
 				$text .= $frm->form_option(MENLAN_15, "", "deac.{$menu_info}");
-				 
+
 				if ($conf) {
 					$text .= $frm->form_option(MENLAN_16, "", $conf);
 				}
-				 
+
 				if ($menu_order != 1) {
 					$text .= $frm->form_option(MENLAN_17, "", "inc.{$menu_info}");
 					$text .= $frm->form_option(MENLAN_24, "", "top.{$menu_info}");
