@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-30 16:34:24 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-03 14:34:07 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 	
@@ -229,7 +229,8 @@ if (!$FORUMSTART) {
 	}
 }
 	
-	
+$forum_info['forum_name'] = $tp -> toHTML($forum_info['forum_name'], TRUE);
+
 // get info for main thread -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 $BREADCRUMB = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a>-><a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_01."</a>-><a class='forumlink' href='forum_viewforum.php?".$forum_info['forum_id']."'>".$forum_info['forum_name']."</a>->".$thread_info['head']['thread_name']."XXX";

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/forum_post_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-01-29 18:06:35 $
-|     $Author: sweetas $
+|     $Revision: 1.2 $
+|     $Date: 2005-02-03 14:34:33 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -43,7 +43,7 @@ $poll = "<tr>
 <span class='smalltext'>".LAN_386."
 </td>
 </tr>
-<tr><td style='width:20%' class='forumheader3'><div class='normaltext'>".LAN_5."</div></td><td style='width:80%'class='forumheader3'><input class='tbox' type='text' name='poll_title' size='70' value=\"".$aj->tpa($_POST['poll_title'])."\" maxlength='200' />";
+<tr><td style='width:20%' class='forumheader3'><div class='normaltext'>".LAN_5."</div></td><td style='width:80%'class='forumheader3'><input class='tbox' type='text' name='poll_title' size='70' value=\"".$tp->toDB($_POST['poll_title'])."\" maxlength='200' />";
 	 
 $option_count = ($_POST['option_count'] ? $_POST['option_count'] : 1);
 $poll .= "<input type='hidden' name='option_count' value='$option_count'>";
@@ -51,7 +51,7 @@ $poll .= "<input type='hidden' name='option_count' value='$option_count'>";
 for($count = 1; $count <= $option_count; $count++) {
 	$var = "poll_option_".$count;
 	$option = stripslashes($$var);
-	$poll .= "<tr><td style='width:20%' class='forumheader3'>".LAN_391." ".$count.":</td><td style='width:80%' class='forumheader3'><input class='tbox' type='text' name='poll_option[]' size='60' value=\"".$aj->tpa($_POST['poll_option'][($count-1)])."\" maxlength='200' />";
+	$poll .= "<tr><td style='width:20%' class='forumheader3'>".LAN_391." ".$count.":</td><td style='width:80%' class='forumheader3'><input class='tbox' type='text' name='poll_option[]' size='60' value=\"".$tp->toDB($_POST['poll_option'][($count-1)])."\" maxlength='200' />";
 	if ($option_count == $count) {
 		$poll .= " <input class='button' type='submit' name='addoption' value='".LAN_6."' /> ";
 	}
@@ -98,5 +98,32 @@ $FORUMPOST = "
 </div>
 {FORUMJUMP}
 ";
-	
+
+$FORUMTHREADPOSTED = "
+<table style='width:100%' class='fborder'>
+<tr>
+<td class='nforumcaption2' colspan='2'>".LAN_133."</td>
+</tr><tr>
+<td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
+<td style='vertical-align:center; width:80%' class='forumheader2'>
+<br />".LAN_324."<br />
+<span class='defaulttext'><a href='".e_PLUGIN."forum/forum_viewtopic.php?".$thread_id."'>".LAN_325."</a><br />
+<a href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_id."'>".LAN_326."</a></span><br /><br />
+</td></tr></table>";
+
+
+$FORUMREPLYPOSTED = "
+<table style='width:100%' class='fborder'>
+<tr>
+<td class='fcaption' colspan='2'>".LAN_133."</td>
+</tr><tr>
+<td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
+<td style='vertical-align:center; width:80%' class='forumheader2'>
+<br />".LAN_324."<br />
+<span class='defaulttext'><a href='".e_PLUGIN."forum/forum_viewtopic.php?{$iid}.last'>".LAN_325."</a><br />
+<a href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_id."'>".LAN_326."</a></span><br /><br />
+</td></tr></table>";
+
+
+
 ?>

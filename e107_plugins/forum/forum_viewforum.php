@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-02 15:53:47 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-03 14:34:07 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 	
@@ -56,7 +56,12 @@ if (!$FORUM_VIEW_START) {
 	
 	
 $forum_info = $forum->forum_get($forum_id);
-	
+
+
+$forum_info['forum_name'] = $tp -> toHTML($forum_info['forum_name'], TRUE);
+$forum_info['forum_description'] = $tp -> toHTML($forum_info['forum_description'], TRUE);
+
+
 define("e_PAGETITLE", LAN_01." / ".$forum_info['forum_name']);
 	
 if (($forum_info['forum_class'] && !check_class($forum_info['forum_class'])) || !$forum_info['forum_parent']) {
