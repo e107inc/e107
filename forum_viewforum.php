@@ -42,23 +42,112 @@ define("IMAGE_admin_unlock", (file_exists(THEME."forum/admin_unlock.png") ? "<im
 define("IMAGE_admin_stick", (file_exists(THEME."forum/admin_stick.png") ? "<img src='".THEME."forum/admin_stick.png' alt='".LAN_401."' style='border:0' />" : "<img src='".e_IMAGE."forum/admin_stick.png' alt='".LAN_401."' style='border:0' />"));
 define("IMAGE_admin_move", (file_exists(THEME."forum/admin_move.png") ? "<img src='".THEME."forum/admin_move.png' alt='".LAN_402."' style='border:0' />" : "<img src='".e_IMAGE."forum/admin_move.png' alt='".LAN_402."' style='border:0' />"));
 
-$view=15;
+$STARTERTITLE = LAN_54;
+	$THREADTITLE = LAN_53;
+	$REPLYTITLE = LAN_55;
+	$LASTPOSTITLE = LAN_57;
+	$VIEWTITLE = LAN_56;
+
+if(!$FORUM_VIEW_START){
+	$FORUM_VIEW_START = "
+<div class='spacer'>
+<div style='text-align:center'>
+<table style='width:95%; display: block' class='fborder'>
+<tr>
+<td  colspan='2' class='fcaption'>{BREADCRUMB}</td>
+</tr>
+<tr>
+<td style='width:80%; vertical-align:middle'>&nbsp;<span class='mediumtext'>{FORUMTITLE}</span><br />{THREADPAGES}</td>
+<td style='width:20%; text-align:right'>
+{NEWTHREADBUTTON}
+</td></tr><tr>
+<td colspan='2'>
+
+<table style='width:100%' class='fborder'>
+<tr>
+<td style='width:3%' class='fcaption'>&nbsp;</td>
+<td style='width:47%' class='fcaption'>{THREADTITLE}</td>
+<td style='width:20%; text-align:center' class='fcaption'>{STARTERTITLE}</td>
+<td style='width:5%; text-align:center' class='fcaption'>{REPLYTITLE}</td>
+<td style='width:5%; text-align:center' class='fcaption'>{VIEWTITLE}</td>
+<td style='width:20%; text-align:center' class='fcaption'>{LASTPOSTITLE}</td>
+</tr>";
+}
+
+if(!$FORUM_VIEW_FORUM){
+	$FORUM_VIEW_FORUM = "
+<tr>
+<td style='vertical-align:middle; text-align:center; width:3%' class='forumheader3'>{ICON}</td>
+<td style='vertical-align:middle; text-align:left; width:47%'  class='forumheader3'>
+	
+<table style='width:100%'>
+<tr>
+<td style='width:90%'><span class='mediumtext'><b>{THREADNAME}</b></span> <span class='smalltext'>{PAGES}</span></td>
+<td style='width:10%; white-space:nowrap;'>{ADMIN_ICONS}</td>
+</tr>
+</table>
+
+</td>
+
+<td style='vertical-align:top; text-align:center; width:20%' class='forumheader3'>{POSTER}<br />{THREADDATE}</td>
+<td style='vertical-align:center; text-align:center; width:5%' class='forumheader3'>{REPLIES}</td>
+<td style='vertical-align:center; text-align:center; width:5%' class='forumheader3'>{VIEWS}</td>
+<td style='vertical-align:top; text-align:center; width:20%' class='forumheader3'>{LASTPOST}</td>
+</tr>";
+}
+
+if(!$FORUM_VIEW_END){
+	$FORUM_VIEW_END = "
+</table>
+<table style='width:100%'>
+<tr>
+<td style='width:80%'><span class='mediumtext'>{THREADPAGES}</span>
+{FORUMJUMP}
+</td>
+<td style='width:20%; text-align:right'>
+{NEWTHREADBUTTON}
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<div class='spacer'>
+<table class='fborder' style='width:95%'>
+<tr>
+<td style='vertical-align:center; width:50%' class='forumheader3'><span class='smalltext'>{MODERATORS}</span></td>
+<td style='vertical-align:center; width:50%' class='forumheader3'><span class='smalltext'>{BROWSERS}</span></td>
+</tr>
+</table>
+</div>
+<div class='spacer'>
+<table class='fborder' style='width:95%'>
+<tr>
+<td style='vertical-align:center; width:50%' class='forumheader3'>{ICONKEY}</td>
+<td style='vertical-align:center; text-align:center; width:50%' class='forumheader3'><span class='smallblacktext'>{PERMS}</span><br /><br />{SEARCH}
+</td>
+</tr>
+</table>
+</div>
+</div>";
+}
 
 $sql -> db_Select("forum", "*", "forum_id='".$forum_id."' ");
 $row = $sql-> db_Fetch(); extract($row);
 
-if($forum_class == 255 || $forum_class && !check_class($forum_class) || !$forum_parent){ header("Location:".e_BASE."forum.php"); exit;}
+if($forum_class && !check_class($forum_class) || !$forum_parent){ header("Location:".e_BASE."forum.php"); exit;}
 
-if(preg_match("/".preg_quote(ADMINNAME)."/", $forum_moderators) && getperms("A")){
-	define("MODERATOR", TRUE);
-}else{
-	define("MODERATOR", FALSE);
-}
+define("MODERATOR", (preg_match("/".preg_quote(ADMINNAME)."/", $forum_moderators) && getperms("A") ? TRUE : FALSE));
+
+$member_users = $sql -> db_Select("online", "*", "online_location REGEXP('forum_viewforum.php.$forum_id') AND online_user_id!='0' ");
+$guest_users = $sql -> db_Select("online", "*", "online_location REGEXP('forum_viewforum.php.$forum_id') AND online_user_id='0' ");
+$users = $member_users+$guest_users;
+
 
 require_once(HEADERF);
 
+$view=15;
 $topics = $sql -> db_Count("forum_t", "(*)", " WHERE thread_forum_id='".$forum_id."' AND thread_parent='0' ");
-
 if($topics > $view){
 	$a = $topics/$view;
 	$r = explode(".", $a);
@@ -82,186 +171,47 @@ $text = "<div style='text-align:center'><table style='width:95%' class='fborder'
 <td style='width:80%; vertical-align:bottom'>".LAN_321.$forum_moderators;
 	
 if($pages){
-	$nppage= "<br />".LAN_316;
+
+	$THREADPAGES = LAN_316.": ";
 	if($pages > 10){
 		$current = ($from/$view)+1;
 		for($c=0; $c<=2; $c++){
-			$nppage .= ($view*$c == $from ? "<u>".($c+1)."</u> " : "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
+			$THREADPAGES .= ($view*$c == $from ? "<u>".($c+1)."</u> " : "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
 		}
 		if($current >=3 && $current <= 5){
 			for($c=3; $c<=$current; $c++){
-				$nppage .= ($view*$c == $from ? "<u>".($c+1)."</u> " : "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
+				$THREADPAGES .= ($view*$c == $from ? "<u>".($c+1)."</u> " : "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
 			}
 		}else if($current >= 6){
 			$text .= " ... ";
 			for($c=($current-2); $c<=$current; $c++){
-				$nppage .= ($view*$c == $from ? "<u>".($c+1)."</u> " : "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
+				$THREADPAGES .= ($view*$c == $from ? "<u>".($c+1)."</u> " : "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
 			}
 		}
 		$text .= " ... ";
 		$tmp = $pages-3;
 		for($c=$tmp; $c<=($pages-1); $c++){
-			$nppage .= ($view*$c == $from ? "<u>".($c+1)."</u> " : "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
+			$THREADPAGES .= ($view*$c == $from ? "<u>".($c+1)."</u> " : "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
 		}
 	}else{
 		for($c=0; $c < $pages; $c++){
-			if($view*$c == $from ? $nppage .= "<u>".($c+1)."</u> " : $nppage .= "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
+			if($view*$c == $from ? $THREADPAGES .= "<b>".($c+1)."</b> " : $THREADPAGES .= "<a href='".e_SELF."?".$forum_id.".".($view*$c)."'>".($c+1)."</a> ");
 		}
 	}
-	$text .= "<br />";
+	$THREADPAGES .= "<br />";
 }
-	
-$text .= $nppage."</td>
-<td style='width:20%; text-align:right'>";
 
 if((ANON || USER) && ($forum_class != e_UC_READONLY || MODERATOR)){
-	$text .= "<a href='".e_BASE."forum_post.php?nt.".$forum_id."'>".IMAGE_newthread."</a>";
-}
-$text .= "</td></tr><tr>
-<td colspan='2'>";
-
-//echo $text;
-
-$text .= "
-<table style='width:100%' class='fborder'>
-<tr>
-<td style='width:3%' class='fcaption'>&nbsp;</td>
-<td style='width:47%' class='fcaption'>".LAN_53."</td>
-<td style='width:20%; text-align:center' class='fcaption'>".LAN_54."</td>
-<td style='width:5%; text-align:center' class='fcaption'>".LAN_55."</td>
-<td style='width:5%; text-align:center' class='fcaption'>".LAN_56."</td>
-<td style='width:20%; text-align:center' class='fcaption'>".LAN_57."</td>
-</tr>
-";
-
-if(!$topics){
-	$text .= "<td colspan='6' style='text-align:center' class='forumheader2'>".LAN_58."</td>";
-}else{
-	$sql -> db_Select("forum_t", "*",  "thread_forum_id='".$forum_id."' AND thread_parent='0' ORDER BY thread_s DESC, thread_lastpost DESC, thread_datestamp DESC LIMIT $from, $view");
-	$sql2 = new db; $sql3 = new db; $gen = new convert;
-	while($row= $sql -> db_Fetch()){
-		extract($row);
-			
-		$replies = $sql2 -> db_Count("forum_t", "(*)", " WHERE thread_parent='$thread_id' ");
-		if($replies){
-			$sql2 -> db_Select("forum_t", "*", "thread_parent='$thread_id' ORDER BY thread_datestamp DESC");
-			list($null, $null, $null, $null, $r_datestamp, $null, $r_user) = $sql2 -> db_Fetch();
-			$r_id = substr($r_user, 0, strpos($r_user, "."));
-			$r_name = substr($r_user, (strpos($r_user, ".")+1));
-
-			if(strstr($r_name, chr(1))){ $tmp = explode(chr(1), $r_name); $r_name = $tmp[0]; }
-
-			$r_datestamp = $gen->convert_date($r_datestamp, "forum");
-			if(!$r_id ? $lastreply = $r_datestamp."<br />".$r_name : $lastreply = $r_datestamp."<br /><a href='".e_BASE."user.php?id.".$r_id."'>".$r_name."</a>");
-
-		}else{
-			$replies = LAN_317;
-			$lastreply = " - ";
-		}
-
-		$post_author_id = substr($thread_user, 0, strpos($thread_user, "."));
-		$post_author_name = substr($thread_user, (strpos($thread_user, ".")+1));
-		if(strstr($post_author_name, chr(1))){ $tmp = explode(chr(1), $post_author_name); $post_author_name = $tmp[0]; }
-		$text .= "<tr>
-		<td style='vertical-align:middle; text-align:center; width:3%' class='forumheader3'>";
-
-		$newflag = FALSE;
-		if(USER){
-			if($thread_datestamp > USERLV && (!ereg("\.".$thread_id."\.", USERVIEWED))){
-				$newflag = TRUE;
-			}else if($sql3 -> db_SELECT("forum_t", "*", "thread_parent='$thread_id' AND thread_datestamp > '".USERLV."' ")){
-				while(list($nthread_id) = $sql3 -> db_Fetch()){
-					if(!ereg("\.".$nthread_id."\.", USERVIEWED)){
-						$newflag = TRUE;
-					}
-				}
-			}
-		}
-
-		$thread_datestamp = $gen->convert_date($thread_datestamp, "forum");
-		$icon = ($newflag ? IMAGE_new_small : IMAGE_nonew_small);
-		if($replies >= $pref['forum_popular'] && $replies != "None"){
-			$icon = ($newflag ? IMAGE_new_popular : IMAGE_nonew_popular);
-		}
-
-		if($thread_s == 1){
-			$icon = ($thread_active ? IMAGE_sticky : IMAGE_stickyclosed);
-		}else if($thread_s == 2){
-			$icon = IMAGE_announce;
-		}else if(!$thread_active){
-			$icon = IMAGE_closed_small;
-		}
-
-		$text .= $icon;
-		$thread_name = $aj -> tpa($thread_name);
-		$result = preg_split("/\]/", $thread_name);
-		$thread_name = ($result[1] ? $result[0]."] <a href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id."'>".ereg_replace("\[.*\]", "", $thread_name)."</a>" : "<a href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id."'>".$thread_name."</a>");
-		$text .= "</td><td style='vertical-align:middle; text-align:left; width:47%'  class='forumheader3'><span class='mediumtext'>".$thread_name."</span>";
-		$pages = ceil($replies/$pref['forum_postspage']);
-		if($pages>1){
-			$text .= "<br /><span class='smalltext'>[ goto page ";
-			for($a=0; $a<=($pages-1); $a++){
-				$text .= "-<a href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id.".".($a*$pref['forum_postspage'])."'>".($a+1)."</a>";
-			}
-			$text .= " ]</span>";
-		}
-
-		if(MODERATOR){
-			$text .= "<div style='text-align:right'>";
-			if($thread_s == 1){
-				$text .= "<a href='".e_ADMIN."forum_conf.php?unstick.".$forum_id.".".$thread_id."'>".IMAGE_admin_unstick."</a> ";
-				if($thread_active){
-					$text .= "<a href='".e_ADMIN."forum_conf.php?close.".$forum_id.".".$thread_id."'>".IMAGE_admin_lock."</a> ";
-				}else{
-					$text .= "<a href='".e_ADMIN."forum_conf.php?open.".$forum_id.".".$thread_id."'>".IMAGE_admin_unlock."</a> ";
-				}
-			}else{
-				$text .= "<a href='".e_ADMIN."forum_conf.php?stick.".$forum_id.".".$thread_id."'>".IMAGE_admin_stick."</a> ";
-				if($thread_active){
-					$text .= "<a href='".e_ADMIN."forum_conf.php?close.".$forum_id.".".$thread_id."'>".IMAGE_admin_lock."</a> ";
-				}else{
-					$text .= "<a href='".e_ADMIN."forum_conf.php?open.".$forum_id.".".$thread_id."'>".IMAGE_admin_unlock."</a> ";
-				}
-			}
-			$text .= "<a href='".e_ADMIN."forum_conf.php?move.".$forum_id.".".$thread_id."'>".IMAGE_admin_move."</a></div>";
-		}
-			
-		$text .= "</td>
-<td style='vertical-align:top; text-align:center; width:20%' class='forumheader3'>".$thread_datestamp."<br />";
-$text .= (!$post_author_id ? $post_author_name :  "<a href='".e_BASE."user.php?id.".$post_author_id."'>".$post_author_name."</a>");
-$text .= "</td><td style='vertical-align:center; text-align:center; width:5%' class='forumheader3'>$replies</td>
-<td style='vertical-align:center; text-align:center; width:5%' class='forumheader3'>$thread_views</td>
-<td style='vertical-align:top; text-align:center; width:20%' class='forumheader3'>$lastreply</td>
-</tr>";
-	}
-	$text .= "</table>";
+	$NEWTHREADBUTTON = "<a href='".e_BASE."forum_post.php?nt.".$forum_id."'>".IMAGE_newthread."</a>";
 }
 
-$text .= "<table style='width:100%'>
-<tr>
-<td style='width:80%'>".$nppage;
+$BREADCRUMB = "<a class='forumlink' href='index.php'>".SITENAME."</a> >> <a class='forumlink' href='forum.php'>".LAN_01."</a> >> <b>".$forum_name."</b>";
+$FORUMTITLE = $forum_name;
+$MODERATORS = LAN_404.": ".$forum_moderators;
+$BROWSERS = $users." ".($users == 1 ? LAN_405 : LAN_406)." (".$member_users." ".($member_users==1 ? LAN_407 : LAN_409).", ".$guest_users." ".($guest_users == 1 ? LAN_408 : LAN_410).")";
 
-$text .= forumjump();
-$text .= "</td>
-<td style='width:20%; text-align:right'>";
 
-if((ANON || USER) && ($forum_class != e_UC_READONLY || MODERATOR)){
-	$text .= "<a href='".e_BASE."forum_post.php?nt.".$forum_id."'>".IMAGE_newthread."</a>";
-}else if($forum_class == e_UC_READONLY && !ADMIN){
-	$text .= LAN_397;
-}else{
-	$text .= LAN_59;
-}
-$text .= "</td>
-</tr>
-</table>";
-
-//echo $text;
-$text .= "</td></tr></table><br />";
-
-$text .= "<table class='fborder' style='width:95%'>
-<tr>
-<td style='vertical-align:center; width:33%' class='forumheader3'>
+$ICONKEY = "
 <table style='width:100%'>
 <tr>
 <td style='vertical-align:center; text-align:center; width:2%'>".IMAGE_new_small."</td>
@@ -272,14 +222,6 @@ $text .= "<table class='fborder' style='width:95%'>
 <td style='width:10%' class='smallblacktext'>".LAN_202."</td>
 <td style='vertical-align:center; text-align:center; width:2%'>".IMAGE_announce."</td>
 <td style='width:10%' class='smallblacktext'>".LAN_396."</td>
-<td style='vertical-align:center; text-align:center; width:50%' class='smallblacktext'>";
-if(USER == TRUE || ANON == TRUE){
-	$text .= LAN_204." - ".LAN_206." - ".LAN_208;
-}else{
-	$text .= LAN_205." - ".LAN_207." - ".LAN_209;
-}
-
-$text .= "</td>
 </tr>
 <tr>
 <td style='vertical-align:center; text-align:center; width:2%'>".IMAGE_new_popular."</td>
@@ -290,36 +232,154 @@ $text .= "</td>
 <td style='width:10%' class='smallblacktext'>".LAN_203."</td>
 <td style='vertical-align:center; text-align:center; width:2%'>".IMAGE_closed_small."</td>
 <td style='width:10%' class='smallblacktext'>".LAN_81."</td>
-<td style='vertical-align:center; text-align:center; width:50%' class='smallblacktext'>
+</tr>
+</table>";
+
+$SEARCH = "
 <form method='post' action='search.php'>
 <p>
 <input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />
 <input class='button' type='submit' name='searchsubmit' value='".LAN_180."' />
 </p>
-</form>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-</div>";
-if($pref['forum_enclose']){ $ns -> tablerender($pref['forum_title'], $text); }else{ echo $text; }
+</form>";
 
+$PERMS = 
+(USER == TRUE || ANON == TRUE ? LAN_204." - ".LAN_206." - ".LAN_208 : LAN_205." - ".LAN_207." - ".LAN_209);
+
+
+if($sql -> db_Select("forum_t", "*",  "thread_forum_id='".$forum_id."' AND thread_parent='0' ORDER BY thread_s DESC, thread_lastpost DESC, thread_datestamp DESC LIMIT $from, $view")){
+	$sql2 = new db; $sql3 = new db; $gen = new convert;
+	while($row= $sql -> db_Fetch()){
+		$forum_view_forum .= parse_thread($row);
+	}
+}else{
+	$forum_view_forum = "<tr><td colspan='6' style='text-align:center' class='forumheader2'><br /><span class='mediumtext'><b>".LAN_58."</b></span><br /><br /></td></tr>";
+}
+
+$sql -> db_Select("forum", "*", "forum_parent !=0 AND forum_class!='255' ");
+$FORUMJUMP = "<form method='post' action='".e_SELF."'><p>".LAN_403.": <select name='forumjump' class='tbox'>";
+while($row = $sql -> db_Fetch()){
+	extract($row);
+	if(check_class($forum_class)){
+		$FORUMJUMP .= "\n<option value='".$forum_id."'>".$forum_name."</option>";
+	}
+}
+$FORUMJUMP .= "</select> <input class='button' type='submit' name='fjsubmit' value='".LAN_03."' /></p></form>";
+$TOPLINK = "<a href='".e_SELF."?".$_SERVER['QUERY_STRING']."#top'>".LAN_02."</a>";
+
+$forum_view_start = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_START);
+$forum_view_end = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_END);
+if($pref['forum_enclose']){ $ns -> tablerender($pref['forum_title'], $forum_view_start.$forum_view_forum.$forum_view_end); }else{ echo $forum_view_start.$forum_view_forum.$forum_view_end; }
 require_once(FOOTERF);
+
+
+function parse_thread($row){
+	global $sql2, $sql3, $FORUM_VIEW_FORUM, $gen, $aj, $pref, $forum_id;
+	extract($row);
+	$VIEWS = $thread_views;
+	$REPLIES = $sql2 -> db_Count("forum_t", "(*)", " WHERE thread_parent='$thread_id' ");
+	if($REPLIES){
+		$sql2 -> db_Select("forum_t", "*", "thread_parent='$thread_id' ORDER BY thread_datestamp DESC");
+		list($null, $null, $null, $null, $r_datestamp, $null, $r_user) = $sql2 -> db_Fetch();
+		$r_id = substr($r_user, 0, strpos($r_user, "."));
+		$r_name = substr($r_user, (strpos($r_user, ".")+1));
+
+		if(strstr($r_name, chr(1))){ $tmp = explode(chr(1), $r_name); $r_name = $tmp[0]; }
+
+		$r_datestamp = $gen->convert_date($r_datestamp, "forum");
+		if(!$r_id ? $LASTPOST = $r_name."<br />".$r_datestamp : $LASTPOST = "<a href='".e_BASE."user.php?id.".$r_id."'>".$r_name."</a><br />".$r_datestamp);
+
+	}else{
+		$REPLIES = LAN_317;
+		$LASTPOST = " - ";
+	}
+
+	$post_author_id = substr($thread_user, 0, strpos($thread_user, "."));
+	$post_author_name = substr($thread_user, (strpos($thread_user, ".")+1));
+	if(strstr($post_author_name, chr(1))){ $tmp = explode(chr(1), $post_author_name); $post_author_name = $tmp[0]; }
+	
+
+	$newflag = FALSE;
+	if(USER){
+		if($thread_datestamp > USERLV && (!ereg("\.".$thread_id."\.", USERVIEWED))){
+			$newflag = TRUE;
+		}else if($sql3 -> db_SELECT("forum_t", "*", "thread_parent='$thread_id' AND thread_datestamp > '".USERLV."' ")){
+			while(list($nthread_id) = $sql3 -> db_Fetch()){
+				if(!ereg("\.".$nthread_id."\.", USERVIEWED)){
+					$newflag = TRUE;
+				}
+			}
+		}
+	}
+
+	$THREADDATE = $gen->convert_date($thread_datestamp, "forum");
+	$ICON = ($newflag ? IMAGE_new_small : IMAGE_nonew_small);
+	if($replies >= $pref['forum_popular'] && $replies != "None"){
+		$ICON = ($newflag ? IMAGE_new_popular : IMAGE_nonew_popular);
+	}
+
+	if($thread_s == 1){
+		$ICON = ($thread_active ? IMAGE_sticky : IMAGE_stickyclosed);
+	}else if($thread_s == 2){
+		$ICON = IMAGE_announce;
+	}else if(!$thread_active){
+		$ICON = IMAGE_closed_small;
+	}
+
+	$thread_name = $aj -> tpa($thread_name);
+	$result = preg_split("/\]/", $thread_name);
+	$THREADNAME = ($result[1] ? $result[0]."] <a href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id."'>".ereg_replace("\[.*\]", "", $thread_name)."</a>" : "<a href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id."'>".$thread_name."</a>");
+
+	
+
+	$pages = ceil($REPLIES/$pref['forum_postspage']);
+	if($pages>1){
+		$PAGES = LAN_316." [ ";
+		for($a=0; $a<=($pages-1); $a++){
+			$PAGES .= "-<a href='".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id.".".($a*$pref['forum_postspage'])."'>".($a+1)."</a>";
+		}
+		$PAGES .= " ]";
+	}
+
+	if(MODERATOR){
+		
+		if($thread_s == 1){
+			$ADMIN_ICONS = "<a href='".e_ADMIN."forum_conf.php?unstick.".$forum_id.".".$thread_id."'>".IMAGE_admin_unstick."</a> ";
+			if($thread_active){
+				$ADMIN_ICONS .= "<a href='".e_ADMIN."forum_conf.php?close.".$forum_id.".".$thread_id."'>".IMAGE_admin_lock."</a> ";
+			}else{
+				$ADMIN_ICONS .= "<a href='".e_ADMIN."forum_conf.php?open.".$forum_id.".".$thread_id."'>".IMAGE_admin_unlock."</a> ";
+			}
+		}else{
+			$ADMIN_ICONS = "<a href='".e_ADMIN."forum_conf.php?stick.".$forum_id.".".$thread_id."'>".IMAGE_admin_stick."</a> ";
+			if($thread_active){
+				$ADMIN_ICONS .= "<a href='".e_ADMIN."forum_conf.php?close.".$forum_id.".".$thread_id."'>".IMAGE_admin_lock."</a> ";
+			}else{
+				$ADMIN_ICONS .= "<a href='".e_ADMIN."forum_conf.php?open.".$forum_id.".".$thread_id."'>".IMAGE_admin_unlock."</a> ";
+			}
+		}
+		$ADMIN_ICONS .= "<a href='".e_ADMIN."forum_conf.php?move.".$forum_id.".".$thread_id."'>".IMAGE_admin_move."</a></div>";
+	}
+			
+	$text .= "</td>
+	<td style='vertical-align:top; text-align:center; width:20%' class='forumheader3'>".$THREADDATE."<br />";
+	$POSTER = (!$post_author_id ? $post_author_name :  "<a href='".e_BASE."user.php?id.".$post_author_id."'>".$post_author_name."</a>");
+	return(preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_FORUM));
+}
+
 
 function forumjump(){
 	global $sql;
 	$sql -> db_Select("forum", "*", "forum_parent !=0 AND forum_class!='255' ");
-	$text .= "<form method='post' action='".e_SELF."'><p>Jump: <select name='forumjump' class='tbox'>";
+	$FORUMJUMP = "<form method='post' action='".e_SELF."'><p>".LAN_403.": <select name='forumjump' class='tbox'>";
 	while($row = $sql -> db_Fetch()){
 		extract($row);
-		if(($forum_class && check_class($forum_class)) || ($forum_class == 254 && USER) || !$forum_class){
-			$text .= "\n<option value='".$forum_id."'>".$forum_name."</option>";
+		if(check_class($forum_class)){
+			$FORUMJUMP .= "\n<option value='".$forum_id."'>".$forum_name."</option>";
 		}
 	}
-	$text .= "</select> <input class='button' type='submit' name='fjsubmit' value='".LAN_03."' />&nbsp;&nbsp;&nbsp;&nbsp;<a href='".e_SELF."?".$_SERVER['QUERY_STRING']."#top'>".LAN_02."</a></p></form>";
-	return $text;
+	$FORUMJUMP .= "</select> <input class='button' type='submit' name='fjsubmit' value='".LAN_03."' />&nbsp;&nbsp;&nbsp;&nbsp;<a href='".e_SELF."?".$_SERVER['QUERY_STRING']."#top'>".LAN_02."</a></p></form>";
+	return ($FORUMJUMP);
 }
 
 ?>

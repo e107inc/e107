@@ -228,7 +228,7 @@ if($thread_active){
 	$T_ACTIVE = TRUE;
 }
 if(MODERATOR){
-	$MODOPTIONS = "<a href='forum_post.php?edit.".$forum_id.".".$thread_id."'>".IMAGE_admin_edit."</a>\n<a style='cursor:pointer; cursor:hand' onClick=\"confirm_('thread', $forum_id, $thread_id, '$thread_name')\"'>".IMAGE_admin_delete."</a>\n<a href='".e_ADMIN."forum_conf.php?move.".$forum_id.".".$thread_id."'>".IMAGE_admin_move."</a>";
+	$MODOPTIONS = "<a href='forum_post.php?edit.".$forum_id.".".$thread_id."'>".IMAGE_admin_edit."</a>\n<a style='cursor:pointer; cursor:hand' onClick=\"confirm_('thread', $forum_id, $thread_id, '')\"'>".IMAGE_admin_delete."</a>\n<a href='".e_ADMIN."forum_conf.php?move.".$forum_id.".".$thread_id."'>".IMAGE_admin_move."</a>";
 }
 
 unset($newflag);
@@ -240,7 +240,8 @@ if(USER){
 }
 
 $THREADDATESTAMP = IMAGE_post." ".$gen->convert_date($thread_datestamp, "forum");
-$POST = wrap($aj -> tpa($thread_thread, "forum"));
+$thread_thread = wrap($thread_thread);
+$POST = $aj -> tpa($thread_thread, "forum");
 if(ADMIN && $iphost){ $POST .= "<br />".$iphost; }
 $TOP = "<a href='".e_SELF."?".e_QUERY."#top'>".LAN_10."</a>";
 $FORUMJUMP = forumjump();
@@ -323,7 +324,8 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 		}
 
 		$THREADDATESTAMP = IMAGE_post." ".$gen->convert_date($thread_datestamp, "forum");
-		$POST = wrap($aj -> tpa($thread_thread, "forum"));
+		$thread_thread = wrap($thread_thread);
+		$POST = $aj -> tpa($thread_thread, "forum");
 		if(ADMIN && $iphost){ $POST .= "<br />".$iphost; }
 
 		$forrep .= preg_replace("/\{(.*?)\}/e", '$\1', $FORUMREPLYSTYLE);
@@ -360,7 +362,7 @@ function forumjump(){
 }
 
 function wrap($data){
-	$wrapcount = 80;
+	$wrapcount = 100;
 	$message_array = explode(" ", $data);
 	for($i=0; $i<=(count($message_array)-1); $i++){
 		if(strlen($message_array[$i]) > $wrapcount){
@@ -445,7 +447,7 @@ function rpg($user_join, $user_forums){
 echo "<script type=\"text/javascript\">
 function confirm_(mode, forum_id, thread_id, thread){
 	if(mode == 'thread'){
-		var x=confirm(\"".LAN_409." [ \" + thread + \" ]\");
+		var x=confirm(\"".LAN_409."\");
 	}else{
 		var x=confirm(\"".LAN_410." [ ".LAN_411."\" + thread + \" ]\");
 	}

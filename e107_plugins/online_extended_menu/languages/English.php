@@ -20,4 +20,6 @@ define("ONLINE_EL5", "Members");
 define("ONLINE_EL6", "Newest member");
 define("ONLINE_EL7", "viewing");
 
+define("ONLINE_EL8", "most ever online: ");
+define("ONLINE_EL9", "on");
 ?>

@@ -59,4 +59,20 @@ define("LAN_408", "This is a read-only forum");
 define("LAN_409", "This is a class restricted forum");
 define("LAN_410", "Welcome guest");
 
+define("LAN_411", "thread");
+define("LAN_412", "reply");
+define("LAN_413", "threads");
+define("LAN_414", "replies");
+define("LAN_415", "user is browsing the forums at the moment");
+define("LAN_416", "users are browsing the forums at the moment");
+
+define("LAN_417", "member");
+define("LAN_418", "guest");
+define("LAN_419", "members");
+define("LAN_420", "guests");
+
+define("LAN_421", "Show new posts");
+define("LAN_422", "New posts since your last visit");
+define("LAN_423", "Posted by");
+define("LAN_424", "New threads");
 ?>

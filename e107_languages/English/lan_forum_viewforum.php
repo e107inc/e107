@@ -24,7 +24,7 @@ define("LAN_206", "You <b>can</b> post replies");
 define("LAN_207", "You <b>cannot</b> post replies");
 define("LAN_208", "You <b>can</b> edit your posts");
 define("LAN_209", "You <b>cannot</b> edit your posts");
-define("LAN_316", "Go to page ");
+define("LAN_316", "Goto page");
 define("LAN_317", "None");
 define("LAN_321", "Moderators: ");
 define("LAN_395", "[popular]");
@@ -37,4 +37,14 @@ define("LAN_399", "Lock thread");
 define("LAN_400", "Unlock thread");
 define("LAN_401", "Stick thread");
 define("LAN_402", "Move thread");
+define("LAN_403", "Jump to forum");
+define("LAN_404", "This forum is moderated by");
+
+define("LAN_405", "user is browsing this forum at the moment");
+define("LAN_406", "users are browsing this forum at the moment");
+define("LAN_407", "member");
+define("LAN_408", "guest");
+define("LAN_409", "members");
+define("LAN_410", "guests");
+
 ?>

@@ -16,7 +16,7 @@ define("CNTLAN_13", "Allow comments");
 define("CNTLAN_14", "On");
 define("CNTLAN_15", "Off");
 define("CNTLAN_16", "Update Content Page");
-define("CNTLAN_17", "Submit Content Page");
+define("CNTLAN_17", "Create Content Page");
 define("CNTLAN_18", "Content Pages");
 define("CNTLAN_19", "Visible to");
 define("CNTLAN_20", "Content page deleted.");
@@ -26,6 +26,8 @@ define("CNTLAN_22", "( if you're posting HTML code you should set this to off )"
 define("CNTLAN_23", "Content page added without link - to link to this content page use this url");
 define("CNTLAN_24", "Content page added and link created in Main Navigation menu");
 
-
+define("CNTLAN_25", "Title");
+define("CNTLAN_26", "Options");
+define("CNTLAN_27", "Are you sure you want to delete this content page?");
 
 ?>

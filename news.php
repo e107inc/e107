@@ -27,7 +27,7 @@ if(file_exists("install.php")){ echo "<div class='installe' style='text-align:ce
 if(!is_object($aj)){ $aj = new textparse; }
 
 $ix = new news;
-if(eregi("cat", e_QUERY)){
+if(strstr(e_QUERY, "cat")){
 	$qs = explode(".", e_QUERY);
 	$category = $qs[1];
 	if($category != 0){
@@ -36,11 +36,8 @@ if(eregi("cat", e_QUERY)){
 		$sql -> db_Select("news_category", "*", "category_id='$category'");
 		list($category_id, $category_name, $category_icon) = $sql-> db_Fetch();
 		$category_name = $aj -> tpa($category_name);
-		if(eregi("images", $category_icon)){
-			$category_icon = THEME.$category_icon;
-		}else{
-			$category_icon = e_BASE.$category_icon;
-		}
+		$category_icon = e_IMAGE."newsicons/".$category_icon;
+		
 		$count = $sql -> db_SELECT("news", "*",  "news_category='$category' ORDER BY news_datestamp DESC");
 		while($row = $sql-> db_Fetch()){
 			extract($row);
@@ -168,6 +165,10 @@ if(!$disablecache && !e_QUERY){
 }
 require_once(e_HANDLER."np_class.php");
 $ix = new nextprev("news.php", $from, ITEMVIEW, $news_total, LAN_84);
+
+if($pref['nfp_display'] == 2){
+	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
+}
 
 require_once(FOOTERF);
 ?>

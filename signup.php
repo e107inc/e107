@@ -82,7 +82,9 @@ if(IsSet($_POST['register'])){
 		if($sql -> db_Select("user", "*", "user_email='".$_POST['email']."' AND user_ban='1' ")){
 			exit;
 		}
-		if($sql -> db_Select("banlist", "*", "banlist_ip='".$_POST['email']."'")){
+
+		$wc = "*".substr($_POST['email'], strpos($_POST['email'], "@"));
+		if($sql -> db_Select("banlist", "*", "banlist_ip='".$_POST['email']."' OR banlist_ip='$wc'")){
 			exit;
 		}
 

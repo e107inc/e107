@@ -40,7 +40,7 @@ while($row = $sql-> db_Fetch()){
 	$cb_nick = eregi_replace("[0-9]+\.", "", $row['cb_nick']);
 	$cb_message = $aj -> tpa($row['cb_message']);
 	if(!eregi("<a href|<img|&#", $cb_message)){
-		$cb_message = preg_replace("/([^s]{100})/", "$1\n", $cb_message);
+		$cb_message = preg_replace("/([^\s]{100})/", "$1\n", $cb_message);
 	}
 	$text .= "\n<div class='spacer'>
 <img src='".THEME."images/bullet2.gif' alt='bullet' />

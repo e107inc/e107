@@ -204,8 +204,14 @@ if($action == "review"){
 					while($row = $sql -> db_Fetch()){
 						extract($row);
 						if(check_class($content_class)){
-							$sql2 -> db_Select("user", "*", "user_id=$content_author");
-							$row = $sql2 -> db_Fetch(); extract($row);
+							if(is_numeric($content_author)){
+								$sql2 -> db_Select("user", "*", "user_id=$content_author");
+								$row = $sql2 -> db_Fetch(); extract($row);
+							}else{
+								$tmp = explode("^", $content_author);
+								$user_name = $tmp[0];
+								$user_email = $tmp[1];
+							}
 							$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
 							$text .= "<tr><td style='width:5%; text-align:center; vertical-align:top'>".($icon ? "<img src='".e_IMAGE."link_icons/".$icon."' alt='' />" : "&nbsp;")."</td>
 							<td style='width:95%'>

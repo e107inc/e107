@@ -13,9 +13,6 @@
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
-
-echo e_BASE;
-
 if($cache = retrieve_cache("article_menu")){
 	$aj = new textparse;
 	$cache = str_replace("e107_themes/", e_THEME, $cache);

@@ -14,40 +14,45 @@
 */
 if(!is_object($aj)){ $aj = new textparse; }
 if(IsSet($_POST['chat_submit'])){
-	$cmessage = $_POST['cmessage'];
-	$nick = trim(chop($_POST['nick']));
-	$fp = new floodprotect;
-	if(!$fp -> flood("chatbox", "cb_datestamp")){
-		header("location:index.php");
-		exit;
+
+	if($pref['user_reg'] && !USER && !$pref['anon_post']){
+		// disallow post
 	}else{
-		$cmessage = trim(chop($cmessage));
-		if((strlen($cmessage) < 1000) && $cmessage != ""){
-			$cmessage = $aj -> formtpa($cmessage, "public");
-			if($sql -> db_Select("chatbox", "*", "cb_message='$cmessage' AND cb_datestamp+84600>".time())){
-				$emessage = "Duplicate post";
-			}else{
-				$datestamp = time();
-				$ip = getip();
-				if(USER){
-					$nick = USERID.".".USERNAME;
-					$sql -> db_Update("user", "user_chats=user_chats+1, user_lastpost='".time()."' WHERE user_id='".USERID."' ");
-				}else if(!$nick){
-					$nick = "0.Anonymous";
+		$cmessage = $_POST['cmessage'];
+		$nick = trim(chop($_POST['nick']));
+		$fp = new floodprotect;
+		if(!$fp -> flood("chatbox", "cb_datestamp")){
+			header("location:index.php");
+			exit;
+		}else{
+			$cmessage = trim(chop($cmessage));
+			if((strlen($cmessage) < 1000) && $cmessage != ""){
+				$cmessage = $aj -> formtpa($cmessage, "public");
+				if($sql -> db_Select("chatbox", "*", "cb_message='$cmessage' AND cb_datestamp+84600>".time())){
+					$emessage = "Duplicate post";
 				}else{
-					if($sql -> db_Select("user", "*", "user_name='$nick' ")){
-						$emessage = CHATBOX_L1;
+					$datestamp = time();
+					$ip = getip();
+					if(USER){
+						$nick = USERID.".".USERNAME;
+						$sql -> db_Update("user", "user_chats=user_chats+1, user_lastpost='".time()."' WHERE user_id='".USERID."' ");
+					}else if(!$nick){
+						$nick = "0.Anonymous";
 					}else{
-						$nick = "0.".$aj -> formtpa($nick, "public");
+						if($sql -> db_Select("user", "*", "user_name='$nick' ")){
+							$emessage = CHATBOX_L1;
+						}else{
+							$nick = "0.".$aj -> formtpa($nick, "public");
+						}
+					}
+					if(!$emessage){
+						$sql -> db_Insert("chatbox", "0, '$nick', '$cmessage', '".time()."', '0' , '$ip' ");
+						$sql -> db_Delete("cache", "cache_url='chatbox' ");
 					}
 				}
-				if(!$emessage){
-					$sql -> db_Insert("chatbox", "0, '$nick', '$cmessage', '".time()."', '0' , '$ip' ");
-					$sql -> db_Delete("cache", "cache_url='chatbox' ");
-				}
+			}else{
+				$emessage = "Post too long.";
 			}
-		}else{
-			$emessage = "Post too long.";
 		}
 	}
 }
@@ -56,7 +61,7 @@ if(strstr(e_BASE, "../")){ $sql -> db_Delete("cache", "cache_url ='chatbox' "); 
 
 $pref['cb_linkc'] = str_replace("e107_images/", e_IMAGE, $pref['cb_linkc']);
 unset($text);
-if($pref['user_reg'] == 1 && USER != TRUE && $pref['anon_post'] != "1"){
+if($pref['user_reg'] && !USER && !$pref['anon_post']){
 	$texta = "<div style='text-align:center'>".CHATBOX_L3."</div><br /><br />";
 }else{
 	$texta =  "<div style='text-align:center'>".(e_QUERY ? "\n<form method='post' action='".e_SELF."?".e_QUERY."'><p>" : "\n<form method='post' action='".e_SELF."'><p>");

@@ -144,11 +144,6 @@ if(IsSet($_POST['newthread'])){
 			header("location: ".e_BASE."index.php");
 			exit;
 		}
-		if($sql -> db_Select("forum_t", "*", "thread_thread='".$_POST['post']."' ")){
-			$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_389."</div>");
-			require_once(FOOTERF);
-			exit;
-		}
 
 		if(USER){
 			$user = USERID.".".USERNAME;
@@ -175,6 +170,12 @@ if(IsSet($_POST['newthread'])){
 
 		$post = (ADMIN ? $aj -> formtpa($_POST['post']) : $aj -> formtpa($_POST['post'], "public"));
 		$subject = (ADMIN ? $aj -> formtpa($_POST['subject']) : $aj -> formtpa($_POST['subject'], "public"));
+
+		if($sql -> db_Select("forum_t", "*", "thread_thread='$post'")){
+			$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_389."</div>");
+			require_once(FOOTERF);
+			exit;
+		}
 
 		$email_notify = ($_POST['email_notify'] ? 99 : 1);
 		if(strstr($user, chr(1))){
@@ -348,7 +349,16 @@ if(IsSet($_POST['update_reply'])){
 
 		$sql -> db_Update("forum_t", "thread_thread='".$post."' WHERE thread_id=".$thread_id);
 		$sql -> db_Delete("cache", "cache_url='newforumposts'");
-		header("location: forum_viewtopic.php?".$forum_id.".".$_POST['thread_id']);
+
+		$sql -> db_Select("forum_t", "*", "thread_id=$thread_id");
+		$row = $sql -> db_Fetch(); extract($row);
+
+		$replies = $sql -> db_Count("forum_t", "(*)", "WHERE thread_parent='".$thread_parent."'");
+
+		$pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
+		$pages = ((ceil($replies/$pref['forum_postspage']) -1) * $pref['forum_postspage']);
+
+		header("location: forum_viewtopic.php?".$forum_id.".".$_POST['thread_id'].($pages ? ".$pages" : ""));
 		exit;
 	}
 }
@@ -370,10 +380,11 @@ if($action == "edit" || $action == "quote"){
 		}
 	}
 
+	//&lt;span class=&#39;smallblacktext&#39;>[ Edited Mon Jan 05 2004, 12:28PM ]&lt;/span>
 
 	$subject = $thread_name;
 	$post = $aj -> editparse($thread_thread);
-	$post = ereg_replace("\<span .*\<\/span\>", "", $post);
+	$post = ereg_replace("&lt;span class=&#39;smallblacktext&#39;.*\span\>", "", $post);
 	if($action == "quote"){
 		$post_author_name = substr($thread_user, (strpos($thread_user, ".")+1));
 		$post = "[quote=$post_author_name]".$post."[/quote]\n";

@@ -21,7 +21,7 @@ if(IsSet($_POST['add_headline'])){
 
 	$datestamp = time();
 	if($_POST['headline_url']){
-		$sql -> db_Insert("headlines", "0, '".$_POST['headline_url']."', '', '0', '', '".$_POST['headline_image']."', '".$_POST['activate']."' ", TRUE);
+		$sql -> db_Insert("headlines", "0, '".$_POST['headline_url']."', '', '0', '', '".$_POST['headline_image']."', '".$_POST['activate']."' ");
 		$message = NWFLAN_1;
 		unset($headline_url, $headline_image);
 	}else{

@@ -176,14 +176,14 @@ p {
 	border: #C3BDBD 1px solid;
 }
 .forumheader2{
-	background-color: #EFEFEF;
+	background-color: #E4EAF2;
 	font: 14px verdana, tahoma, arial, helvetica, sans-serif;
 	color:#000;
 	padding: 4px;
 	border: #C3BDBD 1px solid;
 }
 .forumheader3{
-	background-color: #E3E1E1;
+	background-color: #DFE6EF;
 	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
 	color:#000;
 	padding: 4px;
@@ -215,7 +215,7 @@ p {
 .bottommain{ width: 100%; background-repeat: repeat-x; background-image: url(images/bottom.png);}
 .bottomright{ width: 10px; background-image: url(images/bottomright.png); }
 .finfobar{
-	background-color: #CCC8C8;
+	background-color: #DBE5F5;
 	font: 15px verdana, tahoma, arial, helvetica, sans-serif;
 	color:#000;
 	padding: 4px;
@@ -247,4 +247,99 @@ a.forumlink{
 	background-color: #EEECEC;
 	font: 12px courier, arial, verdana, tahoma, helvetica, sans-serif;
 	color:#000040;
+}
+
+.nforumholder {
+	border: 1px solid #345487;
+	padding: 0px;
+	background-color: #fff;
+}
+
+.nforumcaption {
+	background-image: url(images/nforumcaption.png);
+	padding: 8px 4px 8px 4px;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #fff;
+}
+
+.nforumcaption2 {
+	background-image: url(images/nforumcaption2.png);
+	padding: 8px 0px 8px 4px;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #000;
+	font-weight: bold;
+}
+
+.nforumcaption3 {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-color: #E4EAF2;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumthread {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-color: #EEF2F7;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumthread2 {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-color: #D1DCEB;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumreplycaption {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-color: #E2EDF2;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumreply {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-color: #EDF4F7;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumreply2 {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-color: #CFE0EB;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+.nforumdisclaimer {
+	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#5d6e75;
+}
+
+.nforumview1 {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-color: #E4EAF2;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumview2 {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-color: #DFE6EF;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumview3 {
+	padding: 4px;
+	background-color: #BCD0ED;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #263448;
+}
+
+.nforumview4 {
+	padding: 4px;
+	background-color: #E4EAF2;
+	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #3A4F6C;
 }

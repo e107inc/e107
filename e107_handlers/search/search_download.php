@@ -13,7 +13,7 @@ if($results = $sql -> db_Select("download", "download_id, download_category, dow
                 $download_author_website = parsesearch($download_author_website, $query);
 
 
-                $text .= "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <a href=\"download_view.php?".$download_category.".".$download_id."\">".$download_name."</a><br />$download_description<br /><br />";
+                $text .= "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <a href=\"download.php?view.".$download_id."\">".$download_name."</a><br />$download_description<br /><br />";
 
         }
 }else{

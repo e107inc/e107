@@ -13,6 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
+
 if(!getperms("A")){ header("location:".e_BASE."index.php"); exit; }
 require_once("auth.php");
 
@@ -64,7 +65,14 @@ if($action == "confirm"){
 	if($thread_parent){ // is post a reply?
 		$sql -> db_Delete("forum_t", "thread_id='$thread_id' ");	// delete reply only
 		$sql -> db_Update("forum", "forum_replies=forum_replies-1 WHERE forum_id='$thread_forum_id' ");	// dec reply count by 1
-		$url = e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_parent;	// set return url
+		
+		$sql -> db_Select("forum_t", "*", "thread_id=$thread_id");
+		$row = $sql -> db_Fetch(); extract($row);
+		$replies = $sql -> db_Count("forum_t", "(*)", "WHERE thread_parent='".$thread_parent."'");
+		$pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
+		$pages = ((ceil($replies/$pref['forum_postspage']) -1) * $pref['forum_postspage']);
+		
+		$url = e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_parent.($pages ? ".$pages" : "");	// set return url
 		$message = FORLAN_26;
 	}else{	// post is thread
 		$sql -> db_Delete("poll", "poll_datestamp='$thread_id' ");	 // delete poll if there is one
