@@ -28,13 +28,13 @@ if(IsSet($_POST['emailsubmit'])){
 	 if($_POST['comment'] == ""){
 		 $message = LAN_188." ".SITENAME." (".SITEURL.")";
 		if(USER == TRUE){
-			$message .= "\n\nFrom ".USERNAME;
+			$message .= "\n\n".LAN_email_1." ".USERNAME;
 		}else{
-			$message .= "\n\nFrom: ".$_POST['author_name'];
+			$message .= "\n\n".LAN_email_1." ".$_POST['author_name'];
 		}
 	 }
 	$ip = getip();
-	$message .= "\n\nIP address of sender: ".$ip."\n\n";
+	$message .= "\n\n".LAN_email_2." ".$ip."\n\n";
 
 	if($table == "news"){
 		$sql -> db_Select("news", "*", "news_id='$id' ");
@@ -47,7 +47,7 @@ if(IsSet($_POST['emailsubmit'])){
 	}
 	if($error == ""){
 		require_once(e_HANDLER."mail.php");
-		if(sendemail($_POST['email_send'], "News item from ".SITENAME, $message)){
+		if(sendemail($_POST['email_send'], LAN_email_3.SITENAME, $message)){
 			$text = "<div class='center'>".LAN_10." ".$_POST['email_send']."</div>";
 		}else{
 			$text = "<div class='center'>".LAN_9."</div>";
@@ -74,7 +74,7 @@ $text .= "<tr>
 <td style='width:80%'>
 <textarea class='tbox' name='comment' cols='70' rows='4'>".($type == "news" ? LAN_188 : LAN_189)." ".SITENAME." (".SITEURL.")";
 if(USER == TRUE){
-	$text .= "\n\nFrom ".USERNAME;
+	$text .= "\n\n".LAN_email_1." ".USERNAME;
 }
 
 $text .= "</textarea>

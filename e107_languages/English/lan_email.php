@@ -17,4 +17,9 @@ define("LAN_187", "Email address to send to");
 define("LAN_188", "I thought you might be interested in this news story from");
 define("LAN_189", "I thought you might be interested in this article from");
 
+define("LAN_email_1", "From:");
+define("LAN_email_2", "IP address of sender:");
+define("LAN_email_3", "News item from ");
+
+
 ?>
