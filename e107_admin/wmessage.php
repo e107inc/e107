@@ -11,14 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/wmessage.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-02-04 13:08:23 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.14 $
+|     $Date: 2005-02-05 04:45:12 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 require_once(e_HANDLER.'e_parse_class.php');
-$aj = new e_parse;
 if (!getperms("M")) {
 	header("location:".e_BASE."index.php");
 	 exit;
@@ -27,9 +26,9 @@ $e_sub_cat = 'wmessage';
 
 require_once(e_HANDLER."preset_class.php");
 $pst = new e_preset;
-$pst->form = "wmform"; // form id of the form that will have it's values saved.
-$pst->page = "wmessage.php?create"; // display preset options on which page.
-$pst->id = "admin_wmessage"; // unique name for the preset
+$pst->form = "wmform";
+$pst->page = "wmessage.php?create";
+$pst->id = "admin_wmessage";
 require_once("auth.php");
 $pst->save_preset();  // save and render result
 
@@ -48,12 +47,12 @@ if (e_QUERY) {
 }
 
 if (isset($_POST['wm_update'])) {
-	$wm_text = $aj->toDB($_POST['wm_text']);
+	$wm_text = $tp->toDB($_POST['wm_text']);
 	$message = ($sql->db_Update("wmessage", "wm_text ='$wm_text', wm_active='".$_POST['wm_active']."' WHERE wm_id='".$_POST['wm_id']."' ")) ? LAN_UPDATED : LAN_UPDATED_FAILED;
 }
 
 if (isset($_POST['wm_insert'])) {
-	$wmtext = $aj->toDB($_POST['wm_text']);
+	$wmtext = $tp->toDB($_POST['wm_text']);
 	$message = ($sql->db_Insert("wmessage", "0, '$wmtext', '".$_POST['wm_active']."' ")) ? LAN_CREATED :  LAN_CREATED_FAILED ;
 }
 
@@ -65,7 +64,7 @@ if (isset($_POST['updateoptions'])) {
 }
 
 $deltest = array_flip($_POST);
-if (preg_match("#(.*?)_delete_(\d+)#", $deltest[$aj->toJS(LAN_DELETE)], $matches)) {
+if (preg_match("#(.*?)_delete_(\d+)#", $deltest[$tp->toJS(LAN_DELETE)], $matches)) {
 	$delete = $matches[1];
 	$del_id = $matches[2];
 }
@@ -101,7 +100,7 @@ if ($action == "main" || $action == "") {
 
 			$text .= "</td><td style='width:15%; text-align:center; white-space: nowrap' class='forumheader3'>";
 			$text .= $rs->form_button("button", "main_edit_{$wm_id}", LAN_EDIT, "onclick=\"document.location='".e_SELF."?create.edit.$wm_id'\"");
-			$text .= $rs->form_button("submit", "main_delete_".$wm_id, LAN_DELETE, "onclick=\"return confirm_('".$wm_id."')\"");
+			$text .= $rs->form_button("submit", "main_delete_".$wm_id, LAN_DELETE, "onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [ ID: $wm_id ]")."' )\"");
 			$text .= "</td>";
 			$text .= "</tr>";
 		}
@@ -122,8 +121,7 @@ if ($action == "create" || $action == "edit") {
 		extract($row);
 	}
 
-	if($sub_action != 'edit')
-	{
+	if ($sub_action != 'edit'){
 		$preset = $pst->read_preset("admin_wmessage");
 		extract($preset);
 	}
@@ -138,11 +136,11 @@ if ($action == "create" || $action == "edit") {
 
 		<td style='width:20%' class='forumheader3'>".WMLAN_04."</td>
 		<td style='width:60%' class='forumheader3'>
-		<textarea class='tbox' name='wm_text' cols='70' rows='10' style='width:90%'>".$wm_text."</textarea>
+		<textarea class='tbox' name='wm_text' cols='70' rows='10' style='width:90%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this)'>".$wm_text."</textarea>
 		<br />
-		<input class='helpbox' type='text' name='helpguest' size='100' />
+		<input id='helpb' class='helpbox' type='text' name='helpguest' size='100' />
 		<br />
-		".ren_help(1, "addtext1", "help1")."
+		".ren_help(1, "addtext", "help", "wmform")."
 		</td>
 
 		</tr>";
@@ -219,30 +217,6 @@ function wmessage_adminmenu() {
 
 	show_admin_menu(LAN_OPTIONS, $action, $var);
 }
-
-function headerjs() {
-	global $aj;
-
-	$headerj = "<script type='text/javascript'>
-		function addtext1(sc){
-		document.getElementById('wm_text').value += sc;
-		}
-
-		function fclear(){
-		document.newspostform.message.value = '';
-		}
-		function help1(help){
-		document.getElementById('wmform').helpguest.value = help;
-		}
-
-		function confirm_(link_id){
-		return confirm('".$aj->toJS(LAN_CONFIRMDEL." id:")." ' + link_id);
-		}
-		</script>";
-
-	return $headerj;
-}
-
 
 require_once("footer.php");
 ?>

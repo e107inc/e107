@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-02-04 08:22:58 $
+|     $Revision: 1.21 $
+|     $Date: 2005-02-05 04:45:12 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -123,31 +123,13 @@ if ($action == 'opt') {
 }
 
 require_once('footer.php');
-
-function headerjs() {
-	global $tp;
-	$headerjs = "<script type=\"text/javascript\">
-		function addtext(sc){
-		document.getElementById('linkform').link_button.value = sc;
-		}
-		</script>\n";
-
-	$headerjs .= "<script type=\"text/javascript\">
-		function confirm_(mode, link_id){
-		return confirm(\"".$tp->toJS(LCLAN_58)." \" + link_id);
-		}
-		</script>";
-
-	return $headerjs;
-}
-
 exit;
 
 // End ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 class links {
 	function show_existing_items() {
-		global $sql, $rs, $ns, $aj;
+		global $sql, $rs, $ns, $aj, $tp;
 		if ($link_total = $sql->db_Select("links", "*", "ORDER BY link_order, link_id ASC", "nowhere")) {
 			$text = $rs->form_open("post", e_SELF, "myform_{$link_id}", "", "");
 			$text .= "<div style='text-align:center'>
@@ -168,7 +150,7 @@ class links {
 				$text .= "</td><td style='width:60%' class='forumheader3' title='".$link_description."'>".$link_name."</td>";
 				$text .= "<td style='width:15%; text-align:center; white-space: nowrap' class='forumheader3'>";
 				$text .= $rs->form_button("button", "main_edit_{$link_id}", LCLAN_9, "onclick=\"document.location='".e_SELF."?create.edit.$link_id'\"");
-				$text .= $rs->form_button("submit", "main_delete_".$link_id, LCLAN_10, "onclick=\"return confirm_('create','".$link_name."')\"");
+				$text .= $rs->form_button("submit", "main_delete_".$link_id, LCLAN_10, "onclick=\"return jsconfirm('".$tp->toJS(LCLAN_58." [ $link_name ]")."')\"");
 				$text .= "</td>";
 				$text .= "<td style='width:10%; text-align:center' class='forumheader3'>".r_userclass("link_class[".$link_id."]", $link_class, "off", "public,guest,nobody,member,admin,classes")."</td>";
 				$text .= "<td style='width:5%; text-align:center; white-space: nowrap' class='forumheader3'>";
@@ -253,10 +235,10 @@ class links {
 
 			<br />
 			<input class='button' type ='button' style='cursor:hand' size='30' value='".LCLAN_39."' onclick='expandit(this)' />
-			<div style='display:none;{head}'>";
+			<div id='linkicn' style='display:none;{head}'>";
 
 		while (list($key, $icon) = each($iconlist)) {
-			$text .= "<a href='javascript:addtext(\"$icon\")'><img src='".e_IMAGE."link_icons/".$icon."' style='border:0' alt='' /></a> ";
+			$text .= "<a href=\"javascript:insertext('$icon','link_button','linkicn')\"><img src='".e_IMAGE."link_icons/".$icon."' style='border:0' alt='' /></a> ";
 		}
 
 		// 0 = same window

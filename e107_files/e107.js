@@ -5,6 +5,17 @@ if(parent.frames[0])
 parent.location.href = self.location.href;
 }
 /*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Javascript File.
+|
+|     $Source: /cvs_backup/e107_0.7/e107_files/e107.js,v $
+|     $Revision: 1.6 $
+|     $Date: 2005-02-05 04:46:06 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
+
+/*
  * NOTE: KEEP THIS AT THE TOP OF E107.JS!
  * localTime is recorded ASAP after page load; SyncWithServerTime is called at the END
  * of page processing. We want localTime and serverTime set in close chronological order.
@@ -73,6 +84,13 @@ function jsconfirm(thetext){
 		return confirm(thetext);
 }
 
+function insertext(str,tagid,display){
+        document.getElementById(tagid).value = str;
+        if(display){
+        	document.getElementById(display).style.display='none';
+        }
+}
+
 function open_window(url,type) {
 	if('full' == type){
 		pwindow = window.open(url);
@@ -103,6 +121,7 @@ function openwindow() {
 	opener = window.open("htmlarea/index.php", "popup","top=50,left=100,resizable=no,width=670,height=520,scrollbars=no,menubar=no");
 	opener.focus();
 }
+
 function setCheckboxes(the_form, do_check){
 	var elts = (typeof(document.forms[the_form].elements['perms[]']) != 'undefined') ? document.forms[the_form].elements['perms[]'] : document.forms[the_form].elements['perms[]'];
     var elts_cnt  = (typeof(elts.length) != 'undefined') ? elts.length : 0;
@@ -186,8 +205,12 @@ function addtext(text){
 	}
 }
 
-function help(help){
+function help(help,frmid){
+   	if(frmid){
+     document.getElementById(frmid).helpb.value = help;
+      } else{
 	document.getElementById('dataform').helpb.value = help;
+    }
 }
 function externalLinks() {
  if (!document.getElementsByTagName) return;
