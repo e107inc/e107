@@ -61,5 +61,7 @@ define("LAN_SIGNUP_1", "Min.");
 define("LAN_SIGNUP_2", "chars.");
 define("LAN_SIGNUP_4", "Your password must be at least ");
 define("LAN_SIGNUP_5", " characters long.");
+define("LAN_SIGNUP_6", "Your ");
+define("LAN_SIGNUP_7", " is required");
 
 ?>

@@ -53,6 +53,39 @@ $_uid = e_QUERY;
 require_once(HEADERF);
 
 if(IsSet($_POST['updatesettings'])){
+        // check prefs for required fields =================================.
+    $signupval = explode(".",$pref['signup_options']);
+    $signup_title = array(LAN_308,LAN_144,LAN_115,LAN_116,LAN_117,LAN_118,LAN_119,LAN_120,LAN_121,LAN_122);
+    $signup_name = array("realname","website","icq","aim","msn","birth_year","location","signature","image","timezone");
+
+        for ($i=0; $i<count($signup_title); $i++) {
+                $postvalue = $signup_name[$i];
+                if($signupval[$i]==2 && $_POST[$postvalue] == ""){
+                    $error .= LAN_SIGNUP_6."<b>".$signup_title[$i]."</b>".LAN_SIGNUP_7."<br>";
+                }
+        };
+
+
+        if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
+                $row = $sql -> db_Fetch();
+                $user_entended = unserialize($row[0]);
+                $c=0;
+                $user_pref = unserialize($user_prefs);
+                while(list($key, $u_entended) = each($user_entended)){
+                    if($u_entended){
+
+                        if($pref['signup_ext'.$key] ==2 && $_POST[str_replace(" ", "_", $u_entended)] == ""){
+                        $ut = explode("|",$u_entended);
+                        $u_name = ($ut[0] != "") ? trim($ut[0]) : trim($u_entended);
+                        $error_ext = LAN_SIGNUP_6."<b>".$u_name."</b>".LAN_SIGNUP_7;
+                        $error .= $error_ext."<br>";
+                        }
+
+                    }
+                }
+        }
+
+        // ====================================================================
 
         if($_POST['password1'] != $_POST['password2']){
                 $error .= LAN_105."<br />";
