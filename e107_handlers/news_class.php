@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.52 $
-| $Date: 2005-03-30 15:55:49 $
-| $Author: stevedunstan $
+| $Revision: 1.53 $
+| $Date: 2005-03-31 04:28:44 $
+| $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 
@@ -45,10 +45,10 @@ class news {
 		$news_extended = $tp->toDB($news_extended, TRUE);
 		$news_summary = $tp->toDB($news_summary, TRUE);
 		if(!isset($news_sticky)) {$news_sticky = 0;}
-		$insertime = ($update_datestamp) ? time() : mktime($ds_hour,$ds_min,$ds_sec,$ds_month,$ds_day,$ds_year);
+//		$insertime = ($update_datestamp) ? time() : mktime($ds_hour,$ds_min,$ds_sec,$ds_month,$ds_day,$ds_year);
 
 		if ($news_id) {
-			$vals = "news_datestamp = '$insertime', news_title='$news_title', news_body='$news_body', news_extended='$news_extended', news_category='$cat_id', news_allow_comments='$news_allow_comments', news_start='$active_start', news_end='$active_end', news_class='$news_class', news_render_type='$news_rendertype' , news_summary='$news_summary', news_attach='$attach', news_sticky=$news_sticky WHERE news_id='$news_id' ";
+			$vals = "news_datestamp = '$news_datestamp', news_title='$news_title', news_body='$news_body', news_extended='$news_extended', news_category='$cat_id', news_allow_comments='$news_allow_comments', news_start='$news_start', news_end='$news_end', news_class='$news_class', news_render_type='$news_rendertype' , news_summary='$news_summary', news_attach='$attach', news_sticky=$news_sticky WHERE news_id='$news_id' ";
 			if ($sql->db_Update("news", $vals)) {
 				$e_event->trigger("newsupd", $news);
 				$message = LAN_NEWS_21;
@@ -57,7 +57,7 @@ class news {
 				$message = "<strong>".LAN_NEWS_5."</strong>";
 			}
 		} else {
-			if ($sql->db_Insert("news", "0, '$news_title', '$news_body', '$news_extended', ".$insertime.", ".USERID.", $cat_id, $news_allow_comments, $active_start, $active_end, '$news_class', '$news_rendertype', 0 , '$news_summary', '$attach', $news_sticky ")) {
+			if ($sql->db_Insert("news", "0, '$news_title', '$news_body', '$news_extended', ".$insertime.", ".USERID.", $cat_id, $news_allow_comments, $news_start, $news_end, '$news_class', '$news_rendertype', 0 , '$news_summary', '$attach', $news_sticky ")) {
 				$e_event->trigger("newspost", $news);
 				$message = LAN_NEWS_6;
 				$e107cache->clear("news.php");
