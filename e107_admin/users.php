@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-02-14 04:02:37 $
+|     $Revision: 1.12 $
+|     $Date: 2005-02-21 04:31:11 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -38,9 +38,7 @@ if (e_QUERY) {
 }
 	
 $from = ($from ? $from : 0);
-$amount = 50;
-	
-	
+$amount = 30;
 	
 if (isset($_POST['resend_mail'])) {
 	$id = $_POST['resend_id'];
@@ -404,7 +402,7 @@ class users {
 	function show_existing_users($action, $sub_action, $id, $from, $amount) {
 		// ##### Display scrolling list of existing news items ---------------------------------------------------------------------------------------------------------
 		 
-		global $sql, $rs, $ns;
+		global $sql, $rs, $ns, $tp;
  
 		if ($sql->db_Select("userclass_classes")) {
 			while ($row = $sql->db_Fetch()) {
@@ -414,7 +412,7 @@ class users {
 		}
 		 
 		 
-		$text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>";
+		$text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; margin-left: auto; margin-right: auto;'>";
 		 
 		if (isset($_POST['searchquery'])) {
 			 
@@ -516,7 +514,6 @@ class users {
 				 
 				if ($user_perms != "0") {
 					$text .= "<option value='deluser'>".USRLAN_29."</option>";
-					//                                        $text .= $rs->form_button("submit", "main_$user_id", USRLAN_29, "onclick=\"confirm_('main', '$user_id', '$user_name');\"");
 				}
 				$text .= "</select></div>";
 				$text .= "</form></td></tr>";
@@ -527,21 +524,10 @@ class users {
 		$users = $sql->db_Count("user");
 		 
 		if ($users > $amount && !$_POST['searchquery']) {
-			$a = $users/$amount;
-			$r = explode(".", $a);
-			if ($r[1] != 0 ? $pages = ($r[0]+1) : $pages = $r[0]);
-			if ($pages) {
-				$current = ($from/$amount)+1;
-				$text .= "<br />".USRLAN_89." ";
-				for($a = 1; $a <= $pages; $a++) {
-					$text .= ($current == $a ? " <b>[$a]</b>" : " [<a href='".e_SELF."?".(e_QUERY ? "$action.$sub_action.$id." : "main.user_id.desc.").(($a-1) * $amount)."'>$a</a>] ");
-				}
-				$text .= "<br />";
-			}
+			$parms = "{$users}.{$amount}.{$from}.".e_SELF."?".(e_QUERY ? "$action.$sub_action.$id." : "main.user_id.desc.")."[FROM]";
+			$text .= "<br />".USRLAN_89." ".$tp->parseTemplate("{NEXTPREV={$parms}}");
 		}
-		 
 		$text .= "<br /><form method='post' action='".e_SELF."'>\n<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n<input class='button' type='submit' name='searchsubmit' value='".USRLAN_90."' />\n</p>\n</form>\n</div>";
-		 
 		$ns->tablerender(USRLAN_77, $text);
 		 
 	}
