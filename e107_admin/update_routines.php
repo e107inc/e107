@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-02-13 00:31:24 $
+|     $Revision: 1.36 $
+|     $Date: 2005-02-13 05:41:47 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -55,42 +55,6 @@ function update_61x_to_700($type) {
 	if ($type == "do") {
 		$sql->db_Update("userclass_classes", "userclass_editclass='254' WHERE userclass_editclass ='0' ");
 
-		mysql_query("ALTER TABLE ".MPREFUX."generic` CHANGE gen_chardata gen_chardata TEXT NOT NULL");
-		mysql_query("ALTER TABLE ".MPREFIX."banner CHANGE banner_active banner_active TINYINT(3) UNSIGNED NOT NULL DEFAULT '0'");
-		mysql_query('DROP TABLE `'.MPREFIX.'cache`'); // db cache is no longer an available option..
-		$sql->db_Update("banner", "banner_active='255' WHERE banner_active = '0' ");
-		$sql->db_Update("banner", "banner_active='0' WHERE banner_active = '1' ");
-		$sql->db_Update("wmessage", "wm_active='255' WHERE wm_active = '0' ");
-		$sql->db_Update("wmessage", "wm_active='252' WHERE wm_id = '1' AND wm_active='1' ");
-		$sql->db_Update("wmessage", "wm_active='253' WHERE wm_id = '2' AND wm_active='1' ");
-		$sql->db_Update("wmessage", "wm_active='254' WHERE wm_id = '3' AND wm_active='1' ");
-		mysql_query("ALTER IGNORE TABLE `".MPREFIX."wmessage` ADD UNIQUE INDEX(wm_id)");
-		mysql_query("ALTER TABLE `".MPREFIX."wmessage` CHANGE `wm_id` `wm_id` TINYINT( 3 ) UNSIGNED NOT NULL AUTO_INCREMENT");
-
-		/*
-		Changes by McFly 2/12/2005
-		Moving forum rules from wmessage table to generic table
-		*/
-
-		if($sql->db_Select("wmessage","*","wm_id > 3"))
-		{
-			while($row = $sql->db_Fetch())
-			{
-				$wmList[] = $row;
-			}
-			foreach($wmList as $wm)
-			{
-				if($wm['wm_id'] == '4') {$gen_type = 'forum_rules_guest';}
-				if($wm['wm_id'] == '5') {$gen_type = 'forum_rules_member';}
-				if($wm['wm_id'] == '6') {$gen_type = 'forum_rules_admin';}
-				$exists = $sql->db_Count('generic','(*)',"WHERE gen_type = '{$gen_type}'");
-				if(!$exists)
-				{
-					$sql->db_Insert('generic',"0,'$gen_type','".time()."','".USERID."','',{$wm['wm_active']},'{$wm['wm_text']}'");
-					$sql->db_Delete('wmessage',"WHERE wm_id = '{$wm['wm_id']}'");
-				}
-			}
-		}
 
 		/*
 		changes by jalist 19/01/05:
@@ -242,6 +206,62 @@ function update_61x_to_700($type) {
 				$sql2->db_Update('user', "user_class = '{$new_userclass}' WHERE user_id={$row['user_id']}");
 			}
 		}
+
+
+		mysql_query("ALTER TABLE ".MPREFIX."generic` CHANGE gen_chardata gen_chardata TEXT NOT NULL");
+		mysql_query("ALTER TABLE ".MPREFIX."banner CHANGE banner_active banner_active TINYINT(3) UNSIGNED NOT NULL DEFAULT '0'");
+		mysql_query('DROP TABLE `'.MPREFIX.'cache`'); // db cache is no longer an available option..
+		$sql->db_Update("banner", "banner_active='255' WHERE banner_active = '0' ");
+		$sql->db_Update("banner", "banner_active='0' WHERE banner_active = '1' ");
+		$sql->db_Update("wmessage", "wm_active='255' WHERE wm_active = '0' ");
+		$sql->db_Update("wmessage", "wm_active='252' WHERE wm_id = '1' AND wm_active='1' ");
+		$sql->db_Update("wmessage", "wm_active='253' WHERE wm_id = '2' AND wm_active='1' ");
+		$sql->db_Update("wmessage", "wm_active='254' WHERE wm_id = '3' AND wm_active='1' ");
+		mysql_query("ALTER IGNORE TABLE `".MPREFIX."wmessage` ADD UNIQUE INDEX(wm_id)");
+		mysql_query("ALTER TABLE `".MPREFIX."wmessage` CHANGE `wm_id` `wm_id` TINYINT( 3 ) UNSIGNED NOT NULL AUTO_INCREMENT");
+
+		/*
+		Changes by McFly 2/12/2005
+		Moving forum rules from wmessage table to generic table
+		*/
+
+		if($sql->db_Select("wmessage"))
+		{
+			while($row = $sql->db_Fetch())
+			{
+				$wmList[] = $row;
+			}
+			foreach($wmList as $wm)
+			{
+				$gen_type='wmessage';
+				if($wm['wm_id'] == '4') {$gen_type = 'forum_rules_guest';}
+				if($wm['wm_id'] == '5') {$gen_type = 'forum_rules_member';}
+				if($wm['wm_id'] == '6') {$gen_type = 'forum_rules_admin';}
+				$fieldlist = "";
+				if($gen_type != "wmessage")
+				{
+					$exists = $sql->db_Count('generic','(*)',"WHERE gen_type = '{$gen_type}'");
+					if(!$exists)
+					{
+						$fieldlist = "0,'$gen_type','".time()."','".USERID."','',{$wm['wm_active']},'{$wm['wm_text']}'";
+					}
+				}
+				else
+				{
+					if($wm['wm_id'] == '1') {$wm_class = e_UC_GUEST;}
+					if($wm['wm_id'] == '2') {$wm_class = e_UC_MEMBER;}
+					if($wm['wm_id'] == '3') {$wm_class = e_UC_ADMIN;}
+					$fieldlist = "0,'wmessage','".time()."','".USERID."','',{$wm_class},'{$wm['wm_text']}'";
+				}
+				if($fieldlist)
+				{
+					$sql->db_Insert('generic',$fieldlist);
+				}
+				$sql->db_Delete('wmessage',"WHERE wm_id = '{$wm['wm_id']}'");
+			}
+		}
+		mysql_query('DROP TABLE '.MPREFIX.'wmessage');  // table wmessage is no longer needed.
+
 		// ############# END McFly's Updates  ##############
 
 		// start chatbox update -------------------------------------------------------------------------------------------

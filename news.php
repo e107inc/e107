@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2005-02-12 07:57:14 $
-|     $Author: e107coders $
+|     $Revision: 1.39 $
+|     $Date: 2005-02-13 05:42:05 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -121,11 +121,11 @@ if ($action == "extend") {
 
 // --->wmessage
 if (!$pref['wmessage_sc']) {
-if (!defined("WMFLAG")) {
-	$sql->db_Select("wmessage", "*", "ORDER BY wm_active ASC", "nowhere");
-	while ($row = $sql->db_Fetch()) {
-		if (check_class($row['wm_active'])) {
-			$wmessage .= $tp->toHTML($row['wm_text'], TRUE, 'parse_sc')."<br />";
+	if (!defined("WMFLAG")) {
+		$sql->db_Select("generic", "gen_chardata", "gen_type='wmessage' AND gen_intdata IN (".USERCLASS_LIST.") ORDER BY gen_intdata ASC");
+		while($row = $sql->db_Fetch())
+		{
+			$wmessage .= $tp->toHTML($row['gen_chardata'], TRUE, 'parse_sc')."<br />";
 		}
 	}
 	if ($wmessage) {
@@ -135,7 +135,6 @@ if (!defined("WMFLAG")) {
 			echo $wmessage;
 		}
 	}
-}
 }
 // --->wmessage end
 
