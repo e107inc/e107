@@ -33,27 +33,29 @@ while($row = $sql -> db_Fetch()){
 	extract($row);
 	$link_name=strip_tags($link_name);
 	if($sql2 -> db_Select("links", "*", "link_name REGEXP('submenu.".$link_name."') ORDER BY link_order")){
-		$mlink_name = $link_name;
-		$text .= "
-		<div class='spacer'>
-		<div class='button' style='width:100%; cursor: pointer; cursor: hand' onClick='expandit(this);updatecook(\"".$link_name."\");' >&raquo; ".$link_name."</div>
-		<span style=\"display:none\" style=&{head}; id=\"span_".$link_name."\">
-		";
-		
-		while($row = $sql2 -> db_Fetch()){
-			extract($row);
-			$link_name = str_replace("submenu.".$mlink_name.".", "", $link_name);
-			$text .= "&middot; ".(strstr($link_url, "http") ? setlink($link_name, $link_url, $link_class, $link_open) : setlink($link_name, $link_url, $link_class, $link_open))."\n<br />";
+		if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
+			$mlink_name = $link_name;
+			$text .= "
+			<div class='spacer'>
+			<div class='button' style='width:100%; cursor: pointer; cursor: hand' onClick='expandit(this);updatecook(\"".$link_name."\");' >&raquo; ".$link_name."</div>
+			<span style=\"display:none\" style=&{head}; id=\"span_".$link_name."\">";			
+			while($row = $sql2 -> db_Fetch()){
+				extract($row);
+				if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
+					$link_name = str_replace("submenu.".$mlink_name.".", "", $link_name);
+					$text .= "&middot; ".(strstr($link_url, "http") ? setlink($link_name, $link_url, $link_open) : setlink($link_name, $link_url, $link_open))."\n<br />";
+				}
+			}
+			$text .= "</span></div>";
 		}
-		$text .= "</span>
-		</div>
-		";
-	}else{
-		$text .= "<div class='spacer'><div class='button' style='width:100%; cursor: pointer; cursor: hand' onClick=\"clearcook();\">&middot; ".
-		(strstr($link_url, "http") ? setlink($link_name, $link_url, $link_class, $link_open) : setlink($link_name, $link_url, $link_class, $link_open))."
-		</div></div>";
-	}
-}
+			}else{		
+				if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
+					$text .= "<div class='spacer'><div class='button' style='width:100%; cursor: pointer; cursor: hand' onClick=\"clearcook();\">&middot; ".
+					(strstr($link_url, "http") ? setlink($link_name, $link_url, $link_open) : setlink($link_name, $link_url, $link_open))."
+					</div></div>";
+				}
+			}
+		}
 
 $text .= "
 <sc"."ript>
@@ -86,8 +88,7 @@ $text .= "</sc"."ript>
 $ns -> tablerender(LAN_183, $text);
 
 
-function setlink($link_name, $link_url, $link_class, $link_open){
-	if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
+function setlink($link_name, $link_url, $link_open){
 		switch ($link_open){ 
 			case 1:
 				$link_append = " onclick=\"window.open('$link_url'); return false;\"";
@@ -107,7 +108,6 @@ function setlink($link_name, $link_url, $link_class, $link_open){
 		}else{
 			$link =  "<a style='text-decoration:none' href=\"".$link_url."\"".$link_append.">".$link_name."</a>\n";
 		}
-	}
 	return $link;
 }
 
