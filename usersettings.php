@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-03-15 03:04:15 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.14 $
+|     $Date: 2005-03-15 13:40:00 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 	
@@ -28,7 +28,7 @@ if (isset($_POST['sub_news'])) {
 }
 	
 if (isset($_POST['sub_link'])) {
-	header("location:".e_BASE."links.php?submit");
+	header("location:".e_PLUGIN."links_page/links.php?submit");
 	exit;
 }
 	
