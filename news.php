@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.51 $
-|     $Date: 2005-02-23 21:05:21 $
+|     $Revision: 1.52 $
+|     $Date: 2005-02-24 08:11:25 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -67,13 +67,13 @@ if ($action == 'cat' || $action == 'all'){
 		extract($row);  // still required for the table-render.  :(
 	}
 	if ($action == 'all'){
-		if(!defined("ALLITEMS")){ define("ALLITEMS",10); }
+		if(!defined("NEWSALL_LIMIT")){ define("NEWSALL_LIMIT",10); }
 		// show archive of all news items using list-style template.
 		$news_total = $sql->db_Count("news", "(*)", "WHERE news_class IN (".USERCLASS_LIST.")");
 		$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")  ORDER BY n.news_datestamp DESC LIMIT $from,".ALLITEMS;
+		WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")  ORDER BY n.news_datestamp DESC LIMIT $from,".NEWSALL_LIMIT;
 		$category_name = "All";
 	}
 	elseif ($action == 'cat'){
@@ -117,7 +117,7 @@ if ($action == 'cat' || $action == 'all'){
 		$text .= $ix->parse_newstemplate($row,$NEWSLISTSTYLE,$param);
 	}
 
-	$amount = ($action == "all") ? ALLITEMS : NEWSLIST_LIMIT;
+	$amount = ($action == "all") ? NEWSALL_LIMIT : NEWSLIST_LIMIT;
 
 	$icon = ($row['category_icon']) ? "<img src='".e_IMAGE."icons/".$row['category_icon']."' alt='' />" : "";
 	$parms = $news_total.",".$amount.",".$from.",".e_SELF.'?'.$action.".".$sub_action.".[FROM]";
@@ -150,8 +150,7 @@ if ($action == "extend") {
 if (!$pref['wmessage_sc']) {
 	if (!defined("WMFLAG")) {
 		$sql->db_Select("generic", "gen_chardata", "gen_type='wmessage' AND gen_intdata IN (".USERCLASS_LIST.") ORDER BY gen_intdata ASC");
-		while($row = $sql->db_Fetch())
-		{
+		while ($row = $sql->db_Fetch()){
 			$wmessage .= $tp->toHTML($row['gen_chardata'], TRUE, 'parse_sc')."<br />";
 		}
 	}
@@ -165,18 +164,15 @@ if (!$pref['wmessage_sc']) {
 }
 // --->wmessage end
 
-if (isset($pref['nfp_display']) && $pref['nfp_display'] == 1)
-{
+if (isset($pref['nfp_display']) && $pref['nfp_display'] == 1){
 	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 }
 
-if (Empty($order))
-{
+if (Empty($order)){
 	$order = "news_datestamp";
 }
 
-if ($action == "list")
-{
+if ($action == "list"){
 	$sub_action = intval($sub_action);
 	$news_total = $sql->db_Count("news", "(*)", "WHERE news_category=$sub_action AND news_class IN (".USERCLASS_LIST.") AND news_render_type!=2");
 	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
@@ -393,8 +389,7 @@ if ($action != "item" && $action != 'list' && $pref['newsposts_archive']) {
 // #### END -----------------------------------------------------------------------------------------------------------
 
 if ($action != "item") {
-	if(is_numeric($action))
-	{
+	if (is_numeric($action)){
 		$action = "";
 	}
 	$parms = $news_total.",".ITEMVIEW.",".$from.",".e_SELF.'?'."[FROM].".$action.".".$sub_action;
