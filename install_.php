@@ -97,6 +97,7 @@ function stage2(){
         <td style='width:33%' class='installboxgeneric'>".phpversion()."</td>";
         $verreq = str_replace(".","", "4.0.6");
         $server = str_replace(".","", phpversion());
+		if(strlen($server) < 3) {$server = $server."0";} 
         if($server <= $verreq){
                 $error[0] = TRUE;
                 $text .= "<td style='width:33%' class='installboxfail'>* ".INSLAN4." *</td>
