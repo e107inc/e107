@@ -175,9 +175,9 @@ $text = "";
 		<input class='tbox' type='password' name='userpass' size='15' value='' maxlength='40' />\n\n<br />\n
 		";
 		if($use_imagecode){
-			$text .= "<input type='hidden' name='rand_num' value='".$sec_img -> random_number."'>";
+			$text .= "<input type='hidden' name='rand_num' value='".$sec_img -> random_number."' />";
 			$text .= $sec_img -> r_image();
-			$text .= "<br /><input class='tbox' type='text' name='code_verify' size='15' maxlength='20'><br />";
+			$text .= "<br /><input class='tbox' type='text' name='code_verify' size='15' maxlength='20' /><br />";
 		}
 		$text .= "			
 		<input class='button' type='submit' name='userlogin' value='".LOGIN_MENU_L28."' />\n\n
