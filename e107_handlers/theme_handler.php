@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-03-17 09:01:47 $
+|     $Revision: 1.14 $
+|     $Date: 2005-03-21 12:28:40 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -122,6 +122,13 @@ class themeHandler{
 						$themeArray[$file]['date'] = $match[2];
 						preg_match('/themeinfo(\s=\s|=|\s=|=\s)"(.*?)";/', $themeContents, $match);
 						$themeArray[$file]['info'] = $match[2];
+
+						preg_match('/xhtmlcompliant(\s=\s|=|\s=|=\s)(.*?);/', $themeContents, $match);
+						$themeArray[$file]['xhtmlcompliant'] = $match[2];
+
+						preg_match('/csscompliant(\s=\s|=|\s=|=\s)(.*?);/', $themeContents, $match);
+						$themeArray[$file]['csscompliant'] = $match[2];
+
 					}
 					closedir($handle2);
 				}
@@ -383,6 +390,18 @@ class themeHandler{
 			</td>
 			</table>\n";
 		}
+
+
+		if($theme['xhtmlcompliant'])
+		{
+			$text .= "<img src='".e_IMAGE."generic/valid-xhtml11_small.png' alt='' style='border: 0;' /> ";
+		}
+
+		if($theme['csscompliant'])
+		{
+			$text .= "<img src='".e_IMAGE."generic/vcss_small.png' alt='' style='border: 0;' /> ";
+		}
+
 
 		$text .= "</td></tr></table>\n";
 		return $text;
