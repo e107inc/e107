@@ -2,7 +2,6 @@
 /*
 +---------------------------------------------------------------+
 |        e107 website system
-|        /admin/newspost.php
 |
 |        ©Steve Dunstan 2001-2002
 |        http://e107.org
@@ -10,8 +9,13 @@
 |
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
+|
+|   $Source: /cvs_backup/e107/e107_admin/newspost.php,v $
+|   $Revision: 1.39 $
+|   $Date: 2004-08-13 02:39:39 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
-$Id: newspost.php,v 1.38 2004-08-11 09:26:23 e107coders Exp $ 
+
 */
 require_once("../class2.php");
 if($pref['htmlarea']){
@@ -247,14 +251,18 @@ class newspost{
                         </tr>";
                         while($row = $sql -> db_Fetch()){
                                 extract($row);
+
+                        // Note: To fix the alignment bug. Put both buttons inside the Form.
+                        // But make EDIT a 'button' and DELETE 'submit'
+
                                 $text .= "<tr>
                                 <td style='width:5%' class='forumheader3'>$news_id</td>
                                 <td style='width:75%' class='forumheader3'><a href='".e_BASE."comment.php?comment.news.$news_id'>".($news_title ? $aj -> tpa($news_title) : "[".NWSLAN_42."]")."</a></td>
                                 <td style='width:20%; text-align:center' class='forumheader3'>
-                                                                                  ".$rs -> form_button("submit", "main_edit_{$news_id}", NWSLAN_7, "onclick=\"document.location='".e_SELF."?create.edit.$news_id'\"")."
-                                ".$rs -> form_open("post", e_SELF,"","",""," onsubmit=\"return confirm_('create',$news_id)\"")."
+                                ".$rs -> form_open("post", e_SELF,"myform__{$news_id}","",""," onsubmit=\"return confirm_('create',$news_id)\"")."
+                                <div>".$rs -> form_button("button", "main_edit_{$news_id}", NWSLAN_7, "onclick=\"document.location='".e_SELF."?create.edit.$news_id'\"")."
                                 ".$rs -> form_button("submit", "main_delete_{$news_id}", NWSLAN_8)."
-                                ".$rs -> form_close()."
+                                </div>".$rs -> form_close()."
                                 </td>
                                 </tr>";
                         }
@@ -678,10 +686,10 @@ class newspost{
                                 <td style='width:5%; text-align:center' class='forumheader3'><img src='$icon' alt='' style='vertical-align:middle' /></td>
                                 <td style='width:75%' class='forumheader3'>$category_name</td>
                                 <td style='width:20%; text-align:center' class='forumheader3'>
-                                ".$rs -> form_button("submit", "category_edit_{$category_id}", NWSLAN_7, "onclick=\"document.location='".e_SELF."?cat.edit.$category_id'\"")."
-                                ".$rs -> form_open("post", e_SELF."?cat","","",""," onsubmit=\"return confirm_('cat',$category_id)\"")."
+                                ".$rs -> form_open("post", e_SELF."?cat","myform__{$category_id}","",""," onsubmit=\"return confirm_('cat',$category_id)\"")."
+                                <div>".$rs -> form_button("button", "category_edit_{$category_id}", NWSLAN_7, "onclick=\"document.location='".e_SELF."?cat.edit.$category_id'\"")."
                                 ".$rs -> form_button("submit", "category_delete_{$category_id}", NWSLAN_8)."
-                                ".$rs -> form_close()."
+                                </div>".$rs -> form_close()."
 
 
                                 </td>
@@ -890,10 +898,11 @@ class newspost{
                                 $text .=" [ ".NWSLAN_104." $submitnews_name on ".date("D dS M y, g:ia",$submitnews_datestamp)."]<br />".$aj -> tpa($submitnews_item)."</td>
                                 <td style='width:25%; text-align:right; vertical-align:top' class='forumheader3'>";
                                 $buttext = ($submitnews_auth == 0)? NWSLAN_58 : NWSLAN_103;
-                                $text .= $rs -> form_button("submit", "category_edit_{$submitnews_id}", $buttext, "onclick=\"document.location='".e_SELF."?create.sn.$submitnews_id'\"")."
-                                ".$rs -> form_open("post", e_SELF."?sn","","",""," onsubmit=\"return confirm_('sn',$submitnews_id)\"")."
+                                $text .=
+                                $rs -> form_open("post", e_SELF."?sn","myform__{$submitnews_id}","",""," onsubmit=\"return confirm_('sn',$submitnews_id)\"")
+                                ."<div>".$rs -> form_button("button", "category_edit_{$submitnews_id}", $buttext, "onclick=\"document.location='".e_SELF."?create.sn.$submitnews_id'\"")."
                                 ".$rs -> form_button("submit", "sn_delete_{$submitnews_id}", NWSLAN_8)."
-                                ".$rs -> form_close()."
+                                </div>".$rs -> form_close()."
                                 </td>
                                 </tr>\n";
                         }
