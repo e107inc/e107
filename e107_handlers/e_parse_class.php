@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-02-14 19:21:06 $
+|     $Revision: 1.29 $
+|     $Date: 2005-02-18 17:58:38 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -101,24 +101,10 @@ class e_parse {
 	{
 		$text = trim ($text);
 		$text = str_replace ("\n\n\n", "\n\n", $text);
-		list ($words) = array (explode (" ", $text));
-		$text = "";
-		foreach ($words as $word)
-		{ 
-			if ((strlen($word) > $wrap) && !ereg("[[|]|//|href|<img|&#]", $word))
-			{
-				$word = wordwrap ($word, $wrap, "<br />", 1); 
-			}
-			$text .= " " . $word; 
-		}
+		$text = ereg_replace("([^ \/]{".$wrap."})","\\1<wbr>",$text);
 		$text = str_replace (array ('<br> ', ' <br>', ' <br> '), '<br>', $text);
 		return trim ($text); 
 	}
-
-	function linewrap ($text, $wrap=150) {
-		return eregi_replace("([^ <>\"\\-]{".$wrap."})"," \\1 ",$text);
-	}
-
 	 
 	function toHTML($text, $parseBB = FALSE, $modifiers = "", $postID = "", $wrap=100) {
 		if ($text == '')
