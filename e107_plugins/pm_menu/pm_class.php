@@ -313,7 +313,8 @@ class pm {
 	# Return -	String, entire form
 	*/
 		require_once(e_HANDLER."emote.php");
-		require_once(e_HANDLER."shortcuts.php");
+//		require_once(e_HANDLER."shortcuts.php");
+		require_once(e_HANDLER."ren_help.php");
 		$pm_sql=new db;
 		$ret="";
 		global $pref;
@@ -384,7 +385,7 @@ function help(help){
 		$ret.="<tr><td class='forumheader3'>".PMLAN_29."</td><td class='forumheader3'><input class='tbox' type='text' name='subject' value='".$pm_subject."'></td></tr>\n";
 		$ret.="<tr><td class='forumheader3'>".PMLAN_30."</td><td class='forumheader3'><textarea name='pm_text' rows='10' cols='50' class='tbox'>".$pm_message."</textarea>
 		<br />
-		".shortcuts("addtext")."
+		".ren_help("addtext")."
 		</td></tr>";
 		
 		if($pref['smiley_activate']==1){
