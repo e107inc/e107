@@ -86,8 +86,8 @@ set_error_handler("error_handler");
 if(!$mySQLuser){ header("location:install.php"); exit; }
 define("MPREFIX", $mySQLprefix);
 
-require_once(e_HANDLER."message_handler.php");
-require_once(e_HANDLER."mysql_class.php");
+@require_once(e_HANDLER."message_handler.php");
+@require_once(e_HANDLER."mysql_class.php");
 
 $sql = new db;
 $sql -> db_SetErrorReporting(FALSE);
@@ -127,7 +127,7 @@ if(!is_array($pref)){
 }
 
 if(!$pref['cookie_name']){ $pref['cookie_name'] = "e107cookie"; }
-//if($pref['user_tracking'] == "session"){ require_once(e_HANDLER."session_handler.php"); }        // if your server session handling is misconfigured uncomment this line and comment the next to use custom session handler
+//if($pref['user_tracking'] == "session"){ @require_once(e_HANDLER."session_handler.php"); }        // if your server session handling is misconfigured uncomment this line and comment the next to use custom session handler
 if($pref['user_tracking'] == "session"){ session_start(); }
 
 define("e_SELF", ($pref['ssl_enabled'] ? "https://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']) : "http://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'])));
@@ -195,7 +195,7 @@ define("e_LANGUAGE", (!USERLAN || !defined("USERLAN") ? $language : USERLAN));
 
 if($pref['maintainance_flag'] && ADMIN == FALSE && !eregi("admin", e_SELF)){
         @include(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitedown.php");
-        require_once(e_BASE."sitedown.php"); exit;
+        @require_once(e_BASE."sitedown.php"); exit;
 }
 
 if(defined("CORE_PATH") && ($page == "index.php" || !$page)){ $page = "news.php"; }
@@ -209,7 +209,7 @@ if(strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin.php")){
 }
 
 if(IsSet($_POST['userlogin'])){
-        require_once(e_HANDLER."login.php");
+        @require_once(e_HANDLER."login.php");
         $usr = new userlogin($_POST['username'], $_POST['userpass'], $_POST['autologin']);
 }
 
@@ -238,13 +238,27 @@ if(strstr(e_SELF, $ADMIN_DIRECTORY) && $pref['admintheme'] && !$_POST['sitetheme
                 define("THEME", e_THEME.$pref['admintheme']."/");
         }
 } else {
-        if(USERTHEME != FALSE && USERTHEME != "USERTHEME"){
-                define("THEME", (@fopen(e_THEME.USERTHEME."/theme.php", r) ? e_THEME.USERTHEME."/" : e_THEME."e107/"));
+         if(USERTHEME != FALSE && USERTHEME != "USERTHEME"){
+                if(@fopen(e_THEME.USERTHEME."/theme.php", r)){
+					define("THEME", e_THEME.USERTHEME."/");
+				}else{
+					@require_once(e_HANDLER."debug_handler.php");
+					$e107tmp_theme = search_validtheme();
+					define("THEME", e_THEME.$e107tmp_theme."/");
+					if(ADMIN && !strstr(e_SELF,$ADMIN_DIRECTORY)){echo '<script>alert("'.CORE_LAN1.'")</script>';}
+				}
         } else {
-                define("THEME", (@fopen(e_THEME.$pref['sitetheme']."/theme.php", r) ? e_THEME.$pref['sitetheme']."/" : e_THEME."e107/"));
+                if(@fopen(e_THEME.$pref['sitetheme']."/theme.php", r)){
+					define("THEME", e_THEME.$pref['sitetheme']."/");
+				}else{
+					@require_once(e_HANDLER."debug_handler.php");
+					$e107tmp_theme = search_validtheme();
+					define("THEME", e_THEME.$e107tmp_theme."/");
+					if(ADMIN && !strstr(e_SELF,$ADMIN_DIRECTORY)){echo '<script>alert("'.CORE_LAN1.'")</script>';}
+				}
         }
 }
-require_once(THEME."theme.php");
+@require_once(THEME."theme.php");
 
 if($pref['anon_post'] ? define("ANON", TRUE) : define("ANON", FALSE));
 if(Empty($pref['newsposts']) ? define("ITEMVIEW", 15) : define("ITEMVIEW", $pref['newsposts']));
@@ -264,9 +278,9 @@ define("INIT", TRUE);
 
 define("e_ADMIN", $e_BASE.$ADMIN_DIRECTORY);
 
-//require_once(e_HANDLER."IPB_int.php");
+//@require_once(e_HANDLER."IPB_int.php");
 
-//require_once(e_HANDLER."debug_handler.php");
+//@require_once(e_HANDLER."debug_handler.php");
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
