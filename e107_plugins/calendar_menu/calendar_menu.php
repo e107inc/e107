@@ -11,12 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar_menu.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-17 18:07:23 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-28 20:03:48 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
-	
+if(!defined("e_PLUGIN")){ exit; }
 $ec_dir = e_PLUGIN."calendar_menu/";
 //$lan_file = $ec_dir."languages/".e_LANGUAGE.".php";
 //include(file_exists($lan_file) ? $lan_file : e_PLUGIN."calendar_menu/languages/English.php");

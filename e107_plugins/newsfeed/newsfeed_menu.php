@@ -11,11 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/newsfeed_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-28 18:23:56 $
+|     $Revision: 1.2 $
+|     $Date: 2005-02-28 20:03:51 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
+if(!defined("e_PLUGIN")){ exit; }
 if(!function_exists("checkUpdate"))
 {
 	require(e_PLUGIN."newsfeed/newsfeed_functions.php");

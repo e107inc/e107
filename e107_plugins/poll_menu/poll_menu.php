@@ -11,12 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll_menu/poll_menu.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-27 19:53:15 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-28 20:04:08 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
-	
+if(!defined("e_HANDLER")){ exit; }
 require_once(e_HANDLER."poll_class.php");
 	
 if ($sql->db_Select("poll", "*", "poll_active='1' OR poll_active='2' ")) {

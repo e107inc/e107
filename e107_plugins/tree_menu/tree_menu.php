@@ -12,12 +12,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/tree_menu/tree_menu.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-02-13 16:31:30 $
+|     $Revision: 1.14 $
+|     $Date: 2005-02-28 20:04:10 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
-	
+if(!defined("e_PLUGIN")){ exit; }
 /* Modification to keep menu status during navigation on the site
 - Call the language file (only used for title !!! Maybe this title can be included in the default language file)
 - Add a HTML id to the span tags (menus) : span_$link_name

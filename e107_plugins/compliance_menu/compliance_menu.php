@@ -1,4 +1,7 @@
 <?php
+
+if(!defined("THEME")){ exit; }
+
 $text = "<div style='text-align:center'>
 	<a href='http://validator.w3.org/check?uri=".e_SELF.(e_QUERY ? '?'.e_QUERY : '')."'><img style='border:0' src='".e_PLUGIN."compliance_menu/images/valid-xhtml11.png' alt='Valid XHTML 1.1!' height='31' width='88' /></a>
 	<br />
