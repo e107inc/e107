@@ -16,17 +16,19 @@
 
 require_once("class2.php");
 
-     require_once(HEADERF);
-
-     if($pref['subnews_htmlarea']){
-     require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
-      htmlarea("item");
-      }
-     if(!check_class($pref['subnews_class'])){
-     $ns -> tablerender(NWSLAN_12,NWSLAN_11);
-     require_once(FOOTERF);
-     exit;
-     }
+require_once(HEADERF);
+if($pref['subnews_htmlarea']){
+	require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
+	htmlarea("item");
+}
+if(!isset($pref['subnews_class'])){
+	$pref['subnews_class']="0";
+}
+if(!check_class($pref['subnews_class'])){
+	$ns -> tablerender(NWSLAN_12,NWSLAN_11);
+	require_once(FOOTERF);
+	exit;
+}
 
 $author_name=textparse::tpj($_POST['author_name'],TRUE);
 $author_email=check_email($_POST['author_email']);
