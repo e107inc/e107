@@ -2,9 +2,9 @@
 /*
 +---------------------------------------------------------------+
 |        e107 website system
-|        /themes/templates/templateh.php
+|        /e107_themes/templates/header_default.php
 |
-|        ©Steve Dunstan 2001-2002
+|        ©Steve Dunstan 2001-2004
 |        http://jalist.com
 |        stevedunstan@jalist.com
 |
@@ -25,12 +25,10 @@ if(file_exists(e_FILE."style.css")){ echo "\n<link rel='stylesheet' href='".e_FI
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=".CHARSET."\" />
 <meta http-equiv=\"content-style-type\" content=\"text/css\" />
 ".($pref['meta_tag'] ? $aj -> formtparev($pref['meta_tag'])."\n" : "");
-/*
-if(eregi("forum_post.php", e_SELF) && ($_POST['reply'] || $_POST['newthread'])){
+if(eregi("forum_post.php", e_SELF) && ($_POST['reply'] || $_POST['newthread'] && $pref['forum_redirect'])){
         $tmp = explode(".", e_QUERY);
         echo "<meta http-equiv=\"refresh\" content=\"5;url='".e_BASE."forum_viewforum.php?".$tmp[1]."'>\n";
 }
-*/
 echo "<script type='text/javascript' src='".e_FILE."e107.js'></script>";
 if(file_exists(THEME."theme.js")){echo "<script type='text/javascript' src='".THEME."theme.js'></script>";}
 if(file_exists(e_FILE."user.js")){echo "<script type='text/javascript' src='".e_FILE."user.js'></script>\n";}
