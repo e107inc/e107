@@ -14,9 +14,8 @@ if($results = $sql -> db_Select("content", "*", "content_type=3 AND content_clas
 			$content_subheading_ = $content_subheading_;
 		}
 		$content_content_ = parsesearch($content_content, $query);
-		$action = "content.php?review.".$content_id."";
-		$text .= "\n<br /><form method='post' action='$action' name='review_".$c."'>
-				\n<input type='hidden' name='highlight_search' value='1' /><input type='hidden' name='search_query' value='$query' /><img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <b><a href='javascript:this.review_".$c.".submit()'>".$content_heading_."</a></b> </form><br />".$content_subheading_.$content_content_;
+		$text .= "\n<br /><form method='post' action='content.php?review.".$content_id."' id='review_".$c."'>
+				\n<input type='hidden' name='highlight_search' value='1' /><input type='hidden' name='search_query' value='$query' /><img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <b><a href='javascript:document.getElementById(\"review_".$c."\").submit()'>".$content_heading_."</a></b> </form><br />".$content_subheading_.$content_content_;
 	}
 }else{
 	$text .= LAN_198;
