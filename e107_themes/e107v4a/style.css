@@ -77,7 +77,7 @@ blockquote {
 	color: #000;
 	font: normal 9px verdana, tahoma, arial, helvetica, sans-serif;
 	text-align:center;
-	padding : 2px, 2px, 2px, 2px;
+	padding : 2px;
 	background-image : url(images/button.png);
 }
 .button{
@@ -120,7 +120,7 @@ hr {
 	border: #000 1px solid;
 }
 .helpbox {
-	border: transparent;
+	border: 0px;
 	background-color: transparent;
 	color:#000;
 	font: 9px tahoma, verdana, arial, helvetica, sans-serif;
