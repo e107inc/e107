@@ -45,13 +45,22 @@ if(IsSet($_POST['addemote'])){
 }
 
 $tmp = explode(".", e_QUERY);
+
 if($tmp[0] == "del"){
 	unset($emote[$tmp[1]]);
+ 
+ //Fix Thermo to allow emote deletion
+	$newemote=array_values($emote);
+	$emote=$newemote;
+ //End Change Chris
+ 
 	$tmp = addslashes(serialize($emote));
 	$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='emote' ");
 	header("location:emoticon.php?w");
 	exit;
 }
+
+
 
 
 require_once("auth.php");

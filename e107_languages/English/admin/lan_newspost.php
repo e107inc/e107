@@ -29,13 +29,7 @@ define("NWSLAN_26", "Post news to database");
 define("NWSLAN_27", "Preview");
 define("NWSLAN_28", "New story");
 define("NWSLAN_29", "News Post");
-
 define("NWSLAN_30", "Show title only");
-
-
-
-
-
 define("NWSLAN_31", "News item");
 define("NWSLAN_32", "deleted");
 define("NWSLAN_33", "News Category");
@@ -69,8 +63,8 @@ define("NWSLAN_59", "No submitted news");
 define("NWSLAN_60", "Submitted News");
 define("NWSLAN_61", "deleted");
 
-
-
+define("NWSLAN_62", "Go to page: ");
+define("NWSLAN_63", "Search newsposts");
 
 
 ?>

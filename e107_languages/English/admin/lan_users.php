@@ -95,4 +95,9 @@ define("USRLAN_86", "User verified");
 define("USRLAN_87", "User settings updated");
 define("USRLAN_88", "User classes updated");
 
+define("USRLAN_89", "Go to page:");
+define("USRLAN_90", "Search Users");
+
+define("USRLAN_91", "Class");
+
 ?>

@@ -105,39 +105,46 @@ if($action == "review"){
 			ob_start();
 			if($sql -> db_Select("content", "*", "content_id=$sub_action")){	
 				$row = $sql -> db_Fetch(); extract($row);
-				if(check_class($content_class)){
-					$sql2 = new db;
-					$gen = new convert; 
-					$sql2 -> db_Select("content", "content_id, content_summary", "content_id=$content_parent");
-					list($content_id_, $content_summary_) = $sql2-> db_Fetch();
-					$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
+
+				if(!check_class($content_class)){
+					$ns -> tablerender(LAN_52, "<div style='text-align:center'>".LAN_53."</div>");
+					require_once(FOOTERF);
+					exit;
+				}
+
+
+				
+				$sql2 = new db;
+				$gen = new convert; 
+				$sql2 -> db_Select("content", "content_id, content_summary", "content_id=$content_parent");
+				list($content_id_, $content_summary_) = $sql2-> db_Fetch();
+				$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
+				$sql2 -> db_Select("user", "*", "user_id=$content_author");
+				$row = $sql2 -> db_Fetch(); extract($row);
+				if(is_numeric($content_author)){
 					$sql2 -> db_Select("user", "*", "user_id=$content_author");
 					$row = $sql2 -> db_Fetch(); extract($row);
-					if(is_numeric($content_author)){
-						$sql2 -> db_Select("user", "*", "user_id=$content_author");
-						$row = $sql2 -> db_Fetch(); extract($row);
-					}else{
-						$tmp = explode("^", $content_author);
-						$user_name = $tmp[0];
-						$user_email = $tmp[1];
-					}
-
-					$text .= ($content_summary_ ? "<a href='".e_SELF."?review.cat.$content_id_'><img src='".e_IMAGE."link_icons/".$content_summary_."' alt='' style='float:left; border:0' /></a>" : "")."
-					<span class='mediumtext'><b>$content_heading</b></span>
-					<br />
-					<span class='smalltext'>by $user_name on $datestamp</span>
-					<br /><br />
-					$content_summary
-					<br /><br />
-					".$aj -> tpa($content_content)."
-					<br /><br />
-					Rating: 
-					<table style='width:".($content_review_score*2)."px'>
-					<tr class='border'>
-					<td class='caption' style='width:100%; text-align:right'>$content_review_score%</td>
-					</tr>
-					</table>\n";
+				}else{
+					$tmp = explode("^", $content_author);
+					$user_name = $tmp[0];
+					$user_email = $tmp[1];
 				}
+
+				$text .= ($content_summary_ ? "<a href='".e_SELF."?review.cat.$content_id_'><img src='".e_IMAGE."link_icons/".$content_summary_."' alt='' style='float:left; border:0' /></a>" : "")."
+				<span class='mediumtext'><b>$content_heading</b></span>
+				<br />
+				<span class='smalltext'>by $user_name on $datestamp</span>
+				<br /><br />
+				$content_summary
+				<br /><br />
+				".$aj -> tpa($content_content)."
+				<br /><br />
+				Rating: 
+				<table style='width:".($content_review_score*2)."px'>
+				<tr class='border'>
+				<td class='caption' style='width:100%; text-align:right'>$content_review_score%</td>
+				</tr>
+				</table>\n";
 			}
 			$text .= "<div style='text-align:right'><a href='".e_SELF."?review.cat.$content_id_'>>> ".LAN_27."</a><br />
 			<a href='".e_SELF."?review'><< ".LAN_28."</a></div>";

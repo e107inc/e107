@@ -44,7 +44,7 @@ while($row = $sql-> db_Fetch()){
 	}
 	$text .= "\n<div class='spacer'>
 <img src='".THEME."images/bullet2.gif' alt='bullet' />
-<b>".$cb_nick."</b> on ".$datestamp."<br /><div class='defaulttext'><i>".$cb_message."</i></div>
+<b>".$cb_nick."</b> ".LAN_13." ".$datestamp."<br /><div class='defaulttext'><i>".$cb_message."</i></div>
 </div>
 <br />\n";
 	}

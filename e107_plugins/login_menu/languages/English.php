@@ -38,4 +38,6 @@ define("LOGIN_MENU_L22", "new site member");
 define("LOGIN_MENU_L23", "new site members");
 define("LOGIN_MENU_L24", "Click here to see list of new items");
 
+define("LOGIN_MENU_L25", "Since your last visit there have been");
+
 ?>

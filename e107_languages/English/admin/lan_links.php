@@ -67,4 +67,6 @@ define("LCLAN_74", "Update Link Category");
 define("LCLAN_75", "Create Link Category");
 define("LCLAN_76", "No submitted links");
 
+define("LCLAN_77", "Submitted link deleted");
+
 ?>

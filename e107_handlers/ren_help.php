@@ -28,7 +28,7 @@ if($rencolsize){
 
 	$str .= <<< HELPSTR
 <br />
-<select class="tbox" name="fontcol" onChange="$func('[color=' + this.form.fontcol.options[this.form.fontcol.selectedIndex].value + '] [/color]');this.selectedIndex=0;" onMouseOver="help('Font Color: [color]Black[/color]')" onMouseOut="help('')">
+<select class="tbox" name="fontcol" onChange="$func('[color=' + this.options[this.selectedIndex].value + '] [/color]');this.selectedIndex=0;" onMouseOver="help('Font Color: [color]Black[/color]')" onMouseOut="help('')">
 <option value="">Color ..</option>
 <option style="color:black" value="black">Black</option>
 <option style="color:blue" value="blue">Blue</option>
@@ -45,7 +45,7 @@ if($rencolsize){
 <option style="color:white" value="white">White</option>
 <option style="color:yellow" value="yellow">Yellow</option>
 </select>
-<select class="tbox" name="fontsiz" onChange="$func('[size=' + this.form.fontsiz.options[this.form.fontsiz.selectedIndex].value + '] [/size]');this.selectedIndex=0;" onMouseOver="help('Font Size: [size]Big[/size]')" onMouseOut="help('')">
+<select class="tbox" name="fontsiz" onChange="$func('[size=' + this.options[this.selectedIndex].value + '] [/size]');this.selectedIndex=0;" onMouseOver="help('Font Size: [size]Big[/size]')" onMouseOut="help('')">
 <option>Size ..</option>
 <option value="7">Tiny</option>
 <option value="9">Small</option>

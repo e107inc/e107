@@ -25,4 +25,5 @@ define("CHATBOX_L10", "Delete");
 define("CHATBOX_L11", "No messages yet.");
 define("CHATBOX_L12", "View all posts");
 define("CHATBOX_L13", "moderate chatbox");
+define("CHATBOX_L14", "Emotes");
 ?>

@@ -50,7 +50,9 @@ if(IsSet($_POST['updatesettings'])){
 	$pref['cb_linkc'] = $aj -> formtpa($_POST['cb_linkc'], "admin");
 	$pref['cb_wordwrap'] = $_POST['cb_wordwrap'];
 	$pref['cb_linkreplace'] = $_POST['cb_linkreplace'];
-	
+	$pref['cb_layer'] = $_POST['cb_layer'];
+	$pref['cb_layer_height'] = ($_POST['cb_layer_height'] ? $_POST['cb_layer_height'] : 200);
+	$pref['cb_emote'] = $_POST['cb_emote'];
 	save_prefs();
 	header("location:chatbox.php?u");
 	exit;
@@ -168,31 +170,43 @@ $text .= "</select>
 </td>
 </tr>
 
-<td class='forumheader3' style='width:40%'>".CHBLAN_13."?:  <div class='smalltext'>".CHBLAN_14."</div></td>
-<td class='forumheader3' style='width:60%'>";
-
-if($cb_linkreplace){
-	$text .= "<input type='checkbox' name='cb_linkreplace' value='1' checked>";
-}else{
-	$text .= "<input type='checkbox' name='cb_linkreplace' value='1'>";
-}
-
-$text .= "
+<td class='forumheader3' style='width:40%'>".CHBLAN_29."?: </td>
+<td class='forumheader3' style='width:60%'>".
+($pref['cb_layer'] ? "<input type='checkbox' name='cb_layer' value='1' checked>" : "<input type='checkbox' name='cb_layer' value='1'>")."&nbsp;&nbsp;".
+CHBLAN_30.": <input class='tbox' type='text' name='cb_layer_height' size='8' value='".$pref['cb_layer_height']."' maxlength='3' />
 </td>
 </tr>
 
+<tr>
+<td class='forumheader3' style='width:40%'>".CHBLAN_13."?:  <div class='smalltext'>".CHBLAN_14."</div></td>
+<td class='forumheader3' style='width:60%'>".
+($cb_linkreplace ? "<input type='checkbox' name='cb_linkreplace' value='1' checked>" : "<input type='checkbox' name='cb_linkreplace' value='1'>")."
+</td>
+</tr>
+
+
+<tr>
 <td class='forumheader3' style='width:40%'>".CHBLAN_15.": <div class='smalltext'>".CHBLAN_16."</div></td>
 <td class='forumheader3' style='width:60%'>
 <input class='tbox' type='text' name='cb_linkc' size='50' value='$cb_linkc' maxlength='200' />
 </td>
 </tr>
 
+<td class='forumheader3' style='width:40%'>".CHBLAN_31."?: </td>
+<td class='forumheader3' style='width:60%'>".
+($pref['cb_emote'] ? "<input type='checkbox' name='cb_emote' value='1' checked>" : "<input type='checkbox' name='cb_emote' value='1'>")."
+</td>
+</tr>
+
+
+<tr>
 <td class='forumheader3' style='width:40%'>".CHBLAN_17.":  <div class='smalltext'>".CHBLAN_18."</div></td>
 <td class='forumheader3' style='width:60%'>
 <input class='tbox' type='text' name='cb_wordwrap' size='5' value='$cb_wordwrap' maxlength='3' />
 </td>
 </tr>
 
+<tr>
 <td class='forumheader3' style='width:40%'>".CHBLAN_21.": <div class='smalltext'>".CHBLAN_22."</div></td>
 <td class='forumheader3' style='width:60%'>
 ".CHBLAN_23." <select name='chatbox_prune' class='tbox'>

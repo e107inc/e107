@@ -21,7 +21,7 @@ if($sql -> db_Select("cache", "*", "cache_url='newforumposts' ")){
 	$sql2 = new db;
 	$text = "<span class='smalltext'>";
 	if(!$sql -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHERE ".MPREFIX."forum.forum_id=".MPREFIX."forum_t.thread_forum_id ORDER BY ".MPREFIX."forum_t.thread_datestamp DESC LIMIT 0, ".$menu_pref['newforumposts_display'])){
-		$text = "<span class='mediumtext'>No posts yet";
+		$text = "<span class='mediumtext'>".NFP_2;
 	}else{
 		while($row = $sql-> db_Fetch()){
 			extract($row);

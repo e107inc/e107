@@ -17,10 +17,12 @@ define("POLL_2", "Comments");
 define("POLL_3", "Old Surveys");
 define("POLL_4", "Submit Vote");
 define("POLL_5", "Poll");
-define("LAN_99", "Comments");
+
 define("LAN_163", "Submit Vote");
 define("LAN_164", "Votes: ");
 define("LAN_165", "Old Surveys");
 define("LAN_184", "Poll");
+
+define("LAN_185", "Comments");
 
 ?>

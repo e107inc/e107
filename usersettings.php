@@ -161,7 +161,7 @@ $rs -> form_text("name", 20, $name, 100, "tbox", TRUE)
 <tr>
 <td style='width:20%' class='forumheader3'>".LAN_113."</td>
 <td style='width:80%; text-align:right' class='forumheader3'>".
-($hideemail ? $rs ->form_radio("hideemail", 1, 1)." Yes&nbsp;&nbsp;".$rs ->form_radio("hideemail", 0)." No" : $rs ->form_radio("hideemail", 1)." Yes&nbsp;&nbsp;".$rs ->form_radio("hideemail", 0, 1)." No")."
+($hideemail ? $rs ->form_radio("hideemail", 1, 1)." ".LAN_416."&nbsp;&nbsp;".$rs ->form_radio("hideemail", 0)." ".LAN_417 : $rs ->form_radio("hideemail", 1)." ".LAN_416."&nbsp;&nbsp;".$rs ->form_radio("hideemail", 0, 1)." ".LAN_417)."
 <br />
 <span class='smalltext'>".LAN_114."
 
@@ -268,7 +268,7 @@ $text .= "<tr>
 $avatarlist[0] = "";
 $handle=opendir(e_IMAGE."avatars/");
 while ($file = readdir($handle)){
-	if($file != "." && $file != ".."){
+	if($file != "." && $file != ".." && $file != "index.html"){
 		$avatarlist[] = $file;
 	}
 }

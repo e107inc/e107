@@ -114,6 +114,14 @@ if(ADMIN == TRUE && $wm_active3){
 }
 // ---> wmessage end
 
+if(strstr(e_QUERY, "item")){
+	$tmp = explode(".", e_QUERY);
+	$item = $tmp[1];
+	$query = "news_id=$item AND news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")";
+}else{
+	$query = "news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY ".$order." DESC LIMIT $from,".ITEMVIEW;
+}
+
 $news_total = $sql -> db_Count("news");
 if($sql -> db_Select("news", "*", "news_class<255 AND news_class!='' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_class!='' ORDER BY ".$order." DESC LIMIT $from,".ITEMVIEW)){
 	$disablecache = TRUE;
@@ -131,7 +139,7 @@ if(!$disablecache && !e_QUERY){
 }
 
 ob_start();
-if(!$sql -> db_Select("news", "*", "news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY ".$order." DESC LIMIT $from,".ITEMVIEW)){
+if(!$sql -> db_Select("news", "*", $query)){
 	echo "<br /><br /><div style='text-align:center'><b>".LAN_83."</b></div><br /><br />";
 }else{
 	$sql2 = new db;

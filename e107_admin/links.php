@@ -118,6 +118,10 @@ if($action == "cat"){
 }
 
 if($action == "sn"){
+	if($sub_action == "confirm"){
+		$sql -> db_Delete("tmp", "tmp_time='$id' ");
+		$linkpost -> show_message(LCLAN_77);
+	}
 	$linkpost -> show_submitted($sub_action, $id);
 }
 
@@ -400,7 +404,6 @@ class links{
 			$sql -> db_Delete("tmp", "tmp_time='$id' ");
 		}
 	}
-
 
 
 	function set_order(){

@@ -24,8 +24,12 @@ if(e_QUERY){
 	$action = $tmp[0];
 	$sub_action = $tmp[1];
 	$id = $tmp[2];
+	$from = ($tmp[3] ? $tmp[3] : 0);
 	unset($tmp);
 }
+
+$from = ($from ? $from : 0);
+$amount = 50;
 
 if(IsSet($_POST['update_options'])){
 	$pref['avatar_upload'] = (FILE_UPLOADS ? $_POST['avatar_upload'] : 0);
@@ -188,7 +192,7 @@ if($action == "cu" && is_numeric($sub_action)){
 }
 
 if(!e_QUERY || $action == "main"){
-	$user -> show_existing_users($sub_action, $id);
+	$user -> show_existing_users($action, $sub_action, $id, $from, $amount);
 }
 
 if($action == "options"){
@@ -232,24 +236,40 @@ if(x)
 
 class users{
 
-	function show_existing_users($sub_action, $id){
+	function show_existing_users($action, $sub_action, $id, $from, $amount){
 		// ##### Display scrolling list of existing news items ---------------------------------------------------------------------------------------------------------
 
 		global $sql, $rs, $ns, $aj;
+
+		if($sql -> db_Select("userclass_classes")){
+			while($row = $sql -> db_Fetch()){
+				extract($row);
+				$class[$userclass_id] = $userclass_name;
+			}
+		}
+
+
 		$text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 200px; overflow : auto; '>";
-		$query = "ORDER BY ".($sub_action ? $sub_action : "user_id")." ".($id ? $id : "DESC");
-		if($sql -> db_Select("user", "*", $query, "nowhere")){
+
+		if(IsSet($_POST['searchquery'])){
+			$query = "user_name REGEXP('".$_POST['searchquery']."') ORDER BY user_id";
+		}else{
+			$query = "ORDER BY ".($sub_action ? $sub_action : "user_id")." ".($id ? $id : "DESC")."  LIMIT $from, $amount";
+		}
+
+		if($sql -> db_Select("user", "*", $query, ($_POST['searchquery'] ? 0 : "nowhere"))){
 			$text .= "<table class='fborder' style='width:100%'>
 			<tr>
-			<td style='width:8%' class='forumheader2'><a href='".e_SELF."?main.user_id.".($id == "desc" ? "asc" : "desc")."'>ID</a></td>
-			<td style='width:10%' class='forumheader2'><a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc")."'>".USRLAN_79."</a></td>
-			<td style='width:20%' class='forumheader2'><a href='".e_SELF."?main.user_name.".($id == "desc" ? "asc" : "desc")."'>".USRLAN_78."</a></td>
-			<td style='width:62%' class='forumheader2'>".USRLAN_75."</td>
+			<td style='width:5%' class='forumheader2'><a href='".e_SELF."?main.user_id.".($id == "desc" ? "asc" : "desc").".$from'>ID</a></td>
+			<td style='width:10%' class='forumheader2'><a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_79."</a></td>
+			<td style='width:30%' class='forumheader2'><a href='".e_SELF."?main.user_name.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_78."</a></td>
+			<td style='width:15%' class='forumheader2'><a href='".e_SELF."?main.user_class.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_91."</a></td>
+			<td style='width:30%' class='forumheader2'>".USRLAN_75."</td>
 			</tr>";
 			while($row = $sql -> db_Fetch()){
 				extract($row);
 				$text .= "<tr>
-				<td style='width:8%' class='forumheader3'>$user_id</td>
+				<td style='width:5%; text-align:center' class='forumheader3'>$user_id</td>
 				<td style='width:10%' class='forumheader3'>";
 				
 				if($user_perms == "0"){
@@ -265,42 +285,90 @@ class users{
 				}
 				
 				$text .= "</td>
-				<td style='width:20%' class='forumheader3'>$user_name</td>
-				<td style='width:62%; text-align:center' class='forumheader3'>";
-
-				if($user_perms != "0"){
-
-					$text .= $rs -> form_button("submit", "main_1", USRLAN_80, "onClick=\"document.location='".e_ADMIN."userinfo.php?$user_ip'\"").
-					$rs -> form_button("submit", "main_2", USRLAN_81, "onClick=\"document.location='".e_BASE."usersettings.php?$user_id'\"").
-					$rs -> form_button("submit", "main_3", USRLAN_29, "onClick=\"confirm_('main', '$user_id', '$user_name');\"");
-					
-
-					if($user_ban == 1){
-						$text .= $rs -> form_button("submit", "main_4", USRLAN_33, "onClick=\"document.location='".e_SELF."?unban.$user_id'\"");
-					}else if($user_ban == 2){
-						$text .= $rs -> form_button("submit", "main_4", USRLAN_30, "onClick=\"document.location='".e_SELF."?ban.$user_id'\"").
-						$rs -> form_button("submit", "main_4", USRLAN_32, "onClick=\"document.location='".e_SELF."?verify.$user_id'\"");
-					}else{
-						$text .= $rs -> form_button("submit", "main_4", USRLAN_30, "onClick=\"document.location='".e_SELF."?ban.$user_id'\"");
+				<td style='width:30%' class='forumheader3'><a href='".e_BASE."profile.php?$user_id'>$user_name</a></td>
+				<td style='width:15%' class='forumheader3'>";
+				
+				if($user_class){
+					$tmp = explode(".", $user_class);
+					while(list($key, $class_id) = each($tmp)){ 
+						$text .= ($class[$class_id] ? $class[$class_id]."<br />\n" : "");; 
 					}
-					
-					if(!$user_admin && !$user_ban && $user_ban != 2){
-						$text .= $rs -> form_button("submit", "main_5", USRLAN_35, "onClick=\"document.location='".e_SELF."?admin.$user_id'\"");
-					}else if ($user_admin){
-						$text .= $rs -> form_button("submit", "main_5", USRLAN_34, "onClick=\"document.location='".e_SELF."?unadmin.$user_id'\"");
-					}
-				}
-				if(ADMINPERMS == "0"){
-					$text .= $rs -> form_button("submit", "main_6", USRLAN_36, "onClick=\"document.location='".e_ADMIN."userclass.php?$user_id'\"");
 				}else{
 					$text .= "&nbsp;";
 				}
+				
+				
+				$text .= "</td>
+				<td style='width:30%; text-align:center' class='forumheader3'>
+
+
+				<select name='activate' onChange='urljump(this.options[selectedIndex].value)' class='tbox'>\n<option selected value='".e_SELF."'></option>";
+
+				if($user_perms != "0"){
+					$text .= "<option value='".e_ADMIN."userinfo.php?$user_ip'>".USRLAN_80."</option>
+					<option value='".e_BASE."usersettings.php?$user_id'>".USRLAN_81."</option>";
+
+					if($user_ban == 1){
+						$text .= "<option value='".e_SELF."?unban.$user_id'>".USRLAN_33."</option>";
+					}else if($user_ban == 2){
+						$text .= "<option value='".e_SELF."?ban.$user_id'>".USRLAN_30."</option>
+						<option value='".e_SELF."?verify.$user_id'>".USRLAN_32."</option>";
+					}else{
+						$text .= "<option value='".e_SELF."?ban.$user_id'>".USRLAN_30."</option>";
+					}
+
+					if(!$user_admin && !$user_ban && $user_ban != 2){
+						$text .= "<option value='".e_SELF."?admin.$user_id'>".USRLAN_35."</option>";
+					}else if ($user_admin && $user_perms != "0"){
+						$text .= "<option value='".e_SELF."?unadmin.$user_id'>".USRLAN_34."</option>";
+					}
+				}
+
+				$text .= "<option value='".e_ADMIN."userclass.php?$user_id'>".USRLAN_36."</option>";
+				$text .= "</select>";
+				if($user_perms != "0"){
+					$text .= $rs -> form_button("submit", "main_3", USRLAN_29, "onClick=\"confirm_('main', '$user_id', '$user_name');\"");
+				}
 			}
+
 			$text .= "</td>\n</tr>";
 			$text .= "</table>";
 		}
-		$text .= "</div></div>";
+		$text .= "</div>";
+		$users = $sql -> db_Count("user");
+
+		if($users > $amount && !$_POST['searchquery']){
+			$a = $users/$amount;
+			$r = explode(".", $a);
+			if($r[1] != 0 ? $pages = ($r[0]+1) : $pages = $r[0]);
+			if($pages){
+				$current = ($from/$amount)+1;
+				$text .= "<br />".USRLAN_89." ";
+				for($a=1; $a<=$pages; $a++){
+					$text .= ($current == $a ? " <b>[$a]</b>" : " [<a href='".e_SELF."?".(e_QUERY ? "$action.$sub_action.$id." : "main.user_id.desc.").(($a-1)*$amount)."'>$a</a>] ");
+				}
+				$text .= "<br />";
+			}
+		}
+
+		$text .= "<br /><form method='post' action='".e_SELF."'>\n<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n<input class='button' type='submit' name='searchsubmit' value='".USRLAN_90."' />\n</p>\n</form>\n</div>";
+
 		$ns -> tablerender(USRLAN_77, $text);
+
+		
+
+
+
+
+
+
+
+
+
+
+		
+
+		
 	}
 
 	function show_options($action){

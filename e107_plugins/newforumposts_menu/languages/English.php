@@ -13,5 +13,6 @@
 */
 
 define("NFP_1", "All latest posts are outside of your user class, unable to display.");
+define("NFP_2", "No posts yet");
 
 ?>

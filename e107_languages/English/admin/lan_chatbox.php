@@ -29,4 +29,9 @@ define("CHBLAN_25", "One week");
 define("CHBLAN_26", "One month");
 define("CHBLAN_27", "- Delete all posts -");
 define("CHBLAN_28", "Chatbox pruned.");
+
+define("CHBLAN_29", "Display chatbox inside scrolling layer");
+define("CHBLAN_30", "Layer height");
+define("CHBLAN_31", "Show emoticons");
+
 ?>

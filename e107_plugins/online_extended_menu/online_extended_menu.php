@@ -19,7 +19,7 @@
 		}
 	}
 
-	if(!$menu_pref['most_members_online'] || (MEMBERS_ONLINE + GUESTS_ONLINE) > ($menu_pref['most_members_online'] + $menu_pref['most_guests_online'])){
+	if((MEMBERS_ONLINE + GUESTS_ONLINE) > ($menu_pref['most_members_online'] + $menu_pref['most_guests_online'])){
 		$menu_pref['most_members_online'] = MEMBERS_ONLINE;
 		$menu_pref['most_guests_online'] = GUESTS_ONLINE;
 		$menu_pref['most_online_datestamp'] = time();

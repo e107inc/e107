@@ -31,7 +31,7 @@ if($pref['user_reg'] == 1 || ADMIN == TRUE){
 
 			$text .= "<br /><br />
 			<span class='smalltext'>
-			Since your last visit there have been 
+			".LOGIN_MENU_L25." 
 			$new_news ".($new_news == 1 ? LOGIN_MENU_L14 : LOGIN_MENU_L15).", 
 			$new_chat ".($new_chat == 1 ? LOGIN_MENU_L16 : LOGIN_MENU_L17).", 
 			$new_comments ".($new_comments == 1 ? LOGIN_MENU_L18 : LOGIN_MENU_L19).", 

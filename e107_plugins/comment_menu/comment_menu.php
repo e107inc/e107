@@ -64,7 +64,15 @@ if($sql -> db_Select("cache", "*", "cache_url='newcomments' ")){
 				}
 			}
 			if($comment_type == "1"){
-				$text .= "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".e_BASE."article.php?$comment_item_id'><b>".$poster."</b> on ".$datestamp."</a>";
+				$sql2 -> db_Select("content", "*", "content_id=$comment_item_id");
+				$row = $sql2 -> db_Fetch(); extract($row);
+				if($content_type == 0){
+					$text .= "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".e_BASE."content.php?article.$comment_item_id'><b>".$poster."</b> on ".$datestamp."</a>";
+				}else if($content_type == 3){
+					$text .= "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".e_BASE."content.php?review.$comment_item_id'><b>".$poster."</b> on ".$datestamp."</a>";
+				}else if($content_type == 1){
+					$text .= "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".e_BASE."content.php?content.$comment_item_id'><b>".$poster."</b> on ".$datestamp."</a>";
+				}
 				if($menu_pref['comment_title']) {
 					$sql2 -> db_Select("content", "content_heading", "content_id=$comment_item_id");
 					list($article_title) = $sql2->db_Fetch();

@@ -38,4 +38,7 @@ define("LAN_413", "Choose An Avatar");
 define("LAN_414", "Upload Your Photograph");
 define("LAN_415", "Upload your avatar");
 
+define("LAN_416", "Yes");
+define("LAN_417", "No");
+
 ?>

@@ -35,4 +35,6 @@ define("LAN_49", "article");
 define("LAN_50", "Article Categories");
 define("LAN_51", "This article cannot be viewed.");
 define("LAN_52", "Error");
+define("LAN_53", "This review cannot be viewed.");
+
 ?>

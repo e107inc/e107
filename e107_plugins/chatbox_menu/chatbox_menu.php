@@ -60,16 +60,23 @@ if(IsSet($_POST['chat_submit'])){
 if(strstr(e_BASE, "../")){ $sql -> db_Delete("cache", "cache_url ='chatbox' "); }
 
 $pref['cb_linkc'] = str_replace("e107_images/", e_IMAGE, $pref['cb_linkc']);
-unset($text);
 if($pref['user_reg'] && !USER && !$pref['anon_post']){
 	$texta = "<div style='text-align:center'>".CHATBOX_L3."</div><br /><br />";
 }else{
-	$texta =  "<div style='text-align:center'>".(e_QUERY ? "\n<form method='post' action='".e_SELF."?".e_QUERY."'><p>" : "\n<form method='post' action='".e_SELF."'><p>");
+	$texta =  "<div style='text-align:center'>".(e_QUERY ? "\n<form name='chatbox' method='post' action='".e_SELF."?".e_QUERY."'><p>" : "\n<form name='chatbox' method='post' action='".e_SELF."'><p>");
 	if(($pref['anon_post'] == "1" && USER == FALSE)){
 		$texta .= "\n<input class='tbox' type='text' name='nick' size='27' value='' maxlength='50' /><br />";
 	}
-	$texta .= "\n<textarea class='tbox' name='cmessage' cols='26' rows='5' style='overflow:hidden'></textarea>\n<br />\n<input class='button' type='submit' name='chat_submit' value='".CHATBOX_L4."' />\n<input class='button' type='reset' name='reset' value='".CHATBOX_L5."' />\n</p>\n</form>\n</div>\n<br />\n";
+	$texta .= "\n<textarea class='tbox' name='cmessage' cols='26' rows='5' style='overflow:hidden'></textarea>\n<br />\n<input class='button' type='submit' name='chat_submit' value='".CHATBOX_L4."' />\n<input class='button' type='reset' name='reset' value='".CHATBOX_L5."' />";
+		
+	if($pref['cb_emote']){
+		$texta .= " <input class='button' type ='button' style=''width: 35px'; cursor:hand' size='30' value='".CHATBOX_L14."' onClick='expandit(this)'>\n<div style='display:none'>".emote()."</div>";
+	}
+	
+	$texta .="</p>\n</form>\n</div>\n<br />\n";
 }
+
+
 
 if(!$text = retrieve_cache("chatbox")){
 
@@ -151,7 +158,6 @@ if(!$text = retrieve_cache("chatbox")){
 
 	}else{
 		$text .= "<span class='mediumtext'>".CHATBOX_L11."</span>";
-
 	}
 	$total_chats = $sql -> db_Count("chatbox");
 	if($total_chats > $chatbox_posts){
@@ -167,6 +173,39 @@ if(!$text = retrieve_cache("chatbox")){
 }
 if(ADMIN && getperms("C")){$text .= "<br />[ <a href='".e_ADMIN."chatbox.php'>".CHATBOX_L13."</a> ]";}
 $caption = (file_exists(THEME."images/chatbox_menu.png") ? "<img src='".THEME."images/chatbox_menu.png' alt='' /> ".CHATBOX_L2 : CHATBOX_L2);
-$ns -> tablerender($caption, $texta.$text);
+
+
+$text = ($pref['cb_layer'] ? "<div style='border : 0; padding : 4px; width : auto; height : ".$pref['cb_layer_height']."px; overflow : auto; '>".$texta.$text."</div>" : $texta.$text);
+
+
+$ns -> tablerender($caption, $text);
+
+function emote(){
+	$sql = new db;
+	$sql -> db_Select("core", "*", "e107_name='emote'");
+	$row = $sql -> db_Fetch(); extract($row);
+	$emote = unserialize($e107_value);
+
+	$str = "<div class='spacer'>";
+
+	$c=0;
+	while(list($code, $name) = @each($emote[$c])){
+		if(!$orig[$name]){
+			$str .= "<a href=\"javascript:caddtext(' $code')\"><img src=\"".e_IMAGE."emoticons/$name\" style=\"border:0\" alt=\"\" /></a> \n";
+			$orig[$name] = TRUE;
+		}
+		$c++;
+	}
+
+	$str .= "</div>";
+	return $str;
+}
+
+echo "
+<script type=\"text/javascript\">
+function caddtext(sc){
+	document.chatbox.cmessage.value += sc;
+}
+</script>";
 
 ?>

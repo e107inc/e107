@@ -29,9 +29,12 @@ if(e_QUERY){
 	$action = $tmp[0];
 	$sub_action = $tmp[1];
 	$id = $tmp[2];
+	$from = ($tmp[3] ? $tmp[3] : 0);
 	unset($tmp);
 }
 
+$from = ($from ? $from : 0);
+$amount = 50;
 
 // ##### Main loop -----------------------------------------------------------------------------------------------------------------------
 
@@ -55,19 +58,35 @@ if($action == "sn" && $sub_action == "confirm"){
 	}
 }
 
-if(!e_QUERY || $action == "main"){
-	$newspost -> show_existing_items();
-}
-
 if(IsSet($_POST['preview'])){
 	$newspost -> preview_item($id);
 }
 
 if(IsSet($_POST['submit'])){
 	$newspost -> submit_item($sub_action, $id);
+	$action = "main";
+	unset($sub_action, $id);
 }
 
+if(IsSet($_POST['create_category'])){
+	if($_POST['category_name']){
+		$_POST['category_name'] = $aj -> formtpa($_POST['category_name'], "admin");
+		$sql -> db_Insert("news_category", " '0', '".$_POST['category_name']."', '".$_POST['category_button']."'");
+		$newspost -> show_message(NWSLAN_35);	
+	}
+}
 
+if(IsSet($_POST['update_category'])){
+	if($_POST['category_name']){
+		$_POST['category_name'] = $aj -> formtpa($_POST['category_name'], "admin");
+		$sql -> db_Update("news_category", "category_name='".$_POST['category_name']."', category_icon='".$_POST['category_button']."' WHERE category_id='".$_POST['category_id']."'");
+		$newspost -> show_message(NWSLAN_36);
+	}
+}
+
+if(!e_QUERY || $action == "main"){
+	$newspost -> show_existing_items($action, $sub_action, $id, $from, $amount);
+}
 
 if($action == "create"){
 	if($sub_action == "edit" && !$_POST['preview']  && !$_POST['submit']){
@@ -87,24 +106,6 @@ if($action == "create"){
 	}
 	$newspost -> create_item($sub_action, $id);
 }
-
-
-if(IsSet($_POST['create_category'])){
-	if($_POST['category_name']){
-		$_POST['category_name'] = $aj -> formtpa($_POST['category_name'], "admin");
-		$sql -> db_Insert("news_category", " '0', '".$_POST['category_name']."', '".$_POST['category_button']."'");
-		$newspost -> show_message(NWSLAN_35);	
-	}
-}
-
-if(IsSet($_POST['update_category'])){
-	if($_POST['category_name']){
-		$_POST['category_name'] = $aj -> formtpa($_POST['category_name'], "admin");
-		$sql -> db_Update("news_category", "category_name='".$_POST['category_name']."', category_icon='".$_POST['category_button']."' WHERE category_id='".$_POST['category_id']."'");
-		$newspost -> show_message(NWSLAN_36);
-	}
-}
-
 
 if($action == "cat"){
 	$newspost -> show_categories($sub_action, $id);
@@ -169,26 +170,26 @@ if(x)
 
 exit;
 
-
-
-
-
-
-
-
-
 class newspost{
 
 
-	function show_existing_items(){
+	function show_existing_items($action, $sub_action, $id, $from, $amount){
 		// ##### Display scrolling list of existing news items ---------------------------------------------------------------------------------------------------------
 		global $sql, $rs, $ns, $aj;
 		$text = "<div style='text-align:center'><div style='border : solid 1px #000; padding : 4px; width : auto; height : 200px; overflow : auto; '>";
-		if($news_total = $sql -> db_Select("news", "*", "ORDER BY news_datestamp DESC", "nowhere")){
+
+		if(IsSet($_POST['searchquery'])){
+			$query = "news_title REGEXP('".$_POST['searchquery']."') OR news_body REGEXP('".$_POST['searchquery']."') OR news_extended REGEXP('".$_POST['searchquery']."') ORDER BY news_datestamp DESC";
+		}else{
+			$query = "ORDER BY ".($sub_action ? $sub_action : "news_datestamp")." ".($id ? $id : "DESC")."  LIMIT $from, $amount";
+		}
+
+		if($sql -> db_Select("news", "*", $query, ($_POST['searchquery'] ? 0 : "nowhere"))){
 			$text .= "<table class='fborder' style='width:100%'>
 			<tr>
-			<td style='width:5%' class='forumheader2'>ID</td>
-			<td style='width:50%' class='forumheader2'>".NWSLAN_40."</td>
+
+			<td style='width:5%' class='forumheader2'><a href='".e_SELF."?main.news_id.".($id == "desc" ? "asc" : "desc").".$from'>ID</a></td>
+			<td style='width:5%' class='forumheader2'><a href='".e_SELF."?main.news_title.".($id == "desc" ? "asc" : "desc").".$from'>".NWSLAN_40."</a></td>
 			<td style='width:45%' class='forumheader2'>".NWSLAN_41."</td>
 			</tr>";
 			while($row = $sql -> db_Fetch()){
@@ -206,7 +207,28 @@ class newspost{
 		}else{
 			$text .= "<div style='text-align:center'>".NWSLAN_43."</div>";
 		}
-		$text .= "</div></div>";
+		$text .= "</div>";
+
+		$newsposts = $sql -> db_Count("news");
+
+		if($newsposts > $amount && !$_POST['searchquery']){
+			$a = $newsposts/$amount;
+			$r = explode(".", $a);
+			if($r[1] != 0 ? $pages = ($r[0]+1) : $pages = $r[0]);
+			if($pages){
+				$current = ($from/$amount)+1;
+				$text .= "<br />".NWSLAN_62." ";
+				for($a=1; $a<=$pages; $a++){
+					$text .= ($current == $a ? " <b>[$a]</b>" : " [<a href='".e_SELF."?".(e_QUERY ? "$action.$sub_action.$id." : "main.news_datestamp.desc.").(($a-1)*$amount)."'>$a</a>] ");
+				}
+				$text .= "<br />";
+			}
+		}
+
+		$text .= "<br /><form method='post' action='".e_SELF."'>\n<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n<input class='button' type='submit' name='searchsubmit' value='".NWSLAN_63."' />\n</p>\n</form>\n</div>";
+
+
+
 		$ns -> tablerender(NWSLAN_43, $text);
 	}
 
@@ -286,7 +308,7 @@ class newspost{
 		<tr> 
 		<td style='width:20%' class='forumheader3'>".NWSLAN_13.":<br /></td>
 		<td style='width:80%' class='forumheader3'>
-		<textarea class='tbox' name='data' cols='80' rows='10'>".str_replace("[img]../", "[img]", $_POST['data'])."</textarea>
+		<textarea class='tbox' name='data' cols='80' rows='10'>".(strstr($_POST['data'], "[img]http") ? "" : str_replace("[img]../", "[img]", $_POST['data']))."</textarea>
 		<br />
 		<input class='helpbox' type='text' name='helpb' size='100' />
 		<br />
@@ -402,13 +424,13 @@ class newspost{
 		$_POST['news_datestamp'] = time();
 
 		$_POST['news_title'] = $aj -> formtpa($_POST['news_title']);
-		$_POST['data'] = str_replace("[img]", "[img]../", $_POST['data']);
+		$_POST['data'] = (strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]", "[img]../", $_POST['data']));
 		$_POST['data'] = $aj -> formtpa($_POST['data']);
 		$_POST['news_extended'] = $aj -> formtpa($_POST['news_extended']);
 
 		$ix -> render_newsitem($_POST);
 		$_POST['news_title'] = $aj -> formtpa($_POST['news_title']);
-		$_POST['data'] = $aj -> formtparev($_POST['data']);
+		$_POST['data'] = str_replace("../", "", $aj -> formtparev($_POST['data']));
 		$_POST['news_extended'] = $aj -> formtparev($_POST['news_extended']);
 	}
 
@@ -578,7 +600,7 @@ class create_rss{
   <description>".SITEDESCRIPTION."</description> 
   <language>en-gb</language> 
   <copyright>".$sitedisclaimer."</copyright> 
-  <managingEditor>".SITEADMIN."</managingEditor> 
+  <managingEditor>".SITEADMIN." - ".SITEADMINEMAIL."</managingEditor>
   <webMaster>".SITEADMINEMAIL."</webMaster> 
   <pubDate>$pubdate</pubDate>
   <lastBuildDate>$pubdate</lastBuildDate>
@@ -610,7 +632,7 @@ class create_rss{
 		extract($row);
 		$sql2 -> db_Select("news_category", "*",  "category_id='$news_category' ");
 		$row = $sql2 -> db_Fetch(); extract($row);
-		$sql2 -> db_Select("user", "user_name", "user_id=$news_author");
+		$sql2 -> db_Select("user", "user_name, user_email", "user_id=$news_author");
 		$row = $sql2 -> db_Fetch(); extract($row);
 		$tmp = explode(" ", $news_body);
 		unset($nb);
@@ -619,6 +641,8 @@ class create_rss{
 		}
 		if($tmp[($a-2)]){ $nb .= " [more ...]"; }
   		$nb = htmlentities($nb);
+		$nb = str_replace('&pound', '&amp;#163;', $nb);
+		$nb = str_replace('&copy;', 'c.', $nb);
 		$wlog .= $news_title."\n".SITEURL."comment.php?".$news_id."\n\n";
 		$itemdate = strftime("%a, %d %b %Y %I:%M:00 GMT", $news_datestamp);
 
@@ -628,7 +652,7 @@ class create_rss{
     <description>$nb</description>
     <category domain=\"".SITEURL."\">$category_name</category>
     <comments>http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?".$news_id."</comments>
-    <author>$user_name</author>
+    <author>$user_name - $user_email</author>
     <pubDate>$itemdate</pubDate>
     <guid isPermaLink=\"true\">http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?".$news_id."</guid>
   </item>

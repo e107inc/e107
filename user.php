@@ -16,12 +16,12 @@ require_once("class2.php");
 
 if(strstr(e_QUERY, "delp")){
 	$tmp = explode(".", e_QUERY);
-	if(USERID == $tmp[1]){
+	if(USERID == $tmp[1] || (ADMIN && getperms("4"))){
 		$sql -> db_Select("user", "user_sess", "user_id='". USERID."'");
 		$row = $sql -> db_Fetch(); extract($row);
 		@unlink(e_FILE."public/avatars/".$user_sess);
-		$sql -> db_Update("user", "user_sess='' WHERE user_id='".USERID."' ");
-		header("location:".e_SELF."?id.".USERID);
+		$sql -> db_Update("user", "user_sess='' WHERE user_id=".$tmp[1]);
+		header("location:".e_SELF."?id.".$tmp[1]);
 		exit;
 	}
 }
@@ -210,7 +210,7 @@ function renderuser($row, $user_entended, $mode="verbose"){
 			}
 
 			if(USERID == $user_id || (ADMIN && getperms("4"))){
-				$str .= "<br /><br /><span class='smalltext'>[ <a href='".e_SELF."?delp.".USERID."'>".LAN_413."</a> ]</span>";
+				$str .= "<br /><br /><span class='smalltext'>[ <a href='".e_SELF."?delp.$user_id'>".LAN_413."</a> ]</span>";
 			}
 
 		}else{
@@ -355,11 +355,6 @@ function renderuser($row, $user_entended, $mode="verbose"){
 		return $str;
 
 	}
-}
-		
-function getlevel($user_join, $user_forums, $user_comments, $user_chats, $user_visits){
-	
-	return (!$level ? "<i>".LAN_407."</i>" : $LEVEL)." ( $points ".LAN_409." )";
 }
 
 require_once(FOOTERF);

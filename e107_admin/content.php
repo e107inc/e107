@@ -41,7 +41,7 @@ If(IsSet($_POST['submit'])){
 		if($_POST['content_heading']){
 			$sql -> db_Select("content", "*", "ORDER BY content_datestamp DESC LIMIT 0,1 ", $mode="no_where");
 			list($content_id, $content_heading) = $sql-> db_Fetch();
-			$sql -> db_Insert("links", "0, '".$content_heading."', 'article.php?".$content_id.".255', '', '', '1', '0', '0', '0', {$_POST['c_class']} ");
+			$sql -> db_Insert("links", "0, '".$content_heading."', 'content.php?content.$content_id', '', '', '1', '0', '0', '0', {$_POST['c_class']} ");
 			$message = CNTLAN_24;
 		}else{
 			$sql -> db_Select("content", "*", "ORDER BY content_datestamp DESC LIMIT 0,1 ", $mode="no_where");

@@ -171,7 +171,7 @@ $text .= $permicon.ADLAN_112.": ".$banned."<br />";
 $text .= ($submitted_news ? $permicon2."<a href='".e_ADMIN."submitnews.php'>".ADLAN_107.": $submitted_news</a>" : $permicon.ADLAN_107.": 0")."<br />";
 $text .= ($active_uploads ? $permicon2."<a href='".e_ADMIN."upload.php'>".ADLAN_108.": $active_uploads</a>" : $permicon.ADLAN_108.": ".$active_uploads)."<br />";
 
-$text .= ($submitted_links ? $permicon2."<a href='".e_ADMIN."links.php'>".ADLAN_119.": $submitted_links</a>" : $permicon.ADLAN_119.": ".$submitted_links)."<br /><br />";
+$text .= ($submitted_links ? $permicon2."<a href='".e_ADMIN."links.php?sn'>".ADLAN_119.": $submitted_links</a>" : $permicon.ADLAN_119.": ".$submitted_links)."<br /><br />";
 $text .= $permicon.ADLAN_113.": ".$forum_posts."<br />";
 $text .= $permicon.ADLAN_114.": ".$comments."<br />";
 $text .= $permicon.ADLAN_115.": ".$chatbox_posts;
