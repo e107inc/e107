@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.9 $
-|		$Date: 2005-02-08 23:45:56 $
+|		$Revision: 1.10 $
+|		$Date: 2005-02-09 16:17:25 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -228,10 +228,6 @@ if($delete == 'content'){
 		}
 }
 
-if(isset($_POST['update_order'])){
-		$message = $adb -> dbSetOrder("all", $_POST['order']);
-}
-
 if(isset($_POST['preview'])){
 		$content_heading = $tp -> post_toHTML($_POST['content_heading']);
 		$content_subheading = $tp -> post_toHTML($_POST['content_subheading']);
@@ -281,6 +277,10 @@ if(isset($_POST['preview'])){
 		for($i=0;$i<$content_pref["content_admin_images_number_{$type_id}"];$i++){
 			$content_images{$i} = $_POST['content_images{$i}'];							//won't work, cause file isn't upoaded
 		}
+}
+
+if(isset($_POST['update_order'])){
+		$message = $adb -> dbSetOrder("all", $_POST['order']);
 }
 
 if(IsSet($message)){
@@ -345,22 +345,37 @@ if(!e_QUERY){																//show main categories
 						$aform -> show_main_parent("order");							//show main parents for order selection
 						require_once(e_ADMIN."footer.php");
 						exit;
+
+			//category (category order)
 			}elseif($sub_action == "cat" && $type_id != "0" && (!$id || substr($id,0,3) == "inc" || substr($id,0,3) == "dec") ){
 						if($sub_action == "cat" && substr($id,0,3) == "inc"){			//increase order
-							$adb -> dbSetOrder("inc", substr($id,4));
+							$adb -> dbSetOrder("inc", "cc-".substr($id,4));
 						}elseif($sub_action == "cat" && substr($id,0,3) == "dec"){		//decrease order
-							$adb -> dbSetOrder("dec", substr($id,4));
+							$adb -> dbSetOrder("dec", "cc-".substr($id,4));
 						}
 						$aform -> show_main_parent("order");							//show main parents for order selection
 						$aform -> show_cat_order("admin");								//show categories from selected main parent
-			}elseif($sub_action && $sub_action != "cat" && $type_id != "0" && (!$id || substr($id,0,3) == "inc" || substr($id,0,3) == "dec") ){
+
+			//all items (global order)
+			}elseif($sub_action == "all" && $type_id != "0" && (!$id || substr($id,0,3) == "inc" || substr($id,0,3) == "dec") ){
 						if(substr($id,0,3) == "inc"){									//increase order
-							$adb -> dbSetOrder("inc", substr($id,4));
+							$adb -> dbSetOrder("inc", "ai-".substr($id,4));
 						}elseif(substr($id,0,3) == "dec"){								//decrease order
-							$adb -> dbSetOrder("dec", substr($id,4));
+							$adb -> dbSetOrder("dec", "ai-".substr($id,4));
 						}
 						$aform -> show_main_parent("order");							//show main parents for order selection
-						$aform -> show_content_order("admin");							//show content items from selected category
+						$aform -> show_content_order("admin", "allitem");					//show global content items order
+
+			//items in category (category items order)
+			}elseif($sub_action && $sub_action != "cat" && $sub_action != "all" && $type_id != "0" && (!$id || substr($id,0,3) == "inc" || substr($id,0,3) == "dec") ){
+						if(substr($id,0,3) == "inc"){									//increase order
+							$adb -> dbSetOrder("inc", "ci-".substr($id,4));
+						}elseif(substr($id,0,3) == "dec"){								//decrease order
+							$adb -> dbSetOrder("dec", "ci-".substr($id,4));
+						}
+						$aform -> show_main_parent("order");							//show main parents for order selection
+						$aform -> show_content_order("admin", "catitem");							//show order of content items from selected category
+
 			}else{
 						header("location:".e_SELF."?type.".$type_id.".order"); exit;
 			}
@@ -513,10 +528,21 @@ function admin_content_config_adminmenu(){
 								$var=array();
 								$parentdetails2 = $aa -> getParent("", "", $content_id);
 								$parentarray = $aa -> printParent($parentdetails2, "0", $content_id, "optionadminmenu");
+
 								for($i=0;$i<count($parentarray);$i++){
 									$var['c'.$parentarray[$i][3]]['text']=$parentarray[$i][1];
 									$var['c'.$parentarray[$i][3]]['link']=e_SELF."?type.".$parentarray[$i][4].".c.{$parentarray[$i][3]}";
 								}
+
+								//$parentarray = $aa -> prefetchBreadCrumb($content_id, "", "admin");
+								//print_r($parentarray);
+								//for($i=0;$i<count($parentarray);$i++){
+								//	//$parentarray[$i][3] = ($parentarray[$i][3] == "." ? $parentarray[$i][0].".".$parentarray[$i][0] : $parentarray[$i][0].".".$parentarray[$i][3]);
+								//	$var['c'.$parentarray[$i][3]]['text']=$parentarray[$i][1];
+								//	$var['c'.$parentarray[$i][3]]['link']=e_SELF."?type.".$parentarray[0][0].".c.{$parentarray[$i][3]}";
+								//}
+
+
 								show_admin_menu(CONTENT_ADMIN_MENU_LAN_5." : ".$content_heading."", 'c'.$sub_action, $var);
 							}
 						}

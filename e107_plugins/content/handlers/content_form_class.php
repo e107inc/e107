@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.5 $
-|		$Date: 2005-02-08 23:47:15 $
+|		$Revision: 1.6 $
+|		$Date: 2005-02-09 16:18:39 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -969,8 +969,9 @@ class contentform{
 							<tr>
 								<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>".$prefetchbreadcrumb[$i][0]."</td>
 								<td class='forumheader3' style='width:80%; text-align:left;'>".$prefetchbreadcrumb[$i][1]."</td>
-								<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>
-									<a href='".e_SELF."?".$type.".".$type_id.".order.".$prefetchbreadcrumb[$i][3]."'>".CONTENT_ICON_ORDER."</a> 
+								<td class='forumheader3' style='width:5%; text-align:left; white-space:nowrap;'>
+									<a href='".e_SELF."?".$type.".".$type_id.".order.".$prefetchbreadcrumb[$i][3]."'>".CONTENT_ICON_ORDERCAT."</a>
+									".($type_id == $prefetchbreadcrumb[$i][0] ? "<a href='".e_SELF."?".$type.".".$type_id.".order.all'>".CONTENT_ICON_ORDERALL."</a>" : "")."
 								</td>
 								<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>
 									<a href='".e_SELF."?".$type.".".$type_id.".order.cat.inc-".$prefetchbreadcrumb[$i][0]."-".$prefetchbreadcrumb[$i][4]."'><img src='".e_IMAGE."generic/up.png' alt='".CONTENT_ADMIN_ITEM_LAN_63."' style='border:0;' /></a>
@@ -979,7 +980,7 @@ class contentform{
 								<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>
 									<select name='order[]' class='tbox'>";
 									for($k=1;$k<=count($prefetchbreadcrumb);$k++){
-										$text .= $rs -> form_option($k, ($prefetchbreadcrumb[$i][4] == $k ? "1" : "0"), $prefetchbreadcrumb[$i][0].".".$k);
+										$text .= $rs -> form_option($k, ($prefetchbreadcrumb[$i][4] == $k ? "1" : "0"), $prefetchbreadcrumb[$i][0].".".$k.".cat");
 									}
 									$text .= "</select>
 								</td>
@@ -1003,15 +1004,23 @@ class contentform{
 		}
 
 
-		function show_content_order($mode){
+		function show_content_order($mode, $style){
 						global $sql, $ns, $rs, $type, $type_id, $action, $sub_action, $id, $plugintable, $aa, $tp;
 
-						$cat = str_replace("-", ".", $sub_action);
-						$formtarget = e_SELF."?".$type.".".$type_id.".order.".$sub_action;
-						$query = "content_refer != 'sa' AND content_parent = '".$cat."' ORDER BY content_order, content_heading DESC";
+						if($style == "catitem"){
+							$cat = str_replace("-", ".", $sub_action);
+							$formtarget = e_SELF."?".$type.".".$type_id.".order.".$sub_action;
+							$query = "content_parent = '".$cat."' ";
+							$order = "SUBSTRING_INDEX(content_order, '.', 1)+0";
+
+						}elseif($style == "allitem"){
+							$formtarget = e_SELF."?".$type.".".$type_id.".order.all";
+							$query = "LEFT(content_parent, ".strlen($type_id)." ) = '".$type_id."' ";
+							$order = "SUBSTRING_INDEX(content_order, '.', -1)+0";
+						}
 
 						if(!is_object($sql)){ $sql = new db; }
-						if(!$content_total = $sql -> db_Select($plugintable, "content_id, content_heading, content_author, content_order", $query)){
+						if(!$content_total = $sql -> db_Select($plugintable, "content_id, content_heading, content_author, content_order", "content_refer != 'sa' AND ".$query." ORDER BY ".$order." ASC, content_heading DESC ")){
 							$text = "<div style='text-align:center'>".CONTENT_ADMIN_ITEM_LAN_4."</div>";
 						}else{
 							
@@ -1035,6 +1044,18 @@ class contentform{
 									$caticon = $content_icon_path.$content_icon;
 									$deleteicon = CONTENT_ICON_DELETE;
 
+									$tmp = explode(".", $content_order);
+									if(!$tmp[1]){ $tmp[1] = "0"; }
+									$content_order = $tmp[0]."-".$tmp[1];
+
+									if($style == "catitem"){
+										$ordercheck = $tmp[0];
+										$ordercheck2 = $tmp[1];
+									}elseif($style == "allitem"){
+										$ordercheck = $tmp[1];
+										$ordercheck2 = $tmp[0];
+									}
+
 									$text .= "
 									<tr>
 										<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>".$content_id."</td>
@@ -1049,7 +1070,7 @@ class contentform{
 										<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>
 											<select name='order[]' class='tbox'>";
 											for($k=1;$k<=$content_total;$k++){
-												$text .= $rs -> form_option($k, ($content_order == $k ? "1" : "0"), $content_id.".".$k);
+												$text .= $rs -> form_option($k, ($ordercheck == $k ? "1" : "0"), $content_id.".".$k.".".$style.".".$content_order);
 											}
 											$text .= "</select>
 										</td>
@@ -1672,22 +1693,7 @@ class contentform{
 							<td colspan='4' class='forumheader3'>".CONTENT_ADMIN_OPT_LAN_68."</td>
 							<td colspan='2' class='forumheader3' style='text-align:center'>".$rs -> form_text("content_menu_caption_{$id}", 15, $content_pref["content_menu_caption_{$id}"], 50)."</td>
 						</tr>
-						<tr>
-							<td colspan='4' class='forumheader3' style='width:70%'>".CONTENT_ADMIN_OPT_LAN_69."</td>
-							<td colspan='2' class='forumheader3' style='width:30%; text-align:center'>".$rs -> form_checkbox("content_menu_cat_{$id}", 1, ($content_pref["content_menu_cat_{$id}"] ? "1" : "0"))."</td>
-						</tr>
-						<tr>
-							<td colspan='4' class='forumheader3' style='width:70%'>".CONTENT_ADMIN_OPT_LAN_70."</td>
-							<td colspan='2' class='forumheader3' style='width:30%; text-align:center'>".$rs -> form_checkbox("content_menu_cat_number_{$id}", 1, ($content_pref["content_menu_cat_number_{$id}"] ? "1" : "0"))."</td>
-						</tr>
-						<tr>
-							<td colspan='4' class='forumheader3' style='width:70%'>".CONTENT_ADMIN_OPT_LAN_71."</td>
-							<td colspan='2' class='forumheader3' style='width:30%; text-align:center'>".$rs -> form_checkbox("content_menu_recent_{$id}", 1, ($content_pref["content_menu_recent_{$id}"] ? "1" : "0"))."</td>
-						</tr>
-						<tr>
-							<td colspan='4' class='forumheader3'>".CONTENT_ADMIN_OPT_LAN_72."</td>
-							<td colspan='2' class='forumheader3' style='text-align:center'>".$rs -> form_text("content_menu_recent_caption_{$id}", 15, $content_pref["content_menu_recent_caption_{$id}"], 50)."</td>
-						</tr>
+						<tr><td colspan='6' class='forumheader'>search and sort</td></tr>
 						<tr>
 							<td colspan='4' class='forumheader3' style='width:70%'>".CONTENT_ADMIN_OPT_LAN_73."</td>
 							<td colspan='2' class='forumheader3' style='width:30%; text-align:center'>".$rs -> form_checkbox("content_menu_search_{$id}", 1, ($content_pref["content_menu_search_{$id}"] ? "1" : "0"))."</td>
@@ -1696,6 +1702,7 @@ class contentform{
 							<td colspan='4' class='forumheader3' style='width:70%'>".CONTENT_ADMIN_OPT_LAN_77."</td>
 							<td colspan='2' class='forumheader3' style='width:30%; text-align:center'>".$rs -> form_checkbox("content_menu_sort_{$id}", 1, ($content_pref["content_menu_sort_{$id}"] ? "1" : "0"))."</td>
 						</tr>
+						<tr><td colspan='6' class='forumheader'>links to pages</td></tr>
 						<tr>
 							<td colspan='4' class='forumheader3' style='width:70%'>".CONTENT_ADMIN_OPT_LAN_74."</td>
 							<td colspan='2' class='forumheader3' style='width:30%; text-align:center'>".$rs -> form_checkbox("content_menu_viewallcat_{$id}", 1, ($content_pref["content_menu_viewallcat_{$id}"] ? "1" : "0"))."</td>
@@ -1709,8 +1716,102 @@ class contentform{
 							<td colspan='2' class='forumheader3' style='width:30%; text-align:center'>".$rs -> form_checkbox("content_menu_viewtoprated_{$id}", 1, ($content_pref["content_menu_viewtoprated_{$id}"] ? "1" : "0"))."</td>
 						</tr>
 						<tr>
-							<td colspan='4' class='forumheader3' style='width:70%'>".CONTENT_ADMIN_OPT_LAN_76."</td>
+							<td colspan='4' class='forumheader3' style='width:70%'>".CONTENT_ADMIN_OPT_LAN_84."</td>
 							<td colspan='2' class='forumheader3' style='width:30%; text-align:center'>".$rs -> form_checkbox("content_menu_viewrecent_{$id}", 1, ($content_pref["content_menu_viewrecent_{$id}"] ? "1" : "0"))."</td>
+						</tr>
+						<tr>
+							<td colspan='4' class='forumheader3' style='width:70%'>".CONTENT_ADMIN_OPT_LAN_86."</td>
+							<td colspan='2' class='forumheader3' style='width:30%; text-align:center'>".$rs -> form_checkbox("content_menu_viewsubmit_{$id}", 1, ($content_pref["content_menu_viewsubmit_{$id}"] ? "1" : "0"))."</td>
+						</tr>
+						<tr>
+							<td colspan='4' class='forumheader3'>".CONTENT_ADMIN_OPT_LAN_90."<br />".CONTENT_ADMIN_OPT_LAN_91."</td>
+							<td colspan='2' class='forumheader3' style='text-align:center'>
+								".$rs -> form_select_open("content_menu_viewicon_{$id}")."
+								".$rs -> form_option("none", ($content_pref["content_menu_viewicon_{$id}"] == "0" ? "1" : "0"), 0)."
+								".$rs -> form_option("bullet", ($content_pref["content_menu_viewicon_{$id}"] == "1" ? "1" : "0"), 1)."
+								".$rs -> form_option("middot", ($content_pref["content_menu_viewicon_{$id}"] == "2" ? "1" : "0"), 2)."
+								".$rs -> form_option("white bullet", ($content_pref["content_menu_viewicon_{$id}"] == "3" ? "1" : "0"), 3)."
+								".$rs -> form_option("arrow", ($content_pref["content_menu_viewicon_{$id}"] == "4" ? "1" : "0"), 4)."
+								".$rs -> form_select_close()."
+							</td>
+						</tr>
+						<tr><td colspan='6' class='forumheader'>categories</td></tr>
+						<tr>
+							<td colspan='4' class='forumheader3' style='width:70%'>".CONTENT_ADMIN_OPT_LAN_69."</td>
+							<td colspan='2' class='forumheader3' style='width:30%; text-align:center'>".$rs -> form_checkbox("content_menu_cat_{$id}", 1, ($content_pref["content_menu_cat_{$id}"] ? "1" : "0"))."</td>
+						</tr>
+						<tr>
+							<td colspan='4' class='forumheader3' style='width:70%'>".CONTENT_ADMIN_OPT_LAN_70."</td>
+							<td colspan='2' class='forumheader3' style='width:30%; text-align:center'>".$rs -> form_checkbox("content_menu_cat_number_{$id}", 1, ($content_pref["content_menu_cat_number_{$id}"] ? "1" : "0"))."</td>
+						</tr>
+						<tr>
+							<td colspan='4' class='forumheader3'>".CONTENT_ADMIN_OPT_LAN_90."<br />".CONTENT_ADMIN_OPT_LAN_91."".CONTENT_ADMIN_OPT_LAN_94."</td>
+							<td colspan='2' class='forumheader3' style='text-align:center'>
+								".$rs -> form_select_open("content_menu_cat_icon_{$id}")."
+								".$rs -> form_option("none", ($content_pref["content_menu_cat_icon_{$id}"] == "0" ? "1" : "0"), 0)."
+								".$rs -> form_option("bullet", ($content_pref["content_menu_cat_icon_{$id}"] == "1" ? "1" : "0"), 1)."
+								".$rs -> form_option("middot", ($content_pref["content_menu_cat_icon_{$id}"] == "2" ? "1" : "0"), 2)."
+								".$rs -> form_option("white bullet", ($content_pref["content_menu_cat_icon_{$id}"] == "3" ? "1" : "0"), 3)."
+								".$rs -> form_option("arrow", ($content_pref["content_menu_cat_icon_{$id}"] == "4" ? "1" : "0"), 4)."
+								".$rs -> form_option("category icon", ($content_pref["content_menu_cat_icon_{$id}"] == "5" ? "1" : "0"), 5)."
+								".$rs -> form_select_close()."
+							</td>
+						</tr>
+						<tr><td colspan='6' class='forumheader'>recent items</td></tr>
+						<tr>
+							<td colspan='4' class='forumheader3' style='width:70%'>".CONTENT_ADMIN_OPT_LAN_71."</td>
+							<td colspan='2' class='forumheader3' style='width:30%; text-align:center'>".$rs -> form_checkbox("content_menu_recent_{$id}", 1, ($content_pref["content_menu_recent_{$id}"] ? "1" : "0"))."</td>
+						</tr>
+						<tr>
+							<td colspan='4' class='forumheader3'>".CONTENT_ADMIN_OPT_LAN_72."</td>
+							<td colspan='2' class='forumheader3' style='text-align:center'>".$rs -> form_text("content_menu_recent_caption_{$id}", 15, $content_pref["content_menu_recent_caption_{$id}"], 50)."</td>
+						</tr>
+						<tr>
+							<td colspan='4' class='forumheader3'>".CONTENT_ADMIN_OPT_LAN_85."</td>
+							<td colspan='2' class='forumheader3' style='text-align:center'>
+								".$rs -> form_select_open("content_menu_recent_number_{$id}");
+								for($i=1;$i<15;$i++){
+									$text .= $rs -> form_option($i, ($content_pref["content_menu_recent_number_{$id}"] == $i ? "1" : "0"), $i);
+								}
+								$text .= $rs -> form_select_close()."
+							</td>
+						</tr>
+						<tr>
+							<td colspan='4' class='forumheader3'>".CONTENT_ADMIN_OPT_LAN_87."</td>
+							<td colspan='2' class='forumheader3' style='width:30%; text-align:center'>".$rs -> form_checkbox("content_menu_recent_date_{$id}", 1, ($content_pref["content_menu_recent_date_{$id}"] ? "1" : "0"))."</td>
+						</tr>
+						<tr>
+							<td colspan='4' class='forumheader3'>".CONTENT_ADMIN_OPT_LAN_88."</td>
+							<td colspan='2' class='forumheader3' style='width:30%; text-align:center'>".$rs -> form_checkbox("content_menu_recent_author_{$id}", 1, ($content_pref["content_menu_recent_author_{$id}"] ? "1" : "0"))."</td>
+						</tr>
+						<tr>
+							<td colspan='4' class='forumheader3'>".CONTENT_ADMIN_OPT_LAN_89."</td>
+							<td colspan='2' class='forumheader3' style='width:30%; text-align:center'>".$rs -> form_checkbox("content_menu_recent_subheading_{$id}", 1, ($content_pref["content_menu_recent_subheading_{$id}"] ? "1" : "0"))."</td>
+						</tr>
+						<tr>
+							<td colspan='4' class='forumheader3'>".CONTENT_ADMIN_OPT_LAN_34."</td>
+							<td colspan='2' class='forumheader3' style='text-align:center'>".$rs -> form_text("content_menu_recent_subheading_char_{$id}", 1, $content_pref["content_menu_recent_subheading_char_{$id}"], 3)."</td>
+						</tr>
+						<tr>
+							<td colspan='4' class='forumheader3'>".CONTENT_ADMIN_OPT_LAN_35."</td>
+							<td colspan='2' class='forumheader3' style='text-align:center'>".$rs -> form_text("content_menu_recent_subheading_post_{$id}", 10, $content_pref["content_menu_recent_subheading_post_{$id}"], 30)."</td>
+						</tr>
+						<tr>
+							<td colspan='4' class='forumheader3'>".CONTENT_ADMIN_OPT_LAN_90."<br />".CONTENT_ADMIN_OPT_LAN_91."".CONTENT_ADMIN_OPT_LAN_95."</td>
+							<td colspan='2' class='forumheader3' style='text-align:center'>
+								".$rs -> form_select_open("content_menu_recent_icon_{$id}")."
+								".$rs -> form_option("none", ($content_pref["content_menu_recent_icon_{$id}"] == "0" ? "1" : "0"), 0)."
+								".$rs -> form_option("bullet", ($content_pref["content_menu_recent_icon_{$id}"] == "1" ? "1" : "0"), 1)."
+								".$rs -> form_option("middot", ($content_pref["content_menu_recent_icon_{$id}"] == "2" ? "1" : "0"), 2)."
+								".$rs -> form_option("white bullet", ($content_pref["content_menu_recent_icon_{$id}"] == "3" ? "1" : "0"), 3)."
+								".$rs -> form_option("arrow", ($content_pref["content_menu_recent_icon_{$id}"] == "4" ? "1" : "0"), 4)."
+								".$rs -> form_option("content icon", ($content_pref["content_menu_recent_icon_{$id}"] == "5" ? "1" : "0"), 5)."
+								".$rs -> form_select_close()."
+							</td>
+						</tr>								
+						<tr>
+							<td colspan='4' class='forumheader3'>".CONTENT_ADMIN_OPT_LAN_92."<br />".CONTENT_ADMIN_OPT_LAN_93."</td>
+							<td colspan='2' class='forumheader3' style='text-align:center'>".$rs -> form_text("content_menu_recent_icon_width_{$id}", 1, $content_pref["content_menu_recent_icon_width_{$id}"], 3)."</td>
 						</tr>
 						</table>
 						</div>";

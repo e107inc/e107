@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.10 $
-|		$Date: 2005-02-08 23:45:57 $
+|		$Revision: 1.11 $
+|		$Date: 2005-02-09 16:17:25 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -209,7 +209,7 @@ if(!isset($type)){
 			show_content_cat_all();
 
 		}elseif(is_numeric($sub_action)){								// show contents from category
-			if(!isset($id)){
+			if(!isset($id) || substr($id,0,5) == "order"){
 				if($content_pref["content_searchmenu_{$type_id}"]){ show_content_search_menu(); }
 				if($resultmenu == TRUE){ show_content_search_result($searchkeyword); }
 				show_content_cat();
@@ -304,16 +304,16 @@ function show_content_search_menu(){
 					".$rs -> form_open("post", e_PLUGIN."content/content.php?type.1", "contentsearchorder", "", "enctype='multipart/form-data'")."
 					<select id='ordervalue' name='ordervalue' class='tbox' onchange=\"document.location=this.options[this.selectedIndex].value;\">
 					".$rs -> form_option(CONTENT_LAN_9, 0, "none")."
-					".$rs -> form_option(CONTENT_LAN_10, 0, e_PLUGIN."content/content.php?type.1".$querystring.".orderaheading" )."
-					".$rs -> form_option(CONTENT_LAN_11, 0, e_PLUGIN."content/content.php?type.1".$querystring.".orderdheading" )."
-					".$rs -> form_option(CONTENT_LAN_12, 0, e_PLUGIN."content/content.php?type.1".$querystring.".orderadate" )."
-					".$rs -> form_option(CONTENT_LAN_13, 0, e_PLUGIN."content/content.php?type.1".$querystring.".orderddate" )."
-					".$rs -> form_option(CONTENT_LAN_14, 0, e_PLUGIN."content/content.php?type.1".$querystring.".orderarefer" )."
-					".$rs -> form_option(CONTENT_LAN_15, 0, e_PLUGIN."content/content.php?type.1".$querystring.".orderdrefer" )."
-					".$rs -> form_option(CONTENT_LAN_16, 0, e_PLUGIN."content/content.php?type.1".$querystring.".orderaparent" )."
-					".$rs -> form_option(CONTENT_LAN_17, 0, e_PLUGIN."content/content.php?type.1".$querystring.".orderdparent" )."
-					".$rs -> form_option(CONTENT_LAN_73, 0, e_PLUGIN."content/content.php?type.1".$querystring.".orderaorder" )."
-					".$rs -> form_option(CONTENT_LAN_74, 0, e_PLUGIN."content/content.php?type.1".$querystring.".orderdorder" )."
+					".$rs -> form_option(CONTENT_LAN_10, 0, e_PLUGIN."content/content.php?type.".$type_id.$querystring.".orderaheading" )."
+					".$rs -> form_option(CONTENT_LAN_11, 0, e_PLUGIN."content/content.php?type.".$type_id.$querystring.".orderdheading" )."
+					".$rs -> form_option(CONTENT_LAN_12, 0, e_PLUGIN."content/content.php?type.".$type_id.$querystring.".orderadate" )."
+					".$rs -> form_option(CONTENT_LAN_13, 0, e_PLUGIN."content/content.php?type.".$type_id.$querystring.".orderddate" )."
+					".$rs -> form_option(CONTENT_LAN_14, 0, e_PLUGIN."content/content.php?type.".$type_id.$querystring.".orderarefer" )."
+					".$rs -> form_option(CONTENT_LAN_15, 0, e_PLUGIN."content/content.php?type.".$type_id.$querystring.".orderdrefer" )."
+					".$rs -> form_option(CONTENT_LAN_16, 0, e_PLUGIN."content/content.php?type.".$type_id.$querystring.".orderaparent" )."
+					".$rs -> form_option(CONTENT_LAN_17, 0, e_PLUGIN."content/content.php?type.".$type_id.$querystring.".orderdparent" )."
+					".$rs -> form_option(CONTENT_LAN_73, 0, e_PLUGIN."content/content.php?type.".$type_id.$querystring.".orderaorder" )."
+					".$rs -> form_option(CONTENT_LAN_74, 0, e_PLUGIN."content/content.php?type.".$type_id.$querystring.".orderdorder" )."
 					".$rs -> form_select_close()."
 					".$rs -> form_close();
 				}
@@ -607,6 +607,7 @@ function show_content_cat_all(){
 						}
 						$counter = "0";
 						$content_cat_table_string = "";
+						usort($parentarray, create_function('$x,$y','return $x[16]==$y[16]?0:($x[16]<$y[16]?-1:1);'));
 						for($a=0;$a<count($parentarray);$a++){
 							$content_cat_table_string .= parse_content_cat_table($parentarray[$a], $prefetchbreadcrumb);
 							$counter = $counter+1;
@@ -687,6 +688,7 @@ function show_content_cat($mode=""){
 						}else{
 							$subcats = $aa -> getParent($type_id.".".$sub_action, "", "", "1");
 						}
+						usort($subcats, create_function('$x,$y','return $x[16]==$y[16]?0:($x[16]<$y[16]?-1:1);'));
 						if(!empty($subcats)){
 							if(!$CONTENT_CAT_LISTSUB_TABLE){
 								if(!$content_pref["content_theme_{$type_id}"]){
@@ -737,17 +739,17 @@ function show_content_cat($mode=""){
 						// check userclasses for contents, and do not use those content_ids in the query
 						$leftlength = strlen($type_id)+2;
 						if($content_pref["content_cat_listtype_{$type_id}"]){
-							$query = " LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' AND (content_parent REGEXP('.".$sub_action."')) ";
+							$query = " (content_parent REGEXP('.".$sub_action."')) ";
 						}else{
-							$query = " LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' AND (content_parent REGEXP('.".$sub_action."')) AND NOT (content_parent REGEXP('.".$sub_action.".') ) ";
+							$query = " (content_parent REGEXP('.".$sub_action."')) AND NOT (content_parent REGEXP('.".$sub_action.".') ) ";
 						}
 						$order = $aa -> getOrder();
 						$UnValidArticleIds2 = $aa -> checkMainCat($type_id);
-						$UnValidArticleIds2 = ($UnValidArticleIds2 == "" ? "" : substr($UnValidArticleIds2, 0, -3) );
-						$contenttotal = $sql -> db_Count($plugintable, "(*)", "WHERE content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' AND ".$UnValidArticleIds2." AND ".$query." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ");
+						$UnValidArticleIds2 = ($UnValidArticleIds2 == "" ? "" : "AND ".substr($UnValidArticleIds2, 0, -3) );
+						$contenttotal = $sql -> db_Count($plugintable, "(*)", "WHERE content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ".$UnValidArticleIds2." AND ".$query." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ");
 
 						if(!is_object($sql)){ $sql = new db; }
-						if($resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' AND ".$query." AND ".$UnValidArticleIds2." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ".$order." ".$nextprevquery )){
+						if($resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' AND ".$query." ".$UnValidArticleIds2." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ".$order." ".$nextprevquery )){
 
 							$content_recent_table_string = "";
 							while($row = $sql -> db_Fetch()){
