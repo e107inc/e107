@@ -11,16 +11,41 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/banner_menu/banner_menu.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-28 20:03:47 $
+|     $Revision: 1.7 $
+|     $Date: 2005-03-05 09:39:00 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
+
+if (isset($menu_pref['banner_campaign']) && $menu_pref['banner_campaign'])
+{
+	$campaignlist = explode("|", $menu_pref['banner_campaign']);
+	$campaignlist = array_slice($campaignlist, 0, -1);
+	$bannersccode = file_get_contents(e_FILE."shortcode/banner.sc");
+	$parm = $campaignlist[0];
+	$text = eval($bannersccode);
+
+	if (isset($menu_pref['banner_rendertype']) && $menu_pref['banner_rendertype'] == 2)
+	{
+		$ns->tablerender($menu_pref['banner_caption'], $text);
+	}
+	else
+	{
+		echo $text;
+	}
+}
+
+
+return;
+
+
+
 require_once(e_HANDLER."banner_class.php");
 $bn = new banner;
 	
 if (isset($menu_pref['banner_campaign']) && $menu_pref['banner_campaign']) {
+
 	//if campaign(s) are present, set query
 	$campaignlist = explode("|", $menu_pref['banner_campaign']);
 	unset($campaignlist_query);
@@ -57,7 +82,10 @@ $banneridquery = substr($banneridquery, 0, -3);
 unset($text);
 mt_srand ((double) microtime() * 1000000);
 $seed = mt_rand(1, 2000000000);
-	
+
+echo "query: ".$banneridquery;
+
+
 $sql2 = new db;
 $sql->db_Select("banner", "*", $banneridquery." ORDER BY RAND($seed) LIMIT ".$limitbanner." ");
 while ($row = $sql->db_Fetch()) {
