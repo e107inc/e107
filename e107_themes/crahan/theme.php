@@ -14,6 +14,10 @@
 
 if(!defined("e_THEME")){ exit; }
 
+// [multilanguage]
+@include_once(e_THEME."crahan/languages/".e_LANGUAGE.".php");
+@include_once(e_THEME."crahan/languages/English.php");
+
 // [theme]
 $themename = "CraHan";
 $themeversion = "1.0";
@@ -21,7 +25,7 @@ $themeauthor = "Steve Dunstan [jalist]";
 $themeemail = "jalist@e107.org";
 $themewebsite = "http://e107.org";
 $themedate = "29/01/2005";
-$themeinfo = "Based on the theme by CraHan at his homepage http://n00.be, design used with permission *smooch*";
+$themeinfo = "Based on the theme by CraHan at his homepage <a href='http://n00.be' rel='external'>n00.be</a>, design used with permission.";
 define("STANDARDS_MODE", TRUE);
 
 $logo = "logo".rand(1, 4);
@@ -75,12 +79,12 @@ $NEWSSTYLE = "
 <br />";
 
 define("ICONSTYLE", "float: left; border:0");
-define("COMMENTLINK", "comment(s): ");
-define("COMMENTOFFSTRING", "Comments are turned off for this item");
+define("COMMENTLINK", LAN_THEME_3);
+define("COMMENTOFFSTRING", LAN_THEME_2);
 define("PRE_EXTENDEDSTRING", "<br /><br />[ ");
-define("EXTENDEDSTRING", "Read the rest ...");
+define("EXTENDEDSTRING", LAN_THEME_4);
 define("POST_EXTENDEDSTRING", " ]<br />");
-define("TRACKBACKSTRING", "Trackbacks: ");
+define("TRACKBACKSTRING", LAN_THEME_5);
 define("TRACKBACKBEFORESTRING", " :: ");
 
 
@@ -89,7 +93,7 @@ define("TRACKBACKBEFORESTRING", " :: ");
 define('PRELINK', "");
 define('POSTLINK', " ::");
 define('LINKSTART', ":: ");
-define('LINKSTART_HILITE', "> ");
+define('LINKSTART_HILITE', ":: ");
 define('LINKEND', "");
 define('LINKDISPLAY', 1);
 define('LINKALIGN', "left");
@@ -103,25 +107,12 @@ function tablestyle($caption, $text, $mode)
 }
 
 $COMMENTSTYLE = "
-
 <div style='padding-left: 25px;'>{COMMENT}<br /><br />
-<div class='newssmalltext'>[ Comment by {USERNAME} :: {TIMEDATE} ]</div>
+<div class='newssmalltext'>[ ".LAN_THEME_6." {USERNAME} :: {TIMEDATE} ]</div>
 </div>
 <br /><br />
-
-
-
 ";
 
-$POLLSTYLE = <<< EOF
-<b>Poll:</b> {QUESTION}
-<br /><br />
-{OPTIONS=OPTION<br />BAR<br /><span class='smalltext'>PERCENTAGE VOTES</span><br />\n}
-<br /><div style='text-align:center' class='smalltext'>{AUTHOR}<br />{VOTE_TOTAL} {COMMENTS}
-<br />
-{OLDPOLLS}
-</div>
-EOF;
 
 $CHATBOXSTYLE = "
 <img src='".e_IMAGE."admin_images/chatbox_16.png' alt='' style='vertical-align: middle;' />
