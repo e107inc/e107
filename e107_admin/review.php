@@ -138,12 +138,13 @@ if($action == "cat"){
                 </tr>";
                 while($row = $sql -> db_Fetch()){
                         extract($row);
+						$delete_heading = str_replace("&#39;", "\'", $content_heading);
                         $text .= "<tr>
                         <td style='width:5%; text-align:center' class='forumheader3'>".($content_summary ? "<img src='".e_IMAGE."link_icons/$content_summary' alt='' style='vertical-align:middle' />" : "&nbsp;")."</td>
                         <td style='width:75%' class='forumheader3'>$content_heading [$content_subheading]</td>
                         <td style='width:20%; text-align:center' class='forumheader3'>
                         ".$rs -> form_button("submit", "category_edit", REVLAN_30, "onclick=\"document.location='".e_SELF."?cat.edit.$content_id'\"")."
-                        ".$rs -> form_button("submit", "category_delete", REVLAN_31, "onclick=\"confirm_('cat');\"")."
+                        ".$rs -> form_button("submit", "category_delete", REVLAN_31, "onclick=\"confirm_('cat', '$delete_heading', $content_id);\"")."
                         </td>
                         </tr>";
                 }
@@ -227,6 +228,7 @@ if(!$action || $action == "confirm"){
                 while($row = $sql -> db_Fetch()){
                         extract($row);
                         unset($cs);
+						$delete_heading = str_replace("&#39;", "\'", $content_heading);
                         if($sql2 -> db_Select("content", "content_summary", "content_id=$content_parent")){
                                 $row = $sql2 -> db_Fetch(); $cs = $row[0];
                         }
@@ -235,7 +237,7 @@ if(!$action || $action == "confirm"){
                         <td style='width:75%' class='forumheader3'><a href='".e_BASE."content.php?review.$content_id'>$content_heading</a> [".preg_replace("/-.*-/", "", $content_subheading)."]</td>
                         <td style='width:20%; text-align:center' class='forumheader3'>
                         ".$rs -> form_button("submit", "main_edit", REVLAN_30, "onclick=\"document.location='".e_SELF."?create.edit.$content_id'\"")."
-                        ".$rs -> form_button("submit", "main_delete", REVLAN_31, "onclick=\"confirm_('create')\"")."
+                        ".$rs -> form_button("submit", "main_delete", REVLAN_31, "onclick=\"confirm_('create', '$delete_heading', $content_id)\"")."
                         </td>
                         </tr>";
                 }
@@ -528,21 +530,21 @@ function addtext2(sc){
 
 
 
-$headerjs .= "<script type=\"text/javascript\">
-function confirm_(mode){
+$script .= "<script type=\"text/javascript\">
+function confirm_(mode, content_heading, content_id){
         if(mode == 'cat'){
-                var x=confirm(\"".REVLAN_49."\");
+                var x=confirm(\"".REVLAN_49." [ID \" + content_id + \": \" + content_heading + \"]\");
         }else{
-                var x=confirm(\"".REVLAN_50."\");
+                var x=confirm(\"".REVLAN_50." [ID \" + content_id + \": \" + content_heading + \"]\");
         }
 if(x)
         if(mode == 'cat'){
-                window.location='".e_SELF."?cat.confirm.$content_id';
+                window.location='".e_SELF."?cat.confirm.' + content_id;
         }else{
-                window.location='".e_SELF."?confirm.$content_id';
+                window.location='".e_SELF."?confirm.' + content_id;
         }
 }
 </script>";
- return $headerjs;
+return $script;
 }
 ?>
