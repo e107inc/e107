@@ -1,5 +1,4 @@
 <?php
-	
 /*
 +---------------------------------------------------------------+
 | e107 website system
@@ -15,15 +14,12 @@
 global $tp;
 $gen = new convert;
 
-$query = ($pref['nfp_posts'] ? "thread_lastpost" : "thread_datestamp");
-
-
 $query2 = "SELECT tp.thread_name AS parent_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_anon, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name FROM e107_forum_t AS t 
 LEFT JOIN e107_user AS u ON t.thread_user = u.user_id 
 LEFT JOIN e107_forum_t AS tp ON t.thread_parent = tp.thread_id 
 LEFT JOIN e107_forum AS f ON f.forum_id = t.thread_forum_id 
 WHERE f.forum_class  IN (".USERCLASS_LIST.") 
-ORDER BY t.$query DESC LIMIT 0, ".$pref['nfp_amount'];
+ORDER BY t.thread_datestamp DESC LIMIT 0, ".$menu_pref['newforumposts_display'];
 
 $results = $sql->db_Select_gen($query2);
 
@@ -56,28 +52,8 @@ else
 			$poster = $user_name;
 			$poster_id = $thread_user;
 		}
-
 		$thread_thread = strip_tags(eregi_replace("\[.*\]", "", $thread_thread));
-				 
-		if ($pref['cb_linkreplace'])
-		{
-			$thread_thread .= " ";
-			$thread_thread = preg_replace("#\>(.*?)\</a\>[\s]#si", ">".$pref['cb_linkc']."</a> ", $thread_thread);
-		}
-		
-				 
-		if (!eregi("<a href|<img|&#", $thread_thread))
-		{
-			$message_array = explode(" ", $thread_thread);
-			for($i = 0; $i <= (count($message_array)-1); $i++)
-			{
-				if (strlen($message_array[$i]) > 20)
-				{
-					$message_array[$i] = preg_replace("/([^\s]{20})/", "$1<br />", $message_array[$i]);
-				}
-			}
-			$thread_thread = implode(" ", $message_array);
-		}
+		$thread_thread = $tp->toHTML($thread_thread, FALSE, "", "", $pref['menu_wordwrap']);
 		if (strlen($thread_thread) > $menu_pref['newforumposts_characters'])
 		{
 			$thread_thread = substr($thread_thread, 0, $menu_pref['newforumposts_characters']).$menu_pref['newforumposts_postfix'];

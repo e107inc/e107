@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-02-03 00:10:41 $
+|     $Revision: 1.20 $
+|     $Date: 2005-02-03 10:35:26 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -565,7 +565,27 @@ $text .= "<div id='textpost' style='display:none; text-align:center'>
 	<td class='forumheader3' style='width:60%'>
 	<input class='tbox' type='text' name='email_text' size='50' value='".$tp -> post_toForm($pref['email_text'])."' maxlength='200' />
 	</td>
-	</tr>";
+	</tr>
+	
+	
+	<tr>
+	<td class='forumheader3' style='width:40%'>".PRFLAN_109.":  <div class='smalltext'>".PRFLAN_110."</div></td>
+	<td class='forumheader3' style='width:60%'>
+	<input class='tbox' type='text' name='main_wordwrap' size='5' value='".$pref['main_wordwrap']."' maxlength='3' />
+	</td>
+	</tr>
+
+	<tr>
+	<td class='forumheader3' style='width:40%'>".PRFLAN_111.":  <div class='smalltext'>".PRFLAN_110."</div></td>
+	<td class='forumheader3' style='width:60%'>
+	<input class='tbox' type='text' name='menu_wordwrap' size='5' value='".$pref['menu_wordwrap']."' maxlength='3' />
+	</td>
+	</tr>
+	
+	
+	
+	
+	";
 	
 $text .= pref_submit();
 
