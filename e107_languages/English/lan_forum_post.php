@@ -2,6 +2,9 @@
 
 define("PAGE_NAME", "Forum"); 
 
+define("LAN_01", "Forums");
+define("LAN_02", "Replying to: ");
+define("LAN_03", "New Thread");
 define("LAN_1", "Normal");
 define("LAN_2", "Sticky");
 define("LAN_3", "Announcement");
