@@ -5,7 +5,7 @@
 		$text .= ONLINE_EL2.MEMBERS_ONLINE." ...<br />";
 //	}
 	if(MEMBERS_ONLINE){
-		global $listuserson;
+		global $listuserson, $ADMIN_DIRECTORY;
 		foreach($listuserson as $uinfo => $pinfo){
 			
 	
@@ -16,8 +16,9 @@
 			if(strstr($online_location_page, "forum")){ $pinfo = "forum.php"; $online_location_page = "forum.php"; }
 			if(strstr($online_location_page, "content")){ $pinfo = "content.php"; $online_location_page = "content.php"; }
 			if(strstr($online_location_page, "comment")){ $pinfo = "comment.php"; $online_location_page = "comment.php"; }
-			$text .= "<img src='".e_PLUGIN."online_extended_menu/images/user.png' alt='' style='vertical-align:middle' /> <a href='".e_BASE."user.php?id.$oid'>$oname</a> ".ONLINE_EL7." <a href='{$pinfo}'>$online_location_page</a><br />";
-		}
+			$text .= "<img src='".e_PLUGIN."online_extended_menu/images/user.png' alt='' style='vertical-align:middle' /> <a href='".e_BASE."user.php?id.$oid'>$oname</a> ".ONLINE_EL7;
+      (!strstr($pinfo,$ADMIN_DIRECTORY) ? $text .= " <a href='{$pinfo}'>$online_location_page</a><br />" : $text .= " $online_location_page<br />");
+	   }
 	}
 	
 	if((MEMBERS_ONLINE + GUESTS_ONLINE) > ($menu_pref['most_members_online'] + $menu_pref['most_guests_online'])){
