@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-03-13 10:43:42 $
-|     $Author: sweetas $
+|     $Revision: 1.34 $
+|     $Date: 2005-03-16 03:38:07 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -165,6 +165,7 @@ if (isset($_POST['confirm'])) {
 			$text .= EPL_ADLAN_29."<br />";
 		}
 
+
 		if ($eplug_module) {
 			$plugin->manage_plugin_prefs('remove', 'modules', $eplug_folder);
 		}
@@ -175,6 +176,14 @@ if (isset($_POST['confirm'])) {
 
 		if ($eplug_latest) {
 			$plugin->manage_plugin_prefs('remove', 'plug_latest', $eplug_folder);
+		}
+
+		if (is_array($eplug_array_pref))
+		{
+			foreach($eplug_array_pref as $key => $val)
+			{
+				$plugin->manage_plugin_prefs('remove', $key, $val);
+			}
 		}
 
 		if (is_array($eplug_sc))

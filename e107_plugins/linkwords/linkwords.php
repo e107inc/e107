@@ -11,18 +11,18 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/linkwords/linkwords.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-03-15 17:25:24 $
-|     $Author: stevedunstan $
+|     $Revision: 1.2 $
+|     $Date: 2005-03-16 03:40:40 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
-class e_linkWords
+class e_linkwords
 {
 	var $linkwords = array();
 	var $linkurls = array();
 	 
-	function e_linkWords()
+	function e_linkwords()
 	{
 		/* constructor */
 		global $sql;
@@ -38,7 +38,7 @@ class e_linkWords
 		}
 	}
 
-	function linkWords($text)
+	function linkwords($text)
 	{
 		return str_replace($this -> linkwords, $this -> linkurls, $text);
 	}

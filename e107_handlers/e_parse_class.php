@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2005-03-15 17:25:23 $
-|     $Author: stevedunstan $
+|     $Revision: 1.46 $
+|     $Date: 2005-03-16 03:38:49 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -21,8 +21,10 @@ class e_parse {
 	var $e_sc;
 	var $e_bb;
 	var $e_pf;
-	var $e_lw;
+//	var $e_lw;
 	var $e_emote;
+	var $e_hook;
+
 	 
 	function toDB($text, $no_encode = FALSE) {
 		if (MAGIC_QUOTES_GPC == TRUE) {
@@ -242,14 +244,24 @@ function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $ut
 			$text = $this->e_pf->filterProfanities($text);
 		}
 
-		if ($pref['linkwords_active']) {
-			if (!is_object($this->e_lw)) {
-				require_once(e_PLUGIN."linkwords/linkwords.php");
-				$this->e_lw = new e_linkWords;
+		//Run any hooked in parsers
+		if($pref['tohtml_hook'])
+		{
+			foreach(explode(",",$pref['tohtml_hook']) as $hook)
+			{
+				if (strpos($modifiers, 'no_hook') === FALSE)
+				{
+					if (!is_object($this->e_hook[$hook]))
+					{
+						require_once(e_PLUGIN.$hook."/".$hook.".php");
+						$hook_class = "e_".$hook;
+						$this->e_hook[$hook] = new $hook_class;
+					}
+					$text = $this->e_hook[$hook]->$hook($text);
+				}
 			}
-			$text = $this->e_lw->linkWords($text);
 		}
-		 
+
 		$nl_replace = "<br />";
 		if (strpos($modifiers, 'nobreak') !== FALSE)
 		{

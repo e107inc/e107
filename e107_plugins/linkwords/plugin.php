@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/linkwords/plugin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-03-15 17:25:24 $
-|     $Author: stevedunstan $
+|     $Revision: 1.2 $
+|     $Date: 2005-03-16 03:38:49 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -46,12 +46,12 @@ $eplug_icon_small = $eplug_folder."/images/linkwords_16.png";
 $eplug_caption = LWLANINS_3;
 	
 // List of preferences -----------------------------------------------------------------------------------------------
-$eplug_prefs = array(
-	"linkwords_active" => 1
+
+$eplug_array_pref = array(
+	'tohtml_hook' => 'linkwords'
 	);
 	
 // List of table names -----------------------------------------------------------------------------------------------
-
 $eplug_table_names = array(
 	"linkwords"
 );

@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-03-13 10:44:40 $
-|     $Author: sweetas $
+|     $Revision: 1.12 $
+|     $Date: 2005-03-16 03:38:49 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -231,6 +231,10 @@ class e107plugin {
 		{
 			$pref[$prefname] = implode(',', $newvals);
 		}
+		if(substr($pref[$prefname], 0, 1) == ",")
+		{
+			$pref[$prefname] = substr($pref[$prefname], 1);
+		}
 		save_prefs();
 	}
 
@@ -281,6 +285,13 @@ class e107plugin {
 				$this->manage_plugin_prefs('add', 'plug_latest', $eplug_folder);
 			}
 
+			if (is_array($eplug_array_pref))
+			{
+				foreach($eplug_array_pref as $key => $val)
+				{
+					$this->manage_plugin_prefs('add', $key, $val);
+				}
+			}
 
 			if (is_array($eplug_sc)) {
 				$this->manage_plugin_prefs('add', 'plug_sc', $eplug_folder, $eplug_sc);
