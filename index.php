@@ -22,7 +22,7 @@ if(!$pref['frontpage'] || $pref['frontpage_type'] == "splash"){
         header("location: ".e_BASE."news.php");
         exit;
 }else if(is_numeric($pref['frontpage'])){
-        header("location: ".e_BASE."article.php?".$pref['frontpage'].".255");
+        header("location: ".e_BASE."content.php?article.".$pref['frontpage'].".255");
         exit;
 }else if(eregi("http", $pref['frontpage'])){
         header("location: ".e_BASE.$pref['frontpage']);
