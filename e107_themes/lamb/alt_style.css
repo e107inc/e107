@@ -1,5 +1,5 @@
 
-/* info: this alternative stylesheet uses pure css for layout, no tables, but cross browser issues mean it isn't as stable as the layout that uses tables */
+/* info: this alternative stylesheet uses pure css for layout, no tables, but cross browser issues mean it isn't as stable as the layout that uses tables. To use you have to rename alt_theme.php to theme.php */
 
 .intwrapper {
 	width: 100%;
