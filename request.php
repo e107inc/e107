@@ -150,13 +150,18 @@ if(eregi("http", $image)){
 // File retrieval function. by Cam.
 
 function send_file($file){
+	global $pref;
 
-    @set_time_limit(10*60);
-    @ini_set("max_execution_time",10*60);
+	if(!$pref['download_php']){
+		header("location:".SITEURL.$file);
+		exit;
+	}
 
+	@set_time_limit(10*60);
+	@ini_set("max_execution_time",10*60);
 
-        $fullpath = $file;
-        $file = basename($file);
+	$fullpath = $file;
+	$file = basename($file);
     if (strstr($_SERVER['HTTP_USER_AGENT'], "MSIE")){
         $file = preg_replace('/\./', '%2e', $file,substr_count($file, '.') - 1);
     }
@@ -175,15 +180,15 @@ function send_file($file){
 
         if ($file = fopen($fullpath, 'rb')) {
             while(!feof($file) and (connection_status()==0)) {
-            print(fread($file, 1024*8));
-            flush();
+            	print(fread($file, 1024*8));
+            	flush();
             }
-            $status = (connection_status()==0);
             fclose($file);
         }
 
     }else{
         header("location: ".e_BASE."index.php");
+        exit;
     }
 }
 ?>

@@ -51,7 +51,6 @@ define("DOWLAN_48", "Category Updated");
 define("DOWLAN_49", "Download Category");
 define("DOWLAN_50", "Go to page: ");
 define("DOWLAN_51", "Search downloads");
-
 define("DOWLAN_52", "Files");
 define("DOWLAN_53", "Subcategory");
 define("DOWLAN_54", "Download Options");
@@ -67,12 +66,15 @@ define("DOWLAN_63", "Descending");
 define("DOWLAN_64", "Update Options");
 define("DOWLAN_65", "Options Updated");
 define("DOWLAN_66", "filesize");
-
-define("DOWLAN_100", "Activate Download Agreement");
-define("DOWLAN_101", "Agreement Text");
 define("DOWLAN_67", "ID");
 define("DOWLAN_68", "File Missing!");
 
+define("DOWLAN_69", "Downloads handled by PHP");
+define("DOWLAN_70", "Checking this will send all download requests through PHP.");
+
+
+define("DOWLAN_100", "Activate Download Agreement");
+define("DOWLAN_101", "Agreement Text");
 define("DOWLAN_102", "Allow Comments?");
 
 ?>
