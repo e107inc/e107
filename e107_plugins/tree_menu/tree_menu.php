@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/tree_menu/tree_menu.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2004-12-02 20:11:04 $
-|     $Author: loloirie $
+|     $Revision: 1.5 $
+|     $Date: 2004-12-13 13:20:46 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -100,7 +100,7 @@ function clearcook(){
 
 $text .= "</script>
 ";
-$ns -> tablerender(LAN_183, $text);
+$ns -> tablerender(LAN_183, $text, 'tree_menu');
 
 
 function setlink($link_name, $link_url, $link_open, $link_description){

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/usertheme_menu/usertheme_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:41 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-13 13:20:47 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if(USER == TRUE){
@@ -63,6 +63,6 @@ $text .= "</select>
 </form>
 </div>";
 
-$ns -> tablerender(LAN_351, $text);
+$ns -> tablerender(LAN_351, $text, 'usertheme');
 }
 ?>

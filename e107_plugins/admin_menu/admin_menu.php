@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/admin_menu/admin_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:11:57 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-13 13:20:21 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once(e_HANDLER."userclass_class.php");
@@ -52,7 +52,7 @@ if(ADMIN == TRUE){
         $amtext .= wad(e_ADMIN."admin.php?logout", ADMIN_MENU_L21, "");
         $amtext .= "</select>
         </div>";
-        $ns -> tablerender(ADMIN_MENU_L2, $amtext);
+        $ns -> tablerender(ADMIN_MENU_L2, $amtext, 'admin_menu');
 }
 function wad($url, $urlname, $perms){
         global $amtext;

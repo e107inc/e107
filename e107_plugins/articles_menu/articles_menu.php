@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/articles_menu/articles_menu.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2004-12-03 22:33:22 $
-|     $Author: e107coders $
+|     $Revision: 1.8 $
+|     $Date: 2004-12-13 13:20:41 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if($cache = $e107cache->retrieve("article_menu")){
@@ -76,7 +76,7 @@ if($sql -> db_Select("content", "*", "content_type='0' ORDER BY content_datestam
 		}
 		$caption = (file_exists(THEME."images/article_menu.png") ? "<img src='".THEME."images/article_menu.png' alt='' style='vertical-align:middle' /> ".$menu_pref['article_caption'] : $menu_pref['article_caption']);
 
-		$ns -> tablerender($caption, $text);
+		$ns -> tablerender($caption, $text, 'articles');
 	}
 
 	if($pref['cachestatus']){

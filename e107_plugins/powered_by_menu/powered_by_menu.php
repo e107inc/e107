@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/powered_by_menu/powered_by_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:38 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-13 13:20:45 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 $text = "
@@ -24,5 +24,5 @@ $text = "
 <br />
 <a href='http://mysql.com' rel='external'><img src='".e_IMAGE."generic/poweredbymysql-88.png' alt='mySQL' style='border:0' /></a>
 </div>";
-$ns -> tablerender(POWEREDBY_L1,  $text);
+$ns -> tablerender(POWEREDBY_L1,  $text, 'powered_by');
 ?>

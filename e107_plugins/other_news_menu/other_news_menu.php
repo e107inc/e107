@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/other_news_menu/other_news_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:36 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-13 13:20:45 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 unset($text);
@@ -27,7 +27,7 @@ if($sql -> db_Select("news", "*", "news_render_type=2 ORDER BY news_datestamp DE
                         $text .= "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_BASE."news.php?item.$news_id'>$news_title</a><br />\n";
                 }
         }
-        $ns -> tablerender(TD_MENU_L1, $text);
+        $ns -> tablerender(TD_MENU_L1, $text, 'other_news');
 }
 
 ?>

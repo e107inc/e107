@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/online_extended_menu/online_extended_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:35 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-13 13:20:44 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
         $text = ONLINE_EL1.GUESTS_ONLINE.", ";
@@ -61,6 +61,6 @@
                 $text .= "<br />".ONLINE_EL5.": ".$total_members."<br />".ONLINE_EL6.": <a href='".e_BASE."user.php?id.".$user_id."'>".$user_name."</a>";
         }
 
-        $ns -> tablerender(ONLINE_EL4, $text);
+        $ns -> tablerender(ONLINE_EL4, $text, 'online_extended');
 
 ?>

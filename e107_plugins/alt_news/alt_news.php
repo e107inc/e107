@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/alt_news/alt_news.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-10-10 21:32:39 $
-|     $Author: loloirie $
+|     $Revision: 1.3 $
+|     $Date: 2004-12-13 13:20:41 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once(e_HANDLER."news_class.php");
@@ -70,7 +70,7 @@ function alt_news($news_category){
 			$text = "<img src='$category_icon' alt='' /><br />".
 			LAN_307.$count."
 			<br /><br />".$text;
-			$ns -> tablerender(LAN_82." '".$category_name."'", $text);
+			$ns -> tablerender(LAN_82." '".$category_name."'", $text, 'alt_news');
 		}
 	}
 	return TRUE;

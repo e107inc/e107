@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:30 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-12-13 13:20:44 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if(CORRUPT_COOKIE === TRUE){
         $text = "<div style='text-align:center'>".LOGIN_MENU_L7."<br /><br />\n<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_BASE."index.php?logout'>".LOGIN_MENU_L8."</a></div>";
-        $ns -> tablerender(LOGIN_MENU_L9, $text);
+        $ns -> tablerender(LOGIN_MENU_L9, $text, 'login');
 }
 
 $use_imagecode = ($pref['logcode'] && extension_loaded("gd"));
@@ -175,7 +175,7 @@ $text = "";
                         $text .= "<br /><a href='".e_PLUGIN."list_new/new.php'>".LOGIN_MENU_L24."</a>";
                 }
                 $caption = (file_exists(THEME."images/login_menu.png") ? "<img src='".THEME."images/login_menu.png' alt='' /> ".LOGIN_MENU_L5." ".USERNAME : LOGIN_MENU_L5." ".USERNAME);
-                $ns -> tablerender($caption, $text);
+                $ns -> tablerender($caption, $text, 'login');
         }else{
                 if(LOGINMESSAGE != ""){
                         $text = "<div style='text-align:center'>".LOGINMESSAGE."</div>";
@@ -209,7 +209,7 @@ $text = "";
                 </form>
                 </div>";
                 $caption = (file_exists(THEME."images/login_menu.png") ? "<img src='".THEME."images/login_menu.png' alt='' /> ".LOGIN_MENU_L5 : LOGIN_MENU_L5);
-                $ns -> tablerender($caption, $text);
+                $ns -> tablerender($caption, $text, 'login');
         }
 
 ?>
