@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.55 $
-|   $Date: 2005-03-06 13:48:02 $
+|   $Revision: 1.56 $
+|   $Date: 2005-03-10 18:33:46 $
 |   $Author: stevedunstan $
 +---------------------------------------------------------------+
 
@@ -219,6 +219,29 @@ if ($action == "create") {
 			}
 			$_POST['comment_total'] = $sql->db_Count("comments", "(*)", " WHERE comment_item_id='$news_id' AND comment_type='0' ");
 			$_POST['news_rendertype'] = $news_render_type;
+
+			if($news_attach)
+			{
+				$attach = explode(chr(1), $news_attach);
+				foreach($attach as $att)
+				{
+					if(strstr($att, "thumb:"))
+					{
+						$_POST['news_thumb'] = str_replace("thumb:", "", $att);
+					}
+					
+					if(strstr($att, "image:"))
+					{
+						$_POST['news_image'] = str_replace("image:", "", $att);
+					}
+
+					if(strstr($att, "file:"))
+					{
+						$_POST['news_file'] = str_replace("file:", "", $att);
+					}
+				}
+			}
+
 		}
 	}
 	$newspost->create_item($sub_action, $id);
@@ -370,8 +393,9 @@ class newspost {
 		global $sql, $rs, $ns, $pref, $fl, $IMAGES_DIRECTORY, $tp, $pst, $e107;
 		$thumblist = $fl->get_files(e_IMAGE."newspost_images/", 'thumb_');
 
-		$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$',"thumb_", 'index');
+		$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$',"thumb_", 'index', 'null*');
 		$imagelist = $fl->get_files(e_IMAGE."newspost_images/","",$rejecthumb);
+		$filelist = $fl->get_files(e_FILE."downloads/","",$rejecthumb);
 
 		$sql->db_Select("download");
 		$c = 0;
@@ -569,22 +593,84 @@ class newspost {
 			</tr>
 
 			<tr>
-			<td class='forumheader3'>".LAN_NEWS_22."</td>
+			<td class='forumheader3'>Thumbnail / Icon</td>
 			<td class='forumheader3'>
 			<a style='cursor: pointer' onclick='expandit(this);'>".LAN_NEWS_23."</a>
 			<div style='display: none;'>
 
+			( this will be displayed in your news item where {NEWSTHUMBNAIL} is defined in the NEWSSTYLE section of the theme template )<br />
 			<input class='tbox' type='text' name='news_thumb' size='60' value='".$_POST['news_thumb']."' maxlength='100' />
 			<input class='button' type ='button' style='cursor:hand' size='30' value='".NWSLAN_118."' onclick='expandit(this)' />
 			<div id='newsicn' style='display:none;{head}'>";
 
 			foreach($thumblist as $icon){
-			$text .= "<a href=\"javascript:insertext('".$icon['fname']."','news_thumb','newsicn')\"><img src='".$icon['path']."/".$icon['fname']."' style='border:0' alt='' /></a> ";
+				$text .= "<a href=\"javascript:insertext('".$icon['fname']."','news_thumb','newsicn')\"><img src='".$icon['path']."/".$icon['fname']."' style='border:0' alt='' /></a> ";
 			}
 
-
-			$text .="</div></td>
+			$text .= "</div>
+			</td>
 			</tr>
+
+
+
+
+
+
+
+
+
+
+			<tr>
+			<td class='forumheader3'>Files</td>
+			<td class='forumheader3'>
+			<a style='cursor: pointer' onclick='expandit(this);'>Attach links to files in the newspost</a>
+			<div style='display: none;'>
+
+			<input class='tbox' type='text' name='news_file' size='60' value='".$_POST['news_file']."' maxlength='100' />
+			<input class='button' type ='button' style='cursor:hand' size='30' value='View files' onclick='expandit(this)' />
+			<div id='newsfile' style='display:none;{head}'>";
+
+			$text .= "Multiple files can be added. Once a file has been selected, type {NEWSFILE=filenumber} into your text to display it, eg {NEWSFILE=1}, {NEWSFILE=2).<br /><br />";
+
+			foreach($filelist as $file){
+				$text .= "<a href=\"javascript:appendtext('".$file['fname']."|','news_file','null')\">".$file['fname']."</a><br />";
+			}
+
+			$text .= "</div>
+			</td>
+			</tr>
+
+
+
+			<tr>
+			<td class='forumheader3'>Images</td>
+			<td class='forumheader3'>
+			<a style='cursor: pointer' onclick='expandit(this);'>Attach images to the newspost</a>
+			<div style='display: none;'>
+
+			<input class='tbox' type='text' name='news_image' size='60' value='".$_POST['news_image']."' maxlength='100' />
+			<input class='button' type ='button' style='cursor:hand' size='30' value='View images' onclick='expandit(this)' />
+			<div id='imagefile' style='display:none;{head}'>";
+
+			$text .= "Multiple images can be added. Once an image has been selected, type {NEWSIMAGE=imagenumber} into your text to display it, eg {NEWSIMAGE=1}, {NEWSIMAGE=2).<br /><br />";
+
+			foreach($imagelist as $file){
+				$text .= "<a href=\"javascript:appendtext('".$file['fname']."|','news_image','null')\">".$file['fname']."</a><br />";
+			}
+
+			$text .= "</div>
+			</td>
+			</tr>
+
+
+
+
+
+
+
+
+
+
 
 			<tr>
 			<td style='width:20%' class='forumheader3'>".NWSLAN_15."</td>
@@ -812,6 +898,7 @@ class newspost {
 	function submit_item($sub_action, $id) {
 		// ##### Format and submit item ---------------------------------------------------------------------------------------------------------
 		global $tp, $ix, $sql;
+
 		$_POST['active_start'] = (!$_POST['startmonth'] || !$_POST['startday'] || !$_POST['startyear'] ? 0 : mktime (0, 0, 0, $_POST['startmonth'], $_POST['startday'], $_POST['startyear']));
 		$_POST['active_end'] = (!$_POST['endmonth'] || !$_POST['endday'] || !$_POST['endyear'] ? 0 : mktime (0, 0, 0, $_POST['endmonth'], $_POST['endday'], $_POST['endyear']));
 		$_POST['admin_id'] = USERID;

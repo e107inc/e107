@@ -13,18 +13,34 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.44 $
-| $Date: 2005-03-09 10:03:22 $
+| $Revision: 1.45 $
+| $Date: 2005-03-10 18:35:05 $
 | $Author: stevedunstan $
 +---------------------------------------------------------------+
 */
 
 class news {
 	function submit_item($news) {
-		global $e107cache, $e_event, $pref;
+		global $sql, $tp, $e107cache, $e_event, $pref;
 		if (!is_object($tp)) $tp = new e_parse;
 		if (!is_object($sql)) $sql = new db;
+
 		extract($news);
+
+		$attach = "";
+		if($news_thumb)
+		{
+			$attach = "thumb:".$news_thumb.chr(1);
+		}
+		if($news_file)
+		{
+			$attach .= "file:".$news_file.chr(1);
+		}
+		if($news_image)
+		{
+			$attach .= "image:".$news_image.chr(1);
+		}
+
 		$news_title = $tp->toDB($news_title, TRUE);
 		$news_body = $tp->toDB($data, TRUE);
 		$news_extended = $tp->toDB($news_extended, TRUE);
@@ -33,7 +49,7 @@ class news {
 		$insertime = ($update_datestamp) ? time() : mktime($ds_hour,$ds_min,$ds_sec,$ds_month,$ds_day,$ds_year);
 
 		if ($news_id) {
-			$vals = "news_datestamp = '$insertime', news_title='$news_title', news_body='$news_body', news_extended='$news_extended', news_category='$cat_id', news_allow_comments='$news_allow_comments', news_start='$active_start', news_end='$active_end', news_class='$news_class', news_render_type='$news_rendertype' , news_summary='$news_summary', news_thumb='$news_thumb', news_sticky=$news_sticky WHERE news_id='$news_id' ";
+			$vals = "news_datestamp = '$insertime', news_title='$news_title', news_body='$news_body', news_extended='$news_extended', news_category='$cat_id', news_allow_comments='$news_allow_comments', news_start='$active_start', news_end='$active_end', news_class='$news_class', news_render_type='$news_rendertype' , news_summary='$news_summary', news_attach='$attach', news_sticky=$news_sticky WHERE news_id='$news_id' ";
 			if ($sql->db_Update("news", $vals)) {
 				$e_event->trigger("newsupd", $news);
 				$message = LAN_NEWS_21;
@@ -42,7 +58,7 @@ class news {
 				$message = "<strong>".LAN_NEWS_5."</strong>";
 			}
 		} else {
-			if ($sql->db_Insert("news", "0, '$news_title', '$news_body', '$news_extended', ".$insertime.", ".USERID.", $cat_id, $news_allow_comments, $active_start, $active_end, '$news_class', '$news_rendertype', 0 , '$news_summary', '$news_thumb', $news_sticky ")) {
+			if ($sql->db_Insert("news", "0, '$news_title', '$news_body', '$news_extended', ".$insertime.", ".USERID.", $cat_id, $news_allow_comments, $active_start, $active_end, '$news_class', '$news_rendertype', 0 , '$news_summary', '$attach', $news_sticky ")) {
 				$e_event->trigger("newspost", $news);
 				$message = LAN_NEWS_6;
 				$e107cache->clear("news.php");
@@ -169,7 +185,7 @@ class news {
 
 // new parser.
 
-		$text = $this->parse_newstemplate($news,$NEWSSTYLE,$param);
+		$text = $this->parse_newstemplate($news, $NEWSSTYLE, $param);
 
 		if($mode == "return") {
 			return $text;
@@ -194,7 +210,7 @@ class news {
 	}
 
 
-	function parse_newstemplate($news,$NEWS_TEMPLATE,$param=""){
+	function parse_newstemplate($news, $NEWS_TEMPLATE, $param=""){
 
 	/*
 		News text parser - to allow plugins to parse news items etc.
@@ -266,10 +282,44 @@ class news {
 			$adminoptions = "<a href='".e_BASE.e_ADMIN."newspost.php?create.edit.".$news_id."'><img src='".e_IMAGE."generic/newsedit.png' alt='' style='border:0' /></a>\n";
 		}
 
+		/* new attach code, added by jalist 10/03/2005 */
+		
+		if($news_attach)
+		{
+			$attach = explode(chr(1), $news_attach);
+			foreach($attach as $attachment)
+			{
+				if(strstr($attachment, "thumb:"))
+				{
+					$news_thumb = str_replace("thumb:", "", $attachment);
+				}
+					
+				if(strstr($attachment, "image:"))
+				{
+					$newsimages =  explode("|", str_replace("image:", "", $attachment));
+				}
+
+				if(strstr($attachment, "file:"))
+				{
+					$tmp = explode("|", str_replace("file:", "", $attachment));
+				}
+			}
+		}
+
+		/* check for attached images ... */
+		define("NEWSATTACH", $news_attach);
+		$news_body = $tp -> parseTemplate($news_body);
+	
+			
+
+
+
+		
+
 		$search[0] = "/\{NEWSTITLE\}(.*?)/si";
 		$replace[0] = $news_title;
 		$search[1] = "/\{NEWSBODY\}(.*?)/si";
-		$replace[1] = (strstr(e_QUERY, "extend") ? $news_body."<br /><br />".$news_extended : $news_body);
+		$replace[1] = ($abovepost ? "<br />".$abovepost."<br />" : "").(strstr(e_QUERY, "extend") ? $news_body."<br /><br />".$news_extended : $news_body).($belowpost ? "<br />".$belowpost : "");
 		$search[2] = "/\{NEWSICON\}(.*?)/si";
 		$replace[2] = "<a href='".e_BASE."news.php?cat.$category_id'><img style='".$param['caticon']."'  src='$category_icon' alt='' /></a>";
 		$search[3] = "/\{NEWSHEADER\}(.*?)/si";
@@ -344,6 +394,19 @@ class news {
 		}
 
 		$text = preg_replace($search, $replace, $NEWS_TEMPLATE);
+
+
+
+		if(is_array($news_files))
+		{
+			foreach($news_files as $file)
+			{
+				$text .= $file."<br />";
+			}
+		}
+
+
+
 		return $text;
 	}
 }
