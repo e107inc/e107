@@ -884,11 +884,12 @@ function online(){
                 }
         }
 
+        if(ADMIN){$online_pagecount=1;}
         if($online_pagecount > $online_bancount && $online_ip !="127.0.0.1"){
                 $sql -> db_Insert("banlist", "'$ip', '0', 'Hit count exceeded ($online_pagecount requests within allotted time)' ");
                 exit;
         }
-        if($online_pagecount == $online_warncount && $online_ip !="127.0.0.1"){
+        if($online_pagecount >= $online_warncount && $online_ip !="127.0.0.1"){
                 echo "<div style='text-align:center; font: 11px verdana, tahoma, arial, helvetica, sans-serif;'><b>Warning!</b><br /><br />The flood protection on this site has been activated and you are warned that if you carry on requesting pages you could be banned.<br /></div>";
                 exit;
         }
