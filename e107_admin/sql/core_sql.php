@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:22 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-01-13 16:11:55 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -60,7 +60,7 @@ CREATE TABLE banner (
   banner_impurchased int(10) unsigned NOT NULL default '0',
   banner_startdate int(10) unsigned NOT NULL default '0',
   banner_enddate int(10) unsigned NOT NULL default '0',
-  banner_active tinyint(1) unsigned NOT NULL default '0',
+  banner_active tinyint(3) unsigned NOT NULL default '0',
   banner_clicks int(10) unsigned NOT NULL default '0',
   banner_impressions int(10) unsigned NOT NULL default '0',
   banner_ip text NOT NULL,
