@@ -43,7 +43,7 @@ $adminmessage = $aj -> formtparev($aj -> editparse($adminmessage));
 
 $text = "
 <div style='text-align:center'>
-<form method='post' action='".$_SERVER['PHP_SELF']."'  id='wmform'>
+<form method='post' action='".$_SERVER['PHP_SELF']."'  id='getElementById('wmform')'>
 <table style='width:85%' class='fborder'>
 <tr>";
 
@@ -101,7 +101,7 @@ $text .= "</td>
 <br />
 <input class='helpbox' type='text' name='helpadmin' size='100' />
 <br />
-".ren_help(1,"addtext3","help2")."
+".ren_help(1,"addtext3","help3")."
 </td>
 </tr>
 
@@ -120,25 +120,25 @@ $ns -> tablerender(WMGLAN_5, $text);
 ?>
 <script type="text/javascript">
 function addtext1(sc){
-	document.wmform.guestmessage.value += sc;
+	document.getElementById('wmform').guestmessage.value += sc;
 }
 function addtext2(sc){
-	document.wmform.membermessage.value += sc;
+	document.getElementById('wmform').membermessage.value += sc;
 }
 function addtext3(sc){
-	document.wmform.adminmessage.value += sc;
+	document.getElementById('wmform').adminmessage.value += sc;
 }
 function fclear(){
 	document.newspostform.message.value = "";
 }
 function help1(help){
-	document.wmform.helpguest.value = help;
+	document.getElementById('wmform').helpguest.value = help;
 }
 function help2(help){
-	document.wmform.helpmember.value = help;
+	document.getElementById('wmform').helpmember.value = help;
 }
 function help3(help){
-	document.wmform.helpadmin.value = help;
+	document.getElementById('wmform').helpadmin.value = help;
 }
 </script>
 <?php

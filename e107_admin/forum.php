@@ -786,7 +786,7 @@ class forum{
 		<br />
 		<input class='helpbox' type='text' name='helpadmin' size='100' />
 		<br />
-		".ren_help(1,"addtext3","help2")."
+		".ren_help(1,"addtext3","help3")."
 		</td>
 		</tr>
 
