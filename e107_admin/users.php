@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-03-14 15:53:44 $
-|     $Author: stevedunstan $
+|     $Revision: 1.20 $
+|     $Date: 2005-03-15 03:02:46 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -277,19 +277,17 @@ if ($_POST['useraction'] == "unadmin") {
 	
 if (isset($_POST['add_field']))
 {
-	if($ue->user_extended_add($_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $_POST['user_parms'], $_POST['user_values'], $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write']))
+	if($ue->user_extended_add($_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $_POST['user_parms'], $_POST['user_values'], $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable']))
 	{
 		$message = USRLAN_2;
 	}
 }
 	
 if (isset($_POST['update_field'])) {
-	if($ue->user_extended_modify($sub_action, $_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $_POST['user_parms'], $_POST['user_values'], $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write']))
+	if($ue->user_extended_modify($sub_action, $_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $_POST['user_parms'], $_POST['user_values'], $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable']))
 	{
 		$message = USRLAN_2;
 	}
-
-	$message = "Updated";
 }
 	
 if ($_POST['eu_action'] == "delext") {
@@ -393,10 +391,8 @@ class users {
 		 
 		if (isset($_POST['searchquery'])) {
 			 
-			$query = (eregi("@", $_POST['searchquery']))?"user_email REGEXP('".$_POST['searchquery']."') OR ":
-			"";
-			$query .= (eregi(".", $_POST['searchquery']))?"user_ip REGEXP('".$_POST['searchquery']."') OR ":
-			"";
+			$query = (eregi("@", $_POST['searchquery']))?"user_email REGEXP('".$_POST['searchquery']."') OR ": "";
+			$query .= (eregi(".", $_POST['searchquery']))?"user_ip REGEXP('".$_POST['searchquery']."') OR ": "";
 			$query .= "user_login REGEXP('".$_POST['searchquery']."') OR ";
 			$query .= "user_name REGEXP('".$_POST['searchquery']."') ORDER BY user_id";
 		} else {
@@ -443,7 +439,6 @@ class users {
 					$tmp = explode(".", $user_class);
 					while (list($key, $class_id) = each($tmp)) {
 						$text .= ($class[$class_id] ? $class[$class_id]."<br />\n" : "");
-						;
 					}
 				} else {
 					$text .= "&nbsp;";
@@ -610,8 +605,8 @@ class users {
 				<td class='fcaption'>".USRLAN_97."</td>
 				<td class='fcaption'>".USRLAN_98."</td>
 				<td class='fcaption'>".USRLAN_99."</td>
-				<td class='fcaption'>".USRLAN_100."</td>
 				<td class='fcaption'>".USRLAN_134."</td>
+				<td class='fcaption'>".USRLAN_100."</td>
 				<td class='fcaption'>".USRLAN_101."</td>
 				<td class='fcaption'>".USRLAN_102."</td>
 			</tr>
@@ -763,7 +758,7 @@ class users {
 			<tr>
 			<td style='width:30%' class='forumheader3'>".USRLAN_134."</td>
 			<td style='width:70%' class='forumheader3' colspan='3'>
-			".r_userclass("user_read", $current['user_extended_struct_applicable'], 'off', 'member, admin, classes')."<br /><span class='smalltext'>".USRLAN_135."</span>
+			".r_userclass("user_applicable", $current['user_extended_struct_applicable'], 'off', 'member, admin, classes')."<br /><span class='smalltext'>".USRLAN_135."</span>
 			</td>
 			</tr>
 

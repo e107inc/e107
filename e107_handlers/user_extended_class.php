@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-03-11 03:11:52 $
+|     $Revision: 1.4 $
+|     $Date: 2005-03-15 03:04:15 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -97,8 +97,8 @@ class e107_user_extended
 		if (!($this->user_extended_field_exist($name)))
 		{
 			$field_info = $this->user_extended_type_text($type, $default);
-			$sql->db_Select_gen("ALTER TABLE #user_extended ADD user_".$name.' '.$field_info, TRUE);
-			$sql->db_Insert("user_extended_struct","0,'{$name}','{$text}','{$type}','{$parms}','{$values}','{$default}','{$read}','{$write}','{$required}','0','0', '{$applicable}'", TRUE);
+			$sql->db_Select_gen("ALTER TABLE #user_extended ADD user_".$name.' '.$field_info);
+			$sql->db_Insert("user_extended_struct","0,'{$name}','{$text}','{$type}','{$parms}','{$values}','{$default}','{$read}','{$write}','{$required}','0','{$applicable}'");
 			if ($this->user_extended_field_exist($name))
 			{
 				return TRUE;
@@ -122,7 +122,7 @@ class e107_user_extended
 			user_extended_struct_default = '{$default}',
 			user_extended_struct_required = '{$required}',
 			user_extended_struct_read = '{$read}',
-			user_extended_struct_write = '{$write}'
+			user_extended_struct_write = '{$write}',
 			user_extended_struct_applicable = '{$applicable}'
 			WHERE user_extended_struct_id = '{$id}'
 			";

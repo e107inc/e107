@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-03-14 14:47:56 $
-|     $Author: asperon $
+|     $Revision: 1.13 $
+|     $Date: 2005-03-15 03:04:15 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -63,9 +63,7 @@ require_once(HEADERF);
 	
 if (isset($_POST['updatesettings']))
 {
-//	echo "<pre>".print_r($_POST, TRUE)."</pre>";	
-//	exit;
-	
+
 	$_POST['image'] = str_replace(array('\'', '"', '(', ')'), '', $_POST['image']); // these are invalid anyways, so why allow them? (XSS Fix)
 	// check prefs for required fields =================================.
 	$signupval = explode(".", $pref['signup_options']);
@@ -111,10 +109,13 @@ if (isset($_POST['updatesettings']))
 	{
 		if($val == '' && $extList[$key]['user_extended_struct_required'] == TRUE)
 		{
-			//Required field is blank!
+			$error .= "<b>".substr($key,5)."</b>".LAN_SIGNUP_7."<br />";
 		}
-		$ue_fields .= ($ue_fields) ? ", " : "";
-		$ue_fields .= $key."='".$val."'";
+		else
+		{
+			$ue_fields .= ($ue_fields) ? ", " : "";
+			$ue_fields .= $key."='".$val."'";
+		}
 	}
 
 	// ====================================================================
@@ -206,6 +207,7 @@ if (isset($_POST['updatesettings']))
 			$sql->db_Update("user", "user_password='$password', user_sess='$user_sess', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$birthday."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."', user_customtitle='".$_POST['customtitle']."' WHERE user_id='".$inp."' ");
 			if($ue_fields)
 			{
+				$sql->db_Select_gen("INSERT INTO #user_extended (user_extended_id) values ('{$inp}')");
 				$sql->db_Update("user_extended", $ue_fields." WHERE user_extended_id = '{$inp}'");
 			}
 			 
@@ -264,20 +266,8 @@ WHERE u.user_id='{$uuid}'
 
 $sql->db_Select_gen($qry);
 $curVal=$sql->db_Fetch();
-//echo "<pre>".print_r($curVal, TRUE)."</pre>";
 list($birth_year, $birth_month, $birth_day) = explode("-", $curVal['user_birthday']);
 extract($curVal);
-//list($user_id, $name, $user_customtitle, $user_password, $user_sess, $email, $website, $icq, $aim, $msn, $location, $birthday, $signature, $image, $user_timezone, $hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_prefs, $user_new, $user_viewed, $user_visits, $user_admin, $user_login, $user_class) = $sql->db_Fetch();
-//$signature = $tp->toFORM($user_signature);
-//$user_customtitle = ($_POST['customtitle'])? $_POST['customtitle']: $user_customtitle;
-//$user_login = ($_POST['realname'])? $_POST['realname']: $user_login;
-//$location = ($_POST['location'])? $_POST['location']: $user_location;
-//$icq = ($_POST['icq'])? $_POST['icq']: $user_icq;
-//$msn = ($_POST['msn'])? $_POST['msn']: $user_msn;
-//$aim = ($_POST['aim'])? $_POST['aim']: $user_aim;
-//$website = ($_POST['website'])? $_POST['website']: $user_website;
-//$signature = ($_POST['signature'])? $_POST['signature']: $user_signature;
-//$user_timezone = ($_POST['user_timezone'])? $_POST['user_timezone']: $user_timezone;
 	
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;

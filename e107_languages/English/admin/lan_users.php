@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-03-10 13:31:08 $
+|     $Revision: 1.4 $
+|     $Date: 2005-03-15 03:04:15 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -152,6 +152,9 @@ define("USRLAN_130", "This is the name of the field as stored in the table, it m
 define("USRLAN_131", "This is the displayed name of the field in rendered pages");
 define("USRLAN_132", "Required");
 define("USRLAN_133", "Users will be required to enter a value in this field when updating their settings.");
+
+define("USRLAN_134", "Applicable");
+define("USRLAN_135", "Determines which users this field will apply to.");
 
 
 
