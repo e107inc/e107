@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-02-10 17:17:00 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.24 $
+|     $Date: 2005-02-10 18:16:53 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -547,7 +547,8 @@ $text .= "</table></div>";
 
 if(!isset($pref['post_html']))
 {
-	$pref['post_html'] = e_ADMIN;
+	$pref['post_html'] = '254';
+	save_prefs();
 }
 
 $text .= "<div id='textpost' style='display:none; text-align:center'>
