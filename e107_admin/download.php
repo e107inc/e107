@@ -62,13 +62,14 @@ if(IsSet($_POST['submit_download'])){
 
 
 if(IsSet($_POST['updateoptions'])){
-        $pref['download_view'] = $_POST['download_view'];
-        $pref['download_sort'] = $_POST['download_sort'];
-        $pref['download_order'] = $_POST['download_order'];
-          $pref['agree_flag'] = $_POST['agree_flag'];
-          $pref['agree_text'] = $aj -> formtpa($_POST['agree_text']);
-        save_prefs();
-        $message = DOWLAN_65;
+	$pref['download_php'] = $_POST['download_php'];
+	$pref['download_view'] = $_POST['download_view'];
+	$pref['download_sort'] = $_POST['download_sort'];
+	$pref['download_order'] = $_POST['download_order'];
+	$pref['agree_flag'] = $_POST['agree_flag'];
+	$pref['agree_text'] = $aj -> formtpa($_POST['agree_text']);
+	save_prefs();
+	$message = DOWLAN_65;
 }
 
 if($action == "dlm"){
@@ -117,8 +118,19 @@ if($action == "opt"){
         $text = "<div style='text-align:center'>
         <form method='post' action='".e_SELF."?".e_QUERY."'>\n
         <table style='width:auto' class='fborder'>
-        <tr>
 
+
+          <tr>
+          <td style='width:70%' class='forumheader3'>".DOWLAN_69."</td>
+        <td class='forumheader3' style='width:30%;text-align:left'>";
+        $c = $pref['download_php'] ? " checked = 'checked' " : "";
+        $text .= "<input type='checkbox' class='tbox' name='download_php' value='1' {$c} /> <span class='smalltext'>".DOWLAN_70."</span></td>
+          </tr>
+
+
+
+
+        <tr>
         <td style='width:70%' class='forumheader3'>
         ".DOWLAN_55."
         </td>
