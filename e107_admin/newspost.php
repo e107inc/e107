@@ -11,16 +11,14 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.36 $
-|   $Date: 2005-02-11 02:28:21 $
+|   $Revision: 1.37 $
+|   $Date: 2005-02-11 02:57:47 $
 |   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 
 */
 require_once("../class2.php");
 if (!is_object($tp)) $tp = new e_parse;
-
-echo "<pre>".print_r($_POST,TRUE)."</pre>";
 
 if ($pref['htmlarea']) {
 	require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
@@ -110,7 +108,6 @@ if (IsSet($_POST['submitupload'])) {
 			require_once(e_HANDLER."resize_handler.php");
 			resize_image(e_IMAGE."newspost_images/".$uploaded[0]['name'], e_IMAGE."newspost_images/".$uploaded[0]['name'], $_POST['resize_value'], "copy");
 		}
-
 }
 
 // required.
@@ -355,7 +352,6 @@ class newspost {
 
 		show_admin_menu(NWSLAN_48, $action, $var);
 
-
 	}
 
 	function create_item($sub_action, $id) {
@@ -375,7 +371,6 @@ class newspost {
 			$filelist[$c][1] = $download_url;
 			$c++;
 		}
-
 
 		$handle = opendir(e_FILE."downloads");
 		while ($file = readdir($handle)) {
@@ -417,8 +412,6 @@ class newspost {
 			}
 		}
 
-
-
 		$text = "<div style='text-align:center'>
 			<form ".(FILE_UPLOADS ? "enctype='multipart/form-data'" : "")." method='post' action='".e_SELF."?".e_QUERY."' id='dataform'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>
@@ -454,7 +447,6 @@ class newspost {
 			<input class='tbox' type='text' name='news_summary' size='80' value='".$tp->toForm($_POST['news_summary'])."' maxlength='250' style='width:95%'/>
 			</td>
 			</tr>
-
 
 			<tr>
 			<td style='width:20%' class='forumheader3'>".NWSLAN_13.":<br /></td>
