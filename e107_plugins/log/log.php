@@ -28,7 +28,7 @@ $ip = getip();
 $browser = getBrowser($agent);
 $os = getOs($agent);
 
-$pageName = preg_replace("/(\?.*)|(\_.*)|(\.php)/", "", basename ($self));
+$pageName = preg_replace("/(\?.*)|(\_.*)|(\.php)|(\s)|(\')/", "", basename ($self));
 
 $logfile = "logs/log_".date("z.Y", time()).".php";
 require_once($logfile);
