@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-02-03 09:56:46 $
-|     $Author: e107coders $
+|     $Revision: 1.26 $
+|     $Date: 2005-02-03 11:06:20 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -74,6 +74,8 @@ function update_61x_to_700($type) {
 			extract($comments);
 			$sql->db_Update("news", "news_comment_total=$amount WHERE news_id=$id");
 		}
+
+		mysql_query("ALTER TABLE `".MPREFIX.".content` CHANGE `content_content` `content_content` LONGTEXT NOT NULL");
 
 		/* end */
 
