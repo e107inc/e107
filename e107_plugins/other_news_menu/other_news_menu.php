@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/other_news_menu/other_news_menu.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-02-11 06:59:45 $
+|     $Revision: 1.8 $
+|     $Date: 2005-02-14 02:22:28 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -35,6 +35,17 @@ if(!defined("OTHERNEWS_ITEMLINKSTYLE")){
 if(!defined("OTHERNEWS_CATLINKSTYLE")){
 	define("OTHERNEWS_CATLINKSTYLE","");
 }
+if(!defined("OTHERNEWS_THUMBSTYLE")){
+	define("OTHERNEWS_THUMBSTYLE","border:0px");
+}
+
+
+$style['itemlink'] = OTHERNEWS_ITEMLINKSTYLE;
+$style['catlink'] = OTHERNEWS_CATLINKSTYLE;
+$style['thumb'] = OTHERNEWS_THUMBSTYLE;
+$style['caticon'] = OTHERNEWS_CATICONSTYLE;
+
+
 
 	$categories = array();
 	$sql->db_Select("news_category");
@@ -47,7 +58,7 @@ if(!defined("OTHERNEWS_CATLINKSTYLE")){
 
 if ($sql->db_Select("news", "*", "news_render_type=2 ORDER BY news_datestamp DESC LIMIT 0,$numb")) {
 	while ($row = $sql->db_Fetch()) {
-		$text .= othernews_parser($row,$OTHERNEWS_STYLE,$categories,OTHERNEWS_ITEMLINKSTYLE,OTHERNEWS_CATLINKSTYLE);
+		$text .= othernews_parser($row,$OTHERNEWS_STYLE,$categories,$style);
 	}
 	$ns->tablerender(TD_MENU_L1, $text, 'other_news2');
 }
