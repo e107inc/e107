@@ -453,12 +453,14 @@ if($pref['photo_upload'] && FILE_UPLOADS){
 }
 
 $text .= "</td>
-</tr>
+</tr>";
+if(!e_QUERY){
+	$text .= "
+
 
 <tr>
 <td colspan='2' class='forumheader'>".LAN_427."</td>
 </tr>
-
 <tr>
 <td colspan='2' class='forumheader3' style='text-align:center'>
 
@@ -478,7 +480,9 @@ if($pref['review_submit'] && check_class($pref['review_submit_class'])){
 }
 
 $text .= "</td>
-</tr>
+</tr>";
+}
+$text .= "
 
 
 
