@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/frontpage.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-02-11 08:09:25 $
+|     $Revision: 1.13 $
+|     $Date: 2005-02-11 09:19:02 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -149,156 +149,149 @@ $text = "
 		<td colspan='4' style='text-align:center'  class='forumheader'>".FRTLAN_2.": </td>
 	</tr>
 	<tr>
-		<td style='width:2%;' class='forumheader3'>
-			<input name='frontpage' type='radio' value='news'";
-			if ($frontpage_re == "news.php") {
-				$text .= "checked='checked'";
-				$flag = TRUE;
-			}
-			$text .= " />
+		<td style='width:2%;' class='forumheader3'>";
+			if ($frontpage_re == "news.php") { $flag = TRUE; }
+			$text .= $rs -> form_radio("frontpage", "news", ($frontpage_re == "news.php" ? "1" : "0"))."
 		</td>
 		<td style='width:95%' colspan='3' class='forumheader3'>".FRTLAN_3."</td>
-		</tr>
-		<tr>
-		<td style='width:2%;' class='forumheader3'>
-			<input name='frontpage' type='radio' value='forum'";
-			if ($frontpage_re == $PLUGINS_DIRECTORY."forum/forum.php") {
-				$text .= "checked='checked'";
-				$flag = TRUE;
-			}
-			$text .= " />
+	</tr>
+	<tr>
+		<td style='width:2%;' class='forumheader3'>";
+			if ($frontpage_re == $PLUGINS_DIRECTORY."forum/forum.php") { $flag = TRUE; }
+			$text .= $rs -> form_radio("frontpage", "forum", ($frontpage_re == $PLUGINS_DIRECTORY."forum/forum.php" ? "1" : "0"))."
 		</td>
 		<td style='width:95%' colspan='3' class='forumheader3'>".FRTLAN_4."</td>
-		</tr>
-		<tr>
-		<td style='width:2%;' class='forumheader3'>
-			<input name='frontpage' type='radio' value='download'";
-			if ($frontpage_re == "download.php") {
-				$text .= "checked='checked'";
-				$flag = TRUE;
-			}
-			$text .= " />
+	</tr>
+	<tr>
+		<td style='width:2%;' class='forumheader3'>";
+			if ($frontpage_re == "download.php") { $flag = TRUE; }
+			$text .= $rs -> form_radio("frontpage", "download", ($frontpage_re == "download.php" ? "1" : "0"))."
 		</td>
 		<td style='width:95%' colspan='3' class='forumheader3'>".FRTLAN_5."</td>
-		</tr>
-		<tr>
-		<td style='width:2%;' class='forumheader3'>
-			<input name='frontpage' type='radio' value='links'";
-			if ($frontpage_re == $PLUGINS_DIRECTORY."links_page/links.php") {
-				$text .= "checked='checked'";
-				$flag = TRUE;
-			}
-			$text .= " />
+	</tr>
+	<tr>
+		<td style='width:2%;' class='forumheader3'>";
+			if ($frontpage_re == $PLUGINS_DIRECTORY."links_page/links.php") { $flag = TRUE; }
+			$text .= $rs -> form_radio("frontpage", "links", ($frontpage_re == $PLUGINS_DIRECTORY."links_page/links.php" ? "1" : "0"))."			
 		</td>
 		<td style='width:95%' colspan='3' class='forumheader3'>".FRTLAN_6."</td>
-		</tr>
+	</tr>";
+
+	$array_mainparent = "";
+	if ($sql -> db_Select("pcontent", "content_id, content_heading", "content_parent='0'")) {
+		$text .= "
 		<tr>
-		<td style='width:2%;' class='forumheader3'><input name='frontpage' type='radio' value='content_main' ".($flag != TRUE ? "checked='checked'" : "")." /></td>
+		<td style='width:2%;' class='forumheader3'>".$rs -> form_radio("frontpage", "content_main", ($flag != TRUE ? "1" : "0"))."</td>
 		<td style='width:15%; white-space:nowrap;' class='forumheader3'>".FRTLAN_19."</td>
-		<td style='width:83%;' colspan='2' class='forumheader3'>";
-		
-			$array_mainparent = "";
-			if ($sql->db_Select("pcontent", "content_id, content_heading", "content_parent='0'")) {
-				$text .= $content_heading;
-				$text .= $rs -> form_select_open("frontpage_content_main");
-				$text .= $rs -> form_option("", "0", "");
-				while ($row = $sql->db_Fetch()) {
-					extract($row);
-					if($frontpage_re == $PLUGINS_DIRECTORY."content/content.php?type.".$content_id){
+		<td style='width:83%;' colspan='2' class='forumheader3'>
+		".$rs -> form_select_open("frontpage_content_main")."
+		".$rs -> form_option("", "0", "");
+
+		while ($row = $sql -> db_Fetch()) {
+
+			if($frontpage_re == $PLUGINS_DIRECTORY."content/content.php?type.".$row['content_id']){
+				$selected = "1";
+				$flag = TRUE;
+			}else{
+				$selected = "0";
+			}
+			$text .= $rs -> form_option($row['content_heading'], $selected, "contentmain.".$row['content_id']);
+			$array_mainparent[] = array($row['content_id'], $row['content_heading']);
+		}
+
+		$text .= $rs -> form_select_close()."
+		</td>
+		</tr>";
+	}
+
+	$count = 0;
+	for($i=0;$i<count($array_mainparent);$i++){
+		if ($sql2->db_Select("pcontent", "content_id, content_heading", "LEFT(content_parent,".(strlen($array_mainparent[$i][0])+2).") = '0.".$array_mainparent[$i][0]."' ")) {
+
+			if($count == 0){
+				$text .= "
+				<tr>
+				<td style='width:2%;' class='forumheader3'>".$rs -> form_radio("frontpage", "content_sub", ($flag != TRUE ? "1" : "0"))."</td>
+				<td style='width:15%; white-space:nowrap;' class='forumheader3'>".FRTLAN_20."</td>";
+			}else{
+				$text .= "<tr><td class='forumheader3' colspan='2'>&nbsp;</td>";
+			}
+
+			$text .= "
+			<td style='width:10%; white-space:nowrap;' class='forumheader3'>".$array_mainparent[$i][1]."</td>
+			<td style='width:73%; white-space:nowrap;' class='forumheader3'>
+			".$rs -> form_select_open("frontpage_content_sub[{$array_mainparent[$i][0]}]")."
+			".$rs -> form_option("", "0", "");
+
+			while($row2 = $sql2->db_Fetch()){
+			extract($row2);
+					if($frontpage_re == $PLUGINS_DIRECTORY."content/content.php?type.".$array_mainparent[$i][0].".cat.".$content_id){
 						$selected = "1";
 						$flag = TRUE;
 					}else{
 						$selected = "0";
 					}
-					$text .= $rs -> form_option($row['content_heading'], $selected, "contentmain.".$row['content_id']);
-					$array_mainparent[] = array($content_id, $content_heading);
-				}
-				$text .= $rs -> form_select_close();
+					$text .= $rs -> form_option($row2['content_heading'], $selected, "contentsub.".$array_mainparent[$i][0].".".$row2['content_id']);
+				
+			}
+			$text .= $rs -> form_select_close()."
+			</td>
+			".($count == 0 ? "</tr>" : "");
+
+			$count = $count + 1;
+		}
+	}
+
+	$count = 0;
+	for($i=0;$i<count($array_mainparent);$i++){
+		if($sql3->db_Select("pcontent", "content_id, content_heading", "LEFT(content_parent,".(strlen($array_mainparent[$i][0].".".$array_mainparent[$i][0])).") = '".$array_mainparent[$i][0].".".$array_mainparent[$i][0]."' ORDER BY content_heading")){
+
+			if($count == 0){
+				$text .= "
+				<tr>
+				<td style='width:2%;' class='forumheader3'>".$rs -> form_radio("frontpage", "content_item", ($flag != TRUE ? "1" : "0"))."</td>
+				<td style='width:15%; white-space:nowrap;' class='forumheader3'>".FRTLAN_21."</td>";
+			}else{
+				$text .= "<tr><td class='forumheader3' colspan='2'>&nbsp;</td>";
 			}
 
-		$text .= "
-		</td>
-		</tr>
-		<tr>
-		<td style='width:2%;' class='forumheader3' rowspan='".count($array_mainparent)."'><input name='frontpage' type='radio' value='content_sub' ".($flag != TRUE ? "checked='checked'" : "")." /></td>
-		<td style='width:15%; white-space:nowrap;' rowspan='".count($array_mainparent)."' class='forumheader3'>".FRTLAN_20."</td>";
+			$text .= "
+			<td style='width:10%; white-space:nowrap;' class='forumheader3'>".$array_mainparent[$i][1]."</td>
+			<td style='width:73%; white-space:nowrap;' class='forumheader3'>
+			".$rs -> form_select_open("frontpage_content_item[{$array_mainparent[$i][0]}]")."
+			".$rs -> form_option("", "0", "");
 
-			for($i=0;$i<count($array_mainparent);$i++){
-				if ($sql2->db_Select("pcontent", "content_id, content_heading", "LEFT(content_parent,".(strlen($array_mainparent[$i][0])+2).") = '0.".$array_mainparent[$i][0]."' ")) {
-
-					$text .= "
-					".($i != 0 ? "<tr>" : "")."
-					<td style='width:10%; white-space:nowrap;' class='forumheader3'>".$array_mainparent[$i][1]."</td>
-					<td style='width:73%; white-space:nowrap;' class='forumheader3'>
-					".$rs -> form_select_open("frontpage_content_sub[{$array_mainparent[$i][0]}]")."
-					".$rs -> form_option("", "0", "");
-
-					while($row2 = $sql2->db_Fetch()){
-					extract($row2);
-							if($frontpage_re == $PLUGINS_DIRECTORY."content/content.php?type.".$array_mainparent[$i][0].".cat.".$content_id){
-								$selected = "1";
-								$flag = TRUE;
-							}else{
-								$selected = "0";
-							}
-							$text .= $rs -> form_option($row2['content_heading'], $selected, "contentsub.".$array_mainparent[$i][0].".".$row2['content_id']);
+			while($row3 = $sql3->db_Fetch()){
+			extract($row3);
+					if($frontpage_re == $PLUGINS_DIRECTORY."content/content.php?type.".$array_mainparent[$i][0].".content.".$row3['content_id']){
+						$selected = "1";
+						$flag = TRUE;
+					}else{
+						$selected = "0";
 					}
-					$text .= $rs -> form_select_close()."
-					</td>
-					".($i == count($array_mainparent)-1 ? "</tr>" : "")."
-					";
-				}
+					$text .= $rs -> form_option($content_heading, $selected, "contentitem.".$array_mainparent[$i][0].".".$row3['content_id']);
 			}
+			$text .= $rs -> form_select_close()."
+			</td>
+			".($count == 0 ? "</tr>" : "");
 
-		$text .= "
-		</td>
-		</tr>
-		<tr>
-		<td style='width:2%;' class='forumheader3' rowspan='".count($array_mainparent)."'><input name='frontpage' type='radio' value='content_item' ".($flag != TRUE ? "checked='checked'" : "")." /></td>
-		<td style='width:15%; white-space:nowrap;' rowspan='".count($array_mainparent)."' class='forumheader3'>".FRTLAN_21."</td>
-		";
+			$count = $count + 1;
+		}
+	}
 
-			for($i=0;$i<count($array_mainparent);$i++){
-				if ($sql3->db_Select("pcontent", "content_id, content_heading", "LEFT(content_parent,".(strlen($array_mainparent[$i][0].".".$array_mainparent[$i][0])).") = '".$array_mainparent[$i][0].".".$array_mainparent[$i][0]."' ORDER BY content_heading")) {
-
-					$text .= "
-					".($i != 0 ? "<tr>" : "")."
-					<td style='width:10%; white-space:nowrap;' class='forumheader3'>".$array_mainparent[$i][1]."</td>
-					<td style='width:73%; white-space:nowrap;' class='forumheader3'>
-					".$rs -> form_select_open("frontpage_content_item[{$array_mainparent[$i][0]}]")."
-					".$rs -> form_option("", "0", "");
-
-					while($row3 = $sql3->db_Fetch()){
-					extract($row3);
-							if($frontpage_re == $PLUGINS_DIRECTORY."content/content.php?type.".$array_mainparent[$i][0].".content.".$row3['content_id']){
-								$selected = "1";
-								$flag = TRUE;
-							}else{
-								$selected = "0";
-							}
-							$text .= $rs -> form_option($content_heading, $selected, "contentitem.".$array_mainparent[$i][0].".".$row3['content_id']);
-					}
-					$text .= $rs -> form_select_close()."
-					</td>
-					".($i == count($array_mainparent)-1 ? "</tr>" : "")."
-					";
-				}
-			}
-
-		$text .= "
-		</tr>
-		<tr>
-		<td style='width:2%;' class='forumheader3'><input name='frontpage' type='radio' value='other' ".($flag != TRUE ? "checked='checked'" : "")." /></td>
+	$text .= "
+	<tr>
+		<td style='width:2%;' class='forumheader3'>".$rs -> form_radio("frontpage", "other", ($flag != TRUE ? "1" : "0"))."</td>
 		<td style='width:15%; white-space:nowrap;' class='forumheader3'>".FRTLAN_15."</td>
 		<td style='width:83%;' colspan='2' class='forumheader3'>
-			<input class='tbox' type='text' name='frontpage_url' size='50' value='".($flag != TRUE ? $pref['frontpage'] : "")."' maxlength='100' />
+			".$rs -> form_text("frontpage_url", 50, ($flag != TRUE ? $pref['frontpage'] : ""), 100, "tbox")."
 		</td>
-		</tr>
-		<tr style='vertical-align:top'>
+	</tr>
+	<tr style='vertical-align:top'>
 		<td colspan='4' style='text-align:center' class='forumheader'>
-			<input class='button' type='submit' name='updatesettings' value='".FRTLAN_12."' />
+			".$rs -> form_button("submit", "updatesettings", FRTLAN_12)."
 		</td>
-		</tr>
+	</tr>
 </table>
 </form>
 </div>";
