@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_post_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-02-19 12:12:45 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2005-02-26 18:32:38 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -64,7 +64,7 @@ $poll .= "</td>\n</tr>";
 
 // finally, file attach is optional, again only change this if you know what you're doing ...
 
-$fileattach = "<tr><td colspan='2' class='nforumcaption2'>".LAN_390."</td></tr><tr><td style='width:20%' class='forumheader3'>".LAN_392."</td><td style='width:80%' class='forumheader3'>".LAN_393." | ".str_replace("\n", " | ", $pref['upload_allowedfiletype'])." |<br />".LAN_394."<br />".LAN_395.": ".($pref['upload_maxfilesize'] ? $pref['upload_maxfilesize'].LAN_396 : ini_get('upload_max_filesize'))."<br /><input class='tbox' name='file_userfile[]' type='file' size='47'>\n</td>\n</tr>\n</td>\n</tr>\n";
+$fileattach = "<tr><td colspan='2' class='nforumcaption2'>".($pref['image_post'] ? LAN_390 : LAN_416)."</td></tr><tr><td style='width:20%' class='forumheader3'>".LAN_392."</td><td style='width:80%' class='forumheader3'>".LAN_393." | ".str_replace("\n", " | ", $pref['upload_allowedfiletype'])." |<br />".LAN_394."<br />".LAN_395.": ".($pref['upload_maxfilesize'] ? $pref['upload_maxfilesize'].LAN_396 : ini_get('upload_max_filesize'))."<br /><input class='tbox' name='file_userfile[]' type='file' size='47'>\n</td>\n</tr>\n</td>\n</tr>\n";
 
 
 // ------------
