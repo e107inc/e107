@@ -350,9 +350,9 @@ while($row = $sql -> db_Fetch()){
 		$text .= "<b>".EPL_OPTIONS."</b>: [ ".($plugin_installflag ? "<a href='".e_SELF."?uninstall.$plugin_id'> ".EPL_ADLAN_1."</a>" : "<a href='".e_SELF."?install.$plugin_id'>".EPL_ADLAN_0."</a>")." ]";
 	}else{
 		if($eplug_menu_name){
-			$text .= EPL_NOINSTALL.str_replace("..", "", e_PLUGIN.$plugin_path)."/ ".EPL_DIRECTORY.";
+			$text .= EPL_NOINSTALL.str_replace("..", "", e_PLUGIN.$plugin_path)."/ ".EPL_DIRECTORY;
 		}else{
-			$text .= EPL_NOINSTALL_1.str_replace("..", "", e_PLUGIN.$plugin_path)."/ ".EPL_DIRECTORY.";
+			$text .= EPL_NOINSTALL_1.str_replace("..", "", e_PLUGIN.$plugin_path)."/ ".EPL_DIRECTORY;
 		}
 	}
 	if($plugin_version != $eplug_version && $plugin_installflag){
