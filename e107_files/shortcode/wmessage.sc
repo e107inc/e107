@@ -11,7 +11,7 @@ if ($pref['wmessage_sc']) {
 			$sql->db_Select("wmessage", "*", "ORDER BY wm_active ASC", "nowhere");
 			while ($row = $sql->db_Fetch()) {
 				if (check_class($row['wm_active'])) {
-					$wmessage .= $tp->toHTML($row['wm_text'], TRUE)."<br />";
+					$wmessage .= $tp->toHTML($row['wm_text'], TRUE, 'parse_sc')."<br />";
 				}
 			}
 	 
