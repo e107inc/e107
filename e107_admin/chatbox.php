@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/chatbox.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-18 16:11:32 $
-|     $Author: streaky $
+|     $Revision: 1.6 $
+|     $Date: 2005-01-26 05:23:45 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -22,7 +22,8 @@ $e_sub_cat = 'chatbox';
 
 require_once("auth.php");
 
-if($action == "u"){
+if(e_QUERY == "u")
+{
         $message = CHBLAN_1;
 }
 
@@ -106,6 +107,7 @@ if(!$sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, 50", 
                         $cb_nick = eregi_replace("[0-9]+\.", "", $cb_nick);
                 }
 
+					$cb_message = str_replace('&amp;#','&#',$cb_message);
                 $cb_message = $aj -> tpa($cb_message, "on");
 
                 $text .= "<tr>
