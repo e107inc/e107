@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-12-12 17:38:45 $
-|     $Author: sweetas $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-07 10:41:00 $
+|     $Author: pholzmann $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -327,7 +327,7 @@ $text .="
 ".$rs -> form_password("password1", 40, $password1, 20)."
 ";
 if($pref['signup_pass_len']){
-$text .= "<br /><span class='smalltext'>  (".LAN_SIGNUP_1." {$pref['signup_pass_len']} ".LAN_SIGNUP_2.")</span>";
+$text .= "<span class='smalltext'> (".LAN_SIGNUP_1." {$pref['signup_pass_len']} ".LAN_SIGNUP_2.")</span>";
 }
 $text .="
 </td>
@@ -533,7 +533,7 @@ $text .= "</select>
 
 if($use_imagecode){
         $text .= " <tr>
-        <td class='forumheader3' style='width:30%'>".LAN_410."</td>
+        <td class='forumheader3' style='width:30%'>".LAN_410.req(2)."</td>
         <td class='forumheader3' style='width:70%'>".
         $rs ->form_hidden("rand_num", $sec_img -> random_number).
         $sec_img -> r_image()."<br />".$rs -> form_text("code_verify", 20, "", 20)."
