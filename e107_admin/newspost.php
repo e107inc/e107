@@ -849,6 +849,19 @@ class create_rss{
   		$nb = htmlentities($nb);
 		$nb = str_replace('&pound', '&amp;#163;', $nb);
 		$nb = str_replace('&copy;', 'c.', $nb);
+		// Code from Lisa
+		$search = array();
+		$replace = array();
+		$search[0] = "/\<a href=\"(.*?)\">(.*?)<\/a>/si";
+		$replace[0] = '\\2';
+		$search[1] = "/\<a href='(.*?)'>(.*?)<\/a>/si";
+		$replace[1] = '\\2';
+		$search[2] = "/\<a href='(.*?)'>(.*?)<\/a>/si";
+		$replace[2] = '\\2';
+		$search[3] = "/\<a href=&quot;(.*?)&quot;>(.*?)<\/a>/si";
+		$replace[3] = '\\2';
+		$news_title = preg_replace($search, $replace, $news_title);
+		// End of code from Lisa
 		$wlog .= $news_title."\n".SITEURL."comment.php?".$news_id."\n\n";
 		$itemdate = strftime("%a, %d %b %Y %I:%M:00 GMT", $news_datestamp);
 
