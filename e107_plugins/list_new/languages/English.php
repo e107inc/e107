@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/list_new/languages/English.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-27 19:53:07 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-16 22:18:00 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 	
@@ -41,6 +41,6 @@ define("LIST_19", "Docs");
 define("LIST_20", "Bugtracker");
 	
 define("LIST_21", "Articles");
-	
+define("LIST_22", "Ideas");
 	
 ?>
