@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/class2.php,v $
-|     $Revision: 1.107 $
-|     $Date: 2004-12-11 14:22:10 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.108 $
+|     $Date: 2004-12-17 13:41:32 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -602,6 +602,8 @@ class textparse {
 		$replace[11] = 'background<i></i>:url';
 		$search[12] = "#(meta )#si";
 		$replace[12] = '\1<i></i>';
+		$search[13] = "#onerror#si";
+		$replace[13] = 'one<i></i>error';
 
 		if ($strip) {
 			$text = strip_tags($text);
@@ -773,10 +775,11 @@ class textparse {
 	function img_parse($matches) {
 		global $poster_userid, $pref;
 		if (preg_match("#\.php\?.*#", $matches[1])) {
-			return "";
+			return '';
 		}
+		$matches[1] = preg_replace('#onerror *=#','',$matches[1]);
 		if (!$poster_userid) {
-			return "<img src='{$matches[1]}' alt='' style='vertical-align:middle; border:0' />";
+			return "<img src='{$matches[1]}' alt='' style='vertical-align:  middle; border:0' />";
 		} else {
 			if ($pref['image_post']) {
 				if (!function_exists('e107_userGetuserclass')) {
@@ -789,7 +792,7 @@ class textparse {
 			if ($pref['image_post_disabled_method']) {
 				return '[ image disabled ]';
 			} else {
-				return "Image: $matches[1]";
+				return "Image: {$matches[1]}";
 			}
 		}
 	}
