@@ -138,7 +138,6 @@ function tablestyle($caption, $text, $mode){
 	$bodytable = $mode['style']=='button_menu' ? 'menu_content_buttons' : 'menu_content';
 	$bodybreak = $mode['style']=='button_menu' ? '' : '<br />';
 	$r_caption_bord_but = $mode['style']=='button_menu' ? ' button_menu' : '';
-	if ($caption == 'Select Language') { $image = 'language.png'; } else { $image = 'gears.png'; }
 	if ($style == "leftmenu") {
 		echo "<div class='cap_border'><div class='left_caption'>".$caption."</div></div>";
 		if ($text != "") {
