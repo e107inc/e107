@@ -10,6 +10,8 @@
 |
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
+|
+|   $Id: header_default.php,v 1.32 2004-08-12 15:54:23 e107coders Exp $
 +---------------------------------------------------------------+
 */
 if(!function_exists("parseheader")){
@@ -66,7 +68,7 @@ if(!function_exists("checklayout")){
                                           require_once(e_PLUGIN.$menu_name."/".$menu_name.".php");
                                   }
                           }
-  
+
                   }
           }else if(strstr($str, "SETSTYLE")){
                   $tmp = explode("=", $str);
@@ -75,17 +77,17 @@ if(!function_exists("checklayout")){
                   echo SITEDISCLAIMER.(defined("THEME_DISCLAIMER") && $pref['displaythemeinfo'] ? THEME_DISCLAIMER : "");
           }else if(strstr($str, "CUSTOM")){
                   $custom = trim(chop(preg_replace("/\{CUSTOM=(.*?)\}/si", "\\1", $str)));
-                  if($custom == "login"){
+                  if($custom == "login" || $custom == "login noprofile"){
                           @include(e_PLUGIN."login_menu/languages/".e_LANGUAGE.".php");
                           @include(e_PLUGIN."login_menu/languages/English.php");
-  
+
                           if(USER == TRUE){
                                   echo "<span class='mediumtext'>".LOGIN_MENU_L5." ".USERNAME."&nbsp;&nbsp;&nbsp;.:. ";
                                   if(ADMIN == TRUE){
                                           echo "<a href='".e_ADMIN.(!$pref['adminstyle'] || $pref['adminstyle'] == "default" ? "admin.php" : $pref['adminstyle'].".php")."'>".LOGIN_MENU_L11."</a> .:. ";
                                   }
-                                  echo "
-                                   <a href='".e_BASE."user.php?id.".USERID."'>".LOGIN_MENU_L13."</a>\n.:. <a href='" . e_BASE . "usersettings.php'>".LOGIN_MENU_L12."</a> .:. <a href='".e_BASE."?logout'>".LOGIN_MENU_L8."</a> .:.</span>";
+                                  echo ($custom != "login noprofile") ? "<a href='".e_BASE."user.php?id.".USERID."'>".LOGIN_MENU_L13."</a>\n.:. ":"";
+                                  echo "<a href='" . e_BASE . "usersettings.php'>".LOGIN_MENU_L12."</a> .:. <a href='".e_BASE."?logout'>".LOGIN_MENU_L8."</a> .:.</span>";
                           }else{
                                   echo  "<form method='post' action='".e_SELF."'>\n<p>\n".LOGIN_MENU_L1."<input class='tbox' type='text' name='username' size='15' value='$username' maxlength='20' />&nbsp;&nbsp;\n".LOGIN_MENU_L2."<input class='tbox' type='password' name='userpass' size='15' value='' maxlength='20' />&nbsp;&nbsp;\n<input type='checkbox' name='autologin' value='1' />".LOGIN_MENU_L6."&nbsp;&nbsp;\n<input class='button' type='submit' name='userlogin' value='Login' />";
                                   if($pref['user_reg']){
@@ -93,7 +95,7 @@ if(!function_exists("checklayout")){
                                   }
                                   echo "</p>\n</form>";
                           }
-  
+
                   }else if($custom == "search" && (USER || $pref['search_restrict']!=1)){
                           $searchflat = TRUE;
                           include(e_PLUGIN."search_menu/search_menu.php");
@@ -123,7 +125,7 @@ if(!function_exists("checklayout")){
                           }
                           define("WMFLAG", TRUE);
                   }
-  
+
           }else if(strstr($str, "BANNER")){
                   $campaign = trim(chop(preg_replace("/\{BANNER=(.*?)\}/si", "\\1", $str)));
                   mt_srand ((double) microtime() * 1000000);
@@ -136,7 +138,7 @@ if(!function_exists("checklayout")){
                   $sql = new db;
                   if($sql -> db_Select("banner", "*", $query)){
                           $row = $sql -> db_Fetch(); extract($row);
-  
+
                           $fileext1 = substr(strrchr($banner_image, "."), 1);
                           $fileext2 = substr(strrchr($banner_image, "."), 0);
                           if ($fileext1 == swf) {
@@ -153,7 +155,7 @@ if(!function_exists("checklayout")){
                   require_once(e_PLUGIN."alt_news/alt_news.php");
                   alt_news($news_category);
           }
-  
+
   }
 }
 
@@ -175,7 +177,9 @@ echo "<script type='text/javascript' src='".e_FILE."e107.js'></script>";
 if(file_exists(THEME."theme.js")){echo "<script type='text/javascript' src='".THEME."theme.js'></script>\n";}
 if(file_exists(e_FILE."user.js")){echo "<script type='text/javascript' src='".e_FILE."user.js'></script>\n";}
 if($eplug_js){ echo "<script type='text/javascript' src='{$eplug_js}'></script>\n"; }
+if($htmlarea_js){ echo $htmlarea_js; }
 if(function_exists("headerjs")){echo headerjs();  }
+
 echo "<script type=\"text/javascript\">
 <!--\n";
 if($pref['log_activate']){
@@ -186,7 +190,7 @@ document.write( '<link rel=\"stylesheet\" type=\"text/css\" href=\"".e_PLUGIN."l
 
 $fader_onload = ($sql -> db_Select("menus", "*", "menu_name='fader_menu' AND menu_location!='0' ") ? "changecontent();" : "");
 $links_onload = ($pref['links_new_window'] ? "externalLinks();" : "");
-$body_onload =($fader_onload != "" || $links_onload != "" ? " onload='".$links_onload." ".$fader_onload."'" : "");	
+$body_onload =($fader_onload != "" || $links_onload != "" ? " onload='".$links_onload." ".$fader_onload."'" : "");
 $ejs_listpics = "";
 $handle=opendir(THEME."images");
 while ($file = readdir($handle)){
