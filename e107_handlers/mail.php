@@ -17,18 +17,22 @@
 Please note that mailed attachments have been found to be corrupted using php 4.3.3
 php 4.3.6 does NOT have this problem.
 */
+// Comment out the line below if you have trouble with some people not receiving emails.
+// ini_set(sendmail_path, "/usr/sbin/sendmail -t -f ".$pref['siteadminemail']);
+
 
 function sendemail($send_to, $subject, $message,$to_name,$send_from,$from_name,$attachments,$Cc,$Bcc,$returnpath,$returnreceipt){
         global $pref,$SIGNUPEMAIL;
         $lb = "\n";
         // Clean up the HTML. ==
-        if(!$SIGNUPEMAIL){
+        if(!$SIGNUPEMAIL || (!eregi("<br>",$message) && !eregi("<br />",$message))){
         $Html = preg_replace("/\n/","<br />",$message);
         $Html = eregi_replace('(((f|ht){1}tp://)[-a-zA-Z0-9@:%_\+.~#?&//=]+)',    '<a href="\\1">\\1</a>', $Html);
         $Html = eregi_replace('([[:space:]()[{}])(www.[-a-zA-Z0-9@:%_\+.~#?&//=]+)',    '\\1<a href="http://\\2">\\2</a>', $Html);
         $Html = eregi_replace('([_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,3})',    '<a href="mailto:\\1">\\1</a>', $Html);
         }else{
         $Html = $message;
+
         }
         $text = strip_tags(preg_replace("<br>","/\n/",$message));
         $OB="----=_OuterBoundary_000". md5(uniqid(mt_rand(), 1));
@@ -37,12 +41,14 @@ function sendemail($send_to, $subject, $message,$to_name,$send_from,$from_name,$
         $send_from = ($send_from)?$send_from:$pref['siteadminemail'];
         $from_name = ($from_name)?$from_name:$pref['siteadmin'];
         $to_name = ($to_name)?$to_name:$send_to;
-        
-        $headers = "MIME-Version: 1.0\n";
+        $send_to = $to_name." <".$send_to.">\n";
+
+        $headers = "Date: ".date("r")."\n";
+        $headers.= "MIME-Version: 1.0\n";
         $headers.= "From: ".$from_name." <".$send_from.">\n";
-        $headers.= "To: ".$to_name." <".$send_to.">\n";
         $headers.= "Reply-To: ".$from_name." <".$send_from.">\n";
-         $headers.= ($returnreceipt !="")? "Return-Receipt: $returnreceipt\n":"Return-Receipt: ".$pref['siteadminemail']."\n";
+        $headers.= ($returnreceipt !="")? "Return-Receipt: $returnreceipt\n":"Return-Receipt: ".$pref['siteadminemail']."\n";
+        $headers.= "X-Sender: ".$send_from."\n";
         $headers.= "X-Mailer: PHP Mailer\n";
         $headers.= "X-MimeOLE: Produced By e107 website system\n";
         $headers.= "X-Priority: 3\n";
