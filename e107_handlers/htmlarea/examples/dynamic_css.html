@@ -1,0 +1,44 @@
+<html>
+  <head>
+    <title>Test of CSS plugin</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript">
+      _editor_url = "../";
+      _editor_lang = "en";
+    </script>
+
+    <!-- load the main HTMLArea files -->
+    <script type="text/javascript" src="../htmlarea.js"></script>
+
+    <script type="text/javascript">
+      HTMLArea.loadPlugin("DynamicCSS");
+
+      function initDocument() {
+        var editor = new HTMLArea("editor");
+        editor.config.pageStyle = "@import url(dynamic.css);";
+        editor.registerPlugin(DynamicCSS);
+        editor.generate();
+      }
+      
+      
+      
+    </script>
+
+  </head>
+
+  <body onload="initDocument()">
+    <h1>Test of DynamicCSS plugin</h1>
+
+    <textarea id="editor" style="height: 30em; width: 100%;">
+        <p>p with default p style</p><br>
+        <p class="p1">p with p.class="p1"</p><br>
+        <p class="p2">p with p.class="p2"</p><br>
+        <br>
+        <div>div with default div class</div><br>
+        <div class="div1">div with div.class="div1"</div><br>
+        <div class="div2">div with div.class="div2"</div><br>
+        <br>
+        <span class="highlight">testtext with common class="highlight"</span>
+    </textarea>
+  </body>
+</html>

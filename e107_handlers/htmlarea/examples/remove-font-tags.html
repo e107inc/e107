@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <title>The "htmlRemoveTags" feature</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript">
+      _editor_url = "../";
+      _editor_lang = "en";
+    </script>
+
+    <!-- load the main HTMLArea file -->
+    <script type="text/javascript" src="../htmlarea.js"></script>
+
+    <script type="text/javascript">
+      HTMLArea.loadPlugin("ContextMenu");
+      HTMLArea.loadPlugin("TableOperations");
+
+      function initDocument() {
+        var editor = new HTMLArea("editor");
+        // the following line ensures that FONT tags won't be reported by HTMLArea
+        editor.config.htmlRemoveTags = /^(font)$/i;
+        editor.registerPlugin(ContextMenu);
+        editor.registerPlugin(TableOperations);
+        editor.generate();
+      }
+    </script>
+
+  </head>
+
+  <body onload="initDocument()">
+    <h1>Remove FONT tags</h1>
+
+
+    <textarea id="editor" style="height: 30em; width: 100%;"></textarea>
+
+    <hr />
+    <address><a href="http://dynarch.com/mishoo/">Mihai Bazon</a></address>
+<!-- Created: Wed Oct  1 19:55:37 EEST 2003 -->
+<!-- hhmts start --> Last modified: Wed Apr 28 15:09:09 EEST 2004 <!-- hhmts end -->
+<!-- doc-lang: English -->
+  </body>
+</html>

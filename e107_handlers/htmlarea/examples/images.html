@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Test of Image Manager plugin</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style type="text/css">
+    /*<![CDATA[*/
+        <!--
+                .textarea { height: 30em; width: 80%; } 
+        -->
+        /*]]>*/
+    </style>
+    <script type="text/javascript">
+    //<![CDATA[
+      _editor_url = "../";
+      _editor_lang = "en";
+    //]]>
+    </script><!-- load the main HTMLArea file -->
+    <script type="text/javascript" src="../htmlarea.js">
+    </script>
+    <script type="text/javascript">
+    //<![CDATA[
+          HTMLArea.loadPlugin("ImageManager");
+     initdocument = function () {
+        var editor = new HTMLArea("editor");
+        editor.generate();
+      }
+        function addEvent(obj, evType, fn)
+        { 
+                if (obj.addEventListener) { obj.addEventListener(evType, fn, true); return true; } 
+                else if (obj.attachEvent) {  var r = obj.attachEvent("on"+evType, fn);  return r;  } 
+                else {  return false; } 
+        } 
+        addEvent(window, 'load', initdocument);
+    //]]>
+    </script>
+  </head>
+  <body>
+    <h1>HTMLArea 3 RC1 + Image Manager + Image Editor</h1>
+    <p>PHP Image Manager, Image Editor for HTMLArea. Requires PHP, GD or NetPBM or
+    ImageMagick.</p>
+    <ul>
+      <li>Auto cache thumbnails (JPEG, PNG, GIF depending on GD).</li>
+      <li>Filmstrip view.</li>
+      <li>Online Image Editor.</li>
+      <li>Create folders (if permitting).</li>
+      <li>Editor - Resize, Crop, Rotate, Save as.</li>
+    </ul>
+     <div><textarea id="editor" class="textarea" rows="10" cols="40"></textarea></div>
+    <hr />
+    <address>
+      <a href="http://www.zhuo.org/htmlarea/" title="Home of the ImageManger+Editor">Xiang Wei Zhuo</a>
+    </address>
+  </body>
+</html>
