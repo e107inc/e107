@@ -24,4 +24,8 @@ define("MENLAN_20", "Visibility");
 define("MENLAN_21", "Visible to Guests only");
 define("MENLAN_22", "Inactive Menus");
 
+define("MENLAN_23", "Move to bottom");
+define("MENLAN_24", "Move to top");
+define("MENLAN_25", "Function ...");
+
 ?>
