@@ -13,9 +13,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.16 $
-| $Date: 2005-01-19 17:11:51 $
-| $Author: stevedunstan $
+| $Revision: 1.17 $
+| $Date: 2005-01-20 04:07:50 $
+| $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 
@@ -74,10 +74,8 @@ class news {
 		}
 		
 		global $NEWSSTYLE, $NEWSLISTSTYLE;
-		if (!is_object($tp)) $tp = new e_parse;
 		$news['news_title'] = $tp -> toHTML($news['news_title'],TRUE);
-		$news['data'] = $tp -> toHTML($news['data'],TRUE);
-		$news_body = $news['data'];
+		$news['news_body'] = $tp->toHTML($news['news_body'],TRUE);
 		if ($news['news_extended'] && ($preview == "Preview" || strstr(e_QUERY, "extend"))) {
 			$news['news_extended'] = trim(chop($tp->toHTML($news['news_extended'], TRUE)));
 		}

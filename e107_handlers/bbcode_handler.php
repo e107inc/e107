@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-20 01:27:45 $
+|     $Revision: 1.7 $
+|     $Date: 2005-01-20 04:07:50 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -27,7 +27,7 @@ class e_bbcode {
 	}
 
 	function parseBBCodes($text,$postID) {
-		if(preg_match_all("/(\[([\w]+)([^\]]*)\])(.*?)(\[\/\\2\])/s", $text, $matches)) {
+		while(preg_match_all("/(\[([\w]+)([^\]]*)\])(.*?)(\[\/\\2\])/s", $text, $matches)) {
 			for ($i=0; $i < count($matches[0]); $i++) {
 				$full_text = $matches[0][$i];
 				$code = preg_replace("#\d#","",$matches[2][$i]);

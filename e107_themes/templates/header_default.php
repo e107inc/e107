@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-01-16 05:28:50 $
-|     $Author: sweetas $
+|     $Revision: 1.15 $
+|     $Date: 2005-01-20 04:07:50 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!function_exists("parseheader")) {
@@ -82,7 +82,9 @@ if ($script_text) {
 	echo "</script>\n";
 }
 
-$fader_onload = ($sql -> db_Select("menus", "*", "menu_name='fader_menu' AND menu_location!='0' ")) ? 'changecontent(); ' : '';
+if(in_array('fader_menu',$eMenuActive)) {
+	$fader_onload = 'changecontent(); ';
+}
 $links_onload = 'externalLinks();';
 $body_onload = ($fader_onload != '' || $links_onload != '') ? " onload='".$fader_onload.$links_onload."'" : "";
 

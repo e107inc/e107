@@ -1,6 +1,7 @@
 global $sql, $override;
-if(!$sql -> db_Select("menus", "*", "(menu_name='edynamic_menu' OR menu_name REGEXP('tree_menu')) AND menu_location!=0"))
-{
+global $eMenuActive;
+
+if(!in_array('edynamic_menu',$eMenuActive) && !in_array('tree_menu',$eMenuActive)) {
 	$linktype = $parm;
 	define("LINKDISPLAY", ($linktype == "menu" ? 2 : 1));
 	if($override_function = $override -> override_check('sitelinks')){
