@@ -38,12 +38,5 @@ var MnthNam = new Array(
 //-->
 </script>
 <?php
-if (file_exists(e_PLUGIN."clock_menu/languages/clock_".e_LANGUAGE.".js" ))
-{
-echo "<script type='text/javascript' src='".e_PLUGIN."clock_menu/languages/clock_".e_LANGUAGE.".js'></script>\n<!-- ### end clock ### //-->\n\n"; 
-}
-else
-{
-echo "<script type='text/javascript' src='".e_PLUGIN."clock_menu/clock.js'></script>\n<!-- ### end clock ### //-->\n\n";
-}
+echo "<script type='text/javascript' src='".e_PLUGIN."clock_menu/clock.js'></script>\n\n<script>\nwindow.setTimeout(\"tick('".CLOCK_MENU_L24."')\",150);\n</script>\n<!-- ### end clock ### //-->\n\n";
 ?>
