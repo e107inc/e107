@@ -157,10 +157,25 @@ $SEARCH = "
 $PERMS = 
 (USER == TRUE || ANON == TRUE ? LAN_204." - ".LAN_206." - ".LAN_208 : LAN_205." - ".LAN_207." - ".LAN_209);
 
-
+$sticky_threads = 0;$stuck = FALSE;
+$reg_threads = 0;$unstuck = FALSE;
 if($sql -> db_Select("forum_t", "*",  "thread_forum_id='".$forum_id."' AND thread_parent='0' ORDER BY thread_s DESC, thread_lastpost DESC, thread_datestamp DESC LIMIT $from, $view")){
 	$sql2 = new db; $sql3 = new db; $gen = new convert;
 	while($row= $sql -> db_Fetch()){
+		if($row['thread_s']){
+			$sticky_threads ++;
+		}
+		if($sticky_threads == "1" && !$stuck){
+			$forum_view_forum .= "<tr><td colspan='6'  class='forumheader'><span class='mediumtext'><b>".LAN_411."</b></span></td></tr>";
+			$stuck = TRUE;
+		}
+		if(!$row['thread_s']){
+			$reg_threads ++;
+		}
+		if($reg_threads == "1" && !$unstuck && $stuck){
+			$forum_view_forum .= "<tr><td colspan='6'  class='forumheader'><span class='mediumtext'><b>".LAN_412."</b></span></td></tr>";
+			$unstuck = TRUE;
+		}
 		$forum_view_forum .= parse_thread($row);
 	}
 }else{
