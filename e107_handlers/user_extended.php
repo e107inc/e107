@@ -3,7 +3,7 @@
 // Usage of $form_ext_name - "Name|type|values|default|applicable to|visible to"
 //
 //  default is the default value
-//	applicable to refers to who will see it in the userpref screen
+//        applicable to refers to who will see it in the userpref screen
 //  visible to refers to who will see it in the user screen (ie able to hide certain fields)
 //  applicable to and visible to are the class id (a number)
 //
@@ -26,23 +26,24 @@ function user_extended_name($extended){
 
 function user_extended_edit($form_ext_name,$tdclass="",$alignit="left"){
 
-                        global $pref,$key,$sql,$user_pref;$_POST;
+                        global $pref,$key,$sql,$user_pref,$signup_ext,$_POST;
                         $ut = explode("|",$form_ext_name);
                         $u_name = ($ut[0] != "") ? $ut[0] : trim($form_ext_name);
                         $u_type = trim($ut[1]);
                         $u_value = $ut[2];
-						$v_default = $ut[3];
-						$u_visible = $ut[4];
-						if($ut[4] && check_class($ut[4])==FALSE){ return; }
+                                                $v_default = $ut[3];
+                                                $u_visible = $ut[4];
+                                                if($ut[4] && check_class($ut[4])==FALSE){ return; }
+
+                        $ret ="<tr><td class='".$tdclass."' style='vertical-align:top'>".$u_name.req($pref[$signup_ext])."</td>
+                               <td class='".$tdclass."' style='text-align:".$alignit."'><div style='text-align:left' style='width:10%;white-space:nowrap'>";
 
                         switch ($u_type) {
                           case "radio":
-                            $ret ="<tr><td class='".$tdclass."' style='vertical-align:top'>".$u_name."</td>
-                                   <td class='".$tdclass."' style='text-align:".$alignit."'><div style='text-align:left' style='width:10%;white-space:nowrap'>";
 
                             $tmp = explode(",",$u_value);
                             for ($i=0; $i<count($tmp); $i++) {
-							$checked = ($tmp[$i] == $user_pref[$form_ext_name] || ($tmp[$i] == $v_default && !$user_pref[$form_ext_name])) ? " checked" : ""; 
+                                                        $checked = ($tmp[$i] == $user_pref[$form_ext_name] || ($tmp[$i] == $v_default && !$user_pref[$form_ext_name])) ? " checked" : "";
                             if(!USER){ $checked = ($_POST[$form_ext_name] == $tmp[$i] || ($tmp[$i] == $v_default && !$_POST[$form_ext_name]))? " checked" : ""; }
                             $ret .="<input  type='radio' name='".$form_ext_name."'  value='".$tmp[$i]."' $checked /> $tmp[$i] ";
                             $ret .= ($pref['signup_ext_req'.$key] && $i==0 && (!USER))? "<span style='font-size:15px; color:red'> *</span>":"";
@@ -53,8 +54,10 @@ function user_extended_edit($form_ext_name,$tdclass="",$alignit="left"){
                           break;
 
                           case "dropdown":
-                            $ret ="<tr><td class='".$tdclass."' style='vertical-align:top'>".$u_name."</td>
-                                   <td class='".$tdclass."' style='text-align:".$alignit."'>
+                        //    $ret .="<tr><td class='".$tdclass."' style='vertical-align:top'>".$u_name."</td>
+                       //            <td class='".$tdclass."' style='text-align:".$alignit."'>";
+
+                                   $ret .= "
                                    <select class='tbox' style='width:200px'  name='".$form_ext_name."'><option></option>";
 
                             $tmp = explode(",",$u_value);
@@ -71,8 +74,8 @@ function user_extended_edit($form_ext_name,$tdclass="",$alignit="left"){
 
                           case "text":
                           if($u_value == ""){$u_value = "40";};
-                             $ret ="<tr><td class='".$tdclass."' style='vertical-align:top'>".$u_name."</td>
-                            <td class='".$tdclass."' style='text-align:".$alignit."'>";
+                        //     $ret ="<tr><td class='".$tdclass."' style='vertical-align:top'>".$u_name."</td>
+                       //     <td class='".$tdclass."' style='text-align:".$alignit."'>";
                               $valuehere = ($_POST[$form_ext_name])? $_POST[$form_ext_name] : ($user_pref[$form_ext_name])? $user_pref[$form_ext_name] : $v_default;
                             $ret .="<input class='tbox' type='text' name='".$form_ext_name."' size='".$u_value."' value='".$valuehere."' maxlength='200' />";
                             $ret .= ($pref['signup_ext_req'.$key] && (!USER))? "<span style='font-size:15px; color:red'> *</span>":"";
@@ -80,8 +83,9 @@ function user_extended_edit($form_ext_name,$tdclass="",$alignit="left"){
                             break;
 
                          case "table":
-                            $ret ="<tr><td class='".$tdclass."' style='vertical-align:top'>".$u_name."</td>
-                                   <td class='".$tdclass."' style='text-align:".$alignit."'>
+                        //    $ret ="<tr><td class='".$tdclass."' style='vertical-align:top'>".$u_name."</td>
+                        //           <td class='".$tdclass."' style='text-align:".$alignit."'>";
+                                   $ret .="
                                    <select class='tbox' style='width:200px'  name='".$form_ext_name."'><option></option>";
 
                             $tmp = explode(",",$u_value);
@@ -101,9 +105,9 @@ function user_extended_edit($form_ext_name,$tdclass="",$alignit="left"){
                           break;
 
                         default:
-                        $ret = "<tr>
-                        <td style='width:20%' class='".$tdclass."'>".$form_ext_name."</td>
-                        <td style='width:80%; text-align:".$alignit."' class='".$tdclass."' nowrap>";
+                    //    $ret = "<tr>
+                    //    <td style='width:20%' class='".$tdclass."'>".$form_ext_name."</td>
+                    //    <td style='width:80%; text-align:".$alignit."' class='".$tdclass."' nowrap>";
                         $valuehere = ($_POST[$form_ext_name])? $_POST[$form_ext_name] : ($user_pref[$form_ext_name])? $user_pref[$form_ext_name] : $v_defualt;
                         $ret .="<input class='tbox' type='text' name='".$form_ext_name."' size='40' value='".$valuehere."' maxlength='200' />";
                         $ret .= ($pref['signup_ext_req'.$key])? "<span style='font-size:15px; color:red'> *</span>":"";

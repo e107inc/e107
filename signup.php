@@ -257,28 +257,28 @@ $rs = new form;
 $text .= $rs -> form_open("post", e_SELF, "signupform")."
 <table class='fborder' style='width:70%'>
 <tr>
-<td class='forumheader3' style='width:30%'>".LAN_7."</td>
+<td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_7."<span style='font-size:15px; color:red'> *</span></td>
 <td class='forumheader3' style='width:70%'>
 ".$rs -> form_text("name", 40, $name, 30)."
-<span style='font-size:15px; color:red'> *</span></td>
+</td>
 </tr>";
 
  if($signupval[0]){
 $text .="
 <tr>
-<td class='forumheader3' style='width:30%'>".LAN_308."</td>
+<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_308."".req($signupval[0])."</td>
 <td class='forumheader3' style='width:70%' >
 ".$rs -> form_text("realname", 40, $realname, 100)."
-".req($signupval[0])."</td>
+</td>
 </tr>";
 }
 
 $text .="
 <tr>
-<td class='forumheader3' style='width:30%'>".LAN_17."</td>
+<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_17."<span style='font-size:15px; color:red'> *</span></td>
 <td class='forumheader3' style='width:70%'>
 ".$rs -> form_password("password1", 40, $password1, 20)."
-<span style='font-size:15px; color:red'> *</span>";
+";
 if($pref['signup_pass_len']){
 $text .= "<br><span class='smalltext'>  (".LAN_SIGNUP_1." {$pref['signup_pass_len']} ".LAN_SIGNUP_2.")</span>";
 }
@@ -286,19 +286,19 @@ $text .="
 </td>
 </tr>
 <tr>
-<td class='forumheader3' style='width:30%'>".LAN_111."</td>
+<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_111."<span style='font-size:15px; color:red'> *</span></td>
 <td class='forumheader3' style='width:70%'>
 ".$rs -> form_password("password2", 40, $password2, 20)."
-<span style='font-size:15px; color:red'> *</span></td>
+</td>
 </tr>
 <tr>
-<td class='forumheader3' style='width:30%'>".LAN_112."</td>
+<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_112."<span style='font-size:15px; color:red'> *</span></td>
 <td class='forumheader3' style='width:70%'>
 ".$rs -> form_text("email", 40, $email, 100)."
-<span style='font-size:15px; color:red'> *</span></td>
+</td>
 </tr>
 <tr>
-<td class='forumheader3' style='width:30%'>".LAN_113."</td>
+<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_113."</td>
 <td class='forumheader3' style='width:70%'>".
 $rs ->form_radio("hideemail", 1)." ".LAN_SIGNUP_10."&nbsp;&nbsp;".$rs ->form_radio("hideemail", 0, 1)." ".LAN_200."
 </td>
@@ -309,10 +309,10 @@ $rs ->form_radio("hideemail", 1)." ".LAN_SIGNUP_10."&nbsp;&nbsp;".$rs ->form_rad
 if($signupval[1]){
         $text.="
         <tr>
-        <td class='forumheader3' style='width:30%' >".LAN_144."</td>
+        <td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_144.req($signupval[1])."</td>
         <td class='forumheader3' style='width:70%' >
         ".$rs -> form_text("website", 60, $website, 150)."
-        ".req($signupval[1])."</td>
+        </td>
         </tr>";
 }
 
@@ -320,20 +320,20 @@ if($signupval[1]){
 if($signupval[2]){
         $text.="
         <tr>
-        <td class='forumheader3' style='width:30%' >".LAN_115."</td>
+        <td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_115.req($signupval[2])."</td>
         <td class='forumheader3' style='width:70%' >
         ".$rs -> form_text("icq", 20, $icq, 10)."
-        ".req($signupval[2])."</td>
+        </td>
         </tr>";
 }
 
 if($signupval[3]){
         $text.="
         <tr>
-        <td class='forumheader3' style='width:30%' >".LAN_116."</td>
+        <td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_116.req($signupval[3])."</td>
         <td class='forumheader3' style='width:70%; ' >
         <input class='tbox' type='text' name='aim' size='30' value='$aim' maxlength='100' />
-        ".req($signupval[3])."</td>
+        </td>
         </tr>";
 }
 
@@ -341,10 +341,10 @@ if($signupval[3]){
 if($signupval[4]){
         $text.="
         <tr>
-        <td class='forumheader3' style='width:30%' >".LAN_117."</td>
+        <td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_117.req($signupval[4])."</td>
         <td class='forumheader3' style='width:70%;'>
         <input class='tbox' type='text' name='msn' size='30' value='$msn' maxlength='100' />
-        ".req($signupval[4])."</td>
+        </td>
         </tr>";
 }
 
@@ -352,8 +352,8 @@ if($signupval[4]){
 if($signupval[5]){
         $text.="
         <tr>
-        <td class='forumheader3' style='width:30%' >".LAN_118."</td>
-        <td class='forumheader3' style='width:70%; ' nowrap>".req($signupval[5]).
+        <td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_118.req($signupval[5])."</td>
+        <td class='forumheader3' style='width:70%; ' nowrap>".
 
         $rs -> form_select_open("birth_day").
         $rs -> form_option("", 0);
@@ -383,7 +383,7 @@ if($signupval[5]){
 if($signupval[6]){
         $text.="
         <tr>
-        <td class='forumheader3' style='width:30%' >".LAN_119."</td>
+        <td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_119."</td>
         <td class='forumheader3' style='width:70%' >
         <input class='tbox' type='text' name='location' size='60' value='$location' maxlength='200' />
         ".req($signupval[6])."</td>
@@ -412,7 +412,7 @@ if($sql -> db_Select("core", " e107_value", " e107_name='user_entended'")){
 if($signupval[7]){
         require_once(e_HANDLER."ren_help.php");
         $text .= "<tr>
-        <td class='forumheader3' style='width:30%' style='vertical-align:top' >".LAN_120."</td>
+        <td class='forumheader3' style='width:30%;white-space:nowrap;vertical-align:top' >".LAN_120."</td>
         <td class='forumheader3' style='width:70%' >
         <textarea class='tbox' name='signature' cols='70' rows='4'>$signature</textarea>
         ".req($signupval[7])."<input class='helpbox' type='text' name='helpb' size='90' />
@@ -424,7 +424,7 @@ if($signupval[7]){
 if($signupval[8]){
         $text.="
         <tr>
-        <td class='forumheader3' style='width:30%; vertical-align:top' >".LAN_121."<br /><span class='smalltext'>(".LAN_402.")</span></td>
+        <td class='forumheader3' style='width:30%; vertical-align:top;white-space:nowrap' >".LAN_121.req($signupval[8])."<br /><span class='smalltext'>(".LAN_402.")</span></td>
         <td class='forumheader3' style='width:70%' >
         <input class='tbox' type='text' name='image' size='60' value='$image' maxlength='100' />
 
@@ -457,14 +457,14 @@ if($pref['photo_upload'] && FILE_UPLOADS){
 }
 
 
-$text .= req($signupval[8])."</td>
+$text .= "</td>
 </tr>";
 }
 
 if($signupval[9]){
         $text.="
         <tr>
-        <td class='forumheader3' style='width:30%' >".LAN_122."</td>
+        <td class='forumheader3' style='width:30%' >".LAN_122.req($signupval[9])."</td>
         <td class='forumheader3' style='width:70%' nowrap>
         <select name='timezone' class='tbox'>\n";
 
@@ -479,7 +479,7 @@ if($signupval[9]){
         $count++;
 }
 
-$text .= "</select>".req($signupval[9])."
+$text .= "</select>
 </td>
 </tr>";
 }
@@ -528,7 +528,7 @@ function timezone(){
 function req($field){
         global $pref;
         if($field ==2){
-                $ret = "<span style='font-size:15px; color:red'> *</span>";
+                $ret = "<span style='text-align:right;font-size:15px; color:red'> *</span>";
         } else {
                 $ret = "";
         }
