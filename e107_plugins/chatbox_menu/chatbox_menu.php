@@ -22,7 +22,7 @@ if(IsSet($_POST['chat_submit'])){
 		$nick = trim(chop(preg_replace("/\[.*\]/si", "", $_POST['nick'])));
 		$fp = new floodprotect;
 		if(!$fp -> flood("chatbox", "cb_datestamp")){
-			header("location:index.php");
+			header("location:".e_BASE."index.php");
 			exit;
 		}else{
 			if((strlen(trim(chop($cmessage))) < 1000) && trim(chop($cmessage)) != ""){

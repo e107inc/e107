@@ -1,8 +1,4 @@
 <?php
-if(IsSet($_POST['fjsubmit'])){
-	header("location:forum_viewforum.php?".$_POST['forumjump']);
-	exit;
-}
 /*
 +---------------------------------------------------------------+
 |	e107 website system
@@ -16,8 +12,12 @@ if(IsSet($_POST['fjsubmit'])){
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
-require_once("class2.php");
 
+require_once("class2.php");
+if(IsSet($_POST['fjsubmit'])){
+	header("location:".e_BASE."forum_viewforum.php?".$_POST['forumjump']);
+	exit;
+}
 $highlight_search = FALSE;
 if(IsSet($_POST['highlight_search'])){
 	$highlight_search = TRUE;

@@ -16,7 +16,7 @@ require_once("../class2.php");
 
 if(IsSet($_POST['dump_sql'])){
 	if(!getperms("0")){
-		header("location: admin.php");
+		header("location: ".e_ADMIN."admin.php");
 		exit;
 	}
 	getsql($mySQLdefaultdb);
@@ -24,12 +24,12 @@ if(IsSet($_POST['dump_sql'])){
 }
 
 if(IsSet($_POST['db_update'])){
-	header("location: e107_update.php");
+	header("location: ".e_ADMIN."e107_update.php");
 	exit;
 }
 
 if(IsSet($_POST['verify_sql'])){
-	header("location: db_verify.php");
+	header("location: ".e_ADMIN."db_verify.php");
 	exit;
 }
 

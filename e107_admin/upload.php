@@ -27,12 +27,12 @@ if($action == "dis"){
 }
 
 if($action == "dlm"){
-        header("location: download.php?dlm.".$id);
+        header("location: ".e_ADMIN."download.php?dlm.".$id);
         exit;
 }
 
 if($action == "news"){
-        header("location: newspost.php?create.upload.".$id);
+        header("location: ".e_ADMIN."newspost.php?create.upload.".$id);
         exit;
 }
 

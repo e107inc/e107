@@ -41,7 +41,7 @@ if($action == "dec"){
 	$sql -> db_Update("links", "link_order=link_order-1 WHERE link_order='".($link_order+1)."' AND link_category='$location' ");
 	$sql -> db_Update("links", "link_order=link_order+1 WHERE link_id='$linkid' AND link_category='$location' ");
 	clear_cache("sitelinks");
-	header("location: links.php?order");
+	header("location: ".e_ADMIN."links.php?order");
 }
 
 if($action == "inc"){
@@ -53,7 +53,7 @@ if($action == "inc"){
 	$sql -> db_Update("links", "link_order=link_order+1 WHERE link_order='".($link_order-1)."' AND link_category='$location' ");
 	$sql -> db_Update("links", "link_order=link_order-1 WHERE link_id='$linkid' AND link_category='$location' ");
 	clear_cache("sitelinks");
-	header("location: links.php?order");
+	header("location: ".e_ADMIN."links.php?order");
 }
 
 if(IsSet($_POST['create_category'])){

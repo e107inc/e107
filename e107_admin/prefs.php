@@ -112,7 +112,7 @@ if(IsSet($_POST['updateprefs'])){
 
         $sql -> db_Delete("cache");
         save_prefs();
-        header("location:prefs.php");
+        header("location:".e_ADMIN."prefs.php");
        echo "<script type='text/javascript'>document.location.href='prefs.php'</script>\n";
         exit;
 }

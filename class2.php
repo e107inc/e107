@@ -153,7 +153,7 @@ if($pref['frontpage'] && $pref['frontpage_type'] == "splash"){
 	if(!$sql -> db_Count("online", "(*)", "WHERE online_ip='{$ip}' ")){
 		online();
 		if(is_numeric($pref['frontpage'])){
-			header("location: article.php?".$pref['frontpage'].".255");
+			header("location:".e_BASE."article.php?".$pref['frontpage'].".255");
 			exit;
 		} else if(eregi("http", $pref['frontpage'])) {
 			header("location: ".$pref['frontpage']);

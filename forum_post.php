@@ -1,8 +1,4 @@
 <?php
-if(IsSet($_POST['fjsubmit'])){
-        header("location:forum_viewforum.php?".$_POST['forumjump']);
-        exit;
-}
 /*
 +---------------------------------------------------------------+
 |        e107 website system
@@ -16,7 +12,12 @@ if(IsSet($_POST['fjsubmit'])){
 |        GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
+
 require_once("class2.php");
+if(IsSet($_POST['fjsubmit'])){
+        header("location:".e_BASE."forum_viewforum.php?".$_POST['forumjump']);
+        exit;
+}
 require_once(e_HANDLER."ren_help.php");
 require_once(e_HANDLER."mail.php");
 $gen = new convert;
@@ -379,7 +380,7 @@ if(IsSet($_POST['update_thread'])){
                 $datestamp = $gen->convert_date(time(), "forum");
                 $sql -> db_Update("forum_t", "thread_name='".$subject."', thread_thread='".$post."', thread_s='".$_POST['threadtype']."' WHERE thread_id='$thread_id' ");
                 clear_cache("newforumposts");
-                header("location: forum_viewtopic.php?".$forum_id.".".$thread_id);
+                header("location:".e_BASE."forum_viewtopic.php?".$forum_id.".".$thread_id);
                 exit;
         }
 }
@@ -408,7 +409,7 @@ if(IsSet($_POST['update_reply'])){
                 $pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
                 $pages = ((ceil($replies/$pref['forum_postspage']) -1) * $pref['forum_postspage']);
 
-                header("location: forum_viewtopic.php?".$forum_id.".".$_POST['thread_id'].($pages ? ".$pages" : ""));
+                header("location:".e_BASE."forum_viewtopic.php?".$forum_id.".".$_POST['thread_id'].($pages ? ".$pages" : ""));
                 exit;
         }
 }

@@ -13,7 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("Z")){ header("location:".e_HTTP."index.php"); exit; }
+if(!getperms("Z")){ header("location:".e_BASE."index.php"); exit; }
 require_once("auth.php");
 require_once(e_HANDLER."parser_handler.php");
 
