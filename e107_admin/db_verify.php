@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db_verify.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-03-29 16:03:24 $
+|     $Revision: 1.7 $
+|     $Date: 2005-03-29 17:23:39 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -186,8 +186,9 @@ function check_tables($what) {
 				$text .= "</tr>\n";
 			}
 			foreach(array_keys($xfields) as $tf) {
-				if (!$fields[$tf]) {
-					$text .= "<tr><td class='forumheader3' style='text-align:center'>$k</td><td class='forumheader3' style='text-align:center'>$tf</td><td class='forumheader3' style='text-align:center'><strong><em>".DBLAN_12."</em></strong></td><td class='forumheader3' style='text-align:center'>&nbsp;</td></tr>";
+				if (!$fields[$tf] && $k != "user_extended") {
+					$fix_active = TRUE;
+					$text .= "<tr><td class='forumheader3' style='text-align:center'>$k</td><td class='forumheader3' style='text-align:center'>$tf</td><td class='forumheader3' style='text-align:center'><strong><em>".DBLAN_12."</em></strong></td><td class='forumheader3' style='text-align:center'>&nbsp;".fix_form($k,$tf,$fparams,"drop")."</td></tr>";
 				}
 			}
 		} else {
@@ -244,7 +245,6 @@ if(isset($_POST['do_fix'])){
 		$mode = $_POST['fix_mode'][$key][0];
         $after = $_POST['fix_after'][$key][0];
 
-
 		if($mode == "alter"){
 			$query = "ALTER TABLE `".MPREFIX.$table."` CHANGE `$field` `$field` $newval";
 		}
@@ -253,6 +253,9 @@ if(isset($_POST['do_fix'])){
 	   		$query = "ALTER TABLE `".MPREFIX.$table."` ADD `$field` $newval AFTER $after";
 		}
 
+        if($mode == "drop"){
+	   		$query = "ALTER TABLE `".MPREFIX.$table."` DROP `$field` ";
+		}
 
         $text .= "<div>";
 		$text .= $query;
@@ -261,7 +264,7 @@ if(isset($_POST['do_fix'])){
 
 
 	}
-     $text .="<div style='text-align:center'>
+     $text .="<div style='text-align:center'><br />
 				<form method='POST' action='db.php'>
 				<input class='button' type='submit' name='back' value='".DBLAN_17."' />
 				</form>
