@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2005-03-27 07:57:11 $
+|     $Revision: 1.37 $
+|     $Date: 2005-03-27 22:54:45 $
 |     $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -80,6 +80,7 @@ class sitelinks {
 			$style['linkdisplay'] = LINKDISPLAY;
 			$style['postlink'] = POSTLINK;
             $style['linkclass'] = defined('LINKCLASS') ? LINKCLASS : "";
+			$style['linkclass_hilite'] = defined('LINKCLASS_HILITE') ? LINKCLASS_HILITE : "";
 			$style['linkstart_hilite'] = defined('LINKSTART_HILITE') ? LINKSTART_HILITE : "";
 			$style['linkstart'] = LINKSTART;
 			$style['linkdisplay'] = LINKDISPLAY;
@@ -139,7 +140,7 @@ class sitelinks {
 			$linkInfo['link_name'] = $tmp[2];
 		}
 
-		if ($style['linkstart_hilite'] && hilite($linkInfo['link_url'])== TRUE){
+		if (hilite($linkInfo['link_url'],$style['linkstart_hilite'])== TRUE){
 			$_link = $linkInfo['link_button'] ? preg_replace('/\<img.*\>/si', '', $style['linkstart_hilite']) :  $style['linkstart_hilite'];
 		}else{
 			$_link = $linkInfo['link_button'] ? preg_replace('/\<img.*\>/si', '', $style['linkstart']) :  $style['linkstart'];
@@ -151,7 +152,11 @@ class sitelinks {
 		$_link .= ($submenu == TRUE && $style['linkdisplay'] != 3) ? "&nbsp;&nbsp;" : "";
 
 		if ($linkInfo['link_url']) {
-			$linkadd = ($style['linkclass']) ? " class='".$style['linkclass']."'" : "";
+			if (hilite($linkInfo['link_url'],$style['linkclass_hilite'])== TRUE){
+			    $linkadd = ($style['linkclass_hilite']) ? " class='".$style['linkclass_hilite']."'" : "";
+			}else{
+				$linkadd = ($style['linkclass']) ? " class='".$style['linkclass']."'" : "";
+			}
 			$screentip = '';
 			if(isset($pref['linkpage_screentip']) && $pref['linkpage_screentip'] && $linkInfo['link_description'])
 			{
@@ -171,11 +176,11 @@ class sitelinks {
 	}
 }
 
-function hilite($link){
+function hilite($link,$enabled=''){
 
 	global $PLUGINS_DIRECTORY;
 
-	if(!defined("LINKSTART_HILITE")){ return FALSE; }
+  	if(!$enabled){ return FALSE; }
 
 // --------------- highlighting for plugins. ----------------
 	if(eregi($PLUGINS_DIRECTORY,$link)){
@@ -203,12 +208,12 @@ function hilite($link){
 
 // --------------- highlight default ----------------
 	if(eregi("\?",$link)){
-		if(defined("LINKSTART_HILITE") && (strpos(e_SELF."?".e_QUERY, str_replace("../","","/".$link)) !== FALSE)){
+		if(($enabled) && (strpos(e_SELF."?".e_QUERY, str_replace("../","","/".$link)) !== FALSE)){
 			return TRUE;
 		}
 	}
 
-	if(!eregi("all",e_QUERY) && !eregi("item",e_QUERY) && !eregi("cat",e_QUERY) && !eregi("list",e_QUERY) && defined("LINKSTART_HILITE") && (strpos(e_SELF, str_replace("../","","/".$link)) !== FALSE)){
+	if(!eregi("all",e_QUERY) && !eregi("item",e_QUERY) && !eregi("cat",e_QUERY) && !eregi("list",e_QUERY) && $enabled && (strpos(e_SELF, str_replace("../","","/".$link)) !== FALSE)){
 		return TRUE;
 	}
 
