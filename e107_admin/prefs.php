@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-02-12 16:56:24 $
+|     $Revision: 1.26 $
+|     $Date: 2005-02-16 20:57:49 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -329,15 +329,6 @@ while (isset($adminlist[$counter])) {
 	$counter++;
 }
 $text .= "</select>
-	</td>
-	</tr>";
-	
-	
-$text .= "<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_79.":</td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input type='radio' name='htmlarea' value='1'".($pref['htmlarea'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
-	<input type='radio' name='htmlarea' value='0'".(!$pref['htmlarea'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
 	</tr>";
 	

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-02-12 16:57:01 $
+|     $Revision: 1.13 $
+|     $Date: 2005-02-16 20:57:50 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -90,7 +90,7 @@ define("PRFLAN_75", "The email could not be sent. Please review your SMTP settin
 define("PRFLAN_76", "Enable Image-code verification during signup.");
 define("PRFLAN_77", "Admin Display Options ");
 define("PRFLAN_78", "Leave blank to disable");
-define("PRFLAN_79", "Use HtmlArea for admin text-areas");
+
 define("PRFLAN_80", "Click here to view");
 define("PRFLAN_81", "Enable Image-code verification during login.");
 define("PRFLAN_82", "Restrict Search page to members");
