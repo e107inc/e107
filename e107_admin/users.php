@@ -61,6 +61,7 @@ if(IsSet($_POST['test_mail'])){
 if(IsSet($_POST['update_options'])){
         $pref['avatar_upload'] = (FILE_UPLOADS ? $_POST['avatar_upload'] : 0);
         $pref['im_width'] = $_POST['im_width'];
+        $pref['im_height'] = $_POST['im_height'];
         $pref['photo_upload'] = (FILE_UPLOADS ? $_POST['photo_upload'] : 0);
                 $pref['del_unv'] = $_POST['del_unv'];
         save_prefs();
@@ -522,6 +523,12 @@ class users{
                 <td style='width:50%' class='forumheader3'>".USRLAN_47.":</td>
                 <td style='width:50%' class='forumheader3'>
                 <input class='tbox' type='text' name='im_width' size='10' value='".$pref['im_width']."' maxlength='5' /> (".USRLAN_48.")
+                </tr>
+
+                <tr>
+                <td style='width:50%' class='forumheader3'>".USRLAN_49.":</td>
+                <td style='width:50%' class='forumheader3'>
+                <input class='tbox' type='text' name='im_height' size='10' value='".$pref['im_height']."' maxlength='5' /> (".USRLAN_50.")
                 </tr>
 
                                 <tr>

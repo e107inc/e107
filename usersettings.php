@@ -58,6 +58,22 @@ if(IsSet($_POST['updatesettings'])){
     $signup_title = array(LAN_308,LAN_144,LAN_115,LAN_116,LAN_117,LAN_118,LAN_119,LAN_120,LAN_121,LAN_122);
     $signup_name = array("realname","website","icq","aim","msn","birth_year","location","signature","image","timezone");
 
+	if($_POST['image'] && $size = getimagesize($_POST['image'])){
+		$avwidth = $size[0];
+		$avheight = $size[1];
+
+		if($avwidth > $pref['im_width']){
+			$avmsg .= LAN_USET_1."<br />".LAN_USET_2.": {$pref['im_width']}<br /><br />";
+		}
+		if($avheight > $pref['im_height']){
+			$avmsg .= LAN_USET_3."<br />".LAN_USET_4.": {$pref['im_height']}";
+		}
+		if($avmsg){
+			$_POST['image']="";
+			$ns -> tablerender(" ",$avmsg);
+		}
+	}
+	
         for ($i=0; $i<count($signup_title); $i++) {
                 $postvalue = $signup_name[$i];
                 if($signupval[$i]==2 && $_POST[$postvalue] == ""){
