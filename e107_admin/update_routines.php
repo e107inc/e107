@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2005-03-15 03:02:45 $
+|     $Revision: 1.49 $
+|     $Date: 2005-03-15 13:49:55 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -278,8 +278,7 @@ function update_61x_to_700($type) {
   			user_extended_struct_read tinyint(3) unsigned NOT NULL default '0',
   			user_extended_struct_write tinyint(3) unsigned NOT NULL default '0',
   			user_extended_struct_required tinyint(3) unsigned NOT NULL default '0',
-  			user_extended_struct_signup_show tinyint(3) unsigned NOT NULL default '0',
-  			user_extended_struct_signup_required tinyint(3) unsigned NOT NULL default '0',
+  			user_extended_struct_signup tinyint(3) unsigned NOT NULL default '0',
   			PRIMARY KEY  (user_extended_struct_id)
 			) TYPE=MyISAM;
 		");
