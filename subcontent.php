@@ -37,23 +37,34 @@ if(IsSet($_POST['preview'])){
         $obj = new convert;
         $datestamp = $obj->convert_date(time(), "long");
 
-
         $content_heading = $aj -> formtpa($_POST['content_heading']);
         $content_subheading = $aj -> formtpa($_POST['content_subheading']);
         $content_summary = $aj -> formtpa($_POST['content_summary']);
         $data = $aj -> formtpa($_POST['data']);
 
-        $content_author = (!$_POST['content_author'] || $_POST['content_author'] == ARLAN_84 ? ADMINNAME : $_POST['content_author']."^".$_POST['content_author_email']);
-        if($content_author == "ADMINNAME"){$content_author = "<b>".ARLAN_92."<b>";}
+		if(USER === TRUE)
+		{
+			$content_author = USERNAME;
+		}
+		else
+		{
+			if(!$_POST['content_author'] || $_POST['content_author'] == ARLAN_84)
+			{
+				$content_author = "<b>".ARLAN_92."<b>";
+			}
+			else
+			{
+				$content_author = $_POST['content_author'];
+				$content_author_email = $_POST['content_author_email'];
+			}
+		}
+			
         $text = "<i>by $content_author</i><br /><span class='smalltext'>".$datestamp."</span><br /><br />Subheading: ".$aj -> tpa($content_subheading)."<br />".ARLAN_19.": ".$aj -> tpa($content_summary)."<br /><br />".$aj -> tpa($data);
         $ns -> tablerender($aj -> tpa($content_heading), $text);
         echo "<br /><br />";
 
-
-//        echo $content_heading." --- ".$content_subheading;
-
         $content_parent = $_POST['category'];
-        if($content_author = "<b>".ARLAN_92."<b>"){ $content_author = ""; }
+        if($content_author == "<b>".ARLAN_92."<b>"){ $content_author = ""; }
 }
 
 if(IsSet($_POST['create_article'])){
