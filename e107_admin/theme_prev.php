@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/theme_prev.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-27 19:52:24 $
-|     $Author: streaky $
+|     $Revision: 1.6 $
+|     $Date: 2005-02-14 04:00:56 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -54,9 +54,6 @@ if (isSet($_POST['sitetheme'])) {
 	$ns->tablerender(TPVLAN_1, $text);
 	require_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_news.php");
 	require_once(e_HANDLER."news_class.php");
-	if (!is_object($aj)) {
-		$aj = new textparse;
-	}
 	$ix = new news;
 	ob_start();
 	$news_total = $sql->db_Count("news");

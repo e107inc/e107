@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/ugflag.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-05 07:04:11 $
-|     $Author: e107coders $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-14 03:57:50 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -25,9 +25,8 @@ $e_sub_cat = 'maintain';
 require_once(e_HANDLER."ren_help.php");
 
 if (isset($_POST['updatesettings'])) {
-	$aj = new textparse;
 	$pref['maintainance_flag'] = $_POST['maintainance_flag'];
-	$pref['maintainance_text'] = $aj->formtpa($_POST['maintainance_text']);
+	$pref['maintainance_text'] = $tp->toDB($_POST['maintainance_text']);
 	save_prefs();
 	header("location:".e_SELF."?u");
 	exit;

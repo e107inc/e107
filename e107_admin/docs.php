@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/docs.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-27 19:52:24 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-14 03:49:28 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -41,13 +41,12 @@ closedir($handle);
 	
 	
 if (e_QUERY) {
-	$aj = new textparse;
 	$filename = e_DOCS.$lang."/".$helplist[e_QUERY];
 	$fd = fopen ($filename, "r");
 	$text .= fread ($fd, filesize ($filename));
 	fclose ($fd);
 	 
-	$text = $aj->tpa($text);
+	$text = $tp->toHTML($text, TRUE);
 	$text = preg_replace("/Q\>(.*?)\n/si", "<b>Q>\\1</b>\n", $text);
 	 
 	$ns->tablerender($helplist[e_QUERY], $text."<br />");

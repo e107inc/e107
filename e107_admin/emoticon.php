@@ -20,9 +20,8 @@ if (!getperms("F")) {
 $e_sub_cat = 'emoticon';
 	
 if (isset($_POST['updatesettings'])) {
-	$aj = new textparse;
 	while (list($id, $name) = each($_POST['emote_code'])) {
-		$emote[] = array($aj->formtpa($name) => $_POST['emote_text'][$id]);
+		$emote[] = array($tp->toDB($name) => $_POST['emote_text'][$id]);
 	}
 	$sysprefs->setArray('emote');
 	if ($_POST['smiley_activate'] != $pref['smiley_activate']) {
@@ -43,7 +42,6 @@ if (!is_array($emote)) {
 	
 if (isset($_POST['addemote'])) {
 	if ($_POST['emote_new_code'] && $_POST['emote_new_image']) {
-		$aj = new textparse;
 		$emote[count($emote)] = array($tp->toDB($_POST['emote_new_code']) => $_POST['emote_new_image']);
 		$sysprefs->setArray('emote');
 		header("location:".e_ADMIN."emoticon.php?v");
