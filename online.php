@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/online.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:45 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-09-28 03:10:43 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -162,7 +162,7 @@ foreach($listuserson as $uinfo => $pinfo){
                         $online_location_page = ADMINAREA;
                 }
                 $pm_installed = ($pref['pm_title'] ? TRUE : FALSE);
-                $icon = ($pm_installed && $oid != USERID ? e107_parse("{CODE=pm_menu.sendpm.{$oid}}") : "<img src='".e_PLUGIN."online_extended_menu/images/user.png' alt='' style='vertical-align:middle' />");
+                $icon = ($pm_installed && $oid != USERID ? $tp -> parseTemplate("{pm_menu.sendpm={$oid}}") : "<img src='".e_PLUGIN."online_extended_menu/images/user.png' alt='' style='vertical-align:middle' />");
                 $text .= "<tr><td class='forumheader3' style='width:3%;text-align:center'>".$icon."
                 </td>
                 <td class='forumheader3' style='width:45%'><a href='".e_BASE."user.php?id.$oid'>$oname</a></td>
