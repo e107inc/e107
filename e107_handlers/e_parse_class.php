@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2005-03-04 14:51:57 $
+|     $Revision: 1.37 $
+|     $Date: 2005-03-04 15:06:28 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -104,6 +104,7 @@ function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $ut
 	/*
 	* htmlwrap() function - v1.1
 	* Copyright (c) 2004 Brian Huisman AKA GreyWyvern
+	* http://www.greywyvern.com/code/php/htmlwrap_1.1.php.txt
 	*
 	* This program may be distributed under the terms of the GPL
 	*   - http://www.gnu.org/licenses/gpl.txt
@@ -170,7 +171,8 @@ function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $ut
 	{
 		$text = str_replace ("\n\n\n", "\n\n", $text);
 		$text = $this -> htmlwrap($text, $wrap);
-		$text = str_replace (array ('<br /> ', ' <br />', ' <br /> '), '<br />', $text);
+		$text = str_replace (array ("<br /> ", " <br />", " <br /> ", "<br />"), "", $text);	
+		/* we can remove any linebreaks added by htmlwrap function as any /n's will be converted later anyway */
 		return $text; 
 	}
 	 
