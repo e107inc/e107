@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: English.php,v 1.4 2005-01-29 16:02:20 stevedunstan Exp $
+// $Id: English.php,v 1.5 2005-03-18 02:14:47 mcfly_e107 Exp $
 	
 	
 define('EC_ADLAN_1', "Event Calendar");
@@ -82,7 +82,7 @@ define('EC_LAN_59', "Contact email:");
 define('EC_LAN_60', "Update Event");
 define('EC_LAN_61', "Go");
 define('EC_LAN_62', "Next 10 Events ...");
-define('EC_LAN_63', "Check this if event happens on same day every year', ie birthday");
+define('EC_LAN_63', "Check this if event happens on same day every year, ie birthday");
 define('EC_LAN_64', "Check for an all-day event");
 define('EC_LAN_65', "Recurring:");
 define('EC_LAN_66', "Edit Event");
@@ -127,17 +127,60 @@ define('EC_LAN_87', "Default is 'forumheader3'");
 define('EC_LAN_88', "Css element to use for selected day");
 define('EC_LAN_89', "Default is 'indent'");
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+//  *BK* Corrections to hard coding by Barry 
+define('EC_LAN_90', "Choose");	
+define('EC_LAN_91', "None defined");	
+define('EC_LAN_92', "View Category");		
+define('EC_LAN_93', "View Events List");		
+define('EC_LAN_94', "Enter New Event");			
+define('EC_LAN_95', "Today");	
+define('EC_LAN_96', "View Calendar");	
+define('EC_LAN_97', "All");		
+define('EC_LAN_98', "Required fields left blank");		
+define('EC_LAN_99', "Event must either be an all day event or finish after it starts");			
+define('EC_LAN_100', "Categories can be added by");			
+define('EC_LAN_101', "Set to inactive to disable on the new event form.");	
+define('EC_LAN_102', "Show link to forum thread");	
+define('EC_LAN_103', "On new event entry form.");	
+define('EC_LAN_104', "Calendar Administrator Class");		
+define('EC_LAN_105', "* Required Field");		
+define('EC_LAN_106', "Events");		
+define('EC_LAN_107', "This plugin is a fully featured event calendar with calendar menu.");		
+define('EC_LAN_108', "Event Calendar Upgraded.  Now check the new options.");	
+define('EC_LAN_109', "Unable to delete this event.");	
+define('EC_LAN_110', "Event Number ");	
+define('EC_LAN_111', "All the events on ");	
+define('EC_LAN_112', "All the Events in ");	
+define('EC_LAN_113', "Event form already submitted.");	
+
+define('EC_ADLAN_A10', "Configuration");
+define('EC_ADLAN_A11', "Categories");
+define('EC_ADLAN_A12', "Calendar");
+define('EC_ADLAN_A13', "Edit");
+define('EC_ADLAN_A14', "New");
+define('EC_ADLAN_A15', "Delete");
+define('EC_ADLAN_A16', "Confirm");
+define('EC_ADLAN_A17', "Proceed");
+define('EC_ADLAN_A18', "Action");
+define('EC_ADLAN_A19', "Administer Categories");
+define('EC_ADLAN_A20', "Calendar Categories");
+define('EC_ADLAN_A21', "Category name");
+define('EC_ADLAN_A22', "Edit category");
+define('EC_ADLAN_A23', "Edit category");
+define('EC_ADLAN_A24', "Create category");
+define('EC_ADLAN_A25', "Save");
+define('EC_ADLAN_A26', "Category created");
+define('EC_ADLAN_A27', "Unable to create category");
+define('EC_ADLAN_A28', "Changes Saved");
+define('EC_ADLAN_A29', "Unable to save changes");
+
+define('EC_ADLAN_A30', "Category Deleted");
+define('EC_ADLAN_A31', "Tick the confirm box to delete");
+define('EC_ADLAN_A32', "Unable to delete this category");
+define('EC_ADLAN_A33', "None defined");
+define('EC_ADLAN_A34', "Calendar Administrator Class");
+define('EC_ADLAN_A35', "");
+define('EC_ADLAN_A59', "Category is in use. Can not delete.");
+
+define('EC_ADLAN_A80', "Visible to");
 ?>

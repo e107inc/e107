@@ -11,159 +11,203 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar_menu.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-02-28 20:03:48 $
-|     $Author: stevedunstan $
+|     $Revision: 1.8 $
+|     $Date: 2005-03-18 02:13:57 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
-if(!defined("e_PLUGIN")){ exit; }
-$ec_dir = e_PLUGIN."calendar_menu/";
-//$lan_file = $ec_dir."languages/".e_LANGUAGE.".php";
-//include(file_exists($lan_file) ? $lan_file : e_PLUGIN."calendar_menu/languages/English.php");
-	
-$datearray = getdate();
-$current_day = $datearray['mday'];
-$current_month = $datearray['mon'];
-$current_year = $datearray['year'];
-	
+// *BK* Notes added and comments made by Barry are prefixed by *BK*
+// *BK* Prefixed variables with cal_ to ensure isolation from other menus/scripts that may use the same variable names
+$ec_dir = e_PLUGIN . "calendar_menu/";
+$lan_file = $ec_dir . "languages/" . e_LANGUAGE . ".php";
+include(file_exists($lan_file) ? $lan_file : e_PLUGIN . "calendar_menu/languages/English.php");
+
+$cal_datearray = getdate();
+$cal_current_day = $cal_datearray['mday'];
+$cal_current_month = $cal_datearray['mon'];
+$cal_current_year = $cal_datearray['year']; 
 // get first and last days of month in unix format---------------------------------------------------
-$monthstart = mktime(0, 0, 0, $current_month, 1, $current_year);
-$firstdayarray = getdate($monthstart);
-$monthend = mktime(0, 0, 0, $current_month+1, 0, $current_year);
-$lastdayarray = getdate($monthend);
-// ----------------------------------------------------------------------------------------------------------
-	
-// get events from current month----------------------------------------------------------------------
-	
-$qry = "
-SELECT e.event_rec_y, e.event_rec_y, e.event_start, e.event_end, ec.*
-FROM #event as e
-LEFT JOIN #event_cat as ec ON e.event_category = ec.event_cat_id
-WHERE (e.event_start >= {$monthstart} AND e.event_start <= {$monthend}) OR (e.event_end >= {$monthstart} AND e.event_end <= {$monthend}) OR e.event_rec_y = {$current_month}
-";
-
-if($sql->db_Select_gen($qry))
+$cal_monthstart = mktime(0, 0, 0, $cal_current_month, 1, $cal_current_year);
+$cal_firstdayarray = getdate($cal_monthstart);
+// *BK* Add 86399 seconds to take it to 23:59:59 for the end time otherwise you miss the last day of the month
+$cal_monthend = mktime(0, 0, 0, $cal_current_month + 1, 0, $cal_current_year) + 86399;
+$cal_lastdayarray = getdate($cal_monthend);
+// * *BK*
+// *  *BK* Set up userclass list that the person belongs to. 0 for everyone, if logged in then also in 254
+// *  *BK* Members only 253
+// *  *BK* Guest only is 252
+// *  *BK* Inactive is 255
+if (USER)
 {
-	while($row = $sql->db_Fetch())
-	{
-		if($row['event_rec_y'] == $month)
-		{
-			$events[$row['event_rec_m']][] = $row;
-		}
-		else
-		{
-			$tmp = getdate($row['event_start']);
-			if($tmp['year'] == $current_year)
-			{
-				$start_day = $tmp['mday'];
-			}
-			else
-			{
-				$start_day = 1;
-			}
-			$tmp = getdate($row['event_end']);
-			if($tmp['year'] == $current_year)
-			{
-				$end_day = $tmp['mday'];
-			}
-			else
-			{
-				$end_day = 31;
-			}
-			for ($i = $start_day; $i <= $end_day; $i++)
-			{
-				$events[$i][] = $row;
-			}
-		}
-	}
-}
-
+    $cal_class .= "0,253," . USERCLASS;
+} 
+else
+{
+    $cal_class = "0,252";
+} 
+// *BK* Check if calendar supervisor - they can see all events
+// *BK* Otherwise restrict to those in the categories that this user can see
+if (check_class($pref['eventpost_super']))
+{ 
+    // ----------------------------------------------------------------------------------------------------------
+    // get events from current month----------------------------------------------------------------------
+    $cal_qry = "SELECT e.event_rec_m, e.event_rec_y, e.event_start, e.event_end, ec.*
+			FROM #event as e LEFT JOIN #event_cat as ec ON e.event_category = ec.event_cat_id
+			WHERE (e.event_start >= {$cal_monthstart} AND e.event_start <= {$cal_monthend}) OR (e.event_end >= {$cal_monthstart} AND e.event_end <= {$cal_monthend}) OR e.event_rec_y = {$cal_current_month} order by e.event_start";
+} 
+else
+{ 
+    // *BK*  This query uses mysql find_in_set to return only those records in categories permitted by the assigned read class
+    $cal_qry = "SELECT e.event_rec_m, e.event_rec_y, e.event_start, e.event_end, ec.*
+			FROM #event as e LEFT JOIN #event_cat as ec ON e.event_category = ec.event_cat_id
+			WHERE (e.event_start >= {$cal_monthstart} AND e.event_start <= {$cal_monthend}) OR (e.event_end >= {$cal_monthstart} AND e.event_end <= {$cal_monthend}) OR e.event_rec_y = {$cal_current_month}
+			 and find_in_set(event_cat_class,'" . $cal_class . "') order by e.event_start";
+} 
+// *BK*  Count the number of events in the month
+$cal_totev = 0;
+if ($sql->db_Select_gen($cal_qry))
+{
+    while ($cal_row = $sql->db_Fetch())
+    {
+        $cal_totev ++;
+        if ($cal_row['event_rec_y'] == $cal_current_month)
+        {
+            $cal_events[$cal_row['event_rec_m']][] = $cal_row;
+        } 
+        else
+        {
+            $cal_tmp = getdate($cal_row['event_start']);
+            if ($cal_tmp['year'] == $cal_current_year)
+            {
+                $cal_start_day = $cal_tmp['mday'];
+            } 
+            else
+            {
+                $cal_start_day = 1;
+            } 
+            $cal_tmp = getdate($cal_row['event_end']);
+            if ($cal_tmp['year'] == $cal_current_year)
+            {
+                $cal_end_day = $cal_tmp['mday'];
+            } 
+            else
+            {
+                $cal_end_day = 31;
+            } 
+            // for ($i = $cal_start_day; $i <= $cal_end_day; $i++)
+            // {
+            $cal_events[$cal_start_day][] = $cal_row; 
+            // }
+        } 
+    } 
+} 
 // -----------------------------------------------------------------------------------------------------------
 // set up arrays for calender display ------------------------------------------------------------------
-$week = Array(EC_LAN_25, EC_LAN_19, EC_LAN_20, EC_LAN_21, EC_LAN_22, EC_LAN_23, EC_LAN_24);
-$months = Array(EC_LAN_0, EC_LAN_1, EC_LAN_2, EC_LAN_3, EC_LAN_4, EC_LAN_5, EC_LAN_6, EC_LAN_7, EC_LAN_8, EC_LAN_9, EC_LAN_10, EC_LAN_11);
-$calendar_title = "<a class='forumlink' href='".$ec_dir."calendar.php'>".$months[$datearray[mon]-1]." ".$current_year."</a>";
+$cal_week = Array(EC_LAN_25, EC_LAN_19, EC_LAN_20, EC_LAN_21, EC_LAN_22, EC_LAN_23, EC_LAN_24);
+$cal_months = Array(EC_LAN_0, EC_LAN_1, EC_LAN_2, EC_LAN_3, EC_LAN_4, EC_LAN_5, EC_LAN_6, EC_LAN_7, EC_LAN_8, EC_LAN_9, EC_LAN_10, EC_LAN_11);
+$calendar_title = "<a class='forumlink' href='" . $ec_dir . "calendar.php'>" . $cal_months[$cal_datearray[mon]-1] . " " . $cal_current_year . "</a>";
 // -----------------------------------------------------------------------------------------------------------
-	
-$text = "<div style='text-align:center'>";
-if ($events) {
-	$text .= EC_LAN_26 . ": ".count($events);
-} else {
-	$text .= EC_LAN_27;
-}
+$cal_text = "<div style='text-align:center'>";
+// *BK* Use cal_totev because count(events) doesn't count multiple events on one day
+if ($cal_totev)
+{
+    $cal_text .= EC_LAN_26 . ": " . $cal_totev;
+} 
+else
+{
+    $cal_text .= EC_LAN_27;
+} 
 
-$headercss = ($pref['eventpost_headercss'] ? $pref['eventpost_headercss'] : "forumheader");
-$daycss = ($pref['eventpost_daycss'] ? $pref['eventpost_daycss'] : "forumheader3");
-$todaycss = ($pref['eventpost_todaycss'] ? $pref['eventpost_todaycss'] : "indent");
-	
-$start = $monthstart;
-	
-$text .= "<br /><br />
+$cal_headercss = ($pref['eventpost_headercss'] ? $pref['eventpost_headercss'] : "forumheader");
+$cal_daycss = ($pref['eventpost_daycss'] ? $pref['eventpost_daycss'] : "forumheader3");
+$cal_todaycss = ($pref['eventpost_todaycss'] ? $pref['eventpost_todaycss'] : "indent");
+
+$cal_start = $cal_monthstart;
+
+$cal_text .= "<br /><br />
 	<table cellpadding='0' cellspacing='1' style='width:100%' class='fborder'><tr>";
-	
-foreach($week as $day) {
-	$text .= "<td class='$headercss' style='text-align:center'><span class='smalltext'>".$day."</span></td>";
-}
-$text .= "</tr><tr >";
-	
-$thismonth = $datearray['mon'];
-$thisday = $datearray['mday'];
-	
-for($c = 0; $c < $firstdayarray['wday']; $c++) {
-	$text .= "<td class='$daycss' style='text-align:center'><br /></td>";
-}
-$loop = $firstdayarray['wday'];
-for($c = 1; $c <= 31; $c++) {
-	 
-	$dayarray = getdate($start+(($c-1) * 86400));
-	 
-	if ($dayarray['mon'] == $thismonth) {
-		if ($thisday == $c) {
-			$text .= "<td class='$todaycss' style='text-align:center; width: 15%;'>";
-		} else {
-			$text .= "<td class='$daycss' style='text-align:center; width: 15%;'>";
-		}
-		 
-		if (array_key_exists($c, $events)) {
-			$event_icon = e_PLUGIN."calendar_menu/images/".$events[$c][0]['event_cat_icon'];
-			$event_count = count($events[$c]);
-			if(file_exists($event_icon))
-			{
-				$img = "<img style='border:0' src='{$event_icon}' alt='' height='10' width='10'/>";
-			}
-			else
-			{
-				$img = $c;
-			}
-		}
-		else
-		{
-			$img = $c;
-			$event_count = 0;
-		}
-		 
-		$linkut = mktime(0 , 0 , 0 , $dayarray['mon'], $c, $datearray['year']);
 
-		if($event_count > 0)
-		{
-			$title = " title='{$event_count} events' ";
-		}
-		$text .= "<a {$title} href='".$ec_dir."event.php?".$linkut.".one'>$img</a>";
-		 
-		$text .= "</td>\n";
-		 
-		$loop++;
-		if ($loop == 7) {
-			$loop = 0;
-			$text .= "</tr><tr>";
-		}
-	}
-}
-	
-for($a = ($loop+1); $a <= 7; $a++) {
-	$text .= "<td>&nbsp;</td>";
-}
-	
-$text .= "</tr></table></div>";
-$ns->tablerender($calendar_title, $text, 'calender_menu');
+foreach($cal_week as $cal_day)
+{
+    $cal_text .= "<td class='$cal_headercss' style='text-align:center'><span class='smalltext'>" . $cal_day . "</span></td>";
+} 
+$cal_text .= "</tr><tr >";
+
+$cal_thismonth = $cal_datearray['mon'];
+$cal_thisday = $cal_datearray['mday'];
+
+for($cal_c = 0; $cal_c < $cal_firstdayarray['wday']; $cal_c++)
+{
+    $cal_text .= "<td class='$cal_daycss' style='text-align:center'><br /></td>";
+} 
+$cal_loop = $cal_firstdayarray['wday'];
+for($cal_c = 1; $cal_c <= 31; $cal_c++)
+{
+    $cal_dayarray = getdate($cal_start + (($cal_c-1) * 86400));
+
+    if ($cal_dayarray['mon'] == $cal_thismonth)
+    {
+        if ($cal_thisday == $cal_c)
+        {
+            $cal_text .= "<td class='$cal_todaycss' style='text-align:center; width: 15%;'>";
+        } 
+        else
+        {
+            $cal_text .= "<td class='$cal_daycss' style='text-align:center; width: 15%;'>";
+        } 
+
+        if (array_key_exists($cal_c, $cal_events))
+        {
+            $cal_event_icon = e_PLUGIN . "calendar_menu/images/" . $cal_events[$cal_c][0]['event_cat_icon'];
+            $cal_event_count = count($cal_events[$cal_c]); 
+            // *BK* Check if empty because file_exist will return true if icon name is blank, because it finds that the directory exists
+            // *BK* It then tries to put in the icon which doesn't exist
+            if (!empty($cal_events[$cal_c][0]['event_cat_icon']) && file_exists($cal_event_icon))
+            {
+                $cal_img = "<img style='border:0' src='{$cal_event_icon}' alt='' height='10' width='10'/>";
+            } 
+            else
+            {
+                $cal_img = $cal_c;
+            } 
+        } 
+        else
+        {
+            $cal_img = $cal_c;
+            $cal_event_count = 0;
+        } 
+
+        $cal_linkut = mktime(0 , 0 , 0 , $cal_dayarray['mon'], $cal_c, $cal_datearray['year']);
+
+        if ($cal_event_count > 0)
+        {
+            $title = " title='{$cal_event_count} " . EC_LAN_106 . "' ";
+        } 
+        else
+        { 
+            // *BK* Set title to blank (or you can set to 0 events if you wish otherwise it remembers the last value
+            $title = "";
+        } 
+        $cal_text .= "<a {$title} href='" . $ec_dir . "event.php?" . $cal_linkut . ".one'>$cal_img</a>";
+
+        $cal_text .= "</td>\n";
+
+        $cal_loop++;
+        if ($cal_loop == 7)
+        {
+            $cal_loop = 0;
+            $cal_text .= "</tr><tr>";
+        } 
+    } 
+} 
+
+for($cal_a = ($cal_loop + 1); $cal_a <= 7; $cal_a++)
+{
+    // *BK* Add class so that empty cells display in the menu
+    $cal_text .= "<td class='$cal_daycss' >&nbsp;</td>";
+} 
+
+$cal_text .= "</tr></table></div>";
+$ns->tablerender($calendar_title, $cal_text, 'calender_menu');
+
 ?>

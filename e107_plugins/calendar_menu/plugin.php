@@ -11,23 +11,24 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/plugin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-27 19:52:36 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-03-18 02:13:57 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 // Plugin info -------------------------------------------------------------------------------------------------------
 $lan_file = e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php";
 @require_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."calendar_menu/languages/English.php");
 $eplug_name = "Event Calendar";
-$eplug_version = "3.2";
-$eplug_author = "jalist / cameron";
+$eplug_version = "3.3";
+$eplug_author = "jalist / cameron / McFly / Barry";
 $eplug_url = "http://e107.org";
 $eplug_email = "jalist@e107.org";
-$eplug_description = "This plugin is a fully featured event calendar with calendar menu.";
-$eplug_compatible = "e107v6";
-$eplug_readme = "";
+$eplug_description = EC_LAN_107;
+$eplug_compatible = "e107v7";
+$eplug_readme = "readme.rtf";
 // leave blank if no readme file
+$eplug_compliant = TRUE; 
 	
 // Name of the plugin's folder -------------------------------------------------------------------------------------
 $eplug_folder = "calendar_menu";
@@ -45,7 +46,14 @@ $eplug_caption = EC_LAN_81; // "Configure Event Calendar";
 	
 // List of preferences -----------------------------------------------------------------------------------------------
 $eplug_prefs = array(
-"eventpost_admin" => 0 );
+"eventpost_admin" => 0,
+"eventpost_headercss" => "forumheader",
+"eventpost_daycss" => "forumheader3",
+"eventpost_todaycss" => "indent",
+"eventpost_addcat" => 0,
+"eventpost_forum" => 1
+
+ );
 	
 // List of table names -----------------------------------------------------------------------------------------------
 $eplug_table_names = array(
@@ -76,6 +84,7 @@ $eplug_tables = array(
 	event_cat_id smallint(5) unsigned NOT NULL auto_increment,
 	event_cat_name varchar(100) NOT NULL default '',
 	event_cat_icon varchar(100) NOT NULL default '',
+	event_cat_class int(10) unsigned NOT NULL default 0,
 	PRIMARY KEY  (event_cat_id)
 	) TYPE=MyISAM;");
 	
@@ -97,9 +106,9 @@ $upgrade_add_prefs = "";
 	
 $upgrade_remove_prefs = "";
 	
-$upgrade_alter_tables = "";
+$upgrade_alter_tables = array("alter table ".MPREFIX."event_cat add event_cat_class int(10) unsigned NOT NULL default 0");
 	
-$eplug_upgrade_done = "";
+$eplug_upgrade_done = EC_LAN_108;
 	
 	
 	
