@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-02-21 04:31:11 $
+|     $Revision: 1.13 $
+|     $Date: 2005-02-23 03:22:13 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -524,7 +524,7 @@ class users {
 		$users = $sql->db_Count("user");
 		 
 		if ($users > $amount && !$_POST['searchquery']) {
-			$parms = "{$users}.{$amount}.{$from}.".e_SELF."?".(e_QUERY ? "$action.$sub_action.$id." : "main.user_id.desc.")."[FROM]";
+			$parms = "{$users},{$amount},{$from},".e_SELF."?".(e_QUERY ? "$action.$sub_action.$id." : "main.user_id.desc.")."[FROM]";
 			$text .= "<br />".USRLAN_89." ".$tp->parseTemplate("{NEXTPREV={$parms}}");
 		}
 		$text .= "<br /><form method='post' action='".e_SELF."'>\n<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n<input class='button' type='submit' name='searchsubmit' value='".USRLAN_90."' />\n</p>\n</form>\n</div>";

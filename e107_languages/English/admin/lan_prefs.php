@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-02-22 04:38:35 $
-|     $Author: e107coders $
+|     $Revision: 1.17 $
+|     $Date: 2005-02-23 03:22:42 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_1", "Site Information");
@@ -170,4 +170,7 @@ define("PRFLAN_121", "if no language is specified in the code bbtag, this langua
 
 define("PRFLAN_122", "Enable WYSIWYG textareas");
 define("PRFLAN_123", "Will display a what-you-see-is-what-you-get editor in textareas when available. Applies only to Admins and Users that are allowed to post HTML.");
+
+define("PRFLAN_124", "Use 'classic' nextprev look");
+define("PRFLAN_125", "Turning this on will show the nextprev pages as 1 2 3 ... 21 22 23, instead of the new look with the dropdown.");
 ?>
