@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.3 $
-|		$Date: 2005-02-04 12:08:33 $
+|		$Revision: 1.4 $
+|		$Date: 2005-02-04 14:28:19 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -353,7 +353,10 @@ if(!e_QUERY){																//show main categories
 // ##### Display options --------------------------------------------------------------------------
 function admin_content_config_adminmenu(){
 
-                global $action, $sql, $sub_action, $aa, $type, $type_id, $plugintable;
+                global $action, $sql, $sub_action, $type, $type_id, $plugintable;
+
+				require_once(e_PLUGIN."content/handlers/content_class.php");
+				$aa = new content;
 
 				if($action == "cat"){
 					if($sub_action == "create"){
