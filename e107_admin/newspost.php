@@ -369,7 +369,7 @@ class newspost{
                 <tr>
                 <td style='width:20%' class='forumheader3'>".NWSLAN_13.":<br /></td>
                 <td style='width:80%' class='forumheader3'>
-                <textarea class='tbox' id='data' name='data' cols='80' rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".(strstr($_POST['data'], "[img]http") ? "" : str_replace("[img]../", "[img]", $_POST['data']))."</textarea>
+                <textarea class='tbox' id='data' name='data' cols='80' rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".(strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]../", "[img]", $_POST['data']))."</textarea>
                 ";
 
         if(!$pref['htmlarea']){$text .= ren_help()."
