@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/custommenu.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-02-26 21:08:29 $
+|     $Revision: 1.15 $
+|     $Date: 2005-02-26 21:22:12 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -148,14 +148,15 @@ if (isset($_POST['preview'])){
 		preg_match_all("/\"(.*?)\"/", $buffer, $result);
 		$_POST['menu_caption'] = $tp->toHTML($result[1][1]);
 		$_POST['menu_text'] = $tp->toHTML($result[1][2]);
-		if($pref['wysiwyg']){
+		if ($pref['wysiwyg']){
 			$_POST['menu_text'] = str_replace("../../".$IMAGES_DIRECTORY,SITEURL.$IMAGES_DIRECTORY,$_POST['menu_text']);
 		}
 		$_POST['menu_text'] = str_replace("<br />", "", $_POST['menu_text']);
 		$_POST['menu_name'] = eregi_replace(e_PLUGIN."custompages/|.php", "", $menu);
 		$_POST['type_content'] = 2;
-		$thclass= preg_match("#check_class\((.*?)\)#", $buffer, $result2);
-		$linkclass= $result2[1];
+		if (preg_match("#check_class\((.*?)\)#", $buffer, $result2)){
+			$linkclass= $result2[1];
+		}
 //	print_r($result2);
 } else {
 		$message .= CUSLAN_6." '".$_POST['existing']."' ".CUSLAN_7;
@@ -280,7 +281,7 @@ if (isset($_POST['preview'])) {
 	}
 }
 
-if (isset($_POST['edit'])) {
+if (isset($_POST['edit']) || isset($_POST['edit2'])) {
 	$text .= "<input class='button' type='submit' name='update_menu' value='".CUSLAN_16."' />";
 } else {
 	$text .= "<input class='button' type='submit' name='add_menu' value='".CUSLAN_17."' />";
