@@ -10,6 +10,11 @@
 |
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
+|
+|   $Source: /cvs_backup/e107/user.php,v $
+|   $Revision: 1.14 $
+|   $Date: 2004-08-14 00:37:02 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -220,32 +225,39 @@ $str .= LAN_408;
 }
 
 
-$str .= "</td>
+$str .= "</td></tr>
 
+<tr>
 <td style='width:80%' class='forumheader3'>
 <table style='width:100%'><tr><td style='width:30%'><img src='".e_IMAGE."generic/rname.png' alt='' style='vertical-align:middle' /> ".LAN_308."</td><td style='width:70%; text-align:right'>".($user_login ? $user_login : "<i>".LAN_401."</i>")."</td></tr></table>
 </td></tr>
 
+<tr>
 <td style='width:80%' class='forumheader3'>
 <table style='width:100%'><tr><td style='width:30%'><img src='".e_IMAGE."generic/email.png' alt='' style='vertical-align:middle' /> ".LAN_112."</td><td style='width:70%; text-align:right'>".($user_hideemail && !ADMIN ? "<i>".LAN_143."</i>" : $user_email)."</td></tr></table>
 </td></tr>
 
+<tr>
 <td style='width:80%' class='forumheader3'>
 <table style='width:100%'><tr><td style='width:30%'> <img src='".e_IMAGE."generic/icq.png' alt=''  style='vertical-align:middle' /> ".LAN_115."</td><td style='width:70%; text-align:right'>".($user_icq ? $user_icq : "<i>".LAN_401."</i>")."</td></tr></table>
 </td></tr>
 
+<tr>
 <td style='width:80%' class='forumheader3'>
 <table style='width:100%'><tr><td style='width:30%'> <img src='".e_IMAGE."generic/aim.png' alt=''  style='vertical-align:middle' /> ".LAN_116."</td><td style='width:70%; text-align:right'>".($user_aim ? $aj -> tpa($user_aim) : "<i>".LAN_401."</i>")."</td></tr></table>
 </td></tr>
 
+<tr>
 <td style='width:80%' class='forumheader3'>
 <table style='width:100%'><tr><td style='width:30%'> <img src='".e_IMAGE."generic/msn.png' alt=''  style='vertical-align:middle' /> ".LAN_117."</td><td style='width:70%; text-align:right'>".($user_msn ? $aj -> tpa($user_msn) : "<i>".LAN_401."</i>")."</td></tr></table>
 </td></tr>
 
+<tr>
 <td style='width:80%' class='forumheader3'>
 <table style='width:100%'><tr><td style='width:30%'> <img src='".e_IMAGE."generic/hme.png' alt=''  style='vertical-align:middle' /> ".LAN_144."</td><td style='width:70%; text-align:right'>".($user_homepage ? "<a href='".$user_homepage."' rel='external'>$user_homepage</a>" : "<i>".LAN_401."</i>")."</td></tr></table>
 </td></tr>
 
+<tr>
 <td style='width:80%' class='forumheader3'>
 <table style='width:100%'><tr><td style='width:30%'> <img src='".e_IMAGE."generic/location.png' alt=''  style='vertical-align:middle' /> ".LAN_119."</td><td style='width:70%; text-align:right'>".($user_location ? $aj -> tpa($user_location) : "<i>".LAN_401."</i>")."</td></tr></table>
 </td></tr>";
@@ -256,13 +268,14 @@ if($user_birthday != "" && $user_birthday != "0000-00-00" && ereg ("([0-9]{4})-(
 $user_birthday = "<i>".LAN_401."</i>";
 }
 
-$str .= "<td style='width:80%' class='forumheader3'>
+$str .= "<tr><td style='width:80%' class='forumheader3'>
 <table style='width:100%'><tr><td style='width:30%'> <img src='".e_IMAGE."generic/bday.png' alt=''  style='vertical-align:middle' /> ".LAN_118."</td><td style='width:70%; text-align:right'>$user_birthday</td></tr></table>
 </td></tr>";
 
 if($pm_installed && $id != USERID){
 	$str .= "
-	<td style='width:80%' class='forumheader3'>
+	<tr>
+	<td style='width:80%' class='forumheader3' colspan='2'>
 	<table style='width:100%'><tr><td style='width:30%'> ".e107_parse("{CODE=pm_menu.sendpm.{$id}}")." ".LAN_425."</td><td style='width:70%; text-align:right'>".e107_parse("{CODE=pm_menu.sendpmtext.{$id}}")."</td></tr></table>
 	</td></tr>";
 }
@@ -377,8 +390,8 @@ while($row = $sql -> db_Fetch()){
 $str .= "<tr><td colspan='2' class='forumheader3' style='text-align:center'>
 <table style='width:95%'>
 <tr>
-<td style='width:50%'>".($prevuser['id'] ? "<< ".LAN_414." [ <a href='".e_SELF."?id.".$prevuser['id']."'>".$prevuser['name']."</a> ]" : "&nbsp;")."</td>
-<td style='width:50%; text-align:right'>".($nextuser['id'] ? "[ <a href='".e_SELF."?id.".$nextuser['id']."'>".$nextuser['name']."</a> ] ".LAN_415." >>" : "&nbsp;")."</td>
+<td style='width:50%'>".($prevuser['id'] ? "&lt;&lt; ".LAN_414." [ <a href='".e_SELF."?id.".$prevuser['id']."'>".$prevuser['name']."</a> ]" : "&nbsp;")."</td>
+<td style='width:50%; text-align:right'>".($nextuser['id'] ? "[ <a href='".e_SELF."?id.".$nextuser['id']."'>".$nextuser['name']."</a> ] ".LAN_415." &gt;&gt;" : "&nbsp;")."</td>
 </tr>
 </table>
 </td>
