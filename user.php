@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:45 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-09-26 16:19:59 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -110,16 +110,19 @@ $text .= "<select name='records' class='tbox'>
 }
 $text .= LAN_139;
 
-if($order == "ASC"){
-        $text .= "<select name='order' class='tbox'>
-        <option value='DESC'>".LAN_420."</option>
-        <option value='ASC' selected='selected'>".LAN_421."</option>
-        </select>";
-}else{
-$text .= "<select name='order' class='tbox'>
-<option value='DESC' selected='selected'>".LAN_420."</option>
-<option value='ASC'>".LAN_421."</option>
-</select>";
+if($order == "ASC")
+{
+	$text .= "<select name='order' class='tbox'>
+	<option value='DESC'>".LAN_420."</option>
+	<option value='ASC' selected='selected'>".LAN_421."</option>
+	</select>";
+}
+else
+{
+	$text .= "<select name='order' class='tbox'>
+	<option value='DESC' selected='selected'>".LAN_420."</option>
+	<option value='ASC'>".LAN_421."</option>
+	</select>";
 }
 
 $text .= " <input class='button' type='submit' name='submit' value='".LAN_422."' />
@@ -129,29 +132,34 @@ $text .= " <input class='button' type='submit' name='submit' value='".LAN_422."'
 
 
 
-if(!$sql -> db_Select("user", "*",  "ORDER BY user_id $order LIMIT $from,$records", $mode="no_where")){
-        echo "<div style='text-align:center'><b>".LAN_141."</b></div>";
-}else{
-$sql2 = new db;
-if($sql2 -> db_Select("core", " e107_value", " e107_name='user_entended'")){
-        $row = $sql2 -> db_Fetch();
-        $user_entended = unserialize($row[0]);
+if(!$sql -> db_Select("user", "*",  "ORDER BY user_id $order LIMIT $from,$records", $mode="no_where"))
+{
+	echo "<div style='text-align:center'><b>".LAN_141."</b></div>";
 }
+else
+{
+	$sql2 = new db;
+	if($sql2 -> db_Select("core", " e107_value", " e107_name='user_entended'"))
+	{
+		$row = $sql2 -> db_Fetch();
+		$user_entended = unserialize($row[0]);
+	}
 
-$text .= "
-<table style='width:95%' class='fborder'>
-<tr>
-<td class='fcaption' style='width:2%'>&nbsp;</td>
-<td class='fcaption' style='width:20%'>".LAN_142."</td>
-<td class='fcaption' style='width:20%'>".LAN_112."</td>
-<td class='fcaption' style='width:20%'>".LAN_145."</td>
-</tr>";
+	$text .= "
+	<table style='width:95%' class='fborder'>
+	<tr>
+	<td class='fcaption' style='width:2%'>&nbsp;</td>
+	<td class='fcaption' style='width:20%'>".LAN_142."</td>
+	<td class='fcaption' style='width:20%'>".LAN_112."</td>
+	<td class='fcaption' style='width:20%'>".LAN_145."</td>
+	</tr>";
 
-while($row = $sql -> db_Fetch()){
-        $text .= renderuser($row, $user_entended, "short");
-}
+	while($row = $sql -> db_Fetch())
+	{
+		$text .= renderuser($row, $user_entended, "short");
+	}
 
-$text .= "</table>\n</div>";
+	$text .= "</table>\n</div>";
 
 }
 
@@ -160,44 +168,51 @@ $ns -> tablerender("<div style='text-align:center'>".LAN_140."</div>", $text);
 require_once(e_HANDLER."np_class.php");
 $ix = new nextprev("user.php", $from, $records, $users_total, LAN_138, $records.".".$order);
 
-function renderuser($row, $user_entended, $mode="verbose"){
+function renderuser($row, $user_entended, $mode="verbose")
+{
+	global $sql, $id, $pref, $tp;
+	extract($row);
+	$gen = new convert;
+	$pm_installed = ($pref['pm_title'] ? TRUE : FALSE);
+	if($mode != "verbose")
+	{
+		$datestamp = $gen->convert_date($user_join, "short");
+		return "
+		<tr>
+		<td class='forumheader3' style='width:2%'><a href='".e_SELF."?id.$user_id'><img src='".e_IMAGE."generic/user.png' alt='' style='border:0' /></a></td>
+		<td class='forumheader' style='width:20%'>".$user_id.": <a href='".e_SELF."?id.$user_id'>".$user_name."</a></td>
+		<td class='forumheader3' style='width:20%'>".($user_hideemail && !ADMIN ? "<i>".LAN_143."</i>" : "<a href='mailto:".$user_email."'>".$user_email."</a>")."</td>
+		<td class='forumheader3' style='width:20%'>$datestamp</td>
+		</tr>";
+	}
+	else
+	{
+		$user_data = $user_id.".".$user_name;
+		$chatposts = $sql -> db_Count("chatbox");
+		$commentposts = $sql -> db_Count("comments");
+		$forumposts = $sql -> db_Count("forum_t");
+		$actual_forums = $sql -> db_Count("forum_t", "(*)", "WHERE thread_user='$user_data'");
+		$actual_chats = $sql -> db_Count("chatbox", "(*)", "WHERE cb_nick='$user_data'");
+		$actual_comments = $sql -> db_Count("comments", "(*)", "WHERE comment_author='$user_data'");
+		$chatper = round(($actual_chats/$chatposts)*100,2);
+		$commentper = round(($actual_comments/$commentposts)*100,2);
+		$forumper = round(($actual_forums/$forumposts)*100,2);
+		require_once(e_HANDLER."level_handler.php");
 
-        global $sql, $id, $pref;
-        extract($row);
-        $aj = new textparse;
-        $gen = new convert;
-        $pm_installed = ($pref['pm_title'] ? TRUE : FALSE);
-        if($mode != "verbose"){
-                $datestamp = $gen->convert_date($user_join, "short");
-                return "
-                <tr>
-                <td class='forumheader3' style='width:2%'><a href='".e_SELF."?id.$user_id'><img src='".e_IMAGE."generic/user.png' alt='' style='border:0' /></a></td>
-                <td class='forumheader' style='width:20%'>".$user_id.": <a href='".e_SELF."?id.$user_id'>".$user_name."</a></td>
-                <td class='forumheader3' style='width:20%'>".($user_hideemail && !ADMIN ? "<i>".LAN_143."</i>" : "<a href='mailto:".$user_email."'>".$user_email."</a>")."</td>
-                <td class='forumheader3' style='width:20%'>$datestamp</td>
-                </tr>";
-        }else{
-        $user_data = $user_id.".".$user_name;
-        $chatposts = $sql -> db_Count("chatbox");
-        $commentposts = $sql -> db_Count("comments");
-        $forumposts = $sql -> db_Count("forum_t");
-        $actual_forums = $sql -> db_Count("forum_t", "(*)", "WHERE thread_user='$user_data'");
-        $actual_chats = $sql -> db_Count("chatbox", "(*)", "WHERE cb_nick='$user_data'");
-        $actual_comments = $sql -> db_Count("comments", "(*)", "WHERE comment_author='$user_data'");
-        $chatper = round(($actual_chats/$chatposts)*100,2);
-        $commentper = round(($actual_comments/$commentposts)*100,2);
-        $forumper = round(($actual_forums/$forumposts)*100,2);
-        require_once(e_HANDLER."level_handler.php");
+		$ldata = get_level($user_id, $user_forums, $user_comments, $user_chats, $user_visits, $user_join, $user_admin, $user_perms, $pref);
 
-        $ldata = get_level($user_id, $user_forums, $user_comments, $user_chats, $user_visits, $user_join, $user_admin, $user_perms, $pref);
-
-        if(strstr($ldata[0], "IMAGE_rank_main_admin_image")){
-                $level = LAN_417;
-        }else if(strstr($ldata[0], "IMAGE")){
-                $level = LAN_418;
-        }else{
-        $level = $ldata[1];
-}
+		if(strstr($ldata[0], "IMAGE_rank_main_admin_image"))
+		{
+			$level = LAN_417;
+		}
+		else if(strstr($ldata[0], "IMAGE"))
+		{
+			$level = LAN_418;
+		}
+		else
+		{
+			$level = $ldata[1];
+		}
 
 $datestamp = $gen->convert_date($user_join, "long");
 $lastvisit = ($user_currentvisit ? $gen->convert_date($user_currentvisit, "long") : "<i>".LAN_401."</i>");
@@ -208,19 +223,24 @@ $str = "
 <tr><td colspan='2' class='fcaption' style='text-align:center'>".LAN_142." ".$user_id.": ".$user_name."</td></tr>
 <tr><td rowspan='".($pm_installed && $id != USERID ? 10 : 9)."' class='forumheader3' style='width:20%; vertical-align:middle; text-align:center'>";
 
-if($user_sess && file_exists(e_FILE."public/avatars/".$user_sess)){
-        $str .= "<img src='".e_FILE."public/avatars/".$user_sess."' alt='' />";
+if($user_sess && file_exists(e_FILE."public/avatars/".$user_sess))
+{
+	$str .= "<img src='".e_FILE."public/avatars/".$user_sess."' alt='' />";
 
-        if(ADMIN && getperms("4")){
-                $str .= "<br /><span class='smalltext'>".$user_sess."</span>";
-        }
+	if(ADMIN && getperms("4"))
+	{
+		$str .= "<br /><span class='smalltext'>".$user_sess."</span>";
+	}
 
-        if(USERID == $user_id || (ADMIN && getperms("4"))){
-                $str .= "<br /><br /><span class='smalltext'>[ <a href='".e_SELF."?delp.$user_id'>".LAN_413."</a> ]</span>";
-        }
+	if(USERID == $user_id || (ADMIN && getperms("4")))
+	{
+		$str .= "<br /><br /><span class='smalltext'>[ <a href='".e_SELF."?delp.$user_id'>".LAN_413."</a> ]</span>";
+	}
 
-}else{
-$str .= LAN_408;
+}
+else
+{
+	$str .= LAN_408;
 }
 
 
@@ -233,7 +253,7 @@ $str .= "</td></tr>
 
 <tr>
 <td style='width:80%' class='forumheader3'>
-<table style='width:100%'><tr><td style='width:30%'><img src='".e_IMAGE."generic/email.png' alt='' style='vertical-align:middle' /> ".LAN_112."</td><td style='width:70%; text-align:right'>".($user_hideemail && !ADMIN ? "<i>".LAN_143."</i>" : $user_email)."</td></tr></table>
+<table style='width:100%'><tr><td style='width:30%'><img src='".e_IMAGE."generic/email.png' alt='' style='vertical-align:middle' /> ".LAN_112."</td><td style='width:70%; text-align:right'>".$tp -> parseTemplate("{email=$user_email-link}")."</td></tr></table>
 </td></tr>
 
 <tr>
@@ -243,12 +263,12 @@ $str .= "</td></tr>
 
 <tr>
 <td style='width:80%' class='forumheader3'>
-<table style='width:100%'><tr><td style='width:30%'> <img src='".e_IMAGE."generic/aim.png' alt=''  style='vertical-align:middle' /> ".LAN_116."</td><td style='width:70%; text-align:right'>".($user_aim ? $aj -> tpa($user_aim) : "<i>".LAN_401."</i>")."</td></tr></table>
+<table style='width:100%'><tr><td style='width:30%'> <img src='".e_IMAGE."generic/aim.png' alt=''  style='vertical-align:middle' /> ".LAN_116."</td><td style='width:70%; text-align:right'>".($user_aim ? $tp -> toHTML($user_aim) : "<i>".LAN_401."</i>")."</td></tr></table>
 </td></tr>
 
 <tr>
 <td style='width:80%' class='forumheader3'>
-<table style='width:100%'><tr><td style='width:30%'> <img src='".e_IMAGE."generic/msn.png' alt=''  style='vertical-align:middle' /> ".LAN_117."</td><td style='width:70%; text-align:right'>".($user_msn ? $aj -> tpa($user_msn) : "<i>".LAN_401."</i>")."</td></tr></table>
+<table style='width:100%'><tr><td style='width:30%'> <img src='".e_IMAGE."generic/msn.png' alt=''  style='vertical-align:middle' /> ".LAN_117."</td><td style='width:70%; text-align:right'>".($user_msn ? $tp -> toHTML($user_msn) : "<i>".LAN_401."</i>")."</td></tr></table>
 </td></tr>
 
 <tr>
@@ -258,7 +278,7 @@ $str .= "</td></tr>
 
 <tr>
 <td style='width:80%' class='forumheader3'>
-<table style='width:100%'><tr><td style='width:30%'> <img src='".e_IMAGE."generic/location.png' alt=''  style='vertical-align:middle' /> ".LAN_119."</td><td style='width:70%; text-align:right'>".($user_location ? $aj -> tpa($user_location) : "<i>".LAN_401."</i>")."</td></tr></table>
+<table style='width:100%'><tr><td style='width:30%'> <img src='".e_IMAGE."generic/location.png' alt=''  style='vertical-align:middle' /> ".LAN_119."</td><td style='width:70%; text-align:right'>".($user_location ? $tp -> toHTML($user_location) : "<i>".LAN_401."</i>")."</td></tr></table>
 </td></tr>";
 
 if($user_birthday != "" && $user_birthday != "0000-00-00" && ereg ("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})", $user_birthday, $regs)){
@@ -275,11 +295,11 @@ if($pm_installed && $id != USERID){
         $str .= "
         <tr>
         <td style='width:80%' class='forumheader3' colspan='2'>
-        <table style='width:100%'><tr><td style='width:30%'> ".e107_parse("{CODE=pm_menu.sendpm.{$id}}")." ".LAN_425."</td></tr></table>
+        <table style='width:100%'><tr><td style='width:30%'> ".$tp -> parseTemplate("{pm_menu.sendpm={$id}}")." ".LAN_425."</td></tr></table>
         </td></tr>";
 }
 
-$str .= ($user_signature ? "<tr><td colspan='2' class='forumheader3' style='text-align:center'><i>".$aj -> tpa($user_signature)."</i></td></tr>" : "");
+$str .= ($user_signature ? "<tr><td colspan='2' class='forumheader3' style='text-align:center'><i>".$tp -> toHTML($user_signature)."</i></td></tr>" : "");
 
 
 
