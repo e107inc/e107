@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2005-03-31 09:23:45 $
-|     $Author: stevedunstan $
+|     $Revision: 1.42 $
+|     $Date: 2005-04-02 21:53:22 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -349,7 +349,7 @@ foreach($pluginList as $plug) {
 	include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
 
 	if ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_user_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest) {
-		$img = (!$plug['plugin_installflag'] ? "<img src='".e_IMAGE."admin_images/uninstalled.png' alt='' />" : "<img src='".e_IMAGE."generic/installed.png' alt='' />");
+		$img = (!$plug['plugin_installflag'] ? "<img src='".e_IMAGE."admin_images/uninstalled.png' alt='' />" : "<img src='".e_IMAGE."admin_images/installed.png' alt='' />");
 	} else {
 		$img = "<img src='".e_IMAGE."admin_images/noinstall.png' alt='' />";
 	}
