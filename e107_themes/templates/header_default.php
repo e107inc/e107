@@ -39,6 +39,9 @@ document.write( '<link rel=\"stylesheet\" type=\"text/css\" href=\"".e_PLUGIN."l
 }
 //echo "var ejs_listpics = new Array();";
 
+$fader_onload = ($sql -> db_Select("menus", "*", "menu_name='fader_menu' AND menu_location!='0' ") ? "changecontent();" : "");
+$links_onload = ($pref['links_new_window'] ? "externalLinks();" : "");
+$body_onload =($fader_onload != "" || $links_onload != "" ? " onload='".$links_onload." ".$fader_onload."'" : "");	
 $ejs_listpics = "";
 $handle=opendir(THEME."images");
 while ($file = readdir($handle)){
@@ -49,15 +52,13 @@ while ($file = readdir($handle)){
 $ejs_listpics = substr($ejs_listpics, 0, -1);
 
 closedir($handle);
-$fader_onload = ($sql -> db_Select("menus", "*", "menu_name='fader_menu' AND menu_location!='0' ") ? "changecontent()" : "");
 echo "\n
-ejs_preload('".THEME."images/','".$ejs_listpics."');\n
 
-window.onload=function(){externalLinks(); ".$fader_onload."}\n
+ejs_preload('".THEME."images/','".$ejs_listpics."');\n
 // -->\n
 </script>
 </head>
-<body >";
+<body".$body_onload.">";
 //echo "XX - ".$e107_popup;
 // require $e107_popup =1; to use it as header for popup without menus
 if($e107_popup != 1){
