@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2005-02-24 08:11:25 $
-|     $Author: e107coders $
+|     $Revision: 1.53 $
+|     $Date: 2005-02-24 17:25:13 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -421,15 +421,10 @@ function setNewsCache($cacheString) {
 }
 
 function checkNewsCache($cacheString, $np = FALSE, $nfp = FALSE) {
-	global $pref, $e107cache;
+	global $pref, $e107cache, $tp;
 	$cache_data = $e107cache->retrieve($cacheString);
 	if ($cache_data) {
 		echo $cache_data;
-		if ($np) {
-			$parms = $news_total.",".ITEMVIEW.",".$from.",".e_SELF.'?'."[FROM].".$action.".".$sub_action;
-			$nextprev = LAN_NEWS_22."&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}");
-			echo "<div class='nextprev' style='text-align:center'>".$nextprev."</div>";
-		}
 		if ($nfp && $pref['nfp_display'] == 2) {
 			require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 		}
