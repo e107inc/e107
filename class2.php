@@ -460,23 +460,23 @@ class textparse{
                 }
                 $text = str_replace("$", "&#36;", $text);
                 $search[0] = "#\[link\]([a-z]+?://){1}(.*?)\[/link\]#si";
-                $replace[0] = '<a href="\1\2">\1\2</a>';
+                $replace[0] = '<a href="\1\2" rel="external">\1\2</a>';
                 $search[1] = "#\[link\](.*?)\[/link\]#si";
-                $replace[1] = '<a href="http://\1">\1</a>';
+                $replace[1] = '<a href="http://\1" rel="external">\1</a>';
                 $search[2] = "#\[link=([a-z]+?://){1}(.*?)\](.*?)\[/link\]#si";
-                $replace[2] = '<a href="\1\2">\3</a>';
+                $replace[2] = '<a href="\1\2" rel="external">\3</a>';
                 $search[3] = "#\[link=(.*?)\](.*?)\[/link\]#si";
-                $replace[3] = '<a href="\1">\2</a>';
+                $replace[3] = '<a href="\1" rel="external">\2</a>';
                 $search[4] = "#\[email\](.*?)\[/email\]#si";
                 $replace[4] = '<a href="mailto:\1">\1</a>';
                 $search[5] = "#\[email=(.*?){1}(.*?)\](.*?)\[/email\]#si";
                 $replace[5] = '<a href="mailto:\1\2">\3</a>';
                 $search[6] = "#\[url\]([a-z]+?://){1}(.*?)\[/url\]#si";
-                $replace[6] = '<a href="\1\2">\1\2</a>';
+                $replace[6] = '<a href="\1\2" rel="external">\1\2</a>';
                 $search[7] = "#\[url\](.*?)\[/url\]#si";
-                $replace[7] = '<a href="http://\1">\1</a>';
+                $replace[7] = '<a href="http://\1"> rel="external"\1</a>';
                 $search[8] = "#\[url=([a-z]+?://){1}(.*?)\](.*?)\[/url\]#si";
-                $replace[8] = '<a href="\1\2">\3</a>';
+                $replace[8] = '<a href="\1\2" rel="external">\3</a>';
                 $search[9] = "/\[quote=(.*?)\](.*?)/si";
                 $replace[9] = '<div class=\'indent\'><i>Originally posted by \1</i> ...<br />"\2"';
                 $search[25] = "/\[\/quote\]/si";
@@ -532,8 +532,8 @@ class textparse{
         if($mode != "nobreak"){ $text = nl2br($text); }
 		$text = preg_replace("/\n/i", " ", $text);
 		$text = str_replace("<br />", " <br />" , $text);
-      $text = e107_parse($text,$referrer);
-      $text = preg_replace("#\{\{.*?\}\}#","",$text);
+        $text = e107_parse($text,$referrer);
+        $text = preg_replace("#\{\{.*?\}\}#","",$text);
 		$text = $this -> wrap($text, $highlight_search);
         $text = preg_replace($search, $replace, $text);
         if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
@@ -560,7 +560,7 @@ class textparse{
 						$url = str_replace("http://", "", $message_array[$i]);  
 						$url = explode("/", $url);  
 						$url = $url[0];
-						$message_array[$i] = "<a href=\"".$message_array[$i]."\" onclick=\"window.open('".$message_array[$i]."'); return false;\">[".$url."]</a>";
+						$message_array[$i] = "<a href='".$message_array[$i]."' rel='external'>[".$url."]</a>";
 					}else{
 						if(!strstr($message_array[$i], "[link=") && !strstr($message_array[$i], "[url=") && !strstr($message_array[$i], "href=") && !strstr($message_array[$i], "src=") && !strstr($message_array[$i], "action=") && !strstr($message_array[$i], "onclick=") && !strstr($message_array[$i], "url(")){
 							$message_array[$i] = preg_replace("/([^\s]{".$wrapcount."})/", "$1<br />", $message_array[$i]);
@@ -568,9 +568,9 @@ class textparse{
 						}
 				}else{
 					if(!strstr($message_array[$i], "[link=") && !strstr($message_array[$i], "[url=") && !strstr($message_array[$i], "href=") && !strstr($message_array[$i], "src=") && !strstr($message_array[$i], "action=") && !strstr($message_array[$i], "onclick=") && !strstr($message_array[$i], "url(")){
-						$message_array[$i] = preg_replace("#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="http://\2.\3" onclick="window.open(\'http://\2.\3\'); return false;">\2.\3</a>', $message_array[$i]);
-						$message_array[$i] = preg_replace("#([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?([^.,]))#i", '<a href="\1://\2" onclick="window.open(\'\1://\2\'); return false;">\1://\2</a>', $message_array[$i]);
-							if($highlight_search){
+						$message_array[$i] = preg_replace("#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="http://\2.\3" rel="external";">\2.\3</a>', $message_array[$i]);
+						$message_array[$i] = preg_replace("#([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?([^.,]))#i", '<a href="\1://\2" rel="external";">\1://\2</a>', $message_array[$i]);
+							if($highlight_search && !strstr($message_array[$i], "http://")){
 								$tmp = explode(" ", $_POST['search_query']);
 								foreach($tmp as $key){
 									if(eregi($key, $message_array[$i])){

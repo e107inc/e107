@@ -133,7 +133,7 @@ if($category){
 
 					switch ($link_open) { 
 					case 1:
-						$link_append = "<a href='".e_SELF."?".$link_id."' onclick=\"window.open('".e_SELF."?".$link_id."'); return false;\">";
+						$link_append = "<a href='".e_SELF."?".$link_id."' rel='external'>";
 					break; 
 					case 2:
 					   $link_append = "<a href='".e_SELF."?".$link_id."'>";
