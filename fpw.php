@@ -80,7 +80,7 @@ if(IsSet($_POST['pwsubmit'])){
                 $row = $sql -> db_Fetch(); extract($row);
 
                 if($user_admin == 1 && $user_perms == "0"){
-                        sendemail($pref['siteadminemail'], ".LAN_06.", "".LAN_07."".getip()." ".LAN_08);
+                        sendemail($pref['siteadminemail'], LAN_06, LAN_07."".getip()." ".LAN_08);
                         echo "<script type='text/javascript'>document.location.href='index.php'</script>\n";
                         die();
                 }
