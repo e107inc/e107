@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-03-16 15:18:58 $
+|     $Revision: 1.22 $
+|     $Date: 2005-03-16 15:30:32 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -84,7 +84,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 	$refpage = "";
 }
 
-if (!$search_prefs['user_select']) {
+if (!$search_prefs['user_select'] && $_GET['r'] < 1) {
 	foreach($search_info as $key => $si) {
 		$searchtype[$key] = TRUE;
 	}
