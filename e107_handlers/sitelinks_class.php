@@ -63,13 +63,13 @@ function sitelinks(){
                         $linkstart = ($link_button ? preg_replace("/\<img.*\>/si", "", LINKSTART) : LINKSTART);
                         switch ($link_open) {
                                 case 1:
-                                   $link_append = "";
+                                   $link_append = " rel='external'";
                                         break;
                                 case 2:
                                    $link_append = "";
                                         break;
                                 case 3:
-                                   $link_append = " rel='external'";
+                                   $link_append = "";
                                         break;
                                 default:
                                    unset($link_append);

@@ -360,7 +360,7 @@ class links{
 		<td style='width:70%' class='forumheader3'>
 		<select name='linkopentype' class='tbox'>".
 		($link_open == 0 ? "<option value='0' selected='selected'>".LCLAN_20."</option>" : "<option value='0'>".LCLAN_20."</option>").
-		($link_open == 3 ? "<option value='3' selected='selected'>".LCLAN_23."</option>" : "<option value='3'>".LCLAN_23."</option>").
+		($link_open == 1 ? "<option value='1' selected='selected'>".LCLAN_23."</option>" : "<option value='1'>".LCLAN_23."</option>").
 		($link_open == 4 ? "<option value='4' selected='selected'>".LCLAN_24."</option>" : "<option value='4'>".LCLAN_24."</option>")."
 		</select>
 		</td>
