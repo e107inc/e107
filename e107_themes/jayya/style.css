@@ -43,20 +43,14 @@ a:hover {
 
 .tbox {
 	border: #5e5d63 1px solid;
+	background-color: #fff;
 }
 
 .indent {
 	border: #999 1px dashed;
-}
-
-.indent {
 	padding: 5px;
 	margin: 5px;
 	background-color: #fcf9f9;
-}
-
-.tbox {
-	background-color: #fff;
 }
 
 .button, .button:hover {
@@ -72,7 +66,7 @@ a:hover {
 	background-image : url(images/buttonover.png);
 }
 
-.nextprev, .nextprev:hover {
+.nextprev {
 	border: 0px;
 	text-align:center;
 	padding : 2px;
