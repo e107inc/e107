@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-07 15:29:10 $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-09 14:13:22 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -129,13 +129,13 @@ $path = e_PLUGIN."log/stats.php";
 $links = "<div style='text-align: center;'>".
 (e_QUERY != 1 ? "<a href='$path?1'>Today's Stats</a>" : "<b>Today's Stats</b>")." | ".
 (e_QUERY != 2 ? "<a href='$path?2'>Alltime Stats</a>" : "<b>Alltime Stats</b>")." | ".
-(e_QUERY != 3 && $pref['statBrowser'] ? "<a href='$path?3'>Browser Stats</a> | " : ($pref['statBrowser'] ? "<b>Browser Stats</b> |" : "")).
+(e_QUERY != 3 && $pref['statBrowser'] ? "<a href='$path?3'>Browser Stats</a> | " : ($pref['statBrowser'] ? "<b>Browser Stats</b> | " : "")).
 (e_QUERY != 4 && $pref['statOs'] ? "<a href='$path?4'>Operating System Stats</a> | " : ($pref['statOs'] ? "<b>Operating System Stats</b> | " : "")).
 (e_QUERY != 5 && $pref['statDomain'] ? "<a href='$path?5'>Domain Stats</a> | " : ($pref['statDomain'] ? "<b>Domain Stats</b> | " : "")).
 (e_QUERY != 6 && $pref['statScreen'] ? "<br /><a href='$path?6'>Screen Resolution / Color Depth Stats</a> | " : ($pref['statScreen'] ? "<br /><b>Screen Resolution / Color Depth Stats</b> | " : "")).
 (e_QUERY != 7 && $pref['statRefer'] ? "<a href='$path?7'>Referral Stats</a> | " : ($pref['statRefer'] ? "<b>Referral Stats</b> | " : "")).
 (e_QUERY != 8 && $pref['statQuery'] ? "<a href='$path?8'>Search String Stats</a> | " : ($pref['statQuery'] ? "<b>Search String Stats</b> | " : "")).
-(e_QUERY != 9 && $pref['statRecent'] ? "<a href='$path?9'>Recent Visitors</a> | " : ($pref['statRecent'] ? "<b>Recent Visitors</b>" : "")).
+(e_QUERY != 9 && $pref['statRecent'] ? "<a href='$path?9'>Recent Visitors</a>" : ($pref['statRecent'] ? "<b>Recent Visitors</b>" : "")).
 "</div><br /><br />";
 
 
