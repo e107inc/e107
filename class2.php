@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2004-12-19 01:47:38 $
+|     $Revision: 1.43 $
+|     $Date: 2004-12-26 19:30:58 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -525,7 +525,7 @@ function chk_class($var, $userclass, $debug) {
 	return FALSE;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-function check_class($Classes, $userclass = USERCLASS, $debug = true) {
+function check_class($Classes, $userclass = USERCLASS, $debug = FALSE) {
 	if (!$Classes || $Classes == '') {
 		return true;
 	}
