@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-01-27 21:06:39 $
+|     $Revision: 1.15 $
+|     $Date: 2005-01-28 17:58:03 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -142,23 +142,7 @@ if(!$text = $e107cache->retrieve("chatbox"))
 				$cb_message = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $cb_message);
 			}
 
-			$cb_message = $tp -> toHTML($cb_message);
-
-			if(!eregi("<a href|<img|&#", $cb_message))
-			{
-
-				$message_array = explode(" ", $cb_message);
-				for($i=0; $i<=(count($message_array)-1); $i++)
-				{
-					if(strlen($message_array[$i]) > $cb_wordwrap)
-					{
-						require_once(e_HANDLER."textparse/basic.php");
-						$etp = new e107_basicparse;
-						$message_array[$i] = wordwrap( $etp->unentity($message_array[$i]), $cb_wordwrap, "<br />", 1);
-					}
-				}
-				$cb_message = implode(" ",$message_array);
-			}
+			$cb_message = $tp -> toHTML($cb_message, TRUE, null, null, $cb_wordwrap);
 
 			$replace[0] = "["; $replace[1] = "]";
 			$search[0] = "&lsqb;"; $search[1] =  "&rsqb;";
