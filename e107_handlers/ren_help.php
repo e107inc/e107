@@ -1,7 +1,7 @@
 <?php
 @include(e_LANGUAGEDIR.e_LANGUAGE."/lan_ren_help.php");
 @include(e_LANGUAGEDIR."English/lan_ren_help.php");
-function ren_help($mode=1){
+function ren_help($mode=1,$addtextfunc="addtext",$helpfunc="help"){
 
 	//	$mode == TRUE : fontsize and colour dialogs are rendered
 	//	$mode == 2 : no helpbox
@@ -46,14 +46,14 @@ function ren_help($mode=1){
 	$fontsizes[5] = array("28", LANHELP_20);
 
 	while(list($key, $bbcode) = each($code)){ 
-		$string .= "<input class=\"button\" type=\"button\" value=\"".$bbcode[0]."\" onclick=\"addtext('".$bbcode[1]."')\" ".($mode != 2 ? "onmouseout=\"help('')\" onmouseover=\"help('".$bbcode[2]."')\"" : "" ).($bbcode[3] ? " style='".$bbcode[3]."'" : "")." />\n";
+		$string .= "<input class=\"button\" type=\"button\" value=\"".$bbcode[0]."\" onclick=\"{$addtextfunc}('".$bbcode[1]."')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" ).($bbcode[3] ? " style='".$bbcode[3]."'" : "")." />\n";
 	}
 	if($mode){
-		$string .= "<br />\n<select class=\"tbox\" name=\"fontcol\" onchange=\"addtext('[color=' + this.options[this.selectedIndex].value + '][/color]');this.selectedIndex=0;\"".($mode != 2 ? " onmouseover=\"help('Font Color: [color]Blue[/color]')\" onmouseout=\"help('')\"" : "").">\n<option value=\"\">".LANHELP_21."</option>\n";
+		$string .= "<br />\n<select class=\"tbox\" name=\"fontcol\" onchange=\"{$addtextfunc}('[color=' + this.options[this.selectedIndex].value + '][/color]');this.selectedIndex=0;\"".($mode != 2 ? " onmouseover=\"{$helpfunc}('Font Color: [color]Blue[/color]')\" onmouseout=\"{$helpfunc}('')\"" : "").">\n<option value=\"\">".LANHELP_21."</option>\n";
 		while(list($key, $bbcode) = each($colours)){
 			$string .= "<option style=\"color:".strtolower($bbcode[0])."\" value=\"".strtolower($bbcode[0])."\">".$bbcode[1]."</option>\n";
 		}
-		$string .= "</select>\n<select class=\"tbox\" name=\"fontsiz\" onchange=\"addtext('[size=' + this.options[this.selectedIndex].value + '][/size]');this.selectedIndex=0;\"".($mode != 2 ? " onmouseover=\"help('Font Size: [size]Big[/size]')\" onmouseout=\"help('')\">" : "" )."\n<option>".LANHELP_22."</option>\n";
+		$string .= "</select>\n<select class=\"tbox\" name=\"fontsiz\" onchange=\"{$addtextfunc}('[size=' + this.options[this.selectedIndex].value + '][/size]');this.selectedIndex=0;\"".($mode != 2 ? " onmouseover=\"{$helpfunc}('Font Size: [size]Big[/size]')\" onmouseout=\"{$helpfunc}('')\">" : "" )."\n<option>".LANHELP_22."</option>\n";
 
 		while(list($key, $bbcode) = each($fontsizes)){
 			$string .= "<option value=\"".$bbcode[0]."\">".$bbcode[1]."</option>\n";

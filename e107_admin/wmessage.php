@@ -60,9 +60,9 @@ $text .= "</td>
 <td style='width:60%' class='forumheader3'>
 <textarea class='tbox' name='guestmessage' cols='70' rows='10'>$guestmessage</textarea>
 <br />
-<input class='helpbox' type='text' name='helpb' size='100' />
+<input class='helpbox' type='text' name='helpguest' size='100' />
 <br />
-".ren_help("addtext1")."
+".ren_help(1,"addtext1","help1")."
 </td>
 
 </tr>
@@ -79,7 +79,9 @@ $text .= "</td>
 <td style='width:60%' class='forumheader3'>
 <textarea class='tbox' name='membermessage' cols='70' rows='10'>$membermessage</textarea>
 <br />
-".ren_help("addtext2")."
+<input class='helpbox' type='text' name='helpmember' size='100' />
+<br />
+".ren_help(1,"addtext2","help2")."
 </td>
 
 
@@ -97,7 +99,9 @@ $text .= "</td>
 <td style='width:60%' class='forumheader3'>
 <textarea class='tbox' name='adminmessage' cols='70' rows='10'>$adminmessage</textarea>
 <br />
-".ren_help("addtext3")."
+<input class='helpbox' type='text' name='helpadmin' size='100' />
+<br />
+".ren_help(1,"addtext3","help2")."
 </td>
 </tr>
 
@@ -127,8 +131,14 @@ function addtext3(sc){
 function fclear(){
 	document.newspostform.message.value = "";
 }
-function help(help){
-	document.wmform.helpb.value = help;
+function help1(help){
+	document.wmform.helpguest.value = help;
+}
+function help2(help){
+	document.wmform.helpmember.value = help;
+}
+function help3(help){
+	document.wmform.helpadmin.value = help;
 }
 </script>
 <?php
