@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-12-13 22:50:07 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2004-12-15 22:49:48 $
+|     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
 if(CORRUPT_COOKIE === TRUE){
@@ -55,11 +55,11 @@ $text = "";
 
 
                 $new_articles = 0;
-                $new_articles = $sql -> db_Select("content", "*", "content_datestamp>$time  ORDER BY content_datestamp DESC");
+                $new_articles = $sql -> db_Select("content", "*", "content_type!=6 AND content_datestamp>$time  ORDER BY content_datestamp DESC");
                 while($row = $sql -> db_Fetch()){
                         extract($row);
                                 if(!check_class($content_class)){
-                                        $new_articles = $new_articles - 1;
+                                        $new_articles--;
                                 }
                 }
                 $new_total = $new_total + $new_articles;
