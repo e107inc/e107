@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/meta.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-18 16:11:32 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-22 23:43:48 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -38,10 +38,10 @@ $text = "<div style='text-align:center'>
 <table style='".ADMIN_WIDTH."' class='fborder'>
 <tr>
 
-<td style='width:30%' class='forumheader3'>".METLAN_2.": </td>
-<td style='width:70%' class='forumheader3'>
+<td style='width:20%' class='forumheader3'>".METLAN_2.": </td>
+<td style='width:80%' class='forumheader3'>
 <textarea class='tbox' id='meta' name='meta' cols='70'
-rows='10'>".$pref['meta_tag']."</textarea>
+rows='10' style='width:90%'>".$pref['meta_tag']."</textarea>
 <br />";
 $text .= <<< EOT
 <input class="button" type="button" value="description"
@@ -49,19 +49,19 @@ onclick="addtext2('<meta name=\'description\' content=\'
 EOT;
 $text .= METLAN_5;
 $text .= <<< EOT
-\' />')" />
+\' />\\n')" />
 <input class="button" type="button" value="keywords"
 onclick="addtext2('<meta name=\'keywords\' content=\'
 EOT;
 $text .= METLAN_6;
 $text .= <<< EOT
-\' />')" />
+\' />\\n')" />
 <input class="button" type="button" value="copyright"
 onclick="addtext2('<meta name=\'copyright\' content=\'
 EOT;
 $text .= METLAN_7;
 $text .= <<< EOT
-\' />')" />
+\' />\\n')" />
 EOT;
 $text .= "</td>
 </tr>
@@ -80,7 +80,7 @@ $ns -> tablerender(METLAN_8, $text);
 function headerjs(){
 $headerjs = "<script type=\"text/javascript\">
 function addtext2(str){
-    document.getElementById('meta').value += str;
+    document.getElementById('meta').value += str ;
 }
 </script>\n";
 return $headerjs;
