@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/forum_viewtopic_template.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-02-16 03:11:55 $
+|     $Revision: 1.6 $
+|     $Date: 2005-02-16 12:43:32 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
         $FORUMSTART = "
-<table style='width:100%' class='nforumholder' cellpadding=0 cellspacing=0>
+<table style='width:100%' class='nforumholder' cellpadding='0' cellspacing='0'>
 <tr>	
 <td  colspan='2' class='nforumcaption'>{BACKLINK}</td>
 </tr>
@@ -36,20 +36,20 @@
 
 <table style='width:100%'>
 <tr>
-<td style='width:80%'><div class='mediumtext'><img src='".e_PLUGIN."forum/images/e.png' style='vertical-align:middle' /> <b>{THREADNAME}</b></div><br />{GOTOPAGES}</td>
+<td style='width:80%'><div class='mediumtext'><img src='".e_PLUGIN."forum/images/e.png' style='vertical-align:middle' alt=''/> <b>{THREADNAME}</b></div><br />{GOTOPAGES}</td>
 <td style='width:20%; vertical-align:bottom;'>{BUTTONS}</td>
 </tr>
 </table>
 
 
-<table style='width:100%' class='nforumholder' cellpadding=0 cellspacing=0>
+<table style='width:100%' class='nforumholder' cellpadding='0' cellspacing='0'>
 <tr>
 <td style='width:20%; text-align:center' class='nforumcaption2'>\n".LAN_402."\n</td>\n<td style='width:80%; text-align:center' class='nforumcaption2'>\n".LAN_403."\n</td>
 </tr>
 </table>";
        $FORUMTHREADSTYLE = "
 <div class='spacer'>
-<table style='width:100%' class='nforumholder' cellpadding=0 cellspacing=0>
+<table style='width:100%' class='nforumholder' cellpadding='0' cellspacing='0'>
 <tr>
 <td class='nforumcaption3' style='vertical-align:middle; width:20%;'>\n{NEWFLAG}\n{POSTER}\n</td>
 <td class='nforumcaption3' style='vertical-align:middle; width:80%;'>
@@ -80,7 +80,7 @@
 </div>";
         $FORUMEND = "
 <div class='spacer'>
-<table style='width:100%' class='nforumholder' cellpadding=0 cellspacing=0>
+<table style='width:100%' class='nforumholder' cellpadding='0' cellspacing='0'>
 <tr>
 <td style='width:50%; text-align:left; vertical-align:top' class='nforumthread'><b>{MODERATORS}</b><br />{FORUMJUMP}</td>
 <td style='width:50%; text-align:right; vertical-align:top' class='nforumthread'>{BUTTONS}</td>
@@ -88,23 +88,23 @@
 </table>
 </div>
 <div class='spacer'>
-<table style='width:100%' class='nforumholder' cellpadding=0 cellspacing=0>
+<table style='width:100%' class='nforumholder' cellpadding='0' cellspacing='0'>
 <tr>
 <td style='text-align:center' class='nforumthread2'>{QUICKREPLY}</td>
 </tr>
 </table>
 
 <div style='text-align:center;'>
-<a href='".e_PLUGIN."rss_menu/rss.php?8.1.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss1.png' alt='".LAN_431."' style='vertical-align: middle; border: 0;'></a> 
-<a href='".e_PLUGIN."rss_menu/rss.php?8.2.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss2.png' alt='".LAN_432."' style='vertical-align: middle; border: 0;'></a> 
-<a href='".e_PLUGIN."rss_menu/rss.php?8.3.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss3.png' alt='".LAN_433."' style='vertical-align: middle; border: 0;'></a>
+<a href='".e_PLUGIN."rss_menu/rss.php?8.1.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss1.png' alt='".LAN_431."' style='vertical-align: middle; border: 0;' /></a> 
+<a href='".e_PLUGIN."rss_menu/rss.php?8.2.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss2.png' alt='".LAN_432."' style='vertical-align: middle; border: 0;' /></a> 
+<a href='".e_PLUGIN."rss_menu/rss.php?8.3.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss3.png' alt='".LAN_433."' style='vertical-align: middle; border: 0;' /></a>
 </div>
 
 <div class='nforumdisclaimer' style='text-align:center'>Powered by <b>e107 Forum System</b></div>
 </div>";
        $FORUMREPLYSTYLE = "
 <div class='spacer'>
-<table style='width:100%' class='nforumholder' cellpadding=0 cellspacing=0>
+<table style='width:100%' class='nforumholder' cellpadding='0' cellspacing='0'>
 <tr>
 <td class='nforumreplycaption' style='vertical-align:middle; width:20%;'>\n{NEWFLAG}\n{POSTER}\n</td>
 <td class='nforumreplycaption' style='vertical-align:middle; width:80%;'>

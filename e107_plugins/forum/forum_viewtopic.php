@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-02-15 16:53:24 $
+|     $Revision: 1.8 $
+|     $Date: 2005-02-16 12:42:50 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -317,7 +317,7 @@ for($i = 0; $i < count($thread_info)-1; $i++) {
 	//   $u_new .= ".".$thread_id.".";
 	//  }
 	// }
-	$forrep .= "\n<a name='{$post_info['thread_id']}'></a>\n".$tp->parseTemplate($FORUMREPLYSTYLE, FALSE, $forum_shortcodes)."\n";
+	$forrep .= $tp->parseTemplate($FORUMREPLYSTYLE, FALSE, $forum_shortcodes)."\n";
 }
 	
 	
@@ -374,7 +374,7 @@ function showmodoptions() {
 	 
 	$forum_id = $forum_info['forum_id'];
 	$ret = "
-		<form method='post' action='".e_PLUGIN."forum/forum_viewforum.php?{$forum_id}' id='frmMod_{$forum_id}_{$thread_id}'>
+		<form method='post' action='".e_PLUGIN."forum/forum_viewforum.php?{$forum_id}' id='frmMod_{$forum_id}_{$post_info['thread_id']}'>
 		<div>
 		<a href='".e_PLUGIN."forum/forum_post.php?edit.{$post_info['thread_id']}.{$from}'>".IMAGE_admin_edit."</a>
 		<input type='image' ".IMAGE_admin_delete." name='delete_{$post_info['thread_id']}' value='thread_action' onclick=\"return confirm_('$type', $forum_id, $thread_id, '{$post_info['user_name']}')\" />
