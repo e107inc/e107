@@ -16,9 +16,6 @@ foreach($imgParms as $k => $v) {
 	$parmStr .= "$k='{$v}' ";
 }
 
-echo "image post pref: ".$pref['image_post_disabled_method']."<br />PostID: ".$postID."<br />";
-
-
 if (!$postID) {
 	return "<img src='{$code_text}' {$parmStr} />";
 } else {
