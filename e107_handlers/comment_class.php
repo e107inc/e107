@@ -43,7 +43,7 @@ class comment{
 	}
 
 	function render_comment($row, $table, $action, $id, $width, $subject){
-		global $COMMENTSTYLE, $pref;
+		global $COMMENTSTYLE, $pref, $aj;
 		require_once(e_HANDLER."level_handler.php");
 		if(!$width){$width = 0;}
 		define("IMAGE_nonew_comments", (file_exists(THEME."forum/nonew_comments.png") ? "<img src='".THEME."forum/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/nonew_comments.png' alt=''  />"));
@@ -52,7 +52,7 @@ class comment{
 		$ns = new e107table;
 		extract($row);
 		$comment_author = eregi_replace("[0-9]+\.", "", $comment_author);
-		$comment_subject = (empty($comment_subject) ? $subject : $comment_subject);
+		$comment_subject = (empty($comment_subject) ? $subject : $aj -> tpa($comment_subject));
 		$gen = new convert; $datestamp = $gen->convert_date($comment_datestamp, "short");
 		if($sql -> db_Select("user", "*", "user_name='$comment_author'")){
 			$row = $sql -> db_Fetch();
@@ -131,7 +131,6 @@ class comment{
 		}
 			
 		$aj = new textparse;
-		$comment_comment = wrap_comment($comment_comment);
 		$search[0] = "/\{USERNAME\}(.*?)/si";
 		$replace[0] = ($user_id ? "<a href='".e_BASE."user.php?id.".$user_id."'>".$user_name."</a>\n" : $user_name."\n");
 
@@ -236,6 +235,7 @@ class comment{
 		}
 		
 		$comment = $aj -> formtpa($comment, "public");
+		$subject = $aj -> formtpa($subject, "public");
 		if(!$sql -> db_Select("comments", "*", "comment_comment='".$comment."' AND comment_item_id='$id' AND comment_type='$type' ")){
 			if($_POST['comment']){
 				if(USER == TRUE){
@@ -271,23 +271,4 @@ class comment{
 	}
 }
 
-
-function wrap_comment($data){
-	$wrapcount = 70;
-	$message_array = explode(" ", $data);
-	for($i=0; $i<=(count($message_array)-1); $i++){
-		if(strlen($message_array[$i]) > $wrapcount){
-			if(substr($message_array[$i], 0, 7) == "http://"){
-				$url = str_replace("http://", "", $message_array[$i]);  
-				$url = explode("/", $url);  
-				$url = $url[0];
-				$message_array[$i] = "<a href='".$message_array[$i]."'>[".$url."]</a>";
-			}else{
-				$message_array[$i] = preg_replace("/([^\s]{".$wrapcount."})/", "$1<br />", $message_array[$i]);
-			}
-		}
-	}
-	$data = implode(" ",$message_array);
-	return $data;
-}
 ?>
