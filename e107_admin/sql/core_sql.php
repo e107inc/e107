@@ -93,7 +93,7 @@ CREATE TABLE comments (
   comment_comment text NOT NULL,
   comment_blocked tinyint(3) unsigned NOT NULL default '0',
   comment_ip varchar(20) NOT NULL default '',
-  comment_type tinyint(3) unsigned NOT NULL default '0',
+  comment_type varchar(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (comment_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
