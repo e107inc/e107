@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-03-06 10:04:23 $
-|     $Author: stevedunstan $
+|     $Revision: 1.21 $
+|     $Date: 2005-03-08 16:31:37 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_1", "Site Information");
@@ -156,9 +156,6 @@ define("PRFLAN_111", "Wrap long words in menu text");
 
 define("PRFLAN_112", "On");
 define("PRFLAN_113", "Off");
-
-define("PRFLAN_114", "Search");
-define("PRFLAN_115", "The number of characters that are displayed in your search result summary:");
 
 define("PRFLAN_116", "Allow HTML posting");
 define("PRFLAN_117", "This will allow users to post HTML code anywhere on the site, select the userclass to allow this.");
