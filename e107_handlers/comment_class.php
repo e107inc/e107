@@ -188,7 +188,7 @@ class comment{
 
 		$search[10] = "/\{SUBJECT\}(.*?)/si";
 		if($pref['nested_comments']){
-			$replace[10] = "<div>".$NEWIMAGE." <b>".$comment_subject."</b></div>";
+			$replace[10] = $NEWIMAGE." <b>".$comment_subject."</b>";
 		}else{
 			$replace[10] = "";
 		}
