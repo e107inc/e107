@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/resetcore.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-22 19:40:17 $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-22 20:00:22 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -164,11 +164,8 @@ if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 3) {
 
 	$result = mysql_query("SELECT * FROM ".$mySQLprefix."core WHERE e107_name='pref_backup'");
 	$row = mysql_fetch_array($result);
-	//$tmp = stripslashes($row['e107_value']);
-	echo $row['e107_value'];
-	$pref = unserialize($row['e107_value']);
 	
-	print_r($pref);
+	$pref = unserialize(base64_decode($row['e107_value']));
 	
 	$PrefOutput = $eArrayStorage->WriteArray($pref);
 	
