@@ -6,6 +6,133 @@ require_once("../../class2.php");
 //Change to "P" If you wanna give your plugin-Admins the same rights
  if (!getperms("P")) { header("location:".e_BASE."index.php"); exit; } 
 
+//The following is for php < 4.3.0 not knowing file_get_contents
+if (!function_exists('file_get_contents'))
+{
+    function file_get_contents($filename, $use_include_path = 0)
+    { 
+        $file = @fopen($filename, 'rb', $use_include_path); 
+        if ($file) 
+        { 
+            if ($fsize = @filesize($filename)) 
+            { 
+                $data = fread($file, $fsize); 
+            } 
+            else 
+            { 
+                while (!feof($file)) 
+                { 
+                    $data .= fread($file, 1024); 
+                } 
+            } 
+            fclose($file); 
+        } 
+        return $data;
+    } 
+}
+
+//Load crc-file and check any of its files
+function check_sfv_file($filename, $check=""){
+	$errors_miss = "";
+	$errors_crc = "";
+	if (strpos($filename, ".gz") == strlen($filename)-3) { $p = 1; }
+	else { $p = 0; }
+	if ($p == 0) { $dh = @fopen($filename, "r"); }
+	else { $dh = @gzopen($filename, "rb"); }
+	while (!feof($dh)) {
+   		if ($p == 0) { $line = fgets($dh, 4096); }
+   		else { $line = gzgets($dh, 4096); }
+		$a = substr($line, 0, strpos($line, "<-:sfv:->"));
+   		if ($a) {
+   			$b = substr($line, (strpos($line, "<-:sfv:->")+9));
+   			$a = str_replace($dirs_2, $dirs_1, $a);
+   			if (file_exists(e_BASE.$a)) {
+   				if (trim($b) != trim(generate_sfv_checksum(e_BASE.$a))) {
+   					if (!$errors_crc) {
+   						$errors_crc = "<br />
+   						<div align='center'><u>".Integ_04."*</u></div><br /><ul>";
+   					} 
+   					$errors_crc  .= "<li>".$a;
+   				}
+   			}
+   			elseif ($a != "install.php" && $a != "upgrade.php" && (strpos($a, "e107_themes/") !== 0 || !$check || strpos($a, "templates/") != 0)) {
+   				if (!$errors_miss) {
+   					$errors_miss = "<br />
+   					<div align='center'><u>".Integ_03."</u></div><br /><ul>";
+   				} 
+   				$errors_miss .= "<li>".$a;
+   			}
+   		}
+   	}
+	if ($p == 0) { fclose($dh); }
+	else { gzclose($dh); }
+   	//Error-Output
+   	$mess = "";
+   	if ($errors_crc) { $mess .= $errors_crc."</ul>"; }
+	if ($errors_miss) { $mess .= $errors_miss."</ul>"; }
+   	if (!$errors_crc && !$errors_miss) {
+   		$mess .= "<br />".Integ_15;
+   	}
+   	if ($errors_crc) { $mess .= Integ_29; }
+   	return $mess;
+}
+//Generating Checksum for File
+function generate_sfv_checksum($filename) {
+	return strtoupper(dechex(crc32(str_replace(chr(13).chr(10), chr(10) ,file_get_contents(str_replace(" ", "%20", $filename))))));
+}
+
+//Get Files for doing a crc-file
+function hex_getfiles($dir, $root, $m=""){
+	global $t_array;
+	$dh = opendir($dir);
+	while($file = readdir($dh)){
+		if($file != "." and $file != ".." && $file != "index.html" && $file != "null.txt") {
+			if(is_file($dir.$file)){
+				if ((is_array($m) && strpos($file, "core_".$m['e107_version']."b".$m['e107_build'].".crc") === 0) || ($m == "" && strpos($file, "core_") !== 0 && (strpos($file, ".crc") === strlen($file)-4 || strpos($file, ".crc.gz") === strlen($file)-7))){
+					$t_array[] = $dir.$file;
+				}
+			}else{
+				hex_getfiles($dir.$file."/", $root, $m);
+			}
+		}
+	}
+	closedir($dh);
+	return $t_array;
+}
+
+//Load e107-Files ($s = 1) or e107-File-Tree ($s = 2)
+function hex_getdirs($dir, $root, $s="1", $path=e_BASE){
+	global $t_array, $_arr;
+	$dh = opendir($dir);
+	$search = array("../", $path);
+	$replace = array("", "");
+	while($file = readdir($dh)){
+		if($file != "." and $file != ".." && $file != "index.html" && $file != "null.txt" && !in_array($file, $root) && !in_array(str_replace($search, $replace, $dir.$file), $root)){
+			if(is_file($dir.$file)){
+				if ($s == "1") {
+					$t_array[] = str_replace($search, $replace, $dir.$file);
+				}
+			}elseif (!in_array($file, $_arr) && !in_array(str_replace($search, $replace, $dir.$file), $_arr)) {
+				if ($s == "2" || $s == "3") {
+					$t_array[] = str_replace($search, $replace, $dir.$file);
+				}
+				if ($s != "3") {
+					hex_getdirs($dir.$file."/", $root, $s);
+				}
+			}
+		}
+	}
+	closedir($dh);
+	return $t_array;
+}
+
+//Format String : 1 -> 0001 , 12 -> 0012
+function format_string($string){
+	settype($string, "string");
+	$a = "0000".$string;
+	$b = strrpos($a, $string);
+	return substr($a, (strlen($a)-$b), 4);
+}
 if(e_QUERY){
 	$query = explode(".", e_QUERY);
 }
@@ -62,7 +189,7 @@ $dirs_1 = array($ADMIN_DIRECTORY, $FILES_DIRECTORY, $IMAGES_DIRECTORY, $THEMES_D
 $dirs_2 =array("e107_admin/", "e107_files/", "e107_images/", "e107_themes/", "e107_plugins/", "e107_handlers/", "e107_languages/", "e107_docs/help/");
 
 //Files / Dirs never coming into core-sfv
-$exclude = array($FILES_DIRECTORY."backend", $FILES_DIRECTORY."downloadimages", $FILES_DIRECTORY."downloads", $FILES_DIRECTORY."downloadthumbs", $FILES_DIRECTORY."images", $FILES_DIRECTORY."misc", $FILES_DIRECTORY."public" , substr($IMAGES_DIRECTORY, 0, strlen($IMAGES_DIRECTORY)-1), $PLUGINS_DIRECTORY."custom", "e107_config.php");
+$exclude = array($FILES_DIRECTORY."backend", $FILES_DIRECTORY."downloadimages", $FILES_DIRECTORY."downloads", $FILES_DIRECTORY."downloadthumbs", $FILES_DIRECTORY."images", $FILES_DIRECTORY."misc", $FILES_DIRECTORY."public" , substr($IMAGES_DIRECTORY, 0, strlen($IMAGES_DIRECTORY)-1), $PLUGINS_DIRECTORY."custom", "e107_config.php", "CVS");
 
 //Output-Path
 $o_path = "crc/";
@@ -299,133 +426,6 @@ else {
 +-----------------------
 */
 
-//The following is for php < 4.3.0 not knowing file_get_contents
-if (!function_exists('file_get_contents'))
-{
-    function file_get_contents($filename, $use_include_path = 0)
-    { 
-        $file = @fopen($filename, 'rb', $use_include_path); 
-        if ($file) 
-        { 
-            if ($fsize = @filesize($filename)) 
-            { 
-                $data = fread($file, $fsize); 
-            } 
-            else 
-            { 
-                while (!feof($file)) 
-                { 
-                    $data .= fread($file, 1024); 
-                } 
-            } 
-            fclose($file); 
-        } 
-        return $data;
-    } 
-}
-
-//Load crc-file and check any of its files
-function check_sfv_file($filename, $check=""){
-	$errors_miss = "";
-	$errors_crc = "";
-	if (strpos($filename, ".gz") == strlen($filename)-3) { $p = 1; }
-	else { $p = 0; }
-	if ($p == 0) { $dh = @fopen($filename, "r"); }
-	else { $dh = @gzopen($filename, "rb"); }
-	while (!feof($dh)) {
-   		if ($p == 0) { $line = fgets($dh, 4096); }
-   		else { $line = gzgets($dh, 4096); }
-		$a = substr($line, 0, strpos($line, "<-:sfv:->"));
-   		if ($a) {
-   			$b = substr($line, (strpos($line, "<-:sfv:->")+9));
-   			$a = str_replace($dirs_2, $dirs_1, $a);
-   			if (file_exists(e_BASE.$a)) {
-   				if (trim($b) != trim(generate_sfv_checksum(e_BASE.$a))) {
-   					if (!$errors_crc) {
-   						$errors_crc = "<br />
-   						<div align='center'><u>".Integ_04."*</u></div><br /><ul>";
-   					} 
-   					$errors_crc  .= "<li>".$a;
-   				}
-   			}
-   			elseif ($a != "install.php" && $a != "upgrade.php" && (strpos($a, "e107_themes/") !== 0 || !$check || strpos($a, "templates/") != 0)) {
-   				if (!$errors_miss) {
-   					$errors_miss = "<br />
-   					<div align='center'><u>".Integ_03."</u></div><br /><ul>";
-   				} 
-   				$errors_miss .= "<li>".$a;
-   			}
-   		}
-   	}
-	if ($p == 0) { fclose($dh); }
-	else { gzclose($dh); }
-   	//Error-Output
-   	$mess = "";
-   	if ($errors_crc) { $mess .= $errors_crc."</ul>"; }
-	if ($errors_miss) { $mess .= $errors_miss."</ul>"; }
-   	if (!$errors_crc && !$errors_miss) {
-   		$mess .= "<br />".Integ_15;
-   	}
-   	if ($errors_crc) { $mess .= Integ_29; }
-   	return $mess;
-}
-//Generating Checksum for File
-function generate_sfv_checksum($filename) {
-	return strtoupper(dechex(crc32(str_replace(chr(13).chr(10), chr(10) ,file_get_contents(str_replace(" ", "%20", $filename))))));
-}
-
-//Get Files for doing a crc-file
-function hex_getfiles($dir, $root, $m=""){
-	global $t_array;
-	$dh = opendir($dir);
-	while($file = readdir($dh)){
-		if($file != "." and $file != ".." && $file != "index.html" && $file != "null.txt") {
-			if(is_file($dir.$file)){
-				if ((is_array($m) && strpos($file, "core_".$m['e107_version']."b".$m['e107_build'].".crc") === 0) || ($m == "" && strpos($file, "core_") !== 0 && (strpos($file, ".crc") === strlen($file)-4 || strpos($file, ".crc.gz") === strlen($file)-7))){
-					$t_array[] = $dir.$file;
-				}
-			}else{
-				hex_getfiles($dir.$file."/", $root, $m);
-			}
-		}
-	}
-	closedir($dh);
-	return $t_array;
-}
-
-//Load e107-Files ($s = 1) or e107-File-Tree ($s = 2)
-function hex_getdirs($dir, $root, $s="1", $path=e_BASE){
-	global $t_array, $_arr;
-	$dh = opendir($dir);
-	$search = array("../", $path);
-	$replace = array("", "");
-	while($file = readdir($dh)){
-		if($file != "." and $file != ".." && $file != "index.html" && $file != "null.txt" && !in_array($file, $root) && !in_array(str_replace($search, $replace, $dir.$file), $root)){
-			if(is_file($dir.$file)){
-				if ($s == "1") {
-					$t_array[] = str_replace($search, $replace, $dir.$file);
-				}
-			}elseif (!in_array($file, $_arr) && !in_array(str_replace($search, $replace, $dir.$file), $_arr)) {
-				if ($s == "2" || $s == "3") {
-					$t_array[] = str_replace($search, $replace, $dir.$file);
-				}
-				if ($s != "3") {
-					hex_getdirs($dir.$file."/", $root, $s);
-				}
-			}
-		}
-	}
-	closedir($dh);
-	return $t_array;
-}
-
-//Format String : 1 -> 0001 , 12 -> 0012
-function format_string($string){
-	settype($string, "string");
-	$a = "0000".$string;
-	$b = strrpos($a, $string);
-	return substr($a, (strlen($a)-$b), 4);
-}
 
 ?>
 
