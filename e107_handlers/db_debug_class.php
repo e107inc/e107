@@ -11,8 +11,8 @@
 	 |     GNU General Public License (http://gnu.org).
 	 |
 	 |     $Source: /cvs_backup/e107_0.7/e107_handlers/db_debug_class.php,v $
-	 |     $Revision: 1.3 $
-	 |     $Date: 2005-01-29 17:08:38 $
+	 |     $Revision: 1.4 $
+	 |     $Date: 2005-01-29 18:09:30 $
 	 |     $Author: mrpete $
 	 +----------------------------------------------------------------------------+
 	 */
@@ -78,7 +78,6 @@
 
 			$nFields=0;
 			if (!strcasecmp($qtype,'SELECT')) { 
-			 	$query=str_replace(",", " , ", $query);
 			 	$sQryRes=is_null($rli) ? mysql_query("EXPLAIN $query") : mysql_query("EXPLAIN $query", $rli);
 
 			 	if ($sQryRes) { // There's something to explain
