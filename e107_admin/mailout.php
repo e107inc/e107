@@ -11,13 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-01-09 19:31:28 $
-|     $Author: e107coders $
+|     $Revision: 1.10 $
+|     $Date: 2005-01-10 09:49:03 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
     require_once("../class2.php");
+    $e_sub_cat = 'mail';
     require_once(e_ADMIN."auth.php");
     if(!getperms("W")){ header("location:".e_BASE."index.php"); exit;}
     require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php");

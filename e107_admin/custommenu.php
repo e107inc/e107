@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/custommenu.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-09 18:12:38 $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-10 09:49:02 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -26,6 +26,7 @@ if($pref['htmlarea']){
 }
 
 if(!getperms("I")){ header("location:".e_BASE."index.php"); exit; }
+$e_sub_cat = 'custom';
 require_once("auth.php");
 require_once(e_HANDLER."ren_help.php");
 

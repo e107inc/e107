@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-01-09 19:31:28 $
-|     $Author: e107coders $
+|     $Revision: 1.8 $
+|     $Date: 2005-01-10 09:49:03 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
+$e_sub_cat = 'language';
 require_once("auth.php");
 if(!getperms("ML")){ header("location:".e_BASE."index.php"); exit;}
 require_once(e_HANDLER."form_handler.php");

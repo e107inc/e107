@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/article.php,v $
-|   $Revision: 1.6 $
-|   $Date: 2005-01-09 18:12:38 $
+|   $Revision: 1.7 $
+|   $Date: 2005-01-10 09:49:02 $
 |   $Author: sweetas $
 
 +---------------------------------------------------------------+
@@ -25,7 +25,7 @@ if($pref['htmlarea']){
   //  htmlarea("content_summary");
 }
 if(!getperms("J") && !getperms("K") && !getperms("L")){header("location:".e_BASE."index.php"); exit; }
-
+$e_sub_cat = 'article';
 require_once(e_HANDLER."textparse/basic.php");
 $etp = new e107_basicparse;
 

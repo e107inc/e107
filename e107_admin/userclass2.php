@@ -11,13 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass2.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-09 18:12:38 $
+|     $Revision: 1.5 $
+|     $Date: 2005-01-10 09:49:03 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 if(!getperms("4")){ header("location:".e_BASE."index.php"); exit;}
+$e_sub_cat = 'userclass';
 require_once("auth.php");
 require_once(e_HANDLER."userclass_class.php");
 $aj = new textparse;

@@ -13,6 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
+$e_sub_cat = 'database';
 
 if(IsSet($_POST['dump_sql'])){
 	if(!getperms("0")){

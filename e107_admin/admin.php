@@ -11,14 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-10 05:09:34 $
+|     $Revision: 1.7 $
+|     $Date: 2005-01-10 09:49:02 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
+$e_sub_cat = 'main';
 require_once('auth.php');
-require(e_ADMIN.'ad_links.php');
+//require(e_ADMIN.'ad_links.php');
 require_once(e_HANDLER.'admin_handler.php');
 
 // auto db update

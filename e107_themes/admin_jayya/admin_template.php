@@ -56,7 +56,7 @@ $ADMIN_HEADER = "
 <td style='vertical-align: top; padding: 0px 0px 0px 0px'>
 <img src='".THEME."images/adminlogo_2.png' style='width: 170px; height: 68px; display: block;' alt='' />
 </td>
-<td style='vertical-align: bottom; text-align: right; padding: 3px; background-color: #efefef; border-left: 1px solid #3D4251; width: 100%; background-image: url(".THEME."images/computer.jpg); background-repeat: no-repeat'>
+<td style='vertical-align: bottom; text-align: right; padding: 3px 5px 3px 0px; background-color: #efefef; border-left: 1px solid #3D4251; width: 100%; background-image: url(".THEME."images/computer.jpg); background-repeat: no-repeat'>
 <div style='height: 23px'>
 {CUSTOM=search}
 </div>
@@ -66,6 +66,11 @@ $ADMIN_HEADER = "
 {ADMIN_USERLAN}
 </div>
 {SITELINKS=flat}
+</td>
+<td style='width: 68px; padding: 0px 18px 0px 18px; text-align: center; vertical-align: middle; border-left: 1px solid #3D4251; background-color: #f3f3f3; background-image: url(".THEME."images/screen.png); background-repeat: no-repeat'>
+<div style='height: 32px;'>
+{ADMIN_ICON}
+</div>
 </td>
 </tr>
 </table>
@@ -95,9 +100,6 @@ $ADMIN_HEADER .= "<br />
 ";
 
 $ADMIN_FOOTER = "<br />
-<div style='text-align:center'>
-{SITEDISCLAIMER}
-</div>
 </td>";
 
 if ($preright=='pre') {
@@ -114,5 +116,9 @@ if ($preright=='pre') {
 
 $ADMIN_FOOTER .= "</tr>
 </table>
+<br />
+<div style='text-align:center'>
+{SITEDISCLAIMER}
+</div>
 ";
 ?>

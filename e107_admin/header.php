@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.8 $
-|   $Date: 2005-01-10 05:09:34 $
+|   $Revision: 1.9 $
+|   $Date: 2005-01-10 09:49:03 $
 |   $Author: sweetas $
 +---------------------------------------------------------------+
 */
@@ -70,6 +70,8 @@ if($eplug_css){ echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/cs
 
 echo "</head>
 <body>";
+
+require(e_ADMIN.'ad_links.php');
 
 $ns = new e107table;
 $e107_var = array();

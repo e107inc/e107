@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db_verify.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-09 18:12:38 $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-10 09:49:02 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
+$e_sub_cat = 'database';
 require_once("auth.php");
 
 $filename = "sql/core_sql.php";

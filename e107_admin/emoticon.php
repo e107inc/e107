@@ -14,6 +14,7 @@
 */
 require_once("../class2.php");
 if(!getperms("F")){ header("location:".e_BASE."index.php"); exit; }
+$e_sub_cat = 'emoticon';
 
 if(IsSet($_POST['updatesettings']))
 {

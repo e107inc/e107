@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/theme_prev.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-05 16:57:37 $
+|     $Revision: 1.3 $
+|     $Date: 2005-01-10 09:49:03 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -89,6 +89,7 @@ if(isSet($_POST['sitetheme'])) {
 require_once("../class2.php");
 
 if(!getperms("1")){ header("location:".e_BASE."index.php"); exit;}
+$e_sub_cat = 'prefs';
 
 require_once("auth.php");
 
