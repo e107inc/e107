@@ -107,6 +107,20 @@ if(IsSet($message)){
 }
 
 if($action == "article"){
+
+	if (!($pref['article_submit'])){
+		$articlesubmit = ARLAN_95;
+	}
+
+	if (!check_class($pref['article_submit_class'])){
+		$articlesubmit = ARLAN_97;
+	}
+
+	if(IsSet($articlesubmit)){
+		$ns -> tablerender("", "<div style='text-align:center'><b>".$articlesubmit."</b></div>");
+		require_once(FOOTERF);
+		exit;
+	}
 	$text = "<div style='text-align:center'>
 	".$rs -> form_open("post", e_SELF."?".e_QUERY."", "dataform")."
 	<table style='width:95%' class='fborder'>
@@ -186,6 +200,19 @@ if($action == "article"){
 
 if($action == "review"){
 
+	if (!($pref['review_submit'])){
+		$reviewsubmit = ARLAN_96;
+	}
+
+	if (!check_class($pref['review_submit_class'])){
+		$reviewsubmit = ARLAN_98;
+	}
+
+	if(IsSet($reviewsubmit)){
+		$ns -> tablerender("", "<div style='text-align:center'><b>".$reviewsubmit."</b></div>");
+		require_once(FOOTERF);
+		exit;
+	}
 	$text = "<div style='text-align:center'>
 	".$rs -> form_open("post", e_SELF."?create", "dataform")."
 
