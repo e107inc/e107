@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_submit.php,v $
-|		$Revision: 1.1 $
-|		$Date: 2005-02-03 23:31:36 $
+|		$Revision: 1.2 $
+|		$Date: 2005-02-04 10:36:07 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -66,6 +66,12 @@ if(IsSet($_POST['create_content'])){
 				$content_rate = $_POST['content_rate'];
 				$content_pe = $_POST['content_pe'];
 				$content_class = $_POST['content_class'];
+				$ne_day = $_POST['ne_day'];
+				$ne_month = $_POST['ne_month'];
+				$ne_year = $_POST['ne_year'];
+				$end_day = $_POST['end_day'];
+				$end_month = $_POST['end_month'];
+				$end_year = $_POST['end_year'];
 				$custom["content_custom_score"] = $_POST['content_score'];
 				$custom["content_custom_meta"] = $_POST['content_meta'];
 				for($i=0;$i<$content_pref["content_submit_custom_number_{$type_id}"];$i++){

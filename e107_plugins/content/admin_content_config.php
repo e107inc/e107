@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.1 $
-|		$Date: 2005-02-03 23:31:36 $
+|		$Revision: 1.2 $
+|		$Date: 2005-02-04 10:35:47 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -86,6 +86,12 @@ if(isset($_POST['create_category'])){
 				$content_rate = $_POST['cat_rate'];
 				$content_pe = $_POST['cat_pe'];
 				$content_class = $_POST['cat_class'];
+				$ne_day = $_POST['ne_day'];
+				$ne_month = $_POST['ne_month'];
+				$ne_year = $_POST['ne_year'];
+				$end_day = $_POST['end_day'];
+				$end_month = $_POST['end_month'];
+				$end_year = $_POST['end_year'];
 		}
 }
 
@@ -103,6 +109,12 @@ if(isset($_POST['update_category'])){
 				$content_rate = $_POST['cat_rate'];
 				$content_pe = $_POST['cat_pe'];
 				$content_class = $_POST['cat_class'];
+				$ne_day = $_POST['ne_day'];
+				$ne_month = $_POST['ne_month'];
+				$ne_year = $_POST['ne_year'];
+				$end_day = $_POST['end_day'];
+				$end_month = $_POST['end_month'];
+				$end_year = $_POST['end_year'];
 		}
 }
 if(isset($_POST['assign_admins'])){
@@ -124,6 +136,12 @@ if(isset($_POST['create_content'])){
 				$content_rate = $_POST['content_rate'];
 				$content_pe = $_POST['content_pe'];
 				$content_class = $_POST['content_class'];
+				$ne_day = $_POST['ne_day'];
+				$ne_month = $_POST['ne_month'];
+				$ne_year = $_POST['ne_year'];
+				$end_day = $_POST['end_day'];
+				$end_month = $_POST['end_month'];
+				$end_year = $_POST['end_year'];
 				$custom["content_custom_score"] = $_POST['content_score'];
 				$custom["content_custom_meta"] = $_POST['content_meta'];
 				for($i=0;$i<$content_pref["content_admin_custom_number_{$type_id}"];$i++){
@@ -147,6 +165,12 @@ If(isset($_POST['update_content'])){
 				$content_rate = $_POST['content_rate'];
 				$content_pe = $_POST['content_pe'];
 				$content_class = $_POST['content_class'];
+				$ne_day = $_POST['ne_day'];
+				$ne_month = $_POST['ne_month'];
+				$ne_year = $_POST['ne_year'];
+				$end_day = $_POST['end_day'];
+				$end_month = $_POST['end_month'];
+				$end_year = $_POST['end_year'];
 				$custom["content_custom_score"] = $_POST['content_score'];
 				$custom["content_custom_meta"] = $_POST['content_meta'];
 				for($i=0;$i<$content_pref["content_admin_custom_number_{$type_id}"];$i++){
@@ -186,9 +210,6 @@ if(isset($_POST['preview'])){
 			  
 		$ns -> tablerender($content_heading, $text);
 
-		$ne_day = $_POST['ne_day'];
-		$ne_month = $_POST['ne_month'];
-		$ne_year = $_POST['ne_year'];	
 		$content_authorname = $_POST['content_authorname'];
 		$content_authoremail = $_POST['content_authoremail'];
 		$content_parent = $_POST['parent'];
@@ -200,6 +221,12 @@ if(isset($_POST['preview'])){
 		$content_rate = $_POST['content_rate'];
 		$content_pe = $_POST['content_pe'];
 		$content_class = $_POST['content_class'];
+		$ne_day = $_POST['ne_day'];
+		$ne_month = $_POST['ne_month'];
+		$ne_year = $_POST['ne_year'];
+		$end_day = $_POST['end_day'];
+		$end_month = $_POST['end_month'];
+		$end_year = $_POST['end_year'];
 		$custom["content_custom_score"] = $_POST['content_score'];
 		$custom["content_custom_meta"] = $_POST['content_meta'];
 		for($i=0;$i<$content_pref["content_admin_custom_number_{$type_id}"];$i++){

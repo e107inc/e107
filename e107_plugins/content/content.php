@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.1 $
-|		$Date: 2005-02-03 23:31:36 $
+|		$Revision: 1.2 $
+|		$Date: 2005-02-04 10:36:07 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1193,15 +1193,13 @@ function show_content_top(){
 
 									$authordetails = $aa -> getAuthor($content_author);
 									$CONTENT_TOP_TABLE_AUTHOR = $authordetails[1]." ";
-									if(USER){
-										if(is_numeric($authordetails[3])){
-											$CONTENT_TOP_TABLE_AUTHOR .= " <a href='".e_BASE."user.php?id.".$authordetails[0]."' title='".CONTENT_LAN_40."'>".CONTENT_ICON_USER."</a>";
-										}else{
-											$CONTENT_TOP_TABLE_AUTHOR .= " ".CONTENT_ICON_USER;
-										}
+									
+									if(USER && is_numeric($authordetails[0]) && $authordetails[0] != "0"){
+										$CONTENT_TOP_TABLE_AUTHOR .= " <a href='".e_BASE."user.php?id.".$authordetails[0]."' title='".CONTENT_LAN_40."'>".CONTENT_ICON_USER."</a>";
 									}else{
-										$CONTENT_TOP_TABLE_AUTHOR .= CONTENT_ICON_USER;
+										//$CONTENT_TOP_TABLE_AUTHOR .= " ".CONTENT_ICON_USER;
 									}
+									
 									$CONTENT_TOP_TABLE_AUTHOR .= " <a href='".e_SELF."?".$type.".".$type_id.".author.".$content_id."' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
 
 									$content_top_table_string .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_TOP_TABLE);
@@ -1280,24 +1278,23 @@ function parse_content_recent_table($row){
 				if($content_pref["content_list_authorname_{$type_id}"] || $content_pref["content_list_authoremail_{$type_id}"]){
 					$authordetails = $aa -> getAuthor($content_author);
 					if($content_pref["content_list_authorname_{$type_id}"]){
-						if(USER){
-							if(($content_pref["content_list_authoremail_nonmember_{$type_id}"] || $content_pref["content_list_authoremail_{$type_id}"]) && $authordetails[2]){
+						if($content_pref["content_list_authoremail_{$type_id}"] && $authordetails[2]){
+							if($authordetails[0] == "0"){
+								if($content_pref["content_list_authoremail_nonmember_{$type_id}"]){
+									$CONTENT_RECENT_TABLE_AUTHORDETAILS = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
+								}else{
+									$CONTENT_RECENT_TABLE_AUTHORDETAILS = $authordetails[1];
+								}
+							}else{
 								$CONTENT_RECENT_TABLE_AUTHORDETAILS = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
-							}else{
-								$CONTENT_RECENT_TABLE_AUTHORDETAILS = $authordetails[1];
-							}
-							if(is_numeric($authordetails[3])){
-								$CONTENT_RECENT_TABLE_AUTHORDETAILS .= " <a href='".e_BASE."user.php?id.".$authordetails[0]."' title='".CONTENT_LAN_40."'>".CONTENT_ICON_USER."</a>";
-							}else{
-								$CONTENT_RECENT_TABLE_AUTHORDETAILS .= " ".CONTENT_ICON_USER;
 							}
 						}else{
-							if(($content_pref["content_list_authoremail_nonmember_{$type_id}"] || $content_pref["content_list_authoremail_{$type_id}"]) && $authordetails[2]){
-								$CONTENT_RECENT_TABLE_AUTHORDETAILS = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
-							}else{
-								$CONTENT_RECENT_TABLE_AUTHORDETAILS = $authordetails[1];
-							}
-							$CONTENT_RECENT_TABLE_AUTHORDETAILS .= " ".CONTENT_ICON_USER;
+							$CONTENT_RECENT_TABLE_AUTHORDETAILS = $authordetails[1];
+						}
+						if(USER && is_numeric($authordetails[0]) && $authordetails[0] != "0"){
+							$CONTENT_RECENT_TABLE_AUTHORDETAILS .= " <a href='".e_BASE."user.php?id.".$authordetails[0]."' title='".CONTENT_LAN_40."'>".CONTENT_ICON_USER."</a>";
+						}else{
+							//$CONTENT_RECENT_TABLE_AUTHORDETAILS .= " ".CONTENT_ICON_USER;
 						}
 					}
 					$CONTENT_RECENT_TABLE_AUTHORDETAILS .= " <a href='".e_SELF."?".$type.".".$type_id.".author.".$content_id."' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
@@ -1519,27 +1516,26 @@ function parse_content_content_table($row){
 
 				if($content_pref["content_content_authorname_{$type_id}"] || $content_pref["content_content_authoremail_{$type_id}"]){
 					$authordetails = $aa -> getAuthor($content_author);
-					if(USER){
-						if(($content_pref["content_list_authoremail_nonmember_{$type_id}"] || $content_pref["content_list_authoremail_{$type_id}"]) && $authordetails[2]){
+					if($content_pref["content_content_authoremail_{$type_id}"] && $authordetails[2]){
+						if($authordetails[0] == "0"){
+							if($content_pref["content_content_authoremail_nonmember_{$type_id}"]){
+								$CONTENT_CONTENT_TABLE_AUTHORDETAILS = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
+							}else{
+								$CONTENT_CONTENT_TABLE_AUTHORDETAILS = $authordetails[1];
+							}
+						}else{
 							$CONTENT_CONTENT_TABLE_AUTHORDETAILS = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
-						}else{
-							$CONTENT_CONTENT_TABLE_AUTHORDETAILS = $authordetails[1];
 						}
-						if(is_numeric($authordetails[3])){
-							$CONTENT_CONTENT_TABLE_AUTHORDETAILS .= " <a href='".e_BASE."user.php?id.".$authordetails[0]."' title='".CONTENT_LAN_40."'>".CONTENT_ICON_USER."</a>";
-						}else{
-							$CONTENT_CONTENT_TABLE_AUTHORDETAILS .= " ".CONTENT_ICON_USER;
-						}						
 					}else{
-						if(($content_pref["content_list_authoremail_nonmember_{$type_id}"] || $content_pref["content_list_authoremail_{$type_id}"]) && $authordetails[2]){
-							$CONTENT_CONTENT_TABLE_AUTHORDETAILS = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
-						}else{
-							$CONTENT_CONTENT_TABLE_AUTHORDETAILS = $authordetails[1];
-						}
-						$CONTENT_CONTENT_TABLE_AUTHORDETAILS .= " ".CONTENT_ICON_USER;
+						$CONTENT_CONTENT_TABLE_AUTHORDETAILS = $authordetails[1];
 					}
-					$CONTENT_CONTENT_TABLE_AUTHORDETAILS .= " <a href='".e_SELF."?".$type.".".$type_id.".author.".$content_id."' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
+					if(USER && is_numeric($authordetails[0]) && $authordetails[0] != "0"){
+						$CONTENT_CONTENT_TABLE_AUTHORDETAILS .= " <a href='".e_BASE."user.php?id.".$authordetails[0]."' title='".CONTENT_LAN_40."'>".CONTENT_ICON_USER."</a>";
+					}else{
+						//$CONTENT_CONTENT_TABLE_AUTHORDETAILS .= " ".CONTENT_ICON_USER;
+					}
 				}
+				$CONTENT_CONTENT_TABLE_AUTHORDETAILS .= " <a href='".e_SELF."?".$type.".".$type_id.".author.".$content_id."' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
 
 				$filestmp = explode("[file]", $content_file);
 				foreach($filestmp as $key => $value) { 
