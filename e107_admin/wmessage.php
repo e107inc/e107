@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/wmessage.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-01-27 19:52:25 $
-|     $Author: streaky $
+|     $Revision: 1.9 $
+|     $Date: 2005-01-31 02:22:44 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -53,6 +53,7 @@ if (isset($_POST['wm_insert'])) {
 	
 if (isset($_POST['updateoptions'])) {
 	$pref['wm_enclose'] = $_POST['wm_enclose'];
+	$pref['wmessage_sc'] = $_POST['wmessage_sc'];
 	save_prefs();
 	$message = WMLAN_09;
 }
@@ -172,6 +173,14 @@ if ($action == "opt") {
 		<span class='smalltext'>".WMLAN_07."</span>
 		</td>
 		<td class='forumheader3' style='width:30%;text-align:center'>". ($pref['wm_enclose'] ? "<input type='checkbox' name='wm_enclose' value='1' checked='checked' />" : "<input type='checkbox' name='wm_enclose' value='1' />")."
+		</td>
+		</tr>
+		<tr>
+		 
+		<td style='width:70%' class='forumheader3'>
+		".WMLAN_10."
+		</td>
+		<td class='forumheader3' style='width:30%;text-align:center'>". ($pref['wmessage_sc'] ? "<input type='checkbox' name='wmessage_sc' value='1' checked='checked' />" : "<input type='checkbox' name='wmessage_sc' value='1' />")."
 		</td>
 		</tr>
 		 
