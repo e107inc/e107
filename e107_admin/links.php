@@ -242,6 +242,9 @@ class links{
 
 		$var['opt']['text']=LCLAN_67;
 		$var['opt']['link']=e_SELF."?opt";
+		
+		$var['sub']['text']=LCLAN_83;
+		$var['sub']['link']="submenusgen.php";
 
 		show_admin_menu(LCLAN_68,$action,$var);
 	}
