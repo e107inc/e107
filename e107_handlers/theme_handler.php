@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-03-21 12:28:40 $
+|     $Revision: 1.15 $
+|     $Date: 2005-03-24 10:53:35 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -193,7 +193,7 @@ class themeHandler{
 				}
 
 				$folderName = substr($fileList[0]['stored_filename'], 0, (strpos($fileList[0]['stored_filename'], "/")));
-				$ns->tablerender(TPVLAN_16, "div class='center'>".TPVLAN_19."</div>");
+				$ns->tablerender(TPVLAN_16, "<div class='center'>".TPVLAN_19."</div>");
 
 				@unlink(e_THEME.$archiveName);
 			}
