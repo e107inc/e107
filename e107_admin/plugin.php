@@ -31,7 +31,7 @@ while(false !== ($file = readdir($handle)))
 				include(e_PLUGIN.$file."/".$file2);
 				if(!$sql -> db_Select("plugin", "*", "plugin_name='$eplug_name'"))
 				{
-					if($eplug_conffile && !$eplug_prefs && !$eplug_table_names && !$eplug_user_prefs && !$eplug_parse && !$eplug_userclass)
+					if(!$eplug_prefs && !$eplug_table_names && !$eplug_user_prefs && !$eplug_parse && !$eplug_userclass && !$eplug_module)
 					{
 						// new plugin, assign entry in plugin table, install is not necessary so mark it as intalled
 						$sql -> db_Insert("plugin", "0, '$eplug_name', '$eplug_version', '$eplug_folder', 1");        
