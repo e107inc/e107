@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-01-29 14:26:28 $
+|     $Revision: 1.18 $
+|     $Date: 2005-01-30 06:14:08 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -173,7 +173,21 @@ function update_61x_to_700($type) {
 			PRIMARY KEY  (dblog_id)
 			) TYPE=MyISAM;
 			");
-		 
+			
+		// New generic table for storing any miscellaneous data
+		$sql->db_Select_gen(
+		"CREATE TABLE ".MPREFIX."generic (
+			gen_id int(10) unsigned NOT NULL auto_increment,
+  			gen_type varchar(80) NOT NULL default '',
+  			gen_datestamp int(10) unsigned NOT NULL default '0',
+			gen_user_id int(10) unsigned NOT NULL default '0',
+			gen_ip varchar(80) NOT NULL default '',
+			gen_intdata int(10) unsigned NOT NULL default '0',
+			gen_chardata varchar(255) NOT NULL default '',
+			PRIMARY KEY  (gen_id)
+			) TYPE=MyISAM;
+		");
+			
 		// Update user_class field to use #,#,# instead of #.#.#. notation
 		if ($sql->db_Select('user', 'user_id, user_class')) {
 			$sql2 = new db;
@@ -194,7 +208,7 @@ function update_61x_to_700($type) {
 		// FALSE = needed, TRUE = not needed.
 		//   $fields = mysql_list_fields($mySQLdefaultdb,MPREFIX."wmessage");
 		//    $columns = mysql_num_fields($fields);
-		return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."dblog");
+		return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."generic");
 		 
 	}
 }
