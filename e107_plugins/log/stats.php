@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-03-29 12:24:54 $
+|     $Revision: 1.16 $
+|     $Date: 2005-03-29 12:27:44 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -554,7 +554,7 @@ class siteStats {
 			$statQuery[$name] += $count;
 		}
 
-		if(!is_array($statQuery)) {
+		if(!is_array($statQuery) || !count($statQuery)) {
 			return "<div style='text-align: center;'>No statistics yet.</div>";
 		}
 
