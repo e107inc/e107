@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2004-12-11 01:34:36 $
+|     $Revision: 1.32 $
+|     $Date: 2004-12-11 02:15:31 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -344,6 +344,10 @@ $language = ($pref['sitelanguage'] ? $pref['sitelanguage'] : "English");
 define("e_LAN", $language);
 define("USERLAN", ($user_language && (strpos(e_SELF, $PLUGINS_DIRECTORY) !== FALSE || (strpos(e_SELF, $ADMIN_DIRECTORY) === FALSE && file_exists(e_LANGUAGEDIR.$user_language."/lan_".e_PAGE)) || (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE && file_exists(e_LANGUAGEDIR.$user_language."/admin/lan_".e_PAGE))) ? $user_language : FALSE));
 define("e_LANGUAGE", (!USERLAN || !defined("USERLAN") ? $language : USERLAN));
+@include(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.".php");
+foreach($pref as $key => $prefvalue) {
+	$pref[$key] = $tp->toFORM($prefvalue);
+}
 
 define("SITENAME", $pref['sitename']);
 define("SITEURL", (substr($pref['siteurl'], -1) == "/" ? $pref['siteurl'] : $pref['siteurl']."/"));
@@ -357,7 +361,6 @@ $search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "©");
 $replace = array("\"", "'", "\\", '\"', "\'", "&#169;");
 define("SITEDISCLAIMER", str_replace($search, $replace, $pref['sitedisclaimer']));
 
-@include(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.".php");
 
 if ($pref['maintainance_flag'] && ADMIN == FALSE && !eregi("admin", e_SELF)) {
 	@include(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitedown.php");
@@ -797,9 +800,9 @@ function init_session() {
 				exit;
 			}
 			$user_pref = unserialize($user_prefs);
-			foreach($pref as $key => $prefvalue) {
-				$pref[$key] = $tp->toFORM($prefvalue);
-			}
+//			foreach($pref as $key => $prefvalue) {
+//				$pref[$key] = $tp->toFORM($prefvalue);
+//			}
 			if (IsSet($_POST['settheme'])) {
 				$user_pref['sitetheme'] = ($pref['sitetheme'] == $_POST['sitetheme'] ? "" : $_POST['sitetheme']);
 				save_prefs($user);
