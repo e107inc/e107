@@ -332,8 +332,9 @@ class forum{
                                         }
                                         $text .= "</select>";
                                 }else{
+										$forum_heading = str_replace("&#39;", "\'", $forum_name);
                                         $text .= $rs -> form_button("submit", "main_edit_{$forum_id}", FORLAN_19, "onclick=\"document.location='".e_SELF."?cat.edit.$forum_id'\"")."
-                                        ".$rs -> form_button("submit", "main_delete_{$forum_id}", FORLAN_20, "onclick=\"confirm_('parent', $forum_id, '$forum_name')\"");
+                                        ".$rs -> form_button("submit", "main_delete_{$forum_id}", FORLAN_20, "onclick=\"confirm_('parent', $forum_id, '$forum_heading')\"");
                                 }
                                 $text .= "</td></tr>";
 
@@ -369,8 +370,9 @@ class forum{
                                                         $text .= "</select>";
                                                 }else{
 
+														$forum_heading = str_replace("&#39;", "\'", $forum_name);
                                                         $text .= $rs -> form_button("submit", "main_edit_{$forum_id}", FORLAN_19, "onclick=\"document.location='".e_SELF."?create.edit.$forum_id'\"")."
-                                                        ".$rs -> form_button("submit", "main_delete_{$forum_id}", FORLAN_20, "onclick=\"confirm_('forum', $forum_id, '$forum_name')\"");
+                                                        ".$rs -> form_button("submit", "main_delete_{$forum_id}", FORLAN_20, "onclick=\"confirm_('forum', $forum_id, '$forum_heading')\"");
                                                 }
                                                 $text .= "</td>\n</tr>";
                                         }
