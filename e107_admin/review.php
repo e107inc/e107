@@ -306,9 +306,13 @@ if($action == "create"){
         <tr>
         <td style='width:20%; vertical-align:top' class='forumheader3'>".REVLAN_51.":<br /><span class='smalltext'>(".REVLAN_52.")</span></td>
         <td style='width:80%' class='forumheader3'>
-        <input class='tbox' type='text' name='content_author' size='60' value='".($content_author ? $content_author : REVLAN_53)."' maxlength='100' ".($content_author ? "" : "onFocus=\"document.dataform.content_author.value='';\"")." /><br />
+        <a href=\"javascript:void(0);\" onclick=\"expandit(this);\" >".REVLAN_70."</a>\n
+        <span style=\"display: none;\" >
+		<br /><br />
+		<input class='tbox' type='text' name='content_author' size='60' value='".($content_author ? $content_author : REVLAN_53)."' maxlength='100' ".($content_author ? "" : "onFocus=\"document.dataform.content_author.value='';\"")." /><br />
         <input class='tbox' type='text' name='content_author_email' size='60' value='".($content_author_email ? $content_author_email : REVLAN_54)."' maxlength='100' ".($content_author_email ? "" : "onFocus=\"document.dataform.content_author_email.value='';\"")." /><br />
-        </td>
+        </span>
+		</td>
         </tr>
 
         <tr>
