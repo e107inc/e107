@@ -24,7 +24,7 @@ if(IsSet($_POST['updatesettings'])){
 	$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='emote' ");
 	$pref['smiley_activate'] = $_POST['smiley_activate'];
 	save_prefs();
-	header("location:emoticon.php?u");
+	header("location:".e_ADMIN."emoticon.php?u");
 	exit;
 }
 
@@ -41,7 +41,7 @@ if(IsSet($_POST['addemote'])){
 		$emote[count($emote)] = array($aj -> formtpa($_POST['emote_new_code']) => $_POST['emote_new_image']);
 		$tmp = addslashes(serialize($emote));
 		$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='emote' ");
-		header("location:emoticon.php?v");
+		header("location:".e_ADMIN."emoticon.php?v");
 		exit;
 	}
 }
@@ -58,7 +58,7 @@ if($tmp[0] == "del"){
  
 	$tmp = addslashes(serialize($emote));
 	$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='emote' ");
-	header("location:emoticon.php?w");
+	header("location:".e_ADMIN."emoticon.php?w");
 	exit;
 }
 

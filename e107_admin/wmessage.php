@@ -13,7 +13,7 @@
 +---------------------------------------------------------------+
 */
 require_once("../class2.php");
-if(!getperms("M")){ header("location:../index.php"); exit;}
+if(!getperms("M")){ header("location:".e_BASE."index.php"); exit;}
 require_once("auth.php");
 require_once(e_HANDLER."ren_help.php");
 $aj = new textparse;

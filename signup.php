@@ -163,7 +163,7 @@ if(IsSet($_POST['register'])){
         if(!$error){
                 $fp = new floodprotect;
                 if($fp -> flood("user", "user_join") == FALSE){
-                        header("location:index.php");
+                        header("location:".e_BASE."index.php");
                         exit;
                 }
 

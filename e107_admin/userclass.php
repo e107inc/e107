@@ -17,19 +17,19 @@ if(!getperms("4")){ header("location:".e_BASE."index.php"); exit;}
 require_once("auth.php");
 
 if(!e_QUERY){
-        header("location:admin.php");
+        header("location:".e_ADMIN."admin.php");
         exit;
 }else{
         $id = e_QUERY;
 }
 // Disallow editing of one's own userclass unless user-perms = 0
 if($id == 1 && !getperms("0")){
-    header("location:admin.php");
+    header("location:".e_ADMIN."admin.php");
     exit;
 }
 // Disallow editing of one's own userclass unless user-perms = 0  
 if ($id == USERID && !getperms("0")){
-header("location:admin.php");
+header("location:".e_ADMIN."admin.php");
     exit;
 }
 

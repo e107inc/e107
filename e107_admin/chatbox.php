@@ -54,7 +54,7 @@ if(IsSet($_POST['updatesettings'])){
         $pref['cb_layer_height'] = ($_POST['cb_layer_height'] ? $_POST['cb_layer_height'] : 200);
         $pref['cb_emote'] = $_POST['cb_emote'];
         save_prefs();
-        header("location:chatbox.php?u");
+        header("location:".e_ADMIN."chatbox.php?u");
         exit;
 }
 

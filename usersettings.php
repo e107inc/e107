@@ -1,30 +1,5 @@
 <?php
 
-if(IsSet($_POST['sub_news'])){
-        header("location:submitnews.php");
-        exit;
-}
-
-if(IsSet($_POST['sub_link'])){
-        header("location:links.php?submit");
-        exit;
-}
-
-if(IsSet($_POST['sub_download'])){
-        header("location:upload.php");
-        exit;
-}
-
-if(IsSet($_POST['sub_article'])){
-        header("location:subcontent.php?article");
-        exit;
-}
-
-if(IsSet($_POST['sub_review'])){
-        header("location:subcontent.php?review");
-        exit;
-}
-
 /*
 +---------------------------------------------------------------+
 |        e107 website system
@@ -38,13 +13,38 @@ if(IsSet($_POST['sub_review'])){
 |        GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
-require_once("class2.php");
 
+
+require_once("class2.php");
+if(IsSet($_POST['sub_news'])){
+        header("location:".e_BASE."submitnews.php");
+        exit;
+}
+
+if(IsSet($_POST['sub_link'])){
+        header("location:".e_BASE."links.php?submit");
+        exit;
+}
+
+if(IsSet($_POST['sub_download'])){
+        header("location:".e_BASE."upload.php");
+        exit;
+}
+
+if(IsSet($_POST['sub_article'])){
+        header("location:".e_BASE."subcontent.php?article");
+        exit;
+}
+
+if(IsSet($_POST['sub_review'])){
+        header("location:".e_BASE."subcontent.php?review");
+        exit;
+}
 if(!USER && !ADMIN){ header("location:".e_BASE."index.php"); exit; }
 require_once(e_HANDLER."ren_help.php");
 
 if(e_QUERY && !ADMIN){
-        header("location:usersettings.php");
+        header("location:".e_BASE."usersettings.php");
         exit;
 }
 $aj = new textparse;
