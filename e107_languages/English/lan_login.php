@@ -8,7 +8,7 @@ define("LAN_303", "Incorrect code entered.");
 define("LAN_LOGIN_1", "User name");
 define("LAN_LOGIN_2", "User password");
 define("LAN_LOGIN_3", "Protected server");
-define("LAN_LOGIN_4", "please enter your details to gain access");
+define("LAN_LOGIN_4", "Please enter your details to gain access.");
 define("LAN_LOGIN_5", "Click here to Sign-Up");
 define("LAN_LOGIN_6", "Not accepting new members at this time");
 define("LAN_LOGIN_7", "Enter visible code");

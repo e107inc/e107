@@ -26,15 +26,13 @@ if($use_imagecode){
 
 if(!USER){
 
-        echo "<div style='text-align:center' align='center'>";
+        echo "<div style='margin-right:0 auto;margin-left:0 auto'>";
         if(file_exists(THEME."images/login_logo.png")){
-                echo "<DIV STYLE=\"width:100%; filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(
-                src='".THEME."images/login_logo.png', sizingMethod='image');\" ></DIV>\n";
+                echo "<img src='".THEME."images/login_logo.png',>\n";
         } else{
-        echo "<DIV STYLE=\"width:100%; filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(
-        src='".$IMAGES_DIRECTORY."logo.png', sizingMethod='image');\" ></DIV>\n";
+        echo "<img src='".e_IMAGE."logo.png'>\n";
 }
-echo "</div><br />";
+echo "</div><div style='width:70%;margin-left: auto;margin-right: auto'>";
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 $text = "";
@@ -45,6 +43,11 @@ $text .= "
 <div style='text-align:center'>".
 $rs -> form_open("post", e_SELF)."
 <table class='fborder' style='width:30%'>
+<tr>
+<td class='forumheader' colspan='2' style='text-align:center;width:30%'>
+ <strong>".LAN_LOGIN_4."</strong>
+</td>
+	</tr>
 <tr>
 <td class='forumheader3' style='width:30%'>
 ".LAN_LOGIN_1."
@@ -68,7 +71,7 @@ $rs -> form_password("userpass", 40, "", 100)."
                 }
 
 $text .= "<tr>
-<td class='forumheader' colspan='2' style='text-align:center'>".
+<td class='forumheader2' colspan='2' style='text-align:center'>".
 $rs -> form_checkbox("autologin", "1")."<span class='smalltext'>".LAN_LOGIN_8."</span><br />".
 $rs -> form_button("submit", "userlogin", "Log In", "", "Click to login")."
 </td>
@@ -76,25 +79,21 @@ $rs -> form_button("submit", "userlogin", "Log In", "", "Click to login")."
 $rs -> form_close()."
 </div>";
 
-$login_message = "<center>".LAN_LOGIN_3." | ".SITENAME." | ".LAN_LOGIN_4."</center>";
-
-echo "<div style='text-align:center'><div align='center' style='text-align:center; width:75%'>";
-
+$login_message = "".LAN_LOGIN_3." | ".SITENAME."";
 $ns -> tablerender($login_message, $text);
-echo "</div></div>
-<div style='text-align:center'><br>";
+echo "<div style='width:70%;margin-right:auto;margin-left:auto'><div style='text-align:center'><br>";
 
 if($pref['user_reg']){
         echo "<a href='".e_SIGNUP."'>Signup</a>";
 }
-echo "&nbsp;&nbsp;&nbsp;<a href='fpw.php'>Forgot Password</a></div>";
+echo "&nbsp;&nbsp;&nbsp;<a href='fpw.php'>Forgot Password</a></div></div>";
 
 }else{
 header("location:".e_BASE."index.php");
 exit;
 }
 
-echo "</body>
+echo "</div></body>
 </html>";
 
 $sql -> db_Close();
