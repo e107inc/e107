@@ -13,9 +13,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.13 $
-| $Date: 2004-12-16 22:02:23 $
-| $Author: sweetas $
+| $Revision: 1.14 $
+| $Date: 2004-12-27 22:35:25 $
+| $Author: loloirie $
 +---------------------------------------------------------------+
 */
 
@@ -36,7 +36,7 @@ class news {
 				$message = LAN_NEWS_21;
 				$e107cache->clear("news.php");
 			} else {
-				$message = LAN_NEWS_5;
+				$message = "<strong>".LAN_NEWS_5."</strong>";
 			}
 		} else {
 			if ($sql->db_Insert("news", "0, '$news_title', '$news_body', '$news_extended', ".time().", ".USERID.", $cat_id, $news_allow_comments, $active_start, $active_end, '$news_class', '$news_rendertype' ")) {
@@ -44,7 +44,7 @@ class news {
 				$message = LAN_NEWS_6;
 				$e107cache->clear("news.php");
 			} else {
-				$message = LAN_NEWS_7;
+				$message = "<strong>".LAN_NEWS_7."</strong>";
 			}
 		}
 		$this->create_rss();
