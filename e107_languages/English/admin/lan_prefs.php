@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-02-23 03:22:42 $
+|     $Revision: 1.18 $
+|     $Date: 2005-02-23 12:25:17 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -173,4 +173,6 @@ define("PRFLAN_123", "Will display a what-you-see-is-what-you-get editor in text
 
 define("PRFLAN_124", "Use 'classic' nextprev look");
 define("PRFLAN_125", "Turning this on will show the nextprev pages as 1 2 3 ... 21 22 23, instead of the new look with the dropdown.");
+define("PRFLAN_126", "Text to display on signup page");
+
 ?>

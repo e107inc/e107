@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-02-23 03:22:13 $
+|     $Revision: 1.33 $
+|     $Date: 2005-02-23 12:24:52 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -467,7 +467,7 @@ $text .= "<div id='signup' style='display:none; text-align:center'>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>Text to display on signup page</td>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_126."</td>
 	<td style='width:50%' class='forumheader3'><textarea class='tbox' name='signup_text' cols='1' rows='5' style='width: 100%;'>".$pref['signup_text']."</textarea>
 	</tr>
 
