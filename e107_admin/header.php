@@ -34,10 +34,10 @@ if(file_exists(e_FILE."user.js")){echo "<script type='text/javascript' src='".e_
 
 $ns = new e107table;
 
-
 echo "<div style='text-align:center'>
 <img src='".e_IMAGE."adminlogo.png' alt='Logo' />
 <br />";
+
 if(ADMIN == TRUE){
 	$str = str_replace(".", "", ADMINPERMS);
 	if(ADMINPERMS == "0"){
@@ -58,9 +58,10 @@ echo "
 <td style='width:15%; vertical-align: top;'>";
 
 if(ADMIN == TRUE){
-	
+
 	if(!strstr(e_SELF, "/".$adminfpage) || strstr(e_SELF, "/".$adminfpage."?")){
 	$text = "<a href='".e_ADMIN.$adminfpage."'>".ADLAN_52."</a><br /><a href='".e_BASE."index.php'>".ADLAN_53."</a><br /><br />";
+
 	$text .= "º <a style='cursor: pointer; cursor: hand' onclick=\"expandit(this);\">".ADLAN_93."</a>
 	<div style='display: none;'>
 	<br />";
@@ -112,12 +113,12 @@ if(ADMINPERMS == "0"){
 		$text = "<div style='mediumtext; text-align:center'>".ADLAN_102." <a href='".e_ADMIN."updateadmin.php'>".ADLAN_103."</a></div>";
 		$ns -> tablerender(ADLAN_104, $text);
 	}
- }
+}
 
 $handle=opendir(e_ADMIN."help/");
 	$text = "";
 	while(false !== ($file = readdir($handle))){
-		if($file != "." && $file != ".."){
+		if($file != "." && $file != ".." && $file != "CVS"){
 			 if(eregi($file, e_SELF)){
 				require_once("help/".$file);
 			 }
