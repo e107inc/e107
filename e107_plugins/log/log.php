@@ -29,7 +29,7 @@ $browser = getBrowser($agent);
 $os = getOs($agent);
 
 $pageName = preg_replace("/(\?.*)|(\_.*)|(\.php)|(\s)|(\')(\")/", "", basename ($self));
-if(!trim(chop($pageName)))
+if(!trim(chop($pageName)) || $pageName == "'   eself   '")
 {
 	$pageName = "index";
 }
