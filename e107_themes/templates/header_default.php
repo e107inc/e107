@@ -64,7 +64,6 @@ echo "\nfor(i=0;i<(".$nbrpic."-1);i++){ preloadimages(i,listpics[i]); }
 </script>
 </head>
 <body>";
-$e107_popup = 0;
 //echo "XX - ".$e107_popup;
 // require $e107_popup =1; to use it as header for popup without menus
 if($e107_popup != 1){
