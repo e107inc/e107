@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/human_condition/theme.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-03-24 10:11:45 $
+|     $Revision: 1.9 $
+|     $Date: 2005-03-25 11:38:50 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,9 @@ if(!defined("e_THEME")){ exit; }
 // [theme]
 $themename = "human condition";
 $themeversion = "1.0";
-$themeauthor = "jalist";
+$themeauthor = "Steve Dunstan [jalist]";
+$themeemail = "jalist@e107.org";
+$themewebsite = "http://e107.org";
 $themedate = "19/01/2005";
 $themeinfo = "based on the Wordpress theme, <a href='http://wordpress.org'>http://wordpress.org</a>";
 define("STANDARDS_MODE", TRUE);
