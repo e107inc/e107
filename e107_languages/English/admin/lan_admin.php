@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-10-10 21:31:57 $
-|     $Author: loloirie $
+|     $Revision: 1.3 $
+|     $Date: 2004-12-04 07:14:48 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("ADLAN_0", "News");
@@ -149,5 +149,5 @@ define("ADLAN_130", "Files Management");
 define("ADLAN_131", "Other tools");
 
 define("ADLAN_132", "Language");
-define("ADLAN_133", "Choose default language or/and activate multilanguage");
+define("ADLAN_133", "default");
 ?>

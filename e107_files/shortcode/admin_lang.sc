@@ -1,22 +1,6 @@
-<?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/userlanguage_menu/userlanguage_menu.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-12-04 07:14:49 $
-|     $Author: e107coders $
-+----------------------------------------------------------------------------+
-*/
 
+        global $ns,$sql,$pref;
+    require_once(e_PLUGIN."userlanguage_menu/languages/".e_LANGUAGE.".php");
     $handle=opendir(e_LANGUAGEDIR);
     while ($file = readdir($handle)){
         if($file != "." && $file != ".." && $file != "/" && $file != "CVS" ){
@@ -29,14 +13,19 @@
     $text = "
     <div style='text-align:center'>
     <form method='post' action='".e_SELF."'>
-    <select name='sitelanguage' class='tbox'>";
+    <select name='sitelanguage' class='tbox'>
+    <option value=''>".$pref['sitelanguage']."</option>
+    ";
+
     sort($lanlist);
 
     foreach($lanlist as $langval){
         $langname = $langval;
         $langval = ($langval == $pref['sitelanguage']) ? "" : $langval;
-        $selected = ($langval == USERLAN) ? "selected='selected'" : "";
+        $selected = ($langval == $sql->mySQLlanguage) ? "selected='selected'" : "";
+        if(table_exists($langname)){
         $text .= "<option value='".$langval."' $selected>$langname</option>\n ";
+        }
     }
 
     $text .= "</select>
@@ -45,6 +34,6 @@
     </form>
     </div>";
 
+
 $ns -> tablerender(UTHEME_MENU_L2, $text);
 
-?>
