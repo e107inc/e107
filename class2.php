@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2004-12-10 00:54:15 $
-|     $Author: streaky $
+|     $Revision: 1.31 $
+|     $Date: 2004-12-11 01:34:36 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -440,8 +440,6 @@ define("SAFE_MODE", (ini_get('safe_mode') ? TRUE : FALSE));
 define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
 define("FILE_UPLOADS", (ini_get('file_uploads') ? TRUE : FALSE));
 define("INIT", TRUE);
-
-define("e_ADMIN", $e_BASE.$ADMIN_DIRECTORY);
 define("e_REFERER_SELF", ($_SERVER["HTTP_REFERER"] == e_SELF));
 
 if ($sql->db_Select('menus', '*', 'menu_location > 0 ORDER BY menu_order')) {
