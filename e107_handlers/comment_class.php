@@ -39,7 +39,7 @@ class comment{
                                 "<input class='button' type='submit' name='".$action."submit' value='".LAN_9."' />\n</td>\n</tr>\n</table>\n</form></div>";
                         $ns -> tablerender("", $text);
                 }else{
-                        echo "<br /><div style='text-align:center'><b>".LAN_6."</b></div>";
+                        echo "<br /><div style='text-align:center'><b>".LAN_6." <a href='".e_SIGNUP."'>".COMLAN_1."</a> ".COMLAN_2."</b></div>";
                 }
         }
 
@@ -256,7 +256,7 @@ class comment{
                                 }
                                 if(!defined("emessage")){
                                         if(!$sql -> db_Insert("comments", "0, '$pid', '$id', '$subject', '$nick', '', '".time()."', '$comment', '0', '$ip', '$type' ")){
-                                                echo LAN_11;
+                                                echo "<b>".COMLAN_3."</b> ".LAN_11;
                                         }else{
                                                 clear_cache("comment");
                                         }
