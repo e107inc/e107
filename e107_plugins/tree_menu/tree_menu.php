@@ -40,7 +40,7 @@ while($row = $sql -> db_Fetch()){
                         <div class='spacer'>
                         <div class='button' style='width:100%; cursor: pointer; cursor: hand' onclick='expandit(\"span_".$link_name."\");updatecook(\"".$link_name."\");' >";
 						($link_button!="" ? $textadd1b = "<img src='".e_IMAGE."link_icons/".$link_button."' alt='' style='vertical-align:middle;' />" : $textadd1b = "&raquo;" );
-						$textadd2 .= " <a href=\"javascript: void(0);\" >".$link_name."</a></div>
+						$textadd2 .= " <a href='javascript: void(0);'  style='text-decoration:none'>".$link_name."</a></div>
                         <span style=\"display:none\" id=\"span_".$link_name."\">";
                         $sublink_exist = 0;
 						while($row = $sql2 -> db_Fetch()){
