@@ -289,15 +289,14 @@ class download{
                         if($sql -> db_Select("upload", "*", "upload_id='$id' ")){
                                 $row = $sql-> db_Fetch();
                                 extract($row);
-                                                                $download_category = $upload_category;
-                                $download_name = $upload_name.($upload_version ? " - " . $upload_version : "");
+                                $download_category = $upload_category;
+                                $download_name = $upload_name.($upload_version ? " v" . $upload_version : "");
                                 $download_url = $upload_file;
                                 $download_author_email = $upload_email;
                                 $download_author_website = $upload_website;
                                 $download_description = $upload_description;
                                 $download_image = $upload_ss;
                                 $download_filesize = $upload_filesize;
-                                $file_array[] = $download_url;
                                 $image_array[] = $upload_ss;
                                 $download_author = substr($upload_poster, (strpos($upload_poster, ".")+1));
                         }
@@ -340,13 +339,19 @@ class download{
 
                 $counter = 0;
                 while(IsSet($file_array[$counter])){
-                        if(eregi($file_array[$counter],$download_url)){
-                                $text .= "<option selected>".$file_array[$counter]."</option>\n";
+
+                        if(eregi($download_url,$file_array[$counter])){
+                        $selected = " selected";
+                        $found = 1;
                         }else{
-                                $text .= "<option>".$file_array[$counter]."</option>\n";
+                        $selected = "";
                         }
+
+                        $text .= "<option $selected>".$file_array[$counter]."</option>\n";
                         $counter++;
                 }
+                $text .= (!$found)? "<option selected>".$download_url." -(file missing!)</option>\n":"";
+
                 $text .= "</select>
                 <br />
                 <span class='smalltext'> ".DOWLAN_14.": ";
