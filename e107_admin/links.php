@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-02-10 22:03:04 $
+|     $Revision: 1.23 $
+|     $Date: 2005-02-10 22:23:00 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -198,7 +198,7 @@ class links {
 
 		$handle = opendir(e_IMAGE."icons");
 		while ($file = readdir($handle)) {
-			if ($file != "." && $file != ".." && $file != "/") {
+			if ($file != "." && $file != ".." && $file != "/" && $file != "CVS") {
 				$iconlist[] = $file;
 			}
 		}
