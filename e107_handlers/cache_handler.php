@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2004-10-06 17:58:20 $
+|     $Revision: 1.5 $
+|     $Date: 2004-10-30 02:30:06 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -36,24 +36,8 @@ class ecache
 	function retrieve($query)
 	{
 		global $pref,$FILES_DIRECTORY;
-		if('1' == $pref['cachestatus'])  //Save to db
+		if($pref['cachestatus'])  //Save to file
 		{
-			global $sql;
-			if(!is_object($sql)){$sql = new db;}
-			$qry = $query."-".$this -> e107cache_page_md5();
-			if($sql -> db_Select("cache", "cache_data", "cache_url='$qry' "))
-			{
-				$row = $sql -> db_Fetch();
-				return "\n\n<!-- BEGIN CACHE DB: $query -->\n\n".stripslashes($row['cache_data'])."\n<!-- END CACHE DB: $query -->\n\n";
-			}
-			else
-			{
-				return FALSE;
-			}
-		}
-		if('2' == $pref['cachestatus'])  //Save to file
-		{
-
 			if($cache_file = $this -> cache_fname($query))
 			{
 				$ret = file_get_contents($cache_file);
@@ -71,14 +55,7 @@ class ecache
 	function set($query, $text)
 	{
 		global $pref,$FILES_DIRECTORY;
-		if('1' == $pref['cachestatus'])
-		{
-			global $sql;
-			$query = $query."-".$this -> e107cache_page_md5();
-			if(!is_object($sql)){$sql = new db;}
-			$sql -> db_Insert("cache", "'$query', '".time()."', '".mysql_escape_string($text)."' ");
-		}
-		if('2' == $pref['cachestatus'])
+		if($pref['cachestatus'])
 		{
 			$cache_file = $this -> cache_fname($query);
 			file_put_contents($cache_file, "<?php\n<!-- BEGIN CACHE FILE: $query -->\n\n".$text."\n\n<!-- END CACHE FILE: $query -->");
@@ -89,13 +66,7 @@ class ecache
 	function clear($query)
 	{
 		global $pref,$FILES_DIRECTORY;
-		if('1' == $pref['cachestatus'] || !$query)
-		{
-			global $sql;
-			if(!is_object($sql)){$sql = new db;}
-			$ret = $sql -> db_Delete("cache", "cache_url LIKE '%".$query."%' ");
-		}
-		if('2' == $pref['cachestatus'] || !$query)
+		if($pref['cachestatus'] || !$query)
 		{
 			$file = ($query) ? preg_replace("#\W#","_",$query)."*.cache.php" : "*.cache.php";
 			$dir = "./".e_BASE.$FILES_DIRECTORY."cache/";

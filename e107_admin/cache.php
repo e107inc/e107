@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cache.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:10:20 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2004-10-30 02:30:06 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -21,7 +21,10 @@ if(!getperms("0")){ header("location:".e_BASE."index.php"); exit; }
 require_once("auth.php");
 require_once(e_HANDLER."cache_handler.php");
 $ec = new ecache;
-
+if($pref['cachestatus'] == '2')
+{
+	$pref['cachestatus'] = '1';
+}	
 if(IsSet($_POST['submit_cache'])){
         $pref['cachestatus'] = $_POST['cachestatus'];
         save_prefs();
@@ -53,15 +56,8 @@ $text .=CACLAN_7."
 
 <tr>
 <td style='width:98%' class='forumheader3'>";
-$text .= ('1' == $pref['cachestatus']) ? "<input class='tbox' type='radio' name='cachestatus' value='1' checked='checked' />" : "<input type='radio' name='cachestatus' value='1' />";
-$text .=CACLAN_8."
-</td>
-</tr>
-
-<tr>
-<td style='width:98%' class='forumheader3'>";
 if(is_writable(e_FILE."cache")){
-        $text .= ('2' == $pref['cachestatus']) ? "<input class='tbox' type='radio' name='cachestatus' value='2' checked='checked' />" : "<input type='radio' name='cachestatus' value='2' />";
+        $text .= ('1' == $pref['cachestatus']) ? "<input class='tbox' type='radio' name='cachestatus' value='1' checked='checked' />" : "<input type='radio' name='cachestatus' value='1' />";
         $text .= CACLAN_9;
 } else {
         $text .= CACLAN_9."<br /><br /><b>".CACLAN_10."</b>";
