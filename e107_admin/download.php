@@ -469,6 +469,23 @@ class download{
 
                 $text .= "</td>
                 </tr>
+					
+
+                <tr>
+                <td style='width:20%' class='forumheader3'>".DOWLAN_102.":</td>
+                <td style='width:80%' class='forumheader3'>";
+
+
+                if($download_comment == "0"){
+                        $text .= DOWLAN_22.": <input type='radio' name='download_comment' value='1'>
+                        ".DOWLAN_23.": <input type='radio' name='download_comment' value='0' checked>";
+                }else{
+                        $text .= DOWLAN_22.": <input type='radio' name='download_comment' value='1' checked>
+                        ".DOWLAN_23.": <input type='radio' name='download_comment' value='0'>";
+                }
+
+                $text .= "</td>
+                </tr>
                 <tr style='vertical-align:top'>
                 <td colspan='2' style='text-align:center' class='forumheader'>";
 
@@ -518,11 +535,11 @@ class download{
                 $_POST['download_description'] = $aj -> formtpa($_POST['download_description'], "admin");
 
                 if($id){
-                        $sql -> db_Update("download", "download_name='".$_POST['download_name']."', download_url='".$durl."', download_author='".$_POST['download_author']."', download_author_email='".$_POST['download_author_email']."', download_author_website='".$_POST['download_author_website']."', download_description='".$_POST['download_description']."', download_filesize='".$filesize."', download_category='".$_POST['download_category']."', download_active='".$_POST['download_active']."', download_datestamp='".time()."', download_thumb='".$_POST['download_thumb']."', download_image='".$_POST['download_image']."' WHERE download_id=$id");
+                        $sql -> db_Update("download", "download_name='".$_POST['download_name']."', download_url='".$durl."', download_author='".$_POST['download_author']."', download_author_email='".$_POST['download_author_email']."', download_author_website='".$_POST['download_author_website']."', download_description='".$_POST['download_description']."', download_filesize='".$filesize."', download_category='".$_POST['download_category']."', download_active='".$_POST['download_active']."', download_datestamp='".time()."', download_thumb='".$_POST['download_thumb']."', download_image='".$_POST['download_image']."', download_comment='".$_POST['download_comment']."' WHERE download_id=$id");
                         $this->show_message(DOWLAN_2);
                 }else{
 
-                        $sql -> db_Insert("download", "0, '".$_POST['download_name']."', '".$durl."', '".$_POST['download_author']."', '".$_POST['download_author_email']."', '".$_POST['download_author_website']."', '".$_POST['download_description']."', '".$filesize."', '0', '".$_POST['download_category']."', '".$_POST['download_active']."', '".time()."', '".$_POST['download_thumb']."', '".$_POST['download_image']."' ");
+                        $sql -> db_Insert("download", "0, '".$_POST['download_name']."', '".$durl."', '".$_POST['download_author']."', '".$_POST['download_author_email']."', '".$_POST['download_author_website']."', '".$_POST['download_description']."', '".$filesize."', '0', '".$_POST['download_category']."', '".$_POST['download_active']."', '".time()."', '".$_POST['download_thumb']."', '".$_POST['download_image']."', '".$_POST['download_comment']."' ");
                         $this->show_message(DOWLAN_1);
                 }
         }

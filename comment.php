@@ -61,7 +61,10 @@ if(IsSet($_POST['replysubmit'])){
 		}elseif($table == "bugtrack"){
 			header("location:".e_PLUGIN."bugtracker/bugtracker.php");
 			exit;
-		}								
+		}elseif($table == "download"){
+			header("location:".e_BASE."download.php?view.".$nid."");
+			exit;		
+		}
 	}
 }
 if($action == "reply"){
