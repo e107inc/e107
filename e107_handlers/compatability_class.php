@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/compatability_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-11-27 13:19:31 $
+|     $Revision: 1.2 $
+|     $Date: 2004-11-27 14:40:18 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -21,8 +21,8 @@
 /**
  * Provides missing functionality in the form of constants and functions for older versions of PHP, and optionally to make old plugins compatable with new e107 versions.
  *
- * @package     PHP_Compat
- * @version     $Revision: 1.1 $
+ * @package     e107
+ * @version     $Revision: 1.2 $
  * @author      Author: streaky
  */
 class e107Compat {
