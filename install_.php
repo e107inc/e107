@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-02-19 21:23:34 $
-|     $Author: e107coders $
+|     $Revision: 1.17 $
+|     $Date: 2005-03-17 08:22:12 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 @include("e107_handlers/errorhandler_class.php");
@@ -480,10 +480,14 @@ function create_tables() {
 	$welcome_message = str_replace($search, $replace, $welcome_message);
 	$datestamp = time();
 
-	mysql_query("INSERT INTO ".$mySQLprefix."content VALUES (0, '$article_heading', '$article_subheading', '$article', '$datestamp', 0, 0) ");
-	mysql_query("INSERT INTO ".$mySQLprefix."news VALUES (0, 'Welcome to e107', '$welcome_message', '', '$datestamp', '0', '1', 1, 0, 0, 0, 0) ");
+	
+	mysql_query("INSERT INTO ".$mySQLprefix."news VALUES (0, 'Welcome to e107', '$welcome_message', '', '$datestamp', '0', '1', 1, 0, 0, 0, 0, '0', '', '', 0) ");
+
+
+
+
 	mysql_query("INSERT INTO ".$mySQLprefix."news_category VALUES (0, 'Misc', 'icon5.png') ");
-	mysql_query("INSERT INTO ".$mySQLprefix."poll VALUES (0, '$datestamp', 0, 1, 'So what do you think of e107?', 'I&#39;m not impressed', 'It&#39;s not bad but I&#39;ve seen better', 'It&#39;s good', 'I love it!', 'Grah I hate polls', 'What&#39;s e107 anyway?', '', '', '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 1) ");
+	
 	mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Home', 'index.php', '', '', 1, 1, 0, 0, 0) ");
 	mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Forum', 'forum.php', '', '', 1, 2, 0, 0, 0) ");
 	mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Downloads', 'download.php', '', '', 1, 3, 0, 0, 0) ");
@@ -495,7 +499,7 @@ function create_tables() {
 
 	$e107['e107_author'] = "Steve Dunstan (jalist)";
 	$e107['e107_url'] = "http://e107.org";
-	$e107['e107_version'] = "v0.617";
+	$e107['e107_version'] = "v0.7CVS";
 	$e107['e107_build'] = "";
 	$e107['e107_datestamp'] = time();
 	$tmp = serialize($e107);
@@ -516,31 +520,11 @@ function create_tables() {
 	mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('menu_pref', '$menu_conf') ");
 
 	mysql_query("INSERT INTO ".$mySQLprefix."banner VALUES (0, 'e107', 'e107login', 'e107password', 'e107.jpg', 'http://e107.org', 0, 0, 0, 0, 0, 0, '', 'campaign_one') ");
-	mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES ('1', 'This text (if activated) will appear at the top of your front page all the time.', '0')");
-	mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES ('2', 'Member message ----- This text (if activated) will appear at the top of your front page all the time - only logged in members will see this.', '0')");
-	mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES ('3', 'Administrator message ----- This text (if activated) will appear at the top of your front page all the time - only logged in administrators will see this.', '0')");
 
-	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'login_menu', 1, 1, 0, '')");
-	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'search_menu', 0, 0, 0, '')");
-	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'sitebutton_menu', 1, 4, 0, '')");
-	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'online_menu', 1, 5, 0, '')");
-	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'compliance_menu', 1, 6, 0, '')");
-	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'clock_menu', 2, 1, 0, '')");
-	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'poll_menu', 2, 4, 0, '')");
-	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'headlines_menu', 2, 5, 0, '')");
-	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'counter_menu', 2, 6, 0, '')");
-	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'powered_by_menu', 2, 7, 0, '')");
-	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'rss_menu', 2, 8, 0, '')");
-	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'admin_menu', 0, 0, 0, '')");
-	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'banner_menu', 0, 0, 0, '')");
-	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'comment_menu', 0, 0, 0, '')");
-	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'newforumposts_menu', 0, 0, 0, '')");
-	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'tree_menu', 0, 0, 0, '')");
-	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'userlanguage_menu', 0, 0, 0, '')");
-	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'usertheme_menu', 0, 0, 0, '')");
-	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'blogcalendar_menu', 0, 0, 0, '')");
-	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'online_extended_menu', 0, 0, 0, '')");
-	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'other_news_menu', 0, 0, 0, '')");
+	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'login_menu', 1, 1, 0, '', 'login_menu')");
+	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'rss_menu', 2, 2, 0, '', 'rss_menu')");
+	mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'online_menu', 2, 1, 0, '', 'online_menu')");
+
 
 	mysql_query("INSERT INTO ".$mySQLprefix."userclass_classes VALUES (1, 'PRIVATEMENU', 'Grants access to private menu items')");
 	mysql_query("INSERT INTO ".$mySQLprefix."userclass_classes VALUES (2, 'PRIVATEFORUM1', 'Example private forum class')");

@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_install.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:11:56 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-03-17 08:22:12 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -67,11 +67,11 @@ define("INSLAN52", "e107 has been successfully installed!<br />For security reas
 define("INSLAN53", "Click here to go to your new website!");
 define("INSLAN54", "Unable to read the sql datafile<br /><br />Please ensure the file <b>core_sql.php</b> exists in the <b>/e107_admin/sql</b> directory.");
 define("INSLAN55", "e107 was unable to create all of the required database tables.<br />Please clear the database and rectify any problems before trying again.");
-define("INSLAN56", "Welcome to your new website!");
+define("INSLAN56", "Welcome to your new website!\n");
 
-define("INSLAN57", "e107 has installed successfully and is now ready to accept content.");
+define("INSLAN57", "e107 has installed successfully and is now ready to accept content.\n");
 define("INSLAN58", "you will find the FAQ and documentation here.");
-define("INSLAN59", "Thankyou for trying e107, we hope it fulfills your website needs.\n(You can delete this message from your admin section.)");
+define("INSLAN59", "Thankyou for trying e107, we hope it fulfills your website needs.\n(You can delete this message from your admin section.)\n\n<b>Please note this version of e107 is a beta version and is not intended to be used on live websites.</b>");
 define("INSLAN60", "tick to create");
 define("INSLAN61", "folder");
 define("INSLAN62", "or");
