@@ -24,14 +24,17 @@
 function sitelinks() {
 	global $pref, $ns, $tp, $sql, $sql2, $ml, $e107cache;
 
-	if (!is_object($sql)) {
-		$sql = new db;
-	}
-	if (!is_object($sql2)) {
-		$sql2 = new db;
-	}
-
 	if (!$data = $e107cache->retrieve('sitelinks')) {
+
+		ob_start();
+		
+		if (!is_object($sql)) {
+			$sql = new db;
+		}
+		if (!is_object($sql2)) {
+			$sql2 = new db;
+		}
+
 		if (LINKDISPLAY == 4) {
 			require_once(e_PLUGIN.'ypslide_menu/ypslide_menu.php');
 			return;
@@ -131,15 +134,17 @@ function sitelinks() {
 			$ns->tablerender(LAN_183, $text);
 		} else {
 			if (LINKDISPLAY != 3) {
-				$data = $text;
+				echo $text;
 			}
 		}
 		if (LINKDISPLAY == 3) {
 			$ns->tablerender(LAN_183, $menu_main);
 			foreach($link_menu as $m) {
-				$data = $m;
+				echo $m;
 			}
 		}
+		$data = ob_get_contents();
+		ob_clean();
 		$e107cache->set('sitelinks', $data);
 	}
 	echo $data;
