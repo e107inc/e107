@@ -49,6 +49,7 @@ if(IsSet($_POST['addemote'])){
 $tmp = explode(".", e_QUERY);
 
 if($tmp[0] == "del"){
+	if(!e_REFERER_SELF){exit;}
         unset($emote[$tmp[1]]);
 
  //Fix Thermo to allow emote deletion
@@ -61,9 +62,6 @@ if($tmp[0] == "del"){
         header("location:".e_ADMIN."emoticon.php?w");
         exit;
 }
-
-
-
 
 require_once("auth.php");
 
