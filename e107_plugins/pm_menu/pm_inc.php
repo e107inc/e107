@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm_menu/pm_inc.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-02-08 15:57:01 $
+|     $Revision: 1.6 $
+|     $Date: 2005-02-08 16:13:16 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -44,11 +44,10 @@ function pm_show_icon($to_id, $pm_icon = "") {
 }
 
 function pm_get_stats($user = USERNAME, $time = USERLV) {
-	global $pm_stat_store, $pm_stored_stat_user, $pm_stored_stat_time;
+	global $pm_stat_store, $pm_stored_stat_user, $pm_stored_stat_time, $sql;
 	if ($user == $pm_stored_stat_user && $time == $pm_stored_stat_time) {
 		return $pm_stat_store;
 	}
-	$sql = new db;
 	$ret['new'] = $sql->db_Count("pm_messages", "(*)", "WHERE pm_to_user = '{$user}' AND pm_sent_datestamp > {$time}  ");
 	$ret['received'] = $sql->db_Count("pm_messages", "(*)", "WHERE pm_to_user = '{$user}' ");
 	$ret['unread_rcv_pm'] = $sql->db_Count("pm_messages", "(*)", "WHERE pm_to_user = '{$user}' AND pm_rcv_datestamp = 0");
@@ -66,7 +65,6 @@ function pm_show_stats($no_show_br = 0) {
 	global $pref;
 	$pmstats = pm_get_stats();
 	if (USER == TRUE || ADMIN == TRUE) {
-		$pm_sql = new db;
 		$time = USERLV;
 		$text = (!$no_show_br) ? "<br /><br />" : "";
 		if ($pmstats['unread_rcv_pm'] > 0) {
