@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-01-29 00:54:38 $
-|     $Author: mrpete $
+|     $Revision: 1.15 $
+|     $Date: 2005-02-13 08:33:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 global $eTraffic,$db_time,$sql, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $CUSTOMFOOTER, $FOOTER;
@@ -39,7 +39,7 @@ if($e107_popup!=1){
 
         if($pref['displayrendertime']){ $rinfo .= "Render time: ".$rendertime." second(s); ".$db_time." of that for queries. "; }
         if($pref['displaysql']){ $rinfo .= "DB queries: ".$sql -> db_QueryCount().". "; }
-        if($pref['displaycacheinfo']){ $rinfo .= $cachestring."."; }
+        if(isset($pref['displaycacheinfo']) && $pref['displaycacheinfo']){ $rinfo .= $cachestring."."; }
         echo ($rinfo ? "\n<div style='text-align:center' class='smalltext'>$rinfo</div>\n" : "");
         if (ADMIN && E107_DEBUG_LEVEL) {
                 global $db_debug,$ns;
