@@ -21,8 +21,6 @@ if(!$pref['upload_enabled'] || $pref['upload_class'] == 255){
 
 require_once(HEADERF);
 
-
-
 if($pref['upload_class'] == 254 && !USER){
 	$text = "<div style='text-align:center'>".LAN_402."</div>";
 	$ns -> tablerender(LAN_20, $text);
@@ -34,7 +32,6 @@ if($pref['upload_class'] == 254 && !USER){
 	require_once(FOOTERF);				
 	exit;
 }
-
 
 if(IsSet($_POST['upload'])){
 	if(($_POST['file_email'] || USER==TRUE) && $_POST['file_name'] && $_POST['file_description']){ 
@@ -59,6 +56,7 @@ if(IsSet($_POST['upload'])){
 			if(is_array($uploaded)){
 				$poster = (USER ? USERID.".".USERNAME : "0".$_POST['file_poster']);
 				$_POST['file_email'] = ($_POST['file_email'] ? $_POST['file_email'] : USEREMAIL);
+				$_POST['file_description'] = $aj -> formtpa($_POST['file_description'], "public");
 				$sql -> db_Insert("upload", "0, '$poster', '".$_POST['file_email']."', '".$_POST['file_website']."', '".time()."', '".$_POST['file_name']."', '".$_POST['file_version']."', '".$file."', '".$image."', '".$_POST['file_description']."', '".$_POST['file_demo']."', '".$filesize."', 0");
 				$message .= "<br />".LAN_404;
 			}

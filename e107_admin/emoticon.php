@@ -81,15 +81,16 @@ $text .= "
 </tr>
 <tr> 
 <td rowspan='".count($emote)."' class='forumheader3' style='vertical-align:top'>".EMOLAN_5."</td>";
-$c=0;
-while(list($short, $name) = @each($emote[$c])){
-	$text .= "
-	<td style='width:20%; text-align:center' class='forumheader3'><input class='tbox' type='text' name='emote_code[]' size='15' value='$short' maxlength='20' /></td>
-	<td style='width:20%; text-align:center' class='forumheader3'><input class='tbox' type='text' name='emote_text[]' size='15' value='$name' maxlength='20' /></td>
-	<td style='width:10%; text-align:center' class='forumheader3'><img src='".e_IMAGE."emoticons/$name' alt='' style='vertical-align:absmiddle' /></td>
-	<td style='width:30%' class='forumheader3'>[ <a href='".e_SELF."?del.$c'>".EMOLAN_6."</a> ]</td>
-	</tr>";
-	$c++;
+foreach ($emote as $c => $value){
+	while(list($short, $name) = @each($emote[$c])){
+		$text .= "
+		<td style='width:20%; text-align:center' class='forumheader3'><input class='tbox' type='text' name='emote_code[]' size='15' value='$short' maxlength='20' /></td>
+		<td style='width:20%; text-align:center' class='forumheader3'><input class='tbox' type='text' name='emote_text[]' size='15' value='$name' maxlength='20' /></td>
+		<td style='width:10%; text-align:center' class='forumheader3'><img src='".e_IMAGE."emoticons/$name' alt='' style='vertical-align:absmiddle' /></td>
+		<td style='width:30%' class='forumheader3'>[ <a href='".e_SELF."?del.$c'>".EMOLAN_6."</a> ]</td>
+		</tr>";
+		$c++;
+	}
 }
 $text .= "<tr> 
 <td colspan='5' style='text-align:center' class='forumheader'>

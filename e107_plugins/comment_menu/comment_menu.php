@@ -42,7 +42,7 @@ if($sql -> db_Select("cache", "*", "cache_url='newcomments' ")){
 				$message_array = explode(" ", $comment_comment);
 				for($i=0; $i<=(count($message_array)-1); $i++){
 					if(strlen($message_array[$i]) > 20){
-						$message_array[$i] = preg_replace("/([^\s]{20})/", "$1<br />", $message_array[$i]);
+						$message_array[$i] = wordwrap( $message_array[$i], $pref['cb_wordwrap'], "\n", 1);
 					}
 				}
 				$comment_comment = implode(" ", $message_array);
@@ -59,7 +59,7 @@ if($sql -> db_Select("cache", "*", "cache_url='newcomments' ")){
 					if($menu_pref['comment_title']) {
 						$text .= "<br /> [ Re: <i>$news_title</i> ]";
 					}
-					$text .= "<br />$comment_comment<br /><br /><br />";
+					$text .= "<br />$comment_comment<br /><br />";
 				}
 			}
 			if($comment_type == "1"){
@@ -69,11 +69,11 @@ if($sql -> db_Select("cache", "*", "cache_url='newcomments' ")){
 					list($article_title) = $sql2->db_Fetch();
 					$text .= "<br /> [ Re: <i>$article_title</i> ]";
 				} 
-				$text .= "<br />$comment_comment <br /><br /><br />";
+				$text .= "<br />$comment_comment <br /><br />";
 			}
 			if($comment_type_ == "2"){
 					//This code is not tested... [edwin]
-				$text .= "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".e_BASE."download_comment.php?$comment_item_id_.'>download - <b>".$poster."</b> on ".$datestamp."</a><br />".$comment_comment."<br /><br /><br />";
+				$text .= "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".e_BASE."download_comment.php?$comment_item_id_.'>download - <b>".$poster."</b> on ".$datestamp."</a><br />".$comment_comment."<br /><br />";
 			}
 		}
 

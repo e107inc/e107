@@ -381,7 +381,7 @@ $ns -> tablerender("Forums", $text);
 $text = "<div style='text-align:center'>
 <table style='width:95%' class='fborder'>
 <tr>
-<td colspan='2' style='width:70%; text-align:center' class='fcaption'>".LAN_46."</td>
+<td colspan='2' style='width:70%; text-align:center' class='fcaption'>".FORLAN_28."</td>
 <td style='width:30%; text-align:center' class='fcaption'>".FORLAN_37."</td>
 </tr>";
 
@@ -403,7 +403,7 @@ if(!$sql -> db_Select("forum", "*", "forum_parent='0' ORDER BY forum_order ASC")
 		$text .= "<td class='forumheader' style='text-align:center'>\n<select name='activate' onChange='urljump(this.options[selectedIndex].value)' class='tbox'>\n<option value='forum.php' selected></option>\n<option value='forum.php?inc.".$forum_id.".".$forum_order."'>move up</option>\n<option value='forum.php?dec.".$forum_id.".".$forum_order."'>move down</option>\n</select>\n</td></tr>";
 		$forums = $sql2 -> db_Select("forum", "*", "forum_parent='".$forum_id."' ORDER BY forum_order ASC");
 		if($forums == 0){
-			$text .= "<td colspan='4' style='text-align:center' class='forumheader3'>".LAN_52."</td>";
+			$text .= "<td colspan='4' style='text-align:center' class='forumheader3'>".FORLAN_29."</td>";
 		}else{
 			while($row = $sql2-> db_Fetch()){
 				extract($row);

@@ -12,4 +12,8 @@ define("LAN_313", "Please choose which list you wish to display ...");
 define("LAN_398", "No summary.");
 define("LAN_399", "Rating");
 
+define("LAN_400", "Inactive page");
+define("LAN_401", "This page is inactive and cannot be shown.");
+
+
 ?>

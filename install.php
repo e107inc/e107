@@ -442,8 +442,8 @@ function create_tables(){
 
 	$e107['e107_author'] = "Steve Dunstan (jalist)";
 	$e107['e107_url'] = "http://e107.org";
-	$e107['e107_version'] = "v0.600beta";
-	$e107['e107_build'] = "";
+	$e107['e107_version'] = "v0.601";
+	$e107['e107_build'] = "0";
 	$e107['e107_datestamp'] = time();
 	$tmp = serialize($e107);
 	mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('e107', '$tmp') ");
@@ -496,6 +496,7 @@ function create_tables(){
 	$pref['forum_title'] = "Forums";
 	$pref['forum_postspage'] = "10";
 	$pref['user_tracking'] = "cookie";
+	$pref['cookie_name'] = "e107cookie";
 	$pref['resize_method'] = "gd2";
 	$pref['im_path'] = "/usr/X11R6/bin/convert";
 	$pref['im_quality'] = "80";

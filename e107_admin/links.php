@@ -189,12 +189,13 @@ $text .= "<span class='twelvept'> [ <a href='link_category.php'>".LCLAN_14."</a>
 <tr>
 <td style='width:30%' class='forumheader3'>".LCLAN_19.": </td>
 <td style='width:70%' class='forumheader3'>
-<select name='linkopentype' class='tbox'>
-<option value='0' selected>".LCLAN_20."</option>
-<option value='1'>".LCLAN_21."</option>
-<option value='2'>".LCLAN_22."</option>
-<option value='3'>".LCLAN_23."</option>
-<option value='4'>".LCLAN_24."</option>
+<select name='linkopentype' class='tbox'>".
+($link_open == 0 ? "<option value='0' selected>".LCLAN_20."</option>" : "<option value='0'>".LCLAN_20."</option>").
+
+($link_open == 1 ? "<option value='1' selected>".LCLAN_21."</option>" : "<option value='1'>".LCLAN_21."</option>").
+($link_open == 2 ? "<option value='2' selected>".LCLAN_22."</option>" : "<option value='2'>".LCLAN_22."</option>").
+($link_open == 3 ? "<option value='3' selected>".LCLAN_23."</option>" : "<option value='3'>".LCLAN_23."</option>").
+($link_open == 4 ? "<option value='4' selected>".LCLAN_24."</option>" : "<option value='4'>".LCLAN_24."</option>")."
 </select>
 </td>
 </tr>

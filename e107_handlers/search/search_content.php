@@ -1,7 +1,7 @@
 <?php
 // search module for articles.
 
-if($results = $sql -> db_Select("content", "*", "content_type=1 AND (content_heading REGEXP('".$query."') OR content_subheading REGEXP('".$query."') OR content_content REGEXP('".$query."')) ")){
+if($results = $sql -> db_Select("content", "*", "content_type=1 AND content_class!=255 AND (content_heading REGEXP('".$query."') OR content_subheading REGEXP('".$query."') OR content_content REGEXP('".$query."')) ")){
 	while(list($content_id, $content_heading, $content_subheading, $content_content, $content_datestamp, $content_author, $content_comment) = $sql -> db_Fetch()){
 		$content_heading_ = parsesearch($content_heading, $query);
 		if(!$content_heading_){

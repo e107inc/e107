@@ -19,7 +19,7 @@ echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
   <head>
     <title><?php echo $sitename; ?></title>
     <link rel="stylesheet" href="<?php echo THEME; ?>style.css" />
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=<?php echo CHARSET; ?>" />
     <meta http-equiv="content-style-type" content="text/css" />
     <script type="text/javascript">
       <!--

@@ -14,7 +14,7 @@
 */
 require_once("class2.php");
 
-$qs = explode("-", e_QUERY);
+$qs = explode("^", e_QUERY);
 
 if(!$qs[0] || USER == FALSE){
 	header("location:".e_BASE."index.php");

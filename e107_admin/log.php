@@ -35,6 +35,7 @@ if(IsSet($_POST['wipe'])){
 	
 	if(IsSet($_POST['log_wipe_info'])){
 		$sql -> db_Delete("stat_info", "");
+		$sql -> db_Delete("stat_last", "");
 	}
 	if(IsSet($_POST['log_wipe_counter'])){
 		$sql -> db_Delete("stat_counter", "");

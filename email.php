@@ -46,15 +46,11 @@ if(IsSet($_POST['emailsubmit'])){
 		$message .= $_POST['comment']."\n\n".SITEURL.e_BASE."article.php?".$id."\n\n".$content_heading."\n".$content_subheading."\n".$content_content."\n\n";
 	}
 	if($error == ""){
-		if(file_exists(e_BASE."plugins/smtp.php")){
-			require_once(e_BASE."plugins/smtp.php");
-			smtpmail($_POST['email_send'], "News item from ".SITENAME, $message, "From: newssend@".SITENAME."\r\n"."Reply-To: ".NULL ."\r\n"."X-Mailer: PHP/" . phpversion());
+		require_once(e_HANDLER."mail.php");
+		if(sendemail($_POST['email_send'], "News item from ".SITENAME, $message)){
+			$text = "<div class='center'>".LAN_10." ".$_POST['email_send']."</div>";
 		}else{
-			if(@mail($_POST['email_send'], "News item from ".SITENAME, $message, "From: newssend@".SITENAME."\r\n"."Reply-To: ".NULL ."\r\n"."X-Mailer: PHP/" . phpversion())){
-				$text = "<div class='center'>".LAN_10." ".$_POST['email_send']."</div>";
-			}else{
-				$text = "<div class='center'>".LAN_9."</div>";
-			}
+			$text = "<div class='center'>".LAN_9."</div>";
 		}
 		$ns -> tablerender(LAN_11, $text);
 	}else{

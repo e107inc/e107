@@ -133,6 +133,7 @@ $MODERATORS = LAN_321.$forum_moderators;
 $THREADSTATUS = (!$thread_active ? LAN_66 : "");
 
 $replies = $sql -> db_Count("forum_t", "(*)", "WHERE thread_parent='".$thread_id."'");
+$pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
 $pages = ceil($replies/$pref['forum_postspage']);
 if($pages>1){
 	$currentpage = ($from/$pref['forum_postspage'])+1;

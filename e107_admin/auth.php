@@ -29,9 +29,9 @@ if(ADMIN){
 			$sql -> db_Select("user", "*", "user_name='".$_POST['authname']."'");
 			list($user_id, $user_name, $userpass) = $sql-> db_Fetch();
 			if($pref['tracktype'] == "session"){
-				$_SESSION['userkey'] = $user_id.".".$userpass;
+				$_SESSION[$pref['cookie_name']] = $user_id.".".$userpass;
 			}else{
-				setcookie('userkey', $user_id.".".$userpass, time()+3600*24*30, '/', '', 0);
+				setcookie($pref['cookie_name'], $user_id.".".$userpass, time()+3600*24*30, '/', '', 0);
 			}
 			echo "<script type='text/javascript'>document.location.href='admin.php'</script>\n";
 		}

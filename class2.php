@@ -45,7 +45,6 @@ for($i=1;$i<=$num_levels;$i++){
 	$link_prefix.="../";
 }
 
-define('e_BASE', $link_prefix);
 define("e_SELF", "http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);
 define("e_QUERY", eregi_replace("&|/?PHPSESSID.*", "", $_SERVER['QUERY_STRING']));
 define('e_BASE',$link_prefix);
@@ -61,17 +60,6 @@ define("e_DOCROOT",$_SERVER['DOCUMENT_ROOT']."/");
 define("e_UC_PUBLIC", 0);
 define("e_UC_MEMBER", 254);
 define("e_UC_NOBODY", 255);
-
-/*
-echo "\$tmpr: ".$tmpr."<br />";
-echo "\$root: ".$root."<br />";
-echo "realpath(\$root): ".realpath($root)."<br />";
-echo "\$url_prefix: ".$url_prefix."<br />";
-echo "\$mod_userdir: ".$mod_userdir."<br />";
-echo "e_BASE: ".e_BASE."<br />";
-echo "\$_SERVER['PHP_SELF']: ".$_SERVER['PHP_SELF']."<br />";
-echo "e_DOCROOT: ".e_DOCROOT."<br />";
-*/
 
 include(e_HANDLER."errorhandler_class.php");
 set_error_handler("error_handler");
@@ -106,6 +94,7 @@ if(!is_array($pref)){
 		}					
 	}
 }
+if(!$pref['cookie_name']){ $pref['cookie_name'] = "e107cookie"; }
 if($pref['user_tracking'] == "session"){ require_once(e_HANDLER."session_handler.php"); }
 
 $sql -> db_Select("core", "*", "e107_name='menu_pref' ");
@@ -148,7 +137,7 @@ if($pref['flood_protect'] == 1){
 }
 
 define("SITENAME", $pref['sitename']);
-define("SITEURL", $pref['siteurl']);
+define("SITEURL", (substr($pref['siteurl'], -1) == "/" ? $pref['siteurl'] : $pref['siteurl']."/"));
 define("SITEBUTTON", $pref['sitebutton']);
 define("SITETAG", $pref['sitetag']);
 define("SITEDESCRIPTION", $pref['sitedescription']);
@@ -166,6 +155,11 @@ define(e_LANGUAGE, (!USERLAN || !defined("USERLAN") ? $language : USERLAN));
 
 @include(e_LANGUAGEDIR.$language."/".$language.".php");
 
+if($pref['maintainance_flag'] && ADMIN == FALSE && !eregi("admin", e_SELF)){
+	@include(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitedown.php");
+	require_once(e_BASE."sitedown.php"); exit;
+}
+
 if(strstr(e_SELF, $ADMIN_DIRECTORY)){
 	(file_exists(e_LANGUAGEDIR.$language."/admin/lan_".$page) ? @include(e_LANGUAGEDIR.$language."/admin/lan_".$page) : @include(e_LANGUAGEDIR."English/admin/lan_".$page));
 }else{
@@ -178,8 +172,8 @@ if(IsSet($_POST['userlogin'])){
 }
 
 if(e_QUERY == "logout"){
-	if($pref['user_tracking'] == "session"){ session_destroy(); $_SESSION["userkey"] = ""; }
-	setcookie('userkey', '', 0, '/', '', 0);
+	if($pref['user_tracking'] == "session"){ session_destroy(); $_SESSION[$pref['cookie_name']] = ""; }
+	setcookie($pref['cookie_name'], '', 0, '/', '', 0);
 	echo "<script type='text/javascript'>document.location.href='".e_BASE."index.php'</script>\n";
 }
 ban();
@@ -212,15 +206,14 @@ if($layout != "_default"){
 }
 
 define("LOGINMESSAGE", "");
-if($pref['maintainance_flag'] && ADMIN == FALSE && !eregi("admin", e_SELF)){
-	header("location:".e_BASE."sitedown.php"); exit;
-}
 $ns = new e107table;
 
 define("OPEN_BASEDIR", (ini_get('open_basedir') ? TRUE : FALSE));
 define("SAFE_MODE", (ini_get('safe_mode') ? TRUE : FALSE));
 define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
 define("INIT", TRUE);
+
+//require_once(e_HANDLER."debug_handler.php");
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -367,8 +360,8 @@ class textparse{
 		$replace[16] = '<div style=\'text-align:right\'>\1</div>';
 		$search[17] = "#\[blockquote\](.*?)\[/blockquote\]#si";
 		$replace[17] = '<div class=\'indent\'>\1</div>';
-		$search[18] = "#\[code\](.*?)\[/code\]#si";
-		$replace[18] = '<code>\1</code>';
+	//	$search[18] = "#\[code\](.*?)\[/code\]#si";
+	//	$replace[18] = '<div class=\'indent\'>\1</div>';
 		$search[19] = "/\[color=(.*?)\](.*?)\[\/color\]/si";
 		$replace[19] = '<span style=\'color:\1\'>\2</span>';
 		$search[20] = "/\[size=([1-2]?[0-9])\](.*?)\[\/size\]/si";
@@ -389,6 +382,7 @@ class textparse{
 		$text = preg_replace("#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="http://\2.\3">\2.\3</a>', $text);
 		$text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $text);
 		$text = substr($text, 1);
+		$text = code($text, "notdef");
 		return $text;
 	}
 
@@ -396,11 +390,13 @@ class textparse{
 		global $sql;
 
 		if($mode != "admin"){
+			// check for [code] tags ...
+			$text = code($text);
 			$text = strip_tags($text);
 		}
 		if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
-		$search = array("\"", "'", "\\", '\"', "\'");
-		$replace = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;");
+		$search = array("\"", "'", "\\", '\"', "\'", "$");
+		$replace = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&#036;");
 		$text = str_replace($search, $replace, $text);
 		return $text;
 	}
@@ -512,8 +508,9 @@ function online($page){
 	if($members_online = $sql -> db_Select("online", "*", "online_user_id!='0' ")){
 		while($row = $sql -> db_Fetch()){
 			extract($row);
-			$tmp = explode(".", $online_user_id);
-			$member_list .= "<a href=\"".e_BASE."user.php?id.".$tmp[0]."\">".$tmp[1]."</a> ";
+			$oid = substr($online_user_id, 0, strpos($online_user_id, "."));
+			$oname = substr($online_user_id, (strpos($online_user_id, ".")+1));
+			$member_list .= "<a href='".e_BASE."user.php?id.$oid'>$oname</a> ";
 		}
 	}
 	define("TOTAL_ONLINE", $total_online);
@@ -605,13 +602,13 @@ function init_session(){
 		*/
 	global $sql, $pref, $user_pref, $sql;
 
-	if(!$_COOKIE['userkey'] && !$_SESSION['userkey']){
+	if(!$_COOKIE[$pref['cookie_name']] && !$_SESSION[$pref['cookie_name']]){
 		define("USER", FALSE); define("USERTHEME", FALSE); define("ADMIN", FALSE);
 	}else{
-		$tmp = ($_COOKIE['userkey'] ? explode(".", $_COOKIE['userkey']) : explode(".", $_SESSION['userkey'])); $uid = $tmp[0]; $upw = $tmp[1];
+		$tmp = ($_COOKIE[$pref['cookie_name']] ? explode(".", $_COOKIE[$pref['cookie_name']]) : explode(".", $_SESSION[$pref['cookie_name']])); $uid = $tmp[0]; $upw = $tmp[1];
 		if(Empty($upw)){	 // corrupt cookie?
-			setcookie('userkey', '', 0, '/', '', 0);
-			$_SESSION["userkey"] = "";
+			setcookie($pref['cookie_name'], '', 0, '/', '', 0);
+			$_SESSION[$pref['cookie_name']] = "";
 			session_destroy();
 			define("ADMIN", FALSE); define("USER", FALSE); define("LOGINMESSAGE", "Corrupted cookie detected - logged out.<br /><br />");
 			return(FALSE);
@@ -694,4 +691,37 @@ function glte($table, $order, $amount, $element, $value, $mode){
 	}
 	return FALSE;
 }
+
+function code($string, $mode="default"){
+	if($mode == "default"){
+		$search = array("<", ">", "[", "]");
+		$replace = array("&lt;", "&gt;", "&#091;", "&#093;");
+		$match_count = preg_match_all("#\[code\](.*?)\[/code\]#si", $string, $result);
+		for ($a = 0; $a < $match_count; $a++){
+			$after_replace = str_replace($search, $replace, $result[1][$a]);
+			$string = str_replace("[code]".$result[1][$a]."[/code]", "[code]".$after_replace."[/code]", $string);
+		}
+		return $string;
+	}
+	$search = array("<br />", "[", "]", "&lt;", "&gt;", "&#036;", "&amp;");
+	$replace = array("", "&#091;", "&#093;", "<", ">", "$", "&");
+	$search2 = array("&lt;?", "?&gt;", "&amp;#091;", "&amp;#093;", "&amp;", '<font color="#0000BB">&nbsp;&nbsp;</font>');
+	$replace2 = array("", "", "[", "]", "&", "");
+	$match_count = preg_match_all("#\[code\](.*?)\[/code\]#si", $string, $result);
+	for ($a = 0; $a < $match_count; $a++){
+		$after_replace = "<? ".str_replace($search, $replace, $result[1][$a])." ?>";
+		ob_start();
+		highlight_string($after_replace);
+		$colourtext = ob_get_contents();
+		ob_end_clean();
+
+		$colourtext = preg_replace('/&amp;\<\/font\>\<font color="(.*?)"\>/si', '</font><font color="\1">&amp;', $colourtext);
+		//$colourtext = preg_replace('/\<font color="(.*?)"\>&\<\/font\>\<font color="(.*?)"\>(.*?);/si', '<font color="\1">&amp;\2;</font><font color="\3">', $colourtext);
+
+		$colourtext = str_replace($search2, $replace2, $colourtext);
+		$string = str_replace("[code]".$result[1][$a]."[/code]", "<div class='indent'>".$colourtext."</div>", $string);
+	}
+	return $string;
+}
+
 ?>

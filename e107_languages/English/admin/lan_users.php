@@ -57,4 +57,8 @@ define("USRLAN_51", "Update Options");
 
 define("USRLAN_52", "Member Options");
 
+
+define("USRLAN_53", "Allow members to upload a photograph?");
+
+
 ?>

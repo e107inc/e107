@@ -44,6 +44,6 @@ $text = "<div style='text-align:center'>
 </table>
 </form>
 </div>";
-$ns -> tablerender("New Forum Posts Menu Configuration", $text);
+$ns -> tablerender("Clock Menu Config", $text);
 require_once(e_ADMIN."footer.php");
 ?>

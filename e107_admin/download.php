@@ -83,7 +83,7 @@ If(IsSet($_POST['update'])){
 		$filesize = $_POST['download_filesize_external'];
 	}else{
 		$durl = $_POST['download_url'];
-		$filesize = filesize($_SERVER["DOCUMENT_ROOT"].e_FILE."downloads/".$_POST['download_url']);
+		$filesize = filesize(e_FILE."downloads/".$_POST['download_url']);
 	}
 	$_POST['download_description'] = $aj -> formtpa($_POST['download_description'], "admin");
 	$sql -> db_Update("download", "download_name='".$_POST['download_name']."', download_url='".$durl."', download_author='".$_POST['download_author']."', download_author_email='".$_POST['download_author_email']."', download_author_website='".$_POST['download_author_website']."', download_description='".$_POST['download_description']."', download_filesize='".$filesize."', download_category='".$_POST['download_category']."', download_active='".$_POST['download_active']."', download_datestamp='".time()."', download_thumb='".$_POST['download_thumb']."', download_image='".$_POST['download_image']."' WHERE download_id='".$_POST['download_id']."' ");
@@ -320,7 +320,7 @@ function getfiles($dir){
 			if(is_file($pathdir.$file)){
 				$t_array[] = ereg_replace("../|e107_files/|downloads/|downloadimages/|downloadthumbs/", "", $pathdir.$file);
 			}else{
-				getfiles($pathdir.$file."/");
+				getfiles(str_replace("../", "", $pathdir.$file)."/");
 			}
 		}
 	}

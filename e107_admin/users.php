@@ -34,6 +34,7 @@ if(IsSet($_POST['update_options'])){
 	$pref['im_width'] = $_POST['im_width'];
 	$pref['resize_method'] = $_POST['resize_method'];
 	$pref['im_path'] = $_POST['im_path'];
+	$pref['photo_upload'] = $_POST['photo_upload'];	
 	save_prefs();
 	$message = USRLAN_1;
 }
@@ -269,6 +270,13 @@ $text = "<div style='text-align:center'>
 <td style='width:50%' class='forumheader3'>".USRLAN_44.":</td>
 <td style='width:50%' class='forumheader3'>".
 ($pref['avatar_upload'] ? "<input name='avatar_upload' type='radio' value='1' checked>".USRLAN_45."&nbsp;&nbsp;<input name='avatar_upload' type='radio' value='0'>".USRLAN_46 : "<input name='avatar_upload' type='radio' value='1'>".USRLAN_45."&nbsp;&nbsp;<input name='avatar_upload' type='radio' value='0' checked>".USRLAN_46)."
+</td>
+</tr>
+
+<tr>
+<td style='width:50%' class='forumheader3'>".USRLAN_53.":</td>
+<td style='width:50%' class='forumheader3'>".
+($pref['photo_upload'] ? "<input name='photo_upload' type='radio' value='1' checked>".USRLAN_45."&nbsp;&nbsp;<input name='photo_upload' type='radio' value='0'>".USRLAN_46 : "<input name='photo_upload' type='radio' value='1'>".USRLAN_45."&nbsp;&nbsp;<input name='photo_upload' type='radio' value='0' checked>".USRLAN_46)."
 </td>
 </tr>
 

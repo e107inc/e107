@@ -167,9 +167,12 @@ if(strstr(e_QUERY, "install")){
 }
 
 if(strstr(e_QUERY, "upgrade")){
-	
 	$tmp = explode(".", e_QUERY);
 	$id = $tmp[1]; unset($tmp);
+
+	$sql -> db_Select("plugin", "*", "plugin_id='$id' ");
+	$row = $sql -> db_Fetch(); extract($row);
+	include(e_PLUGIN.$plugin_path."/plugin.php");
 
 	if(is_array($upgrade_alter_tables)){
 		while(list($key, $e_table) = each($upgrade_alter_tables)){

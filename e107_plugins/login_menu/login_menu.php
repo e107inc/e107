@@ -3,7 +3,7 @@ $text = "";
 if($pref['user_reg'] == 1 || ADMIN == TRUE){
 
 	if(USER == TRUE || ADMIN == TRUE){
-		$tmp = ($_COOKIE['userkey'] ? explode(".", $_COOKIE['userkey']) : explode(".", $_SESSION['userkey']));
+		$tmp = ($_COOKIE[$pref['cookie_name']] ? explode(".", $_COOKIE[$pref['cookie_name']]) : explode(".", $_SESSION[$pref['cookie_name']]));
 		$uid = $tmp[0]; $upw = $tmp[1];
 		$sql = new db;
 		if($sql -> db_Select("user", "*", "user_id='$uid' AND user_password='$upw' ")){
@@ -12,6 +12,8 @@ if($pref['user_reg'] == 1 || ADMIN == TRUE){
 				$text .= "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_ADMIN."admin.php'>".LOGIN_MENU_L11."</a><br />";
 			}
 			$text .= "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_BASE."usersettings.php'>".LOGIN_MENU_L12."</a>
+<br />
+<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_BASE."user.php?id.".USERID."'>".LOGIN_MENU_L13."</a>
 <br />
 <img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_BASE."?logout'>".LOGIN_MENU_L8."</a>";
 		
@@ -35,7 +37,7 @@ if($pref['user_reg'] == 1 || ADMIN == TRUE){
 			$new_chat ".($new_chat == 1 ? "chatbox post" : "chatbox posts").", 
 			$new_comments ".($new_comments == 1 ? "comment" : "comments").", 
 			$new_forum ".($new_forum == 1 ? "forum post" : "forum posts")." and 
-			$new_users ".($new_users == 1 ? "new site member" : "new site members").".<span>";
+			$new_users ".($new_users == 1 ? "new site member" : "new site members").".</span>";
 			$caption = (file_exists(THEME."images/login_menu.png") ? "<img src='".THEME."images/login_menu.png' alt='' /> ".LOGIN_MENU_L5." ".USERNAME : LOGIN_MENU_L5." ".USERNAME);
 			$ns -> tablerender($caption, $text);
 

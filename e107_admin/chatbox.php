@@ -91,7 +91,7 @@ if(!$sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, 50", 
 			$sql2 -> db_Select("user", "*", "user_id='$cb_ida' ");
 			$row = $sql2 -> db_Fetch(); extract($row);
 			$cb_nick = "<a href='".e_BASE."user.php?id.".$user_id."'>".$user_name."</a>";
-			$cb_str = "".CHBLAN_4." ".$cb_id;
+			$cb_str = "".CHBLAN_4." ".$user_id;
 		}else{
 			$cb_str = CHBLAN_5;
 			$cb_nick = eregi_replace("[0-9]+\.", "", $cb_nick);

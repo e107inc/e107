@@ -341,9 +341,9 @@ function render_forum($row, $newflag, $forum_id){
 		$sql3 -> db_Select("forum_t", "*", "thread_forum_id='$forum_id' ORDER BY thread_datestamp DESC LIMIT 0,1");
 		$row = $sql3 -> db_Fetch();
 		extract($row);
-		$tmp = explode(".", $thread_user);
-		$lastpost_author_id = $tmp[0];
-		$lastpost_author_name = $tmp[1];
+
+		$lastpost_author_id = substr($thread_user, 0, strpos($thread_user, "."));
+		$lastpost_author_name = substr($thread_user, (strpos($thread_user, ".")+1));
 
 		$tmp = explode(chr(1), $lastpost_author_name); $lastpost_author_name = $tmp[0];
 

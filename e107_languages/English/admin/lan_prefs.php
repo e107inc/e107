@@ -53,7 +53,7 @@ define("PRFLAN_50", "Sessions");
 define("PRFLAN_51", "Click here to visit the homepage of e107");
 define("PRFLAN_52", "Save Changes");
 define("PRFLAN_53", "Site Preferences");
-
 define("PRFLAN_54", "Admin Area Theme");
+define("PRFLAN_55", "Cookie name (if cookies selected)");
 
 ?>

@@ -104,12 +104,14 @@ if($sql -> db_Select("cache", "*", "cache_url='chatbox' ")){
 			$replace[0] = "&lsqb;"; $replace[1] =  "&rsqb;";
 			$cb_message = str_replace($search, $replace, $cb_message);
 
-			$cb_message = $aj -> tpa($cb_message);
 			if($pref['cb_linkreplace']){
-				$cb_message .= " ";
-				$cb_message = preg_replace("#\>(.*?)\</a\>[\s]#si", ">".$pref['cb_linkc']."</a> ", $cb_message);
-				$cb_message = $aj -> tpa($cb_message);
+				$cb_message = " ".$cb_message;
+				$cb_message = preg_replace("#([\t\r\n ])([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="\2://\3">'.$pref['cb_linkc'].'</a>', $cb_message);
+				$cb_message = preg_replace("#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="http://\2.\3">'.$pref['cb_linkc'].'</a>', $cb_message);
+				$cb_message = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $cb_message);
 			}
+
+			$cb_message = $aj -> tpa($cb_message);
 
 
 			if(!eregi("<a href|<img|&#", $cb_message)){
@@ -117,8 +119,7 @@ if($sql -> db_Select("cache", "*", "cache_url='chatbox' ")){
 				$message_array = explode(" ", $cb_message);
 				for($i=0; $i<=(count($message_array)-1); $i++){
 					if(strlen($message_array[$i]) > $cb_wordwrap){
-						$message_array[$i] = wordwrap( $message_array[$i], $cb_wordwrap ); 
-	//					$message_array[$i] = preg_replace("/([^\s]{".$cb_wordwrap."})/", "$1<br />", $message_array[$i]);
+						$message_array[$i] = wordwrap( $message_array[$i], $cb_wordwrap, "\n", 1);
 					}
 				}
 				$cb_message = implode(" ",$message_array);

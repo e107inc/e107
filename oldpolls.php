@@ -21,9 +21,10 @@ $from = (!e_QUERY ? $from = 0 : $from = e_QUERY);
 $poll_total = $sql -> db_Count("poll", "(*)", "WHERE poll_active=0 AND poll_end_datestamp !=0");
 
 $p_query = e_PAGE.(e_QUERY ? "?".e_QUERY : "");
+
 if($sql -> db_Select("cache", "*", "cache_url='$p_query' ")){
 	$row = $sql -> db_Fetch(); extract($row);
-	echo $aj -> formtparev($cache_data); 
+	echo stripslashes($cache_data); 
 	require_once(e_HANDLER."np_class.php");
 	$ix = new nextprev("oldpolls.php", $from, 10, $poll_total, LAN_96);
 	require_once(FOOTERF);
@@ -54,6 +55,7 @@ while(list($poll_id, $poll_datestamp, $poll_end_datestamp, $poll_admin_id, $poll
 	$obj = new convert;
 	$datestamp = $obj -> convert_date($poll_datestamp, "long");
 	$end_datestamp = $obj -> convert_date($poll_end_datestamp, "long");
+
 	$sql2 -> db_Select("user", "*",  "user_id='$poll_admin_id' ");
 	$row = $sql2 -> db_Fetch();
 	extract($row);
@@ -104,12 +106,10 @@ while(list($poll_id, $poll_datestamp, $poll_end_datestamp, $poll_admin_id, $poll
 
 	$text .= "</table>";
 	$ns -> tablerender(LAN_98." #".$poll_id, $text);
-	$w_text .= $text;
 }
 
-
 if($pref['cachestatus']){
-	$cache = $aj -> formtpa(ob_get_contents(), "admin");
+	$cache = addslashes(ob_get_contents());
 	$sql -> db_Insert("cache", "'$p_query', '".time()."', '$cache' ");
 }
 

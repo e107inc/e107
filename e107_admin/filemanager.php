@@ -18,7 +18,8 @@ if(!getperms("6")){ header("location:".e_BASE."index.php"); exit; }
 require_once("auth.php");
 
 $imagedir = e_IMAGE."filemanager/";
-$path = (e_QUERY ? e_QUERY : str_replace("../", "", e_FILE));
+$path = str_replace("../", "", (e_QUERY ? e_QUERY : e_FILE));
+if(!$path){ $path =  str_replace("../", "", e_FILE); }
 
 if(IsSet($_POST['deletefile'])){
 	if(@unlink($_SERVER["DOCUMENT_ROOT"].e_HTTP.$_POST['deleteconfirm'])){

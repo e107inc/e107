@@ -17,11 +17,11 @@ require_once("class2.php");
 require_once(HEADERF);
 
 if(e_QUERY){
-	if($sql -> db_Select("user", "*", "user_sess='".e_QUERY."' ")){
+	if($sql -> db_Select("user", "*", "user_login='".e_QUERY."' ")){
 		$row = $sql -> db_Fetch(); extract($row);
-		$sql -> db_Update("user", "user_password='$user_sess', user_sess='' WHERE user_id='$user_id' ");
-		setcookie('userkey', '', 0, '/', '', 0);
-		$_SESSION["userkey"] = "";
+		$sql -> db_Update("user", "user_password='$user_sess', user_sess='', user_login='' WHERE user_id='$user_id' ");
+		setcookie($pref['cookie_name'], '', 0, '/', '', 0);
+		$_SESSION[$pref['cookie_name']] = "";
 		$ns -> tablerender(LAN_03, "<div style='text-align:center'>".LAN_217."</div>");
 		require_once(FOOTERF);
 		exit;
@@ -31,19 +31,35 @@ if(e_QUERY){
 if(IsSet($_POST['pwsubmit'])){
 	$email = $_POST['email'];
 	if($sql -> db_Select("user", "*", "user_email='".$_POST['email']."' ")){
+		$row = $sql -> db_Fetch(); extract($row);
 
-		$row = $sql -> db_Fetch();
-		extract($row);
+		if($user_id == 1 && $user_perms == 0){
+			exit;
+			/*
+			$ip = getip();
+			$sql -> db_Insert("banlist", "'$ip', '0', 'Visitor tried to reset main admin password.' ");
+			require_once(e_HANDLER."mail.php");
+			sendemail("jalist@jalist.com", "Visitor banned at e107.org", "The following user was banned ...\n\nIP: $ip\nHost: ".gethostbyaddr($ip)."\n\nVisitor attempted to reset main admin password.\n$text\n\n");
+			echo "<script type='text/javascript'>document.location.href='index.php'</script>\n";
+			exit;
+			*/
+		}
+
 		$pwlen = rand(6, 12);
 		for($a=0; $a<=$pwlen;$a++){
 			$newpw .= chr(rand(97, 122));
 		}
-
 		$mdnewpw = md5($newpw);
 
-		$sql -> db_Update("user", "user_sess='$mdnewpw' WHERE user_email='".$_POST['email']."' ");
+		$pwlen = rand(20, 30);
+		for($a=0; $a<=$pwlen;$a++){
+			$validate .= chr(rand(48, 57));
+		}
+		
+
+		$sql -> db_Update("user", "user_sess='$mdnewpw', user_login='$validate' WHERE user_email='".$_POST['email']."' ");
 		$returnaddress = (substr(SITEURL, -1) == "/" ? SITEURL."fpw.php" : SITEURL."/fpw.php");
-		$message = LAN_215.$newpw."\n\n".LAN_216."\n\n".$returnaddress."?".$mdnewpw;
+		$message = LAN_215.$newpw."\n\n".LAN_216."\n\n".$returnaddress."?".$validate;
 
 		require_once(e_HANDLER."mail.php");
 		if(sendemail($_POST['email'], "Password reset from ".SITENAME, $message)){

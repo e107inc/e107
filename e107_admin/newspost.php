@@ -70,7 +70,6 @@ If(IsSet($_POST['delete'])){
 
 
 if(IsSet($_POST['edit'])){
-
 	$sql -> db_Select("news", "*", "news_id='".$_POST['existing']."' ");
 	$row = $sql-> db_Fetch();
 	extract($row);
@@ -79,6 +78,7 @@ if(IsSet($_POST['edit'])){
 	$_POST['news_extended'] = $aj -> formtparev($news_extended);
 	$_POST['news_allow_comments'] = $news_allow_comments;
 	$_POST['news_class'] = $news_class;
+	$_POST['cat_id'] = $news_category;
 	if($news_start){$tmp = getdate($news_start);$_POST['startmonth'] = $tmp['mon'];$_POST['startday'] = $tmp['mday'];$_POST['startyear'] = $tmp['year'];}
 	if($news_end){$tmp = getdate($news_end);$_POST['endmonth'] = $tmp['mon'];$_POST['endday'] = $tmp['mday'];$_POST['endyear'] = $tmp['year'];}
 	$comment_total = $sql -> db_Count("comments", "(*)", " WHERE comment_item_id='$news_id' AND comment_type='0' ");
@@ -367,7 +367,7 @@ class create_rss{
 			$nb .= $tmp[$a]." ";
 		}
 		if($tmp[($a-2)]){ $nb .= " [more ...]"; }
-  		$nb = htmlspecialchars($nb);
+  		$nb = htmlentities($nb);
 		$wlog .= $news_title."\n".SITEURL."comment.php?".$news_id."\n\n";
 
 		$itemdate = strftime("%a, %d %b %Y %I:%M:00 GMT", $news_datestamp);

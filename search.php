@@ -17,7 +17,7 @@ require_once("class2.php");
 
 $_POST['searchquery'] = trim(chop($_POST['searchquery']));
 
-if(IsSet($_POST['searchquery']) && $_POST['searchtype'] == "0"){ header("location:http://www.google.com/search?q=".stripslashes(str_replace(" ", "+", $_POST['searchquery']))); exit; }
+if(IsSet($_POST['searchquery']) && $_POST['searchtype'] == "10"){ header("location:http://www.google.com/search?q=".stripslashes(str_replace(" ", "+", $_POST['searchquery']))); exit; }
 
 require_once(HEADERF);
 
@@ -33,27 +33,28 @@ $search_info[]=array( 'sfile' => e_HANDLER.'search/search_chatbox.php', 'qtype' 
 $search_info[]=array( 'sfile' => e_HANDLER.'search/search_links.php', 'qtype' => LAN_102, 'refpage' => 'links.php');
 $search_info[]=array( 'sfile' => e_HANDLER.'search/search_forum.php', 'qtype' => LAN_103, 'refpage' => 'forum.php');
 $search_info[]=array( 'sfile' => e_HANDLER.'search/search_user.php', 'qtype' => LAN_140, 'refpage' => 'user.php');
-
-
-//load all plugin search routines
-$handle=opendir(e_PLUGIN);
-while(false !== ($file = readdir($handle))){
-	if($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)){
-		$plugin_handle=opendir(e_PLUGIN.$file."/");
-		while(false !== ($file2 = readdir($plugin_handle))){
-			if($file2 == "e_search.php"){
-				require_once(e_PLUGIN.$file."/".$file2);
-			}
-		}
-	}
-}
-
 $search_info[99]=array( 'sfile' => '','qtype' => LAN_192);
-						
+
+if(IsSet($_POST['searchquery']) && $_POST['searchquery'] != ""){ $query = $_POST['searchquery']; }
+$query = $aj -> formtpa($query, "public");
+					
 $con=new convert;
 if(!$refpage = substr($_SERVER['HTTP_REFERER'], (strrpos($_SERVER['HTTP_REFERER'], "/")+1))){ $refpage = "index.php"; }
 
-if(IsSet($_POST['searchquery']) && $_POST['searchquery'] != ""){ $query = $_POST['searchquery']; }
+$tmp = str_replace(".php", "", $refpage);
+//echo "debug: search routine found: ".e_PLUGIN.$tmp."/search.php";
+if(file_exists(e_PLUGIN.$tmp."/search.php")){
+	require_once(e_PLUGIN.$tmp."/search.php");
+	$ns -> tablerender(LAN_195." ".$search_info[$key]['qtype']." :: ".LAN_196.": ".$results, $text);
+	require_once(FOOTERF);
+	exit;
+}
+if(file_exists(e_PLUGIN.$tmp."/_menu/search.php")){
+	require_once(e_PLUGIN.$tmp."/_menu/search.php");
+	$ns -> tablerender(LAN_195." ".$search_info[$key]['qtype']." :: ".LAN_196.": ".$results, $text);
+	require_once(FOOTERF);
+	exit;
+}
 
 if($_POST['searchtype']){
 	$searchtype = $_POST['searchtype'];
@@ -67,11 +68,11 @@ if($_POST['searchtype']){
 		preg_match("/\?(.*?)\./", $refpage, $result);
 		$sql -> db_Select("content", "*", "content_id='".$result[1]."'");
 		$row = $sql -> db_Fetch(); extract($row);
-		if($content_type == 0){ $searchtype = 3; }
-		if($content_type == 3){ $searchtype = 4; }
-		if($content_type == 1){ $searchtype = 5; }
+		if($content_type == 0){ $searchtype = 2; }
+		if($content_type == 3){ $searchtype = 3; }
+		if($content_type == 1){ $searchtype = 4; }
 	}
-	if(!$searchtype){ $searchtype = 1; }
+	if(!$searchtype){ $searchtype = 0; }
 }
 
 $text = "<div style='text-align:center'><form method='post' action='".e_SELF."'>
@@ -85,7 +86,7 @@ foreach($search_info as $key => $si){
 }
 
 $text .= "
-<option value='0'>Google</option>
+<option value='10'>Google</option>
 </select>
 <input class='button' type='submit' name='searchsubmit' value='".LAN_180."' />
 </p>
@@ -95,7 +96,6 @@ $ns -> tablerender("Search ".SITENAME, $text);
 
 // only search when a query is filled.
 if($_POST['searchquery'] && $searchtype != 99){
-	
 	unset($text);
 	require_once($search_info[$searchtype]['sfile']);
 	$ns -> tablerender(LAN_195." ".$search_info[$searchtype]['qtype']." :: ".LAN_196.": ".$results, $text);

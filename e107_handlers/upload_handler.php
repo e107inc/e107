@@ -52,13 +52,13 @@ function file_upload($uploaddir, $avatar = FALSE){
 		}
 		return $uploaded;
 	}
-
+	/*
 	if(ini_get('open_basedir') != ''){
 		require_once(e_HANDLER."message_handler.php");
 		message_handler("MESSAGE", "'open_basedir' restriction is in effect, unable to move uploaded file, deleting ...", __LINE__, __FILE__);
 		return FALSE;
 	}
-
+	*/
 	$files = $_FILES['file_userfile'];
 	if(!is_array($files)){ return FALSE; }
 	$c=0;
@@ -90,6 +90,11 @@ function file_upload($uploaddir, $avatar = FALSE){
 
 			if(@move_uploaded_file($uploadfile, $destination_file)){
 				@chmod($destination_file, 0644);
+				$tmp = explode(".", $name);
+				$rename = $tmp[0].time().".".$tmp[1];
+				if(@rename(e_FILE."public/avatars/".$name, e_FILE."public/avatars/".$rename)){
+					$uploaded[$c]['name'] = $rename;
+				}
 				require_once(e_HANDLER."message_handler.php");
 				message_handler("MESSAGE", "Successfully uploaded '".$files['name'][$key]."'", __LINE__, __FILE__);
 				$message .= "Successfully uploaded '".$files['name'][$key]."'.<br />";

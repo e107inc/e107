@@ -24,9 +24,15 @@ class userlogin{
 		# - scope					public
 		*/
 		global $pref;
+
+///////////////////////////////////////////////////////////////////////////
+//		$pref['auth_method']="ldap";
+		if($pref['auth_method'] && $pref['auth_method'] != "e107"){
+			require_once(e_HANDLER."alt_login_class.php");
+			$result = new alt_login($pref['auth_method'],$username, $userpass);
+		}
+//////////////////////////////////////////////////////////////////////////
 		$sql = new db;
-
-
 		if($username != "" && $userpass != ""){
 			$userpass = md5($userpass);
 			if(!$sql -> db_Select("user",  "*", "user_name='$username' ")){
@@ -42,12 +48,12 @@ class userlogin{
 				list($user_id) = $sql-> db_Fetch();
 
 				if($pref['user_tracking'] == "session"){
-					$_SESSION['userkey'] = $user_id.".".$userpass;
+					$_SESSION[$pref['cookie_name']] = $user_id.".".$userpass;
 				}else{
 					if($autologin == 1){
-						setcookie('userkey', $user_id.".".$userpass, time()+3600*24*30, '/', '', 0);
+						setcookie($pref['cookie_name'], $user_id.".".$userpass, time()+3600*24*30, '/', '', 0);
 					}else{
-						setcookie('userkey', $user_id.".".$userpass, time()+3600, '/', '', 0);
+						setcookie($pref['cookie_name'], $user_id.".".$userpass, time()+3600, '/', '', 0);
 					}
 				}
 

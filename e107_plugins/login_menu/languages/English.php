@@ -25,6 +25,6 @@ define("LOGIN_MENU_L9", "Login Error");
 define("LOGIN_MENU_L10", "The maintenance flag is true - this means normal visitors are being redirected to sitedown.php. To reset the flag go to admin/maintenance.");
 define("LOGIN_MENU_L11", "Admin");
 define("LOGIN_MENU_L12", "Settings");
-
+define("LOGIN_MENU_L13", "Profile");
 
 ?>

@@ -184,10 +184,6 @@ $CHATBOXSTYLE = "
 <div class='mediumtext' style='text-align:right'>
 {MESSAGE}
 </div>
-<div class='smalltext'>
-{ADMINOPTIONS}
-</div></div>";
-
-define(CB_STYLE, $CHATBOXSTYLE);
+</div>";
 
 ?>

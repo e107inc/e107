@@ -119,13 +119,9 @@ if($pref['log_activate'] && ADMIN == FALSE){
 			$country = "(unknown)";
 		}
 
-		$addr = gethostbyaddr($gip);
-		if($addr == ""){
-			$addr = "unresolved";
-		}
 		$con = new convert;
 		$datestamp = $con -> convert_date(time(), "long");
-		$laststr = "IP: ".$sip." (".$addr."), using ".$browser." under ".$os ." at ".$res." x ".$colour." from ".$country.".";
+		$laststr = "IP: ".$sip." using ".$browser." under ".$os ." at ".$res." x ".$colour." from ".$country.".";
 
 		if(!$sql -> db_Select("stat_last", "*", "stat_last_info='$laststr' ")){
 			$sql -> db_Insert("stat_last", " '".time()."', '$laststr' ");

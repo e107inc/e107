@@ -169,11 +169,15 @@ if(IsSet($_POST['reset_core_sub']) && $_POST['reset_core']){
 	$pref['meta_tag'] = "";
 	$pref['user_reg_veri'] = "1";
 	$pref['user_tracking'] = "cookie";
+	$pref['cookie_name'] = "e107cookie";
 	$pref['email_notify'] = "0";
 	$pref['forum_poll'] = "0";
 	$pref['forum_popular'] = "10";
 	$pref['forum_track'] = "0";
 	$pref['forum_eprefix'] = "[forum]";
+	$pref['forum_enclose'] = "1";
+	$pref['forum_title'] = "Forums";
+	$pref['forum_postspage'] = "10";
 	$pref['resize_method'] = "gd2";
 	$pref['im_path'] = "/usr/local/bin/";
 	$pref['im_quality'] = "80";

@@ -21,6 +21,7 @@ if(IsSet($_POST['newver'])){
 
 if(!getperms("1")){ header("location:".e_BASE."index.php"); exit;}
 
+
 if(IsSet($_POST['updateprefs'])){
 	$aj = new textparse;
 	$pref['sitename'] = $aj -> formtpa($_POST['sitename']);
@@ -30,8 +31,8 @@ if(IsSet($_POST['updateprefs'])){
 	$pref['sitedescription'] = $aj -> formtpa($_POST['sitedescription']);
 	$pref['siteadmin'] = $aj -> formtpa($_POST['siteadmin']);
 	$pref['siteadminemail'] = $aj -> formtpa($_POST['siteadminemail']);
-	$pref['sitetheme'] = $_POST['sitetheme'];
-	$pref['admintheme'] = $_POST['admintheme'];
+	$pref['sitetheme'] = ($_POST['sitetheme'] && $_POST['sitetheme'] != "/" ? $_POST['sitetheme'] : "leap of faith");
+	$pref['admintheme'] = ($_POST['admintheme'] && $_POST['admintheme'] != "/" ? $_POST['admintheme'] : "leap of faith");
 	$pref['sitedisclaimer'] = $aj -> formtpa($_POST['sitedisclaimer']);
 	$pref['newsposts'] = $_POST['newsposts'];
 	$pref['flood_protect'] = $_POST['flood_protect'];
@@ -41,15 +42,17 @@ if(IsSet($_POST['updateprefs'])){
 	$pref['profanity_replace'] = $aj -> formtpa($_POST['profanity_replace']);
 	$pref['profanity_words'] = $aj -> formtpa($_POST['profanity_words']);
 	$pref['use_coppa'] = $_POST['use_coppa'];
-	$pref['shortdate'] = $_POST['shortdate'];
-	$pref['longdate'] = $_POST['longdate'];
-	$pref['forumdate'] = $_POST['forumdate'];
+	$pref['shortdate'] = $aj -> formtpa($_POST['shortdate']);
+	$pref['longdate'] = $aj -> formtpa($_POST['longdate']);
+	$pref['forumdate'] = $aj -> formtpa($_POST['forumdate']);
 	$pref['sitelanguage'] = $_POST['sitelanguage'];
 	$pref['time_offset'] = $_POST['time_offset'];
 	$pref['flood_hits'] = $_POST['flood_hits'];
 	$pref['flood_time'] = $_POST['flood_time'];
 	$pref['user_reg_veri'] = $_POST['user_reg_veri'];
 	$pref['user_tracking'] = $_POST['user_tracking'];
+	$pref['cookie_name'] = $_POST['cookie_name'];
+	$pref['auth_method'] = $_POST['auth_method'];
 	$pref['displaythemeinfo'] = $_POST['displaythemeinfo'];
 	$pref['displayrendertime'] = $_POST['displayrendertime'];
 	$pref['displaysql'] = $_POST['displaysql'];
@@ -57,6 +60,32 @@ if(IsSet($_POST['updateprefs'])){
 	save_prefs();
 	header("location:".e_SELF);
 	exit;
+}
+
+$sql -> db_Select("plugin","*","plugin_installflag='1' ");
+while($row = $sql -> db_Fetch()){
+	extract($row);
+	if(preg_match("/^auth_(.*)/",$plugin_path,$match)){
+//	echo $plugin_path."  [".$match[1]."]";
+		$authlist[]=$match[1];
+	}
+}
+if($authlist){
+	$authlist[] = "e107";
+	$auth_dropdown = "
+	<tr>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_56.": </td>
+	<td style='width:50%; text-align:right;' class='forumheader3'>";
+	$auth_dropdown .= "<select class='tbox' name='auth_method'>\n";
+	foreach($authlist as $a){
+		$s = ($pref['auth_method'] == $a) ? " SELECTED" : "";
+		$auth_dropdown .= "<option {$s}>".$a."</option>\n";
+	}
+	$auth_dropdown .= "</select>\n";
+	$auth_dropdown .= "</td></tr>";
+} else {
+	$auth_dropdown="<input type='hidden' name='auth_method' value=''>";
+	$pref['auth_method']="";
 }
 
 
@@ -493,15 +522,10 @@ $text .= "(".PRFLAN_46.")
 <td style='width:50%; text-align:right' class='forumheader3'>".
 ($user_tracking == "cookie" ? "<input type='radio' name='user_tracking' value='cookie' checked> ".PRFLAN_49 : "<input type='radio' name='user_tracking' value='cookie'> ".PRFLAN_49).
 ($user_tracking == "session" ? "<input type='radio' name='user_tracking' value='session' checked> ".PRFLAN_50 : "<input type='radio' name='user_tracking' value='session'> ".PRFLAN_50)."
-
+<br />
+".PRFLAN_55.": <input class='tbox' type='text' name='cookie_name' size='20' value='".$pref['cookie_name']."' maxlength='20' />
 </td>
-</tr>
-
-
-
-
-
-
+</tr>".$auth_dropdown."
 <tr>
 <td colspan='2' class='forumheader3'>
 <div class='border'><div class='caption'>e107</div></div>
