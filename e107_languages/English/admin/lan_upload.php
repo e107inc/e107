@@ -44,4 +44,8 @@ define("UPLLAN_39", "Submit");
 define("UPLLAN_40", "Options");
 define("UPLLAN_41", "Please note - file uploads are disabled from your php.ini, it will not be possible to upload files until you set it to On.");
 
+define("UPLLAN_42", "Actions");
+define("UPLLAN_43", "Uploads");
+define("UPLLAN_44", "Upload");
+
 ?>

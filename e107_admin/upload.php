@@ -73,7 +73,7 @@ if(IsSet($_POST['optionsubmit'])){
         $pref['upload_class'] = $_POST['upload_class'];
         $pref['upload_enabled'] = (FILE_UPLOADS ? $_POST['upload_enabled'] : 0);
         if($pref['upload_enabled'] && !$sql -> db_Select("links", "*", "link_url='upload.php' ")){
-                $sql -> db_Insert("links", "0, 'Upload', 'upload.php', '', '', 1,0,0,0,0");
+                $sql -> db_Insert("links", "0, '".UPLLAN_44."', 'upload.php', '', '', 1,0,0,0,0");
         }
 
         if(!$pref['upload_enabled'] && $sql -> db_Select("links", "*", "link_url='upload.php' ")){
@@ -199,7 +199,7 @@ if(!$active_uploads = $sql -> db_Select("upload", "*", "upload_active=0")){
         <td style='width:20%' class='forumheader3'>".UPLLAN_5."</td>
         <td style='width:20%' class='forumheader3'>".UPLLAN_23."</td>
         <td style='width:30%' class='forumheader3'>".UPLLAN_24."</td>
-        <td style='width:18px' class='forumheader3'>Actions</td>
+        <td style='width:18px' class='forumheader3'>".UPLLAN_42."</td>
         </tr>";
         while($row = $sql -> db_Fetch()){
                 extract($row);
@@ -219,7 +219,7 @@ if(!$active_uploads = $sql -> db_Select("upload", "*", "upload_active=0")){
 }
 $text .= "</table>\n</div>";
 
-$ns -> tablerender("Uploads", $text);
+$ns -> tablerender(UPLLAN_43, $text);
 
 
 // options -------------------------------------------------------------------------------------------------------------------------------------------------------------------
