@@ -37,9 +37,9 @@ list($id, $membermessage, $wm_active2) = $sql-> db_Fetch();
 list($id, $adminmessage, $wm_active3) = $sql-> db_Fetch();
 
 
-$guestmessage = $aj -> editparse($guestmessage);
-$membermessage = $aj -> editparse($membermessage);
-$adminmessage = $aj -> editparse($adminmessage);
+$guestmessage = $aj -> formtparev($aj -> editparse($guestmessage));
+$membermessage = $aj -> formtparev($aj -> editparse($membermessage));
+$adminmessage = $aj -> formtparev($aj -> editparse($adminmessage));
 
 $text = "
 <div style='text-align:center'>
