@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-03-26 09:14:40 $
+|     $Revision: 1.19 $
+|     $Date: 2005-03-30 14:50:54 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -22,6 +22,10 @@ unset($text);
 $agreetext = $pref['agree_text'];
 $cobj = new comment;
 global $tp;
+
+/* define images */
+define("IMAGE_DOWNLOAD", (file_exists(THEME."generic/download.png") ? THEME."generic/download.png" : (defined("IMODE") ? e_IMAGE."generic/".IMODE."/download.png" : e_IMAGE."generic/lite/download.png")));
+define("IMAGE_NEW", (file_exists(THEME."generic/new.png") ? THEME."generic/new.png" : (defined("IMODE") ? e_IMAGE."generic/".IMODE."/new.png" : e_IMAGE."generic/lite/new.png")));
 
 if (!e_QUERY) {
 	require_once(HEADERF);
@@ -70,7 +74,7 @@ if (!e_QUERY) {
 	
 	$download_cat_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_TABLE_START);
 
-	$DOWNLOAD_CAT_NEWDOWNLOAD_TEXT = "<img src='".e_IMAGE."generic/new.png' alt='' style='vertical-align:middle' /> ".LAN_dl_36;
+	$DOWNLOAD_CAT_NEWDOWNLOAD_TEXT = "<img src='".IMAGE_NEW."' alt='' style='vertical-align:middle' /> ".LAN_dl_36;
 	$DOWNLOAD_CAT_SEARCH = "
 		<form method='post' action='".e_BASE."search.php'>
 		<p>
@@ -303,12 +307,12 @@ if ($action == "view") {
 		}
 		else
 		{
-			$DOWNLOAD_VIEW_LINK = $dnld_link." <img src='".e_IMAGE."generic/download.png' alt='' style='border:0' /></a>";
+			$DOWNLOAD_VIEW_LINK = $dnld_link." <img src='".IMAGE_DOWNLOAD."' alt='' style='border:0' /></a>";
 		}
 	}
 	else
 	{
-		$DOWNLOAD_VIEW_LINK = $dnld_link." <img src='".e_IMAGE."generic/download.png' alt='' style='border:0' /></a>";
+		$DOWNLOAD_VIEW_LINK = $dnld_link." <img src='".IMAGE_DOWNLOAD."' alt='' style='border:0' /></a>";
 	}
 
 
@@ -569,7 +573,7 @@ function parse_download_mirror_table($row, $mirrorstring, $mirrorList)
 	$DOWNLOAD_MIRROR_DESCRIPTION = ($mirror_description ? $mirror_description : "");
 
 	$DOWNLOAD_MIRROR_FILESIZE = parsesize($row['download_filesize']);
-	$DOWNLOAD_MIRROR_LINK = "<a href='".e_BASE."request.php?mirror.".$row['download_id'].".$mirrorHost_id'><img src='".e_IMAGE."generic/download.png' alt='' style='border:0' /></a>";
+	$DOWNLOAD_MIRROR_LINK = "<a href='".e_BASE."request.php?mirror.".$row['download_id'].".$mirrorHost_id'><img src='".IMAGE_DOWNLOAD."' alt='' style='border:0' /></a>";
 
 	$DOWNLOAD_MIRROR_REQUESTS = (ADMIN ? LAN_dl_73.$mirrorRequests : "");
 	$DOWNLOAD_TOTAL_MIRROR_REQUESTS = (ADMIN ? LAN_dl_74.$mirror_count : "");
@@ -626,7 +630,7 @@ function parse_download_cat_child_table($row, $subList)
 
 	if(USER && $row['d_last'] > USERLV)
 	{
-		$new = "<img src='".e_IMAGE."generic/new.png' alt='' style='vertical-align:middle' />";
+		$new = "<img src='".IMAGE_NEW."' alt='' style='vertical-align:middle' />";
 	}
 	else
 	{
@@ -651,7 +655,7 @@ function parse_download_cat_child_table($row, $subList)
 
 		if(USER && $subrow['d_last'] > USERLV)
 		{
-			$new = "<img src='".e_IMAGE."generic/new.png' alt='' style='vertical-align:middle' />";
+			$new = "<img src='".IMAGE_NEW."' alt='' style='vertical-align:middle' />";
 		}
 		else
 		{
@@ -671,7 +675,7 @@ function parse_download_list_table($row) {
 	$gen = new convert;
 	$rater = new rater;
 
-	$DOWNLOAD_LIST_NEWICON = (USER && $download_datestamp > USERLV ? "<img src='".e_IMAGE."generic/new.png' alt='' style='vertical-align:middle' />" : "");
+	$DOWNLOAD_LIST_NEWICON = (USER && $download_datestamp > USERLV ? "<img src='".IMAGE_NEW."' alt='' style='vertical-align:middle' />" : "");
 
 	$DOWNLOAD_LIST_DATESTAMP = $gen->convert_date($download_datestamp, "short");
 	$DOWNLOAD_LIST_FILESIZE = parsesize($download_filesize);
@@ -695,7 +699,7 @@ function parse_download_list_table($row) {
 	$DOWNLOAD_LIST_NAME = "<a href='".e_SELF."?view.".$download_id."'>".$download_name."</a>";
 	$DOWNLOAD_LIST_AUTHOR = $download_author;
 	$DOWNLOAD_LIST_REQUESTED = $download_requested;
-	$DOWNLOAD_LIST_ICON = "<img src='".e_IMAGE."generic/download.png' alt='' style='border:0' /></a>";
+	$DOWNLOAD_LIST_ICON = "<img src='".IMAGE_DOWNLOAD."' alt='' style='border:0' /></a>";
 
 	return(preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_LIST_TABLE));
 }
