@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.65 $
-|   $Date: 2005-04-02 07:58:19 $
+|   $Revision: 1.66 $
+|   $Date: 2005-04-02 19:15:20 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -294,7 +294,7 @@ class newspost {
 		{
 
 			$newsarray = $sql -> db_getList();
-			$text .= "<table class='fborder' style='width:99%'>
+			$text .= "<table class='fborder' style='width:96%'>
 			<tr>
 			<td style='width:5%' class='fcaption'><a href='".e_SELF."?main.news_id.".($id == "desc" ? "asc" : "desc").".$from'>ID</a></td>
 			<td style='width:55%' class='fcaption'><a href='".e_SELF."?main.news_title.".($id == "desc" ? "asc" : "desc").".$from'>".NWSLAN_40."</a></td>
@@ -939,7 +939,7 @@ class newspost {
 
 		$_PR['news_file'] = $_POST['news_file'];
 		$_PR['news_image'] = $_POST['news_image'];
-  
+
 		$ix->render_newsitem($_PR);
 	}
 
