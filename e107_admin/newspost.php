@@ -57,6 +57,7 @@ if($action == "cat" && $sub_action == "confirm"){
 if($action == "sn" && $sub_action == "confirm"){
         if($sql -> db_Delete("submitnews", "submitnews_id='$id' ")){
                 $newspost -> show_message(NWSLAN_34." #".$id." ".NWSLAN_32);
+                clear_cache("news.php");
                 unset($id);
         }
 }
@@ -119,6 +120,7 @@ if(IsSet($_POST['save_prefs'])){
         $pref['subnews_htmlarea'] = $_POST['subnews_htmlarea'];
 
         save_prefs();
+        clear_cache("news.php");
         $newspost -> show_message("Settings Saved");
 }
 
