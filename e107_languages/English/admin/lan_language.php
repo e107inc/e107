@@ -14,5 +14,8 @@ define("LANG_LAN_08", "Replace existing tables (data will be lost).");
 
 define("LANG_LAN_10", "Confirm delete");
 define("LANG_LAN_11", "Delete unchecked tables above (if they exist).");
+define("LANG_LAN_12", "Enable Multi-Language");
+define("LANG_LAN_13", "Multi-Language Preferences");
+
 
 ?>
