@@ -12,13 +12,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2005-01-27 04:52:01 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.56 $
+|     $Date: 2005-01-27 15:12:46 $
+|     $Author: mrpete $
 +----------------------------------------------------------------------------+
 */
 
-$eTimingStart = explode(' ', microtime()); // Honest global beginning point for processing time
+$eTimingStart = microtime(); // Honest global beginning point for processing time
 
 //unset any globals created by register_globals being turned ON
 while (list($global) = each($GLOBALS)) {
@@ -112,10 +112,10 @@ if (strstr(e_MENU, "debug")) {
 
 
 // Basic levels
-define('E107_DBG_BASIC',(E107_DEBUG_LEVEL & 1));         // error level and other basics, incl query error counts
-define('E107_DBG_FILLIN2',(E107_DEBUG_LEVEL & 2));     // fill in what it is...already in use?
-define('E107_DBG_FILLIN4',(E107_DEBUG_LEVEL & 4));       // fill in what it is...already in use?
-define('E107_DBG_SQLQUERIES',(E107_DEBUG_LEVEL & 8));    // display all sql queries
+define('E107_DBG_BASIC',(E107_DEBUG_LEVEL & 1));         // basics: worst php errors, sql errors, etc
+define('E107_DBG_SQLQUERIES',(E107_DEBUG_LEVEL & 2));    // display all sql queries
+define('E107_DBG_TRAFFIC',(E107_DEBUG_LEVEL & 4));       // display traffic counters
+define('E107_DBG_FILLIN8',(E107_DEBUG_LEVEL & 8));       // fill in what it is
 define('E107_DBG_FILLIN16',(E107_DEBUG_LEVEL & 16));         // fill in what it is
 define('E107_DBG_FILLIN32',(E107_DEBUG_LEVEL & 32));         // fill in what it is
 define('E107_DBG_FILLIN64',(E107_DEBUG_LEVEL & 64));         // fill in what it is
@@ -151,7 +151,9 @@ define("MPREFIX", $mySQLprefix);
 
 e107_require_once(e_HANDLER."mysql_class.php");
 e107_require_once(e_HANDLER.'e_parse_class.php');
+e107_require_once(e_HANDLER.'traffic_class.php');
 
+$eTraffic = new e107_traffic; // Traffic counts can begin now
 $tp = new e_parse;
 $sql = new db;
 $sql->db_SetErrorReporting(FALSE);
