@@ -12,7 +12,7 @@
 | GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
-	
+
 //
 // Simple functionality:
 // Grab all prefs once, in one DB query. Reuse them throughout the session.
@@ -27,25 +27,31 @@
 //       (while processing a single web page)
 //  Just to be safe I have changed a number of menu_pref edits to use setArray().
 //
-	
+
 class prefs {
 	var $prefVals;
 	var $prefArrays;
-	 
-	/**
-	* Constructor
-	*/
-	function prefs() {
+
+	// List of rows that shouldn't be automatically extracted (delimeted by '|')
+	var $DefaultIgnoreRows = 'pref_backup|SitePrefs_Backup';
+
+	function ExtractPrefs() {
 		global $sql;
-		/* Preload core table */
-		$table = 'core';
-		$sql->db_Select($table);
+		$IgnoredRowsArray = explode('|', $this->DefaultIgnoreRows);
+		$Args = '';
+		$i = 0;
+		foreach ($IgnoredRowsArray as $Name){
+			$Args .= ($i == 0 ? '' : ' AND ').'`e107_name` != \''.$Name.'\'';
+			$i++;
+		}
+		$Args = trim($Args);
+		$sql->db_Select('core', '*', $Args, 'default', true);
 		while ($row = $sql->db_Fetch()) {
 			extract($row);
-			$this->prefVals[$table][$e107_name] = stripslashes($e107_value);
+			$this->prefVals['core'][$e107_name] = $e107_value;
 		}
 	}
-	 
+
 	/**
 	* Return current pref string $name from $table (only core for now)
 	*
@@ -54,14 +60,24 @@ class prefs {
 	* - @return  string pref value, slashes already stripped
 	* - @access  public
 	*/
-	function get($name, $table = "core") {
-		// retrieve the prefs for $name
-		if ($table == 'core') {
-			return $this->prefVals[$table][$name];
+	function get($Name) {
+		global $sql;
+		if(isset($this->prefVals['core'][$Name])){
+			if($this->prefVals['core'][$Name] != '### ROW CACHE FALSE ###'){
+				return $this->prefVals['core'][$Name];
+			} else {
+				return false;
+			}
+		} elseif($sql->db_Select('core', '*', "`e107_name` = '{$Name}'", 'default', true)) {
+			$row = $sql->db_Fetch();
+			$this->prefVals['core'][$Name] = $row['e107_name'];
+			return $this->prefVals['core'][$Name];
+		} else {
+			$this->prefVals['core'][$Name] = '### ROW CACHE FALSE ###';
+			return false;
 		}
-		return FALSE;
 	}
-	 
+
 	/**
 	* Return current array from pref string $name in $table (core only for now)
 	*
@@ -77,8 +93,8 @@ class prefs {
 		}
 		return $this->prefArrays[$table][$name];
 	}
-	 
-	 
+
+
 	/**
 	* Update pref set and cache
 	*
@@ -101,14 +117,14 @@ class prefs {
 			switch ($table) {
 				case 'core':
 				$name = "pref";
-				 break;
+				break;
 				case 'user':
 				$name = "user_pref";
-				 break;
+				break;
 			}
 		}
 		$val = addslashes($val);
-		 
+
 		switch ($table ) {
 			case 'core':
 			$sql->db_Update($table, "e107_value='$val' WHERE e107_name='$name'");
@@ -120,8 +136,8 @@ class prefs {
 			break;
 		}
 	}
-	 
-	 
+
+
 	/**
 	* Update pref set and cache
 	*
@@ -140,25 +156,25 @@ class prefs {
 	*/
 	function setArray($name = "", $table = "core", $uid = USERID) {
 		global $tp;
-		 
+
 		if (!strlen($name)) {
 			switch ($table) {
 				case 'core':
 				$name = "pref";
-				 break;
+				break;
 				case 'user':
 				$name = "user_pref";
-				 break;
+				break;
 			}
 		}
-		 
+
 		global $$name;
 		if ($name != "menu_pref") {
 			foreach($$name as $key => $prefvalue) {
 				$$name[$key] = $tp->toDB($prefvalue);
 			}
 		}
-		 
+
 		$tmp = serialize($$name);
 		$this->set($tmp, $name, $table, $uid);
 	}
