@@ -122,8 +122,9 @@ $ns -> tablerender(POLLAN_3, $text);
 
 $poll_total = $sql -> db_Select("poll");
 
+$act_add = (e_QUERY && !strpos(e_QUERY,"elete")) ? "?".e_QUERY : "";
 $text = "<div style='text-align:center'>
-<form method='post' action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."'>
+<form method='post' action='".e_SELF.$act_add."'>
 <table style='width:85%' class='fborder'>
 <tr>
 <td style='width:30%' class='forumheader3'><div class='normaltext'>".POLLAN_7.":</div></td>
