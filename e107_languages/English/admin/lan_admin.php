@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-03-08 16:31:37 $
-|     $Author: sweetas $
+|     $Revision: 1.20 $
+|     $Date: 2005-03-26 17:21:25 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("ADLAN_0", "News");
@@ -84,14 +84,8 @@ define("ADLAN_73", "Configure public file uploads");
 define("ADLAN_74", "Cache");
 define("ADLAN_75", "Set cache status");
 define("ADLAN_77", "You have had a news item submitted - please click here to check.");
-define("ADLAN_78", "Edit");
-define("ADLAN_79", "Delete");
-define("ADLAN_80", "tick to confirm");
-define("ADLAN_81", "Update ");
-define("ADLAN_82", "Create ");
-define("ADLAN_83", "Existing ");
-define("ADLAN_84", "Open HTML Editor ");
-define("ADLAN_85", "Submit ");
+
+
 define("ADLAN_86", "Incorrect password ");
 define("ADLAN_87", "Administrator name not found in database ");
 define("ADLAN_88", "Unable to login ");
@@ -132,7 +126,7 @@ define("ADLAN_119", "Unchecked submitted links");
 
 define("ADLAN_120", "There is a database update available, please click button to install ...");
 define("ADLAN_121", "Install");
-define("ADLAN_122", "Update");
+
 
 define("ADLAN_123", "Unchecked submitted articles");
 define("ADLAN_124", "Unchecked submitted reviews");
@@ -216,6 +210,6 @@ define("LAN_TIME","Time");
 define("LAN_YES","Yes");
 define("LAN_NO","No");
 define("LAN_EMPTY","There are no entries in the database yet");
-define("LAN_EXISTING","Existing Entries"); 
+define("LAN_EXISTING","Existing Entries");
 
 ?>
