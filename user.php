@@ -277,8 +277,11 @@ function renderuser($row, $user_entended, $mode="verbose"){
 
                         $user_prefs = unserialize($user_prefs);
                         while(list($key, $u_entended) = each($user_entended)){
+							$ut = explode("|", $u_entended);
+							if(!$ut[5] || check_class($ut[5])==TRUE){
                                 $str .= "<tr><td style='width:40%' class='forumheader3'>".user_extended_name($u_entended)."</td>
                                 <td style='width:60%' class='forumheader3'>".($user_prefs[$u_entended] ? $user_prefs[$u_entended] : "<i>".LAN_401."</i>")."</td></tr>";
+							}
                         }
                 }
 
