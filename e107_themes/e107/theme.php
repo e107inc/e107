@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107/theme.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-10-04 21:27:27 $
+|     $Revision: 1.3 $
+|     $Date: 2004-10-05 08:52:38 $
 |     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
@@ -150,11 +150,11 @@ $NEWSSTYLE = "
                 <br />
         </div>
         <div style='text-align:center'>
-                <hr />Category:
+                <hr />".LAN_THEME_4."
                 {NEWSCATEGORY}
-                Posted by:
+                ".LAN_THEME_5."
                 {NEWSAUTHOR}
-                on
+                ".LAN_THEME_6."
                 {NEWSDATE}
                 <br />
                 {NEWSCOMMENTS}
@@ -173,7 +173,7 @@ $NEWSLISTSTYLE = "
 </b>
 <div class='smalltext'>
 {NEWSAUTHOR}
-on
+".LAN_THEME_6."
 {NEWSDATE}
 {NEWSCOMMENTS}
 </div>

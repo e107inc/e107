@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/ranyart/theme.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-10-04 21:31:38 $
+|     $Revision: 1.3 $
+|     $Date: 2004-10-05 08:54:34 $
 |     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
@@ -195,7 +195,7 @@ $NEWSSTYLE = "
 </div>
 <div style='text-align:right' class='alttd9'>
 {NEWSAUTHOR}
-on
+".LAN_THEME_5."
 {NEWSDATE}
 <br />
 {NEWSCOMMENTS}
