@@ -41,7 +41,7 @@ function fpw_error($txt){
 
 if(e_QUERY){
         $tmp=explode(".",e_QUERY);
-        $tmpinfo=preg_replace("#[\W_]#","",$tmp[1]);
+        $tmpinfo=preg_replace("#[\W_]#","",$tmp[0]);
         if($sql -> db_Select("tmp","*","tmp_info LIKE '%.{$tmpinfo}' ")){
                 $row = $sql -> db_Fetch();
                 extract($row);
