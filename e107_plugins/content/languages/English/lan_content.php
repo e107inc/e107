@@ -4,11 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-02-09 16:18:39 $
+|     $Revision: 1.8 $
+|     $Date: 2005-02-09 21:19:25 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
+
 
 define("LAN_38", "vote");
 define("LAN_39", "votes");

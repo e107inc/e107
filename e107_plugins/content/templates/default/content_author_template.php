@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_author_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-03 23:31:40 $
+|     $Revision: 1.2 $
+|     $Date: 2005-02-09 21:19:25 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
-
+$CONTENT_AUTHOR_TABLE_START = "";
+$CONTENT_AUTHOR_TABLE_END = "";
 // ##### CONTENT AUTHOR -------------------------------------------------------
 if(!$CONTENT_AUTHOR_TABLE_START){
 				$CONTENT_AUTHOR_TABLE_START = "

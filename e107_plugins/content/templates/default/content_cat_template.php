@@ -11,11 +11,19 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_cat_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-03 23:31:40 $
+|     $Revision: 1.2 $
+|     $Date: 2005-02-09 21:19:25 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
+
+$CONTENT_CAT_TABLE_START = "";
+$CONTENT_CAT_TABLE = "";
+$CONTENT_CAT_TABLE_END = "";
+$CONTENT_CAT_LIST_TABLE = "";
+$CONTENT_CAT_LISTSUB_TABLE_START = "";
+$CONTENT_CAT_LISTSUB_TABLE = "";
+$CONTENT_CAT_LISTSUB_TABLE_END = "";
 
 // ##### CONTENT CAT ----------------------------------------------------------
 if(!$CONTENT_CAT_TABLE_START){
@@ -38,7 +46,9 @@ if(!$CONTENT_CAT_TABLE){
 									</span>
 									<span class='smalltext'>{CONTENT_CAT_TABLE_TEXT}</span>
 								</td>
-								<td class='smalltext' style='vertical-align:top; text-align:right; padding-top:2px; white-space:nowrap; width:5%;'>{CONTENT_CAT_TABLE_AMOUNT}</td>
+								<td class='smalltext' style='vertical-align:top; text-align:right; padding-top:2px; white-space:nowrap; width:5%;'>
+									{CONTENT_CAT_TABLE_AMOUNT}<br />{CONTENT_CAT_TABLE_COMMENT}
+								</td>
 							</tr>
 						</table>
 					</td>
@@ -104,7 +114,6 @@ if(!$CONTENT_CAT_LISTSUB_TABLE_START){
 				$CONTENT_CAT_LISTSUB_TABLE_START = "
 				<div style='text-align:center'>
 				<table style='width:95%' border='0'>";
-				//<tr><td>".CONTENT_LAN_28."</td></tr>
 }
 if(!$CONTENT_CAT_LISTSUB_TABLE){
 				$CONTENT_CAT_LISTSUB_TABLE = "

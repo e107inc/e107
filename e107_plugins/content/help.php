@@ -1,7 +1,7 @@
 <?php
 
 $lan_file = e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content_help.php';
-include(file_exists($lan_file) ? $lan_file : e_PLUGIN.'content/languages/English/lan_content_help.php');
+include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN.'content/languages/English/lan_content_help.php');
 
 if(e_QUERY){
         $tmp = explode(".", e_QUERY);
