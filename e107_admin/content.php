@@ -42,7 +42,7 @@ If(IsSet($_POST['submit'])){
         if($_POST['data'] != ""){
                 $content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
                 $content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
-                $content_content = $aj -> $_POST['data'];
+                $content_content = $aj -> formtpa($_POST['data'],"admin");
                 $sql -> db_Insert("content", "0, '".$content_heading."', '".$content_subheading."', '$content_content', '".$_POST['auto_line_breaks']."', '".time()."', '".ADMINID."', '".$_POST['content_comment']."', '', '1', 0, 0,  {$_POST['c_class']}");
                 if($_POST['content_heading']){
                         $sql -> db_Select("content", "*", "ORDER BY content_datestamp DESC LIMIT 0,1 ", $mode="no_where");
@@ -100,22 +100,21 @@ if(!$content_total = $sql -> db_Select("content", "*", "content_type='254' OR co
 <td style='width:65%' class='forumheader2'>".CNTLAN_25."</td>
 <td style='width:30%' class='forumheader2'>".CNTLAN_26."</td>
 
-
 </tr>";
 
         while($row = $sql -> db_Fetch()){
                 extract($row);
-                $text .= "<td style='width:5%; text-align:center' class='forumheader3'>$content_id</td>
+                $text .= "<tr><td style='width:5%; text-align:center' class='forumheader3'>$content_id</td>
                 <td style='width:65%' class='forumheader3'>$content_heading</td>
                 <td style='width:30%; text-align:center' class='forumheader3'>
-                ".$rs -> form_button("submit", "main_edit", CNTLAN_6, "onClick=\"document.location='".e_SELF."?edit.$content_id'\"")."
-                ".$rs -> form_button("submit", "main_delete", CNTLAN_7, "onClick=\"confirm_($content_id)\"")."
+                ".$rs -> form_button("submit", "main_edit_{$content_id}", CNTLAN_6, "onClick=\"document.location='".e_SELF."?edit.$content_id'\"")."
+                ".$rs -> form_button("submit", "main_delete_{$content_id}", CNTLAN_7, "onClick=\"confirm_($content_id)\"")."
 
                 </td>\n</tr>";
         }
         $text .= "</table>\n";
 }
-$text .= "</div>";
+$text .= "</div></div>";
 
 $ns -> tablerender(CNTLAN_5, $text);
 
@@ -149,10 +148,10 @@ $text = "<div style='text-align:center'>
 </td>
 </tr>
 <tr>
-<td style='width:20%' class='forumheader3'><u>".CNTLAN_12."</u>: </td>
+<td style='width:20%' class='forumheader3'><span style='text-decoration: underline'>".CNTLAN_12.": </span></td>
 <td style='width:80%' class='forumheader3'>";
 $insertjs = (!$pref['htmlarea'])? "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'":"";
-$text .="<textarea class='tbox' id='data' name='data' style='width:100%' rows='30' $insertjs >$content_content</textarea>";
+$text .="<textarea class='tbox' id='data' name='data' style='width:100%' rows='30' cols='60' $insertjs >$content_content</textarea>";
 
 if(!$pref['htmlarea']){
     $text .="
@@ -171,11 +170,11 @@ $text .="
 <td style='width:80%' class='forumheader3'>";
 
 if($content_parent){
-        $text .= CNTLAN_14.": <input type='radio' name='auto_line_breaks' value='0'>
-        ".CNTLAN_15.": <input type='radio' name='auto_line_breaks' value='1' checked>";
+        $text .= CNTLAN_14.": <input type='radio' name='auto_line_breaks' value='0' />
+        ".CNTLAN_15.": <input type='radio' name='auto_line_breaks' value='1' checked='checked' />";
 }else{
-        $text .= CNTLAN_14.": <input type='radio' name='auto_line_breaks' value='0' checked>
-        ".CNTLAN_15.": <input type='radio' name='auto_line_breaks' value='1'>";
+        $text .= CNTLAN_14.": <input type='radio' name='auto_line_breaks' value='0' checked='checked' />
+        ".CNTLAN_15.": <input type='radio' name='auto_line_breaks' value='1' />";
 }
 $text .= "<span class='smalltext'>".CNTLAN_22."</span>
 </td></tr>
@@ -185,11 +184,11 @@ $text .= "<span class='smalltext'>".CNTLAN_22."</span>
 
 
 if(!$content_comment){
-        $text .= CNTLAN_14.": <input type='radio' name='content_comment' value='1'>
-        ".CNTLAN_15.": <input type='radio' name='content_comment' value='0' checked>";
+        $text .= CNTLAN_14.": <input type='radio' name='content_comment' value='1' />
+        ".CNTLAN_15.": <input type='radio' name='content_comment' value='0' checked='checked' />";
 }else{
-        $text .= CNTLAN_14.": <input type='radio' name='content_comment' value='1' checked>
-        ".CNTLAN_15.": <input type='radio' name='content_comment' value='0'>";
+        $text .= CNTLAN_14.": <input type='radio' name='content_comment' value='1' checked='checked' />
+        ".CNTLAN_15.": <input type='radio' name='content_comment' value='0' />";
 }
 
 
@@ -209,7 +208,7 @@ $text.="
 
 if($action == "edit"){
         $text .= "<input class='button' type='submit' name='update' value='".CNTLAN_16."' />
-        <input type='hidden' name='content_id' value='$content_id'>";
+        <input type='hidden' name='content_id' value='$content_id' />";
 }else{
         $text .= "<input class='button' type='submit' name='submit' value='".CNTLAN_17."' />";
 }
