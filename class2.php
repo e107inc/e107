@@ -299,7 +299,7 @@ if($pref['flood_protect']){  define(FLOODPROTECT, TRUE); define(FLOODTIMEOUT, $p
 define ("HEADERF", e_THEME."templates/header".$layout.".php");
 define ("FOOTERF", e_THEME."templates/footer".$layout.".php");
 if(!file_exists(HEADERF)){message_handler("CRITICAL_ERROR", "Unable to find file: ".HEADERF,  __LINE__-2, __FILE__);}
-if(!file_exists(FOOTERF)){message_handler("CRITICAL_ERROR", "Unable to find file: ".HEADERF,  __LINE__-2, __FILE__);}
+if(!file_exists(FOOTERF)){message_handler("CRITICAL_ERROR", "Unable to find file: ".FOOTERF,  __LINE__-2, __FILE__);}
 
 define("LOGINMESSAGE", "");
 $ns = new e107table;
@@ -513,7 +513,8 @@ class textparse{
                         $text = str_replace($this->searchb, $this->replace, $text);
                 }
                 $text = str_replace("$", "&#36;", $text);                
-                if($mode != "nobreak"){ $text = nl2br($text); }
+				$text = code($text, "notdef");
+            if($mode != "nobreak"){ $text = nl2br($text); }
 				$text = preg_replace("/\n/i", " ", $text);
 				$text = str_replace("<br />", " <br />" , $text);
 				$text = e107_parse($text,$referrer);
@@ -528,7 +529,6 @@ class textparse{
 				$text = str_replace("<br /><br />", "<br />", $text);
 				$text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $text);
 				$text = substr($text, 1);
-				$text = code($text, "notdef");
 				$text = html($text);
 				return $text;
                 }
@@ -1028,36 +1028,51 @@ function cookie($name, $value, $expire, $path="/", $domain="", $secure=0){
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function html($string){
-        $match_count = preg_match_all("#\[html\](.*?)\[/html\]#si", $string, $result);
-        for ($a = 0; $a < $match_count; $a++){
-                $after_replace = str_replace("<br />", "", $result[1][$a]);
-                $string = str_replace("[html]".$result[1][$a]."[/html]", $after_replace, $string);
-        }
-        return $string;
+	global $pref, $aj;
+	$match_count = preg_match_all("#\[html\](.*?)\[/html\]#si", $string, $result);
+	for ($a = 0; $a < $match_count; $a++){
+		if($pref['smiley_activate']){
+			if(!is_object($aj)){$aj = new textparse;}
+     		$after_replace = str_replace($aj->replace, $aj->searcha, $result[1][$a]);
+		} else {
+			$after_replace= $result[1][$a];
+		}
+		$after_replace = str_replace("<br />", "\n", $after_replace);
+		$after_replace=nl2br($after_replace);
+		$string = str_replace("[html]".$result[1][$a]."[/html]", $after_replace, $string);
+	}
+	return $string;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function code($string, $mode="default"){
-        $search = array("<", ">", "[", "]", " ");
-        $replace = array("&lt;", "&gt;", "&#091;", "&#093;", "&nbsp;");
-
-        if($mode == "default"){
-                $match_count = preg_match_all("#\[code\](.*?)\[/code\]#si", $string, $result);
-                for ($a = 0; $a < $match_count; $a++){
-                        $after_replace = str_replace($search, $replace, $result[1][$a]);
-                        $string = str_replace("[code]".$result[1][$a]."[/code]", "[code]".$after_replace."[/code]", $string);
-                }
-                return $string;
-        }
-
-        $match_count = preg_match_all("#\[code\](.*?)\[/code\]#si", $string, $result);
-        for ($a = 0; $a < $match_count; $a++){
-                $colourtext = str_replace($search, $replace, $result[1][$a]);
-                $string = str_replace("[code]".$result[1][$a]."[/code]", "<div class='indent'>".$colourtext."</div>", $string);
-        }
-
-        $string = str_replace("&lt;br&nbsp;/&gt;", "<br />", $string);
-
-        return $string;
+	global $pref, $aj;
+	$search = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&lt;span", "&lt;/span");
+	$replace =  array("\"", "'", "\\", '\"', "\'", "<span", "</span");
+	$string = str_replace($search, $replace, $string);
+	$match_count = preg_match_all("#(\[code(.*?)\])(.*?)\[/code\]#si", $string, $result);
+	for ($a = 0; $a < $match_count; $a++){
+		if($pref['smiley_activate']){
+			if(!is_object($aj)){$aj = new textparse;}
+    			$after_replace = str_replace($aj->replace, $aj->searcha, $result[3][$a]);
+		} else {
+			$after_replace= $result[3][$a];
+		}
+		if(strpos($result[2][$a],'highlight')){
+			$after_replace = str_replace("&#036;","$",$after_replace);
+			$after_replace=highlight_string($after_replace,TRUE);
+			$after_replace=str_replace("<br />","",$after_replace);
+		} else {
+			$after_replace = str_replace("&#036;","$",$after_replace);
+			$after_replace=htmlentities($after_replace);
+		}
+		if(strpos($result[2][$a],'indent')){
+			$class="indent";
+		} else {
+			$class="";
+		}
+		$string = str_replace($result[1][$a].$result[3][$a]."[/code]", "<div class='{$class}'>".$after_replace."</div>", $string);
+	}
+	return $string;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function checkvalidtheme($theme_check){
