@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/includes/categories.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-03-08 16:58:38 $
+|     $Revision: 1.7 $
+|     $Date: 2005-03-09 10:40:42 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ foreach ($admin_cat['id'] as $cat_key => $cat_id) {
 	$text_cat = "<tr><td class='fcaption' colspan='2'>".$admin_cat['title'][$cat_key]."</td></tr>
 		<tr><td class='forumheader3' style='text-align: center; vertical-align: middle; width: 72px; height: 48px'>".$admin_cat['lrg_img'][$cat_key]."</td><td class='forumheader3'>
 		<table style='width:100%'>";
-	if ($cat_key != 6) {
+	if ($cat_key != 5) {
 		foreach ($newarray as $key => $funcinfo) {
 			if ($funcinfo[4] == $cat_key) {
 				$text_rend = render_links($funcinfo[0], $funcinfo[1], $funcinfo[2], $funcinfo[3], $funcinfo[5], 'default');

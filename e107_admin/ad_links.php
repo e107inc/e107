@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/ad_links.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-03-08 16:58:34 $
+|     $Revision: 1.25 $
+|     $Date: 2005-03-09 10:39:58 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -379,15 +379,15 @@ $admin_cat['id'][3] = 'contMenu';
 $admin_cat['img'][3] = E_16_CAT_CONT;
 $admin_cat['lrg_img'][3] = E_32_CAT_CONT;
 	
-$admin_cat['title'][5] = ADLAN_CL_6;
-$admin_cat['id'][5] = 'toolMenu';
-$admin_cat['img'][5] = E_16_CAT_TOOL;
-$admin_cat['lrg_img'][5] = E_32_CAT_TOOL;
+$admin_cat['title'][4] = ADLAN_CL_6;
+$admin_cat['id'][4] = 'toolMenu';
+$admin_cat['img'][4] = E_16_CAT_TOOL;
+$admin_cat['lrg_img'][4] = E_32_CAT_TOOL;
 
-$admin_cat['title'][6] = ADLAN_CL_7;
-$admin_cat['id'][6] = 'plugMenu';
-$admin_cat['img'][6] = E_16_CAT_PLUG;
-$admin_cat['lrg_img'][6] = E_32_CAT_PLUG;
+$admin_cat['title'][5] = ADLAN_CL_7;
+$admin_cat['id'][5] = 'plugMenu';
+$admin_cat['img'][5] = E_16_CAT_PLUG;
+$admin_cat['lrg_img'][5] = E_32_CAT_PLUG;
 	
 // Info about attributes
 /*
@@ -401,28 +401,28 @@ attribute 7 = 32 x 32 image
 */
 	
 $array_functions = array(
-0 => array(e_ADMIN."administrator.php", ADLAN_8, ADLAN_9, "3", 2, E_16_ADMIN, E_32_ADMIN),
+	0 => array(e_ADMIN."administrator.php", ADLAN_8, ADLAN_9, "3", 2, E_16_ADMIN, E_32_ADMIN),
 	1 => array(e_ADMIN."updateadmin.php", ADLAN_10, ADLAN_11, "", 2, E_16_ADPASS, E_32_ADPASS),
 	2 => array(e_ADMIN."banlist.php", ADLAN_34, ADLAN_35, "4", 2, E_16_BANLIST, E_32_BANLIST),
 	3 => array(e_ADMIN."banner.php", ADLAN_54, ADLAN_55, "D", 3, E_16_BANNER, E_32_BANNER),
 	4 => array(e_ADMIN."cache.php", ADLAN_74, ADLAN_75, "0", 1, E_16_CACHE, E_32_CACHE),
 	5 => array(e_ADMIN."custommenu.php", ADLAN_42, ADLAN_43, "2", 3, E_16_CUST, E_32_CUST),
-	6 => array(e_ADMIN."db.php", ADLAN_44, ADLAN_45, "0", 5, E_16_DATAB, E_32_DATAB),
+	6 => array(e_ADMIN."db.php", ADLAN_44, ADLAN_45, "0", 4, E_16_DATAB, E_32_DATAB),
 	7 => array(e_ADMIN."download.php", ADLAN_24, ADLAN_25, "R", 3, E_16_DOWNL, E_32_DOWNL),
 	8 => array(e_ADMIN."emoticon.php", ADLAN_58, ADLAN_59, "F", 1, E_16_EMOTE, E_32_EMOTE),
-	9 => array(e_ADMIN."filemanager.php", ADLAN_30, ADLAN_31, "6", 5, E_16_FILE, E_32_FILE),
+	9 => array(e_ADMIN."filemanager.php", ADLAN_30, ADLAN_31, "6", 4, E_16_FILE, E_32_FILE),
 	10 => array(e_ADMIN."frontpage.php", ADLAN_60, ADLAN_61, "G", 1, E_16_FRONT, E_32_FRONT),
 	11 => array(e_ADMIN."image.php", ADLAN_105, ADLAN_106, "5", 1, E_16_IMAGES, E_32_IMAGES),
 	12 => array(e_ADMIN."links.php", ADLAN_138, ADLAN_139, "I", 1, E_16_LINKS, E_32_LINKS),
 	13 => array(e_ADMIN."wmessage.php", ADLAN_28, ADLAN_29, "M", 3, E_16_WELCOME, E_32_WELCOME),
-	14 => array(e_ADMIN."ugflag.php", ADLAN_40, ADLAN_41, "9", 5, E_16_MAINTAIN, E_32_MAINTAIN),
+	14 => array(e_ADMIN."ugflag.php", ADLAN_40, ADLAN_41, "9", 4, E_16_MAINTAIN, E_32_MAINTAIN),
 	15 => array(e_ADMIN."menus.php", ADLAN_6, ADLAN_7, "2", 3, E_16_MENUS, E_32_MENUS),
 	16 => array(e_ADMIN."meta.php", ADLAN_66, ADLAN_67, "T", 1, E_16_META, E_32_META),
 	17 => array(e_ADMIN."newspost.php", ADLAN_0, ADLAN_1, "H", 3, E_16_NEWS, E_32_NEWS),
-	18 => array(e_ADMIN."phpinfo.php", ADLAN_68, ADLAN_69, "0", 5, E_16_PHP, E_32_PHP),
+	18 => array(e_ADMIN."phpinfo.php", ADLAN_68, ADLAN_69, "0", 4, E_16_PHP, E_32_PHP),
 	19 => array(e_ADMIN."prefs.php", ADLAN_4, ADLAN_5, "1", 1, E_16_PREFS, E_32_PREFS),
 	20 => array(e_ADMIN."search.php", ADLAN_142, ADLAN_143, "X", 1, E_16_SEARCH, E_32_SEARCH),
-	21 => array(e_ADMIN."theme.php", ADLAN_140, ADLAN_141, "1", 5, E_16_THEMEMANAGER, E_32_THEMEMANAGER),
+	21 => array(e_ADMIN."theme.php", ADLAN_140, ADLAN_141, "1", 4, E_16_THEMEMANAGER, E_32_THEMEMANAGER),
 	22 => array(e_ADMIN."upload.php", ADLAN_72, ADLAN_73, "V", 3, E_16_UPLOADS, E_32_UPLOADS),
 	23 => array(e_ADMIN."users.php", ADLAN_36, ADLAN_37, "4", 2, E_16_USER, E_32_USER),
 	24 => array(e_ADMIN."userclass2.php", ADLAN_38, ADLAN_39, "4", 2, E_16_USERCLASS, E_32_USERCLASS),

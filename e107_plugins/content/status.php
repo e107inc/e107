@@ -1,6 +1,5 @@
 <?php
-
-if(!is_object($sql2)){ $sql2 = new db; }
+$sql2 = new db;
 $maincat = $sql -> db_Select("pcontent", "content_id, content_heading", "content_parent = '0' ORDER BY content_heading");
 while($row = $sql -> db_Fetch()){
 	extract($row);

@@ -35,7 +35,7 @@ if (ADMIN) {
 
 	$text .= adnav_cat('Main', e_ADMIN.'admin.php', E_16_NAV_MAIN);
 
-	for($i=1;$i<7;$i++){
+	for ($i = 1; $i < 5; $i++) {
 		$ad_tmpi = 0;
 		$ad_links_array = asortbyindex($array_functions, 1);
 		$nav_main = adnav_cat($admin_cat['title'][$i], '', $admin_cat['img'][$i], $admin_cat['id'][$i]);
@@ -70,6 +70,7 @@ if (ADMIN) {
 			}
 		}
 		ksort($plugin_array, SORT_STRING);
+		$plugs_text = '';
 		foreach ($plugin_array as $plugin_compile) {
 			$plugs_text .= $plugin_compile;
 		}
@@ -77,7 +78,7 @@ if (ADMIN) {
 	
 	if (getperms('Z')) {
 		$pclass_extended = $active_plugs ? 'header' : '';
-		$plugin_text .= adnav_main(ADLAN_98, e_ADMIN.'plugin.php', E_16_PLUGMANAGER, FALSE, $pclass_extended);
+		$plugin_text = adnav_main(ADLAN_98, e_ADMIN.'plugin.php', E_16_PLUGMANAGER, FALSE, $pclass_extended);
 		$render_plugins = TRUE;
 	}
 	

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/plugin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-30 19:33:33 $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-09 10:40:42 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -98,7 +98,7 @@ $eplug_tables = array(
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
 $eplug_link = TRUE;
 $eplug_link_name = "Forum";
-$eplug_link_url = $PLUGINS_DIRECTORY.'forum/forum.php';
+$eplug_link_url = e_PLUGIN.'forum/forum.php';
 	
 // Text to display after plugin successfully installed ------------------------------------------------------------------
 $eplug_done = 'Your forum is now installed';

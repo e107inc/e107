@@ -170,9 +170,9 @@ define("POST_EXTENDEDSTRING", " ]<br />");
 function tablestyle($caption, $text, $mode){
 	global $style;
 	if ($caption == '') { $caption = '&nbsp;'; }
-	$bodytable = $mode['style']=='button_menu' ? 'menu_content_buttons' : 'menu_content';
-	$bodybreak = $mode['style']=='button_menu' ? '' : '<br />';
-	$r_caption_bord_but = $mode['style']=='button_menu' ? ' button_menu' : '';
+	$bodytable = (isset($mode['style']) && $mode['style'] == 'button_menu') ? 'menu_content_buttons' : 'menu_content';
+	$bodybreak = (isset($mode['style']) && $mode['style'] == 'button_menu') ? '' : '<br />';
+	$r_caption_bord_but = (isset($mode['style']) && $mode['style'] == 'button_menu') ? ' button_menu' : '';
 	if ($style == "leftmenu") {
 		echo "<div class='cap_border'><div class='left_caption'>".$caption."</div></div>";
 		if ($text != "") {

@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.24 $
-|   $Date: 2005-02-25 07:42:37 $
-|   $Author: e107coders $
+|   $Revision: 1.25 $
+|   $Date: 2005-03-09 10:39:58 $
+|   $Author: sweetas $
 +---------------------------------------------------------------+
 */
 if (!defined('e_HTTP')) {
@@ -69,7 +69,7 @@ if (filesize(e_FILE.'user.js')) {
 if (function_exists("headerjs")) {
 	echo headerjs();
 }
-if ($htmlarea_js) {
+if (isset($htmlarea_js) && $htmlarea_js) {
 	echo $htmlarea_js;
 }
 echo "<script type='text/javascript'>
@@ -78,10 +78,10 @@ echo "<script type='text/javascript'>
 			document.getElementById(ps).submit();
 		}
 	</script> ";
-if ($eplug_js) {
+if (isset($eplug_js) && $eplug_js) {
 	echo "<script type='text/javascript' src='{$eplug_js}'></script>\n";
 }
-if ($eplug_css) {
+if (isset($eplug_css) && $eplug_css) {
 	echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n";
 }
 if((ADMIN || $pref['allow_html']) && $pref['wysiwyg'] && $e_wysiwyg == TRUE){
