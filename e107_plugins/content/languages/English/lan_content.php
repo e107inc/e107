@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-02-06 21:34:22 $
+|     $Revision: 1.3 $
+|     $Date: 2005-02-07 12:21:49 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -51,7 +51,7 @@ define("CONTENT_ADMIN_CAT_LAN_31", "remove");
 define("CONTENT_ADMIN_CAT_LAN_32", "clear class");
 define("CONTENT_ADMIN_CAT_LAN_33", "assign admins to category");
 define("CONTENT_ADMIN_CAT_LAN_34", "admins succesfully assigned to the category");
-define("CONTENT_ADMIN_CAT_LAN_35", "");
+define("CONTENT_ADMIN_CAT_LAN_35", "content sub category deleted");
 define("CONTENT_ADMIN_CAT_LAN_36", "");
 define("CONTENT_ADMIN_CAT_LAN_37", "");
 define("CONTENT_ADMIN_CAT_LAN_38", "");
@@ -202,7 +202,7 @@ define("CONTENT_ADMIN_ITEM_LAN_44", "create content item");
 define("CONTENT_ADMIN_ITEM_LAN_45", "update content item");
 define("CONTENT_ADMIN_ITEM_LAN_46", "preview");
 define("CONTENT_ADMIN_ITEM_LAN_47", "preview again");
-define("CONTENT_ADMIN_ITEM_LAN_48", "main parent category");
+define("CONTENT_ADMIN_ITEM_LAN_48", "main parent");
 define("CONTENT_ADMIN_ITEM_LAN_49", "submitted content items");
 define("CONTENT_ADMIN_ITEM_LAN_50", "no submitted content items");
 define("CONTENT_ADMIN_ITEM_LAN_51", "author details<br /> leave if article written by you");
@@ -246,6 +246,8 @@ define("CONTENT_ADMIN_JS_LAN_5", "file");
 define("CONTENT_ADMIN_JS_LAN_6", "ID");
 define("CONTENT_ADMIN_JS_LAN_7", "are you sure you want to remove the current icon ?");
 define("CONTENT_ADMIN_JS_LAN_8", "icon");
+define("CONTENT_ADMIN_JS_LAN_9", "WARNING :\\nby deleting this category, all subcategories (if present for this category),\\nwill be deleted as well!");
+define("CONTENT_ADMIN_JS_LAN_10", "Are you sure you want to delete this submitted content before posting it?");
 
 define("CONTENT_ADMIN_DATE_LAN_0", "January");
 define("CONTENT_ADMIN_DATE_LAN_1", "February");

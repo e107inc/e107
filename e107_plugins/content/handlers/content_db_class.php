@@ -12,13 +12,13 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.2 $
-|		$Date: 2005-02-04 10:37:09 $
+|		$Revision: 1.3 $
+|		$Date: 2005-02-07 12:21:48 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
-$plugintable = "pcontent";		//name of the table used in this plugin
+//$plugintable = "pcontent";		//name of the table used in this plugin
 
 if (!defined('ADMIN_WIDTH')) { define("ADMIN_WIDTH", "width:98%;"); }
 
@@ -60,8 +60,8 @@ class contentdb{
 								if($_POST['content_icon'] && !$uploadedicon){
 									$icon = $_POST['content_icon'];
 								} else {
-									require_once(e_HANDLER."resize_handler.php");
-									resize_image($pathicon.$uploadedicon[0]['name'], $pathicon.$uploadedicon[0]['name'], 250, "copy");
+									//require_once(e_HANDLER."resize_handler.php");
+									//resize_image($pathicon.$uploadedicon[0]['name'], $pathicon.$uploadedicon[0]['name'], 250, "copy");
 									$fileorgicon = $uploadedicon[0]['name'];
 									$fileext2icon = substr(strrchr($fileorgicon, "."), 0);
 									if($fileorgicon){
@@ -229,8 +229,8 @@ class contentdb{
 								if($_POST['content_icon'] && !$uploadedicon){
 									$icon = $_POST['content_icon'];
 								} else {
-									require_once(e_HANDLER."resize_handler.php");
-									resize_image($pathicon.$uploadedicon[0]['name'], $pathicon.$uploadedicon[0]['name'], 250, "copy");
+									//require_once(e_HANDLER."resize_handler.php");
+									//resize_image($pathicon.$uploadedicon[0]['name'], $pathicon.$uploadedicon[0]['name'], 250, "copy");
 									$fileorgicon = $uploadedicon[0]['name'];
 									$fileext2icon = substr(strrchr($fileorgicon, "."), 0);
 									if($fileorgicon){
@@ -404,6 +404,7 @@ class contentdb{
 							$sql -> db_Select($plugintable, "content_id", "content_parent = '0' ORDER BY content_datestamp DESC LIMIT 1");
 							list($parent_id) = $sql -> db_Fetch();
 							$content_pref = $aa -> getContentPref($parent_id);
+							$aa -> CreateParentMenu($parent_id);
 						}
 
 						if($mode == "admin"){
