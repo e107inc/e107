@@ -17,6 +17,7 @@ if(!getperms("Z")){ header("location:".e_HTTP."index.php"); exit; }
 require_once("auth.php");
 require_once(e_HANDLER."parser_handler.php");
 
+
 //        check for new plugins, create entry in plugin table ...
 $handle=opendir(e_PLUGIN);
 while(false !== ($file = readdir($handle))){
@@ -48,7 +49,7 @@ while($row = $sql -> db_fetch()){
 
 if(strstr(e_QUERY, "uninstall")){
         $tmp = explode(".", e_QUERY);
-        $id = $tmp[1]; unset($tmp);
+        $id = intval($tmp[1]); unset($tmp);
 
         $sql -> db_Select("plugin", "*", "plugin_id='$id' ");
         $row = $sql -> db_Fetch(); extract($row);
@@ -79,7 +80,7 @@ if(IsSet($_POST['confirm'])){
         $id = $_POST['id'];
         $sql -> db_Select("plugin", "*", "plugin_id='$id' ");
         $row = $sql -> db_Fetch(); extract($row);
-        if($plugin_installflag){
+        if($plugin_installflag){  //Uninstall Plugin
                 include(e_PLUGIN.$plugin_path."/plugin.php");
                 if(is_array($eplug_tables)){
                         while(list($key, $e_table) = each($eplug_table_names)){
@@ -100,6 +101,16 @@ if(IsSet($_POST['confirm'])){
                         save_prefs();
                         $text .= EPL_ADLAN_29."<br />";
                 }
+					if($eplug_module){
+						$mods=explode(",",$pref['modules']);
+						foreach($mods as $k => $v){
+							if($v == $eplug_folder){unset($mods[$k]);}
+						}
+						$pref['modules'] = implode(",",$mods);
+                  save_prefs();
+                }
+
+
                 if(is_array($eplug_user_prefs)){
                         $sql = new db;
                         $sql -> db_Select("core", " e107_value", " e107_name='user_entended'");
@@ -173,6 +184,16 @@ if(strstr(e_QUERY, "install")){
                         $text .= EPL_ADLAN_20."<br />";
 
                 }
+					if($eplug_module){
+						$mods = explode(",",$pref['modules']);
+						if(!in_array($eplug_folder,$mods)){
+							$mods[]=$eplug_folder;
+						}
+						$pref['modules'] = implode(",",$mods);
+                  save_prefs();
+               }
+						
+
                 if(is_array($eplug_user_prefs)){
                         $sql = new db;
                         $sql -> db_Select("core", " e107_value", " e107_name='user_entended'");
@@ -376,6 +397,7 @@ $ns -> tablerender(Plugins, $text);
 
 
 
+echo "pref-modules = [{$pref['modules']}]";
 
 
 require_once("footer.php");
