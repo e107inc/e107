@@ -23,7 +23,7 @@ if(!USER && $pref['search_restrict']==1){
 }
 
 $_POST['searchquery'] = trim(chop($_POST['searchquery']));
-if(IsSet($_POST['searchquery']) && $_POST['searchtype'] == "98"){ header("location:http://www.google.com/search?q=".stripslashes(str_replace(" ", "+", $_POST['searchquery']))); exit; }
+if(IsSet($_POST['searchquery']) && $_POST['searchtype'][0] == "98"){ header("location:http://www.google.com/search?q=".stripslashes(str_replace(" ", "+", $_POST['searchquery']))); exit; }
 require_once(HEADERF);
 
 if($_POST['searchquery'] && strlen($_POST['searchquery']) < 3){
@@ -58,7 +58,7 @@ while(false !== ($file = readdir($handle))){
 	}
 }
 
-$search_info[99]=array( 'sfile' => '','qtype' => LAN_192);
+//$search_info[99]=array( 'sfile' => '','qtype' => LAN_192);
 						
 $con=new convert;
 if(!$refpage = substr($_SERVER['HTTP_REFERER'], (strrpos($_SERVER['HTTP_REFERER'], "/")+1))){ $refpage = "index.php"; }
@@ -84,41 +84,71 @@ if($_POST['searchtype']){
 //	if(!$searchtype){ $searchtype = 1; }
 	if($_POST['searchtype']==0 && !$searchtype || $refpage == "news.php"){ $searchtype = 0; }
 }
-
-$text = "<div style='text-align:center'><form method='post' action='".e_SELF."'>
-<p>
-".LAN_199." <input class='tbox' type='text' name='searchquery' size='20' value='$query' maxlength='50' />
-&nbsp;".LAN_200." <select name='searchtype' class='tbox'>";
+if($_POST['searchtype'] == "99"){
+	unset($_POST['searchtype']);
+	foreach($search_info as $key => $si){
+		$_POST['searchtype'][] = $key;
+	}
+}
+$text = "<div ><form name='searchform' method='post' action='".e_SELF."'>
+<table style='width:95%' class='fborder'>
+<tr>
+<td colspan='2' class='forumheader'>
+".LAN_180."
+</td>
+</tr>
+<tr>
+<td class='forumheader2' style='width:20%'>
+".LAN_199." </td>
+<td class='forumheader3' style='width:80%'>
+<input class='tbox' type='text' name='searchquery' size='40' value='$query' maxlength='50' />
+<span class='smalltext'>".LAN_417."</span>
+</td>
+</tr>
+<tr>
+<td style='width:20%' class='forumheader2'>
+&nbsp;".LAN_200." 
+</td>
+<td style='width:80%' class='forumheader3'>";
 
 foreach($search_info as $key => $si){
-	($searchtype==$key) ? $sel=" selected" : $sel="";
-	$text.="<option value='{$key}' {$sel}>{$si['qtype']}</option>\n";
+	//($_POST['searchtype'][$key]==$key ) ? $sel=" checked" : $sel="";
+	$text.="<input onclick=\"getElementById('google').checked = false\"   type='checkbox' name='searchtype[]' value='{$key}' >{$si['qtype']}\n";
 }
 
 $text .= "
-<option value='98'>Google</option>
-</select>
+<input id='google' type='checkbox' name='searchtype[]'  onClick='uncheckAll(this)' value='98'>Google</option>
+<br />
+<input class='button' type='button' name='CheckAll' value='Check All'
+onClick='checkAll(this);'>
+<input class='button' type='button' name='UnCheckAll' value='Uncheck All'
+onClick='uncheckAll(this);'>
+<br>
+</td>
+</tr>
+<tr>
+<td colspan='2' class='forumheader' style='text-align:center'>
+
 <input class='button' type='submit' name='searchsubmit' value='".LAN_180."' />
-</p>
+</td>
+</tr>
+</table>
 </form></div>";
+
 
 $ns -> tablerender(PAGE_NAME." ".SITENAME, $text);
 
 // only search when a query is filled.
-if($_POST['searchquery'] && $searchtype != 99){
-	
+if($_POST['searchquery']){
 	unset($text);
-	require_once($search_info[$searchtype]['sfile']);
-	$ns -> tablerender(LAN_195." ".$search_info[$searchtype]['qtype']." :: ".LAN_196.": ".$results, $text);
-}else if($searchtype == 99 && $_POST['searchquery']){
-	foreach ($search_info as $key => $si){
-		if($key != 99){
-			unset($text);
-			if(file_exists($search_info[$key]['sfile'])){
-				@require_once($search_info[$key]['sfile']);
-				$ns -> tablerender(LAN_195." ".$search_info[$key]['qtype']." :: ".LAN_196.": ".$results, $text);
+	extract($_POST);
+	$key = $_POST['searchtype'];
+	for($a=0; $a<=(count($key)-1); $a++){
+		unset($text);
+			if(file_exists($search_info[$key[$a]]['sfile'])){
+				@require_once($search_info[$key[$a]]['sfile']);
+				$ns -> tablerender(LAN_195." ".$search_info[$key[$a]]['qtype']." :: ".LAN_196.": ".$results, $text);
 			}
-		}
 	}
 }
 
@@ -136,4 +166,22 @@ function parsesearch($text, $match){
 }
 
 require_once(FOOTERF);
-?>
+?><SCRIPT LANGUAGE="JavaScript">
+function checkAll(allbox)
+{
+for (var i = 0; i < document.searchform["searchtype[]"].length-1; i++)
+	document.searchform["searchtype[]"][i].checked = true ;
+}
+
+function uncheckAll(allbox)
+{
+for (var i = 0; i < document.searchform["searchtype[]"].length-1; i++)
+	document.searchform["searchtype[]"][i].checked = false ;
+}
+
+function uncheckG(allbox)
+{
+i = document.searchform["searchtype[]"].length;
+	document.searchform["searchtype[]"][i].checked = false ;
+}
+</script>

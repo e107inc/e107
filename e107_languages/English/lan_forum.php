@@ -76,4 +76,8 @@ define("LAN_422", "New posts since your last visit");
 define("LAN_423", "Posted by");
 define("LAN_424", "New threads");
 define("LAN_425", "Re:");
+
+define("LAN_426", "Who's Online: ");
+define("LAN_427", "View detailed list");
+define("LAN_428", "Re:");
 ?>
