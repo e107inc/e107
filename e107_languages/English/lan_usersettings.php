@@ -31,22 +31,11 @@ define("LAN_402", "Type path or choose avatar");
 define("LAN_403", "Choose avatar");
 define("LAN_404", "Please note: Any image uploaded to this server which is deemed inappropriate by the administrators will be deleted immediately.");
 
-
-
 define("LAN_410", "Settings for");
 define("LAN_411", "Update Your Settings");
 define("LAN_412", "Change Your Password");
 define("LAN_413", "Choose An Avatar");
 define("LAN_414", "Upload Your Photograph");
-define("LAN_415", "Error");
-define("LAN_416", "Error");
-define("LAN_417", "Error");
-define("LAN_418", "Error");
-define("LAN_419", "Error");
-
-
-
-
-
+define("LAN_415", "Upload your avatar");
 
 ?>

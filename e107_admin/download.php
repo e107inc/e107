@@ -135,7 +135,7 @@ class download{
 		}else{
 			$text .= "<div style='text-align:center'>".DOWLAN_6."</div>";
 		}
-		$text .= "</div>";
+		$text .= "</div></div>";
 		$ns -> tablerender(DOWLAN_7, $text);
 	}
 
@@ -196,7 +196,7 @@ class download{
 		<td style='width:20%' class='forumheader3'>".DOWLAN_11.":</td>
 		<td style='width:80%' class='forumheader3'>";
 
-		$sql -> db_Select("download_category");
+		$sql -> db_Select("download_category", "*", "download_category_parent !=0");
 		$text .= "<select name='download_category' class='tbox'>\n";
 		while($row = $sql -> db_Fetch()){
 			extract($row);
@@ -397,7 +397,7 @@ class download{
 			while($row = $sql -> db_Fetch()){
 				extract($row);
 				$text .= "<tr>
-				<td style='width:5%; text-align:center' class='forumheader3'><img src='".e_IMAGE."download_icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' /></td>
+				<td style='width:5%; text-align:center' class='forumheader3'>".($download_category_icon ? "<img src='".e_IMAGE."download_icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")."</td>
 				<td style='width:75%' class='forumheader3'>$download_category_name</a></td>
 				<td style='width:20%; text-align:center' class='forumheader3'>
 				".$rs -> form_button("submit", "main_edit", DOWLAN_8, "onClick=\"document.location='".e_SELF."?cat.edit.$download_category_id'\"")."
@@ -410,7 +410,7 @@ class download{
 						extract($row);
 						$text .= "<tr>
 						<td style='width:5%; text-align:center' class='forumheader3'>&nbsp;</td>
-						<td style='width:75%' class='forumheader3'> --> <img src='".e_IMAGE."download_icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' /> $download_category_name</a></td>
+						<td style='width:75%' class='forumheader3'> --> ".($download_category_icon ? "<img src='".e_IMAGE."download_icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")." $download_category_name</a></td>
 						<td style='width:20%; text-align:center' class='forumheader3'>
 						".$rs -> form_button("submit", "main_edit", DOWLAN_8, "onClick=\"document.location='".e_SELF."?cat.edit.$download_category_id'\"")."
 						".$rs -> form_button("submit", "main_delete", DOWLAN_9, "onClick=\"confirm_('cat', $download_category_id)\"")."
@@ -422,7 +422,7 @@ class download{
 								extract($row);
 								$text .= "<tr>
 								<td style='width:5%; text-align:center' class='forumheader3'>&nbsp;</td>
-								<td style='width:75%' class='forumheader3'> ----> <img src='".e_IMAGE."download_icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' /> $download_category_name</a></td>
+								<td style='width:75%' class='forumheader3'> ----> ".($download_category_icon ? "<img src='".e_IMAGE."download_icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")." $download_category_name</a></td>
 								<td style='width:20%; text-align:center' class='forumheader3'>
 								".$rs -> form_button("submit", "main_edit", DOWLAN_8, "onClick=\"document.location='".e_SELF."?cat.edit.$download_category_id'\"")."
 								".$rs -> form_button("submit", "main_delete", DOWLAN_9, "onClick=\"confirm_('cat', $download_category_id)\"")."
@@ -511,7 +511,7 @@ class download{
 
 
 		while(list($key, $icon) = each($iconlist)){
-			$text .= "<a href='javascript:addtext2(\"$icon\")'><img src='".e_IMAGE."link_icons/".$icon."' style='border:0' alt='' /></a> ";
+			$text .= "<a href='javascript:addtext2(\"$icon\")'><img src='".e_IMAGE."download_icons/".$icon."' style='border:0' alt='' /></a> ";
 		}
 
 		$text .= "

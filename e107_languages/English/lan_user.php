@@ -46,4 +46,7 @@ define("LAN_415", "next member");
 
 define("LAN_416", "You must be logged in to access this page");
 
+define("LAN_417", "Main site administrator");
+define("LAN_418", "Site administrator");
+
 ?>

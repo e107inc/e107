@@ -16,7 +16,9 @@ require_once("../class2.php");
 if(!getperms("9")){ header("location:".e_BASE."index.php"); exit;}
 
 if(IsSet($_POST['updatesettings'])){
+	$aj = new textparse;
 	$pref['maintainance_flag'] = $_POST['maintainance_flag'];
+	$pref['maintainance_text'] = $aj -> formtpa($_POST['maintainance_text']);
 	save_prefs();
 	header("location:".e_SELF."?u");
 	exit;
@@ -46,6 +48,14 @@ if($maintainance_flag == 1){
 
 $text .= "</td>
 </tr>
+
+<tr>
+<td style='width:30%' class='forumheader3'>".UGFLAN_5."<br /><span class='smalltext'>".UGFLAN_6."</span></td>
+<td style='width:70%' class='forumheader3'>
+<textarea class='tbox' name='maintainance_text' cols='59' rows='10'>".$pref['maintainance_text']."</textarea>
+</td>
+</tr>
+
 <tr>
 <tr style='vertical-align:top'> 
 <td colspan='2'  style='text-align:center' class='forumheader'>

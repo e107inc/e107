@@ -28,6 +28,7 @@ $HELP_DIRECTORY = "e107_docs/help/";
 //ob_start ("ob_gzhandler");
 ob_start ();
 $timing_start = explode(' ', microtime());
+error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 if(!$mySQLserver){
 	@include("e107_config.php");
@@ -133,18 +134,19 @@ init_session();
 online();
 
 $fp = ($pref['frontpage'] ? $pref['frontpage'].".php" : "news.php index.php");
-if($pref['membersonly_enabled'] && !USER && !strstr($fp, e_PAGE) && e_PAGE != "signup.php" && e_PAGE != "customsignup.php"){
-	echo "<br /><br /><div style='text-align:center; font: 12px Verdana, Tahoma'>This is a restricted area, to access it either log in or <a href='signup.php'>signup for an account</a>.<br /><a href='index.php'>Click here to return to front page</a>.</div>";
+$signuplink = (file_exists($e_BASE."customsignup.php"))? "customsignup.php" : "signup.php";
+if($pref['membersonly_enabled'] && !USER && !strstr($fp, e_PAGE) && e_PAGE != "$signuplink" && e_PAGE != "index.php"){
+	echo "<br /><br /><div style='text-align:center; font: 12px Verdana, Tahoma'>This is a restricted area, to access it either log in or <a href='".$e_BASE.$signuplink."'>register as a member</a>.<br /><br /><a href='".$e_BASE."index.php'>Click here to return to front page</a>.</div>";
 	exit;
 }
 
 $sql -> db_Delete("tmp", "tmp_time < '".(time()-300)."' AND tmp_ip!='data' AND tmp_ip!='adminlog' AND tmp_ip!='submitted_link' AND tmp_ip!='var_store' ");
 
-if($pref['flood_protect'] == 1){
+if($pref['flood_protect']){
 	$sql -> db_Delete("flood", "flood_time+'".$pref['flood_time']."'<'".time()."' ");
 	$sql -> db_Insert("flood", " '".$_SERVER['PHP_SELF']."', '".time()."' ");
 	$hits = $sql -> db_Count("flood", "(*)", "WHERE flood_url = '".$_SERVER['PHP_SELF']."' ");
-	if($hits > $pref['flood_hits'] && $pref['flood_hits'] != ""){
+	if($hits > $pref['flood_hits'] && $pref['flood_hits']){
 		die();
 	}
 }
@@ -390,7 +392,7 @@ class textparse{
 		}else if(!$pref['image_post_disabled_method']){
 			$replace[13] = '\1';
 		}else{
-			$replace[13] = '';
+			$replace[13] = '[ image disabled ]';
 		}
 
 		$search[14] = "#\[center\](.*?)\[/center\]#si";
@@ -433,7 +435,7 @@ class textparse{
 		$text = " " . $text;
 		$text = preg_replace("#([\t\r\n ])([a-z0-9]+?){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="\2://\3" onclick="window.open(\'\2://\3\'); return false;">\2://\3</a>', $text);
 		$text = preg_replace("#([\t\r\n ])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^ \"\n\r\t<]*)?)#i", '\1<a href="http://\2.\3" onclick="window.open(\'http://\2.\3\'); return false;">\2.\3</a>', $text);
-		$text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "<script type=\"text/javascript\">document.write('<a href=\"mailto:'+'\\2'+'@'+'\\3\">'+'\\2'+'@'+'\\3'+'</a>')</script>", $text);
+		$text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "<script type=\"text/javascript\">document.write(' <a href=\"mailto:'+'\\2'+'@'+'\\3\">'+'\\2'+'@'+'\\3'+'</a>')</script>", $text);
 		$text = substr($text, 1);
 		$text = code($text, "notdef");
 		$text = html($text);
@@ -457,10 +459,12 @@ class textparse{
 			$text = str_replace("<script", "&lt;script", $text);
 			$text = str_replace("<iframe", "&lt;iframe", $text);
 			if(($pref['image_post_class'] == 253 && !USER) || ($pref['image_post_class'] == 254 && !ADMIN)){
-				$text = preg_replace("#\[img\](.*?)\[/img\]#si", '', $text);
+				$text = preg_replace("#\[img\](.*?)\[/img\]#si", '&nbsp;', $text);
 			}else if(!check_class($pref['image_post_class'])){
-				$text = preg_replace("#\[img\](.*?)\[/img\]#si", '', $text);
+				$text = preg_replace("#\[img\](.*?)\[/img\]#si", '&nbsp;', $text);
 			}
+		}else{
+			$text = preg_replace("#\[img\](.*?)\[/img\]#si", '<img src=\'\1\' alt=\'\' style=\'vertical-align:middle; border:0\' />', $text);
 		}
 
 		if(MAGIC_QUOTES_GPC){ $text = stripslashes($text); }
@@ -570,6 +574,7 @@ function save_prefs($table = "core", $uid=USERID){
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 function online(){
+	global $e_BASE;
 	$page = e_SELF;
 	$sql = new db;
 	$ip = getip();
@@ -585,7 +590,7 @@ function online(){
 			extract($row);
 			$oid = substr($online_user_id, 0, strpos($online_user_id, "."));
 			$oname = substr($online_user_id, (strpos($online_user_id, ".")+1));
-			$member_list .= "<a href='".e_BASE."user.php?id.$oid'>$oname</a> ";
+			$member_list .= "<a href='".$e_BASE."user.php?id.$oid'>$oname</a> ";
 		}
 	}
 	define("TOTAL_ONLINE", $total_online);

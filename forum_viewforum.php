@@ -67,12 +67,17 @@ if($topics > $view){
 	$pages = FALSE;
 }
 
+$sql -> db_Select("forum", "*", "forum_id='".$forum_parent."' ");
+$row_par = $sql-> db_Fetch();
+$parent_title = $row_par['forum_name'];
+ 
 $text = "<div style='text-align:center'><table style='width:95%' class='fborder'>
 <tr>
 <td  colspan='2' class='fcaption'>
-<a class='forumlink' href='index.php'>".SITENAME."</a> >> <a class='forumlink' href='forum.php'>".LAN_01."</a> >> <b>".$forum_name."</b>
+<a class='forumlink' href='index.php'>".SITENAME."</a> >> <a class='forumlink' href='forum.php'>".LAN_01."</a> >> <a class='forumlink' href='forum.php?pid=$forum_parent'>".$parent_title."</a> >> <b>".$forum_name."</b>
 </td>
 </tr>
+
 <tr>
 <td style='width:80%; vertical-align:bottom'>".LAN_321.$forum_moderators;
 	

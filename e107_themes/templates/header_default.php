@@ -13,33 +13,26 @@
 +---------------------------------------------------------------+
 */
 $aj = new textparse;
-echo "<?xml version='1.0' encoding='iso-8859-1' ?>\n";
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+echo "<?xml version='1.0' encoding='iso-8859-1' ?>
+<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
+<html xmlns=\"http://www.w3.org/1999/xhtml\">
 <head>
-<title><?php echo SITENAME; if(defined("PAGE_NAME")){ echo ": ".PAGE_NAME; }?></title>
-<link rel="stylesheet" href="<?php echo THEME; ?>style.css" />
-<link rel="stylesheet" href="<?php echo e_FILE; ?>e107.css" />
-<?php
-if(file_exists(e_FILE."style.css")){ echo "\n<link rel='stylesheet' href='".e_FILE."style.css' />\n"; }
-
+<title>".SITENAME.(defined("PAGE_NAME") ? ": ".PAGE_NAME : "")."</title>
+<link rel=\"stylesheet\" href=\"".THEME."style.css\" />
+<link rel=\"stylesheet\" href=\"".e_FILE."e107.css\" />";
+if(file_exists(e_FILE."style.css")){ echo "\n<link rel='stylesheet' href='".e_FILE."style.css' />"; }
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=".CHARSET."\" />
 <meta http-equiv=\"content-style-type\" content=\"text/css\" />
-".$aj -> formtparev($pref['meta_tag'])."\n";
+".($pref['meta_tag'] ? $aj -> formtparev($pref['meta_tag'])."\n" : "");
 if(eregi("forum_post.php", e_SELF) && ($_POST['reply'] || $_POST['newthread'])){
 	$tmp = explode(".", e_QUERY);
 	echo "<meta http-equiv=\"refresh\" content=\"5;url='".e_BASE."forum_viewforum.php?".$tmp[1]."'>\n";
 }
-
-
 echo "<script type='text/javascript' src='".e_FILE."e107.js'></script>";
-
 if(file_exists(THEME."theme.js")){echo "<script type='text/javascript' src='".THEME."theme.js'></script>";}
 if(file_exists(e_FILE."user.js")){echo "<script type='text/javascript' src='".e_FILE."user.js'></script>\n";}
 
-echo "\n
-<script type=\"text/javascript\">
+echo "<script type=\"text/javascript\">
 <!--
 var listpics = new Array();
 ";

@@ -197,13 +197,13 @@ $COMMENTSTYLE = "
 <b>
 {USERNAME}
 </b>
-<div class='spacer'>
+<br />
+{LEVEL}
 {AVATAR}
-</div>
 <span class='smalltext'>
 {COMMENTS}
-<br />
 {JOINED}
+{LOCATION}
 </span>
 </td>
 <td style='width:70%; vertical-align:top'>

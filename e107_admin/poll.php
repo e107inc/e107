@@ -117,7 +117,7 @@ if($poll_total = $sql -> db_Select("poll")){
 }else{
 	$text .= "<div style='text-align:center'>".LCLAN_61."</div>";
 }
-$text .= "</div>";
+$text .= "</div></div>";
 $ns -> tablerender(POLLAN_3, $text);
 
 

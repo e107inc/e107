@@ -88,7 +88,7 @@ if(IsSet($_POST['submitpoll'])){
 
 
 if(IsSet($_POST['fpreview'])){
-	if(USER ? $poster = USERNAME : $poster = $_POST['anonname']);
+	if(USER ? $poster = USERNAME : $poster = ($_POST['anonname'] ? $_POST['anonname'] : LAN_311));
 	$postdate = $gen->convert_date(time(), "forum");
 
 	$tsubject = $aj -> tpa($_POST['subject']);
@@ -122,9 +122,9 @@ if(IsSet($_POST['fpreview'])){
 	$ns -> tablerender(LAN_323, $text);
 
 
-	$anonname = $aj -> formtpa($_POST['anonname'], "public");
-	$subject = $aj -> formtpa($_POST['subject'], "public");
-	$post = $aj -> formtpa($_POST['post'], "public");
+	$anonname = ($_POST['anonname'] ? $aj -> formtpa($_POST['anonname'], "public") : LAN_311);
+	$post = (ADMIN ? $aj -> formtpa($_POST['post']) : $aj -> formtpa($_POST['post'], "public"));
+	$subject = (ADMIN ? $aj -> formtpa($_POST['subject']) : $aj -> formtpa($_POST['subject'], "public"));
 
 	if($action == "edit"){
 		if($_POST['subject'] ? $action = "nt" : $action = "reply");
@@ -173,8 +173,8 @@ if(IsSet($_POST['newthread'])){
 			}
 		}
 
-		$post = $aj -> formtpa($_POST['post'], "public");
-		$subject = $aj -> formtpa($_POST['subject'], "public");
+		$post = (ADMIN ? $aj -> formtpa($_POST['post']) : $aj -> formtpa($_POST['post'], "public"));
+		$subject = (ADMIN ? $aj -> formtpa($_POST['subject']) : $aj -> formtpa($_POST['subject'], "public"));
 
 		$email_notify = ($_POST['email_notify'] ? 99 : 1);
 		if(strstr($user, chr(1))){
@@ -261,8 +261,8 @@ if(IsSet($_POST['reply'])){
 			}
 		}
 
-		$post = $aj -> formtpa($_POST['post'], "public");
-		$subject = $aj -> formtpa($_POST['subject'], "public");
+		$post = (ADMIN ? $aj -> formtpa($_POST['post']) : $aj -> formtpa($_POST['post'], "public"));
+		$subject = (ADMIN ? $aj -> formtpa($_POST['subject']) : $aj -> formtpa($_POST['subject'], "public"));
 
 		if(strstr($user, chr(1))){
 			$tmp = explode(chr(1), $user);
@@ -591,7 +591,6 @@ if($action == "rp"){
 	$thread_datestamp  = $gen->convert_date($thread_datestamp , "forum");
 	$thread_name = $aj -> tpa($thread_name, $mode="off");
 	$thread_thread = $aj -> tpa($thread_thread, $mode="off");
-	$thread_thread = preg_replace("/([^s]{80})/", "$1\n", $thread_thread);
 	$text .= "<div style='text-align:center'>
 	<table style='width:95%' class='fborder'>
 	<tr>

@@ -298,10 +298,8 @@ class users{
 			}
 			$text .= "</td>\n</tr>";
 			$text .= "</table>";
-		}else{
-			$text .= "<div style='text-align:center'>You shouldn't be seeing this - database is reporting no users yet you're still logged on as admin??? Weird, I'd contact Mulder and Skully if I were you ...<br />( Defective query was <b>$query</b> )</div>";
 		}
-		$text .= "</div>";
+		$text .= "</div></div>";
 		$ns -> tablerender(USRLAN_77, $text);
 	}
 

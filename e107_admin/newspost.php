@@ -206,7 +206,7 @@ class newspost{
 		}else{
 			$text .= "<div style='text-align:center'>".NWSLAN_43."</div>";
 		}
-		$text .= "</div>";
+		$text .= "</div></div>";
 		$ns -> tablerender(NWSLAN_43, $text);
 	}
 

@@ -174,6 +174,9 @@ class links{
 				extract($row);
 				$cat[$link_category_id] = $link_category_name;
 			}
+		}else{
+			$sql -> db_Insert("link_category", "0, 'Main', 'Any links with this category will be displayed in main navigation bar.', '' ");
+			$sql -> db_Insert("link_category", "0, 'Misc', 'Miscellaneous links.', '' ");
 		}
 
 		// ##### Display scrolling list of existing links ---------------------------------------------------------------------------------------------------------
@@ -191,7 +194,7 @@ class links{
 				extract($row);
 				$text .= "<tr>
 				<td style='width:5%' class='forumheader3'>$link_id</td>
-				<td style='width:10%' class='forumheader3'>$cat[$link_category]</td>
+				<td style='width:10%' class='forumheader3'>".$cat[$link_category]."</td>
 				<td style='width:50%' class='forumheader3'><a href='".e_BASE."comment.php?$link_id'></a>$link_name</td>
 				<td style='width:25%; text-align:center' class='forumheader3'>".
 				$rs -> form_button("submit", "main_edit", "Edit", "onClick=\"document.location='".e_SELF."?create.edit.$link_id'\"").
@@ -203,7 +206,7 @@ class links{
 		}else{
 			$text .= "<div style='text-align:center'>".LCLAN_61."</div>";
 		}
-		$text .= "</div>";
+		$text .= "</div></div>";
 		$ns -> tablerender(LCLAN_8, $text);
 	}
 
@@ -446,7 +449,7 @@ class links{
 	function show_categories($sub_action, $id){
 		// ##### Display scrolling list of existing categories ---------------------------------------------------------------------------------------------------------
 		global $sql, $rs, $ns, $aj;
-		$text = "<div style='border : solid 1px #000; padding : 4px; width :auto; height : 100px; overflow : auto; '>\n";
+		$text = "<div style='border : solid 1px #000; padding : 4px; width :auto; height : 200px; overflow : auto; '>\n";
 		if($category_total = $sql -> db_Select("link_category")){
 			$text .= "<table class='fborder' style='width:100%'>
 			<tr>

@@ -286,7 +286,7 @@ if(e_QUERY && ADMIN){
 }else{
 
 	if($pref['avatar_upload'] && FILE_UPLOADS){
-		$text .= "<br /><span class='smalltext'>Upload your avatar</span> <input class='tbox' name='file_userfile[]' type='file' size='47'>
+		$text .= "<br /><span class='smalltext'>".LAN_415."</span> <input class='tbox' name='file_userfile[]' type='file' size='47'>
 		<br /><div class='smalltext'>".LAN_404."</div>";
 	}
 

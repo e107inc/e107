@@ -55,7 +55,6 @@ $HEADER .=
 </td>
 </tr>
 </table>
-<br />
 <table style='width:100%' cellspacing='3'>
 <tr>
 <td style='width:20%; vertical-align: top;'>
@@ -223,7 +222,7 @@ function tablestyle($caption, $text){
 $POLLSTYLE = <<< EOF
 <b>Poll:</b> {QUESTION}
 <br /><br />
-{OPTIONS=<div class='alttd'>OPTION</div>BAR<br /><span class='smalltext'>PERCENTAGE VOTES</span><br />\n}
+{OPTIONS=<span class='alttd'>OPTION</span><br />BAR<br /><span class='smalltext'>PERCENTAGE VOTES</span><br />\n}
 <div style='text-align:center' class='smalltext'>{VOTE_TOTAL} {COMMENTS}
 <br />
 {OLDPOLLS}
@@ -231,16 +230,15 @@ $POLLSTYLE = <<< EOF
 EOF;
 
 $CHATBOXSTYLE = "
-<div class='alttd'>
- 
-<div class='mediumtext'>
+<span class='alttd'>
+<span class='mediumtext'>
 <img src='".THEME."images/bullet2.gif' alt='bullet' />
 <b>{USERNAME}</b> @ {TIMEDATE}
-</div>
-</div>
-<div class='mediumtext'>
+</span>
+</span>
+<span class='mediumtext'>
 {MESSAGE}
-</div>
+</span>
 <br />";
 
 define(CB_STYLE, $CHATBOXSTYLE);
@@ -265,6 +263,7 @@ $COMMENTSTYLE = "
 {AVATAR}
 </div>
 <span class='smalltext'>
+{LEVEL}
 {COMMENTS}
 <br />
 {JOINED}

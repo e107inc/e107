@@ -53,7 +53,7 @@ if(IsSet($_POST['create_review'])){
 		$content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
 		$content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
 		$content_content = $aj -> formtpa($_POST['data'], "admin");
-		$content_author = ($_POST['content_author'] || $_POST['content_author'] == REVLAN_53 ? ADMINID : $_POST['content_author']."^".$_POST['content_author_email']);
+		$content_author = (!$_POST['content_author'] || $_POST['content_author'] == REVLAN_53 ? ADMINID : $_POST['content_author']."^".$_POST['content_author_email']);
 		 $sql -> db_Insert("content", "0, '".$content_heading."', '".$content_subheading."', '$content_content', '".$_POST['category']."', '".time()."', '".$content_author."', '".$_POST['content_comment']."', '".$_POST['content_summary']."', '3', ".$_POST['content_rating'].",0 ,".$_POST['r_class']);
 		unset($content_heading, $content_subheading, $data, $content_summary);
 		$message = REVLAN_1;
@@ -70,7 +70,7 @@ If(IsSet($_POST['update_review'])){
 	$content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
 	$content_content = $aj -> formtpa($_POST['data'], "admin");
 	$content_author = ($_POST['content_author'] && $_POST['content_author'] != ARLAN_84 ? $_POST['content_author']."^".$_POST['content_author_email'] : ADMINID);
-	$sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_parent='".$_POST['category']."', content_author='$content_author', content_comment='".$_POST['content_comment']."', content_summary='".$_POST['content_summary']."', content_class='{$_POST['r_class']}' WHERE content_id='".$_POST['content_id']."' ");
+	$sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_parent='".$_POST['category']."', content_author='$content_author', content_comment='".$_POST['content_comment']."', content_summary='".$_POST['content_summary']."', content_review_score=".$_POST['content_rating'].", content_class='{$_POST['r_class']}' WHERE content_id='".$_POST['content_id']."'");
 	unset($action);
 	$message = REVLAN_3;
 	clear_cache("review");

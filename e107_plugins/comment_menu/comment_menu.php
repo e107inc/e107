@@ -26,6 +26,7 @@ if($sql -> db_Select("cache", "*", "cache_url='newcomments' ")){
 		$sql2 = new db;
 		while($row = $sql-> db_Fetch()){
 			extract($row);
+			
 			$poster = substr($comment_author, (strpos($comment_author, ".")+1));
 			$gen = new convert;
 			$datestamp = $gen->convert_date($comment_datestamp, "short");
@@ -59,7 +60,7 @@ if($sql -> db_Select("cache", "*", "cache_url='newcomments' ")){
 					if($menu_pref['comment_title']) {
 						$text .= "<br /> [ Re: <i>$news_title</i> ]";
 					}
-					$text .= "<br />$comment_comment<br /><br /><br />";
+					$text .= "<br />".($comment_blocked ? CM_L2 : $comment_comment)."<br /><br />";
 				}
 			}
 			if($comment_type == "1"){
@@ -69,11 +70,11 @@ if($sql -> db_Select("cache", "*", "cache_url='newcomments' ")){
 					list($article_title) = $sql2->db_Fetch();
 					$text .= "<br /> [ Re: <i>$article_title</i> ]";
 				} 
-				$text .= "<br />$comment_comment <br /><br /><br />";
+				$text .= "<br />".($comment_blocked ? CM_L2 : $comment_comment)."<br /><br />";
 			}
 			if($comment_type_ == "2"){
 					//This code is not tested... [edwin]
-				$text .= "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".e_BASE."download_comment.php?$comment_item_id_.'>download - <b>".$poster."</b> on ".$datestamp."</a><br />".$comment_comment."<br /><br /><br />";
+				$text .= "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".e_BASE."download_comment.php?$comment_item_id_.'>download - <b>".$poster."</b> on ".$datestamp."</a><br />".($comment_blocked ? CM_L2 : $comment_comment)."<br /><br />";
 			}
 		}
 

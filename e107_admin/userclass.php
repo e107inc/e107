@@ -89,7 +89,8 @@ $text .= "<tr><td class='forumheader' colspan='2' style='text-align:center'><inp
 </td>
 </tr>
 </table>
-</form>";
+</form>
+</div>";
 
 $ns -> tablerender($caption, $text);
 

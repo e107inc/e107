@@ -31,7 +31,10 @@ class comment{
 	}
 
 	function render_comment($row){
-		global $COMMENTSTYLE;
+		global $COMMENTSTYLE, $pref;
+
+		require_once(e_HANDLER."level_handler.php");
+
 		$sql = new db;
 		$ns = new e107table;
 		extract($row);
@@ -65,8 +68,9 @@ class comment{
 			<img src='".THEME."images/bullet2.gif' alt='bullet' /> 
 			<span class='defaulttext'><i>
 			{USERNAME}
-			</i></span>
 			<br />
+			</i></span>
+			{LEVEL}
 			<span class='smalltext'>on 
 			{TIMEDATE}
 			<br />
@@ -90,10 +94,10 @@ class comment{
 		$replace[1] = $datestamp;
 
 		$search[2] = "/\{AVATAR\}(.*?)/si";
-		$replace[2] = ($user_image ? "<div class='spacer'><img src='".$user_image."' alt='' /></div>" : "");
+		$replace[2] = ($user_image ? "<div class='spacer'><img src='".$user_image."' alt='' /></div><br />" : "");
 		
 		$search[3] = "/\{COMMENTS\}(.*?)/si";
-		$replace[3] = ($user_id ? LAN_99.": ".$user_comments : LAN_194);
+		$replace[3] = ($user_id ? LAN_99.": ".$user_comments : LAN_194)."<br />";
 
 		$search[4] = "/\{COMMENT\}(.*?)/si";
 		$replace[4] = ($comment_blocked ? LAN_0 : preg_quote($aj -> tpa($comment_comment)));
@@ -108,15 +112,23 @@ class comment{
 		$replace[5] = $user_signature;
 
 		$search[6] = "/\{JOINED\}(.*?)/si";
-		if($user_admin && $user_perms == "0"){ 
-			$replace[6] = LAN_7; 
-		}else if($user_admin){
-			$replace[6] = LAN_10;
+		if($user_admin){ 
+			$replace[6] = ""; 
 		}else{
-			$replace[6] = ($user_join != "01 Jan : 00:00" && $user_join != "31 Dec : 19:00" ? LAN_145.$user_join : "");
+			$replace[6] = ($user_join != "01 Jan : 00:00" && $user_join != "31 Dec : 19:00" ? LAN_145.$user_join."<br />" : "");
 		}
 		
-		$replace[8] = $tmp;
+		$search[7] = "/\{LOCATION\}(.*?)/si";
+		$replace[7] = ($user_location ? LAN_313.": ".$aj -> tpa($user_location) : "");
+
+		$search[8] = "/\{LEVEL\}(.*?)/si";
+		define("IMAGE_rank_main_admin_image", ($pref['rank_main_admin_image'] && file_exists(e_IMAGE."forum/".$pref['rank_main_admin_image']) ? "<img src='".e_IMAGE."forum/".$pref['rank_main_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/main_admin.png' alt='' />"));
+		define("IMAGE_rank_moderator_image", ($pref['rank_moderator_image'] && file_exists(e_IMAGE."forum/".$pref['rank_moderator_image']) ? "<img src='".e_IMAGE."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/admin.png' alt='' />"));
+		define("IMAGE_rank_admin_image", ($pref['rank_admin_image'] && file_exists(e_IMAGE."forum/".$pref['rank_admin_image']) ? "<img src='".e_IMAGE."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/admin.png' alt='' />"));
+		$ldata = get_level($user_id, $user_forums, $user_comments, $user_chats, $user_visits, $user_join, $user_admin, $user_perms, $pref);
+		$replace[8] = ($user_admin ? $ldata[0] : $ldata[1]);
+
+
 		$text = preg_replace($search, $replace, $COMMENTSTYLE);
 		return stripslashes($text);
 	}

@@ -18,7 +18,12 @@ define("LAN_16", "Username: ");
 define("LAN_99", "Comments");
 define("LAN_145", "Registered: ");
 define("LAN_194", "Guest");
+
+define("LAN_195", "Registered member");
+
 define("LAN_310", "Unable to accept post as that username is registered - if it is your username please login to post.");
 define("LAN_312", "Duplicate post - unable to accept.");
+
+define("LAN_313", "Location");
 
 ?>

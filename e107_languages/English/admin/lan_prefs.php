@@ -62,4 +62,6 @@ define("PRFLAN_58", "Restrict website to member's only");
 define("PRFLAN_59", "Ticking will restrict all areas apart from the front page and signup page to members only");
 define("PRFLAN_60", "Enable SSL");
 
+define("PRFLAN_61", "Only enable SSL if <b>you are sure you know what you are doing!</b>");
+
 ?>

@@ -40,8 +40,8 @@ chr(36)."text = ".chr(34).$_POST['menu_text'].chr(34).";\n".
 
 
 chr(36)."aj = new textparse;\n".
-chr(36)."caption = ".chr(36)."aj -> tpa(".chr(36)."caption);\n".
-chr(36)."text = ".chr(36)."aj -> tpa(".chr(36)."text);\n".
+chr(36)."caption = ".chr(36)."aj -> tpa(".chr(36)."caption, \"on\");\n".
+chr(36)."text = ".chr(36)."aj -> tpa(".chr(36)."text, \"on\");\n".
 chr(36)."ns -> tablerender(".chr(36)."caption, ".chr(36)."text);\n?".chr(62);
 
 		$fp = @fopen(e_PLUGIN."custom/".$_POST['menu_name'].".php","w");

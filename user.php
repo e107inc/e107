@@ -158,7 +158,8 @@ require_once(e_HANDLER."np_class.php");
 $ix = new nextprev("user.php", $from, $records, $users_total, LAN_138, $records.".".$order);
 
 function renderuser($row, $user_entended, $mode="verbose"){
-	global $sql, $id;
+
+	global $sql, $id, $pref;
 	extract($row);
 	$aj = new textparse;
 	$gen = new convert;
@@ -180,7 +181,17 @@ function renderuser($row, $user_entended, $mode="verbose"){
 		$chatper = round(($user_chats/$chatposts)*100,2);
 		$commentper = round(($user_comments/$commentposts)*100,2);
 		$forumper = round(($user_forums/$forumposts)*100,2);
-		$level = getlevel($user_join, $user_forums, $user_comments, $user_chats, $user_visits);
+		require_once(e_HANDLER."level_handler.php");
+
+		$ldata = get_level($user_id, $user_forums, $user_comments, $user_chats, $user_visits, $user_join, $user_admin, $user_perms, $pref);
+
+		if(strstr($ldata[0], "IMAGE_rank_main_admin_image")){
+			$level = LAN_417;
+		}else if(strstr($ldata[0], "IMAGE")){
+			$level = LAN_418;
+		}else{
+			$level = $ldata[1];
+		}
 
 		$datestamp = $gen->convert_date($user_join, "long");
 		$lastvisit = ($user_currentvisit ? $gen->convert_date($user_currentvisit, "long") : "<i>".LAN_401."</i>");
@@ -347,41 +358,7 @@ function renderuser($row, $user_entended, $mode="verbose"){
 }
 		
 function getlevel($user_join, $user_forums, $user_comments, $user_chats, $user_visits){
-	global $pref;
-	$level = ceil((($user_forums*5) + ($user_comments*5) + ($user_chats*2) + $user_visits)/4);
-	$points = $level;
-	if($level <= 100){
-		$level = 0;
-	}else if($level >= 101 && $level <= 1000){
-		$level = 1;
-	}else if($level >= 1001 && $level <= 2500){
-		$level = 2;
-	}else if($level >= 2501 && $level <= 4500){
-		$level = 3;
-	}else if($level >= 4501 && $level <= 7000){
-		$level = 4;
-	}else if($level >= 7001 && $level <= 10000){
-		$level = 5;
-	}else if($level >= 10001 && $level <= 13500){
-		$level = 6;
-	}else if($level >= 13501 && $level <= 17500){
-		$level = 7;
-	}else if($level >= 17501 && $level <= 22000){
-		$level = 8;
-	}else if($level >= 22001 && $level <= 27000){
-		$level = 9;
-	}else if($level >= 27001){
-		$level = 10;
-	}
-		
-	if($pref['forum_levels']){
-		$tmp = explode(",", $pref['forum_levels']);
-		$LEVEL = "[ ".trim(chop($tmp[$level]))." ]";
-	}else{
-		for($a=0; $a<=($level-1); $a++){
-			$LEVEL .= "<img src='".e_IMAGE."generic/star3.gif' alt='rating' />";
-		}
-	}
+	
 	return (!$level ? "<i>".LAN_407."</i>" : $LEVEL)." ( $points ".LAN_409." )";
 }
 

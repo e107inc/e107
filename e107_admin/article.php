@@ -32,7 +32,7 @@ if(e_QUERY){
 if(IsSet($_POST['create_category'])){
 	$_POST['category_name'] = $aj -> formtpa($_POST['category_name'], "admin");
 	$_POST['category_description'] = $aj -> formtpa($_POST['category_description'], "admin");
-	$sql -> db_Insert("content", " '0', '".$_POST['category_name']."', '".$_POST['category_description']."', 0, 0, ".time().", '".ADMINID."', 0, '".$_POST['category_button']."', 6, 0, 0");
+	$sql -> db_Insert("content", " '0', '".$_POST['category_name']."', '".$_POST['category_description']."', '', 0, ".time().", '".ADMINID."', 0, '".$_POST['category_button']."', 6, 0, 0, 0");
 	$message = ARLAN_56;
 	clear_cache("article");
 }
@@ -50,7 +50,7 @@ if(IsSet($_POST['create_article'])){
 		$content_subheading = $aj -> formtpa($_POST['content_subheading'], "admin");
 		$content_heading = $aj -> formtpa($_POST['content_heading'], "admin");
 		$content_content = $aj -> formtpa($_POST['data'], "admin");
-		$content_author = ($_POST['content_author'] || $_POST['content_author'] == ARLAN_84 ? ADMINID : $_POST['content_author']."^".$_POST['content_author_email']);
+		$content_author = (!$_POST['content_author'] || $_POST['content_author'] == ARLAN_84 ? ADMINID : $_POST['content_author']."^".$_POST['content_author_email']);
 		$sql -> db_Insert("content", "0, '$content_heading', '$content_subheading', '$content_content', '".$_POST['category']."', '".time()."', '$content_author', '".$_POST['content_comment']."', '".$_POST['content_summary']."', '0' ,'0' ,".$_POST['add_icons'].", ".$_POST['a_class']);
 		unset($content_heading, $content_subheading, $data, $content_summary, $content_author);
 		$message = ARLAN_0;
@@ -58,6 +58,7 @@ if(IsSet($_POST['create_article'])){
 	}else{
 		$message = ARLAN_1;
 	}
+	unset($action);
 }
 
 If(IsSet($_POST['update_article'])){

@@ -125,7 +125,7 @@ $rs -> form_button("submit", "main_delete", ADMSLAN_59, "onClick=\"confirm_($use
 </tr>";
 }
 
-$text .= "</table>\n</div>";
+$text .= "</table>\n</div>\n</div>";
 
 $ns -> tablerender(ADMSLAN_13, $text);
 

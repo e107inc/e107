@@ -14,14 +14,14 @@
 */
 require_once("class2.php");
 
-$text = "<font style='FONT-SIZE: 11px; COLOR: black; FONT-FAMILY: Tahoma, Verdana, Arial, Helvetica; TEXT-DECORATION: none'>
+$text = "<font style='FONT-SIZE: 14px; COLOR: black; FONT-FAMILY: Tahoma, Verdana, Arial, Helvetica; TEXT-DECORATION: none'>
 <div style='text-align:center'>
 <img src='".e_IMAGE."logo.png' alt='Logo' />
 </div>
 <hr />
 <br />
 
-<div style='text-align:center'>".LAN_00."</div>";
+<div style='text-align:center'>".($pref['maintainance_text'] ? $pref['maintainance_text'] : LAN_00)."</div>";
 echo $text;
 
 ?>

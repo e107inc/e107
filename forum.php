@@ -34,20 +34,23 @@ define("IMAGE_post", (file_exists(THEME."forum/post.png") ? "<img src='".THEME."
 
 if(e_QUERY && e_QUERY != "track"){
 	$forum_id = e_QUERY;
-	echo $forum_id;
-	if(!is_numeric($forum_id) && $forum_id != "tracked"){
-		$sql -> db_Select("forum_t", "thread_id", "thread_datestamp > '".USERLV."' ");
+	if(!strstr(e_QUERY, "pid")){
+		if(!is_numeric($forum_id) && $forum_id != "tracked"){
+			$sql -> db_Select("forum_t", "thread_id", "thread_datestamp > '".USERLV."' ");
+		}else{
+			$sql -> db_Select("forum_t", "thread_id", "thread_forum_id='$forum_id' AND thread_datestamp > '".USERLV."' ");
+		}
+		while($row = $sql -> db_Fetch()){
+			extract($row);
+			$u_new .= ".".$thread_id.".";
+		}
+		$u_new .= USERVIEWED;
+		$sql -> db_Update("user", "user_viewed='$u_new' WHERE user_id='".USERID."' ");
+		header("location:".e_SELF);
+		exit;
 	}else{
-		$sql -> db_Select("forum_t", "thread_id", "thread_forum_id='$forum_id' AND thread_datestamp > '".USERLV."' ");
+		$parent_view = "AND forum_id='".$_GET['pid']."' ";  
 	}
-	while($row = $sql -> db_Fetch()){
-		extract($row);
-		$u_new .= ".".$thread_id.".";
-	}
-	$u_new .= USERVIEWED;
-	$sql -> db_Update("user", "user_viewed='$u_new' WHERE user_id='".USERID."' ");
-	header("location:".e_SELF);
-	exit;
 }
 
 require_once(HEADERF);
@@ -68,7 +71,19 @@ $text = "<div style='text-align:center'>
 <td style='width:20%; text-align:center' class='fcaption'>".LAN_49."</td>
 </tr>";
 
-if(!$sql -> db_Select("forum", "*", "forum_parent='0' ORDER BY forum_order ASC")){
+
+$text = "<div style='text-align:center'>
+<table style='width:95%' class='fborder'><tr>
+<td colspan='2' style='width:60%; text-align:center' class='fcaption'>";
+$text .= ($parent_view)? "<a class='forumlink' href='forum.php'>".LAN_46."</a></td>" : LAN_46;
+$text .="</td>
+<td style='width:10%; text-align:center' class='fcaption'>".LAN_47."</td>
+<td style='width:10%; text-align:center' class='fcaption'>".LAN_48."</td>
+<td style='width:20%; text-align:center' class='fcaption'>".LAN_49."</td>
+</tr>";
+
+
+if(!$sql -> db_Select("forum", "*", "forum_parent='0' $parent_view ORDER BY forum_order ASC")){
 	$ns -> tablerender(PAGE_NAME, "<div style='text-align:center'>".LAN_51."</div>");
 	require_once(FOOTERF);
 	exit;

@@ -23,7 +23,6 @@ define("IMAGE_newthread", (file_exists(THEME."forum/newthread.png") ? "<img src=
 define("IMAGE_rank_moderator_image", ($pref['rank_moderator_image'] && file_exists(e_IMAGE."forum/".$pref['rank_moderator_image']) ? "<img src='".e_IMAGE."forum/".$pref['rank_moderator_image']."' alt='' />" : "<img src='".e_IMAGE."forum/moderator.png' alt='' />"));
 define("IMAGE_rank_main_admin_image", ($pref['rank_main_admin_image'] && file_exists(e_IMAGE."forum/".$pref['rank_main_admin_image']) ? "<img src='".e_IMAGE."forum/".$pref['rank_main_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/main_admin.png' alt='' />"));
 define("IMAGE_rank_admin_image", ($pref['rank_admin_image'] && file_exists(e_IMAGE."forum/".$pref['rank_admin_image']) ? "<img src='".e_IMAGE."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/admin.png' alt='' />"));
-define("IMAGE_rank_admin_image", ($pref['rank_admin_image'] && file_exists(e_IMAGE."forum/".$pref['rank_admin_image']) ? "<img src='".e_IMAGE."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/admin.png' alt='' />"));
 define("IMAGE_profile", (file_exists(THEME."forum/profile.png") ? "<img src='".THEME."forum/profile.png' alt='".LAN_398."' style='border:0' />" : "<img src='".e_IMAGE."forum/profile.png' alt='".LAN_398."' style='border:0' />"));
 define("IMAGE_email", (file_exists(THEME."forum/email.png") ? "<img src='".THEME."forum/email.png' alt='".LAN_397."' style='border:0' />" : "<img src='".e_IMAGE."forum/email.png' alt='".LAN_397."' style='border:0' />"));
 define("IMAGE_pm", (file_exists(THEME."forum/pm.png") ? "<img src='".THEME."forum/pm.png' alt='".LAN_399."' style='border:0' />" : "<img src='".e_IMAGE."forum/pm.png' alt='".LAN_399."' style='border:0' />"));
@@ -75,36 +74,12 @@ $row = $sql-> db_Fetch(); extract($row);
 if(($forum_class && !check_class($forum_class)) || ($forum_class == 254 && !USER)){ header("Location:".e_BASE."forum.php"); exit;}
 
 require_once(HEADERF);
+require_once(e_HANDLER."level_handler.php");
 
 $sql -> db_Select("forum_t", "*", "thread_id='".$thread_id."' ORDER BY thread_datestamp DESC ");
 $row = $sql-> db_Fetch("no_strip"); extract($row);
 
-
 define("MODERATOR", (preg_match("/".preg_quote(ADMINNAME)."/", $forum_moderators) && getperms("A") ? TRUE : FALSE));
-$level_thresholds = ($pref['forum_thresholds'] ? explode(",", $pref['forum_thresholds']) : array(20, 100, 250, 410, 580, 760, 950, 1150, 1370, 1600));
-
-if(!$pref['forum_images']){
-	if($pref['forum_levels']){
-		$level_images = explode(",", $pref['forum_levels']);
-		$rank_type = "text";
-	}else{
-		$level_images = array("lev1.png", "lev2.png", "lev3.png", "lev4.png", "lev5.png", "lev6.png", "lev7.png", "lev8.png", "lev9.png", "lev10.png");
-		$rank_type = "image";
-	}
-}else{
-	$level_images = explode(",", $pref['forum_images']);
-	if(!$level_images[0]){
-		if($pref['forum_levels']){
-			$level_images = explode(",", $pref['forum_levels']);
-			$rank_type = "text";
-		}else{
-			$level_images = array("lev1.png", "lev2.png", "lev3.png", "lev4.png", "lev5.png", "lev6.png", "lev7.png", "lev8.png", "lev9.png", "lev10.png");
-			$rank_type = "image";
-		}
-	}else{
-		$rank_type = "image";
-	}
-}
 
 If(IsSet($_POST['pollvote'])){
 	$sql -> db_Select("poll", "poll_active, poll_ip", "poll_id='".$_POST['pollid']."' ");
@@ -154,7 +129,7 @@ while($row = $sql -> db_Fetch()){
 
 if(!$FORUMSTART){	// no style defined in theme.php - use default style ...
 	$FORUMSTART = "<div style='text-align:center'>\n<table style='width:98%' class='fborder'>\n<tr>\n<td  colspan='2' class='fcaption'>\n{BACKLINK}\n</td>\n</tr>\n<tr>\n<td class='forumheader' colspan='2'>\n<table cellspacing='0' cellpadding='0' style='width:100%'>\n<tr>\n<td class='smalltext'>\n{NEXTPREV}\n</td>\n<td style='text-align:right'>&nbsp;\n{TRACK}\n</td>\n</tr>\n</table>\n</td>\n</tr>\n<tr>\n<td style='width:80%; vertical-align:bottom'><br /><div class='captiontext'>&nbsp;{THREADNAME}</div><br />\n{MODERATORS}\n<div class='mediumtext'>\n{GOTOPAGES}\n</div>\n</td>\n<td style='width:20%; text-align:right'>\n{BUTTONS}\n</td>\n</tr>\n<tr>\n<td colspan='2' style='text-align:center'>\n{THREADSTATUS}\n<table style='width:100%' class='fborder'>\n<tr>\n<td style='width:20%; text-align:center' class='fcaption'>\n".LAN_402."\n</td>\n<td style='width:80%; text-align:center' class='fcaption'>\n".LAN_403."\n</td>\n</tr>\n";
-	$FORUMTHREADSTYLE = "<tr>\n<td class='forumheader' style='vertical-align:middle'>\n{NEWFLAG}\n{POSTER}\n</td>\n<td class='forumheader' style='vertical-align:middle'>\n<table cellspacing='0' cellpadding='0' style='width:100%'>\n<tr>\n<td class='smallblacktext'>\n{THREADDATESTAMP}\n</td>\n<td style='text-align:right'>\n{EDITIMG}{QUOTEIMG}\n</td>\n</tr>\n</table>\n</td>\n</tr>\n<tr>\n<td class='forumheader3' style='vertical-align:top'>\n{AVATAR}\n<span class='smalltext'>\n{MEMBERID}\n</span>\n{LEVEL}\n<span class='smalltext'>\n{JOINED}\n{POSTS}\n</span>\n</td>\n<td class='forumheader3' style='vertical-align:top'>\n{POST}\n{SIGNATURE}\n</td>\n</tr>\n<tr>\n <td class='finfobar'>\n<span class='smallblacktext'>\n{TOP}\n</span>\n</td>\n<td class='finfobar' style='vertical-align:top'>\n<table cellspacing='0' cellpadding='0' style='width:100%'>\n<tr>\n<td>\n{PROFILEIMG}\n {EMAILIMG}\n {WEBSITEIMG}\n {PRIVMESSAGE}\n</td>\n<td style='text-align:right'>\n{MODOPTIONS}\n</td>\n</tr>\n</table>\n</td>\n</tr>\n<tr>\n<td colspan='2'>\n</td>\n</tr>\n";
+	$FORUMTHREADSTYLE = "<tr>\n<td class='forumheader' style='vertical-align:middle'>\n{NEWFLAG}\n{POSTER}\n</td>\n<td class='forumheader' style='vertical-align:middle'>\n<table cellspacing='0' cellpadding='0' style='width:100%'>\n<tr>\n<td class='smallblacktext'>\n{THREADDATESTAMP}\n</td>\n<td style='text-align:right'>\n{EDITIMG}{QUOTEIMG}\n</td>\n</tr>\n</table>\n</td>\n</tr>\n<tr>\n<td class='forumheader3' style='vertical-align:top'>\n{AVATAR}\n<span class='smalltext'>\n{LEVEL}\n{MEMBERID}\n{JOINED}\n{POSTS}\n</span>\n</td>\n<td class='forumheader3' style='vertical-align:top'>\n{POST}\n{SIGNATURE}\n</td>\n</tr>\n<tr>\n <td class='finfobar'>\n<span class='smallblacktext'>\n{TOP}\n</span>\n</td>\n<td class='finfobar' style='vertical-align:top'>\n<table cellspacing='0' cellpadding='0' style='width:100%'>\n<tr>\n<td>\n{PROFILEIMG}\n {EMAILIMG}\n {WEBSITEIMG}\n {PRIVMESSAGE}\n</td>\n<td style='text-align:right'>\n{MODOPTIONS}\n</td>\n</tr>\n</table>\n</td>\n</tr>\n<tr>\n<td colspan='2'>\n</td>\n</tr>\n";
 	$FORUMEND = "<tr><td colspan='2' class='forumheader3' style='text-align:center'>{QUICKREPLY}</td></tr></table>\n</td>\n</tr>\n<tr>\n<td style='width:80%; vertical-align:top'>\n<div class='mediumtext'>\n{GOTOPAGES}\n</div>\n{FORUMJUMP}\n</td>\n<td style='width:20%; text-align:right'>\n{BUTTONS}\n</td>\n</tr>\n</table>\n</div>";
 	$FORUMREPLYSTYLE = "";
 }
@@ -168,7 +143,6 @@ $BREADCRUMB = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a> 
 $BACKLINK = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a> -> <a class='forumlink' href='forum.php'>Forums</a> -> <a class='forumlink' href='forum_viewforum.php?".$forum_id."'>".$forum_name."</a>";
 
 $THREADNAME = $thread_name;
-
 
 $NEXTPREV = ($prevthread ? "&lt;&lt; <a href='".e_SELF."?".$forum_id.".".$prevthread."'>".LAN_389."</a> " : LAN_404." ")."|".($nextthread ? " <a href='".e_SELF."?".$forum_id.".".$nextthread."'>".LAN_390."</a> &gt;&gt;" : " ".LAN_405." ");
 
@@ -230,22 +204,9 @@ if(!$post_author_id || !$sql -> db_Select("user", "*", "user_id='".$post_author_
 	$POSTS = LAN_67." ".$user_forums."<br />";
 	$VISITS = LAN_09.": ".$user_visits;
 
-	 if($user_admin){
-		if($user_perms == "0"){
-			$MEMBERID = IMAGE_rank_main_admin_image."<br />";
-		}else{
-			if(preg_match("/(^|\s)".preg_quote($user_name)."/", $forum_moderators) && getperms("A", $user_perms)){
-				$MEMBERID = IMAGE_rank_moderator_image."<br />";
-			}else{
-				$MEMBERID = IMAGE_rank_admin_image."<br />";
-			}
-		}
-	}else if(preg_match("/(^|\s)".preg_quote($user_name)."/", $forum_moderators) && getperms("A", $user_perms)){
-		$MEMBERID = IMAGE_rank_moderator_image."<br />";
-	}else{
-		$MEMBERID = LAN_195." #".$user_id."<br />";
-	}
-
+	$ldata = get_level($user_id, $user_forums, $user_comments, $user_chats, $user_visits, $user_join, $user_admin, $user_perms, $pref);
+	$MEMBERID = $ldata[0];
+	$LEVEL = $ldata[1];
 
 	$SIGNATURE = ($user_signature ? "<br /><hr style='width:15%; text-align:left'><span class='smalltext'>".$aj -> tpa($user_signature) : "");
 	$PROFILEIMG = "<a href='user.php?id.".$user_id."'>".IMAGE_profile."</a>";
@@ -255,44 +216,7 @@ if(!$post_author_id || !$sql -> db_Select("user", "*", "user_id='".$post_author_
 
 	$WEBSITEIMG = ($user_homepage && $user_homepage != "http://" ? "<a href='$user_homepage'>".IMAGE_website."</a>" : "");
 	$RPG = rpg($user_join, $user_forums);
-	if(strstr($MEMBERID, "<img")){
-		$LEVEL = "";
-	}else{
-		$daysregged = max(1, round((time() - $user_join)/86400))."days";
-		$level = ceil((($user_forums*5) + ($user_comments*5) + ($user_chats*2) + $user_visits)/4);
-		$ltmp = $level;
-
-		if($level <= $level_thresholds[0]){
-			$rank = 0; 
-		}else if($level >= ($level_thresholds[0]+1) && $level <= $level_thresholds[1]){
-			$rank = 1;
-		}else if($level >= ($level_thresholds[1]+1) && $level <= $level_thresholds[2]){
-			$rank = 2;
-		}else if($level >= ($level_thresholds[2]+1) && $level <= $level_thresholds[3]){
-			$rank = 3;
-		}else if($level >= ($level_thresholds[3]+1) && $level <= $level_thresholds[4]){
-			$rank = 4;
-		}else if($level >= ($level_thresholds[4]+1) && $level <= $level_thresholds[5]){
-			$rank = 5;
-		}else if($level >= ($level_thresholds[5]+1) && $level <= $level_thresholds[6]){
-			$rank = 6;
-		}else if($level >= ($level_thresholds[6]+1) && $level <= $level_thresholds[7]){
-			$rank = 7;
-		}else if($level >= ($level_thresholds[7]+1) && $level <= $level_thresholds[8]){
-			$rank = 8;
-		}else if($level >= ($level_thresholds[8]+1) && $level <= $level_thresholds[9]){
-			$rank = 9;
-		}else if($level >= ($level_thresholds[9]+1)){
-			$rank = 10;
-		}
-		$LEVEL = "<div class='spacer'>";
-		if($rank_type == "image"){
-			$LEVEL .= "<img src='".e_IMAGE."forum/".$level_images[$rank]."' alt='' />";
-		}else{
-			$LEVEL .= "[ ".trim(chop($level_images[$level]))." ]";
-		}
-		$LEVEL .= "</div>";
-	}
+	
 }
 
 
@@ -316,7 +240,7 @@ if(USER){
 }
 
 $THREADDATESTAMP = IMAGE_post." ".$gen->convert_date($thread_datestamp, "forum");
-$POST = $aj -> tpa($thread_thread, "forum");
+$POST = wrap($aj -> tpa($thread_thread, "forum"));
 if(ADMIN && $iphost){ $POST .= "<br />".$iphost; }
 $TOP = "<a href='".e_SELF."?".e_QUERY."#top'>".LAN_10."</a>";
 $FORUMJUMP = forumjump();
@@ -367,21 +291,9 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 			$POSTS = LAN_67." ".$user_forums."<br />";
 			$VISITS = LAN_09.": ".$user_visits;
 			
-			 if($user_admin){
-				if($user_perms == "0"){
-					$MEMBERID = IMAGE_rank_main_admin_image."<br />";
-				}else{
-					if(preg_match("/(^|\s)".preg_quote($user_name)."/", $forum_moderators) && getperms("A", $user_perms)){
-						$MEMBERID = IMAGE_rank_moderator_image."<br />";
-					}else{
-						$MEMBERID = IMAGE_rank_admin_image."<br />";
-					}
-				}
-			}else if(preg_match("/(^|\s)".preg_quote($user_name)."/", $forum_moderators) && getperms("A", $user_perms)){
-				$MEMBERID = IMAGE_rank_moderator_image."<br />";
-			}else{
-				$MEMBERID = LAN_195." #".$user_id."<br />";
-			}
+			$ldata = get_level($user_id, $user_forums, $user_comments, $user_chats, $user_visits, $user_join, $user_admin, $user_perms, $pref);
+			$MEMBERID = $ldata[0];
+			$LEVEL = $ldata[1];
 
 			$SIGNATURE = ($user_signature ? "<br /><hr style='width:15%; text-align:left'><span class='smalltext'>".$aj -> tpa($user_signature) : "");
 			$PROFILEIMG = "<a href='user.php?id.".$user_id."'>".IMAGE_profile."</a>";
@@ -391,44 +303,7 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 
 			$WEBSITEIMG = ($user_homepage && $user_homepage != "http://" ? "<a href='$user_homepage'>".IMAGE_website."</a>" : "");
 			$RPG = rpg($user_join, $user_forums);
-			if(strstr($MEMBERID, "<img")){
-				$LEVEL = "";
-			}else{
-				$daysregged = max(1, round((time() - $user_join)/86400))."days";
-				$level = ceil((($user_forums*5) + ($user_comments*5) + ($user_chats*2) + $user_visits)/4);
-				$ltmp = $level;
-
-				if($level <= $level_thresholds[0]){
-					$rank = 0; 
-				}else if($level >= ($level_thresholds[0]+1) && $level <= $level_thresholds[1]){
-					$rank = 1;
-				}else if($level >= ($level_thresholds[1]+1) && $level <= $level_thresholds[2]){
-					$rank = 2;
-				}else if($level >= ($level_thresholds[2]+1) && $level <= $level_thresholds[3]){
-					$rank = 3;
-				}else if($level >= ($level_thresholds[3]+1) && $level <= $level_thresholds[4]){
-					$rank = 4;
-				}else if($level >= ($level_thresholds[4]+1) && $level <= $level_thresholds[5]){
-					$rank = 5;
-				}else if($level >= ($level_thresholds[5]+1) && $level <= $level_thresholds[6]){
-					$rank = 6;
-				}else if($level >= ($level_thresholds[6]+1) && $level <= $level_thresholds[7]){
-					$rank = 7;
-				}else if($level >= ($level_thresholds[7]+1) && $level <= $level_thresholds[8]){
-					$rank = 8;
-				}else if($level >= ($level_thresholds[8]+1) && $level <= $level_thresholds[9]){
-					$rank = 9;
-				}else if($level >= ($level_thresholds[9]+1)){
-					$rank = 10;
-				}
-				$LEVEL = "<div class='spacer'>";
-				if($rank_type == "image"){
-					$LEVEL .= "<img src='".e_IMAGE."forum/".$level_images[$rank]."' alt='' />";
-				}else{
-					$LEVEL .= "[ ".trim(chop($level_images[$level]))." ]";
-				}
-				$LEVEL .= "</div>";
-			}
+			
 		}
 
 		$EDITIMG = ($post_author_name == USERNAME && $thread_active ? "<a href='forum_post.php?edit.".$forum_id.".".$thread_id."'>".IMAGE_edit."</a> " : "");
@@ -448,7 +323,7 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 		}
 
 		$THREADDATESTAMP = IMAGE_post." ".$gen->convert_date($thread_datestamp, "forum");
-		$POST = $aj -> tpa($thread_thread, "forum");
+		$POST = wrap($aj -> tpa($thread_thread, "forum"));
 		if(ADMIN && $iphost){ $POST .= "<br />".$iphost; }
 
 		$forrep .= preg_replace("/\{(.*?)\}/e", '$\1', $FORUMREPLYSTYLE);

@@ -68,10 +68,10 @@ if($action == "review"){
 					}
 
 					$text .= ($content_summary_ ? "<a href='".e_SELF."?review.cat.$content_id_'><img src='".e_IMAGE."link_icons/".$content_summary_."' alt='' style='float:left; border:0' /></a>" : "")."
-					<b>$content_heading</b>
+					<span class='mediumtext'><b>$content_heading</b></span>
 					<br />
 					<span class='smalltext'>by $user_name on $datestamp</span>
-					</br /></br />
+					<br /><br />
 					$content_summary
 					<br /><br />
 					".$aj -> tpa($content_content)."
@@ -154,10 +154,10 @@ if($action == "review"){
 							$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
 							$text .= "<tr><td style='width:5%; text-align:center; vertical-align:top'>".($icon ? "<img src='".e_IMAGE."link_icons/".$icon."' alt='' />" : "&nbsp;")."</td>
 							<td style='width:95%'>
-							<b><a href='".e_SELF."?review.$content_id'>$content_heading</a></b>
+							<b><span class='mediumtext'><a href='".e_SELF."?review.$content_id'>$content_heading</a></span></b>
 							<br />
 							<span class='smalltext'>by $user_name on $datestamp</span>
-							</br />
+							<br />
 							$content_summary
 							<br />
 							<table style='width:".($content_review_score*2)."px'>
@@ -181,8 +181,9 @@ if($action == "review"){
 		}
 
 		unset($text);
-		if($sql -> db_Select("content", "content_id, content_heading ", "content_subheading REGEXP('^-$id-') AND content_type=3 ORDER BY content_datestamp DESC LIMIT 10,100")){
+		if($sql -> db_Select("content", "content_id, content_heading ", "content_subheading REGEXP('^-$id-') AND content_type=3 ORDER BY content_datestamp DESC LIMIT 10,200")){
 			while($row = $sql -> db_Fetch()){
+				extract($row);
 				$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
 				$text .= "<img src='".e_IMAGE."generic/hme.png' alt='' style='vertical-align:middle' /> <a href='".e_SELF."?review.$content_id'>$content_heading</a> ($datestamp)<br />";
 			}
@@ -224,10 +225,10 @@ if($action == "review"){
 					$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
 
 					$text .= (file_exists(e_IMAGE."link_icons/$content_summary") ? "<a href='".e_SELF."?review.cat.$content_id'><img src='".e_IMAGE."link_icons/".$content_summary."' alt='' style='float:left; border:0' /></a>" : "&nbsp;")."
-					<b><a href='".e_SELF."?review.$rev_id'>$content_heading</a></b>
+					<b><span class='mediumtext'><a href='".e_SELF."?review.$rev_id'>$content_heading</a></span></b>
 					<br />
 					<span class='smalltext'>by <b>$user_name</b> on $datestamp</span>
-					</br />
+					<br />
 					$summary
 					<br />
 					<table style='width:".($content_review_score*2)."px'>
@@ -319,10 +320,10 @@ if($action == "article"){
 				}
 
 				$text .= ($content_summary_ ? "<a href='".e_SELF."?article.cat.$content_id_'><img src='".e_IMAGE."link_icons/".$content_summary_."' alt='' style='float:left; border:0' /></a>" : "")."
-				<b>$content_heading</b>
+				<span class='mediumtext'><b>$content_heading</b></span>
 				<br />
 				<span class='smalltext'>by <b>$user_name</b> on $datestamp</span>
-				</br /></br />
+				<br /><br />
 				$content_summary
 				<br /><br />";
 
@@ -469,10 +470,10 @@ if($action == "article"){
 							$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
 							$text .= "<tr><td style='width:5%; text-align:center; vertical-align:top'>".($icon ? "<img src='".e_IMAGE."link_icons/".$icon."' alt='' />" : "&nbsp;")."</td>
 							<td style='width:95%'>
-							<b><a href='".e_SELF."?article.$content_id'>$content_heading</a></b>
+							<b><span class='mediumtext'><a href='".e_SELF."?article.$content_id'>$content_heading</a></span></b>
 							<br />
 							<span class='smalltext'>".LAN_43." $user_name ".LAN_44." $datestamp</span>
-							</br />
+							<br />
 							$content_summary
 							<br /><br />\n</td></tr>\n";
 						}
@@ -490,8 +491,9 @@ if($action == "article"){
 		}
 
 		unset($text);
-		if($sql -> db_Select("content", "content_id, content_heading ", "content_parent=$id AND content_type=0 ORDER BY content_datestamp DESC LIMIT 10,100")){
+		if($sql -> db_Select("content", "content_id, content_heading ", "content_parent=$id AND content_type=0 ORDER BY content_datestamp DESC LIMIT 10,200")){
 			while($row = $sql -> db_Fetch()){
+				extract($row);
 				$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
 				$text .= "<img src='".e_IMAGE."generic/hme.png' alt='' style='vertical-align:middle' /> <a href='".e_SELF."?article.$content_id'>$content_heading</a> ($datestamp)<br />";
 			}
@@ -534,12 +536,12 @@ if($action == "article"){
 					$text .= "<tr>\n<td style='width:5%; text-align:center; vertical-align:top'>\n";
 					$text .= ($content_summary && $content_parent ? "<a href='".e_SELF."?article.cat.$content_id'><img src='".e_IMAGE."link_icons/".$content_summary."' alt='' style='border:0' /></a>" : "&nbsp;")."
 					</td>\n<td style='width:95%'>
-					<b><a href='".e_SELF."?article.$rev_id'> $content_heading</a></b>
+					<b><span class='mediumtext'><a href='".e_SELF."?article.$rev_id'>$content_heading</a></span></b>
 					<br />
 					<span class='smalltext'>by $user_name on $datestamp</span>
-					</br />
+					<br />
 					$summary
-					</br /></br />\n</td></tr>\n";
+					<br /><br />\n</td></tr>\n";
 				}
 			}
 		}else{
@@ -547,7 +549,6 @@ if($action == "article"){
 		}
 		$text .= "</table>";
 		$ns -> tablerender(LAN_47, $text);
-
 
 		if($sql -> db_Select("content", "*", "content_type=6")){
 			$text = "<div style='text-align:center'>
