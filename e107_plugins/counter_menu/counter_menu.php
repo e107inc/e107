@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/counter_menu/counter_menu.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-02-14 17:34:37 $
+|     $Revision: 1.10 $
+|     $Date: 2005-02-18 20:30:50 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -45,9 +45,7 @@ if ($pref['statActivate']) {
 }
 
 if (!$pref['statActivate'] && ADMIN) {
-	$text .= "<br /><br /><span class='smalltext'>".COUNTER_L5."</span><br />
-		<a href='".e_ADMIN."log.php'>".COUNTER_L6."</a>";
-	 
+	$text .= "<span class='smalltext'>".COUNTER_L5."<br />".COUNTER_L6."</span>";
 	$ns->tablerender(COUNTER_L1, $text, 'counter');
 }
 	
