@@ -12,18 +12,28 @@
 +---------------------------------------------------------------+
 */
 
+// [multilanguage]
+@include_once(e_THEME."vekna_blue/languages/".e_LANGUAGE.".php");
+@include_once(e_THEME."vekna_blue/languages/English.php");
+
 // [theme]
 $themename = "vekna blue";
 $themeversion = "1.0";
 $themeauthor = "Steve Dunstan [jalist]";
+$themeemail = "jalist@e107.org";
+$themewebsite = "http://e107.org";
 $themedate = "09/03/2005";
 $themeinfo = "Based on, and with permission from Arach's site, http://e107.vekna.com";
 define("STANDARDS_MODE", TRUE);
 
+$xhtmlcompliant = TRUE;
+$csscompliant = TRUE;
+
+define("THEME_DISCLAIMER", "<br /><i>".LAN_THEME_1."</i>");
+
 function theme_head() {
 	return "<link rel='stylesheet' href='".THEME."nav_menu.css' />\n";
 }
-
 
 // [layout]
 
@@ -38,7 +48,7 @@ then make change to nav_menu.css (documented in that file)
 */
 
 $HEADER = "
-<table id='wrapptable' cellSpacing='2' cellPadding='2' style='width: 800'> 
+<table id='wrapptable' cellspacing='2' cellpadding='2' style='width: 800'> 
 <tr>
 <td colspan='2'>
 <div>{SITELINKS_ALT=no_icons}</div>
@@ -63,17 +73,14 @@ $FOOTER = "
 {MENU=1}
 </td>
 </tr>
-
 <tr>
-<td class='infobar' colspan='2' style='text-align: center;'>{SITEDISCLAIMER}</td>
+<td class='infobar' colspan='2' style='text-align: center;'>{SITEDISCLAIMER}<br />{THEMEDISCLAIMER}</td>
 </tr>
-
-
 </table>
 ";
 
 $CUSTOMHEADER = "
-<table id='wrapptable' cellSpacing='2' cellPadding='2' style='width: 800'> 
+<table id='wrapptable' cellspacing='2' cellpadding='2' style='width: 800'> 
 <tr>
 <td colspan='2'>
 <div>{SITELINKS_ALT=no_icons}</div>
@@ -94,6 +101,9 @@ $CUSTOMHEADER = "
 $CUSTOMFOOTER = "
 </td>
 </tr>
+<tr>
+<td class='infobar' colspan='2' style='text-align: center;'>{SITEDISCLAIMER}<br />{THEMEDISCLAIMER}</td>
+</tr>
 </table>
 ";
 
@@ -101,7 +111,7 @@ $CUSTOMPAGES = "forum.php forum_post.php forum_viewforum.php forum_viewtopic.php
 
 $NEWSSTYLE = "
 <div class='spacer'>
-<div class='borderx'><div id='line2'>{NEWSTITLE}</div>
+<div class='borderx'><div class='line2'>{NEWSTITLE}</div>
 <div class='incontent'>{NEWSBODY}{EXTENDED}</div>
 <div class='infobar'>{NEWSAUTHOR} on {NEWSDATE} | {NEWSCOMMENTS}{TRACKBACK}</div>
 </div>
@@ -109,12 +119,12 @@ $NEWSSTYLE = "
 ";
 
 define("ICONSTYLE", "");
-define("COMMENTLINK", "Read/Post Comment: ");
-define("COMMENTOFFSTRING", "Comments are turned off for this item");
+define("COMMENTLINK", LAN_THEME_2);
+define("COMMENTOFFSTRING", LAN_THEME_3);
 define("PRE_EXTENDEDSTRING", "<br /><br />[ ");
-define("EXTENDEDSTRING", "Read the rest ...");
+define("EXTENDEDSTRING", LAN_THEME_4);
 define("POST_EXTENDEDSTRING", " ]<br />");
-define("TRACKBACKSTRING", "Trackbacks: ");
+define("TRACKBACKSTRING", LAN_THEME_5);
 define("TRACKBACKBEFORESTRING", " | ");
 
 
@@ -145,7 +155,7 @@ function tablestyle($caption, $text, $mode)
 	{
 		if($caption)
 		{
-			echo "<div class='spacer'>\n<div class='borderx'><div id='line2'>$caption</div>\n<div class='incontent'>$text</div>\n</div>\n";
+			echo "<div class='spacer'>\n<div class='borderx'><div class='line2'>$caption</div>\n<div class='incontent'>$text</div>\n</div>\n";
 		}
 		else
 		{
@@ -164,8 +174,6 @@ $COMMENTSTYLE = "
 </tr>
 </table>
 ";
-
-define("CBWIDTH", "100%");
 
 $CHATBOXSTYLE = "
 <img src='".THEME."images/bullet2.gif' alt='' style='vertical-align: middle;' />
