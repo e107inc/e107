@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/search.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-03-16 18:14:44 $
+|     $Revision: 1.7 $
+|     $Date: 2005-03-17 10:47:07 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -40,7 +40,7 @@ if (isset($_POST['updatesettings'])) {
 	$search_prefs['relevance'] = $_POST['relevance'];
 	$search_prefs['user_select'] = $_POST['user_select'];
 	$search_prefs['time_restrict'] = $_POST['time_restrict'];
-	$search_prefs['time_secs'] = $_POST['time_secs'];
+	$search_prefs['time_secs'] = $_POST['time_secs'] > 300 ? 300 : $_POST['time_secs'];
 	foreach($search_handlers as $s_key => $s_value) {
 		$search_prefs['core_handlers'][$s_key] = $_POST['core_handlers'][$s_key];
 	}
@@ -102,7 +102,7 @@ $text .= "<tr>
 
 $text .= "<tr>
 <td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_12."</td>
-<td style='width:50%;' colspan='2' class='forumheader3'>".$rs -> form_checkbox('time_restrict', '1', $search_prefs['time_restrict'])." ".SEALAN_13." ".$rs -> form_text("time_secs", 4, $search_prefs['time_secs'], 4)." ".SEALAN_14."</td>
+<td style='width:50%;' colspan='2' class='forumheader3'>".$rs -> form_checkbox('time_restrict', '1', $search_prefs['time_restrict'])." ".SEALAN_13." ".$rs -> form_text("time_secs", 3, $search_prefs['time_secs'], 3)." ".SEALAN_14."</td>
 </tr>";
 
 $text .= "<tr>
