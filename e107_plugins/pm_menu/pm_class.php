@@ -313,21 +313,10 @@ class pm {
 	# Return -	String, entire form
 	*/
 		require_once(e_HANDLER."emote.php");
-//		require_once(e_HANDLER."shortcuts.php");
 		require_once(e_HANDLER."ren_help.php");
 		$pm_sql=new db;
 		$ret="";
 		global $pref;
-		$ret.="
-<script type=\"text/javascript\">
-function addtext(sc){
-	document.pm.pm_text.value += sc;
-}
-function help(help){
-	document.pm.helpb.value = help;
-}
-</script>
-";
 
 		$ret.="
 		<table style'width:100%' class='fborder'>
@@ -348,7 +337,7 @@ function help(help){
 				$pm_message="[quote=".$pm_from_user."]".$pm_message."[/quote]\n\n";
 			}
 		}
-		$ret.="<form method='post' name='pm' action='".e_SELF."'>\n";
+		$ret.="<form method='post' id='pm' action='".e_SELF."'>\n";
 		$ret.="<input type='hidden' name='from' value='".USERNAME."'>\n";
 		if($pm_from_user){
 			$ret.="<input type='hidden' name='to' value='".$pm_from_user."'>\n";
@@ -385,7 +374,8 @@ function help(help){
 		$ret.="<tr><td class='forumheader3'>".PMLAN_29."</td><td class='forumheader3'><input class='tbox' type='text' name='subject' value='".$pm_subject."'></td></tr>\n";
 		$ret.="<tr><td class='forumheader3'>".PMLAN_30."</td><td class='forumheader3'><textarea name='pm_text' rows='10' cols='50' class='tbox'>".$pm_message."</textarea>
 		<br />
-		".ren_help("addtext")."
+        <input class='helpbox' type='text' name='helpb' size='100' />
+		".ren_help(1, "addtext", "help")."
 		</td></tr>";
 		
 		if($pref['smiley_activate']==1){
@@ -659,5 +649,16 @@ function help(help){
 			return TRUE;
 		}
 	}
+}
+function headerjs(){
+$script_txt= "	<script type=\"text/javascript\">
+function addtext(sc){
+	document.getElementById('pm').pm_text.value += sc;
+}
+function help(help){
+	document.getElementById('pm').helpb.value = help;
+}
+</script>\n";
+return $script_txt;
 }
 ?>
