@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/frontpage.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-03-15 17:43:11 $
-|     $Author: stevedunstan $
+|     $Revision: 1.16 $
+|     $Date: 2005-04-02 19:13:38 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -115,7 +115,7 @@ if (isset($_POST['updatesettings'])) {
 		$pref['frontpage'] = $frontpage_value;
 		save_prefs();
 		$message = TRUE;
-		
+
 		if ($pref['frontpage'] != "news") {
 			if (!$sql->db_Select("links", "*", "link_url='news.php' ")) {
 				$sql->db_Insert("links", "0, 'News', 'news.php', '', '', 1, 0, 0, 0, 0");
@@ -153,26 +153,26 @@ $text = "
 			if ($frontpage_re == "news.php") { $flag = TRUE; }
 			$text .= $rs -> form_radio("frontpage", "news", ($frontpage_re == "news.php" ? "1" : "0"))."
 		</td>
-		<td style='width:95%' colspan='3' class='forumheader3'>".FRTLAN_3."</td>
+		<td style='width:95%' colspan='3' class='forumheader3'>".ADLAN_0."</td>
 	</tr>
 	<tr>
 		<td style='width:2%;' class='forumheader3'>";
 			if ($frontpage_re == $PLUGINS_DIRECTORY."forum/forum.php") { $flag = TRUE; }
 			$text .= $rs -> form_radio("frontpage", "forum", ($frontpage_re == $PLUGINS_DIRECTORY."forum/forum.php" ? "1" : "0"))."
 		</td>
-		<td style='width:95%' colspan='3' class='forumheader3'>".FRTLAN_4."</td>
+		<td style='width:95%' colspan='3' class='forumheader3'>".ADLAN_12."</td>
 	</tr>
 	<tr>
 		<td style='width:2%;' class='forumheader3'>";
 			if ($frontpage_re == "download.php") { $flag = TRUE; }
 			$text .= $rs -> form_radio("frontpage", "download", ($frontpage_re == "download.php" ? "1" : "0"))."
 		</td>
-		<td style='width:95%' colspan='3' class='forumheader3'>".FRTLAN_5."</td>
+		<td style='width:95%' colspan='3' class='forumheader3'>".ADLAN_24."</td>
 	</tr>
 	<tr>
 		<td style='width:2%;' class='forumheader3'>";
 			if ($frontpage_re == $PLUGINS_DIRECTORY."links_page/links.php") { $flag = TRUE; }
-			$text .= $rs -> form_radio("frontpage", "links", ($frontpage_re == $PLUGINS_DIRECTORY."links_page/links.php" ? "1" : "0"))."			
+			$text .= $rs -> form_radio("frontpage", "links", ($frontpage_re == $PLUGINS_DIRECTORY."links_page/links.php" ? "1" : "0"))."
 		</td>
 		<td style='width:95%' colspan='3' class='forumheader3'>".FRTLAN_6."</td>
 	</tr>";
@@ -204,7 +204,7 @@ $text = "
 		</tr>";
 	}
 
-	
+
 /*
 
 	$count = 0;
@@ -235,7 +235,7 @@ $text = "
 						$selected = "0";
 					}
 					$text .= $rs -> form_option($row2['content_heading'], $selected, "contentsub.".$array_mainparent[$i][0].".".$row2['content_id']);
-				
+
 			}
 			$text .= $rs -> form_select_close()."
 			</td>
@@ -298,7 +298,7 @@ $text = "
 </table>
 </form>
 </div>";
-	
+
 $ns -> tablerender(FRTLAN_13, $text);
 
 require_once("footer.php");

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/image.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-03-23 16:34:05 $
-|     $Author: stevedunstan $
+|     $Revision: 1.8 $
+|     $Date: 2005-04-02 19:13:38 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -26,7 +26,7 @@ require_once("auth.php");
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."userclass_class.php");
 $rs = new form;
-	
+
 if (strstr(e_QUERY, "delp")) {
 	if (!e_REFERER_SELF) {
 		exit;
@@ -38,7 +38,7 @@ if (strstr(e_QUERY, "delp")) {
 	$sql->db_Update("user", "user_sess='' WHERE user_sess='$image'");
 	$message = $image." ".IMALAN_28;
 }
-	
+
 if (e_QUERY == "del") {
 	if (!e_REFERER_SELF) {
 		exit;
@@ -59,8 +59,8 @@ if (e_QUERY == "del") {
 	}
 	$message = $count." ".IMALAN_26;
 }
-	
-	
+
+
 if (isset($_POST['update_options'])) {
 	$pref['image_post'] = $_POST['image_post'];
 	$pref['resize_method'] = $_POST['resize_method'];
@@ -70,14 +70,14 @@ if (isset($_POST['update_options'])) {
 	save_prefs();
 	$message = IMALAN_9;
 }
-	
+
 if (isset($message)) {
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
-	
-	
+
+
 if (isset($_POST['show_avatars'])) {
-	 
+
 	$handle = opendir(e_FILE."public/avatars/");
 	while ($file = readdir($handle)) {
 		if ($file != "." && $file != ".." && $file != "index.html" && $file != "/" && !is_dir($file)) {
@@ -85,15 +85,15 @@ if (isset($_POST['show_avatars'])) {
 		}
 	}
 	closedir($handle);
-	 
+
 	$text = "<div style='text-align:center'>\n";
-	 
+
 	if (!is_array($dirlist)) {
 		$text .= IMALAN_29;
 	} else {
-		 
-		 
-		 
+
+
+
 		while (list($key, $image_name) = each($dirlist)) {
 			$users = IMALAN_21." | ";
 			if ($sql->db_Select("user", "*", "user_image='-upload-$image_name' OR user_sess='$image_name'")) {
@@ -104,14 +104,14 @@ if (isset($_POST['show_avatars'])) {
 			} else {
 				$users = IMALAN_22;
 			}
-			 
+
 			$text .= "<div class='spacer'>
 				<table style='".ADMIN_WIDTH."' class='fborder'>
 				<tr>
 				<td class='fcaption'>$image_name</td>
 				</tr>
 				<tr>
-				<td class='forumheader3'><img src='".e_FILE."public/avatars/".$image_name."' alt='' /><br />[ <a href='".e_SELF."?delp-$image_name'>".IMALAN_27." ]</a></td>
+				<td class='forumheader3'><img src='".e_FILE."public/avatars/".$image_name."' alt='' /><br />[ <a href='".e_SELF."?delp-$image_name'>".LAN_DELETE." ]</a></td>
 				</tr>
 				<tr>
 				<td class='forumheader3'>$users</td>
@@ -119,27 +119,27 @@ if (isset($_POST['show_avatars'])) {
 				</table>
 				</div>";
 		}
-		 
+
 		$text .= "<div class='spacer'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
 			<td class='forumheader'><a href='".e_SELF."?del'>".IMALAN_25."</a></td>
 			</tr>
 			</table>";
-		 
+
 	}
-	 
+
 	$text .= "</div>";
-	 
+
 	$ns->tablerender(IMALAN_18, $text);
 }
-	
-	
-	
+
+
+
 $text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
-	 
+
 	<tr>
 	<td style='width:75%' class='forumheader3'>
 	".IMALAN_1."<br />
@@ -148,23 +148,23 @@ $text = "<div style='text-align:center'>
 	<td style='width:25%;text-align:center' class='forumheader3' >". ($pref['image_post'] ? "<input type='checkbox' name='image_post' value='1' checked='checked' />" : "<input type='checkbox' name='image_post' value='1' />")."
 	</td>
 	</tr>
-	 
-	 
+
+
 	<tr>
 	<td style='width:75%' class='forumheader3'>
 	".IMALAN_10."<br />
 	<span class='smalltext'>".IMALAN_11."</span>
 	</td>
 	<td style='width:25%;text-align:center' class='forumheader3' >
-	 
-	 
+
+
 	<select class='tbox' name='image_post_class'>
 	<option value='".e_UC_PUBLIC."'".($pref['image_post_class'] == e_UC_PUBLIC ? " selected='selected'" : "").">".IMALAN_30."</option>
 	<option value='".e_UC_GUEST."'".($pref['image_post_class'] == e_UC_GUEST ? " selected='selected'" : "").">".IMALAN_31."</option>
 	<option value='".e_UC_MEMBER."'".($pref['image_post_class'] == e_UC_MEMBER ? " selected='selected'" : "").">".IMALAN_32."</option>
 	<option value='".e_UC_ADMIN."'".($pref['image_post_class'] == e_UC_ADMIN ? " selected='selected'" : "").">".IMALAN_33."</option>\n";
-	
-	
+
+
 if ($sql->db_Select("userclass_classes")) {
 	while ($row = $sql->db_Fetch()) {
 		extract($row);
@@ -172,10 +172,10 @@ if ($sql->db_Select("userclass_classes")) {
 	}
 }
 $text .= "</select>
-	 
+
 	</td>
 	</tr>
-	 
+
 	<tr>
 	<td style='width:75%' class='forumheader3'>
 	".IMALAN_12."<br />
@@ -185,7 +185,7 @@ $text .= "</select>
 	<select name='image_post_disabled_method' class='tbox'>". ($pref['image_post_disabled_method'] == "0" ? "<option value='1' selected='selected'>".IMALAN_14."</option>" : "<option value='0'>".IMALAN_14."</option>"). ($pref['image_post_disabled_method'] == "1" ? "<option value='1' selected='selected'>".IMALAN_15."</option>" : "<option value='1'>".IMALAN_15."</option>")."
 	</select></td>
 	</tr>
-	 
+
 	<tr>
 	<td style='width:75%' class='forumheader3'>".IMALAN_3."<br /><span class='smalltext'>".IMALAN_4."</span></td>
 	<td style='width:25%;text-align:center' class='forumheader3' >
@@ -193,35 +193,35 @@ $text .= "</select>
 	</select>
 	</td>
 	</tr>
-	 
+
 	<tr>
 	<td style='width:75%' class='forumheader3'>".IMALAN_5."<br /><span class='smalltext'>".IMALAN_6."</span></td>
 	<td style='width:25%;text-align:center' class='forumheader3' >
 	<input class='tbox' type='text' name='im_path' size='40' value='".$pref['im_path']."' maxlength='200' />
 	</td></tr>
-	 
+
 	<tr>
 	<td style='width:75%' class='forumheader3'>".IMALAN_16."</td>
 	<td style='width:25%;text-align:center' class='forumheader3'  >
 	<input class='button' type='submit' name='show_avatars' value='".IMALAN_17."' />
 	</td></tr>
-	 
+
 	<tr>
 	<td colspan='2' style='text-align:center' class='forumheader'>
 	<input class='button' type='submit' name='update_options' value='".IMALAN_8."' />
 	</td>
 	</tr>
-	 
+
 	</table></form></div>";
 $ns->tablerender(IMALAN_7, $text);
-	
-	
+
+
 require_once("footer.php");
-	
-	
-	
+
+
+
 $pref['resize_method'] = $_POST['resize_method'];
 $pref['im_path'] = $_POST['im_path'];
-	
-	
+
+
 ?>

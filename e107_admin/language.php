@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-03-26 19:55:38 $
+|     $Revision: 1.14 $
+|     $Date: 2005-04-02 19:13:38 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -103,7 +103,7 @@ $text = "<div style='text-align:center'>
 
 $text .= "<table class='fborder' style='width:99%; margin-top: 1px;'>\n";
 $text .= "<tr><td class='fcaption'>".ADLAN_132."</td>";
-$text .= "<td class='fcaption'>".LANG_LAN_03."</td><td class='fcaption'>".LANG_LAN_04."</td>";
+$text .= "<td class='fcaption'>".LANG_LAN_03."</td><td class='fcaption'>".LAN_OPTIONS."</td>";
 $text .= "</tr>\n\n";
 sort($lanlist);
 for($i = 0; $i < count($lanlist); $i++) {

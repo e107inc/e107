@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2005-04-02 18:29:13 $
+|     $Revision: 1.43 $
+|     $Date: 2005-04-02 19:13:38 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -240,12 +240,12 @@ if ($action == "opt") {
 		</td>
 		<td class='forumheader3' style='width:30%;text-align:left'>
 
-		<select name='download_order' class='tbox'>". ($pref['download_order'] == "download_datestamp" ? "<option value='download_datestamp' selected='selected'>".LAN_DATE."</option>" : "<option value='download_datestamp'>".LAN_DATE."</option>"). ($pref['download_order'] == "download_requested" ? "<option value='download_requested' selected='selected'>".DOWLAN_57."</option>" : "<option value='download_requested'>".DOWLAN_57."</option>"). ($pref['download_order'] == "download_name" ? "<option value='download_name' selected='selected'>".DOWLAN_59."</option>" : "<option value='download_name'>".DOWLAN_59."</option>"). ($pref['download_order'] == "download_author" ? "<option value='download_author' selected='selected'>".DOWLAN_60."</option>" : "<option value='download_author'>".DOWLAN_60."</option>")."
+		<select name='download_order' class='tbox'>". ($pref['download_order'] == "download_datestamp" ? "<option value='download_datestamp' selected='selected'>".LAN_DATE."</option>" : "<option value='download_datestamp'>".LAN_DATE."</option>"). ($pref['download_order'] == "download_requested" ? "<option value='download_requested' selected='selected'>".ADLAN_24."</option>" : "<option value='download_requested'>".ADLAN_24."</option>"). ($pref['download_order'] == "download_name" ? "<option value='download_name' selected='selected'>".DOWLAN_59."</option>" : "<option value='download_name'>".DOWLAN_59."</option>"). ($pref['download_order'] == "download_author" ? "<option value='download_author' selected='selected'>".DOWLAN_60."</option>" : "<option value='download_author'>".DOWLAN_60."</option>")."
 		</select>
 		</td>
 		</tr>
 		<tr><td style='width:70%' class='forumheader3'>
-		".DOWLAN_61."
+		".LAN_ORDER."
 		</td>
 		<td class='forumheader3' style='width:30%;text-align:left'>
 		<select name='download_sort' class='tbox'>". ($pref['download_sort'] == "ASC" ? "<option value='ASC' selected='selected'>".DOWLAN_62."</option>" : "<option value='ASC'>".DOWLAN_62."</option>"). ($pref['download_sort'] == "DESC" ? "<option value='DESC' selected='selected'>".DOWLAN_63."</option>" : "<option value='DESC'>".DOWLAN_63."</option>")."
@@ -471,7 +471,7 @@ class download {
 		extract($preset);
 
 		if (!$sql->db_Select("download_category")) {
-			$ns->tablerender(DOWLAN_26, "<div style='text-align:center'>".DOWLAN_5."</div>");
+			$ns->tablerender(ADLAN_24, "<div style='text-align:center'>".DOWLAN_5."</div>");
 			return;
 		}
 		$download_active = 1;
@@ -802,7 +802,7 @@ class download {
 			</table>
 			</form>
 			</div>";
-		$ns->tablerender(DOWLAN_26, $text);
+		$ns->tablerender(ADLAN_24, $text);
 	}
 
 	function show_message($message) {

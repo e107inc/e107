@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_download.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-04-02 18:29:48 $
+|     $Revision: 1.7 $
+|     $Date: 2005-04-02 19:14:19 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -17,7 +17,6 @@ define("DOWLAN_5", "There are no download categories defined yet, until you defi
 define("DOWLAN_6", "No existing downloads");
 define("DOWLAN_7", "Existing Downloads");
 
-define("DOWLAN_10", "tick to confirm");
 define("DOWLAN_11", "Category");
 define("DOWLAN_12", "Name");
 define("DOWLAN_13", "File");
@@ -32,7 +31,7 @@ define("DOWLAN_21", "Status");
 
 define("DOWLAN_24", "Update Download");
 define("DOWLAN_25", "Submit Download");
-define("DOWLAN_26", "Downloads");
+
 define("DOWLAN_27", "Download");
 
 define("DOWLAN_29", "Downloads Front Page");
@@ -63,11 +62,11 @@ define("DOWLAN_53", "Subcategory");
 define("DOWLAN_54", "Download Options");
 define("DOWLAN_55", "Number of downloads to display per page");
 define("DOWLAN_56", "Sort by ");
-define("DOWLAN_57", "Downloads");
+
 
 define("DOWLAN_59", "Filename");
 define("DOWLAN_60", "Author");
-define("DOWLAN_61", "Order ");
+
 define("DOWLAN_62", "Ascending");
 define("DOWLAN_63", "Descending");
 define("DOWLAN_64", "Update Options");

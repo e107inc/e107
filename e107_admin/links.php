@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-03-31 09:18:48 $
-|     $Author: stevedunstan $
+|     $Revision: 1.31 $
+|     $Date: 2005-04-02 19:13:38 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -50,7 +50,7 @@ if (e_QUERY) {
 	$id = $tmp[2];
 	unset($tmp);
 }
-if (preg_match("#(.*?)_delete_(\d+)#", $deltest[$tp->toJS(LCLAN_10)], $matches)) {
+if (preg_match("#(.*?)_delete_(\d+)#", $deltest[$tp->toJS(LAN_DELETE)], $matches)) {
 	$delete = $matches[1];
 	$del_id = $matches[2];
 }
@@ -80,7 +80,7 @@ if (isset($_POST['update'])) {
 		$sql->db_Update("links", "link_class=".$lcid." WHERE link_id=".$lckey);
 	}
 	$e107cache->clear("sitelinks");
-	$linkpost->show_message(LCLAN_97);
+	$linkpost->show_message(LAN_UPDATED);
 }
 
 if (isset($_POST['updateoptions'])) {
@@ -135,10 +135,10 @@ class links {
 				<tr>
 				<td class='fcaption' style='width:5%'>".LCLAN_89."</td>
 				<td class='fcaption' style='width:60%'>".LCLAN_90."</td>
-				<td class='fcaption' style='width:15%'>".LCLAN_60."</td>
+				<td class='fcaption' style='width:15%'>".LAN_OPTIONS."</td>
 				<td class='fcaption' style='width:10%'>".LCLAN_95."</td>
 				<td class='fcaption' style='width:5%'>".LCLAN_91."</td>
-				<td class='fcaption' style='width:5%'>".LCLAN_86."</td>
+				<td class='fcaption' style='width:5%'>".LAN_ORDER."</td>
 				</tr>";
 			while ($row = $sql->db_Fetch()) {
 				extract($row);
@@ -147,13 +147,13 @@ class links {
 				"";
 				$text .= "</td><td style='width:60%' class='forumheader3' title='".$link_description."'>".$link_name."</td>";
 				$text .= "<td style='width:15%; text-align:center; white-space: nowrap' class='forumheader3'>";
-				$text .= $rs->form_button("button", "main_edit_{$link_id}", LCLAN_9, "onclick=\"document.location='".e_SELF."?create.edit.$link_id'\"");
-				$text .= $rs->form_button("submit", "main_delete_".$link_id, LCLAN_10, "onclick=\"return jsconfirm('".$tp->toJS(LCLAN_58." [ $link_name ]")."')\"");
+				$text .= $rs->form_button("button", "main_edit_{$link_id}", LAN_EDIT, "onclick=\"document.location='".e_SELF."?create.edit.$link_id'\"");
+				$text .= $rs->form_button("submit", "main_delete_".$link_id, LAN_DELETE, "onclick=\"return jsconfirm('".$tp->toJS(LCLAN_58." [ $link_name ]")."')\"");
 				$text .= "</td>";
 				$text .= "<td style='width:10%; text-align:center' class='forumheader3'>".r_userclass("link_class[".$link_id."]", $link_class, "off", "public,guest,nobody,member,admin,classes")."</td>";
 				$text .= "<td style='width:5%; text-align:center; white-space: nowrap' class='forumheader3'>";
-				$text .= "<input type='image' src='".e_IMAGE."admin_images/up.png' value='".$link_id.".".$link_order."' name='inc' />";
-				$text .= "<input type='image' src='".e_IMAGE."admin_images/down.png' value='".$link_id.".".$link_order."' name='dec' />";
+				$text .= "<input type='image' src='".e_IMAGE."admin_images/up.png' title='".LCLAN_30."' value='".$link_id.".".$link_order."' name='inc' />";
+				$text .= "<input type='image' src='".e_IMAGE."admin_images/down.png' title='".LCLAN_31."' value='".$link_id.".".$link_order."' name='dec' />";
 				$text .= "</td>";
 				$text .= "<td style='width:5%; text-align:center' class='forumheader3'>";
 				$text .= "<select name='link_order[]' class='tbox'>";
@@ -166,7 +166,7 @@ class links {
 				$text .= "</tr>";
 			}
 			$text .= "<tr>
-				<td class='forumheader' colspan='6' style='text-align:center'><input class='button' type='submit' name='update' value='".LCLAN_96."' /></td>
+				<td class='forumheader' colspan='6' style='text-align:center'><input class='button' type='submit' name='update' value='".LAN_UPDATE."' /></td>
 				</tr>";
 			$text .= "</table></div>";
 			$text .= $rs->form_close();
@@ -326,7 +326,7 @@ class links {
 
 			<tr style='vertical-align:top'>
 			<td colspan='2' style='text-align:center' class='forumheader'>
-			<input class='button' type='submit' name='updateoptions' value='".LCLAN_87."' />
+			<input class='button' type='submit' name='updateoptions' value='".LAN_UPDATE."' />
 			</td>
 			</tr>
 
@@ -348,7 +348,7 @@ function links_adminmenu() {
 	$var['create']['text'] = LCLAN_63;
 	$var['create']['link'] = e_SELF."?create";
 
-	$var['opt']['text'] = LCLAN_67;
+	$var['opt']['text'] = LAN_OPTIONS;
 	$var['opt']['link'] = e_SELF."?opt";
 
 	$var['sub']['text'] = LCLAN_83;

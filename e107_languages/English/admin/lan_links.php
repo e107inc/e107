@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_links.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-03-27 17:42:49 $
+|     $Revision: 1.6 $
+|     $Date: 2005-04-02 19:14:19 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -15,11 +15,9 @@ define("LCLAN_3", "Link updated in database.");
 define("LCLAN_4", "Link deleted.");
 define("LCLAN_6", "Order updated.");
 define("LCLAN_8", "Existing Links");
-define("LCLAN_9", "Edit");
-define("LCLAN_10", "Delete");
+
 define("LCLAN_12", "Link Rendertype");
-define("LCLAN_13", "Cannot edit the main category.");
-define("LCLAN_14", "Post");
+
 define("LCLAN_15", "Link Name");
 define("LCLAN_16", "Link URL");
 define("LCLAN_17", "Link Description");
@@ -34,61 +32,34 @@ define("LCLAN_26", "Ticking will make the link visible to only users in that cla
 define("LCLAN_27", "Update Link");
 define("LCLAN_28", "Create link");
 define("LCLAN_29", "Links");
+
 define("LCLAN_30", "move up");
 define("LCLAN_31", "move down");
-define("LCLAN_32", "Update Order");
-define("LCLAN_33", "Link Order");
-define("LCLAN_34", "Tick this to allow have the links page show only the link categories. Helpful if you have a lot of links.");
-define("LCLAN_35", "Update Options");
-define("LCLAN_36", "Link Page Options");
 
 define("LCLAN_39", "View Images");
-define("LCLAN_40", "Show only link categories");
-define("LCLAN_51", "Link Category Saved");
-define("LCLAN_52", "Link Category Updated");
+
 define("LCLAN_53", "Link");
 define("LCLAN_54", "deleted");
-define("LCLAN_55", "Link Category");
-define("LCLAN_56", "Are you sure you want to delete this category?");
+
 define("LCLAN_58", "Are you sure you want to delete this link?");
-define("LCLAN_59", "Category");
-define("LCLAN_60", "Options");
+
 define("LCLAN_61", "No links");
 define("LCLAN_62", "Links Front Page");
 define("LCLAN_63", "Create New Link");
-define("LCLAN_64", "Set Link Order");
-define("LCLAN_65", "Categories");
-define("LCLAN_67", "Options");
+
 define("LCLAN_68", "Links Options");
-define("LCLAN_69", "No link categories");
-define("LCLAN_70", "Existing Link Categories");
-define("LCLAN_71", "Category Name");
-define("LCLAN_72", "Category Description");
-define("LCLAN_73", "Category Icon");
-define("LCLAN_74", "Update Link Category");
-define("LCLAN_75", "Create Link Category");
 
 define("LCLAN_78", "Show Description as Screen-Tip");
 define("LCLAN_79", "Description will be shown when the mouse hovers over the link");
 
-define("LCLAN_80", "View Images");
-define("LCLAN_81", "Clear Form");
 
 define("LCLAN_83", "Submenus Generator");
 
-define("LCLAN_84", "Name");
-define("LCLAN_85", "Description");
-define("LCLAN_86", "Order");
-
-define("LCLAN_87", "Update");
 define("LCLAN_88", "Site Links Options");
 define("LCLAN_89", "Image");
 define("LCLAN_90", "Link Name");
 define("LCLAN_91", "Move");
-define("LCLAN_92", "Up");
-define("LCLAN_93", "Down");
-define("LCLAN_94", "Reorder");
+
 define("LCLAN_95", "Class");
-define("LCLAN_96", "Update");
-define("LCLAN_97", "Successfully Updated");
+
 ?>
