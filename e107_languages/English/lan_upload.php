@@ -22,5 +22,6 @@ define("LAN_414", "Working demo");
 define("LAN_415", "enter URL to site where demo can be viewed");
 define("LAN_416", "Submit and Upload");
 define("LAN_417", "Upload File");
+define("LAN_418", "Maximum file size: ");
 
 ?>

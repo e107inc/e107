@@ -173,7 +173,7 @@ if($action == "list"){
 	<select name='order' class='tbox'>".
 	($order == "download_datestamp" ? "<option value='download_datestamp' selected>".LAN_dl_22."</option>" : "<option value='download_datestamp'>".LAN_dl_22."</option>").
 	($order == "download_requested" ? "<option value='download_requested' selected>".LAN_dl_18."</option>" : "<option value='download_requested'>".LAN_dl_18."</option>").
-	($order == "download_name" ? "<option value='download_name' selected>".LAN_dl_23."</option>" : "<option value='download_name'>Filename</option>").
+	($order == "download_name" ? "<option value='download_name' selected>".LAN_dl_23."</option>" : "<option value='download_name'>".LAN_dl_23."</option>").
 	($order == "download_author" ? "<option value='download_author' selected>".LAN_dl_24."</option>" : "<option value='download_author'>".LAN_dl_24."</option>")."
 	</select>
 	&nbsp;
@@ -297,7 +297,7 @@ if($action == "view"){
 
 	if($download_thumb){
 		$text .= "<tr>
-		<td style='width:20%' class='forumheader3'>Image: </td>
+		<td style='width:20%' class='forumheader3'>".LAN_dl_11.": </td>
 		<td style='width:80%' class='forumheader3'>".
 		($download_image ? "<a href='".e_FILE."downloadimages/$download_image'><img src='".e_FILE."downloadthumbs/$download_thumb' alt='' style='border:0' /></a>" : "<img src='".e_FILE."downloadthumbs/$download_thumb' alt='' />")."
 		</td>
@@ -343,7 +343,7 @@ if($action == "view"){
 		}
 		if($ratearray[2] == ""){ $ratearray[2] = 0; }
 			$text .= "&nbsp;".$ratearray[1].".".$ratearray[2]." - ".$ratearray[0]."&nbsp;";
-			$text .= ($ratearray[0] == 1 ? "vote" : "votes");
+			$text .= ($ratearray[0] == 1 ? LAN_dl_43 : LAN_dl_44);
 		}else{
 			$text .= LAN_dl_13;
 		}
