@@ -172,9 +172,9 @@ class comment{
 		$replace[7] = ($user_location ? LAN_313.": ".$aj -> tpa($user_location) : "");
 
 		$search[8] = "/\{LEVEL\}(.*?)/si";
-		define("IMAGE_rank_main_admin_image", ($pref['rank_main_admin_image'] && file_exists(e_IMAGE."forum/".$pref['rank_main_admin_image']) ? "<img src='".e_IMAGE."forum/".$pref['rank_main_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/main_admin.png' alt='' />"));
-		define("IMAGE_rank_moderator_image", ($pref['rank_moderator_image'] && file_exists(e_IMAGE."forum/".$pref['rank_moderator_image']) ? "<img src='".e_IMAGE."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/admin.png' alt='' />"));
-		define("IMAGE_rank_admin_image", ($pref['rank_admin_image'] && file_exists(e_IMAGE."forum/".$pref['rank_admin_image']) ? "<img src='".e_IMAGE."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/admin.png' alt='' />"));
+		define("IMAGE_rank_main_admin_image", ($pref['rank_main_admin_image'] && file_exists(THEME."forum/".$pref['rank_main_admin_image']) ? "<img src='".THEME."forum/".$pref['rank_main_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/main_admin.png' alt='' />"));
+		define("IMAGE_rank_moderator_image", ($pref['rank_moderator_image'] && file_exists(THEME."forum/".$pref['rank_moderator_image']) ? "<img src='".THEME."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/admin.png' alt='' />"));
+		define("IMAGE_rank_admin_image", ($pref['rank_admin_image'] && file_exists(THEME."forum/".$pref['rank_admin_image']) ? "<img src='".THEME."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/admin.png' alt='' />"));
 		$ldata = get_level($user_id, $user_forums, $user_comments, $user_chats, $user_visits, $user_join, $user_admin, $user_perms, $pref);
 		$replace[8] = ($user_admin ? $ldata[0] : $ldata[1]);
 

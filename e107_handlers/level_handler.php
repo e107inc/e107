@@ -88,9 +88,11 @@ function get_level($user_id, $user_forums, $user_comments, $user_chats, $user_vi
 	}else if($level >= ($level_thresholds[9]+1)){
 		$rank = 10;
 	}
-
+	if($rank_type == "image"){
+		(file_exists(THEME."forum/".$level_images[$rank]) ? $pic_lev = THEME."forum/".$level_images[$rank] : $pic_lev = e_IMAGE."forum/".$level_images[$rank]);
+	}
 	$data[1] = "<div class='spacer'>
-	".($rank_type == "image" ? "<img src='".e_IMAGE."forum/".$level_images[$rank]."' alt='' />" : "[ ".trim(chop($level_images[$rank]))." ]")."
+	".($rank_type == "image" ? "<img src='".$pic_lev."' alt='' />" : "[ ".trim(chop($level_images[$rank]))." ]")."
 	</div>";
 	return ($data);
 }
