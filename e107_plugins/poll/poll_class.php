@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-03-24 09:13:42 $
+|     $Revision: 1.12 $
+|     $Date: 2005-03-24 22:28:06 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -189,7 +189,7 @@ class poll
 						$MODE = $mode;		/* debug */
 						$OPTION = $option;
 
-						$BAR = ($percentage[$count] ? "<div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div><div style='background-image: url($bar); width: ".floor($percentage[$count])."%; height: 14px; float: left;'></div><div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div>" : "");
+						$BAR = ($percentage[$count] ? "<div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div><div style='background-image: url($bar); width: ".(floor($percentage[$count]) != 100 ? floor($percentage[$count]) : 95)."%; height: 14px; float: left;'></div><div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div>" : "");
 
 						$PERCENTAGE = $percentage[$count]."%";
 						$VOTES = POLLAN_31.": ".$voteArray[$count];
