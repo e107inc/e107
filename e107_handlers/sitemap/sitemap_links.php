@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitemap/sitemap_links.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-10-07 14:46:28 $
+|     $Revision: 1.3 $
+|     $Date: 2004-11-06 01:38:44 $
 |     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,7 @@ function sm_links(){
         $sql2 = new db;
         $aj = new textparse;
         if($sql -> db_Select("news","news_id")){
-                $texto .= "<p class='caption2' style='text-align: left;' >\n
+                $texto .= "<p class='forumheader2' >\n
                 <a href=\"#\" onfocus=\"this.blur;\" onclick=\"if(document.getElementById('links_cats')){expandit('link_cats');}ejs_func_todo='view'\" >".SM_ICO_EXP."</a> <img src='".THEME."images/bullet2.gif' alt='bullet' /> <a class=\"sitemap2\"  href=\"links.php\" >".LANSM_8."</a> <b class='smalltext' >".LANSM_9."</b>\n
                 </p><br />\n";
 
