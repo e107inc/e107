@@ -29,7 +29,7 @@ define("LAN_308", "Real Name: ");
 define("LAN_401", "Leave blank to keep existing password");
 define("LAN_402", "Type path or choose avatar");
 define("LAN_403", "Choose avatar");
-define("LAN_404", "Please note: Any image uploaded to this server which is deemed inappropriate by the administrators will be deleted immediately.");
+define("LAN_404", "Please note: Any image uploaded to this server that is deemed inappropriate by the administrators will be deleted immediately.");
 
 define("LAN_410", "Settings for");
 define("LAN_411", "Update Your Settings");
@@ -64,9 +64,9 @@ define("LAN_SIGNUP_5", " characters long.");
 define("LAN_SIGNUP_6", "Your ");
 define("LAN_SIGNUP_7", " is required");
 
-define("LAN_USET_1", "Your avatar width is too large");
+define("LAN_USET_1", "Your avatar is too wide");
 define("LAN_USET_2", "Maximum allowable width is");
-define("LAN_USET_3", "Your avatar height is too large");
+define("LAN_USET_3", "Your avatar is too high");
 define("LAN_USET_4", "Maximum allowable height is");
 
 // v.616
