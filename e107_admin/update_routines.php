@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.68 $
-|     $Date: 2005-03-31 10:19:32 $
+|     $Revision: 1.69 $
+|     $Date: 2005-03-31 10:22:40 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -573,13 +573,6 @@ function update_61x_to_700($type) {
 			$s_prefs = TRUE;
 		}
 		// end newsfeed update -------------------------------------------------------------------------------------------
-		
-		// start stats update -------------------------------------------------------------------------------------------
-		if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='log'")) {
-			$sql->db_Insert("plugin", "0, 'Statistic Logging', '2.0', 'log', 1");
-			$s_prefs = TRUE;
-		}
-		// end stats update -------------------------------------------------------------------------------------------
 		
 		// start stats update -------------------------------------------------------------------------------------------
 		if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='log'")) {
