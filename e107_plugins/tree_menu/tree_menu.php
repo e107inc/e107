@@ -87,7 +87,7 @@ function clearcook(){
 //-->\n
 ";
 
-(($treemenustatus!="0")?$text .= "window.onload=document.getElementById('span_".$treemenustatus."').style.display=''":"");
+(($treemenustatus!="0" && isset($treemenustatus))?$text .= "window.onload=document.getElementById('span_".$treemenustatus."').style.display=''":"");
 
 $text .= "</script>
 ";
