@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-29 14:55:13 $
+|     $Revision: 1.4 $
+|     $Date: 2005-01-30 16:34:24 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -106,13 +106,12 @@ if ($action == "report") {
 		$report_thread_name = $_POST['report_thread_name'];
 		if ($pref['reported_post_email']) {
 			require_once(e_HANDLER."mail.php");
-			$report_add = $tp->tpDB($_POST['report_add']);
+			$report_add = $tp->toDB($_POST['report_add']);
 			$report = LAN_422.SITENAME." : ".(substr(SITEURL, -1) == "/" ? SITEURL : SITEURL."/")."forum_viewtopic.php?".$forum_id.".".$report_thread_id."#".$thread_id."\n".LAN_425.$user."\n".$report_add;
 			$subject = LAN_421." ".SITENAME;
 			sendemail(SITEADMINEMAIL, $subject, $report);
 		}
-		$reported_post = $forum_id."^".$report_thread_id."^".$thread_id."^".$report_thread_name."^".$user;
-		$sql->db_Insert("tmp", "'reported_post', '".time()."', '$reported_post' ");
+		$sql->db_Insert('generic',"0,'reported_post',".time().",'".USERID."','{$_POST['report_thread_name']}',{$_POST['report_thread_id']},'{$_POST['report_add']}'");
 		define("e_PAGETITLE", LAN_01." / ".LAN_428);
 		require_once(HEADERF);
 		$text = LAN_424."<br /><a href='forum_viewtopic.php?".$report_thread_id."#".$thread_id."'>".LAN_429."</a";
