@@ -19,20 +19,16 @@ if($use_imagecode){
         require_once(e_HANDLER."secure_img_handler.php");
         $sec_img = new secure_image;
 }
-
 if($pref['membersonly_enabled']){
-        $HEADER = "<div style='text-align:center'><div style='text-align:center; width:70%'><br>";
+        $HEADER = "<div style='width:70%;margin-left:auto;margin-right:auto'><div style='text-align:center;'><br>";
         if(file_exists(THEME."images/login_logo.png")){
-        $HEADER .= "<DIV STYLE=\"width:100%; filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(
-        src='".THEME."images/login_logo.png', sizingMethod='image');\" ></DIV>\n";
+        $HEADER .= "<img src='".THEME."images/login_logo.png'>\n";
         } else{
-        $HEADER .= "<DIV STYLE=\"width:100%; filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(
-        src='".$IMAGES_DIRECTORY."logo.png', sizingMethod='image');\" ></DIV>\n";
+        $HEADER .= "<img src='".e_IMAGE."logo.png'>\n";
         }
         $HEADER .= "<br />";
         $FOOTER = "</div></div>";
 }
-
 
 require_once(HEADERF);
 
@@ -135,7 +131,6 @@ if(IsSet($_POST['pwsubmit'])){
                 $ns -> tablerender(LAN_214, "<div style='text-align:center'>".$text."</div>");
         }
 }
-
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."'>\n
 <table style='width:85%' class='fborder'>
@@ -181,6 +176,5 @@ $text .="
 </div>";
 
 $ns -> tablerender(LAN_03, $text);
-
 require_once(FOOTERF);
 ?>

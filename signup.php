@@ -17,13 +17,11 @@ require_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_usersettings.php");
 $use_imagecode = ($pref['signcode'] && extension_loaded("gd"));
 
 if($pref['membersonly_enabled']){
-        $HEADER = "<div style='text-align:center'><div style='text-align:center; width:70%'><br>";
+        $HEADER = "<div style='width:70%;margin-left:auto;margin-right:auto'><div style='text-align:center;'><br>";
         if(file_exists(THEME."images/login_logo.png")){
-        $HEADER .= "<DIV STYLE=\"width:100%; filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(
-        src='".THEME."images/login_logo.png', sizingMethod='image');\" ></DIV>\n";
+        $HEADER .= "<img src='".THEME."images/login_logo.png'>\n";
         } else{
-        $HEADER .= "<DIV STYLE=\"width:100%; filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(
-        src='".$IMAGES_DIRECTORY."logo.png', sizingMethod='image');\" ></DIV>\n";
+        $HEADER .= "<img src='".e_IMAGE."logo.png'>\n";
         }
         $HEADER .= "<br />";
         $FOOTER = "</div></div>";
