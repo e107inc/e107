@@ -159,7 +159,8 @@ SC_END
 SC_BEGIN QUOTEIMG
 global $thread_info;
 global $post_info;
-if ($thread_info["head"]["thread_active"]) {
+global $forum_info;
+if (check_class($forum_info['forum_postclass']) && check_class($forum_info['parent_postclass']) && $thread_info["head"]["thread_active"]) {
 return "<a href='".e_PLUGIN."forum/forum_post.php?quote.{$post_info['thread_id']}'>".IMAGE_quote."</a>";
 }
 SC_END

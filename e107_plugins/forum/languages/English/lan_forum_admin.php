@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_admin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-03-07 12:55:29 $
-|     $Author: stevedunstan $
+|     $Revision: 1.8 $
+|     $Date: 2005-03-25 03:32:11 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("FORLAN_1", "You must enter the number of days you wish to prune.");
@@ -31,8 +31,8 @@ define("FORLAN_19", "Edit");
 define("FORLAN_20", "Delete");
 define("FORLAN_21", "tick to confirm");
 define("FORLAN_22", "Parent");
-define("FORLAN_23", "Accessable to?");
-define("FORLAN_24", "tick to make accessable to users in the ticked class");
+define("FORLAN_23", "Viewable by");
+define("FORLAN_24", "Indicates who can can view the forum");
 define("FORLAN_25", "Update Parent");
 define("FORLAN_26", "Create Parent");
 define("FORLAN_27", "You need to define at least one forum parent before creating a forum.");
@@ -164,4 +164,11 @@ define("FORLAN_137", "Enabling this will resize larger images and also create a 
 
 define("FORLAN_138", "Prune these forums");
 define("FORLAN_139", "To use this setting you also need to tick 'Enable image posting' on the <a href='".e_ADMIN."image.php'>images</a> page");	
+
+define("FORLAN_140", "View");	
+define("FORLAN_141", "Post");	
+
+define("FORLAN_142", "Post permission");
+define("FORLAN_143", "Indicates who can can post to the forum");
+
 ?>

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-03-20 22:49:31 $
-|     $Author: stevedunstan $
+|     $Revision: 1.21 $
+|     $Date: 2005-03-25 03:32:11 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -185,7 +185,7 @@ $thread_info = $forum->thread_get($thread_id, $from-1, $pref['forum_postspage'])
 $forum_info = $forum->forum_get($thread_info['head']['thread_forum_id']);
 
 
-if (!check_class($forum_info['forum_class'])) {
+if (!check_class($forum_info['forum_class']) || !check_class($forum_info['parent_class'])) {
 	header("Location:".e_PLUGIN."forum/forum.php");
 	exit;
 }
@@ -306,8 +306,10 @@ if ($pages > 1) {
 		$GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
 }
 
-if ((ANON || USER) && ($forum_info['forum_class'] != e_UC_READONLY || MODERATOR)) {
-	if ($thread_info['head']['thread_active']) {
+if ((check_class($forum_info['forum_postclass']) && check_class($forum_info['parent_postclass'])) || MODERATOR)
+{
+	if ($thread_info['head']['thread_active'])
+	{
 		$BUTTONS = "<a href='".e_PLUGIN."forum/forum_post.php?rp.".e_QUERY."'>".IMAGE_reply."</a>";
 	}
 	$BUTTONS .= "<a href='".e_PLUGIN."forum/forum_post.php?nt.".$forum_info['forum_id']."'>".IMAGE_newthread."</a>";
@@ -347,10 +349,14 @@ for($i = 0; $i < count($thread_info)-1; $i++) {
 }
 
 
-if ((ANON || USER) && ($forum_class != e_UC_READONLY || MODERATOR) && $thread_info['head']['thread_active'] ) {
-	if (!$forum_quickreply) {
+if (((check_class($forum_info['forum_postclass']) && check_class($forum_info['parent_postclass'])) || MODERATOR) && $thread_info['head']['thread_active'] )
+{
+	if (!$forum_quickreply)
+	{
 		$QUICKREPLY = "<form action='".e_PLUGIN."forum/forum_post.php?rp.".e_QUERY."' method='post'>\n<p>\n".LAN_393.":<br /><textarea cols='60' rows='4' class='tbox' name='post'></textarea><br /><input type='submit' name='fpreview' value='".LAN_394."' class='button' /> &nbsp;\n<input type='submit' name='reply' value='".LAN_395."' class='button' />\n<input type='hidden' name='thread_id' value='$thread_parent' />\n</p>\n</form>";
-	} else {
+	}
+	else
+	{
 		$QUICKREPLY = $forum_quickreply;
 	}
 }

@@ -170,8 +170,13 @@ class e107forum {
 	 
 	function forum_get($forum_id) {
 		$forum_id = intval($forum_id);
+		$qry = "
+		SELECT f.*, fp.forum_class as parent_class, fp.forum_postclass as parent_postclass FROM #forum AS f
+		LEFT JOIN #forum AS fp ON fp.forum_id = f.forum_parent
+		WHERE f.forum_id = {$forum_id}
+		";
 		global $sql;
-		if ($sql->db_Select('forum', '*', "forum_id = $forum_id")) {
+		if ($sql->db_Select_gen($qry)) {
 			return $sql->db_Fetch();
 		}
 		return FALSE;
