@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2004-12-12 18:22:26 $
+|     $Revision: 1.39 $
+|     $Date: 2004-12-15 19:54:11 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -242,6 +242,9 @@ if ($pref['del_unv']) {
 	$sql->db_Delete("user", "user_ban = 2 AND user_join<'$threshold' ");
 }
 
+e107_require_once(e_HANDLER."override_class.php");
+$override = new override;
+
 e107_require_once(e_HANDLER."event_class.php");
 $e_event = new e107_event;
 
@@ -310,8 +313,9 @@ if (!class_exists('e107_table')) {
 			# - return                                null
 			# - scope                                        public
 			*/
-			if (function_exists("theme_tablerender")) {
-				$result = call_user_func("theme_tablerender", $caption, $text, $mode, $return);
+			global $override;
+			if($override_tablerender = $override -> override_check('tablerender')){
+				$result = call_user_func($override_tablerender, $caption, $text, $mode, $return);
 				if ($result == "return") {
 					return;
 				}
