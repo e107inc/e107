@@ -335,7 +335,9 @@ $text .= "</select>
 <tr>
 
 <td style='width:50%' class='forumheader3'>".PRFLAN_18.": </td>
-<td style='width:50%; text-align:right' class='forumheader3'>
+<td style='width:50%; text-align:right' class='forumheader3'><a href='".e_ADMIN."lancheck.php'>".PRFLAN_86."</a>
+
+
 <select name='sitelanguage' class='tbox'>\n";
 $counter = 0;
 $sellan = eregi_replace("lan_*.php", "", $pref['sitelanguage']);
