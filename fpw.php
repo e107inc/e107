@@ -20,7 +20,7 @@ if($use_imagecode){
         $sec_img = new secure_image;
 }
 if($pref['membersonly_enabled']){
-        $HEADER = "<div style='width:70%;margin-left:auto;margin-right:auto'><div style='text-align:center;'><br />";
+        $HEADER = "<div style='width:100%;text-align:center;margin-left:auto;margin-right:auto'><div style='width:70%;margin-left:auto;margin-right:auto;text-align:center;'><br />";
         if(file_exists(THEME."images/login_logo.png")){
         $HEADER .= "<img src='".THEME."images/login_logo.png' alt='' />\n";
         } else{
