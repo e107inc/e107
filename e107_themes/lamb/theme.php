@@ -12,13 +12,21 @@
 +---------------------------------------------------------------+
 */
 
+// [multilanguage]
+@include_once(e_THEME."lamb/languages/".e_LANGUAGE.".php");
+@include_once(e_THEME."lamb/languages/English.php");
+
 // [theme]
 $themename = "lamb";
 $themeversion = "1.0";
 $themeauthor = "Steve Dunstan [jalist]";
+$themeemail = "jalist@e107.org";
+$themewebsite = "http://e107.org";
 $themedate = "29/01/2005";
 $themeinfo = "";
 define("STANDARDS_MODE", TRUE);
+
+define("THEME_DISCLAIMER", "<br /><i>".LAN_THEME_1."</i>");
 
 // [layout]
 
@@ -30,7 +38,6 @@ $HEADER = "<div id='header'>
 <div id='banner'>
 {BANNER}
 </div>
-
 <table style='width: 100%;' cellpadding='0' cellspacing='0'>
 <tr>
 <td id='leftcontent'>
@@ -41,7 +48,6 @@ $HEADER = "<div id='header'>
 </div>
 </div>
 </td>
-
 <td id='centercontent'>
 <div class='columnwrap'>
 ";
@@ -49,7 +55,6 @@ $HEADER = "<div id='header'>
 $FOOTER = "
 </div>
 </td>
-
 <td id='rightcontent'>
 <div class='menuwrapper'>
 <div class='columnwrap'>
@@ -59,12 +64,10 @@ $FOOTER = "
 </td>
 </tr>
 </table>
-
-
 <div id='footer'>
 <div class='columnwrap'>
 <div style='text-align: center;' class='smalltext'>
-{SITEDISCLAIMER}
+{SITEDISCLAIMER}<br />{THEMEDISCLAIMER}
 <br />
 <img src='".e_IMAGE."generic/php-small-trans-light.gif' alt='' /> <img src='".e_IMAGE."button.png' alt='' /> 
 <img src='".e_IMAGE."generic/poweredbymysql-88.png' alt=''  /> &nbsp;&nbsp;&nbsp;&nbsp;
@@ -95,12 +98,12 @@ on
 </div>
 <br />";
 define("ICONSTYLE", "float: left; border:0");
-define("COMMENTLINK", "Read/Post Comment: ");
-define("COMMENTOFFSTRING", "Comments are turned off for this item");
+define("COMMENTLINK", LAN_THEME_3);
+define("COMMENTOFFSTRING", LAN_THEME_2);
 define("PRE_EXTENDEDSTRING", "<br /><br />[ ");
-define("EXTENDEDSTRING", "Read the rest ...");
+define("EXTENDEDSTRING", LAN_THEME_3);
 define("POST_EXTENDEDSTRING", " ]<br />");
-define("TRACKBACKSTRING", "Trackbacks: ");
+define("TRACKBACKSTRING", LAN_THEME_5);
 define("TRACKBACKBEFORESTRING", " | ");
 
 
@@ -145,18 +148,6 @@ $COMMENTSTYLE = "
 </tr>
 </table>
 ";
-
-$POLLSTYLE = <<< EOF
-<b>Poll:</b> {QUESTION}
-<br /><br />
-{OPTIONS=OPTION<br />BAR<br /><span class='smalltext'>PERCENTAGE VOTES</span><br />\n}
-<br /><div style='text-align:center' class='smalltext'>{AUTHOR}<br />{VOTE_TOTAL} {COMMENTS}
-<br />
-{OLDPOLLS}
-</div>
-EOF;
-
-define("CBWIDTH", "100%");
 
 $CHATBOXSTYLE = "
 <img src='".e_IMAGE."admin_images/chatbox_16.png' alt='' style='vertical-align: middle;' />
