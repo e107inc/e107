@@ -91,11 +91,11 @@ a:hover {
 	background-color: #f9f9f9;
 }
 
-.forumheader2, .f2default, .fcaption, .fcdefault, .fcaption2 {
+.f2default, .fcaption, .fcdefault, .fcaption2 {
 	background-color: #efefef;
 }
 
-.forumheader3, .f3default{
+.forumheader2, .forumheader3, .f3default{
 	background-color: #fff;
 }
 
