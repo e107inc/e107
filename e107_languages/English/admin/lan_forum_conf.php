@@ -23,4 +23,6 @@ define("FORLAN_24", "Move thread  to forum");
 define("FORLAN_25", "Move Thread");
 define("FORLAN_26", "Reply deleted");
 
+define("FORLAN_27", "moved");
+
 ?>
