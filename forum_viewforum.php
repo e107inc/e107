@@ -166,14 +166,14 @@ if($sql -> db_Select("forum_t", "*",  "thread_forum_id='".$forum_id."' AND threa
 			$sticky_threads ++;
 		}
 		if($sticky_threads == "1" && !$stuck){
-			$forum_view_forum .= "<tr><td colspan='6'  class='forumheader'><span class='mediumtext'><b>".LAN_411."</b></span></td></tr>";
+			$forum_view_forum .= "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>".LAN_411."</b></span></td></tr>";
 			$stuck = TRUE;
 		}
 		if(!$row['thread_s']){
 			$reg_threads ++;
 		}
 		if($reg_threads == "1" && !$unstuck && $stuck){
-			$forum_view_forum .= "<tr><td colspan='6'  class='forumheader'><span class='mediumtext'><b>".LAN_412."</b></span></td></tr>";
+			$forum_view_forum .= "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>".LAN_412."</b></span></td></tr>";
 			$unstuck = TRUE;
 		}
 		$forum_view_forum .= parse_thread($row);
