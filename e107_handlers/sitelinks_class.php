@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-02-11 22:26:59 $
-|     $Author: stevedunstan $
+|     $Revision: 1.28 $
+|     $Date: 2005-02-14 08:27:50 $
+|     $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -124,11 +124,14 @@ class sitelinks {
 			$linkInfo['link_name'] = $tmp[2];
 		}
 
-		if(defined("LINKSTART_HILITE") && strpos(e_SELF, str_replace("../","","/".$linkInfo['link_url'])) !== FALSE ){
+		if (hilite($linkInfo['link_url'])== TRUE){
 			$_link = $linkInfo['link_button'] ? preg_replace('/\<img.*\>/si', '', LINKSTART_HILITE) :  LINKSTART_HILITE;
 		}else{
 			$_link = $linkInfo['link_button'] ? preg_replace('/\<img.*\>/si', '', LINKSTART) :  LINKSTART;
 		}
+
+
+
 		$_link .= $linkInfo['link_button'] ? "<img src='".e_IMAGE."icons/".$linkInfo['link_button']."' alt='' style='vertical-align:middle' />" : "";
 		$_link .= ($submenu == TRUE && LINKDISPLAY != 3) ? "&nbsp;&nbsp;" : "";
 
@@ -153,4 +156,18 @@ class sitelinks {
 	}
 }
 
+function hilite($link){
+
+	if(eregi("\?",$link)){
+		if(defined("LINKSTART_HILITE") && (strpos(e_SELF."?".e_QUERY, str_replace("../","","/".$link)) !== FALSE)){
+			return TRUE;
+		}
+	}
+
+	if(!eregi("cat",e_QUERY)&& defined("LINKSTART_HILITE") && (strpos(e_SELF, str_replace("../","","/".$link)) !== FALSE)){
+		return TRUE;
+	}
+
+	return FALSE;
+}
 ?>
