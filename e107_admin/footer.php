@@ -105,7 +105,7 @@ if($pref['cachestatus']){
 
 
 // Docs menu
-
+unset($e107_var);
 while(list($key, $value) = each($helplist)){
         $e107_var['x'.$key]['text'] = $value;
         $e107_var['x'.$key]['link'] = e_ADMIN."docs.php?".$key;
