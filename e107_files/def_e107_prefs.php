@@ -87,6 +87,41 @@ $pref['cb_emote'] = "0";
 
 // Added
 $pref['signup_text'] = "";
-$pref['make_clickable'] = 1;
+$pref['admin_alerts_ok'] = 1;
+$pref['real'] = 1;
+$pref['url'] = 1;
+$pref['icq'] = 1;
+$pref['aim'] = 1;
+$pref['msn'] = 1;
+$pref['dob'] = 1;
+$pref['loc'] = 1;
+$pref['sig'] = 1;
+$pref['avt'] = 1;
+$pref['zone'] = 1;
+$pref['usrclass'] = 1;
+$pref['link_replace'] = 1;
+$pref['link_text'] = "";
+$pref['signcode'] = 1;
+$pref['logcode'] = 1;
+$pref['signup_options'] = "1.1.1.1.1.1.1.1.1.1.1";
+$pref['newsposts_archive'] = 0;
+$pref['newsposts_archive_title'] = "";
+$pref['news_cats'] = "";
+$pref['nbr_cols'] = 1;
+$pref['subnews_attach'] = "";
+$pref['subnews_resize'] = "";
+$pref['subnews_class'] = 0;
+$pref['subnews_htmlarea'] = 0;
+$pref['subnews_hide_news'] = "";
+$pref['news_newdateheader'] = 0;
+$pref['email_text'] = "";
+$pref['plug_status'] = "";
+$pref['useGeshi'] = 0;
+$pref['search_sort'] = "php";
+$pref['wysiwyg'] = 0;
+$pref['old_np'] = 0;
+$pref['make_clickable'] = 0;
+
+
 
 ?>
