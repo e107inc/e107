@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-02-09 22:09:27 $
+|     $Revision: 1.13 $
+|     $Date: 2005-02-17 19:12:39 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -46,11 +46,6 @@ class comment {
 		}
 	}
 	function render_comment($row, $table, $action, $id, $width, $subject) {
-		 
-		 
-		//echo "<pre>"; print_r($row); echo "</pre>";
-		 
-		 
 		global $COMMENTSTYLE, $pref, $tp;
 		require_once(e_HANDLER."level_handler.php");
 		if (!$width) {

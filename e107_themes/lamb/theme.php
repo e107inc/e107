@@ -120,7 +120,7 @@ function tablestyle($caption, $text, $mode)
 $COMMENTSTYLE = "
 <table style='width: 100%;'>
 <tr>
-<td style='width: 30%; text-align: right;'>{USERNAME} @ <span class='smalltext'>{TIMEDATE}</span><br />{AVATAR}</td>
+<td style='width: 30%; text-align: right;'>{USERNAME} @ <span class='smalltext'>{TIMEDATE}</span><br />{AVATAR}<span class='smalltext'>{REPLY}</span></td>
 <td style='width: 70%;'>
 <div id='lbqtop'>
 <div id='pgFrontUserInner'>
