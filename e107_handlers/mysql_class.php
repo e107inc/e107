@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2005-04-05 03:45:46 $
-|     $Author: streaky $
+|     $Revision: 1.37 $
+|     $Date: 2005-04-05 11:33:31 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -25,8 +25,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.36 $
-* @author $Author: streaky $
+* @version $Revision: 1.37 $
+* @author $Author: mcfly_e107 $
 */
 class db {
 
@@ -87,7 +87,7 @@ class db {
 		$temp = $this->mySQLerror;
 		$this->mySQLerror = FALSE;
 		if(defined("USE_PERSISTANT_DB") && USE_PERSISTANT_DB == true){
-			if (!$this->mySQL_access = @mysql_pconnect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword)) {
+			if (!$this->mySQLaccess = @mysql_pconnect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword)) {
 				return 'e1';
 			} else {
 				if (!@mysql_select_db($this->mySQLdefaultdb)) {
@@ -97,7 +97,7 @@ class db {
 				}
 			}
 		} else {
-			if (!$this->mySQL_access = @mysql_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword)) {
+			if (!$this->mySQLaccess = @mysql_connect($this->mySQLserver, $this->mySQLuser, $this->mySQLpassword)) {
 				return 'e1';
 			} else {
 				if (!@mysql_select_db($this->mySQLdefaultdb)) {
