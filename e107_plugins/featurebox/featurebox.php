@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/featurebox/featurebox.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-04-01 11:03:58 $
+|     $Revision: 1.2 $
+|     $Date: 2005-04-05 07:07:40 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -27,6 +27,10 @@ else if($sql -> db_Select("featurebox", "*", "fb_mode!=1 AND fb_class IN (".USER
 	$nfArray = $sql -> db_getList();
 	$entry = $nfArray[array_rand($nfArray)];
 	extract($entry);
+}
+else
+{
+	return FALSE;
 }
 
 $fbcc = $fb_title;
