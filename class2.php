@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2004-11-26 15:05:16 $
+|     $Revision: 1.21 $
+|     $Date: 2004-11-27 13:23:52 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -129,6 +129,13 @@ else if($merror == "e2") {
 	exit;
 }
 
+/* New compatabilty class.
+   Set true to enable e107 comapatabilty mode,
+   defaults to *PHP ONLY* mode */
+
+require_once(e_HANDLER."compatability_class.php");
+$e107_Compatability = new e107Compat(true);
+
 // New parser code #########
 $parsethis = array();
 if ($sql->db_Select("parser", "parser_pluginname,parser_regexp", "")) {
@@ -213,40 +220,9 @@ if ($pref['frontpage'] && $pref['frontpage_type'] == "splash") {
 	}
 }
 
-if ($pref['cachestatus']) {
+if ($pref['status']) {
 	require_once(e_HANDLER."cache_handler.php");
 	$e107cache = new ecache;
-}
-
-function retrieve_cache($query) {
-	global $e107cache, $e107_debug;
-	if (!is_object($e107cache)) {
-		return FALSE;
-	}
-	$ret = $e107cache->retrieve($query);
-	if ($e107_debug && $ret) {
-		echo "cache used for: $query <br />";
-	}
-	return $ret;
-}
-
-function set_cache($query, $text) {
-	global $e107cache;
-	if (!is_object($e107cache)) {
-		return FALSE;
-	}
-	if ($e107_debug) {
-		echo "cache set for: $query <br />";
-	}
-	$e107cache->set($query, $text);
-}
-
-function clear_cache($query) {
-	global $e107cache;
-	if (!is_object($e107cache)) {
-		return FALSE;
-	}
-	return $e107cache->clear($query);
 }
 
 if ($pref['del_unv']) {
@@ -481,29 +457,6 @@ if ($sql->db_Select('menus', '*', 'menu_location > 0 ORDER BY menu_order')) {
 
 //@require_once(e_HANDLER."IPB_int.php");
 //@require_once(e_HANDLER."debug_handler.php");
-
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-if (!function_exists('file_get_contents')) {
-	function file_get_contents($filename) {
-		$fd = fopen("$filename", "rb");
-		$content = fread($fd, filesize($filename));
-		fclose($fd);
-		return $content;
-	}
-}
-
-if (!function_exists('file_put_contents')) {
-	function file_put_contents($filename, $data) {
-		if (($h = @fopen($filename, 'w+')) === false) {
-			return false;
-		}
-		if (($bytes = @fwrite($h, $data)) === false) {
-			return false;
-		}
-		fclose($h);
-		return $bytes;
-	}
-}
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
