@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/search_menu/search_menu.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-02-28 20:04:09 $
-|     $Author: stevedunstan $
+|     $Revision: 1.9 $
+|     $Date: 2005-03-09 06:28:38 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_PLUGIN")){ exit; }
@@ -52,7 +52,7 @@ if (isset($custom_query[2]) && $custom_query[2] != '') {
 $text = "<form method='post' action='".e_BASE."search.php'>
 	<p>
 	<input class='tbox search' type='text' name='searchquery' size='".$search_size."' value='' maxlength='50' />
-	<input type='hidden' name='searchtype' value='$page' />
+	
 	".$search_button."
 	</p>
 	</form>";
