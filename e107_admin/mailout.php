@@ -1,4 +1,22 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107/e107_admin/mailout.php,v $
+|     $Revision: 1.4 $
+|     $Date: 2004-11-12 04:18:32 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
+*/
+
 /*  User-Mailout for the e107 core release. .
  This code is experimental
  Still to be added:
@@ -6,11 +24,11 @@
   - the {USERNAME} stuff.
   - bulk mailing with BCC option.. ?
   - confirm number of recipients, before sending.
-
 */
 
 require_once("../class2.php");
 require_once(e_ADMIN."auth.php");
+if(!getperms("4")){ header("location:".e_BASE."index.php"); exit;}
 require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php");
 
 require_once(e_HANDLER."userclass_class.php");
