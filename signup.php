@@ -78,7 +78,12 @@ if(IsSet($_POST['register'])){
 			$headers .= "X-Priority: 3\n";
 			$headers .= "Return-Path: <mail@".SITEURL.">\n";
 			$message = "Welcome to ".SITENAME."\nYour registration has been received and created with the following login information ...\n\nUsername: ".$_POST['name']."\nPassword: ".$_POST['password1']."\n\nYour account is currently marked as being inactive, to activate your account please go to the following link ...\n\n".SITEURL."signup.php?activate.".$id.".".$key."\n\nPlease keep this email for your own information as your password has been encrypted and cannot be retrieved if you misplace or forget it. You can however request a new password if this happens.\n\nThanks for your registration.\n\nFrom ".SITENAME."\n".SITEURL;
-			mail($_POST['email'], "Registration details for ".SITENAME, $message, $headers);
+			if(file_exists(e_BASE."plugins/smtp.php")){
+				require_once(e_BASE."plugins/smtp.php");
+				smtpmail($_POST['email'], "Registration details for ".SITENAME, $message, $headers);
+			}else{
+				mail($_POST['email'], "Registration details for ".SITENAME, $message, $headers);
+			}
 			require_once(HEADERF);
 			$text = "This stage of registation is complete, you will be receiving a confirmation email containing your login details, please follow the link in the email to complete the signup process and activate your account.";
 			$ns -> tablerender("<div style=\"text-align:center\">Thankyou!</div>", $text);

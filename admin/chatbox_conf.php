@@ -57,8 +57,7 @@ if(IsSet($_POST['updatesettings'])){
 	$pref['cb_wordwrap'][1] = $_POST['cb_wordwrap'];
 	$pref['cb_linkreplace'][1] = $_POST['cb_linkreplace'];
 	
-	$tmp = addslashes(serialize($pref));
-	$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='pref' ");
+	save_prefs();
 	header("location:chatbox_conf.php?u");
 }
 

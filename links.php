@@ -24,7 +24,7 @@ if($id != ""){
 
 require_once(HEADERF);
 
-$ns -> tablerender("<div style=\"text-align:center\">Links</div>", "");
+$ns -> tablerender("<div class='centre'>Links</div>", "");
 $sql -> db_Select("link_category", "*", "link_category_id != '1' ");
 $sql2 = new db;
 while(list($link_category_id, $link_category_name, $link_category_description) = $sql-> db_Fetch()){
@@ -32,7 +32,7 @@ while(list($link_category_id, $link_category_name, $link_category_description) =
 		unset($text);
 		while($row = $sql2-> db_Fetch()){
 			extract($row);
-			$text .= "<table style=\"width:95%\" cellspacing=\"5\">";
+			$text .= "<table class='defaulttable' cellspacing='5'>";
 			$caption = LAN_86." $link_category_name";
 			if($link_category_description != ""){
 				$caption .= " <i>[$link_category_description]</i>";
@@ -40,29 +40,29 @@ while(list($link_category_id, $link_category_name, $link_category_description) =
 
 			switch ($link_open) { 
 			case 1:
-				$link_append = "<a href=\"".e_SELF."?".$link_id."\" target=\"_blank\">";
+				$link_append = "<a href='".e_SELF."?".$link_id."' target='_blank'>";
 			break; 
 			case 2:
-			   $link_append = "<a href=\"".e_SELF."?".$link_id."\" target=\"_parent\">";
+			   $link_append = "<a href='".e_SELF."?".$link_id."' target='_parent'>";
 			break;
 			case 3:
-			   $link_append = "<a href=\"".e_SELF."?".$link_id."\" target=\"_top\">";
+			   $link_append = "<a href='".e_SELF."?".$link_id."' target='_top'>";
 			break;
 			case 4:
-				$link_append = "<a href=\"javascript:openwindow('".e_SELF."?".$link_id."')\">";
+				$link_append = "<a href='javascript:openwindow('".e_SELF."?".$link_id."')'>";
 			break;
 			default:
-			   $link_append = "<a href=\"".e_SELF."?".$link_id."\">";
+			   $link_append = "<a href='".e_SELF."?".$link_id."'>";
 			}
 
-			$text .= "\n<tr><td style=\"width:10%; vertical-align: top\">";
+			$text .= "\n<tr><td style='width:10%; vertical-align: top'>";
 			if($link_button != ""){
-				$text .= $link_append."\n<img style=\"border:0\" src=\"$link_button\" alt=\"".LAN_87." $link_name\" /></a>";
+				$text .= $link_append."\n<img style='border:0' src='$link_button' alt='".LAN_87." $link_name' /></a>";
 			}else{
-				$text .= $link_append."\n<img style=\"border:0\" src=\"themes/shared/generic/blankbutton.png\" alt=\"".LAN_87." $link_name\" /></a>";
+				$text .= $link_append."\n<img style='border:0' src='themes/shared/generic/blankbutton.png' alt='".LAN_87." $link_name' /></a>";
 			}
 			$text .= "</td>
-			<td style=\"width:80%; vertical-align: top;\">";
+			<td style='width:80%; vertical-align: top;'>";
 
 			$text .=  $link_append."<b>".$link_name."</b></a>\n";
 
@@ -70,10 +70,10 @@ while(list($link_category_id, $link_category_name, $link_category_description) =
 			<br />
 			$link_description
 			</td>
-			<td style=\"text-align: right; vertical-align:top; width:10%\">
-			<span class=\"smalltext\">[ ".LAN_88." $link_refer ]</span></td></tr>";
+			<td style='text-align: right; vertical-align:top; width:10%'>
+			<span class='smalltext'>[ ".LAN_88." $link_refer ]</span></td></tr>";
 			if(ADMIN == TRUE && getperms("I")){
-				$text .= "<tr><td colspan=\"3\" class=\"smalltext\">".LAN_89."[ <a href=\"admin/links.php?edit.".$link_id."\">".LAN_68."</a> ] [ <a href=\"admin/links.php?delete.".$link_id."\">".LAN_69."</a> ][ <a href=\"admin/links.php?add.".$link_category."\">".LAN_90."</a> ][ <a href=\"admin/link_category.php\">".LAN_91."</a> ]</td></tr>";
+				$text .= "<tr><td colspan='3' class='smalltext'>".LAN_89."[ <a href='admin/links.php?edit.".$link_id."'>".LAN_68."</a> ] [ <a href='admin/links.php?delete.".$link_id."'>".LAN_69."</a> ][ <a href='admin/links.php?add.".$link_category."'>".LAN_90."</a> ][ <a href='admin/link_category.php'>".LAN_91."</a> ]</td></tr>";
 			}
 			$text .= "</table>";
 		}

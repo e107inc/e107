@@ -1,7 +1,7 @@
 <?php
 echo "<br />
 <div style=\"text-align:center\">".
-$disclaimer.
+SITEDISCLAIMER.
 "</div>";
 ?>
 </td>
@@ -14,13 +14,6 @@ $sql -> db_Select("core", "*", "e107_name='e107' ");
 $row = $sql -> db_Fetch();
 $e107info = unserialize($row['e107_value']);
 
-
-
-
-$sql -> db_Select("e107");
-list($e107_author, $e107_url, $e107_version, $e107_build, $e107_datestamp) = $sql-> db_Fetch();
-$sql -> db_Select("prefs");
-list($sitename, $siteurl, $sitebutton, $sitetag, $sitedescription, $siteadmin, $siteadminemail, $sitetheme, $posts, $chatbox_d, $chat_posts,  $poll_d, $disclaimer, $headline_enable, $headline_update) = $sql-> db_Fetch();
 $obj = new convert;
 $install_date = $obj->convert_date($e107info['e107_datestamp'], "long");
 

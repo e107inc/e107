@@ -221,14 +221,16 @@ class news{
 			//	{PRINTICON}
 			//	{ENTENDEDSTRING}
 
+//http://e107.org/user.php?id.1233
+
 			$news_category = "<a href='".e_SELF."?cat.".$category_id."'>".$category_name."</a>";
-			$news_author = "<a href='mailto:".$a_email."'>".$a_name."</a>";
+			$news_author = "<a href='user.php?id.".$a_id."'>".$a_name."</a>";
 			$etext = " <a href=\"email.php?".$news_id."\"><img src=\"".e_BASE."themes/shared/generic/friend.gif\" style=\"border:0\" alt=\"email to someone\" /></a>";
-			$ptext = " <a href=\"print.php?".$news_id."\"><img src=\"".e_BASE."themes/shared/generic/printer.gif\" style=\"border:0\" alt=\"printer friendly\" /></a>";
+			$ptext = " <a href=\"print.php?news.".$news_id."\"><img src=\"".e_BASE."themes/shared/generic/printer.gif\" style=\"border:0\" alt=\"printer friendly\" /></a>";
 
 			if(ADMIN && getperms("H")){
-				$adminoptions .= "<a href=\"".e_BASE."admin/newspost.php?ne.".$news_id."\"><img src=\"".e_BASE."themes/shared/generic/newsedit.png\" alt=\"\" style=\"border:0\" /></a>
-				<a href=\"".e_BASE."admin/newspost.php?nd.".$news_id."\"><img src=\"".e_BASE."themes/shared/generic/newsdelete.png\" alt=\"\" style=\"border:0\" /></a>";
+				$adminoptions .= "<a href=\"".e_BASE.e_ADMIN."newspost.php?ne.".$news_id."\"><img src=\"".e_BASE."themes/shared/generic/newsedit.png\" alt=\"\" style=\"border:0\" /></a>
+				<a href=\"".e_BASE.e_ADMIN."newspost.php?nd.".$news_id."\"><img src=\"".e_BASE."themes/shared/generic/newsdelete.png\" alt=\"\" style=\"border:0\" /></a>";
 			}
 
 			$search[0] = "/\{NEWSTITLE\}(.*?)/si";
@@ -268,18 +270,24 @@ class news{
 			$replace[11] = $adminoptions;
 
 			$search[12] = "/\{EXTENDED\}(.*?)/si";
-			if($news_extended != "" && !eregi("extend", e_QUERY)){
-				$replace[12] = "<a href='".e_SELF."?extend.".$news_id."'>".EXTENDEDSTRING."</a>";
+			if($news_extended && !eregi("extend", e_QUERY)){
+				if(defined("PRE_EXTENDEDSTRING")){ $es1 = PRE_EXTENDEDSTRING; }
+				if(defined("POST_EXTENDEDSTRING")){ $es2 = POST_EXTENDEDSTRING; }
+				$replace[12] = $es1."<a href='".e_BASE."index.php?extend.".$news_id."'>".EXTENDEDSTRING."</a>".$es2;
 			}
 
 			$search[13] = "/\{NEWSSOURCE\}(.*?)/si";
 			if($news_source){
-				$replace[13] = SOURCESTRING.$news_source;
+				if(defined("PRE_SOURCESTRING")){ $es1 = PRE_SOURCESTRING; }
+				if(defined("POST_SOURCESTRING")){ $es2 = POST_SOURCESTRING; }
+				$replace[13] = $es1.SOURCESTRING.$news_source.$es2;
 			}
 
 			$search[14] = "/\{NEWSURL\}(.*?)/si";
 			if($news_url){
-				$replace[14] = URLSTRING.$news_url;
+				if(defined("PRE_URLSTRING")){ $es1 = PRE_URLSTRING; }
+				if(defined("POST_URLSTRING")){ $es2 = POST_URLSTRING; }
+				$replace[14] = $es1.URLSTRING.$news_url.$es2;
 			}
 
 			$text = preg_replace($search, $replace, $NEWSSTYLE);
@@ -364,49 +372,5 @@ class news{
 		if($modex == "preview"){ echo $info; }
 	}
 // ------------ end old newsstyle code
-
-
-function parsenews($NEWSSTYLE, $news_title, $news_body, $category_icon, $category_name, $a_name, $datestamp, $comment_total, $emailicon, $printicon, $entendedstring, $a_email, $category_id){
-
-	$tmp = explode("\n", $NEWSSTYLE);
-	for($c=0; $c < count($tmp); $c++){ 
-		if(ereg("{|}", $tmp[$c])){
-			$text .= $this->checklayoutn($tmp[$c], $news_title, $news_body, $category_icon, $category_name, $a_name, $datestamp, $comment_total, $emailicon, $printicon, $entendedstring, $a_email, $category_id);
-		}else{
-			$text .=  $tmp[$c];
-		}
-	}
-	return $text;
 }
-
-function checklayoutn($str, $news_title, $news_body, $category_icon, $category_name, $a_name, $datestamp, $comment_total, $emailicon, $printicon, $entendedstring, $a_email, $category_id){
-	if(strstr($str, "NEWSTITLE")){
-		$text .= $news_title;
-	}else if(strstr($str, "NEWSBODY")){
-		$text .= $news_body;
-	}else if(strstr($str, "NEWSICON")){
-		$text .= $category_icon;
-	}else if(strstr($str, "NEWSHEADER")){
-		$text .= $category_icon;
-	}else if(strstr($str, "NEWSCATEGORY")){
-		$text .= "<a href='".e_SELF."?cat.".$category_id."'>".$category_name."</a>";
-	}else if(strstr($str, "NEWSAUTHOR")){
-		$text .= "<a href='mailto:".$a_email."'>".$a_name."</a>";
-	}else if(strstr($str, "NEWSDATE")){
-		$text .= $datestamp;
-	}else if(strstr($str, "NEWSCOMMENTS")){
-		$text .= $comment_total;
-	}else if(strstr($str, "ENTENDEDSTRING")){
-		$text .= $entendedstring;
-	}
-	return $text;
-}
-
-
-
-
-
-
-}
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 ?>

@@ -13,6 +13,7 @@
 |        GNU General Public License (http://gnu.org).                                |
 +---------------------------------------------------------------+
 */
+setlocale(LC_ALL, 'de_DE');
 
 //articles.php/comment.php
 define(LAN_0, "[durch Admin gesperrt]");
@@ -43,7 +44,7 @@ define(LAN_20, "Fehler");
 define(LAN_21, "Besucher insgesamt heute: ");
 define(LAN_22, "Besucher total: ");
 define(LAN_23, "Anzahl Pageviews insgesamt: ");
-define(LAN_24, "fuck|piss|shit|cunt|cock|asshole|motherfucker|mother fucker| arse|pussy|faggot");
+define(LAN_24, "pulli|pullover");
 define(LAN_25, "Seite zurück");
 define(LAN_26, "Nächste Seite");
 
@@ -63,7 +64,7 @@ define(LAN_38, ", alle Zeitangaben in GMT.");
 define(LAN_39, "Themen insgesamt");
 define(LAN_40, "Beiträge insgesamt.");
 define(LAN_41, "Neuestes Mitglied: ");
-define(LAN_42, "Registrierte Mitglieder: ");
+define(LAN_42, "Registrierte Mitglieder");
 define(LAN_43, "In diesen Foren können Unregistrierte lesen und schreiben. Wenn Du Infos zu neuen Antworten sehen, oder Deine Nachricht editieren/löschen möchtest musst Du Dich <a href=\"signup.php\">registrieren</a> und einloggen.");
 define(LAN_44, "In diesen Foren können Unregistrierte lesen und schreiben. IP-Adressen/Hosts werden geloggt.");
 define(LAN_45, "In diesen Foren können nur registrierte Mitglieder lesen und schreiben. Bitte klicke <a href=\"signup.php\">hier</a> um Dich zu registrieren.");
@@ -140,13 +141,13 @@ define(LAN_105, "Die beiden Passworte stimmen nicht überein, bitte wiederholen."
 define(LAN_106, "Diese Email Adresse ist ungültig, bitte korrigieren.");
 define(LAN_107, "Vielen Dank ! Du bist jetzt registrierter Benutzer von".SITENAME.", bitte verwahre Benutzername und Passwort an einem sicheren Ort.<br /><br />Du kannst Dich nun über die Loginbox einloggen.");
 define(LAN_108, "Anmeldung abgeschlossen");
-define(LAN_109, "This site complies with The Children's Online Privacy Protection Act of 1998 (COPPA) and as such cannot accept registrations from users under the age of 13 without a written permission document from their parent or guardian. For more information you can read the legislation <a href=\"http://www.cdt.org/legislation/105th/privacy/coppa.html\">here</a>. Please contact the main site admin <a href=\"mailto:".SITEADMINEMAIL."\">here</a> if you require assistance.<br /><br /><div style=\"text-align:center\"><b>If you are over the age of 13 please click <a href=\"signup.php?stage1\">here</a> to continue the registration process.");
+define(LAN_109, "Diese Seite unterliegt dem \"Children's Online Privacy Protection Act of 1998 (COPPA)\" und kann somit keine Anmeldung von Personen unter einem Alter von 13 Jahren ohne Einverständnis eines Erziehungsberechtigten akzeptieren. Für weitere Informarationen besuchen sie bitte <a href=\"http://www.cdt.org/legislation/105th/privacy/coppa.html\">diese Seite</a>. Bitte kontaktieren sie den Administrator <a href=\"mailto:".SITEADMINEMAIL."\">hier</a> falls sie weitere Hilfe benötigen.<br /><br /><div style=\"text-align:center\"><b><br />Falls sie älter als 13 Jahre sind, klicken sie bitte <a href=\"signup.php?stage1\">hier</a> um mit der Registrierung fortzufahren.");
 define(LAN_110, "Anmeldung");
 define(LAN_111, "Passwort-Wiederholung: ");
 define(LAN_112, "Email Adresse: ");
 define(LAN_113, "Email Adresse verstecken?: ");
 define(LAN_114, "(Dadurch wird Deine Email Adresse im Profil nicht angezeigt)");
-define(LAN_115, "ICQ Number: ");
+define(LAN_115, "ICQ Nummer: ");
 define(LAN_116, "AIM Name: ");
 define(LAN_117, "MSN Name: ");
 define(LAN_118, "Geburtstag: ");
@@ -199,7 +200,7 @@ define(LAN_185, "Du hast das Feld für das Passwort nicht ausgefüllt,");
 
 //plugins
 define(LAN_156, "Senden");
-define(LAN_157, "Zurücksetzen");
+define(LAN_157, "Löschen");
 define(LAN_158, "Bisher keine Nachrichten.");
 define(LAN_159, "Alle Einträge ansehen");
 define(LAN_160, "Webmaster: ");
@@ -215,7 +216,7 @@ define(LAN_167, "Artikel");
 define(LAN_168, "Unsere Schlagzeilen können auf Deine Webseite übernommen/weitergegeben werden.(rss oder Text)");
 define(LAN_169, "Backend");
 define(LAN_170, "W3C Konformität");
-define(LAN_171, "User-Id konnte nicht gelesen werden (wahrscheinlich korrupter Cookie).<br />Bitte <a href=\"index.php?logout\">hier klicken</a> um den Cookie zu löschen.");
+define(LAN_171, "User-Id konnte nicht gelesen werden (wahrscheinlich fehlerhafter Cookie).<br />Bitte <a href=\"index.php?logout\">hier klicken</a> um den Cookie zu löschen.");
 define(LAN_172, "Ausloggen");
 define(LAN_173, "Einloggen fehlgeschlagen");
 define(LAN_174, "Anmeldung");
@@ -227,7 +228,7 @@ define(LAN_179, "Online");
 define(LAN_180, "Suchen");
 define(LAN_181, "Link zu uns");
 define(LAN_182, "Chatbox");
-define(LAN_183, "Haupt Menu");
+define(LAN_183, "Hauptmenü");
 define(LAN_184, "Umfragen");
 
 // #### Added in v5 #### //
@@ -241,7 +242,8 @@ define(LAN_191, "Information");
 define(LAN_192, "Die Benutzer dieses Forums erstellten insgesamt ");
 define(LAN_193, "Forum Moderator");
 define(LAN_194, "Gast");
-define(LAN_195, "Registriertes Mitglied");
+//define(LAN_195, "Registriertes Mitglied");
+define(LAN_195, "Mitglied");
 define(LAN_196, "Sie haben ");
 define(LAN_197, " der Themen gelesen.");
 define(LAN_198, " Alle neuen Themen wurden gelesen.");
@@ -265,39 +267,42 @@ define(LAN_215, "Dein Passwort für ".SITENAME." wurde zurückgesetzt. Dein neues 
 define(LAN_216, "Um das neue Passwort zu bestätigen bitte zu folgender Adresse gehen ...");
 define(LAN_217, "Danke, Dein neues Passwort wurde bestätigt. Du kannst Dich jetzt mit Deinem neuen Password einloggen.");
 
-      // NEW IN VERSION 5.3b4 - PLEASE UPDATE!
+define(LAN_281, "Besucher: ");
 
-define(LAN_300, "That username was not found in the database.<br /><br />");
-define(LAN_301, "Incorrect password.<br /><br />");
-define(LAN_302, "You have not activated your account. You should have received an email with instructions on how to confirm your account, if not please contact a site administrator.<br /><br />");
-define(LAN_303, "This news item is from ");
-define(LAN_304, "Article Title: ");
-define(LAN_305, "Subheading: ");
-define(LAN_306, "This article is from ");
-define(LAN_307, "Total posts in this category: ");
+// NEW IN VERSION 5.3b4 - PLEASE UPDATE!
+
+define(LAN_300, "Dieser Benutzername wurde nicht in der Datenbank gefunden.<br /><br />");
+define(LAN_301, "Falsches Passwort.<br /><br />");
+define(LAN_302, "Ihr Account ist noch nicht aktiviert. Sie haben eine Email mit weiteren Informationen bei ihrer Anmeldung erhalten. Falls nicht, melden sie sich auf der Kontakt Seite.<br /><br />");
+define(LAN_303, "Diese News stammt von ");
+define(LAN_304, "Artikel Titel: ");
+define(LAN_305, "Untertitel: ");
+define(LAN_306, "Dieser Artikel stammt von ");
+define(LAN_307, "Gesamte Anzahl an Posts in dieser Kategorie: ");
 define(LAN_308, "Real Name: ");
-define(LAN_309, "Please enter your details below - <b>a verification email will be sent to the email address you enter here so it must be valid, </b>if you do not wish to display your email address on this site please tick the hide email address box.");
-define(LAN_310, "Unable to accept post as that username is registered - if it is your username please login to post.");
+define(LAN_309, "Bitte fühlen sie alle Details aus - <b>eine Überprüfungs-Email wird an die angegebene Email Adresse gesendet. </b>Falls sie ihre Email Adresse nicht öffentlich zeigen wollen, markieren sie bitte die entsprechende Option.");
+define(LAN_310, "Name nicht akzeptiert da bereits registriert. Bitte Einloggen oder neuen Namen wählen!");
 define(LAN_311, "Anonymous");
-define(LAN_312, "Duplicate post - unable to accept.");
-define(LAN_313, "Please choose which list you wish to display ...");
-define(LAN_314, "Classes: ");
-define(LAN_315, "Users: ");
-define(LAN_316, "Go to page ");
-define(LAN_317, "None");
-define(LAN_318, "moderator options: ");
+define(LAN_312, "Doppelpost - nicht akzeptiert.");
+define(LAN_313, "Bitte wählen sie die anzuzeigende Liste ...");
+define(LAN_314, "Klassen: ");
+define(LAN_315, "Benutzer: ");
+define(LAN_316, "Gehe zu Seite ");
+define(LAN_317, "Keine");
+define(LAN_318, "moderator optionen: ");
 define(LAN_319, "Unstick");
 define(LAN_320, "Stick");
-define(LAN_321, "Moderators: ");
-define(LAN_322, "Posted: ");
-define(LAN_323, "Preview");
-define(LAN_324, "Your message has been successfully posted.");
-define(LAN_325, "Click Here to view your message");
-define(LAN_326, "Click here to return to the forum");
-define(LAN_327, "Review");
-define(LAN_328, "Einstellungen");   // "Settings" as used in default-header.
-define(LAN_329, "Auto Login"); // Auto Login
+define(LAN_321, "Moderatoren: ");
+define(LAN_322, "Erstellt am: ");
+define(LAN_323, "Vorschau");
+define(LAN_324, "Ihr Eintrag wurde erfolgreich erstellt.");
+define(LAN_325, "Hier klicken um Nachricht anzuzeigen...");
+define(LAN_326, "Hier klicken um zum Forum zurückzukehren...");
+define(LAN_327, "Rückschau");
 
-
+######## Added again.
+define(LAN_328, "Nur für Mitglieder");   // "Settings" as used in default-header.
+define(LAN_328, "Zeit");
+define(LAN_329, "Zitat des Tages");
 
 ?>

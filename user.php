@@ -51,9 +51,7 @@ if(IsSet($id)){
 		exit;
 	}
 
-	list($user_id, $user_name, $null, $user_sess, $user_email, $user_homepage, $user_icq, $user_aim, $user_msn, $user_location, $user_birthday, $user_signature, $user_image, $user_timezone, $user_hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_prefs, $user_new, $user_viewed, $user_visits, $user_admin, $user_login)  = $sql -> db_Fetch();
-
-	renderuser($user_id, $user_name, $null, $user_sess, $user_email, $user_homepage, $user_icq, $user_aim, $user_msn, $user_location, $user_birthday, $user_signature, $user_image, $user_timezone, $user_hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_prefs, $user_new, $user_viewed, $user_visits, $user_admin, $user_login);
+	renderuser($sql -> db_Fetch());
 	require_once(FOOTERF);
 	exit;
 }
@@ -109,16 +107,17 @@ $ns -> tablerender("<div style=\"text-align:center\">".LAN_140."</div>", $text);
 if(!$sql -> db_Select("user", "*",  "ORDER BY user_id $order LIMIT $from,$records", $mode="no_where")){
 	echo "<div style=\"text-align:center\"><b>".LAN_141."</b></div>";
 }else{
-	while(list($user_id, $user_name, $null, $user_sess, $user_email, $user_homepage, $user_icq, $user_aim, $user_msn, $user_location, $user_birthday, $user_signature, $user_image, $user_timezone, $user_hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_prefs, $user_new, $user_viewed, $user_visits, $user_admin, $user_login)  = $sql -> db_Fetch()){
+	while($row = $sql -> db_Fetch()){
 
-		renderuser($user_id, $user_name, $null, $user_sess, $user_email, $user_homepage, $user_icq, $user_aim, $user_msn, $user_location, $user_birthday, $user_signature, $user_image, $user_timezone, $user_hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_prefs, $user_new, $user_viewed, $user_visits, $user_admin, $user_login);
+		renderuser($row);
 	}
 }
 
 $ix = new nextprev("user.php", $from, $records, $users_total, LAN_138, $records.".".$order);
 
-function renderuser($user_id, $user_name, $null, $user_sess, $user_email, $user_homepage, $user_icq, $user_aim, $user_msn, $user_location, $user_birthday, $user_signature, $user_image, $user_timezone, $user_hideemail, $user_join, $user_lastvisit, $user_currentvisit, $user_lastpost, $user_chats, $user_comments, $user_forums, $user_ip, $user_ban, $user_prefs, $user_new, $user_viewed, $user_visits, $user_admin, $user_login){
-	$caption = LAN_142." ".$user_id.": ".$user_name."</div>";
+function renderuser($row){
+	extract($row);
+	$caption = LAN_142." ".$user_id.": ".$user_name;
 	$text = "<table style=\"width:95%\"><tr>";
 
 	if($user_image != ""){

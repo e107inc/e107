@@ -17,7 +17,7 @@ if(!getperms("3")){ header("location:".e_HTTP."index.php"); }
 require_once("auth.php");
 
 if(IsSet($_POST['add_admin'])){
-	for ($i=0; $i<=21; $i++){
+	for ($i=0; $i<=23; $i++){
 		if($_POST['perms'][$i]){
 			$perm .= $_POST['perms'][$i].".";
 		}
@@ -42,14 +42,13 @@ if(IsSet($_POST['update_admin'])){
 		$admin_password = md5($_POST['a_password']);
 	}
 
-	for ($i=0; $i<=16; $i++){
+	for ($i=0; $i<=23; $i++){
 		if($_POST['perms'][$i]){
 			$perm .= $_POST['perms'][$i].".";
 		}
 	}
-	$sql -> db_Update("admin", "admin_name='".$_POST['ad_name']."', admin_password='$admin_password', admin_email='".$_POST['ad_email']."', admin_permissions='".$perm."' WHERE admin_id='".$_POST['a_id']."' ");
-	$sql -> db_Update("user", "user_password='$admin_password', user_perms='$perm', user_email='".$_POST['ad_email']."' WHERE user_name='$a_name' ");
-	unset($ad_name, $a_password, $ad_email, $a_perms);
+	$sql -> db_Update("user", "user_password='$admin_password', user_perms='$perm' WHERE user_name='$a_name' ");
+	unset($ad_name, $a_password, $a_perms);
 	$message = "Administrator ".$_POST['ad_name']." updated in database.<br />";
 }
 
@@ -57,7 +56,7 @@ if(IsSet($_POST['edit'])){
 	$sql -> db_Select("user", "*", "user_id='".$_POST['existing']."' ");
 	$row = $sql-> db_Fetch();
 	extract($row);
-	$a_id = $user_id; $ad_name = $user_name; $ad_email = $user_email; $a_perms = $user_perms;
+	$a_id = $user_id; $ad_name = $user_name; $a_perms = $user_perms;
 	if($a_perms == "0"){
 		$text = "<div style=\"text-align:center\">$ad_name is the main site administrator and cannot be edited.
 		<br /><br />
@@ -115,49 +114,44 @@ if(IsSet($message)){
 
 $sql -> db_Select("user", "*", "user_admin='1'");
 
-$text = "<div style=\"text-align:center\">";
-
-$text .= "<form method=\"post\" action=\"".e_SELF."\">
-Existing Administrators: 
+$text = "<div style=\"text-align:center\">
+<form method=\"post\" action=\"".e_SELF."\" name=\"myform\">
+<table style=\"width:95%\" class=\"fborder\">
+<tr>
+<td colspan=\"2\" class=\"forumheader\" style=\"text-align:center\">
+<span class=\"defaulttext\">Existing Administrators:</span> 
 <select name=\"existing\" class=\"tbox\">";
 while(list($admin_id_, $admin_name_) = $sql-> db_Fetch()){
 	$text .= "<option value=\"$admin_id_\">".$admin_name_."</option>";
 }
 $text .= "</select>
 <input class=\"button\" type=\"submit\" name=\"delete\" value=\"Delete\" /> \n
-<input class=\"button\" type=\"submit\" name=\"edit\" value=\"Edit\" />\n";
+<input class=\"button\" type=\"submit\" name=\"edit\" value=\"Edit\" />\n
+</td></tr>
 
-$text .= "<table style=\"width:95%\">
 <tr>
-<td style=\"width:30%\">Admin Name: </td>
-<td style=\"width:70%\">
+<td style=\"width:30%\" class=\"forumheader3\">Admin Name: </td>
+<td style=\"width:70%\" class=\"forumheader3\">
 <input class=\"tbox\" type=\"text\" name=\"ad_name\" size=\"60\" value=\"$ad_name\" maxlength=\"100\" />
 </td>
 </tr>
 
 <tr>
-<td style=\"width:30%\">Admin Password: </td>
-<td style=\"width:70%\">
+<td style=\"width:30%\" class=\"forumheader3\">Admin Password: </td>
+<td style=\"width:70%\" class=\"forumheader3\">
 <input class=\"tbox\" type=\"text\" name=\"a_password\" size=\"60\" value=\"$a_password\" maxlength=\"100\" />
 </td>
 </tr>
 
-<tr>
-<td style=\"width:30%\">Admin Email: </td>
-<td style=\"width:70%\">
-<input class=\"tbox\" type=\"text\" name=\"ad_email\" size=\"60\" value=\"$ad_email\" maxlength=\"100\" />
-</td>
-</tr>
-
 <tr> 
-<td style=\"width:30%; vertical-align:top\">Permissions: <br /></td>
-<td style=\"width:70%\">";
+<td style=\"width:30%\" class=\"forumheader3\">Permissions: <br /></td>
+<td style=\"width:70%\" class=\"forumheader3\">";
 
 function checkb($arg, $perms){
 	if(getperms($arg, $perms)){
-		$par = "<input type=\"checkbox\" name=\"perms[]\" value=\"$arg\" checked>";
+		$par = "<input type=\"checkbox\" name=\"perms[]\" value=\"$arg\" checked>\n";
 	}else{
-		$par = "<input type=\"checkbox\" name=\"perms[]\" value=\"$arg\">";
+		$par = "<input type=\"checkbox\" name=\"perms[]\" value=\"$arg\">\n";
 	}
 	return $par;
 }
@@ -167,7 +161,8 @@ $text .= checkb("2", $a_perms)."Alter Menus<br />";
 $text .= checkb("3", $a_perms)."Add site administrators<br />";
 $text .= checkb("4", $a_perms)."Moderate users/bans etc<br />";
 $text .= checkb("5", $a_perms)."Create/edit forums<br />";
-$text .= checkb("6", $a_perms)."Upload files<br />";
+$text .= checkb("Q", $a_perms)."Manage download categories<br />";
+$text .= checkb("6", $a_perms)."Upload /manage files<br />";
 $text .= checkb("7", $a_perms)."Oversee news categories<br />";
 $text .= checkb("8", $a_perms)."Oversee link categories<br />";
 $text .= checkb("9", $a_perms)."Take site down for maintenance<br /><br />";
@@ -181,17 +176,22 @@ $text .= checkb("I", $a_perms)."Post links<br />";
 $text .= checkb("J", $a_perms)."Post articles<br />";
 $text .= checkb("K", $a_perms)."Post reviews<br />";
 $text .= checkb("L", $a_perms)."Post content pages<br />";
+$text .= checkb("R", $a_perms)."Post downloads<br />";
 $text .= checkb("M", $a_perms)."Welcome message<br />";
 $text .= checkb("N", $a_perms)."Moderate submitted news<br /><br />";
 
 $text .= checkb("P", $a_perms)."Configure plugins<br />";
 
 $text .= "
+<br />
+<a href=\"".e_SELF."?checkall=1\" onclick=\"setCheckboxes('myform', true); return false;\">Check All</a> - 
+<a href=\"".e_SELF."\" onclick=\"setCheckboxes('myform', false); return false;\">Unheck All</a>
+
 </td>
 </tr>";
 
 $text .= "<tr style=\"vertical-align:top\"> 
-<td colspan=\"2\" style=\"text-align:center\"><br />";
+<td colspan=\"2\" style=\"text-align:center\" class=\"forumheader\">";
 
 if(IsSet($_POST['edit'])){
 	$text .= "<input class=\"button\" type=\"submit\" name=\"update_admin\" value=\"Update administrator\" />

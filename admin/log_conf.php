@@ -20,7 +20,7 @@ if(IsSet($_POST['updatesettings'])){
 	$pref['log_activate'][1] = $_POST['log_activate'];
 	$pref['log_refertype'][1] = $_POST['refertype'];
 	$pref['log_lvcount'][1] = $_POST['lvcount'];
-	$sql -> db_Update("core", "e107_value='".addslashes(serialize($pref))."' WHERE e107_name='pref' ");
+	save_prefs();
 	header("location:log_conf.php?u");
 }
 

@@ -43,8 +43,7 @@ if(IsSet($_POST['updateprefs'])){
 	$pref['flood_time'][1] = $_POST['flood_time'];
 	$pref['user_reg_veri'][1] = $_POST['user_reg_veri'];
 
-	$tmp = addslashes(serialize($pref));
-	$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='pref' ");
+	save_prefs();
 	header("location:".e_SELF);
 }
 
@@ -81,7 +80,7 @@ closedir($handle);
 
 $handle=opendir(e_BASE."languages/");
 while ($file = readdir($handle)){
-	if($file != "." && $file != ".."){
+	if($file != "." && $file != ".." && $file != "/"){
 		$lanlist[] = eregi_replace("lan_|.php", "", $file);
 	}
 }
@@ -164,7 +163,7 @@ $text = "<div style=\"text-align:center\">
 <td style=\"width:50%; text-align:right\" class=\"forumheader3\">
 <select name=\"sitetheme\" class=\"tbox\">\n";
 $counter = 0;
-while($dirlist[$counter]){
+while(IsSet($dirlist[$counter])){
 	if($dirlist[$counter] == $pref['sitetheme'][1]){
 		$text .= "<option selected>".$dirlist[$counter]."</option>\n";
 	}else{
@@ -187,7 +186,7 @@ $text .= "</select>
 <select name=\"sitelanguage\" class=\"tbox\">\n";
 $counter = 0;
 $sellan = eregi_replace("lan_*.php", "", $pref['sitelanguage'][1]);
-while($lanlist[$counter]){
+while(IsSet($lanlist[$counter])){
 	if($lanlist[$counter] == $sellan){
 		$text .= "<option selected>".$lanlist[$counter]."</option>\n";
 	}else{
@@ -286,7 +285,7 @@ $text .= "<td style=\"width:50%\" class=\"forumheader3\">Short date format: </td
 <select name=\"time_offset\" class=\"tbox\">\n";
 $toffset = array("-12", "-11", "-10", "-9", "-8", "-7", "-6", "-5", "-4", "-3", "-2", "-1", "0", "+1", "+2", "+3", "+4", "+5", "+6", "+7", "+8", "+9", "+10", "+11", "+12", "+13");
 $counter = 0;
-while($toffset[$counter] != ""){
+while(IsSet($toffset[$counter])){
 	if($toffset[$counter] == $pref['time_offset'][1]){
 		$text .= "<option selected>".$toffset[$counter]."</option>\n";
 	}else{

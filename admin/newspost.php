@@ -52,6 +52,7 @@ if(IsSet($_POST['deletecancel'])){
 if(IsSet($_POST['deleteconfirm'])){
 	$message = $ix -> delete_item($_POST['news_id']);
 	$news_id = "";
+	$rsd = new create_rss();
 }
 
 if(IsSet($_POST['edit'])){
@@ -118,13 +119,16 @@ if(IsSet($message)){
 	$ns -> tablerender("", "<div style=\"text-align:center\"><b>".$message."</b></div>");
 }
 
+$text = "<div style=\"text-align:center\">
+<form method=\"post\" action=\"".e_SELF."\" name=\"dataform\">
+<table style=\"width:80%\" class=\"fborder\">
+<tr>
+<td colspan=\"2\" style=\"text-align:center\" class=\"forumheader\">";
+
 if(!$sql -> db_Select("news", "*", "ORDER BY news_datestamp DESC LIMIT 0,20", $mode="no_where")){
-	$text = "No news items yet.<br />
-	<form method=\"post\" action=\"".e_SELF."\">";
+	$text .= "No news items yet.";
 }else{
-	$text = "<div style=\"text-align:center\">
-	<form method=\"post\" action=\"".e_SELF."\" name=\"dataform\">
-	Existing News: 
+	$text .= "<span class=\"defaulttext\">Existing News:</span> 
 	<select name=\"existing\" class=\"tbox\">";
 	
 	while(list($news_id_, $news_title_) = $sql-> db_Fetch()){
@@ -134,24 +138,20 @@ if(!$sql -> db_Select("news", "*", "ORDER BY news_datestamp DESC LIMIT 0,20", $m
 <input class=\"button\" type=\"submit\" name=\"edit\" value=\"Edit\" /> 
 <input class=\"button\" type=\"submit\" name=\"delete\" value=\"Delete\" />
 </div>
-<br />
 ";
 }
 
 $text .= "
-<div style=\"text-align:center\">
-<table style=\"width:80%\">
-
+</td></tr>
 <tr>
-<td colspan=\"2\" style=\"text-align:center\">
+<td colspan=\"2\" style=\"text-align:center\" class=\"forumheader2\">
 <input class=\"button\" type=\"button\" onClick=\"openwindow()\"  value=\"Open HTML Editor\" />
-<br /><br />
 </td>
 </tr>
 
 <tr>
-<td style=\"width:20%\">Category: </td>
-<td style=\"width:80%\">";
+<td style=\"width:20%\" class=\"forumheader3\">Category: </td>
+<td style=\"width:80%\" class=\"forumheader3\">";
 
 if(!$sql -> db_Select("news_category")){
 	$text .= "No categories set yet.";
@@ -173,14 +173,14 @@ $text .= " [ <a href=\"news_category.php\">Add/Edit Categories</a> ]
 </td>
 </tr>
 <tr> 
-<td style=\"width:20%\">Title:</td>
-<td style=\"width:80%\">
+<td style=\"width:20%\" class=\"forumheader3\">Title:</td>
+<td style=\"width:80%\" class=\"forumheader3\">
 <input class=\"tbox\" type=\"text\" name=\"news_title\" size=\"80\" value=\"$news_title\" maxlength=\"200\" />
 </td>
 </tr>
 <tr> 
-<td style=\"width:20%\">Body:<br /></td>
-<td style=\"width:80%\">
+<td style=\"width:20%\" class=\"forumheader3\">Body:<br /></td>
+<td style=\"width:80%\" class=\"forumheader3\">
 <textarea class=\"tbox\" name=\"data\" cols=\"80\" rows=\"10\" onselect=\"storeCaret(this);\" onclick=\"storeCaret(this);\" onkeyup=\"storeCaret(this);\">$data</textarea>
 <br />
 <input class=\"helpbox\" type=\"text\" name=\"helpb\" size=\"100\" />";
@@ -188,27 +188,27 @@ $text .= ren_help("addtext");
 $text .= "</td>
 </tr>
 <tr> 
-<td style=\"width:20%\">Extended:<br /></td>
-<td style=\"width:80%\">
+<td style=\"width:20%\" class=\"forumheader3\">Extended:<br /></td>
+<td style=\"width:80%\" class=\"forumheader3\">
 <textarea class=\"tbox\" name=\"news_extended\" cols=\"80\" rows=\"10\" onselect=\"storeCaret2(this);\" onclick=\"storeCaret2(this);\" onkeyup=\"storeCaret2(this);\">$news_extended</textarea>";
 $text .= ren_help("addtext2");
 $text .= "</tr>
 <tr> 
-<td style=\"width:20%\">Source:</td>
-<td style=\"width:80%\">
+<td style=\"width:20%\" class=\"forumheader3\">Source:</td>
+<td style=\"width:80%\" class=\"forumheader3\">
 <input class=\"tbox\" type=\"text\" name=\"news_source\" size=\"80\" value=\"$news_source\" maxlength=\"100\" />
 </td>
 </tr>
 <tr> 
-<td style=\"width:20%\">URL:</td>
-<td style=\"width:80%\">
+<td style=\"width:20%\" class=\"forumheader3\">URL:</td>
+<td style=\"width:80%\" class=\"forumheader3\">
 <input class=\"tbox\" type=\"text\" name=\"news_url\" size=\"80\" value=\"$news_url\" maxlength=\"100\" />
 </td>
 </tr>
 
 <tr> 
-<td style=\"width:20%\">Comments:</td>
-<td style=\"width:80%\">";
+<td style=\"width:20%\" class=\"forumheader3\">Comments:</td>
+<td style=\"width:80%\" class=\"forumheader3\">";
 
 if(!$_POST['news_allow_comments']){
 	$text .= "<input name=\"news_allow_comments\" type=\"radio\" value=\"0\" checked>Enabled&nbsp;&nbsp;<input name=\"news_allow_comments\" type=\"radio\" value=\"1\">Disabled";
@@ -222,8 +222,8 @@ $text .= "</td>
 </tr>
 
 <tr> 
-<td style=\"width:20%\">Status:</td>
-<td style=\"width:80%\">";
+<td style=\"width:20%\" class=\"forumheader3\">Status:</td>
+<td style=\"width:80%\" class=\"forumheader3\">";
 
 
 $text .= (!$_POST['news_active'] ? "<input name=\"news_active\" type=\"radio\" value=\"0\" checked>Enabled&nbsp;&nbsp;<input name=\"news_active\" type=\"radio\" value=\"1\">Disabled" : "<input name=\"news_active\" type=\"radio\" value=\"0\">Enabled&nbsp;&nbsp;<input name=\"news_active\" type=\"radio\" value=\"1\" checked>Disabled");
@@ -233,8 +233,8 @@ $text .= " <span class=\"smalltext\">( Enabled = visible on front page, disabled
 </tr>
 
 <tr> 
-<td style=\"width:20%\">Activation:<br /><span class=\"smalltext\">(Leave blank to disable auto-activation)</span></td>
-<td style=\"width:80%\">";
+<td style=\"width:20%\" class=\"forumheader3\">Activation:<br /><span class=\"smalltext\">(Leave blank to disable auto-activation)</span></td>
+<td style=\"width:80%\" class=\"forumheader3\">";
 
 $text .= "<br />Activate between: <select name=\"startday\" class=\"tbox\"><option selected> </option>";
 for($a=1; $a<=31; $a++){
@@ -263,7 +263,7 @@ for($a=2003; $a<=2010; $a++){
 
 $text .= "</select>
 <tr style=\"vertical-align: top;\">
-<td colspan=\"2\"  style=\"text-align=center\"><br />";
+<td colspan=\"2\"  style=\"text-align=center\" class=\"forumheader\">";
 	
 if(IsSet($_POST['preview'])){
 	$text .= "<input class=\"button\" type=\"submit\" name=\"preview\" value=\"Preview again\" /> ";
@@ -282,13 +282,10 @@ $text .= "<input type=\"hidden\" name=\"news_id\" value=\"$news_id\">
 </td>
 </tr>
 <tr>
-<td colspan=\"2\"  class=\"smalltext\">
-
-<br />
-<br />
-<span class=\"smalltext\">
+<td colspan=\"2\" class=\"forumheader2\" style=\"text-align:right\">
+<div class=\"smalltext\">
 Line breaks (&lt;br /&gt;) are auto added. <u>Underlined fields are required.</u>
-</span>
+</div>
 </td>
 </tr>
 </table>
@@ -393,7 +390,7 @@ $rss = "<?xml version=\"1.0\"?>
 		$rss .= "<item>
 <title>".$news_title."</title>
 <description>".$nb."</description>
-<link>".SITEURL."/comment.php?".$news_id."</link> 
+<link>http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?".$news_id."</link> 
 </item>
 ";
 	}

@@ -77,7 +77,7 @@ $text .= "\n<textarea class=\"tbox\" name=\"message\" cols=\"26\" rows=\"5\" sty
 </form>
 </div>";
 }
-
+global $nickstore;
 if($sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, ".$chatbox_posts, $mode="no_where")){
 	$obj2 = new convert;
 	$aj = new textparse();
@@ -87,18 +87,24 @@ if($sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, ".$cha
 
 		// get available vars
 		$cb_nick = eregi_replace("[0-9]+\.", "", $cb_nick);
-		
-		if($sql2 -> db_Select("user", "*", "user_name='$cb_nick'")){
-			list($cuser_id, $cuser_name) = $sql2-> db_Fetch();
-			$cb_nick = "<a href=\"user.php?id.".$cuser_id."\">".$cb_nick."</a>";
+		if($nickstore[$cb_nick]){
+			$cb_nick = "<a href=\"user.php?id.".$nickstore[$cb_nick]."\">".$cb_nick."</a>";
 		}else{
-			$cb_nick = $aj -> tpa($cb_nick);
+			if($sql2 -> db_Select("user", "*", "user_name='$cb_nick'")){
+				list($cuser_id, $cuser_name) = $sql2-> db_Fetch();
+				$nickstore[$cb_nick] = $cuser_id;
+				$cb_nick = "<a href=\"user.php?id.".$cuser_id."\">".$cb_nick."</a>";
+			}else{
+				$cb_nick = $aj -> tpa($cb_nick);
+			}
 		}
 		$datestamp = $obj2->convert_date($cb_datestamp, "short");
 		$cb_message = $aj -> tpa($cb_message, "on");
 		if($pref['cb_linkreplace'][1]){
-			$cb_message = preg_replace("#\>(.*?)\</#i", ">".$pref['cb_linkc'][1]."</", $cb_message);
+			$cb_message = preg_replace("#\>(.*?)\</a#si", ">".$pref['cb_linkc'][1]."</a", $cb_message);
 		}
+
+		$cb_message = preg_replace("#src='#si" ,"src='".e_BASE, $cb_message);
 		$cb_message = preg_replace("/([^\s]{".$cb_wordwrap."})/", "$1\n", $cb_message);
 		if(CB_STYLE != "CB_STYLE"){
 			$CHATBOXSTYLE = CB_STYLE;
@@ -117,10 +123,9 @@ if($sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, ".$cha
 			{ADMINOPTIONS}
 			<br />";
 		}
-		$cb_message = eregi_replace("<img src=\"|<img src='" ,"<img src='".e_BASE, $cb_message);
+		
 		$text .= parsechatbox($CHATBOXSTYLE, $cb_nick, $datestamp, $cb_id, $cb_message, $cb_ip, $cb_blocked);
 	}
-		
 }else{
 	$text .= "<span class=\"mediumtext\">".LAN_158."</span>";
 }

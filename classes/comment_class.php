@@ -58,10 +58,10 @@ class comment{
 			
 		$user_join = $gen->convert_date($user_join, "short");
 
-		$unblock = "[<a href=\"admin/comment_conf.php?unblock-".$comment_id."-".$_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING']."\">".LAN_1."</a>]";
-		$block = "[<a href=\"admin/comment_conf.php?block-".$comment_id."-".$_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING']."\">".LAN_2."</a>] ";
-		$delete = "[<a href=\"admin/comment_conf.php?delete-".$comment_id."-".$_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING']."\">".LAN_3."</a>] ";
-		$userinfo = "[<a href=\"admin/userinfo.php?".$comment_ip."\">".LAN_4."</a>]";
+		$unblock = "[<a href=\"".e_BASE.e_ADMIN."comment_conf.php?unblock-".$comment_id."-".$_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING']."\">".LAN_1."</a>]";
+		$block = "[<a href=\"".e_BASE.e_ADMIN."comment_conf.php?block-".$comment_id."-".$_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING']."\">".LAN_2."</a>] ";
+		$delete = "[<a href=\"".e_BASE.e_ADMIN."comment_conf.php?delete-".$comment_id."-".$_SERVER['PHP_SELF']."?".$_SERVER['QUERY_STRING']."\">".LAN_3."</a>] ";
+		$userinfo = "[<a href=\"".e_BASE.e_ADMIN."userinfo.php?".$comment_ip."\">".LAN_4."</a>]";
 	
 		if(!$COMMENTSTYLE){
 			$COMMENTSTYLE = "<table style=\"width:95%\">
@@ -87,8 +87,51 @@ class comment{
 			{ADMINOPTIONS}
 			</td></tr></table><br />";
 		}
-		$text = $this->parsecomment($COMMENTSTYLE, $user_id, $user_name, $datestamp, $user_image, $user_comments, $user_join, $user_signature, $comment_comment, $comment_blocked, $unblock, $block, $delete, $userinfo);
-		return $text;
+
+		$aj = new textparse;
+
+		$search[0] = "/\{USERNAME\}(.*?)/si";
+		$replace[0] = ($user_id ? "<a href=\"user.php?id.".$user_id."\">".$user_name."</a>\n" : $user_name."\n");
+
+		$search[1] = "/\{TIMEDATE\}(.*?)/si";
+		$replace[1] = $datestamp;
+
+		$search[2] = "/\{AVATAR\}(.*?)/si";
+		$replace[2] = ($user_image ? "<img src=\"".$user_image."\" alt=\"\" />" : "");
+		
+		$search[3] = "/\{COMMENTS\}(.*?)/si";
+		$replace[3] = ($user_id ? LAN_99.": ".$user_comments : LAN_194);
+
+		$search[4] = "/\{COMMENT\}(.*?)/si";
+		$replace[4] = ($comment_blocked ? LAN_0 : $aj -> tpa($comment_comment));
+
+		$search[5] = "/\{SIGNATURE\}(.*?)/si";
+		if($user_signature){
+			$user_signature = preg_replace("/\[img\](.*?)\[\/img\]/si", "\\1", $user_signature);
+			$user_signature = "[ ".$aj -> tpa($user_signature)." ]";
+		}
+		$replace[5] = $user_signature;
+
+		$search[6] = "/\{JOINED\}(.*?)/si";
+		if($user_admin && $user_perms == "0"){ 
+			$replace[6] = "Main site administrator"; 
+		}else if($user_admin){
+			$replace[6] = "Administrator";
+		}else{
+			$replace[6] = ($user_join != "01 Jan : 00:00" ? LAN_145.$user_join : "");
+		}
+		$search[7] = "/\{ADMINOPTIONS\}(.*?)/si";
+		if(ADMIN == TRUE && getperms("B")){
+			if($comment_blocked == 1){
+				$tmp = $unblock;
+			}else{
+				$tmp = $block;
+			}
+			$tmp .= $delete.$userinfo;
+		}
+		$replace[8] = $tmp;
+
+		return preg_replace($search, $replace, $COMMENTSTYLE);
 	}
 	
 	function enter_comment($author_name, $comment, $table, $id){
@@ -108,6 +151,10 @@ class comment{
 			case "faq" : $type=3; break;
 			case "poll" : $type=4; break;
 			case "docs" : $type=5; break;
+			/****************************************
+			Add your comment type here in same format as above, ie ...
+			case "your_comment_type"; $type = your_type_id; break;
+			****************************************/
 		}
 
 
@@ -142,60 +189,6 @@ class comment{
 		}else{
 			define("emessage", LAN_312);
 		}
-	}
-
-	function parsecomment($LAYOUT, $user_id, $user_name, $datestamp, $user_image, $user_comments, $user_join, $user_signature, $comment_comment, $comment_blocked, $unblock, $block, $delete, $userinfo){
-		$tmp = explode("\n", $LAYOUT);
-		for($c=0; $c < count($tmp); $c++){ 
-			if(preg_match("/[\{|\}]/", $tmp[$c])){
-				$text .= $this->checklayoutc($tmp[$c], $user_id, $user_name, $datestamp, $user_image, $user_comments, $user_join, $user_signature, $comment_comment, $comment_blocked, $unblock, $block, $delete, $userinfo);
-			}else{
-				$text .=  $tmp[$c];
-			}
-		}
-		return $text;
-	}
-	function checklayoutc($str, $user_id, $user_name, $datestamp, $user_image, $user_comments, $user_join, $user_signature, $comment_comment, $comment_blocked, $unblock, $block, $delete, $userinfo){
-		if(strstr($str, "USERNAME")){
-			$text .= "<a href=\"user.php?id.".$user_id."\">".$user_name."</a>\n";
-		}else if(strstr($str, "TIMEDATE")){
-			$text .= $datestamp;
-		}else if(strstr($str, "AVATAR")){
-			if($user_image){
-				$text .= "<img src=\"".$user_image."\" alt=\"\" />";
-			}
-		}else if(strstr($str, "COMMENTS")){
-			if($user_id == 0){
-				$text .= "Guest";
-			}else{
-				$text .= "Comments: ".$user_comments;
-			}
-		}else if(strstr($str, "COMMENT")){
-			if($comment_blocked == 1){
-				$text .= LAN_0;
-			}else{
-				$aj = new textparse;
-				$text .= $aj -> tpa($comment_comment);
-			}	
-		}else if(strstr($str, "SIGNATURE")){
-			if($user_signature){
-				$text .= $user_signature;
-			}
-		}else if(strstr($str, "JOINED")){
-			if($user_join != "01 Jan : 00:00"){
-				$text .= $user_join;
-			}
-		}else if(strstr($str, "ADMINOPTIONS")){
-			if(ADMIN == TRUE && getperms("B")){
-				if($comment_blocked == 1){
-					$text .= $unblock;
-				}else{
-					$text .= $block;
-				}
-				$text .= $delete.$userinfo."</td>";
-			}
-		}
-		return $text;
 	}
 }
 ?>

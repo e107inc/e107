@@ -14,32 +14,44 @@
 */
 require_once("class2.php");
 require_once(HEADERF);
-$month = array("01" => "January", "02" => "February", "03" => "March", "04" =>"April", "05" =>"May", "06" =>"June", "07" =>"July", "08" =>"August", "09" =>"September", "10" =>"October", "11" =>"November", "12" =>"December");
+
+
+
+if(!$pref['log_activate'][1]){
+	if(ADMIN){
+		$text = "<div style=\"text-align:center\">Logging is not activated, to activate go to your admin section, click on Logger and tick the Activate Logging/Counter checkbox.</div>";
+	}else{
+		$text = "<div style=\"text-align:center\">The features on this page have been disabled.</div>";
+	}
+	$ns -> tablerender("Stats", $text);
+	require_once(FOOTERF);
+	exit;
+}
+
+
 $maxwidth = 400;
 
 $dep = new dbFunc;
 
-$dep -> dbQuery("SELECT * FROM ".MUSER."stat_counter ORDER BY counter_date");
+$dep -> dbQuery("SELECT * FROM ".MPREFIX."stat_counter ORDER BY counter_date");
 $row = $dep -> dbFetch();
 $tmp = explode("-", $row['counter_date']);
+$tmp2 = getdate(mktime(0, 0, 0, $tmp[1], $tmp[2], $tmp[0]));
 
-$logstart = $tmp[2]." ".$month[$tmp[1]]." ".$tmp[0];
-
+$logstart = $tmp[2]." ".$tmp2['month']." ".$tmp[0];
 $text = "<b>Logging began:</b> ".$logstart."<br />";
-
 $action = e_QUERY;
 
-
-$total_page_views = $dep -> dbCount("SELECT sum(counter_unique) FROM ".MUSER."stat_counter");
+$total_page_views = $dep -> dbCount("SELECT sum(counter_unique) FROM ".MPREFIX."stat_counter");
 $row = $dep -> dbFetch();
 $text .= "<b>Unique views by page:</b> ".$total_page_views."<br />";
 
-$total_page_views = $dep -> dbCount("SELECT sum(counter_total) FROM ".MUSER."stat_counter");
+$total_page_views = $dep -> dbCount("SELECT sum(counter_total) FROM ".MPREFIX."stat_counter");
 $row = $dep -> dbFetch();
 $text .= "<b>Total site views:</b> ".$total_page_views."<br />";
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 $c=0;
-$dep -> dbQuery("SELECT counter_url, sum(counter_unique) FROM ".MUSER."stat_counter GROUP BY counter_url");
+$dep -> dbQuery("SELECT counter_url, sum(counter_unique) FROM ".MPREFIX."stat_counter GROUP BY counter_url");
 $text .= "<br /><b>Unique views by page</b>";
 if($action == 1){
 	$text .= " (all)";
@@ -81,7 +93,7 @@ if($action == 1){
 }
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 $c=0;
-$dep -> dbQuery("SELECT counter_url, sum(counter_total) FROM ".MUSER."stat_counter GROUP BY counter_url");
+$dep -> dbQuery("SELECT counter_url, sum(counter_total) FROM ".MPREFIX."stat_counter GROUP BY counter_url");
 $text .= "<br /><b>Total views by page</b>";
 if($action == 2){
 	$text .= " (all)";
@@ -144,7 +156,7 @@ if(ADMIN == TRUE && $pref['log_lvcount'][1] >10){
 
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 $c=0;
-$dep -> dbQuery("SELECT info_name, SUM(info_count) FROM ".MUSER."stat_info WHERE info_type='1' GROUP BY info_name");
+$dep -> dbQuery("SELECT info_name, SUM(info_count) FROM ".MPREFIX."stat_info WHERE info_type='1' GROUP BY info_name");
 $text .= "<br /><b>".LAN_128."</b>";
 if($action == 3){
 	$text .= " (all)";
@@ -193,7 +205,7 @@ if($action == 3){
 }
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 $c=0;
-$dep -> dbQuery("SELECT info_name, SUM(info_count) AS Total FROM ".MUSER."stat_info WHERE info_type='2' GROUP BY info_name");
+$dep -> dbQuery("SELECT info_name, SUM(info_count) AS Total FROM ".MPREFIX."stat_info WHERE info_type='2' GROUP BY info_name");
 $text .= "<br /><b>".LAN_129."</b>";
 if($action == 4){
 	$text .= " (all)";
@@ -235,7 +247,7 @@ if($action == 4){
 }
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 $c=0;
-$dep -> dbQuery("SELECT info_name, SUM(info_count) AS Total FROM ".MUSER."stat_info WHERE info_type='4' AND info_name!= 'Network' AND info_name!='Commercial Users' AND info_name!='Education' AND info_name!='Government' GROUP BY info_name");
+$dep -> dbQuery("SELECT info_name, SUM(info_count) AS Total FROM ".MPREFIX."stat_info WHERE info_type='4' AND info_name!= 'Network' AND info_name!='Commercial Users' AND info_name!='Education' AND info_name!='Government' GROUP BY info_name");
 $text .= "<br /><b>".LAN_130."</b>";
 if($action == 5){
 	$text .= " (all)";
@@ -277,7 +289,7 @@ if($action == 5){
 }
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 $c=0;
-$dep -> dbQuery("SELECT info_name, SUM(info_count) AS Total FROM ".MUSER."stat_info WHERE info_type='6' GROUP BY info_name");
+$dep -> dbQuery("SELECT info_name, SUM(info_count) AS Total FROM ".MPREFIX."stat_info WHERE info_type='6' GROUP BY info_name");
 $text .= "<br /><b>".LAN_131."</b>";
 if($action == 6){
 	$text .= " (all)";
@@ -319,7 +331,7 @@ if($action == 6){
 // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 $c=0;
-$dep -> dbQuery("SELECT info_name, SUM(info_count) AS Total FROM ".MUSER."stat_info WHERE info_type='5' GROUP BY info_name");
+$dep -> dbQuery("SELECT info_name, SUM(info_count) AS Total FROM ".MPREFIX."stat_info WHERE info_type='5' GROUP BY info_name");
 $text .= "<br /><b>Screen resolutions</b>";
 if($action == 7){
 	$text .= " (all)";

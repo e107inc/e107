@@ -16,11 +16,12 @@ $count = 0;
 $totalct = $sql -> db_Select("user", "user_prefs", "user_prefs REGEXP('sitetheme') ");
 
 while ($row = $sql -> db_Fetch()){
-	$user_prefs = unserialize($row['user_prefs']);
-	$themecount[$user_prefs['sitetheme']]++;
+	$up = unserialize($row['user_prefs']);
+	$themecount[$up['sitetheme']]++;
 }
 
 $defaultusers = $sql -> db_Count("user") - $totalct;
+$themecount[$defaulttheme] += $defaultusers;
 
 $text = "
 <div style=\"text-align:center\">
@@ -29,24 +30,19 @@ $text = "
 $counter = 0;
 
 while($themelist[$counter]){
-
-	if($themelist[$counter] == $defaulttheme){
-		$text .= "<option style=\"font-style:bold\" value=\"".$themelist[$counter]."\" selected>[".$themelist[$counter]."] (users: ".$defaultusers.")</option>\n";
-	}else if($themelist[$counter] == USERTHEME){
-		$text .= "<option value=\"".$themelist[$counter]."\" selected>".$themelist[$counter]." (users: ".$themecount[$themelist[$counter]].")</option>\n";
-	}else{
-		$text .= "<option value=\"".$themelist[$counter]."\">".$themelist[$counter]." (users: ".$themecount[$themelist[$counter]].")</option>\n";
+	$text .= "<option value=\"".$themelist[$counter]."\" ";
+	if(($themelist[$counter] == USERTHEME) || (USERTHEME == FALSE && $themelist[$counter] == $defaulttheme)){
+		$text .= "selected";
 	}
-
+	$text .= ">".($themelist[$counter] == $defaulttheme ? "[ ".$themelist[$counter]." ]" : $themelist[$counter])." (users: ".$themecount[$themelist[$counter]].")</option>\n";
 	$counter++;
 }
 $text .= "</select>
 <br /><br />
-<input class=\"button\" type=\"submit\" name=\"settheme\" value=\"Set Theme\" />
-<input type=\"hidden\" name=\"tid\" value=\"".USERID."\">
+<input class=\"button\" type=\"submit\" name=\"settheme\" value=\"".LAN_350."\" />
 </form>
 </div>";
 
-$ns -> tablerender("Select Theme", $text);
+$ns -> tablerender(LAN_351, $text);
 }
 ?>

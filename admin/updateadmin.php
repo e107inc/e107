@@ -15,7 +15,7 @@
 require_once("../class2.php");
 
 if(IsSet($_POST['update_settings'])){
-	if($_POST['a_name'] != "" && $_POST['a_email'] != "" && $_POST['a_password'] != "" && $_POST['a_password2'] != "" && ($_POST['a_password'] == $_POST['a_password2'])){
+	if($_POST['a_name'] != "" && $_POST['a_password'] != "" && $_POST['a_password2'] != "" && ($_POST['a_password'] == $_POST['a_password2'])){
 		$sql -> db_Update("user", "user_password='".md5($_POST['a_password'])."', user_pwchange='".time()."' WHERE user_name='".ADMINNAME."' ");
 		$se = TRUE;
 	}else{
@@ -38,46 +38,37 @@ if(IsSet($message)){
 $text = "<div style=\"text-align:center\">
 <form method=\"post\" action=\"".e_SELF."\">\n
 
-<table style=\"width:95%\">
+<table style=\"width:95%\" class=\"fborder\">
 <tr>
-<td style=\"width:30%\">Name: </td>
-<td style=\"width:70%\">
-<input class=\"tbox\" type=\"text\" name=\"a_name\" size=\"60\" value=\"".ADMINNAME."\" maxlength=\"100\" />
+<td style=\"width:30%\" class=\"forumheader3\">Name: </td>
+<td style=\"width:70%\" class=\"forumheader3\">
+".ADMINNAME."
 </td>
 </tr>
 <tr>
-<td style=\"width:30%\">Password: </td>
-<td style=\"width:70%\">
+<td style=\"width:30%\" class=\"forumheader3\">Password: </td>
+<td style=\"width:70%\" class=\"forumheader3\">
 <input class=\"tbox\" type=\"password\" name=\"a_password\" size=\"60\" value=\"\" maxlength=\"100\" />
 </td>
 </tr>
 
 <tr>
-<td style=\"width:30%\">Re-type Password: </td>
-<td style=\"width:70%\">
+<td style=\"width:30%\" class=\"forumheader3\">Re-type Password: </td>
+<td style=\"width:70%\" class=\"forumheader3\">
 <input class=\"tbox\" type=\"password\" name=\"a_password2\" size=\"60\" value=\"\" maxlength=\"100\" />
 </td>
 </tr>
 
-<tr>
-<td style=\"width:30%\">Email: </td>
-<td style=\"width:70%\">
-<input class=\"tbox\" type=\"text\" name=\"a_email\" size=\"60\" value=\"".ADMINEMAIL."\" maxlength=\"100\" />
-</td>
-</tr>
-</td>
-</tr>
-<tr valign=\"top\"> 
-<td colspan=\"2\"  style =\"text-align:center\">
-<br />
-<input class=\"button\" type=\"submit\" name=\"update_settings\" value=\"Update settings\" />
+<tr> 
+<td colspan=\"2\" style =\"text-align:center\"  class=\"forumheader\">
+<input class=\"button\" type=\"submit\" name=\"update_settings\" value=\"Change Password\" />
 </td>
 </tr>
 </table>
 </form>
 </div>";
 
-$ns -> tablerender("<div style=\"text-align:center\">Update Settings for ".ADMINNAME."</div>", $text);
+$ns -> tablerender("<div style=\"text-align:center\">Password Update for ".ADMINNAME."</div>", $text);
 
 require_once("footer.php");
 ?>

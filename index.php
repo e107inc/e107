@@ -16,7 +16,7 @@ require_once("class2.php");
 require_once("classes/news_class.php");
 require_once(HEADERF);
 
-if(file_exists("install.php")){ echo "<div class=\"installe\" style=\"text-align:center\"><b>*** Please delete install.php from your server ***</b><br />if you do not there is a potential security risk to your website</div><br /><br />"; }
+if(file_exists("install.php")){ echo "<div class='installe' style='text-align:center'><b>*** Please delete install.php from your server ***</b><br />if you do not there is a potential security risk to your website</div><br /><br />"; }
 
 $ix = new news;
 
@@ -39,13 +39,13 @@ if(eregi("cat", e_QUERY)){
 			$datestamp = $gen->convert_date($news_datestamp, "short");
 			$news_body = strip_tags(substr($news_body, 0, 100))." ...";
 			$comment_total = $sql2 -> db_Count("comments", "(*)",  "WHERE comment_item_id='$news_id' AND comment_type='0' ");
-			$text .= "<div class=\"mediumtext\">
-			<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> ";
+			$text .= "<div class='mediumtext'>
+			<img src='".THEME."images/bullet2.gif' alt='bullet' /> ";
 
 			if($news_allow_comments){
 				$text .= $news_title;
 			}else{
-				$text .= "<a href=\"comment.php?".$news_id."\">".$news_title."</a>";
+				$text .= "<a href='comment.php?".$news_id."'>".$news_title."</a>";
 			}
 			$text .= "<br />
 			On ".$datestamp." (".LAN_99.": ";
@@ -58,7 +58,7 @@ if(eregi("cat", e_QUERY)){
 			".$news_body."
 			<br /><br />\n";
 		}
-		$text = "<img src=\"$category_icon\" alt=\"\" /><br />".
+		$text = "<img src='$category_icon' alt='' /><br />".
 		LAN_307.$count."
 		<br /><br />".$text;
 		$ns -> tablerender(LAN_82." '".$category_name."'", $text);
@@ -90,11 +90,11 @@ list($wm_guest, $guestmessage, $wm_active1) = $sql-> db_Fetch();
 list($wm_member, $membermessage, $wm_active2) = $sql-> db_Fetch();
 list($wm_admin, $adminmessage, $wm_active3) = $sql-> db_Fetch();
 if(ADMIN == TRUE && $wm_active3){
-	$ns -> tablerender("", "<div style=\"text-align:center\"><b>Administrators</b><br />".$adminmessage."</div>");
+	$ns -> tablerender("", "<div style='text-align:center'><b>Administrators</b><br />".$adminmessage."</div>");
 }else if(USER == TRUE && $wm_active2){
-	$ns -> tablerender("", "<div style=\"text-align:center\">".$membermessage."</div>");
+	$ns -> tablerender("", "<div style='text-align:center'>".$membermessage."</div>");
 }else if(USER == FALSE && $wm_active1){
-	$ns -> tablerender("", "<div style=\"text-align:center\">".$guestmessage."</div>");
+	$ns -> tablerender("", "<div style='text-align:center'>".$guestmessage."</div>");
 }
 // ---> wmessage end
 
@@ -102,7 +102,7 @@ if(ADMIN == TRUE && $wm_active3){
 
 $news_total = $sql -> db_Count("news");
 if(!$sql -> db_Select("news", "*", "news_active=0 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY ".$order." DESC LIMIT $from,".ITEMVIEW)){
-	echo "<br /><br /><div style=\"text-align:center\"><b>".LAN_83."</b></div><br /><br />";
+	echo "<br /><br /><div style='text-align:center'><b>".LAN_83."</b></div><br /><br />";
 }else{
 	$sql2 = new db;	
 	while($row = $sql -> db_Fetch()){

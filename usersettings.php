@@ -102,7 +102,7 @@ $name
 <tr>
 <td style=\"width:20%\">".LAN_113."</td>
 <td style=\"width:80%\">";
-if($hide_email == 1){
+if($hideemail == 1){
 	$text .= "<input type=\"checkbox\" name=\"hideemail\" value=\"1\"  checked>";
 }else{
 	$text .= "<input type=\"checkbox\" name=\"hideemail\" value=\"1\">";
@@ -151,11 +151,11 @@ $text .= LAN_114."</td></tr><tr>
 </tr>
 
 <tr>
-<td style=\"width:20%\">".LAN_120."</td>
+<td style=\"width:20%\" style=\"vertical-align:top\">".LAN_120."</td>
 <td style=\"width:80%\">
 <textarea class=\"tbox\" name=\"signature\" cols=\"70\" rows=\"4\">$signature</textarea>
 <br />
-<input class=\"fhelpbox\" type=\"text\" name=\"helpb\" size=\"90\" />
+<input class=\"helpbox\" type=\"text\" name=\"helpb\" size=\"90\" />
 <br />
 <input class=\"button\" type=\"button\" style=\"font-weight:bold; width: 35px\" value=\"b\" onclick=\"addtext('[b][/b]')\" onMouseOver=\"help('Bold text: [b]This text will be bold[/b]')\" onMouseOut=\"help('')\">
 <input class=\"button\" type=\"button\" style=\"font-style:italic; width: 35px\" value=\"i\" onclick=\"addtext('[i][/i]')\" onMouseOver=\"help('Italic text: [i]This text will be italicised[/i]')\" onMouseOut=\"help('')\">

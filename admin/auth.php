@@ -15,7 +15,10 @@
 if(ADMIN == TRUE){
 	require_once("header.php");
 }else{
-	if(IsSet($_POST['authsubmit'])){
+	if($_POST['authsubmit']){
+
+		echo "<b>DEBUG</b><br />";
+
 		$obj = new auth;
 
 		$row = $authresult = $obj -> authcheck($_POST['authname'], $_POST['authpass']);
@@ -29,7 +32,8 @@ if(ADMIN == TRUE){
 
 			$sql -> db_Select("user", "*", "user_name='".$_POST['authname']."'");
 			list($user_id, $user_name, $user_pass) = $sql-> db_Fetch();
-			setcookie('userkey', $user_id.".".$user_pass, time()+3600*24, '/', '', 0);
+
+			setcookie('userkey', $user_id.".".$user_pass, time()+3600*24*30, '/', '', 0);
 			header("Location: ".e_SELF);
 			exit;
 		}

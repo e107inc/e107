@@ -18,9 +18,9 @@ require_once("auth.php");
 function wad($link, $title, $description, $perms){
 
 	if(getperms($perms)){
-		$tmp = "<td style=\"text-align:center; vertical-align:top; width:20%\"><a href=\"".$link."\"><img src=\"e107.png\" alt=\"bullet\" style=\"border:0\"/></a><br /><a href=\"".$link."\"><b>".$title."</b></a><br />".$description."<br /><br /></td>";
+		$tmp = "<td style=\"text-align:center; vertical-align:top; width:20%\"><a href=\"".$link."\"><img src=\"../themes/shared/generic/e107.gif\" alt=\"bullet\" style=\"border:0\"/></a><br /><a href=\"".$link."\"><b>".$title."</b></a><br />".$description."<br /><br /></td>\n\n";
 	}else{
-		$tmp = "<td style=\"text-align:center; vertical-align:top\"><img src=\"e1073.png\" alt=\"bullet\" style=\"border:0\"/><br /><b>".$title."</b><br />".$description."<br /><br /></td>";
+		$tmp = "<td style=\"text-align:center; vertical-align:top\"><img src=\"../themes/shared/generic/e1073.gif\" alt=\"bullet\" style=\"border:0\"/><br /><b>".$title."</b><br />".$description."<br /><br /></td>";
 	}
 	return $tmp;
 }
@@ -36,7 +36,7 @@ $text .= wad("administrator.php", "Administrators", "Add/delete site administrat
 
 $text .= "</tr><tr>";
 
-$text .= wad("updateadmin.php", "Update admin settings", "Edit your admin settings", "");
+$text .= wad("updateadmin.php", "Update admin password", "Change your password", "");
 $text .= wad("forum.php", "Forums", "Add/Edit Forums", "5");
 $text .= wad("article.php", "Articles", "Add new/edit/delete articles", "J");
 $text .= wad("content.php", "Content", "Add new/edit/delete content pages", "L");
@@ -45,25 +45,25 @@ $text .= wad("review.php", "Reviews", "Add new/edit/delete reviews", "K");
 $text .= "</tr><tr>";
 $text .= wad("links.php", "Links", "Add new/edit/delete links", "I");
 $text .= wad("link_category.php", "Link Categories", "Add new/edit/delete link categories", "8");
+$text .= wad("download.php", "Downloads", "Manage Downloads", "R");
+$text .= wad("download_category.php", "Download Categories", "Add new/edit/delete download categories", "Q");
 $text .= wad("wmessage.php", "Welcome Message", "Set static welcome message", "M");
-$text .= wad("upload.php", "Upload", "Upload file/image", "6");
-$text .= wad("submitnews.php", "Submitted News", "Review user submitted news items", "N");
 
 $text .= "</tr><tr>";
-
+$text .= wad("filemanager.php", "File Manager", "Manage files", "6");
+$text .= wad("submitnews.php", "Submitted News", "Review user submitted news items", "N");
 $text .= wad("banlist.php", "Banlist", "Ban visitors by IP address", "4");
 $text .= wad("users.php", "Users", "Moderate site members", "4");
+$text .= wad("userclass2.php", "User Classes", "Create/edit user classes", "4");
+
+$text .= "</tr><tr>";
 $text .= wad("ugflag.php", "Maintainance", "Display custom site is down page", "9");
+$text .= wad("custommenu.php", "Custom Menus", "Create custom menu items", "2");
 $text .= wad("admin.php?logout", "Logout", "", "");
+
+
 $text .= "</tr>";
 
-
-
-//$text .= "</tr></table>";
-
-//$ns -> tablerender("<div style=\"text-align:center\">Welcome ".ADMINNAME."</div>", $text);
-
-//$text = "<table style=\"width:95%\">
 $text .= "<tr>
 <td colspan=\"5\">
 <div style=\"text-align:center\">
@@ -87,12 +87,5 @@ $text .= "<tr>
 	$text .= "</tr></table>";
 	closedir($handle);
 	$ns -> tablerender("<div style=\"text-align:center\">Welcome ".ADMINNAME."</div>", $text);
-	/*
-	if($text != ""){
-		$ns -> tablerender("<div style=\"text-align:center\">Plugins</div>", "<div style=\"text-align:center\">".$text."</div>");
-	}else{
-		$ns -> tablerender("<div style=\"text-align:center\">Plugins</div>", "No plugins loaded.");
-	}
-	*/
 require_once("footer.php");
 ?>

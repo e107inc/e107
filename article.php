@@ -19,8 +19,8 @@ require_once("classes/comment_class.php");
 $itemview = "20";
 
 if(!e_QUERY){
-	$text = "<a href=\"".e_HTTP."article.php?list.0\">".LAN_100."</a><br /><a href=\"".e_HTTP."article.php?list.3\">".LAN_190."</a>";
-	$ns -> tablerender("<div style=\"text-align:center\">".LAN_313."</div>", $text);
+	$text = "<a href='".e_HTTP."article.php?list.0'>".LAN_100."</a><br /><a href='".e_HTTP."article.php?list.3'>".LAN_190."</a>";
+	$ns -> tablerender("<div style='text-align:center'>".LAN_313."</div>", $text);
 	require_once(FOOTERF);
 	exit;
 }else{
@@ -52,15 +52,15 @@ if($id == "list"){
 			extract($row);
 			if($content_summary == "0"){ $content_summary = "No summary."; }
 			$datestamp = $gen->convert_date($content_datestamp, "short");
-			$text .= "<a href=\"".e_HTTP."article.php?".$content_id.".0\"><b>".$content_heading."</b></a> <span class=\"smalltext\">".$datestamp."</span>
+			$text .= "<a href='".e_HTTP."article.php?".$content_id.".0'><b>".$content_heading."</b></a> <span class='smalltext'>".$datestamp."</span>
 			<br />".$content_summary."<br />";
 			if($comments = $sql2 -> db_Select("comments", "*", "comment_type='1' AND comment_item_id='$content_id' ")){
-				$text .= "<span class=\"smalltext\">".LAN_99.": ".$comments."</span><br />";
+				$text .= "<span class='smalltext'>".LAN_99.": ".$comments."</span><br />";
 			}
 			$text .= "<br />";
 		}
 			
-		$ns -> tablerender("<div style=\"text-align:center\">".LAN_100, $text);
+		$ns -> tablerender("<div style='text-align:center'>".LAN_100, $text);
 
 
 		if(!$page ? $ix = new nextprev("article.php", $from, $itemview, $total, LAN_100, "list.".$page) : $ix = new nextprev("article.php", $from, $itemview, $total, LAN_190, "list.".$page));
@@ -94,8 +94,16 @@ if(!$sql -> db_Select("content", "*", "content_id='$id' ")){
 
 	if($page == 255){
 		//	content page
-		$text = $aj -> tpa($content_content, $mode="off");
+
+		$auto_add = substr($content_subheading, -1);
+		if($auto_add == "^"){
+			$content_subheading = substr($content_subheading, 0, -1);
+			$text = $aj -> tpa($content_content, $mode="on");
+		}else{
+			$text = $aj -> tpa($content_content, $mode="off");
+		}
 		$caption = $aj -> tpa($content_subheading);
+
 		$ns -> tablerender($caption, $text);
 		unset($text);
 		if($main_content_comment){
@@ -130,9 +138,9 @@ $content_content .= "<br />";
 		$text = "<i>".$content_subheading."</i>
 <br />";
 	}
-$text .= "<i>by <a href=\"mailto:".$admin_email."\">".$admin_name."</a></i>
+$text .= "<i>by <a href='mailto:".$admin_email."'>".$admin_name."</a></i>
 <br />
-<span class=\"smalltext\">".
+<span class='smalltext'>".
 $datestamp."
 </span>
 <br /><br />";
@@ -148,19 +156,19 @@ if($totalpages > 1){
 	}
 
 	if($page != 0){
-		$text .= "<a href=\"article.php?$id.".($page-1)."\"><< </a>";
+		$text .= "<a href='article.php?$id.".($page-1)."'><< </a>";
 	}
 
 	for($c=1; $c<= $totalpages; $c++){
 		if($c == ($page+1)){
 			$text .= "<u>$c</u>&nbsp;&nbsp;";
 		}else{
-			$text .= "<a href=\"article.php?$id.".($c-1)."\">$c</a>&nbsp;&nbsp;";
+			$text .= "<a href='article.php?$id.".($c-1)."'>$c</a>&nbsp;&nbsp;";
 		}
 	}
 
 	if(($page+1) != $totalpages){
-		$text .= "<a href=\"article.php?$id.".($page+1)."\">>> </a>";
+		$text .= "<a href='article.php?$id.".($page+1)."'>>> </a>";
 	}
 
 	$ns -> tablerender($main_content_heading.", page ".($page+1), $text);

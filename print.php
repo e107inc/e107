@@ -57,7 +57,7 @@ if($table == "news"){
 	$text .= "<br /><br /><hr />".
 	LAN_303.SITENAME."
 	<br />
-	( ".e_HTTP."comment.php?".$news_id." )
+	( http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?".$news_id." )
 	</font>";
 	
 }else{
@@ -85,7 +85,7 @@ if($table == "news"){
 	<br /><br /><hr />
 	".LAN_306.SITENAME."
 	<br />
-	(".e_HTTP."article.php?".$content_id.".0)
+	( http://".$_SERVER['HTTP_HOST'].e_HTTP."article.php?".$content_id.".0 )
 	</font>";
 }
 echo $text;

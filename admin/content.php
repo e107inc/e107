@@ -21,9 +21,9 @@ $aj = new textparse;
 
 If(IsSet($_POST['submit'])){
 	if($_POST['data'] != ""){
-
-		$content_heading = $aj -> tp($_POST['content_heading'], $mode="on");
 		$content_subheading = $aj -> tp($_POST['content_subheading'], $mode="on");
+		if(!$_POST['auto_add']){ $content_subheading .= "^"; }
+		$content_heading = $aj -> tp($_POST['content_heading'], $mode="on");
 		$content_content = $aj -> tp($_POST['data'], $mode="on");
 
 		 $sql -> db_Insert("content", "0, '".$content_heading."', '".$content_subheading."', '$content_content', '0', '".time()."', '".ADMINID."', '".$_POST['content_comment']."', '0', '1' ");
@@ -49,9 +49,9 @@ If(IsSet($_POST['submit'])){
 If(IsSet($_POST['update'])){
 	$content_heading = $aj -> tp($_POST['content_heading'], $mode="on");
 	$content_subheading = $aj -> tp($_POST['content_subheading'], $mode="on");
+	if(!$_POST['auto_add']){ $content_subheading .= "^"; }
 	$content_content = $aj -> tp($_POST['data'], $mode="on");
-    $content_parent = $_POST['parent_article'];
-	$sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content', content_page='".$_POST['content_page']."', content_comment='".$_POST['content_comment']."', content_summary='".$content_parent."' WHERE content_id='".$_POST['content_id']."' ");
+	$sql -> db_Update("content", " content_heading='$content_heading', content_subheading='$content_subheading', content_content='$content_content',  content_comment='".$_POST['content_comment']."' WHERE content_id='".$_POST['content_id']."' ");
 
 	unset($content_heading, $content_subheading, $content_content, $content_parent);
 	$message = "Content updated in database.";
@@ -61,6 +61,9 @@ If(IsSet($_POST['edit'])){
 	$sql -> db_Select("content", "*", "content_id='".$_POST['existing']."' ");
 	list($content_id, $content_heading, $content_subheading, $content_content, $content_page, $content_datestamp, $content_author, $content_comment, $content_parent, $content_type) = $sql-> db_Fetch();
 	$content_content = $aj -> editparse($content_content);
+	if(substr($content_subheading, -1) == "^"){
+		$content_subheading = substr($content_subheading, 0, -1);
+	}
 }
 
 If(IsSet($_POST['delete'])){
@@ -83,16 +86,16 @@ if(IsSet($message)){
 
 $article_total = $sql -> db_Select("content", "*", "content_type='254' OR content_type='255' OR content_type='1' ");
 
-if($article_total == "0"){
-	$text = "<div style=\"text-align:center\">
-No content pages yet.
-<br />
-	";
-}else{
-	$text = "<div style=\"text-align:center\">
-	<form method=\"post\" action=\"".e_SELF."\">
+$text = "<div style=\"text-align:center\">
+<form method=\"post\" action=\"".e_SELF."\" name=\"dataform\">
+<table style=\"width:80%\" class=\"fborder\">
+<tr>
+<td class=\"forumheader\" style=\"text-align:center\" colspan=\"2\">";
 
-	Existing Content Pages:
+if($article_total == "0"){
+	$text .= "No content pages yet.";
+}else{
+	$text .= "<span class=\"defaulttext\">Existing Content Pages:</span>
 	<select name=\"existing\" class=\"tbox\">";
 	while(list($content_id_, $content_heading_) = $sql-> db_Fetch()){
 		$text .= "<option value=\"$content_id_\">".$content_heading_."</option>";
@@ -101,49 +104,32 @@ No content pages yet.
 	<input class=\"button\" type=\"submit\" name=\"edit\" value=\"Edit\" />
 	<input class=\"button\" type=\"submit\" name=\"delete\" value=\"Delete\" />
 	<input type=\"checkbox\" name=\"confirm\" value=\"1\"><span class=\"smalltext\"> tick to confirm</span>
-	</form>
-	</div>
-	<br />";
+	</td>
+	</tr>";
 }
 
-$text .= "
-<form method=\"post\" action=\"".e_SELF."\" name=\"dataform\">\n
-<table style=\"width:95%\">";
-
-
-while(list($content_id_, $content_heading_) = $sql-> db_Fetch()){
-    if (IsSet($content_parent) && $content_parent == $content_id_) {
-	    $text .= "<option value=\"$content_id_\" selected>".$content_heading_."</option>";
-    }
-    else {
-	    $text .= "<option value=\"$content_id_\">".$content_heading_."</option>";
-    }
-}
-$text .= "</select></td></tr>
-
-<tr>
-<td colspan=\"2\" style=\"text-align:center\">
+$text .= "<tr>
+<td colspan=\"2\" style=\"text-align:center\" class=\"forumheader2\">
 <input class=\"button\" type=\"button\" onClick=\"openwindow()\"  value=\"Open HTML Editor\" />
-<br /><br />
 </td>
 </tr>
 
 <tr>
-<td style=\"width:20%; vertical-align:top\">Link name:</td>
-<td style=\"width:80%\">
+<td style=\"width:20%; vertical-align:top\" class=\"forumheader3\">Link name:</td>
+<td style=\"width:80%\" class=\"forumheader3\">
 <input class=\"tbox\" type=\"text\" name=\"content_heading\" size=\"60\" value=\"$content_heading\" maxlength=\"100\" />
 
 </td>
 </tr>
 <tr>
-<td style=\"width:20%\">Page Heading:</td>
-<td style=\"width:80%\">
+<td style=\"width:20%\" class=\"forumheader3\">Page Heading:</td>
+<td style=\"width:80%\" class=\"forumheader3\">
 <input class=\"tbox\" type=\"text\" name=\"content_subheading\" size=\"60\" value=\"$content_subheading\" maxlength=\"100\" />
 </td>
 </tr>
 <tr>
-<td style=\"width:20%\"><u>Content</u>: </td>
-<td style=\"width:80%\">
+<td style=\"width:20%\" class=\"forumheader3\"><u>Content</u>: </td>
+<td style=\"width:80%\" class=\"forumheader3\">
 <textarea class=\"tbox\" name=\"data\" cols=\"70\" rows=\"30\">$content_content</textarea>
 <br />";
 require_once("../classes/shortcuts.php");
@@ -152,9 +138,8 @@ $text .= "</td>
 </tr>
 
 <tr>
-<td style=\"width:20%\">Allow comments?:</td>
-<td style=\"width:80%\">";
-
+<td style=\"width:20%\" class=\"forumheader3\">Allow comments?:</td>
+<td style=\"width:80%\" class=\"forumheader3\">";
 
 if($content_comment == "0"){
 	$text .= "On: <input type=\"radio\" name=\"content_comment\" value=\"1\">
@@ -164,9 +149,17 @@ if($content_comment == "0"){
 	Off: <input type=\"radio\" name=\"content_comment\" value=\"0\">";
 }
 
-$text .= "</td></tr>
+
+$text .= "<tr>
+<td style=\"width:20%\" class=\"forumheader3\">Auto add line breaks (&lt;br />)?:</td>
+<td style=\"width:80%\" class=\"forumheader3\">
+
+On: <input type=\"radio\" name=\"auto_add\" value=\"1\" checked>
+Off: <input type=\"radio\" name=\"auto_add\" value=\"0\">
+
+</td></tr>
 <tr style=\"vertical-align:top\">
-<td colspan=\"2\"  style=\"text-align:center\"><br />";
+<td colspan=\"2\"  style=\"text-align:center\" class=\"forumheader\">";
 
 
 If(IsSet($_POST['edit'])){
@@ -179,13 +172,15 @@ If(IsSet($_POST['edit'])){
 $text .= "</td>
 </tr>
 <tr>
-<td colspan=\"2\"  class=\"smalltext\">
-<br />
+<td colspan=\"2\" style=\"text-align:right\" class=\"forumheader2\">
+<span class=\"smalltext\">
 Tags allowed: all. <u>Underlined</u> fields are required.
+</span>
 </td>
 </tr>
 </table>
-</form>";
+</form>
+</div>";
 
 
 $ns -> tablerender("<div style=\"text-align:center\">Content Pages</div>", $text);

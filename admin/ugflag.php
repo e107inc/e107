@@ -17,7 +17,7 @@ if(!getperms("9")){ header("location:".e_HTTP."index.php"); }
 
 if(IsSet($_POST['updatesettings'])){
 	$pref['maintainance_flag'][1] = $_POST['maintainance_flag'];
-	$sql -> db_Update("core", "e107_value='".serialize($pref)."' WHERE e107_name='pref' ");
+	save_prefs();
 	header("location:".e_SELF."?u");
 }
 

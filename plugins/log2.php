@@ -27,7 +27,7 @@ if($self == "/"){
 $screenstats = $res." @ ".$colour;
 require_once("../class2.php");
 
-if($pref['log_activate'][1] == 1 && ADMIN == FALSE){
+if($pref['log_activate'][1] && ADMIN == FALSE){
 
 	$agent = $_SERVER['HTTP_USER_AGENT'];
 	$browser = getbrowser($agent);

@@ -619,6 +619,51 @@ $core_table = "CREATE TABLE ".$mySQLprefix."core (
 if(!mysql_query($core_table)){	$error .= "There was a problem creating the <b>core</b> mySQL table ...<br />"; }
 
 
+$download_table = "CREATE TABLE ".$mySQLprefix."download (
+  download_id int(10) unsigned NOT NULL auto_increment,
+  download_name varchar(100) NOT NULL default '',
+  download_url varchar(150) NOT NULL default '',
+  download_author varchar(100) NOT NULL default '',
+  download_author_email varchar(200) NOT NULL default '',
+  download_author_website varchar(200) NOT NULL default '',
+  download_description text NOT NULL,
+  download_filesize varchar(20) NOT NULL default '',
+  download_requested int(10) unsigned NOT NULL default '0',
+  download_category int(10) unsigned NOT NULL default '0',
+  download_active tinyint(3) unsigned NOT NULL default '0',
+  download_datestamp int(10) unsigned NOT NULL default '0',
+  download_thumb varchar(150) NOT NULL default '',
+  download_image varchar(150) NOT NULL default '',
+  PRIMARY KEY  (download_id),
+  UNIQUE KEY download_name (download_name)
+) TYPE=MyISAM;";
+if(!mysql_query($download_table)){	$error .= "There was a problem creating the <b>download</b> mySQL table ...<br />"; }
+
+
+$download_category_table = "CREATE TABLE ".$mySQLprefix."download_category (
+  download_category_id int(10) unsigned NOT NULL auto_increment,
+  download_category_name varchar(100) NOT NULL default '',
+  download_category_description text NOT NULL,
+  download_category_icon varchar(100) NOT NULL default '',
+  download_category_parent int(10) unsigned NOT NULL default '0',
+  download_category_class varchar(100) NOT NULL default '',
+  PRIMARY KEY  (download_category_id)
+) TYPE=MyISAM;";
+if(!mysql_query($download_category_table)){	$error .= "There was a problem creating the <b>download_category</b> mySQL table ...<br />"; }
+
+
+$rate_table = "CREATE TABLE ".$mySQLprefix."rate (
+  rate_id int(10) unsigned NOT NULL auto_increment,
+  rate_table varchar(100) NOT NULL default '',
+  rate_itemid int(10) unsigned NOT NULL default '0',
+  rate_rating int(10) unsigned NOT NULL default '0',
+  rate_votes int(10) unsigned NOT NULL default '0',
+  rate_voters text NOT NULL,
+  PRIMARY KEY  (rate_id)
+) TYPE=MyISAM;";
+if(!mysql_query($rate_table)){	$error .= "There was a problem creating the <b>rate</b> mySQL table ...<br />"; }
+
+
 $forum_table = "CREATE TABLE ".$mySQLprefix."forum (
   forum_id int(10) unsigned NOT NULL auto_increment,
   forum_name varchar(250) NOT NULL default '',
@@ -901,16 +946,18 @@ mysql_query("INSERT INTO ".$mySQLprefix."news_category VALUES (0, 'Misc', 'image
 mysql_query("INSERT INTO ".$mySQLprefix."poll VALUES (0, '$datestamp', 0, 1, 'So what do you think of e107?', 'I\'m not impressed', 'It\'s not bad but I\'ve seen better', 'It\'s good', 'I love it!', 'Grah I hate polls', 'What\'s e107 anyway?', '', '', '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 1) ");
 mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Home', 'index.php', '', '', 1, 0, 0, 0) ");
 mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Links', 'links.php', '', '', 1, 0, 0, 0) ");
+mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Forum', 'forum.php', '', '', 1, 0, 0, 0) ");
+mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Downloads', 'download.php', '', '', 1, 0, 0, 0) ");
+mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Members', 'user.php', '', '', 1, 0, 0, 0) ");
 mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Submit News', 'submitnews.php', '', '', 1, 0, 0, 0) ");
 mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'e107.org', 'http://e107.org', 'Home of the e107 website script', 'button.png', 2, 0, 0, 0) ");
-mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Forum', 'forum.php', '', '', 1, 0, 0, 0) ");
 mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Stats', 'stats.php', '', '', 1, 0, 0, 0) ");
-mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Members', 'user.php', '', '', 1, 0, 0, 0) ");
+
 
 $e107['e107_author'] = "Steve Dunstan (jalist)";
 $e107['e107_url'] = "http://e107.org";
 $e107['e107_version'] = "v5.4";
-$e107['e107_build'] = "beta5";
+$e107['e107_build'] = "beta6";
 $e107['e107_datestamp'] = time();
 $tmp = serialize($e107);
 mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('e107', '$tmp') ");

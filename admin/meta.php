@@ -20,8 +20,7 @@ if(IsSet($_POST['metasubmit'])){
 	$meta = str_replace("\"", "'", $_POST['meta']);
 	$meta = stripslashes($meta);
 	$pref['meta_tag'][1] = $meta;
-	$tmp = addslashes(serialize($pref));
-	$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='pref' ");
+	save_prefs();
 	header("location:meta.php?e");
 }
 

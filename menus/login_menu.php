@@ -3,12 +3,13 @@ $text = "";
 if($pref['user_reg'][1] == 1 || ADMIN == TRUE){
 
 	if(USER == TRUE || ADMIN == TRUE){
-		$uk = $_COOKIE['userkey']; $tmp = explode(".", $uk); $uid = $tmp[0]; $upw = $tmp[1];
+		$tmp = ($_COOKIE['userkey'] ? explode(".", $_COOKIE['userkey']) : explode(".", $_SESSION['userkey']));
+		$uid = $tmp[0]; $upw = $tmp[1];
 		$sql = new db;
 		if($sql -> db_Select("user", "*", "user_id='$uid' AND user_password='$upw' ")){
 			if(ADMIN == TRUE){
 				$text = ($pref['maintainance_flag'][1]==1 ? "<div style=\"text-align:center\"><b>The maintenance flag is true - this means normal visitors are being redirected to sitedown.php. To reset the flag go to admin/maintenance.</div></b><br />" : "" );
-				$text .= "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <a href=\"admin/admin.php\">Admin</a><br />";
+				$text .= "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <a href=\"".e_BASE."admin/admin.php\">Admin</a><br />";
 			}
 			$text .= "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <a href=\"usersettings.php\">Settings</a>
 <br />

@@ -20,6 +20,7 @@ echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
 <head>
 <title><?php echo SITENAME; ?></title>
 <link rel="stylesheet" href="<?php echo THEME; ?>style.css" />
+<link rel="stylesheet" href="<?php echo e_BASE."files/"; ?>e107.css" />
 <?php
 if(file_exists(e_BASE."files/style.css")){ echo "\n<link rel=\"stylesheet\" href=\"".e_BASE."files/style.css\" />\n"; }
 ?>
@@ -39,7 +40,7 @@ if(file_exists(e_BASE."files/user.js")){echo "<script type=\"text/javascript\" s
 <?php
 
 $page = substr(strrchr(e_SELF, "/"), 1);
-if(eregi("^".$page, $CUSTOMPAGES) ? parseheader($CUSTOMHEADER) : parseheader($HEADER)) ;
+if(eregi($page, $CUSTOMPAGES) ? parseheader($CUSTOMHEADER) : parseheader($HEADER)) ;
 unset($text);
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function parseheader($LAYOUT){
@@ -62,7 +63,7 @@ function checklayout($str){
 		echo SITETAG."\n";
 	}else if(strstr($str, "SITELINKS")){
 		$linktype = substr($str,(strpos($str, "=")+1), 4);
-		define(LINKDISPLAY, ($linktype == "menu" ? 2 : 1));
+		define("LINKDISPLAY", ($linktype == "menu" ? 2 : 1));
 		sitelinks();
 	}else if(strstr($str, "MENU")){
 		$sql = new db;

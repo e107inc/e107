@@ -53,36 +53,19 @@ If(IsSet($_POST['edit'])){
 	$data = $aj -> editparse($data);
 }
 
-If(IsSet($_POST['confirm'])){
-	$sql -> db_Select("content", "*", "content_id='".$_POST['existing']."' ");
-	list($null, $content_heading, $null, $null, $content_page) = $sql-> db_Fetch();
-	if($content_type == 255){
-		$sql -> db_Delete("links", "link_name='".$content_heading."' ");
-	}
-	$sql -> db_Delete("content", "content_id='".$_POST['existing']."' ");
-	$message = "Review deleted.";
-	unset($content_heading, $content_page);
-}
-
 If(IsSet($_POST['delete'])){
-	$sql -> db_Select("content", "content_id='".$_POST['existing']."' ");
-	list($null, $content_heading_) = $sql-> db_Fetch();
-	$text = "<div style=\"text-align:center\">
-	<b>Please confirm you wish to delete this review $content_heading_ - once deleted it cannot be retrieved</b>
-<br /><br />
-<form method=\"post\" action=\"".e_SELF."\">
-<input class=\"button\" type=\"submit\" name=\"cancel\" value=\"Cancel\" />
-<input class=\"button\" type=\"submit\" name=\"confirm\" value=\"Confirm Delete\" />
-<input type=\"hidden\" name=\"existing\" value=\"".$_POST['existing']."\">
-</form>
-</div>";
-$ns -> tablerender("Confirm Delete Review", $text);
-
-	require_once("footer.php");
-	exit;
-}
-If(IsSet($_POST['cancel'])){
-	$message = "Delete cancelled.";
+	if($_POST['confirm']){
+		$sql -> db_Select("content", "*", "content_id='".$_POST['existing']."' ");
+		list($null, $content_heading, $null, $null, $content_page) = $sql-> db_Fetch();
+		if($content_type == 255){
+			$sql -> db_Delete("links", "link_name='".$content_heading."' ");
+		}
+		$sql -> db_Delete("content", "content_id='".$_POST['existing']."' ");
+		$message = "Review deleted.";
+		unset($content_heading, $content_page);
+	}else{
+		$message = "Please tick the confirm box to delete this review";
+	}
 }
 
 if(IsSet($message)){
@@ -91,16 +74,16 @@ if(IsSet($message)){
 
 $article_total = $sql -> db_Select("content", "*", "content_type='3' ");
 
-if($article_total == "0"){
-	$text = "<div style=\"text-align:center\">
-No reviews yet.
-<br />
-	";
-}else{
-	$text = "<div style=\"text-align:center\">
-	<form method=\"post\" action=\"".e_SELF."\">
+$text = "<div style=\"text-align:center\">
+<form method=\"post\" action=\"".e_SELF."\" name=\"dataform\">\n
+<table style=\"width:80%\" class=\"fborder\">
+<tr>
+<td class=\"forumheader\" style=\"text-align:center\" colspan=\"2\">";
 
-	Existing Reviews:
+if($article_total == "0"){
+	$text .= "No reviews yet.";
+}else{
+	$text .= "<span class=\"defaulttext\">Existing Reviews:</span>
 	<select name=\"existing\" class=\"tbox\">";
 	while(list($content_id_, $content_heading_) = $sql-> db_Fetch()){
 		$text .= "<option value=\"$content_id_\">".$content_heading_."</option>";
@@ -108,14 +91,10 @@ No reviews yet.
 	$text .= "</select>
 	<input class=\"button\" type=\"submit\" name=\"edit\" value=\"Edit\" />
 	<input class=\"button\" type=\"submit\" name=\"delete\" value=\"Delete\" />
-	</form>
-	</div>
-	<br />";
+	<input type=\"checkbox\" name=\"confirm\" value=\"1\"><span class=\"smalltext\"> tick to confirm</span>";
 }
 
-$text .= "
-<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name=\"dataform\">\n
-<table style=\"width:95%\">";
+
 
 
 while(list($content_id_, $content_heading_) = $sql-> db_Fetch()){
@@ -129,36 +108,35 @@ while(list($content_id_, $content_heading_) = $sql-> db_Fetch()){
 $text .= "</select></td></tr>
 
 <tr>
-<td colspan=\"2\" style=\"text-align:center\">
+<td colspan=\"2\" style=\"text-align:center\" class=\"forumheader2\">
 <input class=\"button\" type=\"button\" onClick=\"openwindow()\"  value=\"Open HTML Editor\" />
-<br /><br />
 </td>
 </tr>
 
 <tr>
-<td style=\"width:20%; vertical-align:top\"><u>Heading</u>:</td>
-<td style=\"width:80%\">
+<td style=\"width:20%; vertical-align:top\" class=\"forumheader3\"><u>Heading</u>:</td>
+<td style=\"width:80%\" class=\"forumheader3\">
 <input class=\"tbox\" type=\"text\" name=\"content_heading\" size=\"60\" value=\"$content_heading\" maxlength=\"100\" />
 
 </td>
 </tr>
 <tr>
-<td style=\"width:20%\">Sub-Heading:</td>
-<td style=\"width:80%\">
+<td style=\"width:20%\" class=\"forumheader3\">Sub-Heading:</td>
+<td style=\"width:80%\" class=\"forumheader3\">
 <input class=\"tbox\" type=\"text\" name=\"content_subheading\" size=\"60\" value=\"$content_subheading\" maxlength=\"100\" />
 </td>
 </tr>
 
 <tr>
-<td style=\"width:20%\">Summary:</td>
-<td style=\"width:80%\">
+<td style=\"width:20%\" class=\"forumheader3\">Summary:</td>
+<td style=\"width:80%\" class=\"forumheader3\">
 <textarea class=\"tbox\" name=\"content_summary\" cols=\"70\" rows=\"5\">$content_summary</textarea>
 </td>
 </tr>
 
 <tr>
-<td style=\"width:20%\"><u>Review</u>: </td>
-<td style=\"width:80%\">
+<td style=\"width:20%\" class=\"forumheader3\"><u>Review</u>: </td>
+<td style=\"width:80%\" class=\"forumheader3\">
 <textarea class=\"tbox\" name=\"data\" cols=\"70\" rows=\"30\">$data</textarea>
 <br />";
 require_once("../classes/shortcuts.php");
@@ -167,8 +145,8 @@ $text .="</td>
 </tr>
 
 <tr>
-<td style=\"width:20%\">Allow comments?:</td>
-<td style=\"width:80%\">";
+<td style=\"width:20%\" class=\"forumheader3\">Allow comments?:</td>
+<td style=\"width:80%\" class=\"forumheader3\">";
 
 
 if($content_comment == "0"){
@@ -181,7 +159,7 @@ if($content_comment == "0"){
 
 $text .= "</td></tr>
 <tr style=\"vertical-align:top\">
-<td colspan=\"2\"  style=\"text-align:center\"><br />";
+<td colspan=\"2\" style=\"text-align:center\" class=\"forumheader\">";
 
 
 If(IsSet($_POST['edit'])){
@@ -194,13 +172,15 @@ If(IsSet($_POST['edit'])){
 $text .= "</td>
 </tr>
 <tr>
-<td colspan=\"2\"  class=\"smalltext\">
-<br />
+<td colspan=\"2\" class=\"forumheader2\" style=\"text-align:right\">
+<span class=\"smalltext\">
 Tags allowed: all. <u>Underlined</u> fields are required.
+</span>
 </td>
 </tr>
 </table>
-</form>";
+</form>
+</div>";
 
 
 $ns -> tablerender("<div style=\"text-align:center\">Reviews</div>", $text);

@@ -37,32 +37,37 @@ if(IsSet($_POST['emailsubmit'])){
 	$message .= $_POST['comment']."\n\n".$news_title."\n".$news_body."\n".$news_extended."\n\n";
 
 	if($error == ""){
-		if(@mail($_POST['email_send'], "News item from ".SITENAME, $message, "From: newssend@".SITENAME."\r\n"."Reply-To: ".NULL ."\r\n"."X-Mailer: PHP/" . phpversion())){
-			$text = "<div style=\"text-align:center\">Mail sent to ".$_POST['email_send']."</div>";
+		if(file_exists(e_BASE."plugins/smtp.php")){
+			require_once(e_BASE."plugins/smtp.php");
+			smtpmail($_POST['email_send'], "News item from ".SITENAME, $message, "From: newssend@".SITENAME."\r\n"."Reply-To: ".NULL ."\r\n"."X-Mailer: PHP/" . phpversion());
 		}else{
-			$text = "<div style=\"text-align:center\">Sorry - unable to send email</div>";
+			if(@mail($_POST['email_send'], "News item from ".SITENAME, $message, "From: newssend@".SITENAME."\r\n"."Reply-To: ".NULL ."\r\n"."X-Mailer: PHP/" . phpversion())){
+				$text = "<div class='center'>Mail sent to ".$_POST['email_send']."</div>";
+			}else{
+				$text = "<div class='center'>Sorry - unable to send email</div>";
+			}
 		}
 		$ns -> tablerender("Email sent", $text);
 	}else{
-		$ns -> tablerender("Error", "<div style=\"text-align:center\">".$error."</div>");
+		$ns -> tablerender("Error", "<div style='text-align:center'>".$error."</div>");
 	}
 }
 
-$text = "<form method=\"post\" action=\"".e_SELF."?$id\">\n
-<table style=\"width:95%\">";
+$text = "<form method='post' action='".e_SELF."?$id'>\n
+<table class='defaulttable'>";
 
 if(USER != TRUE){
 	$text .= "<tr>
-<td style=\"width:20%\">".LAN_7."</td>
-<td style=\"width:80%\">
-<input class=\"tbox\" type=\"text\" name=\"author_name\" size=\"60\" value=\"$author_name\" maxlength=\"100\" />
+<td style='width:20%'>".LAN_7."</td>
+<td style='width:80%'>
+<input class='tbox' type='text' name='author_name' size='60' value='$author_name' maxlength='100' />
 </td>
 </tr>";
 }
 $text .= "<tr> 
-<td style=\"width:20%\">".LAN_8."</td>
-<td style=\"width:80%\">
-<textarea class=\"tbox\" name=\"comment\" cols=\"70\" rows=\"4\">".LAN_188." ".SITENAME." (".SITEURL.")";
+<td style='width:20%'>".LAN_8."</td>
+<td style='width:80%'>
+<textarea class='tbox' name='comment' cols='70' rows='4'>".LAN_188." ".SITENAME." (".SITEURL.")";
 if(USER == TRUE){
 	$text .= "\n\nFrom ".USERNAME;
 }
@@ -72,16 +77,16 @@ $text .= "</textarea>
 </tr>
 
 <tr>
-<td style=\"width:20%\">".LAN_187."</td>
-<td style=\"width:80%\">
-<input class=\"tbox\" type=\"text\" name=\"email_send\" size=\"60\" value=\"$email_send\" maxlength=\"100\" />
+<td style='width:20%'>".LAN_187."</td>
+<td style='width:80%'>
+<input class='tbox' type='text' name='email_send' size='60' value='$email_send' maxlength='100' />
 </td>
 </tr>
 
-<tr style=\"vertical-align:top\"> 
-<td style=\"width:20%\"></td>
-<td style=\"width:80%\">
-<input class=\"button\" type=\"submit\" name=\"emailsubmit\" value=\"".LAN_186."\" />
+<tr style='vertical-align:top'> 
+<td style='width:20%'></td>
+<td style='width:80%'>
+<input class='button' type='submit' name='emailsubmit' value='".LAN_186."' />
 </td>
 </tr>
 </table>

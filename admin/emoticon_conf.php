@@ -17,7 +17,7 @@ if(!getperms("P")){ header("location:".e_HTTP."index.php"); }
 
 if(IsSet($_POST['updatesettings'])){
 	$pref['smiley_activate'][1] = $_POST['smiley_activate'];
-	$sql -> db_Update("core", "e107_value='".serialize($pref)."' WHERE e107_name='pref' ");
+	save_prefs();
 	header("location:emoticon_conf.php?u");
 }
 
@@ -36,12 +36,7 @@ $text = "
 <td style=\"width:30%\">Activate emoticons?: </td>
 <td style=\"width:70%\">";
 
-
-if($smiley_activate == 1){
-	$text .= "<input type=\"checkbox\" name=\"smiley_activate\" value=\"1\"  checked>";
-}else{
-	$text .= "<input type=\"checkbox\" name=\"smiley_activate\" value=\"1\">";
-}
+$text .= ($pref['smiley_activate'][1] ? "<input type=\"checkbox\" name=\"smiley_activate\" value=\"1\"  checked>" : "<input type=\"checkbox\" name=\"smiley_activate\" value=\"1\">");
 
 $text .= "</td>
 </tr>

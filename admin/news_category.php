@@ -94,29 +94,33 @@ if(IsSet($message)){
 
 $category_total = $sql -> db_Select("news_category");
 
-$text = "<form method=\"post\" action=\"".e_SELF."\">
-<table class=\"fborder\" style=\"width:98%\">
+$text = "<div style=\"text-align:center\">
+<form method=\"post\" action=\"".e_SELF."\">
+<table class=\"fborder\" style=\"width:95%\">
 
-<tr><td colspan=\"2\" style=\"text-align:center\" class=\"fcaption\">Update Existing Categories</td></tr>
-<tr><td class=\"forumheader\" >Category Name</td><td class=\"forumheader\" >Category Icon</td></tr>\n";
+<tr><td colspan=\"3\" style=\"text-align:center\" class=\"forumheader\">Update Existing Categories</td></tr>
+<tr><td class=\"forumheader\"><span class=\"defaulttext\">Category Name</span></td><td colspan=\"2\" class=\"forumheader\"><span class=\"defaulttext\">Category Icon</span></td></tr>\n";
 if(!$category_total){
 	$text .= "<tr>
-	<td colspan=\"2\" class=\"forumheader2\" style=\"text-align:center\">No news categories yet.</td>";
+	<td colspan=\"3\" class=\"forumheader2\" style=\"text-align:center\">No news categories yet.</td>";
 }else{
 	while($row = $sql-> db_Fetch()){
 		extract($row);
 		$text.="<tr>
-		<td class=\"forumheader2\">
+		<td class=\"forumheader3\">
 		<input class=\"tbox\" type=\"text\" size=\"30\" maxlength=\"25\" name=\"name_".$category_id."\" value=\"".$category_name."\">
 		</td>
-		<td class=\"forumheader2\">";
+		<td class=\"forumheader3\" style=\"width:5%\">";
 		if($fp = @fopen(THEME.$category_icon, "r")){
 			$icon = THEME.$category_icon;
 			fclose ($fp);
 		}else{
 			$icon = e_BASE.$category_icon;
 		}
-		$text .= "<img src=\"".$icon."\" alt=\"\" style=\"float:left\" />&nbsp;&nbsp;
+		$text .= "
+		<img src=\"".$icon."\" alt=\"\" style=\"float:left\" />
+		</td>
+		<td class=\"forumheader3\">
 		<input class=\"tbox\" type=\"text\" size=\"60\" maxlength=\"85\" name=\"icon_".$category_id."\" value=\"".$category_icon ."\">
 			
 		<span class=\"defaulttext\">[ <a href=\"".e_SELF."?delete.".$category_id ."\">Delete</a> ]</span>
@@ -124,18 +128,24 @@ if(!$category_total){
 		</tr>";
 	}
 }
-$text.="<tr><td colspan=\"2\" style=\"text-align:center\" class=\"forumheader\">";
+
+$text .= "
+<tr><td colspan=\"3\" style=\"text-align:center\" class=\"forumheader\">";
 if($category_total){
 	$text .= "<input class=\"button\" type=\"submit\" name=\"updatecategories\" value=\"Update News Categories\"></td></tr>";
 }
 
-$text .= "<tr><td colspan=\"2\" style=\"text-align:center\" class=\"fcaption\">Create New Category</td></tr>
-<tr><td class=\"forumheader\" >Category Name</td><td class=\"forumheader\" >Category Icon</td></tr>\n
+$text .= "
+</table>
+<br />
+<table class=\"fborder\" style=\"width:80%\">
+<tr><td colspan=\"3\" style=\"text-align:center\" class=\"forumheader\">Create New Category</td></tr>
+<tr><td class=\"forumheader\"><span class=\"defaulttext\">Category Name</span></td><td class=\"forumheader\"><span class=\"defaulttext\">Category Icon</span></td></tr>
 <tr>
-<td class=\"forumheader2\">
+<td class=\"forumheader3\">
 <input class=\"tbox\" type=\"text\" size=\"30\" maxlength=\"25\" name=\"category_name\" value=\"\">
 </td>
-<td class=\"forumheader2\">
+<td class=\"forumheader3\">
 
 <select name=\"category_icon\" class=\"tbox\">\n";
 		$counter = 0;
@@ -159,7 +169,8 @@ $text .= "</td>
 <input class=\"button\" type=\"submit\" name=\"createcategory\" value=\"Create New News Category\"></td></tr>
 
 </table>
-</form>";
+</form>
+</div>";
 
 $ns -> tablerender("<div style=\"text-align:center\">News Categories</div>", $text);
 require_once("footer.php");

@@ -27,7 +27,8 @@ $end = $timing_stop[0]+$timing_stop[1];
 $rendertime = number_format($start-$stop, 4);
 // echo "<div style='text-align:center' class='smalltext'>Render time: ".$rendertime." second(s)<br /></div>";
 
-echo "
+if($pref['log_activate'][1]){
+	echo "
 <!-- log -->
 <script type=\"text/javascript\">
 <!--
@@ -37,7 +38,9 @@ var res = window.screen.width + \"x\" + window.screen.height;
 var self = document.location;
 document.write(\"<img src='".e_BASE."plugins/log2.php?referer=\" + ref + \"&amp;color=\" + colord + \"&amp;self=\" + self + \"&amp;res=\" + res + \"' style='float:left; border:0' alt='' />\");\n
 //-->
-</script>
+</script>";
+}
+echo "
 </body>
 </html>";
 
