@@ -153,7 +153,7 @@ $text = "<div style='text-align:center'>
 $text .= $permicon.ADLAN_110.": ".$members."<br />";
 $text .= $permicon.ADLAN_111.": ".$unverified."<br />";
 $text .= $permicon.ADLAN_112.": ".$banned."<br />";
-                                                         
+
 $text .= ($submitted_news ? $permicon2."<a href='".e_ADMIN."newspost.php?sn'>".ADLAN_107.": $submitted_news</a>" : $permicon.ADLAN_107.": 0")."<br />";
 $text .= ($submitted_articles ? $permicon2."<a href='".e_ADMIN."article.php?sa'>".ADLAN_123.": $submitted_articles</a>" : $permicon.ADLAN_123.": ".$submitted_articles)."<br />";
 $text .= ($submitted_reviews ? $permicon2."<a href='".e_ADMIN."review.php?sa'>".ADLAN_124.": $submitted_reviews</a>" : $permicon.ADLAN_124.": ".$submitted_reviews)."<br />";
@@ -228,9 +228,8 @@ function comesafter ($s1, $s2) {
         return ($order);
 }
 
-?>
-
-<script type="text/javascript">
+function headerjs(){
+$script = "<script type=\"text/javascript\">
 function tdover(object) {
   if (object.className == 'td') object.className = 'forumheader5';
 }
@@ -238,4 +237,13 @@ function tdover(object) {
 function tdnorm(object) {
   if (object.className == 'forumheader5') object.className = 'td';
 }
-</script>
+
+</script>\n";
+
+ return $script;
+
+}
+
+
+?>
+

@@ -29,6 +29,7 @@ if(file_exists(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_header.php")){@include_once(
 echo "<script type='text/javascript' src='".e_FILE."e107.js'></script>";
 if(file_exists(THEME."theme.js")){echo "<script type='text/javascript' src='".THEME."theme.js'></script>";}
 if(file_exists(e_FILE."user.js")){echo "<script type='text/javascript' src='".e_FILE."user.js'></script>\n";}
+if(function_exists("headerjs")){     echo headerjs(); }
 ?>
 </head>
 <body>
