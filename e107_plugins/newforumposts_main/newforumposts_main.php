@@ -14,14 +14,14 @@
 */
 
 require_once(e_HANDLER."userclass_class.php");
-
+$query = ($pref['nfp_posts'] ? "thread_lastpost" : "thread_datestamp");
 $lan_file=e_PLUGIN."newforumposts_main/languages/".e_LANGUAGE.".php";
 if(file_exists($lan_file)){
 	require_once($lan_file);
 } else {
 	require_once(e_PLUGIN."newforumposts_main/languages/English.php");
 }
-if($sql -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHERE ".MPREFIX."forum.forum_id=".MPREFIX."forum_t.thread_forum_id AND ".MPREFIX."forum_t.thread_parent=0 ORDER BY ".MPREFIX."forum_t.thread_datestamp DESC LIMIT 0, ".$pref['nfp_amount'])){
+if($sql -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHERE ".MPREFIX."forum.forum_id=".MPREFIX."forum_t.thread_forum_id AND ".MPREFIX."forum_t.thread_parent=0 ORDER BY ".MPREFIX."forum_t.$query DESC LIMIT 0, ".$pref['nfp_amount'])){
 	$text = "<div style='text-align:center'>\n<table style='width:auto' class='fborder'>\n";
 	if(!is_object($sql2)){
 		$sql2 = new db;
@@ -42,7 +42,7 @@ if($sql -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHE
 	while($row = $sql -> db_Fetch()){
 		extract($row);
 		if(check_class($forum_class)){
-			$sql2 -> db_Select("forum_t", "*", "thread_parent='$thread_id' ORDER BY thread_datestamp DESC");
+			$sql2 -> db_Select("forum_t", "*", "thread_parent='$thread_id' ORDER BY $query DESC");
 			list($null, $null, $null, $null, $r_datestamp, $null, $r_user) = $sql2 -> db_Fetch();
 			$r_id = substr($r_user, 0, strpos($r_user, "."));
 			$r_name = substr($r_user, (strpos($r_user, ".")+1));

@@ -16,11 +16,12 @@ define("NFPM_L6", "Top of page");
 define("NFPM_L7", "Bottom of page");
 define("NFPM_L8", "Caption");
 define("NFPM_L9", "Number of new posts to display?");
-define("NFPM_L10", "Affichage dans un cadre défilant?");
+define("NFPM_L10", "Display inside scrolling layer?");
 define("NFPM_L11", "Layer height");
 define("NFPM_L12", "New Forum Posts Configuration");
 define("NFPM_L13", "Update New Forum Posts Settings");
 define("NFPM_L14", "New Forum Posts settings updated.");
+define("NFPM_L15", "Check to display latest forum posts.<br />Default is latest topics.");
 
 
 ?>

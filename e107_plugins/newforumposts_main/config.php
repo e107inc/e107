@@ -31,6 +31,7 @@ if(IsSet($_POST['updatesettings'])){
 	$pref['nfp_caption'] = $_POST['nfp_caption'];
 	$pref['nfp_amount'] = $_POST['nfp_amount'];
 	$pref['nfp_layer'] = $_POST['nfp_layer'];
+	$pref['nfp_posts'] = $_POST['nfp_posts'];
 	$pref['nfp_layer_height'] = ($_POST['nfp_layer_height'] ? $_POST['nfp_layer_height'] : 200);
 	save_prefs();
 	$message = "".NFPM_L14."";
@@ -71,6 +72,14 @@ $text = "<div style='text-align:center'>
 </td>
 </tr>
 
+<tr>
+<td class='forumheader3' style='width:40%'>".NFPM_L15." </td>
+<td class='forumheader3' style='width:60%'>".
+($pref['nfp_posts'] ? "<input type='checkbox' name='nfp_posts' value='1' checked>" : "<input type='checkbox' name='nfp_posts' value='1'>")."
+</td>
+</tr>
+
+<tr>
 <td class='forumheader3' style='width:40%'>".NFPM_L10.": </td>
 <td class='forumheader3' style='width:60%'>".
 ($pref['nfp_layer'] ? "<input type='checkbox' name='nfp_layer' value='1' checked>" : "<input type='checkbox' name='nfp_layer' value='1'>")."&nbsp;&nbsp;".NFPM_L11.": <input class='tbox' type='text' name='nfp_layer_height' size='8' value='".$pref['nfp_layer_height']."' maxlength='3' />
