@@ -29,9 +29,10 @@ $aj = new textparse;
 $ix = new news;
 $newspost = new newspost;
 
+$deltest = array_flip($_POST);
 if(e_QUERY){
-        list($action, $sub_action, $id, $from) = explode(".", e_QUERY);
-        unset($tmp);
+	list($action, $sub_action, $id, $from) = explode(".", e_QUERY);
+	unset($tmp);
 }
 
 $from = ($from ? $from : 0);
@@ -39,27 +40,38 @@ $amount = 50;
 
 // ##### Main loop -----------------------------------------------------------------------------------------------------------------------
 
-if($action == "main" && $sub_action == "confirm"){
-        if($sql -> db_Delete("news", "news_id='$id' ")){
-                $newspost -> show_message(NWSLAN_31." #".$id." ".NWSLAN_32);
-                clear_cache("news.php");
-        }
-        unset($sub_action, $id);
+if(preg_match("#(.*?)_delete_(\d+)#",$deltest['Delete'],$matches))
+{
+	$delete = $matches[1];
+	$del_id = $matches[2];
 }
 
-if($action == "cat" && $sub_action == "confirm"){
-        if($sql -> db_Delete("news_category", "category_id='$id' ")){
-                $newspost -> show_message(NWSLAN_33." #".$id." ".NWSLAN_32);
-                unset($id);
-        }
+if($delete == "main" && $del_id)
+{
+	if($sql -> db_Delete("news", "news_id='$del_id' "))
+	{
+		$newspost -> show_message(NWSLAN_31." #".$del_id." ".NWSLAN_32);
+		clear_cache("news.php");
+	}
+	unset($delete, $del);
 }
 
-if($action == "sn" && $sub_action == "confirm"){
-        if($sql -> db_Delete("submitnews", "submitnews_id='$id' ")){
-                $newspost -> show_message(NWSLAN_34." #".$id." ".NWSLAN_32);
-                clear_cache("news.php");
-                unset($id);
-        }
+if($delete == "category" && $del_id)
+{
+	if($sql -> db_Delete("news_category", "category_id='$del_id' "))
+	{
+		$newspost -> show_message(NWSLAN_33." #".$del_id." ".NWSLAN_32);
+		unset($delete,$del_id);
+	}
+}
+
+if($delete == "sn" && $del_id){
+	if($sql -> db_Delete("submitnews", "submitnews_id='$del_id' "))
+	{
+		$newspost -> show_message(NWSLAN_34." #".$del_id." ".NWSLAN_32);
+		clear_cache("news.php");
+		unset($delete,$del_id);
+	}
 }
 
 if(IsSet($_POST['submitupload'])){
@@ -199,19 +211,11 @@ function fclear(){
 echo "<script type=\"text/javascript\">
 function confirm_(mode, news_id){
         if(mode == 'cat'){
-                var x=confirm(\"".NWSLAN_37." [ID: \" + news_id + \"]\");
+                return confirm(\"".NWSLAN_37." [ID: \" + news_id + \"]\");
         }else if(mode == 'sn'){
-                var x=confirm(\"".NWSLAN_38." [ID: \" + news_id + \"]\");
+                return confirm(\"".NWSLAN_38." [ID: \" + news_id + \"]\");
         }else{
-                var x=confirm(\"".NWSLAN_39." [ID: \" + news_id + \"]\");
-        }
-if(x)
-        if(mode == 'cat'){
-                window.location='".e_SELF."?cat.confirm.' + news_id;
-        }else if(mode == 'sn'){
-                window.location='".e_SELF."?sn.confirm.' + news_id;
-        }else{
-                window.location='".e_SELF."?main.confirm.' + news_id;
+                return confirm(\"".NWSLAN_39." [ID: \" + news_id + \"]\");
         }
 }
 </script>";
@@ -246,8 +250,10 @@ class newspost{
                                 <td style='width:5%' class='forumheader3'>$news_id</td>
                                 <td style='width:75%' class='forumheader3'><a href='".e_BASE."comment.php?comment.news.$news_id'>".($news_title ? $aj -> tpa($news_title) : "[".NWSLAN_42."]")."</a></td>
                                 <td style='width:20%; text-align:center' class='forumheader3'>
-                                ".$rs -> form_button("submit", "main_edit_{$news_id}", NWSLAN_7, "onclick=\"document.location='".e_SELF."?create.edit.$news_id'\"")."
-                                ".$rs -> form_button("submit", "main_delete_{$news_id}", NWSLAN_8, "onclick=\"confirm_('create', $news_id)\"")."
+										  ".$rs -> form_button("submit", "main_edit_{$news_id}", NWSLAN_7, "onclick=\"document.location='".e_SELF."?create.edit.$news_id'\"")."
+                                ".$rs -> form_open("post", e_SELF,"","",""," onsubmit=\"return confirm_('create',$news_id)\"")."
+                                ".$rs -> form_button("submit", "main_delete_{$news_id}", NWSLAN_8)."
+                                ".$rs -> form_close()."
                                 </td>
                                 </tr>";
                         }
@@ -670,7 +676,11 @@ class newspost{
                                 <td style='width:75%' class='forumheader3'>$category_name</td>
                                 <td style='width:20%; text-align:center' class='forumheader3'>
                                 ".$rs -> form_button("submit", "category_edit_{$category_id}", NWSLAN_7, "onclick=\"document.location='".e_SELF."?cat.edit.$category_id'\"")."
-                                ".$rs -> form_button("submit", "category_delete_{$category_id}", NWSLAN_8, "onclick=\"confirm_('cat', '$category_id');\"")."
+                                ".$rs -> form_open("post", e_SELF."?cat","","",""," onsubmit=\"return confirm_('cat',$category_id)\"")."
+                                ".$rs -> form_button("submit", "category_delete_{$category_id}", NWSLAN_8)."
+                                ".$rs -> form_close()."
+
+
                                 </td>
                                 </tr>\n";
                         }
@@ -878,7 +888,9 @@ class newspost{
                                 <td style='width:25%; text-align:right; vertical-align:top' class='forumheader3'>";
                                 $buttext = ($submitnews_auth == 0)? NWSLAN_58 : NWSLAN_103;
                                 $text .= $rs -> form_button("submit", "category_edit_{$submitnews_id}", $buttext, "onclick=\"document.location='".e_SELF."?create.sn.$submitnews_id'\"")."
-                                ".$rs -> form_button("submit", "category_delete_{$submitnews_id}", NWSLAN_8, "onclick=\"confirm_('sn', $submitnews_id);\"")."
+                                ".$rs -> form_open("post", e_SELF."?sn","","",""," onsubmit=\"return confirm_('sn',$submitnews_id)\"")."
+                                ".$rs -> form_button("submit", "sn_delete_{$submitnews_id}", NWSLAN_8)."
+                                ".$rs -> form_close()."
                                 </td>
                                 </tr>\n";
                         }
