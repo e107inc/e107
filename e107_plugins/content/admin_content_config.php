@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.5 $
-|		$Date: 2005-02-04 15:30:35 $
+|		$Revision: 1.6 $
+|		$Date: 2005-02-04 15:39:16 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -413,7 +413,6 @@ function admin_content_config_adminmenu(){
 
 				show_admin_menu(CONTENT_ADMIN_MENU_LAN_6, $act,$var);
 
-				echo $plugintable.", content_heading, content_id='".$type_id."' ";
 				if($sub_action == "options"){
 					unset($var);
 					$var=array();
