@@ -30,7 +30,7 @@ function sm_custom(){
 	$texto .= "<a href=\"submitnews.php\" >".LANSM_48."</a><br />\n";
 
 	// Submit content
-	$texto .= "<a href=\"subcontent.php\" >".LANSM_49."</a><br />\n";
+	$texto .= "<a href=\"subcontent.php?article\" >".LANSM_49."</a><br />\n";
 	
 	// Submit links
 	$texto .= "<a href=\"links.php?submit\" >".LANSM_51."</a><br />\n";
