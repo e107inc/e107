@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-02-09 15:35:14 $
+|     $Revision: 1.9 $
+|     $Date: 2005-02-19 16:26:49 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -36,7 +36,20 @@ if (!e_QUERY) {
 		$from = 0;
 	}
 }
-	
+$view = 25;
+
+if(isset($_POST['pageSelect']))
+{
+	$from = ($_POST['pageSelect']-1)*$view;
+}
+if(isset($_POST['submitPrev']))
+{
+	$from = ($_POST['pagePrev']-1)*$view;
+}
+if(isset($_POST['submitNext']))
+{
+	$from = ($_POST['pageNext']-1)*$view;
+}
 require_once(e_PLUGIN.'forum/forum_class.php');
 $forum = new e107forum;
 	
@@ -89,7 +102,6 @@ if ($message) {
 	$ns->tablerender("", $message);
 }
 	
-$view = 25;
 	
 $topics = $forum->forum_get_topic_count($forum_id);
 	
@@ -99,35 +111,16 @@ if ($topics > $view) {
 	$pages = FALSE;
 }
 	
-if ($pages) {
-	$THREADPAGES = LAN_316.": ";
-	if ($pages > 10) {
-		$current = ($from/$view)+1;
-		for($c = 0; $c <= 2; $c++) {
-			$THREADPAGES .= ($view * $c == $from ? "<span style='text-decoration: underline;'>".($c+1)."</span> " : "<a href='".e_SELF."?".$forum_id.".".($view * $c)."'>".($c+1)."</a> ");
-		}
-		if ($current >= 3 && $current <= 5) {
-			for($c = 3; $c <= $current; $c++) {
-				$THREADPAGES .= ($view * $c == $from ? "<span style='text-decoration: underline;'>".($c+1)."</span> " : "<a href='".e_SELF."?".$forum_id.".".($view * $c)."'>".($c+1)."</a> ");
-			}
-		}
-		else if($current >= 6) {
-			$text .= " ... ";
-			for($c = ($current-2); $c <= $current; $c++) {
-				$THREADPAGES .= ($view * $c == $from ? "<span style='text-decoration: underline;'>".($c+1)."</span> " : "<a href='".e_SELF."?".$forum_id.".".($view * $c)."'>".($c+1)."</a> ");
-			}
-		}
-		$text .= " ... ";
-		$tmp = $pages-3;
-		for($c = $tmp; $c <= ($pages-1); $c++) {
-			$THREADPAGES .= ($view * $c == $from ? "<span style='text-decoration: underline;'>".($c+1)."</span> " : "<a href='".e_SELF."?".$forum_id.".".($view * $c)."'>".($c+1)."</a> ");
-		}
-	} else {
-		for($c = 0; $c < $pages; $c++) {
-			if ($view * $c == $from ? $THREADPAGES .= "<b>".($c+1)."</b> " : $THREADPAGES .= "<a href='".e_SELF."?".$forum_id.".".($view * $c)."'>".($c+1)."</a> ");
-		}
+if ($pages)
+{
+	if(strpos($FORUM_VIEW_START, 'THREADPAGES') !== FALSE || strpos($FORUM_VIEW_END, 'THREADPAGES') !== FALSE)
+	{
+		$np_parm['template'] = LAN_316." [PREV] [DROPDOWN] [NEXT]";
+		$np_parm['currentpage'] = ($from/$view)+1;
+		$np_parm['totalpages'] = $pages;
+		cachevars('nextprev', $np_parm);
+		$THREADPAGES = $tp->parseTemplate("{NEXTPREV}");
 	}
-	$THREADPAGES .= "<br />";
 }
 	
 if ((ANON || USER) && ($forum_info['forum_class'] != e_UC_READONLY || MODERATOR)) {
