@@ -213,6 +213,14 @@ body {
 	width: 760px;
 	border: 1px solid #959596;
 	}
+
+#page2 {
+	background-color: white;
+	margin: 20px auto;
+	padding: 0;
+	width: 760px;
+	border: 1px solid #959596;
+	}
 	
 #header {
 	padding: 0;
@@ -239,6 +247,7 @@ body {
 	padding: 10px 0 10px 0;
 	margin: 5px 0 0 5px;
 	width: 700px;
+	line-height: 1.6em;
 	}
 	
 .post {
