@@ -18,6 +18,8 @@ define("SUBNEWSLAN_1", "You must include a title.\\n");
 define("SUBNEWSLAN_2", "You must include some text in the news item.\\n");
 define("SUBNEWSLAN_3", "Your attachment must be either a jpg, gif or png file");
 define("SUBNEWSLAN_4", "File too Large");
+define("SUBNEWSLAN_5", "Image File");
+define("SUBNEWSLAN_6", "(jpg, gif or png)");
 
 /*
 define("SUBNEWSLAN_5", "");
