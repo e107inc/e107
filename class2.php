@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.67 $
-|     $Date: 2005-01-29 16:25:23 $
-|     $Author: streaky $
+|     $Revision: 1.68 $
+|     $Date: 2005-01-29 16:37:26 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -33,6 +33,7 @@ if($register_globals){
 	unset($global);
 }
 
+
 // Grab e107_config, get directory paths, and create the $e107 object
 @include_once(dirname(__FILE__).'/e107_config.php');
 if(!isset($ADMIN_DIRECTORY)){
@@ -41,14 +42,14 @@ if(!isset($ADMIN_DIRECTORY)){
 	
 include_once(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY.'e107_class.php');
 $Paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY');
-if(COMPRESS_OUTPUT === true) {
+if(defined("COMPRESS_OUTPUT") && COMPRESS_OUTPUT === true) {
 	$OutputCompression = true;
 } else {
 	$OutputCompression = false;
 }
 $e107 = new e107($Paths, __FILE__, $OutputCompression);
 
-echo '<pre>'.print_r($e107, true).'</pre>';
+//echo '<pre>'.print_r($e107, true).'</pre>';
 
 $start_ob_level=ob_get_level();
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
