@@ -27,7 +27,7 @@ define("LAN_200", "Categories:");
 define("LAN_201", "Please redefine your search query");
 define("LAN_416", "You must be logged in to access this page");
 
-define("LAN_417", "Search terms must be at least 3 charachters.");
+define("LAN_417", "Search terms must be at least 3 characters.");
 define("LAN_418", "You must be logged in to access this page");
 define("LAN_419", "You must be logged in to access this page");
 
