@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-02-17 19:11:22 $
+|     $Revision: 1.18 $
+|     $Date: 2005-02-17 20:06:03 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -236,16 +236,9 @@ $comment_total = $sql->db_Select_gen($query);
 if ($comment_total) {
 	$width = 0;
 	while ($row = $sql->db_Fetch()) {
-		if ($pref['nested_comments']) {
-			$text = $cobj->render_comment($row, $table, $action, $id, $width, $subject);
-			$ns->tablerender("", $text);
-		} else {
-			$text .= $cobj->render_comment($row, $table, $action, $id, $width, $subject);
-		}
+		$text .= $cobj->render_comment($row, $table, $action, $id, $width, $subject);
 	}
-	if (!$pref['nested_comments']) {
-		$ns->tablerender(LAN_5, $text);
-	}
+	$ns->tablerender(LAN_5, $text);
 }
 	
 	
