@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-02-19 12:12:45 $
-|     $Author: e107coders $
+|     $Revision: 1.11 $
+|     $Date: 2005-02-23 18:57:18 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -225,7 +225,46 @@ if (isset($_POST['newthread']) || isset($_POST['reply'])) {
 		if ($file_userfile['error'] != 4) {
 			require_once(e_HANDLER."upload_handler.php");
 			if ($uploaded = file_upload('/'.e_FILE."public/", "attachment")) {
-				$_POST['post'] .= "\n\n".(strstr($uploaded[0]['type'], "image") ? "[img]".e_FILE."public/".$uploaded[0]['name']."[/img] \n<span class='smalltext'>[ ".$uploaded[0]['name']." ]</span>" : "[file=".e_FILE."public/".$uploaded[0]['name']."]".$uploaded[0]['name']."[/file]");
+				if(strstr($uploaded[0]['type'], "image"))
+				{
+					if(isset($pref['forum_maxwidth']) && $pref['forum_maxwidth'] > 0)
+					{
+						require_once(e_HANDLER."resize_handler.php");
+						$orig_file = $uploaded[0]['name'];
+						$p = strrpos($orig_file,'.');
+						$new_file = substr($orig_file, 0 , $p)."_".substr($orig_file, $p);
+						$fpath = e_FILE."public/";
+						if(resize_image($fpath.$orig_file, $fpath.$new_file, $pref['forum_maxwidth']))
+						{
+							if($pref['forum_linkimg'])
+							{
+								$_POST['post'] .= "[link=".$fpath.$orig_file."][img]".$fpath.$new_file."[/img][/link]";
+								//show resized, link to fullsize
+							}
+							else
+							{
+								@unlink($fpath.$orig_file);
+								//show resized
+								$_POST['post'] .= "[img]".$fpath.$new_file."[/img] \n";
+							}
+						}
+						else
+						{
+							//resize failed, show original 
+							$_POST['post'] .= "[img]".e_FILE."public/".$uploaded[0]['name']."[/img] \n";
+						}
+					}
+					else
+					{
+						//resizing disabled, show original
+						$_POST['post'] .= "[img]".e_FILE."public/".$uploaded[0]['name']."[/img] \n<span class='smalltext'>[ ".$uploaded[0]['name']." ]</span>";
+					}
+				}
+				else
+				{
+					//upload was not an image, link to file
+					$_POST['post'] .= "[file=".e_FILE."public/".$uploaded[0]['name']."]".$uploaded[0]['name']."[/file]";
+				}
 			}
 		}
 		$post = $tp->toDB($_POST['post']);
