@@ -456,7 +456,7 @@ if($signupval[8]){
         $avatarlist[0] = "";
         $handle=opendir(e_IMAGE."avatars/");
         while ($file = readdir($handle)){
-                if($file != "." && $file != ".."){
+                if($file != "." && $file != ".." && $file != "CVS" && $file != "index.html"){
                         $avatarlist[] = $file;
                 }
         }
