@@ -38,4 +38,6 @@ define("LANHELP_32", "Code - preformatted text: [code]\$foo = bah;[/code]");
 define("LANHELP_33", "HTML - removes linebreaks from text: [html]<table><tr><td> etc[/html]");
 define("LANHELP_34", "Insert newpage tag, splits article into more than one page");
 
+define("LANHELP_35", "hyperlink url");
+
 ?>
