@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.12 $
-|		$Date: 2005-02-09 21:17:51 $
+|		$Revision: 1.13 $
+|		$Date: 2005-02-10 14:10:04 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1253,7 +1253,9 @@ function parse_content_recent_table($row, $prefetchbreadcrumb=""){
 				if(($content_pref["content_list_peicon_{$type_id}"] && $content_pe) || $content_pref["content_list_peicon_all_{$type_id}"]){
 					$CONTENT_RECENT_TABLE_EPICONS = $tp -> parseTemplate("{EMAIL_ITEM=".CONTENT_LAN_69." ".CONTENT_LAN_71."^plugin:content.$content_id}");
 					$CONTENT_RECENT_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_71."^plugin:content.$content_id}");
+					$CONTENT_RECENT_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_71."^plugin:content.$content_id}");
 				}
+				
 
 				if($content_pref["content_log_{$type_id}"] && $content_pref["content_list_refer_{$type_id}"]){
 					$refercounttmp = explode("^", $content_refer);
@@ -1332,7 +1334,10 @@ function parse_content_cat_table($row, $prefetchbreadcrumb){
 				if($content_pe){
 					$CONTENT_CAT_TABLE_EPICONS = $tp -> parseTemplate("{EMAIL_ITEM=".CONTENT_LAN_69." ".CONTENT_LAN_72."^plugin:content.$content_id}");
 					$CONTENT_CAT_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_72."^plugin:content.$content_id}");
+					$CONTENT_CAT_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_71."^plugin:content.$content_id}");
 				}
+				
+
 				$CONTENT_CAT_TABLE_RATING = "";
 				if($content_rate){
 					if($ratearray = $rater -> getrating("content_cat", $content_id)){
@@ -1424,7 +1429,9 @@ function parse_content_cat_list_table($row){
 				if($content_pe){
 					$CONTENT_CAT_LIST_TABLE_EPICONS = $tp -> parseTemplate("{EMAIL_ITEM=".CONTENT_LAN_69." ".CONTENT_LAN_72."^plugin:content.$sub_action}");
 					$CONTENT_CAT_LIST_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_72."^plugin:content.$sub_action}");
+					$CONTENT_CAT_LIST_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_71."^plugin:content.$sub_action}");
 				}
+				
 				return(preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CAT_LIST_TABLE));
 }
 
@@ -1563,7 +1570,9 @@ function parse_content_content_table($row){
 				if(($content_pref["content_content_peicon_{$type_id}"] && $content_pe) || $content_pref["content_content_peicon_all_{$type_id}"]){
 					$CONTENT_CONTENT_TABLE_EPICONS = $tp -> parseTemplate("{EMAIL_ITEM=".CONTENT_LAN_69." ".CONTENT_LAN_71."^plugin:content.$content_id}");
 					$CONTENT_CONTENT_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_71."^plugin:content.$content_id}");
+					$CONTENT_CAT_LIST_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_71."^plugin:content.$content_id}");
 				}
+				
 
 				$content_text = ($content_text ? $content_text : "");
 				if(preg_match_all("/\[newpage=(.*?)]/si", $content_text, $matches)) {
