@@ -115,7 +115,7 @@ function sitelinks() {
 						}
 					}
 					if (LINKDISPLAY == 3 && $menu_title) {
-						$link_menu[] = $ns->tablerender(PRELINKTITLE.$menu_title.POSTLINKTITLE, $menu_text, "", TRUE);
+						$link_menu[] = $ns->tablerender(PRELINKTITLE.$menu_title.POSTLINKTITLE, $menu_text, 'sitelinks', TRUE);
 						$menu_title = "";
 						$menu_text = "";
 					}
@@ -130,14 +130,14 @@ function sitelinks() {
 		$text = $tp->toHTML($text, TRUE, 'nobreak');
 		if (LINKDISPLAY == 2) {
 			$ns = new e107table;
-			$ns->tablerender(LAN_183, $text);
+			$ns->tablerender(LAN_183, $text, 'sitelinks');
 		} else {
 			if (LINKDISPLAY != 3) {
 				echo $text;
 			}
 		}
 		if (LINKDISPLAY == 3) {
-			$ns->tablerender(LAN_183, $menu_main);
+			$ns->tablerender(LAN_183, $menu_main, 'sitelinks');
 			foreach($link_menu as $m) {
 				echo $m;
 			}
