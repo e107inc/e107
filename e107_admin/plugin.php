@@ -346,7 +346,7 @@ $text = "<div style='text-align:center'>
 $sql -> db_Select("plugin");
 while($row = $sql -> db_Fetch()){
         extract($row);
-        unset($eplug_name, $eplug_version, $eplug_author, $eplug_logo, $eplug_url, $eplug_email, $eplug_description, $eplug_compatible, $eplug_readme, $eplug_folder, $eplug_table_names);
+        unset($eplug_module, $eplug_parse, $eplug_name, $eplug_version, $eplug_author, $eplug_logo, $eplug_url, $eplug_email, $eplug_description, $eplug_compatible, $eplug_readme, $eplug_folder, $eplug_table_names);
         include(e_PLUGIN.$plugin_path."/plugin.php");
 
         if(is_array($eplug_table_names) || is_array($eplug_prefs)  || is_array($eplug_user_prefs) || is_array($eplug_parse)){
@@ -369,7 +369,7 @@ while($row = $sql -> db_Fetch()){
         if($eplug_readme){
                 $text .= "[ <a href='".e_PLUGIN.$eplug_folder."/".$eplug_readme."'>".$eplug_readme."</a> ]<br />";
         }
-        if(is_array($eplug_table_names) || is_array($eplug_prefs)  || is_array($eplug_user_prefs) || is_array($eplug_parse)){
+        if($eplug_module || is_array($eplug_table_names) || is_array($eplug_prefs)  || is_array($eplug_user_prefs) || is_array($eplug_parse)){
                 $text .= "<b>".EPL_OPTIONS."</b>: [ ".($plugin_installflag ? "<a href='".e_SELF."?uninstall.$plugin_id' title='".EPL_ADLAN_1."'> ".EPL_ADLAN_1."</a>" : "<a href='".e_SELF."?install.$plugin_id' title='".EPL_ADLAN_0."'>".EPL_ADLAN_0."</a>")." ]";
         }else{
                 if($eplug_menu_name){
