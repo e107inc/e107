@@ -1,8 +1,7 @@
 <?php
 /*
-+---------------------------------------------------------------+
++ ----------------------------------------------------------------------------+
 |        e107 website system
-|        /np_class.php
 |
 |        ©Steve Dunstan 2001-2002
 |        http://e107.org
@@ -10,7 +9,12 @@
 |
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|
+|     $Source: /cvs_backup/e107/e107_handlers/level_handler.php,v $
+|     $Revision: 1.5 $
+|     $Date: 2004-11-07 21:04:11 $
+|     $Author: e107coders $
++----------------------------------------------------------------------------+
 */
 
 function get_level($user_id, $user_forums, $user_comments, $user_chats, $user_visits, $user_join, $user_admin, $user_perms, $pref){
