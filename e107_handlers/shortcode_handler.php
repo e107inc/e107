@@ -12,8 +12,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.10 $
-| $Date: 2005-02-02 15:58:19 $
+| $Revision: 1.11 $
+| $Date: 2005-02-05 21:18:53 $
 | $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -107,7 +107,22 @@ class e_shortcode {
 				}
 			}
 		}
-		return eval($shortcode);
+		$ret = eval($shortcode);
+		if($sc != '')
+		{
+			if(is_array($sc_style) && array_key_exists($code,$sc_style))
+			{
+				if(isset($sc_style[$code]['pre']))
+				{
+					$ret = $sc_style[$code]['pre'].$ret;
+				}
+				if(isset($sc_style[$code]['post']))
+				{
+					$ret = $ret.$sc_style[$code]['post'];
+				}
+			}
+		}
+		return $ret;
 	}
 	 
 	function parse_scbatch($fname) {
