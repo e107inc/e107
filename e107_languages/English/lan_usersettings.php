@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_usersettings.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-29 14:18:01 $
-|     $Author: mrpete $
+|     $Revision: 1.4 $
+|     $Date: 2005-04-04 16:24:36 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "User Settings");
@@ -92,4 +92,6 @@ define("RESIZE_NOT_SUPPORTED", "Resize method not supported by this server. Plea
 // v0.7
 define("LAN_USET_5", "Subscribed to");
 define("LAN_USET_6", "Subscribe to our mailing-list(s) and/or sections of this site.");
+define("LAN_USET_7", "Miscellaneous");
+define("LAN_USET_8", "Signature / Timezone");
 ?>
