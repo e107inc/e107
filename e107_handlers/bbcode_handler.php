@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-01-27 19:52:27 $
-|     $Author: streaky $
+|     $Revision: 1.11 $
+|     $Date: 2005-01-28 01:06:55 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -30,12 +30,11 @@ class e_bbcode {
 		global $code;
 		global $postID;
 		$done = FALSE;
-		$x = 0;
 		while (!$done) {
 			$done = TRUE;
 			foreach($this->core_bb as $code) {
 				if (strpos($text, "[$code") !== FALSE) {
-					$text = preg_replace_callback("/\[({$code}([a-zA-Z]*))([\d]*?)([^\]]*)\](.*)\[\/{$code}\\2\\3\]/s", array($this, 'doCode'), $text);
+					$text = preg_replace_callback("/\[({$code}([a-zA-Z]*))([\d]*?)([^\]]*)\](.*?)\[\/{$code}\\2\\3\]/s", array($this, 'doCode'), $text);
 					$done = FALSE;
 				}
 			}
@@ -49,7 +48,6 @@ class e_bbcode {
 		$code = $matches[1];
 		$parm = substr($matches[4], 1);
 		$code_text = $matches[5];
-		 
 		if (is_array($this->bbList) && array_key_exists($code, $this->bbList)) {
 			$bbcode = $this->bbList[$code];
 		} else {
