@@ -4,7 +4,6 @@ if(!USER || check_class($pref['post_html']) == FALSE){
 exit;
 }
 $HEADER = "";
-$FOOTER = "";
 require_once(HEADERF);
 
 
@@ -14,7 +13,7 @@ require_once(HEADERF);
 	$orig = array();
 	while(list($code, $name) = @each($emote[$c])){
 		if(!array_key_exists($name,$orig)){
-	$str .= "\n<a href=\"javascript:insertEmotion('$name')\"><img src=\"".e_IMAGE."emoticons/$name\" style=\"border:0; padding-top:2px;\" alt=\"\" /></a> ";
+	$str .= "\n<a href='javascript:void(0);' onmousedown=\"javascript:insertEmotion('$name')\"><img src=\"".e_IMAGE."emoticons/$name\" style=\"border:0; padding-top:2px;\" alt=\"\" /></a> ";
 			$orig[$name] = TRUE;
 		}
 		$c++;
@@ -30,7 +29,7 @@ function headerjs(){
 	$js .= " <script type='text/javascript'>
 	function insertEmotion(file_name) {
 		if (window.opener) {
-			tinyMCE.insertImage('".SITEURL.$IMAGES_DIRECTORY."emoticons/' + file_name);
+			tinyMCE.insertImage('".SITEURL.$IMAGES_DIRECTORY."emoticons/' + file_name,file_name);
 			window.close();
 		}
 	}

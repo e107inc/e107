@@ -4,13 +4,14 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/wysiwyg.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-24 02:43:35 $
+|     $Revision: 1.5 $
+|     $Date: 2005-02-24 05:32:28 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 function wysiwyg($formids){
+global $pref;
 $text = "
 	<script language='javascript' type='text/javascript' src='".e_HANDLER."tiny_mce/tiny_mce.js'></script>
 	<script language='javascript' type='text/javascript'>
@@ -20,14 +21,14 @@ $text = "
 		theme : 'advanced',
 		plugins : 'table,";
 
- $text .= "emoticons,";
+$text .= ($pref['smiley_activate']) ? "emoticons," : "";
 $text .= (ADMIN) ? "ibrowser," : "image,";
 $text .= "iespell,zoom,flash,forecolor',
 		theme_advanced_buttons1 : 'bold,italic,underline,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,outdent, indent,separator, forecolor,cut,copy,paste,separator,link,unlink',";
 
 
 $text .= "theme_advanced_buttons2	: 'tablecontrols,separator,undo,redo,separator";
- $text .= ",emoticons";
+$text .= ($pref['smiley_activate']) ? ",emoticons" : "";
 $text .= ",charmap,iespell,flash";
 $text .= (ADMIN) ? ",ibrowser," : ",image";
 $text .= (ADMIN) ? ",code" : "";
