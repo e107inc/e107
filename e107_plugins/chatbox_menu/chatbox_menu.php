@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-02-01 05:15:01 $
-|     $Author: sweetas $
+|     $Revision: 1.18 $
+|     $Date: 2005-02-02 13:48:24 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 global $tp, $e107cache, $e_event;
+$emessage='';
 if(isset($_POST['chat_submit']))
 {
 	if(!USER && !$pref['anon_post'])
@@ -132,7 +133,6 @@ if(!$text = $e107cache->retrieve("chatbox"))
 			}
 
 			$datestamp = $obj2->convert_date($cb_datestamp, "short");
-			$cb_message = str_replace($search, $replace, $cb_message);
 
 			if($pref['cb_linkreplace'])
 			{
