@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-03-07 12:38:52 $
+|     $Revision: 1.17 $
+|     $Date: 2005-03-07 12:55:00 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -597,7 +597,14 @@ class forum {
 			</tr>
 
 			<tr>
-			<td style='width:75%' class='forumheader3'>".FORLAN_70."<br /><span class='smalltext'>".FORLAN_71." <a href='".e_ADMIN."upload.php'>".FORLAN_130."</a> ". FORLAN_131."</span></td>
+			<td style='width:75%' class='forumheader3'>".FORLAN_70."<br /><span class='smalltext'>".FORLAN_71." <a href='".e_ADMIN."upload.php'>".FORLAN_130."</a> ". FORLAN_131."</span>";
+			
+			if(!$pref['image_post'])
+			{
+				$text .= "<br /><b>".FORLAN_139."</b>";
+			}
+
+			$text .= "</td>
 			<td style='width:25%;text-align:center' class='forumheader3' >".($pref['forum_attach'] ? "<input type='checkbox' name='forum_attach' value='1' checked='checked' />" : "<input type='checkbox' name='forum_attach' value='1' />")."</td>
 			</tr>
 
