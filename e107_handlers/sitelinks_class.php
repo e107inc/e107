@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-03-27 06:54:15 $
+|     $Revision: 1.36 $
+|     $Date: 2005-03-27 07:57:11 $
 |     $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -79,6 +79,11 @@ class sitelinks {
 			$style['prelink'] = PRELINK;
 			$style['linkdisplay'] = LINKDISPLAY;
 			$style['postlink'] = POSTLINK;
+            $style['linkclass'] = defined('LINKCLASS') ? LINKCLASS : "";
+			$style['linkstart_hilite'] = defined('LINKSTART_HILITE') ? LINKSTART_HILITE : "";
+			$style['linkstart'] = LINKSTART;
+			$style['linkdisplay'] = LINKDISPLAY;
+			$style['linkend'] = LINKEND;
 		}
 
 		$menu_count = 0;
@@ -86,12 +91,12 @@ class sitelinks {
 
 		if ($style['linkdisplay'] != 3) {
 			foreach ($this->eLinkList['head_menu'] as $link) {
-				$text .= $this->makeLink($link);
+				$text .= $this->makeLink($link,'', $style);
 				if ($style['linkdisplay'] != 1 && $style['linkdisplay'] != 2) {
 					$main_linkname = $link['link_name'];
 					if (isset($this->eLinkList[$main_linkname]) && is_array($this->eLinkList[$main_linkname])) {
 						foreach ($this->eLinkList[$main_linkname] as $sub) {
-							$text .= $this->makeLink($sub, TRUE);
+							$text .= $this->makeLink($sub, TRUE, $style);
 						}
 					}
 				}
@@ -103,7 +108,7 @@ class sitelinks {
 		} else {
 			foreach($this->eLinkList['head_menu'] as $link) {
 				if (!count($this->eLinkList[$link['link_name']])) {
-					$text .= $this->makeLink($link);
+					$text .= $this->makeLink($link,'', $style);
 				}
 				$text .= $style['postlink'];
 			}
@@ -125,14 +130,6 @@ class sitelinks {
 
 	function makeLink($linkInfo, $submenu = FALSE, $style='') {
 		global $pref;
-
-		if(!$style){
-			$style['linkclass'] = defined('LINKCLASS') ? LINKCLASS : "";
-			$style['linkstart_hilite'] = defined('LINKSTART_HILITE') ? LINKSTART_HILITE : "";
-			$style['linkstart'] = LINKSTART;
-			$style['linkdisplay'] = LINKDISPLAY;
-			$style['linkend'] = LINKEND;
-		}
 
 		if (!preg_match('#(http:|mailto:|ftp:)#', $linkInfo['link_url'])) {
 			$linkInfo['link_url'] = e_BASE.$linkInfo['link_url'];
