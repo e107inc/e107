@@ -56,21 +56,24 @@ a:hover {
 	background-color: #fff;
 }
 
-.button, .button:hover, .nextprev, .nextprev:hover {
+.button, .button:hover {
 	border: 1px solid #000;
 	text-align:center;
 }
 
-.button, .nextprev {
+.button {
 	background-image : url(images/button.png);
 }
 
-.button:hover, .nextprev:hover {
+.button:hover {
 	background-image : url(images/buttonover.png);
 }
 
-.nextprev {
+.nextprev, .nextprev:hover {
+	border: 0px;
+	text-align:center;
 	padding : 2px;
+	background-color: #F9f7f7;
 }
 
 .spacer{
