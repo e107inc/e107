@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/class2.php,v $
-|     $Revision: 1.103 $
-|     $Date: 2004-11-07 18:52:48 $
+|     $Revision: 1.104 $
+|     $Date: 2004-11-08 02:30:10 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -599,7 +599,7 @@ class textparse
                 //                                $text = str_replace("<br />", " <br />" , $text);
                 $text = e107_parse($text,$referrer);
                 $text = $this -> bbcode($text, $mode, $referrer);
-                if($mode != "on")
+                if(strpos($mode,'on') === FALSE)
                 {
                         $text = $this -> wrap($text, $mode, $referrer, $highlight_search);
                 }
@@ -610,7 +610,7 @@ class textparse
                 $text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>", $text);
                 $text = substr($text, 1);
                 $text = html($text);
-                $nl_replace = ($mode != "nobreak") ? "<br />" : "";
+                $nl_replace = (strpos($mode,'nobreak') === FALSE) ? "<br />" : "";
                 $text = str_replace(" [e_NL]",$nl_replace,$text);
                 return $text;
         }
