@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/forum.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2004-11-17 04:07:23 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.13 $
+|     $Date: 2005-01-11 15:29:39 $
+|     $Author: pholzmann $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -152,13 +152,13 @@ foreach($listuserson as $uinfo => $pinfo)
 }
 $USERLIST .= "<br /><a rel='external' href='online.php'>".LAN_427."</a> ".LAN_436."";
 $ICONKEY = "
-<table style='width:100%'>\n<tr>
+<table style='width:100%' cellpadding='2' cellspacing='0'>\n<tr>
 <td style='width:2%'>".IMAGE_new_small."</td>
-<td style='width:10%'><span class='smallblacktext'>".LAN_79."</span></td>
+<td style='width:30%'><span class='smallblacktext'>".LAN_79."</span></td>
 <td style='width:2%'>".IMAGE_nonew_small."</td>
-<td style='width:10%'><span class='smallblacktext'>".LAN_80."</span></td>
+<td style='width:30%'><span class='smallblacktext'>".LAN_80."</span></td>
 <td style='width:2%'>".IMAGE_closed_small."</td>
-<td style='width:10%'><span class='smallblacktext'>".LAN_394."</span></td>
+<td style='width:30%'><span class='smallblacktext'>".LAN_394."</span></td>
 </tr>\n</table>\n";
 
 $SEARCH = "
@@ -367,7 +367,7 @@ function parse_forum($row, $restricted_string="")
 			}
 		}
 	}
-	$NEWFLAG = ($newflag ? "<a href='".e_SELF."?mfar.$forum_id'>".IMAGE_new."</a></td>" : IMAGE_nonew);
+        $NEWFLAG = ($newflag ? "<a href='".e_SELF."?mfar.$forum_id'>".IMAGE_new."</a>" : IMAGE_nonew);
 	$FORUMNAME = "<a href='".e_BASE."forum_viewforum.php?$forum_id'>$forum_name</a>";
 	$FORUMDESCRIPTION = $forum_description.($restricted_string ? "<br /><span class='smalltext'><i>$restricted_string</i></span>" : "");;
 	$THREADS = $forum_threads;
