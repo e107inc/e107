@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-02-22 18:34:47 $
-|     $Author: stevedunstan $
+|     $Revision: 1.21 $
+|     $Date: 2005-02-26 06:34:03 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -635,7 +635,7 @@ class download {
 			while ($row = $sql->db_Fetch()) {
 				extract($row);
 				$text .= "<tr>
-					<td style='width:5%; text-align:center' class='forumheader'>".($download_category_icon ? "<img src='".e_IMAGE."download_icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")."</td>
+					<td style='width:5%; text-align:center' class='forumheader'>".($download_category_icon ? "<img src='".e_IMAGE."icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")."</td>
 					<td colspan='2' style='width:70%' class='forumheader'><b>$download_category_name</b></td>
 
 					<td style='width:20%; text-align:center' class='forumheader'>
@@ -659,7 +659,7 @@ class download {
 
 
 						$text .= "<tr>
-							<td style='width:5%; text-align:center' class='forumheader3'>".($download_category_icon ? "<img src='".e_IMAGE."download_icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")."</td>
+							<td style='width:5%; text-align:center' class='forumheader3'>".($download_category_icon ? "<img src='".e_IMAGE."icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")."</td>
 							<td style='width:70%' class='forumheader3'>$download_category_name<br /><span class='smalltext'>$download_category_description</span></td>
 							<td style='width:5%; text-align:center' class='forumheader3'>$files</td>
 							<td style='width:20%; text-align:center' class='forumheader3'>
@@ -680,7 +680,7 @@ class download {
 								extract($row);
 								$files = $sql4->db_Count("download", "(*)", "WHERE download_category='".$download_category_id."'");
 								$text .= "<tr>
-									<td style='width:5%; text-align:center' class='forumheader3'>".($download_category_icon ? "<img src='".e_IMAGE."download_icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")."</td>
+									<td style='width:5%; text-align:center' class='forumheader3'>".($download_category_icon ? "<img src='".e_IMAGE."icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")."</td>
 									<td style='width:70%' class='forumheader3'>&nbsp;&nbsp;&nbsp;&nbsp;".DOWLAN_53.": $download_category_name<br />&nbsp;&nbsp;&nbsp;&nbsp;<span class='smalltext'>$download_category_description</span></td>
 									<td style='width:5%; text-align:center' class='forumheader3'>$files</td>
 									<td style='width:20%; text-align:center' class='forumheader3'>
