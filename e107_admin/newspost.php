@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.49 $
-|   $Date: 2005-02-21 18:15:32 $
-|   $Author: stevedunstan $
+|   $Revision: 1.50 $
+|   $Date: 2005-02-22 02:28:36 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 
 */
@@ -24,7 +24,7 @@ if (!getperms("H")) {
 	 exit;
 }
 $e_sub_cat = 'news';
-$WYSIWYG = TRUE;
+$e_wysiwyg = "data,news_extended";
 
 // -------- Presets. ------------  // always load before auth.php
 require_once(e_HANDLER."preset_class.php");
