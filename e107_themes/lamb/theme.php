@@ -108,6 +108,7 @@ define("TRACKBACKBEFORESTRING", " | ");
 define('PRELINK', "");
 define('POSTLINK', "");
 define('LINKSTART', "<img src='".THEME."images/bullet2.gif' alt='' /> ");
+define("LINKSTART_HILITE", "<img src='".THEME."images/bluearrow_greybg.png' alt='' /> ");
 define('LINKEND', "<br />");
 define('LINKDISPLAY', 2);
 define('LINKALIGN', "left");
