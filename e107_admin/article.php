@@ -27,13 +27,18 @@ if($pref['htmlarea']){
 
 $rs = new form;
 
-
+$deltest = array_flip($_POST);
 if(e_QUERY){
         $tmp = explode(".", e_QUERY);
         $action = $tmp[0];
         $sub_action = $tmp[1];
         $id = $tmp[2];
         unset($tmp);
+}
+if(preg_match("#(.*?)_delete_(\d+)#",$deltest['Delete'],$matches))
+{
+	$delete = $matches[1];
+	$del_id = $matches[2];
 }
 
 // ##### DB --------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -121,20 +126,24 @@ if(IsSet($_POST['updateoptions'])){
         $message = ARLAN_92;
 }
 
-if($action == "cat" && $sub_action == "confirm"){
-        if($sql -> db_Delete("content", "content_id='$id' ")){
-                $message = ARLAN_58;
-				unset($sub_action,	$id);
-				$action = "cat";
-        }
+if($delete == 'category')
+{
+	if($sql -> db_Delete("content", "content_id='$del_id' "))
+	{
+		$message = ARLAN_58;
+		unset($sub_action, $id);
+		$action = "cat";
+	}
 }
 
-if($action == "confirm"){
-        if($sql -> db_Delete("content", "content_id='$sub_action' ")){
-                $message = ARLAN_30;
-                clear_cache("article");
-				unset($action, $sub_action,	$id);
-        }
+if($delete == "main")
+{
+	if($sql -> db_Delete("content", "content_id='$del_id' "))
+	{
+		$message = ARLAN_30;
+		clear_cache("article");
+		unset($action, $sub_action, $id);
+	}
 }
 
 if(IsSet($_POST['preview'])){
@@ -187,13 +196,16 @@ if($action == "cat"){
                 </tr>";
                 while($row = $sql -> db_Fetch()){
                         extract($row);
-                                                $delete_heading = str_replace("&#39;", "\'", $content_heading);
+								$delete_heading = str_replace("&#39;", "\'", $content_heading);
                         $text .= "<tr>
                         <td style='width:5%; text-align:center' class='forumheader3'>".($content_summary ? "<img src='".e_IMAGE."link_icons/$content_summary' alt='' style='vertical-align:middle' />" : "&nbsp;")."</td>
                         <td style='width:75%' class='forumheader3'>$content_heading [$content_subheading]</td>
                         <td style='width:20%; text-align:center' class='forumheader3'>
                         ".$rs -> form_button("submit", "category_edit", ARLAN_61, "onclick=\"document.location='".e_SELF."?cat.edit.$content_id'\"")."
-                        ".$rs -> form_button("submit", "category_delete", ARLAN_62, "onclick=\"confirm_('cat', '$delete_heading', $content_id);\"")."
+                       	".$rs -> form_open("post", e_SELF,"","",""," onsubmit=\"return confirm_('cat','$delete_heading','$content_id')\"")."
+              				".$rs -> form_button("submit", "category_delete_{$content_id}", ARLAN_62)."
+              				".$rs -> form_close()."
+
                         </td>
                         </tr>";
                 }
@@ -330,10 +342,15 @@ if(!$action || $action == "confirm" || $action == 'c'){
 				<td style='width:75%' class='forumheader3'><a href='".e_BASE."content.php?article.$content_id'>$content_heading</a> [$content_subheading]</td>
 				<td style='width:20%; text-align:center' class='forumheader3'>
 				".$rs -> form_button("submit", "main_edit", ARLAN_61, "onclick=\"document.location='".e_SELF."?create.edit.$content_id'\"")."
-				".$rs -> form_button("submit", "main_delete", ARLAN_62, "onclick=\"confirm_('create', '$delete_heading', $content_id)\"")."
+				
+				".$rs -> form_open("post", e_SELF,"","",""," onsubmit=\"return confirm_('create','$delete_heading','$content_id')\"")."
+				".$rs -> form_button("submit", "main_delete_{$content_id}", ARLAN_62)."
+				".$rs -> form_close()."
+				
 				</td>
 				</tr>";
 			}
+//				".$rs -> form_button("submit", "main_delete", ARLAN_62, "onclick=\"confirm_('create', '$delete_heading', $content_id)\"")."
 			$text .= "</table>";
 		} else {
 			$text .= "<br /><div style='text-align:center'>".ARLAN_32."</div>";
@@ -612,15 +629,9 @@ function addtext2(sc){
 $script .= "<script type=\"text/javascript\">
 function confirm_(mode, content_heading, content_id){
         if(mode == 'cat'){
-                var x=confirm(\"".ARLAN_80." [ID \" + content_id + \": \" + content_heading + \"]\");
+                return confirm(\"".ARLAN_80." [ID \" + content_id + \": \" + content_heading + \"]\");
         }else{
-                var x=confirm(\"".ARLAN_81." [ID \" + content_id + \": \" + content_heading + \"]\");
-        }
-if(x)
-        if(mode == 'cat'){
-                window.location='".e_SELF."?cat.confirm.' + content_id;
-        }else{
-                window.location='".e_SELF."?confirm.' + content_id;
+                return confirm(\"".ARLAN_81." [ID \" + content_id + \": \" + content_heading + \"]\");
         }
 }
 </script>";

@@ -22,12 +22,19 @@ $rs = new form;
 $forum = new forum;
 $aj = new textparse;
 
+
+$deltest = array_flip($_POST);
 if(e_QUERY){
         $tmp = explode(".", e_QUERY);
         $action = $tmp[0];
         $sub_action = $tmp[1];
         $id = $tmp[2];
         unset($tmp);
+}
+if(preg_match("#(.*?)_delete_(\d+)#",$deltest['Delete'],$matches))
+{
+	$delete = $matches[1];
+	$del_id = $matches[2];
 }
 
 If(IsSet($_POST['submit_parent'])){
@@ -151,10 +158,12 @@ if(IsSet($_POST['frsubmit'])){
         $sql -> db_Update("wmessage", "wm_text ='$adminrules', wm_active='".$_POST['wm_active6']."' WHERE wm_id='6' ");
 }
 
-if($action == "main" && $sub_action == "confirm"){
-        if($sql -> db_Delete("forum", "forum_id='$id' ")){
-                $forum -> show_message(FORLAN_96);
-        }
+if($delete == 'main')
+{
+	if($sql -> db_Delete("forum", "forum_id='$del_id' "))
+	{
+		$forum -> show_message(FORLAN_96);
+	}
 }
 
 if($action == "create"){
@@ -166,16 +175,19 @@ if($action == "create"){
         }
 }
 
-if($action == "cat"){
-        if($sub_action == "confirm"){
-                if($sql -> db_Delete("forum", "forum_id='$id' ")){
-                        $sql -> db_Delete("forum", "forum_parent='$id' ");
-                        $forum -> show_message(FORLAN_97);
-                        $action = "main";
-                }
-        }else{
-                $forum -> create_parents($sub_action, $id);
-        }
+if($delete == 'cat')
+{
+	if($sql -> db_Delete("forum", "forum_id='$del_id' "))
+	{
+		$sql -> db_Delete("forum", "forum_parent='$del_id' ");
+		$forum -> show_message(FORLAN_97);
+		$action = "main";
+	}
+}
+
+if($action == "cat")
+{
+	$forum -> create_parents($sub_action, $id);
 }
 
 if($action == "order"){
@@ -198,12 +210,16 @@ if($action == "rules"){
         $forum -> show_rules();
 }
 
+if($delete == 'reported')
+{
+	$sql -> db_Delete("tmp", "tmp_time='$del_id' ");
+	$forum -> show_message(FORLAN_118);
+	$forum -> show_reported();
+}
+	
+
 if($action == "sr"){
-        if($sub_action == "confirm"){
-                $sql -> db_Delete("tmp", "tmp_time='$id' ");
-                        $forum -> show_message(FORLAN_118);
-        }
-        $forum -> show_reported();
+	$forum -> show_reported();
 }
 
 
@@ -211,31 +227,17 @@ if(!e_QUERY || $action == "main"){
         $forum -> show_existing_forums($sub_action, $id);
 }
 
-
-
-
-
-
-
 //$forum -> show_options($action);
 require_once("footer.php");
 function headerjs(){
 $headerjs =  "<script type=\"text/javascript\">
 function confirm_(mode, forum_id, forum_name){
         if(mode == 'sr'){
-                var x=confirm(\"".FORLAN_117."\");
+                return confirm(\"".FORLAN_117."\");
         }else if(mode == 'parent'){
-                var x=confirm(\"".FORLAN_81." [ID: \" + forum_name + \"]\");
+                return confirm(\"".FORLAN_81." [ID: \" + forum_name + \"]\");
         }else{
-                var x=confirm(\"".FORLAN_82." [ID: \" + forum_name + \"]\");
-        }
-if(x)
-        if(mode == 'sr'){
-                window.location='".e_SELF."?sr.confirm.' + forum_id;
-        }else if(mode == 'parent'){
-                window.location='".e_SELF."?cat.confirm.' + forum_id;
-        }else{
-                window.location='".e_SELF."?main.confirm.' + forum_id;
+                return confirm(\"".FORLAN_82." [ID: \" + forum_name + \"]\");
         }
 }
 </script>";
@@ -323,8 +325,12 @@ class forum{
                                         $text .= "</select>";
                                 }else{
 										$forum_heading = str_replace("&#39;", "\'", $forum_name);
-                                        $text .= $rs -> form_button("submit", "main_edit_{$forum_id}", FORLAN_19, "onclick=\"document.location='".e_SELF."?cat.edit.$forum_id'\"")."
-                                        ".$rs -> form_button("submit", "main_delete_{$forum_id}", FORLAN_20, "onclick=\"confirm_('parent', $forum_id, '$forum_heading')\"");
+                                        $text .= "
+                                        ".$rs -> form_button("submit", "main_edit_{$forum_id}", FORLAN_19, "onclick=\"document.location='".e_SELF."?cat.edit.$forum_id'\"")."
+
+			                               	".$rs -> form_open("post", e_SELF,"","",""," onsubmit=\"return confirm_('parent',$forum_id,'$forum_heading')\"")."
+                                				".$rs -> form_button("submit", "cat_delete_{$forum_id}", FORLAN_20)."
+                                				".$rs -> form_close();
                                 }
                                 $text .= "</td></tr>";
 
@@ -361,8 +367,16 @@ class forum{
                                                 }else{
 
 														$forum_heading = str_replace("&#39;", "\'", $forum_name);
-                                                        $text .= $rs -> form_button("submit", "main_edit_{$forum_id}", FORLAN_19, "onclick=\"document.location='".e_SELF."?create.edit.$forum_id'\"")."
-                                                        ".$rs -> form_button("submit", "main_delete_{$forum_id}", FORLAN_20, "onclick=\"confirm_('forum', $forum_id, '$forum_heading')\"");
+                                                        $text .= "
+                                                        ".$rs -> form_button("submit", "main_edit_{$forum_id}", FORLAN_19, "onclick=\"document.location='".e_SELF."?create.edit.$forum_id'\"")."
+
+							                               		".$rs -> form_open("post", e_SELF,"","",""," onsubmit=\"return confirm_('forum',$forum_id,'$forum_heading')\"")."
+                                									".$rs -> form_button("submit", "main_delete_{$forum_id}", FORLAN_20)."
+                                									".$rs -> form_close();
+
+
+
+//                                                        ".$rs -> form_button("submit", "main_delete_{$forum_id}", FORLAN_20, "onclick=\"confirm_('forum', $forum_id, '$forum_heading')\"");
                                                 }
                                                 $text .= "</td>\n</tr>";
                                         }
@@ -618,10 +632,13 @@ class forum{
                                         $text .= "<tr>
                                         <td style='width:80%' class='forumheader3'><a href='".e_BASE."forum_viewtopic.php?".$reported[0].".".$reported[1]."#".$reported[2]."' rel='external'>".$reported[3]."</a></td>
                                         <td style='width:20%; text-align:center; vertical-align:top' class='forumheader3'>
-                                        ".$rs -> form_button("submit", "reported_delete", FORLAN_20, "onclick=\"confirm_('sr', $tmp_time);\"")."
+			                               	".$rs -> form_open("post", e_SELF,"","",""," onsubmit=\"return confirm_('sr',$tmp_time)\"")."
+   	                         				".$rs -> form_button("submit", "reported_delete_{$tmp_time}", FORLAN_20)."
+	     	                       				".$rs -> form_close()."
                                         </td>
                                         </tr>\n";
                                 }
+//                                     ".$rs -> form_button("submit", "reported_delete", FORLAN_20, "onclick=\"confirm_('sr', $tmp_time);\"")."
                                 $text .= "</table>";
                         }else{
                                 $text .= "<div style='text-align:center'>".FORLAN_121."</div>";
