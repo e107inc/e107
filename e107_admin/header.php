@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.11 $
-|   $Date: 2005-01-13 09:24:54 $
+|   $Revision: 1.12 $
+|   $Date: 2005-01-13 09:29:29 $
 |   $Author: sweetas $
 +---------------------------------------------------------------+
 */
@@ -52,15 +52,6 @@ if (file_exists(THEME.'e107.css')) {
 } else if (file_exists(e_FILE.'e107.css')) {
 	echo "<link rel='stylesheet' href='".e_FILE."e107.css' />\n";
 }
-if($admin_alt_nav){
-	if (file_exists(THEME.'admin_nav.css')) {
-		echo "<link rel='stylesheet' href='".THEME."admin_nav.css' />\n";
-	} else {
-		echo "<link rel='stylesheet' href='".e_FILE."admin_nav.css' />\n";
-	}
-}
-if (function_exists('admin_alt_nav')) { echo admin_alt_nav(); }
-
 echo "<script type='text/javascript' src='".e_FILE."e107.js'></script>\n";
 if(file_exists(THEME."theme.js")){ echo "<script type='text/javascript' src='".THEME."theme.js'></script>\n"; }
 if(file_exists(e_FILE."user.js")){ echo "<script type='text/javascript' src='".e_FILE."user.js'></script>\n"; }

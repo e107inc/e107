@@ -1,6 +1,13 @@
 if (ADMIN) {
 	global $sql, $pref;
 	require(e_ADMIN.'ad_links.php');
+	function admin_alt_nav() {
+		if (file_exists(THEME.'admin_nav.css')) {
+			return "<link rel='stylesheet' href='".THEME."admin_nav.css' />\n";
+		} else {
+			return "<link rel='stylesheet' href='".e_FILE."admin_nav.css' />\n";
+		}
+	}
 	require_once(e_HANDLER.'admin_handler.php');
 	function adnav_cat($cat_title, $cat_link, $cat_img, $cat_id=FALSE) {
 		$text = "<a class='menuButton' href='".$cat_link."' style='background-image: url(".$cat_img."); background-repeat: no-repeat;  background-position: 3px 1px' ";
@@ -23,11 +30,15 @@ if (ADMIN) {
 			$text .= "</a>";
 		return $text;
 	}
-	
 	if (file_exists(THEME.'admin_nav.js')) {
 		$text = "<script type='text/javascript' src='".THEME."admin_nav.js'></script>";
 	} else {
 		$text = "<script type='text/javascript' src='".e_FILE."admin_nav.js'></script>";
+	}
+	if (file_exists(THEME.'admin_nav.css')) {
+		echo "<link rel='stylesheet' href='".THEME."admin_nav.css' />\n";
+	} else {
+		echo "<link rel='stylesheet' href='".e_FILE."admin_nav.css' />\n";
 	}
 	
 	$text .= "<div style='width: 100%'><table border='0' cellspacing='0' cellpadding='0' style='width: 100%'>
