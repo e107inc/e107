@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/admin_config.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-11 09:16:39 $
+|     $Revision: 1.5 $
+|     $Date: 2005-03-14 15:39:11 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -190,66 +190,5 @@ $text = "<div style='text-align:center'>
 	
 $ns->tablerender(NFLAN_09, $text);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if (isset($_POST['add_headline'])) {
-	 
-	$datestamp = time();
-	if ($_POST['headline_url']) {
-		$sql->db_Insert("headlines", "0, '".$_POST['headline_url']."', '', '0', '', '".$_POST['headline_image']."', '".$_POST['activate']."' ");
-		$message = NWFLAN_1;
-		unset($headline_url, $headline_image);
-	} else {
-		$message = NWFLAN_20;
-	}
-}
-	
-if (isset($_POST['update_headline'])) {
-	$sql->db_Update("headlines", "headline_url='".$_POST['headline_url']."', headline_timestamp='0', headline_image='".$_POST['headline_image']."', headline_active='".$_POST['activate']."' WHERE headline_id='".$_POST['headline_id']."'");
-	$message = NWFLAN_2;
-	unset($headline_url, $headline_image);
-}
-	
-if (isset($_POST['delete'])) {
-	if ($_POST['confirm']) {
-		$sql->db_Delete("headlines", "headline_url='".$_POST['existing']."' ");
-		$message = NWFLAN_3;
-	} else {
-		$message = NWFLAN_4;
-	}
-}
-	
-if (isset($_POST['edit'])) {
-	$sql->db_Select("headlines", "*", "headline_url='".$_POST['existing']."' ");
-	$row = $sql->db_Fetch();
-	 extract($row);
-}
-	
-if (isset($message)) {
-	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
-}
-	
-	
-
-	
 require_once("footer.php");
 ?>
