@@ -10,3 +10,6 @@ A>	It prevents your site being flooded by HTTP calls, which can render your site
 
 Q>	Should I use Cookies or Sessions for tracking my users?
 A>	It's your choice, if your site is working ok with cookies (the default) then leave it like that. If you prefer to use PHP sessions, then use that (a custom session handler is used by e107 to store and handle sessions).
+
+Q>	Why should I run my site in standards mode?
+A>	If your developing a theme and having trouble getting it to render correctly in Firefox/Mozilla and IE, try ticking this box. IE will then be run in standards mode and use the correct box model.
