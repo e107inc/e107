@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2004-11-27 16:14:44 $
-|     $Author: streaky $
+|     $Revision: 1.27 $
+|     $Date: 2004-11-28 02:13:09 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -114,6 +114,7 @@ if (!$mySQLuser) {
 define("MPREFIX", $mySQLprefix);
 
 @require_once(e_HANDLER."mysql_class.php");
+@require_once(e_HANDLER.'e_parse_class.php');
 
 $tp = new e_parse;
 $sql = new db;
@@ -128,6 +129,8 @@ else if($merror == "e2") {
 	message_handler("CRITICAL_ERROR", 7, ": generic, ", "class2.php");
 	exit;
 }
+
+
 
 /* New compatabilty mode.
    At a later date add a check to load e107 compat mode by $pref
@@ -859,130 +862,4 @@ function message_handler($mode, $message, $line = 0, $file = "") {
 	@require_once(e_HANDLER."message_handler.php");
 	show_emessage($mode, $message, $line, $file);
 }
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-class e_parse
-{
-	var $e_sc;
-	var $e_bb;
-	var $e_pf;
-	var $e_emote;
-
-	function toDB($text,$no_encode = FALSE)
-	{
-		if(MAGIC_QUOTES_GPC == TRUE)
-		{
-			$text = stripslashes($text);
-		}
-		$search = array('$','"',"'",'\\');
-		$replace = array('&#036;','&quot;','&#039;','&#092;');
-		$text = str_replace($search,$replace,$text);
-		if (ADMIN == FALSE && $no_encode == FALSE) {
-			$search = array('<','>');
-			$replace = array('[e_LT]','[e_GT]');
-			$text = str_replace($search,$replace,$text);
-		}
-		return $text;
-//		return (ADMIN || $no_encode) ? $text : htmlentities($text,ENT_QUOTES,CHARSET);
-	}
-
-	function toForm($text,$single_quotes = FALSE)
-	{
-		$mode = ($single_quotes) ? ENT_QUOTES : ENT_COMPAT;
-		if(MAGIC_QUOTES_GPC == TRUE)
-		{
-			$text = stripslashes($text);
-		}
-		$search = array('&#036;','&quot;','[e_LT]','[e_GT]');
-		$replace = array('$','"','<','>');
-		$text = str_replace($search,$replace,$text);
-		return $text;
-	}
-
-	function post_toHTML($text)
-	{
-		return $this -> toHTML($text,TRUE);
-	}
-
-	function post_toForm($text)
-	{
-		if(MAGIC_QUOTES_GPC == TRUE)
-		{
-			return addslashes($text);
-		}
-		$search = array('&');
-		$replace = array('&amp;');
-		$text = str_replace($search,$replace,$text);
-		return $text;
-	}
-
-	function parseTemplate($text,$parseSCFiles=TRUE,$extraCodes="")
-	{
-		// Start parse {XXX} codes
-		if(!class_exists('e_shortcode'))
-		{
-			require_once(e_HANDLER."shortcode_handler.php");
-			$this -> e_sc = new e_shortcode;
-		}
-		return $this -> e_sc -> parseCodes($text,$parseSCFiles,$extraCodes);
-		// End parse {XXX} codes
-	}
-
-	function toHTML($text,$parseBB=FALSE,$modifiers="",$postID="")
-	{
-		if($text==''){return $text;}
-		global $pref;
-		if(MAGIC_QUOTES_GPC == TRUE)
-		{
-			$text = stripslashes($text);
-		}
-
-		$search = array('&#039;','&#036;','&quot;');
-		$replace = array("'",'$','"');
-		$text = str_replace($search,$replace,$text);
-		if(strpos($modifiers,'nobreak') == FALSE)
-		{
-			$text = preg_replace("#[\r]*\n[\r]*#","[E_NL]",$text);
-		}
-
-		if($pref['smiley_activate'])
-		{
-			if(!is_object($this -> e_emote))
-			{
-				require_once(e_HANDLER."emote_filter.php");
-				$this -> e_emote = new e_emoteFilter;
-			}
-			$text = $this -> e_emote -> filterEmotes($text);
-		}
-
-		// Start parse [bb][/bb] codes
-		if($parseBB === TRUE)
-		{
-			if(!is_object($this -> e_bb))
-			{
-				require_once(e_HANDLER."bbcode_handler.php");
-				$this -> e_bb = new e_bbcode;
-			}
-			$text = $this -> e_bb -> parseBBCodes($text,$postID);
-		}
-		// End parse [bb][/bb] codes
-
-		if($pref['profanity_filter'])
-		{
-			if(!is_object($this -> e_pf))
-			{
-				require_once(e_HANDLER."profanity_filter.php");
-				$this -> e_pf = new e_profanityFilter;
-			}
-			$text = $this -> e_pf -> filterProfanities($text);
-		}
-
-		$nl_replace = (strpos($modifiers,'nobreak') === FALSE) ? "<br />" : "";
-		$text = str_replace('[E_NL]',$nl_replace,$text);
-		$search = array('[e_LT]','[e_GT]');
-		$replace = array('&lt;','&gt;');
-		$text = str_replace($search,$replace,$text);
-		return $text;
-	}
-}
-
 ?>
