@@ -77,4 +77,7 @@ define("REVLAN_68", "User submitted review saved in database");
 
 define("REVLAN_69", "Clear Form");
 define("REVLAN_70", "Click here to fill author fields");
+define("REVLAN_71", "Add email/print icons?");
+define("REVLAN_72", "Yes");
+define("REVLAN_73", "No");
 ?>

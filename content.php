@@ -159,7 +159,8 @@ if($action == "content"){
 if($action == "review"){
 
 	if(is_numeric($sub_action)){
-		if($cache = retrieve_cache("review.item.$sub_action")){
+		$cachestr = ($id ? "review.item.$sub_action.$id" : "review.item.$sub_action");
+		if($cache = retrieve_cache($cachestr)){
 			echo $aj -> formtparev($cache);
 		}else{
 			ob_start();
@@ -194,9 +195,34 @@ if($action == "review"){
 				<span class='smalltext'>".LAN_43."$user_name".LAN_44."$datestamp</span>
 				<br /><br />
 				$content_summary
-				<br /><br />
-				".$aj -> tpa($content_content, "off", "admin")."
-				<br /><br />
+				<br /><br />";
+			
+				$content_content = $aj -> tpa($content_content, "off", "admin");
+				$reviewpages = explode("[newpage]",$content_content);
+				$totalpages = count($reviewpages);
+				if(strstr($content_content, "{EMAILPRINT}") || $content_pe_icon){
+					$content_content = str_replace("{EMAILPRINT}", $textemailprint, $content_content);
+					$epflag = TRUE;
+				}
+
+				if($totalpages > 1){
+					$text .=  $reviewpages[(!$id ? 0 : $id)]."<br /><br />";
+					if($id != 0){ $text .= "<a href='content.php?review.$sub_action.".($id-1)."'>".LAN_25." <<</a> "; }
+					for($c=1; $c<= $totalpages; $c++){
+						$text .= ($c == ($id+1) ? "<span style='text-decoration: underline;'>$c</span>&nbsp;&nbsp;" : "<a href='content.php?review.$sub_action.".($c-1)."'>$c</a>&nbsp;&nbsp;");
+					}
+					if(($id+1) != $totalpages){ $text .= "<a href='content.php?review.$sub_action.".($id+1)."'>>> ".LAN_26."</a> "; }
+					if($epflag){ $text .= $textemailprint; }
+					$content_heading .= ", ".LAN_63." ".($id+1);
+					$cachestr = ($id ? "review.item.$sub_action.$id" : "review.item.$sub_action");
+
+				}else{
+					$text .= $content_content."\n<br />\n";
+					if($epflag){ $text .= $textemailprint; }
+					$cachestr = "review.item.$sub_action";
+					$comflag = TRUE;
+				}
+				$text .= "<br /><br />
 				".LAN_42.": 
 				<table style='width:".($content_review_score*2)."px'>
 				<tr class='border'>
@@ -457,7 +483,6 @@ if($action == "article"){
 				$sql2 -> db_Select("content", "content_id, content_summary", "content_id=$category");
 				list($content_id_, $content_summary_) = $sql2-> db_Fetch();
 				$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
-
 				if(is_numeric($content_author)){
 					$sql2 -> db_Select("user", "*", "user_id=$content_author");
 					$row = $sql2 -> db_Fetch(); extract($row);
