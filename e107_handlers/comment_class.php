@@ -24,7 +24,7 @@ class comment{
 			if($action == "reply" && substr($subject, 0, 4) != "Re: "){
 				$subject = "Re: ".$subject;
 			}
-			$text = "\n<div style='text-align:center'><form method='post' action='".e_SELF."?".e_QUERY."' name='dataform'>\n<table style='width:95%'>";
+			$text = "\n<div style='text-align:center'><form method='post' action='".e_SELF."?".e_QUERY."' name='dataform' id='dataform' >\n<table style='width:95%'>";
 			if($pref['nested_comments']){
 				$text .= "<tr>\n<td style='width:20%'>Subject</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='subject' size='60' value='$subject' maxlength='100' />\n</td>\n</tr>";
 			}else{
@@ -33,7 +33,7 @@ class comment{
 			if(ANON == TRUE && USER == FALSE){
 				$text .= "<tr>\n<td style='width:20%'>".LAN_16."</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='author_name' size='60' value='$author_name' maxlength='100' />\n</td>\n</tr>";
 			}
-			$text .= "<tr> \n<td style='width:20%'>".LAN_8.":</td>\n<td style='width:80%'>\n<textarea class='tbox' name='comment' cols='70' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>\n<br />".ren_help(2)."</td></tr>\n<tr style='vertical-align:top'> \n<td style='width:20%'></td>\n<td style='width:80%'>\n".
+			$text .= "<tr> \n<td style='width:20%'>".LAN_8.":</td>\n<td style='width:80%'>\n<textarea class='tbox' name='comment' cols='70' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>\n<br /><input class='helpbox' type='text' name='helpb' size='100' /><br />".ren_help(1,'addtext','help')."</td></tr>\n<tr style='vertical-align:top'> \n<td style='width:20%'></td>\n<td style='width:80%'>\n".
 			($action == "reply" ? "<input type='hidden' name='pid' value='$id'>" : "").($content_type  ? "<input type='hidden' name='content_type' value='$content_type'>" : "").
 				"<input class='button' type='submit' name='".$action."submit' value='".LAN_9."' />\n</td>\n</tr>\n</table>\n</form>";
 			$ns -> tablerender("", $text);
