@@ -263,6 +263,7 @@ class newspost{
         }
 
         function show_options($action){
+			global $sql;
 
                 if($action==""){$action="main";}
                 $var['main']['text']=NWSLAN_44;
@@ -278,10 +279,11 @@ class newspost{
                 $var['pref']['text']=NWSLAN_90;
                 $var['pref']['link']=e_SELF."?pref";
                 $var['pref']['perm']="N";
-
-                $var['sn']['text']=NWSLAN_47;
-                $var['sn']['link']=e_SELF."?sn";
-                $var['sn']['perm']="N";
+				if($sql -> db_Select("submitnews", "*", "submitnews_auth ='0' ")){
+					$var['sn']['text']=NWSLAN_47;
+					$var['sn']['link']=e_SELF."?sn";
+					$var['sn']['perm']="N";
+				}
 
                 show_admin_menu(NWSLAN_48,$action,$var);
 

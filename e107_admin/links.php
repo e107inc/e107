@@ -220,6 +220,7 @@ class links{
 	}
 
 	function show_options($action){
+		global $sql;
 		// ##### Display options ---------------------------------------------------------------------------------------------------------
 		if($action==""){$action="main";}
 		$var['main']['text']=LCLAN_62;
@@ -234,9 +235,10 @@ class links{
 		$var['cat']['text']=LCLAN_65;
 		$var['cat']['link']=e_SELF."?cat";
 		$var['cat']['perm']="8";
-
-		$var['sn']['text']=LCLAN_66;
-		$var['sn']['link']=e_SELF."?sn";
+		if($sql -> db_Select("tmp", "*", "tmp_ip='submitted_link' ")){
+			$var['sn']['text']=LCLAN_66;
+			$var['sn']['link']=e_SELF."?sn";
+		}
 
 		$var['opt']['text']=LCLAN_67;
 		$var['opt']['link']=e_SELF."?opt";

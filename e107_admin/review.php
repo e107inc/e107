@@ -493,7 +493,7 @@ if($action == "sa"){
 
 function review_adminmenu(){
 	
-		global $action;
+		global $action,$sql;
 		$act=$action;	
 		if($act==""){$act="main";}
 		$var['main']['text']=REVLAN_45;
@@ -507,9 +507,10 @@ function review_adminmenu(){
 
 		$var['opt']['text']=REVLAN_29;
 		$var['opt']['link']=e_SELF."?opt";
-
-		$var['sa']['text']=REVLAN_62;
-		$var['sa']['link']=e_SELF."?sa";
+		if($sql -> db_Select("content", "*", "content_type ='16' ")){
+			$var['sa']['text']=REVLAN_62;
+			$var['sa']['link']=e_SELF."?sa";
+		}
 
 		show_admin_menu(REVLAN_48,$act,$var);
 }
