@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.71 $
-|     $Date: 2005-01-30 16:33:43 $
+|     $Revision: 1.72 $
+|     $Date: 2005-01-31 02:48:38 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -535,7 +535,7 @@ define("TIMEOFFSET", $e_deltaTime);
 
 //
 //
-$sql->db_Mark_Time('Start: Get menus and links');
+$sql->db_Mark_Time('Start: Get menus');
 //
 //
 
@@ -546,25 +546,6 @@ if ($sql->db_Select('menus', '*', 'menu_location > 0 ORDER BY menu_order')) {
 	}
 }
 
-if ($sql->db_Select('links', '*', 'link_category = 1 ORDER BY link_order ASC')) {
-	while ($row = $sql->db_Fetch()) {
-		if (check_class($row['link_class'])) {
-			if (substr($row['link_name'], 0, 8) == 'submenu.') {
-				$tmp=explode('.', $row['link_name'], 3);
-				$eLinkList[$tmp[1]][]=$row;
-			} else {
-				$eLinkList['head_menu'][] = $row;
-			}
-		}
-	}
-}
-
-//echo '<pre>';
-//print_r($eLinkList);
-//echo '</pre>';
-
-//
-//
 $sql->db_Mark_Time('(Start: Find/Load Theme)');
 //
 //
