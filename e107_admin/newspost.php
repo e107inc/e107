@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.63 $
-|   $Date: 2005-03-31 17:07:18 $
-|   $Author: mcfly_e107 $
+|   $Revision: 1.64 $
+|   $Date: 2005-03-31 17:30:01 $
+|   $Author: stevedunstan $
 +---------------------------------------------------------------+
 
 */
@@ -625,7 +625,7 @@ class newspost {
 							if(file_exists(e_IMAGE."newspost_images/".$fi))
 							{
 								// thumb and main image found
-								$text .= "<a href='javascript:addtext(\"[link=e107_images/newspost_images/".$fi."][image]".$image['fname']."[/image][/link]\");'><img src='".e_IMAGE."generic/".IMODE."/image.png' alt='' style='vertical-align:middle;' /> ".$image['fname']."</a> (link to full image will be generated)<br />
+								$text .= "<a href='javascript:addtext(\"[link=e107_images/newspost_images/".$fi."][img]".$image['fname']."[/img][/link]\");'><img src='".e_IMAGE."generic/".IMODE."/image.png' alt='' style='vertical-align:middle;' /> ".$image['fname']."</a> (link to full image will be generated)<br />
 								";
 							}
 							else 
