@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-02-02 17:43:06 $
+|     $Revision: 1.8 $
+|     $Date: 2005-02-03 10:35:33 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -147,4 +147,10 @@ define("PRFLAN_105", "text to replace links with, image can be used by using &lt
 define("PRFLAN_106", "Core preferences saved to database.");
 define("PRFLAN_107", "Email link replace text");
 define("PRFLAN_108", "text to replace email links with, image can be used by using &lt;img tag, with full path to image");
+
+define("PRFLAN_109", "Wrap long words in main text");
+define("PRFLAN_110", "words longer than the length entered will be wrapped onto a new line");
+define("PRFLAN_111", "Wrap long words in menu text");
+
+
 ?>
