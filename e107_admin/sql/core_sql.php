@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-03-31 19:18:27 $
+|     $Revision: 1.24 $
+|     $Date: 2005-04-06 14:23:34 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -488,6 +488,7 @@ CREATE TABLE userclass_classes (
 
 CREATE TABLE user_extended (
   user_extended_id int(10) unsigned NOT NULL default '0',
+  user_hidden_fields text NOT NULL,  
   PRIMARY KEY  (user_extended_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------

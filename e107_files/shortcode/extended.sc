@@ -32,9 +32,10 @@ else
 	}
 }
 if (
-!check_class($ueStruct[$parms[0]]['user_extended_struct_applicable'], $udata['user_class'])
+!check_class($ueStruct["user_".$parms[0]]['user_extended_struct_applicable'], $udata['user_class'])
 || !check_class($ueStruct["user_".$parms[0]]['user_extended_struct_read'])
-|| (!ADMIN && strpos($ueStruct["user_".$parms[0]]['user_extended_struct_parms'], "allow_hide") !== FALSE && strpos($udata['user_'.$parms[0]], chr(1)) !== FALSE)
+|| (!ADMIN && strpos($ueStruct["user_".$parms[0]]['user_extended_struct_parms'], "allow_hide") !== FALSE 
+&& strpos($udata['user_hidden_fields'], "^user_".$parms[0]."^") !== FALSE)
 )
 {
 	return FALSE;

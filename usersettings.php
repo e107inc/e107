@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-04-06 03:53:01 $
+|     $Revision: 1.19 $
+|     $Date: 2005-04-06 14:22:46 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -65,6 +65,12 @@ require_once(HEADERF);
 if (isset($_POST['updatesettings']))
 {
 
+	if ($_uid && ADMIN) {
+		$inp = $_uid;
+		$remflag = TRUE;
+	} else {
+		$inp = USERID;
+	}
 	$_POST['image'] = str_replace(array('\'', '"', '(', ')'), '', $_POST['image']); // these are invalid anyways, so why allow them? (XSS Fix)
 	// check prefs for required fields =================================.
 	$signupval = explode(".", $pref['signup_options']);
@@ -117,12 +123,17 @@ if (isset($_POST['updatesettings']))
 		{
 			$val = $tp->toDB($val);
 			$ue_fields .= ($ue_fields) ? ", " : "";
-			if(isset($_POST["hide_".$key]))
-			{
-				$val .= chr(1);
-			}
 			$ue_fields .= $key."='".$val."'";
 		}
+	}
+	if($ue_fields)
+	{
+		$hidden_fields = implode("^", array_keys($_POST['hide']));
+		if($hidden_fields != "")
+		{
+			$hidden_fields = "^".$hidden_fields."^";
+		}
+		$ue_fields .= ", user_hidden_fields = '".$hidden_fields."'";
 	}
 
 	// ====================================================================
@@ -192,12 +203,6 @@ if (isset($_POST['updatesettings']))
 		$user_sess = $_POST['_user_sess'];
 	}
 	if (!$error) {
-		if ($_uid && ADMIN) {
-			$inp = $_uid;
-			$remflag = TRUE;
-		} else {
-			$inp = USERID;
-		}
 		$_POST['signature'] = $tp->toDB($_POST['signature']);
 		$_POST['location'] = $tp->toDB($_POST['location']);
 		$_POST['website'] = $tp->toDB($_POST['website']);
@@ -471,7 +476,8 @@ $text .= "
 					<td style='width:60%' class='forumheader3'>".$ue->user_extended_edit($f, $uVal);
 					if(strpos($f['user_extended_struct_parms'], 'allow_hide') !== FALSE)
 					{
-						$text .= "&nbsp;&nbsp;".$ue->user_extended_hide($f, strpos($curVal[$fname], chr(1)));
+						$chk = (strpos($curVal['user_hidden_fields'], "^".$fname."^") === FALSE) ? FALSE : TRUE;
+						$text .= "&nbsp;&nbsp;".$ue->user_extended_hide($f, $chk);
 					}
 					$text .= "
 					</td>
