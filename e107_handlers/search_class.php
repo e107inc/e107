@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-10 14:14:16 $
+|     $Revision: 1.7 $
+|     $Date: 2005-02-11 14:23:26 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -50,7 +50,7 @@ class e_search {
 		}
 		$match_query = implode(' + ', $search_query);
 		$field_query = implode(',', $search_fields);		
-		return $results = $sql->db_Select_gen("SELECT ".$return_fields.", (".$match_query.") AS relevance FROM #".$table." WHERE ".$where." ( MATCH(".$field_query.") AGAINST ('".$this -> query."' IN BOOLEAN MODE) ) HAVING relevance > 0 ORDER BY relevance DESC ".$order.";");
+		return $results = $sql->db_Select_gen("SELECT ".$return_fields." (".$match_query.") AS relevance FROM #".$table." WHERE ".$where." ( MATCH(".$field_query.") AGAINST ('".$this -> query."' IN BOOLEAN MODE) ) HAVING relevance > 0 ORDER BY relevance DESC ".$order.";");
 	}
 	
 	function parsesearch($results, $link, $item_text, $relevance) {
