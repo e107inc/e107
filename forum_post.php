@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/forum_post.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2004-09-06 09:55:18 $
-|     $Author: e107coders $
+|     $Revision: 1.24 $
+|     $Date: 2004-09-14 12:37:42 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -505,7 +505,7 @@ $text .= ($action == "nt" ? LAN_63 : LAN_73);
 
 $text .= "</td>
 <td class='forumheader2' style='width:80%'>
-<textarea class='tbox' name='post' cols='70' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".$post."</textarea>
+<textarea class='tbox' name='post' cols='70' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".$aj -> formtparev($post)."</textarea>
 <br />\n".ren_help(2);
 
 $text .= "<br />";
