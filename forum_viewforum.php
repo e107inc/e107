@@ -250,7 +250,7 @@ function forumjump(){
 			$text .= "\n<option>".$forum_name."</option>";
 		}
 	}
-	$text .= "</select><input class=\"button\" type=\"submit\" name=\"fjsubmit\" value=\"Go\" />&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"".e_SELF."?".$_SERVER['QUERY_STRING']."#top\">Back to top</a></p></form>";
+	$text .= "</select> <input class=\"button\" type=\"submit\" name=\"fjsubmit\" value=\"Go\" />&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"".e_SELF."?".$_SERVER['QUERY_STRING']."#top\">Back to top</a></p></form>";
 	return $text;
 }
 

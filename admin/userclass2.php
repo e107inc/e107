@@ -26,10 +26,6 @@ if(IsSet($_POST['createclass'])){
 $qs = explode(".", e_QUERY);
 $action = $qs[0]; $id = $qs[1];
 
-
-
-
-
 if(IsSet($_POST['confirm'])){
 	$sql -> db_Delete("userclass_classes", "userclass_id='".$id."' ");
 	$message = "Class deleted.";
@@ -55,8 +51,7 @@ $ns -> tablerender("Confirm Delete Category", $text);
 	exit;
 }
 
-if(IsSet($_POST['updateclasses'])){
-	
+if(IsSet($_POST['updateclasses'])){	
 	$sql -> db_Select("userclass_classes");
 	$sql2 = new db;
 	while($row = $sql -> db_Fetch()){
@@ -123,7 +118,7 @@ $text.="
 
 
 
-$ns -> tablerender("User Class Settings", $text);
+$ns -> tablerender("<div style=\"text-align:center\">User Class Settings</div>", $text);
 
 
 

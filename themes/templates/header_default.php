@@ -17,21 +17,29 @@ echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n";
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <title><?php echo SITENAME; ?></title>
-    <link rel="stylesheet" href="<?php echo THEME; ?>style.css" />
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-    <meta http-equiv="content-style-type" content="text/css" />
+<head>
+<title><?php echo SITENAME; ?></title>
+<link rel="stylesheet" href="<?php echo THEME; ?>style.css" />
+<?php
+if(file_exists(e_BASE."files/style.css")){ echo "\n<link rel=\"stylesheet\" href=\"".e_BASE."files/style.css\" />\n"; }
+?>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="content-style-type" content="text/css" />
 	<?php
-	echo $pref['meta_tag'][1]."\n";
+echo $pref['meta_tag'][1]."\n";
 	?>
-	<script type="text/javascript" src="files/e107.js"></script>
-  </head>
+
+<script type="text/javascript" src="files/e107.js"></script>
+<?php
+if(file_exists(THEME."theme.js")){echo "<script type=\"text/javascript\" src=\"".THEME."theme.js\"></script>";}
+if(file_exists(e_BASE."files/user.js")){echo "<script type=\"text/javascript\" src=\"".e_BASE."files/user.js\"></script>\n";}
+?>
+</head>
 <body>
 <?php
 
 $page = substr(strrchr(e_SELF, "/"), 1);
-if(eregi($page, $CUSTOMPAGES) ? parseheader($CUSTOMHEADER) : parseheader($HEADER)) ;
+if(eregi("^".$page, $CUSTOMPAGES) ? parseheader($CUSTOMHEADER) : parseheader($HEADER)) ;
 unset($text);
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function parseheader($LAYOUT){
@@ -47,7 +55,7 @@ function parseheader($LAYOUT){
 function checklayout($str){
 	global $pref, $style, $userthemes, $udirs, $userclass;
 	if(strstr($str, "LOGO")){
-		echo "<img src=\"".e_HTTP."themes/shared/logo.png\" alt=\"Logo\" />\n";
+		echo "<img src=\"".e_BASE."themes/shared/logo.png\" alt=\"Logo\" />\n";
 	}else if(strstr($str, "SITENAME")){
 		echo SITENAME."\n";
 	}else if(strstr($str, "SITETAG")){
@@ -62,8 +70,22 @@ function checklayout($str){
 		$menu = trim(chop(preg_replace("/\{MENU=(.*?)\}/si", "\\1", $str)));
 		$sql9 = new db;
 		$sql9 -> db_Select("menus", "*",  "menu_location='$menu' ORDER BY menu_order");
-		while(list($menu_id, $menu_name, $menu_location, $menu_order) = $sql9-> db_Fetch()){
-			require_once(e_BASE."menus/".$menu_name.".php");
+		while(list($menu_id, $menu_name, $menu_location, $menu_order, $menu_class) = $sql9-> db_Fetch()){
+			$sm = FALSE;
+			if(!$menu_class){
+				$sm = TRUE;
+			}else if($menu_class == 253 && USER){
+				$sm = TRUE;
+			}else if($menu_class == 254 && ADMIN){
+				$sm = TRUE;
+			}else if(check_class($menu_class)){
+				$sm = TRUE;
+			}
+
+			if($sm == TRUE){
+				require_once(e_BASE."menus/".$menu_name.".php");
+			}
+			
 		}
 	}else if(strstr($str, "SETSTYLE")){
 		$tmp = explode("=", $str);
@@ -79,13 +101,9 @@ function checklayout($str){
 					<td class=\"mediumtext\">Welcome ".USERNAME."&nbsp;&nbsp;&nbsp;</td>
 					<td>.:.</td>";
 					if(ADMIN == TRUE){
-						echo "<td> <a href=\"admin/admin.php\">Admin</a></td><td>.:.</td>";
+						echo "<td> <a href=\"".e_BASE."admin/admin.php\">Admin</a></td><td>.:.</td>";
 					}
-					echo "<td> <a href=\"usersettings.php\">Settings</a></td>
-					<td>.:.</td>
-					<td><a href=\"".e_SELF."?logout\">Logout</a></td>
-					<td>.:.</td>
-					</tr></table> ";
+					echo "<td> <a href=\"" . e_BASE . "usersettings.php\">Settings</a></td><td>.:.</td><td><a href=\"".e_BASE."index.php?logout\">Logout</a></td><td>.:.</td></tr></table> ";
 				}else{
 					echo  "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
 					<p>

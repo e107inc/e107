@@ -143,19 +143,19 @@ if($post_author_name == USERNAME && $thread_active){
 }
 
 if(eregi(ADMINNAME, $forum_moderators)){
-	$post_info .= "<div class=\"smallblacktext\" style=\"text-align:right\">[ moderator - <a href=\"forum.php?edit.".$forum_id.".".$thread_id."\">".LAN_68."</a> - 
+	$post_info .= "<div class=\"smallblacktext\" style=\"text-align:right\">[ moderator - <a href=\"forum_post.php?edit.".$forum_id.".".$thread_id."\">".LAN_68."</a> - 
 	<a href=\"admin/forum_conf.php?delete.".$forum_id.".".$thread_id."\">".LAN_69."</a> -
 	<a href=\"admin/forum_conf.php?move.".$forum_id.".".$thread_id."\">".LAN_70."</a> ]</div>";
 }
 
 
 $text .= "<tr> 
-<td class=\"forumtable2\" style=\"vertical-align:top\">".$starter_info."</td>
-<td class=\"forumtable2\" style=\"vertical-align:top\">".$post_info."</td>
+<td class=\"forumheader3\" style=\"vertical-align:top\">".$starter_info."</td>
+<td class=\"forumheader3\" style=\"vertical-align:top\">".$post_info."</td>
 </tr>
 <tr> 
-<td class=\"forumtable2\"><span class=\"smallblacktext\"><a href=\"".e_SELF."?".$_SERVER['QUERY_STRING']."#top\">Back to top</a></span></td>
-<td class=\"forumtable2\" style=\"vertical-align:top\">".$option_info."</td>
+<td class=\"forumheader3\"><span class=\"smallblacktext\"><a href=\"".e_SELF."?".$_SERVER['QUERY_STRING']."#top\">Back to top</a></span></td>
+<td class=\"forumheader3\" style=\"vertical-align:top\">".$option_info."</td>
 </tr>";
 
 unset($starter_info, $post_info, $option_info);
@@ -245,18 +245,18 @@ if($sql -> db_Select("forum_t", "*", "thread_parent='".$thread_id."' ORDER BY th
 		}
 
 		if(eregi(ADMINNAME, $forum_moderators)){
-			$post_info .= "<div class=\"smallblacktext\" style=\"text-align:right\">[ moderator - <a href=\"forum.php?edit.".$forum_id.".".$thread_id."\">".LAN_68."</a> - 
+			$post_info .= "<div class=\"smallblacktext\" style=\"text-align:right\">[ moderator - <a href=\"forum_post.php?edit.".$forum_id.".".$thread_id."\">".LAN_68."</a> - 
 			<a href=\"admin/forum_conf.php?delete.".$forum_id.".".$thread_id."\">".LAN_69."</a> -
 			<a href=\"admin/forum_conf.php?move.".$forum_id.".".$thread_id."\">".LAN_70."</a> ]</div>";
 		}
 
 		$text .= "<tr> 
-		<td class=\"forumtable2\" style=\"vertical-align:top\">".$starter_info."</td>
-		<td class=\"forumtable2\" style=\"vertical-align:top\">".$post_info."</td>
+		<td class=\"forumheader3\" style=\"vertical-align:top\">".$starter_info."</td>
+		<td class=\"forumheader3\" style=\"vertical-align:top\">".$post_info."</td>
 		</tr>
 		<tr> 
-		<td class=\"forumtable2\"><span class=\"smallblacktext\"><a href=\"".e_SELF."?".$_SERVER['QUERY_STRING']."#top\">Back to top</a></span></td>
-		<td class=\"forumtable2\" style=\"vertical-align:top\">".$option_info."</td>
+		<td class=\"forumheader3\"><span class=\"smallblacktext\"><a href=\"".e_SELF."?".$_SERVER['QUERY_STRING']."#top\">Back to top</a></span></td>
+		<td class=\"forumheader3\" style=\"vertical-align:top\">".$option_info."</td>
 		</tr>";
 		unset($starter_info, $post_info, $option_info);
 	}
@@ -309,7 +309,7 @@ function forumjump(){
 			$text .= "\n<option>".$forum_name."</option>";
 		}
 	}
-	$text .= "</select><input class=\"button\" type=\"submit\" name=\"fjsubmit\" value=\"Go\" />&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"".e_SELF."?".$_SERVER['QUERY_STRING']."#top\">Back to top</a></p></form>";
+	$text .= "</select> <input class=\"button\" type=\"submit\" name=\"fjsubmit\" value=\"Go\" />&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"".e_SELF."?".$_SERVER['QUERY_STRING']."#top\">Back to top</a></p></form>";
 	return $text;
 }
 ?>

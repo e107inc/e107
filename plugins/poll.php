@@ -20,7 +20,7 @@ $user_id = ($poll_active == 1 ? getip() : USERID)."^";
 
 if(strpos($poll_ip, $user_id)){
 	$mode = "voted";
-}else if($poll_active == 2 && USER == FALSE){
+}else if($poll_active == 2 && !USER){
 	$mode = "disallowed";
 }else{
 	$mode = "notvoted";
@@ -38,19 +38,17 @@ If(IsSet($_POST['vote'])){
 
 $po = new poll;
 
-if(!$sql -> db_Select("poll", "*", "poll_active!='0' ")){
-	$text = "<div style=\"text-align:center\">".LAN_162."</div>";
-}else{
+if($sql -> db_Select("poll", "*", "poll_active!='0' ")){
 	list($poll_id, $poll_datestamp, $poll_end_datestamp, $poll_admin_id, $poll_title_, $poll_option[1], $poll_option[2], $poll_option[3], $poll_option[4], $poll_option[5], $poll_option[6], $poll_option[7], $poll_option[8], $poll_option[9], $poll_option[10], $votes[1], $votes[2], $votes[3], $votes[4], $votes[5], $votes[6], $votes[7], $votes[8], $votes[9], $votes[10], $poll_ip, $poll_active) = $sql-> db_Fetch();
 
 	$po -> render_poll($poll_id, $poll_title_, $poll_option[1], $poll_option[2], $poll_option[3], $poll_option[4], $poll_option[5], $poll_option[6], $poll_option[7], $poll_option[8], $poll_option[9], $poll_option[10], $mode, $votes[1], $votes[2], $votes[3], $votes[4], $votes[5], $votes[6], $votes[7], $votes[8], $votes[9], $votes[10]);
-
 }
 
 class poll{
 	
 	function render_poll($poll_id, $poll_name, $poll_option_1, $poll_option_2, $poll_option_3, $poll_option_4, $poll_option_5, $poll_option_6, $poll_option_7, $poll_option_8, $poll_option_9, $poll_option_10, $mode = "normal", $vote_1 = 0, $vote_2 = 0, $vote_3 = 0, $vote_4 = 0, $vote_5 = 0, $vote_6 = 0, $vote_7 = 0, $vote_8 = 0, $vote_9 = 0, $vote_10 = 0){
 		global $poll_title;
+
 	$options = 0;
 	$poll_name = stripslashes($poll_name);
 	for($count=1; $count<=10; $count++){
@@ -88,7 +86,7 @@ class poll{
 	}
 	for($counter=1; $counter<=$options; $counter++){
 	
-		if ($mode == "normal" || $mode=="preview" || $mode == "disallowed") {
+		if ($mode == "normal" || $mode=="preview") {
 			$text .= "<input type=\"radio\" name=\"votea\" value=\"$counter\" />
 <b>".stripslashes($poll[$counter])."</b>
 <br />
@@ -103,29 +101,31 @@ class poll{
 <img src=\"".THEME."images/bar.jpg\" height=\"12\" width=\"".($percen[$counter]*1.5)."\" style=\"border : 1px solid Black\" alt=\"\" />
 <br />";
 		}
-		if ($mode == "notvoted") {
-			$text .= "<input type=\"radio\" name=\"votea\" value=\"$counter\" />\n<b>".stripslashes($poll[$counter])."</b>\n";
-		}
-
-		if($percen[$counter] == ""){ $percen[$counter] = 0;}
-		if($votes[$counter] == ""){$votes[$counter] = 0;}
-
-		$text .= "<span class=\"smalltext\">".$percen[$counter]."% ";
-		if($votes[$counter] == 0){
-			$vt = "No votes";
-		}else if($votes[$counter] == 1){
-			$vt = "1 vote";
+		if($mode == "notvoted"){
+			$text .= "<input type=\"radio\" name=\"votea\" value=\"$counter\" />\n<b>".stripslashes($poll[$counter])."</b><br />\n";
+		}else if($mode == "disallowed"){
+			$text .= "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> \n<b>".stripslashes($poll[$counter])."</b><br /><br />\n";
 		}else{
-			$vt = $votes[$counter]." votes";
+
+			if($percen[$counter] == ""){ $percen[$counter] = 0;}
+			if($votes[$counter] == ""){$votes[$counter] = 0;}
+
+			$text .= "<span class=\"smalltext\">".$percen[$counter]."% ";
+			if($votes[$counter] == 0){
+				$vt = "No votes";
+			}else if($votes[$counter] == 1){
+				$vt = "1 vote";
+			}else{
+				$vt = $votes[$counter]." votes";
+			}
+			$text .= "[".$vt."]</span><br /><br />";	
 		}
-				
-		$text .= "[".$vt."]</span><br /><br />";		
 	}
 
 	if ($mode == "normal" || $mode=="notvoted"){
 		$text .= "\n</p>\n<div style=\"text-align:center\">\n<input  style=\"text-align:center\" class=\"button\" type=\"submit\" name=\"vote\" value=\"".LAN_163."\" /></div>";
 	}elseif($mode == "disallowed"){
-		$text .= "\n</p>\n<div style=\"text-align:center\">".LAN_328."</div><br />";
+		$text .= "\n<div style=\"text-align:center\">".LAN_328."</div><br />";
 	}
 
 	if ($mode == "normal" || $mode=="notvoted"){

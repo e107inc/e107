@@ -40,7 +40,6 @@ if(IsSet($_POST['edit'])){
 }
 
 if(IsSet($_POST['submit'])){
-	$sql -> db_Update("prefs", "pref_value='".$_POST['poll_system_activate ']."' WHERE pref_name='poll_activate ' ");
 	$message = $po -> submit_poll($_POST['poll_id'], $_POST['poll_title'], $_POST['poll_option_1'], $_POST['poll_option_2'], $_POST['poll_option_3'], $_POST['poll_option_4'], $_POST['poll_option_5'], $_POST['poll_option_6'], $_POST['poll_option_7'], $_POST['poll_option_8'], $_POST['poll_option_9'], $_POST['poll_option_10'], $_POST['activate'], $admin_id);
 	unset($poll_id, $poll_title, $poll_option_1, $poll_option_2, $poll_option_3, $poll_option_4, $poll_option_5, $poll_option_6, $poll_option_7, $poll_option_8, $poll_option_9, $poll_option_10);
 }

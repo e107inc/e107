@@ -575,7 +575,7 @@ if(!mysql_query($comments_table)){	$error .= "There was a problem creating the <
 
 
 $content_table = "CREATE TABLE ".$mySQLprefix."content (
-  content_id int(10) unsigned NOT NULL auto_increment,
+ content_id int(10) unsigned NOT NULL auto_increment,
   content_heading tinytext NOT NULL,
   content_subheading tinytext NOT NULL,
   content_content text NOT NULL,
@@ -583,7 +583,7 @@ $content_table = "CREATE TABLE ".$mySQLprefix."content (
   content_datestamp int(10) unsigned NOT NULL default '0',
   content_author smallint(5) unsigned NOT NULL default '0',
   content_comment tinyint(3) unsigned NOT NULL default '0',
-  content_parent int(10) unsigned NOT NULL default '0',
+  content_summary text NOT NULL,
   content_type tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (content_id)
 ) TYPE=MyISAM;";
@@ -680,10 +680,11 @@ $link_table = "CREATE TABLE ".$mySQLprefix."links (
 
 
 $menus_table = "CREATE TABLE ".$mySQLprefix."menus (
-  menu_id int(10) unsigned NOT NULL auto_increment,
+ menu_id int(10) unsigned NOT NULL auto_increment,
   menu_name varchar(100) NOT NULL default '',
   menu_location tinyint(3) unsigned NOT NULL default '0',
   menu_order tinyint(3) unsigned NOT NULL default '0',
+  menu_class tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (menu_id)
 ) TYPE=MyISAM;";
 if(!mysql_query($menus_table)){	$error .= "There was a problem creating the <b>menus</b> mySQL table ...<br />"; }
@@ -938,15 +939,15 @@ mysql_query("INSERT INTO ".$mySQLprefix."link_category VALUES (0, 'Misc', 'Misce
 mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES ('1', 'This text (if activated) will appear at the top of your front page all the time.', '0')");
 mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES ('2', 'Member message ----- This text (if activated) will appear at the top of your front page all the time - only logged in members will see this.', '0')");
 mysql_query("INSERT INTO ".$mySQLprefix."wmessage VALUES ('3', 'Administrator message ----- This text (if activated) will appear at the top of your front page all the time - only logged in administrators will see this.', '0')");
-mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'login_menu', 1, 2)");
-mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'chatbox_menu', 1, 3)");
-mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'sitebutton_menu', 1, 4)");
-mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'online_menu', 1, 5)");
-mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'compliance_menu', 1, 6)");
-mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'articles_menu', 2, 1)");
-mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'poll_menu', 2, 2)");
-mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'headlines_menu', 2, 3)");
-mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'backend_menu', 2, 4)");
+mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'login_menu', 1, 2, 0)");
+mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'chatbox_menu', 1, 3, 0)");
+mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'sitebutton_menu', 1, 4, 0)");
+mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'online_menu', 1, 5, 0)");
+mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'compliance_menu', 1, 6, 0)");
+mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'articles_menu', 2, 1, 0)");
+mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'poll_menu', 2, 2, 0)");
+mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'headlines_menu', 2, 3, 0)");
+mysql_query("INSERT INTO ".$mySQLprefix."menus VALUES (0, 'backend_menu', 2, 4, 0)");
 mysql_query("INSERT INTO ".$mySQLprefix."userclass_classes VALUES (1, 'PRIVATEMENU', 'Grants access to private menu items')");
 mysql_query("INSERT INTO ".$mySQLprefix."userclass_classes VALUES (2, 'PRIVATEFORUM1', 'Example private forum class')");
 mysql_close();

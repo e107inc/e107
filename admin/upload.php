@@ -223,7 +223,7 @@ if(IsSet($_POST['addbasefolder'])){
 
 			$text .= "<br><b>Folders added to Database.</b><br /><br />Your base path has been set to <b>$newfolder</b><br />
 		        I have also created a <b>default</b> folder which you can now upload to.<br /><br />
-			In order to create <b>hyper-links</b> to the files if uploaded to the default folder,<br />
+			In order to create a <b>hyper-links</b> to the files if uploaded to the default folder,<br />
 			use the relative path to the files such as the following.<br />
 			Example: <b>$newfolder/default/my-file.zip </b> <br />This would be the same as http://".$_SERVER['SERVER_NAME']."/$newfolder/default/my-file.zip<br/>
  			<b><a href=\"upload.php\">Continue</a></b>";

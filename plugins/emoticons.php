@@ -99,13 +99,8 @@ $emoticons = array(
 );
 
 while (list($short, $name) = each ($emoticons)){
-	if(eregi("admin", $_SERVER['PHP_SELF']) || eregi("plugin", $_SERVER['PHP_SELF'])){
-		$msg = ereg_replace(strtoupper($short),"<img src=\"../themes/shared/emoticons/$name.png\" alt=\"\" style=\"vertical-align:absmiddle\" />",$msg);
-		$msg = ereg_replace($short,"<img src=\"../themes/shared/emoticons/$name.png\" alt=\"\" style=\"vertical-align:absmiddle\" />",$msg);
-	}else{
-		$msg = ereg_replace(strtoupper($short),"<img src=\"themes/shared/emoticons/$name.png\" alt=\"\" style=\"vertical-align:absmiddle\" />", $msg);
-		$msg = ereg_replace($short,"<img src=\"themes/shared/emoticons/$name.png\" alt=\"\" style=\"vertical-align:absmiddle\" />", $msg);
-	}
+	$msg = ereg_replace(strtoupper($short), "<img src=\"".e_BASE."themes/shared/emoticons/$name.png\" alt=\"\" style=\"vertical-align:absmiddle\" />", $msg);
+	$msg = ereg_replace($short, "<img src=\"".e_BASE."themes/shared/emoticons/$name.png\" alt=\"\" style=\"vertical-align:absmiddle\" />", $msg);
 }
 return $msg;
 }

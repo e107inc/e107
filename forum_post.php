@@ -159,12 +159,14 @@ if(IsSet($_POST['reply'])){
 		require_once(HEADERF);
 		echo "<table style=\"width:100%\" class=\"fborder\">
 		<tr>
-		<td class=\"fcaption\">".LAN_4."</td>
+		<td class=\"fcaption\" colspan=\"2\">".LAN_133."</td>
 		</tr><tr>
-		<td style=\"text-align:center\"><br />".LAN_324."<br /><br />
+		<td style=\"text-align:right; vertical-align:center; width:20%\" class=\"forumheader2\"><img src=\"".e_HTTP."themes/shared/forum/e.png\" alt=\"\" />&nbsp;</td>
+		<td style=\"vertical-align:center; width:80%\" class=\"forumheader2\">
+		<br />".LAN_324."<br />
 
-		<a href=\"".e_HTTP."forum_viewtopic.php?".$forum_id.".".$thread_id."\">".LAN_325."</a><br /><br />
-		<a href=\"".e_HTTP."forum_viewforum.php?".$forum_id."\">".LAN_326."</a><br /><br />
+		<span class=\"defaulttext\"><a href=\"".e_HTTP."forum_viewtopic.php?".$thread_forum_id.".".$thread_id."\">".LAN_325."</a><br />
+		<a href=\"".e_HTTP."forum_viewforum.php?".$forum_id."\">".LAN_326."</a></span><br /><br />
 		</td></tr></table>";
 		require_once(FOOTERF);
 		exit;
@@ -274,7 +276,7 @@ $text .= "</td>
 <td class=\"forumheader2\" style=\"width:85%\">
 <textarea class=\"tbox\" name=\"post\" cols=\"70\" rows=\"10\">".$post."</textarea>
 <br />
-<input class=\"fhelpbox\" type=\"text\" name=\"helpb\" size=\"90\" />
+<input class=\"helpbox\" type=\"text\" name=\"helpb\" size=\"90\" />
 <br />
 <input class=\"button\" type=\"button\" style=\"font-weight:bold; width: 35px\" value=\"b\" onclick=\"addtext('[b][/b]')\" onMouseOver=\"help('Bold text: [b]This text will be bold[/b]')\" onMouseOut=\"help('')\">
 <input class=\"button\" type=\"button\" style=\"font-style:italic; width: 35px\" value=\"i\" onclick=\"addtext('[i][/i]')\" onMouseOver=\"help('Italic text: [i]This text will be italicised[/i]')\" onMouseOut=\"help('')\">
@@ -283,31 +285,10 @@ $text .= "</td>
 <input class=\"button\" type=\"button\" style=\"width: 35px\" value=\"cen\" onclick=\"addtext('[center][/center]')\" onMouseOver=\"help('Center align: [center]This text will be centered[/center]')\" onMouseOut=\"help('')\">
 <input class=\"button\" type=\"button\" value=\"link\" onclick=\"addtext('[link=hyperlink url]hyperlink text[/link]')\" onMouseOver=\"help('Insert link: [link]http://mysite.com[/link] or  [link=http://yoursite.com]Visit My Site[/link]')\" onMouseOut=\"help('')\">
 <input class=\"button\" type=\"button\" style=\"width: 35px\" value=\"code\" onclick=\"addtext('[code][/code]')\" onMouseOver=\"help('Code - preformatted text: [code]\$var = foobah;[/code]')\" onMouseOut=\"help('')\">
-<br />
-<a href=\"javascript:addtext(':)')\"><img src=\"themes/shared/emoticons/smile.png\" style=\"border:0\" alt=\"\" />
-<a href=\"javascript:addtext(':(')\"><img src=\"themes/shared/emoticons/frown.png\" style=\"border:0\" alt=\"\" />
-<a href=\"javascript:addtext(':D')\"><img src=\"themes/shared/emoticons/grin.png\" style=\"border:0\" alt=\"\" />
-<a href=\"javascript:addtext(':?')\"><img src=\"themes/shared/emoticons/confused.png\" style=\"border:0\" alt=\"\" />
-<a href=\"javascript:addtext(':((')\"><img src=\"themes/shared/emoticons/cry.png\" style=\"border:0\" alt=\"\" />
-<a href=\"javascript:addtext('%-6')\"><img src=\"themes/shared/emoticons/special.png\" style=\"border:0\" alt=\"\" />
-<a href=\"javascript:addtext('X)')\"><img src=\"themes/shared/emoticons/dead.png\" style=\"border:0\" alt=\"\" />
-<a href=\"javascript:addtext(':@')\"><img src=\"themes/shared/emoticons/gah.png\" style=\"border:0\" alt=\"\" />
-<a href=\"javascript:addtext('~:\(')\"><img src=\"themes/shared/emoticons/mad.png\" style=\"border:0\" alt=\"\" />
-<a href=\"javascript:addtext(':!')\"><img src=\"themes/shared/emoticons/idea.png\" style=\"border:0\" alt=\"\" />
-<a href=\"javascript:addtext(':|')\"><img src=\"themes/shared/emoticons/neutral.png\" style=\"border:0\" alt=\"\" />
-<a href=\"javascript:addtext('?!')\"><img src=\"themes/shared/emoticons/question.png\" style=\"border:0\" alt=\"\" />
-<a href=\"javascript:addtext('B)')\"><img src=\"themes/shared/emoticons/rolleyes.png\" style=\"border:0\" alt=\"\" />
-<a href=\"javascript:addtext('8)')\"><img src=\"themes/shared/emoticons/shades.png\" style=\"border:0\" alt=\"\" />
-<a href=\"javascript:addtext(':O')\"><img src=\"themes/shared/emoticons/suprised.png\" style=\"border:0\" alt=\"\" />
-<a href=\"javascript:addtext(':P')\"><img src=\"themes/shared/emoticons/tongue.png\" style=\"border:0\" alt=\"\" />
-<a href=\"javascript:addtext(';)')\"><img src=\"themes/shared/emoticons/wink.png\" style=\"border:0\" alt=\"\" />
-<a href=\"javascript:addtext('!ill')\"><img src=\"themes/shared/emoticons/ill.png\" style=\"border:0\" alt=\"\" />
-<a href=\"javascript:addtext('!amazed')\"><img src=\"themes/shared/emoticons/amazed.png\" style=\"border:0\" alt=\"\" />
-<a href=\"javascript:addtext('!cry')\"><img src=\"themes/shared/emoticons/cry.png\" style=\"border:0\" alt=\"\" />
-<a href=\"javascript:addtext('!dodge')\"><img src=\"themes/shared/emoticons/dodge.png\" style=\"border:0\" alt=\"\" />
-<a href=\"javascript:addtext('!alien')\"><img src=\"themes/shared/emoticons/alien.png\" style=\"border:0\" alt=\"\" />
-<a href=\"javascript:addtext('!heart')\"><img src=\"themes/shared/emoticons/heart.png\" style=\"border:0\" alt=\"\" />
-</td>
+<br />";
+require_once(e_BASE."classes/emote.php");
+$text .= r_emote();
+$text .= "</td>
 
 </tr>
 <tr style=\"vertical-align:top\"> 
@@ -418,7 +399,7 @@ function forumjump(){
 			$text .= "\n<option>".$forum_name."</option>";
 		}
 	}
-	$text .= "</select><input class=\"button\" type=\"submit\" name=\"fjsubmit\" value=\"Go\" />&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"".e_SELF."?".$_SERVER['QUERY_STRING']."#top\">Back to top</a></p></form>";
+	$text .= "</select> <input class=\"button\" type=\"submit\" name=\"fjsubmit\" value=\"Go\" />&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"".e_SELF."?".$_SERVER['QUERY_STRING']."#top\">Back to top</a></p></form>";
 	return $text;
 }
 ?>
