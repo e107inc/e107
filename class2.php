@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2004-10-11 11:24:32 $
+|     $Revision: 1.13 $
+|     $Date: 2004-10-13 07:52:09 $
 |     $Author: loloirie $
 +----------------------------------------------------------------------------+
 */
@@ -869,6 +869,7 @@ function init_session(){
 	if(!$_COOKIE[$pref['cookie_name']] && !$_SESSION[$pref['cookie_name']])
 	{
 		define("USER", FALSE); define("USERTHEME", FALSE); define("ADMIN", FALSE);define("GUEST", TRUE);
+		require_once(e_HANDLER."multilang/switch.php");
 	}
 	else
 	{
