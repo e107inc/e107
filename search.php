@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-03-09 06:28:54 $
+|     $Revision: 1.16 $
+|     $Date: 2005-03-09 09:03:40 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -71,7 +71,7 @@ if (isset($query) && isset($_POST['searchtype'][$google_id]) && $_POST['searchty
 
 require_once(HEADERF);
 	
-if (!isset($query)) {
+if (!isset($query) && isset($_POST['searchquery'])) {
 	$ns->tablerender(LAN_180, LAN_201);
 }
 
