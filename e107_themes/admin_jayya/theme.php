@@ -16,7 +16,7 @@
 
 $themename = "Jayya";
 $themeversion = "1.0";
-$themeauthor = "SweetAs";
+$themeauthor = "e107";
 $themedate = "22/12/04";
 $themeinfo = "Admin Theme Jayya";
 
