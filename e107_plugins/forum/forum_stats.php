@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_stats.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-03-20 18:11:52 $
+|     $Revision: 1.3 $
+|     $Date: 2005-03-20 18:42:47 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -121,21 +121,21 @@ $text = "
 <div class='spacer'>
 <table style='width: 100%;' class='fborder'>
 <tr>
-<td class='forumheader'>General</td>
+<td class='forumheader'>".FSLAN_1."</td>
 </tr>
 
 <tr>
 <td class='forumheader3'>
 	<table style='width: 100%;'>
-	<tr><td style='width: 50%;'><b>Forum opened:</b></td><td style='width: 50%;'>$open_date</td></tr>
-	<tr><td style='width: 50%;'><b>Open for:</b></td><td style='width: 50%;'>$open_since</td></tr>
-	<tr><td style='width: 50%;'><b>Total posts:</b></td><td style='width: 50%;'>$total_posts</td></tr>
-	<tr><td style='width: 50%;'><b>Forum topics:</b></td><td style='width: 50%;'>$total_topics</td></tr>
-	<tr><td style='width: 50%;'><b>Forum replies:</b></td><td style='width: 50%;'>$total_replies</td></tr>
-	<tr><td style='width: 50%;'><b>Forum thread views:</b></td><td style='width: 50%;'>$total_views</td></tr>
+	<tr><td style='width: 50%;'><b>".FSLAN_2.":</b></td><td style='width: 50%;'>$open_date</td></tr>
+	<tr><td style='width: 50%;'><b>".FSLAN_3.":</b></td><td style='width: 50%;'>$open_since</td></tr>
+	<tr><td style='width: 50%;'><b>".FSLAN_4.":</b></td><td style='width: 50%;'>$total_posts</td></tr>
+	<tr><td style='width: 50%;'><b>".FSLAN_5.":</b></td><td style='width: 50%;'>$total_topics</td></tr>
+	<tr><td style='width: 50%;'><b>".FSLAN_6.":</b></td><td style='width: 50%;'>$total_replies</td></tr>
+	<tr><td style='width: 50%;'><b>".FSLAN_7.":</b></td><td style='width: 50%;'>$total_views</td></tr>
 
-	<tr><td style='width: 50%;'><b>Database size (forum tables only):</b></td><td style='width: 50%;'>$db_size</td></tr>
-	<tr><td style='width: 50%;'><b>Average row length in forum table:</b></td><td style='width: 50%;'>$avg_row_len</td></tr>
+	<tr><td style='width: 50%;'><b>".FSLAN_8.":</b></td><td style='width: 50%;'>$db_size</td></tr>
+	<tr><td style='width: 50%;'><b>".FSLAN_9.":</b></td><td style='width: 50%;'>$avg_row_len</td></tr>
 	</tr>
 	</table>
 </td>
@@ -146,14 +146,14 @@ $text = "
 <div class='spacer'>
 <table style='width: 100%;' class='fborder'>
 <tr>
-<td class='forumheader' colspan='5'>Most active topics</td>
+<td class='forumheader' colspan='5'>".FSLAN_10."</td>
 </tr>
 <tr>
-<td style='width: 10%; text-align: center;' class='fcaption'>Rank</td>
-<td style='width: 40%;' class='fcaption'>Topic</td>
-<td style='width: 10%; text-align: center;' class='fcaption'>Replies</td>
-<td style='width: 20%; text-align: center;' class='fcaption'>Started by</td>
-<td style='width: 20%; text-align: center;' class='fcaption'>Date</td>
+<td style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_11."</td>
+<td style='width: 40%;' class='fcaption'>".FSLAN_12."</td>
+<td style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_13."</td>
+<td style='width: 20%; text-align: center;' class='fcaption'>".FSLAN_14."</td>
+<td style='width: 20%; text-align: center;' class='fcaption'>".FSLAN_15."</td>
 </tr>
 ";
 
@@ -178,14 +178,14 @@ $text .= "</table>
 <div class='spacer'>
 <table style='width: 100%;' class='fborder'>
 <tr>
-<td class='forumheader' colspan='5'>Most viewed topics</td>
+<td class='forumheader' colspan='5'>".FSLAN_16."</td>
 </tr>
 <tr>
-<td style='width: 10%; text-align: center;' class='fcaption'>Rank</td>
-<td style='width: 40%;' class='fcaption'>Topic</td>
-<td style='width: 10%; text-align: center;' class='fcaption'>Views</td>
-<td style='width: 20%; text-align: center;' class='fcaption'>Started by</td>
-<td style='width: 20%; text-align: center;' class='fcaption'>Date</td>
+<td style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_11."</td>
+<td style='width: 40%;' class='fcaption'>".FSLAN_12."</td>
+<td style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_17."</td>
+<td style='width: 20%; text-align: center;' class='fcaption'>".FSLAN_14."</td>
+<td style='width: 20%; text-align: center;' class='fcaption'>".FSLAN_15."</td>
 </tr>
 ";
 
@@ -209,12 +209,12 @@ $text .= "</table>
 <div class='spacer'>
 <table style='width: 100%;' class='fborder'>
 <tr>
-<td class='forumheader' colspan='5'>Top posters</td>
+<td class='forumheader' colspan='5'>".FSLAN_18."</td>
 </tr>
 <tr>
-<td style='width: 10%; text-align: center;' class='fcaption'>Rank</td>
-<td style='width: 20%;' class='fcaption'>Name</td>
-<td style='width: 10%; text-align: center;' class='fcaption'>Posts</td>
+<td style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_11."</td>
+<td style='width: 20%;' class='fcaption'>".FSLAN_19."</td>
+<td style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_20."</td>
 <td style='width: 10%; text-align: center;' class='fcaption'>%</td>
 <td style='width: 50%; text-align: center;' class='fcaption'>&nbsp;</td>
 </tr>
@@ -247,12 +247,12 @@ $text .= "
 <div class='spacer'>
 <table style='width: 100%;' class='fborder'>
 <tr>
-<td class='forumheader' colspan='5'>Top topic starters</td>
+<td class='forumheader' colspan='5'>".FSLAN_21."</td>
 </tr>
 <tr>
-<td style='width: 10%; text-align: center;' class='fcaption'>Rank</td>
-<td style='width: 20%;' class='fcaption'>Name</td>
-<td style='width: 10%; text-align: center;' class='fcaption'>Posts</td>
+<td style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_11."</td>
+<td style='width: 20%;' class='fcaption'>".FSLAN_19."</td>
+<td style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_20."</td>
 <td style='width: 10%; text-align: center;' class='fcaption'>%</td>
 <td style='width: 50%; text-align: center;' class='fcaption'>&nbsp;</td>
 </tr>
@@ -285,12 +285,12 @@ $text .= "</table>
 <div class='spacer'>
 <table style='width: 100%;' class='fborder'>
 <tr>
-<td class='forumheader' colspan='5'>Top repliers</td>
+<td class='forumheader' colspan='5'>".FSLAN_22."</td>
 </tr>
 <tr>
-<td style='width: 10%; text-align: center;' class='fcaption'>Rank</td>
-<td style='width: 20%;' class='fcaption'>Name</td>
-<td style='width: 10%; text-align: center;' class='fcaption'>Posts</td>
+<td style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_11."</td>
+<td style='width: 20%;' class='fcaption'>".FSLAN_19."</td>
+<td style='width: 10%; text-align: center;' class='fcaption'>".FSLAN_20."</td>
 <td style='width: 10%; text-align: center;' class='fcaption'>%</td>
 <td style='width: 50%; text-align: center;' class='fcaption'>&nbsp;</td>
 </tr>
@@ -321,51 +321,10 @@ $text .= "</table>
 ";
 
 
+$ns -> tablerender(FSLAN_23, $text);
 
-
-
-
-$ns -> tablerender("Forum Statistics", $text);
-
-
-
-
-
-/*
-echo "Posts: $total_posts, topics: $total_topics, replies: $total_replies, views: $total_views<br />";
-echo "Opened: $open_date, $open_since ago<br />";
-echo "Table size: $db_size, average row length: $avg_row_len<br />";
-echo "<pre>"; print_r($most_activeArray); echo "</pre>";
-echo "<pre>"; print_r($most_viewedArray); echo "</pre>";
-echo "<pre>"; print_r($top_posters); echo "</pre>";
-*/
 
 require_once(FOOTERF);
-
-
-
-
-
-
-/*
-function getdbsize($tdb) {
-
-	$sql_result = "SHOW TABLE STATUS FROM " .$tdb;
-	$result = mysql_query($sql_result);
-	mysql_close($db);
-
-	if($result) {
-		$size = 0;
-		while ($data = mysql_fetch_array($result)) {
-			$size = $size + $data["Data_length"] + $data["Index_length"];
-		}
-		return $size;
-	}
-	else {
-		return FALSE;
-	}
-}
-*/
 
 function parsesize($size) {
 	$kb = 1024;
