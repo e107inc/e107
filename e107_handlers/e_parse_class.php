@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2005-03-05 08:03:18 $
+|     $Revision: 1.39 $
+|     $Date: 2005-03-06 09:38:58 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -171,7 +171,7 @@ function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $ut
 	{
 		$text = str_replace ("\n\n\n", "\n\n", $text);
 		$text = $this -> htmlwrap($text, $wrap);
-		$text = str_replace (array ("<br /> ", " <br />", " <br /> ", "<br />"), "", $text);	
+		$text = str_replace (array ("<br /> ", " <br />", " <br /> ", "<br /><br />"), "<br />", $text);	
 		/* we can remove any linebreaks added by htmlwrap function as any \n's will be converted later anyway */
 		return $text; 
 	}
