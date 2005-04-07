@@ -163,7 +163,7 @@ SC_END
 SC_BEGIN NEWSTHUMBNAIL
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-return (isset($news_item['news_thumbnail']) && $news_item['news_thumbnail']) ? "<a href='".e_BASE."news.php?item.".$news_item['news_id'].$news_item['news_category']."'><img src='".e_IMAGE."newspost_images/".$news_item['news_thumbnail']."' alt='' style='".$param['thumbnail']."' /></a>" : "";
+return (isset($news_item['news_thumbnail']) && $news_item['news_thumbnail']) ? "<a href='".e_BASE."news.php?item.".$news_item['news_id'].".".$news_item['news_category']."'><img src='".e_IMAGE."newspost_images/".$news_item['news_thumbnail']."' alt='' style='".$param['thumbnail']."' /></a>" : "";
 SC_END
 	
 SC_BEGIN STICKY_ICON
