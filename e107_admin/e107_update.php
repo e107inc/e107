@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/e107_update.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-04-02 21:43:29 $
-|     $Author: e107coders $
+|     $Revision: 1.8 $
+|     $Date: 2005-04-07 11:22:09 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -74,3 +74,4 @@ if ($updates > 1) {
 $text .= "</table></div></form>";
 $ns->tablerender(LAN_UPDATE_10, $text);
 require_once("footer.php");
+?>
