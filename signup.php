@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-04-06 19:03:11 $
+|     $Revision: 1.18 $
+|     $Date: 2005-04-07 12:43:20 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -527,9 +527,8 @@ if ($signupval[7]) {
 	$text .= "<tr>
 		<td class='forumheader3' style='width:30%;white-space:nowrap;vertical-align:top' >".LAN_120." ".req($signupval[7])."</td>
 		<td class='forumheader3' style='width:70%' >
-		<textarea class='tbox' name='signature' cols='10' rows='4' style='width: 80%;'>$signature</textarea>
-		<input class='helpbox' type='text' name='helpb' size='90' />
-		".ren_help("addtext");
+		<textarea class='tbox' name='signature' cols='10' rows='4' style='width: 80%;' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$signature</textarea><br />
+		".ren_help(2);
 }
 	
 if ($signupval[8]) {
@@ -537,7 +536,7 @@ if ($signupval[8]) {
 		<tr>
 		<td class='forumheader3' style='width:30%; vertical-align:top;white-space:nowrap' >".LAN_121.req($signupval[8])."<br /><span class='smalltext'>(".LAN_402.")</span></td>
 		<td class='forumheader3' style='width:70%' >
-		<input class='tbox' type='text' name='image' size='40' value='$image' maxlength='100' />
+		<input class='tbox' id='avatar' type='text' name='image' size='40' value='$image' maxlength='100' />
 		 
 		<input class='button' type ='button' style=''width: 35px'; cursor:hand' size='30' value='".LAN_SIGNUP_27."' onClick='expandit(this)'>
 		<div style='display:none' style=&{head};>";
@@ -551,7 +550,7 @@ if ($signupval[8]) {
 	closedir($handle);
 	 
 	for($c = 1; $c <= (count($avatarlist)-1); $c++) {
-		$text .= "<a href='javascript:addtext3(\"$avatarlist[$c]\")'><img src='".e_IMAGE."avatars/".$avatarlist[$c]."' style='border:0' alt='' /></a> ";
+		$text .= "<a href='javascript:insertext(\"$avatarlist[$c]\", \"avatar\")'><img src='".e_IMAGE."avatars/".$avatarlist[$c]."' style='border:0' alt='' /></a> ";
 	}
 	 
 	$text .= "<br />
