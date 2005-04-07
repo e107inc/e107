@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_recent_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-13 19:17:24 $
+|     $Revision: 1.5 $
+|     $Date: 2005-04-07 14:48:06 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -29,7 +29,7 @@ if(!$CONTENT_RECENT_TABLE){
 				$CONTENT_RECENT_TABLE = "
 				<tr>
 					<td style='width:1%; white-space:nowrap; vertical-align:top; padding:0; '>
-						{CONTENT_RECENT_TABLE_ICON}
+						{CONTENT_RECENT_TABLE_ICON}<br /><br />
 					</td>
 					<td style='width:99%; vertical-align:top; padding-top:2px; padding:0;'>
 						<table style='width:100%; vertical-align:top;' border='0'>
@@ -70,7 +70,7 @@ if(!$CONTENT_RECENT_TABLE){
 				</tr>
 				<tr>
 					<td colspan='2'>
-						<div class='spacer'><br /><br /></div>
+						<div class='spacer'><br /></div>
 					</td>
 				</tr>";
 }

@@ -11,9 +11,9 @@
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
 |
-|		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_conversion_script.php,v $
-|		$Revision: 1.4 $
-|		$Date: 2005-02-11 16:15:54 $
+|		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_convert.php,v $
+|		$Revision: 1.1 $
+|		$Date: 2005-04-07 14:45:55 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -54,6 +54,7 @@ if(isset($_POST['convert_table'])){
 	if(!is_object($sql5)){ $sql5 = new db; }
 	if(!is_object($sql6)){ $sql6 = new db; }
 	if(!is_object($sql7)){ $sql7 = new db; }
+	if(!is_object($sql8)){ $sql8 = new db; }
 
 	// ##### STAGE 1 : ANALYSE OLD CONTENT --------------------------------------------------------
 					//analyse old content table
@@ -199,6 +200,20 @@ if(isset($_POST['convert_table'])){
 					}else{
 						$valid_content_insert[] = $content_id." ".$content_heading;
 						$countcontent = $countcontent + 1;
+
+						//check if comments present, if so, convert those to new content item id's
+						list($thenewcontent_id, $thenewcontent_heading) = $sql6 -> db_Fetch();
+						$num = $sql8 -> db_Count("comments", "(*)", "WHERE comment_type = '1' AND comment_item_id = '".$content_id."' ");
+						if($num > 0){
+							$sql8 -> db_Update("comments", "comment_item_id = '".$thenewcontent_id."', comment_type = 'pcontent' WHERE comment_item_id = '".$content_id."' ");
+						}
+
+						//check if rating present, if so, convert those to new content item id's
+						list($thenewcontent_id, $thenewcontent_heading) = $sql6 -> db_Fetch();
+						$num = $sql8 -> db_Count("rate", "(*)", "WHERE rate_table = 'article' AND rate_itemid = '".$content_id."' ");
+						if($num > 0){
+							$sql8 -> db_Update("rate", "rate_table = 'pcontent', rate_itemid = '".$thenewcontent_id."' WHERE rate_itemid = '".$thenewcontent_id."' ");
+						}
 					}
 					$count = $count + 1;
 		}
@@ -361,6 +376,20 @@ if(isset($_POST['convert_table'])){
 					}else{
 						$valid_review_insert[] = $content_id." ".$content_heading;
 						$countreview = $countreview + 1;
+
+						//check if comments present, if so, convert those to new content item id's
+						list($thenewcontent_id, $thenewcontent_heading) = $sql6 -> db_Fetch();
+						$num = $sql8 -> db_Count("comments", "(*)", "WHERE comment_type = '1' AND comment_item_id = '".$content_id."' ");
+						if($num > 0){
+							$sql8 -> db_Update("comments", "comment_item_id = '".$thenewcontent_id."', comment_type = 'pcontent' WHERE comment_item_id = '".$content_id."' ");
+						}
+
+						//check if rating present, if so, convert those to new content item id's
+						list($thenewcontent_id, $thenewcontent_heading) = $sql6 -> db_Fetch();
+						$num = $sql8 -> db_Count("rate", "(*)", "WHERE rate_table = 'article' AND rate_itemid = '".$content_id."' ");
+						if($num > 0){
+							$sql8 -> db_Update("rate", "rate_table = 'pcontent', rate_itemid = '".$thenewcontent_id."' WHERE rate_itemid = '".$thenewcontent_id."' ");
+						}
 					}
 					$count = $count + 1;
 		}
@@ -374,7 +403,9 @@ if(isset($_POST['convert_table'])){
 		$count = 1;
 		$article_present = "1";
 		while($row = $sql7 -> db_Fetch()){
-		extract($row);					
+		extract($row);	
+					$oldcontentid = $row['content_id'];
+
 					//select main article parent id
 					$sql2 -> db_Select($plugintable, "content_id", "content_heading = 'article' AND content_parent = '0' ");
 					list($article_main_id) = $sql2 -> db_Fetch();
@@ -429,11 +460,25 @@ if(isset($_POST['convert_table'])){
 
 					$sql5 -> db_Insert($plugintable, "'0', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '1.".$count."' ");
 
-					if(!$sql5 -> db_Select($plugintable, "content_id, content_heading", "content_heading = '".$newcontent_heading."' ")){
+					if(!$sql6 -> db_Select($plugintable, "content_id, content_heading", "content_heading = '".$newcontent_heading."' ")){
 						$bug_article_insert[] = $content_id." ".$content_heading;
 					}else{
 						$valid_article_insert[] = $content_id." ".$content_heading;
 						$countarticle = $countarticle + 1;
+
+						//check if comments present, if so, convert those to new content item id's
+						list($thenewcontent_id, $thenewcontent_heading) = $sql6 -> db_Fetch();
+						$num = $sql8 -> db_Count("comments", "(*)", "WHERE comment_type = '1' AND comment_item_id = '".$content_id."' ");
+						if($num > 0){
+							$sql8 -> db_Update("comments", "comment_item_id = '".$thenewcontent_id."', comment_type = 'pcontent' WHERE comment_item_id = '".$content_id."' ");
+						}
+
+						//check if rating present, if so, convert those to new content item id's
+						list($thenewcontent_id, $thenewcontent_heading) = $sql6 -> db_Fetch();
+						$num = $sql8 -> db_Count("rate", "(*)", "WHERE rate_table = 'article' AND rate_itemid = '".$content_id."' ");
+						if($num > 0){
+							$sql8 -> db_Update("rate", "rate_table = 'pcontent', rate_itemid = '".$thenewcontent_id."' WHERE rate_itemid = '".$thenewcontent_id."' ");
+						}
 					}
 					$count = $count + 1;
 		}

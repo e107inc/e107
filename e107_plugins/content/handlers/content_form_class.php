@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.12 $
-|		$Date: 2005-03-31 09:20:25 $
-|		$Author: stevedunstan $
+|		$Revision: 1.13 $
+|		$Date: 2005-04-07 14:48:05 $
+|		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
@@ -1097,13 +1097,65 @@ class contentform{
 						return;
 		}
 
+		function show_main_intro(){
+						global $sql, $ns, $rs, $type, $type_id, $action, $sub_action, $id, $plugintable;
+
+						if(!is_object($sql)){ $sql = new db; }
+						$newcontent = $sql -> db_Count($plugintable, "(*)", "");
+						if($newcontent > 0){
+							return false;
+						}else{
+
+							$text .= "
+							<div style='text-align:center'>
+							<div style='width:70%; text-align:left'>
+							".CONTENT_ADMIN_MAIN_LAN_9."<br /><br />
+							".CONTENT_ADMIN_MAIN_LAN_8."<br /><br />";
+							
+							$oldcontent = $sql -> db_Count("content", "(*)", "");
+							if($oldcontent > 0){
+								$text .= "
+								<b>The old content table contains records</b><br />
+								Since the old content table contains records, you can choose one of the following two options:<br />
+								<br />
+								<b>a) convert records</b><br />
+								The first thing you need to do is create a backup of your existing content table.<br />
+								Use a program to backup your content table, like phpmyadmin.<br />
+								After you have created a backup of your old content table, you can start converting the records to the new Content Management Plugin.<br />
+								After you have converted your old content, you should no longer see this information, and be able to manage your existing content.<br />
+								Please go to the <a href='".e_PLUGIN."content/admin_content_convert.php'>Content Conversion Script</a> page.<br />
+								<br />
+								<b>b) do not convert records and just start managing new content</b><br />
+								If you no longer need the records from your old content table,<br />
+								and just want to start with a fresh new Content Management Plugin table,<br />
+								you can start by creating a new category.<br />
+								Please go to the <a href='".e_SELF."?type.0.cat.create'>Create New Category</a> page.<br />
+								";
+							}else{
+								$text .= "
+								<b>This is a fresh install / The old content table does not contain records</b><br />
+								Since the old existing content table does not contain any records, you can now start managing new content.<br />
+								The first thing you need to do is create a new category.<br />
+								Please go to the <a href='".e_SELF."?type.0.cat.create'>Create New Category</a> page.<br />
+								";
+							}
+
+							$text .= "
+							</div>
+							</div>";
+
+							$ns -> tablerender(CONTENT_ADMIN_MAIN_LAN_7, $text);
+							return true;
+						}
+		}
+
 
 		function show_main_parent($mode){
 						global $sql, $ns, $rs, $type, $type_id, $action, $sub_action, $id, $plugintable;
 
 						if(!is_object($sql)){ $sql = new db; }
 						if(!$sql -> db_Select($plugintable, "content_id, content_heading", "content_parent='0' ")){
-								$text .= "<div style='text-align:center'>".CONTENT_ADMIN_MAIN_LAN_1."</div>";
+								$text .= "<div style='text-align:center'>".CONTENT_ADMIN_MAIN_LAN_1."</div>";							
 								$ns -> tablerender(CONTENT_ADMIN_MAIN_LAN_0, $text);
 								return;
 						}else{
