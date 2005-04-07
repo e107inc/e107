@@ -94,7 +94,7 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
 			$row['category_name'] = $category_name;
 			$row['category_icon'] = $category_icon;
 
-			$textbody .= $ix->parse_newstemplate($row,$NEWSCAT_ITEM,$param);
+			$textbody .= $ix -> render_newsitem($row, 'return', '', $NEWSCAT_ITEM, $param);
 
 		}
 // ----------------------------------
