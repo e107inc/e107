@@ -3,29 +3,36 @@ include_once(e_HANDLER.'shortcode_handler.php');
 $news_shortcodes = e_shortcode::parse_scbatch(__FILE__);
 /*
 SC_BEGIN NEWSTITLE
-global $ix, $tp;
-return $tp -> toHTML($ix -> news_item['news_title'], TRUE);
+global $tp;
+$news_item = getcachedvars('current_news_item');
+$param = getcachedvars('current_news_param');
+return $tp -> toHTML($news_item['news_title'], TRUE);
 SC_END
 
 SC_BEGIN NEWSBODY
-global $ix, $tp;
-$news_body = $tp -> toHTML($ix -> news_item['news_body'], TRUE);
-if($ix -> news_item['news_extended'] && (isset($_POST['preview']) || strpos(e_QUERY, 'extend') !== FALSE)) {
-    $news_extended = $tp -> toHTML($ix -> news_item['news_extended'], TRUE);
+global $tp;
+$news_item = getcachedvars('current_news_item');
+$param = getcachedvars('current_news_param');
+$news_body = $tp -> toHTML($news_item['news_body'], TRUE);
+if($news_item['news_extended'] && (isset($_POST['preview']) || strpos(e_QUERY, 'extend') !== FALSE)) {
+    $news_extended = $tp -> toHTML($news_item['news_extended'], TRUE);
     $news_body .= "<br /><br />".$news_extended;
 }
 return $news_body;
 SC_END
 
 SC_BEGIN NEWSICON
-global $ix, $tp;
+global $tp;
+$news_item = getcachedvars('current_news_item');
+$param = getcachedvars('current_news_param');
 $category_icon = $tp -> parseTemplate('{NEWSHEADER}', FALSE, $news_shortcodes);
-return "<a href='".e_BASE."news.php?cat.".$ix -> news_item['news_category']."'><img style='".$ix -> param['caticon']."'  src='".$category_icon."' alt='' /></a>";
+return "<a href='".e_BASE."news.php?cat.".$news_item['news_category']."'><img style='".$param['caticon']."'  src='".$category_icon."' alt='' /></a>";
 SC_END
 	
 SC_BEGIN NEWSHEADER
-global $ix;
-$category_icon = str_replace("../", "", $ix -> news_item['category_icon']);
+$news_item = getcachedvars('current_news_item');
+$param = getcachedvars('current_news_param');
+$category_icon = str_replace("../", "", $news_item['category_icon']);
 if ($category_icon && strstr("images", $category_icon)) {
 	return THEME.$category_icon;
 } else {
@@ -34,68 +41,79 @@ if ($category_icon && strstr("images", $category_icon)) {
 SC_END
 	
 SC_BEGIN NEWSCATEGORY
-global $ix, $tp;
-$category_name = $tp -> toHTML($ix -> news_item['category_name']);
-return "<a style='".(isset($ix -> param['catlink']) ? $ix -> param['catlink'] : "#")."' href='".e_BASE."news.php?cat.".$ix -> news_item['news_category']."'>".$category_name."</a>";
+global $tp;
+$news_item = getcachedvars('current_news_item');
+$param = getcachedvars('current_news_param');
+$category_name = $tp -> toHTML($news_item['category_name']);
+return "<a style='".(isset($param['catlink']) ? $param['catlink'] : "#")."' href='".e_BASE."news.php?cat.".$news_item['news_category']."'>".$category_name."</a>";
 SC_END
 	
 SC_BEGIN NEWSAUTHOR
-global $ix;
-return  "<a href='".e_BASE."user.php?id.".$ix -> news_item['user_id']."'>".$ix -> news_item['user_name']."</a>";
+$news_item = getcachedvars('current_news_item');
+$param = getcachedvars('current_news_param');
+return  "<a href='".e_BASE."user.php?id.".$news_item['user_id']."'>".$news_item['user_name']."</a>";
 SC_END
 	
 SC_BEGIN NEWSDATE
-global $ix;
+$news_item = getcachedvars('current_news_item');
+$param = getcachedvars('current_news_param');
 $con = new convert;
-return  $con -> convert_date($ix -> news_item['news_datestamp'], 'long');
+return  $con -> convert_date($news_item['news_datestamp'], 'long');
 SC_END
 	
 SC_BEGIN NEWSCOMMENTS
-global $ix, $pref, $sql;
-if ($ix -> news_item['news_comment_total']) {
-	$sql->db_Select("comments", "comment_datestamp", "comment_item_id='".$ix -> news_item['news_id']."' AND comment_type='0' ORDER BY comment_datestamp DESC LIMIT 0,1");
+global $pref, $sql;
+$news_item = getcachedvars('current_news_item');
+$param = getcachedvars('current_news_param');
+if ($news_item['news_comment_total']) {
+	$sql->db_Select("comments", "comment_datestamp", "comment_item_id='".$news_item['news_id']."' AND comment_type='0' ORDER BY comment_datestamp DESC LIMIT 0,1");
 	list($comments['comment_datestamp']) = $sql->db_Fetch();
 	$latest_comment = $comments['comment_datestamp'];
 	if ($latest_comment > USERLV ) {
-		$NEWIMAGE = $ix -> param['image_new_small'];
+		$NEWIMAGE = $param['image_new_small'];
 	} else {
-		$NEWIMAGE = $ix -> param['image_nonew_small'];
+		$NEWIMAGE = $param['image_nonew_small'];
 	}
 } else {
-	$NEWIMAGE = $ix -> param['image_nonew_small'];
+	$NEWIMAGE = $param['image_nonew_small'];
 }
-return ($ix -> news_item['news_allow_comments'] ? $ix -> param['commentoffstring'] : "".($pref['comments_icon'] ? $NEWIMAGE : "")." <a href='".e_BASE."comment.php?comment.news.".$ix -> news_item['news_id']."'>".$ix -> param['commentlink'].$ix -> news_item['news_comment_total']."</a>");
+return ($news_item['news_allow_comments'] ? $param['commentoffstring'] : "".($pref['comments_icon'] ? $NEWIMAGE : "")." <a href='".e_BASE."comment.php?comment.news.".$news_item['news_id']."'>".$param['commentlink'].$news_item['news_comment_total']."</a>");
 SC_END
 	
 SC_BEGIN EMAILICON
-global $ix;
+$news_item = getcachedvars('current_news_item');
+$param = getcachedvars('current_news_param');
 require_once(e_HANDLER.'emailprint_class.php');
-return emailprint::render_emailprint('news', $ix -> news_item['news_id'], 1);
+return emailprint::render_emailprint('news', $news_item['news_id'], 1);
 SC_END
 	
 SC_BEGIN PRINTICON
-global $ix;
+$news_item = getcachedvars('current_news_item');
+$param = getcachedvars('current_news_param');
 require_once(e_HANDLER.'emailprint_class.php');
-return emailprint::render_emailprint('news', $ix -> news_item['news_id'], 2);
+return emailprint::render_emailprint('news', $news_item['news_id'], 2);
 SC_END
 
 SC_BEGIN NEWSID
-global $ix;
-return $ix -> news_item['news_id'];
+$news_item = getcachedvars('current_news_item');
+$param = getcachedvars('current_news_param');
+return $news_item['news_id'];
 SC_END
 	
 SC_BEGIN ADMINOPTIONS
-global $ix;
+$news_item = getcachedvars('current_news_item');
+$param = getcachedvars('current_news_param');
 if (ADMIN && getperms("H")) {
-	return "<a href='".e_BASE.e_ADMIN."newspost.php?create.edit.".$ix -> news_item['news_id']."'><img src='".e_IMAGE."generic/".IMODE."/newsedit.png' alt='' style='border:0' /></a>\n";
+	return "<a href='".e_BASE.e_ADMIN."newspost.php?create.edit.".$news_item['news_id']."'><img src='".e_IMAGE."generic/".IMODE."/newsedit.png' alt='' style='border:0' /></a>\n";
 } else {
 	return '';
 }
 SC_END
 	
 SC_BEGIN EXTENDED
-global $ix, $preview;
-if ($ix -> news_item['news_extended'] && strpos(e_QUERY, 'extend') === FALSE) {
+$news_item = getcachedvars('current_news_item');
+$param = getcachedvars('current_news_param');
+if ($news_item['news_extended'] && strpos(e_QUERY, 'extend') === FALSE) {
 	if (defined("PRE_EXTENDEDSTRING")) {
 		$es1 = PRE_EXTENDEDSTRING;
 	}
@@ -103,9 +121,9 @@ if ($ix -> news_item['news_extended'] && strpos(e_QUERY, 'extend') === FALSE) {
 		$es2 = POST_EXTENDEDSTRING;
 	}
 	if (isset($_POST['preview'])) {
-		return $es1.EXTENDEDSTRING.$es2."<br />".$ix -> news_item['news_extended'];
+		return $es1.EXTENDEDSTRING.$es2."<br />".$news_item['news_extended'];
 	} else {
-		return $es1."<a href='".e_BASE."news.php?extend.".$ix -> news_item['news_id']."'>".EXTENDEDSTRING."</a>".$es2;
+		return $es1."<a href='".e_BASE."news.php?extend.".$news_item['news_id']."'>".EXTENDEDSTRING."</a>".$es2;
 	}
 } else {
 	return "";
@@ -113,57 +131,87 @@ if ($ix -> news_item['news_extended'] && strpos(e_QUERY, 'extend') === FALSE) {
 SC_END
 	
 SC_BEGIN CAPTIONCLASS
-global $ix, $tp;
-$news_title = $tp -> toHTML($ix -> news_item['news_title'], TRUE);
-return "<div class='category".$ix -> news_item['news_category']."'>".($ix -> news_item['news_render_type'] == 1 ? "<a href='".e_BASE."comment.php?comment.news.".$ix -> news_item['news_id']."'>".$news_title."</a>" : $news_title)."</div>";
+global $tp;
+$news_item = getcachedvars('current_news_item');
+$param = getcachedvars('current_news_param');
+$news_title = $tp -> toHTML($news_item['news_title'], TRUE);
+return "<div class='category".$news_item['news_category']."'>".($news_item['news_render_type'] == 1 ? "<a href='".e_BASE."comment.php?comment.news.".$news_item['news_id']."'>".$news_title."</a>" : $news_title)."</div>";
 SC_END
 	
 SC_BEGIN ADMINCAPTION
-global $ix, $tp;
-$news_title = $tp -> toHTML($ix -> news_item['news_title'], TRUE);
-return "<div class='".(defined(ADMINNAME) ? ADMINNAME : "null")."'>".($ix -> news_item['news_render_type'] == 1 ? "<a href='".e_BASE."comment.php?comment.news.".$ix -> news_item['news_id']."'>".$news_title."</a>" : $news_title)."</div>";
+global $tp;
+$news_item = getcachedvars('current_news_item');
+$param = getcachedvars('current_news_param');
+$news_title = $tp -> toHTML($news_item['news_title'], TRUE);
+return "<div class='".(defined(ADMINNAME) ? ADMINNAME : "null")."'>".($news_item['news_render_type'] == 1 ? "<a href='".e_BASE."comment.php?comment.news.".$news_item['news_id']."'>".$news_title."</a>" : $news_title)."</div>";
 SC_END
 	
 SC_BEGIN ADMINBODY
-global $ix, $tp;
+global $tp;
+$news_item = getcachedvars('current_news_item');
+$param = getcachedvars('current_news_param');
 $news_body = $tp -> parseTemplate('{NEWSBODY}', FALSE, $news_shortcodes);
 return "<div class='".(defined(ADMINNAME) ? ADMINNAME : "null")."'>".$news_body."</div>";
 SC_END
 	
 SC_BEGIN NEWSSUMMARY
-global $ix;
-return ($ix -> news_item['news_summary']) ? $ix -> news_item['news_summary']."<br />" : "";
+$news_item = getcachedvars('current_news_item');
+$param = getcachedvars('current_news_param');
+return ($news_item['news_summary']) ? $news_item['news_summary']."<br />" : "";
 SC_END
 	
 SC_BEGIN NEWSTHUMBNAIL
-global $ix;
-return (isset($ix -> news_item['news_thumbnail'])) ? "<a href='".e_BASE."news.php?item.".$ix -> news_item['news_id'].$ix -> news_item['news_category']."'><img src='".e_IMAGE."newspost_images/".$ix -> news_item['news_thumbnail']."' alt='' style='".$ix -> param['thumbnail']."' /></a>" : "";
+$news_item = getcachedvars('current_news_item');
+$param = getcachedvars('current_news_param');
+return (isset($news_item['news_thumbnail']) && $news_item['news_thumbnail']) ? "<a href='".e_BASE."news.php?item.".$news_item['news_id'].$news_item['news_category']."'><img src='".e_IMAGE."newspost_images/".$news_item['news_thumbnail']."' alt='' style='".$param['thumbnail']."' /></a>" : "";
 SC_END
 	
 SC_BEGIN STICKY_ICON
-global $ix;
-return $ix -> news_item['news_sticky'] ? $ix -> param['image_sticky'] : "";
+$news_item = getcachedvars('current_news_item');
+$param = getcachedvars('current_news_param');
+return $news_item['news_sticky'] ? $param['image_sticky'] : "";
 SC_END
 	
 SC_BEGIN NEWSTITLELINK
-global $ix;
-return "<a style='".(isset($ix -> param['itemlink']) ? $ix -> param['itemlink'] : "null")."' href='".e_BASE."news.php?item.".$ix -> news_item['news_id'].".".$ix -> news_item['news_category']."'>".$ix -> news_item['news_title']."</a>";
+$news_item = getcachedvars('current_news_item');
+$param = getcachedvars('current_news_param');
+return "<a style='".(isset($param['itemlink']) ? $param['itemlink'] : "null")."' href='".e_BASE."news.php?item.".$news_item['news_id'].".".$news_item['news_category']."'>".$news_item['news_title']."</a>";
 SC_END
 	
 SC_BEGIN NEWSCATICON
-global $ix, $tp;
+global $tp;
+$news_item = getcachedvars('current_news_item');
+$param = getcachedvars('current_news_param');
 $category_icon = $tp -> parseTemplate('{NEWSHEADER}', FALSE, $news_shortcodes);
-if($ix -> param['caticon'] == ""){$ix -> param['caticon'] = "border:0px";}
-return "<a href='".e_BASE."news.php?cat.".$ix -> news_item['news_category']."'><img style='".$ix -> param['caticon']."' src='".$category_icon."' alt='' /></a>";
+if($param['caticon'] == ""){$param['caticon'] = "border:0px";}
+return "<a href='".e_BASE."news.php?cat.".$news_item['news_category']."'><img style='".$param['caticon']."' src='".$category_icon."' alt='' /></a>";
 SC_END
 	
 SC_BEGIN TRACKBACK
-global $pref, $ix;
+global $pref;
+$news_item = getcachedvars('current_news_item');
+$param = getcachedvars('current_news_param');
 if(isset($pref['trackbackEnabled'])) {
-	return ($ix -> param['trackbackbeforestring'] ? $ix -> param['trackbackbeforestring'] : "")."<a href='".e_BASE."comment.php?comment.news.".$ix -> news_item['news_id']."#track'>".$ix -> param['trackbackstring'].$ix -> news_item['tb_count']."</a>".($ix -> param['trackbackafterstring'] ? $ix -> param['trackbackafterstring'] : "");
+	return ($param['trackbackbeforestring'] ? $param['trackbackbeforestring'] : "")."<a href='".e_BASE."comment.php?comment.news.".$news_item['news_id']."#track'>".$param['trackbackstring'].$news_item['tb_count']."</a>".($param['trackbackafterstring'] ? $param['trackbackafterstring'] : "");
 } else {
 	return "";
 }
+SC_END
+
+SC_BEGIN NEWSINFO
+global $ns;
+$news_item = getcachedvars('current_news_item');
+$param = getcachedvars('current_news_param');
+$con = new convert;
+$news_item['news_start'] = (isset($news_item['news_start']) && $news_item['news_start'] ? str_replace(" - 00:00:00", "", $con -> convert_date($news_item['news_start'], "long")) : LAN_NEWS_19);
+$news_item['news_end'] = (isset($news_item['news_end']) && $news_item['news_end'] ? " to ".str_replace(" - 00:00:00", "", $con -> convert_date($news_item['news_end'], "long")) : "");
+$info = $news_item['news_render_type'] == 1 ? LAN_NEWS_9 : "";
+$info .= $news_item['news_class'] == 255 ? LAN_NEWS_10 : LAN_NEWS_11;
+$info .= $news_item['news_sticky'] ? "<br />".LAN_NEWS_31 : "";
+$info .= "<br />".($news_item['news_allow_comments'] ? LAN_NEWS_13 : LAN_NEWS_12);
+$info .= LAN_NEWS_14.$news_item['news_start'].$news_item['news_end']."<br />";
+$info .= LAN_NEWS_15.strlen($news_item['news_body']).LAN_NEWS_16.strlen($news_item['news_extended']).LAN_NEWS_17."<br /><br /></div>";
+return $ns -> tablerender(LAN_NEWS_18, $info);
 SC_END
 */
 ?>

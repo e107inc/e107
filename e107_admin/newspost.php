@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.70 $
-|   $Date: 2005-04-07 01:05:24 $
+|   $Revision: 1.71 $
+|   $Date: 2005-04-07 19:39:00 $
 |   $Author: sweetas $
 +---------------------------------------------------------------+
 
@@ -926,7 +926,8 @@ class newspost {
 		$_PR['news_image'] = $_POST['news_image'];
 
 		$ix -> render_newsitem($_PR);
-		echo $ix -> news_info();
+		// echo $ix -> news_info();
+		echo $tp -> parseTemplate('{NEWSINFO}', FALSE, $news_shortcodes);
 	}
 
 	function submit_item($sub_action, $id) {

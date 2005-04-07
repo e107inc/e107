@@ -12,16 +12,13 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.58 $
-| $Date: 2005-04-07 01:05:38 $
+| $Revision: 1.59 $
+| $Date: 2005-04-07 19:39:41 $
 | $Author: sweetas $
 +---------------------------------------------------------------+
 */
 
 class news {
-	
-	var $news_item;
-	var $param;
 	
 	function submit_item($news) {
 		global $sql, $tp, $e107cache, $e_event, $pref;
@@ -106,7 +103,7 @@ class news {
 		return $message;
 	}
 
-	function render_newsitem($news, $mode = 'default', $n_restrict = '', $NEWS_TEMPLATE = '', $params='') {
+	function render_newsitem($news, $mode = 'default', $n_restrict = '', $NEWS_TEMPLATE = '', $param='') {
 		global $tp, $sql, $override, $pref, $ns, $NEWSSTYLE, $NEWSLISTSTYLE;
 		if ($override_newsitem = $override->override_check('render_newsitem')) {
 			$result = call_user_func($override_newsitem, $news);
@@ -115,23 +112,20 @@ class news {
 			}
 		}
 		if (!is_object($tp)) $tp = new e_parse;
-		$this -> news_item = $news;
-		
+
 		if ($n_restrict == 'userclass') {
-			$this -> news_item['news_id'] = 0;
-			$this -> news_item['news_title'] = LAN_NEWS_1;
-			$this -> news_item['data'] = LAN_NEWS_2;
-			$this -> news_item['news_extended'] = "";
-			$this -> news_item['news_allow_comments'] = 1;
-			$this -> news_item['news_start'] = 0;
-			$this -> news_item['news_end'] = 0;
-			$this -> news_item['news_render_type'] = 0;
-			$this -> news_item['comment_total'] = 0;
+			$news['news_id'] = 0;
+			$news['news_title'] = LAN_NEWS_1;
+			$news['data'] = LAN_NEWS_2;
+			$news['news_extended'] = "";
+			$news['news_allow_comments'] = 1;
+			$news['news_start'] = 0;
+			$news['news_end'] = 0;
+			$news['news_render_type'] = 0;
+			$news['comment_total'] = 0;
 		}
 
-		if ($params) {
-			$this -> param = $params;
-		} else {
+		if (!$param) {
 			if (!defined("IMAGE_nonew_small")){
 				define("IMAGE_nonew_small", (file_exists(THEME."generic/nonew_comments.png") ? "<img src='".THEME."generic/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/".IMODE."/nonew_comments.png' alt=''  />"));
 			}
@@ -142,20 +136,23 @@ class news {
 				define("IMAGE_sticky", (file_exists(THEME."images/sticky.png") ? "<img src='".THEME."images/sticky.png' alt=''  /> " : "<img src='".e_IMAGE."generic/".IMODE."/sticky.png' alt='' style='width: 14px; height: 14px; vertical-align: bottom' /> "));
 			}
 
-			$this -> param['image_nonew_small'] = IMAGE_nonew_small;
-			$this -> param['image_new_small'] = IMAGE_new_small;
-			$this -> param['image_sticky'] = IMAGE_sticky;
-			$this -> param['caticon'] = ICONSTYLE;
-			$this -> param['commentoffstring'] = COMMENTOFFSTRING;
-			$this -> param['commentlink'] = COMMENTLINK;
-			$this -> param['trackbackstring'] = (defined("TRACKBACKSTRING") ? TRACKBACKSTRING : "");
-			$this -> param['trackbackbeforestring'] = (defined("TRACKBACKBEFORESTRING") ? TRACKBACKBEFORESTRING : "");
-			$this -> param['trackbackafterstring'] = (defined("TRACKBACKAFTERSTRING") ? TRACKBACKAFTERSTRING : "");
+			$param['image_nonew_small'] = IMAGE_nonew_small;
+			$param['image_new_small'] = IMAGE_new_small;
+			$param['image_sticky'] = IMAGE_sticky;
+			$param['caticon'] = ICONSTYLE;
+			$param['commentoffstring'] = COMMENTOFFSTRING;
+			$param['commentlink'] = COMMENTLINK;
+			$param['trackbackstring'] = (defined("TRACKBACKSTRING") ? TRACKBACKSTRING : "");
+			$param['trackbackbeforestring'] = (defined("TRACKBACKBEFORESTRING") ? TRACKBACKBEFORESTRING : "");
+			$param['trackbackafterstring'] = (defined("TRACKBACKAFTERSTRING") ? TRACKBACKAFTERSTRING : "");
 		}
+		
+		cachevars('current_news_item', $news);
+		cachevars('current_news_param', $param);
 
-		if ($this -> news_item['news_render_type'] == 1) {
+		if ($news['news_render_type'] == 1) {
 			if (function_exists("news_list")) {
-				$NEWS_PARSE = news_list($this -> news_item);
+				$NEWS_PARSE = news_list($news);
 			} else if ($NEWSLISTSTYLE) {
 				$NEWS_PARSE = $NEWSLISTSTYLE;
 			} else {
@@ -166,13 +163,13 @@ class news {
 				$NEWS_PARSE = $NEWS_TEMPLATE;
 			} else {
 				if (function_exists("news_style")) {
-					$NEWS_PARSE = news_style($this -> news_item);
+					$NEWS_PARSE = news_style($news);
 				} else {
 					$NEWS_PARSE = $NEWSSTYLE;
 				}
 			}
 		}
-
+		
 		require_once(e_FILE.'shortcode/batch/news_shortcodes.php');
 		$text = $tp -> parseTemplate($NEWS_PARSE, FALSE, $news_shortcodes);
 
@@ -191,19 +188,6 @@ class news {
 		$original = str_replace('&pound', '&amp;#163;', $original);
 		$original = str_replace('&copy;', '(c)', $original);
 		return htmlspecialchars($original);
-	}
-	
-	function news_info() {
-		global $ns;
-		$this -> news_item['news_start'] = (isset($this -> news_item['news_start']) && $this -> news_item['news_start'] ? str_replace(" - 00:00:00", "", $con->convert_date($this -> news_item['news_start'], "long")) : LAN_NEWS_19);
-		$this -> news_item['news_end'] = (isset($this -> news_item['news_end']) && $this -> news_item['news_end'] ? " to ".str_replace(" - 00:00:00", "", $con->convert_date($this -> news_item['news_end'], "long")) : "");
-		$info = $this -> news_item['news_render_type'] == 1 ? LAN_NEWS_9 : "";
-		$info .= $this -> news_item['news_class'] == 255 ? LAN_NEWS_10 : LAN_NEWS_11;
-		$info .= $this -> news_item['news_sticky'] ? "<br />".LAN_NEWS_31 : "";
-		$info .= "<br />".($this -> news_item['news_allow_comments'] ? LAN_NEWS_13 : LAN_NEWS_12);
-		$info .= LAN_NEWS_14.$this -> news_item['news_start'].$this -> news_item['news_end']."<br />";
-		$info .= LAN_NEWS_15.strlen($this -> news_item['news_body']).LAN_NEWS_16.strlen($this -> news_item['news_extended']).LAN_NEWS_17."<br /><br /></div>";
-		return $ns -> tablerender(LAN_NEWS_18, $info);
 	}
 }
 
