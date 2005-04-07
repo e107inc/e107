@@ -240,7 +240,7 @@ ul{
 }
 
 .news_info {
-	width: 100%;
+	width: *;
 	background-color: #F3F0F0;
 	border-collapse:collapse;
 	border-spacing:0px;

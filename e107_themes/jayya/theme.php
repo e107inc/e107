@@ -68,6 +68,12 @@ $HEADER = "<table class='top_section'>
 </div>
 
 <table class='main_section'>
+<tr style='display: none'>
+<td style='width: 170px'></td>
+<td style='width: *'></td>
+<td style='width: 170px'></td>
+</tr>
+
 <tr>
 <td class='left_menu'>
 {SETSTYLE=leftmenu}
@@ -158,22 +164,24 @@ function tablestyle($caption, $text, $mode){
 	if ($caption == '') { $caption = '&nbsp;'; }
 	$bodytable = ((isset($mode['style']) && $mode['style'] == 'button_menu') || (isset($mode) && ($mode == 'menus_config'))) ? 'menu_content_buttons' : 'menu_content';
 	$bodybreak = ((isset($mode['style']) && $mode['style'] == 'button_menu') || (isset($mode) && ($mode == 'menus_config'))) ? '' : '<br />';
-	$r_caption_bord_but = (isset($mode['style']) && $mode['style'] == 'button_menu') ? ' button_menu' : '';
-	if ($style == "leftmenu") {
-		echo "<div class='cap_border'><div class='left_caption'>".$caption."</div></div>";
-		if ($text != "") {
-			echo "<div class='".$bodytable."'>".$text.$bodybreak."</div>";
-		}
-	}  else if ($style == "rightmenu") {
-		echo "<div class='cap_border".$r_caption_bord_but."'><div class='right_caption'>".$caption."</div></div>";
-		if ($text != "") {
-			echo "<div class='".$bodytable."'>".$text.$bodybreak."</div>";
-		}
+	$but_border = (isset($mode['style']) && $mode['style'] == 'button_menu') ? ' button_menu' : '';
+	if ($style == 'leftmenu' || $style == 'rightmenu') {
+		echo "<table cellpadding='0' cellspacing='0' border='0' style='width: 170px'><tr><td>";
+	}
+	echo "<div class='cap_border".$but_border."'>";
+	if ($style == 'leftmenu') {
+		echo "<div class='left_caption'>".$caption."</div>";
+	}  else if ($style == 'rightmenu') {
+		echo "<div class='right_caption'>".$caption."</div>";
 	} else {
-		echo "<div class='cap_border'><div class='main_caption'>".$caption."</div></div>";
-		if ($text != "") {
-			echo "<div class='".$bodytable."'>".$text.$bodybreak."</div>";
-		}
+		echo "<div class='main_caption'>".$caption."</div>";
+	}
+	echo "</div>";
+	if ($text != "") {
+		echo "<div class='".$bodytable."'>".$text.$bodybreak."</div>";
+	}
+	if ($style == 'leftmenu' || $style == 'rightmenu') {
+		echo "</td></tr></table>";
 	}
 }
 
