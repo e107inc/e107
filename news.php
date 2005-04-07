@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.61 $
-|     $Date: 2005-04-03 20:30:54 $
-|     $Author: stevedunstan $
+|     $Revision: 1.62 $
+|     $Date: 2005-04-07 01:05:39 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -114,7 +114,7 @@ if ($action == 'cat' || $action == 'all'){
 
 	$sql->db_Select_gen($query);
 	while ($row = $sql->db_Fetch()) {
-		$text .= $ix->parse_newstemplate($row,$NEWSLISTSTYLE,$param);
+		$text .= $ix->render_newsitem($row, 'return', '', $NEWSLISTSTYLE, $param);
 	}
 
 	$amount = ($action == "all") ? NEWSALL_LIMIT : NEWSLIST_LIMIT;

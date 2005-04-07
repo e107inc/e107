@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.69 $
-|   $Date: 2005-04-06 21:25:00 $
-|   $Author: stevedunstan $
+|   $Revision: 1.70 $
+|   $Date: 2005-04-07 01:05:24 $
+|   $Author: sweetas $
 +---------------------------------------------------------------+
 
 */
@@ -215,29 +215,7 @@ if ($action == "create") {
 			$_POST['news_end'] = $news_end;
 			$_POST['comment_total'] = $sql->db_Count("comments", "(*)", " WHERE comment_item_id='$news_id' AND comment_type='0' ");
 			$_POST['news_rendertype'] = $news_render_type;
-
-			if($news_attach)
-			{
-				$attach = explode(chr(1), $news_attach);
-				foreach($attach as $att)
-				{
-					if(strstr($att, "thumb:"))
-					{
-						$_POST['news_thumb'] = str_replace("thumb:", "", $att);
-					}
-
-					if(strstr($att, "image:"))
-					{
-						$_POST['news_image'] = str_replace("image:", "", $att);
-					}
-
-					if(strstr($att, "file:"))
-					{
-						$_POST['news_file'] = str_replace("file:", "", $att);
-					}
-				}
-			}
-
+			$_POST['news_thumbnail'] = $news_thumbnail;
 		}
 	}
 	$newspost->create_item($sub_action, $id);
@@ -566,12 +544,12 @@ class newspost {
 			<div style='display: none;'>
 
 			(".LAN_NEWS_38.")<br />
-			<input class='tbox' type='text' name='news_thumb' size='60' value='".$_POST['news_thumb']."' maxlength='100' />
+			<input class='tbox' type='text' name='news_thumbnail' size='60' value='".$_POST['news_thumbnail']."' maxlength='100' />
 			<input class='button' type ='button' style='cursor:hand' size='30' value='".NWSLAN_118."' onclick='expandit(this)' />
 			<div id='newsicn' style='display:none;{head}'>";
 
 			foreach($thumblist as $icon){
-				$text .= "<a href=\"javascript:insertext('".$icon['fname']."','news_thumb','newsicn')\"><img src='".$icon['path']."/".$icon['fname']."' style='border:0' alt='' /></a> ";
+				$text .= "<a href=\"javascript:insertext('".$icon['fname']."','news_thumbnail','newsicn')\"><img src='".$icon['path']."/".$icon['fname']."' style='border:0' alt='' /></a> ";
 			}
 
 			$text .= "</div>
@@ -947,7 +925,8 @@ class newspost {
 		$_PR['news_file'] = $_POST['news_file'];
 		$_PR['news_image'] = $_POST['news_image'];
 
-		$ix->render_newsitem($_PR);
+		$ix -> render_newsitem($_PR);
+		echo $ix -> news_info();
 	}
 
 	function submit_item($sub_action, $id) {

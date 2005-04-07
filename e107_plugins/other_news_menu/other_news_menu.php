@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/other_news_menu/other_news_menu.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-02-28 20:04:07 $
-|     $Author: stevedunstan $
+|     $Revision: 1.12 $
+|     $Date: 2005-04-07 01:05:38 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
@@ -94,7 +94,7 @@ $nbr_cols = OTHERNEWS_COLS;
 		while ($row = $sql->db_Fetch()) {
 		$text .= ($t % $nbr_cols == 0) ? "<tr>" : "";
 		$text .= "\n<td style='$style ; width:$wid%;'>\n";
-		$text .= $ix->parse_newstemplate($row,$OTHERNEWS_STYLE,$param);
+		$text .= $ix->render_newsitem($row, 'return', '', $OTHERNEWS_STYLE, $param);
 
     	$text .= "\n</td>\n";
 		if (($t+1) % $nbr_cols == 0) {
