@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/custommenu.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-04-02 18:29:13 $
+|     $Revision: 1.22 $
+|     $Date: 2005-04-07 07:50:32 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -234,7 +234,7 @@ if (count($page_files)){
 	foreach($page_files as $f) {
 		$text .= "<option>".$f['fname']."</option>";
 	}
-	$text .= "</select>\n<input class='button' type='submit' name='edit2' value='".CUSLAN_9."' /> ";
+	$text .= "</select>\n<input class='button' type='submit' name='edit2' value='".LAN_EDIT."' /> ";
 } else {
 	$text .= "<span class='defaulttext'>".CUSLAN_10."</span>";
 }
