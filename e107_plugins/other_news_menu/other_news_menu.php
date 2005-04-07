@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/other_news_menu/other_news_menu.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-04-07 17:38:35 $
-|     $Author: e107coders $
+|     $Revision: 1.15 $
+|     $Date: 2005-04-07 21:47:00 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
@@ -80,7 +80,7 @@ $nbr_cols = OTHERNEWS_COLS;
 		WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type=2  ORDER BY n.news_datestamp DESC LIMIT 0,".OTHERNEWS_LIMIT;
 
 	if ($sql->db_Select_gen($query)){
-    $text = "<table style='width:100%' cellpadding='0' cellspacing='".OTHERNEWS2_SPACING."'>";
+    $text = "<table style='width:100%' cellpadding='0' cellspacing='".OTHERNEWS_SPACING."'>";
     $t = 0;
 	$wid = floor(100/$nbr_cols);
 		while ($row = $sql->db_Fetch()) {
