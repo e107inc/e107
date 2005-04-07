@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-03-31 17:49:48 $
-|     $Author: stevedunstan $
+|     $Revision: 1.14 $
+|     $Date: 2005-04-07 23:59:58 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -48,7 +48,7 @@ if(strstr(e_QUERY, "mirror"))
 	LEFT JOIN #download_category AS dc ON dc.download_category_id = d.download_id
 	WHERE d.download_id = $download_id;
 	";
-	
+
 	if ($sql->db_Select_gen($qry))
 	{
 		$row = $sql->db_Fetch();
@@ -60,7 +60,7 @@ if(strstr(e_QUERY, "mirror"))
 			{
 				check_download_limits();
 			}
-			
+
 			$mirrorList = explode(chr(1), $download_mirror);
 			$mstr = "";
 			foreach($mirrorList as $mirror)
@@ -115,7 +115,7 @@ if (preg_match("#.*\.[a-z,A-Z]{3,4}#", e_QUERY)) {
 	require_once(FOOTERF);
 	exit;
 }
-	
+
 if ($type == "file")
 {
 
@@ -124,7 +124,7 @@ if ($type == "file")
 	LEFT JOIN #download_category AS dc ON dc.download_category_id = d.download_id
 	WHERE d.download_id = $id;
 	";
-	
+
 	if ($sql->db_Select_gen($qry))
 	{
 		$row = $sql->db_Fetch();
@@ -141,13 +141,13 @@ if ($type == "file")
 			{
 				$array = explode(chr(1), $download_mirror);
 
-				$c = (count($array)-1); 
+				$c = (count($array)-1);
 				for ($i=1; $i < $c; $i++)
-				{ 
-					$d = mt_rand(0, $i); 
-					$tmp = $array[$i]; 
-					$array[$i] = $array[$d]; 
-					$array[$d] = $tmp; 
+				{
+					$d = mt_rand(0, $i);
+					$tmp = $array[$i];
+					$array[$i] = $array[$d];
+					$array[$d] = $tmp;
 				}
 
 				$tmp = explode(",", $array[0]);
@@ -232,13 +232,13 @@ if ($type == "file")
 	require_once(FOOTERF);
 	exit;
 }
-	
+
 $sql->db_Select($table, "*", $table."_id= '$id' ");
 $row = $sql->db_Fetch();
 extract($row);
-	
+
 $image = ($table == "upload" ? $upload_ss : $download_image);
-	
+
 if (preg_match("/Binary\s(.*?)\/.*/", $image, $result)) {
 	$bid = $result[1];
 	$result = @mysql_query("SELECT * FROM ".MPREFIX."rbinary WHERE binary_id='$bid' ");
@@ -250,11 +250,11 @@ if (preg_match("/Binary\s(.*?)\/.*/", $image, $result)) {
 	echo $binary_data;
 	exit;
 }
-	
+
 $image = ($table == "upload" ? $upload_ss : $download_image);
-	
+
 if (eregi("http", $image)) {
-	 
+
 	header("location:".$image);
 	exit;
 } else {
@@ -270,7 +270,7 @@ if (eregi("http", $image)) {
 		}
 		$disp .= "<br /><div style='text-align:center'><a href='javascript:history.back(1)'>".LAN_dl_64."</a></div>";
 		$ns->tablerender($image, $disp);
-		 
+
 		require_once(FOOTERF);
 	} else {
 		if (is_file(e_FILE."public/".$image)) {
@@ -286,50 +286,61 @@ if (eregi("http", $image)) {
 		exit;
 	}
 }
-	
+
 // File retrieval function. by Cam.
-	
 function send_file($file) {
 	global $pref;
-	 
+
 	if (!$pref['download_php']) {
 		header("location:".SITEURL.$file);
 		exit;
 	}
-	 
+
 	@set_time_limit(10 * 60);
 	@ini_set("max_execution_time", 10 * 60);
-	 
-	$fullpath = $file;
-	$file = basename($file);
-	if (strstr($_SERVER['HTTP_USER_AGENT'], "MSIE")) {
-		$file = preg_replace('/\./', '%2e', $file, substr_count($file, '.') - 1);
-	}
 
-	if (is_file($fullpath) && connection_status() == 0) {
-		header("Cache-control: private");
-		header('Pragma: no-cache');
-		header("Content-Type: application/force-download");
-		header("Content-Disposition:attachment; filename=\"".trim(htmlentities($file))."\"");
-		header("Content-Description: ".trim(htmlentities($file)));
-		header("Content-length:".(string)(filesize($fullpath)));
-		header("Expires: ".gmdate("D, d M Y H:i:s", mktime(date("H")+2, date("i"), date("s"), date("m"), date("d"), date("Y")))." GMT");
-		header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
-		 
-		 
-		if ($file = fopen($fullpath, 'rb')) {
-			while (!feof($file) and (connection_status() == 0)) {
-				print(fread($file, 1024 * 8));
-				flush();
-			}
-			fclose($file);
+	ob_end_clean();
+	$filename = $file;
+	$file = basename($file);
+	if (is_file($filename) && connection_status() == 0) {
+		if (strstr($_SERVER['HTTP_USER_AGENT'], "MSIE")) {
+			$file = preg_replace('/\./', '%2e', $file, substr_count($file, '.') - 1);
 		}
-		 
+
+		if (isset($_SERVER['HTTP_RANGE'])) {
+			$seek = intval(substr($_SERVER['HTTP_RANGE'] , strlen('bytes=')));
+		}
+
+		$bufsize = 2048;
+		ignore_user_abort(true);
+		$data_len = filesize($filename);
+		if ($seek > ($data_len - 1)) $seek = 0;
+		if ($filename == null) $filename = basename($this->data);
+		$res =& fopen($filename, 'rb');
+		if ($seek){
+			fseek($res , $seek);
+		}
+		$data_len -= $seek;
+		header("Content-Type: application/force-download");
+		header('Content-Disposition: attachment; filename="'.$file.'"');
+		header("Content-Length: {$data_len}");
+		if ($seek) {
+			header('Accept-Ranges: bytes');
+			header("HTTP/1.0 206 Partial Content");
+			header("status: 206 Partial Content");
+			header("Content-Range: bytes {$seek}-" . ($data_len - 1) . "/{$data_len}");
+		}
+		while (!connection_aborted() && $data_len > 0) {
+			echo fread($res , $bufsize);
+			$data_len -= $bufsize;
+		}
+		fclose($res);
 	} else {
 		header("location: ".e_BASE."index.php");
 		exit;
 	}
 }
+
 
 function check_download_limits()
 {
