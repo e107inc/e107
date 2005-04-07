@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/other_news_menu/other_news_menu.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-04-07 17:30:45 $
+|     $Revision: 1.14 $
+|     $Date: 2005-04-07 17:38:35 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -32,10 +32,6 @@ $OTHERNEWS_STYLE = "
 			{NEWSCATICON}
 			</td><td style='text-align:left;padding:3px;vertical-align:top'>
 			{NEWSTITLELINK}
-			<br />
-			{NEWSSUMMARY}
-			</td><td style='width:55px;vertical-align:top'>
-			{NEWSTHUMBNAIL}
 			</td></tr></table>
 			</div>\n";
  }
