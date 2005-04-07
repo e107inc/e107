@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.72 $
-|     $Date: 2005-04-06 14:23:34 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.73 $
+|     $Date: 2005-04-07 01:05:24 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -477,7 +477,7 @@ function update_61x_to_700($type) {
 
 		if($columns != 16){
 			mysql_query("ALTER TABLE `".MPREFIX."news` ADD `news_summary` TEXT DEFAULT NULL;");
-			mysql_query("ALTER TABLE `".MPREFIX."news` ADD `news_attach` TEXT DEFAULT NULL;");
+			mysql_query("ALTER TABLE `".MPREFIX."news` ADD `news_thumbnail` TEXT DEFAULT NULL;");
 			mysql_query("ALTER TABLE ".MPREFIX."news ADD news_sticky TINYINT ( 3 ) UNSIGNED NOT NULL");
 		}
 
@@ -563,6 +563,8 @@ function update_61x_to_700($type) {
 		mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` DROP `user_extended_struct_icon` ;");
 		mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` ADD `user_extended_struct_parent` INT( 10 ) UNSIGNED NOT NULL ;");
 		mysql_query("ALTER TABLE `".MPREFIX."user_extended` ADD `user_hidden_fields` TEXT NOT NULL AFTER `user_extended_id`");
+		mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_attach` `news_thumbnail` TEXT NOT NULL;");
+		mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_summary` `news_summary` TEXT NOT NULL;");
 
 
 		// start poll update -------------------------------------------------------------------------------------------
@@ -607,9 +609,9 @@ function update_61x_to_700($type) {
 
 		//return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."user_extended_struct");
 
-		if($sql -> db_Select("menus", "*", "menu_name = 'newforumposts_menu' and menu_path='newforumposts_menu' ")){
-			return FALSE;
-		}
+		//if($sql -> db_Select("menus", "*", "menu_name = 'newforumposts_menu' and menu_path='newforumposts_menu' ")){
+		//	return FALSE;
+		//}
 
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."user_extended");
 		$fieldname = mysql_field_name($fields, 1);
@@ -617,17 +619,24 @@ function update_61x_to_700($type) {
 		{
 			return FALSE;
 		}
+
+		if (!$sql -> db_Select('news', 'news_thumbnail')) {
+			return FALSE;
+		} else {
+			return TRUE;
+		}
 		//return !$sql->db_Select("core","*","e107_name = 'user_entended'");
 
 //		$sql->db_Select_gen("DELETE FROM #core WHERE e107_name='user_entended'");
 
-
+		/*
 		global $pref;
 		if (!isset($pref['search_highlight'])) {
 			return FALSE;
 		} else {
 			return TRUE;
 		}
+		*/
 
 	}
 }

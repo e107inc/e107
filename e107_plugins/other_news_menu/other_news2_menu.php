@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/other_news_menu/other_news2_menu.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-03-10 19:03:05 $
-|     $Author: stevedunstan $
+|     $Revision: 1.8 $
+|     $Date: 2005-04-07 01:05:38 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
@@ -94,7 +94,7 @@ $query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_na
 		$text .= "\n<td style='$style ; width:$wid%;'>\n";
 
 
-		$text .= $ix->parse_newstemplate($row, $OTHERNEWS2_STYLE, $param);
+		$text .= $ix->render_newsitem($row, 'return', '', $OTHERNEWS2_STYLE, $param);
 
 
     	$text .= "\n</td>\n";
