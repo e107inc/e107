@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-03-21 04:25:37 $
+|     $Revision: 1.18 $
+|     $Date: 2005-04-07 12:14:05 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -71,11 +71,6 @@ if ($records > 30) {
 	$records = 30;
 }
 
-//$pref['profile_comments'] = 1;
-//$pref['profile_rate'] = 1;
-//require_once(e_BASE."user_shortcodes.php");
-//echo "<pre>".print_r($user_shortcodes, TRUE)."</pre>";
-
 if (isset($id)) {
 
 	if ($id == 0) {
@@ -84,7 +79,6 @@ if (isset($id)) {
 		require_once(FOOTERF);
 		exit;
 	}
-
 
 	if (isset($_POST['commentsubmit']) && $pref['profile_comments'])
 	{
@@ -110,10 +104,6 @@ if (isset($id)) {
 	{
 		include_once(e_HANDLER."comment_class.php");
 	}
-//	if($pref['profile_rate'])
-//	{
-//		include_once(e_HANDLER."rate_class.php");
-//	}
 	$user_data = $sql->db_Fetch();
 	cachevars('userinfo_{$id}',$user_data);
 	$text = renderuser($user_data);
@@ -122,15 +112,24 @@ if (isset($id)) {
 	if($pref['profile_comments'])
 	{
 		$cobj = new comment;
-		if($pref['nested_comments'])
-		{
-			$query = "comment_item_id='$id' AND comment_type='profile' AND comment_pid='0' ORDER BY comment_datestamp";
-		}
-		else
-		{
-			$query = "comment_item_id='$id' AND comment_type='profile' ORDER BY comment_datestamp";
-		}
-		$comment_total = $sql->db_Select("comments", "*", "".$query);
+
+		$query = ($pref['nested_comments']) ? 
+			"SELECT #comments.*, user_id, user_name, user_image, user_signature, user_join, user_comments, user_location FROM #comments
+			LEFT JOIN #user ON #comments.comment_author = #user.user_id 
+			WHERE comment_item_id='$id' 
+			AND comment_type='profile' 
+			AND comment_pid='0' 
+			ORDER BY comment_datestamp
+			"
+			:
+			"SELECT #comments.*, user_id, user_name, user_image, user_signature, user_join, user_comments, user_location FROM #comments
+			LEFT JOIN #user ON #comments.comment_author = #user.user_id 
+			WHERE comment_item_id='$id' 
+			AND comment_type='profile'  
+			ORDER BY comment_datestamp
+			";
+
+		$comment_total = $sql->db_Select_gen($query);
 		if ($comment_total)
 		{
 			$width = 0;
@@ -155,7 +154,7 @@ if (isset($id)) {
 				echo "<a href='".e_BASE.e_ADMIN."modcomment.php?profile.{$id}'>".LAN_314."</a>";
 			}
 		}
-		$cobj->form_comment("comment", "profile", $id, $subject, $content_type, TRUE);
+		$cobj->form_comment("comment", "profile", $id, $subject, $content_type, FALSE);
 	}
 	require_once(FOOTERF);
 	exit;
