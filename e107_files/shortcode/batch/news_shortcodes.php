@@ -22,7 +22,7 @@ return $news_body;
 SC_END
 
 SC_BEGIN NEWSICON
-global $tp;
+global $tp, $news_shortcodes;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
 $category_icon = $tp -> parseTemplate('{NEWSHEADER}', FALSE, $news_shortcodes);
@@ -147,7 +147,7 @@ return "<div class='".(defined(ADMINNAME) ? ADMINNAME : "null")."'>".($news_item
 SC_END
 	
 SC_BEGIN ADMINBODY
-global $tp;
+global $tp, $news_shortcodes;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
 $news_body = $tp -> parseTemplate('{NEWSBODY}', FALSE, $news_shortcodes);
@@ -179,7 +179,7 @@ return "<a style='".(isset($param['itemlink']) ? $param['itemlink'] : "null")."'
 SC_END
 	
 SC_BEGIN NEWSCATICON
-global $tp;
+global $tp, $news_shortcodes;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
 $category_icon = $tp -> parseTemplate('{NEWSHEADER}', FALSE, $news_shortcodes);
