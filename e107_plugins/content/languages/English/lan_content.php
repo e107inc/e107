@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-03-20 19:47:52 $
-|     $Author: stevedunstan $
+|     $Revision: 1.18 $
+|     $Date: 2005-04-07 14:48:06 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -181,7 +181,12 @@ define("CONTENT_ADMIN_OPT_LAN_78", "choose a rendertype for the sections<br />yo
 define("CONTENT_ADMIN_OPT_LAN_79", "in seperate menus");
 define("CONTENT_ADMIN_OPT_LAN_80", "in one menu");
 define("CONTENT_ADMIN_OPT_LAN_81", "error; menu file not created");
-define("CONTENT_ADMIN_OPT_LAN_82", "menu file succesfully created in the /menus folder<br />you will still need to activate the menu in the admin menus area");
+define("CONTENT_ADMIN_OPT_LAN_82", "content menu created<br /><br />
+Because you have created a Main Parent Category, a Menu has been generated.<br />
+The menu file has been created in your /menus folder.<br /><br />
+In order to see the menu in action, you still need to activate this menu in your <a href='".e_ADMIN."menus.php'>admin menus area</a>.
+");
+
 define("CONTENT_ADMIN_OPT_LAN_83", "breadcrumb seperator character ( >> or > or - or ...)");
 define("CONTENT_ADMIN_OPT_LAN_84", "does a link to the 'recent content items' page need to be shown?");
 define("CONTENT_ADMIN_OPT_LAN_85", "how many recent items should be shown");
@@ -332,6 +337,27 @@ define("CONTENT_ADMIN_MAIN_LAN_2", "main content categories");
 define("CONTENT_ADMIN_MAIN_LAN_3", "content item deleted");
 define("CONTENT_ADMIN_MAIN_LAN_4", "parent text");
 define("CONTENT_ADMIN_MAIN_LAN_5", "parent icon");
+define("CONTENT_ADMIN_MAIN_LAN_6", "<br />
+
+There are two scenarios possible for you to choose from.<br /><br />
+1) start with the empty new content table.<br />
+2) convert the old content table into the new content table used in this plugin.<br />
+
+1) this is a fresh install, so i want to start managing new content<br />
+2) i do not need to convert content from my old content table<br />
+3) i need to convert content from my old content table<br />
+");
+
+define("CONTENT_ADMIN_MAIN_LAN_7", "Welcome to the Content Management System !");
+define("CONTENT_ADMIN_MAIN_LAN_8", "Please read the following information carefully and choose what you want to do");
+define("CONTENT_ADMIN_MAIN_LAN_9", "This information is shown because the table of the Content Management Plugin contains no records.");
+define("CONTENT_ADMIN_MAIN_LAN_10", "");
+define("CONTENT_ADMIN_MAIN_LAN_11", "");
+define("CONTENT_ADMIN_MAIN_LAN_12", "");
+define("CONTENT_ADMIN_MAIN_LAN_13", "");
+define("CONTENT_ADMIN_MAIN_LAN_14", "");
+define("CONTENT_ADMIN_MAIN_LAN_15", "");
+
 
 define("CONTENT_ADMIN_MENU_LAN_0", "Manage Existing Content");
 define("CONTENT_ADMIN_MENU_LAN_1", "Create New Content");

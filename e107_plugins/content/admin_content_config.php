@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.15 $
-|		$Date: 2005-02-20 22:35:06 $
+|		$Revision: 1.16 $
+|		$Date: 2005-04-07 14:45:54 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -289,7 +289,11 @@ if(IsSet($message)){
 // ##### End --------------------------------------------------------------------------------------
 
 if(!e_QUERY){																//show main categories
-		$aform -> show_main_parent("edit");
+
+		$intro = $aform -> show_main_intro();
+		if($intro == false){
+			$aform -> show_main_parent("edit");
+		}
 		require_once(e_ADMIN."footer.php");
 		exit;
 }else{
@@ -406,6 +410,11 @@ if(!e_QUERY){																//show main categories
 						header("location:".e_SELF."?type.".$type_id.".cat.create"); exit;
 				}else{														//category; create form
 						if($id == "pc"){									//category; create redirect
+								$sql -> db_Select($plugintable, "content_id", "content_parent = '0' ORDER BY content_datestamp DESC LIMIT 1");
+								list($parent_id) = $sql -> db_Fetch();
+								$content_pref = $aa -> getContentPref($parent_id);								
+								$aa -> CreateParentMenu($parent_id);
+
 								$message = CONTENT_ADMIN_CAT_LAN_11;
 								if($type_id == "0"){ $message .= "<br /><br />".CONTENT_ADMIN_OPT_LAN_82; }
 								$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");

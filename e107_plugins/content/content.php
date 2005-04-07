@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.17 $
-|		$Date: 2005-03-01 23:12:20 $
+|		$Revision: 1.18 $
+|		$Date: 2005-04-07 14:45:55 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1045,6 +1045,7 @@ function show_content_item(){
 							if($comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='".$sub_action."' AND comment_type='".$plugintable."' AND comment_pid='0' ORDER BY comment_datestamp")){
 								$width = 0;
 								while($row2 = $sql -> db_Fetch()){
+
 									if($pref['nested_comments']){
 										$text .= $cobj -> render_comment($row2, $plugintable , "comment", $sub_action, $width, $row['content_heading']);
 										$ns -> tablerender(CONTENT_LAN_35, $text);
