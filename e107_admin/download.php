@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2005-04-02 19:13:38 $
-|     $Author: e107coders $
+|     $Revision: 1.44 $
+|     $Date: 2005-04-08 18:11:02 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -813,6 +813,9 @@ class download {
 	function submit_download($sub_action, $id) {
 		global $tp, $sql, $DOWNLOADS_DIRECTORY, $e_event;
 
+
+		//echo "<pre>"; print_r($_POST); echo "</pre>"; exit;
+
 		if ($_POST['download_url_external'] && $_POST['download_url'] == '') {
 			$durl = $_POST['download_url_external'];
 			$filesize = $_POST['download_filesize_external'];
@@ -847,8 +850,12 @@ class download {
 		$mirrorStr = "";
 		$mirrorReq = "";
 
-		if($mirrors = count($_POST['download_mirror_name']))
+
+	//	echo "<b>Debug</b> ".count($_POST['download_mirror_name'])." <br />"; EXIT;
+
+		if($_POST['download_mirror_name'][0])
 		{
+			$mirrors = count($_POST['download_mirror_name']);
 			for($a=0; $a<$mirrors; $a++)
 			{
 				$mirror_id = $_POST['download_mirror_name'][$a];
