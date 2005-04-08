@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.73 $
-|     $Date: 2005-04-07 01:05:24 $
+|     $Revision: 1.74 $
+|     $Date: 2005-04-08 09:56:54 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -563,8 +563,16 @@ function update_61x_to_700($type) {
 		mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` DROP `user_extended_struct_icon` ;");
 		mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` ADD `user_extended_struct_parent` INT( 10 ) UNSIGNED NOT NULL ;");
 		mysql_query("ALTER TABLE `".MPREFIX."user_extended` ADD `user_hidden_fields` TEXT NOT NULL AFTER `user_extended_id`");
+		
+		// news_attach removal / field structure changes / 'thumb:' prefix removal
 		mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_attach` `news_thumbnail` TEXT NOT NULL;");
 		mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_summary` `news_summary` TEXT NOT NULL;");
+		if ($sql -> db_Select("news", "news_id, news_thumbnail", "news_thumbnail LIKE '%thumb:%'")) {
+			while ($row = $sql -> db_Fetch()) {
+				$thumbnail = trim(str_replace('thumb:', '', $row['news_thumbnail']));
+				$sql2 -> db_Update("news", "news_thumbnail='".$thumbnail."' WHERE news_id='".$row['news_id']."'");
+			}
+		}
 
 
 		// start poll update -------------------------------------------------------------------------------------------
@@ -617,6 +625,10 @@ function update_61x_to_700($type) {
 		$fieldname = mysql_field_name($fields, 1);
 		if($fieldname != "user_hidden_fields")
 		{
+			return FALSE;
+		}
+		
+		if ($sql -> db_Select("news", "news_id, news_thumbnail", "news_thumbnail LIKE '%thumb:%'")) {
 			return FALSE;
 		}
 
