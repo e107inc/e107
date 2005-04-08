@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-04-07 23:59:58 $
+|     $Revision: 1.15 $
+|     $Date: 2005-04-08 12:37:29 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -299,7 +299,8 @@ function send_file($file) {
 	@set_time_limit(10 * 60);
 	@ini_set("max_execution_time", 10 * 60);
 
-	ob_end_clean();
+	while (@ob_end_clean()); // kill all output buffering else it eats server resources
+	
 	$filename = $file;
 	$file = basename($file);
 	if (is_file($filename) && connection_status() == 0) {
