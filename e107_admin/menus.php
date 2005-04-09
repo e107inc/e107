@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-04-05 07:13:39 $
-|     $Author: e107coders $
+|     $Revision: 1.21 $
+|     $Date: 2005-04-09 02:37:12 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 if (!getperms("2")) {
 	header("location:".e_BASE."index.php");
-	 exit;
+	exit;
 }
 $e_sub_cat = 'menus';
 require_once("auth.php");
@@ -43,19 +43,19 @@ if ($menus_equery[1] == '' || $menus_equery[1] == 'default_layout') {
 }
 else if ($menus_equery[1] == 'custom_layout') {
 	$menus_header = $CUSTOMHEADER ? $CUSTOMHEADER :
-	 $HEADER;
+	$HEADER;
 	$menus_footer = $CUSTOMFOOTER ? $CUSTOMFOOTER :
-	 $FOOTER;
+	$FOOTER;
 }
 else if ($menus_equery[1] == 'newsheader_layout') {
 	$menus_header = $NEWSHEADER ? $NEWSHEADER :
-	 $HEADER;
+	$HEADER;
 	$menus_footer = $FOOTER;
 } else {
 	$menus_header = $CUSTOMHEADER[$menus_equery[1]] ? $CUSTOMHEADER[$menus_equery[1]] :
-	 $HEADER;
+	$HEADER;
 	$menus_footer = $CUSTOMFOOTER[$menus_equery[1]] ? $CUSTOMFOOTER[$menus_equery[1]] :
-	 $FOOTER;
+	$FOOTER;
 }
 
 $layouts_str = $HEADER.$FOOTER;
@@ -97,13 +97,13 @@ foreach ($menu_array as $menu_value) {
 // Cams Bit ----------- Activate Multiple Menus ---
 if($_POST['menuActivate']){
 	foreach ($_POST['menuActivate'] as $k => $v) {
-     	if (trim($v)) {
-        	$location = $k;
+		if (trim($v)) {
+			$location = $k;
 		}
 	}
 
-    $menu_count = $sql->db_Count("menus", "(*)", " WHERE menu_location='$position' ");
-    foreach($_POST['menuselect'] as $sel_mens){
+	$menu_count = $sql->db_Count("menus", "(*)", " WHERE menu_location='$position' ");
+	foreach($_POST['menuselect'] as $sel_mens){
 		$sql->db_Update("menus", "menu_location='$location', menu_order='".($menu_count+1)."' WHERE menu_id='$sel_mens' ");
 		$menu_count++;
 	}
@@ -130,37 +130,37 @@ if ($menu_act == "adv") {
 	require_once(e_HANDLER."userclass_class.php");
 	$sql->db_Select("menus", "*", "menu_id='$id' ");
 	$row = $sql->db_Fetch();
-	 extract($row);
+	extract($row);
 	$listtype = substr($menu_pages, 0, 1);
 	$menu_pages = substr($menu_pages, 2);
 	$menu_pages = preg_replace("#\|#", "\n", $menu_pages);
 	$text = "<div style='text-align:center'>
-		<form  method='post' action='".e_SELF."?configure.".$menus_equery[1]."'>\n
-		<table style='width:100%'>
-		<tr>
-		<td>
-		<input type='hidden' name='menuAct[$menu_id]' value='sv.$menu_id' />";
+	<form  method='post' action='".e_SELF."?configure.".$menus_equery[1]."'>\n
+	<table style='width:100%'>
+	<tr>
+	<td>
+	<input type='hidden' name='menuAct[$menu_id]' value='sv.$menu_id' />";
 	$text .= MENLAN_4." ";
 	$text .= r_userclass('menu_class', $menu_class, "off", "public,member,guest,admin,classes,nobody");
 	$text .= "</td>
-		</tr>";
+	</tr>";
 	$text .= "<tr><td><br />";
 	$checked = ($listtype == 1) ? " checked='checked' " :
-	 "";
+	"";
 	$text .= "<input type='radio' {$checked} name='listtype' value='1' /> ".MENLAN_26."<br />";
 	$checked = ($listtype == 2) ? " checked='checked' " :
-	 "";
+	"";
 	$text .= "<input type='radio' {$checked} name='listtype' value='2' /> ".MENLAN_27."<br /><br />".MENLAN_28."<br />";
 	$text .= "<textarea name='pagelist' cols='60' rows='10' class='tbox'>$menu_pages</textarea>";
 	$text .= "
-		<tr>
-		<td style=\"text-align:center\"><br />
-		<input class=\"button\" type=\"submit\" name=\"class_submit\" value=\"".MENLAN_6."\" />
-		</td>
-		</tr>
-		</table>
-		</form>
-		</div>";
+	<tr>
+	<td style=\"text-align:center\"><br />
+	<input class=\"button\" type=\"submit\" name=\"class_submit\" value=\"".MENLAN_6."\" />
+	</td>
+	</tr>
+	</table>
+	</form>
+	</div>";
 	$caption = MENLAN_7." ".$menu_name;
 	$ns->tablerender($caption, $text);
 }
@@ -176,7 +176,7 @@ if ($menu_act == "sv") {
 	$pageparms = $_POST['listtype'].'-'.$plist;
 	$pageparms = preg_replace("#\|$#", "", $pageparms);
 	$pageparms = (trim($_POST['pagelist']) == '') ? '' :
-	 $pageparms;
+	$pageparms;
 	$sql->db_Update("menus", "menu_class='".$_POST['menu_class']."', menu_pages='{$pageparms}' WHERE menu_id='$id' ");
 	$message = "<br />".MENLAN_8."<br />";
 }
@@ -275,21 +275,25 @@ foreach ($menu_areas as $menu_act) {
 	$menus_sql[] = "menu_location!='".$menu_act."'";
 }
 
-$menus_query = implode(' && ', $menus_sql);
-$sql->db_Update("menus", "menu_location='0', menu_order='0' WHERE ".$menus_query);
-
-if ($message != "") {
+if ($message != "")
+{
 	echo $ns -> tablerender('Updated', "<div style='text-align:center'><b>".$message."</b></div><br /><br />");
 }
-if (strpos(e_QUERY, 'configure') === FALSE) {
-  	$cnt = $sql->db_Select("menus", "*", "menu_location='1' ORDER BY menu_name "); // calculate height to remove vertical scroll-bar.
-  	$text = "<object data='".e_SELF."?configure' type='text/html' style='width:100%;height:".(($cnt*80)+500)."px;border:0px;overflow:auto' ></object>";
+if (strpos(e_QUERY, 'configure') === FALSE)
+{
+	$cnt = $sql->db_Select("menus", "*", "menu_location='1' ORDER BY menu_name "); // calculate height to remove vertical scroll-bar.
+	$text = "<object data='".e_SELF."?configure' type='text/html' style='width:100%;height:".(($cnt*80)+500)."px;border:0px;overflow:auto' ></object>";
 	echo $ns -> tablerender(MENLAN_35, $text, 'menus_config');
-} else {
+}
+else
+{
 
-if ($CUSTOMPAGES) {
-	if ($menu_act != 'adv') {
-		$text = "<form  method='post' action='".e_SELF."?configure.".$menus_equery[1]."'><div style='width: 100%'>
+	$menus_query = implode(' && ', $menus_sql);
+	$sql->db_Update("menus", "menu_location='0', menu_order='0' WHERE ".$menus_query);
+
+	if ($CUSTOMPAGES) {
+		if ($menu_act != 'adv') {
+			$text = "<form  method='post' action='".e_SELF."?configure.".$menus_equery[1]."'><div style='width: 100%'>
 			<table class='fborder' style='".ADMIN_WIDTH."'>
 			<tr>
 			<td class='forumheader3' style='width: 90%'>
@@ -297,50 +301,50 @@ if ($CUSTOMPAGES) {
 			</td>
 			<td class='forumheader3' style='width: 10%; text-align: center;'>";
 
-		$text .= $frm->form_select_open('custom_select', 'onchange="this.form.submit()"');
+			$text .= $frm->form_select_open('custom_select', 'onchange="this.form.submit()"');
 
-		if ($menus_equery[1] == '' || $menus_equery[1] == 'default_layout') {
-			$text .= $frm->form_option(MENLAN_31, 'selected', 'default_layout');
-		} else {
-			$text .= $frm->form_option(MENLAN_31, FALSE, 'default_layout');
-		}
-
-		if ($NEWSHEADER) {
-			if ($menus_equery[1] == 'newsheader_layout') {
-				$text .= $frm->form_option(MENLAN_32, 'selected', 'newsheader_layout');
+			if ($menus_equery[1] == '' || $menus_equery[1] == 'default_layout') {
+				$text .= $frm->form_option(MENLAN_31, 'selected', 'default_layout');
 			} else {
-				$text .= $frm->form_option(MENLAN_32, FALSE, 'newsheader_layout');
+				$text .= $frm->form_option(MENLAN_31, FALSE, 'default_layout');
 			}
-		}
 
-		if ($CUSTOMPAGES) {
-			if (is_array($CUSTOMPAGES)) {
-				foreach ($CUSTOMPAGES as $custom_pages_key => $custom_pages_value) {
-					if ($menus_equery[1] == $custom_pages_key) {
-						$text .= $frm->form_option($custom_pages_key, 'selected', $custom_pages_key);
+			if ($NEWSHEADER) {
+				if ($menus_equery[1] == 'newsheader_layout') {
+					$text .= $frm->form_option(MENLAN_32, 'selected', 'newsheader_layout');
+				} else {
+					$text .= $frm->form_option(MENLAN_32, FALSE, 'newsheader_layout');
+				}
+			}
+
+			if ($CUSTOMPAGES) {
+				if (is_array($CUSTOMPAGES)) {
+					foreach ($CUSTOMPAGES as $custom_pages_key => $custom_pages_value) {
+						if ($menus_equery[1] == $custom_pages_key) {
+							$text .= $frm->form_option($custom_pages_key, 'selected', $custom_pages_key);
+						} else {
+							$text .= $frm->form_option($custom_pages_key, FALSE, $custom_pages_key);
+						}
+					}
+				} else {
+					if ($menus_equery[1] == 'custom_layout') {
+						$text .= $frm->form_option(MENLAN_33, 'selected', 'custom_layout');
 					} else {
-						$text .= $frm->form_option($custom_pages_key, FALSE, $custom_pages_key);
+						$text .= $frm->form_option(MENLAN_33, FALSE, 'custom_layout');
 					}
 				}
-			} else {
-				if ($menus_equery[1] == 'custom_layout') {
-					$text .= $frm->form_option(MENLAN_33, 'selected', 'custom_layout');
-				} else {
-					$text .= $frm->form_option(MENLAN_33, FALSE, 'custom_layout');
-				}
 			}
-		}
 
-		$text .= $frm->form_select_close();
+			$text .= $frm->form_select_close();
 
-		$text .= "</td>
+			$text .= "</td>
 			</tr>
 			</table></div>
 			</form>";
 
-		$ns->tablerender(MENLAN_29, $text);
+			$ns->tablerender(MENLAN_29, $text);
+		}
 	}
-}
 
 
 	parseheader($menus_header);
@@ -350,23 +354,23 @@ if ($CUSTOMPAGES) {
 
 	$sql->db_Select("menus", "*", "menu_location='0' ORDER BY menu_name ");
 	$text .= "<tr><td style='text-align:center;padding-bottom:4px'>".MENLAN_36."...</td><td style='padding-bottom:4px;text-align:center'>...".MENLAN_37."</td></tr>";
-  	$text .= "<tr><td style='width:50%;vertical-align:top;text-align:center'>";
+	$text .= "<tr><td style='width:50%;vertical-align:top;text-align:center'>";
 
 	$text .= "<select name='menuselect[]' class='tbox' multiple='multiple' style='height:200px;width:95%'>";
 	while (list($menu_id, $menu_name, $menu_location, $menu_order) = $sql->db_Fetch()) {
 		$menu_name = eregi_replace("_menu", "", $menu_name);
-    $text .= "<option value='$menu_id'>$menu_name</option>\n";
+		$text .= "<option value='$menu_id'>$menu_name</option>\n";
 
-		}
+	}
 	$text .= "</select>";
-    $text .= "<br /><br /><span class='smalltext'>".MENLAN_38."</span>";
+	$text .= "<br /><br /><span class='smalltext'>".MENLAN_38."</span>";
 	$text .= "</td><td style='width:50%;vertical-align:top;text-align:center'><br />";
-    	foreach ($menu_areas as $menu_act) {
-	 	  	$text .= "<input type='submit' class='button' id='menuAct_".trim($menu_act)."' name='menuActivate[".trim($menu_act)."]' value='".MENLAN_13." ".trim($menu_act)."' /><br /><br />\n";
-	 	}
-	 	$text .= "</td>";
+	foreach ($menu_areas as $menu_act) {
+		$text .= "<input type='submit' class='button' id='menuAct_".trim($menu_act)."' name='menuActivate[".trim($menu_act)."]' value='".MENLAN_13." ".trim($menu_act)."' /><br /><br />\n";
+	}
+	$text .= "</td>";
 
-  	$text .= "</tr></table>";
+	$text .= "</tr></table>";
 	echo $ns -> tablerender(MENLAN_22, $text);
 	echo $frm->form_close();
 	echo "</div>";
@@ -413,25 +417,25 @@ function checklayout($str) {
 	else if (strstr($str, "SITELINKS")) {
 		echo "[SiteLinks]";
 	}
-    else if (strstr($str, "CUSTOM")) {
+	else if (strstr($str, "CUSTOM")) {
 		$cust = preg_replace("/\{CUSTOM=(.*?)\}/si", "\\1", $str);
 		echo "[$cust]";
 	}
-// Display embedded Plugin information.
-    else if (strstr($str, "PLUGIN")){
+	// Display embedded Plugin information.
+	else if (strstr($str, "PLUGIN")){
 		$plug = preg_replace("/\{PLUGIN=(.*?)\}/si", "\\1", $str);
 		$plug = trim($plug);
-	  	if (file_exists((e_PLUGIN."{$plug}/{$plug}.config.php"))){
-	  		$link = e_PLUGIN."{$plug}/{$plug}.config.php";
-	  	}
+		if (file_exists((e_PLUGIN."{$plug}/{$plug}.config.php"))){
+			$link = e_PLUGIN."{$plug}/{$plug}.config.php";
+		}
 
 		if(file_exists((e_PLUGIN.$plug."/config.php"))){
 			$link = e_PLUGIN.$plug."/config.php";
 		}
 
-        $plugtext = ($link) ? "(".MENLAN_34.":<a href=\"$link\" title='".MENLAN_16."'>".MENLAN_16."</a>)" : "(".MENLAN_34.")" ;
+		$plugtext = ($link) ? "(".MENLAN_34.":<a href=\"$link\" title='".MENLAN_16."'>".MENLAN_16."</a>)" : "(".MENLAN_34.")" ;
 		echo "<br />";
-        $ns -> tablerender($plug, $plugtext);
+		$ns -> tablerender($plug, $plugtext);
 	}
 	else if (strstr($str, "MENU")) {
 		$ns = new e107table;
@@ -448,7 +452,7 @@ function checklayout($str) {
 			while (list($menu_id, $menu_name, $menu_location, $menu_order, $menu_class, $menu_pages, $menu_path) = $sql9->db_Fetch()) {
 				$menu_name = eregi_replace("_menu", "", $menu_name);
 				$vis = ($menu_class || strlen($menu_pages) > 1) ? " <span style='color:red'>*</span> " :
-				 "";
+				"";
 				$caption = "<div style=\"text-align:center\">{$menu_name}{$vis}</div>";
 				$menu_info = "{$menu_location}.{$menu_order}";
 
