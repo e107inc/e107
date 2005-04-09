@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.104 $
-|     $Date: 2005-04-05 16:26:49 $
-|     $Author: stevedunstan $
+|     $Revision: 1.105 $
+|     $Date: 2005-04-09 20:33:18 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -242,7 +242,10 @@ define("e_SELF", ($pref['ssl_enabled'] ? "https://".$_SERVER['HTTP_HOST'].($_SER
 
 // Cameron's Mult-lang switch. ==================
 
-if (isset($_POST['setlanguage'])) {
+if (isset($_POST['setlanguage']) || $_GET['elan']) {
+	if($_GET['elan']){  // query support, for language selection splash pages. etc
+    	$_POST['sitelanguage'] = $_GET['elan'];
+	}
 	$sql->mySQLlanguage=$_POST['sitelanguage'];
 	if ($pref['user_tracking'] == "session") {
 		$_SESSION['e107language_'.$pref['cookie_name']] = $_POST['sitelanguage'];
