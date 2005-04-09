@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-03-25 03:32:11 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.19 $
+|     $Date: 2005-04-09 19:13:45 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -109,7 +109,7 @@ require_once(HEADERF);
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 if (IsSet($_POST['submitpoll'])) {
-	require_once(e_PLUGIN."poll/poll_class.php");
+	require(e_PLUGIN."poll/poll_class.php");
 	$poll = new poll;
 	//$poll->submit_poll(0, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], 0, $forum_id, "forum");
 
