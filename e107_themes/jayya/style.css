@@ -205,6 +205,12 @@ ul{
 	vertical-align: top;
 }
 
+.menus_container {
+	width: 170px;
+	border-collapse:collapse;
+	border-spacing:0px;
+}
+
 .left_menu, .right_menu {
 	width: 170px;
 	vertical-align: top;

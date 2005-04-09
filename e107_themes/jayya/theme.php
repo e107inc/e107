@@ -76,8 +76,10 @@ $HEADER = "<table class='top_section'>
 
 <tr>
 <td class='left_menu'>
+<table class='menus_container'><tr><td>
 {SETSTYLE=leftmenu}
 {MENU=1}
+</td></tr></table>
 </td>
 <td class='default_menu'>
 {SETSTYLE=default}
@@ -88,8 +90,10 @@ $FOOTER = "<br />
 </td>
 
 <td class='right_menu'>
+<table class='menus_container'><tr><td>
 {SETSTYLE=rightmenu}
 {MENU=2}
+</td></tr></table>
 </td>
 </tr>
 </table>
@@ -161,13 +165,17 @@ define('TRACKBACKBEFORESTRING', '&nbsp;|&nbsp;');
 
 function tablestyle($caption, $text, $mode){
 	global $style;
-	if ($caption == '') { $caption = '&nbsp;'; }
-	$bodytable = ((isset($mode['style']) && $mode['style'] == 'button_menu') || (isset($mode) && ($mode == 'menus_config'))) ? 'menu_content_buttons' : 'menu_content';
-	$bodybreak = ((isset($mode['style']) && $mode['style'] == 'button_menu') || (isset($mode) && ($mode == 'menus_config'))) ? '' : '<br />';
-	$but_border = (isset($mode['style']) && $mode['style'] == 'button_menu') ? ' button_menu' : '';
-	if ($style == 'leftmenu' || $style == 'rightmenu') {
-		echo "<table cellpadding='0' cellspacing='0' border='0' style='width: 170px'><tr><td>";
+	$caption = $caption ? $caption : '&nbsp;';
+	if ((isset($mode['style']) && $mode['style'] == 'button_menu') || (isset($mode) && ($mode == 'menus_config'))) {
+		$bodytable = 'menu_content_buttons';
+		$bodybreak = '';
+		$but_border = ' button_menu';
+	} else {
+		$bodytable = 'menu_content';
+		$bodybreak = '<br />';
+		$but_border = '';
 	}
+	
 	echo "<div class='cap_border".$but_border."'>";
 	if ($style == 'leftmenu') {
 		echo "<div class='left_caption'>".$caption."</div>";
@@ -179,9 +187,6 @@ function tablestyle($caption, $text, $mode){
 	echo "</div>";
 	if ($text != "") {
 		echo "<div class='".$bodytable."'>".$text.$bodybreak."</div>";
-	}
-	if ($style == 'leftmenu' || $style == 'rightmenu') {
-		echo "</td></tr></table>";
 	}
 }
 
