@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-04-03 08:15:47 $
+|     $Revision: 1.23 $
+|     $Date: 2005-04-09 19:13:46 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -257,7 +257,7 @@ if (eregi("\[".LAN_430."\]", $thread_info['head']['thread_name']))
 		}
 		if(!defined("POLLCLASS"))
 		{
-			require_once(e_PLUGIN."poll/poll_class.php");
+			require(e_PLUGIN."poll/poll_class.php");
 		}
 		$poll = new poll;
 		$pollstr = "<div class='spacer'>".$poll->render_poll($pollArray, "forum", $POLLMODE, TRUE)."</div>";
