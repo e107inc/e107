@@ -217,49 +217,16 @@ if (file_exists($o_path."log.txt")) {
 	}
 	 
 }
-//Load normal Header ?
-if (in_array("header", $query) && ($_log[3] <= $steps || !isset($_log)) && (!isset($_POST['steps']) || $_POST['steps'] == 1)) {
-	require_once(e_ADMIN."auth.php");
-} else {
-	//Alternative Header
-	$text = "<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>\n
-		<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
-		<html xmlns=\"http://www.w3.org/1999/xhtml\">
-		<head>
-		<title>".$sitename."</title>
-		<link rel=\"stylesheet\" href=\"".THEME."style.css\" />";
-	if (file_exists(e_FILE."e107.css")) {
-		$text .= "\n<link rel='stylesheet' href='".e_FILE."e107.css' />\n";
-	}
-	if (file_exists(e_FILE."style.css")) {
-		$text .= "\n<link rel='stylesheet' href='".e_FILE."style.css' />\n";
-	}
-	$text .= "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=".CHARSET."\" />
-		<meta http-equiv=\"content-style-type\" content=\"text/css\" />\n";
+
+require_once(e_ADMIN."auth.php");
+
+function headerjs() {
+	global $o_path, $_log, $steps;
 	if ((file_exists($o_path."log.txt") && $_log[3] > $steps) || ($_POST['steps'] > 1 && file_exists($_POST['input_files']))) {
-		$text .= "<meta http-equiv=\"refresh\" content=\"5;url='".e_PLUGIN."integrity_check\integrity_check.php?".e_QUERY." '\">\n";
+		echo "<meta http-equiv=\"refresh\" content=\"5; url='".e_PLUGIN."integrity_check/admin_integrity_check.php?".e_QUERY." '\">\n";
 	}
-	$text .= "<script type='text/javascript' src='".e_FILE."e107.js'></script>";
-	if (file_exists(THEME."theme.js")) {
-		$text .= "<script type='text/javascript' src='".THEME."theme.js'></script>";
-	}
-	if (file_exists(e_FILE."user.js")) {
-		$text .= "<script type='text/javascript' src='".e_FILE."user.js'></script>\n";
-	}
-	$text .= "</head>
-		<body><div style='text-align:center'>
-		<img src='".e_IMAGE."adminlogo.png' alt='Logo' />
-		</div><br />
-		<div>
-		<table style='width:100%' cellspacing='10' cellpadding='10'>
-		<tr>
-		<td style='width:15%; vertical-align: top;'>";
-	echo $text;
-	$text = "<a href='".e_ADMIN."admin.php'>".Integ_24."</a><br /><a href='".e_BASE."index.php'>".Integ_25."</a><br /><br />";
-	$ns->tablerender("Admin", $text);
-	echo "</td>
-		<td style='width:60%; vertical-align: top;'>";
 }
+
 	
 //check Version you are using
 if (file_exists(e_ADMIN."ver.php")) {
@@ -334,7 +301,7 @@ if (isset($_POST['docheck']) && $_POST['input_files'] != "") {
 		$_log[4] = $_POST['steps'];
 		$the_end = check_sfv_file($_POST['input_files'], $_POST['theme_folders'], 0, $steps);
 		if ($_log[3] > 0) {
-			$text = "<div align='center'>".str_replace("{counts}", $_log[3], Integ_38)."<br />". Integ_36."<br /><a href=\"".e_PLUGIN."integrity_check/integrity_check.php?".e_QUERY." \">".Integ_37."</a>
+			$text = "<div align='center'>".str_replace("{counts}", $_log[3], Integ_38)."<br />". Integ_36."<br /><a href=\"".e_PLUGIN."integrity_check/admin_integrity_check.php?".e_QUERY." \">".Integ_37."</a>
 				</div>";
 			$ns->tablerender("", "<b>".$text."</b>");
 		}
@@ -370,7 +337,7 @@ if (file_exists($o_path."log.txt")) {
 	$the_end = check_sfv_file($_log[0], $_log[1], $_log[5], $steps);
 	$_log[3] = $_log[3] - $steps;
 	if ($_log[3] > 0) {
-		$text = "<div align='center'>".str_replace("{counts}", $_log[3], Integ_38)."<br />". Integ_36."<br /><a href=\"".e_PLUGIN."integrity_check/integrity_check.php?".e_QUERY." \">".Integ_37."</a>
+		$text = "<div align='center'>".str_replace("{counts}", $_log[3], Integ_38)."<br />". Integ_36."<br /><a href=\"".e_PLUGIN."integrity_check/admin_integrity_check.php?".e_QUERY." \">".Integ_37."</a>
 			</div>";
 		$ns->tablerender("", "<b>".$text."</b>");
 	}
@@ -536,17 +503,10 @@ if (is_writable($o_path)) {
 }
 $text .= "<br /><br /><br /><a href='".e_SELF."?header'>".Integ_26."</a><br />";
 	
-//Render this fuck
+
 $ns->tablerender(Integ_13, $text);
 	
-//Footer
-echo "\n
-	</td>
-	</tr>
-	</table></div>
-	</body>
-	</html>";
-	
+require_once(e_ADMIN.'footer.php');
 ?>
 
 <script LANGUAGE="JavaScript" type="text/javascript">
@@ -555,4 +515,4 @@ function hex_strReplace(a, b, c){
 return a.split(b).join(c);
 }
 // -->
-</script>
+</script>
