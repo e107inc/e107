@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-03-28 01:00:57 $
-|     $Author: e107coders $
+|     $Revision: 1.18 $
+|     $Date: 2005-04-09 19:37:20 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -42,7 +42,7 @@ class e107plugin {
 	 *
 	 */
 	function update_plugins_table() {
-		global $sql,$mySQLprefix;
+		global $sql,$mySQLprefix,$menu_pref;
 
 		require_once(e_HANDLER.'file_class.php');
 
