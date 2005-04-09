@@ -237,7 +237,7 @@ if (in_array("header", $query) && ($_log[3] <= $steps || !isset($_log)) && (!iss
 	$text .= "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=".CHARSET."\" />
 		<meta http-equiv=\"content-style-type\" content=\"text/css\" />\n";
 	if ((file_exists($o_path."log.txt") && $_log[3] > $steps) || ($_POST['steps'] > 1 && file_exists($_POST['input_files']))) {
-		$text .= "<meta http-equiv=\"refresh\" content=\"5;url='".e_PLUGIN."integrity_check\integrity_check.php?".e_QUERY." '\">\n";
+		$text .= "<meta http-equiv=\"refresh\" content=\"5;url='".e_PLUGIN."integrity_check/admin_integrity_check.php?".e_QUERY." '\">\n";
 	}
 	$text .= "<script type='text/javascript' src='".e_FILE."e107.js'></script>";
 	if (file_exists(THEME."theme.js")) {
