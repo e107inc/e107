@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/wmessage.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-04-02 21:06:52 $
-|     $Author: e107coders $
+|     $Revision: 1.21 $
+|     $Date: 2005-04-09 15:40:37 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -80,6 +80,7 @@ if (isset($message)) {
 // Show Existing -------
 if ($action == "main" || $action == "") {
 	if ($wm_total = $sql->db_Select("generic", "gen_id, gen_intdata, gen_chardata", "gen_type='wmessage' ORDER BY gen_id ASC")) {
+		$wmList = $sql->db_getList();
 		$text = $rs->form_open("post", e_SELF, "myform_{$gen_id}", "", "");
 		$text .= "<div style='text-align:center'>
 			<table class='fborder' style='".ADMIN_WIDTH."'>
@@ -89,10 +90,8 @@ if ($action == "main" || $action == "") {
 			<td class='fcaption' style='width:20%'>".WMLAN_03."</td>
 			<td class='fcaption' style='width:15%'>".LAN_OPTIONS."</td>
 			</tr>";
-		while ($row = $sql->db_Fetch()) {
-//			extract($row);
+		foreach($wmList as $row) {
 			$text .= "<tr><td class='forumheader3' style='width:5%; text-align: center; vertical-align: middle'>";
-			//   $text .= $wm_id ? "<img src='".e_IMAGE."link_icons/".$link_button."' alt='' /> ":"";
 			$text .= $row['gen_id'];
 			$text .= "</td><td style='width:70%' class='forumheader3'>".$tp->toHTML($row['gen_chardata'])."</td>";
 			$text .= "</td><td style='width:70%' class='forumheader3'>".r_userclass_name($row['gen_intdata'])."</td>";
