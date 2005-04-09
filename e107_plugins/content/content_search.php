@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/content_search.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-03-21 22:11:47 $
+|     $Revision: 1.4 $
+|     $Date: 2005-04-09 17:58:19 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,7 @@ $return_fields = 'content_id, content_heading, content_subheading, content_summa
 $search_fields = array('content_heading', 'content_subheading', 'content_summary', 'content_text');
 $weights = array('1.2', '0.9', '0.6', '0.6');
 $no_results = LAN_198;
-$where = "";
+$where = "content_class IN (".USERCLASS_LIST.") AND";
 $order = array('content_datestamp' => DESC);
 
 $ps = $sch -> parsesearch('pcontent', $return_fields, $search_fields, $weights, 'search_content', $no_results, $where, $order);
@@ -32,7 +32,7 @@ function search_content($row) {
 	global $con;
 	$type = explode('.', $row['content_parent']);
 	$res['link'] = e_PLUGIN."content/content.php?type.".$type[0].".content.".$row['content_id'];
-	$res['pre_title'] = "Item: ";
+	$res['pre_title'] = "";
 	$res['title'] = $row['content_heading'];
 	$res['summary'] = $row['content_summary'].' '.$row['content_text'];
 	$res['detail'] = LAN_SEARCH_3.$con -> convert_date($row['content_datestamp'], "long");
