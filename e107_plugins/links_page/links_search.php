@@ -11,17 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links_search.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-03-21 22:11:47 $
+|     $Revision: 1.3 $
+|     $Date: 2005-04-09 17:58:19 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
-$return_fields = 'l.link_id, l.link_name, l.link_description, l.link_url, l.link_category, c.link_category_name';
+$return_fields = 'l.link_id, l.link_name, l.link_description, l.link_url, l.link_category, l.link_class, c.link_category_name';
 $search_fields = array('l.link_name', 'l.link_description');
 $weights = array('1.2', '0.6');
 $no_results = LAN_198;
-$where = "";
+$where = "l.link_class IN (".USERCLASS_LIST.") AND";
 $order = "";
 $table = "links_page AS l LEFT JOIN #links_page_cat AS c ON l.link_category = c.link_category_id";
 

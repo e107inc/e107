@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_search.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-03-21 22:11:43 $
+|     $Revision: 1.7 $
+|     $Date: 2005-04-09 17:58:18 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -33,7 +33,7 @@ define("LAN_417", "Search terms must be at least 3 characters.");
 
 define("LAN_SEARCH_1", "Check All");
 define("LAN_SEARCH_2", "Uncheck All");
-define("LAN_SEARCH_3", "Item posted on ");
+define("LAN_SEARCH_3", "Posted on ");
 define("LAN_SEARCH_4", "Match found in news title");
 define("LAN_SEARCH_5", "Match found in news text");
 define("LAN_SEARCH_6", "Match found in extended news text");
