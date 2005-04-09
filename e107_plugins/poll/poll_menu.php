@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_menu.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-04-03 20:33:55 $
+|     $Revision: 1.4 $
+|     $Date: 2005-04-09 19:47:32 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ if(defined("POLLRENDERED"))
 }
 if(!defined("POLLCLASS"))
 {
-	require_once(e_PLUGIN."poll/poll_class.php");
+	require(e_PLUGIN."poll/poll_class.php");
 }
 if(!isset($poll) || !is_object($poll))
 {
