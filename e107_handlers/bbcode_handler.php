@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-03-17 22:19:33 $
-|     $Author: stevedunstan $
+|     $Revision: 1.25 $
+|     $Date: 2005-04-09 01:57:21 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -31,7 +31,7 @@ class e_bbcode {
 			'html', 'flash', 'link', 'email', 
 			'url', 'quote', 'left', 'right', 
 			'blockquote', 'justify', 'file', 'stream', 
-			'textarea', 'list'
+			'textarea', 'list', 'php'
 			);
 		foreach($core_bb as $c)
 		{
@@ -49,7 +49,8 @@ class e_bbcode {
 		$this->bbLocation = array_diff($this->bbLocation,array(''));
 	}
 	 
-	function parseBBCodes($text, $p_ID) {
+	function parseBBCodes($text, $p_ID)
+	{
 		global $code;
 		global $postID;
 		global $single_bb;
@@ -57,7 +58,8 @@ class e_bbcode {
 		$done = FALSE;
 		$single_bb = FALSE;
 		$i=0;
-		while (!$done) {
+		while (!$done)
+		{
 			$done = TRUE;
 			$i++;
 			foreach(array_keys($this->bbLocation) as $code)
@@ -89,7 +91,8 @@ class e_bbcode {
 					}
 				}
 			}
-			if($i > 200) {
+			if($i > 200)
+			{
 				echo "An error has been detected in the bbcode process, it entered an infinite loop!  Exiting...";
 				exit;
 			}
@@ -97,7 +100,8 @@ class e_bbcode {
 		return $text;
 	}
 	 
-	function doCode($matches) {
+	function doCode($matches)
+	{
 		global $tp;
 		global $postID;
 		global $single_bb;
@@ -123,14 +127,20 @@ class e_bbcode {
 		
 		if (is_array($this->bbList) && array_key_exists($code, $this->bbList)) {
 			$bbcode = $this->bbList[$code];
-		} else {
-			if ($this->bbLocation[$code] == 'core') {
+		}
+		else
+		{
+			if ($this->bbLocation[$code] == 'core')
+			{
 				$bbFile = e_FILE.'bbcode/'.strtolower(str_replace('*','',$code)).'.bb';
-			} else {
+			}
+			else
+			{
 				// Add code to check for plugin bbcode addition
 				$bbFile = e_PLUGIN.$this->bbLocation[$code].'/'.strtolower(str_replace('*','',$code)).'.bb';
 			}
-			if (file_exists($bbFile)) {
+			if (file_exists($bbFile))
+			{
 				$bbcode = file_get_contents($bbFile);
 				$this->bbList[$code] = $bbcode;
 			} else {
@@ -138,7 +148,11 @@ class e_bbcode {
 				return FALSE;
 			}
 		}
-		return eval($bbcode);
+		ob_start();
+		$bbcode_return = eval($bbcode);
+      $bbcode_output = ob_get_contents();
+      ob_end_clean();
+		return $bbcode_output.$bbcode_return;
 	}
 }
 ?>

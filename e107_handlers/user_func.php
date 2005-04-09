@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_func.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-27 19:52:29 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-04-09 01:57:21 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -29,23 +29,36 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_func.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-27 19:52:29 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-04-09 01:57:21 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
-function e107_userGetuserclass($user_id) {
+function e107_userGetuserclass($user_id)
+{
 	global $cachevar;
 	$key = 'userclass_'.$user_id;
 	$val = getcachedvars($key);
-	if ($val) {
+	if ($val)
+	{
 		return $cachevar[$key];
-	} else {
+	}
+	else
+	{
 		$uc_sql = new db;
-		if ($uc_sql->db_Select("user", "user_class", "user_id={$user_id}")) {
+		if ($uc_sql->db_Select("user", "user_class, user_admin", "user_id={$user_id}"))
+		{
 			$row = $uc_sql->db_Fetch();
-			return $row['user_class'];
-		} else {
+			$uc = $row['user_class'];
+			$uc .= ",".e_UC_MEMBER;
+			if($row['user_admin'])
+			{
+				$uc .= ",".e_UC_ADMIN;
+			}
+			return $uc;
+		}
+		else
+		{
 			return "";
 		}
 	}
