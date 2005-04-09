@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2005-04-06 17:07:19 $
+|     $Revision: 1.44 $
+|     $Date: 2005-04-09 01:56:56 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -536,6 +536,13 @@ $text .= "<div id='textpost' style='display:none; text-align:center'>
 	<input type='radio' name='old_np' value='0'".(!$pref['old_np'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
 	</tr>
+
+	<tr>
+	<td class='forumheader3' style='width:50%;'>".PRFLAN_131.":  <div class='smalltext'>".PRFLAN_132."</div></td>
+	<td class='forumheader3' style='width:50%; text-align: right;'>
+	".r_userclass('php_bbcode',$pref['php_bbcode'],'off','nobody, admin, classes')."
+	</td>
+	</tr>\n
 
 ";
 

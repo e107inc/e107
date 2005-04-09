@@ -13,9 +13,9 @@ SC_BEGIN NEWSBODY
 global $tp;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-$news_body = $tp -> toHTML($news_item['news_body'], TRUE);
+$news_body = $tp -> toHTML($news_item['news_body'], TRUE, '', $news_item['news_author']);
 if($news_item['news_extended'] && (isset($_POST['preview']) || strpos(e_QUERY, 'extend') !== FALSE)) {
-    $news_extended = $tp -> toHTML($news_item['news_extended'], TRUE);
+    $news_extended = $tp -> toHTML($news_item['news_extended'], TRUE, '', $news_item['news_author']);
     $news_body .= "<br /><br />".$news_extended;
 }
 return $news_body;

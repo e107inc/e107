@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-04-02 21:08:06 $
-|     $Author: e107coders $
+|     $Revision: 1.26 $
+|     $Date: 2005-04-09 01:57:21 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_1", "Site Information");
@@ -177,6 +177,9 @@ define("PRFLAN_127", "Make posted links clickable");
 define("PRFLAN_128", "Turning this on will convert posted links to hyperlinks");
 define("PRFLAN_129", "Disallow multiple logins");
 define("PRFLAN_130", "Activating this will prevent more than one person logging in with the same username/password (login detail sharing)");
+define("PRFLAN_131", "Activate use of [php] bbcode");
+define("PRFLAN_132", "Activating this will allow authorized users to post [php] code in certain areas");
+
 
 // define("PRFLAN_131", "Select stylesheet to use");
 
