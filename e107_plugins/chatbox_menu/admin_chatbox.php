@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/admin_chatbox.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-20 09:14:56 $
+|     $Revision: 1.5 $
+|     $Date: 2005-04-10 12:56:17 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -29,10 +29,7 @@ if (file_exists(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."_config.php")) {
 	
 require_once(e_ADMIN."auth.php");
 	
-if (e_QUERY == "u") {
-	$message = CHBLAN_1;
-}
-	
+
 if (isset($_POST['moderate'])) {
 	 
 	extract($_POST);
@@ -58,16 +55,13 @@ if (isset($_POST['moderate'])) {
 if (isset($_POST['updatesettings'])) {
 	 
 	$pref['chatbox_posts'] = $_POST['chatbox_posts'];
-	$aj = new textparse;
-	$pref['cb_linkc'] = $aj->formtpa($_POST['cb_linkc'], "admin");
-	$pref['cb_wordwrap'] = $_POST['cb_wordwrap'];
+	$pref['cb_linkc'] = $tp->toDB($_POST['cb_linkc'], "admin");
 	$pref['cb_linkreplace'] = $_POST['cb_linkreplace'];
 	$pref['cb_layer'] = $_POST['cb_layer'];
 	$pref['cb_layer_height'] = ($_POST['cb_layer_height'] ? $_POST['cb_layer_height'] : 200);
 	$pref['cb_emote'] = $_POST['cb_emote'];
 	save_prefs();
-	header("location:".e_ADMIN."chatbox.php?u");
-	exit;
+	$message = CHBLAN_1;
 }
 	
 if (isset($_POST['prune'])) {
@@ -149,7 +143,6 @@ if (!$sql->db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, 50", $
 $chatbox_posts = $pref['chatbox_posts'];
 $cb_linkreplace = $pref['cb_linkreplace'];
 $cb_linkc = $pref['cb_linkc'];
-$cb_wordwrap = $pref['cb_wordwrap'];
 	
 $text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."' id='cbform'>
