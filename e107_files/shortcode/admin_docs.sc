@@ -18,7 +18,7 @@ if(ADMIN){
 	        $e107_var['x'.$key]['link'] = e_ADMIN."docs.php?".$key;
 	}
 
-	$text = get_admin_treemenu(FOOTLAN_14,$act,$e107_var);
-	return $ns -> tablerender(FOOTLAN_14,$text, '', TRUE);
+	$text = show_admin_menu(FOOTLAN_14, $act, $e107_var, FALSE, TRUE, TRUE);
+	return $ns -> tablerender(FOOTLAN_14,$text, array('id' => 'admin_docs', 'style' => 'button_menu'), TRUE);
 }
 

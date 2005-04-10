@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.30 $
-|   $Date: 2005-04-04 09:23:00 $
+|   $Revision: 1.31 $
+|   $Date: 2005-04-10 02:09:31 $
 |   $Author: sweetas $
 +---------------------------------------------------------------+
 */
@@ -110,28 +110,94 @@ $ns = new e107table;
 $e107_var = array();
 
 if (!function_exists('show_admin_menu')) {
-	function show_admin_menu($title, $page, $e107_vars, $js = FALSE) {
-		global $ns;
-		$text = "<div style='text-align:center; width:100%'><table class='fborder' style='width:98%;'>\n";
-		foreach (array_keys($e107_vars) as $act) {
-			$pre = "";
-			$post = "";
+	function show_admin_menu($title, $active_page, $e107_vars, $js = FALSE, $sub_link = FALSE, $sortlist = FALSE) {
+		global $ns, $BUTTON, $BUTTON_OVER, $BUTTONS_START, $BUTTONS_END, $SUB_BUTTON, $SUB_BUTTON_OVER, $SUB_BUTTONS_START, $SUB_BUTTONS_END;
+		$id_title = "yop_".str_replace(" ", "", $title);
+		if (!isset($BUTTONS_START)) {
+			$BUTTONS_START = "<div style='text-align:center; width:100%'><table class='fborder' style='width:98%;'>\n";
+		}
+		if (!isset($BUTTON)) {
+			$BUTTON = "<tr><td class='button'><div style='width:100%; text-align:center'><a style='cursor:hand; cursor:pointer; text-decoration:none;' {ONCLICK} >{LINK_TEXT}</a></div></td></tr>\n";
+		}
+		if (!isset($BUTTON_OVER)) {
+			$BUTTON_OVER = "<tr><td class='button'><div style='width:100%; text-align:center'><a style='cursor:hand; cursor:pointer; text-decoration:none;' {ONCLICK} ><b>&laquo;&nbsp;{LINK_TEXT}&nbsp;&raquo;</b></a></div></td></tr>\n";
+		}
+		if (!isset($BUTTONS_END)) {
+			$BUTTONS_END = "</table></div>\n";
+		}
+		if (!isset($SUB_BUTTON)) {
+			$SUB_BUTTON = "<a style='text-decoration:none;' href='{LINK_URL}'>{LINK_TEXT}</a><br />";
+		}
+		if (!isset($SUB_BUTTON_OVER)) {
+			$SUB_BUTTON_OVER = "<b> &laquo; <a style='text-decoration:none;' href='{LINK_URL}'>{LINK_TEXT}</a> &raquo; </b><br />";
+		}
+		if (!isset($SUB_BUTTONS_START)) {
+			$SUB_BUTTONS_START = "<div style='text-align:center; width:100%'><table class='fborder' style='width:100%;'>
+			<tr><td class='button'><a style='text-align:center; cursor:hand; cursor:pointer; text-decoration:none;' 
+			onclick=\"expandit('{SUB_HEAD_ID}');\" >{SUB_HEAD}</a></td></tr>
+			<tr id='{SUB_HEAD_ID}' style='display: none' ><td class='forumheader3' style='text-align:left;'>";
+		}
+		if (!isset($SUB_BUTTONS_END)) {
+			$SUB_BUTTONS_END = "</td></tr></table></div>";
+		}
 
-		  	if ($page == $act || (str_replace("?","",e_PAGE.e_QUERY) == str_replace("?","",$act))) {
-				$pre = "<b>&laquo;&nbsp;";
-				$post = "&nbsp;&raquo;</b>";
-		 	}
-			$t = str_replace(" ", "&nbsp;", $e107_vars[$act]['text']);
-			if (!$e107_vars[$act]['perm'] || getperms($e107_vars[$act]['perm'])) {
-				$on_click = $js ? "onclick=\"showhideit('".$act."');\"" : "onclick=\"location.href='{$e107_vars[$act]['link']}'\" ";
-				$text .= "<tr><td class='button'><div style='width:100%; text-align:center'><a style='cursor:hand; cursor:pointer; text-decoration:none;' ".$on_click." >{$pre}{$t}{$post}</a></div></td></tr>\n";
+		if ($sortlist == TRUE) {
+			$temp = $e107_vars;
+			unset($e107_vars);
+			foreach (array_keys($temp) as $key) {
+				$func_list[] = $temp[$key]['text'];
+			}
+
+			usort($func_list, 'strcoll');
+
+			foreach ($func_list as $func_text) {
+				foreach (array_keys($temp) as $key) {
+					if ($temp[$key]['text'] == $func_text) {
+						$e107_vars[] = $temp[$key];
+					}
+				}
 			}
 		}
-		$text .= "</table></div>\n";
-		if ($title == "") {
-			return $text;
+		
+		$search[0] = "/\{LINK_TEXT\}(.*?)/si";
+		$search[1] = "/\{LINK_URL\}(.*?)/si";
+		$search[2] = "/\{ONCLICK\}(.*?)/si";
+		$search[3] = "/\{SUB_HEAD\}(.*?)/si";
+		$search[4] = "/\{SUB_HEAD_ID\}(.*?)/si";
+		
+		if ($sub_link) {
+			$replace[0] = '';
+			$replace[1] = '';
+			$replace[2] = '';
+			$replace[3] = $title;
+			$replace[4] = $id_title;
+			$text = preg_replace($search, $replace, $SUB_BUTTONS_START);
+		} else {
+			$text = $BUTTONS_START;
 		}
-		$ns->tablerender($title, $text);
+
+		foreach (array_keys($e107_vars) as $act) {
+			if (!$e107_vars[$act]['perm'] || getperms($e107_vars[$act]['perm'])) {
+				if ($active_page == $act || (str_replace("?", "", e_PAGE.e_QUERY) == str_replace("?", "", $act))) {
+					$BUTTON_TEMPLATE = $sub_link ? $SUB_BUTTON_OVER : $BUTTON_OVER;
+				} else {
+					$BUTTON_TEMPLATE = $sub_link ? $SUB_BUTTON : $BUTTON;
+				}
+				$replace[0] = str_replace(" ", "&nbsp;", $e107_vars[$act]['text']);
+				$replace[1] = $e107_vars[$act]['link'];
+				$replace[2] = $js ? "onclick=\"showhideit('".$act."');\"" : "onclick=\"document.location='".$e107_vars[$act]['link']."'; disabled=true;\"";
+				$replace[3] = $title;
+				$replace[4] = $id_title;
+				$text .= preg_replace($search, $replace, $BUTTON_TEMPLATE);
+			}
+		}
+		$text .= $sub_link ? $SUB_BUTTONS_END : $BUTTONS_END;
+	
+		if ($title == "" || $sub_link) {
+			return $text;
+		} else {
+			$ns -> tablerender($title, $text, array('id' => $id_title, 'style' => 'button_menu'));
+		}
 	}
 }
 
@@ -153,44 +219,4 @@ if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
 	parse_admin($ADMIN_HEADER);
 }
 
-function get_admin_treemenu($title, $page, $e107_vars, $sortlist = FALSE) {
-	global $ns;
-	if ($sortlist == TRUE) {
-		$temp = $e107_vars;
-		unset($e107_vars);
-		foreach (array_keys($temp) as $key) {
-			$func_list[] = $temp[$key]['text'];
-		}
-
-		usort($func_list, 'strcoll');
-
-		foreach ($func_list as $func_text) {
-			foreach (array_keys($temp) as $key) {
-				if ($temp[$key]['text'] == $func_text) {
-					$e107_vars[] = $temp[$key];
-				}
-			}
-		}
-	}
-
-	$idtitle = "yop_".str_replace(" ", "", $title);
-	$text = "<div style='text-align:center; width:100%'><table class='fborder' style='width:100%;'>";
-	$text .= "<tr><td class='button'><a style='text-align:center; cursor:hand; cursor:pointer; text-decoration:none;' onclick=\"expandit('{$idtitle}');\" >{$title}</a></td></tr>";
-	$text .= "<tr id=\"{$idtitle}\" style=\"display: none;\" ><td class='forumheader3' style='text-align:left;'>";
-	foreach (array_keys($e107_vars) as $act) {
-		$pre = "";
-		$post = "";
-		if ($page == $act) {
-			$pre = "<b> &laquo; ";
-			$post = " &raquo; </b>";
-		}
-		if (!$e107_vars[$act]['perm'] || getperms($e107_vars[$act]['perm'])) {
-			$text .= "{$pre}<a style='text-decoration:none;' href='{$e107_vars[$act]['link']}'>{$e107_vars[$act]['text']}</a>{$post}<br />";
-		}
-	}
-
-	$text .= "</td></tr>";
-	$text .= "</table></div>";
-	return $text;
-}
 ?>
