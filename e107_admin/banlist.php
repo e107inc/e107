@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banlist.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-04-02 18:29:13 $
-|     $Author: e107coders $
+|     $Revision: 1.10 $
+|     $Date: 2005-04-10 12:43:42 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -58,6 +58,7 @@ if ($action == "remove" && isset($_POST['ban_secure'])) {
 if (isset($message)) {
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
+
 if ($action != "edit") {
 	$text = $rs->form_open("post", e_SELF, "ban_form")."<div style='text-align:center'>".$rs->form_hidden("ban_secure", "1")."<div style='padding : 1px; ".ADMIN_WIDTH."; height : 170px; overflow : auto; margin-left: auto; margin-right: auto;'>\n";
 	if (!$ban_total = $sql->db_Select("banlist")) {
@@ -91,6 +92,21 @@ if ($action == "edit") {
 		$banlist_ip = $action;
 	}
 }
+
+
+
+if(strstr($action, "fla"))
+{
+	list($null, $id) = explode(".", $action);
+	if($sql -> db_Select("generic", "*", "gen_id=$id"))
+	{
+		$at = $sql -> db_Fetch();
+		$banlist_ip = $at['gen_ip'];
+		$banlist_reason = BANLAN_11;
+	}
+}
+
+
 $text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>

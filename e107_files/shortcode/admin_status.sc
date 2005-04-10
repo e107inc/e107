@@ -30,6 +30,13 @@ if (ADMIN) {
 				$text .= include($p['path']."/".$p['fname']);
 			}
 
+			if($flo = $sql -> db_Select("generic", "*", "gen_type='failed_login' "))
+			{
+				
+				$text .= "<img src='".e_IMAGE."admin_images/failedlogin_16.png' alt='' style='vertical-align: middle;' /> <a href='".e_ADMIN."fla.php'>".ADLAN_138.": $flo</a>";
+			}
+
+
 			return $ns -> tablerender(ADLAN_134, $text, '', TRUE);	
 		}
 	}
