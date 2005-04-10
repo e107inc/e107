@@ -13,39 +13,8 @@ $preright .= $tp -> parseTemplate('{ADMIN_PRESET}');
 $preright .= $tp -> parseTemplate('{ADMIN_LOG=request}');
 $style = "default";
 
-// [admin button style]
-
-//function show_admin_menu($title, $page, $e107_vars, $js = FALSE, $js_include = FALSE){
-function show_admin_menu($title, $page, $e107_vars, $js = FALSE){
-	global $ns;
-	$text = "<table class='fborder' style='width: 100%'>";
-	foreach (array_keys($e107_vars) as $act) {
-		$t=str_replace(" ","&nbsp;",$e107_vars[$act]['text']);
-		if (!$e107_vars[$act]['perm'] || getperms($e107_vars[$act]['perm'])) {
-			$arrow_icon = ($page == $act || (str_replace("?","",e_PAGE.e_QUERY) == str_replace("?","",$act))) ? E_16_NAV_ARROW_OVER : E_16_NAV_ARROW;
-			if ($js_include) {
-				$on_click = $js_include;
-			} else {
-				$on_click = $js ? "showhideit('".$act."');" : "document.location='".$e107_vars[$act]['link']."'; disabled=true;";
-			}
-			$text .= "<tr><td style='border-bottom: 1px solid #000'><div class='emenuBar'>
-			<div class='menuButton' onmouseover=\"eover(this, 'menuButton_over')\" onmouseout=\"eover(this, 'menuButton')\" onclick=\"".$on_click."\"
-			style='width: 98% !important; width: 100%; padding: 0px 0px 0px 2px; border-right: 0px'>
-			<img src='".$arrow_icon."' style='width: 16px; height: 16px; vertical-align: middle' alt='' />&nbsp;".$t."</div>
-			</div>
-			</td></tr>";
-		}
-	}
-	$text .= "</table>";
-	if ($title=="") {
-		return $text;
-	}
-	$ns -> tablerender($title,$text, array('id' => $title, 'style' => 'button_menu'));
-}
-
-
 // [layout]
-// <img src='".THEME."images/logo.png' style='width: 170px; height: 71px; display: block;' alt='' />
+
 $ADMIN_HEADER = "<table class='top_section'>
 <tr>
 <td class='top_section_left' style='padding-left: 5px; padding-right: 5px'>
@@ -142,4 +111,35 @@ $ADMIN_FOOTER .= "</tr>
 <br /><br />
 </div>
 ";
+
+
+// [admin button style]
+
+$BUTTONS_START = "<table class='fborder' style='width: 100%'>";
+
+$BUTTON = "<tr><td style='border-bottom: 1px solid #000'><div class='emenuBar'>
+<div class='menuButton' onmouseover=\"eover(this, 'menuButton_over')\" onmouseout=\"eover(this, 'menuButton')\" {ONCLICK} 
+style='width: 98% !important; width: 100%; padding: 0px 0px 0px 2px; border-right: 0px'>
+<img src='".E_16_NAV_ARROW."' style='width: 16px; height: 16px; vertical-align: middle' alt='' />&nbsp;{LINK_TEXT}</div></div></td></tr>";
+
+$BUTTON_OVER = "<tr><td style='border-bottom: 1px solid #000'><div class='emenuBar'>
+<div class='menuButton' onmouseover=\"eover(this, 'menuButton_over')\" onmouseout=\"eover(this, 'menuButton')\" {ONCLICK} 
+style='width: 98% !important; width: 100%; padding: 0px 0px 0px 2px; border-right: 0px'>
+<img src='".E_16_NAV_ARROW_OVER."' style='width: 16px; height: 16px; vertical-align: middle' alt='' />&nbsp;{LINK_TEXT}</div></div></td></tr>";
+
+$BUTTONS_END = "</table>";
+
+$SUB_BUTTONS_START = "<table class='fborder' style='width:100%;'>
+<tr><td style='border-bottom: 1px solid #000'><div class='emenuBar'>
+<div class='menuButton' onmouseover=\"eover(this, 'menuButton_over')\" onmouseout=\"eover(this, 'menuButton')\" onclick=\"expandit('{SUB_HEAD_ID}');\" 
+style='width: 98% !important; width: 100%; padding: 0px 0px 0px 2px; border-right: 0px'>
+<img src='".E_16_NAV_ARROW."' style='width: 16px; height: 16px; vertical-align: middle' alt='' />&nbsp;{SUB_HEAD}</div></div></td></tr>
+<tr id='{SUB_HEAD_ID}' style='display: none' ><td class='forumheader3' style='text-align:left;'>";
+
+$SUB_BUTTON = "<a style='text-decoration:none;' href='{LINK_URL}'>{LINK_TEXT}</a><br />";
+
+$SUB_BUTTON_OVER = "<b> &laquo; <a style='text-decoration:none;' href='{LINK_URL}'>{LINK_TEXT}</a> &raquo; </b><br />";
+
+$SUB_BUTTONS_END = "</td></tr></table>";
+
 ?>
