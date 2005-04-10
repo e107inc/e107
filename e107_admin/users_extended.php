@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-04-06 03:52:34 $
+|     $Revision: 1.6 $
+|     $Date: 2005-04-10 04:57:22 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -29,6 +29,7 @@ if (isset($_POST['cancel']))
 
 $e_sub_cat = 'user_extended';
 $user = new users_ext;
+$curtype = '1';
 require_once("auth.php");
 require_once(e_HANDLER."user_extended_class.php");
 require_once(e_HANDLER."userclass_class.php");
@@ -84,14 +85,26 @@ if (isset($_POST['catdown_x']))
 
 if (isset($_POST['add_field']))
 {
-	if($ue->user_extended_add($_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $_POST['user_parms'], $_POST['user_values'], $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable'], 0, $_POST['user_parent']))
+	if(isset($_POST['allow_hide']) && $_POST['allow_hide'])
+	{
+		$_POST['user_parms'][] = "allow_hide";
+	}
+	$new_values = make_delimited($_POST['user_values']);
+	$new_parms = make_delimited($_POST['user_parms']);
+	if($ue->user_extended_add($_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $new_parms, $new_values, $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable'], 0, $_POST['user_parent']))
 	{
 		$message = EXTLAN_29;
 	}
 }
 
 if (isset($_POST['update_field'])) {
-	if($ue->user_extended_modify($sub_action, $_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $_POST['user_parms'], $_POST['user_values'], $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable'], $_POST['user_parent']))
+	if(isset($_POST['allow_hide']) && $_POST['allow_hide'])
+	{
+		$_POST['user_parms'][] = "allow_hide";
+	}
+	$upd_values = make_delimited($_POST['user_values']);
+	$upd_parms = make_delimited($_POST['user_parms']);
+	if($ue->user_extended_modify($sub_action, $_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $upd_parms, $upd_values, $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable'], $_POST['user_parent']))
 	{
 		$message = EXTLAN_29;
 	}
@@ -158,7 +171,10 @@ if ($action == "editext")
 		$tmp = $sql->db_Fetch();
 		$user->show_extended($tmp);
 	}
-	$action = 'main';
+	else
+	{
+		$user->show_extended('new');
+	}
 }
 
 if($action == 'cat')
@@ -180,251 +196,351 @@ class users_ext
 
 	function show_extended($current)
 	{
-		global $sql, $ns, $ue;
-
-		$text = "<div style='text-align:center'>";
-		$text .= "
-		<table style='".ADMIN_WIDTH."' class='fborder'>
-		<tr>
-		<td class='fcaption'>".EXTLAN_1."</td>
-		<td class='fcaption'>".EXTLAN_2."</td>
-		<td class='fcaption'>".EXTLAN_3."</td>
-		<td class='fcaption'>".EXTLAN_4."</td>
-		<td class='fcaption'>".EXTLAN_5."</td>
-		<td class='fcaption'>".EXTLAN_6."</td>
-		<td class='fcaption'>".EXTLAN_7."</td>
-		<td class='fcaption'>&nbsp;</td>
-		<td class='fcaption'>".EXTLAN_8."</td>
-		</tr>
-		";
+		global $sql, $ns, $ue, $curtype;
 
 		$catList = $ue->user_extended_get_categories();
 		$catList[0][0] = array('user_extended_struct_name' => EXTLAN_36);
 		$catNums = array_keys($catList);
 		$extendedList = $ue->user_extended_get_fields();
-		foreach($catNums as $cn)
+
+		if(!$current)
 		{
+			$text = "<div style='text-align:center'>";
 			$text .= "
+			<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
-			<td class='fcaption' colspan='9' style='text-align:center'>{$catList[$cn][0]['user_extended_struct_name']}</td>
+			<td class='fcaption'>".EXTLAN_1."</td>
+			<td class='fcaption'>".EXTLAN_2."</td>
+			<td class='fcaption'>".EXTLAN_3."</td>
+			<td class='fcaption'>".EXTLAN_4."</td>
+			<td class='fcaption'>".EXTLAN_5."</td>
+			<td class='fcaption'>".EXTLAN_6."</td>
+			<td class='fcaption'>".EXTLAN_7."</td>
+			<td class='fcaption'>&nbsp;</td>
+			<td class='fcaption'>".EXTLAN_8."</td>
 			</tr>
 			";
 
-			$i=0;
-			if(count($extendedList))
+			foreach($catNums as $cn)
 			{
-				//	Show current extended fields
-				foreach($extendedList[$cn] as $ext)
+				$text .= "
+				<tr>
+				<td class='fcaption' colspan='9' style='text-align:center'>{$catList[$cn][0]['user_extended_struct_name']}</td>
+				</tr>
+				";
+
+				$i=0;
+				if(count($extendedList))
+				{
+					//	Show current extended fields
+					foreach($extendedList[$cn] as $ext)
+					{
+						$text .= "
+						<tr>
+						<td class='forumheader3'>{$ext['user_extended_struct_name']}<br />[{$ext['user_extended_struct_text']}]</td>
+						<td class='forumheader3'>".$ue->user_extended_types[$ext['user_extended_struct_type']]."</td>
+						<td class='forumheader3'>{$ext['user_extended_struct_values']}";
+						if($ext['user_extended_struct_values'])
+						{
+							$text .= "<br />[{$ext['user_extended_struct_default']}]";
+						}
+						$text .= "
+						</td>
+						<td class='forumheader3'>".($ext['user_extended_struct_required'] ? LAN_YES : LAN_NO)."</td>
+						<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_applicable'])."</td>
+						<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_read'])."</td>
+						<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_write'])."</td>
+						<td class='forumheader3'>
+						<form method='post' action='".e_SELF."'>
+						<input type='hidden' name='id' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />
+						";
+						if($i > 0)
+						{
+							$text .= "
+							<input type='image' alt='' title='".EXTLAN_26."' src='".e_IMAGE."/admin_images/up.png' name='up' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />
+							";
+						}
+						if($i <= count($extendedList[$cn])-2)
+						{
+							$text .= "<input type='image' alt='' title='".EXTLAN_25."' src='".e_IMAGE."/admin_images/down.png' name='down' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />";
+						}
+						$text .= "
+						</form>
+						</td>
+						<td class='forumheader3' style='text-align:center;'>
+						<a style='text-decoration:none' href='".e_SELF."?editext.{$ext['user_extended_struct_id']}'>".ADMIN_EDIT_ICON."</a>
+						&nbsp;
+						<form method='post' action='".e_SELF."?extended' onsubmit='return confirm(\"".EXTLAN_27."\")'>
+						<input type='hidden' name='eu_action' value='delext' />
+						<input type='hidden' name='key' value='{$ext['user_extended_struct_id']},{$ext['user_extended_struct_name']}' />
+						<input type='image' title='".LAN_DELETE."' name='eudel' src='".ADMIN_DELETE_ICON_PATH."' />
+						</form>
+						</td>
+						</tr>
+						";
+						$i++;
+					}
+				}
+				else
 				{
 					$text .= "
 					<tr>
-					<td class='forumheader3'>{$ext['user_extended_struct_name']}<br />[{$ext['user_extended_struct_text']}]</td>
-					<td class='forumheader3'>".$ue->user_extended_types[$ext['user_extended_struct_type']]."</td>
-					<td class='forumheader3'>{$ext['user_extended_struct_values']}";
-					if($ext['user_extended_struct_values'])
-					{
-						$text .= "<br />[{$ext['user_extended_struct_default']}]";
-					}
-					$text .= "
-					</td>
-					<td class='forumheader3'>".($ext['user_extended_struct_required'] ? LAN_YES : LAN_NO)."</td>
-					<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_applicable'])."</td>
-					<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_read'])."</td>
-					<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_write'])."</td>
-					<td class='forumheader3'>
-					<form method='post' action='".e_SELF."'>
-					<input type='hidden' name='id' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />
-					";
-					if($i > 0)
-					{
-						$text .= "
-						<input type='image' alt='' title='".EXTLAN_26."' src='".e_IMAGE."/admin_images/up.png' name='up' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />
-						";
-					}
-					if($i <= count($extendedList[$cn])-2)
-					{
-						$text .= "<input type='image' alt='' title='".EXTLAN_25."' src='".e_IMAGE."/admin_images/down.png' name='down' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />";
-					}
-					$text .= "
-					</form>
-					</td>
-					<td class='forumheader3' style='text-align:center;'>
-					<a style='text-decoration:none' href='".e_SELF."?editext.{$ext['user_extended_struct_id']}'>".ADMIN_EDIT_ICON."</a>
-					&nbsp;
-					<form method='post' action='".e_SELF."?extended' onsubmit='return confirm(\"".EXTLAN_27."\")'>
-					<input type='hidden' name='eu_action' value='delext' />
-					<input type='hidden' name='key' value='{$ext['user_extended_struct_id']},{$ext['user_extended_struct_name']}' />
-					<input type='image' title='".LAN_DELETE."' name='eudel' src='".ADMIN_DELETE_ICON_PATH."' />
-					</form>
-					</td>
+					<td colspan='8' class='forumheader3' style='text-align:center'>".EXTLAN_28."</td>
 					</tr>
 					";
-					$i++;
 				}
+			}
+			//Show add/edit form
+			$text .= "
+			</table>";
+		}
+		else
+		{
+			if($current == 'new')
+			{
+				$current = '';
+			}
+			$text .= "
+			<form method='post' action='".e_SELF."?".e_QUERY."'>
+			";
+			$text .= "<div><br /></div><table style='".ADMIN_WIDTH."' class='fborder'>  ";
+			$text .= "
+
+			<tr>
+			<td style='width:30%' class='forumheader3'>".EXTLAN_10.":</td>
+			<td style='width:70%' class='forumheader3' colspan='3'>user_";
+			if(is_array($current))
+			{
+				$text .= $current['user_extended_struct_name']."
+				<input type='hidden' name='user_field' value='".$current['user_extended_struct_name']."' />
+				";
 			}
 			else
 			{
 				$text .= "
-				<tr>
-				<td colspan='8' class='forumheader3' style='text-align:center'>".EXTLAN_28."</td>
-				</tr>
+				<input class='tbox' type='text' name='user_field' size='40' value='".$current['user_extended_struct_name']."' maxlength='50' />
 				";
 			}
-		}
-		//Show add/edit form
-		$text .= "
-		</table>
-		<form method='post' action='".e_SELF."?".e_QUERY."'>
-		";
-		$text .= "<div><br /></div><table style='".ADMIN_WIDTH."' class='fborder'>  ";
-		$text .= "
+			$text .= "
+			<br /><span class='smalltext'>".EXTLAN_11."</span>
+			</td>
+			</tr>
 
-		<tr>
-		<td style='width:30%' class='forumheader3'>".EXTLAN_10.":</td>
-		<td style='width:70%' class='forumheader3' colspan='3'>user_";
-		if(is_array($current))
-		{
-			$text .= $current['user_extended_struct_name']."
-			<input type='hidden' name='user_field' value='".$current['user_extended_struct_name']."' />
+			<tr>
+			<td style='width:30%' class='forumheader3'>".EXTLAN_12.":</td>
+			<td style='width:70%' class='forumheader3' colspan='3'>
+			<input class='tbox' type='text' name='user_text' size='40' value='".$current['user_extended_struct_text']."' maxlength='50' /><br />
+			<span class='smalltext'>".EXTLAN_13."</span>
+			</td>
+			</tr>
+			";
+
+			$text .= "<tr>
+			<td style='width:30%' class='forumheader3'>".EXTLAN_14."</td>
+			<td style='width:70%' class='forumheader3' colspan='3'>
+			<select onchange='changeHelp(this.value)' class='tbox' name='user_type' id='user_type'>";
+			foreach($ue->user_extended_types as $key => $val)
+			{
+				$selected = ($current['user_extended_struct_type'] == $key) ? " selected='selected'": "";
+				$text .= "<option value='".$key."' $selected>".$val."</option>";
+			}
+			$curtype = $current['user_extended_struct_type'];
+			if(!$curtype)
+			{
+				$curtype = '1';
+			}
+			$text .= "
+			</select>
+			</td></tr>";
+
+			$text .= "
+			<tr>
+			<td style='width:30%' class='forumheader3'>".EXTLAN_15."</td>
+			<td style='width:70%' class='forumheader3' colspan='3'>
+			<div id='parm_container'>
+			";
+			$curParms = explode(",",$current['user_extended_struct_parms']);
+			if(count($curParms) == 0)
+			{
+				$curParms[]='';
+			}
+			$i=0;
+			foreach($curParms as $p)
+			{
+				$id = $i ? "" : " id='parm_line'";
+				$i++;
+				if($p == 'allow_hide' && count($curParms) == 1)
+				{
+					$p = "";
+					$text .= "
+					<span {$id}>
+					<input class='tbox' type='text' name='user_parms[]' size='40' value='{$p}' /><br />
+					</span>
+					";
+				}
+				else
+				{
+					if($p != 'allow_hide')
+					{
+						$text .= "
+						<span {$id}>
+						<input class='tbox' type='text' name='user_parms[]' size='40' value='{$p}' /><br />
+						</span>
+						";
+					}
+				}
+			}
+			$text .= "
+			</div>
+			<span class='smalltext'>".EXTLAN_51."</span><br />
+			<input type='button' class='button' value='".EXTLAN_47."' onclick=\"duplicateHTML('parm_line','parm_container');\"  />
+			</td>
+			</tr>
+
+			<tr>
+			<td style='width:30%' class='forumheader3'>".EXTLAN_3."</td>
+			<td style='width:70%' class='forumheader3' colspan='3'>
+			<div id='value_container'>
+			";
+			$curVals = explode(",",$current['user_extended_struct_values']);
+			if(count($curVals) == 0)
+			{
+				$curVals[]='';
+			}
+			$i=0;
+			foreach($curVals as $v)
+			{
+				$id = $i ? "" : " id='value_line'";
+				$i++;
+				$text .= "
+				<span {$id}>
+				<input class='tbox' type='text' name='user_values[]' size='40' value='{$v}' /><br />
+				</span>
+				";
+			}
+			$text .= "
+			</div>			
+			<span class='smalltext'>".EXTLAN_17."</span><br />
+			<input type='button' class='button' value='".EXTLAN_48."' onclick=\"duplicateHTML('value_line','value_container');\"  />
+			</td>
+			</tr>
+
+			<tr>
+			<td style='width:30%' class='forumheader3'>".EXTLAN_16."</td>
+			<td style='width:70%' class='forumheader3' colspan='3'>
+			<input class='tbox' type='text' name='user_default' size='40' value='{$current['user_extended_struct_default']}' />
+			</td>
+			</tr>
+
+			<tr>
+			<td style='width:30%' class='forumheader3'>".EXTLAN_44."</td>
+			<td style='width:70%' class='forumheader3' colspan='3'>
+			<select class='tbox' name='user_parent'>";
+			foreach($catNums as $k)
+			{
+				$sel = ($k == $current['user_extended_struct_parent']) ? " selected='selected' " : "";
+				$text .= "<option value='{$k}' {$sel}>{$catList[$k][0]['user_extended_struct_name']}</option>\n";
+			}
+			$text .= "</select>
+
+			</td>
+			</tr>
+
+			<tr>
+			<td style='width:30%' class='forumheader3'>".EXTLAN_18."</td>
+			<td style='width:70%' class='forumheader3' colspan='3'>
+			<select class='tbox' name='user_required'>
+			";
+			if($current['user_extended_struct_required'])
+			{
+				$text .= "
+				<option value='1' selected='selected'>".LAN_YES."</option>
+				<option value='0'>".LAN_NO."</option>";
+			}
+			else
+			{
+				$text .= "
+				<option value='1'>".LAN_YES."</option>
+				<option value='0' selected='selected'>".LAN_NO."</option>";
+			}
+			$text .= "
+			</select>
+			<br />
+			<span class='smalltext'>".EXTLAN_19."</span>
+			</td>
+			</tr>
+
+			<tr>
+			<td style='width:30%' class='forumheader3'>".EXTLAN_5."</td>
+			<td style='width:70%' class='forumheader3' colspan='3'>
+			".r_userclass("user_applicable", $current['user_extended_struct_applicable'], 'off', 'member, admin, classes')."<br /><span class='smalltext'>".EXTLAN_20."</span>
+			</td>
+			</tr>
+
+			<tr>
+			<td style='width:30%' class='forumheader3'>".EXTLAN_6."</td>
+			<td style='width:70%' class='forumheader3' colspan='3'>
+			".r_userclass("user_read", $current['user_extended_struct_read'], 'off', 'member, admin, classes')."<br /><span class='smalltext'>".EXTLAN_22."</span>
+			</td>
+			</tr>
+
+			<tr>
+			<td style='width:30%' class='forumheader3'>".EXTLAN_7."</td>
+			<td style='width:70%' class='forumheader3' colspan='3'>
+			".r_userclass("user_write", $current['user_extended_struct_write'], 'off', 'member, admin, classes')."<br /><span class='smalltext'>".EXTLAN_21."</span>
+			</td>
+			</tr>
+			
+			<tr>
+			<td style='width:30%' class='forumheader3'>".EXTLAN_49."
+			</td>
+			<td style='width:70%' class='forumheader3' colspan='3'>
+			<select class='tbox' name='allow_hide'>
+			";
+			if(strpos($current['user_extended_struct_parms'], 'allow_hide') !== FALSE)
+			{
+				$text .= "
+				<option value='1' selected='selected'>".LAN_YES."</option>
+				<option value='0'>".LAN_NO."</option>";
+			}
+			else
+			{
+				$text .= "
+				<option value='1'>".LAN_YES."</option>
+				<option value='0' selected='selected'>".LAN_NO."</option>";
+			}
+			$text .= "
+			</select>
+			<br /><span class='smalltext'>".EXTLAN_50."</span>
+			</td>
+			</tr>
+			";
+
+
+			$text .= "<tr>
+			<td colspan='4' style='text-align:center' class='forumheader'>";
+
+			if (!is_array($current))
+			{
+				$text .= "
+				<input class='button' type='submit' name='add_field' value='".EXTLAN_23."' />
+				";
+			}
+			else
+			{
+				$text .= "
+				<input class='button' type='submit' name='update_field' value='".EXTLAN_24."' /> &nbsp; &nbsp;
+				<input class='button' type='submit' name='cancel' value='".EXTLAN_33."' />
+				";
+			}
+			// ======= end added by Cam.
+			$text .= "</td>
+			</tr>
+
+			</table></form>
 			";
 		}
-		else
-		{
-			$text .= "
-			<input class='tbox' type='text' name='user_field' size='40' value='".$current['user_extended_struct_name']."' maxlength='50' />
-			";
-		}
-		$text .= "
-		<br /><span class='smalltext'>".EXTLAN_11."</span>
-		</td>
-		</tr>
-
-		<tr>
-		<td style='width:30%' class='forumheader3'>".EXTLAN_12.":</td>
-		<td style='width:70%' class='forumheader3' colspan='3'>
-		<input class='tbox' type='text' name='user_text' size='40' value='".$current['user_extended_struct_text']."' maxlength='50' /><br />
-		<span class='smalltext'>".EXTLAN_13."</span>
-		</td>
-		</tr>
-		";
-
-		$text .= "<tr>
-		<td style='width:30%' class='forumheader3'>".EXTLAN_14."</td>
-		<td style='width:70%' class='forumheader3' colspan='3'>
-		<select class='tbox' name='user_type'>";
-		foreach($ue->user_extended_types as $key => $val)
-		{
-			$selected = ($current['user_extended_struct_type'] == $key) ? " selected='selected'": "";
-			$text .= "<option value='".$key."' $selected>".$val."</option>";
-		}
-
-		$text .= "
-		</select></td></tr>";
-
-		$text .= "
-		<tr>
-		<td style='width:30%' class='forumheader3'>".EXTLAN_15."</td>
-		<td style='width:70%' class='forumheader3' colspan='3'>
-		<input class='tbox' type='text' name='user_parms' size='40' value='{$current['user_extended_struct_parms']}' /><br />
-		</td>
-		</tr>
-
-		<tr>
-		<td style='width:30%' class='forumheader3'>".EXTLAN_3."</td>
-		<td style='width:70%' class='forumheader3' colspan='3'>
-		<input class='tbox' type='text' name='user_values' size='40' value='{$current['user_extended_struct_values']}' /><br />
-		<span class='smalltext'>".EXTLAN_17."</span>
-		</td>
-		</tr>
-
-		<tr>
-		<td style='width:30%' class='forumheader3'>".EXTLAN_16."</td>
-		<td style='width:70%' class='forumheader3' colspan='3'>
-		<input class='tbox' type='text' name='user_default' size='40' value='{$current['user_extended_struct_default']}' />
-		</td>
-		</tr>
-
-		<tr>
-		<td style='width:30%' class='forumheader3'>".EXTLAN_44."</td>
-		<td style='width:70%' class='forumheader3' colspan='3'>
-		<select class='tbox' name='user_parent'>";
-		foreach($catNums as $k)
-		{
-			$sel = ($k == $current['user_extended_struct_parent']) ? " selected='selected' " : "";
-			$text .= "<option value='{$k}' {$sel}>{$catList[$k][0]['user_extended_struct_name']}</option>\n";
-		}
-		$text .= "</select>
-		
-		</td>
-		</tr>
-
-		<tr>
-		<td style='width:30%' class='forumheader3'>".EXTLAN_18."</td>
-		<td style='width:70%' class='forumheader3' colspan='3'>
-		<select class='tbox' type='text' name='user_required'>
-		";
-		if($current['user_extended_struct_required'])
-		{
-			$text .= "
-			<option value='1' selected='selected'>".LAN_YES."
-			<option value='0'>".LAN_NO;
-		}
-		else
-		{
-			$text .= "
-			<option value='1'>".LAN_YES."
-			<option value='0' selected='selected'>".LAN_NO;
-		}
-		$text .= "
-		</select>
-		<br />
-		<span class='smalltext'>".EXTLAN_19."</span>
-		</td>
-		</tr>
-
-		<tr>
-		<td style='width:30%' class='forumheader3'>".EXTLAN_5."</td>
-		<td style='width:70%' class='forumheader3' colspan='3'>
-		".r_userclass("user_applicable", $current['user_extended_struct_applicable'], 'off', 'member, admin, classes')."<br /><span class='smalltext'>".EXTLAN_20."</span>
-		</td>
-		</tr>
-
-		<tr>
-		<td style='width:30%' class='forumheader3'>".EXTLAN_6."</td>
-		<td style='width:70%' class='forumheader3' colspan='3'>
-		".r_userclass("user_read", $current['user_extended_struct_read'], 'off', 'member, admin, classes')."<br /><span class='smalltext'>".EXTLAN_22."</span>
-		</td>
-		</tr>
-
-		<tr>
-		<td style='width:30%' class='forumheader3'>".EXTLAN_7."</td>
-		<td style='width:70%' class='forumheader3' colspan='3'>
-		".r_userclass("user_write", $current['user_extended_struct_write'], 'off', 'member, admin, classes')."<br /><span class='smalltext'>".EXTLAN_21."</span>
-		</td>
-		</tr>";
-
-
-		$text .= "<tr>
-		<td colspan='4' style='text-align:center' class='forumheader'>";
-
-		if (!is_array($current))
-		{
-			$text .= "
-			<input class='button' type='submit' name='add_field' value='".EXTLAN_23."' />
-			";
-		}
-		else
-		{
-			$text .= "
-			<input class='button' type='submit' name='update_field' value='".EXTLAN_24."' /> &nbsp; &nbsp;
-			<input class='button' type='submit' name='cancel' value='".EXTLAN_33."' />
-			";
-		}
-		// ======= end added by Cam.
-		$text .= "</td>
-		</tr>
-
-		</table></form></div>";
+//		$text .= "</div>";
 		$ns->tablerender(EXTLAN_9, $text);
 	}
 
@@ -568,6 +684,9 @@ class users_ext
 		$var['main']['text'] = EXTLAN_34;
 		$var['main']['link'] = e_SELF;
 
+		$var['editext']['text'] = EXTLAN_45;
+		$var['editext']['link'] = e_SELF."?editext";
+
 		$var['cat']['text'] = EXTLAN_35;
 		$var['cat']['link'] = e_SELF."?cat";
 
@@ -576,9 +695,56 @@ class users_ext
 
 }
 function users_extended_adminmenu() {
-	global $user;
-	global $action;
+	global $user, $action, $ns, $curtype, $action;
 	$user->show_options($action);
+	if($action == 'editext')
+	{
+		$ns->tablerender(EXTLAN_46." - <span id='ue_type'>&nbsp;</span>", "<div id='ue_help'>&nbsp;</div>");
+		echo "<script type='text/javascript'>changeHelp('{$curtype}');</script>";
+	}
+}
+
+function headerjs()
+{
+	include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php");
+	$text = "
+<script type='text/javascript'>
+function changeHelp(type) {
+	var ftype;
+	var helptext;
+";
+for($i=0; $i<=7; $i++)
+{
+	$type_const = "UE_LAN_{$i}";
+	$help_const = "EXTLAN_HELP_{$i}";
+	$text .= "
+	if(type == \"{$i}\")
+	{
+		xtype=\"".constant($type_const)."\";
+		what=\"".constant($help_const)."\";
+	}";
+}
+$text .= "
+	document.getElementById('ue_type').innerHTML=''+xtype+'';
+	document.getElementById('ue_help').innerHTML=''+what+'';
+}
+</script>
+";
+	echo $text;
+}
+
+function make_delimited($var)
+{
+	foreach($var as $k => $v)
+	{
+		$var[$k] = trim($v);
+		if($var[$k] == "")
+		{
+			unset($var[$k]);
+		}
+	}
+	$ret = implode(",", $var);
+	return $ret;
 }
 
 ?>
