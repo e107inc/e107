@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users_extended.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-04-02 21:08:06 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2005-04-10 04:57:37 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("EXTLAN_1", "Name");
@@ -26,7 +26,7 @@ define("EXTLAN_13", "This is the displayed name of the field in rendered pages")
 define("EXTLAN_14", "Field Type");
 define("EXTLAN_15", "Field Type parameters");
 define("EXTLAN_16", "Default Value");
-define("EXTLAN_17", "Enter values seperated by commas eg. value1,value2 etc <br /> For DB table use the format: dbtable,field-value,field-name.");
+define("EXTLAN_17", "Enter each possible value on each line <br /> For DB table see help.");
 define("EXTLAN_18", "Required");
 define("EXTLAN_19", "Users will be required to enter a value in this field when updating their settings.");
 define("EXTLAN_20", "Determines which users this field will apply to.");
@@ -54,5 +54,29 @@ define("EXTLAN_41", "Category deleted");
 define("EXTLAN_42", "Update Category");
 define("EXTLAN_43", "Category Updated");
 define("EXTLAN_44", "Category");
+define("EXTLAN_45", "Add New Field");
+define("EXTLAN_46", "Help");
+define("EXTLAN_47", "Add new parameter");
+define("EXTLAN_48", "Add new value");
+define("EXTLAN_49", "Allow user to hide");
+define("EXTLAN_50", "Setting this to yes will allow the user to hide this value from non-admins");
+define("EXTLAN_51", "<i>parm_name=parm_value</i><br />See help box for valid parameters.");
+
+
+
+//textbox
+define("EXTLAN_HELP_1", "<b><i>Parameters:</i></b><br />size - size of field<br />maxlength - max length of field<br />class - css class of field<br />");
+//radio buttons
+define("EXTLAN_HELP_2", "This will be the radio buttons help text");
+//dropdown
+define("EXTLAN_HELP_3", "This will be the dropdown help text");
+//db field
+define("EXTLAN_HELP_4", "<b><i>Values:</i></b><br />There should be three values given ALWAYS:<br /><ol><li>dbtable</li><li>field containing id</li><li>field containing value</li></ol><br />");
+//textarea
+define("EXTLAN_HELP_5", "This will be the Textarea help text");
+//integer
+define("EXTLAN_HELP_6", "This will be the Integer help text");
+//date
+define("EXTLAN_HELP_7", "This will be the date help text");
 
 ?>
