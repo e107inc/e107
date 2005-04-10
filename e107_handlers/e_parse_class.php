@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2005-04-09 14:07:28 $
+|     $Revision: 1.59 $
+|     $Date: 2005-04-10 17:34:54 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -116,7 +116,7 @@ function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $ut
 	*   - http://www.gnu.org/licenses/gpl.txt
 	*/
 
-	$content = preg_split("/([<>])/", $str, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+	$content = preg_split("/([<>])|(\[code\])|(\[\/code\])/", $str, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 	$nobreak = explode(" ", $nobreak);
 	$nobr = explode(" ", $nobr);
 	$intag = false;
@@ -135,6 +135,8 @@ function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $ut
 		{
 			case "<": $intag = true; break;
 			case ">": $intag = false; break;
+			case "[code]": $intag = true; break;
+			case "[/code]": $intag = false; break;
 			default:
 				if ($intag)
 				{
