@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-04-11 22:32:23 $
+|     $Revision: 1.21 $
+|     $Date: 2005-04-11 23:04:28 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -37,10 +37,10 @@ if($e107_popup!=1){
 	$db_time    = number_format($db_time,4);
 	$rinfo = '';
 
-	if($pref['displayrendertime']){ $rinfo .= "Render time: ".$rendertime." second(s); ".$db_time." of that for queries. "; }
+	if($pref['displayrendertime']){ $rinfo .= "Render time: {$rendertime} second(s); {$db_time} of that for queries. "; }
 	if($pref['displaysql']){ $rinfo .= "DB queries: ".$sql -> db_QueryCount().". "; }
 	if(isset($pref['displaycacheinfo']) && $pref['displaycacheinfo']){ $rinfo .= $cachestring."."; }
-	echo ($rinfo ? "\n<div style='text-align:center' class='smalltext'>$rinfo</div>\n" : "");
+	echo ($rinfo ? "\n<div style='text-align:center' class='smalltext'>{$rinfo}</div>\n" : "");
 	if (ADMIN && E107_DEBUG_LEVEL) {
 		global $db_debug,$ns;
 		echo "\n<!-- DEBUG -->\n";
@@ -93,7 +93,7 @@ if(is_array($queryinfo) && ADMIN)
 	<td class='fcaption' style='width: 5%;'>ID</td><td class='fcaption' style='width: 95%;'>SQL Queries</td>\n</tr>\n";
 	foreach ($queryinfo as $infovalue)
 	{
-		echo "<tr>\n<td class='forumheader3' style='width: 5%;'>$c</td><td class='forumheader3' style='width: 95%;'>{$infovalue}</td>\n</tr>\n";
+		echo "<tr>\n<td class='forumheader3' style='width: 5%;'>{$c}</td><td class='forumheader3' style='width: 95%;'>{$infovalue}</td>\n</tr>\n";
 		$c++;
 	}
 	echo "</table>";
