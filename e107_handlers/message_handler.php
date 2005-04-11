@@ -11,9 +11,9 @@ e107 website system
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/message_handler.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-17 05:08:54 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2005-04-11 23:57:25 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -25,7 +25,7 @@ function show_emessage($mode, $message, $line = 0, $file = "") {
 	$emessage[4] = "<b>[4]: No core backup found. Please run the <a href='".e_FILE."resetcore.php'>Reset_Core</a> utility to rebuild your core settings. <br />After rebuilding your core please save a backup from the admin/sql screen.</b>";
 	$emessage[5] = "[5]: Field(s) have been left blank. Please resubmit the form and fill in the required fields.";
 	$emessage[6] = "<b>[6]: Unable to form a valid connection to mySQL. Please check that your e107_config.php contains the correct information.</b>";
-	$emessage[7] = "<b>[7]: mySQL is running but database ($mySQLdefaultdb) couldn't be connected to.<br />Please check it exists and that your e107_config.php contains the correct information.</b>";
+	$emessage[7] = "<b>[7]: mySQL is running but database ({$mySQLdefaultdb}) couldn't be connected to.<br />Please check it exists and that your e107_config.php contains the correct information.</b>";
 	$emessage[8] = "
 		<div style='text-align:center; font: 12px Verdana, Tahoma'><b>To complete the upgrade, copy the following text into your e107_config.php file: </b><br /><br />
 		".chr(36)."ADMIN_DIRECTORY = \"e107_admin/\";<br />
@@ -50,11 +50,11 @@ function show_emessage($mode, $message, $line = 0, $file = "") {
 		break;
 
 		case "MESSAGE":
-		$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+		$ns->tablerender("", "<div style='text-align:center'><b>{$message}</b></div>");
 		break;
 
 		case "ADMIN_MESSAGE":
-		$ns->tablerender("Admin Message", "<div style='text-align:center'><b>".$message."</b></div>");
+		$ns->tablerender("Admin Message", "<div style='text-align:center'><b>{$message}</b></div>");
 		break;
 
 		case "ALERT":
@@ -66,4 +66,5 @@ function show_emessage($mode, $message, $line = 0, $file = "") {
 		break;
 	}
 }
+
 ?>
