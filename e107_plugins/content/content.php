@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.18 $
-|		$Date: 2005-04-07 14:45:55 $
+|		$Revision: 1.19 $
+|		$Date: 2005-04-11 16:32:36 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -407,6 +407,11 @@ function show_content(){
 
 				if(!is_object($sql)){ $sql = new db; }
 				$CONTENT_TYPE_TABLE = "";
+
+				if(!$CONTENT_TYPE_TABLE){
+					require_once(e_PLUGIN."content/templates/default/content_type_template.php");
+				}
+
 				$cachestr = "$plugintable.typelist";
 				if($cache = $e107cache->retrieve($cachestr)){
 					echo $cache;
@@ -415,9 +420,7 @@ function show_content(){
 					if(!$sql -> db_Select($plugintable, "*", "content_parent = '0' ".$datequery." ORDER BY content_heading")){
 						$text .= "<div style='text-align:center;'>".CONTENT_LAN_21."</div>";
 					}else{
-						if(!$CONTENT_TYPE_TABLE){
-							require_once(e_PLUGIN."content/templates/default/content_type_template.php");
-						}
+
 						$sql2 = "";
 						$content_type_table_string = "";
 						while($row = $sql -> db_Fetch()){
@@ -500,7 +503,7 @@ function show_content(){
 					$ns -> tablerender($caption, $text);
 
 					if($pref['cachestatus']){
-						$cache = $tp -> toDB(ob_get_contents());
+						$cache = ob_get_contents();
 						$e107cache->set($cachestr, $cache);
 					}
 					ob_end_flush(); // dump collected data 			
@@ -513,23 +516,23 @@ function show_content_recent(){
 				global $type, $type_id, $action, $sub_action, $id, $id2, $nextprevquery, $from, $number;
 				global $CONTENT_RECENT_TABLE, $datequery, $prefetchbreadcrumb, $unvalidcontent;
 
+				if(!$CONTENT_RECENT_TABLE){
+					if(!$content_pref["content_theme_{$type_id}"]){
+						require_once(e_PLUGIN."content/templates/default/content_recent_template.php");
+					}else{
+						if(file_exists(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_recent_template.php")){
+							require_once(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_recent_template.php");
+						}else{
+							require_once(e_PLUGIN."content/templates/default/content_recent_template.php");
+						}
+					}
+				}
+
 				$cachestr = "$plugintable.recent";
 				if($cache = $e107cache->retrieve($cachestr)){
 					echo $cache;
 				}else{
 					ob_start();
-
-					if(!$CONTENT_RECENT_TABLE){
-						if(!$content_pref["content_theme_{$type_id}"]){
-							require_once(e_PLUGIN."content/templates/default/content_recent_template.php");
-						}else{
-							if(file_exists(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_recent_template.php")){
-								require_once(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_recent_template.php");
-							}else{
-								require_once(e_PLUGIN."content/templates/default/content_recent_template.php");
-							}
-						}
-					}
 
 					$order = $aa -> getOrder();
 					$breadcrumb = $aa -> drawBreadcrumb($prefetchbreadcrumb, $type_id, "base", "");
@@ -570,7 +573,7 @@ function show_content_recent(){
 					}
 
 					if($pref['cachestatus']){
-						$cache = $tp -> toDB(ob_get_contents());
+						$cache = ob_get_contents();
 						$e107cache->set($cachestr, $cache);
 					}
 					ob_end_flush(); // dump collected data 			
@@ -584,6 +587,18 @@ function show_content_cat_all(){
 				global $sql, $type, $type_id, $datequery, $prefetchbreadcrumb, $unvalidcontent;
 				unset($text);
 
+				if(!$CONTENT_CAT_TABLE){
+					if(!$content_pref["content_theme_{$type_id}"]){
+						require_once(e_PLUGIN."content/templates/default/content_cat_template.php");
+					}else{
+						if(file_exists(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_cat_template.php")){
+							require_once(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_cat_template.php");
+						}else{
+							require_once(e_PLUGIN."content/templates/default/content_cat_template.php");
+						}
+					}
+				}
+
 				$cachestr = "$plugintable.cat";
 				if($cache = $e107cache->retrieve($cachestr)){
 					echo $cache;
@@ -594,18 +609,7 @@ function show_content_cat_all(){
 					if(!$resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_enddate, content_class, content_pref as contentprefvalue, content_order", "content_refer !='sa' AND ((content_id = '".$type_id."' && content_parent ='0') || LEFT(content_parent,".(strlen($type_id)+2).") = '0.".$type_id."') ".$unvalidcontent." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ORDER BY content_order ASC " )){
 						header("location:".e_SELF."?".$type.".".$type_id); exit;
 					}else{
-						
-						if(!$CONTENT_CAT_TABLE){
-							if(!$content_pref["content_theme_{$type_id}"]){
-								require_once(e_PLUGIN."content/templates/default/content_cat_template.php");
-							}else{
-								if(file_exists(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_cat_template.php")){
-									require_once(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_cat_template.php");
-								}else{
-									require_once(e_PLUGIN."content/templates/default/content_cat_template.php");
-								}
-							}
-						}
+
 						$content_cat_table_string = "";
 						while($row = $sql -> db_Fetch()){
 						extract($row);
@@ -630,7 +634,7 @@ function show_content_cat_all(){
 						$ns -> tablerender($caption, $text);
 					}
 					if($pref['cachestatus']){
-						$cache = $tp -> toDB(ob_get_contents());
+						$cache = ob_get_contents();
 						$e107cache->set($cachestr, $cache);
 					}
 					ob_end_flush(); // dump collected data
@@ -641,6 +645,29 @@ function show_content_cat($mode=""){
 				global $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj, $datequery;
 				global $type, $type_id, $action, $sub_action, $id, $id2, $nextprevquery, $from, $number, $prefetchbreadcrumb, $unvalidcontent;
 				global $CONTENT_RECENT_TABLE, $CONTENT_CAT_LIST_TABLE, $CONTENT_CAT_LISTSUB_TABLE_START, $CONTENT_CAT_LISTSUB_TABLE, $CONTENT_CAT_LISTSUB_TABLE_END;
+
+				if(!$CONTENT_CAT_LIST_TABLE){
+					if(!$content_pref["content_theme_{$type_id}"]){
+						require_once(e_PLUGIN."content/templates/default/content_cat_template.php");
+					}else{
+						if(file_exists(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_cat_template.php")){
+							require_once(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_cat_template.php");
+						}else{
+							require_once(e_PLUGIN."content/templates/default/content_cat_template.php");
+						}
+					}
+				}
+				if(!$CONTENT_RECENT_TABLE){
+					if(!$content_pref["content_theme_{$type_id}"]){
+						require_once(e_PLUGIN."content/templates/default/content_recent_template.php");
+					}else{
+						if(file_exists(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_recent_template.php")){
+							require_once(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_recent_template.php");
+						}else{
+							require_once(e_PLUGIN."content/templates/default/content_recent_template.php");
+						}
+					}
+				}
 
 				if($mode == "comment"){
 					$cachestr = "$plugintable.cat.$sub_action.comment";
@@ -659,17 +686,6 @@ function show_content_cat($mode=""){
 					// parent article
 					$CONTENT_CAT_LIST_TABLE = "";
 					if($content_pref["content_cat_showparent_{$type_id}"]){
-						if(!$CONTENT_CAT_LIST_TABLE){
-							if(!$content_pref["content_theme_{$type_id}"]){
-								require_once(e_PLUGIN."content/templates/default/content_cat_template.php");
-							}else{
-								if(file_exists(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_cat_template.php")){
-									require_once(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_cat_template.php");
-								}else{
-									require_once(e_PLUGIN."content/templates/default/content_cat_template.php");
-								}
-							}
-						}
 						
 						if(!$resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_parent, content_comment, content_rate, content_pe, content_datestamp", "content_refer !='sa' AND content_id = '".$sub_action."' ".$unvalidcontent." ".$datequery." AND content_class IN (".USERCLASS_LIST.") " )){
 							header("location:".e_SELF."?".$type.".".$type_id.".cat"); exit;
@@ -706,6 +722,7 @@ function show_content_cat($mode=""){
 						
 						//list all contents within this category
 						unset($text);				
+						/*
 						if(!$CONTENT_RECENT_TABLE){
 							if(!$content_pref["content_theme_{$type_id}"]){
 								require_once(e_PLUGIN."content/templates/default/content_recent_template.php");
@@ -717,6 +734,7 @@ function show_content_cat($mode=""){
 								}
 							}
 						}
+						*/
 
 						$subquery = ($content_pref["content_cat_listtype_{$type_id}"] ? "" : "  AND content_parent NOT REGEXP '.".$sub_action.".'  ");
 						$order = $aa -> getOrder();
@@ -817,7 +835,7 @@ function show_content_cat($mode=""){
 									}
 									if(!$pref['nested_comments']){$ns -> tablerender(CONTENT_LAN_35, $text); }
 									if($pref['cachestatus']){
-										$cache = $tp -> toDB(ob_get_contents());
+										$cache = ob_get_contents();
 										$e107cache->set("comment.$plugintable.$sub_action", $cache);
 									}
 								}
@@ -831,7 +849,7 @@ function show_content_cat($mode=""){
 					}
 
 					if($pref['cachestatus']){
-						$cache = $tp -> toDB(ob_get_contents());
+						$cache = ob_get_contents();
 						$e107cache->set($cachestr, $cache);
 					}
 					ob_end_flush(); // dump collected data 			
@@ -843,6 +861,19 @@ function show_content_cat($mode=""){
 function show_content_author_all(){
 				global $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj;
 				global $type, $type_id, $action, $sub_action, $id, $id2, $datequery, $prefetchbreadcrumbnosub, $unvalidcontent;
+					
+				$CONTENT_AUTHOR_TABLE = "";
+				if(!$CONTENT_AUTHOR_TABLE){
+					if(!$content_pref["content_theme_{$type_id}"]){
+						require_once(e_PLUGIN."content/templates/default/content_author_template.php");
+					}else{
+						if(file_exists(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_author_template.php")){
+							require_once(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_author_template.php");
+						}else{
+							require_once(e_PLUGIN."content/templates/default/content_author_template.php");
+						}
+					}
+				}
 
 				$cachestr = "$plugintable.author";
 				if($cache = $e107cache->retrieve($cachestr)){
@@ -860,19 +891,6 @@ function show_content_author_all(){
 							$authordetails[] = $aa -> getAuthor($content_author);
 						}
 						usort($authordetails, create_function('$a,$b','return strcasecmp ($a[1], $b[1]);')); 
-
-						$CONTENT_AUTHOR_TABLE = "";
-						if(!$CONTENT_AUTHOR_TABLE){
-							if(!$content_pref["content_theme_{$type_id}"]){
-								require_once(e_PLUGIN."content/templates/default/content_author_template.php");
-							}else{
-								if(file_exists(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_author_template.php")){
-									require_once(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_author_template.php");
-								}else{
-									require_once(e_PLUGIN."content/templates/default/content_author_template.php");
-								}
-							}
-						}
 
 						$sql2 = "";
 						$content_author_table_string = "";
@@ -912,7 +930,7 @@ function show_content_author_all(){
 					$ns -> tablerender($caption, $text);
 					
 					if($pref['cachestatus']){
-						$cache = $tp -> toDB(ob_get_contents());
+						$cache = ob_get_contents();
 						$e107cache->set($cachestr, $cache);
 					}
 					ob_end_flush(); // dump collected data 			
@@ -924,6 +942,18 @@ function show_content_author(){
 				global $type, $type_id, $action, $sub_action, $id, $id2, $nextprevquery, $from, $number;
 				global $CONTENT_RECENT_TABLE, $datequery, $prefetchbreadcrumb, $unvalidcontent;
 
+				$CONTENT_RECENT_TABLE = "";
+				if(!$CONTENT_RECENT_TABLE){
+					if(!$content_pref["content_theme_{$type_id}"]){
+						require_once(e_PLUGIN."content/templates/default/content_recent_template.php");
+					}else{
+						if(file_exists(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_recent_template.php")){
+							require_once(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_recent_template.php");
+						}else{
+							require_once(e_PLUGIN."content/templates/default/content_recent_template.php");
+						}
+					}
+				}
 				$cachestr = "$plugintable.author.$sub_action";
 				if($cache = $e107cache->retrieve($cachestr)){
 					echo $cache;
@@ -938,19 +968,6 @@ function show_content_author(){
 					}else{
 						list($content_author) = $sqla -> db_Fetch();
 						$authordetails = $aa -> getAuthor($content_author);
-												
-						$CONTENT_RECENT_TABLE = "";
-						if(!$CONTENT_RECENT_TABLE){
-							if(!$content_pref["content_theme_{$type_id}"]){
-								require_once(e_PLUGIN."content/templates/default/content_recent_template.php");
-							}else{
-								if(file_exists(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_recent_template.php")){
-									require_once(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_recent_template.php");
-								}else{
-									require_once(e_PLUGIN."content/templates/default/content_recent_template.php");
-								}
-							}
-						}
 
 						$order = $aa -> getOrder();
 						if(!is_object($sql)){ $sql = new db; }
@@ -991,7 +1008,7 @@ function show_content_author(){
 						}
 					}
 					if($pref['cachestatus']){
-						$cache = $tp -> toDB(ob_get_contents());
+						$cache = ob_get_contents();
 						$e107cache->set($cachestr, $cache);
 					}
 					ob_end_flush(); // dump collected data 			
@@ -1055,7 +1072,7 @@ function show_content_item(){
 								}
 								if(!$pref['nested_comments']){$ns -> tablerender(CONTENT_LAN_35, $text); }
 								if($pref['cachestatus']){
-									$cache = $tp -> toDB(ob_get_contents());
+									$cache = ob_get_contents();
 									$e107cache->set("comment.$plugintable.$sub_action", $cache);
 								}
 							}
@@ -1068,7 +1085,7 @@ function show_content_item(){
 					}
 
 					if($pref['cachestatus']){
-						$cache = $tp -> toDB(ob_get_contents());
+						$cache = ob_get_contents();
 						$e107cache->set($cachestr, $cache);
 					}
 					ob_end_flush(); // dump collected data 			
