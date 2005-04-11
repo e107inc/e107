@@ -12,27 +12,28 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.105 $
-|     $Date: 2005-04-09 20:33:18 $
-|     $Author: e107coders $
+|     $Revision: 1.106 $
+|     $Date: 2005-04-11 11:55:00 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
 // Honest global beginning point for processing time
 $eTimingStart = microtime();
+$start_ob_level = ob_get_level();
 
 // Find out if register globals is enabled and destroy them if so
-
 $register_globals = true;
 if(function_exists('ini_get')) {
-	if(ini_get('register_globals')){
-		while (list($global) = each($GLOBALS)) {
-			if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST|eTimingStart)$/', $global)) {
-				unset($$global);
-			}
+	$register_globals = ini_get('register_globals');
+}
+if($register_globals == true){
+	while (list($global) = each($GLOBALS)) {
+		if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST|eTimingStart)$/', $global)) {
+			unset($$global);
 		}
-		unset($global);
 	}
+	unset($global);
 }
 
 // Grab e107_config, get directory paths, and create the $e107 object
@@ -42,38 +43,21 @@ if(!isset($ADMIN_DIRECTORY)){
 	header("Location: install.php");
 }
 
+
+// clever stuff that figures out where the paths are on the fly.. no more need to hard-coded e_HTTP :)
 include_once(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY.'e107_class.php');
-$Paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY');
-if(defined("COMPRESS_OUTPUT") && COMPRESS_OUTPUT === true) {
-	$OutputCompression = true;
-} else {
-	$OutputCompression = false;
-}
-$e107 = new e107($Paths, __FILE__, $OutputCompression);
+$e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY');
+$e107 = new e107($e107_paths, __FILE__);
 
-$start_ob_level = ob_get_level();
-error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
-if (!$mySQLserver) {
-	@include("e107_config.php");
-	$a=0;
-	$p="";
+$page_path = dirname($_SERVER['PHP_SELF']).'/';
 
-	while (!$mySQLserver && $a < 5) {
-		$a++;
-		$p .= "../";
-		@include($p."e107_config.php");
-	}
-	if (!defined("e_HTTP")) {
-		header("Location:install.php");
-		exit;
-	}
-}
-$link_prefix="";
-$url_prefix=substr($_SERVER['PHP_SELF'], strlen(e_HTTP), strrpos($_SERVER['PHP_SELF'], "/") + 1 - strlen(e_HTTP));
-$tmp=explode("?", $url_prefix);
-$num_levels=substr_count($tmp[0], "/");
+$relative_path = str_replace(e_HTTP, '', $page_path);
 
+$link_prefix = '';
+$url_prefix = substr($_SERVER['PHP_SELF'], strlen(e_HTTP), strrpos($_SERVER['PHP_SELF'], "/") + 1 - strlen(e_HTTP));
+$tmp = explode("?", $url_prefix);
+$num_levels = substr_count($tmp[0], "/");
 for ($i = 1; $i <= $num_levels; $i++) {
 	$link_prefix .= "../";
 }
@@ -90,8 +74,9 @@ if (preg_match("/\[(.*?)\].*?/i", $_SERVER['QUERY_STRING'], $matches)) {
 }
 
 define("e_TBQS", $_SERVER['QUERY_STRING']);
-$_SERVER['QUERY_STRING']=e_QUERY;
+$_SERVER['QUERY_STRING'] = e_QUERY;
 define('e_BASE', $link_prefix);
+
 define("e_ADMIN", e_BASE.$ADMIN_DIRECTORY);
 define("e_IMAGE", e_BASE.$IMAGES_DIRECTORY);
 define("e_THEME", e_BASE.$THEMES_DIRECTORY);
@@ -244,7 +229,7 @@ define("e_SELF", ($pref['ssl_enabled'] ? "https://".$_SERVER['HTTP_HOST'].($_SER
 
 if (isset($_POST['setlanguage']) || $_GET['elan']) {
 	if($_GET['elan']){  // query support, for language selection splash pages. etc
-    	$_POST['sitelanguage'] = $_GET['elan'];
+	$_POST['sitelanguage'] = $_GET['elan'];
 	}
 	$sql->mySQLlanguage=$_POST['sitelanguage'];
 	if ($pref['user_tracking'] == "session") {

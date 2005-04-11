@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-03-10 19:45:29 $
-|     $Author: stevedunstan $
+|     $Revision: 1.11 $
+|     $Date: 2005-04-11 11:55:49 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -148,12 +148,12 @@ class rssCreate {
 				$loop=0;
 				foreach($tmp as $value) {
 					if($value['thread_user']) {
-						$this -> rssItems[$loop]['author'] = $value['user_name'] . " ( ".$e107->HTTPPath."user.php?id.".$value['thread_user']." )";
+						$this -> rssItems[$loop]['author'] = $value['user_name'] . " ( ".$e107->http_path."user.php?id.".$value['thread_user']." )";
 					} else {
 						list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $value['thread_anon']);
 					}
 					$this -> rssItems[$loop]['title'] = $tp -> toRss($value['thread_name']);
-					$this -> rssItems[$loop]['link'] = $e107->HTTPPath.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'];
+					$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'];
 
 					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['thread_thread']) : $tp -> toRss(substr($value['thread_thread'], 0, 100)));
 
@@ -175,17 +175,17 @@ class rssCreate {
 				$loop=0;
 				foreach($tmp as $value) {
 					if($value['thread_user']) {
-						$this -> rssItems[$loop]['author'] = $value['user_name'] . " ( ".$e107->HTTPPath."user.php?id.".$value['thread_user']." )";
+						$this -> rssItems[$loop]['author'] = $value['user_name'] . " ( ".$e107->http_path."user.php?id.".$value['thread_user']." )";
 					} else {
 						list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $value['thread_anon']);
 					}
 
 					if($value['parent_name']) {
 						$this -> rssItems[$loop]['title'] = "Re: ".$tp -> toRss($value['parent_name']);
-						$this -> rssItems[$loop]['link'] = $e107->HTTPPath.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_parent'];
+						$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_parent'];
 					} else {
 						$this -> rssItems[$loop]['title'] = $tp -> toRss($value['thread_name']);
-						$this -> rssItems[$loop]['link'] = $e107->HTTPPath.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'];
+						$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'];
 					}
 
 					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['thread_thread']) : $tp -> toRss(substr($value['thread_thread'], 0, 100)));
@@ -221,22 +221,22 @@ class rssCreate {
 				$this -> rssItems = array();
 				$loop = 0;
 				if($topic['thread_user']) {
-					$this -> rssItems[$loop]['author'] = $topic['user_name'] . " ( ".$e107->HTTPPath."user.php?id.".$topic['thread_user']." )";
+					$this -> rssItems[$loop]['author'] = $topic['user_name'] . " ( ".$e107->http_path."user.php?id.".$topic['thread_user']." )";
 				} else {
 					list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $topic['thread_anon']);
 				}
 				$this -> rssItems[$loop]['title'] = $tp -> toRss($topic['thread_name']);
-				$this -> rssItems[$loop]['link'] = $e107->HTTPPath.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$topic['thread_id'];
+				$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$topic['thread_id'];
 				$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($topic['thread_thread']) : $tp -> toRss(substr($topic['thread_thread'], 0, 100)));
 				$loop ++;
 				foreach($replies as $value) {
 					if($value['thread_user']) {
-						$this -> rssItems[$loop]['author'] = $value['user_name'] . " ( ".$e107->HTTPPath."user.php?id.".$value['thread_user']." )";
+						$this -> rssItems[$loop]['author'] = $value['user_name'] . " ( ".$e107->http_path."user.php?id.".$value['thread_user']." )";
 					} else {
 						list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $value['thread_anon']);
 					}
 					$this -> rssItems[$loop]['title'] = "Re: ".$tp -> toRss($topic['thread_name']);
-					$this -> rssItems[$loop]['link'] = $e107->HTTPPath.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$this -> topicid;
+					$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$this -> topicid;
 					$this -> rssItems[$loop]['description'] = $tp -> toRss($value['thread_thread']);
 					$loop++;
 				}
@@ -252,7 +252,7 @@ class rssCreate {
 					$nick = eregi_replace("[0-9]+\.", "", $value['cb_nick']);
 					$this -> rssItems[$loop]['author'] = $nick;
 					$this -> rssItems[$loop]['title'] = "";
-					$this -> rssItems[$loop]['link'] = $e107->HTTPPath.$PLUGINS_DIRECTORY."chat.php";
+					$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."chat.php";
 					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['cb_message']) : $tp -> toRss(substr($value['cb_message'], 0, 100)));
 					$loop++;
 				}
@@ -268,7 +268,7 @@ class rssCreate {
 					$nick = eregi_replace("[0-9]+\.", "", $value['bugtrack2_bugs_poster']);
 					$this -> rssItems[$loop]['author'] = $nick;
 					$this -> rssItems[$loop]['title'] = $value['bugtrack2_bugs_summary'];
-					$this -> rssItems[$loop]['link'] = $e107->HTTPPath.$PLUGINS_DIRECTORY."bugtracker2/bugtracker2.php?0.bug.".$value['bugtrack2_bugs_id'];
+					$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."bugtracker2/bugtracker2.php?0.bug.".$value['bugtrack2_bugs_id'];
 					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['bugtrack2_bugs_description']) : $tp -> toRss(substr($value['bugtrack2_bugs_description'], 0, 100)));
 					$loop++;
 				}
@@ -289,17 +289,17 @@ class rssCreate {
 				$loop=0;
 				foreach($tmp as $value) {
 					if($value['thread_user']) {
-						$this -> rssItems[$loop]['author'] = $value['user_name'] . " ( ".$e107->HTTPPath."user.php?id.".$value['thread_user']." )";
+						$this -> rssItems[$loop]['author'] = $value['user_name'] . " ( ".$e107->http_path."user.php?id.".$value['thread_user']." )";
 					} else {
 						list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $value['thread_anon']);
 					}
 
 					if($value['parent_name']) {
 						$this -> rssItems[$loop]['title'] = $tp -> toRss("Re: ".$value['parent_name']);
-						$this -> rssItems[$loop]['link'] = $e107->HTTPPath.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_parent'];
+						$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_parent'];
 					} else {
 						$this -> rssItems[$loop]['title'] = $tp -> toRss($value['thread_name']);
-						$this -> rssItems[$loop]['link'] = $e107->HTTPPath.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'];
+						$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'];
 					}
 					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['thread_thread']) : $tp -> toRss(substr($value['thread_thread'], 0, 100)));
 					$loop++;

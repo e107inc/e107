@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2005-04-05 16:58:40 $
-|     $Author: stevedunstan $
+|     $Revision: 1.43 $
+|     $Date: 2005-04-11 11:55:50 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 if (!function_exists("parseheader")) {
@@ -40,7 +40,7 @@ echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' /
 echo "<link rel='alternate' type='application/rss+xml' title='".SITENAME." RSS' href='".e_PLUGIN."rss_menu/rss.php?1.2' />\n";
 if(isset($pref['trackbackEnabled']))
 {
-echo '<link rel="pingback" href="'.$e107->HTTPPath.$PLUGINS_DIRECTORY.'trackback/xmlrpc.php" />
+echo '<link rel="pingback" href="'.$e107->http_path.$PLUGINS_DIRECTORY.'trackback/xmlrpc.php" />
 ';
 }
 

@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.61 $
-| $Date: 2005-04-08 10:49:22 $
-| $Author: sweetas $
+| $Revision: 1.62 $
+| $Date: 2005-04-11 11:55:49 $
+| $Author: streaky $
 +---------------------------------------------------------------+
 */
 
@@ -56,7 +56,7 @@ class news {
 		{
 			$excerpt = substr($news['news_body'], 0, 100)."...";
 			$id=mysql_insert_id();
-			$permLink = $e107->HTTPPath."comment.php?comment.news.$id";
+			$permLink = $e107->http_path."comment.php?comment.news.$id";
 
 			require_once(e_PLUGIN."trackback/trackbackClass.php");
 			$trackback = new trackbackClass();
