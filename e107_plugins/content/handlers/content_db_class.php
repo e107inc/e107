@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.9 $
-|		$Date: 2005-04-11 14:56:31 $
+|		$Revision: 1.10 $
+|		$Date: 2005-04-11 16:11:05 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ if (!defined('ADMIN_WIDTH')) { define("ADMIN_WIDTH", "width:98%;"); }
 class contentdb{
 
 			function dbContentUpdate($mode){
-						global $sql, $ns, $rs, $aa, $tp, $plugintable, $e107cache;
+						global $pref, $sql, $ns, $rs, $aa, $tp, $plugintable, $e107cache;
 						global $type, $type_id, $action, $sub_action, $id;
 
 						$_POST['content_heading'] = $tp -> toDB($_POST['content_heading']);
@@ -60,8 +60,8 @@ class contentdb{
 								if($_POST['content_icon'] && !$uploadedicon){
 									$icon = $_POST['content_icon'];
 								} else {
-									//require_once(e_HANDLER."resize_handler.php");
-									//resize_image($pathicon.$uploadedicon[0]['name'], $pathicon.$uploadedicon[0]['name'], 250, "copy");
+								//	require_once(e_HANDLER."resize_handler.php");
+								//	resize_image($pathicon.$uploadedicon[0]['name'], $pathicon.$uploadedicon[0]['name'], 250, "copy");
 									$fileorgicon = $uploadedicon[0]['name'];
 									$fileext2icon = substr(strrchr($fileorgicon, "."), 0);
 									if($fileorgicon){
@@ -180,7 +180,7 @@ class contentdb{
 
 
 		function dbContentCreate($mode){
-						global $sql, $ns, $rs, $aa, $tp, $plugintable, $e107cache;
+						global $pref, $sql, $ns, $rs, $aa, $tp, $plugintable, $e107cache;
 						global $type, $type_id, $action, $sub_action, $id;
 
 						$_POST['content_heading'] = $tp -> toDB($_POST['content_heading']);
@@ -224,6 +224,7 @@ class contentdb{
 								$_FILES['file_userfile'] = $_FILES['file_userfile1'];
 								$pref['upload_storagetype'] = "1";
 								require_once(e_HANDLER."upload_handler.php");
+								$pref['upload_storagetype'] = "1";
 								$pathicon = $content_icon_path;
 								$uploadedicon = file_upload($pathicon);
 								if($_POST['content_icon'] && !$uploadedicon){
@@ -345,11 +346,12 @@ class contentdb{
 								header("location:".e_SELF."?d"); exit;
 							}							
 						}
+						
 		}
 
 
 		function dbCategoryUpdate($mode){
-						global $sql, $ns, $rs, $aa, $tp, $plugintable, $e107cache;
+						global $pref, $sql, $ns, $rs, $aa, $tp, $plugintable, $e107cache;
 						global $type, $type_id, $action, $sub_action, $id, $id2;
 
 						$_POST['cat_heading'] = $tp -> toDB($_POST['cat_heading']);
@@ -378,7 +380,7 @@ class contentdb{
 
 
 		function dbCategoryCreate($mode){
-						global $sql, $ns, $rs, $aa, $tp, $plugintable, $e107cache;
+						global $pref, $sql, $ns, $rs, $aa, $tp, $plugintable, $e107cache;
 						global $type, $type_id, $action, $sub_action, $id, $id2;
 
 						$_POST['cat_heading'] = $tp -> toDB($_POST['cat_heading']);
