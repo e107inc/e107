@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/forum_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-03-20 22:46:03 $
-|     $Author: stevedunstan $
+|     $Revision: 1.2 $
+|     $Date: 2005-04-11 16:42:38 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -50,6 +50,38 @@ $FORUMSTART = "
 </table>";
 
 $FORUMTHREADSTYLE = "
+<div class='spacer'>
+<table style='width:100%' class='nforumholder' cellpadding='0' cellspacing='0'>
+<tr>
+<td class='nforumcaption3' style='vertical-align:middle; width:20%;'>\n{NEWFLAG}\n{POSTER}\n</td>
+<td class='nforumcaption3' style='vertical-align:middle; width:80%;'>
+<table cellspacing='0' cellpadding='0' style='width:100%'>
+<tr>
+<td class='smallblacktext'>\n{THREADDATESTAMP}\n</td>
+<td style='text-align:right'>\n{EMAILITEM} {PRINTITEM} {REPORTIMG}\n{EDITIMG}\n{QUOTEIMG}\n</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td class='nforumthread' style='vertical-align:top'>\n{AVATAR}\n<span class='smalltext'>\n{CUSTOMTITLE}\n{LEVEL}\n{MEMBERID}\n{JOINED}\n{LOCATION}\n{POSTS}\n</span>\n</td>
+<td class='nforumthread' style='vertical-align:top'>{POLL}\n{POST}\n{SIGNATURE}\n</td>
+</tr>
+<tr>
+<td class='nforumthread2'>\n<span class='smallblacktext'>\n{TOP}\n</span>\n</td>
+<td class='nforumthread2' style='vertical-align:top'>
+<table cellspacing='0' cellpadding='0' style='width:100%'>
+<tr>
+<td>\n{PROFILEIMG}\n {EMAILIMG}\n {WEBSITEIMG}\n {PRIVMESSAGE}\n</td>
+<td style='text-align:right'>\n{MODOPTIONS}\n</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</div>";
+
+$FORUMREPLYSTYLE = "
 <div class='spacer'>
 <table style='width:100%' class='nforumholder' cellpadding='0' cellspacing='0'>
 <tr>
