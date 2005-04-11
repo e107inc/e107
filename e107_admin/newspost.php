@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.72 $
-|   $Date: 2005-04-11 10:28:58 $
-|   $Author: stevedunstan $
+|   $Revision: 1.73 $
+|   $Date: 2005-04-11 11:58:05 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 
 */
@@ -368,7 +368,7 @@ class newspost {
 
 	function create_item($sub_action, $id)
 	{
-		global $cal;
+		global $cal, $IMAGES_DIRECTORY;
 		// ##### Display creation form ---------------------------------------------------------------------------------------------------------
 		/* 08-08-2004 - unknown - fixed `Insert Image' display to use $IMAGES_DIRECTORY */
 		global $sql, $rs, $ns, $pref, $fl, $IMAGES_DIRECTORY, $tp, $pst, $e107;
@@ -606,18 +606,18 @@ class newspost {
 							if(file_exists(e_IMAGE."newspost_images/".$fi))
 							{
 								// thumb and main image found
-								$text .= "<a href='javascript:addtext(\"[link=e107_images/newspost_images/".$fi."][img]".$image['fname']."[/img][/link]\");'><img src='".e_IMAGE."generic/".IMODE."/image.png' alt='' style='border:0px;vertical-align:middle;' /> ".$image['fname']."</a> (link to full image will be generated)<br />
+								$text .= "<a href='javascript:addtext(\"[link=".$IMAGES_DIRECTORY."newspost_images/".$fi."][img]{E_IMAGE}newspost_images/".$image['fname']."[/img][/link]\");'><img src='".e_IMAGE."generic/".IMODE."/image.png' alt='' style='border:0px;vertical-align:middle;' /> ".$image['fname']."</a> (link to full image will be generated)<br />
 								";
 							}
 							else
 							{
-								$text .= "<a href='javascript:addtext(\"[image]".$image['fname']."[/image]\");'><img src='".e_IMAGE."generic/".IMODE."/image.png' alt='' style='border:0px;vertical-align:middle;' /> ".$image['fname']."</a><br />
+								$text .= "<a href='javascript:addtext(\"[img]{E_IMAGE}newspost_images/".$image['fname']."[/img]\");'><img src='".e_IMAGE."generic/".IMODE."/image.png' alt='' style='border:0px;vertical-align:middle;' /> ".$image['fname']."</a><br />
 								";
 							}
 						}
 						else
 						{
-							$text .= "<a href='javascript:addtext(\"[image]".$image['fname']."[/image]\");'><img src='".e_IMAGE."generic/".IMODE."/image.png' alt='' style='border:0px;vertical-align:middle;' /> ".$image['fname']."</a><br />
+							$text .= "<a href='javascript:addtext(\"[img]{E_IMAGE}newspost_images/".$image['fname']."[/img]\");'><img src='".e_IMAGE."generic/".IMODE."/image.png' alt='' style='border:0px;vertical-align:middle;' /> ".$image['fname']."</a><br />
 							";
 						}
 					}
@@ -867,7 +867,7 @@ class newspost {
 
 	function preview_item($id) {
 		// ##### Display news preview ---------------------------------------------------------------------------------------------------------
-		global $tp, $sql, $ix,$IMAGES_DIRECTORY;
+		global $tp, $sql, $ix, $IMAGES_DIRECTORY;
 		$_POST['news_id'] = $id;
 
 		if($_POST['news_start'])

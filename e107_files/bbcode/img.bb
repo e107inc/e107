@@ -1,6 +1,8 @@
 global $pref;
 if (preg_match("#\.php\?.*#",$code_text)){return "";}
-$code_text = str_replace('"','&039;',$code_text);
+$search = array('"', '{E_IMAGE}');
+$replace = array('&#039;', e_IMAGE);
+$code_text = str_replace($search, $replace, $code_text);
 unset($imgParms);
 $imgParms['alt']='';
 $imgParms['style']="vertical-align:middle; border:0";
