@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2005-04-06 21:06:12 $
-|     $Author: sweetas $
+|     $Revision: 1.40 $
+|     $Date: 2005-04-11 23:13:54 $
+|     $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -92,12 +92,22 @@ class sitelinks {
 
 		if ($style['linkdisplay'] != 3) {
 			foreach ($this->eLinkList['head_menu'] as $link) {
+                 $main_linkname = $link['link_name'];
+
+				$link['link_expand'] = (isset($pref['sitelinks_expandsub']) && is_array($this->eLinkList[$main_linkname])) ?  TRUE : FALSE;
+
 				$text .= $this->makeLink($link,'', $style);
-				$main_linkname = $link['link_name'];
+
+
+			// if there's a submenu. :
 				if (isset($this->eLinkList[$main_linkname]) && is_array($this->eLinkList[$main_linkname])) {
+                   	$substyle = (eregi($main_linkname,e_SELF) || $link['link_expand'] == FALSE) ? "visible" : "none";   // expanding sub-menus.
+                    $text .= "\n\n<div id='sub_".$main_linkname."' style='display:$substyle'>\n";
 					foreach ($this->eLinkList[$main_linkname] as $sub) {
-						$text .= $this->makeLink($sub, TRUE, $style);
+					 	$text .= $this->makeLink($sub, TRUE, $style);
 					}
+					$text .= "\n</div>\n";
+
 				}
 			}
 			$text .= $style['postlink'];
@@ -163,6 +173,7 @@ class sitelinks {
 
 //			$screentip = ($pref['linkpage_screentip'] && $linkInfo['link_description']) ? " title = '".$linkInfo['link_description']."'" : "";
 			$href = ($linkInfo['link_open'] == 4) ? " href=\"javascript:open_window('".$linkInfo['link_url']."')\"" : " href='".$linkInfo['link_url']."'";
+			$href = ($linkInfo['link_expand']) ? "href=\"javascript: expandit('sub_".$linkInfo['link_name']."')\"" : $href;  // expanding sub-menus.
 			$link_append = ($linkInfo['link_open'] == 1) ? " rel='external'" : "";
 
 			$_link .= "<a".$linkadd.$screentip.$href.$link_append.">".$linkInfo['link_name']."</a>\n";
