@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-04-11 22:19:43 $
+|     $Revision: 1.26 $
+|     $Date: 2005-04-11 23:32:09 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -51,9 +51,9 @@ if (USER == TRUE || ADMIN == TRUE) {
 	$new_total = 0;
 	$time = USERLV;
 
-// ------------ News Stats -----------  
+// ------------ News Stats -----------
 
-	if (!isset($menu_pref['login_menu']) || $menu_pref['login_menu']['new_news'] != false) {
+	if (isset($menu_pref['login_menu']) && $menu_pref['login_menu']['new_news'] == true) {
 		$new_news = $sql->db_Select('news', '*', '`news_datestamp` > '.$time);
 		while ($row = $sql->db_Fetch()) {
 			if (!check_class($row['news_class'])) {
@@ -69,7 +69,7 @@ if (USER == TRUE || ADMIN == TRUE) {
 
 // ------------ Article Stats -----------
 
-	if (!isset($menu_pref['login_menu']) || $menu_pref['login_menu']['new_articles'] != false) {
+	if (isset($menu_pref['login_menu']) && $menu_pref['login_menu']['new_articles'] == true) {
 		$new_articles = 0;
 		$new_articles = $sql->db_Select('content', '(content_class)', 'content_type = 0 AND `content_datestamp` > '.$time);
 		while ($row = $sql->db_Fetch()) {
@@ -83,7 +83,7 @@ if (USER == TRUE || ADMIN == TRUE) {
 		}
 		$NewItems[] = $new_articles.' '.($new_articles == 1 ? LOGIN_MENU_L29 : LOGIN_MENU_L30);
 	}
-	if (!isset($menu_pref['login_menu']) || $menu_pref['login_menu']['new_comments'] != false) {
+	if (isset($menu_pref['login_menu']) && $menu_pref['login_menu']['new_comments'] == true) {
 		$new_comments = 0;
 		$new_comments = $sql->db_Select('comments', '*', '`comment_datestamp` > '.$time);
 
@@ -111,7 +111,7 @@ if (USER == TRUE || ADMIN == TRUE) {
 
 // ------------ Chatbox Stats -----------
 
-	if (!isset($menu_pref['login_menu']) || $menu_pref['login_menu']['new_chatbox'] != false) {
+	if (isset($menu_pref['login_menu']) && $menu_pref['login_menu']['new_chatbox'] == true) {
 		$display_chats = TRUE;
 
 		if(in_array('chatbox_menu',$eMenuActive)){
@@ -131,7 +131,7 @@ if (USER == TRUE || ADMIN == TRUE) {
 
 // ------------ Forum Stats -----------
 
-	if (!isset($menu_pref['login_menu']) || $menu_pref['login_menu']['new_forum'] != false) {
+	if (isset($menu_pref['login_menu']) && $menu_pref['login_menu']['new_forum'] == true) {
 		$qry = "
 		SELECT  count(*) as count FROM #forum_t  as t
 		LEFT JOIN #forum as f
@@ -152,7 +152,7 @@ if (USER == TRUE || ADMIN == TRUE) {
 
 // ------------ Member Stats -----------
 
-	if (!isset($menu_pref['login_menu']) || $menu_pref['login_menu']['new_members'] != false) {
+	if (isset($menu_pref['login_menu']) && $menu_pref['login_menu']['new_members'] == true) {
 		$new_users = $sql->db_Count('user', '(user_join)', 'WHERE user_join > '.$time);
 		$new_total += $new_users;
 		if (!$new_users) {
