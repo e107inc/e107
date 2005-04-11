@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-04-03 20:51:52 $
+|     $Revision: 1.18 $
+|     $Date: 2005-04-11 10:06:09 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -217,15 +217,15 @@ class poll
 				}
 				if($pollArray['poll_vote_userclass'] == 253)
 				{
-					$DISALLOWMESSAGE = POLL_502.POLL_503;
+					$DISALLOWMESSAGE = POLLAN_41;
 				}
 				else if($pollArray['poll_vote_userclass'] == 254)
 				{
-					$DISALLOWMESSAGE = POLL_502.POLL_504;
+					$DISALLOWMESSAGE = POLLAN_42;
 				}
 				else
 				{
-					$DISALLOWMESSAGE = POLL_501;
+					$DISALLOWMESSAGE = POLLAN_43;
 				}
 				$text .= preg_replace("/\{(.*?)\}/e", '$\1', $POLL_DISALLOWED_END);
 			break;
@@ -240,7 +240,7 @@ class poll
 		}
 		else if($type == "forum")
 		{
-			$caption = POLL_505;
+			$caption = LAN_4;
 		}
 
 
