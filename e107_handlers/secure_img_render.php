@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/secure_img_render.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-04-11 13:13:55 $
+|     $Revision: 1.4 $
+|     $Date: 2005-04-11 13:18:29 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -59,7 +59,7 @@ foreach($imgtypes as $t) {
 
 switch($type) {
 	case "jpeg":
-	$image = ImageCreateFromJPEG("F:/Apache/Apache2/htdocs/e107_0.7/e107_images/generic/code_bg.jpg");
+	$image = ImageCreateFromJPEG($$url."generic/code_bg.jpg");
 	break;
 	case "png":
 	$image = ImageCreateFromPNG($url."generic/code_bg.png");
