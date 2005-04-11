@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/db_debug_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-03-21 13:23:48 $
+|     $Revision: 1.9 $
+|     $Date: 2005-04-11 22:59:10 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -415,6 +415,7 @@ class e107_db_debug {
 
 
 	function Show_DEPRECIATED(){
+		$text = '';
 		if (!E107_DBG_DEPRECIATED){
 			return FALSE;
 		} else {
