@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.13 $
-|		$Date: 2005-04-07 14:48:05 $
+|		$Revision: 1.14 $
+|		$Date: 2005-04-11 14:56:31 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -630,6 +630,7 @@ class contentform{
 								<div style='text-align:center'>
 								<form method='post' action='".$formtarget."'>
 								<table class='fborder' style='".ADMIN_WIDTH."'>
+								<tr><td colspan='2' class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_66."</td></tr>
 								<tr><td colspan='2' class='fcaption'>".CONTENT_ADMIN_ITEM_LAN_6."</td></tr>
 								<tr><td colspan='2' class='forumheader3'>";
 								while($row = $sql-> db_Fetch()){
@@ -673,6 +674,7 @@ class contentform{
 						}else{
 							if($content_total < 50 || $letter || $cat){
 									$text .= "<table style='".ADMIN_WIDTH."' class='fborder'>
+									<tr><td colspan='5' class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_67."</td></tr>
 									<tr>
 									<td class='fcaption' style='width:5%; text-align:center;'>".CONTENT_ADMIN_ITEM_LAN_8."</td>
 									<td class='fcaption' style='width:5%; text-align:center;'>".CONTENT_ADMIN_ITEM_LAN_9."</td>
@@ -1162,7 +1164,9 @@ class contentform{
 								$text .= "
 								<div style='text-align:center'>
 								<table class='fborder' style='".ADMIN_WIDTH."'>
-								<tr><td class='fcaption'>".CONTENT_ADMIN_MAIN_LAN_2."</td></tr><tr><td class='forumheader3'>";
+								<tr><td class='forumheader3'>".CONTENT_ADMIN_MAIN_LAN_10."</td></tr>
+								<tr><td class='fcaption'>".CONTENT_ADMIN_MAIN_LAN_2."</td></tr>								
+								<tr><td class='forumheader3'>";
 								while($row = $sql -> db_Fetch()){
 									extract($row);
 										if($mode == "create"){ $urllocation = "".e_SELF."?".$type.".".$content_id.".create"; }

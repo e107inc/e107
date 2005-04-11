@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.16 $
-|		$Date: 2005-04-07 14:45:54 $
+|		$Revision: 1.17 $
+|		$Date: 2005-04-11 14:55:05 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -193,7 +193,8 @@ if($delete == 'cat'){
 		}
 
 		//check if subcats present
-		if($sql -> db_Select($plugintable, "content_parent", "content_id != '".$del_id."' AND LEFT(content_parent,".(strlen($content_parent)).") = '".$content_parent."' ")){
+		$query = "AND LEFT(content_parent,".(strlen($content_parent)+1+strlen($del_id)).") = '".$content_parent.".".$del_id."' ";
+		if($sql -> db_Select($plugintable, "content_parent", "content_id != '".$del_id."' ".$query." ")){
 			//subcategories found don't delete
 			$checkermsg .= CONTENT_ADMIN_CAT_LAN_36."<br />";
 			$checksubcat = TRUE;
@@ -410,11 +411,6 @@ if(!e_QUERY){																//show main categories
 						header("location:".e_SELF."?type.".$type_id.".cat.create"); exit;
 				}else{														//category; create form
 						if($id == "pc"){									//category; create redirect
-								$sql -> db_Select($plugintable, "content_id", "content_parent = '0' ORDER BY content_datestamp DESC LIMIT 1");
-								list($parent_id) = $sql -> db_Fetch();
-								$content_pref = $aa -> getContentPref($parent_id);								
-								$aa -> CreateParentMenu($parent_id);
-
 								$message = CONTENT_ADMIN_CAT_LAN_11;
 								if($type_id == "0"){ $message .= "<br /><br />".CONTENT_ADMIN_OPT_LAN_82; }
 								$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
