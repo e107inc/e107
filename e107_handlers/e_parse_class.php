@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.62 $
-|     $Date: 2005-04-11 02:59:34 $
+|     $Revision: 1.63 $
+|     $Date: 2005-04-11 12:30:40 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -45,6 +45,7 @@ class e_parse {
 		else
 		{
 			$text = htmlentities($text, ENT_QUOTES, CHARSET);
+			$text = preg_replace("/&amp;#(\d*?);/", "&#\\1;", $text);
 		}
 		return $text;
 	}
