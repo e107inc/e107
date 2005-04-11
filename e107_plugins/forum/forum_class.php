@@ -335,9 +335,9 @@ class e107forum {
 		}
 		$start = max(0, $start);
 		if ($start != 0) {
-			$limit--;
 			$array_start = 0;
 		} else {
+			$limit--;
 			$array_start = 1;
 		}
 		 
@@ -347,7 +347,7 @@ class e107forum {
 			ON t.thread_user = u.user_id
 			WHERE t.thread_parent = $thread_id
 			ORDER by t.thread_datestamp ASC
-			LIMIT {$start},".($limit-1);
+			LIMIT {$start},".($limit);
 		$ret = array();
 		if ($sql->db_Select_gen($qry)) {
 			$i = $array_start;
