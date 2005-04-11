@@ -36,3 +36,4 @@ tinyMCELang['lang_bold_img'] = "bold.gif";
 tinyMCELang['lang_italic_img'] = "italic.gif";
 tinyMCELang['lang_underline_img'] = "underline.gif";
 tinyMCELang['lang_clipboard_msg'] = 'Copy/Cut/Paste is not available in Mozilla and Firefox.\nDo you want more information about this issue?';
+tinyMCELang['lang_emotions_desc'] = "emoticons";
