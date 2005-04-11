@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/newsfeed.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-02 09:14:44 $
+|     $Revision: 1.5 $
+|     $Date: 2005-04-11 08:32:21 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -54,6 +54,14 @@ if($action == "show")
 		extract ($row);
 
 		$rss = unserialize($newsfeed_data);
+
+		if(!is_object($rss))
+		{
+			$text = "Unable to unserialize rss data - uses non-standard syntax";
+			$ns->tablerender(NFLAN_01, $text);
+			require_once(FOOTERF);
+			exit;
+		}
 
 		$FEEDNAME = "<a href='".e_SELF."?show.$newsfeed_id'>$newsfeed_name</a>";
 		$FEEDDESCRIPTION = $newsfeed_description;
