@@ -27,11 +27,11 @@ class e107{
 		$class2_file = dirname($class2_file).'/';
 		$class2_file = $this->fix_windows_paths($class2_file);
 
-		$this->ServerPath = str_replace($_SERVER['DOCUMENT_ROOT'], '', $class2_file);
-		$this->http_path = 'http://'.$_SERVER['HTTP_HOST'].$this->ServerPath;
-		$this->https_path = 'https://'.$_SERVER['HTTP_HOST'].$this->ServerPath;
+		$this->server_path = str_replace($_SERVER['DOCUMENT_ROOT'], '', $class2_file);
+		$this->http_path = 'http://'.$_SERVER['HTTP_HOST'].$this->server_path;
+		$this->https_path = 'https://'.$_SERVER['HTTP_HOST'].$this->server_path;
 		$this->class2_path = $class2_file;
-		define("e_HTTP", $this->ServerPath);
+		define("e_HTTP", $this->server_path);
 	}
 
 	function fix_windows_paths($path) {
