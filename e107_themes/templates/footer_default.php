@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-04-11 22:31:08 $
+|     $Revision: 1.20 $
+|     $Date: 2005-04-11 22:32:23 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -93,7 +93,7 @@ if(is_array($queryinfo) && ADMIN)
 	<td class='fcaption' style='width: 5%;'>ID</td><td class='fcaption' style='width: 95%;'>SQL Queries</td>\n</tr>\n";
 	foreach ($queryinfo as $infovalue)
 	{
-		echo "<tr>\n<td class='forumheader3' style='width: 5%;'>$c</td><td class='forumheader3' style='width: 95%;'>".$infovalue."</td>\n</tr>\n";
+		echo "<tr>\n<td class='forumheader3' style='width: 5%;'>$c</td><td class='forumheader3' style='width: 95%;'>{$infovalue}</td>\n</tr>\n";
 		$c++;
 	}
 	echo "</table>";
@@ -107,7 +107,7 @@ if(is_array($queryinfo) && ADMIN)
 $tmp = eQTimeElapsed();
 if (strlen($tmp)) {
 	global $ns;
-	$ns->tablerender('Quick Admin Timer',"Results: $tmp microseconds");
+	$ns->tablerender('Quick Admin Timer',"Results: {$tmp} microseconds");
 }
 
 // Provide a way to sync user and server time -- see e107.js and class2.php
@@ -129,7 +129,7 @@ global $start_ob_level;
 if (ob_get_level() != $start_ob_level ) {
 	$oblev=ob_get_level();
 	$obdbg = "<div style='text-align:center' class='smalltext'>";
-	$obdbg .= "Software defect detected; ob_*() level $oblev at end.</div>";
+	$obdbg .= "Software defect detected; ob_*() level {$oblev} at end.</div>";
 	if ($oblev > $start_ob_level) {
 		while (ob_get_level() > $start_ob_level) {
 			ob_end_flush();  /* clear extras */
