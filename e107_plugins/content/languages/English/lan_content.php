@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-04-07 14:48:06 $
+|     $Revision: 1.19 $
+|     $Date: 2005-04-11 14:56:33 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -321,8 +321,8 @@ define("CONTENT_ADMIN_ITEM_LAN_62", "order categories");
 define("CONTENT_ADMIN_ITEM_LAN_63", "inc");
 define("CONTENT_ADMIN_ITEM_LAN_64", "dec");
 define("CONTENT_ADMIN_ITEM_LAN_65", "order content items");
-define("CONTENT_ADMIN_ITEM_LAN_66", "");
-define("CONTENT_ADMIN_ITEM_LAN_67", "");
+define("CONTENT_ADMIN_ITEM_LAN_66", "Below you'll see the distinct letters of the content heading for all items in this category.<br />By clicking on one of the letters you will see a list of all items starting with the selected letter. You can also choose the ALL button to display all items in this category.");
+define("CONTENT_ADMIN_ITEM_LAN_67", "Below you'll see the content items listed for the selected category or narrowed down with a selected letter.<br />You can edit or delete an item by clicking the appropriate buttons on the right.");
 define("CONTENT_ADMIN_ITEM_LAN_68", "");
 define("CONTENT_ADMIN_ITEM_LAN_69", "");
 define("CONTENT_ADMIN_ITEM_LAN_70", "");
@@ -351,7 +351,7 @@ There are two scenarios possible for you to choose from.<br /><br />
 define("CONTENT_ADMIN_MAIN_LAN_7", "Welcome to the Content Management System !");
 define("CONTENT_ADMIN_MAIN_LAN_8", "Please read the following information carefully and choose what you want to do");
 define("CONTENT_ADMIN_MAIN_LAN_9", "This information is shown because the table of the Content Management Plugin contains no records.");
-define("CONTENT_ADMIN_MAIN_LAN_10", "");
+define("CONTENT_ADMIN_MAIN_LAN_10", "You can manage content items on this page. First decide the category you would like to manage content for. Click on the button of the main parents listed below to start managing content for that category.");
 define("CONTENT_ADMIN_MAIN_LAN_11", "");
 define("CONTENT_ADMIN_MAIN_LAN_12", "");
 define("CONTENT_ADMIN_MAIN_LAN_13", "");
@@ -385,7 +385,7 @@ define("CONTENT_ADMIN_JS_LAN_5", "file");
 define("CONTENT_ADMIN_JS_LAN_6", "ID");
 define("CONTENT_ADMIN_JS_LAN_7", "are you sure you want to remove the current icon ?");
 define("CONTENT_ADMIN_JS_LAN_8", "icon");
-define("CONTENT_ADMIN_JS_LAN_9", "WARNING :\\nby deleting this category, all subcategories (if present for this category),\\nwill be deleted as well!");
+define("CONTENT_ADMIN_JS_LAN_9", "NOTICE :\\nonly empty categories can be deleted.\\na category is empty if it does NOT contain any subcategories and\\nif it does NOT contain any content items!");
 define("CONTENT_ADMIN_JS_LAN_10", "Are you sure you want to delete this submitted content before posting it?");
 
 define("CONTENT_ADMIN_DATE_LAN_0", "January");
