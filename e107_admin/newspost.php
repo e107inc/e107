@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.71 $
-|   $Date: 2005-04-07 19:39:00 $
-|   $Author: sweetas $
+|   $Revision: 1.72 $
+|   $Date: 2005-04-11 10:28:58 $
+|   $Author: stevedunstan $
 +---------------------------------------------------------------+
 
 */
@@ -839,10 +839,7 @@ class newspost {
 				</td>
 				</tr>\n";
 			}
-			else
-		{
-				echo "<b>".LAN_NEWS_44.".</b> ".$variable." <br />";
-		}
+			
 
 			$text .= "<tr style='vertical-align: top;'>
 			<td colspan='2'  style='text-align:center' class='forumheader'>";
