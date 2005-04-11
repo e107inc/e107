@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-04-10 04:57:22 $
+|     $Revision: 1.7 $
+|     $Date: 2005-04-11 02:58:58 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
+//if($_POST) { echo "<pre>".print_r($_POST, true)."</pre>"; }
 if (!getperms("4")) {
 	header("location:".e_BASE."index.php");
 	exit;
@@ -85,12 +86,8 @@ if (isset($_POST['catdown_x']))
 
 if (isset($_POST['add_field']))
 {
-	if(isset($_POST['allow_hide']) && $_POST['allow_hide'])
-	{
-		$_POST['user_parms'][] = "allow_hide";
-	}
 	$new_values = make_delimited($_POST['user_values']);
-	$new_parms = make_delimited($_POST['user_parms']);
+	$new_parms = $tp->toDB($_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide']);
 	if($ue->user_extended_add($_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $new_parms, $new_values, $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable'], 0, $_POST['user_parent']))
 	{
 		$message = EXTLAN_29;
@@ -98,12 +95,8 @@ if (isset($_POST['add_field']))
 }
 
 if (isset($_POST['update_field'])) {
-	if(isset($_POST['allow_hide']) && $_POST['allow_hide'])
-	{
-		$_POST['user_parms'][] = "allow_hide";
-	}
 	$upd_values = make_delimited($_POST['user_values']);
-	$upd_parms = make_delimited($_POST['user_parms']);
+	$upd_parms = $tp->toDB($_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide']);
 	if($ue->user_extended_modify($sub_action, $_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $upd_parms, $upd_values, $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable'], $_POST['user_parent']))
 	{
 		$message = EXTLAN_29;
@@ -196,7 +189,7 @@ class users_ext
 
 	function show_extended($current)
 	{
-		global $sql, $ns, $ue, $curtype;
+		global $sql, $ns, $ue, $curtype, $tp;
 
 		$catList = $ue->user_extended_get_categories();
 		$catList[0][0] = array('user_extended_struct_name' => EXTLAN_36);
@@ -300,6 +293,7 @@ class users_ext
 			{
 				$current = '';
 			}
+			list($current_include, $current_regex, $current_regexfail, $current_hide) = explode("^,^",$current['user_extended_struct_parms']);
 			$text .= "
 			<form method='post' action='".e_SELF."?".e_QUERY."'>
 			";
@@ -357,43 +351,8 @@ class users_ext
 			<tr>
 			<td style='width:30%' class='forumheader3'>".EXTLAN_15."</td>
 			<td style='width:70%' class='forumheader3' colspan='3'>
-			<div id='parm_container'>
-			";
-			$curParms = explode(",",$current['user_extended_struct_parms']);
-			if(count($curParms) == 0)
-			{
-				$curParms[]='';
-			}
-			$i=0;
-			foreach($curParms as $p)
-			{
-				$id = $i ? "" : " id='parm_line'";
-				$i++;
-				if($p == 'allow_hide' && count($curParms) == 1)
-				{
-					$p = "";
-					$text .= "
-					<span {$id}>
-					<input class='tbox' type='text' name='user_parms[]' size='40' value='{$p}' /><br />
-					</span>
-					";
-				}
-				else
-				{
-					if($p != 'allow_hide')
-					{
-						$text .= "
-						<span {$id}>
-						<input class='tbox' type='text' name='user_parms[]' size='40' value='{$p}' /><br />
-						</span>
-						";
-					}
-				}
-			}
-			$text .= "
-			</div>
+			<textarea class='tbox' name='user_include' cols='60' rows='3'>{$current_include}</textarea><br />
 			<span class='smalltext'>".EXTLAN_51."</span><br />
-			<input type='button' class='button' value='".EXTLAN_47."' onclick=\"duplicateHTML('parm_line','parm_container');\"  />
 			</td>
 			</tr>
 
@@ -429,6 +388,22 @@ class users_ext
 			<td style='width:30%' class='forumheader3'>".EXTLAN_16."</td>
 			<td style='width:70%' class='forumheader3' colspan='3'>
 			<input class='tbox' type='text' name='user_default' size='40' value='{$current['user_extended_struct_default']}' />
+			</td>
+			</tr>
+
+			<tr>
+			<td style='width:30%' class='forumheader3'>".EXTLAN_52."</td>
+			<td style='width:70%' class='forumheader3' colspan='3'>
+			<input class='tbox' type='text' name='user_regex' size='30' value='{$current_regex}' /><br />
+			<span class='smalltext'>".EXTLAN_53."</span><br />
+			</td>
+			</tr>
+
+			<tr>
+			<td style='width:30%' class='forumheader3'>".EXTLAN_54."</td>
+			<td style='width:70%' class='forumheader3' colspan='3'>
+			<input class='tbox' type='text' name='user_regexfail' size='40' value='{$current_regexfail}' /><br />
+			<span class='smalltext'>".EXTLAN_55."</span><br />
 			</td>
 			</tr>
 
@@ -480,7 +455,7 @@ class users_ext
 			<tr>
 			<td style='width:30%' class='forumheader3'>".EXTLAN_6."</td>
 			<td style='width:70%' class='forumheader3' colspan='3'>
-			".r_userclass("user_read", $current['user_extended_struct_read'], 'off', 'member, admin, classes')."<br /><span class='smalltext'>".EXTLAN_22."</span>
+			".r_userclass("user_read", $current['user_extended_struct_read'], 'off', 'public, member, admin, classes')."<br /><span class='smalltext'>".EXTLAN_22."</span>
 			</td>
 			</tr>
 
@@ -495,9 +470,9 @@ class users_ext
 			<td style='width:30%' class='forumheader3'>".EXTLAN_49."
 			</td>
 			<td style='width:70%' class='forumheader3' colspan='3'>
-			<select class='tbox' name='allow_hide'>
+			<select class='tbox' name='user_hide'>
 			";
-			if(strpos($current['user_extended_struct_parms'], 'allow_hide') !== FALSE)
+			if($current_hide)
 			{
 				$text .= "
 				<option value='1' selected='selected'>".LAN_YES."</option>
@@ -639,7 +614,7 @@ class users_ext
 		<tr>
 		<td style='width:30%' class='forumheader3'>".EXTLAN_6."</td>
 		<td style='width:70%' class='forumheader3' colspan='3'>
-		".r_userclass("user_read", $current['user_extended_struct_read'], 'off', 'member, admin, classes')."<br /><span class='smalltext'>".EXTLAN_22."</span>
+		".r_userclass("user_read", $current['user_extended_struct_read'], 'off', 'public, member, admin, classes')."<br /><span class='smalltext'>".EXTLAN_22."</span>
 		</td>
 		</tr>
 
@@ -735,9 +710,11 @@ $text .= "
 
 function make_delimited($var)
 {
+	global $tp;
 	foreach($var as $k => $v)
 	{
-		$var[$k] = trim($v);
+		$var[$k] = $tp->toDB(trim($v));
+		$var[$k] = str_replace(",", "[E_COMMA]", $var[$k]);
 		if($var[$k] == "")
 		{
 			unset($var[$k]);
