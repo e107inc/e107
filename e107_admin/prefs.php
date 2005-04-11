@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2005-04-09 01:56:56 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.45 $
+|     $Date: 2005-04-11 21:40:10 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -451,10 +451,10 @@ if($extList)
 		$chk = ($curval == 2) ? " checked='checked' " : "";
 		$text .= "<input type='radio' name='uesignup_{$fid}' {$chk} value='2' /> ".CUSTSIG_15."\n";
 		$text .= "</td></tr>";
-		
+
 	}
 }
-	
+
 $text .= pref_submit();
 $text .= "</table></div>";
 
@@ -643,7 +643,7 @@ $text .= "<div id='security' style='display:none; text-align:center'>
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_43.": </td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
-	<textarea class='tbox' name='profanity_words' cols='59' rows='2'>".$pref['profanity_words']."</textarea>
+	<textarea class='tbox' name='profanity_words' cols='59' rows='2' style='width:100%'>".$pref['profanity_words']."</textarea>
 	<br />".PRFLAN_44."
 	</td>
 	</tr>
