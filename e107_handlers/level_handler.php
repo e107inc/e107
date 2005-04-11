@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/level_handler.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-03-24 16:30:43 $
-|     $Author: stevedunstan $
+|     $Revision: 1.6 $
+|     $Date: 2005-04-11 23:57:24 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 	
@@ -68,7 +68,7 @@ function get_level($user_id, $user_forums, $user_comments, $user_chats, $user_vi
 		}
 	}
 	 
-	$daysregged = max(1, round((time() - $user_join)/86400))."days";
+	$daysregged = max(1, round((time() - $user_join) / 86400))."days";
 	$level = ceil((($user_forums * 5) + ($user_comments * 5) + ($user_chats * 2) + $user_visits)/4);
 	$ltmp = $level;
 	 

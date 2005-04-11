@@ -96,13 +96,13 @@ if (!defined("PCL_TAR"))
   // Return Values :
   //   1 on success, or an error code (see table at the beginning).
   // --------------------------------------------------------------------------------
-  function PclTarCreate($p_tarname, $p_filelist="", $p_mode="", $p_add_dir="", $p_remove_dir="")
+  function PclTarCreate($p_tarname, $p_filelist = "", $p_mode = "", $p_add_dir = "", $p_remove_dir = "")
   {
-    TrFctStart(__FILE__, __LINE__, "PclTarCreate", "tar=$p_tarname, file='$p_filelist', mode=$p_mode, add_dir='$p_add_dir', remove_dir='$p_remove_dir'");
+    TrFctStart(__FILE__, __LINE__, "PclTarCreate", "tar={$p_tarname}, file='{$p_filelist}', mode={$p_mode}, add_dir='{$p_add_dir}', remove_dir='{$p_remove_dir}'");
     $v_result=1;
 
     // ----- Look for default mode
-    if (($p_mode == "") || (($p_mode!="tar") && ($p_mode!="tgz")))
+    if (($p_mode == "") || (($p_mode != "tar") && ($p_mode != "tgz")))
     {
       // ----- Extract the tar format from the extension
       if (($p_mode = PclTarHandleExtension($p_tarname)) == "")
@@ -113,7 +113,7 @@ if (!defined("PCL_TAR"))
       }
 
       // ----- Trace
-      TrFctMessage(__FILE__, __LINE__, 1, "Auto mode selected : found $p_mode");
+      TrFctMessage(__FILE__, __LINE__, 1, "Auto mode selected : found {$p_mode}");
     }
 
     // ----- Look if the $p_filelist is really an array
@@ -166,7 +166,7 @@ if (!defined("PCL_TAR"))
   // --------------------------------------------------------------------------------
   function PclTarAdd($p_tarname, $p_filelist)
   {
-    TrFctStart(__FILE__, __LINE__, "PclTarAdd", "tar=$p_tarname, file=$p_filelist");
+    TrFctStart(__FILE__, __LINE__, "PclTarAdd", "tar={$p_tarname}, file={$p_filelist}");
     $v_result=1;
     $v_list_detail = array();
 
@@ -238,12 +238,12 @@ if (!defined("PCL_TAR"))
   // --------------------------------------------------------------------------------
   function PclTarAddList($p_tarname, $p_filelist, $p_add_dir="", $p_remove_dir="", $p_mode="")
   {
-    TrFctStart(__FILE__, __LINE__, "PclTarAddList", "tar=$p_tarname, file=$p_filelist, p_add_dir='$p_add_dir', p_remove_dir='$p_remove_dir', mode=$p_mode");
+    TrFctStart(__FILE__, __LINE__, "PclTarAddList", "tar={$p_tarname}, file={$p_filelist}, p_add_dir='{$p_add_dir}', p_remove_dir='{$p_remove_dir}', mode={$p_mode}");
     $v_result=1;
     $p_list_detail = array();
 
     // ----- Extract the tar format from the extension
-    if (($p_mode == "") || (($p_mode!="tar") && ($p_mode!="tgz")))
+    if (($p_mode == "") || (($p_mode != "tar") && ($p_mode != "tgz")))
     {
       if (($p_mode = PclTarHandleExtension($p_tarname)) == "")
       {
@@ -312,11 +312,11 @@ if (!defined("PCL_TAR"))
   // --------------------------------------------------------------------------------
   function PclTarList($p_tarname, $p_mode="")
   {
-    TrFctStart(__FILE__, __LINE__, "PclTarList", "tar=$p_tarname, mode='$p_mode'");
+    TrFctStart(__FILE__, __LINE__, "PclTarList", "tar={$p_tarname}, mode='{$p_mode}'");
     $v_result=1;
 
     // ----- Extract the tar format from the extension
-    if (($p_mode == "") || (($p_mode!="tar") && ($p_mode!="tgz")))
+    if (($p_mode == "") || (($p_mode != "tar") && ($p_mode != "tgz")))
     {
       if (($p_mode = PclTarHandleExtension($p_tarname)) == "")
       {
@@ -366,7 +366,7 @@ if (!defined("PCL_TAR"))
   // --------------------------------------------------------------------------------
   function PclTarExtract($p_tarname, $p_path="./", $p_remove_path="", $p_mode="")
   {
-    TrFctStart(__FILE__, __LINE__, "PclTarExtract", "tar='$p_tarname', path='$p_path', remove_path='$p_remove_path', mode='$p_mode'");
+    TrFctStart(__FILE__, __LINE__, "PclTarExtract", "tar='{$p_tarname}', path='{$p_path}', remove_path='{$p_remove_path}', mode='{$p_mode}'");
     $v_result=1;
 
     // ----- Extract the tar format from the extension
@@ -425,7 +425,7 @@ if (!defined("PCL_TAR"))
   // --------------------------------------------------------------------------------
   function PclTarExtractList($p_tarname, $p_filelist, $p_path="./", $p_remove_path="", $p_mode="")
   {
-    TrFctStart(__FILE__, __LINE__, "PclTarExtractList", "tar=$p_tarname, list, path=$p_path, remove_path='$p_remove_path', mode='$p_mode'");
+    TrFctStart(__FILE__, __LINE__, "PclTarExtractList", "tar={$p_tarname}, list, path={$p_path}, remove_path='{$p_remove_path}', mode='{$p_mode}'");
     $v_result=1;
 
     // ----- Extract the tar format from the extension
@@ -514,7 +514,7 @@ if (!defined("PCL_TAR"))
   // --------------------------------------------------------------------------------
   function PclTarExtractIndex($p_tarname, $p_index, $p_path="./", $p_remove_path="", $p_mode="")
   {
-    TrFctStart(__FILE__, __LINE__, "PclTarExtractIndex", "tar=$p_tarname, index='$p_index', path=$p_path, remove_path='$p_remove_path', mode='$p_mode'");
+    TrFctStart(__FILE__, __LINE__, "PclTarExtractIndex", "tar={$p_tarname}, index='{$p_index}', path={$p_path}, remove_path='{$p_remove_path}', mode='{$p_mode}'");
     $v_result=1;
 
     // ----- Extract the tar format from the extension
@@ -532,7 +532,7 @@ if (!defined("PCL_TAR"))
     if (is_integer($p_index))
     {
       // ----- Call the extracting fct
-      if (($v_result = PclTarHandleExtractByIndexList($p_tarname, "$p_index", &$p_list, $p_path, $p_remove_path, $v_tar_mode)) != 1)
+      if (($v_result = PclTarHandleExtractByIndexList($p_tarname, $p_index, &$p_list, $p_path, $p_remove_path, $v_tar_mode)) != 1)
       {
         TrFctEnd(__FILE__, __LINE__, 0, PclErrorString());
         return(0);
@@ -554,7 +554,7 @@ if (!defined("PCL_TAR"))
     else
     {
       // ----- Error log
-      PclErrorLog(-3, "Invalid variable type $p_index");
+      PclErrorLog(-3, "Invalid variable type {$p_index}");
 
       // ----- Return
       TrFctEnd(__FILE__, __LINE__, PclErrorCode(), PclErrorString());
@@ -583,7 +583,7 @@ if (!defined("PCL_TAR"))
   // --------------------------------------------------------------------------------
   function PclTarDelete($p_tarname, $p_filelist, $p_mode="")
   {
-    TrFctStart(__FILE__, __LINE__, "PclTarDelete", "tar='$p_tarname', list='$p_filelist', mode='$p_mode'");
+    TrFctStart(__FILE__, __LINE__, "PclTarDelete", "tar='{$p_tarname}', list='{$p_filelist}', mode='{$p_mode}'");
     $v_result=1;
 
     // ----- Extract the tar format from the extension
@@ -656,7 +656,7 @@ if (!defined("PCL_TAR"))
   // --------------------------------------------------------------------------------
   function PclTarUpdate($p_tarname, $p_filelist, $p_mode="", $p_add_dir="", $p_remove_dir="")
   {
-    TrFctStart(__FILE__, __LINE__, "PclTarUpdate", "tar='$p_tarname', list='$p_filelist', mode='$p_mode'");
+    TrFctStart(__FILE__, __LINE__, "PclTarUpdate", "tar='{$p_tarname}', list='{$p_filelist}', mode='{$p_mode}'");
     $v_result=1;
 
     // ----- Extract the tar format from the extension
@@ -730,7 +730,7 @@ if (!defined("PCL_TAR"))
   // --------------------------------------------------------------------------------
   function PclTarMerge($p_tarname, $p_tarname_add, $p_mode="", $p_mode_add="")
   {
-    TrFctStart(__FILE__, __LINE__, "PclTarMerge", "tar='$p_tarname', tar_add='$p_tarname_add', mode='$p_mode', mode_add='$p_mode_add'");
+    TrFctStart(__FILE__, __LINE__, "PclTarMerge", "tar='{$p_tarname}', tar_add='{$p_tarname_add}', mode='{$p_mode}', mode_add='{$p_mode_add}'");
     $v_result=1;
 
     // ----- Check the parameters
