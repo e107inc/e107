@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-04-10 12:44:17 $
-|     $Author: stevedunstan $
+|     $Revision: 1.28 $
+|     $Date: 2005-04-11 01:08:29 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 define("ADLAN_0", "News");
@@ -151,7 +151,18 @@ define("ADLAN_135", "Admin Log");
 define("ADLAN_136", "Mail");
 define("ADLAN_137", "Email Settings And Mailout");
 
-define("ADLAN_138", "Failed login attempts");
+define("ADLAN_138", "Site Links");
+define("ADLAN_139", "Add/edit/delete links");
+
+define("ADLAN_140", "Theme Manager");
+define("ADLAN_141", "Install / set themes etc");
+
+define("ADLAN_142", "Search");
+define("ADLAN_143", "Search Configuration");
+define("ADLAN_144", "You are in simple-view mode, to switch to advanced-view");
+define("ADLAN_145", "click here");
+
+define("ADLAN_146", "Failed login attempts");
 
 define('ADLAN_CL_1', 'Settings');
 define('ADLAN_CL_2', 'Users');
@@ -170,17 +181,6 @@ define("ADLAN_LAT_5", "Submitted links");
 define("ADLAN_LAT_6", "Reported forum posts");
 define("ADLAN_LAT_7", "File uploads");
 define("ADLAN_LAT_8", "There are unmoderated administrator messages");
-
-define("ADLAN_138", "Site Links");
-define("ADLAN_139", "Add/edit/delete links");
-
-define("ADLAN_140", "Theme Manager");
-define("ADLAN_141", "Install / set themes etc");
-
-define("ADLAN_142", "Search");
-define("ADLAN_143", "Search Configuration");
-define("ADLAN_144", "You are in simple-view mode, to switch to advanced-view");
-define("ADLAN_145", "click here");
 
 // Common Terms
 define("LAN_EDIT","Edit");
