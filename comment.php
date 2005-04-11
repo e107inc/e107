@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-04-03 20:51:45 $
-|     $Author: stevedunstan $
+|     $Revision: 1.27 $
+|     $Date: 2005-04-11 11:55:00 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -247,7 +247,7 @@ if ($action == "reply") {
 }
 
 if($pref['trackbackEnabled'] && $table == "news"){
-	echo "<span class='smalltext'><b>".$pref['trackbackString']."</b> ".$e107->HTTPPath.e_PLUGIN."trackback/trackback.php?pid=$id</span>";
+	echo "<span class='smalltext'><b>".$pref['trackbackString']."</b> ".$e107->http_path.e_PLUGIN."trackback/trackback.php?pid=$id</span>";
 }
 	
 $comment_total = $sql->db_Select_gen($query);
