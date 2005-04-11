@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-04-02 19:13:38 $
+|     $Revision: 1.32 $
+|     $Date: 2005-04-11 23:13:42 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -85,6 +85,7 @@ if (isset($_POST['update'])) {
 
 if (isset($_POST['updateoptions'])) {
 	$pref['linkpage_screentip'] = $_POST['linkpage_screentip'];
+	$pref['sitelinks_expandsub'] = $_POST['sitelinks_expandsub'];
 	save_prefs();
 	$linkpost->show_message(LCLAN_1);
 }
@@ -323,6 +324,17 @@ class links {
 			<td class='forumheader3' style='width:30%;text-align:center'>". ($pref['linkpage_screentip'] ? "<input type='checkbox' name='linkpage_screentip' value='1' checked='checked' />" : "<input type='checkbox' name='linkpage_screentip' value='1' />")."
 			</td>
 			</tr>
+
+            <tr>
+			<td style='width:70%' class='forumheader3'>
+			".LCLAN_80."<br />
+			<span class='smalltext'>".LCLAN_81."</span>
+			</td>
+			<td class='forumheader3' style='width:30%;text-align:center'>". ($pref['sitelinks_expandsub'] ? "<input type='checkbox' name='sitelinks_expandsub' value='1' checked='checked' />" : "<input type='checkbox' name='sitelinks_expandsub' value='1' />")."
+			</td>
+			</tr>
+
+
 
 			<tr style='vertical-align:top'>
 			<td colspan='2' style='text-align:center' class='forumheader'>

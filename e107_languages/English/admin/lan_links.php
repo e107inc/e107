@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_links.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-04-02 21:08:06 $
+|     $Revision: 1.8 $
+|     $Date: 2005-04-11 23:13:55 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -52,7 +52,6 @@ define("LCLAN_68", "Links Options");
 define("LCLAN_78", "Show Description as Screen-Tip");
 define("LCLAN_79", "Description will be shown when the mouse hovers over the link");
 
-
 define("LCLAN_83", "Submenus Generator");
 
 define("LCLAN_88", "Site Links Options");
@@ -61,5 +60,8 @@ define("LCLAN_90", "Link Name");
 define("LCLAN_91", "Move");
 
 define("LCLAN_95", "Class");
+
+define("LCLAN_80", "Activate expanding sub-menus");
+define("LCLAN_81", "Sub-menus will display only after clicking their parent. (Link parent is disabled)");
 
 ?>
