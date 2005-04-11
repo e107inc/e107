@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/secure_img_render.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-27 19:52:29 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2005-04-11 13:13:55 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 while (list($global) = each($GLOBALS)) {
@@ -29,6 +29,9 @@ $recnum = preg_replace("#\D#", "", e_QUERY);
 if (!$recnum) {
 	exit;
 }
+
+$mySQLserver = "";
+
 @include("e107_config.php");
 $a = 0;
 $p = "";
@@ -44,7 +47,7 @@ $result = mysql_query("SELECT tmp_info FROM {$mySQLprefix}tmp WHERE tmp_ip = '{$
 if (!$row = mysql_fetch_array($result)) {
 	exit;
 }
-	
+
 list($code, $url) = explode(",", $row['tmp_info']);
 $type = "none";
 foreach($imgtypes as $t) {
@@ -53,9 +56,10 @@ foreach($imgtypes as $t) {
 		break;
 	}
 }
+
 switch($type) {
 	case "jpeg":
-	$image = ImageCreateFromJPEG($url."generic/code_bg.jpg");
+	$image = ImageCreateFromJPEG("F:/Apache/Apache2/htdocs/e107_0.7/e107_images/generic/code_bg.jpg");
 	break;
 	case "png":
 	$image = ImageCreateFromPNG($url."generic/code_bg.png");
@@ -65,8 +69,8 @@ switch($type) {
 	break;
 }
 $text_color = ImageColorAllocate($image, 80, 80, 80);
-ob_clean();
-Header("Content-type: image/{$type}");
+//ob_clean();
+//Header("Content-type: image/".$type);
 ImageString ($image, 5, 12, 2, $code, $text_color);
 switch($type) {
 	case "jpeg":
