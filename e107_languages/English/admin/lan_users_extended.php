@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users_extended.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-04-10 04:57:37 $
+|     $Revision: 1.6 $
+|     $Date: 2005-04-11 02:59:36 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ define("EXTLAN_11", "This is the name of the field as stored in the table, it mu
 define("EXTLAN_12", "Field text");
 define("EXTLAN_13", "This is the displayed name of the field in rendered pages");
 define("EXTLAN_14", "Field Type");
-define("EXTLAN_15", "Field Type parameters");
+define("EXTLAN_15", "Field include text");
 define("EXTLAN_16", "Default Value");
 define("EXTLAN_17", "Enter each possible value on each line <br /> For DB table see help.");
 define("EXTLAN_18", "Required");
@@ -60,12 +60,15 @@ define("EXTLAN_47", "Add new parameter");
 define("EXTLAN_48", "Add new value");
 define("EXTLAN_49", "Allow user to hide");
 define("EXTLAN_50", "Setting this to yes will allow the user to hide this value from non-admins");
-define("EXTLAN_51", "<i>parm_name=parm_value</i><br />See help box for valid parameters.");
-
-
+define("EXTLAN_51", "Any valid w3c parameter may be entered here<br />ie <i><b>class='tbox' size='40' maxlength='80'</i></b>");
+define("EXTLAN_52", "regex validation code");
+define("EXTLAN_53", "Enter the regex code that will need to be matched to make it a valid entry <br />**regex delimiters are required**");
+define("EXTLAN_54", "regex failure text");
+define("EXTLAN_55", "Enter the error message that will be shown if the regex validation fails.");
 
 //textbox
-define("EXTLAN_HELP_1", "<b><i>Parameters:</i></b><br />size - size of field<br />maxlength - max length of field<br />class - css class of field<br />");
+define("EXTLAN_HELP_1", "<b><i>Parameters:</i></b><br />size - size of field<br />maxlength - max length of field<br /><br />class - css class of field<br />style - css style string<br /><br />regex - regex valiation code<br />regexfail - validateion fail text");
+
 //radio buttons
 define("EXTLAN_HELP_2", "This will be the radio buttons help text");
 //dropdown

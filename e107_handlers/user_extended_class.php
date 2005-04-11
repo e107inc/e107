@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-04-06 17:09:20 $
+|     $Revision: 1.16 $
+|     $Date: 2005-04-11 02:59:35 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -215,21 +215,30 @@ class e107_user_extended
 		$name = "hide[user_".$struct['user_extended_struct_name']."]";
 		return "<input type='checkbox' {$chk} value='1' name='{$name}' />&nbsp;".UE_LAN_HIDE;
 	}
-
+		
 	function user_extended_edit($struct, $curval)
 	{
-		global $cal;
-		$p = explode(",",$struct['user_extended_struct_parms']);
+		global $cal, $tp;
 		$choices = explode(",",$struct['user_extended_struct_values']);
+		foreach($choices as $k => $v)
+		{
+			$choices[$k] = str_replace("[E_COMMA]", ",", $choices[$k]);
+		}
+		$parms = explode("^,^",$struct['user_extended_struct_parms']);
+		$include = preg_replace("/\n/", " ", $tp->toText($parms[0]));
+		$regex = $tp->toText($parms[1]);
+		$regexfail = $tp->toText($parms[2]);
 		$fname = "ue[user_".$struct['user_extended_struct_name']."]";
-		$extra = "";
+		if(strpos($include, 'class') === FALSE)
+		{
+			$include .= " class='tbox' ";
+		}
+
 		switch($struct['user_extended_struct_type'])
 		{
 			case 1:  //textbox
 			case 6:  //integer
-				if($p[0]) { $extra .= "size = '{$p[0]}' "; }
-				if($p[1]) { $extra .= "maxlength = '{$p[1]}' "; }
-				$ret = "<input class='tbox' name='{$fname}' value='{$curval}' {$extra} />";
+				$ret = "<input name='{$fname}' value='{$curval}' {$include} />";
 				return $ret;
 				break;
 
@@ -245,13 +254,13 @@ class e107_user_extended
 					{
 						$chk="";
 					}
-					$ret .= "<input class='tbox' type='radio' name='{$fname}' value='{$choice}' {$chk} /> {$choice}";
+					$ret .= "<input {$include} type='radio' name='{$fname}' value='{$choice}' {$chk} /> {$choice}";
 				}
 				return $ret;
 				break;
 				
 			case 3: //dropdown
-				$ret = "<select class='tbox' name='{$fname}'>\n";
+				$ret = "<select {$include} name='{$fname}'>\n";
 				foreach($choices as $choice)
 				{
 					$choice = trim($choice);
@@ -287,7 +296,7 @@ class e107_user_extended
 						{
 							$sel="";
 						}
-						$ret .= "<option value='{$cID}' {$sel}>{$cText}</option>\n";
+						$ret .= "<option {$include} value='{$cID}' {$sel}>{$cText}</option>\n";
 					}
 					$ret .= "</select>\n";
 					return $ret;
@@ -299,10 +308,7 @@ class e107_user_extended
 				break;
 
 			case 5: //textarea
-				$extra = "";
-				$extra .= " rows='".($p[0] ? $p[0] : 5)."' ";
-				$extra .= " cols='".($p[1] ? $p[1] : 60)."' ";
-				return "<textarea class='tbox' name='{$fname}' {$extra}>{$curval}</textarea>";
+				return "<textarea {$include} name='{$fname}' >{$curval}</textarea>";
 				break;
 				
 			case 7: //date

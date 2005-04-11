@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-04-06 14:22:46 $
+|     $Revision: 1.20 $
+|     $Date: 2005-04-11 02:59:37 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -115,11 +115,24 @@ if (isset($_POST['updatesettings']))
 	$ue_fields = "";
 	foreach($_POST['ue'] as $key => $val)
 	{
+		$err = false;
+		$parms = explode("^,^", $extList[$key]['user_extended_struct_parms']);
+		$regex = $tp->toText($parms[1]);
+		$regexfail = $tp->toText($parms[2]);
 		if($val == '' && $extList[$key]['user_extended_struct_required'] == TRUE)
 		{
-			$error .= "<b>".substr($key,5)."</b>".LAN_SIGNUP_7."<br />";
+			$error .= "<b>".substr($key,5)."</b> ".LAN_SIGNUP_7."<br />";
+			$err = TRUE;
 		}
-		else
+		if($regex != "")
+		{
+			if(!preg_match($regex, $val))
+			{
+				$error .= "<b>".substr($key,5)."</b> ".$regexfail;
+				$err = TRUE;
+			}
+		}
+		if(!$err)
 		{
 			$val = $tp->toDB($val);
 			$ue_fields .= ($ue_fields) ? ", " : "";
@@ -474,7 +487,8 @@ $text .= "
 				<tr>
 					<td style='width:40%' class='forumheader3'>".$f['user_extended_struct_text']."</td>
 					<td style='width:60%' class='forumheader3'>".$ue->user_extended_edit($f, $uVal);
-					if(strpos($f['user_extended_struct_parms'], 'allow_hide') !== FALSE)
+					$parms = explode("^,^",$f['user_extended_struct_parms']);
+					if($parms[3])
 					{
 						$chk = (strpos($curVal['user_hidden_fields'], "^".$fname."^") === FALSE) ? FALSE : TRUE;
 						$text .= "&nbsp;&nbsp;".$ue->user_extended_hide($f, $chk);

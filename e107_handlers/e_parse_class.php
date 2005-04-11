@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.61 $
-|     $Date: 2005-04-10 21:06:33 $
-|     $Author: sweetas $
+|     $Revision: 1.62 $
+|     $Date: 2005-04-11 02:59:34 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -309,6 +309,14 @@ function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $ut
 		$text = htmlspecialchars($text);
 		return $text;
 	}
-	 
+
+	//Convert specific characters back to original form, for use in storing code (or regex) values in the db.
+	function toText($text)
+	{
+		$search = array("&amp;#039;", "&amp;#036;", "&#039;", "&#036;", "&#092;", "&amp;#092;");
+		$replace = array("'", "$", "'", "$", "\\", "\\");
+		$text = str_replace($search, $replace, $text);
+		return $text;
+	}
 }
 ?>
