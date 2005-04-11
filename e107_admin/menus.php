@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-04-09 02:37:12 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.22 $
+|     $Date: 2005-04-11 20:46:36 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -282,7 +282,7 @@ if ($message != "")
 if (strpos(e_QUERY, 'configure') === FALSE)
 {
 	$cnt = $sql->db_Select("menus", "*", "menu_location='1' ORDER BY menu_name "); // calculate height to remove vertical scroll-bar.
-	$text = "<object data='".e_SELF."?configure' type='text/html' style='width:100%;height:".(($cnt*80)+500)."px;border:0px;overflow:auto' ></object>";
+	$text = "<object data='".e_SELF."?configure' type='text/html' style='width:100%;height:".(($cnt*80)+600)."px;border:0px;overflow:auto' ></object>";
 	echo $ns -> tablerender(MENLAN_35, $text, 'menus_config');
 }
 else
