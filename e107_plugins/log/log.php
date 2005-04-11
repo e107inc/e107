@@ -28,7 +28,7 @@ $ip = getip();
 $browser = getBrowser($agent);
 $os = getOs($agent);
 
-$pageName = preg_replace("/(\?.*)|(\_.*)|(\.php)|(\s)|(\')(\")/", "", basename ($self));
+$pageName = preg_replace("/(\?.*)|(\_.*)|(\.php)|(\s)|(\')|(\")/", "", basename ($self));
 if(!trim(chop($pageName)) || strstr($pageName, "eself"))
 {
 	$pageName = "index";
