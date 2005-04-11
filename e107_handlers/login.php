@@ -1,4 +1,5 @@
 <?php
+
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -11,11 +12,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-04-10 12:44:16 $
-|     $Author: stevedunstan $
+|     $Revision: 1.6 $
+|     $Date: 2005-04-11 23:40:45 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
+
 @include(e_LANGUAGEDIR.e_LANGUAGE."/lan_login.php");
 @include(e_LANGUAGEDIR."English/lan_login.php");
 class userlogin {
@@ -51,16 +53,16 @@ class userlogin {
 			$username = ereg_replace("\sOR\s|\=|\#", "", $username);
 			$ouserpass = $userpass;
 			$userpass = md5($userpass);
-			if (!$sql->db_Select("user", "*", "user_name='$username' ")) {
+			if (!$sql->db_Select("user", "*", "user_name = '{$username}'")) {
 				define("LOGINMESSAGE", LAN_300."<br /><br />");
 				$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '".getip()."', 0, '".LAN_LOGIN_14." ::: ".LAN_LOGIN_1.": $username, ".LAN_LOGIN_2.": $ouserpass' ");
 				return FALSE;
 			}
-			else if(!$sql->db_Select("user", "*", "user_name='$username' AND user_password='$userpass'")) {
+			else if(!$sql->db_Select("user", "*", "user_name = '{$username}' AND user_password = '{$userpass}'")) {
 				define("LOGINMESSAGE", LAN_301."<br /><br />");
 				return FALSE;
 			}
-			else if(!$sql->db_Select("user", "*", "user_name='$username' AND user_password='$userpass' AND user_ban!=2 ")) {
+			else if(!$sql->db_Select("user", "*", "user_name = '{$username}' AND user_password = '{$userpass}' AND user_ban!=2 ")) {
 				define("LOGINMESSAGE", LAN_302."<br /><br />");
 				$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '".getip()."', 0, '".LAN_LOGIN_15." ::: ".LAN_LOGIN_1.": $username, ".LAN_LOGIN_2.": $ouserpass' ");
 				return FALSE;
@@ -84,9 +86,9 @@ class userlogin {
 					$_SESSION[$pref['cookie_name']] = $cookieval;
 				} else {
 					if ($autologin == 1) {
-						cookie($pref['cookie_name'], $cookieval, (time()+3600 * 24 * 30));
+						cookie($pref['cookie_name'], $cookieval, (time() + 3600 * 24 * 30));
 					} else {
-						cookie($pref['cookie_name'], $cookieval, (time()+3600 * 3));
+						cookie($pref['cookie_name'], $cookieval, (time() + 3600 * 3));
 					}
 				}
 				$edata_li = array("user_id" => $user_id, "user_name" => $username);
@@ -96,7 +98,7 @@ class userlogin {
 					header("Location: ".$redir);
 					exit;
 				} else {
-					echo "<script type='text/javascript'>document.location.href='$redir'</script>\n";
+					echo "<script type='text/javascript'>document.location.href='{$redir}'</script>\n";
 				}
 			}
 		} else {
@@ -105,4 +107,5 @@ class userlogin {
 		}
 	}
 }
+
 ?>

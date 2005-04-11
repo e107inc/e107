@@ -90,8 +90,8 @@ class MagpieRSS {
      *                                  source encoding. (caveat emptor)
      *
      */
-    function MagpieRSS ($source, $output_encoding='ISO-8859-1', 
-                        $input_encoding=null, $detect_encoding=true) 
+    function MagpieRSS ($source, $output_encoding = 'ISO-8859-1', 
+                        $input_encoding=null, $detect_encoding = true) 
     {   
         # if PHP xml isn't compiled in, die
         #
@@ -131,7 +131,7 @@ class MagpieRSS {
                 $xml_error = xml_error_string( $errorcode );
                 $error_line = xml_get_current_line_number($this->parser);
                 $error_col = xml_get_current_column_number($this->parser);
-                $errormsg = "$xml_error at line $error_line, column $error_col";
+                $errormsg = "{$xml_error} at line {$error_line}, column {$error_col}";
 
                 $this->error( $errormsg );
             }
@@ -227,7 +227,7 @@ class MagpieRSS {
                     array_keys($attrs), 
                     array_values($attrs) ) );
             
-            $this->append_content( "<$element $attrs_str>"  );
+            $this->append_content( "<{$element} {$attrs_str}>"  );
                     
             array_unshift( $this->stack, $el );
         }
@@ -298,10 +298,10 @@ class MagpieRSS {
             // note:  i don't think this is actually neccessary
             if ( $this->stack[0] == $el ) 
             {
-                $this->append_content("</$el>");
+                $this->append_content("</{$el}>");
             }
             else {
-                $this->append_content("<$el />");
+                $this->append_content("<{$el} />");
             }
 
             array_shift( $this->stack );
@@ -313,9 +313,9 @@ class MagpieRSS {
         $this->current_namespace = false;
     }
     
-    function concat (&$str1, $str2="") {
+    function concat (&$str1, $str2 = "") {
         if (!isset($str1) ) {
-            $str1="";
+            $str1 = "";
         }
         $str1 .= $str2;
     }
@@ -449,7 +449,7 @@ class MagpieRSS {
     *
     */
     function create_parser($source, $out_enc, $in_enc, $detect) {
-        if ( substr(phpversion(),0,1) == 5) {
+        if ( substr(phpversion(), 0, 1) == 5) {
             $parser = $this->php5_create_parser($in_enc, $detect);
         }
         else {
@@ -539,7 +539,7 @@ class MagpieRSS {
         }
         
         // else 
-        $this->error("Feed is in an unsupported character encoding. ($in_enc) " .
+        $this->error("Feed is in an unsupported character encoding. ({$in_enc}) " .
                      "You may see strange artifacts, and mangled characters.",
                      E_USER_NOTICE);
             
@@ -559,7 +559,7 @@ class MagpieRSS {
     function error ($errormsg, $lvl=E_USER_WARNING) {
         // append PHP's error message if track_errors enabled
         if ( $php_errormsg ) { 
-            $errormsg .= " ($php_errormsg)";
+            $errormsg .= " ({$php_errormsg})";
         }
         if ( MAGPIE_DEBUG ) {
             trigger_error( $errormsg, $lvl);        
@@ -607,7 +607,7 @@ function parse_w3cdtf ( $date_str ) {
             if ( ! $tz_hour ) { $tz_hour = 0; }
             if ( ! $tz_min ) { $tz_min = 0; }
         
-            $offset_secs = (($tz_hour*60)+$tz_min)*60;
+            $offset_secs = (($tz_hour * 60) + $tz_min) * 60;
             
             # is timezone ahead of GMT?  then subtract offset
             #
