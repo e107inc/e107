@@ -11,11 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/forum_viewforum_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-04-04 10:59:36 $
+|     $Revision: 1.5 $
+|     $Date: 2005-04-11 08:45:19 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
+
+$icon = (file_exists(THEME."forum/e.png") ? THEME."forum/e.png" : e_PLUGIN."forum/images/lite/e.png");
+
  $FORUM_VIEW_START = "
 <table style='width:100%' class='nforumholder' cellpadding=0 cellspacing=0>
 <tr>
@@ -24,7 +27,7 @@
 <tr>
 </table>
 <table style='width:100%'>
-<td style='width:80%'><div class='mediumtext'><img src='".e_PLUGIN."forum/images/lite/e.png' style='vertical-align:middle' /> <b>{FORUMTITLE} Forum</b></div>{THREADPAGES}</td>
+<td style='width:80%'><div class='mediumtext'><img src='".$icon."' style='vertical-align:middle' /> <b>{FORUMTITLE} Forum</b></div>{THREADPAGES}</td>
 <td style='width:20%; text-align:right; vertical-align:bottom;'>
 {NEWTHREADBUTTON}
 </td>
