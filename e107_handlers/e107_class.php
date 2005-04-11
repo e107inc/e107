@@ -3,7 +3,7 @@
 class e107{
 	var $server_path;
 	var $http_path;
-	var $http_path;
+	var $https_path;
 	var $class2_path;
 	var $e107_dirs = array();
 
