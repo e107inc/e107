@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-04-06 21:37:37 $
-|     $Author: stevedunstan $
+|     $Revision: 1.22 $
+|     $Date: 2005-04-11 20:01:57 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -111,7 +111,7 @@ if (is_numeric($tmp[0])) {
 }
 
 if (isset($_POST['commentsubmit'])) {
-	if (!$sql->db_Select("download", "download_comment", "download_id='$id' ")) {
+	if (!$sql->db_Select("download", "download_comment", "download_id = '{$id}' ")) {
 		header("location:".e_BASE."index.php");
 		exit;
 	} else {
@@ -144,7 +144,7 @@ if ($action == "list") {
 		$view = ($pref['download_view'] ? $pref['download_view'] : "10");
 	}
 
-	$total_downloads = $sql->db_Select("download", "*", "download_category='".$id."' AND download_active > 0 AND download_class IN (".USERCLASS_LIST.")");
+	$total_downloads = $sql->db_Select("download", "*", "download_category = '{$id}' AND download_active > 0 AND download_class IN (".USERCLASS_LIST.")");
 	if (!$total_downloads) {
 		require_once(HEADERF);
 		require_once(FOOTERF);
@@ -152,10 +152,10 @@ if ($action == "list") {
 	}
 
 	$sql = new db;
-	$sql->db_Select("download_category", "*", "download_category_id='".$id."'");
+	$sql->db_Select("download_category", "*", "download_category_id='{$id}'");
 	$row = $sql->db_Fetch();
 	extract($row);
-	$core_total = $sql->db_Count("download WHERE download_category='".$id."' AND download_active > 0 AND download_class IN (".USERCLASS_LIST.")");
+	$core_total = $sql->db_Count("download WHERE download_category='{$id}' AND download_active > 0 AND download_class IN (".USERCLASS_LIST.")");
 	$type = $download_category_name;
 
 	$type .= ($download_category_description) ? " [ ".$download_category_description." ]" :
@@ -186,7 +186,7 @@ if ($action == "list") {
 	$sql = new db;
 	 $sql2 = new db;
 
-	$filetotal = $sql->db_Select("download", "*", "download_category='".$id."' AND download_active > 0 AND download_class IN (".USERCLASS_LIST.") ORDER BY $order $sort LIMIT $from, $view");
+	$filetotal = $sql->db_Select("download", "*", "download_category='{$id}' AND download_active > 0 AND download_class IN (".USERCLASS_LIST.") ORDER BY {$order} {$sort} LIMIT {$from}, {$view}");
 	$ft = ($filetotal < $view ? $filetotal : $view);
 	while ($row = $sql->db_Fetch()) {
 		extract($row);
@@ -212,7 +212,7 @@ if ($action == "list") {
 	echo "<div style='text-align:center;margin-left:auto;margin-right:auto'><a href='".e_SELF."'>".LAN_dl_9."</a></div>";
 
 	require_once(e_HANDLER."np_class.php");
-	$ix = new nextprev("download.php", $from, $view, $total_downloads, "Downloads", "list.".$id.".".$view.".".$order.".".$sort);
+	$ix = new nextprev("download.php", $from, $view, $total_downloads, "Downloads", "list.{$id}.{$view}.{$order}.{$sort}");
 	require_once(FOOTERF);
 	exit;
 }
@@ -254,13 +254,13 @@ if ($action == "view") {
 		exit;
 	}
 
-	$DOWNLOAD_REPORT_LINK = "<a href='".e_SELF."?report.$download_id'>".LAN_dl_45."</a>";
+	$DOWNLOAD_REPORT_LINK = "<a href='".e_SELF."?report.{$download_id}'>".LAN_dl_45."</a>";
 	$DOWNLOAD_CATEGORY = $download_category_name;
 	$DOWNLOAD_CATEGORY_DESCRIPTION = $tp -> toHTML($download_category_description, TRUE);
 
 	$DOWNLOAD_VIEW_NAME = $download_name;
 
-	$DOWNLOAD_VIEW_NAME_LINKED = "<a href='".e_BASE."request.php?".$download_id."' title='".LAN_dl_46."'>$download_name</a>";
+	$DOWNLOAD_VIEW_NAME_LINKED = "<a href='".e_BASE."request.php?".$download_id."' title='".LAN_dl_46."'>{$download_name}</a>";
 
 	$DOWNLOAD_VIEW_AUTHOR_LAN = LAN_dl_24;
 	$DOWNLOAD_VIEW_AUTHOR = ($download_author ? $download_author : "&nbsp;");
@@ -280,7 +280,7 @@ if ($action == "view") {
 
 	if ($download_thumb) {
 		$DOWNLOAD_VIEW_IMAGE_LAN = LAN_dl_11;
-		$DOWNLOAD_VIEW_IMAGE = ($download_image ? "<a href='".e_FILE."downloadimages/".$download_image."'><img src='".e_FILE."downloadthumbs/".$download_thumb."' alt='' style='border:0' /></a>" : "<img src='".e_FILE."downloadthumbs/".$download_thumb."' alt='' />");
+		$DOWNLOAD_VIEW_IMAGE = ($download_image ? "<a href='".e_FILE."downloadimages/{$download_image}'><img src='".e_FILE."downloadthumbs/".$download_thumb."' alt='' style='border:0' /></a>" : "<img src='".e_FILE."downloadthumbs/".$download_thumb."' alt='' />");
 	}
 	else if($download_image) {
 		$DOWNLOAD_VIEW_IMAGE_LAN = LAN_dl_11;
@@ -288,9 +288,9 @@ if ($action == "view") {
 	}
 
 	if ($pref['agree_flag'] == 1) {
-		$dnld_link = "<a href='request.php?".$download_id."' onclick= \"return confirm('$agreetext');\">";
+		$dnld_link = "<a href='request.php?{$download_id}' onclick= \"return confirm('{$agreetext}');\">";
 	} else {
-		$dnld_link = "<a href='request.php?".$download_id."'>";
+		$dnld_link = "<a href='request.php?{$download_id}'>";
 	}
 
 	$DOWNLOAD_VIEW_FILESIZE_LAN = LAN_dl_10;
@@ -303,7 +303,7 @@ if ($action == "view") {
 	{
 		if($download_mirror_type)
 		{
-			$DOWNLOAD_VIEW_LINK = "<a href='".e_SELF."?mirror.$download_id'>".LAN_dl_66."</a>";
+			$DOWNLOAD_VIEW_LINK = "<a href='".e_SELF."?mirror.{$download_id}'>".LAN_dl_66."</a>";
 		}
 		else
 		{
@@ -362,17 +362,17 @@ if ($action == "view") {
 	$text .= $download_view_table_start.$download_view_table_string.$download_view_table_end;
 
 	$dl_id = $download_id;
-	if ($sql->db_Select("download", "*", "download_category='$download_category_id' AND download_id < $dl_id AND download_active > 0 ORDER BY download_datestamp DESC")) {
+	if ($sql->db_Select("download", "*", "download_category='{$download_category_id}' AND download_id < {$dl_id} AND download_active > 0 ORDER BY download_datestamp DESC")) {
 		$row = $sql->db_Fetch();
 		 extract($row);
-		$prev = "<a href='".e_SELF."?view.$download_id'>&lt;&lt; ".LAN_dl_33." [$download_name]</a>\n";
+		$prev = "<a href='".e_SELF."?view.{$download_id}'>&lt;&lt; ".LAN_dl_33." [{$download_name}]</a>\n";
 	} else {
 		$prev = "&nbsp;";
 	}
-	if ($sql->db_Select("download", "*", "download_category='$download_category_id' AND download_id > $dl_id AND download_active > 0 ORDER BY download_datestamp ASC")) {
+	if ($sql->db_Select("download", "*", "download_category='{$download_category_id}' AND download_id > {$dl_id} AND download_active > 0 ORDER BY download_datestamp ASC")) {
 		$row = $sql->db_Fetch();
 		 extract($row);
-		$next = "<a href='".e_SELF."?view.$download_id'>[$download_name] ".LAN_dl_34." &gt;&gt;</a>\n";
+		$next = "<a href='".e_SELF."?view.{$download_id}'>[{$download_name}] ".LAN_dl_34." &gt;&gt;</a>\n";
 	} else {
 		$next = "&nbsp;";
 	}
@@ -381,9 +381,9 @@ if ($action == "view") {
 		$text .= "
 			<table style='width:100%'>
 			<tr>
-			<td style='width:40%;'>$prev</td>
-			<td style='width:20%; text-align: center;'><a href='".e_SELF."?list.$download_category'>".LAN_dl_35."</a></td>
-			<td style='width:40%; text-align: right;'>$next</td>
+			<td style='width:40%;'>{$prev}</td>
+			<td style='width:20%; text-align: center;'><a href='".e_SELF."?list.{$download_category}'>".LAN_dl_35."</a></td>
+			<td style='width:40%; text-align: right;'>{$next}</td>
 			</tr>
 			</table>
 			";
@@ -396,8 +396,8 @@ if ($action == "view") {
 	}
 	unset($text);
 	if ($download_comment) {
-		$query = ($pref['nested_comments'] ? "comment_item_id='$id' AND comment_type='2' AND comment_pid='0' ORDER BY comment_datestamp" : "comment_item_id='$id' AND comment_type='2' ORDER BY comment_datestamp");
-		$comment_total = $sql->db_Select("comments", "*", "".$query."");
+		$query = ($pref['nested_comments'] ? "comment_item_id='{$id}' AND comment_type='2' AND comment_pid='0' ORDER BY comment_datestamp" : "comment_item_id='{$id}' AND comment_type='2' ORDER BY comment_datestamp");
+		$comment_total = $sql->db_Select("comments", "*", $query);
 		if ($comment_total) {
 			$width = 0;
 			while ($row = $sql->db_Fetch()) {
@@ -413,7 +413,7 @@ if ($action == "view") {
 			}
 				if(ADMIN == TRUE && $comment_total)
 				{
-					echo "<a href='".e_BASE.e_ADMIN."modcomment.php?download.$dl_id'>".LAN_314."</a>";
+					echo "<a href='".e_BASE.e_ADMIN."modcomment.php?download.{$dl_id}'>".LAN_314."</a>";
 				}
 		}
 		$cobj->form_comment("comment", "download", $id, $subject, $content_type);
@@ -424,7 +424,7 @@ if ($action == "view") {
 
 if ($action == "report") {
 
-	if (!$sql->db_Select("download", "*", "download_id = $id AND download_active > 0")) {
+	if (!$sql->db_Select("download", "*", "download_id = {$id} AND download_active > 0")) {
 		require_once(HEADERF);
 		require_once(FOOTERF);
 		exit;
@@ -440,7 +440,7 @@ if ($action == "report") {
 		if ($pref['reported_post_email']) {
 			require_once(e_HANDLER."mail.php");
 			$report_add = $tp->toDB($_POST['report_add']);
-			$report = LAN_dl_58.SITENAME." : ".(substr(SITEURL, -1) == "/" ? SITEURL : SITEURL."/")."download.php?".$download_id."\n".LAN_dl_59.$user."\n".$report_add;
+			$report = LAN_dl_58.SITENAME." : ".(substr(SITEURL, -1) == "/" ? SITEURL : SITEURL."/")."download.php?{$download_id}\n".LAN_dl_59."{$user}\n{$report_add}";
 			$subject = LAN_dl_60." ".SITENAME;
 			sendemail(SITEADMINEMAIL, $subject, $report);
 		}
@@ -465,11 +465,11 @@ if ($action == "report") {
 		require_once(HEADERF);
 
 
-		$text = "<form action='".e_SELF."?report.$download_id' method='post'>
+		$text = "<form action='".e_SELF."?report.{$download_id}' method='post'>
 		<table style='width:100%'>
 			<tr>
 			<td  style='width:50%' >
-			".LAN_dl_32.": ".$download_name." <a href='".e_SELF."?view.$download_id'><span class='smalltext'>".LAN_dl_53." </span>
+			".LAN_dl_32.": ".$download_name." <a href='".e_SELF."?view.{$download_id}'><span class='smalltext'>".LAN_dl_53." </span>
 			</a>
 			</td>
 			<td style='text-align:center;width:50%'>
@@ -485,8 +485,8 @@ if ($action == "report") {
 			<tr>
 			<td colspan='2' style='text-align:center;'><br />
 			<input type ='hidden' name='user' value='".(USER ? USERNAME : LAN_dl_52)."' />
-			<input type ='hidden' name='report_download_id' value='$download_id' />
-			<input type ='hidden' name='report_download_name' value='$download_name' />
+			<input type ='hidden' name='report_download_id' value='{$download_id}' />
+			<input type ='hidden' name='report_download_name' value='{$download_name}' />
 			<input class='button' type='submit' name='report_thread' value='".LAN_dl_56."' />
 			</td>
 			</tr>
@@ -512,7 +512,7 @@ if($action == "mirror")
 	$sql -> db_Select("download_mirror");
 	$mirrorList = $sql -> db_getList("ALL", 0, 200, "mirror_id");
 
-	if($sql -> db_Select("download", "*", "download_id=$id"))
+	if($sql -> db_Select("download", "*", "download_id = {$id}"))
 	{
 		$row = $sql->db_Fetch();
 		
@@ -567,13 +567,13 @@ function parse_download_mirror_table($row, $mirrorstring, $mirrorList)
 
 	extract($mirrorList[$mirrorHost_id]);
 
-	$DOWNLOAD_MIRROR_NAME = "<a href='$mirror_url' rel='external'>$mirror_name</a>";
-	$DOWNLOAD_MIRROR_IMAGE = ($mirror_image ? "<a href='$mirror_url' rel='external'><img src='".e_FILE."downloadimages/".$mirror_image."' alt='' style='border:0' /></a>" : "");
+	$DOWNLOAD_MIRROR_NAME = "<a href='{$mirror_url}' rel='external'>{$mirror_name}</a>";
+	$DOWNLOAD_MIRROR_IMAGE = ($mirror_image ? "<a href='{$mirror_url}' rel='external'><img src='".e_FILE."downloadimages/".$mirror_image."' alt='' style='border:0' /></a>" : "");
 	$DOWNLOAD_MIRROR_LOCATION = ($mirror_location ? $mirror_location : "");
 	$DOWNLOAD_MIRROR_DESCRIPTION = ($mirror_description ? $mirror_description : "");
 
 	$DOWNLOAD_MIRROR_FILESIZE = parsesize($row['download_filesize']);
-	$DOWNLOAD_MIRROR_LINK = "<a href='".e_BASE."request.php?mirror.".$row['download_id'].".$mirrorHost_id'><img src='".IMAGE_DOWNLOAD."' alt='' style='border:0' /></a>";
+	$DOWNLOAD_MIRROR_LINK = "<a href='".e_BASE."request.php?mirror.{$row['download_id']}.{$mirrorHost_id}'><img src='".IMAGE_DOWNLOAD."' alt='' style='border:0' /></a>";
 
 	$DOWNLOAD_MIRROR_REQUESTS = (ADMIN ? LAN_dl_73.$mirrorRequests : "");
 	$DOWNLOAD_TOTAL_MIRROR_REQUESTS = (ADMIN ? LAN_dl_74.$mirror_count : "");
@@ -636,7 +636,7 @@ function parse_download_cat_child_table($row, $subList)
 	{
 		$new = "";
 	}
-	$DOWNLOAD_CAT_SUB_ICON = ($row['download_category_icon'] ? "<img src='".e_IMAGE."icons/".$row['download_category_icon']."' alt='' style='float-left' />" : "&nbsp;");
+	$DOWNLOAD_CAT_SUB_ICON = ($row['download_category_icon'] ? "<img src='".e_IMAGE."icons/{$row['download_category_icon']}' alt='' style='float-left' />" : "&nbsp;");
 	$DOWNLOAD_CAT_SUB_NEW_ICON = $new;
 	$DOWNLOAD_CAT_SUB_NAME = ($row['d_count'] ? "<a href='".e_SELF."?list.".$row['download_category_id']."'>".$row['download_category_name']."</a>" : $row['download_category_name']);
 	$DOWNLOAD_CAT_SUB_DESCRIPTION = $row['download_category_description'];
@@ -683,20 +683,20 @@ function parse_download_list_table($row) {
 	if (!$ratearray[0]) {
 		$DOWNLOAD_LIST_RATING = LAN_dl_13;
 	} else {
-		$DOWNLOAD_LIST_RATING = ($ratearray[2] ? $ratearray[1].".".$ratearray[2]."/".$ratearray[0] : $ratearray[1]."/".$ratearray[0]);
+		$DOWNLOAD_LIST_RATING = ($ratearray[2] ? "{$ratearray[1]}.{$ratearray[2]}/{$ratearray[0]}" : "{$ratearray[1]}/{$ratearray[0]}");
 	}
 
 
 	if($download_mirror_type)
 	{
-		$DOWNLOAD_LIST_LINK = ($pref['agree_flag'] ? "<a href='".e_SELF."?mirror.".$download_id."' onclick= \"return confirm('".$agreetext."');\">" : "<a href='".e_SELF."?mirror.".$download_id."'>");
+		$DOWNLOAD_LIST_LINK = ($pref['agree_flag'] ? "<a href='".e_SELF."?mirror.{$download_id}' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_SELF."?mirror.{$download_id}'>");
 	}
 	else
 	{
-		$DOWNLOAD_LIST_LINK = ($pref['agree_flag'] ? "<a href='".e_BASE."request.php?".$download_id."' onclick= \"return confirm('".$agreetext."');\">" : "<a href='".e_BASE."request.php?".$download_id."'>");
+		$DOWNLOAD_LIST_LINK = ($pref['agree_flag'] ? "<a href='".e_BASE."request.php?{$download_id}' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_BASE."request.php?{$download_id}'>");
 	}
 
-	$DOWNLOAD_LIST_NAME = "<a href='".e_SELF."?view.".$download_id."'>".$download_name."</a>";
+	$DOWNLOAD_LIST_NAME = "<a href='".e_SELF."?view.{$download_id}'>{$download_name}</a>";
 	$DOWNLOAD_LIST_AUTHOR = $download_author;
 	$DOWNLOAD_LIST_REQUESTED = $download_requested;
 	$DOWNLOAD_LIST_ICON = "<img src='".IMAGE_DOWNLOAD."' alt='' style='border:0' /></a>";
