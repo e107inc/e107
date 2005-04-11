@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.74 $
-|     $Date: 2005-04-08 09:56:54 $
-|     $Author: sweetas $
+|     $Revision: 1.75 $
+|     $Date: 2005-04-11 08:31:14 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -31,7 +31,6 @@ $dbupdate["614_to_615"] = LAN_UPDATE_8." .614 ".LAN_UPDATE_9." .615";
 $dbupdate["611_to_612"] = LAN_UPDATE_8." .611 ".LAN_UPDATE_9." .612";
 $dbupdate["603_to_604"] = LAN_UPDATE_8." .603 ".LAN_UPDATE_9." .604";
 
-
 function update_check() {
 	global $ns, $dbupdate;
 	foreach($dbupdate as $func => $rmks) {
@@ -42,6 +41,7 @@ function update_check() {
 			}
 		}
 	}
+
 	if ($update_needed === TRUE) {
 		$txt = "<div style='text-align:center;'>".ADLAN_120;
 		$txt .= "<br /><form method='POST' action='".e_ADMIN."e107_update.php'>
@@ -73,16 +73,6 @@ function update_61x_to_700($type) {
 
 		mysql_query("ALTER TABLE `".MPREFIX.".content` CHANGE `content_content` `content_content` LONGTEXT NOT NULL");
 		/* end */
-
-		/*
-		changes by jalist 07/02/2005:
-		description stat tables no longer required
-		*/
-		// mysql_query("DROP TABLE ".MPREFIX."stat_counter");
-		// mysql_query("DROP TABLE ".MPREFIX."stat_info");
-		// mysql_query("DROP TABLE ".MPREFIX."stat_last");
-		/* end */
-
 
 		/* start poll update */
 		$sql -> db_Update("menus", "menu_path='poll' WHERE menu_name='poll_menu' ");
@@ -137,6 +127,11 @@ function update_61x_to_700($type) {
 		/* general table structure changes */
 		mysql_query("ALTER TABLE `".MPREFIX."user` CHANGE `user_sess` `user_sess` VARCHAR( 100 ) NOT NULL");
 		/*	end	*/
+
+		/* start newsfeed update */
+		mysql_query("ALTER TABLE `".MPREFIX."newsfeed` CHANGE `newsfeed_data` `newsfeed_data` LONGTEXT NOT NULL");
+		$sql -> db_Update("newsfeed", "newsfeed_timestamp='0' ");
+
 
 		/* start download updates */
 		$query = "CREATE TABLE ".MPREFIX."download_mirror (
@@ -634,9 +629,26 @@ function update_61x_to_700($type) {
 
 		if (!$sql -> db_Select('news', 'news_thumbnail')) {
 			return FALSE;
-		} else {
-			return TRUE;
 		}
+
+
+
+		$result = mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
+		$qry = "SHOW CREATE TABLE `".MPREFIX."newsfeed`";
+		$res = mysql_query($qry);
+		if ($res)
+		{
+			$row = mysql_fetch_row($res);
+			if(!strstr($row[1], "longtext"))
+			{
+				return FALSE;
+			}
+			else
+			{
+				return TRUE;
+			}
+		}
+
 		//return !$sql->db_Select("core","*","e107_name = 'user_entended'");
 
 //		$sql->db_Select_gen("DELETE FROM #core WHERE e107_name='user_entended'");

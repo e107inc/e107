@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/plugin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-28 18:23:56 $
+|     $Revision: 1.2 $
+|     $Date: 2005-04-11 08:32:21 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -58,7 +58,7 @@ $eplug_tables = array(
   newsfeed_id int(10) unsigned NOT NULL auto_increment,
   newsfeed_name varchar(150) NOT NULL default '',
   newsfeed_url varchar(150) NOT NULL default '',
-  newsfeed_data text NOT NULL,
+  newsfeed_data longtext NOT NULL,
   newsfeed_timestamp int(10) unsigned NOT NULL default '0',
   newsfeed_description text NOT NULL,
   newsfeed_image varchar(100) NOT NULL default '',
