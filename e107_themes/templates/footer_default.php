@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-03-21 13:25:08 $
+|     $Revision: 1.19 $
+|     $Date: 2005-04-11 22:31:08 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -123,6 +123,8 @@ if (abs($_serverTime - $lastSet) > 120) {
 	echo "SyncWithServerTime('{$_serverTime}');
        </script>\n";
 }
+ob_end_flush(); // flush primary output -- buffer was opened in class2.php
+
 global $start_ob_level;
 if (ob_get_level() != $start_ob_level ) {
 	$oblev=ob_get_level();
@@ -137,6 +139,6 @@ if (ob_get_level() != $start_ob_level ) {
 	}
 	echo $obdbg;
 }
-ob_end_flush(); // flush primary output -- buffer was opened in class2.php
+
 echo "</body></html>";
 ?>
