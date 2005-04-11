@@ -34,7 +34,6 @@ class e107{
 		$this->class2_path = $class2_file;
 		
 		$this->e107_file_root = $_SERVER['DOCUMENT_ROOT'].$this->server_path;
-		echo $this->e107_file_root;
 		
 		define("e_HTTP", $this->server_path);
 	}
