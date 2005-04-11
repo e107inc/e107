@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-04-03 17:17:54 $
+|     $Revision: 1.25 $
+|     $Date: 2005-04-11 14:28:55 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -23,7 +23,7 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help") {
 	//        $mode == TRUE : fontsize and colour dialogs are rendered
 	//        $mode == 2 : no helpbox
 
-	if (strstr(e_SELF, "article")) {
+	if (strstr(e_SELF, "content")) {
 		$code[0] = array("newpage", "[newpage]", LANHELP_34);
 	}
 	$code[1] = array("link", "[link=".LANHELP_35."][/link]", LANHELP_23);
@@ -40,6 +40,7 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help") {
 	$code[12] = array("fontcol", "[color][/color]", LANHELP_21);
 	$code[13] = array("fontsize", "[size][/size]", LANHELP_22);
 
+	$img[0] = "newpage.png";
 	$img[1] = "link.png";
 	$img[2] = "bold.png";
 	$img[3] = "italic.png";
@@ -80,7 +81,7 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	//        $mode == TRUE : fontsize and colour dialogs are rendered
 	//        $mode == 2 : no helpbox
 
-	if (strstr(e_SELF, "article")) {
+	if (strstr(e_SELF, "content")) {
 		$code[0] = array("newpage", "[newpage]", LANHELP_34);
 	}
 	$code[1] = array("link", "[link=".LANHELP_35."][/link]", LANHELP_23);
@@ -97,6 +98,7 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	$code[12] = array("fontcol", "[color][/color]", LANHELP_21);
 	$code[13] = array("fontsize", "[size][/size]", LANHELP_22);
 
+	$img[0] = "newpage.png";
 	$img[1] = "link.png";
 	$img[2] = "bold.png";
 	$img[3] = "italic.png";
