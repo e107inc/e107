@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-03-30 17:47:33 $
+|     $Revision: 1.8 $
+|     $Date: 2005-04-11 18:12:59 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */ 
@@ -96,7 +96,7 @@ $calendar_title = "<a href='" . e_PLUGIN . "calendar_menu/event.php' class='mmen
 $monthstart = mktime(0, 0, 0, $month, 1, $year);
 $firstdayarray = getdate($monthstart);
 // *BK* Make it the end of the last day of the month not the beginning of the last day of the month ie 23:59:59
-$monthend = mktime(0, 0, 0, $month + 1, 1, $year) + 83699;
+$monthend = mktime(0, 0, 0, $month + 1, 1, $year) - 1;
 $lastdayarray = getdate($monthend);
 // ----------------------------------------------------------------------------------------------------------
 // echo current month with links to previous/next months ----------------------------------------
@@ -216,6 +216,7 @@ $nav_text .= "</div><br />";
 // get events from current month----------------------------------------------------------------------
 // *BK* If supervisor then all events can be seen irrespective of userclass
 // *BK* Uses mysql find_in_set if not supervisor
+
 if ($cal_super)
 {
     $qry = "SELECT e.*, ec.*

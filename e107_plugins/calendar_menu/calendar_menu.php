@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar_menu.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-04-03 20:41:16 $
-|     $Author: stevedunstan $
+|     $Revision: 1.12 $
+|     $Date: 2005-04-11 18:13:00 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 // *BK* Notes added and comments made by Barry are prefixed by *BK*
@@ -29,8 +29,7 @@ $cal_current_year = $cal_datearray['year'];
 // get first and last days of month in unix format---------------------------------------------------
 $cal_monthstart = mktime(0, 0, 0, $cal_current_month, 1, $cal_current_year);
 $cal_firstdayarray = getdate($cal_monthstart);
-// *BK* Add 86399 seconds to take it to 23:59:59 for the end time otherwise you miss the last day of the month
-$cal_monthend = mktime(0, 0, 0, $cal_current_month + 1, 0, $cal_current_year) + 86399;
+$cal_monthend = mktime(0, 0, 0, $cal_current_month + 1, 1, $cal_current_year) -1;
 $cal_lastdayarray = getdate($cal_monthend);
 // * *BK*
 // *  *BK* Set up userclass list that the person belongs to. 0 for everyone, if logged in then also in 254
@@ -94,10 +93,11 @@ if ($sql->db_Select_gen($cal_qry))
 			{
 				$cal_end_day = 31;
 			}
-			// for ($i = $cal_start_day; $i <= $cal_end_day; $i++)
-			// {
-			$cal_events[$cal_start_day][] = $cal_row;
-			// }
+			// Mark each day the event occurs 
+			for ($i = $cal_start_day; $i <= $cal_end_day; $i++)
+			{
+				$cal_events[$i][] = $cal_row;
+			}
 		}
 	}
 }
