@@ -6,6 +6,7 @@ class e107{
 	var $https_path;
 	var $class2_path;
 	var $e107_dirs = array();
+	var $e107_file_root;
 
 	function e107($e107_paths, $class2_file){
 		error_reporting(E_ERROR | E_WARNING | E_PARSE);
@@ -26,11 +27,15 @@ class e107{
 
 		$class2_file = dirname($class2_file).'/';
 		$class2_file = $this->fix_windows_paths($class2_file);
-
+		
 		$this->server_path = str_replace($_SERVER['DOCUMENT_ROOT'], '', $class2_file);
 		$this->http_path = 'http://'.$_SERVER['HTTP_HOST'].$this->server_path;
 		$this->https_path = 'https://'.$_SERVER['HTTP_HOST'].$this->server_path;
 		$this->class2_path = $class2_file;
+		
+		$this->e107_file_root = $_SERVER['DOCUMENT_ROOT'].$this->server_path;
+		echo $this->e107_file_root;
+		
 		define("e_HTTP", $this->server_path);
 	}
 
