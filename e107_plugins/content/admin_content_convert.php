@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_convert.php,v $
-|		$Revision: 1.1 $
-|		$Date: 2005-04-07 14:45:55 $
+|		$Revision: 1.2 $
+|		$Date: 2005-04-11 15:03:19 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -125,6 +125,7 @@ if(isset($_POST['convert_table'])){
 							$tmp = addslashes(serialize($content_pref));
 							$sql4 -> db_Update($plugintable, "content_pref='$tmp' WHERE content_id='$review_main_id' ");
 							$review_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_1." ".CONTENT_ADMIN_CONVERSION_LAN_8."<br />";
+							$aa -> CreateParentMenu($review_main_id);
 						}
 					}
 	}else{
@@ -155,6 +156,7 @@ if(isset($_POST['convert_table'])){
 							$tmp = addslashes(serialize($content_pref));
 							$sql4 -> db_Update($plugintable, "content_pref='$tmp' WHERE content_id='$article_main_id' ");
 							$article_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_2." ".CONTENT_ADMIN_CONVERSION_LAN_8."<br />";
+							$aa -> CreateParentMenu($article_main_id);
 						}
 					}
 	}else{
