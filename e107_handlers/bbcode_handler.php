@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-04-09 01:57:21 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.26 $
+|     $Date: 2005-04-11 23:55:58 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 	
@@ -132,12 +132,12 @@ class e_bbcode {
 		{
 			if ($this->bbLocation[$code] == 'core')
 			{
-				$bbFile = e_FILE.'bbcode/'.strtolower(str_replace('*','',$code)).'.bb';
+				$bbFile = e_FILE.'bbcode/'.strtolower(str_replace('*', '', $code)).'.bb';
 			}
 			else
 			{
 				// Add code to check for plugin bbcode addition
-				$bbFile = e_PLUGIN.$this->bbLocation[$code].'/'.strtolower(str_replace('*','',$code)).'.bb';
+				$bbFile = e_PLUGIN.$this->bbLocation[$code].'/'.strtolower(str_replace('*', '', $code)).'.bb';
 			}
 			if (file_exists($bbFile))
 			{
