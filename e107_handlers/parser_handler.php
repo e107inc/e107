@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/parser_handler.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-27 19:52:28 $
+|     $Revision: 1.3 $
+|     $Date: 2005-04-12 22:21:43 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -25,12 +25,12 @@ function register_parser($plugin_name, $regexp) {
 			if (function_exists($plugin_name.'_parse')) {
 				if (IsRegExp($regexp)) {
 					$oursql = new db;
-					$oursql->db_Select("parser", "*", "parser_pluginname='".$plugin_name."' AND parser_regexp='".$regexp."'");
+					$oursql->db_Select("parser", "*", "parser_pluginname = '{$plugin_name}' AND parser_regexp = '{$regexp}'");
 					if ($row = $oursql->db_Fetch()) {
 						// Already exists, handle error if needed.
 					} else {
 						$regexp = str_replace("\\" , "\\\\", $regexp);
-						$oursql->db_Insert("parser", "0, '".$plugin_name."', '".$regexp."'");
+						$oursql->db_Insert("parser", "0, '{$plugin_name}', '{$regexp}'");
 						return 1;
 					}
 				} else {

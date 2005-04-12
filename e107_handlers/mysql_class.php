@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-04-05 11:33:31 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.38 $
+|     $Date: 2005-04-12 22:21:41 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -25,8 +25,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.37 $
-* @author $Author: mcfly_e107 $
+* @version $Revision: 1.38 $
+* @author $Author: streaky $
 */
 class db {
 
@@ -142,7 +142,7 @@ class db {
 		$uid = (USER === FALSE) ? USERID : '0';
 		$ip = getip();
 		$qry = $tp->toDB($log_query);
-		$this->db_Insert('dblog', "0,'{$log_type}',{$d},{$uid},'{$ip}','{$qry}','{$log_remark}'", 2);
+		$this->db_Insert('dblog', "0, '{$log_type}', {$d}, {$uid}, '{$ip}', '{$qry}', '{$log_remark}'", 2);
 	}
 
 	/**
@@ -187,7 +187,7 @@ class db {
 			if(is_object($db_debug)) {
 				$nFields = $db_debug->Mark_Query($query, $rli, $sQryRes,$aTrace, $mytime, $pTable);
 			} else {
-				echo "what happened to db_debug??!!<br/>";
+				echo "what happened to db_debug??!!<br />";
 			}
 		}
 		return $sQryRes;
@@ -226,7 +226,7 @@ class db {
 				$this->dbError('dbQuery');
 				return $this->db_Rows();
 			} else {
-				$this->dbError("db_Select (SELECT $fields FROM ".MPREFIX."$table WHERE $arg)");
+				$this->dbError("db_Select (SELECT $fields FROM ".MPREFIX."{$table} WHERE {$arg})");
 				return FALSE;
 			}
 		} elseif($arg != '' && $mode != 'default') {
@@ -242,7 +242,7 @@ class db {
 				$this->dbError('dbQuery');
 				return $this->db_Rows();
 			} else {
-				$this->dbError("db_Select (SELECT $fields FROM ".MPREFIX."$table)");
+				$this->dbError("db_Select (SELECT {$fields} FROM ".MPREFIX."{$table})");
 				return FALSE;
 			}
 		}
@@ -263,7 +263,7 @@ class db {
 	function db_Insert($table, $arg, $debug = FALSE, $log_type = '', $log_remark = '') {
 		$table = $this->db_IsLang($table);
 		$this->mySQLcurTable = $table;
-		$query='INSERT INTO '.MPREFIX.$table.' VALUES ('.$arg.')';
+		$query = 'INSERT INTO '.MPREFIX."{$table} VALUES ({$arg})";
 		if ($result = $this->mySQLresult = $this->db_Query($query, NULL, 'db_Insert', $debug, $log_type, $log_remark )) {
 			$tmp = mysql_insert_id();
 			return $tmp;
