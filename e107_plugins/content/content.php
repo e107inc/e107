@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.19 $
-|		$Date: 2005-04-11 16:32:36 $
+|		$Revision: 1.20 $
+|		$Date: 2005-04-12 22:03:14 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -684,7 +684,6 @@ function show_content_cat($mode=""){
 					}
 
 					// parent article
-					$CONTENT_CAT_LIST_TABLE = "";
 					if($content_pref["content_cat_showparent_{$type_id}"]){
 						
 						if(!$resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_parent, content_comment, content_rate, content_pe, content_datestamp", "content_refer !='sa' AND content_id = '".$sub_action."' ".$unvalidcontent." ".$datequery." AND content_class IN (".USERCLASS_LIST.") " )){
@@ -699,6 +698,7 @@ function show_content_cat($mode=""){
 					if(!$mode || $mode == ""){
 
 						//list subcategories
+						$content_cat_listsub_table_string = "";
 						$checkparent = ($type_id == $sub_action ? $type_id.".".$type_id."." : $type_id.".".$type_id.".".$sub_action.".");
 						for($i=0;$i<count($prefetchbreadcrumb);$i++){
 							if(substr($prefetchbreadcrumb[$i][3],0,strlen($checkparent)) == $checkparent && !strpos($unvalidcontent, "'".$prefetchbreadcrumb[$i][3]."'")){
@@ -1029,7 +1029,7 @@ function show_content_item(){
 				}else{
 					ob_start();
 
-					if(!$resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class", "content_refer !='sa' AND content_id='".$sub_action."' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ".$unvalidcontent." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ".$order." ".$nextprevquery )){
+					if(!$resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class, content_pref as contentprefvalue", "content_refer !='sa' AND content_id='".$sub_action."' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ".$unvalidcontent." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ".$order." ".$nextprevquery )){
 						header("location:".e_SELF."?".$type.".".$type_id); exit;
 					}else{
 						$row = $sql -> db_Fetch();
@@ -1600,19 +1600,38 @@ function parse_content_content_table($row){
 				
 
 				$content_text = ($content_text ? $content_text : "");
-				if(preg_match_all("/\[newpage=(.*?)]/si", $content_text, $matches)) {
+				$CONTENT_CONTENT_TABLE_TEXT = $content_text;
 
-					$textpages = explode("[newpage=", $content_text);
-					$CONTENT_CONTENT_TABLE_TEXT = substr($textpages[(!$id ? 1 : $id)], (strpos($textpages[(!$id ? 1 : $id)], "]")+1) );
-					$CONTENT_CONTENT_TABLE_PAGENAMES = "";
-					for ($i=0; $i < count($matches[1]); $i++) {
-						if(!$id){ $id = ($id + 1); }
-						if($id == $i+1){ $pre = " - current"; }else{ $pre = ""; }
-						$CONTENT_CONTENT_TABLE_PAGENAMES .= "page ".($i+1)." ".$pre." : <a href='".e_SELF."?".$type.".".$type_id.".content.".$sub_action.".".($i+1)."'>".$matches[1][$i]."</a><br />";
+				if(preg_match_all("/\[newpage.*?]/si", $content_text, $matches)){
+					
+					$pages = preg_split("/\[newpage.*?]/si", $content_text);
+
+					for ($i=0; $i < count($pages); $i++) {				//remove empty values
+						if(empty($pages[$i])){ unset($pages[$i]); }
 					}
-				}else{
-					$CONTENT_CONTENT_TABLE_TEXT = $content_text;
+					$pages = array_values($pages);
+					
+					if(count($pages) == count($matches[0])){
+					}elseif(count($pages) > count($matches[0])){
+						$matches[0] = array_pad($matches[0], -count($pages), "[newpage]");
+
+					}elseif(count($pages) < count($matches[0])){
+					}
+					
+					$CONTENT_CONTENT_TABLE_TEXT = $pages[(!$id ? 0 : $id-1)];
+					for ($i=0; $i < count($pages); $i++) {
+						if(!isset($id)){ $idp = 1; }else{ $idp = $id; }
+						if($idp == $i+1){ $pre = " - current"; }else{ $pre = ""; }
+						if($matches[0][$i] == "[newpage]"){
+							$pagename[$i] = CONTENT_LAN_78;
+						}else{
+							$arrpagename = explode("[newpage=", $matches[0][$i]);
+							$pagename[$i] = substr($arrpagename[1],0,-1);
+						}
+						$CONTENT_CONTENT_TABLE_PAGENAMES .= CONTENT_LAN_79." ".($i+1)." ".$pre." : <a href='".e_SELF."?".$type.".".$type_id.".content.".$sub_action.".".($i+1)."'>".$pagename[$i]."</a><br />";
+					}
 				}
+
 				$CONTENT_CONTENT_TABLE_TEXT = $aa -> parseContentPathVars($CONTENT_CONTENT_TABLE_TEXT);
 				$CONTENT_CONTENT_TABLE_TEXT = $tp -> toHTML($CONTENT_CONTENT_TABLE_TEXT, TRUE, "");
 				$CONTENT_CONTENT_TABLE_ICON = $aa -> getIcon("item", $content_icon, $content_icon_path, "", "100", $content_pref["content_blank_icon_{$type_id}"]);
@@ -1631,15 +1650,19 @@ function parse_content_content_table($row){
 					}
 				}
 
+				//print_r($custom);
 				if(!empty($custom)){
 					foreach($custom as $k => $v){
 						if(!($k == "content_custom_score" || $k == "content_custom_meta")){
-							$key = substr($k,15);
-							$CONTENT_CONTENT_TABLE_CUSTOM_KEY[] = $key;
+							$CONTENT_CONTENT_TABLE_CUSTOM = true;
+							//echo $k."<br />";
+							$CONTENT_CONTENT_TABLE_CUSTOM_KEY[] = substr($k,15);
 							$CONTENT_CONTENT_TABLE_CUSTOM_VALUE[] = $v;
 						}
 					}
 				}
+				//print_r($CONTENT_CONTENT_TABLE_CUSTOM_KEY);
+				//print_r($CONTENT_CONTENT_TABLE_CUSTOM_VALUE);
 				
 				$CONTENT_CONTENT_TABLE = "";
 				if(!$CONTENT_CONTENT_TABLE){

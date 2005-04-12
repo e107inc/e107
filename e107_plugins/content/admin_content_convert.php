@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_convert.php,v $
-|		$Revision: 1.2 $
-|		$Date: 2005-04-11 15:03:19 $
+|		$Revision: 1.3 $
+|		$Date: 2005-04-12 22:03:14 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -73,6 +73,7 @@ if(isset($_POST['convert_table'])){
 
 
 	// ##### STAGE 2 : INSERT MAIN PARENT FOR CONTENT ---------------------------------------------
+	$mainparentcontent = "0";
 	if($totaloldrowscat_content > "0"){
 					//insert a content main parent cat, then insert all content pages into this main parent
 					if(!$sql2 -> db_Select($plugintable, "content_heading", "content_heading = 'content' AND content_parent = '0' ")){
@@ -96,6 +97,8 @@ if(isset($_POST['convert_table'])){
 							$sql4 -> db_Update($plugintable, "content_pref='$tmp' WHERE content_id='$content_main_id' ");
 							$content_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_0." ".CONTENT_ADMIN_CONVERSION_LAN_8."<br />";
 						}
+					}else{
+						$content_mainparent = CONTENT_ADMIN_CONVERSION_LAN_9." ".CONTENT_ADMIN_CONVERSION_LAN_0." ".CONTENT_ADMIN_CONVERSION_LAN_10."<br />";
 					}
 	}else{
 		$content_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_9." ".CONTENT_ADMIN_CONVERSION_LAN_0." ".CONTENT_ADMIN_CONVERSION_LAN_10."<br />";
@@ -103,6 +106,7 @@ if(isset($_POST['convert_table'])){
 	
 
 	// ##### STAGE 3 : INSERT MAIN PARENT FOR REVIEW ----------------------------------------------
+	$mainparentreview = "0";
 	if($totaloldrowscat_review > "0"){
 					//insert a review main parent cat, then insert all review cats into this main parent
 					if(!$sql2 -> db_Select($plugintable, "content_heading", "content_heading = 'review' AND content_parent = '0' ")){
@@ -112,7 +116,7 @@ if(isset($_POST['convert_table'])){
 						if(!$sql3 -> db_Select($plugintable, "content_id", "content_heading = 'review' ")){
 							$review_mainparent = CONTENT_ADMIN_CONVERSION_LAN_45;
 						}else{
-							$review_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_1." ".CONTENT_ADMIN_CONVERSION_LAN_7."<br />";
+							$review_mainparent = CONTENT_ADMIN_CONVERSION_LAN_1." ".CONTENT_ADMIN_CONVERSION_LAN_7."<br />";
 							$mainparentreview = "1";
 
 							//select main review parent id
@@ -127,13 +131,16 @@ if(isset($_POST['convert_table'])){
 							$review_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_1." ".CONTENT_ADMIN_CONVERSION_LAN_8."<br />";
 							$aa -> CreateParentMenu($review_main_id);
 						}
+					}else{
+						$review_mainparent = CONTENT_ADMIN_CONVERSION_LAN_9." ".CONTENT_ADMIN_CONVERSION_LAN_1." ".CONTENT_ADMIN_CONVERSION_LAN_10."<br />";
 					}
 	}else{
-		$review_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_9." ".CONTENT_ADMIN_CONVERSION_LAN_1." ".CONTENT_ADMIN_CONVERSION_LAN_10."<br />";
+		$review_mainparent = CONTENT_ADMIN_CONVERSION_LAN_9." ".CONTENT_ADMIN_CONVERSION_LAN_1." ".CONTENT_ADMIN_CONVERSION_LAN_10."<br />";
 	}
 	
 
 	// ##### STAGE 4 : INSERT MAIN PARENT FOR ARTICLE ---------------------------------------------
+	$mainparentarticle = "0";
 	if($totaloldrowscat_article > "0"){
 					//insert a article main parent cat, then insert all article cats into this main parent
 					if(!$sql2 -> db_Select($plugintable, "content_heading", "content_heading = 'article' AND content_parent = '0' ")){
@@ -143,7 +150,7 @@ if(isset($_POST['convert_table'])){
 						if(!$sql3 -> db_Select($plugintable, "content_id", "content_heading = 'article' ")){
 							$article_mainparent = CONTENT_ADMIN_CONVERSION_LAN_45;
 						}else{
-							$article_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_2." ".CONTENT_ADMIN_CONVERSION_LAN_7."<br />";
+							$article_mainparent = CONTENT_ADMIN_CONVERSION_LAN_2." ".CONTENT_ADMIN_CONVERSION_LAN_7."<br />";
 							$mainparentarticle = "1";
 
 							//select main article parent id
@@ -158,11 +165,12 @@ if(isset($_POST['convert_table'])){
 							$article_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_2." ".CONTENT_ADMIN_CONVERSION_LAN_8."<br />";
 							$aa -> CreateParentMenu($article_main_id);
 						}
+					}else{
+						$article_mainparent = CONTENT_ADMIN_CONVERSION_LAN_9." ".CONTENT_ADMIN_CONVERSION_LAN_2." ".CONTENT_ADMIN_CONVERSION_LAN_10."<br />";
 					}
 	}else{
-		$article_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_9." ".CONTENT_ADMIN_CONVERSION_LAN_2." ".CONTENT_ADMIN_CONVERSION_LAN_10."<br />";
+		$article_mainparent = CONTENT_ADMIN_CONVERSION_LAN_9." ".CONTENT_ADMIN_CONVERSION_LAN_2." ".CONTENT_ADMIN_CONVERSION_LAN_10."<br />";
 	}
-
 
 	// ##### STAGE 5 : INSERT CONTENT -------------------------------------------------------------
 	if(!$sql -> db_Select("content", "*", "content_parent = '0' AND content_type = '1' ORDER BY content_id " )){
@@ -699,27 +707,33 @@ if(isset($_POST['convert_table'])){
 
 
 
+if(!isset($_POST['convert_table'])){
+	$totalnewcontent = $sql -> db_Count($plugintable);
 
-$totalnewcontent = $sql -> db_Count($plugintable);
+	$text = "
+	<div style='text-align:center'>
+	".$rs -> form_open("post", e_SELF, "dataform")."
+	<table class='fborder' style='width:95%;'>";
 
-$text = "
-<div style='text-align:center'>
-".$rs -> form_open("post", e_SELF, "dataform")."
-<table class='fborder' style='width:95%;'>";
+	if($totalnewcontent != "0"){
+		$text .= "<tr><td class='forumheader3' style='text-align:center;'>".CONTENT_ADMIN_CONVERSION_LAN_44."</td></tr>";
+	}
 
-if($totalnewcontent != "0"){
-	$text .= "<tr><td class='forumheader3' style='text-align:center;'>".CONTENT_ADMIN_CONVERSION_LAN_44."</td></tr>";
+	$text .= "
+	<tr><td class='forumheader3' style='text-align:center;'>".$rs -> form_button("submit", "convert_table", "convert table")."</td></tr>
+
+	</table>
+	</form>
+	</div>";
+
+	$caption = CONTENT_ADMIN_CONVERSION_LAN_43;
+	$ns -> tablerender($caption, $text);
+}else{
+
+	$text = "<div style='text-align:center'>".CONTENT_ADMIN_CONVERSION_LAN_46."</div>";
+	$caption = CONTENT_ADMIN_CONVERSION_LAN_47;
+	$ns -> tablerender($caption, $text);
 }
-
-$text .= "
-<tr><td class='forumheader3' style='text-align:center;'>".$rs -> form_button("submit", "convert_table", "convert table")."</td></tr>
-
-</table>
-</form>
-</div>";
-
-$caption = CONTENT_ADMIN_CONVERSION_LAN_43;
-$ns -> tablerender($caption, $text);
 
 require_once(e_ADMIN."footer.php");
 

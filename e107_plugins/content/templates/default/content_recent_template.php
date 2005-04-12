@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_recent_template.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-04-07 14:48:06 $
+|     $Revision: 1.6 $
+|     $Date: 2005-04-12 22:04:42 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -34,20 +34,18 @@ if(!$CONTENT_RECENT_TABLE){
 					<td style='width:99%; vertical-align:top; padding-top:2px; padding:0;'>
 						<table style='width:100%; vertical-align:top;' border='0'>
 						<tr>
-							<td style='text-align:left; padding:2px; vertical-align:top; border:0;'>
+							<td colspan='2' style='text-align:left; padding:2px; vertical-align:top; border:0;'>
 								{CONTENT_RECENT_TABLE_HEADING}
-							</td>
-							<td style='text-align:right; padding:2px; vertical-align:top; border:0;'>
-								
-								<span class='smalltext'>{CONTENT_RECENT_TABLE_EPICONS} {CONTENT_RECENT_TABLE_AUTHORDETAILS} ".CONTENT_LAN_44." {CONTENT_RECENT_TABLE_REFER}</span>
 							</td>
 						</tr>
 						<tr>
-							<td style='text-align:left; padding:2px; vertical-align:top; border:0;'>
+							<td colspan='2' style='text-align:left; padding:2px; vertical-align:top; border:0;'>
 								<i>{CONTENT_RECENT_TABLE_SUBHEADING}</i>
 							</td>
-							<td style='text-align:right; padding:2px; vertical-align:top; border:0;'>
-								<span class='smalltext'>{CONTENT_RECENT_TABLE_DATE}</span>
+						</tr>
+						<tr>
+							<td colspan='2' style='padding:2px; vertical-align:top; border:0;'>
+								<span class='smalltext'>{CONTENT_RECENT_TABLE_DATE} {CONTENT_RECENT_TABLE_EPICONS} {CONTENT_RECENT_TABLE_AUTHORDETAILS} ".CONTENT_LAN_44." {CONTENT_RECENT_TABLE_REFER}</span>
 							</td>
 						</tr>
 						<tr>
@@ -55,7 +53,7 @@ if(!$CONTENT_RECENT_TABLE){
 								<span class='smalltext'>{CONTENT_RECENT_TABLE_RATING}</span>
 							</td>
 						</tr>
-						<tr>
+							<tr>
 							<td colspan='2' style='padding:2px; vertical-align:middle; border:0;'>
 								<span class='smalltext' style='vertical-align:middle;'>{CONTENT_RECENT_TABLE_PARENT}</span>
 							</td>

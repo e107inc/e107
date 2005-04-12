@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.15 $
-|		$Date: 2005-04-12 11:22:48 $
+|		$Revision: 1.16 $
+|		$Date: 2005-04-12 22:04:41 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1149,9 +1149,16 @@ class contentform{
 
 						if(!is_object($sql)){ $sql = new db; }
 						if(!$sql -> db_Select($plugintable, "content_id, content_heading", "content_parent='0' ")){
-								$text .= "<div style='text-align:center'>".CONTENT_ADMIN_MAIN_LAN_1."</div>";							
-								$ns -> tablerender(CONTENT_ADMIN_MAIN_LAN_0, $text);
-								return;
+								$text = "
+								<div style='text-align:center'>".CONTENT_ADMIN_MAIN_LAN_1."<br />";
+
+								if($mode == "create"){ $text .= CONTENT_ADMIN_MAIN_LAN_17; }
+								if($mode == "edit"){ $text .= ""; }
+								if($mode == "order"){ $text .= CONTENT_ADMIN_MAIN_LAN_17; }
+								if($mode == "editcat"){ $text .= CONTENT_ADMIN_MAIN_LAN_17; }
+								if($mode == "createcat"){ $text .= ""; }
+
+								$text .= "</div>";
 						}else{
 								if($mode == "create"){ $help = CONTENT_ADMIN_MAIN_LAN_13; }
 								if($mode == "edit"){ $help = CONTENT_ADMIN_MAIN_LAN_10; }
@@ -1159,7 +1166,7 @@ class contentform{
 								if($mode == "editcat"){ $help = CONTENT_ADMIN_MAIN_LAN_15; }
 								if($mode == "createcat"){ $help = CONTENT_ADMIN_MAIN_LAN_16; }
 
-								$text .= "
+								$text = "
 								<div style='text-align:center'>
 								<table style='".ADMIN_WIDTH."' class='fborder'>
 								<tr><td $classhelp>".$help."</td></tr>
@@ -1175,8 +1182,8 @@ class contentform{
 										$text .= $rs -> form_button("submit", "typeselect", $content_heading, "onclick=\"document.location='".$urllocation."'\"")." ";
 									}
 								$text .= "</table></div>";
-								$ns -> tablerender(CONTENT_ADMIN_MAIN_LAN_0, $text);
 						}
+						$ns -> tablerender(CONTENT_ADMIN_MAIN_LAN_0, $text);
 						return;
 		}
 
