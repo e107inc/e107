@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-04-11 23:32:09 $
+|     $Revision: 1.27 $
+|     $Date: 2005-04-12 01:35:08 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -42,7 +42,7 @@ if (USER == TRUE || ADMIN == TRUE) {
 	<br />
 	'.$bullet.' <a href="'.e_BASE.'user.php?id.'.USERID.'">'.LOGIN_MENU_L13.'</a>
 	<br />
-	'.$bullet.' <a href="'.e_BASE.'?logout">'.LOGIN_MENU_L8.'</a>';
+	'.$bullet.' <a href="'.e_BASE.'index.php?logout">'.LOGIN_MENU_L8.'</a>';
 
 	if (!$sql->db_Select('online', '*', '`online_ip` = \''.$ip.'\' AND `online_user_id` = \'0\' ')) {
 		$sql->db_Delete('online', '`online_ip` = \''.$ip.'\' AND `online_user_id` = \'0\' ');
