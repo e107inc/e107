@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-04-11 14:56:33 $
+|     $Revision: 1.20 $
+|     $Date: 2005-04-12 11:23:23 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -88,8 +88,9 @@ define("CONTENT_ADMIN_CAT_LAN_36", "category check: there are still subcategorie
 define("CONTENT_ADMIN_CAT_LAN_37", "content items check: there are still content items present, the category will NOT be deleted. first remove all content items and then try again.");
 define("CONTENT_ADMIN_CAT_LAN_38", "content items check: no items found");
 define("CONTENT_ADMIN_CAT_LAN_39", "category check: no subcategories found");
-define("CONTENT_ADMIN_CAT_LAN_40", "");
-define("CONTENT_ADMIN_CAT_LAN_41", "");
+define("CONTENT_ADMIN_CAT_LAN_40", "Below you see a list of the main category and all subcategories if present.<br />");
+
+define("CONTENT_ADMIN_CAT_LAN_41", "The personal manager of content categories allows you to assign certain other admins to a category. With this privilige these admins can manage their own and only their own personal content items in this specified category, without the need to have control over the full content manager plugin. From the normal content page outside of the admin area they will see a personalmanager icon which redirects them to the personal manager page.");
 define("CONTENT_ADMIN_CAT_LAN_42", "");
 define("CONTENT_ADMIN_CAT_LAN_43", "");
 define("CONTENT_ADMIN_CAT_LAN_44", "");
@@ -308,7 +309,7 @@ define("CONTENT_ADMIN_ITEM_LAN_49", "submitted content items");
 define("CONTENT_ADMIN_ITEM_LAN_50", "no submitted content items");
 define("CONTENT_ADMIN_ITEM_LAN_51", "author details<br /> leave if article written by you");
 define("CONTENT_ADMIN_ITEM_LAN_52", "submit content item");
-define("CONTENT_ADMIN_ITEM_LAN_53", "meta keywords for this content item (seperate with commas, no spaces allowed !)");
+define("CONTENT_ADMIN_ITEM_LAN_53", "meta keywords");
 define("CONTENT_ADMIN_ITEM_LAN_54", "additional data");
 define("CONTENT_ADMIN_ITEM_LAN_55", "Go back to the <a href='".e_SELF."'>main contentmanager page</a> to manage more of your personal content<br />or<br />Go to the <a href='".e_PLUGIN."content/content.php'>content main page</a> to view content items.");
 define("CONTENT_ADMIN_ITEM_LAN_56", "personal content manager");
@@ -323,9 +324,28 @@ define("CONTENT_ADMIN_ITEM_LAN_64", "dec");
 define("CONTENT_ADMIN_ITEM_LAN_65", "order content items");
 define("CONTENT_ADMIN_ITEM_LAN_66", "Below you'll see the distinct letters of the content heading for all items in this category.<br />By clicking on one of the letters you will see a list of all items starting with the selected letter. You can also choose the ALL button to display all items in this category.");
 define("CONTENT_ADMIN_ITEM_LAN_67", "Below you'll see the content items listed for the selected category or narrowed down with a selected letter.<br />You can edit or delete an item by clicking the appropriate buttons on the right.");
-define("CONTENT_ADMIN_ITEM_LAN_68", "");
-define("CONTENT_ADMIN_ITEM_LAN_69", "");
-define("CONTENT_ADMIN_ITEM_LAN_70", "");
+define("CONTENT_ADMIN_ITEM_LAN_68", "Below you have the ability to add custom data for this content item. Each custom data needs to have both a key and a value data present. You can specify the key i the left field and the corresponding value in the right field.<br />(for instance, key='photography' and value='all photos are made by me'.");
+define("CONTENT_ADMIN_ITEM_LAN_69", "Here you can upload icons, attachments and/or images to go with the content item. The allowed filetypes are : ");
+define("CONTENT_ADMIN_ITEM_LAN_70", "In the next box you can specify specific meta keywords to go with this content item. These meta keywords are rendered in the header of the page. Seperate each word with commas, and no spaces are allowed !");
+define("CONTENT_ADMIN_ITEM_LAN_71", "");
+define("CONTENT_ADMIN_ITEM_LAN_72", "");
+define("CONTENT_ADMIN_ITEM_LAN_73", "");
+define("CONTENT_ADMIN_ITEM_LAN_74", "");
+define("CONTENT_ADMIN_ITEM_LAN_75", "");
+define("CONTENT_ADMIN_ITEM_LAN_76", "");
+define("CONTENT_ADMIN_ITEM_LAN_77", "");
+define("CONTENT_ADMIN_ITEM_LAN_78", "");
+define("CONTENT_ADMIN_ITEM_LAN_79", "");
+define("CONTENT_ADMIN_ITEM_LAN_80", "");
+define("CONTENT_ADMIN_ITEM_LAN_81", "");
+define("CONTENT_ADMIN_ITEM_LAN_82", "");
+define("CONTENT_ADMIN_ITEM_LAN_83", "");
+define("CONTENT_ADMIN_ITEM_LAN_84", "");
+define("CONTENT_ADMIN_ITEM_LAN_85", "");
+define("CONTENT_ADMIN_ITEM_LAN_86", "");
+define("CONTENT_ADMIN_ITEM_LAN_87", "");
+define("CONTENT_ADMIN_ITEM_LAN_88", "");
+define("CONTENT_ADMIN_ITEM_LAN_89", "");
 
 define("CONTENT_ADMIN_ORDER_LAN_0", "order is increased");
 define("CONTENT_ADMIN_ORDER_LAN_1", "order is decreased");
@@ -337,26 +357,39 @@ define("CONTENT_ADMIN_MAIN_LAN_2", "main content categories");
 define("CONTENT_ADMIN_MAIN_LAN_3", "content item deleted");
 define("CONTENT_ADMIN_MAIN_LAN_4", "parent text");
 define("CONTENT_ADMIN_MAIN_LAN_5", "parent icon");
-define("CONTENT_ADMIN_MAIN_LAN_6", "<br />
-
-There are two scenarios possible for you to choose from.<br /><br />
-1) start with the empty new content table.<br />
-2) convert the old content table into the new content table used in this plugin.<br />
-
-1) this is a fresh install, so i want to start managing new content<br />
-2) i do not need to convert content from my old content table<br />
-3) i need to convert content from my old content table<br />
-");
+define("CONTENT_ADMIN_MAIN_LAN_6", "");
 
 define("CONTENT_ADMIN_MAIN_LAN_7", "Welcome to the Content Management System !");
 define("CONTENT_ADMIN_MAIN_LAN_8", "Please read the following information carefully and choose what you want to do");
 define("CONTENT_ADMIN_MAIN_LAN_9", "This information is shown because the table of the Content Management Plugin contains no records.");
 define("CONTENT_ADMIN_MAIN_LAN_10", "You can manage content items on this page. First decide the category you would like to manage content for. Click on the button of the main parents listed below to start managing content for that category.");
-define("CONTENT_ADMIN_MAIN_LAN_11", "");
-define("CONTENT_ADMIN_MAIN_LAN_12", "");
-define("CONTENT_ADMIN_MAIN_LAN_13", "");
-define("CONTENT_ADMIN_MAIN_LAN_14", "");
-define("CONTENT_ADMIN_MAIN_LAN_15", "");
+define("CONTENT_ADMIN_MAIN_LAN_11", "
+<b>The old content table contains records</b><br />
+Since the old content table contains records, you can choose one of the following two options:<br />
+<br />
+<b>a) convert records</b><br />
+The first thing you need to do is create a backup of your existing content table as well as your comments and rate table.<br />
+Use a program to backup your content table, like phpmyadmin.<br />
+After you have created a backup of your old content table, you can start converting the records to the new Content Management Plugin.<br />
+After you have converted your old content, you should no longer see this information, and be able to manage your existing content.<br />
+Please go to the <a href='".e_PLUGIN."content/admin_content_convert.php'>Content Conversion Script</a> page.<br />
+<br />
+<b>b) do not convert records and just start managing new content</b><br />
+If you no longer need the records from your old content table,<br />
+and just want to start with a fresh new Content Management Plugin table,<br />
+you can start by creating a new category.<br />
+Please go to the <a href='".e_SELF."?type.0.cat.create'>Create New Category</a> page.<br />
+");
+define("CONTENT_ADMIN_MAIN_LAN_12", "
+<b>This is a fresh install / The old content table does not contain records</b><br />
+Since the old existing content table does not contain any records, you can now start managing new content.<br />
+The first thing you need to do is create a new category.<br />
+Please go to the <a href='".e_SELF."?type.0.cat.create'>Create New Category</a> page.<br />
+");
+define("CONTENT_ADMIN_MAIN_LAN_13", "You can create new content items on this page. First decide the category you would like to manage content for. Click on the button of the main parents listed below to create new content in that main category.");
+define("CONTENT_ADMIN_MAIN_LAN_14", "You can set the order for content items on this page. Click on the button of the main parents listed below to start ordering content items or categories for the selected main category.");
+define("CONTENT_ADMIN_MAIN_LAN_15", "You can manage categories on this page. Choose the main category from the buttons listed below to show an overview of alle categories and subcategories within that main category.");
+define("CONTENT_ADMIN_MAIN_LAN_16", "You can create new categories on this page. By default the creation form for a new main category is shown. If you would like to create a subcategory for an existing main category, please click on one of the buttons listed below to show the creation form for a subcategory within the selected main category.");
 
 
 define("CONTENT_ADMIN_MENU_LAN_0", "Manage Existing Content");
@@ -403,10 +436,10 @@ define("CONTENT_ADMIN_DATE_LAN_11", "December");
 define("CONTENT_ADMIN_DATE_LAN_12", "day");
 define("CONTENT_ADMIN_DATE_LAN_13", "month");
 define("CONTENT_ADMIN_DATE_LAN_14", "year");
-define("CONTENT_ADMIN_DATE_LAN_15", "set custom start date");
-define("CONTENT_ADMIN_DATE_LAN_16", "set end date");
-define("CONTENT_ADMIN_DATE_LAN_17", "you can specify a starting date for this item. leave blank to use current time");
-define("CONTENT_ADMIN_DATE_LAN_18", "you can specify an end date for this item. leave blank to have unlimited time");
+define("CONTENT_ADMIN_DATE_LAN_15", "start date");
+define("CONTENT_ADMIN_DATE_LAN_16", "end date");
+define("CONTENT_ADMIN_DATE_LAN_17", "You can specify a start date for this content item. If you use a date in the future the content item will be visible from that point onward. If you do not need a specific starting date, you can just leave these fields as they are.");
+define("CONTENT_ADMIN_DATE_LAN_18", "you can specify an end date for this content item. With the end date you can specify until which point in time the content item needs to be visible. If you do not need an end time for this content item, you can just leave the fields as they are.");
 
 define("CONTENT_LAN_0", "Content");
 define("CONTENT_LAN_1", "Recent List");

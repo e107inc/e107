@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.14 $
-|		$Date: 2005-04-11 14:56:31 $
+|		$Revision: 1.15 $
+|		$Date: 2005-04-12 11:22:48 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -21,13 +21,13 @@
 //$plugintable = "pcontent";		//name of the table used in this plugin
 
 if (!defined('ADMIN_WIDTH')) { define("ADMIN_WIDTH", "width:98%;"); }
-
+$classhelp = " class='forumheader3' style='color:#878787; padding-top:10px; border:0; font-style:italic;' ";
 class contentform{
 
 		function show_content_create($mode, $userid="", $username=""){
-						global $sql, $ns, $rs, $aa, $tp, $plugintable;
+						global $sql, $ns, $rs, $aa, $tp, $plugintable, $pref;
 						global $type, $type_id, $action, $sub_action, $id;
-						global $message;
+						global $message, $classhelp;
 
 						$content_pref = $aa -> getContentPref($type_id);
 						$content_cat_icon_path_large = $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$type_id}"]);
@@ -155,8 +155,9 @@ class contentform{
 						//if($sub_action == "edit" || $sub_action == "sa" || $_POST['editp']){
 						//}else{
 							$text .= "
+							<tr><td $classhelp></td><td $classhelp>".CONTENT_ADMIN_DATE_LAN_17."</td></tr>
 							<tr>
-								<td class='forumheader3' style='width:30%; vertical-align:top'>".CONTENT_ADMIN_DATE_LAN_15."<br />".CONTENT_ADMIN_DATE_LAN_17."</td>
+								<td class='forumheader3' style='width:30%; vertical-align:top'>".CONTENT_ADMIN_DATE_LAN_15."</td>
 								<td class='forumheader3' style='width:70%'>
 
 									".$rs -> form_select_open("ne_day")."
@@ -186,8 +187,9 @@ class contentform{
 						//}
 
 						$text .= "
+						<tr><td $classhelp></td><td $classhelp>".CONTENT_ADMIN_DATE_LAN_18."</td></tr>
 						<tr>
-							<td class='forumheader3' style='width:30%; vertical-align:top'>".CONTENT_ADMIN_DATE_LAN_16."<br />".CONTENT_ADMIN_DATE_LAN_18."</td>
+							<td class='forumheader3' style='width:30%; vertical-align:top'>".CONTENT_ADMIN_DATE_LAN_16."</td>
 							<td class='forumheader3' style='width:70%'>
 
 								".$rs -> form_select_open("end_day")."
@@ -239,31 +241,34 @@ class contentform{
 						<tr>
 							<td class='forumheader3' style='width:30%; vertical-align:top'>".CONTENT_ADMIN_ITEM_LAN_51."</td>
 							<td class='forumheader3' style='width:70%; vertical-align:top'>
-								".$rs -> form_text("content_author_name", 60, ($authordetails[1] ? $authordetails[1] : CONTENT_ADMIN_ITEM_LAN_14), 100, "tbox", "", "", ($authordetails[1] ? "" : "onfocus=\"if(document.getElementById('dataform').content_author_name.value=='".CONTENT_ADMIN_ITEM_LAN_14."'){document.getElementById('dataform').content_author_name.value='';}\"") )."<br />
-								".$rs -> form_text("content_author_email", 60, ($authordetails[2] ? $authordetails[2] : CONTENT_ADMIN_ITEM_LAN_15), 100, "tbox", "", "", ($authordetails[2] ? "" : "onfocus=\"if(document.getElementById('dataform').content_author_email.value=='".CONTENT_ADMIN_ITEM_LAN_15."'){document.getElementById('dataform').content_author_email.value='';}\"") )."
+								".$rs -> form_text("content_author_name", 90, ($authordetails[1] ? $authordetails[1] : CONTENT_ADMIN_ITEM_LAN_14), 100, "tbox", "", "", ($authordetails[1] ? "" : "onfocus=\"if(document.getElementById('dataform').content_author_name.value=='".CONTENT_ADMIN_ITEM_LAN_14."'){document.getElementById('dataform').content_author_name.value='';}\"") )."<br />
+								".$rs -> form_text("content_author_email", 90, ($authordetails[2] ? $authordetails[2] : CONTENT_ADMIN_ITEM_LAN_15), 100, "tbox", "", "", ($authordetails[2] ? "" : "onfocus=\"if(document.getElementById('dataform').content_author_email.value=='".CONTENT_ADMIN_ITEM_LAN_15."'){document.getElementById('dataform').content_author_email.value='';}\"") )."
 								".$rs -> form_hidden("content_author_id", $authordetails[0])."
 							</td>
 						</tr>
 						<tr>
 							<td class='forumheader3' style='width:30%'>".CONTENT_ADMIN_ITEM_LAN_11."</td>
-							<td class='forumheader3' style='width:70%'>".$rs -> form_text("content_heading", 100, $content_heading, 250)."</td>
+							<td class='forumheader3' style='width:70%'>".$rs -> form_text("content_heading", 90, $content_heading, 250)."</td>
 						</tr>
 						<tr>
 							<td class='forumheader3' style='width:30%'>".CONTENT_ADMIN_ITEM_LAN_16."</td>
-							<td class='forumheader3' style='width:70%'>".$rs -> form_text("content_subheading", 100, $content_subheading, 250)."</td>
+							<td class='forumheader3' style='width:70%'>".$rs -> form_text("content_subheading", 90, $content_subheading, 250)."</td>
 						</tr>
 						<tr>
 							<td class='forumheader3' style='width:30%'>".CONTENT_ADMIN_ITEM_LAN_17."</td>
-							<td class='forumheader3' style='width:70%'>".$rs -> form_textarea("content_summary", 102, 5, $content_summary)."</td>
+							<td class='forumheader3' style='width:70%'>".$rs -> form_textarea("content_summary", 88, 5, $content_summary)."</td>
 						</tr>
 						<tr>
 							<td class='forumheader3' style='width:30%'>".CONTENT_ADMIN_ITEM_LAN_18."</td>
-							<td class='forumheader3' style='width:70%'>".$rs -> form_textarea("content_text", 102, 30, $content_text, "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'")."
-								<br />".$rs -> form_text("helpb", 100, '', '', "helpbox")."<br />";
+							<td class='forumheader3' style='width:70%'>".$rs -> form_textarea("content_text", 88, 30, $content_text, "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'")."
+								<br />".$rs -> form_text("helpb", 90, '', '', "helpbox")."<br />";
 								require_once(e_HANDLER."ren_help.php");
 								$text .= ren_help()."
 							</td>
 						</tr>";
+
+						$text .= "<tr><td colspan='2'><br /></td></tr>";
+						$text .= "<tr><td $classhelp></td><td $classhelp>".CONTENT_ADMIN_ITEM_LAN_69." ".$pref['upload_allowedfiletype']."</td></tr>";
 
 						if($checkicon){
 							$text .= "
@@ -398,6 +403,7 @@ class contentform{
 						}
 
 						if($checkcomment || $checkrating || $checkscore || $checkpe || $checkvisibility || $checkmeta ){
+							$text .= "<tr><td colspan='2'><br /></td></tr>";
 							$text .= "<tr><td colspan='2' class='fcaption'>".CONTENT_ADMIN_ITEM_LAN_35."</td></tr>";
 						}
 						if($checkcomment){
@@ -452,15 +458,19 @@ class contentform{
 						}
 
 						if($checkmeta){
+							$text .= "<tr><td $classhelp></td><td $classhelp>".CONTENT_ADMIN_ITEM_LAN_70."</td></tr>";
 							$text .= "
 							<tr>
 								<td class='forumheader3' style='width:30%'>".CONTENT_ADMIN_ITEM_LAN_53."</td>
-								<td class='forumheader3' style='width:70%'>".$rs -> form_text("content_meta", 100, $custom['content_custom_meta'], 250)."</td>
+								<td class='forumheader3' style='width:70%'>".$rs -> form_text("content_meta", 90, $custom['content_custom_meta'], 250)."</td>
 							</tr>";
 						}
 						
 						if($checkcustomnumber){
+							$text .= "<tr><td $classhelp></td><td $classhelp>".CONTENT_ADMIN_ITEM_LAN_68."</td></tr>";
 							$text .= "<tr><td colspan='2' class='fcaption'>".CONTENT_ADMIN_ITEM_LAN_54."</td></tr>";
+
+							
 						}
 						$existing_custom = "0";
 
@@ -471,8 +481,8 @@ class contentform{
 									if($checkcustomnumber){
 										$text .= "
 										<tr>
-											<td class='forumheader3' style='width:30%'>".$rs -> form_text("content_custom_key_".$existing_custom."", 30, $key, 100)."</td>
-											<td class='forumheader3' style='width:70%'>".$rs -> form_text("content_custom_value_".$existing_custom."", 100, $v, 250)."</td>
+											<td class='forumheader3' style='width:30%'>".$rs -> form_text("content_custom_key_".$existing_custom."", 25, $key, 100)."</td>
+											<td class='forumheader3' style='width:70%'>".$rs -> form_text("content_custom_value_".$existing_custom."", 90, $v, 250)."</td>
 										</tr>";
 									}else{
 										$text .= $rs -> form_hidden("content_custom_key_".$existing_custom, $key);
@@ -485,11 +495,12 @@ class contentform{
 						for($i=$existing_custom;$i<$checkcustomnumber;$i++){
 								$text .= "
 								<tr>
-									<td class='forumheader3' style='width:30%'>".$rs -> form_text("content_custom_key_".$i."", 30, "", 100)."</td>
-									<td class='forumheader3' style='width:70%'>".$rs -> form_text("content_custom_value_".$i."", 100, "", 250)."</td>
+									<td class='forumheader3' style='width:30%'>".$rs -> form_text("content_custom_key_".$i."", 25, "", 100)."</td>
+									<td class='forumheader3' style='width:70%'>".$rs -> form_text("content_custom_value_".$i."", 90, "", 250)."</td>
 								</tr>";
 						}
 
+						$text .= "<tr><td colspan='2'><br /></td></tr>";
 						$text .= "
 						<tr style='vertical-align:top'>
 							<td colspan='2' style='text-align:center' class='forumheader'>";
@@ -570,7 +581,7 @@ class contentform{
 
 		function show_content_manage($mode, $userid="", $username=""){
 						global $sql, $ns, $rs, $aa, $plugintable, $tp;
-						global $type, $type_id, $action, $sub_action, $id;
+						global $type, $type_id, $action, $sub_action, $id, $classhelp;
 
 						$content_pref = $aa -> getContentPref($type_id);
 						$content_cat_icon_path_large = $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$type_id}"]);
@@ -630,7 +641,7 @@ class contentform{
 								<div style='text-align:center'>
 								<form method='post' action='".$formtarget."'>
 								<table class='fborder' style='".ADMIN_WIDTH."'>
-								<tr><td colspan='2' class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_66."</td></tr>
+								<tr><td colspan='2' $classhelp>".CONTENT_ADMIN_ITEM_LAN_66."</td></tr>
 								<tr><td colspan='2' class='fcaption'>".CONTENT_ADMIN_ITEM_LAN_6."</td></tr>
 								<tr><td colspan='2' class='forumheader3'>";
 								while($row = $sql-> db_Fetch()){
@@ -674,7 +685,7 @@ class contentform{
 						}else{
 							if($content_total < 50 || $letter || $cat){
 									$text .= "<table style='".ADMIN_WIDTH."' class='fborder'>
-									<tr><td colspan='5' class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_67."</td></tr>
+									<tr><td colspan='5' $classhelp>".CONTENT_ADMIN_ITEM_LAN_67."</td></tr>
 									<tr>
 									<td class='fcaption' style='width:5%; text-align:center;'>".CONTENT_ADMIN_ITEM_LAN_8."</td>
 									<td class='fcaption' style='width:5%; text-align:center;'>".CONTENT_ADMIN_ITEM_LAN_9."</td>
@@ -693,7 +704,7 @@ class contentform{
 												<td class='forumheader3' style='width:5%; text-align:center'>".$content_id."</td>
 												<td class='forumheader3' style='width:5%; text-align:center'>".($content_icon ? "<img src='".$caticon."' alt='' style='width:50px; vertical-align:middle' />" : "&nbsp;")."</td>
 												<td class='forumheader3' style='width:10%; text-align:left'>[".$authordetails[0]."] ".$authordetails[1]."</td>
-												<td class='forumheader3' style='width:70%; text-align:left; white-space:nowrap;'>".$content_heading." [".content_subheading."]</td>
+												<td class='forumheader3' style='width:70%; text-align:left;'>".$content_heading." [".$content_subheading."]</td>
 												<td class='forumheader3' style='width:10%; text-align:center; white-space:nowrap;'>
 												".$rs -> form_open("post", e_SELF."?".$type.".".$type_id, "myform_{$content_id}","","", "")."
 												<a href='".e_SELF."?".$type.".".$type_id.".create.edit.".$content_id."'>".CONTENT_ICON_EDIT."</a> 
@@ -714,7 +725,7 @@ class contentform{
 
 
 		function show_cat_create(){
-						global $plugintable, $sql, $ns, $rs, $aa;
+						global $plugintable, $sql, $ns, $rs, $aa, $classhelp;
 						global $type, $type_id, $action, $sub_action, $id;
 						global $content_parent, $content_heading, $content_subheading, $content_text, $content_icon, $content_comment, $content_rate, $content_pe, $content_class;
 
@@ -760,8 +771,9 @@ class contentform{
 						$months = array(CONTENT_ADMIN_DATE_LAN_0, CONTENT_ADMIN_DATE_LAN_1, CONTENT_ADMIN_DATE_LAN_2, CONTENT_ADMIN_DATE_LAN_3, CONTENT_ADMIN_DATE_LAN_4, CONTENT_ADMIN_DATE_LAN_5, CONTENT_ADMIN_DATE_LAN_6, CONTENT_ADMIN_DATE_LAN_7, CONTENT_ADMIN_DATE_LAN_8, CONTENT_ADMIN_DATE_LAN_9, CONTENT_ADMIN_DATE_LAN_10, CONTENT_ADMIN_DATE_LAN_11);
 						
 						$text .= "
+						<tr><td></td><td $classhelp>".CONTENT_ADMIN_DATE_LAN_17."</td></tr>
 						<tr>
-							<td class='forumheader3' style='width:30%; vertical-align:top'>".CONTENT_ADMIN_DATE_LAN_15."<br />".CONTENT_ADMIN_DATE_LAN_17."</td>
+							<td class='forumheader3' style='width:30%; vertical-align:top'>".CONTENT_ADMIN_DATE_LAN_15."</td>
 							<td class='forumheader3' style='width:70%'>
 
 								".$rs -> form_select_open("ne_day")."
@@ -790,8 +802,9 @@ class contentform{
 						</tr>";
 
 						$text .= "
+						<tr><td></td><td $classhelp>".CONTENT_ADMIN_DATE_LAN_18."</td></tr>
 						<tr>
-							<td class='forumheader3' style='width:30%; vertical-align:top'>".CONTENT_ADMIN_DATE_LAN_16."<br />".CONTENT_ADMIN_DATE_LAN_18."</td>
+							<td class='forumheader3' style='width:30%; vertical-align:top'>".CONTENT_ADMIN_DATE_LAN_16."</td>
 							<td class='forumheader3' style='width:70%'>
 
 								".$rs -> form_select_open("end_day")."
@@ -831,16 +844,16 @@ class contentform{
 						</tr>
 						<tr>
 							<td class='forumheader3' style='width:30%'>".CONTENT_ADMIN_CAT_LAN_2."</td>
-							<td class='forumheader3' style='width:70%'>".$rs -> form_text("cat_heading", 100, $content_heading, 250)."</td>
+							<td class='forumheader3' style='width:70%'>".$rs -> form_text("cat_heading", 90, $content_heading, 250)."</td>
 						</tr>
 						<tr>
 							<td class='forumheader3' style='width:30%'>".CONTENT_ADMIN_CAT_LAN_3."</td>
-							<td class='forumheader3' style='width:70%'>".$rs -> form_text("cat_subheading", 100, $content_subheading, 250)."</td>
+							<td class='forumheader3' style='width:70%'>".$rs -> form_text("cat_subheading", 90, $content_subheading, 250)."</td>
 						</tr>
 						<tr>
 							<td class='forumheader3' style='width:30%'>".CONTENT_ADMIN_CAT_LAN_4."</td>
-							<td class='forumheader3' style='width:70%'>".$rs -> form_textarea("cat_text", 102, 20, $content_text, "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'")."
-								<br />".$rs -> form_text("helpb", 100, '', '', "helpbox")."<br />";
+							<td class='forumheader3' style='width:70%'>".$rs -> form_textarea("cat_text", 88, 20, $content_text, "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'")."
+								<br />".$rs -> form_text("helpb", 90, '', '', "helpbox")."<br />";
 								require_once(e_HANDLER."ren_help.php");
 								$text .= ren_help()."
 							</td>
@@ -1070,7 +1083,7 @@ class contentform{
 										<td class='forumheader3' style='width:70%; text-align:left;'>".$content_heading."</td>
 										<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>
 											<a href='".e_SELF."?".$type.".".$type_id.".order.".$sub_action.".inc-".$content_id."-".$content_order."'><img src='".e_IMAGE."admin_images/up.png' alt='".CONTENT_ADMIN_ITEM_LAN_63."' style='border:0;' /></a>
-											<a href='".e_SELF."?".$type.".".$type_id.".order.".$sub_action.".dec-".$content_id."-".$content_order."'><img src='".e_IMAGE."generic/admin_images.png' alt='".CONTENT_ADMIN_ITEM_LAN_64."' style='border:0;' /></a>
+											<a href='".e_SELF."?".$type.".".$type_id.".order.".$sub_action.".dec-".$content_id."-".$content_order."'><img src='".e_IMAGE."admin_images/down.png' alt='".CONTENT_ADMIN_ITEM_LAN_64."' style='border:0;' /></a>
 										</td>
 										<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>
 											<select name='order[]' class='tbox'>";
@@ -1116,30 +1129,9 @@ class contentform{
 							
 							$oldcontent = $sql -> db_Count("content", "(*)", "");
 							if($oldcontent > 0){
-								$text .= "
-								<b>The old content table contains records</b><br />
-								Since the old content table contains records, you can choose one of the following two options:<br />
-								<br />
-								<b>a) convert records</b><br />
-								The first thing you need to do is create a backup of your existing content table.<br />
-								Use a program to backup your content table, like phpmyadmin.<br />
-								After you have created a backup of your old content table, you can start converting the records to the new Content Management Plugin.<br />
-								After you have converted your old content, you should no longer see this information, and be able to manage your existing content.<br />
-								Please go to the <a href='".e_PLUGIN."content/admin_content_convert.php'>Content Conversion Script</a> page.<br />
-								<br />
-								<b>b) do not convert records and just start managing new content</b><br />
-								If you no longer need the records from your old content table,<br />
-								and just want to start with a fresh new Content Management Plugin table,<br />
-								you can start by creating a new category.<br />
-								Please go to the <a href='".e_SELF."?type.0.cat.create'>Create New Category</a> page.<br />
-								";
+								$text .= CONTENT_ADMIN_MAIN_LAN_11;
 							}else{
-								$text .= "
-								<b>This is a fresh install / The old content table does not contain records</b><br />
-								Since the old existing content table does not contain any records, you can now start managing new content.<br />
-								The first thing you need to do is create a new category.<br />
-								Please go to the <a href='".e_SELF."?type.0.cat.create'>Create New Category</a> page.<br />
-								";
+								$text .= CONTENT_ADMIN_MAIN_LAN_12;
 							}
 
 							$text .= "
@@ -1153,7 +1145,7 @@ class contentform{
 
 
 		function show_main_parent($mode){
-						global $sql, $ns, $rs, $type, $type_id, $action, $sub_action, $id, $plugintable;
+						global $sql, $ns, $rs, $type, $type_id, $action, $sub_action, $id, $plugintable, $classhelp;
 
 						if(!is_object($sql)){ $sql = new db; }
 						if(!$sql -> db_Select($plugintable, "content_id, content_heading", "content_parent='0' ")){
@@ -1161,19 +1153,25 @@ class contentform{
 								$ns -> tablerender(CONTENT_ADMIN_MAIN_LAN_0, $text);
 								return;
 						}else{
+								if($mode == "create"){ $help = CONTENT_ADMIN_MAIN_LAN_13; }
+								if($mode == "edit"){ $help = CONTENT_ADMIN_MAIN_LAN_10; }
+								if($mode == "order"){ $help = CONTENT_ADMIN_MAIN_LAN_14; }
+								if($mode == "editcat"){ $help = CONTENT_ADMIN_MAIN_LAN_15; }
+								if($mode == "createcat"){ $help = CONTENT_ADMIN_MAIN_LAN_16; }
+
 								$text .= "
 								<div style='text-align:center'>
-								<table class='fborder' style='".ADMIN_WIDTH."'>
-								<tr><td class='forumheader3'>".CONTENT_ADMIN_MAIN_LAN_10."</td></tr>
+								<table style='".ADMIN_WIDTH."' class='fborder'>
+								<tr><td $classhelp>".$help."</td></tr>
 								<tr><td class='fcaption'>".CONTENT_ADMIN_MAIN_LAN_2."</td></tr>								
 								<tr><td class='forumheader3'>";
 								while($row = $sql -> db_Fetch()){
 									extract($row);
-										if($mode == "create"){ $urllocation = "".e_SELF."?".$type.".".$content_id.".create"; }
-										if($mode == "edit"){ $urllocation = "".e_SELF."?".$type.".".$content_id.""; }
-										if($mode == "order"){ $urllocation = "".e_SELF."?".$type.".".$content_id.".order.cat"; }
-										if($mode == "editcat"){ $urllocation = "".e_SELF."?".$type.".".$content_id.".cat.manage"; }
-										if($mode == "createcat"){ $urllocation = "".e_SELF."?".$type.".".$content_id.".cat.create"; }
+										if($mode == "create"){ $urllocation = e_SELF."?".$type.".".$content_id.".create"; }
+										if($mode == "edit"){ $urllocation = e_SELF."?".$type.".".$content_id.""; }
+										if($mode == "order"){ $urllocation = e_SELF."?".$type.".".$content_id.".order.cat"; }
+										if($mode == "editcat"){ $urllocation = e_SELF."?".$type.".".$content_id.".cat.manage"; }
+										if($mode == "createcat"){ $urllocation = e_SELF."?".$type.".".$content_id.".cat.create"; }
 										$text .= $rs -> form_button("submit", "typeselect", $content_heading, "onclick=\"document.location='".$urllocation."'\"")." ";
 									}
 								$text .= "</table></div>";
@@ -1185,7 +1183,7 @@ class contentform{
 
 		function show_cat_manage(){
 						global $sql, $ns, $rs, $aa, $plugintable;
-						global $type, $type_id, $action, $sub_action, $id;
+						global $type, $type_id, $action, $sub_action, $id, $classhelp;
 
 						$parentdetails = $aa -> getParent("","",$type_id, "");
 						$content_pref = $aa -> getContentPref($type_id);
@@ -1202,6 +1200,7 @@ class contentform{
 								if($category_total = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_author, content_icon", "content_id='".$type_id."' ORDER BY content_parent")){
 										$text .= "
 										<table style='".ADMIN_WIDTH."' class='fborder'>
+										<tr><td $classhelp colspan='5'>".CONTENT_ADMIN_CAT_LAN_40."</td></tr>
 										<tr>
 										<td class='fcaption' style='width:5%'>".CONTENT_ADMIN_CAT_LAN_24."</td>
 										<td class='fcaption' style='width:5%'>".CONTENT_ADMIN_CAT_LAN_25."</td>
@@ -1223,7 +1222,7 @@ class contentform{
 
 		function show_admin_contentmanager(){
 						global $plugintable;
-						global $sql, $ns, $rs, $aa;
+						global $sql, $ns, $rs, $aa, $classhelp;
 						global $type, $type_id, $action, $sub_action, $id;
 
 						if(!getperms("0")){ header("location:".e_SELF); exit; }
@@ -1265,6 +1264,7 @@ class contentform{
 						<div style='text-align:center'>
 						".$rs -> form_open("post", e_SELF."?".$type.".".$type_id.".cat.personalmanager.".$id, "dataform")."
 						<table class='fborder' style='".ADMIN_WIDTH."'>
+						<tr><td $classhelp>".CONTENT_ADMIN_CAT_LAN_41."</td></tr>
 						<tr><td class='forumheader' style='text-align:center;'>".CONTENT_ADMIN_CAT_LAN_28."</td></tr>
 						<tr><td class='forumheader3' style='text-align:center'>
 					 		<table style='width:98%;'>
