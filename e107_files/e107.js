@@ -9,9 +9,9 @@ parent.location.href = self.location.href;
 |	e107 website system - Javascript File.
 |
 |	$Source: /cvs_backup/e107_0.7/e107_files/e107.js,v $
-|	$Revision: 1.10 $
-|	$Date: 2005-02-25 03:05:46 $
-|	$Author: mcfly_e107 $
+|	$Revision: 1.11 $
+|	$Date: 2005-04-12 02:23:50 $
+|	$Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -99,16 +99,23 @@ function appendtext(str,tagid,display){
 	}
 }
 
-function open_window(url,type) {
-	if('full' == type){
+function open_window(url,wth,hgt) {
+	if('full' == wth){
 		pwindow = window.open(url);
 	} else {
-		if (type > 0 ) {
-			mywidth=type;
+		if (wth) {
+			mywidth=wth;
 		} else {
 			mywidth=600;
-	}
-		pwindow = window.open(url,'Name', 'top=100,left=100,resizable=yes,width='+mywidth+',height=400,scrollbars=yes,menubar=yes')
+		}
+
+		if (hgt) {
+			myheight=hgt;
+		} else {
+			myheight=400;
+		}
+
+		pwindow = window.open(url,'Name', 'top=100,left=100,resizable=yes,width='+mywidth+',height='+myheight+',scrollbars=yes,menubar=yes')
 	}
 	pwindow.focus();
 }

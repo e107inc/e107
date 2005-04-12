@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2005-04-11 23:13:54 $
+|     $Revision: 1.41 $
+|     $Date: 2005-04-12 02:23:50 $
 |     $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -65,7 +65,7 @@ class sitelinks {
 
 		$this->getlinks($cat);
 
-     // are these defines used at all ?
+		// are these defines used at all ?
 
 		if(!defined('PRELINKTITLE')){
 			define('PRELINKTITLE', '');
@@ -73,13 +73,13 @@ class sitelinks {
 		if(!defined('PRELINKTITLE')){
 			define('POSTLINKTITLE', '');
 		}
-      // -----------------------------
+		// -----------------------------
 
-        if(!$style){
+		if(!$style){
 			$style['prelink'] = PRELINK;
 			$style['linkdisplay'] = LINKDISPLAY;
 			$style['postlink'] = POSTLINK;
-            $style['linkclass'] = defined('LINKCLASS') ? LINKCLASS : "";
+			$style['linkclass'] = defined('LINKCLASS') ? LINKCLASS : "";
 			$style['linkclass_hilite'] = defined('LINKCLASS_HILITE') ? LINKCLASS_HILITE : "";
 			$style['linkstart_hilite'] = defined('LINKSTART_HILITE') ? LINKSTART_HILITE : "";
 			$style['linkstart'] = LINKSTART;
@@ -92,17 +92,16 @@ class sitelinks {
 
 		if ($style['linkdisplay'] != 3) {
 			foreach ($this->eLinkList['head_menu'] as $link) {
-                 $main_linkname = $link['link_name'];
+				$main_linkname = $link['link_name'];
 
 				$link['link_expand'] = (isset($pref['sitelinks_expandsub']) && is_array($this->eLinkList[$main_linkname])) ?  TRUE : FALSE;
 
 				$text .= $this->makeLink($link,'', $style);
 
-
 			// if there's a submenu. :
 				if (isset($this->eLinkList[$main_linkname]) && is_array($this->eLinkList[$main_linkname])) {
-                   	$substyle = (eregi($main_linkname,e_SELF) || $link['link_expand'] == FALSE) ? "visible" : "none";   // expanding sub-menus.
-                    $text .= "\n\n<div id='sub_".$main_linkname."' style='display:$substyle'>\n";
+					$substyle = (eregi($main_linkname,e_SELF) || $link['link_expand'] == FALSE) ? "visible" : "none";   // expanding sub-menus.
+					$text .= "\n\n<div id='sub_".$main_linkname."' style='display:$substyle'>\n";
 					foreach ($this->eLinkList[$main_linkname] as $sub) {
 					 	$text .= $this->makeLink($sub, TRUE, $style);
 					}
@@ -161,7 +160,7 @@ class sitelinks {
 
 		if ($linkInfo['link_url']) {
 			if (hilite($linkInfo['link_url'],$style['linkclass_hilite'])== TRUE){
-			    $linkadd = ($style['linkclass_hilite']) ? " class='".$style['linkclass_hilite']."'" : "";
+				$linkadd = ($style['linkclass_hilite']) ? " class='".$style['linkclass_hilite']."'" : "";
 			}else{
 				$linkadd = ($style['linkclass']) ? " class='".$style['linkclass']."'" : "";
 			}
@@ -172,7 +171,15 @@ class sitelinks {
 			}
 
 //			$screentip = ($pref['linkpage_screentip'] && $linkInfo['link_description']) ? " title = '".$linkInfo['link_description']."'" : "";
-			$href = ($linkInfo['link_open'] == 4) ? " href=\"javascript:open_window('".$linkInfo['link_url']."')\"" : " href='".$linkInfo['link_url']."'";
+
+			if($linkInfo['link_open'] == 4 || $linkInfo['link_open'] == 5){
+				$dimen = ($linkInfo['link_open'] == 4) ? "600,400" : "800,600";
+				$href = " href=\"javascript:open_window('".$linkInfo['link_url']."',$dimen)\"";
+			}else{
+				$href = " href='".$linkInfo['link_url']."'";
+			}
+
+	  //		$href = ($linkInfo['link_open'] == 4) ? " href=\"javascript:open_window('".$linkInfo['link_url']."')\"" : " href='".$linkInfo['link_url']."'";
 			$href = ($linkInfo['link_expand']) ? "href=\"javascript: expandit('sub_".$linkInfo['link_name']."')\"" : $href;  // expanding sub-menus.
 			$link_append = ($linkInfo['link_open'] == 1) ? " rel='external'" : "";
 
