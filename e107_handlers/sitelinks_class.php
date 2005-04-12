@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2005-04-12 02:23:50 $
-|     $Author: e107coders $
+|     $Revision: 1.42 $
+|     $Date: 2005-04-12 23:13:01 $
+|     $Author: streaky $
 +---------------------------------------------------------------+
 */
 
@@ -174,7 +174,7 @@ class sitelinks {
 
 			if($linkInfo['link_open'] == 4 || $linkInfo['link_open'] == 5){
 				$dimen = ($linkInfo['link_open'] == 4) ? "600,400" : "800,600";
-				$href = " href=\"javascript:open_window('".$linkInfo['link_url']."',$dimen)\"";
+				$href = " href=\"javascript:open_window('".$linkInfo['link_url']."', {$dimen})\"";
 			}else{
 				$href = " href='".$linkInfo['link_url']."'";
 			}
@@ -199,9 +199,9 @@ function hilite($link,$enabled=''){
   	if(!$enabled){ return FALSE; }
 
 // --------------- highlighting for plugins. ----------------
-	if(eregi($PLUGINS_DIRECTORY,$link) && !eregi("custompages",$link)){
-		$link = str_replace("../","",$link);
-		if(eregi(dirname($link),dirname(e_SELF))){
+	if(eregi($PLUGINS_DIRECTORY, $link) && !eregi("custompages", $link)){
+		$link = str_replace("../", "", $link);
+		if(eregi(dirname($link), dirname(e_SELF))){
 			return TRUE;
 		}
 	}
@@ -209,30 +209,34 @@ function hilite($link,$enabled=''){
 // eg. news.php?list.1 or news.php?cat.2 etc
 
 	if(eregi("news.php",$link)){
-		if(eregi("list",$link) && eregi("list",e_QUERY)){
-			$tmp = str_replace("php?","",explode(".",$link));
-			$tmp2 = explode(".",e_QUERY);
-			if($tmp[1] == $tmp2[1] && $tmp[2]==$tmp2[2]){ return TRUE; }
+		if(eregi("list", $link) && eregi("list", e_QUERY)){
+			$tmp = str_replace("php?", "", explode(".",$link));
+			$tmp2 = explode(".", e_QUERY);
+			if($tmp[1] == $tmp2[1] && $tmp[2] == $tmp2[2]){
+				return true;
+			}
 		}
 
-		if((eregi("cat",$link) || eregi("list",$link)) && eregi("item",e_QUERY)){
-			$tmp = str_replace("php?","",explode(".",$link));
-			$tmp2 = explode(".",e_QUERY);
-			if($tmp[2]==$tmp2[2]){ return TRUE; }
+		if((eregi("cat", $link) || eregi("list", $link)) && eregi("item", e_QUERY)){
+			$tmp = str_replace("php?", "", explode(".",$link));
+			$tmp2 = explode(".", e_QUERY);
+			if($tmp[2] == $tmp2[2]){
+				return TRUE;
+			}
 		}
 	}
 
 // --------------- highlight default ----------------
-	if(eregi("\?",$link)){
-		if(($enabled) && (strpos(e_SELF."?".e_QUERY, str_replace("../","","/".$link)) !== FALSE)){
-			return TRUE;
+	if(eregi("\?", $link)){
+		if(($enabled) && (strpos(e_SELF."?".e_QUERY, str_replace("../", "", "/".$link)) !== false)){
+			return true;
 		}
 	}
 
-	if(!eregi("all",e_QUERY) && !eregi("item",e_QUERY) && !eregi("cat",e_QUERY) && !eregi("list",e_QUERY) && $enabled && (strpos(e_SELF, str_replace("../","","/".$link)) !== FALSE)){
-		return TRUE;
+	if(!eregi("all", e_QUERY) && !eregi("item", e_QUERY) && !eregi("cat",e_QUERY) && !eregi("list", e_QUERY) && $enabled && (strpos(e_SELF, str_replace("../", "", "/".$link)) !== false)){
+		return true;
 	}
 
-	return FALSE;
+	return false;
 }
 ?>

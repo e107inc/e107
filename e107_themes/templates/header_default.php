@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2005-04-11 11:55:50 $
+|     $Revision: 1.44 $
+|     $Date: 2005-04-12 23:13:01 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -45,7 +45,7 @@ echo '<link rel="pingback" href="'.$e107->http_path.$PLUGINS_DIRECTORY.'trackbac
 }
 
 if (isset($eplug_css) && $eplug_css) { echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n"; }
-if (isset($eplug_js) && $eplug_js) { echo "<script type='text/javascript' src='".$eplug_js."'></script>\n"; }
+if (isset($eplug_js) && $eplug_js) { echo "<script type='text/javascript' src='{$eplug_js}'></script>\n"; }
 
 if(defined("PREVIEWTHEME")) {
 	echo "<link rel='stylesheet' href='".PREVIEWTHEME."style.css' type='text/css' />\n";
@@ -116,7 +116,7 @@ if (isset($script_text) && $script_text) {
 }
 
 $fader_onload='';
-if(in_array('fader_menu',$eMenuActive))
+if(in_array('fader_menu', $eMenuActive))
 {
 	$fader_onload = 'changecontent(); ';
 }

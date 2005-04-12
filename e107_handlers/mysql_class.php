@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2005-04-12 22:21:41 $
+|     $Revision: 1.39 $
+|     $Date: 2005-04-12 23:13:00 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.38 $
+* @version $Revision: 1.39 $
 * @author $Author: streaky $
 */
 class db {
@@ -171,7 +171,7 @@ class db {
 		$sQryRes = is_null($rli) ? @mysql_query($query) : @mysql_query($query, $rli);
 		$e = microtime();
 
-		$eTraffic->Bump('db_Query',$b,$e);
+		$eTraffic->Bump('db_Query', $b, $e);
 		$mytime = $eTraffic->TimeDelta($b,$e);
 		$db_time += $mytime;
 		$this->mySQLresult = $sQryRes;
@@ -185,7 +185,7 @@ class db {
 				$this->mySQLcurTable = ''; // clear before next query
 			}
 			if(is_object($db_debug)) {
-				$nFields = $db_debug->Mark_Query($query, $rli, $sQryRes,$aTrace, $mytime, $pTable);
+				$nFields = $db_debug->Mark_Query($query, $rli, $sQryRes, $aTrace, $mytime, $pTable);
 			} else {
 				echo "what happened to db_debug??!!<br />";
 			}
@@ -229,12 +229,12 @@ class db {
 				$this->dbError("db_Select (SELECT $fields FROM ".MPREFIX."{$table} WHERE {$arg})");
 				return FALSE;
 			}
-		} elseif($arg != '' && $mode != 'default') {
+		} elseif ($arg != '' && $mode != 'default') {
 			if ($this->mySQLresult = $this->db_Query('SELECT '.$fields.' FROM '.MPREFIX.$table.' '.$arg, NULL, 'db_Select', $debug, $log_type, $log_remark)) {
 				$this->dbError('dbQuery');
 				return $this->db_Rows();
 			} else {
-				$this->dbError("db_Select (SELECT $fields FROM ".MPREFIX."$table $arg)");
+				$this->dbError("db_Select (SELECT {$fields} FROM ".MPREFIX."{$table} {$arg})");
 				return FALSE;
 			}
 		} else {
@@ -487,9 +487,9 @@ class db {
 
 	function ml_check($matches) {
 		$table = $this->db_IsLang($matches[1]);
-		if($this->tabset == FALSE) {
+		if($this->tabset == false) {
 			$this->mySQLcurTable = $table;
-			$this->tabset = TRUE;
+			$this->tabset = true;
 		}
 		return MPREFIX.$table.substr($matches[0],-1);
 	}

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/emote.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-26 22:35:03 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2005-04-12 23:13:00 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 function r_emote() {
@@ -23,9 +23,9 @@ function r_emote() {
 	$c = 0;
 	$orig = array();
 	while(list($code, $name) = @each($emote[$c])){
-		if(!array_key_exists($name,$orig) && (strpos($code, '&') === FALSE)){
-			$str .= "\n<a href=\"javascript:addtext(' $code', true)\"><img src=\"".e_IMAGE."emoticons/$name\" style=\"border:0; padding-top:2px;\" alt=\"\" /></a> ";
-			$orig[$name] = TRUE;
+		if(!array_key_exists($name, $orig) && (strpos($code, '&') === false)){
+			$str .= "\n<a href=\"javascript:addtext(' $code', true)\"><img src=\"".e_IMAGE."emoticons/{$name}\" style=\"border:0; padding-top:2px;\" alt=\"\" /></a> ";
+			$orig[$name] = true;
 		}
 		$c++;
 	}
