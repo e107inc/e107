@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-04-12 11:23:23 $
+|     $Revision: 1.21 $
+|     $Date: 2005-04-12 22:04:41 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -91,8 +91,9 @@ define("CONTENT_ADMIN_CAT_LAN_39", "category check: no subcategories found");
 define("CONTENT_ADMIN_CAT_LAN_40", "Below you see a list of the main category and all subcategories if present.<br />");
 
 define("CONTENT_ADMIN_CAT_LAN_41", "The personal manager of content categories allows you to assign certain other admins to a category. With this privilige these admins can manage their own and only their own personal content items in this specified category, without the need to have control over the full content manager plugin. From the normal content page outside of the admin area they will see a personalmanager icon which redirects them to the personal manager page.");
-define("CONTENT_ADMIN_CAT_LAN_42", "");
-define("CONTENT_ADMIN_CAT_LAN_43", "");
+define("CONTENT_ADMIN_CAT_LAN_42", "to edit more categories from the earlier selected main category");
+
+define("CONTENT_ADMIN_CAT_LAN_43", "click here");
 define("CONTENT_ADMIN_CAT_LAN_44", "");
 define("CONTENT_ADMIN_CAT_LAN_45", "");
 define("CONTENT_ADMIN_CAT_LAN_46", "");
@@ -390,6 +391,20 @@ define("CONTENT_ADMIN_MAIN_LAN_13", "You can create new content items on this pa
 define("CONTENT_ADMIN_MAIN_LAN_14", "You can set the order for content items on this page. Click on the button of the main parents listed below to start ordering content items or categories for the selected main category.");
 define("CONTENT_ADMIN_MAIN_LAN_15", "You can manage categories on this page. Choose the main category from the buttons listed below to show an overview of alle categories and subcategories within that main category.");
 define("CONTENT_ADMIN_MAIN_LAN_16", "You can create new categories on this page. By default the creation form for a new main category is shown. If you would like to create a subcategory for an existing main category, please click on one of the buttons listed below to show the creation form for a subcategory within the selected main category.");
+define("CONTENT_ADMIN_MAIN_LAN_17", "please create a new category on the <a href='".e_SELF."?type.0.cat.create'>Create New Category</a> page");
+define("CONTENT_ADMIN_MAIN_LAN_18", "");
+define("CONTENT_ADMIN_MAIN_LAN_19", "");
+define("CONTENT_ADMIN_MAIN_LAN_20", "");
+define("CONTENT_ADMIN_MAIN_LAN_21", "");
+define("CONTENT_ADMIN_MAIN_LAN_22", "");
+define("CONTENT_ADMIN_MAIN_LAN_23", "");
+define("CONTENT_ADMIN_MAIN_LAN_24", "");
+define("CONTENT_ADMIN_MAIN_LAN_25", "");
+define("CONTENT_ADMIN_MAIN_LAN_26", "");
+define("CONTENT_ADMIN_MAIN_LAN_27", "");
+define("CONTENT_ADMIN_MAIN_LAN_28", "");
+define("CONTENT_ADMIN_MAIN_LAN_29", "");
+
 
 
 define("CONTENT_ADMIN_MENU_LAN_0", "Manage Existing Content");
@@ -523,8 +538,8 @@ define("CONTENT_LAN_74", "order_desc");
 define("CONTENT_LAN_75", "submit content item");
 define("CONTENT_LAN_76", "create pdf file of the");
 define("CONTENT_LAN_77", "content search");
-define("CONTENT_LAN_78", "");
-define("CONTENT_LAN_79", "");
+define("CONTENT_LAN_78", "untitled page");
+define("CONTENT_LAN_79", "page");
 define("CONTENT_LAN_80", "");
 
 define("CONTENT_ADMIN_SUBMIT_LAN_0", "no content categories allow user submission at this point");
@@ -598,8 +613,8 @@ define("CONTENT_ADMIN_CONVERSION_LAN_43", "press the button to convert the old c
 define("CONTENT_ADMIN_CONVERSION_LAN_44", "the new content table already contains data !<br />are you sure you want to convert the old content table to the new content table ?<br /><br />if you still would like to convert the table, the old content data will be added to the already existing new content table, but no garantee can be made to assure that all items will be added to already existing new categories in a correct manner !");
 
 define("CONTENT_ADMIN_CONVERSION_LAN_45", "insertion failed: main parent not inserted");
-define("CONTENT_ADMIN_CONVERSION_LAN_46", "");
-define("CONTENT_ADMIN_CONVERSION_LAN_47", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_46", "Start managing your content by going to the <a href='".e_PLUGIN."content/admin_content_config.php'>Content Manager Plugin Frontpage</a> !");
+define("CONTENT_ADMIN_CONVERSION_LAN_47", "conversion completed");
 define("CONTENT_ADMIN_CONVERSION_LAN_48", "");
 define("CONTENT_ADMIN_CONVERSION_LAN_49", "");
 

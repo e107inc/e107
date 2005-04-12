@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.17 $
-|		$Date: 2005-04-11 14:55:05 $
+|		$Revision: 1.18 $
+|		$Date: 2005-04-12 22:03:13 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -395,7 +395,7 @@ if(!e_QUERY){																//show main categories
 			}elseif($sub_action == "edit"){									//category; edit
 				if(is_numeric($id)){										//category; edit form
 					if($id2 != "" && $id2 == "pu"){										//category; update redirect
-							$message = CONTENT_ADMIN_CAT_LAN_12;
+							$message = CONTENT_ADMIN_CAT_LAN_12."<br />".CONTENT_ADMIN_CAT_LAN_42." <a href='".e_SELF."?type.".$type_id.".cat.edit'>".CONTENT_ADMIN_CAT_LAN_43."</a>";
 							$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 							require_once(e_ADMIN."footer.php");
 							exit;

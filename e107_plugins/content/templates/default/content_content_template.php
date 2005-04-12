@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_content_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-02-09 21:19:25 $
+|     $Revision: 1.3 $
+|     $Date: 2005-04-12 22:04:42 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,6 @@
 $CONTENT_CONTENT_TABLE_START = "";
 $CONTENT_CONTENT_TABLE = "";
 $CONTENT_CONTENT_TABLE_END = "";
-$CONTENT_CONTENT_TABLE_CUSTOM_KEY = "";
 
 if(!$CONTENT_CONTENT_TABLE){
 				$CONTENT_CONTENT_TABLE .= "
@@ -115,20 +114,8 @@ if(!$CONTENT_CONTENT_TABLE){
 					".($CONTENT_CONTENT_TABLE_IMAGES ? "<td style='width:5%; white-space:nowrap; vertical-align:top; padding-left:20px;'>{CONTENT_CONTENT_TABLE_IMAGES}</td>" : "")."
 				</tr>";
 
-				if($CONTENT_CONTENT_TABLE_PAGENAMES){
-					$CONTENT_CONTENT_TABLE .= "
-					<tr>
-						<td colspan='".($CONTENT_CONTENT_TABLE_IMAGES ? ($CONTENT_CONTENT_TABLE_ICON ? "4" : "3") : "3")."' style='border-bottom:1px solid #000; vertical-align:top;'><br /></td>
-					</tr>
-					<tr>
-						<td colspan='".($CONTENT_CONTENT_TABLE_IMAGES ? ($CONTENT_CONTENT_TABLE_ICON ? "3" : "2") : "3")."' style='vertical-align:top;'>
-							<div style='font-weight:bold;'>".CONTENT_LAN_46."</div>
-							{CONTENT_CONTENT_TABLE_PAGENAMES}
-						</td>
-					</tr>";
-				}
 
-				if($CONTENT_CONTENT_TABLE_CUSTOM_KEY){
+				if($CONTENT_CONTENT_TABLE_CUSTOM){
 					$CONTENT_CONTENT_TABLE .= "
 					<tr>
 						<td colspan='".($CONTENT_CONTENT_TABLE_IMAGES ? ($CONTENT_CONTENT_TABLE_ICON ? "4" : "3") : "3")."' style='border-bottom:1px solid #000; vertical-align:top;'><br /></td>
@@ -148,6 +135,18 @@ if(!$CONTENT_CONTENT_TABLE){
 					}
 				}
 
+				if($CONTENT_CONTENT_TABLE_PAGENAMES){
+					$CONTENT_CONTENT_TABLE .= "
+					<tr>
+						<td colspan='".($CONTENT_CONTENT_TABLE_IMAGES ? ($CONTENT_CONTENT_TABLE_ICON ? "4" : "3") : "3")."' style='border-bottom:1px solid #000; vertical-align:top;'><br /></td>
+					</tr>
+					<tr>
+						<td colspan='".($CONTENT_CONTENT_TABLE_IMAGES ? ($CONTENT_CONTENT_TABLE_ICON ? "3" : "2") : "3")."' style='vertical-align:top;'>
+							<div style='font-weight:bold;'>".CONTENT_LAN_46."</div>
+							{CONTENT_CONTENT_TABLE_PAGENAMES}
+						</td>
+					</tr>";
+				}
 
 				$CONTENT_CONTENT_TABLE .= "
 				</table>
