@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-04-11 23:13:42 $
+|     $Revision: 1.33 $
+|     $Date: 2005-04-12 02:22:43 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -239,33 +239,39 @@ class links {
 			$text .= "<a href=\"javascript:insertext('$icon','link_button','linkicn')\"><img src='".e_IMAGE."icons/".$icon."' style='border:0' alt='' /></a> ";
 		}
 
-		// 0 = same window
 		// 1 = _blank
-		// 2 = _parent
-		// 3 = _top
-		// 4 = miniwindow
-
+		// 2 = _parent   not in use.
+		// 3 = _top   not in use.
+		$linkop[0] = LCLAN_20;  // 0 = same window
+		$linkop[1] = LCLAN_23;
+		$linkop[4] = LCLAN_24;  // 4 = miniwindow  600x400
+		$linkop[5] = LCLAN_82;  // 5 = miniwindow  800x600
 
 		$text .= "</div></td>
 			</tr>
 			<tr>
 			<td style='width:30%' class='forumheader3'>".LCLAN_19.": </td>
 			<td style='width:70%' class='forumheader3'>
-			<select name='linkopentype' class='tbox'>". ($link_open == 0 ? "<option value='0' selected='selected'>".LCLAN_20."</option>" : "<option value='0'>".LCLAN_20."</option>"). ($link_open == 1 ? "<option value='1' selected='selected'>".LCLAN_23."</option>" : "<option value='1'>".LCLAN_23."</option>"). ($link_open == 4 ? "<option value='4' selected='selected'>".LCLAN_24."</option>" : "<option value='4'>".LCLAN_24."</option>")."
-			</select>
+			<select name='linkopentype' class='tbox'>\n";
+			foreach($linkop as $key=>$val){
+				$selectd = ($link_open == $key) ? "selected='selected'" : "";
+				$text .= "<option value='$key' $selectd>".$val."</option>\n";
+			}
+
+			$text .="</select>
 			</td>
 			</tr>
-            <tr>
+			<tr>
 			<td style='width:30%' class='forumheader3'>".LCLAN_12.": </td>
 			<td style='width:70%' class='forumheader3'>
 			<select name='linkrender' class='tbox'>";
 			$rentype = array("","Main","Alt","Alt", "Alt");
-            for ($i=1; $i<count($rentype); $i++) {
-			$sel = ($link_category == $i) ? "selected='selected'" : "";
-            $text .="<option value='$i' $sel>$i - ".$rentype[$i]."</option>";
-            };
+			for ($i=1; $i<count($rentype); $i++) {
+				$sel = ($link_category == $i) ? "selected='selected'" : "";
+				$text .="<option value='$i' $sel>$i - ".$rentype[$i]."</option>";
+			};
 
-            $text .="</select><span class='smalltext'> Shown in your theme as {SITELINKS=flat:[rendertype number]}</span>
+			$text .="</select><span class='smalltext'> Shown in your theme as {SITELINKS=flat:[rendertype number]}</span>
 			</td>
 			</tr>
 			<tr>
@@ -325,7 +331,7 @@ class links {
 			</td>
 			</tr>
 
-            <tr>
+			<tr>
 			<td style='width:70%' class='forumheader3'>
 			".LCLAN_80."<br />
 			<span class='smalltext'>".LCLAN_81."</span>
