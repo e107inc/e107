@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-04-09 19:37:20 $
-|     $Author: stevedunstan $
+|     $Revision: 1.19 $
+|     $Date: 2005-04-12 22:21:43 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,7 +27,7 @@ class e107plugin {
 	 */
 	function getall() {
 		global $sql;
-		if ($sql->db_Select('plugin','*',"plugin_id !='' order by plugin_installflag DESC,plugin_name ASC")) {
+		if ($sql->db_Select('plugin', '*', "plugin_id != '' ORDER BY `plugin_installflag` DESC, `plugin_name` ASC")) {
 			while ($row = $sql->db_Fetch()) {
 				$ret[ucfirst($row['plugin_name'])] = $row;
 			}
@@ -42,7 +42,7 @@ class e107plugin {
 	 *
 	 */
 	function update_plugins_table() {
-		global $sql,$mySQLprefix,$menu_pref;
+		global $sql, $mySQLprefix, $menu_pref;
 
 		require_once(e_HANDLER.'file_class.php');
 
@@ -56,20 +56,20 @@ class e107plugin {
 					unset($$varname);
 				}
 			}
-			include($p['path']."/".$p['fname']);
-			$plugin_path = substr($p['path'], strrpos($p['path'], "/")+1);
+			include("{$p['path']}/{$p['fname']}");
+			$plugin_path = substr($p['path'], strrpos($p['path'], "/") + 1);
 
-			if ((!$sql->db_Select("plugin", "plugin_id", "plugin_path='$plugin_path'")) && $eplug_name)
+			if ((!$sql->db_Select("plugin", "plugin_id", "plugin_path = '{$plugin_path}'")) && $eplug_name)
 			{
 				if (!$eplug_prefs && !$eplug_table_names && !$eplug_user_prefs && !$eplug_sc && !$eplug_userclass && !$eplug_module && !$eplug_bb && !$eplug_latest && !$eplug_status)
 				{
 					// new plugin, assign entry in plugin table, install is not necessary so mark it as intalled
-					$sql->db_Insert("plugin", "0, '$eplug_name', '$eplug_version', '$eplug_folder', 1");
+					$sql->db_Insert("plugin", "0, '{$eplug_name}', '{$eplug_version}', '{$eplug_folder}', 1");
 				}
 				else
 				{
 					// new plugin, assign entry in plugin table, install is necessary
-					$sql->db_Insert("plugin", "0, '$eplug_name', '$eplug_version', '$eplug_folder', 0");
+					$sql->db_Insert("plugin", "0, '{$eplug_name}', '{$eplug_version}', '{$eplug_folder}', 0");
 				}
 			}
 		}
@@ -77,7 +77,7 @@ class e107plugin {
 		$sql->db_Select("plugin");
 		while ($row = $sql->db_fetch()) {
 			if (!is_dir(e_PLUGIN.$row['plugin_path'])) {
-				$sql->db_Delete('plugin', "plugin_path='{$row['plugin_path']}'");
+				$sql->db_Delete('plugin', "plugin_path = '{$row['plugin_path']}'");
 			}
 		}
 	}
@@ -110,10 +110,10 @@ class e107plugin {
 			}
 		}
 		if ($action == 'remove') {
-			if ($sql->db_Select('userclass_classes', 'userclass_id', "userclass_name='{$class_name}'")) {
+			if ($sql->db_Select('userclass_classes', 'userclass_id', "userclass_name = '{$class_name}'")) {
 				$row = $sql->db_Fetch();
 				$class_id = $row['userclass_id'];
-				if ($sql->db_Delete('userclass_classes', "userclass_id='{$class_id}'")) {
+				if ($sql->db_Delete('userclass_classes', "userclass_id = '{$class_id}'")) {
 					if ($sql->db_Select('user', 'user_id, user_class', "user_class REGEXP('^{$class_id}\.') OR user_class REGEXP('\.{$class_id}\.') OR user_class REGEXP('\.{$class_id}$')")) {
 						$sql2 = new db;
 						while ($row = $sql->db_Fetch()) {
@@ -125,7 +125,7 @@ class e107plugin {
 								}
 							}
 							$newclass = '.'.implode('.', $classes).'.';
-							$sql2->db_Update('user', "user_class='$newclass' WHERE user_id='{$row['user_id']}");
+							$sql2->db_Update('user', "user_class = '{$newclass}' WHERE user_id = '{$row['user_id']}");
 						}
 					}
 				}
@@ -138,17 +138,17 @@ class e107plugin {
 		if ($action == 'add') {
 			$path = str_replace("../", "", $link_url);
 			$link_t = $sql->db_Count('links');
-			if (!$sql->db_Count('links', '(*)', "link_name='$link_name' ")) {
-				return $sql->db_Insert('links', "0, '$link_name', '$path', '', '', '1', '".($link_t+1)."', '0', '0', '' ");
+			if (!$sql->db_Count('links', '(*)', "link_name = '{$link_name}'")) {
+				return $sql->db_Insert('links', "0, '{$link_name}', '{$path}', '', '', '1', '".($link_t + 1)."', '0', '0', '' ");
 			} else {
 				return FALSE;
 			}
 		}
 		if ($action == 'remove') {
-			if ($sql->db_Select('links', 'link_order', "link_name='{$link_name}'")) {
+			if ($sql->db_Select('links', 'link_order', "link_name = '{$link_name}'")) {
 				$row = $sql->db_Fetch();
-				$sql->db_Update('links', "link_order=link_order-1 WHERE link_order > {$row['link_order']}");
-				return $sql->db_Delete('links', "link_name='{$link_name}'");
+				$sql->db_Update('links', "link_order = link_order - 1 WHERE link_order > {$row['link_order']}");
+				return $sql->db_Delete('links', "link_name = '{$link_name}'");
 			}
 		}
 	}
@@ -271,7 +271,7 @@ class e107plugin {
 			unset($search_prefs['comments_handlers'][$eplug_folder]);
 		}
 		$tmp = addslashes(serialize($search_prefs));
-		$sql->db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs' ");
+		$sql->db_Update("core", "e107_value = '{$tmp}' WHERE e107_name = 'search_prefs' ");
 	}
 
 	/**
@@ -338,7 +338,7 @@ class e107plugin {
 			}
 
 			if (is_array($eplug_user_prefs)) {
-				$sql->db_Select("core", " e107_value", " e107_name='user_entended'");
+				$sql->db_Select("core", " e107_value", " e107_name = 'user_entended'");
 				$row = $sql->db_Fetch();
 				$user_entended = unserialize($row[0]);
 				while (list($e_user_pref, $default_value) = each($eplug_user_prefs)) {
@@ -347,10 +347,10 @@ class e107plugin {
 				}
 				save_prefs("user");
 				$tmp = addslashes(serialize($user_entended));
-				if ($sql->db_Select("core", " e107_value", " e107_name='user_entended'")) {
-					$sql->db_Update("core", "e107_value='$tmp' WHERE e107_name='user_entended' ");
+				if ($sql->db_Select("core", "e107_value", " e107_name = 'user_entended'")) {
+					$sql->db_Update("core", "e107_value = '{$tmp}' WHERE e107_name = 'user_entended' ");
 				} else {
-					$sql->db_Insert("core", "'user_entended', '$tmp' ");
+					$sql->db_Insert("core", "'user_entended', '{$tmp}' ");
 				}
 				$text .= EPL_ADLAN_20."<br />";
 			}
@@ -365,8 +365,8 @@ class e107plugin {
 
 			$this -> manage_search('add', $eplug_folder);
 
-			$sql->db_Update('plugin', "plugin_installflag=1 WHERE plugin_id='$id' ");
-			$text .= ($eplug_done ? "<br />".$eplug_done : "");
+			$sql->db_Update('plugin', "plugin_installflag = 1 WHERE plugin_id = '{$id}'");
+			$text .= ($eplug_done ? "<br />{$eplug_done}" : "");
 		} else {
 			$text = EPL_ADLAN_21;
 		}

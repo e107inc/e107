@@ -12,8 +12,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.62 $
-| $Date: 2005-04-11 11:55:49 $
+| $Revision: 1.63 $
+| $Date: 2005-04-12 22:21:42 $
 | $Author: streaky $
 +---------------------------------------------------------------+
 */
@@ -56,7 +56,7 @@ class news {
 		{
 			$excerpt = substr($news['news_body'], 0, 100)."...";
 			$id=mysql_insert_id();
-			$permLink = $e107->http_path."comment.php?comment.news.$id";
+			$permLink = $e107->http_path."comment.php?comment.news.{$id}";
 
 			require_once(e_PLUGIN."trackback/trackbackClass.php");
 			$trackback = new trackbackClass();
@@ -67,9 +67,9 @@ class news {
 				foreach($urlArray as $pingurl) {
 					if(!$error = $trackback -> sendTrackback($permLink, $pingurl, $news['news_title'], $excerpt))
 					{
-						$message .= "<br />successfully pinged $pingurl.";
+						$message .= "<br />successfully pinged {$pingurl}.";
 					} else {
-						$message .= "<br />was unable to ping $pingurl<br />[ Error message returned was : '$error'. ]";
+						$message .= "<br />was unable to ping {$pingurl}<br />[ Error message returned was : '{$error}'. ]";
 					}
 				}
 			}
@@ -83,11 +83,11 @@ class news {
 
 						if ($trackback -> sendTrackback($permLink, $pingurl, $news['news_title'], $excerpt))
 						{
-	 						$message .= "<br />successfully pinged $pingurl.";
+	 						$message .= "<br />successfully pinged {$pingurl}.";
 						}
 						else
 						{
-							$message .= "Pingback to $pingurl failed ...";
+							$message .= "Pingback to {$pingurl} failed ...";
 						}
 					}
 				}
