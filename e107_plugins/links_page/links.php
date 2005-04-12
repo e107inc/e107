@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-03-20 19:47:53 $
-|     $Author: stevedunstan $
+|     $Revision: 1.7 $
+|     $Date: 2005-04-12 15:34:56 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once('../../class2.php');
@@ -250,7 +250,11 @@ function parse_link_cat_table($row) {
 	}
 	 
 	if ($link_button) {
-		$LINK_CAT_BUTTON = (strstr($link_button, "/") ? $link_append."\n<img style='border:0;' src='".e_BASE.$link_button."' alt='".$link_name."' /></a>" : $link_append."\n<img style='border:0' src='".e_PLUGIN."links_page/link_images/".$link_button."' alt='".$link_name."' /></a>");
+		if (strpos($link_button, "http://") !== FALSE) {
+			$LINK_CAT_BUTTON = $link_append."\n<img style='border:0;' src='".$link_button."' alt='".$link_name."' /></a>";
+		} else {
+			$LINK_CAT_BUTTON = (strstr($link_button, "/") ? $link_append."\n<img style='border:0;' src='".e_BASE.$link_button."' alt='".$link_name."' /></a>" : $link_append."\n<img style='border:0' src='".e_PLUGIN."links_page/link_images/".$link_button."' alt='".$link_name."' /></a>");
+		}
 	} else {
 		$LINK_CAT_BUTTON = $link_append."\n<img style='border:0; width: 88px; height: 31px;' src='".e_PLUGIN."links_page/images/generic.png' alt='".$link_name."' /></a>";
 	}
