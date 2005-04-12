@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.18 $
-| $Date: 2005-03-21 04:25:37 $
-| $Author: mcfly_e107 $
+| $Revision: 1.19 $
+| $Date: 2005-04-12 23:13:01 $
+| $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 	
@@ -132,7 +132,7 @@ class e_shortcode {
 		return $ret;
 	}
 	 
-	function parse_scbatch($fname, $type='file') {
+	function parse_scbatch($fname, $type = 'file') {
 		$ret = array();
 		if($type == 'file')
 		{

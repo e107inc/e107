@@ -1,4 +1,5 @@
 <?php
+
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -11,95 +12,81 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-04-11 23:55:58 $
+|     $Revision: 1.27 $
+|     $Date: 2005-04-12 23:13:00 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
-	
+
 class e_bbcode {
-	 
+
 	var $bbList;
 	var $bbLocation;
-	 
-	function e_bbcode()
-	{
+
+	function e_bbcode() {
 		global $pref;
 		$core_bb = array(
-			'b', 'i', 'img', 'u', 'center', 
-			'br', 'color', 'size', 'code', 
-			'html', 'flash', 'link', 'email', 
-			'url', 'quote', 'left', 'right', 
-			'blockquote', 'justify', 'file', 'stream', 
-			'textarea', 'list', 'php'
-			);
-		foreach($core_bb as $c)
-		{
+		'b', 'i', 'img', 'u', 'center',
+		'br', 'color', 'size', 'code',
+		'html', 'flash', 'link', 'email',
+		'url', 'quote', 'left', 'right',
+		'blockquote', 'justify', 'file', 'stream',
+		'textarea', 'list', 'php'
+		);
+		foreach($core_bb as $c) {
 			$this->bbLocation[$c] = 'core';
 		}
-		if(isset($pref['plug_bb']) && $pref['plug_bb'] != '')
-		{
+		if(isset($pref['plug_bb']) && $pref['plug_bb'] != '') {
 			$tmp = explode(',',$pref['plug_bb']);
-			foreach($tmp as $val)
-			{
+			foreach($tmp as $val) {
 				list($code, $location) = explode(':',$val);
 				$this->bbLocation[$code] = $location;
 			}
 		}
-		$this->bbLocation = array_diff($this->bbLocation,array(''));
+		$this->bbLocation = array_diff($this->bbLocation, array(''));
 	}
-	 
+
 	function parseBBCodes($text, $p_ID)
 	{
 		global $code;
 		global $postID;
 		global $single_bb;
 		$postID = $p_ID;
-		$done = FALSE;
-		$single_bb = FALSE;
+		$done = false;
+		$single_bb = false;
 		$i=0;
-		while (!$done)
-		{
-			$done = TRUE;
+		while (!$done) {
+			$done = true;
 			$i++;
-			foreach(array_keys($this->bbLocation) as $code)
-			{
-				if($code{0} == '*')
-				{
-					$single_bb = TRUE;
+			foreach(array_keys($this->bbLocation) as $code) {
+				if($code{0} == '*') {
+					$single_bb = true;
 					$code = substr($code, 1);
-					if ($code && ($pos = strpos($text, "[$code")) !== FALSE)
-					{
+					if ($code && ($pos = strpos($text, "[{$code}")) !== false) {
 						$text = preg_replace_callback("#\[({$code}([a-zA-Z]*))(\d*?)(.*?)\]#s", array($this, 'doCode'), $text);
-						$done = FALSE;
-						if($text{$pos} == "[")
-						{
+						$done = false;
+						if($text{$pos} == "[") {
 							$text = str_replace("[".$code, "&#091;".$code, $text);
 						}
 					}
-				}
-				else
-				{
-					if ($code && ($pos = strpos($text, "[$code")) !== FALSE)
-					{
+				} else {
+					if ($code && ($pos = strpos($text, "[$code")) !== false) {
 						$text = preg_replace_callback("/\[({$code}([a-zA-Z]*))([\d]*?)([^\]]*)\](.*?)\[\/{$code}\\2\\3\]/s", array($this, 'doCode'), $text);
-						$done = FALSE;
-						if($text{$pos} == "[")
-						{
+						$done = true;
+						if($text{$pos} == "[") {
 							$text = str_replace("[".$code, "&#091;".$code, $text);
 						}
 					}
 				}
 			}
-			if($i > 200)
-			{
+			if($i > 200) {
 				echo "An error has been detected in the bbcode process, it entered an infinite loop!  Exiting...";
-				exit;
+				exit();
 			}
 		}
 		return $text;
 	}
-	 
+
 	function doCode($matches)
 	{
 		global $tp;
@@ -109,14 +96,12 @@ class e_bbcode {
 		global $code_text;
 		global $code;
 		global $parm;
-		
+
 		$code = $matches[1];
-		if($single_bb == TRUE)
-		{
+		if($single_bb == true) {
 			$code = '*'.$code;
 		}
-		if (E107_DEBUG_LEVEL)
-		{
+		if (E107_DEBUG_LEVEL) {
 			global $db_debug;
 			$db_debug->logCode(1, $code, $parm, $postID);
 		}
@@ -124,34 +109,28 @@ class e_bbcode {
 		$parm = substr($matches[4], 1);
 		$code_text = $matches[5];
 		$full_text = $matches[0];
-		
+
 		if (is_array($this->bbList) && array_key_exists($code, $this->bbList)) {
 			$bbcode = $this->bbList[$code];
-		}
-		else
-		{
-			if ($this->bbLocation[$code] == 'core')
-			{
+		} else {
+			if ($this->bbLocation[$code] == 'core') {
 				$bbFile = e_FILE.'bbcode/'.strtolower(str_replace('*', '', $code)).'.bb';
-			}
-			else
-			{
+			} else {
 				// Add code to check for plugin bbcode addition
 				$bbFile = e_PLUGIN.$this->bbLocation[$code].'/'.strtolower(str_replace('*', '', $code)).'.bb';
 			}
-			if (file_exists($bbFile))
-			{
+			if (file_exists($bbFile)) {
 				$bbcode = file_get_contents($bbFile);
 				$this->bbList[$code] = $bbcode;
 			} else {
 				$this->bbList[$code] = '';
-				return FALSE;
+				return false;
 			}
 		}
 		ob_start();
 		$bbcode_return = eval($bbcode);
-      $bbcode_output = ob_get_contents();
-      ob_end_clean();
+		$bbcode_output = ob_get_contents();
+		ob_end_clean();
 		return $bbcode_output.$bbcode_return;
 	}
 }

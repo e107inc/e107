@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.106 $
-|     $Date: 2005-04-11 11:55:00 $
+|     $Revision: 1.107 $
+|     $Date: 2005-04-12 23:11:55 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -354,7 +354,7 @@ if (!function_exists('checkvalidtheme')) {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 if (!class_exists('e107_table')) {
 	class e107table {
-		function tablerender($caption, $text, $mode = "default", $return = FALSE) {
+		function tablerender($caption, $text, $mode = "default", $return = false) {
 			/*
 			# Render style table
 			# - parameter #1:                string $caption, caption text
@@ -853,7 +853,7 @@ function cachevars($id, $var) {
 
 function getcachedvars($id) {
 	global $cachevar;
-	return ($cachevar[$id] ? $cachevar[$id] : FALSE);
+	return ($cachevar[$id] ? $cachevar[$id] : false);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -868,14 +868,14 @@ function getip() {
 	if (getenv('HTTP_X_FORWARDED_FOR')) {
 		$ip=$_SERVER['REMOTE_ADDR'];
 		if (preg_match("/^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/", getenv('HTTP_X_FORWARDED_FOR'), $ip3)) {
-			$ip2=array(
-			'/^0\./',
-			'/^127\.0\.0\.1/',
-			'/^192\.168\..*/',
-			'/^172\.16\..*/',
-			'/^10..*/',
-			'/^224..*/',
-			'/^240..*/'
+			$ip2 = array(
+				'/^0\./',
+				'/^127\.0\.0\.1/',
+				'/^192\.168\..*/',
+				'/^172\.16\..*/',
+				'/^10..*/',
+				'/^224..*/',
+				'/^240..*/'
 			);
 			$ip=preg_replace($ip2, $ip, $ip3[1]);
 		}
@@ -1092,30 +1092,28 @@ function class_list($uid = '') {
 // ---------------------------------------------------------------------------
 function e107_include($fname) {
 	global $e107_debug;
-	$ret=($e107_debug ? include($fname) : @include($fname));
+	$ret = ($e107_debug ? include($fname) : @include($fname));
 	return $ret;
 }
 
 function e107_include_once($fname) {
 	global $e107_debug;
-	$ret=($e107_debug ? include_once($fname) : @include_once($fname));
+	$ret = ($e107_debug ? include_once($fname) : @include_once($fname));
 	return $ret;
 }
 
 function e107_require_once($fname) {
 	global $e107_debug;
-	$ret=($e107_debug ? require_once($fname) : @require_once($fname));
+	$ret = ($e107_debug ? require_once($fname) : @require_once($fname));
 	return $ret;
 }
 
 function e107_require($fname) {
 	global $e107_debug;
-	$ret=($e107_debug ? require($fname) : @require($fname));
+	$ret = ($e107_debug ? require($fname) : @require($fname));
 	return $ret;
 }
-//
-//
+
 $sql->db_Mark_Time('(After class2)');
-//
-//
+
 ?>

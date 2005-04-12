@@ -11,25 +11,25 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/traffic_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-29 17:17:10 $
-|     $Author: mrpete $
+|     $Revision: 1.6 $
+|     $Date: 2005-04-12 23:13:01 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 class e107_traffic {
-    var $aTraffic=array();      // Overall system traffic counters
-    var $aTrafficTimed=array(); // Timed traffic counters
-    var $aTrafficWho=array();   // Overall system traffic source tracking
-    var $calPassBoth=0.0;       // Calibration offset when both parameters are passed
-    var $calPassOne=0.0;        // Calibration offset when only one parameter is passed
-    var $calTime=0.0;           // Total time spent in overhead, based on calibration
-    var $qTimeOn=0;					// Quick Timer: when it started
-    var $qTimeTotal=0.0;			// Quick Timer: Accumulated time
-	 
- //   function e107_traffic() {
- // No dynamic initializers needed, so no constructor
- //   }
-	 
+	var $aTraffic=array();      // Overall system traffic counters
+	var $aTrafficTimed=array(); // Timed traffic counters
+	var $aTrafficWho=array();   // Overall system traffic source tracking
+	var $calPassBoth=0.0;       // Calibration offset when both parameters are passed
+	var $calPassOne=0.0;        // Calibration offset when only one parameter is passed
+	var $calTime=0.0;           // Total time spent in overhead, based on calibration
+	var $qTimeOn=0;					// Quick Timer: when it started
+	var $qTimeTotal=0.0;			// Quick Timer: Accumulated time
+
+	//   function e107_traffic() {
+	// No dynamic initializers needed, so no constructor
+	//   }
+
 	/**
 	* @return float         Time difference
 	* @param time $tStart   Start time - unexploded microtime result
@@ -43,7 +43,7 @@ class e107_traffic {
 		$tTot = ((float)$tTo[0] + (float)$tTo[1]) - ((float)$tFrom[0] + (float)$tFrom[1]);
 		return $tTot;
 	}
-	 
+
 	/**
 	* @return float         Absolute time from microtime
 	* @param time $tStart   time - unexploded microtime result
@@ -54,7 +54,7 @@ class e107_traffic {
 		$tFrom = explode(' ', $tStart);
 		return (float)$tFrom[0] + (float)$tFrom[1];
 	}
-	 
+
 	/**
 	* @return void
 	* @param string $sWhat  what to count
@@ -68,31 +68,31 @@ class e107_traffic {
 		// 0        err: $e=microtime(); $eTraffic->Bump('foo',$b,$e);
 		// ~15 usec err: $eTraffic->Bump('foo',$b,microtime());
 		// ~25 usec err: $eTraffic->Bump('foo',$b);
-		 
+
 		if (!E107_DBG_TRAFFIC) return;
-		 
-        if ($tStart) {
-            $vName='aTrafficTimed';
-            $bTimed = TRUE;
-        } else {
-            $vName='aTraffic';
-            $bTimed = FALSE;
-        }
-        if (!isset($this->{$vName}[$sWhat])) {
-            $this->{$vName}[$sWhat] = array();
-            $t = & $this->{$vName}[$sWhat];
-			$t['Count'] = 0;
-            if ($bTimed) {
-			$t['Time'] = 0.0;
-			$t['Min'] = 999999999.0;
-			$t['Max'] = 0.0;
+
+		if ($tStart) {
+			$vName = 'aTrafficTimed';
+			$bTimed = TRUE;
+		} else {
+			$vName = 'aTraffic';
+			$bTimed = FALSE;
 		}
-        }
-		 
-        $this->{$vName}[$sWhat]['Count']++;
-        
-        if ($bTimed) {
-            $t = & $this->aTrafficTimed[$sWhat];
+		if (!isset($this->{$vName}[$sWhat])) {
+			$this->{$vName}[$sWhat] = array();
+			$t = & $this->{$vName}[$sWhat];
+			$t['Count'] = 0;
+			if ($bTimed) {
+				$t['Time'] = 0.0;
+				$t['Min'] = 999999999.0;
+				$t['Max'] = 0.0;
+			}
+		}
+
+		$this->{$vName}[$sWhat]['Count']++;
+
+		if ($bTimed) {
+			$t = & $this->aTrafficTimed[$sWhat];
 			if (!$tFinish) {
 				$tFinish = $x;
 				$offset = $this->calPassOne;
@@ -106,7 +106,7 @@ class e107_traffic {
 			if ($time > $t['Max']) $t['Max'] = $time;
 		}
 	}
-	 
+
 	/**
 	* @return void
 	* @param string $sWhat  what to count
@@ -119,9 +119,9 @@ class e107_traffic {
 	function BumpWho($sWhat, $level = 0, $tStart = 0, $tFinish = 0) {
 		$x = microtime();
 		if (!E107_DBG_TRAFFIC) return;
-		 
+
 		$this->Bump($sWhat, $tStart, ($tFinish? $tFinish : $x));
-		 
+
 		if (!isset($this->aTrafficWho[$sWhat])) {
 			$this->aTrafficWho[$sWhat] = array();
 		}
@@ -131,19 +131,19 @@ class e107_traffic {
 		}
 		$sFile = $aTrace[$level]['file'];
 		$sLine = $aTrace[$level]['line'];
-		 
+
 		$this->aTrafficWho[$sWhat][] = "$sFile($sLine)";
 	}
-	 
+
 	function Calibrate($tObject, $count = 10 ) {
-        if (!E107_DBG_TRAFFIC) return;
+		if (!E107_DBG_TRAFFIC) return;
 		if ($tObject != $this) {
 			message_handler("CRITICAL_ERROR", "Bad traffic object", __LINE__-2, __FILE__);
 		}
-        if ($count <= 0) return;    // no calibration
-		 
+		if ($count <= 0) return;    // no calibration
+
 		$this->calPassBoth = $this->calPassOne = 0.0;
-		 
+
 		for ($i = 0; $i < $count; $i++) {
 			$b = microtime();
 			$e = microtime();
@@ -151,47 +151,47 @@ class e107_traffic {
 			$b = microtime();
 			$tObject->Bump('TRAF_CAL2', $b);
 		}
-        $t = $tObject->aTrafficTimed['TRAF_CAL1'];
+		$t = $tObject->aTrafficTimed['TRAF_CAL1'];
 		$this->calPassBoth = $t['Time']/$t['Count'];
-        $t = $tObject->aTrafficTimed['TRAF_CAL2'];
+		$t = $tObject->aTrafficTimed['TRAF_CAL2'];
 		$this->calPassOne = $t['Time']/$t['Count'];
 	}
-	 
+
 	function Display() {
-        if (!E107_DBG_TRAFFIC) return '';
-        
+		if (!E107_DBG_TRAFFIC) return '';
+
 		$text = '';
-        @include(e_HANDLER.'traffic_class_display.php');
-        return $text;
-		}
+		@include(e_HANDLER.'traffic_class_display.php');
+		return $text;
+	}
 }
-				 
-			 
+
+
 //
 // This is a set of quick-n-simple tools to measure ONE bit of render time,
 // without any need for debug to be working. You can copy to somewhere else if needed
 // such as before this class has been loaded
 
 if (!isset($qTimeOn)) {
-    $qTimeOn=0;
-    $qTimeTotal=0;
-    function eQTimeOn() {
-    		$GLOBALS['qTimeOn']=explode(' ',microtime());
-    }
-    function eQTimeOff() {
-    		$e=explode(' ',microtime());
-    		$diff=((float)$e[0] + (float)$e[1]) - ((float)$qTimeOn[0] + (float)$qTimeOn[1]);
-         $GLOBALS['qTimeTotal'] += $diff;
-    }
+	$qTimeOn=0;
+	$qTimeTotal=0;
+	function eQTimeOn() {
+		$GLOBALS['qTimeOn']=explode(' ',microtime());
+	}
+	function eQTimeOff() {
+		$e=explode(' ',microtime());
+		$diff=((float)$e[0] + (float)$e[1]) - ((float)$qTimeOn[0] + (float)$qTimeOn[1]);
+		$GLOBALS['qTimeTotal'] += $diff;
+	}
 	function eQTimeElapsed() {
-			// return elapsed time so far, as text in microseconds, or blank if zero
-			if ($GLOBALS['qTimeTotal']) {
-				return number_format($GLOBALS['qTimeTotal']*1000000.0,1);
-			} else {
-				return '';
+		// return elapsed time so far, as text in microseconds, or blank if zero
+		if ($GLOBALS['qTimeTotal']) {
+			return number_format($GLOBALS['qTimeTotal']*1000000.0,1);
+		} else {
+			return '';
 		}
 	}
-	 
+
 }
-	
+
 ?>

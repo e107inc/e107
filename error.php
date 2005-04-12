@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/error.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-03-10 10:45:15 $
-|     $Author: stevedunstan $
+|     $Revision: 1.6 $
+|     $Date: 2005-04-12 23:11:56 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -44,7 +44,7 @@ switch(e_QUERY) {
 	$text = "<div class='installe'>".LAN_7."</div><br /><div class='installh'>".LAN_8."</div><br /><div class='smalltext'>".LAN_9."</div>
 		<br /><div class='installh'>".LAN_2."
 		<br />".LAN_16." <b>{$errTo}</b> ".LAN_16;
-	if (strlen($errFrom)) $text .= "<br />".LAN_18." $errFrom -- ".LAN_19;
+	if (strlen($errFrom)) $text .= "<br />".LAN_18." {$errFrom} -- ".LAN_19;
 	$text .= "<br /> <a href='index.php'>".LAN_20."</a></div>";
 	break;
 	case 500:
