@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-03-25 15:42:31 $
-|     $Author: sweetas $
+|     $Revision: 1.7 $
+|     $Date: 2005-04-13 16:08:27 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 /*
@@ -26,11 +26,11 @@ php 4.3.6 does NOT have this problem.
 	
 function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_name, $attachments, $Cc, $Bcc, $returnpath, $returnreceipt) {
 	global $pref;
-	require("phpmailer/class.phpmailer.php");
+	require_once("phpmailer/class.phpmailer.php");
 	 
 	$mail = new PHPMailer();
 	if ($pref['smtp_enable']) {
-		require("phpmailer/class.smtp.php");
+		require_once("phpmailer/class.smtp.php");
 		$mail->IsSMTP(); // telling the class to use SMTP
 	}
 	($to_name)?$to_name:
