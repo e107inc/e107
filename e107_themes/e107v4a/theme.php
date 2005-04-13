@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/theme.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-03-24 10:11:45 $
-|     $Author: stevedunstan $
+|     $Revision: 1.12 $
+|     $Date: 2005-04-13 12:18:11 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_THEME")){ exit; }
@@ -50,7 +50,7 @@ $HEADER .=
 {CUSTOM=clock}
 </td>
 <td style='text-align:right'>
-{CUSTOM=search+25+".THEME."images/search.png+18+19}
+{CUSTOM=search+".THEME."images/search.png+18+19}
 </td>
 </tr>
 </table>
