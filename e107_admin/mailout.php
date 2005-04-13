@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-04-06 21:31:27 $
-|     $Author: stevedunstan $
+|     $Revision: 1.23 $
+|     $Date: 2005-04-13 09:43:42 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -327,7 +327,7 @@ $text .= "
 	<tr>
 	<td colspan='2' style='width:30%' class='forumheader3'>
 
-	<textarea rows='10' cols='20' id='email_body' name='email_body'  class='tbox' style='border:1px solid black;width:100%;height:200px' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>
+	<textarea rows='10' cols='20' id='email_body' name='email_body'  class='tbox' style='width:100%;height:200px' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>
 	$email_body
 	</textarea>
 	</td>
