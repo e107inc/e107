@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-04-07 12:43:20 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.19 $
+|     $Date: 2005-04-13 09:35:24 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -25,7 +25,7 @@ require_once(e_HANDLER."calendar/calendar_class.php");
 $cal = new DHTML_Calendar(true);
 
 $use_imagecode = ($pref['signcode'] && extension_loaded("gd"));
-	
+
 if ($pref['membersonly_enabled']) {
 	$HEADER = "<div style='text-align:center; width:100%;margin-left:auto;margin-right:auto;text-align:center'><div style='width:70%;text-align:center;margin-left:auto;margin-right:auto'><br />";
 	if (file_exists(THEME."images/login_logo.png")) {
@@ -36,22 +36,22 @@ if ($pref['membersonly_enabled']) {
 	$HEADER .= "<br />";
 	$FOOTER = "</div></div>";
 }
-	
+
 if ($use_imagecode) {
 	require_once(e_HANDLER."secure_img_handler.php");
 	$sec_img = new secure_image;
 }
-	
+
 if ($pref['user_reg'] == 0) {
 	header("location:".e_BASE."index.php");
 	exit;
 }
-	
+
 if (USER) {
 	header("location:".e_BASE."index.php");
 	exit;
 }
-	
+
 if (e_QUERY) {
 	$qs = explode(".", e_QUERY);
 	if ($qs[0] == "activate") {
@@ -71,12 +71,12 @@ if (e_QUERY) {
 		}
 	}
 }
-	
+
 $signupval = explode(".", $pref['signup_options']);
 $signup_title = array(LAN_308, LAN_144, LAN_115, LAN_116, LAN_117, LAN_118, LAN_119, LAN_120, LAN_121, LAN_122, LAN_SIGNUP_28);
 $signup_name = array("realname", "website", "icq", "aim", "msn", "birth_year", "location", "signature", "image", "timezone", "usrclass");
-	
-	
+
+
 if (isset($_POST['register'])) {
 	extract($_POST);
 	require_once(e_HANDLER."message_handler.php");
@@ -87,12 +87,12 @@ if (isset($_POST['register'])) {
 			$error = TRUE;
 		}
 	}
-	 
+
 	if (strstr($_POST['name'], "#") || strstr($_POST['name'], "=") || strstr($_POST['name'], "\\")) {
 		message_handler("P_ALERT", LAN_409);
 		$error = TRUE;
 	}
-	 
+
 	$_POST['name'] = trim(chop(ereg_replace("&nbsp;|\#|\=", "", $_POST['name'])));
 	if ($_POST['name'] == "Anonymous") {
 		message_handler("P_ALERT", LAN_103);
@@ -117,35 +117,35 @@ if (isset($_POST['register'])) {
 	if (strlen($_POST['name']) > 30) {
 		exit;
 	}
-	 
+
 	if ($sql->db_Select("user", "*", "user_name='".$_POST['name']."' ")) {
 		message_handler("P_ALERT", LAN_104);
 		$error = TRUE;
 		$name = "";
 	}
-	 
-	 
+
+
 	if ($_POST['password1'] != $_POST['password2']) {
 		message_handler("P_ALERT", LAN_105);
 		$error = TRUE;
 		$password1 = "";
 		$password2 = "";
 	}
-	 
+
 	if (strlen($_POST['password1']) < $pref['signup_pass_len']) {
 		message_handler("P_ALERT", LAN_SIGNUP_4.$pref['signup_pass_len'].LAN_SIGNUP_5);
 		$error = TRUE;
 		$password1 = "";
 		$password2 = "";
 	}
-	 
+
 	if ($_POST['name'] == "" || $_POST['password1'] == "" || $_POST['password2'] = "") {
 		message_handler("P_ALERT", LAN_185);
 		$error = TRUE;
 	}
-	 
+
 	// ========== Verify Custom Signup options if selected ========================
-	 
+
 	for ($i = 0; $i < count($signup_title); $i++)
 	{
 		$postvalue = $signup_name[$i];
@@ -154,12 +154,12 @@ if (isset($_POST['register'])) {
 			$error = TRUE;
 		}
 	}
-	 
+
 	if ($sql->db_Select("user", "user_email", "user_email='".$_POST['email']."' ")) {
 		message_handler("P_ALERT", LAN_408);
 		$error = TRUE;
 	}
-	 
+
 	$extList = $usere->user_extended_get_fieldList();
 	foreach($extList as $ext)
 	{
@@ -175,9 +175,9 @@ if (isset($_POST['register'])) {
 			$error = TRUE;
 		}
 	}
-	
+
 	// ========== End of verification.. ====================================================
-	 
+
 	if (!preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]{1,50}@([-0-9A-Z]+\.){1,50}([0-9A-Z]){2,4}$/i', $_POST['email'])) {
 		message_handler("P_ALERT", LAN_106);
 		$error = TRUE;
@@ -195,21 +195,21 @@ if (isset($_POST['register'])) {
 			header("location:".e_BASE."index.php");
 			exit;
 		}
-		 
+
 		if ($sql->db_Select("user", "*", "user_email='".$_POST['email']."' AND user_ban='1' ")) {
 			exit;
 		}
-		 
+
 		$wc = "*".substr($_POST['email'], strpos($_POST['email'], "@"));
 		if ($sql->db_Select("banlist", "*", "banlist_ip='".$_POST['email']."' OR banlist_ip='$wc'")) {
 			exit;
 		}
-		 
+
 		$username = strip_tags($_POST['name']);
 		$time = time();
 		$ip = getip();
 		$birthday = $_POST['birth_year']."/".$_POST['birth_month']."/".$_POST['birth_day'];
-		 
+
 		$ue_fields = "";
 		foreach($_POST['ue'] as $key => $val)
 		{
@@ -222,7 +222,7 @@ if (isset($_POST['register'])) {
 		{
 			$u_key = md5(uniqid(rand(), 1));
 			$nid = $sql->db_Insert("user", "0, \"".$username."\", '', \"".md5($_POST['password1'])."\", '$u_key', \"".$_POST['email']."\", \"".$_POST['website']."\", \"".$_POST['icq']."\", \"".$_POST['aim']."\", \"".$_POST['msn']."\", \"".$_POST['location']."\", \"".$birthday."\", \"".$_POST['signature']."\", \"".$_POST['image']."\", \"".$_POST['timezone']."\", \"".$_POST['hideemail']."\", \"".$time."\", '0', \"".$time."\", '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '', '0', \"".$_POST['realname']."\", '', '', '', '' ");
-			 
+
 			// ==== Update Userclass =======
 			if ($_POST['usrclass']) {
 				if(is_array($_POST['usrclass'])) {
@@ -236,7 +236,7 @@ if (isset($_POST['register'])) {
 				}
 				$sql->db_Update("user", "user_class='$insert_class' WHERE user_id='".$nid."' ");
 			}
-			 
+
 			// ========= save extended fields as serialized data. =====
 
 			if($ue_fields)
@@ -250,7 +250,7 @@ if (isset($_POST['register'])) {
 			$pass_show = ($pref['user_reg_secureveri'])? "*******" : $_POST['password1'];
 			$message = LAN_403." ".SITENAME."\n".LAN_SIGNUP_18."\n\n".LAN_SIGNUP_19." ".$_POST['name']."\n".LAN_SIGNUP_20." ".$pass_show."\n\n".LAN_SIGNUP_21."\n\n";
 			$message .= RETURNADDRESS.LAN_407." ".SITENAME."\n".SITEURL;
-			 
+
 			require_once(e_HANDLER."mail.php");
 			if (file_exists(THEME."emails.php"))
 			{
@@ -259,13 +259,13 @@ if (isset($_POST['register'])) {
 				$message;
 			}
 			sendemail($_POST['email'], LAN_404." ".SITENAME, $message);
-			 
+
 			$edata_su = array("username" => $username, "email" => $_POST['email'], "website" => $_POST['website'], "icq" => $_POST['icq'], "aim" => $_POST['aim'], "msn" => $_POST['msn'], "location" => $_POST['location'], "birthday" => $birthday, "signature" => $_POST['signature'], "image" => $_POST['image'], "timezone" => $_POST['timezone'], "hideemail" => $_POST['hideemail'], "ip" => $ip, "realname" => $_POST['realname']);
 			$e_event->trigger("usersup", $edata_su);
-			 
+
 			require_once(HEADERF);
 			$text = LAN_405;
-			$ns->tablerender("<div style='text-align:center'>".LAN_406."</div>", $text);
+			$ns->tablerender(LAN_406, $text);
 			require_once(FOOTERF);
 			exit;
 		}
@@ -284,29 +284,29 @@ if (isset($_POST['register'])) {
 				$sql->db_Update("user", "user_class='$insert_class' WHERE user_id='".$nid."' ");
 			}
 			// ======== save extended fields as serialized data.
-			
+
 			if($ue_fields)
 			{
 				$sql->db_Select_gen("INSERT INTO #user_extended (user_extended_id) values ('{$nid}')");
 				$sql->db_Update("user_extended", $ue_fields." WHERE user_extended_id = '{$nid}'");
 			}
- 
+
 			// ==========================================================
-			 
+
 			$edata_su = array("username" => $username, "email" => $_POST['email'], "website" => $_POST['website'], "icq" => $_POST['icq'], "aim" => $_POST['aim'], "msn" => $_POST['msn'], "location" => $_POST['location'], "birthday" => $birthday, "signature" => $_POST['signature'], "image" => $_POST['image'], "timezone" => $_POST['timezone'], "hideemail" => $_POST['hideemail'], "ip" => $ip, "realname" => $_POST['realname']);
 			$e_event->trigger("usersup", $edata_su);
-			 
-			$ns->tablerender("<div style='text-align:center'>".LAN_SIGNUP_8."</div>", LAN_107."&nbsp;".SITENAME.", ".LAN_SIGNUP_12."<br /><br />".LAN_SIGNUP_13);
+
+			$ns->tablerender(LAN_SIGNUP_8, LAN_107."&nbsp;".SITENAME.", ".LAN_SIGNUP_12."<br /><br />".LAN_SIGNUP_13);
 			require_once(FOOTERF);
 			exit;
 		}
 	}
-	 
+
 }
 require_once(HEADERF);
-	
+
 $qs = ($error ? "stage" : e_QUERY);
-	
+
 if ($pref['use_coppa'] == 1 && !ereg("stage", $qs)) {
 	$cert_text = LAN_109 . " <a href='http://www.cdt.org/legislation/105th/privacy/coppa.html'>".LAN_SIGNUP_14."</a>. ".LAN_SIGNUP_15." <a href=\"mailto:".SITEADMINEMAIL."\">".LAN_SIGNUP_14."</a> ".LAN_SIGNUP_16."<br /><br /><div style=\"text-align:center\"><b>".LAN_SIGNUP_17."\n";
 	if (eregi("stage", LAN_109)) {
@@ -321,20 +321,20 @@ if ($pref['use_coppa'] == 1 && !ereg("stage", $qs)) {
 			</div></form>
 			</div>";
 	}
-	 
-	$ns->tablerender("<div style='text-align:center'>".LAN_110."</div>", $text);
+
+	$ns->tablerender(LAN_110, $text);
 	require_once(FOOTERF);
 	exit;
 }
-	
+
 if (!$website) {
 	$website = "http://";
 }
-	
+
 if (!eregi("stage", LAN_109)) {
 	if (isset($_POST['newver'])) {
 		if (!$_POST['coppa']) {
-			$ns->tablerender("<div style='text-align:center'>".LAN_202."</div>", "<div style='text-align:center'>".LAN_SIGNUP_9."</div>");
+			$ns->tablerender(LAN_202, "<div style='text-align:center'>".LAN_SIGNUP_9."</div>");
 			require_once(FOOTERF);
 			exit;
 		}
@@ -349,7 +349,7 @@ if($pref['signup_text']) {
 if ($pref['user_reg_veri']) {
 	$text .= LAN_309."<br /><br />";
 }
-	
+
 $text .= LAN_400;
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
@@ -361,7 +361,7 @@ $text .= $rs->form_open("post", e_SELF, "signupform")."
 	".$rs->form_text("name", 40, $name, 30)."
 	</td>
 	</tr>";
-	
+
 if ($signupval[0]) {
 	$text .= "
 		<tr>
@@ -371,7 +371,7 @@ if ($signupval[0]) {
 		</td>
 		</tr>";
 }
-	
+
 $text .= "
 	<tr>
 	<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_17."<span style='font-size:15px; color:red'> *</span></td>
@@ -401,8 +401,8 @@ $text .= "
 	<td class='forumheader3' style='width:70%'>". $rs->form_radio("hideemail", 1)." ".LAN_SIGNUP_10."&nbsp;&nbsp;".$rs->form_radio("hideemail", 0, 1)." ".LAN_200."
 	</td>
 	</tr>";
-	
-	
+
+
 // ----------  User subscription to userclasses.
 if ($signupval[10]) {
 	$text .= "<tr>
@@ -420,14 +420,14 @@ if ($signupval[10]) {
 		$text .= "</tr>\n";
 	}
 	$text .= "</table>\n";
-	 
+
 	$text .= " </td>
 		</tr>";
 }
 // --------------------------
-	
-	
-	
+
+
+
 if ($signupval[1]) {
 	$text .= "
 		<tr>
@@ -437,8 +437,8 @@ if ($signupval[1]) {
 		</td>
 		</tr>";
 }
-	
-	
+
+
 if ($signupval[2]) {
 	$text .= "
 		<tr>
@@ -448,7 +448,7 @@ if ($signupval[2]) {
 		</td>
 		</tr>";
 }
-	
+
 if ($signupval[3]) {
 	$text .= "
 		<tr>
@@ -458,8 +458,8 @@ if ($signupval[3]) {
 		</td>
 		</tr>";
 }
-	
-	
+
+
 if ($signupval[4]) {
 	$text .= "
 		<tr>
@@ -469,13 +469,13 @@ if ($signupval[4]) {
 		</td>
 		</tr>";
 }
-	
-	
+
+
 if ($signupval[5]) {
 	$text .= "
 		<tr>
 		<td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_118.req($signupval[5])."</td>
-		<td class='forumheader3' style='width:70%'>".  
+		<td class='forumheader3' style='width:70%'>".
 	$rs->form_select_open("birth_day"). $rs->form_option("", 0);
 	$today = getdate();
 	$year = $today['year'];
@@ -490,12 +490,12 @@ if ($signupval[5]) {
 	for($a = 1900; $a <= $year; $a++) {
 		$text .= ($birth_year == $a ? $rs->form_option($a, 1) : $rs->form_option($a, 0));
 	}
-	 
+
 	$text .= "</td></tr>";
 }
-	
-	
-	
+
+
+
 if ($signupval[6]) {
 	$text .= "
 		<tr>
@@ -505,8 +505,8 @@ if ($signupval[6]) {
 		</td>
 		</tr>";
 }
-	
-	
+
+
 $extList = $usere->user_extended_get_fieldList();
 
 foreach($extList as $ext)
@@ -521,7 +521,7 @@ foreach($extList as $ext)
 		";
 	}
 }
-		
+
 if ($signupval[7]) {
 	require_once(e_HANDLER."ren_help.php");
 	$text .= "<tr>
@@ -530,14 +530,14 @@ if ($signupval[7]) {
 		<textarea class='tbox' name='signature' cols='10' rows='4' style='width: 80%;' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$signature</textarea><br />
 		".ren_help(2);
 }
-	
+
 if ($signupval[8]) {
 	$text .= "
 		<tr>
 		<td class='forumheader3' style='width:30%; vertical-align:top;white-space:nowrap' >".LAN_121.req($signupval[8])."<br /><span class='smalltext'>(".LAN_402.")</span></td>
 		<td class='forumheader3' style='width:70%' >
 		<input class='tbox' id='avatar' type='text' name='image' size='40' value='$image' maxlength='100' />
-		 
+
 		<input class='button' type ='button' style=''width: 35px'; cursor:hand' size='30' value='".LAN_SIGNUP_27."' onClick='expandit(this)'>
 		<div style='display:none' style=&{head};>";
 	$avatarlist[0] = "";
@@ -548,36 +548,36 @@ if ($signupval[8]) {
 		}
 	}
 	closedir($handle);
-	 
+
 	for($c = 1; $c <= (count($avatarlist)-1); $c++) {
 		$text .= "<a href='javascript:insertext(\"$avatarlist[$c]\", \"avatar\")'><img src='".e_IMAGE."avatars/".$avatarlist[$c]."' style='border:0' alt='' /></a> ";
 	}
-	 
+
 	$text .= "<br />
 		</div>";
-	 
+
 	if ($pref['avatar_upload'] && FILE_UPLOADS) {
 		$text .= "<br /><span class='smalltext'>".LAN_SIGNUP_25."</span> <input class='tbox' name='file_userfile[]' type='file' size='40'>
 			<br /><div class='smalltext'>".LAN_404."</div>";
 	}
-	 
+
 	if ($pref['photo_upload'] && FILE_UPLOADS) {
 		$text .= "<br /><span class='smalltext'>".LAN_SIGNUP_26."</span> <input class='tbox' name='file_userfile[]' type='file' size='40'>
 			<br /><div class='smalltext'>".LAN_404."</div>";
 	}
-	 
-	 
+
+
 	$text .= "</td>
 		</tr>";
 }
-	
+
 if ($signupval[9]) {
 	$text .= "
 		<tr>
 		<td class='forumheader3' style='width:30%' >".LAN_122.req($signupval[9])."</td>
 		<td class='forumheader3' style='width:70%;white-space:nowrap'>
 		<select name='timezone' class='tbox'>\n";
-	 
+
 	timezone();
 	$count = 0;
 	while ($timezone[$count]) {
@@ -588,12 +588,12 @@ if ($signupval[9]) {
 		}
 		$count++;
 	}
-	 
+
 	$text .= "</select>
 		</td>
 		</tr>";
 }
-	
+
 if ($use_imagecode) {
 	$text .= " <tr>
 		<td class='forumheader3' style='width:30%'>".LAN_410.req(2)."</td>
@@ -601,7 +601,7 @@ if ($use_imagecode) {
 		</td>
 		</tr>";
 }
-	
+
 $text .= "
 	<tr style='vertical-align:top'>
 	<td class='forumheader' colspan='2'  style='text-align:center'>
@@ -613,13 +613,13 @@ $text .= "
 	</form>
 	</div>
 	";
-	
+
 $ns->tablerender(LAN_123, $text);
-	
+
 require_once(FOOTERF);
-	
+
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-	
+
 function timezone() {
 	/*
 	# Render style table
@@ -632,7 +632,7 @@ function timezone() {
 	$timearea = array("International DateLine West", "Samoa", "Hawaii", "Alaska", "Pacific Time (US and Canada)", "Mountain Time (US and Canada)", "Central Time (US and Canada), Central America", "Eastern Time (US and Canada)", "Atlantic Time (Canada)", "Greenland, Brasilia, Buenos Aires, Georgetown", "Mid-Atlantic", "Azores", "GMT - UK, Ireland, Lisbon", "West Central Africa, Western Europe", "Greece, Egypt, parts of Africa", "Russia, Baghdad, Kuwait, Nairobi", "Abu Dhabi, Kabul", "Islamabad, Karachi", "Astana, Dhaka", "Bangkok, Rangoon", "Hong Kong, Singapore, Perth, Beijing", "Tokyo, Seoul", "Brisbane, Canberra, Sydney, Melbourne", "Soloman Islands", "New Zealand", "Nuku'alofa");
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-	
+
 function req($field) {
 	global $pref;
 	if ($field == 2) {
@@ -643,14 +643,14 @@ function req($field) {
 	return $ret;
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-	
+
 function headerjs() {
 	$script_txt = "
 	<script type=\"text/javascript\">
 	function addtext3(sc){
 	document.getElementById('signupform').image.value = sc;
 	}
-	 
+
 	function addsig(sc){
 	document.getElementById('signupform').signature.value += sc;
 	}
@@ -663,5 +663,5 @@ function headerjs() {
 	$script_text .= $cal->load_files();
 	return $script_text;
 }
-	
+
 ?>
