@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_post.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-03-03 18:36:11 $
-|     $Author: stevedunstan $
+|     $Revision: 1.6 $
+|     $Date: 2005-04-13 11:34:52 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Forum");
@@ -107,6 +107,7 @@ define("POLL_506", "Allow multiple choices?");
 define("POLL_507", "yes");
 define("POLL_508", "no");
 
+define("LAN_FORUM_1", "Uploads disabled: ".e_FILE."public directory is not writable");
 
 
 ?>

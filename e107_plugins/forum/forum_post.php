@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-04-09 19:13:45 $
-|     $Author: stevedunstan $
+|     $Revision: 1.20 $
+|     $Date: 2005-04-13 11:34:06 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -386,8 +386,24 @@ if ($action == "nt" && $pref['forum_poll'] && !eregi("edit", e_QUERY))
 
 if ($pref['forum_attach'] && !eregi("edit", e_QUERY) && (check_class($pref['upload_class']) || getperms('0')))
 {
-	$FILEATTACH = $fileattach;
+	if (is_writable(e_FILE."public"))
+	{
+		$FILEATTACH = $fileattach;
+	}
+	else
+	{
+		$FILEATTACH = "";
+		if(ADMIN)
+		{
+			if(!$fileattach_alert)
+			{
+				$fileattach_alert = "<tr><td colspan='2' class='nforumcaption2'>".($pref['image_post'] ? LAN_390 : LAN_416)."</td></tr><tr><td colspan='2' class='forumheader3'>".LAN_FORUM_1."</td></tr>\n";
+			}
+			$FILEATTACH = $fileattach_alert;
+		}
+	}
 }
+
 
 $buttons = "<input class='button' type='submit' name='fpreview' value='".LAN_323."' /> ";
 if ($action != "nt") {
