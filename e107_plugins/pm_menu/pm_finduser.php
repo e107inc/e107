@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm_menu/pm_finduser.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-03-18 01:44:13 $
+|     $Revision: 1.4 $
+|     $Date: 2005-04-13 17:37:03 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ echo "
 	<!--
 	function SelectUser() {
 	var d = window.document.results.usersel.value;
-	parent.opener.document.pm.to.value = d;
+	parent.opener.document.getElementById('pmto').value = d;
 	this.close();
 	}
 	//-->

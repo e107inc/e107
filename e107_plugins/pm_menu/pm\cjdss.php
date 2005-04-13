@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm_menu/pm\cjdss.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-03-14 18:44:07 $
-|     $Author: e107coders $
+|     $Revision: 1.8 $
+|     $Date: 2005-04-13 17:37:02 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 class pm {
@@ -382,7 +382,7 @@ class pm {
 					$ret .= "<input type='hidden' name='to' value='".$this->real_name($uid)."'>\n";
 					$ret .= "<b>".$this->real_name($uid)."</b>\n";
 				} else {
-					$ret .= "<input class='tbox' type='text' name='to' maxlength='30'>";
+					$ret .= "<input class='tbox' type='text' name='to' id='pmto' maxlength='30'>";
 					$ret .= "&nbsp;&nbsp;&nbsp;<a class='button' href='".e_PLUGIN."pm_menu/pm_finduser.php' onclick=\"window.open('".e_PLUGIN."pm_menu/pm_finduser.php','pmsearch', 'toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes,width=350,height=350,left=100,top=100'); return false;\">".PMLAN_53."... </a>";
 					if (($pref['pm_userclass'] < e_UC_NOBODY && USERCLASS) || ADMINPERMS == "0") {
 						$ret .= "<br /><input type='radio' name='sendtype' value='userclass'> ".PMLAN_47."&nbsp; <select class='tbox' name='class' size='1'>".$this->UserclassDropdownList()."</select>";
