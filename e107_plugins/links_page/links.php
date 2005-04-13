@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-04-12 15:34:56 $
-|     $Author: sweetas $
+|     $Revision: 1.8 $
+|     $Date: 2005-04-13 17:00:07 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once('../../class2.php');
@@ -261,7 +261,7 @@ function parse_link_cat_table($row) {
 	$LINK_CAT_APPEND = $link_append;
 	$LINK_CAT_NAME = $link_name;
 	$LINK_CAT_URL = $link_url;
-	$LINK_CAT_DESC = $tp->toHTML($link_description);
+	$LINK_CAT_DESC = $tp->toHTML($link_description, TRUE);
 	$LINK_CAT_REFER = LAN_88." ".$link_refer;
 	 
 	return(preg_replace("/\{(.*?)\}/e", '$\1', $LINK_CAT_TABLE));
