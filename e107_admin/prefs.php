@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2005-04-11 21:40:10 $
-|     $Author: e107coders $
+|     $Revision: 1.46 $
+|     $Date: 2005-04-13 15:50:16 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -570,6 +570,7 @@ $text .= pref_submit();
 $text .= "</table></div>";
 
 // Security Options. .
+$hasGD = extension_loaded("gd");
 
 $text .= "<div id='security' style='display:none; text-align:center'>
 	<table style='width:100%' class='fborder'>
@@ -588,16 +589,38 @@ $text .= "<div id='security' style='display:none; text-align:center'>
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_76.": </td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
+	";
+	if($hasGD)
+	{
+	$text .= "
 	<input type='radio' name='signcode' value='1'".($pref['signcode'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
 	<input type='radio' name='signcode' value='0'".(!$pref['signcode'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
+	";
+	}
+	else
+	{
+		$text .= PRFLAN_133;
+	}
+	$text .= "
 	</td>
 	</tr>
 
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_81.": </td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
+	";
+	if($hasGD)
+	{
+	$text .= "
 	<input type='radio' name='logcode' value='1'".($pref['logcode'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
 	<input type='radio' name='logcode' value='0'".(!$pref['logcode'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
+	";
+	}
+	else
+	{
+		$text .= PRFLAN_133;
+	}
+	$text .= "
 	</td>
 	</tr>
 
