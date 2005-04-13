@@ -247,7 +247,6 @@ SC_END
 
 SC_BEGIN USER_SENDPM
 global $tp, $user;
-print_r($user);
 return $tp->parseTemplate("{SENDPM={$user['user_id']}}");
 SC_END
 

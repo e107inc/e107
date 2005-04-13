@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/user_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-04-06 03:53:01 $
+|     $Revision: 1.4 $
+|     $Date: 2005-04-13 17:39:05 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -46,7 +46,14 @@ $USER_SHORT_TEMPLATE = "
 $sc_style['USER_SENDPM']['pre'] = "<tr><td style='width:100%' class='forumheader3'><span style='float:left'>";
 $sc_style['USER_SENDPM']['post'] = "</span><span style='float:right;'>".LAN_425."</span></td></tr>";
 
-$sendpm = $tp->parseTemplate("{USER_SENDPM}", FALSE, $user_shortcodes);
+if($tp->parseTemplate("{USER_SENDPM}", FALSE, $user_shortcodes))
+{
+	$sendpm = "{USER_SENDPM}}";
+}
+else
+{
+	$sendpm = "";
+}
 
 //$sc_style['USER_PICTURE']['pre'] = "";
 //$sc_style['USER_PICTURE']['post'] = $sendpm;
