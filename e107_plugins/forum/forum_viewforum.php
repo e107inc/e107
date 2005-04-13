@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-03-29 13:04:49 $
+|     $Revision: 1.23 $
+|     $Date: 2005-04-13 11:04:41 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -329,7 +329,7 @@ function parse_thread($thread_info) {
 		 "<input type='image' ".IMAGE_admin_stick." name='stick_{$thread_id}' value='thread_action' /> ";
 		$ADMIN_ICONS .= ($thread_info['thread_active']) ? "<input type='image' ".IMAGE_admin_lock." name='lock_{$thread_id}' value='thread_action' /> " :
 		 "<input type='image' ".IMAGE_admin_unlock." name='unlock_{$thread_id}' value='thread_action' /> ";
-		$ADMIN_ICONS .= "<a href='".e_ADMIN."forum_conf.php?move.".$forum_id.".".$thread_id."'>".IMAGE_admin_move."</a>";
+		$ADMIN_ICONS .= "<a href='".e_PLUGIN."forum/forum_conf.php?move.".$forum_id.".".$thread_id."'>".IMAGE_admin_move."</a>";
 		$ADMIN_ICONS .= "
 			</div></form>
 			";
