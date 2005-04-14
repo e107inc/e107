@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-04-13 11:04:41 $
+|     $Revision: 1.24 $
+|     $Date: 2005-04-14 11:22:08 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -306,14 +306,18 @@ function parse_thread($thread_info) {
 	}
 	$THREADNAME = "<a {$title} href='".e_PLUGIN."forum/forum_viewtopic.php?{$thread_info['thread_id']}'>{$thread_name}</a>";
 	 
-	$pages = ceil($REPLIES/$pref['forum_postspage']);
-	if ($pages > 1) {
-		$PAGES = LAN_316." [ ";
-		for($a = 0; $a <= ($pages-1); $a++) {
-			$PAGES .= "-<a href='".e_PLUGIN."forum/forum_viewtopic.php?".$thread_info['thread_id'].".".($a * $pref['forum_postspage'])."'>".($a+1)."</a>";
+	$pages = ceil(($REPLIES+1)/$pref['forum_postspage']);
+	if ($pages > 1)
+	{
+		for($a = 0; $a <= ($pages-1); $a++)
+		{
+			$PAGES .= $PAGES ? "-" : "";
+			$PAGES .= "<a href='".e_PLUGIN."forum/forum_viewtopic.php?".$thread_info['thread_id'].".".($a * $pref['forum_postspage'])."'>".($a+1)."</a>";
 		}
-		$PAGES .= " ]";
-	} else {
+		$PAGES = LAN_316." [&nbsp;".$PAGES."&nbsp;]";
+	}
+	else
+	{
 		$PAGES = "";
 	}
 	 
