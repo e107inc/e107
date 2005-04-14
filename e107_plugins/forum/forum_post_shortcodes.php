@@ -12,10 +12,10 @@ $txt = "
 <table style='width:100%' class='fborder'>
 <tr>
 <td colspan='2' class='fcaption' style='vertical-align:top'>".
-LAN_101.(count($thread_info)-2).LAN_102."
+LAN_101.(count($thread_info)-1).LAN_102."
 </td>
 </tr>";
-for($i=1; $i<count($thread_info)-1;$i++) {
+for($i = count($thread_info)-2; $i>=0; $i--) {
 if ($thread_info[$i]['thread_user']) {
 $uname = $thread_info[$i]['user_name'];
 } else {
