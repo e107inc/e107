@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-04-12 02:27:06 $
+|     $Revision: 1.19 $
+|     $Date: 2005-04-14 12:39:01 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -351,13 +351,14 @@ class e107forum {
 			$limit--;
 			$array_start = 1;
 		}
+		$sortdir = "ASC";
 		 
 		$qry = "
 			SELECT t.*, u.* FROM #forum_t as t
 			LEFT JOIN #user AS u
 			ON t.thread_user = u.user_id
 			WHERE t.thread_parent = $thread_id
-			ORDER by t.thread_datestamp ASC
+			ORDER by t.thread_datestamp {$sortdir}
 			LIMIT {$start},".($limit);
 		$ret = array();
 		if ($sql->db_Select_gen($qry)) {

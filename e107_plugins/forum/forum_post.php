@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-04-13 11:34:06 $
+|     $Revision: 1.21 $
+|     $Date: 2005-04-14 12:39:01 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -42,7 +42,7 @@ if (!e_QUERY) {
 // check if user can post to this forum ...
 if ($action == 'rp') {
 	// reply to thread
-	$thread_info = $forum->thread_get($id, 0, 10);
+	$thread_info = $forum->thread_get($id, 'last', 11);
 	$forum_info = $forum->forum_get($thread_info['head']['thread_forum_id']);
 } elseif ($action == 'nt') {
 	// New post
