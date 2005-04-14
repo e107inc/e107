@@ -31,11 +31,12 @@ else
 		}
 	}
 }
+
 if (
 !check_class($ueStruct["user_".$parms[0]]['user_extended_struct_applicable'], $udata['user_class'])
 || !check_class($ueStruct["user_".$parms[0]]['user_extended_struct_read'])
-|| (!ADMIN && strpos($ueStruct["user_".$parms[0]]['user_extended_struct_parms'], "allow_hide") !== FALSE 
-&& strpos($udata['user_hidden_fields'], "^user_".$parms[0]."^") !== FALSE)
+|| (!ADMIN && substr($ueStruct["user_".$parms[0]]['user_extended_struct_parms'], -1) == 1 
+&& strpos($udata['user_hidden_fields'], "^user_".$parms[0]."^") !== FALSE && $parms[2] != USERID)
 )
 {
 	return FALSE;
