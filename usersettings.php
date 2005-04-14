@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-04-11 02:59:37 $
+|     $Revision: 1.21 $
+|     $Date: 2005-04-14 16:38:42 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -20,7 +20,6 @@
 require_once("class2.php");
 require_once(e_HANDLER."user_extended_class.php");
 $ue = new e107_user_extended;
-//echo "<pre>".print_r($_POST, true)."</pre>";
 if (isset($_POST['sub_news'])) {
 	header("location:".e_BASE."submitnews.php");
 	exit;
@@ -75,7 +74,7 @@ if (isset($_POST['updatesettings']))
 	// check prefs for required fields =================================.
 	$signupval = explode(".", $pref['signup_options']);
 	$signup_title = array(LAN_308, LAN_144, LAN_115, LAN_116, LAN_117, LAN_118, LAN_119, LAN_120, LAN_121, LAN_122);
-	$signup_name = array("realname", "website", "icq", "aim", "msn", "birth_year", "location", "signature", "image", "user_timezone");
+	$signup_name = array("realname", "website", "icq", "aim", "msn", "birthday", "location", "signature", "image", "user_timezone");
 	 
 	if ($_POST['image'] && $size = getimagesize($_POST['image'])) {
 		$avwidth = $size[0];
@@ -96,9 +95,11 @@ if (isset($_POST['updatesettings']))
 		}
 	}
 	 
-	for ($i = 0; $i < count($signup_title); $i++) {
+	for ($i = 0; $i < count($signup_title); $i++)
+	{
 		$postvalue = $signup_name[$i];
-		if ($signupval[$i] == 2 && $_POST[$postvalue] == "") {
+		if ($signupval[$i] == 2 && $_POST[$postvalue] == "")
+		{
 			$error .= LAN_SIGNUP_6."<b>".$signup_title[$i]."</b>".LAN_SIGNUP_7."<br />";
 		}
 	};

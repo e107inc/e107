@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/user_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-04-13 17:39:05 $
+|     $Revision: 1.5 $
+|     $Date: 2005-04-14 16:40:30 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -48,7 +48,7 @@ $sc_style['USER_SENDPM']['post'] = "</span><span style='float:right;'>".LAN_425.
 
 if($tp->parseTemplate("{USER_SENDPM}", FALSE, $user_shortcodes))
 {
-	$sendpm = "{USER_SENDPM}}";
+	$sendpm = "{USER_SENDPM}";
 }
 else
 {

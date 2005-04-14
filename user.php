@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-04-07 12:14:05 $
+|     $Revision: 1.19 $
+|     $Date: 2005-04-14 16:38:42 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -241,37 +241,10 @@ require_once(e_HANDLER."np_class.php");
 $ix = new nextprev("user.php", $from, $records, $users_total, LAN_138, $records.".".$order);
 
 function renderuser($user_array, $user_entended, $mode = "verbose") {
-	//	echo "<pre>".print_r($user, TRUE)."</pre>";
 	global $sql, $pref, $tp, $sc_style, $user_shortcodes;
 	global $EXTENDED_START, $EXTENDED_TABLE, $EXTENDED_END, $USER_SHORT_TEMPLATE, $USER_FULL_TEMPLATE;
 	global $user;
 	$user = $user_array;
-
-	//        extended fields ...
-
-/*
-	require_once(e_HANDLER."user_extended_class.php");
-	$ue = new e107_user_extended;
-	$ueList = $ue->user_extended_getStruct();
-
-	if ($ueList)
-	{
-		$USER_EXTENDED = $EXTENDED_START;
-		foreach($ueList as $key => $ext)
-		{
-			if($ue_name = $tp->parseTemplate("{EXTENDED={$key}.name.{$user_id}}", TRUE))
-			{
-				$extended_record = str_replace("EXTENDED_ICON","EXTENDED={$key}.icon", $EXTENDED_TABLE);
-				$extended_record = str_replace("{EXTENDED_NAME}", $ue_name, $extended_record);
-				$extended_record = str_replace("EXTENDED_VALUE","EXTENDED={$key}.value.{$user_id}", $extended_record);
-				$USER_EXTENDED .= $tp->parseTemplate($extended_record, TRUE);
-
-			}
-		}
-		$USER_EXTENDED .= $EXTENDED_END;
-	}
-*/
-	//        end extended fields
 
 	if($mode == 'verbose')
 	{

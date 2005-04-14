@@ -11,13 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-04-11 02:58:58 $
+|     $Revision: 1.8 $
+|     $Date: 2005-04-14 16:40:27 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
-//if($_POST) { echo "<pre>".print_r($_POST, true)."</pre>"; }
 if (!getperms("4")) {
 	header("location:".e_BASE."index.php");
 	exit;
