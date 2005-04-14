@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/online_extended_menu/online_extended_menu.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-03-06 09:07:45 $
-|     $Author: stevedunstan $
+|     $Revision: 1.7 $
+|     $Date: 2005-04-14 17:07:56 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_PLUGIN")){ exit; }
@@ -36,7 +36,7 @@ if (MEMBERS_ONLINE) {
 			$pinfo = "download.php";
 		}
 		if (strstr($online_location_page, "forum")) {
-			$pinfo = e_PLUGIN/"forum/forum.php";
+			$pinfo = e_PLUGIN."forum/forum.php";
 			$online_location_page = "forum.php";
 		}
 		if (strstr($online_location_page, "content")) {
