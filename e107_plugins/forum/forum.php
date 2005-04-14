@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-03-25 03:32:11 $
+|     $Revision: 1.15 $
+|     $Date: 2005-04-14 19:44:20 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -328,57 +328,41 @@ if (e_QUERY == "track") {
 	}
 }
 
-if (e_QUERY == "new") {
-	$sql3 = new db;
-	if ($forum_posts = $sql->db_Select("forum_t", "*", "thread_datestamp>".USERLV." ORDER BY thread_datestamp DESC LIMIT 0,50")) {
-		while ($row = $sql->db_Fetch()) {
-			extract($row);
-			$sql2->db_Select("forum", "*", "forum_id=$thread_forum_id");
-			$row = $sql2->db_Fetch();
-			 extract($row);
-
-			if (check_class($forum_class)) {
-				if (!ereg("\.".$thread_id."\.", USERVIEWED)) {
-					$np = TRUE;
-					$author_id = substr($thread_user , 0, strpos($thread_user , "."));
-					$author_name = substr($thread_user , (strpos($thread_user , ".")+1));
-					if (strstr($author_name, chr(1))) {
-						$tmp = explode(chr(1), $author_name);
-						$author_name = $tmp[0];
-					}
-					$datestamp = $gen->convert_date($thread_datestamp, "forum");
-					$STARTERTITLE = "<a href='".e_BASE."user.php?id.$author_id'>$author_name</a><br />".$datestamp;
-					$iid = $thread_id;
-
-					if ($thread_parent) {
-						$ttemp = $thread_id;
-						$sql2->db_Select("forum_t", "*", "thread_id=$thread_parent ");
-						$row = $sql2->db_Fetch();
-						 extract($row);
-						$replies = $sql3->db_Count("forum_t", "(*)", "WHERE thread_parent='".$thread_id."'");
-						$pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
-						$pages = ((ceil($replies/$pref['forum_postspage']) -1) * $pref['forum_postspage']);
-						$NEWSPOSTNAME = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?$thread_forum_id.$thread_id".($pages ? ".$pages" : "")."#".$iid."'>".LAN_425.$thread_name."</a>";
-					} else {
-						$NEWSPOSTNAME = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?$thread_forum_id.$thread_id'>$thread_name</a>";
-					}
-					$forum_newstring .= preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_NEWPOSTS_MAIN);
-				}
+if (e_QUERY == "new")
+{
+	$newpostList = $forum->post_getnew(5);
+	foreach($newpostList as $post)
+	{
+		if (!ereg("\.".$thread_id."\.", USERVIEWED))
+		{
+			$author_name = $forum->thread_user($post);
+			$author_id = $post['thread_user'];
+			$datestamp = $gen->convert_date($post['thread_datestamp'], "forum");
+			if($author_id == 0)
+			{
+				$STARTERTITLE = $author_name."<br />".$datestamp;
 			}
+			else
+			{
+				$STARTERTITLE = "<a href='".e_BASE."user.php?id.$author_id'>$author_name</a><br />".$datestamp;
+			}
+				
+			$NEWSPOSTNAME = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?{$post['thread_id']}.post'>".LAN_425.$post['post_subject']."</a>";
+			$forum_newstring .= preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_NEWPOSTS_MAIN);
 		}
-		if (!$np) {
-			$NEWSPOSTNAME = LAN_198;
-			$forum_newstring = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_NEWPOSTS_MAIN);
-		}
+	}
 
-		$forum_new_start = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_NEWPOSTS_START);
-		$forum_new_end = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_NEWPOSTS_END);
+	if (!$newpostList) {
+		$NEWSPOSTNAME = LAN_198;
+		$forum_newstring = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_NEWPOSTS_MAIN);
+	}
+	$forum_new_start = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_NEWPOSTS_START);
+	$forum_new_end = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_NEWPOSTS_END);
 
-		if ($pref['forum_enclose']) {
-			$ns->tablerender($pref['forum_title'], $forum_new_start.$forum_newstring.$forum_new_end);
-		} else {
-			echo $forum_new_start.$forum_newstring.$forum_new_end;
-		}
+	if ($pref['forum_enclose']) {
+		$ns->tablerender($pref['forum_title'], $forum_new_start.$forum_newstring.$forum_new_end);
+	} else {
+		echo $forum_new_start.$forum_newstring.$forum_new_end;
 	}
 }
 
