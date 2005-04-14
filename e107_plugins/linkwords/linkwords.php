@@ -11,21 +11,21 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/linkwords/linkwords.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-04-05 21:12:35 $
-|     $Author: stevedunstan $
+|     $Revision: 1.5 $
+|     $Date: 2005-04-14 19:00:09 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-	
+
 class e_linkwords
 {
 	var $linkwords = array();
 	var $linkurls = array();
-	 
+
 	function e_linkwords()
 	{
 		/* constructor */
-		global $sql;
+		$sql = new db;
 		if($sql -> db_Select("linkwords", "*", "linkword_active=0"))
 		{
 			$linkWords = $sql -> db_getList();
@@ -49,5 +49,5 @@ class e_linkwords
 		return $ptext;
 	}
 }
-	
+
 ?>
