@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_convert.php,v $
-|		$Revision: 1.3 $
-|		$Date: 2005-04-12 22:03:14 $
+|		$Revision: 1.4 $
+|		$Date: 2005-04-14 07:50:54 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -64,6 +64,14 @@ if(isset($_POST['convert_table'])){
 					$totaloldrowscat_review = $sql -> db_Count("content", "(*)", "WHERE content_parent = '0' AND content_type = '10'");
 					$totaloldrowsitem_review = $sql -> db_Count("content", "(*)", "WHERE content_type = '3' || content_type = '16'");
 					$totaloldrowsitem_article = $sql -> db_Count("content", "(*)", "WHERE content_type = '0' || content_type = '15'");
+
+if(!is_object($sqlu)){ $sqlu = new db; }
+$totaloldrowsunknown = $sqlu -> db_Select("content", "*", " NOT ( (content_parent = '0' AND content_type = '1') || (content_parent = '0' AND content_type = '6') || (content_parent = '0' AND content_type = '10') || (content_type = '3' || content_type = '16') || (content_type = '0' || content_type = '15') ) ");
+
+	while($rowu = $sqlu -> db_Fetch()){
+		extract($rowu);
+		$bug_unknownrows[] = $content_id." ".$content_heading." - parent=".$content_parent." - type=".$content_type;
+	}
 
 					//content page:		$content_parent == "0" && $content_type == "1"
 					//review category:	$content_parent == "0" && $content_type == "10"
@@ -180,6 +188,8 @@ if(isset($_POST['convert_table'])){
 		$content_present = "1";
 		while($row = $sql -> db_Fetch()){
 		extract($row);
+					$oldcontentid = $row['content_id'];
+
 					//select main content parent id
 					$sql5 -> db_Select($plugintable, "content_id", "content_heading = 'content' AND content_parent = '0' ");
 					list($content_main_id2) = $sql5 -> db_Fetch();
@@ -211,18 +221,18 @@ if(isset($_POST['convert_table'])){
 						$valid_content_insert[] = $content_id." ".$content_heading;
 						$countcontent = $countcontent + 1;
 
-						//check if comments present, if so, convert those to new content item id's
 						list($thenewcontent_id, $thenewcontent_heading) = $sql6 -> db_Fetch();
-						$num = $sql8 -> db_Count("comments", "(*)", "WHERE comment_type = '1' AND comment_item_id = '".$content_id."' ");
-						if($num > 0){
-							$sql8 -> db_Update("comments", "comment_item_id = '".$thenewcontent_id."', comment_type = 'pcontent' WHERE comment_item_id = '".$content_id."' ");
+						
+						//check if comments present, if so, convert those to new content item id's						
+						$numc = $sql7 -> db_Count("comments", "(*)", "WHERE comment_type = '1' AND comment_item_id = '".$content_id."' ");
+						if($numc > 0){
+							$sql7 -> db_Update("comments", "comment_item_id = '".$thenewcontent_id."', comment_type = 'pcontent' WHERE comment_item_id = '".$content_id."' ");
 						}
 
 						//check if rating present, if so, convert those to new content item id's
-						list($thenewcontent_id, $thenewcontent_heading) = $sql6 -> db_Fetch();
-						$num = $sql8 -> db_Count("rate", "(*)", "WHERE rate_table = 'article' AND rate_itemid = '".$content_id."' ");
-						if($num > 0){
-							$sql8 -> db_Update("rate", "rate_table = 'pcontent', rate_itemid = '".$thenewcontent_id."' WHERE rate_itemid = '".$thenewcontent_id."' ");
+						$numr = $sql8 -> db_Count("rate", "(*)", "WHERE rate_table = 'content' AND rate_itemid = '".$content_id."' ");
+						if($numr > 0){
+							$sql8 -> db_Update("rate", "rate_table = 'pcontent', rate_itemid = '".$thenewcontent_id."' WHERE rate_itemid = '".$content_id."' ");
 						}
 					}
 					$count = $count + 1;
@@ -325,7 +335,9 @@ if(isset($_POST['convert_table'])){
 		$count = 1;
 		$review_present = "1";
 		while($row = $sql7 -> db_Fetch()){
-		extract($row);					
+		extract($row);
+					$oldcontentid = $row['content_id'];
+
 					//select main review parent id
 					$sql2 -> db_Select($plugintable, "content_id", "content_heading = 'review' AND content_parent = '0' ");
 					list($review_main_id) = $sql2 -> db_Fetch();
@@ -381,24 +393,24 @@ if(isset($_POST['convert_table'])){
 
 					$sql5 -> db_Insert($plugintable, "'0', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '1.".$count."' ");
 
-					if(!$sql5 -> db_Select($plugintable, "content_id, content_heading", "content_heading = '".$newcontent_heading."' ")){
+					if(!$sql6 -> db_Select($plugintable, "content_id, content_heading", "content_heading = '".$newcontent_heading."' ")){
 						$bug_review_insert[] = $content_id." ".$content_heading;
 					}else{
 						$valid_review_insert[] = $content_id." ".$content_heading;
 						$countreview = $countreview + 1;
 
-						//check if comments present, if so, convert those to new content item id's
 						list($thenewcontent_id, $thenewcontent_heading) = $sql6 -> db_Fetch();
-						$num = $sql8 -> db_Count("comments", "(*)", "WHERE comment_type = '1' AND comment_item_id = '".$content_id."' ");
-						if($num > 0){
-							$sql8 -> db_Update("comments", "comment_item_id = '".$thenewcontent_id."', comment_type = 'pcontent' WHERE comment_item_id = '".$content_id."' ");
+						
+						//check if comments present, if so, convert those to new content item id's						
+						$numc = $sql7 -> db_Count("comments", "(*)", "WHERE comment_type = '1' AND comment_item_id = '".$content_id."' ");
+						if($numc > 0){
+							$sql7 -> db_Update("comments", "comment_item_id = '".$thenewcontent_id."', comment_type = 'pcontent' WHERE comment_item_id = '".$content_id."' ");
 						}
 
 						//check if rating present, if so, convert those to new content item id's
-						list($thenewcontent_id, $thenewcontent_heading) = $sql6 -> db_Fetch();
-						$num = $sql8 -> db_Count("rate", "(*)", "WHERE rate_table = 'article' AND rate_itemid = '".$content_id."' ");
-						if($num > 0){
-							$sql8 -> db_Update("rate", "rate_table = 'pcontent', rate_itemid = '".$thenewcontent_id."' WHERE rate_itemid = '".$thenewcontent_id."' ");
+						$numr = $sql8 -> db_Count("rate", "(*)", "WHERE rate_table = 'review' AND rate_itemid = '".$content_id."' ");
+						if($numr > 0){
+							$sql8 -> db_Update("rate", "rate_table = 'pcontent', rate_itemid = '".$thenewcontent_id."' WHERE rate_itemid = '".$content_id."' ");
 						}
 					}
 					$count = $count + 1;
@@ -407,12 +419,12 @@ if(isset($_POST['convert_table'])){
 
 
 	// ##### STAGE 9 : INSERT ARTICLES ------------------------------------------------------------
-	if(!$sql7 -> db_Select("content", "*", "content_type = '0' || content_type = '15' ORDER BY content_id " )){
+	if(!$sql -> db_Select("content", "*", "content_type = '0' || content_type = '15' ORDER BY content_id " )){
 		$article_present = "0";
 	}else{
 		$count = 1;
 		$article_present = "1";
-		while($row = $sql7 -> db_Fetch()){
+		while($row = $sql -> db_Fetch()){
 		extract($row);	
 					$oldcontentid = $row['content_id'];
 
@@ -476,18 +488,17 @@ if(isset($_POST['convert_table'])){
 						$valid_article_insert[] = $content_id." ".$content_heading;
 						$countarticle = $countarticle + 1;
 
-						//check if comments present, if so, convert those to new content item id's
 						list($thenewcontent_id, $thenewcontent_heading) = $sql6 -> db_Fetch();
-						$num = $sql8 -> db_Count("comments", "(*)", "WHERE comment_type = '1' AND comment_item_id = '".$content_id."' ");
-						if($num > 0){
-							$sql8 -> db_Update("comments", "comment_item_id = '".$thenewcontent_id."', comment_type = 'pcontent' WHERE comment_item_id = '".$content_id."' ");
+						//check if comments present, if so, convert those to new content item id's						
+						$numc = $sql7 -> db_Count("comments", "(*)", "WHERE comment_type = '1' AND comment_item_id = '".$content_id."' ");
+						if($numc > 0){
+							$sql7 -> db_Update("comments", "comment_item_id = '".$thenewcontent_id."', comment_type = 'pcontent' WHERE comment_item_id = '".$content_id."' ");
 						}
 
 						//check if rating present, if so, convert those to new content item id's
-						list($thenewcontent_id, $thenewcontent_heading) = $sql6 -> db_Fetch();
-						$num = $sql8 -> db_Count("rate", "(*)", "WHERE rate_table = 'article' AND rate_itemid = '".$content_id."' ");
-						if($num > 0){
-							$sql8 -> db_Update("rate", "rate_table = 'pcontent', rate_itemid = '".$thenewcontent_id."' WHERE rate_itemid = '".$thenewcontent_id."' ");
+						$numr = $sql8 -> db_Count("rate", "(*)", "WHERE rate_table = 'article' AND rate_itemid = '".$content_id."' ");
+						if($numr > 0){
+							$sql8 -> db_Update("rate", "rate_table = 'pcontent', rate_itemid = '".$thenewcontent_id."' WHERE rate_itemid = '".$content_id."' ");
 						}
 					}
 					$count = $count + 1;
@@ -505,7 +516,7 @@ if(isset($_POST['convert_table'])){
 		".CONTENT_ADMIN_CONVERSION_LAN_12.": ".$totaloldcontentrows."<br />
 		".CONTENT_ADMIN_CONVERSION_LAN_13.": ".(count($valid_article_insert) + count($valid_article_cat_insert) + count($valid_review_insert) + count($valid_review_cat_insert) + count($valid_content_insert))."<br />
 		".CONTENT_ADMIN_CONVERSION_LAN_14.": ".(count($bug_article_oldcat) + count($bug_article_newcat) + count($bug_review_oldcat) + count($bug_review_newcat))."<br />
-		".CONTENT_ADMIN_CONVERSION_LAN_15.": ".(count($bug_article_insert) + count($bug_article_cat_insert) + count($bug_review_insert) + count($bug_review_cat_insert) + count($bug_content_insert))."<br />
+		".CONTENT_ADMIN_CONVERSION_LAN_15.": ".(count($bug_article_insert) + count($bug_article_cat_insert) + count($bug_review_insert) + count($bug_review_cat_insert) + count($bug_content_insert) + count($bug_unknownrows))."<br />
 	</td></tr>
 
 	<tr><td class='forumheader3' colspan='2'><br /></td></tr>
@@ -527,9 +538,21 @@ if(isset($_POST['convert_table'])){
 
 	$text .= "
 	</td>
-	</tr>
+	</tr>";
 
-	<tr><td class='forumheader3' colspan='2'><br /></td></tr>";
+	//unknown rows
+	$text .= "
+	<tr><td class='forumheader3' colspan='2'><br /></td></tr>
+	<tr><td class='fcaption' colspan='2'>unknown rows</td></tr>";
+
+		if(count($bug_unknownrows) > 0 ){
+			for($i=0;$i<count($bug_unknownrows);$i++){
+				$text .= "<tr><td class='forumheader3' colspan='2'>".CONTENT_ICON_ERROR." ".$bug_unknownrows[$i]."</td></tr>";
+			}
+		}
+
+
+	$text .= "<tr><td class='forumheader3' colspan='2'><br /></td></tr>";
 
 	//main parents
 	$text .= "
