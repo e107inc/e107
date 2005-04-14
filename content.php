@@ -11,14 +11,19 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/content.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-01-27 19:51:37 $
-|     $Author: streaky $
+|     $Revision: 1.14 $
+|     $Date: 2005-04-14 08:34:19 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 	
 require_once("class2.php");
-	
+
+//redirection to new content management plugin if it is installed
+if($content_install = $sql -> db_Select("plugin", "*", "plugin_path = 'content' AND plugin_installflag = '1' ")){ 
+	header("location:".e_PLUGIN."content/content.php");
+}
+
 if (e_QUERY) {
 	$tmp = explode(".", e_QUERY);
 	$action = $tmp[0];
