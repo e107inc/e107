@@ -10,7 +10,9 @@ div.menu a.menuItem {
 }
 
 div.menuBar {
-  background-color: #FCFEFF;
+  background-color: #F7F9FA;
+  background-image: url(images/s_nav.png);
+  background-repeat: repeat-x;
   border-top: 1px solid #ffffff;
   border-bottom: 0px solid #000;
   padding: 4px 0px 4px 0px;
@@ -18,7 +20,7 @@ div.menuBar {
 }
 
 div.emenuBar {
-  background-color: #FCFEFF;
+  background-color: #F7F9FA;
   border-top: 1px solid #ffffff;
   border-bottom: 0px solid #000;
   text-align: left;
@@ -26,7 +28,7 @@ div.emenuBar {
 
 div.menuBar a.menuButton, div.menuButton, div.menuButton_over {
   background-color: transparent;
-  border: 1px solid #FCFEFF;
+  border: 1px solid #F7F9FA;
   color: #000000;
   cursor: default;
   left: 0px;
@@ -46,7 +48,7 @@ div.menuBar a.menuButton:hover, div.menuButton:hover, div.menuButton_over {
 
 div.menuBar a.menuButtonActive, div.menuButtonActive, div.menuButtonActive:hover, 
 div.menuBar a.menuButtonActive:hover {
-  background-color: #f0f0ff;
+  background-color: #ffffff;
   border-color: #a5a5a5 #ffffff #ffffff #a5a5a5;
   color: #000;
   left: 1px;
@@ -54,7 +56,7 @@ div.menuBar a.menuButtonActive:hover {
 }
 
 div.menu {
-  background-color: #FCFEFF;
+  background-color: #FCFDFF;
   border: 1px solid;
   border-color: #ffffff #a5a5a5 #a5a5a5 #ffffff;
   left: 0px;
@@ -75,7 +77,7 @@ div.menu a.menuItem {
 }
 
 div.menu a.menuItem:hover, div.menu a.menuItemHighlight {
-  background-color: #f0f0ff;
+  background-color: #F0F6FF;
   color: #000000;
 }
 

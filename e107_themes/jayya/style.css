@@ -214,6 +214,8 @@ ul{
 .left_menu, .right_menu {
 	width: 170px;
 	vertical-align: top;
+	background-image: url(images/s_body.png);
+	background-repeat: repeat-y;
 	background-color: #F0F1F2;
 }
 
@@ -232,11 +234,23 @@ ul{
 }
 
 .main_caption {
+	background-image: url(images/s_main_cap.png);
+	background-repeat: no-repeat;
+	background-position: left;
 	background-color: #E1E4E8;
 }
 
 .left_caption, .right_caption {
+	background-image: url(images/s_left_cap.png);
+	background-repeat: no-repeat;
+	background-position: left;
 	background-color: #D2D5D9;
+}
+
+.bevel {
+	background-image: url(images/s_left_bevel.png);
+	background-repeat: no-repeat;
+	background-position: right;
 }
 
 .cap_border {

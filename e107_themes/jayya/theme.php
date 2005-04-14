@@ -117,9 +117,9 @@ define('LINKALIGN', 'left');
 
 // [newsstyle]
 
-$NEWSSTYLE = "<div class='cap_border'><div class='main_caption'>
+$NEWSSTYLE = "<div class='cap_border'><div class='main_caption'><div class='bevel'>
 {STICKY_ICON}{NEWSTITLE}
-</div></div>
+</div></div></div>
 <div class='menu_content'>
 {NEWSBODY}
 {EXTENDED}
@@ -178,11 +178,11 @@ function tablestyle($caption, $text, $mode){
 	
 	echo "<div class='cap_border".$but_border."'>";
 	if ($style == 'leftmenu') {
-		echo "<div class='left_caption'>".$caption."</div>";
+		echo "<div class='left_caption'><div class='bevel'>".$caption."</div></div>";
 	}  else if ($style == 'rightmenu') {
-		echo "<div class='right_caption'>".$caption."</div>";
+		echo "<div class='right_caption'><div class='bevel'>".$caption."</div></div>";
 	} else {
-		echo "<div class='main_caption'>".$caption."</div>";
+		echo "<div class='main_caption'><div class='bevel'>".$caption."</div></div>";
 	}
 	echo "</div>";
 	if ($text != "") {
