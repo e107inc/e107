@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-04-14 12:39:01 $
+|     $Revision: 1.20 $
+|     $Date: 2005-04-14 19:44:20 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -518,6 +518,27 @@ class e107forum {
 		 
 		return $newthread_id;
 	}
+	
+	function post_getnew($count)
+	{
+		global $sql;
+		$qry = "
+			SELECT ft.*, fp.thread_name as post_subject, fp.thread_total_replies as replies, u.user_id, u.user_name, f.forum_class
+			FROM #forum_t AS ft
+			LEFT JOIN #forum_t as fp ON fp.thread_id = ft.thread_parent
+			LEFT JOIN #user as u ON u.user_id = ft.thread_user
+			LEFT JOIN #forum as f ON f.forum_id = ft.thread_forum_id
+			WHERE ft.thread_datestamp > ".USERLV. "
+			AND
+			f.forum_class IN (".USERCLASS_LIST.") 
+			ORDER BY ft.thread_datestamp DESC LIMIT 0, 50
+			";
+		if($sql->db_Select_gen($qry))
+		{
+			$ret = $sql->db_getList();
+		}
+		return $ret;
+	}
 }
 	
 	
@@ -574,7 +595,7 @@ function eMLANG_path($file_name, $sub_folder) {
 	}
 	return e_PLUGIN.$sub_folder."/images/".$file_name;
 }
-	
+
 	
 if (file_exists(THEME.'forum/forum_icons_template.php')) {
 	require_once(THEME.'forum/forum_icons_template.php');
