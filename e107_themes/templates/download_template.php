@@ -11,11 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/download_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-03-23 12:54:37 $
-|     $Author: stevedunstan $
+|     $Revision: 1.4 $
+|     $Date: 2005-04-15 22:26:30 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
+/* set style of download image and thumbnail */
+define("DL_IMAGESTYLE","border:0px");
+
 // ##### CAT TABLE --------------------------------------------------------------------------------
 if(!$DOWNLOAD_CAT_TABLE_START){
                 $DOWNLOAD_CAT_TABLE_START = "
