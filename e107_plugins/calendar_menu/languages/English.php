@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: English.php,v 1.6 2005-03-30 17:49:39 mcfly_e107 Exp $
+// $Id: English.php,v 1.7 2005-04-15 14:35:53 mcfly_e107 Exp $
 	
 	
 define('EC_ADLAN_1', "Event Calendar");
@@ -160,6 +160,7 @@ define('EC_LAN_118', "Date format in calendar header.");
 define('EC_LAN_119', "month/year");
 define('EC_LAN_120', "year/month");
 define('EC_LAN_121', "Show Calendar");	
+define('EC_LAN_122', "Css element to show events on this day (menu)");	
 
 define('EC_ADLAN_A10', "Configuration");
 define('EC_ADLAN_A11', "Categories");
