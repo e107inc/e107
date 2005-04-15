@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2005-04-13 15:50:16 $
+|     $Revision: 1.47 $
+|     $Date: 2005-04-15 15:45:53 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -47,6 +47,7 @@ if (isset($_POST['updateprefs']))
 	unset($_POST['updateprefs']);
 	foreach($_POST as $key => $value)
 	{
+		echo "pref = $key - val = [$value] <br />";
 		if(substr($key, 0, 9) != "uesignup_")
 		{
 			$pref[$key] = $tp->toDB($value);
@@ -66,6 +67,7 @@ if (isset($_POST['updateprefs']))
 	}
 	$pref['signup_options'] = $signup_options;
 	$e107cache->clear();
+//	exit;
 	save_prefs();
 	header("location:".e_ADMIN."prefs.php?u");
 	exit;
@@ -311,14 +313,17 @@ $text .= "<td style='width:50%' class='forumheader3'>".PRFLAN_22.": </td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
 	<select name='time_offset' class='tbox'>\n";
 $toffset = array("-12", "-11", "-10", "-9", "-8", "-7", "-6", "-5", "-4", "-3", "-2", "-1", "0", "+1", "+2", "+3", "+4", "+5", "+6", "+7", "+8", "+9", "+10", "+11", "+12", "+13", "+14", "+15", "+16");
-$counter = 0;
-while (isset($toffset[$counter])) {
-	if ($toffset[$counter] == $pref['time_offset']) {
-		$text .= "<option selected='selected'>".$toffset[$counter]."</option>\n";
+if(!isset($pref['time_offset']))
+{
+	$pref['time_offset'] = "0";
+}
+foreach($toffset as $o)
+{
+	if (!isset($pref['time_offset']) || $o == $pref['time_offset']) {
+		$text .= "<option selected='selected'>".$o."</option>\n";
 	} else {
-		$text .= "<option>".$toffset[$counter]."</option>\n";
+		$text .= "<option>".$o."</option>\n";
 	}
-	$counter++;
 }
 $text .= "</select>
 	</td></tr>
