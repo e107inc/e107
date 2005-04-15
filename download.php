@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-04-15 02:10:51 $
+|     $Revision: 1.24 $
+|     $Date: 2005-04-15 22:25:30 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -27,6 +27,12 @@ global $tp;
 define("IMAGE_DOWNLOAD", (file_exists(THEME."generic/download.png") ? THEME."generic/download.png" : e_IMAGE."generic/".IMODE."/download.png"));
 define("IMAGE_NEW", (file_exists(THEME."generic/new.png") ? THEME."generic/new.png" : e_IMAGE."generic/".IMODE."/new.png"));
 
+/* define image style */
+
+
+
+
+
 if (!e_QUERY) {
 	require_once(HEADERF);
 	// no qs - render categories ...
@@ -38,6 +44,11 @@ if (!e_QUERY) {
 			require_once(e_BASE.$THEMES_DIRECTORY."templates/download_template.php");
 		}
 	}
+    if(!defined("DL_IMAGESTYLE")){ define("DL_IMAGESTYLE","border:1px solid blue");}
+
+
+
+
 
 	$qry = "
 	SELECT dc.*, SUM(d.download_filesize) AS d_size,
@@ -179,6 +190,7 @@ if ($action == "list") {
 			require_once(e_BASE.$THEMES_DIRECTORY."templates/download_template.php");
 		}
 	}
+    if(!defined("DL_IMAGESTYLE")){ define("DL_IMAGESTYLE","border:1px solid blue");}
 
 	$gen = new convert;
 	require_once(e_HANDLER."rate_class.php");
@@ -238,6 +250,18 @@ if ($action == "view") {
 		exit;
 	}
 
+    if (!$DOWNLOAD_VIEW_TABLE) {
+		if (file_exists(THEME."download_template.php")) {
+			require_once(THEME."download_template.php");
+		} else {
+			require_once(e_BASE.$THEMES_DIRECTORY."templates/download_template.php");
+		}
+	}
+    if(!defined("DL_IMAGESTYLE")){ define("DL_IMAGESTYLE","border:0px");}
+
+
+
+
 	$row = $sql->db_Fetch();
 	 extract($row);
 	$subject = $download_name;
@@ -280,14 +304,14 @@ if ($action == "view") {
 
 	if ($download_thumb) {
 		$DOWNLOAD_VIEW_IMAGE_LAN = LAN_dl_11;
-		$DOWNLOAD_VIEW_IMAGE = ($download_image ? "<a href='".e_FILE."downloadimages/{$download_image}'><img src='".e_FILE."downloadthumbs/".$download_thumb."' alt='' style='border:0' /></a>" : "<img src='".e_FILE."downloadthumbs/".$download_thumb."' alt='' />");
+		$DOWNLOAD_VIEW_IMAGE = ($download_image ? "<a href='".e_FILE."downloadimages/{$download_image}'><img src='".e_FILE."downloadthumbs/".$download_thumb."' alt='' style='".DL_IMAGESTYLE."' /></a>" : "<img src='".e_FILE."downloadthumbs/".$download_thumb."' alt='' style='".DL_IMAGESTYLE."' />");
 	}
 	else if($download_image) {
 		$DOWNLOAD_VIEW_IMAGE_LAN = LAN_dl_11;
 		$DOWNLOAD_VIEW_IMAGE = "<a href='".e_BASE."request.php?download.".$download_id."'>".LAN_dl_40."</a>";
 	}
 
-	$DOWNLOAD_VIEW_IMAGEFULL = ($download_image) ? "<img src='".e_FILE."downloadimages/{$download_image}' alt='' />" : "";
+	$DOWNLOAD_VIEW_IMAGEFULL = ($download_image) ? "<img src='".e_FILE."downloadimages/{$download_image}' alt='' style='".DL_IMAGESTYLE."' />" : "";
 
 	if ($pref['agree_flag'] == 1) {
 		$dnld_link = "<a href='request.php?{$download_id}' onclick= \"return confirm('{$agreetext}');\">";
@@ -351,13 +375,8 @@ if ($action == "view") {
 	}
 	$DOWNLOAD_VIEW_RATING .= "</td></tr></table>";
 
-	if (!$DOWNLOAD_VIEW_TABLE) {
-		if (file_exists(THEME."download_template.php")) {
-			require_once(THEME."download_template.php");
-		} else {
-			require_once(e_BASE.$THEMES_DIRECTORY."templates/download_template.php");
-		}
-	}
+
+
 	$download_view_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_VIEW_TABLE_START);
 	$download_view_table_string = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_VIEW_TABLE);
 	$download_view_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_VIEW_TABLE_END);
@@ -702,7 +721,7 @@ function parse_download_list_table($row) {
 	$DOWNLOAD_LIST_AUTHOR = $download_author;
 	$DOWNLOAD_LIST_REQUESTED = $download_requested;
 	$DOWNLOAD_LIST_ICON = "<img src='".IMAGE_DOWNLOAD."' alt='' style='border:0' /></a>";
-    $DOWNLOAD_LIST_THUMB = "<img src='".e_FILE."downloadthumbs/".$download_thumb."' alt='' />";
+    $DOWNLOAD_LIST_THUMB = "<img src='".e_FILE."downloadthumbs/".$download_thumb."' alt='' style='".DL_IMAGESTYLE."' />";
 	return(preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_LIST_TABLE));
 }
 
