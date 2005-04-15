@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-04-11 20:01:57 $
-|     $Author: streaky $
+|     $Revision: 1.23 $
+|     $Date: 2005-04-15 02:10:51 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -40,13 +40,13 @@ if (!e_QUERY) {
 	}
 
 	$qry = "
-	SELECT dc.*, SUM(d.download_filesize) AS d_size, 
+	SELECT dc.*, SUM(d.download_filesize) AS d_size,
 	COUNT(d.download_id) AS d_count,
-	MAX(d.download_datestamp) as d_last, 
-	SUM(d.download_requested) as d_requests 
-	FROM #download_category AS dc 
-	LEFT JOIN #download AS d ON dc.download_category_id = d.download_category AND d.download_active > 0 AND d.download_class IN (".USERCLASS_LIST.") 
-	WHERE dc.download_category_class IN (".USERCLASS_LIST.") 
+	MAX(d.download_datestamp) as d_last,
+	SUM(d.download_requested) as d_requests
+	FROM #download_category AS dc
+	LEFT JOIN #download AS d ON dc.download_category_id = d.download_category AND d.download_active > 0 AND d.download_class IN (".USERCLASS_LIST.")
+	WHERE dc.download_category_class IN (".USERCLASS_LIST.")
 	GROUP by dc.download_category_id ORDER by dc.download_category_order
 	";
 	if (!$sql->db_Select_gen($qry))
@@ -63,7 +63,7 @@ if (!e_QUERY) {
 		}
 		foreach($catList[0] as $row)
 		{
-			
+
 			$download_cat_table_string .= parse_download_cat_parent_table($row);
 			foreach($catList[$row['download_category_id']] as $crow)
 			{
@@ -71,7 +71,7 @@ if (!e_QUERY) {
 			}
 		}
 	}
-	
+
 	$download_cat_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_TABLE_START);
 
 	$DOWNLOAD_CAT_NEWDOWNLOAD_TEXT = "<img src='".IMAGE_NEW."' alt='' style='vertical-align:middle' /> ".LAN_dl_36;
@@ -286,6 +286,8 @@ if ($action == "view") {
 		$DOWNLOAD_VIEW_IMAGE_LAN = LAN_dl_11;
 		$DOWNLOAD_VIEW_IMAGE = "<a href='".e_BASE."request.php?download.".$download_id."'>".LAN_dl_40."</a>";
 	}
+
+	$DOWNLOAD_VIEW_IMAGEFULL = ($download_image) ? "<img src='".e_FILE."downloadimages/{$download_image}' alt='' />" : "";
 
 	if ($pref['agree_flag'] == 1) {
 		$dnld_link = "<a href='request.php?{$download_id}' onclick= \"return confirm('{$agreetext}');\">";
@@ -508,23 +510,23 @@ if($action == "mirror")
 			require_once(e_BASE.$THEMES_DIRECTORY."templates/download_template.php");
 		}
 	}
-	
+
 	$sql -> db_Select("download_mirror");
 	$mirrorList = $sql -> db_getList("ALL", 0, 200, "mirror_id");
 
 	if($sql -> db_Select("download", "*", "download_id = {$id}"))
 	{
 		$row = $sql->db_Fetch();
-		
+
 		extract($row);
 		$array = explode(chr(1), $download_mirror);
 
-		$c = (count($array)-1); 
-		for ($i=1; $i<$c; $i++) { 
-			$d = mt_rand(0, $i); 
-			$tmp = $array[$i]; 
-			$array[$i] = $array[$d]; 
-			$array[$d] = $tmp; 
+		$c = (count($array)-1);
+		for ($i=1; $i<$c; $i++) {
+			$d = mt_rand(0, $i);
+			$tmp = $array[$i];
+			$array[$i] = $array[$d];
+			$array[$d] = $tmp;
 		}
 
 		$download_mirror = "";
@@ -542,7 +544,7 @@ if($action == "mirror")
 		$DOWNLOAD_MIRROR_DESCRIPTION_LAN = LAN_dl_71;
 		$DOWNLOAD_MIRROR_REQUEST = LAN_dl_72."'".$download_name."'";
 
-		
+
 
 		$download_mirror_start = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_MIRROR_START);
 		$download_mirror_end = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_MIRROR_END);
@@ -700,7 +702,7 @@ function parse_download_list_table($row) {
 	$DOWNLOAD_LIST_AUTHOR = $download_author;
 	$DOWNLOAD_LIST_REQUESTED = $download_requested;
 	$DOWNLOAD_LIST_ICON = "<img src='".IMAGE_DOWNLOAD."' alt='' style='border:0' /></a>";
-
+    $DOWNLOAD_LIST_THUMB = "<img src='".e_FILE."downloadthumbs/".$download_thumb."' alt='' />";
 	return(preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_LIST_TABLE));
 }
 
