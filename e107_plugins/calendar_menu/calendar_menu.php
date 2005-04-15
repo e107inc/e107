@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar_menu.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-04-11 18:13:00 $
+|     $Revision: 1.13 $
+|     $Date: 2005-04-15 14:34:46 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -139,6 +139,7 @@ else
 $cal_headercss = (isset($pref['eventpost_headercss']) && $pref['eventpost_headercss']) ? $pref['eventpost_headercss'] : "forumheader";
 $cal_daycss = (isset($pref['eventpost_daycss']) && $pref['eventpost_daycss']) ? $pref['eventpost_daycss'] : "forumheader3";
 $cal_todaycss = (isset($pref['eventpost_todaycss']) && $pref['eventpost_todaycss']) ? $pref['eventpost_todaycss'] : "indent";
+$cal_evtoday = (isset($pref['eventpost_evtoday']) && $pref['eventpost_evtoday']) ? $pref['eventpost_evtoday'] : "indent";
 
 $cal_start = $cal_monthstart;
 
@@ -181,9 +182,16 @@ for($cal_c = 1; $cal_c <= 31; $cal_c++)
 		}
 		else
 		{
-			$cal_text .= "<td class='$cal_daycss' style='text-align:center; width: 14.28%;'>";
+			if (array_key_exists($cal_c, $cal_events))
+			{
+			    $cal_text .= "<td class='$cal_evtoday' style='text-align:center; width: 14.28%;'>";
+			} 
+			else
+			{
+			    $cal_text .= "<td class='$cal_daycss' style='text-align:center; width: 14.28%;'>";
+			} 
 		}
-
+		
 		if (array_key_exists($cal_c, $cal_events))
 		{
 			$cal_event_icon = e_PLUGIN . "calendar_menu/images/" . $cal_events[$cal_c][0]['event_cat_icon'];

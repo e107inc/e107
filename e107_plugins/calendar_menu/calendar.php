@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-04-11 18:12:59 $
+|     $Revision: 1.9 $
+|     $Date: 2005-04-15 14:34:45 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */ 
@@ -312,16 +312,19 @@ for ($c = 1; $c <= 31; $c++)
     {
         if ($nowday == $c && $calmonth == $nowmonth && $calyear == $nowyear)
         {
-            $text .= "<td  class='forumheader3' style='vertical-align:top; width:90px;height:90px;padding-bottom:0px;padding-right:0px; margin-right:0px'>";
+        		//today
+            $text .= "<td  class='forumheader3' style='vertical-align:top; width:14%; height:90px; padding-bottom:0px;padding-right:0px; margin-right:0px'>";
             $text .= "<div style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'>
 				<b>
 				<a href='" . e_PLUGIN . "calendar_menu/event.php?" . $startt . ".one'>" . $c . "</a>
 				</b>
 				<span class='smalltext'>[" . EC_LAN_95 . "]</span>
 				</div>";
-        } elseif (array_key_exists($c, $events))
+        } 
+        elseif (array_key_exists($c, $events))
         {
-            $text .= "<td class='forumheader3' style='z-index: 1;vertical-align:top;  width:90px;height:90px;padding-bottom:0px;padding-right:0px; margin-right:0px'>";
+        		//day has events
+            $text .= "<td class='forumheader3' style='z-index: 1;vertical-align:top; width:14%; height:90px;padding-bottom:0px;padding-right:0px; margin-right:0px'>";
             $text .= "<span style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'>
 				<a href='" . e_PLUGIN . "calendar_menu/event.php?" . $startt . ".one'>
 				<strong>" . $c . "</strong>
@@ -330,7 +333,8 @@ for ($c = 1; $c <= 31; $c++)
         } 
         else
         {
-            $text .= "<td class='forumheader2 ' style='z-index: 1;vertical-align:top;  width:90px;height:90px;padding-bottom:0px;padding-right:0px; margin-right:0px'>";
+            // no events and not today
+            $text .= "<td class='forumheader2 ' style='z-index: 1;vertical-align:top; width:14%; height:90px;padding-bottom:0px;padding-right:0px; margin-right:0px'>";
             $text .= "<span style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'>
 				<a href='" . e_PLUGIN . "calendar_menu/event.php?" . $startt . ".one'>
 				<strong>" . $c . "</strong>
@@ -338,6 +342,7 @@ for ($c = 1; $c <= 31; $c++)
 				</span>";
         } 
 
+        // If there are events then list them
         if (array_key_exists($c, $events))
         {
             foreach($events[$c] as $ev)

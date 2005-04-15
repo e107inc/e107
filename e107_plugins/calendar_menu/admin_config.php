@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/admin_config.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-03-30 17:47:33 $
+|     $Revision: 1.8 $
+|     $Date: 2005-04-15 14:34:46 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -31,6 +31,7 @@ if (isset($_POST['updatesettings'])) {
 	$pref['eventpost_headercss'] = $_POST['eventpost_headercss'];
 	$pref['eventpost_daycss'] = $_POST['eventpost_daycss'];
 	$pref['eventpost_todaycss'] = $_POST['eventpost_todaycss'];
+	$pref['eventpost_evtoday'] = $_POST['eventpost_evtoday'];	
 	$pref['eventpost_addcat'] = $_POST['eventpost_addcat'];
 	$pref['eventpost_forum'] = $_POST['eventpost_forum'];	
 	$pref['eventpost_super'] = $_POST['eventpost_super'];
@@ -87,6 +88,13 @@ $text = "<div style='text-align:center'>
 	<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_todaycss' size='20' value='".$pref['eventpost_todaycss']."' maxlength='100' />
 	</td>
 	</tr>
+
+	<tr>
+	<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_122."<br /><span class='smalltext'><em>".EC_LAN_89."</em></span></td>
+	<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_evtoday' size='20' value='".$pref['eventpost_evtoday']."' maxlength='100' />
+	</td>
+	</tr>
+
 	<tr>
 	<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_102."<br /><span class='smalltext'><em>".EC_LAN_103."</em></span></td>
 	<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='checkbox' name='eventpost_forum' value='1' ".

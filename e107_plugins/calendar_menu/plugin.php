@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/plugin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-18 02:13:57 $
+|     $Revision: 1.5 $
+|     $Date: 2005-04-15 14:34:46 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -20,7 +20,7 @@
 $lan_file = e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php";
 @require_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."calendar_menu/languages/English.php");
 $eplug_name = "Event Calendar";
-$eplug_version = "3.3";
+$eplug_version = "3.4";
 $eplug_author = "jalist / cameron / McFly / Barry";
 $eplug_url = "http://e107.org";
 $eplug_email = "jalist@e107.org";
@@ -51,7 +51,8 @@ $eplug_prefs = array(
 "eventpost_daycss" => "forumheader3",
 "eventpost_todaycss" => "indent",
 "eventpost_addcat" => 0,
-"eventpost_forum" => 1
+"eventpost_forum" => 1,
+"eventpost_evtoday" => "indent"
 
  );
 	

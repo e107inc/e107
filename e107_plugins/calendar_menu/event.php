@@ -1,7 +1,7 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website sy.em
+|     e107 website system
 |
 |     ©Steve Dun.an 2001-2002
 |     http://e107.org
@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-04-11 18:13:00 $
+|     $Revision: 1.10 $
+|     $Date: 2005-04-15 14:34:46 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -45,6 +45,8 @@ if (isset($_POST['doit']))
 {
 	Header("Location: " . e_PLUGIN . "calendar_menu/event.php?ne." . $_POST['enter_new_val']);
 }
+require_once(e_HANDLER."calendar/calendar_class.php");
+$cal = new DHTML_Calendar(true);
 
 // enter new category into db ------------------------------------------------------------------------
 if (isset($_POST['ne_cat_create']))
@@ -64,8 +66,10 @@ if (isset($_POST['ne_insert']) && USER == true)
 {
 	if ($_POST['ne_event'] != "")
 	{
-		$ev_start = mktime($_POST['ne_hour'], $_POST['ne_minute'], 0, $_POST['ne_month'], $_POST['ne_day'], $_POST['ne_year']);
-		$ev_end = mktime($_POST['end_hour'], $_POST['end_minute'], 0, $_POST['end_month'], $_POST['end_day'], $_POST['end_year']);
+		$tmp = explode("-", $_POST['start_date']);
+		$ev_start = mktime($_POST['ne_hour'], $_POST['ne_minute'], 0, $tmp[1], $tmp[2], $tmp[0]);
+		$tmp = explode("-", $_POST['end_date']);
+		$ev_end = mktime($_POST['end_hour'], $_POST['end_minute'], 0, $tmp[1], $tmp[2], $tmp[0]);
 		$ev_title = $tp->toDB($_POST['ne_title']);
 		$ev_location = $tp->toDB($_POST['ne_location']);
 		$ev_event = $tp->toDB($_POST['ne_event']);
@@ -233,39 +237,28 @@ if ($action == "ne" || $action == "ed")
 			list($null, $ne_start, $ne_end, $allday, $recurring, $ne_datestamp, $ne_title, $ne_location, $ne_event, $ne_author, $ne_email, $ne_category, $ne_thread) = $sql->db_Fetch();
 
 			$smarray = getdate($ne_start);
-			$ne_day = $smarray['mday'];
-			$ne_month = $smarray['mon'];
-			$ne_year = $smarray['year'];
-
 			$ne_hour = $smarray['hours'];
 			$ne_minute = $smarray['minutes'];
+			$ne_startdate = date("Y-m-d", $ne_start);
 
 			$smarray = getdate($ne_end);
-			$end_day = $smarray['mday'];
-			$end_month = $smarray['mon'];
-			$end_year = $smarray['year'];
-
 			$end_hour = $smarray['hours'];
 			$end_minute = $smarray['minutes'];
+			$ne_enddate = date("Y-m-d", $ne_end);
 		}
 		else
 		{
 			$smarray = getdate($qs[1]);
 			$month = $smarray['mon'];
 			$year = $smarray['year'];
-
-			$ne_day = $smarray['mday'];
-			$ne_month = $smarray['mon'];
-			$ne_year = $smarray['year'];
+			$ne_startdate = date("Y-m-d", $qs[1]);
 
 			$ne_hour = $smarray['hours'];
 			$ne_minute = $smarray['minutes'];
-			$end_day = $smarray['mday'];
-			$end_month = $smarray['mon'];
-			$end_year = $smarray['year'];
 
 			$end_hour = $smarray['hours'];
 			$end_minute = $smarray['minutes'];
+			$ne_enddate = date("Y-m-d", $qs[1]);
 		}
 
 		$text = "
@@ -274,13 +267,17 @@ if ($action == "ne" || $action == "ed")
 		function calcheckform(thisform)
 		{
 			var testresults=true;
-			var sdate=new Date(thisform.ne_year.value,thisform.ne_month.value-1,thisform.ne_day.value,thisform.ne_hour.value,thisform.ne_minute.value,0);
-			var edate=new Date(thisform.end_year.value,thisform.end_month.value-1,thisform.end_day.value,thisform.end_hour.value,thisform.end_minute.value,0);
+			var temp;
+			temp = thisform.start_date.value.split(\"-\");
+			var sdate = temp[0] + temp[1] + temp[2] + thisform.ne_hour.options[thisform.ne_hour.selectedIndex].value + thisform.ne_minute.options[thisform.ne_minute.selectedIndex].value
+			temp = thisform.end_date.value.split(\"-\");
+			var edate = temp[0] + temp[1] + temp[2] + thisform.end_hour.options[thisform.end_hour.selectedIndex].value + thisform.end_minute.options[thisform.end_minute.selectedIndex].value
+			
 			if (thisform.ne_new_category.value!='')
 			{
 				testresults=true;
 			}
-		else
+			else
 			{
 				if (edate <= sdate && !thisform.allday.checked && testresults )
 				{
@@ -317,7 +314,8 @@ if ($action == "ne" || $action == "ed")
 		{
 			$caption = EC_LAN_66;
 			// edit Event
-		} elseif ($action == "ne")
+		} 
+		elseif ($action == "ne")
 		{
 			$caption = EC_LAN_28; // Enter New Event
 		}
@@ -329,113 +327,65 @@ if ($action == "ne" || $action == "ed")
 		$text .= "
 		<tr>
 		<td class='forumheader3' style='width:20%'>" . EC_LAN_72 . " </td>
-		<td class='forumheader3' style='width:80%'>
-		" . EC_LAN_67 . " <select name='ne_day' class='tbox'>";
-		for($count = 1; $count <= 31; $count++)
-		{
-			if ($count == $ne_day)
-			{
-				$text .= "<option selected='selected'>" . $count . "</option>";
-			}
-			else
-			{
-				$text .= "<option>" . $count . "</option>";
-			}
-		}
-		$text .= "</select>
-		<select name='ne_month' class='tbox'>";
-		for($count = 1; $count <= 12; $count++)
-		{
-			if ($count == $ne_month)
-			{
-				$text .= "<option value='$count' selected='selected'>" . $months[($count-1)] . "</option>";
-			}
-			else
-			{
-				$text .= "<option value='$count'>" . $months[($count-1)] . "</option>";
-			}
-		}
-		$text .= "</select>
-		<select name='ne_year' class='tbox'>";
-		for($count = 2002; $count <= 2022; $count++)
-		{
-			if ($count == $ne_year)
-			{
-				$text .= "<option selected='selected'>" . $count . "</option>";
-			}
-			else
-			{
-				$text .= "<option>" . $count . "</option>";
-			}
-		}
-		$text .= "</select><br />&nbsp;" . EC_LAN_73 . "
-		<select name='end_day' class='tbox'>";
-		for($count = 1; $count <= 31; $count++)
-		{
-			if ($count == $end_day)
-			{
-				$text .= "<option selected='selected'>" . $count . "</option>";
-			}
-			else
-			{
-				$text .= "<option>" . $count . "</option>";
-			}
-		}
-		$text .= "</select>
-		<select name='end_month' class='tbox'>";
-		for($count = 1; $count <= 12; $count++)
-		{
-			if ($count == $end_month)
-			{
-				$text .= "<option value='$count' selected='selected'>" . $months[($count-1)] . "</option>";
-			}
-			else
-			{
-				$text .= "<option value='$count'>" . $months[($count-1)] . "</option>";
-			}
-		}
-		$text .= "</select>
-		<select name='end_year' class='tbox'>";
-		for($count = 2002; $count <= 2022; $count++)
-		{
-			if ($count == $end_year)
-			{
-				$text .= "<option selected='selected'>" . $count . "</option>";
-			}
-			else
-			{
-				$text .= "<option>" . $count . "</option>";
-			}
-		}
-		$text .= "</select>
+		<td class='forumheader3' style='width:80%'> ".EC_LAN_67." ";
+		
+		unset($cal_options);
+		unset($cal_attrib);
+		$cal_options['firstDay'] = 0;
+		$cal_options['showsTime'] = false;
+		$cal_options['showOthers'] = true;
+		$cal_options['weekNumbers'] = false;
+		$cal_options['ifFormat'] = "%Y-%m-%d";
+		$cal_attrib['class'] = "tbox";
+		$cal_attrib['size'] = "12";
+		$cal_attrib['name'] = "start_date";
+		$cal_attrib['value'] = $ne_startdate;
+		$text .= $cal->make_input_field($cal_options, $cal_attrib);
+		
+		$text .= "&nbsp;&nbsp;&nbsp;" . EC_LAN_73 . " ";
+		unset($cal_options);
+		unset($cal_attrib);
+		$cal_options['firstDay'] = 0;
+		$cal_options['showsTime'] = false;
+		$cal_options['showOthers'] = true;
+		$cal_options['weekNumbers'] = false;
+		$cal_options['ifFormat'] = "%Y-%m-%d";
+		$cal_attrib['class'] = "tbox";
+		$cal_attrib['size'] = "12";
+		$cal_attrib['name'] = "end_date";
+		$cal_attrib['value'] = $ne_enddate;
+		$text .= $cal->make_input_field($cal_options, $cal_attrib);
+		$text .= "		
 		</td>
 		</tr>
 		<tr>
 		<td class='forumheader3' style='width:20%'>" . EC_LAN_71 . " </td>
 		<td class='forumheader3' style='width:80%'>
-		" . EC_LAN_67 . " <select name='ne_hour' class='tbox'>";
+		" . EC_LAN_67 . " <select name='ne_hour' id='ne_hour' class='tbox'>";
 		for($count = "00"; $count <= "23"; $count++)
 		{
+			$val = sprintf("%02d", $count);
 			if ($count == $ne_hour)
 			{
-				$text .= "<option selected='selected'>" . $count . "</option>";
+				$text .= "<option value='{$val}' selected='selected'>" . $val . "</option>";
 			}
 			else
 			{
-				$text .= "<option>" . $count . "</option>";
+				$text .= "<option value='{$val}'>" . $val . "</option>";
 			}
 		}
 		$text .= "</select>
 		<select name='ne_minute' class='tbox'>";
 		for($count = "00"; $count <= "59"; $count++)
 		{
+			$val = sprintf("%02d", $count);
 			if ($count == $ne_minute)
 			{
-				$text .= "<option selected='selected'>" . $count . "</option>";
+				$text .= "<option selected='selected' value='{$val}'>" . $val . "</option>";
 			}
 			else
 			{
-				$text .= "<option>" . $count . "</option>";
+				$text .= "<option value='{$val}'>" . $val . "</option>";
 			}
 		}
 		$text .= "</select>
@@ -443,26 +393,28 @@ if ($action == "ne" || $action == "ed")
 		&nbsp;&nbsp;" . EC_LAN_73 . " <select name='end_hour' class='tbox'>";
 		for($count = "00"; $count <= "23"; $count++)
 		{
+			$val = sprintf("%02d", $count);
 			if ($count == $end_hour)
 			{
-				$text .= "<option selected='selected'>" . $count . "</option>";
+				$text .= "<option selected='selected' value='{$val}'>" . $val . "</option>";
 			}
 			else
 			{
-				$text .= "<option>" . $count . "</option>";
+				$text .= "<option value='{$val}'>" . $val . "</option>";
 			}
 		}
 		$text .= "</select>
 		<select name='end_minute' class='tbox'>";
 		for($count = "00"; $count <= "59"; $count++)
 		{
+			$val = sprintf("%02d", $count);
 			if ($count == $end_minute)
 			{
-				$text .= "<option selected='selected'>" . $count . "</option>";
+				$text .= "<option selected='selected' value='{$val}'>" . $val . "</option>";
 			}
 			else
 			{
-				$text .= "<option>" . $count . "</option>";
+				$text .= "<option value='{$val}'>" . $val . "</option>";
 			}
 		}
 		$text .= "</select>";
@@ -1045,59 +997,67 @@ function show_event($day_events)
 				var emailHost='" . $smailaddr[1] . "';
 				document.write(\"<a href=\" + \"mail\" + \"to:\" + email + \"@\" + emailHost+ \">\" + contact + \"</a>\" + \"\")
 				//-->
-			</script>";
-			// $text2 .= "<a href='mailto:" . $event['event_contact'] . "'>" . $event['event_contact'] . "</a>";
+				</script>";
+				// $text2 .= "<a href='mailto:" . $event['event_contact'] . "'>" . $event['event_contact'] . "</a>";
 			}
 
-		$text2 .= "</td></tr>
-		<tr>
+			$text2 .= "</td></tr>
+			<tr>
 			<td style='width:50%' class='forumheader'>" .
-				($event['event_thread'] ? "<span class='smalltext'><a href='{$event['event_thread']}'><img src='" . e_PLUGIN . "forum/images/e.png' alt='' style='border:0' width='16' height='16' align='absmiddle'> " . EC_LAN_39 . "</a></span>" : "&nbsp;") . "
+			($event['event_thread'] ? "<span class='smalltext'><a href='{$event['event_thread']}'><img src='" . e_PLUGIN . "forum/images/e.png' alt='' style='border:0' width='16' height='16' align='absmiddle'> " . EC_LAN_39 . "</a></span>" : "&nbsp;") . "
 
 			</td>
 			<td style='width:50%;text-align:right' class='forumheader' >";
 
-				if (USERNAME == $event_author_name || $cal_super)
-				{
+			if (USERNAME == $event_author_name || $cal_super)
+			{
 				$text2 .= "<span class='smalltext'>
-					[ <a href='event.php?ed." . $event['event_id'] . "'>" . EC_LAN_35 . "</a> ] [ <a href='" . e_PLUGIN . "calendar_menu/event.php?de." . $event['event_id'] . "'>" . EC_LAN_36 . "</a> ]
+				[ <a href='event.php?ed." . $event['event_id'] . "'>" . EC_LAN_35 . "</a> ] [ <a href='" . e_PLUGIN . "calendar_menu/event.php?de." . $event['event_id'] . "'>" . EC_LAN_36 . "</a> ]
 				</span>";
-				}
+			}
 
 			$text2 .= "</td>
-		</tr>";
+			</tr>";
 		}
-		}
-		return $text2;
-		}
+	}
+	return $text2;
+}
 
-		function cal_landate($dstamp, $recurring = FALSE, $allday = FALSE)
-		{
-		$long_month_start = 0;
-		$long_day_start = 12;
-		$now = getdate($dstamp);
+function cal_landate($dstamp, $recurring = FALSE, $allday = FALSE)
+{
+	$long_month_start = 0;
+	$long_day_start = 12;
+	$now = getdate($dstamp);
 
-		if($now['wday'] == 0)
-		{
+	if($now['wday'] == 0)
+	{
 		$now['wday'] = 7;
-		}
-		$dow = constant("EC_LAN_".($long_day_start+$now['wday']-1));
-		$moy = constant("EC_LAN_".($long_month_start+$now['mon']-1));
+	}
+	$dow = constant("EC_LAN_".($long_day_start+$now['wday']-1));
+	$moy = constant("EC_LAN_".($long_month_start+$now['mon']-1));
 
-		if($recurring == TRUE)
-		{
+	if($recurring == TRUE)
+	{
 		$today = getdate();
 		$now['year'] = $today['year'];
-		}
+	}
 
-		if($allday == TRUE)
-		{
+	if($allday == TRUE)
+	{
 		return sprintf("%s %02d %s %d", $dow, $now['mday'], $moy, $now['year']);
-		}
-		else
-		{
+	}
+	else
+	{
 		return sprintf("%s %02d %s %d - %02d:%02d", $dow, $now['mday'], $moy, $now['year'], $now['hours'], $now['minutes']);
-		}
-		}
+	}
+}
 
-		?>
+function headerjs()
+{
+	global $cal;
+	$script = $cal->load_files();
+	return $script;
+}
+
+
+?>
