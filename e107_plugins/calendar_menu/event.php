@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-04-15 14:34:46 $
+|     $Revision: 1.11 $
+|     $Date: 2005-04-15 15:22:52 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -726,8 +726,9 @@ if ($ds == "event")
 	$sql2->db_Select("event", "*", "event_id='$eveid'");
 	$row = $sql2->db_Fetch();
 	$event[] = $row;
-	$text2 .= "<table style='width:98%' class='fborder'>
-	<tr><td class='fcaption' colspan='2'><strong>" . EC_LAN_110 . " $eveid</strong></td></tr>";
+	$next10_start = $event[0]['event_start'];
+	$text2 .= "<table style='width:98%' class='fborder'>";
+//	<tr><td class='fcaption' colspan='2'><strong>" . EC_LAN_110 . " $eveid</strong></td></tr>";
 	$text2 .= show_event($event);
 	$text2 .= "</table>";
 }
@@ -793,7 +794,7 @@ else
 			}
 			else
 			{
-				if($ds = 'one')
+				if($ds == 'one')
 				{
 					if(!in_array($row['event_id'], $idArray))
 					{
@@ -839,9 +840,10 @@ $text2 .= "<table style='width:98%' class='fborder'>";
 
 if ($ds == 'one')
 {
+	echo "selected month: $selected_mon <br />";
 	$text2 .= "<tr><td class='fcaption' colspan='2'><strong>" . EC_LAN_111 . $months[$selected_mon-1] . " " . $dayslo[$selected_day-1] . "</strong></td></tr>";
 }
-else
+elseif ($ds != 'event')
 {
 	$text2 .= "<tr><td class='fcaption' colspan='2'><strong>" . EC_LAN_112 . " " . $months[date("m", $monthstart)-1] . "</strong></td></tr>";
 }
@@ -864,15 +866,21 @@ foreach ($events as $dom => $event)
 
 $text2 .= "</table>";
 // -----------------------------------------------------------------------------------------------------------
-$nextmonth = mktime(0, 0, 0, $month + 1, 1, $year);
-$sql->db_Select("event", "*", "event_start>='$nextmonth' ORDER BY event_start ASC LIMIT 0,10");
+$nextmonth = mktime(0, 0, 0, $month + 1, 1, $year)-1;
+if(!$next10_start)
+{
+	$next10_start = $nextmonth;
+}
+//echo date('r', $next10_start)."<br />";
+$sql->db_Select("event", "*", "event_start > '{$next10_start}' ORDER BY event_start ASC LIMIT 0,10");
 $num = $sql->db_Rows();
 // added by rezso
 $gen = new convert;
 // end
+$_title = str_replace("-NUM-", $num, EC_LAN_62);
 $text2 .= "<br /><table style='width:98%' class='fborder'>
 <tr>
-<td colspan='2' class='forumheader'><span class='defaulttext'>" . EC_LAN_62 . "</span></td></tr>";
+<td colspan='2' class='forumheader'><span class='defaulttext'>{$_title}</span></td></tr>";
 if ($num != 0)
 {
 	while ($events = $sql->db_Fetch())
@@ -932,7 +940,7 @@ function show_event($day_events)
 			else
 			{
 				$text2 .= "<tr>
-				<td colspan='2' class='fcaption'>" . $event['event_title'] . "</td>";
+				<td colspan='2' class='fcaption'><strong>" . EC_LAN_57."</strong> ".$event['event_title'] . "</td>";
 			}
 
 			$text2 .= "</tr>

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-04-15 14:34:45 $
+|     $Revision: 1.10 $
+|     $Date: 2005-04-15 15:22:52 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */ 
@@ -222,7 +222,8 @@ if ($cal_super)
     $qry = "SELECT e.*, ec.*
 			FROM #event as e
 			LEFT JOIN #event_cat as ec ON e.event_category = ec.event_cat_id
-			WHERE ((e.event_start >= {$monthstart} AND e.event_start <= {$monthend}) OR (e.event_end >= {$monthstart} AND e.event_end <= {$monthend}) OR e.event_rec_y = {$month})";
+			WHERE ((e.event_start >= {$monthstart} AND e.event_start <= {$monthend}) OR (e.event_end >= {$monthstart} AND e.event_end <= {$monthend}) OR e.event_rec_y = {$month})
+			ORDER BY e.event_start";
 } 
 else
 {
@@ -230,7 +231,8 @@ else
 			FROM #event as e
 			LEFT JOIN #event_cat as ec ON e.event_category = ec.event_cat_id
 			WHERE ((e.event_start >= {$monthstart} AND e.event_start <= {$monthend}) OR (e.event_end >= {$monthstart} AND e.event_end <= {$monthend}) OR e.event_rec_y = {$month})
-			AND find_in_set(event_cat_class,'$cal_class') ";
+			AND find_in_set(event_cat_class,'$cal_class') 
+			ORDER BY e.event_start";
 } 
 if ($sql->db_Select_gen($qry))
 {
