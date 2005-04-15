@@ -123,16 +123,15 @@ if(!strstr($ipAddresses, $ip)) {
 
 $siteTotal ++;
 
-$varStart = chr(36);
 $quote = chr(34);
 
-$data = chr(60)."?php\n". chr(47)."* e107 website system: Log file: ".date("z:Y", time())." *". chr(47)."\n\n".
-$varStart."ipAddresses = ".$quote.$ipAddresses.$quote.";\n".
-$varStart."siteTotal = ".$quote.$siteTotal.$quote.";\n".
-$varStart."siteUnique = ".$quote.$siteUnique.$quote.";\n";
+$data = "<?php\n\n/* e107 website system: Log file: ".date("z:Y", time())." */\n\n".
+"\$ipAddresses = ".$quote.$ipAddresses.$quote.";\n".
+"\$siteTotal = ".$quote.$siteTotal.$quote.";\n".
+"\$siteUnique = ".$quote.$siteUnique.$quote.";\n";
 
 $loop = FALSE;
-$data .= $varStart."domainInfo = array(\n";
+$data .= "\$domainInfo = array(\n";
 foreach($domainInfo as $key => $info) {
 	if($loop){ $data .= ",\n"; }
 	$data .= $quote.$key.$quote." => $info";
@@ -141,7 +140,7 @@ foreach($domainInfo as $key => $info) {
 $data .= "\n);\n".
 
 $loop = FALSE;
-$data .= $varStart."screenInfo = array(\n";
+$data .= "\$screenInfo = array(\n";
 foreach($screenInfo as $key => $info) {
 	if($loop){ $data .= ",\n"; }
 	$data .= $quote.$key.$quote." => $info";
@@ -151,7 +150,7 @@ $data .= "\n);\n".
 
 
 $loop = FALSE;
-$data .= $varStart."browserInfo = array(\n";
+$data .= "\$browserInfo = array(\n";
 foreach($browserInfo as $key => $info) {
 	if($loop){ $data .= ",\n"; }
 	$data .= $quote.$key.$quote." => $info";
@@ -160,7 +159,7 @@ foreach($browserInfo as $key => $info) {
 $data .= "\n);\n".
 
 $loop = FALSE;
-$data .= $varStart."osInfo = array(\n";
+$data .= "\$osInfo = array(\n";
 foreach($osInfo as $key => $info) {
 	if($loop){ $data .= ",\n"; }
 	$data .= $quote.$key.$quote." => $info";
@@ -170,7 +169,7 @@ $data .= "\n);\n".
 
 
 $loop = FALSE;
-$data .= $varStart."refInfo = array(\n";
+$data .= "\$refInfo = array(\n";
 foreach($refInfo as $key => $info) {
 	if($loop){ $data .= ",\n"; }
 	$data .= $quote.$key.$quote." => array('url' => '".$info['url']."', 'ttl' => ".$info['ttl'].")";
@@ -179,7 +178,7 @@ foreach($refInfo as $key => $info) {
 $data .= "\n);\n".
 
 $loop = FALSE;
-$data .= $varStart."searchInfo = array(\n";
+$data .= "\$searchInfo = array(\n";
 foreach($searchInfo as $key => $info) {
 	if($loop){ $data .= ",\n"; }
 	$data .= $quote.$key.$quote." => $info";
@@ -188,7 +187,7 @@ foreach($searchInfo as $key => $info) {
 $data .= "\n);\n".
 
 $loop = FALSE;
-$data .= $varStart."visitInfo = array(\n";
+$data .= "\$visitInfo = array(\n";
 foreach($visitInfo as $key => $info) {
 	if($loop){ $data .= ",\n"; }
 	$data .= $quote.$key.$quote." => ".$quote.$info.$quote;
@@ -197,11 +196,11 @@ foreach($visitInfo as $key => $info) {
 $data .= "\n);\n".
 
 $loop = FALSE;
-$data .= $varStart."pageInfo = array(\n";
+$data .= "\$pageInfo = array(\n";
 foreach($pageInfo as $info) {
 	$page = preg_replace("/(\?.*)|(\_.*)|(\.php)/", "", basename ($info['url']));
 	if($loop){ $data .= ",\n"; }
-	$data .= $quote.$page.$quote." => array('url' => '".$info['url']."', 'ttl' => ".$info['ttl'].", 'unq' => ".$info['unq'].", 'ttlv' => ".$info['ttlv'].", 'unqv' => ".$info['unqv'].")";
+	$data .= $quote.$page.$quote." => array('url' => '{$info['url']}', 'ttl' => ".$info['ttl'].", 'unq' => ".$info['unq'].", 'ttlv' => ".$info['ttlv'].", 'unqv' => ".$info['unqv'].")";
 	$loop = 1;
 }
 
