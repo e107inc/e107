@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/admin_config.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-04-15 14:34:46 $
+|     $Revision: 1.9 $
+|     $Date: 2005-04-15 16:38:43 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -57,18 +57,18 @@ $text = "<div style='text-align:center'>
 	</tr>
 	<tr>
 	<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_76." </td>
-	<td style='width:60%;vertical-align:top;' class='forumheader3'>". r_userclass("eventpost_admin", $pref['eventpost_admin'], $mode = "off")."
+	<td style='width:60%;vertical-align:top;' class='forumheader3'>". r_userclass("eventpost_admin", $pref['eventpost_admin'], "off", 'public, nobody, member, admin, classes')."
 	</td>
 	</tr>
 	<tr>
 	<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_100." </td>
-	<td style='width:60%;vertical-align:top;' class='forumheader3'>". r_userclass("eventpost_addcat", $pref['eventpost_addcat'], $mode = "off")."
+	<td style='width:60%;vertical-align:top;' class='forumheader3'>". r_userclass("eventpost_addcat", $pref['eventpost_addcat'], "off",  'public, nobody, member, admin, classes')."
 	<br /><em>".EC_LAN_101."</em>
 	</td>
 	</tr>
 	<tr>
 	<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_104." </td>
-	<td style='width:60%;vertical-align:top;' class='forumheader3'>". r_userclass("eventpost_super", $pref['eventpost_super'], $mode = "off")."
+	<td style='width:60%;vertical-align:top;' class='forumheader3'>". r_userclass("eventpost_super", $pref['eventpost_super'], "off",  'public, nobody, member, admin, classes')."
 	</td>
 	</tr>
 	<tr>

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/admin_cat.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-04-15 14:34:46 $
+|     $Revision: 1.3 $
+|     $Date: 2005-04-15 16:38:44 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -159,7 +159,7 @@ if ($calendarmenu_action=='dothings')
 <td style='width:80%' class='forumheader3'>" . r_userclass("event_cat_class", $event_cat_class) . "
 </td></tr>			
 <tr><td class='forumheader3' style='width:20%'>" . EC_LAN_55."</td><td class='forumheader3' >";
-            $calendarmenu_text .= " <input class='tbox' style='width:150px' type='text' name='ne_new_category_icon' />";
+            $calendarmenu_text .= " <input class='tbox' style='width:150px' id='caticon' type='text' name='ne_new_category_icon' />";
             $calendarmenu_text .= " <input class='button' type='button' style='width: 45px; cursor:hand;' value='".EC_LAN_90."' onclick='expandit(\"cat_icons\")' />";
             $calendarmenu_text .= "<div style='display:none' id='cat_icons'>";
 
@@ -167,7 +167,7 @@ if ($calendarmenu_action=='dothings')
             {
                 if ($img['fname'])
                 {
-                    $calendarmenu_text .= "<a href='javascript:addtext(\"" . $img['fname'] . "\")'><img src='" . e_PLUGIN . "calendar_menu/images/" . $img['fname'] . "' style='border:0px' alt='' /></a> ";
+                    $calendarmenu_text .= "<a href='javascript:insertext(\"{$img['fname']}\", \"caticon\")'><img src='" . e_PLUGIN . "calendar_menu/images/" . $img['fname'] . "' style='border:0px' alt='' /></a> ";
                 } 
             } 
 
