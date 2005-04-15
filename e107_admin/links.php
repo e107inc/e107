@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-04-12 02:22:43 $
+|     $Revision: 1.34 $
+|     $Date: 2005-04-15 09:22:55 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -142,7 +142,47 @@ class links {
 				<td class='fcaption' style='width:5%'>".LAN_ORDER."</td>
 				</tr>";
 			while ($row = $sql->db_Fetch()) {
-				extract($row);
+
+				if (substr($row['link_name'], 0, 8) == 'submenu.')				{
+					$tmp=explode('.', $row['link_name'], 3);
+					$linklist[$tmp[1]][]=$row;
+				}else{
+					$linklist['head_menu'][] = $row;
+				}
+
+			}
+
+			foreach ($linklist['head_menu'] as $lk) {
+				$lk['link_total'] = $link_total;
+				$text .= $this->display_row($lk);
+				$main_linkname = $lk['link_name'];
+				if($linklist[$main_linkname]){
+					foreach ($linklist[$main_linkname] as $sub) {
+						$sub['link_total'] = $link_total;
+						$text .= $this->display_row($sub);
+					}
+				}
+			}
+
+			$text .= "<tr>
+				<td class='forumheader' colspan='6' style='text-align:center'><input class='button' type='submit' name='update' value='".LAN_UPDATE."' /></td>
+				</tr>";
+			$text .= "</table></div>";
+			$text .= $rs->form_close();
+		} else {
+			$text .= "<div style='text-align:center'>".LCLAN_61."</div>";
+		}
+		$ns->tablerender(LCLAN_8, $text);
+	}
+
+	function display_row($row2,$link_total){
+		global $sql, $rs, $ns, $tp;
+		extract($row2);
+		if(eregi("submenu.",$link_name)){
+			$tmp = explode(".",$link_name);
+			$link_name = "<span style='padding-left:30px'>".$tmp[2]."</span>";
+		}
+
 				$text .= "<tr><td class='forumheader3' style='width:5%; text-align: center; vertical-align: middle' title='".$link_description."'>";
 				$text .= $link_button ? "<img src='".e_IMAGE."icons/".$link_button."' alt='' /> ":
 				"";
@@ -157,25 +197,20 @@ class links {
 				$text .= "<input type='image' src='".e_IMAGE."admin_images/down.png' title='".LCLAN_31."' value='".$link_id.".".$link_order."' name='dec' />";
 				$text .= "</td>";
 				$text .= "<td style='width:5%; text-align:center' class='forumheader3'>";
-				$text .= "<select name='link_order[]' class='tbox'>";
+				$text .= "<select name='link_order[]' class='tbox'>\n";
 				for($a = 1; $a <= $link_total; $a++) {
-					$text .= ($row['link_order'] == $a) ? "<option value='".$row['link_id'].".".$a."' selected='selected'>".$a."</option>" :
-					 "<option value='".$row['link_id'].".".$a."'>".$a."</option>";
+					$selected = ($link_order == $a) ? "selected='selected'" : "";
+					$text .= "<option value='".$link_id.".".$a."' $selected>".$a."</option>\n";
 				}
 				$text .= "</select>";
 				$text .= "</td>";
 				$text .= "</tr>";
-			}
-			$text .= "<tr>
-				<td class='forumheader' colspan='6' style='text-align:center'><input class='button' type='submit' name='update' value='".LAN_UPDATE."' /></td>
-				</tr>";
-			$text .= "</table></div>";
-			$text .= $rs->form_close();
-		} else {
-			$text .= "<div style='text-align:center'>".LCLAN_61."</div>";
-		}
-		$ns->tablerender(LCLAN_8, $text);
+
+	return $text;
+
 	}
+
+
 
 	function show_message($message) {
 		global $ns;
@@ -195,6 +230,12 @@ class links {
 			}
 		}
 
+		if(eregi("submenu.",$link_name)){
+			$tmp = explode(".",$link_name);
+			$link_name = $tmp[2];
+			$sublink = $tmp[1];
+		}
+
 		$handle = opendir(e_IMAGE."icons");
 		while ($file = readdir($handle)) {
 			if ($file != "." && $file != ".." && $file != "/" && $file != "CVS") {
@@ -205,7 +246,21 @@ class links {
 
 		$text = "<div style='text-align:center'>
 			<form method='post' action='".e_SELF."?".e_QUERY."' id='linkform'>
-			<table style='".ADMIN_WIDTH."' class='fborder'>
+			<table style='".ADMIN_WIDTH."' class='fborder'>";
+
+		$text .= "<tr>
+			<td style='width:30%' class='forumheader3'>".LINKLAN_2.": </td>
+			<td style='width:70%' class='forumheader3'>
+			<select class='tbox' name='link_parent' >
+			<option value=''>".LINKLAN_3."</option>";
+			$sql -> db_Select("links", "*", "link_name NOT LIKE 'submenu.%' ORDER BY link_name");
+			while($row = $sql-> db_Fetch()){
+				$sel = ($sublink == $row['link_name']) ? "selected='selected'" : "";
+				$text .="<option value='".$row['link_name']."' $sel>".$row['link_name']."</option>";
+			}
+
+		$text .= "</select></td>
+			</tr>
 			<tr>
 			<td style='width:30%' class='forumheader3'>".LCLAN_15.": </td>
 			<td style='width:70%' class='forumheader3'>
@@ -245,7 +300,7 @@ class links {
 		$linkop[0] = LCLAN_20;  // 0 = same window
 		$linkop[1] = LCLAN_23;
 		$linkop[4] = LCLAN_24;  // 4 = miniwindow  600x400
-		$linkop[5] = LCLAN_82;  // 5 = miniwindow  800x600
+		$linkop[5] = LINKLAN_1;  // 5 = miniwindow  800x600
 
 		$text .= "</div></td>
 			</tr>
@@ -299,7 +354,12 @@ class links {
 		if(!is_object($tp)) {
 			$tp=new e_parse;
 		}
-		$link_name = $tp->toDB($_POST['link_name']);
+
+		if($_POST['link_parent']){
+        	$link_name = $tp->toDB(("submenu.".$_POST['link_parent'].".".$_POST['link_name']));
+		}else{
+			$link_name = $tp->toDB($_POST['link_name']);
+		}
 		$link_url = $tp->toDB($_POST['link_url']);
 		$link_description = $tp->toDB($_POST['link_description']);
 		$link_button = $tp->toDB($_POST['link_button']);
