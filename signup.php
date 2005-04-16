@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-04-13 09:35:24 $
+|     $Revision: 1.20 $
+|     $Date: 2005-04-16 10:30:15 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -218,29 +218,22 @@ if (isset($_POST['register'])) {
 			$ue_fields .= $key."='".$val."'";
 		}
 
-		if ($pref['user_reg_veri'])
-		{
+		if ($pref['user_reg_veri']){
 			$u_key = md5(uniqid(rand(), 1));
 			$nid = $sql->db_Insert("user", "0, \"".$username."\", '', \"".md5($_POST['password1'])."\", '$u_key', \"".$_POST['email']."\", \"".$_POST['website']."\", \"".$_POST['icq']."\", \"".$_POST['aim']."\", \"".$_POST['msn']."\", \"".$_POST['location']."\", \"".$birthday."\", \"".$_POST['signature']."\", \"".$_POST['image']."\", \"".$_POST['timezone']."\", \"".$_POST['hideemail']."\", \"".$time."\", '0', \"".$time."\", '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '', '0', \"".$_POST['realname']."\", '', '', '', '' ");
 
 			// ==== Update Userclass =======
+
 			if ($_POST['usrclass']) {
-				if(is_array($_POST['usrclass'])) {
-					if(count($_POST['usrclass'] == 1)) {
-						$nid = $_POST['usrclass'][0];
-					} else {
-						$nid = explode(',',array_dif($_POST['usrclass'],array('')));
-					}
-				} else {
-					$nid = $_POST['usrclass'];
-				}
+				unset($insert_class);
+				sort($_POST['usrclass']);
+				$insert_class = implode(",",$_POST['usrclass']);
 				$sql->db_Update("user", "user_class='$insert_class' WHERE user_id='".$nid."' ");
 			}
 
 			// ========= save extended fields as serialized data. =====
 
-			if($ue_fields)
-			{
+			if($ue_fields){
 				$sql->db_Select_gen("INSERT INTO #user_extended (user_extended_id) values ('{$nid}')");
 				$sql->db_Update("user_extended", $ue_fields." WHERE user_extended_id = '{$nid}'");
 			}
@@ -278,9 +271,7 @@ if (isset($_POST['register'])) {
 			if ($_POST['usrclass']) {
 				unset($insert_class);
 				sort($_POST['usrclass']);
-				foreach($_POST['usrclass'] as $value) {
-					$insert_class .= $value.".";
-				}
+				$insert_class = implode(",",$_POST['usrclass']);
 				$sql->db_Update("user", "user_class='$insert_class' WHERE user_id='".$nid."' ");
 			}
 			// ======== save extended fields as serialized data.
