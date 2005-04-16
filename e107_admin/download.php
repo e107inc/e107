@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2005-04-08 18:11:02 $
-|     $Author: stevedunstan $
+|     $Revision: 1.45 $
+|     $Date: 2005-04-16 09:59:39 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -240,8 +240,14 @@ if ($action == "opt") {
 		</td>
 		<td class='forumheader3' style='width:30%;text-align:left'>
 
-		<select name='download_order' class='tbox'>". ($pref['download_order'] == "download_datestamp" ? "<option value='download_datestamp' selected='selected'>".LAN_DATE."</option>" : "<option value='download_datestamp'>".LAN_DATE."</option>"). ($pref['download_order'] == "download_requested" ? "<option value='download_requested' selected='selected'>".ADLAN_24."</option>" : "<option value='download_requested'>".ADLAN_24."</option>"). ($pref['download_order'] == "download_name" ? "<option value='download_name' selected='selected'>".DOWLAN_59."</option>" : "<option value='download_name'>".DOWLAN_59."</option>"). ($pref['download_order'] == "download_author" ? "<option value='download_author' selected='selected'>".DOWLAN_60."</option>" : "<option value='download_author'>".DOWLAN_60."</option>")."
-		</select>
+		<select name='download_order' class='tbox'>";
+		$order_options = array("download_id"=>"Id No.","download_datestamp"=>LAN_DATE,"download_requested"=>ADLAN_24,"download_name"=>DOWLAN_59,"download_author"=>DOWLAN_60);
+		foreach($order_options as $value=>$label){
+			$select = ($pref['download_order'] == $value) ? "selected='selected'" : "";
+			$text .= "<option value='$value' $select >$label</option>\n";
+		}
+
+		$text .= "</select>
 		</td>
 		</tr>
 		<tr><td style='width:70%' class='forumheader3'>
