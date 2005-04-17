@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-04-16 10:30:15 $
+|     $Revision: 1.21 $
+|     $Date: 2005-04-17 21:25:36 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -241,12 +241,15 @@ if (isset($_POST['register'])) {
 			// ========== Send Email =====.                                                       // ==========================================================
 			define("RETURNADDRESS", (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$nid.".".$u_key : SITEURL."/signup.php?activate.".$nid.".".$u_key));
 			$pass_show = ($pref['user_reg_secureveri'])? "*******" : $_POST['password1'];
-			$message = LAN_403." ".SITENAME."\n".LAN_SIGNUP_18."\n\n".LAN_SIGNUP_19." ".$_POST['name']."\n".LAN_SIGNUP_20." ".$pass_show."\n\n".LAN_SIGNUP_21."\n\n";
-			$message .= RETURNADDRESS.LAN_407." ".SITENAME."\n".SITEURL;
+            $message = LAN_403." ".SITENAME."\n";
+			$message .= LAN_SIGNUP_21."\n\n";
+			$message .= RETURNADDRESS."\n\n";
+			$message .= LAN_SIGNUP_18."\n\n";
+			$message .= LAN_SIGNUP_19." ".$_POST['name']."\n".LAN_SIGNUP_20." ".$pass_show."\n\n";
+			$message .= LAN_407." ".SITENAME."\n".SITEURL;
 
 			require_once(e_HANDLER."mail.php");
-			if (file_exists(THEME."emails.php"))
-			{
+			if (file_exists(THEME."emails.php")){
 				require_once(THEME."emails.php");
 				$message = ($SIGNUPEMAIL)? $SIGNUPEMAIL:
 				$message;

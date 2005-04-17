@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_signup.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-15 18:15:34 $
+|     $Revision: 1.5 $
+|     $Date: 2005-04-17 21:24:56 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -39,7 +39,7 @@ define("LAN_403", "Welcome to");
 define("LAN_404", "Registration details for");
 define("LAN_405", "This stage of registation is complete. You will receive a confirmation email containing your login details. Please follow the link in the email to complete the signup process and activate your account.");
 define("LAN_406", "Thankyou!");
-define("LAN_407", "\n\nPlease keep this email for your own information. Your password has been encrypted and cannot be retrieved if you misplace or forget it. You can however request a new password if this happens.\n\nThanks for your registration.\n\nFrom");
+define("LAN_407", "Please keep this email for your own information. Your password has been encrypted and cannot be retrieved if you misplace or forget it. You can however request a new password if this happens.\n\nThanks for your registration.\n\nFrom");
 define("LAN_408", "A user with that email address already exists. Please use the 'forgot password' screen to retrieve your password.");
 define("LAN_SIGNUP_1", "Min.");
 define("LAN_SIGNUP_2", "chars.");
