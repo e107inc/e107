@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-04-08 12:37:29 $
-|     $Author: streaky $
+|     $Revision: 1.16 $
+|     $Date: 2005-04-17 22:12:10 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -300,7 +300,7 @@ function send_file($file) {
 	@ini_set("max_execution_time", 10 * 60);
 
 	while (@ob_end_clean()); // kill all output buffering else it eats server resources
-	
+
 	$filename = $file;
 	$file = basename($file);
 	if (is_file($filename) && connection_status() == 0) {
@@ -322,9 +322,12 @@ function send_file($file) {
 			fseek($res , $seek);
 		}
 		$data_len -= $seek;
+        header("Expires: 0");
+		header("Cache-Control: max-age=30" );
 		header("Content-Type: application/force-download");
 		header('Content-Disposition: attachment; filename="'.$file.'"');
 		header("Content-Length: {$data_len}");
+		header("Pragma: public");
 		if ($seek) {
 			header('Accept-Ranges: bytes');
 			header("HTTP/1.0 206 Partial Content");
@@ -349,8 +352,8 @@ function check_download_limits()
 
 	// Check download count limits
 	$qry = "
-	SELECT gen_intdata, gen_chardata, (gen_intdata/gen_chardata) as count_perday 
-	FROM #generic 
+	SELECT gen_intdata, gen_chardata, (gen_intdata/gen_chardata) as count_perday
+	FROM #generic
 	WHERE gen_type = 'download_limit' AND gen_datestamp IN (".USERCLASS_LIST.") AND (gen_chardata > 0 AND gen_intdata > 0)
 	ORDER BY count_perday DESC
 	";
@@ -393,8 +396,8 @@ function check_download_limits()
 
 	// Check download bandwidth limits
 	$qry = "
-	SELECT gen_user_id, gen_ip, (gen_user_id/gen_ip) as bw_perday 
-	FROM #generic 
+	SELECT gen_user_id, gen_ip, (gen_user_id/gen_ip) as bw_perday
+	FROM #generic
 	WHERE gen_type='download_limit' AND gen_datestamp IN (".USERCLASS_LIST.") AND (gen_user_id > 0 AND gen_ip > 0)
 	ORDER BY bw_perday DESC
 	";
