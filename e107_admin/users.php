@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-04-02 22:09:55 $
+|     $Revision: 1.29 $
+|     $Date: 2005-04-17 21:54:36 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -364,13 +364,13 @@ class users
 					$text .= "<a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc")."'><div class='fcaption' style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap'>".LAN_BANNED."</div></a>";
 				}
 				else if($user_ban == 2) {
-					$text .= "<div class='fcaption' style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap'>".LAN_NOTVERIFIED."</div>";
+					$text .= "<div class='fcaption' style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap' >".LAN_NOTVERIFIED."</div>";
 				} else {
 					$text .= "&nbsp;";
 				}
 
 				$text .= "</td>
-					<td style='width:30%' class='forumheader3'><a href='".e_BASE."user.php?id.$user_id'>$user_name</a></td>
+					<td style='width:30%' class='forumheader3'><a href='".e_BASE."user.php?id.$user_id' title='$user_email : $user_login'>$user_name</a></td>
 					<td style='width:15%' class='forumheader3'>";
 
 				if ($user_class) {
