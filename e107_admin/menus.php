@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-04-11 20:46:36 $
-|     $Author: e107coders $
+|     $Revision: 1.23 $
+|     $Date: 2005-04-17 06:28:16 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -350,7 +350,7 @@ else
 	parseheader($menus_header);
 	echo "<div style='text-align:center'>";
 	echo $frm->form_open("post", e_SELF."?configure.".$menus_equery[1], "menuActivation");
-	$text = "<table  style='width:95%;margin-left:auto;margin-right:auto' >";
+	$text = "<table style='width:95%;margin-left:auto;margin-right:auto'>";
 
 	$sql->db_Select("menus", "*", "menu_location='0' ORDER BY menu_name ");
 	$text .= "<tr><td style='text-align:center;padding-bottom:4px'>".MENLAN_36."...</td><td style='padding-bottom:4px;text-align:center'>...".MENLAN_37."</td></tr>";
@@ -406,20 +406,20 @@ function checklayout($str) {
 	global $frm;
 
 	if (strstr($str, "LOGO")) {
-		echo "[Logo]";
+		echo "<div style='padding: 2px'>[Logo]</div>";
 	}
 	else if(strstr($str, "SITENAME")) {
-		echo "[SiteName]";
+		echo "<div style='padding: 2px'>[SiteName]</div>";
 	}
 	else if (strstr($str, "SITETAG")) {
-		echo "[SiteTag]";
+		echo "<div style='padding: 2px'>[SiteTag]</div>";
 	}
 	else if (strstr($str, "SITELINKS")) {
-		echo "[SiteLinks]";
+		echo "<div style='padding: 2px'>[SiteLinks]</div>";
 	}
 	else if (strstr($str, "CUSTOM")) {
-		$cust = preg_replace("/\{CUSTOM=(.*?)\}/si", "\\1", $str);
-		echo "[$cust]";
+		$cust = preg_replace("/\W*\{CUSTOM=(.*?)(\+.*)?\}\W*/si", "\\1", $str);
+		echo "<div style='padding: 2px'>[".$cust."]</div>";
 	}
 	// Display embedded Plugin information.
 	else if (strstr($str, "PLUGIN")){
