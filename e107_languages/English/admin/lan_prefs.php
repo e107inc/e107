@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-04-13 15:50:59 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.28 $
+|     $Date: 2005-04-18 02:33:01 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_1", "Site Information");
@@ -45,7 +45,7 @@ define("PRFLAN_29", "Activate user registration system?");
 define("PRFLAN_30", "allow users to register as members on your site");
 define("PRFLAN_31", "Use email verification for signups?");
 define("PRFLAN_32", "Allow anonymous posting?");
-define("PRFLAN_33", "if left unchecked only registered members can post comments etc");
+define("PRFLAN_33", "switch this off to allow only registered members to post comments etc");
 
 // define("PRFLAN_34", "Security");
 
