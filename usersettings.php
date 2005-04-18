@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-04-14 16:38:42 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.22 $
+|     $Date: 2005-04-18 19:01:46 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 	
@@ -546,7 +546,7 @@ $text .= "</select>
 	<tr>
 	<td style='width:20%; vertical-align:top' class='forumheader3'>".LAN_422."<br /><span class='smalltext'>".LAN_423."</span></td>
 	<td style='width:80%' class='forumheader2'>
-	<input class='tbox' type='text' name='image' size='60' value='$image' maxlength='100' />
+	<input class='tbox' type='text' name='image' size='60' value='$user_image' maxlength='100' />
 	</td>
 	</tr>
 	 
