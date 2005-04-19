@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-04-06 20:20:04 $
+|     $Revision: 1.31 $
+|     $Date: 2005-04-19 07:13:36 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-require_once("class2.php");
-e107_require(e_HANDLER."search_class.php");
+require_once('class2.php');
+e107_require(e_HANDLER.'search_class.php');
 $sch = new e_search;
 $search_prefs = $sysprefs -> getArray('search_prefs');
 
@@ -28,11 +28,8 @@ if (!check_class($pref['search_restrict'])) {
 	exit;
 }
 
-if (isset($_GET)) {
-	$url_query = explode('.', e_QUERY);
-	if (isset($_GET['q']) && strlen($_GET['q']) > 2) {
-		$query = trim($_GET['q']);
-	}
+if (isset($_GET['q']) && strlen($_GET['q']) > 2) {
+	$query = trim($_GET['q']);
 }
 
 $search_info = array();
@@ -57,6 +54,7 @@ function search_info($id, $type, $plug_require, $info='') {
 		return FALSE;
 	}
 }
+
 //load all core search routines
 $search_id = 0;
 if ($search_info[$search_id] = search_info('news', 'core', FALSE, array('sfile' => e_HANDLER.'search/search_news.php', 'qtype' => LAN_98, 'refpage' => 'news.php'))) {
@@ -108,7 +106,8 @@ if ($search_prefs['multisearch']) {
 	}
 }
 
-$perform_search = TRUE;
+$perform_search = 'perform';
+
 if ($search_prefs['time_restrict']) {
 	if (isset($query)) {
 		$time = time() - $search_prefs['time_secs'];
@@ -117,7 +116,7 @@ if ($search_prefs['time_restrict']) {
 		if ($sql -> db_Select("tmp", "tmp_ip, tmp_time, tmp_info", "tmp_info LIKE 'type_search%' AND tmp_ip='".$ip."'")) {
 			$row = $sql -> db_Fetch();
 			if (($row['tmp_time'] > $time) && ($row['tmp_info'] != 'type_search '.$query_check)) {
-				$perform_search = FALSE;
+				$perform_search = 'time_restricted';
 			} else {
 				$sql -> db_Update("tmp", "tmp_time='".time()."', tmp_info='type_search ".$query_check."' WHERE tmp_info LIKE 'type_search%' AND tmp_ip='".$ip."'");
 			}
@@ -125,6 +124,13 @@ if ($search_prefs['time_restrict']) {
 			$sql -> db_Insert("tmp", "'".$ip."', '".time()."', 'type_search ".$query_check."'");
 		}
 	}
+}
+
+if (is_numeric($_GET['r'])) {
+	$result_flag = $_GET['r'];
+} else {
+	$perform_search = 'not_numeric';
+	$result_flag = 0;
 }
 
 require_once(HEADERF);
@@ -219,7 +225,7 @@ $text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_BOT_TABLE);
 $ns->tablerender(PAGE_NAME." ".SITENAME, $text);
 
 if (isset($query)) {
-	if ($perform_search) {
+	if ($perform_search == 'perform') {
 		foreach ($search_info as $key => $a) {
 			if (isset($searchtype[$key])) {
 				unset($text);
@@ -244,7 +250,9 @@ if (isset($query)) {
 				}
 			}
 		}
-	} else {
+	} else if ($perform_search == 'time_restrict') {
+		$ns->tablerender(LAN_SEARCH_16, LAN_SEARCH_17.$search_prefs['time_secs'].LAN_SEARCH_18);
+	} else if ($perform_search == 'not_numeric') {
 		$ns->tablerender(LAN_SEARCH_16, LAN_SEARCH_17.$search_prefs['time_secs'].LAN_SEARCH_18);
 	}
 }

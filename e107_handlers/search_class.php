@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search_class.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-03-27 08:01:52 $
+|     $Revision: 1.25 $
+|     $Date: 2005-04-19 07:11:44 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ class e_search {
 	var $pos;
 
 	function parsesearch($table, $return_fields, $search_fields, $weights, $handler, $no_results, $where, $order) {
-		global $sql, $query, $tp, $search_prefs, $pre_title, $search_chars, $search_res;
+		global $sql, $query, $tp, $search_prefs, $pre_title, $search_chars, $search_res, $result_flag;
 		$bullet = (defined("BULLET") ? "<img src='".THEME."images/".BULLET."' alt='' style='vertical-align: middle;' />" : "<img src='".THEME."images/bullet2.gif' alt='' style='vertical-align: middle;' />");
 		$this -> query = $query;	
 		$keywords = explode(' ', $this -> query);
@@ -37,19 +37,6 @@ class e_search {
 				$match_query = implode(' OR ', $search_query);
 			}
 			$sql_query = "SELECT ".$return_fields." FROM #".$table." WHERE ".$where." (".$match_query.");";
-		} else {
-			foreach ($search_fields as $field_key => $field) {
-				$search_query[] = "(".$weights[$field_key]." * (MATCH(".$field.") AGAINST ('".$this -> query."' IN BOOLEAN MODE)))";
-			}
-			$match_query = implode(' + ', $search_query);
-			$sql_order = '';
-			foreach ($order as $sort_key => $sort_value) {
-				$sql_order .= ', '.$sort_key.' '.$sort_value;
-			}
-			$limit = " LIMIT ".$_GET['r'].",".$search_res;
-			$sql_query = "SELECT SQL_CALC_FOUND_ROWS ".$return_fields.", (".$match_query.") AS relevance FROM #".$table." WHERE ".$where." ( MATCH(".$field_query.") AGAINST ('".$this -> query."' IN BOOLEAN MODE) ) HAVING relevance > 0 ORDER BY relevance DESC ".$sql_order.$limit.";";
-		}
-		if($search_prefs['search_sort'] == 'php') {
 			if (count($keywords) > 1) {
 				$php_keywords[] = $query;
 				foreach ($keywords as $php_key) {
@@ -60,6 +47,17 @@ class e_search {
 			} else {
 				$keycount = count($keywords);
 			}
+		} else {
+			foreach ($search_fields as $field_key => $field) {
+				$search_query[] = "(".$weights[$field_key]." * (MATCH(".$field.") AGAINST ('".$this -> query."' IN BOOLEAN MODE)))";
+			}
+			$match_query = implode(' + ', $search_query);
+			$sql_order = '';
+			foreach ($order as $sort_key => $sort_value) {
+				$sql_order .= ', '.$sort_key.' '.$sort_value;
+			}
+			$limit = " LIMIT ".$result_flag.",".$search_res;
+			$sql_query = "SELECT SQL_CALC_FOUND_ROWS ".$return_fields.", (".$match_query.") AS relevance FROM #".$table." WHERE ".$where." ( MATCH(".$field_query.") AGAINST ('".$this -> query."' IN BOOLEAN MODE) ) HAVING relevance > 0 ORDER BY relevance DESC ".$sql_order.$limit.";";
 		}
 		if ($ps['results'] = $sql->db_Select_gen($sql_query)) {
 			while ($row = $sql->db_Fetch()) {
@@ -69,14 +67,10 @@ class e_search {
 					$endcrop = FALSE;
 					$output = '';
 					$title = TRUE;
-					if($search_prefs['search_sort'] == 'php') {
-						$weight = 0;
-						$x = 0;
-					}
+					$weight = 0;
+					$x = 0;
 					foreach ($matches as $this -> text) {
-						if($search_prefs['search_sort'] == 'php') {
-							$exact = TRUE;
-						}
+						$exact = TRUE;
 						$this -> text = nl2br($this -> text);
 						$t_search = $tp -> search;
 						$t_replace = $tp -> replace;
@@ -114,9 +108,7 @@ class e_search {
 									$this -> text = eregi_replace($regex_prepend.$this -> query.$regex_append, "<span class='searchhighlight'>\\1</span>", $this -> text);
 								}
 							}
-							if($search_prefs['search_sort'] == 'php') {
-								$exact = FALSE;
-							}
+							$exact = FALSE;
 						}
 						if ($title) {
 							if ($pre_title == 0) {
@@ -132,10 +124,8 @@ class e_search {
 						}
 						$output .= $this -> text;
 						$title = FALSE;
-						if($search_prefs['search_sort'] == 'php') {
-							$endweight = FALSE;
-							$x++;
-						}
+						$endweight = FALSE;
+						$x++;
 					}
 					if($search_prefs['search_sort'] == 'php') {
 						$relevance = $weight;
@@ -153,7 +143,7 @@ class e_search {
 					$res['omit_result'] = FALSE;
 				}
 			}
-			if($search_prefs['search_sort'] == 'php') {
+			if ($search_prefs['search_sort'] == 'php') {
 				$sort_args[] = $output_array['weight'];
 				$sort_args[] = SORT_DESC;
 				foreach ($order as $order_key => $order_value) {
@@ -166,14 +156,11 @@ class e_search {
 				foreach ($output_array['weight'] as $arg_id => $arg_value) {
 					$ps_limit[] = $output_array['text'][$arg_id];
 				}
-			} else {
-				$ps_limit = $output_array['text'];
-			}
-			if ($search_prefs['search_sort'] == 'php') {
-				for ($i = $_GET['r']; $i < ($_GET['r'] + $search_res); $i++) {
+				for ($i = $result_flag; $i < ($result_flag + $search_res); $i++) {
 					$ps['text'] .= $ps_limit[$i];
 				}
 			} else {
+				$ps_limit = $output_array['text'];
 				for ($i = 0; $i < $search_res; $i++) {
 					$ps['text'] .= $ps_limit[$i];
 				}
