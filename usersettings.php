@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-04-18 19:01:46 $
-|     $Author: stevedunstan $
+|     $Revision: 1.23 $
+|     $Date: 2005-04-20 14:14:22 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -501,7 +501,7 @@ $text .= "
 		}
 	}
 	
-
+$signature = $tp->toForm($user_signature);
 $text .= "
 	<tr><td colspan='2' class='forumheader'>".LAN_USET_8."</td></tr>
 	<tr>
