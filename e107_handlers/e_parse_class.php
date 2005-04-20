@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.64 $
-|     $Date: 2005-04-12 23:13:00 $
-|     $Author: streaky $
+|     $Revision: 1.65 $
+|     $Date: 2005-04-20 05:13:01 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 	
@@ -156,7 +156,7 @@ function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $ut
 							do
 							{
 								$store = $value;
-								if (preg_match("/^(.*?\s|^)(([^\s&]|&(\w{2,5}|#\d{2,4});){".$width."})(?!(".preg_quote($break, "/").'|\s))(.*)$/s$utf', $value, $match)) 
+								if (preg_match("/^(.*?\s|^)(([^\s&]|&(\w{2,5}|#\d{2,4});){".$width."})(?!(".preg_quote($break, "/").'|\s))(.*)$/s'.$utf, $value, $match)) 
 								{
 									for ($x = 0, $ledge = 0; $x < strlen($lbrks); $x++) $ledge = max($ledge, strrpos($match[2], $lbrks{$x}));
 									if (!$ledge) $ledge = strlen($match[2]) - 1;
