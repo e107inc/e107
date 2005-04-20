@@ -14,7 +14,7 @@
 */
 require_once("../class2.php");
 $e_sub_cat = 'database';
-	
+
 if (isset($_POST['dump_sql'])) {
 	if (!getperms("0")) {
 		header("location: ".e_ADMIN."admin.php");
@@ -23,55 +23,55 @@ if (isset($_POST['dump_sql'])) {
 	getsql($mySQLdefaultdb);
 	exit;
 }
-	
+
 if (isset($_POST['db_update'])) {
 	header("location: ".e_ADMIN."e107_update.php");
 	exit;
 }
-	
+
 if (isset($_POST['verify_sql'])) {
 	header("location: ".e_ADMIN."db_verify.php");
 	exit;
 }
-	
+
 require_once("auth.php");
 if (isset($_POST['optimize_sql'])) {
 	optimizesql($mySQLdefaultdb);
 	require_once("footer.php");
 	exit;
 }
-	
+
 if (isset($_POST['backup_core'])) {
 	backup_core();
 	message_handler("MESSAGE", DBLAN_1);
 }
-	
-	
-	
+
+
+
 $text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."'>\n
 	<table style='".ADMIN_WIDTH."' class='fborder'>
-	 
+
 	<tr>
 	<td style='width:70%' class='forumheader3'>".DBLAN_15."</td>
 	<td class='forumheader3' style='width:30%;text-align:center'><input class='button' style='width: 100%' type='submit' name='db_update' value='".DBLAN_16."' /></td>
 	</tr>
-	 
+
 	<tr>
 	<td style='width:70%' class='forumheader3'>".DBLAN_2."</td>
 	<td class='forumheader3' style='width:30%;text-align:center'><input class='button' style='width: 100%' type='submit' name='dump_sql' value='".DBLAN_3."' /></td>
 	</tr>
-	 
+
 	<tr>
 	<td style='width:70%' class='forumheader3'>".DBLAN_4."</td>
 	<td class='forumheader3' style='width:30%;text-align:center'><input class='button' style='width: 100%' type='submit' name='verify_sql' value='".DBLAN_5."' /></td>
 	</tr>
-	 
+
 	<tr>
 	<td style='width:70%' class='forumheader3'>".DBLAN_6."</td>
 	<td class='forumheader3' style='width:30%;text-align:center'><input class='button' style='width: 100%' type='submit' name='optimize_sql' value='".DBLAN_7."' /></td>
 	</tr>
-	 
+
 	<tr>
 	<td style='width:70%' class='forumheader3'>".DBLAN_8."</td>
 	<td class='forumheader3' style='width:30%;text-align:center'><input class='button' style='width: 100%' type='submit' name='backup_core' value='".DBLAN_9."' />
@@ -80,9 +80,9 @@ $text = "<div style='text-align:center'>
 	</table>
 	</form>
 	</div>";
-	
+
 $ns->tablerender(DBLAN_10, $text);
-	
+
 function backup_core() {
 	global $pref, $sql;
 	$tmp = base64_encode((serialize($pref)));
@@ -90,20 +90,20 @@ function backup_core() {
 		$sql->db_Update("core", "e107_value='{$tmp}' WHERE e107_name='pref_backup'");
 	}
 }
-	
+
 function optimizesql($mySQLdefaultdb) {
-	 
+
 	$result = mysql_list_tables($mySQLdefaultdb);
 	while ($row = mysql_fetch_row($result)) {
 		mysql_query("OPTIMIZE TABLE ".$row[0]);
 	}
-	 
+
 	$str = "
 		<div style='text-align:center'>
 		<b>".DBLAN_11." $mySQLdefaultdb ".DBLAN_12.".</b>
-		 
+
 		<br /><br />
-		 
+
 		<form method='POST' action='".e_SELF."'>
 		<input class='button' type='submit' name='back' value='".DBLAN_13."' />
 		</form>
@@ -111,28 +111,30 @@ function optimizesql($mySQLdefaultdb) {
 		<br />";
 	$ns = new e107table;
 	$ns->tablerender(DBLAN_14, $str);
-	 
+
 }
-	
+
 function sqladdslashes($str) {
 	// SQL text data fixup
 	$str = str_replace('\\', '\\\\', $str); // replace \ with \\
 	$str = str_replace('\'', '\'\'', $str); // replace ' with ''
 	return $str;
 }
-	
+
 function getsql($mySQLdefaultdb) {
-	$filename = "e107_backup";
+
 	$ext = "sql";
 	$mime_type = "'application/octet-stream";
 	$now = gmdate('D, d M Y H:i:s') . ' GMT';
-	 
+    $filename = "e107_backup_".date("Y-m-d_His");
+
+
 	header('Content-Type: ' . $mime_type);
 	header('Expires: ' . $now);
 	header('Content-Disposition: inline; filename="' . $filename . '.' . $ext . '"');
 	header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 	header('Pragma: public');
-	 
+
 	$sql = new db;
 	$sTblWild = str_replace('_', '\_', MPREFIX).'%'; /* add slash to underscores, end with SQL wildcard */
 	$result = mysql_query("SHOW TABLES LIKE '{$sTblWild}'"); // avoid normal sql class (instead of $sql2 which would also work)
@@ -149,7 +151,7 @@ function getsql($mySQLdefaultdb) {
 		$qryRes = $sql->db_Query($sQ);
 		$var = $sql->db_Fetch();
 		$sCreate = $var['Create Table'];
-		 
+
 		$sQ = "SHOW TABLE STATUS LIKE '".str_replace('_', '\_', $row[0])."'";
 		$sql->db_Query($sQ);
 		if ($sql->db_Rows()) {
@@ -160,21 +162,21 @@ function getsql($mySQLdefaultdb) {
 		}
 		unset($var);
 		$sqltext .= $sCreate.';'.$es;
-		 
+
 		// String fixups
 		$search = array("\x00", "\x0a", "\x0d", "\x1a"); //\x08\\x09, not required
 		$replace = array('\0', '\n', '\r', '\Z');
-		 
+
 		$maintable = ereg_replace(MPREFIX, '', $row[0]);
 		$sql->db_Select($maintable);
-		 
+
 		$metainfo = array();
 		$iFields = $sql->db_Num_fields();
-		 
+
 		for ($i = 0; $i < $iFields; $i++) {
 			$metainfo[] = $sql->db_Field_info();
 		}
-		 
+
 		while ($var = $sql->db_Fetch()) {
 			$sqltext .= $es.$es."## Table Data for ".$row[0]." ##".$es;
 			$field_names = array();
@@ -211,7 +213,7 @@ function getsql($mySQLdefaultdb) {
 	}
 	echo $sqltext;
 }
-	
+
 require_once("footer.php");
 
 ?>
